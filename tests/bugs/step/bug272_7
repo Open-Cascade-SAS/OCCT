@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC272"
+puts "========"
+
+
+stepread [locate_data_file test-m020306-v2.stp] a *
+
+tpcompound result
+if { [llength [whatis result]] == 3 } {
+    puts "Error : There is no result"
+}
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

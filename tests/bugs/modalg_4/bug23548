@@ -1,0 +1,13 @@
+puts "============"
+puts "CR23548"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation between two faces fails
+#######################################################################
+
+restore [locate_data_file bug23548_f1.brep] b1
+
+restore [locate_data_file bug23548_f2.brep] b2
+
+bop b1 b2

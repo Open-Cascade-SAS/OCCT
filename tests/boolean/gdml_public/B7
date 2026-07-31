@@ -1,0 +1,121 @@
+# test script for prism_orth_complex1.prt.1.gdml file
+compound result
+
+# box 
+box sh48E68B0 -190.50000009999999 -254.00000009999999 -381 381.00000019999999 508.00000019999999 762
+
+# box 
+box sh492B120 -137.39791879500001 -137.39791879500001 -396.24000000000001 274.79583759000002 274.79583759000002 792.48000000000002
+
+# copy shape
+copy sh492B120 sh492B120_copy
+
+# shape transformation
+trotate sh492B120_copy 0 0 0 -7.417649474675704e-009 -3.0724910593272844e-009 1 135 
+ttranslate sh492B120_copy 192.4050001 255.9050001 0
+
+# shape transformation
+trotate sh492B120_copy 0 0 0 0 1 0 90 
+ttranslate sh492B120_copy 508 127 -63.5
+
+# box 
+box sh492E610 -137.39791879500001 -137.39791879500001 -411.48000000000002 274.79583759000002 274.79583759000002 822.96000000000004
+
+# copy shape
+copy sh492E610 sh492E610_copy
+
+# shape transformation
+trotate sh492E610_copy 0 0 0 5.5511151231257802e-017 1.3401577416544655e-016 1 45.000000000000007 
+ttranslate sh492E610_copy 192.4050001 -255.9050001 0
+
+# shape transformation
+trotate sh492E610_copy 0 0 0 0 1 0 90 
+ttranslate sh492E610_copy 508 127 -63.5
+
+# cylinder 
+plane pln_sh4931710 -0 -0 -381 0 0 1 1 0 0
+erase pln_sh4931710
+pcylinder sh4931710 pln_sh4931710 190.5 762 360
+settolerance sh4931710 7.6199999999999999e-006
+
+# box 
+box sh4932660 -192.405 -28.177059884999998 -388.62 384.81 56.354119769999997 777.24000000000001
+
+# copy shape
+copy sh4932660 sh4932660_copy
+
+# shape transformation
+trotate sh4932660_copy 0 0 0 5.5511151231257802e-017 1.3401577416544655e-016 1 45.000000000000007 
+ttranslate sh4932660_copy 75.325809880000008 -138.82580988000001 0
+
+# shape transformation
+trotate sh4932660_copy 0 0 0 0 1 0 90 
+ttranslate sh4932660_copy 508 127 -63.5
+
+# copy shape
+copy sh4931710 sh4931710_copy
+
+# shape transformation
+ttranslate sh4931710_copy 190.5 -254 0
+
+# shape transformation
+trotate sh4931710_copy 0 0 0 0 1 0 90 
+ttranslate sh4931710_copy 508 127 -63.5
+
+# cut operation
+bcut sh48FF270 sh4931710_copy sh4932660_copy; copy sh48FF270 sh48FF270_copy 
+
+# cylinder 
+plane pln_sh48FAA40 -0 -0 -381 0 0 1 1 0 0
+erase pln_sh48FAA40
+pcylinder sh48FAA40 pln_sh48FAA40 190.5 762 360
+settolerance sh48FAA40 7.6199999999999999e-006
+
+# box 
+box sh48FEA90 -192.405 -28.177059884999998 -388.62 384.81 56.354119769999997 777.24000000000001
+
+# copy shape
+copy sh48FEA90 sh48FEA90_copy
+
+# shape transformation
+trotate sh48FEA90_copy 0 0 0 -3.2517679528326877e-017 1.2449156634005056e-016 1 135 
+ttranslate sh48FEA90_copy 75.325809880000008 138.82580988000001 0
+
+# shape transformation
+trotate sh48FEA90_copy 0 0 0 0 1 0 90 
+ttranslate sh48FEA90_copy 508 127 -63.5
+
+# copy shape
+copy sh48FAA40 sh48FAA40_copy
+
+# shape transformation
+ttranslate sh48FAA40_copy 190.5 254 0
+
+# shape transformation
+trotate sh48FAA40_copy 0 0 0 0 1 0 90 
+ttranslate sh48FAA40_copy 508 127 -63.5
+
+# cut operation
+bcut sh44CB930 sh48FAA40_copy sh48FEA90_copy; copy sh44CB930 sh44CB930_copy 
+
+# copy shape
+copy sh48E68B0 sh48E68B0_copy
+
+# shape transformation
+trotate sh48E68B0_copy 0 0 0 0 1 0 90 
+ttranslate sh48E68B0_copy 508 127 -63.5
+
+# cut operation
+bcut sh4576BB0 sh48E68B0_copy sh492B120_copy; copy sh4576BB0 sh4576BB0_copy 
+
+# cut operation
+bcut sh4585A00 sh4576BB0_copy sh492E610_copy; copy sh4585A00 sh4585A00_copy 
+
+# fuse operation
+bfuse sh44D2540 sh4585A00_copy sh48FF270_copy; copy sh44D2540 sh44D2540_copy 
+
+# fuse operation
+bfuse sh9055790 sh44D2540_copy sh44CB930_copy; copy sh9055790 sh9055790_copy 
+
+# result
+add sh9055790_copy result

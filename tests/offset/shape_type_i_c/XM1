@@ -1,0 +1,12 @@
+restore [locate_data_file bug28046_rm-107_merged_input.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 8
+offsetperform result
+
+checkprops result -s 1.81645e+06 -v 4.40127e+07
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 62 -face 62 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

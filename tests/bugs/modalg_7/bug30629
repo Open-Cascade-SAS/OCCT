@@ -1,0 +1,22 @@
+puts "========"
+puts "0030629: Modeling Algorithms - Invalid result of fuse operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30629.brep] s
+
+explode s so
+
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2 s_3 s_4
+bfillds
+
+bbop result 1
+
+checkshape result
+checknbshapes result -wire 11 -face 11 -shell 3 -solid 3
+checkprops result -s 725537 -v 1.33469e+07
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC24766"
+puts "============"
+puts ""
+#################################################
+# Wrong result for distmini between a TopoDS_Shell and a TopoDS_Edge on version 6.6.0.
+#################################################
+
+restore [locate_data_file bug24766_shell_for_points.brep] s1
+restore [locate_data_file bug24766_edge_to_line.brep] e1
+
+set dist_list [distmini d s1 e1]
+
+regexp {([-0-9.+eE]+)} [dump d_val] full dist
+
+set expected_dist 2.09628394812595e-15
+set tol_abs_dist 1.0e-12
+set tol_rel_dist 0.001
+
+checkreal "Minimal distantion" ${dist} ${expected_dist} ${tol_abs_dist} ${tol_rel_dist}

@@ -1,0 +1,2 @@
+source [locate_data_file 51686_ta6031.prt.gdml.tcl]
+

@@ -1,0 +1,21 @@
+pload QAcommands
+
+#INTERFACE XCAF
+puts "========================"
+puts "OCC363"
+puts "BUC60998"
+puts "========================"
+puts ""
+#######################################################
+## Incorrect work of persistence during reading and writing of degenerated edges.
+#######################################################
+
+######################################################################
+#set filedir $env(TmpDir)
+#puts $filedir
+#catch {exec rm $filedir/OCC363.xbf}
+pload XDE
+
+set T [OCC363 OCC363Doc [locate_data_file OCC363.xbf]]
+puts $T
+

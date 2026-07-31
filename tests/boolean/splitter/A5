@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26874"
+puts "============"
+puts ""
+#######################################################################
+# Implementation of the Partition operator in OCCT
+#######################################################################
+
+# split shell by faces
+restore [locate_data_file bug24558_Surface_3.brep] sh
+
+restore [locate_data_file bug24558_Surface_1.brep] f1
+restore [locate_data_file bug24558_Surface_2.brep] f2
+restore [locate_data_file bug24558_Surface_4.brep] f3
+
+bclearobjects
+bcleartools
+baddobjects sh
+baddtools f1 f2 f3
+bfillds
+bsplit result
+
+checkshape result
+checknbshapes result -face 58
+checkprops result -s 2997.83
+
+smallview
+don result
+fit
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

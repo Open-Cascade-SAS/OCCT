@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC20964: Wrong result of cut operation for given shapes"
+puts "============"
+puts ""
+
+restore [locate_data_file OCC20964_revsolid.brep] b1 
+restore [locate_data_file OCC20964_sphere.brep] b2 
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+# SECTION
+bbop result 4
+
+checkprops result -l 323.635
+checkshape result 
+checksection result -r 0
+
+set NbShapesRef "
+Number of shapes in .*
+ VERTEX : 6
+ EDGE : 6
+ WIRE : 0
+ FACE : 0
+ SHELL : 0
+ SOLID : 0
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 13
+"
+
+checknbshapes result -ref $NbShapesRef
+checkmaxtol result -ref 2.0849512334752456e-05
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

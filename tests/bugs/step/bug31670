@@ -1,0 +1,23 @@
+puts "================"
+puts "0031670: Data Exchange - cp1251 Cyrillic characters in STEP file"
+puts "================"
+puts ""
+
+pload OCAF
+
+# Read file
+param read.step.codepage CP1251
+ReadStep D [locate_data_file bug31670_russian.stp]
+
+# Checking 
+set aNameAssambly [encoding convertfrom utf-8 "\xd0\xa1\xd0\xb1\xd0\xbe\xd1\x80\xd0\xba\xd0\xb0\x31"]
+set aNameShape [encoding convertfrom utf-8 "\xd0\x94\xd0\xb5\xd1\x82"]
+
+set isOK 1
+if { [GetName D 0:1:1:1] != "$aNameAssambly" } { set isOK 0 }
+for { set i 1 } { $i < 9 } { incr i } {
+  if { [GetName D 0:1:1:[expr $i + 1]] != "$aNameShape$i" } { set isOK 0 }
+}
+if { $isOK == 0 } { puts "Error: unable to read CP1251 STEP" }
+
+Close D

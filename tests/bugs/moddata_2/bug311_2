@@ -1,0 +1,47 @@
+puts "========"
+puts "OCC311"
+puts "========"
+
+restore [locate_data_file OCC311.draw] c 
+####       checkshape c  # - not a topological shape
+
+set ufirst 1e-7
+set ulast  6.2831854071795897
+
+segment c ${ufirst} ${ulast}
+
+set dumpc [dump c]
+
+set list [split ${dumpc} "\n\t"]
+set listLength [llength ${list}]
+if { ${listLength} < 25 } {
+    puts "OCC311 - Error : listLength= ${listLength}"
+}
+
+regexp { +Degree +([-0-9.+eE]+), +([-0-9.+eE]+) +Poles, +([-0-9.+eE]+)  +Knots} $dumpc full DegreeNumber PolesNumber KnotsNumber
+
+set Knots [regexp -all -inline { +([-0-9.+eE]+ +: +[-0-9.+eE]+ +[-0-9.+eE]+)} $dumpc]
+regexp { *[-0-9.+eE]+ +: +([-0-9.+eE]+) +[-0-9.+eE]+} [lindex $Knots 1] full FirstKnot 
+regexp { *[-0-9.+eE]+ +: +([-0-9.+eE]+) +[-0-9.+eE]+} [lindex $Knots [llength $Knots]-1] full LastKnot 
+
+set delta_first [expr abs(${FirstKnot} - ${ufirst}) / ${ufirst} * 100]
+set delta_last  [expr abs(${LastKnot} - ${ulast}) / ${ulast} * 100]
+
+set maxdelta 0.01
+
+puts "FirstKnot = ${FirstKnot}"
+puts "LastKnot  = ${LastKnot}"
+
+if { ${delta_first} > ${maxdelta} } {
+    puts "OCC311 - Error : delta_first = ${delta_first}"
+}
+if { ${delta_last} > ${maxdelta} } {
+    puts "OCC311 - Error : delta_last = ${delta_last}"
+}
+
+if { ${delta_first} <= ${maxdelta} && ${delta_last} <= ${maxdelta} } {
+   puts "OCC311: OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

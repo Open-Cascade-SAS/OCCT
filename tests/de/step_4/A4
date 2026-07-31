@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename BUC50070.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 72  ( 64 )  Summary  = 72  ( 64 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 445  ( 445 )  Face     = 445  ( 445 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 445  ( 445 )  Face     = 445  ( 445 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.08129076078  (   0.1779929979 )  AvgTol   =  0.002456407106  (   0.01536487374 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 893  ( 893 )  N2Labels = 0  ( 0 )   TotalLabels = 894  ( 894 )   NameLabels = 1  ( 1 )   ColorLabels = 448  ( 448 )   LayerLabels = 448  ( 448 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = CYAN GRAY53 GREEN RED WHITE YELLOW  ( CYAN GRAY53 GREEN RED WHITE YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 215 242 254 5  ( 215 242 254 5 )
+
+}

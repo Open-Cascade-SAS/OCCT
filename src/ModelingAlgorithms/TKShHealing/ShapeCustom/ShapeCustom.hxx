@@ -1,0 +1,117 @@
+// Created on: 1998-06-03
+// Created by: data exchange team
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _ShapeCustom_HeaderFile
+#define _ShapeCustom_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Integer.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <Message_ProgressRange.hxx>
+
+class TopoDS_Shape;
+class BRepTools_Modification;
+class BRepTools_Modifier;
+class ShapeBuild_ReShape;
+class ShapeCustom_RestrictionParameters;
+
+//! This package is intended to
+//! convert geometrical objects and topological. The
+//! modifications of one geometrical object to another
+//! (one) geometrical object are provided. The supported
+//! modifications are the following:
+//! conversion of BSpline and Bezier surfaces to analytical form,
+//! conversion of indirect elementary surfaces (with left-handed
+//! coordinate systems) into direct ones,
+//! conversion of elementary surfaces to surfaces of revolution,
+//! conversion of surface of linear extrusion, revolution, offset
+//! surface to bspline,
+//! modification of parameterization, degree, number of segments of bspline
+//! surfaces, scale the shape.
+class ShapeCustom
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Applies modifier to shape and checks sharing in the case assemblies.
+  Standard_EXPORT static TopoDS_Shape ApplyModifier(
+    const TopoDS_Shape&                                                       S,
+    const occ::handle<BRepTools_Modification>&                                M,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& context,
+    BRepTools_Modifier&                                                       MD,
+    const Message_ProgressRange&           theProgress = Message_ProgressRange(),
+    const occ::handle<ShapeBuild_ReShape>& aReShape    = nullptr);
+
+  //! Returns a new shape without indirect surfaces.
+  Standard_EXPORT static TopoDS_Shape DirectFaces(const TopoDS_Shape& S);
+
+  //! Returns a new shape which is scaled original
+  Standard_EXPORT static TopoDS_Shape ScaleShape(const TopoDS_Shape& S, const double scale);
+
+  //! Returns a new shape with all surfaces, curves and pcurves
+  //! which type is BSpline/Bezier or based on them converted
+  //! having Degree less than <MaxDegree> or number of spans less
+  //! than <NbMaxSegment> in dependence on parameter priority <Degree>.
+  //! <GmaxDegree> and <GMaxSegments> are maximum possible degree
+  //! and number of spans correspondingly.
+  //! These values will be used in those cases when approximation with
+  //! specified parameters is impossible and one of GmaxDegree or
+  //! GMaxSegments is selected in dependence on priority.
+  //! Note that even if approximation is impossible with <GMaxDegree>
+  //! then number of spans can exceed specified <GMaxSegment>
+  //! <Rational> specifies if to convert Rational BSpline/Bezier into
+  //! polynomial B-Spline.
+  //! If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are true there are means
+  //! that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline
+  //! correspondingly.
+  Standard_EXPORT static TopoDS_Shape BSplineRestriction(
+    const TopoDS_Shape&                                   S,
+    const double                                          Tol3d,
+    const double                                          Tol2d,
+    const int                                             MaxDegree,
+    const int                                             MaxNbSegment,
+    const GeomAbs_Shape                                   Continuity3d,
+    const GeomAbs_Shape                                   Continuity2d,
+    const bool                                            Degree,
+    const bool                                            Rational,
+    const occ::handle<ShapeCustom_RestrictionParameters>& aParameters);
+
+  //! Returns a new shape with all elementary periodic surfaces converted
+  //! to Geom_SurfaceOfRevolution
+  Standard_EXPORT static TopoDS_Shape ConvertToRevolution(const TopoDS_Shape& S);
+
+  //! Returns a new shape with all surfaces of revolution and linear extrusion
+  //! convert to elementary periodic surfaces
+  Standard_EXPORT static TopoDS_Shape SweptToElementary(const TopoDS_Shape& S);
+
+  //! Returns a new shape with all surfaces of linear extrusion, revolution,
+  //! offset, and planar surfaces converted according to flags to
+  //! Geom_BSplineSurface (with same parameterisation).
+  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(const TopoDS_Shape& S,
+                                                       const bool          extrMode,
+                                                       const bool          revolMode,
+                                                       const bool          offsetMode,
+                                                       const bool          planeMode = false);
+};
+
+#endif // _ShapeCustom_HeaderFile

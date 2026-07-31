@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC25828"
+puts "========"
+puts ""
+##########################################
+## BRepAlgoAPI_Section fails for a solid and a face depending on order of arguments
+##########################################
+
+set BugNumber OCC25828
+
+restore [locate_data_file bug25828_intersectionproblem.brep] b
+
+explode b
+copy b_1 b1
+copy b_2 b2
+ 
+explode b1 f; copy b1_1 b1
+explode b2 f; copy b2_6 b2
+ 
+set log [bopcurves b1 b2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+set MaxTol 5.5e-6
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != 1} {
+  puts "Error: NbCurv is bad!"
+}
+
+smallview
+donly b1 b2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

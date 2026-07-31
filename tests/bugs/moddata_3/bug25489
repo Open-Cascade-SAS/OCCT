@@ -1,0 +1,37 @@
+puts "============"
+puts "CR25489"
+puts "============"
+puts ""
+###################################################################################
+# GCPnts_TangentialDeflection gives incorrect distribution of points
+###################################################################################
+
+restore [locate_data_file bug25469_bad_tria.brep] a
+
+subshape a e 8
+mkcurve c a_8
+
+set deflection 0.001
+set info [crvtpoints r c ${deflection} pi/6]
+
+set str1 "Nb points +: +(\[-0-9.+eE\]+)\n"
+set str2 "Max defl: +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+
+regexp "${str1}${str2}" ${info} full Nb dmax ufmax ulmax i
+
+#-1
+set min_Nb 4
+if { ${Nb} < ${min_Nb} } {
+    puts "Error : bad value of Nb points=${Nb}"
+}
+
+#-2
+if { ${dmax} > ${deflection} } {
+    puts "Error : bad value of deflection=${dmax}"
+}
+
+smallview
+donly a_8 r_a_8
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

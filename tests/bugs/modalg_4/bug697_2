@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC697"
+puts "============"
+puts ""
+######################################################
+# Fuse operation does not work
+######################################################
+## (old topology)
+## (fuse)
+######################################################
+
+puts "#"
+puts "Non stable test case on Linux. MKV. 28.04.2010"
+puts "#"
+
+restore [locate_data_file OCC697_2.brep] b2 
+restore [locate_data_file OCC697_3.brep] b3 
+
+checkshape b2
+checkshape b3
+##############################################
+if { [catch {bfuse result b2 b3} catch_result] } {
+##############################################
+   puts "Faulty : an exception was caught"
+}
+
+checkprops result -s 26041.9
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

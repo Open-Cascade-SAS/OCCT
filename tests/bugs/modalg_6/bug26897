@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC26897"
+puts "============"
+puts ""
+###############################
+## The mesh should not rebuild on copied shape
+###############################
+
+pload MODELING
+set tol 1.0e-7
+
+cone c 0 0 0 45 0
+mkface f c 0 6.28318530717958647 0 10
+
+# Mesh the face and store initial data
+incmesh f 0.1
+set base [trinfo f]
+regexp {([0-9]+) +triangles.*[^0-9]([0-9]+) +nodes} $base dummy base_tria base_nodes
+regexp {Maximal deflection ([-0-9.+eE]+)} $base dummy base_defl
+
+# Copy face
+tcopy -m f fc
+
+# Remesh initial face and check it is not changed
+incmesh f 1.0
+checktrinfo f -tri ${base_tria} -nod ${base_nodes} -defl ${base_defl} -tol_abs_defl ${tol}
+
+# Compare mesh info from copied shape
+checktrinfo fc -tri ${base_tria} -nod ${base_nodes} -defl ${base_defl} -tol_abs_defl ${tol}
+
+# Remesh copied shape and compare mesh once again
+incmesh fc 1.0
+checktrinfo fc -tri ${base_tria} -nod ${base_nodes} -defl ${base_defl} -tol_abs_defl ${tol}
+
+copy fc result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

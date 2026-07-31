@@ -1,0 +1,15 @@
+puts "============"
+puts "CR22835: IncrementalMesh generates FLT exceptions when running in parallel mode"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+mpparallel 1
+restore [locate_data_file bug22835_hello.brep] result
+vinit View1
+vdisplay result
+vsetdispmode 1
+tclean result
+vdisplay result
+
+vdump $imagedir/${casename}.png

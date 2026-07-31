@@ -1,0 +1,7 @@
+restore [locate_data_file so3] b1
+restore [locate_data_file so7] b2
+
+bcommon result b1 b2
+
+checkprops result -s 340.339
+checkview -display result -2d -s -otherwise { b1 b2 } -path ${imagedir}/${test_image}.png

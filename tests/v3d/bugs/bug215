@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC215"
+puts "========"
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC215.brep] result
+checkshape result
+
+tclean result
+vinit View1
+vdisplay result
+vfit
+
+set scale    6.29714883567995
+set proj_X   0.344812899827957
+set proj_Y   -0.830477952957153
+set proj_Z   0.43750473856926
+set up_X     -0.368759274482727
+set up_Y     0.308769434690475
+set up_Z     0.876742839813232
+set at_X     39.9465644699194
+set at_Y     74.2135758209193
+set at_Z     37.7440421525395
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+checkcolor 229 94 1 1 0
+vdump $imagedir/${casename}.png

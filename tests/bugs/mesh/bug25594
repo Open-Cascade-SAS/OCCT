@@ -1,0 +1,24 @@
+puts "======="
+puts "0025594: Valid shape is not visualize in shading mode."
+puts "======="
+puts ""
+
+restore [locate_data_file bug25594_face1.brep] result
+fixshape result result
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfront
+vfit
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo result -tri 374 -nod 224
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

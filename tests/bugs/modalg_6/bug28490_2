@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28490"
+puts "========"
+puts ""
+###########################################################
+# Point located outside the solid is classified as inside
+###########################################################
+
+restore [locate_data_file bug28490_solid_vertex2.brep] a
+explode a
+mkpoint p a_2
+set case_output [string trim [bclassify a_1 p]]
+
+if {$case_output != "The point is OUT of shape"} {
+  puts "ERROR: OCC28490 is reproduced. Point is classified as INNER."
+}
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

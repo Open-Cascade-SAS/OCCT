@@ -1,0 +1,8 @@
+restore [locate_data_file buc60996.brep] sh
+explode sh
+
+bop sh_1 sh_2
+bopcut result
+
+checkprops result -s 57854
+checkview -display result -2d -otherwise { sh_1 sh_2 } -s -path ${imagedir}/${test_image}.png

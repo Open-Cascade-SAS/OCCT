@@ -1,0 +1,96 @@
+puts "================"
+puts "OCC1031"
+puts "================"
+puts ""
+#
+# Note:   Numerical control of setting material
+#
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1031_AISMaterial D ${aLabel}]
+set AISMaterial1 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Set a material of the shape as NOM_JADE
+set JadeMaterial 18
+OCC1031_AISMaterial D ${aLabel} ${JadeMaterial}
+
+set list [OCC1031_AISMaterial D ${aLabel}]
+set AISMaterial2 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1031_AISMaterial D ${aLabel}]
+set AISMaterial3 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1031_AISMaterial D ${aLabel}]
+set AISMaterial4 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Check the material
+puts "AISMaterial1 = ${AISMaterial1}"
+puts "AISMaterial2 = ${AISMaterial2}"
+puts "AISMaterial3 = ${AISMaterial3}"
+puts "AISMaterial4 = ${AISMaterial4}"
+
+set status 0
+if { ${AISMaterial1} != 0 } {
+	puts "OCC1031_AISMaterial command: Error (case 1)"
+	set status 1
+}
+
+if { ${AISMaterial2} != ${JadeMaterial} } {
+	puts "OCC1031_AISMaterial command: Error (case 2)"
+	set status 1
+}
+
+if { ${AISMaterial3} != 0 } {
+	puts "OCC1031_AISMaterial command: Error (case 3)"
+	set status 1
+}
+
+if { ${AISMaterial4} != ${JadeMaterial} } {
+	puts "OCC1031_AISMaterial command: Error (case 4)"
+	set status 1
+}
+
+if { ${status} == 0} {
+	puts "OCC1031_AISMaterial command: OK"
+}
+

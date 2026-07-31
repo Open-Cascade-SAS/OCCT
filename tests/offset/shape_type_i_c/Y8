@@ -1,0 +1,13 @@
+polyline p 0 0 0 5 0 0 5 0 1 1 0 1 5 0 5 0 0 5 0 0 0
+mkplane f p
+prism s f 0 5 0
+explode s f
+donly s
+offsetparameter 1e-7 c i 
+offsetload s 1
+offsetonface s_4 6
+offsetperform result
+
+checkprops result -v 587.279
+
+checknbshapes result -shell 1

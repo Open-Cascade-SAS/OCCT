@@ -1,0 +1,40 @@
+puts "TODO OCC25940 ALL: Error: MakeThickSolid creates C0 continuous edges"
+
+puts "============"
+puts "OCC25940"
+puts "============"
+puts ""
+#######################################################################
+# MakeThickSolid creates C0 continuous edges
+#######################################################################
+
+restore [locate_data_file bug25940_thickness-extrude1-tcl-Face.brep] Face
+
+prism Extrude Face -102 0 0
+explode Extrude F
+
+offsetparameter 1e-7 p a
+offsetload Extrude 3.34 Extrude_5
+offsetperform Thickness001
+
+set Log [bopargcheck Thickness001 #F]
+set Message "Shapes with Continuity C0       : YES"
+
+if { [regexp ${Message} ${Log}] != 1 } {
+    puts "OK: MakeThickSolid don't creates C0 continuous edges"
+} else {
+    puts "Error: MakeThickSolid creates C0 continuous edges"
+}
+
+smallview
+display Thickness001
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-Thickness001-2d.png
+
+donly Extrude
+checkview -screenshot -2d -path ${imagedir}/${test_image}-Extrude.png
+
+donly Face
+checkview -screenshot -2d -path ${imagedir}/${test_image}-Face.png
+
+checkview -display Thickness001 -3d -path ${imagedir}/${test_image}-Thickness001-3d.png

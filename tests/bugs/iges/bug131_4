@@ -1,0 +1,14 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC131"
+puts "========"
+puts ""
+
+igesbrep [locate_data_file OCC131-4.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

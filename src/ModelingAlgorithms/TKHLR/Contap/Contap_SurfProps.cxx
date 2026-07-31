@@ -1,0 +1,351 @@
+// Created on: 1995-02-24
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Adaptor3d_HSurfaceTool.hxx>
+#include <Contap_SurfProps.hxx>
+#include <ElSLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+
+//=================================================================================================
+
+void Contap_SurfProps::Normale(const occ::handle<Adaptor3d_Surface>& S,
+                               const double                          U,
+                               const double                          V,
+                               gp_Pnt&                               P,
+                               gp_Vec&                               Norm)
+{
+
+  GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
+  switch (typS)
+  {
+    case GeomAbs_Plane: {
+      gp_Pln pl(Adaptor3d_HSurfaceTool::Plane(S));
+      Norm = pl.Axis().Direction();
+      P    = ElSLib::Value(U, V, pl);
+      if (!pl.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+
+    case GeomAbs_Sphere: {
+      gp_Sphere sp(Adaptor3d_HSurfaceTool::Sphere(S));
+      P    = ElSLib::Value(U, V, sp);
+      Norm = gp_Vec(sp.Location(), P);
+      if (sp.Direct())
+      {
+        Norm.Divide(sp.Radius());
+      }
+      else
+      {
+        Norm.Divide(-sp.Radius());
+      }
+    }
+    break;
+
+    case GeomAbs_Cylinder: {
+      gp_Cylinder cy(Adaptor3d_HSurfaceTool::Cylinder(S));
+      P = ElSLib::Value(U, V, cy);
+      Norm.SetLinearForm(std::cos(U), cy.XAxis().Direction(), std::sin(U), cy.YAxis().Direction());
+      if (!cy.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+
+    case GeomAbs_Cone: {
+      gp_Cone co(Adaptor3d_HSurfaceTool::Cone(S));
+      P            = ElSLib::Value(U, V, co);
+      double Angle = co.SemiAngle();
+      double Sina  = sin(Angle);
+      double Cosa  = cos(Angle);
+      double Rad   = co.RefRadius();
+
+      double Vcalc = V;
+      if (std::abs(V * Sina + Rad) <= 1e-12)
+      { // on est a l`apex
+        /*
+        double Vfi = Adaptor3d_HSurfaceTool::FirstVParameter(S);
+        if (Vfi < -Rad/Sina) { // partie valide pour V < Vapex
+        Vcalc = V - 1;
+        }
+        else {
+        Vcalc = V + 1.;
+        }
+        */
+        Norm.SetCoord(0, 0, 0);
+        return;
+      }
+
+      if (Rad + Vcalc * Sina < 0.)
+      {
+        Norm.SetLinearForm(Sina,
+                           co.Axis().Direction(),
+                           Cosa * cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * sin(U),
+                           co.YAxis().Direction());
+      }
+      else
+      {
+        Norm.SetLinearForm(-Sina,
+                           co.Axis().Direction(),
+                           Cosa * cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * sin(U),
+                           co.YAxis().Direction());
+      }
+      if (!co.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+    default: {
+      gp_Vec d1u, d1v;
+      Adaptor3d_HSurfaceTool::D1(S, U, V, P, d1u, d1v);
+      Norm = d1u.Crossed(d1v);
+    }
+    break;
+  }
+}
+
+//=================================================================================================
+
+void Contap_SurfProps::DerivAndNorm(const occ::handle<Adaptor3d_Surface>& S,
+                                    const double                          U,
+                                    const double                          V,
+                                    gp_Pnt&                               P,
+                                    gp_Vec&                               d1u,
+                                    gp_Vec&                               d1v,
+                                    gp_Vec&                               Norm)
+{
+
+  GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
+  switch (typS)
+  {
+    case GeomAbs_Plane: {
+      gp_Pln pl(Adaptor3d_HSurfaceTool::Plane(S));
+      Norm = pl.Axis().Direction();
+      ElSLib::D1(U, V, pl, P, d1u, d1v);
+      if (!pl.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+
+    case GeomAbs_Sphere: {
+      gp_Sphere sp(Adaptor3d_HSurfaceTool::Sphere(S));
+      ElSLib::D1(U, V, sp, P, d1u, d1v);
+      Norm = gp_Vec(sp.Location(), P);
+      if (sp.Direct())
+      {
+        Norm.Divide(sp.Radius());
+      }
+      else
+      {
+        Norm.Divide(-sp.Radius());
+      }
+    }
+    break;
+
+    case GeomAbs_Cylinder: {
+      gp_Cylinder cy(Adaptor3d_HSurfaceTool::Cylinder(S));
+      ElSLib::D1(U, V, cy, P, d1u, d1v);
+      Norm.SetLinearForm(std::cos(U), cy.XAxis().Direction(), std::sin(U), cy.YAxis().Direction());
+      if (!cy.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+
+    case GeomAbs_Cone: {
+      gp_Cone co(Adaptor3d_HSurfaceTool::Cone(S));
+      ElSLib::D1(U, V, co, P, d1u, d1v);
+      double Angle = co.SemiAngle();
+      double Sina  = std::sin(Angle);
+      double Cosa  = std::cos(Angle);
+      double Rad   = co.RefRadius();
+
+      double Vcalc = V;
+      if (std::abs(V * Sina + Rad) <= RealEpsilon())
+      { // on est a l`apex
+        double Vfi = Adaptor3d_HSurfaceTool::FirstVParameter(S);
+        if (Vfi < -Rad / Sina)
+        { // partie valide pour V < Vapex
+          Vcalc = V - 1;
+        }
+        else
+        {
+          Vcalc = V + 1.;
+        }
+      }
+
+      if (Rad + Vcalc * Sina < 0.)
+      {
+        Norm.SetLinearForm(Sina,
+                           co.Axis().Direction(),
+                           Cosa * std::cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * std::sin(U),
+                           co.YAxis().Direction());
+      }
+      else
+      {
+        Norm.SetLinearForm(-Sina,
+                           co.Axis().Direction(),
+                           Cosa * std::cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * std::sin(U),
+                           co.YAxis().Direction());
+      }
+      if (!co.Direct())
+      {
+        Norm.Reverse();
+      }
+    }
+    break;
+    default: {
+      Adaptor3d_HSurfaceTool::D1(S, U, V, P, d1u, d1v);
+      Norm = d1u.Crossed(d1v);
+    }
+    break;
+  }
+}
+
+//=================================================================================================
+
+void Contap_SurfProps::NormAndDn(const occ::handle<Adaptor3d_Surface>& S,
+                                 const double                          U,
+                                 const double                          V,
+                                 gp_Pnt&                               P,
+                                 gp_Vec&                               Norm,
+                                 gp_Vec&                               Dnu,
+                                 gp_Vec&                               Dnv)
+{
+
+  GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
+  switch (typS)
+  {
+    case GeomAbs_Plane: {
+      gp_Pln pl(Adaptor3d_HSurfaceTool::Plane(S));
+      P    = ElSLib::Value(U, V, pl);
+      Norm = pl.Axis().Direction();
+      if (!pl.Direct())
+      {
+        Norm.Reverse();
+      }
+      Dnu = Dnv = gp_Vec(0., 0., 0.);
+    }
+    break;
+
+    case GeomAbs_Sphere: {
+      gp_Sphere sp(Adaptor3d_HSurfaceTool::Sphere(S));
+      ElSLib::D1(U, V, sp, P, Dnu, Dnv);
+      Norm       = gp_Vec(sp.Location(), P);
+      double Rad = sp.Radius();
+      if (!sp.Direct())
+      {
+        Rad = -Rad;
+      }
+      Norm.Divide(Rad);
+      Dnu.Divide(Rad);
+      Dnv.Divide(Rad);
+    }
+    break;
+
+    case GeomAbs_Cylinder: {
+      gp_Cylinder cy(Adaptor3d_HSurfaceTool::Cylinder(S));
+      P = ElSLib::Value(U, V, cy);
+      Norm.SetLinearForm(std::cos(U), cy.XAxis().Direction(), std::sin(U), cy.YAxis().Direction());
+      Dnu.SetLinearForm(-std::sin(U), cy.XAxis().Direction(), std::cos(U), cy.YAxis().Direction());
+      if (!cy.Direct())
+      {
+        Norm.Reverse();
+        Dnu.Reverse();
+      }
+      Dnv = gp_Vec(0., 0., 0.);
+    }
+    break;
+
+    case GeomAbs_Cone: {
+
+      gp_Cone co(Adaptor3d_HSurfaceTool::Cone(S));
+      P            = ElSLib::Value(U, V, co);
+      double Angle = co.SemiAngle();
+      double Sina  = std::sin(Angle);
+      double Cosa  = std::cos(Angle);
+      double Rad   = co.RefRadius();
+      double Vcalc = V;
+      if (std::abs(V * Sina + Rad) <= RealEpsilon())
+      { // on est a l`apex
+        double Vfi = Adaptor3d_HSurfaceTool::FirstVParameter(S);
+        if (Vfi < -Rad / Sina)
+        { // partie valide pour V < Vapex
+          Vcalc = V - 1;
+        }
+        else
+        {
+          Vcalc = V + 1.;
+        }
+      }
+
+      if (Rad + Vcalc * Sina < 0.)
+      {
+        Norm.SetLinearForm(Sina,
+                           co.Axis().Direction(),
+                           Cosa * std::cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * std::sin(U),
+                           co.YAxis().Direction());
+      }
+      else
+      {
+        Norm.SetLinearForm(-Sina,
+                           co.Axis().Direction(),
+                           Cosa * std::cos(U),
+                           co.XAxis().Direction(),
+                           Cosa * std::sin(U),
+                           co.YAxis().Direction());
+      }
+      Dnu.SetLinearForm(-Cosa * std::sin(U),
+                        co.XAxis().Direction(),
+                        Cosa * std::cos(U),
+                        co.YAxis().Direction());
+      if (!co.Direct())
+      {
+        Norm.Reverse();
+        Dnu.Reverse();
+      }
+      Dnv = gp_Vec(0., 0., 0.);
+    }
+    break;
+
+    default: {
+      gp_Vec d1u, d1v, d2u, d2v, d2uv;
+      Adaptor3d_HSurfaceTool::D2(S, U, V, P, d1u, d1v, d2u, d2v, d2uv);
+      Norm = d1u.Crossed(d1v);
+      Dnu  = d2u.Crossed(d1v) + d1u.Crossed(d2uv);
+      Dnv  = d2uv.Crossed(d1v) + d1u.Crossed(d2v);
+    }
+    break;
+  }
+}

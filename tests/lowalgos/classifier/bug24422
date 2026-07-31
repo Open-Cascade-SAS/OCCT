@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC24422"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by FaceClassifier algorithm
+#######################################################################
+
+restore [locate_data_file bug24422_Compound.brep] b 
+explode b f
+copy b_1 f
+
+point p 115.945392440981 106 230.000108990528
+point p_proj 230.00010899052799 1925.9453924409811
+set info [b2dclassify f p_proj]
+
+if { [regexp "The point is OUT of shape" $info] != 1  } {
+    puts "Error : point should be ON shape"
+} else {
+    puts "OK: point is OUT of shape"
+}
+
+axo
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,156 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESAppli_RegionRestriction.hxx>
+#include <IGESAppli_ToolRegionRestriction.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+
+IGESAppli_ToolRegionRestriction::IGESAppli_ToolRegionRestriction() = default;
+
+void IGESAppli_ToolRegionRestriction::ReadOwnParams(
+  const occ::handle<IGESAppli_RegionRestriction>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
+  IGESData_ParamReader& PR) const
+{
+  int tempNbPropertyValues;
+  int tempElectViasRestrict;
+  int tempElectCompRestrict;
+  int tempElectCktRestrict;
+
+  PR.ReadInteger(PR.Current(), "No. of Property values", tempNbPropertyValues);
+  PR.ReadInteger(PR.Current(), "Electrical vias restriction", tempElectViasRestrict);
+  PR.ReadInteger(PR.Current(), "Electrical components restriction", tempElectCompRestrict);
+  PR.ReadInteger(PR.Current(), " Electrical circuitary restriction", tempElectCktRestrict);
+
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempNbPropertyValues,
+            tempElectViasRestrict,
+            tempElectCompRestrict,
+            tempElectCktRestrict);
+}
+
+void IGESAppli_ToolRegionRestriction::WriteOwnParams(
+  const occ::handle<IGESAppli_RegionRestriction>& ent,
+  IGESData_IGESWriter&                            IW) const
+{
+  IW.Send(ent->NbPropertyValues());
+  IW.Send(ent->ElectricalViasRestriction());
+  IW.Send(ent->ElectricalComponentRestriction());
+  IW.Send(ent->ElectricalCktRestriction());
+}
+
+void IGESAppli_ToolRegionRestriction::OwnShared(
+  const occ::handle<IGESAppli_RegionRestriction>& /*ent*/,
+  Interface_EntityIterator& /*iter*/) const
+{
+}
+
+void IGESAppli_ToolRegionRestriction::OwnCopy(
+  const occ::handle<IGESAppli_RegionRestriction>& another,
+  const occ::handle<IGESAppli_RegionRestriction>& ent,
+  Interface_CopyTool& /*TC*/) const
+{
+  ent->Init(3,
+            another->ElectricalViasRestriction(),
+            another->ElectricalComponentRestriction(),
+            another->ElectricalCktRestriction()); // nbprops = 3
+}
+
+bool IGESAppli_ToolRegionRestriction::OwnCorrect(
+  const occ::handle<IGESAppli_RegionRestriction>& ent) const
+{
+  bool res = (ent->NbPropertyValues() != 3);
+  if (res)
+  {
+    ent->Init(3,
+              ent->ElectricalViasRestriction(),
+              ent->ElectricalComponentRestriction(),
+              ent->ElectricalCktRestriction()); // nbprops = 3
+  }
+  if (ent->SubordinateStatus() != 0)
+  {
+    occ::handle<IGESData_LevelListEntity> nulevel;
+    ent->InitLevel(nulevel, 0);
+    res = true;
+  }
+  return res; // + reset level according to subordinate
+}
+
+IGESData_DirChecker IGESAppli_ToolRegionRestriction::DirChecker(
+  const occ::handle<IGESAppli_RegionRestriction>& /*ent*/) const
+{
+  IGESData_DirChecker DC(406, 2); // Form no = 2 & Type = 406
+  DC.Structure(IGESData_DefVoid);
+  DC.GraphicsIgnored();
+  DC.BlankStatusIgnored();
+  DC.UseFlagIgnored();
+  DC.HierarchyStatusIgnored();
+  return DC;
+}
+
+void IGESAppli_ToolRegionRestriction::OwnCheck(const occ::handle<IGESAppli_RegionRestriction>& ent,
+                                               const Interface_ShareTool&,
+                                               occ::handle<Interface_Check>& ach) const
+{
+  if (ent->SubordinateStatus() != 0)
+  {
+    if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
+    {
+      ach->AddFail("Level type: Not value/reference");
+    }
+  }
+  if (ent->NbPropertyValues() != 3)
+  {
+    ach->AddFail("Number of Property Values != 3");
+  }
+  if (ent->ElectricalViasRestriction() < 0 || ent->ElectricalViasRestriction() > 2)
+  {
+    ach->AddFail("Incorrect value for Electrical Vias Restriction");
+  }
+  if (ent->ElectricalComponentRestriction() < 0 || ent->ElectricalComponentRestriction() > 2)
+  {
+    ach->AddFail("Incorrect value for Electrical Component Restriction");
+  }
+  if (ent->ElectricalCktRestriction() < 0 || ent->ElectricalCktRestriction() > 2)
+  {
+    ach->AddFail("Incorrect value for Electrical Circuit Restriction");
+  }
+  // UNFINISHED
+  // level ignored if this property is subordinate -- queried
+}
+
+void IGESAppli_ToolRegionRestriction::OwnDump(const occ::handle<IGESAppli_RegionRestriction>& ent,
+                                              const IGESData_IGESDumper& /*dumper*/,
+                                              Standard_OStream& S,
+                                              const int /*level*/) const
+{
+  S << "IGESAppli_RegionRestriction\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Electrical vias restriction       : " << ent->ElectricalViasRestriction() << "\n"
+    << "Electrical components restriction : " << ent->ElectricalComponentRestriction() << "\n"
+    << "Electrical circuitary restriction : " << ent->ElectricalCktRestriction() << '\n';
+}

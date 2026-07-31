@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC25002"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result done by Boolean Operation algorithm
+#######################################################################
+
+restore [locate_data_file bug25002_pl1.brep] b1
+restore [locate_data_file bug25002_selected_holes.brep] b2
+
+bop b1 b2
+bopcut r
+
+bopsection result
+
+regexp {nb alone Vertices : +([-0-9.+eE]+)} [checksection result] full nb_alone_Vertices
+
+if { ${nb_alone_Vertices} == 0 } {
+  puts "OK: Good result done by Boolean Operation algorithm"
+} else {
+  puts "Error: Wrong result done by Boolean Operation algorithm"
+}
+
+checkprops result -l 67.3503 
+checkshape result 
+
+checknbshapes result -vertex 1128 -edge 1128 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2257
+checkview -display result -2d -path ${imagedir}/${test_image}.png

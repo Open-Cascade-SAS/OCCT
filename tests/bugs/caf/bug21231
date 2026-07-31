@@ -1,0 +1,91 @@
+puts "============"
+puts "OCC21231"
+puts "============"
+puts ""
+#######################################################################
+#######################################################################
+
+set BugNumber OCC21231
+set status 0
+
+pload TOBJ
+
+# Create a new document
+TObjNew TD1
+
+TObjAddObj TD1 obj1
+TObjAddObj TD1 obj2
+TObjAddObj TD1 obj3
+
+set parent "obj1 obj2 obj2"
+set children "ch11 ch21 ch22"
+for { set i 0} {$i <= 2} {incr i} {
+  set p [lindex $parent $i]
+  set ch [lindex $children $i]
+  TObjAddChild TD1 $p $ch
+}
+
+TObjSetRef TD1 obj1 obj2
+
+TObjSetVal TD1 obj1 533
+TObjSetVal TD1 obj2 -r 3 3.14 2.78 0.123
+
+# Save the document
+set aFile $imagedir/${test_image}-[file tail [info script]].cbf
+catch {[file delete ${aFile}]}
+catch {TObjSave TD1 ${aFile}}
+if { ![file exists ${aFile}] } {
+   set status 1
+   puts "There is not ${aFile} file; TObjSave command: Error"
+   puts "${BugNumber}: ERROR"
+} else {
+   puts "Save the document to ${aFile} file"
+}
+
+TObjClose TD1
+unset TD1
+
+# Restore the document
+if [catch { TObjLoad TD2 ${aFile} } catch_result] {
+   puts "${BugNumber}: ERROR"
+}
+
+# check children of obj2
+set retChh [TObjGetChildren TD2 obj2]
+for { set i 1 } { $i <= 2} {incr i} {
+  set chh [lindex $retChh [expr $i - 1]]
+  set oldCh [lindex $children $i]
+  if { $chh != $oldCh } {
+    set status 1
+    puts "${BugNumber}: check children of obj2; ERROR (case 1)"
+  }
+}
+
+# check reference from obj1
+set retRef [TObjGetRef TD2 obj1]
+if { $retRef != "obj2" } {
+    set status 1
+    puts "${BugNumber}: check reference from obj1; ERROR (case 2)"
+}
+
+# check stored single integer value
+set retInt [TObjGetVal TD2 obj1 -i]
+if { $retInt != 533 } {
+    set status 1
+    puts "${BugNumber}: check stored single integer value; ERROR (case 3)"
+}
+
+# check stored array of doubles
+set retDbl [TObjGetVal TD2 obj2 -r]
+set nbVal [llength $retDbl]
+if { $nbVal != 3 } {
+    set status 1
+    puts "${BugNumber}: check stored array of doubles; ERROR (case 4)"
+}
+
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

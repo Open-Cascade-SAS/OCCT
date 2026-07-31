@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC25584"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by PerformInfinitePoint Test
+#######################################################################
+
+restore [locate_data_file t6.rle] res_1
+
+explode res_1
+
+shape z so
+add res_1_3 z
+
+vprops z
+
+set res [xclassify z]
+if { [regexp "IN" $res] == 1 } {
+   puts "OK : Good result obtained by PerformInfinitePoint Test"
+} else {
+   puts "Error : Wrong result obtained by PerformInfinitePoint Test"
+}

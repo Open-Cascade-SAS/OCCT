@@ -1,0 +1,25 @@
+puts "========"
+puts "0031096: Visualization, TKOpenGl - support metallic-roughness texture mapping"
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+Close D -silent
+ReadGltf D [locate_data_file bug30691_DamagedHelmet.gltf]
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vcamera -persp
+vviewparams -scale 0.412548 -proj 0.54479 -0.790649 0.279424 -up -0.248339 0.166151 0.954317 -at -27.3419 382.603 -233.934
+
+vtextureenv on 2
+vlight -change 0 -intensity 2.5
+vlight -change 1 -intensity 0.3
+
+vrenderparams -shadingModel PBR
+vdump ${imagedir}/${casename}_pbr.png
+
+vrenderparams -ray -gi -rayDepth 10
+vfps 200
+vdump ${imagedir}/${casename}_pt.png

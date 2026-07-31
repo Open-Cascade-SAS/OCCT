@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC6862"
+puts "============"
+puts ""
+#######################################################################
+# Tool for checking arguments of Boolean Operations
+#######################################################################
+
+set BugNumber OCC6862
+
+# test types
+box b1 10 20 10
+box b2 20 10 10
+explode b2 f
+
+set resstr [bopargcheck b1 b2_1 -C /RFTVEI]
+
+if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

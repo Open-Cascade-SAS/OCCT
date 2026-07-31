@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC22241"
+puts "========"
+puts ""
+###########################################################
+# The bug is appendix to the Salome Bug 0021148
+###########################################################
+
+set BugNumber OCC22241
+
+restore [locate_data_file bug22241_c1.draw] c1 
+restore [locate_data_file bug22241_c2.draw] c2 
+
+set extrema_res [extrema c1 c2]
+set extrema_length [llength ${extrema_res} ]
+
+if {${extrema_length} < 8 } {
+   puts "${BugNumber}: Faulty"
+} else {
+   regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $extrema_res full X Y Z
+
+   checkreal "X" ${X} 1 0 0.001
+   checkreal "Y" ${Y} 3.0891916307971289e-33 0 0.001
+   checkreal "Z" ${Z} 0.059999999999999998 0 0.001
+}
+

@@ -1,0 +1,9 @@
+#D3----------------------------------------------
+plane p 0 0 0 1 1 1
+psphere p p 20
+pcone p2 10 12 40
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_2 -10 0 0 40 0 0 1
+
+checkprops result -s 6658.61

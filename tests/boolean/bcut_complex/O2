@@ -1,0 +1,10 @@
+# Original bug : pro15042
+# Date : 26Aout98
+# pkv f
+
+restore [locate_data_file pro15042.rle] a 
+explode a
+
+bcut result a_1 a_2
+checkprops result -s 8387.96
+checkview -display result -2d -s -otherwise { a_1 a_2 } -path ${imagedir}/${test_image}.png

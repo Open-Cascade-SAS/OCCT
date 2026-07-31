@@ -1,0 +1,21 @@
+#old revolrib7
+pcylinder c1 3 5
+pcone c2 2 1.5 3
+pcylinder c3 1 2
+ttranslate c2 0 0 5
+ttranslate c3 0 0 8
+bfuse ss c1 c2
+bfuse s ss c3
+nexplode s e
+blend s s 0.3 s_4 0.3 s_2
+
+profile pp x 4 c 1 90 y 1 WW
+trotate pp 0 0 0 0 1 0 -90
+trotate pp 0 0 0 0 0 1 -90
+ttranslate pp -3 0 5
+plane pl -3 0 5 0 1 0
+
+featrf s pp pl 0 0 0 0 0 1 0.2 0.2 1 1
+featperform rf result
+
+checkprops result -s 204.661

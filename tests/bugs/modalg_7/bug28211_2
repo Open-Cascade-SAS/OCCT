@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28211"
+puts "========"
+puts ""
+#################################################
+# Modeling Algorithms - Boolean fuse operation produces incorrect result
+#################################################
+
+restore [locate_data_file bug28211_MHX_VKT_WS_Pos3_source.brep] s
+restore [locate_data_file bug28211_MHX_VKT_WS_Pos3_tool.brep] t
+
+explode s f
+explode t f
+
+bnondestructive 1
+
+# Before the fix, exception in bsection algo was thrown.
+bsection r s_91 t_4
+
+bcut result s t
+
+checkshape result
+checknbshapes result -solid 4 -shell 4 -face 105 -wire 105
+checkprops result -v 226838 -s 36317.7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

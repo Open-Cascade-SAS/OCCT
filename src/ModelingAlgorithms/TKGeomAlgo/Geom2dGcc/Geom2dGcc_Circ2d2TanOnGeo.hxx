@@ -1,0 +1,207 @@
+// Created on: 1991-03-29
+// Created by: Remi GILET
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dGcc_Circ2d2TanOnGeo_HeaderFile
+#define _Geom2dGcc_Circ2d2TanOnGeo_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+#include <Standard_Integer.hxx>
+#include <gp_Circ2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
+#include <gp_Pnt2d.hxx>
+class GccEnt_QualifiedCirc;
+class Geom2dAdaptor_Curve;
+class GccEnt_QualifiedLin;
+class gp_Pnt2d;
+class gp_Circ2d;
+
+//! This class implements the algorithms used to
+//! create 2d circles TANgent to 2 entities and
+//! having the center ON a curve.
+//! The order of the tangency argument is always
+//! QualifiedCirc, QualifiedLin, QualifiedCurv, Pnt2d.
+//! the arguments are :
+//! - The two tangency arguments (lines, circles or points).
+//! - The center line (a curve).
+//! - The parameter for each tangency argument which
+//! is a curve.
+//! - The tolerance.
+class Geom2dGcc_Circ2d2TanOnGeo
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to two 2d circles and
+  //! having the center ON a curve.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc& Qualified1,
+                                            const GccEnt_QualifiedCirc& Qualified2,
+                                            const Geom2dAdaptor_Curve&  OnCurv,
+                                            const double                Tolerance);
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to a 2d circle and a 2d line
+  //! having the center ON a curve.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc& Qualified1,
+                                            const GccEnt_QualifiedLin&  Qualified2,
+                                            const Geom2dAdaptor_Curve&  OnCurv,
+                                            const double                Tolerance);
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to a 2d circle and a point
+  //! having the center ON a curve.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc& Qualified1,
+                                            const gp_Pnt2d&             Point2,
+                                            const Geom2dAdaptor_Curve&  OnCurv,
+                                            const double                Tolerance);
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to two 2d lines
+  //! having the center ON a curve.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedLin& Qualified1,
+                                            const GccEnt_QualifiedLin& Qualified2,
+                                            const Geom2dAdaptor_Curve& OnCurv,
+                                            const double               Tolerance);
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to a 2d line and a point
+  //! having the center ON a 2d line.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedLin& Qualified1,
+                                            const gp_Pnt2d&            Qualified2,
+                                            const Geom2dAdaptor_Curve& OnCurv,
+                                            const double               Tolerance);
+
+  //! This method implements the algorithms used to
+  //! create 2d circles TANgent to two points
+  //! having the center ON a 2d line.
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOnGeo(const gp_Pnt2d&            Point1,
+                                            const gp_Pnt2d&            Point2,
+                                            const Geom2dAdaptor_Curve& OnCurv,
+                                            const double               Tolerance);
+
+  //! This method returns True if the construction
+  //! algorithm succeeded.
+  Standard_EXPORT bool IsDone() const;
+
+  //! This method returns the number of solutions.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  Standard_EXPORT int NbSolutions() const;
+
+  //! Returns the solution number Index and raises OutOfRange
+  //! exception if Index is greater than the number of solutions.
+  //! Be careful: the Index is only a way to get all the
+  //! solutions, but is not associated to those outside the
+  //! context of the algorithm-object.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT gp_Circ2d ThisSolution(const int Index) const;
+
+  //! It returns the information about the qualifiers of
+  //! the tangency
+  //! arguments concerning the solution number Index.
+  //! It returns the real qualifiers (the qualifiers given to the
+  //! constructor method in case of enclosed, enclosing and outside
+  //! and the qualifiers computedin case of unqualified).
+  Standard_EXPORT void WhichQualifier(const int        Index,
+                                      GccEnt_Position& Qualif1,
+                                      GccEnt_Position& Qualif2) const;
+
+  //! Returns information about the tangency point between the
+  //! result number Index and the first argument.
+  //! ParSol is the intrinsic parameter of the point on the
+  //! solution curv.
+  //! ParArg is the intrinsic parameter of the point on the
+  //! argument curv.
+  //! PntSol is the tangency point on the solution curv.
+  //! PntArg is the tangency point on the argument curv.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT void Tangency1(const int Index,
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
+
+  //! Returns information about the tangency point between the
+  //! result number Index and the second argument.
+  //! ParSol is the intrinsic parameter of the point on the
+  //! solution curv.
+  //! ParArg is the intrinsic parameter of the point on the
+  //! argument curv.
+  //! PntSol is the tangency point on the solution curv.
+  //! PntArg is the tangency point on the argument curv.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT void Tangency2(const int Index,
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
+
+  //! Returns information about the center (on the curv)
+  //! of the result.
+  //! ParArg is the intrinsic parameter of the point on
+  //! the argument curv.
+  //! PntSol is the center point of the solution curv.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT void CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const;
+
+  //! Returns True if the solution number Index is equal to
+  //! the first argument and False in the other cases.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT bool IsTheSame1(const int Index) const;
+
+  //! Returns True if the solution number Index is equal to
+  //! the second argument and False in the other cases.
+  //! It raises NotDone if the construction algorithm
+  //! didn't succeed.
+  //! It raises OutOfRange if Index is greater than the
+  //! number of solutions.
+  Standard_EXPORT bool IsTheSame2(const int Index) const;
+
+private:
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Circ2d>       cirsol;
+  NCollection_Array1<GccEnt_Position> qualifier1;
+  NCollection_Array1<GccEnt_Position> qualifier2;
+  NCollection_Array1<int>             TheSame1;
+  NCollection_Array1<int>             TheSame2;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
+  NCollection_Array1<gp_Pnt2d>        pntcen;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          par2sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<double>          parcen3;
+};
+
+#endif // _Geom2dGcc_Circ2d2TanOnGeo_HeaderFile

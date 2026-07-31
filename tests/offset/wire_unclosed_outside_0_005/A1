@@ -1,0 +1,7 @@
+puts "TODO OCC23068 ALL: Error : The resulting shape is WRONG"
+
+restore [locate_data_file offset_wire_001.brep] s
+set length 8.78837
+set nbsh_v 37
+set nbsh_e 37
+set nbsh_w 1

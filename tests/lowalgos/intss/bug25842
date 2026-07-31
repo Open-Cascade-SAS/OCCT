@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC25842"
+puts "================"
+puts ""
+#######################################################################
+# Wrong intersection 2D-curves obtained for pair of faces.
+#######################################################################
+
+restore [locate_data_file bug25842_f1.brep] f1
+restore [locate_data_file bug25842_f2.brep] f2
+
+bopcurves f1 f2 -2d
+
+v2d
+donly c2d2_1 c2d2_2
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

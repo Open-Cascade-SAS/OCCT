@@ -1,0 +1,33 @@
+puts "================"
+puts "OCC62"
+puts "BUC61001"
+puts "================"
+
+cpulimit 1000
+restore [locate_data_file OCC62.brep] sh 
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean sh
+
+explode sh 
+checkshape sh
+
+bfuse res1 sh_1 sh_3
+checkshape res1
+
+bfuse res2 res1 sh_2 
+checkshape res2
+
+bfuse res3 res2 sh_6
+checkshape res3
+
+bfuse res4 res3 sh_4
+checkshape res4
+
+bfuse res5 res4 sh_5
+checkshape res5
+
+renamevar res5 result
+
+checkprops result -s 1.20915e+007
+checkview -display result -2d -path ${imagedir}/${test_image}.png

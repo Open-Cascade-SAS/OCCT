@@ -1,0 +1,28 @@
+
+puts "========"
+puts "BUC60789"
+puts "========"
+puts ""
+
+#restore buc60789c.brep S1
+##by apn
+restore [locate_data_file buc60787b.brep] S1 
+checkshape S1
+restore [locate_data_file buc60789d.brep] S2
+checkshape S2
+
+bcut result S2 S1
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
+
+ if { $ve != 0 && $ed != 0 } {
+     puts  " BUC60789 OK: CUT operation was made properly"
+ } else {
+     puts "Faulty BUC60789: CUT operation was made wrongly"
+ }
+checkprops result -l 288.856 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

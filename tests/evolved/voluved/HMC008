@@ -1,0 +1,222 @@
+puts "=========="
+puts "OCC29523"
+puts "=========="
+
+cpulimit 100
+
+restore [locate_data_file bug29523_cut_extrudewire07.brep] sw 
+restore [locate_data_file bug29523_cut_toolwire07.brep] tw
+
+# Indeed the source shapes are invalid for evolved algorithm
+# (they contain gaps and discontinuous wire). Therefore, we
+# make them valid with following script.
+
+# Clear variables
+foreach a [directory cur_*] {unset $a}
+foreach a [directory ee*] {unset $a}
+
+# Obtain edges from the wire sw and copy their geometry (3D-curve cur_*) to the new edges ee*
+set NbEdges [llength [ explode sw e ]]
+for {set i 1} { $i <= $NbEdges} {incr i} { mkcurve cur_$i sw_$i } 
+for {set i 1} { $i <= $NbEdges} {incr i} { mkedge ee$i cur_$i } 
+
+# Extend every 3D-curve to cover the gap
+trim cur_1 cur_1 4.71239090823492 5.53811019613953
+trim cur_2 cur_2 -0.134931759799294 7999.99999936156
+trim cur_3 cur_3 1.57079573067402 2.39667036644493
+trim cur_4 cur_4 2.3157179964798 3.14159386656777
+trim cur_6 cur_6 3.14159205618886 3.96746669323983
+trim cur_7 cur_7 3.8865143232747 4.71239019354553
+trim cur_9 cur_9 4.71238838316655 5.53826302003487
+trim cur_10 cur_10 1.49677804444134e-010 357.366033033755
+trim cur_11 cur_11 5.467579522113 6.28318530589953
+trim cur_12 cur_12 -4.48015052825212e-005 496000.040846485
+trim cur_13 cur_13 5.83654858656781e-007 0.826061103391988
+
+
+foreach a {{1 2} {3 4} {6 7} {9 10} {10 11} {12 13} {1 13}} {
+  set i [lindex $a 0]
+  set j [lindex $a 1]
+
+  explode sw_$i v
+  explode sw_$j v
+
+  mkedge ee$i cur_$i
+  mkedge ee$j cur_$j
+  emptycopy ee$i ee$i
+  emptycopy ee$j ee$j
+
+  if {[regexp "REVERSED" [whatis sw_$i]]} {
+    orientation ee$i R
+  } else {
+    orientation ee$i F  
+  }
+  
+  if {[regexp "REVERSED" [whatis sw_$j]]} {
+    orientation ee$j R
+  } else {
+    orientation ee$j F  
+  }
+
+  add sw_${i}_1 ee$i
+  add sw_${i}_2 ee$i
+  add sw_${j}_1 ee$j
+  add sw_${j}_2 ee$j 
+}
+
+# Create new wire without any gaps
+
+bclearobjects 
+bcleartools
+eval baddobjects [directory ee*]
+bfillds
+bbuild rr
+edgestowire ww rr
+
+settolerance ww 1.0e-7
+
+mkplane pl ww
+explode pl w
+copy pl_1 sw
+
+# Eliminate not smoothness joint between two circles.
+# For that, every pair of circles will be joined by their common tangent.
+# So, smoothness joint will be provided automatically.
+
+# Clear variables
+foreach a [directory cur_*] {unset $a}
+foreach a [directory ee*] {unset $a}
+foreach a [directory sw_*] {unset $a}
+
+# Obtain edges from the wire sw and copy their geometry (3D-curve cur_*) to the new edges ee*
+set NbEdges [llength [ explode sw e ]]
+for {set i 1} { $i <= $NbEdges} {incr i} { mkcurve cur_$i sw_$i } 
+for {set i 1} { $i <= $NbEdges} {incr i} { mkedge ee$i cur_$i } 
+
+# Empty compound
+compound ce
+
+#Process circles sw_1 and sw_2
+
+# Trim every circle to the tangent point
+trim cur_1 cur_1 4.71239090823492 5.49761669005051
+trim cur_2 cur_2 5.83654858656781e-007 0.785568617129074
+
+# Fill the created gap by line
+line ccf1l2 -24754.1762623319 0 34741.3413352011 2003.1995336714681 0 2003.8825557731907
+trim ccf1l2 ccf1l2 0 2833.43495937946
+
+# Recreate necessary edges
+mkedge ee1 cur_1
+mkedge ee2 cur_2
+mkedge el12 ccf1l2
+
+# Add new (linear edge to compound)
+add el12 ce
+
+# Process circles sw_4 and sw_6.
+# Note that these circles are joined by the line sw_5.
+# This line is too small. Therefore it should be eliminated.
+
+unset ee5
+
+# Trim every circle to the tangent point
+trim cur_4 cur_4 5.49750649442623 6.28318530589953
+trim cur_6 cur_6 4.71238838316655 5.49750649442623
+
+# Fill the created gap by line
+line ccf4l6 522755.595179584 0 36741.7037941423 2000.8085436843103 0 -2001.9319102431036
+trim ccf4l6 ccf4l6 0 2830.365029767315
+
+# Recreate necessary edges
+mkedge ee4 cur_4
+mkedge ee6 cur_6
+mkedge el46 ccf4l6
+
+# Add new (linear edge to compound)
+add el46 ce
+
+# Process circles sw_8 and sw_9."
+# It is made analogically to the step 11.1.
+
+# Trim every circle to the tangent point
+trim cur_8 cur_8 3.92695569467718 4.71239019354553
+trim cur_9 cur_9 3.14159205618886 3.92695569467718
+
+# Fill the created gap by line
+line ccf8l9 522745.848826566 0 -24750.3286992239 2002.755997602304 0 2002.754818110996
+trim ccf8l9 ccf8l9 0 2832.3238599070564
+
+# Recreate necessary edges
+mkedge ee8 cur_8
+mkedge ee9 cur_9
+mkedge el89 ccf8l9
+
+# Add new (linear edge to compound)
+add el89 ce
+
+# Process circles sw_11 and sw_12
+# It is made analogically to the step 11.1.
+
+# Trim every circle to the tangent point
+trim cur_11 cur_11 2.3561593678824 3.14159386656777
+trim cur_12 cur_12 1.57079573067402 2.3561593678824
+
+# Fill the created gap by line
+line ccf11l12 -24750.328699221 0 -22745.8488265693 2002.7548181108614 0 -2002.7559976021548
+trim ccf11l12 ccf11l12 0 2832.323859906856
+
+# Recreate necessary edges
+mkedge ee11 cur_11
+mkedge ee12 cur_12
+mkedge el1112 ccf11l12
+
+# Add new (linear edge to compound)
+add el1112 ce
+
+# Build wire from compound of edges"
+foreach a [directory ee*] {add $a ce}
+
+bclearobjects 
+bcleartools
+eval baddcompound ce
+bfillds
+bbuild rr
+edgestowire ww rr
+
+# Check planarity
+mkplane pl ww
+explode pl w
+copy pl_1 sw
+
+
+tscale sw 0 0 0 1.0e-3
+tscale tw 0 0 0 1.0e-3
+removeloc sw sw
+removeloc tw tw
+
+evolved result -s sw -p tw -solid -a -v
+
+tscale result 0 0 0 1000
+
+checkprops result -s 1.99565e+011 -v 6.75431e+014
+checkshape result
+
+checknbshapes result -solid 1 -shell 1
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+# Attention. Tolerance > 1 is quite big. However,
+# the dimensions of the shape "result" are about 1.0e+5.
+# So, this tolerance seems to be OK.
+
+checkmaxtol result -ref 1.6514213338573371
+
+smallview
+don result sw tw
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

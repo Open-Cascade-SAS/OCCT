@@ -1,0 +1,81 @@
+# This workflow runs daily on the IR branch to configure OCCT with vcpkg packages.
+# It only performs configuration without building or installing, using vcpkg for dependency management.
+
+name: Daily IR Branch vcpkg Configure
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  configure-windows:
+    name: Configure OCCT on Windows with MSVC
+    runs-on: windows-2025
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      with:
+        ref: IR
+
+    - name: Configure OCCT
+      uses: ./.github/actions/configure-occt
+      with:
+        platform: windows
+        compiler: msvc
+        cmake-build-type: Release
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify configuration output
+      run: |
+        echo "::notice::Successfully configured OCCT on Windows with vcpkg packages"
+
+  configure-macos:
+    name: Configure OCCT on macOS with Clang
+    runs-on: macos-15
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      with:
+        ref: IR
+
+    - name: Configure OCCT
+      uses: ./.github/actions/configure-occt
+      with:
+        platform: macos
+        compiler: clang
+        cmake-build-type: Release
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify configuration output
+      run: |
+        echo "::notice::Successfully configured OCCT on macOS with vcpkg packages"
+
+  configure-linux:
+    name: Configure OCCT on Ubuntu with Clang
+    runs-on: ubuntu-24.04
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      with:
+        ref: IR
+
+    - name: Configure OCCT
+      uses: ./.github/actions/configure-occt
+      with:
+        platform: linux
+        compiler: clang
+        cmake-build-type: Release
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify configuration output
+      run: |
+        echo "::notice::Successfully configured OCCT on Linux with vcpkg packages"

@@ -1,0 +1,99 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+#include <IntSurf_LineOn2S.hxx>
+
+inline bool IntWalk_PWalking::IsDone() const
+{
+  return done;
+}
+
+inline int IntWalk_PWalking::NbPoints() const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  return line->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntWalk_PWalking::Value(const int Index) const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  return line->Value(Index);
+}
+
+inline const occ::handle<IntSurf_LineOn2S>& IntWalk_PWalking::Line() const
+{
+
+  if (!done)
+    throw StdFail_NotDone();
+  return line;
+}
+
+inline bool IntWalk_PWalking::TangentAtFirst() const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  return tgfirst;
+}
+
+inline bool IntWalk_PWalking::TangentAtLast() const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  return tglast;
+}
+
+inline bool IntWalk_PWalking::IsClosed() const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  return close;
+}
+
+inline const gp_Dir& IntWalk_PWalking::TangentAtLine(int& theIndex) const
+{
+  if (!done)
+    throw StdFail_NotDone();
+  theIndex = myTangentIdx;
+  return tgdir;
+}
+
+#define REGLAGE 0
+
+inline void IntWalk_PWalking::AddAPoint(const IntSurf_PntOn2S& POn2S)
+{
+#if REGLAGE
+  int n = line->NbPoints() + 1;
+  if (n == 1)
+  {
+    std::cout << "Dump of WL" << std::endl;
+  }
+
+  if (n)
+  {
+    double u1, v1, u2, v2;
+    POn2S.Parameters(u1, v1, u2, v2);
+    printf("point p%d  %+10.20f %+10.20f %+10.20f\n",
+           n,
+           POn2S.Value().X(),
+           POn2S.Value().Y(),
+           POn2S.Value().Z());
+    fflush(stdout);
+  }
+#endif
+  line->Add(POn2S);
+  myTangentIdx = std::max(myTangentIdx, 1);
+}

@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+restore [locate_data_file bug24157_x_512_solids_glued] b1
+tcopy b1 b2
+ttranslate b2 2. 2. 2.
+tcopy b1 b3
+ttranslate b3 4. 4. 4.
+bclearobjects
+bcleartools
+baddcompound b1
+baddcompound b2
+baddcompound b3
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 2500
+} else {
+  set check_time 378
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

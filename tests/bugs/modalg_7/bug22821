@@ -1,0 +1,123 @@
+puts "============"
+puts "OCC22821"
+puts "============"
+puts ""
+#########################################################################
+# Crash with BRepFilletAPI_MakeFillet
+#########################################################################
+
+pload XDE
+
+stepread [locate_data_file bug22821_test.step] t *
+renamevar t_1 m
+checkshape m
+
+explode m E
+
+if {![catch {fillet res1 m 0.01 m_1}]} {
+  #puts "OK: Fillet on edge m_1 was processed correctly!"
+  checkshape res1
+  checkprops res1 -s 0.220328
+  checkview -display res1 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res2 m 0.01 m_2}]} {
+  #puts "OK: Fillet on edge m_2 was processed correctly!"
+  checkshape res2
+  checkprops res2 -s 0.220328
+  checkview -display res2 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res3 m 0.01 m_3}]} {
+  #puts "OK: Fillet on edge m_3 was processed correctly!"
+  checkshape res3
+  checkprops res3 -s 0.220328
+  checkview -display res3 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res4 m 0.01 m_4}]} {
+  #puts "OK: Fillet on edge m_4 was processed correctly!"
+  checkshape res4
+  checkprops res4 -s 0.220328
+  checkview -display res4 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res5 m 0.01 m_5}]} {
+  #puts "OK: Fillet on edge m_5 was processed correctly!"
+  checkshape res5
+  checkprops res5 -s 0.218602
+  checkview -display res5 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res6 m 0.01 m_6}]} {
+  #puts "OK: Fillet on edge m_6 was processed correctly!"
+  checkshape res6
+  checkprops res6 -s 0.220328
+  checkview -display res6 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res7 m 0.01 m_7}]} {
+  #puts "OK: Fillet on edge m_7 was processed correctly!"
+  checkshape res7
+  checkprops res7 -s 0.218602
+  checkview -display res7 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res8 m 0.01 m_8}]} {
+  #puts "OK: Fillet on edge m_8 was processed correctly!"
+  checkshape res8
+  checkprops res8 -s 0.220328
+  checkview -display res8 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res9 m 0.01 m_9}]} {
+  #puts "OK: Fillet on edge m_9 was processed correctly!"
+  checkshape res9
+  checkprops res9 -s 0.218602
+  checkview -display res9 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res10 m 0.01 m_10}]} {
+  #puts "OK: Fillet on edge m_10 was processed correctly!"
+  checkshape res10
+  checkprops res10 -s 0.218602
+  checkview -display res10 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res11 m 0.01 m_11}]} {
+  #puts "OK: Fillet on edge m_11 was processed correctly!"
+  checkshape res11
+  checkprops res11 -s 0.220328
+  checkview -display res11 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}
+
+if {![catch {fillet res12 m 0.01 m_12}]} {
+  #puts "OK: Fillet on edge m_12 was processed correctly!"
+  checkshape res12
+  checkprops res12 -s 0.220328
+  checkview -display res12 -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}

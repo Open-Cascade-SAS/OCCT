@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename tr9_r0101-pe.stp
+
+# set in as local length unit
+set lengthunit_start "in"
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 5 )  Summary  = 0  ( 5 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 621  ( 621 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 621  ( 621 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0003716458644  ( 0.001004445675 )  AvgTol   =  9.473671712e-005  (  0.0002334520641 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = LIGHTGOLDENROD2  ( LIGHTGOLDENROD2 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

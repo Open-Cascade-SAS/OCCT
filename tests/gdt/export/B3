@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27645_nist_ftc_09_asme1_cr3000_rd.prt.stp
+
+set ref_data {
+
+ NbOfDimensions          : 27
+  NbOfDimensionalSize    : 19
+  NbOfDimensionalLocation: 2
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 1
+ NbOfTolerances          : 29
+  NbOfGTWithModifiers    : 6
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 28
+ NbOfDatumFeature        : 0
+ NbOfAttachedDatum       : 0
+ NbOfDatumTarget         : 0
+}

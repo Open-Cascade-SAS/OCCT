@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC27948"
+puts "========"
+puts ""
+##################################
+# Cut produces unexpected shape
+##################################
+
+restore [locate_data_file bug27948_a.brep] a
+restore [locate_data_file bug27948_b.brep] b
+
+bcut result a b
+
+checkshape result
+checkprops result -s 135.137 -v 40.573
+checknbshapes result -wire 19 -face 17 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

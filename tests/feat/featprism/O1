@@ -1,0 +1,20 @@
+# Original bug : cts21126
+# Date : 25 Nov 98
+
+restore [locate_data_file cts21126_base.brep] base
+
+circle c1 0 0 0 0 0 1 1 0 0 6.3
+mkedge e1 c1
+wire w1 e1
+mkplane cont w1 0
+
+# offset de 4 sur face base_3
+explode base face
+copy base_3 funtil
+ttranslate funtil 0 0 -4
+
+#depression until+offset
+featprism base cont cont 0 0 1 0 1
+featperform prism result funtil
+
+checkprops result -s 2976.57

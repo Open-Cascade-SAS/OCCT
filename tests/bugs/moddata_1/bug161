@@ -1,0 +1,16 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC161"
+puts "========"
+puts ""
+###########################################################
+## The face provided in attachment has single wire that is misoriented, i.e has
+## internal part outside. The checkshape command in DRAW should report that error
+## situation, while it does not.
+###########################################################
+
+restore [locate_data_file OCC161.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

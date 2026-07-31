@@ -1,0 +1,17 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+
+ReadObj D_First ${filename}
+XGetOneShape S_First D_First
+
+set file_path ${imagedir}/${casename}.ply
+
+writefile S_First $file_path -conf "provider.PLY.OCC.author: PLY_AUTHOR "
+
+file delete $file_path
+
+Close D_First

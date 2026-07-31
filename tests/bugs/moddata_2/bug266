@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC266"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC266.brep] a 
+checkshape a
+
+renamevar a edge
+explode edge e
+
+renamevar edge face
+explode face f
+
+if [catch {chamf result face edge_10 face_3 A 1 45 edge_6 face_3 A 1 45 edge_11 face_3 A 1 45 edge_12 face_3 A 1 45 edge_13 face_3 A 1 45 edge_14 face_3 A 1 45 edge_8 face_3 A 1 45 edge_9 face_3 A 1 45 } catch_result] {
+} else {
+  checkshape result
+  checkprops result -s 48913
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

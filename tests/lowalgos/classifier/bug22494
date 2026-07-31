@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC22494"
+puts "================"
+puts ""
+#######################################################################
+# BRepClass_FaceClassifier bug (ref SALOME issue 21185)
+#######################################################################
+
+set BugNumber OCC22494
+
+restore [locate_data_file bug22494_Pb_belogToGeom_FACE.brep] Face 
+
+point p -3.53254182396379145e-05 0.000877856930738714065
+
+set res [split [b2dclassify Face p] ]
+
+set ll [llength ${res}]
+if {${ll} < 4} {
+   puts "Bad format of bclassify draw-command; Faulty ${BugNumber}"
+} else {
+   if {[regexp {The point is ON shape} $res]} {
+      puts "OK ${BugNumber}"
+   } else {
+      puts "Faulty ${BugNumber}"
+   }
+}
+

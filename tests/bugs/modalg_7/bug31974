@@ -1,0 +1,44 @@
+puts "======================================================="
+puts "0031974: Modeling Algorithms - Strange behavior of boolean operations on this BREP"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31974.brep] s
+explode s
+
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+bbuild rgf
+
+foreach r {r0 r1 r2 r3 r4 rgf} {
+  checkshape $r
+}
+
+checknbshapes r0 -wire 5 -face 5 -shell 1 -solid 1 -t
+checkprops r0 -s 0.0739843 -v 0.00122155
+
+checknbshapes r1 -wire 7 -face 7 -shell 1 -solid 1 -t
+checkprops r1 -s 7.27512 -v 1.12443
+
+checknbshapes r2 -wire 8 -face 8 -shell 1 -solid 1 -t
+checkprops r2 -s 5.98712 -v 0.998778
+
+checknbshapes r3 -wire 4 -face 4 -shell 1 -solid 1 -t
+checkprops r3 -s 1.36198 -v 0.124436
+
+checkprops r4 -l 0.656552
+checksection r4 -r 0
+
+checknbshapes rgf -wire 12 -face 12 -shell 3 -solid 3 -t
+checkprops rgf -s 7.42309 -v 1.12443
+
+checkview -display rgf -2d -path ${imagedir}/${test_image}.png

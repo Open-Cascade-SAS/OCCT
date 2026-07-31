@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC26489"
+puts "============"
+puts ""
+######################################################
+# The class ShapeUpgrade_UnifySameDomain provides the results that are wrong or difficult to explain.
+######################################################
+
+restore [locate_data_file bug26489_p01usd.brep] poly
+
+mkplane ff poly
+unifysamedom result ff
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 4
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 10
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result provided by the class ShapeUpgrade_UnifySameDomain"
+
+vinit
+vsetdispmode 1
+vclear
+vdisplay result
+vfit
+vdump ${imagedir}/${casename}.png

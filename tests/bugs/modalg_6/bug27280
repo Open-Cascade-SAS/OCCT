@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC27280"
+puts "============"
+puts ""
+###########################################################################################################
+# HLR algorithms taking seam edges into account
+###########################################################################################################
+
+restore [locate_data_file bug27280_SeamTest0_modified.brep] a
+fit
+hlrin3d result a 0.57735026918962573 -0.57735026918962573 0.57735026918962584
+donly result
+
+checkshape result
+
+checknbshapes result -compound 4 -edge 7 -vertex 6

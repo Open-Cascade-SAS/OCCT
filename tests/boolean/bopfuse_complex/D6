@@ -1,0 +1,18 @@
+restore [locate_data_file BUC60931.brep] sh
+explode sh
+
+bclearobjects
+bcleartools
+baddobjects sh_1 sh_2
+bfillds
+bcbuild rx
+
+# Use Cells Builder algorithm to Fuse Shell to Solid
+bcadd result sh_2 1 -m 1 -u
+bcadd result sh_1 1 sh_2 0
+bcmakecontainers result
+
+checknbshapes result -solid 1 -shell 8 -face 466
+checkprops result -s 1.72392e+006 -v 7.37003e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

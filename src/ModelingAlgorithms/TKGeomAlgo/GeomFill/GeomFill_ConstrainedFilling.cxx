@@ -1,0 +1,1710 @@
+// Created on: 1995-10-26
+// Created by: Laurent BOURESCHE
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//  Modified by skv - Fri Jun 18 12:52:54 2004 OCC6129
+
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomFill_BoundWithSurf.hxx>
+#include <GeomFill_ConstrainedFilling.hxx>
+#include <GeomFill_CoonsAlgPatch.hxx>
+#include <GeomFill_DegeneratedBound.hxx>
+#include <GeomFill_TgtOnCoons.hxx>
+#include <gp_XYZ.hxx>
+#include <Law.hxx>
+#include <Law_BSpFunc.hxx>
+#include <Law_BSpline.hxx>
+#include <Law_Linear.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+
+#ifdef OCCT_DEBUG
+Standard_IMPORT void Law_draw1dcurve(const NCollection_Array1<double>& pol,
+                                     const NCollection_Array1<double>& knots,
+                                     const NCollection_Array1<int>&    mults,
+                                     const int                         deg,
+                                     const gp_Vec2d&                   tra,
+                                     const double                      scal);
+Standard_IMPORT void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
+                                     const gp_Vec2d&                 tra,
+                                     const double                    scal);
+
+  // Pour les mesures.
+  #include <OSD_Chronometer.hxx>
+static OSD_Chronometer totclock, parclock, appclock, cstclock;
+#endif
+
+static int inqadd(const double d1,
+                  const double d2,
+                  double*      k,
+                  int*         m,
+                  const int    deg,
+                  const double tolk)
+{
+  int nbadd = 0;
+  m[0] = m[1] = deg - 2;
+  if (d1 != 1. && d2 != 1.)
+  {
+    if (std::abs(d1 + d2 - 1.) < tolk)
+    {
+      k[0]  = 0.5 * (d1 + 1. - d2);
+      nbadd = 1;
+    }
+    else
+    {
+      nbadd = 2;
+      k[0]  = std::min(d1, 1. - d2);
+      k[1]  = std::max(d1, 1. - d2);
+    }
+  }
+  else if (d1 != 1.)
+  {
+    k[0]  = d1;
+    nbadd = 1;
+  }
+  else if (d2 != 1.)
+  {
+    k[0]  = d2;
+    nbadd = 1;
+  }
+  return nbadd;
+}
+
+static occ::handle<Law_Linear> mklin(const occ::handle<Law_Function>& func)
+{
+  occ::handle<Law_Linear> fu = occ::down_cast<Law_Linear>(func);
+  if (fu.IsNull())
+  {
+    fu = new Law_Linear();
+    double d, f;
+    func->Bounds(d, f);
+    fu->Set(d, func->Value(d), f, func->Value(f));
+  }
+  return fu;
+}
+
+static void sortbounds(const int                       nb,
+                       occ::handle<GeomFill_Boundary>* bound,
+                       bool*                           rev,
+                       GeomFill_CornerState*           stat)
+{
+  // trier les bords (facon bourinos),
+  // flaguer ceux a renverser,
+  // flaguer les baillements au coins.
+  int                            i, j;
+  occ::handle<GeomFill_Boundary> temp;
+  rev[0] = false;
+  gp_Pnt pf, pl;
+  gp_Pnt qf, ql;
+  for (i = 0; i < nb - 1; i++)
+  {
+    if (!rev[i])
+    {
+      bound[i]->Points(pf, pl);
+    }
+    else
+    {
+      bound[i]->Points(pl, pf);
+    }
+    for (j = i + 1; j <= nb - 1; j++)
+    {
+      bound[j]->Points(qf, ql);
+      //  Modified by skv - Fri Jun 18 12:52:54 2004 OCC6129 Begin
+      double df = qf.Distance(pl);
+      double dl = ql.Distance(pl);
+      if (df < dl)
+      {
+        if (df < stat[i + 1].Gap())
+        {
+          temp         = bound[i + 1];
+          bound[i + 1] = bound[j];
+          bound[j]     = temp;
+          stat[i + 1].Gap(df);
+          rev[i + 1] = false;
+        }
+      }
+      else
+      {
+        if (dl < stat[i + 1].Gap())
+        {
+          temp         = bound[i + 1];
+          bound[i + 1] = bound[j];
+          bound[j]     = temp;
+          stat[i + 1].Gap(dl);
+          rev[i + 1] = true;
+        }
+      }
+      //  Modified by skv - Fri Jun 18 12:52:54 2004 OCC6129 End
+    }
+  }
+  if (!rev[nb - 1])
+  {
+    bound[nb - 1]->Points(pf, pl);
+  }
+  else
+  {
+    bound[nb - 1]->Points(pl, pf);
+  }
+  bound[0]->Points(qf, ql);
+  stat[0].Gap(pl.Distance(qf));
+
+  // flaguer les angles entre tangentes au coins et entre les normales au
+  // coins pour les bords contraints.
+  gp_Pnt pbid;
+  gp_Vec tgi, nori, tgn, norn;
+  double fi, fn, li, ln;
+  for (i = 0; i < nb; i++)
+  {
+    int next = (i + 1) % nb;
+    if (!rev[i])
+    {
+      bound[i]->Bounds(fi, li);
+    }
+    else
+    {
+      bound[i]->Bounds(li, fi);
+    }
+    bound[i]->D1(li, pbid, tgi);
+    if (rev[i])
+    {
+      tgi.Reverse();
+    }
+    if (!rev[next])
+    {
+      bound[next]->Bounds(fn, ln);
+    }
+    else
+    {
+      bound[next]->Bounds(ln, fn);
+    }
+    bound[next]->D1(fn, pbid, tgn);
+    if (rev[next])
+    {
+      tgn.Reverse();
+    }
+    double ang = M_PI - tgi.Angle(tgn);
+    stat[next].TgtAng(ang);
+    if (bound[i]->HasNormals() && bound[next]->HasNormals())
+    {
+      stat[next].Constraint();
+      nori = bound[i]->Norm(li);
+      norn = bound[next]->Norm(fn);
+      ang  = nori.Angle(norn);
+      stat[next].NorAng(ang);
+    }
+  }
+}
+
+static void coonscnd(const int                       nb,
+                     occ::handle<GeomFill_Boundary>* bound,
+                     bool*                           rev,
+                     GeomFill_CornerState*           stat,
+                     //		     occ::handle<GeomFill_TgtField>* tga,
+                     occ::handle<GeomFill_TgtField>*,
+                     double* mintg)
+{
+  double fact_normalization = 100.;
+  int    i;
+  // Pour chaque coin contraint, on controle les bounds adjascents.
+  for (i = 0; i < nb; i++)
+  {
+    if (stat[i].HasConstraint())
+    {
+      int    ip     = (i - 1 + nb) % nb;
+      double tolang = std::min(bound[ip]->Tolang(), bound[i]->Tolang());
+      double an     = stat[i].NorAng();
+      bool   twist  = false;
+      if (an >= 0.5 * M_PI)
+      {
+        twist = true;
+        an    = M_PI - an;
+      }
+      if (an > tolang)
+      {
+        stat[i].DoKill(0.);
+      }
+      else
+      {
+        double fact = 0.5 * 27. / 4;
+        tolang *= (std::min(mintg[ip], mintg[i]) * fact * fact_normalization);
+        gp_Vec tgp, dnorp, tgi, dnori, vbid;
+        gp_Pnt pbid;
+        double fp, lp, fi, li;
+        if (!rev[ip])
+        {
+          bound[ip]->Bounds(fp, lp);
+        }
+        else
+        {
+          bound[ip]->Bounds(lp, fp);
+        }
+        bound[ip]->D1(lp, pbid, tgp);
+        bound[ip]->D1Norm(lp, vbid, dnorp);
+        if (!rev[i])
+        {
+          bound[i]->Bounds(fi, li);
+        }
+        else
+        {
+          bound[i]->Bounds(li, fi);
+        }
+        bound[i]->D1(fi, pbid, tgi);
+        bound[i]->D1Norm(fi, vbid, dnori);
+        double scal1 = tgp.Dot(dnori);
+        double scal2 = tgi.Dot(dnorp);
+        if (!twist)
+        {
+          scal2 *= -1.;
+        }
+        scal1 = std::abs(scal1 + scal2);
+        if (scal1 > tolang)
+        {
+          double killfactor = tolang / scal1;
+          stat[i].DoKill(killfactor);
+#ifdef OCCT_DEBUG
+          std::cout << "pb coons cnd coin : " << i << " fact = " << killfactor << std::endl;
+#endif
+        }
+      }
+    }
+  }
+}
+
+static void killcorners(const int                       nb,
+                        occ::handle<GeomFill_Boundary>* bound,
+                        bool*                           rev,
+                        bool*                           nrev,
+                        GeomFill_CornerState*           stat,
+                        occ::handle<GeomFill_TgtField>* tga)
+{
+  int i;
+  // Pour chaque  bound, on  controle l etat  des extremites  et on flingue
+  // eventuellement le champ tangent et les derivees du bound.
+  for (i = 0; i < nb; i++)
+  {
+    int    inext = (i + 1) % nb;
+    bool   fnul, lnul;
+    double fscal, lscal;
+    if (!nrev[i])
+    {
+      fnul = stat[i].IsToKill(fscal);
+      lnul = stat[inext].IsToKill(lscal);
+    }
+    else
+    {
+      lnul = stat[i].IsToKill(lscal);
+      fnul = stat[inext].IsToKill(fscal);
+    }
+    if (fnul || lnul)
+    {
+#ifdef OCCT_DEBUG
+      parclock.Start();
+#endif
+      bound[i]->Reparametrize(0., 1., fnul, lnul, fscal, lscal, rev[i]);
+#ifdef OCCT_DEBUG
+      parclock.Stop();
+#endif
+      if (bound[i]->HasNormals() && tga[i]->IsScalable())
+      {
+        occ::handle<Law_BSpline> bs = Law::ScaleCub(0., 1., fnul, lnul, fscal, lscal);
+        tga[i]->Scale(bs);
+      }
+    }
+  }
+}
+
+//=======================================================================
+// class : GeomFill_ConstrainedFilling_Eval
+// purpose: The evaluator for curve approximation
+//=======================================================================
+
+class GeomFill_ConstrainedFilling_Eval : public AdvApprox_EvaluatorFunction
+{
+public:
+  GeomFill_ConstrainedFilling_Eval(GeomFill_ConstrainedFilling& theTool)
+      : curfil(theTool)
+  {
+  }
+
+  void Evaluate(int*    Dimension,
+                double  StartEnd[2],
+                double* Parameter,
+                int*    DerivativeRequest,
+                double* Result, // [Dimension]
+                int*    ErrorCode) override;
+
+private:
+  GeomFill_ConstrainedFilling& curfil;
+};
+
+void GeomFill_ConstrainedFilling_Eval::Evaluate(int*, /*Dimension*/
+                                                double /*StartEnd*/[2],
+                                                double* Parameter,
+                                                int*    DerivativeRequest,
+                                                double* Result, // [Dimension]
+                                                int*    ErrorCode)
+{
+  *ErrorCode = curfil.Eval(*Parameter, *DerivativeRequest, Result[0]);
+}
+
+//=================================================================================================
+
+GeomFill_ConstrainedFilling::GeomFill_ConstrainedFilling(const int MaxDeg, const int MaxSeg)
+    : degmax(MaxDeg),
+      segmax(MaxSeg),
+      appdone(false),
+      nbd3(0)
+{
+  dom[0] = dom[1] = dom[2] = dom[3] = 1.;
+  memset(ctr, 0, sizeof(ctr));
+  memset(degree, 0, sizeof(degree));
+  memset(ibound, 0, sizeof(ibound));
+  memset(mig, 0, sizeof(mig));
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
+                                       const occ::handle<GeomFill_Boundary>& B2,
+                                       const occ::handle<GeomFill_Boundary>& B3,
+                                       const bool                            NoCheck)
+{
+#ifdef OCCT_DEBUG
+  totclock.Reset();
+  parclock.Reset();
+  appclock.Reset();
+  cstclock.Reset();
+  totclock.Start();
+#endif
+  bool rev[3];
+  rev[0] = rev[1] = rev[2] = false;
+  occ::handle<GeomFill_Boundary> bound[3];
+  bound[0] = B1;
+  bound[1] = B2;
+  bound[2] = B3;
+  int i;
+  sortbounds(3, bound, rev, stcor);
+
+  // on reoriente.
+  rev[2] = !rev[2];
+
+  // on reparamettre tout le monde entre 0. et 1.
+#ifdef OCCT_DEBUG
+  parclock.Start();
+#endif
+  for (i = 0; i <= 2; i++)
+  {
+    bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
+  }
+#ifdef OCCT_DEBUG
+  parclock.Stop();
+#endif
+
+  // On cree le carreau algorithmique (u,(1-u)) et les champs tangents
+  // 1er jus.
+  // On cree donc le bord manquant.
+  gp_Pnt                                 p1 = bound[1]->Value(1.);
+  gp_Pnt                                 p2 = bound[2]->Value(1.);
+  gp_Pnt                                 ppp(0.5 * (p1.XYZ() + p2.XYZ()));
+  double                                 t3 = std::max(bound[1]->Tol3d(), bound[2]->Tol3d());
+  occ::handle<GeomFill_DegeneratedBound> DB = new GeomFill_DegeneratedBound(ppp, 0., 1., t3, 10.);
+
+  ptch = new GeomFill_CoonsAlgPatch(bound[0], bound[1], DB, bound[2]);
+
+  occ::handle<GeomFill_TgtField> ttgalg[3];
+  if (bound[0]->HasNormals())
+  {
+    ttgalg[0] = tgalg[0] = new GeomFill_TgtOnCoons(ptch, 0);
+  }
+  if (bound[1]->HasNormals())
+  {
+    ttgalg[1] = tgalg[1] = new GeomFill_TgtOnCoons(ptch, 1);
+  }
+  if (bound[2]->HasNormals())
+  {
+    ttgalg[2] = tgalg[3] = new GeomFill_TgtOnCoons(ptch, 3);
+  }
+
+  for (i = 0; i <= 3; i++)
+  {
+    mig[i] = 1.;
+    if (!tgalg[i].IsNull())
+    {
+      MinTgte(i);
+    }
+  }
+
+  if (!NoCheck)
+  {
+    // On  verifie enfin les conditions  de compatibilites sur les derivees
+    // aux coins maintenant qu on a quelque chose a quoi les comparer.
+    bool nrev[3];
+    nrev[0] = nrev[1] = false;
+    nrev[2]           = true;
+    mig[2]            = mig[3];
+    coonscnd(3, bound, nrev, stcor, ttgalg, mig);
+    killcorners(3, bound, rev, nrev, stcor, ttgalg);
+  }
+  // on remet les coins en place (on duplique la pointe).
+  stcor[3] = stcor[2];
+
+  for (i = 0; i <= 3; i++)
+  {
+    mig[i] = 1.;
+    if (!tgalg[i].IsNull())
+    {
+      if (!CheckTgte(i))
+      {
+        occ::handle<Law_Function> fu1, fu2;
+        ptch->Func(fu1, fu2);
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        ptch->SetFunc(ffu1, ffu2);
+        break;
+      }
+    }
+  }
+
+  Build();
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
+                                       const occ::handle<GeomFill_Boundary>& B2,
+                                       const occ::handle<GeomFill_Boundary>& B3,
+                                       const occ::handle<GeomFill_Boundary>& B4,
+                                       const bool                            NoCheck)
+{
+#ifdef OCCT_DEBUG
+  totclock.Reset();
+  parclock.Reset();
+  appclock.Reset();
+  cstclock.Reset();
+  totclock.Start();
+#endif
+  bool rev[4];
+  rev[0] = rev[1] = rev[2] = rev[3] = false;
+  occ::handle<GeomFill_Boundary> bound[4];
+  bound[0] = B1;
+  bound[1] = B2;
+  bound[2] = B3;
+  bound[3] = B4;
+  int i;
+  sortbounds(4, bound, rev, stcor);
+
+  // on reoriente.
+  rev[2] = !rev[2];
+  rev[3] = !rev[3];
+
+  // on reparamettre tout le monde entre 0. et 1.
+#ifdef OCCT_DEBUG
+  parclock.Start();
+#endif
+  for (i = 0; i <= 3; i++)
+  {
+    bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
+  }
+#ifdef OCCT_DEBUG
+  parclock.Stop();
+#endif
+
+  // On cree le carreau algorithmique (u,(1-u)) et les champs tangents
+  // 1er jus.
+  ptch = new GeomFill_CoonsAlgPatch(bound[0], bound[1], bound[2], bound[3]);
+  for (i = 0; i <= 3; i++)
+  {
+    if (bound[i]->HasNormals())
+    {
+      tgalg[i] = new GeomFill_TgtOnCoons(ptch, i);
+    }
+  }
+  // on calcule le min de chacun des champs tangents pour l evaluation
+  // des tolerances.
+  for (i = 0; i <= 3; i++)
+  {
+    mig[i] = 1.;
+    if (!tgalg[i].IsNull())
+    {
+      MinTgte(i);
+    }
+  }
+
+  if (!NoCheck)
+  {
+    // On  verifie enfin les conditions  de compatibilites sur les derivees
+    // aux coins maintenant qu on a quelque chose a quoi les comparer.
+    bool nrev[4];
+    nrev[0] = nrev[1] = false;
+    nrev[2] = nrev[3] = true;
+    coonscnd(4, bound, nrev, stcor, tgalg, mig);
+    killcorners(4, bound, rev, nrev, stcor, tgalg);
+  }
+  // On verifie les champs tangents ne changent pas de direction.
+  for (i = 0; i <= 3; i++)
+  {
+    mig[i] = 1.;
+    if (!tgalg[i].IsNull())
+    {
+      if (!CheckTgte(i))
+      {
+        occ::handle<Law_Function> fu1, fu2;
+        ptch->Func(fu1, fu2);
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        ptch->SetFunc(ffu1, ffu2);
+        break;
+      }
+    }
+  }
+
+  Build();
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::SetDomain(const double                               l,
+                                            const occ::handle<GeomFill_BoundWithSurf>& B)
+{
+  if (B == ptch->Bound(0))
+  {
+    dom[0] = std::min(1., std::abs(l));
+  }
+  else if (B == ptch->Bound(1))
+  {
+    dom[1] = std::min(1., std::abs(l));
+  }
+  else if (B == ptch->Bound(2))
+  {
+    dom[2] = std::min(1., std::abs(l));
+  }
+  else if (B == ptch->Bound(3))
+  {
+    dom[3] = std::min(1., std::abs(l));
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::ReBuild()
+{
+  if (!appdone)
+  {
+    throw Standard_Failure("GeomFill_ConstrainedFilling::ReBuild Approx non faite");
+  }
+  MatchKnots();
+  PerformS0();
+  PerformS1();
+  PerformSurface();
+}
+
+//=================================================================================================
+
+occ::handle<GeomFill_Boundary> GeomFill_ConstrainedFilling::Boundary(const int I) const
+{
+  return ptch->Bound(I);
+}
+
+//=================================================================================================
+
+occ::handle<Geom_BSplineSurface> GeomFill_ConstrainedFilling::Surface() const
+{
+  return surf;
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::Build()
+{
+  for (int count = 0; count < 2; count++)
+  {
+    ibound[0] = count;
+    ibound[1] = count + 2;
+    ctr[0] = ctr[1] = nbd3 = 0;
+    int ii;
+    for (ii = 0; ii < 2; ii++)
+    {
+      if (ptch->Bound(ibound[ii])->HasNormals())
+      {
+        ctr[ii] = 2;
+      }
+      else if (!ptch->Bound(ibound[ii])->IsDegenerated())
+      {
+        ctr[ii] = 1;
+      }
+      nbd3 += ctr[ii];
+    }
+#ifdef OCCT_DEBUG
+    appclock.Start();
+#endif
+    if (nbd3)
+    {
+      PerformApprox();
+    }
+#ifdef OCCT_DEBUG
+    appclock.Stop();
+#endif
+  }
+  appdone = true;
+#ifdef OCCT_DEBUG
+  cstclock.Start();
+#endif
+  MatchKnots();
+  PerformS0();
+  PerformS1();
+  PerformSurface();
+#ifdef OCCT_DEBUG
+  cstclock.Stop();
+  totclock.Stop();
+  double tottime, apptime, partime, csttime;
+  totclock.Show(tottime);
+  parclock.Show(partime);
+  appclock.Show(apptime);
+  cstclock.Show(csttime);
+  std::cout << "temp total : " << tottime << " secondes" << std::endl;
+  std::cout << std::endl;
+  std::cout << "dont" << std::endl;
+  std::cout << std::endl;
+  std::cout << "reparametrage         : " << partime << " secondes" << std::endl;
+  std::cout << "approximation         : " << apptime << " secondes" << std::endl;
+  std::cout << "construction formelle : " << csttime << " secondes" << std::endl;
+  std::cout << std::endl;
+#endif
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::PerformApprox()
+{
+  int                                      ii;
+  occ::handle<NCollection_HArray1<double>> tol3d, tol2d, tol1d;
+  if (nbd3)
+  {
+    tol3d = new NCollection_HArray1<double>(1, nbd3);
+  }
+  int i3d = 0;
+  for (ii = 0; ii <= 1; ii++)
+  {
+    if (ctr[ii])
+    {
+      tol3d->SetValue((++i3d), ptch->Bound(ibound[ii])->Tol3d());
+    }
+    if (ctr[ii] == 2)
+    {
+      tol3d->SetValue(++i3d, 0.5 * mig[ibound[ii]] * ptch->Bound(ibound[ii])->Tolang());
+    }
+  }
+  double f, l;
+  ptch->Bound(ibound[0])->Bounds(f, l);
+
+  GeomFill_ConstrainedFilling_Eval ev(*this);
+  AdvApprox_ApproxAFunction
+    app(0, 0, nbd3, tol1d, tol2d, tol3d, f, l, GeomAbs_C1, degmax, segmax, ev);
+
+  if (app.IsDone() || app.HasResult())
+  {
+    int imk     = std::min(ibound[0], ibound[1]);
+    int nbpol   = app.NbPoles();
+    degree[imk] = app.Degree();
+    mults[imk]  = app.Multiplicities();
+    knots[imk]  = app.Knots();
+    i3d         = 0;
+    for (ii = 0; ii <= 1; ii++)
+    {
+      curvpol[ibound[ii]]            = new NCollection_HArray1<gp_Pnt>(1, nbpol);
+      NCollection_Array1<gp_Pnt>& cp = curvpol[ibound[ii]]->ChangeArray1();
+      if (ctr[ii])
+      {
+        app.Poles(++i3d, cp);
+      }
+      else
+      {
+        gp_Pnt ppp = ptch->Bound(ibound[ii])->Value(0.5 * (f + l));
+        for (int ij = 1; ij <= nbpol; ij++)
+        {
+          cp(ij) = ppp;
+        }
+      }
+      if (ctr[ii] == 2)
+      {
+        tgtepol[ibound[ii]] = new NCollection_HArray1<gp_Pnt>(1, nbpol);
+        app.Poles(++i3d, tgtepol[ibound[ii]]->ChangeArray1());
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::MatchKnots()
+{
+  // on n insere rien si les domaines valent 1.
+  int i, j, l;
+  int ind[4];
+  nm[0]    = mults[0];
+  nm[1]    = mults[1];
+  nk[0]    = knots[0];
+  nk[1]    = knots[1];
+  ind[0]   = nk[1]->Length();
+  ind[2]   = 1;
+  ind[1]   = 1;
+  ind[3]   = nk[0]->Length();
+  ncpol[0] = curvpol[0];
+  ncpol[1] = curvpol[1];
+  ncpol[2] = curvpol[2];
+  ncpol[3] = curvpol[3];
+  ntpol[0] = tgtepol[0];
+  ntpol[1] = tgtepol[1];
+  ntpol[2] = tgtepol[2];
+  ntpol[3] = tgtepol[3];
+  double kadd[2];
+  int    madd[2];
+  double tolk  = 1. / std::max(10, 2 * knots[1]->Array1().Length());
+  int    nbadd = inqadd(dom[0], dom[2], kadd, madd, degree[1], tolk);
+  if (nbadd)
+  {
+    NCollection_Array1<double> addk(kadd[0], 1, nbadd);
+    NCollection_Array1<int>    addm(madd[0], 1, nbadd);
+    int                        nbnp, nbnk;
+    if (BSplCLib::PrepareInsertKnots(degree[1],
+                                     false,
+                                     knots[1]->Array1(),
+                                     mults[1]->Array1(),
+                                     addk,
+                                     &addm,
+                                     nbnp,
+                                     nbnk,
+                                     tolk,
+                                     false))
+    {
+      nm[1]    = new NCollection_HArray1<int>(1, nbnk);
+      nk[1]    = new NCollection_HArray1<double>(1, nbnk);
+      ncpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      ncpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      BSplCLib::InsertKnots(degree[1],
+                            false,
+                            curvpol[1]->Array1(),
+                            BSplCLib::NoWeights(),
+                            knots[1]->Array1(),
+                            mults[1]->Array1(),
+                            addk,
+                            &addm,
+                            ncpol[1]->ChangeArray1(),
+                            BSplCLib::NoWeights(),
+                            nk[1]->ChangeArray1(),
+                            nm[1]->ChangeArray1(),
+                            tolk,
+                            false);
+
+      BSplCLib::InsertKnots(degree[1],
+                            false,
+                            curvpol[3]->Array1(),
+                            BSplCLib::NoWeights(),
+                            knots[1]->Array1(),
+                            mults[1]->Array1(),
+                            addk,
+                            &addm,
+                            ncpol[3]->ChangeArray1(),
+                            BSplCLib::NoWeights(),
+                            nk[1]->ChangeArray1(),
+                            nm[1]->ChangeArray1(),
+                            tolk,
+                            false);
+      if (!tgtepol[1].IsNull())
+      {
+        ntpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+        BSplCLib::InsertKnots(degree[1],
+                              false,
+                              tgtepol[1]->Array1(),
+                              BSplCLib::NoWeights(),
+                              knots[1]->Array1(),
+                              mults[1]->Array1(),
+                              addk,
+                              &addm,
+                              ntpol[1]->ChangeArray1(),
+                              BSplCLib::NoWeights(),
+                              nk[1]->ChangeArray1(),
+                              nm[1]->ChangeArray1(),
+                              tolk,
+                              false);
+      }
+      if (!tgtepol[3].IsNull())
+      {
+        ntpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+        BSplCLib::InsertKnots(degree[1],
+                              false,
+                              tgtepol[3]->Array1(),
+                              BSplCLib::NoWeights(),
+                              knots[1]->Array1(),
+                              mults[1]->Array1(),
+                              addk,
+                              &addm,
+                              ntpol[3]->ChangeArray1(),
+                              BSplCLib::NoWeights(),
+                              nk[1]->ChangeArray1(),
+                              nm[1]->ChangeArray1(),
+                              tolk,
+                              false);
+      }
+    }
+    if (dom[0] != 1.)
+    {
+      for (i = 2; i <= nbnk; i++)
+      {
+        if (std::abs(dom[0] - nm[1]->Value(i)) < tolk)
+        {
+          ind[0] = i;
+          break;
+        }
+      }
+    }
+    if (dom[2] != 1.)
+    {
+      for (i = 1; i < nbnk; i++)
+      {
+        if (std::abs(1. - dom[2] - nm[1]->Value(i)) < tolk)
+        {
+          ind[2] = i;
+          break;
+        }
+      }
+    }
+  }
+  tolk  = 1. / std::max(10., 2. * knots[0]->Array1().Length());
+  nbadd = inqadd(dom[1], dom[3], kadd, madd, degree[0], tolk);
+  if (nbadd)
+  {
+    NCollection_Array1<double> addk(kadd[0], 1, nbadd);
+    NCollection_Array1<int>    addm(madd[0], 1, nbadd);
+    int                        nbnp, nbnk;
+    if (BSplCLib::PrepareInsertKnots(degree[0],
+                                     false,
+                                     knots[0]->Array1(),
+                                     mults[0]->Array1(),
+                                     addk,
+                                     &addm,
+                                     nbnp,
+                                     nbnk,
+                                     tolk,
+                                     false))
+    {
+      nm[0]    = new NCollection_HArray1<int>(1, nbnk);
+      nk[0]    = new NCollection_HArray1<double>(1, nbnk);
+      ncpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      ncpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      BSplCLib::InsertKnots(degree[0],
+                            false,
+                            curvpol[0]->Array1(),
+                            BSplCLib::NoWeights(),
+                            knots[0]->Array1(),
+                            mults[0]->Array1(),
+                            addk,
+                            &addm,
+                            ncpol[0]->ChangeArray1(),
+                            BSplCLib::NoWeights(),
+                            nk[0]->ChangeArray1(),
+                            nm[0]->ChangeArray1(),
+                            tolk,
+                            false);
+
+      BSplCLib::InsertKnots(degree[0],
+                            false,
+                            curvpol[2]->Array1(),
+                            BSplCLib::NoWeights(),
+                            knots[0]->Array1(),
+                            mults[0]->Array1(),
+                            addk,
+                            &addm,
+                            ncpol[2]->ChangeArray1(),
+                            BSplCLib::NoWeights(),
+                            nk[0]->ChangeArray1(),
+                            nm[0]->ChangeArray1(),
+                            tolk,
+                            false);
+      if (!tgtepol[0].IsNull())
+      {
+        ntpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+        BSplCLib::InsertKnots(degree[0],
+                              false,
+                              tgtepol[0]->Array1(),
+                              BSplCLib::NoWeights(),
+                              knots[0]->Array1(),
+                              mults[0]->Array1(),
+                              addk,
+                              &addm,
+                              ntpol[0]->ChangeArray1(),
+                              BSplCLib::NoWeights(),
+                              nk[0]->ChangeArray1(),
+                              nm[0]->ChangeArray1(),
+                              tolk,
+                              false);
+      }
+      if (!tgtepol[2].IsNull())
+      {
+        ntpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+        BSplCLib::InsertKnots(degree[0],
+                              false,
+                              tgtepol[2]->Array1(),
+                              BSplCLib::NoWeights(),
+                              knots[0]->Array1(),
+                              mults[0]->Array1(),
+                              addk,
+                              &addm,
+                              ntpol[2]->ChangeArray1(),
+                              BSplCLib::NoWeights(),
+                              nk[0]->ChangeArray1(),
+                              nm[0]->ChangeArray1(),
+                              tolk,
+                              false);
+      }
+    }
+    if (dom[1] != 1.)
+    {
+      for (i = 2; i <= nbnk; i++)
+      {
+        if (std::abs(dom[1] - nm[0]->Value(i)) < tolk)
+        {
+          ind[1] = i;
+          break;
+        }
+      }
+    }
+    if (dom[3] != 1.)
+    {
+      for (i = 1; i < nbnk; i++)
+      {
+        if (std::abs(1. - dom[3] - nm[0]->Value(i)) < tolk)
+        {
+          ind[3] = i;
+          break;
+        }
+      }
+    }
+  }
+  occ::handle<Law_Linear> fu = mklin(ptch->Func(0));
+  ab[0]                      = Law::MixBnd(degree[1], nk[1]->Array1(), nm[1]->Array1(), fu);
+  fu                         = mklin(ptch->Func(1));
+  ab[1]                      = Law::MixBnd(degree[0], nk[0]->Array1(), nm[0]->Array1(), fu);
+
+  for (i = 0; i < 2; i++)
+  {
+    l         = ab[i]->Length();
+    ab[i + 2] = new NCollection_HArray1<double>(1, l);
+    for (j = 1; j <= l; j++)
+    {
+      ab[i + 2]->SetValue(j, 1. - ab[i]->Value(j));
+    }
+  }
+  pq[0] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), true, ind[0]);
+  pq[2] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), false, ind[2]);
+
+  pq[1] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), false, ind[1]);
+  pq[3] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), true, ind[3]);
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::PerformS0()
+{
+  // On construit les poles de S0 par combinaison des poles des bords,
+  // des poles des fonctions ab, des points c selon la formule :
+  // S0(i,j) = ab[0](j)*ncpol[0](i) + ab[1](i)*ncpol[1](j)
+  //         + ab[2](j)*ncpol[2](i) + ab[3](i)*ncpol[3](j)
+  //         - ab[3](i)*ab[0](j)*c[0] - ab[0](j)*ab[1](i)*c[1]
+  //         - ab[1](i)*ab[2](j)*c[2] - ab[2](j)*ab[3](i)*c[3]
+
+  int i, j;
+  int ni                          = ncpol[0]->Length();
+  int nj                          = ncpol[1]->Length();
+  S0                              = new NCollection_HArray2<gp_Pnt>(1, ni, 1, nj);
+  NCollection_Array2<gp_Pnt>& ss0 = S0->ChangeArray2();
+  const gp_XYZ&               c0  = ptch->Corner(0).Coord();
+  const gp_XYZ&               c1  = ptch->Corner(1).Coord();
+  const gp_XYZ&               c2  = ptch->Corner(2).Coord();
+  const gp_XYZ&               c3  = ptch->Corner(3).Coord();
+  for (i = 1; i <= ni; i++)
+  {
+    double        ab1 = ab[1]->Value(i);
+    double        ab3 = ab[3]->Value(i);
+    const gp_XYZ& b0  = ncpol[0]->Value(i).Coord();
+    const gp_XYZ& b2  = ncpol[2]->Value(i).Coord();
+    for (j = 1; j <= nj; j++)
+    {
+      double        ab0   = ab[0]->Value(j);
+      double        ab2   = ab[2]->Value(j);
+      const gp_XYZ& b1    = ncpol[1]->Value(j).Coord();
+      const gp_XYZ& b3    = ncpol[3]->Value(j).Coord();
+      gp_XYZ        polij = b0.Multiplied(ab0);
+      gp_XYZ        temp  = b1.Multiplied(ab1);
+      polij.Add(temp);
+      temp = b2.Multiplied(ab2);
+      polij.Add(temp);
+      temp = b3.Multiplied(ab3);
+      polij.Add(temp);
+      temp = c0.Multiplied(-ab3 * ab0);
+      polij.Add(temp);
+      temp = c1.Multiplied(-ab0 * ab1);
+      polij.Add(temp);
+      temp = c2.Multiplied(-ab1 * ab2);
+      polij.Add(temp);
+      temp = c3.Multiplied(-ab2 * ab3);
+      polij.Add(temp);
+      ss0(i, j).SetXYZ(polij);
+    }
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::PerformS1()
+{
+  // on construit en temporaire les poles des champs tangents
+  // definis par :
+  // tgte[ibound](u) - d/dv (S0(u,vbound)) pour ibound = 0 ou 2
+  // tgte[ibound](v) - d/du (S0(ubound,v)) pour ibound = 1 ou 3
+  // sur les bords ou tgte est defini.
+  gp_XYZ*                           nt[4];
+  const NCollection_Array2<gp_Pnt>& ss0 = S0->Array2();
+  int                               l, i, j, k;
+  int                               ni = ss0.ColLength();
+  int                               nj = ss0.RowLength();
+  for (i = 0; i <= 3; i++)
+  {
+    if (ntpol[i].IsNull())
+    {
+      nt[i] = nullptr;
+    }
+    else
+    {
+      double z   = 0;
+      int    nbp = ntpol[i]->Length();
+      int    i1 = 0, i2 = 0, j1 = 0, j2 = 0;
+      bool   inci = false;
+      nt[i]       = new gp_XYZ[nbp];
+      switch (i)
+      {
+        case 0:
+          z    = -degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
+          inci = true;
+          i1   = 1;
+          i2   = 1;
+          j1   = 1;
+          j2   = 2;
+          break;
+        case 1:
+          l    = nk[0]->Length();
+          z    = -degree[0] / (nk[0]->Value(l) - nk[0]->Value(l - 1));
+          inci = false;
+          i1   = ni - 1;
+          i2   = ni;
+          j1   = 1;
+          j2   = 1;
+          break;
+        case 2:
+          l    = nk[1]->Length();
+          z    = -degree[1] / (nk[1]->Value(l) - nk[1]->Value(l - 1));
+          inci = true;
+          i1   = 1;
+          i2   = 1;
+          j1   = nj - 1;
+          j2   = nj;
+          break;
+        case 3:
+          z    = -degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
+          inci = false;
+          i1   = 1;
+          i2   = 2;
+          j1   = 1;
+          j2   = 1;
+          break;
+      }
+      for (k = 0; k < nbp; k++)
+      {
+        nt[i][k] = S0->Value(i1, j1).XYZ();
+        nt[i][k].Multiply(-1.);
+        nt[i][k].Add(S0->Value(i2, j2).XYZ());
+        nt[i][k].Multiply(z);
+        nt[i][k].Add(ntpol[i]->Value(k + 1).XYZ());
+        if (inci)
+        {
+          i1++;
+          i2++;
+        }
+        else
+        {
+          j1++;
+          j2++;
+        }
+      }
+    }
+  }
+  // on calcul les termes correctifs pour le melange.
+  double coef0 = degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
+  double coef1 = degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
+  gp_XYZ vtemp, vtemp0, vtemp1;
+  if (nt[0] && nt[3])
+  {
+    vtemp0 = nt[0][0].Multiplied(-1.);
+    vtemp0.Add(nt[0][1]);
+    vtemp0.Multiply(coef0);
+    vtemp1 = nt[3][0].Multiplied(-1.);
+    vtemp1.Add(nt[3][1]);
+    vtemp1.Multiply(coef1);
+    vtemp = vtemp0.Added(vtemp1);
+    vtemp.Multiply(0.5);
+    v[0].SetXYZ(vtemp);
+  }
+
+  int ln0 = nk[0]->Length(), lp0 = ncpol[0]->Length();
+  coef0 = degree[0] / (nk[0]->Value(ln0) - nk[0]->Value(ln0 - 1));
+  coef1 = degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
+  if (nt[0] && nt[1])
+  {
+    vtemp0 = nt[0][lp0 - 2].Multiplied(-1.);
+    vtemp0.Add(nt[0][lp0 - 1]);
+    vtemp0.Multiply(coef0);
+    vtemp1 = nt[1][0].Multiplied(-1.);
+    vtemp1.Add(nt[1][1]);
+    vtemp1.Multiply(coef1);
+    vtemp = vtemp0.Added(vtemp1);
+    vtemp.Multiply(0.5);
+    v[1].SetXYZ(vtemp);
+  }
+  ln0     = nk[0]->Length();
+  lp0     = ncpol[0]->Length();
+  int ln1 = nk[1]->Length(), lp1 = ncpol[1]->Length();
+  coef0 = degree[0] / (nk[0]->Value(ln0) - nk[0]->Value(ln0 - 1));
+  coef1 = degree[1] / (nk[1]->Value(ln1) - nk[1]->Value(ln1 - 1));
+  if (nt[1] && nt[2])
+  {
+    vtemp0 = nt[2][lp0 - 2].Multiplied(-1.);
+    vtemp0.Add(nt[2][lp0 - 1]);
+    vtemp0.Multiply(coef0);
+    vtemp1 = nt[1][lp1 - 2].Multiplied(-1.);
+    vtemp1.Add(nt[1][lp1 - 1]);
+    vtemp1.Multiply(coef1);
+    vtemp = vtemp0.Added(vtemp1);
+    vtemp.Multiply(0.5);
+    v[2].SetXYZ(vtemp);
+  }
+  ln1   = nk[1]->Length();
+  lp1   = ncpol[1]->Length();
+  coef0 = degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
+  coef1 = degree[1] / (nk[1]->Value(ln1) - nk[1]->Value(ln1 - 1));
+  if (nt[2] && nt[3])
+  {
+    vtemp0 = nt[2][0].Multiplied(-1.);
+    vtemp0.Add(nt[2][1]);
+    vtemp0.Multiply(coef0);
+    vtemp1 = nt[3][lp1 - 2].Multiplied(-1.);
+    vtemp1.Add(nt[3][lp1 - 1]);
+    vtemp1.Multiply(coef1);
+    vtemp = vtemp0.Added(vtemp1);
+    vtemp.Multiply(0.5);
+    v[3].SetXYZ(vtemp);
+  }
+
+  // On construit les poles de S1 par combinaison des poles des
+  // champs tangents, des poles des fonctions pq, des duv au coins
+  // selon la formule :
+  // S1(i,j) = pq[0](j)*ntpol[0](i) + pq[1](i)*ntpol[1](j)
+  //         + pq[2](j)*ntpol[2](i) + pq[3](i)*ntpol[3](j)
+  //         - pq[3](i)*pq[0](j)*v[0] - pq[0](j)*pq[1](i)*v[1]
+  //         - pq[1](i)*pq[2](j)*v[2] - pq[2](j)*pq[3](i)*v[3]
+  S1                              = new NCollection_HArray2<gp_Pnt>(1, ni, 1, nj);
+  NCollection_Array2<gp_Pnt>& ss1 = S1->ChangeArray2();
+  const gp_XYZ&               v0  = v[0].XYZ();
+  const gp_XYZ&               v1  = v[1].XYZ();
+  const gp_XYZ&               v2  = v[2].XYZ();
+  const gp_XYZ&               v3  = v[3].XYZ();
+
+  for (i = 1; i <= ni; i++)
+  {
+    double pq1 = 0, pq3 = 0;
+    if (nt[1])
+    {
+      pq1 = -pq[1]->Value(i);
+    }
+    if (nt[3])
+    {
+      pq3 = pq[3]->Value(i);
+    }
+    gp_XYZ t0, t2;
+    if (nt[0])
+    {
+      t0 = nt[0][i - 1];
+    }
+    if (nt[2])
+    {
+      t2 = nt[2][i - 1];
+    }
+    for (j = 1; j <= nj; j++)
+    {
+      double pq0 = 0, pq2 = 0;
+      if (nt[0])
+      {
+        pq0 = pq[0]->Value(j);
+      }
+      if (nt[2])
+      {
+        pq2 = -pq[2]->Value(j);
+      }
+      gp_XYZ t1, t3;
+      if (nt[1])
+      {
+        t1 = nt[1][j - 1];
+      }
+      if (nt[3])
+      {
+        t3 = nt[3][j - 1];
+      }
+
+      gp_XYZ tpolij(0., 0., 0.), temp;
+      if (nt[0])
+      {
+        temp = t0.Multiplied(pq0);
+        tpolij.Add(temp);
+      }
+      if (nt[1])
+      {
+        temp = t1.Multiplied(pq1);
+        tpolij.Add(temp);
+      }
+      if (nt[2])
+      {
+        temp = t2.Multiplied(pq2);
+        tpolij.Add(temp);
+      }
+      if (nt[3])
+      {
+        temp = t3.Multiplied(pq3);
+        tpolij.Add(temp);
+      }
+      if (nt[3] && nt[0])
+      {
+        temp = v0.Multiplied(-pq3 * pq0);
+        tpolij.Add(temp);
+      }
+      if (nt[0] && nt[1])
+      {
+        temp = v1.Multiplied(-pq0 * pq1);
+        tpolij.Add(temp);
+      }
+      if (nt[1] && nt[2])
+      {
+        temp = v2.Multiplied(-pq1 * pq2);
+        tpolij.Add(temp);
+      }
+      if (nt[2] && nt[3])
+      {
+        temp = v3.Multiplied(-pq2 * pq3);
+        tpolij.Add(temp);
+      }
+      ss1(i, j).SetXYZ(tpolij);
+    }
+  }
+
+  // Un petit menage
+  for (i = 0; i <= 3; i++)
+  {
+    delete[] nt[i];
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::PerformSurface()
+{
+  int                               ni = S0->ColLength(), nj = S0->RowLength(), i, j;
+  NCollection_Array2<gp_Pnt>        temp(1, ni, 1, nj);
+  const NCollection_Array2<gp_Pnt>& t0 = S0->Array2();
+  const NCollection_Array2<gp_Pnt>& t1 = S1->Array2();
+  for (i = 1; i <= ni; i++)
+  {
+    for (j = 1; j <= nj; j++)
+    {
+      temp(i, j).SetXYZ(t0(i, j).XYZ().Added(t1(i, j).XYZ()));
+    }
+  }
+  surf = new Geom_BSplineSurface(temp,
+                                 nk[0]->Array1(),
+                                 nk[1]->Array1(),
+                                 nm[0]->Array1(),
+                                 nm[1]->Array1(),
+                                 degree[0],
+                                 degree[1]);
+}
+
+//=================================================================================================
+
+bool GeomFill_ConstrainedFilling::CheckTgte(const int I)
+{
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  if (!bou->HasNormals())
+  {
+    return true;
+  }
+  // On prend 13 points le long du bord et on verifie que le triedre
+  // forme par la tangente a la courbe la normale et la tangente du
+  // peigne ne change pas d orientation.
+  double ll = 1. / 12., pmix = 0;
+  for (int iu = 0; iu < 13; iu++)
+  {
+    double uu = iu * ll;
+    gp_Pnt pbid;
+    gp_Vec tgte;
+    bou->D1(uu, pbid, tgte);
+    gp_Vec norm   = bou->Norm(uu);
+    gp_Vec vfield = tgalg[I]->Value(uu);
+    if (iu == 0)
+    {
+      pmix = vfield.Dot(tgte.Crossed(norm));
+    }
+    else
+    {
+      double pmixcur = vfield.Dot(tgte.Crossed(norm));
+      if (pmix * pmixcur < 0.)
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::MinTgte(const int I)
+{
+  if (!ptch->Bound(I)->HasNormals())
+  {
+    return;
+  }
+  double minmag = RealLast();
+  double ll     = 0.02;
+  for (int iu = 0; iu <= 30; iu++)
+  {
+    double uu   = 0.2 + iu * ll;
+    gp_Vec vv   = tgalg[I]->Value(uu);
+    double temp = vv.SquareMagnitude();
+    if (temp < minmag)
+    {
+      minmag = temp;
+    }
+  }
+  mig[I] = sqrt(minmag);
+}
+
+//=================================================================================================
+
+int GeomFill_ConstrainedFilling::Eval(const double W, const int Ord, double& Result) const
+{
+  double* res = &Result;
+  int     jmp = (3 * ctr[0]);
+  switch (Ord)
+  {
+    case 0:
+      if (ctr[0])
+      {
+        ptch->Bound(ibound[0])->Value(W).Coord(res[0], res[1], res[2]);
+      }
+      if (ctr[0] == 2)
+      {
+        tgalg[ibound[0]]->Value(W).Coord(res[3], res[4], res[5]);
+      }
+      if (ctr[1])
+      {
+        ptch->Bound(ibound[1])->Value(W).Coord(res[jmp], res[jmp + 1], res[jmp + 2]);
+      }
+      if (ctr[1] == 2)
+      {
+        tgalg[ibound[1]]->Value(W).Coord(res[jmp + 3], res[jmp + 4], res[jmp + 5]);
+      }
+      break;
+    case 1:
+      gp_Pnt pt;
+      gp_Vec vt;
+      if (ctr[0])
+      {
+        ptch->Bound(ibound[0])->D1(W, pt, vt);
+        vt.Coord(res[0], res[1], res[2]);
+      }
+      if (ctr[0] == 2)
+      {
+        tgalg[ibound[0]]->D1(W).Coord(res[3], res[4], res[5]);
+      }
+      if (ctr[1])
+      {
+        ptch->Bound(ibound[1])->D1(W, pt, vt);
+        vt.Coord(res[jmp], res[jmp + 1], res[jmp + 2]);
+      }
+      if (ctr[1] == 2)
+      {
+        tgalg[ibound[1]]->D1(W).Coord(res[jmp + 3], res[jmp + 4], res[jmp + 5]);
+      }
+      break;
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const int I)
+{
+  int    nbp = 30;
+  double uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
+  surf->Bounds(u1, u2, v1, v2);
+  bool enu = false;
+  switch (I)
+  {
+    case 0:
+      uu = ww = u1;
+      vv      = v1;
+      duu = dww = (u2 - u1) / nbp;
+      dvv       = 0.;
+      break;
+    case 1:
+      vv = ww = v1;
+      uu      = u2;
+      dvv = dww = (v2 - v1) / nbp;
+      duu       = 0.;
+      enu       = true;
+      break;
+    case 2:
+      uu = ww = u1;
+      vv      = v2;
+      duu = dww = (u2 - u1) / nbp;
+      dvv       = 0.;
+      break;
+    case 3:
+      vv = ww = v1;
+      uu      = u1;
+      dvv = dww = (v2 - v1) / nbp;
+      duu       = 0.;
+      enu       = true;
+      break;
+  }
+  gp_Pnt                         pbound;
+  gp_Vec                         vptch;
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int k = 0; k <= nbp; k++)
+  {
+    pbound = bou->Value(ww);
+    if (enu)
+    {
+      vptch = ptch->D1U(uu, vv);
+    }
+    else
+    {
+      vptch = ptch->D1V(uu, vv);
+    }
+    uu += duu;
+    vv += dvv;
+    ww += dww;
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
+{
+  if (tgalg[I].IsNull())
+  {
+    return;
+  }
+  gp_Pnt                         p1;
+  gp_Vec                         d1;
+  bool                           caplisse = false;
+  double                         maxang = 0., pmix = 0, pmixcur;
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int iu = 0; iu <= 30; iu++)
+  {
+    double uu = iu / 30.;
+    bou->D1(uu, p1, d1);
+    gp_Vec vtg   = tgalg[I]->Value(uu);
+    gp_Vec vnor  = bou->Norm(uu);
+    gp_Vec vcros = d1.Crossed(vnor);
+    vcros.Normalize();
+    if (iu == 0)
+    {
+      pmix = vtg.Dot(vcros);
+    }
+    else
+    {
+      pmixcur = vtg.Dot(vcros);
+      if (pmix * pmixcur < 0.)
+      {
+        caplisse = true;
+      }
+    }
+    if (vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15)
+    {
+      double alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
+      if (std::abs(alpha) > maxang)
+      {
+        maxang = std::abs(alpha);
+      }
+    }
+  }
+  std::cout << "KAlgo angle max sur bord " << I << " : " << maxang << '\n';
+  if (caplisse)
+  {
+    std::cout << "sur bord " << I << " le champ tangent change de cote!" << '\n';
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::CheckApprox(const int I)
+{
+  bool                           donor  = !tgalg[I].IsNull();
+  int                            nbp    = 30;
+  double                         maxang = 0., maxdist = 0.;
+  gp_Pnt                         pbound, papp, pbid;
+  gp_Vec                         vbound, vapp;
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int iu = 0; iu <= nbp; iu++)
+  {
+    double uu = iu;
+    uu /= nbp;
+    pbound = bou->Value(uu);
+    BSplCLib::D0(uu,
+                 0,
+                 degree[I % 2],
+                 false,
+                 ncpol[I]->Array1(),
+                 BSplCLib::NoWeights(),
+                 nk[I % 2]->Array1(),
+                 &nm[I % 2]->Array1(),
+                 papp);
+    if (donor)
+    {
+      BSplCLib::D0(uu,
+                   0,
+                   degree[I % 2],
+                   false,
+                   ntpol[I]->Array1(),
+                   BSplCLib::NoWeights(),
+                   nk[I % 2]->Array1(),
+                   &nm[I % 2]->Array1(),
+                   pbid);
+      vapp.SetXYZ(pbid.XYZ());
+      vbound = bou->Norm(uu);
+      if (vapp.Magnitude() > 1.e-15 && vbound.Magnitude() > 1.e-15)
+      {
+        double alpha = std::abs(M_PI / 2. - std::abs(vbound.Angle(vapp)));
+        if (std::abs(alpha) > maxang)
+        {
+          maxang = std::abs(alpha);
+        }
+      }
+    }
+    if (papp.Distance(pbound) > maxdist)
+    {
+      maxdist = papp.Distance(pbound);
+    }
+  }
+  std::cout << "Controle approx/contrainte sur bord " << I << " : " << '\n';
+  std::cout << "Distance max : " << maxdist << '\n';
+  if (donor)
+  {
+    maxang = maxang * 180. / M_PI;
+    std::cout << "Angle max    : " << maxang << " deg" << '\n';
+  }
+}
+
+//=================================================================================================
+
+void GeomFill_ConstrainedFilling::CheckResult(const int I)
+{
+  bool   donor  = !tgalg[I].IsNull();
+  double maxang = 0., maxdist = 0.;
+  double uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
+  surf->Bounds(u1, u2, v1, v2);
+  switch (I)
+  {
+    case 0:
+      uu = ww = u1;
+      vv      = v1;
+      duu = dww = (u2 - u1) / 30;
+      dvv       = 0.;
+      break;
+    case 1:
+      vv = ww = v1;
+      uu      = u2;
+      dvv = dww = (v2 - v1) / 30;
+      duu       = 0.;
+      break;
+    case 2:
+      uu = ww = u1;
+      vv      = v2;
+      duu = dww = (u2 - u1) / 30;
+      dvv       = 0.;
+      break;
+    case 3:
+      vv = ww = v1;
+      uu      = u1;
+      dvv = dww = (v2 - v1) / 30;
+      duu       = 0.;
+      break;
+  }
+  gp_Pnt                         pbound[31], pres[31];
+  gp_Vec                         vbound[31], vres[31];
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  int                            k;
+  for (k = 0; k <= 30; k++)
+  {
+    pbound[k] = bou->Value(ww);
+    if (!donor)
+    {
+      surf->D0(uu, vv, pres[k]);
+    }
+    else
+    {
+      vbound[k] = bou->Norm(ww);
+      gp_Vec V1, V2;
+      surf->D1(uu, vv, pres[k], V1, V2);
+      vres[k] = V1.Crossed(V2);
+      if (vres[k].Magnitude() > 1.e-15 && vbound[k].Magnitude() > 1.e-15)
+      {
+        double alpha = std::abs(vres[k].Angle(vbound[k]));
+        alpha        = std::min(alpha, std::abs(M_PI - alpha));
+        if (alpha > maxang)
+        {
+          maxang = alpha;
+        }
+      }
+    }
+    if (pres[k].Distance(pbound[k]) > maxdist)
+    {
+      maxdist = pres[k].Distance(pbound[k]);
+    }
+    uu += duu;
+    vv += dvv;
+    ww += dww;
+  }
+  std::cout << "Controle resultat/contrainte sur bord " << I << " : " << '\n';
+  std::cout << "Distance max : " << maxdist << '\n';
+  if (donor)
+  {
+    double angdeg = maxang * 180. / M_PI;
+    std::cout << "Angle max    : " << angdeg << " deg" << '\n';
+  }
+}

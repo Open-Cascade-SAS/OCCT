@@ -1,0 +1,48 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <AppParCurves_ConstraintCouple.hxx>
+
+AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple()
+    : myIndex(-1),
+      myConstraint(AppParCurves_NoConstraint)
+{
+}
+
+AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple(const int                     TheIndex,
+                                                             const AppParCurves_Constraint Cons)
+{
+  myIndex      = TheIndex;
+  myConstraint = Cons;
+}
+
+int AppParCurves_ConstraintCouple::Index() const
+{
+  return myIndex;
+}
+
+AppParCurves_Constraint AppParCurves_ConstraintCouple::Constraint() const
+{
+  return myConstraint;
+}
+
+void AppParCurves_ConstraintCouple::SetIndex(const int TheIndex)
+{
+  myIndex = TheIndex;
+}
+
+void AppParCurves_ConstraintCouple::SetConstraint(const AppParCurves_Constraint Cons)
+{
+  myConstraint = Cons;
+}

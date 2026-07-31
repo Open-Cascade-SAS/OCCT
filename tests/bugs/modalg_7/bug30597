@@ -1,0 +1,47 @@
+puts "================================================================================"
+puts "OCC30597: Result of BRepOffsetAPI_MakePipeShell doesn't match the given profiles"
+puts "================================================================================"
+puts ""
+
+restore [locate_data_file bug30597_compound.brep] a
+explode a
+
+explode a_1 v
+explode a_2
+explode a_3
+
+mksweep a_1
+addsweep a_2_1 a_1_1
+addsweep a_3_1 a_1_2
+
+buildsweep result
+
+checkprops result -s 0.880677
+
+explode result e
+
+explode a_2_1
+mkcurve c2 a_2_1_1
+cvalue c2 pi x2 y2 z2
+vertex v2 x2 y2 z2
+distmini d2 v2 result_2
+
+if {[dval d2_val] > 1.e-7} {
+   puts "Error: result is far from first profile"
+}
+
+explode a_3_1
+mkcurve c3 a_3_1_1
+cvalue c3 pi x3 y3 z3
+vertex v3 x3 y3 z3
+distmini d3 v3 result_3
+
+if {[dval d3_val] > 1.e-7} {
+   puts "Error: result is far from second profile"
+}
+
+smallview
+donly result a_2_1 a_3_1
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

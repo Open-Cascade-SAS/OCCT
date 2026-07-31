@@ -1,0 +1,27 @@
+set env(CSF_dataDefaults) [file dirname [info script]]/../data
+puts $env(CSF_dataDefaults)
+DT_ApplySeq result a data data1
+set b [explode a f]
+set b1 [explode result f]
+puts $b
+puts $b1
+set nb_surf 0
+set i 0
+for {set i 0} {$i < [llength $b]} {incr i} {
+    set t [lindex $b $i]
+    set t1 [lindex $b1 $i]
+    mksurface s$i $t
+    mksurface su$i $t1
+    set q [dump s$i]
+    set q1 [dump su$i] 
+    puts $q
+    puts $q1
+    if { [lindex $q 5] != [lindex $q1 5] } {
+	if { [lindex $q1 5] == "SurfaceOfRevolution" } {
+	    incr nb_surf
+	}
+    }
+}
+if { $nb_surf == 0 || $nb_revol != $nb_surf } {
+    puts "Error : $nb_revol faces should be converted instead of $nb_surf."
+}

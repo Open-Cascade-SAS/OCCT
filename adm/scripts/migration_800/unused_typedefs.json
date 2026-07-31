@@ -1,0 +1,815 @@
+{
+  "description": "Unused NCollection typedefs in OCCT. Use replacement field to update external code.",
+  "unused_typedefs": [
+    {
+      "name": "CDM_MetaDataLookUpTable",
+      "replacement": "NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>",
+      "file": "ApplicationFramework/TKCDF/CDM/CDM_MetaDataLookUpTable.hxx",
+      "start_line": 24,
+      "end_line": 25,
+      "content": "typedef NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>\n  CDM_MetaDataLookUpTable;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "TDF_AttributeIndexedMap",
+      "replacement": "NCollection_IndexedMap<occ::handle<TDF_Attribute>>",
+      "file": "ApplicationFramework/TKLCAF/TDF/TDF_AttributeIndexedMap.hxx",
+      "start_line": 22,
+      "end_line": 22,
+      "content": "typedef NCollection_IndexedMap<occ::handle<TDF_Attribute>> TDF_AttributeIndexedMap;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "StdObjMgt_TransientPersistentMap",
+      "replacement": "NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>",
+      "file": "ApplicationFramework/TKStdL/StdObjMgt/StdObjMgt_TransientPersistentMap.hxx",
+      "start_line": 22,
+      "end_line": 23,
+      "content": "typedef NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>\n  StdObjMgt_TransientPersistentMap;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "TObj_SequenceOfObject",
+      "replacement": "NCollection_Sequence<occ::handle<TObj_Object>>",
+      "file": "ApplicationFramework/TKTObj/TObj/TObj_SequenceOfObject.hxx",
+      "start_line": 25,
+      "end_line": 25,
+      "content": "typedef NCollection_Sequence<occ::handle<TObj_Object>> TObj_SequenceOfObject;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "XCAFDimTolObjects_DatumObjectSequence",
+      "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>",
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DatumObjectSequence.hxx",
+      "start_line": 22,
+      "end_line": 23,
+      "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>\n  XCAFDimTolObjects_DatumObjectSequence;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "XCAFDimTolObjects_DimensionObjectSequence",
+      "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>",
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DimensionObjectSequence.hxx",
+      "start_line": 22,
+      "end_line": 23,
+      "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>\n  XCAFDimTolObjects_DimensionObjectSequence;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "XCAFDimTolObjects_GeomToleranceObjectSequence",
+      "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>",
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_GeomToleranceObjectSequence.hxx",
+      "start_line": 22,
+      "end_line": 23,
+      "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>\n  XCAFDimTolObjects_GeomToleranceObjectSequence;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "XCAFDoc_GraphNodeSequence",
+      "replacement": "NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>",
+      "file": "DataExchange/TKXCAF/XCAFDoc/XCAFDoc_GraphNodeSequence.hxx",
+      "start_line": 22,
+      "end_line": 22,
+      "content": "typedef NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>> XCAFDoc_GraphNodeSequence;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "MoniTool_DataMapOfTimer",
+      "replacement": "NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>",
+      "file": "DataExchange/TKXSBase/MoniTool/MoniTool_DataMapOfTimer.hxx",
+      "start_line": 25,
+      "end_line": 26,
+      "content": "typedef NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>\n  MoniTool_DataMapOfTimer;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "ViewerTest_DoubleMapOfInteractiveAndName",
+      "replacement": "NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>",
+      "file": "Draw/TKViewerTest/ViewerTest/ViewerTest_DoubleMapOfInteractiveAndName.hxx",
+      "start_line": 25,
+      "end_line": 26,
+      "content": "typedef NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>\n  ViewerTest_DoubleMapOfInteractiveAndName;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "gp_TrsfNLerp",
+      "replacement": "NCollection_Lerp<gp_Trsf>",
+      "file": "FoundationClasses/TKMath/gp/gp_TrsfNLerp.hxx",
+      "start_line": 89,
+      "end_line": 89,
+      "content": "typedef NCollection_Lerp<gp_Trsf> gp_TrsfNLerp;",
+      "file_will_be_deleted": false
+    },
+    {
+      "name": "BOPDS_ListOfPaveBlock",
+      "replacement": "NCollection_List<occ::handle<BOPDS_PaveBlock>>",
+      "file": "ModelingAlgorithms/TKBO/BOPDS/BOPDS_ListOfPaveBlock.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "content": "typedef NCollection_List<occ::handle<BOPDS_PaveBlock>> BOPDS_ListOfPaveBlock;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Expr_Array1OfNamedUnknown",
+      "replacement": "NCollection_Array1<occ::handle<Expr_NamedUnknown>>",
+      "file": "ModelingAlgorithms/TKExpress/Expr/Expr_Array1OfNamedUnknown.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "content": "typedef NCollection_Array1<occ::handle<Expr_NamedUnknown>> Expr_Array1OfNamedUnknown;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "ShapeAnalysis_BoxBndTree",
+      "replacement": "NCollection_UBTree<int, Bnd_Box>",
+      "file": "ModelingAlgorithms/TKShHealing/ShapeAnalysis/ShapeAnalysis_BoxBndTree.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "content": "typedef NCollection_UBTree<int, Bnd_Box> ShapeAnalysis_BoxBndTree;",
+      "file_will_be_deleted": false
+    },
+    {
+      "name": "BRepClass3d_BndBoxTree",
+      "replacement": "NCollection_UBTree<int, Bnd_Box>",
+      "file": "ModelingAlgorithms/TKTopAlgo/BRepClass3d/BRepClass3d_BndBoxTree.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "content": "typedef NCollection_UBTree<int, Bnd_Box> BRepClass3d_BndBoxTree;",
+      "file_will_be_deleted": false
+    },
+    {
+      "name": "TopoDS_ListOfShape",
+      "replacement": "NCollection_List<TopoDS_Shape>",
+      "file": "ModelingData/TKBRep/TopoDS/TopoDS_ListOfShape.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "content": "typedef NCollection_List<TopoDS_Shape> TopoDS_ListOfShape;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Geom2dConvert_SequenceOfPPoint",
+      "replacement": "NCollection_Sequence<Geom2dConvert_PPoint>",
+      "file": "ModelingData/TKGeomBase/Geom2dConvert/Geom2dConvert_SequenceOfPPoint.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "content": "typedef NCollection_Sequence<Geom2dConvert_PPoint> Geom2dConvert_SequenceOfPPoint;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Graphic3d_MapOfAspectsToAspects",
+      "replacement": "NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_MapOfAspectsToAspects.hxx",
+      "start_line": 20,
+      "end_line": 21,
+      "content": "typedef NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>\n  Graphic3d_MapOfAspectsToAspects;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Graphic3d_MapOfStructure",
+      "replacement": "NCollection_Map<occ::handle<Graphic3d_Structure>>",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_MapOfStructure.hxx",
+      "start_line": 22,
+      "end_line": 22,
+      "content": "typedef NCollection_Map<occ::handle<Graphic3d_Structure>> Graphic3d_MapOfStructure;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "PrsMgr_ListOfPresentableObjects",
+      "replacement": "NCollection_List<occ::handle<PrsMgr_PresentableObject>>",
+      "file": "Visualization/TKV3d/PrsMgr/PrsMgr_ListOfPresentableObjects.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "content": "typedef NCollection_List<occ::handle<PrsMgr_PresentableObject>> PrsMgr_ListOfPresentableObjects;",
+      "file_will_be_deleted": false
+    },
+    {
+      "name": "PrsMgr_Presentations",
+      "replacement": "NCollection_Sequence<occ::handle<PrsMgr_Presentation>>",
+      "file": "Visualization/TKV3d/PrsMgr/PrsMgr_Presentations.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "content": "typedef NCollection_Sequence<occ::handle<PrsMgr_Presentation>> PrsMgr_Presentations;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Select3D_EntitySequence",
+      "replacement": "NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>",
+      "file": "Visualization/TKV3d/Select3D/Select3D_EntitySequence.hxx",
+      "start_line": 20,
+      "end_line": 20,
+      "content": "typedef NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>> Select3D_EntitySequence;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "Select3D_IndexedMapOfEntity",
+      "replacement": "NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>",
+      "file": "Visualization/TKV3d/Select3D/Select3D_IndexedMapOfEntity.hxx",
+      "start_line": 20,
+      "end_line": 20,
+      "content": "typedef NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>> Select3D_IndexedMapOfEntity;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "SelectMgr_IndexedMapOfOwner",
+      "replacement": "NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_IndexedMapOfOwner.hxx",
+      "start_line": 24,
+      "end_line": 25,
+      "content": "typedef NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>\n  SelectMgr_IndexedMapOfOwner;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "SelectMgr_SequenceOfOwner",
+      "replacement": "NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_SequenceOfOwner.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "content": "typedef NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> SelectMgr_SequenceOfOwner;",
+      "file_will_be_deleted": true
+    },
+    {
+      "name": "V3d_ListOfView",
+      "replacement": "NCollection_List<occ::handle<V3d_View>>",
+      "file": "Visualization/TKV3d/V3d/V3d_ListOfView.hxx",
+      "start_line": 20,
+      "end_line": 20,
+      "content": "typedef NCollection_List<occ::handle<V3d_View>> V3d_ListOfView;",
+      "file_will_be_deleted": true
+    }
+  ],
+  "files_to_delete": [
+    {
+      "file": "ApplicationFramework/TKCDF/CDM/CDM_MetaDataLookUpTable.hxx",
+      "typedefs": [
+        {
+          "name": "CDM_MetaDataLookUpTable",
+          "replacement": "NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>",
+          "content": "typedef NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>\n  CDM_MetaDataLookUpTable;"
+        }
+      ],
+      "includes": [
+        "#include <TCollection_ExtendedString.hxx>",
+        "#include <NCollection_DataMap.hxx>"
+      ],
+      "forward_decls": [
+        "class CDM_MetaData;"
+      ],
+      "includers": [
+        "ApplicationFramework/TKCDF/CDF/CDF_FWOSDriver.hxx",
+        "ApplicationFramework/TKCDF/CDM/CDM_Application.hxx",
+        "ApplicationFramework/TKCDF/CDM/CDM_Document.cxx",
+        "ApplicationFramework/TKCDF/CDM/CDM_MetaData.cxx",
+        "ApplicationFramework/TKCDF/CDM/CDM_MetaData.hxx",
+        "ApplicationFramework/TKCDF/PCDM/PCDM_ReferenceIterator.hxx"
+      ]
+    },
+    {
+      "file": "ApplicationFramework/TKLCAF/TDF/TDF_AttributeIndexedMap.hxx",
+      "typedefs": [
+        {
+          "name": "TDF_AttributeIndexedMap",
+          "replacement": "NCollection_IndexedMap<occ::handle<TDF_Attribute>>",
+          "content": "typedef NCollection_IndexedMap<occ::handle<TDF_Attribute>> TDF_AttributeIndexedMap;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_IndexedMap.hxx>"
+      ],
+      "forward_decls": [
+        "class TDF_Attribute;"
+      ],
+      "includers": [
+        "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.hxx",
+        "ApplicationFramework/TKLCAF/TDF/TDF_Attribute.hxx",
+        "ApplicationFramework/TKLCAF/TDF/TDF_Label.hxx",
+        "Draw/TKDCAF/DDF/DDF_Browser.hxx"
+      ]
+    },
+    {
+      "file": "ApplicationFramework/TKStdL/StdObjMgt/StdObjMgt_TransientPersistentMap.hxx",
+      "typedefs": [
+        {
+          "name": "StdObjMgt_TransientPersistentMap",
+          "replacement": "NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>",
+          "content": "typedef NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>\n  StdObjMgt_TransientPersistentMap;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_DataMap.hxx>"
+      ],
+      "forward_decls": [
+        "class Standard_Transient;",
+        "class StdObjMgt_Persistent;"
+      ],
+      "includers": [
+        "ApplicationFramework/TKStd/ShapePersistent/ShapePersistent_BRep.hxx",
+        "ApplicationFramework/TKStd/ShapePersistent/ShapePersistent_Geom.hxx",
+        "ApplicationFramework/TKStd/ShapePersistent/ShapePersistent_Geom_Curve.hxx",
+        "ApplicationFramework/TKStd/ShapePersistent/ShapePersistent_Poly.hxx",
+        "ApplicationFramework/TKStd/ShapePersistent/ShapePersistent_TopoDS.hxx",
+        "ApplicationFramework/TKStd/StdObject/StdObject_Location.hxx",
+        "ApplicationFramework/TKStd/StdPersistent/StdPersistent_TopLoc.hxx"
+      ]
+    },
+    {
+      "file": "ApplicationFramework/TKTObj/TObj/TObj_SequenceOfObject.hxx",
+      "typedefs": [
+        {
+          "name": "TObj_SequenceOfObject",
+          "replacement": "NCollection_Sequence<occ::handle<TObj_Object>>",
+          "content": "typedef NCollection_Sequence<occ::handle<TObj_Object>> TObj_SequenceOfObject;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>",
+        "#include <NCollection_HSequence.hxx>"
+      ],
+      "forward_decls": [
+        "class TObj_Object;"
+      ],
+      "includers": [
+        "ApplicationFramework/TKTObj/TObj/TObj_Object.hxx",
+        "ApplicationFramework/TKTObj/TObj/TObj_Persistence.hxx",
+        "ApplicationFramework/TKTObj/TObj/TObj_SequenceIterator.hxx",
+        "ApplicationFramework/TKTObj/TObj/TObj_TNameContainer.hxx"
+      ]
+    },
+    {
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DatumObjectSequence.hxx",
+      "typedefs": [
+        {
+          "name": "XCAFDimTolObjects_DatumObjectSequence",
+          "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>",
+          "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>\n  XCAFDimTolObjects_DatumObjectSequence;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class XCAFDimTolObjects_DatumObject;"
+      ],
+      "includers": [
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DatumObject.hxx",
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.cxx",
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.hxx"
+      ]
+    },
+    {
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DimensionObjectSequence.hxx",
+      "typedefs": [
+        {
+          "name": "XCAFDimTolObjects_DimensionObjectSequence",
+          "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>",
+          "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>\n  XCAFDimTolObjects_DimensionObjectSequence;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class XCAFDimTolObjects_DimensionObject;"
+      ],
+      "includers": [
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_DimensionObject.hxx",
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.cxx",
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.hxx"
+      ]
+    },
+    {
+      "file": "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_GeomToleranceObjectSequence.hxx",
+      "typedefs": [
+        {
+          "name": "XCAFDimTolObjects_GeomToleranceObjectSequence",
+          "replacement": "NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>",
+          "content": "typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>\n  XCAFDimTolObjects_GeomToleranceObjectSequence;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class XCAFDimTolObjects_GeomToleranceObject;"
+      ],
+      "includers": [
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.cxx",
+        "DataExchange/TKXCAF/XCAFDimTolObjects/XCAFDimTolObjects_Tool.hxx"
+      ]
+    },
+    {
+      "file": "DataExchange/TKXCAF/XCAFDoc/XCAFDoc_GraphNodeSequence.hxx",
+      "typedefs": [
+        {
+          "name": "XCAFDoc_GraphNodeSequence",
+          "replacement": "NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>",
+          "content": "typedef NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>> XCAFDoc_GraphNodeSequence;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class XCAFDoc_GraphNode;"
+      ],
+      "includers": [
+        "DataExchange/TKXCAF/XCAFDoc/XCAFDoc_GraphNode.hxx"
+      ]
+    },
+    {
+      "file": "DataExchange/TKXSBase/MoniTool/MoniTool_DataMapOfTimer.hxx",
+      "typedefs": [
+        {
+          "name": "MoniTool_DataMapOfTimer",
+          "replacement": "NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>",
+          "content": "typedef NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>\n  MoniTool_DataMapOfTimer;"
+        }
+      ],
+      "includes": [
+        "#include <Standard_CString.hxx>",
+        "#include <Standard_CStringHasher.hxx>",
+        "#include <NCollection_DataMap.hxx>"
+      ],
+      "forward_decls": [
+        "class MoniTool_Timer;"
+      ],
+      "includers": [
+        "DataExchange/TKXSBase/MoniTool/MoniTool_Timer.cxx",
+        "DataExchange/TKXSBase/MoniTool/MoniTool_Timer.hxx"
+      ]
+    },
+    {
+      "file": "Draw/TKViewerTest/ViewerTest/ViewerTest_DoubleMapOfInteractiveAndName.hxx",
+      "typedefs": [
+        {
+          "name": "ViewerTest_DoubleMapOfInteractiveAndName",
+          "replacement": "NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>",
+          "content": "typedef NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>\n  ViewerTest_DoubleMapOfInteractiveAndName;"
+        }
+      ],
+      "includes": [
+        "#include <Standard_Transient.hxx>",
+        "#include <TCollection_AsciiString.hxx>",
+        "#include <NCollection_DoubleMap.hxx>"
+      ],
+      "forward_decls": [
+        "class AIS_InteractiveObject;"
+      ],
+      "includers": [
+        "Draw/TKQADraw/QABugs/QABugs_1.cxx",
+        "Draw/TKQADraw/QABugs/QABugs_11.cxx",
+        "Draw/TKQADraw/QABugs/QABugs_16.cxx",
+        "Draw/TKViewerTest/ViewerTest/ViewerTest.cxx",
+        "Draw/TKViewerTest/ViewerTest/ViewerTest_ObjectCommands.cxx",
+        "Draw/TKViewerTest/ViewerTest/ViewerTest_OpenGlCommands.cxx",
+        "Draw/TKViewerTest/ViewerTest/ViewerTest_RelationCommands.cxx",
+        "Draw/TKViewerTest/ViewerTest/ViewerTest_ViewerCommands.cxx"
+      ]
+    },
+    {
+      "file": "ModelingAlgorithms/TKBO/BOPDS/BOPDS_ListOfPaveBlock.hxx",
+      "typedefs": [
+        {
+          "name": "BOPDS_ListOfPaveBlock",
+          "replacement": "NCollection_List<occ::handle<BOPDS_PaveBlock>>",
+          "content": "typedef NCollection_List<occ::handle<BOPDS_PaveBlock>> BOPDS_ListOfPaveBlock;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_List.hxx>",
+        "#include <Standard_Handle.hxx>"
+      ],
+      "forward_decls": [
+        "class BOPDS_PaveBlock;"
+      ],
+      "includers": [
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_Builder_1.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_PaveFiller.hxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_PaveFiller_10.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_PaveFiller_6.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_PaveFiller_7.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_PaveFiller_9.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_Section.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_Tools.cxx",
+        "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_Tools.hxx",
+        "ModelingAlgorithms/TKBO/BOPDS/BOPDS_CommonBlock.hxx",
+        "ModelingAlgorithms/TKBO/BOPDS/BOPDS_Curve.hxx",
+        "ModelingAlgorithms/TKBO/BOPDS/BOPDS_DS.hxx",
+        "ModelingAlgorithms/TKBO/BOPDS/BOPDS_PaveBlock.hxx",
+        "ModelingAlgorithms/TKFeat/BRepFeat/BRepFeat_Builder.cxx"
+      ]
+    },
+    {
+      "file": "ModelingAlgorithms/TKExpress/Expr/Expr_Array1OfNamedUnknown.hxx",
+      "typedefs": [
+        {
+          "name": "Expr_Array1OfNamedUnknown",
+          "replacement": "NCollection_Array1<occ::handle<Expr_NamedUnknown>>",
+          "content": "typedef NCollection_Array1<occ::handle<Expr_NamedUnknown>> Expr_Array1OfNamedUnknown;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Array1.hxx>"
+      ],
+      "forward_decls": [
+        "class Expr_NamedUnknown;"
+      ],
+      "includers": [
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Absolute.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArcCosine.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArcSine.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArcTangent.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArgCosh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArgSinh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_ArgTanh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_BinaryFunction.cxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_BinaryFunction.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Cosh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Cosine.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Difference.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Division.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Exponential.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Exponentiate.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_FunctionDerivative.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_GeneralExpression.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_GeneralFunction.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_LogOf10.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_LogOfe.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_NamedConstant.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_NamedFunction.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_NamedUnknown.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_NumericValue.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_PolyFunction.cxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_PolyFunction.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Product.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Sign.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Sine.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Sinh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Square.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_SquareRoot.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Sum.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Tangent.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_Tanh.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_UnaryFunction.cxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_UnaryFunction.hxx",
+        "ModelingAlgorithms/TKExpress/Expr/Expr_UnaryMinus.hxx",
+        "ModelingAlgorithms/TKExpress/ExprIntrp/ExprIntrp_yaccintrf.cxx"
+      ]
+    },
+    {
+      "file": "ModelingData/TKBRep/TopoDS/TopoDS_ListOfShape.hxx",
+      "typedefs": [
+        {
+          "name": "TopoDS_ListOfShape",
+          "replacement": "NCollection_List<TopoDS_Shape>",
+          "content": "typedef NCollection_List<TopoDS_Shape> TopoDS_ListOfShape;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_List.hxx>"
+      ],
+      "forward_decls": [
+        "class TopoDS_Shape;"
+      ],
+      "includers": [
+        "ModelingData/TKBRep/TopoDS/TopoDS_Builder.cxx",
+        "ModelingData/TKBRep/TopoDS/TopoDS_Iterator.hxx",
+        "ModelingData/TKBRep/TopoDS/TopoDS_TShape.hxx"
+      ]
+    },
+    {
+      "file": "ModelingData/TKGeomBase/Geom2dConvert/Geom2dConvert_SequenceOfPPoint.hxx",
+      "typedefs": [
+        {
+          "name": "Geom2dConvert_SequenceOfPPoint",
+          "replacement": "NCollection_Sequence<Geom2dConvert_PPoint>",
+          "content": "typedef NCollection_Sequence<Geom2dConvert_PPoint> Geom2dConvert_SequenceOfPPoint;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class Geom2dConvert_PPoint;"
+      ],
+      "includers": [
+        "ModelingData/TKGeomBase/Geom2dConvert/Geom2dConvert_ApproxArcsSegments.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_MapOfAspectsToAspects.hxx",
+      "typedefs": [
+        {
+          "name": "Graphic3d_MapOfAspectsToAspects",
+          "replacement": "NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>",
+          "content": "typedef NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>\n  Graphic3d_MapOfAspectsToAspects;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_DataMap.hxx>"
+      ],
+      "forward_decls": [
+        "class Graphic3d_Aspects;"
+      ],
+      "includers": [
+        "Visualization/TKService/Graphic3d/Graphic3d_Group.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_MapOfStructure.hxx",
+      "typedefs": [
+        {
+          "name": "Graphic3d_MapOfStructure",
+          "replacement": "NCollection_Map<occ::handle<Graphic3d_Structure>>",
+          "content": "typedef NCollection_Map<occ::handle<Graphic3d_Structure>> Graphic3d_MapOfStructure;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Map.hxx>"
+      ],
+      "forward_decls": [
+        "class Graphic3d_Structure;"
+      ],
+      "includers": [
+        "Visualization/TKService/Graphic3d/Graphic3d_CView.cxx",
+        "Visualization/TKService/Graphic3d/Graphic3d_Structure.cxx",
+        "Visualization/TKService/Graphic3d/Graphic3d_Structure.hxx",
+        "Visualization/TKService/Graphic3d/Graphic3d_StructureManager.cxx",
+        "Visualization/TKService/Graphic3d/Graphic3d_StructureManager.hxx",
+        "Visualization/TKV3d/V3d/V3d_View.cxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/PrsMgr/PrsMgr_Presentations.hxx",
+      "typedefs": [
+        {
+          "name": "PrsMgr_Presentations",
+          "replacement": "NCollection_Sequence<occ::handle<PrsMgr_Presentation>>",
+          "content": "typedef NCollection_Sequence<occ::handle<PrsMgr_Presentation>> PrsMgr_Presentations;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class PrsMgr_Presentation;"
+      ],
+      "includers": [
+        "Visualization/TKV3d/PrsMgr/PrsMgr_PresentableObject.hxx",
+        "Visualization/TKV3d/PrsMgr/PrsMgr_PresentationManager.cxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/Select3D/Select3D_EntitySequence.hxx",
+      "typedefs": [
+        {
+          "name": "Select3D_EntitySequence",
+          "replacement": "NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>",
+          "content": "typedef NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>> Select3D_EntitySequence;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class Select3D_SensitiveEntity;"
+      ],
+      "includers": [
+        "Visualization/TKV3d/Select3D/Select3D_SensitiveGroup.hxx",
+        "Visualization/TKV3d/StdSelect/StdSelect_BRepSelectionTool.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/Select3D/Select3D_IndexedMapOfEntity.hxx",
+      "typedefs": [
+        {
+          "name": "Select3D_IndexedMapOfEntity",
+          "replacement": "NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>",
+          "content": "typedef NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>> Select3D_IndexedMapOfEntity;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_IndexedMap.hxx>"
+      ],
+      "forward_decls": [
+        "class Select3D_SensitiveEntity;"
+      ],
+      "includers": [
+        "Visualization/TKV3d/Select3D/Select3D_SensitiveGroup.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_IndexedMapOfOwner.hxx",
+      "typedefs": [
+        {
+          "name": "SelectMgr_IndexedMapOfOwner",
+          "replacement": "NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>",
+          "content": "typedef NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>\n  SelectMgr_IndexedMapOfOwner;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_IndexedMap.hxx>",
+        "#include <NCollection_Shared.hxx>"
+      ],
+      "forward_decls": [
+        "class SelectMgr_EntityOwner;"
+      ],
+      "includers": [
+        "Visualization/TKV3d/AIS/AIS_InteractiveContext.hxx",
+        "Visualization/TKV3d/SelectMgr/SelectMgr_SelectableObject.cxx",
+        "Visualization/TKV3d/SelectMgr/SelectMgr_SelectableObject.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_SequenceOfOwner.hxx",
+      "typedefs": [
+        {
+          "name": "SelectMgr_SequenceOfOwner",
+          "replacement": "NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>",
+          "content": "typedef NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> SelectMgr_SequenceOfOwner;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_Sequence.hxx>"
+      ],
+      "forward_decls": [
+        "class SelectMgr_EntityOwner;"
+      ],
+      "includers": [
+        "Visualization/TKMeshVS/MeshVS/MeshVS_Mesh.cxx",
+        "Visualization/TKMeshVS/MeshVS/MeshVS_Mesh.hxx",
+        "Visualization/TKV3d/AIS/AIS_Manipulator.cxx",
+        "Visualization/TKV3d/AIS/AIS_ViewCube.cxx",
+        "Visualization/TKV3d/SelectMgr/SelectMgr_SelectableObject.hxx"
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/V3d/V3d_ListOfView.hxx",
+      "typedefs": [
+        {
+          "name": "V3d_ListOfView",
+          "replacement": "NCollection_List<occ::handle<V3d_View>>",
+          "content": "typedef NCollection_List<occ::handle<V3d_View>> V3d_ListOfView;"
+        }
+      ],
+      "includes": [
+        "#include <NCollection_List.hxx>"
+      ],
+      "forward_decls": [
+        "class V3d_View;"
+      ],
+      "includers": [
+        "Visualization/TKV3d/V3d/V3d_Viewer.hxx"
+      ]
+    }
+  ],
+  "files_to_modify": [
+    {
+      "file": "FoundationClasses/TKMath/gp/gp_TrsfNLerp.hxx",
+      "typedefs": [
+        {
+          "name": "gp_TrsfNLerp",
+          "replacement": "NCollection_Lerp<gp_Trsf>",
+          "start_line": 89,
+          "end_line": 89,
+          "content": "typedef NCollection_Lerp<gp_Trsf> gp_TrsfNLerp;"
+        }
+      ]
+    },
+    {
+      "file": "ModelingAlgorithms/TKShHealing/ShapeAnalysis/ShapeAnalysis_BoxBndTree.hxx",
+      "typedefs": [
+        {
+          "name": "ShapeAnalysis_BoxBndTree",
+          "replacement": "NCollection_UBTree<int, Bnd_Box>",
+          "start_line": 33,
+          "end_line": 33,
+          "content": "typedef NCollection_UBTree<int, Bnd_Box> ShapeAnalysis_BoxBndTree;"
+        }
+      ]
+    },
+    {
+      "file": "ModelingAlgorithms/TKTopAlgo/BRepClass3d/BRepClass3d_BndBoxTree.hxx",
+      "typedefs": [
+        {
+          "name": "BRepClass3d_BndBoxTree",
+          "replacement": "NCollection_UBTree<int, Bnd_Box>",
+          "start_line": 31,
+          "end_line": 31,
+          "content": "typedef NCollection_UBTree<int, Bnd_Box> BRepClass3d_BndBoxTree;"
+        }
+      ]
+    },
+    {
+      "file": "Visualization/TKV3d/PrsMgr/PrsMgr_ListOfPresentableObjects.hxx",
+      "typedefs": [
+        {
+          "name": "PrsMgr_ListOfPresentableObjects",
+          "replacement": "NCollection_List<occ::handle<PrsMgr_PresentableObject>>",
+          "start_line": 24,
+          "end_line": 24,
+          "content": "typedef NCollection_List<occ::handle<PrsMgr_PresentableObject>> PrsMgr_ListOfPresentableObjects;"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

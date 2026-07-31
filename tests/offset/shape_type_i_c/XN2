@@ -1,0 +1,10 @@
+restore [locate_data_file bug28163_merged_input_trim5.brep] s
+
+OFFSETSHAPE 4 {} $calcul $type
+
+checkprops result -v 220952 -s 26863.2
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 12 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,15 @@
+puts "==========================================================="
+puts "0031402: Geom_BSplineSurface::Segment produces wrong result"
+puts "==========================================================="
+puts ""
+
+restore [locate_data_file bug31402.brep] face
+
+mksurface s face
+segsur s 0.0, 1.0, 0.49999999999999988898, 0.66666666666666662966
+bounds s u1 u2 v1 v2
+
+checkreal "U1" [dval u1] 0 0.001 0.0001
+checkreal "U2" [dval u2] 1 0.001 0.0001
+checkreal "V1" [dval v1] 0.5 0.001 0.0001
+checkreal "V2" [dval v2] 0.66666667 0.001 0.0001

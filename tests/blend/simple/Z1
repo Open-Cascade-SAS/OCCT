@@ -1,0 +1,14 @@
+# Original bug : usa60109
+# Date : 30mar98
+
+pcylinder c1 10 20
+pcylinder c2 5 20
+ttranslate c2 5 0 20
+
+bfuse f c1 c2
+
+explode c1 e
+
+blend result f 1 c1_3
+
+checkprops result -s 2485.86

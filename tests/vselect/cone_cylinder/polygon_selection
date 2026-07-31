@@ -1,0 +1,72 @@
+puts "================================="
+puts "0032281: Visualization - add Select3D_SensitiveCylinder"
+puts "Tests polygon selection of Select3D_SensitiveCylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+pcylinder c1 10 20
+pcone c2 10 0 20
+pcone c3 10 5 10
+ttranslate c1 25 25 0
+ttranslate c2 -25 25 0
+vdisplay -dispmode 1 c1 c2 c3
+vfit
+
+vselect 124 93 234 24 394 85 539 125 542 346 329 351 123 335
+if { ![string match "*Selected*" [vstate c1]] ||
+     ![string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: all shapes should be selected" }
+vselect 124 93 234 24 394 85 539 125 542 346 329 351 123 335 -allowoverlap
+if { ![string match "*Selected*" [vstate c1]] ||
+     ![string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: all shapes should be selected" }
+vselect 397 223 401 161 431 142 468 135 504 145 531 164 533 191 531 267 533 301 509 314 475 327 442 323 406 313 396 288
+if { ![string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]]} { puts "Error: only cylinder c1 should be selected" }
+vselect 176 143 242 39 316 147 308 171 299 180 284 187 266 196 245 196 222 196 200 187 188 182 179 171 172 154
+if { [string match "*Selected*" [vstate c1]] ||
+     ![string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]]} { puts "Error: only cone c2 should be selected" }
+vselect 179 272 217 214 242 207 271 216 279 223 282 233 311 274 311 287 303 304 283 315 247 323 221 321 196 314 184 304 177 292 172 279
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: only cone c3 should be selected" }
+vtop
+vfit
+vselect 183 124 281 46 423 115 295 207 -allowoverlap 1
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]] } { puts "Error: all shapes should be unselected" }
+vselect 7 10 87 2 145 16 189 60 380 257 396 317 381 356 360 390 301 396 241 383 195 338 2 133 2 103 3 57
+if { [string match "*Selected*" [vstate c1]] ||
+     ![string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: only cones c2 and c3 should be selected" }
+vselect 410 142 465 149 445 205
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]] } { puts "Error: all shapes should be unselected" }
+vselect 410 142 465 149 445 205 -allowoverlap 1
+if { ![string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]]} { puts "Error: only cylinder c1 should be selected" }
+vselect 261 306 297 275 325 320 -allowoverlap 1
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: only cone c3 should be selected" }
+vright
+vfit
+vselect 0 332 65 198 201 198 269 331 260 358 15 350
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: only cone c3 should be selected" }
+vselect 50 376 85 156 163 155 208 381 -allowoverlap 1 
+if { [string match "*Selected*" [vstate c1]] ||
+     [string match "*Selected*" [vstate c2]] ||
+     ![string match "*Selected*" [vstate c3]]} { puts "Error: only cone c3 should be selected" }
+vselect 318 172 599 191 599 236 322 242 -allowoverlap 1
+if { ![string match "*Selected*" [vstate c1]] ||
+     ![string match "*Selected*" [vstate c2]] ||
+     [string match "*Selected*" [vstate c3]]} { puts "Error: cylinder c1 and cone c2 should be selected" }

@@ -1,0 +1,13 @@
+#box s1 0 0 0 10 10 10
+#pcylinder s2 3 4 90
+#trotate s2 0 0 0 0 0 1 90
+#ttranslate s2 5 1.5 10
+#fuse s s1 s2
+#save s C5678.draw 
+
+restore [locate_data_file CFI_c5678fih.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 1*SCALE1 s_14
+
+checkprops result -s 64113.3

@@ -1,0 +1,42 @@
+puts "========"
+puts "CR27534"
+puts "========"
+puts ""
+####################################################################
+## [Regression to 6.9.1]: Infinite loop in Curve on Surface projection algorithm
+####################################################################
+
+# This test produces different results on windows and linux.
+# Windows result is unstable. Linux result is used as reference.
+puts "TODO ?OCC29268 Windows: The length of result shape is"
+
+# Prepare initial data
+sphere s 0 0 0 10
+circle c 0 0 0 0 0 1 10
+
+# Trim curve
+trim c c 0 pi
+
+# Convert geometry to topology
+mkface f s
+mkedge e c
+
+# Convert to splines
+nurbsconvert f f
+nurbsconvert e e
+
+# Switch back to geometry
+mksurface s f
+mkcurve c e
+
+# Build projection
+project c2d c s -t 0.2
+
+# Length check
+checklength c2d -l 3.1415926535897931
+
+# Visual Check
+v2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

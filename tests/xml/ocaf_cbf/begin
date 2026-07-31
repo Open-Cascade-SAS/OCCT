@@ -1,0 +1,10 @@
+set FileSuffix "cbf"
+
+# Create a new document and set UndoLimit
+NewDocument D BinOcaf
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "ocaf_cbf"

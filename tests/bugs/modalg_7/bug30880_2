@@ -1,0 +1,10 @@
+puts "========"
+puts "0030880: Bug in BRepExtrema_ExtCF"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30880_face.brep] f
+point p2d -0.0034857302428251678 0.016350559703980902
+if {![regexp "OUT" [b2dclassifx f p2d -tol 1.e-7]]} {
+  puts "Error: Incorrect classification of the point"
+}

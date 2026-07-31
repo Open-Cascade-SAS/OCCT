@@ -1,0 +1,14 @@
+puts "========"
+puts "0026558: Failing to build isoline for offset surface"
+puts "========"
+puts ""
+
+restore [locate_data_file bug26558_s.brep] s
+
+mksurface sur s
+offset o sur -0.5
+uiso icur o 0
+
+smallview
+fit   
+checkview -screenshot -2d -path ${imagedir}/${test_image}-3d.png

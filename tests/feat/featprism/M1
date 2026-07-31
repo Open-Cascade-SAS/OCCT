@@ -1,0 +1,16 @@
+# Original bug : ger50084
+# Date : 15 Sept 98
+
+restore [locate_data_file CTO900_ger50084c.rle] base
+restore [locate_data_file ger50084_face.rle] wire
+
+## contour est un wire -> on en fait une face
+mkplane cont wire
+
+explode base face
+copy base_7 funtil
+
+featprism base cont cont 0 0 1 1 1
+featperform prism result funtil
+
+checkprops result -s 1135.18

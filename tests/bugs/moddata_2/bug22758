@@ -1,0 +1,62 @@
+puts "========================"
+puts "OCC22758"
+puts "========================"
+puts ""
+#######################################################################
+# Problem in BRepExtrema_DistShapeShape
+#
+# This script tries to reproduce the bug in BRepExtrema_DistanceSS class reported
+# by Rob Bacnrach on OCCT Forum: http://www.opencascade.org/org/forum/thread_23040
+# (when first shape is edge and second is vertex, the points are returned
+# for the solutions are swapped)
+#
+#######################################################################
+
+set BugNumber OCC22758
+
+bsplinecurve c1 2   2 0 3 1 3       0 2 0 1  1 1 0 1  2 2 0 1
+mkedge e c1
+vertex v 0 0 1
+
+distmini r e v
+
+set status 0
+# result should contain one edge, starting on e and ending on v
+#if { [llength $res] != 2 } {
+#    puts "Error: result has structure different from expected: $res"
+#    set status 1
+#}
+
+# get start and end vertices -- these should be solutions on e1 and e2
+set sol [explode r v]
+
+# check distances in correct order
+distmini d1 [lindex $sol 0] e
+distmini d2 [lindex $sol 1] v
+set d1 [dval d1_val]
+set d2 [dval d2_val]
+puts "Distances from solutions to relevant objects: $d1, $d2"
+if { $d1 > 1e-7 || $d2 > 1e-7 } {
+    puts "Error: distances are non-zero!"
+    set status 1
+}
+
+# check distances in swapped order
+distmini d1 [lindex $sol 0] v
+distmini d2 [lindex $sol 1] e
+set d1 [dval d1_val]
+set d2 [dval d2_val]
+puts "Distances from solutions to swapped objects: $d1, $d2"
+if { $d1 < 0.1 || $d2 < 0.1 } {
+    puts "Error: swapped distances are zero, i.e. solutions are swapped!"
+    set status 1
+}
+
+# Resume
+puts ""
+if { ${status} == 1 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

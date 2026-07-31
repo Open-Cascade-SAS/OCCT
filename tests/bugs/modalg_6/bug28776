@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC28776"
+puts "========"
+puts ""
+####################################################################
+# Extend the field BOPAlgo_Builder::myOrigins so that the shape could have multiple origins
+####################################################################
+
+box b1 10 10 10
+box b2 10 10 10
+box b3 10 10 10
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+bfillds
+bbuild r
+
+explode r v
+boporigin r_1
+checknbshapes r_1_or -vertex 3
+
+explode r e
+boporigin r_1
+checknbshapes r_1_or -edge 3
+
+explode r f
+boporigin r_1
+checknbshapes r_1_or -face 3
+
+explode r so
+boporigin r_1
+checknbshapes r_1_or -solid 3
+

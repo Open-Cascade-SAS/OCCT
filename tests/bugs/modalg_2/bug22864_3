@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC22864"
+puts "============"
+puts ""
+##############################################################################################
+# The algorithm BiTgte_Blend obtains instable results
+##############################################################################################
+
+set BugNumber OCC22864
+
+sphere s1 10
+sphere s2 10
+mkface f1 s1
+mkface f2 s2
+scalexyz f1 f1 2 2 1
+scalexyz f2 f2 0.5 0.5 2
+compound f1 f2 s
+
+brollingball result s 2. @ f1 f2
+
+checkshape result
+checknbshapes result -vertex 6 -edge 11 -wire 5 -face 5 -shell 1
+checkprops result -s 3750.55
+checkview -display result -2d -path ${imagedir}/${test_image}.png

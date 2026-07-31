@@ -1,0 +1,25 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
+
+puts "========================"
+puts " OCC420 "
+puts "PRO12473"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO909_objects.brep] a 
+checkshape a
+
+restore [locate_data_file CTO909_tool_4.brep] b 
+checkshape b
+
+bsection sec a b
+puts [checksection sec]
+checkshape sec
+explode a so
+renamevar a_1 a
+
+bcut result a b
+
+checkprops result -s 135.092
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

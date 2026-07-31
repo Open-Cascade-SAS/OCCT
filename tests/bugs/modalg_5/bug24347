@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24347"
+puts "============"
+puts ""
+###########################################################
+# Problem by tolerance of the distance of Face and Vertex
+###########################################################
+
+pload XDE
+set checkvalue 2.72742879238428e-14
+
+restore [locate_data_file bug24347_face.brep] f
+vertex v 34.265509314637 0.1 0.73361964922719
+
+settolerance f 4.e-6
+distmini d1 f v
+
+regexp {([-0-9.+eE]+)$} [dump d1_val] full distvalue
+if { $distvalue != $checkvalue } {
+  puts "Error: distance is incorrect"
+} else {
+  puts "OK: distance is correct"
+}

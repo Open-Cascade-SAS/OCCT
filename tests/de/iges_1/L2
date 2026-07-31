@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename JAP0005.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 274  ( 1846 )  Summary  = 274  ( 1848 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1041  ( 1041 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1041  ( 1041 )   FreeWire = 90  ( 90 ) 
+TOLERANCE   : MaxTol   =     0.90877121  (   0.9087712052 )  AvgTol   =   0.01342759474  (   0.01342779368 )
+LABELS      : N0Labels = 1571  ( 1571 )  N1Labels = 80  ( 4094 )  N2Labels = 0  ( 0 )   TotalLabels = 1651  ( 5665 )   NameLabels = 1571  ( 2173 )   ColorLabels = 1561  ( 5665 )   LayerLabels = 1525  ( 5665 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = GREEN MAGENTA RED YELLOW  ( GREEN MAGENTA RED YELLOW )
+NLAYERS     : NLayers  = 8  ( 8 )
+LAYERS      : Layers   = 1 10 100 20 30 40 50 60  ( 1 10 100 20 30 40 50 60 )
+
+}

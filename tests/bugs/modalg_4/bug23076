@@ -1,0 +1,21 @@
+puts "========================"
+puts "OCC23076"
+puts "========================"
+puts ""
+########################################################################
+## Empty result done by intersection algorithm for a curve and a surface 
+########################################################################
+
+set BugNumber OCC23076
+
+restore [locate_data_file bug23076_c1.draw] c
+restore [locate_data_file bug23076_s2.draw] s
+intersect i c s
+set info [directory]
+set nb [regexp -all {i_[-0-9.+eE]+} $info]
+if { $nb != 26 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+

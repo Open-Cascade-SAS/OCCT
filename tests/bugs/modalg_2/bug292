@@ -1,0 +1,24 @@
+
+puts "========================"
+puts " OCC292 "
+puts "========================"
+puts ""
+#################################################################
+## Attached face looks as unclosed but command "checkshape" concludes that it is valid.
+## In spite of that, mesh for shading is not being created on this face.
+#################################################################
+
+restore [locate_data_file OCC292.brep] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+
+isos result 0
+triangles result
+
+checktrinfo result -tri 26 -nod 20
+checkprops result -s 1.3135 
+checkview -display result -3d -path ${imagedir}/${test_image}.png

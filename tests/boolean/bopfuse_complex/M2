@@ -1,0 +1,20 @@
+## pro15946
+puts "PRO15946"
+puts "Fuse"
+puts ""
+restore [locate_data_file pro15946c.rle] c
+restore [locate_data_file pro15946d.rle] d
+
+explode c so
+
+fsameparameter c_3
+fsameparameter d
+
+maxtolerance c_3
+maxtolerance d
+
+bop c_3 d
+bopfuse result
+
+checkprops result -s 5194.93
+checkview -display result -2d -otherwise { c_3 d } -s -path ${imagedir}/${test_image}.png

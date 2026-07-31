@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC20866"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakePipeShell fails on sections having different form
+#######################################################################
+
+set BugNumber OCC20866
+
+restore [locate_data_file bug20866_V_path_Eo_Co.brep] spine 
+
+restore [locate_data_file bug20866_Compound_sections.brep] profile 
+explode profile
+
+mksweep spine
+addsweep profile_1
+addsweep profile_2
+addsweep profile_3
+addsweep profile_4
+addsweep profile_5
+addsweep profile_6
+addsweep profile_7
+
+if [catch { buildsweep result } ] {
+  puts "Faulty ${BugNumber} : buildsweep is wrong"
+} else {
+
+    checkprops result -s 1.94998e+06
+
+    checknbshapes result -vertex 161 -edge 299 -wire 138 -face 138 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 737
+}
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

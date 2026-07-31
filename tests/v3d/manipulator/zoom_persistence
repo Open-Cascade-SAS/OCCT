@@ -1,0 +1,87 @@
+puts "==============================================="
+puts "AIS_Manipulator - check zoom persistence option"
+puts "==============================================="
+
+pload MODELING VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+set anImage5 $imagedir/${casename}_5.png
+set anImage6 $imagedir/${casename}_6.png
+
+# -------------------------------------
+# create manipulated and helper objects
+# -------------------------------------
+
+box b1 0  0 0 20 20 20
+box b2 80 0 0 20 20 20
+vdisplay b1
+vdisplay b2
+vtrihedron tri
+vsetdispmode 1
+vaxo
+vfit
+
+# --------------------------------------------------------
+# create and test non-zoom persistent manipulator (test 1)
+# --------------------------------------------------------
+
+vmanipulator m1 -attach b1 -adjustPosition 1 -adjustSize 1 -enableModes 1 -zoomable 1
+
+set mouse_pick_1 {80 133}
+set mouse_pick_2 {29 103}
+set mouse_pick_3 {29 103}
+set mouse_drag_3 {121 126}
+
+# pick at default zoom
+vmoveto 0 0
+vmoveto {*}$mouse_pick_1
+vdump $anImage1
+
+# pick at changed zoom
+vzoom 1.5
+vmoveto 0 0
+vmoveto {*}$mouse_pick_2
+vdump $anImage2
+
+# drag object
+vselect {*}$mouse_pick_3
+vmanipulator m1 -startTransform {*}$mouse_pick_3
+vmanipulator m1 -transform {*}$mouse_drag_3
+vmanipulator m1 -stopTransform
+vselect 0 0
+vdump $anImage3
+
+# ----------------------------------------------------
+# create and test zoom persistent manipulator (test 2)
+# ----------------------------------------------------
+
+vfit
+
+vmanipulator m2 -attach b2 -adjustPosition 1 -adjustSize 0 -enableModes 1 -zoomable 0 -size 40
+
+set mouse_pick_1 {340 282}
+set mouse_pick_2 {277 245}
+set mouse_pick_3 {277 245}
+set mouse_drag_3 {210 210}
+
+# pick at default zoom
+vmoveto 0 0
+vmoveto {*}$mouse_pick_1
+vdump $anImage4
+
+# pick at changed zoom
+vzoom 0.5
+vmoveto 0 0
+vmoveto {*}$mouse_pick_2
+vdump $anImage5
+
+# drag object
+vselect {*}$mouse_pick_3
+vmanipulator m2 -startTransform {*}$mouse_pick_3
+vmanipulator m2 -transform {*}$mouse_drag_3
+vmanipulator m2 -stopTransform
+vselect 0 0
+vdump $anImage6

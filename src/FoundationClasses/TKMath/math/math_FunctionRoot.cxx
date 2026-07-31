@@ -1,0 +1,136 @@
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// #ifndef OCCT_DEBUG
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#define No_Standard_DimensionError
+
+// #endif
+
+#include <math_FunctionRoot.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_FunctionWithDerivative.hxx>
+
+class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
+{
+
+private:
+  math_FunctionWithDerivative* Ff;
+
+public:
+  math_MyFunctionSetWithDerivatives(math_FunctionWithDerivative& F);
+
+  int  NbVariables() const override;
+  int  NbEquations() const override;
+  bool Value(const math_Vector& X, math_Vector& F) override;
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
+};
+
+math_MyFunctionSetWithDerivatives::math_MyFunctionSetWithDerivatives(math_FunctionWithDerivative& F)
+{
+  Ff = &F;
+}
+
+int math_MyFunctionSetWithDerivatives::NbVariables() const
+{
+  return 1;
+}
+
+int math_MyFunctionSetWithDerivatives::NbEquations() const
+{
+  return 1;
+}
+
+bool math_MyFunctionSetWithDerivatives::Value(const math_Vector& X, math_Vector& Fs)
+{
+  return Ff->Value(X(1), Fs(1));
+}
+
+bool math_MyFunctionSetWithDerivatives::Derivatives(const math_Vector& X, math_Matrix& D)
+{
+  return Ff->Derivative(X(1), D(1, 1));
+}
+
+bool math_MyFunctionSetWithDerivatives::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+{
+  return Ff->Values(X(1), F(1), D(1, 1));
+}
+
+math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
+                                     const double                 Guess,
+                                     const double                 Tolerance,
+                                     const int                    NbIterations)
+{
+  math_Vector                       V(1, 1), Tol(1, 1);
+  math_MyFunctionSetWithDerivatives Ff(F);
+  V(1)   = Guess;
+  Tol(1) = Tolerance;
+  math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
+  Sol.Perform(Ff, V);
+  Done = Sol.IsDone();
+  if (Done)
+  {
+    NbIter = Sol.NbIterations();
+    F.GetStateNumber();
+    TheRoot       = Sol.Root()(1);
+    TheDerivative = Sol.Derivative()(1, 1);
+    F.Value(TheRoot, TheError);
+  }
+}
+
+math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
+                                     const double                 Guess,
+                                     const double                 Tolerance,
+                                     const double                 A,
+                                     const double                 B,
+                                     const int                    NbIterations)
+{
+  math_Vector                       V(1, 1), Aa(1, 1), Bb(1, 1), Tol(1, 1);
+  math_MyFunctionSetWithDerivatives Ff(F);
+  V(1)   = Guess;
+  Tol(1) = Tolerance;
+  Aa(1)  = A;
+  Bb(1)  = B;
+  math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
+  Sol.Perform(Ff, V, Aa, Bb);
+  Done = Sol.IsDone();
+  if (Done)
+  {
+    NbIter = Sol.NbIterations();
+    F.GetStateNumber();
+    TheRoot       = Sol.Root()(1);
+    TheDerivative = Sol.Derivative()(1, 1);
+    F.Value(TheRoot, TheError);
+  }
+}
+
+void math_FunctionRoot::Dump(Standard_OStream& o) const
+{
+
+  o << "math_FunctionRoot ";
+  if (Done)
+  {
+    o << " Status = Done \n";
+    o << " Number of iterations = " << NbIter << '\n';
+    o << " The Root is: " << TheRoot << '\n';
+    o << "The value at the root is: " << TheError << '\n';
+  }
+  else
+  {
+    o << " Status = not Done \n";
+  }
+}

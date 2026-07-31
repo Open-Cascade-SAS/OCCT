@@ -1,0 +1,30 @@
+puts "========================"
+puts " OCC469 "
+puts "========================"
+puts ""
+######################################################
+## It's impossible to fuse the two shapes in the file attached. #2740, SAM1493
+######################################################
+
+restore [locate_data_file OCC469.brep] a 
+# remove small edges from the shape
+fixsmalledges a a 0.002
+
+# explode to get two arguments
+explode a
+
+# use fuzzy value to treat misalignment of the arguments
+bfuzzyvalue 0.002
+
+# perform Boolean operation
+bfuse result a_1 a_2
+
+# restoring fuzzy value to zero
+bfuzzyvalue 0.0
+
+# check the obtained result
+checkshape result
+checkprops result -s 30523.3 -v 22730.1
+checknbshapes result -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

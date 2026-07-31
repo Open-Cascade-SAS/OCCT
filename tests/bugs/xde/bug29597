@@ -1,0 +1,17 @@
+puts "=========="
+puts "0029539: Data Exchange - unable to read VRML from data samples"
+puts "=========="
+puts ""
+
+pload VISUALIZATION XDE
+vclear
+vinit View1
+loadvrml v [locate_data_file bug29597_vrml2.wrl]
+vdisplay -dispMode 1 v
+vfit
+
+set anArea [triarea v]
+checkreal "Triangulation area" [lindex $anArea 0] 5341500. 1. 1e+6
+checktrinfo v -tri 12 -nod 24
+
+#vdump $::imagedir/${::casename}.png

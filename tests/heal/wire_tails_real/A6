@@ -1,0 +1,8 @@
+pload XDE
+
+stepread [locate_data_file bug26261_lower_2.stp] s *
+renamevar s_1 s
+fixshape  r  s  1e-3  1  -maxtaila 6  -maxtailw 1e-3
+
+checknbshapes  r  -vertex 257  -edge 395  -wire 146  -face 137  -shell 1  -solid 1  -compsolid 0  -compound 0
+checkprops r -l 4611.0742231217555

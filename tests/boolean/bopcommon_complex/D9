@@ -1,0 +1,10 @@
+cpulimit 1000
+
+restore [locate_data_file OCC228.brep] sh
+explode sh
+
+bop sh_2 sh_1
+bopcommon result
+
+checkprops result -s 66231.3
+checkview -display result -2d -otherwise { sh_2 sh_1 } -s -path ${imagedir}/${test_image}.png

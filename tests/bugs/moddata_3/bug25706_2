@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC25706"
+puts "================"
+puts ""
+#######################################################################
+# Exception in conversion B-spline to rational
+#######################################################################
+
+2dbsplinecurve bc 2 2  0.0 3  1.0 3  0 0 1.0  0.5 1 1.0  1 0 1.0
+mkedge e1 bc
+
+dump bc
+
+setweight bc 2 0.5
+
+set info [dump bc]
+if { [regexp {rational} ${info}] } {
+    puts "OK : B-spline is rational"
+} else {
+    puts "Error : B-spline is non-rational"
+}
+
+mkedge result bc
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

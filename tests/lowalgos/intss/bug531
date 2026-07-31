@@ -1,0 +1,16 @@
+
+puts "======="
+puts "OCC531"
+puts "======="
+puts ""
+##########################################################
+## Can not intersect plane and cone.The ">intersect" command hangs up the computer
+##########################################################
+
+restore [locate_data_file OCC531_1.draw] a 
+restore [locate_data_file OCC531_2.draw] b 
+
+intersect result a b
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

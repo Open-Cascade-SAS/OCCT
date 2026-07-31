@@ -1,0 +1,17 @@
+# Original bug : fra50091
+# Date : 19Mai98
+
+pcylinder cyla 100 400
+
+circle circ 150 0 200 1 0 0 100
+
+mkedge e circ
+wire w e
+mkplane f w 1
+
+prism cylb f -300 0 0 
+
+bcommon result cyla cylb
+
+checkprops result -s 160000
+checkview -display result -2d -s -otherwise { cyla cylb } -path ${imagedir}/${test_image}.png

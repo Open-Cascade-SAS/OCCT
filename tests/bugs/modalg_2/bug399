@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC399"
+puts "========"
+puts ""
+#########################################
+## Checkshape gives wrong result for valid face 
+#########################################
+
+restore [locate_data_file OCC399.brep] result
+
+set che [checkshape result]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC399: Command checkshape works wrongly: Source shape is invalid but this shape must be OK"
+} else {
+    puts "OCC399 OK : Source shape is valid. Command checkshape works properly."
+}
+
+checkprops result -s 4558.53 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

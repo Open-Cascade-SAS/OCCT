@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC25124"
+puts "========"
+puts ""
+######################################################
+# Removal of continuity checks for offset geometries
+######################################################
+
+smallview
+
+set ver_info_1 "\n\n*********** Dump of cc *************\nTrimmed curve\nParameters : 2 5\nBasis curve :\nOffsetCurveOffset : 10\nDirection : 0, 0, 1 \nBasis curve :\nTrimmed curve\nParameters : 1 6\nBasis curve :\nCircle"
+set ver_info_2 "\n\n*********** Dump of oc *************\nOffsetCurveOffset : 20\nDirection : 0, 0, 1 \nBasis curve :\nTrimmed curve\nParameters : 2 5\nBasis curve :\nCircle"
+
+point pp 0 0 1
+circle cc 20 40 30 20
+trim cc cc 1 6
+offsetcurve oc cc 10 pp
+trim cc oc 2 5
+set bug_info_1 [dump cc]
+offsetcurve oc cc 10 pp
+set bug_info_2 [dump oc]
+
+if {[string first $ver_info_1 $bug_info_1] == -1} {
+  puts "ERROR: OCC25124 is reproduced (dump of cc)."
+}
+if {[string first $ver_info_2 $bug_info_2] == -1} {
+  puts "ERROR: OCC25124 is reproduced (dump of oc)."
+}
+
+donly oc cc
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

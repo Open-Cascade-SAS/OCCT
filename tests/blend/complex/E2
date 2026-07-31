@@ -1,0 +1,13 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : J4
+## Comment : from pro8792
+## ====================================
+
+restore [locate_data_file CFI_pro8792.rle] a
+explode a e
+mkevol result a
+updatevol a_20 0 15 0.5 20 1 5
+buildevol
+
+checkprops result -s 1.22091e+06

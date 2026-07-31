@@ -1,0 +1,72 @@
+// Created on: 2015-12-23
+// Created by: Anastasia BORISOVA
+// Copyright (c) 2015 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <AIS_ManipulatorOwner.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
+
+//=================================================================================================
+
+AIS_ManipulatorOwner::AIS_ManipulatorOwner(
+  const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+  const int                                      theIndex,
+  const AIS_ManipulatorMode                      theMode,
+  const int                                      thePriority)
+    : SelectMgr_EntityOwner(theSelObject, thePriority),
+      myIndex(theIndex),
+      myMode(theMode)
+{
+}
+
+//=================================================================================================
+
+void AIS_ManipulatorOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                            const occ::handle<Prs3d_Drawer>&               theStyle,
+                                            const int                                      theMode)
+{
+  if (theMode == 0)
+  {
+    SelectMgr_EntityOwner::HilightWithColor(thePM, theStyle, theMode);
+    return;
+  }
+
+  Selectable()->HilightOwnerWithColor(thePM, theStyle, this);
+}
+
+//=================================================================================================
+
+bool AIS_ManipulatorOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                       const int /*theMode*/) const
+{
+  if (!HasSelectable())
+  {
+    return false;
+  }
+
+  return thePM->IsHighlighted(Selectable(), myMode);
+}
+
+//=================================================================================================
+
+void AIS_ManipulatorOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                     const int /*theMode*/)
+{
+  if (!HasSelectable())
+  {
+    return;
+  }
+
+  thePM->Unhighlight(Selectable());
+}

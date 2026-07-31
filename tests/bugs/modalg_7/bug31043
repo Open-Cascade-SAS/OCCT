@@ -1,0 +1,54 @@
+puts "============="
+puts "0031043: GCPnts_TangentialDeflection generates points which number is inconsistent with MinimumOfPoints parameter"
+puts "============="
+
+restore [locate_data_file bug28500_shape_mesh_artifact.brep] result
+
+tclean result
+explode result f
+explode result_7 e
+
+mkcurve c result_7_1
+
+set log [crvtpoints r c 0.01 1.57 1]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 2 } {
+  puts "Error : Incorrect number of points $pnts"
+}
+
+
+set log [crvtpoints r c 0.01 1.57 2]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 2 } {
+  puts "Error : Incorrect number of points $pnts"
+}
+
+set log [crvtpoints r c 0.01 1.57 3]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 3 } {
+  puts "Error : Incorrect number of points $pnts"
+}
+
+set log [crvtpoints r c 0.01 1.57 4]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 4 } {
+  puts "Error : Incorrect number of points $pnts"
+}
+
+set log [crvtpoints r c 0.01 1.57 5]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 5 } {
+  puts "Error : Incorrect number of points $pnts"
+}
+
+set log [crvtpoints r c 0.01 1.57 6]
+regexp {Nb points : ([0-9]+)} $log full pnts
+
+if { $pnts < 6 } {
+  puts "Error : Incorrect number of points $pnts"
+}

@@ -1,0 +1,42 @@
+puts "======================================================="
+puts "0031306: Modeling Algorithms - Incomplete result of Cut operation"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31306_argument.brep] s1
+restore [locate_data_file bug31306_tool.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+foreach r {r0 r1 r2 r3 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the $r is a self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 0 -face 0
+
+checknbshapes r1 -wire 41 -face 40 -t
+checkprops r1 -s 244.474
+
+checknbshapes r2 -wire 3 -face 2 -t
+checkprops r2 -s 228.338
+
+checknbshapes r3 -wire 38 -face 38 -t
+checkprops r3 -s 16.1362
+
+checkprops r4 -l 40.2015
+checksection r4 -r 0
+
+checkview -display r1 -2d -path ${imagedir}/${test_image}.png

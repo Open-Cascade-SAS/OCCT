@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC61034"
+puts " OCC371 "
+puts "========================"
+puts ""
+#################################################################
+##Intersection between two BSplineSurfaces, using IntPatch_Intersection, lead to infinite cycle.
+#################################################################
+
+restore [locate_data_file OCC371a.brep] a 
+restore [locate_data_file OCC371b.brep] b
+
+mksurface gs1 a
+mksurface gs2 b
+trim trgs1 gs1 0.0 1.0 0.9698725179864 1.0
+trim trgs2 gs2 0.0 1.0 0.24333094700742 0.92374551772989
+
+#cpulimit 300
+intersect result trgs1 trgs2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

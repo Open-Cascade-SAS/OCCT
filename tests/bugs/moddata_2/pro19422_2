@@ -1,0 +1,20 @@
+puts "=========="
+puts "PRO19422"
+puts "=========="
+puts ""
+#############################################################
+## Errors when cutting, 2 cases in /dp_25/IBug/pro/19422 files o1 t1 and o2 t2, restore.
+## cut c1 o1 t1 fails. cut c2 o2 t2 fails 
+#############################################################
+
+restore [locate_data_file pro19422c.brep] shape 
+checkshape shape
+restore [locate_data_file pro19422d.brep] tool
+checkshape tool
+explode tool
+bfuse tool tool_1 tool_2
+
+bcut result shape tool
+
+checkprops result -s 2282.26
+checkview -display result -2d -path ${imagedir}/${test_image}.png

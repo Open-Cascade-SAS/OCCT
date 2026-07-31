@@ -1,0 +1,10 @@
+box b 10 10 10 
+copy b c
+pcylinder s 2 4
+ttranslate s 5 5 -2
+bcut rr c s
+explode rr so
+
+bcut result rr_1 c
+checkprops result -s empty
+checkview -display result -2d -s -otherwise { c rr_1 } -path ${imagedir}/${test_image}.png

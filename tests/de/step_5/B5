@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename trj7_pm5-sd-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 6 )  Summary  = 14  ( 6 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 37  ( 37 )  Shell    = 37  ( 37 )  Face     = 1477  ( 1477 ) 
+STATSHAPE   : Solid    = 157  ( 157 )  Shell    = 157  ( 157 )  Face     = 6549  ( 6549 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 9.800652784e-007  ( 9.956101111e-007 )  AvgTol   =  1.069744863e-007  (  1.089661143e-007 )
+LABELS      : N0Labels = 49  ( 49 )  N1Labels = 207  ( 207 )  N2Labels = 0  ( 0 )   TotalLabels = 256  ( 256 )   NameLabels = 213  ( 213 )   ColorLabels = 80  ( 80 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 21  ( 21 )
+COLORS      : Colors   = BLUE DARKORANGE DARKSLATEGRAY1 DODGERBLUE2 GRAY13 GRAY18 GRAY27 GRAY30 GRAY31 GRAY4 GRAY65 GRAY8 GRAY85 GRAY94 GREEN LIGHTPINK2 MATRAGRAY RED RED RED4 WHITE  ( BLUE DARKORANGE DARKSLATEGRAY1 DODGERBLUE2 GRAY13 GRAY18 GRAY27 GRAY30 GRAY31 GRAY4 GRAY65 GRAY8 GRAY85 GRAY94 GREEN LIGHTPINK2 MATRAGRAY RED RED RED4 WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,35 @@
+puts "======="
+puts "0028995"
+puts "======="
+puts ""
+##################################################
+# UnifySameDomain produces invalid shape
+##################################################
+
+brestore [locate_data_file bug28995_s1.brep] s1
+brestore [locate_data_file bug28995_s2.brep] s2
+
+# perform fuse operation
+bfuse rfuse s1 s2
+
+# check the result of fuse
+checkshape rfuse 
+
+if {![regexp "This shape seems to be OK" [bopcheck rfuse]]} {
+  puts "Error: The result of FUSE operation is a self-intersecting shape."
+}
+
+# unify faces and edges in the fused shape
+unifysamedom result rfuse
+
+# check unified result
+checkshape result
+
+if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+  puts "Error: The result of UnifySameDomain algorithm is a self-intersecting shape."
+}
+
+checknbshapes result -vertex 200 -edge 300 -wire 104 -face 103 -solid 1
+checkprops result -s 1.59154e+006 -v 1.1497e+007
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

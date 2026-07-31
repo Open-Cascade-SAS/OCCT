@@ -1,0 +1,8 @@
+restore [locate_data_file bug26917_dom7772.input_simple.brep] s
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 176.308
+checkprops result -s 218.729
+
+checknbshapes result -shell 1

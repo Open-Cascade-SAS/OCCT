@@ -1,0 +1,7 @@
+puts "TODO OCC30286 ALL: Error : The length of result shape is 1736.86, expected 1704.87"
+
+set viewname "vright"
+set length 1704.87
+
+testreadstep [locate_data_file bug27341_Drehkopf_HSK_Gewinde_R_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

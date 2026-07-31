@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL:  Update of 3D-Parameters has failed" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename t4mdb.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 9  ( 3 )  Summary  = 9  ( 3 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 13  ( 13 )  Face     = 13  ( 13 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 13  ( 13 )  Face     = 13  ( 13 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0001243142426  ( 0.0001243142426 )  AvgTol   =  1.797032671e-005  (  2.850666988e-005 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 96  ( 96 )  N2Labels = 0  ( 0 )   TotalLabels = 97  ( 97 )   NameLabels = 1  ( 1 )   ColorLabels = 12  ( 12 )   LayerLabels = 84  ( 84 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 9  ( 9 )
+COLORS      : Colors   = CYAN DODGERBLUE2 GRAY67 GREEN MAGENTA MAGENTA3 RED WHITE YELLOW  ( CYAN DODGERBLUE2 GRAY67 GREEN MAGENTA MAGENTA3 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 12  ( 12 )
+LAYERS      : Layers   = 0 10 20 40 41 42 43 44 45 47 48 49  ( 0 10 20 40 41 42 43 44 45 47 48 49 )
+
+}

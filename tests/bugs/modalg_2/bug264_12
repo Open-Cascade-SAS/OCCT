@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "========"
+puts "OCC264"
+puts " (case 12)"
+puts "========"
+
+restore [locate_data_file OCC264_12.brep] result
+
+tclean result
+vinit
+vdisplay result
+vclear
+
+isos res 0
+triangles result
+
+checktrinfo result -tri 19 -nod 21
+checkprops result -s 0 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

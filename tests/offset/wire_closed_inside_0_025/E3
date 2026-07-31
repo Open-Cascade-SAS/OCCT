@@ -1,0 +1,7 @@
+restore [locate_data_file offset_wire_052.brep] s
+
+set length 42.1732
+set nbsh_v 10
+set nbsh_e 10
+set nbsh_w 2
+

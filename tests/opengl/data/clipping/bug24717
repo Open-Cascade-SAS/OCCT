@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24717: TKOpenGl - globally defined clipping planes blink when operating with view"
+puts "Test checks that state of clippings always corresponds to a state of viewed scene."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vmoveto 204 204
+vclipplane create pln1
+vclipplane set pln1 view Driver1/Viewer1/View1
+vclipplane change pln1 equation 0 1 0 0
+vfit
+vaspects -setwidth 5
+
+if { "[vreadpixel 204 204 rgb name]" != "CYAN" } {
+  puts "Error : Viewer clipping is broken."
+}
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,20 @@
+puts "================"
+puts "0030932: Modeling Algorithms - Invalid result on 2d curve on surface approximation"
+puts "================"
+puts ""
+
+# Prepare data.
+restore [locate_data_file bug30932_c2d] c2d
+restore [locate_data_file bug30932_sur] sur
+
+# Approximate.
+approxcurveonsurf res c2d sur
+
+# Length check.
+checklength res -l 150.02782767924231
+
+# Visual check.
+axo;
+don res;
+fit;
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

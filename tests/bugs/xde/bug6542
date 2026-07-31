@@ -1,0 +1,138 @@
+puts "========"
+puts "OCC6542"
+puts "========"
+puts ""
+######################################################
+# Circle is translated to IGES as NURBS
+######################################################
+
+set BugNumber    OCC6542
+set TheFileName  OCC6542.igs
+set TheFileName2 ${TheFileName}-2.igs
+
+igesbrep [locate_data_file ${TheFileName}] a *
+set comp [tpcompound res1]
+
+set status 0
+set result [checkshape res1]
+set index [lsearch $result Faulty]
+if {$index > -1} {
+    puts "Faulty ${BugNumber} : checkshape is wrong for source file"
+    incr status
+} else {
+    puts "OK ${BugNumber} : checkshape is good for source file"
+
+    set dumpList [split [dump res1] "\n\t :,"]
+    set index1 [lsearch -exact ${dumpList} Circle]
+
+    if {${index1} == -1} {
+        puts "Faulty ${BugNumber} : there is not a circle in source file"
+        incr status
+    } else {
+        puts "OK ${BugNumber} : there is a circle in source file"
+        set Center_X_1 [lindex ${dumpList} [expr ${index1} + 5]]
+        set Center_Y_1 [lindex ${dumpList} [expr ${index1} + 7]]
+        set Center_Z_1 [lindex ${dumpList} [expr ${index1} + 9]]
+        set Axis_X_1   [lindex ${dumpList} [expr ${index1} + 17]]
+        set Axis_Y_1   [lindex ${dumpList} [expr ${index1} + 19]]
+        set Axis_Z_1   [lindex ${dumpList} [expr ${index1} + 21]]
+        set XAxis_X_1  [lindex ${dumpList} [expr ${index1} + 28]]
+        set XAxis_Y_1  [lindex ${dumpList} [expr ${index1} + 30]]
+        set XAxis_Z_1  [lindex ${dumpList} [expr ${index1} + 32]]
+        set YAxis_X_1  [lindex ${dumpList} [expr ${index1} + 39]]
+        set YAxis_Y_1  [lindex ${dumpList} [expr ${index1} + 41]]
+        set YAxis_Z_1  [lindex ${dumpList} [expr ${index1} + 43]]
+        set Radius_1   [lindex ${dumpList} [expr ${index1} + 49]]
+        puts "Center_X_1 = ${Center_X_1}"
+        puts "Center_Y_1 = ${Center_Y_1}"
+        puts "Center_Z_1 = ${Center_Z_1}"
+        puts "Axis_X_1   = ${Axis_X_1}"
+        puts "Axis_Y_1   = ${Axis_Y_1}"
+        puts "Axis_Z_1   = ${Axis_Z_1}"
+        puts "XAxis_X_1  = ${XAxis_X_1}"
+        puts "XAxis_Y_1  = ${XAxis_Y_1}"
+        puts "XAxis_Z_1  = ${XAxis_Z_1}"
+        puts "YAxis_X_1  = ${YAxis_X_1}"
+        puts "YAxis_Y_1  = ${YAxis_Y_1}"
+        puts "YAxis_Z_1  = ${YAxis_Z_1}"
+        puts "Radius_1   = ${Radius_1}"
+    }
+
+    brepiges res1 ${imagedir}/${TheFileName2}
+
+    dall
+    if [catch { igesbrep ${imagedir}/${TheFileName2} b * } res] {
+        puts "Error ${BugNumber}: there is reading problem"
+    } else {
+        set comp [tpcompound res]
+        set result [checkshape res]
+        set index [lsearch $result Faulty]
+        if {$index > -1} {
+            puts "Faulty ${BugNumber} : checkshape is wrong for writing file"
+            incr status
+        } else {
+            puts "OK ${BugNumber} : checkshape is good for writing file"
+
+            set dumpList2 [split [dump res] "\n\t :,"]
+            set index2 [lsearch -exact ${dumpList2} Circle]
+
+            if {${index2} == -1} {
+                puts "Faulty ${BugNumber} : there is not a circle in writing file"
+                incr status
+            } else {
+                puts "OK ${BugNumber} : there is a circle in writing file"
+                set Center_X_2 [lindex ${dumpList2} [expr ${index2} + 5]]
+                set Center_Y_2 [lindex ${dumpList2} [expr ${index2} + 7]]
+                set Center_Z_2 [lindex ${dumpList2} [expr ${index2} + 9]]
+                set Axis_X_2   [lindex ${dumpList2} [expr ${index2} + 17]]
+                set Axis_Y_2   [lindex ${dumpList2} [expr ${index2} + 19]]
+                set Axis_Z_2   [lindex ${dumpList2} [expr ${index2} + 21]]
+                set XAxis_X_2  [lindex ${dumpList2} [expr ${index2} + 28]]
+                set XAxis_Y_2  [lindex ${dumpList2} [expr ${index2} + 30]]
+                set XAxis_Z_2  [lindex ${dumpList2} [expr ${index2} + 32]]
+                set YAxis_X_2  [lindex ${dumpList2} [expr ${index2} + 39]]
+                set YAxis_Y_2  [lindex ${dumpList2} [expr ${index2} + 41]]
+                set YAxis_Z_2  [lindex ${dumpList2} [expr ${index2} + 43]]
+                set Radius_2   [lindex ${dumpList2} [expr ${index2} + 49]]
+                puts "Center_X_2 = ${Center_X_2}"
+                puts "Center_Y_2 = ${Center_Y_2}"
+                puts "Center_Z_2 = ${Center_Z_2}"
+                puts "Axis_X_2   = ${Axis_X_2}"
+                puts "Axis_Y_2   = ${Axis_Y_2}"
+                puts "Axis_Z_2   = ${Axis_Z_2}"
+                puts "XAxis_X_2  = ${XAxis_X_2}"
+                puts "XAxis_Y_2  = ${XAxis_Y_2}"
+                puts "XAxis_Z_2  = ${XAxis_Z_2}"
+                puts "YAxis_X_2  = ${YAxis_X_2}"
+                puts "YAxis_Y_2  = ${YAxis_Y_2}"
+                puts "YAxis_Z_2  = ${YAxis_Z_2}"
+                puts "Radius_2   = ${Radius_2}"
+
+                checkreal "Center_X" ${Center_X_2} ${Center_X_1} 0 0.001
+                checkreal "Center_Y" ${Center_Y_2} ${Center_Y_1} 0 0.001
+                checkreal "Center_Z" ${Center_Z_2} ${Center_Z_1} 0 0.001
+
+                checkreal "Axis_X" ${Axis_X_2} ${Axis_X_1} 0 0.001
+                checkreal "Axis_Y" ${Axis_Y_2} ${Axis_Y_1} 0 0.001
+                checkreal "Axis_Z" ${Axis_Z_2} ${Axis_Z_1} 0 0.001
+
+                checkreal "XAxis_X" ${XAxis_X_2} ${XAxis_X_1} 0 0.001
+                checkreal "XAxis_Y" ${XAxis_Y_2} ${XAxis_Y_1} 0 0.001
+                checkreal "XAxis_Z" ${XAxis_Z_2} ${XAxis_Z_1} 0 0.001
+
+                checkreal "YAxis_X" ${YAxis_X_2} ${YAxis_X_1} 0 0.001
+                checkreal "YAxis_Y" ${YAxis_Y_2} ${YAxis_Y_1} 0 0.001
+                checkreal "YAxis_Z" ${YAxis_Z_2} ${YAxis_Z_1} 0 0.001
+
+                checkreal "Radius" ${Radius_2} ${Radius_1} 0 0.001
+            }
+        }
+    }
+}
+
+puts ""
+if {${status} != 0} {
+    puts "${BugNumber}: Error"
+}
+
+

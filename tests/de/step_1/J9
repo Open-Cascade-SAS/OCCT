@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm1_sy_t4.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 3 )  Warnings = 0  ( 2 )  Summary  = 0  ( 5 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 1 )  Summary  = 1  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 6  ( 6 )  Face     = 6  ( 6 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 6  ( 6 )  Face     = 6  ( 6 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.01889086606  (  0.01889086606 )  AvgTol   =  0.001105643981  (  0.001105643981 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 20  ( 20 )  N2Labels = 0  ( 0 )   TotalLabels = 23  ( 23 )   NameLabels = 5  ( 5 )   ColorLabels = 12  ( 12 )   LayerLabels = 12  ( 12 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = CHOCOLATE1 TURQUOISE  ( CHOCOLATE1 TURQUOISE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = {}  ( {} )
+
+}

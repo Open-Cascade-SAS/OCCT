@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC25456"
+puts "============"
+puts ""
+###############################
+## BOPAlgo_CheckerSI reports an error on the given shape
+###############################
+
+restore [locate_data_file bug25456_shape.brep] a
+
+set info [bopcheck a]
+
+if {[string compare ${info} " This shape seems to be OK.\n"] == 0} {
+    puts "OK: BOPAlgo_CheckerSI report is good"
+} else {
+    puts "Error : BOPAlgo_CheckerSI report is wrong"
+}

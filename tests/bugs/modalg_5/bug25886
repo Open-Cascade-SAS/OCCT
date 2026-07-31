@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC25886"
+puts "========"
+puts ""
+#################################################
+# Wrong result obtained by projection algorithm
+#################################################
+
+set ok_len_c3x "1.57079"
+set ok_len_c5x "1.57079"
+
+smallview -2D-
+
+restore [locate_data_file OCC25886_cx.brep] cx
+
+explode cx
+copy cx_1 f
+mksurface s f
+mkcurve c3 cx_3
+mkcurve c5 cx_5
+project c3x c3 s
+project c5x c5 s
+
+2dfit
+
+set len_c3x [string range [lindex [length c3x] 4] 0 6]
+set len_c5x [string range [lindex [length c5x] 4] 0 6]
+if {$len_c3x != $ok_len_c3x} {
+  puts "ERROR: OCC25866 is reproduced. Length of projection is $len_c3x, but expected length is $ok_len_c3x"
+}
+if {$len_c5x != $ok_len_c5x} {
+  puts "ERROR: OCC25866 is reproduced. Length of projection is $len_c5x, but expected length is $ok_len_c5x"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

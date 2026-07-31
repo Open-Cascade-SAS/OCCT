@@ -1,0 +1,67 @@
+// Created on: 1995-02-07
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+
+//=================================================================================================
+
+inline GeomInt_LineConstructor::GeomInt_LineConstructor()
+    : done(false)
+{
+}
+
+//=================================================================================================
+
+inline void GeomInt_LineConstructor::Load(const occ::handle<Adaptor3d_TopolTool>& D1,
+                                          const occ::handle<Adaptor3d_TopolTool>& D2,
+                                          const occ::handle<GeomAdaptor_Surface>& S1,
+                                          const occ::handle<GeomAdaptor_Surface>& S2)
+{
+  myDom1 = D1;
+  myDom2 = D2;
+  myHS1  = S1;
+  myHS2  = S2;
+}
+
+//=================================================================================================
+
+inline bool GeomInt_LineConstructor::IsDone() const
+{
+  return done;
+}
+
+//=================================================================================================
+
+inline int GeomInt_LineConstructor::NbParts() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return (seqp.Length() / 2);
+}
+
+//=================================================================================================
+
+inline void GeomInt_LineConstructor::Part(const int I, double& WFirst, double& WLast) const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  WFirst = seqp(2 * I - 1);
+  WLast  = seqp(2 * I);
+}

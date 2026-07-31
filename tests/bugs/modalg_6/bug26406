@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC26406"
+puts "========"
+puts ""
+#############################################################
+# BRepPrimAPI_MakeRevol crash when rotating Paraboloid face
+#############################################################
+
+smallview
+
+restore [locate_data_file OCC26406-Paraboloid.brep] p
+revol r p 0 0 0 0 0 1 180 c
+checkshape r
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,13 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISViewer
+# Testing command:   AISInitViewer
+#
+
+puts "caf003-A1"
+
+# Initialize 3D viewer
+AISInitViewer D
+
+puts "There is the empty 3D viewer"

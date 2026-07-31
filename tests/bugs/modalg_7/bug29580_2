@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC29580"
+puts "========"
+puts ""
+#################################################
+# Regression: invalid result of BOP Fuse
+#################################################
+
+
+circle c1 0 -5 0 1 0 0 10 
+circle c2 0 5 0 1 0 0 10
+mkedge e1 c1 
+mkedge e2 c2 
+wire w1 e1 
+wire w2 e2 
+mkplane f1 w1 
+mkplane f2 w2 
+bcut f12 f1 f2 
+revol b1 f12 0 0 0 0 0 1 180
+ttranslate b1 0 31.358955689999998 0 
+
+plane pln 0 0 0 0 0 1 1.1102230246251565e-016 -1 0 
+psphere b2 pln 8.6602540399999999 180 
+ttranslate b2  0 31.358955689999998 0
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -vertex 4 -edge 16 -wire 10 -face 10 -shell 3 -solid 3 -t
+checkprops result -s 3879.55 -v 6295.15
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

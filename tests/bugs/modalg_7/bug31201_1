@@ -1,0 +1,27 @@
+puts "======================================================="
+puts "OCC31201: Modeling Algorithms - Result of a section operation is incomplete"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31201_obj1.brep] s1
+restore [locate_data_file bug31201_tool.brep] s2
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bsplit rsp
+
+checkshape rsp
+checknbshapes rsp -face 22 -wire 22
+
+bbop result 4
+
+checkshape result
+checkprops result -l 36.032
+checknbshapes result -vertex 11 -edge 11
+
+checksection result -r 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC27762"
+puts "========"
+puts ""
+# This is the second script that tries to reproduce the source of the problem -
+# impossibility to project a point on a torus with major radius == 0
+
+torus s 0 10
+set out [proj s 1 0 0]
+if {[llength [lmatch $out ext_*]] != 4} {
+  puts "Error: projection failed"
+} else {
+  puts "OK : projection passed"
+}

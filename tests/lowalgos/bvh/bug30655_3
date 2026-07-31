@@ -1,0 +1,21 @@
+puts "======="
+puts "0030655: Modeling Data - Provide interfaces for selection of the elements from BVH tree"
+puts "======="
+puts ""
+
+pload QAcommands
+
+psphere s1 100
+psphere s2 110
+ttranslate s2 150 150 150
+
+incmesh s1 0.01
+incmesh s2 0.01
+
+dchrono stime start
+regexp {Distance ([-0-9.+eE]*)} [QABVH_PairDistance s1 s2] full dist
+dchrono stime stop counter MESH_MESH_DISTANCE
+
+distmini d s1 s2
+
+checkreal "Distance" $dist [dval d_val] 0 1.e-2

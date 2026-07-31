@@ -1,0 +1,19 @@
+puts "TODO OCC26030 ALL: Error : The offset cannot be built"
+
+puts "========"
+puts "OCC26030"
+puts "========"
+puts ""
+#################################################
+# Offset of a lofted body fails after long time
+#################################################
+
+restore [locate_data_file bug26030_thickness-crash1-tcl-Loft001-00-section.brep] Loft001-00-section
+restore [locate_data_file bug26030_thickness-crash1-tcl-Loft001-01-section.brep] Loft001-01-section
+
+thrusections Loft001 1 0 Loft001-00-section Loft001-01-section
+explode Loft001 F
+offsetparameter 1e-7 p i
+offsetload Loft001 1
+
+offsetperform Offset

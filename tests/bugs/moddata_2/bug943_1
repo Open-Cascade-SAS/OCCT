@@ -1,0 +1,32 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========="
+puts " OCC943 "
+puts "(case 1)"
+puts "========="
+puts ""
+#####################################################
+## The regression is intersecting pcurves of face, They are added by fixshape.
+## (To see this you can try fixshape dF.rle from attachment. But please note, that
+## checkshape on result of fixshape sometimes fails and sometimes not. It is
+## instability!)
+######################################################
+
+restore [locate_data_file OCC943_1.brep] result
+
+set err [checkshape result]
+
+set j 1
+repeat 25 {
+    restore [locate_data_file OCC943_1.brep] result
+    set err1 [checkshape result]
+    if { $err != $err1 } {
+	puts [format " Faulty OCC943 (case 1): function CHECKSHAPE works wrongly on %s time" $j]
+	break
+    } else {
+	puts [format " OCC943 (case 1)  OK: function CHECKSHAPE works properly %s time" $j]
+    }
+    incr j
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

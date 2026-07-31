@@ -1,0 +1,67 @@
+puts "========"
+puts "OCC24803"
+puts "========"
+puts ""
+###########################################################
+# improve the result of v/v interference for two vertices case
+###########################################################
+
+set x1 0
+set y1 0
+set z1 0
+set tolerance1 1.0
+vertex v1 $x1 $y1 $z1
+settolerance v1 $tolerance1
+
+set x2 4
+set y2 0
+set z2 0
+vertex v2 $x2 $y2 $z2
+set tolerance2 3.5
+settolerance v2 $tolerance2
+
+bop v1 v2
+bopcommon res
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+puts "MaxTolerance=$MaxTolerance"
+
+set expected_MaxTolerance 4.25
+set tol_abs_MaxTolerance 0.1
+set tol_rel_MaxTolerance 0.1
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+set info [dump res]
+regexp "Tolerance : +(\[-0-9*\.+eE\]+)" $info full tolerance_res
+regexp "Point 3D : +(\[-0-9*\.+eE\]+), +(\[-0-9*\.+eE\]+), +(\[-0-9*\.+eE\]+)" $info full x_res y_res z_res
+puts "tolerance_res=$tolerance_res"
+puts "x_res=$x_res y_res=$y_res z_res=$z_res"
+
+set expected_tolerance 4.25
+set tol_abs_tolerance  0.1
+set tol_rel_tolerance 0.1
+checkreal "tolerance" ${tolerance_res} ${expected_tolerance} ${tol_abs_tolerance} ${tol_rel_tolerance}
+
+set expected_x_res 3.25
+set tol_abs_x_res  0.1
+set tol_rel_x_res 0.1
+checkreal "x_res" ${x_res} ${expected_x_res} ${tol_abs_x_res} ${tol_rel_x_res}
+
+set expected_y_res 0
+set tol_abs_y_res  0.1
+set tol_rel_y_res 0.1
+checkreal "y_res" ${y_res} ${expected_y_res} ${tol_abs_y_res} ${tol_rel_y_res}
+
+set expected_z_res 0
+set tol_abs_z_res  0.1
+set tol_rel_z_res 0.1
+checkreal "z_res" ${z_res} ${expected_z_res} ${tol_abs_z_res} ${tol_rel_z_res}
+
+circle c1 $x1 $y1 $z1 $tolerance1
+circle c2 $x2 $y2 $z2 $tolerance2
+circle c_res $x_res $y_res $z_res $tolerance_res
+
+view 1 +X+Y 465 20 400 400
+fit
+
+xwd $imagedir/${test_image}.png

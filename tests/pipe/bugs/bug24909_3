@@ -1,0 +1,35 @@
+puts "TODO OCC24909 ALL: Error: sweep failed"
+
+puts "========"
+puts "OCC24909"
+puts "========"
+puts ""
+##################################
+# 0024909: SIGSEGV in buildsweep
+##################################
+
+restore [locate_data_file bug24909_minihyd-draw-BezCurve.brep] BezCurve
+
+ttranslate BezCurve 0 -8 0
+explode BezCurve E
+wire Sweep001-0-spine BezCurve_1
+mksweep Sweep001-0-spine
+setsweep -CF
+circle Circle-curve 0 0 0 18
+mkedge Circle-edge Circle-curve 0 0
+wire Circle Circle-edge
+trotate Circle 0 0 0 0.577350269189625731 0.577350269189625731 0.577350269189625731 120
+ttranslate Circle 0 -71 203.5
+addsweep Circle
+circle Circle001-curve 0 0 0 16
+mkedge Circle001-edge Circle001-curve 0 0
+wire Circle001 Circle001-edge
+trotate Circle001 0 0 0 0.577350269189625731 0.577350269189625731 0.577350269189625731 120
+ttranslate Circle001 0 -71 203.5
+addsweep Circle001
+
+set result [buildsweep Sweep001 -C -S]
+
+if {[regexp "Not Done" $result]} {
+  puts "Error: sweep failed"
+}

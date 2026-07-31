@@ -1,0 +1,21 @@
+puts "TODO OCC12345 ALL: Exception Raised while reading Step File"
+
+puts "========================"
+puts "BUC60991"
+puts "OCC97"
+puts "OCC133"
+puts "========================"
+puts ""
+#######################################################
+##Exception when translating a STEP file to Open CASCADE (loading phase).
+#######################################################
+
+set filepath [locate_data_file buc60990.stp]
+if {[catch {stepread $filepath a *}]} {
+    puts "Error: Exception Raised while reading Step File"
+} else {
+    tpcompound result
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

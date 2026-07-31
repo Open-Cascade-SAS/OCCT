@@ -1,0 +1,9 @@
+puts "TODO OCC24592 ALL: Error: Max tolerance"
+restore [locate_data_file CIN902_intcqhmq.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 108.09508055264889
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 13

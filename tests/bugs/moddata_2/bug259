@@ -1,0 +1,20 @@
+ 
+puts "========================"
+puts " OCC259 "
+puts "========================"
+puts ""
+######################################################
+##Inequality behaviour of checkshape -top on SunOS and IRIX.
+######################################################
+
+pcylinder b1 1 2
+
+dset r sqrt(2)/2
+box b2 -r -r 0 2*r 2*r 2
+trotate b2 0 0 0 0 0 1 135
+
+bfuse result b2 b1
+checkshape -top result
+
+checkprops result -s 18.8496
+checkview -display result -2d -path ${imagedir}/${test_image}.png

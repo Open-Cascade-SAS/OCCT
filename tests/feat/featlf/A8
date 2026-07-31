@@ -1,0 +1,13 @@
+# Original bug : cts19573
+# Date : 26 Nov 98
+
+restore [locate_data_file CFE901_cts19gge.rle] base
+restore [locate_data_file cts19573_wire.brep] wire
+
+vertex v1 0 -500 120
+plane plan 0 -500 120 1 0 0 
+
+featlf base wire plan -10 0 0 10 0 0 1 1
+featperform lf result
+
+checkprops result -s 2.00853e+06

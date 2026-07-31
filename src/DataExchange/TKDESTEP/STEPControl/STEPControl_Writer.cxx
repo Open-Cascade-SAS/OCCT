@@ -1,0 +1,320 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <STEPControl_Writer.hxx>
+
+#include <APIHeaderSection_MakeHeader.hxx>
+#include <DE_ShapeFixParameters.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <MoniTool_Macros.hxx>
+#include <STEPControl_ActorWrite.hxx>
+#include <STEPControl_Controller.hxx>
+#include <DESTEP_Parameters.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepTidy_DuplicateCleaner.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <UnitsMethods.hxx>
+
+//=================================================================================================
+
+STEPControl_Writer::STEPControl_Writer()
+{
+  STEPControl_Controller::Init();
+  SetWS(new XSControl_WorkSession);
+}
+
+//=================================================================================================
+
+STEPControl_Writer::STEPControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                       const bool                                scratch)
+{
+  STEPControl_Controller::Init();
+  SetWS(WS, scratch);
+}
+
+//=================================================================================================
+
+void STEPControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
+{
+  thesession = WS;
+  thesession->SelectNorm("STEP");
+  thesession->InitTransferReader(0);
+  occ::handle<StepData_StepModel> model = Model(scratch);
+}
+
+//=================================================================================================
+
+occ::handle<XSControl_WorkSession> STEPControl_Writer::WS() const
+{
+  return thesession;
+}
+
+//=================================================================================================
+
+occ::handle<StepData_StepModel> STEPControl_Writer::Model(const bool newone)
+{
+  DeclareAndCast(StepData_StepModel, model, thesession->Model());
+  if (newone || model.IsNull())
+  {
+    model = GetCasted(StepData_StepModel, thesession->NewModel());
+  }
+  return model;
+}
+
+//=================================================================================================
+
+void STEPControl_Writer::SetTolerance(const double Tol)
+{
+  DeclareAndCast(STEPControl_ActorWrite, act, WS()->NormAdaptor()->ActorWrite());
+  if (!act.IsNull())
+  {
+    act->SetTolerance(Tol);
+  }
+}
+
+//=================================================================================================
+
+void STEPControl_Writer::UnsetTolerance()
+{
+  SetTolerance(-1.);
+}
+
+//=================================================================================================
+
+IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
+                                                   const STEPControl_StepModelType mode,
+                                                   const bool                      compgraph,
+                                                   const Message_ProgressRange&    theProgress)
+{
+  occ::handle<StepData_StepModel> aStepModel =
+    occ::down_cast<StepData_StepModel>(thesession->Model());
+  if (!aStepModel.IsNull())
+  {
+    aStepModel->InternalParameters.InitFromStatic();
+  }
+  return Transfer(sh, mode, aStepModel->InternalParameters, compgraph, theProgress);
+}
+
+IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
+                                                   const STEPControl_StepModelType mode,
+                                                   const DESTEP_Parameters&        theParams,
+                                                   const bool                      compgraph,
+                                                   const Message_ProgressRange&    theProgress)
+{
+  int mws = -1;
+  switch (mode)
+  {
+    case STEPControl_AsIs:
+      mws = 0;
+      break;
+    case STEPControl_FacetedBrep:
+      mws = 1;
+      break;
+    case STEPControl_ShellBasedSurfaceModel:
+      mws = 2;
+      break;
+    case STEPControl_ManifoldSolidBrep:
+      mws = 3;
+      break;
+    case STEPControl_GeometricCurveSet:
+      mws = 4;
+      break;
+    default:
+      break;
+  }
+  if (mws < 0)
+  {
+    return IFSelect_RetError; // cas non reconnu
+  }
+  thesession->TransferWriter()->SetTransferMode(mws);
+  if (!Model()->IsInitializedUnit())
+  {
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
+    Model()->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
+  Model()->InternalParameters = theParams;
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(Model());
+  occ::handle<STEPControl_ActorWrite> ActWrite =
+    occ::down_cast<STEPControl_ActorWrite>(WS()->NormAdaptor()->ActorWrite());
+  ActWrite->SetGroupMode(
+    occ::down_cast<StepData_StepModel>(thesession->Model())->InternalParameters.WriteAssembly);
+  InitializeMissingParameters();
+  return thesession->TransferWriteShape(sh, compgraph, theProgress);
+}
+
+//=================================================================================================
+
+IFSelect_ReturnStatus STEPControl_Writer::Write(const char* const theFileName)
+{
+  occ::handle<StepData_StepModel> aModel = Model();
+  if (aModel.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aModel);
+  return thesession->SendAll(theFileName);
+}
+
+//=================================================================================================
+
+IFSelect_ReturnStatus STEPControl_Writer::WriteStream(std::ostream& theOStream)
+{
+  occ::handle<StepData_StepModel> aModel = Model();
+  if (aModel.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+
+  occ::handle<StepData_Protocol> aProtocol = occ::down_cast<StepData_Protocol>(aModel->Protocol());
+  if (aProtocol.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+
+  StepData_StepWriter aWriter(aModel);
+  aWriter.SendModel(aProtocol);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aModel);
+  return aWriter.Print(theOStream) ? IFSelect_RetDone : IFSelect_RetFail;
+}
+
+//=================================================================================================
+
+void STEPControl_Writer::PrintStatsTransfer(const int what, const int mode) const
+{
+  thesession->TransferWriter()->PrintStats(what, mode);
+}
+
+//=================================================================================================
+
+Standard_EXPORT void STEPControl_Writer::CleanDuplicateEntities()
+{
+  StepTidy_DuplicateCleaner aCleaner(thesession);
+  aCleaner.Perform();
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
+{
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeFixParameters(theParameters);
+  }
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
+{
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeFixParameters(std::move(theParameters));
+  }
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters)
+{
+  XSAlgo_ShapeProcessor::ParameterMap anAdditionalParameters;
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeFixParameters(theParameters, anAdditionalParameters);
+  }
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
+{
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeFixParameters(theParameters, theAdditionalParameters);
+  }
+}
+
+//=============================================================================
+
+const XSAlgo_ShapeProcessor::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
+{
+  static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
+  const occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor();
+  return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeProcessFlags(theFlags);
+  }
+}
+
+//=============================================================================
+
+const XSAlgo_ShapeProcessor::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
+{
+  static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
+  const occ::handle<Transfer_ActorOfFinderProcess>    anActor = GetActor();
+  return anActor.IsNull() ? anEmptyFlags : anActor->GetShapeProcessFlags();
+}
+
+//=============================================================================
+
+occ::handle<Transfer_ActorOfFinderProcess> STEPControl_Writer::GetActor() const
+{
+  occ::handle<XSControl_WorkSession> aSession = WS();
+  if (aSession.IsNull())
+  {
+    return nullptr;
+  }
+
+  occ::handle<XSControl_Controller> aController = aSession->NormAdaptor();
+  if (aController.IsNull())
+  {
+    return nullptr;
+  }
+
+  return aController->ActorWrite();
+}
+
+//=============================================================================
+
+void STEPControl_Writer::InitializeMissingParameters()
+{
+  if (GetShapeFixParameters().IsEmpty())
+  {
+    SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
+  }
+  if (!GetShapeProcessFlags().second)
+  {
+    ShapeProcess::OperationsFlags aFlags;
+    aFlags.set(ShapeProcess::Operation::SplitCommonVertex);
+    aFlags.set(ShapeProcess::Operation::DirectFaces);
+    SetShapeProcessFlags(aFlags);
+  }
+}

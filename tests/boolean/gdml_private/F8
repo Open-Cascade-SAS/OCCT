@@ -1,0 +1,4 @@
+source [locate_data_file 20000_et1_401-ta6027.prt.2.gdml.tcl]
+
+## image is differ from application
+checkprops result -s 1.50445e+007

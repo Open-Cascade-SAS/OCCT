@@ -1,0 +1,151 @@
+// Created on: 1995-07-25
+// Created by: Modelistation
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Precision.hxx>
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen()
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve& C,
+                                                            const double    TolConf,
+                                                            const double    Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C,
+                                                            const IntRes2d_Domain& D,
+                                                            const double           TolConf,
+                                                            const double           Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C, D, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve& C1,
+                                                            const TheCurve& C2,
+                                                            const double    TolConf,
+                                                            const double    Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C1, C2, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C1,
+                                                            const IntRes2d_Domain& D1,
+                                                            const TheCurve&        C2,
+                                                            const double           TolConf,
+                                                            const double           Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C1, D1, C2, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C1,
+                                                            const TheCurve&        C2,
+                                                            const IntRes2d_Domain& D2,
+                                                            const double           TolConf,
+                                                            const double           Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C1, C2, D2, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C1,
+                                                            const IntRes2d_Domain& D1,
+                                                            const TheCurve&        C2,
+                                                            const IntRes2d_Domain& D2,
+                                                            const double           TolConf,
+                                                            const double           Tol)
+    : param1inf(-Precision::Infinite()),
+      param1sup(Precision::Infinite()),
+      param2inf(-Precision::Infinite()),
+      param2sup(Precision::Infinite())
+{
+  Perform(C1, D1, C2, D2, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------
+inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C1,
+                                               const TheCurve& C2,
+                                               const double    TolConf,
+                                               const double    Tol)
+{
+  double TolDomain = Tol;
+  if (TolConf > TolDomain)
+  {
+    TolDomain = TolConf;
+  }
+  Perform(C1, ComputeDomain(C1, TolDomain), C2, ComputeDomain(C2, TolDomain), TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
+                                               const IntRes2d_Domain& D1,
+                                               const TheCurve&        C2,
+                                               const double           TolConf,
+                                               const double           Tol)
+{
+  double TolDomain = Tol;
+  if (TolConf > TolDomain)
+  {
+    TolDomain = TolConf;
+  }
+  Perform(C1, D1, C2, ComputeDomain(C2, TolDomain), TolConf, Tol);
+}
+
+//----------------------------------------------------------------------
+inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
+                                               const TheCurve&        C2,
+                                               const IntRes2d_Domain& D2,
+                                               const double           TolConf,
+                                               const double           Tol)
+{
+  double TolDomain = Tol;
+  if (TolConf > TolDomain)
+  {
+    TolDomain = TolConf;
+  }
+  Perform(C1, ComputeDomain(C1, TolDomain), C2, D2, TolConf, Tol);
+}

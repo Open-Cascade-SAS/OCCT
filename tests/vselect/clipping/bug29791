@@ -1,0 +1,33 @@
+puts "============"
+puts "0029791: Visualization - Wrong result of SelectMgr_RectangularFrustum::IsClipped"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file occ/bottle.brep] b
+vclear
+vinit View1
+vdisplay -dispMode 1 -highMode 1 b
+vfit
+vzbufftrihedron
+vclipplane p -equation 1 0 0 -20 -set
+
+# clipping plane orthogonal to the camera direction
+vfront
+vfit
+vmoveto 150 200
+vstate -entities
+vselect 150 200
+if { [vreadpixel 150 200 rgb name] != "BLACK"     } { puts "Error: object is not clipped" }
+if { [vreadpixel 350 200 rgb name] != "GOLDENROD" } { puts "Error: object should NOT be selected" }
+vdump $imagedir/${casename}_1.png
+
+# depth range starts behinds the picking ray
+vviewparams -scale 14.7435 -proj 0.193921 -0.891229 0.410007 -up -0.0205984 0.414149 0.909976 -at 11.3689 1.32152 24.9954
+vmoveto 150 200
+vstate -entities
+vselect 150 200
+if { [vreadpixel 150 200 rgb name] != "BLACK"      } { puts "Error: object is not clipped" }
+if { [vreadpixel 300 200 rgb name] != "GOLDENROD3" } { puts "Error: object should NOT be selected" }
+
+vdump $imagedir/${casename}_2.png

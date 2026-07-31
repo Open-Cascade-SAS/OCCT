@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC26567"
+puts "============"
+puts ""
+###############################
+## Exception in Boolean intersection command
+###############################
+
+cpulimit 1000
+
+restore [locate_data_file Bug26567_c0.brep] b1
+restore [locate_data_file Bug26567_c1.brep] b2
+restore [locate_data_file Bug26567_c2.brep] b3
+restore [locate_data_file Bug26567_c3.brep] b4
+
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4
+
+#Exception in bfillds
+bfillds
+
+bbop result 4
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 19228
+ EDGE      : 31600
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 50829
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result obtained by Common operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

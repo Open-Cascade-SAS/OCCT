@@ -1,0 +1,79 @@
+puts "============"
+puts "OCC27386"
+puts "============"
+puts ""
+#####################################################################
+# BRepOffsetAPI_MakePipeShell does not provide history of generations
+#####################################################################
+
+
+restore [locate_data_file bug27386_sp.brep] sp
+restore [locate_data_file bug27386_pr1.brep] pr1
+restore [locate_data_file bug27386_pr2.brep] pr2
+restore [locate_data_file bug27386_pr3.brep] pr3
+
+mksweep sp
+addsweep pr3
+addsweep pr1
+addsweep pr2
+buildsweep q
+
+explode pr1
+explode pr2
+explode pr3
+
+savehistory sweep_hist
+
+generated r1_1 sweep_hist pr1_1
+generated r1_2 sweep_hist pr1_2
+generated r1_3 sweep_hist pr1_3
+generated r1_4 sweep_hist pr1_4
+
+generated r2_1 sweep_hist pr2_1
+generated r2_2 sweep_hist pr2_2
+generated r2_3 sweep_hist pr2_3
+
+generated r3_1 sweep_hist pr3_1
+
+checknbshapes r1_1 -face 1
+checkprops r1_1 -s 1070.74
+checknbshapes r1_2 -face 2
+checkprops r1_2 -s 1210.46
+checknbshapes r1_3 -face 2
+checkprops r1_3 -s 1506.95
+checknbshapes r1_4 -face 3
+checkprops r1_4 -s 1210.02
+checknbshapes r2_1 -face 3
+checkprops r2_1 -s 1776.97
+checknbshapes r2_2 -face 2
+checkprops r2_2 -s 1777.4
+checknbshapes r2_3 -face 3
+checkprops r2_3 -s 1443.8
+checknbshapes r3_1 -face 8
+checkprops r3_1 -s 4998.17
+
+explode pr1 v
+explode pr2 v
+explode pr3 v
+
+generated r1_1 sweep_hist pr1_1
+generated r1_2 sweep_hist pr1_2
+generated r1_3 sweep_hist pr1_3
+generated r1_4 sweep_hist pr1_4
+
+generated r2_1 sweep_hist pr2_1
+generated r2_2 sweep_hist pr2_2
+generated r2_3 sweep_hist pr2_3
+
+generated r3_1 sweep_hist pr3_1
+
+checkprops r1_1 -l 142.176
+checkprops r1_2 -l 142.176
+checkprops r1_3 -l 163.176
+checkprops r1_4 -l 163.176
+
+checkprops r2_1 -l 142.176
+checkprops r2_2 -l 172.788
+checkprops r2_3 -l 142.176
+
+checkprops r3_1 -l 153.936

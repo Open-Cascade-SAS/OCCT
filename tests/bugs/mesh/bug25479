@@ -1,0 +1,33 @@
+puts "========="
+puts "CR25479"
+puts "========="
+puts ""
+###############################################
+# BRepTools::Clean() cleans all edge polygons, even related to different shapes
+###############################################
+
+restore [locate_data_file bug25469_common_edge.brep] a
+
+tclean a
+incmesh a 0.004
+
+explode a
+
+incmesh a_1 0.04
+set report [tricheck a_1]
+if {$report != ""} {
+   puts "Error: incorrect meshing of shape"
+}
+
+tclean a_2
+set report [tricheck a_1]
+if {$report != ""} {
+   puts "Error: cleaning mesh of shape 2 corrupts mesh of shape 1"
+}
+
+vinit
+vsetdispmode 1
+vdisplay a_1 a_2
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

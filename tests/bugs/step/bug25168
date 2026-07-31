@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC25168"
+puts "========"
+puts ""
+##########################################################################################################
+# STEP Writer - empty AppliedGroupAssignment can cause exception in RWStepAP214_RWAppliedGroupAssignment
+##########################################################################################################
+
+stepread [locate_data_file bug24135_Drum.stp] a *
+catch {exec rm ${imagedir}/bug25168.stp}
+stepwrite a a_1 ${imagedir}/bug25168.stp

@@ -1,0 +1,9 @@
+# Original bug : fra61199
+# Date : 29June98
+cpulimit 1000
+restore [locate_data_file CTO904_fra61199a.rle] a 
+restore [locate_data_file CTO904_fra61199b.rle] b
+
+bcut result a b
+checkprops result -s 1.21952e+06
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+
+puts "========"
+puts "OCC256"
+puts "========"
+
+restore [locate_data_file OCC256.brep] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri 72 -nod 72
+checkview -display result -3d -path ${imagedir}/${test_image}.png

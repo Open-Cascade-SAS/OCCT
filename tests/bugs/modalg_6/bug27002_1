@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC27002"
+puts "============"
+puts ""
+###############################
+## First test case for Set-42
+###############################
+
+restore [locate_data_file bug27002_Face.brep] b1
+restore [locate_data_file bug27002_Compartment.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 0
+donly result
+
+checkprops result -s empty
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

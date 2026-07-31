@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC27315"
+puts "============"
+puts ""
+###############################
+## UnifySameDomain leaves unmerged edges
+###############################
+
+restore [locate_data_file bug27315_fused.brep] a
+unifysamedom result a
+
+checkshape result
+checknbshapes result -m "unifysamedom" -edge 141
+
+subshape a e 85
+don a_85
+smallview; fit
+repeat 20 md; repeat 3 pr
+don result
+explode result v
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

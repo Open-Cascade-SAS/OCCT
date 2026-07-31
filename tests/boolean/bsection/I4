@@ -1,0 +1,7 @@
+restore [locate_data_file GEN510-3666.rle] a
+explode a
+bsection result a_1 a_2
+
+checkprops result -l 114.142
+checksection result
+checkview -display result -2d -otherwise { a_1 a_2 } -l -path ${imagedir}/${test_image}.png

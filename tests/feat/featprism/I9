@@ -1,0 +1,10 @@
+restore [locate_data_file cts20924a.rle] cyl
+restore [locate_data_file contour2.rle] cont
+
+explode cyl face
+copy cyl_1 funtil
+
+featprism cyl cont cont -1 0 0 0 1
+featperform prism result funtil
+
+checkprops result -s 763239

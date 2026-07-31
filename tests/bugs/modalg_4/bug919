@@ -1,0 +1,33 @@
+
+puts "======="
+puts "OCC919"
+puts "SAM1623"
+puts "======="
+puts ""
+#############################
+## Impossible to fuse the shapes. 
+##############################
+
+restore [locate_data_file OCC919.brep] a 
+
+explode a
+
+# See comment in CR23244:
+restore [locate_data_file OCC919-PROC.brep] a_1 
+#
+fixshape a_1 a_1
+checkshape a_1
+checkshape a_2
+
+if { [ catch { bfuse result a_1 a_2} catch_result ] } {
+    puts "Faulty OCC919 (case 1)"
+} else {
+    if { [ catch { checkshape result } catch_result ] } {
+	puts "Faulty OCC919 (case 2)"
+    } else {
+	puts "OCC919 OK"
+    }
+}
+
+checkprops result -s 272591. 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

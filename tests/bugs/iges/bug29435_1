@@ -1,0 +1,36 @@
+puts "============"
+puts "0029435: Data Exchange, Exporting wires consisting of more than one edge results in loss of color data in IGES"
+puts "============"
+
+pload XDE MODELING VISUALIZATION
+catch { Close D }
+catch { Close D1 }
+
+vertex v1 -25 0 0
+vertex v2 -25 -7.5 0
+edge e1 v1 v2
+
+point p2 -25 -7.5 0
+point p3 0 -15 0
+point p4 25 -7.5 0
+catch {gcarc arc cir p2 p3 p4}
+mkedge e2 arc
+
+wire w1 e1 e2
+
+XNewDoc D
+XAddShape D w1 1
+XExpand D 0 0:1:1:1
+XSetColor D 0:1:1:2 0 128 0
+XSetColor D 0:1:1:3 128 0 0
+
+WriteIges D $imagedir/${casename}.igs
+ReadIges D1 $imagedir/${casename}.igs
+
+set color_orig [XGetAllColors D]
+set color_comp [XGetAllColors D1]
+
+if { $color_orig != $color_comp } {
+  puts "Error: incorrect color transfer"
+}
+file delete $imagedir/${casename}.igs

@@ -1,0 +1,42 @@
+puts "========"
+puts "0030645: Modeling Algorithms - B-spline segmentation produces wrong parametrization"
+puts "========"
+puts ""
+
+bsplinecurve result 3 4 \
+2.0 4  2.5 2  2.9 2  3.0 4 \
+117.9 0.0 11.6 1 \
+116.7 0.0 11 1 \
+115.8 0.0 10.5 1 \
+114.4 0.0 9.7 1 \
+113.9 0.0 9.4 1 \
+113.3 0.0 9.1 1 \
+113.1 0.0 9.0 1 \
+113.0 0.0 8.9 1
+
+
+set tolerance 2.e-9
+segment result 2.5 2.900000001 $tolerance
+
+set crv [dump result]
+
+regexp {Knots +:\n(.*)} $crv full knots
+set is_different_knots 1
+set knots_list {}
+while { "$knots" != "\n" && $is_different_knots } {
+  regexp { +([0-9]+) +: +([-0-9.+eE]+) *([0-9]+)\n(.*)} $knots full index knot weight rest
+  foreach k $knots_list {
+    if { [expr abs($k - $knot)] < $tolerance } {
+      set is_different_knots 0
+    }
+  }
+
+  lappend knots_list $knot
+  set knots $rest
+}
+
+if { $is_different_knots } {
+  puts "OK: all knots are different"
+} else {
+  puts "ERROR: segment has knots too close"
+}

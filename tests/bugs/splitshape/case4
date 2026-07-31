@@ -1,0 +1,13 @@
+puts "=============="
+puts "   splitshape "
+puts "   case4      "
+puts "=============="
+puts ""
+#puts "   OCC26354   "
+###################################################
+# Operation "splitshape" in the Test Harness give invalid result on the attached case.
+###################################################
+
+restore [locate_data_file bug27520_SplitShape4.brep] shape 
+restore [locate_data_file bug27520_SplitEdges4.brep] edges
+set ref_nbf 49

@@ -1,0 +1,6 @@
+#old file ofcb23
+
+restore [locate_data_file CHE_cc3.rle] s
+OFFSETSHAPE -0.01 {s_6} $calcul $type
+
+checkprops result -v 0.0228808

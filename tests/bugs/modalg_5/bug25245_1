@@ -1,0 +1,47 @@
+puts "================"
+puts "OCC25245"
+puts "================"
+puts ""
+#######################################################################
+# General Fuse operation regression
+#######################################################################
+
+restore [locate_data_file bug25245_Input_0.brep] s0
+restore [locate_data_file bug25245_Input_1.brep] s1
+restore [locate_data_file bug25245_Input_2.brep] s2
+restore [locate_data_file bug25245_Input_3.brep] s3
+restore [locate_data_file bug25245_Input_4.brep] s4
+restore [locate_data_file bug25245_Input_5.brep] s5
+restore [locate_data_file bug25245_Input_6.brep] s6
+restore [locate_data_file bug25245_Input_7.brep] s7
+restore [locate_data_file bug25245_Input_8.brep] s8
+restore [locate_data_file bug25245_Input_9.brep] s9
+restore [locate_data_file bug25245_Input_10.brep] s10
+restore [locate_data_file bug25245_Input_11.brep] s11
+restore [locate_data_file bug25245_Input_12.brep] s12
+restore [locate_data_file bug25245_Input_13.brep] s13
+restore [locate_data_file bug25245_Input_14.brep] s14
+restore [locate_data_file bug25245_Input_15.brep] s15
+restore [locate_data_file bug25245_Input_16.brep] s16
+restore [locate_data_file bug25245_Input_17.brep] s17
+restore [locate_data_file bug25245_Input_18.brep] s18
+restore [locate_data_file bug25245_Input_19.brep] s19
+restore [locate_data_file bug25245_Input_20.brep] s20
+restore [locate_data_file bug25245_Input_21.brep] s21
+restore [locate_data_file bug25245_Input_22.brep] s22
+restore [locate_data_file bug25245_Input_23.brep] s23
+restore [locate_data_file bug25245_Input_24.brep] s24
+restore [locate_data_file bug25245_Input_25.brep] s25
+
+bclearobjects
+bcleartools
+baddobjects s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13 s14 s15 s16 s17 s18 s19 s20 s21 s22 s23 s24 s25
+bfillds
+bbuild result
+
+checkprops result -s 11598.4 
+checkshape result
+
+checknbshapes result -t -vertex 34 -edge 80 -wire 57 -face 56 -shell 14 -solid 14 -compsolid 0 -compound 1 -shape 256
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

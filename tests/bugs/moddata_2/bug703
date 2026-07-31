@@ -1,0 +1,22 @@
+puts "=========="
+puts "OCC703    "
+puts "=========="
+puts ""
+##################################################
+## Wrong result of extrema
+## Draw command extrema c1 ce gives no solutions, but must be 2 solutions
+##################################################
+
+restore [locate_data_file OCC703_1.draw] c1 
+restore [locate_data_file OCC703_2.draw] ce 
+
+set result [extrema c1 ce]
+set err [llength $result]
+if { $err != 2} {
+    puts "Faulty OCC703 (amount of solution): command extrema does NOT work properly"
+} else {
+    puts "OCC703 OK (amount of solution): command extrema works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

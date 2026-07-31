@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC27760"
+puts "========"
+puts ""
+########################################################
+# [regression] BRepAlgoAPI_Common returns empty result
+########################################################
+
+restore [locate_data_file bug27760_leid.brep] l
+
+explode l
+brunparallel 1
+bop l_1 l_2
+bopcommon result
+
+set bug_info [string trim [explode result]]
+if {[llength $bug_info] == 0} {
+  puts "ERROR: OCC27760 is reproduced. Result of bopcommon operation is empty compound."
+}
+
+vinit
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

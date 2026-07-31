@@ -1,0 +1,86 @@
+puts "============"
+puts "OCC25230: Visualization - Test case for selection in perspective views"
+puts "Test is made using comparison of selected points with expected to be selected points."
+puts "In case of mismatching test will report about an e r r o r of certain type:"
+puts "point selection, rectangle selection or polygon selection is broken."
+puts "============"
+puts ""
+
+vinit View1
+vsetdispmode 1
+#draw grid of points 7x7
+set j 0
+for {set x 0} {$x<7} {incr x} {
+  for {set y 0} {$y<7} {incr y} {
+    vpoint $j $x $y 10
+    incr j
+  }
+}
+  for {set x 0} {$x<7} {incr x} {
+  for {set y 0} {$y<7} {incr y} {
+    vpoint $j $x $y 0
+    incr j
+  }
+}
+
+#prepare view
+vtop
+vcamera -persp
+vfit
+vleft
+vtop
+
+#check rectagle selection
+vselect 200 200 0 0
+set stat 0
+set result [vstate]
+set newlist {}
+set ref_selected {55 6 69 18 13 67 54 68 19 12 62 5 53 60 4 61 20 11}
+set asplit [split $result "\n"]
+for {set i 0} {$i < [llength $ref_selected]} {incr i} {
+  lappend newlist [lindex [lindex $asplit $i] 0]
+}
+set newsorted [lsort $newlist]
+set refsorted [lsort $ref_selected]
+for {set i 0} {$i < [llength $refsorted]} {incr i} {
+  if {[lindex $refsorted $i] != [lindex $newsorted $i]} {
+    set stat 1
+    break
+  }
+}
+
+#check point selection
+vselect 0 0
+vselect 27 28
+set stat1 0
+set result [vstate]
+if {[lindex $result 0] != 6} {
+  set stat1 1
+}
+
+#check polygon selection
+vselect 70 70 0 600 200 600 200 200 600 200 600 70
+set stat2 0
+set result [vstate]
+set newlist {}
+set ref_selected {67 97 47 32 12 33 49 74 54 8 50 19\
+ 9 63 83 56 39 26 66 75 18 95 81 15 89 51 46 76 57 90\
+ 82 58 65  10 11 25 62 59 14 52 40 60 68 16 55 7 64 61\
+ 88 69 53 17 96}
+set asplit [split $result "\n"]
+for {set i 0} {$i < [llength $ref_selected]} {incr i} {
+  lappend newlist [lindex [lindex $asplit $i] 0]
+}
+set newsorted [lsort $newlist]
+set refsorted [lsort $ref_selected]
+for {set i 0} {$i < [llength $refsorted]} {incr i} {
+  if {[lindex $refsorted $i] != [lindex $newsorted $i]} {
+    set stat2 1
+    break
+  }
+}
+
+if {$stat  == 1} { puts "Error : Perspective selection by rectangle is broken." }
+if {$stat1 == 1} { puts "Error : Perspective selection by point is broken." }
+if {$stat2 == 1} { puts "Error : Perspective selection by polygon is broken." }
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,32 @@
+## Extension of /users/skv/testref/cd1/ED/cto/009/F1
+
+vertex v1 -1 -1 0
+vertex v2 2 -1 0
+edge ea v1 v2
+prism fa ea 0 3.5 0
+prism ba fa 0 0 2
+#fit
+
+vertex v3 0 0 0 
+vertex v4 1 0 0
+vertex v5 1 0 2
+vertex v6 0 0 2
+edge eb v3 v4
+edge ec v4 v5
+edge ed v5 v6
+wire wb eb ec ed
+revol bb wb 0 0 0 0 0 1 360
+
+#clear
+
+# added by pkv from
+emptycopy s ba
+add bb s
+bop ba s
+#bop ba bb
+# added by pkv to 
+
+bopcut result 
+
+checkprops result -s 53.2832
+checkview -display result -2d -otherwise { ba s } -s -path ${imagedir}/${test_image}.png

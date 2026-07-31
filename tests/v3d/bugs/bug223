@@ -1,0 +1,60 @@
+puts "========"
+puts "OCC223: Shading is not correct for several overlapped faces, converted to B-Spline representation"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC223-1.brep] cylinder
+checkshape cylinder
+restore [locate_data_file OCC223-2.brep] face
+checkshape face
+
+set Start_X 140
+set Start_Y 40
+
+vinit
+tclean cylinder
+tclean face
+
+vdisplay cylinder
+vdisplay face
+vfit
+
+vsetdispmode face 1
+vsetcolor face GREEN1
+
+vsetdispmode  cylinder 1
+vsetcolor cylinder RED1
+
+set ColorList [vreadpixel ${Start_X} ${Start_Y} rgb]
+set R_START_POINT [lindex $ColorList 0]
+set G_START_POINT [lindex $ColorList 1]
+set B_START_POINT [lindex $ColorList 2]
+
+puts "R_START_POINT=$R_START_POINT ;   G_START_POINT=$G_START_POINT ;   B_START_POINT=$B_START_POINT"
+
+set IsGood 1
+for {set count 0} {${count} <= 11} {incr count 1} {
+    checkcolor $Start_X $Start_Y $R_START_POINT $G_START_POINT $B_START_POINT
+    if {$stat != 1} {
+	 set IsGood 0
+    }
+    incr $Start_X 10
+    incr $Start_Y 10
+}
+
+if {$IsGood == 1} {
+  puts "\nOCC223 OK\n"
+} else {
+  puts "\nFaulty OCC223\n"
+}
+
+vdump $imagedir/${casename}.png
+
+puts "\n------- Additional Comments From Igor FEOKTISTOV 2002-05-20 12:32 -------\n"
+
+puts "It is not problem of meshing."
+puts "It is pure problem of shading geometrically coinciding faces with different"
+puts "triangulation. If we create analytical cylinder and box by such way that plane"
+puts "faces of cylinder and two faces of box are coinceded, we will have the same"
+puts "result: fractional shading of coinciding faces.\n"

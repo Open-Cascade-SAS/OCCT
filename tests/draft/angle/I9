@@ -1,0 +1,14 @@
+#K2----------------------------------------------
+beziercurve cb 4  10 0 0  20 10 0  20 20 0  10 30 0 
+polyline pl 10 30 0  10 0 0
+mkedge ed cb
+wire ww ed pl
+mkplane ww ww
+revol rv ww 0 0 0 0 1 0 -180
+plane p 0 15 12 0 0 1
+pcylinder p p 5 15
+bfuse f rv p
+nexplode f f
+depouille result f 0 0 1 f_5 3 0 0 27 0 0 1
+
+checkprops result -s 3164.69

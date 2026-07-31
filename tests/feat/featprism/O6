@@ -1,0 +1,19 @@
+# Original bug : cts20960
+# Date : 25 Nov 98
+
+# mkv 17.08.2010
+#cpulimit 600
+#miv
+cpulimit 2000
+
+restore [locate_data_file CFE900_cts20geq.rle] base
+restore [locate_data_file cts20960_face.brep] cont
+
+explode base face
+#copy base_26 funtil
+copy base_28 funtil
+
+featprism base cont cont -0.866 0.5 0 1 1
+featperform prism result funtil
+
+checkprops result -s 38845.6

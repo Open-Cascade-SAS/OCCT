@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj3_s1-md-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 39 )  Summary  = 8  ( 39 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 116  ( 116 ) 
+STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 130  ( 130 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0009770882201  (  0.08941549678 )  AvgTol   =  2.388262758e-005  (  0.0007912796777 )
+LABELS      : N0Labels = 14  ( 14 )  N1Labels = 14  ( 14 )  N2Labels = 0  ( 0 )   TotalLabels = 28  ( 28 )   NameLabels = 28  ( 28 )   ColorLabels = 9  ( 9 )   LayerLabels = 9  ( 9 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = CYAN DARKORANGE1 DARKORANGE3 GREEN MAGENTA RED YELLOW  ( CYAN DARKORANGE1 DARKORANGE3 GREEN MAGENTA RED YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 1 110 28263 5  ( 1 110 28263 5 )
+
+}

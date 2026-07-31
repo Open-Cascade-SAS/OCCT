@@ -1,0 +1,21 @@
+puts "=================================="
+puts "0031336: Modeling data - extend BRepPrimAPI_MakeBox with planar shape creation"
+puts "Check a creation preview if it is a rectangle"
+puts "=================================="
+
+pload TOPTEST
+           
+smallview +X+Y
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+             
+box rect1 0.0 0.0 0.0 10.0 10.0 0.0 -preview
+donly rect1
+fit                    
+checkview -screenshot -2d -path $anImage1
+
+box rect2 -min 30.0 40.0 0.0 -max 50.0 60.0 0.0 -preview
+donly rect2
+fit                    
+checkview -screenshot -2d -path $anImage2

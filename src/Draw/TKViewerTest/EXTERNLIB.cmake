@@ -1,0 +1,30 @@
+# External dependencies for TKViewerTest
+set(OCCT_TKViewerTest_EXTERNAL_LIBS
+  TKGeomBase
+  TKFillet
+  TKBRep
+  TKTopAlgo
+  TKHLR
+  TKernel
+  TKMath
+  TKService
+  TKShHealing
+  TKBool
+  TKPrim
+  TKGeomAlgo
+  TKG2d
+  TKTopTest
+  TKG3d
+  TKOffset
+  TKMesh
+  TKV3d
+  TKDraw
+  CSF_TclLibs
+  CSF_XwLibs
+  CSF_user32
+  CSF_gdi32
+  CSF_objc
+  CSF_Appkit
+  CSF_IOKit
+  CSF_FREETYPE
+)

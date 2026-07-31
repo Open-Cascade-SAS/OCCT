@@ -1,0 +1,30 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 10)
+######################################################
+
+restore [locate_data_file OCC1477-1.brep] s1 
+restore [locate_data_file OCC1477-2.brep] s2 
+
+checkshape s1
+checkshape s2
+
+mksweep s1
+
+addsweep s2 -T 0 1 1 2 2 .5
+
+if { [catch {buildsweep result -C} catch_result] } {
+    puts "Faulty OCC1477"
+}
+
+checkprops result -s 0 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

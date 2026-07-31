@@ -1,0 +1,19 @@
+puts "============="
+puts "OCC24049: Modeling Algorithms - cras-h in BRepOffsetAPI_MakePipe"
+puts "============="
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug24049_spine.brep] spine
+
+mkedge spine spine
+wire spine spine
+
+circle profile 27378.59961 -1139.028442 -621 0 0 -1 -1 0 -0 6.349999904633
+mkedge profile profile
+
+pipe pipe spine profile 2
+checkshape pipe
+
+puts "TEST COMPLETED"

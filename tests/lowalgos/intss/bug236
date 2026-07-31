@@ -1,0 +1,40 @@
+puts "TODO OCC12345 ALL: Faulty OCC236"
+
+puts "================"
+puts "OCC236"
+puts "================"
+puts ""
+#######################################################
+##Result of intersection of two surfaces of linear extrusion is incorrect.
+#######################################################
+
+restore [locate_data_file OCC236a.rle] su1 
+############### checkshape su1 # is not a topological shape
+restore [locate_data_file OCC236b.rle] su2
+############### checkshape su2 # is not a topological shape
+
+intersect result su1 su2
+
+set che [directory]
+set err [lindex $che [expr [llength $che] - 1]]
+if { $err != "result_2"} {
+    puts "Faulty OCC236"
+} else {
+    puts "OCC236 OK (first checking) : Intersection command works properly"
+    regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection result_1] full num
+    if { $num != 0 } {
+	puts " Faulty OCC236 (second checking): Result result_1 is UNclosed !!! " 
+    } else {
+	puts " OCC236 OK (second checking): Result result_1 is closed !!! " 
+        puts ""
+    }
+    regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection result_2] full num
+    if { $num != 0 } {
+	puts " Faulty OCC236 (second checking): Result result_2 is UNclosed !!! " 
+    }  else {
+	puts " OCC236 OK (second checking): Result result_2 is closed !!! " 
+    }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

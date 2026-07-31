@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+
+set LinuxFaulties {STATSHAPE}
+set filename Inner.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 35  ( 887 )  Summary  = 35  ( 887 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 392 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 392 )   FreeWire = 97  ( 121 ) 
+TOLERANCE   : MaxTol   =   0.9393822539  (   0.9393822539 )  AvgTol   =   0.01258754851  (   0.01256114362 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 812  ( 3079 )  N2Labels = 0  ( 0 )   TotalLabels = 813  ( 3080 )   NameLabels = 716  ( 992 )   ColorLabels = 812  ( 3079 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLUE GREEN WHITE YELLOW  ( BLUE GREEN WHITE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

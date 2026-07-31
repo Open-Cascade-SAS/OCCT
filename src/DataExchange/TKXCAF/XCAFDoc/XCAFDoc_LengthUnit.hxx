@@ -1,0 +1,96 @@
+// Copyright (c) 2021 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _XCAFDoc_LengthUnit_HeaderFile
+#define _XCAFDoc_LengthUnit_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_DerivedAttribute.hxx>
+
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
+class TDF_Label;
+class TDF_RelocationTable;
+
+//! Used to define a Length Unit attribute containing a length unit info
+class XCAFDoc_LengthUnit : public TDF_Attribute
+{
+
+public:
+  //! Returns the GUID of the attribute.
+  Standard_EXPORT static const Standard_GUID& GetID();
+
+  //! Finds or creates a LengthUnit attribute
+  //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
+  //! @param theUnitValue - length scale factor to meter
+  //! The LengthUnit attribute is returned.
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(
+    const TDF_Label&               theLabel,
+    const TCollection_AsciiString& theUnitName,
+    const double                   theUnitValue);
+
+  //! Finds or creates a LengthUnit attribute
+  //! @param theUnitValue - length scale factor to meter
+  //! The LengthUnit attribute is returned.
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(const TDF_Label& theLabel,
+                                                             const double     theUnitValue);
+
+  //! Finds, or creates, a LengthUnit attribute with explicit user defined GUID
+  //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
+  //! @param theUnitValue - length scale factor to meter
+  //! The LengthUnit attribute is returned
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(
+    const TDF_Label&               theLabel,
+    const Standard_GUID&           theGUID,
+    const TCollection_AsciiString& theUnitName,
+    const double                   theUnitValue);
+
+  //! Creates a LengthUnit attribute
+  //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
+  //! @param theUnitValue - length scale factor to meter
+  Standard_EXPORT void Set(const TCollection_AsciiString& theUnitName, const double theUnitValue);
+
+  //! Length unit description (could be arbitrary text)
+  const TCollection_AsciiString& GetUnitName() const { return myUnitName; }
+
+  //! Returns length unit scale factor to meter
+  double GetUnitValue() const { return myUnitScaleValue; }
+
+  Standard_EXPORT bool IsEmpty() const { return myUnitName.IsEmpty(); }
+
+  Standard_EXPORT XCAFDoc_LengthUnit();
+
+  Standard_EXPORT const Standard_GUID& ID() const override;
+
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theWith) override;
+
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
+
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LengthUnit, TDF_Attribute)
+
+private:
+  double                  myUnitScaleValue;
+  TCollection_AsciiString myUnitName;
+};
+
+#endif // _XCAFDoc_LengthUnit_HeaderFile

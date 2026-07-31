@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC24596"
+puts "============"
+puts ""
+###############################
+## Slow import of IGES data
+###############################
+
+pload XDE
+
+dchrono h restart
+
+stepread [locate_data_file bug26327_fuse_input.stp] a *
+
+for {set i 2} {$i < 22} {incr i} {
+   puts "a_$i"
+   bfuse a_1 a_1 a_$i
+   }
+
+dchrono h stop counter stepread

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC17128"
+puts "========"
+puts ""
+###########################################
+# ShapeFix WireIntersector make bad shape
+###########################################
+
+restore [locate_data_file bug17129_ff_1285_proj.brep] a
+fixshape result a
+
+vinit
+vdisplay result
+vfit
+
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

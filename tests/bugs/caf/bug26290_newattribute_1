@@ -1,0 +1,50 @@
+# OCAF VISUALIZATION
+# Presentation attributes
+#
+# Testing attributes: TPrsStd_AISPresentation & TDataXtd_Presentation
+#
+# Testing command:   standard set of commands
+#
+# The test checks joint work of these attributes (including Undo/Redo) and keeps result in 'bug26290_new_1.cbf' file
+
+pload OCAF VISUALIZATION
+
+box b 100 200 300
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+set Lab1 [Label D 0:1:1]
+SetShape D $Lab1 b
+AISInitViewer D
+vsetdispmode 1
+AISSet D $Lab1 NS
+AISDisplay D $Lab1
+vfit
+NewCommand D
+Undo D 1
+Redo D 1
+AISColor D $Lab1 AQUAMARINE4
+NewCommand D
+
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
+
+AISErase D $Lab1
+## DFBrowse D # - for debug purpose only
+AISUnset D $Lab1
+NewCommand D
+Undo D 1
+Redo D 1
+Close D
+
+## reopen just kept file
+Open $aTmpFile D
+file delete -force $aTmpFile
+
+## DFBrowse D
+AISInitViewer D
+vsetdispmode 1
+vfit
+AISColor D $Lab1 AQUAMARINE1
+AISErase D $Lab1
+Close D

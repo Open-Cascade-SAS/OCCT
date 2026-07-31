@@ -1,0 +1,40 @@
+puts "========"
+puts "OCC21261"
+puts "========"
+puts ""
+######################################################
+# Implementation of thickening of shell functionality
+######################################################
+
+set BugNumber OCC21261
+
+restore [locate_data_file OCC21261-3.brep] s 
+
+thickshell result s 5 i
+
+checkprops result -s 110064 
+checkshape result
+
+checknbshapes result -vertex 24 -edge 48 -wire 24 -face 24 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 122
+
+
+vinit
+vdisplay result
+vsetdispmode 0
+vfit
+
+set scale    4.1681300306816444
+set proj_X   0.48621529340744019
+set proj_Y   -0.47558537125587463
+set proj_Z   0.73308473825454712
+set up_X     -0.51949578523635864
+set up_Y     0.51725912094116211
+set up_Z     0.68012285232543945
+set at_X     -2.16667064830908
+set at_Y     2.30140290143177
+set at_Z     4.64791596010368
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

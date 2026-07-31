@@ -1,0 +1,26 @@
+puts "========================"
+puts "BUC60703"
+puts "================================="
+puts "Action with models with VERY BIG tolerance" 
+puts "================================="
+##########################################
+## Crash during a fuse whilst two plans are tangent. 
+## ( Case has  LIMITATION status currently )
+##########################################
+
+cpulimit 1000
+
+restore [locate_data_file buc60703a.brep] a 
+# maxtolerance a
+checkshape a
+restore [locate_data_file buc60703b.brep] b
+# maxtolerance b
+checkshape b
+
+bfuse result a b
+
+checkshape result
+checkprops result -s 173.109 -v 129.814
+checknbshapes result -wire 10 -face 10 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

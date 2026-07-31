@@ -1,0 +1,25 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "================"
+puts "OCC21060"
+puts "================"
+puts ""
+#######################################################################################
+# Triangulatiom fails on non-manifold face with Sl wire
+######################################################################################
+
+set BugNumber OCC21060
+
+restore [locate_data_file OCC21060-A9_205.brep] result
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkprops result -s 12 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 4 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 13
+checkview -display result -3d -path ${imagedir}/${test_image}.png

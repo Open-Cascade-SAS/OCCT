@@ -1,0 +1,399 @@
+// Copyright (c) 2022 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <DE_ConfigurationContext.hxx>
+
+#include <Message.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
+#include <OSD_StreamBuffer.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(DE_ConfigurationContext, Standard_Transient)
+
+enum DE_ConfigurationContext_KindOfLine
+{
+  DE_ConfigurationContext_KindOfLine_End,
+  DE_ConfigurationContext_KindOfLine_Empty,
+  DE_ConfigurationContext_KindOfLine_Comment,
+  DE_ConfigurationContext_KindOfLine_Resource,
+  DE_ConfigurationContext_KindOfLine_Error
+};
+
+namespace
+{
+//=================================================================================================
+
+static bool GetLine(OSD_File& theFile, TCollection_AsciiString& theLine)
+{
+  TCollection_AsciiString aBuffer;
+  int                     aBufSize = 10;
+  int                     aLen;
+  theLine.Clear();
+  do
+  {
+    theFile.ReadLine(aBuffer, aBufSize, aLen);
+    theLine += aBuffer;
+    if (theFile.IsAtEnd())
+    {
+      if (!theLine.Length())
+      {
+        return false;
+      }
+      else
+      {
+        theLine += "\n";
+      }
+    }
+  } while (theLine.Value(theLine.Length()) != '\n');
+  return true;
+}
+
+//=================================================================================================
+
+static DE_ConfigurationContext_KindOfLine WhatKindOfLine(const TCollection_AsciiString& theLine,
+                                                         TCollection_AsciiString&       theToken1,
+                                                         TCollection_AsciiString&       theToken2)
+{
+  static const TCollection_AsciiString aWhiteSpace = " \t\r\n";
+  int                                  aPos1 = 0, aPos2 = 0, aPos = 0;
+  TCollection_AsciiString              aLine(theLine);
+  aLine.LeftAdjust();
+  aLine.RightAdjust();
+  if (!aLine.EndsWith(':')
+      && (!aLine.EndsWith(' ') || !aLine.EndsWith('\t') || !aLine.EndsWith('\n')))
+  {
+    aLine.InsertAfter(aLine.Length(), " ");
+  }
+
+  if (aLine.Value(1) == '!')
+  {
+    return DE_ConfigurationContext_KindOfLine_Comment;
+  }
+  aPos1 = aLine.FirstLocationNotInSet(aWhiteSpace, 1, aLine.Length());
+  if (aLine.Value(aPos1) == '\n')
+  {
+    return DE_ConfigurationContext_KindOfLine_Empty;
+  }
+
+  aPos2 = aLine.Location(1, ':', aPos1, aLine.Length());
+  if (aPos2 == 0 || aPos1 == aPos2)
+  {
+    return DE_ConfigurationContext_KindOfLine_Error;
+  }
+
+  for (aPos = aPos2 - 1; aLine.Value(aPos) == '\t' || aLine.Value(aPos) == ' '; aPos--)
+  {
+    ;
+  }
+
+  theToken1 = aLine.SubString(aPos1, aPos);
+  if (aPos2 != aLine.Length())
+  {
+    aPos2++;
+  }
+  aPos = aLine.FirstLocationNotInSet(aWhiteSpace, aPos2, aLine.Length());
+  if (aPos != 0)
+  {
+    if (aLine.Value(aPos) == '\\')
+    {
+      switch (aLine.Value(aPos + 1))
+      {
+        case '\\':
+        case ' ':
+        case '\t':
+          aPos++;
+          break;
+      }
+    }
+  }
+  if (aPos == aLine.Length() || aPos == 0)
+  {
+    theToken2.Clear();
+  }
+  else
+  {
+    aLine.Remove(1, aPos - 1);
+    aLine.Remove(aLine.Length());
+    theToken2 = aLine;
+  }
+  return DE_ConfigurationContext_KindOfLine_Resource;
+}
+
+//=================================================================================================
+
+static TCollection_AsciiString MakeName(const TCollection_AsciiString& theScope,
+                                        const TCollection_AsciiString& theParam)
+{
+  TCollection_AsciiString aStr(theScope);
+  if (!aStr.IsEmpty())
+  {
+    aStr += '.';
+  }
+  aStr += theParam;
+  return aStr;
+}
+} // namespace
+
+//=================================================================================================
+
+DE_ConfigurationContext::DE_ConfigurationContext() = default;
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::Load(const TCollection_AsciiString& theConfiguration)
+{
+  OSD_Path aPath = theConfiguration;
+  OSD_File aFile(aPath);
+  if (!aFile.Exists())
+  {
+    if (!LoadStr(theConfiguration))
+    {
+      return false;
+    }
+  }
+  else
+  {
+    if (!LoadFile(theConfiguration))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::LoadFile(const TCollection_AsciiString& theFile)
+{
+  myResource.Clear();
+  OSD_Path                aPath(theFile);
+  OSD_File                aFile    = aPath;
+  TCollection_AsciiString FileName = aPath.Name();
+  aFile.Open(OSD_ReadOnly, OSD_Protection());
+  if (aFile.Failed())
+  {
+    Message::SendFail("Error: DE Context loading is stopped. Can't open the file");
+    return true;
+  }
+  TCollection_AsciiString aLine;
+  while (GetLine(aFile, aLine))
+  {
+    if (!load(aLine))
+    {
+      Message::SendFail() << "Error: DE Context loading is stopped. Syntax error: " << aLine;
+      return false;
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::LoadStr(const TCollection_AsciiString& theResource)
+{
+  myResource.Clear();
+  TCollection_AsciiString aLine   = "";
+  const int               aLength = theResource.Length();
+  for (int anInd = 1; anInd <= aLength; anInd++)
+  {
+    const char aChar = theResource.Value(anInd);
+    if (aChar != '\n')
+    {
+      aLine += aChar;
+    }
+    if ((aChar == '\n' || anInd == aLength) && !aLine.IsEmpty())
+    {
+      if (!load(aLine))
+      {
+        Message::SendFail() << "Error: DE Context loading is stopped. Syntax error: " << aLine;
+        return false;
+      }
+      aLine.Clear();
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::IsParamSet(const TCollection_AsciiString& theParam,
+                                         const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aResource(MakeName(theScope, theParam));
+  return myResource.IsBound(aResource);
+}
+
+//=================================================================================================
+
+double DE_ConfigurationContext::RealVal(const TCollection_AsciiString& theParam,
+                                        const double                   theDefValue,
+                                        const TCollection_AsciiString& theScope) const
+{
+  double aVal = 0.;
+  return GetReal(theParam, aVal, theScope) ? aVal : theDefValue;
+}
+
+//=================================================================================================
+
+int DE_ConfigurationContext::IntegerVal(const TCollection_AsciiString& theParam,
+                                        const int                      theDefValue,
+                                        const TCollection_AsciiString& theScope) const
+{
+  int aVal = 0;
+  return GetInteger(theParam, aVal, theScope) ? aVal : theDefValue;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::BooleanVal(const TCollection_AsciiString& theParam,
+                                         const bool                     theDefValue,
+                                         const TCollection_AsciiString& theScope) const
+{
+  bool aVal = false;
+  return GetBoolean(theParam, aVal, theScope) ? aVal : theDefValue;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString DE_ConfigurationContext::StringVal(
+  const TCollection_AsciiString& theParam,
+  const TCollection_AsciiString& theDefValue,
+  const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aVal = "";
+  return GetString(theParam, aVal, theScope) ? aVal : theDefValue;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::GetReal(const TCollection_AsciiString& theParam,
+                                      double&                        theValue,
+                                      const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aStr;
+  if (!GetString(theParam, aStr, theScope))
+  {
+    return false;
+  }
+  if (aStr.IsRealValue())
+  {
+    theValue = aStr.RealValue();
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::GetInteger(const TCollection_AsciiString& theParam,
+                                         int&                           theValue,
+                                         const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aStr;
+  if (!GetString(theParam, aStr, theScope))
+  {
+    return false;
+  }
+  if (aStr.IsIntegerValue())
+  {
+    theValue = aStr.IntegerValue();
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::GetBoolean(const TCollection_AsciiString& theParam,
+                                         bool&                          theValue,
+                                         const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aStr;
+  if (!GetString(theParam, aStr, theScope))
+  {
+    return false;
+  }
+  if (aStr.IsIntegerValue())
+  {
+    theValue = aStr.IntegerValue() != 0;
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::GetString(const TCollection_AsciiString& theParam,
+                                        TCollection_AsciiString&       theStr,
+                                        const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aResource = MakeName(theScope, theParam);
+  return myResource.Find(aResource, theStr);
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::GetStringSeq(const TCollection_AsciiString&             theParam,
+                                           NCollection_List<TCollection_AsciiString>& theValue,
+                                           const TCollection_AsciiString& theScope) const
+{
+  TCollection_AsciiString aStr;
+  if (!GetString(theParam, aStr, theScope))
+  {
+    return false;
+  }
+  theValue.Clear();
+  TCollection_AsciiString anElem;
+  const int               aLength = aStr.Length();
+  for (int anInd = 1; anInd <= aLength; anInd++)
+  {
+    const char aChar = aStr.Value(anInd);
+    anElem += aChar;
+    if ((aChar == ' ' || anInd == aLength) && !anElem.IsEmpty())
+    {
+      anElem.RightAdjust();
+      anElem.LeftAdjust();
+      theValue.Append(anElem);
+      anElem.Clear();
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationContext::load(const TCollection_AsciiString& theResourceLine)
+{
+  if (theResourceLine.IsEmpty())
+  {
+    return false;
+  }
+  TCollection_AsciiString            aToken1, aToken2;
+  DE_ConfigurationContext_KindOfLine aKind = WhatKindOfLine(theResourceLine, aToken1, aToken2);
+  switch (aKind)
+  {
+    case DE_ConfigurationContext_KindOfLine_End:
+    case DE_ConfigurationContext_KindOfLine_Comment:
+    case DE_ConfigurationContext_KindOfLine_Empty:
+      break;
+    case DE_ConfigurationContext_KindOfLine_Resource:
+      myResource.Bind(aToken1, aToken2);
+      break;
+    case DE_ConfigurationContext_KindOfLine_Error:
+      break;
+  }
+  return true;
+}

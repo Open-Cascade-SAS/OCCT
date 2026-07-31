@@ -1,0 +1,19 @@
+puts "TODO OCC28694 ALL: ERROR: OCC28694 is reproduced."
+
+puts "========"
+puts "OCC28694"
+puts "========"
+puts ""
+###############################################################
+# IGES reader produces too small edge covered by its vertices
+###############################################################
+
+igesbrep [locate_data_file ger61337a.igs] r *
+
+foreach e [explode r e] {
+  if {[lsearch [dump $e] degenerated] == -1 && [validrange $e] == "edge has no valid range"} {
+    regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
+    regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
+    puts "ERROR: OCC28694 is reproduced. Edge $e (length=$len, tolerance=$tol) is too small"
+  }
+}

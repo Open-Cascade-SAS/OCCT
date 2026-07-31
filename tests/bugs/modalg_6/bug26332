@@ -1,0 +1,15 @@
+puts "=========="
+puts "OCC26332"
+puts "=========="
+puts ""
+############################################################
+# BRepOffsetAPI_ThruSections algorithm fails on two wires with different number of edges
+############################################################
+
+restore [locate_data_file bug26332_w1.brep] w1
+restore [locate_data_file bug26332_w2.brep] w2
+
+thrusections result 0 1 w1 w2
+
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

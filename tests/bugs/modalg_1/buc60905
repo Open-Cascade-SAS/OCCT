@@ -1,0 +1,29 @@
+
+puts "============"
+puts "BUC60905"
+puts "============"
+puts ""
+puts "TODO CR23530 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+#########################################################
+## shape contains open shells if sewing would be made with big tolerance invalid shape
+## will be produced, and visualization crashes. 
+#########################################################
+
+restore [locate_data_file BUC60905.brep] a 
+# checkshape a
+
+sewing result 10 a
+
+vinit
+vdisplay result
+
+# checkshape res
+
+checkmaxtol result -ref 1.098308e+001
+checknbshapes result -shell 2
+checkfreebounds result 115
+
+checkprops result -s 270868 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

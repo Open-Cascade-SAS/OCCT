@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC27325"
+puts "============"
+puts ""
+###############################
+## [Regression to 6.9.1] geom/revolution_00/A1: BOPTools_AlgoTools2D::AttachExistingPCurve doesn't work
+###############################
+
+restore [locate_data_file bug27325_edge.brep] en
+restore [locate_data_file bug27325_face.brep] f
+explode f e
+attachpcurve f_3 en f
+
+#Check attached p-curve
+pcurve result en f
+#whatis result
+set ind [string first "2d curve" [whatis result]]
+if {${ind} < 0} {
+  puts "Error: PCurve has not been attached"
+} else {
+  dump result
+}

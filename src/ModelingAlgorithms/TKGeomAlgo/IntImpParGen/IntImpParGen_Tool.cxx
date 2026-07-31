@@ -1,0 +1,204 @@
+// Created on: 1992-06-10
+// Created by: Laurent BUCHARD
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntImpParGen_Tool.hxx>
+#include <gp.hxx>
+
+#define TOLERANCE_ANGULAIRE 0.00000001
+
+//----------------------------------------------------------------------
+double NormalizeOnDomain(double& Param, const IntRes2d_Domain& TheDomain)
+{
+  double modParam = Param;
+  if (TheDomain.IsClosed())
+  {
+    double Periode, t;
+    TheDomain.EquivalentParameters(t, Periode);
+    Periode -= t;
+    if (TheDomain.HasFirstPoint())
+    {
+      while (modParam < TheDomain.FirstParameter())
+      {
+        modParam += Periode;
+      }
+    }
+    if (TheDomain.HasLastPoint())
+    {
+      if (modParam > TheDomain.LastParameter())
+      {
+        modParam -= Periode;
+      }
+    }
+  }
+  return (modParam);
+}
+
+//----------------------------------------------------------------------
+void Determine_Position(IntRes2d_Position&     Pos1,
+                        const IntRes2d_Domain& TheDomain,
+                        const gp_Pnt2d&        Pnt1,
+                        const double           Param1)
+{
+
+  Pos1 = IntRes2d_Middle;
+
+  if (TheDomain.HasFirstPoint())
+  {
+    if (Pnt1.Distance(TheDomain.FirstPoint()) <= TheDomain.FirstTolerance())
+    {
+      Pos1 = IntRes2d_Head;
+    }
+  }
+
+  if (TheDomain.HasLastPoint())
+  {
+    if (Pnt1.Distance(TheDomain.LastPoint()) <= TheDomain.LastTolerance())
+    {
+      if (Pos1 == IntRes2d_Head)
+      {
+        if (std::abs(Param1 - TheDomain.LastParameter())
+            < std::abs(Param1 - TheDomain.FirstParameter()))
+        {
+          Pos1 = IntRes2d_End;
+        }
+      }
+      else
+      {
+        Pos1 = IntRes2d_End;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------
+void Determine_Transition(const IntRes2d_Position Pos1,
+                          gp_Vec2d&               Tan1,
+                          const gp_Vec2d&         Norm1,
+                          IntRes2d_Transition&    T1,
+                          const IntRes2d_Position Pos2,
+                          gp_Vec2d&               Tan2,
+                          const gp_Vec2d&         Norm2,
+                          IntRes2d_Transition&    T2,
+                          //			  const double        Tolerance_Angulaire) {
+                          const double)
+{
+
+  bool courbure1 = true;
+  bool courbure2 = true;
+  bool decide    = true;
+  if (Tan1.Magnitude() <= gp::Resolution())
+  {
+    Tan1      = Norm1;
+    courbure1 = false;
+    if (Tan1.Magnitude() <= gp::Resolution())
+    { // transition undecided
+      decide = false;
+    }
+  }
+
+  if (Tan2.Magnitude() <= gp::Resolution())
+  {
+    Tan2      = Norm2;
+    courbure2 = false;
+    if (Tan2.Magnitude() <= gp::Resolution())
+    { // transition undecided
+      decide = false;
+    }
+  }
+
+  if (!decide)
+  {
+    T1.SetValue(Pos1);
+    T2.SetValue(Pos2);
+  }
+  else
+  {
+    double sgn  = Tan1.Crossed(Tan2);
+    double norm = Tan1.Magnitude() * Tan2.Magnitude();
+
+    if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
+    { // Transition TOUCH #########
+      bool opos = (Tan1.Dot(Tan2)) < 0;
+      if (!(courbure1 || courbure2))
+      {
+        T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
+        T2.SetValue(true, Pos2, IntRes2d_Unknown, opos);
+      }
+      else
+      {
+        gp_Vec2d Norm;
+        Norm.SetCoord(-Tan1.Y(), Tan1.X());
+        double Val1, Val2;
+        if (!courbure1)
+        {
+          Val1 = 0.0;
+        }
+        else
+        {
+          Val1 = Norm.Dot(Norm1);
+        }
+        if (!courbure2)
+        {
+          Val2 = 0.0;
+        }
+        else
+        {
+          Val2 = Norm.Dot(Norm2);
+        }
+
+        if (std::abs(Val1 - Val2) <= gp::Resolution())
+        {
+          T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
+          T2.SetValue(true, Pos2, IntRes2d_Unknown, opos);
+        }
+        else if (Val2 > Val1)
+        {
+          T2.SetValue(true, Pos2, IntRes2d_Inside, opos);
+          if (opos)
+          {
+            T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
+          }
+          else
+          {
+            T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
+          }
+        }
+        else
+        { // Val1 > Val2
+          T2.SetValue(true, Pos2, IntRes2d_Outside, opos);
+          if (opos)
+          {
+            T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
+          }
+          else
+          {
+            T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
+          }
+        }
+      }
+    }
+    else if (sgn < 0)
+    {
+      T1.SetValue(false, Pos1, IntRes2d_In);
+      T2.SetValue(false, Pos2, IntRes2d_Out);
+    }
+    else
+    { // sgn>0
+      T1.SetValue(false, Pos1, IntRes2d_Out);
+      T2.SetValue(false, Pos2, IntRes2d_In);
+    }
+  }
+}

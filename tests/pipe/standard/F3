@@ -1,0 +1,10 @@
+beziercurve profile 6 0 -105 75.5 -5 -115 75.5 -5 -135 75.5 5 -135 75.5 5 -115 75.5 0 -105 75.5 
+mkedge profile profile 
+wire profile profile 
+mkplane profile profile
+hyperbola w 0 0 -50 1 0 0 50 50
+mkedge w w -pi/2. pi/2.
+wire w w
+pipe result w profile
+
+checkprops result -s 9533.54

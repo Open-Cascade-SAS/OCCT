@@ -1,0 +1,14 @@
+
+#box s1 10 10 10 
+#pcylinder s2 3 20 
+#trotate s2 0 0 0 1 0 0 90
+#ttranslate s2 5 15 5
+#cut s s1 s2
+#save s L12.draw 
+
+restore [locate_data_file CFI_l12__fiu.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_5
+
+checkprops result -s 72801.3

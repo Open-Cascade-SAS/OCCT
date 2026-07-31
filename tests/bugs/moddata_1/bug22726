@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC22726"
+puts "============"
+puts ""
+#######################################################################
+# Exception on restoring shape
+#######################################################################
+
+set BugNumber OCC22726
+
+restore [locate_data_file OCC22726-b211.brep] result
+
+whatis result
+
+vinit
+vdisplay result
+vfit
+
+checkprops result -s 812.984
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

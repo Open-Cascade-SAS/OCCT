@@ -1,0 +1,10 @@
+## pro16343
+
+restore [locate_data_file CTO909_fus-object1.brep] a
+restore [locate_data_file CTO909_fus-object2.brep] b
+
+bop a b
+bopfuse result
+
+checkprops result -s 67333.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC27271"
+puts "============"
+puts ""
+###########################################################################################################
+# Unifysamedomain invalid result
+###########################################################################################################
+
+restore [locate_data_file bug27271_Shape.brep] a
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -vertex 44 -edge 81 -wire 45 -face 35 -shell 3 -solid 3
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.003} {
+   puts "Error: bad tolerance of result"
+}
+
+explode result
+checkprops result_1 -v 1109.52
+checkprops result_2 -v 7.50891
+checkprops result_3 -v 7.51022

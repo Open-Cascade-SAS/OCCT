@@ -1,0 +1,22 @@
+puts "========"
+puts "BUC60890"
+puts "========"
+puts ""
+#####################################################
+## The Extrema raises when the number of C2 intervals is greater that 16. 
+#####################################################
+
+set poles { { 0 0 1 } { 1 0 1 } { 1.3 1 1 } { 2 1 1 } { 2 0 1 } { 3 0 1} { 3.5 1 1 } { 4 1 1 } { 4 0 1 } { 5 0 1 } { 5 1 1 } { 6 1 1 } { 6 0 1 } { 7 0 1 } { 7 1 1 } { 8 1 1 } { 8 0 1 } { 9 0 1 } }
+set knots { { 0 2 } { 1 1 } { 2 1 } { 3 1 } { 4 1 } { 5 1 } { 6 1 } { 7 1 } { 8 1 } { 9 1 } { 10 1 } { 11 1 } { 12 1 } { 13 1 } { 14 1 } { 15 1 } { 16 1 } {17 2 } }
+
+eval 2dbsplinecurve curve_1 1 [ llength $knots] [ join $knots ] [ join $poles ]
+
+circle curve_2 5.3 -0.5 2
+
+set err [llength [2dextrema curve_1 curve_2]]
+
+if {$err == 8} {
+    puts "BUC60890 OK: Function 2dextrema works properly."
+} else {
+    puts "Faulty BUC60890 : Function 2dextrema works wrongly."
+}

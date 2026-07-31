@@ -1,0 +1,20 @@
+puts "========================"
+puts " OCC541 "
+puts "========================"
+puts ""
+############################################
+## Extrema works wrong for line and circle laying on one plane.
+############################################
+
+restore [locate_data_file OCC541a.draw] c1x 
+restore [locate_data_file OCC541b.draw] c2x 
+
+set result [extrema c1x c2x]
+set err [llength $result]
+if { $err < 1} {
+    puts "Faulty OCC541 (amount of solution): command extrema does NOT work properly"
+} else {
+    puts "OCC541 OK (amount of solution): : command extrema works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

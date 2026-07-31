@@ -1,0 +1,11 @@
+# Original bug : pro14260
+# Date : 21 Sept 98
+
+restore [locate_data_file CTO900_pro14260c.rle] c
+restore [locate_data_file pro14260d.rle] d
+
+bfuse result c d
+
+checkprops result -s 46305.1
+checknbshapes result -solid 1 -shell 1 -face 35
+checkview -display result -2d -otherwise { c d } -s -path ${imagedir}/${test_image}.png

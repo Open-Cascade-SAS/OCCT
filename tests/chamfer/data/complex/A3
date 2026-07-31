@@ -1,0 +1,13 @@
+set chamf_shape CCH_001_ahew.rle
+set chamf_edge_face  [list "3  1" "4 10" "21  7" "22 10" "24 10" "23  8"]
+set chamf_dist_angle [list "3 30" "2 10" " 3 20" " 3 30" " 3 30" " 3 30"]
+set chamf_dist_dist  [list "3  2" "2  1" " 3  1" " 3  2" " 3  1" " 3  1"]
+set chamf_equal_dist [list "1   " "1   " " 2   " " 2   " " 2   " " 3   "]
+if { [string compare $command chamf] == 0 } {
+  if { [string compare $group dist_angle] == 0 || [string compare $group dist_dist] == 0 } {
+#    puts "TODO OCC22909 All:(Faulty shapes in variables faulty_1 to faulty_2)|(Error\\s*:\\s*chamfer is not done. compute of chamfer failed)"
+    puts "TODO OCC22909 All:Faulty shapes in variables faulty_1 to faulty_"
+  }
+} else {
+  puts "TODO OCC22909 All: compute of chamfer failed"
+}

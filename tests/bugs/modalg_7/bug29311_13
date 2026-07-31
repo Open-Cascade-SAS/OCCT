@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+restore [locate_data_file CTO900_cts19474part.rle] part
+
+compound result
+
+# construct obb for each edge of the shape
+foreach e [explode part e] {
+  if [catch {bounding $e -obb}] {
+    puts "Error with $e (exception)"
+    add $e result
+  } else {
+    puts "$e OK"
+  }
+}
+
+checknbshapes result -edge 0

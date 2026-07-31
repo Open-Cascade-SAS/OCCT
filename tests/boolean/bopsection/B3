@@ -1,0 +1,12 @@
+# Original bug : fra50047
+# Date : 25Mai98
+
+restore [locate_data_file CTO904_fra50047a.rle] a
+restore [locate_data_file fra50047b.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 628.319
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

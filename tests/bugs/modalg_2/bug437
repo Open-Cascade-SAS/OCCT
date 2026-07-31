@@ -1,0 +1,20 @@
+puts "========================"
+puts " OCC437 "
+puts "========================"
+puts ""
+##########################################
+## different checkshape result under ros and rosdeb in KAS:dev.
+##########################################
+
+restore [locate_data_file OCC437.brep] result
+
+set che [checkshape result r]
+
+if { [regexp {OK} $che] != 1 } {
+    puts " Faulty OCC437: function CHECKSHAPE works wrongly"
+} else {
+    puts " OCC437  OK: function CHECKSHAPE works properly"
+}
+
+checkprops result -s 0.000201234 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

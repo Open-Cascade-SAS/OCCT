@@ -1,0 +1,12 @@
+puts "==============================================================="
+puts "OCC30560: Improvement of the method BRepTools::DetectClosedness"
+puts "==============================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug30560_face.brep] a
+
+OCC30391 result a 0. 0. 2. 2.
+
+checknbshapes result -vertex 2 -edge 3

@@ -1,0 +1,28 @@
+puts "TODO OCC22033 ALL: Error : The area of result shape is"
+puts "TODO OCC22033 ALL: Error :  is WRONG because number of"
+
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+restore [locate_data_file OCC6272_revolution.brep] a2 
+
+bop a1 a2
+bopfuse result
+
+# puts "See result in the viewer!!!"
+
+checkprops result -s 8979.70 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 60 -edge 90 -wire 42 -face 40 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 243
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

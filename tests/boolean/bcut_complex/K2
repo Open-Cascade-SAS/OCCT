@@ -1,0 +1,10 @@
+# Original bug : pro14235
+# Date : 11June98
+# D9
+
+restore [locate_data_file CTO902_pro14235c.rle] c
+restore [locate_data_file CTO902_pro14235d.rle] d
+
+bcut result c d
+checkprops result -s 1.55789e+06
+checkview -display result -2d -s -otherwise { c d } -path ${imagedir}/${test_image}.png

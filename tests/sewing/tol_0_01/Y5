@@ -1,0 +1,8 @@
+restore [locate_data_file CFI_13_h1ffp.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 2.6929942488295899e-007
+checknbshapes result -shell 1
+checkfreebounds result 12
+checkfaults result a 0

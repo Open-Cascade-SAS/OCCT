@@ -1,0 +1,93 @@
+// Created on: 1994-05-31
+// Created by: Modelistation
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _IGESSelect_CounterOfLevelNumber_HeaderFile
+#define _IGESSelect_CounterOfLevelNumber_HeaderFile
+
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+class Interface_InterfaceModel;
+class TCollection_HAsciiString;
+
+//! This class gives information about Level Number. It counts
+//! entities according level number, considering also the
+//! multiple level (see the class LevelList) for which an entity
+//! is attached to each of the listed levels.
+//!
+//! Data are available, as level number, or as their alphanumeric
+//! counterparts ("LEVEL nnnnnnn", " NO LEVEL", " LEVEL LIST")
+class IGESSelect_CounterOfLevelNumber : public IFSelect_SignCounter
+{
+
+public:
+  //! Creates a CounterOfLevelNumber, clear, ready to work
+  //! <withmap> and <withlist> are transmitted to SignCounter
+  Standard_EXPORT IGESSelect_CounterOfLevelNumber(const bool withmap  = true,
+                                                  const bool withlist = false);
+
+  //! Resets already memorized information : also numeric data
+  Standard_EXPORT void Clear() override;
+
+  //! Adds an entity by considering its lrvrl number(s)
+  //! A level is added both in numeric and alphanumeric form,
+  //! i.e. LevelList gives "LEVEL LIST", others (no level or
+  //! positive level) displays level number on 7 digits (C : %7d)
+  //! Remark : an entity attached to a Level List is added for
+  //! " LEVEL LIST", and for each of its constituent levels
+  Standard_EXPORT void AddSign(const occ::handle<Standard_Transient>&       ent,
+                               const occ::handle<Interface_InterfaceModel>& model) override;
+
+  //! The internal action to record a new level number, positive,
+  //! null (no level) or negative (level list)
+  Standard_EXPORT void AddLevel(const occ::handle<Standard_Transient>& ent, const int level);
+
+  //! Returns the highest value found for a level number
+  Standard_EXPORT int HighestLevel() const;
+
+  //! Returns the number of times a level is used,
+  //! 0 if it has not been recorded at all
+  //! <level> = 0 counts entities attached to no level
+  //! <level> < 0 counts entities attached to a LevelList
+  Standard_EXPORT int NbTimesLevel(const int level) const;
+
+  //! Returns the ordered list of used positive Level numbers
+  Standard_EXPORT occ::handle<NCollection_HSequence<int>> Levels() const;
+
+  //! Determines and returns the value of the signature for an
+  //! entity as an HAsciiString. Redefined, gives the same result
+  //! as AddSign, see this method ("LEVEL LIST" or "nnnnnnn")
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Sign(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
+
+  //! Prints the counts of items (not the list) then the Highest
+  //! Level Number recorded
+  Standard_EXPORT void PrintCount(Standard_OStream& S) const override;
+
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
+
+private:
+  int                                   thehigh;
+  int                                   thenblists;
+  occ::handle<NCollection_HArray1<int>> thelevels;
+};
+
+#endif // _IGESSelect_CounterOfLevelNumber_HeaderFile

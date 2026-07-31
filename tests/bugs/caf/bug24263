@@ -1,0 +1,27 @@
+puts "=========="
+puts "OCC24263"
+puts "=========="
+puts ""
+###################################################
+# TNaming_CopyShape::CopyTool failure
+###################################################
+
+box b 100 100 100
+explode b F
+if { [regexp "Copy is Done" [CopyShape b b_1] ] != 1 } {
+    puts "Error : Copy is not done"
+} else {
+    puts "OK : Copy is done"
+}
+
+if { [regexp "SOLID FORWARD" [whatis b_c] ] != 1 } {
+    puts "Error : b_c is not a solid forward"
+} else {
+    puts "OK : b_c is  a solid forward"
+}
+
+if { [regexp "FACE REVERSED" [whatis b_1_c] ] != 1 } {
+    puts "Error : b_1_c is not a face reversed"
+} else {
+    puts "OK : b_1_c is  a face reversed"
+}

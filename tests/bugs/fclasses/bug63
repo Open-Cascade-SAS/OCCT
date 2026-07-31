@@ -1,0 +1,17 @@
+puts "TODO OCC23626 ALL: Tcl Exception"
+puts "TODO OCC23626 ALL: TEST INCOMPLETE"
+
+puts "================"
+puts "OCC63"
+puts "================"
+puts ""
+
+set s [encoding convertto iso8859-2 "\xE9"]
+set path [locate_data_file box__simplifie.brep]
+
+file copy -force "${path}" "${imagedir}/box__simplifi${s}e.brep"
+restore "${imagedir}/box__simplifi${s}e.brep" result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

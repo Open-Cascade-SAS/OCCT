@@ -1,0 +1,42 @@
+puts "========"
+puts "OCC24762 new interactive object AIS_ColoredShape with customized subshapes presentations"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b  0 0 0 1 2 3
+box bb 3 0 0 2 3 1
+
+# prepare view
+vinit View1
+vclear
+vglinfo
+vsetdispmode 1
+vaxo
+vdisplay b bb
+vfit
+
+# customize box 1
+explode b V
+vaspects b -subshapes b_1      -setcolor GREEN
+explode b E
+vaspects b -subshapes b_6 b_12 -setcolor RED     -setwidth 6
+explode b W
+vaspects b -subshapes b_2      -setcolor HOTPINK -setwidth 4
+explode b F
+vaspects b -subshapes b_3      -setcolor GRAY
+
+# customize box 2
+explode bb F
+vaspects bb -setcolor GREEN -subshapes bb_6 -setcolor RED
+vsetdispmode bb 0
+
+# take snapshot
+vdump $imagedir/${casename}.png
+
+# check colors on box 1
+set aWireColor  [vreadpixel 54  150 rgb name]
+set anEdgeColor [vreadpixel 100  90 rgb name]
+set aFaceColor  [vreadpixel 30  200 rgb name]
+if {"$aWireColor"  != "HOTPINK"} { puts "Error: wrong Wire color" }
+if {"$anEdgeColor" != "RED"}     { puts "Error: wrong Edge color" }
+if {"$aFaceColor"  != "GRAY69"}  { puts "Error: wrong Face color" }

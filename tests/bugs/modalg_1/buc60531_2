@@ -1,0 +1,22 @@
+
+puts "========================"
+puts "BUC60531"
+puts "========================"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
+restore [locate_data_file buc60531a.brep] r1
+checkshape r1
+
+restore [locate_data_file buc60531b.brep] pl1
+checkshape pl1
+
+bcut r2 r1 pl1
+checkshape r2
+
+restore [locate_data_file buc60531c.brep] pl2
+checkshape pl2
+
+bcut result r2 pl2
+
+checkprops result -s 115935 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

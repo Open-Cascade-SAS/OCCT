@@ -1,0 +1,22 @@
+puts "========"
+puts "CR23018"
+puts "========"
+puts ""
+#######################################
+## Open CASCADE incorrectly writes/reads IGES Tabulated Cylinders (Type 122)
+#######################################
+
+restore [locate_data_file bug23018_f-ext.brep] f
+brepiges f ${imagedir}/bug23018_f-ext.igs
+set info [entity 6]
+regexp {Starting +Point +: +\x28([-0-9.+eE]+),([-0-9.+eE]+),([-0-9.+eE]+)\x29} ${info} full x1 y1 z1
+regexp {End +Point +: +\x28([-0-9.+eE]+),([-0-9.+eE]+),([-0-9.+eE]+)\x29} ${info} full x2 y2 z2
+puts "x1=$x1 y1=$y1 z1=$z1"
+puts "x2=$x2 y2=$y2 z2=$z2"
+set tolerance 1.e-7
+if { [expr abs(${x1} - ${tolerance})] < 0. || ${x1} > 1. || [expr abs(${y1} - ${tolerance})] < 0.|| ${y1} > 1. } {
+  puts "Error : Bad Starting Point"
+}
+if { [expr abs(${x2} - ${tolerance})] < 0. || ${x2} > 1. || [expr abs(${y2} - ${tolerance})] < 0. || ${y2} > 1.} {
+  puts "Error : Bad Starting Point"
+}

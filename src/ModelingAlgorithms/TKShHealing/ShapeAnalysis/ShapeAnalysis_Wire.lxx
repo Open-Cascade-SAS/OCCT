@@ -1,0 +1,184 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//: pdn 05.01.99: renaming method ...Little to ...Small
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_WireData.hxx>
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::IsLoaded() const
+{
+  return !myWire.IsNull() && myWire->NbEdges() > 0;
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::IsReady() const
+{
+  return IsLoaded() && !myFace.IsNull();
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_Wire::Precision() const
+{
+  return myPrecision;
+}
+
+//=================================================================================================
+
+inline const occ::handle<ShapeExtend_WireData>& ShapeAnalysis_Wire::WireData() const
+{
+  return myWire;
+}
+
+//=================================================================================================
+
+inline int ShapeAnalysis_Wire::NbEdges() const
+{
+  return myWire.IsNull() ? 0 : myWire->NbEdges();
+}
+
+//=================================================================================================
+
+inline const TopoDS_Face& ShapeAnalysis_Wire::Face() const
+{
+  return myFace;
+}
+
+//=================================================================================================
+
+inline const occ::handle<ShapeAnalysis_Surface>& ShapeAnalysis_Wire::Surface() const
+{
+  return mySurf;
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusOrder(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusOrder, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusConnected(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusConnected, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusEdgeCurves(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusEdgeCurves, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusDegenerated(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusDegenerated, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusClosed(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusClosed, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusSmall(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSmall, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusSelfIntersection(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSelfIntersection, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusLacking(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusLacking, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusGaps3d(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusGaps3d, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusGaps2d(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusGaps2d, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusCurveGaps(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusCurveGaps, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::StatusLoop(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusLoop, Status);
+}
+
+//=================================================================================================
+
+inline bool ShapeAnalysis_Wire::LastCheckStatus(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, Status);
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_Wire::MinDistance3d() const
+{
+  return myMin3d;
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_Wire::MinDistance2d() const
+{
+  return myMin2d;
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_Wire::MaxDistance3d() const
+{
+  return myMax3d;
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_Wire::MaxDistance2d() const
+{
+  return myMax2d;
+}

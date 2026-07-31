@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC169"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC169.brep] a
+
+fixshape result a 1e-7
+checkshape result
+
+checkprops result -s 6.27959 
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

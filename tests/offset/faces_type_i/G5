@@ -1,0 +1,14 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 0 0 10 0 0 -10 25 0 -10 15 0 0
+wire w w1 w2
+mkplane w w
+revol s w 0 0 0 0 0 1 360
+
+OFFSETSHAPE 1 {s_2} $calcul $type
+
+checkprops result -v 3048.04

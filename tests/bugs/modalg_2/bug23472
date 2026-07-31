@@ -1,0 +1,22 @@
+puts "============"
+puts "CR23472"
+puts "============"
+puts ""
+##########################################################################################################
+# BRepAlgoAPI_Section algorithm fails with exception while intersecting two faces
+##########################################################################################################
+
+restore [locate_data_file bug23472_f1.brep] f1
+restore [locate_data_file bug23472_f2.brep] f2
+
+bsection result f1 f2
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full l      
+
+if { $l != 0} {
+  puts "Error : The bsection is not valid"
+} 
+
+# Service parameters
+set mass -0.1
+set m -0.1

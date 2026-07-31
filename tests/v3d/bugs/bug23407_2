@@ -1,0 +1,21 @@
+puts "============"
+puts "CR23407: Draw face outlines for XDE objects"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+vclear
+vinit View1
+vdisplay b
+vsetdispmode 1
+vaspects b -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setFaceBoundaryWidth 5 -setFaceBoundaryType dash
+vfit
+vaspects -setwidth 10
+
+if { "[vreadpixel 314 344 rgb name]" != "RED" ||
+     "[vreadpixel  26 267 rgb name]" != "RED" } {
+  puts "Error : Boundary of face is not changed"
+}
+
+vdump $imagedir/${casename}.png

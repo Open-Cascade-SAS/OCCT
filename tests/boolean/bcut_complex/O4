@@ -1,0 +1,7 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
+
+restore [locate_data_file CTO908_topo101-o2.brep] obj2
+restore [locate_data_file CTO908_topo101-t2.brep] tool2
+bcut result obj2 tool2
+checkprops result -s 15696.8
+checkview -display result -2d -s -otherwise { obj2 tool2 } -path ${imagedir}/${test_image}.png

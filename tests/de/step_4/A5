@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename BUC60031.stp
+
+# set in as local length unit
+set lengthunit_start "in"
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 22  ( 22 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 22  ( 22 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0008790534196  ( 0.002257804385 )  AvgTol   =  0.0002077159479  (  0.0003435677762 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 22  ( 22 )   NameLabels = 5  ( 5 )   ColorLabels = 18  ( 18 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = CYAN GREEN MAGENTA MEDIUMSEAGREEN  ( CYAN GREEN MAGENTA MEDIUMSEAGREEN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

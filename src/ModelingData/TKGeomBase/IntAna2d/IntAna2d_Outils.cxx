@@ -1,0 +1,320 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//============================================================================
+//======================================================= IntAna2d_Outils.cxx
+//============================================================================
+#include <IntAna2d_Outils.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+
+MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
+                                                 const double A3,
+                                                 const double A2,
+                                                 const double A1,
+                                                 const double A0)
+{
+  //-- std::cout<<" IntAna2d : A4..A0 "<<A4<<" "<<A3<<" "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
+  nbsol = 0;
+  same  = false;
+  //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:14 2002 Begin
+  double anAA[5];
+
+  anAA[0] = std::abs(A0);
+  anAA[1] = std::abs(A1);
+  anAA[2] = std::abs(A2);
+  anAA[3] = std::abs(A3);
+  anAA[4] = std::abs(A4);
+
+  if ((anAA[0] + anAA[1] + anAA[2] + anAA[3] + anAA[4]) < Epsilon(10000.0))
+  {
+    //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:15 2002 End
+    same = true;
+    return;
+  }
+  int i, j, nbp;
+  for (size_t anIdx = 0; anIdx < sizeof(val) / sizeof(val[0]); anIdx++)
+  {
+    val[anIdx] = RealLast();
+    sol[anIdx] = RealLast();
+  }
+
+  double                     tol = Epsilon(100.0);
+  math_DirectPolynomialRoots MATH_A43210(A4, A3, A2, A1, A0);
+  bool                       PbPossible       = false;
+  int                        NbsolPolyComplet = 0;
+  if (MATH_A43210.IsDone())
+  {
+    nbp              = MATH_A43210.NbSolutions();
+    NbsolPolyComplet = nbp;
+    for (i = 1; i <= nbp; i++)
+    {
+      double x = MATH_A43210.Value(i);
+      //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<std::endl;
+      val[nbsol] = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
+      sol[nbsol] = x;
+      if (val[nbsol] > tol || val[nbsol] < -tol)
+      {
+        PbPossible = true;
+      }
+      nbsol++;
+    }
+    if (nbp & 1)
+    {
+      PbPossible = true;
+    }
+  }
+  else
+  {
+    PbPossible = true;
+  }
+  //-- Search for the smallest coefficient between A4 and A0
+  if (PbPossible)
+  {
+    //  Modified by Sergey KHROMOV - Thu Oct 24 12:45:35 2002 Begin
+    double anAMin = RealLast();
+    double anAMax = -1;
+    double anEps  = RealEpsilon();
+
+    for (i = 0; i < 5; i++)
+    {
+      anAMin = std::min(anAMin, std::max(anAA[i], anEps));
+      anAMax = std::max(anAMax, std::max(anAA[i], anEps));
+    }
+
+    anEps = std::min(1.e-4, Epsilon(1000. * anAMax / anAMin));
+    //  Modified by Sergey KHROMOV - Thu Oct 24 15:46:24 2002 End
+    math_DirectPolynomialRoots MATH_A4321(A4, A3, A2, A1);
+    if (MATH_A4321.IsDone())
+    {
+      nbp = MATH_A4321.NbSolutions();
+      //-- Add the values to the array
+      for (i = 1; i <= nbp; i++)
+      {
+        double x   = MATH_A4321.Value(i);
+        bool   Add = true;
+        for (j = 0; j < nbsol; j++)
+        {
+          double t = sol[j] - x;
+          if (std::abs(t) < anEps)
+          {
+            Add = false;
+          }
+        }
+        if (Add)
+        {
+          val[nbsol] = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
+          sol[nbsol] = x;
+          nbsol++;
+        }
+      }
+    }
+    math_DirectPolynomialRoots MATH_A3210(A3, A2, A1, A0);
+    if (MATH_A3210.IsDone())
+    {
+      nbp = MATH_A3210.NbSolutions();
+      //-- Add the values to the array
+      for (i = 1; i <= nbp; i++)
+      {
+        double x   = MATH_A3210.Value(i);
+        bool   Add = true;
+        for (j = 0; j < nbsol; j++)
+        {
+          double t = sol[j] - x;
+          if (std::abs(t) < anEps)
+          {
+            Add = false;
+          }
+        }
+        if (Add)
+        {
+          val[nbsol] = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
+          sol[nbsol] = x;
+          nbsol++;
+        }
+      }
+    }
+    math_DirectPolynomialRoots MATH_A210(A3, A2, A1);
+    if (MATH_A210.IsDone())
+    {
+      nbp = MATH_A210.NbSolutions();
+      //-- Add the values to the array
+      for (i = 1; i <= nbp; i++)
+      {
+        double x   = MATH_A210.Value(i);
+        bool   Add = true;
+        for (j = 0; j < nbsol; j++)
+        {
+          double t = sol[j] - x;
+          if (std::abs(t) < anEps)
+          {
+            Add = false;
+          }
+        }
+        if (Add)
+        {
+          val[nbsol] = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
+          sol[nbsol] = x;
+          nbsol++;
+        }
+      }
+    }
+    //------------------------------------------------------------
+    //-- Sort values by decreasing order of val
+    //-- for(i=0;i<nbsol;i++) {
+    //--  std::cout<<" IntAna2d Sol,Val"<<sol[i]<<"  "<<val[i]<<std::endl;
+    //-- }
+    bool TriOK = false;
+    do
+    {
+      TriOK = true;
+      for (i = 1; i < nbsol; i++)
+      {
+        if (std::abs(val[i]) < std::abs(val[i - 1]))
+        {
+          double t;
+          t          = val[i];
+          val[i]     = val[i - 1];
+          val[i - 1] = t;
+          t          = sol[i];
+          sol[i]     = sol[i - 1];
+          sol[i - 1] = t;
+          TriOK      = false;
+        }
+      }
+    } while (!TriOK);
+    //-----------------------------------------------------------
+    //-- Keep the first values
+    //-- At least as many as the complete polynomial
+    //--
+    for (nbsol = 0; nbsol < NbsolPolyComplet || std::abs(val[nbsol]) < Epsilon(10000.0); nbsol++)
+    {
+      ;
+    }
+    //-- std::cout<<" IntAna2d : nbsol:"<<nbsol<<std::endl;
+  }
+  if (nbsol == 0)
+  {
+    nbsol = -1;
+  }
+  if (nbsol > 4)
+  {
+    same  = true;
+    nbsol = 0;
+  }
+}
+
+MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2, const double A1, const double A0)
+{
+  //-- std::cout<<" IntAna2d : A2..A0 "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
+  for (size_t anIdx = 0; anIdx < sizeof(val) / sizeof(val[0]); anIdx++)
+  {
+    val[anIdx] = RealLast();
+    sol[anIdx] = RealLast();
+  }
+  nbsol = 0;
+  if ((std::abs(A2) + std::abs(A1) + std::abs(A0)) < Epsilon(10000.0))
+  {
+    same = true;
+    return;
+  }
+  math_DirectPolynomialRoots MATH_A210(A2, A1, A0);
+  same = false;
+  if (MATH_A210.IsDone())
+  {
+    for (int i = 1; i <= MATH_A210.NbSolutions(); i++)
+    {
+      double x   = MATH_A210.Value(i);
+      val[nbsol] = A0 + x * (A1 + x * A2);
+      sol[nbsol] = x;
+      //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<"  Val:"<<val[nbsol]<<std::endl;
+      nbsol++;
+    }
+  }
+  else
+  {
+    nbsol = -1;
+  }
+}
+
+bool Points_Confondus(const double x1, const double y1, const double x2, const double y2)
+{
+  if (std::abs(x1 - x2) < Epsilon(x1))
+  {
+    if (std::abs(y1 - y2) < Epsilon(y1))
+    {
+      return (true);
+    }
+  }
+  return (false);
+}
+
+//=================================================================================================
+//--- Coincident points are removed
+//--- The number of points is updated
+
+void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts)
+{
+  int i, j;
+  for (i = nb_pts; i > 1; i--)
+  {
+    bool Non_Egalite = true;
+    for (j = i - 1; (j > 0) && Non_Egalite; j--)
+    {
+      //                                        <--- Already Tested --->
+      //             | 1  |2  |  | J |  |I-1| I |I+1|          |NPTS|
+      //             | 1  |2  |  | J |  |I-1|XXX|I+1|          |NPTS|
+      //             | 1  |2  |  | J |  |I-1|I+1|I+2|     |NPTS|
+      if (Points_Confondus(pts[i - 1].Value().X(),
+                           pts[i - 1].Value().Y(),
+                           pts[j - 1].Value().X(),
+                           pts[j - 1].Value().Y()))
+      {
+        int k;
+        Non_Egalite = false;
+        for (k = i; k < nb_pts; k++)
+        {
+          double Xk, Yk, Uk;
+          Xk = pts[k].Value().X();
+          Yk = pts[k].Value().Y();
+          Uk = pts[k].ParamOnFirst();
+          pts[k - 1].SetValue(Xk, Yk, Uk);
+        }
+        nb_pts--;
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void Coord_Ancien_Repere(double& x1, double& y1, const gp_Ax2d& Dir1)
+{
+  double t11, t12, t21, t22, t13, t23;
+  double x0, y0;
+
+  // x1 and y1 are the coordinates in the reference frame associated with Dir1
+  // We return these coordinates in the "absolute" reference frame
+
+  Dir1.Direction().Coord(t11, t21);
+  Dir1.Location().Coord(t13, t23);
+
+  t22 = t11;
+  t12 = -t21;
+
+  x0 = t11 * x1 + t12 * y1 + t13;
+  y0 = t21 * x1 + t22 * y1 + t23;
+
+  x1 = x0;
+  y1 = y0;
+}

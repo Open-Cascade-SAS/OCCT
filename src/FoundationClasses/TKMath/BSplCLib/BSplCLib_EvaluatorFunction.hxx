@@ -1,0 +1,59 @@
+// Created on: 1997-03-03
+// Created by: Xavier BENVENISTE
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BSplCLib_EvaluatorFunction_HeaderFile
+#define _BSplCLib_EvaluatorFunction_HeaderFile
+
+#include <Standard_TypeDef.hxx>
+
+// This is a one dimensional function
+// NOTE: StartEnd[2]
+// Serves to multiply a given vectorial BSpline by a function
+
+// History - C function pointer converted to a virtual class
+// in order to get rid of usage of static functions and static data
+class BSplCLib_EvaluatorFunction
+{
+public:
+  //! Empty constructor
+  BSplCLib_EvaluatorFunction() = default;
+
+  //! Destructor should be declared as virtual
+  virtual ~BSplCLib_EvaluatorFunction() = default;
+
+  //! Function evaluation method to be defined by descendant
+  virtual void Evaluate(const int     theDerivativeRequest,
+                        const double* theStartEnd,
+                        const double  theParameter,
+                        double&       theResult,
+                        int&          theErrorCode) const = 0;
+
+  //! Shortcut for function-call style usage
+  void operator()(const int     theDerivativeRequest,
+                  const double* theStartEnd,
+                  const double  theParameter,
+                  double&       theResult,
+                  int&          theErrorCode) const
+  {
+    Evaluate(theDerivativeRequest, theStartEnd, theParameter, theResult, theErrorCode);
+  }
+
+  // copying is prohibited
+  BSplCLib_EvaluatorFunction(const BSplCLib_EvaluatorFunction&)            = delete;
+  BSplCLib_EvaluatorFunction& operator=(const BSplCLib_EvaluatorFunction&) = delete;
+};
+
+#endif

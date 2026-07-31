@@ -1,0 +1,12 @@
+proc CheckExtResult {info ref_dist} {
+  global ext_1
+  if {[regexp "ext_1" $info]} {
+    set dist [lindex [length ext_1] end]
+    if { $dist > $ref_dist } {
+      puts "Error: Extrema distance is too big"
+    }
+  } else {
+    puts "Error: Extrema is not found"
+  }
+}
+

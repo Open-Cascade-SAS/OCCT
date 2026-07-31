@@ -1,0 +1,19 @@
+puts "=============================================================="
+puts "OCC29813: BRepFill_PipeShell algorithm produces invalid result"
+puts "=============================================================="
+puts ""
+
+binrestore [locate_data_file cut_extrudewire_2.bin] sw
+binrestore [locate_data_file cut_toolwire_1.bin] tw
+
+mksweep sw
+addsweep tw
+buildsweep result -R
+
+checkshape result
+
+checknbshapes result -vertex 60 -edge 112 -wire 50 -face 50 -shell 1
+
+checkprops result -s 5327.76
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

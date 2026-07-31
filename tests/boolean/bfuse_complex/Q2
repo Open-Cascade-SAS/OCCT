@@ -1,0 +1,11 @@
+# pro10658
+restore [locate_data_file CTO900_pro10658a.rle] a
+restore [locate_data_file pro10658b.rle] b
+
+bfuse result a b
+
+checkshape result
+checkprops result -s 8231.06 -v 30472.5
+checknbshapes result -wire 9 -face 9 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

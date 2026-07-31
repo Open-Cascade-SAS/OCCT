@@ -1,0 +1,22 @@
+puts "========="
+puts "CR23981"
+puts "========="
+puts ""
+###############################
+## Wrong section curves
+###############################
+
+restore [locate_data_file bug23981_s1.draw] s1
+restore [locate_data_file bug23981_s2.draw] s2
+
+intersect i s1 s2
+
+puts "First test"
+xdistcs i_1 s1 0 1 100 1e-7
+
+puts "Second test"
+xdistcs i_2 s1 0 1 100 1e-7
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

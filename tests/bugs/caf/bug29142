@@ -1,0 +1,51 @@
+puts "================"
+puts "bug0029142"
+puts "================"
+puts ""
+
+######################################################
+# Checks bug of Undo mechanism
+######################################################
+NewDocument D BinOcaf
+UndoLimit D 100
+set Lab1 [Label D 0:1:1]
+
+#1. Set Integer attribute
+NewCommand D
+SetInteger  D $Lab1 111
+
+#2. Set Real attribute
+NewCommand D
+SetReal D $Lab1 0.234
+
+#3. Forget Integer attribute
+NewCommand D
+ForgetAtt D $Lab1 2a96b606-ec8b-11d0-bee7-080009dc3333
+
+#4. Set new Integer attribute
+SetInteger D $Lab1 222
+#5. Undo
+NewCommand D
+set IsGoodUndo 1
+if [catch {Undo D}] {
+   puts "Error during Document Undo"
+   set IsGoodUndo 0
+}
+
+#6. Redo
+set IsGoodRedo 1
+if [catch {Redo D}] {
+   puts "Error during Document Redo"
+   set IsGoodRedo 0
+}
+
+
+#7. Check result
+if {$IsGoodUndo == 1 & $IsGoodRedo == 1} {
+    puts "bug0029142: OK"
+} else {
+    puts "bug0029142: ERROR"
+}
+
+#8. Close document
+Close D

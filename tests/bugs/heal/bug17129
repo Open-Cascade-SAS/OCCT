@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC17129"
+puts "============"
+puts ""
+#######################################################################
+# ShapeFix projector makes 2d curves with oscillations
+#######################################################################
+
+restore [locate_data_file bug17129_ff_1285_proj.brep] a
+fixshape r a
+
+pcurve r
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

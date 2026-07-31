@@ -1,0 +1,82 @@
+puts "========"
+puts "OCC28044: Implement data structures in OCAF for Saved Views."
+puts "========"
+puts ""
+
+pload OCAF
+
+# Create document with View
+box b 0 0 0 1 1 1
+box bb 2 2 2 1 1 1
+NewDocument D_First BinXCAF
+XAddShape D_First b
+# 0:1:1:1
+XAddShape D_First bb
+# 0:1:1:2
+explode b e
+XAddShape D_First b_1
+XAddDimension D_First b_1
+#0:1:4:1
+XSetDimensionType D_First 0:1:4:1 14
+XSetDimensionValue D_First 0:1:4:1 1
+#0:1:7:1
+XSetView D_First 0:1:1:1 0:1:1:2 0:1:4:1
+XSetViewName D_First 0:1:7:1 ALL
+XSetViewType D_First 0:1:7:1 parallel
+XSetViewProjectionPoint D_First 0:1:7:1 2 3 5
+XSetViewDir D_First 0:1:7:1 0 0 -1
+XSetViewUpDir D_First 0:1:7:1 0 1 0
+XSetViewZoom D_First 0:1:7:1 3
+XSetViewWindowSize D_First 0:1:7:1 480 640
+XSetViewFrontPlaneDistance D_First 0:1:7:1 10
+XSetViewVolumeSidesClipping D_First 0:1:7:1 1
+set first_view [XDumpView D_First 0:1:7:1]
+# Write file
+set aTmpFile ${imagedir}/${casename}.xbf
+SaveAs D_First $aTmpFile
+Close D_First
+# Read document
+XOpen $aTmpFile D_Second
+file delete -force $aTmpFile
+set second_view [XDumpView D_Second 0:1:7:1]
+
+Close D_Second
+
+set ref_data {Reference shapes: 0:1:1:1 0:1:1:2 
+Reference GD&Ts: 0:1:4:1 
+Reference Clipping Planes: 
+Name: ALL
+Type: parallel
+Projection point: 2 3 5
+View Direction: 0 0 -1
+Up Direction: 0 1 0
+Zoom factor: 3
+Window Size: width 480,  height 640
+Front Plane Distance: 10
+Front Back Distance: 0
+View VolumeSized Clipping: 1
+}
+# Results validation
+set first_list [split $first_view \n]
+set second_list [split $second_view \n]
+set ref_list [split $ref_data \n]
+set err_compare_ref ""
+for { set i 0 } { $i < 12 } { incr i } {
+  set isOK 1
+  set first [lindex $first_list $i]
+  set second [lindex $second_list $i]
+  set ref [lindex $ref_list $i]
+  if {$ref != $first} {set isOK 0}
+  if {$ref != $second} {set isOK 0}
+  if {$isOK == 0} {
+    append err_compare_ref "$ref\n"
+  }
+}
+
+if {[llength $err_compare_ref] > 0} {
+  puts "Error : differences with reference data found :\n$err_compare_ref"
+} else {
+  puts "Comparison of current result with reference data - OK\n"
+} 
+
+puts "TEST COMPLETED"

@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC23927"
+puts "========"
+puts ""
+######################################################################
+# BRepProj_Projection produces Edge with one Vertex outside from curve
+######################################################################
+
+restore [locate_data_file bug23927_line.brep] line
+restore [locate_data_file bug23927_surf.brep] surf
+
+breducetolerance surf
+
+prj p line surf 0.57735025882720947 -0.57735025882720947 0.57735025882720947
+
+explode p_1 V
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+explode line V
+
+set tol_abs 0.001
+set tol_rel 0
+
+distmini d p_1_1 line_2
+checkreal "Projection, p1" [dval d_val] 0 $tol_abs $tol_rel
+
+distmini d p_1_2 line_1
+checkreal "Projection, p2" [dval d_val] 0 $tol_abs $tol_rel

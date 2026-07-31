@@ -1,0 +1,17 @@
+
+puts "========================"
+puts " OCC409 "
+puts "========================"
+puts ""
+
+restore [locate_data_file f2] b1 
+checkshape b1
+
+restore [locate_data_file f6] b2
+checkshape b2
+
+bcommon result b1 b2
+
+checkprops result -s 45.5929 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

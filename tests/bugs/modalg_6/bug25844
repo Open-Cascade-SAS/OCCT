@@ -1,0 +1,10 @@
+puts "================"
+puts "OCC25844"
+puts "================"
+puts ""
+#######################################################################
+# Command "checkshape" does not detect error for case when degenerated edge does not contain geometric representation.
+#######################################################################
+
+restore [locate_data_file bug25843_onewire.brep] b
+checkshape b f

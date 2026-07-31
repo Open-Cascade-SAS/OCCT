@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC24089"
+puts "============"
+puts ""
+####################################################
+# Missing section edge
+####################################################
+
+restore [locate_data_file bug24089_fz2] b1
+restore [locate_data_file bug24089_qf1] b2
+
+bop b1 b2
+bopsection result
+
+checknbshapes result -vertex 5 -edge 4 -shape 10
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

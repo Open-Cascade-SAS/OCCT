@@ -1,0 +1,13 @@
+cpulimit 300
+
+if { $::tcl_platform(os) == "Darwin" } {
+  puts "TEST COMPLETED"
+  return -code 1 "Skipping testgrid 'opengles3': not configured for macOS"
+}
+
+pload VISUALIZATION
+vdriver -load GLES
+vgldebug -glslWarn 1
+vcaps -useWinBuffer 0
+
+if { [info exists imagedir] == 0 } { set imagedir . } 

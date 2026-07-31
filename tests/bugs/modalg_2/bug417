@@ -1,0 +1,18 @@
+
+puts "========================"
+puts " OCC417 "
+puts "CTS21128"
+puts "========================"
+puts ""
+
+restore [locate_data_file cts21128c.rle] c 
+checkshape c
+
+restore [locate_data_file cts21128d.rle] d
+checkshape d
+
+bcut result c d
+
+checkprops result -s 2814.01 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

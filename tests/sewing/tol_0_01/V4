@@ -1,0 +1,8 @@
+restore [locate_data_file CFE903_cts21ggu.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 6.2894351252427993e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

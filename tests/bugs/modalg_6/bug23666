@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC23666"
+puts "============"
+puts ""
+###############################
+##  Wrong section curve between attached faces
+###############################
+
+restore [locate_data_file bug23666_b1.brep] b1
+restore [locate_data_file bug23666_b2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkprops result -s 1.21915e+08
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 10
+ EDGE      : 13
+ WIRE      : 4
+ FACE      : 4
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 32
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result done by General Fuse algorithm"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

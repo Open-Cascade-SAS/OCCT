@@ -1,0 +1,3 @@
+set TheFileName shading_082.brep
+set bug_cross "OCC22687"
+set nbcross(All) 0

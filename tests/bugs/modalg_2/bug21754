@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC21754"
+puts "================"
+puts ""
+#################################################################
+# Section of face by plane yields empty result
+#################################################################
+
+set BugNumber OCC21754
+
+# load shape and make face with natural bounds, to exclude possibility of
+# lame excuse saying that it contains small edges
+restore [locate_data_file OCC21754-bug_bsection_empty.brep] a 
+mksurface s a
+mkface f s
+
+# create plane at Z=-0.410 (the bug is reproduced for Z in range [-0.405;-0.420])
+plane pl 0 0 -0.410 0 0 1
+mkface p pl 0 10 -5 5
+
+bsection result f p -na
+
+checknbshapes result -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
+checkprops result -l 0.592137 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

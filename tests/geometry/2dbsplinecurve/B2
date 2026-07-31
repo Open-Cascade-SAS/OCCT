@@ -1,0 +1,12 @@
+2dbsplinecurve b1 3 5 0 4 1 1 2 1 3 1 4 4  0 0 1  1 0.5 0.8   2 1 1  2 2 0.7  3 1.5 0.6  4 1.5 1   5 2 1 
+2dcvalue b1 2.0 x y  dx dy 
+set delta 0.01
+point p1 x y 
+set dyvalue [dval dy] 
+repeat 100 {
+    cmovetangent b1 2.0  x y dx $dyvalue 1
+    set dyvalue [expr $dyvalue + $delta ]
+    repaint
+}
+copy b1 result
+checklength result -l 6.6492776719511806

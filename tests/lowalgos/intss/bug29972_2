@@ -1,0 +1,65 @@
+puts "========"
+puts "OCC29972: Intersection curve has a weird gap in the middle of it"
+puts "========"
+puts ""
+
+set GoodNbCurves 2
+
+foreach a [directory res*] {unset $a}
+
+restore [locate_data_file bug29972_s1.draw] s1 
+cylinder s2 -120 54.2955104312028 -116 1 0 0 0 0 -1 28
+
+intersect res s1 s2 1.e-4
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+   
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 2.0e-5
+    xdistcs res_$ic s2 U1 U2 100 2.0e-5
+    
+    mkedge ee res_$ic
+    baddobjects ee
+    
+    incr ic
+  }
+}
+
+# Check of gaps between intersection curves
+bfillds
+bbuild rs
+
+checknbshapes rs -edge $GoodNbCurves
+checksection rs -r 0
+
+smallview
+don res_*
+
+fit
+don s1 s2
+clpoles s1
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

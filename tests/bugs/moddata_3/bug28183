@@ -1,0 +1,39 @@
+puts "============"
+puts "CR28183"
+puts "==========="
+puts ""
+###############################################################################
+# BRepExtrema_DistShapeShape does not find all solutions
+###############################################################################
+
+pload MODELING
+
+restore [locate_data_file bug28175_borders2.brep] b
+restore [locate_data_file bug28175_segments2.brep] s
+explode b
+explode s
+
+set ref_nbsol 4
+set ref_dist 1e-7
+
+# find extremum points
+set res [distmini r s_511 b_2]
+set redges [lrange [lindex [split $res \n] 1] 1 end]
+set nbsol [llength $redges]
+set dist [dval r_val]
+
+# display curves and points
+don b_2 s_511
+foreach q $redges { display $q; foreach v [explode $q] { display $v } }
+
+if { $dist > $ref_dist } {
+  puts "Error: too big distance is reported: $dist"
+} else {
+  puts "OK: reported distance $dist is below $ref_dist"
+}
+
+if {$nbsol != $ref_nbsol} {
+  puts "Error: $ref_nbsol solutions expected, but $nbsol found"
+} else {
+  puts "OK: $ref_nbsol solutions are found"
+}

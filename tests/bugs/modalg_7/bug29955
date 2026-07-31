@@ -1,0 +1,42 @@
+puts "=============================================================="
+puts "OCC29955: Face and Solid BOP: Building 2D curve of edge on face is failing"
+puts "=============================================================="
+
+restore [locate_data_file bug29955_o.brep] o
+restore [locate_data_file bug29955_t.brep] t
+
+bclearobjects
+bcleartools
+baddobjects o
+baddtools t
+bfillds
+
+bbop r0 0
+bbop r2 2
+bbop r4 4
+bsplit result
+
+foreach r {r0 r2 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the result of BOP is self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 1 -face 1
+checkprops r0 -s 3.62288e-006
+
+checknbshapes r2 -wire 1 -face 1
+checkprops r2 -s 6.47633e-007
+
+checknbshapes r4 -vertex 4 -edge 4
+checkprops r4 -l 0.0111863
+if {![regexp "nb alone Vertices : 0" [checksection r4]]} {
+  puts "Error: section is not closed"
+}
+
+checkshape result
+checknbshapes result -wire 2 -face 2
+checkprops result -s 4.27051e-006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

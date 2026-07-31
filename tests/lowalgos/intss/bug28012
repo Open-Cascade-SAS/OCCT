@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC28012"
+puts "========"
+puts ""
+#################################################
+# Exception while intersecting two surfaces
+#################################################
+
+restore [locate_data_file bug28012_s1.draw] s1
+restore [locate_data_file bug28012_s2.draw] s2
+
+intersect result s1 s2 0.00012162815337817315 0.0010404164685680738 0.99999999999999989 0.22068942273845651
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

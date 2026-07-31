@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC23683"
+puts "================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug23683_a_31_draw] result
+set info [OCC23683 result]
+
+if { [regexp "iscnu: OK" $info] != 1 } {
+    puts "Error : ucontinuity is incorrect"
+}
+
+if { [regexp "iscnv: OK" $info] != 1 } {
+    puts "Error : vcontinuity is incorrect"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,24 @@
+puts "========="
+puts "CR25157"
+puts "========="
+puts ""
+###################################################
+# Face missing depending the angle of revolution 
+###################################################
+
+pload XDE
+
+pcone Cone 6 0 10 180
+pcylinder Cylinder 1 6 360
+ttranslate Cylinder 0 3 1
+bcut Cut Cone Cylinder
+explode Cut F
+tclean Cut_1
+incmesh Cut_1 0.1
+
+checktrinfo Cut_1 -tri -nod
+
+vinit
+vdisplay Cut_1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

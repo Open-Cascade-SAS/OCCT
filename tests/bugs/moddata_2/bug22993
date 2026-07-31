@@ -1,0 +1,16 @@
+puts "==========="
+puts "OCC22993"
+puts "==========="
+######################################################
+# Crash during reading STEP file
+######################################################
+
+set BugNumber OCC22993
+
+catch { pload XDE }
+
+stepread [locate_data_file OCC22993-23-9421-42601.stp] result *
+
+set 3viewer 0
+
+

@@ -1,0 +1,16 @@
+
+puts "========"
+puts "OCC268"
+puts "========"
+puts ""
+###########################################################
+## Using of command "lprops" for shapes that contain degenerated edges call exception.
+###########################################################
+
+restore [locate_data_file OCC268.brep] result 
+checkshape result
+
+checkprops result -l 56.6039 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

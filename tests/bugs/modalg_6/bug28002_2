@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC28002"
+puts "========"
+puts ""
+#################################################
+# Invalid result of Boolean Fuse operation
+#################################################
+
+binrestore [locate_data_file bug28002_solid.bin] solid
+
+point pnt -91.9238815542512 433.456456867354 81.42128884
+
+# perform classification and get the result
+set result [lindex [bclassify solid pnt] 3]
+
+if {$result != "OUT"} {
+  puts "Error: incorrect classification of the point relatively solid"
+}

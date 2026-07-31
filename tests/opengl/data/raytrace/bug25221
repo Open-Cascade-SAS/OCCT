@@ -1,0 +1,70 @@
+puts "========"
+puts "OCC25221: Visualization - Depth test errors in ray-tracing scene containing face outlines"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# custom shapes
+set aShape [locate_data_file occ/Bottom.brep]
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+
+vsetdispmode 1
+restore $aShape s
+vdisplay s
+vfit
+
+# activate ray-tracing
+vrenderparams -raytrace
+
+# highlight the shape
+vmoveto 200 200
+
+vdump $imagedir/${casename}_lines_closeup.png
+
+vzoom 0.5
+
+vdump $imagedir/${casename}_lines_far.png
+
+vfit
+
+# change camera to perspective
+vcamera -persp
+
+# change highlight display mode
+vdisplay s -highMode 1
+
+# highlight the shape again
+vmoveto 0 0
+vmoveto 200 200
+
+vdump $imagedir/${casename}_faces_closeup.png
+
+# apply transformation
+vlocation s -reset -translate -30 0 0 -rotate 0 0 0 0 0 1 10
+vmoveto 0 0
+vmoveto 200 200
+
+vdump $imagedir/${casename}_faces_closeup_rotated.png
+
+vlocation s -reset
+vmoveto 0 0
+vmoveto 200 200
+
+vzoom 0.5
+
+vdump $imagedir/${casename}_faces_far.png
+
+# enable Path tracing
+vrenderparams -gi
+vfit
+vfps 100
+
+vdump $imagedir/${casename}_faces_pt.png
+
+# rotate camera
+vrotate 0 0.2 0
+vfps 100
+
+vdump $imagedir/${casename}_faces_pt_rot.png

@@ -1,0 +1,24 @@
+puts "=========="
+puts "0025042: Cone Meshing: Missing two connecting edges."
+puts "=========="
+puts ""
+
+pcone result 200 0 500
+incmesh result 0.2 -a 0.2*180.0/pi -relative -parallel
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vviewparams -scale 1.81755 -proj 0.88572 0.104526 0.452299 -up -0.0339444 0.986295 -0.16146 -at 15.3368 42.2711 210.324 -eye 679.928 120.701 549.702
+ 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri 509 -nod 327 -defl 1.5916215272983552 -tol_abs_defl 1e-6
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}

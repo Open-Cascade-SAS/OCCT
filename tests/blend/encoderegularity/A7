@@ -1,0 +1,10 @@
+restore [locate_data_file CFI901_congefke.rle] m
+explode m E
+encoderegularity m 3
+blend result m 7 m_1 7 m_5 7 m_7 7 m_8 7 m_9 7 m_10 7 m_11 7 m_12 \
+	       7 m_14 7 m_16 7 m_17 7 m_18 \
+	       7 m_19 7 m_20 7 m_22 7 m_23 7 m_24
+explode result Sh
+renamevar result_1 result
+
+checkprops result -s 17179.7

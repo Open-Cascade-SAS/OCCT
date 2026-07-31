@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename PRO9236.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 6 )  Summary  = 0  ( 6 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 8  ( 8 )  Face     = 816  ( 816 ) 
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 8  ( 8 )  Face     = 816  ( 816 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0005195064467  ( 0.0005195064467 )  AvgTol   =  5.643276084e-006  (  5.69542099e-006 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 442  ( 442 )  N2Labels = 0  ( 0 )   TotalLabels = 446  ( 446 )   NameLabels = 7  ( 7 )   ColorLabels = 439  ( 439 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 9  ( 9 )
+COLORS      : Colors   = BLUE CYAN DARKORANGE1 FORESTGREEN GRAY40 GREEN MAGENTA WHITE YELLOW  ( BLUE CYAN DARKORANGE1 FORESTGREEN GRAY40 GREEN MAGENTA WHITE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

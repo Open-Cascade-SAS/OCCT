@@ -1,0 +1,33 @@
+set aTestName "xcaf200-A1"
+puts $aTestName
+
+# Add an attribute to a data framework
+set aLabel 0:1:1:1
+Label D $aLabel
+set aValue 13.777
+XSetArea D $aLabel $aValue
+
+# Close/Open the transaction
+NewCommand D
+
+# save result for check after retrieval
+set area_before [XGetArea D $aLabel]
+if { ${area_before} != ${aValue} } {
+	puts "Error : XSetArea or XGetArea"
+} else {
+
+    # Save the document
+    set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+    SaveToFile D $aFile
+
+    # Restore the document
+    Close D
+    Open ${aFile} DD
+
+    # Get a value of the attribute
+    set IsDone [catch {set area_after [XGetArea DD $aLabel]} aResult]
+    if { ${IsDone} != 0 || ${area_after} != ${area_before} } {
+	puts "Error : Get a value of XCAFDoc_Area attribute from restoring document"
+    }
+}

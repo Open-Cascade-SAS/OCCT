@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC518"
+puts "========"
+puts ""
+################################
+## Checkshape reports problem in C40, none in DEV
+################################
+
+pload XDE
+
+restore [locate_data_file OCC518.brep] a
+
+fixshape result a .001 1.
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

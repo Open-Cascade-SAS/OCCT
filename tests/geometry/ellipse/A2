@@ -1,0 +1,4 @@
+ellipse  cer 0 0 0  0 0 1  2 1
+convert result cer c1
+checklength result -l 9.6884482205476772
+checkview -display result -2d -path ${imagedir}/${test_image}.png

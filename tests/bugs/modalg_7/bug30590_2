@@ -1,0 +1,21 @@
+puts "==============================================="
+puts "OCC30590: Wrong result of Boolean Cut algorithm"
+puts "==============================================="
+puts ""
+
+binrestore [locate_data_file bug30590_cut_argument1.bin] a
+binrestore [locate_data_file bug30590_cut_tool2.bin] b
+
+bcut result a b
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 15 -wire 15 -edge 39 -vertex 26
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.005} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 5639.78 -deps 1.e-7

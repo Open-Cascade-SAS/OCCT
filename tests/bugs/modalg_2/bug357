@@ -1,0 +1,21 @@
+
+puts "========"
+puts "OCC357"
+puts "BUC60970"
+puts "========"
+
+restore [locate_data_file buc60970a.brep] a
+checkshape a
+## small/brep/OCC358a.brep - second shape
+restore [locate_data_file OCC358a.brep] b 
+checkshape b
+
+if { [catch { pipe result a b } catch_result] } {
+    puts "$catch_result"
+}
+
+checkprops result -s 44761.1 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

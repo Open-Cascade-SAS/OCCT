@@ -1,0 +1,47 @@
+puts "========================"
+puts "  OCC110 "
+puts "Case is duplicate of chl 902 I1, bug BUC60706 "
+puts "(cases D1,D2,..D9)"
+puts "========================"
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D7
+#
+restore [locate_data_file buc60706s.brep] f
+restore [locate_data_file buc60706b.brep] w
+pipe t w f
+
+restore [locate_data_file buc60706c.brep] s
+
+bop s t
+bopcut res 
+
+tcopy res buc60706y.brep
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D8
+#
+restore [locate_data_file buc60706v.brep] f
+restore [locate_data_file buc60706e.brep] w
+pipe t w f
+
+tcopy buc60706y.brep s
+
+bop s t
+bopcut res 
+
+tcopy res buc60706z1.brep
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D9
+#
+restore [locate_data_file buc60706x.brep] f
+restore [locate_data_file buc60706h.brep] w
+pipe t w f
+tcopy buc60706z1.brep s
+
+bop s t
+bopcut result
+
+checkprops result -s 861220
+checkview -display result -2d -otherwise { s t } -s -path ${imagedir}/${test_image}.png

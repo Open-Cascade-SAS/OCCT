@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC25225"
+puts "============"
+puts ""
+#######################################################################
+# Failure of 2d offset algorithm on two wires with arc
+#######################################################################
+
+restore [locate_data_file bug25225_2869_open.brep] a
+
+if [catch { mkoffset resoffset a 1 -10} ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  checkprops result -l 416.777 
+checkshape result 
+checksection result
+
+  checknbshapes result -vertex 7 -edge 7 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 15
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

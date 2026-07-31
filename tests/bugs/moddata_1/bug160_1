@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC60775"
+puts "OCC160"
+puts "(COMMON: A and B)"
+puts "========================"
+
+restore [locate_data_file buc60775a.brep] a 
+checkshape a
+restore [locate_data_file buc60775b.brep] b
+checkshape b
+
+bcommon result a b
+checkshape result
+
+set nf [llength [explode result f]]
+if {$nf < 6} {
+   puts "Error : the resulting shape is unclosed!!!"
+}
+
+checkprops result -s 94067.7
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,6 @@
+restore [locate_data_file so1] b1
+restore [locate_data_file so4] b2
+
+bcut result b2 b1
+checkprops result -s empty
+checkview -display result -2d -s -otherwise { b2 b1 } -path ${imagedir}/${test_image}.png

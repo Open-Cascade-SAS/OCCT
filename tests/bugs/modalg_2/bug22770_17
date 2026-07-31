@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve command sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+vertex a 1 0 0
+vertex b 10 0 0
+edge e1 a b
+vertex c 10.01 0 0
+vertex d 20 0 0
+edge e2 c d
+sewing result 0.1 e1 e2 -e
+
+checkprops result -l 18.99 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 4 -edge 2 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 7
+checkmaxtol result -ref 9.9999999999999995e-008
+checknbshapes result -shell 0
+checkfreebounds result 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

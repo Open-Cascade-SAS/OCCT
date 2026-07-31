@@ -1,0 +1,19 @@
+puts "========"
+puts "0027158: BRepMesh manage vertex tolerance in parametric space in improper way"
+puts "========"
+puts ""
+
+set BugNumber OCC27158
+
+restore [locate_data_file bug27158_ZoneB_25.brep] result
+
+tclean result
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}

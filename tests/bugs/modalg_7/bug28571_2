@@ -1,0 +1,29 @@
+puts "TODO OCC28571 ALL: Error: BRepOffsetAPI_MakeOffset build invalid wire"
+puts "TODO OCC28571 ALL: Error : There are alone Vertices"
+
+puts "========"
+puts "OCC28571"
+puts "========"
+puts ""
+#############################################
+# BRepOffsetAPI_MakeOffset build invalid wire
+#############################################
+
+restore [locate_data_file bug28571_inputwire.brep] w
+
+openoffset result w 1 1 a
+
+set Log [bopcheck result_1]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepOffsetAPI_MakeOffset build invalid wire"
+}
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result_1] full nbv
+if { $nbv != 0 } { 
+  puts "Error : There are alone Vertices" 
+}
+
+top
+donly w result_1
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

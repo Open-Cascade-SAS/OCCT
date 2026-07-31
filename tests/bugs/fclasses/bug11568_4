@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC11568"
+puts "============"
+puts ""
+#######################################################################
+# UnitsAPI package uses incorrect symbol for minutes: mn instead of min
+#######################################################################
+
+set BugNumber OCC11568
+
+set UnitString "min"
+set result "result: 60\n"
+
+if { [unitconvtoSI 1 ${UnitString}] == ${result} } {
+    puts "${BugNumber}: OK"
+} else {
+    puts "${BugNumber}: Faulty"
+}

@@ -1,0 +1,44 @@
+puts "=========="
+puts "OCC26197"
+puts "=========="
+puts ""
+############################################################
+# Incomplete intersection curve
+############################################################
+
+restore [locate_data_file bug26197_profile_1093.brep] b1
+restore [locate_data_file bug26197_endcut1_1093.brep] b2
+
+explode b1 f
+copy b1_107 f1
+
+explode b2 f
+copy b2_2 f2
+
+bsection result f1 f2
+
+explode result e
+mk2dcurve c2d2 result_1 f2
+
+bounds c2d2 u1 u2
+puts [dval u1]
+puts [dval u2]
+
+2dcvalue c2d2 u1 x y1
+2dcvalue c2d2 u2 x y2
+
+set y1_ [dval y1]
+set y2_ [dval y2]
+
+set tol_abs 1.e-7
+set tol_rel 1.e-7
+
+#V-last of the surface of f2 face
+set expected_y 1.1883793591414735
+
+checkreal "extension the section line to the surface boundary?" ${y2_} ${expected_y} ${tol_abs} ${tol_rel}
+
+smallview
+donly result f1 f2
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "========================"
+puts "BUC60703"
+puts "========================"
+puts ""
+####################################
+## Crash during a fuse whilst two plans are tangent. 
+####################################
+
+restore [locate_data_file buc60703d.brep] a 
+restore [locate_data_file buc60703f.brep] b
+
+bfuse result a b
+
+checkshape result
+checkprops result -s 322.013 -v 375.942
+checknbshapes result -wire 6 -face 4 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

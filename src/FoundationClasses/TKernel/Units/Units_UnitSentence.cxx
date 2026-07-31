@@ -1,0 +1,228 @@
+// Created on: 1992-06-24
+// Created by: Gilles DEBARBOUILLE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TCollection_AsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Operators.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_Token.hxx>
+#include <Units_Unit.hxx>
+#include <Units_UnitsDictionary.hxx>
+#include <Units_UnitSentence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+//=================================================================================================
+
+Units_UnitSentence::Units_UnitSentence(const char* const astring)
+    : Units_Sentence(Units::LexiconUnits(), astring)
+{
+  Analyse();
+  SetConstants();
+  SetUnits(Units::DictionaryOfUnits()->Sequence());
+}
+
+//=================================================================================================
+
+Units_UnitSentence::Units_UnitSentence(
+  const char* const                                                      astring,
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
+    : Units_Sentence(Units::LexiconUnits(false), astring)
+{
+  Analyse();
+  SetConstants();
+  SetUnits(aquantitiessequence);
+}
+
+//=================================================================================================
+
+void Units_UnitSentence::Analyse()
+{
+  if (Sequence()->Length() == 0)
+  {
+    return;
+  }
+
+  int                                                          index;
+  TCollection_AsciiString                                      s;
+  occ::handle<Units_Token>                                     token;
+  occ::handle<Units_Token>                                     previoustoken;
+  occ::handle<Units_Token>                                     currenttoken;
+  occ::handle<Units_Token>                                     nexttoken;
+  occ::handle<Units_Token>                                     lasttoken;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequence = Sequence();
+
+  currenttoken = sequence->Value(1);
+
+  // std::cout<<std::endl;
+  // for(int ind=1; ind<=sequence->Length(); ind++) {
+  //   occ::handle<Units_Token> tok = sequence->Value(ind);
+  //   std::cout<<tok->Word()<<" ";
+  // }
+  // std::cout<<std::endl;
+  // for(ind=1; ind<=sequence->Length(); ind++) {
+  //   occ::handle<Units_Token> tok = sequence->Value(ind);
+  //   std::cout<<tok->Mean()<<" ";
+  // }
+  // std::cout<<std::endl;
+
+  for (index = 2; index <= sequence->Length(); index++)
+  {
+    previoustoken = currenttoken;
+    currenttoken  = sequence->Value(index);
+    s             = currenttoken->Mean();
+    if (s == "MU" || s == "U")
+    {
+      if (previoustoken->Mean() == "M" || previoustoken->Mean() == "MU")
+      {
+        previoustoken->Mean("M");
+        currenttoken->Mean("U");
+        currenttoken->Value(0.);
+      }
+    }
+  }
+
+  for (index = 1; index <= sequence->Length(); index++)
+  {
+    currenttoken = sequence->Value(index);
+    s            = currenttoken->Mean();
+    if (s == "MU")
+    {
+      currenttoken->Mean("U");
+      currenttoken->Value(0.);
+    }
+  }
+
+  currenttoken = sequence->Value(1);
+  index        = 2;
+
+  while (index <= sequence->Length())
+  {
+    previoustoken = currenttoken;
+    currenttoken  = sequence->Value(index);
+    if (previoustoken->Mean() == "M" && currenttoken->Mean() == "U")
+    {
+      token = new Units_Token("(", "S");
+      sequence->InsertBefore(index - 1, token);
+      token = new Units_Token("*", "O");
+      sequence->InsertBefore(++index, token);
+      token = new Units_Token(")", "S");
+      sequence->InsertAfter(++index, token);
+      index++;
+    }
+    index++;
+  }
+
+  index = 1;
+  while (index <= sequence->Length())
+  {
+    currenttoken = sequence->Value(index);
+    if (currenttoken->Mean() == "P")
+    {
+      if (currenttoken->Word() == "sq." || currenttoken->Word() == "cu.")
+      {
+        sequence->Exchange(index, index + 1);
+        index++;
+      }
+      token = new Units_Token("**", "O");
+      sequence->InsertBefore(index, token);
+      index++;
+    }
+    index++;
+  }
+
+  currenttoken = sequence->Value(1);
+  index        = 2;
+
+  while (index <= sequence->Length())
+  {
+    previoustoken = currenttoken;
+    currenttoken  = sequence->Value(index);
+    if (currenttoken->Word() == "(")
+    {
+      if (!(previoustoken->Mean() == "O" || previoustoken->Word() == "("))
+      {
+        token = new Units_Token("*", "O");
+        sequence->InsertBefore(index, token);
+        index++;
+      }
+    }
+    else if (previoustoken->Word() == ")")
+    {
+      if (!(currenttoken->Mean() == "O" || currenttoken->Word() == ")"))
+      {
+        token = new Units_Token("*", "O");
+        sequence->InsertBefore(index, token);
+        index++;
+      }
+    }
+    index++;
+  }
+}
+
+//=================================================================================================
+
+void Units_UnitSentence::SetUnits(
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
+{
+  int                                                          index, jindex, kindex;
+  bool                                                         istheend = false;
+  occ::handle<Units_Quantity>                                  quantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequenceoftokens;
+  occ::handle<Units_Token>                                     currenttoken;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>  unitssequence;
+  occ::handle<Units_Unit>                                      unit;
+  TCollection_AsciiString                                      symbol;
+
+  for (index = 1; index <= aquantitiessequence->Length(); index++)
+  {
+    quantity      = aquantitiessequence->Value(index);
+    unitssequence = quantity->Sequence();
+    for (jindex = 1; jindex <= unitssequence->Length(); jindex++)
+    {
+      unit             = unitssequence->Value(jindex);
+      sequenceoftokens = Sequence();
+      istheend         = true;
+      for (kindex = 1; kindex <= sequenceoftokens->Length(); kindex++)
+      {
+        currenttoken = sequenceoftokens->Value(kindex);
+        if (currenttoken->Mean() == "U")
+        {
+          if (currenttoken->Value() == 0.)
+          {
+            symbol = currenttoken->Word();
+            if (unit == symbol.ToCString())
+            {
+              sequenceoftokens->SetValue(kindex, unit->Token());
+            }
+            else
+            {
+              istheend = false;
+            }
+          }
+        }
+      }
+      if (istheend)
+      {
+        break;
+      }
+    }
+    if (istheend)
+    {
+      break;
+    }
+  }
+}

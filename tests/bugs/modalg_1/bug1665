@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC1665"
+puts "========"
+############################################################
+## Geom_BSplineSurface::SetVPeriodic throws an exception
+############################################################
+
+restore [locate_data_file OCC1665.draw] a
+
+if {[catch {setvperiodic a} message]} {
+    puts "OCC1665 FAULTY : setvperiodic"
+} else {
+    if {[catch {mkface result a} message]} {
+	puts "OCC1665 FAULTY : mkface"
+    } else {
+      checknbshapes result -edge 3
+    }
+}
+
+checkprops result -s 12637 -eps 0.1
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

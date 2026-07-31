@@ -1,0 +1,22 @@
+puts "==========="
+puts "OCC24946"
+puts "==========="
+puts ""
+######################################################
+# Wrong result obtained by Extrema Curve/Curve
+######################################################
+
+restore [locate_data_file bug24946_ez5] b1
+restore [locate_data_file bug24946_ez101] b2
+
+mkcurve cb1 b1
+mkcurve cb2 b2
+
+extrema cb1 cb2
+regexp {The length ext_1 is+ +([-0-9.+eE]+)} [length ext_1] full ll
+
+if { $ll < 1.0e-7 } {
+  puts "OK: extrema is good"
+} else {
+  puts "Error: extrema is wrong"
+}

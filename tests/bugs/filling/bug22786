@@ -1,0 +1,28 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "============"
+puts "0022786: 64bit issue in AdvApp2Var"
+puts "============"
+puts ""
+
+set BugNumber OCC22786
+
+restore [locate_data_file OCC22786-c.brep] c 
+
+explode c
+
+gplate result 5 0 c_1 0 c_2 0 c_3 0 c_4 0 c_5 0
+
+checkprops result -s 2.92409 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 10
+
+vinit
+vdisplay c_1 c_2 c_3 c_4 c_5
+vdisplay result
+vsetdispmode 1
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

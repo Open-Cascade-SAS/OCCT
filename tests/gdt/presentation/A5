@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27645_nist_ftc_06_asme1_cr3000_rd.prt.stp
+
+set ref_data {
+Centre of mass: 117582.80050896495 404113.50809473585 -141.38021108117269
+Mass: 9543968.3389828727
+
+}

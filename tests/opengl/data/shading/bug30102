@@ -1,0 +1,13 @@
+puts "============="
+puts "0030102: Visualization, TKOpenGl - Graphic3d_TOSM_FACET shading is incorrect in some casesn"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vdrawparray b triangles v 0 55 0 v 0 75 0 v 20 55 0 v 0 55 0 v 0 75 0 v 0 55 20 v 0 55 0 v 0 55 20 v 20 55 0 v 0 75 0 v 0 55 20 v 20 55 0
+vrotate 0.3 0.0 0.0
+vfit
+
+vdump ${imagedir}/${casename}.png

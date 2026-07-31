@@ -1,0 +1,15 @@
+
+puts "========"
+puts "OCC444"
+puts "========"
+puts ""
+######################################
+## Exception in '2dextrema' command  if distance = 0.
+######################################
+
+restore [locate_data_file OCC444a.draw] a 
+restore [locate_data_file OCC444a.draw] b
+
+extrema a b
+
+

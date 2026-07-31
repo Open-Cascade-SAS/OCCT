@@ -1,0 +1,11 @@
+puts "============"
+puts "0030356: Data Exchange - IGES model after importing into document has location issues"
+puts "============"
+
+XNewDoc d
+ReadIges d [locate_data_file bug30356_GES-13500-000.igs]
+
+XShow d
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

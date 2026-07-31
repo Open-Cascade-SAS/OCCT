@@ -1,0 +1,64 @@
+puts "========"
+puts "OCC29734"
+puts "========"
+puts ""
+#######################
+# Compute global properties of tessellated shape
+#######################
+proc compmass { mass props1 props2 } {
+  regexp {Mass +: +([-0-9.+eE]+)} ${props1} full m1
+  regexp {Mass +: +([-0-9.+eE]+)} ${props2} full m2 
+  if { abs ($m1 - $m2) > 1.e-7  } {
+    puts "Error : The $mass by geometry is $m1, by triangulation is  $m2"
+  } else {
+    puts "The $mass are equal  $m1"
+  }
+}
+#
+proc compmoms { props1 props2 } {
+  set moments {"IX" "IY" "IZ"}
+  foreach moment $moments {
+    set exp_string "${moment} = +(\[-0-9.+eE\]+)" 
+    regexp "${exp_string}" ${props1} full m1
+    regexp "${exp_string}" ${props2} full m2
+    if { abs ($m1 - $m2) > 1.e-7  } {
+      puts "Error : The ${moment} by geometry is $m1, by triangulation is  $m2"
+    } else {
+      puts "The moments ${moment} are equal  $m1"
+    }
+  }
+}
+#
+proc compprops { shape } {
+  upvar ${shape} ${shape}
+  set commands {"lprops" "sprops" "vprops"}
+  foreach command ${commands} {
+    switch $command {
+      "lprops"    { set mass "length" }
+      "sprops"    { set mass "area" }
+      "vprops"    { set mass "volume" }
+    }
+    puts ""
+    set props1 [eval $command ${shape} -full]
+    set props2 [eval $command ${shape} -full -tri]
+    compmass $mass $props1 $props2
+    compmoms $props1 $props2
+  }
+}
+
+#For shapes consisted from planar polygonal faces 
+#results of computation of global properties using exact geometry 
+#and using triangulations must be the same
+#It is checked by this test
+box b1 1 2 3
+box b2 3 2 1
+ttranslate b2 .5 .5 .5
+trotate b2 0 0 0 1 1 1 30
+bfuse ff b1 b2
+incmesh ff .01
+set tri_info [eval trinfo ff]
+puts $tri_info
+
+# check of equality calculations by triangulation and exact geometry
+#set shape "ff"
+compprops ff

@@ -1,0 +1,102 @@
+// Created on: 2002-12-12
+// Created by: data exchange team
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+
+#include <Interface_EntityIterator.hxx>
+#include "RWStepRepr_RWPropertyDefinitionRelationship.pxx"
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_PropertyDefinitionRelationship.hxx>
+
+//=================================================================================================
+
+RWStepRepr_RWPropertyDefinitionRelationship::RWStepRepr_RWPropertyDefinitionRelationship() =
+  default;
+
+//=================================================================================================
+
+void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
+{
+  // Check number of parameters
+  if (!data->CheckNbParams(num, 4, ach, "property_definition_relationship"))
+  {
+    return;
+  }
+
+  // Own fields of PropertyDefinitionRelationship
+
+  occ::handle<TCollection_HAsciiString> aName;
+  data->ReadString(num, 1, "name", ach, aName);
+
+  occ::handle<TCollection_HAsciiString> aDescription;
+  data->ReadString(num, 2, "description", ach, aDescription);
+
+  occ::handle<StepRepr_PropertyDefinition> aRelatingPropertyDefinition;
+  data->ReadEntity(num,
+                   3,
+                   "relating_property_definition",
+                   ach,
+                   STANDARD_TYPE(StepRepr_PropertyDefinition),
+                   aRelatingPropertyDefinition);
+
+  occ::handle<StepRepr_PropertyDefinition> aRelatedPropertyDefinition;
+  data->ReadEntity(num,
+                   4,
+                   "related_property_definition",
+                   ach,
+                   STANDARD_TYPE(StepRepr_PropertyDefinition),
+                   aRelatedPropertyDefinition);
+
+  // Initialize entity
+  ent->Init(aName, aDescription, aRelatingPropertyDefinition, aRelatedPropertyDefinition);
+}
+
+//=================================================================================================
+
+void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
+{
+
+  // Own fields of PropertyDefinitionRelationship
+
+  SW.Send(ent->Name());
+
+  SW.Send(ent->Description());
+
+  SW.Send(ent->RelatingPropertyDefinition());
+
+  SW.Send(ent->RelatedPropertyDefinition());
+}
+
+//=================================================================================================
+
+void RWStepRepr_RWPropertyDefinitionRelationship::Share(
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent,
+  Interface_EntityIterator&                                   iter) const
+{
+
+  // Own fields of PropertyDefinitionRelationship
+
+  iter.AddItem(ent->RelatingPropertyDefinition());
+
+  iter.AddItem(ent->RelatedPropertyDefinition());
+}

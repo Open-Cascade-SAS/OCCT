@@ -1,0 +1,18 @@
+# test script on make volume operation
+# sphere
+
+# spherical face 
+sphere sph_f1 0 0 0 0 0 1 550
+erase sph_f1
+mkface f1 sph_f1
+
+# spherical face 
+sphere sph_f2 0 0 0 0 0 1 510
+erase sph_f2
+mkface f2 sph_f2
+
+# make volume operation 
+mkvolume result f1 f2
+
+checkprops result -s 1.03384e+007
+

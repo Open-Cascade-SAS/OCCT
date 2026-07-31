@@ -1,0 +1,65 @@
+puts "========"
+puts "CR24817"
+puts "========"
+puts ""
+#########################################
+## Can not sew two circular faces in non-manifold mode
+#########################################
+
+# Create first face
+circle c 0 1 0 1
+trim c c 0.5*pi 1.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane1 w
+
+# Create second face
+circle c 0 1 0 1
+trim c c 1.5*pi 2.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane2 w
+
+# Create third face
+circle c 0 1 0 1 0 0 1
+trim c c 1.5*pi 2.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane3 w
+
+# Sew faces
+sewing sr1 plane1 plane2 +n
+sewing sr2 plane1 plane2 plane3 +n
+
+#
+checknbshapes sr1 -vertex 2 -edge 3 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 10
+
+checkprops sr1 -s 3.14159
+clear
+smallview
+donly sr1
+fit
+xwd $imagedir/${test_image}_1.png
+
+#
+checknbshapes sr2 -vertex 2 -edge 4 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 13
+
+checkprops sr2 -s 4.71239
+donly sr2
+fit
+xwd $imagedir/${test_image}_2.png
+
+checkmaxtol sr1 -ref 1.0000000015308085e-007
+checkfreebounds sr1 2
+
+checkmaxtol sr2 -ref 1.0000000015308085e-007
+checkfreebounds sr2 0

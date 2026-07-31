@@ -1,0 +1,30 @@
+puts "========================"
+puts "OCC22995"
+puts "========================"
+puts ""
+##################################################################################################
+# It is not possible to check presence of a document in OCAF session via IsInSession() on Windows
+##################################################################################################
+
+set BugNumber OCC22995
+
+set status 0
+set aFile1 $imagedir/${test_image}-1.cbf
+set aFile2 $imagedir/${test_image}-2.cbf
+
+NewDocument D BinOcaf
+
+if { [file exists ${aFile1}] } {
+    file delete ${aFile1}
+}
+if { [file exists ${aFile2}] } {
+    file delete ${aFile2}
+}
+SaveAs D ${aFile1}
+set info1 [ IsInSession ${aFile1} ]
+set info0 [ IsInSession ${aFile2} ]
+if { ${info1} == 1 && ${info0} == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}

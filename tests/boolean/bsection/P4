@@ -1,0 +1,13 @@
+restore [locate_data_file intcq004.brep] m
+explode m
+# primitives : m_1 m_3 m_4 m_5
+# m_2 : Bloc
+compound m_1 m_3 m_5 c1
+bsection s c1 m_2
+# PB
+bsection s2 m_4 m_2 
+compound s s2 result
+
+checkprops result -l 682.142
+checksection result
+checkview -display result -2d -otherwise { c1 m_2 m_4 m_2 } -l -path ${imagedir}/${test_image}.png

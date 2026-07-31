@@ -1,0 +1,68 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+# bopcurves command
+
+restore [locate_data_file bug25292_Input_0.brep] b1
+restore [locate_data_file bug25292_Input_1.brep] b2
+
+explode b1 f
+copy b1_2 f1
+explode b2 f
+copy b2_2 f2
+
+#############################
+set log [bopcurves f1 f2 -2d]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+#This value must be equal to the analogical value in bug25292_11 and bug25292_12 of "bugs modalg_5" testgrid. 
+set MaxTol 2.0e-7
+
+#This value must be equal to the analogical value in bug25292_11, bug25292_12, bug25292_15 and bug25292_16 of "bugs modalg_5" testgrid. 
+set GoodNbCurv 4
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+#-------------
+
+puts ""
+
+mksurface s1 f1
+mksurface s2 f2
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i U1 U2
+
+  puts "U2=[dval U1]"
+  puts "U2=[dval U2]"
+  
+  if {[dval U2-U1] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+
+  xdistcs c_$i s1 U1 U2 10 ${Toler}
+  xdistcs c_$i s2 U1 U2 10 ${Toler}
+}
+
+v2d
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

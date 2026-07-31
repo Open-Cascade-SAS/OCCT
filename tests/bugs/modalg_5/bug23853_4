@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC23853"
+puts "============"
+puts ""
+######################################################
+# BOP regression (2) - BRepAlgoAPI_Cut
+######################################################
+
+restore [locate_data_file bug23853_cylinder.brep] s1
+restore [locate_data_file bug23853_pipe.brep] s2
+
+bop s1 s2
+bopcommon result
+
+checkprops result -s 3947.09 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

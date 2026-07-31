@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_example_3_side_30_top_0.brep] s
+
+OFFSETSHAPE 35 {} $calcul $type
+
+checkprops result -v 8.08679e+007
+
+checknbshapes result -shell 1

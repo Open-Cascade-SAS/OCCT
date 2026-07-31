@@ -1,0 +1,232 @@
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BRepMesh_DataStructureOfDelaun_HeaderFile
+#define _BRepMesh_DataStructureOfDelaun_HeaderFile
+
+#include <Standard_Transient.hxx>
+#include <BRepMesh_VertexTool.hxx>
+
+class BRepMesh_Edge;
+
+//! Describes the data structure necessary for the mesh algorithms in
+//! two dimensions plane or on surface by meshing in UV space.
+class BRepMesh_DataStructureOfDelaun : public Standard_Transient
+{
+public:
+  //! Constructor.
+  //! @param theAllocator memory allocator to be used by internal structures.
+  //! @param theReservedNodeSize presumed number of nodes in this mesh.
+  Standard_EXPORT BRepMesh_DataStructureOfDelaun(
+    const occ::handle<NCollection_IncAllocator>& theAllocator,
+    const int                                    theReservedNodeSize = 100);
+
+public: //! @name API for accessing mesh nodes.
+  //! Returns number of nodes.
+  int NbNodes() const { return myNodes->Extent(); }
+
+  //! Adds node to the mesh if it is not already in the mesh.
+  //! @param theNode node to be added to the mesh.
+  //! @param isForceAdd adds the given node to structure without
+  //! checking on coincidence with other nodes.
+  //! @return index of the node in the structure.
+  Standard_EXPORT int AddNode(const BRepMesh_Vertex& theNode, const bool isForceAdd = false);
+
+  //! Finds the index of the given node.
+  //! @param theNode node to find.
+  //! @return index of the given element of zero if node is not in the mesh.
+  int IndexOf(const BRepMesh_Vertex& theNode) { return myNodes->FindIndex(theNode); }
+
+  //! Get node by the index.
+  //! @param theIndex index of a node.
+  //! @return node with the given index.
+  const BRepMesh_Vertex& GetNode(const int theIndex) { return myNodes->FindKey(theIndex); }
+
+  //! Alias for GetNode.
+  const BRepMesh_Vertex& operator()(const int theIndex) { return GetNode(theIndex); }
+
+  //! Substitutes the node with the given index by new one.
+  //! @param theIndex index of node to be substituted.
+  //! @param theNewNode substituting node.
+  //! @return FALSE in case if new node is already in the structure, TRUE elsewhere.
+  Standard_EXPORT bool SubstituteNode(const int theIndex, const BRepMesh_Vertex& theNewNode);
+
+  //! Removes node from the mesh in case if it has no connected links
+  //! and its type is Free.
+  //! @param theIndex index of node to be removed.
+  //! @param isForce if TRUE node will be removed even if movability
+  //! is not Free.
+  void RemoveNode(const int theIndex, const bool isForce = false)
+  {
+    if (isForce || myNodes->FindKey(theIndex).Movability() == BRepMesh_Free)
+    {
+      if (LinksConnectedTo(theIndex).Extent() == 0)
+        myNodes->DeleteVertex(theIndex);
+    }
+  }
+
+  //! Get list of links attached to the node with the given index.
+  //! @param theIndex index of node whose links should be retrieved.
+  //! @return list of links attached to the node.
+  const IMeshData::ListOfInteger& LinksConnectedTo(const int theIndex) const
+  {
+    return linksConnectedTo(theIndex);
+  }
+
+public: //! @name API for accessing mesh links.
+  //! Returns number of links.
+  int NbLinks() const { return myLinks.Extent(); }
+
+  //! Adds link to the mesh if it is not already in the mesh.
+  //! @param theLink link to be added to the mesh.
+  //! @return index of the link in the structure.
+  Standard_EXPORT int AddLink(const BRepMesh_Edge& theLink);
+
+  //! Finds the index of the given link.
+  //! @param theLink link to find.
+  //! @return index of the given element of zero if link is not in the mesh.
+  int IndexOf(const BRepMesh_Edge& theLink) const { return myLinks.FindIndex(theLink); }
+
+  //! Get link by the index.
+  //! @param theIndex index of a link.
+  //! @return link with the given index.
+  const BRepMesh_Edge& GetLink(const int theIndex) { return myLinks.FindKey(theIndex); }
+
+  //! Returns map of indices of links registered in mesh.
+  const IMeshData::MapOfInteger& LinksOfDomain() const { return myLinksOfDomain; }
+
+  //! Substitutes the link with the given index by new one.
+  //! @param theIndex index of link to be substituted.
+  //! @param theNewLink substituting link.
+  //! @return FALSE in case if new link is already in the structure, TRUE elsewhere.
+  Standard_EXPORT bool SubstituteLink(const int theIndex, const BRepMesh_Edge& theNewLink);
+
+  //! Removes link from the mesh in case if it has no connected elements
+  //! and its type is Free.
+  //! @param theIndex index of link to be removed.
+  //! @param isForce if TRUE link will be removed even if movability
+  //! is not Free.
+  Standard_EXPORT void RemoveLink(const int theIndex, const bool isForce = false);
+
+  //! Returns indices of elements connected to the link with the given index.
+  //! @param theLinkIndex index of link whose data should be retrieved.
+  //! @return indices of elements connected to the link.
+  const BRepMesh_PairOfIndex& ElementsConnectedTo(const int theLinkIndex) const
+  {
+    return myLinks.FindFromIndex(theLinkIndex);
+  }
+
+public: //! @name API for accessing mesh elements.
+  //! Returns number of links.
+  int NbElements() const { return myElements.Length(); }
+
+  //! Adds element to the mesh if it is not already in the mesh.
+  //! @param theElement element to be added to the mesh.
+  //! @return index of the element in the structure.
+  Standard_EXPORT int AddElement(const BRepMesh_Triangle& theElement);
+
+  //! Get element by the index.
+  //! @param theIndex index of an element.
+  //! @return element with the given index.
+  const BRepMesh_Triangle& GetElement(const int theIndex)
+  {
+    return myElements.ChangeValue(theIndex - 1);
+  }
+
+  //! Returns map of indices of elements registered in mesh.
+  const IMeshData::MapOfInteger& ElementsOfDomain() const { return myElementsOfDomain; }
+
+  //! Substitutes the element with the given index by new one.
+  //! @param theIndex index of element to be substituted.
+  //! @param theNewLink substituting element.
+  //! @return FALSE in case if new element is already in the structure, TRUE elsewhere.
+  Standard_EXPORT bool SubstituteElement(const int                theIndex,
+                                         const BRepMesh_Triangle& theNewElement);
+
+  //! Removes element from the mesh.
+  //! @param theIndex index of element to be removed.
+  Standard_EXPORT void RemoveElement(const int theIndex);
+
+  //! Returns indices of nodes forming the given element.
+  //! @param theElement element which nodes should be retrieved.
+  //! @param[out] theNodes nodes of the given element.
+  Standard_EXPORT void ElementNodes(const BRepMesh_Triangle& theElement, int (&theNodes)[3]);
+
+  Standard_EXPORT void Dump(const char* theFileNameStr);
+
+public: //! @name Auxiliary API
+  //! Returns memory allocator used by the structure.
+  const occ::handle<NCollection_IncAllocator>& Allocator() const { return myAllocator; }
+
+  //! Gives the data structure for initialization of cell size and tolerance.
+  const occ::handle<BRepMesh_VertexTool>& Data() { return myNodes; }
+
+  //! Removes all elements.
+  Standard_EXPORT void ClearDomain();
+
+  //! Substitutes deleted items by the last one from corresponding map
+  //! to have only non-deleted elements, links or nodes in the structure.
+  void ClearDeleted()
+  {
+    clearDeletedLinks();
+    clearDeletedNodes();
+  }
+
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun, Standard_Transient)
+
+private:
+  //! Get list of links attached to the node with the given index.
+  //! @param theIndex index of node whose links should be retrieved.
+  //! @return list of links attached to the node.
+  IMeshData::ListOfInteger& linksConnectedTo(const int theIndex) const
+  {
+    return (IMeshData::ListOfInteger&)myNodeLinks.Find(theIndex);
+  }
+
+  //! Substitutes deleted links by the last one from corresponding map
+  //! to have only non-deleted links in the structure.
+  Standard_EXPORT void clearDeletedLinks();
+
+  //! Substitutes deleted nodes by the last one from corresponding map
+  //! to have only non-deleted nodes in the structure.
+  Standard_EXPORT void clearDeletedNodes();
+
+  //! Cleans dependent structures from the given link.
+  //! @param theIndex index of link in the data structure.
+  //! @param theLink reference to the link to avoid double accessing
+  //! to map of links.
+  void cleanLink(const int theIndex, const BRepMesh_Edge& theLink);
+
+  //! Cleans dependent structures from the given element.
+  //! @param theIndex index of element in the data structure.
+  //! @param theElement reference to the element to avoid double accessing
+  //! to map of elements.
+  void cleanElement(const int theIndex, const BRepMesh_Triangle& theElement);
+
+  //! Removes element index from the given pair. Used by cleanElement.
+  //! @param theIndex index of element to be removed.
+  //! @param thePair pair of elements to be cleaned.
+  void removeElementIndex(const int theIndex, BRepMesh_PairOfIndex& thePair);
+
+private:
+  occ::handle<NCollection_IncAllocator> myAllocator;
+  occ::handle<BRepMesh_VertexTool>      myNodes;
+  IMeshData::DMapOfIntegerListOfInteger myNodeLinks;
+  IMeshData::IDMapOfLink                myLinks;
+  IMeshData::ListOfInteger              myDelLinks;
+  IMeshData::VectorOfElements           myElements;
+  IMeshData::MapOfInteger               myElementsOfDomain;
+  IMeshData::MapOfInteger               myLinksOfDomain;
+};
+
+#endif

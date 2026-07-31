@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC23985"
+puts "========"
+puts ""
+##########################################
+## There is no section between attached faces
+##########################################
+
+set BugNumber 23985
+
+restore [locate_data_file bug23985_b1.brep] b1
+restore [locate_data_file bug23985_b2.brep] b2
+
+bsection result b1 b2
+
+set expl [explode result]
+
+set ll [llength $expl]
+puts "Result is $ll section edge"
+
+if {$ll > 0} {
+    puts "${BugNumber} OK"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

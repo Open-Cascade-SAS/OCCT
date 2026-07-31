@@ -1,0 +1,57 @@
+// Created on: 1993-04-07
+// Created by: Laurent BUCHARD
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _IntCurveSurface_TheQuadCurvExactHInter_HeaderFile
+#define _IntCurveSurface_TheQuadCurvExactHInter_HeaderFile
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <NCollection_Sequence.hxx>
+
+class Adaptor3d_HSurfaceTool;
+class IntCurveSurface_TheHCurveTool;
+class IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter;
+
+class IntCurveSurface_TheQuadCurvExactHInter
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Provides the signed distance function : Q(w)
+  //! and its first derivative dQ(w)/dw
+  Standard_EXPORT IntCurveSurface_TheQuadCurvExactHInter(const occ::handle<Adaptor3d_Surface>& S,
+                                                         const occ::handle<Adaptor3d_Curve>&   C);
+
+  Standard_EXPORT bool IsDone() const;
+
+  Standard_EXPORT int NbRoots() const;
+
+  Standard_EXPORT double Root(const int Index) const;
+
+  Standard_EXPORT int NbIntervals() const;
+
+  //! U1 and U2 are the parameters of
+  //! a segment on the curve.
+  Standard_EXPORT void Intervals(const int Index, double& U1, double& U2) const;
+
+private:
+  int                          nbpnts;
+  NCollection_Sequence<double> pnts;
+  int                          nbintv;
+  NCollection_Sequence<double> intv;
+};
+
+#endif // _IntCurveSurface_TheQuadCurvExactHInter_HeaderFile

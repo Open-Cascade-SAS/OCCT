@@ -1,0 +1,57 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDF_Reference
+#
+# Testing command:   SetReference
+# Testing command:   GetReference
+#
+
+puts "caf001-L3"
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aSetAttr2 200
+set aSetAttr3 300
+set aLabel1 0:2
+set aLabel2 0:3
+set aLabel3 0:4
+set aLabel4 0:5
+SetInteger D ${aLabel1} ${aSetAttr1}
+SetInteger D ${aLabel2} ${aSetAttr2}
+SetInteger D ${aLabel3} ${aSetAttr3}
+
+set aReference1 ${aLabel2}
+SetReference D ${aLabel4} ${aReference1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-L3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aReference5 [GetReference DD ${aLabel4}]} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDF_Reference attribute from restoring document: Error"
+	return
+}
+
+if { ${aReference1} != ${aReference5} } {
+	puts "aReference1=${aReference1} aReference5=${aReference5}"
+	puts "Get a value of TDF_Reference attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDF_Reference attribute from restoring document: OK"

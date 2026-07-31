@@ -1,0 +1,26 @@
+puts "TODO OCC25597 ALL: Error: Reached tolerance"
+puts "============"
+puts "OCC23218"
+puts "============"
+puts ""
+#######################################################################
+# Wrong value of tolerance for the intersection curve.
+#######################################################################
+
+set BugNumber OCC23218
+
+puts "Load first shape ..."
+restore [locate_data_file bug23218_b1] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug23218_b4] b2 
+
+puts "Start project operation ..."
+set result [bopcurves b1 b2]
+puts $result
+puts "Finish project operation ..."
+
+set GoodToleranceReached 6.3315853638232248e-007
+regexp {Tolerance Reached=([-0-9.+eE]+)} $result full ToleranceReached
+
+checkreal "Reached tolerance" ${ToleranceReached} ${GoodToleranceReached} 0 0.001

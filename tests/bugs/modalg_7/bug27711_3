@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC27711"
+puts "========"
+puts ""
+#####################################
+# Blend-on-blend corrupts the shape
+#####################################
+
+smallview
+
+restore [locate_data_file bug27711.brep] s
+
+clear
+display s
+fit
+xwd $imagedir/${casename}_step_0.png
+
+explode s e
+blend r1 s 0.5 s_12 0.5 s_11
+set bug_info [string trim [checkshape r1]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display r1
+xwd $imagedir/${casename}_step_1.png
+
+explode r1 e
+blend result r1 0.5 r1_7 0.5 r1_11
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display result
+xwd $imagedir/${casename}_step_2.png

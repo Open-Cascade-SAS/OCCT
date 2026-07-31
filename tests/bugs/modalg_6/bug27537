@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC27537"
+puts "============"
+puts ""
+######################################################
+# Incorrect number of sample points provided by GCPnts_TangentialDeflection
+######################################################
+
+restore [locate_data_file bug27537.brep] result
+incmesh result 0.2
+
+bounding result -save xMin yMin zMin xMax yMax zMax -dump
+
+mkcurve c result
+bounds c u1 u2
+set first [dval u1]
+set last  [dval u2]
+
+set x 0.
+set y 0.
+set z 0.
+set param 0.
+set isOk true
+
+set nbSamples 100
+set step [expr ($last - $first)/$nbSamples]
+for {set i 0} {$i <= $nbSamples} {incr i} {
+  if {$i < $nbSamples} {
+    set param [expr $first + $i * $step]
+  } else {
+    set param $last
+  }
+
+  cvalue c $param cx cy cz
+  set x [dval cx]
+  set y [dval cy]
+  set z [dval cz]
+  if {$x < [dval xMin] || $x > [dval xMax] || $y < [dval yMin] || $y > [dval yMax] || $z < [dval zMin] || $z > [dval zMax] } {
+    puts "ERROR: point ($x; $y; $z) is out of bounding box"
+    set isOk false
+  }
+}
+
+if {$isOk} {
+  puts "OK: all sample points inside bounding box"
+}
+
+top; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

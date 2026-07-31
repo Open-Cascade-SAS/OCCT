@@ -1,0 +1,56 @@
+puts "========"
+puts "0025952: Wrong intersection curve"
+puts "========"
+puts ""
+pload QAcommands
+puts "TODO OCC25952 ALL: Error: The curve res_1 is possible to have a bend at parameter"
+
+set aGoodNbCurves 1
+
+restore [locate_data_file bug25952_shape.brep] q
+explode q 
+copy q_1 b1
+copy q_2 b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+trimv s2t s2 0.24999939999991502 1
+
+intersect res s1 s2t
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+    lappend CurvesList res_$ic
+    QACheckBends res_$ic
+    incr ic
+  }
+}
+
+set ic [expr $ic - 1]
+
+if { $ic != $aGoodNbCurves } {
+  puts "Error: $aGoodNbCurves curves is expected but $ic ones are found"
+} else {
+  CheckIntersectionResult s1 s2 $CurvesList 100 2.0e-7 2.0e-7
+}
+
+
+smallview 
+don res_*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

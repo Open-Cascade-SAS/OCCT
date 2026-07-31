@@ -1,0 +1,12 @@
+#B5----------------------------------------------
+plane p 0 0 0 1 0 0 0 0 -1
+pcylinder p p 25 35
+profile pf o 12 -10 20 l 10 c 5 90 l 10 c 5 90 l 10 \
+c 5 90 l 10 c 5 90
+polyline pl 0 0 20 0 0 40
+pipe p2 pl pf
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_11 2 0 0 40 0 0 1
+
+checkprops result -s 10572.7

@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC3397"
+puts "============"
+puts ""
+######################################################
+# Incorrect work of ShapeFix_ComposeShell
+######################################################
+
+set BugNumber OCC3397
+
+#mkv-04.09.06
+param read.step.shape.relationship OFF
+
+set filepath [locate_data_file trj12_b3-tu-203.stp]
+if [catch { stepread $filepath a * } res] {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+    
+    checkprops result -s 1.48021e+06 
+    checkshape result
+    checknbshapes result -vertex 1228 -edge 1938 -wire 762 -face 696 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 4627
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

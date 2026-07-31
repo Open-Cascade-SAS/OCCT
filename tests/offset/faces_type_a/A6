@@ -1,0 +1,6 @@
+#old file ofcbborne
+
+restore [locate_data_file CHE_borne.rle] s
+OFFSETSHAPE -0.1 {s_2 s_3} $calcul $type
+
+checkprops result -v 0.47668

@@ -1,0 +1,36 @@
+puts "==========="
+puts "0030537: Visualization - wrapping text in font text formatter"
+puts ""
+puts "==========="
+
+pload MODELING VISUALIZATION
+vinit View1 -width 500
+vclear
+vaxo
+
+box b1 10 0 460 10 180 40
+vdisplay b1
+vdrawtext t1 "Top text on plane yOz\n(not wrapped)" -pos 10 5 500 -color green -plane 1 0 0 0 1 0 -valign top -font SansFont -zoom 1
+
+box b2 10 0 340 10 130 60
+vdisplay b2
+vdrawtext t2 "Top text on plane yOz\n(wrapping=120)" -pos 10 5 400 -color green -wrapping 120 -plane 1 0 0 0 1 0 -valign top -font SansFont -zoom 1
+
+box b3 10 0 160 10 60 150
+vdisplay b3
+vdrawtext t3 "Top text on plane yOz\n(wrapping=50)" -pos 10 5 300 -color green -wrapping 50 -plane 1 0 0 0 1 0 -valign top -font SansFont -zoom 1
+
+box b4 10 200 400 10 130 100
+vdisplay b4
+vdrawtext t4 "Top text on plane yOz\n(wrapping=120, word wrapping disabled)" -pos 10 205 500 -color green -wrapping 120 -plane 1 0 0 0 1 0 -valign top -font SansFont -zoom 1 -wordwrapping 0
+
+box b5 10 200 160 10 60 200
+vdisplay b5
+vdrawtext t5 "Top text on plane yOz\n(wrapping=50, word wrapping disabled)" -pos 10 205 350 -color green -wrapping 50 -plane 1 0 0 0 1 0 -valign top -font SansFont -zoom 1 -wordwrapping 0
+
+
+vright
+vfit
+vzoom 0.9
+
+vdump $imagedir/${casename}.png

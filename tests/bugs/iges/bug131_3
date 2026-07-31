@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC131"
+puts "========"
+puts ""
+
+igesbrep [locate_data_file OCC131-3.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

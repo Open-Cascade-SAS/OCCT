@@ -1,0 +1,36 @@
+puts "========="
+puts "OCC23948"
+puts "========="
+puts ""
+###########################################################
+# Wrong intersection between a surface of revolution and a plane.
+###########################################################
+
+foreach a [directory c_*] {unset $a}
+
+restore [locate_data_file bug22766_f1] f1
+restore [locate_data_file bug22766_f2] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+set log [bopcurves f1 f2]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+for { set i 1 } { $i <= $NbCurv } { incr i } {
+  bounds c_$i U1 U2
+
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  xdistcs c_$i s1 0 1 10 2.0e-7
+  xdistcs c_$i s2 0 1 10 2.0e-7
+}
+
+smallview
+don c_*
+fit
+disp s1 s2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

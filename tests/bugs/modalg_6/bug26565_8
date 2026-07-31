@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC26565"
+puts "============"
+puts ""
+###############################
+## Compsolid after cut becomes compound of solids
+###############################
+
+box b 10 10 10
+explode b f
+
+shape profile Sh
+add b_1 profile
+add b_3 profile
+
+polyline spine 0 0 0 10 10 0
+
+pipe sh spine profile
+
+whatis sh
+plane pl 10 10 0 -1 -1 0 1 0 0
+mkface f pl
+
+shape sl So
+shape sl_sh Sh
+add f sl_sh
+add sl_sh sl
+
+bcut res sh sl
+
+explode res
+
+# should be compsolid
+
+set ShapeType "COMPSOLID"
+if { [regexp $ShapeType [whatis res_1]] == 1  } {
+   puts "OK : There is $ShapeType; Compsolid is good"
+} else {
+   puts "Error : There is not $ShapeType; Compsolid is bad"
+}

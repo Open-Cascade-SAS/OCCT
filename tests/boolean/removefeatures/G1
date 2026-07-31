@@ -1,0 +1,28 @@
+# prepare model
+polyline p 0 0 0 10 0 0 10 0 5 5 0 5 0 0 0
+mkplane f p
+prism s f 0 5 0
+pcylinder c 2 3
+ttranslate c 7.5 2.5 2
+
+bclearobjects
+bcleartools
+baddobjects s
+baddtools c
+bfillds
+bbop model 2
+
+savehistory bop_hist
+# find face to remove - top face of the model
+explode s f
+modified feature bop_hist s_3
+
+# remove features
+removefeatures result model feature
+
+checkshape result
+checkprops result -s 334.621 -v 180.885 -deps 1.e-7
+checknbshapes result -vertex 8 -edge 12 -wire 8 -face 7 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature {e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

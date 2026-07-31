@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC27079"
+puts "============"
+puts ""
+##################################################################
+# Bad approximation of intersection curves with variable curvature
+##################################################################
+
+restore [locate_data_file bug27079_s3.draw] s3
+restore [locate_data_file bug27079_s4.draw] s4
+trim  ts3 s3 pi-pi/30 pi -5 -2
+mkface f1 ts3
+mkface f2 s4
+
+smallview
+donly f1 f2
+fit
+
+bop f1 f2
+bopsection result
+
+checksection result
+checkprops result -l 8.5688
+checknbshapes result -vertex 2 -edge 2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

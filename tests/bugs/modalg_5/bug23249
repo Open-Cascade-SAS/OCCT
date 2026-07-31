@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC23249"
+puts "=========="
+puts ""
+#############################################################
+# BRepFeat_SplitShape could not split a simple face by edge
+#############################################################
+
+restore [locate_data_file bug23249_Face2.brep] f
+restore [locate_data_file bug23249_Edge2.brep] e
+
+splitshape r f f e
+fixshape result r
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

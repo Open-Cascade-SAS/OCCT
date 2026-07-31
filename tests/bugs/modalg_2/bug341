@@ -1,0 +1,16 @@
+
+puts "========"
+puts "BUC61008"
+puts "OCC341"
+puts "========"
+puts ""
+
+restore [locate_data_file buc61008.brep] w 
+checkshape w
+
+mkplane f w
+prism result f 0 0 100
+
+checkprops result -s 24991 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

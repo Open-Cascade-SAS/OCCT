@@ -1,0 +1,5129 @@
+// Created on: 2002-03-20
+// Created by: QA Admin
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <cstdio>
+
+#include <QABugs.hxx>
+
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <DBRep.hxx>
+#include <DrawTrSurf.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <ViewerTest.hxx>
+#include <AIS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
+
+#include <Geom_Surface.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <gp.hxx>
+#include <gp_Trsf.hxx>
+#include <AIS_Trihedron.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <TopoDS_Solid.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <IGESToBRep_Reader.hxx>
+#include <TopoDS.hxx>
+#include <GCPnts_UniformDeflection.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Overflow.hxx>
+#include <Standard_Underflow.hxx>
+#include <Standard_DivideByZero.hxx>
+#include <OSD_SIGSEGV.hxx>
+#include <OSD_Exception_ACCESS_VIOLATION.hxx>
+#include <OSD_Exception_STACK_OVERFLOW.hxx>
+#include <OSD_Timer.hxx>
+#include <OSD_Parallel.hxx>
+#include <STEPCAFControl_Writer.hxx>
+#include <STEPControl_StepModelType.hxx>
+#include <Interface_Static.hxx>
+#include <Standard_Failure.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_LinearVector.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomProjLib.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDF_CopyLabel.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <Standard_Integer.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <AIS_ColorScale.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DoubleMap.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <Poly_Triangulation.hxx>
+#include <IGESControl_Reader.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <V3d_View.hxx>
+#include <BRepFeat_SplitShape.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <Message.hxx>
+#include <Draw_Printer.hxx>
+#include <TopExp_Explorer.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <TDocStd_Document.hxx>
+#include <PCDM_StoreStatus.hxx>
+#include <TDocStd_Application.hxx>
+#include <TPrsStd_AISPresentation.hxx>
+#include <ExprIntrp_GenExp.hxx>
+#include <StepData_StepModel.hxx>
+#include <XSControl_WorkSession.hxx>
+
+#include <atomic>
+
+#if !defined(_WIN32)
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
+  GetMapOfAIS();
+#else
+Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
+                GetMapOfAIS();
+#endif
+
+static int OCC128(Draw_Interpretor& di, int /*argc*/, const char** argv)
+{
+  occ::handle<AIS_InteractiveContext> myAISContext = ViewerTest::GetAISContext();
+  if (myAISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0];
+    return 1;
+  }
+
+  occ::handle<Geom_Axis2Placement> aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
+
+  gp_Trsf trsf1;
+  trsf1.SetTranslation(gp_Vec(100, 100, 0));
+  aTrihedronAxis->Transform(trsf1);
+  occ::handle<AIS_Trihedron> myTrihedron = new AIS_Trihedron(aTrihedronAxis);
+  myTrihedron->SetColor(Quantity_NOC_LIGHTSTEELBLUE4);
+  myTrihedron->SetSize(100);
+  myAISContext->Display(myTrihedron, true);
+
+  //  TopoDS_Shape shape1 = (TopoDS_Shape) BRepPrimAPI_MakeBox(50,50,50);
+  TopoDS_Shape           shape1 = BRepPrimAPI_MakeBox(50, 50, 50).Shape();
+  occ::handle<AIS_Shape> AS     = new AIS_Shape(shape1);
+  AS->SetDisplayMode(1);
+  Graphic3d_MaterialAspect mat(Graphic3d_NameOfMaterial_Plastified);
+  AS->SetMaterial(mat);
+  AS->SetColor(Quantity_NOC_RED);
+  myAISContext->Display(AS, false);
+
+  gp_Trsf TouchTrsf;
+  TouchTrsf.SetTranslation(gp_Vec(20, 20, 0));
+
+  myAISContext->ResetLocation(AS);
+  myAISContext->SetLocation(AS, TouchTrsf);
+  myAISContext->Redisplay(AS, true);
+
+  return 0;
+}
+
+static int OCC136(Draw_Interpretor& di, int argc, const char** /*argv*/)
+{
+  if (argc > 1)
+  {
+    di << "Usage: OCC136\n";
+    return 1;
+  }
+
+  // create some primitives:
+  //  Two basic points:
+  double Size = 100;
+  gp_Pnt P0(0, 0, 0), P1(Size, Size, Size);
+  // box
+  TopoDS_Solid aBox = BRepPrimAPI_MakeBox(P0, P1);
+  // sphere
+  TopoDS_Solid aSphere = BRepPrimAPI_MakeSphere(Size * 0.5);
+  // cone
+  gp_Ax2       anAx2(P1, gp_Dir(1, 1, 1));
+  TopoDS_Solid aCone = BRepPrimAPI_MakeCone(anAx2, Size * 0.7, Size * 0.3, Size);
+  // cylinder
+  anAx2.SetLocation(gp_Pnt(Size, 0, 0));
+  anAx2.SetDirection(gp_Dir(-1, -1, 1));
+  TopoDS_Solid aCyl = BRepPrimAPI_MakeCylinder(anAx2, Size * 0.5, Size);
+
+  occ::handle<AIS_InteractiveContext> anAISCtx = ViewerTest::GetAISContext();
+  if (anAISCtx.IsNull())
+  {
+    di << "Null interactive context. Use 'vinit' at first.\n";
+    return 1;
+  }
+
+  anAISCtx->EraseAll(false);
+
+  // load primitives to context
+  occ::handle<AIS_InteractiveObject> aSh1 = new AIS_Shape(aBox);
+  anAISCtx->Display(aSh1, false);
+
+  occ::handle<AIS_InteractiveObject> aSh2 = new AIS_Shape(aSphere);
+  anAISCtx->Display(aSh2, false);
+
+  occ::handle<AIS_InteractiveObject> aSh3 = new AIS_Shape(aCone);
+  anAISCtx->Display(aSh3, false);
+
+  occ::handle<AIS_InteractiveObject> aSh4 = new AIS_Shape(aCyl);
+  anAISCtx->Display(aSh4, false);
+
+  // set selected
+  anAISCtx->InitSelected();
+  anAISCtx->AddOrRemoveSelected(aSh1, false);
+  anAISCtx->AddOrRemoveSelected(aSh2, false);
+  anAISCtx->AddOrRemoveSelected(aSh3, false);
+  anAISCtx->AddOrRemoveSelected(aSh4, false);
+
+  // remove all this objects from context
+  anAISCtx->Remove(aSh1, false);
+  anAISCtx->Remove(aSh2, false);
+  anAISCtx->Remove(aSh3, false);
+  anAISCtx->Remove(aSh4, false);
+
+  anAISCtx->UpdateCurrentViewer();
+  return 0;
+}
+
+static int BUC60610(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc < 2)
+  {
+    printf("Usage: %s  iges_input [name]\n", argv[0]);
+    return (1);
+  }
+  char* Ch = nullptr;
+
+  if (argc > 2)
+  {
+    Ch = new char[strlen(argv[2]) + 3];
+  }
+  IGESToBRep_Reader IR;
+  IR.LoadFile(argv[1]);
+  IR.Clear();
+  IR.TransferRoots();
+  TopoDS_Shape    aTopShape = IR.OneShape();
+  TopExp_Explorer ex(aTopShape, TopAbs_EDGE);
+  for (; ex.More(); ex.Next())
+  {
+    const TopoDS_Edge&       E = TopoDS::Edge(ex.Current());
+    BRepAdaptor_Curve        aCurve(E);
+    GCPnts_UniformDeflection plin(aCurve, 0.1);
+    di << "Num points = " << plin.NbPoints() << "\n";
+    if (argc > 2)
+    {
+      Sprintf(Ch, "%s_%i", argv[2], 1);
+      DBRep::Set(Ch, E);
+    }
+  }
+  return (1);
+}
+
+//====================================================
+//
+// Following code is inserted from
+// /dn03/KAS/dev/QAopt/src/QADraw/QADraw_TOPOLOGY.cxx
+// ( 75455 Apr 16 18:59)
+//
+//====================================================
+
+// OCC105
+#include <BRepTools_WireExplorer.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <TopExp.hxx>
+
+//
+// usage : OCC105 shape
+//
+// comments:
+// GCPnts_UniformAbscissa returns bad end point foe first edge. Its value is
+
+// Value Pnt = -338.556216693211 -394.465571897208 0
+// should be
+// Value Pnt = -307.47165394 -340.18073533 0
+
+static int OCC105(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Usage : OCC105 shape\n";
+    return 1;
+  }
+  //  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get("aa.brep"));
+  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
+  double      l            = 0.5; // Draw::Atof(argv[2]);
+  // Find the first vertex of the wire
+  BRepTools_WireExplorer wire_exp(myTopoDSWire);
+  TopoDS_Vertex          vlast;
+  {
+    TopoDS_Vertex vw1, vw2;
+    TopExp::Vertices(myTopoDSWire, vw1, vw2);
+    TopoDS_Vertex ve1, ve2;
+    TopoDS_Edge   edge = TopoDS::Edge(wire_exp.Current());
+    TopExp::Vertices(edge, ve1, ve2);
+    if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
+    {
+      vlast = vw1;
+    }
+    else
+    {
+      //      assert(vw2.IsSame(ve1) || vw2.IsSame(ve2));
+      vlast = vw2;
+    }
+  }
+  for (; wire_exp.More(); wire_exp.Next())
+  {
+    di << "\n\n New Edge \n" << "\n";
+    double                  newufirst, newulast;
+    TopoDS_Edge             edge = TopoDS::Edge(wire_exp.Current());
+    double                  ufirst, ulast;
+    occ::handle<Geom_Curve> acurve;
+    TopoDS_Vertex           ve1, ve2;
+    TopExp::Vertices(edge, ve1, ve2);
+    if (ve1.IsSame(vlast))
+    {
+      acurve    = BRep_Tool::Curve(edge, ufirst, ulast);
+      newufirst = ufirst;
+      newulast  = ulast;
+      vlast     = ve2;
+    }
+    else
+    {
+      //          assert(ve2.IsSame(vlast));
+      //          assert ( wire_exp.Orientation( ) == TopAbs_REVERSED );
+      acurve    = BRep_Tool::Curve(edge, ufirst, ulast);
+      newufirst = acurve->ReversedParameter(ufirst);
+      newulast  = acurve->ReversedParameter(ulast);
+      acurve    = acurve->Reversed();
+      vlast     = ve1;
+    }
+
+    GeomAdaptor_Curve      curve;
+    GCPnts_UniformAbscissa algo;
+    curve.Load(acurve);
+    algo.Initialize(curve, l, newufirst, newulast);
+    if (!algo.IsDone())
+    {
+      di << "Not Done!!!" << "\n";
+    }
+    for (int Index = 1; Index <= algo.NbPoints(); Index++)
+    {
+      double t   = algo.Parameter(Index);
+      gp_Pnt pt3 = curve.Value(t);
+      di << "Parameter t = " << t << "\n";
+      di << "Value Pnt = " << pt3.X() << " " << pt3.Y() << " " << pt3.Z() << "\n";
+    }
+  }
+  return 0;
+}
+
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <GeomFill_Pipe.hxx>
+
+static int pipe_OCC9(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 6)
+  {
+    di << "Usage: " << a[0] << " result path cur1 cur2 radius [tolerance]\n";
+    return 1;
+  }
+
+  NCollection_Sequence<occ::handle<Standard_Transient>> aCurveSeq;
+  int                                                   i;
+  for (i = 2; i <= 4; i++)
+  {
+    occ::handle<Geom_Curve> aC = occ::down_cast<Geom_Curve>(DrawTrSurf::Get(a[i]));
+    if (aC.IsNull())
+    {
+      di << a[i] << " is not a curve\n";
+      return 1;
+    }
+    aCurveSeq.Append(aC);
+  }
+
+  GeomFill_Pipe aPipe(occ::down_cast<Geom_Curve>(aCurveSeq(1)),
+                      occ::down_cast<Geom_Curve>(aCurveSeq(2)),
+                      occ::down_cast<Geom_Curve>(aCurveSeq(3)),
+                      Draw::Atof(a[5]));
+
+  if (n == 7)
+  {
+    aPipe.Perform(Draw::Atof(a[6]), true);
+  }
+  else
+  {
+    aPipe.Perform(true /*, true*/);
+  }
+
+  if (!aPipe.IsDone())
+  {
+    di << "GeomFill_Pipe cannot make a surface\n";
+    return 1;
+  }
+
+  occ::handle<Geom_Surface> aSurf = aPipe.Surface();
+
+  DrawTrSurf::Set(a[1], aSurf);
+  return 0;
+}
+
+//======================================================================
+// OCC125
+// usage : OCC125 shell
+//======================================================================
+
+int OCC125(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n != 2)
+  {
+    di << " Use OCC125 shell";
+    return 1;
+  }
+
+  TopoDS_Shape S = DBRep::Get(a[1]);
+
+  if (S.IsNull())
+  {
+    di << " Null shape is not allowed";
+    return 1;
+  }
+
+  TopAbs_ShapeEnum aT;
+  aT = S.ShapeType();
+  if (aT != TopAbs_SHELL)
+  {
+    di << " Shape Type must be SHELL";
+    return 1;
+  }
+
+  const TopoDS_Shell& aShell = TopoDS::Shell(S);
+  //
+  bool isAccountMultiConex, bNonManifold, bResult;
+
+  isAccountMultiConex = true;
+  bNonManifold        = false;
+
+  occ::handle<ShapeFix_Shell> aFix = new ShapeFix_Shell(aShell);
+  bResult = aFix->FixFaceOrientation(aShell, isAccountMultiConex, bNonManifold);
+
+  di << "bResult=" << (int)bResult;
+
+  TopoDS_Shape aShape;
+  aShape = aFix->Shape();
+
+  TCollection_AsciiString aName(a[1]), aDef("_sh"), aRName;
+  aRName = aName;
+  aRName = aRName + aDef;
+  DBRep::Set(aRName.ToCString(), aShape);
+  di << aRName.ToCString();
+  //
+  return 0;
+}
+
+#include <BRepLib_FindSurface.hxx>
+
+int OCC157(Draw_Interpretor& di, int n, const char** a)
+// static int findplanarsurface(Draw_Interpretor&, int n, const char ** a)
+{
+  if (n < 3)
+  {
+    di << "bad number of arguments\n";
+    return 1;
+  }
+
+  // try to read a shape:
+  TopoDS_Shape inputShape = DBRep::Get(a[2]);
+  if (inputShape.IsNull() || inputShape.ShapeType() != TopAbs_WIRE)
+  {
+    di << "Invalid input shape\n";
+    return 1;
+  }
+  double              toler = Draw::Atof(a[3]);
+  TopoDS_Wire         aWire = TopoDS::Wire(inputShape);
+  BRepLib_FindSurface FS(aWire, toler, true);
+  if (FS.Found())
+  {
+    di << "OCC157: OK; Planar surface is found\n";
+    occ::handle<Geom_Surface> aSurf = FS.Surface();
+    BRepBuilderAPI_MakeFace   aMakeFace(aSurf, aWire, true);
+    if (aMakeFace.IsDone())
+    {
+      const TopoDS_Face& aFace = aMakeFace.Face();
+      DBRep::Set(a[1], aFace);
+    }
+  }
+  else
+  {
+    di << "OCC157: ERROR; Planar surface is not found with toler = " << toler << "\n";
+  }
+  return 0;
+}
+
+// #include <MyCommandsCMD.h>
+#include <ShapeFix_Shape.hxx>
+#include <BRepOffsetAPI_MakeOffset.hxx>
+#include <GeomAbs_JoinType.hxx>
+
+#include <BRepTools.hxx>
+
+int OCC165(Draw_Interpretor& di, int n, const char** a)
+
+//=======================================================================
+
+// static int YOffset (Draw_Interpretor& di, int argc, const char ** argv);
+
+// void MyOffsets_Commands(Draw_Interpretor& theCommands)
+// {
+// 	theCommands.Add("yoffset" , "yoffset" , __FILE__, YOffset, " Offset on Z Direction");
+// }
+
+//=======================================================================
+
+// static int YOffset (Draw_Interpretor& di, int argc, const char ** argv)
+{
+  if (n > 2)
+  {
+    di << "Usage : " << a[0] << " [file]\n";
+    return 1;
+  }
+  di.Eval("axo");
+
+#define _OFFSET_TELCO_
+#ifdef _OFFSET_TELCO_
+
+  const char* file = a[1];
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape theShape;
+  // BRepTools::Read(theShape, static_cast<const
+  // char*>("/dn02/users_SUN/inv/3/OCC165/2d_tr_line.brep"), aBuilder);
+  BRepTools::Read(theShape, file, aBuilder);
+  DBRep::Set("shape", theShape);
+
+  TopoDS_Wire theWire = TopoDS::Wire(theShape);
+
+  double anOffset = 1.5;
+
+#else
+
+  double xA = 0.0, xB = 200.0, xC = 200.0, xD = 0.0, yA = 0.0, yB = 0.0, yC = 200.0, yD = 200.0,
+         zA = 0.0, zB = 0.0, zC = 0.0, zD = 0.0;
+
+  BRepBuilderAPI_MakePolygon theSquare;
+  TopoDS_Vertex              theA = BRepBuilderAPI_MakeVertex(gp_Pnt(xA, yA, zA));
+  theSquare.Add(theA);
+  TopoDS_Vertex theB = BRepBuilderAPI_MakeVertex(gp_Pnt(xB, yB, zB));
+  theSquare.Add(theB);
+  TopoDS_Vertex theC = BRepBuilderAPI_MakeVertex(gp_Pnt(xC, yC, zC));
+  theSquare.Add(theC);
+  TopoDS_Vertex theD = BRepBuilderAPI_MakeVertex(gp_Pnt(xD, yD, zD));
+  theSquare.Add(theD);
+
+  theSquare.Close();
+  TopoDS_Wire theWire = theSquare.Wire();
+
+  double anOffset = 10;
+
+#endif /* _OFFSET_TELCO_ */
+
+  TopoDS_Face theFace = BRepBuilderAPI_MakeFace(theWire).Face();
+  DBRep::Set("face", theFace);
+
+  double           anAlt   = 0.;
+  GeomAbs_JoinType theJoin = GeomAbs_Intersection;
+  // GeomAbs_Intersection; //GeomAbs_Arc;
+  BRepOffsetAPI_MakeOffset aMakeOffset(theFace, theJoin);
+  aMakeOffset.AddWire(theWire);
+
+  aMakeOffset.Perform(anOffset, anAlt);
+
+  TopoDS_Shape theOffsetShapePos = aMakeOffset.Shape();
+  DBRep::Set("offset", theOffsetShapePos);
+  return 0;
+  // 	return TCL_OK;
+}
+
+#include <BRepAlgoAPI_Cut.hxx>
+
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <AIS_Point.hxx>
+
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+
+static int OCC297(Draw_Interpretor& di, int /*argc*/, const char** argv)
+
+{
+  occ::handle<AIS_InteractiveContext> myAISContext = ViewerTest::GetAISContext();
+  if (myAISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return -1;
+  }
+
+  gp_Pnt                  pt1_(250., 250., 0.);
+  gp_Pnt                  pt2_(-250., 250., 0.);
+  gp_Pnt                  pt3_(-250., -250., 0.);
+  gp_Pnt                  pt4_(250., -250., 0.);
+  BRepBuilderAPI_MakeEdge edg1_(pt1_, pt2_);
+  BRepBuilderAPI_MakeEdge edg2_(pt2_, pt3_);
+  BRepBuilderAPI_MakeEdge edg3_(pt3_, pt4_);
+  BRepBuilderAPI_MakeEdge edg4_(pt4_, pt1_);
+
+  BRepBuilderAPI_MakeWire wire_(edg1_, edg2_, edg3_, edg4_);
+  BRepBuilderAPI_MakeFace face_(wire_);
+  const TopoDS_Face&      sh_ = face_.Face();
+
+  int up = 1;
+
+  gp_Pnt g_pnt;
+  if (up)
+  {
+    g_pnt = gp_Pnt(0, 0, -100);
+  }
+  else
+  {
+    g_pnt = gp_Pnt(0, 0, 100);
+  }
+
+  myAISContext->EraseAll(false);
+  occ::handle<Geom_CartesianPoint> GEOMPoint = new Geom_CartesianPoint(g_pnt);
+  occ::handle<AIS_Point>           AISPoint  = new AIS_Point(GEOMPoint);
+  myAISContext->Display(AISPoint, true);
+
+  BRepPrimAPI_MakeHalfSpace half_(sh_, g_pnt);
+  const TopoDS_Solid&       sol1_ = half_.Solid();
+
+  DBRep::Set("Face", sol1_);
+
+  double x = 0., y = 0., z = -80.;
+
+  BRepPrimAPI_MakeBox box(gp_Pnt(x, y, z), gp_Pnt(x + 150, y + 200, z + 200));
+
+  DBRep::Set("Box", box.Shape());
+
+  return 0;
+}
+
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+
+static int OCC305(Draw_Interpretor& di, int argc, const char** argv)
+
+{
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " file\n";
+    return 1;
+  }
+  const char* file = argv[1];
+
+  occ::handle<AIS_InteractiveContext> myAISContext = ViewerTest::GetAISContext();
+  if (myAISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return -1;
+  }
+
+  TopoDS_Shape sh;
+  BRep_Builder builder;
+  // BRepTools::Read(sh, "/dn02/users_SUN/inv/3/OCC305/testc.brep", builder);
+  BRepTools::Read(sh, file, builder);
+
+  TopoDS_Wire wire;
+  builder.MakeWire(wire);
+  TopoDS_Edge     ed;
+  TopoDS_Vertex   vt1, vt2;
+  TopExp_Explorer wex(sh, TopAbs_EDGE);
+  for (; wex.More(); wex.Next())
+  {
+    ed = TopoDS::Edge(wex.Current());
+    TopExp::Vertices(ed, vt1, vt2);
+    builder.UpdateVertex(vt1, 0.01);
+    builder.UpdateVertex(vt2, 0.01);
+    builder.UpdateEdge(ed, 0.01);
+    builder.Add(wire, ed);
+
+    GProp_GProps lprop;
+    BRepGProp::LinearProperties(ed, lprop);
+    printf("\n length = %f", lprop.Mass());
+  }
+  DBRep::Set("Wire", wire);
+  // occ::handle<AIS_Shape> res = new AIS_Shape( wire );
+  // aContext->SetColor( res, Quantity_NOC_RED );
+  // aContext->Display( res );
+
+  // BRepOffsetAPI_MakeOffset off(wire, GeomAbs_Arc);
+  // off.Perform(0.5, 0);
+
+  // printf("\n IsDone = %d", off.IsDone());
+  // sh = off.Shape();
+  // res = new AIS_Shape( sh );
+  // aContext->SetColor( res, Quantity_NOC_GREEN );
+  // aContext->Display( res );
+
+  return 0;
+}
+
+#include <DDocStd.hxx>
+
+static int OCC381_Save(Draw_Interpretor& di, int nb, const char** a)
+{
+  if (nb != 2)
+  {
+    di << "Usage: " << a[0] << " Doc\n";
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+
+  occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+
+  TCollection_ExtendedString theStatusMessage;
+  if (!D->IsSaved())
+  {
+    di << "this document has never been saved\n";
+    return 0;
+  }
+  PCDM_StoreStatus theStatus = A->Save(D, theStatusMessage);
+  if (theStatus != PCDM_SS_OK)
+  {
+    switch (theStatus)
+    {
+      case PCDM_SS_DriverFailure: {
+        di << "Error saving document: Could not store , no driver found to make it\n";
+        break;
+      }
+      case PCDM_SS_WriteFailure: {
+        di << "Error saving document: Write access failure\n";
+        break;
+      }
+      case PCDM_SS_Failure: {
+        di << "Error saving document: Write failure\n";
+        break;
+      }
+      case PCDM_SS_Doc_IsNull: {
+        di << "Error saving document: No document to save\n";
+        break;
+      }
+      case PCDM_SS_No_Obj: {
+        di << "Error saving document: No objects written\n";
+        break;
+      }
+      case PCDM_SS_Info_Section_Error: {
+        di << "Error saving document: Write info section failure\n";
+        break;
+      }
+      default:
+        break;
+    }
+    return 1;
+  }
+  return 0;
+}
+
+static int OCC381_SaveAs(Draw_Interpretor& di, int nb, const char** a)
+{
+  if (nb != 3)
+  {
+    di << "Usage: " << a[0] << " Doc Path\n";
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+
+  TCollection_ExtendedString       path(a[2]);
+  occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+
+  TCollection_ExtendedString theStatusMessage;
+  PCDM_StoreStatus           theStatus = A->SaveAs(D, path, theStatusMessage);
+  if (theStatus != PCDM_SS_OK)
+  {
+    switch (theStatus)
+    {
+      case PCDM_SS_DriverFailure: {
+        di << "Error saving document: Could not store , no driver found to make it\n";
+        break;
+      }
+      case PCDM_SS_WriteFailure: {
+        di << "Error saving document: Write access failure\n";
+        break;
+      }
+      case PCDM_SS_Failure: {
+        di << "Error saving document: Write failure\n";
+        break;
+      }
+      case PCDM_SS_Doc_IsNull: {
+        di << "Error saving document: No document to save\n";
+        break;
+      }
+      case PCDM_SS_No_Obj: {
+        di << "Error saving document: No objects written\n";
+        break;
+      }
+      case PCDM_SS_Info_Section_Error: {
+        di << "Error saving document: Write info section failure\n";
+        break;
+      }
+      default:
+        break;
+    }
+    return 1;
+  }
+
+  return 0;
+}
+
+#include <BRepClass3d_SolidClassifier.hxx>
+
+int OCC299bug(Draw_Interpretor& theDi, int theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 3)
+  {
+    theDi << "Usage : " << theArgVec[0] << " Solid Point [Tolerance=1.e-7]\n";
+    return -1;
+  }
+
+  TopoDS_Shape aS = DBRep::Get(theArgVec[1]);
+  if (aS.IsNull())
+  {
+    theDi << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  else if (aS.ShapeType() != TopAbs_SOLID)
+  {
+    theDi << " Shape type must be SOLID\n";
+    return 1;
+  }
+
+  gp_Pnt aP(8., 9., 10.);
+  if (!DrawTrSurf::GetPoint(theArgVec[2], aP))
+  {
+    theDi << " Null Point is not allowed here\n";
+    return 1;
+  }
+  const double aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : 1.e-7;
+
+  BRepClass3d_SolidClassifier aSC(aS);
+  aSC.Perform(aP, aTol);
+
+  switch (aSC.State())
+  {
+    case TopAbs_IN:
+      theDi << "The point is IN shape\n";
+      return 0;
+    case TopAbs_OUT:
+      theDi << "The point is OUT of shape\n";
+      return 0;
+    case TopAbs_ON:
+      theDi << "The point is ON shape\n";
+      return 0;
+    case TopAbs_UNKNOWN:
+    default:
+      theDi << "The point is UNKNOWN shape\n";
+      return 0;
+  }
+}
+
+#include <OSD_Process.hxx>
+#include <DDocStd_DrawDocument.hxx>
+#include <TDataStd_Name.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <TDF_Label.hxx>
+#include <XCAFPrs_Driver.hxx>
+
+//=================================================================================================
+
+static int OCC363(Draw_Interpretor& di, int argc, const char** argv)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    // 1. Verufy amount of arguments
+    if (argc < 3)
+    {
+      di << "Error OCC363 : Use : OCC363 document filename\n";
+      return 1;
+    }
+
+    // 2. Retrieve DDocStd application
+    occ::handle<TDocStd_Application> App = DDocStd::GetApplication();
+
+    // 3. Open document
+    TCollection_ExtendedString    name(argv[2]);
+    occ::handle<TDocStd_Document> Doc;
+    if (App->Open(name, Doc) != PCDM_RS_OK)
+    {
+      di << "Error OCC363 : document was not opened successfully\n";
+      return 1;
+    }
+    occ::handle<DDocStd_DrawDocument> DD = new DDocStd_DrawDocument(Doc);
+    TDataStd_Name::Set(Doc->GetData()->Root(), argv[1]);
+    Draw::Set(argv[1], DD);
+
+    // 4. Create prsentations
+    occ::handle<XCAFDoc_ShapeTool>  shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+    NCollection_Sequence<TDF_Label> seq;
+    shapes->GetFreeShapes(seq);
+    occ::handle<TPrsStd_AISPresentation> prs;
+    for (int i = 1; i <= seq.Length(); i++)
+    {
+      if (!seq.Value(i).FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+      {
+        prs = TPrsStd_AISPresentation::Set(seq.Value(i), XCAFPrs_Driver::GetID());
+      }
+    }
+  }
+  catch (Standard_Failure const&)
+  {
+    di << "FAULTY OCC363 : Exception during reading document.\n";
+    return 0;
+  }
+
+  di << "OCC363 OK\n";
+  return 0;
+}
+
+// Must use OCC299
+////======================================================================================
+//// Function : OCC372
+//// Purpose  :
+////======================================================================================
+// static int OCC372 (Draw_Interpretor& di, int argc, const char ** argv)
+//{
+//   try
+//   {
+//     OCC_CATCH_SIGNALS
+//     // 1. Verufy amount of arguments
+//     if(argc < 2) {di << "OCC372 FAULTY. Use : OCC372 brep-file";return 0;}
+//
+//     // 2. Read solid
+//     BRep_Builder B;
+//     TopoDS_Shape Ref;
+//     BRepTools::Read(Ref, argv[1], B);
+//
+//     // 3. Calculate location of aP3d in relation to the solid
+//     gp_Pnt aP3d(6311.4862583184, -2841.3092756034, 16.461053497188);
+//     BRepClass3d_SolidClassifier SC(Ref);
+//     SC.Perform(aP3d, 1e-7);
+//
+//     // 4. Check returned state. The point must be inside the solid.
+//     TopAbs_State aState=SC.State();
+//     switch (aState)
+//     {
+//     case TopAbs_OUT:
+//       di<<"OCC372 FAULTY. aState = TopAbs_OUT";
+//       return 0;
+//     case TopAbs_ON:
+//       di<<"OCC372 FAULTY. aState = TopAbs_ON";
+//      return 0;
+//     case TopAbs_IN:
+//       di<<"OCC372 OK. aState = TopAbs_IN" ;
+//       return 0;
+//     default:
+//       di<<"OCC372 FAULTY. aState = UNKNOWN";
+//       return 0;
+//     }
+//   }
+//   catch (Standard_Failure) { di<<"OCC372 FAULTY. Exception raised"; }
+//
+//   return 0;
+// }
+
+#include <BRepTopAdaptor_FClass2d.hxx>
+
+//=================================================================================================
+
+static int OCC377(Draw_Interpretor& di, int argc, const char** argv)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    // 1. Verify validity of arguments
+    if (argc < 1)
+    {
+      di << "Error OCC377. Use  OCC377 file x y precuv \n";
+      return 0;
+    }
+
+    // 2. Initialize parameters
+    gp_Pnt2d p2d;
+    p2d.SetX(Draw::Atof(argv[2]));
+    p2d.SetY(Draw::Atof(argv[3]));
+    double precuv = Draw::Atof(argv[4]);
+
+    // 3. Read shape
+    BRep_Builder B;
+    TopoDS_Shape Shape;
+    BRepTools::Read(Shape, argv[1], B);
+
+    // 4. Verify whether entry point is on wire and reversed ones (indeed results of verifying must
+    // be the same)
+    TopExp_Explorer exp;
+    int             i = 1;
+    for (exp.Init(Shape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp.More(); exp.Next(), i++)
+    {
+      // 4.1. Verify whether entry point is on wire
+      const TopoDS_Wire& wir     = TopoDS::Wire(exp.Current());
+      TopoDS_Face        newFace = TopoDS::Face(Shape.EmptyCopied());
+
+      TopAbs_Orientation orWire = wir.Orientation();
+      newFace.Orientation(TopAbs_FORWARD);
+      B.Add(newFace, wir);
+
+      BRepTopAdaptor_FClass2d FClass2d1(newFace, precuv);
+      TopAbs_State            stat1 = FClass2d1.PerformInfinitePoint();
+      // di << "Wire " << i << ": Infinite point is " <<
+      //   ( stat1 == TopAbs_IN ? "IN" : stat1 == TopAbs_OUT ? "OUT" : stat1 == TopAbs_ON ? "ON" :
+      //   "UNKNOWN" ) << "\n";
+
+      TCollection_AsciiString TmpString;
+      stat1 == TopAbs_IN    ? TmpString.AssignCat("IN")
+      : stat1 == TopAbs_OUT ? TmpString.AssignCat("OUT")
+      : stat1 == TopAbs_ON  ? TmpString.AssignCat("ON")
+                            : TmpString.AssignCat("UNKNOWN");
+      di << "Wire " << i << ": Infinite point is " << TmpString.ToCString() << "\n";
+
+      stat1 = FClass2d1.Perform(p2d);
+      // di << "Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is " <<
+      //   ( stat1 == TopAbs_IN ? "IN" : stat1 == TopAbs_OUT ? "OUT" : stat1 == TopAbs_ON ? "ON" :
+      //   "UNKNOWN" ) << "\n";
+
+      TmpString.Clear();
+      stat1 == TopAbs_IN    ? TmpString.AssignCat("IN")
+      : stat1 == TopAbs_OUT ? TmpString.AssignCat("OUT")
+      : stat1 == TopAbs_ON  ? TmpString.AssignCat("ON")
+                            : TmpString.AssignCat("UNKNOWN");
+      di << "Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is "
+         << TmpString.ToCString() << "\n";
+
+      // 4.2. Verify whether entry point is on reversed wire
+      newFace = TopoDS::Face(Shape.EmptyCopied());
+      newFace.Orientation(TopAbs_FORWARD);
+      orWire = TopAbs::Reverse(orWire);
+      B.Add(newFace, wir.Oriented(orWire));
+      BRepTopAdaptor_FClass2d FClass2d2(newFace, precuv);
+      TopAbs_State            stat2 = FClass2d2.PerformInfinitePoint();
+      // di << "Reversed Wire " << i << ": Infinite point is " <<
+      //   ( stat2 == TopAbs_IN ? "IN" : stat2 == TopAbs_OUT ? "OUT" : stat2 == TopAbs_ON ? "ON" :
+      //   "UNKNOWN" ) << "\n";
+
+      TmpString.Clear();
+      stat2 == TopAbs_IN    ? TmpString.AssignCat("IN")
+      : stat2 == TopAbs_OUT ? TmpString.AssignCat("OUT")
+      : stat2 == TopAbs_ON  ? TmpString.AssignCat("ON")
+                            : TmpString.AssignCat("UNKNOWN");
+      di << "Reversed Wire " << i << ": Infinite point is " << TmpString.ToCString() << "\n";
+
+      stat2 = FClass2d2.Perform(p2d);
+      // di << "Reversed Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is " <<
+      //   ( stat2 == TopAbs_IN ? "IN" : stat2 == TopAbs_OUT ? "OUT" : stat2 == TopAbs_ON ? "ON" :
+      //   "UNKNOWN" ) << "\n";
+
+      TmpString.Clear();
+      stat2 == TopAbs_IN    ? TmpString.AssignCat("IN")
+      : stat2 == TopAbs_OUT ? TmpString.AssignCat("OUT")
+      : stat2 == TopAbs_ON  ? TmpString.AssignCat("ON")
+                            : TmpString.AssignCat("UNKNOWN");
+      di << "Reversed Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is "
+         << TmpString.ToCString() << "\n";
+
+      // 4.3. Compare results (they must be same)
+      if (stat1 == stat2)
+      {
+        di << "OCC377 OK\n";
+      }
+      else
+      {
+        di << "OCC377 FAULTY\n";
+        return 0;
+      }
+    }
+  }
+  catch (Standard_Failure const&)
+  {
+    di << "OCC377 Exception";
+  }
+
+  return 0;
+}
+
+#include <ShapeUpgrade_ShapeDivideAngle.hxx>
+#include <ShapeBuild_ReShape.hxx>
+
+//=================================================================================================
+
+static int OCC22(Draw_Interpretor& di, int argc, const char** argv)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    // 1. Verify arguments of the command
+    if (argc < 5)
+    {
+      di
+        << "OCC22 FAULTY. Use : OCC22 Result Shape CompoundOfSubshapesToBeDivided ConsiderLocation";
+      return 0;
+    }
+
+    bool aConsiderLocation;
+    aConsiderLocation = strcmp(argv[4], "0") != 0;
+
+    // 2. Initialize aShapeUpgrade
+    ShapeUpgrade_ShapeDivideAngle aShapeUpgrade(M_PI / 2.);
+    // precision
+    aShapeUpgrade.SetPrecision(Precision::Confusion());
+    // tolerance
+    aShapeUpgrade.SetMaxTolerance(0.1);
+    // subshapes to be divided
+    TopoDS_Shape aSubShapesToBeDivided = DBRep::Get(argv[3]);
+    if (aSubShapesToBeDivided.IsNull())
+    {
+      di << "OCC22 FAULTY. Compound of subshapes to be divided is not exist. Please, verify input "
+            "values. \n";
+      return 0;
+    }
+    aShapeUpgrade.Init(aSubShapesToBeDivided);
+    // context
+    occ::handle<ShapeBuild_ReShape> aReshape = new ShapeBuild_ReShape;
+    aShapeUpgrade.SetContext(aReshape);
+    if (aConsiderLocation)
+    {
+      aReshape->ModeConsiderLocation() = true;
+    }
+
+    // 3. Perform splitting
+    if (aShapeUpgrade.Perform(false))
+    {
+      di << "Upgrade_SplitRevolution_Done \n";
+    }
+    else if (aShapeUpgrade.Status(ShapeExtend_OK))
+    {
+      di << "Upgrade_SplitRevolution_OK \n";
+    }
+    else if (aShapeUpgrade.Status(ShapeExtend_FAIL))
+    {
+      di << "OCC22 FAULTY. Operation failed. Angle was not divided\n";
+      return 0;
+    }
+
+    // 4. Perform rebuilding shape
+    // 4.1. Retrieve Shape
+    TopoDS_Shape anInitShape = DBRep::Get(argv[2]);
+    if (anInitShape.IsNull())
+    {
+      di << "OCC22 FAULTY. Initial shape is not exist. Please verify input values \n";
+      return 0;
+    }
+    // 4.2 Rebuild retrieved shape
+    TopoDS_Shape aResultShape = aReshape->Apply(anInitShape);
+    // 4.3. Create result Draw shape
+    DBRep::Set(argv[1], aResultShape);
+  }
+  catch (Standard_Failure const&)
+  {
+    di << "OCC22 Exception \n";
+    return 0;
+  }
+
+  return 0;
+}
+
+#include <ShapeProcess_OperLibrary.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
+#include <ShapeProcess.hxx>
+
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <IMeshTools_Parameters.hxx>
+
+//=================================================================================================
+
+static int OCC24(Draw_Interpretor& di, int argc, const char** argv)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    // 1. Verify amount of arguments of the command
+    if (argc < 6)
+    {
+      di << "OCC24 FAULTY. Use : OCC22 Result Shape CompoundOfSubshapes ResourceFileName "
+            "SequenceName";
+      return 0;
+    }
+
+    // 2. Retrieve parameters
+    // initial shape
+    TopoDS_Shape anInitShape = DBRep::Get(argv[2]);
+    if (anInitShape.IsNull())
+    {
+      di << "OCC24 FAULTY. Initial shape is not exist. Please verify input values \n";
+      return 0;
+    }
+    // compound of subshapes
+    TopoDS_Shape aSubShapes = DBRep::Get(argv[3]);
+    if (aSubShapes.IsNull())
+    {
+      di << "OCC24 FAULTY. Compound of subshapes is not exist. Please, verify input values. \n";
+      return 0;
+    }
+    // name of resource file
+    const char* aResourceFile = argv[4];
+    // name of sequence from resource file to be executed
+    const char* aSequenceName = argv[5];
+
+    // 3. Initialize ShapeContext and perform sequence of operation specified with resource file
+    ShapeProcess_OperLibrary::Init();
+    occ::handle<ShapeProcess_ShapeContext> aShapeContext =
+      new ShapeProcess_ShapeContext(aSubShapes, aResourceFile);
+    aShapeContext->SetDetalisation(TopAbs_EDGE);
+    ShapeProcess::Perform(aShapeContext, aSequenceName);
+
+    // 4. Rebuild initil shape in accordance with performed operation
+    occ::handle<ShapeBuild_ReShape> aReshape = new ShapeBuild_ReShape;
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIter(
+      aShapeContext->Map());
+    for (; anIter.More(); anIter.Next())
+    {
+      aReshape->Replace(anIter.Key(), anIter.Value());
+    }
+    TopoDS_Shape aResultShape = aReshape->Apply(anInitShape);
+
+    // 5 Create resultant Draw shape
+    DBRep::Set(argv[1], aResultShape);
+  }
+  catch (Standard_Failure const&)
+  {
+    di << "OCC24 Exception \n";
+    return 0;
+  }
+
+  return 0;
+}
+
+//=======================================================================
+// function : OCC369
+// purpose  : Verify whether exception occurs during building mesh
+//=======================================================================
+static int OCC369(Draw_Interpretor& di, int argc, const char** argv)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    // 1. Verify amount of arguments of the command
+    if (argc < 2)
+    {
+      di << "OCC369 FAULTY. Use : OCC369 Shape \n";
+      return 0;
+    }
+
+    // 2. Retrieve shape
+    TopoDS_Shape aShape = DBRep::Get(argv[1]);
+    if (aShape.IsNull())
+    {
+      di << "OCC369 FAULTY. Entry shape is NULL \n";
+      return 0;
+    }
+
+    // 3. Build mesh
+    IMeshTools_Parameters aMeshParams;
+    aMeshParams.Relative   = true;
+    aMeshParams.Deflection = 0.2;
+    aMeshParams.Angle      = M_PI / 6.0;
+    BRepMesh_IncrementalMesh aMesh(aShape, aMeshParams);
+  }
+  catch (Standard_Failure const&)
+  {
+    di << "OCC369 Exception \n";
+    return 0;
+  }
+
+  di << "OCC369 OK \n";
+  return 0;
+}
+
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+
+#include <GeomPlate_BuildPlateSurface.hxx>
+
+//=================================================================================================
+
+#include <gce_MakeRotation.hxx>
+#include <gce_MakeTranslation.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepPrimAPI_MakeWedge.hxx>
+
+//=================================================================================================
+
+static int OCC578(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 4)
+  {
+    di << "Usage : " << argv[0] << " shape1 shape2 shape3\n";
+    return 1;
+  }
+
+  gp_Pnt P0(0, 0, 0.0);
+  double xperiod   = 1.0;
+  double yperiod   = 1.0;
+  double sub_thick = 0.5;
+
+  // mask_substrate
+  // TopoDS_Shape substrate = BRepPrimAPI_MakeBox( P0, xperiod, yperiod, sub_thick );
+  TopoDS_Shape substrate = BRepPrimAPI_MakeBox(P0, xperiod, yperiod, sub_thick).Shape();
+
+  // --------------------------------------------------------------------
+
+  // wedge
+  // TopoDS_Shape wedge1 = BRepPrimAPI_MakeWedge(0.5, 0.05, 0.5,
+  //				      0.1,  0.1  , 0.4, 0.4 );
+  TopoDS_Shape wedge1 = BRepPrimAPI_MakeWedge(0.5, 0.05, 0.5, 0.1, 0.1, 0.4, 0.4).Shape();
+
+  gp_Trsf rotate = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::X), 1.570795);
+
+  gp_Trsf translate = gce_MakeTranslation(gp_Pnt(0.0, -0.5, 0.0), gp_Pnt(0.25, 0.25, 0.5));
+
+  rotate.PreMultiply(translate);
+
+  TopoDS_Shape wedge1a = BRepBuilderAPI_Transform(wedge1, rotate);
+
+  if (wedge1a.IsNull())
+  {
+    di << " Null shape1 is not allowed\n";
+    return 1;
+  }
+  DBRep::Set(argv[1], wedge1a);
+
+  // --------------------------------------------------------------------
+
+  // wedge top
+  // TopoDS_Shape wedge2 = BRepPrimAPI_MakeWedge(0.5, 0.3, 0.5,
+  //				      0.1,  0.1  , 0.4, 0.4 );
+  TopoDS_Shape wedge2 = BRepPrimAPI_MakeWedge(0.5, 0.3, 0.5, 0.1, 0.1, 0.4, 0.4).Shape();
+
+  gp_Trsf rotate2 = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::X), 1.570795 * 3.0);
+
+  gp_Trsf translate2 = gce_MakeTranslation(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.25, 0.25, 0.5));
+
+  rotate2.PreMultiply(translate2);
+
+  TopoDS_Shape wedge2a = BRepBuilderAPI_Transform(wedge2, rotate2);
+
+  if (wedge2a.IsNull())
+  {
+    di << " Null shape2 is not allowed\n";
+    return 1;
+  }
+  DBRep::Set(argv[2], wedge2a);
+
+  // combine wedges
+  di << "wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a)\n";
+  TopoDS_Shape wedge_common = BRepAlgoAPI_Fuse(wedge1a, wedge2a).Shape();
+
+  di << "sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common)\n";
+  TopoDS_Shape sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common).Shape();
+
+  if (sub_etch1.IsNull())
+  {
+    di << " Null shape3 is not allowed\n";
+    return 1;
+  }
+  DBRep::Set(argv[3], sub_etch1);
+
+  return 0;
+}
+
+#include <Standard_GUID.hxx>
+
+#if defined(DDataStd_def01)
+  #include <DDataStd_DrawPresentation.hxx>
+
+//=================================================================================================
+
+static int OCC739_DrawPresentation(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 1)
+  {
+    di << "Usage : " << argv[0] << "\n";
+    return -1;
+  }
+  const Standard_GUID& guid = DDataStd_DrawPresentation::GetID();
+  // guid.ShallowDump(std::cout);
+  Standard_SStream aSStream;
+  guid.ShallowDump(aSStream);
+  di << aSStream;
+  return 0;
+}
+#endif
+
+//=================================================================================================
+
+static int OCC708(Draw_Interpretor& di, int argc, const char** argv)
+{
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
+    return 1;
+  }
+
+  if (argc != 2)
+  {
+    di << "ERROR : Usage : " << argv[0] << " shape ; Deactivate the current transformation\n";
+    return 1;
+  }
+
+  bool updateviewer = true;
+
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
+    GetMapOfAIS();
+
+  TCollection_AsciiString            aName(argv[1]);
+  occ::handle<AIS_InteractiveObject> AISObj;
+
+  if (!aMap.Find2(aName, AISObj) || AISObj.IsNull())
+  {
+    di << "Use 'vdisplay' before\n";
+    return 1;
+  }
+
+  AISObj->ResetTransformation();
+
+  aContext->Erase(AISObj, updateviewer);
+  aContext->UpdateCurrentViewer();
+  aContext->Display(AISObj, updateviewer);
+  aContext->UpdateCurrentViewer();
+  return 0;
+}
+
+//=================================================================================================
+
+static int OCC909(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "Usage : " << argv[0] << " wire face\n";
+    return 1;
+  }
+
+  TopoDS_Wire awire = TopoDS::Wire(DBRep::Get(argv[1])); // read the wire
+  TopoDS_Face aface = TopoDS::Face(DBRep::Get(argv[2])); // read the face
+  if (awire.IsNull() || aface.IsNull())
+  {
+    di << "Null object\n";
+    return 1;
+  }
+
+  int             count = 0;
+  TopExp_Explorer TE(awire, TopAbs_VERTEX);
+  if (TE.More())
+  {
+    BRepTools_WireExplorer WE;
+    for (WE.Init(awire, aface); WE.More(); WE.Next())
+    {
+      count++;
+    }
+  }
+  di << "Count = " << count << "\n";
+
+  return 0;
+}
+
+//=================================================================================================
+
+static int OCC921(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " face\n";
+    return 1;
+  }
+  double      u1, u2, v1, v2;
+  TopoDS_Face F = TopoDS::Face(DBRep::Get(argv[1])); // read the shape
+  if (F.IsNull())
+  {
+    return 1;
+  }
+  BRepTools::UVBounds(F, u1, u2, v1, v2);
+  di << "Bounds: " << u1 << "   " << u2 << "   " << v1 << "   " << v2 << "\n";
+  return 0;
+}
+
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_GeneralExpression.hxx>
+
+//=================================================================================================
+
+#include <DDF.hxx>
+#include <TPrsStd_AISViewer.hxx>
+
+//=======================================================================
+// function : OCC1029_AISTransparency
+// purpose  : OCC1029_AISTransparency  (DOC,entry,[real])
+//=======================================================================
+
+static int OCC1029_AISTransparency(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb >= 3)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISViewer> viewer;
+    if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISPresentation> prs;
+    if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
+      if (nb == 4)
+      {
+        prs->SetTransparency(Draw::Atof(arg[3]));
+        TPrsStd_AISViewer::Update(L);
+      }
+      else
+      {
+        di << "Transparency = " << prs->Transparency() << "\n";
+      }
+      return 0;
+    }
+  }
+  di << arg[0] << " : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : OCC1031_AISMaterial
+// purpose  : OCC1031_AISMaterial (DOC,entry,[material])
+//=======================================================================
+
+static int OCC1031_AISMaterial(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb >= 3)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISViewer> viewer;
+    if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISPresentation> prs;
+    if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
+      if (nb == 4)
+      {
+        prs->SetMaterial((Graphic3d_NameOfMaterial)Draw::Atoi(arg[3]));
+        TPrsStd_AISViewer::Update(L);
+      }
+      else
+      {
+        di << "Material = " << prs->Material() << "\n";
+      }
+      return 0;
+    }
+  }
+  di << arg[0] << " : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : OCC1032_AISWidth
+// purpose  : OCC1032_AISWidth (DOC,entry,[width])
+//=======================================================================
+
+static int OCC1032_AISWidth(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb >= 3)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISViewer> viewer;
+    if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISPresentation> prs;
+    if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
+      if (nb == 4)
+      {
+        prs->SetWidth(Draw::Atof(arg[3]));
+        TPrsStd_AISViewer::Update(L);
+      }
+      else
+      {
+        di << "Width = " << prs->Width() << "\n";
+      }
+      return 0;
+    }
+  }
+  di << arg[0] << " : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : OCC1033_AISMode
+// purpose  : OCC1033_AISMode (DOC,entry,[mode])
+//=======================================================================
+
+static int OCC1033_AISMode(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb >= 3)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISViewer> viewer;
+    if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISPresentation> prs;
+    if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
+      if (nb == 4)
+      {
+        prs->SetMode(Draw::Atoi(arg[3]));
+        TPrsStd_AISViewer::Update(L);
+      }
+      else
+      {
+        di << "Mode = " << prs->Mode() << "\n";
+      }
+      return 0;
+    }
+  }
+  di << arg[0] << " : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : OCC1034_AISSelectionMode
+// purpose  : OCC1034_AISSelectionMode (DOC,entry,[selectionmode])
+//=======================================================================
+
+static int OCC1034_AISSelectionMode(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb >= 3)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISViewer> viewer;
+    if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
+      return 1;
+    }
+
+    occ::handle<TPrsStd_AISPresentation> prs;
+    if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
+      if (nb == 4)
+      {
+        prs->SetSelectionMode(Draw::Atoi(arg[3]));
+        TPrsStd_AISViewer::Update(L);
+      }
+      else
+      {
+        di << "SelectionMode = " << prs->SelectionMode() << "\n";
+      }
+      return 0;
+    }
+  }
+  di << arg[0] << " : Error\n";
+  return 1;
+}
+
+//=================================================================================================
+
+static int OCC1487(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 5)
+  {
+    di << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape\n";
+    return 1;
+  }
+
+  int CaseNumber = Draw::Atoi(argv[1]);
+
+  // BRepPrimAPI_MakeCylinder o_mc1 (gp_Ax2 (gp_Pnt(0,-50,140), gp_Dir(gp_Dir::D::X)), 50,1000);
+  gp_Dir                   myDir(gp_Dir::D::X);
+  gp_Pnt                   myPnt(0, -50, 140);
+  gp_Ax2                   myAx2(myPnt, myDir);
+  BRepPrimAPI_MakeCylinder o_mc1(myAx2, 50, 1000);
+
+  TopoDS_Shape cyl1 = o_mc1.Shape();
+
+  TopoDS_Shape cyl2;
+  TopoDS_Shape o_cut_shape;
+  if (CaseNumber == 1)
+  {
+    // BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(21.65064, -50.0, 127.5),gp_Dir(-sin(M_PI/3),
+    // 0.0, 0.5)), 5, 150);
+    gp_Dir                   myDir_mc2(-sin(M_PI / 3), 0.0, 0.5);
+    gp_Pnt                   myPnt_mc2(21.65064, -50.0, 127.5);
+    gp_Ax2                   myAx2_mc2(myPnt_mc2, myDir_mc2);
+    BRepPrimAPI_MakeCylinder o_mc2(myAx2_mc2, 5, 150);
+
+    cyl2 = o_mc2.Shape();
+    di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
+    o_cut_shape = BRepAlgoAPI_Cut(o_mc1.Solid(), o_mc2.Solid()).Shape();
+  }
+  else
+  {
+    // BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(978.34936, -50.0, 127.5),gp_Dir(sin(M_PI/3),
+    // 0.0, 0.5)), 5, 150);
+    gp_Dir                   myDir_mc2(sin(M_PI / 3), 0.0, 0.5);
+    gp_Pnt                   myPnt_mc2(978.34936, -50.0, 127.5);
+    gp_Ax2                   myAx2_mc2(myPnt_mc2, myDir_mc2);
+    BRepPrimAPI_MakeCylinder o_mc2(myAx2_mc2, 5, 150);
+
+    cyl2 = o_mc2.Shape();
+    di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
+    o_cut_shape = BRepAlgoAPI_Cut(o_mc1.Solid(), o_mc2.Solid()).Shape();
+  }
+
+  DBRep::Set(argv[2], cyl1);
+  DBRep::Set(argv[3], cyl2);
+  DBRep::Set(argv[4], o_cut_shape);
+
+  return 0;
+}
+
+#include <NCollection_List.hxx>
+
+//////////////////////////////////////////////////////////////
+/*!
+ * Compute uniform distribution of points using GCPnts_UniformAbscissa
+ */
+//////////////////////////////////////////////////////////////
+static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc < 4)
+  {
+    di << "Usage : " << argv[0] << " name shape step\n";
+    return 1;
+  }
+  const char*             name      = argv[1];
+  Adaptor3d_Curve*        adapCurve = nullptr;
+  occ::handle<Geom_Curve> curve     = DrawTrSurf::GetCurve(argv[2]);
+  if (!curve.IsNull())
+  {
+    adapCurve = new GeomAdaptor_Curve(curve);
+  }
+  else
+  {
+    TopoDS_Shape wire = DBRep::Get(argv[2]);
+    if (wire.IsNull() || wire.ShapeType() != TopAbs_WIRE)
+    {
+      di << argv[0] << " Faulty : incorrect 1st parameter, curve or wire expected\n";
+      return 1;
+    }
+    adapCurve = new BRepAdaptor_CompCurve(TopoDS::Wire(wire));
+  }
+  double                 step = Draw::Atof(argv[3]);
+  GCPnts_UniformAbscissa aUni(*adapCurve, step);
+  int                    res;
+  if (!aUni.IsDone())
+  {
+    di << argv[0] << " : fail\n";
+    res = 1;
+  }
+  else
+  {
+    int i, np = aUni.NbPoints();
+    for (i = 0; i < np; i++)
+    {
+      double par = aUni.Parameter(i + 1);
+      gp_Pnt p   = adapCurve->Value(par);
+      char   n[20], *pname = n;
+      Sprintf(n, "%s_%d", name, i + 1);
+      DrawTrSurf::Set(pname, p);
+      di << pname << " ";
+    }
+    res = 0;
+  }
+  delete adapCurve;
+  return res;
+}
+
+static int OCC5698(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " wire\n";
+    return 1;
+  }
+  TopoDS_Shape shape = DBRep::Get(argv[1], TopAbs_WIRE);
+  if (shape.IsNull())
+  {
+    return 1;
+  }
+  TopoDS_Wire wire = TopoDS::Wire(shape);
+  // create curve parameterised by curvilinear distance
+  BRepAdaptor_CompCurve curve(wire, true);
+  double                length      = curve.LastParameter();
+  double                need_length = length / 2;
+  gp_Pnt                pnt;
+  curve.D0(need_length, pnt);
+  // create check_curve parameterised in a general way
+  BRepAdaptor_CompCurve check_curve(wire);
+  double                check_par = GCPnts_AbscissaPoint(check_curve, need_length, 0).Parameter();
+  gp_Pnt                check_pnt;
+  check_curve.D0(check_par, check_pnt);
+  // check that points are coinciding
+  double error_dist = pnt.Distance(check_pnt);
+  if (error_dist > Precision::Confusion())
+  {
+    // std::cout.precision(3);
+    di << "error_dist = " << error_dist << "  ( " << error_dist / need_length * 100 << " %)\n";
+    return 0;
+  }
+  di << "OK\n";
+  return 0;
+}
+
+// stack overflow can be successfully handled only on 32-bit Windows
+#if defined(_WIN32) && !defined(_WIN64)
+static int StackOverflow(int i = -1)
+{
+  char arr[2000];
+  memset(arr, 0, sizeof(arr));
+  if (i < 0)
+    StackOverflow(i - 1);
+  return i;
+}
+#endif
+
+// this code does not work with optimize mode on Windows
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma optimize("", off)
+#endif
+static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 1)
+  {
+    std::cout << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  bool Succes;
+
+  Succes = true;
+  // OSD::SetSignal();
+
+  { //==== Test Divide ByZero (Integer) ========================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "(Integer) Divide By Zero..." << '\n';
+      di << "(Integer) Divide By Zero...";
+      // std::cout.flush();
+      di << "\n";
+      int res, a = 4, b = 0;
+      res = a / b;
+      di << "Error: 4 / 0 = " << res << " - no exception is raised!\n";
+      Succes = false;
+    }
+#if defined(SOLARIS) || defined(_WIN32)
+    catch (Standard_DivideByZero const&)
+#else
+    catch (Standard_NumericError const&)
+#endif
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+    // this case tests if (...) supersedes (Standard_*),
+    // the normal behaviour is not
+    catch (...)
+    {
+      di << " unknown exception... (But) Ok\n";
+    }
+  }
+
+  { //==== Test Divide ByZero (Real) ===========================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "(Real) Divide By Zero..." << '\n';
+      di << "(Real) Divide By Zero...";
+      // std::cout.flush();
+      di << "\n";
+      double res, a = 4.0, b = 0.0;
+      res = a / b;
+      di << "Error: 4.0 / 0.0 = " << res << " - no exception is raised!\n";
+      Succes = false;
+    }
+    catch (Standard_DivideByZero const&) // Solaris, Windows w/o SSE2
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_NumericError const&) // Linux, Windows with SSE2
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+  { //==== Test Overflow (Integer) =============================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "(Integer) Overflow..." << '\n';
+      di << "(Integer) Overflow...";
+      // std::cout.flush();
+      di << "\n";
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Winteger-overflow"
+#elif defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Woverflow"
+#elif defined(_MSC_VER)
+  #pragma warning(push)
+  #pragma warning(disable : 4307)
+#endif
+      constexpr int i   = IntegerLast();
+      int           res = i + 1;
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+  #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+  #pragma warning(pop)
+#endif
+      di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
+    }
+    catch (Standard_Overflow const&)
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+  { //==== Test Overflow (Real) ================================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "(Real) Overflow..." << '\n';
+      di << "(Real) Overflow...";
+      // std::cout.flush();
+      di << "\n";
+      constexpr double r   = RealLast();
+      double           res = r * r;
+
+      (void)sin(1.); // this function tests FPU flags and raises signal (tested on LINUX).
+
+      di << "Error: " << r << "*" << r << " = " << res << " - no exception is raised!\n";
+      Succes = false;
+    }
+    catch (Standard_Overflow const&) // Solaris, Windows w/o SSE2
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_NumericError const&) // Linux, Windows with SSE2
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+  { //==== Test Underflow (Real) ===============================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      // clang-format off
+      std::cout << "(Real) Underflow" << '\n'; // to have message in log even if process crashed
+      // clang-format on
+      di << "(Real) Underflow";
+      // std::cout.flush();
+      di << "\n";
+      constexpr double r   = RealSmall();
+      double           res = r * r;
+      // res = res + 1.;
+      //++++ std::cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<std::endl;
+      //++++ Succes = false;
+      di << "Not caught: " << r << "*" << r << " = " << res << ", still OK\n";
+    }
+    catch (Standard_Underflow const&) // could be on Solaris, Windows w/o SSE2
+    {
+      di << "Exception caught, KO\n";
+      Succes = false;
+    }
+    catch (Standard_NumericError const&) // could be on Linux, Windows with SSE2
+    {
+      di << "Exception caught, KO\n";
+      Succes = false;
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+  { //==== Test Invalid Operation (Real) ===============================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "(Real) Invalid Operation..." << '\n';
+      di << "(Real) Invalid Operation...";
+      // std::cout.flush();
+      di << "\n";
+      double res, r = -1;
+      res = sqrt(r);
+      di << "Error: swrt(-1) = " << res << " - no exception is raised!\n";
+      Succes = false;
+    }
+    catch (Standard_NumericError const&)
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+  { //==== Test Access Violation ===============================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "Segmentation Fault..." << '\n';
+      di << "Segmentation Fault...";
+      // std::cout.flush();
+      di << "\n";
+      int* pint = nullptr;
+      *pint     = 4;
+      di << "Error: writing by NULL address - no exception is raised!\n";
+      Succes = false;
+    }
+#ifdef _WIN32
+    catch (OSD_Exception_ACCESS_VIOLATION const&)
+#else
+    catch (OSD_SIGSEGV const&)
+#endif
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+
+#if defined(_WIN32) && !defined(_WIN64)
+  { //==== Test Stack Overflow ===============================================
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "Stack Overflow..." << std::endl;
+      di << "Stack Overflow...";
+      // std::cout.flush();
+      di << "\n";
+      StackOverflow();
+      di << "Error - no exception is raised!\n";
+      Succes = false;
+    }
+    catch (OSD_Exception_STACK_OVERFLOW const&)
+    {
+      di << "Caught, OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
+      di << " Caught (";
+      di << anException.what();
+      di << ")... KO\n";
+      Succes = false;
+    }
+  }
+#endif
+
+  if (Succes)
+  {
+    di << "TestExcept: Successful completion\n";
+  }
+  else
+  {
+    di << "TestExcept: failure\n";
+  }
+
+  return 0;
+}
+
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma optimize("", on)
+#endif
+
+// try disabling compiler optimizations and function inlining for proper stack
+// (VS2010 is skipped due to generation of extra compiler warnings)
+#if defined(_MSC_VER) && (_MSC_VER >= 1700) && !defined(__clang__)
+  #pragma optimize("", off)
+#endif
+//! Auxiliary functions for printing synthetic backtrace
+class MyTestInterface : public Standard_Transient
+{
+public:
+  virtual int Standard_NOINLINE testMethod3(int* theIntPtr, bool theToPrintStack) = 0;
+};
+
+class MyTestClass : public MyTestInterface
+{
+public:
+  MyTestClass() = default;
+
+  int Standard_NOINLINE testMethod3(int* theIntPtr, bool theToPrintStack) override
+  {
+    if (theToPrintStack)
+    {
+      char aMsg[4096] = {};
+      Standard::StackTrace(aMsg, 4096, 10);
+      std::cout << aMsg << "\n";
+      return 0;
+    }
+    *theIntPtr = 4;
+    return *theIntPtr;
+  }
+};
+
+static int Standard_NOINLINE myTestFunction2(int* theIntPtr, bool theToPrintStack)
+{
+  occ::handle<MyTestInterface> aTest = new MyTestClass();
+  return aTest->testMethod3(theIntPtr, theToPrintStack);
+}
+
+static void Standard_NOINLINE myTestFunction1(bool theToPrintStack)
+{
+  int* anIntPtr = nullptr;
+  myTestFunction2(anIntPtr, theToPrintStack);
+}
+
+static Standard_NOINLINE int OCC30762(Draw_Interpretor& theDI, int theNbArgs, const char**)
+{
+  if (theNbArgs != 1)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  // just print stack
+  std::cout << "Test normal backtrace...\n";
+  myTestFunction1(true);
+
+  // test access violation
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "Test segmentation Fault...\n";
+      myTestFunction1(false);
+      std::cout << "Error: writing by NULL address - no exception is raised!\n";
+    }
+#ifdef _WIN32
+    catch (OSD_Exception_ACCESS_VIOLATION const& aSegException)
+#else
+    catch (OSD_SIGSEGV const& aSegException)
+#endif
+    {
+      theDI << " Caught (";
+      theDI << aSegException.what();
+      theDI << aSegException.GetStackString();
+      theDI << ")... OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      theDI << " Caught (";
+      theDI << anException.what();
+      theDI << anException.GetStackString();
+      theDI << ")... KO\n";
+    }
+  }
+  return 0;
+}
+#if defined(_MSC_VER) && (_MSC_VER >= 1700) && !defined(__clang__)
+  #pragma optimize("", on)
+#endif
+
+static TopoDS_Compound AddTestStructure(int nCount_)
+{
+  BRep_Builder    B;
+  int             nCount = nCount_;
+  TopoDS_Compound C;
+  B.MakeCompound(C);
+  BRepPrimAPI_MakeBox mkBox(1.0, 2.0, 3.0);
+  for (int i = 0; i < nCount; i++)
+  {
+    for (int j = 0; j < nCount; j++)
+    {
+      gp_Trsf trsf;
+      trsf.SetTranslationPart(gp_Vec(5.0 * i, 05.0 * j, 0.0));
+      TopLoc_Location topLoc(trsf);
+      TopoDS_Shape    tempShape = mkBox.Shape().Located(topLoc);
+      B.Add(C, tempShape);
+    }
+  }
+  return C;
+}
+
+static int OCC7141(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 2 && argc != 3)
+  {
+    std::cout << "Usage : " << argv[0] << " [nCount] path\n";
+    return 1;
+  }
+
+  int                           nCount = (argc > 2 ? Draw::Atoi(argv[1]) : 10);
+  TCollection_AsciiString       aFilePath(argv[argc > 2 ? 2 : 1]);
+  STEPCAFControl_Writer         writer;
+  occ::handle<TDocStd_Document> document;
+  document = new TDocStd_Document("Pace Test-StepExporter-");
+  occ::handle<XCAFDoc_ShapeTool> shapeTool;
+  shapeTool = XCAFDoc_DocumentTool::ShapeTool(document->Main());
+  shapeTool->AddShape(AddTestStructure(nCount), true);
+  STEPControl_StepModelType mode = STEPControl_AsIs;
+  if (!Interface_Static::SetIVal("write.step.assembly", 1))
+  { // assembly mode
+    di << "Failed to set assembly mode for step data\n\n";
+    return 0;
+  }
+  try
+  {
+    OCC_CATCH_SIGNALS
+    if (writer.Transfer(document, mode))
+    {
+      writer.Write(aFilePath.ToCString());
+    }
+  }
+  catch (OSD_Exception_STACK_OVERFLOW const&)
+  {
+    di << "Failed : STACK OVERFLOW\n\n";
+  }
+  catch (Standard_Failure const& anException)
+  {
+    di << "Failed :\n\n";
+    // std::cout << Standard_Failure::Caught() << std::endl;
+    di << anException.what();
+  }
+  di << argv[0] << " : Finish\n";
+
+  return 0;
+}
+
+static int OCC8169(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 4)
+  {
+    di << "Usage : " << argv[0] << " edge1 edge2 plane\n";
+    return 1;
+  }
+  TopoDS_Edge theEdge1 = TopoDS::Edge(DBRep::Get(argv[1], TopAbs_EDGE));
+  if (theEdge1.IsNull())
+  {
+    di << "Invalid input shape " << argv[1] << "\n";
+    return 1;
+  }
+  TopoDS_Edge theEdge2 = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
+  if (theEdge2.IsNull())
+  {
+    di << "Invalid input shape " << argv[2] << "\n";
+    return 1;
+  }
+  TopoDS_Face theFace = TopoDS::Face(DBRep::Get(argv[3], TopAbs_FACE));
+  if (theFace.IsNull())
+  {
+    di << "Invalid input shape " << argv[3] << "\n";
+    return 1;
+  }
+
+  occ::handle<Geom_Surface> thePlane = BRep_Tool::Surface(theFace);
+
+  constexpr double aConfusion = Precision::Confusion();
+  double           aP1first, aP1last, aP2first, aP2last;
+
+  occ::handle<Geom_Curve>   aCurve1   = BRep_Tool::Curve(theEdge1, aP1first, aP1last);
+  occ::handle<Geom_Curve>   aCurve2   = BRep_Tool::Curve(theEdge2, aP2first, aP2last);
+  occ::handle<Geom2d_Curve> aCurve2d1 = GeomProjLib::Curve2d(aCurve1, aP1first, aP1last, thePlane);
+  occ::handle<Geom2d_Curve> aCurve2d2 = GeomProjLib::Curve2d(aCurve2, aP2first, aP2last, thePlane);
+
+  Geom2dAPI_InterCurveCurve anInter(aCurve2d1, aCurve2d2, aConfusion);
+
+  int NbPoints = anInter.NbPoints();
+
+  di << "NbPoints = " << NbPoints << "\n";
+
+  if (NbPoints > 0)
+  {
+    int i;
+    for (i = 1; i <= NbPoints; i++)
+    {
+      gp_Pnt2d aPi = anInter.Point(i);
+      di << "Point.X(" << i << ") = " << aPi.X() << "   Point.Y(" << i << ") = " << aPi.Y() << "\n";
+    }
+  }
+
+  int NbSegments = anInter.NbSegments();
+
+  di << "\nNbSegments = " << NbSegments << "\n";
+
+  if (NbSegments > 0)
+  {
+    IntRes2d_IntersectionSegment aSegment = anInter.Intersector().Segment(1);
+
+    gp_Pnt2d aP1 = aCurve2d1->Value(aSegment.FirstPoint().ParamOnFirst());
+    gp_Pnt2d aP2 = aCurve2d2->Value(aSegment.FirstPoint().ParamOnSecond());
+
+    double aDist = aP1.Distance(aP2);
+
+    di << "aP1.X() = " << aP1.X() << "   aP1.Y() = " << aP1.Y() << "\n";
+    di << "aP2.X() = " << aP2.X() << "   aP2.Y() = " << aP2.Y() << "\n";
+
+    di << "Distance = " << aDist << "\n";
+
+    di << "Confusion = " << aConfusion << "\n";
+
+    if (aDist > aConfusion)
+    {
+      di << "\n" << argv[0] << " Faulty\n";
+    }
+    else
+    {
+      di << "\n" << argv[0] << " OK\n";
+    }
+  }
+  else
+  {
+    di << "\n" << argv[0] << " OK\n";
+  }
+
+  return 0;
+}
+
+static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "Usage : " << argv[0] << " lower upper\n";
+    return 1;
+  }
+
+  int LOWER = Draw::Atoi(argv[1]);
+  int UPPER = Draw::Atoi(argv[2]);
+
+  //! 0. Create an empty document with several test labels
+  occ::handle<TDocStd_Document> doc = new TDocStd_Document("XmlOcaf");
+  doc->SetUndoLimit(100);
+  TDF_Label main_label = doc->Main();
+  TDF_Label label1     = main_label.FindChild(1, true);
+  TDF_Label label2     = main_label.FindChild(2, true);
+
+  //! 1. Set/Get OCAF attribute
+  doc->OpenCommand();
+  TDataStd_RealArray::Set(label1, LOWER, UPPER);
+  occ::handle<TDataStd_RealArray> array;
+  if (label1.FindAttribute(TDataStd_RealArray::GetID(), array) && array->Lower() == LOWER
+      && array->Upper() == UPPER)
+  {
+    std::cout << "1: OK" << '\n';
+  }
+  else
+  {
+    std::cout << "1: Failed.." << '\n';
+    return 1;
+  }
+  doc->CommitCommand();
+
+  //! 2. Set/Get value
+  doc->OpenCommand();
+  int i;
+  for (i = LOWER; i <= UPPER; i++)
+  {
+    array->SetValue(i, i);
+  }
+  for (i = LOWER; i <= UPPER; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "2: Failed.." << '\n';
+      return 2;
+    }
+  }
+  std::cout << "2: OK" << '\n';
+  doc->CommitCommand();
+
+  //! 3. Re-init the array
+  doc->OpenCommand();
+  array->Init(LOWER + 2, UPPER + 4);
+  if (array->Lower() != LOWER + 2 && array->Upper() != UPPER + 4)
+  {
+    std::cout << "3: Failed.." << '\n';
+    return 3;
+  }
+  for (i = LOWER + 2; i <= UPPER + 4; i++)
+  {
+    array->SetValue(i, i);
+  }
+  for (i = LOWER + 2; i <= UPPER + 4; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "3: Failed.." << '\n';
+      return 3;
+    }
+  }
+  std::cout << "3: OK" << '\n';
+  doc->CommitCommand();
+
+  //! 4. Change array
+  doc->OpenCommand();
+  occ::handle<NCollection_HArray1<double>> arr =
+    new NCollection_HArray1<double>(LOWER + 5, UPPER + 5);
+  for (i = LOWER + 5; i <= UPPER + 5; i++)
+  {
+    arr->SetValue(i, i);
+  }
+  array->ChangeArray(arr);
+  for (i = LOWER + 5; i <= UPPER + 5; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "4: Failed.." << '\n';
+      return 4;
+    }
+  }
+  std::cout << "4: OK" << '\n';
+  doc->CommitCommand();
+
+  //! 5. Copy the array
+  doc->OpenCommand();
+  TDF_CopyLabel copier(label1, label2);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    std::cout << "5: Failed.." << '\n';
+    return 5;
+  }
+  occ::handle<TDataStd_RealArray> array2;
+  if (!label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
+  {
+    std::cout << "5: Failed.." << '\n';
+    return 5;
+  }
+  for (i = LOWER + 5; i <= UPPER + 5; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "5: Failed.." << '\n';
+      return 5;
+    }
+  }
+  std::cout << "5: OK" << '\n';
+  doc->CommitCommand();
+
+  //! 6. Undo/Redo
+  //! 6.a: undoes the 5th action: the copied array should disappear
+  doc->Undo();
+  if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array)
+      || label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
+  {
+    std::cout << "6.a: Failed.." << '\n';
+    return 6;
+  }
+  //! 6.b: undoes the 4th action: the array should be changed to (lower+2,upper+4)
+  doc->Undo();
+  if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER + 2
+      || array->Upper() != UPPER + 4)
+  {
+    std::cout << "6.b: Failed.." << '\n';
+    return 6;
+  }
+  for (i = LOWER + 2; i <= UPPER + 4; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "6.b: Failed.." << '\n';
+      return 6;
+    }
+  }
+  //! 6.c: undoes the 3d action: the array should be changed to (lower,upper)
+  doc->Undo();
+  if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER
+      || array->Upper() != UPPER)
+  {
+    std::cout << "6.c: Failed.." << '\n';
+    return 6;
+  }
+  for (i = LOWER; i <= UPPER; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "6.c: Failed.." << '\n';
+      return 6;
+    }
+  }
+  //! 6.d: undoes and redoes the 2nd action: no change is expected.
+  doc->Undo();
+  doc->Redo();
+  if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER
+      || array->Upper() != UPPER)
+  {
+    std::cout << "6.d: Failed.." << '\n';
+    return 6;
+  }
+  for (i = LOWER; i <= UPPER; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "6.d: Failed.." << '\n';
+      return 6;
+    }
+  }
+  std::cout << "6: OK" << '\n';
+
+  //! 7. Re-set the array
+  doc->OpenCommand();
+  array = TDataStd_RealArray::Set(label1, LOWER + 1, UPPER + 1);
+  if (array->Lower() != LOWER + 1 && array->Upper() != UPPER + 1)
+  {
+    std::cout << "7: Failed.." << '\n';
+    return 7;
+  }
+  for (i = LOWER + 1; i <= UPPER + 1; i++)
+  {
+    array->SetValue(i, i);
+  }
+  for (i = LOWER + 1; i <= UPPER + 1; i++)
+  {
+    if (array->Value(i) != i)
+    {
+      std::cout << "7: Failed.." << '\n';
+      return 7;
+    }
+  }
+  std::cout << "7: OK" << '\n';
+  doc->CommitCommand();
+
+  //! 8.Test of speed: set LOWER and UPPER equal to great integer number and
+  //! measure the time spent by this test.
+  //! Good luck!
+
+  return 0;
+}
+
+static int OCC7068(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 1)
+  {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+
+  occ::handle<AIS_InteractiveContext> AISContext = ViewerTest::GetAISContext();
+  if (AISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+
+  // ObjectsInside
+  NCollection_List<occ::handle<AIS_InteractiveObject>> ListOfIO_1;
+  AISContext->ObjectsInside(ListOfIO_1);
+  di << "ObjectsInside = " << ListOfIO_1.Extent() << "\n";
+  if (!ListOfIO_1.IsEmpty())
+  {
+    NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator iter;
+    for (iter.Initialize(ListOfIO_1); iter.More(); iter.Next())
+    {
+      occ::handle<AIS_InteractiveObject> aIO = iter.Value();
+      di << GetMapOfAIS().Find1(aIO).ToCString() << "\n";
+    }
+  }
+
+  return 0;
+}
+
+// Test AIS_InteractiveContext::Hilight() call.
+static int OCC31965(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 2)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  occ::handle<AIS_InteractiveObject> aPrs = GetMapOfAIS().Find2(theArgVec[1]);
+  ViewerTest::GetAISContext()->HilightWithColor(
+    aPrs,
+    ViewerTest::GetAISContext()->HighlightStyle(Prs3d_TypeOfHighlight_Dynamic),
+    true);
+  return 0;
+}
+
+static int OCC11457(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if ((argc < 9) || (((argc - 3) % 3) != 0))
+  {
+    di << "Usage : " << argv[0] << "polygon lastedge x1 y1 z1 x2 y2 z2 ...\n";
+    return 1;
+  }
+  int                        i, j, np = (argc - 3) / 3;
+  BRepBuilderAPI_MakePolygon W;
+  j = 3;
+  for (i = 1; i <= np; i++)
+  {
+    W.Add(gp_Pnt(Draw::Atof(argv[j]), Draw::Atof(argv[j + 1]), Draw::Atof(argv[j + 2])));
+    j += 3;
+  }
+  W.Close();
+  DBRep::Set(argv[1], W.Wire());
+  DBRep::Set(argv[2], W.Edge());
+  return 0;
+}
+
+int OCC14376(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc < 2)
+  {
+    di << "Usage : " << argv[0] << " shape [deflection]\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(argv[1]);
+
+  if (aShape.IsNull())
+  {
+    di << " Null shape is not allowed";
+    return 1;
+  }
+
+  double aDeflection = 0.45110277533;
+  if (argc > 2)
+  {
+    aDeflection = Draw::Atof(argv[2]);
+  }
+  di << "deflection=" << aDeflection << "\n";
+
+  BRepMesh_IncrementalMesh        aIMesh(aShape, aDeflection, false, M_PI / 9.);
+  TopLoc_Location                 aLocation;
+  occ::handle<Poly_Triangulation> aTriang =
+    BRep_Tool::Triangulation(TopoDS::Face(aShape), aLocation);
+
+  if (aTriang.IsNull())
+  {
+    di << argv[0] << " : Faulty\n";
+  }
+  else
+  {
+    di << argv[0] << " : OK\n";
+    di << "NbNodes=" << aTriang->NbNodes() << "\n";
+    di << "NbTriangles=" << aTriang->NbTriangles() << "\n";
+  }
+  return 0;
+}
+
+static int OCC15755(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "Usage : " << argv[0] << " file shape\n";
+    return 1;
+  }
+
+  IGESControl_Reader aReader;
+  aReader.ReadFile(argv[1]);
+  aReader.SetReadVisible(true);
+  aReader.TransferRoots();
+
+  occ::handle<IGESData_IGESModel> model = aReader.IGESModel();
+  if (model.IsNull())
+  {
+    di << "model.IsNull()\n";
+    return 1;
+  }
+  int nb = model->NbEntities();
+  for (int i = 1; i <= nb; i++)
+  {
+    occ::handle<IGESData_IGESEntity>      ent = model->Entity(i);
+    occ::handle<TCollection_HAsciiString> name;
+    name             = ent->NameValue();
+    const char* aStr = name->ToCString();
+    di << "NameValue = " << aStr << "\n";
+  }
+
+  TopoDS_Shape shape = aReader.OneShape();
+  DBRep::Set(argv[2], shape);
+  return 0;
+}
+
+// For OCC16782 testing
+#include <AppStd_Application.hxx>
+#include <TDF_Tool.hxx>
+// Iterators
+// Attributes
+#include <TDataStd_Tick.hxx>
+#include <TDataStd_IntegerList.hxx>
+#include <TDataStd_RealList.hxx>
+#include <TDataStd_ExtStringList.hxx>
+#include <TDataStd_BooleanList.hxx>
+#include <TDataStd_ReferenceList.hxx>
+#include <TDataStd_BooleanArray.hxx>
+#include <TDataStd_ReferenceArray.hxx>
+#include <TDataStd_ByteArray.hxx>
+#include <TDataStd_NamedData.hxx>
+#include <TDF_Reference.hxx>
+//
+occ::handle<AppStd_Application> app;
+
+int TestSetGet(const occ::handle<TDocStd_Document>& doc)
+{
+  // TDataStd_Tick:
+  // Set
+  TDataStd_Tick::Set(doc->Main());
+  // Get
+  occ::handle<TDataStd_Tick> tick;
+  if (!doc->Main().FindAttribute(TDataStd_Tick::GetID(), tick))
+  {
+    return 1;
+  }
+  // Forget
+  doc->Main().ForgetAttribute(TDataStd_Tick::GetID());
+  if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 2;
+  }
+  doc->Main().ResumeAttribute(tick);
+  if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 3;
+  }
+  // Forget
+  doc->Main().ForgetAttribute(TDataStd_Tick::GetID());
+  if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 2;
+  }
+
+  // TDataStd_IntegerList:
+  // Set
+  occ::handle<TDataStd_IntegerList> setintlist = TDataStd_IntegerList::Set(doc->Main());
+  setintlist->Append(2);
+  setintlist->Prepend(1);
+  setintlist->InsertAfter(3, 2);
+  setintlist->InsertBefore(0, 1);
+  setintlist->Append(200);
+  setintlist->Remove(0);
+  setintlist->Remove(200);
+  // Get
+  occ::handle<TDataStd_IntegerList> getintlist;
+  if (!doc->Main().FindAttribute(TDataStd_IntegerList::GetID(), getintlist))
+  {
+    return 1;
+  }
+  if (getintlist->First() != 1)
+  {
+    return 2;
+  }
+  if (getintlist->Last() != 3)
+  {
+    return 3;
+  }
+  const NCollection_List<int>&    intlist = getintlist->List();
+  NCollection_List<int>::Iterator itr_intlist(intlist);
+  for (; itr_intlist.More(); itr_intlist.Next())
+  {
+    if (itr_intlist.Value() != 1 && itr_intlist.Value() != 2 && itr_intlist.Value() != 3)
+    {
+      return 4;
+    }
+  }
+  getintlist->Clear();
+
+  // TDataStd_RealList:
+  // Set
+  occ::handle<TDataStd_RealList> setdbllist = TDataStd_RealList::Set(doc->Main());
+  setdbllist->Append(2.5);
+  setdbllist->Prepend(1.5);
+  setdbllist->InsertAfter(3.5, 2.5);
+  setdbllist->InsertBefore(0.5, 1.5);
+  setdbllist->Append(200.5);
+  setdbllist->Remove(0.5);
+  setdbllist->Remove(200.5);
+  // Get
+  occ::handle<TDataStd_RealList> getdbllist;
+  if (!doc->Main().FindAttribute(TDataStd_RealList::GetID(), getdbllist))
+  {
+    return 1;
+  }
+  if (getdbllist->First() != 1.5)
+  {
+    return 2;
+  }
+  if (getdbllist->Last() != 3.5)
+  {
+    return 3;
+  }
+  const NCollection_List<double>&    dbllist = getdbllist->List();
+  NCollection_List<double>::Iterator itr_dbllist(dbllist);
+  for (; itr_dbllist.More(); itr_dbllist.Next())
+  {
+    if (itr_dbllist.Value() != 1.5 && itr_dbllist.Value() != 2.5 && itr_dbllist.Value() != 3.5)
+    {
+      return 4;
+    }
+  }
+  getdbllist->Clear();
+
+  // TDataStd_ExtStringList:
+  // Set
+  occ::handle<TDataStd_ExtStringList> setstrlist = TDataStd_ExtStringList::Set(doc->Main());
+  setstrlist->Append("Hello");
+  setstrlist->Prepend("Guten Tag");
+  setstrlist->InsertAfter("Bonjour", "Guten Tag");
+  setstrlist->InsertBefore("Bonsoir", "Hello");
+  setstrlist->Append("Good bye");
+  setstrlist->Remove("Bonsoir");
+  setstrlist->Remove("Good bye");
+  // Get
+  occ::handle<TDataStd_ExtStringList> getstrlist;
+  if (!doc->Main().FindAttribute(TDataStd_ExtStringList::GetID(), getstrlist))
+  {
+    return 1;
+  }
+  if (getstrlist->First() != "Guten Tag")
+  {
+    return 2;
+  }
+  if (getstrlist->Last() != "Hello")
+  {
+    return 3;
+  }
+  const NCollection_List<TCollection_ExtendedString>&    strlist = getstrlist->List();
+  NCollection_List<TCollection_ExtendedString>::Iterator itr_strlist(strlist);
+  for (; itr_strlist.More(); itr_strlist.Next())
+  {
+    if (itr_strlist.Value() != "Guten Tag" && itr_strlist.Value() != "Bonjour"
+        && itr_strlist.Value() != "Hello")
+    {
+      return 4;
+    }
+  }
+  getstrlist->Clear();
+
+  // TDataStd_BooleanList:
+  // Set
+  occ::handle<TDataStd_BooleanList> setboollist = TDataStd_BooleanList::Set(doc->Main());
+  setboollist->Append(true);
+  setboollist->Prepend(false);
+  // Get
+  occ::handle<TDataStd_BooleanList> getboollist;
+  if (!doc->Main().FindAttribute(TDataStd_BooleanList::GetID(), getboollist))
+  {
+    return 1;
+  }
+  if (getboollist->First())
+  {
+    return 2;
+  }
+  if (!getboollist->Last())
+  {
+    return 3;
+  }
+  const NCollection_List<uint8_t>& boollist = getboollist->List();
+  for (NCollection_List<uint8_t>::Iterator itr_boollist(boollist); itr_boollist.More();
+       itr_boollist.Next())
+  {
+    if (itr_boollist.Value() != 1 && itr_boollist.Value() != 0)
+    {
+      return 4;
+    }
+  }
+  getboollist->Clear();
+
+  // TDataStd_ReferenceList:
+  TDF_Label L1 = doc->Main().FindChild(100);
+  TDF_Label L2 = doc->Main().FindChild(101);
+  TDF_Label L3 = doc->Main().FindChild(102);
+  TDF_Label L4 = doc->Main().FindChild(103);
+  TDF_Label L5 = doc->Main().FindChild(104);
+  // Set
+  occ::handle<TDataStd_ReferenceList> setreflist = TDataStd_ReferenceList::Set(doc->Main());
+  setreflist->Append(L1);
+  setreflist->Prepend(L2);
+  setreflist->InsertAfter(L3, L2);
+  setreflist->InsertBefore(L4, L1);
+  setreflist->Append(L5);
+  setreflist->Remove(L4);
+  setreflist->Remove(L5);
+  // Get
+  occ::handle<TDataStd_ReferenceList> getreflist;
+  if (!doc->Main().FindAttribute(TDataStd_ReferenceList::GetID(), getreflist))
+  {
+    return 1;
+  }
+  if (getreflist->First() != L2)
+  {
+    return 2;
+  }
+  if (getreflist->Last() != L1)
+  {
+    return 3;
+  }
+  const NCollection_List<TDF_Label>&    reflist = getreflist->List();
+  NCollection_List<TDF_Label>::Iterator itr_reflist(reflist);
+  for (; itr_reflist.More(); itr_reflist.Next())
+  {
+    if (itr_reflist.Value() != L1 && itr_reflist.Value() != L2 && itr_reflist.Value() != L3)
+    {
+      return 4;
+    }
+  }
+  getreflist->Clear();
+
+  // TDataStd_BooleanArray:
+  // Set
+  occ::handle<TDataStd_BooleanArray> setboolarr = TDataStd_BooleanArray::Set(doc->Main(), 12, 16);
+  setboolarr->SetValue(12, true);
+  setboolarr->SetValue(13, false);
+  setboolarr->SetValue(14, false);
+  setboolarr->SetValue(15, false);
+  setboolarr->SetValue(16, true);
+  setboolarr->SetValue(14, true);
+  // Get
+  occ::handle<TDataStd_BooleanArray> getboolarr;
+  if (!doc->Main().FindAttribute(TDataStd_BooleanArray::GetID(), getboolarr))
+  {
+    return 1;
+  }
+  if (!getboolarr->Value(12))
+  {
+    return 2;
+  }
+  if (getboolarr->Value(13))
+  {
+    return 2;
+  }
+  if (!getboolarr->Value(14))
+  {
+    return 2;
+  }
+  if (getboolarr->Value(15))
+  {
+    return 2;
+  }
+  if (!getboolarr->Value(16))
+  {
+    return 2;
+  }
+
+  // TDataStd_ReferenceArray:
+  // Set
+  occ::handle<TDataStd_ReferenceArray> setrefarr = TDataStd_ReferenceArray::Set(doc->Main(), 0, 4);
+  setrefarr->SetValue(0, L1);
+  setrefarr->SetValue(1, L2);
+  setrefarr->SetValue(2, L3);
+  setrefarr->SetValue(3, L4);
+  setrefarr->SetValue(4, L5);
+  // Get
+  occ::handle<TDataStd_ReferenceArray> getrefarr;
+  if (!doc->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), getrefarr))
+  {
+    return 1;
+  }
+  if (getrefarr->Value(0) != L1)
+  {
+    return 2;
+  }
+  if (getrefarr->Value(1) != L2)
+  {
+    return 2;
+  }
+  if (getrefarr->Value(2) != L3)
+  {
+    return 2;
+  }
+  if (getrefarr->Value(3) != L4)
+  {
+    return 2;
+  }
+  if (getrefarr->Value(4) != L5)
+  {
+    return 2;
+  }
+
+  // TDataStd_ByteArray:
+  // Set
+  occ::handle<TDataStd_ByteArray> setbytearr = TDataStd_ByteArray::Set(doc->Main(), 12, 16);
+  setbytearr->SetValue(12, 0);
+  setbytearr->SetValue(13, 1);
+  setbytearr->SetValue(14, 2);
+  setbytearr->SetValue(15, 3);
+  setbytearr->SetValue(16, 255);
+  // Get
+  occ::handle<TDataStd_ByteArray> getbytearr;
+  if (!doc->Main().FindAttribute(TDataStd_ByteArray::GetID(), getbytearr))
+  {
+    return 1;
+  }
+  if (getbytearr->Value(12) != 0)
+  {
+    return 2;
+  }
+  if (getbytearr->Value(13) != 1)
+  {
+    return 2;
+  }
+  if (getbytearr->Value(14) != 2)
+  {
+    return 2;
+  }
+  if (getbytearr->Value(15) != 3)
+  {
+    return 2;
+  }
+  if (getbytearr->Value(16) != 255)
+  {
+    return 2;
+  }
+
+  // TDataStd_NamedData:
+  // Set:
+  occ::handle<TDataStd_NamedData> setnd = TDataStd_NamedData::Set(doc->Main());
+  setnd->SetInteger("Integer1", 1);
+  setnd->SetInteger("Integer2", 2);
+  setnd->SetInteger("Integer3", 8);
+  setnd->SetInteger("Integer3", 3);
+  // Get:
+  occ::handle<TDataStd_NamedData> getnd;
+  if (!doc->Main().FindAttribute(TDataStd_NamedData::GetID(), getnd))
+  {
+    return 1;
+  }
+  if (!getnd->HasIntegers())
+  {
+    return 2;
+  }
+  if (!getnd->HasInteger("Integer1"))
+  {
+    return 3;
+  }
+  if (getnd->GetInteger("Integer2") != 2)
+  {
+    return 4;
+  }
+  if (getnd->GetInteger("Integer3") != 3)
+  {
+    return 4;
+  }
+
+  return 0;
+}
+
+int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
+{
+  // TDataStd_Tick:
+  doc->OpenCommand();
+  occ::handle<TDataStd_Tick> tick = TDataStd_Tick::Set(doc->Main());
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 3;
+  }
+
+  // TDataStd_IntegerList:
+  doc->OpenCommand();
+  occ::handle<TDataStd_IntegerList> intlist = TDataStd_IntegerList::Set(doc->Main());
+  intlist->Append(2);
+  intlist->Prepend(1);
+  intlist->InsertBefore(0, 1);
+  intlist->InsertAfter(3, 2);
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_IntegerList::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (!intlist->IsEmpty())
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!intlist->Extent())
+  {
+    return 3;
+  }
+  if (intlist->First() != 0)
+  {
+    return 4;
+  }
+  if (intlist->Last() != 3)
+  {
+    return 5;
+  }
+  intlist->Clear();
+
+  // TDataStd_RealList:
+  doc->OpenCommand();
+  occ::handle<TDataStd_RealList> dbllist = TDataStd_RealList::Set(doc->Main());
+  dbllist->Append(2.5);
+  dbllist->Prepend(1.5);
+  dbllist->InsertBefore(0.5, 1.5);
+  dbllist->InsertAfter(3.5, 2.5);
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_RealList::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (!dbllist->IsEmpty())
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!dbllist->Extent())
+  {
+    return 3;
+  }
+  if (dbllist->First() != 0.5)
+  {
+    return 4;
+  }
+  if (dbllist->Last() != 3.5)
+  {
+    return 5;
+  }
+  dbllist->Clear();
+
+  // TDataStd_ExtStringList:
+  doc->OpenCommand();
+  occ::handle<TDataStd_ExtStringList> strlist = TDataStd_ExtStringList::Set(doc->Main());
+  strlist->Append("Hello");
+  strlist->Prepend("Guten Tag");
+  strlist->InsertAfter("Bonjour", "Guten Tag");
+  strlist->InsertBefore("Bonsoir", "Hello");
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_ExtStringList::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (!strlist->IsEmpty())
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!strlist->Extent())
+  {
+    return 3;
+  }
+  if (strlist->First() != "Guten Tag")
+  {
+    return 4;
+  }
+  if (strlist->Last() != "Hello")
+  {
+    return 5;
+  }
+  strlist->Clear();
+
+  // TDataStd_BooleanList:
+  doc->OpenCommand();
+  occ::handle<TDataStd_BooleanList> boollist = TDataStd_BooleanList::Set(doc->Main());
+  boollist->Append(true);
+  boollist->Prepend(false);
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_BooleanList::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (!boollist->IsEmpty())
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!boollist->Extent())
+  {
+    return 3;
+  }
+  if (boollist->First())
+  {
+    return 4;
+  }
+  if (!boollist->Last())
+  {
+    return 5;
+  }
+  boollist->Clear();
+
+  // TDataStd_ReferenceList:
+  TDF_Label L1 = doc->Main().FindChild(100);
+  TDF_Label L2 = doc->Main().FindChild(101);
+  TDF_Label L3 = doc->Main().FindChild(102);
+  TDF_Label L4 = doc->Main().FindChild(103);
+  doc->OpenCommand();
+  occ::handle<TDataStd_ReferenceList> reflist = TDataStd_ReferenceList::Set(doc->Main());
+  reflist->Append(L1);
+  reflist->Prepend(L2);
+  reflist->InsertBefore(L3, L1);
+  reflist->InsertAfter(L4, L2);
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_ReferenceList::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  if (!reflist->IsEmpty())
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!reflist->Extent())
+  {
+    return 3;
+  }
+  if (reflist->First() != L2)
+  {
+    return 4;
+  }
+  if (reflist->Last() != L1)
+  {
+    return 5;
+  }
+  reflist->Clear();
+
+  // TDataStd_BooleanArray:
+  doc->OpenCommand();
+  occ::handle<TDataStd_BooleanArray> boolarr = TDataStd_BooleanArray::Set(doc->Main(), 23, 25);
+  boolarr->SetValue(23, true);
+  boolarr->SetValue(25, true);
+  doc->CommitCommand();
+  doc->OpenCommand();
+  boolarr = TDataStd_BooleanArray::Set(doc->Main(), 230, 250);
+  boolarr->SetValue(230, true);
+  boolarr->SetValue(250, true);
+  doc->CommitCommand();
+  doc->Undo();
+  if (!boolarr->Value(23))
+  {
+    return 2;
+  }
+  if (boolarr->Value(24))
+  {
+    return 2;
+  }
+  if (!boolarr->Value(25))
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (!boolarr->Value(230))
+  {
+    return 3;
+  }
+  if (boolarr->Value(240))
+  {
+    return 3;
+  }
+  if (!boolarr->Value(250))
+  {
+    return 3;
+  }
+
+  // TDataStd_ReferenceArray:
+  doc->OpenCommand();
+  occ::handle<TDataStd_ReferenceArray> refarr = TDataStd_ReferenceArray::Set(doc->Main(), 5, 8);
+  refarr->SetValue(5, L1);
+  refarr->SetValue(6, L2);
+  refarr->SetValue(7, L3);
+  refarr->SetValue(8, L4);
+  doc->CommitCommand();
+  if (!doc->Main().IsAttribute(TDataStd_ReferenceArray::GetID()))
+  {
+    return 1;
+  }
+  doc->Undo();
+  doc->Redo();
+  if (refarr->Value(5) != L1)
+  {
+    return 4;
+  }
+  if (refarr->Value(6) != L2)
+  {
+    return 4;
+  }
+  if (refarr->Value(7) != L3)
+  {
+    return 4;
+  }
+  if (refarr->Value(8) != L4)
+  {
+    return 4;
+  }
+
+  // TDataStd_ByteArray:
+  doc->OpenCommand();
+  occ::handle<TDataStd_ByteArray> bytearr = TDataStd_ByteArray::Set(doc->Main(), 23, 25);
+  bytearr->SetValue(23, 23);
+  bytearr->SetValue(25, 25);
+  doc->CommitCommand();
+  doc->OpenCommand();
+  bytearr = TDataStd_ByteArray::Set(doc->Main(), 230, 250);
+  bytearr->SetValue(230, 230);
+  bytearr->SetValue(250, 250);
+  doc->CommitCommand();
+  doc->Undo();
+  if (bytearr->Value(23) != 23)
+  {
+    return 2;
+  }
+  if (bytearr->Value(25) != 25)
+  {
+    return 2;
+  }
+  doc->Redo();
+  if (bytearr->Value(230) != 230)
+  {
+    return 3;
+  }
+  if (bytearr->Value(250) != 250)
+  {
+    return 3;
+  }
+
+  // TDataStd_NamedData:
+  doc->OpenCommand();
+  occ::handle<TDataStd_NamedData> nd = TDataStd_NamedData::Set(doc->Main());
+  nd->SetByte("b14", 12);
+  nd->SetByte("b17", 18);
+  nd->SetByte("b14", 14);
+  nd->SetByte("b17", 17);
+  doc->CommitCommand();
+  doc->OpenCommand();
+  nd = TDataStd_NamedData::Set(doc->Main());
+  nd->SetReal("r14", 14);
+  nd->SetReal("r17", 17);
+  nd->SetReal("r14", 14.4);
+  nd->SetReal("r17", 17.7);
+  doc->CommitCommand();
+  doc->Undo();
+  if (nd->HasStrings())
+  {
+    return 1;
+  }
+  if (nd->HasReals())
+  {
+    return 1;
+  }
+  if (nd->HasReal("r17"))
+  {
+    return 2;
+  }
+  if (!nd->HasBytes())
+  {
+    return 3;
+  }
+  if (nd->GetByte("b14") != 14)
+  {
+    return 4;
+  }
+  if (nd->GetByte("b17") != 17)
+  {
+    return 4;
+  }
+  if (nd->HasByte("b18"))
+  {
+    return 5;
+  }
+  doc->Redo();
+  if (!nd->HasBytes())
+  {
+    return 1;
+  }
+  if (!nd->HasReals())
+  {
+    return 1;
+  }
+  if (nd->GetByte("b14") != 14)
+  {
+    return 2;
+  }
+  if (nd->GetReal("r14") != 14.4)
+  {
+    return 2;
+  }
+  if (nd->GetReal("r17") != 17.7)
+  {
+    return 2;
+  }
+
+  return 0;
+}
+
+int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
+{
+  TDF_Label     L1 = doc->Main().FindChild(1);
+  TDF_Label     L2 = doc->Main().FindChild(2);
+  TDF_CopyLabel copier(L1, L2);
+
+  // TDataStd_Tick:
+  TDataStd_Tick::Set(L1);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  if (!L2.IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 2;
+  }
+
+  // TDataStd_IntegerList:
+  occ::handle<TDataStd_IntegerList> intlist = TDataStd_IntegerList::Set(L1);
+  intlist->Append(1);
+  intlist->InsertAfter(2, 1);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  intlist->Clear();
+  intlist.Nullify();
+  if (!L2.FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
+    return 2;
+  }
+  if (intlist->First() != 1)
+  {
+    return 3;
+  }
+  if (intlist->Last() != 2)
+  {
+    return 4;
+  }
+  intlist->Clear();
+
+  // TDataStd_RealList:
+  occ::handle<TDataStd_RealList> dbllist = TDataStd_RealList::Set(L1);
+  dbllist->Append(1.5);
+  dbllist->InsertAfter(2.5, 1.5);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  dbllist->Clear();
+  dbllist.Nullify();
+  if (!L2.FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
+    return 2;
+  }
+  if (dbllist->First() != 1.5)
+  {
+    return 3;
+  }
+  if (dbllist->Last() != 2.5)
+  {
+    return 4;
+  }
+  dbllist->Clear();
+
+  // TDataStd_ExtStringList:
+  occ::handle<TDataStd_ExtStringList> strlist = TDataStd_ExtStringList::Set(L1);
+  strlist->Append("Open CASCADE");
+  strlist->InsertAfter(" - is the best set of libraries!", "Open CASCADE");
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  strlist->Clear();
+  strlist.Nullify();
+  if (!L2.FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
+    return 2;
+  }
+  if (strlist->First() != "Open CASCADE")
+  {
+    return 3;
+  }
+  if (strlist->Last() != " - is the best set of libraries!")
+  {
+    return 4;
+  }
+  strlist->Clear();
+
+  // TDataStd_BooleanList:
+  occ::handle<TDataStd_BooleanList> boollist = TDataStd_BooleanList::Set(L1);
+  boollist->Append(true);
+  boollist->Prepend(false);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  boollist->Clear();
+  boollist.Nullify();
+  if (!L2.FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
+    return 2;
+  }
+  if (boollist->First())
+  {
+    return 3;
+  }
+  if (!boollist->Last())
+  {
+    return 4;
+  }
+  boollist->Clear();
+
+  // TDataStd_ReferenceList:
+  TDF_Label                           L100    = doc->Main().FindChild(100);
+  TDF_Label                           L101    = doc->Main().FindChild(101);
+  occ::handle<TDataStd_ReferenceList> reflist = TDataStd_ReferenceList::Set(L1);
+  reflist->Append(L100);
+  reflist->InsertAfter(L101, L100);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  reflist->Clear();
+  reflist.Nullify();
+  if (!L2.FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
+    return 2;
+  }
+  if (reflist->First() != L100)
+  {
+    return 3;
+  }
+  if (reflist->Last() != L101)
+  {
+    return 4;
+  }
+  reflist->Clear();
+
+  // TDataStd_BooleanArray:
+  occ::handle<TDataStd_BooleanArray> boolarr = TDataStd_BooleanArray::Set(L1, 4, 6);
+  boolarr->SetValue(4, true);
+  boolarr->SetValue(6, true);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  boolarr.Nullify();
+  if (!L2.FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
+    return 2;
+  }
+  if (!boolarr->Value(4))
+  {
+    return 3;
+  }
+  if (boolarr->Value(5))
+  {
+    return 3;
+  }
+  if (!boolarr->Value(6))
+  {
+    return 3;
+  }
+
+  // TDataStd_ReferenceArray:
+  occ::handle<TDataStd_ReferenceArray> refarr = TDataStd_ReferenceArray::Set(L1, 3, 4);
+  refarr->SetValue(3, L100);
+  refarr->SetValue(4, L101);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  refarr.Nullify();
+  if (!L2.FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
+    return 2;
+  }
+  if (refarr->Value(3) != L100)
+  {
+    return 3;
+  }
+  if (refarr->Value(4) != L101)
+  {
+    return 3;
+  }
+
+  // TDataStd_ByteArray:
+  occ::handle<TDataStd_ByteArray> bytearr = TDataStd_ByteArray::Set(L1, 4, 6);
+  bytearr->SetValue(4, 40);
+  bytearr->SetValue(6, 60);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  bytearr.Nullify();
+  if (!L2.FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
+    return 2;
+  }
+  if (bytearr->Value(4) != 40)
+  {
+    return 3;
+  }
+  if (bytearr->Value(6) != 60)
+  {
+    return 3;
+  }
+
+  // TDataStd_NamedData:
+  occ::handle<TDataStd_NamedData> nd = TDataStd_NamedData::Set(L1);
+  nd->SetInteger("Integer1", 11);
+  nd->SetReal("Real1", 11.1);
+  nd->SetString("String1", "11.11111111");
+  nd->SetByte("Byte1", 111);
+  occ::handle<NCollection_HArray1<int>> ints_arr = new NCollection_HArray1<int>(4, 5);
+  ints_arr->SetValue(4, 4);
+  ints_arr->SetValue(5, 5);
+  nd->SetArrayOfIntegers("Integers1", ints_arr);
+  copier.Perform();
+  if (!copier.IsDone())
+  {
+    return 1;
+  }
+  nd.Nullify();
+  if (!L2.FindAttribute(TDataStd_NamedData::GetID(), nd))
+  {
+    return 2;
+  }
+  if (!nd->HasIntegers())
+  {
+    return 3;
+  }
+  if (!nd->HasReals())
+  {
+    return 3;
+  }
+  if (!nd->HasStrings())
+  {
+    return 3;
+  }
+  if (!nd->HasBytes())
+  {
+    return 3;
+  }
+  if (!nd->HasArraysOfIntegers())
+  {
+    return 3;
+  }
+  if (nd->HasArraysOfReals())
+  {
+    return 3;
+  }
+  if (!nd->HasInteger("Integer1"))
+  {
+    return 4;
+  }
+  if (nd->GetInteger("Integer1") != 11)
+  {
+    return 4;
+  }
+  if (!nd->HasReal("Real1"))
+  {
+    return 4;
+  }
+  if (nd->GetReal("Real1") != 11.1)
+  {
+    return 4;
+  }
+  if (!nd->HasString("String1"))
+  {
+    return 4;
+  }
+  if (nd->GetString("String1") != "11.11111111")
+  {
+    return 4;
+  }
+  if (!nd->HasByte("Byte1"))
+  {
+    return 4;
+  }
+  if (nd->GetByte("Byte1") != 111)
+  {
+    return 4;
+  }
+  if (!nd->HasArrayOfIntegers("Integers1"))
+  {
+    return 4;
+  }
+  const occ::handle<NCollection_HArray1<int>>& ints_arr_out = nd->GetArrayOfIntegers("Integers1");
+  if (ints_arr_out.IsNull())
+  {
+    return 4;
+  }
+  if (ints_arr_out->Value(5) != 5)
+  {
+    return 4;
+  }
+
+  return 0;
+}
+
+int TestOpenSave(const TCollection_ExtendedString& aFile1,
+                 const TCollection_ExtendedString& aFile2,
+                 const TCollection_ExtendedString& aFile3)
+{
+  // Std
+  occ::handle<TDocStd_Document> doc_std, doc_std_open;
+  app->NewDocument("BinOcaf", doc_std);
+  // TDataStd_Tick:
+  TDataStd_Tick::Set(doc_std->Main());
+  // TDataStd_IntegerList:
+  occ::handle<TDataStd_IntegerList> intlist = TDataStd_IntegerList::Set(doc_std->Main());
+  intlist->Append(1);
+  intlist->Append(5);
+  // TDataStd_RealList:
+  occ::handle<TDataStd_RealList> dbllist = TDataStd_RealList::Set(doc_std->Main());
+  dbllist->Append(1.5);
+  dbllist->Append(5.5);
+  // TDataStd_ExtStringList:
+  occ::handle<TDataStd_ExtStringList> strlist = TDataStd_ExtStringList::Set(doc_std->Main());
+  strlist->Append("Auf");
+  strlist->Append("Wiedersehen");
+  // TDataStd_BooleanList:
+  occ::handle<TDataStd_BooleanList> boollist = TDataStd_BooleanList::Set(doc_std->Main());
+  boollist->Append(false);
+  boollist->Append(true);
+  // TDataStd_ReferenceList:
+  TCollection_AsciiString entry1, entry2, entry_first, entry_last;
+  TDF_Label               Lstd1 = doc_std->Main().FindChild(100);
+  TDF_Tool::Entry(Lstd1, entry1);
+  TDF_Label Lstd2 = doc_std->Main().FindChild(101);
+  TDF_Tool::Entry(Lstd2, entry2);
+  occ::handle<TDataStd_ReferenceList> reflist = TDataStd_ReferenceList::Set(doc_std->Main());
+  reflist->Append(Lstd1);
+  reflist->Append(Lstd2);
+  // TDataStd_BooleanArray:
+  occ::handle<TDataStd_BooleanArray> boolarr = TDataStd_BooleanArray::Set(doc_std->Main(), 15, 18);
+  boolarr->SetValue(15, false);
+  boolarr->SetValue(16, true);
+  boolarr->SetValue(17, true);
+  boolarr->SetValue(18, true);
+  // TDataStd_ReferenceArray:
+  occ::handle<TDataStd_ReferenceArray> refarr =
+    TDataStd_ReferenceArray::Set(doc_std->Main(), 45, 46);
+  refarr->SetValue(45, Lstd1);
+  refarr->SetValue(46, Lstd2);
+  // TDataStd_ByteArray:
+  occ::handle<TDataStd_ByteArray> bytearr = TDataStd_ByteArray::Set(doc_std->Main(), 15, 18);
+  bytearr->SetValue(15, 150);
+  bytearr->SetValue(16, 160);
+  bytearr->SetValue(17, 170);
+  bytearr->SetValue(18, 180);
+  // TDataStd_NamedData:
+  occ::handle<TDataStd_NamedData> nameddata = TDataStd_NamedData::Set(doc_std->Main());
+  // TDF_Reference:
+  TDF_Label                  Lstd3 = doc_std->Main().FindChild(103);
+  occ::handle<TDF_Reference> ref   = TDF_Reference::Set(doc_std->Main(), Lstd3);
+  //
+  // Save
+  // if (app->SaveAs(doc_std, "W:\\doc.std") != PCDM_SS_OK)
+  if (app->SaveAs(doc_std, aFile1) != PCDM_SS_OK)
+  {
+    return 1;
+  }
+  intlist.Nullify();
+  dbllist.Nullify();
+  strlist.Nullify();
+  boollist.Nullify();
+  reflist.Nullify();
+  boolarr.Nullify();
+  ref.Nullify();
+  app->Close(doc_std);
+  doc_std.Nullify();
+  // if (app->Open("W:\\doc.std", doc_std_open) != PCDM_RS_OK)
+  if (app->Open(aFile1, doc_std_open) != PCDM_RS_OK)
+  {
+    return 2;
+  }
+  if (!doc_std_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 3;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
+    return 4;
+  }
+  if (intlist->First() != 1)
+  {
+    return 5;
+  }
+  if (intlist->Last() != 5)
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
+    return 4;
+  }
+  if (dbllist->First() != 1.5)
+  {
+    return 5;
+  }
+  if (dbllist->Last() != 5.5)
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
+    return 4;
+  }
+  if (strlist->First() != "Auf")
+  {
+    return 5;
+  }
+  if (strlist->Last() != "Wiedersehen")
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
+    return 4;
+  }
+  if (boollist->First())
+  {
+    return 5;
+  }
+  if (!boollist->Last())
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(reflist->First(), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(reflist->Last(), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
+    return 4;
+  }
+  if (boolarr->Value(15))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(16))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(17))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(18))
+  {
+    return 5;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(refarr->Value(45), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(refarr->Value(46), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
+    return 4;
+  }
+  if (bytearr->Value(15) != 150)
+  {
+    return 5;
+  }
+  if (bytearr->Value(16) != 160)
+  {
+    return 5;
+  }
+  if (bytearr->Value(17) != 170)
+  {
+    return 5;
+  }
+  if (bytearr->Value(18) != 180)
+  {
+    return 5;
+  }
+  if (!doc_std_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
+    return 4;
+  }
+  if (ref->Get().IsNull())
+  {
+    return 5;
+  }
+  if (ref->Get().Tag() != 103)
+  {
+    return 5;
+  }
+
+  // Xml
+  occ::handle<TDocStd_Document> doc_xml, doc_xml_open;
+  app->NewDocument("XmlOcaf", doc_xml);
+  // TDataStd_Tick:
+  TDataStd_Tick::Set(doc_xml->Main());
+  // TDataStd_IntegerList:
+  intlist = TDataStd_IntegerList::Set(doc_xml->Main());
+  intlist->Append(1);
+  intlist->Append(5);
+  // TDataStd_RealList:
+  dbllist = TDataStd_RealList::Set(doc_xml->Main());
+  dbllist->Append(1.5);
+  dbllist->Append(5.5);
+  // TDataStd_ExtStringList:
+  strlist = TDataStd_ExtStringList::Set(doc_xml->Main());
+  strlist->Append("Guten ");
+  strlist->Append("Tag");
+  // TDataStd_BooleanList:
+  boollist = TDataStd_BooleanList::Set(doc_xml->Main());
+  boollist->Append(false);
+  boollist->Append(true);
+  // TDataStd_ReferenceList:
+  TDF_Label Lxml1 = doc_xml->Main().FindChild(100);
+  TDF_Tool::Entry(Lxml1, entry1);
+  TDF_Label Lxml2 = doc_xml->Main().FindChild(101);
+  TDF_Tool::Entry(Lxml2, entry2);
+  reflist = TDataStd_ReferenceList::Set(doc_xml->Main());
+  reflist->Append(Lxml1);
+  reflist->Append(Lxml2);
+  // TDataStd_BooleanArray:
+  boolarr = TDataStd_BooleanArray::Set(doc_xml->Main(), 15, 24);
+  boolarr->SetValue(15, false);
+  boolarr->SetValue(16, true);
+  boolarr->SetValue(17, true);
+  boolarr->SetValue(18, true);
+  boolarr->SetValue(19, true);
+  boolarr->SetValue(20, true);
+  boolarr->SetValue(21, false);
+  boolarr->SetValue(22, true);
+  boolarr->SetValue(23, true);
+  boolarr->SetValue(24, true);
+  // TDataStd_ReferenceArray:
+  refarr = TDataStd_ReferenceArray::Set(doc_xml->Main(), 444, 445);
+  refarr->SetValue(444, Lxml1);
+  refarr->SetValue(445, Lxml2);
+  // TDataStd_ByteArray:
+  bytearr = TDataStd_ByteArray::Set(doc_xml->Main(), 15, 24);
+  bytearr->SetValue(15, 0);
+  bytearr->SetValue(16, 10);
+  bytearr->SetValue(17, 100);
+  bytearr->SetValue(18, 200);
+  bytearr->SetValue(19, 250);
+  bytearr->SetValue(20, 251);
+  bytearr->SetValue(21, 252);
+  bytearr->SetValue(22, 253);
+  bytearr->SetValue(23, 254);
+  bytearr->SetValue(24, 255);
+  // TDF_Reference:
+  Lstd3 = doc_xml->Main().FindChild(103);
+  ref   = TDF_Reference::Set(doc_xml->Main(), Lstd3);
+  //
+  // Save
+  // if (app->SaveAs(doc_xml, "W:\\doc.xml") != PCDM_SS_OK)
+  if (app->SaveAs(doc_xml, aFile2) != PCDM_SS_OK)
+  {
+    return 1;
+  }
+  intlist.Nullify();
+  ref.Nullify();
+  app->Close(doc_xml);
+  doc_xml.Nullify();
+  // if (app->Open("W:\\doc.xml", doc_xml_open) != PCDM_RS_OK)
+  if (app->Open(aFile2, doc_xml_open) != PCDM_RS_OK)
+  {
+    return 2;
+  }
+  if (!doc_xml_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 3;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
+    return 4;
+  }
+  if (intlist->First() != 1)
+  {
+    return 5;
+  }
+  if (intlist->Last() != 5)
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
+    return 4;
+  }
+  if (dbllist->First() != 1.5)
+  {
+    return 5;
+  }
+  if (dbllist->Last() != 5.5)
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
+    return 4;
+  }
+  if (strlist->First() != "Guten ")
+  {
+    return 5;
+  }
+  if (strlist->Last() != "Tag")
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
+    return 4;
+  }
+  if (boollist->First())
+  {
+    return 5;
+  }
+  if (!boollist->Last())
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(reflist->First(), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(reflist->Last(), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
+    return 4;
+  }
+  if (boolarr->Value(15))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(16))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(17))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(18))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(19))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(20))
+  {
+    return 5;
+  }
+  if (boolarr->Value(21))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(22))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(23))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(24))
+  {
+    return 5;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(refarr->Value(444), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(refarr->Value(445), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
+    return 4;
+  }
+  if (bytearr->Value(15) != 0)
+  {
+    return 5;
+  }
+  if (bytearr->Value(16) != 10)
+  {
+    return 5;
+  }
+  if (bytearr->Value(17) != 100)
+  {
+    return 5;
+  }
+  if (bytearr->Value(18) != 200)
+  {
+    return 5;
+  }
+  if (bytearr->Value(19) != 250)
+  {
+    return 5;
+  }
+  if (bytearr->Value(20) != 251)
+  {
+    return 5;
+  }
+  if (bytearr->Value(21) != 252)
+  {
+    return 5;
+  }
+  if (bytearr->Value(22) != 253)
+  {
+    return 5;
+  }
+  if (bytearr->Value(23) != 254)
+  {
+    return 5;
+  }
+  if (bytearr->Value(24) != 255)
+  {
+    return 5;
+  }
+  if (!doc_xml_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
+    return 4;
+  }
+  if (ref->Get().IsNull())
+  {
+    return 5;
+  }
+  if (ref->Get().Tag() != 103)
+  {
+    return 5;
+  }
+
+  // Bin
+  occ::handle<TDocStd_Document> doc_bin, doc_bin_open;
+  app->NewDocument("BinOcaf", doc_bin);
+  // TDataStd_Tick:
+  TDataStd_Tick::Set(doc_bin->Main());
+  // TDataStd_IntegerList:
+  intlist = TDataStd_IntegerList::Set(doc_bin->Main());
+  intlist->Append(1);
+  intlist->Append(5);
+  // TDataStd_RealList:
+  dbllist = TDataStd_RealList::Set(doc_bin->Main());
+  dbllist->Append(1.5);
+  dbllist->Append(5.5);
+  // TDataStd_ExtStringList:
+  strlist = TDataStd_ExtStringList::Set(doc_bin->Main());
+  strlist->Append("Bonjour");
+  strlist->Append("Bonsoir");
+  // TDataStd_BooleanList:
+  boollist = TDataStd_BooleanList::Set(doc_bin->Main());
+  boollist->Append(false);
+  boollist->Append(true);
+  // TDataStd_ReferenceList:
+  TDF_Label Lbin1 = doc_bin->Main().FindChild(100);
+  TDF_Tool::Entry(Lbin1, entry1);
+  TDF_Label Lbin2 = doc_bin->Main().FindChild(101);
+  TDF_Tool::Entry(Lbin2, entry2);
+  reflist = TDataStd_ReferenceList::Set(doc_bin->Main());
+  reflist->Append(Lbin1);
+  reflist->Append(Lbin2);
+  // TDataStd_BooleanArray:
+  boolarr = TDataStd_BooleanArray::Set(doc_bin->Main(), 15, 24);
+  boolarr->SetValue(15, false);
+  boolarr->SetValue(16, true);
+  boolarr->SetValue(17, true);
+  boolarr->SetValue(18, true);
+  boolarr->SetValue(19, true);
+  boolarr->SetValue(20, true);
+  boolarr->SetValue(21, false);
+  boolarr->SetValue(22, true);
+  boolarr->SetValue(23, true);
+  boolarr->SetValue(24, true);
+  // TDataStd_ReferenceArray:
+  refarr = TDataStd_ReferenceArray::Set(doc_bin->Main(), 0, 1);
+  refarr->SetValue(0, Lbin1);
+  refarr->SetValue(1, Lbin2);
+  // TDataStd_ByteArray:
+  bytearr = TDataStd_ByteArray::Set(doc_bin->Main(), 15, 16);
+  bytearr->SetValue(15, 0);
+  bytearr->SetValue(16, 255);
+  // TDataStd_NamedData:
+  nameddata = TDataStd_NamedData::Set(doc_bin->Main());
+  nameddata->SetByte("A", 12);
+  nameddata->SetByte("B", 234);
+  // TDF_Reference:
+  Lstd3 = doc_bin->Main().FindChild(103);
+  ref   = TDF_Reference::Set(doc_bin->Main(), Lstd3);
+  //
+  // Save
+  // if (app->SaveAs(doc_bin, "W:\\doc.cbf") != PCDM_SS_OK)
+  if (app->SaveAs(doc_bin, aFile3) != PCDM_SS_OK)
+  {
+    return 1;
+  }
+  intlist.Nullify();
+  ref.Nullify();
+  app->Close(doc_bin);
+  doc_bin.Nullify();
+  // if (app->Open("W:\\doc.cbf", doc_bin_open) != PCDM_RS_OK)
+  if (app->Open(aFile3, doc_bin_open) != PCDM_RS_OK)
+  {
+    return 2;
+  }
+  if (!doc_bin_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
+    return 3;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
+    return 4;
+  }
+  if (intlist->First() != 1)
+  {
+    return 5;
+  }
+  if (intlist->Last() != 5)
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
+    return 4;
+  }
+  if (dbllist->First() != 1.5)
+  {
+    return 5;
+  }
+  if (dbllist->Last() != 5.5)
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
+    return 4;
+  }
+  if (strlist->First() != "Bonjour")
+  {
+    return 5;
+  }
+  if (strlist->Last() != "Bonsoir")
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
+    return 4;
+  }
+  if (boollist->First())
+  {
+    return 5;
+  }
+  if (!boollist->Last())
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(reflist->First(), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(reflist->Last(), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
+    return 4;
+  }
+  if (boolarr->Value(15))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(16))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(17))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(18))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(19))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(20))
+  {
+    return 5;
+  }
+  if (boolarr->Value(21))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(22))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(23))
+  {
+    return 5;
+  }
+  if (!boolarr->Value(24))
+  {
+    return 5;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
+    return 4;
+  }
+  TDF_Tool::Entry(refarr->Value(0), entry_first);
+  if (entry1 != entry_first)
+  {
+    return 5;
+  }
+  TDF_Tool::Entry(refarr->Value(1), entry_last);
+  if (entry2 != entry_last)
+  {
+    return 6;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
+    return 4;
+  }
+  if (bytearr->Value(15) != 0)
+  {
+    return 5;
+  }
+  if (bytearr->Value(16) != 255)
+  {
+    return 5;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDataStd_NamedData::GetID(), nameddata))
+  {
+    return 4;
+  }
+  if (nameddata->GetByte("A") != 12)
+  {
+    return 5;
+  }
+  if (nameddata->GetByte("B") != 234)
+  {
+    return 5;
+  }
+  if (!doc_bin_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
+    return 4;
+  }
+  if (ref->Get().IsNull())
+  {
+    return 5;
+  }
+  if (ref->Get().Tag() != 103)
+  {
+    return 5;
+  }
+
+  return 0;
+}
+
+// For OCC16782 testing
+
+static int OCC16782(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 4)
+  {
+    di << "Usage : " << argv[0] << " file.std file.xml file.cbf\n";
+    return 1;
+  }
+  TCollection_ExtendedString aFile1(argv[1]);
+  TCollection_ExtendedString aFile2(argv[2]);
+  TCollection_ExtendedString aFile3(argv[3]);
+
+  if (app.IsNull())
+  {
+    app = new AppStd_Application();
+  }
+
+  int good = 0;
+
+  occ::handle<TDocStd_Document> doc;
+  app->NewDocument("BinOcaf", doc);
+  doc->SetUndoLimit(10);
+
+  di << "\nTestSetGet start\n";
+  good += TestSetGet(doc);
+  di << "TestSetGet finish\n";
+  di << "Status = " << good << "\n";
+
+  di << "\nTestUndoRedo start\n";
+  good += TestUndoRedo(doc);
+  di << "TestUndoRedo finish\n";
+  di << "Status = " << good << "\n";
+
+  di << "\nTestCopyPaste start\n";
+  good += TestCopyPaste(doc);
+  di << "TestCopyPaste finish\n";
+  di << "Status = " << good << "\n";
+
+  di << "\nTestOpenSave start\n";
+  good += TestOpenSave(aFile1, aFile2, aFile3);
+  di << "TestOpenSave finish\n";
+  di << "Status = " << good << "\n";
+
+  if (!good)
+  {
+    di << "\nThe " << argv[0] << " test is passed well, OK\n";
+  }
+  else
+  {
+    di << "\nThe " << argv[0] << " test failed, Faulty\n";
+  }
+
+  return 0;
+}
+
+static int OCC12584(Draw_Interpretor& di, int argc, const char** argv)
+{
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << argv[0] << " ERROR : use 'vinit' command before \n";
+    return -1;
+  }
+
+  if (argc > 2)
+  {
+    di << "Usage : " << argv[0] << " [mode = 0/1/2]\n";
+    return 1;
+  }
+  int mode = 0;
+  if (argc == 2)
+  {
+    mode = Draw::Atoi(argv[1]);
+  }
+  if (mode > 2 || mode < 0)
+  {
+    di << "Usage : " << argv[0] << " [mode = 0/1/2]\n";
+    return 1;
+  }
+  occ::handle<V3d_View>              V = ViewerTest::CurrentView();
+  static occ::handle<AIS_ColorScale> aCS;
+  if (aCS.IsNull())
+  {
+    aCS = new AIS_ColorScale();
+  }
+  if (aCS->ZLayer() != Graphic3d_ZLayerId_TopOSD)
+  {
+    aCS->SetZLayer(Graphic3d_ZLayerId_TopOSD);
+  }
+  if (aCS->TransformPersistence().IsNull()
+      || aCS->TransformPersistence()->Mode() != Graphic3d_TMF_2d)
+  {
+    aContext->SetTransformPersistence(
+      aCS,
+      new Graphic3d_TransformPers(Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
+  }
+  int aWinWidth, aWinHeight;
+  V->Window()->Size(aWinWidth, aWinHeight);
+  aCS->SetSize(aWinWidth, aWinHeight);
+  if (!V.IsNull())
+  {
+    if (mode == 0)
+    {
+      aContext->Display(aCS, true);
+    }
+    if (mode == 1)
+    {
+      aContext->Erase(aCS, false);
+      V->UpdateLights();
+      V->Update();
+    }
+    if (mode == 2)
+    {
+      bool IsDisplayed = aContext->IsDisplayed(aCS);
+      if (IsDisplayed)
+      {
+        di << "ColorScaleIsDisplayed = 1\n";
+      }
+      else
+      {
+        di << "ColorScaleIsDisplayed = 0\n";
+      }
+    }
+  }
+  return 0;
+}
+
+#include <MoniTool_Macros.hxx>
+#include <Draw_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
+
+#include <Geom_Plane.hxx>
+
+static int OCC20766(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 6)
+  {
+    di << "Usage : " << argv[0] << " plane a b c d\n";
+    return 1;
+  }
+
+  double A = Draw::Atof(argv[2]);
+  double B = Draw::Atof(argv[3]);
+  double C = Draw::Atof(argv[4]);
+  double D = Draw::Atof(argv[5]);
+
+  occ::handle<Geom_Geometry> result;
+
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(A, B, C, D);
+  result                         = aPlane;
+
+  DrawTrSurf::Set(argv[1], result);
+  return 0;
+}
+
+static int OCC20627(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " MaxNbr\n";
+    return -1;
+  }
+  int aMaxNbr = Draw::Atoi(argv[1]);
+
+  for (int i = 0; i < aMaxNbr; i++)
+  {
+    BRepBuilderAPI_MakePolygon w(gp_Pnt(0, 0, 0),
+                                 gp_Pnt(0, 100, 0),
+                                 gp_Pnt(20, 100, 0),
+                                 gp_Pnt(20, 0, 0));
+    w.Close();
+    TopoDS_Wire              wireShape(w.Wire());
+    BRepBuilderAPI_MakeFace  faceBuilder(wireShape);
+    const TopoDS_Face&       f(faceBuilder.Face());
+    BRepMesh_IncrementalMesh im(f, 1);
+    BRepTools::Clean(f);
+  }
+  return 0;
+}
+
+#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <gp_Lin.hxx>
+
+int OCC17424(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 9)
+  {
+    di << "Usage : " << argv[0] << " shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf\n";
+    return -1;
+  }
+
+  TopoDS_Shape shape = DBRep::Get(argv[1]);
+
+  if (shape.IsNull())
+  {
+    di << " Null shape is not allowed";
+    return 1;
+  }
+
+  double X_Pnt = Draw::Atof(argv[2]);
+  double Y_Pnt = Draw::Atof(argv[3]);
+  double Z_Pnt = Draw::Atof(argv[4]);
+
+  double X_Dir = Draw::Atof(argv[5]);
+  double Y_Dir = Draw::Atof(argv[6]);
+  double Z_Dir = Draw::Atof(argv[7]);
+
+  double PInf = Draw::Atof(argv[8]);
+
+  IntCurvesFace_ShapeIntersector intersector;
+  intersector.Load(shape, Precision::Intersection());
+
+  gp_Pnt origin(X_Pnt, Y_Pnt, Z_Pnt);
+  gp_Dir dir(X_Dir, Y_Dir, Z_Dir);
+  gp_Lin ray(origin, dir);
+
+  constexpr double PSup = RealLast();
+  intersector.PerformNearest(ray, PInf, PSup);
+  if (intersector.NbPnt() != 0)
+  {
+    di << argv[0] << " status = 0 \n";
+    double w = intersector.WParameter(1);
+    di << "w = " << w << "\n";
+  }
+  else
+  {
+    di << argv[0] << " status = -1 \n";
+  }
+  return 0;
+}
+
+int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 1)
+  {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+
+  // Create mask 1111: extent == 4
+  TColStd_PackedMapOfInteger aFullMask;
+  for (int i = 0; i < 4; i++)
+  {
+    aFullMask.Add(i);
+  }
+
+  // Create mask 1100: extent == 2
+  TColStd_PackedMapOfInteger aPartMask;
+  for (int i = 0; i < 2; i++)
+  {
+    aPartMask.Add(i);
+  }
+
+  di << "aFullMask = 1111\n";
+  di << "aPartMask = 1100\n";
+
+  bool isAffected;
+
+  isAffected = NCollection_PackedMapAlgo::Intersect(aFullMask, aPartMask); // true; extent == 2 (OK)
+  di << "First time: aFullMask.Intersect(aPartMask), isAffected = " << (int)isAffected << "\n";
+  isAffected = NCollection_PackedMapAlgo::Intersect(aFullMask, aPartMask); // true; extent == 0 (?)
+  di << "Second time: aFullMask.Intersect(aPartMask), isAffected = " << (int)isAffected << "\n";
+  isAffected = NCollection_PackedMapAlgo::Subtract(aFullMask, aPartMask); // false (?)
+  di << "After two intersections: aFullMask.Subtract(aPartMask), isAffected = " << (int)isAffected
+     << "\n";
+
+  return 0;
+}
+
+int OCC23429(Draw_Interpretor& /*di*/, int narg, const char** a)
+{
+  if (narg < 4)
+  {
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    return 1;
+  }
+
+  BRepFeat_SplitShape Spls(aShape);
+  Spls.SetCheckInterior(false);
+
+  TopoDS_Shape aTool = DBRep::Get(a[3]);
+
+  BRepAlgoAPI_Section Builder(aShape, aTool, false);
+  Builder.ComputePCurveOn1(true);
+  if (narg == 5)
+  {
+    Builder.Approximation(true);
+  }
+  Builder.Build();
+  TopoDS_Shape aSection = Builder.Shape();
+
+  TopExp_Explorer ExpSec(aSection, TopAbs_EDGE);
+  for (; ExpSec.More(); ExpSec.Next())
+  {
+    TopoDS_Edge               anEdge = TopoDS::Edge(ExpSec.Current());
+    occ::handle<Geom2d_Curve> thePCurve;
+    occ::handle<Geom_Surface> theSurface;
+    TopLoc_Location           theLoc;
+    double                    fpar, lpar;
+    BRep_Tool::CurveOnSurface(anEdge, thePCurve, theSurface, theLoc, fpar, lpar);
+    TopoDS_Face     aFace;
+    TopExp_Explorer ExpShape(aShape, TopAbs_FACE);
+    for (; ExpShape.More(); ExpShape.Next())
+    {
+      aFace = TopoDS::Face(ExpShape.Current());
+      TopLoc_Location           aLoc;
+      occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace, aLoc);
+      if (aSurface == theSurface && aLoc == theLoc)
+      {
+        break;
+      }
+    }
+    Spls.Add(anEdge, aFace);
+  }
+
+  TopoDS_Shape Result = Spls.Shape();
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+int CR23403(Draw_Interpretor& di, int argc, const char** argv)
+{
+
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " string\n";
+    return 1;
+  }
+
+  const char*                   aString = argv[1];
+  occ::handle<ExprIntrp_GenExp> myExpr  = ExprIntrp_GenExp::Create();
+  try
+  {
+    OCC_CATCH_SIGNALS
+    myExpr->Process(aString);
+  }
+  catch (Standard_Failure const& anException)
+  {
+    di << "Exception : " << anException.what() << "\n";
+  }
+
+  return 0;
+}
+
+int OCC28478(Draw_Interpretor& di, int argc, const char** argv)
+{
+  int  nbOuter = (argc > 1 ? Draw::Atoi(argv[1]) : 3);
+  int  nbInner = (argc > 2 ? Draw::Atoi(argv[2]) : 2);
+  bool isInf   = (argc > 3 && !strcmp(argv[3], "-inf"));
+
+  // test behavior of progress indicator when using nested scopes with names
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+
+  // Outer cycle
+  Message_ProgressScope anOuter(aProgress->Start(), "Outer", nbOuter);
+  for (int i = 0; i < nbOuter && anOuter.More(); i++)
+  {
+    // Inner cycle
+    Message_ProgressScope anInner(anOuter.Next(), "Inner", nbInner, isInf);
+    for (int j = 0; j < (isInf ? 2 * nbInner : nbInner) && anInner.More(); j++, anInner.Next())
+    {
+      // Cycle body
+    }
+  }
+
+  return 0;
+}
+
+namespace
+{
+struct Task
+{
+  Message_ProgressRange Range;
+  math_Matrix           Mat1, Mat2, Mat3;
+
+  Task(const Message_ProgressRange& thePR, int theSize)
+      : Range(thePR),
+        Mat1(1, theSize, 1, theSize, 0.12345),
+        Mat2(1, theSize, 1, theSize, 12345),
+        Mat3(1, theSize, 1, theSize)
+  {
+  }
+};
+
+struct Functor
+{
+  void operator()(Task& theTask) const
+  {
+    if (theTask.Range.More())
+    {
+      if (theTask.Mat1.RowNumber() > 1)
+      {
+        theTask.Mat3 = theTask.Mat1 * theTask.Mat2;
+      }
+    }
+    theTask.Range.Close();
+  }
+};
+} // namespace
+
+int OCC25748(Draw_Interpretor& di, int argc, const char** argv)
+{
+  // test behavior of progress indicator in multi-threaded execution
+  int  nIter      = 1000;
+  int  aMatSize   = 1;
+  bool isProgress = false;
+  bool isParallel = false;
+
+  for (int i = 1; i < argc; i++)
+  {
+    if (strcmp(argv[i], "-niter") == 0)
+    {
+      nIter = Draw::Atoi(argv[++i]);
+    }
+    else if (strcmp(argv[i], "-matsize") == 0)
+    {
+      aMatSize = Draw::Atoi(argv[++i]);
+    }
+    else if (strcmp(argv[i], "-progr") == 0)
+    {
+      isProgress = true;
+    }
+    else if (strcmp(argv[i], "-parallel") == 0)
+    {
+      isParallel = true;
+    }
+    else
+    {
+      di.PrintHelp("OCC25748");
+      return 1;
+    }
+  }
+
+  OSD_Timer aTimerWhole;
+  aTimerWhole.Start();
+
+  occ::handle<Draw_ProgressIndicator> aProgress;
+  if (isProgress)
+  {
+    aProgress = new Draw_ProgressIndicator(di, 1);
+  }
+  Message_ProgressScope aPS(Message_ProgressIndicator::Start(aProgress),
+                            "Parallel data processing",
+                            nIter);
+
+  NCollection_LinearVector<Task> aTasks;
+  aTasks.Reserve(nIter);
+  for (int i = 0; i < nIter; i++)
+  {
+    aTasks.Append(Task(aPS.Next(), aMatSize));
+  }
+
+  OSD_Timer aTimer;
+  aTimer.Start();
+  OSD_Parallel::ForEach(aTasks.begin(), aTasks.end(), Functor(), !isParallel);
+  aTimer.Stop();
+
+  aTimerWhole.Stop();
+
+  TCollection_AsciiString aText(nIter);
+  aText += (isParallel ? " parallel" : " sequential");
+  if (aMatSize > 1)
+  {
+    aText = aText + " calculations on matrices " + aMatSize + "x" + aMatSize;
+  }
+  else
+  {
+    aText += " empty tasks";
+  }
+  if (isProgress)
+  {
+    aText += " with progress";
+  }
+  di << "COUNTER " << aText << ": " << aTimer.ElapsedTime();
+  di << "\nCOUNTER " << "including preparations" << ": " << aTimerWhole.ElapsedTime();
+  return 0;
+}
+
+void QABugs::Commands_11(Draw_Interpretor& theCommands)
+{
+  const char* group = "QABugs";
+
+  theCommands.Add("OCC128", "OCC128", __FILE__, OCC128, group);
+
+  // Remove as bad version of QAAddOrRemoveSelected from QADraw
+  // theCommands.Add("OCC129", "OCC129 shape islocal", __FILE__, OCC129, group);
+
+  theCommands.Add("OCC136", "OCC136", __FILE__, OCC136, group);
+  theCommands.Add("BUC60610", "BUC60610 iges_input [name]", __FILE__, BUC60610, group);
+
+  theCommands.Add("OCC105", "OCC105 shape", __FILE__, OCC105, group);
+  theCommands.Add("OCC9",
+                  " result path cur1 cur2 radius [tolerance]:\t test GeomFill_Pipe",
+                  __FILE__,
+                  pipe_OCC9,
+                  group);
+
+  theCommands.Add("OCC125", "OCC125 shell", __FILE__, OCC125, group);
+
+  theCommands.Add("OCC157", "findplanarsurface Result wire Tol", __FILE__, OCC157, group);
+  // theCommands.Add("OCC165","OCC165",__FILE__,OCC165,group);
+  theCommands.Add("OCC165", "OCC165 file", __FILE__, OCC165, group);
+  theCommands.Add("OCC297", "OCC297", __FILE__, OCC297, group);
+  // theCommands.Add("OCC305","OCC305",__FILE__,OCC305,group);
+  theCommands.Add("OCC305", "OCC305 file", __FILE__, OCC305, group);
+
+  // New commands:
+  theCommands.Add("OCC381_Save", "OCC381_Save Doc", __FILE__, OCC381_Save, group);
+  theCommands.Add("OCC381_SaveAs", "OCC381_SaveAs Doc Path", __FILE__, OCC381_SaveAs, group);
+
+  theCommands.Add("OCC299", "OCC299 Solid Point [Tolerance=1.e-7]", __FILE__, OCC299bug, group);
+
+  theCommands.Add("OCC363", "OCC363 document filename ", __FILE__, OCC363, group);
+  // Must use OCC299
+  // theCommands.Add("OCC372", "OCC372", __FILE__, OCC372, group);
+  theCommands.Add("OCC377", "OCC377", __FILE__, OCC377, group);
+  theCommands.Add("OCC22",
+                  "OCC22 Result Shape CompoundOfSubshapesToBeDivided ConsiderLocation",
+                  __FILE__,
+                  OCC22,
+                  group);
+  theCommands.Add("OCC24",
+                  "OCC24 Result Shape CompoundOfSubshapes ResourceFileName",
+                  __FILE__,
+                  OCC24,
+                  group);
+  theCommands.Add("OCC369", "OCC369 Shape", __FILE__, OCC369, group);
+  // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
+  theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
+  theCommands.Add("OCC708",
+                  "OCC708 shape ; Deactivate the current transformation",
+                  __FILE__,
+                  OCC708,
+                  group);
+  theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
+  theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
+
+  theCommands.Add("OCC1029_AISTransparency",
+                  "OCC1029_AISTransparency (DOC, entry, [real])",
+                  __FILE__,
+                  OCC1029_AISTransparency,
+                  group);
+  theCommands.Add("OCC1031_AISMaterial",
+                  "OCC1031_AISMaterial (DOC, entry, [material])",
+                  __FILE__,
+                  OCC1031_AISMaterial,
+                  group);
+  theCommands.Add("OCC1032_AISWidth",
+                  "OCC1032_AISWidth (DOC, entry, [width])",
+                  __FILE__,
+                  OCC1032_AISWidth,
+                  group);
+  theCommands.Add("OCC1033_AISMode",
+                  "OCC1033_AISMode (DOC, entry, [mode])",
+                  __FILE__,
+                  OCC1033_AISMode,
+                  group);
+  theCommands.Add("OCC1034_AISSelectionMode",
+                  "OCC1034_AISSelectionMode (DOC, entry, [selectionmode])",
+                  __FILE__,
+                  OCC1034_AISSelectionMode,
+                  group);
+
+  // theCommands.Add("OCC1487", "OCC1487 CylinderVariant(=1/2) cylinder1 cylinder2 cutshape",
+  // __FILE__, OCC1487, group);
+  theCommands.Add("OCC1487",
+                  "OCC1487 CylinderVariant(=1/2) cylinder1 cylinder2 cutshape",
+                  __FILE__,
+                  OCC1487,
+                  group);
+
+  theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);
+  theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
+  theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
+  theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
+  theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
+  theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);
+  theCommands.Add("OCC10138", "OCC10138 lower upper", __FILE__, OCC10138, group);
+  theCommands.Add("OCC7068", "OCC7068", __FILE__, OCC7068, group);
+  theCommands.Add("OCC11457",
+                  "OCC11457 polygon lastedge x1 y1 z1 x2 y2 z2 ...",
+                  __FILE__,
+                  OCC11457,
+                  group);
+  theCommands.Add("OCC14376", "OCC14376 shape [deflection]", __FILE__, OCC14376, group);
+  theCommands.Add("OCC15755", "OCC15755 file shape", __FILE__, OCC15755, group);
+  theCommands.Add("OCC16782", "OCC16782 file.std file.xml file.cbf", __FILE__, OCC16782, group);
+  theCommands.Add("OCC12584", "OCC12584 [mode = 0/1/2]", __FILE__, OCC12584, group);
+  theCommands.Add("OCC20766", "OCC20766 plane a b c d", __FILE__, OCC20766, group);
+  theCommands.Add("OCC20627", "OCC20627", __FILE__, OCC20627, group);
+  theCommands.Add("OCC17424",
+                  "OCC17424  shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf",
+                  __FILE__,
+                  OCC17424,
+                  group);
+  theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
+  theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
+  theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
+  theCommands.Add(
+    "OCC28478",
+    "OCC28478 [nb_outer=3 [nb_inner=2] [-inf]: test progress indicator on nested cycles",
+    __FILE__,
+    OCC28478,
+    group);
+  theCommands.Add("OCC25748",
+                  "OCC25748 [-niter val] [-matsize val] [-progr] [-parallel]\n"
+                  "\t\ttest progress indicator in parallel execution",
+                  __FILE__,
+                  OCC25748,
+                  group);
+
+  theCommands.Add("OCC31965",
+                  "OCC31965 object : tests AIS_InteractiveContext::Hilight()",
+                  __FILE__,
+                  OCC31965,
+                  group);
+}

@@ -1,0 +1,36 @@
+# test for #22778: compare number of triangles in triangulation
+# produced on surface converted to nurbs, against number of triangles on
+# original analytic (spherical) surface
+
+puts "TODO #22778 All: too many triangles"
+
+# original face on spherical surface
+restore [locate_data_file bug22778_square.brep] s
+checkshape s
+incmesh s 0.001
+set trinfo_s [trinfo s]
+regexp {([0-9]+) triangles} $trinfo_s str nbtri_s
+
+# face converted to NURBS
+nurbsconvert r s
+checkshape r
+tclean r
+incmesh r 0.001
+set trinfo_r [trinfo r]
+regexp {([0-9]+) triangles} $trinfo_r str nbtri_r
+
+
+# check deflections
+checktrinfo s -tri -defl 0.00072921907260989653 -tol_abs_defl 1e-6
+checktrinfo r -tri -max_defl 0.001 -tol_abs_defl 1e-6
+
+# compare number of triangles, allow twice more
+set exptri_s [expr 2. * $nbtri_s]
+if { $nbtri_r > $exptri_s } {
+    puts "Error: too many triangles ($nbtri_r, while ~ $exptri_s would be sufficient)"
+}
+
+# extra check: deflection on rough mesh on NURBS
+tclean r
+incmesh r 0.1
+checktrinfo r -max_defl 0.1

@@ -1,0 +1,11 @@
+puts "================"
+puts "OCC26553"
+puts "================"
+puts ""
+#######################################################################
+# Out of range exception in BRepFill_Pipe::FindEdge
+#######################################################################
+
+pload QAcommands
+
+OCC26553 [locate_data_file bug26553_wire.brep]

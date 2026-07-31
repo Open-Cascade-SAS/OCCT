@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename id_turbine-B.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 8 )  Summary  = 7  ( 8 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 49  ( 49 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 49  ( 49 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.003591433268  ( 0.006109048795 )  AvgTol   =  0.0005960057219  (  0.001315874482 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 87  ( 87 )  N2Labels = 0  ( 0 )   TotalLabels = 90  ( 90 )   NameLabels = 5  ( 5 )   ColorLabels = 86  ( 86 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 5 )
+COLORS      : Colors   = DEEPSKYBLUE2 MAGENTA ORANGE ORANGERED RED  ( DEEPSKYBLUE2 MAGENTA ORANGE ORANGERED RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC26496"
+puts "========"
+puts ""
+#######################################
+# Error in use the BRepCheck_Analyzer
+#######################################
+
+restore [locate_data_file OCC26496-infinite_wire.brep] w
+checkshape w

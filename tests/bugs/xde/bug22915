@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC22915"
+puts "================"
+puts ""
+######################################################################################
+# xrash in iges reader TransferRoots()
+######################################################################################
+
+set BugNumber OCC22915
+
+igesread [locate_data_file OCC22915-brakes.igs] result *
+checkshape result
+set info [ tpstat c ]
+
+regexp {Nb Total:([-0-9.+eE]+)[ \t]*for ([-0-9.+eE]+) items} $info full total nb_items
+set word1 [string compare $nb_items "3"]
+set word2 [string compare $total "38"]
+
+if { ${word1} == 0 && ${word2} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 284190 
+
+

@@ -1,0 +1,28 @@
+# This series of example is designed to compare 
+# a very simple Boolean operation with what is
+# possible under Euclid Designer
+
+# face constructed from two points
+# note use of wire
+
+box ba 3 3 0 5 7 4
+
+vertex v1 7 0 2
+vertex v2 8 0 2
+vertex v3 8 6 2
+vertex v4 7 6 2
+
+edge ea v1 v2
+edge eb v2 v3
+edge ec v3 v4
+edge ed v4 v1
+
+wire w ea eb ec ed
+mkplane f w
+
+prism bb f 0 0 1
+
+bcommon result ba bb
+
+checkprops result -s 14
+checkview -display result -2d -s -otherwise { ba bb } -path ${imagedir}/${test_image}.png

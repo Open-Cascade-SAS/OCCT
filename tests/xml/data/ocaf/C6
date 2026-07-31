@@ -1,0 +1,37 @@
+set aTestName "caf100-F1"
+puts ${aTestName}
+
+# Set a driver guid
+set driverGuid "5b35ca00-5b78-11d1-8940-080009dc3333"
+
+# Set a failure
+set failureNb 13
+
+# Set a function attribute
+set aCLabel 0:1:1
+Label D ${aCLabel}
+SetFunction D ${aCLabel} ${driverGuid} ${failureNb}
+
+# Save the document
+set aFile ${WorkDirectory}/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a variable from the label
+set IsDone [catch {GetFunction DD ${aCLabel} driverGuid2 failureNb2} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TFunction_Function attribute from restoring document"
+} else {
+
+    if { ${failureNb2} != ${failureNb} } {
+	puts "Error : Get a value of TFunction_Function attribute from restoring document"
+    }
+
+    if { ${driverGuid2} != ${driverGuid} } {
+	puts "Error : Get a value of TFunction_Function attribute from restoring document"
+    }
+}

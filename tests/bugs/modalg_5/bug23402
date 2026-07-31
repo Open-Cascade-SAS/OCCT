@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC23402"
+puts "============"
+puts ""
+##################################################
+# Issue in BRepAlgoAPI_Common - SOLID and FACE
+##################################################
+
+polyline l 0 0 0 0 5 0 0 5 5 0 3 5 0 3 3 0 2 3 0 2 5 0 0 5 0 0 0
+mkplane sf l
+prism s sf 5 0 0
+polyline w1 -2 2.5 2 7 2.5 2 7 7 2 -2 7 2 -2 2.5 2
+mkplane f1 w1
+bop s f1
+bopcommon c1
+ttranslate c1 0 0 5
+polyline w2 -2 2.5 3 7 2.5 3 7 7 3 -2 7 3 -2 2.5 3
+mkplane f2 w2
+bop s f2
+bopcommon c2
+ttranslate c2 0 0 5
+polyline w3 -2 2.5 4 7 2.5 4 7 7 4 -2 7 4 -2 2.5 4
+mkplane f3 w3
+bop s f3
+bopcommon c3
+ttranslate c3 0 0 5
+
+checkprops c1 -s 12.5
+checkprops c2 -s 12.5
+checkprops c3 -s 10
+
+mu4
+fit
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,35 @@
+
+puts "========"
+puts "OCC755"
+puts "SAM1607"
+puts "(case 1)"
+puts "========"
+puts ""
+####################################################################
+##Result of cut of capteur2 from capteur1 is a solid. It must be a compound, as it consists of 2 bodies.
+####################################################################
+
+restore [locate_data_file OCC755_1.brep] a1 
+checkshape a1
+restore [locate_data_file OCC755_2.brep] a2 
+checkshape a2
+
+bcut result a1 a2
+
+set wt_is [whatis result]
+
+set lth [llength $wt_is]
+
+if {$lth < 5} {
+    puts "Faulty OCC755 (case 1)"
+} else {
+    if {[regexp {COMPOUND} $wt_is] == 1} {
+	puts "OCC755 OK (case 2)"
+    } else {
+	puts "Faulty OCC755 (case 2)"
+    }
+}
+
+checkprops result -s 1.57358e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

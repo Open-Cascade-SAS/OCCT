@@ -1,0 +1,80 @@
+puts "========"
+puts "OCC27739: Visualization, TKV3d - implement individual acceleration data structure for selection of 2D persistent objects"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+# Create view
+set win_width 409
+set win_height 409
+vinit View1 w=$win_width h=$win_height
+vclear
+
+# Display several different presentation types with orthographic camera
+vcamera -ortho
+vtrihedron tri1
+box box3d     100 100 100
+box box2d     100 100 1
+box box2d_pos 100 100 1
+box box2d_loc 100 100 1
+box box_zoom  100 100 100
+
+vdisplay box3d     -dispMode 1 -highMode 0
+vdisplay box2d     -dispMode 1 -highMode 1 -2d center
+vdisplay box2d_pos -dispMode 1 -highMode 1 -2d bottomLeft
+vdisplay box2d_loc -dispMode 1 -highMode 1 -2d center
+vdisplay box_zoom  -dispMode 1 -highMode 0 -trsfPers zoom
+vdisplay box2d
+vsetlocation box2d_loc  100  0   0
+vsetlocation box_zoom  -100 -100 100
+
+vsetmaterial box3d box2d box2d_pos box2d_loc box_zoom PLASTIC
+vsetcolor box3d     GOLD
+vsetcolor box2d     GREEN
+vsetcolor box2d_pos GREEN
+vsetcolor box2d_loc GREEN
+vsetcolor box_zoom  RED
+vfit
+
+# ==========================================
+# Test selection for orthographic projection
+# ==========================================
+
+set test_1 {220 120}; # box2d
+set test_2 {350 150}; # box2d_pos
+set test_3 { 50 350}; # box2d_loc
+
+vmoveto {*}$test_1
+if {[vreadpixel {*}$test_1 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_1.png
+
+vmoveto {*}$test_2
+if {[vreadpixel {*}$test_2 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_2.png
+
+vmoveto {*}$test_3
+if {[vreadpixel {*}$test_3 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_3.png
+
+# =========================================
+# Test selection for perspective projection
+# =========================================
+
+vcamera -persp
+vcamera -distance 1000
+set test_1 {220 120}; # box2d
+set test_2 {350 150}; # box2d_pos
+set test_3 { 50 350}; # box2d_loc
+
+vmoveto {*}$test_1
+if {[vreadpixel {*}$test_1 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_4.png
+
+vmoveto {*}$test_2
+if {[vreadpixel {*}$test_2 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_5.png
+
+vmoveto {*}$test_3
+if {[vreadpixel {*}$test_3 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
+vdump $imagedir/${casename}_6.png

@@ -1,0 +1,46 @@
+puts "============"
+puts "Print OpenGL info"
+puts "============"
+puts ""
+
+set to_dump_screen 0
+pload VISUALIZATION
+vclose ALL 0
+
+puts "=== Create compatible profile ==="
+vgldebug 0
+vcaps -core 0 -maxVersion -1 -1 -softMode 0
+vinit g1/v/info
+vglinfo -complete -lineWidth 80
+vclose ALL 0
+
+puts "=== Create core profile ==="
+vgldebug 0
+vcaps -core 1 -maxVersion -1 -1 -softMode 0
+vinit g1/v/info
+vglinfo -complete -lineWidth 80
+vclose ALL 0
+
+puts "=== Create version-restricted profile ==="
+vgldebug 0
+vcaps -core 0 -maxVersion 2 1 -softMode 0
+vinit g1/v/info
+vglinfo -complete -lineWidth 80
+vclose ALL 0
+
+puts "=== Create software emulated profile ==="
+vgldebug 0
+vcaps -core 0 -maxVersion -1 -1 -softMode 1
+vinit g1/v/info
+vglinfo -complete -lineWidth 80
+vclose ALL 0
+
+puts "=== Create debug profile ==="
+vgldebug 1
+vcaps -core 0 -maxVersion -1 -1 -softMode 0
+vinit g1/v/info
+vglinfo -complete -lineWidth 80
+vclose ALL 0
+
+vgldebug 0
+vcaps -core 0 -maxVersion -1 -1 -softMode 0

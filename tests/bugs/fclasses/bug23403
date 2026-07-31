@@ -1,0 +1,12 @@
+#######################################################################
+# Crash when parsing an expression with lexical error
+#######################################################################
+pload QAcommands
+
+set result [CR23403 \t]
+set ll [llength ${result}]
+
+puts ""
+if { ${ll} != 0 } {
+  puts "Error : parsing is incorrect"
+}

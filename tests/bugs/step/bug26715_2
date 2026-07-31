@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC26715"
+puts "========"
+puts ""
+##########################################################################
+# Problems in reading STEP short names in complex entities
+##########################################################################
+
+stepread [locate_data_file bug26715_003.stp] a *
+tpcompound result
+
+checkprops result -s 23212.2
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 3840
+ EDGE      : 3840
+ WIRE      : 487
+ FACE      : 485
+ SHELL     : 485
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 9138
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

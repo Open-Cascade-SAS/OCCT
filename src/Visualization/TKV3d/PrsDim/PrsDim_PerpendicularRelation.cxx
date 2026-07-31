@@ -1,0 +1,381 @@
+// Created on: 1996-12-05
+// Created by: Jean-Pierre COMBE/Odile Olivier
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <PrsDim_PerpendicularRelation.hxx>
+
+#include <PrsDim.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <DsgPrs_PerpenPresentation.hxx>
+#include <ElCLib.hxx>
+#include <gce_MakeDir.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAPI.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(PrsDim_PerpendicularRelation, PrsDim_Relation)
+
+//=================================================================================================
+
+PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&            aFShape,
+                                                           const TopoDS_Shape&            aSShape,
+                                                           const occ::handle<Geom_Plane>& aPlane)
+
+{
+  myFShape = aFShape;
+  mySShape = aSShape;
+  myPlane  = aPlane;
+}
+
+//=================================================================================================
+
+PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape,
+                                                           const TopoDS_Shape& aSShape)
+
+{
+  myFShape = aFShape;
+  mySShape = aSShape;
+}
+
+//=================================================================================================
+
+void PrsDim_PerpendicularRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                           const occ::handle<Prs3d_Presentation>& aPresentation,
+                                           const int)
+{
+  if (myFShape.ShapeType() == mySShape.ShapeType())
+  {
+    switch (myFShape.ShapeType())
+    {
+      case TopAbs_FACE: {
+        // perpendicular case between two faces
+        ComputeTwoFacesPerpendicular(aPresentation);
+      }
+      break;
+      case TopAbs_EDGE: {
+        // perpendicular case between two edges
+        ComputeTwoEdgesPerpendicular(aPresentation);
+      }
+      break;
+      default:
+        break;
+    }
+  }
+  // Case not handled - Edge/Face
+}
+
+//=================================================================================================
+
+void PrsDim_PerpendicularRelation::ComputeSelection(
+  const occ::handle<SelectMgr_Selection>& aSelection,
+  const int)
+{
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  const gp_Pnt&                          pos = myPosition;
+  occ::handle<Select3D_SensitiveSegment> seg;
+  bool                                   ok1(false), ok2(false);
+
+  if (!myFAttach.IsEqual(pos, Precision::Confusion()))
+  {
+    seg = new Select3D_SensitiveSegment(own, myFAttach, pos);
+    aSelection->Add(seg);
+    ok1 = true;
+  }
+  if (!mySAttach.IsEqual(myPosition, Precision::Confusion()))
+  {
+    seg = new Select3D_SensitiveSegment(own, mySAttach, pos);
+    aSelection->Add(seg);
+    ok2 = true;
+  }
+
+  if (ok1 && ok2)
+  {
+    gp_Vec vec1(gce_MakeDir(pos, myFAttach));
+    gp_Vec vec2(gce_MakeDir(pos, mySAttach));
+    double dist1(pos.Distance(myFAttach));
+    double dist2(pos.Distance(mySAttach));
+    vec1 *= dist1;
+    vec1 *= .2;
+    vec2 *= dist2;
+    vec2 *= .2;
+
+    gp_Pnt pAx11  = pos.Translated(vec1);
+    gp_Pnt pAx22  = pos.Translated(vec2);
+    gp_Pnt p_symb = pAx22.Translated(vec1);
+    seg           = new Select3D_SensitiveSegment(own, pAx11, p_symb);
+    aSelection->Add(seg);
+    seg = new Select3D_SensitiveSegment(own, p_symb, pAx22);
+    aSelection->Add(seg);
+  }
+}
+
+//=================================================================================================
+
+void PrsDim_PerpendicularRelation::ComputeTwoFacesPerpendicular(
+  const occ::handle<Prs3d_Presentation>& /*aPresentation*/)
+{
+}
+
+//=================================================================================================
+
+void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
+  const occ::handle<Prs3d_Presentation>& aPresentation)
+{
+  // 3d lines
+  occ::handle<Geom_Curve> geom1, geom2;
+  gp_Pnt                  pint3d, p1, p2, pAx1, pAx2, ptat11, ptat12, ptat21, ptat22;
+  bool                    isInfinite1, isInfinite2;
+  occ::handle<Geom_Curve> extCurv;
+  if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
+                               TopoDS::Edge(mySShape),
+                               myExtShape,
+                               geom1,
+                               geom2,
+                               ptat11,
+                               ptat12,
+                               ptat21,
+                               ptat22,
+                               extCurv,
+                               isInfinite1,
+                               isInfinite2,
+                               myPlane))
+  {
+    return;
+  }
+
+  bool interOut1(false), interOut2(false);
+
+  occ::handle<Geom_Line> geom_lin1;
+  occ::handle<Geom_Line> geom_lin2;
+  if (geom1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+  {
+    occ::handle<Geom_Ellipse> geom_el(occ::down_cast<Geom_Ellipse>(geom1));
+    // construct lines through focuses
+    gp_Ax1 elAx = geom_el->XAxis();
+    gp_Lin ll(elAx);
+    geom_lin1       = new Geom_Line(ll);
+    double focex    = geom_el->MajorRadius() - geom_el->Focal() / 2.0;
+    gp_Vec transvec = gp_Vec(elAx.Direction()) * focex;
+    ptat11          = geom_el->Focus1().Translated(transvec);
+    ptat12          = geom_el->Focus2().Translated(-transvec);
+    interOut1       = true;
+  }
+  else if (geom1->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    geom_lin1 = occ::down_cast<Geom_Line>(geom1);
+  }
+  else
+  {
+    return;
+  }
+
+  if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+  {
+    occ::handle<Geom_Ellipse> geom_el(occ::down_cast<Geom_Ellipse>(geom2));
+    // construct lines through focuses
+    gp_Ax1 elAx = geom_el->XAxis();
+    gp_Lin ll(elAx);
+    geom_lin2       = new Geom_Line(ll);
+    double focex    = geom_el->MajorRadius() - geom_el->Focal() / 2.0;
+    gp_Vec transvec = gp_Vec(elAx.Direction()) * focex;
+    ptat21          = geom_el->Focus1().Translated(transvec);
+    ptat22          = geom_el->Focus2().Translated(-transvec);
+    interOut2       = true;
+  }
+  else if (geom2->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    geom_lin2 = occ::down_cast<Geom_Line>(geom2);
+  }
+  else
+  {
+    return;
+  }
+
+  // current face
+  BRepBuilderAPI_MakeFace makeface(myPlane->Pln());
+  BRepAdaptor_Surface     adp(makeface.Face());
+
+  // 2d lines => projection of 3d on current plane
+  occ::handle<Geom2d_Curve> aGeom2dCurve = GeomAPI::To2d(geom_lin1, myPlane->Pln());
+  occ::handle<Geom2d_Line>  lin1_2d      = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
+  aGeom2dCurve                           = GeomAPI::To2d(geom_lin2, myPlane->Pln());
+  occ::handle<Geom2d_Line> lin2_2d       = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
+  IntAna2d_AnaIntersection inter(lin1_2d->Lin2d(), lin2_2d->Lin2d());
+  if (!inter.IsDone())
+  {
+    return;
+  }
+  if (!inter.NbPoints())
+  {
+    return;
+  }
+
+  gp_Pnt2d pint(inter.Point(1).Value());
+  pint3d = adp.Value(pint.X(), pint.Y());
+
+  myPosition = pint3d;
+  // search for attachment points
+  double par1, par2, curpar, pmin, pmax; //,dist,sign;
+  double length(0.);
+
+  if (isInfinite1 && isInfinite2)
+  {
+    double curpar1 = ElCLib::Parameter(geom_lin1->Lin(), pint3d);
+    double curpar2 = ElCLib::Parameter(geom_lin2->Lin(), pint3d);
+    par1 = par2 = 50.;
+    p1 = p2   = pint3d;
+    myFAttach = ElCLib::Value(curpar1 + par1, geom_lin1->Lin());
+    mySAttach = ElCLib::Value(curpar2 + par2, geom_lin2->Lin());
+  }
+  else
+  {
+    bool lengthComputed(false);
+    if (!isInfinite1)
+    {
+      curpar = ElCLib::Parameter(geom_lin1->Lin(), pint3d);
+      par1   = ElCLib::Parameter(geom_lin1->Lin(), ptat11);
+      par2   = ElCLib::Parameter(geom_lin1->Lin(), ptat12);
+      pmin   = std::min(par1, par2);
+      pmax   = std::max(par1, par2);
+
+      if (myPosition.SquareDistance(ptat11) > myPosition.SquareDistance(ptat12))
+      {
+        p1 = ptat11;
+      }
+      else
+      {
+        p1 = ptat12;
+      }
+      if ((curpar < pmin) || (curpar > pmax))
+      {
+        interOut1 = true;
+      }
+      if (!isInfinite2)
+      {
+        length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+      }
+      else
+      {
+        length = 2. * ptat11.Distance(ptat12) / 5.;
+      }
+      lengthComputed = true;
+      gp_Vec vec1(gce_MakeDir(myPosition, p1));
+      vec1.Multiply(length);
+      pAx1      = myPosition.Translated(vec1);
+      myFAttach = pAx1;
+    }
+    if (!isInfinite2)
+    {
+      curpar = ElCLib::Parameter(geom_lin2->Lin(), pint3d);
+      par1   = ElCLib::Parameter(geom_lin2->Lin(), ptat21);
+      par2   = ElCLib::Parameter(geom_lin2->Lin(), ptat22);
+      pmin   = std::min(par1, par2);
+      pmax   = std::max(par1, par2);
+
+      if (myPosition.SquareDistance(ptat21) > myPosition.SquareDistance(ptat22))
+      {
+        p2 = ptat21;
+      }
+      else
+      {
+        p2 = ptat22;
+      }
+      if ((curpar < pmin) || (curpar > pmax))
+      {
+        interOut2 = true;
+      }
+      gp_Vec vec2(gce_MakeDir(myPosition, p2));
+      if (!lengthComputed)
+      {
+        if (!isInfinite1)
+        {
+          length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+        }
+        else
+        {
+          length = 2. * ptat21.Distance(ptat22) / 5.;
+        }
+      }
+      vec2.Multiply(length);
+      pAx2      = myPosition.Translated(vec2);
+      mySAttach = pAx2;
+    }
+    if (isInfinite1)
+    {
+      p1 = myPosition;
+      gp_Vec vec1(geom_lin1->Lin().Direction());
+      vec1.Multiply(length);
+      myFAttach = myPosition.Translated(vec1);
+    }
+    if (isInfinite2)
+    {
+      p2 = myPosition;
+      gp_Vec vec2(geom_lin2->Lin().Direction());
+      vec2.Multiply(length);
+      mySAttach = myPosition.Translated(vec2);
+    }
+  }
+  DsgPrs_PerpenPresentation::Add(aPresentation,
+                                 myDrawer,
+                                 myFAttach,
+                                 mySAttach,
+                                 p1,
+                                 p2,
+                                 myPosition,
+                                 interOut1,
+                                 interOut2);
+
+  if ((myExtShape != 0) && !extCurv.IsNull())
+  {
+    gp_Pnt pf, pl;
+    if (myExtShape == 1)
+    {
+      if (!isInfinite1)
+      {
+        pf = ptat11;
+        pl = ptat12;
+      }
+      aPresentation->SetInfiniteState(isInfinite1);
+      ComputeProjEdgePresentation(aPresentation, TopoDS::Edge(myFShape), geom_lin1, pf, pl);
+    }
+    else
+    {
+      if (!isInfinite2)
+      {
+        pf = ptat21;
+        pl = ptat22;
+      }
+      aPresentation->SetInfiniteState(isInfinite2);
+      ComputeProjEdgePresentation(aPresentation, TopoDS::Edge(mySShape), geom_lin2, pf, pl);
+    }
+  }
+}

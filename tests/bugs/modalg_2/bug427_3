@@ -1,0 +1,27 @@
+
+puts "========================"
+puts " OCC427 "
+puts "(case 3)"
+puts "========================"
+puts ""
+cpulimit 1000
+proc OFFSETSHAPE {distance faces  calcul type} {
+        uplevel #0 explode s f
+        uplevel #0 offsetparameter 1e-7 $calcul $type
+        uplevel #0 offsetload s $distance $faces
+        uplevel #0 offsetperform result
+}
+
+#Shell no rough and rounded mode
+
+set calcul "c"
+set type "i"
+
+pcone s 9 4 15 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE 1 {s_2 s_3} $calcul $type
+
+checkprops result -s 885.688 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

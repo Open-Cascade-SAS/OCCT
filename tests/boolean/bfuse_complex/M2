@@ -1,0 +1,12 @@
+# Original bug : cts21240
+# Date : 16July98
+
+restore [locate_data_file cts21240a.rle] a 
+restore [locate_data_file cts21240b.rle] skface
+
+prism b skface 0 0 1 10
+
+bfuse result a b
+
+checkprops result -s 19213.9
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

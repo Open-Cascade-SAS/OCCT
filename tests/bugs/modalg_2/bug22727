@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC22727"
+puts "================"
+puts ""
+#######################################################################################
+# Fillet not produces a result
+######################################################################################
+
+set BugNumber OCC22727
+
+restore [locate_data_file OCC22727-toFillet.brep] t
+
+tscale t 0.0507219 -0.0399294 -0.00324254 1000
+explode t e
+blend result t 2. t_3
+
+checkprops result -s 3286.89 -eps 0.1
+checkshape result
+
+checknbshapes result -vertex 12 -edge 14 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 1 -shape 34
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

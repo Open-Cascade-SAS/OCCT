@@ -1,0 +1,23 @@
+puts "========"
+puts "0032129: Visualization, TKOpenGl - shadowmap is broken for ZLayer having non-zero origin"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b  0 0 1 100 200 300
+box bb -500 -500 0 1000 1000 0 -preview
+vinit View1
+vrenderparams -shadingModel PHONG
+vdisplay -dispMode 1 b bb
+vaspects bb -material STONE
+vfit
+vlight -change 0 -castShadows 1 -head 0 -dir 1 1 -1
+vdump $::imagedir/${::casename}_1.png
+vzlayer DEFAULT -origin 200 0 0
+vdump $::imagedir/${::casename}_2.png
+
+vlocation b  -setLocation 1000000000 0 0
+vlocation bb -setLocation 1000000000 0 0
+vfit
+vdump $::imagedir/${::casename}_3.png
+vzlayer DEFAULT   -origin 1000000000 0 0
+vdump $::imagedir/${::casename}_4.png

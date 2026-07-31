@@ -1,0 +1,12 @@
+box bb 100 100 100
+plane pl1 98.946735014, 46.491265177, 17.092869659
+plane pl2 -1.053264986, 46.491265177, 17.092869659
+psphere s1 pl1 7.5
+psphere s2 pl2 7.5
+
+bop bb s1
+bopcommon result
+
+checkprops result -s 576.293
+checkview -display result -2d -otherwise { bb s1 } -s -path ${imagedir}/${test_image}.png
+

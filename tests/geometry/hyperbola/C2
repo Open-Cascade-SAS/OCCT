@@ -1,0 +1,6 @@
+hyperbola result 70 0 0  0 0 1   1 0 0   20 10
+repeat 7 {rotate result 0 0 0 0 0 1 45;
+    copy result .;
+}
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{49.4974746830583 -49.4974746830583 0} {-0 0 1} {0.707106781186547 -0.707106781186548 0} {0.707106781186548 0.707106781186547 0} {20 10}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

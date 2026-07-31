@@ -1,0 +1,11 @@
+puts "=================================================="
+puts "Check count of segments in approximating polyline."
+puts "=================================================="
+puts ""
+
+restore [locate_data_file bug24474_2.draw] c
+discrCurve p c nbPnts 3 uniform 1
+regexp {Poles\, +([0-9]+)} [dump p] full n
+if {$n != 3} {
+  puts "Error: invalid discretization."
+}

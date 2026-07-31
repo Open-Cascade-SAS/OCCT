@@ -1,0 +1,16 @@
+# Original bug : cts 19304
+# Date : 23mar98
+
+restore [locate_data_file cts19304a.rle] a
+restore [locate_data_file cts19304b.rle] b
+restore [locate_data_file cts19304c.rle] c
+
+mkplane af a 
+mkplane bf b
+mkplane cf c
+
+bfuse resafbf af bf
+bfuse result resafbf cf
+
+checkprops result -s 12677.1
+checkview -display result -2d -otherwise { resafbf cf } -s -path ${imagedir}/${test_image}.png

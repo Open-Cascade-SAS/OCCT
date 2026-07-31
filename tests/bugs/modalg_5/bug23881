@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC23881"
+puts "============"
+puts ""
+############################################################################
+# BRepAlgoAPI_Section HasAnsectorFaceOn1 returned False on the boundary
+############################################################################
+
+polyline w1 0 0 0 1 0 0 1 1 0 0 1 0 0 0 0 
+polyline w2 0 1 0 1 1 0 1 2 0 0 2 0 0 1 0
+mkplane f1 w1
+mkplane f2 w2
+sewing s1 0.0001 f1 f2
+
+plane pl 0 1 0 0 1 0
+mkface f3 pl
+
+bsection r s1 f3
+
+# check that section edge (r) is the edge from original shape (s1)
+compound r s1 c
+if { ! [regexp {EDGE\s*:\s*([0-9]+)} [nbshapes s1] str nbedges_s1] ||
+     ! [regexp {EDGE\s*:\s*([0-9]+)} [nbshapes c ] str nbedges_c] } {
+    error "Could not get number of edges from resulting shapes"
+}
+ 
+if { $nbedges_s1 != $nbedges_c } {
+    puts "Error: section does not share common edge with original shape"
+}
+
+renamevar r result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

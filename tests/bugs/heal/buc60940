@@ -1,0 +1,10 @@
+puts "========================"                                                                                      
+puts "BUC60940"                                                                                                      
+puts "========================"                                                                                      
+
+restore [locate_data_file buc60940.rle] a 
+
+fixshape result a 1e-7 1
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

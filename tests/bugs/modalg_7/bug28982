@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC28982"
+puts "========"
+puts ""
+########################################
+# 2D offset creates faulty result from wire
+########################################
+
+restore [locate_data_file bug28982_ellipse.brep] e
+mkoffset result e 1 1
+
+checkshape result_1
+if {![regexp "This shape seems to be OK" [bopcheck result_1]]} {
+  puts "Error: The resulting wire is self-interfered"
+}
+checkprops result_1 -l 305.299
+
+checkview -display result_1 -2d -path ${imagedir}/${test_image}.png

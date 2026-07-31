@@ -1,0 +1,43 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDF_TagSource
+#
+# Testing command:   NewChild
+#
+
+puts "caf005-A1"
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+set aName1 Label1
+Label D ${aLabel1}
+SetName D ${aLabel1} ${aName1}
+
+set aName11 Label11
+set aChild1 [NewChild D ${aLabel1}]
+SetName D ${aChild1} ${aName11}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetName1 [GetName D ${aChild1}]
+
+if { ${aName11}!=${aGetName1} } {
+	puts "aName11=${aName11} aGetName1=${aGetName1}"
+	puts "Add TDF_TagSource attribute: Error"
+	return
+}
+puts "Add TDF_TagSource attribute: OK"

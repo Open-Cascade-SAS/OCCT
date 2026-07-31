@@ -1,0 +1,14 @@
+puts "=============================="
+puts "0032668: Documentation - add tutorial for creating a custom AIS Interactive Object"
+puts "=============================="
+
+pload MODELING VISUALIZATION QAcommands
+vclear
+vinit View1
+
+QATutorialAisObject p
+vfit
+vmoveto 300 300
+vdump $imagedir/${casename}.png
+
+puts "TEST COMPLETED" 

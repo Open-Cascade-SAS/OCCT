@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC26789"
+puts "========"
+puts ""
+#################################################
+# Fuse of several solids fails
+#################################################
+
+restore [locate_data_file bug26789_All-Spikes.brep] a
+explode a
+# fusing all solids one by one
+bfuse result a_1 a_2
+bfuse result result a_3
+bfuse result result a_4
+bfuse result result a_5
+bfuse result result a_6
+bfuse result result a_7
+bfuse result result a_8
+bfuse result result a_9
+
+checkshape result
+checknbshapes result -solid 1 -shell 2
+checkprops result -s 3583.27 -v 11455.2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

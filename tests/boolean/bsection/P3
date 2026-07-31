@@ -1,0 +1,10 @@
+restore [locate_data_file intcq003.brep] m
+explode m
+# m_1 : Cq
+# m_2 -> m_5 : Cones
+compound  m_2 m_3 m_4 m_5 c1
+bsection result m_1 c1
+
+checkprops result -l 214.703
+checksection result
+checkview -display result -2d -otherwise { m_1 c1 } -l -path ${imagedir}/${test_image}.png

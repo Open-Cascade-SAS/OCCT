@@ -1,0 +1,45 @@
+puts "TODO OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC23748 ALL: Faulty OCC745"
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+##################################################
+# Exception thrown: Standard_ConstructionError: Offset wire is not closed.
+##################################################
+
+restore [locate_data_file OCC745_nb3.brep] w 
+checkshape w
+
+if { [catch { mkoffset result w 1 10 } status] } {
+    puts "Faulty OCC745"
+} else {
+    renamevar result_1 result
+    set nb_info [nbshapes result]
+    regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
+    puts [format "Result shape result contains %s vertexes" $ve]
+    if { $ve == 0 } {
+        puts [format "Faulty : Result shape is NULL shape"]
+    } else {
+        regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full wi
+        if {$wi > 1 } {
+            set ll [explode result w]
+            set num [llength $ll]
+            puts [format "Faulty : Result shape result is COMPOUND and contains %s wires" $num]
+            foreach {k} $ll {
+                checkshape $k
+                regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection $k] full cs
+                if { $cs != 0 } {
+                    puts [format "Faulty : Result shape is UNclosed wire !!! " $k]
+                } else {
+                    puts [format "OK: Result shape is CLOSED wire !!! "]
+                }
+            }
+        }
+    }
+    checkprops result -l 0 
+checkshape result 
+checksection result
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

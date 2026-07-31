@@ -1,0 +1,38 @@
+puts "0028404: DRAW is slow"
+
+# Test performance of code generating deep nested compound 
+# involving simple shape (box) around 93 K times
+
+pload MODELING
+
+# replicate shape nb times, adding rotation and translation to each copy
+# (except first) 
+proc replicate {result shape nb cx cy cz rx ry rz angle tx ty tz} {
+  upvar $result res
+  upvar $shape s
+
+  copy s a0
+  set ll a0
+  for {set i 1} {$i < $nb} {incr i} {
+    copy "a[expr $i - 1]" a$i
+    trotate a$i $cx $cy $cz $rx $ry $rz $angle
+    ttranslate a$i $tx $ty $tz
+    lappend ll a$i
+  }
+  eval compound $ll res
+  return $result
+}
+
+# switch off autodisplay of shapes
+autodisplay 0
+
+chrono s restart
+box b 10 10 10 
+replicate r1 b  12    0    0 0  0  0 1 30   15  20  3
+replicate r2 r1 36   50  -50 0  1  1 0 10    0   0  0 
+replicate r3 r2 18  250  250 0  1 -1 0 20  100 100 20
+replicate r4 r3 12 -300 -300 0  0  0 1 30  300 300  0
+chrono s stop counter "huge compound generation CPU"
+
+# return autodisplay
+autodisplay 1

@@ -1,0 +1,18 @@
+puts "============"
+puts "0029847: Visualization, Image_Diff - Tolerance is not effective for 24/32bit image formats"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vclear
+vinit View1
+vbackground -color GRAY50
+vdump $imagedir/${casename}_127.png
+vbackground -color GRAY51
+vdump $imagedir/${casename}_130.png
+set aNbDiff0  [diffimage $imagedir/${casename}_127.png $imagedir/${casename}_130.png $imagedir/${casename}_0.png  -toleranceOfColor 0]
+set aNbDiff1  [diffimage $imagedir/${casename}_127.png $imagedir/${casename}_130.png $imagedir/${casename}_1.png  -toleranceOfColor 0.1]
+set aNbDiff01 [diffimage $imagedir/${casename}_127.png $imagedir/${casename}_130.png $imagedir/${casename}_01.png -toleranceOfColor 0.01]
+if { $aNbDiff0  != 167281 } { puts "Error: difference with tolerance 0.0  is incorrect" }
+if { $aNbDiff1  != 0      } { puts "Error: difference with tolerance 0.1  is incorrect" }
+if { $aNbDiff01 != 167281 } { puts "Error: difference with tolerance 0.01 is incorrect" }

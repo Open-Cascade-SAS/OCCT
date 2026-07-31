@@ -1,0 +1,24 @@
+
+puts "================"
+puts "OCC22757"
+puts "================"
+puts ""
+#######################################################################################
+# Exception in ShapeHealing
+######################################################################################
+
+set BugNumber OCC22757
+
+catch {pload XDE}
+
+set status 0
+restore [locate_data_file BUC60887.brep] res
+set TestVar [ catch {fixshape result res 0.01} ]
+
+if { ${TestVar} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,32 @@
+#INTERFACE STEP
+puts "============"
+puts "OCC6289"
+puts "============"
+puts ""
+######################################################
+# Internal error (code 101) in Section computation
+######################################################
+
+catch { pload XDE }
+
+set BugNumber OCC6289
+
+set filepath [locate_data_file OCC6289.stp]
+if { [catch { stepread $filepath a * } catch_result] } {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    tpcompound comp
+
+    plane pl 0 0 28 0 0 1
+    mkface f pl
+
+    if { [catch { bsection result comp f } catch_result] } {
+	puts "Faulty ${BugNumber}"
+    }
+}
+
+checkprops result -l 453.679 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

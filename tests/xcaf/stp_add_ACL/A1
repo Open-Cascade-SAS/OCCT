@@ -1,0 +1,8 @@
+set TypeOfFile "stp"
+
+set AddToDocument "ASSEMBLY_C_L"
+
+set CompareDocumentsMode "ALL"
+
+
+

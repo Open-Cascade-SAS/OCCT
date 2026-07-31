@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC25782"
+puts "========"
+puts ""
+######################################################
+# The result of intersection between two cylinders is incorrect
+######################################################
+
+set GoodNbCurv 2
+
+cylinder s1 0 0 0 12 35 47 5
+cylinder s2 3 2 8 12 35 47 4
+
+set bug_info [intersect res s1 s2]
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  
+  copy res res_1
+}
+
+if {[llength ${bug_info}] != $GoodNbCurv} {
+  puts "Error: The result of intersection between two cylinders is incorrect"
+}
+
+set Tolerance 1.e-7
+set D_good 0.
+set Limit_Tol 1.0e-7
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    if { [regexp {\*\*\nLine} [dump res_$ic]] } {
+      #puts "OK : Correct intersection"
+    } else {
+      puts "Error : Bad intersection"
+    }
+  
+    xdistcs res_$ic s1 0 100 10 1e-7
+    xdistcs res_$ic s2 0 100 10 1e-7
+    
+    incr ic
+  }
+}

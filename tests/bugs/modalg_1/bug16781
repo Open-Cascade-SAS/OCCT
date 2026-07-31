@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC16781"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of Cut operation.
+#######################################################################
+
+restore [locate_data_file OCC16781-wing_solid.brep] s1
+restore [locate_data_file OCC16781-extr.brep] s2
+
+bop s1 s2
+bopcut result
+
+checkprops result -s 3.92094e+07 
+checkshape result
+checknbshapes result -vertex 14 -edge 21 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 56
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r65b-pe.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 4 )  Summary  = 4  ( 4 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 676  ( 676 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 676  ( 676 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002842773779  (  0.01045202874 )  AvgTol   =  9.202624825e-005  (  0.001200445623 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 680  ( 680 )  N2Labels = 0  ( 0 )   TotalLabels = 685  ( 685 )   NameLabels = 9  ( 9 )   ColorLabels = 0  ( 0 )   LayerLabels = 676  ( 676 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = LAGERNIET LEITBLECH_OBEN SCHLAUCHFASSUNG_OBEN SEILROLLE_1  ( LAGERNIET LEITBLECH_OBEN SCHLAUCHFASSUNG_OBEN SEILROLLE_1 )
+
+}

@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC60728"
+puts "========================"
+puts ""
+####################################################
+## Infinite loop in section. Section between the two attached faces never finish.
+####################################################
+
+restore [locate_data_file buc60728a.brep] s1 
+restore [locate_data_file buc60728b.brep] s2
+build3d s1
+checkshape s1
+checkshape s2
+
+bsection result s1 s2
+
+#checksection res
+#checkshape res
+
+checkprops result -l 238.032 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

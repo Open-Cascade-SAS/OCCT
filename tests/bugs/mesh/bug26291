@@ -1,0 +1,9 @@
+puts "========"
+puts "OCC26291: BRepMesh produces mesh with gap on the attached shape"
+puts "========"
+puts ""
+
+restore [locate_data_file bug26291_mesh_gap.brep] a
+incmesh a 1
+
+tricheck a

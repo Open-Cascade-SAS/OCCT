@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+puts "================"
+puts "OCC23"
+puts "================"
+puts ""
+##########################################################################################################
+## Checkshape gives result that there is a selfintersection on wire, but there are no intersection on it.
+##########################################################################################################
+
+restore [locate_data_file OCC23.brep] sh 
+
+checkshape sh
+
+explode sh f
+explode sh_2 w
+
+renamevar sh_2_1 result
+
+checkprops result -l 0 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

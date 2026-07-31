@@ -1,0 +1,19 @@
+
+puts "0029731: Modeling Algorithms - calculation of surface/volume of tessellated geometry"
+puts ""
+
+#############################################################
+# Surface and volume calculation on the triangulation built on a sphere
+#############################################################
+
+psphere sp1 10
+checkprops sp1 -v 4188.79
+checkprops sp1 -s 1256.64
+checkprops sp1 -l 62.8319
+
+incmesh sp1 0.01
+tclean -geom sp1
+
+checkprops sp1 -v 4183.13
+checkprops sp1 -s 1255.75
+checkprops sp1 -l 62.8215

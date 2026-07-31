@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC24867: Visualization - polygon offsets look broken"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file Top.brep] b
+vinit View1
+vdisplay b
+vfit
+vsetdispmode 1
+vaspects -setwidth 5
+vmoveto 200 200
+if { "[vreadpixel 264 288 rgb name]" != "CYAN" } {
+  puts "Error : Highlighting of dimension with flipping in local context failed."
+}
+
+if { "[vreadpixel 251 271 rgb name]" != "CYAN" } {
+  puts "Error : Highlighting of dimension with flipping in local context failed."
+}
+
+vdump $::imagedir/${::casename}_highlighted.png
+
+vselect 200 200
+vdump $::imagedir/${::casename}_selected.png

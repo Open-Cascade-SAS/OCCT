@@ -1,0 +1,53 @@
+puts "============"
+puts "OCC20904"
+puts "============"
+puts ""
+#######################################################################
+# BRepBuilderAPI_Sewing produces a shape with big tolerance
+#######################################################################
+
+set BugNumber OCC20904
+
+restore [locate_data_file bug20904_face_bas.brep] a 
+
+set tolerance_in 1.e-6
+set tolerance_out ${tolerance_in}
+sewing result ${tolerance_in} a
+
+set tolerance_list [maxtolerance result]
+
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance_list full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance_list full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance_list full MaxVertexTolerance
+
+set status 0
+
+if { ${MaxFaceTolerance} > ${tolerance_out} } {
+  set status 1
+  puts "Max Face Tolerance is bad"
+}
+
+if { ${MaxEdgeTolerance} > ${tolerance_out} } {
+  set status 1
+  puts "Max Edge Tolerance is bad"
+}
+
+if { ${MaxVertexTolerance} > ${tolerance_out} } {
+  set status 1
+  puts "Max Vertex Tolerance is bad"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+checkmaxtol result -ref 9.9999999999999995e-008
+checknbshapes result -shell 0
+checkfreebounds result 2
+
+checkprops result -s 30078.9
+checkview -display result -2d -path ${imagedir}/${test_image}.png

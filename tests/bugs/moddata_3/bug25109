@@ -1,0 +1,12 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1 "
+puts "============"
+puts "CR25109"
+puts "============"
+puts ""
+##########################################################################################################
+# Check PolygonOnTriangulation contained in edges
+##########################################################################################################
+
+restore [locate_data_file bug25109_e1.brep] b
+
+checkshape b

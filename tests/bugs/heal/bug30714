@@ -1,0 +1,22 @@
+puts "================================================="
+puts "OCC30714: UnifySameDomain corrupts original shape"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug30714.brep] s
+explode s
+bcut r s_1 s_2
+unifysamedom result r
+
+checkshape result
+checkshape s_1
+
+checknbshapes result -solid 1 -shell 1 -face 10 -wire 12 -edge 24 -vertex 16
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.000008e-07} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1.20292

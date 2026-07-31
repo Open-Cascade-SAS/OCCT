@@ -1,0 +1,20 @@
+
+puts "========================"
+puts "BUC60801"
+puts "========================"
+
+box b -10 -10 -10 30 40 40 
+box a1 -20 0 -20 20 20 100
+box a2 0 20 -20 50 20 100
+box c -20 -20 20 100 100 100
+bcut r1 b a1
+bcut r2 r1 a2
+bcut r3 r2 c
+checkshape r3
+
+renamevar r3 result
+
+checkprops result -s 6400 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

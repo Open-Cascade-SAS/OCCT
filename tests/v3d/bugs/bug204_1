@@ -1,0 +1,14 @@
+puts "TODO OCC12345 ALL: Error : 3 boxes missing in the viewer!"
+puts "TODO OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
+puts "========"
+puts "OCC204"
+puts "========"
+
+pload VISUALIZATION QAcommands
+vinit View1
+OCC204 0
+vfit
+checkcolor 150 200 0.8 0.8 0.8
+if { ${stat} != 1 } { puts "Error : 3 boxes missing in the viewer!" }
+
+vdump $imagedir/${casename}.png

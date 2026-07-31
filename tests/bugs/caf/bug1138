@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC1138"
+puts "================"
+puts ""
+############################################################
+# OSD_SIGSEGV is thrown during call LDOMParser.parse method
+############################################################
+
+pload QAcommands
+
+set BugNumber OCC1138
+
+if [catch { OCC983 ${imagedir} }] {
+  puts "Faulty ${BugNumber} : here is reading problem when the filename is a directory name."
+} else {
+  puts "Reading ${BugNumber} OK : here is not reading problem when the filename is a directory name."
+}
+

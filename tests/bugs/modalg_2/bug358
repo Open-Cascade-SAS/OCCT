@@ -1,0 +1,33 @@
+puts "========================"
+puts " BUC60977 "
+puts " OCC358 "
+puts "========================"
+#####
+puts "The helical pipe is not shaded in AISViewer"
+#####
+
+if { [regexp {Windows} [dversion]] } {
+  set tri_n 19922
+  set nod_n 10395
+} else {
+  set tri_n 19882
+  set nod_n 10375
+}
+  
+restore [locate_data_file OCC358a.brep] f 
+checkshape f
+
+restore [locate_data_file OCC358b.brep] w
+checkshape w
+
+pipe result w f
+
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checktrinfo result -tri $tri_n -nod $nod_n
+checkprops result -s 24861.2 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

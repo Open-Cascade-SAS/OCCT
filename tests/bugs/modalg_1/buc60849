@@ -1,0 +1,23 @@
+puts "============"
+puts "BUC60849"
+puts "============"
+puts ""
+
+restore [locate_data_file BUC60849.brep] result
+checkshape result
+
+bounding result -save xmin ymin zmin xmax ymax zmax -dump
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+if { [dval zmin] > 100.000001 } {
+    puts "Faulty BUC60849 : Bounding box of spherical surface is created wroughly."
+} else {
+    puts "BUC60849 OK :Bounding box of spherical surface is created properly."
+}
+
+checkprops result -s 125663 
+checkshape result
+

@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+puts ""
+######################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+######################################################
+
+set BugNumber OCC5805
+
+puts "demonstration of pipes and hollowing for GTISoft"
+puts ""
+puts "Scenario 2A: Hollowed elliptical cylinder - ThroughSection and MakeThickSolid"
+
+ellipse e 10 60 0 1 0 0 5 3
+mkedge ee e
+wire w1 ee
+copy w1 w2
+ttranslate w2 -20 0 0
+
+if { [catch { thrusections rthru2 1 1 w1 w2 } catch_result] } {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+}
+
+explode rthru2 f
+
+if { [catch { offsetshape result rthru2 -0.5 rthru2_2 rthru2_3 } catch_result] } {
+   puts "Faulty ${BugNumber} : offsetshape is wrong"
+}
+
+checkmaxtol result -min_tol 1.
+
+checkprops result -s 1006.59
+checkshape result
+
+checknbshapes result -t -wire 6 -face 4 -shell 1 -solid 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

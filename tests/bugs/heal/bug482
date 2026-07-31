@@ -1,0 +1,16 @@
+puts "========================"
+puts " OCC482 "
+puts "========================"
+puts ""
+#################################################
+## Regression in ShapeFix_Wireframe (caused by fix on OCC394)
+#################################################
+
+restore [locate_data_file OCC482.brep] a 
+
+fixsmall result a 0.05
+
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

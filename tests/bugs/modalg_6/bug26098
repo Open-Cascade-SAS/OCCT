@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC26098"
+puts "============"
+puts ""
+###############################
+## The result of General Fuse operation is self-interfered shape
+###############################
+
+restore [locate_data_file bug26098_c.brep ] c
+
+explode c
+
+bclearobjects
+bcleartools
+baddobjects c_1
+baddtools c_2 c_3 c_4 c_5
+
+bfillds
+bbuild result
+
+set info [bopcheck result]
+
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The result of General Fuse operation is self-interfered shape"
+}
+
+checkprops result -s 173.444 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 230
+ EDGE      : 400
+ WIRE      : 196
+ FACE      : 185
+ SHELL     : 20
+ SOLID     : 20
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1052
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by General Fuse operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

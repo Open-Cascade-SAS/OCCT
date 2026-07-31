@@ -1,0 +1,24 @@
+
+box b 10 10 10
+box b1 20 20 20 30 30 30
+explode b
+explode b_1
+explode b1
+explode b1_1
+
+NewDocument D
+XAddShape D b
+XAddShape D b1
+XAddDimension D b_1_1 b1_1_1
+#0:1:4:1
+XSetDimensionType D  0:1:4:1 2
+XSetDimensionValue D  0:1:4:1 6
+XSetDimensionPlusMinusTol D  0:1:4:1 -0.001 0.002
+vertex v1 10 10 10
+vertex v2 20 20 20 
+XSetDimensionPoints D  0:1:4:1 v1 v2
+
+set c_value "6"
+set c_type "Location_LinearDistance"
+set c_pnts "10;10;10 20;20;20"
+set c_plusminus "lower -0.001 upper 0.002"

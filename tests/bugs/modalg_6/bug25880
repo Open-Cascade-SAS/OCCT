@@ -1,0 +1,65 @@
+puts "============"
+puts "OCC25880"
+puts "============"
+puts ""
+###############################
+## fuzzy booleans with multiple tools
+###############################
+
+bfuzzyvalue 0.00001
+box Box018 13.550000190735 50.200000762939 3.299999952316
+ttranslate Box018 -19.1 -0.1 2.35
+#Object Label: Box
+
+psphere Sphere002 1.600000023842 0 90 180
+ttranslate Sphere002 -15 50.1 5.5
+#Object Label: LeftSph
+
+#bfuse to-Fusion-001-t Box018 Sphere002
+pcylinder Cylinder006 1.600000023842 3.200000047684 180
+ttranslate Cylinder006 -15 50.1 2.35
+
+#Object Label: LeftHalfCyl
+#bfuse to-Fusion-002-t to-Fusion-001-t Cylinder006
+psphere Sphere001 1.600000023842 0 90 180
+trotate Sphere001 0 0 0 1 0 0 90
+ttranslate Sphere001 -15 -0.1 5.5
+
+#Object Label: RightSph
+#bfuse to-Fusion-003-t to-Fusion-002-t Sphere001
+pcylinder Cylinder005 1.600000023842 3.200000047684 180
+trotate Cylinder005 0 0 0 0 0 1 180
+ttranslate Cylinder005 -15 -0.1 2.35
+
+#Object Label: RightHalfCyl
+#bfuse to-Fusion-004-t to-Fusion-003-t Cylinder005
+pcylinder Cylinder004 1.600000023842 50.200000762939 180
+trotate Cylinder004 0 0 0 0 0.7071067811865475 0.7071067811865475 180
+ttranslate Cylinder004 -15.000003814697 -0.100001335144 5.500000953674
+
+#Object Label: TopHalfCyl
+#bfuse Fusion to-Fusion-004-t Cylinder004
+bclearobjects
+bcleartools
+baddobjects Box018
+baddtools Sphere002 Cylinder006 Sphere001 Cylinder005 Cylinder004
+bfillds
+bbop result 1
+
+checkprops result -s 1893.17 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 32
+ EDGE : 51
+ WIRE : 20
+ FACE : 20
+ SHELL : 1
+ SOLID : 1
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 126
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "fuzzy booleans with multiple tools"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

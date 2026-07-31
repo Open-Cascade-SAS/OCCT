@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC20823"
+puts "============"
+puts ""
+#######################################################################
+# BRepFilletAPI_MakeFillet2d fails to build a chamfer
+#######################################################################
+
+set BugNumber OCC20823
+
+restore [locate_data_file OCC20823.brep] a 
+mkplane f a
+explode f e
+
+if [catch { chfi2d result f f_1 f_2 CDD 10. 10. } ] {
+  puts "Faulty ${BugNumber} : chfi2d is wrong"
+} else {
+checkprops result -l 267.795 
+checksection result
+
+checknbshapes result -vertex 4 -edge 3 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 9
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

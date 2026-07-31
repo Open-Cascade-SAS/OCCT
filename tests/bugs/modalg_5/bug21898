@@ -1,0 +1,42 @@
+puts "========="
+puts "OCC21898"
+puts "========="
+puts ""
+###########################################################################
+# Empty result of intersection between a surface of revolution and a line
+###########################################################################
+
+restore [locate_data_file bug21898_intersect_1.brep] a
+explode a
+mksurface s a_1
+mkcurve l a_2
+mkcurve l1 a_3
+
+intersect r l s
+regexp {Point +: +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [dump r] full pnt1_x pnt1_y pnt1_z
+if { $pnt1_x == 0 || $pnt1_y == 0 || $pnt1_z == 0 } {
+  puts "Error: there is not intersection between surface and first curve"
+}
+
+intersect r1 l1 s
+regexp {Point +: +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [dump r1] full pnt2_x pnt2_y pnt2_z
+if { $pnt2_x == 0 || $pnt2_y == 0 || $pnt2_z == 0 } {
+  puts "Error: there is not intersection between surface and second curve"
+}
+
+vertex v r
+distmini d v a_1
+regexp {([-0-9.+eE]+)} [dump d_val] full dist1
+
+vertex v1 r1
+distmini d v1 a_1
+regexp {([-0-9.+eE]+)} [dump d_val] full dist2
+
+if { $dist1 > 1.e-7 || $dist2 > 1.e-7} {
+  puts "Error: Wrong 3d point between surface and curve"
+} else {
+  puts "OK: Correct 3d point between surface and curve"
+}
+
+axo
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

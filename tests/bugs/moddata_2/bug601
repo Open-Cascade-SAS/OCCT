@@ -1,0 +1,23 @@
+puts "========================"
+puts " OCC601 "
+puts "SAM1542"
+puts "========================"
+puts ""
+#############################################
+## No possibility to make a fillet 13 at the inner edge of the shape
+#############################################
+
+restore [locate_data_file OCC601.brep] a
+checkshape a
+
+explode a e
+
+if [catch {blend result a 13 a_41 } res] {
+    puts "Faulty OCC601: function BLEND works wrongly"
+} else {
+    puts "OCC601 OK: function BLEND works good"
+    checkshape result
+    
+    checkprops result -s 32486.0
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

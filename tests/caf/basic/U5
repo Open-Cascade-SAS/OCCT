@@ -1,0 +1,74 @@
+#INTERFACE CAF
+# Basic attributes
+# TDataStd_BooleanList
+#
+# Testing attribute: User defined (additional GUID) TDataStd_BooleanList
+#
+# Testing command:   SetBooleanList
+# Testing command:   GetBooleanList
+#
+
+puts "caf001-U5"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aSetAttr11 0
+set aSetAttr12 1
+set aLabel 0:2
+
+set aGuid1 "12e94551-6dbc-11d4-b9c8-0060b0ee281b"
+
+SetBooleanList D ${aLabel} ${aSetAttr11} ${aSetAttr12}
+SetBooleanList D ${aLabel} -g ${aGuid1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage1 "Add TDataStd_BooleanList attribute: Error"
+set aGetAttr1 [GetBooleanList D ${aLabel}]
+set aLen1 [llength ${aGetAttr1}]
+set aGetAttr2 [GetBooleanList D ${aLabel} ${aGuid1}]
+set aLen2 [llength ${aGetAttr2}]
+
+if { ${aLen1} != ${aLen2}} {
+   set IsGood 0
+   puts "aLen1=${aLen1}"
+   puts "aLen2=${aLen2}"
+   puts ${aMessage1}
+}
+
+set aGetAttr11 [lindex ${aGetAttr1} 0]
+set aGetAttr21 [lindex ${aGetAttr2} 0]
+if { ${aGetAttr11} != ${aGetAttr21} } {
+   set IsGood 0
+   puts "aGetAttr11=${aGetAttr11}"
+   puts "aGetAttr21=${aGetAttr21}"
+   puts ${aMessage1}
+}
+set aGetAttr12 [lindex ${aGetAttr1} 1]
+set aGetAttr22 [lindex ${aGetAttr2} 1]
+if { ${aGetAttr12} != ${aGetAttr22} } {
+   set IsGood 0
+   puts "aGetAttr12=${aGetAttr12}"
+   puts "aGetAttr22=${aGetAttr22}"
+   puts ${aMessage1}
+}
+
+if { ${IsGood} == 0} {
+  puts "Add TDataStd_BooleanList attribute: Error"
+} else {
+  puts "Add TDataStd_BooleanList attribute: OK"
+}

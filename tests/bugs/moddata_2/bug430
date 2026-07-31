@@ -1,0 +1,19 @@
+puts "========================"
+puts " OCC430 "
+puts "========================"
+puts ""
+################################################################
+## Exception when projecting a point on planar surface of linear extrusion oriented along Y axis 
+################################################################
+
+restore [locate_data_file OCC430.rle] result
+
+if [catch {proj result 49.86391363636364 440.7894090909091 127.05 } catch_result] {
+    puts "Faulty OCC430: Projection was made wrongly."
+} else {
+    puts "OK OCC348: function PROJECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

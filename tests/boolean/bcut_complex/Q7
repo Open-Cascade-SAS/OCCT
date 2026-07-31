@@ -1,0 +1,12 @@
+puts "ID260084"
+puts "Cut"
+puts ""
+
+restore [locate_data_file id260084a.rle] a
+restore [locate_data_file id260084b.rle] b
+
+# Cut
+prism tool b 0 0 10
+bcut result a tool
+checkprops result -s 14055.3
+checkview -display result -2d -s -otherwise { a tool } -path ${imagedir}/${test_image}.png

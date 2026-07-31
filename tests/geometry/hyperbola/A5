@@ -1,0 +1,4 @@
+hyperbola result 70 0 1 0 20 10
+2dtranslate result -200 0
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-130 0} {1 0} {1 0} {-0 1} {20 10}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

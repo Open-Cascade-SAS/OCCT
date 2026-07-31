@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC25460"
+puts "========"
+puts ""
+##############################################################################
+# BRepOffsetAPI_ThruSections fails on customer's shape (wing on 11 sections)
+##############################################################################
+
+smallview
+
+restore [locate_data_file turb1.brep] t
+
+explode t
+
+thrusections res 0 0 t_1 t_2 t_3 t_4 t_5 t_6 t_7 t_8 t_9 t_10 t_11
+
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

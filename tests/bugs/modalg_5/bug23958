@@ -1,0 +1,33 @@
+puts "========="
+puts "OCC23958"
+puts "========="
+puts ""
+#################################################################################
+# Section of shell by plane is incomplete
+#################################################################################
+
+cpulimit 1000
+
+pload DATAEXCHANGEKERNEL
+
+# shell
+restore [locate_data_file bug23958_bug948-shape.brep] a
+
+# plane
+plane p 10.62752 0 0 1 0 0
+mkface f p
+
+# check that everything is Ok
+checkshape a
+tolerance a
+bopargcheck a f -S #F
+
+# build section
+bsection result a f
+
+# check total length of result
+checkprops result -l 1.21473 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+box b -30 -30 -30 60 60 20
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 15 0 0  27 0 -12  0 0 -12  0 0 10
+orientation w2 R
+wire w w1 w2
+revol r w 0 0 0 0 0 1 360
+shape s So
+add r s
+trotate s b 0 0 0 1 1 0 -40
+trotate s b 0 0 0 0 0 1 -10
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+bfuseblend result s b 1*SCALE1
+ 
+checkprops result -s 1.29262e+06

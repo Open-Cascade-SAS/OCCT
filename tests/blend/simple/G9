@@ -1,0 +1,11 @@
+bsplinecurve w1 3 2  -1.0 4   1.0 4  0 0 0 1  2 10 0 1  4 6 0 1  10 0 0 1
+mkedge w1 w1 
+polyline w2 10 0 0 0 0 0
+wire w w1 w2
+mkplane w w
+prism s w 0 2 10
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 0.5*SCALE1 s_4
+
+checkprops result -s 33865.5

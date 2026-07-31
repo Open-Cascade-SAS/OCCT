@@ -1,0 +1,4 @@
+circle result 70 0 0  0 0 1   1 0 0   30
+lmirror result 0 0 0  0 1  0
+checklength result -l 188.49555921538757
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "=========="
+puts "OCC29523"
+puts "=========="
+
+# Result contains intersected faces
+profile p X 15 C 1 90 Y 5 X -7 Y -2 C -1 90 X -8 W
+profile t O 0 1 0 P 0 1 0 0 0 1 X 5 T -1 2 WW
+evolved result -s p -p t -a -solid -v
+
+checkprops result -s 361.087 -v 312.848
+checkshape result
+
+checknbshapes result -solid 1 -shell 1
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in res2"
+}
+
+checkmaxtol result -ref 1.5e-7
+
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance result] full toler
+checkreal MAXTOL $toler 3.0e-007 0.0 0.1
+
+smallview
+don result sw tw
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

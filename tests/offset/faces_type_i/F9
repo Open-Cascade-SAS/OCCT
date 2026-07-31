@@ -1,0 +1,12 @@
+beziercurve w 4 0 0 0 10 0 0 10 10 0 20 10 0
+mkedge w w
+wire w w
+circle profile 0 0 0 1 0 0 5
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+pipe s w profile
+
+OFFSETSHAPE -1 {s_1 s_3} $calcul $type
+
+checkprops result -v 653.428

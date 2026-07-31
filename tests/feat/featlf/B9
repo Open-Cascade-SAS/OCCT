@@ -1,0 +1,24 @@
+# Original bug : pro15772
+# Date : 30 Nov 98
+
+restore [locate_data_file pro15772_cont.brep] cont
+restore [locate_data_file pro15772_cont1.brep] cont1
+box boite 0 0 0 200 100 200
+
+explode cont edge
+wire wire cont_1
+wire wire1 cont1
+mksurface plan cont
+
+featlf boite wire plan 0 0 -50 0 0 50 0 1
+featperform lf res
+
+featlf res wire1 plan 0 0 -5 0 0 5 0 1
+featperform lf result
+
+# le probleme n'est pas entre rainure large et etroite
+# mais entre rainure moins profonde et plus profonde
+# Il faut faire en premier la rainure la moins profonde 
+# puis la plus profonde
+
+checkprops result -s 164147

@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC26138: Problems with writing periodic BSplines into IGES"
+puts "========"
+puts ""
+
+igesbrep [locate_data_file OCC26138_Torus.igs] a *
+
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges a $aTmpFile
+igesbrep $aTmpFile b *
+file delete -force ${aTmpFile}
+
+checkprops a -s -equal b

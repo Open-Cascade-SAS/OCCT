@@ -1,0 +1,58 @@
+puts "========"
+puts "OCC26896"
+puts "========"
+puts ""
+#################################
+# Wrong result of bsection algorithm
+#################################
+
+restore [locate_data_file bug26896_cutshape1.brep] b1
+
+vertex v1 554.852479447 5561.24970151 -18225.8420231
+vertex v2 19830.8118639 5561.31737822 -18184.3230952
+vertex v3 19967.9643885 5620.52434157 18138.50479
+vertex v4 692.019599679 5620.80022039 18307.753443
+vertex v5 623.443337395 5591.19673871 146.339500409
+vertex v6 623.428741731 5590.85318318 -64.4280804958
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v5
+edge e5 v5 v6
+edge e6 v6 v1
+
+wire w1 e1 e2 e3 e4 e5 e6
+mkplane f1 w1
+
+bsection result b1 f1
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
+
+set expected_MaxTolerance 0.0020855537098296495
+set tol_abs_MaxTolerance 0.0
+set tol_rel_MaxTolerance 1.0e-4
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2
+ EDGE      : 1
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 4
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "BSECTION"
+
+smallview
+
+donly result
+fit
+display b1 f1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

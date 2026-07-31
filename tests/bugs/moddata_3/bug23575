@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC23575"
+puts "========"
+puts ""
+##################################################################################################
+# Bounding box for a planar edge has non-zero dimension in direction orthogonal to an edge plane
+##################################################################################################
+
+bsplinecurve c 3 2 0 4 1 4 0 0 0 1 0 1 0 1 1 1 0 1 1 0 0 1
+mkedge e c
+bounding e -save Xmin Ymin Zmin Xmax Ymax Zmax
+
+checkreal "Xmin" [dval Xmin]  0. 0.1 0.
+checkreal "Ymin" [dval Ymin] 0. 0.1 0.
+checkreal "Zmin" [dval Zmin] 0. 0.1 0.
+checkreal "Xmax" [dval Xmax] 1. 0.1 0.
+checkreal "Ymax" [dval Ymax] 1. 0.1 0.
+checkreal "Zmax" [dval Zmax] 0. 0.1 0.

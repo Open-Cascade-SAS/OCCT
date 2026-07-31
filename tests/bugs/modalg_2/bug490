@@ -1,0 +1,23 @@
+
+puts "========="
+puts " OCC490 "
+puts "========="
+puts ""
+########################################################
+## Result of fuse operation is faulty shape although arguments are valid
+########################################################
+
+restore [locate_data_file OCC490a.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC490b.brep] a_2
+checkshape a_2
+
+if [catch {bfuse result a_1 a_2 } catch_result] {
+    puts "Faulty OCC490: command FUSE works wrongly"
+} else {
+    puts "OCC490 : function FUSE works without hangs up "
+}
+checkprops result -s 2744.08 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

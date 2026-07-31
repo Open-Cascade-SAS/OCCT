@@ -1,0 +1,5 @@
+pcylinder s 5 10 270
+
+OFFSETSHAPE -1 {s_5 s_4} $calcul $type
+
+checkprops result -v 287.456

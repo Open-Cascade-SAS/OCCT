@@ -1,0 +1,11 @@
+puts "CTS20769"
+puts "Creating fuse is impossible"
+puts ""
+
+restore [locate_data_file cts20769a.brep] a
+restore [locate_data_file CTO904_cts20769a.rle] b
+
+bfuse result a b
+
+checkprops result -s 92385.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

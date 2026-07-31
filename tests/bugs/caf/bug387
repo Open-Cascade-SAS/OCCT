@@ -1,0 +1,23 @@
+puts "==========="
+puts "OCC387"
+puts "SAM1452"
+puts "==========="
+
+NewDocument D BinOcaf
+UndoLimit D 10
+NewCommand D
+SetVariable D 0:1 0 a
+SetRelation D 0:1 a=10 0:1
+SetReal D 0:1 10
+
+NewCommand D
+SetRelation D 0:1 a=20 0:1
+SetReal D 0:1 20
+NewCommand D
+Undo D
+set Res [DumpRelation D 0:1]
+
+if { [regexp "a=20" $Res] == 1 } {
+    puts "OCC387: Error "
+}
+

@@ -1,0 +1,483 @@
+// Created on: 1993-11-10
+// Created by: Jean Yves LEBEY
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRepTopAdaptor_HVertex.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_FFTransitionTool.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
+
+#ifdef OCCT_DEBUG
+static TCollection_AsciiString PRODINP("dinp ");
+#endif
+
+//=================================================================================================
+
+void TopOpeBRep_VPointInter::SetPoint(const IntPatch_Point& P)
+{
+  myPPOI = (IntPatch_Point*)&P;
+
+  bool isOn1 = P.IsOnDomS1();
+  bool isOn2 = P.IsOnDomS2();
+  if (isOn1 && isOn2)
+  {
+    myShapeIndex = 3;
+  }
+  else if (isOn2)
+  {
+    myShapeIndex = 2;
+  }
+  else if (isOn1)
+  {
+    myShapeIndex = 1;
+  }
+  else
+  {
+    myShapeIndex = 0;
+  }
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::ArcOnS1() const
+{
+  const occ::handle<Adaptor2d_Curve2d>& HAHC2  = myPPOI->ArcOnS1();
+  const BRepAdaptor_Curve2d&            BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
+  return BRAC2P.Edge();
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::ArcOnS2() const
+{
+  const occ::handle<Adaptor2d_Curve2d>& HAHC2  = myPPOI->ArcOnS2();
+  const BRepAdaptor_Curve2d&            BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
+  return BRAC2P.Edge();
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::VertexOnS1() const
+{
+  if (!myPPOI->IsVertexOnS1())
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::VertexOnS1");
+  }
+
+  const occ::handle<BRepTopAdaptor_HVertex>* HBRTAHV =
+    (occ::handle<BRepTopAdaptor_HVertex>*)&(myPPOI->VertexOnS1());
+  return (*HBRTAHV)->Vertex();
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::VertexOnS2() const
+{
+  if (!myPPOI->IsVertexOnS2())
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::VertexOnS2");
+  }
+
+  const occ::handle<BRepTopAdaptor_HVertex>* HBRTAHV =
+    (occ::handle<BRepTopAdaptor_HVertex>*)&(myPPOI->VertexOnS2());
+  return (*HBRTAHV)->Vertex();
+}
+
+//=================================================================================================
+
+void TopOpeBRep_VPointInter::State(const TopAbs_State S, const int I)
+{
+  if (I == 1)
+  {
+    myState1 = S;
+  }
+  else if (I == 2)
+  {
+    myState2 = S;
+  }
+  else
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::State");
+  }
+  UpdateKeep();
+}
+
+//=================================================================================================
+
+TopAbs_State TopOpeBRep_VPointInter::State(const int I) const
+{
+  if (I == 1)
+  {
+    return myState1;
+  }
+  else if (I == 2)
+  {
+    return myState2;
+  }
+  else
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::State");
+  }
+}
+
+//=================================================================================================
+
+void TopOpeBRep_VPointInter::EdgeON(const TopoDS_Shape& Eon, const double Par, const int I)
+{
+  if (I == 1)
+  {
+    myEdgeON1    = Eon;
+    myEdgeONPar1 = Par;
+  }
+  else if (I == 2)
+  {
+    myEdgeON2    = Eon;
+    myEdgeONPar2 = Par;
+  }
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::EdgeON(const int I) const
+{
+  if (I == 1)
+  {
+    return myEdgeON1;
+  }
+  else if (I == 2)
+  {
+    return myEdgeON2;
+  }
+  else
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::EdgeON");
+  }
+}
+
+//=================================================================================================
+
+double TopOpeBRep_VPointInter::EdgeONParameter(const int I) const
+{
+  if (I == 1)
+  {
+    return myEdgeONPar1;
+  }
+  else if (I == 2)
+  {
+    return myEdgeONPar2;
+  }
+  else
+  {
+    throw Standard_DomainError("TopOpeBRep_VPointInter::EdgeONParameter");
+  }
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::Edge(const int I) const
+{
+  if (I == 1 && IsOnDomS1())
+  {
+    return ArcOnS1();
+  }
+  else if (I == 2 && IsOnDomS2())
+  {
+    return ArcOnS2();
+  }
+
+  return myNullShape;
+}
+
+//=================================================================================================
+
+double TopOpeBRep_VPointInter::EdgeParameter(const int I) const
+{
+  if (I == 1 && IsOnDomS1())
+  {
+    return ParameterOnArc1();
+  }
+  else if (I == 2 && IsOnDomS2())
+  {
+    return ParameterOnArc2();
+  }
+  return 0.;
+}
+
+//=================================================================================================
+
+gp_Pnt2d TopOpeBRep_VPointInter::SurfaceParameters(const int I) const
+{
+  double u = 0., v = 0.;
+  // if      (I == 1 && IsOnDomS1() ) ParametersOnS1(u,v);
+  // else if (I == 2 && IsOnDomS1() ) ParametersOnS2(u,v);
+  if (I == 1)
+  {
+    ParametersOnS1(u, v);
+  }
+  else if (I == 2)
+  {
+    ParametersOnS2(u, v);
+  }
+  gp_Pnt2d p2d(u, v);
+  return p2d;
+}
+
+//=================================================================================================
+
+bool TopOpeBRep_VPointInter::IsVertex(const int I) const
+{
+  if (I == 0)
+  {
+    return false;
+  }
+  if (I == 1 && IsVertexOnS1())
+  {
+    return true;
+  }
+  else if (I == 2 && IsVertexOnS2())
+  {
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_VPointInter::Vertex(const int I) const
+{
+  if (I == 1 && IsVertexOnS1())
+  {
+    return VertexOnS1();
+  }
+  else if (I == 2 && IsVertexOnS2())
+  {
+    return VertexOnS2();
+  }
+  return myNullShape;
+}
+
+//=================================================================================================
+
+void TopOpeBRep_VPointInter::UpdateKeep()
+{
+#define M_SINON(s) (((s) == TopAbs_IN) || ((s) == TopAbs_ON))
+
+  TopAbs_State pos1 = State(1);
+  TopAbs_State pos2 = State(2);
+
+  int SI = ShapeIndex();
+
+  bool condition = false;
+
+  if (SI == 1)
+  {
+    condition = M_SINON(pos2);
+  }
+  else if (SI == 2)
+  {
+    condition = M_SINON(pos1);
+  }
+  else if (SI == 0)
+  {
+    condition = M_SINON(pos1) && M_SINON(pos2);
+  }
+  else if (SI == 3)
+  {
+    condition = M_SINON(pos1) && M_SINON(pos2);
+  }
+  // NYI : SI == 3 --> le VP devrait toujours etre Keep() (par definition)
+
+  myKeep = condition;
+}
+
+//=======================================================================
+// function : EqualpP
+// purpose  : returns <True> if the 3d points and the parameters of the
+//           VPoints are same.
+//=======================================================================
+bool TopOpeBRep_VPointInter::EqualpP(const TopOpeBRep_VPointInter& VP) const
+{
+  double p1     = ParameterOnLine();
+  double p2     = VP.ParameterOnLine();
+  bool   pequal = fabs(p1 - p2) < Precision::PConfusion();
+  gp_Pnt P1     = Value();
+  gp_Pnt P2     = VP.Value();
+  double Ptol1 = Tolerance(), Ptol2 = VP.Tolerance();
+  double Ptol    = (Ptol1 > Ptol2) ? Ptol1 : Ptol2;
+  bool   Pequal  = P1.IsEqual(P2, Ptol);
+  bool   pPequal = (pequal && Pequal);
+  return pPequal;
+}
+
+//=================================================================================================
+
+bool TopOpeBRep_VPointInter::ParonE(const TopoDS_Edge& E, double& par) const
+{
+  bool found = false;
+  if (IsOnDomS1())
+  {
+    if (E.IsSame(ArcOnS1()))
+    {
+      found = true;
+    }
+    if (found)
+    {
+      par = ParameterOnArc1();
+      return found;
+    }
+  }
+  if (IsOnDomS2())
+  {
+    if (E.IsSame(ArcOnS2()))
+    {
+      found = true;
+    }
+    if (found)
+    {
+      par = ParameterOnArc2();
+      return found;
+    }
+  }
+
+  for (int i = 1; i <= 2; i++)
+  {
+    if (State(i) != TopAbs_ON)
+    {
+      continue;
+    }
+    if (EdgeON(i).IsSame(E))
+    {
+      par = EdgeONParameter(i);
+      return true;
+    }
+  }
+  return found;
+}
+
+//=================================================================================================
+
+Standard_OStream& TopOpeBRep_VPointInter::Dump(const int          I,
+                                               const TopoDS_Face& F,
+                                               Standard_OStream&  OS) const
+{
+  const TopoDS_Edge& E = TopoDS::Edge(Edge(I));
+#ifdef OCCT_DEBUG
+  double Epar =
+#endif
+    EdgeParameter(I);
+#ifdef OCCT_DEBUG
+  TopAbs_Orientation O =
+#endif
+    E.Orientation();
+#ifdef OCCT_DEBUG
+  bool closingedge =
+#endif
+    TopOpeBRepTool_ShapeTool::Closed(E, F);
+
+#ifdef OCCT_DEBUG
+  if (closingedge)
+    OS << "on closing edge ";
+  else
+    OS << "on edge ";
+  TopAbs::Print(O, std::cout);
+  std::cout << " of " << I << " : par : " << Epar << std::endl;
+  TopOpeBRep_FFTransitionTool::ProcessLineTransition(*this, I, O);
+  OS << "line transition ";
+  if (closingedge)
+    OS << "on closing edge ";
+  else
+    OS << "on edge ";
+  TopAbs::Print(O, std::cout);
+  OS << " of " << I << std::endl;
+#endif
+
+  return OS;
+}
+
+//=================================================================================================
+
+#ifdef OCCT_DEBUG
+Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,
+                                               const TopoDS_Face& FF2,
+                                               Standard_OStream&  OS) const
+{
+  const TopoDS_Face& F1 = TopoDS::Face(FF1);
+  const TopoDS_Face& F2 = TopoDS::Face(FF2);
+  OS << "VP " << myIndex << " on " << myShapeIndex << " :";
+  double Cpar = ParameterOnLine();
+  OS << " on curve : " << Cpar;
+  if (!myKeep)
+    OS << " NOT kept";
+  OS << std::endl;
+  const gp_Pnt& P = Value();
+  OS << PRODINP << "P" << myIndex << " ";
+  OS << P.X() << " " << P.Y() << " " << P.Z();
+  OS << "; #draw" << std::endl;
+
+  if (IsVertexOnS1())
+  {
+    OS << "is vertex of 1" << std::endl;
+  }
+  if (IsVertexOnS2())
+  {
+    OS << "is vertex of 2" << std::endl;
+  }
+  if (IsMultiple())
+  {
+    OS << "is multiple" << std::endl;
+  }
+  if (IsInternal())
+  {
+    OS << "is internal" << std::endl;
+  }
+
+  if (myShapeIndex == 1)
+  {
+    Dump(1, F1, OS);
+  }
+  else if (myShapeIndex == 2)
+  {
+    Dump(2, F2, OS);
+  }
+  else if (myShapeIndex == 3)
+  {
+    Dump(1, F1, OS);
+    Dump(2, F2, OS);
+  }
+#else
+Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face&,
+                                               const TopoDS_Face&,
+                                               Standard_OStream& OS) const
+{
+#endif
+
+  return OS;
+}
+
+//=================================================================================================
+
+TopOpeBRep_PThePointOfIntersection TopOpeBRep_VPointInter::PThePointOfIntersectionDummy() const
+{
+  return myPPOI;
+}

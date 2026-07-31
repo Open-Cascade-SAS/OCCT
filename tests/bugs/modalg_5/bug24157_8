@@ -1,0 +1,58 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+set N 19
+set dX 2.
+
+box b 100 100 100
+
+explode b f
+copy b_1 fx
+copy b_3 fy
+copy b_5 fz
+
+set q {}
+for {set j 1} {$j < $N} {incr j} {
+ tcopy fx fx_${j}
+ ttranslate fx_${j} [expr $j*$dX] 0. 0. 
+ lappend q fx_${j}
+}
+
+for {set j 1} {$j < $N} {incr j} {
+ tcopy fy fy_${j}
+ ttranslate fy_${j} 0. [expr $j*$dX] 0. 
+ lappend q fy_${j}
+}
+
+for {set j 1} {$j < $N} {incr j} {
+ tcopy fz fz_${j}
+ ttranslate fz_${j} 0. 0. [expr $j*$dX]
+ lappend q fz_${j}
+}
+
+eval compound $q b1
+
+bclearobjects
+bcleartools
+baddcompound b1
+bfillds -t
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 100
+} else {
+  set check_time 15
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

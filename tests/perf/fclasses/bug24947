@@ -1,0 +1,14 @@
+# Test performance of dynamic loading / unloading of large OCCT library
+
+set libname TKDESTEP
+
+switch -nocase [checkplatform] {
+  windows {set libname    ${libname}.dll}
+  linux   {set libname lib${libname}.so}
+  macos   {set libname lib${libname}.dylib}
+}
+
+for {set i 0} {$i < 1000} {incr i} {
+  puts "Iteration $i" 
+  dtryload $libname
+}

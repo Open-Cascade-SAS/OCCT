@@ -1,0 +1,7 @@
+vclear
+meshfromstl m [locate_data_file b.stl]
+meshshowall m
+vselmode m 1 1
+vselect 0 0 250 200
+meshhidesel m
+vdump $::imagedir/${::casename}.png

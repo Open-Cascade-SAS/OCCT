@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC23484: Visualization, TKOpenGl - primitive arrays to become the only way to render geometry"
+puts "Tests wireframe trihedron rendering with primitive arrays"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vfit
+vaxo
+
+vzbufftrihedron -scale 0.1 -type wireframe -position left_lower
+vdump $imagedir/${casename}_1.png
+
+vzbufftrihedron -scale 0.1 -type wireframe -position center
+vdump $imagedir/${casename}_2.png

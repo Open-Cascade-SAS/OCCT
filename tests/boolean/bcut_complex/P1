@@ -1,0 +1,8 @@
+## PRO 16663
+
+restore [locate_data_file Shape_2.brep] a
+restore [locate_data_file CTO909_outil_1.brep] b
+
+bcut result a b
+checkprops result -s 343725
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,22 @@
+
+puts "========"
+puts "OCC452"
+puts "(case 1)"
+puts "========"
+puts ""
+
+pcone pc 10 0 20
+explode pc f
+
+prism pcy pc_2 0 0 10
+
+dchrono h2 restart
+
+bcut result pc pcy
+
+dchrono h2 stop counter bcut
+
+checkprops result -s 254.16 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

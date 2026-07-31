@@ -1,0 +1,18 @@
+# Original bug : cts20872 
+# bis cts20212
+# Date : 22 Sept 98
+
+restore [locate_data_file CFE900_cts20gcu.rle] base
+restore [locate_data_file cts20872_face.rle] cont
+
+explode base face
+copy base_12 funtil
+
+### support
+mksurface p12 base_12
+mkface f12 p12
+
+featprism base cont cont 0 1 0 0 1
+featperform prism result f12
+
+checkprops result -s 829.806

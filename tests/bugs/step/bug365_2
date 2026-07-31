@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC365"
+puts "========"
+puts ""
+
+cpulimit 1000
+
+stepread [locate_data_file BUC61004.stp] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

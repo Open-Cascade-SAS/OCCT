@@ -1,0 +1,53 @@
+puts "========"
+puts "0033514: Visualization - Scaled view twists zoom persistence objects"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vsetdispmode 1
+vmanipulator vm -attach b
+vscale 1 3 10
+vviewparams -scale 6.28866 -proj 0.57735 -0.57735 0.57735 -up -0.408248 0.408248 0.816497 -at 0 10 30
+
+
+set color_1 [vreadpixel 235 170 -rgb -name]
+set color_2 [vreadpixel 223 155 -rgb -name]
+set color_3 [vreadpixel 235 155 -rgb -name]
+
+if {$color_1 != "RED3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: RED3"
+  puts "       current color is:  $color_1"
+}
+
+if {$color_2 != "BLUE3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: BLUE3"
+  puts "       current color is:  $color_2"
+}
+
+if {$color_3 != "GREEN3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: GREEN3"
+  puts "       current color is:  $color_3"
+}
+
+vdump $imagedir/${casename}.png
+
+vclear
+box b 10 10 10
+vdisplay b
+vfit
+vsetdispmode 1
+vmanipulator vm -attach b -zoomable 1
+vscale 1 3 10
+vviewparams -scale 4.28866 -proj 0.57735 -0.57735 0.57735 -up -0.408248 0.408248 0.816497 -at 0 10 30
+
+vdump $imagedir/${casename}_zoomable.png

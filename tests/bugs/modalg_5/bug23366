@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC23366"
+puts "============"
+puts ""
+######################################################
+# Cut operation produces invalid shape
+######################################################
+
+restore [locate_data_file bug23366_finalTool.brep] s1
+restore [locate_data_file bug23366_IntersectionSegment.brep] s2
+
+bop s1 s2
+bopcut result
+
+checkprops result -s 173.098 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

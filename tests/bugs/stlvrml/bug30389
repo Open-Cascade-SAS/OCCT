@@ -1,0 +1,19 @@
+puts "========"
+puts "0030389: Data Exchange - StlAPI_Writer does not check if the face has triangulation"
+puts "========"
+puts ""
+
+box b 1 1 1 
+
+# mesh only 5 faces of the box
+eval compound [lrange [explode b f] 0 4] cf
+incmesh cf 0.1
+
+# save box into stl
+writestl b $imagedir/${casename}.stl
+
+# read stl
+readstl result $imagedir/${casename}.stl -brep
+
+# check that it contains only 10 triangles
+checknbshapes result -face 10

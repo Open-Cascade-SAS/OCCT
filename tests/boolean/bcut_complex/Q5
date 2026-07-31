@@ -1,0 +1,12 @@
+puts "CTS60025"
+puts "CUT doesn't give the waiting result."
+puts ""
+restore [locate_data_file cts60025a.rle] b
+restore [locate_data_file cts60025b.rle] f
+
+# Essai de cut
+prism tool f 0 0 4
+
+bcut result b tool
+checkprops result -s 51883
+checkview -display result -2d -s -otherwise { b tool } -path ${imagedir}/${test_image}.png

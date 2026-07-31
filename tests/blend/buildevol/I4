@@ -1,0 +1,12 @@
+#box b -15 -15 -15 30 30 15
+#pcone c 13 5 20
+#fuse s b c
+
+restore [locate_data_file CFI_6_b12fgt.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_3 0 4*SCALE2 1 8*SCALE2 2 6*SCALE2
+buildevol
+
+checkprops result -s 4242.66

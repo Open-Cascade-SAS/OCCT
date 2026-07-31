@@ -1,0 +1,11 @@
+#D1----------------------------------------------
+psphere p 20 0 90
+box p2 -10 -10 10 20 20 20 
+bfuse f p p2
+nexplode f e 
+blend f f 2 f_10 
+# 2 f_4 2 f_10 2 f_14
+nexplode f f
+depouille result f 0 0 1 f_8 2 0 0 35 0 0 1
+
+checkprops result -s 4827.83

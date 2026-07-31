@@ -1,0 +1,31 @@
+puts "========"
+puts "0030786: BOP Cut: artifacts with enabled nondestructive flag"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30786_Corner_Shapes.brep] s
+explode s
+
+bnondestructive 1
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2 s_3 s_4
+bfillds
+bbop result 2
+
+bnondestructive 0
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2 s_3 s_4
+bfillds
+bbop result1 2
+
+foreach r {result result1} {
+  checkshape $r
+  checknbshapes $r -wire 32 -face 32 -shell 2 -solid 2
+  checkprops $r -s 277739 -v 543086
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

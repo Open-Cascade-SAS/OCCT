@@ -1,0 +1,10 @@
+puts "========================"
+puts "0030052: Data Exchange -  on reading STEP produce invalid shapes"
+puts "========================"
+
+stepread [locate_data_file EADE1200A4AQJ.STP] a *
+renamevar a_1 result
+
+checkshape result
+checkmaxtol result -ref 0.08108
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC1243"
+puts "================"
+puts "Bad solid created from face with command 'revol'"
+puts ""
+
+restore [locate_data_file OCC1243-2.brep] f1 
+checkshape f1
+
+revol result f1 -5000.0 0.0 0.0 10000.0 0.0 0.0 360.0
+
+set tolerance [maxtolerance result]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+set max_tolerance 1.00000e-06
+
+if { ${MaxFaceTolerance} > ${max_tolerance} || ${MaxEdgeTolerance} > ${max_tolerance} || ${MaxVertexTolerance} > ${max_tolerance} } {
+    puts "OCC1243 - Error"
+} else {
+    puts "OCC1243 - OK"
+}
+
+checkprops result -s 3.06024e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

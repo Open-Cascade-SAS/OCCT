@@ -1,0 +1,14 @@
+
+puts "========"                                                                 
+puts "BUC61005"                                                                 
+puts "OCC340"
+puts "========"                                                                 
+puts ""                                                                         
+
+restore [locate_data_file buc61005.brep] w 
+checkshape w
+revol result w 0 0 0 0 0 1 360 1                                                     
+
+checkprops result -s 55795.4 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

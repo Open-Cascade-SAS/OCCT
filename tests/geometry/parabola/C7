@@ -1,0 +1,6 @@
+parabola result 70 1 0  0 0 1   0 1 0   10
+repeat 7 {rotate result 0 0 0 0 0 1 45;
+    copy result .;
+}
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{50.2045814642448 -48.7903679018718 0} {0 -0 1} {0.707106781186548 0.707106781186547 0} {-0.707106781186547 0.707106781186548 0} {10}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

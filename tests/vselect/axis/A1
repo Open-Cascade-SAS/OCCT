@@ -1,0 +1,35 @@
+puts "========"
+puts "0032338: Visualization - provide straightforward interface for ray-picking"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+psphere s 2
+box b -min -1 -1 2 -max 1 1 4
+vclear
+vinit View1
+vdisplay -dispMode 1 s
+vsettransparency s 0.5
+vdisplay -dispMode 1 b
+vsettransparency b 0.5
+vaxis a 1 -2 2 1 2 2
+vpoint p 0 0 5
+vdisplay p
+vaspects p -markerType O
+vaxo
+vfit
+if { [vselaxis -4 0 6 0 0 -1 -display sel_a0] != "There are no any intersections with this axis." } { puts "Error: there should be no any intersections" }
+
+set pointlist1 [vselaxis 0 0 6 0 0 -1 -display sel_a1 -onlytop 0]
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)\s([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)\s([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${pointlist1} full p1 p2 p3
+checkpoint "point1" $p1 {0 0 5} 0.001
+checkpoint "point2" $p2 {0 0 4} 0.001
+checkpoint "point3" $p3 {0 0 2} 0.001
+
+set pointlist2 [vselaxis 1 0 6 0 0 -1 -display sel_a2 -onlytop 0 -shownormal]
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)\s([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)\s([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${pointlist2} full p1 p2 p3
+checkpoint "point1" $p1 {1 0 4} 0.0001
+checkpoint "point2" $p2 {1 0 2} 0.0001
+checkpoint "point3" $p3 {1 0 1.7320508075688776} 0.0001
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,11 @@
+box b1 0 0 0 1 1 1
+dset a30 atan2(1,2)*180/pi
+dset r sqrt(5)
+box b2 0 0.5 0 r/2 1/r 0.5
+trotate b2 0 0.5 0 0 0 1 a30
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 5.80902
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,59 @@
+puts "================"
+puts "OCC25416"
+puts "================"
+puts ""
+#######################################################################
+# Wrong section curve
+#######################################################################
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+# bopcurves command
+
+restore [locate_data_file bug25416_f1.brep] f1
+restore [locate_data_file bug25416_f2.brep] f2
+
+#############################
+set log [bopcurves f1 f2 -2d]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+set MaxTol 1.e-7
+
+set GoodNbCurv 1
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+#-------------
+
+mksurface s1 f1
+mksurface s2 f2
+
+erase s1 s2
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i U1 U2
+  
+  dump U1 U2
+  
+  if {[dval $U2-$U1] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+
+  xdistcs c_$i s1 ${U1} ${U2} 10 1e-7
+  xdistcs c_$i s2 ${U1} ${U2} 10 1e-7
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

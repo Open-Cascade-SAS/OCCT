@@ -1,0 +1,26 @@
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+#################################
+# Infinite loop during bisector loci calculation.
+#################################
+
+restore [locate_data_file OCC745_nb5.brep] w 
+checkshape w
+mkplane result w
+topoload result
+drawcont
+
+cpulimit 600
+
+mat
+
+result
+
+puts "OCC745 OK"
+
+checkprops result -s 5844.54 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

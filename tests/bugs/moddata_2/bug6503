@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC6503"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect calculation of bounding box for infinite surfaces
+#######################################################################################
+
+set BugNumber OCC6503
+
+plane pl 0 0 0 0 0 1
+mkface f pl
+set info_result [bounding f -save x1 y1 z1 x2 y2 z2]
+
+set good_x1 -1e+100
+set good_y1 -1e+100
+set good_z1 -9.9999999999999995e-08
+set good_x2 1e+100
+set good_y2 1e+100
+set good_z2 9.9999999999999995e-08
+
+checkreal "x1" [dval x1] ${good_x1} 0 0.001
+checkreal "y1" [dval y1] ${good_y1} 0 0.001
+checkreal "z1" [dval z1] ${good_z1} 0 0.001
+checkreal "x2" [dval x2] ${good_x2} 0 0.001
+checkreal "y2" [dval y2] ${good_y2} 0 0.001
+checkreal "z2" [dval z2] ${good_z2} 0 0.001

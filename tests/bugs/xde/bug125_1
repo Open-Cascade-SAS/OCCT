@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC125"
+puts "================"
+puts ""
+##################################
+## Exception during usage ShapeFix_Shell class. 
+##################################
+
+restore [locate_data_file OCC125-1.brep] shell1 
+
+fixshape result shell1 1e-7
+checkshape result
+
+checkprops result -s 282.743 
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

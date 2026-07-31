@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC513"
+puts "========"
+puts ""
+
+######################################
+## Can not intersect plane and conical surfaces
+## The ">intersect" command hangs up the computer.
+######################################
+
+# cpulimit 9000
+
+restore [locate_data_file OCC513a.draw] sa23 
+restore [locate_data_file OCC513b.draw] sb8 
+
+if { [catch {intersect result sa23 sb8} catch_result] } {
+    puts "Faulty OCC513: function INTERSECTION works wrongly"
+} else {
+    puts "OCC513 OK: function INTERSECTION works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

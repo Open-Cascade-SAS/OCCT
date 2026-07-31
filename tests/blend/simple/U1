@@ -1,0 +1,28 @@
+puts "TODO OCC22817 All:Faulty shapes in variables faulty_1 to faulty_2 "
+
+#box b -15 -15 -15 15 30 30
+#beziercurve w 4 0 0 0 10 0 0 10 10 0 20 10 0
+#mkedge w w
+#wire w w
+#circle profile 0 0 0 1 0 0 10
+#mkedge profile profile
+#wire profile profile
+#mkplane profile profile
+#pipe p w profile
+#explode b F
+#explode p F
+#glue r p b p_2 b_2
+#pcylinder c 6 10
+#ttranslate c -7.5 0 15
+#explode c F
+#explode r F
+#glue s c r c_3 r_6 
+#save s 6_G56.draw
+
+restore [locate_data_file 6_G56.draw] s
+tscale s 0 0 0 SCALE2
+fsameparameter s
+explode  s E
+blend result s 7*SCALE2 s_12
+ 
+checkprops result -s 5335.27

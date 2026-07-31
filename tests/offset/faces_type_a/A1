@@ -1,0 +1,6 @@
+#old file filtercb
+
+restore [locate_data_file CHE_filter.rle] s
+OFFSETSHAPE -.0015 {s_26 s_27 s_28 s_29} $calcul $type
+
+checkprops result -v 6.38048e-05

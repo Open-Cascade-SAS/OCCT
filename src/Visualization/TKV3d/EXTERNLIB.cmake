@@ -1,0 +1,19 @@
+# External dependencies for TKV3d
+set(OCCT_TKV3d_EXTERNAL_LIBS
+  TKBRep
+  TKMath
+  TKernel
+  TKService
+  TKShHealing
+  TKTopAlgo
+  TKG2d
+  TKG3d
+  TKGeomBase
+  TKMesh
+  TKGeomAlgo
+  TKHLR
+  CSF_user32
+  CSF_gdi32
+  CSF_FREETYPE
+  CSF_TBB
+)

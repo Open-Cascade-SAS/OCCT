@@ -1,0 +1,50 @@
+puts "========="
+puts "CR25613"
+puts "========="
+puts ""
+###############################
+## Wrong distance found by xdistef command for attached shapes
+###############################
+
+set Tol 5.0e-14
+set dist_good 8.512706220911343e-006
+
+restore [locate_data_file bug698_f.brep] f
+nexplode f e
+copy f_4 e
+don f e
+
+set log [xdistef e f]
+
+regexp {Max Distance = +([-0-9.+eE]+); Parameter on curve = +([-0-9.+eE]+)} ${log} full dist param
+
+if { [ expr ($dist - $dist_good) ] < -$Tol } {
+  puts "Error in xdistef command (cannot find maximal distance)"
+}
+
+if { $dist > $dist_good } {
+#Check if distance found is correct
+
+  mkcurve c3d e
+  mk2dcurve c2d e f
+  mksurface ss f
+  
+  cvalue c3d $param xx yy zz
+  vertex v1 xx yy zz
+  
+  2dcvalue c2d $param uu vv 
+  svalue ss uu vv xx yy zz
+  vertex v2 xx yy zz
+  
+  distmini dm v1 v2
+  
+  if { [ expr abs([dval dm_val] - $dist) ] > $Tol } {
+    if { [dval dm_val] != $dist } {
+      puts "Error. xdistef has failed when computing (dist_V1V2 =[dval dm_val], FoundDist=$dist)"
+    } else {
+      puts "Error. xdistef command works better than on MASTER. Please set \"dist_good\" value to $dist."
+    }
+  } else {
+    puts "OK: xdistef algorithm works properly"
+  }
+}

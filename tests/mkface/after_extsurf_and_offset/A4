@@ -1,0 +1,8 @@
+circle circle 0 0 0 0 0 1 30
+extsurf es_circle circle 0 0 1
+offset es_circle_of es_circle 5
+offset es_circle_of_of es_circle_of 5
+mkface result es_circle_of_of 0 3 0 40
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 1.4095203923333596e-07
+set MaxVTol 1.4095203923333602e-07

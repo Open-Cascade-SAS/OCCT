@@ -1,0 +1,22 @@
+#puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+#puts "TODO OCC12345 ALL: Error : The area of result shape is"
+
+puts "========"
+puts "OCC726"
+puts "SAM1594"
+puts "========"
+puts ""
+######################################
+## Boolean operations are impossible on the attachment.
+######################################
+
+restore [locate_data_file OCC726.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bcommon result a_1 a_2
+
+checkprops result -s 73346.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

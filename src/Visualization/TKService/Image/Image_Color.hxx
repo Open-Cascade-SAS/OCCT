@@ -1,0 +1,403 @@
+// Created on: 2012-07-18
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef Image_Color_HeaderFile
+#define Image_Color_HeaderFile
+
+#include <Standard.hxx>
+
+//! POD structure for packed RGB color value (3 bytes)
+struct Image_ColorRGB
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+public: // access methods
+  //! Alias to 1st component (red intensity).
+  uint8_t r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t b() const { return v[2]; }
+
+  //! Alias to 1st component (red intensity).
+  uint8_t& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t& b() { return v[2]; }
+
+public:
+  uint8_t v[3];
+};
+
+//! POD structure for packed RGB color value (4 bytes with extra byte for alignment)
+struct Image_ColorRGB32
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+  //! Alias to 1st component (red intensity).
+  uint8_t r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t b() const { return v[2]; }
+
+  //! Alias to 4th component (dummy).
+  uint8_t a_() const { return v[3]; }
+
+  //! Alias to 1st component (red intensity).
+  uint8_t& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t& b() { return v[2]; }
+
+  //! Alias to 4th component (dummy).
+  uint8_t& a_() { return v[3]; }
+
+public:
+  uint8_t v[4];
+};
+
+//! POD structure for packed RGBA color value (4 bytes)
+struct Image_ColorRGBA
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 4; }
+
+  //! Alias to 1st component (red intensity).
+  uint8_t r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t b() const { return v[2]; }
+
+  //! Alias to 4th component (alpha value).
+  uint8_t a() const { return v[3]; }
+
+  //! Alias to 1st component (red intensity).
+  uint8_t& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  uint8_t& b() { return v[2]; }
+
+  //! Alias to 4th component (alpha value).
+  uint8_t& a() { return v[3]; }
+
+public:
+  uint8_t v[4];
+};
+
+//! POD structure for packed BGR color value (3 bytes)
+struct Image_ColorBGR
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t r() const { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t b() const { return v[0]; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t& r() { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t& b() { return v[0]; }
+
+public:
+  uint8_t v[3];
+};
+
+//! POD structure for packed BGR color value (4 bytes with extra byte for alignment)
+struct Image_ColorBGR32
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t r() const { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t b() const { return v[0]; }
+
+  //! Alias to 4th component (dummy).
+  uint8_t a_() const { return v[3]; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t& r() { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t& b() { return v[0]; }
+
+  //! Alias to 4th component (dummy).
+  uint8_t& a_() { return v[3]; }
+
+public:
+  uint8_t v[4];
+};
+
+//! POD structure for packed BGRA color value (4 bytes)
+struct Image_ColorBGRA
+{
+
+  //! Component type.
+  typedef uint8_t ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 4; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t r() const { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t g() const { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t b() const { return v[0]; }
+
+  //! Alias to 4th component (alpha value).
+  uint8_t a() const { return v[3]; }
+
+  //! Alias to 3rd component (red intensity).
+  uint8_t& r() { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  uint8_t& g() { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  uint8_t& b() { return v[0]; }
+
+  //! Alias to 4th component (alpha value).
+  uint8_t& a() { return v[3]; }
+
+public:
+  uint8_t v[4];
+};
+
+//! POD structure for packed float RG color value (2 floats)
+struct Image_ColorRGF
+{
+  //! Component type.
+  typedef float ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 2; }
+
+  //! Alias to 1st component (red intensity).
+  float r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float g() const { return v[1]; }
+
+  //! Alias to 1st component (red intensity).
+  float& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float& g() { return v[1]; }
+
+public:
+  float v[2];
+};
+
+//! POD structure for packed float RGB color value (3 floats)
+struct Image_ColorRGBF
+{
+
+  //! Component type.
+  typedef float ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+  //! Alias to 1st component (red intensity).
+  float r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float g() const { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  float b() const { return v[2]; }
+
+  //! Alias to 1st component (red intensity).
+  float& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float& g() { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  float& b() { return v[2]; }
+
+public:
+  float v[3];
+};
+
+//! POD structure for packed BGR float color value (3 floats)
+struct Image_ColorBGRF
+{
+
+  //! Component type.
+  typedef float ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 3; }
+
+  //! Alias to 3rd component (red intensity).
+  float r() const { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  float g() const { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  float b() const { return v[0]; }
+
+  //! Alias to 3rd component (red intensity).
+  float& r() { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  float& g() { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  float& b() { return v[0]; }
+
+public:
+  float v[3];
+};
+
+//! POD structure for packed RGBA color value (4 floats)
+struct Image_ColorRGBAF
+{
+
+  //! Component type.
+  typedef float ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 4; }
+
+  //! Alias to 1st component (red intensity).
+  float r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float g() const { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  float b() const { return v[2]; }
+
+  //! Alias to 4th component (alpha value).
+  float a() const { return v[3]; }
+
+  //! Alias to 1st component (red intensity).
+  float& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  float& g() { return v[1]; }
+
+  //! Alias to 3rd component (blue intensity).
+  float& b() { return v[2]; }
+
+  //! Alias to 4th component (alpha value).
+  float& a() { return v[3]; }
+
+public:
+  float v[4];
+};
+
+//! POD structure for packed float BGRA color value (4 floats)
+struct Image_ColorBGRAF
+{
+
+  //! Component type.
+  typedef float ComponentType_t;
+
+  //! Returns the number of components.
+  static int Length() { return 4; }
+
+  //! Alias to 3rd component (red intensity).
+  float r() const { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  float g() const { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  float b() const { return v[0]; }
+
+  //! Alias to 4th component (alpha value).
+  float a() const { return v[3]; }
+
+  //! Alias to 3rd component (red intensity).
+  float& r() { return v[2]; }
+
+  //! Alias to 2nd component (green intensity).
+  float& g() { return v[1]; }
+
+  //! Alias to 1st component (blue intensity).
+  float& b() { return v[0]; }
+
+  //! Alias to 4th component (alpha value).
+  float& a() { return v[3]; }
+
+public:
+  float v[4];
+};
+
+#endif // _Image_Color_H__

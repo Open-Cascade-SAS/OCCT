@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24633"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect projection of a curve on a surface
+#######################################################################
+
+restore [locate_data_file bug24633_comp_50.brep] a
+
+explode a
+mkcurve c a_1
+mksurface s a_2
+pcurve a_2
+
+project prj c s
+checklength prj -l 7.2662499016218058
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename sd_turbine-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 3 )  Summary  = 14  ( 3 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 69  ( 69 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 69  ( 69 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 5.770870575e-007  ( 5.770866594e-007 )  AvgTol   =  2.291348192e-007  (  2.274428193e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 64  ( 64 )  N2Labels = 0  ( 0 )   TotalLabels = 65  ( 65 )   NameLabels = 1  ( 1 )   ColorLabels = 65  ( 65 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 5 )
+COLORS      : Colors   = BLUE3 DARKORANGE1 GREEN MEDIUMTURQUOISE RED  ( BLUE3 DARKORANGE1 GREEN MEDIUMTURQUOISE RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

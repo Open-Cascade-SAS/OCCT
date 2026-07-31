@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC24203"
+puts "============"
+puts ""
+#######################################################################
+## Command "sameparameter" in DRAW on attached edge set tolerance equal to 116.
+#######################################################################
+
+pload DATAEXCHANGEKERNEL
+
+restore [locate_data_file bug24203_notspedge.brep] e1
+
+sameparameter e1
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance e1] full MaxTol_1
+
+puts "MaxTolerance = $MaxTol_1"
+
+set MaxTol 0.20
+
+if { $MaxTol_1 > $MaxTol } {
+    puts "Faulty OCC24203"
+} else {
+    puts "OCC24203 OK"
+}

@@ -1,0 +1,72 @@
+#INTERFACE CAF
+#
+#Sometimes this error is inside a log file, but it is outside in other case. The '?' character manage it.
+#
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+pload VISUALIZATION
+
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISSet
+#
+
+# ANALOG: puts "caf003-A4"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape Doc ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer Doc
+
+# Add AISPresentation attribute with parameter NS
+AISSet Doc ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay Doc ${aLabel}
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Initialize 3D viewer
+catch {AISInitViewer DDoc}
+
+########## Add AISPresentation attribute with parameter NS
+##########AISSet DDoc ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+set IsDone [catch {AISDisplay DDoc ${aLabel}} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TPrsStd_AISPresentation attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+} else {
+        Close DDoc
+	puts "There is the box in the viewer"
+	puts "OCC1228: OK"
+}

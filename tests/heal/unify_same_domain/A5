@@ -1,0 +1,11 @@
+puts "=========="
+puts "OCC28227"
+puts "=========="
+puts ""
+#############################################################################
+# ShapeUpgrade_UnifySameDomain modifies the edges even if it is not requested
+#############################################################################
+
+restore [locate_data_file bug28228_face.brep] a
+setflags a locked
+unifysamedom result a

@@ -1,0 +1,34 @@
+puts "============"
+puts "0031965: Visualization - AIS_InteractiveContext::HilightWithColor() ignores passed highlight style"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit V1/RootView -width 1024 -height 512 -composer 0
+vbackground GRAY20
+
+vinit V2/ViewLeft -parent V1/RootView -width 0.5 -height 1.0
+vbackground GRAY30
+
+box b 100 200 300
+vdisplay -dispMode 1 b
+vaspects b -faceBoundaryDraw 1
+vfit
+vviewcube vc
+
+vinit V2/ViewRight -parent V1/RootView -width 0.5 -height 1.0 -left 0.5
+vbackground GRAY40
+psphere s 300
+vdisplay -dispMode 1 s
+vaspects s -material SILVER
+vfit
+vzbufftrihedron
+
+vactivate V2/ViewLeft
+verase s -view
+vcamera -rotationMode pick
+vmoveto 100 100
+if { [string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should NOT be detected" }
+
+vseldump $::imagedir/${::casename}_sel.png -type entity
+vdump $::imagedir/${::casename}_vis.png

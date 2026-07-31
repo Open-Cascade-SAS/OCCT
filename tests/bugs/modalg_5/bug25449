@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC25449"
+puts "================"
+puts ""
+#######################################################################
+# Excess vertex in result of General Fuse operation.
+#######################################################################
+
+restore [locate_data_file bug25449_fz351.brep] b1
+restore [locate_data_file bug25449_ez679.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+bfillds -t
+bbuild result
+
+checkprops result -s 21.1115 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 11
+checkview -display result -3d -path ${imagedir}/${test_image}.png

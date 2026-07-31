@@ -1,0 +1,26 @@
+#jap60271
+puts "JAP60271"
+puts "Can not create a CompSolid using exploded faces of 2 solids in contact."
+puts ""
+
+box b1 10 10 10
+box b2 5 5 5 
+ttranslate b2 2 2 10
+
+explode b1 F 
+explode b2 F  
+
+bcut res b1_6 b2_6
+
+explode res F 
+sewing se b1_1 b1_2 b1_3 b1_4 b1_5 b2_6 res_1 
+explode se Sh 
+shape Solid1 So 
+add se_1 Solid1 
+
+shape result CS 
+add b2 result
+add Solid1 result
+
+checkprops result -s 750
+checkview -display result -2d -s -otherwise { b1_6 b2_6 } -path ${imagedir}/${test_image}.png

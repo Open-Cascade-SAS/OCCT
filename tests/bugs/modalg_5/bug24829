@@ -1,0 +1,13 @@
+puts "========="
+puts "OCC24829"
+puts "========="
+puts ""
+###########################################################
+# sprops with precision throws an exception
+###########################################################
+
+restore [locate_data_file bug24829_faceOutput-wrong.brep] result
+
+checkprops result -s 15.1187 -eps 0.0001
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

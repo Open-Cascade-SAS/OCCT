@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename tr9_r0601-td.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 194  ( 1 )  Summary  = 194  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4242  ( 61 )  Face     = 4242  ( 4242 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4242  ( 61 )  Face     = 4242  ( 4242 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0003292944598  ( 0.0009787303794 )  AvgTol   =  3.190255905e-007  (  8.69801799e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 4242  ( 4242 )  N2Labels = 0  ( 0 )   TotalLabels = 4243  ( 4243 )   NameLabels = 1  ( 1 )   ColorLabels = 4242  ( 4242 )   LayerLabels = 4242  ( 4242 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = RED WHITE  ( RED WHITE )
+NLAYERS     : NLayers  = 39  ( 39 )
+LAYERS      : Layers   = 001 002 003 004 005 008 009 010 011 012 015 016 017 018 029 030 031 032 033 034 035 036 037 096 097 099 100 101 138 139 175 176 177 178 181 182 183 245 246  ( 001 002 003 004 005 008 009 010 011 012 015 016 017 018 029 030 031 032 033 034 035 036 037 096 097 099 100 101 138 139 175 176 177 178 181 182 183 245 246 )
+
+}

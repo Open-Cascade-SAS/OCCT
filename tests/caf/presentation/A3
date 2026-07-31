@@ -1,0 +1,49 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISViewer
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISSet
+# Testing command:   AISDisplay
+# Testing command:   AISRepaint
+#
+
+puts "caf003-A3"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Open transaction 
+NewCommand D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Close/Open transaction
+NewCommand D
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer (AISRepaint Doc)
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+puts "There is the box in the viewer"

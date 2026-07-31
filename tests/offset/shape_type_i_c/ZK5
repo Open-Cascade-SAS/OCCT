@@ -1,0 +1,8 @@
+restore [locate_data_file bug26917_fills_outside.bad_trim1.brep] s
+
+OFFSETSHAPE 2 {} $calcul $type
+
+checkprops result -v 1.92643e+007
+checkprops result -s 625460
+
+checknbshapes result -shell 1

@@ -1,0 +1,34 @@
+puts "============="
+puts "0030949: Foundation Classes - Dump improvement for OCCT classes"
+puts "============="
+
+pload VISUALIZATION
+vinit View1
+
+set pred   0.088428
+set pgreen 0.041081
+set pblue  0.00209
+
+set dump_aligned_off [vaspects -defaults -dumpJson -dumpCompact on]
+
+if {![regexp {"RGBA": \[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} $dump_aligned_off full cred cgreen cblue]} {
+  puts "Error in Dump. Wrong format of output."
+}
+
+checkreal "Cred" $cred $pred 1.0e-7 0.0
+checkreal "Cgreen" $cgreen $pgreen 1.0e-7 0.0
+checkreal "Cblue" $cblue $pblue 1.0e-7 0.0
+
+
+set dump_aligned_off_deep [vaspects -defaults -dumpJson -dumpCompact on -dumpDepth 2]
+
+if {[regexp {\[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} dump_aligned_off_deep full cred cgreen cblue]} {
+  puts "Error in Dump. Wrong deep of output"
+}
+
+
+puts "Aligned Dump of vaspects:"
+set dump_aligned_on [vaspects -defaults -dumpJson]
+
+puts "Aligned Dump of vaspects (deep = 2):"
+set dump_aligned_on_deep [vaspects -defaults -dumpJson -dumpCompact off -dumpDepth 2]

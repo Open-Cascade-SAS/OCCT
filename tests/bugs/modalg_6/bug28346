@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28346"
+puts "========"
+puts ""
+#################################################
+# Function ProjectOnSegments of ShapeAnalysis_Curve 
+# returns only single solution leading to projection 
+# result far from optimal
+#################################################
+
+restore [locate_data_file bug28346.brep] f
+explode f e
+
+regexp {Dist: ([-0-9.+eE]+)} [projpcurve f_4 f 0.5 169.29762271743246 -75.660813304433930 1040.0634215916459] full dd
+if { abs($dd - 0.1685) > 0.0001 } { puts "Error : Projection is incorrect" }
+

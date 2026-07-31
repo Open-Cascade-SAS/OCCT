@@ -1,0 +1,33 @@
+puts "========"
+puts "0030194: Modeling Algorithms - Intersection points between line and torus are not found"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30194_HA-8579.brep] a
+line l 18000 2000 4000 0 0 -1
+explode a f
+mksurface s1 a_1
+intersect result l s1
+
+set full1 ""
+regexp "Point\\s*:\\s*(\[-0-9.+eE\]+)\\s*,\\s*(\[-0-9.+eE\]+)\\s*,\\s*(\[-0-9.+eE\]+)\\s*" [dump result_1] full1 px1 py1 pz1
+
+if {$full1 != ""} {
+  checkreal PointX $px1 1.8e4 1.0e-7 0
+  checkreal PointY $py1 2.0e3 1.0e-7 0
+  checkreal PointZ $pz1 7.898712797729002e+003 1.0e-7 0
+} else {
+ puts "Error : no intersection point"
+}
+
+set full2 ""
+regexp "Point\\s*:\\s*(\[-0-9.+eE\]+)\\s*,\\s*(\[-0-9.+eE\]+)\\s*,\\s*(\[-0-9.+eE\]+)\\s*" [dump result_2] full2 px2 py2 pz2
+
+if {$full2 != ""} {
+  checkreal PointX $px2 1.8e4 1.0e-7 0
+  checkreal PointY $py2 2.0e3 1.0e-7 0
+  checkreal PointZ $pz2 1.012872022709980e+002 1.0e-7 0
+} else {
+  puts "Error : no intersection point"
+}
+

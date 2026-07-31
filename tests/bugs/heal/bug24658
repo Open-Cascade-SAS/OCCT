@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC24658"
+puts "============"
+puts ""
+#######################################################################
+## fixshape changes source shape
+#######################################################################
+
+restore [locate_data_file bug24658.brep] a
+
+puts "\nBefore shape healing"
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance a] full expected_MaxTolerance
+
+fixshape af a
+
+puts "\nAfter shape healing"
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance a] full MaxTol
+
+set tol_abs_MaxTolerance 1.0e-06
+set tol_rel_MaxTolerance 1.0e-06
+checkreal "MaxTolerance" ${MaxTol} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

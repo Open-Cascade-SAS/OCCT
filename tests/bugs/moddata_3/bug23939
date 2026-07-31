@@ -1,0 +1,28 @@
+puts "========================"
+puts " CR23939 "
+puts "========================"
+puts ""
+##################################################################
+## Incorrect circle parameter in IntAna
+##################################################################
+
+circle c1 0 0 10
+circle c2 7 0 3
+
+set info1 [2dintanalytical c1 c2]
+regexp {parameter on the fist: +([-0-9.+eE]+) parameter on the second: +([-0-9.+eE]+)} ${info1} full p1_1 p1_2
+if { ${p1_1} != 0 } {
+   puts "Bad first parameter p1_1=${p1_1}"
+}
+if { ${p1_2} != 0 } {
+   puts "Bad second parameter p1_2=${p1_2}"
+}
+
+set info2 [2dintanalytical c2 c1]
+regexp {parameter on the fist: +([-0-9.+eE]+) parameter on the second: +([-0-9.+eE]+)} ${info2} full p2_1 p2_2
+if { ${p2_1} != 0 } {
+   puts "Bad first parameter p2_1=${p2_1}"
+}
+if { ${p2_2} != 0 } {
+   puts "Bad second parameter p2_2=${p2_2}"
+}

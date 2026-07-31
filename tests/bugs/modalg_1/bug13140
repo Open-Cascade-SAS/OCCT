@@ -1,0 +1,48 @@
+puts "============"
+puts "OCC13140"
+puts "============"
+puts ""
+#######################################################################
+# Exception during creation pipe on from attached spine and profile
+#######################################################################
+
+restore [locate_data_file OCC13140_Spine.brep] Spine
+restore [locate_data_file OCC13140_Profile.brep] Profile
+
+pipe result Spine Profile
+
+checkprops result -s 3.68518
+checkshape result
+set good_vertex 2
+set good_edge 3
+set good_wire 1
+set good_face 1
+
+set explode_v_length  [llength [explode result v] ]
+set explode_e_length  [llength [explode result e] ]
+set explode_w_length  [llength [explode result w] ]
+set explode_f_length  [llength [explode result f] ]
+
+if { ${explode_v_length} != ${good_vertex} } {
+   puts "vertex: Faulty"
+} else {
+   puts "vertex: OK"
+}
+if { ${explode_e_length} != ${good_edge} } {
+   puts "edge: Faulty"
+} else {
+   puts "edge: OK"
+}
+if { ${explode_w_length} != ${good_wire} } {
+   puts "wire: Faulty"
+} else {
+   puts "wire: OK"
+}
+if { ${explode_f_length} != ${good_face} } {
+   puts "face: Faulty"
+} else {
+   puts "face: OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

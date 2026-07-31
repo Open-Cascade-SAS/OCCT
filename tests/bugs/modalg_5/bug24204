@@ -1,0 +1,45 @@
+puts "============"
+puts "CR24204"
+puts "============"
+puts ""
+################################################################################################################################
+# The algorithm BRepOffsetAPI_MakePipeShell produces resulting shape with unwarrantably big tolerance
+################################################################################################################################
+
+restore [locate_data_file bug24204_outerWire1.brep] w1
+restore [locate_data_file bug24204_outerWire2.brep] w2
+restore [locate_data_file bug24204_path.brep] sp
+
+wire w1 w1
+wire w2 w2
+wire sp sp
+
+mksweep sp
+addsweep w1
+addsweep w2
+
+buildsweep result
+
+set tolmax_result [checkmaxtol result]
+
+set tolmax_w1 [checkmaxtol w1]
+set tolmax_w2 [checkmaxtol w2]
+set tolmax_sp [checkmaxtol sp]
+
+set tolmax_s ${tolmax_w1}
+if { ${tolmax_w2} > ${tolmax_s} } {
+   set tolmax_s ${tolmax_w2}
+}
+if { ${tolmax_sp} > ${tolmax_s} } {
+   set tolmax_s ${tolmax_sp}
+}
+
+if { ${tolmax_result} > [expr 2 * ${tolmax_s}] } {
+   puts "Error : big tolerance of result"
+}
+
+checkprops result -s 3.44584 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -display result -3d -path ${imagedir}/${test_image}.png

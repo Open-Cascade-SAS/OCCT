@@ -1,0 +1,21 @@
+puts "========="
+puts "0025113: Progress indicator in mesh"
+puts "========="
+puts ""
+
+restore [locate_data_file bug21134_r.brep] a
+tclean a
+XProgress +t
+set output [incmesh a 0.005]
+
+set ctr { "Perform incmesh" "Mesh Perform"
+          "Face Discret" "100%"
+          "Create triangles on new vertices" }
+
+foreach data ${ctr} {
+    if ![regexp $data $output] {
+       puts "Error: Non parallel version incmesh command: Mismatch data on '$data'"
+       break; 
+    }
+}
+

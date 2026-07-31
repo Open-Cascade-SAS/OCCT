@@ -1,0 +1,801 @@
+// Created on: 2001-07-20
+// Created by: Alexander GRIGORIEV
+// Copyright (c) 2001-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// AGV 060302: Input from std::istream
+//             AGV 130302: bug corr: was error if strlen(root_elem_name) < 7
+
+#include <LDOM_XmlReader.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <LDOM_MemManager.hxx>
+#include <LDOM_BasicAttribute.hxx>
+#include <LDOM_CharReference.hxx>
+#include <LDOM_OSStream.hxx>
+
+#include <cstring>
+#include <cerrno>
+#ifdef _MSC_VER
+  #include <io.h>
+#else
+  #include <unistd.h>
+#endif
+
+// #include <ctype.h>
+
+const int XML_MIN_BUFFER = 10;
+
+typedef enum
+{
+  STATE_WAITING = 0,
+  STATE_HEADER,
+  STATE_DOCTYPE,
+  STATE_DOCTYPE_MARKUP,
+  STATE_ELEMENT,
+  STATE_ELEMENT_END,
+  STATE_ATTRIBUTE_NAME,
+  STATE_ATTRIBUTE_EQUAL,
+  STATE_ATTRIBUTE_VALUE,
+  STATE_COMMENT,
+  STATE_CDATA,
+  STATE_TEXT
+} ParserState;
+
+#define TEXT_COMPARE(aPtr, aPattern) (memcmp((aPtr), (aPattern), sizeof(aPattern) - 1) == 0)
+
+static bool isName(const char* aString, const char* aStringEnd, const char*& aNameEnd);
+
+//=======================================================================
+// function : LDOM_XmlReader()
+// purpose  : Constructor (file descriptor)
+//=======================================================================
+
+LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
+                               TCollection_AsciiString&            theErrorString,
+                               const bool                          theTagPerStep)
+    : myEOF(false),
+      myError(theErrorString),
+      myDocument(theDocument),
+      myElement(nullptr),
+      myLastChild(nullptr),
+      myPtr(&myBuffer[0]),
+      myEndPtr(&myBuffer[0]),
+      myTagPerStep(theTagPerStep),
+      myBOM(LDOM_OSStream::BOM_UNDEFINED)
+{
+}
+
+//=================================================================================================
+
+LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStream,
+                                                      LDOM_OSStream&    theData,
+                                                      bool&             theDocStart)
+{
+  theData.Clear();
+  myError.Clear();
+  ParserState     aState     = STATE_WAITING;
+  const char *    aStartData = nullptr, *aNameEnd = nullptr, *aPtr;
+  LDOMBasicString anAttrName, anAttrValue;
+  char            anAttDelimiter = '\0';
+  bool            aHasRead       = false;
+
+  for (;;)
+  {
+    //  Check if the current file buffer is exhausted
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  There should always be some bytes available in the buffer for analysis
+    int aBytesRest = (int)(myEndPtr - myPtr);
+    if (aBytesRest < XML_MIN_BUFFER)
+    {
+      if (myEOF)
+      {
+        if (aBytesRest <= 0)
+        {
+          break; // END of processing
+        }
+      }
+      else if (myTagPerStep && aHasRead)
+      {
+        // in myTagPerStep mode, we should parse the buffer to the end before
+        // getting more characters from the stream.
+      }
+      else
+      {
+        // If we are reading some data, save the beginning and preserve the state
+        if (aStartData /* && aState != STATE_WAITING */)
+        {
+          if (myPtr > aStartData)
+          {
+            theData.rdbuf()->sputn(aStartData, myPtr - aStartData);
+          }
+          aStartData = &myBuffer[0];
+        }
+        // Copy the rest of file data to the beginning of buffer
+        if (aBytesRest > 0)
+        {
+          // do not use memcpy here because aBytesRest may be greater than myPtr-myBuffer, so,
+          // overlap
+          memmove(&myBuffer[0], myPtr, aBytesRest);
+        }
+
+        // Read the full buffer and reset start and end buffer pointers
+        myPtr = &myBuffer[0];
+        size_t aNBytes;
+
+        if (myTagPerStep)
+        {
+          theIStream.getline(&myBuffer[aBytesRest], XML_BUFFER_SIZE - aBytesRest, '>');
+          aHasRead = true;
+        }
+        else
+        {
+          theIStream.read(&myBuffer[aBytesRest], XML_BUFFER_SIZE - aBytesRest);
+        }
+        aNBytes = (size_t)theIStream.gcount();
+
+        if (aNBytes == 0)
+        {
+          myEOF = true; // END-OF-FILE
+        }
+        else if (myTagPerStep)
+        {
+          // replace \0 (being inserted by getline method) with >
+          myBuffer[aBytesRest + aNBytes - 1] = '>';
+        }
+        myEndPtr                       = &myBuffer[aBytesRest + aNBytes];
+        myBuffer[aBytesRest + aNBytes] = '\0';
+      }
+    }
+    if (theDocStart && !myEOF)
+    {
+      theDocStart = false;
+      // check for BOM block
+      unsigned char aFirstChar = static_cast<unsigned char>(myPtr[0]);
+      switch (aFirstChar)
+      {
+        case 0xEF:
+          if (static_cast<unsigned char>(myPtr[1]) == 0xBB
+              && static_cast<unsigned char>(myPtr[2]) == 0xBF)
+          {
+            myBOM = LDOM_OSStream::BOM_UTF8;
+            myPtr += 3;
+          }
+          break;
+        case 0xFE:
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFF)
+          {
+            myBOM = LDOM_OSStream::BOM_UTF16BE;
+            myPtr += 2;
+          }
+          break;
+        case 0xFF:
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFE)
+          {
+            if (myPtr[2] == 0 && myPtr[3] == 0)
+            {
+              myBOM = LDOM_OSStream::BOM_UTF32LE;
+              myPtr += 4;
+            }
+            else
+            {
+              myBOM = LDOM_OSStream::BOM_UTF16LE;
+              myPtr += 2;
+            }
+          }
+          break;
+        case 0x00:
+          if (myPtr[1] == 0 && static_cast<unsigned char>(myPtr[2]) == 0xFE
+              && static_cast<unsigned char>(myPtr[3]) == 0xFF)
+          {
+            myBOM = LDOM_OSStream::BOM_UTF32BE;
+            myPtr += 4;
+          }
+          break;
+        case 0x2B:
+          if (myPtr[1] == 47 && myPtr[2] == 118
+              && (myPtr[3] == 43 || myPtr[3] == 47 || myPtr[3] == 56 || myPtr[3] == 57))
+          {
+            myBOM = LDOM_OSStream::BOM_UTF7;
+            if (myPtr[3] == 56 && myPtr[4] == 45)
+            {
+              myPtr += 5;
+            }
+            else
+            {
+              myPtr += 4;
+            }
+          }
+          break;
+        case 0xF7:
+          if (myPtr[1] == 100 && myPtr[2] == 76)
+          {
+            myBOM = LDOM_OSStream::BOM_UTF1;
+            myPtr += 3;
+          }
+          break;
+        case 0xDD:
+          if (myPtr[1] == 115 && myPtr[2] == 102 && myPtr[3] == 115)
+          {
+            myBOM = LDOM_OSStream::BOM_UTFEBCDIC;
+            myPtr += 4;
+          }
+          break;
+        case 0x0E:
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFE
+              && static_cast<unsigned char>(myPtr[2]) == 0xFF)
+          {
+            myBOM = LDOM_OSStream::BOM_SCSU;
+            myPtr += 3;
+          }
+          break;
+        case 0xFB:
+          if (static_cast<unsigned char>(myPtr[1]) == 0xEE && myPtr[2] == 40)
+          {
+            myBOM = LDOM_OSStream::BOM_BOCU1;
+            myPtr += 3;
+          }
+          break;
+        case 0x84:
+          if (myPtr[1] == 49 && static_cast<unsigned char>(myPtr[2]) == 0x95 && myPtr[3] == 51)
+          {
+            myBOM = LDOM_OSStream::BOM_GB18030;
+            myPtr += 4;
+          }
+          break;
+      }
+      if (myBOM != LDOM_OSStream::BOM_UNDEFINED)
+      {
+        continue;
+      }
+    }
+
+    //  Check the character data
+    switch (aState)
+    {
+
+        // Checking the characters in STATE_WAITING (blank, TEXT or markup)
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_WAITING:
+        switch (myPtr[0])
+        {
+          case ' ':
+          case '\t':
+          case '\n':
+          case '\r':
+            ++myPtr;
+            continue;
+          case '<':
+            // XML markup found, then make detect the record type
+            switch (myPtr[1])
+            {
+              case '?':
+                aState = STATE_HEADER;
+                myPtr += 2;
+                aStartData = myPtr;
+                continue;
+              case '/':
+                aState = STATE_ELEMENT_END;
+                myPtr += 2;
+                aStartData = myPtr;
+                continue;
+              case '!':
+                if (myPtr[2] == '-' && myPtr[3] == '-')
+                {
+                  aState = STATE_COMMENT;
+                  myPtr += 4;
+                }
+                else if (TEXT_COMPARE(&myPtr[2], "DOCTYPE"))
+                {
+                  char ch = myPtr[9];
+                  if (ch != ' ' && ch != '\t' && ch != '\n' && ch != '\r')
+                  {
+                    break;
+                  }
+                  aState = STATE_DOCTYPE;
+                  myPtr += 10;
+                }
+                else if (TEXT_COMPARE(&myPtr[2], "[CDATA["))
+                {
+                  aState = STATE_CDATA;
+                  myPtr += 9;
+                }
+                else
+                {
+                  break; // ERROR
+                }
+                aStartData = myPtr;
+                continue;
+              default:
+                if (::isName(&myPtr[1], myEndPtr, aNameEnd))
+                {
+                  aStartData = myPtr + 1;
+                  myPtr      = aNameEnd;
+                  if (myPtr < myEndPtr)
+                  {
+                    myElement =
+                      &LDOM_BasicElement::Create(aStartData, (int)(myPtr - aStartData), myDocument);
+                    myLastChild = nullptr;
+                    aState      = STATE_ATTRIBUTE_NAME;
+                    aStartData  = nullptr;
+                  }
+                  else
+                  {
+                    aState = STATE_ELEMENT;
+                  }
+                  continue;
+                } // otherwise ERROR
+            } // end of switch
+            myError = "Unknown XML object: ";
+            myError += TCollection_AsciiString(myPtr, XML_MIN_BUFFER);
+            return XML_UNKNOWN;
+          case '\0':
+            if (myEOF)
+            {
+              continue;
+            }
+            [[fallthrough]];
+          default:
+            //      Limitation: we do not treat '&' as special character
+            aPtr = (const char*)memchr(myPtr, '<', myEndPtr - myPtr);
+            if (aPtr)
+            {
+              // The end of text field reached
+              theData.rdbuf()->sputn(myPtr, aPtr - myPtr);
+              myPtr = aPtr;
+              return XML_TEXT;
+            }
+            aState     = STATE_TEXT;
+            aStartData = myPtr;
+            myPtr      = myEndPtr;
+            aHasRead   = false;
+        } // end of checking in STATE_WAITING
+        continue;
+
+        // Checking the characters in STATE_HEADER, seek for "?>" sequence
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_HEADER:
+        aPtr = (const char*)memchr(aStartData, '?', (myEndPtr - 1) - aStartData);
+        if (aPtr)
+        {
+          // The end of XML declaration found
+          if (aPtr[1] != '>')
+          { // ERROR
+            myError = "Character \'>\' is expected in the end of XML declaration";
+            return XML_UNKNOWN;
+          }
+          // The XML declaration is retrieved
+          theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+          myPtr = aPtr + 2;
+          return XML_HEADER;
+        }
+        myPtr    = myEndPtr - 1;
+        aHasRead = false;
+        continue;
+
+        // Checking the characters in STATE_DOCTYPE, seek for "]>" sequence
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_DOCTYPE:
+        for (aPtr = aStartData; aPtr < myEndPtr - 1; aPtr++)
+        {
+          const int aChar = aPtr[0];
+          if (aChar == '[')
+          {
+            aState     = STATE_DOCTYPE_MARKUP;
+            aStartData = &aPtr[1];
+            goto state_doctype_markup;
+          }
+          if (aChar == '>')
+          {
+            // The DOCTYPE declaration is retrieved
+            theData.rdbuf()->sputn(aStartData, aPtr - aStartData - 1);
+            myPtr = aPtr + 1;
+            return XML_DOCTYPE;
+          }
+        }
+        myPtr    = myEndPtr - 1;
+        aHasRead = false;
+        continue;
+
+      state_doctype_markup:
+      case STATE_DOCTYPE_MARKUP:
+        aPtr = (const char*)memchr(aStartData, ']', (myEndPtr - 1) - aStartData);
+        if (aPtr)
+        {
+          // The end of DOCTYPE declaration found
+          if (aPtr[1] != '>')
+          { // ERROR
+            myError = "Character \'>\' is expected in the end of DOCTYPE declaration";
+            return XML_UNKNOWN;
+          }
+          // The DOCTYPE declaration is retrieved
+          theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+          myPtr = aPtr + 2;
+          return XML_DOCTYPE;
+        }
+        myPtr    = myEndPtr - 1;
+        aHasRead = false;
+        continue;
+
+        // Checking the characters in STATE_COMMENT, seek for "-->" sequence
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_COMMENT:
+        aPtr = aStartData;
+        for (;;)
+        {
+          aPtr = (const char*)memchr(aPtr, '-', (myEndPtr - 2) - aPtr);
+          if (aPtr == nullptr)
+          {
+            break;
+          }
+          if (aPtr[1] != '-')
+          {
+            ++aPtr;
+          }
+          else
+          {
+            if (aPtr[2] != '>')
+            { // ERROR
+              myError = "Character \'>\' is expected in the end of comment";
+              return XML_UNKNOWN;
+            }
+            theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+            myPtr = aPtr + 3;
+            return XML_COMMENT;
+          }
+        }
+        myPtr    = myEndPtr - 2;
+        aHasRead = false;
+        continue;
+
+        // Checking the characters in STATE_TEXT, seek for "<"
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_TEXT:
+        aPtr = (const char*)memchr(aStartData, '<', myEndPtr - aStartData);
+        if (aPtr)
+        {
+          // The end of text field reached
+          theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+          myPtr = aPtr;
+          return XML_TEXT;
+        }
+        myPtr    = myEndPtr;
+        aHasRead = false;
+        continue;
+
+        // Checking the characters in STATE_CDATA, seek for "]]"
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_CDATA:
+        aPtr = aStartData;
+        for (;;)
+        {
+          aPtr = (const char*)memchr(aPtr, ']', (myEndPtr - 1) - aStartData);
+          if (aPtr == nullptr)
+          {
+            break;
+          }
+          if (aPtr[1] != ']')
+          { // ERROR
+            myError = "Characters \']]\' are expected in the end of CDATA";
+            return XML_UNKNOWN;
+          }
+          theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+          myPtr = aPtr + 2;
+          return XML_CDATA;
+        }
+        myPtr    = myEndPtr - 1;
+        aHasRead = false;
+        continue;
+
+        // Checking the characters in STATE_ELEMENT, seek the end of TagName
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_ELEMENT:
+        if (!::isName(myPtr, myEndPtr, aNameEnd))
+        {
+          if (theData.Length() == 0 || aNameEnd != myPtr)
+          {
+            myError = "Invalid tag name";
+            return XML_UNKNOWN;
+          }
+        }
+        {
+          theData.rdbuf()->sputn(aStartData, aNameEnd - aStartData);
+          char* aDataString = (char*)theData.str();
+          myElement         = &LDOM_BasicElement::Create(aDataString, theData.Length(), myDocument);
+          theData.Clear();
+          myLastChild = nullptr;
+          delete[] aDataString;
+          aState     = STATE_ATTRIBUTE_NAME;
+          aStartData = nullptr;
+          myPtr      = aNameEnd;
+          continue;
+        }
+        // Parsing a single attribute (STATE_ATTRIBUTE)
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_ATTRIBUTE_NAME: // attribute name
+        switch (myPtr[0])
+        {
+          case ' ':
+          case '\t':
+          case '\n':
+          case '\r':
+            if (aStartData)
+            {
+              goto attr_name;
+            }
+            ++myPtr;
+            continue;
+          case '/':
+            if (aStartData)
+            {
+              myError = "Inexpected end of attribute";
+            }
+            else if (myPtr[1] != '>')
+            {
+              myError = "Improper element tag termination";
+            }
+            else
+            {
+              myPtr += 2;
+#ifdef OCCT_DEBUG
+              theData.Clear();
+              theData << myElement->GetTagName();
+#endif
+              return XML_FULL_ELEMENT;
+            }
+            return XML_UNKNOWN;
+          case '>':
+            if (aStartData)
+            {
+              myError = "Inexpected end of attribute";
+              return XML_UNKNOWN;
+            }
+            ++myPtr;
+#ifdef OCCT_DEBUG
+            theData.Clear();
+            theData << myElement->GetTagName();
+#endif
+            return XML_START_ELEMENT;
+          default:
+            if (!::isName(myPtr, myEndPtr, aNameEnd))
+            {
+              if (theData.Length() == 0 || aNameEnd != myPtr)
+              {
+                myError = "Invalid attribute name";
+                return XML_UNKNOWN;
+              }
+            }
+            if (aNameEnd >= myEndPtr)
+            {
+              aStartData = myPtr;
+            }
+            else
+            {
+              if (theData.Length() == 0)
+              {
+                anAttrName = LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
+              }
+              else
+              {
+                theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
+              attr_name:
+                char* aDataString = (char*)theData.str();
+                theData.Clear();
+                anAttrName = LDOMBasicString(aDataString, myDocument);
+                delete[] aDataString;
+              }
+              aStartData = nullptr;
+              aState     = STATE_ATTRIBUTE_EQUAL;
+            }
+            myPtr = aNameEnd;
+            continue;
+        }
+      case STATE_ATTRIBUTE_EQUAL: // attribute 'equal' sign
+        switch (myPtr[0])
+        {
+          case '=':
+            aState = STATE_ATTRIBUTE_VALUE;
+            [[fallthrough]];
+          case ' ':
+          case '\t':
+          case '\n':
+          case '\r':
+            ++myPtr;
+            continue;
+          default:
+            myError = "Equal sign expected in attribute definition";
+            return XML_UNKNOWN;
+        }
+
+      case STATE_ATTRIBUTE_VALUE: // attribute value
+        switch (myPtr[0])
+        {
+          case ' ':
+          case '\t':
+          case '\n':
+          case '\r':
+            if (aStartData == nullptr)
+            {
+              ++myPtr;
+              continue;
+              default:
+                if (anAttDelimiter == '\0')
+                {
+                  myError = "Expected an attribute value";
+                  return XML_UNKNOWN;
+                  case '\"':
+                  case '\'':
+                    if (aStartData == nullptr)
+                    {
+                      aStartData     = &myPtr[1];
+                      anAttDelimiter = myPtr[0];
+                    }
+                }
+            }
+            //      Limitation: we do not take into account that '<' and '&'
+            //      are not allowed in attribute values
+            aPtr = (const char*)memchr(aStartData, anAttDelimiter, myEndPtr - aStartData);
+            if (aPtr)
+            {
+              (char&)aPtr[0]          = '\0';
+              anAttDelimiter          = '\0';
+              char*       aDataString = (char*)aStartData;
+              const char* ePtr        = aPtr;
+
+              //    Append the end of the string to previously taken data
+              if (theData.Length() > 0)
+              {
+                theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+                aDataString = (char*)theData.str();
+                ePtr        = strchr(aDataString, '\0');
+              }
+
+              int aDataLen;
+              aDataString = LDOM_CharReference::Decode(aDataString, aDataLen);
+              if (IsDigit(aDataString[0]))
+              {
+                if (getInteger(anAttrValue, aDataString, ePtr))
+                {
+                  anAttrValue = LDOMBasicString(aDataString, aDataLen, myDocument);
+                }
+              }
+              else
+              {
+                anAttrValue = LDOMBasicString(aDataString, aDataLen, myDocument);
+              }
+
+              if (theData.Length() > 0)
+              {
+                theData.Clear();
+                delete[] aDataString;
+              }
+              //    Create an attribute
+              myLastChild =
+                myElement->AddAttribute(anAttrName, anAttrValue, myDocument, myLastChild);
+              myPtr      = aPtr + 1;
+              aStartData = nullptr;
+              aState     = STATE_ATTRIBUTE_NAME;
+            }
+            else
+            {
+              myPtr    = myEndPtr;
+              aHasRead = false;
+            }
+            continue;
+        }
+        // Checking the characters in STATE_ELEMENT_END, seek for ">"
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      case STATE_ELEMENT_END:
+        aPtr = (const char*)memchr(aStartData, '>', myEndPtr - aStartData);
+        if (aPtr)
+        {
+          // The end of the end-element markup
+          theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
+          myPtr = aPtr + 1;
+          return XML_END_ELEMENT;
+        }
+        myPtr    = myEndPtr;
+        aHasRead = false;
+        continue;
+    }
+  }
+  if (aState != STATE_WAITING)
+  {
+    myError = "Unexpected end of file";
+    return XML_UNKNOWN;
+  }
+  return XML_EOF;
+}
+
+//=======================================================================
+// function : isName
+// type     : static
+// purpose  : Check if aString is a valid XML Name
+//=======================================================================
+
+static bool isName(const char* aString, const char* aStringEnd, const char*& aNameEnd)
+{
+  bool aResult;
+  char aCh = aString[0];
+  if (IsAlphabetic(aCh) || aCh == '_' || aCh == ':')
+  {
+    const char* aPtr = &aString[1];
+    while (aPtr < aStringEnd)
+    {
+      aCh = *aPtr;
+      switch (aCh)
+      {
+        case ' ':
+        case '\n':
+        case '\r':
+        case '\t':
+        case '=':
+        case '\0':
+        case '/':
+        case '>':
+          aNameEnd = aPtr;
+          return true;
+        default:
+          if (IsAlphanumeric(aCh) == 0)
+          {
+            aNameEnd = aPtr;
+            return false;
+          }
+          [[fallthrough]];
+        case '.':
+        case '-':
+        case '_':
+        case ':':
+          ++aPtr;
+      }
+    }
+    aNameEnd = aPtr;
+    aResult  = true;
+  }
+  else
+  {
+    aNameEnd = aString;
+    aResult  = false;
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+void LDOM_XmlReader::CreateElement(const char* theName, const int theLen)
+{
+  myElement = &LDOM_BasicElement::Create(theName, theLen, myDocument);
+}
+
+//=======================================================================
+// function : getInteger
+// purpose  : Try to initialize theValue as Integer; return False on success
+//=======================================================================
+
+bool LDOM_XmlReader::getInteger(LDOMBasicString& theValue, const char* theStart, const char* theEnd)
+{
+  char* ptr;
+  errno = 0;
+  if (theEnd - theStart == 1 || theStart[0] != '0')
+  {
+    long aResult = strtol(theStart, &ptr, 10);
+    if (ptr == theEnd && errno == 0)
+    {
+      theValue = int(aResult);
+      return false;
+    }
+  }
+  return true;
+}

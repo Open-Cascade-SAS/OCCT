@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC28028"
+puts "========"
+puts ""
+#################################################
+# Solid becomes invalid after scaling
+#################################################
+
+pload XDE
+
+testreadstep [locate_data_file bug28028_stamp.stp] s
+
+tcopy s result
+checkshape s
+
+tscale result 0 0 0 3
+checkshape result
+
+checkprops result -s 2197.19 -v 5026.59

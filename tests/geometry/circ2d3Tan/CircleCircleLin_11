@@ -1,0 +1,9 @@
+qcircle c1 0 0 50
+qcircle c2 20 0 10
+qline l1 -20 0 10 20
+circ2d3Tan tan1 c1 c2 l1
+
+checklength tan1_1 -l 115.99869565347736
+checklength tan1_2 -l 156.18117752496227
+checklength tan1_3 -l 165.15717356376749
+checklength tan1_4 -l 198.5849242626559

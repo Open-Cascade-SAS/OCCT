@@ -1,0 +1,11 @@
+puts "========"
+puts "0029356: Modeling Algorithms - GCPnts_TangentialDeflection hangs on specific curve"
+puts "========"
+
+if {[info commands testreadiges] == ""} {pload IGES}
+testreadiges [locate_data_file bug29356.igs] a
+
+vinit View1
+vdisplay -dispMode 0 a
+visos a 12 6 1
+vfit

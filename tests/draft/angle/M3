@@ -1,0 +1,11 @@
+# Original bug : cts21900
+# Date : 02 Dec 98
+
+restore [locate_data_file CFE903_cts21ggv.rle] base
+
+explode base face
+
+if { [catch { depouille result base 0 0 1 base_16 3 200 -15.1180845742047 30 0 0 1 base_18 3 200 -15.1180845742047 30 0 0 1 } ] != 0 } {
+  puts "Error in depouille"
+}
+checkprops result -s 74960.8

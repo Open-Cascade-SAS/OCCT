@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+cylinder cyl 10
+trimv cyl cyl -20 20
+mkface fcyl cyl
+cone con 45 0
+trimv con1 con 0 15
+trimv con2 con -15 0
+mkface fcon1 con1
+mkface fcon2 con2
+plane pl 0 0 15 0 0 1
+mkface fp pl -15 15 -15 15
+sphere sph 0 0 0 12
+mkface fsph sph
+
+mkvolume result fcyl fp
+# 0 solids
+
+checknbshapes result -vertex 0 -edge 0 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

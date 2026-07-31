@@ -1,0 +1,93 @@
+// Created on: 1993-06-03
+// Created by: Laurent BUCHARD
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_OutOfRange.hxx>
+
+//======================================================================
+inline double IntCurve_Polygon2dGen::DeflectionOverEstimation() const
+{
+  return (TheDeflection);
+} //======================================================================
+
+inline void IntCurve_Polygon2dGen::SetDeflectionOverEstimation(const double x)
+{
+  TheDeflection = x;
+  myBox.Enlarge(TheDeflection);
+}
+
+//======================================================================
+inline void IntCurve_Polygon2dGen::Closed(const bool flag)
+{
+  ClosedPolygon = flag;
+}
+
+//======================================================================
+inline int IntCurve_Polygon2dGen::NbSegments() const
+{
+  return ((ClosedPolygon) ? NbPntIn : NbPntIn - 1);
+}
+
+//======================================================================
+inline double IntCurve_Polygon2dGen::InfParameter() const
+{
+  return (TheParams.Value(TheIndex(1)));
+}
+
+//======================================================================
+inline double IntCurve_Polygon2dGen::SupParameter() const
+{
+  return (TheParams.Value(TheIndex(NbPntIn)));
+}
+
+//======================================================================
+
+//======================================================================
+inline int IntCurve_Polygon2dGen::CalculRegion(const double x,
+                                               const double y,
+                                               const double x1,
+                                               const double x2,
+                                               const double y1,
+                                               const double y2) const
+{
+  int r;
+  if (x < x1)
+  {
+    r = 1;
+  }
+  else
+  {
+    if (x > x2)
+    {
+      r = 2;
+    }
+    else
+    {
+      r = 0;
+    }
+  }
+  if (y < y1)
+  {
+    r |= 4;
+  }
+  else
+  {
+    if (y > y2)
+    {
+      r |= 8;
+    }
+  }
+  return (r);
+}

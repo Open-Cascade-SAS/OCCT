@@ -1,0 +1,10 @@
+# Original bug : pro12896
+# Date : 30mar98
+
+restore [locate_data_file CTO900_pro12896a.rle] a
+restore [locate_data_file CTO900_pro12896b.rle] b
+
+bfuse result a b
+
+checkprops result -s 202328
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

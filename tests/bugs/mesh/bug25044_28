@@ -1,0 +1,18 @@
+puts "======="
+puts "0025044: BRepMesh tweaks"
+puts "======="
+puts ""
+
+restore [locate_data_file bug25044_face28.brep] result
+tclean result
+
+incmesh result 0.1 -a 5
+
+checktrinfo result -tri
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

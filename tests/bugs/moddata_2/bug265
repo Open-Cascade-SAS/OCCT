@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC265"
+puts "========"
+puts ""
+###############################################
+##Exception while projecting hyperbola on plane.
+###############################################
+
+restore [locate_data_file OCC265-hyperbola.draw] hyperbola 
+restore [locate_data_file OCC265-plane.draw] plane
+
+projonplane result hyperbola plane
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

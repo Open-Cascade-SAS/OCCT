@@ -1,0 +1,27 @@
+puts "TODO OCC25798 ALL: Faulty shapes in variables faulty_1 to"
+
+puts "============"
+puts "OCC25798"
+puts "============"
+puts ""
+##############################################
+#  BRepFeat_SplitShape returns invalid result
+##############################################
+
+restore [locate_data_file bug25798_Pump2.brep] p
+
+explode p
+checkshape p
+whatis p
+
+renamevar p_1 f
+checkshape f
+explode f
+
+splitshape result f_4 f_4 p_5
+
+whatis result
+checkshape result
+tolerance result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png 

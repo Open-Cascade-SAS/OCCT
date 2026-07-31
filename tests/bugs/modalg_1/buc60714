@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC60714"
+puts "========================"
+
+profile f x 30 y 20 x -30
+explode f w 
+vertex v1 0 0 0 
+vertex v2 0 -10 -10
+edge e v1 v2
+
+wire w e
+mksweep f_1
+setsweep -FR
+addsweep w
+
+########
+#doesn't work
+buildsweep result -C -S
+
+checkprops result -s 1979.9 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

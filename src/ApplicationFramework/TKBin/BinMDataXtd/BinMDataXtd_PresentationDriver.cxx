@@ -1,0 +1,215 @@
+// Created on: 2004-05-17
+// Created by: Sergey ZARITCHNY
+// Copyright (c) 2004-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BinMDataXtd_PresentationDriver.hxx>
+
+#include <TDataXtd_Presentation.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <Message_Messenger.hxx>
+#include <Quantity_Color.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver, BinMDF_ADriver)
+
+//=================================================================================================
+
+BinMDataXtd_PresentationDriver::BinMDataXtd_PresentationDriver(
+  const occ::handle<Message_Messenger>& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Presentation)->Name())
+{
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> BinMDataXtd_PresentationDriver::NewEmpty() const
+{
+  return new TDataXtd_Presentation();
+}
+
+//=================================================================================================
+
+bool BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           BinObjMgt_RRelocationTable& /*theRT*/) const
+{
+  bool                               ok          = false;
+  occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theTarget);
+
+  // Display status
+  int aValue;
+  ok = theSource >> aValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  anAttribute->SetDisplayed(aValue != 0);
+
+  // GUID
+  Standard_GUID aGUID;
+  ok = theSource >> aGUID;
+  if (!ok)
+  {
+    return ok;
+  }
+  anAttribute->SetDriverGUID(aGUID);
+
+  // Color
+  ok = theSource >> aValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  if (aValue != -1)
+  {
+    Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum(aValue);
+    if (aNameOfColor <= Quantity_NOC_WHITE)
+    {
+      anAttribute->SetColor(aNameOfColor);
+    }
+  }
+  else
+  {
+    anAttribute->UnsetColor();
+  }
+
+  // Material
+  ok = theSource >> aValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  if (aValue != -1)
+  {
+    anAttribute->SetMaterialIndex(aValue);
+  }
+  else
+  {
+    anAttribute->UnsetMaterial();
+  }
+
+  // Transparency
+  double aRValue;
+  ok = theSource >> aRValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  if (aRValue != -1.)
+  {
+    anAttribute->SetTransparency(aRValue);
+  }
+  else
+  {
+    anAttribute->UnsetTransparency();
+  }
+
+  // Width
+  ok = theSource >> aRValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  if (aRValue != -1.)
+  {
+    anAttribute->SetWidth(aRValue);
+  }
+  else
+  {
+    anAttribute->UnsetWidth();
+  }
+
+  // Mode
+  ok = theSource >> aValue;
+  if (!ok)
+  {
+    return ok;
+  }
+  if (aValue != -1)
+  {
+    anAttribute->SetMode(aValue);
+  }
+  else
+  {
+    anAttribute->UnsetMode();
+  }
+
+  return true;
+}
+
+//=================================================================================================
+
+void BinMDataXtd_PresentationDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theSRT*/) const
+{
+  occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theSource);
+
+  // Display status
+  theTarget.PutBoolean(anAttribute->IsDisplayed());
+
+  // GUID
+  theTarget.PutGUID(anAttribute->GetDriverGUID());
+
+  // Color
+  if (anAttribute->HasOwnColor())
+  {
+    const int anOldEnum = TDataXtd_Presentation::getOldColorNameFromNewEnum(anAttribute->Color());
+    theTarget.PutInteger(anOldEnum);
+  }
+  else
+  {
+    theTarget.PutInteger(-1);
+  }
+
+  // Material
+  if (anAttribute->HasOwnMaterial())
+  {
+    theTarget.PutInteger(anAttribute->MaterialIndex());
+  }
+  else
+  {
+    theTarget.PutInteger(-1);
+  }
+
+  // Transparency
+  if (anAttribute->HasOwnTransparency())
+  {
+    theTarget.PutReal(anAttribute->Transparency());
+  }
+  else
+  {
+    theTarget.PutReal(-1.);
+  }
+
+  // Width
+  if (anAttribute->HasOwnWidth())
+  {
+    theTarget.PutReal(anAttribute->Width());
+  }
+  else
+  {
+    theTarget.PutReal(-1.);
+  }
+
+  // Mode
+  if (anAttribute->HasOwnMode())
+  {
+    theTarget.PutInteger(anAttribute->Mode());
+  }
+  else
+  {
+    theTarget.PutInteger(-1);
+  }
+}

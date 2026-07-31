@@ -1,0 +1,30 @@
+puts "================="
+puts "OCC644"
+puts "SAM1513"
+puts "================="
+puts ""
+
+NewDocument D 
+UndoLimit D 10 
+
+NewCommand D 
+SetVariable D 0:1 0 mm 
+SetRelation D 0:2 x=10 0:1 
+
+NewCommand D 
+SetRelation D 0:2 x=20 0:1 
+
+NewCommand D 
+Undo D 
+Redo D
+Undo D
+
+set RelationList [DumpRelation D 0:2]
+
+if {[llength ${RelationList}] <= 10} {
+    puts "OCC644: OK"
+} else {
+    puts "OCC644: ERROR"
+}
+
+

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC27110"
+puts "========"
+puts ""
+###############################################################################
+# Regression: Draw command "parameters" can not compute parameter on the line
+###############################################################################
+
+restore [locate_data_file bug27110-ClosedWireEdge.brep] e1
+mkcurve c1 e1
+parameters c1 800.0 0.001 0 0.001 U
+
+set bug_info [dump U]
+set bug_info [string trim [string range $bug_info [expr {[string last "\n" $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
+if {$bug_info != 800} {
+  puts "ERROR: OCC27110 is reproduced. Parameters U is not equal 800."
+}

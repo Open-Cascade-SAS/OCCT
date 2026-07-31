@@ -1,0 +1,44 @@
+puts "========"
+puts "0025082: bopcommon returns different result on Windows and Linux system"
+puts "========"
+puts ""
+
+
+restore [locate_data_file bug25054_shape1.brep] b1
+restore [locate_data_file bug25054_shape2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b2
+baddtools b1
+
+bfillds
+
+for {set i 0} { $i <= 4 } { incr i} {
+  bbop r_$i $i
+  checkshape r_$i
+  if {[regexp "Faulties" [bopargcheck r_$i]]} {
+    puts "Error: bopargcheck has found some faulties in r_$i"
+  }
+}
+
+checknbshapes r_0 -solid 1 -shell 1 -face 8 -wire 8
+checkprops r_0 -s 0.28083 -v 0.00131782
+
+checknbshapes r_1 -solid 1 -shell 1 -face 20 -wire 20
+checkprops r_1 -s 0.28086 -v 0.00132012
+
+checknbshapes r_2 -solid 1 -shell 1 -face 8 -wire 8
+checkprops r_2 -s 0.263808 -v 1.1489e-06
+
+checknbshapes r_3 -solid 1 -shell 1 -face 8 -wire 8
+checkprops r_3 -s 0.263808 -v 1.1489e-06
+
+checknbshapes r_4 -vertex 12 -edge 18
+checkprops r_4 -l 3.47027
+checksection r_4 -r 12
+
+# COMMON
+copy r_0 result
+checkmaxtol result -min_tol 6.0e-7
+checkview -display result -2d -path ${imagedir}/${test_image}.png

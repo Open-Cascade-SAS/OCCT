@@ -1,0 +1,18 @@
+# Original bug : pro13278
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_pro13gey.rle] base
+restore [locate_data_file pro13278_face.brep] cont
+
+explode base face
+copy base_6 funtil
+
+mksurface p6 base_6
+mkface f6 p6
+
+featprism base cont cont 0 0 -1 1 1
+featperform prism result f6
+
+# indiquer option support face Until
+
+checkprops result -s 603600

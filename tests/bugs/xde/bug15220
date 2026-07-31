@@ -1,0 +1,17 @@
+puts "==========="
+puts "OCC15220"
+puts "==========="
+
+set BugNumber OCC15220
+
+######################################################
+# Problems with IGES file locations
+######################################################
+
+
+igesbrep [locate_data_file OCC15220.igs] result *
+
+checkprops result -s 5.69952e+07 
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

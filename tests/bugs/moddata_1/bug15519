@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC15519"
+puts "============"
+puts ""
+#######################################################################
+# Exception while meshing shape
+#######################################################################
+
+set BugNumber OCC15519
+
+restore [locate_data_file OCC15519.brep] result
+tclean result
+
+set Deflection 1.
+catch {incmesh result ${Deflection} }
+
+checktrinfo result -tri 60069 -nod 50081 -defl 1.6213275001104823 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checkview -display result -2d -path ${imagedir}/${test_image}.png

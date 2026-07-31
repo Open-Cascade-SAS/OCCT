@@ -1,0 +1,41 @@
+puts "==============================================================="
+puts "0030595: Oriented Bounding Box seems not optimal for some shapes"
+puts "==============================================================="
+puts ""
+
+# average volumes of OBBs on different sets
+set OBB_Vol_Exp 615000
+# set relative error to 1%
+set eps 0.01
+
+restore [locate_data_file bug30595_UC4_P_2K.brep] s1
+# build OBB
+dchrono s1_time start
+bounding s1 -obb -shape bs1 -optimal
+dchrono s1_time stop counter s1_OBB
+# check volume
+checkprops bs1 -v $OBB_Vol_Exp -deps $eps
+
+restore [locate_data_file bug30595_UC4_P_13K.brep] s2
+# build OBB
+dchrono s2_time start
+bounding s2 -obb -shape bs2 -optimal
+dchrono s2_time stop counter s2_OBB
+# check volume
+checkprops bs2 -v $OBB_Vol_Exp -deps $eps
+
+restore [locate_data_file bug30595_UC4_P_125K.brep] s3
+# build OBB
+dchrono s3_time start
+bounding s3 -obb -shape bs3 -optimal
+dchrono s3_time stop counter s3_OBB
+# check volume
+checkprops bs3 -v $OBB_Vol_Exp -deps $eps
+
+smallview +X+Z
+donly s3 bs3; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_xz.png
+
+smallview +X+Y
+donly s3 bs3; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_xy.png

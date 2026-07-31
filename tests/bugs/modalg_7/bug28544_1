@@ -1,0 +1,19 @@
+puts "TODO OCC28544 ALL: Error in ii: T="
+
+puts "========"
+puts "OCC28544"
+puts "========"
+puts ""
+##################################################################
+# Big tolerance value is returned by Implicit-parametric algorithm
+##################################################################
+
+restore [locate_data_file bug24094_face.brep] b1
+
+mksurface s1 b1
+plane s2 183.6 0 0 1 0 0 0 1 0
+
+# B-spline + Plane
+intersect ii s1 s2
+bounds ii u1 u2
+xdistcs ii s1 u1 u2 10 2.0e-7

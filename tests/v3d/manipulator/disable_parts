@@ -1,0 +1,29 @@
+puts "====================================="
+puts "Disable functional parts for manipulator axes"
+puts "====================================="
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1
+vaxo
+vzbufftrihedron
+
+box b 500 500 1 50 100 150
+vdisplay b -dispMode 1
+vfit
+
+vmanipulator m -attach b -part 0 1 0
+vdump $imagedir/${casename}_1.png
+vmanipulator m -detach
+
+vmanipulator m -attach b -part 0 2 0
+vdump $imagedir/${casename}_2.png
+vmanipulator m -detach
+
+vmanipulator m -attach b -part 0 3 0
+vdump $imagedir/${casename}_3.png
+vmanipulator m -detach
+
+vmanipulator m -attach b -parts 1 0
+vdump $imagedir/${casename}_4.png

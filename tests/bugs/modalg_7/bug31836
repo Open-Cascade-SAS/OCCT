@@ -1,0 +1,59 @@
+puts "============================================================================================="
+puts "0031836: regression issue - boolean cut between a cone and a Torus is not done"
+puts "============================================================================================="
+puts ""
+
+pcone c 282.842712474619 100 300
+ttranslate c 100 0 0
+ptorus t 80.2535587508467 19.7464412491533
+ttranslate t 100 0 300
+
+bfuzzyvalue 1.e-6
+brunparallel 1
+bnondestructive 1
+setfillhistory 0
+
+explode s
+
+bclearobjects
+bcleartools
+baddobjects c
+baddtools t
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+bbuild r_5
+
+boptions -default
+
+foreach i {0 1 2 3 4 5} {
+  checkshape r_$i
+  if {![regexp "OK" [bopcheck r_$i]]} {
+    puts "Error: r_$i is self-intersecting shape"
+  }
+}
+
+checkprops r_0 -s 51195.4 -v 308846
+checknbshapes r_0 -wire 3 -face 2 -shell 1 -solid 1 -t
+
+checkprops r_1 -s 716665 -v 3.74689e+07
+checknbshapes r_1 -wire 4 -face 4 -shell 1 -solid 1 -t
+
+checkprops r_2 -s 716665 -v 3.68513e+07
+checknbshapes r_2 -wire 4 -face 4 -shell 1 -solid 1 -t
+
+checkprops r_3 -s 51195.4 -v 308846
+checknbshapes r_3 -wire 3 -face 2 -shell 1 -solid 1 -t
+
+checkprops r_4 -l 1008.5
+checksection r_4 -r 0
+checknbshapes r_4 -edge 2
+
+checkprops r_5 -s 819056 -v 3.74689e+07
+checknbshapes r_5 -wire 7 -face 6 -shell 3 -solid 3 -t
+
+checkview -display r_2 -2d -path ${imagedir}/${test_image}.png

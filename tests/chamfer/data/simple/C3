@@ -1,0 +1,5 @@
+set chamf_shape CCH_001_hhdi.rle
+set chamf_edge_face  [list "   8    2" " 15    8"]
+set chamf_dist_angle [list "0.05   30" "0.1   30"]
+set chamf_dist_dist  [list " 0.1 0.06" "0.1 0.06"]
+set chamf_equal_dist [list "0.1      " "0.1     "]

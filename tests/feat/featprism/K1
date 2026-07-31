@@ -1,0 +1,12 @@
+# Original bug : cts20170
+# Date : 8April98
+
+restore [locate_data_file cts20170_base.rle] base
+restore [locate_data_file cts20170_face.rle] cont
+
+explode base face
+
+featprism base cont cont 0 0 1 1 1
+featperformval prism result 25
+
+checkprops result -s 47886.5

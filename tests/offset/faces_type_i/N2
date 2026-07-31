@@ -1,0 +1,12 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+beziersurf c 3 2 \
+0 0 0 0 5 5 2 14 3 \
+10 -5 -3 13 3 0 12 10 5
+mkface c c
+prism s c 0 0 20
+
+OFFSETSHAPE -1 {s_5 s_6} $calcul $type
+
+checkprops result -v 951.165

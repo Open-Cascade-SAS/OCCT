@@ -1,0 +1,30 @@
+puts "============"
+puts "0027818: Visualization - provide an interface to define highlight presentation properties"
+puts "Test change of highlight properties for whole interactive context"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+box b 10 20 30
+pcone p 15 0 40
+
+vclear
+vinit View1
+vdisplay b -dispMode 1 b p
+vsetcolor b RED
+vsetcolor p GRAY
+
+vviewparams -scale 17.8 -proj 0.892687 -0.331602 0.305206 -up -0.162521 0.394789 0.904284 -at 1.99 2.4 20.9
+vselprops dynHighlight -transp 0.3 -color PALEGREEN2 -dispMode 1
+
+vmoveto 285 212
+if { [vreadpixel 285 212 name rgb] != "KHAKI3" }        { puts "Error: highlighting of a box is not transparent!" }
+
+vmoveto -reset
+if { [vreadpixel 285 212 name rgb] != "RED" }           { puts "Error: highlighting of a box is not reset!" }
+
+vmoveto 167 263
+if { [vreadpixel 167 263 name rgb] != "DARKSEAGREEN2" } { puts "Error: highlighting of a cone is not transparent!" }
+
+vdump $imagedir/${casename}.png

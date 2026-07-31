@@ -1,0 +1,28 @@
+puts "========================"
+puts "PRO20362"
+puts "========================"
+
+stepread [locate_data_file PRO20362.stp] a *
+
+explode a_1 f
+renamevar a_1 result
+
+checkshape a_1_1
+checkshape a_1_1 r
+
+set l [explode a_1_1 e]
+set n [llength $l]
+if { $n != 4 } {
+    puts "Error : The amount of edges in FIRST face is more than four"
+}
+
+checkshape a_1_2
+checkshape a_1_2 r
+
+set i [explode a_1_2 e]
+set m [llength $i]
+if { $m != 4 } {
+    puts "Faulty : The amount of edges in SECOND face is more than four"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC11565"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation "Cut" in 2d cannot cut the hole from the rectangle
+#######################################################################
+
+restore [locate_data_file OCC11565.brep] a
+explode a
+
+bop a_1 a_2
+bopcut result
+
+checkprops result -s 28.6255 
+checkshape result
+checknbshapes result -vertex 12 -edge 12 -wire 2 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 28
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

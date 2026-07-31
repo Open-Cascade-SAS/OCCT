@@ -1,0 +1,18 @@
+## ==================================
+## File : Begin file for FEAT grids
+## Date : 01.02.2012
+## ==================================
+
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+   pload TOPTEST
+}
+
+# To prevent loops limit to 10 minutes
+cpulimit 600
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

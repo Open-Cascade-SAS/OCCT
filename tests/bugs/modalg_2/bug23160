@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC23160"
+puts "============"
+puts ""
+#######################################################################
+# Cut operation with the attached shapes produces a not correct result.
+#######################################################################
+
+set BugNumber OCC23160
+
+restore [locate_data_file bug23160_tshape.brep] b1 
+restore [locate_data_file bug23160_box.brep] b2 
+bop b1 b2
+bopcut result
+
+checkprops result -s 270192 
+checkshape result
+
+checknbshapes result -vertex 16 -edge 24 -wire 10 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 63
+checkview -display result -3d -path ${imagedir}/${test_image}.png

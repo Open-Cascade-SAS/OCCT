@@ -1,0 +1,8 @@
+restore [locate_data_file CFI901_congefjy.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 0.0011000000000000001
+checknbshapes result -shell 1
+checkfreebounds result 13
+checkfaults result a 0

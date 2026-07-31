@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC2083"
+puts "============"
+puts ""
+######################################################
+# BRepOffsetAPI_MakePipeShell throws an exception
+######################################################
+
+restore [locate_data_file OCC2083-f1.brep] f1 
+restore [locate_data_file OCC2083-f2.brep] f2 
+restore [locate_data_file OCC2083-w.brep] s 
+
+checkshape f1
+checkshape f2
+checkshape s
+
+explode f1 w
+explode f2 w
+mksweep s
+addsweep f1_1 -T
+addsweep f2_1 -T
+
+if { [catch {buildsweep result} catch_result] } {
+    puts "Faulty OCC2083"
+}
+
+checkprops result -s 36583.8 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

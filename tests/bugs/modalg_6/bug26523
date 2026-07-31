@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC26523"
+puts "============"
+puts ""
+###############################
+## Wrong result of section algorithm
+###############################
+
+restore [locate_data_file bug26523_as.brep] as
+restore [locate_data_file bug26523_at.brep] at
+
+bsection result as at
+
+checkprops result -l 1189.91
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 3
+ EDGE      : 2
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 6
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Section curve"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

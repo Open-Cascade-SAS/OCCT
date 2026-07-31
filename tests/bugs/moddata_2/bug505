@@ -1,0 +1,18 @@
+
+puts "========="
+puts " OCC505 "
+puts "========="
+puts ""
+#####################################
+## BRepExtrema_DistShapeShape throws an exception.
+#####################################
+
+restore [locate_data_file OCC505a.brep] su1 
+checkshape su1
+
+restore [locate_data_file OCC505b.brep] su2
+checkshape su2
+
+distmini d su1 su2
+
+

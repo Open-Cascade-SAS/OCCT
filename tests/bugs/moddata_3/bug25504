@@ -1,0 +1,12 @@
+puts "================"
+puts "OCC25504"
+puts "================"
+puts ""
+#######################################################################
+# Exception raised during projection curve on surface
+#######################################################################
+
+restore [locate_data_file bug25504_surf.draw] s
+restore [locate_data_file bug25504_curve.draw] c
+
+project c2d c s

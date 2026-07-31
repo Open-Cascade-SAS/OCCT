@@ -1,0 +1,9 @@
+restore [locate_data_file CIN900_cts20hlh.rle] a
+restore [locate_data_file CIN900_cts20hli.rle] b
+restore [locate_data_file CIN900_cts20hlj.rle] c
+
+bcut rab a b
+
+bcut result rab c
+checkprops result -s 272.503
+checkview -display result -2d -s -otherwise { rab c } -path ${imagedir}/${test_image}.png

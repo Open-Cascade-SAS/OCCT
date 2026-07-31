@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_parasite_solid_s2.brep] s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+checkprops result -v 10761.4
+
+checknbshapes result -shell 1

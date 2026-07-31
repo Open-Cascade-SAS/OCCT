@@ -1,0 +1,19 @@
+puts "================"
+puts "OCC25450"
+puts "================"
+puts ""
+####################################
+# Common operation returns wrong shape
+####################################
+
+restore [locate_data_file bug25450_b1.brep] b1
+restore [locate_data_file bug25450_b2.brep] b2
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 35538.3 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 11
+checkview -display result -3d -path ${imagedir}/${test_image}.png

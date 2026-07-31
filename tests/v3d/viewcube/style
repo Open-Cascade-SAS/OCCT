@@ -1,0 +1,49 @@
+puts "=================================="
+puts "0028954: Visualization - implement interactive object AIS_ViewCube for camera manipulations"
+puts "Display custom styled View Cube"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vrenderparams -rendScale 1
+
+vviewcube vc -edges 0
+if {[vreadpixel 70 295 name rgb] != "BLACK"} { puts "Error: Invalid display of View Cube without edges." }
+vdump $imagedir/${casename}_noedges.png
+
+vviewcube vc -edges 1 -vertices 0
+if {[vreadpixel 100 308 name rgb] != "BLACK"} { puts "Error: Invalid display of View Cube without vertices." }
+vdump $imagedir/${casename}_noverts.png
+
+vviewcube vc -edges 0 -vertices 0
+
+if {[vreadpixel 70 295 name rgb] != "BLACK" || [vreadpixel 100 308 name rgb] != "BLACK"} {
+  puts "Error: Invalid display of View Cube without edges & vertices."
+}
+vdump $imagedir/${casename}_noedgeandvert.png
+vclear
+
+# Color
+vrenderparams -rendScale 2
+vviewcube vc1 -boxColor B0E0FF -textColor 00668A
+vdisplay vc1 -trihedron bottomLeft 100 100
+
+# Transparency
+vviewcube vc2 -transparency 0.5
+vdisplay vc2 -trihedron topLeft 100 100
+
+# Font
+vviewcube vc3 -reset -boxSideColor WHITE -font "monospace" -fontHeight 16
+vdisplay vc3 -trihedron bottomRight 100 100
+vaspects vc3 -setFaceBoundaryDraw 1 -setFaceBoundaryWidth 2
+
+# Corner radius
+vviewcube vc4 -reset -boxSideColor WHITE -roundRadius 0.2 -boxEdgeGap 2
+vdisplay vc4 -trihedron topRight 100 100
+vaspects vc4 -setFaceBoundaryDraw 1
+
+# Padding
+vviewcube vc5 -reset -boxFacetExtension 0 -axesPadding 0
+vdisplay vc5 -trihedron center
+vdump $imagedir/${casename}_styles.png

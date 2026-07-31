@@ -1,0 +1,24 @@
+puts "============"
+puts "BUC60685"
+puts "============"
+puts ""
+
+cpulimit 1000
+
+set l [igesbrep [locate_data_file buc60685a.igs] a xst-transferrable-roots] 
+
+tpcompound result
+checkshape result r
+
+regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full start
+regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full end
+puts "start = ${start}"
+puts "end = ${end}"
+if { ${start} == ${end} && ${start} == 19 } {
+  puts "BUC60685: OK"
+} else {
+  puts "Faulty : wrong number of translated shapes. It is ${end} instead of ${start}"
+  puts "BUC60685: Faulty"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

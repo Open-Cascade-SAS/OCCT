@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename y306351fM.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 183  ( 951 )  Summary  = 183  ( 951 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 )   FreeWire = 20  ( 20 ) 
+TOLERANCE   : MaxTol   =          1e-05  ( 1.00030003e-05 )  AvgTol   =  1.900914531e-07  (  7.374328322e-06 )
+LABELS      : N0Labels = 1528  ( 1528 )  N1Labels = 20  ( 1296 )  N2Labels = 0  ( 0 )   TotalLabels = 1548  ( 2824 )   NameLabels = 1528  ( 1528 )   ColorLabels = 1527  ( 2824 )   LayerLabels = 1504  ( 2820 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLUE CYAN WHITE  ( BLUE CYAN WHITE )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 1 2  ( 1 2 )
+
+}

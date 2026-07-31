@@ -1,0 +1,138 @@
+#INTERFACE CAF
+# XLink attributes
+#
+# Testing attribute: TDocStd_XLink
+#
+# Testing command:   UpdateLink
+#
+
+puts "caf004-D2"
+
+# Create two new documents Doc1, Doc2
+NewDocument Doc1 BinOcaf
+NewDocument Doc2 BinOcaf
+
+# Set UndoLimit for them
+UndoLimit Doc1 100
+UndoLimit Doc2 100
+
+# Set a shape in Doc1 to label 'SLabel'
+set aLabel1 0:2
+Label Doc1 ${aLabel1}
+SetName Doc1 ${aLabel1} SLabel
+
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+
+SetShape Doc1 ${aLabel1} aBox1
+
+# Set a shape in Doc1 to label 'S2Label'
+set aLabel12 0:22
+Label Doc1 ${aLabel12}
+SetName Doc1 ${aLabel12} S2Label
+
+set aSetX12 210
+set aSetY12 220
+set aSetZ12 230
+set aSetDX12 2100
+set aSetDY12 2200
+set aSetDZ12 2300
+
+box aBox12 ${aSetX12} ${aSetY12} ${aSetZ12} ${aSetDX12} ${aSetDY12} ${aSetDZ12}
+
+bounding aBox12 -save X1_Box12 Y1_Box12 Z1_Box12 X2_Box12 Y2_Box12 Z2_Box12
+
+SetShape Doc1 ${aLabel12} aBox12
+
+# Create a new label 'TLabel1' in Doc2
+set aLabel2 0:3
+Label Doc2 ${aLabel2}
+SetName Doc2 ${aLabel2} TLabel1
+
+# Create a new label 'T2Label1' in Doc2
+set aLabel22 0:32
+Label Doc2 ${aLabel22}
+SetName Doc2 ${aLabel22} T2Label1
+
+# Open transaction in Doc2
+NewCommand Doc2
+
+# Copy 'SLabel' to the label 'TLabel1' with link
+CopyWithLink Doc2 ${aLabel2} Doc1 ${aLabel1}
+
+# Copy 'S2Label' to the label 'T2Label1' with link
+CopyWithLink Doc2 ${aLabel22} Doc1 ${aLabel12}
+
+# Close/Open transaction in Doc2
+NewCommand Doc2
+
+# Set new shape in Doc1 to label 'SLabel'
+set aRadius 70
+psphere aSphere ${aRadius}
+SetShape Doc1 ${aLabel1} aSphere
+
+# Set new shape in Doc1 to label 'SLabel'
+set aRadius 270
+psphere aSphere ${aRadius}
+SetShape Doc1 ${aLabel12} aSphere
+
+# Update all links in Doc2
+UpdateLink Doc2
+
+# Close/Open transaction in Doc2
+NewCommand Doc2
+
+# Undo Doc2
+Undo Doc2
+
+# Redo Doc2
+Redo Doc2
+
+# Get a shape from 'TLabel1'
+GetShape Doc2 ${aLabel2} aBox2
+
+bounding aBox2 -save X1_Box2 Y1_Box2 Z1_Box2 X2_Box2 Y2_Box2 Z2_Box2
+
+# Get a shape from 'T2Label1'
+GetShape Doc2 ${aLabel22} aBox22
+
+bounding aBox22 -save X1_Box22 Y1_Box22 Z1_Box22 X2_Box22 Y2_Box22 Z2_Box22
+
+if { [dval X1_Box1] == [dval X1_Box2] || 
+     [dval Y1_Box1] == [dval Y1_Box2] || 
+     [dval Z1_Box1] == [dval Z1_Box2] || 
+     [dval X2_Box1] == [dval X2_Box2] || 
+     [dval Y2_Box1] == [dval Y2_Box2] || 
+     [dval Z2_Box1] == [dval Z2_Box2] ||
+
+     [dval X1_Box12] == [dval X1_Box22] || 
+     [dval Y1_Box12] == [dval Y1_Box22] || 
+     [dval Z1_Box12] == [dval Z1_Box22] || 
+     [dval X2_Box12] == [dval X2_Box22] || 
+     [dval Y2_Box12] == [dval Y2_Box22] || 
+     [dval Z2_Box12] == [dval Z2_Box22] ||
+
+     [dval X1_Box2] == [dval X1_Box22] || 
+     [dval Y1_Box2] == [dval Y1_Box22] || 
+     [dval Z1_Box2] == [dval Z1_Box22] || 
+     [dval X2_Box2] == [dval X2_Box22] || 
+     [dval Y2_Box2] == [dval Y2_Box22] || 
+     [dval Z2_Box2] == [dval Z2_Box22] } {
+
+	puts "X1_Box1=[dval X1_Box1] Y1_Box1=[dval Y1_Box1] Z1_Box1=[dval Z1_Box1] X2_Box1=[dval X2_Box1] Y2_Box1=[dval Y2_Box1] Z2_Box1=[dval Z2_Box1]"
+	puts "X1_Box2=[dval X1_Box2] Y1_Box2=[dval Y1_Box2] Z1_Box2=[dval Z1_Box2] X2_Box2=[dval X2_Box2] Y2_Box2=[dval Y2_Box2] Z2_Box2=[dval Z2_Box2]"
+	puts "X1_Box12=[dval X1_Box12] Y1_Box12=[dval Y1_Box12] Z1_Box12=[dval Z1_Box12] X2_Box12=[dval X2_Box12] Y2_Box12=[dval Y2_Box12] Z2_Box12=[dval Z2_Box12]"
+	puts "X1_Box22=[dval X1_Box22] Y1_Box22=[dval Y1_Box22] Z1_Box22=[dval Z1_Box22] X2_Box22=[dval X2_Box22] Y2_Box22=[dval Y2_Box22] Z2_Box22=[dval Z2_Box22]"
+	puts "Updating all links between attributes of the same document: Error"
+	return
+}
+
+puts "Updating all links between attributes of the same document: OK"

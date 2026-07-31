@@ -1,0 +1,10 @@
+#cts21527
+
+restore [locate_data_file CTO909_bad_cut_outil.brep] a
+restore [locate_data_file CTO909_bad_cut_part.brep] b
+
+bop b a
+bopcut result
+
+checkprops result -s 163.988
+checkview -display result -2d -otherwise { b a } -s -path ${imagedir}/${test_image}.png

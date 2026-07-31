@@ -1,0 +1,5 @@
+# Source files for TKBinTObj
+set(OCCT_TKBinTObj_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKBinTObj_FILES
+)

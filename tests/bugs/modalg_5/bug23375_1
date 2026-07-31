@@ -1,0 +1,21 @@
+puts "========================"
+puts "OCC23375"
+puts "========================" 
+puts ""
+#######################################################################
+# (OCC 6.5.3 regression) BRepBuilderAPI_Sewing returns wrong result
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug23375_Volute1.brep] v
+
+explode v
+sewing result 0.01 v_1 v_2
+
+checkshape result
+checkmaxtol result -ref 6.7739238740616194e-005 -source {v_1 v_2} -min_tol 1.e-4
+checknbshapes result -shell 1
+checkfreebounds result 8
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

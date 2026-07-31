@@ -1,0 +1,16 @@
+puts "==========="
+puts "BUC60756"
+puts "BUC60761"
+puts "BUC60762"
+puts "BUC60764"
+puts "==========="
+
+Open [locate_data_file BUC60756_Doc.std] D
+
+Format D BinOcaf
+
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
+Close D
+Open $aTmpFile D
+file delete -force $aTmpFile

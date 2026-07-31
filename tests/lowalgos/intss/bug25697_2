@@ -1,0 +1,44 @@
+puts "=========="
+puts "OCC25697"
+puts "=========="
+puts ""
+########################################################################################
+# Regression : Section obtained after command "bsection" in Test Harness is incorrect.
+########################################################################################
+
+restore [locate_data_file bug25697_shell_for_seam.brep] b1
+restore [locate_data_file bug25697_prism.brep] b2
+explode b1 f
+copy b1_1 b1
+explode b2 f
+copy b2_1 b2
+
+#################################
+set log [bopcurves b1 b2 -2d1]
+#################################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+set GoodNbCurv 3
+
+checkreal TolReached ${Toler} 0.00027763280312203317 0.0 0.01
+
+if { ${NbCurv} != ${GoodNbCurv} } {
+  puts "Error: Curve Number is bad!"
+}
+
+#---------------
+mksurface s1 b1
+mksurface s2 b2
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i u1 u2
+  dump u1 u2
+
+  xdistcs c_$i s1 u1 u2 10 1e-7
+  xdistcs c_$i s2 u1 u2 10 1e-7
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

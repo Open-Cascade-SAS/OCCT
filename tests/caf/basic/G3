@@ -1,0 +1,74 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Point
+#
+# Testing command:   SetPoint
+# Testing command:   GetPoint
+#
+
+puts "caf001-G3"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+point aPoint1 ${aSetX1} ${aSetY1} ${aSetZ1}
+
+set aDumpPoint1 [dump aPoint1]
+
+# [llength ${aDumpPoint1}] = 10
+# Format of ${aDumpPoint1}:
+# *********** Dump of aPoint1 *************
+# Point : 1.000000000000000e+01, 2.000000000000000e+01, 3.000000000000000e+01
+
+set X_Point1 [lindex [split [lindex ${aDumpPoint1} 7] ${aTokList}] 0]
+set Y_Point1 [lindex [split [lindex ${aDumpPoint1} 8] ${aTokList}] 0]
+set Z_Point1 [lindex [split [lindex ${aDumpPoint1} 9] ${aTokList}] 0]
+
+set aLabel 0:2
+SetPoint D ${aLabel} aPoint1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-G3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is no file ${aFile}; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetPoint DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_Point attribute from restoring document: Error"
+	return
+}
+GetPoint DD ${aLabel} aPoint5
+
+set aDumpPoint5 [dump aPoint5]
+set X_Point5 [lindex [split [lindex ${aDumpPoint5} 7] ${aTokList}] 0]
+set Y_Point5 [lindex [split [lindex ${aDumpPoint5} 8] ${aTokList}] 0]
+set Z_Point5 [lindex [split [lindex ${aDumpPoint5} 9] ${aTokList}] 0]
+
+if { ${X_Point1} != ${X_Point5} || 
+     ${Y_Point1} != ${Y_Point5} || 
+     ${Z_Point1} != ${Z_Point5} } {
+	puts "X_Point1=${X_Point1} X_Point5=${X_Point5}"
+	puts "Y_Point1=${Y_Point1} Y_Point5=${Y_Point5}"
+	puts "Z_Point1=${Z_Point1} Z_Point5=${Z_Point5}"
+	puts "Get a value of TDataStd_Point attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDataStd_Point attribute from restoring document: OK"

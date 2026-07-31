@@ -1,0 +1,14 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "================"
+puts "OCC54"
+puts "================"
+puts ""
+####################################################
+## Exception is raised during command "small" in DRAW on attached shape.
+####################################################
+
+cpulimit 500
+restore [locate_data_file OCC54.brep] result
+
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

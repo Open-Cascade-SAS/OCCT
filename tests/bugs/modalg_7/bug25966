@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC25966"
+puts "============"
+puts ""
+######################################################
+# Booleans with tangent faces
+######################################################
+
+# Construct result.
+restore [locate_data_file bug25966_Revolution.brep] Revolution
+trotate Revolution 0 0 0 1 0 0 90
+restore [locate_data_file bug25966_Pad009.brep] Pad009
+ttranslate Pad009 0 0 -2
+restore [locate_data_file bug25966_Pad.brep] Pad
+bfuse Fusion007 Revolution Pad009
+bfuse Fusion008 Pad Fusion007
+bfuse Fusion009 Pad Pad009
+bfuse Fusion010 Revolution Fusion009
+bclearobjects
+bcleartools
+baddobjects Pad
+baddtools Pad009 Revolution
+bfillds
+bbop Fusion011 1
+bclearobjects
+bcleartools
+baddobjects Revolution
+baddtools Pad009 Pad
+bfillds
+bbop Fusion006 1
+bclearobjects
+bcleartools
+baddobjects Pad009
+baddtools Revolution Pad
+bfillds
+bbop Fusion012 1
+
+# Checshape
+checkshape Fusion006
+checkshape Fusion008
+checkshape Fusion010
+checkshape Fusion011
+checkshape Fusion012
+
+# Check properties
+checkprops Fusion012 -s 18712.8
+
+# Check number of shapes in result
+checknbshapes Fusion012 -wire 26 -face 23 -shell 1 -solid 1

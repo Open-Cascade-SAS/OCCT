@@ -1,0 +1,65 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug26689_nist_ctc_05_asme1_ap242-1.stp
+
+set ref_data {
+
+ NbOfDimensions          : 6
+ NbOfTolerances          : 10
+ NbOfDatumFeature        : 6
+ NbOfAttachedDatum       : 26
+ NbOfDatumTarget         : 2
+
+ 0:1:1:2:2 Shape.5
+ 	 0:1:4:14 Dimension.5.1 ( N "linear distance" T 2, V 127, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 0:1:1:2:8 Shape.11
+ 	 0:1:4:14 Dimension.11.1 ( N "linear distance" T 2, V 127, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 0:1:1:2:9 Shape.12
+ 	 0:1:4:1 GeomTolerance.12.1 ( N "Feature Control Frame (11)" T 13 TV 0, V 0.127 )
+ 0:1:1:2:66 Shape.69
+ 	 0:1:4:15 GeomTolerance.69.1 ( N "Feature Control Frame (9)" T 3 TV 0, V 0.050799999999999998 )
+ 0:1:1:2:67 Shape.70
+ 	 0:1:4:15 GeomTolerance.70.1 ( N "Feature Control Frame (9)" T 3 TV 0, V 0.050799999999999998 )
+ 0:1:1:2:68 Shape.71
+ 	 0:1:4:2 GeomTolerance.71.1 ( N "Feature Control Frame (32)" T 2 TV 0, V 0.88900000000000001 )
+ 	 	 0:1:4:3 Datum.71.1.1 ( N "Feature Control Frame (32)" )
+ 	 	 0:1:4:4 Datum.71.1.2 ( N "Feature Control Frame (32)" )
+ 0:1:1:2:88 Shape.91
+ 	 0:1:4:16 GeomTolerance.91.1 ( N "Feature Control Frame (10)" T 4 TV 1, V 0.76200000000000001 )
+ 	 	 0:1:4:17 Datum.91.1.1 ( N "Feature Control Frame (10)" )
+ 0:1:1:2:89 Shape.92
+ 	 0:1:4:16 GeomTolerance.92.1 ( N "Feature Control Frame (10)" T 4 TV 1, V 0.76200000000000001 )
+ 	 	 0:1:4:17 Datum.92.1.1 ( N "Feature Control Frame (10)" )
+ 0:1:1:2:118 Shape.121
+ 	 0:1:4:27 Datum target.121.1 ( N "DGT:Datum" T 3, A ( L (000), XD (100), RD (010)), L 0 )
+ 0:1:1:2:123 Shape.126
+ 	 0:1:4:25 Datum target.126.1 ( N "DGT:Datum" T 3, A ( L (000), XD (100), RD (010)), L 0 )
+ 0:1:1:2:125 Shape.128
+ 	 0:1:4:18 GeomTolerance.128.1 ( N "Feature Control Frame (44)" T 2 TV 0, V 0.63500000000000001 )
+ 	 	 0:1:4:19 Datum.128.1.1 ( N "Feature Control Frame (44)" )
+ 	 	 0:1:4:20 Datum.128.1.2 ( N "Feature Control Frame (44)" )
+ 0:1:1:2:141 Shape.144
+ 	 0:1:4:21 GeomTolerance.144.1 ( N "Feature Control Frame (45)" T 2 TV 0, V 0.63500000000000001 )
+ 	 	 0:1:4:22 Datum.144.1.1 ( N "Feature Control Frame (45)" )
+ 	 	 0:1:4:23 Datum.144.1.2 ( N "Feature Control Frame (45)" )
+ 0:1:1:2:152 Shape.155
+ 	 0:1:4:26 GeomTolerance.155.1 ( N "Feature Control Frame (27)" T 9 TV 0, V 0.254 )
+ 	 	 0:1:4:27 Datum.155.1.1 ( N "Feature Control Frame (27)" )
+ 0:1:1:2:153 Shape.156
+ 	 0:1:4:9 GeomTolerance.156.1 ( N "Feature Control Frame (5)" T 2 TV 0, V 0.38100000000000001 )
+ 	 	 0:1:4:10 Datum.156.1.1 ( N "Feature Control Frame (5)" )
+ 0:1:1:2:154 Shape.157
+ 	 0:1:4:24 GeomTolerance.157.1 ( N "Feature Control Frame (20)" T 9 TV 0, V 0.254 )
+ 	 	 0:1:4:25 Datum.157.1.1 ( N "Feature Control Frame (20)" )
+ 0:1:1:2:199 Shape.202
+ 	 0:1:4:7 GeomTolerance.202.1 ( N "Feature Control Frame (4)" T 2 TV 0, V 0.050799999999999998 )
+ 	 	 0:1:4:8 Datum.202.1.1 ( N "Feature Control Frame (4)" )
+ 0:1:1:2:200 Shape.203
+ 	 0:1:4:7 GeomTolerance.203.1 ( N "Feature Control Frame (4)" T 2 TV 0, V 0.050799999999999998 )
+ 	 	 0:1:4:8 Datum.203.1.1 ( N "Feature Control Frame (4)" )
+ 0:1:1:2:206 Shape.209
+ 	 0:1:4:11 Dimension.209.1 ( N "linear distance" T 2, V 254, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 0:1:1:2:207 Shape.210
+ 	 0:1:4:11 Dimension.210.1 ( N "linear distance" T 2, V 254, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 0:1:1:3:1 Shape.211
+ 	 0:1:4:1 GeomTolerance.211.1 ( N "Feature Control Frame (11)" T 13 TV 0, V 0.127 )
+}

@@ -1,0 +1,10 @@
+# Original bug : cts20072
+# Date : 24mar98
+
+restore [locate_data_file CFE900_cts20gbj.rle] base
+restore [locate_data_file cts20072_face.rle] cont
+
+featprism base cont cont 0 0 1 1 1
+featperformval prism result 100
+
+checkprops result -s 280367

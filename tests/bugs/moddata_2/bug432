@@ -1,0 +1,12 @@
+puts "========================"
+puts " OCC432 "
+puts "========================"
+puts ""
+############################################
+## Regression in dev regarding C40: exception during checkshape 
+############################################
+
+restore [locate_data_file OCC432.brep] result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

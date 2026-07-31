@@ -1,0 +1,20 @@
+pload QAcommands
+
+puts "========"
+puts "OCC20627"
+puts "========"
+puts ""
+#######################################################################
+# Memory leaks in BRepMesh
+#######################################################################
+
+set BugNumber OCC20627
+
+set listmem {}
+
+for {set i 1} {$i < 10} {incr i} {
+    OCC20627 10
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 1 "Memory leak detected"
+}

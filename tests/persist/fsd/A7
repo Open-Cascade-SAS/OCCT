@@ -1,0 +1,6 @@
+torus t 1 0.2
+mkface base t
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

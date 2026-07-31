@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC26253"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+box b1 -805 585 143 407 30 8
+
+restore [locate_data_file bug26253_qs.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+bfillds 
+bbuild result
+
+checkprops result -s 64832 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 40
+ EDGE      : 68
+ WIRE      : 36
+ FACE      : 36
+ SHELL     : 11
+ SOLID     : 6
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 198
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result done by General Fuse algorithm"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

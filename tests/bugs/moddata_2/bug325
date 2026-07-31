@@ -1,0 +1,14 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========================"
+puts " OCC325 "
+puts "========================"
+puts ""
+##################################################
+## Checkshape does not recognize an error in a bad face
+##################################################
+
+restore [locate_data_file OCC325.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

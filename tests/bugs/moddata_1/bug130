@@ -1,0 +1,48 @@
+
+puts "================"
+puts "OCC130"
+puts "================"
+puts ""
+######################################################
+## Draw Environment: No intersection found between a specific surface and a line
+######################################################
+
+restore [locate_data_file OCC130.brep] sh 
+checkshape sh
+
+line l -120 -100 400 0 0 1
+mksurface surf sh
+############## checkshape surf   # - not a topological shape
+
+
+if [catch {intersect res l surf } result] {
+set mistake 1
+} else {
+set  mistake 0
+}
+
+if { $mistake == 0} {
+    puts "OCC130 OK : intersection found between a specific surface and a line"
+    puts ""
+ set nom 0
+   set j 1
+   repeat 10 {
+     set che [whatis res_$j]
+       set err [lindex $che [expr [llength $che] - 1]]
+
+          if { $err != "point"} {
+          	break
+              } else {
+              set nom [expr $nom + 1]
+              }
+    incr j}
+ if { $nom != 2 && $nom != 0} {
+    puts [format "Faulty OCC130: Intersection was made WRONGLY: %s points" $nom]
+} else {
+    puts [format "OCC130 OK : Intersection command works properly: %s points" $nom]
+}
+
+} else {
+    puts "Faulty OCC130 : NO intersection found between a specific surface and a line"
+}
+

@@ -1,0 +1,52 @@
+puts "========================================="
+puts "OCC32214: 2d Offset produces wrong result"
+puts "========================================="
+puts ""
+
+restore [locate_data_file bug32214.brep] a
+wire ww a
+donly ww
+
+openoffset result ww 14 -0.1 -approx
+
+front
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+for {set i 1} {$i<=14} {incr i} {
+	checkshape result_${i}
+	set tolres [checkmaxtol result_${i}]
+	if { ${tolres} > 1.001e-7} {
+		puts "Error: bad tolerance of result"
+	}
+}
+
+checknbshapes result_1 -t -vertex 33 -edge 32 -wire 1
+checkprops result_1 -l 1.66475
+checknbshapes result_2 -t -vertex 29 -edge 28 -wire 1
+checkprops result_2 -l 1.56032
+checknbshapes result_3 -t -vertex 26 -edge 25 -wire 1
+checkprops result_3 -l 1.45922
+checknbshapes result_4 -t -vertex 24 -edge 23 -wire 1
+checkprops result_4 -l 1.39682
+checknbshapes result_5 -t -vertex 20 -edge 19 -wire 1
+checkprops result_5 -l 1.30715
+checknbshapes result_6 -t -vertex 16 -edge 15 -wire 1
+checkprops result_6 -l 1.27033
+checknbshapes result_7 -t -vertex 15 -edge 14 -wire 1
+checkprops result_7 -l 1.1996
+checknbshapes result_8 -t -vertex 13 -edge 12 -wire 1
+checkprops result_8 -l 1.1737
+checknbshapes result_9 -t -vertex 11 -edge 10 -wire 1
+checkprops result_9 -l 1.17713
+checknbshapes result_10 -t -vertex 9 -edge 8 -wire 1
+checkprops result_10 -l 1.11521
+checknbshapes result_11 -t -vertex 9 -edge 8 -wire 1
+checkprops result_11 -l 1.17655
+checknbshapes result_12 -t -vertex 8 -edge 7 -wire 1
+checkprops result_12 -l 1.10597
+checknbshapes result_13 -t -vertex 8 -edge 7 -wire 1
+checkprops result_13 -l 1.16139
+checknbshapes result_14 -t -vertex 6 -edge 5 -wire 1
+checkprops result_14 -l 1.06775

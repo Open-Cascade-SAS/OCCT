@@ -1,0 +1,922 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomEval_RepUtils_HeaderFile
+#define _GeomEval_RepUtils_HeaderFile
+
+#include "GeomEval_RepCurveDesc.hxx"
+#include "GeomEval_RepSurfaceDesc.hxx"
+
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+
+#include <Standard_ProgramError.hxx>
+
+#include <cmath>
+
+//! Internal helper namespace for EvalRep dispatch and validation.
+namespace GeomEval_RepUtils
+{
+occ::handle<GeomEval_RepCurveDesc::Base> CloneCurveDesc(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc);
+occ::handle<GeomEval_RepSurfaceDesc::Base> CloneSurfaceDesc(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc);
+
+bool TryEvalCurveD0(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                    const double                                    theU,
+                    gp_Pnt&                                         theResult);
+bool TryEvalCurveD1(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                    const double                                    theU,
+                    Geom_Curve::ResD1&                              theResult);
+bool TryEvalCurveD2(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                    const double                                    theU,
+                    Geom_Curve::ResD2&                              theResult);
+bool TryEvalCurveD3(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                    const double                                    theU,
+                    Geom_Curve::ResD3&                              theResult);
+bool TryEvalCurveDN(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                    const double                                    theU,
+                    const int                                       theN,
+                    gp_Vec&                                         theResult);
+
+bool TryEvalSurfaceD0(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                      const double                                      theU,
+                      const double                                      theV,
+                      gp_Pnt&                                           theResult);
+bool TryEvalSurfaceD1(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                      const double                                      theU,
+                      const double                                      theV,
+                      Geom_Surface::ResD1&                              theResult);
+bool TryEvalSurfaceD2(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                      const double                                      theU,
+                      const double                                      theV,
+                      Geom_Surface::ResD2&                              theResult);
+bool TryEvalSurfaceD3(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                      const double                                      theU,
+                      const double                                      theV,
+                      Geom_Surface::ResD3&                              theResult);
+bool TryEvalSurfaceDN(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                      const double                                      theU,
+                      const double                                      theV,
+                      const int                                         theNu,
+                      const int                                         theNv,
+                      gp_Vec&                                           theResult);
+
+bool TryEvalCurveD0Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                          const double                         theU,
+                          gp_Pnt&                              theResult);
+bool TryEvalCurveD1Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                          const double                         theU,
+                          Geom_Curve::ResD1&                   theResult);
+bool TryEvalCurveD2Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                          const double                         theU,
+                          Geom_Curve::ResD2&                   theResult);
+bool TryEvalCurveD3Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                          const double                         theU,
+                          Geom_Curve::ResD3&                   theResult);
+bool TryEvalCurveDNMapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                          const double                         theU,
+                          const int                            theN,
+                          gp_Vec&                              theResult);
+
+bool TryEvalSurfaceD0Mapped(const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+                            const double                           theU,
+                            const double                           theV,
+                            gp_Pnt&                                theResult);
+bool TryEvalSurfaceD1Mapped(const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+                            const double                           theU,
+                            const double                           theV,
+                            Geom_Surface::ResD1&                   theResult);
+bool TryEvalSurfaceD2Mapped(const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+                            const double                           theU,
+                            const double                           theV,
+                            Geom_Surface::ResD2&                   theResult);
+bool TryEvalSurfaceD3Mapped(const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+                            const double                           theU,
+                            const double                           theV,
+                            Geom_Surface::ResD3&                   theResult);
+bool TryEvalSurfaceDNMapped(const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+                            const double                           theU,
+                            const double                           theV,
+                            const int                              theNu,
+                            const int                              theNv,
+                            gp_Vec&                                theResult);
+
+void ValidateCurveDesc(const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+                       const Geom_Curve*                               theOwner);
+void ValidateSurfaceDesc(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+                         const Geom_Surface*                               theOwner);
+} // namespace GeomEval_RepUtils
+
+//=================================================================================================
+
+inline void GeomEval_RepUtils::ValidateCurveDesc(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const Geom_Curve*                               theOwner)
+{
+  if (theDesc.IsNull())
+  {
+    return;
+  }
+  if (theDesc->Representation.IsNull())
+  {
+    throw Standard_ProgramError("SetEvalRepresentation: null Representation");
+  }
+  if (theDesc->GetKind() == GeomEval_RepCurveDesc::Base::Kind::Mapped)
+  {
+    const auto* aMapped = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+    if (!aMapped->ParamMap.IsValid())
+    {
+      throw Standard_ProgramError("SetEvalRepresentation: invalid parameter map");
+    }
+  }
+  if (theDesc->Representation.get() == theOwner)
+  {
+    throw Standard_ProgramError("SetEvalRepresentation: invalid descriptor chain");
+  }
+}
+
+//=================================================================================================
+
+inline void GeomEval_RepUtils::ValidateSurfaceDesc(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const Geom_Surface*                               theOwner)
+{
+  if (theDesc.IsNull())
+  {
+    return;
+  }
+  if (theDesc->Representation.IsNull())
+  {
+    throw Standard_ProgramError("SetEvalRepresentation: null Representation");
+  }
+  if (theDesc->GetKind() == GeomEval_RepSurfaceDesc::Base::Kind::Mapped)
+  {
+    const auto* aMapped = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+    if (!aMapped->ParamMap.IsValid())
+    {
+      throw Standard_ProgramError("SetEvalRepresentation: invalid parameter map");
+    }
+  }
+  if (theDesc->Representation.get() == theOwner)
+  {
+    throw Standard_ProgramError("SetEvalRepresentation: invalid descriptor chain");
+  }
+}
+
+//=================================================================================================
+
+inline occ::handle<GeomEval_RepCurveDesc::Base> GeomEval_RepUtils::CloneCurveDesc(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc)
+{
+  if (theDesc.IsNull() || theDesc->Representation.IsNull())
+  {
+    return occ::handle<GeomEval_RepCurveDesc::Base>();
+  }
+
+  const occ::handle<Geom_Curve> aRepCopy =
+    occ::down_cast<Geom_Curve>(theDesc->Representation->Copy());
+  if (aRepCopy.IsNull())
+  {
+    return occ::handle<GeomEval_RepCurveDesc::Base>();
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full: {
+      occ::handle<GeomEval_RepCurveDesc::Full> aClone = new GeomEval_RepCurveDesc::Full();
+      aClone->Representation                          = aRepCopy;
+      return aClone;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded: {
+      const auto* aSrc = static_cast<const GeomEval_RepCurveDesc::DerivBounded*>(theDesc.get());
+      occ::handle<GeomEval_RepCurveDesc::DerivBounded> aClone =
+        new GeomEval_RepCurveDesc::DerivBounded();
+      aClone->Representation = aRepCopy;
+      aClone->MaxDerivOrder  = aSrc->MaxDerivOrder;
+      return aClone;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped: {
+      const auto* aSrc = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+      occ::handle<GeomEval_RepCurveDesc::Mapped> aClone = new GeomEval_RepCurveDesc::Mapped();
+      aClone->Representation                            = aRepCopy;
+      aClone->MaxDerivOrder                             = aSrc->MaxDerivOrder;
+      aClone->Domain                                    = aSrc->Domain;
+      aClone->ParamMap                                  = aSrc->ParamMap;
+      return aClone;
+    }
+  }
+  return occ::handle<GeomEval_RepCurveDesc::Base>();
+}
+
+//=================================================================================================
+
+inline occ::handle<GeomEval_RepSurfaceDesc::Base> GeomEval_RepUtils::CloneSurfaceDesc(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
+{
+  if (theDesc.IsNull() || theDesc->Representation.IsNull())
+  {
+    return occ::handle<GeomEval_RepSurfaceDesc::Base>();
+  }
+
+  const occ::handle<Geom_Surface> aRepCopy =
+    occ::down_cast<Geom_Surface>(theDesc->Representation->Copy());
+  if (aRepCopy.IsNull())
+  {
+    return occ::handle<GeomEval_RepSurfaceDesc::Base>();
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full: {
+      occ::handle<GeomEval_RepSurfaceDesc::Full> aClone = new GeomEval_RepSurfaceDesc::Full();
+      aClone->Representation                            = aRepCopy;
+      return aClone;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded: {
+      const auto* aSrc = static_cast<const GeomEval_RepSurfaceDesc::DerivBounded*>(theDesc.get());
+      occ::handle<GeomEval_RepSurfaceDesc::DerivBounded> aClone =
+        new GeomEval_RepSurfaceDesc::DerivBounded();
+      aClone->Representation = aRepCopy;
+      aClone->MaxDerivOrder  = aSrc->MaxDerivOrder;
+      return aClone;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped: {
+      const auto* aSrc = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+      occ::handle<GeomEval_RepSurfaceDesc::Mapped> aClone = new GeomEval_RepSurfaceDesc::Mapped();
+      aClone->Representation                              = aRepCopy;
+      aClone->MaxDerivOrder                               = aSrc->MaxDerivOrder;
+      aClone->Domain                                      = aSrc->Domain;
+      aClone->ParamMap                                    = aSrc->ParamMap;
+      return aClone;
+    }
+  }
+  return occ::handle<GeomEval_RepSurfaceDesc::Base>();
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD0(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const double                                    theU,
+  gp_Pnt&                                         theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full:
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded:
+      theResult = theDesc->Representation->EvalD0(theU);
+      return true;
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped:
+      return TryEvalCurveD0Mapped(*static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get()),
+                                  theU,
+                                  theResult);
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD1(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const double                                    theU,
+  Geom_Curve::ResD1&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD1(theU);
+      return true;
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded = static_cast<const GeomEval_RepCurveDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 1)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD1(theU);
+      return true;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 1)
+      {
+        return false;
+      }
+      return TryEvalCurveD1Mapped(*aMapped, theU, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD2(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const double                                    theU,
+  Geom_Curve::ResD2&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD2(theU);
+      return true;
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded = static_cast<const GeomEval_RepCurveDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 2)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD2(theU);
+      return true;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 2)
+      {
+        return false;
+      }
+      return TryEvalCurveD2Mapped(*aMapped, theU, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD3(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const double                                    theU,
+  Geom_Curve::ResD3&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD3(theU);
+      return true;
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded = static_cast<const GeomEval_RepCurveDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 3)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD3(theU);
+      return true;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 3)
+      {
+        return false;
+      }
+      return TryEvalCurveD3Mapped(*aMapped, theU, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveDN(
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
+  const double                                    theU,
+  const int                                       theN,
+  gp_Vec&                                         theResult)
+{
+  if (theDesc.IsNull() || theN < 1)
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepCurveDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalDN(theU, theN);
+      return true;
+    case GeomEval_RepCurveDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded = static_cast<const GeomEval_RepCurveDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < static_cast<std::size_t>(theN))
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalDN(theU, theN);
+      return true;
+    }
+    case GeomEval_RepCurveDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepCurveDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < static_cast<std::size_t>(theN))
+      {
+        return false;
+      }
+      return TryEvalCurveDNMapped(*aMapped, theU, theN, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD0(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const double                                      theU,
+  const double                                      theV,
+  gp_Pnt&                                           theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full:
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded:
+      theResult = theDesc->Representation->EvalD0(theU, theV);
+      return true;
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped:
+      return TryEvalSurfaceD0Mapped(
+        *static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get()),
+        theU,
+        theV,
+        theResult);
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD1(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const double                                      theU,
+  const double                                      theV,
+  Geom_Surface::ResD1&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD1(theU, theV);
+      return true;
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded =
+        static_cast<const GeomEval_RepSurfaceDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 1)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD1(theU, theV);
+      return true;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 1)
+      {
+        return false;
+      }
+      return TryEvalSurfaceD1Mapped(*aMapped, theU, theV, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD2(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const double                                      theU,
+  const double                                      theV,
+  Geom_Surface::ResD2&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD2(theU, theV);
+      return true;
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded =
+        static_cast<const GeomEval_RepSurfaceDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 2)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD2(theU, theV);
+      return true;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 2)
+      {
+        return false;
+      }
+      return TryEvalSurfaceD2Mapped(*aMapped, theU, theV, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD3(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const double                                      theU,
+  const double                                      theV,
+  Geom_Surface::ResD3&                              theResult)
+{
+  if (theDesc.IsNull())
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalD3(theU, theV);
+      return true;
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded =
+        static_cast<const GeomEval_RepSurfaceDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < 3)
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalD3(theU, theV);
+      return true;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < 3)
+      {
+        return false;
+      }
+      return TryEvalSurfaceD3Mapped(*aMapped, theU, theV, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceDN(
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
+  const double                                      theU,
+  const double                                      theV,
+  const int                                         theNu,
+  const int                                         theNv,
+  gp_Vec&                                           theResult)
+{
+  const int aTotalOrder = theNu + theNv;
+  if (theDesc.IsNull() || theNu < 0 || theNv < 0 || aTotalOrder < 1)
+  {
+    return false;
+  }
+
+  switch (theDesc->GetKind())
+  {
+    case GeomEval_RepSurfaceDesc::Base::Kind::Full:
+      theResult = theDesc->Representation->EvalDN(theU, theV, theNu, theNv);
+      return true;
+    case GeomEval_RepSurfaceDesc::Base::Kind::DerivBounded: {
+      const auto* aBounded =
+        static_cast<const GeomEval_RepSurfaceDesc::DerivBounded*>(theDesc.get());
+      if (aBounded->MaxDerivOrder < static_cast<std::size_t>(aTotalOrder))
+      {
+        return false;
+      }
+      theResult = theDesc->Representation->EvalDN(theU, theV, theNu, theNv);
+      return true;
+    }
+    case GeomEval_RepSurfaceDesc::Base::Kind::Mapped: {
+      const auto* aMapped = static_cast<const GeomEval_RepSurfaceDesc::Mapped*>(theDesc.get());
+      if (aMapped->MaxDerivOrder < static_cast<std::size_t>(aTotalOrder))
+      {
+        return false;
+      }
+      return TryEvalSurfaceDNMapped(*aMapped, theU, theV, theNu, theNv, theResult);
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD0Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                                                    const double                         theU,
+                                                    gp_Pnt&                              theResult)
+{
+  const double aURep = theDesc.ParamMap.Map(theU);
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
+  {
+    return false;
+  }
+
+  theResult = theDesc.Representation->EvalD0(aURep);
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD1Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD1&                   theResult)
+{
+  const double aURep = theDesc.ParamMap.Map(theU);
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
+  {
+    return false;
+  }
+
+  const Geom_Curve::ResD1 aRepRes = theDesc.Representation->EvalD1(aURep);
+  const double            aScale  = theDesc.ParamMap.Scale;
+
+  theResult.Point = aRepRes.Point;
+  theResult.D1    = aRepRes.D1 * aScale;
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD2Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD2&                   theResult)
+{
+  const double aURep = theDesc.ParamMap.Map(theU);
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
+  {
+    return false;
+  }
+
+  const Geom_Curve::ResD2 aRepRes = theDesc.Representation->EvalD2(aURep);
+  const double            aScale  = theDesc.ParamMap.Scale;
+  const double            aScale2 = aScale * aScale;
+
+  theResult.Point = aRepRes.Point;
+  theResult.D1    = aRepRes.D1 * aScale;
+  theResult.D2    = aRepRes.D2 * aScale2;
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveD3Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD3&                   theResult)
+{
+  const double aURep = theDesc.ParamMap.Map(theU);
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
+  {
+    return false;
+  }
+
+  const Geom_Curve::ResD3 aRepRes = theDesc.Representation->EvalD3(aURep);
+  const double            aScale  = theDesc.ParamMap.Scale;
+  const double            aScale2 = aScale * aScale;
+  const double            aScale3 = aScale2 * aScale;
+
+  theResult.Point = aRepRes.Point;
+  theResult.D1    = aRepRes.D1 * aScale;
+  theResult.D2    = aRepRes.D2 * aScale2;
+  theResult.D3    = aRepRes.D3 * aScale3;
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalCurveDNMapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
+                                                    const double                         theU,
+                                                    const int                            theN,
+                                                    gp_Vec&                              theResult)
+{
+  const double aURep = theDesc.ParamMap.Map(theU);
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
+  {
+    return false;
+  }
+
+  const gp_Vec aRepVec = theDesc.Representation->EvalDN(aURep, theN);
+  const double aScaleN = std::pow(theDesc.ParamMap.Scale, theN);
+  theResult            = aRepVec * aScaleN;
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD0Mapped(
+  const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  gp_Pnt&                                theResult)
+{
+  double aURep = 0.0;
+  double aVRep = 0.0;
+  theDesc.ParamMap.Map(theU, theV, aURep, aVRep);
+
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep, aVRep))
+  {
+    return false;
+  }
+
+  theResult = theDesc.Representation->EvalD0(aURep, aVRep);
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD1Mapped(
+  const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD1&                   theResult)
+{
+  double aURep = 0.0;
+  double aVRep = 0.0;
+  theDesc.ParamMap.Map(theU, theV, aURep, aVRep);
+
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep, aVRep))
+  {
+    return false;
+  }
+
+  const Geom_Surface::ResD1 aRepRes = theDesc.Representation->EvalD1(aURep, aVRep);
+
+  theResult.Point = aRepRes.Point;
+  if (theDesc.ParamMap.SwapUV)
+  {
+    theResult.D1U = aRepRes.D1V * theDesc.ParamMap.ScaleV;
+    theResult.D1V = aRepRes.D1U * theDesc.ParamMap.ScaleU;
+  }
+  else
+  {
+    theResult.D1U = aRepRes.D1U * theDesc.ParamMap.ScaleU;
+    theResult.D1V = aRepRes.D1V * theDesc.ParamMap.ScaleV;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD2Mapped(
+  const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD2&                   theResult)
+{
+  double aURep = 0.0;
+  double aVRep = 0.0;
+  theDesc.ParamMap.Map(theU, theV, aURep, aVRep);
+
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep, aVRep))
+  {
+    return false;
+  }
+
+  const Geom_Surface::ResD2 aRepRes = theDesc.Representation->EvalD2(aURep, aVRep);
+
+  const double aSu   = theDesc.ParamMap.ScaleU;
+  const double aSv   = theDesc.ParamMap.ScaleV;
+  const double aSu2  = aSu * aSu;
+  const double aSv2  = aSv * aSv;
+  const double aSuSv = aSu * aSv;
+
+  theResult.Point = aRepRes.Point;
+  if (theDesc.ParamMap.SwapUV)
+  {
+    theResult.D1U  = aRepRes.D1V * aSv;
+    theResult.D1V  = aRepRes.D1U * aSu;
+    theResult.D2U  = aRepRes.D2V * aSv2;
+    theResult.D2V  = aRepRes.D2U * aSu2;
+    theResult.D2UV = aRepRes.D2UV * aSuSv;
+  }
+  else
+  {
+    theResult.D1U  = aRepRes.D1U * aSu;
+    theResult.D1V  = aRepRes.D1V * aSv;
+    theResult.D2U  = aRepRes.D2U * aSu2;
+    theResult.D2V  = aRepRes.D2V * aSv2;
+    theResult.D2UV = aRepRes.D2UV * aSuSv;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceD3Mapped(
+  const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD3&                   theResult)
+{
+  double aURep = 0.0;
+  double aVRep = 0.0;
+  theDesc.ParamMap.Map(theU, theV, aURep, aVRep);
+
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep, aVRep))
+  {
+    return false;
+  }
+
+  const Geom_Surface::ResD3 aRepRes = theDesc.Representation->EvalD3(aURep, aVRep);
+
+  const double aSu = theDesc.ParamMap.ScaleU;
+  const double aSv = theDesc.ParamMap.ScaleV;
+
+  theResult.Point = aRepRes.Point;
+  if (theDesc.ParamMap.SwapUV)
+  {
+    theResult.D1U   = aRepRes.D1V * aSv;
+    theResult.D1V   = aRepRes.D1U * aSu;
+    theResult.D2U   = aRepRes.D2V * (aSv * aSv);
+    theResult.D2V   = aRepRes.D2U * (aSu * aSu);
+    theResult.D2UV  = aRepRes.D2UV * (aSu * aSv);
+    theResult.D3U   = aRepRes.D3V * (aSv * aSv * aSv);
+    theResult.D3V   = aRepRes.D3U * (aSu * aSu * aSu);
+    theResult.D3UUV = aRepRes.D3UVV * (aSv * aSv * aSu);
+    theResult.D3UVV = aRepRes.D3UUV * (aSu * aSu * aSv);
+  }
+  else
+  {
+    theResult.D1U   = aRepRes.D1U * aSu;
+    theResult.D1V   = aRepRes.D1V * aSv;
+    theResult.D2U   = aRepRes.D2U * (aSu * aSu);
+    theResult.D2V   = aRepRes.D2V * (aSv * aSv);
+    theResult.D2UV  = aRepRes.D2UV * (aSu * aSv);
+    theResult.D3U   = aRepRes.D3U * (aSu * aSu * aSu);
+    theResult.D3V   = aRepRes.D3V * (aSv * aSv * aSv);
+    theResult.D3UUV = aRepRes.D3UUV * (aSu * aSu * aSv);
+    theResult.D3UVV = aRepRes.D3UVV * (aSu * aSv * aSv);
+  }
+  return true;
+}
+
+//=================================================================================================
+
+inline bool GeomEval_RepUtils::TryEvalSurfaceDNMapped(
+  const GeomEval_RepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  const int                              theNu,
+  const int                              theNv,
+  gp_Vec&                                theResult)
+{
+  double aURep = 0.0;
+  double aVRep = 0.0;
+  theDesc.ParamMap.Map(theU, theV, aURep, aVRep);
+
+  if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep, aVRep))
+  {
+    return false;
+  }
+
+  int aNuRep = theNu;
+  int aNvRep = theNv;
+  if (theDesc.ParamMap.SwapUV)
+  {
+    aNuRep = theNv;
+    aNvRep = theNu;
+  }
+
+  const gp_Vec aRepVec = theDesc.Representation->EvalDN(aURep, aVRep, aNuRep, aNvRep);
+  const double aScale =
+    std::pow(theDesc.ParamMap.ScaleU, aNuRep) * std::pow(theDesc.ParamMap.ScaleV, aNvRep);
+  theResult = aRepVec * aScale;
+  return true;
+}
+
+#endif // _GeomEval_RepUtils_HeaderFile

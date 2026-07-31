@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC25957"
+puts "============"
+puts ""
+######################################################
+# nurbsconvert modifies original shape
+######################################################
+
+psphere s 10
+setflags s locked
+nurbsconvert q s
+checkshape s

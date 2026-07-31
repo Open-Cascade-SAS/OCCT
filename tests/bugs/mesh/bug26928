@@ -1,0 +1,34 @@
+puts "========="
+puts "0026928: Edges are meshed too coarsly"
+puts "========="
+puts ""
+
+restore [locate_data_file bug27356_comp.brep] c
+tclean c
+
+vinit
+vdisplay c
+vviewparams -scale 44.578446 -proj 8.964134e-4 0.055037 -0.998484 -up -0.951475 0.307306 0.016085 -at 44.487383 37.608231 -3.232527 -eye 44.517406 37.608231 -3.232527
+vsetdispmode c 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}-vdisplay.png
+
+tclean c
+vdefaults -autoTriang 0
+incmesh c 0.715 -a 11.459
+vdisplay -redisplay c
+checkview -screenshot -3d -path ${imagedir}/${test_image}-0715.png
+
+tclean c
+incmesh c 0.5 -a 11.459
+vdisplay -redisplay c
+checkview -screenshot -3d -path ${imagedir}/${test_image}-05.png
+
+tclean c
+incmesh c 0.3 -a 11.459
+vdisplay -redisplay c
+checkview -screenshot -3d -path ${imagedir}/${test_image}-03.png
+
+tclean c
+incmesh c 0.1 -a 11.459
+vdisplay -redisplay c
+checkview -screenshot -3d -path ${imagedir}/${test_image}-01.png

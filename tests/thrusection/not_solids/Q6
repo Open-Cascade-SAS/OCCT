@@ -1,0 +1,4 @@
+restore [locate_data_file C13] w1
+restore [locate_data_file C6] w2
+thrusections result 0 0 w1 w2
+checkprops result -s 972.397

@@ -1,0 +1,63 @@
+puts "============"
+puts "OCCGH648"
+puts "============"
+puts ""
+
+set BugNumber OCCGH648
+
+set np 3
+set D1 150
+set D2 123
+
+set P1 13
+set P2 66.89
+set P3 13
+
+set N1 .75
+set N2 4.05
+set N3 .75
+
+set mistake 0
+set result ""
+if [catch { set info_result [spiral2 result ${np} ${D1} ${D2} ${P1} ${P2} ${P3} ${N1} ${N2} ${N3}]} ] {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : approximation algorithm is broken"
+  set mistake 1
+} elseif { [regexp {ErrorStatus} ${info_result}] } {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : helix is broken"
+  set mistake 1
+}
+
+if { ${mistake} == 0 } {
+  set d 5
+  set x [expr $D1/2]
+  set y 0
+  set z 0
+  set dx 0
+  set dy 1
+  set dz 0
+
+  circle c $x $y $z $dx $dy $dz $d
+  mkedge e c
+  wire s2 e
+
+  renamevar result s1
+
+
+set square 75587.2
+set volume 188539
+
+set nb_v_good 8
+set nb_e_good 15
+set nb_w_good 9
+set nb_f_good 9
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 43
+
+CheckSweep
+}
+set 2dviewer 0

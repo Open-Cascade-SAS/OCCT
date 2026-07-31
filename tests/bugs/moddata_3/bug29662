@@ -1,0 +1,19 @@
+puts "==========="
+puts "0029662"
+puts "==========="
+puts ""
+########################################################
+# Allow replacement of Compounds via BRepTools_ReShape
+########################################################
+
+box b1 10 10 10
+box b2 10 0 0 10 10 10
+box b3 0 0 10 10 10 10
+box b4 10 0 10 10 10 10
+box b5 20 0 0 10 10 10
+compound b1 b2 c1
+compound b3 b4 c2
+compound c1 c2 c
+compound b5 c3
+reshape res c -replace c2 c3 -until compound
+checknbshapes res -solid 3

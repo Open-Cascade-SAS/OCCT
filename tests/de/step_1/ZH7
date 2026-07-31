@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename tr8_ha1_db.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 6  ( 6 ) 
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 12  ( 12 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 0 )   TotalLabels = 4  ( 5 )   NameLabels = 4  ( 4 )   ColorLabels = 1  ( 1 )   LayerLabels = 1  ( 3 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 2 )
+LAYERS      : Layers   = 0  ( {  0} 255 )
+
+}

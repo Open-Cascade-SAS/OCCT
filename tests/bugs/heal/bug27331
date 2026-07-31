@@ -1,0 +1,12 @@
+puts "======="
+puts "OCC27331"
+puts "======="
+puts ""
+#####################################################################
+## FixMissingSeam gives wrong result
+#####################################################################
+
+restore [locate_data_file OCC27331.brep] shape
+fixshape result shape 1.e-7 1
+
+checkshape result

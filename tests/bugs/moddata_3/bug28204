@@ -1,0 +1,17 @@
+puts "============"
+puts "CR28204"
+puts "==========="
+puts ""
+###############################################################################
+# TopoTools_ShapeSet::Dump() does not show flag Locked
+###############################################################################
+
+vertex v 0 0 0 
+setflags v locked
+set info [dump v]
+
+if { [regexp {Locked} ${info}] == 1 } {
+   puts "OK: Dump show flag Locked"
+} else {
+   puts "Error: Dump does not show flag Locked"
+}

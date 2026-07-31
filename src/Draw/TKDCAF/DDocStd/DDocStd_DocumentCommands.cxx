@@ -1,0 +1,640 @@
+// Created on: 2000-03-01
+// Created by: Denis PASCAL
+// Copyright (c) 2000-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <DDocStd.hxx>
+
+#include <BinDrivers_DocumentStorageDriver.hxx>
+#include <DDF.hxx>
+#include <Draw_Interpretor.hxx>
+#include <TDF_Reference.hxx>
+#include <TDocStd_Modified.hxx>
+#include <TDF_Label.hxx>
+#include <TDocStd_XLink.hxx>
+#include <TDocStd_XLinkIterator.hxx>
+#include <TDocStd_Application.hxx>
+#include <Draw.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Tool.hxx>
+#include <TPrsStd_AISViewer.hxx>
+#include <AIS_InteractiveContext.hxx>
+// pour propagate
+#include <TDocStd_XLinkTool.hxx>
+
+// typedef int (* DFBROWSER_CALL)(const occ::handle<TDocStd_Document>&);
+// static DFBROWSER_CALL gDFunc = 0;
+
+//=================================================================================================
+
+static int DDocStd_Main(Draw_Interpretor& di, int nb, const char** a)
+{
+  if (nb == 2)
+  {
+    occ::handle<TDocStd_Document> DOC;
+    if (!DDocStd::GetDocument(a[1], DOC))
+    {
+      return 1;
+    }
+    DDocStd::ReturnLabel(di, DOC->Main());
+    return 0;
+  }
+  di << "DDocStd_Main : Error\n";
+  return 1;
+}
+
+//=================================================================================================
+
+static int DDocStd_Format(Draw_Interpretor& di, int n, const char** a)
+{
+  occ::handle<TDocStd_Document> D;
+  if (n == 2)
+  {
+    if (!DDocStd::GetDocument(a[1], D))
+    {
+      return 1;
+    }
+    // std::cout << "FORMAT : " << D->StorageFormat() << std::endl;
+    di << "FORMAT : ";
+    Standard_SStream aStream;
+    D->StorageFormat().Print(aStream);
+    di << aStream;
+    di << "\n";
+    return 0;
+  }
+  if (n == 3)
+  {
+    if (!DDocStd::GetDocument(a[1], D))
+    {
+      return 1;
+    }
+    D->ChangeStorageFormat(a[2]);
+    return 0;
+  }
+  di << "DDocStd_Format : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : Copy "Copy DOC entry XDOC xentry",
+//=======================================================================
+
+static int DDocStd_Copy(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n == 5)
+  {
+    occ::handle<TDocStd_Document> DOC, XDOC;
+    if (!DDocStd::GetDocument(a[1], DOC))
+    {
+      return 1;
+    }
+    if (!DDocStd::GetDocument(a[3], XDOC))
+    {
+      return 1;
+    }
+    TDF_Label L, XL;
+    if (!DDocStd::Find(DOC, a[2], L))
+    {
+      return 1;
+    }
+    if (!DDocStd::Find(XDOC, a[4], XL))
+    {
+      return 1;
+    }
+    TDocStd_XLinkTool XLinkTool;
+    XLinkTool.Copy(L, XL);
+    if (!XLinkTool.IsDone())
+    {
+      di << "DDocStd_XLinkTool : not done\n";
+    }
+    return 0;
+  }
+  di << "DDocStd_XLinkTool : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : CopyWithLink "Copy DOC entry XDOC xentry",
+//=======================================================================
+
+static int DDocStd_CopyWithLink(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n == 5)
+  {
+    occ::handle<TDocStd_Document> DOC, XDOC;
+    if (!DDocStd::GetDocument(a[1], DOC))
+    {
+      return 1;
+    }
+    if (!DDocStd::GetDocument(a[3], XDOC))
+    {
+      return 1;
+    }
+    TDF_Label L, XL;
+    if (!DDocStd::Find(DOC, a[2], L))
+    {
+      return 1;
+    }
+    if (!DDocStd::Find(XDOC, a[4], XL))
+    {
+      return 1;
+    }
+    TDocStd_XLinkTool XLinkTool;
+    XLinkTool.CopyWithLink(L, XL);
+    if (!XLinkTool.IsDone())
+    {
+      di << "DDocStd_CopyWithLink : not done\n";
+    }
+    return 0;
+  }
+  di << "DDocStd_CopyWithLink : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : UpdateLink (D,[xrefentry])
+//=======================================================================
+
+static int DDocStd_UpdateLink(Draw_Interpretor& di, int nb, const char** a)
+{
+  if (nb == 2 || nb == 3)
+  {
+    occ::handle<TDocStd_Document> DOC;
+    if (!DDocStd::GetDocument(a[1], DOC))
+    {
+      return 1;
+    }
+    occ::handle<TDF_Reference> REF;
+    TDocStd_XLinkTool          XLinkTool;
+    if (nb == 3)
+    {
+      if (!DDocStd::Find(DOC, a[2], TDF_Reference::GetID(), REF))
+      {
+        return 1;
+      }
+      XLinkTool.UpdateLink(REF->Label());
+      if (!XLinkTool.IsDone())
+      {
+        di << "DDocStd_UpdateXLink : not done\n";
+      }
+    }
+    else
+    {
+      for (TDocStd_XLinkIterator xit(DOC); xit.More(); xit.Next())
+      {
+        XLinkTool.UpdateLink(xit.Value()->Label());
+        if (!XLinkTool.IsDone())
+        {
+          di << "DDocStd_UpdateXLink : not done\n";
+        }
+      }
+    }
+    return 0;
+  }
+  di << "DDocStd_UpdateXLink : Error\n";
+  return 1;
+}
+
+//=================================================================================================
+
+static int DDocStd_UndoLimit(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+
+  if (n > 2)
+  {
+    int lim = Draw::Atoi(a[2]);
+    D->SetUndoLimit(lim);
+  }
+
+  // display current values
+  di << D->GetUndoLimit() << " ";
+  di << D->GetAvailableUndos() << " ";
+  di << D->GetAvailableRedos();
+  return 0;
+}
+
+//=======================================================================
+// function : Undo, Redo
+// purpose  : Undo (DOC)
+//=======================================================================
+
+static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+
+  int i, step = 1;
+  if (n > 2)
+  {
+    step = Draw::Atoi(a[2]);
+  }
+
+  // test if the command was undo or redo
+  bool undo = a[0][0] == 'U';
+
+  for (i = 1; i <= step; i++)
+  {
+    if (undo)
+    {
+      if (!D->Undo())
+      {
+        di << "Undo not done\n";
+      }
+    }
+    else
+    {
+      if (!D->Redo())
+      {
+        di << "Redo not done\n";
+      }
+    }
+  }
+
+  // Redraw the viewer.
+  occ::handle<AIS_InteractiveContext> IC;
+  if (TPrsStd_AISViewer::Find(D->Main(), IC))
+  {
+    IC->UpdateCurrentViewer();
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
+static int DDocStd_NewCommand(Draw_Interpretor& /*di*/, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+  D->NewCommand();
+  return 0;
+}
+
+//=================================================================================================
+
+static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+  D->OpenCommand();
+  return 0;
+}
+
+//=================================================================================================
+
+static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+  D->AbortCommand();
+  return 0;
+}
+
+//=================================================================================================
+
+static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(a[1], D))
+  {
+    return 1;
+  }
+  D->CommitCommand();
+  return 0;
+}
+
+//=======================================================================
+// function : DDocStd_DumpDocument
+// purpose  : DumpDocument (DOC)
+//=======================================================================
+
+static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb == 2)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    di << "\n";
+    // document name
+    if (D->IsSaved())
+    {
+      di << "DOCUMENT      : " << D->GetName();
+    }
+    else
+    {
+      di << "DOCUMENT      : not saved";
+    }
+    di << "\n";
+    // format
+    // std::cout << "FORMAT        : " << D->StorageFormat();
+    di << "FORMAT        : ";
+    Standard_SStream aStream;
+    D->StorageFormat().Print(aStream);
+    di << aStream;
+    di << "\n";
+    // command
+    di << "COMMAND       : ";
+    if (D->HasOpenCommand())
+    {
+      di << " Is Open";
+    }
+    else
+    {
+      di << " Is Not Open";
+    }
+    // undo
+    di << "UNDO          :";
+    di << " limit :" << D->GetUndoLimit();
+    di << " undos :" << D->GetAvailableUndos() << " ";
+    di << " redos :" << D->GetAvailableRedos();
+    di << "\n";
+    // std::cout << "CURRENT :";
+    //     TCollection_AsciiString string;
+    //     TDF_Tool::Entry(D->CurrentLabel(),string);
+    //     std::cout << string;
+    //     std::cout << std::endl;
+    // modified
+    di << "MODIFIED      : ";
+    if (D->IsModified())
+    {
+      di << "true";
+    }
+    else
+    {
+      di << "false";
+    }
+    di << "\n";
+    if (!TDocStd_Modified::IsEmpty(D->Main()))
+    {
+      di << "MODIFICATIONS : ";
+      NCollection_Map<TDF_Label>::Iterator it(D->GetModified());
+      if (!it.More())
+      {
+        di << "VALID\n";
+      }
+      else
+      {
+        TCollection_AsciiString string;
+        for (; it.More(); it.Next())
+        {
+          TDF_Tool::Entry(it.Key(), string);
+          di << string.ToCString() << " ";
+        }
+        di << "\n";
+      }
+    }
+    return 0;
+  }
+  di << "DDocStd_DumpDocument : Error\n";
+  return 1;
+}
+
+//=======================================================================
+// function : SetModified
+// purpose  : Set modifications in a document
+//=======================================================================
+
+static int DDocStd_SetModified(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n > 2)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(a[1], D))
+    {
+      return 1;
+    }
+    TDF_Label L;
+    for (int i = 2; i < n; i++)
+    {
+      if (DDocStd::Find(D, a[i], L))
+      {
+        D->SetModified(L);
+      }
+    }
+    return 0;
+  }
+  di << "DDocStd_SetModified : Error\n";
+  return 1;
+}
+
+//=================================================================================================
+
+static int DDocStd_Propagate(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
+{
+  //   if (n == 2) {
+  //     occ::handle<TDocStd_Document> D;
+  //     if (!DDocStd::GetDocument(a[1],D)) return 1;
+  //     if (D->IsValid()) {
+  //       std::cout << "the document is valid" << std::endl;
+  //       return 0;
+  //     }
+  //     occ::handle<TDesign_Function> F;
+  //     if (!D->Main().FindAttribute(TDesign_Function::GetID(),F)) {
+  //       std::cout << "no function found at main" << std::endl;
+  //       return 0;
+  //     }
+  //     TFunction_Logbook mdf (true);
+  //     for (NCollection_Map<TDF_Label>::Iterator it (D->GetModified());it.More();it.Next()) {
+  //       mdf.SetTouched(it.Key());
+  //     }
+  //     F->Execute(mdf);
+  //     D->PurgeModified();
+  //     return 0;
+  //   }
+  di << "DDocStd_Propagate : not implemented\n";
+  return 1;
+}
+
+//=================================================================================================
+
+static int DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
+                                      int               theNbArgs,
+                                      const char**      theArgVec)
+{
+  const occ::handle<TDocStd_Application>&       anApp = DDocStd::GetApplication();
+  occ::handle<BinDrivers_DocumentStorageDriver> aDriverXCaf =
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApp->WriterFromFormat("BinXCAF"));
+  occ::handle<BinDrivers_DocumentStorageDriver> aDriverOcaf =
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApp->WriterFromFormat("BinOcaf"));
+  if (aDriverXCaf.IsNull() || aDriverOcaf.IsNull())
+  {
+    std::cout << "Error: BinXCAF or BinOcaf storage formats are not registered\n";
+    return 1;
+  }
+
+  if (theNbArgs == 1)
+  {
+    theDi << (aDriverXCaf->IsWithTriangles() ? "1" : "0");
+    return 0;
+  }
+
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString aParam(theArgVec[anArgIter]);
+    aParam.LowerCase();
+
+    // toStore optional positional parameter
+    int aParsedIntegerValue(0);
+    if (anArgIter == 1 && Draw::ParseInteger(aParam.ToCString(), aParsedIntegerValue))
+    {
+      const bool toEnable = (aParsedIntegerValue != 0);
+      aDriverXCaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
+      aDriverOcaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
+      continue;
+    }
+
+    if (aParam == "-nonormals" || aParam == "-normals")
+    {
+      bool isWithNormals(true);
+      if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], isWithNormals))
+      {
+        ++anArgIter;
+      }
+      if (aParam == "-nonormals")
+      {
+        isWithNormals = !isWithNormals;
+      }
+      aDriverXCaf->SetWithNormals(anApp->MessageDriver(), isWithNormals);
+      aDriverOcaf->SetWithNormals(anApp->MessageDriver(), isWithNormals);
+    }
+    if (aParam == "-getnormals")
+    {
+      theDi << (aDriverXCaf->IsWithNormals() ? "1" : "0");
+      continue;
+    }
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+void DDocStd::DocumentCommands(Draw_Interpretor& theCommands)
+{
+
+  static bool done = false;
+  if (done)
+  {
+    return;
+  }
+  done = true;
+
+  const char* g = "DDocStd commands";
+
+  // Data Framework Access
+
+  theCommands.Add("Main", "Main (DOC)", __FILE__, DDocStd_Main, g);
+
+  // DUMP
+
+  theCommands.Add("Format", "Format (DOC, [format])", __FILE__, DDocStd_Format, g);
+
+  theCommands.Add("DumpDocument", "DumpDocument (DOC)", __FILE__, DDocStd_DumpDocument, g);
+
+  theCommands.Add("StoreTriangulation",
+                  "StoreTriangulation [toStore={0|1}] [-normals=off] [-noNormals=on]"
+                  "\n\t\t:  -normals -noNormals write triangulation normals."
+                  "\n\t\t:  Ignored (always off) if toStore=0 or skipped"
+                  "\nSetup BinXCAF/BinOcaf storage drivers to write triangulation",
+                  __FILE__,
+                  DDocStd_StoreTriangulation,
+                  g);
+
+  // XREF
+
+  theCommands.Add("Copy", "Copy DOC entry XDOC xentry", __FILE__, DDocStd_Copy, g);
+
+  theCommands.Add("CopyWithLink",
+                  "CopyWithLink DOC entry XDOC xentry",
+                  __FILE__,
+                  DDocStd_CopyWithLink,
+                  g);
+
+  theCommands.Add("UpdateLink", "UpdateLink DOC [entry]", __FILE__, DDocStd_UpdateLink, g);
+
+  // UNDO/REDO
+
+  theCommands.Add("UndoLimit",
+                  "UndoLimit DOC (Value), return UndoLimit Undos Redos",
+                  __FILE__,
+                  DDocStd_UndoLimit,
+                  g);
+
+  theCommands.Add("Undo", "Undo DOC (steps = 1)", __FILE__, DDocStd_Undo, g);
+
+  theCommands.Add("Redo", "Redo DOC (steps = 1)", __FILE__, DDocStd_Undo, g);
+
+  theCommands.Add("NewCommand", "NewCommand DOC", __FILE__, DDocStd_NewCommand, g);
+
+  theCommands.Add("OpenCommand", "OpenCommand DOC", __FILE__, DDocStd_OpenCommand, g);
+
+  theCommands.Add("AbortCommand", "AbortCommand DOC", __FILE__, DDocStd_AbortCommand, g);
+
+  theCommands.Add("CommitCommand", "CommitCommand DOC", __FILE__, DDocStd_CommitCommand, g);
+
+  // Modif and Propagation
+
+  theCommands.Add("SetModified",
+                  "SetModified DOC Label1 Label2 ....",
+                  __FILE__,
+                  DDocStd_SetModified,
+                  g);
+
+  theCommands.Add("Propagate", "Propagate DOC", __FILE__, DDocStd_Propagate, g);
+}

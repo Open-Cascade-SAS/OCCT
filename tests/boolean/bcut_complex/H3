@@ -1,0 +1,9 @@
+# Original bug : cts20374
+# Date : 24mar98
+
+restore [locate_data_file CTO900_cts20374-part.rle] part
+restore [locate_data_file cts20374-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 472107
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+puts "REQUIRED ALL: Faulty shapes in variables faulty_"
+puts "=========="
+puts "OCC25735"
+puts "=========="
+puts ""
+######################################################
+# Wrong solid is considered as valid by checkshape
+######################################################
+
+restore [locate_data_file bug25735_r5] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

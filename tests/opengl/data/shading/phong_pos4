@@ -1,0 +1,36 @@
+puts "========"
+puts "0029283: Visualization - allow defining more than 8 light sources"
+puts "Test case creates about 100 of light sources."
+puts "========"
+
+pload MODELING VISUALIZATION
+
+vclear
+vclose ALL
+vinit View1
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+box b -50 5 -50 100 100 100
+vdisplay -dispMode 1 b
+vfront
+vfit
+
+# define lights
+set THE_COLORS { RED1 YELLOW BLUE CYAN PURPLE WHITE HOTPINK GREEN MAGENTA MAGENTA3 }
+vlight -clear
+set aNbColors 10
+set aLightIndex 0
+set aConstAtten 0.1
+set aLinAtten 1
+set aRand [expr srand(1)]
+for { set anZIter -50 } { $anZIter <= 50 } { set anZIter [expr $anZIter + 10] } {
+  for { set anXIter -50 } { $anXIter <= 50 } { set anXIter [expr $anXIter + 10] } {
+    set anIndex [expr {int(rand() * $aNbColors)}]
+    set aColor [lindex $THE_COLORS $anIndex]
+    set aPos "$anXIter 0 $anZIter"
+    vlight -add positional -pos {*}$aPos -color $aColor -headLight 0 -constAttenuation $aConstAtten -linearAttenuation $aLinAtten
+    vpoint v${aLightIndex} {*}$aPos
+    set aLightIndex [expr $aLightIndex + 1]
+  }
+}
+vdump ${imagedir}/${casename}.png

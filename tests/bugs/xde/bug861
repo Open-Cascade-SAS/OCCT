@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC861"
+puts "SAM1626"
+puts "================"
+puts ""
+######################################################
+## Invalid free boundary get by command DRAW "freebound" on attached shape.
+######################################################
+
+restore [locate_data_file OCC859.brep] result
+checkshape result
+
+freebounds result 0.1
+
+set list [statshape result_o]
+
+if {[llength ${list}] > 4} {
+   puts "Faulty OCC861"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

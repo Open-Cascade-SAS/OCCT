@@ -1,0 +1,11 @@
+puts "========================"
+puts "0030052: "
+puts "========================"
+
+stepread [locate_data_file KNSU040R08X16S100.STP] a *
+renamevar a_1 result
+
+checkshape result
+checkmaxtol result -ref 0.043776
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

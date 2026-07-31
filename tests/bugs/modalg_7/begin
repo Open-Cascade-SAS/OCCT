@@ -1,0 +1,56 @@
+set subgroup modalg
+
+set calcul "p"
+set type "i"
+
+proc OFFSETSHAPE {distance faces calcul type} {
+        uplevel #0 explode s f
+        uplevel #0 offsetparameter 1e-7 $calcul $type
+        uplevel #0 offsetload s $distance $faces
+        uplevel #0 offsetperform result
+}
+
+proc ProjectCurvePointToPlaneAlongDir {curve param pln {dir {}}} {
+  upvar $pln p
+  upvar $curve c
+  cvalue c $param x y z
+  if {[llength $dir] == 0 } {
+    # project to plane along the normal
+    regexp {Axis   :([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} [dump p] full dx dy dz
+    lappend dir $dx $dy $dz
+  }
+  line ln x y z [lindex $dir 0] [lindex $dir 1] [lindex $dir 2]
+  intersect pt ln p
+  regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} [dump pt] full x y z
+
+  set pntOnPlane {}
+  lappend pntOnPlane $x $y $z
+  return $pntOnPlane
+}
+
+proc CheckProjectionToPlane {nbSamples origCurve origParam0 origParam1 projCurve projParam0 projParam1 pln {dir {}} {tolerance 1.e-7}} {
+  upvar $pln p
+  upvar $origCurve origC
+  upvar $projCurve projC
+
+  set isOk 1
+  for {set i 0} {$i <= $nbSamples} {incr i} {
+    set parOrig [expr $origParam0 + ($origParam1 - $origParam0) * $i / $nbSamples]
+    set parProj [expr $projParam0 + ($projParam1 - $projParam0) * $i / $nbSamples]
+
+    set pnt [ProjectCurvePointToPlaneAlongDir origC $parOrig p $dir]
+    cvalue projC $parProj X Y Z
+
+    set dx [expr [lindex $pnt 0]-[dval X]]
+    set dy [expr [lindex $pnt 1]-[dval Y]]
+    set dz [expr [lindex $pnt 2]-[dval Z]]
+
+    if {[expr $dx*$dx + $dy*$dy + $dz*$dz] < [expr $tolerance*$tolerance]} {
+      puts "OK: Projection correct"
+    } else {
+      puts "ERROR: Projection incorrect"
+      set isOk 0
+    }
+  }
+  return $isOk
+}

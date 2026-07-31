@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC27477: Visualization - Select3D_SensitiveCircle always return infinite depth value in boundary mode"
+puts "============"
+puts ""
+
+proc check_output {theInfo} {
+  set aSize [llength $theInfo]
+  for {set i 0} {$i < $aSize} {incr i} {
+    if {[string equal [lindex $theInfo $i] "Depth:"]} {
+      set aDepth [lindex $theInfo [expr $i + 1]]
+      if {[string equal $aDepth "17.4833"]} {
+        return 1
+      } else {
+        return $aDepth
+      }
+    }
+  }
+
+  return 0
+}
+
+pload VISUALIZATION
+
+vinit View1
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle radP1 radP2 radP3 0
+vfit
+
+vmoveto 177 285
+set anOut [split [vstate -entities] "\n"]
+set anInfo [split [lindex $anOut 1] " "]
+set aResult [check_output $anInfo]
+if {$aResult == 1} {
+  puts "OK"
+  } else {
+    puts "ERROR: the depth value is incorrect: should be 17.4833, but is equal to:"
+    puts $aResult
+  }
+
+vdump ${imagedir}/${casename}.png

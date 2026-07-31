@@ -1,0 +1,7 @@
+hyperbola hyperbola 0 0 0 30 10
+revsurf rs_hyperbola hyperbola 0 400 0 1 0 0
+offset rs_hyperbola_of rs_hyperbola 5
+mkface result rs_hyperbola_of .3 .5 .3 .5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 4.8054451347385554e-07
+set MaxVTol 4.8054451347385575e-07

@@ -1,0 +1,460 @@
+// Created on: 2001-04-26
+// Created by: OCC Team
+// Copyright (c) 2001-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Message_MsgFile.hxx>
+
+#include <NCollection_Buffer.hxx>
+#include <NCollection_DataMap.hxx>
+#include <OSD_Environment.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <OSD_OpenFile.hxx>
+
+#include <cstdlib>
+#include <cstdio>
+#include <mutex>
+
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>
+  Message_DataMapOfExtendedString;
+
+static Message_DataMapOfExtendedString& msgsDataMap()
+{
+  static Message_DataMapOfExtendedString aDataMap;
+  return aDataMap;
+}
+
+// mutex used to prevent concurrent access to message registry
+static std::mutex& Message_MsgFile_Mutex()
+{
+  static std::mutex theMutex;
+  return theMutex;
+}
+
+typedef enum
+{
+  MsgFile_WaitingKeyword,
+  MsgFile_WaitingMessage,
+  MsgFile_WaitingMoreMessage,
+  MsgFile_Indefinite
+} LoadingState;
+
+//=======================================================================
+// function : Message_MsgFile
+// purpose  : Load file from given directories
+//           theDirName may be represented as list: "/dirA/dirB /dirA/dirC"
+//=======================================================================
+
+bool Message_MsgFile::Load(const char* const theDirName, const char* const theFileName)
+{
+  if (!theDirName || !theFileName)
+  {
+    return false;
+  }
+
+  bool                    ret = true;
+  TCollection_AsciiString aDirList(theDirName);
+  //  Try to load from all consecutive directories in list
+  for (int i = 1;; i++)
+  {
+    TCollection_AsciiString aFileName = aDirList.Token(" \t\n", i);
+    if (aFileName.IsEmpty())
+    {
+      break;
+    }
+#ifdef _WIN32
+    aFileName += '\\';
+#else
+    aFileName += '/';
+#endif
+    aFileName += theFileName;
+    if (!LoadFile(aFileName.ToCString()))
+    {
+      ret = false;
+    }
+  }
+  return ret;
+}
+
+//=======================================================================
+// function : getString
+// purpose  : Takes a TCollection_ExtendedString from Ascii or Unicode
+//           Strings are left-trimmed; those beginning with '!' are omitted
+// Called   : from loadFile()
+//=======================================================================
+
+template <typename CharType>
+struct TCollection_String;
+
+template <>
+struct TCollection_String<char>
+{
+  typedef TCollection_AsciiString type;
+};
+
+template <>
+struct TCollection_String<char16_t>
+{
+  typedef TCollection_ExtendedString type;
+};
+
+template <class CharType>
+static inline bool getString(CharType*&                  thePtr,
+                             TCollection_ExtendedString& theString,
+                             int&                        theLeftSpaces)
+{
+  CharType* anEndPtr = thePtr;
+  CharType* aPtr;
+  int       aLeftSpaces;
+
+  do
+  {
+    //    Skip whitespaces in the beginning of the string
+    aPtr        = anEndPtr;
+    aLeftSpaces = 0;
+    for (;;)
+    {
+      CharType aChar = *aPtr;
+      if (aChar == ' ')
+      {
+        aLeftSpaces++;
+      }
+      else if (aChar == '\t')
+      {
+        aLeftSpaces += 8;
+      }
+      else if (aChar == '\r' || *aPtr == '\n')
+      {
+        aLeftSpaces = 0;
+      }
+      else
+      {
+        break;
+      }
+      aPtr++;
+    }
+
+    //    Find the end of the string
+    for (anEndPtr = aPtr; *anEndPtr; anEndPtr++)
+    {
+      if (anEndPtr[0] == '\n')
+      {
+        if (anEndPtr[-1] == '\r')
+        {
+          anEndPtr--;
+        }
+        break;
+      }
+    }
+
+  } while (aPtr[0] == '!');
+
+  //    form the result
+  if (aPtr == anEndPtr)
+  {
+    return false;
+  }
+  thePtr = anEndPtr;
+  if (*thePtr)
+  {
+    *thePtr++ = '\0';
+  }
+  theString     = typename TCollection_String<CharType>::type(aPtr);
+  theLeftSpaces = aLeftSpaces;
+  return true;
+}
+
+//=======================================================================
+// function : loadFile
+// purpose  : Static function, fills the DataMap of Messages from Ascii or Unicode
+// Called   : from LoadFile()
+//=======================================================================
+
+template <class _Char>
+static inline bool loadFile(_Char* theBuffer)
+{
+  TCollection_AsciiString    aKeyword;
+  TCollection_ExtendedString aMessage, aString;
+  LoadingState               aState         = MsgFile_WaitingKeyword;
+  _Char*                     sCurrentString = theBuffer;
+  int                        aLeftSpaces = 0, aFirstLeftSpaces = 0;
+
+  //    Take strings one-by-one; comments already screened
+  while (::getString(sCurrentString, aString, aLeftSpaces))
+  {
+    bool isKeyword = (aString.Value(1) == '.');
+    switch (aState)
+    {
+      case MsgFile_WaitingMoreMessage:
+        if (isKeyword)
+        {
+          Message_MsgFile::AddMsg(aKeyword, aMessage); // terminate the previous one
+          //      Pass from here to 'case MsgFile_WaitingKeyword'
+        }
+        else
+        {
+          //      Add another line to the message already in the buffer 'aMessage'
+          aMessage += '\n';
+          aLeftSpaces -= aFirstLeftSpaces;
+          if (aLeftSpaces > 0)
+          {
+            aMessage += TCollection_ExtendedString(aLeftSpaces, ' ');
+          }
+          aMessage += aString;
+          break;
+        }
+        [[fallthrough]];
+      case MsgFile_WaitingMessage:
+        if (!isKeyword)
+        {
+          aMessage         = aString;
+          aFirstLeftSpaces = aLeftSpaces; // remember the starting position
+          aState           = MsgFile_WaitingMoreMessage;
+          break;
+        }
+        //      Pass from here to 'case MsgFile_WaitingKeyword'
+        [[fallthrough]];
+      case MsgFile_WaitingKeyword:
+        if (isKeyword)
+        {
+          // remove the first dot character and all subsequent spaces + right-trim
+          aKeyword = TCollection_AsciiString(aString.Split(1));
+          aKeyword.LeftAdjust();
+          aKeyword.RightAdjust();
+          aState = MsgFile_WaitingMessage;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  //    Process the last string still remaining in the buffer
+  if (aState == MsgFile_WaitingMoreMessage)
+  {
+    Message_MsgFile::AddMsg(aKeyword, aMessage);
+  }
+  return true;
+}
+
+//=================================================================================================
+
+static int GetFileSize(FILE* theFile)
+{
+  if (!theFile)
+  {
+    return -1;
+  }
+
+  // get real file size
+  long nRealFileSize = 0;
+  if (fseek(theFile, 0, SEEK_END) != 0)
+  {
+    return -1;
+  }
+  nRealFileSize = ftell(theFile);
+  if (fseek(theFile, 0, SEEK_SET) != 0)
+  {
+    return -1;
+  }
+
+  return (int)nRealFileSize;
+}
+
+//=======================================================================
+// function : LoadFile
+// purpose  : Load the list of messages from a file
+//=======================================================================
+
+bool Message_MsgFile::LoadFile(const char* const theFileName)
+{
+  if (theFileName == nullptr || *theFileName == '\0')
+  {
+    return false;
+  }
+
+  //    Open the file
+  FILE* anMsgFile = OSD_OpenFile(theFileName, "rb");
+  if (!anMsgFile)
+  {
+    return false;
+  }
+
+  const int          aFileSize = GetFileSize(anMsgFile);
+  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
+  if (aFileSize <= 0 || !aBuffer.Allocate(aFileSize + 2))
+  {
+    fclose(anMsgFile);
+    return false;
+  }
+
+  char*     anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
+  const int nbRead      = static_cast<int>(fread(anMsgBuffer, 1, aFileSize, anMsgFile));
+
+  fclose(anMsgFile);
+  if (nbRead != aFileSize)
+  {
+    return false;
+  }
+
+  anMsgBuffer[aFileSize]     = 0;
+  anMsgBuffer[aFileSize + 1] = 0;
+
+  // Read the messages in the file and append them to the global DataMap
+  bool isLittleEndian = (anMsgBuffer[0] == '\xff' && anMsgBuffer[1] == '\xfe');
+  bool isBigEndian    = (anMsgBuffer[0] == '\xfe' && anMsgBuffer[1] == '\xff');
+  if (isLittleEndian || isBigEndian)
+  {
+    char16_t* aUnicodeBuffer = reinterpret_cast<char16_t*>(&anMsgBuffer[2]);
+    // Convert Unicode representation to order adopted on current platform
+#if defined(__sparc) && defined(__sun)
+    if (isLittleEndian)
+#else
+    if (isBigEndian)
+#endif
+    {
+      // Reverse the bytes throughout the buffer
+      const char16_t* const anEnd = reinterpret_cast<const char16_t*>(&anMsgBuffer[aFileSize]);
+
+      for (char16_t* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
+      {
+        unsigned short aWord = *aPtr;
+        *aPtr                = (aWord & 0x00ff) << 8 | (aWord & 0xff00) >> 8;
+      }
+    }
+    return ::loadFile(aUnicodeBuffer);
+  }
+  else
+  {
+    return ::loadFile(anMsgBuffer);
+  }
+}
+
+//=================================================================================================
+
+bool Message_MsgFile::LoadFromEnv(const char* const theEnvName,
+                                  const char* const theFileName,
+                                  const char* const theLangExt)
+{
+  TCollection_AsciiString aLangExt(theLangExt != nullptr ? theLangExt : "");
+  if (aLangExt.IsEmpty())
+  {
+    OSD_Environment aLangEnv("CSF_LANGUAGE");
+    aLangExt = aLangEnv.Value();
+    if (aLangExt.IsEmpty())
+    {
+      aLangExt = "us";
+    }
+  }
+
+  TCollection_AsciiString aFilePath(theFileName);
+  if (theEnvName != nullptr && theEnvName[0] != '\0')
+  {
+    OSD_Environment         aNameEnv(theEnvName);
+    TCollection_AsciiString aNameEnvStr = aNameEnv.Value();
+    if (!aNameEnvStr.IsEmpty())
+    {
+      if (aNameEnvStr.Value(aNameEnvStr.Length()) != '/')
+      {
+        aFilePath.Insert(1, '/');
+      }
+      aFilePath.Insert(1, aNameEnvStr);
+    }
+  }
+
+  if (aLangExt.Value(1) != '.')
+  {
+    aFilePath.AssignCat('.');
+  }
+  aFilePath.AssignCat(aLangExt);
+
+  return Message_MsgFile::LoadFile(aFilePath.ToCString());
+}
+
+//=================================================================================================
+
+bool Message_MsgFile::LoadFromString(const char* const theContent, const int theLength)
+{
+  int                aStringSize = theLength >= 0 ? theLength : (int)strlen(theContent);
+  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
+  if (aStringSize <= 0 || !aBuffer.Allocate(aStringSize + 2))
+  {
+    return false;
+  }
+
+  memcpy(aBuffer.ChangeData(), theContent, aStringSize);
+  aBuffer.ChangeData()[aStringSize + 0] = '\0';
+  aBuffer.ChangeData()[aStringSize + 1] = '\0';
+  char* anMsgBuffer                     = reinterpret_cast<char*>(aBuffer.ChangeData());
+  return ::loadFile(anMsgBuffer);
+}
+
+//=======================================================================
+// function : AddMsg
+// purpose  : Add one message to the global table. Fails if the same keyword
+//           already exists in the table
+//=======================================================================
+bool Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKeyword,
+                             const TCollection_ExtendedString& theMessage)
+{
+  Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
+
+  std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
+  aDataMap.Bind(theKeyword, theMessage);
+  return true;
+}
+
+//=======================================================================
+// function : getMsg
+// purpose  : retrieve the message previously defined for the given keyword
+//=======================================================================
+const TCollection_ExtendedString& Message_MsgFile::Msg(const char* const theKeyword)
+{
+  TCollection_AsciiString aKey(theKeyword);
+  return Msg(aKey);
+}
+
+//=================================================================================================
+
+bool Message_MsgFile::HasMsg(const TCollection_AsciiString& theKeyword)
+{
+  std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
+  return ::msgsDataMap().IsBound(theKeyword);
+}
+
+//=======================================================================
+// function : Msg
+// purpose  : retrieve the message previously defined for the given keyword
+//=======================================================================
+const TCollection_ExtendedString& Message_MsgFile::Msg(const TCollection_AsciiString& theKeyword)
+{
+  // find message in the map
+  Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
+  std::lock_guard<std::mutex>      aLock(Message_MsgFile_Mutex());
+
+  // if message is not found, generate error message and add it to the map to minimize overhead
+  // on consequent calls with the same key
+  const TCollection_ExtendedString* aValPtr = aDataMap.Seek(theKeyword);
+  if (aValPtr == nullptr)
+  {
+    // text of the error message can be itself defined in the map
+    static const TCollection_AsciiString    aPrefixCode("Message_Msg_BadKeyword");
+    static const TCollection_ExtendedString aDefPrefix("Unknown message invoked with the keyword ");
+    const TCollection_ExtendedString*       aPrefValPtr = aDataMap.Seek(aPrefixCode);
+    TCollection_AsciiString aErrorMessage = (aPrefValPtr != nullptr ? *aPrefValPtr : aDefPrefix);
+    aErrorMessage += theKeyword;
+    aDataMap.Bind(theKeyword, aErrorMessage); // do not use AddMsg() here to avoid mutex deadlock
+    aValPtr = aDataMap.Seek(theKeyword);
+  }
+
+  return *aValPtr;
+}

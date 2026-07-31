@@ -1,0 +1,36 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _MathUtils_Gauss_HeaderFile
+#define _MathUtils_Gauss_HeaderFile
+
+#include <Standard_Macro.hxx>
+#include <math_Vector.hxx>
+
+//! Modern math solver utilities.
+namespace MathUtils
+{
+
+//! Get ordered Gauss-Legendre points and weights for given order.
+//! Points are returned in ascending order on [-1, 1].
+//! @param theOrder number of quadrature points (>= 1)
+//! @param[out] thePoints points array
+//! @param[out] theWeights weights array
+//! @return true if points/weights are available
+Standard_EXPORT bool GetGaussPointsAndWeights(int          theOrder,
+                                              math_Vector& thePoints,
+                                              math_Vector& theWeights);
+
+} // namespace MathUtils
+
+#endif // _MathUtils_Gauss_HeaderFile

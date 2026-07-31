@@ -1,0 +1,32 @@
+
+puts "=========="
+puts "OCC705    "
+puts "=========="
+puts ""
+###########################################################
+## The matrix of inertia for sphere computed incorrectly.
+## In the second case the not diagonal elements of the inertia matrix are not close to zero.
+###########################################################
+
+psphere result 10 10 10
+ttranslate result 10 10 10
+trotate result 0 0 0 0 1 1 34
+
+set list [vprops result]
+set inertia [regexp -all -inline { +[-0-9.+eE]+ +[-0-9.+eE]+ +[-0-9.+eE]+} $list]
+set matrix [regexp -all -inline {[-0-9.+eE]+} $inertia]
+
+set matrix12 [lindex $matrix 1]
+set matrix21 [lindex $matrix 3]
+set matrix23 [lindex $matrix 5]
+set matrix32 [lindex $matrix 7]
+
+if { ${matrix12} != 0. || ${matrix21} != 0. || ${matrix23} != 0. || ${matrix32} != 0. } {
+    puts "Faulty OCC705"
+} else {
+    puts "OCC705 OK"
+}
+
+checkprops result -l 123.755 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC24037"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by General Fuse algorithm
+#######################################################################
+
+restore [locate_data_file bug24037_coude_sain.brep] b1
+restore [locate_data_file bug24037_plans_bloc.brep] b2
+
+bclearobjects
+bcleartools
+baddcompound b1
+baddcompound b2
+bfillds
+bbuild result
+
+checknbshapes result -t -vertex 52 -edge 105 -wire 76 -face 70 -shell 12 -solid 12 -compsolid 0 -compound 1 -shape 328
+checkview -display result -3d -path ${imagedir}/${test_image}.png

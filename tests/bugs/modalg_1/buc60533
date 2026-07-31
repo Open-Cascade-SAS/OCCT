@@ -1,0 +1,73 @@
+puts "=========="
+puts "BUC60533"
+puts "=========="
+
+restore [locate_data_file buc60533a.brep] part 
+checkshape part
+#puts "Tolerance part"
+#computetolerance part
+
+restore [locate_data_file buc60533b.brep] trTool
+checkshape trTool
+#puts "Tolerance trTool"
+#computetolerance trTool
+
+#building the result using general fuse algorithm
+#without building halfspace
+bclearobjects
+bcleartools
+baddobjects part trTool
+#*************************************************
+if [catch {bfillds; bbuild r} catch_result] {
+    puts "Faulty BUC60533: function CUT works wrongly"
+} else {
+    puts " BUC60533 OK: function CUT works properly"
+}
+#*************************************************
+explode r
+copy r_1 result
+
+#set che [checkshape res r]
+#set err [lindex $che [expr [llength $che] - 1]]
+#if { $err != "OK"} {
+#  puts "Faulty : mistakes are found in checked shape by checkshape command"
+#} else {
+#  puts "Checking by checkshape - OK"
+
+#explode res e
+#mkcurve cu1 res_1
+#mkcurve cu2 res_2
+#mkcurve cu3 res_3
+#mkcurve cu4 res_4
+#mkcurve cu5 res_5
+
+#checkshape res
+
+#set tolerance [ maxtolerance res ]
+#set MaxFaceTolerance [ lindex $tolerance 14 ]
+#set MaxEdgeTolerance [ lindex $tolerance 20 ]
+#set MaxVertexTolerance [ lindex $tolerance 26 ]
+#if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
+#puts "Faulty :Tolerance of shape is more then 1.0"
+#} else {
+#puts "Tolerance of shape is less then 1.0"
+#}
+#}
+
+# Objectif : Couper part par trTool
+#
+# part est construite a partir d'un semi de point et de telle facon que u=x et v=y.
+# On obtient une Geom_BSplineSurface. On cree alors la topologie a partir de cette
+# surface via BRepAPI::MakeFace(surface)
+# Dans notre code, a aucun moment, nous
+# n'initialisons la tolerance.
+#
+# Le cut n'est pas effectue car une exception est levee :
+#  An exception was caught Standard_ConstructionError: 
+#  ** Exception ** Standard_ConstructionError: 
+ 
+
+checkprops result -s 1.5003e+007
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename r0301soe_db.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1103  ( 1013 )  Summary  = 1103  ( 1013 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 95  ( 95 )  Shell    = 289  ( 271 )  Face     = 3569  ( 3569 ) 
+STATSHAPE   : Solid    = 95  ( 95 )  Shell    = 289  ( 271 )  Face     = 3569  ( 3569 )   FreeWire = 0  ( 102 ) 
+TOLERANCE   : MaxTol   =   0.6657106806  (   0.6657106806 )  AvgTol   =  0.001018983764  (     0.003936121 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1839  ( 1840 )  N2Labels = 0  ( 0 )   TotalLabels = 1840  ( 1841 )   NameLabels = 1  ( 1 )   ColorLabels = 165  ( 165 )   LayerLabels = 1762  ( 1763 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 9  ( 9 )
+COLORS      : Colors   = CYAN DARKORANGE1 DODGERBLUE2 GREEN MAGENTA MAGENTA4 RED WHITE YELLOW  ( CYAN DARKORANGE1 DODGERBLUE2 GREEN MAGENTA MAGENTA4 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 19  ( 19 )
+LAYERS      : Layers   = 0 10 101 103 104 105 122 15 16 17 171 18 20 21 25 27 51 71 72  ( {  0} { 10} { 15} { 16} { 17} { 18} { 20} { 21} { 25} { 27} { 51} { 71} { 72} 101 103 104 105 122 171 )
+
+}

@@ -1,0 +1,143 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESGraph_LineFontDefTemplate.hxx>
+#include <IGESGraph_ToolLineFontDefTemplate.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+
+IGESGraph_ToolLineFontDefTemplate::IGESGraph_ToolLineFontDefTemplate() = default;
+
+void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  const occ::handle<IGESData_IGESReaderData>&       IR,
+  IGESData_ParamReader&                             PR) const
+{
+  // bool st; //szv#4:S4163:12Mar99 not needed
+
+  int                                 tempOrientation;
+  double                              tempDistance, tempScale;
+  occ::handle<IGESBasic_SubfigureDef> tempTemplateEntity;
+
+  // clang-format off
+  PR.ReadInteger(PR.Current(), "Template Orientation", tempOrientation); //szv#4:S4163:12Mar99 `st=` not needed
+
+  PR.ReadEntity(IR, PR.Current(),
+		"Subfigure Definition Entity for Template Display",
+		STANDARD_TYPE(IGESBasic_SubfigureDef), tempTemplateEntity); //szv#4:S4163:12Mar99 `st=` not needed
+
+  PR.ReadReal(PR.Current(), "Distance between successive Template",
+	      tempDistance); //szv#4:S4163:12Mar99 `st=` not needed
+
+  PR.ReadReal(PR.Current(), "Scale Factor For Subfigure", tempScale); //szv#4:S4163:12Mar99 `st=` not needed
+  // clang-format on
+
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempOrientation, tempTemplateEntity, tempDistance, tempScale);
+}
+
+void IGESGraph_ToolLineFontDefTemplate::WriteOwnParams(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  IGESData_IGESWriter&                              IW) const
+{
+  IW.Send(ent->Orientation());
+  IW.Send(ent->TemplateEntity());
+  IW.Send(ent->Distance());
+  IW.Send(ent->Scale());
+}
+
+void IGESGraph_ToolLineFontDefTemplate::OwnShared(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  Interface_EntityIterator&                         iter) const
+{
+  iter.GetOneItem(ent->TemplateEntity());
+}
+
+void IGESGraph_ToolLineFontDefTemplate::OwnCopy(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& another,
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  Interface_CopyTool&                               TC) const
+{
+  int tempOrientation = another->Orientation();
+  DeclareAndCast(IGESBasic_SubfigureDef,
+                 tempTemplateSubfigure,
+                 TC.Transferred(another->TemplateEntity()));
+  double tempDistance = another->Distance();
+  double tempScale    = another->Scale();
+
+  ent->Init(tempOrientation, tempTemplateSubfigure, tempDistance, tempScale);
+}
+
+IGESData_DirChecker IGESGraph_ToolLineFontDefTemplate::DirChecker(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& /*ent*/) const
+{
+  IGESData_DirChecker DC(304, 1);
+  DC.Structure(IGESData_DefVoid);
+  DC.LineFont(IGESData_DefValue);
+  DC.LineWeight(IGESData_DefVoid);
+  DC.Color(IGESData_DefVoid);
+  DC.BlankStatusIgnored();
+  DC.SubordinateStatusRequired(0);
+  DC.UseFlagRequired(2);
+  DC.HierarchyStatusIgnored();
+
+  return DC;
+}
+
+void IGESGraph_ToolLineFontDefTemplate::OwnCheck(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
+{
+  if (ent->RankLineFont() == 0)
+  {
+    ach->AddWarning("Line Font Rank is zero");
+  }
+  else if ((ent->RankLineFont() < 1) || (ent->RankLineFont() > 5))
+  {
+    ach->AddWarning("Invalid Value As Line Font Rank");
+  }
+}
+
+void IGESGraph_ToolLineFontDefTemplate::OwnDump(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
+{
+  int tempSubLevel = (level <= 4) ? 0 : 1;
+
+  S << "IGESGraph_LineFontDefTemplate\n"
+    << "Orientation : " << ent->Orientation() << "\n"
+    << "Subfigure Display Entity For Template Display : ";
+  dumper.Dump(ent->TemplateEntity(), S, tempSubLevel);
+  S << "\n"
+    << "Length Between Successive Template Figure : " << ent->Distance() << "\n"
+    << "Scale Factor for Subfigure : " << ent->Scale() << "\n"
+    << '\n';
+}

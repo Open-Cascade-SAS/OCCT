@@ -1,0 +1,4 @@
+restore [locate_data_file cts21570_1.rle] w1
+restore [locate_data_file cts21570_2.rle] w2
+thrusections result 1 0 w2 w1
+checkprops result -s 29817.5

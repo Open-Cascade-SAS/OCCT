@@ -1,0 +1,185 @@
+puts "Check History of Cells Builder"
+
+puts "Case with overlapping planar faces"
+
+circle c1 0 0 0 10
+circle c2 10 0 0 10
+circle c3 10 10 0 10
+
+mkedge e1 c1
+mkedge e2 c2
+mkedge e3 c3
+
+wire w1 e1
+wire w2 e2
+wire w3 e3
+
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+
+bclearobjects
+bcleartools
+baddobjects f1 f2 f3
+bfillds
+
+bcbuild rx
+
+bcremoveall
+
+# no history at this point
+
+# add to result all parts of f1 with material 1
+bcadd result f1 1 -m 1
+
+# get history of the operation
+savehistory cells_hist
+
+# check modification of f1
+modified rm1 cells_hist f1
+checknbshapes rm1 -face 4 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2 cells_hist f2
+checknbshapes rm2 -face 2 -m "Information about modification of f2"
+
+# check modification of f3
+modified rm3 cells_hist f3
+checknbshapes rm3 -face 2 -m "Information about modification of f3"
+
+# make one face from result
+bcremoveint result
+
+# update cells history
+savehistory cells_hist
+
+# check modification of f1
+modified rm1u cells_hist f1
+checknbshapes rm1u -face 1 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2u cells_hist f2
+checknbshapes rm2u -face 1 -m "Information about modification of f2"
+
+# check modification of f3
+modified rm3u cells_hist f3
+checknbshapes rm3u -face 1 -m "Information about modification of f3"
+
+compound rm1u rm2u rm3u cfu
+checknbshapes cfu -face 1 -m "Information about modification of f1, f2 and f3"
+
+
+bcremoveall
+# no history at this point
+
+# add to result all parts of f1 and f2 not contained in f3 with material 1
+bcadd result f1 1 f3 0 -m 1
+bcadd result f2 1 f3 0 -m 1
+
+# update cells history
+savehistory cells_hist
+
+# check modification of f1
+modified rm1 cells_hist f1
+checknbshapes rm1 -face 2 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2 cells_hist f2
+checknbshapes rm2 -face 2 -m "Information about modification of f2"
+
+# check modification of f3
+if {[string trim [modified rm3 cells_hist f3]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modification of f3"
+}
+
+# check deletion of f1
+if {[string trim [isdeleted cells_hist f1]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deletion of f1"
+}
+
+# check deletion of f2
+if {[string trim [isdeleted cells_hist f2]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deletion of f2"
+}
+
+# check deletion of f3
+if {[string trim [isdeleted cells_hist f3]] != "Deleted."} {
+  puts "Error: Incorrect information about Deletion of f3"
+}
+
+# make one face from result
+bcremoveint result
+
+# update cells history
+savehistory cells_hist
+
+# check modification of f1
+modified rm1 cells_hist f1
+checknbshapes rm1 -face 1 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2 cells_hist f2
+checknbshapes rm2 -face 1 -m "Information about modification of f2"
+
+# check modification of f3
+if {[string trim [modified rm3 cells_hist f3]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modification of f3"
+}
+
+# check deletion of f1
+if {[string trim [isdeleted cells_hist f1]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deletion of f1"
+}
+
+# check deletion of f2
+if {[string trim [isdeleted cells_hist f2]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deletion of f2"
+}
+
+# check deletion of f3
+if {[string trim [isdeleted cells_hist f3]] != "Deleted."} {
+  puts "Error: Incorrect information about Deletion of f3"
+}
+
+
+bcremoveall
+
+# add to result parts of f1 with material 1, and all other parts with material 2
+bcadd result f1 1 -m 1
+bcadd result f2 1 f1 0 -m 2
+bcadd result f3 1 f1 0 -m 2
+
+# update cells history
+savehistory cells_hist
+
+# at this point all splits of faces are contained in the result
+# check modification of f1
+modified rm1 cells_hist f1
+checknbshapes rm1 -face 4 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2 cells_hist f2
+checknbshapes rm2 -face 4 -m "Information about modification of f2"
+
+# check modification of f3
+modified rm3 cells_hist f3
+checknbshapes rm3 -face 4 -m "Information about modification of f3"
+
+# unify faces with same material
+bcremoveint result
+
+# update cells history
+savehistory cells_hist
+
+# check modification of f1
+modified rm1u cells_hist f1
+checknbshapes rm1u -face 1 -m "Information about modification of f1"
+
+# check modification of f2
+modified rm2u cells_hist f2
+checknbshapes rm2u -face 2 -m "Information about modification of f2"
+
+# check modification of f3
+modified rm3u cells_hist f3
+checknbshapes rm3u -face 2 -m "Information about modification of f3"
+

@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC23576"
+puts "============"
+puts ""
+#######################################################################
+# Intersection algorithm produces trimmed circle with illegal parametric range.
+#######################################################################
+
+restore [locate_data_file bug23576_ff_b1_4_z564.brep] b1
+
+explode b1
+bopcurves b1_1 b1_2
+copy c_1 result
+
+set log [dump result]
+
+regexp {Parameters : +([-0-9.+eE]+) +([-0-9.+eE]+)} ${log} full rc1 rc2
+puts "rc1=${rc1}"
+puts "rc2=${rc2}"
+set 2_PI [expr 2. * 2. * asin(1.0)]
+puts "2_PI=${2_PI}"
+puts ""
+
+if {${rc1} < 0.} {
+  puts "Error: Bad value of parametric range rc1"
+} else {
+  puts "Good value of parametric range rc1"
+}
+if {${rc2} < ${2_PI}} {
+  puts "Error: Bad value of parametric range rc2"
+} else {
+  puts "Good value of parametric range rc2"
+}

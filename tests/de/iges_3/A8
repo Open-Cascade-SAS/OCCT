@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename VERSEUSE.igs
+
+set ref_data {
+DATA        : Faulties = 1  ( 0 )  Warnings = 0  ( 0 )  Summary  = 1  ( 0 )
+TPSTAT      : Faulties = 2  ( 19 )  Warnings = 97  ( 1155 )  Summary  = 99  ( 1174 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 )   FreeWire = 15  ( 15 ) 
+TOLERANCE   : MaxTol   =   0.8904045146  (   0.8904045345 )  AvgTol   =   0.01244635964  (   0.01248091559 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 514  ( 3187 )  N2Labels = 0  ( 0 )   TotalLabels = 515  ( 3188 )   NameLabels = 502  ( 770 )   ColorLabels = 514  ( 3187 )   LayerLabels = 443  ( 3109 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLUE GREEN RED WHITE  ( BLUE GREEN RED WHITE )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 10 20 30 50  ( 10 20 30 50 )
+
+}

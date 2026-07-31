@@ -1,0 +1,21 @@
+puts "============"
+puts "0023838: Modeling Data - Standard_Out Of Range in Geom_OffsetSurface::LocalDN (called by BRepFill_PipeShell)"
+puts "============"
+puts ""
+
+restore [locate_data_file bug23838_profile.brep] prof
+restore [locate_data_file bug23838_SpineAndSupport.brep] comp
+
+explode comp
+renamevar comp_1 supp
+renamevar comp_2 spine
+
+mksweep spine
+setsweep -DX supp
+addsweep prof
+
+buildsweep result -R
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

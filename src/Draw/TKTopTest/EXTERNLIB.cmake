@@ -1,0 +1,24 @@
+# External dependencies for TKTopTest
+set(OCCT_TKTopTest_EXTERNAL_LIBS
+  TKBRep
+  TKGeomAlgo
+  TKTopAlgo
+  TKernel
+  TKMath
+  TKBO
+  TKG2d
+  TKG3d
+  TKDraw
+  TKHLR
+  TKGeomBase
+  TKMesh
+  TKService
+  TKV3d
+  TKFillet
+  TKPrim
+  TKBool
+  TKOffset
+  TKFeat
+  TKShHealing
+  TKHelix
+)

@@ -1,0 +1,18 @@
+puts "=============================================================="
+puts "0027913: Sharing between edges was lost after offset operation"
+puts "=============================================================="
+puts ""
+
+restore [locate_data_file bug27913.brep] s 
+offsetparameter 1e-7 p i
+offsetload s 10
+offsetperform result
+
+if { [isdraw result] } {
+ unifysamedom result_unif result
+
+ checkshape result
+ checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
+
+ checknbshapes result -ref [lrange [nbshapes s] 8 19]
+}

@@ -1,0 +1,68 @@
+// Created on: 1992-06-24
+// Created by: Gilles DEBARBOUILLE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Units_Quantity.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Units_Explorer.hxx>
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Units_UnitsDictionary::
+  Sequence() const
+{
+  return thequantitiessequence;
+}
+
+//=================================================================================================
+
+inline void Units_UnitsDictionary::Dump(const int alevel) const
+{
+  int index;
+  switch (alevel)
+  {
+    case 2:
+      if (!thequantitiessequence.IsNull())
+      {
+        for (index = 1; index <= thequantitiessequence->Length(); index++)
+          thequantitiessequence->Value(index)->Dump(0, 1);
+      }
+      break;
+
+    case 1:
+    default:
+      Units_Explorer explorer(this);
+      std::cout << " UNITS DICTIONARY : " << std::endl;
+      for (; explorer.MoreQuantity(); explorer.NextQuantity())
+      {
+        std::cout << explorer.Quantity() << std::endl;
+        for (; explorer.MoreUnit(); explorer.NextUnit())
+          std::cout << "  " << explorer.Unit() << std::endl;
+      }
+  }
+}
+
+//=================================================================================================
+
+inline void Units_UnitsDictionary::Dump(const occ::handle<Units_Dimensions>& adimensions) const
+{
+  int index;
+  for (index = 1; index <= thequantitiessequence->Length(); index++)
+  {
+    if (thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))
+      thequantitiessequence->Value(index)->Dump(0, 1);
+  }
+}

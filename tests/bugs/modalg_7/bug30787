@@ -1,0 +1,17 @@
+puts "========"
+puts "0030787: BRepOffsetAPI_MakePipeShell: hangs on the attached model"
+puts "========"
+puts ""
+
+cpulimit 300
+
+circle profile 0 -1.81898940354586e-12 0 0 -0.999995598293478 -0.00296705134258169 1 0 0 25
+mkedge profile profile
+wire profile profile
+
+restore [locate_data_file bug30787_spine.brep] path
+
+mksweep path
+addsweep profile
+
+buildsweep result -C -S

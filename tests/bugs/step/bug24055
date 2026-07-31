@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC24055"
+puts "============"
+puts ""
+#################################################
+# Reading a STEP file produces invalid shape
+#################################################
+
+stepread [locate_data_file bug24055_8MTF-75LS05.step] a *
+checkshape a_1
+
+axo
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

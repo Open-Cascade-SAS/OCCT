@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22831"
+puts "============"
+puts ""
+######################################################
+# Regression in boolean Cut - wrong result ( 6.5.2).
+######################################################
+
+pload XDE
+
+restore [locate_data_file bug22831_shape.brep] sh
+restore [locate_data_file bug22831_face.brep] f
+
+checkshape sh
+checkshape f
+
+prism pr f -0.0023732630088625609, 0.49562550631034025, 0.86853308809584784
+
+checkshape pr
+
+fixshape prf pr 1.e-4
+checkshape prf
+
+bopcheck prf
+bcut result sh prf
+
+checkprops result -s 0.233021 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,10 @@
+# Original bug : cts20503
+# Date : 13Mai98
+# B8.gif
+
+restore [locate_data_file CTO902_cts20503-part.rle] part
+restore [locate_data_file CTO902_cts20503-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 800270
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,113 @@
+# Mode - Complete
+set calcul "c"
+# Join type - Intersection
+set type "i"
+
+proc compare_prop_values {prop m_res m_ref} {
+  if { ($m_ref != 0 && abs (($m_ref - $m_res) / double($m_ref)) > 1.e-2) || ($m_res == 0 && $m_ref != 0) } {
+    puts "Error: The $prop of result shape is $m_res, expected $m_ref"
+    return 0
+  } else {
+    puts "OK: The $prop of result shape is as expected"
+    return 1
+  }
+}
+
+proc compare_nbs {entity nb_res nb_ref} {
+  if {$nb_res != $nb_ref} {
+    puts "Error: number of $entity entities in the result shape is $nb_res, expected $nb_ref"
+    return 0
+  } else {
+    puts "OK: number of $entity entities in the result shape is as expected"
+    return 1
+  }
+}
+
+proc perform_offset_multi {theResult theShape theValue theFaceIds theFaceValues} {
+  upvar $theShape TheShape
+  
+  global ${theResult}
+  global ${theResult}_unif
+
+  tcopy TheShape sx
+  offsetparameter 1.e-7 c i r
+  offsetload sx ${theValue}
+  
+  set nbFaces [llength $theFaceIds]
+  if {$nbFaces > 0} {
+    explode sx f
+  }
+  
+  for {set i 0} {$i < $nbFaces} {incr i} {
+    set face_id [lindex $theFaceIds $i]
+    set face_offset [lindex $theFaceValues $i]
+    offsetonface sx_${face_id} ${face_offset}
+  }
+  
+  offsetperform ${theResult}
+  
+  if {![catch { checkshape ${theResult} } ] } {
+    unifysamedom ${theResult}_unif ${theResult}
+    return 1
+  }
+  return 0
+}
+
+proc perform_offset_multi_with_ref {theResult theShape theValue theFaceIds theFaceValues theRefValues theUnified} {
+
+  upvar $theShape TheShape
+  
+  global ${theResult}
+  global ${theResult}_unif
+
+  set operation_done [perform_offset_multi ${theResult} TheShape ${theValue} ${theFaceIds} ${theFaceValues}]
+
+  if {${operation_done} == 0} {
+    puts "Error: operation with offset value ${theValue} has failed"
+    return 0
+  }
+  
+  set check_res {}
+  
+  if { $theUnified == 1} {
+    set nbshapes_value [nbshapes ${theResult}_unif]
+  } else {
+    set nbshapes_value [nbshapes ${theResult}]
+  }
+  
+  if { [llength $theRefValues] == 4} {
+    set area_value [lindex [sprops ${theResult}] 2]
+    set volume_value [lindex [vprops ${theResult}] 2]
+    set nbwires_value [lindex $nbshapes_value 13]
+    set nbfaces_value [lindex $nbshapes_value 16]
+
+    lappend checks_res [compare_prop_values "area" ${area_value} [lindex ${theRefValues} 0]]
+    lappend checks_res [compare_prop_values "volume" ${volume_value} [lindex ${theRefValues} 1]]
+
+    lappend checks_res [compare_nbs "wire" $nbwires_value [lindex ${theRefValues} 2]]
+    lappend checks_res [compare_nbs "face" $nbfaces_value [lindex ${theRefValues} 3]]
+  }
+
+  set nbshells_value [lindex $nbshapes_value 19]
+  set nbsolids_value [lindex $nbshapes_value 22]
+  lappend checks_res [compare_nbs "shell" $nbshells_value 1]
+  lappend checks_res [compare_nbs "solid" $nbsolids_value 1]
+
+  set OK 1
+  foreach x $checks_res {
+    if {$x == 0} {
+      set OK 0
+      break
+    }
+  }
+  
+  set status "OK"
+  if {$OK == 0} {
+    puts "Error: operation with offset value ${theValue} produced incorrect result"
+    set status "KO"
+  }
+  
+  puts "Offset value ${theValue} - $status: area - ${area_value}; volume - ${volume_value}; wires - ${nbwires_value}; faces - ${nbfaces_value} (${area_value} ${volume_value} ${nbwires_value} ${nbfaces_value})" 
+  
+  checkmaxtol ${theResult} -ref 1.e-6
+}

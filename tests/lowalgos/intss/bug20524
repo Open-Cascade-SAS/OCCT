@@ -1,0 +1,22 @@
+puts "========================"
+puts "OCC20524"
+puts "========================"
+puts ""
+#######################################################################
+# Wrong intersection
+#######################################################################
+
+set BugNumber OCC20524
+
+restore [locate_data_file OCC20524-surf1.draw] surf1 
+restore [locate_data_file OCC20524-surf2.draw] surf2 
+
+intersect result surf1 surf2
+
+set che [whatis result]
+if { ![regexp {3d curve} $che] } {
+    puts "Faulty ${BugNumber}: command INTERSECT works wrongly"
+} else {
+  puts "${BugNumber} OK : command INTERSECT works properly"
+}
+

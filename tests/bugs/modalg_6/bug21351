@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC23351"
+puts "=========="
+puts ""
+################################################################################################
+# Fail to compute derivatives of offset surface on trimmed surfaces on offsets on CN surfaces
+################################################################################################
+
+beziersurf bz 3 3 0 0 0 1 -1 0 2 0 0 0 -1 1 1 0 1 2 -1 1 0 0 2 1 -1 2 2 0 2
+offset obz bz 0.5
+trim tobz obz 0.1 0.9 0.1 0.9
+offset otobz tobz 0.5
+svalue otobz 0.2 0.2 x y z dux duy duz dvx dvy dvz
+
+offset oobz bz 1
+svalue oobz 0.2 0.2 x y z dux duy duz dvx dvy dvz
+
+trim ttbz bz 0.1 0.9 0.1 0.9
+offset ottbz ttbz 1
+svalue ottbz 0.2 0.2 x y z dux duy duz dvx dvy dvz

@@ -1,0 +1,6 @@
+parabola result 70 1 0  0 0 1   0 1 0   10
+pscale result 0 0 0 5
+repeat 4 {pl}
+dmode result U
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{350 5 0} {0 -0 1} {0 1 0} {-1 0 0} {50}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

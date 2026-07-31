@@ -1,0 +1,108 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ElCLib.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
+
+//=================================================================================================
+
+void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
+{
+
+  done = false;
+
+  iden = false;
+  para = false;
+  //
+  double   A, B, C0, d;
+  gp_Pnt2d aP2D, aP2D1, aP2D2;
+  //
+  L.Coefficients(A, B, C0);
+  d = A * C.Location().X() + B * C.Location().Y() + C0;
+
+  if (std::abs(d) - C.Radius() > Epsilon(C.Radius()))
+  {
+    empt = true;
+    nbp  = 0;
+  }
+  else
+  { // At least 1 solution
+    empt = false;
+    //
+    // modified by NIZNHY-PKV Fri Jun 15 09:55:00 2007f
+    // double ang;
+    // ang = C.XAxis().Direction().Angle(L.Direction());
+    // ang = ang + M_PI / 2.0;
+    // modified by NIZNHY-PKV Fri Jun 15 09:55:29 2007t
+    if (std::abs(std::abs(d) - C.Radius()) <= Epsilon(C.Radius()))
+    { // Tangency case
+
+      double u, XS, YS, ang;
+      //
+      nbp = 1;
+      XS  = C.Location().X() - d * A;
+      YS  = C.Location().Y() - d * B;
+      //
+      // modified by NIZNHY-PKV Fri Jun 15 09:55:35 2007f
+      aP2D.SetCoord(XS, YS);
+      u   = ElCLib::Parameter(L, aP2D);
+      ang = ElCLib::Parameter(C, aP2D);
+      /*
+      u=B*(L.Location().X()-C.Location().X()) -
+    A*(L.Location().Y()-C.Location().Y());
+      if (d<0.0) {ang=ang+M_PI;}
+      if (ang>=2.0*M_PI) {
+    ang=ang-2.0*M_PI;
+      }
+      else if (ang<0.0) {
+    ang=ang+2.0*M_PI;
+      }
+      */
+      // modified by NIZNHY-PKV Fri Jun 15 09:55:41 2007t
+      lpnt[0].SetValue(XS, YS, u, ang);
+    }
+    else
+    { // 2 intersection points
+      // clang-format off
+      double h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;
+      // clang-format on
+      nbp = 2;
+      h   = std::sqrt(C.Radius() * C.Radius() - d * d);
+      // modified by NIZNHY-PKV Fri Jun 15 09:55:47 2007f
+      // cost=d/C.Radius();
+      // sint=h/C.Radius();
+      // modified by NIZNHY-PKV Fri Jun 15 09:55:52 2007t
+      XS1 = C.Location().X() - d * A - h * B;
+      YS1 = C.Location().Y() - d * B + h * A;
+      XS2 = C.Location().X() - d * A + h * B;
+      YS2 = C.Location().Y() - d * B - h * A;
+      //
+      // modified by NIZNHY-PKV Fri Jun 15 09:55:57 2007f
+      aP2D1.SetCoord(XS1, YS1);
+      aP2D2.SetCoord(XS2, YS2);
+      u1   = ElCLib::Parameter(L, aP2D1);
+      u2   = ElCLib::Parameter(L, aP2D2);
+      ang1 = ElCLib::Parameter(C, aP2D1);
+      ang2 = ElCLib::Parameter(C, aP2D2);
+
+      lpnt[0].SetValue(XS1, YS1, u1, ang1);
+      lpnt[1].SetValue(XS2, YS2, u2, ang2);
+    }
+  }
+  done = true;
+}

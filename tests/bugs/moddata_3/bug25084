@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25084"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect PCurve construction
+#######################################################################
+
+restore [locate_data_file bug25084_c.draw] c
+restore [locate_data_file bug25084_s10.draw] s
+
+project cx c s
+checklength cx -l 4.6201952691345385
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

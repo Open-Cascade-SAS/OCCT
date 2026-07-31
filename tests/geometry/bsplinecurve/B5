@@ -1,0 +1,4 @@
+bsplinecurve b2 3 3 0 4 3 1 4 4  0 0 0 1  1 2 0 1   2 3 0 1  3 2 0 1 2   0 0 1
+copy b2 result
+translate result -1 -2 3
+checklength result -l 6.3759776321287411

@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC8842"
+puts "============"
+puts ""
+#######################################################################
+# Errors in Offset Shape algorithm working with bspline and surface of revolution
+#######################################################################
+
+set BugNumber OCC8842
+
+cpulimit 500
+
+if {[info commands testreadiges] == ""} {pload XSDRAW IGES}
+
+proc myoffset {result sh val tan} {
+  if {$tan == 1} {
+    offsetparameter 1e-7 p i
+  } else {
+    offsetparameter 1e-7 p a
+  }
+  uplevel offsetload $sh $val
+  uplevel offsetperform $result
+}
+
+testreadiges [locate_data_file OCC8842_cone_Ideas.igs] a2
+
+DT_ShapeDivide con2 a2
+
+# join type Intersection
+puts "***** offsetting with join type Intersection"
+puts "   cone_Ideas - 5"
+
+if [catch { myoffset result con2 -5 1 } catch_result] {
+  puts "${BugNumber}: Faulty (1)"
+} else {
+
+checkprops result -s 9885.2 
+checkshape result
+checknbshapes result -vertex 4 -edge 9 -wire 4 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 23
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

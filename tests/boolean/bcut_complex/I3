@@ -1,0 +1,9 @@
+# Original bug : cts20150
+# Date : 13Mai98
+
+restore [locate_data_file CTO901_cts20150_base.rle]  base
+restore [locate_data_file CTO901_cts20150_outil.rle]  outil
+
+bcut result base outil
+checkprops result -s 50892.2
+checkview -display result -2d -s -otherwise { base outil } -path ${imagedir}/${test_image}.png

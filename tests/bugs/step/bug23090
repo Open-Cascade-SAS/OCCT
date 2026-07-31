@@ -1,0 +1,16 @@
+puts "TODO OCC23090 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC23090"
+puts "========"
+puts ""
+##########################################################################
+# Reading a STEP file produces invalid shape
+##########################################################################
+
+stepread [locate_data_file bug23090_2012_003_050_matrice.stp] a *
+tpcompound result
+
+checkshape result
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

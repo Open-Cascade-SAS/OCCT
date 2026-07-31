@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC2368"
+puts "============"
+puts ""
+######################################################
+# Exception is raised in the application during reading attached IGES file.
+######################################################
+
+set list [stepread [locate_data_file OCC2368.stp] a *]
+if {[lsearch ${list} Error] > -1} {
+    puts "OCC2368: Error during reading attached IGES file"
+} else {
+    puts "OCC2368: OK"
+}
+

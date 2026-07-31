@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28315_rev_part_neu_01_ap214_is.stp
+
+set ref_data {
+
+ NbOfDimensions          : 51
+  NbOfDimensionalSize    : 0
+  NbOfDimensionalLocation: 0
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 39
+ NbOfTolerances          : 0
+  NbOfGTWithModifiers    : 0
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 0
+ NbOfDatumFeature        : 0
+ NbOfAttachedDatum       : 0
+ NbOfDatumTarget         : 0
+}

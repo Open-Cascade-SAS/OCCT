@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+
+
+set filename trj5_pm3-ug-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 83 )  Summary  = 7  ( 83 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 369  ( 369 ) 
+STATSHAPE   : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 369  ( 369 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.07714530523  (  0.01678530642 )  AvgTol   =  0.0009065081658  (  0.0001538088659 )
+LABELS      : N0Labels = 20  ( 20 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 39  ( 39 )   NameLabels = 39  ( 39 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 20  ( 20 )  Volume   = 20  ( 20 )  Area     = 20  ( 20 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,8 @@
+bsplinecurve bspline_3d_np_nc_nr 2 3 0 3 1 1 2 3  0 0 0 1  1 1 1 1  1 0 0 1  0 0 1 1
+revsurf rs_bspline_3d_np_nc_nr  bspline_3d_np_nc_nr 0 -1 0 1 0 0
+offset rs_bspline_3d_np_nc_nr_of  rs_bspline_3d_np_nc_nr .1
+offset rs_bspline_3d_np_nc_nr_of_of rs_bspline_3d_np_nc_nr_of .1
+mkface result rs_bspline_3d_np_nc_nr_of_of .3 .5 .3 .5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 7.0121431023305125e-07
+set MaxVTol 7.0121431023305146e-07

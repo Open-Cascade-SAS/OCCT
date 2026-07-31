@@ -1,0 +1,76 @@
+puts "============"
+puts "OCC9303"
+puts "============"
+puts ""
+######################################################
+# Intersection curve surface doesn't take account of bounds of the surface
+######################################################
+
+set BugNumber OCC9303
+
+cone c 0 0 0 30 0
+trimv nc c 20 30
+
+smallview +X+Z
+donly nc
+fit
+
+line ll 0 0 20 1 0 0
+
+if [catch {intersect res ll nc} result] {
+   set mistake 1
+} else {
+   set  mistake 0
+}
+                                                                                                
+if { $mistake == 0} {                                                                           
+   puts "${BugNumber} OK : intersection was finished"                 
+   puts ""
+   set nom 0
+   set j 1
+   repeat 2 {
+     set che [whatis res_$j]
+     set err [lindex $che [expr [llength $che] - 1]]
+     if { $err != "point"} {
+        break
+     } else {
+        set nom [expr $nom + 1]
+     }
+     incr j
+   }
+   if { $nom != 2 } {
+      puts [format "Faulty ${BugNumber}: Intersection was made WRONGLY: %s points" $nom]
+   } else {
+      puts [format "${BugNumber} OK : Intersection command works properly: %s points" $nom]
+
+      set dump1 [dump res_1]
+      set x1 [lindex ${dump1} 7]
+      set y1 [lindex ${dump1} 8]
+      set z1 [lindex ${dump1} 9]
+      set x1 [string range ${x1} 0 end-1]
+      set y1 [string range ${y1} 0 end-1]
+
+      set dump2 [dump res_2]
+      set x2 [lindex ${dump2} 7]
+      set y2 [lindex ${dump2} 8]
+      set z2 [lindex ${dump2} 9]
+      set x2 [string range ${x2} 0 end-1]
+      set y2 [string range ${y2} 0 end-1]
+
+      set GoodX1 1.154700538379251e+01
+      set GoodY1 0.000000000000000e+00
+      set GoodZ1 2.000000000000000e+01
+      set GoodX2 -1.154700538379251e+01
+      set GoodY2 0.000000000000000e+00
+      set GoodZ2 2.000000000000000e+01
+
+      checkreal "x1" ${x1} ${GoodX1} 0 0.001
+      checkreal "y1" ${y1} ${GoodY1} 0 0.001
+      checkreal "z1" ${z1} ${GoodZ1} 0 0.001
+      checkreal "x2" ${x2} ${GoodX2} 0 0.001
+      checkreal "y2" ${y2} ${GoodY2} 0 0.001
+      checkreal "z2" ${z2} ${GoodZ2} 0 0.001
+   }
+} else {
+   puts "Faulty ${BugNumber} : intersection does not finished"
+}

@@ -1,0 +1,12 @@
+puts "# ====================================================================="
+puts "# 0030628: Data Exchange - Crash on importing STEP file"
+puts "# ====================================================================="
+puts ""
+
+vclear
+vinit View1
+vaxo
+ReadStep D [locate_data_file bug30628_319892-GSE306L520-HOG-s5.stp]
+XDisplay D -dispMode 1
+vfit
+vdump ${imagedir}/${casename}.png

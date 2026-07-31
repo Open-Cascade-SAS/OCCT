@@ -1,0 +1,13 @@
+# Original bug : pro13573
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_pro13gfe.rle] base
+profile cont p 1 0 0 0 1 0 F 0 200 x -100 y -150 x 100
+
+nexplode base face
+copy base_8 funtil
+
+featprism base cont cont -1 0 0 1 1
+featperform prism result funtil
+
+checkprops result -s 1.7422e+006

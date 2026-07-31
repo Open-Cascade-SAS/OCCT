@@ -1,0 +1,16 @@
+#pcylinder s1 5 15
+#pcylinder s2 4 6 90
+#trotate s2 0 0 0 1 0 0 90
+#ttranslate s2 -2 -2 5
+#ttranslate s1 s2 5 5 0
+#fuse s s1 s2
+#save s G5678.draw 
+
+restore [locate_data_file G5678.draw] s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_6 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+checkprops result -s 67290.4

@@ -1,0 +1,249 @@
+// Created on: 1993-11-26
+// Created by: Isabelle GRIGNON
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::IndexOfS1() const
+{
+  return indexOfS1;
+}
+
+//=================================================================================================
+
+inline bool ChFiDS_SurfData::IsOnCurve1() const
+{
+  return isoncurv1;
+}
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::IndexOfC1() const
+{
+  if (!isoncurv1)
+    throw Standard_Failure("Interference pas sur courbe");
+  return indexOfC1;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_SurfData::SetIndexOfC1(const int theIndex)
+{
+  indexOfC1 = theIndex;
+  isoncurv1 = (theIndex != 0);
+}
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::IndexOfS2() const
+{
+  return indexOfS2;
+}
+
+//=================================================================================================
+
+inline bool ChFiDS_SurfData::IsOnCurve2() const
+{
+  return isoncurv2;
+}
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::IndexOfC2() const
+{
+  if (!isoncurv2)
+    throw Standard_Failure("Interference pas sur courbe");
+  return indexOfC2;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_SurfData::SetIndexOfC2(const int theIndex)
+{
+  indexOfC2 = theIndex;
+  isoncurv2 = (theIndex != 0);
+}
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::Surf() const
+{
+  return indexOfConge;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation ChFiDS_SurfData::Orientation() const
+{
+  return orientation;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_FaceInterference& ChFiDS_SurfData::InterferenceOnS1() const
+{
+  return intf1;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_FaceInterference& ChFiDS_SurfData::InterferenceOnS2() const
+{
+  return intf2;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexFirstOnS1() const
+{
+  return pfirstOnS1;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS1() const
+{
+  return plastOnS1;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexFirstOnS2() const
+{
+  return pfirstOnS2;
+}
+
+//=================================================================================================
+
+inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS2() const
+{
+  return plastOnS2;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_SurfData::ChangeIndexOfS1(const int Index)
+{
+  indexOfS1 = Index;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_SurfData::ChangeIndexOfS2(const int Index)
+{
+  indexOfS2 = Index;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_SurfData::ChangeSurf(const int Index)
+{
+  indexOfConge = Index;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation& ChFiDS_SurfData::ChangeOrientation()
+{
+  return orientation;
+}
+
+//=================================================================================================
+
+inline ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterferenceOnS1()
+{
+  return intf1;
+}
+
+//=================================================================================================
+
+inline ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterferenceOnS2()
+{
+  return intf2;
+}
+
+//=================================================================================================
+
+inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexFirstOnS1()
+{
+  return pfirstOnS1;
+}
+
+//=================================================================================================
+
+inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS1()
+{
+  return plastOnS1;
+}
+
+//=================================================================================================
+
+inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexFirstOnS2()
+{
+  return pfirstOnS2;
+}
+
+//=================================================================================================
+
+inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS2()
+{
+  return plastOnS2;
+}
+
+//=================================================================================================
+
+inline bool ChFiDS_SurfData::IsOnCurve(const int OnS) const
+{
+  if (OnS == 1)
+    return isoncurv1;
+  return isoncurv2;
+}
+
+//=================================================================================================
+
+inline int ChFiDS_SurfData::IndexOfC(const int OnS) const
+{
+  if (OnS == 1)
+  {
+    if (!isoncurv1)
+      throw Standard_Failure("Interference pas sur courbe");
+    return indexOfC1;
+  }
+  if (!isoncurv2)
+    throw Standard_Failure("Interference pas sur courbe");
+  return indexOfC2;
+}
+
+//=================================================================================================
+
+inline bool ChFiDS_SurfData::TwistOnS1() const
+{
+  return twistons1;
+}
+
+inline bool ChFiDS_SurfData::TwistOnS2() const
+{
+  return twistons2;
+}
+
+inline void ChFiDS_SurfData::TwistOnS1(const bool T)
+{
+  twistons1 = T;
+}
+
+inline void ChFiDS_SurfData::TwistOnS2(const bool T)
+{
+  twistons2 = T;
+}

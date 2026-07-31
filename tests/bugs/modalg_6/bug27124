@@ -1,0 +1,61 @@
+puts "============"
+puts "OCC27124"
+puts "============"
+puts ""
+###############################
+## Invalid curve on surface in the result of General Fuse operation
+###############################
+
+restore [locate_data_file bug27129_e.brep] e
+restore [locate_data_file bug27129_p.brep] p
+restore [locate_data_file bug27129_q.brep] q
+
+bclearobjects
+bcleartools
+baddobjects e
+baddtools p q
+bfillds
+bbuild result
+set log [bopargcheck result #f]
+
+set MessageList {
+"Faulties for FIRST  shape found : 1"
+"Shapes are not suppotrted by BOP: NO"
+"Self-Intersections              : NO"
+"Check for SI has been aborted   : NO"
+"Too small edges                 : NO"
+"Bad faces                       : NO"
+"Too close vertices              : DISABLED"
+"Too close edges                 : DISABLED"
+"Shapes with Continuity C0       : NO"
+"Invalid Curve on Surface        : YES  Cases\\(1\\)  Total shapes\\(2\\)"
+"Faulties for SECOND  shape found : 0"
+}
+
+for {set i 1} {$i <= 11} {incr i} {
+   set str [ lindex ${MessageList} [expr $i - 1] ]
+   if { [regexp ${str} ${log}] == 1  } {
+      puts "OK : There is #$i message"
+   } else {
+      puts "Error : There is not #$i message"
+      puts $str
+   }
+}
+
+checkprops result -s 81576.6
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 18
+ EDGE      : 31
+ WIRE      : 16
+ FACE      : 16
+ SHELL     : 4
+ SOLID     : 4
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 90
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "solid construction"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

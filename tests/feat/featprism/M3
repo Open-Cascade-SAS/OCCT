@@ -1,0 +1,13 @@
+# Original bug : pro15199 
+# bis pro15024
+# Date : 17 Sept 98
+
+restore [locate_data_file CFE_e_lonfzx.rle] E
+
+nexplode E face
+profile cont S E_10 F 50 -100 X 50 Y -100 X -50
+
+featprism  E cont cont 0 0 1 0 1
+featperform prism result E_9
+
+checkprops result -s 960000

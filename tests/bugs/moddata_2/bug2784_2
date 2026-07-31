@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC2784"
+puts "============"
+puts ""
+######################################################
+# Common and cut operations for two faces gives invalid result
+######################################################
+# Common and cut operations for two faces gives invalid result if one of the faces
+# has a hole and other face lay in this hole (fill this hole).
+######################################################
+## (old topology)
+## (cut)
+## (common)
+######################################################
+
+############# data #############
+box b1 10 20 10
+box b2 1 1 1
+ttranslate b2 5 5 0
+explode b1 f
+explode b2 f
+
+bcut rcut1 b1_5 b2_5
+checkshape rcut1
+
+bcommon result rcut1 b2_5
+
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+
+if { $m != 0 } {
+    puts "Error : area is not right"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

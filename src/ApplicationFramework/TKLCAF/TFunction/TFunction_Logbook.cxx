@@ -1,0 +1,297 @@
+// Created on: 1999-07-20
+// Created by: Vladislav ROMASHKO
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_OStream.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
+#include <TFunction_Logbook.hxx>
+#include <Standard_GUID.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
+
+//=================================================================================================
+
+const Standard_GUID& TFunction_Logbook::GetID()
+{
+  static Standard_GUID TFunction_LogbookID("CF519724-5CA4-4B90-835F-8919BE1DDE4B");
+  return TFunction_LogbookID;
+}
+
+//=================================================================================================
+
+occ::handle<TFunction_Logbook> TFunction_Logbook::Set(const TDF_Label& Access)
+{
+  occ::handle<TFunction_Logbook> S;
+  if (!Access.Root().FindAttribute(TFunction_Logbook::GetID(), S))
+  {
+    S = new TFunction_Logbook();
+    Access.Root().AddAttribute(S);
+  }
+  return S;
+}
+
+//=================================================================================================
+
+const Standard_GUID& TFunction_Logbook::ID() const
+{
+  return GetID();
+}
+
+//=================================================================================================
+
+TFunction_Logbook::TFunction_Logbook()
+    : isDone(false)
+{
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::Clear()
+{
+  if (!IsEmpty())
+  {
+    Backup();
+    myTouched.Clear();
+    myImpacted.Clear();
+    myValid.Clear();
+  }
+}
+
+//=================================================================================================
+
+bool TFunction_Logbook::IsEmpty() const
+{
+  return (myTouched.IsEmpty() && myImpacted.IsEmpty() && myValid.IsEmpty());
+}
+
+//=================================================================================================
+
+bool TFunction_Logbook::IsModified(const TDF_Label& L, const bool WithChildren) const
+{
+  if (myTouched.Contains(L))
+  {
+    return true;
+  }
+  if (myImpacted.Contains(L))
+  {
+    return true;
+  }
+  if (WithChildren)
+  {
+    TDF_ChildIterator itr(L);
+    for (; itr.More(); itr.Next())
+    {
+      if (IsModified(itr.Value(), true))
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::SetValid(const TDF_Label& L, const bool WithChildren)
+{
+  Backup();
+  myValid.Add(L);
+  if (WithChildren)
+  {
+    TDF_ChildIterator itr(L, true);
+    for (; itr.More(); itr.Next())
+    {
+      myValid.Add(itr.Value());
+    }
+  }
+}
+
+void TFunction_Logbook::SetValid(const NCollection_Map<TDF_Label>& Ls)
+{
+  Backup();
+  NCollection_Map<TDF_Label>::Iterator itrm(Ls);
+  for (; itrm.More(); itrm.Next())
+  {
+    const TDF_Label& L = itrm.Key();
+    myValid.Add(L);
+  }
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::SetImpacted(const TDF_Label& L, const bool WithChildren)
+{
+  Backup();
+  myImpacted.Add(L);
+  if (WithChildren)
+  {
+    TDF_ChildIterator itr(L, true);
+    for (; itr.More(); itr.Next())
+    {
+      myImpacted.Add(itr.Value());
+    }
+  }
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::GetValid(NCollection_Map<TDF_Label>& Ls) const
+{
+  // Copy valid labels.
+  NCollection_Map<TDF_Label>::Iterator itrm(myValid);
+  for (; itrm.More(); itrm.Next())
+  {
+    const TDF_Label& L = itrm.Key();
+    Ls.Add(L);
+  }
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::Restore(const occ::handle<TDF_Attribute>& other)
+{
+  occ::handle<TFunction_Logbook> logbook = occ::down_cast<TFunction_Logbook>(other);
+
+  // Status.
+  isDone = logbook->isDone;
+
+  // Valid labels
+  NCollection_Map<TDF_Label>::Iterator itrm;
+  for (itrm.Initialize(logbook->myValid); itrm.More(); itrm.Next())
+  {
+    myValid.Add(itrm.Key());
+  }
+  // Touched labels
+  for (itrm.Initialize(logbook->myTouched); itrm.More(); itrm.Next())
+  {
+    myTouched.Add(itrm.Key());
+  }
+  // Impacted labels
+  for (itrm.Initialize(logbook->myImpacted); itrm.More(); itrm.Next())
+  {
+    myImpacted.Add(itrm.Key());
+  }
+}
+
+//=================================================================================================
+
+void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
+                              const occ::handle<TDF_RelocationTable>& RT) const
+{
+  occ::handle<TFunction_Logbook> logbook = occ::down_cast<TFunction_Logbook>(into);
+
+  // Status.
+  logbook->isDone = isDone;
+
+  // Touched.
+  logbook->myTouched.Clear();
+  NCollection_Map<TDF_Label>::Iterator itr(myTouched);
+  for (; itr.More(); itr.Next())
+  {
+    const TDF_Label& L = itr.Value();
+    if (!L.IsNull())
+    {
+      TDF_Label relocL;
+      if (RT->HasRelocation(L, relocL))
+      {
+        logbook->myTouched.Add(relocL);
+      }
+      else
+      {
+        logbook->myTouched.Add(L);
+      }
+    }
+  }
+
+  // Impacted.
+  logbook->myImpacted.Clear();
+  itr.Initialize(myImpacted);
+  for (; itr.More(); itr.Next())
+  {
+    const TDF_Label& L = itr.Value();
+    if (!L.IsNull())
+    {
+      TDF_Label relocL;
+      if (RT->HasRelocation(L, relocL))
+      {
+        logbook->myImpacted.Add(relocL);
+      }
+      else
+      {
+        logbook->myImpacted.Add(L);
+      }
+    }
+  }
+
+  // Valid.
+  logbook->myValid.Clear();
+  itr.Initialize(myValid);
+  for (; itr.More(); itr.Next())
+  {
+    const TDF_Label& L = itr.Value();
+    if (!L.IsNull())
+    {
+      TDF_Label relocL;
+      if (RT->HasRelocation(L, relocL))
+      {
+        logbook->myValid.Add(relocL);
+      }
+      else
+      {
+        logbook->myValid.Add(L);
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> TFunction_Logbook::NewEmpty() const
+{
+  return new TFunction_Logbook();
+}
+
+//=================================================================================================
+
+Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
+{
+  NCollection_Map<TDF_Label>::Iterator itr;
+  TCollection_AsciiString              as;
+
+  stream << "Done = " << isDone << '\n';
+  stream << "Touched labels: " << '\n';
+  for (itr.Initialize(myTouched); itr.More(); itr.Next())
+  {
+    TDF_Tool::Entry(itr.Key(), as);
+    stream << as << '\n';
+  }
+  stream << "Impacted labels: " << '\n';
+  for (itr.Initialize(myImpacted); itr.More(); itr.Next())
+  {
+    TDF_Tool::Entry(itr.Key(), as);
+    stream << as << '\n';
+  }
+  stream << "Valid labels: " << '\n';
+  for (itr.Initialize(myValid); itr.More(); itr.Next())
+  {
+    TDF_Tool::Entry(itr.Key(), as);
+    stream << as << '\n';
+  }
+
+  return stream;
+}

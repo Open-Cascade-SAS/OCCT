@@ -1,0 +1,10 @@
+#C3----------------------------------------------
+plane p 0 0 0 1 0 0 
+pcone p p 15 18 20 90
+plane p2 10 -7 10 0 0 1
+pcone p2 p2 5 4 20
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_6 1 0 0 30 0 0 1
+
+checkprops result -s 2002.16

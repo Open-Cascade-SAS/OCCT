@@ -1,0 +1,40 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1"
+puts "============"
+puts "OCC25509"
+puts "============"
+puts ""
+######################################################
+# Wrong shape considered as valid by checkshape
+######################################################
+
+# 06  
+# Solid with Two vertices FORWARD that are out of the growth
+# Solid with 2 growths 
+# Solid with 2 shells with imbrications
+# 
+
+box b1 10 10 10 
+
+explode b1 
+
+vertex v1 11 11 0 
+vertex v2 11 11 11 
+
+box b3 3 3 3 4 4 4
+explode b3
+
+explode b1_1 
+orientation b1_1_1 I
+shape x sh
+add b1_1_1 x
+
+shape result so
+add b1_1 result
+add v1 result
+add v2 result
+add b3_1 result
+add x result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

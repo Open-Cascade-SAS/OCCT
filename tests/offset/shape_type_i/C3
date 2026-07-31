@@ -1,0 +1,6 @@
+puts "TODO OCC23068 ALL: Error : The volume of result shape "
+ptorus s 20 5  270
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 0

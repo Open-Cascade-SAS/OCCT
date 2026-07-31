@@ -1,0 +1,17 @@
+# test for #21593: compare number of triangles/nodes
+# produced by BRepMesh for face with internal vertices
+# depending on value of InternalVerticesMode flag.
+
+restore [locate_data_file bug21593_internal_vertices.brep] a
+
+# enable internal vertices mode
+tclean a
+incmesh a 0.1
+
+checktrinfo a -tri 10 -nod 8
+
+# disable internal vertices mode
+tclean a
+incmesh a 0.1 -int_vert_off
+
+checktrinfo a -tri 2 -nod 4

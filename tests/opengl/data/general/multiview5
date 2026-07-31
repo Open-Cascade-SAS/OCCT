@@ -1,0 +1,26 @@
+puts "========"
+puts "0032886: Visualization, V3d_View - introduce interface for creating a subview"
+puts "V1/CompView + V1/ThumbView at corner"
+puts "========"
+
+pload MODELING VISUALIZATION
+vinit V1/CompView -width 380 -height 520 -composer 1
+vbackground GRAY20
+vaxo
+vcamera -persp
+box b 1 2 3
+vdisplay -dispMode 1 b
+vaspects b -faceBoundaryDraw 1
+vfit
+vzbufftrihedron
+
+vinit V1/ThumbView -parent V1/CompView -width 0.25 -height 0.25 -corner bottomRight -top 10 -left 10
+vbackground GRAY40
+vaxo
+vfit
+
+vactivate V1/CompView
+vdump $::imagedir/${::casename}.png
+
+vactivate V1/ThumbView
+vdump $::imagedir/${::casename}_thumb.png

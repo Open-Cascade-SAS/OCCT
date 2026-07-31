@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC21317"
+puts "================"
+puts ""
+######################################################################################
+# Face cannot be fixed by Shape Healing
+######################################################################################
+
+set BugNumber OCC21317
+
+catch {pload XDE}
+
+restore [locate_data_file bug21317_faulty.brep] a 
+fixshape result a
+set info [checkshape result]
+
+# Resume
+puts ""
+if { [regexp {This shape seems to be valid} $info] } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

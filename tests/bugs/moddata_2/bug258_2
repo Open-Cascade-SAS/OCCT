@@ -1,0 +1,19 @@
+
+puts "========================"
+puts " OCC258 "
+puts "(case 2)"
+puts "========================"
+
+restore [locate_data_file shading_144.brep] result
+checkshape result
+
+tclean result
+isos result 0
+vinit 
+vdisplay result
+vsetdispmode result 1
+vfit
+triangles result
+
+checktrinfo result -tri 78 -nod 80
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

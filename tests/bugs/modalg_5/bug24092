@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24092"
+puts "============"
+puts ""
+######################################################
+# Boolean fuse fails
+######################################################
+
+restore [locate_data_file bug24092_fz2.brep] b1
+restore [locate_data_file bug24092_fz1196.brep] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 155006 
+checkshape result
+
+checknbshapes result -vertex 9 -edge 15 -wire 4 -face 4 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 33
+checkview -display result -2d -path ${imagedir}/${test_image}.png

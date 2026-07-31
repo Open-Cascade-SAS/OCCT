@@ -1,0 +1,124 @@
+// Created on: 2002-11-19
+// Created by: Vladimir ANIKIN
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TDF_Data.hxx>
+
+//=======================================================================
+// function : SetNestedTransactionMode
+// purpose  : Sets nested transaction mode if isAllowed == true
+//=======================================================================
+
+inline void TDocStd_Document::SetNestedTransactionMode(const bool isAllowed)
+{
+  myIsNestedTransactionMode = isAllowed;
+}
+
+//=======================================================================
+// function : SetNestedTransactionMode
+// purpose  : Sets nested transaction mode if isAllowed == true
+//=======================================================================
+
+inline bool TDocStd_Document::IsNestedTransactionMode() const
+{
+  return myIsNestedTransactionMode;
+}
+
+//=======================================================================
+// function : IsModified
+// purpose  : returns True if document differs from the state of last saving.
+//           this method have to be called only working in the transaction mode
+//=======================================================================
+
+inline bool TDocStd_Document::IsChanged() const
+{
+  return myData->Time() != mySaveTime;
+}
+
+//=======================================================================
+// function : SetSaved
+// purpose  : This method have to be called to show document that it has been saved
+//=======================================================================
+
+inline void TDocStd_Document::SetSaved()
+{
+  mySaveTime = myData->Time();
+}
+
+//=======================================================================
+// function : SetModificationMode
+// purpose  : if theTransactionOnly is True changes is denied outside transactions
+//=======================================================================
+
+inline void TDocStd_Document::SetModificationMode(const bool theTransactionOnly)
+{
+  myOnlyTransactionModification = theTransactionOnly;
+
+  // deny or allow modifications according to transaction state
+  if (myOnlyTransactionModification)
+  {
+    myData->AllowModification(myUndoTransaction.IsOpen());
+  }
+  else
+  {
+    myData->AllowModification(true);
+  }
+}
+
+//=======================================================================
+// function : ModificationMode
+// purpose  : returns True if changes allowed only inside transactions
+//=======================================================================
+
+inline bool TDocStd_Document::ModificationMode() const
+{
+  return myOnlyTransactionModification;
+}
+
+//=======================================================================
+// function : SetSavedTime
+// purpose  : Say to document what it is not saved. Use value, returned earlier by GetSavedTime().
+//=======================================================================
+inline void TDocStd_Document::SetSavedTime(const int theTime)
+{
+  mySaveTime = theTime;
+}
+
+//=======================================================================
+// function : GetSavedTime
+// purpose  : Returns value of <mySavedTime> to be used later in SetSavedTime()
+//=======================================================================
+inline int TDocStd_Document::GetSavedTime() const
+{
+  return mySaveTime;
+}
+
+//=======================================================================
+// function : SetEmptyLabelsSavingMode
+// purpose  : Sets saving mode for empty labels. If true,
+//           empty labels will be saved.
+//=======================================================================
+inline void TDocStd_Document::SetEmptyLabelsSavingMode(const bool isAllowed)
+{
+  mySaveEmptyLabels = isAllowed;
+}
+
+//=======================================================================
+// function : EmptyLabelsSavingMode
+// purpose  : Returns saving mode for empty labels
+//=======================================================================
+inline bool TDocStd_Document::EmptyLabelsSavingMode() const
+{
+  return mySaveEmptyLabels;
+}

@@ -1,0 +1,3717 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// #58 rln 28.12.98 Versioning
+
+#include <IFSelect_Act.hxx>
+#include <IFSelect_CheckCounter.hxx>
+#include <IFSelect_DispGlobal.hxx>
+#include <IFSelect_DispPerCount.hxx>
+#include <IFSelect_DispPerFiles.hxx>
+#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_DispPerSignature.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_Editor.hxx>
+#include <IFSelect_Functions.hxx>
+#include <IFSelect_GraphCounter.hxx>
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_ListEditor.hxx>
+#include <IFSelect_ModifReorder.hxx>
+#include <IFSelect_SelectDiff.hxx>
+#include <IFSelect_SelectEntityNumber.hxx>
+#include <IFSelect_SelectErrorEntities.hxx>
+#include <IFSelect_SelectIncorrectEntities.hxx>
+#include <IFSelect_SelectIntersection.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SelectModelEntities.hxx>
+#include <IFSelect_SelectModelRoots.hxx>
+#include <IFSelect_SelectPointed.hxx>
+#include <IFSelect_SelectRange.hxx>
+#include <IFSelect_SelectRoots.hxx>
+#include <IFSelect_SelectShared.hxx>
+#include <IFSelect_SelectSharing.hxx>
+#include <IFSelect_SelectSignature.hxx>
+#include <IFSelect_SelectSuite.hxx>
+#include <IFSelect_SelectUnion.hxx>
+#include <IFSelect_SelectUnknownEntities.hxx>
+#include <IFSelect_SessionFile.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <IFSelect_ShareOut.hxx>
+#include <IFSelect_SignatureList.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <IFSelect_SignType.hxx>
+#include <IFSelect_Transformer.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <IFSelect_WorkSession.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Interface_Static.hxx>
+#include <Interface_Version.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+#include <cstdio>
+
+//  Decomposition of a file name in its parts : prefix, root, suffix
+static void SplitFileName(const char* const        filename,
+                          TCollection_AsciiString& prefix,
+                          TCollection_AsciiString& fileroot,
+                          TCollection_AsciiString& suffix)
+{
+  int                     nomdeb, nomfin, nomlon;
+  TCollection_AsciiString resfile(filename);
+  nomlon = resfile.Length();
+  nomdeb = resfile.SearchFromEnd("/");
+  if (nomdeb <= 0)
+  {
+    nomdeb = resfile.SearchFromEnd("\\"); // for NT
+  }
+  if (nomdeb < 0)
+  {
+    nomdeb = 0;
+  }
+  nomfin = resfile.SearchFromEnd(".");
+  if (nomfin < nomdeb)
+  {
+    nomfin = nomlon + 1;
+  }
+
+  if (nomdeb > 0)
+  {
+    prefix = resfile.SubString(1, nomdeb);
+  }
+  fileroot = resfile.SubString(nomdeb + 1, nomfin - 1);
+  if (nomfin <= nomlon)
+  {
+    suffix = resfile.SubString(nomfin, nomlon);
+  }
+}
+
+//  Functions defines a certain number of commands
+//  registered in the Activator Dictionary (by unit Acts)
+//  The actions themselves are grouped at the end of file
+
+//  The definitions
+
+static IFSelect_ReturnStatus funstatus(const occ::handle<IFSelect_SessionPilot>&)
+{
+  //        ****    Version & cie     ****
+  // #58 rln
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  sout << "Processor Version : " << XSTEP_PROCESSOR_VERSION << '\n';
+  sout << "OL Version        : " << XSTEP_SYSTEM_VERSION << '\n';
+  sout << "Configuration     : " << XSTEP_Config << '\n';
+  sout << "UL Names          : " << XSTEP_ULNames << '\n';
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun1(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    ToggleHandler     ****
+  bool                            hand = !WS->ErrorHandle();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (hand)
+  {
+    sout << " --  Mode Catch Error now Active" << '\n';
+  }
+  else
+  {
+    sout << " --  Mode Catch Error now Inactive" << '\n';
+  }
+  WS->SetErrorHandle(hand);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun3(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    XRead / Load         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Read/Load : give file name !" << '\n';
+    return IFSelect_RetError;
+  }
+  if (WS->Protocol().IsNull())
+  {
+    sout << "Protocol not defined" << '\n';
+    return IFSelect_RetError;
+  }
+  if (WS->WorkLibrary().IsNull())
+  {
+    sout << "WorkLibrary not defined" << '\n';
+    return IFSelect_RetError;
+  }
+
+  IFSelect_ReturnStatus status = WS->ReadFile(arg1);
+  // status: 0 OK, 1 read error, 2 Fail(try/catch),
+  //          -1 file not found, -2 reading done but empty result
+  switch (status)
+  {
+    case IFSelect_RetVoid:
+      sout << "file:" << arg1 << " gives empty result" << '\n';
+      break;
+    case IFSelect_RetError:
+      sout << "file:" << arg1 << " could not be opened" << '\n';
+      break;
+    case IFSelect_RetDone:
+      sout << "file:" << arg1 << " read" << '\n';
+      break;
+    case IFSelect_RetFail:
+      sout << "file:" << arg1 << " : error while reading" << '\n';
+      break;
+    case IFSelect_RetStop:
+      sout << "file:" << arg1 << " : EXCEPTION while reading" << '\n';
+      break;
+    default:
+      sout << "file:" << arg1 << " could not be read" << '\n';
+      break;
+  }
+  if (status != IFSelect_RetDone)
+  {
+    return status;
+  }
+  //      sout<<" - clearing list of already written files"<<std::endl;
+  WS->BeginSentFiles(true);
+  return status;
+}
+
+static IFSelect_ReturnStatus fun4(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Write All         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Write All : give file name !" << '\n';
+    return IFSelect_RetError;
+  }
+  return WS->SendAll(arg1);
+}
+
+static IFSelect_ReturnStatus fun5(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //  const char* const arg2 = pilot->Arg(2);
+  //        ****    Write Selected         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Write Selected : give file name + givelist !" << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> result =
+    IFSelect_Functions::GiveList(WS, pilot->CommandPart(2));
+  if (result.IsNull())
+  {
+    sout << "No entity selected" << '\n';
+    return IFSelect_RetError;
+  }
+  else
+  {
+    sout << "Nb Entities selected : " << result->Length() << '\n';
+  }
+  occ::handle<IFSelect_SelectPointed> sp = new IFSelect_SelectPointed;
+  sp->SetList(result);
+  return WS->SendSelected(arg1, sp);
+}
+
+static IFSelect_ReturnStatus fun6(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Write Entite(s)         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Write Entitie(s) : give file name + n0s entitie(s)!" << '\n';
+    return IFSelect_RetError;
+  }
+  int                                 ko = 0;
+  occ::handle<IFSelect_SelectPointed> sp = new IFSelect_SelectPointed;
+  for (int ia = 2; ia < argc; ia++)
+  {
+    int id = pilot->Number(pilot->Arg(ia));
+    if (id > 0)
+    {
+      occ::handle<Standard_Transient> item = WS->StartingEntity(id);
+      if (sp->Add(item))
+      {
+        sout << "Added:no." << id << '\n';
+      }
+      else
+      {
+        sout << " Fail Add n0." << id << '\n';
+        ko++;
+      }
+    }
+    else
+    {
+      sout << "Not an entity number:" << pilot->Arg(ia) << '\n';
+      ko++;
+    }
+  }
+  if (ko > 0)
+  {
+    sout << ko << " bad arguments, abandon" << '\n';
+    return IFSelect_RetError;
+  }
+  return WS->SendSelected(arg1, sp);
+}
+
+static IFSelect_ReturnStatus fun7(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Entity Label       ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give entity number" << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->HasModel())
+  {
+    sout << "No loaded model, abandon" << '\n';
+    return IFSelect_RetError;
+  }
+  int nument = WS->NumberFromLabel(arg1);
+  if (nument <= 0 || nument > WS->NbStartingEntities())
+  {
+    sout << "Not a suitable number: " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  sout << "N0." << nument << " ->Label in Model : ";
+  WS->Model()->PrintLabel(WS->StartingEntity(nument), sout);
+  sout << '\n';
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun8(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Entity Number      ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give label to search" << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->HasModel())
+  {
+    sout << "No loaded model, abandon" << '\n';
+    return IFSelect_RetError;
+  }
+  const occ::handle<Interface_InterfaceModel>& model = WS->Model();
+  int                                          i, cnt = 0;
+  bool                                         exact = false;
+  sout << " **  Search Entity Number for Label : " << arg1 << '\n';
+  for (i = model->NextNumberForLabel(arg1, 0, exact); i != 0;
+       i = model->NextNumberForLabel(arg1, i, exact))
+  {
+    cnt++;
+    sout << " **  Found n0/id:";
+    model->Print(model->Value(i), sout);
+    sout << '\n';
+  }
+
+  if (cnt == 0)
+  {
+    sout << " **  No Match" << '\n';
+  }
+  else if (cnt == 1)
+  {
+    sout << " **  1 Match" << '\n';
+  }
+  else
+  {
+    sout << cnt << " Matches" << '\n';
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun9(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    List Types         ****
+  occ::handle<IFSelect_WorkSession> WS       = pilot->Session();
+  occ::handle<IFSelect_Signature>   signtype = WS->SignType();
+  if (signtype.IsNull())
+  {
+    signtype = new IFSelect_SignType;
+  }
+  occ::handle<IFSelect_SignCounter> counter = new IFSelect_SignCounter(signtype, false);
+  return pilot->ExecuteCounter(counter, 1);
+}
+
+static IFSelect_ReturnStatus funcount(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS       = pilot->Session();
+  int                               argc     = pilot->NbWords();
+  const char* const                 arg0     = pilot->Arg(0);
+  const char* const                 arg1     = pilot->Arg(1);
+  bool                              listmode = (arg0[0] == 'l');
+  //        ****    List Counter         ****
+
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Designer signature ou compteur, + facultatif selection + facultatif entite" << '\n';
+    sout << " signature/compteur seul -> tout le modele" << '\n'
+         << " sign/compteur + selection -> cette selection, evaluation normale" << '\n'
+         << " sign/compteur + sel + num -> cette selection evaluee sur entite n0 num" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_SignCounter, counter, WS->NamedItem(arg1));
+  if (counter.IsNull())
+  {
+    DeclareAndCast(IFSelect_Signature, signa, WS->NamedItem(arg1));
+    if (!signa.IsNull())
+    {
+      counter = new IFSelect_SignCounter(signa, false, listmode);
+    }
+  }
+  //  occ::handle<IFSelect_Selection> sel;
+  //  int n3 = 0;  if (argc > 3) n3 = WS->NumberFromLabel(arg3);
+  //  if (argc > 2) sel = GetCasted(IFSelect_Selection,WS->NamedItem(arg2));
+  //  if (counter.IsNull() || (argc > 2 && n3 <= 0 && sel.IsNull()) ) {
+  //    sout<<"Nom:"<<arg1; if (argc > 2) sout<<" et/ou "<<arg2;
+  //    sout<<" incorrect (demande: compteur ou signature [selection])"<<std::endl;
+  //    return IFSelect_RetError;
+  //  }
+
+  //  Addition: if Selection, we apply a GraphCounter
+  //   And in this case, we can have several: the limit is the keyword "on"
+  int onflag = 0;
+  int i; // svv Jan11 2000 : porting on DEC
+  for (i = 2; i < argc; i++)
+  {
+    if (!strcmp(pilot->Arg(i), "on"))
+    {
+      onflag = i;
+      break;
+    }
+  }
+
+  occ::handle<IFSelect_Selection> sel = WS->GiveSelection(arg1);
+  DeclareAndCast(IFSelect_SelectDeduct, seld, sel);
+  if (!seld.IsNull())
+  {
+    //  If onflag, create a SelectSuite
+    if (onflag > 2)
+    {
+      occ::handle<IFSelect_SelectSuite> suite = new IFSelect_SelectSuite;
+      for (i = 1; i < onflag; i++)
+      {
+        sel = WS->GiveSelection(pilot->Arg(i));
+        if (!suite->AddInput(sel))
+        {
+          sout << "Incorrect definition for applied selection" << '\n';
+          return IFSelect_RetError;
+        }
+      }
+      seld = suite;
+    }
+
+    occ::handle<IFSelect_GraphCounter> gc = new IFSelect_GraphCounter(false, listmode);
+    gc->SetApplied(seld);
+    counter = gc;
+  }
+
+  if (counter.IsNull())
+  {
+    sout << "Neither Counter nor Signature : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+
+  if (onflag == 0)
+  {
+    onflag = 1;
+  }
+  IFSelect_PrintCount pcm = IFSelect_ListByItem;
+  if (arg0[0] == 'c')
+  {
+    pcm = IFSelect_CountByItem;
+  }
+  if (arg0[0] == 's')
+  {
+    pcm = IFSelect_CountSummary;
+  }
+  return pilot->ExecuteCounter(counter, onflag + 1, pcm);
+}
+
+static IFSelect_ReturnStatus funsigntype(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Sign Type              ****
+  occ::handle<IFSelect_Signature> signtype = WS->SignType();
+  Message_Messenger::StreamBuffer sout     = Message::SendInfo();
+  if (signtype.IsNull())
+  {
+    sout << "signtype actually undefined" << '\n';
+  }
+  else
+  {
+    occ::handle<TCollection_HAsciiString> str = WS->Name(signtype);
+    int                                   id  = WS->ItemIdent(signtype);
+    sout << signtype->Label() << '\n';
+    if (str.IsNull())
+    {
+      if (id > 0)
+      {
+        sout << "signtype : item n0 " << id << '\n';
+      }
+    }
+    else
+    {
+      sout << "signtype : also named as " << str->ToCString() << '\n';
+    }
+  }
+  if (argc < 2)
+  {
+    sout << "signtype newitem  to change, signtype . to clear" << '\n';
+  }
+  else
+  {
+    if (arg1[0] == '.' && arg1[1] == '\0')
+    {
+      signtype.Nullify();
+      sout << "signtype now cleared" << '\n';
+    }
+    else
+    {
+      signtype = GetCasted(IFSelect_Signature, WS->NamedItem(arg1));
+      if (signtype.IsNull())
+      {
+        sout << "Not a Signature : " << arg1 << '\n';
+        return IFSelect_RetError;
+      }
+      else
+      {
+        sout << "signtype now set to " << arg1 << '\n';
+      }
+    }
+    WS->SetSignType(signtype);
+    return IFSelect_RetDone;
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus funsigncase(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Sign Case              ****
+  occ::handle<IFSelect_Signature> signcase = GetCasted(IFSelect_Signature, WS->NamedItem(arg1));
+  Message_Messenger::StreamBuffer sout     = Message::SendInfo();
+  if (signcase.IsNull())
+  {
+    sout << "Not a Signature : " << arg1 << '\n';
+  }
+  else
+  {
+    bool hasmin, hasmax;
+    int  valmin, valmax;
+    if (signcase->IsIntCase(hasmin, valmin, hasmax, valmax))
+    {
+      sout << "Signature " << arg1 << " : Integer Case";
+      if (hasmin)
+      {
+        sout << " - Mini:" << valmin;
+      }
+      if (hasmax)
+      {
+        sout << " - Maxi:" << valmax;
+      }
+      sout << '\n';
+    }
+    occ::handle<NCollection_HSequence<TCollection_AsciiString>> caselist = signcase->CaseList();
+    if (caselist.IsNull())
+    {
+      sout << "Signature " << arg1 << " : no predefined case, see command  count " << arg1 << '\n';
+    }
+    else
+    {
+      int i, nb = caselist->Length();
+      sout << "Signature " << arg1 << " : " << nb << " basic cases :" << '\n';
+      for (i = 1; i <= nb; i++)
+      {
+        sout << "  " << caselist->Value(i);
+      }
+      sout << '\n';
+    }
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun10(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Entity Status          ****
+  int                             i, nb;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    nb = Interface_Category::NbCategories();
+    sout << " Categories defined :" << nb << " i.e. :\n";
+    for (i = 0; i <= nb; i++)
+    {
+      sout << "Cat." << i << "  : " << Interface_Category::Name(i) << "\n";
+    }
+    sout << " On a given entity : give its number" << '\n';
+    return IFSelect_RetVoid;
+  }
+  int num = pilot->Number(arg1);
+  if (num <= 0 || num > WS->NbStartingEntities())
+  {
+    sout << "Not a suitable entity number : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<Standard_Transient> ent = WS->StartingEntity(num);
+  WS->PrintEntityStatus(ent, sout);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun11(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //  int argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
+  //        ****    DumpModel (Data)  ****
+  int niv = 0;
+  //  char arg10 = arg1[0];
+  //  if (argc < 2) arg10 = '?';
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  switch (arg1[0])
+  {
+    case '?':
+      sout << "? for this help, else give a listing mode (first letter suffices) :\n"
+           << " general    General Statistics\n roots    Roots\n"
+           << " entities   All Entities\n"
+           << " listfails  CheckList (fails)    per entity\n"
+           << " messages   CheckList (complete) per entity\n"
+           << " fails      CheckList (fails)    per message (counting)\n"
+           << " check      CheckList (complete) per message (counting)\n"
+           << " totalcheck CheckList (complete) per message (listing n0 ents)\n"
+           << " FAILS      CheckList (fails)    per message (listing complete)\n"
+           << " TOTALCHECK CheckList (complete) per message (listing complete)" << '\n';
+      return IFSelect_RetVoid;
+    case 'g':
+      niv = 0;
+      break;
+    case 'r':
+      niv = 1;
+      break;
+    case 'e':
+      niv = 2;
+      break;
+    case 'l':
+      niv = 3;
+      break;
+    case 'm':
+      niv = 4;
+      break;
+    case 'c':
+      niv = 5;
+      break;
+    case 't':
+      niv = 6;
+      break;
+    case 'T':
+      niv = 7;
+      break;
+    case 'f':
+      niv = 8;
+      break;
+    case 'F':
+      niv = 10;
+      break;
+    default:
+      sout << "Unknown Mode .  data simply for help" << '\n';
+      return IFSelect_RetError;
+  }
+  WS->TraceDumpModel(niv);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fundumpent(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS     = pilot->Session();
+  int                               argc   = pilot->NbWords();
+  occ::handle<IFSelect_WorkLibrary> WL     = WS->WorkLibrary();
+  int                               levdef = 0, levmax = 10, level;
+  WL->DumpLevels(levdef, levmax);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2 || (argc == 2 && levmax < 0))
+  {
+    sout << "Give n0 or id of entity";
+    if (levmax < 0)
+    {
+      sout << "  and dump level" << '\n';
+    }
+    else
+    {
+      sout << "  + optional, dump level in [0 - " << levmax << "] , default = " << levdef << '\n';
+    }
+    for (level = 0; level <= levmax; level++)
+    {
+      const char* help = WL->DumpHelp(level);
+      if (help[0] != '\0')
+      {
+        sout << level << " : " << help << '\n';
+      }
+    }
+    return IFSelect_RetError;
+  }
+
+  const char* const arg1 = pilot->Arg(1);
+  const char* const arg2 = pilot->Arg(2);
+  int               num  = pilot->Number(arg1);
+  if (num == 0)
+  {
+    return IFSelect_RetError;
+  }
+  level = levdef;
+  if (argc > 2)
+  {
+    level = atoi(arg2);
+  }
+  occ::handle<Standard_Transient> ent = WS->StartingEntity(num);
+  if (ent.IsNull())
+  {
+    sout << "No entity with given id " << arg1 << " (" << num << ") is found in the current model"
+         << '\n';
+  }
+  else
+  {
+    sout << "  --   DUMP  Entity n0 " << num << "  level " << level << '\n';
+    WL->DumpEntity(WS->Model(), WS->Protocol(), ent, sout, level);
+
+    Interface_CheckIterator chl = WS->CheckOne(ent);
+    if (!chl.IsEmpty(false))
+    {
+      chl.Print(sout, WS->Model(), false);
+    }
+  }
+  //  sout << std::flush;
+
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus funsign(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  Message_Messenger::StreamBuffer   sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << " Give signature name + n0 or id of entity" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Signature, sign, WS->NamedItem(arg1));
+  if (sign.IsNull())
+  {
+    sout << "Not a signature : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  int                             num = pilot->Number(arg2);
+  occ::handle<Standard_Transient> ent = WS->StartingEntity(num);
+  if (num == 0)
+  {
+    return IFSelect_RetError;
+  }
+  sout << "Entity n0 " << num << " : " << WS->SignValue(sign, ent) << '\n';
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus funqp(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  Message_Messenger::StreamBuffer   sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << " Give 2 numeros or labels : dad son" << '\n';
+    return IFSelect_RetError;
+  }
+  int n1 = WS->NumberFromLabel(arg1);
+  int n2 = WS->NumberFromLabel(arg2);
+  sout << "QueryParent for dad:" << arg1 << ":" << n1 << " and son:" << arg2 << ":" << n2 << '\n';
+  int qp = WS->QueryParent(WS->StartingEntity(n1), WS->StartingEntity(n2));
+  if (qp < 0)
+  {
+    sout << arg1 << " is not super-entity of " << arg2 << '\n';
+  }
+  else if (qp == 0)
+  {
+    sout << arg1 << " is same as " << arg2 << '\n';
+  }
+  else
+  {
+    sout << arg1 << " is super-entity of " << arg2 << " , max level found=" << qp << '\n';
+  }
+  //  sout<<" Trouve "<<qp<<std::endl;
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun12(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    DumpShare         ****
+  WS->DumpShare();
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun13(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    ListItems         ****
+  WS->ListItems(pilot->Arg(1));
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun14(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    NewInt            ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 1)
+  {
+    sout << "Give integer value for IntParam" << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_IntParam> intpar = new IFSelect_IntParam;
+  if (argc >= 1)
+  {
+    intpar->SetValue(atoi(arg1));
+  }
+  return pilot->RecordItem(intpar);
+}
+
+static IFSelect_ReturnStatus fun15(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SetInt            ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner 2 arguments : nom Parametre et Valeur" << '\n';
+    return IFSelect_RetError;
+  }
+  int val = atoi(arg2);
+  DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
+  if (!WS->SetIntValue(par, val))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun16(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    NewText           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 1)
+  {
+    sout << "Give text value for TextParam" << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<TCollection_HAsciiString> textpar = new TCollection_HAsciiString();
+  if (argc >= 1)
+  {
+    textpar->AssignCat(arg1);
+  }
+  return pilot->RecordItem(textpar);
+}
+
+static IFSelect_ReturnStatus fun17(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SetText           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner 2 arguments : nom Parametre et Valeur" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(TCollection_HAsciiString, par, WS->NamedItem(arg1));
+  if (!WS->SetTextValue(par, arg2))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun19(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    DumpSel           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give 1 argument : Selection Name" << '\n';
+    return IFSelect_RetError;
+  }
+  WS->DumpSelection(GetCasted(IFSelect_Selection, WS->NamedItem(arg1)));
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun20(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  //        ****    EvalSel           ****
+  //        ****    GiveList          ****
+  //        ****    GiveShort GivePointed  ****
+  //        ****    MakeList          ****
+  char mode = pilot->Arg(0)[0]; // givelist/makelist
+  if (mode == 'g')
+  {
+    mode = pilot->Arg(0)[4]; // l list  s short  p pointed
+  }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Entity ID, or Selection Name [+ optional other selection or entity]" << '\n';
+    return IFSelect_RetError;
+  }
+
+  //    MakeList: on existing Pointed or to be created
+  occ::handle<IFSelect_SelectPointed> pnt;
+  if (mode == 'm')
+  {
+    const char* const               arg1 = pilot->Arg(1);
+    occ::handle<Standard_Transient> item = WS->NamedItem(arg1);
+    pnt                                  = GetCasted(IFSelect_SelectPointed, item);
+    if (!pnt.IsNull())
+    {
+      sout << arg1 << ":Already existing Selection for List, cleared then filled" << '\n';
+      pnt->Clear();
+    }
+    else if (!item.IsNull())
+    {
+      sout << arg1 << ":Already existing Item not for a List, command ignored" << '\n';
+      return IFSelect_RetFail;
+    }
+    else
+    {
+      pnt = new IFSelect_SelectPointed;
+      WS->AddNamedItem(arg1, pnt);
+    }
+  }
+
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> result =
+    IFSelect_Functions::GiveList(WS, pilot->CommandPart((mode == 'm' ? 2 : 1)));
+  if (result.IsNull())
+  {
+    return IFSelect_RetError;
+  }
+  Interface_EntityIterator iter(result);
+  sout << pilot->CommandPart((mode == 'm' ? 2 : 1)) << " : ";
+  if (mode == 'l')
+  {
+    WS->ListEntities(iter, 0, sout);
+  }
+  else if (mode == 's' || mode == 'm')
+  {
+    WS->ListEntities(iter, 2, sout);
+  }
+  else if (mode == 'p')
+  {
+    sout << iter.NbEntities() << " Entities : ";
+    for (iter.Start(); iter.More(); iter.Next())
+    {
+      sout << " +" << WS->StartingNumber(iter.Value());
+    }
+    sout << '\n';
+  }
+
+  if (!pnt.IsNull())
+  {
+    pnt->SetList(result);
+    sout << "List set to a SelectPointed : " << pilot->Arg(1) << '\n';
+    sout << "Later editable by command setlist" << '\n';
+  }
+
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun20c(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  //        ****    GiveCount         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Entity ID, or Selection Name [+ optional other selection or entity]" << '\n';
+    return IFSelect_RetError;
+  }
+  //  WS->EvaluateSelection(GetCasted(IFSelect_Selection,WS->NamedItem(arg1)));
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> result =
+    IFSelect_Functions::GiveList(WS, pilot->CommandPart(1));
+  if (result.IsNull())
+  {
+    return IFSelect_RetError;
+  }
+  sout << pilot->CommandPart(1) << " : List of " << result->Length() << " Entities" << '\n';
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus funselsuite(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  //        ****    SelSuite         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Entity ID, or Selection Name [+ optional other selection or entity]" << '\n';
+    return IFSelect_RetError;
+  }
+  //  WS->EvaluateSelection(GetCasted(IFSelect_Selection,WS->NamedItem(arg1)));
+  occ::handle<IFSelect_SelectSuite> selsuite = new IFSelect_SelectSuite;
+
+  for (int i = 1; i < argc; i++)
+  {
+    occ::handle<IFSelect_Selection> sel = WS->GiveSelection(pilot->Arg(i));
+    if (!selsuite->AddInput(sel))
+    {
+      sout << pilot->Arg(i - 1) << " : not a SelectDeduct, no more can be added. Abandon" << '\n';
+      return IFSelect_RetError;
+    }
+  }
+  selsuite->SetLabel(pilot->CommandPart(1));
+  return pilot->RecordItem(selsuite);
+}
+
+static IFSelect_ReturnStatus fun21(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    ClearItems           ****
+  WS->ClearItems();
+  WS->ClearFinalModifiers();
+  WS->ClearShareOut(false);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun22(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    ClearData           ****
+  int mode = -1;
+  if (argc >= 2)
+  {
+    if (arg1[0] == 'a')
+    {
+      mode = 1;
+    }
+    if (arg1[0] == 'g')
+    {
+      mode = 2;
+    }
+    if (arg1[0] == 'c')
+    {
+      mode = 3;
+    }
+    if (arg1[0] == 'p')
+    {
+      mode = 4;
+    }
+    if (arg1[0] == '?')
+    {
+      mode = -1;
+    }
+  }
+  else
+  {
+    mode = 0;
+  }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (mode <= 0)
+  {
+    if (mode < 0)
+    {
+      sout << "Give a suitable mode";
+    }
+    sout << "  Available Modes :\n"
+         << " a : all data    g : graph+check  c : check  p : selectpointed" << '\n';
+    return (mode < 0 ? IFSelect_RetError : IFSelect_RetVoid);
+  }
+  WS->ClearData(mode);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun24(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  //        ****    Item Label         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  TCollection_AsciiString         label;
+  if (argc < 2)
+  {
+    sout << " Give  label to search" << '\n';
+    return IFSelect_RetError;
+  }
+  for (int i = 1; i < argc; i++)
+  {
+    label.AssignCat(pilot->Arg(i));
+    if (i < argc - 1)
+    {
+      label.AssignCat(" ");
+    }
+  }
+  for (int mode = 0; mode <= 2; mode++)
+  {
+    int nbitems = 0;
+    int id;
+    sout << "Searching label : " << label << ". in mode ";
+    if (mode == 0)
+    {
+      sout << " exact" << '\n';
+    }
+    if (mode == 1)
+    {
+      sout << " same head" << '\n';
+    }
+    if (mode == 2)
+    {
+      sout << " search if present" << '\n';
+    }
+    for (id = WS->NextIdentForLabel(label.ToCString(), 0, mode); id != 0;
+         id = WS->NextIdentForLabel(label.ToCString(), id, mode))
+    {
+      sout << " " << id;
+      nbitems++;
+    }
+    sout << " -- giving " << nbitems << " found" << '\n';
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun25(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Save (Dump)       ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner nom du Fichier" << '\n';
+    return IFSelect_RetError;
+  }
+  IFSelect_SessionFile dumper(WS, arg1);
+  if (!dumper.IsDone())
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun26(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Restore (Dump)    ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner nom du Fichier" << '\n';
+    return IFSelect_RetError;
+  }
+  IFSelect_SessionFile dumper(WS);
+  int                  readstat = dumper.Read(arg1);
+  if (readstat == 0)
+  {
+    return IFSelect_RetDone;
+  }
+  else if (readstat > 0)
+  {
+    sout << "-- Erreur Lecture Fichier " << arg1 << '\n';
+  }
+  else
+  {
+    sout << "-- Pas pu ouvrir Fichier " << arg1 << '\n';
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun27(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                               argc       = pilot->NbWords();
+  occ::handle<IFSelect_WorkSession> WS         = pilot->Session();
+  const char* const                 arg1       = pilot->Arg(1);
+  const char*                       arg2       = pilot->Arg(2);
+  const char* const                 anEmptyStr = "";
+  if (arg2 && strlen(arg2) == 2 && arg2[0] == '"' && arg2[1] == '"')
+  {
+    arg2 = anEmptyStr;
+  }
+  //        ****    Param(Value)         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2 || (argc == 3 && strcmp(arg1, "-p") == 0))
+  {
+    occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> li =
+      Interface_Static::Items();
+    int    i, nb = li->Length(), aPatternNb = 0;
+    size_t aPatternLen = strlen(arg2);
+    if (argc == 3)
+    {
+      for (i = 1; i <= nb; i++)
+      {
+        if (strncmp(li->Value(i)->String().ToCString(), arg2, aPatternLen) == 0)
+        {
+          aPatternNb++;
+        }
+      }
+    }
+    else
+    {
+      aPatternNb = nb;
+    }
+    sout << " List of parameters : " << aPatternNb << " items : " << '\n';
+    for (i = 1; i <= nb; i++)
+    {
+      if (argc == 3 && strncmp(li->Value(i)->String().ToCString(), arg2, aPatternLen) != 0)
+      {
+        continue;
+      }
+      sout << li->Value(i)->String();
+      sout << " : " << Interface_Static::CVal(li->Value(i)->ToCString()) << '\n';
+    }
+    return IFSelect_RetVoid;
+  }
+  else if (atoi(arg1) > 0)
+  {
+    int use = atoi(arg1);
+    WS->TraceStatics(use);
+  }
+  else
+  {
+    if (argc > 2)
+    {
+      sout << "     FORMER STATUS of Static Parameter " << arg1 << '\n';
+    }
+    else
+    {
+      sout << "     ACTUAL STATUS of Static Parameter " << arg1 << '\n';
+    }
+    if (!Interface_Static::IsPresent(arg1))
+    {
+      sout << " Parameter " << arg1 << " undefined" << '\n';
+      return IFSelect_RetError;
+    }
+    if (!Interface_Static::IsSet(arg1))
+    {
+      sout << " Parameter " << arg1 << " not valued" << '\n';
+    }
+    else if (argc == 2)
+    {
+      Interface_Static::Static(arg1)->Print(sout);
+    }
+    else
+    {
+      sout << " Value : " << Interface_Static::CVal(arg1) << '\n';
+    }
+
+    if (argc == 2)
+    {
+      sout << "To modify, param name_param new_val" << '\n';
+    }
+    else
+    {
+      if (strlen(arg2) != 0)
+      {
+        sout << " New demanded value : " << arg2;
+      }
+      else
+      {
+        sout << " New demanded value : not valued";
+      }
+      if (Interface_Static::SetCVal(arg1, arg2))
+      {
+        sout << "   OK" << '\n';
+        return IFSelect_RetDone;
+      }
+      else
+      {
+        sout << " , refused" << '\n';
+        return IFSelect_RetError;
+      }
+    }
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun29(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SentFiles         ****
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list = WS->SentFiles();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (list.IsNull())
+  {
+    sout << "List of Sent Files not enabled" << '\n';
+    return IFSelect_RetVoid;
+  }
+  int i, nb = list->Length();
+  sout << "  Sent Files : " << nb << " : " << '\n';
+  for (i = 1; i <= nb; i++)
+  {
+    sout << list->Value(i)->ToCString() << '\n';
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun30(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    FilePrefix        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    if (WS->FilePrefix().IsNull())
+    {
+      sout << "No prefix defined" << '\n';
+    }
+    else
+    {
+      sout << "Prefixe : " << WS->FilePrefix()->ToCString() << '\n';
+    }
+    sout << "Pour changer :  filepref newprefix" << '\n';
+    return IFSelect_RetVoid;
+  }
+  WS->SetFilePrefix(arg1);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun31(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    FileExtension     ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    if (WS->FileExtension().IsNull())
+    {
+      sout << "Pas d extension definie" << '\n';
+    }
+    else
+    {
+      sout << "Extension : " << WS->FileExtension()->ToCString() << '\n';
+    }
+    sout << "Pour changer :  fileext newext" << '\n';
+    return IFSelect_RetVoid;
+  }
+  WS->SetFileExtension(arg1);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun32(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    FileRoot          ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Dispatch and Root name" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(arg1));
+  if (argc < 3)
+  {
+    if (WS->FileRoot(disp).IsNull())
+    {
+      sout << "No root defined for " << arg1 << '\n';
+    }
+    else
+    {
+      sout << "Root for " << arg1 << " : " << WS->FileRoot(disp)->ToCString() << '\n';
+    }
+    sout << "Pour changer :  fileroot nomdisp newroot" << '\n';
+    return IFSelect_RetVoid;
+  }
+  if (!WS->SetFileRoot(disp, arg2))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun33(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Default File Root     ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    if (WS->DefaultFileRoot().IsNull())
+    {
+      sout << "No default root defined" << '\n';
+    }
+    else
+    {
+      sout << "Racine par defaut : " << WS->DefaultFileRoot()->ToCString() << '\n';
+    }
+    sout << "Pour changer :  filedef newdef" << '\n';
+    return IFSelect_RetVoid;
+  }
+  WS->SetDefaultFileRoot(arg1);
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun34(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    EvalFile          ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (!WS->HasModel())
+  {
+    sout << "No Model loaded, abort" << '\n';
+    return IFSelect_RetFail;
+  }
+
+  sout << "Evaluation avec Memorisation des resultats" << '\n';
+  WS->EvaluateFile();
+  int nbf = WS->NbFiles();
+  for (int i = 1; i <= nbf; i++)
+  {
+    occ::handle<Interface_InterfaceModel> mod = WS->FileModel(i);
+    if (mod.IsNull())
+    {
+      sout << "Modele " << i << " Model non genere ..." << '\n';
+      continue;
+    }
+    TCollection_AsciiString name = WS->FileName(i);
+    sout << "Fichier n0 " << i << " Nb Entites : " << mod->NbEntities() << "  Nom: ";
+    sout << name << '\n';
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun35(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    ClearFile          ****
+  WS->ClearFile();
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun36(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  //        ****    Split              ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  IFSelect_ReturnStatus           stat = IFSelect_RetVoid;
+  if (argc < 2)
+  {
+    sout << "Split : last dispatch list defined" << '\n';
+  }
+  else
+  {
+    WS->ClearShareOut(true);
+    for (int i = 1; i < argc; i++)
+    {
+      DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(pilot->Arg(i)));
+      if (disp.IsNull())
+      {
+        sout << "Pas un dispatch:" << pilot->Arg(i) << ", Splitt abandonne" << '\n';
+        stat = IFSelect_RetError;
+      }
+      else
+      {
+        WS->SetActive(disp, true);
+      }
+    }
+  }
+  if (stat == IFSelect_RetError)
+  {
+    return stat;
+  }
+  WS->BeginSentFiles(true);
+  if (!WS->SendSplit())
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun37(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Remaining Data     ****
+  char                mode  = '?';
+  IFSelect_RemainMode numod = IFSelect_RemainDisplay;
+  if (argc >= 2)
+  {
+    mode = arg1[0];
+  }
+  if (mode == 'u')
+  {
+    numod = IFSelect_RemainUndo;
+  }
+  else if (mode == 'l')
+  {
+    numod = IFSelect_RemainDisplay;
+  }
+  else if (mode == 'c')
+  {
+    numod = IFSelect_RemainCompute;
+  }
+  else if (mode == 'f')
+  {
+    numod = IFSelect_RemainForget;
+  }
+  else
+  {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    if (argc < 2)
+    {
+      sout << "Donner un Mode - ";
+    }
+    sout << "Modes possibles : l  list, c compute, u undo, f forget" << '\n';
+    if (mode == '?')
+    {
+      return IFSelect_RetDone;
+    }
+    else
+    {
+      return IFSelect_RetError;
+    }
+  }
+  if (!WS->SetRemaining(numod))
+  {
+    return IFSelect_RetVoid;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun38(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SetModelContent    ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner nom selection et mode (k=keep,r=remove)" << '\n';
+    return IFSelect_RetError;
+  }
+  bool keepmode;
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  if (sel.IsNull())
+  {
+    sout << "No Selection with Name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  if (arg2[0] == 'k')
+  {
+    sout << " -- SetContent keep ...";
+    keepmode = true;
+  }
+  else if (arg2[0] == 'r')
+  {
+    sout << " -- SetContent remove ...";
+    keepmode = false;
+  }
+  else
+  {
+    sout << "Donner nom selection et mode (k=keep,r=remove)" << '\n';
+    return IFSelect_RetError;
+  }
+
+  if (WS->SetModelContent(sel, keepmode))
+  {
+    sout << " Done" << '\n';
+  }
+  else
+  {
+    sout << " Result empty, ignored" << '\n';
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun40(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    ListModif          ****
+  WS->ListFinalModifiers(true);
+  WS->ListFinalModifiers(false);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun41(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Modifier           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner Nom du Modifier" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
+  if (modif.IsNull())
+  {
+    sout << "No Modifier with Name : " << arg1 << '\n';
+    return IFSelect_RetVoid;
+  }
+  occ::handle<IFSelect_IntParam> low, up;
+
+  occ::handle<IFSelect_Dispatch> disp = modif->Dispatch();
+  sout << "Modifier : " << arg1 << " Label : " << modif->Label() << '\n';
+  int rank = WS->ModifierRank(modif);
+  if (modif->IsKind(STANDARD_TYPE(IFSelect_Modifier)))
+  {
+    sout << "Model Modifier n0." << rank;
+  }
+  else
+  {
+    sout << "File Modifier n0." << rank;
+  }
+  if (disp.IsNull())
+  {
+    sout << "  Applique a tous les Dispatchs" << '\n';
+  }
+  else
+  {
+    sout << "  Dispatch : " << disp->Label();
+    if (WS->HasName(disp))
+    {
+      sout << " - Nom:" << WS->Name(disp)->ToCString();
+    }
+    sout << '\n';
+  }
+
+  occ::handle<IFSelect_Selection> sel = modif->Selection();
+  if (!sel.IsNull())
+  {
+    sout << "  Selection : " << sel->Label();
+  }
+  if (WS->HasName(sel))
+  {
+    sout << " - Nom:" << WS->Name(sel)->ToCString();
+  }
+  sout << '\n';
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun42(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    ModifSel           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner Nom Modifier; + Nom Selection optionnel\n"
+         << "Selection to Set a Selection, otherwise Cancel" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
+  if (modif.IsNull())
+  {
+    sout << "Not a Modifier name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_Selection> sel;
+  if (arg2[0] != '\0')
+  {
+    sel = GetCasted(IFSelect_Selection, WS->NamedItem(arg2));
+    if (sel.IsNull())
+    {
+      sout << "Not a Selection name : " << arg2 << '\n';
+      return IFSelect_RetError;
+    }
+  }
+  if (!WS->SetItemSelection(modif, sel))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun43(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SetAppliedModifier           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner Nom Modifier; + Nom Dispatch ou Transformer optionnel :\n"
+         << " - rien : tous Dispatches\n - Dispatch : ce Dispatch seul\n"
+         << " - Transformer : pas un Dispatch mais un Transformer" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
+  if (modif.IsNull())
+  {
+    sout << "Not a Modifier name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<Standard_Transient> item;
+  if (arg2[0] != '\0')
+  {
+    item = WS->NamedItem(arg2);
+    if (item.IsNull())
+    {
+      sout << "Pas un nom connu : " << arg2 << '\n';
+      return IFSelect_RetError;
+    }
+  }
+  else
+  {
+    item = WS->ShareOut();
+  }
+  if (!WS->SetAppliedModifier(modif, item))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun44(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    ResetApplied (modifier)    ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Designer un modifier" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
+  if (modif.IsNull())
+  {
+    sout << "Not a Modifier name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->ResetAppliedModifier(modif))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun45(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  const char* const                 arg3 = pilot->Arg(3);
+  //        ****    ModifMove         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 4)
+  {
+    sout << "modifmove MF rang1 rang2, M for Model F for File" << '\n';
+    return IFSelect_RetError;
+  }
+  bool formodel;
+  if (arg1[0] == 'm' || arg1[0] == 'M')
+  {
+    formodel = true;
+  }
+  else if (arg1[0] == 'f' || arg1[0] == 'F')
+  {
+    formodel = false;
+  }
+  else
+  {
+    sout << "specify M for Model, F for File" << '\n';
+    return IFSelect_RetError;
+  }
+  int before = atoi(arg2);
+  int after  = atoi(arg3);
+  if (before == 0 || after == 0)
+  {
+    sout << "Donner 2 Entiers Positifs" << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->ChangeModifierRank(formodel, before, after))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun51(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    DispSel           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner Noms Dispatch et Selection Finale" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(arg1));
+  if (disp.IsNull())
+  {
+    sout << "Not a Dispatch name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg2));
+  if (sel.IsNull())
+  {
+    sout << "Not a Selection name : " << arg2 << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->SetItemSelection(disp, sel))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun_dispone(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    DispOne           ****
+  occ::handle<IFSelect_DispPerOne> disp = new IFSelect_DispPerOne;
+  return pilot->RecordItem(disp);
+}
+
+static IFSelect_ReturnStatus fun_dispglob(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    DispGlob          ****
+  occ::handle<IFSelect_DispGlobal> disp = new IFSelect_DispGlobal;
+  return pilot->RecordItem(disp);
+}
+
+static IFSelect_ReturnStatus fun_dispcount(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    DispCount         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give IntParam Name for Count" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
+  if (par.IsNull())
+  {
+    sout << "Not an IntParam name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_DispPerCount> disp = new IFSelect_DispPerCount;
+  disp->SetCount(par);
+  return pilot->RecordItem(disp);
+}
+
+static IFSelect_ReturnStatus fun_dispfiles(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    DispFiles         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give IntParam Name for NbFiles" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
+  if (par.IsNull())
+  {
+    sout << "Not an IntParam name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_DispPerFiles> disp = new IFSelect_DispPerFiles;
+  disp->SetCount(par);
+  return pilot->RecordItem(disp);
+}
+
+static IFSelect_ReturnStatus fun_dispsign(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    DispFiles         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner Nom Signature" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Signature, sig, WS->NamedItem(arg1));
+  if (sig.IsNull())
+  {
+    sout << "Not a Signature name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_DispPerSignature> disp = new IFSelect_DispPerSignature;
+  disp->SetSignCounter(new IFSelect_SignCounter(sig));
+  return pilot->RecordItem(disp);
+}
+
+static IFSelect_ReturnStatus fun56(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Dispatch           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner Nom du Dispatch" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(arg1));
+  if (disp.IsNull())
+  {
+    sout << "Pas un dispatch : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  int num = WS->DispatchRank(disp);
+  sout << "Dispatch with Name : " << arg1 << " , in ShareOut, Number " << num << " : ";
+  occ::handle<IFSelect_Selection>       sel     = WS->ItemSelection(disp);
+  occ::handle<TCollection_HAsciiString> selname = WS->Name(sel);
+  if (sel.IsNull())
+  {
+    sout << "No Final Selection" << '\n';
+  }
+  else if (selname.IsNull())
+  {
+    sout << "Selection Finale : #" << WS->ItemIdent(sel) << '\n';
+  }
+  else
+  {
+    sout << "Selection Finale : " << selname->ToCString() << '\n';
+  }
+  if (disp->HasRootName())
+  {
+    sout << "-- Root file name : " << disp->RootName()->ToCString() << '\n';
+  }
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun57(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Remove           ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Name to Remove !" << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->RemoveNamedItem(arg1))
+  {
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun58(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    EvalDisp          ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "evaldisp mode disp [disp ...] :  Mode + Name(s) of Dispatch(es). Mode:\n"
+         << "  0 brief  1 +forgotten ents  2 +duplicata  3 1+2" << '\n'
+         << "See also : evaladisp  writedisp  xsplit" << '\n';
+    return IFSelect_RetVoid;
+  }
+  bool OK = true;
+  int  i, mode = atoi(arg1);
+  sout << " Mode " << mode << "\n";
+  for (i = 2; i < argc; i++)
+  {
+    DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(pilot->Arg(i)));
+    if (disp.IsNull())
+    {
+      sout << "Not a dispatch:" << pilot->Arg(i) << '\n';
+      OK = false;
+    }
+  }
+  if (!OK)
+  {
+    sout << "Some of the parameters are not correct" << '\n';
+    return IFSelect_RetError;
+  }
+
+  WS->ClearShareOut(true);
+  for (i = 2; i < argc; i++)
+  {
+    DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(pilot->Arg(i)));
+    WS->SetActive(disp, true);
+  }
+  //      WS->EvaluateDispatch(disp,mode);
+  WS->EvaluateComplete(mode);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun_evaladisp(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    EvalADisp [GiveList]         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "evaladisp mode(=0-1-2-3) disp [givelist] :  Mode + Dispatch [+ GiveList]\n  If "
+            "GiveList not given, computed from Selection of the Dispatch. Mode:\n"
+         << "  0 brief  1 +forgotten ents  2 +duplicata  3 1+2" << '\n'
+         << "See also : writedisp" << '\n';
+    return IFSelect_RetVoid;
+  }
+  if (arg1[1] != '\0')
+  {
+    sout << "first parameter : mode, must be a number between 0 and 3" << '\n';
+    return IFSelect_RetError;
+  }
+  int mode = atoi(arg1);
+  sout << " Mode " << mode << "\n";
+  //  DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(2)));
+  occ::handle<IFSelect_Dispatch> disp = IFSelect_Functions::GiveDispatch(WS, pilot->Arg(2), true);
+  if (disp.IsNull())
+  {
+    sout << "Not a dispatch:" << pilot->Arg(2) << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_Selection> selsav = disp->FinalSelection();
+  occ::handle<IFSelect_Selection> sel;
+  if (argc > 3)
+  {
+    occ::handle<IFSelect_SelectPointed> sp = new IFSelect_SelectPointed;
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+      IFSelect_Functions::GiveList(pilot->Session(), pilot->CommandPart(3));
+    int nb = (list.IsNull() ? 0 : list->Length());
+    if (nb > 0)
+    {
+      sp->AddList(list);
+      sel = sp;
+    }
+  }
+
+  if (sel.IsNull() && selsav.IsNull())
+  {
+    sout << "No Selection nor GiveList defined" << '\n';
+    return IFSelect_RetError;
+  }
+  if (sel.IsNull() && !selsav.IsNull())
+  {
+    if (argc > 3)
+    {
+      sout << "GiveList is empty, hence computed from the Selection of the Dispatch" << '\n';
+    }
+    sel = selsav;
+  }
+  disp->SetFinalSelection(sel);
+  //  WS->ClearShareOut(true);
+  //  WS->SetActive(disp,true);
+  WS->EvaluateDispatch(disp, mode);
+  disp->SetFinalSelection(selsav);
+
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun_writedisp(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    EvalADisp [GiveList]         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "writedisp filename disp [givelist] :  FileName + Dispatch [+ GiveList]\n  If GiveList "
+            "not given, computed from Selection of the Dispatch.\n"
+         << "FileName : rootname.ext will gives rootname_1.ext etc...\n"
+         << "  path/rootname.ext gives  path/rootname_1.ext etc...\n"
+         << "See also : evaladisp" << '\n';
+    return IFSelect_RetVoid;
+  }
+  TCollection_AsciiString prefix, rootname, suffix;
+  SplitFileName(arg1, prefix, rootname, suffix);
+  if (rootname.Length() == 0 || suffix.Length() == 0)
+  {
+    sout << "Empty Root Name or Extension" << '\n';
+    return IFSelect_RetError;
+  }
+
+  //  DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(2)));
+  occ::handle<IFSelect_Dispatch> disp = IFSelect_Functions::GiveDispatch(WS, pilot->Arg(2), true);
+  if (disp.IsNull())
+  {
+    sout << "Not a dispatch:" << pilot->Arg(2) << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_Selection> selsav = disp->FinalSelection();
+  occ::handle<IFSelect_Selection> sel;
+  if (argc > 3)
+  {
+    occ::handle<IFSelect_SelectPointed> sp = new IFSelect_SelectPointed;
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+      IFSelect_Functions::GiveList(pilot->Session(), pilot->CommandPart(3));
+    int nb = (list.IsNull() ? 0 : list->Length());
+    if (nb > 0)
+    {
+      sp->AddList(list);
+      sel = sp;
+    }
+  }
+
+  if (sel.IsNull() && selsav.IsNull())
+  {
+    sout << "No Selection nor GiveList defined" << '\n';
+    return IFSelect_RetError;
+  }
+  if (sel.IsNull() && !selsav.IsNull())
+  {
+    if (argc > 3)
+    {
+      sout << "GiveList is empty, hence computed from the Selection of the Dispatch" << '\n';
+    }
+    sel = selsav;
+  }
+
+  WS->ClearShareOut(true);
+  disp->SetFinalSelection(sel);
+  WS->SetActive(disp, true);
+  WS->BeginSentFiles(true);
+
+  WS->SetFilePrefix(prefix.ToCString());
+  WS->SetFileExtension(suffix.ToCString());
+  WS->SetFileRoot(disp, rootname.ToCString());
+
+  bool OK = WS->SendSplit();
+  disp->SetFinalSelection(selsav);
+  return (OK ? IFSelect_RetDone : IFSelect_RetFail);
+}
+
+static IFSelect_ReturnStatus fun59(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    EvalComplete      ****
+  int                             mode = 0;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << " -- mode par defaut 0\n";
+  }
+  else
+  {
+    mode = atoi(arg1);
+    sout << " -- mode : " << mode << '\n';
+  }
+  WS->EvaluateComplete(mode);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun60(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    LastRunCheckList    ****
+  Interface_CheckIterator            chlist  = WS->LastRunCheckList();
+  occ::handle<IFSelect_CheckCounter> counter = new IFSelect_CheckCounter(false);
+  counter->Analyse(chlist, WS->Model(), false);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  counter->PrintCount(sout);
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun61(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    RunTransformer    ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Transformer Name" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Transformer, tsf, WS->NamedItem(arg1));
+  int effect = WS->RunTransformer(tsf);
+  switch (effect)
+  {
+    case -4:
+      sout << "Edition sur place, nouveau Protocole, erreur recalcul graphe" << '\n';
+      break;
+    case -3:
+      sout << "Erreur, Transformation ignoree" << '\n';
+      break;
+    case -2:
+      sout << "Error on in-place editing, risk of corruption (check)" << '\n';
+      break;
+    case -1:
+      sout << "Error on local editing, risk of corruption (check)" << '\n';
+      break;
+    case 0:
+      if (tsf.IsNull())
+      {
+        sout << "Erreur, pas un Transformer: " << arg1 << '\n';
+      }
+      else
+      {
+        sout << "Execution non faite" << '\n';
+      }
+      break;
+    case 1:
+      sout << "Transformation locale (graphe non touche)" << '\n';
+      break;
+    case 2:
+      sout << "Edition sur place (graphe recalcule)" << '\n';
+      break;
+    case 3:
+      sout << "Modele reconstruit" << '\n';
+      break;
+    case 4:
+      sout << "Edition sur place, nouveau Protocole" << '\n';
+      break;
+    case 5:
+      sout << "Nouveau Modele avec nouveau Protocole" << '\n';
+      break;
+    default:
+      break;
+  }
+  return ((effect > 0) ? IFSelect_RetDone : IFSelect_RetFail);
+}
+
+static IFSelect_ReturnStatus fun62(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    TransformStandard Copy         ****
+  return pilot->RecordItem(WS->NewTransformStandard(true));
+}
+
+static IFSelect_ReturnStatus fun63(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    TransformStandard OntheSpot         ****
+  return pilot->RecordItem(WS->NewTransformStandard(false));
+}
+
+static IFSelect_ReturnStatus fun6465(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    Run Modifier avec Standard Copy     ****
+  //        ****    Run Modifier avec OnTheSpot         ****
+  bool runcopy = (pilot->Arg(0)[3] == 'c');
+  //  either it's a name, otherwise it's a command
+  occ::handle<IFSelect_Modifier> modif;
+  if (WS->NameIdent(arg1) > 0)
+  {
+    modif = GetCasted(IFSelect_Modifier, WS->NamedItem(arg1));
+  }
+  else
+  {
+    pilot->RemoveWord(0); // it was the run command
+    pilot->Perform();
+    modif = GetCasted(IFSelect_Modifier, pilot->RecordedItem());
+  }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (modif.IsNull())
+  {
+    sout << "Not a Modifier name : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
+  occ::handle<IFSelect_SelectPointed>                                 sp;
+  if (argc > 2)
+  {
+    list = IFSelect_Functions::GiveList(WS, pilot->CommandPart(2));
+    sp   = new IFSelect_SelectPointed;
+    sp->SetList(list);
+  }
+
+  int effect = 0;
+  effect     = WS->RunModifierSelected(modif, sp, runcopy);
+  //      sout<<"Modifier applique sur TransformStandard #"<<WS->ItemIdent(tsf)<<std::endl;
+  switch (effect)
+  {
+    case -4:
+      sout << "Edition sur place, nouveau Protocole, erreur recalcul graphe" << '\n';
+      break;
+    case -3:
+      sout << "Erreur, Transformation ignoree" << '\n';
+      break;
+    case -2:
+      sout << "Error on in-place editing, risk of corruption (check)" << '\n';
+      break;
+    case -1:
+      sout << "Error on local editing, risk of corruption (check)" << '\n';
+      break;
+    case 0:
+      if (modif.IsNull())
+      {
+        sout << "Erreur, pas un Modifier: " << arg1 << '\n';
+      }
+      else
+      {
+        sout << "Execution non faite" << '\n';
+      }
+      break;
+    case 1:
+      sout << "Transformation locale (graphe non touche)" << '\n';
+      break;
+    case 2:
+      sout << "Edition sur place (graphe recalcule)" << '\n';
+      break;
+    case 3:
+      sout << "Modele reconstruit" << '\n';
+      break;
+    case 4:
+      sout << "Edition sur place, nouveau Protocole" << '\n';
+      break;
+    case 5:
+      sout << "Nouveau Modele avec nouveau Protocole" << '\n';
+      break;
+    default:
+      break;
+  }
+  return ((effect > 0) ? IFSelect_RetDone : IFSelect_RetFail);
+}
+
+static IFSelect_ReturnStatus fun66(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    (xset) ModifReorder         ****
+  char opt  = ' ';
+  int  argc = pilot->NbWords();
+  if (argc >= 2)
+  {
+    opt = pilot->Word(1).Value(1);
+  }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (opt != 'f' && opt != 'l')
+  {
+    sout << "Donner option : f -> root-first  l -> root-last" << '\n';
+    return IFSelect_RetError;
+  }
+  return pilot->RecordItem(new IFSelect_ModifReorder(opt == 'l'));
+}
+
+static IFSelect_ReturnStatus fun70(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    SelToggle         ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give Selection Name" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  if (!WS->ToggleSelectExtract(sel))
+  {
+    sout << "Pas une SelectExtract : " << arg1 << '\n';
+    return IFSelect_RetFail;
+  }
+  if (WS->IsReversedSelectExtract(sel))
+  {
+    sout << arg1 << " a present Reversed" << '\n';
+  }
+  else
+  {
+    sout << arg1 << " a present Directe" << '\n';
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun71(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelInput          ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner Noms Selections cible et input" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, sou, WS->NamedItem(arg2));
+  if (sel.IsNull() || sou.IsNull())
+  {
+    sout << "Incorrect : " << arg1 << "," << arg2 << '\n';
+    return IFSelect_RetError;
+  }
+  if (!WS->SetInputSelection(sel, sou))
+  {
+    sout << "Nom incorrect ou Selection " << arg1 << " ni Extract ni Deduct" << '\n';
+    return IFSelect_RetFail;
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun72(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelModelRoots     ****
+  return pilot->RecordItem(new IFSelect_SelectModelRoots);
+}
+
+static IFSelect_ReturnStatus fun73(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelRange          ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc >= 2 && arg1[0] == '?')
+  {
+    argc = 1;
+  }
+  if (argc < 2)
+  {
+    sout << "Donner la description du SelectRange"
+         << "    Accepted forms :\n <n1> <n2>  : Range from <n1> to <n2>\n"
+         << " <n1> tout seul : Range n0 <n1>\n  from <n1>  : Range From <n1>\n"
+         << "  until <n2> : Range Until <n2>" << '\n';
+    return IFSelect_RetVoid;
+  }
+
+  occ::handle<IFSelect_IntParam>    low, up;
+  occ::handle<IFSelect_SelectRange> sel;
+  //                                         Range From
+  if (pilot->Word(1).IsEqual("from"))
+  {
+    if (argc < 3)
+    {
+      sout << "Forme admise : from <i>" << '\n';
+      return IFSelect_RetError;
+    }
+    low = GetCasted(IFSelect_IntParam, WS->NamedItem(arg2));
+    sel = new IFSelect_SelectRange;
+    sel->SetFrom(low);
+    //                                         Range Until
+  }
+  else if (pilot->Word(1).IsEqual("until"))
+  {
+    if (argc < 3)
+    {
+      sout << "Forme admise : until <i>" << '\n';
+      return IFSelect_RetError;
+    }
+    up  = GetCasted(IFSelect_IntParam, WS->NamedItem(arg2));
+    sel = new IFSelect_SelectRange;
+    sel->SetUntil(up);
+    //                                         Range One (n-th)
+  }
+  else if (argc < 3)
+  {
+    low = GetCasted(IFSelect_IntParam, WS->NamedItem(arg1));
+    sel = new IFSelect_SelectRange;
+    sel->SetOne(low);
+    //                                         Range (from-to)
+  }
+  else
+  {
+    low = GetCasted(IFSelect_IntParam, WS->NamedItem(arg1));
+    up  = GetCasted(IFSelect_IntParam, WS->NamedItem(arg2));
+    sel = new IFSelect_SelectRange;
+    sel->SetRange(low, up);
+  }
+  return pilot->RecordItem(sel);
+}
+
+static IFSelect_ReturnStatus fun74(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelRoots          ****
+  return pilot->RecordItem(new IFSelect_SelectRoots);
+}
+
+static IFSelect_ReturnStatus fun75(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelShared         ****
+  return pilot->RecordItem(new IFSelect_SelectShared);
+}
+
+static IFSelect_ReturnStatus fun76(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelDiff           ****
+  occ::handle<IFSelect_Selection> sel = new IFSelect_SelectDiff;
+  if (sel.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Diff without input : don't forget to define them (ctlmain, ctlsec)!" << '\n';
+  }
+  DeclareAndCast(IFSelect_Selection, selmain, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, selsec, WS->NamedItem(arg2));
+  if (argc >= 2)
+  {
+    if (!WS->SetControl(sel, selmain, true))
+    {
+      sout << "Echec ControlMain:" << arg1 << " , a refaire (ctlmain)" << '\n';
+    }
+  }
+  if (argc >= 3)
+  {
+    if (!WS->SetControl(sel, selsec, false))
+    {
+      sout << "Echec ControlSecond:" << arg2 << " , a refaire (ctlsec)" << '\n';
+    }
+  }
+  return pilot->RecordItem(sel);
+}
+
+static IFSelect_ReturnStatus fun77(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelControlMain       ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Give Control and MainInput Names" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, selmain, WS->NamedItem(arg2));
+  if (WS->SetControl(sel, selmain, true))
+  {
+    return IFSelect_RetDone;
+  }
+  sout << "Incorrect name or Selection " << arg1 << " not of Control type" << '\n';
+  return IFSelect_RetFail;
+}
+
+static IFSelect_ReturnStatus fun78(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelControlSecond       ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Give Control and SecondInput Names" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, seldif, WS->NamedItem(arg2));
+  if (WS->SetControl(sel, seldif, false))
+  {
+    return IFSelect_RetDone;
+  }
+  sout << "Incorrect name or Selection " << arg1 << " not of Control type" << '\n';
+  return IFSelect_RetFail;
+}
+
+static IFSelect_ReturnStatus fun79(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelModelAll       ****
+  return pilot->RecordItem(new IFSelect_SelectModelEntities);
+}
+
+static IFSelect_ReturnStatus fun80(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelCombAdd        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner n0 Combine et une Input" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, seladd, WS->NamedItem(arg2));
+  if (WS->CombineAdd(sel, seladd))
+  {
+    return IFSelect_RetDone;
+  }
+  sout << "Nom incorrect ou Selection " << arg1 << " pas Combine" << '\n';
+  return IFSelect_RetFail;
+}
+
+static IFSelect_ReturnStatus fun81(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  //        ****    SelCombRem        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Donner n0 Combine et RANG a supprimer" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_Selection, inp, WS->NamedItem(arg2));
+  if (WS->CombineRemove(sel, inp))
+  {
+    return IFSelect_RetDone;
+  }
+  sout << "Nom incorrect ou Selection " << arg1 << " ni Union ni Intersection" << '\n';
+  return IFSelect_RetFail;
+}
+
+static IFSelect_ReturnStatus fun82(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    SelEntNumber      ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give IntParam Name for Entity n0" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
+  occ::handle<IFSelect_SelectEntityNumber> sel = new IFSelect_SelectEntityNumber;
+  sel->SetNumber(par);
+  return pilot->RecordItem(sel);
+}
+
+static IFSelect_ReturnStatus fun83(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelUnion          ****
+  return pilot->RecordItem(new IFSelect_SelectUnion);
+}
+
+static IFSelect_ReturnStatus fun84(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelIntersection   ****
+  return pilot->RecordItem(new IFSelect_SelectIntersection);
+}
+
+static IFSelect_ReturnStatus fun85(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
+  //        ****    SelTextType Exact ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner le TYPE a selectionner" << '\n';
+    return IFSelect_RetError;
+  }
+  return pilot->RecordItem(new IFSelect_SelectSignature(new IFSelect_SignType, arg1, true));
+}
+
+static IFSelect_ReturnStatus fun86(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    SelErrorEntities  ****
+  return pilot->RecordItem(new IFSelect_SelectErrorEntities);
+}
+
+static IFSelect_ReturnStatus fun87(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    SelUnknownEntities  **
+  return pilot->RecordItem(new IFSelect_SelectUnknownEntities);
+}
+
+static IFSelect_ReturnStatus fun88(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    SelSharing        ****
+  return pilot->RecordItem(new IFSelect_SelectSharing);
+}
+
+static IFSelect_ReturnStatus fun89(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
+  //        ****    SelTextType Contain **
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner le TYPE a selectionner" << '\n';
+    return IFSelect_RetError;
+  }
+  return pilot->RecordItem(new IFSelect_SelectSignature(new IFSelect_SignType, arg1, false));
+}
+
+static IFSelect_ReturnStatus fun90(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  //        ****    SelPointed        ****
+  occ::handle<IFSelect_SelectPointed> sp = new IFSelect_SelectPointed;
+  if (pilot->NbWords() > 1)
+  {
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+      IFSelect_Functions::GiveList(pilot->Session(), pilot->CommandPart(1));
+    if (list.IsNull())
+    {
+      return IFSelect_RetFail;
+    }
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "SelectPointed : " << list->Length() << " entities" << '\n';
+    sp->AddList(list);
+  }
+  return pilot->RecordItem(sp);
+}
+
+static IFSelect_ReturnStatus fun91(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  //        ****    SetPointed (edit) / SetList (edit)    ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner NOM SelectPointed + Option(s) :\n"
+         << " aucune : liste des entites pointees\n"
+         << " 0: Clear  +nn ajout entite nn  -nn enleve nn  /nn toggle nn" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_SelectPointed, sp, WS->NamedItem(arg1));
+  if (sp.IsNull())
+  {
+    sout << "Pas une SelectPointed:" << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  const occ::handle<Interface_InterfaceModel>& model = WS->Model(); // for Print
+  if (argc == 2)
+  { // listage simple
+    int nb = sp->NbItems();
+    sout << " SelectPointed : " << arg1 << " : " << nb << " Items :" << '\n';
+    for (int i = 1; i <= nb; i++)
+    {
+      occ::handle<Standard_Transient> pointed = sp->Item(i);
+      int                             id      = WS->StartingNumber(pointed);
+      if (id == 0)
+      {
+        sout << " (inconnu)";
+      }
+      else
+      {
+        sout << "  ";
+        model->Print(pointed, sout);
+      }
+    }
+    if (nb > 0)
+    {
+      sout << '\n';
+    }
+    return IFSelect_RetDone;
+  }
+
+  for (int ia = 2; ia < argc; ia++)
+  {
+    const TCollection_AsciiString argi = pilot->Word(ia);
+    int                           id   = pilot->Number(&(argi.ToCString())[1]);
+    if (id == 0)
+    {
+      if (!argi.IsEqual("0"))
+      {
+        sout << "Incorrect,ignore:" << argi << '\n';
+      }
+      else
+      {
+        sout << "Clear SelectPointed" << '\n';
+        sp->Clear();
+      }
+    }
+    else if (argi.Value(1) == '-')
+    {
+      occ::handle<Standard_Transient> item = WS->StartingEntity(id);
+      if (sp->Remove(item))
+      {
+        sout << "Removed:no." << id;
+      }
+      else
+      {
+        sout << " Echec Remove " << id;
+      }
+      sout << ": " << '\n';
+      model->Print(item, sout);
+    }
+    else if (argi.Value(1) == '/')
+    {
+      occ::handle<Standard_Transient> item = WS->StartingEntity(id);
+      if (sp->Remove(item))
+      {
+        sout << "Toggled:n0." << id;
+      }
+      else
+      {
+        sout << " Echec Toggle " << id;
+      }
+      sout << ": " << '\n';
+      model->Print(item, sout);
+    }
+    else if (argi.Value(1) == '+')
+    {
+      occ::handle<Standard_Transient> item = WS->StartingEntity(id);
+      if (sp->Add(item))
+      {
+        sout << "Added:no." << id;
+      }
+      else
+      {
+        sout << " Echec Add " << id;
+      }
+      sout << ": " << '\n';
+      model->Print(item, sout);
+    }
+    else
+    {
+      sout << "Ignore:" << argi << " , give n0 PRECEDED by + or - or /" << '\n';
+    }
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun92(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+  //        ****    SelIncorrectEntities  ****
+  WS->ComputeCheck();
+  return pilot->RecordItem(new IFSelect_SelectIncorrectEntities);
+}
+
+static IFSelect_ReturnStatus fun93(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  //        ****    SelSignature        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Give name of Signature or Counter, text + option exact(D) else contains" << '\n';
+    return IFSelect_RetError;
+  }
+  bool exact = true;
+  if (argc > 3)
+  {
+    if (pilot->Arg(3)[0] == 'c')
+    {
+      exact = false;
+    }
+  }
+
+  DeclareAndCast(IFSelect_Signature, sign, WS->NamedItem(arg1));
+  DeclareAndCast(IFSelect_SignCounter, cnt, WS->NamedItem(arg1));
+  occ::handle<IFSelect_SelectSignature> sel;
+
+  if (!sign.IsNull())
+  {
+    sel = new IFSelect_SelectSignature(sign, arg2, exact);
+  }
+  else if (!cnt.IsNull())
+  {
+    sel = new IFSelect_SelectSignature(cnt, arg2, exact);
+  }
+  else
+  {
+    sout << arg1 << ":neither Signature nor Counter" << '\n';
+    return IFSelect_RetError;
+  }
+
+  return pilot->RecordItem(sel);
+}
+
+static IFSelect_ReturnStatus fun94(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  //        ****    SignCounter        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner nom signature" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_Signature, sign, WS->NamedItem(arg1));
+  if (sign.IsNull())
+  {
+    sout << arg1 << ":pas une signature" << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_SignCounter> cnt = new IFSelect_SignCounter(sign, true, true);
+  return pilot->RecordItem(cnt);
+}
+
+static IFSelect_ReturnStatus funbselected(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                               argc = pilot->NbWords();
+  const char* const                 arg1 = pilot->Arg(1);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  //        ****    NbSelected = GraphCounter        ****
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Donner nom selection (deduction) a appliquer" << '\n';
+    return IFSelect_RetError;
+  }
+  DeclareAndCast(IFSelect_SelectDeduct, applied, WS->GiveSelection(arg1));
+  if (applied.IsNull())
+  {
+    sout << arg1 << ":pas une SelectDeduct" << '\n';
+    return IFSelect_RetError;
+  }
+  occ::handle<IFSelect_GraphCounter> cnt = new IFSelect_GraphCounter(true, true);
+  cnt->SetApplied(applied);
+  return pilot->RecordItem(cnt);
+}
+
+//  #########################################
+//  ####    EDITOR  -  EDITFORM          ####
+//  #########################################
+
+static IFSelect_ReturnStatus fun_editlist(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                             argc = pilot->NbWords();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give the name of an EditForm or an Editor" << '\n';
+    return IFSelect_RetError;
+  }
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+
+  //  EditForm
+
+  DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
+  occ::handle<IFSelect_Editor> edt;
+  if (!edf.IsNull())
+  {
+    sout << "Print EditForm " << arg1 << '\n';
+    edt = edf->Editor();
+    if (argc < 3)
+    {
+
+      //       DEFINITIONS : Editor (direct ou via EditForm)
+
+      if (edt.IsNull())
+      {
+        edt = GetCasted(IFSelect_Editor, WS->NamedItem(arg1));
+      }
+      if (edt.IsNull())
+      {
+        return IFSelect_RetVoid;
+      }
+
+      sout << "Editor, Label : " << edt->Label() << '\n';
+      sout << '\n' << " --  Names (short - complete) + Labels of Values" << '\n';
+      edt->PrintNames(sout);
+      sout << '\n' << " --  Definitions  --" << '\n';
+      edt->PrintDefs(sout);
+      if (!edf.IsNull())
+      {
+        edf->PrintDefs(sout);
+        sout << '\n'
+             << "To display values, add an option : o original  f final  m modified" << '\n';
+      }
+
+      return IFSelect_RetVoid;
+    }
+    else
+    {
+      char opt  = arg2[0];
+      int  what = 0;
+      if (opt == 'o')
+      {
+        what = -1;
+      }
+      else if (opt == 'f')
+      {
+        what = 1;
+      }
+
+      edf->PrintValues(sout, what, false);
+    }
+  }
+
+  return IFSelect_RetVoid;
+}
+
+static IFSelect_ReturnStatus fun_editvalue(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                             argc = pilot->NbWords();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 3)
+  {
+    sout << "Give the name of an EditForm + name of Value [+ newvalue or . to nullify]" << '\n';
+    return IFSelect_RetError;
+  }
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
+  if (edf.IsNull())
+  {
+    sout << "Not an EditForm : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  int num = edf->NameNumber(arg2);
+  if (num == 0)
+  {
+    sout << "Unknown Value Name : " << arg2 << '\n';
+  }
+  if (num < 0)
+  {
+    sout << "Not Extracted Value Name : " << arg2 << '\n';
+  }
+  if (num <= 0)
+  {
+    return IFSelect_RetError;
+  }
+
+  bool        islist = edf->Editor()->IsList(num);
+  const char* name   = edf->Editor()->Name(num, true); // real name
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> listr;
+  occ::handle<TCollection_HAsciiString>                                     str;
+  sout << "Value Name : " << name << (edf->IsModified(num) ? "(already edited) : " : " : ");
+
+  if (islist)
+  {
+    listr = edf->EditedList(num);
+    if (listr.IsNull())
+    {
+      sout << "(NULL LIST)" << '\n';
+    }
+    else
+    {
+      int ilist, nblist = listr->Length();
+      sout << "(List : " << nblist << " Items)" << '\n';
+      for (ilist = 1; ilist <= nblist; ilist++)
+      {
+        str = listr->Value(ilist);
+        sout << "  [" << ilist << "]	" << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
+      }
+    }
+    if (argc < 4)
+    {
+      sout << "To Edit, options by editval edit-form value-name ?" << '\n';
+    }
+  }
+  else
+  {
+    str = edf->EditedValue(num);
+    sout << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
+  }
+  if (argc < 4)
+  {
+    return IFSelect_RetVoid;
+  }
+
+  //  Valeur simple ou liste ?
+  int numarg = 3;
+  str.Nullify();
+
+  const char* const argval = pilot->Arg(numarg);
+  if (islist)
+  {
+    if (argval[0] == '?')
+    {
+      sout << "To Edit, options" << '\n'
+           << " + val : add value at end (blanks allowed)" << '\n'
+           << " +nn text : insert val before item nn" << '\n'
+           << " nn text : replace item nn with a new value" << '\n'
+           << " -nn : remove item nn" << '\n'
+           << " . : clear the list" << '\n';
+      return IFSelect_RetVoid;
+    }
+    bool                             stated = false;
+    occ::handle<IFSelect_ListEditor> listed = edf->ListEditor(num);
+    if (listed.IsNull())
+    {
+      return IFSelect_RetError;
+    }
+    if (argval[0] == '.')
+    {
+      listr.Nullify();
+      stated = listed->LoadEdited(listr);
+    }
+    else if (argval[0] == '+')
+    {
+      int numadd = 0;
+      if (argval[1] != '\0')
+      {
+        numadd = atoi(argval);
+      }
+      stated =
+        listed->AddValue(new TCollection_HAsciiString(pilot->CommandPart(numarg + 1)), numadd);
+    }
+    else if (argval[0] == '-')
+    {
+      int numrem = atoi(argval);
+      stated     = listed->Remove(numrem);
+    }
+    else
+    {
+      int numset = atoi(argval);
+      if (numset > 0)
+      {
+        stated =
+          listed->AddValue(new TCollection_HAsciiString(pilot->CommandPart(numarg + 1)), numset);
+      }
+    }
+    if (stated)
+    {
+      stated = edf->ModifyList(num, listed, true);
+    }
+    if (stated)
+    {
+      sout << "List Edition done" << '\n';
+    }
+    else
+    {
+      sout << "List Edition not done, option" << argval << '\n';
+    }
+  }
+  else
+  {
+    if (argval[0] == '.' && argval[1] == '\0')
+    {
+      str.Nullify();
+    }
+    else
+    {
+      str = new TCollection_HAsciiString(pilot->CommandPart(numarg));
+    }
+    if (edf->Modify(num, str, true))
+    {
+      sout << "Now set to " << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
+    }
+    else
+    {
+      sout << "Modify not done" << '\n';
+      return IFSelect_RetFail;
+    }
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun_editclear(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                             argc = pilot->NbWords();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give the name of an EditForm [+ name of Value  else all]" << '\n';
+    return IFSelect_RetError;
+  }
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
+  if (edf.IsNull())
+  {
+    sout << "Not an EditForm : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+  if (argc < 3)
+  {
+    edf->ClearEdit();
+    sout << "All Modifications Cleared" << '\n';
+  }
+  else
+  {
+    int num = edf->NameNumber(arg2);
+    if (num == 0)
+    {
+      sout << "Unknown Value Name : " << arg2 << '\n';
+    }
+    if (num < 0)
+    {
+      sout << "Not Extracted Value Name : " << arg2 << '\n';
+    }
+    if (num <= 0)
+    {
+      return IFSelect_RetError;
+    }
+    if (!edf->IsModified(num))
+    {
+      sout << "Value " << arg2 << " was not modified" << '\n';
+      return IFSelect_RetVoid;
+    }
+    edf->ClearEdit(num);
+    sout << "Modification on Value " << arg2 << " Cleared" << '\n';
+  }
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun_editapply(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                             argc = pilot->NbWords();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give the name of an EditForm [+ option keep to re-apply edited values]" << '\n';
+    return IFSelect_RetError;
+  }
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
+  if (edf.IsNull())
+  {
+    sout << "Not an EditForm : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+
+  occ::handle<Standard_Transient>       ent   = edf->Entity();
+  occ::handle<Interface_InterfaceModel> model = edf->Model();
+  if (!model.IsNull())
+  {
+    if (ent.IsNull())
+    {
+      sout << "Applying modifications on loaded model" << '\n';
+    }
+    else
+    {
+      sout << "Applying modifications on loaded entity : ";
+      model->PrintLabel(ent, sout);
+    }
+  }
+  else
+  {
+    sout << "Applying modifications" << '\n';
+  }
+
+  if (!edf->ApplyData(edf->Entity(), edf->Model()))
+  {
+    sout << "Modifications could not be applied" << '\n';
+    return IFSelect_RetFail;
+  }
+  sout << "Modifications have been applied" << '\n';
+
+  bool stat = true;
+  if (argc > 2 && arg2[0] == 'k')
+  {
+    stat = false;
+  }
+  if (stat)
+  {
+    edf->ClearEdit();
+    sout << "Edited values are cleared" << '\n';
+  }
+  else
+  {
+    sout << "Edited values are kept for another loading/applying" << '\n';
+  }
+
+  return IFSelect_RetDone;
+}
+
+static IFSelect_ReturnStatus fun_editload(const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int                             argc = pilot->NbWords();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (argc < 2)
+  {
+    sout << "Give the name of an EditForm [+ Entity-Ident]" << '\n';
+    return IFSelect_RetError;
+  }
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
+  DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
+  if (edf.IsNull())
+  {
+    sout << "Not an EditForm : " << arg1 << '\n';
+    return IFSelect_RetError;
+  }
+
+  int  num  = (argc < 3 ? 0 : pilot->Number(arg2));
+  bool stat = false;
+  if (argc < 3)
+  {
+    sout << "EditForm " << arg1 << " : Loading Model" << '\n';
+    stat = edf->LoadModel(WS->Model());
+  }
+  else if (num <= 0)
+  {
+    sout << "Not an entity ident : " << arg2 << '\n';
+    return IFSelect_RetError;
+  }
+  else
+  {
+    sout << "EditForm " << arg1 << " : Loading Entity " << arg2 << '\n';
+    stat = edf->LoadData(WS->StartingEntity(num), WS->Model());
+  }
+
+  if (!stat)
+  {
+    sout << "Loading not done" << '\n';
+    return IFSelect_RetFail;
+  }
+  sout << "Loading done" << '\n';
+  return IFSelect_RetDone;
+}
+
+//  #########################################
+//  ####    FONCTIONS COMPLEMENTAIRES    ####
+//  #########################################
+
+occ::handle<Standard_Transient> IFSelect_Functions::GiveEntity(
+  const occ::handle<IFSelect_WorkSession>& WS,
+  const char* const                        name)
+{
+  occ::handle<Standard_Transient> ent; // demarre a Null
+  int                             num = GiveEntityNumber(WS, name);
+  if (num > 0)
+  {
+    ent = WS->StartingEntity(num);
+  }
+  return ent;
+}
+
+int IFSelect_Functions::GiveEntityNumber(const occ::handle<IFSelect_WorkSession>& WS,
+                                         const char* const                        name)
+{
+  int num = 0;
+  if (!name || name[0] == '\0')
+  {
+    constexpr size_t aBufferSize = 80;
+    char             ligne[aBufferSize];
+    ligne[0] = '\0';
+    std::cin.width(aBufferSize);
+    std::cin >> ligne;
+    //    std::cin.clear();  std::cin.getline (ligne,79);
+    if (ligne[0] == '\0')
+    {
+      return 0;
+    }
+    num = WS->NumberFromLabel(ligne);
+  }
+  else
+  {
+    num = WS->NumberFromLabel(name);
+  }
+  return num;
+}
+
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Functions::GiveList(
+  const occ::handle<IFSelect_WorkSession>& WS,
+  const char* const                        first,
+  const char* const                        second)
+{
+  return WS->GiveList(first, second);
+}
+
+//  Function which returns an EVALUATED DISPATCH
+//   (could be added in WorkSession.cdl ...)
+//  Two modes : returns dispatch as it is, or return with edition
+//  Dispatch Name can be : an immediate name of already recorded Dispatch
+//  Or a name of dispatch + a parameter :  dispatch-name(param-value)
+//  According to type of Dispatch : integer , signature name
+
+occ::handle<IFSelect_Dispatch> IFSelect_Functions::GiveDispatch(
+  const occ::handle<IFSelect_WorkSession>& WS,
+  const char* const                        name,
+  const bool                               mode)
+{
+  DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(name));
+  if (!disp.IsNull())
+  {
+    return disp; // OK as it is given
+  }
+
+  //   Else, let s try special cases
+  TCollection_AsciiString nam(name);
+  int                     paro = nam.Location(1, '(', 1, nam.Length());
+  int                     parf = nam.Location(1, ')', 1, nam.Length());
+  nam.SetValue(paro, '\0');
+  nam.SetValue(parf, '\0');
+  if (paro <= 0 && parf <= 0)
+  {
+    return disp;
+  }
+  disp = GetCasted(IFSelect_Dispatch, WS->NamedItem(nam.ToCString()));
+  if (disp.IsNull())
+  {
+    return disp; // KO anyway
+  }
+
+  //  According to the type of dispatch :
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  DeclareAndCast(IFSelect_DispPerCount, dc, disp);
+  if (!dc.IsNull())
+  {
+    int nb = atoi(&(nam.ToCString())[paro]);
+    if (nb <= 0)
+    {
+      sout << " DispPerCount, count is not positive" << '\n';
+      disp.Nullify();
+      return disp;
+    }
+    if (mode)
+    {
+      occ::handle<IFSelect_IntParam> val = new IFSelect_IntParam;
+      val->SetValue(nb);
+      dc->SetCount(val);
+    }
+    return dc;
+  }
+  DeclareAndCast(IFSelect_DispPerFiles, dp, disp);
+  if (!dp.IsNull())
+  {
+    int nb = atoi(&(nam.ToCString())[paro]);
+    if (nb <= 0)
+    {
+      sout << " DispPerFiles, count is not positive" << '\n';
+      disp.Nullify();
+      return disp;
+    }
+    if (mode)
+    {
+      occ::handle<IFSelect_IntParam> val = new IFSelect_IntParam;
+      val->SetValue(nb);
+      dp->SetCount(val);
+    }
+    return dp;
+  }
+  DeclareAndCast(IFSelect_DispPerSignature, ds, disp);
+  if (!ds.IsNull())
+  {
+    DeclareAndCast(IFSelect_Signature, sg, WS->NamedItem(&(nam.ToCString())[paro]));
+    if (sg.IsNull())
+    {
+      sout << "DispPerSignature " << nam << " , Signature not valid : " << &(nam.ToCString())[paro]
+           << '\n';
+      disp.Nullify();
+      return disp;
+    }
+    if (mode)
+    {
+      ds->SetSignCounter(new IFSelect_SignCounter(sg));
+    }
+    return ds;
+  }
+  sout << "Dispatch : " << name << " , Parameter : " << &(nam.ToCString())[paro] << '\n';
+  return disp;
+}
+
+//  #########################################
+//  ####    INITIALISATIONS              ####
+//  #########################################
+
+static int THE_IFSelect_Functions_initactor = 0;
+
+void IFSelect_Functions::Init()
+{
+  if (THE_IFSelect_Functions_initactor)
+  {
+    return;
+  }
+
+  THE_IFSelect_Functions_initactor = 1;
+  IFSelect_Act::SetGroup("DE: General");
+  IFSelect_Act::AddFunc("xstatus", "Lists XSTEP Status : Version, System Name ...", funstatus);
+  IFSelect_Act::AddFunc("handler", "Toggle status catch Handler Error of the session", fun1);
+  IFSelect_Act::AddFunc("xload", "file:string  : Read File -> Load Model", fun3);
+  IFSelect_Act::AddFunc("xread", "file:string  : Read File -> Load Model", fun3);
+  IFSelect_Act::AddFunc("writeall", "file:string  : Write all model (no split)", fun4);
+  IFSelect_Act::AddFunc("writesel", "file:string sel:Selection : Write Selected (no split)", fun5);
+  IFSelect_Act::AddFunc("writeent",
+                        "file:string  n1ent n2ent...:integer : Write Entite(s) (no split)",
+                        fun6);
+  IFSelect_Act::AddFunc("writent",
+                        "file:string  n1ent n2ent...:integer : Write Entite(s) (no split)",
+                        fun6);
+  IFSelect_Act::AddFunc("elabel", "nument:integer   : Displays Label Model of an entity", fun7);
+  IFSelect_Act::AddFunc("enum",
+                        "label:string  : Displays entities n0.s of which Label Model ends by..",
+                        fun8);
+
+  IFSelect_Act::AddFunc("listtypes",
+                        "List nb entities per type. Optional selection name  else all model",
+                        fun9);
+  IFSelect_Act::AddFunc("count", "Count : counter [selection]", funcount);
+  IFSelect_Act::AddFunc("listcount", "List Counted : counter [selection [nument]]", funcount);
+  IFSelect_Act::AddFunc("sumcount", "Summary Counted : counter [selection [nument]]", funcount);
+  IFSelect_Act::AddFunc("signtype", "Sign Type [newone]", funsigntype);
+  IFSelect_Act::AddFunc("signcase", "signature : displays possible cases", funsigncase);
+
+  IFSelect_Act::AddFunc("estatus", "ent/nument : displays status of an entity", fun10);
+  IFSelect_Act::AddFunc("data", "Data (DumpModel); whole help : data tout court", fun11);
+  IFSelect_Act::AddFunc("entity", "give n0 ou id of entity [+ level]", fundumpent);
+  IFSelect_Act::AddFunc("signature", "signature name + n0/ident entity", funsign);
+  IFSelect_Act::AddFunc("queryparent", " give 2 n0s/labels of entities : dad son", funqp);
+
+  IFSelect_Act::AddFunc("dumpshare", "Dump Share (dispatches, IntParams)", fun12);
+  IFSelect_Act::AddFunc("listitems", "List Items [label else all]  ->Type,Label[,Name]", fun13);
+  IFSelect_Act::AddFSet("integer", "value:integer : cree un IntParam", fun14);
+  IFSelect_Act::AddFunc("setint",
+                        "name:IntParam   newValue:integer  : Change valeur IntParam",
+                        fun15);
+  IFSelect_Act::AddFSet("text", "value:string  : cree un TextParam", fun16);
+  IFSelect_Act::AddFunc("settext",
+                        "Name:TextParam  newValue:string   : Change valeur TextParam",
+                        fun17);
+  IFSelect_Act::AddFunc("dumpsel", "Dump Selection followed by Name of Selection to dump", fun19);
+  IFSelect_Act::AddFunc("evalsel", "name:Selection [num/sel]  : Evalue une Selection", fun20);
+  IFSelect_Act::AddFunc("givelist", "num/sel [num/sel ...]  : Evaluates GiveList", fun20);
+  IFSelect_Act::AddFunc("giveshort", "num/sel [num/sel ...]  : GiveList in short form", fun20);
+  IFSelect_Act::AddFunc("givepointed",
+                        "num/sel [num/sel ...]  : GiveList to fill a SelectPointed",
+                        fun20);
+  IFSelect_Act::AddFunc("makelist",
+                        "listname [givelist] : Makes a List(SelectPointed) from GiveList",
+                        fun20);
+  IFSelect_Act::AddFunc("givecount", "num/sel [num/sel ...]  : Counts GiveList", fun20c);
+  IFSelect_Act::AddFSet("selsuite", "sel sel ...  : Creates a SelectSuite", funselsuite);
+  IFSelect_Act::AddFunc("clearitems", "Clears all items (selections, dispatches, etc)", fun21);
+  IFSelect_Act::AddFunc("cleardata",
+                        "mode:a-g-c-p  : Clears all or some data (model, check...)",
+                        fun22);
+
+  IFSelect_Act::AddFunc("itemlabel", "xxx xxx : liste items having this label", fun24);
+  IFSelect_Act::AddFunc("xsave", "filename:string  : sauve items-session", fun25);
+  IFSelect_Act::AddFunc("xrestore", "filename:string  : restaure items-session", fun26);
+  IFSelect_Act::AddFunc("param",
+                        "[-p Pattern] - displays all parameters or filtered by pattern;\n"
+                        "par_name - displays parameter;\n"
+                        "par_name par_value - changes parameter's value",
+                        fun27);
+
+  IFSelect_Act::AddFunc("sentfiles", "Lists files sent from last Load", fun29);
+  IFSelect_Act::AddFunc("fileprefix", "prefix:string    : definit File Prefix", fun30);
+  IFSelect_Act::AddFunc("fileext", "extent:string    : definit File Extension", fun31);
+  IFSelect_Act::AddFunc("fileroot",
+                        "disp:Dispatch  root:string  : definit File Root sur un Dispatch",
+                        fun32);
+  IFSelect_Act::AddFunc("filedef", "defroot:string   : definit File DefaultRoot", fun33);
+  IFSelect_Act::AddFunc("evalfile", "Evaluation du FileNaming et memorisation", fun34);
+  IFSelect_Act::AddFunc("clearfile", "Efface la liste d'EvalFile", fun35);
+  IFSelect_Act::AddFunc("xsplit",
+                        "[disp:Dispatch  sinon tout]  : Split, la grande affaire !",
+                        fun36);
+  IFSelect_Act::AddFunc("remaining",
+                        "options... : Remaining Entities, help complet par  remaining ?",
+                        fun37);
+  IFSelect_Act::AddFunc("setcontent",
+                        "sel:Selection mode:k ou r  : Restreint contenu du modele",
+                        fun38);
+
+  IFSelect_Act::AddFunc("listmodif", "List Final Modifiers", fun40);
+  IFSelect_Act::AddFunc("dumpmodif", "modif:Modifier  : Affiche le Statut d'un Modifier", fun41);
+  IFSelect_Act::AddFunc("modifsel",
+                        "modif:Modifier [sel:Selection]  : Change/Cancel Selection of Modifier",
+                        fun42);
+  IFSelect_Act::AddFunc(
+    "setapplied",
+    "modif:Modifier [name:un item sinon sortie fichier]  : Applique un Modifier",
+    fun43);
+  IFSelect_Act::AddFunc("resetapplied",
+                        "modif:Modifier  : Remove a Modifier from file output",
+                        fun44);
+  IFSelect_Act::AddFunc(
+    "modifmove",
+    "modif:Modifier M(model)/F(file) avant,apres:integer  : Deplace un Modifier (sortie fichier)",
+    fun45);
+
+  IFSelect_Act::AddFunc("dispsel",
+                        "disp:Dispatch sel:Selection  -> Final Selection of Dispatch",
+                        fun51);
+  IFSelect_Act::AddFSet("dispone", "cree DispPerOne", fun_dispone);
+  IFSelect_Act::AddFSet("dispglob", "cree DispGlobal", fun_dispglob);
+  IFSelect_Act::AddFSet("dispcount", "count:IntParam  : cree DispPerCount", fun_dispcount);
+  IFSelect_Act::AddFSet("dispfile", "files:IntParam  : cree DispPerFiles", fun_dispfiles);
+  IFSelect_Act::AddFSet("dispsign", "sign:Signature  : cree DispPerSignature", fun_dispsign);
+  IFSelect_Act::AddFunc("dumpdisp", "disp:Dispatch   : Affiche le Statut d'un Dispatch", fun56);
+
+  IFSelect_Act::AddFunc("xremove", "nom  : Remove a Control Item from the Session", fun57);
+  IFSelect_Act::AddFunc("evaldisp",
+                        "mode=[0-3]  disp:Dispatch  : Evaluates one or more Dispatch(es)",
+                        fun58);
+  IFSelect_Act::AddFunc(
+    "evaladisp",
+    "mode=[0-3]  disp:Dispatch [givelist]  : Evaluates a Dispatch (on a GiveList)",
+    fun_evaladisp);
+  IFSelect_Act::AddFunc(
+    "writedisp",
+    "filepattern  disp:Dispatch [givelist]  : Writes Entities by Splitting by a Dispatch",
+    fun_writedisp);
+  IFSelect_Act::AddFunc("evalcomplete", "Complete Evaluation of the Distribution", fun59);
+
+  IFSelect_Act::AddFunc("runcheck", "affiche LastRunCheckList (write,modif)", fun60);
+  IFSelect_Act::AddFunc("runtranformer", "transf:Transformer  : Applique un Transformer", fun61);
+  IFSelect_Act::AddFSet("copy", "cree TransformStandard, option Copy, vide", fun62);
+  IFSelect_Act::AddFSet("onthespot", "cree TransformStandard, option OntheSpot, vide", fun63);
+  IFSelect_Act::AddFunc(
+    "runcopy",
+    "modif:ModelModifier [givelist] : Run <modif> via TransformStandard option Copy",
+    fun6465);
+  IFSelect_Act::AddFunc(
+    "runonthespot",
+    "modif:ModelModifier [givelist] : Run <modif> via TransformStandard option OnTheSpot",
+    fun6465);
+  IFSelect_Act::AddFSet("reorder", "[f ou t] reordonne le modele", fun66);
+
+  IFSelect_Act::AddFunc("toggle", "sel:Selection genre Extract  : Toggle Direct/Reverse", fun70);
+  IFSelect_Act::AddFunc("input",
+                        "sel:Selection genre Deduct ou Extract  input:Selection  : Set Input",
+                        fun71);
+  IFSelect_Act::AddFSet("modelroots", "cree SelectModelRoots", fun72);
+  IFSelect_Act::AddFSet("range", "options... : create SelectRange ...; simply for help", fun73);
+  IFSelect_Act::AddFSet("roots", "cree SelectRoots (local roots)", fun74);
+  IFSelect_Act::AddFSet("shared", "cree SelectShared", fun75);
+  IFSelect_Act::AddFSet("diff", "[main:Selection diff:Selection]  : cree SelectDiff", fun76);
+  IFSelect_Act::AddFunc("selmain",
+                        "sel:Selection genre Control  main:Selection  : Set Main Input",
+                        fun77);
+  IFSelect_Act::AddFunc("selsecond",
+                        "sel:Selection genre Control  sec:Selection   : Set Second Input",
+                        fun78);
+  IFSelect_Act::AddFSet("modelall", "cree SelectModelAll", fun79);
+  IFSelect_Act::AddFunc("seladd",
+                        "sel:Selection genre Combine  input:Selection  : Add Selection",
+                        fun80);
+  IFSelect_Act::AddFunc("selrem",
+                        "sel:Selection genre Combine  input:Selection  : Remove Selection",
+                        fun81);
+  IFSelect_Act::AddFSet("number", "num:IntParam  : Cree SelectEntityNumber", fun82);
+
+  IFSelect_Act::AddFSet("union", "cree SelectUnion (vide), cf aussi combadd, combrem", fun83);
+  IFSelect_Act::AddFSet("intersect",
+                        "cree SelectIntersection (vide), cf aussi combadd, combrem",
+                        fun84);
+  IFSelect_Act::AddFSet("typexact", "type:string  : cree SelectTextType Exact", fun85);
+  IFSelect_Act::AddFSet("errors", "cree SelectErrorEntities (from file)", fun86);
+  IFSelect_Act::AddFSet("unknown", "cree SelectUnknownEntities", fun87);
+  IFSelect_Act::AddFSet("sharing", "cree SelectSharing", fun88);
+  IFSelect_Act::AddFSet("typecontain", "type:string  : cree SelectTextType Contains", fun89);
+  IFSelect_Act::AddFSet("pointed", "cree SelectPointed [num/sel num/sel]", fun90);
+  IFSelect_Act::AddFunc("setpointed",
+                        "sel:SelectPointed  : edit SelectPointed. simply for help",
+                        fun91);
+  IFSelect_Act::AddFunc("setlist",
+                        "sel:SelectPointed  : edit SelectPointed. simply for help",
+                        fun91);
+  IFSelect_Act::AddFSet("incorrect", "cree SelectIncorrectEntities (computed)", fun92);
+
+  IFSelect_Act::AddFSet("signsel",
+                        "sign:Signature|cnt:Counter text:string [e(D)|c] : cree SelectSignature",
+                        fun93);
+  IFSelect_Act::AddFSet("signcounter", "sign:Signature : cree SignCounter", fun94);
+  IFSelect_Act::AddFSet("nbselected",
+                        "applied:Selection : cree GraphCounter(=NbSelected)",
+                        funbselected);
+
+  IFSelect_Act::AddFunc("editlist", "editor or editform : lists defs + values", fun_editlist);
+  IFSelect_Act::AddFunc("editvalue",
+                        "editform paramname [newval or .] : lists-changes a value",
+                        fun_editvalue);
+  IFSelect_Act::AddFunc("editclear",
+                        "editform [paramname] : clears edition on all or one param",
+                        fun_editclear);
+  IFSelect_Act::AddFunc("editload",
+                        "editform [entity-id] : loads from model or an entity",
+                        fun_editload);
+  IFSelect_Act::AddFunc("editapply", "editform [keep] : applies on loaded data", fun_editapply);
+}

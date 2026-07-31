@@ -1,0 +1,10 @@
+restore [locate_data_file bug25926_input_slanted.brep] s
+
+OFFSETSHAPE 21 {} $calcul $type
+
+checkprops result -v 3.29213e+007 -s 791474
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 22 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

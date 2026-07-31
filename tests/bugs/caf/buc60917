@@ -1,0 +1,52 @@
+puts "==========="
+puts "BUC60917"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+box b 10 10 10 
+SetShape D 0:1:1 b
+
+AISInitViewer D
+
+OpenCommand D
+
+AISSet   D 0:1:1 NS
+AISWidth D 0:1:1 1.0
+set W [AISWidth D 0:1:1]
+if { ${W} != 1 } {
+    puts "Error : 1"
+} else {
+    AISDisplay D 0:1:1
+    vfit
+    CommitCommand D
+
+    puts "Doing Undo... "
+
+    Undo D
+    AISRepaint D
+    AISRepaint D
+
+    puts "And now, look: Redo!"
+
+    Redo D
+    AISRepaint D
+
+    set W [AISWidth D 0:1:1]
+    if { ${W} != 1 } {
+	puts "Error : 2"
+    }
+}
+
+# This TCL script demonstrates bug in AIS/OCAF viewer 
+#
+# It needs an additional DRAW command to be defined for 
+# setting Width parameter of TPrsStd_AISPresentation attribute.
+# The code for this command (AISWidth) is provided separately.
+# 
+# The problem is that when width is set to AISPresentation attribute
+# and Undo/redo are made, this causes error 'width is 0' in the viewer.
+# It seems that width is not kept during Undo/Redo operations.

@@ -1,0 +1,16 @@
+puts "========================================================================="
+puts "0030955: Modeling Algorithms - Incorrect result of fuse operation"
+puts "========================================================================="
+puts ""
+
+restore [locate_data_file bug30407_fuse3.brep] s
+set exp [explode s so]
+bclearobjects
+bcleartools
+baddobjects s_1
+eval baddtools [lrange $exp 1 end]
+bfillds
+bbop r 1
+checkshape r
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png

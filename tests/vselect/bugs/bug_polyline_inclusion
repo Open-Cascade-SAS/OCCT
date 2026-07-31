@@ -1,0 +1,47 @@
+puts "========================================"
+puts "Visualization - polyline (polygonal) selection in strict-inclusion mode"
+puts "Regression guard for SelectMgr_TriangularFrustumSet::OverlapsPoint /"
+puts "OverlapsBox: the single-arg OverlapsPoint(gp_Pnt) used to return false"
+puts "unconditionally, which made strict-inclusion polyline selection of"
+puts "SensitiveTriangle / SensitivePoly / SensitiveTriangulation /"
+puts "SensitivePrimitiveArray / MeshVS_* impossible."
+puts "Pixel coordinates are reused from tests/vselect/sphere/rectangle_selection."
+puts "========================================"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s1 1
+psphere s2 1
+ttranslate s1 2 0 0
+ttranslate s2 -2 0 0
+vdisplay -dispMode 1 s1 s2
+vfit
+
+# A 4-point polygon that matches the extent of the selection rectangle
+# (15,15)-(585,385) used in tests/vselect/sphere/rectangle_selection,
+# where strict inclusion is known to select both spheres.
+vselect 15 15 585 15 585 385 15 385 -allowoverlap 0
+if {![string match "*Selected*" [vstate s1]] ||
+    ![string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline enclosing both spheres must select s1 and s2 in strict inclusion mode"
+}
+
+# A tiny polygon fully inside the upper-left corner of the viewport that
+# does not cover either sphere. Neither sphere must be selected, in either mode.
+vselect 0 0
+vselect 5 5 40 5 40 40 5 40 -allowoverlap 0
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline not covering any sphere must not select anything (strict)"
+}
+
+vselect 0 0
+vselect 5 5 40 5 40 40 5 40 -allowoverlap 1
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline not covering any sphere must not select anything (overlap)"
+}
+
+vdump ${imagedir}/${casename}.png

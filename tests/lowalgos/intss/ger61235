@@ -1,0 +1,24 @@
+puts "==========="
+puts "GER61235"
+puts "==========="
+
+restore [locate_data_file ger61235a.brep] tool 
+checkshape tool
+restore [locate_data_file ger61235b.brep] object 
+checkshape object
+
+bsection result object tool 
+
+puts "Result of section :"
+checkshape result
+#To check geometry part 
+mksurface s1 tool 
+mksurface s2 object 
+
+puts "Result of intersect :"
+intersect result s1 s2 
+puts [checksection result]
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

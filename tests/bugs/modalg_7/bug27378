@@ -1,0 +1,55 @@
+puts "TODO OCC27378 ALL: Error: BRepLib_MakeFace produces invalid faces on periodic surfaces"
+
+puts "========"
+puts "OCC27378"
+puts "========"
+puts ""
+############################################################################################################################
+# BRepLib_MakeFace produces invalid faces on periodic surfaces in case the given parametrization does not match the default
+############################################################################################################################
+
+cylinder cyl 10
+mkface fcyl cyl pi 3*pi -10 10
+checkshape fcyl
+set Log [bopcheck fcyl]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepLib_MakeFace produces invalid faces on periodic surfaces; fcyl"
+}
+checkview -display fcyl -2d -path ${imagedir}/${test_image}_fcyl.png
+ 
+sphere sph 10
+trimu spht sph pi 3*pi
+mkface fsph spht
+checkshape fsph
+set Log [bopcheck fsph]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepLib_MakeFace produces invalid faces on periodic surfaces; fsph"
+}
+checkview -display fsph -2d -path ${imagedir}/${test_image}_fsph.png
+ 
+cone con 30 0
+mkface fcon con pi 3*pi 0 20
+checkshape fcon
+set Log [bopcheck fcon]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepLib_MakeFace produces invalid faces on periodic surfaces; fcon"
+}
+checkview -display fcon -2d -path ${imagedir}/${test_image}_fcon.png
+ 
+torus tor 20 5
+
+mkface ftor1 tor pi 3*pi 0 2*pi
+checkshape ftor1
+set Log [bopcheck ftor1]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepLib_MakeFace produces invalid faces on periodic surfaces; ftor1"
+}
+checkview -display ftor1 -2d -path ${imagedir}/${test_image}_ftor1.png
+
+mkface ftor2 tor 0 2*pi pi 3*pi
+checkshape ftor2
+set Log [bopcheck ftor2]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepLib_MakeFace produces invalid faces on periodic surfaces; ftor2"
+}
+checkview -display ftor2 -2d -path ${imagedir}/${test_image}_ftor2.png

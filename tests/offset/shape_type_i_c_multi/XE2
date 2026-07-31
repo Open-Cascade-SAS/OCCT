@@ -1,0 +1,115 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug31148_case_04.brep] s
+
+explode s f
+offsetparameter 1e-7 c i
+offsetload s 5
+
+offsetonface s_168 15
+offsetonface s_99  15
+offsetonface s_145 15
+offsetonface s_122 15
+offsetonface s_169 15
+offsetonface s_100 15
+offsetonface s_146 15
+offsetonface s_123 15
+offsetonface s_170 15
+offsetonface s_101 15
+offsetonface s_147 15
+offsetonface s_124 15
+offsetonface s_171 15
+offsetonface s_102 15
+offsetonface s_148 15
+offsetonface s_125 15
+offsetonface s_172 15
+offsetonface s_103 15
+offsetonface s_149 15
+offsetonface s_126 15
+offsetonface s_173 15
+offsetonface s_104 15
+offsetonface s_150 15
+offsetonface s_127 15
+offsetonface s_174 15
+offsetonface s_105 15
+offsetonface s_151 15
+offsetonface s_128 15
+offsetonface s_175 15
+offsetonface s_106 15
+offsetonface s_152 15
+offsetonface s_129 15
+offsetonface s_176 15
+offsetonface s_107 15
+offsetonface s_153 15
+offsetonface s_130 20
+offsetonface s_177 20
+offsetonface s_108 20
+offsetonface s_154 20
+offsetonface s_131 20
+offsetonface s_178 20
+offsetonface s_109 20
+offsetonface s_155 20
+offsetonface s_132 20
+offsetonface s_179 20
+offsetonface s_110 20
+offsetonface s_156 20
+offsetonface s_133 20
+offsetonface s_180 20
+offsetonface s_111 20
+offsetonface s_157 20
+offsetonface s_134 20
+offsetonface s_181 20
+offsetonface s_112 20
+offsetonface s_158 20
+offsetonface s_135 20
+offsetonface s_182 20
+offsetonface s_113 20
+offsetonface s_159 20
+offsetonface s_136 20
+offsetonface s_183 20
+offsetonface s_114 20
+offsetonface s_160 20
+offsetonface s_137 20
+offsetonface s_184 20
+offsetonface s_115 20
+offsetonface s_161 20
+offsetonface s_138 10
+offsetonface s_185 10
+offsetonface s_116 10
+offsetonface s_162 10
+offsetonface s_139 10
+offsetonface s_186 10
+offsetonface s_117 10
+offsetonface s_163 10
+offsetonface s_140 10
+offsetonface s_187 10
+offsetonface s_118 10
+offsetonface s_164 10
+offsetonface s_141 10
+offsetonface s_188 10
+offsetonface s_119 10
+offsetonface s_165 10
+offsetonface s_142 10
+offsetonface s_189 10
+offsetonface s_120 10
+offsetonface s_166 10
+offsetonface s_143 10
+offsetonface s_190 10
+offsetonface s_121 10
+offsetonface s_167 10
+offsetonface s_144 10
+offsetonface s_928 10
+
+offsetperform result
+
+unifysamedom result_unif result
+
+checkprops result -s 1.04375e+07 -v 6.31578e+08
+checknbshapes result_unif -wire 98 -face 68 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

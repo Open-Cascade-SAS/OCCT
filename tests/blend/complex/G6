@@ -1,0 +1,14 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : M4
+## Comment : from cts21363
+## ====================================
+puts "TODO OCC22817 All:exception.+There are no suitable edges"
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file cts21363.rle] a
+explode a e
+blend result a 0.2 a_24
+# value of 0.1 works
+
+checkprops result -s 0

@@ -1,0 +1,35 @@
+
+box b 10 10 10
+explode b
+explode b_1
+
+NewDocument D
+XAddShape D b
+XAddGeomTolerance D b_1_1
+XAddDatum D b_1_2
+#0:1:4:1
+#0:1:4:2
+XSetDatumName D 0:1:4:2 A
+XAddDatumModifier D 0:1:4:2 10
+XSetDatumPosition D 0:1:4:2 1
+XSetDatum D 0:1:4:2 0:1:4:1
+XSetToleranceValue D 0:1:4:1 0.5
+XSetTypeOfTolerance D 0:1:4:1 1
+XSetTypeOfToleranceValue D 0:1:4:1 1
+XSetTolMaterialReq D 0:1:4:1 1
+XSetTolZoneMod D 0:1:4:1 1
+XSetTolZoneModValue D 0:1:4:1 1
+XAddTolModifier D 0:1:4:1 6 1
+XSetTolMaxValue D 0:1:4:1 1.5
+
+set c_dname "A"
+set c_dmod "DistanceVariable"
+set c_val "0.5"
+set c_type "Angularity"
+set c_typev "Diameter"
+set c_mat "M"
+set c_zone "P"
+set c_zonev "1"
+set c_mod "Major_Diameter, Common_Zone"
+set c_max "1.5"
+

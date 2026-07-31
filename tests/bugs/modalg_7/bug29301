@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC29301"
+puts "========"
+puts ""
+#################################################
+# Improve performance of Boolean Operations
+#################################################
+
+restore [locate_data_file bug29301_zh3.brep] cs
+
+explode cs
+
+bclearobjects
+bcleartools
+baddobjects cs_1
+baddtools cs_2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -vertex 5 -edge 10 -wire 5 -face 5 -shell 2 -solid 2
+checkprops result -s 4823.5 -v 10392.6
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: the result is self-interfered"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

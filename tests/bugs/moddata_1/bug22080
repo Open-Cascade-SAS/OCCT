@@ -1,0 +1,24 @@
+puts "TODO OCC11111 ALL: Faulty OCC22080 : The face f contains degenerated edge that is far-fetched one"
+# puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "============"
+puts "OCC22080"
+puts "============"
+puts ""
+#######################################################################
+# Checkshape command does not return faulty shapes for the face. CAS63-sp10-*. Appendix to SALOME bug IPAL22072
+#######################################################################
+
+set BugNumber OCC22080
+
+puts "Load shape ..."
+restore [locate_data_file bug22080_fx.brep] result
+
+set che [checkshape result]
+
+if {[regexp {Faulty} $che]} {
+     puts "OK ${BugNumber} : The face f contains degenerated edge that is far-fetched one"
+} else {
+     puts "Faulty ${BugNumber} : The face f contains degenerated edge that is far-fetched one"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

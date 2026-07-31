@@ -1,0 +1,34 @@
+puts "========================"
+puts "OCC20616"
+puts "========================"
+puts ""
+#######################################################################
+# Failed to save/restore [locate_data_file empty] face 
+#######################################################################
+
+set BugNumber OCC20616
+
+set mistake 0
+foreach t {V E W F Sh So CS C} {
+    puts "shape type $t"
+    shape test $t
+    if [catch {save test $imagedir/${test_image}.brep}] {
+        puts "Faulty ${BugNumber} save $t"
+        set mistake 1
+    } else {
+        puts "OK ${BugNumber} save $t"
+    }
+    if [catch {restore $imagedir/${test_image}.brep test}] { 
+	puts "Faulty ${BugNumber} restore $t"
+        set mistake 1
+    } else {
+    puts "OK ${BugNumber} restore $t"
+    }
+}
+
+if {${mistake} !=0} {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

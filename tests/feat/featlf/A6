@@ -1,0 +1,13 @@
+# Original bug : cts20638
+# Date : 04 Nov 98
+
+restore [locate_data_file CFE901_cts20gfp.rle] base
+restore [locate_data_file cts20638_wire.rle] wire
+
+mkplane p wire
+mksurface plan p
+
+featlf base wire plan 0 -5 0 0 5 0 1 1
+featperform lf result
+
+checkprops result -s 202613

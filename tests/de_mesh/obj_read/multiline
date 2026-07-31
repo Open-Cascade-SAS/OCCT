@@ -1,0 +1,41 @@
+puts "========"
+puts "0030899: Data Exchange, RWObj_Reader - reading multiline file with more than one line separator leads to memory corruption"
+puts "========"
+
+# define a long line
+set aDummy "dummy"
+for {set i 0} {$i < 49} {incr i} { set aDummy "${aDummy}dummy" }
+
+set ml_obj {
+v 0 0 0
+v 2 0 0
+v 2 1 0
+v 1 2 0
+v 0 1 0
+v 0 0 2
+v 2 0 2
+v 2 1 2
+v 1 2 2
+v 0 1 2\
+__DUMMY__\
+__DUMMY__
+f 5 4 3 2 1
+f 7 8__SPLIT__9 10 6
+f 10 9 4 5
+f 9 8 3 4
+f 6 10 5 1
+f 2 3 8 7
+f 1 2 7 6}
+
+regsub -all {__DUMMY__} $ml_obj "\\\n${aDummy}" ml_obj
+regsub -all {__SPLIT__} $ml_obj "\\\n" ml_obj
+
+set fd [open ${imagedir}/${casename}.obj w]
+fconfigure $fd -translation lf
+puts $fd $ml_obj
+close $fd
+
+ReadObj D ${imagedir}/${casename}.obj
+XGetOneShape s D
+checknbshapes s -face 1 -compound 1
+checktrinfo s -tri 16 -nod 10

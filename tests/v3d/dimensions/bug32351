@@ -1,0 +1,23 @@
+puts "========"
+puts "0032351: Visualization, PrsDim_LengthDimension - add NULL checks for handling non-Line curves"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 200 0 0 100 200 300
+pcylinder c 100 200
+vinit View1
+vdisplay -dispMode 0 b c
+vfit
+
+explode b V
+explode c E
+vdisplay c_1 b_1
+vdimension d1 -length -shapes c_1 b_1 -plane zox
+
+explode b E
+explode c E
+vdisplay c_1 b_3
+vdimension d2 -length -shapes c_1 b_3
+
+vfit
+vdump $imagedir/${casename}.png

@@ -1,0 +1,15 @@
+#pcylinder s1 5 13
+#box s2 0 0 0 3 8 7
+#ttranslate s2 0 -9 2
+#ttranslate s1 s2 5 5 0
+#fuse s s1 s2
+#save s F5678.draw 
+
+restore [locate_data_file CFI_f5678fin.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_7 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+checkprops result -s 65253.7

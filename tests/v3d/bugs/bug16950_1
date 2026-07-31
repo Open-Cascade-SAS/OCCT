@@ -1,0 +1,21 @@
+puts "==========="
+puts "OCC16950: OCC Visualization fails to display empty nested compounds"
+puts "==========="
+
+pload MODELING VISUALIZATION
+
+puts "Make compound containing another (empty) one"
+compound c
+compound c result
+
+puts "And display it"
+vinit
+vdisplay result
+
+# Resume
+if [catch { vsetdispmode 1 } res] {
+  puts "Faulty OCC16950"
+} else {
+  puts "OK OCC16950"
+}
+vdump $imagedir/${casename}.png

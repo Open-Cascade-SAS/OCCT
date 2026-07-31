@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC6412"
+puts "========"
+puts ""
+####################################################
+## Regression in visualization
+####################################################
+
+set BugNumber OCC6412
+
+restore [locate_data_file OCC6412.brep] result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+isos result 0
+triangles result
+
+checktrinfo result -tri -nod
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

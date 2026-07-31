@@ -1,0 +1,150 @@
+// Created on: 2013-10-02
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <OpenGl_ShaderStates.hxx>
+
+//=================================================================================================
+
+OpenGl_StateInterface::OpenGl_StateInterface()
+    : myIndex(0)
+{
+}
+
+// =======================================================================
+// function : OpenGl_ProjectionState
+// purpose  : Creates uninitialized projection state
+// =======================================================================
+OpenGl_ProjectionState::OpenGl_ProjectionState()
+    : myInverseNeedUpdate(false)
+{
+}
+
+// =======================================================================
+// function : Set
+// purpose  : Sets new OCCT projection state
+// =======================================================================
+void OpenGl_ProjectionState::Set(const NCollection_Mat4<float>& theProjectionMatrix)
+{
+  myProjectionMatrix  = theProjectionMatrix;
+  myInverseNeedUpdate = true;
+}
+
+// =======================================================================
+// function : ProjectionMatrixInverse
+// purpose  : Returns inverse of current projection matrix
+// =======================================================================
+const NCollection_Mat4<float>& OpenGl_ProjectionState::ProjectionMatrixInverse() const
+{
+  if (myInverseNeedUpdate)
+  {
+    myInverseNeedUpdate = false;
+    myProjectionMatrix.Inverted(myProjectionMatrixInverse);
+  }
+  return myProjectionMatrixInverse;
+}
+
+// =======================================================================
+// function : OpenGl_ModelWorldState
+// purpose  : Creates uninitialized model-world state
+// =======================================================================
+OpenGl_ModelWorldState::OpenGl_ModelWorldState()
+    : myInverseNeedUpdate(false)
+{
+}
+
+//=================================================================================================
+
+void OpenGl_ModelWorldState::Set(const NCollection_Mat4<float>& theModelWorldMatrix)
+{
+  myModelWorldMatrix  = theModelWorldMatrix;
+  myInverseNeedUpdate = true;
+}
+
+// =======================================================================
+// function : ModelWorldMatrixInverse
+// purpose  : Returns inverse of current model-world matrix
+// =======================================================================
+const NCollection_Mat4<float>& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
+{
+  if (myInverseNeedUpdate)
+  {
+    myInverseNeedUpdate = false;
+    myModelWorldMatrix.Inverted(myModelWorldMatrixInverse);
+  }
+  return myModelWorldMatrixInverse;
+}
+
+// =======================================================================
+// function : OpenGl_WorldViewState
+// purpose  : Creates uninitialized world-view state
+// =======================================================================
+OpenGl_WorldViewState::OpenGl_WorldViewState()
+    : myInverseNeedUpdate(false)
+{
+}
+
+//=================================================================================================
+
+void OpenGl_WorldViewState::Set(const NCollection_Mat4<float>& theWorldViewMatrix)
+{
+  myWorldViewMatrix   = theWorldViewMatrix;
+  myInverseNeedUpdate = true;
+}
+
+// =======================================================================
+// function : WorldViewMatrixInverse
+// purpose  : Returns inverse of current world-view matrix
+// =======================================================================
+const NCollection_Mat4<float>& OpenGl_WorldViewState::WorldViewMatrixInverse() const
+{
+  if (myInverseNeedUpdate)
+  {
+    myInverseNeedUpdate = false;
+    myWorldViewMatrix.Inverted(myWorldViewMatrixInverse);
+  }
+  return myWorldViewMatrixInverse;
+}
+
+//=================================================================================================
+
+OpenGl_ClippingState::OpenGl_ClippingState()
+    : myIndex(0),
+      myNextIndex(1)
+{
+}
+
+//=================================================================================================
+
+void OpenGl_ClippingState::Update()
+{
+  myStateStack.Prepend(myIndex);
+  myIndex = myNextIndex; // use myNextIndex here to handle properly Update() after Revert()
+  ++myNextIndex;
+}
+
+//=================================================================================================
+
+void OpenGl_ClippingState::Revert()
+{
+  if (!myStateStack.IsEmpty())
+  {
+    myIndex = myStateStack.First();
+    myStateStack.RemoveFirst();
+  }
+  else
+  {
+    myIndex = 0;
+  }
+}

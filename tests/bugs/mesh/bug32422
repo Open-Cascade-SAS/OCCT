@@ -1,0 +1,32 @@
+puts "========"
+puts "0032422: Mesh - Weird rendering"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+pbsplinecurve sp1 3 9 0 2 73.198335334976 1 109.22594821708 1 168.29694729401 1 244.58155163942 1 307.53411471698 1 344.2978168401 1 379.98768527731 1 399.75469301329 2 77.34874687409 77.303696496535 0 1 -37.404350826922 66.469283013615 0 1 -38.129049645989 51.427809605917 0 1 45.003598352348 23.760586819334 0 1 -76.009618710498 -14.499612221562 0 1 44.396611605217 -43.851734118626 0 1 119.71153838454 27.656796734959 0 1 38.244406969565 24.98300747794 0 1 68.787902964874 60.998473938995 0 1
+mkedge eg1 sp1
+wire wr1 eg1
+mkplane fc1 wr1
+prism result fc1 0 0 100
+checkshape result
+
+vinit
+vdisplay -dispMode 1 result
+vfit
+
+checktrinfo result -tri 1286 -nod 863
+
+explode result F
+tessellate r result_1 50 50
+
+vdisplay r -dispMode 1
+vaspects r -material STONE -color GREEN
+vlocation r -location 0 0 -100
+vleft
+vfit
+
+checktrinfo r -tri 5000 -nod 2601
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

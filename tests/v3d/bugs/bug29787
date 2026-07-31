@@ -1,0 +1,25 @@
+puts "========"
+puts "0029787: Visualization - Avoid in presentation edges of certain continuity class"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vbackground -color WHITE
+
+psphere s1 1
+psphere s2 1
+psphere s3 1
+ttranslate s2 4 0 0
+ttranslate s3 8 0 0
+
+vdisplay -dispMode 0 s1
+vdisplay -dispMode 1 s2 s3
+vfit
+
+vaspects s2 -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED
+vaspects s3 -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setMostContinuity c2
+
+vdump $::imagedir/${::casename}.png

@@ -1,0 +1,12 @@
+# Note: we use CSF_OCCTResourcePath and not CSF_XmlOcafResource to allow running from Visual Studio in CMake build
+set SchemaFile [file join $env(CSF_OCCTResourcePath) XmlOcafResource XmlOcaf.xsd]
+set FileSuffix "xml"
+
+# Create a new document and set UndoLimit
+NewDocument D XmlOcaf
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "ocaf_xml"

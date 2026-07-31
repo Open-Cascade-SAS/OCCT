@@ -1,0 +1,19 @@
+
+# To prevent loops limit to 10 minutes
+cpulimit 600
+
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+	pload TOPTEST
+}
+
+if { [array get Draw_Groups "Shape Healing"] == "" } {
+	pload XSDRAW
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

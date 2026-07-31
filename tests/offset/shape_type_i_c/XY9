@@ -1,0 +1,29 @@
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32333_ZU6_trim.brep] s
+
+set ref_values { { 154279 1.16809e+06 31 31 } \
+                 { 159804 1.32512e+06 31 31 } \
+                 { 165387 1.48771e+06 31 31 } \
+                 { 171028 1.65592e+06 31 31 } \
+                 { 148419 1.82979e+06 29 29 } \
+                 { 132204 1.98042e+06 17 17 } \
+                 { 136267 2.11465e+06 17 17 } \
+                 { 125291 2.25298e+06 13 13 } \
+                 { 129494 2.38037e+06 13 13 } \
+                 { 133767 2.51199e+06 13 13 } \
+                 { 138109 2.64793e+06 13 13 } \
+                 { 142522 2.78824e+06 13 13 } \
+                 { 147004 2.93299e+06 13 13 } \
+                 { 151557 3.08227e+06 13 13 } \
+                 { 156179 3.23613e+06 13 13 } }
+
+perform_offset_increasing s 1 15 1 $ref_values
+
+copy r10 result
+copy r10_unif result_unif
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

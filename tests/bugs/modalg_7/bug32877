@@ -1,0 +1,16 @@
+puts "================================================="
+puts "0032877: Modeling algorithms - Sweeping issue"
+puts "================================================="
+puts ""
+
+polyline f 0 0 0 10 0 0 10 5 0 0 5 0 0 0 0
+mkplane f f
+polyline path 9 1 0.01 5 2.5 4
+pipe result path f
+
+checkshape result
+checknbshapes result -shell 1 -face 6 -wire 6 -edge 12
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

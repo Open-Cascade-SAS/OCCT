@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC5079"
+puts "================"
+puts ""
+#######################################################################################
+# Exception in translating of IGES files
+#######################################################################################
+
+igesbrep [locate_data_file OCC5079.igs] a *
+tpcompound result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

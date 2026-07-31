@@ -1,0 +1,38 @@
+puts "===================================="
+puts "OCC31550: Surface transparency is ignored"
+puts "===================================="
+
+# Step file
+set filename [locate_data_file bug29525_rev_part_neu_01.prt_converted_from_datakit.stp]
+
+# Read file
+if { [catch { ReadStep D ${filename} } result] } {
+  puts "ERROR: Couldn't read ${filename} file"
+}
+
+# Static data
+set Transparency 0.5
+set TempFilename ${imagedir}/${casename}_temp.stp
+
+# Get colors
+set Colors [XGetAllColors D]
+if { [string first ${Transparency} ${Colors}] == -1 } {
+  puts "ERROR: OCC31550 is reproduced while STEP import."
+}
+
+# Write file
+if { [catch { WriteStep D ${TempFilename} } result] } {
+  puts "ERROR: Couldn't write ${TempFilename} file"
+}
+
+# Read temporary file
+if { [catch { ReadStep D1 ${TempFilename} } result] } {
+  puts "ERROR: Couldn't read ${TempFilename} file"
+}
+file delete -force $TempFilename
+
+# Get colors
+set Colors [XGetAllColors D1]
+if { [string first ${Transparency} ${Colors}] == -1 } {
+  puts "ERROR: OCC31550 is reproduced while STEP export."
+}

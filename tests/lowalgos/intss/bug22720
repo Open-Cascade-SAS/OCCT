@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC22720"
+puts "============"
+puts ""
+#######################################################################
+# Wrong intersection point for the case of intersection between sphere and plane
+#######################################################################
+
+set BugNumber OCC22720
+
+restore [locate_data_file OCC22720-f1.brep] f1 
+restore [locate_data_file OCC22720-f2.brep] f2 
+
+mksurface s1 f1
+mksurface s2 f2
+
+trim s1t s1 0 2 0 2
+intersect result s1t s2
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

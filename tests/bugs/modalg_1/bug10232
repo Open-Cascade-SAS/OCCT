@@ -1,0 +1,29 @@
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of "
+
+puts "============"
+puts "OCC10232"
+puts "============"
+puts ""
+#######################################################################
+# Exception "Segmentation violation" in Boolean Operations
+#######################################################################
+
+set BugNumber OCC10232
+
+puts "Load first shape ..."
+restore [locate_data_file OCC10232_ms1.brep] b1 
+puts "Load second shape ..."
+restore [locate_data_file OCC10232_ms2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopsection result
+puts "Finish boolean operation ..."
+
+checkprops result -l 3356.31
+checkshape result
+checksection result
+checknbshapes result -vertex 1197 -edge 1182 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2380
+

@@ -1,0 +1,18 @@
+puts "========="
+puts " OCC496 "
+puts "========="
+puts ""
+##############################
+## Exception occurs during fuse operation 
+##############################
+
+restore [locate_data_file OCC496a.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC496b.brep] a_2
+checkshape a_2
+
+bfuse result a_1 a_2
+
+checkprops result -s 4949.79
+checkview -display result -2d -path ${imagedir}/${test_image}.png

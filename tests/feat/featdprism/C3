@@ -1,0 +1,8 @@
+restore [locate_data_file CFE_e_lonfzx.rle] E
+nexplode E f
+
+profile cont S E_10 F 50 -100 X 50 Y -100 X -50
+featdprism E cont E_10 10 0 1
+featperform dprism result E_9 E_6
+
+checkprops result -s 975927

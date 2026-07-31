@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC28591"
+puts "========"
+puts ""
+##########################################
+##  BOP Cut creates wrong result
+##########################################
+
+restore [locate_data_file bug28591_ToCut.brep] b1
+restore [locate_data_file bug28591_vol_neg.brep] b2
+
+bcut result b1 b2
+
+checkshape result
+
+checknbshapes result -face 38 -shell 9 -solid 9
+checkprops result -s 0.0165593 -v 2.65628e-005
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

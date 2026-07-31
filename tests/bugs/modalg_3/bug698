@@ -1,0 +1,17 @@
+
+puts "======= OCC698 ======="
+######################################
+## Cut operation produces bad result on attached shapes
+######################################
+cpulimit 1000
+restore [locate_data_file OCC698_1.brep] b4 
+checkshape b4
+restore [locate_data_file OCC698_2.brep] b5 
+checkshape b5
+
+bcut result b5 b4
+
+checkprops result -s 19048.2
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

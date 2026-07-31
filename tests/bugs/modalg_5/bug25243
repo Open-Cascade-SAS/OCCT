@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25243"
+puts "========"
+puts ""
+##################################################################################
+# BRepFeat_SplitShape algorithm processes incorrect faces with degenerated edges
+##################################################################################
+
+restore [locate_data_file bug25243_Context.brep] a
+restore [locate_data_file bug25243_splitterEdge_1_1.brep] e
+
+smallview
+
+explode a
+
+donly a_4 e
+fit
+
+splitshape result a_4 a_4 e
+
+set bug_info [checkshape result]
+if {[string compare $bug_info "This shape seems to be valid"] != 0} {
+  puts "ERROR: OCC25243 is reproduced"
+  puts "       shape result is invalid"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

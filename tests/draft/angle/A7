@@ -1,0 +1,6 @@
+#B3-----------------------------------------------------
+pcylinder p 10 25
+nexplode p f
+depouille result p 0 0 1 p_3 5 0 0 0 0 0 1
+
+checkprops result -s 1910.28

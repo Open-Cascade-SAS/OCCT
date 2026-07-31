@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC26444"
+puts "========"
+puts ""
+####################################################################################
+# Boolean operation "bcut" gives invalid result between solid and halfspace solid.
+####################################################################################
+
+restore [locate_data_file bug26444_cutting_shape.brep] a
+restore [locate_data_file bug26444_shape_to_cut.brep] b
+restore [locate_data_file bug26444_ref_out.brep] p2
+dump p2
+halfspace s1 a -0.541421905726473 0.200000002980232 0.00899999961256981
+bcut result b s1
+
+checkprops result -s 0.106547 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

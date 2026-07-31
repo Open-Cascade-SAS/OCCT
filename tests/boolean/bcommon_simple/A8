@@ -1,0 +1,8 @@
+box b1 0 0 0 1 1 1
+nurbsconvert b1 b1
+box b2  0     1     0     1     0.5   1
+
+bcommon result b1 b2
+
+checkprops result -s empty
+checkview -display result -2d -s -otherwise { b1 b2 } -path ${imagedir}/${test_image}.png

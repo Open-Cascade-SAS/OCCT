@@ -1,0 +1,6 @@
+beziersurf bsurf 3 4  0 0 0 1  10 0 5 1  20 0 0 1  0 10 2 1  10 10 3 1  20 10 2 1  0 20 10 1  10 20 20 1  20 20 10 1  0 30 0 1   10 30 0 1   20 30 0 1
+offset bsurf_of bsurf 5
+offset r bsurf_of 5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 1.083051088685794e-06
+set MaxVTol 1.0830510886857944e-06

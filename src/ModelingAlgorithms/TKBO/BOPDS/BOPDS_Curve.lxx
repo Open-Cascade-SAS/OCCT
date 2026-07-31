@@ -1,0 +1,156 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BOPDS_PaveBlock.hxx>
+
+//=================================================================================================
+
+inline BOPDS_Curve::BOPDS_Curve()
+    : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+      myPaveBlocks(myAllocator),
+      myTechnoVertices(myAllocator),
+      myTolerance(0.)
+{
+}
+
+//=================================================================================================
+
+inline BOPDS_Curve::BOPDS_Curve(const occ::handle<NCollection_BaseAllocator>& theAllocator)
+    : myAllocator(theAllocator),
+      myPaveBlocks(myAllocator),
+      myTechnoVertices(myAllocator),
+      myTolerance(0.)
+{
+}
+
+//=================================================================================================
+
+inline BOPDS_Curve::~BOPDS_Curve() = default;
+
+//=================================================================================================
+
+inline void BOPDS_Curve::SetCurve(const IntTools_Curve& theCurve)
+{
+  myCurve = theCurve;
+}
+
+//=================================================================================================
+
+inline const IntTools_Curve& BOPDS_Curve::Curve() const
+{
+  return myCurve;
+}
+
+//=================================================================================================
+
+inline void BOPDS_Curve::SetPaveBlocks(const NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB)
+{
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt;
+  //
+  myPaveBlocks.Clear();
+  aIt.Initialize(theLPB);
+  for (; aIt.More(); aIt.Next())
+  {
+    myPaveBlocks.Append(aIt.Value());
+  }
+}
+
+//=================================================================================================
+
+inline const NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_Curve::PaveBlocks() const
+{
+  return myPaveBlocks;
+}
+
+//=================================================================================================
+
+inline NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_Curve::ChangePaveBlocks()
+{
+  return myPaveBlocks;
+}
+
+//=================================================================================================
+
+inline void BOPDS_Curve::InitPaveBlock1()
+{
+  if (!myPaveBlocks.Extent())
+  {
+    occ::handle<BOPDS_PaveBlock> aPB = new BOPDS_PaveBlock;
+    myPaveBlocks.Append(aPB);
+  }
+}
+
+//=================================================================================================
+
+inline occ::handle<BOPDS_PaveBlock>& BOPDS_Curve::ChangePaveBlock1()
+{
+  occ::handle<BOPDS_PaveBlock>* pPB = (occ::handle<BOPDS_PaveBlock>*)&myPaveBlocks.First();
+  return *pPB;
+}
+
+//=================================================================================================
+
+inline const NCollection_List<int>& BOPDS_Curve::TechnoVertices() const
+{
+  return myTechnoVertices;
+}
+
+//=================================================================================================
+
+inline NCollection_List<int>& BOPDS_Curve::ChangeTechnoVertices()
+{
+  return myTechnoVertices;
+}
+
+//=================================================================================================
+
+inline void BOPDS_Curve::SetBox(const Bnd_Box& theBox)
+{
+  myBox = theBox;
+}
+
+//=================================================================================================
+
+inline const Bnd_Box& BOPDS_Curve::Box() const
+{
+  return myBox;
+}
+
+//=================================================================================================
+
+inline Bnd_Box& BOPDS_Curve::ChangeBox()
+{
+  return myBox;
+}
+
+//=================================================================================================
+
+inline bool BOPDS_Curve::HasEdge() const
+{
+  bool                                                     bFlag;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
+  //
+  bFlag = false;
+  aItPB.Initialize(myPaveBlocks);
+  for (; aItPB.More(); aItPB.Next())
+  {
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
+    bFlag                                   = aPB->HasEdge();
+    if (bFlag)
+    {
+      break;
+    }
+  }
+  return bFlag;
+}

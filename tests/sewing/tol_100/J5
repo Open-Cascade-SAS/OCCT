@@ -1,0 +1,9 @@
+#puts "TODO OCC24592 ALL: Error : Number of free edges is"
+restore [locate_data_file CIN902_intcqhmr.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 69.276181431972319
+checknbshapes result -shell 1
+checkfreebounds result 21
+checkfaults result a 7

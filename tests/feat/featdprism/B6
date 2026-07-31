@@ -1,0 +1,16 @@
+restore [locate_data_file cylindre.rle] cyl
+restore [locate_data_file contour.rle] cont
+mkplane cont cont
+nexplode cyl F
+
+ttranslate cont 0 0 -100
+ttranslate cont 0 200 0
+#
+# flo : 25/06/1998 : Argument 4 featperformval -> face et non surface
+#
+mksurface surf cyl_3
+mkface face surf
+featdprism cyl cont cont -10 1 1
+featperformval dprism result 55 face
+
+checkprops result -s 99444.8

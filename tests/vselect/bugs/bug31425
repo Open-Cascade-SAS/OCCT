@@ -1,0 +1,17 @@
+puts "============="
+puts "0031425: Visualization - free Edge has selection sensitivity inconsistent to presentation"
+puts "============="
+
+pload MODELING VISUALIZATION
+circle circ 150 0 200 1 0 0 100
+mkedge e circ
+wire w e
+vclear
+vinit View1
+vdisplay e
+vaspects e -setLineWidth 2
+vfit
+vviewparams -scale 25.38 -proj 0.5 -0.5 0.5 -up -0.4 0.4 0.8 -at 125.128 46.4744 271.346
+checkpoint pick [vmoveto 275 175] {150 31 294} 1.0
+
+vdump $::imagedir/${::casename}.png

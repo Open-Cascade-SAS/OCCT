@@ -1,0 +1,27 @@
+puts "TODO OCC00000 ALL: Faulty OCC602: function BLEND works wrongly"
+puts "TODO OCC00000 ALL: Error: The command cannot be built"
+puts "TODO OCC00000 ALL: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC00000 ALL: TEST INCOMPLETE"
+
+puts "========================"
+puts " OCC602 "
+puts "========================"
+puts ""
+###########################################
+## Exception during filet creation if it cross samedge of cylinder.
+###########################################
+
+restore [locate_data_file OCC602.brep] a 
+checkshape a
+
+explode a e
+
+if [catch {blend result a 20 a_9 } catch_result] {
+    puts "Faulty OCC602: function BLEND works wrongly"
+} else {
+    puts "OCC602 OK: function BLEND works OK"
+}
+
+checkprops result -s 0
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

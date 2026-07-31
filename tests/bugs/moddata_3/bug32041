@@ -1,0 +1,12 @@
+puts "========="
+puts "0032041: Modeling Data - Access v i o l a t i o n ExchangeUV in Geom_BezierSurface"
+puts "========="
+puts ""
+
+pload MODELING
+beziersurf bs 4 4  0  0 0  4 0 0  8 0 0  12 0 0 0  4 0  4 4 1  8 4 0  12 4 0 0  8 0  4 8 0  8 8 -1  12 8 0 0 12 0 4 12 0 8 12 0 12 12 0
+smallview
+fit
+xwd ${imagedir}/${casename}_1.png
+exchuv bs
+xwd ${imagedir}/${casename}_2.png

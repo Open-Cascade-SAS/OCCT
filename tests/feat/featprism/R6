@@ -1,0 +1,8 @@
+restore [locate_data_file CFE_osa_sgad.rle] a
+restore [locate_data_file osa-contour] b
+mkplane f b
+
+featprism a f f 1 0 0 0 1
+featperform prism result
+
+checkprops result -s 3288.73

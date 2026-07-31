@@ -1,0 +1,12 @@
+# Original bug : pro13495
+# Date : 19Mai98
+
+restore [locate_data_file CTO904_pro13495a.rle] a
+restore [locate_data_file pro13495b.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 280.243
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

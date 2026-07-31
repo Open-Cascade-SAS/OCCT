@@ -1,0 +1,10 @@
+beziercurve profile 6 0 10 0 -5 0 0 -5 -20 0 5 -20 0 5 0 0 0 10 0 
+mkedge profile profile 
+wire profile profile 
+mkplane profile profile
+circle w 0 100 0 1 0 0 100
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 29584.3

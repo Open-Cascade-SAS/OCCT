@@ -1,0 +1,94 @@
+// Created on: 2001-09-04
+// Created by: Julia DOROVSKIKH
+// Copyright (c) 2001-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_XLink.hxx>
+#include <XmlMDocStd_XLinkDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDocStd_XLinkDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(DocEntryString, "documentEntry")
+
+//=================================================================================================
+
+XmlMDocStd_XLinkDriver::XmlMDocStd_XLinkDriver(const occ::handle<Message_Messenger>& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
+{
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> XmlMDocStd_XLinkDriver::NewEmpty() const
+{
+  return (new TDocStd_XLink());
+}
+
+//=================================================================================================
+
+bool XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                   const occ::handle<TDF_Attribute>& theTarget,
+                                   XmlObjMgt_RRelocationTable&) const
+{
+  XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
+
+  if (anXPath == nullptr)
+  {
+    myMessageDriver->Send("XLink: Cannot retrieve reference string from element", Message_Fail);
+    return false;
+  }
+
+  TCollection_AsciiString anEntry;
+  if (!XmlObjMgt::GetTagEntryString(anXPath, anEntry))
+  {
+    TCollection_ExtendedString aMessage =
+      TCollection_ExtendedString("Cannot retrieve XLink reference from \"") + anXPath + '\"';
+    myMessageDriver->Send(aMessage, Message_Fail);
+    return false;
+  }
+
+  occ::handle<TDocStd_XLink> aRef = occ::down_cast<TDocStd_XLink>(theTarget);
+
+  // set referenced label
+  aRef->LabelEntry(anEntry);
+
+  // document entry
+  aRef->DocumentEntry(theSource.Element().getAttribute(::DocEntryString()));
+
+  return true;
+}
+
+//=================================================================================================
+
+void XmlMDocStd_XLinkDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                   XmlObjMgt_Persistent&             theTarget,
+                                   XmlObjMgt_SRelocationTable&) const
+{
+  occ::handle<TDocStd_XLink> aRef = occ::down_cast<TDocStd_XLink>(theSource);
+  if (!aRef.IsNull())
+  {
+    // reference
+    TCollection_AsciiString anEntry = aRef->LabelEntry();
+    XmlObjMgt_DOMString     aDOMString;
+    XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
+    XmlObjMgt::SetStringValue(theTarget, aDOMString);
+
+    // document entry
+    theTarget.Element().setAttribute(::DocEntryString(), aRef->DocumentEntry().ToCString());
+  }
+}

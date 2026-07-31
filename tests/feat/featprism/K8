@@ -1,0 +1,17 @@
+# Original bug : cts21128
+# Date : 21August98
+
+restore [locate_data_file cts21126_base.brep] base
+restore [locate_data_file cts21128b.rle] cont
+
+explode base face
+copy base_3 funtil
+
+## creation face infinie support
+mksurface p3 base_3
+mkface f3 p3
+
+featprism base cont cont 0 0 1 0 1
+featperform prism result f3
+
+checkprops result -s 2814.01

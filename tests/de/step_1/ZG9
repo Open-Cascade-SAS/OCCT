@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename spigot.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 0 )  Summary  = 4  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 22  ( 22 ) 
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 22  ( 22 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 2.100581826e-007  ( 2.098677141e-007 )  AvgTol   =  1.07336592e-007  (  1.07325212e-007 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 1 )   TotalLabels = 5  ( 7 )   NameLabels = 5  ( 6 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

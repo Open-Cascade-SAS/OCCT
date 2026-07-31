@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC23982"
+puts "================"
+puts ""
+#######################################################
+## Wire explorer raises exception
+#######################################################
+
+restore [locate_data_file bug23982_Cowl_965.brep] result
+
+checkshape result
+
+explode result w
+
+wexplo result_1 result

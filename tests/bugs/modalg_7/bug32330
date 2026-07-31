@@ -1,0 +1,47 @@
+puts "============================================"
+puts "0032330: Modeling Algorithms - Extend Offset algorithm with Progress Indicator and User Break"
+puts "============================================"
+puts ""
+ 
+proc isTracked { theOutput } {
+  if {![regexp "Progress" $theOutput]} {
+    puts "Error: progress is not tracked"
+  }
+}
+ 
+XProgress +t
+    
+# check that progress is tracked for offsetshape operation
+
+box s1 100 100 100
+explode s1 f
+set log [offsetshape result1 s1 -5 s1_1]
+isTracked $log
+
+# check that progress is tracked for offsetperform operation
+
+restore [locate_data_file bug27908.brep] s2
+offsetparameter 1e-7 p i
+offsetload s2 10
+set log [offsetperform result2]
+isTracked $log
+
+
+polyline p 0 0 0 5 0 0 7 0 3 3 0 3 4 0 1 1 0 1 2 0 3 -2 0 3 0 0 0
+mkplane f p
+prism s3 f 0 5 0
+offsetparameter 1e-7 c i
+offsetload s3 1
+set log [offsetperform result3]
+isTracked $log
+
+box s4 10 10 10
+offsetparameter 1e-7 c a
+offsetload s4 5
+set log [offsetperform result4]
+isTracked $log
+
+offsetparameter 1e-7 p a
+offsetload s4 5
+set log [offsetperform result5]
+isTracked $log

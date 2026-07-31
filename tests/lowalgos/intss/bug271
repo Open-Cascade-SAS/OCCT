@@ -1,0 +1,26 @@
+
+puts "========================"
+puts " OCC271 "
+puts "========================"
+puts ""
+
+restore [locate_data_file OCC271a.rle] su1 
+restore [locate_data_file OCC271b.rle] su2
+
+set U1 2.315721254379057e-16
+set U2 0.01131870392278708
+set V1 226.9760100729095
+set V2 203.7283534809051
+
+intersect result su1 su2 $U1 $V1 $U2 $V2
+
+set che [whatis result]
+
+if { ![regexp {3d} $che] || ![regexp {curve} $che]} {
+    puts "Faulty OCC271: command INTERSECT works wrongly"
+} else {
+    puts "OCC271 OK : command INTERSECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

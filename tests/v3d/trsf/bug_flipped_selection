@@ -1,0 +1,78 @@
+puts "========"
+puts "Selection must work on a group-flipped text label after the camera is rotated 180 deg."
+puts "A Graphic3d_Flipper is stored on the group and on the sensitive entity; the selection"
+puts "pipeline applies its matrix so the sensitive frustum matches the rendered geometry."
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1
+vclear
+
+# Flipping-enabled label at the world origin, lying in the XZ-plane with normal along +Y.
+# OpenGl_Flipper mirrors the text when the camera crosses the plane, so switching from
+# vfront to vback triggers the flip.
+vdrawtext t0 "PICK ME" -pos 0 0 0 -color red -height 40 \
+          -plane 0 1 0 1 0 0 -flipping \
+          -valign center -halign center
+
+# Baseline: front view, label readable, selection must work already (sanity check).
+vfront
+vfit
+vmoveto 205 205
+vselect 205 205
+set nbFront [vnbselected]
+puts "Selected count (front view, unflipped label): $nbFront"
+
+if { $nbFront < 1 } {
+  puts "Error : sanity check failed - label is not selectable even in front view"
+}
+
+vdump $imagedir/${casename}_front_selected.png
+
+# Deselect and rotate to the flipped orientation.
+vselect 0 0
+vback
+vfit
+vdump $imagedir/${casename}_back.png
+
+# After the fix, the sensitive frustum is built in flipped coordinates and matches
+# what OpenGl_Flipper renders on screen, so vselect at the label's screen position
+# picks its owner. Before the fix, vnbselected stays at zero.
+vmoveto 205 205
+vselect 205 205
+set nbBack [vnbselected]
+puts "Selected count (back view, flipped label): $nbBack"
+
+if { $nbBack < 1 } {
+  puts "Error : flipped text label is not selectable (expected >=1, got $nbBack)"
+} else {
+  puts "OK : flipped text label selection works."
+}
+
+vdump $imagedir/${casename}_back_selected.png
+
+# Rotated host object - exercises the WorldView * ModelWorld fix. At render time
+# OpenGl_Flipper::Render uses WV*MW (includes the object's Transformation); the
+# selection pipeline now folds theObject->Transformation() into the MV passed to
+# Graphic3d_Flipper::Compute so the isReversedX/Y/Z decision matches.
+vclear
+vdrawtext t2 "ROTATED FLIPPED" -pos 0 0 0 -color blue -height 40 \
+          -plane 0 1 0 1 0 0 -flipping \
+          -valign center -halign center
+vsetlocation t2 0 0 0 0 45 0
+vback
+vfit
+vmoveto 205 205
+vselect 205 205
+set nbRotated [vnbselected]
+puts "Selected count (rotated host, flipped label): $nbRotated"
+
+if { $nbRotated < 1 } {
+  puts "Error : rotated + flipped label not selectable (expected >=1, got $nbRotated)"
+} else {
+  puts "OK : rotated + flipped label selection works."
+}
+
+vdump $imagedir/${casename}_rotated_selected.png

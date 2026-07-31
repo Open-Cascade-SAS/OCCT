@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27575"
+puts "========"
+puts ""
+###########################################
+# Reading STEP file gives an empty result
+###########################################
+
+stepread [locate_data_file bug27575_Outer_Shell.stp] a *
+renamevar a_1 result
+
+whatis result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,12 @@
+#box s1 0 0 0 10 10 10
+#box s2 0 0 0 3 2 7
+#ttranslate s2 3 0 1
+#cut s s1 s2
+#save s A1234.draw 
+
+restore [locate_data_file CFI_a1234fic.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_10 0.5*SCALE1 s_11 0.5*SCALE1 s_15
+
+checkprops result -s 63733.6

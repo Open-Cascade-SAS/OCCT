@@ -1,0 +1,10 @@
+if { [info exists rel_tol] && $rel_tol > 0 } {
+  puts "\nChecking triangulation area (triarea command)..."
+  set rel_err [expr abs([CheckTriArea result $area_eps])]
+  if { [info exists max_rel_tol_diff] && $max_rel_tol_diff > 0 } {
+    checkreal "area difference" $rel_err $rel_tol $max_rel_tol_diff 0
+  }
+}
+
+# to end a test script
+puts "TEST COMPLETED"

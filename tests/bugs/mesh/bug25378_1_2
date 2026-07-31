@@ -1,0 +1,32 @@
+puts "============"
+puts "CR25378"
+puts "============"
+puts ""
+###################################################################################
+# Building of triangulation for distored surfaces can take very long using BRepMesh_IncrementalMesh
+#
+# Test case was created to control bad situation, building of triangulation takes
+# very long time and it is expected by the meaning of issue #25378.
+# Case when it is passed too fast should be considered as failure.
+###################################################################################
+
+cpulimit 900
+
+restore [locate_data_file bug25378_Blower_bad.brep] b
+trinfo b
+
+tclean b
+set t_01 [expr [lindex [time {incmesh b 0.01}] 0]/1000000]
+puts "t_01=${t_01}"
+trinfo b
+
+if { [regexp {Debug mode} [dversion]] } {
+  set max_t_01 180
+} else {
+  set max_t_01 1
+}
+
+# this test case is redundant, as we must not set lower limit for computation time
+#if {${max_t_01} > ${t_01}} {
+#   puts "Error. Time of building of triangulation, ${t_01} seconds, is less than expected minimum time - ${max_t_01} seconds"
+#}

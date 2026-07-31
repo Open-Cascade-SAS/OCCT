@@ -1,0 +1,19 @@
+
+puts "========="
+puts " OCC501 "
+puts "========="
+puts ""
+##################################################
+## Exception during tcopy command (only in 3.0fix), SAM1339 (#2137) 
+###################################################
+
+restore [locate_data_file OCC501.brep] result
+
+if [catch {tcopy result b } catch_result] {
+    puts "Faulty OCC501 : function TCOPY works wrongly "
+} else {
+    puts "OCC501 OK: function TCOPY works without hangs up "
+}
+checkprops result -s 121895 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

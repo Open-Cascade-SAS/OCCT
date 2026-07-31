@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC16667"
+puts "============"
+puts ""
+#######################################################################
+# 2D Offset algorithm fails
+#######################################################################
+
+restore [locate_data_file OCC16667-face.brep] a
+
+mkoffset resoffset a 1 -20
+renamevar resoffset_1 result
+
+checkprops result -l 1188.62 
+checkshape result
+checksection result
+checknbshapes result -vertex 5 -edge 5 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 11
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

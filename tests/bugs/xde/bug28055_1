@@ -1,0 +1,29 @@
+puts "============"
+puts "CR28055"
+puts "============"
+puts ""
+
+##########################################################################
+# Add UpdateAssemblies() method for top-down update of assembly compounds
+##########################################################################
+
+ReadStep d [locate_data_file trj3_as1-tc-214.stp]
+XShow d
+vfit
+vsetdispmode 1
+
+# First check verifies that originally there is 18 solid instances
+XGetOneShape model_before d
+checknbshapes model_before -solid 18 -t
+
+checkview -screenshot -3d -path ${imagedir}/${::casename}_1.png
+
+XRemoveComponent d 0:1:1:1:1
+XUpdateAssemblies d
+XShow d
+
+checkview -screenshot -3d -path ${imagedir}/${::casename}_2.png
+
+# Second check verifies that after component removal 7 instances go away
+XGetOneShape model_after d
+checknbshapes model_after -solid 11 -t

@@ -1,0 +1,36 @@
+
+puts "============"
+puts "BUC60942"
+puts "============"
+###############################################################
+## SplitShape algorithm modifies original shape (increases vertex tolerance of a plitting edge). 
+###############################################################
+
+restore [locate_data_file BUC60942_splitshape.brep] c 
+explode c
+checkshape c_1
+checkshape c_2
+
+renamevar c_1 f
+renamevar c_2 w
+
+set tol1 [maxtolerance w]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full MaxEdgeTol1
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full MaxVertexTol1
+
+splitshape result f f w
+
+set tol2 [maxtolerance w]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full MaxEdgeTol2
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full MaxVertexTol2
+
+
+if { $MaxEdgeTol1 <  $MaxEdgeTol2 || $MaxVertexTol1 < $MaxVertexTol1 } {
+    puts "Faulty BUC60942: max tolerance of the input wire has been increased by about 10 times."
+} else {
+    puts "BUC60942 OK: Tolerance of shape is correct"
+}
+
+checkprops result -s 37.7032 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

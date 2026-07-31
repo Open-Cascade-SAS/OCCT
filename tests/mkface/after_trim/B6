@@ -1,0 +1,5 @@
+restore [locate_data_file bs_s_np_r] a
+trim r a 0.5 0.8 0.5 0.8
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 9.9999999999999995e-08

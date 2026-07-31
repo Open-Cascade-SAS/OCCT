@@ -1,0 +1,14 @@
+puts "TODO OCC23497 ALL: exception"
+
+puts "============"
+puts "0023497: Units package raises e x c e p t i o n for composite units"
+puts "============"
+puts ""
+
+set UnitString "sq.km"
+
+if [catch {unitconvtoSI 1 ${UnitString}} res] {
+  puts "Error: Units package raises exception for composite units"
+} else {
+  puts "OK: Units package work good for composite unit"
+}

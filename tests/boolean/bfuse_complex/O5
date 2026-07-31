@@ -1,0 +1,9 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
+
+restore [locate_data_file CTO908_topo104-o1.brep] wheel
+restore [locate_data_file CTO908_topo104-o2.brep] jante
+
+bfuse result wheel jante
+
+checkprops result -s 28962.2
+checkview -display result -2d -otherwise { wheel jante } -s -path ${imagedir}/${test_image}.png

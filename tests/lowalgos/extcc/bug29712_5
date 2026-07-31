@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 lie on parallel lines.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other. So,
+# perpendicular between these curves does not exist. 
+
+line c1 1 0 0 0 0 1 
+line c2 5 0 0 0 0 1
+trim c1 c1 -1.0e100 5
+trim c2 c2 10 20
+
+extrema c1 c2
+
+if { ![isdraw ext_1 ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}
+
+renamevar ext_1 e1
+extrema c2 c1
+
+if { ![isdraw ext_1 ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}

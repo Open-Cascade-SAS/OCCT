@@ -1,0 +1,15 @@
+puts "TODO OCC23638 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "============"
+puts "CR23638"
+puts "============"
+puts ""
+#######################################################################
+# Reading IGES file produced invalid shape
+#######################################################################
+
+param read.surfacecurve.mode -3
+
+igesread [locate_data_file bug23638_cadbad.igs] result *
+
+checkshape result

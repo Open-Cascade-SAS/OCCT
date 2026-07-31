@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC28661"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakePipeShell throws an exception Standard_NoSuchObject
+#######################################################################
+
+circle sp 0 0 0  6
+mkedge sp sp
+wire sp sp
+circle pr 0 0 0  0 -1 0  10
+trim pr pr 0 pi
+mkedge pr pr
+wire pr pr
+
+mksweep sp
+addsweep pr
+buildsweep r
+
+explode r f
+mksurface s1 r_1
+set info [dump s1]
+
+set check [regexp "SphericalSurface" $info]
+
+if { ${check} == 1 } {
+   puts "OK: The basic surface is spherical surface."
+} else {
+   puts "Faulty: The basic surface is not spherical surface."
+}
+
+set info1 [errorsweep]
+
+set check [regexp {Tolerance on surfaces = ([0-9\-+Ee.]+)} $info1 str error]
+
+if { $error != 0 } {
+    puts "Faulty: tolerance reached on resulting surfaces is wrong"
+}

@@ -1,0 +1,17 @@
+# Test for #24863: creation of variables
+
+box b 10 10 10
+set is_ok [whatis b]
+
+set b aaaa
+
+box b 10 10 10
+
+set check_ok [whatis b]
+if {$is_ok != $check_ok} {
+    puts "Error : results of command \"whatis\" are different"
+}
+
+if {$b != "b"} {
+    puts "Error : tcl variable doesn't point to same-named draw variable"
+}

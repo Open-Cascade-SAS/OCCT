@@ -1,0 +1,20 @@
+puts "========"
+puts "0029641: Mesher produce 'bad' result for extruded spline with given deviation coefficient"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29641.brep] result
+tclean result
+
+vinit
+vdefaults -devCoeff 0.0001
+
+vsetdispmode 1
+vdisplay result
+vtop
+vrotate -0.1 0.1 1 0 0 0
+vfit
+
+checktrinfo result -tri 29040 -nod 15358
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

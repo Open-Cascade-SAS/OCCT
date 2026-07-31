@@ -1,0 +1,26 @@
+
+# Step file
+set filename [locate_data_file bug29525_rev_part_neu_01.prt_converted_from_datakit.stp]
+
+# Read file
+if { [catch { ReadStep D ${filename} } result] } {
+  puts "ERROR: Couldn't read ${filename} file"
+}
+
+# Static data
+set L 0:1:4:35
+set N_expected "AE19"
+set N_modified "AE19_modified"
+
+# Get semantic name
+set N0 [XGetGDTSemanticName D ${L}]
+if { [string compare ${N0} ${N_expected}] != 0 } {
+  puts "ERROR: OCC29525 is reproduced."
+}
+
+# Set semantic name
+XSetGDTSemanticName D ${L} ${N_modified}
+set N1 [XGetGDTSemanticName D ${L}]
+if { [string compare ${N1} ${N_modified}] != 0 } {
+  puts "ERROR: Couldn't modify semantic name!"
+}

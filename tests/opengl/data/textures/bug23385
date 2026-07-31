@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC23385: Bug in AIS_TexturedShape::Compute()"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+restore [locate_data_file OCC23115-bottle.brep] b
+explode b F
+vdisplay b_16
+vtexture b_16 [locate_data_file OCC23385-carrelage1.gif]
+vtexrepeat b_16 3 2
+vsetdispmode b_16 1
+vfit
+
+if { "[vreadpixel 85 73 rgb name]" != "BLACK" } {
+  puts "OK OCC23385"
+} else {
+  puts "Faulty OCC23385"
+}
+
+vdump $imagedir/${casename}.png

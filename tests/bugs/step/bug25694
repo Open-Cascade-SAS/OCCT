@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC25694"
+puts "========"
+puts ""
+###################################################
+# Change STEP exporter to use AP214 IS by default
+###################################################
+
+box b 1 2 3
+stepwrite a b
+
+set bug_info [data g]
+
+set bug_info [string trim [string range $bug_info [string first "FILE_SCHEMA" $bug_info] [expr {[string length $bug_info] - 1}]]]
+set bug_info [string trim [string range $bug_info 0 [string first ";" $bug_info]]]
+set bug_info [string trim [string range $bug_info [expr {[string first "'" $bug_info] + 1}] [expr {[string last "'" $bug_info] - 1}]]]
+
+if {$bug_info != "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }"} {
+   puts "ERROR: OCC25694 is reproduced."
+}

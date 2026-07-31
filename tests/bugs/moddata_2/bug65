@@ -1,0 +1,24 @@
+puts "================"
+puts "BUC61023"
+puts "OCC65"
+puts "================"
+puts ""
+###############################################
+## Possibility to make a revolution to have a solid with a volume=0 m3 
+###############################################
+
+restore [locate_data_file OCC65.brep] sh 
+checkshape sh
+
+revol result sh 0 0 0 0 0 1 360
+
+explode result
+#result contains two shapes, one of them (result_2) is bad - empty shell 
+#because of bad input data, so only result_1 is checked.
+checkshape result_1
+
+checkprops result -s 1.0134e+06
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

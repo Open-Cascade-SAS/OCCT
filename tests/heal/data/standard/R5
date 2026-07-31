@@ -1,0 +1,8 @@
+if { [string compare $command "ShapeConvertRev"] == 0 } {
+   puts "TODO OCC23127 ALL: Error : The area of the resulting shape is"
+}
+if {[string compare $command "SplitAngle"] == 0 } {
+    puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_4 "
+}
+restore [locate_data_file CTO900_pro5363c.rle] a
+

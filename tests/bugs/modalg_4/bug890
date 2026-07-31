@@ -1,0 +1,23 @@
+
+puts "======="
+puts "OCC890"
+puts "SAM1681"
+puts "======="
+puts ""
+##############################
+## No possibility to fuse the attached prisms.
+##############################
+
+restore [locate_data_file OCC890.brep] a 
+explode a
+
+checkshape a_1
+checkshape a_2
+
+if { [ catch { bfuse result a_1 a_2 } catch_result ] } {
+   puts "Faulty OCC890 (case 3)"
+}
+
+checkprops result -s 1.8276e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

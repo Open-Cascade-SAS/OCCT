@@ -1,0 +1,26 @@
+puts "==========="
+puts "OCC22703"
+puts "==========="
+puts ""
+#######################################################################
+#  Exception in bop command for the specified shapes
+#######################################################################
+
+set BugNumber OCC22703
+
+puts "Load first shape ..."
+restore [locate_data_file OCC22703-faceAC.brep] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file OCC22703-pln.brep] b2 
+
+puts "Prepare boolean operation ..."
+
+if [catch { bop b1 b2 } catch_result] {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "${BugNumber}  OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,71 @@
+puts "========================"
+puts " 	0033171: Modeling Algorithms - Invalid result of faces unification"
+puts "========================"
+puts ""
+
+# make outer prism
+polyline p 0 0 0  10 0 0  10 10 0  0 10 0  0 0 0
+mkplane f p
+prism s f 0 0 5
+
+# make section shells
+polyline p1 3 10 0  3 7 0  6 7 0  6 3 0  10 3 0
+polyline p2 6 7 0  10 7 0
+polyline p3 8 7 0  8 10 0
+polyline p4 0 5 0  10 5 0
+
+prism sh1 p1 0 0 5
+prism sh2 p2 0 0 5
+prism sh3 p3 0 0 5
+prism sh4 p4 0 0 5
+
+# split the prism
+bclearobjects
+bcleartools
+baddobjects s
+baddtools sh1 sh2 sh3 sh4
+bfillds
+bsplit r
+
+checkshape r
+if {![regexp "This shape seems to be OK" [bopcheck r]]} {
+    puts "Error: invalid shape after split"
+}
+
+# try to unify faces in the result compound
+unifysamedom ru1 r
+unifysamedom ru2 r +i
+
+checkshape ru1
+checkshape ru2
+
+checknbshapes ru1 -ref [nbshapes r -t] -t
+checknbshapes ru2 -ref [nbshapes r -t] -t
+
+if {![regexp "This shape seems to be OK" [bopcheck ru1]]} {
+    puts "Error: invalid shape after faces unification"
+}
+if {![regexp "This shape seems to be OK" [bopcheck ru2]]} {
+    puts "Error: invalid shape after faces unification"
+}
+
+# make compound of shells
+eval compound [explode r] shs
+
+unifysamedom shsu1 r
+unifysamedom shsu2 r +i
+
+checkshape shsu1
+checkshape shsu2
+
+checknbshapes shsu1 -ref [nbshapes shs -t] -t
+checknbshapes shsu2 -ref [nbshapes shs -t] -t
+
+if {![regexp "This shape seems to be OK" [bopcheck shsu1]]} {
+    puts "Error: invalid shape after faces unification"
+}
+if {![regexp "This shape seems to be OK" [bopcheck shsu2]]} {
+    puts "Error: invalid shape after faces unification"
+}
+
+checkview -display ru2 -2d -path ${imagedir}/${test_image}.png

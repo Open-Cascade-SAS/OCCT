@@ -1,0 +1,66 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Interface_EntityIterator.hxx>
+#include "RWStepBasic_RWLengthUnit.pxx"
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_LengthUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+
+RWStepBasic_RWLengthUnit::RWStepBasic_RWLengthUnit() = default;
+
+void RWStepBasic_RWLengthUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                        const int                                   num,
+                                        occ::handle<Interface_Check>&               ach,
+                                        const occ::handle<StepBasic_LengthUnit>&    ent) const
+{
+
+  // --- Number of Parameter Control ---
+
+  if (!data->CheckNbParams(num, 1, ach, "length_unit"))
+  {
+    return;
+  }
+
+  // --- inherited field : dimensions ---
+
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
+  data->ReadEntity(num,
+                   1,
+                   "dimensions",
+                   ach,
+                   STANDARD_TYPE(StepBasic_DimensionalExponents),
+                   aDimensions);
+
+  //--- Initialisation of the read entity ---
+
+  ent->Init(aDimensions);
+}
+
+void RWStepBasic_RWLengthUnit::WriteStep(StepData_StepWriter&                     SW,
+                                         const occ::handle<StepBasic_LengthUnit>& ent) const
+{
+
+  // --- inherited field dimensions ---
+
+  SW.Send(ent->Dimensions());
+}
+
+void RWStepBasic_RWLengthUnit::Share(const occ::handle<StepBasic_LengthUnit>& ent,
+                                     Interface_EntityIterator&                iter) const
+{
+
+  iter.GetOneItem(ent->Dimensions());
+}

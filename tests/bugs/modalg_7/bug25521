@@ -1,0 +1,19 @@
+puts "TODO OCC25521 ALL: Faulty shapes in variables faulty_1 to"
+
+puts "============"
+puts "OCC25521"
+puts "============"
+puts ""
+######################################################
+# Fillet creates shell with bad orientation of SubShape
+######################################################
+
+restore [locate_data_file bug25521_fillet-suborient3-draw-s1.brep] s1
+
+ttranslate s1 0 0 3
+explode s1 E
+blend Fillet s1 2 s1_4
+
+checkshape Fillet
+
+checkview -display Fillet -2d -path ${imagedir}/${test_image}.png

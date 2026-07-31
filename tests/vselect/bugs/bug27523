@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC27523: Visualization - selection owner contains obsolete shape"
+puts "============"
+puts ""
+
+pload QAcommands VISUALIZATION
+
+vinit View1
+OCC27523
+
+vdump ${imagedir}/${casename}.png

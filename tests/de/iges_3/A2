@@ -1,0 +1,28 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename UKI60094.igs
+
+set ref_data {
+DATA        : Faulties = 2  ( 0 )  Warnings = 0  ( 0 )  Summary  = 2  ( 0 )
+TPSTAT      : Faulties = 4  ( 33 )  Warnings = 391  ( 320 )  Summary  = 395  ( 353 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 3  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 421  ( 159 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 421  ( 419 )   FreeWire = 66  ( 114 ) 
+TOLERANCE   : MaxTol   =    1.590835832  (    2716.882548 )  AvgTol   =  0.006724915687  (     3.678737419 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 224  ( 1781 )  N2Labels = 0  ( 0 )   TotalLabels = 227  ( 1784 )   NameLabels = 215  ( 312 )   ColorLabels = 224  ( 1781 )   LayerLabels = 157  ( 1551 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA MATRABLUE RED RED4 WHITE YELLOW )
+NLAYERS     : NLayers  = 2  ( 3 )
+LAYERS      : Layers   = 1 253  ( 1 2 253 )
+
+}

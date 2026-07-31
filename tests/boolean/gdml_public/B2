@@ -1,0 +1,38 @@
+# test script for hole_full_prism_rect.prt.2.gdml file
+compound result
+
+# box 
+box sh467E330 -321.87638082500001 -263.17581868000002 -254 643.75276165000002 526.35163736000004 508
+
+# cylinder 
+plane pln_sh48D1E70 -0 -0 -508 0 0 1 1 0 0
+erase pln_sh48D1E70
+pcylinder sh48D1E70 pln_sh48D1E70 76.200000000000003 1016 360
+settolerance sh48D1E70 1.0159999999999999e-005
+
+# copy shape
+copy sh48D1E70 sh48D1E70_copy
+
+# shape transformation
+trotate sh48D1E70_copy 0 0 0 -0.70710677745571249 3.6866829955513545e-009 0.70710678491738266 -179.99999957753724 
+ttranslate sh48D1E70_copy 186.12362050792001 -136.17581735759262 126.99999945592533
+
+# shape transformation
+trotate sh48D1E70_copy 0 0 0 -0.679047659633503 -0.27890596661104489 0.67904766970737829 148.8317924119616 
+ttranslate sh48D1E70_copy 0 -309.31813764999998 -164.27444069000001
+
+# copy shape
+copy sh467E330 sh467E330_copy
+
+# shape transformation
+trotate sh467E330_copy 0 0 0 -0.679047659633503 -0.27890596661104489 0.67904766970737829 148.8317924119616 
+ttranslate sh467E330_copy 0 -309.31813764999998 -164.27444069000001
+
+# cut operation
+bcut sh48C48E0 sh467E330_copy sh48D1E70_copy; copy sh48C48E0 sh48C48E0_copy 
+
+# result
+add sh48C48E0_copy result
+
+checkprops result -s 2.13824e+006 -v 1.60388e+008
+checknbshapes result -vertex 10 -edge 15 -wire 9 -face 7 -shell 1 -solid 1

@@ -1,0 +1,71 @@
+// Created on: 2002-12-12
+// Created by: data exchange team
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+
+#include <Interface_EntityIterator.hxx>
+#include "RWStepFEA_RWFeaMaterialPropertyRepresentationItem.pxx"
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
+
+//=================================================================================================
+
+RWStepFEA_RWFeaMaterialPropertyRepresentationItem::
+  RWStepFEA_RWFeaMaterialPropertyRepresentationItem() = default;
+
+//=================================================================================================
+
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
+  const occ::handle<StepData_StepReaderData>&                       data,
+  const int                                                         num,
+  occ::handle<Interface_Check>&                                     ach,
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>& ent) const
+{
+  // Check number of parameters
+  if (!data->CheckNbParams(num, 1, ach, "fea_material_property_representation_item"))
+  {
+    return;
+  }
+
+  // Inherited fields of RepresentationItem
+
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
+  data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
+
+  // Initialize entity
+  ent->Init(aRepresentationItem_Name);
+}
+
+//=================================================================================================
+
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep(
+  StepData_StepWriter&                                              SW,
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>& ent) const
+{
+
+  // Inherited fields of RepresentationItem
+
+  SW.Send(ent->StepRepr_RepresentationItem::Name());
+}
+
+//=================================================================================================
+
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share(
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>&,
+  Interface_EntityIterator&) const
+{
+  // Inherited fields of RepresentationItem
+}

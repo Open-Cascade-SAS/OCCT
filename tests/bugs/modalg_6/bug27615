@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC27615"
+puts "========"
+puts ""
+#################################################
+# General Fuse operation error
+#################################################
+
+restore [locate_data_file bug27615.brep] p
+
+whatis p
+tolerance p
+checkshape p
+explode p
+brunparallel 1
+bopcheck p_1
+bopcheck p_2
+bopargcheck p_1 p_2 -O #F
+bop p_1 p_2
+bopcommon result
+whatis result
+explode result
+whatis result_1
+
+if { [regexp "This shape seems to be OK" [bopcheck result] ] != 1 } {
+    puts "Error : The result of General Fuse operation is self-interfered shape"
+}
+
+checkshape result_1
+
+checkprops result_1 -v 15287.7 -s 8383.16
+
+checkview -display result_1 -2d -path ${imagedir}/${test_image}.png
+

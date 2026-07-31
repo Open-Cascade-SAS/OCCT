@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC25224"
+puts "================"
+puts ""
+#######################################################################
+# The section curve between two cylindrical faces is incomplete
+#######################################################################
+
+restore [locate_data_file bug25224_Input_5.brep]  b1
+restore [locate_data_file bug25224_Input_21.brep] b2
+
+# 1. bopcurves
+explode b1 f
+explode b2 f
+
+set log [bopcurves b1_1 b2_1]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+set MaxTol 1.e-7
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+checklength c_1 -l 0.52377379499528021
+
+# 2. BOP
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkprops result -s 21.4983 
+checkshape result
+
+checknbshapes result -vertex 10 -edge 19 -wire 13 -face 13 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 62
+checkview -display result -3d -path ${imagedir}/${test_image}.png

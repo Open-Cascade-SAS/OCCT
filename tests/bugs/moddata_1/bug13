@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC13"
+puts "================"
+puts ""
+##################################################
+## It is impossible to intersect two surfaces
+##################################################
+
+restore [locate_data_file OCC13-1.draw] su1 
+restore [locate_data_file OCC13-2.draw] su2
+
+mkface f1 su1
+mkface f2 su2
+
+bop f1 f2
+bopsection result
+
+tolerance result
+checkshape result
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,15 @@
+## ======================================
+## Grid    : CCV003
+## Test    : B1
+## Comment : From CV tests serie page 69
+## ======================================
+
+puts "TODO OCC22741 All: Faulty shapes in variables faulty_1 to faulty_2"
+
+restore [locate_data_file 3_base.rle] base
+mkplane fbase base
+restore [locate_data_file 3_B1.rle] profile
+
+pipe result profile fbase
+
+checkprops result -s 43132.1

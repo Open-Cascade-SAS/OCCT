@@ -1,0 +1,36 @@
+
+puts "================"
+puts "OCC356"
+puts "================"
+puts ""
+#######################################################
+## The Draw command "wexplo" gives one edge instead of 6 for the face. 
+#######################################################
+
+restore [locate_data_file OCC356.brep] result
+checkshape result
+
+explode result w
+
+wexplo result_1 result
+
+set nom 0
+set j 1
+repeat 10 {
+    set err ""
+    regexp { is a shape ([A-Z]+)} [whatis WEDGE_$j] full err
+    if { $err != "EDGE"} {
+	break
+    } else {
+	set nom [expr $nom + 1]
+    }
+    incr j
+}
+if { $nom != 6} {
+    puts "Faulty OCC356 : Command WEXPLO works WRONGLY"
+} else {
+    puts "OCC356 OK  :  Command WEXPLO works properly"
+}
+
+checkprops result -s 6207.83 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

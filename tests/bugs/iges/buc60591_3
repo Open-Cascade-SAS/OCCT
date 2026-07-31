@@ -1,0 +1,39 @@
+puts "=================================="
+puts "BUC60591"
+puts "=================================="
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+puts "consideration of \"buc60591c\" model"
+
+igesbrep [locate_data_file buc60591c.igs] a *
+
+tpcompound buc60591c
+checkshape buc60591c r
+
+######################################################################
+
+catch {exec rm ${imagedir}/buc60591c.brep}
+save buc60591c ${imagedir}/buc60591c.brep
+catch {exec rm ${imagedir}/buc60591c_iges.igs}
+brepiges buc60591c ${imagedir}/buc60591c_iges.igs
+dall
+
+restore  ${imagedir}/buc60591c.brep buc60591c_brep
+catch {exec rm ${imagedir}/buc60591c_brep.igs}
+brepiges buc60591c_brep ${imagedir}/buc60591c_brep.igs
+dall
+
+igesbrep ${imagedir}/buc60591c_brep.igs c_brep_iges *
+tpcompound buc60591c_brep_iges
+checkshape buc60591c_brep_iges
+
+igesbrep ${imagedir}/buc60591c_iges.igs c_iges *
+tpcompound buc60591c_iges
+checkshape buc60591c_iges
+
+renamevar  buc60591c_iges result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

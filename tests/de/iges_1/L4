@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename PRO10105.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 18  ( 67 )  Summary  = 18  ( 67 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 230  ( 230 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 230  ( 230 )   FreeWire = 1  ( 1 ) 
+TOLERANCE   : MaxTol   =  0.06012224686  (   0.1346852729 )  AvgTol   =  0.001347527212  (  0.001524974821 )
+LABELS      : N0Labels = 292  ( 292 )  N1Labels = 1  ( 731 )  N2Labels = 0  ( 0 )   TotalLabels = 293  ( 1023 )   NameLabels = 292  ( 292 )   ColorLabels = 292  ( 1023 )   LayerLabels = 247  ( 979 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BURLYWOOD1 DEEPSKYBLUE1 RED WHITE  ( BURLYWOOD1 DEEPSKYBLUE1 RED WHITE )
+NLAYERS     : NLayers  = 3  ( 3 )
+LAYERS      : Layers   = 1 2 3  ( 1 2 3 )
+
+}

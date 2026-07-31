@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename Inventor_AdjustableBracket.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 35 )  Summary  = 33  ( 35 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 256  ( 256 ) 
+STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 256  ( 256 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.04148434363  (  0.04230490857 )  AvgTol   =  0.0009235736057  (  0.0009349333939 )
+LABELS      : N0Labels = 11  ( 11 )  N1Labels = 10  ( 10 )  N2Labels = 0  ( 0 )   TotalLabels = 21  ( 21 )   NameLabels = 21  ( 21 )   ColorLabels = 9  ( 9 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = DARKSEAGREEN GOLD2 GRAY50 GRAY97  ( DARKSEAGREEN GOLD2 GRAY50 GRAY97 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

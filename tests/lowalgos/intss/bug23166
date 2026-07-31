@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC23166"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of plane and cone produces wrong result
+#######################################################################
+
+restore [locate_data_file bug23166_surface1_draw.draw] s1
+restore [locate_data_file bug23166_surface2_draw.draw] s2
+
+intersect result s1 s2
+
+set log [dump result_1]
+if { [regexp {Parameters} ${log}] } {
+  puts "Error: untrimmed first hyperbola"
+} else {
+  puts "OK: untrimmed first hyperbola"
+}
+
+set log [dump result_2]
+if { [regexp {Parameters} ${log}] } {
+  puts "Error: untrimmed second hyperbola"
+} else {
+  puts "OK: untrimmed second hyperbola"
+}
+
+smallview
+donly result*
+fit
+display s1 s2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

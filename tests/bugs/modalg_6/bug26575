@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC26575"
+puts "============"
+puts ""
+#######################################################################
+# Normal projection of an edge to a face is wrong
+#######################################################################
+
+restore [locate_data_file bug26575_face.brep] f
+restore [locate_data_file bug26575_wire.brep] w
+
+prj res w f 0 0 1
+
+renamevar res_1 result
+
+checkprops result -l 238.46 
+checkshape result 
+checksection result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2
+ EDGE      : 1
+ WIRE      : 1
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 4
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Normal projection of an edge to a face is wrong"

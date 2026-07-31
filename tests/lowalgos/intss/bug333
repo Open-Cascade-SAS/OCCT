@@ -1,0 +1,71 @@
+puts "================"
+puts "OCC333: Superimposed curves during intersection two surfaces "
+puts "================"
+puts ""
+
+set GoodNbCurv 14
+
+restore [locate_data_file OCC333a.draw] s1 
+restore [locate_data_file OCC333b.draw] s2
+
+intersect result s1 s2
+
+set che [whatis result]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "result" exists
+  renamevar result result_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis result_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    display result_$ic
+    
+    bounds result_$ic U1 U2
+    
+    dump U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs result_$ic s1 U1 U2 10 2.0e-7
+    xdistcs result_$ic s2 U1 U2 10 2.0e-7
+    
+    for { set ip [expr $ic-1] } { $ip > 0 } { incr ip -1 } {
+      mkedge e1 result_$ic
+      mkedge e2 result_$ip
+
+      set coe [checkoverlapedges e1 e2 5.0e-5]
+
+      puts "result_$ic <-> result_$ip: $coe"
+      if { [regexp "Edges are not overlapped" $coe] != 1 } {
+        puts "Error: result_$ic and result_$ip are overlapped"
+      }
+    }
+     
+    incr ic
+  }
+}
+
+incr ic -1
+
+if {$ic == $GoodNbCurv} {
+  puts "OK: Number of curves is good!"
+} else {
+  puts "Error: $GoodNbCurv curves are expected but $ic ones are found!"
+}
+
+smallview
+don result*
+fit
+clear
+don s1 s2 result*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

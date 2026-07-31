@@ -1,0 +1,70 @@
+// Created on: 2008-01-21
+// Created by: Galina KULIKOVA
+// Copyright (c) 2008-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Interface_ParamList_HeaderFile
+#define _Interface_ParamList_HeaderFile
+
+#include <Standard.hxx>
+
+#include <NCollection_DynamicArray.hxx>
+#include <Interface_FileParameter.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
+class Interface_FileParameter;
+
+class Interface_ParamList : public Standard_Transient
+{
+
+public:
+  //! Creates an vector with size of memory block equal to theIncrement
+  Standard_EXPORT Interface_ParamList(const int theIncrement = 256);
+
+  //! Returns the number of elements of <me>.
+  int Length() const;
+
+  //! Returns the lower bound.
+  //! Warning
+  int Lower() const;
+
+  //! Returns the upper bound.
+  //! Warning
+  int Upper() const;
+
+  //! Assigns the value <Value> to the <Index>-th item of this array.
+  Standard_EXPORT void SetValue(const int Index, const Interface_FileParameter& Value);
+
+  //! Return the value of the <Index>th element of the
+  //! array.
+  Standard_EXPORT const Interface_FileParameter& Value(const int Index) const;
+
+  const Interface_FileParameter& operator()(const int Index) const { return Value(Index); }
+
+  //! return the value of the <Index>th element of the
+  //! array.
+  Standard_EXPORT Interface_FileParameter& ChangeValue(const int Index);
+
+  Interface_FileParameter& operator()(const int Index) { return ChangeValue(Index); }
+
+  Standard_EXPORT void Clear();
+
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamList, Standard_Transient)
+
+private:
+  NCollection_DynamicArray<Interface_FileParameter> myVector;
+};
+
+#include <Interface_ParamList.lxx>
+
+#endif // _Interface_ParamList_HeaderFile

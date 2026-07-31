@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC28474"
+puts "========"
+puts ""
+#################################################
+# Boolean operations - General Fuse operator breaks validity of resulting shape
+#################################################
+
+restore [locate_data_file bug28474_shapes1.brep] b
+explode b
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -shell 2 -solid 2
+checkprops result -s 1.37256 -v 0.00204945
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

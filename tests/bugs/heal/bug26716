@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC26716: Mesher cannot create a mesh of brep model due to ShapeFix_Wire::FixShifted()"
+puts "============"
+puts ""
+
+restore [locate_data_file bug26716_rev.brep] result
+
+checkshape result
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri

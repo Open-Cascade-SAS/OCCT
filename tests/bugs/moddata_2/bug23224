@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC23224"
+puts "============"
+puts ""
+#######################################################################
+# Empty result done by intersection algorithm
+#######################################################################
+
+set BugNumber OCC23224
+
+restore [locate_data_file OCC23224-line.brep] l
+restore [locate_data_file OCC23224-face.brep] f
+mksurface s f
+mkcurve c l
+intersect result c s
+set info1 [dump result]
+
+if { [regexp {Point +: ([-0-9.+eE]+)} $info1 full] == 0  } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+

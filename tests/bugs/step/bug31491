@@ -1,0 +1,17 @@
+puts "==================================================================="
+puts "0031491: Data Exchange, STEP Import - Regression due to patch 29068"
+puts "==================================================================="
+puts ""
+
+# Use trsf.
+stepread [locate_data_file bug29068.stp] a *
+# Do not use trsf.
+param read.step.root.transformation OFF
+stepread [locate_data_file bug29068.stp] b *
+
+# Check gravity centers.
+checkgravitycenter a_1 -v 36.7307 -14.513 0.0157913 0.001
+checkgravitycenter b_1 -v 0.0157877 24.5531 -30.934 0.001
+
+# Return default behavior.
+param read.step.root.transformation ON

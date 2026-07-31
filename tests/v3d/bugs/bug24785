@@ -1,0 +1,57 @@
+puts "This test case handles a specific task:"
+puts "to draw 2d objects in same scene with 3d objects while 2d objects need to be drawn in specific order on 3d plane and overlap correctly with 3d objects."
+
+pload MODELING VISUALIZATION
+vinit View1
+# Thin boxes represent overlapping 2d objects in same plane
+# Normally such configuration would cause z-fighting noise (flickering)
+box b1 -0.75 -0.75 0 1 1 0.01
+box b2 -0.50 -0.50 0 1 1 0.01
+box b3 -0.25 -0.25 0 1 1 0.01
+vdisplay b1 b2 b3 -dispMode 1
+vaspects b1 -material brass
+vaspects b2 -material silver
+vaspects b3 -material copper
+# Set object polygon mode Aspect_POM_None to inherit Z-Layer settings,
+# as default object polygon offset is "Aspect_POM_Fill 1 1" (overrides Z-layer settings)
+vpolygonoffset b1 8 0 0
+vpolygonoffset b2 8 0 0
+vpolygonoffset b3 8 0 0
+
+psphere s 0.3
+vdisplay s -dispMode 1
+vaspects s -material brass
+vpolygonoffset s 8 0 0
+
+# Create new z-layer for 3d objects
+catch { vzlayer -delete 1 }
+set aLayerId [vzlayer add]
+vdisplay s -layer $aLayerId
+
+# Disable OpenGL depth test for layer 0 (to eliminate flickering)
+# But depth write is still enabled
+vzlayer DEFAULT   -disable depthTest
+
+# Disable depth buffer clearing for layer 1 (we want correct overlapping with 3d objects)
+vzlayer $aLayerId -disable depthClear
+
+# List currently enabled settings of each layer
+vzlayer DEFAULT   -settings
+vzlayer $aLayerId -settings
+
+# "3d" box with one of its faces on same plane with "2d" objects
+# Normally this also would cause flickering because new box is
+# supposed to be in layer 1 as "3d" structure, thus depth test between
+# new box and "2d" objects will be enabled.
+box b 0 0 0.01 0.5 0.5 -0.5
+vdisplay b -dispMode 1 -layer $aLayerId
+vaspects b -material brass
+vpolygonoffset b 8 0 0
+
+# To handle this situation, depth offset setting was introduced.
+# It implemented with glPolygonOffset calls per layer.
+# Set polygon offset 2 (greater than default value 1 to see the difference).
+vzlayer 1 -enable depthoffset 2 1
+
+vfit
+vdump $imagedir/${casename}.png

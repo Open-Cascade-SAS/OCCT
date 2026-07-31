@@ -1,0 +1,40 @@
+puts "========"
+puts "OCC24490"
+puts "========"
+puts ""
+#########################################################################################
+# Computed surface properties differ substantially depending on NaturalRestriction flag
+#########################################################################################
+
+restore [locate_data_file bug24490_face_naturalrestriction_flag.brep] ff
+restore [locate_data_file bug24490_face_naturalrestriction_noflag.brep] fn
+
+# Get information from model ff
+set bug_info [sprops ff]
+set ff_area [lindex $bug_info 2]
+set ff_CG_X [lindex $bug_info 9]
+set ff_CG_Y [lindex $bug_info 12]
+set ff_CG_Z [lindex $bug_info 15]
+
+# Get information from model ff
+set bug_info [sprops fn]
+set fn_area [lindex $bug_info 2]
+set fn_CG_X [lindex $bug_info 9]
+set fn_CG_Y [lindex $bug_info 12]
+set fn_CG_Z [lindex $bug_info 15]
+
+# Verification
+if {$ff_area != $fn_area} {
+  puts "ERROR: OCC24490 is reproduced. Areas of identical shapes are different."
+}
+
+if {$ff_CG_X != $fn_CG_X} {
+  puts "ERROR: OCC24490 is reproduced. Center of gravity (X) of identical shapes are different."
+}
+
+if {$ff_CG_Y != $fn_CG_Y} {
+  puts "ERROR: OCC24490 is reproduced. Center of gravity (Y) of identical shapes are different."
+}
+if {$ff_CG_Z != $fn_CG_Z} {
+  puts "ERROR: OCC24490 is reproduced. Center of gravity (Z) of identical shapes are different."
+}

@@ -1,0 +1,28 @@
+puts "TODO OCC111111 ALL: Error :  is WRONG because number of "
+
+puts "============"
+puts "OCC10842"
+puts "============"
+puts ""
+#######################################################################
+# Bug in Bop
+#######################################################################
+
+set BugNumber OCC10842
+
+restore [locate_data_file OCC10842-1.brep] b1 
+restore [locate_data_file OCC10842-2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+checkprops result -s 27919.7 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 15 -edge 21 -wire 7 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 52
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,27 @@
+puts "==========="
+puts "OCC25112"
+puts "==========="
+puts ""
+###########################################################################
+# Undo of modification of the attribute TDataStd_IntPackedMap works wrong
+###########################################################################
+
+NewDocument D
+UndoLimit D 10
+SetIntPackedMap D 0:1 1 319
+puts "initial: [GetIntPackedMap D 0:1]"
+
+OpenCommand D
+ChangeIntPackedMap_Add D 0:1 344
+ChangeIntPackedMap_Rem D 0:1 319
+CommitCommand D
+puts "after changes: [GetIntPackedMap D 0:1]"
+
+Undo D
+
+set map [GetIntPackedMap D 0:1]
+puts "after undo: $map"
+
+if {$map != "319"} {
+  puts "ERROR: OCC25112 is reproduced. Expected map content is 319"
+}

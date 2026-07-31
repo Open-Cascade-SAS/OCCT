@@ -1,0 +1,16 @@
+#box b -20 -13 -20 40 25 20
+#ellipse w 0 0 0 15 10
+#mkedge w w
+#wire w w
+#mkplane w w
+#prism f w 2 0 30
+#fuse s f b
+
+restore [locate_data_file CFI_6_f12fhb.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_14 0 5*SCALE2 1 2*SCALE2 2 5*SCALE2 3 2*SCALE2
+buildevol
+
+checkprops result -s 6856.71

@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC25279"
+puts "================"
+puts ""
+#######################################################################################
+# OCCT fails to read VRML file created by OCCT
+#######################################################################################
+
+set BugNumber OCC25279
+
+set aFile ${imagedir}/${test_image}.vrml
+file delete ${aFile}
+
+ptorus res 10 8 0 90 270
+incmesh res 0.1
+
+set TrinfoBefore [trinfo res]
+
+set version 2
+set mode 2
+
+writevrml res ${aFile} ${version} ${mode}
+
+checktrinfo res -ref "${TrinfoBefore}"
+
+set Log [loadvrml test ${aFile}]
+
+if { [string length $Log] != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}

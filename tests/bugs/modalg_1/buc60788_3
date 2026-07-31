@@ -1,0 +1,20 @@
+puts "========"
+puts "BUC60788"
+puts "case 2"
+puts "========"
+
+#restore Common_Shell_Case2.brep S1
+#restore Common_Solid_Case2.brep S2
+
+restore [locate_data_file buc60788c.brep] S1 
+checkshape S1
+restore [locate_data_file buc60787b.brep] S2
+checkshape S1
+
+bcommon result S1 S2
+
+checknbshapes result -shell 1 -compound 1 -m "result should be a shell, but not a compound of faces"
+
+checkprops result -s 45000 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

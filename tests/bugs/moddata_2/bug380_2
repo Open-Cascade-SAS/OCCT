@@ -1,0 +1,16 @@
+ 
+puts "========================"
+puts " OCC380 "
+puts "========================"
+puts ""
+##############################
+##Incorrect result of common operation 
+##############################
+
+restore [locate_data_file OCC380a.rle] a 
+restore [locate_data_file OCC380b.rle] b
+
+bcommon result b a
+
+checkprops result -s 21.154
+checkview -display result -2d -path ${imagedir}/${test_image}.png

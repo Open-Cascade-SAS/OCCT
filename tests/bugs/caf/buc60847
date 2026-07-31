@@ -1,0 +1,18 @@
+puts "==========="
+puts "BUC60847"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+NewCommand D
+
+box Shape 10 20 30
+
+set ResultError [BUC60847 D Shape]
+if { ${ResultError} != 0 } {
+    puts "BUC60847: Error = $ResultError"
+}
+

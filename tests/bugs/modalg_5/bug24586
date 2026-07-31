@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC24586"
+puts "============"
+puts ""
+#######################################################################
+# Pipe construction is failed
+#######################################################################
+
+restore [locate_data_file bug24586_base.brep] base 
+restore [locate_data_file bug24586_path.brep] path 
+
+pipe result path base
+
+checknbshapes result -vertex 164 -edge 379 -wire 240 -face 240 -shell 24 -solid 24 -compsolid 0 -compound 1 -shape 1072
+checkview -display result -2d -path ${imagedir}/${test_image}.png

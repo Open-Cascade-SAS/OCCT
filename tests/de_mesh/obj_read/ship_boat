@@ -1,0 +1,16 @@
+puts "========"
+puts "0029296: Data Exchange - implement import of mesh data from files in OBJ format"
+puts "Ship model with transparent windows"
+puts "========"
+
+XNewDoc D
+XSetLengthUnit D in
+ReadObj D [locate_data_file ship_boat.obj] -nocreatedoc -unit 1
+XGetOneShape s D
+checknbshapes s -face 2359 -compound 2
+checktrinfo s -tri 27297 -nod 40496
+set aLProps [uplevel #0 sprops $s]
+regexp {Mass\s:\s*([0-9\.e\+]+)} $aLProps dummy anArea
+if {abs($anArea - 2.65152e+10) > 1e-8} {
+  puts "Error: invalid area $anArea instead of 2.65152e+10"
+}

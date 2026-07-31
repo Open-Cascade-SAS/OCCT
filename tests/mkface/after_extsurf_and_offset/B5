@@ -1,0 +1,8 @@
+pbsplinecurve bspline_3d_p_r 2 4 0 1 1 1 2 1 3 1  0 0 0 2  1 2 0 1  2 0 0 1
+extsurf es_bspline_3d_p_r  bspline_3d_p_r 0 0 1
+offset es_bspline_3d_p_r_of es_bspline_3d_p_r 1
+offset es_bspline_3d_p_r_of_of es_bspline_3d_p_r_of 1
+mkface result es_bspline_3d_p_r_of_of 0 1 0 3
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 4.5939474192898358e-07
+set MaxVTol 4.5939474192898368e-07

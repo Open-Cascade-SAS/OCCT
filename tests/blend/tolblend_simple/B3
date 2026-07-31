@@ -1,0 +1,23 @@
+#box b 0 0 0 20 20 20
+#box b2 0 0 20 20 20 20
+#box b3 20 0 0 20 20 20
+#box b4 0 -20 0 20 20 20
+#explode b f
+#explode b2 f
+#explode b3 f
+#explode b4 f
+#glue r b2 b b2_5 b_6
+#explode r f
+#glue r b4 r b4_4 r_2
+#explode r f
+#glue s b3 r b3_1 r_4
+#save s 5_J12.draw
+
+restore [locate_data_file CFI_5_j12fgo.rle] s
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 2*SCALE1 s_26 2*SCALE1 s_19  2*SCALE1 s_15 2*SCALE1 s_16 2*SCALE1 s_27 2*SCALE1 s_25
+explode result So
+tcopy result_1 result 
+
+checkprops result -s 177551

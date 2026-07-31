@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 13)
+######################################################
+
+restore [locate_data_file OCC1477_closedPolyline.brep] s1 
+restore [locate_data_file OCC1477_profile1_rectangle.brep] e1 
+wire s2 e1
+
+puts "###############################################################################"
+puts "# (case /-/-R/-R/)"
+puts "###############################################################################"
+
+checkshape s1
+checkshape s2
+
+mksweep s1
+
+addsweep s2 -R
+if [catch { buildsweep result -R} res] {
+  puts "Faulty OCC1477: buildsweep is wrong"
+}
+
+checkprops result -s 51376.4
+
+checknbshapes result -vertex 48 -edge 90 -wire 42 -face 42 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 223

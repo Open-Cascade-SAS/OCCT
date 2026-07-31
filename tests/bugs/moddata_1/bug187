@@ -1,0 +1,16 @@
+
+puts "================"
+puts "OCC187"
+puts "SAM1230"
+puts "================"
+puts ""
+
+#################################################################
+## In time document with "1-exhaust.brep" imported shape saving exception "Access Violation" 
+## raises because of wrong PColgp_HArray1 allocation.
+## StandardCSFDB_Allocate badly allocates memory blocks: bad address value returned.
+#################################################################
+
+restore [locate_data_file OCC187_from_bug_description.brep] result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

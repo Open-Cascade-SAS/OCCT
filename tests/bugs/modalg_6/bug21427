@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC21427"
+puts "============"
+puts ""
+######################################################
+# Operation "cut" crashes on attached shapes
+######################################################
+
+restore [locate_data_file bug21427a.brep] shape
+restore [locate_data_file bug21427b.brep] tool
+
+bcut result shape tool
+
+checkprops result -s 1.49188e+007 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

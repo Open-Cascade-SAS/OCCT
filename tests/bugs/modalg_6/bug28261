@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC28261"
+puts "========"
+puts ""
+#################################################
+# Chamfer fails on edges placed on quasi-planar cone
+#################################################
+
+brestore [locate_data_file bug28261_face.brep] f
+brestore [locate_data_file bug28261_hexaprism.brep] h
+
+explode f E
+mkcurve c f_1
+cvalue c 0 x y z dx dy dz
+revol rev f $x $y $z $dx $dy $dz 360
+
+bcut r rev h
+savehistory hh
+
+explode h f
+explode h_7 E
+
+chamf r r h_7_1 0.1  h_7_2 0.1  h_7_3 0.1  h_7_4 0.1  h_7_5 0.1  h_7_6 0.1
+
+explode rev f
+modified ff hh rev_1
+explode ff e
+
+chamf result r ff_1 0.1  ff_2 0.1  ff_3 0.1  ff_4 0.1  ff_5 0.1  ff_6 0.1  ff_7 0.1
+
+checkshape result
+checknbshapes result -solid 1 -face 27 -edge 54 -vertex 31
+checkprops result -v 17158.2 -s 4072.76 -deps 1.e-7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

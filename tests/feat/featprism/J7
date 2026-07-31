@@ -1,0 +1,16 @@
+# Original bug : cts21616
+# Date : 04 Nov 98
+
+restore [locate_data_file CFE900_cts21gdm.rle] base
+restore [locate_data_file cts21616_face.rle] cont
+
+# Funtil in Shape -> failure
+explode base face
+copy base_20 funtil
+copy base_23 skface
+
+# Gluer -> OK
+featprism base cont skface 0 -1 0 0 1
+featperform prism result funtil
+
+checkprops result -s 42861.7

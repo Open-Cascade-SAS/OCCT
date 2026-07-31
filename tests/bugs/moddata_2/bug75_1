@@ -1,0 +1,19 @@
+puts "============"
+puts "BUC60861"
+puts "OCC75"
+puts "============"
+puts ""
+puts "(case 1)"
+###############################
+## Incorrect work of section Shell-Shell. 
+###############################
+
+restore [locate_data_file BUC60861_gap.brep] ss 
+checkshape ss
+
+plane pl1 25680.2288 21428 9995 1 0 0
+mkface f1 pl1 -4000 8000 -5000 5000
+bsection result ss f1
+
+checkprops result -l 9265
+checkview -display result -2d -path ${imagedir}/${test_image}.png

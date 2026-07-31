@@ -1,0 +1,9 @@
+puts "TODO OCC26556 ALL: Error : The volume"
+puts "TODO OCC26556 ALL: Faulty shapes"
+puts "TODO OCC26556 ALL: Error : The area"
+
+pcone s 5 0 12 270
+
+OFFSETSHAPE 1 {s_4} $calcul $type
+
+checkprops result -v 0

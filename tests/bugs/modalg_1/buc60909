@@ -1,0 +1,17 @@
+
+puts "============"
+puts "BUC60909"
+puts "============"
+puts ""
+
+box boite 200 200 200 
+nexplode boite F
+profile cont S boite_4 F 0 50 X 50 Y 100 X -50
+featrevol boite cont boite_4 0 0 200 0 -1 0 1 1
+featperform revol result boite_1
+
+checkprops result -s 265343 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

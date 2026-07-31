@@ -1,0 +1,94 @@
+puts "================"
+puts "OCC1033"
+puts "================"
+puts ""
+#
+# Note:   Numerical control of setting mode
+#
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel1 0:2
+SetShape D ${aLabel1} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel1} NS
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1033_AISMode D ${aLabel1}]
+set AISMode1 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel1}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a mode
+set SetMode 2
+OCC1033_AISMode D ${aLabel1} ${SetMode}
+
+set list [OCC1033_AISMode D ${aLabel1}]
+set AISMode2 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1033_AISMode D ${aLabel1}]
+set AISMode3 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1033_AISMode D ${aLabel1}]
+set AISMode4 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Check the mode
+puts "AISMode1 = ${AISMode1}"
+puts "AISMode2 = ${AISMode2}"
+puts "AISMode3 = ${AISMode3}"
+puts "AISMode4 = ${AISMode4}"
+
+set DefaultAISMode 0
+set status 0
+if { ${AISMode1} != ${DefaultAISMode} } {
+	puts "OCC1033_AISMode command: Error (case 1)"
+	set status 1
+}
+if { ${AISMode2} != ${SetMode} } {
+	puts "OCC1033_AISMode command: Error (case 2)"
+	set status 1
+}
+if { ${AISMode3} != ${DefaultAISMode} } {
+	puts "OCC1033_AISMode command: Error (case 3)"
+	set status 1
+}
+if { ${AISMode4} != ${SetMode} } {
+	puts "OCC1033_AISMode command: Error (case 4)"
+	set status 1
+}
+
+if { ${status} == 0} {
+	puts "OCC1033_AISMode command: OK"
+}
+

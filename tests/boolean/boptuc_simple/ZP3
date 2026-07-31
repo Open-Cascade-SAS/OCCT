@@ -1,0 +1,10 @@
+pcone pc 10 0 20
+explode pc f
+
+prism pcy pc_2 0 0 10
+
+bop pc pcy
+boptuc result
+
+checkprops result -s 1390.8
+checkview -display result -2d -otherwise { pc pcy } -s -path ${imagedir}/${test_image}.png

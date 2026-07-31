@@ -1,0 +1,44 @@
+puts "TODO ?OCC25913 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25913 ALL: Error :  is WRONG because number of"
+puts "TODO OCC25913 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC8842"
+puts "============"
+puts ""
+#######################################################################
+# Errors in Offset Shape algorithm working with bspline and surface of revolution
+#######################################################################
+
+set BugNumber OCC8842
+
+if {[info commands testreadiges] == ""} {pload XSDRAW IGES}
+
+proc myoffset {result sh val tan} {
+  if {$tan == 1} {
+    offsetparameter 1e-7 p i
+  } else {
+    offsetparameter 1e-7 p a
+  }
+  uplevel offsetload $sh $val
+  uplevel offsetperform $result
+}
+
+testreadiges [locate_data_file OCC8842_cone_Ideas.igs] a2
+
+DT_ShapeDivide con2 a2
+
+# join type Arc
+puts "***** offsetting with join type Arc"
+puts "   cone_Ideas + 5"
+
+if [catch { myoffset result con2 5 0 } catch_result] {
+  puts "${BugNumber}: Faulty (1)"
+} else {
+
+checkprops result -s 3542.24 
+checkshape result
+checknbshapes result -vertex 60 -edge 90 -wire 42 -face 40 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 243
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

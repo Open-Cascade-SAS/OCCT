@@ -1,0 +1,87 @@
+puts "========"
+puts "OCC29972: Intersection curve has a weird gap in the middle of it"
+puts "========"
+puts ""
+
+set GoodNbCurves 1
+
+foreach a [directory res*] {unset $a}
+
+binrestore [locate_data_file bug29972_f1.bin] f1
+
+mksurface s1 f1
+plane s2 -145.136225014162, -136.038366, -73.563687 0 0 1 -1 0 0
+
+intersect res s1 s2 1.0e-4
+
+if { [info exists res] } {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+dset aLambda1 1.0e-5
+dset aLambda2 [dval 1-aLambda1]
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  if { ![info exists res_$ic] } {
+    set AllowRepeat 0
+  } else {
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 1.0e-7
+    xdistcs res_$ic s2 U1 U2 100 1.0e-7  
+    
+    #check whether the curve has a loop
+    set aFpar [dval U1*aLambda1+aLambda2*U2]
+    set aLpar [dval U2]
+    
+    set delta [expr ($aLpar-$aFpar)/10.0]
+    cvalue res_$ic $aFpar xp yp zp dx1 dy1 dz1
+    for {set p $aFpar} {$p <= $aLpar} {set p [expr $p + $delta]} {
+      cvalue res_$ic $p xp yp zp dx2 dy2 dz2
+      
+      #Check if the angle between the vectors {dx1 dy1 dz1} and {dx2 dy2 dz2} is less than 40deg.
+      set nv1 [ dval dx1*dx1+dy1*dy1+dz1*dz1 ] 
+      set nv2 [ dval dx2*dx2+dy2*dy2+dz2*dz2 ] 
+      
+      set nv1 [ expr sqrt($nv1) ]
+      set nv2 [ expr sqrt($nv2) ]
+      
+      set dp [ dval dx1*dx2+dy2*dy2+dz1*dz2 ] 
+      
+      if {$dp < [ expr 0.76604444311897803520239265055542 * $nv1 * $nv2 ] } {
+        puts "Error: The curve res_$ic possibly has a bend at parameter $p. Please check carefully"
+      }      
+      
+      dset dx1 dx2
+      dset dy1 dy2
+      dset dz1 dz2
+    }
+    
+    incr ic
+  }
+}
+
+incr ic -1
+
+if { $ic != $GoodNbCurves } {
+  puts "Error: $GoodNbCurves are expected but $ic ones are found"
+}
+
+smallview
+clear
+point p1 57.478209319525746 -120.6955841545726 -125.98789759526636
+point p2 57.478010564066473 -120.69677875685414 -125.98860176530741
+fit
+
+clpoles s1
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,181 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef AppCont_ContMatrices_HeaderFile
+#define AppCont_ContMatrices_HeaderFile
+
+#include <math_Matrix.hxx>
+#include <Standard_DimensionError.hxx>
+
+#include <AppCont_ContMatrices_BB.pxx>
+#include <AppCont_ContMatrices_InvM.pxx>
+#include <AppCont_ContMatrices_IBP.pxx>
+#include <AppCont_ContMatrices_IBT.pxx>
+#include <AppCont_ContMatrices_VB.pxx>
+
+namespace AppCont_ContMatrices
+{
+
+constexpr int THE_MAX_CLASSE         = 26;
+constexpr int THE_MAX_MMATRIX_CLASSE = 24;
+constexpr int THE_MAX_NBPOINTS       = 24;
+
+//! Compute offset into the flat MMatrix/InvMMatrix array for a given classe.
+//! Data for classe values 2..24 are packed sequentially,
+//! each block having classe*classe entries.
+constexpr int MMatrixOffset(const int theClasse)
+{
+  int anOffset = 0;
+  for (int i = 2; i < theClasse; ++i)
+  {
+    anOffset += i * i;
+  }
+  return anOffset;
+}
+
+//! Compute offset into the flat IBPMatrix array for a given classe.
+//! IBP result has size (classe-2)^2, starting from classe=3.
+constexpr int IBPMatrixOffset(const int theClasse)
+{
+  int anOffset = 0;
+  for (int i = 1; i < theClasse - 2; ++i)
+  {
+    anOffset += i * i;
+  }
+  return anOffset;
+}
+
+//! Compute offset into the flat IBTMatrix array for a given classe.
+//! IBT result has size (classe-4)^2, starting from classe=5.
+constexpr int IBTMatrixOffset(const int theClasse)
+{
+  int anOffset = 0;
+  for (int i = 1; i < theClasse - 4; ++i)
+  {
+    anOffset += i * i;
+  }
+  return anOffset;
+}
+
+//! Compute Bernstein basis mass matrix of size classe x classe.
+inline void MMatrix(const int classe, math_Matrix& M)
+{
+  if (classe > THE_MAX_MMATRIX_CLASSE)
+  {
+    throw Standard_DimensionError("MMatrix: classe > 24");
+  }
+
+  const double* aData = THE_BBMATRIX_DATA + MMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= classe; ++i)
+  {
+    for (int j = 1; j <= classe; ++j)
+    {
+      M(i + M.LowerRow() - 1, j + M.LowerCol() - 1) = aData[k++];
+    }
+  }
+}
+
+//! Compute inverse of the Bernstein basis mass matrix.
+inline void InvMMatrix(const int classe, math_Matrix& InvM)
+{
+  if (classe > THE_MAX_MMATRIX_CLASSE)
+  {
+    throw Standard_DimensionError("InvMMatrix: classe > 24");
+  }
+
+  const double* aData = THE_INV_MMATRIX_DATA + MMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= classe; ++i)
+  {
+    for (int j = 1; j <= classe; ++j)
+    {
+      InvM(i + InvM.LowerRow() - 1, j + InvM.LowerCol() - 1) = aData[k++];
+    }
+  }
+}
+
+//! Compute inverse of (MP^T * MP) for pass-point constraints,
+//! where MP is the submatrix of M with columns 2..classe-1.
+//! Result size: (classe-2) x (classe-2).
+inline void IBPMatrix(const int classe, math_Matrix& IBPMa)
+{
+  if (classe > THE_MAX_CLASSE)
+  {
+    throw Standard_DimensionError("IBPMatrix: classe > 26");
+  }
+
+  const int     aDim  = classe - 2;
+  const double* aData = THE_IBPMATRIX_DATA + IBPMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= aDim; ++i)
+  {
+    for (int j = 1; j <= aDim; ++j)
+    {
+      IBPMa(i + IBPMa.LowerRow() - 1, j + IBPMa.LowerCol() - 1) = aData[k++];
+    }
+  }
+}
+
+//! Compute inverse of (MT^T * MT) for tangency constraints,
+//! where MT is the submatrix of M with columns 3..classe-2.
+//! Result size: (classe-4) x (classe-4).
+inline void IBTMatrix(const int classe, math_Matrix& IBTMa)
+{
+  if (classe > THE_MAX_CLASSE)
+  {
+    throw Standard_DimensionError("IBTMatrix: classe > 26");
+  }
+
+  const int     aDim  = classe - 4;
+  const double* aData = THE_IBTMATRIX_DATA + IBTMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= aDim; ++i)
+  {
+    for (int j = 1; j <= aDim; ++j)
+    {
+      IBTMa(i + IBTMa.LowerRow() - 1, j + IBTMa.LowerCol() - 1) = aData[k++];
+    }
+  }
+}
+
+//! Evaluate Bernstein basis polynomials at Gauss-Legendre points.
+//! Result size: classe x nbpoints.
+inline void VBernstein(const int classe, const int nbpoints, math_Matrix& M)
+{
+  if (classe > THE_MAX_CLASSE)
+  {
+    throw Standard_DimensionError("VBernstein: classe > 26");
+  }
+  if (nbpoints > THE_MAX_NBPOINTS)
+  {
+    throw Standard_DimensionError("VBernstein: nbpoints > 24");
+  }
+
+  const int Som = static_cast<int>(300.0 * ((classe - 1) * classe / 2.0 - 1.0)
+                                   + classe * (nbpoints - 1) * nbpoints / 2.0);
+
+  const double* aData = THE_VBMATRIX_DATA + Som;
+  for (int i = 1; i <= classe; ++i)
+  {
+    for (int j = 1; j <= nbpoints; ++j)
+    {
+      M(i, j) = *aData;
+      ++aData;
+    }
+  }
+}
+
+} // namespace AppCont_ContMatrices
+
+#endif

@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24731"
+puts "============"
+puts ""
+######################################################
+# Incomplete section of a surface by plane
+######################################################
+
+restore [locate_data_file bug24731_bot1.brep] b
+restore [locate_data_file bug24731_lim1.brep] l
+
+bsection result b l -n2d2
+
+checkprops result -l 93.2392 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 4 -edge 3 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

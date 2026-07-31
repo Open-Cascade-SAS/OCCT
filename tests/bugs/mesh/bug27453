@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC27453: Wrongly meshed surface"
+puts "========"
+puts ""
+
+pload XDE
+
+stepread [locate_data_file bug27453_165-174_piattello.stp] a *
+
+explode a_1 F
+renamevar a_1_13 result
+checkshape result
+incmesh result 0.01 -a 0.5
+
+if {[ string compare "" [tricheck result] ] != 0} {
+  puts "Error: Wrongly meshed surface"
+}

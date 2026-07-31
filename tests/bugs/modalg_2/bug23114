@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC23114"
+puts "================"
+puts ""
+#######################################################################################
+# Extrema algorithm throws the exception
+######################################################################################
+
+set BugNumber OCC23114
+
+restore [locate_data_file OCC23114-c1.draw] c1 
+restore [locate_data_file OCC23114-c2.draw] c2 
+trim c1t c1 6.8444417666253693e-010 3.3201579728233819e-007
+trim c2t c2 0.57529999999422077 0.99999999996162448
+set exception_status [ catch { extrema c1t c2t } ]
+
+if { ${exception_status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}

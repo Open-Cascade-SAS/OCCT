@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC162"
+puts "========"
+
+puts "TODO ?CR33225 Linux: Checking trend failed "
+puts "TODO ?CR33225 Linux: Tcl Exception: Memory leak detected"
+
+pload QAcommands
+pload XDE
+
+restore [locate_data_file OCC162.brep] s 
+
+OCC162 s
+
+set i_max 5
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+    OCC162 s
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 1 "Memory leak detected"
+}
+

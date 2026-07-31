@@ -1,0 +1,30 @@
+puts "TODO OCC24694 ALL: Result is WRONG because number of SHELL entities in shape \"result\" is 2"
+puts "TODO OCC24694 ALL: Result is WRONG because number of SOLID entities in shape \"result\" is 2"
+puts "=========="
+puts "OCC26938  "
+puts "=========="
+puts ""
+#####################################################
+# Boolean operations fail between two ellipsoids
+#####################################################
+
+restore [locate_data_file bug26938.brep] a
+explode a
+
+bcut result a_1 a_2
+
+# Check shape validity
+checkshape result
+
+# Check area
+checkprops result -s 8.7408e+006
+
+# Check self-intersection
+set info [bopcheck result]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The result of cut operation is self-interfered shape"
+}
+
+checknbshapes result -solid 3 -shell 3 -t -m "Result"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

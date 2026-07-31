@@ -1,0 +1,33 @@
+pload QAcommands
+
+puts "========"
+puts "OCC486"
+puts "========"
+puts ""
+#############################
+## Extrema_ExtPS gives wrong solution.
+#############################
+
+restore [locate_data_file OCC486.draw] s 
+
+# Case 1. Verify whether surface is u-periodic and v-periodic
+set result [isperiodic s]
+puts $result
+set uper "is u-periodic"
+set vper "is v-periodic"
+if {[regexp $uper $result] && [regexp $vper $result]} {
+    puts "OCC486 case 1 - Faulty"
+} else {
+    puts "OCC486 case 1 -  OK"
+}
+
+# Case 2. Verify extremum distance between point and surface
+
+point p3d -420.1170080179139 926.8792206000001 229.5109675013802
+if { [ catch { OCC486 s -420.1170080179139 926.8792206000001 229.5109675013802 0 0.0000001 } ] } {
+    puts "OCC486 case 2 - Faulty"
+} else {
+    puts "OCC486 case 2 -  OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

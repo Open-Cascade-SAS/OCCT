@@ -1,0 +1,18 @@
+
+puts "========================"
+puts "BUC60585"
+puts "========================"
+
+restore [locate_data_file buc60585b.brep] t
+checkshape t
+plane pt 2036.25  -97.5  -1460.499755859375  0.0  -1.0  0.0 1.0 0.0 0.0
+mkface ft pt
+
+bsection result t ft
+
+checkprops result -l 22.0446 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+# checksection res

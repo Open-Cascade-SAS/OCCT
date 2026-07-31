@@ -1,0 +1,4 @@
+circle result 0 0  1 0  200
+reverse result
+checklength result -l 1256.6370614359173
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

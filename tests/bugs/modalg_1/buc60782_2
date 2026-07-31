@@ -1,0 +1,37 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC12345 ALL: Faulty : mistakes are found in SOURCE  shape by checkshape command"
+puts "TODO OCC12345 ALL: Faulty BUC60782"
+	 
+puts "========================"
+puts "BUC60782"
+puts "CASE 2"
+puts "========================"
+puts ""
+puts "Results of Geom2d_OffsetCurve are sometimes strange (not correct). "
+puts ""
+
+restore [locate_data_file buc60782b.brep] a 
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty BUC60782 (case 2): Source shape is invalid"
+} else {
+    puts "BUC60782 OK (case 2): Sourse shape is correct"
+}
+
+set che [checkshape a rr]
+if { [regexp {OK} $che ] != 1} {
+    puts "Faulty : mistakes are found in SOURCE  shape by checkshape command"
+    puts "Body of the script was not executed"
+} else {
+    puts "Checking of SOURCE shape by checkshape - OK"
+    if [catch { mkoffset result a 1 10 } catch_result] {
+	puts "Faulty BUC60782: mkoffset works wrongly"
+	renamevar a result
+    } else {
+	puts "OK BUC60782: offset is created"
+	tpcompound result
+    }
+    checkprops result -s 0 
+checkshape result
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

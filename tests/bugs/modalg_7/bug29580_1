@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC29580"
+puts "========"
+puts ""
+#################################################
+# Regression: invalid result of BOP Fuse
+#################################################
+
+restore [locate_data_file bug29580_Cylinder.brep] b1
+restore [locate_data_file bug29580_Solid.brep] b2
+
+bfuse result b1 b2
+
+foreach f [explode result f] {
+  explode $f w
+  foreach w [explode $f w] {
+    if {[regexp "A self-intersecting wire" [checkselfintersection $w $f]]} {
+      puts "Error: BOP produces a face with self-intersecting wire"
+    }
+  }
+}
+
+checkshape result
+checknbshapes result -wire 11 -face 10 -shell 1 -solid 1
+checkprops result -s 866.155 -v 1622.85
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

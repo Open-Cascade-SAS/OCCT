@@ -1,0 +1,10 @@
+puts "BUC60092"
+puts "cut"
+puts ""
+
+restore [locate_data_file buc60092a.rle] a
+restore [locate_data_file buc60092b.rle] b
+
+bcut result a b
+checkprops result -s 88508.3
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,24 @@
+puts "TODO OCC24365 ALL: ERROR: OCC24365 is reproduced."
+
+puts "========"
+puts "OCC24365"
+puts "========"
+puts ""
+##################################################################
+# BRepAlgoAPI_Section wrong result, BRepAlgo_Section good result
+##################################################################
+
+restore [locate_data_file bug24365_faceA.brep] a
+restore [locate_data_file bug24365_faceB.brep] b
+
+bsection result a b
+
+set bug_info [lprops result]
+
+if {[lindex $bug_info 2] == 0} {
+  puts "ERROR: OCC24365 is reproduced. Section of two shapes is not built."
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

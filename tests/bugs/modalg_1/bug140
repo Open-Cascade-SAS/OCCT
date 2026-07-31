@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC140"
+puts "================"
+puts ""
+#########################################################
+## Fillet is created incorrectly on attached shape.
+#########################################################
+
+restore [locate_data_file shading_137.brep] s 
+checkshape s
+
+dset SCALE1 5
+tscale s 0 0 0 SCALE1
+explode s e
+blend sh s  4.5*SCALE1 s_4  4.5*SCALE1 s_5  4.5*SCALE1 s_1
+explode sh so
+
+renamevar sh_1 result 
+fsameparameter result
+
+checkprops result -s 3.65424e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

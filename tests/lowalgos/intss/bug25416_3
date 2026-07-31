@@ -1,0 +1,40 @@
+puts "================"
+puts "OCC25416"
+puts "================"
+puts ""
+#######################################################################
+# Wrong section curve
+#######################################################################
+
+#Check if intersection algorithm produces overlapped curves
+
+restore [locate_data_file bug25416_s1.draw] s1
+restore [locate_data_file bug25416_s2.draw] s2
+
+set ll [intersect ii s1 s2]
+
+set status 0
+if { [llength $ll] < 1 } {
+    set status 1
+}
+
+foreach i $ll {
+   foreach j $ll {
+      if { $i >= $j } continue
+
+      mkedge e1 $i
+      mkedge e2 $j
+      set coe [checkoverlapedges e1 e2]
+
+      puts "$i<->$j: $coe"
+      if { [regexp "Edges are not overlapped" $coe] != 1 } {
+         set status 2
+      }
+   }
+}
+
+if { $status != 0 } {
+    puts "Wrong section. Error with code $status"
+} else {
+    puts "OK: Good section"
+}

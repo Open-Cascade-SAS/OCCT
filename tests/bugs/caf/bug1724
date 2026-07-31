@@ -1,0 +1,167 @@
+puts "================"
+puts "OCC1724"
+puts "OCC2707"
+puts "================"
+puts ""
+#######################################################################################
+# BinOcaf: portability of binary file between platforms 
+#######################################################################################
+
+set QA_DUP 0
+
+set SetIntegerAttribute 100
+set SetRealAttribute 123.45
+set aFrom1 1
+set aTo1 2
+set SetReal1 3.21
+set SetReal2 4.56
+set aFrom2 11
+set aTo2 12
+set SetInteger1 3
+set SetInteger2 4
+set aLabel 0:2
+
+
+#### FOR PREPARING TEST ONLY ####
+#### # Create testing document
+#### NewDocument Doc BinOcaf
+#### UndoLimit Doc 100
+#### NewCommand Doc
+#### 
+#### # Set an integer attribute
+#### SetInteger Doc ${aLabel} ${SetIntegerAttribute}
+#### 
+#### # Set a real attribute
+#### SetReal Doc ${aLabel} ${SetRealAttribute}
+#### 
+#### # Set a real array attribute
+#### SetRealArray Doc ${aLabel} ${aFrom1} ${aTo1} ${SetReal1} ${SetReal2}
+#### 
+#### # Set an integer array attribute
+#### SetIntArray Doc ${aLabel} ${aFrom2} ${aTo2} ${SetInteger1} ${SetInteger2}
+#### 
+#### NewCommand Doc
+#### 
+#### # Save the document
+#### set OS $tcl_platform(os)
+#### if { ${OS} == "SunOS" } {
+####   puts "SunOS"
+####   set aFile ${WorkDirectory}/OCC1724-[file tail [info script]]-SunOS.cbf
+#### } else {
+####   puts "WNT"
+####   set aFile ${WorkDirectory}/OCC1724-[file tail [info script]]-WNT.cbf
+#### }
+#### puts "aFile=${aFile}"
+#### catch {exec rm -f ${aFile}}
+#### catch {SaveAs Doc ${aFile}}
+#### if { ![file exists ${aFile}] } {
+####    puts "There is not ${aFile} file; SaveAs command: Error"
+####    puts "OCC1724: ERROR (case 1)"
+#### }
+#### catch {exec chmod 777 ${aFile}}
+#### Close Doc
+#### FOR PREPARING TEST ONLY ####
+
+set IsGood 1
+
+Open [locate_data_file OCC1724-M3-WNT.cbf] DDoc
+
+# Get a value of integer attribute
+set GetIntegerAttribute ""
+set IsDone [catch {set GetIntegerAttribute [GetInteger DDoc ${aLabel}]} message]
+if { ${IsDone} != 0 ||
+   ${SetIntegerAttribute}!=${GetIntegerAttribute} } {
+   puts ${message}
+   puts "SetIntegerAttribute=${SetIntegerAttribute} GetIntegerAttribute=${GetIntegerAttribute}"
+   puts "Get a value of TDataStd_Integer attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 3)"
+   set IsGood 0
+} else {
+   puts "Get a value of TDataStd_Integer attribute from restoring document: OK"
+}
+
+# Get a value of real attribute
+set GetRealAttribute ""
+set IsDone [catch {set GetRealAttribute [GetReal DDoc ${aLabel}]} message]
+if { ${IsDone} != 0 ||
+   ${SetRealAttribute}!=${GetRealAttribute} } {
+   puts ${message}
+   puts "SetRealAttribute=${SetRealAttribute} GetRealAttribute=${GetRealAttribute}"
+   puts "Get a value of TDataStd_Real attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 4)"
+   set IsGood 0
+} else {
+   puts "Get a value of TDataStd_Real attribute from restoring document: OK"
+}
+
+# Get a value of real array attribute
+set GetRealArrayAttribute ""
+set IsDone [catch {set GetRealArrayAttribute [GetRealArray DDoc ${aLabel}]} message]
+if { ${IsDone} != 0 } {
+   puts ${message}
+   puts "Get a value of TDataStd_RealArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 5)"
+   set IsGood 0
+}
+set aRealArrayLength [llength ${GetRealArrayAttribute}]
+if { ${aRealArrayLength} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   puts "aRealArrayLength=${aRealArrayLength}"
+   puts "Get a value of TDataStd_RealArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 6)"
+   set IsGood 0
+}
+set GetReal1 [lindex ${GetRealArrayAttribute} 0]
+if { ${SetReal1} != ${GetReal1} } {
+   puts "GetReal1=${GetReal1}"
+   puts "Get a value of TDataStd_RealArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 7)"
+   set IsGood 0
+}
+set GetReal2 [lindex ${GetRealArrayAttribute} 1]
+if { ${SetReal2} != ${GetReal2} } {
+   puts "GetReal2=${GetReal2}"
+   puts "Get a value of TDataStd_RealArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 8)"
+   set IsGood 0
+} else {
+   puts "Get a value of TDataStd_RealArray attribute from restoring document: OK"
+}
+
+# Get a value of Integer array attribute
+set GetIntegerArrayAttribute ""
+set IsDone [catch {set GetIntegerArrayAttribute [GetIntArray DDoc ${aLabel}]} message]
+if { ${IsDone} != 0 } {
+   puts ${message}
+   puts "Get a value of TDataStd_IntegerArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 9)"
+   set IsGood 0
+}
+set aIntegerArrayLength [llength ${GetIntegerArrayAttribute}]
+if { ${aIntegerArrayLength} != [expr ${aTo2} - ${aFrom2} + 1] } {
+   puts "aIntegerArrayLength=${aIntegerArrayLength}"
+   puts "Get a value of TDataStd_IntegerArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 10)"
+   set IsGood 0
+}
+set GetInteger1 [lindex ${GetIntegerArrayAttribute} 0]
+if { ${SetInteger1} != ${GetInteger1} } {
+   puts "GetInteger1=${GetInteger1}"
+   puts "Get a value of TDataStd_IntegerArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 11)"
+   set IsGood 0
+}
+set GetInteger2 [lindex ${GetIntegerArrayAttribute} 1]
+if { ${SetInteger2} != ${GetInteger2} } {
+   puts "GetInteger2=${GetInteger2}"
+   puts "Get a value of TDataStd_IntegerArray attribute from restoring document: Error"
+   puts "OCC1724: ERROR (case 12)"
+   set IsGood 0
+} else {
+   puts "Get a value of TDataStd_IntegerArray attribute from restoring document: OK"
+}
+
+if { ${IsGood} == 1 } {
+  puts "OCC1724 OK"
+} else {
+  puts "OCC1724 Error"
+}

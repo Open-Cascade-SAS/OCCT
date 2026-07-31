@@ -1,0 +1,113 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <GProp_PrincipalProps.hxx>
+
+typedef gp_Vec Vec;
+typedef gp_Pnt Pnt;
+
+GProp_PrincipalProps::GProp_PrincipalProps()
+{
+
+  i1 = i2 = i3 = RealLast();
+  r1 = r2 = r3 = RealLast();
+  v1           = Vec(1.0, 0.0, 0.0);
+  v2           = Vec(0.0, 1.0, 0.0);
+  v3           = Vec(0.0, 0.0, 1.0);
+  g            = Pnt(RealLast(), RealLast(), RealLast());
+}
+
+GProp_PrincipalProps::GProp_PrincipalProps(const double  Ixx,
+                                           const double  Iyy,
+                                           const double  Izz,
+                                           const double  Rxx,
+                                           const double  Ryy,
+                                           const double  Rzz,
+                                           const gp_Vec& Vxx,
+                                           const gp_Vec& Vyy,
+                                           const gp_Vec& Vzz,
+                                           const gp_Pnt& G)
+    : i1(Ixx),
+      i2(Iyy),
+      i3(Izz),
+      r1(Rxx),
+      r2(Ryy),
+      r3(Rzz),
+      v1(Vxx),
+      v2(Vyy),
+      v3(Vzz),
+      g(G)
+{
+}
+
+bool GProp_PrincipalProps::HasSymmetryAxis() const
+{
+  const double aRelTol = 1.e-10;
+  double       Eps1    = std::abs(i1) * aRelTol;
+  double       Eps2    = std::abs(i2) * aRelTol;
+  return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
+}
+
+bool GProp_PrincipalProps::HasSymmetryAxis(const double aTol) const
+{
+
+  double Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  double Eps2 = std::abs(i2 * aTol) + std::abs(Epsilon(i2));
+  return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
+}
+
+bool GProp_PrincipalProps::HasSymmetryPoint() const
+{
+  const double aRelTol = 1.e-10;
+  double       Eps1    = std::abs(i1) * aRelTol;
+  return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
+}
+
+bool GProp_PrincipalProps::HasSymmetryPoint(const double aTol) const
+{
+
+  double Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
+}
+
+void GProp_PrincipalProps::Moments(double& Ixx, double& Iyy, double& Izz) const
+{
+
+  Ixx = i1;
+  Iyy = i2;
+  Izz = i3;
+}
+
+const Vec& GProp_PrincipalProps::FirstAxisOfInertia() const
+{
+  return v1;
+}
+
+const Vec& GProp_PrincipalProps::SecondAxisOfInertia() const
+{
+  return v2;
+}
+
+const Vec& GProp_PrincipalProps::ThirdAxisOfInertia() const
+{
+  return v3;
+}
+
+void GProp_PrincipalProps::RadiusOfGyration(double& Rxx, double& Ryy, double& Rzz) const
+{
+
+  Rxx = r1;
+  Ryy = r2;
+  Rzz = r3;
+}

@@ -1,0 +1,11 @@
+restore [locate_data_file bug26917_t138_c2.recipe.brep] s
+
+OFFSETSHAPE 43 {} $calcul $type
+
+checkprops result -v 2.09462e+009
+checkprops result -s 1.32364e+007
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 38 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

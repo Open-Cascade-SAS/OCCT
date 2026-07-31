@@ -1,0 +1,64 @@
+
+puts "============"
+puts "BUC60901"
+puts "============"
+puts ""
+################################################################
+## We should get the edges forming a closed intersection line but we see breaks. 
+################################################################
+
+set n 3
+set dx 1
+set sx 20
+set sz 10
+
+set xc [dval (2*$dx+2*$sx)*$n/2]
+set yc 0
+set zc [dval $sz*10]
+set nxc 0.5
+set nyc -0.3
+set nzc 1
+set r [dval $xc*0.9]
+
+set x 0
+set y [dval -$r*1.2]
+set z 0
+set pol "polyline w $x $y $z"
+for {set i 1} {$i <= $n} {incr i} {
+    set x [dval $x+$dx]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$sx]
+    set z [dval $z+$sz]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$dx]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$sx]
+    set z [dval $z-$sz]
+    set pol "$pol $x $y $z"
+}
+
+eval $pol
+circle c $xc $yc $zc $nxc $nyc $nzc $r
+mkedge c c
+
+set lcyl [dval -$zc*2]
+set lcrg [dval -$y*2]
+
+prism cyl c 0 0 $lcyl
+prism crg w 0 $lcrg 0
+bsection result crg cyl
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_vertices
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_edges
+
+if { $nb_vertices != $nb_edges } {                                         
+    puts "Section is opened: Faulty shape"
+} else {
+    puts "Section is closed: OK"
+}
+
+checkprops result -l 350.404 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

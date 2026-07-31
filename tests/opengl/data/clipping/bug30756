@@ -1,0 +1,19 @@
+puts "============="
+puts "0030756: Visualization, TKOpenGl - capping plane does not work for ZLayer with non-zero origin"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vclose ALL
+vinit View1
+vzbufftrihedron
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vclipplane p 1 -equation  0 1 0 -1 -set -capping 1
+if { [vreadpixel 200 200 rgb name] != "GRAY14" } { puts "Error: capping does not work with zero origin" }
+vzlayer DEFAULT -origin 0 10 0
+if { [vreadpixel 200 200 rgb name] != "GRAY14" } { puts "Error: capping does not work with non-zero origin" }
+
+vdump ${imagedir}/${casename}.png

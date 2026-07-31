@@ -1,0 +1,39 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Comment
+#
+# Testing command:   SetComment
+# Testing command:   GetComment
+#
+
+puts "caf001-F1"
+
+# Add an attribute to a data framework
+set aSetAttr1 "New Attribute"
+set aLabel 0:2
+Label D ${aLabel}
+SetComment D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetAttr1 [GetComment D ${aLabel}]
+if { ${aSetAttr1}!=${aGetAttr1} } {
+	puts "aSetAttr1=${aSetAttr1} aGetAttr1=${aGetAttr1}"
+	puts "Add TDataStd_Comment attribute: Error"
+	return
+}
+puts "Add TDataStd_Comment attribute: OK"

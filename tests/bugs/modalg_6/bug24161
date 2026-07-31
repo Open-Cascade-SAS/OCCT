@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC24161"
+puts "=========="
+puts ""
+###########################################
+# boolean operation hanging
+###########################################
+
+cpulimit 100
+
+restore [locate_data_file bug24161_MirrorSolids.brep] m
+explode m
+
+bop m_1 m_2
+bopfuse result
+
+checkshape result
+bopargcheck result
+
+smallview
+donly result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC23954"
+puts "============"
+puts ""
+##########################################################
+# BRepPrimAPI_MakeRevol fails to recognize a torus case
+##########################################################
+
+circle c_1 0 100.00001 0 1 0 0 0 1 0 100
+circle c_2 0 100.00001 0 1 0 0 0 0 1 100
+circle c_3 0 100.00001 0 1 0 0 0 -1 0 100
+circle c_4 0 100.00001 0 1 0 0 0 0 1 10
+for { set i 1 } { $i <= 4 } { incr i } {
+  mkedge e c_$i
+  revol r e 0 0 0 0 0 1 90
+  mksurface s_$i r
+  set info [dump s_$i]
+  if { [regexp "SurfaceOfRevolution" $info] == 1 } {
+    puts "Error: result is not Toroidal surface"
+  }
+}

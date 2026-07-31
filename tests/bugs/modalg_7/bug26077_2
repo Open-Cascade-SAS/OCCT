@@ -1,0 +1,57 @@
+puts "TODO OCC26077 ALL: Error: Boolean operation of the given type is not allowed on the given inputs"
+puts "TODO OCC26077 ALL: ERROR: OCC26077 is reproduced."
+puts "TODO OCC26077 ALL: ERROR: Problematic shape in OCC26077:"
+
+puts "========"
+puts "OCC26077"
+puts "========"
+puts ""
+#################################################
+# nurbsconvert of psphere fails the bopargcheck
+#################################################
+
+ellipse Ellipse002-untrimmed 0 0 0 8.2 6.2
+mkedge Ellipse002 Ellipse002-untrimmed 0 6.283185307179586
+trotate Ellipse002 0 0 0 0 0 1 90
+ttranslate Ellipse002 0 0 15
+prism Extrude_Ellipse Ellipse002 0 0 6
+ttranslate Extrude_Ellipse 0 0 -4
+restore [locate_data_file bug26077_ellipsoid1-tcl-Loft-00-section.brep] Loft-00-section
+restore [locate_data_file bug26077_ellipsoid1-tcl-Loft-01-section.brep] Loft-01-section
+thrusections Loft 1 0 Loft-00-section Loft-01-section
+psphere Ellipsoid-sphere 12.5
+deform Ellipsoid Ellipsoid-sphere 1 1.04 1.2
+
+set bug_info [string trim [bopargcheck Loft]]
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP."} {
+  puts "ERROR: Problematic shape in OCC26077: Shape Loft is not valid for BOP."
+}
+
+set bug_info [string trim [bopargcheck Ellipsoid]]
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP."} {
+  puts "ERROR: Problematic shape in OCC26077: Shape Ellipsoid is not valid for BOP."
+}
+
+set bug_info [string trim [bfuse Fusion Loft Ellipsoid]]
+if {[string length $bug_info] == 0} {
+  puts "OCC26077: Operation bfuse (bfuse Fusion Loft Ellipsoid) has been finished with OK status."
+} else {
+  puts "ERROR: OCC26077 is reproduced. Operation bfuse (bfuse Fusion Loft Ellipsoid) has been finished with KO status."
+}
+
+set bug_info [string trim [bopargcheck Extrude_Ellipse]]
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP."} {
+  puts "ERROR: Problematic shape in OCC26077: Shape Extrude_Ellipse is not valid for BOP."
+}
+
+set bug_info [string trim [bopargcheck Fusion]]
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP."} {
+  puts "ERROR: Problematic shape in OCC26077: Shape Fusion is not valid for BOP."
+}
+
+set bug_info [string trim [bfuse Fusion002 Extrude_Ellipse Fusion]]
+if {[string length $bug_info] == 0} {
+  puts "OCC26077: Operation bfuse (bfuse Fusion002 Extrude_Ellipse Fusion) has been finished with OK status."
+} else {
+  puts "ERROR: OCC26077 is reproduced. Operation bfuse (bfuse Fusion002 Extrude_Ellipse Fusion) has been finished with KO status."
+}

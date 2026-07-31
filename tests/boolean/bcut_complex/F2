@@ -1,0 +1,44 @@
+# Original bug : buc60127
+# Date : 18mar98
+
+restore [locate_data_file buc60127-part.rle] part
+restore [locate_data_file buc60127-tool.rle] tool
+
+# fix the part shape
+
+explode part f
+# fix inner cylinder
+mksurface c_in part_1
+trim c_in c_in
+mkface f_in c_in 0 2*pi 0 150
+
+# fix side faces
+mksurface s1 part_3
+mksurface s2 part_4
+mkface f1 s1 -10 10 -10 10
+mkface f2 s2 -10 10 -10 10
+
+# fix solid
+mkvolume r part_2 f_in f1 f2
+
+# find the other solid - the one containing the outer cylinder (part_2 face)
+foreach s [explode r so] {
+  set found 0
+  foreach f [explode $s f] {
+    if {[regexp "same shapes" [compare part_2 $f]]} {
+      copy $s part
+      set found 1
+      break
+    }
+  }
+  if {$found} {
+    break
+  }
+}
+
+bcut result part tool
+checkshape result
+checkprops result -s 5382.41 -v 2643.38
+checknbshapes result -wire 14 -face 11 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+#D4----------------------------------------------
+plane p 0 0 0 0 0 1 -1 0 0
+psphere p p 20 0 90
+#profile pf o -4 -4 1 l 8 d 0 1 l 8 d -1 0 l 8
+profile pf o -4 -4 1 l 8 c 2 90 l 8 d -1 0 l 8
+prism p2 pf 0 0 40
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_7 5 0 0 40 0 0 1
+
+checkprops result -s 4630.78

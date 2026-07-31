@@ -1,0 +1,93 @@
+
+puts "========"
+puts "BUC60889"
+puts "BUC60947"
+puts "========"
+
+pload QAcommands
+
+set bndbox_X1 0
+set bndbox_Y1 0
+set bndbox_Z1 0
+set bndbox_X2 30
+set bndbox_Y2 10
+set bndbox_Z2 20
+
+set point_1_1_X -30
+set point_1_1_Y -10
+set point_1_1_Z 5
+set point_1_2_X -30
+set point_1_2_Y -10
+set point_1_2_Z 15
+
+set point_1_3_X -15
+set point_1_3_Y -5
+set point_1_3_Z 5
+
+set dx_1 [ expr { $point_1_3_X - $point_1_1_X } ]
+set dy_1 [ expr { $point_1_3_Y - $point_1_1_Y } ]
+set dz_1 [ expr { $point_1_3_Z - $point_1_1_Z } ]
+
+point point_1_1 $point_1_1_X $point_1_1_Y $point_1_1_Z
+point point_1_2 $point_1_2_X $point_1_2_Y $point_1_2_Z
+polyline p_line_1 $point_1_1_X $point_1_1_Y $point_1_1_Z $point_1_2_X $point_1_2_Y $point_1_2_Z
+vertex vertex_1_1 $point_1_1_X $point_1_1_Y $point_1_1_Z
+vertex vertex_1_2 $point_1_3_X $point_1_3_Y $point_1_3_Z
+edge edge_1 vertex_1_1 vertex_1_2
+
+puts ""
+
+set point_2_1_X 30
+set point_2_1_Y 10
+set point_2_1_Z -5
+set point_2_2_X 30
+set point_2_2_Y 10
+set point_2_2_Z -15
+
+set point_2_3_X 0
+set point_2_3_Y 10
+set point_2_3_Z -5
+
+set dx_2 [ expr { $point_2_3_X - $point_2_1_X } ]
+set dy_2 [ expr { $point_2_3_Y - $point_2_1_Y } ]
+set dz_2 [ expr { $point_2_3_Z - $point_2_1_Z } ]
+
+point point_2_1 $point_2_1_X $point_2_1_Y $point_2_1_Z
+point point_2_2 $point_2_2_X $point_2_2_Y $point_2_2_Z
+polyline p_line_2 $point_2_1_X $point_2_1_Y $point_2_1_Z $point_2_2_X $point_2_2_Y $point_2_2_Z
+vertex vertex_2_1 $point_2_1_X $point_2_1_Y $point_2_1_Z
+vertex vertex_2_2 $point_2_3_X $point_2_3_Y $point_2_3_Z
+edge edge_2 vertex_2_1 vertex_2_2
+
+puts ""
+
+box bndbox $bndbox_X1 $bndbox_Y1 $bndbox_Z1 $bndbox_X2 $bndbox_Y2 $bndbox_Z2
+
+
+line line_1_1 $point_1_1_X $point_1_1_Y $point_1_1_Z $dx_1 $dy_1 $dz_1
+line line_1_2 $point_1_2_X $point_1_2_Y $point_1_2_Z $dx_1 $dy_1 $dz_1
+
+line line_2_1 $point_2_1_X $point_2_1_Y $point_2_1_Z $dx_2 $dy_2 $dz_2
+line line_2_2 $point_2_2_X $point_2_2_Y $point_2_2_Z $dx_2 $dy_2 $dz_2
+
+puts ""
+
+set result1 [BUC60889 point_1_1 point_1_2 edge_1 $bndbox_X1 $bndbox_Y1 $bndbox_Z1 $bndbox_X2 $bndbox_Y2 $bndbox_Z2]
+
+if {${result1} != "The band intersects the box\n"} {
+  puts "BUC60889: Error; (case 1)"
+} else {
+  puts "BUC60889: OK; (case 1)"
+}
+
+puts ""
+
+set result2 [BUC60889 point_2_1 point_2_2 edge_2 $bndbox_X1 $bndbox_Y1 $bndbox_Z1 $bndbox_X2 $bndbox_Y2 $bndbox_Z2]
+
+if {${result2} != "The band lies out of the box\n"} {
+  puts "BUC60889: Error; (case 2)"
+} else {
+  puts "BUC60889: OK; (case 2)"
+}
+
+

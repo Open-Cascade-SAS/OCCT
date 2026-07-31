@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC32722: Visualization, TKOpenGl - performance counters disappear at some camera viewpoints"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vcamera -persp
+
+box b1   0   0 0 50 50 50
+box b2 150   0 0 50 50 50
+box b3   0 150 0 50 50 50
+vdisplay b1 b2 b3 -dispMode 1 -noupdate
+vaspects b1 b2 b3 -color RED -transparency 0.5
+
+vrenderparams -perfCounters fps
+vviewparams -scale 2.14747 -proj 0.160074 0.265291 -0.950788 -up -0.0189965 0.963858 0.265739 -at 63.0574 214.479 199.417
+checkcolor 22 34 0.8 0.8 0.8
+vdump $::imagedir/${::casename}.png

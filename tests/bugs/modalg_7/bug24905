@@ -1,0 +1,67 @@
+puts "========"
+puts "0024905: Boolean cut produced invalid result"
+puts "========"
+puts ""
+
+circle c1 0 0 0 0 -1 0 75
+circle c2 0 0 0 0 -1 0 65
+mkedge c1 c1
+mkedge c2 c2
+wire c1 c1
+wire c2 c2
+orientation c2 R
+mkplane f1 c1 1
+add c2 f1
+prism p1 f1 0 1000 0
+trotate p1 0 0 0 0 0 1 180
+circle c3 50 500 -2000 0 0 1 50
+mkedge c3 c3
+wire c3 c3
+mkplane f2 c3 1
+prism p2 f2 0 0 4000
+trotate p2 0 500 0 1 0 0 -77
+trotate p2 0 0 0 0 0 1 180
+
+bclearobjects
+bcleartools
+baddobjects p1
+baddtools p2
+
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+
+for {set i 0} {$i <= 4} {incr i} {
+  checkshape r_$i
+  if {[regexp "Faulties" [ bopargcheck r_$i ]]} {
+    puts "Error: bopargcheck has found some faulties in r_$i"
+  }
+}
+
+
+checknbshapes r_0 -solid 1 -shell 1 -face 5 -wire 6
+checkprops r_0 -s 196255 -v 857818
+
+checknbshapes r_1 -solid 1 -shell 1 -face 9 -wire 13
+checkprops r_1 -s 1.96453e+06 -v 3.49563e+07
+
+checknbshapes r_2 -solid 1 -shell 1 -face 7 -wire 11
+checkprops r_2 -s 742474 -v 3.54041e+06
+
+checknbshapes r_3 -solid 2 -shell 2 -face 7 -wire 8
+checkprops r_3 -s 1.41831e+06 -v 3.05581e+07
+
+checknbshapes r_4 -vertex 8 -edge 8
+checkprops r_4 -l 3965.07
+
+checksection r_4 -r 0
+
+# CUT
+copy r_2 result
+checkmaxtol result -min_tol 1.0e-4
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

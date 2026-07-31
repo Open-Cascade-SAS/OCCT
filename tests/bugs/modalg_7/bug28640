@@ -1,0 +1,37 @@
+puts "================"
+puts "0028640: Modeling Algorithms - BRepBuilderAPI_Transform builds invalid shape"
+puts "================"
+puts ""
+
+# Analyze triangulation after mirroring shape 
+restore [locate_data_file bug28640_origin_copy.brep] a
+tmirror a 0 0 0 1 0 0
+
+vinit
+vsetdispmode 1
+vdisplay a
+vfront
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-mirror-3d_1.png
+
+if {[tricheck a] != ""} {
+	puts "Error: invalid triangulation"
+}
+
+# Fix the shape and check its validity after mirroring
+restore [locate_data_file bug28640_origin_copy.brep] a
+fixshape a a
+checkshape a
+tmirror a 0 0 0 1 0 0
+checkshape a
+
+# Check triangulation of healed and mirrored shape 
+vclear
+vdisplay a
+vfront
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-mirror-3d_2.png
+
+if {[tricheck a] != ""} {
+	puts "Error: invalid triangulation"
+}

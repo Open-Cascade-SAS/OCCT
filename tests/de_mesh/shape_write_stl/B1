@@ -1,0 +1,36 @@
+sphere s 10
+tessellate result s 100 100
+XProgress +t
+set aTmpFile "$imagedir/${casename}.stl"
+set out [writestl result "$aTmpFile"]
+file delete "$aTmpFile"
+
+set expected {
+  {Progress: 0%}
+  {Progress: 5% Triangles: 1000 / 20000}
+  {Progress: 10% Triangles: 2000 / 20000}
+  {Progress: 15% Triangles: 3000 / 20000}
+  {Progress: 20% Triangles: 4000 / 20000}
+  {Progress: 25% Triangles: 5000 / 20000}
+  {Progress: 30% Triangles: 6000 / 20000}
+  {Progress: 35% Triangles: 7000 / 20000}
+  {Progress: 40% Triangles: 8000 / 20000}
+  {Progress: 45% Triangles: 9000 / 20000}
+  {Progress: 50% Triangles: 10000 / 20000}
+  {Progress: 55% Triangles: 11000 / 20000}
+  {Progress: 60% Triangles: 12000 / 20000}
+  {Progress: 65% Triangles: 13000 / 20000}
+  {Progress: 70% Triangles: 14000 / 20000}
+  {Progress: 75% Triangles: 15000 / 20000}
+  {Progress: 80% Triangles: 16000 / 20000}
+  {Progress: 85% Triangles: 17000 / 20000}
+  {Progress: 90% Triangles: 18000 / 20000}
+  {Progress: 95% Triangles: 19000 / 20000}
+  {Progress: 100% Triangles: 20000 / 20000}
+}
+
+if { [string compare [string trim $out] [join $expected "\n"]] } {
+  puts "Error: output (see above) does not match expected one:"
+  puts "[join $expected "\n"]"
+  puts ""
+}

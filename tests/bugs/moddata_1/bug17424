@@ -1,0 +1,33 @@
+pload QAcommands
+
+puts "============"
+puts "OCC17424"
+puts "============"
+puts ""
+######################################################
+# IntCurvesFace_ShapeIntersector does not find intersection point
+######################################################
+
+set BugNumber OCC17424
+
+restore [locate_data_file OCC17424.brep] a 
+
+set X_Pnt 86.960439048069262
+set Y_Pnt 1028.2863798310484
+set Z_Pnt -266.58526583558000
+
+set X_Dir 0.25881904510252074
+set Y_Dir 0
+set Z_Dir -0.96592582628906831
+
+set PInf 0.
+
+set aStatusList [OCC17424 a ${X_Pnt} ${Y_Pnt} ${Z_Pnt} ${X_Dir} ${Y_Dir} ${Z_Dir} ${PInf}]
+regexp {OCC17424 status = +([-0-9.+eE]+)} ${aStatusList} full aStatus
+
+if { ${aStatus} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

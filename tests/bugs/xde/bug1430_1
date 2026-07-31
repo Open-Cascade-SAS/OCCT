@@ -1,0 +1,19 @@
+puts "================"
+puts "OCC1430"
+puts "ShapeFix_Wireframe does not process separate wires"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC1430-1.brep] a
+checkshape a
+
+set message [fixsmall result a 10.]
+
+if {[string length ${message}] > 0} {
+    # Small edges fixed on shape
+    checkshape result
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+    puts "OCC1430: Error"
+}
+

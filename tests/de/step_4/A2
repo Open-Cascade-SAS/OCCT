@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename 1084837_solide.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 6  ( 28 )  Summary  = 6  ( 28 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 96  ( 96 )  Shell    = 96  ( 96 )  Face     = 1550  ( 1550 ) 
+STATSHAPE   : Solid    = 157  ( 157 )  Shell    = 157  ( 157 )  Face     = 2165  ( 2165 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.09605304491  (   0.2017069355 )  AvgTol   =  0.004007230055  (  0.008706711093 )
+LABELS      : N0Labels = 112  ( 112 )  N1Labels = 170  ( 170 )  N2Labels = 0  ( 0 )   TotalLabels = 282  ( 282 )   NameLabels = 282  ( 282 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

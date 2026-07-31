@@ -1,0 +1,10 @@
+#pcone s 10 5 20
+
+restore [locate_data_file 7_F2.draw] s
+tscale s 0 0 0 SCALE1
+explode s E
+mkevol result s
+updatevol s_1 0 0*SCALE1 1 3*SCALE1 2 0*SCALE1
+buildevol
+
+checkprops result -s 33798.1

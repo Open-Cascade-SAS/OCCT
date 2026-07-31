@@ -1,0 +1,132 @@
+puts "================"
+puts "OCC27192"
+puts "================"
+puts ""
+######################################################
+# Improvement of storage of Ocaf document in XML file format
+######################################################
+
+NewDocument M4 XmlOcaf
+
+# Simple array with many separators inside.
+SetExtStringArray M4 0:1 0 1 6
+set S1 "Hello 1"
+SetExtStringArrayValue M4 0:1 1 ${S1}
+set S2 "Hello_2"
+SetExtStringArrayValue M4 0:1 2 ${S2}
+set S3 "Hello*3"
+SetExtStringArrayValue M4 0:1 3 ${S3}
+set S4 "Hello-4"
+SetExtStringArrayValue M4 0:1 4 ${S4}
+set S5 "Hello5"
+SetExtStringArrayValue M4 0:1 5 ${S5}
+set Sempty ""
+SetExtStringArrayValue M4 0:1 6 ${Sempty}
+SetNode M4 0:1
+
+#An array with empty strings.
+SetExtStringArray M4 0:2 0 0 3
+SetExtStringArrayValue M4 0:2 0 ${Sempty}
+set SH "H"
+SetExtStringArrayValue M4 0:2 1 ${SH}
+SetExtStringArrayValue M4 0:2 2 ${Sempty}
+SetExtStringArrayValue M4 0:2 3 ${Sempty}
+SetNode M4 0:2
+AppendNode M4 0:1 0:2
+
+#An empty array.
+SetExtStringArray M4 0:3 0 0 0
+SetNode M4 0:3
+AppendNode M4 0:1 0:3
+
+#Save & Close.
+set aFile ${imagedir}/OCC27192.xml
+#
+file delete ${aFile}
+#
+if { [file exists ${aFile}] } {
+	puts "There is ${aFile} old file"
+	puts "OCC27192: ERROR (old file)"
+}
+#
+catch {SaveAs M4 ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC27192: ERROR (Save failed)"
+}
+Close M4
+
+#Open the document and check the values.
+catch {Open ${aFile} MM4}
+
+set IsGood 1
+
+#Check ExtStringArrays:
+#0:1
+set V1 [GetExtStringArrayValue MM4 0:1 1]
+if { ${V1} != ${S1} } {
+   set IsGood 0
+   puts "${V1}!=${S1}"
+}
+set V2 [GetExtStringArrayValue MM4 0:1 2]
+if { ${V2} != ${S2} } {
+   set IsGood 0
+   puts "${V2}!=${S2}"
+}
+set V3 [GetExtStringArrayValue MM4 0:1 3]
+if { ${V3} != ${S3} } {
+   set IsGood 0
+   puts "${V3}!=${S3}"
+}
+set V4 [GetExtStringArrayValue MM4 0:1 4]
+if { ${V4} != ${S4} } {
+   set IsGood 0
+   puts "${V4}!=${S4}"
+}
+set V5 [GetExtStringArrayValue MM4 0:1 5]
+if { ${V5} != ${S5} } {
+   set IsGood 0
+   puts "${V5}!=${S5}"
+}
+set V6 [GetExtStringArrayValue MM4 0:1 6]
+if { ${V6} != ${Sempty} } {
+   set IsGood 0
+   puts "${V6}!=${Sempty}"
+}
+
+#0:2
+set V7 [GetExtStringArrayValue MM4 0:2 0]
+if { ${V7} != ${Sempty} } {
+   set IsGood 0
+   puts "${V7}!=${Sempty}"
+}
+set V8 [GetExtStringArrayValue MM4 0:2 1]
+if { ${V8} != ${SH} } {
+   set IsGood 0
+   puts "${V8}!=${SH}"
+}
+set V9 [GetExtStringArrayValue MM4 0:2 2]
+if { ${V9} != ${Sempty} } {
+   set IsGood 0
+   puts "${V9}!=${Sempty}"
+}
+set V10 [GetExtStringArrayValue MM4 0:2 3]
+if { ${V10} != ${Sempty} } {
+   set IsGood 0
+   puts "${V10}!=${Sempty}"
+}
+
+#0:3
+set V11 [GetExtStringArrayValue MM4 0:3 0]
+if { ${V11} != ${Sempty} } {
+   set IsGood 0
+   puts "${V11}!=${Sempty}"
+}
+
+if { ${IsGood} == 0} {
+  puts "OCC27192: Error"
+} else {
+  puts "OCC27192: OK"
+}
+
+Close MM4

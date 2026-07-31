@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC2785"
+puts "============"
+puts ""
+######################################################
+# Cut and fuse operations for two faces that share same domain give invalid result
+######################################################
+# Cut and fuse operations for two faces that share same domain gives invalid
+# result, if one face has a hole and other face touches a boundary of this hole.
+######################################################
+## (old topology)
+## (cut)
+## (fuse)
+######################################################
+
+############# data #############
+pcylinder c1 2 10
+pcylinder c2 2 2
+explode c1 f
+explode c2 f
+mksurface gs c2_1
+trim trgs gs 1 2 2 4
+mkface ff trgs
+trim trgs gs 0 1 2 4
+mkface ff2 trgs
+
+bcut rcut1 c1_1 ff
+checkshape rcut1
+
+bcut rcut2 rcut1 ff2
+checkshape rcut2
+
+bfuse fuse1 rcut2 ff2
+checkshape fuse1
+
+bfuse result fuse1 ff
+
+checkprops result -s 125.664 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

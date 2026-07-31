@@ -1,0 +1,20 @@
+pload QAcommands
+
+puts "========"
+puts "OCC377"
+puts "BUC61056"
+puts "========"
+puts ""
+###################################################################
+##Incorrect behaviour of BRepTopAdapter_FClass2d. It cannot work with parametric representation 
+## of the first wire on  the face. It says that point (1.9812, -0.9557948)  is outside the contour  for
+##  forward wire and inside for reversed one if tolerance  is equal to 6.45    
+###################################################################
+
+set result_info [ OCC377 [locate_data_file OCC377.brep] 1.9812 -0.9557948 6.45 ]
+if { [ regexp {FAULTY} $result_info ]} {
+    puts "Error : OCC377"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

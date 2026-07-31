@@ -1,0 +1,60 @@
+puts "========"
+puts "0032862: Visualization, Graphic3d_TextureMap - add 3D texture definition"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+set aTex1 [locate_data_file SF_CubeMap_posx.jpg]
+set aTex2 [locate_data_file SF_CubeMap_negx.jpg]
+set aTex3 [locate_data_file SF_CubeMap_posy.jpg]
+set aTex4 [locate_data_file SF_CubeMap_negy.jpg]
+set aTex5 [locate_data_file SF_CubeMap_posz.jpg]
+set aTex6 [locate_data_file SF_CubeMap_negz.jpg]
+
+set aShaderVert "
+THE_SHADER_OUT vec3 TexCoord;
+uniform float uSlice;
+void main() {
+  float aNbSlices = 6.0;
+  TexCoord = occVertex.xyz;
+  if (uSlice >= 0.0) { TexCoord = vec3(occTexCoord.xy, uSlice * 1.0 / aNbSlices + 0.5 / aNbSlices); }
+  if (occTextureTrsf_Scale().y < 0.0) { TexCoord.y = 1.0 - TexCoord.y; }
+  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
+}"
+
+set aShaderFrag "
+#ifdef GL_ES
+  uniform mediump sampler3D occSampler0;
+#else
+  uniform sampler3D occSampler0;
+#endif
+THE_SHADER_IN vec3 TexCoord;
+void main() {
+  occFragColor = occTexture3D(occSampler0, TexCoord);
+}"
+
+set aGlslVer "#version 110"
+if { [vdriver -default] == "TKOpenGles" } { set aGlslVer "#version 300 es" }
+
+# draw a box
+box b 1.0 1.0 1.0
+vclear
+vclose ALL
+vinit View1
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vrotate 0.2 0.0 0.0
+
+# load 3D texture
+vtexture b -3d $aTex1 $aTex2 $aTex3 $aTex4 $aTex5 $aTex6
+
+# texture slices
+foreach aSliceIter {0 1 2 3 4 5} {
+  vshaderprog b -vert $aShaderVert -frag $aShaderFrag -defaultSampler 0 -uniform "uSlice" ${aSliceIter} -header "$aGlslVer"
+  vdump $::imagedir/${::casename}_s${aSliceIter}.png
+}
+
+# texture interpolation
+vshaderprog b -vert $aShaderVert -frag $aShaderFrag -defaultSampler 0 -uniform "uSlice" -1 -header "$aGlslVer"
+vdump $::imagedir/${::casename}_def.png

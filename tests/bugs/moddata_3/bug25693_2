@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC25693"
+puts "============"
+puts ""
+###############################
+## Wire of BSplines fails bopcheck
+###############################
+
+restore [locate_data_file bug25693_path3039.brep] path3039
+
+prism Extrude_path3039 path3039 0 0 50
+
+set log1 [string trim [bopcheck path3039]]
+if {$log1 != "This shape seems to be OK."} {
+    puts "Error : bad shape"
+}
+
+set log2 [string trim [bopcheck Extrude_path3039]]
+if {$log2 != "This shape seems to be OK."} {
+    puts "Error : Wire of BSplines fails bopcheck"
+}
+
+checkview -display path3039 -2d -path ${imagedir}/${test_image}-path3039-2d.png
+checkview -display Extrude_path3039 -2d -path ${imagedir}/${test_image}-Extrude_path3039-2d.png

@@ -1,0 +1,24 @@
+
+puts "========"
+puts "OCC536"
+puts "SAM1504"
+puts "========"
+
+vinit
+
+restore [locate_data_file OCC536.brep] S 
+checkshape S
+
+explode S So
+checkshape S_5
+checkshape S_1
+
+if [catch {bfuse result S_5 S_1}] {
+    puts "Faulty OCC536"
+} else {
+    puts "OCC536 : OK"
+    checkshape result
+}
+
+checkprops result -s 2.45349e+06
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,9 @@
+puts "============================================"
+puts "OCC29405: Modeling Algorithms - Check normal define status in HLRBRep_Data"
+puts "============================================"
+puts ""
+
+pload ALL
+ptorus t 17.37 17.37 [dval 2.35*180/pi]
+vdisplay t
+vcomputehlr t t2 -algotype algo 0 50 0 0 -50 0 0 0 1

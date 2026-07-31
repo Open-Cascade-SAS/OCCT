@@ -1,0 +1,118 @@
+// Created on: 2006-05-25
+// Created by: Alexander GRIGORIEV
+// Copyright (c) 2006-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef VrmlData_Appearance_HeaderFile
+#define VrmlData_Appearance_HeaderFile
+
+#include <VrmlData_Material.hxx>
+#include <VrmlData_Texture.hxx>
+#include <VrmlData_TextureTransform.hxx>
+
+/**
+ *  Implementation of the Appearance node type
+ */
+class VrmlData_Appearance : public VrmlData_Node
+{
+public:
+  // ---------- PUBLIC METHODS ----------
+
+  /**
+   * Empty constructor
+   */
+  inline VrmlData_Appearance() = default;
+
+  /**
+   * Constructor
+   */
+  inline VrmlData_Appearance(const VrmlData_Scene& theScene, const char* theName)
+      : VrmlData_Node(theScene, theName)
+  {
+  }
+
+  /**
+   * Query the Material
+   */
+  inline const occ::handle<VrmlData_Material>& Material() const { return myMaterial; }
+
+  /**
+   * Query the Texture
+   */
+  inline const occ::handle<VrmlData_Texture>& Texture() const { return myTexture; }
+
+  /**
+   * Query the TextureTransform
+   */
+  inline const occ::handle<VrmlData_TextureTransform>& TextureTransform() const
+  {
+    return myTTransform;
+  }
+
+  /**
+   * Set the Material
+   */
+  inline void SetMaterial(const occ::handle<VrmlData_Material>& theMat) { myMaterial = theMat; }
+
+  /**
+   * Set the Texture
+   */
+  inline void SetTexture(const occ::handle<VrmlData_Texture>& theTexture)
+  {
+    myTexture = theTexture;
+  }
+
+  /**
+   * Set the Texture Transform
+   */
+  inline void SetTextureTransform(const occ::handle<VrmlData_TextureTransform>& theTT)
+  {
+    myTTransform = theTT;
+  }
+
+  /**
+   * Create a copy of this node.
+   * If the parameter is null, a new copied node is created. Otherwise new node
+   * is not created, but rather the given one is modified.<p>
+   */
+  Standard_EXPORT occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>&) const override;
+  /**
+   * Read the node from input stream.
+   */
+  Standard_EXPORT VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+
+  /**
+   * Write the Node from input stream.
+   */
+  Standard_EXPORT VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+
+  /**
+   * Returns True if the node is default, so that it should not be written.
+   */
+  Standard_EXPORT bool IsDefault() const override;
+
+private:
+  // ---------- PRIVATE FIELDS ----------
+
+  occ::handle<VrmlData_Material>         myMaterial;
+  occ::handle<VrmlData_Texture>          myTexture;
+  occ::handle<VrmlData_TextureTransform> myTTransform;
+
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_Appearance, VrmlData_Node)
+};
+
+// Definition of HANDLE object using Standard_DefineHandle.hxx
+#endif

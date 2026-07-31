@@ -1,0 +1,59 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: transfer failed : entity skipped." 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename CTS21655.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 12 )  Warnings = 0  ( 1 )  Summary  = 0  ( 13 )
+TPSTAT      : Faulties = 0  ( 28 )  Warnings = 126  ( 7 )  Summary  = 126  ( 35 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 1 )   Solids   = 0 ( 1 )
+NBSHAPES    : Solid    = 0  ( 18 )  Shell    = 0  ( 18 )  Face     = 1190  ( 1190 ) 
+STATSHAPE   : Solid    = 0  ( 18 )  Shell    = 0  ( 18 )  Face     = 1190  ( 1190 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.2496134023  (   0.2496134025 )  AvgTol   =   0.00219307132  (  0.004111718822 )
+LABELS      : N0Labels = 27  ( 27 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 27  ( 27 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}
+
+# Due to the ambiguous interpretation of the "inner" wire on the surfaces
+# that have natural bound (is it the cutout in the whole surface, or it's just wrong wire orientation),
+# we must manually turn off the adding of the natural bound option of the shape healing for this test.
+
+set de_use_custom_scripts 1
+
+proc de_before_script {TheFileName} {
+    # remember the path to the old resource file
+    set old_resource_path $::env(CSF_IGESDefaults)
+    # reading old resource file
+    set anOptions [parse_resource_file "${old_resource_path}/IGES"]
+    # activation of ignoring the adding of natural bound
+    dict set anOptions "FromIGES.FixShape.FixAddNaturalBoundMode" "0"
+    # path to new resource file
+    global imagedir new_resource_path
+    set new_resource_path "${imagedir}[file rootname $TheFileName]"
+    # creating resource file
+    create_resource_file "${new_resource_path}/IGES" $anOptions
+    # changing the path to the resource file
+    set ::env(CSF_IGESDefaults) ${new_resource_path}
+    puts "New path to IGES resource file is: \"${new_resource_path}\""
+    
+    return ${old_resource_path}
+}
+
+proc de_after_script {old_resource_path} {
+   # Restoring the path to the old resource file
+   set ::env(CSF_IGESDefaults) ${old_resource_path}
+   puts "Restore path to IGES resource file: \"${old_resource_path}\""
+   # Remove the newly created resource directory and its contents
+   global new_resource_path
+   if {[info exists new_resource_path] && [file exists ${new_resource_path}]} {
+       file delete -force ${new_resource_path}
+       puts "Deleted temporary directory: \"${new_resource_path}\""
+   }
+}

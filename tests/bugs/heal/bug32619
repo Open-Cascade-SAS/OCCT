@@ -1,0 +1,20 @@
+puts "============================================="
+puts "OCC32619: UnifySameDomain ignores shared face"
+puts "============================================="
+puts ""
+
+restore [locate_data_file bug32619.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -shell 2 -face 3 -wire 3 -edge 12 -vertex 10
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

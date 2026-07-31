@@ -1,0 +1,16 @@
+puts "TODO OCC31845 All: ERROR: null result"
+
+puts "============================================"
+puts "OCC31845: BRepOffsetAPI_MakeThickSolid fails"
+puts "============================================"
+puts ""
+
+restore [locate_data_file bug31845_h.brep] a
+
+offsetparameter 1e-7 p i
+offsetload a -0.01
+offsetperform result
+
+if {[llength [whatis result]] < 4} {
+  puts "ERROR: null result"
+}

@@ -1,0 +1,1 @@
+source [locate_data_file 200a0-1_sopac-dn500_piquage.prt.1.gdml.tcl]

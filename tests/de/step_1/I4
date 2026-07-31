@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename PRO9240.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 30 )  Warnings = 0  ( 0 )  Summary  = 0  ( 30 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 51 )  Summary  = 14  ( 51 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 35  ( 35 ) 
+STATSHAPE   : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 35  ( 35 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 1.923915122e-006  ( 1.923915463e-006 )  AvgTol   =  8.705070078e-007  (  8.92719352e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

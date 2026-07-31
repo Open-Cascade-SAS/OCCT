@@ -1,0 +1,40 @@
+puts "================================="
+puts "0032652: Visualization - Select3D_SensitiveCylinder returns wrong 3D point on transformed shape"
+puts "Check picking of transformed cylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+pcylinder  c 10 20
+fscale     c 0 0 0 0.1
+trotate    c 0 0 0 1 1 0 25
+ttranslate c 2500 3500 1000
+
+vinit View1
+
+# check Select3D_SensitiveCircle
+vclear
+vaxo
+compound {*}[explode c Sh] cc
+vdisplay -dispmode 1 cc
+vfit
+vselaxis 2500 3498 1001 0 1 0 -display a -showNormal
+set aPntTris [vmoveto 200 200]
+vpoint pp {*}$aPntTris
+checkpoint aPntTris_p $aPntTris {2500.9 3499.0 1001.6} 0.1
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle should be detected" }
+vfit
+vdump $imagedir/${casename}_prs_tris.png
+vseldump $imagedir/${casename}_selnorm_tris.png -type surfNormal
+
+# check Select3D_SensitiveCylinder
+vclear
+vdisplay -dispmode 1 c
+vfit
+vselaxis 2500 3498 1001 0 1 0 -display a -showNormal
+set aPntCyl [vmoveto 200 200]
+vpoint pp {*}$aPntCyl
+checkpoint aPntCyl_p $aPntCyl {2500.9 3499.0 1001.6} 0.1
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+vfit
+vdump $imagedir/${casename}_prs_cyl.png
+vseldump $imagedir/${casename}_selnorm_cyl.png -type surfNormal

@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC25337"
+puts "================"
+puts ""
+####################################
+# Regression to version 6.7.1 : boolean operations fail on two planar circular faces lying in the same plane
+####################################
+
+circle c1 -50 0 0 10
+circle c2 -35 0 0 10
+mkedge e1 c1
+mkedge e2 c2
+wire w1 e1
+wire w2 e2
+mkplane f1 w1
+mkplane f2 w2
+
+bop f1 f2
+bopfuse result
+
+checkprops result -s 582.987 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 6 -wire 3 -face 3 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 17
+checkview -display result -2d -path ${imagedir}/${test_image}.png

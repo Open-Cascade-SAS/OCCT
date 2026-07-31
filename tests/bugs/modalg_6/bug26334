@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC26334"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakePipeShell returns the wrong shape
+#######################################################################
+
+restore [locate_data_file bug26334_pw1.brep] pw1
+restore [locate_data_file bug26334_pw2.brep] pw2
+restore [locate_data_file bug26334_pw3.brep] pw3
+
+mksweep pw1
+addsweep pw2
+addsweep pw3
+setsweep -DT
+
+buildsweep result
+
+set square 1.72246
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 10
+ EDGE      : 13
+ WIRE      : 4
+ FACE      : 4
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 32
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by BRepOffsetAPI_MakePipeShell"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

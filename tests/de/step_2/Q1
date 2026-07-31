@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r_64-pe.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 4 )  Summary  = 4  ( 4 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 303  ( 303 ) 
+STATSHAPE   : Solid    = 37  ( 37 )  Shell    = 37  ( 37 )  Face     = 743  ( 743 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.07416095417  (  0.07455309901 )  AvgTol   =   0.00367968926  (   0.00785376399 )
+LABELS      : N0Labels = 6  ( 6 )  N1Labels = 16  ( 16 )  N2Labels = 0  ( 0 )   TotalLabels = 22  ( 22 )   NameLabels = 22  ( 22 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+
+
+set filename CTS21866.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 63  ( 66 )  Summary  = 63  ( 66 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 1393  ( 1393 ) 
+STATSHAPE   : Solid    = 6  ( 6 )  Shell    = 6  ( 6 )  Face     = 1459  ( 1459 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.1527552835  (   0.1473074462 )  AvgTol   =  0.0009786162001  (   0.00130619769 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 1261  ( 1261 )  N2Labels = 0  ( 0 )   TotalLabels = 1266  ( 1266 )   NameLabels = 11  ( 11 )   ColorLabels = 0  ( 0 )   LayerLabels = 1255  ( 1255 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 3  ( 3 )
+LAYERS      : Layers   = DECKEL GEHAEUSE KONTAKTE  ( DECKEL GEHAEUSE KONTAKTE )
+
+}

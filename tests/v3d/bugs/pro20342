@@ -1,0 +1,22 @@
+puts "============="
+puts "PRO20342"
+puts "============="
+
+##############################################################################
+## Calling of the function "vsetshading" with argument less than 1.0 calls exception "Segmentation Fault". Command
+## works properly in C30. There is line in the file "C40/Gallery/ViewerTest.cxx" in the function "Vshading": 
+##############################################################################
+
+pload XDE MODELING VISUALIZATION
+
+igesbrep [locate_data_file fra62523a.igs] result *
+
+checkshape result r
+
+vinit View1
+tclean result
+vdisplay result
+vsetshading result 0.1
+vfit
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC23932"
+puts "============"
+puts ""
+######################################################
+# Standard_NoSuchObject thrown computing section between two cylinders - new to 6.6.0
+######################################################
+
+set PI 3.1415926535897932
+
+#first face
+cylinder s1 538.57646417050069 347.77316708315834 183.37500000000000 0 -1 0 1 0 0 44.819173824159222
+trimu s1t s1 0 $PI
+mkface b1 s1t
+
+#second face
+cylinder s2 859.00000000000011 463.75990629028450 80.865093709715211 -1 0 0 0 -1 0 187.41335506149036
+trimu s2t s2 0 $PI
+mkface b2 s2t
+
+#section
+bop b1 b2
+bopsection result
+
+checkprops result -l 330.903 
+checkshape result 
+checksection result

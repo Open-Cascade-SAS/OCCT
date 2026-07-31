@@ -1,0 +1,46 @@
+puts "========"
+puts "BUG30435"
+puts "Improving performance of Approx_ComputeCLine"
+puts "========"
+puts ""
+
+pload QAcommands
+cone con 0 0 0 0 0 -1 1 0 0 -30 0
+2dbeziercurve b 4 0 0 15 15 35 -15 50 1.
+approxcurveonsurf cc b con  1.e-7 1 12 1000
+clear con
+clpoles cc
+
+set time0 ""
+set time1 ""
+
+dchrono t0 restart
+OCC30435 r0 cc 0 50
+dchrono t0 stop 
+set inf0 [dchrono t0 counter OCC30435] 
+
+regexp {COUNTER OCC30435: ([-0-9.+eE]+)} $inf0 full0 time0
+
+dchrono t1 restart
+OCC30435 r1 cc 1 50
+dchrono t1 stop
+set inf1 [dchrono t1 counter OCC30435_1] 
+ 
+regexp {COUNTER OCC30435_1: ([-0-9.+eE]+)} $inf1 full1 time1
+
+if { $time1 > $time0 } {
+    puts "Error : optimized algorithm works slowly then initial one"
+} else {
+    puts "Performance ratio is [expr $time0/$time1]"
+}
+
+clpoles r0
+clpoles r1
+smallview
+fit
+xwd $imagedir/${test_image}.png
+
+
+
+
+

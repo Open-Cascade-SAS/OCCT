@@ -1,0 +1,8 @@
+puts "===================================="
+puts "0030616: Crash on reading STEP file"
+puts "===================================="
+puts ""
+
+param xstep.cascade.unit M
+
+ReadStep D [locate_data_file bug30616_nist_ctc_01_asme1_ap242.stp]

@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC28501"
+puts "========"
+puts ""
+#################################################
+# Incomplete result of offset operation in mode Complete with Join type intersection
+#################################################
+
+restore [locate_data_file bug28501_ls_full.brep] ls
+
+mkvolume result ls -c
+
+checkshape result
+checknbshapes result -solid 28
+
+checkprops result -s 1.80723e+006 -v 1.8558e+007
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

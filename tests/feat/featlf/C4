@@ -1,0 +1,19 @@
+
+profile pr x 1 y 1 x -0.5 tt 0 1.2
+prism pr pr 0 0 1
+trotate pr 0.5 0 0 1 0 0 90
+ttranslate pr 0 1 0
+nexplode pr f
+depouille pr pr 0 1 0 pr_6 10 1 0 1 0 1 0
+profile pp c 0.3 280 ww
+trotate pp 0 0.15 0 0 1 0 -90
+ttranslate pp 0.3 0.3 0.9
+trotate pp 0.3 0.3 0.9 0 0 1 -90
+ttranslate pp 0.4 0 0
+
+plane pl 1 0.3 1 0 1 0
+featlf pr pp pl 0 0.3 0 0 0 0 1 1
+featperform lf result 
+
+
+checkprops result -s 6.86189

@@ -1,0 +1,33 @@
+puts "================================="
+puts "COMMON of box and halfspace"
+puts "================================="
+
+vertex v1  250  250 0
+vertex v2 -250  250 0
+vertex v3 -250 -250 0
+vertex v4  250 -250 0
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire w1 e1 e2 e3 e4
+
+mkplane f w1
+
+set x 0
+set y 0
+
+set Zpoint -100
+set Zbox -80
+
+halfspace hs f $x $y $Zpoint
+
+box b 0 0 $Zbox 150 200 200
+
+bop b hs
+bopcommon result
+
+checkprops result -s 116000
+checkview -display result -2d -otherwise { b hs } -s -path ${imagedir}/${test_image}.png

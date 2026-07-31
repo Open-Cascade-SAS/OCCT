@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC25263"
+puts "============"
+puts ""
+######################################################
+# Wrong result of cut operation.
+######################################################
+
+restore [locate_data_file bug25263_Face_cylindrique.brep] b1
+restore [locate_data_file bug25263_camembert.brep] b2
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 3.76991 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 3 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10
+checkview -display result -2d -path ${imagedir}/${test_image}.png

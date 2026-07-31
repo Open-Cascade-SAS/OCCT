@@ -1,0 +1,19 @@
+puts "======="
+puts "DXF906"
+puts "OCC889"
+puts "OCC1013"
+puts "======="
+puts ""
+#########################################################
+## After fix OCC157 we have plane surface in face (instead bspline as in C40).
+## But now checkshape founds number of errors on new face. I think that face from
+## c40 is not better than in dev 
+#########################################################
+
+restore [locate_data_file DXF906.rle] a 
+
+mkplane result a
+
+checkprops result -s 92131.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

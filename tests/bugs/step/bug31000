@@ -1,0 +1,28 @@
+puts "# ====================================================================="
+puts "# 0031000: Data Exchange - STEP file cannot be opened due to lower-case special token End-ISO-10303-21"
+puts "# ====================================================================="
+puts ""
+
+pload OCAF
+Close D -silent
+
+# Read file
+ReadStep D [locate_data_file bug31000_InSensitive.stp]
+
+# Checking
+set state [data c]
+if { [regexp "361 Entities, of which 4 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+set xst [ XStat D 1] 
+if { [regexp "Number of labels with color link = 1" $xst] != 1} {
+   puts "Error : wrong count of color link"
+}
+if { [regexp {0:1:1:1 SOLID  has attributes: Color([(])RED 1([)])} $xst] != 1} {
+   puts "Error : wrong shape 0:1:1:1"
+}
+
+XGetOneShape res D
+checknbshapes res -face 6 -shell 1 -solid 1
+checkshape res f

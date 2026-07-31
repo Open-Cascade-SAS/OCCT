@@ -1,0 +1,318 @@
+puts "================"
+puts "OCC1054"
+puts "================"
+puts ""
+#######################################################################################
+# Mechanism of transactions' synchronization and mechanizm of nested transactions 
+#######################################################################################
+# Case 2 (nested mode OFF)
+#######################################################################################
+
+proc OCC1054_Check_dump {IsGood index good_index case} {
+  # Check dump
+  if { ${index} != ${good_index} } {
+    set IsGood 0
+    puts "OCC1054 Error (case ${case} : index = ${index} good_index = ${good_index})"
+  }
+  return ${IsGood}
+}
+
+proc OCC1054_Check_real_attribute {IsGood doc label good_real case} {
+  global ${doc}
+  # Check real attribute
+  set percent_max 0.1
+  if [catch { set real [GetReal ${doc} ${label}] } message] {
+    set IsGood 0
+    puts "OCC1054 Error (case ${case})"
+  } else {
+    set real_percent [expr abs(${real} - ${good_real}) / double(${good_real}) * 100.]
+    if {${real_percent} > ${percent_max}} {
+       puts "good_real = ${good_real}"
+       puts "real = ${real}"
+       puts "real_percent = ${real_percent}"
+       puts "OCC1054 Error (case ${case}-2)"
+    }
+  }
+  return ${IsGood}
+}
+
+
+set IsGood 1
+set Case 0
+
+NewDocument doc1
+NewDocument doc2
+NewDocument doc3
+mtmCreate 4
+
+mtmAdd doc1
+
+mtmOpen
+SetReal doc1 0:1 1
+mtmCommit tr1
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There is one document ( "2809192" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0} "one" [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}     21 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}     1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}     29 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+
+
+mtmAdd doc2
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 2 documents ( "2809192" "2705536" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  22 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  30 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+
+mtmOpen
+SetReal doc2 0:1 2
+mtmCommit tr2
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 2 documents ( "2809192" "2705536" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" ) 
+#  Undo: 	tr2 - 1 documents  ( "2705536" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "tr2"]
+set docnum2 [lindex ${list} [expr ${index2} + 2]]
+set index3 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  22 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  30 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum2}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index3}  38 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:1 2 [incr Case]]
+
+SetReal doc3 0:1 1
+mtmAdd doc3
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 3 documents ( "2809192" "2705536" "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" ) 
+#  Undo: 	tr2 - 1 documents  ( "2705536" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "tr2"]
+set docnum2 [lindex ${list} [expr ${index2} + 2]]
+set index3 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  3 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  23 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  31 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum2}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index3}  39 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:1 2 [incr Case]]
+
+mtmOpen
+SetReal doc1 0:2 2
+SetReal doc3 0:2 2
+mtmCommit tr3
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 3 documents ( "2809192" "2705536" "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" ) 
+#  Undo: 	tr2 - 1 documents  ( "2705536" ) 
+#  Undo: 	tr3 - 2 documents  ( "3095112" "2809192" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "tr2"]
+set docnum2 [lindex ${list} [expr ${index2} + 2]]
+set index3 [lsearch -exact ${list} "tr3"]
+set docnum3 [lindex ${list} [expr ${index3} + 2]]
+set index4 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  3 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  23 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  31 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum2}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index3}  39 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum3}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index4}  48 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:1 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc3} 0:2 2 [incr Case]]
+
+mtmOpen
+SetReal doc2 0:2 2
+SetReal doc3 0:3 3
+mtmCommit tr4
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 3 documents ( "2809192" "2705536" "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr1 - 1 documents  ( "2809192" ) 
+#  Undo: 	tr2 - 1 documents  ( "2705536" ) 
+#  Undo: 	tr3 - 2 documents  ( "3095112" "2809192" ) 
+#  Undo: 	tr4 - 2 documents  ( "3095112" "2705536" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr1"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "tr2"]
+set docnum2 [lindex ${list} [expr ${index2} + 2]]
+set index3 [lsearch -exact ${list} "tr3"]
+set docnum3 [lindex ${list} [expr ${index3} + 2]]
+set index4 [lsearch -exact ${list} "tr4"]
+set docnum4 [lindex ${list} [expr ${index4} + 2]]
+set index5 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  3 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  23 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  31 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum2}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index3}  39 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum3}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index4}  48 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum4}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index5}  57 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:1 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc3} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc3} 0:3 3 [incr Case]]
+
+mtmOpen
+SetReal doc1 0:3 3
+SetReal doc2 0:3 3
+mtmCommit tr5
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There are 3 documents ( "2809192" "2705536" "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	tr2 - 1 documents  ( "2705536" ) 
+#  Undo: 	tr3 - 2 documents  ( "3095112" "2809192" ) 
+#  Undo: 	tr4 - 2 documents  ( "3095112" "2705536" ) 
+#  Undo: 	tr5 - 2 documents  ( "2705536" "2809192" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set docnum0 [lindex ${list} 7]
+set index1 [lsearch -exact ${list} "tr2"]
+set docnum1 [lindex ${list} [expr ${index1} + 2]]
+set index2 [lsearch -exact ${list} "tr3"]
+set docnum2 [lindex ${list} [expr ${index2} + 2]]
+set index3 [lsearch -exact ${list} "tr4"]
+set docnum3 [lindex ${list} [expr ${index3} + 2]]
+set index4 [lsearch -exact ${list} "tr5"]
+set docnum4 [lindex ${list} [expr ${index4} + 2]]
+set index5 [lsearch -exact ${list} "Last"]
+
+# Check dump
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum0}  3 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index1}  23 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum1}  1 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index2}  31 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum2}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index3}  40 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum3}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index4}  49 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${docnum4}  2 [incr Case]]
+set IsGood [OCC1054_Check_dump ${IsGood} ${index5}  58 [incr Case]]
+
+# Check real attributes
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:1 1 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc1} 0:3 3 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:1 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc2} 0:3 3 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc3} 0:2 2 [incr Case]]
+set IsGood [OCC1054_Check_real_attribute ${IsGood} ${doc3} 0:3 3 [incr Case]]
+
+if { ${IsGood} == 1 } {
+  puts "OCC1054 OK"
+} else {
+  puts "OCC1054 Error"
+}

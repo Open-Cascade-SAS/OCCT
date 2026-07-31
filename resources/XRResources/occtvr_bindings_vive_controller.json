@@ -1,0 +1,139 @@
+{
+  "bindings": {
+    "/actions/generic_left": {
+      "haptics": [
+        {
+          "output": "/actions/generic_left/out/haptic",
+          "path": "/user/hand/left/output/haptic"
+        }
+      ],
+      "poses": [
+        {
+          "output": "/actions/generic_left/in/pose_base",
+          "path": "/user/hand/left/pose/base"
+        },
+        {
+          "output": "/actions/generic_left/in/pose_front",
+          "path": "/user/hand/left/pose/front"
+        },
+        {
+          "output": "/actions/generic_left/in/pose_handgrip",
+          "path": "/user/hand/left/pose/handgrip"
+        },
+        {
+          "output": "/actions/generic_left/in/pose_tip",
+          "path": "/user/hand/left/pose/tip"
+        }
+      ],
+      "sources": [
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/appmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/application_menu"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/trigger_click" },
+            "pull":  { "output": "/actions/generic_left/in/trigger_pull" }
+          },
+          "mode": "trigger",
+          "path": "/user/hand/left/input/trigger"
+        },
+        {
+          "inputs": {
+            "click":    { "output": "/actions/generic_left/in/trackpad_click" },
+            "touch":    { "output": "/actions/generic_left/in/trackpad_touch" },
+            "position": { "output": "/actions/generic_left/in/trackpad_position" }
+          },
+          "mode": "trackpad",
+          "path": "/user/hand/left/input/trackpad"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/grip_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/grip"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/sysmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/system"
+        }
+      ]
+    },
+    "/actions/generic_right": {
+      "haptics": [
+        {
+          "output": "/actions/generic_right/out/haptic",
+          "path": "/user/hand/right/output/haptic"
+        }
+      ],
+      "poses": [
+        {
+          "output": "/actions/generic_right/in/pose_base",
+          "path": "/user/hand/right/pose/base"
+        },
+        {
+          "output": "/actions/generic_right/in/pose_front",
+          "path": "/user/hand/right/pose/front"
+        },
+        {
+          "output": "/actions/generic_right/in/pose_handgrip",
+          "path": "/user/hand/right/pose/handgrip"
+        },
+        {
+          "output": "/actions/generic_right/in/pose_tip",
+          "path": "/user/hand/right/pose/tip"
+        }
+      ],
+      "sources": [
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/appmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/application_menu"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/trigger_click" },
+            "pull":  { "output": "/actions/generic_right/in/trigger_pull" }
+          },
+          "mode": "trigger",
+          "path": "/user/hand/right/input/trigger"
+        },
+        {
+          "inputs": {
+            "click":    { "output": "/actions/generic_right/in/trackpad_click" },
+            "touch":    { "output": "/actions/generic_right/in/trackpad_touch" },
+            "position": { "output": "/actions/generic_right/in/trackpad_position" }
+          },
+          "mode": "trackpad",
+          "path": "/user/hand/right/input/trackpad"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/grip_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/grip"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/sysmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/system"
+        }
+      ]
+    }
+  },
+  "controller_type": "vive_controller",
+  "description": "Standard Open CASCADE Technology VR bindings for the Vive controller",
+  "name": "OCCT VR bindings for the Vive controller"
+}

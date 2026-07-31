@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC28211"
+puts "========"
+puts ""
+#################################################
+# Modeling Algorithms - Boolean fuse operation produces incorrect result
+#################################################
+
+restore [locate_data_file bug28211_DDJ_BLD1_B_Pos3.brep] a
+
+explode a so
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+
+# FUSE
+bbop result 1
+
+checkshape result
+checknbshapes result -solid 1 -shell 1
+checkprops result -v 13953.1 -s 4096.56
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

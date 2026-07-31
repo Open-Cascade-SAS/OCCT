@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC27128"
+puts "============"
+puts ""
+###############################
+## The algorithm of sharing edges in Boolean operation should be improved
+###############################
+
+plane pl 0.195808075898442, -0.229262227170656, 4.05546403129991 0 0 1
+psphere s1 pl 0.03101752454
+restore [locate_data_file bug27128-Helix_Pipe.brep] s2
+
+settolerance s1 2.0e-6
+
+bfuse result s1 s2
+checkshape result
+
+smallview
+donly s1
+fit
+donly result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

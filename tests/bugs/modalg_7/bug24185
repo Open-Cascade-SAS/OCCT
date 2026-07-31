@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC24185"
+puts "========"
+puts ""
+########################################
+# Wrong projection of a wire to a face
+########################################
+
+restore [locate_data_file bug24185_face.brep] f
+restore [locate_data_file bug24185_wire.brep] w
+
+nproject result w f 1.e-4 1
+
+checkshape result
+checkprops result -l 11.06
+
+vinit
+vdisplay w
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

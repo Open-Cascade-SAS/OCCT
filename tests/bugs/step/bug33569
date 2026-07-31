@@ -1,0 +1,13 @@
+puts "================"
+puts "0033569: Data Exchange, STEP - Crash when reading multi-body file"
+puts "================"
+
+ReadStep D [locate_data_file bug33569.stp]
+
+set result [XDumpNbDGTs D] 
+
+regexp {NbOfAttachedDatum +: +([0-9]+)} $result full nb
+
+if { $nb != 26} {
+  puts "Error: Number of Datums incorrect"
+}

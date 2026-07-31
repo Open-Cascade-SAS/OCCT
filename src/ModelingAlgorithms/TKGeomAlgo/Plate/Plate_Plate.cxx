@@ -1,0 +1,2001 @@
+// Created on: 1995-10-19
+// Created by: Andre LIEUTIER
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <gp_XY.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <Plate_FreeGtoCConstraint.hxx>
+#include <Plate_GlobalTranslationConstraint.hxx>
+#include <Plate_GtoCConstraint.hxx>
+#include <Plate_LinearScalarConstraint.hxx>
+#include <Plate_LinearXYZConstraint.hxx>
+#include <Plate_LineConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <Plate_PlaneConstraint.hxx>
+#include <Plate_Plate.hxx>
+#include <Plate_SampledCurveConstraint.hxx>
+
+//=================================================================================================
+
+Plate_Plate::Plate_Plate()
+    : order(0),
+      n_el(0),
+      n_dim(0),
+      solution(nullptr),
+      points(nullptr),
+      deru(nullptr),
+      derv(nullptr),
+      OK(false),
+      maxConstraintOrder(0),
+      Uold(1.e20),
+      Vold(1.e20),
+      U2(0.0),
+      R(0.0),
+      L(0.0)
+{
+  PolynomialPartOnly = false;
+  memset(ddu, 0, sizeof(ddu));
+  memset(ddv, 0, sizeof(ddv));
+}
+
+//=================================================================================================
+
+Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
+    : order(Ref.order),
+      n_el(Ref.n_el),
+      n_dim(Ref.n_dim),
+      solution(nullptr),
+      points(nullptr),
+      deru(nullptr),
+      derv(nullptr),
+      OK(Ref.OK),
+      Uold(1.e20),
+      Vold(1.e20),
+      U2(0.0),
+      R(0.0),
+      L(0.0)
+{
+  int i;
+  if (Ref.OK)
+  {
+    if (n_dim > 0 && Ref.solution != nullptr)
+    {
+      solution = new gp_XYZ[n_dim];
+      for (i = 0; i < n_dim; i++)
+      {
+        Solution(i) = Ref.Solution(i);
+      }
+    }
+
+    if (n_el > 0)
+    {
+      if (Ref.points != nullptr)
+      {
+        points = new gp_XY[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Points(i) = Ref.Points(i);
+        }
+      }
+
+      if (Ref.deru != nullptr)
+      {
+        deru = new int[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Deru(i) = Ref.Deru(i);
+        }
+      }
+
+      if (Ref.derv != nullptr)
+      {
+        derv = new int[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Derv(i) = Ref.Derv(i);
+        }
+      }
+    }
+  }
+
+  myConstraints        = Ref.myConstraints;
+  myLXYZConstraints    = Ref.myLXYZConstraints;
+  myLScalarConstraints = Ref.myLScalarConstraints;
+  maxConstraintOrder   = Ref.maxConstraintOrder;
+  PolynomialPartOnly   = Ref.PolynomialPartOnly;
+  for (i = 0; i < 10; i++)
+  {
+    ddu[i] = Ref.ddu[i];
+    ddv[i] = Ref.ddv[i];
+  }
+}
+
+//=================================================================================================
+
+Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
+{
+  Init();
+  order = Ref.order;
+  n_el  = Ref.n_el;
+  n_dim = Ref.n_dim;
+  OK    = Ref.OK;
+  int i;
+  if (Ref.OK)
+  {
+    if (n_dim > 0 && Ref.solution != nullptr)
+    {
+      solution = new gp_XYZ[n_dim];
+      for (i = 0; i < n_dim; i++)
+      {
+        Solution(i) = Ref.Solution(i);
+      }
+    }
+
+    if (n_el > 0)
+    {
+      if (Ref.points != nullptr)
+      {
+        points = new gp_XY[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Points(i) = Ref.Points(i);
+        }
+      }
+
+      if (Ref.deru != nullptr)
+      {
+        deru = new int[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Deru(i) = Ref.Deru(i);
+        }
+      }
+
+      if (Ref.derv != nullptr)
+      {
+        derv = new int[n_el];
+        for (i = 0; i < n_el; i++)
+        {
+          Derv(i) = Ref.Derv(i);
+        }
+      }
+    }
+  }
+
+  myConstraints        = Ref.myConstraints;
+  myLXYZConstraints    = Ref.myLXYZConstraints;
+  myLScalarConstraints = Ref.myLScalarConstraints;
+  maxConstraintOrder   = Ref.maxConstraintOrder;
+  PolynomialPartOnly   = Ref.PolynomialPartOnly;
+
+  for (i = 0; i < 10; i++)
+  {
+    ddu[i] = Ref.ddu[i];
+    ddv[i] = Ref.ddv[i];
+  }
+  return *this;
+}
+
+//=================================================================================================
+
+void Plate_Plate::Load(const Plate_PinpointConstraint& PConst)
+{
+  OK = false;
+  n_el++;
+  myConstraints.Append(PConst);
+  int OrdreConst = PConst.Idu() + PConst.Idv();
+  if (maxConstraintOrder < OrdreConst)
+  {
+    maxConstraintOrder = OrdreConst;
+  }
+}
+
+void Plate_Plate::Load(const Plate_LinearXYZConstraint& LXYZConst)
+{
+  OK = false;
+  n_el += LXYZConst.Coeff().RowLength();
+
+  myLXYZConstraints.Append(LXYZConst);
+  for (int j = 1; j <= LXYZConst.GetPPC().Length(); j++)
+  {
+    int OrdreConst = LXYZConst.GetPPC()(j).Idu() + LXYZConst.GetPPC()(j).Idv();
+    if (maxConstraintOrder < OrdreConst)
+    {
+      maxConstraintOrder = OrdreConst;
+    }
+  }
+}
+
+void Plate_Plate::Load(const Plate_LinearScalarConstraint& LScalarConst)
+{
+  OK = false;
+  n_el += LScalarConst.Coeff().RowLength();
+  myLScalarConstraints.Append(LScalarConst);
+  for (int j = 1; j <= LScalarConst.GetPPC().Length(); j++)
+  {
+    int OrdreConst = LScalarConst.GetPPC()(j).Idu() + LScalarConst.GetPPC()(j).Idv();
+    if (maxConstraintOrder < OrdreConst)
+    {
+      maxConstraintOrder = OrdreConst;
+    }
+  }
+}
+
+void Plate_Plate::Load(const Plate_LineConstraint& LConst)
+{
+  Load(LConst.LSC());
+}
+
+void Plate_Plate::Load(const Plate_PlaneConstraint& PConst)
+{
+  Load(PConst.LSC());
+}
+
+void Plate_Plate::Load(const Plate_SampledCurveConstraint& SCConst)
+{
+  Load(SCConst.LXYZC());
+}
+
+void Plate_Plate::Load(const Plate_GtoCConstraint& GtoCConst)
+{
+  for (int i = 0; i < GtoCConst.nb_PPC(); i++)
+  {
+    Load(GtoCConst.GetPPC(i));
+  }
+}
+
+void Plate_Plate::Load(const Plate_FreeGtoCConstraint& FGtoCConst)
+{
+  int i;
+  for (i = 0; i < FGtoCConst.nb_PPC(); i++)
+  {
+    Load(FGtoCConst.GetPPC(i));
+  }
+  for (i = 0; i < FGtoCConst.nb_LSC(); i++)
+  {
+    Load(FGtoCConst.LSC(i));
+  }
+}
+
+void Plate_Plate::Load(const Plate_GlobalTranslationConstraint& GTConst)
+{
+  Load(GTConst.LXYZC());
+}
+
+//=======================================================================
+// function : SolveTI
+// purpose  : to solve the set of constraints
+//=======================================================================
+
+void Plate_Plate::SolveTI(const int                    ord,
+                          const double                 anisotropie,
+                          const Message_ProgressRange& theProgress)
+{
+  int IterationNumber = 0;
+  OK                  = false;
+  order               = ord;
+  if (ord <= 1)
+  {
+    return;
+  }
+  if (ord > 9)
+  {
+    return;
+  }
+  if (n_el < 1)
+  {
+    return;
+  }
+  if (anisotropie < 1.e-6)
+  {
+    return;
+  }
+  if (anisotropie > 1.e+6)
+  {
+    return;
+  }
+
+  // computation of the bounding box of the 2d PPconstraints
+  double xmin, xmax, ymin, ymax;
+  UVBox(xmin, xmax, ymin, ymax);
+
+  double du = 0.5 * (xmax - xmin);
+  if (anisotropie > 1.)
+  {
+    du *= anisotropie;
+  }
+  if (du < 1.e-10)
+  {
+    return;
+  }
+  ddu[0] = 1;
+  int i;
+  for (i = 1; i <= 9; i++)
+  {
+    ddu[i] = ddu[i - 1] / du;
+  }
+
+  double dv = 0.5 * (ymax - ymin);
+  if (anisotropie < 1.)
+  {
+    dv /= anisotropie;
+  }
+  if (dv < 1.e-10)
+  {
+    return;
+  }
+  ddv[0] = 1;
+  for (i = 1; i <= 9; i++)
+  {
+    ddv[i] = ddv[i - 1] / dv;
+  }
+
+  if (myLScalarConstraints.IsEmpty())
+  {
+    if (myLXYZConstraints.IsEmpty())
+    {
+      SolveTI1(IterationNumber, theProgress);
+    }
+    else
+    {
+      SolveTI2(IterationNumber, theProgress);
+    }
+  }
+  else
+  {
+    SolveTI3(IterationNumber, theProgress);
+  }
+}
+
+//=======================================================================
+// function : SolveTI1
+// purpose  : to solve the set of constraints in the easiest case,
+//           only PinPointConstraints are loaded
+//=======================================================================
+
+void Plate_Plate::SolveTI1(const int IterationNumber, const Message_ProgressRange& theProgress)
+{
+  // computation of square matrix members
+
+  n_dim = n_el + order * (order + 1) / 2;
+  math_Matrix mat(0, n_dim - 1, 0, n_dim - 1, 0.);
+
+  delete[] (gp_XY*)points;
+  points = new gp_XY[n_el];
+  int i;
+  for (i = 0; i < n_el; i++)
+  {
+    Points(i) = myConstraints(i + 1).Pnt2d();
+  }
+
+  delete[] (int*)deru;
+  deru = new int[n_el];
+  for (i = 0; i < n_el; i++)
+  {
+    Deru(i) = myConstraints(i + 1).Idu();
+  }
+
+  delete[] (int*)derv;
+  derv = new int[n_el];
+  for (i = 0; i < n_el; i++)
+  {
+    Derv(i) = myConstraints(i + 1).Idv();
+  }
+
+  for (i = 0; i < n_el; i++)
+  {
+    for (int j = 0; j < i; j++)
+    {
+      double signe = 1;
+      if (((Deru(j) + Derv(j)) % 2) == 1)
+      {
+        signe = -1;
+      }
+      int iu    = Deru(i) + Deru(j);
+      int iv    = Derv(i) + Derv(j);
+      mat(i, j) = signe * SolEm(Points(i) - Points(j), iu, iv);
+    }
+  }
+
+  i = n_el;
+  for (int iu = 0; iu < order; iu++)
+  {
+    for (int iv = 0; iu + iv < order; iv++)
+    {
+      for (int j = 0; j < n_el; j++)
+      {
+        int idu   = Deru(j);
+        int idv   = Derv(j);
+        mat(i, j) = Polm(Points(j), iu, iv, idu, idv);
+      }
+      i++;
+    }
+  }
+
+  for (i = 0; i < n_dim; i++)
+  {
+    for (int j = i + 1; j < n_dim; j++)
+    {
+      mat(i, j) = mat(j, i);
+    }
+  }
+
+  // initialisation of the Gauss algorithm
+  double pivot_max = 1.e-12;
+  OK               = true;
+
+  Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI1()", 10);
+  math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
+
+  if (aScope.UserBreak())
+  {
+    OK = false;
+    return;
+  }
+
+  if (!algo_gauss.IsDone())
+  {
+    int nbm = order * (order + 1) / 2;
+    for (i = n_el; i < n_el + nbm; i++)
+    {
+      mat(i, i) = 1.e-8;
+    }
+    pivot_max = 1.e-18;
+
+    math_Gauss thealgo(mat, pivot_max, aScope.Next(3));
+
+    if (aScope.UserBreak())
+    {
+      OK = false;
+      return;
+    }
+    algo_gauss = thealgo;
+    OK         = algo_gauss.IsDone();
+  }
+
+  if (OK)
+  {
+    //   computation of the linear system solution for the X, Y and Z coordinates
+    math_Vector sec_member(0, n_dim - 1, 0.);
+    math_Vector sol(0, n_dim - 1);
+
+    delete[] (gp_XYZ*)solution;
+    solution = new gp_XYZ[n_dim];
+
+    for (int icoor = 1; icoor <= 3; icoor++)
+    {
+      for (i = 0; i < n_el; i++)
+      {
+        sec_member(i) = myConstraints(i + 1).Value().Coord(icoor);
+      }
+      algo_gauss.Solve(sec_member, sol);
+      // alr iteration pour affiner la solution
+      {
+        math_Vector sol1(0, n_dim - 1);
+        math_Vector sec_member1(0, n_dim - 1);
+        for (i = 1; i <= IterationNumber; i++)
+        {
+          sec_member1 = sec_member - mat * sol;
+          algo_gauss.Solve(sec_member1, sol1);
+          sol += sol1;
+        }
+      }
+      // finalr
+
+      for (i = 0; i < n_dim; i++)
+      {
+        Solution(i).SetCoord(icoor, sol(i));
+      }
+    }
+  }
+}
+
+//=======================================================================
+// function : SolveTI2
+// purpose  : to solve the set of constraints in the medium case,
+//           LinearXYZ constraints are provided but no LinearScalar one
+//=======================================================================
+
+void Plate_Plate::SolveTI2(const int IterationNumber, const Message_ProgressRange& theProgress)
+{
+  // computation of square matrix members
+
+  int nCC1 = myConstraints.Length();
+  int nCC2 = 0;
+  int i;
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+    nCC2 += myLXYZConstraints(i).Coeff().ColLength();
+  }
+
+  int n_dimat = nCC1 + nCC2 + order * (order + 1) / 2;
+
+  delete[] (gp_XY*)points;
+  points = new gp_XY[n_el];
+  delete[] (int*)deru;
+  deru = new int[n_el];
+  delete[] (int*)derv;
+  derv = new int[n_el];
+
+  for (i = 0; i < nCC1; i++)
+  {
+    Points(i) = myConstraints(i + 1).Pnt2d();
+    Deru(i)   = myConstraints(i + 1).Idu();
+    Derv(i)   = myConstraints(i + 1).Idv();
+  }
+
+  int k = nCC1;
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    {
+      Points(k) = myLXYZConstraints(i).GetPPC()(j).Pnt2d();
+      Deru(k)   = myLXYZConstraints(i).GetPPC()(j).Idu();
+      Derv(k)   = myLXYZConstraints(i).GetPPC()(j).Idv();
+      k++;
+    }
+  }
+
+  math_Matrix mat(0, n_dimat - 1, 0, n_dimat - 1, 0.);
+
+  fillXYZmatrix(mat, 0, 0, nCC1, nCC2);
+
+  // initialisation of the Gauss algorithm
+  double pivot_max = 1.e-12;
+  OK               = true; // ************ JHH
+
+  Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI2()", 10);
+  math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
+
+  if (aScope.UserBreak())
+  {
+    OK = false;
+    return;
+  }
+
+  if (!algo_gauss.IsDone())
+  {
+    for (i = nCC1 + nCC2; i < n_dimat; i++)
+    {
+      mat(i, i) = 1.e-8;
+    }
+    pivot_max = 1.e-18;
+
+    math_Gauss thealgo1(mat, pivot_max, aScope.Next(3));
+
+    if (aScope.UserBreak())
+    {
+      OK = false;
+      return;
+    }
+    algo_gauss = thealgo1;
+    OK         = algo_gauss.IsDone();
+  }
+
+  if (OK)
+  {
+    //   computation of the linear system solution for the X, Y and Z coordinates
+    math_Vector sec_member(0, n_dimat - 1, 0.);
+    math_Vector sol(0, n_dimat - 1);
+
+    delete[] (gp_XYZ*)solution;
+    n_dim    = n_el + order * (order + 1) / 2;
+    solution = new gp_XYZ[n_dim];
+
+    for (int icoor = 1; icoor <= 3; icoor++)
+    {
+      for (i = 0; i < nCC1; i++)
+      {
+        sec_member(i) = myConstraints(i + 1).Value().Coord(icoor);
+      }
+
+      k = nCC1;
+      for (i = 1; i <= myLXYZConstraints.Length(); i++)
+      {
+        for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        {
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+          {
+            sec_member(k) += myLXYZConstraints(i).Coeff()(irow, icol)
+                             * myLXYZConstraints(i).GetPPC()(icol).Value().Coord(icoor);
+          }
+          k++;
+        }
+      }
+
+      algo_gauss.Solve(sec_member, sol);
+      // alr iteration pour affiner la solution
+      {
+        math_Vector sol1(0, n_dimat - 1);
+        math_Vector sec_member1(0, n_dimat - 1);
+        for (i = 1; i <= IterationNumber; i++)
+        {
+          sec_member1 = sec_member - mat * sol;
+          algo_gauss.Solve(sec_member1, sol1);
+          sol += sol1;
+        }
+      }
+      // finalr
+
+      for (i = 0; i < nCC1; i++)
+      {
+        Solution(i).SetCoord(icoor, sol(i));
+      }
+
+      int kSolution = nCC1;
+      int ksol      = nCC1;
+
+      for (i = 1; i <= myLXYZConstraints.Length(); i++)
+      {
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+        {
+          double vsol = 0;
+          for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+          {
+            vsol += myLXYZConstraints(i).Coeff()(irow, icol) * sol(ksol + irow - 1);
+          }
+          Solution(kSolution).SetCoord(icoor, vsol);
+          kSolution++;
+        }
+        ksol += myLXYZConstraints(i).Coeff().ColLength();
+      }
+
+      for (i = 0; i < order * (order + 1) / 2; i++)
+      {
+        Solution(n_el + i).SetCoord(icoor, sol(ksol + i));
+      }
+    }
+  }
+}
+
+//=======================================================================
+// function : SolveTI3
+// purpose  : to solve the set of constraints in the most general situation
+//=======================================================================
+
+void Plate_Plate::SolveTI3(const int IterationNumber, const Message_ProgressRange& theProgress)
+{
+  // computation of square matrix members
+
+  int nCC1 = myConstraints.Length();
+
+  int nCC2 = 0;
+  int i;
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+    nCC2 += myLXYZConstraints(i).Coeff().ColLength();
+  }
+
+  int nCC3 = 0;
+  for (i = 1; i <= myLScalarConstraints.Length(); i++)
+  {
+    nCC3 += myLScalarConstraints(i).Coeff().ColLength();
+  }
+
+  int nbm          = order * (order + 1) / 2;
+  int n_dimsousmat = nCC1 + nCC2 + nbm;
+  int n_dimat      = 3 * n_dimsousmat + nCC3;
+
+  delete[] (gp_XY*)points;
+  points = new gp_XY[n_el];
+  delete[] (int*)deru;
+  deru = new int[n_el];
+  delete[] (int*)derv;
+  derv = new int[n_el];
+
+  for (i = 0; i < nCC1; i++)
+  {
+    Points(i) = myConstraints(i + 1).Pnt2d();
+    Deru(i)   = myConstraints(i + 1).Idu();
+    Derv(i)   = myConstraints(i + 1).Idv();
+  }
+
+  int k = nCC1;
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    {
+      Points(k) = myLXYZConstraints(i).GetPPC()(j).Pnt2d();
+      Deru(k)   = myLXYZConstraints(i).GetPPC()(j).Idu();
+      Derv(k)   = myLXYZConstraints(i).GetPPC()(j).Idv();
+      k++;
+    }
+  }
+  int nPPC2 = k;
+  for (i = 1; i <= myLScalarConstraints.Length(); i++)
+  {
+    for (int j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
+    {
+      Points(k) = myLScalarConstraints(i).GetPPC()(j).Pnt2d();
+      Deru(k)   = myLScalarConstraints(i).GetPPC()(j).Idu();
+      Derv(k)   = myLScalarConstraints(i).GetPPC()(j).Idv();
+      k++;
+    }
+  }
+
+  math_Matrix mat(0, n_dimat - 1, 0, n_dimat - 1, 0.);
+
+  fillXYZmatrix(mat, 0, 0, nCC1, nCC2);
+  fillXYZmatrix(mat, n_dimsousmat, n_dimsousmat, nCC1, nCC2);
+  fillXYZmatrix(mat, 2 * n_dimsousmat, 2 * n_dimsousmat, nCC1, nCC2);
+
+  k        = 3 * n_dimsousmat;
+  int kppc = nPPC2;
+  int j;
+  for (i = 1; i <= myLScalarConstraints.Length(); i++)
+  {
+    for (j = 0; j < nCC1; j++)
+    {
+
+      math_Vector vmat(1, myLScalarConstraints(i).GetPPC().Length());
+
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+      {
+        double signe = 1;
+        if (((Deru(j) + Derv(j)) % 2) == 1)
+        {
+          signe = -1;
+        }
+        int iu     = Deru(kppc + ippc - 1) + Deru(j);
+        int iv     = Derv(kppc + ippc - 1) + Derv(j);
+        vmat(ippc) = signe * SolEm(Points(kppc + ippc - 1) - Points(j), iu, iv);
+      }
+
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+        {
+          mat(k + irow - 1, j) += myLScalarConstraints(i).Coeff()(irow, icol).X() * vmat(icol);
+          mat(k + irow - 1, n_dimsousmat + j) +=
+            myLScalarConstraints(i).Coeff()(irow, icol).Y() * vmat(icol);
+          mat(k + irow - 1, 2 * n_dimsousmat + j) +=
+            myLScalarConstraints(i).Coeff()(irow, icol).Z() * vmat(icol);
+        }
+      }
+    }
+
+    int k2    = nCC1;
+    int kppc2 = nCC1;
+    int i2;
+    for (i2 = 1; i2 <= myLXYZConstraints.Length(); i2++)
+    {
+
+      math_Matrix tmpmat(1,
+                         myLScalarConstraints(i).GetPPC().Length(),
+                         1,
+                         myLXYZConstraints(i2).GetPPC().Length());
+
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+      {
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+        {
+          double signe = 1;
+          if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
+          {
+            signe = -1;
+          }
+          int iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          tmpmat(ippc, ippc2) =
+            signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), iu, iv);
+        }
+      }
+
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
+        {
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+          {
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
+            {
+              mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol).X()
+                                                   * myLXYZConstraints(i2).Coeff()(irow2, icol2)
+                                                   * tmpmat(icol, icol2);
+              mat(k + irow - 1, n_dimsousmat + k2 + irow2 - 1) +=
+                myLScalarConstraints(i).Coeff()(irow, icol).Y()
+                * myLXYZConstraints(i2).Coeff()(irow2, icol2) * tmpmat(icol, icol2);
+              mat(k + irow - 1, 2 * n_dimsousmat + k2 + irow2 - 1) +=
+                myLScalarConstraints(i).Coeff()(irow, icol).Z()
+                * myLXYZConstraints(i2).Coeff()(irow2, icol2) * tmpmat(icol, icol2);
+            }
+          }
+        }
+      }
+
+      k2 += myLXYZConstraints(i2).Coeff().ColLength();
+      kppc2 += myLXYZConstraints(i2).Coeff().RowLength();
+    }
+
+    j = nCC1 + nCC2;
+    for (int iu = 0; iu < order; iu++)
+    {
+      for (int iv = 0; iu + iv < order; iv++)
+      {
+
+        math_Vector vmat(1, myLScalarConstraints(i).GetPPC().Length());
+        for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+        {
+          int idu    = Deru(kppc + ippc - 1);
+          int idv    = Derv(kppc + ippc - 1);
+          vmat(ippc) = Polm(Points(kppc + ippc - 1), iu, iv, idu, idv);
+        }
+
+        for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        {
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+          {
+            mat(k + irow - 1, j) += myLScalarConstraints(i).Coeff()(irow, icol).X() * vmat(icol);
+            mat(k + irow - 1, n_dimsousmat + j) +=
+              myLScalarConstraints(i).Coeff()(irow, icol).Y() * vmat(icol);
+            mat(k + irow - 1, 2 * n_dimsousmat + j) +=
+              myLScalarConstraints(i).Coeff()(irow, icol).Z() * vmat(icol);
+          }
+        }
+
+        j++;
+      }
+    }
+
+    k2    = 3 * n_dimsousmat;
+    kppc2 = nPPC2;
+    for (i2 = 1; i2 <= i; i2++)
+    {
+
+      math_Matrix tmpmat(1,
+                         myLScalarConstraints(i).GetPPC().Length(),
+                         1,
+                         myLScalarConstraints(i2).GetPPC().Length());
+
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+      {
+        for (int ippc2 = 1; ippc2 <= myLScalarConstraints(i2).GetPPC().Length(); ippc2++)
+        {
+          double signe = 1;
+          if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
+          {
+            signe = -1;
+          }
+          int a_iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv   = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          tmpmat(ippc, ippc2) =
+            signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), a_iu, iv);
+        }
+      }
+
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int irow2 = 1; irow2 <= myLScalarConstraints(i2).Coeff().ColLength(); irow2++)
+        {
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+          {
+            for (int icol2 = 1; icol2 <= myLScalarConstraints(i2).Coeff().RowLength(); icol2++)
+            {
+              mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol)
+                                                   * myLScalarConstraints(i2).Coeff()(irow2, icol2)
+                                                   * tmpmat(icol, icol2);
+            }
+          }
+        }
+      }
+
+      k2 += myLScalarConstraints(i2).Coeff().ColLength();
+      kppc2 += myLScalarConstraints(i2).Coeff().RowLength();
+    }
+
+    k += myLScalarConstraints(i).Coeff().ColLength();
+    kppc += myLScalarConstraints(i).Coeff().RowLength();
+  }
+
+  for (j = 3 * n_dimsousmat; j < n_dimat; j++)
+  {
+    for (i = 0; i < j; i++)
+    {
+      mat(i, j) = mat(j, i);
+    }
+  }
+
+  // initialisation of the Gauss algorithm
+  double pivot_max = 1.e-12;
+  OK               = true; // ************ JHH
+
+  Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI3()", 10);
+  math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
+
+  if (aScope.UserBreak())
+  {
+    OK = false;
+    return;
+  }
+
+  if (!algo_gauss.IsDone())
+  {
+    for (i = nCC1 + nCC2; i < nCC1 + nCC2 + nbm; i++)
+    {
+      mat(i, i)                                       = 1.e-8;
+      mat(n_dimsousmat + i, n_dimsousmat + i)         = 1.e-8;
+      mat(2 * n_dimsousmat + i, 2 * n_dimsousmat + i) = 1.e-8;
+    }
+    pivot_max = 1.e-18;
+
+    math_Gauss thealgo2(mat, pivot_max, aScope.Next(3));
+
+    if (aScope.UserBreak())
+    {
+      OK = false;
+      return;
+    }
+    algo_gauss = thealgo2;
+    OK         = algo_gauss.IsDone();
+  }
+
+  if (OK)
+  {
+    //   computation of the linear system solution for the X, Y and Z coordinates
+    math_Vector sec_member(0, n_dimat - 1, 0.);
+    math_Vector sol(0, n_dimat - 1);
+
+    delete[] (gp_XYZ*)solution;
+    n_dim    = n_el + order * (order + 1) / 2;
+    solution = new gp_XYZ[n_dim];
+
+    int icoor;
+    for (icoor = 1; icoor <= 3; icoor++)
+    {
+      for (i = 0; i < nCC1; i++)
+      {
+        sec_member((icoor - 1) * n_dimsousmat + i) = myConstraints(i + 1).Value().Coord(icoor);
+      }
+
+      k = nCC1;
+      for (i = 1; i <= myLXYZConstraints.Length(); i++)
+      {
+        for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        {
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+          {
+            sec_member((icoor - 1) * n_dimsousmat + k) +=
+              myLXYZConstraints(i).Coeff()(irow, icol)
+              * myLXYZConstraints(i).GetPPC()(icol).Value().Coord(icoor);
+          }
+          k++;
+        }
+      }
+    }
+    k = 3 * n_dimsousmat;
+    for (i = 1; i <= myLScalarConstraints.Length(); i++)
+    {
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+        {
+          sec_member(k) += myLScalarConstraints(i).Coeff()(irow, icol)
+                           * myLScalarConstraints(i).GetPPC()(icol).Value();
+        }
+        k++;
+      }
+    }
+
+    algo_gauss.Solve(sec_member, sol);
+    // iteration to refine the solution
+    {
+      math_Vector sol1(0, n_dimat - 1);
+      math_Vector sec_member1(0, n_dimat - 1);
+      for (i = 1; i <= IterationNumber; i++)
+      {
+        sec_member1 = sec_member - mat * sol;
+        algo_gauss.Solve(sec_member1, sol1);
+        sol += sol1;
+      }
+    }
+
+    for (icoor = 1; icoor <= 3; icoor++)
+    {
+      for (i = 0; i < nCC1; i++)
+      {
+        Solution(i).SetCoord(icoor, sol((icoor - 1) * n_dimsousmat + i));
+      }
+
+      int kSolution = nCC1;
+      int ksol      = nCC1;
+
+      for (i = 1; i <= myLXYZConstraints.Length(); i++)
+      {
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+        {
+          double vsol = 0;
+          for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+          {
+            vsol += myLXYZConstraints(i).Coeff()(irow, icol)
+                    * sol((icoor - 1) * n_dimsousmat + ksol + irow - 1);
+          }
+          Solution(kSolution).SetCoord(icoor, vsol);
+          kSolution++;
+        }
+        ksol += myLXYZConstraints(i).Coeff().ColLength();
+      }
+
+      ksol = nCC1 + nCC2;
+      for (i = 0; i < order * (order + 1) / 2; i++)
+      {
+        Solution(n_el + i).SetCoord(icoor, sol((icoor - 1) * n_dimsousmat + ksol + i));
+      }
+    }
+
+    int ksol      = 3 * n_dimsousmat;
+    int kSolution = nPPC2;
+    for (i = 1; i <= myLScalarConstraints.Length(); i++)
+    {
+      for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+      {
+        gp_XYZ Vsol(0., 0., 0.);
+        for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        {
+          Vsol += myLScalarConstraints(i).Coeff()(irow, icol) * sol(ksol + irow - 1);
+        }
+        Solution(kSolution) = Vsol;
+        kSolution++;
+      }
+      ksol += myLScalarConstraints(i).Coeff().ColLength();
+    }
+  }
+}
+
+//=================================================================================================
+
+void Plate_Plate::fillXYZmatrix(math_Matrix& mat,
+                                const int    i0,
+                                const int    j0,
+                                const int    ncc1,
+                                const int    ncc2) const
+{
+  int i, j;
+  for (i = 0; i < ncc1; i++)
+  {
+    for (j = 0; j < i; j++)
+    {
+      double signe = 1;
+      if (((Deru(j) + Derv(j)) % 2) == 1)
+      {
+        signe = -1;
+      }
+      int iu              = Deru(i) + Deru(j);
+      int iv              = Derv(i) + Derv(j);
+      mat(i0 + i, j0 + j) = signe * SolEm(Points(i) - Points(j), iu, iv);
+    }
+  }
+
+  int k    = ncc1;
+  int kppc = ncc1;
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+
+    for (int a_j = 0; a_j < ncc1; a_j++)
+    {
+
+      math_Vector vmat(1, myLXYZConstraints(i).GetPPC().Length());
+
+      for (int ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
+      {
+        double signe = 1;
+        if (((Deru(a_j) + Derv(a_j)) % 2) == 1)
+        {
+          signe = -1;
+        }
+        int iu     = Deru(kppc + ippc - 1) + Deru(a_j);
+        int iv     = Derv(kppc + ippc - 1) + Derv(a_j);
+        vmat(ippc) = signe * SolEm(Points(kppc + ippc - 1) - Points(a_j), iu, iv);
+      }
+
+      for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+        {
+          mat(i0 + k + irow - 1, j0 + a_j) += myLXYZConstraints(i).Coeff()(irow, icol) * vmat(icol);
+        }
+      }
+    }
+
+    int k2    = ncc1;
+    int kppc2 = ncc1;
+    for (int i2 = 1; i2 <= i; i2++)
+    {
+
+      math_Matrix tmpmat(1,
+                         myLXYZConstraints(i).GetPPC().Length(),
+                         1,
+                         myLXYZConstraints(i2).GetPPC().Length());
+
+      for (int ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
+      {
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+        {
+          double signe = 1;
+          if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
+          {
+            signe = -1;
+          }
+          int iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          tmpmat(ippc, ippc2) =
+            signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), iu, iv);
+        }
+      }
+
+      for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+      {
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
+        {
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+          {
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
+            {
+              mat(i0 + k + irow - 1, j0 + k2 + irow2 - 1) +=
+                myLXYZConstraints(i).Coeff()(irow, icol)
+                * myLXYZConstraints(i2).Coeff()(irow2, icol2) * tmpmat(icol, icol2);
+            }
+          }
+        }
+      }
+
+      k2 += myLXYZConstraints(i2).Coeff().ColLength();
+      kppc2 += myLXYZConstraints(i2).Coeff().RowLength();
+    }
+
+    k += myLXYZConstraints(i).Coeff().ColLength();
+    kppc += myLXYZConstraints(i).Coeff().RowLength();
+  }
+
+  i = ncc1 + ncc2;
+  for (int iu = 0; iu < order; iu++)
+  {
+    for (int iv = 0; iu + iv < order; iv++)
+    {
+      for (int a_j = 0; a_j < ncc1; a_j++)
+      {
+        int idu               = Deru(a_j);
+        int idv               = Derv(a_j);
+        mat(i0 + i, j0 + a_j) = Polm(Points(a_j), iu, iv, idu, idv);
+      }
+
+      int k2    = ncc1;
+      int kppc2 = ncc1;
+      for (int i2 = 1; i2 <= myLXYZConstraints.Length(); i2++)
+      {
+        math_Vector vmat(1, myLXYZConstraints(i2).GetPPC().Length());
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+        {
+          int idu     = Deru(kppc2 + ippc2 - 1);
+          int idv     = Derv(kppc2 + ippc2 - 1);
+          vmat(ippc2) = Polm(Points(kppc2 + ippc2 - 1), iu, iv, idu, idv);
+        }
+
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
+        {
+          for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
+          {
+            mat(i0 + i, j0 + k2 + irow2 - 1) +=
+              myLXYZConstraints(i2).Coeff()(irow2, icol2) * vmat(icol2);
+          }
+        }
+
+        k2 += myLXYZConstraints(i2).Coeff().ColLength();
+        kppc2 += myLXYZConstraints(i2).Coeff().RowLength();
+      }
+
+      i++;
+    }
+  }
+
+  int n_dimat = ncc1 + ncc2 + order * (order + 1) / 2;
+
+  for (i = 0; i < n_dimat; i++)
+  {
+    for (int a_j = i + 1; a_j < n_dimat; a_j++)
+    {
+      mat(i0 + i, j0 + a_j) = mat(i0 + a_j, j0 + i);
+    }
+  }
+}
+
+//=================================================================================================
+
+bool Plate_Plate::IsDone() const
+{
+  return OK;
+}
+
+//=================================================================================================
+
+void Plate_Plate::destroy()
+{
+  Init();
+}
+
+//=================================================================================================
+
+void Plate_Plate::Init()
+{
+  myConstraints.Clear();
+  myLXYZConstraints.Clear();
+  myLScalarConstraints.Clear();
+
+  delete[] (gp_XYZ*)solution;
+  solution = nullptr;
+
+  delete[] (gp_XY*)points;
+  points = nullptr;
+
+  delete[] (int*)deru;
+  deru = nullptr;
+
+  delete[] (int*)derv;
+  derv = nullptr;
+
+  order              = 0;
+  n_el               = 0;
+  n_dim              = 0;
+  OK                 = true;
+  maxConstraintOrder = 0;
+}
+
+//=================================================================================================
+
+gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
+{
+  if (solution == nullptr)
+  {
+    return gp_XYZ(0, 0, 0);
+  }
+  if (!OK)
+  {
+    return gp_XYZ(0, 0, 0);
+  }
+
+  gp_XYZ valeur(0, 0, 0);
+
+  if (!PolynomialPartOnly)
+  {
+    for (int i = 0; i < n_el; i++)
+    {
+      double signe = 1;
+      if (((Deru(i) + Derv(i)) % 2) == 1)
+      {
+        signe = -1;
+      }
+      valeur += Solution(i) * (signe * SolEm(point2d - Points(i), Deru(i), Derv(i)));
+    }
+  }
+  int i = n_el;
+  for (int idu = 0; idu < order; idu++)
+  {
+    for (int idv = 0; idu + idv < order; idv++)
+    {
+      valeur += Solution(i) * Polm(point2d, idu, idv, 0, 0);
+      i++;
+    }
+  }
+  return valeur;
+}
+
+//=================================================================================================
+
+gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const
+{
+  if (solution == nullptr)
+  {
+    return gp_XYZ(0, 0, 0);
+  }
+  if (!OK)
+  {
+    return gp_XYZ(0, 0, 0);
+  }
+
+  gp_XYZ valeur(0, 0, 0);
+  if (!PolynomialPartOnly)
+  {
+    for (int i = 0; i < n_el; i++)
+    {
+      double signe = 1;
+      if (((Deru(i) + Derv(i)) % 2) == 1)
+      {
+        signe = -1;
+      }
+      valeur += Solution(i) * (signe * SolEm(point2d - Points(i), Deru(i) + iu, Derv(i) + iv));
+    }
+  }
+  int i = n_el;
+  for (int idu = 0; idu < order; idu++)
+  {
+    for (int idv = 0; idu + idv < order; idv++)
+    {
+      valeur += Solution(i) * Polm(point2d, idu, idv, iu, iv);
+      i++;
+    }
+  }
+  return valeur;
+}
+
+//=======================================================================
+// function : Plate_Plate::CoefPol
+// purpose  : give back the array of power basis coefficient of
+// the polynomial part of the Plate function
+//=======================================================================
+
+occ::handle<NCollection_HArray2<gp_XYZ>> Plate_Plate::CoefPol() const
+{
+  occ::handle<NCollection_HArray2<gp_XYZ>> aCoefs =
+    new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
+  int i = n_el;
+  for (int iu = 0; iu < order; iu++)
+  {
+    for (int iv = 0; iu + iv < order; iv++)
+    {
+      aCoefs->ChangeValue(iu, iv) = Solution(i) * ddu[iu] * ddv[iv];
+      // Coefs->ChangeValue(idu,idv) = Solution(i);
+      //  it is necessary to reset this line if one remove factors in method Polm.
+      i++;
+    }
+  }
+  return aCoefs;
+}
+
+void Plate_Plate::CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const
+{
+  Coefs = CoefPol();
+}
+
+//=======================================================================
+// function : Plate_Plate::Continuity
+// purpose  : give back the continuity order of the Plate function
+//=======================================================================
+
+int Plate_Plate::Continuity() const
+{
+  return 2 * order - 3 - maxConstraintOrder;
+}
+
+//=======================================================================
+// function : Plate_Plate::SolEm
+// purpose  : compute the (iu,iv)th derivative of the fundamental solution
+// of Laplcian at the power order
+//=======================================================================
+
+double Plate_Plate::SolEm(const gp_XY& point2d, const int iu, const int iv) const
+{
+  Plate_Plate* aThis = const_cast<Plate_Plate*>(this);
+  double       U, V;
+  int          IU, IV;
+
+  if (iv > iu)
+  {
+    // SolEm is symmetric in (u<->v) : we swap u and v if iv>iu
+    // to avoid some code
+    IU = iv;
+    IV = iu;
+    U  = point2d.Y() * ddv[1];
+    V  = point2d.X() * ddu[1];
+  }
+  else
+  {
+    IU = iu;
+    IV = iv;
+    U  = point2d.X() * ddu[1];
+    V  = point2d.Y() * ddv[1];
+  }
+
+  if ((U == Uold) && (V == Vold))
+  {
+    if (R < 1.e-20)
+    {
+      return 0;
+    }
+  }
+  else
+  {
+    aThis->Uold = U;
+    aThis->Vold = V;
+    aThis->U2   = U * U;
+    aThis->R    = U2 + V * V;
+    if (R < 1.e-20)
+    {
+      return 0;
+    }
+    aThis->L = log(R);
+  }
+  double DUV = 0;
+
+  int     m   = order;
+  int     mm1 = m - 1;
+  double& r   = aThis->R;
+
+  // double pr = pow(R, mm1 - IU - IV);
+  //  this expression takes a lot of time
+  //(does not take into account a small integer value of the exponent)
+  //
+
+  int    expo = mm1 - IU - IV;
+  double pr;
+  if (expo < 0)
+  {
+    pr = R;
+    for (int i = 1; i < -expo; i++)
+    {
+      pr *= R;
+    }
+    pr = 1. / pr;
+  }
+  else if (expo > 0)
+  {
+    pr = R;
+    for (int i = 1; i < expo; i++)
+    {
+      pr *= R;
+    }
+  }
+  else
+  {
+    pr = 1.;
+  }
+
+  switch (IU)
+  {
+    case 0:
+      switch (IV)
+      {
+        case 0: {
+          DUV = pr * L;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 1:
+      switch (IV)
+      {
+        case 0: {
+          DUV = 2 * pr * U * (1 + L * mm1);
+        }
+        break;
+
+        case 1: {
+          double m2 = m * m;
+          // DUV = 4*pr*U*V*(-3+2*L+2*m-3*L*m+L*m2);
+          DUV = 4 * pr * U * V * ((2 * m - 3) + (m2 - 3 * m + 2) * L);
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 2:
+      switch (IV)
+      {
+        case 0: {
+          double m2 = m * m;
+          DUV       = 2 * pr
+                * (R - L * R + L * m * R - 6 * U2 + 4 * L * U2 + 4 * m * U2 - 6 * L * m * U2
+                   + 2 * L * m2 * U2);
+        }
+        break;
+
+        case 1: {
+          double m2 = m * m;
+          double m3 = m2 * m;
+          DUV = -3 * R + 2 * L * R + 2 * m * R - 3 * L * m * R + L * m2 * R + 22 * U2 - 12 * L * U2
+                - 24 * m * U2 + 22 * L * m * U2 + 6 * m2 * U2 - 12 * L * m2 * U2 + 2 * L * m3 * U2;
+          DUV = DUV * 4 * pr * V;
+        }
+        break;
+
+        case 2: {
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
+          double V2 = V * V;
+          double R2 = R * R;
+          DUV       = -3 * R2 + 2 * L * R2 + 2 * m * R2 - 3 * L * m * R2 + L * m2 * R2 + 22 * R * U2
+                - 12 * L * R * U2 - 24 * m * R * U2 + 22 * L * m * R * U2 + 6 * m2 * R * U2
+                - 12 * L * m2 * R * U2;
+          DUV += 2 * L * m3 * R * U2 + 22 * R * V2 - 12 * L * R * V2 - 24 * m * R * V2
+                 + 22 * L * m * R * V2 + 6 * m2 * R * V2 - 12 * L * m2 * R * V2
+                 + 2 * L * m3 * R * V2 - 200 * U2 * V2 + 96 * L * U2 * V2;
+          DUV += 280 * m * U2 * V2 - 200 * L * m * U2 * V2 - 120 * m2 * U2 * V2
+                 + 140 * L * m2 * U2 * V2 + 16 * m3 * U2 * V2 - 40 * L * m3 * U2 * V2
+                 + 4 * L * m4 * U2 * V2;
+          DUV = 4 * pr * DUV;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 3:
+      switch (IV)
+      {
+        case 0: {
+          double m2 = m * m;
+          double m3 = m2 * m;
+          DUV       = -9 * R + 6 * L * R + 6 * m * R - 9 * L * m * R + 3 * L * m2 * R + 22 * U2
+                - 12 * L * U2 - 24 * m * U2 + 22 * L * m * U2 + 6 * m2 * U2 - 12 * L * m2 * U2
+                + 2 * L * m3 * U2;
+          DUV = DUV * 4 * pr * U;
+        }
+        break;
+
+        case 1: {
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
+          DUV = 33 * R - 18 * L * R - 36 * m * R + 33 * L * m * R + 9 * m2 * R - 18 * L * m2 * R
+                + 3 * L * m3 * R - 100 * U2 + 48 * L * U2 + 140 * m * U2 - 100 * L * m * U2
+                - 60 * m2 * U2 + 70 * L * m2 * U2;
+          DUV += 8 * m3 * U2 - 20 * L * m3 * U2 + 2 * L * m4 * U2;
+          DUV = 8 * pr * U * V * DUV;
+        }
+        break;
+
+        case 2: {
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m4 * m;
+          double ru2  = R * U2;
+          double v2   = V * V;
+          double rv2  = R * v2;
+          double u2v2 = v2 * U2;
+          double r2   = r * r;
+
+          // copy-paste the mathematics
+          DUV = -100 * ru2 + 48 * L * ru2 + 140 * m * ru2 - 100 * L * m * ru2 - 60 * m2 * ru2
+                + 70 * L * m2 * ru2 + 8 * m3 * ru2 - 20 * L * m3 * ru2 + 2 * L * m4 * ru2
+                - 300 * rv2 + 144 * L * rv2 + 420 * m * rv2 - 300 * L * m * rv2 - 180 * m2 * rv2
+                + 210 * L * m2 * rv2 + 24 * m3 * rv2 - 60 * L * m3 * rv2 + 6 * L * m4 * rv2
+                + 33 * r2 - 18 * L * r2 - 36 * m * r2 + 33 * L * m * r2 + 9 * m2 * r2
+                - 18 * L * m2 * r2 + 3 * L * m3 * r2 + 1096 * u2v2 - 480 * L * u2v2
+                - 1800 * m * u2v2 + 1096 * L * m * u2v2 + 1020 * m2 * u2v2 - 900 * L * m2 * u2v2
+                - 240 * m3 * u2v2 + 340 * L * m3 * u2v2 + 20 * m4 * u2v2 - 60 * L * m4 * u2v2
+                + 4 * L * m5 * u2v2;
+
+          DUV = 8 * pr * U * DUV;
+        }
+        break;
+
+        case 3: {
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m3 * m2;
+          double m6   = m3 * m3;
+          double ru2  = r * U2;
+          double v2   = V * V;
+          double rv2  = R * v2;
+          double u2v2 = v2 * U2;
+          double r2   = r * r;
+
+          // copy-paste the mathematics
+          DUV = 1644 * ru2 - 720 * L * ru2 - 2700 * m * ru2 + 1644 * L * m * ru2 + 1530 * m2 * ru2
+                - 1350 * L * m2 * ru2 - 360 * m3 * ru2 + 510 * L * m3 * ru2 + 30 * m4 * ru2
+                - 90 * L * m4 * ru2 + 6 * L * m5 * ru2 + 1644 * rv2 - 720 * L * rv2 - 2700 * m * rv2
+                + 1644 * L * m * rv2 + 1530 * m2 * rv2 - 1350 * L * m2 * rv2 - 360 * m3 * rv2
+                + 510 * L * m3 * rv2 + 30 * m4 * rv2 - 90 * L * m4 * rv2 + 6 * L * m5 * rv2
+                - 450 * r2 + 216 * L * r2 + 630 * m * r2 - 450 * L * m * r2 - 270 * m2 * r2
+                + 315 * L * m2 * r2 + 36 * m3 * r2 - 90 * L * m3 * r2 + 9 * L * m4 * r2
+                - 7056 * u2v2 + 2880 * L * u2v2 + 12992 * m * u2v2 - 7056 * L * m * u2v2
+                - 8820 * m2 * u2v2 + 6496 * L * m2 * u2v2 + 2800 * m3 * u2v2 - 2940 * L * m3 * u2v2
+                - 420 * m4 * u2v2 + 700 * L * m4 * u2v2 + 24 * m5 * u2v2 - 84 * L * m5 * u2v2
+                + 4 * L * m6 * u2v2;
+
+          DUV = 16 * pr * U * V * DUV;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 4:
+      switch (IV)
+      {
+        case 0: {
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
+          double U4 = U2 * U2;
+          double R2 = R * R;
+          DUV = -9 * R2 + 6 * L * R2 + 6 * m * R2 - 9 * L * m * R2 + 3 * L * m2 * R2 + 132 * R * U2
+                - 72 * L * R * U2 - 144 * m * R * U2 + 132 * L * m * R * U2 + 36 * m2 * R * U2
+                - 72 * L * m2 * R * U2;
+          DUV += 12 * L * m3 * R * U2 - 200 * U4 + 96 * L * U4 + 280 * m * U4 - 200 * L * m * U4
+                 - 120 * m2 * U4 + 140 * L * m2 * U4 + 16 * m3 * U4 - 40 * L * m3 * U4
+                 + 4 * L * m4 * U4;
+          DUV = 4 * pr * DUV;
+        }
+        break;
+
+        case 1: {
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double u4  = U2 * U2;
+          double ru2 = R * U2;
+          double r2  = R * R;
+
+          // copy-paste the mathematics
+          DUV = -600 * ru2 + 288 * L * ru2 + 840 * m * ru2 - 600 * L * m * ru2 - 360 * m2 * ru2
+                + 420 * L * m2 * ru2 + 48 * m3 * ru2 - 120 * L * m3 * ru2 + 12 * L * m4 * ru2
+                + 33 * r2 - 18 * L * r2 - 36 * m * r2 + 33 * L * m * r2 + 9 * m2 * r2
+                - 18 * L * m2 * r2 + 3 * L * m3 * r2 + 1096 * u4 - 480 * L * u4 - 1800 * m * u4
+                + 1096 * L * m * u4 + 1020 * m2 * u4 - 900 * L * m2 * u4 - 240 * m3 * u4
+                + 340 * L * m3 * u4 + 20 * m4 * u4 - 60 * L * m4 * u4 + 4 * L * m5 * u4;
+
+          DUV = 8 * pr * V * DUV;
+        }
+        break;
+
+        case 2: {
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double ru4   = r * u4;
+          double r2v2  = r2 * v2;
+
+          // copy-paste the mathematics
+          DUV = 6576 * ru2v2 - 2880 * L * ru2v2 - 10800 * m * ru2v2 + 6576 * L * m * ru2v2
+                + 6120 * m2 * ru2v2 - 5400 * L * m2 * ru2v2 - 1440 * m3 * ru2v2
+                + 2040 * L * m3 * ru2v2 + 120 * m4 * ru2v2 - 360 * L * m4 * ru2v2
+                + 24 * L * m5 * ru2v2 + 1096 * ru4 - 480 * L * ru4 - 1800 * m * ru4
+                + 1096 * L * m * ru4 + 1020 * m2 * ru4 - 900 * L * m2 * ru4 - 240 * m3 * ru4
+                + 340 * L * m3 * ru4 + 20 * m4 * ru4 - 60 * L * m4 * ru4 + 4 * L * m5 * ru4
+                - 600 * r2u2 + 288 * L * r2u2 + 840 * m * r2u2 - 600 * L * m * r2u2
+                - 360 * m2 * r2u2 + 420 * L * m2 * r2u2 + 48 * m3 * r2u2 - 120 * L * m3 * r2u2
+                + 12 * L * m4 * r2u2 - 300 * r2v2 + 144 * L * r2v2 + 420 * m * r2v2
+                - 300 * L * m * r2v2 - 180 * m2 * r2v2 + 210 * L * m2 * r2v2 + 24 * m3 * r2v2
+                - 60 * L * m3 * r2v2 + 6 * L * m4 * r2v2 + 33 * r3 - 18 * L * r3 - 36 * m * r3
+                + 33 * L * m * r3 + 9 * m2 * r3 - 18 * L * m2 * r3 + 3 * L * m3 * r3 - 14112 * u4v2
+                + 5760 * L * u4v2 + 25984 * m * u4v2 - 14112 * L * m * u4v2 - 17640 * m2 * u4v2
+                + 12992 * L * m2 * u4v2 + 5600 * m3 * u4v2 - 5880 * L * m3 * u4v2 - 840 * m4 * u4v2
+                + 1400 * L * m4 * u4v2 + 48 * m5 * u4v2 - 168 * L * m5 * u4v2 + 8 * L * m6 * u4v2;
+
+          DUV = 8 * pr * DUV;
+        }
+        break;
+
+        case 3: {
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double m7    = m3 * m4;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double r2v2  = r2 * v2;
+          double ru4   = r * u4;
+
+          // copy-paste the mathematics
+          DUV = -42336 * ru2v2 + 17280 * L * ru2v2 + 77952 * m * ru2v2 - 42336 * L * m * ru2v2
+                - 52920 * m2 * ru2v2 + 38976 * L * m2 * ru2v2 + 16800 * m3 * ru2v2
+                - 17640 * L * m3 * ru2v2 - 2520 * m4 * ru2v2 + 4200 * L * m4 * ru2v2
+                + 144 * m5 * ru2v2 - 504 * L * m5 * ru2v2 + 24 * L * m6 * ru2v2 - 21168 * ru4
+                + 8640 * L * ru4 + 38976 * m * ru4 - 21168 * L * m * ru4 - 26460 * m2 * ru4
+                + 19488 * L * m2 * ru4 + 8400 * m3 * ru4 - 8820 * L * m3 * ru4 - 1260 * m4 * ru4
+                + 2100 * L * m4 * ru4 + 72 * m5 * ru4 - 252 * L * m5 * ru4 + 12 * L * m6 * ru4
+                + 9864 * r2u2 - 4320 * L * r2u2 - 16200 * m * r2u2 + 9864 * L * m * r2u2
+                + 9180 * m2 * r2u2 - 8100 * L * m2 * r2u2 - 2160 * m3 * r2u2 + 3060 * L * m3 * r2u2
+                + 180 * m4 * r2u2 - 540 * L * m4 * r2u2 + 36 * L * m5 * r2u2 + 1644 * r2v2
+                - 720 * L * r2v2 - 2700 * m * r2v2 + 1644 * L * m * r2v2 + 1530 * m2 * r2v2
+                - 1350 * L * m2 * r2v2 - 360 * m3 * r2v2 + 510 * L * m3 * r2v2 + 30 * m4 * r2v2
+                - 90 * L * m4 * r2v2 + 6 * L * m5 * r2v2 - 450 * r3 + 216 * L * r3 + 630 * m * r3
+                - 450 * L * m * r3 - 270 * m2 * r3 + 315 * L * m2 * r3 + 36 * m3 * r3
+                - 90 * L * m3 * r3 + 9 * L * m4 * r3 + 104544 * u4v2 - 40320 * L * u4v2
+                - 210112 * m * u4v2 + 104544 * L * m * u4v2 + 162456 * m2 * u4v2
+                - 105056 * L * m2 * u4v2 - 62720 * m3 * u4v2 + 54152 * L * m3 * u4v2
+                + 12880 * m4 * u4v2 - 15680 * L * m4 * u4v2 - 1344 * m5 * u4v2
+                + 2576 * L * m5 * u4v2 + 56 * m6 * u4v2 - 224 * L * m6 * u4v2 + 8 * L * m7 * u4v2;
+
+          DUV = 16 * pr * V * DUV;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 5:
+      switch (IV)
+      {
+        case 0: {
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double u4  = U2 * U2;
+          double r2  = R * R;
+          double ru2 = R * U2;
+
+          // copy-paste the mathematics
+          DUV = -1000 * ru2 + 480 * L * ru2 + 1400 * m * ru2 - 1000 * L * m * ru2 - 600 * m2 * ru2
+                + 700 * L * m2 * ru2 + 80 * m3 * ru2 - 200 * L * m3 * ru2 + 20 * L * m4 * ru2
+                + 165 * r2 - 90 * L * r2 - 180 * m * r2 + 165 * L * m * r2 + 45 * m2 * r2
+                - 90 * L * m2 * r2 + 15 * L * m3 * r2 + 1096 * u4 - 480 * L * u4 - 1800 * m * u4
+                + 1096 * L * m * u4 + 1020 * m2 * u4 - 900 * L * m2 * u4 - 240 * m3 * u4
+                + 340 * L * m3 * u4 + 20 * m4 * u4 - 60 * L * m4 * u4 + 4 * L * m5 * u4;
+
+          DUV = 8 * pr * U * DUV;
+        }
+        break;
+
+        case 1: {
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double m6  = m3 * m3;
+          double u4  = U2 * U2;
+          double ru2 = r * U2;
+          double r2  = r * r;
+
+          // copy-paste the mathematics
+          DUV = 5480 * ru2 - 2400 * L * ru2 - 9000 * m * ru2 + 5480 * L * m * ru2 + 5100 * m2 * ru2
+                - 4500 * L * m2 * ru2 - 1200 * m3 * ru2 + 1700 * L * m3 * ru2 + 100 * m4 * ru2
+                - 300 * L * m4 * ru2 + 20 * L * m5 * ru2 - 750 * r2 + 360 * L * r2 + 1050 * m * r2
+                - 750 * L * m * r2 - 450 * m2 * r2 + 525 * L * m2 * r2 + 60 * m3 * r2
+                - 150 * L * m3 * r2 + 15 * L * m4 * r2 - 7056 * u4 + 2880 * L * u4 + 12992 * m * u4
+                - 7056 * L * m * u4 - 8820 * m2 * u4 + 6496 * L * m2 * u4 + 2800 * m3 * u4
+                - 2940 * L * m3 * u4 - 420 * m4 * u4 + 700 * L * m4 * u4 + 24 * m5 * u4
+                - 84 * L * m5 * u4 + 4 * L * m6 * u4;
+
+          DUV = 16 * pr * U * V * DUV;
+        }
+        break;
+
+        case 2: {
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double m7    = m3 * m4;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double r2v2  = r2 * v2;
+          double ru4   = r * u4;
+
+          // copy-paste the mathematics
+          DUV =
+
+            -70560 * ru2v2 + 28800 * L * ru2v2 + 129920 * m * ru2v2 - 70560 * L * m * ru2v2
+            - 88200 * m2 * ru2v2 + 64960 * L * m2 * ru2v2 + 28000 * m3 * ru2v2
+            - 29400 * L * m3 * ru2v2 - 4200 * m4 * ru2v2 + 7000 * L * m4 * ru2v2 + 240 * m5 * ru2v2
+            - 840 * L * m5 * ru2v2 + 40 * L * m6 * ru2v2 - 7056 * ru4 + 2880 * L * ru4
+            + 12992 * m * ru4 - 7056 * L * m * ru4 - 8820 * m2 * ru4 + 6496 * L * m2 * ru4
+            + 2800 * m3 * ru4 - 2940 * L * m3 * ru4 - 420 * m4 * ru4 + 700 * L * m4 * ru4
+            + 24 * m5 * ru4 - 84 * L * m5 * ru4 + 4 * L * m6 * ru4 + 5480 * r2u2 - 2400 * L * r2u2
+            - 9000 * m * r2u2 + 5480 * L * m * r2u2 + 5100 * m2 * r2u2 - 4500 * L * m2 * r2u2
+            - 1200 * m3 * r2u2 + 1700 * L * m3 * r2u2 + 100 * m4 * r2u2 - 300 * L * m4 * r2u2
+            + 20 * L * m5 * r2u2 + 8220 * r2v2 - 3600 * L * r2v2 - 13500 * m * r2v2
+            + 8220 * L * m * r2v2 + 7650 * m2 * r2v2 - 6750 * L * m2 * r2v2 - 1800 * m3 * r2v2
+            + 2550 * L * m3 * r2v2 + 150 * m4 * r2v2 - 450 * L * m4 * r2v2 + 30 * L * m5 * r2v2
+            - 750 * r3 + 360 * L * r3 + 1050 * m * r3 - 750 * L * m * r3 - 450 * m2 * r3
+            + 525 * L * m2 * r3 + 60 * m3 * r3 - 150 * L * m3 * r3 + 15 * L * m4 * r3
+            + 104544 * u4v2 - 40320 * L * u4v2 - 210112 * m * u4v2 + 104544 * L * m * u4v2
+            + 162456 * m2 * u4v2 - 105056 * L * m2 * u4v2 - 62720 * m3 * u4v2
+            + 54152 * L * m3 * u4v2 + 12880 * m4 * u4v2 - 15680 * L * m4 * u4v2 - 1344 * m5 * u4v2
+            + 2576 * L * m5 * u4v2 + 56 * m6 * u4v2 - 224 * L * m6 * u4v2 + 8 * L * m7 * u4v2;
+
+          DUV = 16 * pr * U * DUV;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 6:
+      switch (IV)
+      {
+        case 0: {
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m2 * m3;
+          double m6   = m3 * m3;
+          double u4   = U2 * U2;
+          double u6   = U2 * u4;
+          double r2   = r * r;
+          double r3   = r2 * r;
+          double r2u2 = r2 * U2;
+          double ru4  = r * u4;
+
+          // copy-paste the mathematics
+          DUV = 16440 * ru4 - 7200 * L * ru4 - 27000 * m * ru4 + 16440 * L * m * ru4
+                + 15300 * m2 * ru4 - 13500 * L * m2 * ru4 - 3600 * m3 * ru4 + 5100 * L * m3 * ru4
+                + 300 * m4 * ru4 - 900 * L * m4 * ru4 + 60 * L * m5 * ru4 - 4500 * r2u2
+                + 2160 * L * r2u2 + 6300 * m * r2u2 - 4500 * L * m * r2u2 - 2700 * m2 * r2u2
+                + 3150 * L * m2 * r2u2 + 360 * m3 * r2u2 - 900 * L * m3 * r2u2 + 90 * L * m4 * r2u2
+                + 165 * r3 - 90 * L * r3 - 180 * m * r3 + 165 * L * m * r3 + 45 * m2 * r3
+                - 90 * L * m2 * r3 + 15 * L * m3 * r3 - 14112 * u6 + 5760 * L * u6 + 25984 * m * u6
+                - 14112 * L * m * u6 - 17640 * m2 * u6 + 12992 * L * m2 * u6 + 5600 * m3 * u6
+                - 5880 * L * m3 * u6 - 840 * m4 * u6 + 1400 * L * m4 * u6 + 48 * m5 * u6
+                - 168 * L * m5 * u6 + 8 * L * m6 * u6;
+
+          DUV = 8 * pr * DUV;
+        }
+        break;
+
+        default:
+          break;
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return DUV * ddu[iu] * ddv[iv];
+}
+
+//=================================================================================================
+
+void Plate_Plate::UVBox(double& UMin, double& UMax, double& VMin, double& VMax) const
+{
+  int          i;
+  const double Bmin = 1.e-3;
+  UMin              = myConstraints(1).Pnt2d().X();
+  UMax              = UMin;
+  VMin              = myConstraints(1).Pnt2d().Y();
+  VMax              = VMin;
+
+  for (i = 2; i <= myConstraints.Length(); i++)
+  {
+    double x = myConstraints(i).Pnt2d().X();
+    if (x < UMin)
+    {
+      UMin = x;
+    }
+    if (x > UMax)
+    {
+      UMax = x;
+    }
+    double y = myConstraints(i).Pnt2d().Y();
+    if (y < VMin)
+    {
+      VMin = y;
+    }
+    if (y > VMax)
+    {
+      VMax = y;
+    }
+  }
+
+  for (i = 1; i <= myLXYZConstraints.Length(); i++)
+  {
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    {
+      double x = myLXYZConstraints(i).GetPPC()(j).Pnt2d().X();
+      if (x < UMin)
+      {
+        UMin = x;
+      }
+      if (x > UMax)
+      {
+        UMax = x;
+      }
+      double y = myLXYZConstraints(i).GetPPC()(j).Pnt2d().Y();
+      if (y < VMin)
+      {
+        VMin = y;
+      }
+      if (y > VMax)
+      {
+        VMax = y;
+      }
+    }
+  }
+
+  for (i = 1; i <= myLScalarConstraints.Length(); i++)
+  {
+    for (int j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
+    {
+      double x = myLScalarConstraints(i).GetPPC()(j).Pnt2d().X();
+      if (x < UMin)
+      {
+        UMin = x;
+      }
+      if (x > UMax)
+      {
+        UMax = x;
+      }
+      double y = myLScalarConstraints(i).GetPPC()(j).Pnt2d().Y();
+      if (y < VMin)
+      {
+        VMin = y;
+      }
+      if (y > VMax)
+      {
+        VMax = y;
+      }
+    }
+  }
+
+  if (UMax - UMin < Bmin)
+  {
+    double UM = 0.5 * (UMin + UMax);
+    UMin      = UM - 0.5 * Bmin;
+    UMax      = UM + 0.5 * Bmin;
+  }
+  if (VMax - VMin < Bmin)
+  {
+    double VM = 0.5 * (VMin + VMax);
+    VMin      = VM - 0.5 * Bmin;
+    VMax      = VM + 0.5 * Bmin;
+  }
+}
+
+//=================================================================================================
+
+void Plate_Plate::UVConstraints(NCollection_Sequence<gp_XY>& Seq) const
+{
+  for (int i = 1; i <= myConstraints.Length(); i++)
+  {
+    if ((myConstraints.Value(i).Idu() == 0) && (myConstraints.Value(i).Idv() == 0))
+    {
+      Seq.Append((myConstraints.Value(i)).Pnt2d());
+    }
+  }
+}
+
+//=======================================================================
+
+void Plate_Plate::SetPolynomialPartOnly(const bool PPOnly)
+{
+  PolynomialPartOnly = PPOnly;
+}

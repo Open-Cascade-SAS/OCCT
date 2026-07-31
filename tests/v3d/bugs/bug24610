@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24610: Erased AIS object should not be taken into account by FitAll operation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b1 200 200 200
+vdisplay b1
+vfit
+box b2 2 2 2
+vdisplay b2
+set color_1 [vreadpixel 32 305]
+verase b1
+vfit
+set color_2 [vreadpixel 32 305]
+if {$color_1 == $color_2} { puts "ERROR: OCC24610 is reproduced" }
+
+vdump ${imagedir}/${casename}_2.png

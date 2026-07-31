@@ -1,0 +1,32 @@
+puts "========="
+puts "0027457: Modeling Data - Raise if scaled transformation is used for shape location"
+puts "         Testing tool for purging locations"
+puts "========="
+puts ""
+
+restore [locate_data_file bug27457_1.brep] s
+set chsh [checkshape s b]
+regexp {Shapes with problems : ([0-9]+)} $chsh full NbSh
+puts "Number of faulty shapes : $NbSh"
+
+set Nbloc 0
+set chloc [checkloc s]
+set Nbloc [llength $chloc]
+puts "Number of problematic locations : $Nbloc"
+
+set Purge_status [purgeloc s1 s]
+checkshape s1 
+
+set Nbloc1 0
+
+set chloc1 [checkloc s1]
+if { ! [regexp {There are no problematic shapes} $chloc1 full str]} {
+  puts "Error - not all problematic locations are purged"
+  set Nbloc1 [llength $chloc1]
+  puts "Number of problematic locations : $Nbloc1"
+} 
+
+smallview
+donly s1
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

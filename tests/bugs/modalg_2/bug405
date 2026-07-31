@@ -1,0 +1,28 @@
+pload QAcommands
+
+puts "================"
+puts "OCC405"
+puts "OCC435"
+puts "SAM1296"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC395-1.brep] e1 
+restore [locate_data_file OCC405-2.brep] e2 
+
+checkshape e1
+checkshape e2
+
+OCC405 result e1 e2
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full num
+
+if { $num == 2 } {
+    puts "OCC405 OK : Result shape is CORRECT !!! "
+} else {
+    puts " Faulty OCC405: Result shape is INcorrect !!! "
+}
+
+checkprops result -l 17.5348 
+checkshape result 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

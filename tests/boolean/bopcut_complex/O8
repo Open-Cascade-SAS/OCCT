@@ -1,0 +1,8 @@
+restore [locate_data_file sh10] b1
+restore [locate_data_file shx] b2
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 68.6292
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

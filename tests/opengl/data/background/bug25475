@@ -1,0 +1,24 @@
+puts "============"
+puts "0025475: Visualization, TKOpenGl - draw background using primitive arrays"
+puts "Tests textured background"
+puts "============"
+puts ""
+
+set aTextureFile [locate_data_file hatch_1.png]
+
+pload VISUALIZATION
+vinit View1
+
+vbackground -image $aTextureFile -imageMode STRETCH
+vdump $imagedir/${casename}_1.png
+
+vbackground -image $aTextureFile -imageMode NONE
+vbackground -image $aTextureFile -imageMode TILED
+vdump $imagedir/${casename}_2.png
+
+vbackground -gradient RED BLUE -gradientMode HORIZONTAL
+vbackground -image $aTextureFile -imageMode CENTERED
+vdump $imagedir/${casename}_3.png
+
+vbackground -image $aTextureFile -imageMode NONE
+vdump $imagedir/${casename}_4.png

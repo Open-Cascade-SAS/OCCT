@@ -1,0 +1,15 @@
+puts "================="
+puts "OCC381"
+puts "================="
+puts ""
+
+pload QAcommands
+
+NewDocument D BinOcaf
+
+######################################################
+catch { SaveAs D ${imagedir}/${casename}.cbf }
+if { [catch { OCC381_Save D } ] } {
+    puts "OCC381: Error" 
+}
+file delete -force ${imagedir}/${casename}.cbf

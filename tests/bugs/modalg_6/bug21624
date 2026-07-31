@@ -1,0 +1,21 @@
+puts "=========="
+puts "OCC21624"
+puts "=========="
+puts ""
+##############################################
+# BRepFeat_SplitShape produce invalid shape
+##############################################
+
+restore [locate_data_file bug21624_splitBug.brep] cc
+explode cc
+splitshape result cc_1 cc_1 cc_2 cc_1 cc_3
+
+set info [ checkshape result f ]
+
+if { [regexp {The Shape result looks OK} $info] } {
+  puts "OK: Splitshape produces valid shape"
+} else {
+  puts "Error: Splitshape produces invalid shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

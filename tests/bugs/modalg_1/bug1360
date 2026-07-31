@@ -1,0 +1,19 @@
+pload QAcommands
+
+puts "================"
+puts "OCC1360"
+puts "================"
+puts ""
+######################################################
+# Solid correctly displayed in shadding mode, but one tis faces itself has no prs
+######################################################
+
+pload XDE
+
+restore [locate_data_file OCC1360.brep] sh 
+
+fixshape result sh 1e-7
+
+checkprops result -s 407.599 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

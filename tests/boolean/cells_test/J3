@@ -1,0 +1,120 @@
+puts "========"
+puts "OCC28528"
+puts "========"
+puts ""
+#######################################################################
+# Make the CellsBuilder algorithm to work with multi-dimensional arguments
+#######################################################################
+
+puts "Arguments: three interfering boxes cut by a plane"
+box b1 10 10 10
+box b2 7 0 0 10 10 10
+box b3 5 0 5 10 10 10
+plane p 5 5 5 0 1 0
+mkface f p -20 20 -20 20
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+baddtools f
+bfillds
+bcbuild r
+
+puts "Results"
+
+puts "All split shapes"
+bcaddall result
+checknbshapes result -solid 14 -m "Number of SOLIDs in the result containing all splits"
+checknbshapes result -face 66 -m "Number of FACEs in the result containing all splits"
+checkprops result -v 2200 -s 4120
+
+puts "Splits of solids"
+bcremove result f 1
+checknbshapes result -solid 14 -m "Number of SOLIDs in the result containing only splits of solids"
+checknbshapes result -face 65 -m "Number of FACEs in the result containing only splits of solids"
+checkprops result -v 2200 -s 2520
+
+puts "Splits of the face"
+bcremoveall
+bcadd result f 1
+checknbshapes result -face 8 -m "Number of FACEs in the result containing only splits of the face"
+checkprops result -s 1600
+
+puts "Cut solids from face"
+bcremoveall
+bcadd result f 1 b1 0 b2 0 b3 0
+checknbshapes result -face 1 -m "Number of FACEs in the result of CUT(face, solids) operation"
+checkprops result -s 1380
+
+puts "Splits of only one solid"
+bcremoveall
+bcadd result b1 1
+checknbshapes result -solid 8 -m "Number of FACEs in the result containing only the splits of first solid"
+checkprops result -v 1000
+
+
+puts "Making containers"
+
+puts "Make SHELL and COMPSOLID from all splits parts"
+bcremoveall
+bcaddall result
+bcmakecontainers result
+explode result
+if {![regexp "SHELL" [whatis result_1]]} {puts "Error: Shell is not created"}
+checknbshapes result_1 -face 8 -m "Number of FACEs in the SHELL built from all splits of face"
+if {![regexp "COMPSOLID" [whatis result_2]]} {puts "Error: COMPSOLID is not created"}
+checknbshapes result_2 -solid 14 -m "Number of SOLIDs in the COMPSOLID built from splits of all solids"
+
+puts "Remove splits of the first solid from the COMPSOLID"
+bcremove result b1 1
+explode result
+if {![regexp "SHELL" [whatis result_1]]} {puts "Error: Shell has been destroyed"}
+if {![regexp "COMPSOLID" [whatis result_2]]} {puts "Error: COMPSOLID has been destroyed"}
+checknbshapes result_2 -solid 6 -m "Number of SOLIDs in the COMPSOLID built from splits of two solids not included in the first solid"
+
+puts "Remove splits of face included into first solid from the shell"
+bcremove result f 1 b1 1
+explode result 
+if {![regexp "SHELL" [whatis result_1]]} {puts "Error: Shell has been destroyed"}
+checknbshapes result_1 -face 4 -m "Number of FACEs in the SHELL built from splits of face not included into the first solid"
+if {![regexp "COMPSOLID" [whatis result_2]]} {puts "Error: COMPSOLID has been destroyed"}
+
+puts "Destroy the shell completely by removing all splits of the face from the result"
+bcremove result f 1
+if {[regexp "_2" [explode result]]} {puts "Error: Shell has not been destroyed"}
+if {![regexp "COMPSOLID" [whatis result_1]]} {puts "Error: COMPSOLID has been destroyed"}
+
+
+puts "Removing internal boundaries"
+
+puts "Remove internal boundaries in the result of COMMON operation between first two solids"
+bcremoveall
+bcadd result b1 1 b2 1 -m 1 -u
+checknbshapes result -solid 1 -m "Number of SOLIDs in the result of COMMON(b1, b2) operation"
+
+puts "Remove internal boundaries in the result of COMMON operation between first solid and face"
+bcremoveall
+bcadd result b1 1 f 1 -m 1 -u
+checknbshapes result -face 1 -m "Number of FACEs in the result of COMMON(b1, f) operation"
+
+
+puts "Make Fuse operation between two solids and face"
+bcremoveall
+bcadd result b1 1 -m 1
+bcadd result b3 1 -m 1
+bcadd result f 1 b1 0 b3 0 -m 2
+bcmakecontainers result
+bcremoveint result
+set expl [explode result]
+if {![regexp "result_1 result_2" $expl]} {puts "Error: The unification did not work"}
+if {[regexp "result_3" $expl]} {puts "Error: The unification did not work"}
+
+if {![regexp "SOLID" [whatis result_1]]} {puts "Error: The solids have not been fused"}
+if {![regexp "FACE" [whatis result_2]]} {puts "Error: The faces have not been unified"}
+
+puts "Fuse splits of solids with different material for each solid"
+bcremoveall
+bcadd result b1 1 -m 1 -u
+bcadd result b2 1 -m 2 -u
+bcadd result b3 1 -m 3 -u
+checknbshapes result -solid 3 -m "Number of shapes in the result of Unification of splits of each solid"

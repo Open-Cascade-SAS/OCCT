@@ -1,0 +1,56 @@
+puts "========"
+puts "OCC29103"
+puts "========"
+puts ""
+#################################################
+# No intersection curve between faces if starting points are given
+#################################################
+
+set MaxTolReached 2.0e-7
+set GoodNbCurv 1
+set ExpLength 0.074141742883251954
+
+restore [locate_data_file bug29073_M6.brep] a
+restore [locate_data_file bug29073_Shell.brep] b
+explode a f
+explode b f
+
+don b_2
+axo
+fit
+disp a_6
+
+set log1 [bopcurves a_6 b_2 -2d]
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+checklength c_1 -l $ExpLength
+
+don b_2
+axo
+fit
+disp a_6
+
+set log2 [bopcurves a_6 b_2 -2d -p -0.55478319275098653 1.2919191091235780 0.80333089657224976 0.67079577554162440 -p -0.62451407353846222 1.2667484772947102 0.82894736842100003 0.70523311453721027]
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
+checklength c_1 -l $ExpLength
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Toler1 NbCurv1
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Toler2 NbCurv2
+
+if {$Toler1 > $MaxTolReached} {
+  puts "Error: Big tolerance is returned by intersector w/o start points"
+}
+
+if {$Toler2 > $MaxTolReached} {
+  puts "Error: Big tolerance is returned by intersector with start points"
+}
+
+if {$NbCurv1 != $GoodNbCurv} {
+  puts "Error: Please check NbCurves for intersector w/o start points"
+}
+
+if {$NbCurv2 != $GoodNbCurv} {
+  puts "Error: Please check NbCurves for intersector with start points"
+}
+

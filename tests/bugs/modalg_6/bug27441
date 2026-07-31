@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC27441"
+puts "============"
+puts ""
+###############################
+## The method IntTools_ContextIsVertexOnLine incorrectly computes parameter of the point on the curve
+###############################
+
+restore [locate_data_file bug27428_shapes.brep] b
+explode b
+bsection result b_1 b_2
+set bcheck [bopcheck result]
+puts $bcheck
+if {![regexp {This shape seems to be OK.} $bcheck]} {
+    puts "Error: bopcheck failed"
+}
+
+checkshape result
+checkprops result -l 0.00535319
+checknbshapes result -vertex 2 -edge 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

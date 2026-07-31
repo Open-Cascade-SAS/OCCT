@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename UKI60591.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 6 )  Warnings = 0  ( 0 )  Summary  = 0  ( 6 )
+TPSTAT      : Faulties = 0  ( 6 )  Warnings = 17  ( 34 )  Summary  = 17  ( 40 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 27  ( 27 )  Face     = 183  ( 183 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 27  ( 27 )  Face     = 183  ( 183 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.2224706003  (   0.2224706003 )  AvgTol   =  0.004510216815  (  0.004579913524 )
+LABELS      : N0Labels = 28  ( 28 )  N1Labels = 32  ( 23 )  N2Labels = 0  ( 0 )   TotalLabels = 60  ( 51 )   NameLabels = 51  ( 51 )   ColorLabels = 27  ( 22 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GRAY20 RED  ( GRAY20 RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

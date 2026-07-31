@@ -1,0 +1,27 @@
+puts "========="
+puts " OCC794 "
+puts "========="
+puts ""
+#####################################################
+## The offset algorithm produced invalid result when offsetting an attached face
+#####################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC794.brep] a 
+
+offsetshape result a 10
+
+set x_coord 120
+set y_coord 150
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+
+checkcolor $x_coord $y_coord 0.77 0.54 0.09
+
+checkprops result -s 206399 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

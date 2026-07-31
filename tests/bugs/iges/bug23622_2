@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC23622"
+puts "============"
+puts ""
+#######################################################################
+# IGES import produces invalid shape with parameter read.iges.bspline.continuity=0
+#######################################################################
+
+param read.iges.bspline.continuity 0
+
+igesbrep [locate_data_file bug23622_seatmotor2.igs] s1 397
+
+renamevar s1_1 result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 7
+set tol [tolerance result ]
+regexp { *Tolerance +MAX=([-0-9.+eE]+)} ${tol} full max_tol
+puts "max_tol=${max_tol}"
+if {${max_tol} > 0.02} {
+  puts "Error : Bad tolerance"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

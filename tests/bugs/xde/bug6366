@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC6366"
+puts "============"
+puts ""
+#############################################################
+# FixShape does not fix an edge with invalid SameRange flag 
+#############################################################
+
+set BugNumber OCC6366
+
+restore [locate_data_file BUC60393.rle] a
+
+fixshape result a
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

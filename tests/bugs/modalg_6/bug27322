@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC27322"
+puts "========"
+puts ""
+####################################################
+# geom/revolution_00/A1: Incorrect pcurve creation
+####################################################
+
+restore [locate_data_file bug27325_edge.brep] en
+restore [locate_data_file bug27325_face.brep] f
+
+bhaspc en f do
+mk2dcurve c1 en f
+explode f e
+mk2dcurve c2 f_3 f
+2dcvalue c1 0.0025 x y
+
+set log [2dproj c2 x y]
+
+if { ![regexp {ext_} $log ] } {
+  puts "Error: empty projection"
+} elseif { ![regexp {point} [whatis ext_1] ] } { 
+  puts "ERROR: OCC27322 is reproduced. Incorrect pcurve creation: too long from the source one"
+}

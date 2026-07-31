@@ -1,0 +1,13 @@
+puts "========"
+puts "0031407: Extrema does not process parallel circles correctly"
+puts "========"
+puts ""
+
+circle c1  0 0 0  0 0 -1  5
+circle c2  0 0 0  0 0 1  10
+
+if { [regexp "Infinite number of extremas" [extrema c1 c2]] == 1} {
+  puts "OK : Circles are treated as concentric"
+} else {
+  puts "Error : Extrema does not find the circles are parallel"
+}

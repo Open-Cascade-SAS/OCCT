@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28315_part_step-pmi.stp
+
+set ref_data {
+Centre of mass: -32.061608109140749 -17.085829657462373 4.1559554100512006
+Mass: 2012.3193680858712
+
+}

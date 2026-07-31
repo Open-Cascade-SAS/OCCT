@@ -1,0 +1,22 @@
+puts "========"
+puts "0027536: Visualization - incorrect behavior of zoom persisted objects"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+
+box b -50 -50 -50 100 100 100
+vdisplay b -trsfPers zoom -trsfPersPos 0 0 0 -dispmode 1
+vdump $imagedir/${casename}_1.png
+
+vinit View2 w=200 h=400
+vaxo
+vfit
+
+# Check that box wasn't resized in small view
+if {[vreadpixel 165 200 -rgb -name] != "DARKGOLDENROD"} { puts "ERROR: zoom persistent box is resized on view sizes changed!" }
+
+vdump $imagedir/${casename}_2.png

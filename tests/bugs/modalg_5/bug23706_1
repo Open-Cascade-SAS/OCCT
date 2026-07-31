@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+bsplinecurve r2 4 3 1 5 2 1 3 5 0 8 0 1 2 8 2 1 4 8 3 1 4 8 3 1 6 8 4 1 10 8 10 1
+mkedge spine r2
+wire spine spine
+circle profile 0 8 0 1 0 1 0.2
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+pipe p spine profile
+explode p f
+mksurface ss1 p_1
+mksurface ss2 p_2
+mksurface ss3 p_3
+offset o1 ss1 -0.1
+offset o2 ss2 -0.1
+offset o3 ss3 -0.1
+
+mkface res o2
+
+checkprops res -s 9.00819

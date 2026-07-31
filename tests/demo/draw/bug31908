@@ -1,0 +1,16 @@
+puts "=========="
+puts "0031908: Draw Harness, TKTopTest - wavefront file path length is limited to 100 characters"
+puts "=========="
+puts ""
+pload MODELING 
+box b 10 20 30
+
+# this test check use wavefront command with long file name
+set file_name "${imagedir}/${casename}"
+set path_length [string length $file_name]
+# but full path must be less than 255
+for {set i $path_length} {$i < 255} {incr i} {
+  append file_name "1"
+}
+wavefront b ${file_name}
+puts "TEST COMPLETED"

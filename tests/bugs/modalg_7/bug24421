@@ -1,0 +1,20 @@
+puts "TODO OCC24421 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC24421"
+puts "========"
+puts ""
+#################################################
+# Sewing changes orientations of some subshapes
+#################################################
+
+catch {pload XDE}
+
+igesread [locate_data_file bug24421_Rohteil_Pmod.igs] s *
+
+checkshape s
+normals s 100
+sewing r s
+checkshape r
+mkvolume result r
+checkshape result

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj6_b1-hc-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 296 )  Summary  = 0  ( 296 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 14 )  Summary  = 0  ( 14 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 265  ( 265 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 265  ( 265 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.006613321445  ( 0.006613321441 )  AvgTol   =  0.0003210128166  (  0.000382587884 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 266  ( 266 )  N2Labels = 0  ( 0 )   TotalLabels = 268  ( 268 )   NameLabels = 3  ( 3 )   ColorLabels = 265  ( 265 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

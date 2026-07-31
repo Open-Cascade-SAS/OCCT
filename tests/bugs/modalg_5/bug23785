@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC23785"
+puts "================"
+puts ""
+#######################################################################
+# Crash on make face from wire
+#######################################################################
+
+set BugNumber OCC23777
+
+restore [locate_data_file bug23785_Wire_1.brep] w
+
+mkplane result w 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

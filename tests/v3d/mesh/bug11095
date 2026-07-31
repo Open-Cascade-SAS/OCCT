@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC11095: MeshVS: Borders of faces are not visible in shrink mode"
+puts "============"
+puts ""
+
+set BugNumber OCC11095
+
+pload XDE VISUALIZATION
+
+vinit View1
+meshfromstl m [locate_data_file OMF6391_box.stl]
+vmoveto 157 280
+
+vsetdispmode m 3
+puts "\nSet shrinked display mode\n"
+
+checkcolor 137 277 0 0 0
+if { ${stat} != 1 } { puts "Error : Borders of faces are not visible in shrink mode" }
+
+vdump $imagedir/${casename}.png

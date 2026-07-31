@@ -1,0 +1,17 @@
+puts "======="
+puts "0028780"
+puts "======="
+puts ""
+##################################################
+# HLR with focus does not seem to work
+##################################################
+
+box a 10 20 50
+vdisplay a
+vtop
+vfit
+vcamera -persp
+vhlrtype algo
+vhlr on
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

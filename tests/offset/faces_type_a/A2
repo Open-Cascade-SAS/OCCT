@@ -1,0 +1,6 @@
+#old file fritesb
+
+restore [locate_data_file fritehaut] s
+OFFSETSHAPE -.004 {s_3} $calcul $type
+
+checkprops result -v 0.000514386

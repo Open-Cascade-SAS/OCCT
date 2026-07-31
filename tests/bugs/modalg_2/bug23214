@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23214"
+puts "============"
+puts ""
+#######################################################################
+# BOP section operation produces incorrect result.
+#######################################################################
+
+restore [locate_data_file OCC23214-face_1188.brep] b1
+restore [locate_data_file OCC23214-shell_for_line_1188.brep] b2
+
+bop b1 b2
+bopsection result
+
+checkprops result -l 2.94086 
+checkshape result 
+checksection result
+set nb_good_vertex 4
+set nb_good_edge 2
+set nb_good_wire 0
+set nb_good_face 0
+set nb_good_shell 0
+set nb_good_solid 0
+set nb_good_compsolid 0
+set nb_good_compound 1
+set nb_good_shape 7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

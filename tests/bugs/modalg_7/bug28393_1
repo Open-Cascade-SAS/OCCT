@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28393"
+puts "========"
+puts ""
+###################################
+# Boolean cut produce wrong result.
+###################################
+
+restore [locate_data_file bug28393_o.brep] o
+restore [locate_data_file bug28393_t.brep] t
+
+# object is self-interfering shape
+bopcheck o
+
+bcut result o t
+
+checkshape result
+
+# the self-interfering part of the object is not affected
+# by the tool, and passed into result as is
+bopcheck result
+
+checkprops result -s 70266.5 -v 979408
+checknbshapes result -solid 1 -shell 1 -face 42 -wire 44
+
+checkview -display result -2d -path ${imagedir}/${test_image}-result.png

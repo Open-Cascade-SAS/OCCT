@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename r0601_sy.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 76  ( 20 )  Summary  = 76  ( 20 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 106  ( 106 )  Face     = 106  ( 106 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 106  ( 106 )  Face     = 106  ( 106 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.02881427566  (  0.03703290736 )  AvgTol   =  0.002630949279  (  0.004091781902 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 212  ( 212 )  N2Labels = 0  ( 0 )   TotalLabels = 213  ( 213 )   NameLabels = 1  ( 1 )   ColorLabels = 106  ( 106 )   LayerLabels = 106  ( 106 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 5 )
+COLORS      : Colors   = GREEN RED ROYALBLUE STEELBLUE2 TURQUOISE  ( GREEN RED ROYALBLUE STEELBLUE2 TURQUOISE )
+NLAYERS     : NLayers  = 8  ( 8 )
+LAYERS      : Layers   = 1 2 21 22 23 24 25 3  ( 1 2 21 22 23 24 25 3 )
+
+}

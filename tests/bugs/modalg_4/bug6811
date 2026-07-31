@@ -1,0 +1,25 @@
+#INTERFACE STEP
+puts "================"
+puts "OCC6811"
+puts "================"
+puts ""
+#######################################################################################
+# Unstable work of the checkshape on the attached file. 
+#######################################################################################
+
+catch { pload XDE }
+
+set BugNumber OCC6811
+
+set filepath [locate_data_file trj12_b3-tu-203.stp]
+if { [catch { stepread $filepath a * } catch_result] } {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    checkshape a_1 f
+    checkshape a_1 f
+    renamevar a_1 result
+}
+
+checkprops result -s 1.48021e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

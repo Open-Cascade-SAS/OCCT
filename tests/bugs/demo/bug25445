@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC25445"
+puts "========"
+puts ""
+#######################################################################
+# Draw command incmesh should support all parameters used in BRepMesh
+#######################################################################
+
+pcone aCone 100 10 100
+
+tclean aCone
+incmesh aCone 0.01 -a 10.
+regexp {([0-9]+) +triangles.*[^0-9]([0-9]+) +nodes} [trinfo aCone] full NbTrian_1 NbNodes_1
+
+tclean aCone
+incmesh aCone 0.01 -a 1.
+
+checktrinfo aCone -tri !${NbTrian_1} -nod !${NbNodes_1}

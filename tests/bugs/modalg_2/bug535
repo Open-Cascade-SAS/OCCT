@@ -1,0 +1,35 @@
+#INTERFACE IGES
+puts "======="
+puts "OCC535"
+puts "======="
+puts ""
+#############################################################
+## After command "fixshape" in DRAW on attached shape quantity of shapes obtained
+## with help command "nbs" is increased.
+#############################################################
+
+pload XDE
+
+restore [locate_data_file OCC535.brep] a 
+
+set nb_info_a [nbshapes a]
+regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info_a full r1
+
+fixshape result a
+
+set nb_info_res [nbshapes result]
+regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info_res full r2
+
+puts ""
+puts [format "before Shapes = %s     after Shapes = %s" $r1 $r2]
+puts ""
+
+if { $r1 == $r2 } {
+    puts "OCC535 OK"
+} else {
+    puts "OCC535 Faulty"
+}
+
+checkprops result -s 3554.31 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

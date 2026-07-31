@@ -1,0 +1,9 @@
+box b 1 1 1
+profile p c 0.5 360
+ttranslate p 0.5 0 1
+explode b f
+
+featprism b p b_6 0 0 1 1 1
+featperformval prism result 1
+
+checkprops result -s 9.14159

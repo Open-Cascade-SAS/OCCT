@@ -1,0 +1,23 @@
+puts "========="
+puts "0031995: Modeling Data - Bounding box wrong for face"
+puts "========="
+puts ""
+
+
+restore [locate_data_file bug31995.brep] result
+
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax
+
+set tol_abs 1.0e-4
+set tol_rel 1.0e-4
+
+checkreal "Xmin" [dval Xmin] -0.4992512824357961 ${tol_abs} ${tol_rel}
+checkreal "Ymin" [dval Ymin]  0.5646627848871493 ${tol_abs} ${tol_rel}
+checkreal "Zmin" [dval Zmin]  0.5646627848871487 ${tol_abs} ${tol_rel}
+checkreal "Xmax" [dval Xmax]  0.1535534905932737 ${tol_abs} ${tol_rel}
+checkreal "Ymax" [dval Ymax]  1.4505295939775213 ${tol_abs} ${tol_rel}
+checkreal "Zmax" [dval Zmax]  1.4505295939775207 ${tol_abs} ${tol_rel}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

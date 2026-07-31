@@ -1,0 +1,12 @@
+puts "================"
+puts "0001188: Impossible to set background image for V3d_View"
+puts "================"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+
+vbackground -image [locate_data_file OCC1188.gif]
+if { [vreadpixel 200 200 rgb name] != "WHITE" } { puts "Error: image background is not set" }
+
+vdump $imagedir/${casename}.png

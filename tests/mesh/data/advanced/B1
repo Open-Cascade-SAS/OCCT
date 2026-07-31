@@ -1,0 +1,11 @@
+set TheFileName OCC22095-selectTbb.brep
+#set bug_area "OCC22687"
+set max_rel_tol_diff 1
+if { [string compare $command "shading"] == 0 } {
+  set rel_tol 2.06
+} else {
+  set rel_tol 2.16
+}
+
+set bug_freenodes "OCC22687"
+set nbfreenodes(ALL) 2

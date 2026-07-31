@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC7093"
+puts "========"
+puts ""
+##########################################################################################
+# BRepLib::SameParameter() changes tolerance of shape, not involved into operation
+##########################################################################################
+
+restore [locate_data_file bug7093_BoxAndMult.brep] comp
+
+explode comp
+explode comp_2 f
+explode comp_2_10 e
+
+mkcurve c comp_2_10_3
+pcurve c2d comp_2_10_3 comp_2_10
+
+dump c
+dump c2d
+
+samerange comp_2
+
+mkcurve c comp_2_10_3
+pcurve c2d comp_2_10_3 comp_2_10
+
+dump c
+dump c2d
+
+checkshape comp_2

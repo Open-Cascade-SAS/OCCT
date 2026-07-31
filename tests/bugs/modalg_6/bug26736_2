@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC26736"
+puts "============"
+puts ""
+##################################
+# Errors in BRepOffsetAPI_MakeOffset: overlapping arcs are processed incorrect in mode GeomAbs_Intersection
+##################################
+
+circle c1 7 0 0 5
+circle c2 -7 0 0 0 0 1 0 1 0 5
+trim c1 c1 pi/2 3*pi/2
+trim c2 c2 pi 2*pi
+mkedge e1 c1
+mkedge e2 c2
+polyline pp1 -7 5 0 -7 30 0 7 30 0 7 5 0
+polyline pp2 7 -5 0 7 -30 0 -7 -30 0 -7 -5 0
+wire ww pp1 e1 pp2 e2
+
+smallview
+donly ww
+fit
+
+mkoffset result ww 1 -3. i
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

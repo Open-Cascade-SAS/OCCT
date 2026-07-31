@@ -1,0 +1,6 @@
+restore [locate_data_file projortho008.brep] p 
+explode p
+compound p_4 p_5 c1
+compound p_1 p_2 p_6 p_7 p_3 p_8 c2
+nproject result c2 c1 0.001 2 14 10
+checkprops result -l 561.837

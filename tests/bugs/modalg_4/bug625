@@ -1,0 +1,35 @@
+puts "TODO OCC24156 MacOS: Tcl Exception: tolerance ang"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "========================"
+puts "OCC625"
+puts "========================"
+puts ""
+###############################################################################
+## Created filler looks strange (see attached picture) in spite of checkshapes told about correct source and result shapes.
+###############################################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC625.brep] a 
+checkshape a
+
+tclean a
+explode a e
+
+blend res1 a 10 a_22 10 a_14
+blend result res1 10 a_17 10 a_4
+checkshape result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+set x_coord 116
+set y_coord 252
+
+checkcolor $x_coord $y_coord 0.82 0.58 0.09
+
+checkprops result -s 19977 
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC208"
+puts "========"
+
+##########################
+## Incorrect work of ShapeFix
+##########################
+
+restore [locate_data_file OCC208.brep] a 
+
+fixshape result a 0.01 0.01
+
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

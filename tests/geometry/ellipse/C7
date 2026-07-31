@@ -1,0 +1,6 @@
+ellipse result 70 0 0  0 0 1   1 0 0   40 20
+repeat 7 {rotate result 0 0 0 0 0 1 45;
+    copy result .;
+}
+checklength result -l 193.76896441095104
+checkview -display result -2d -path ${imagedir}/${test_image}.png

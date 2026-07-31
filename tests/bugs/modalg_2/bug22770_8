@@ -1,0 +1,24 @@
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of "
+
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve command sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+restore [locate_data_file 22770-tramp.brep] a 
+restore [locate_data_file 22770-trans.brep] b 
+sewing result +t 0.01 a b 
+
+checkprops result -s 1.88469e+07 
+checkshape result
+
+checknbshapes result -vertex 482 -edge 744 -wire 273 -face 259 -shell 2 -solid 0 -compsolid 0 -compound 1 -shape 1761
+checkmaxtol result -ref 0.04656161000546645
+checknbshapes result -shell 2
+checkfreebounds result 6
+checkview -display result -3d -path ${imagedir}/${test_image}.png

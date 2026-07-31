@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC27746"
+puts "========"
+puts ""
+#################################################
+# Incomplete result of SECTION operation
+#################################################
+
+restore [locate_data_file bug27746_first.brep] b1
+restore [locate_data_file bug27746_second.brep] b2
+
+explode b1 f; compound b1_60 b1_61 b1
+explode b2 f; compound b2_14 b2_18 b2
+donly b1 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 4
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 2 } { puts "Error : Section is incorrect" }
+
+checkprops result -l 4.39869

@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC24481"
+puts "================"
+puts ""
+#######################################################################
+# Test "Perform Infinite Point" provides wrong result for a solid
+#######################################################################
+
+set BugNumber OCC24481
+
+restore [locate_data_file bug24481_b1_64.brep] b
+
+set res [xclassify b]
+if { [regexp "OUT" $res] == 1 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}

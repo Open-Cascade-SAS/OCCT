@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC6555"
+puts "========"
+puts ""
+####################################################
+## ShapeFix_Shape modifies valid shape and return wrong status DONE.
+####################################################
+
+set BugNumber OCC6555
+
+box s1 10 10 10
+
+set result [checkshape s1]
+set index [lsearch ${result} Faulty]
+if {$index > -1} {
+   puts "Faulty ${BugNumber} : checkshape is wrong for s1"
+} else {
+   puts "checkshape is good for s1"
+}
+
+set DumpList1 [dump s1]
+set SOLID_Adress_1 [lindex ${DumpList1} 29]
+
+fixshape result s1
+
+set res [checkshape result]
+set index [lsearch ${res} Faulty]
+if {$index > -1} {
+   puts "Faulty ${BugNumber} : checkshape is wrong for res"
+} else {
+   puts "checkshape is good for res"
+}
+
+set DumpList2 [dump result]
+set SOLID_Adress_2 [lindex ${DumpList2} 29]
+
+if { ${SOLID_Adress_1} != ${SOLID_Adress_2} } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

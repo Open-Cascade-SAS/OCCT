@@ -1,0 +1,33 @@
+puts "==========="
+puts "OCC13904"
+puts "==========="
+######################################################
+# Exception during "filling" operation
+######################################################
+
+set BugNumber OCC13904
+
+circle c 0 100 100 0 1 1 50
+ellipse el 0 0 0 0 1 1 100 50
+
+set  mistake 0
+if [catch { appsurf result c el } res] {
+  set  mistake 1
+  puts "Faulty ${BugNumber}: filling problem"
+} else {
+  puts "Filling ${BugNumber}  OK"
+  set What [whatis result]
+  if { [regexp "surface" $What] != 1 } {
+    set  mistake 1
+  } else {
+    set  mistake 0
+  }
+}
+
+# Resume
+puts ""
+if { ${mistake} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

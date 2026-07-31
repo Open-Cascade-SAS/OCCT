@@ -1,0 +1,26 @@
+puts "==========="
+puts "OCC23191: Visualization - small objects displayed with visual artifacts"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug23191_irons.brep] i
+
+explode i
+explode i_2 F
+compound i_2_1 i_2_4 i_2_5 i2
+compound i_2_2 i_2_3       i3
+
+ttranslate i_2 0.003 0 0
+ttranslate i2  0.006 0 0
+ttranslate i3  0.006 0 0
+
+vinit View1
+vclear
+vsetdispmode 1
+vdisplay i_2 i2 i3
+vsetcolor i3 RED
+vbottom
+vfit
+
+vdump $imagedir/${casename}.png

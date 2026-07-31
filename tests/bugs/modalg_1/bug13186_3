@@ -1,0 +1,21 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
+puts "============"
+puts "OCC13186"
+puts "============"
+puts ""
+#######################################################################
+# Problem with Boolean operation
+# Bug is reprodused on Linux platform only
+#######################################################################
+
+restore [locate_data_file OCC13186_cutcyl11.brep] b1
+restore [locate_data_file OCC13186_sphere.brep] b2
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 14.9648 
+checkshape result
+checknbshapes result -vertex 8 -edge 11 -wire 7 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 34
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

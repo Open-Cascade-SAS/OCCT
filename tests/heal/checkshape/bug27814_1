@@ -1,0 +1,6 @@
+puts "=========="
+puts "0027814: Parallelize BRepCheck_Analyzer"
+puts "=========="
+puts ""
+
+CheckPerform [locate_data_file bug27814.brep]

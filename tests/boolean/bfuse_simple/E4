@@ -1,0 +1,25 @@
+## MFA's collection of bugs
+
+pcylinder cyl 3 5
+vertex v1 0 3 2
+vertex v2 0 4 2
+vertex v3 0 4 3
+vertex v4 0 3 3
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire w e1 e2 e3 e4
+mkplane f w
+
+revol ring f 0 0 0 0 0 1 269
+## works correctly for values 270 and above
+## problem associated with the straight
+## edge of the cylinder
+
+bfuse result cyl ring
+
+checkprops result -s 190.356
+checkview -display result -2d -otherwise { cyl ring } -s -path ${imagedir}/${test_image}.png

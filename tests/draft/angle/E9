@@ -1,0 +1,12 @@
+#C6----------------------------------------------
+plane p 0 0 0 1 0 0 0 1 0
+pcone p p 15 17 25 180
+profile pf o 15 4 10 p 1 0 0 0 1 0 l 5 t 0 20 \
+t -5 0  
+revol p2 pf 15 0 0 0 0 1 170
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_8 -3 5 0 30 0 0 1 \
+f_6 -3 5 0 30 0 0 1
+
+checkprops result -s 3608.6

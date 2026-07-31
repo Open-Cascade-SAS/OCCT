@@ -1,0 +1,3 @@
+set TheFileName shading_099.brep
+set bug_area "OCC22687"
+set rel_tol 0.298

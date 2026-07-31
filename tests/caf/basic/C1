@@ -1,0 +1,67 @@
+#INTERFACE CAF
+# Basic attributes
+# TDataStd_RealArray
+#
+# Testing attribute: TDataStd_RealArray
+#
+# Testing command:   SetRealArray
+# Testing command:   GetRealArray
+#
+
+puts "caf001-C1"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aFrom1 1
+set aTo1 2
+set aSetAttr11 3.
+set aSetAttr12 4.
+set aLabel 0:2
+set isDelta 0
+SetRealArray D ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage1 "Add TDataStd_RealArray attribute: Error"
+set aGetAttr1 [GetRealArray D ${aLabel}]
+set aLen1 [llength ${aGetAttr1}]
+if { ${aLen1} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   set IsGood 0
+	puts "aLen1=${aLen1}"
+	puts ${aMessage1}
+###	return
+}
+set aGetAttr21 [lindex ${aGetAttr1} 0]
+if { ${aSetAttr11} != ${aGetAttr21} } {
+   set IsGood 0
+	puts "aGetAttr21=${aGetAttr21}"
+	puts ${aMessage1}
+###	return
+}
+set aGetAttr22 [lindex ${aGetAttr1} 1]
+if { ${aSetAttr12} != ${aGetAttr22} } {
+   set IsGood 0
+	puts "aGetAttr22=${aGetAttr22}"
+	puts ${aMessage1}
+###	return
+}
+
+if { ${IsGood} == 0} {
+  puts "Add TDataStd_RealArray attribute: Error"
+} else {
+  puts "Add TDataStd_RealArray attribute: OK"
+}

@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC26333"
+puts "============"
+puts ""
+############################################
+## Fails on a shape with BSpline boundaries
+############################################
+
+restore [locate_data_file bug26333.brep] s
+mkoffset result s 1 10.
+
+renamevar result_1 result
+
+checkprops result -l 3820.28
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

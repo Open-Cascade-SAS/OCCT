@@ -1,0 +1,35 @@
+puts "================"
+puts "OCC46"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC46.brep] sh 
+explode sh e
+regexp {Mass +: +([-0-9.+eE]+)} [lprops sh_4] full l1
+regexp {Mass +: +([-0-9.+eE]+)} [lprops sh_7] full l2
+regexp {Mass +: +([-0-9.+eE]+)} [lprops sh_9] full l3
+
+set res1 [expr $l1+$l2+$l3]
+puts $res1
+
+#write stepfile
+######################################################################
+catch {exec rm ${imagedir}/sss.step}
+stepwrite a sh ${imagedir}/sss.step
+stepread ${imagedir}/sss.step ss *
+
+tpcompound result
+
+explode result e
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_4] full t1
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_7] full t2
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_9] full t3
+
+set res2 [expr $t1+$t2+$t3]
+puts $res2
+
+if {[expr abs([expr $res1 - $res2])]  > 0.0001} then {	
+   puts "Error : large difference between shapes"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

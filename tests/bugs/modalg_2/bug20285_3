@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC20285"
+puts "============"
+puts ""
+#######################################################################
+# SIGFPE Arithmetic exception on MakeCut Appendix for IPAL20277
+#######################################################################
+
+set BugNumber OCC20285
+
+puts "Load first shape ..."
+restore [locate_data_file OCC20285-main.brep] a1 
+explode a1
+renamevar a1_5 b1
+
+puts "Load second shape ..."
+restore [locate_data_file OCC20285-tool.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+checkprops result -s 113140 
+checkshape result
+
+checknbshapes result -vertex 18 -edge 28 -wire 11 -face 11 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 71
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

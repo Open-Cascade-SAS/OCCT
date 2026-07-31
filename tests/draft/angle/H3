@@ -1,0 +1,15 @@
+#G4----------------------------------------------
+beziersurf bs 4 4 \
+  0  0 0   5  0 0  10  0 0  15  0 0 \
+  0  5 0   5  5 -2  10  5 2  15  5 0 \
+  0 10 0   5 10 0  10 10 0  15 10 0 \
+  0 15 0   5 15 0  10 15 0  15 15 0 
+mkface bs bs
+prism p bs 0 0 5
+profile pf o 5 5 1 l 2 c 3 90 l 2 d -1 0 l 5
+prism pr pf 0 0 20
+bfuse f p pr
+nexplode f f
+depouille result f 0 0 1 f_10 5 0 0 21 0 0 1
+
+checkprops result -s 1076.83

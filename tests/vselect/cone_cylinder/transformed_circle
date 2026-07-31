@@ -1,0 +1,41 @@
+puts "================================="
+puts "0032547: Visualization, Select3D_SensitiveCylinder - implement picking of a hollow cylinder"
+puts ""
+puts "================================="
+
+pload VISUALIZATION OPENGL 
+vinit View1
+
+vpoint C1P1 10 10 10
+vpoint C1P2 60 60 -10 
+vpoint C1P3 35 100 10 
+vcircle c1 C1P1 C1P2 C1P3 1 
+
+vpoint C2P1 10 -10 -10 
+vpoint C2P2 60 -60 10 
+vpoint C2P3 35 -100 10 
+vcircle c2 C2P1 C2P2 C2P3 1 
+
+vpoint C3P1 -80 -10 10 
+vpoint C3P2 -140 -50 -10 
+vpoint C3P3 -110 -100 -10 
+vcircle c3 C3P1 C3P2 C3P3 1 
+
+vpoint C4P1 -80 10 10 
+vpoint C4P2 -140 60 10 
+vpoint C4P3 -110 100 -10 
+vcircle c4 C4P1 C4P2 C4P3 1 
+
+vbottom
+vfit
+
+vmoveto 100 100
+if {[vreadpixel 100 100 rgb name] != "TURQUOISE"} { puts "ERROR: the circle should be highlighted" }
+
+vmoveto 200 200
+
+vseldump $imagedir/${casename}_selnorm.png -type surfNormal
+
+vsensdis
+
+vseldump $imagedir/${casename}.png

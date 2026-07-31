@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26684"
+puts "============"
+puts ""
+###################################################
+## Big tolerance values of the intersection curves
+###################################################
+
+brestore [locate_data_file IR2_TuyoPipeBSpline_20_draw2.brep] b1
+brestore [locate_data_file IR2_sphere2_20.brep] b2
+
+explode b1 f; copy b1_1 f1
+explode b2 f; copy b2_1 f2
+
+smallview
+donly f1 f2
+fit
+
+# 1 case
+set bop_info [bopcurves f1 f2]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $bop_info full Tolerance
+
+checkreal "Reached tolerance" ${Tolerance} 1.2530391548405894e-008 1.e-7 0
+
+# 2 case
+set bop_info_2d [bopcurves f1 f2 -2d]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $bop_info_2d full Tolerance_2d
+
+checkreal "Reached tolerance" ${Tolerance_2d} 0.00040497924613267194 0 1.e-2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

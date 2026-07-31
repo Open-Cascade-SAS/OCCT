@@ -1,0 +1,37 @@
+puts "=================================="
+puts "0028954: Visualization - implement interactive object AIS_ViewCube for camera manipulations"
+puts "Display and erase with default settings"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+box b 15 20 70
+vdisplay -dispMode 1 b
+vaxo
+vfit
+vviewcube vc -fixedAnimation 1 -duration 0
+
+vmoveto 70 340
+if {[vreadpixel 70 340 name rgb] != "CYAN"} { puts "Error: Highlighting of view cube Side is wrong." }
+vmoveto 0 0
+vdump $imagedir/${casename}_axo.png
+
+# check FRONT side
+vselect 70 340
+if {[vreadpixel 255 300 name rgb] != "BLACK"} { puts "Error: Position of FRONT camera is wrong." }
+vdump $imagedir/${casename}_side.png
+
+# check FRONT/TOP edge
+vselect 100 270
+if {[vreadpixel 100 300 name rgb] != "GRAY52"} { puts "Error: Position of FRONT-TOP camera is wrong." }
+if {[vreadpixel 100 310 name rgb] != "CYAN"}   { puts "Error: Position of FRONT-TOP camera is wrong." }
+vdump $imagedir/${casename}_edge.png
+
+# Check vertex
+vselect 140 310
+if {[vreadpixel 100 290 name rgb] != "GRAY47"} { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+if {[vreadpixel 100 310 name rgb] != "CYAN"}   { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+if {[vreadpixel 100 320 name rgb] != "GRAY59"} { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+vdump $imagedir/${casename}_corner.png

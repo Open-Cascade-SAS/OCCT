@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC26151"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by intersection algorithm.
+###############################
+
+restore [locate_data_file bug26132_shape.brep] q
+
+explode q
+copy q_1 b1
+copy q_2 b2
+
+explode b1 f
+explode b2 
+explode b2_11 f
+
+set log [bopcurves b1_1 b2_11_2 -2d]
+
+#Faces almost coincide. Therefore, there is no point in
+#returning some intersection line.
+#Theoretically, the intersection result is some region (tangent zone).
+
+if { [regexp "has no 3d curve" ${log}] != 1 } {
+   puts "Error : Wrong result obtained by intersection algorithm"
+} else {
+   puts "OK : Good result obtained by intersection algorithm"
+}
+
+smallview
+fit
+xwd $imagedir/${test_image}.png

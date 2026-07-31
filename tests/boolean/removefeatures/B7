@@ -1,0 +1,27 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# removal of the square gap, keeping the sphere.
+
+removefeatures result s s_7 s_10
+checkshape result
+checkprops result -s 466.126 -v 197.014 -deps 1.e-7
+checknbshapes result -vertex 28 -edge 43 -wire 22 -face 18 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved s_7 {e f}
+CheckIsFeatureRemoved s_10 {e f}
+
+# get history of the operation
+savehistory rf_hist
+
+# check modification of the side faces
+modified m12 rf_hist s_12
+modified m19 rf_hist s_19
+
+if {![regexp "same shapes" [compare m12 m19]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m12 -s 13.9463
+checknbshapes m12 -vertex 7 -edge 7 -wire 1 -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

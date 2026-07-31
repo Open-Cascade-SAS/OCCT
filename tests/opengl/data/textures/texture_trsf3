@@ -1,0 +1,48 @@
+puts "========"
+puts "Texture 2D transformation (presentation trsf) on DDS texture"
+puts "========"
+
+set aTexture [locate_data_file bug31478_texture_trsf_ref_dxt3.dds]
+
+pload MODELING VISUALIZATION
+if { [vdriver -default] == "TKOpenGles" } {
+  puts "Skipping test case 'DDS texture': OpenGL ES does not support sRGB S3TC_DXT1 texture format"
+  return
+}
+
+box b 1 1 1
+explode b F
+
+for { set aPass 0 } { $aPass < 2 } { incr aPass } {
+  vclear
+  vclose ALL
+
+  set aSuffix ""
+  if { $aPass == 0 } {
+    set aSuffix "ffp"
+    vcaps -ffp 1
+  } else {
+    set aSuffix "glsl"
+    vcaps -ffp 0
+  }
+
+  vinit View1 w=512 h=512
+  vtop
+  vdisplay -dispMode 1 b_6
+  vfit
+
+  vtexture b_6 $aTexture -modulate off
+  vdump $::imagedir/${::casename}_identity_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.0 0.0 -trsfScale 0.8 2.0 -trsfAngle 0
+  vdump $::imagedir/${::casename}_scale_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.0 1.0 -trsfAngle 0
+  vdump $::imagedir/${::casename}_translate_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.0 0.1 -trsfScale 1 1.1 -trsfAngle 30
+  vdump $::imagedir/${::casename}_rotate_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.1 0.8 -trsfAngle 0
+  vdump $::imagedir/${::casename}_${aSuffix}.png
+}

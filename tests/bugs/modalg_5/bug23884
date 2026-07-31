@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC23884"
+puts "============"
+puts ""
+######################################################
+# Boolean Fuse between two faces fails
+######################################################
+
+restore [locate_data_file bug23884_fz72] b1
+restore [locate_data_file bug23884_fz124] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 2368.48 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+

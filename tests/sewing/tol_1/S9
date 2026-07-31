@@ -1,0 +1,8 @@
+restore [locate_data_file CIN001_a24.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 1.0246950765959601e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

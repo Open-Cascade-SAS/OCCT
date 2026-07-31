@@ -1,0 +1,26 @@
+puts "============"
+puts "CR24873"
+puts "============"
+puts ""
+##########################################################################################################
+# Draw Harness, ViewerTest - add command vbounding to show presentation bounding box
+##########################################################################################################
+
+pload QAcommands
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+psphere s 2
+vdisplay s
+vfit
+
+vbounding s
+
+set x 378
+set y 102
+checkcolor $x $y 1 1 1
+
+vdump ${imagedir}/${test_image}.png

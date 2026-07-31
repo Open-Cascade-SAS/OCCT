@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC23708"
+puts "============"
+puts ""
+############################################################################
+# The correct shape is interpreted as invalid
+############################################################################
+
+restore [locate_data_file bug23708_invalidface.brep] result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

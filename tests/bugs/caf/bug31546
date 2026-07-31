@@ -1,0 +1,26 @@
+puts "==========="
+puts "0031546: Application Framework - Memory leak (100 bytes) on Load / Close OCAF document"
+puts "==========="
+
+puts "Preparing empty document"
+set docname ${imagedir}/${casename}.cbf
+NewDocument D BinOcaf
+SaveAs D $docname
+Close D
+
+# make the first open/close iteration before checking memory because some filled structures
+# are cleared on start of the next open (like mySections in DocumentRetrievalDriver)
+for {set i 1} {$i < 3} {incr i} {
+  Open $docname D
+  Close D
+}
+
+puts "Executing Load / Close in cycle to see if allocated heap memory grows"
+set listmem {}
+for {set i 1} {$i < 10} {incr i} {
+  Open $docname D
+  Close D
+
+  lappend listmem [meminfo h]
+  checktrend $listmem 50 50 "Memory leak"
+}

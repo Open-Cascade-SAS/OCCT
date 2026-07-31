@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : A1
+## Comment : from original bug PRO4495
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file CFI_indusfjm.rle] s
+explode s e
+blend result s 2 s_4 s_5 s_15 s_16
+
+checkprops result -s 0

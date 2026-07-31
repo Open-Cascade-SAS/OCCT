@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC29233"
+puts "============"
+puts ""
+#####################################################
+# Incorrect result of conversion to the STEP format.
+#####################################################
+
+restore [locate_data_file bug29233.brep] orig
+set aTmpFile "$imagedir/${casename}.brep"
+testwritestep "$aTmpFile" orig
+testreadstep  "$aTmpFile" result
+file delete   "$aTmpFile"
+checknbshapes result -face 22
+checkmaxtol result -ref 1.e-7

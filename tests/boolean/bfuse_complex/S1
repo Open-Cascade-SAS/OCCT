@@ -1,0 +1,16 @@
+puts "PRO15946"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file CFE900_uki60gfk.rle] base
+restore [locate_data_file uki60919b.brep] cont
+
+prism pr cont 0 0 -200
+
+bcut res pr base
+explode res
+
+bfuse result base res_1
+
+checkprops result -s 64405.2
+checkview -display result -2d -otherwise { base res_1 } -s -path ${imagedir}/${test_image}.png

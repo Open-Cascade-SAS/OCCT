@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+box b1 10 10 10
+explode b1 f
+box b2 4 4 4 2 2 2
+explode b2 w
+mkvolume result b1_1 b1_2 b1_3 b1_4 b1_5 b1_6 b2_1 b2_2 b2_3 b2_4 b2_5 b2_6 -ni
+# 1 solid created
+
+checkprops result -s 600 
+checkshape result
+
+checknbshapes result -vertex 16 -edge 24 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 54
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "========"
+puts "0032758: Visualization, TKOpenGl - disable shadow-map from transform-persistence objects"
+puts "========"
+
+pload MODELING VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+vinit View1
+vcamera -persp
+vviewparams -scale 1.1 -proj 0.57 -0.57 0.57 -up -0.4 0.4 0.8
+vrenderparams -shadows
+vlight headlight -castShadows 1 -head 0 -dir -1 -1 -1
+vtrihedron trih
+
+box g -250 -250 0 500 500 0 -preview
+vdisplay -dispMode 1 g
+vaspects g -color GRAY60
+
+box b 20 10 50
+vdisplay -dispMode 1 b -trsfPers ZOOM -trsfPersPos 0 0 0
+
+vdump $::imagedir/${::casename}.png

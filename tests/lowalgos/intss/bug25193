@@ -1,0 +1,105 @@
+puts "TODO OCC27116 ALL: Error: Summary length  ="
+puts "TODO OCC27116 ALL: Error: 1 intersection curve\\(s\\) expected but"
+
+puts "================"
+puts "OCC25193"
+puts "================"
+puts ""
+#######################################################################
+# Bad Intersection curveobtained by Surface/Surface Intersection Algorithm.
+#######################################################################
+
+puts ""
+
+pload QAcommands
+
+set GoodNbCurv 1
+set GoodTol 3.6570868343352305e-005
+set NbControlPts 10
+
+restore [locate_data_file bug25193_s1t.draw] s1
+restore [locate_data_file bug25193_s4t.draw] s4
+
+#Ethalon of intersection curve
+bounds s1 us1 us2 vs1 vs2
+uiso cc s1 us1
+
+regexp {is ([-0-9.+eE]+)} [length cc 1.0e-4] full ExpLength
+puts "Expected length = $ExpLength"
+
+intersect res s1 s4 $GoodTol
+set che [whatis res]
+set ind [string first "3d curve" $che]
+
+set AllowRepeate 1
+set ic 1
+
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+set SumLength 0
+
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+    break
+  }
+  
+  for {set jc 1} {$jc < $ic} {incr jc} {
+    mkedge e1 res_$ic
+    mkedge e2 res_$jc
+    set coe [checkoverlapedges e1 e2]
+
+    puts "res_$ic <-> res_$jc: $coe"
+    if { [regexp "Edges are not overlapped" $coe] != 1 } {
+      puts "Error: Overlapped intersection curves"
+    }
+  }
+
+  regexp {is ([-0-9.+eE]+)} [length res_$ic 1.0e-4] full ll
+
+  set SumLength [ expr $SumLength+$ll ]
+  
+  bounds res_$ic U1 U2
+  
+  set step [ dval (U2-U1)/$NbControlPts ]
+  
+  if { $step < 1.0e-9*$NbControlPts } {
+    puts "Error: Wrong curve's range!"
+  }
+
+  set DPPrev 0
+  for {set par [dval U1]} {$par <= [dval U2]} {set par [expr $par+$step]} {
+    cvalue res_$ic $par xx yy zz dx1 dy1 dz1
+    regexp " parameter 1 = +(\[-0-9*\.+eE\]+)" [proj cc xx yy zz] full cpar
+    cvalue cc $cpar xx yy zz dx2 dy2 dz2
+    
+    set DP [dval dx1*dx2+dy1*dy2+dz1*dz2]
+    
+    if {$DPPrev*$DP < 0.0} {
+      puts "Error: Curve res_$ic changes its direction"
+    }
+    
+    set DPPrev $DP
+  }
+  
+  incr ic
+}
+  
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Good number of intersection curve(s) obtained by Surface/Surface Intersection Algorithm"
+} else {
+  puts "Error: $GoodNbCurv intersection curve(s) expected but [expr {$ic - 1}] found"
+}
+
+checkreal "Summary length " ${SumLength} $ExpLength 0.0 1.0e-6
+
+smallview
+donly res_* s1 s4
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

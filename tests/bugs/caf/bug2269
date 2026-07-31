@@ -1,0 +1,53 @@
+puts "REQUIRED All: Cannot retrieve real member for RealArray attribute"
+
+puts "================"
+puts "OCC2269"
+puts "================"
+puts ""
+#######################################################################################
+# XML persistence should be more robust
+#######################################################################################
+# 
+# Tested file is contains 3 labels with TDataStd_RealArray attributes
+# 0:2   label has good TDataStd_RealArray attribute
+# 0:22  label has bad  TDataStd_RealArray attribute
+# 0:222 label has good TDataStd_RealArray attribute
+# 
+#######################################################################################
+
+#set ScriptDir $XmlDir
+#source ${ScriptDir}/begin
+#source ${ScriptDir}/002/begin
+
+#set aTestName "OCC2269"
+#set WorkDirectory ${filedir}
+#set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+#Close D -silent
+
+set IsGood 1
+Open [locate_data_file OCC2269.xml] DD
+
+if [catch {XDumpDF DD } result] {
+   puts "Error during dump ${aFile} file"
+   set IsGood 0
+}
+if [catch {CheckLabel DD 0:2} result] {
+   puts "Error during search 0:2 label in ${aFile} file"
+   set IsGood 0
+}
+if [catch {CheckLabel DD 0:22} result] {
+   puts "Error during search 0:22 label in ${aFile} file"
+   set IsGood 0
+}
+if [catch {CheckLabel DD 0:222} result] {
+   puts "Error during search 0:222 label in ${aFile} file"
+   set IsGood 0
+}
+
+Close DD
+
+if { ${IsGood} == 0} {
+  puts "Faulty OCC2269"
+} else {
+  puts "OK OCC2269"
+}

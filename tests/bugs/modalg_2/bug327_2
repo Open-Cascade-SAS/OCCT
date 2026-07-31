@@ -1,0 +1,16 @@
+puts "========================"
+puts " OCC327 "
+puts " case 2 "
+puts "========================"
+
+restore [locate_data_file OCC327b.brep] result
+
+set che [checkshape result r]
+if { [regexp {OK} $che] == 1 } {
+    puts " OCC327  case 2: OK"
+} else {
+    puts " OCC327  case 2: Faulty"
+}
+
+checkprops result -s 5674.84 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

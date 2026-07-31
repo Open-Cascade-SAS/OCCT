@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC22886: Bug in boolean"
+puts "============"
+puts ""
+
+restore [locate_data_file bug22886_solid1.brep] solid1
+restore [locate_data_file bug22886_solid2.brep] solid2
+
+bcommon result solid1 solid2
+
+checkshape result
+checkprops result -s 1.40191e+09 -v 3.59571e+12
+checknbshapes result -vertex 78 -edge 135 -wire 56 -face 56 -shell 1 -solid 1 -t -m "Common operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

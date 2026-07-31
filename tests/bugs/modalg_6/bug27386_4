@@ -1,0 +1,60 @@
+puts "============"
+puts "OCC27386"
+puts "============"
+puts ""
+#####################################################################
+# BRepOffsetAPI_MakePipeShell does not provide history of generations
+#####################################################################
+
+
+restore [locate_data_file bug27386_sp.brep] sp
+restore [locate_data_file bug27386_pr2.brep] pr2
+explode sp v
+donly sp sp_1 pr2 sp_2
+
+mksweep sp
+addsweep sp_1
+addsweep pr2
+addsweep sp_2
+buildsweep q
+
+explode pr2
+
+savehistory sweep_hist
+
+generated r1 sweep_hist pr2_1
+generated r2 sweep_hist pr2_2
+generated r3 sweep_hist pr2_3
+
+checkprops r1 -s 1171.18
+checkprops r2 -s 1171.18
+checkprops r3 -s 965.22
+
+explode pr2 v
+
+generated r1 sweep_hist pr2_1
+generated r2 sweep_hist pr2_2
+generated r3 sweep_hist pr2_3
+
+checkprops r1 -l 147.049
+checkprops r2 -l 167.959
+checkprops r3 -l 147.049
+
+generated r4 sweep_hist sp_1
+generated r5 sweep_hist sp_2
+
+checknbshapes r4 -vertex 1 -edge 3 -face 0
+
+regexp {Mass : *([0-9\-+.eE]+)} [lprops r4] dummy len4
+
+if {$len4 > 1.e-12} {
+   puts "Error: the length of punctual section is not null"
+}
+
+checknbshapes r5 -vertex 1 -edge 3 -face 0
+
+regexp {Mass : *([0-9\-+.eE]+)} [lprops r5] dummy len5
+
+if {$len5 > 1.e-12} {
+   puts "Error: the length of punctual section is not null"
+}

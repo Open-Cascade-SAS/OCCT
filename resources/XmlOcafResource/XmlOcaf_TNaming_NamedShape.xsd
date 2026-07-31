@@ -1,0 +1,97 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+	elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of attribute TNaming_NamedShape
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TNaming_NamedShape.xsd
+  </documentation>
+</annotation>
+
+<complexType name="Location">
+  <sequence>
+    <element name="datum" minOccurs="0">
+      <complexType>
+        <attribute name="id" type="positiveInteger" use="required"/>
+	<attribute name="trsf" use="required">
+	  <simpleType>
+	    <restriction base="ocaf:ListOfReal">
+	      <length value="14"/>
+	    </restriction>
+	  </simpleType>
+	</attribute>
+      </complexType>
+    </element>
+    <element name="location" type="ocaf:Location" minOccurs="0"/>
+  </sequence>
+  <attribute name="power" type="positiveInteger" use="required"/>
+  <attribute name="datum" type="positiveInteger" use="required"/>
+</complexType>
+
+<element name="TNaming_NamedShape" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+	  <element name="array" minOccurs="0" maxOccurs="2">
+	    <complexType>
+	      <sequence>
+	        <element name="shape" minOccurs="0" maxOccurs="unbounded">
+		  <complexType>
+		    <sequence>
+		      <element name="location" type="ocaf:Location" minOccurs="0"/>
+		    </sequence>
+		    <attribute name="tshape" use="required">
+		      <simpleType>
+		        <restriction base="string">
+			  <pattern value="[+-ie]\d+"/>
+			</restriction>
+		      </simpleType>
+		    </attribute>
+		    <attribute name="index" type="positiveInteger" use="required"/>
+		  </complexType>
+		</element>
+	      </sequence>
+	      <attribute name="id" type="positiveInteger" use="required"/>
+	      <attribute name="lower" type="positiveInteger"/>
+	      <attribute name="upper" type="positiveInteger"/>
+	    </complexType>
+	  </element>
+	</sequence>
+        <attribute name="olds" type="positiveInteger"/>
+        <attribute name="news" type="positiveInteger"/>
+        <attribute name="evolution" use="required">
+	  <simpleType>
+	    <restriction base="string">
+	      <enumeration value="primitive"/>
+	      <enumeration value="generated"/>
+	      <enumeration value="modify"/>
+	      <enumeration value="delete"/>
+	      <enumeration value="selected"/>
+	      <enumeration value="replace"/>
+	    </restriction>
+	  </simpleType>
+	</attribute>
+	<attribute name="version" type="positiveInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

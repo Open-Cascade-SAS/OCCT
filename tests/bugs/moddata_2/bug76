@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC76"
+puts "================"
+puts ""
+
+set vol1_exp 3050.42
+set vol2_exp 10195.3
+
+restore [locate_data_file shading_177.brep] sh1 
+checkshape sh1
+regexp {Mass +: +([-0-9.+eE]+)} [vprops sh1] full l1
+
+restore [locate_data_file OCC76-2.brep] sh2
+checkshape sh2
+regexp {Mass +: +([-0-9.+eE]+)} [vprops sh2] full l2
+
+if { [expr abs([expr $l1 - $vol1_exp])] > 0.00999} {	
+   puts "Error : Volume of OCC76-1.brep is calculated wrongly because $vol1_exp value must be but $l1 is"
+} else {
+  puts " Volume of OCC76-1.brep is right calculated"
+}
+
+if { [expr abs([expr $l2 - $vol2_exp])] > 0.00999} {
+   puts "Error : Volume of OCC76-2.brep is calculated wrongly because $vol2_exp value must be but $l2 is"
+} else {
+  puts " Volume of OCC76-2.brep is right calculated"
+}

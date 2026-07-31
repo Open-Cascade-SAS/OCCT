@@ -1,0 +1,25 @@
+puts "TODO OCC27614 ALL: ERROR: OCC27614 is reproduced."
+
+puts "========"
+puts "OCC27614"
+puts "========"
+puts ""
+#################################################
+# Sewing returns result with too high tolerance
+#################################################
+
+set sew_Tol 0.2
+
+restore [locate_data_file bug27614_CC.brep] c
+
+explode c
+sewing result $sew_Tol c_1 c_2
+
+checkshape result
+
+set bug_info [string trim [tolerance result]]
+set max_Tol [lindex $bug_info 1]
+set max_Tol [string trim [string range $max_Tol [expr {[string first "=" $max_Tol] + 1}] [expr {[string length $max_Tol] - 1}]]]
+if {$max_Tol > $sew_Tol} {
+  puts "ERROR: OCC27614 is reproduced. Tolerance of shape is too high: ${max_Tol} (expected: ${sew_Tol})."
+}

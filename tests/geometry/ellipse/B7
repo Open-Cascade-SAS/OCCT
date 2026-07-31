@@ -1,0 +1,11 @@
+ellipse e  3 0 0 0 0 1 0 1 0 1 0.5
+copy e er
+translate er 0 -4 0
+reverse er
+convert result er
+pl
+pl
+pu
+pu
+checklength result -l 4.844224110274018
+checkview -display result -2d -path ${imagedir}/${test_image}.png

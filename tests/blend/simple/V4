@@ -1,0 +1,10 @@
+#modele fabrique dans STRIM et transfere dans DRAW
+
+restore [locate_data_file CFI_5_g12fgl.rle]  s
+tscale s 0 0 0 SCALE1 
+explode s E
+blend result s 8*SCALE1 s_4
+explode result sh
+tcopy result_1 result 
+
+checkprops result -s 5.05104e+06

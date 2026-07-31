@@ -1,0 +1,69 @@
+puts "==========="
+puts "OCC73"
+puts "BUC61050"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 10
+
+# Close/Open transaction
+NewCommand D
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Get a selection mode of the shape
+set SelectionMode0 [OCC73_SelectionMode D ${aLabel}]
+
+# Set a selection mode of the shape as 1
+set SelectionMode 1
+OCC73_SelectionMode D ${aLabel} ${SelectionMode}
+
+# Get a selection mode of the shape
+set SelectionMode1 [OCC73_SelectionMode D ${aLabel}]
+
+# Close/Open transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a selection mode of the shape
+set IsDone [catch {set SelectionMode2 [OCC73_SelectionMode D ${aLabel}]} aResult]
+
+if { ${IsDone} != 0 }  {
+	puts "OCC73: Error"
+	puts ${aResult}
+} else {
+
+puts "SelectionMode0 = ${SelectionMode0}"
+puts "SelectionMode1 = ${SelectionMode1}"
+puts "SelectionMode  = ${SelectionMode}"
+puts "SelectionMode2 = ${SelectionMode2}"
+
+if {${SelectionMode0} == ${SelectionMode1} || ${SelectionMode1} != ${SelectionMode} || ${SelectionMode1} != ${SelectionMode2}} then {
+	puts "OCC73: Error"
+} else {
+	puts "OCC73: OK"
+}
+
+}

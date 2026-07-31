@@ -1,0 +1,24 @@
+puts "=========="
+puts "OCC21802: Not all names are transferred from STEP to IGES via XDE"
+puts "=========="
+puts ""
+
+ReadStep d [locate_data_file bug21802_as1-oc-214.stp]
+
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges d $aTmpFile
+
+set is21802fixed "FALSE"
+set file21802 [open $aTmpFile RDONLY]
+while {[eof $file21802] == 0} {
+  set file21802line [string trim [gets $file21802]]
+  if {[string first "l-bracke" $file21802line] != -1} {
+    set is21802fixed "TRUE"
+  }
+}
+close $file21802
+file delete -force ${aTmpFile}
+
+if {[string compare $is21802fixed "FALSE"] == 0} {
+  puts "ERROR: OCC21802 is reproduced"
+}

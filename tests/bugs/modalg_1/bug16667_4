@@ -1,0 +1,21 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
+puts "============"
+puts "OCC16667"
+puts "============"
+puts ""
+#######################################################################
+# 2D Offset algorithm fails
+#######################################################################
+
+restore [locate_data_file OCC16667-wire.brep] a
+
+mkoffset resoffset a 1 -20
+renamevar resoffset_1 result
+
+checkprops result -l 1200.16 
+checkshape result
+checksection result
+checknbshapes result -vertex 8 -edge 8 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 17
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

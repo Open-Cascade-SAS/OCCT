@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC24357"
+puts "========"
+puts ""
+###########################################################
+# BRepBuilderAPI_Sewing returns result with too high tolerance
+###########################################################
+
+restore [locate_data_file bug24357_faces.brep] f
+whatis f
+tolerance f
+sewing r 0.2 f
+whatis r
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance r] full MaxTolerance
+puts "MaxTolerance=$MaxTolerance"
+
+set expected_MaxTolerance 0.00068453844086764995
+set tol_abs_MaxTolerance  0.00001
+set tol_rel_MaxTolerance  0.00001
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+smallview
+donly r
+fit
+xwd ${imagedir}/${casename}_1.png
+
+vinit
+vsetdispmode 1
+vdisplay r
+vfit
+vdump ${imagedir}/${casename}_2.png

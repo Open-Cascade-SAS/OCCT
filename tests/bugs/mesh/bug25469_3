@@ -1,0 +1,39 @@
+puts "TODO CR25469 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
+
+puts "========="
+puts "CR25469"
+puts "========="
+puts ""
+###############################################
+# BRepMesh corrupts triangulation of another not connected shape
+###############################################
+
+pload QAcommands
+
+restore [locate_data_file bug25469_bad_tria.brep] a
+tclean a
+incmesh a 0.001
+triangles a
+isos a 0
+
+donly a
+top
+fit
+
+vinit
+vsetdispmode 1
+vdisplay a
+vtop
+vfit
+vmoveto 200 150
+
+checkcolor 64 200 1 0.72549021244049072 0.12941177189350128
+
+if { ${stat} == 1} {
+   puts "Error : Bad triangulation"
+} else {
+   puts "OK : Good triangulation"
+}
+
+xwd ${imagedir}/${test_image}_1.png
+vdump ${imagedir}/${test_image}_2.png

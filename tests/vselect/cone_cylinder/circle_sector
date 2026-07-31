@@ -1,0 +1,46 @@
+puts "================================="
+puts "0032547: Visualization, Select3D_SensitiveCylinder - implement picking of a hollow cylinder"
+puts ""
+puts "================================="
+
+pload VISUALIZATION OPENGL 
+vinit View1 
+
+# Filled circle sector
+vpoint C1P1 10 10 10
+vpoint C1P2 60 60 -10 
+vpoint C1P3 35 100 10 
+vcircle c1 C1P1 C1P2 C1P3 1 90 150
+
+# Circle arc
+vpoint C2P1 10 -10 -10 
+vpoint C2P2 60 -60 10 
+vpoint C2P3 35 -100 10 
+vcircle c2 C2P1 C2P2 C2P3 0 90 150
+
+# Filled circle
+vpoint C3P1 -80 -10 10 
+vpoint C3P2 -140 -50 -10 
+vpoint C3P3 -110 -100 -10 
+vcircle c3 C3P1 C3P2 C3P3 1 0 360
+
+# Circle wire
+vpoint C4P1 -80 10 10 
+vpoint C4P2 -140 60 10 
+vpoint C4P3 -110 100 -10 
+vcircle c4 C4P1 C4P2 C4P3 0 0 360
+
+vbottom
+vfit
+
+vselect 100 100
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: filled circle should be detected" }
+
+vselect 100 225
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle wire should be detected" }
+
+vselect 390 50
+if { ![string match "*Select3D_SensitivePoly*" [vstate -entities]] } { puts "Error: circle arc should be detected" }
+
+vselect 360 350
+if { ![string match "*Select3D_SensitivePoly*" [vstate -entities]] } { puts "Error: circle sector should be detected" }

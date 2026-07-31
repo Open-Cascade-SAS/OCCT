@@ -1,0 +1,377 @@
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _gp_Pln_HeaderFile
+#define _gp_Pln_HeaderFile
+
+#include <gp_Ax1.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+
+//! Describes a plane.
+//! A plane is positioned in space with a coordinate system
+//! (a gp_Ax3 object), such that the plane is defined by the
+//! origin, "X Direction" and "Y Direction" of this coordinate
+//! system, which is the "local coordinate system" of the
+//! plane. The "main Direction" of the coordinate system is a
+//! vector normal to the plane. It gives the plane an implicit
+//! orientation such that the plane is said to be "direct", if the
+//! coordinate system is right-handed, or "indirect" in the other case.
+//! Note: when a gp_Pln plane is converted into a
+//! Geom_Plane plane, some implicit properties of its local
+//! coordinate system are used explicitly:
+//! -   its origin defines the origin of the two parameters of
+//! the planar surface,
+//! -   its implicit orientation is also that of the Geom_Plane.
+//! See Also
+//! gce_MakePln which provides functions for more complex
+//! plane constructions
+//! Geom_Plane which provides additional functions for
+//! constructing planes and works, in particular, with the
+//! parametric equations of planes
+class gp_Pln
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Creates a plane coincident with OXY plane of the
+  //! reference coordinate system.
+  constexpr gp_Pln() noexcept = default;
+
+  //! The coordinate system of the plane is defined with the axis
+  //! placement theA3.
+  //! The "Direction" of theA3 defines the normal to the plane.
+  //! The "Location" of theA3 defines the location (origin) of the plane.
+  //! The "XDirection" and "YDirection" of theA3 define the "XAxis" and
+  //! the "YAxis" of the plane used to parametrize the plane.
+  constexpr gp_Pln(const gp_Ax3& theA3) noexcept
+      : myPosition(theA3)
+  {
+  }
+
+  //! Creates a plane with the "Location" point <theP>
+  //! and the normal direction <theV>.
+  Standard_EXPORT gp_Pln(const gp_Pnt& theP, const gp_Dir& theV);
+
+  //! Creates a plane from its cartesian equation :
+  //! @code
+  //! theA * X + theB * Y + theC * Z + theD = 0.0
+  //! @endcode
+  //! Raises ConstructionError if std::sqrt (theA*theA + theB*theB + theC*theC) <= Resolution from
+  //! gp.
+  Standard_EXPORT gp_Pln(const double theA,
+                         const double theB,
+                         const double theC,
+                         const double theD);
+
+  //! Returns the coefficients of the plane's cartesian equation:
+  //! @code
+  //! theA * X + theB * Y + theC * Z + theD = 0.
+  //! @endcode
+  void Coefficients(double& theA, double& theB, double& theC, double& theD) const noexcept;
+
+  //! Modifies this plane, by redefining its local coordinate system so that
+  //! -   its origin and "main Direction" become those of the
+  //! axis theA1 (the "X Direction" and "Y Direction" are then recomputed).
+  //! Raises ConstructionError if the theA1 is parallel to the "XAxis" of the plane.
+  void SetAxis(const gp_Ax1& theA1) { myPosition.SetAxis(theA1); }
+
+  //! Changes the origin of the plane.
+  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { myPosition.SetLocation(theLoc); }
+
+  //! Changes the local coordinate system of the plane.
+  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { myPosition = theA3; }
+
+  //! Reverses the U parametrization of the plane
+  //! reversing the XAxis.
+  constexpr void UReverse() noexcept { myPosition.XReverse(); }
+
+  //! Reverses the V parametrization of the plane
+  //! reversing the YAxis.
+  constexpr void VReverse() noexcept { myPosition.YReverse(); }
+
+  //! Returns true if the Ax3 is right handed.
+  [[nodiscard]] constexpr bool Direct() const { return myPosition.Direct(); }
+
+  //! Returns the plane's normal Axis.
+  [[nodiscard]] constexpr const gp_Ax1& Axis() const noexcept { return myPosition.Axis(); }
+
+  //! Returns the plane's location (origin).
+  [[nodiscard]] constexpr const gp_Pnt& Location() const noexcept { return myPosition.Location(); }
+
+  //! Returns the local coordinate system of the plane.
+  [[nodiscard]] constexpr const gp_Ax3& Position() const noexcept { return myPosition; }
+
+  //! Computes the distance between <me> and the point <theP>.
+  [[nodiscard]] inline double Distance(const gp_Pnt& theP) const noexcept
+  {
+    return std::abs(SignedDistance(theP));
+  }
+
+  //! Computes the distance between <me> and the line <theL>.
+  [[nodiscard]] inline double Distance(const gp_Lin& theL) const noexcept
+  {
+    return std::abs(SignedDistance(theL));
+  }
+
+  //! Computes the distance between two planes.
+  [[nodiscard]] inline double Distance(const gp_Pln& theOther) const noexcept
+  {
+    return std::abs(SignedDistance(theOther));
+  }
+
+  //! Computes the signed distance between <me> and the point <theP>.
+  //! The sign of the distance indicates on which side of the plane the point is located:
+  //! - positive sign: the point is located in the direction of the plane normal,
+  //! - negative sign: the point is located in the opposite direction to the plane normal,
+  //! - zero: the point is located on the plane.
+  [[nodiscard]] inline double SignedDistance(const gp_Pnt& theP) const noexcept;
+
+  //! Computes the signed distance between <me> and the line <theL>.
+  //! The sign of the distance indicates on which side of the plane the line is located:
+  //! - positive sign: the line is located in the direction of the plane normal,
+  //! - negative sign: the line is located in the opposite direction to the plane normal,
+  //! - zero: the line intersects the plane.
+  [[nodiscard]] inline double SignedDistance(const gp_Lin& theL) const noexcept;
+
+  //! Computes the signed distance between two planes.
+  //! The sign of the distance indicates on which side of <me> the other plane is located:
+  //! - positive sign: the other plane is located in the direction of the plane normal,
+  //! - negative sign: the other plane is located in the opposite direction to the plane normal,
+  //! - zero: the planes intersect.
+  [[nodiscard]] inline double SignedDistance(const gp_Pln& theOther) const noexcept;
+
+  //! Computes the square distance between <me> and the point <theP>.
+  [[nodiscard]] inline double SquareDistance(const gp_Pnt& theP) const noexcept
+  {
+    const double aD = Distance(theP);
+    return aD * aD;
+  }
+
+  //! Computes the square distance between <me> and the line <theL>.
+  [[nodiscard]] inline double SquareDistance(const gp_Lin& theL) const noexcept
+  {
+    const double aD = Distance(theL);
+    return aD * aD;
+  }
+
+  //! Computes the square distance between two planes.
+  [[nodiscard]] inline double SquareDistance(const gp_Pln& theOther) const noexcept
+  {
+    const double aD = Distance(theOther);
+    return aD * aD;
+  }
+
+  //! Returns the X axis of the plane.
+  [[nodiscard]] constexpr gp_Ax1 XAxis() const noexcept
+  {
+    return gp_Ax1(myPosition.Location(), myPosition.XDirection());
+  }
+
+  //! Returns the Y axis of the plane.
+  [[nodiscard]] constexpr gp_Ax1 YAxis() const noexcept
+  {
+    return gp_Ax1(myPosition.Location(), myPosition.YDirection());
+  }
+
+  //! Returns true if this plane contains the point theP. This means that
+  //! -   the distance between point theP and this plane is less
+  //! than or equal to theLinearTolerance, or
+  //! -   line L is normal to the "main Axis" of the local
+  //! coordinate system of this plane, within the tolerance
+  //! AngularTolerance, and the distance between the origin
+  //! of line L and this plane is less than or equal to
+  //! theLinearTolerance.
+  [[nodiscard]] inline bool Contains(const gp_Pnt& theP,
+                                     const double  theLinearTolerance) const noexcept
+  {
+    return Distance(theP) <= theLinearTolerance;
+  }
+
+  //! Returns true if this plane contains the line theL. This means that
+  //! -   the distance between point P and this plane is less
+  //! than or equal to LinearTolerance, or
+  //! -   line theL is normal to the "main Axis" of the local
+  //! coordinate system of this plane, within the tolerance
+  //! theAngularTolerance, and the distance between the origin
+  //! of line theL and this plane is less than or equal to
+  //! theLinearTolerance.
+  [[nodiscard]] bool Contains(const gp_Lin& theL,
+                              const double  theLinearTolerance,
+                              const double  theAngularTolerance) const noexcept
+  {
+    return Contains(theL.Location(), theLinearTolerance)
+           && myPosition.Direction().IsNormal(theL.Direction(), theAngularTolerance);
+  }
+
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
+
+  //! Performs the symmetrical transformation of a plane with respect
+  //! to the point <theP> which is the center of the symmetry
+  //! Warnings :
+  //! The normal direction to the plane is not changed.
+  //! The "XAxis" and the "YAxis" are reversed.
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Pnt& theP) const noexcept;
+
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
+
+  //! Performs the symmetrical transformation of a plane with
+  //! respect to an axis placement which is the axis of the
+  //! symmetry. The transformation is performed on the "Location"
+  //! point, on the "XAxis" and the "YAxis". The resulting normal
+  //! direction is the cross product between the "XDirection" and
+  //! the "YDirection" after transformation if the initial plane
+  //! was right handed, else it is the opposite.
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Ax1& theA1) const noexcept;
+
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
+
+  //! Performs the symmetrical transformation of a plane with
+  //! respect to an axis placement. The axis placement <A2>
+  //! locates the plane of the symmetry. The transformation is
+  //! performed on the "Location" point, on the "XAxis" and the
+  //! "YAxis". The resulting normal direction is the cross product
+  //! between the "XDirection" and the "YDirection" after
+  //! transformation if the initial plane was right handed,
+  //! else it is the opposite.
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Ax2& theA2) const noexcept;
+
+  void Rotate(const gp_Ax1& theA1, const double theAng) { myPosition.Rotate(theA1, theAng); }
+
+  //! Rotates a plane. theA1 is the axis of the rotation.
+  //! theAng is the angular value of the rotation in radians.
+  [[nodiscard]] gp_Pln Rotated(const gp_Ax1& theA1, const double theAng) const
+  {
+    gp_Pln aPl = *this;
+    aPl.myPosition.Rotate(theA1, theAng);
+    return aPl;
+  }
+
+  void Scale(const gp_Pnt& theP, const double theS) { myPosition.Scale(theP, theS); }
+
+  //! Scales a plane. theS is the scaling value.
+  [[nodiscard]] gp_Pln Scaled(const gp_Pnt& theP, const double theS) const
+  {
+    gp_Pln aPl = *this;
+    aPl.myPosition.Scale(theP, theS);
+    return aPl;
+  }
+
+  void Transform(const gp_Trsf& theT) { myPosition.Transform(theT); }
+
+  //! Transforms a plane with the transformation theT from class Trsf.
+  //! The transformation is performed on the "Location"
+  //! point, on the "XAxis" and the "YAxis".
+  //! The resulting normal direction is the cross product between
+  //! the "XDirection" and the "YDirection" after transformation.
+  [[nodiscard]] gp_Pln Transformed(const gp_Trsf& theT) const
+  {
+    gp_Pln aPl = *this;
+    aPl.myPosition.Transform(theT);
+    return aPl;
+  }
+
+  constexpr void Translate(const gp_Vec& theV) noexcept { myPosition.Translate(theV); }
+
+  //! Translates a plane in the direction of the vector theV.
+  //! The magnitude of the translation is the vector's magnitude.
+  [[nodiscard]] constexpr gp_Pln Translated(const gp_Vec& theV) const noexcept
+  {
+    gp_Pln aPl = *this;
+    aPl.myPosition.Translate(theV);
+    return aPl;
+  }
+
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    myPosition.Translate(theP1, theP2);
+  }
+
+  //! Translates a plane from the point theP1 to the point theP2.
+  [[nodiscard]] constexpr gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  {
+    gp_Pln aPl = *this;
+    aPl.myPosition.Translate(theP1, theP2);
+    return aPl;
+  }
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+
+private:
+  gp_Ax3 myPosition;
+};
+
+//=================================================================================================
+
+inline void gp_Pln::Coefficients(double& theA,
+                                 double& theB,
+                                 double& theC,
+                                 double& theD) const noexcept
+{
+  const gp_Dir& aDir = myPosition.Direction();
+  if (myPosition.Direct())
+  {
+    theA = aDir.X();
+    theB = aDir.Y();
+    theC = aDir.Z();
+  }
+  else
+  {
+    theA = -aDir.X();
+    theB = -aDir.Y();
+    theC = -aDir.Z();
+  }
+  const gp_Pnt& aP = myPosition.Location();
+  theD             = -(theA * aP.X() + theB * aP.Y() + theC * aP.Z());
+}
+
+//=================================================================================================
+
+inline double gp_Pln::SignedDistance(const gp_Pnt& theP) const noexcept
+{
+  const gp_Pnt& aLoc = myPosition.Location();
+  const gp_Dir& aDir = myPosition.Direction();
+  return (aDir.X() * (theP.X() - aLoc.X()) + aDir.Y() * (theP.Y() - aLoc.Y())
+          + aDir.Z() * (theP.Z() - aLoc.Z()));
+}
+
+//=================================================================================================
+
+inline double gp_Pln::SignedDistance(const gp_Lin& theL) const noexcept
+{
+  if (!myPosition.Direction().IsNormal(theL.Direction(), gp::Resolution()))
+  {
+    return 0.;
+  }
+
+  return SignedDistance(theL.Location());
+}
+
+//=================================================================================================
+
+inline double gp_Pln::SignedDistance(const gp_Pln& theOther) const noexcept
+{
+  if (!myPosition.Direction().IsParallel(theOther.myPosition.Direction(), gp::Resolution()))
+  {
+    return 0.;
+  }
+
+  return SignedDistance(theOther.myPosition.Location());
+}
+
+#endif // _gp_Pln_HeaderFile

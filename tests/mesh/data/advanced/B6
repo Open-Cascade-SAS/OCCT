@@ -1,0 +1,8 @@
+set TheFileName OCC22247.brep
+if { [string compare $command "incmesh"] == 0 ||
+     [string compare $command "mesh"] == 0 ||
+     [string compare $command "incmesh_parallel"] == 0 } {
+  set bug_area "OCC25519"
+  set max_rel_tol_diff 1
+  set rel_tol 0.91
+}

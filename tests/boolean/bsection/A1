@@ -1,0 +1,11 @@
+restore [locate_data_file CIN001_a63.rle] a
+restore [locate_data_file CIN001_b63.rle] b
+#a and b shapes have not intersection according to tolerance
+
+ttranslate a 0 -0.0025400016456842422 0
+
+bsection result a b
+
+checkprops result -l 225.961
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

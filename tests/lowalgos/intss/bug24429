@@ -1,0 +1,59 @@
+puts "========"
+puts "OCC24429: Cylinder-torus intersection throws an ex-ception and produces no result"
+puts "========"
+puts ""
+
+puts "TODO OCC24429 ALL: Error: 0 vertices are expected but 2 are found."
+
+set GoodNbCurves 8
+
+restore [locate_data_file bug24429_s1.draw] s1
+restore [locate_data_file bug24429_s2.draw] s2
+
+intersect res s1 s2
+
+if { [info exists res] } {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  if { ![info exists res_$ic] } {
+    set AllowRepeat 0
+  } else {
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 2.0e-6
+    xdistcs res_$ic s2 U1 U2 100 2.0e-6
+    
+    mkedge ee res_$ic
+    baddobjects ee
+    
+    incr ic
+  }
+}
+
+# Check of gaps between intersection curves
+bfillds
+bbuild rs
+
+checknbshapes rs -edge $GoodNbCurves
+checksection rs -r 0
+
+smallview
+don res_*
+
+fit
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

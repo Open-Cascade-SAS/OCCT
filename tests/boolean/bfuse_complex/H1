@@ -1,0 +1,11 @@
+# Original bug : cts20453
+# Date : 13Mai98
+# A2.gif
+
+restore [locate_data_file CTO902_cts20453b.rle] b
+restore [locate_data_file cts20453a.rle] a
+
+bfuse result a b
+
+checkprops result -s 1.89512e+06
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+puts "============================================================================================="
+puts "0030559: BOP Fuse: result is inconsistent"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug30559_VALVE_1_of_BRANCH_6028_B3.brep] a
+set exp [explode a So]
+bclearobjects
+bcleartools
+baddobjects a_1
+eval baddtools [lrange $exp 1 end]
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -wire 26 -face 20 -shell 1 -solid 1
+checkprops result -s 456495 -v 1.2165e+07
+
+if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+  puts "Error: result is self-interfered shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

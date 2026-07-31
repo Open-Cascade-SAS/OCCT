@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC26513"
+puts "========"
+puts ""
+###########################################################
+# Offset API not returning result (seems to be "hanging")
+###########################################################
+
+set max_time 10
+
+smallview
+
+restore [locate_data_file bug26513-offset_input.brep] a
+
+unifysamedom s a -a 5.7e-7
+offsetparameter 1.e-7 c i
+offsetload s 5
+offsetperform result
+
+checkshape result
+
+checkprops result -s 3.28125e+008 -v 3.07334e+010
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 114 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

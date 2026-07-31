@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename tr10_r0501_db.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 170  ( 3 )  Summary  = 170  ( 3 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.01863822154  (  0.02412563428 )  AvgTol   =  2.362847726e-005  (  0.000129392056 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 4313  ( 4313 )  N2Labels = 0  ( 0 )   TotalLabels = 4314  ( 4314 )   NameLabels = 1  ( 1 )   ColorLabels = 4242  ( 4242 )   LayerLabels = 4252  ( 4252 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = RED WHITE  ( RED WHITE )
+NLAYERS     : NLayers  = 40  ( 40 )
+LAYERS      : Layers   = 1 10 100 101 11 12 138 139 15 16 17 175 176 177 178 18 181 182 183 2 245 246 29 3 30 31 32 33 34 35 36 37 4 5 7 8 9 96 97 99  ( {  1} {  2} {  3} {  4} {  5} {  7} {  8} {  9} { 10} { 11} { 12} { 15} { 16} { 17} { 18} { 29} { 30} { 31} { 32} { 33} { 34} { 35} { 36} { 37} { 96} { 97} { 99} 100 101 138 139 175 176 177 178 181 182 183 245 246 )
+
+}

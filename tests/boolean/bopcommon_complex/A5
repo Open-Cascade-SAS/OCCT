@@ -1,0 +1,12 @@
+puts "================================="
+puts "COMMON of OCC213-1.brep and  OCC213-2.brep"
+puts "================================="
+
+restore [locate_data_file OCC213-1.brep] a
+restore [locate_data_file OCC213-2.brep] b
+
+bop a b 
+bopcommon result
+
+checkprops result -s 838.302
+checkview -display result -2d -otherwise { a b  } -s -path ${imagedir}/${test_image}.png

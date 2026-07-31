@@ -1,0 +1,11 @@
+puts "================"
+puts "OCC23846"
+puts "================"
+puts ""
+######################################################################################
+# A crash on reading of a VRML file with wrong indices
+######################################################################################
+
+loadvrml result [locate_data_file T00000112_0000.wrl]
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

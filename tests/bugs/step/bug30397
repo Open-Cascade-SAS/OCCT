@@ -1,0 +1,11 @@
+puts "========================"
+puts "0030397: Data Exchange - STEP Reader extension to support entities which have a text description field with not supported symbols"
+puts "========================"
+
+ReadStep D [locate_data_file bug31397.stp]
+
+set state [data c]
+
+if { [regexp "141153" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}

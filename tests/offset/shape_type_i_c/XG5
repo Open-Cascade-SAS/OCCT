@@ -1,0 +1,18 @@
+restore [locate_data_file bug26917_rm-095_input_with_faces.brep] c
+
+# get the shape
+explode c
+copy c_1 s
+
+offsetparameter 1e-7 c i
+offsetload s 5
+
+foreach f [explode c_2 f] {
+  offsetonface $f 0
+}
+
+offsetperform result
+
+checkprops result -v 2.91628e+007 -s 2.58238e+006
+
+checknbshapes result -shell 1

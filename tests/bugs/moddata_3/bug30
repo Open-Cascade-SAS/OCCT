@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC30"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC30.brep] a 
+puts [checkshape a]
+
+explode a e
+explode a f
+catch {chamf result a a_2 a_1 A 1 45} info
+if { [regexp "No suitable edges to chamfer" $info] != 1 } {
+    puts "Error : Function chamfer works wrongly"
+} else {
+    puts "OK: suitable message is given"
+}
+
+

@@ -1,0 +1,9 @@
+puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_2"
+polyline w 0 0 25  20 0 5  5 0 5  5 0 -5  20 0 -5  0 0 -25  0 0 25
+mkplane w w
+revol s w 0 0 0 0 0 1 270
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_4
+
+checkprops result -s 555352

@@ -1,0 +1,98 @@
+// Created on: 1991-01-10
+// Created by: Arnaud BOUZY
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Expr_NamedConstant_HeaderFile
+#define _Expr_NamedConstant_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <Expr_NamedExpression.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+class TCollection_AsciiString;
+class Expr_GeneralExpression;
+class Expr_NamedUnknown;
+
+//! Describes any numeric constant known by a special name
+//! (as PI, e,...).
+class Expr_NamedConstant : public Expr_NamedExpression
+{
+
+public:
+  //! Creates a constant value of name <name> and value <value>.
+  Standard_EXPORT Expr_NamedConstant(const TCollection_AsciiString& name, const double value);
+
+  double GetValue() const;
+
+  //! returns the number of sub-expressions contained
+  //! in <me> (always returns zero)
+  Standard_EXPORT int NbSubExpressions() const override;
+
+  //! returns the <I>-th sub-expression of <me>
+  //! raises OutOfRange
+  Standard_EXPORT const occ::handle<Expr_GeneralExpression>& SubExpression(
+    const int I) const override;
+
+  //! returns a GeneralExpression after replacement of
+  //! NamedUnknowns by an associated expression and after
+  //! values computation.
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Simplified() const override;
+
+  //! Returns a GeneralExpression after a simplification
+  //! of the arguments of <me>.
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> ShallowSimplified() const override;
+
+  //! Returns a copy of <me> having the same unknowns and functions.
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Copy() const override;
+
+  //! Tests if <me> contains NamedUnknown.
+  //! (returns always False)
+  Standard_EXPORT bool ContainsUnknowns() const override;
+
+  //! Tests if <exp> is contained in <me>.
+  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+
+  Standard_EXPORT bool IsLinear() const override;
+
+  //! Returns the derivative on <X> unknown of <me>
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Derivative(
+    const occ::handle<Expr_NamedUnknown>& X) const override;
+
+  //! Returns the <N>-th derivative on <X> unknown of <me>.
+  //! Raises OutOfRange if <N> <= 0
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> NDerivative(
+    const occ::handle<Expr_NamedUnknown>& X,
+    const int                             N) const override;
+
+  //! Replaces all occurrences of <var> with <with> in <me>
+  Standard_EXPORT void Replace(const occ::handle<Expr_NamedUnknown>&      var,
+                               const occ::handle<Expr_GeneralExpression>& with) override;
+
+  //! Returns the value of <me> (as a Real) by
+  //! replacement of <vars> by <vals>.
+  Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                  const NCollection_Array1<double>& vals) const override;
+
+  DEFINE_STANDARD_RTTIEXT(Expr_NamedConstant, Expr_NamedExpression)
+
+private:
+  double myValue;
+};
+
+#include <Expr_NamedConstant.lxx>
+
+#endif // _Expr_NamedConstant_HeaderFile

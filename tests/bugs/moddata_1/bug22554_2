@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC22554"
+puts "============"
+puts ""
+#######################################################################
+# Application hangs on selection
+#######################################################################
+
+set BugNumber OCC22554
+
+vinit
+vpoint p1 0 0 0
+vpoint p2 30 0 0
+vpoint p3 30 30 0
+vplane result p1 p2 p3
+verase p1 p2 p3
+vfit
+
+puts "OK ${BugNumber}"
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

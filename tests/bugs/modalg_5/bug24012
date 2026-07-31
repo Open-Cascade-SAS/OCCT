@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC24012"
+puts "============"
+puts ""
+############################################
+# problem with BRepAlgo_NormalProjection   
+############################################
+
+pload XDE
+pload QAcommands
+
+igesread [locate_data_file bug24012_face.igs] face *
+igesread [locate_data_file bug24012_line.igs] edge *
+
+nproject r edge face
+checknbshapes r -edge 1
+checkprops r -l 5.96
+
+vinit
+vsetdispmode 0
+vdisplay face
+vdisplay edge
+vdisplay r
+vsetcolor r yellow
+vfit
+
+set scale    71.101493567712652
+set proj_X   -0.14605970947882216
+set proj_Y   -0.18639384905183365
+set proj_Z   0.97155745805516014
+set up_X     -0.587582742029223
+set up_Y     0.80643668322534767
+set up_Z     0.066380699137021923
+set at_X     6.30475074082204
+set at_Y     6.748073489527
+set at_Z     8.5106037329062
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

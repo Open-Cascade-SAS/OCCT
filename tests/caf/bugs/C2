@@ -1,0 +1,82 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC6493"
+puts "================"
+puts ""
+######################################################
+# No binary persistence for TDataStd_ExtStringArray attribute
+######################################################
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_ExtStringArray
+#
+# Testing command:   SetExtStringArray
+# Testing command:   GetExtStringArray
+#
+
+# ANALOG: puts "caf001-M3"
+set QA_DUP 0
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aFrom1 1
+set aTo1 2
+set aSetAttr11 "TDataStd"
+set aSetAttr12 "ExtStringArray"
+set aLabel 0:2
+set isDelta 0
+SetExtStringArray Doc ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC6493-[file tail [info script]].cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC6493: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set aGetAttr3 ""
+set aMessage3 "Get a value of TDataStd_ExtStringArray attribute from restoring document: Error"
+set IsDone [catch {set aGetAttr3 [GetExtStringArray DDoc ${aLabel}]} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aMessage3}
+	puts "OCC6493: ERROR (case 2)"
+}
+set aLen3 [llength ${aGetAttr3}]
+if { ${aLen3} != [expr ${aTo1} - ${aFrom1} + 1] } {
+	puts "aLen3=${aLen3}"
+	puts ${aMessage3}
+	puts "OCC6493: ERROR (case 3)"
+}
+set aGetAttr41 [lindex ${aGetAttr3} 0]
+if { ${aSetAttr11} != ${aGetAttr41} } {
+	puts "aGetAttr41=${aGetAttr41}"
+	puts ${aMessage3}
+	puts "OCC6493: ERROR (case 4)"
+}
+set aGetAttr42 [lindex ${aGetAttr3} 1]
+if { ${aSetAttr12} != ${aGetAttr42} } {
+	puts "aGetAttr42=${aGetAttr42}"
+	puts ${aMessage3}
+	puts "OCC6493: ERROR (case 5)"
+} else {
+	puts "Get a value of TDataStd_ExtStringArray attribute from restoring document: OK"
+	puts "OCC6493: OK"
+}

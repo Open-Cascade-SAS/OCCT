@@ -1,0 +1,48 @@
+restore [locate_data_file GEN758_nofog.rle] a
+explode a f
+
+# see issue #26777
+set GoodNbCurv 1
+
+set log [bopcurves a_1 a_2 -2d -p 0.20639206339545224 0.69260832843385300 0.0 0.017002507022347624]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
+
+set expected_Tolerance_Reached 2.8312498500210269e-07
+set tol_abs_Tolerance_Reached 0.0
+set tol_rel_Tolerance_Reached 1.0e-2
+checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: ${GoodNbCurv} curves are expected but ${NbCurv} are found!"
+}
+
+smallview
+clear
+
+if {${NbCurv} == 1} {
+  display c_1
+  fit
+} else {
+  for { set i 1 } { ${i} <= ${NbCurv} } {incr i} {
+    bounds c_$i u1 u2
+    cvalue c_$i u2 xx yy zz
+    point p$i xx yy zz
+  }
+  
+  fit
+  
+  for { set i 1 } { ${i} <= ${NbCurv} } {incr i} {
+    erase p$i
+    display c_$i
+  }
+}
+
+xwd ${imagedir}/${casename}_curv.png
+
+donly a_1 a_2
+
+bsection result a_1 a_2
+
+checkprops result -l 22.2575
+checksection result
+checkview -display result -2d -otherwise { a_1 a_2 } -l -path ${imagedir}/${test_image}.png

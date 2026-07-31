@@ -1,0 +1,20 @@
+
+puts "========"
+puts "OCC278"
+puts " (case 2)"
+puts "========"
+
+######################################################################
+##Command "checkshape" does not define self-crossing for some wires and assigns status "valid" for them.
+## NOTE akm: there is no actual intersection - it was a bug in displaying complicated curves (my patch deals with it)
+## NOTE akm: wire alone is only a curve in the space so it may intersect itself.
+## NOTE akm: bug after putting it on plane checkshape found the pb.
+#######################################################################
+
+restore [locate_data_file OCC278b.brep] a 
+
+mkplane result a
+checkshape result
+
+checkprops result -s 22740
+checkview -display result -2d -path ${imagedir}/${test_image}.png

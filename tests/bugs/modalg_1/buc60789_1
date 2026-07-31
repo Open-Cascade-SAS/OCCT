@@ -1,0 +1,28 @@
+
+puts "========"
+puts "BUC60789"
+puts "========"
+puts ""
+
+#restore buc60789a.brep S1
+restore [locate_data_file buc60787b.brep] S1 
+### (by apn during classification)
+checkshape S1
+restore [locate_data_file buc60789b.brep] S2
+checkshape S2
+
+bcommon result S1 S2
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
+
+if { $ve != 0 && $ed != 0 } {
+    puts  " BUC60789 OK: COMMON operation was made properly"
+} else {
+    puts "Faulty BUC60789: COMMON operation was made wrongly"
+}
+checkprops result -l 78.3594 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

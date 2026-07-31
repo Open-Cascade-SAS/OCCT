@@ -1,0 +1,19 @@
+puts "========================"
+puts "BUC60992"
+puts "OCC98"
+puts "OCC133" 
+puts "========================"
+puts ""
+#####################################################
+##  BUC60992. STEP file cannot be translated to Open CASCADE.
+##Loading phase returns error status (though no exception raised).
+## Perhaps file is invalid (several fail messages have been output when loading).
+#####################################################
+
+stepread [locate_data_file stepBF3.stp] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,33 @@
+set aTestName "xcaf200-V1"
+puts $aTestName
+
+# Add an attribute to a data framework
+set aLabel 0:1:1:1
+Label D $aLabel
+set aValue 13.777
+XSetVolume D $aLabel $aValue
+
+# Close/Open the transaction
+NewCommand D
+
+# save result for check after retrieval
+set vol_before [XGetVolume D $aLabel]
+if { ${vol_before} != ${aValue} } {
+    puts "Error : XSetVolume or XGetVolume"
+} else {
+
+    # Save the document
+    set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+    SaveToFile D $aFile
+
+    # Restore the document
+    Close D
+    Open ${aFile} DD
+
+    # Get a value of the attribute
+    set IsDone [catch {set vol_after [XGetVolume DD $aLabel]} aResult]
+    if { ${IsDone} != 0 || ${vol_after} != ${vol_before} } {
+	puts "Error : Get a value of XCAFDoc_Volume attribute from restoring document"
+    }
+}

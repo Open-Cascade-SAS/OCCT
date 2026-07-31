@@ -1,0 +1,36 @@
+puts "============"
+puts "PRO19653"
+puts "BREPALGO_BOOLEANOPERATION does not return result."
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+restore [locate_data_file pro19653a.brep] a 
+checkshape a
+restore [locate_data_file pro19653b.brep] b
+checkshape b
+
+# There is a gap between shapes around the edge a_4. The tolerance
+# of the edge is 1e-7. The max gap width is about 2e-6. So, in order to 
+# get the whole edge as a section we need to set its tolerance to that value.
+# Otherwise, this test case will be unstable from version to version.
+explode a e
+settolerance a_4 2e-6
+
+bsection result a b
+
+explode result e
+checkshape result_1
+explode a e
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_1] full ll_1
+regexp {Mass +: +([-0-9.+eE]+)} [lprops a_4] full ll_2
+if { $ll_1 != $ll_2 } {
+    puts "Faulty : TEST FAILED"
+} else {
+    puts "PRO19653 OK : BREPALGO_BOOLEANOPERATION returns result"
+}
+
+checkprops result -l 228.265 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

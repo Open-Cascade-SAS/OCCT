@@ -1,0 +1,19 @@
+puts "==========="
+puts "OCC24492"
+puts "==========="
+puts ""
+##############################################################
+# The command bopargcheck produces wrong results for cases
+##############################################################
+
+box x1 10 10 10
+vertex x2 3 3 3
+compound x1 x2 b1
+
+set info [bopargcheck b1 #f]
+
+if { [regexp "Faulties for FIRST  shape found : 1" $info] != 1 } {
+    puts "Error : command bopargcheck produces wrong result"
+} else {
+    puts "OK : command bopargcheck produces correct result"
+}

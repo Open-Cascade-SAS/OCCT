@@ -1,0 +1,192 @@
+
+ReadStep D_First [locate_data_file "as1_motor.step"]
+
+set TRAVERSE_ASSEMBLY_TREE_ARGS "-names"
+set TRAVERSE_ASSEMBLY_TREE_RESULT "Product 2
+Product 2/as1
+Product 2/as1/rod-assembly_1
+Product 2/as1/rod-assembly_1/nut_1
+Product 2/as1/rod-assembly_1/nut_2
+Product 2/as1/rod-assembly_1/rod_1
+Product 2/as1/l-bracket-assembly_1
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_1
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_1/bolt_1
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_1/nut_3
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_2
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_2/bolt_1
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_2/nut_3
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_3
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_3/bolt_1
+Product 2/as1/l-bracket-assembly_1/nut-bolt-assembly_3/nut_3
+Product 2/as1/l-bracket-assembly_1/l-bracket_1
+Product 2/as1/plate_1
+Product 2/as1/l-bracket-assembly_2
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_1
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_1/bolt_1
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_1/nut_3
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_2
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_2/bolt_1
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_2/nut_3
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_3
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_3/bolt_1
+Product 2/as1/l-bracket-assembly_2/nut-bolt-assembly_3/nut_3
+Product 2/as1/l-bracket-assembly_2/l-bracket_1
+Product 1
+Product 1/35
+Product 1/35/Item_0
+Product 1/35/Item_0/Item_0
+Product 1/35/Item_1
+Product 1/35/Item_1/Item_0
+Product 1/35/Item_2
+Product 1/35/Item_2/Item_0
+Product 1/35/Item_3
+Product 1/35/Item_3/Item_0
+Product 1/35/Item_4
+Product 1/35/Item_4/Item_0
+Product 1/35/Item_5
+Product 1/35/Item_5/Item_0
+Product 1/35/Item_6
+Product 1/35/Item_6/Item_0
+Product 1/35/Item_7
+Product 1/35/Item_7/Item_0
+Product 1/35/Item_8
+Product 1/35/Item_8/Item_0
+Product 1/35/Item_9
+Product 1/35/Item_9/Item_0
+Product 1/35/Item_10
+Product 1/35/Item_10/Item_0
+Product 1/35/Item_11
+Product 1/35/Item_11/Item_0
+Product 1/35/Item_12
+Product 1/35/Item_12/Item_0
+Product 1/35/Item_13
+Product 1/35/Item_13/Item_0
+Product 1/35/Item_14
+Product 1/35/Item_14/Item_0
+Product 1/35/Item_15
+Product 1/35/Item_15/Item_0
+Product 1/35/Item_16
+Product 1/35/Item_16/Item_0"
+
+set TRAVERSE_ASSEMBLY_GRAPH_ARGS "-names"
+set TRAVERSE_ASSEMBLY_GRAPH_RESULT "1 R 'Product 1' 2
+2 O '35' 3
+3 A 'Product 1.1' 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68
+4 O 'Item_0' 5
+5 A 'Product 1.1.1' 6
+6 O 'Item_0' 7
+7 P 'Product 1.1.1.1'
+8 O 'Item_1' 9
+9 A 'Product 1.1.2' 10
+10 O 'Item_0' 11
+11 P 'Product 1.1.2.1'
+12 O 'Item_2' 13
+13 A 'Product 1.1.3' 14
+14 O 'Item_0' 15
+15 P 'Product 1.1.3.1'
+16 O 'Item_3' 17
+17 A 'Product 1.1.4' 18
+18 O 'Item_0' 19
+19 P 'Product 1.1.4.1'
+20 O 'Item_4' 21
+21 A 'Product 1.1.5' 22
+22 O 'Item_0' 23
+23 P 'Product 1.1.5.1'
+24 O 'Item_5' 25
+25 A 'Product 1.1.6' 26
+26 O 'Item_0' 27
+27 P 'Product 1.1.6.1'
+28 O 'Item_6' 29
+29 A 'Product 1.1.7' 30
+30 O 'Item_0' 31
+31 P 'Product 1.1.7.1'
+32 O 'Item_7' 33
+33 A 'Product 1.1.8' 34
+34 O 'Item_0' 35
+35 P 'Product 1.1.8.1'
+36 O 'Item_8' 37
+37 A 'Product 1.1.9' 38
+38 O 'Item_0' 39
+39 P 'Product 1.1.9.1'
+40 O 'Item_9' 41
+41 A 'Product 1.1.10' 42
+42 O 'Item_0' 43
+43 P 'Product 1.1.10.1'
+44 O 'Item_10' 45
+45 A 'Product 1.1.11' 46
+46 O 'Item_0' 47
+47 P 'Product 1.1.11.1'
+48 O 'Item_11' 49
+49 A 'Product 1.1.12' 50
+50 O 'Item_0' 51
+51 P 'Product 1.1.12.1'
+52 O 'Item_12' 53
+53 A 'Product 1.1.13' 54
+54 O 'Item_0' 55
+55 P 'Product 1.1.13.1'
+56 O 'Item_13' 57
+57 A 'Product 1.1.14' 58
+58 O 'Item_0' 59
+59 P 'Product 1.1.14.1'
+60 O 'Item_14' 61
+61 A 'Product 1.1.15' 62
+62 O 'Item_0' 63
+63 P 'Product 1.1.15.1'
+64 O 'Item_15' 65
+65 A 'Product 1.1.16' 66
+66 O 'Item_0' 67
+67 P 'Product 1.1.16.1'
+68 O 'Item_16' 69
+69 A 'Product 1.1.17' 70
+70 O 'Item_0' 71
+71 P 'Product 1.1.17.1'
+72 R 'Product 2' 73
+73 O 'as1' 74
+74 A 'Product 2.1' 75 82 99 101
+75 O 'rod-assembly_1' 76
+76 A 'rod-assembly' 77 79 80
+77 O 'nut_1' 78
+78 P 'nut'
+79 O 'nut_2' 78
+80 O 'rod_1' 81
+81 P 'rod'
+82 O 'l-bracket-assembly_1' 83
+83 A 'l-bracket-assembly' 84 89 93 97
+84 O 'nut-bolt-assembly_1' 85
+85 A 'nut-bolt-assembly' 86 88
+86 O 'bolt_1' 87
+87 P 'bolt'
+88 O 'nut_3' 78
+89 O 'nut-bolt-assembly_2' 90
+90 A 'nut-bolt-assembly' 91 92
+91 O 'bolt_1' 87
+92 O 'nut_3' 78
+93 O 'nut-bolt-assembly_3' 94
+94 A 'nut-bolt-assembly' 95 96
+95 O 'bolt_1' 87
+96 O 'nut_3' 78
+97 O 'l-bracket_1' 98
+98 P 'l-bracket'
+99 O 'plate_1' 100
+100 P 'plate'
+101 O 'l-bracket-assembly_2' 102
+102 A 'l-bracket-assembly' 103 107 111 115
+103 O 'nut-bolt-assembly_1' 104
+104 A 'nut-bolt-assembly' 105 106
+105 O 'bolt_1' 87
+106 O 'nut_3' 78
+107 O 'nut-bolt-assembly_2' 108
+108 A 'nut-bolt-assembly' 109 110
+109 O 'bolt_1' 87
+110 O 'nut_3' 78
+111 O 'nut-bolt-assembly_3' 112
+112 A 'nut-bolt-assembly' 113 114
+113 O 'bolt_1' 87
+114 O 'nut_3' 78
+115 O 'l-bracket_1' 98"
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "TRAVERSE_ASSEMBLY_TREE TRAVERSE_ASSEMBLY_GRAPH SKIP_CHECKVIEW"

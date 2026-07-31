@@ -1,0 +1,16 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+
+puts "================"
+puts "BUC60961"
+puts "OCC103"
+puts "================"
+puts ""
+
+circle c 0 0 10
+to3d c1 c
+
+offset o c -2
+catch {to3d result o}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

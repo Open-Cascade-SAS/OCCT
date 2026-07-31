@@ -1,0 +1,7 @@
+psphere s 1
+box b 1 1 1
+trotate b 0 0 1 0 1 0 90
+bfuse result s b
+
+checkprops result -s 14.6393
+checkview -display result -2d -otherwise { s b } -s -path ${imagedir}/${test_image}.png

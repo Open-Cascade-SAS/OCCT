@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename BUC60000.igs
+
+set ref_data {
+DATA        : Faulties = 12  ( 0 )  Warnings = 0  ( 0 )  Summary  = 12  ( 0 )
+TPSTAT      : Faulties = 24  ( 0 )  Warnings = 24  ( 558 )  Summary  = 48  ( 558 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 186  ( 186 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 186  ( 186 )   FreeWire = 200  ( 290 ) 
+TOLERANCE   : MaxTol   =   0.5957823778  (   0.5957823778 )  AvgTol   =   0.00246270621  (  0.002802769554 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 582  ( 1628 )  N2Labels = 0  ( 0 )   TotalLabels = 584  ( 1630 )   NameLabels = 384  ( 733 )   ColorLabels = 582  ( 1628 )   LayerLabels = 368  ( 1335 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 9  ( 10 )
+COLORS      : Colors   = BLUE BURLYWOOD1 CYAN DEEPSKYBLUE1 GREEN MAGENTA RED WHITE YELLOW  ( BLUE BURLYWOOD1 CYAN DEEPSKYBLUE1 GREEN LEMONCHIFFON1 MAGENTA RED WHITE YELLOW )
+NLAYERS     : NLayers  = 10  ( 11 )
+LAYERS      : Layers   = 10 100 11 2 24 25 27 3 4 66  ( 1 10 100 11 2 24 25 27 3 4 66 )
+
+}

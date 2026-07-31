@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename Amino_komatsu.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 1 )  Summary  = 0  ( 3 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 22 )  Summary  = 0  ( 22 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 181  ( 181 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 181  ( 181 )   FreeWire = 3  ( 3 ) 
+TOLERANCE   : MaxTol   =   0.1814235482  (   0.1814235485 )  AvgTol   =   0.00374562953  (  0.003756748249 )
+LABELS      : N0Labels = 184  ( 359 )  N1Labels = 4  ( 139 )  N2Labels = 0  ( 0 )   TotalLabels = 188  ( 498 )   NameLabels = 184  ( 440 )   ColorLabels = 185  ( 323 )   LayerLabels = 181  ( 323 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLACK WHITE YELLOW  ( BLACK WHITE YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 241 5 6 8  ( 241 5 6 8 )
+
+}

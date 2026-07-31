@@ -1,0 +1,136 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESDefs_AttributeDef.hxx>
+#include <IGESDefs_AttributeTable.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_Integer.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
+
+//  WARNING  WARNING : The "ROW" designation is not continued as is
+//  The Attribute Number is given first (therefore, in column of HArray2 and not
+//  in row), the Column number second (therefore, as a Row number)
+IGESDefs_AttributeTable::IGESDefs_AttributeTable() = default;
+
+void IGESDefs_AttributeTable::Init(
+  const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)
+{
+  if (attributes->LowerCol() != 1 || attributes->LowerRow() != 1)
+  {
+    throw Standard_DimensionMismatch("IGESDefs_AttributeTable : Init");
+  }
+  theAttributes = attributes;
+
+  int fn = FormNumber();
+  if (attributes->UpperCol() > 1)
+  {
+    fn = 1;
+  }
+  else if (fn < 0 || fn > 1)
+  {
+    fn = 0;
+  }
+  InitTypeAndForm(422, fn);
+  //  FormNumber : 0 SingleRow, 1 MultipleRows (can be reduced to one ...)
+}
+
+void IGESDefs_AttributeTable::SetDefinition(const occ::handle<IGESDefs_AttributeDef>& def)
+{
+  InitMisc(def, LabelDisplay(), LineWeightNumber());
+}
+
+occ::handle<IGESDefs_AttributeDef> IGESDefs_AttributeTable::Definition() const
+{
+  return GetCasted(IGESDefs_AttributeDef, Structure());
+}
+
+int IGESDefs_AttributeTable::NbRows() const
+{
+  return theAttributes->UpperCol();
+}
+
+int IGESDefs_AttributeTable::NbAttributes() const
+{
+  return theAttributes->UpperRow();
+}
+
+int IGESDefs_AttributeTable::DataType(const int Atnum) const
+{
+  return Definition()->AttributeType(Atnum);
+}
+
+int IGESDefs_AttributeTable::ValueCount(const int Atnum) const
+{
+  return Definition()->AttributeValueCount(Atnum);
+}
+
+occ::handle<Standard_Transient> IGESDefs_AttributeTable::AttributeList(const int Atnum,
+                                                                       const int Rownum) const
+{
+  return theAttributes->Value(Atnum, Rownum);
+}
+
+int IGESDefs_AttributeTable::AttributeAsInteger(const int Atnum,
+                                                const int Rownum,
+                                                const int Valuenum) const
+{
+  return GetCasted(NCollection_HArray1<int>, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
+}
+
+double IGESDefs_AttributeTable::AttributeAsReal(const int Atnum,
+                                                const int Rownum,
+                                                const int Valuenum) const
+{
+  return GetCasted(NCollection_HArray1<double>, theAttributes->Value(Atnum, Rownum))
+    ->Value(Valuenum);
+}
+
+occ::handle<TCollection_HAsciiString> IGESDefs_AttributeTable::AttributeAsString(
+  const int Atnum,
+  const int Rownum,
+  const int Valuenum) const
+{
+  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,
+                   theAttributes->Value(Atnum, Rownum))
+    ->Value(Valuenum);
+}
+
+occ::handle<IGESData_IGESEntity> IGESDefs_AttributeTable::AttributeAsEntity(
+  const int Atnum,
+  const int Rownum,
+  const int Valuenum) const
+{
+  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>,
+                   theAttributes->Value(Atnum, Rownum))
+    ->Value(Valuenum);
+}
+
+bool IGESDefs_AttributeTable::AttributeAsLogical(const int Atnum,
+                                                 const int Rownum,
+                                                 const int Valuenum) const
+{
+  return (AttributeAsInteger(Atnum, Rownum, Valuenum) != 0); // shortcut
+}

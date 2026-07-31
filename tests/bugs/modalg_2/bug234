@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC234"
+puts "========"
+
+######################################################################
+##I believe that attached shape is OK but checkshape finds out some problems (Bad Orientation of Subshape).
+######################################################################
+
+restore [locate_data_file OCC234.brep] result
+
+set che [checkshape result r]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty OCC234 (checkshape) : Checkshape command works wrongly"
+} else {
+    puts "OCC234 OK (checkshape) : Checkshape command works properly"
+}
+
+set che [checkshape result]
+if { [regexp {Faulty} $che] == 1 } {
+    puts "Faulty OCC234 (checkshape) : Checkshape command works wrongly"
+} else {
+    puts "OCC234 OK (checkshape) : Checkshape command works properly"
+}
+
+checkprops result -s 2464.17 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

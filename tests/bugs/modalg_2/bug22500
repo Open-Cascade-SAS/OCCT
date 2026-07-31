@@ -1,0 +1,23 @@
+puts "========================"
+puts "OCC22500"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing creates invalid shape
+#######################################################################
+
+set BugNumber OCC22500
+
+restore [locate_data_file OCC22500-bug602badsewing.brep] a 
+
+if { [catch {sewing result 0.01 a} catch_result] } {
+    puts "Faulty ${BugNumber} : function Sewing works wrongly"
+}
+
+checkmaxtol result -ref 4.5583792019775401e-006
+checknbshapes result -shell 1
+checkfreebounds result 28
+
+checkprops result -s 0.0363594 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

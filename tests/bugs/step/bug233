@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC233"
+puts "========"
+puts "Problem during translation in dev in optimize mode .Debug mode is OK)"
+
+stepread [locate_data_file Sbottle.stp] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,36 @@
+puts "======="
+puts "OCC22"
+puts "======="
+puts ""
+#####################################################################
+##Locations are not correctly processed by ShapeBuild_ReShape (and base class BRepTools_ReShape)
+#####################################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC21.brep] shape
+explode shape f
+compound shape_1 shape_2 compoundToBeDivided
+
+# Case A of the bug is reproduced. Resulting shape must have 5 faces instead of 3
+
+if [catch { OCC22 result shape compoundToBeDivided 0 } ] {
+    puts "OCC22 ERROR; (case 1)"
+} else {
+    puts "OCC22 OK; (case 1)"
+}
+
+regexp {([-0-9.+eE]+)\s FACE} [statshape result] full nbFaces
+if {$nbFaces != 5} {
+    puts "OCC22 FAULTY: Initial shape was not split"
+}
+
+# Case B of the bug is reproduced. Result must be valid
+if [catch { OCC22 res shape compoundToBeDivided 1 } ] {
+    puts "OCC22 ERROR; (case 2)"
+} else {
+    puts "OCC22 OK; (case 2)"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

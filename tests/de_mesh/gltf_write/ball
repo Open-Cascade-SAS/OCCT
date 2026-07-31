@@ -1,0 +1,29 @@
+puts "========"
+puts "0030953: Data Exchange - implement export of mesh data into glTF 2.0 format"
+puts "Test case exporting BRep model into glb (binary glTF) file."
+puts "========"
+
+restore [locate_data_file Ball.brep] b
+incmesh b 0.1
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+writegltf b "$aTmpGltf"
+
+ReadGltf D "$aTmpGltf"
+XGetOneShape s D
+checknbshapes s -face 17 -compound 5
+
+set THE_REF_DUMP {
+ASSEMBLY COMPOUND 0:1:1:1 "ASSEMBLY"
+	INSTANCE COMPOUND 0:1:1:1:1 (refers to 0:1:1:2) "ASSEMBLY"
+	INSTANCE COMPOUND 0:1:1:1:2 (refers to 0:1:1:4) "ASSEMBLY"
+ASSEMBLY COMPOUND 0:1:1:2 "ASSEMBLY"
+	INSTANCE COMPOUND 0:1:1:2:1 (refers to 0:1:1:3) "SOLID"
+PART COMPOUND 0:1:1:3 "SOLID"
+ASSEMBLY COMPOUND 0:1:1:4 "ASSEMBLY"
+	INSTANCE COMPOUND 0:1:1:4:1 (refers to 0:1:1:5) "SOLID"
+PART COMPOUND 0:1:1:5 "SOLID"
+
+Free Shapes: 1
+ASSEMBLY COMPOUND  0:1:1:1 "ASSEMBLY"
+}
+checkXDump D $THE_REF_DUMP

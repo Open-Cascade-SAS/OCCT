@@ -1,0 +1,57 @@
+puts "================"
+puts "0031923: DXF import - add support of code page DOS850"
+puts ""
+puts "Test case:"
+puts "1) Creates a temporary STEP file-template using WriteStep."
+puts "2) Reads generated template and replaces @tmp_name@ entity in it with Latin characters using Tcl."
+puts "3) Generates 2 STEP files in UTF-8 and ISO850 encodings (converted by Tcl)."
+puts "4) Reads generated files using StepRead and validates entity name."
+puts "================"
+puts ""
+
+proc fileToString { thePath } {
+  set aFile [open "$thePath" r]
+  set aText [read $aFile [file size "$thePath"]]
+  close $aFile
+  return $aText
+}
+
+proc fileFromString { thePath theContent theCodePage } {
+  set aFile [open "$thePath" w]
+  fconfigure $aFile -translation lf -encoding "$theCodePage"
+  puts $aFile $theContent
+  close $aFile
+}
+
+pload XDE OCAF MODELING VISUALIZATION
+set aTmpNameTmpl "@tmp_name@"
+set aTmpFileTmpl "${imagedir}/${casename}-tmp.stp"
+set aTmpFileUtf8 "${imagedir}/${casename}-tmp-utf8.stp"
+set aTmpFileCP850   "${imagedir}/${casename}-tmp-cp850.stp"
+# Überprüfung de codificação
+set aName [encoding convertfrom utf-8 "\xc3\x9c\x62\x65\x72\x70\x72\xc3\xbc\x66\x75\x6e\x67 \x64\x65 \x63\x6f\x64\x69\x66\x69\x63\x61\xc3\xa7\xc3\xa3\x6f"]
+
+Close A T U C -silent
+
+box b 1 2 3
+XNewDoc   T
+XAddShape T b 0
+XSetColor T b 1 0 0
+SetName   T 0:1:1:1 "$aTmpNameTmpl"
+GetName   T 0:1:1:1
+WriteStep T "$aTmpFileTmpl"
+
+regsub -all -- $aTmpNameTmpl [fileToString "$aTmpFileTmpl"] "$aName" aContent
+fileFromString "$aTmpFileUtf8" "$aContent" "utf-8"
+fileFromString "$aTmpFileCP850"   "$aContent" "cp850"
+
+param read.step.codepage UTF8
+ReadStep U "$aTmpFileUtf8"
+ReadStep A "$aTmpFileCP850"
+param read.step.codepage CP850
+ReadStep C "$aTmpFileCP850"
+
+puts "Original name is 'Überprüfung de codificação'"
+if { [GetName U 0:1:1:1] != "$aName" } { puts "Error: unable to read UTF-8 STEP" }
+if { [GetName C 0:1:1:1] != "$aName" } { puts "Error: unable to read CP850 STEP" }
+if { [GetName A 0:1:1:1] == "$aName" } { puts "Error: broken test case" }

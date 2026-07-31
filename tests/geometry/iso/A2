@@ -1,0 +1,12 @@
+plane p
+trim p p 0 1 0 1
+convert p p
+incudeg p 3
+incvdeg p 3
+movep p 2 2 0 0 1
+nbiso p 20 20
+offset offs1 p 0.3
+uiso curv_u2 offs1 0.2
+copy curv_u2 result
+
+checklength result -l 1.3447354805936929

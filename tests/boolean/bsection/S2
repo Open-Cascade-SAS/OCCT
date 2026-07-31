@@ -1,0 +1,11 @@
+puts "GER60854"
+puts "Section"
+puts ""
+restore [locate_data_file ger60854a.rle] a
+restore [locate_data_file ger60854b.rle] b
+
+bsection result a b
+
+checkprops result -l 44.3547
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

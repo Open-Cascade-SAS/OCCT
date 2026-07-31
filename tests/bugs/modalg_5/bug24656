@@ -1,0 +1,32 @@
+puts "========="
+puts "OCC24656"
+puts "========="
+puts ""
+###########################################################
+# Exception on current version of OCC libraries during perform of boolean operation (Regression)
+###########################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24656_Surface_1.brep] s1
+restore [locate_data_file bug24656_Surface_2.brep] s2
+restore [locate_data_file bug24656_Surface_3.brep] s3
+restore [locate_data_file bug24656_Surface_4.brep] s4
+restore [locate_data_file bug24656_Surface_5.brep] s5
+restore [locate_data_file bug24656_Surface_6.brep] s6
+restore [locate_data_file bug24656_Surface_7.brep] s7
+
+bclearobjects
+bcleartools
+baddobjects s1 s2 s3 s4 s5 s6 s7
+
+bfillds
+bbuild res
+
+fixshape result res
+
+checkprops result -s 337959 
+checkshape result
+
+checknbshapes result -vertex 300 -edge 443 -wire 171 -face 149 -shell 85 -solid 12 -compsolid 0 -compound 2 -shape 1162
+checkview -display result -2d -path ${imagedir}/${test_image}.png

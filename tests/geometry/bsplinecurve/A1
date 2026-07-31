@@ -1,0 +1,9 @@
+bsplinecurve bscurv  3 2  -1.0 4   1.0 4  0 0 0 1   1 0 0 1   2 0 0 1   3 0 0 1
+incdeg bscurv 11
+translate bscurv 0 -4 0
+set i 1
+repeat 100 {cmovepoint bscurv 0 0. 0.05  0.0  ; incr i 1; repaint}
+set i 1
+repeat 100 {cmovepoint bscurv 0 0. -0.05  0.0 ; incr i 1; repaint}
+renamevar bscurv result
+checklength result -l 3.0000000000000004

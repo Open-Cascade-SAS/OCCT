@@ -1,0 +1,71 @@
+puts "========"
+puts "OCC565: Can not intersect two trimmed conical surfaces"
+puts "========"
+puts ""
+
+set GoodNbCurv 1
+
+foreach c [directory result*] {
+  unset $c
+}
+
+foreach c [directory inf*] {
+  unset $c
+}
+
+restore [locate_data_file OCC565a.draw] s1 
+restore [locate_data_file OCC565b.draw] s2 
+
+puts "Preliminary check: intersection work with infinite cones:"
+if { [catch {intersect inf s1 s2 } catch_result] } {
+  puts "Faulty OCC565: function intersection works wrongly with infinite cones"
+} else {
+  set isFound 0
+  foreach c [directory inf*] {
+    set ind [string first "3d curve" [whatis $c]]
+    if {${ind} < 0} {
+      dump $c
+      puts "Error: Intersection result (with infinite cones) is not 3D-curve"
+    } else {
+      set isFound 1
+    }
+  }
+  
+  if { !$isFound } {
+    puts "Error: Empty intersection result (with infinite cones)"    
+  }
+}
+
+trim s1x s1 0 2*pi 0 2.8
+trim s2x s2 0 2*pi 0 2.8
+
+if { [catch {intersect result s1x s2x } catch_result] } {
+  puts "Faulty OCC565 exception: function intersection works wrongly with trimmed cones"
+} else {
+  foreach c [directory result*] {
+    bounds $c U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs $c s1 U1 U2 10 1.0e-7
+    xdistcs $c s2 U1 U2 10 1.0e-7
+  }
+
+  set NbCurv [llength [directory result*]]
+
+  if { $NbCurv == $GoodNbCurv } {
+    puts "OK: Number of curves is good!"
+  } else {
+    puts "Error: $GoodNbCurv is expected but $NbCurv is found!"
+  }
+
+  smallview
+  don result*
+  fit
+  disp s1x s2x
+  checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+}
+
+

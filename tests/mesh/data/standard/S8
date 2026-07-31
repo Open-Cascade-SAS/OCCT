@@ -1,0 +1,3 @@
+set TheFileName shading_170.brep
+set bug_area "OCC22687"
+set rel_tol 47

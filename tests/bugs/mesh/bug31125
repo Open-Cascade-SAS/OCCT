@@ -1,0 +1,7 @@
+puts "======="
+puts "0031125: BRepMesh_IncrementalMesh crash in constructor for empty compound shape"
+puts "======="
+puts ""
+
+compound result
+incmesh result 1

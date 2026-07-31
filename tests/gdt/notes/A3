@@ -1,0 +1,9 @@
+
+# create binary note
+set data [XNoteCreateBinData D "Binary data" --data "abcdefghijklmnopqrstuvwxyz" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${data}
+
+# expected results
+set nb_annotations_result 0
+set nb_notes_result 1
+set nb_orphan_result 1

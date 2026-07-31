@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename r0101_al.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 11 )  Summary  = 11  ( 11 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 9  ( 2 )  Face     = 210  ( 210 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 9  ( 2 )  Face     = 210  ( 210 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.03020760843  (  0.09627072019 )  AvgTol   =  0.002575758956  (   0.01084846592 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 31  ( 31 )  N2Labels = 0  ( 0 )   TotalLabels = 32  ( 32 )   NameLabels = 1  ( 1 )   ColorLabels = 5  ( 5 )   LayerLabels = 26  ( 26 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLUE2 DEEPPINK2 YELLOW2  ( BLUE2 DEEPPINK2 YELLOW2 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = Invisible  ( Invisible )
+
+}

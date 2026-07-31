@@ -1,0 +1,21 @@
+
+puts "========"
+puts "OCC776"
+puts "SAM1654"
+puts "(case 1)"
+puts "========"
+puts ""
+##########################################
+## Impossible to cut one shape from another in the attachment
+##########################################
+
+restore [locate_data_file OCC776.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bcut result a_1 a_2
+
+checkprops result -s 112637. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

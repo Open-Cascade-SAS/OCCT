@@ -1,0 +1,28 @@
+puts "=========="
+puts "OCC24470"
+puts "=========="
+puts ""
+##################################################
+# Wrong result done by General Fuse algorithm
+##################################################
+
+restore [locate_data_file bug24470_box.brep] b1
+restore [locate_data_file bug24470_cone.brep] b2
+restore [locate_data_file bug24470_cylinder.brep] b3
+restore [locate_data_file bug24470_rotBox.brep] b4
+restore [locate_data_file bug24470_rotCyl.brep] b5
+restore [locate_data_file bug24470_sphere.brep] b6
+restore [locate_data_file bug24470_torus.brep] b7
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4 b5 b6 b7
+bfillds
+bbuild result
+checkshape result
+
+checkprops result -s 595443 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

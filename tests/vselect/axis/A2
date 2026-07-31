@@ -1,0 +1,24 @@
+puts "========"
+puts "0032338: Visualization - provide straightforward interface for ray-picking"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 200 300
+vinit View1
+vdisplay -dispMode 1 b
+vfit
+vselmode b VERTEX 1
+vselmode b FACE 1
+set point1 [vmoveto 324 320]
+vdump ${imagedir}/${casename}_p1.png
+
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point1} full p1
+checkpoint "point1" $p1 {100 200 0} 0.001
+
+vselaxis 50 -100 100 0 1 0 -display a
+vmoveto 0 0
+set point2 [vmoveto 324 320]
+vdump ${imagedir}/${casename}_p2.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point1} full p2
+checkpoint "point2" $p2 {100 200 0} 0.001

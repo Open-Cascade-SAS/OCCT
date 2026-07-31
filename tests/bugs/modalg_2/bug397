@@ -1,0 +1,32 @@
+puts "========================"
+puts " OCC397 "
+puts "========================"
+
+pload QAcommands
+
+restore [locate_data_file OCC397.brep] a 
+checkshape a
+
+tclean a
+explode a f
+renamevar a_55 result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+set x_coord 235
+set y_coord 180
+
+checkcolor $x_coord $y_coord 0.5 0.35 0.05
+
+if { ${stat} != 1 } {
+    puts "Error : Shading is missing in 3D Viewer"
+}
+
+vselect 220 170
+
+checkprops result -s 92.9029 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

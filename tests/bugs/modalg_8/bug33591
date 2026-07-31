@@ -1,0 +1,18 @@
+puts "========================"
+puts "0033591: Modeling Algorithms - Regression: old surface is not removed after translation or rotation with geometry copying"
+puts "========================"
+puts ""
+
+pload MODELING
+psphere Sphere_1 80
+trotate Sphere_1  0 0 0  0 1 0  90 -copy
+ttranslate Sphere_1 0 0 200 -copy
+
+catch {dump Sphere_1} dumpOutput
+if {[regexp {Dump of ([0-9]+) surfaces} $dumpOutput match num]} {
+  set numSurfaces $num
+}
+
+if {$numSurfaces != 1} {
+  puts "Error: The number of surfaces must be 1"
+}

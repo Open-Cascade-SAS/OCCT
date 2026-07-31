@@ -1,0 +1,15 @@
+puts "==========="
+puts "BUC60790"
+puts "BUC60836"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+set ResultError [BUC60836 D]
+if {${ResultError} != 0 } {
+    puts "BUC60790: Error = $ResultError"
+}
+

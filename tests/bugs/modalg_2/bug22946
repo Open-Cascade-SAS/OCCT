@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC22946"
+puts "================"
+puts ""
+#######################################################################################
+# BRepFeat_SplitShape crashes on splitting a face by two edges
+######################################################################################
+
+set BugNumber OCC22946
+
+restore [locate_data_file OCC22946-FaceWithNewCurves.brep] a 
+restore [locate_data_file OCC22946-CompoundWithoutPcurves.brep] b 
+
+splitshape result a a b
+
+checkprops result -s 6.06498e+08 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

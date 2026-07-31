@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC25124"
+puts "========"
+puts ""
+######################################################
+# Removal of continuity checks for offset geometries
+######################################################
+
+smallview
+
+point pp 0 0 1
+circle cc 20 40 30 20
+convert bc cc
+trim bc bc 1 6
+offsetcurve oc bc 10 pp
+trim bc oc 2 5
+revsurf se bc 0 0 0 0 1 0
+offset os se 15
+
+set bug_info [getsurfcontinuity se]
+getsurfcontinuity os
+
+if {[string compare $bug_info "se has G1 continuity.\n"] != 0} {
+  puts "ERROR: OCC25124 is reproduced (se does not have G1 continuity)."
+}
+
+set bug_info_1 [dump se]
+set bug_info_1 [string range $bug_info_1 39 [expr {[string length $bug_info_1] -1}]]
+set bug_info_2 [dump os]
+set bug_info_2 [string range $bug_info_2 39 [expr {[string length $bug_info_2] -1}]]
+if {[string compare $bug_info_1 $bug_info_2] == 0} {
+  puts "ERROR: OCC25124 is reproduced (se = os)."
+}
+
+donly os se
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

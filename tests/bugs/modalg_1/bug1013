@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC1013"
+puts "OCC906"
+puts "================"
+puts ""
+
+restore [locate_data_file DXF906.rle] wire 
+checkshape wire
+
+mkplane result wire
+
+checkprops result -s 92131.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

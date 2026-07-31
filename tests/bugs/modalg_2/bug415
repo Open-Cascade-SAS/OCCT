@@ -1,0 +1,33 @@
+
+puts "========================"
+puts " OCC415 "
+puts "PRO5557"
+puts "========================"
+puts ""
+
+restore [locate_data_file pro5557_revol.brep] revol1 
+checkshape revol1
+restore [locate_data_file pro5557_bsurf.brep] bsurf2
+checkshape bsurf2
+
+zoom 660
+normals bsurf2 0.27
+point pnt1 0 -0.3 0
+halfspace space2 bsurf2 0 -0.3 0
+
+bcut result revol1 space2
+
+set testinfos(info)  \
+    "pro5557 : cut a cylinder by an infinite surface extrusion"
+set testinfos(infoX) -0.2
+set testinfos(infoY) -0.2
+set testinfos(infoZ)  -0.34
+set testinfos(infoZ2) -0.3
+
+checkshape -top result
+
+checkprops result -s 0.402138 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

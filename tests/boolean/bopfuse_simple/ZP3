@@ -1,0 +1,22 @@
+# Original bug : fra50046
+# Date : 19Mai98
+
+pcylinder cyl 1 4
+
+vertex va 0 -1 0
+vertex vb 0 1 0
+vertex vc 0 1 2
+vertex vd 0 -1 2
+edge e1 va vb
+edge e2 vb vc
+edge e3 vc vd
+edge e4 vd va
+wire w e1 e2 e3 e4
+mkplane f w 1
+prism priz f 1 0 0
+
+bop priz cyl
+bopfuse result
+
+checkprops result -s 33.9911
+checkview -display result -2d -otherwise { priz cyl } -s -path ${imagedir}/${test_image}.png

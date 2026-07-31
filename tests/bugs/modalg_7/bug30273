@@ -1,0 +1,35 @@
+puts "========"
+puts "0030273: Crash in postprocessing of imported shape."
+puts "========"
+puts ""
+
+pload XDE
+
+# Due to the ambiguous interpretation of the "inner" wire on the surfaces
+# that have natural bound (is it the cutout in the whole surface, or it's just wrong wire orientation),
+# we must manually turn off the adding of the natural bound option of the shape healing for this test.
+if { [info exists imagedir] == 0 } {
+   set imagedir ../BugNumber
+   if {![file exists ${imagedir}]} {
+       file mkdir ${imagedir}
+   }
+}
+# remember the path to the old resource file
+set old_resource_path $::env(CSF_STEPDefaults)
+# reading old resource file
+set anOptions [parse_resource_file "${old_resource_path}/STEP"]
+# activation of ignoring the adding of natural bound
+dict set anOptions "FromSTEP.FixShape.FixAddNaturalBoundMode" "0"
+# path to new resource file
+set new_resource_path ${imagedir}
+# creating resource file
+create_resource_file "${new_resource_path}/STEP" $anOptions
+# changing the path to the resource file
+set ::env(CSF_STEPDefaults) ${new_resource_path}
+
+stepread [locate_data_file bug30273.stp] res *
+
+# Restoring the path to the old resource file
+set ::env(CSF_STEPDefaults) ${old_resource_path}
+
+checknbshapes res_1 -solid 176 -face 10463 -shape 72893

@@ -1,0 +1,48 @@
+puts "============"
+puts "OCC25614"
+puts "============"
+puts ""
+###############################
+## Provide API access to the new functionalities of Boolean Components
+###############################
+
+#====================
+box b 10 10 4
+ttranslate b 0 0 -2
+set qs1 {}
+set N 11
+
+for {set i 0} {$i < $N} {incr i} {
+ for {set j 0} {$j < $N} {incr j} {
+  tcopy b b_${i}_${j}
+  ttranslate b_${i}_${j} [expr $i * 10] [expr $j * 10] 0. 
+  lappend qs1 b_${i}_${j} 
+ }
+}
+eval compound $qs1 b1
+
+pcylinder b 6 10
+ttranslate b 10 10 -5
+
+set qs2 {}
+set N 10
+
+for {set i 0} {$i < $N} {incr i} {
+ for {set j 0} {$j < $N} {incr j} {
+  tcopy b b_${i}_${j}
+  ttranslate b_${i}_${j} [expr $i * 10] [expr $j * 10] 0. 
+  lappend qs2 b_${i}_${j} 
+ }
+}
+eval compound $qs2 b2
+#====================
+
+bclearobjects
+bcleartools
+baddcompound b1
+baddcompound b2
+
+bapibuild result
+
+checknbshapes result -vertex 2728 -edge 7032 -wire 5746 -face 5746 -shell 1441 -solid 1441 -compsolid 0 -compound 1 -shape 24135
+checkview -display result -3d -path ${imagedir}/${test_image}.png

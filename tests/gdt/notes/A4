@@ -1,0 +1,16 @@
+
+# create comment note
+set comment [XNoteCreateComment D "Hello, World!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment}
+
+# create balloon note
+set balloon [XNoteCreateComment D "Hello, Everyone!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${balloon}
+
+# delete comment note
+XNoteDelete D ${comment}
+
+# expected results
+set nb_annotations_result 0
+set nb_notes_result 1
+set nb_orphan_result 1

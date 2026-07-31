@@ -1,0 +1,9 @@
+puts "TODO ALL: Error : big tolerance of shape result"
+
+restore [locate_data_file offset_wire_003.brep] s
+
+set length 1613.94
+set nbsh_v 98
+set nbsh_e 98
+set nbsh_w 1
+

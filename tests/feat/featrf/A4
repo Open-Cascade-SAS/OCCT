@@ -1,0 +1,22 @@
+#old revolrib6
+pcylinder c1 3 5
+pcone c2 2 1.5 3
+pcylinder c3 1 2
+ttranslate c2 0 0 5
+ttranslate c3 0 0 8
+bfuse ss c1 c2
+bfuse s ss c3
+nexplode s e
+blend s s 0.3 s_4 0.3 s_2
+
+vertex v1 0 -3 5
+vertex v2 0 -1 10
+edge e1 v1 v2
+wire w e1
+plane pl 0 -3 5 -1 0 0
+
+featrf s w pl 0 0 0 0 0 1 0.2 0.2 1 1
+featperform rf result
+
+
+checkprops result -s 194.575

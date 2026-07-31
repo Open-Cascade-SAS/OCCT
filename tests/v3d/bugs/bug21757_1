@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC21757: Funny (giraffe-like) shading of torus meshed with specific parameters (WNT)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vsetdispmode 1
+vclear
+
+# variant 1: mesh explicitly
+ptorus result 200 50 45
+incmesh result 0.4 
+vdisplay result
+vfit
+checkcolor 200 200 0.89 0.63 0.109
+
+vdump $imagedir/${casename}.png 

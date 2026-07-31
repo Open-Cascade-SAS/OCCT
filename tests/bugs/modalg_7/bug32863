@@ -1,0 +1,43 @@
+puts "================================================="
+puts "0032863: Cone surface returns wrong v derivative "
+puts "================================================="
+puts ""
+
+cone c 0.2 2.0
+
+set u 5.23290599890759
+set v 5.06498283391571
+
+# reference data
+svalue c  $u $v  x y z  dux duy duz  dvx dvy dvz  d2ux d2uy d2uz  d2vx d2vy d2vz  d2uvx d2uvy d2uvz
+set dxRef [list [dval x] [dval dux] [dval dvx] [dval d2ux] [dval d2uvx] [dval d2vx]]
+set dyRef [list [dval y] [dval duy] [dval dvy] [dval d2uy] [dval d2uvy] [dval d2vy]]
+set dzRef [list [dval z] [dval duz] [dval dvz] [dval d2uz] [dval d2uvz] [dval d2vz]]
+
+# compute derivatives till the second order
+puts "======================================="
+set tolerance 1.e-7
+for {set order 1} {$order <= 2} {incr order} {
+  for {set nv 0} {$nv <= $order} {incr nv} {
+    set nu [expr $order - $nv]
+    
+    set offset [expr $order * ($order + 1) / 2 + $nv]
+    set ref_dx [lindex $dxRef $offset]
+    set ref_dy [lindex $dyRef $offset]
+    set ref_dz [lindex $dzRef $offset]
+
+    sderivative c  $u $v  $nu $nv  dx dy dz
+    set dx [dval dx]
+    set dy [dval dy]
+    set dz [dval dz]
+
+    puts ""
+    puts "Order of derivative: Nu = $nu, Nv = $nv"
+    puts "Expected ($ref_dx, $ref_dy, $ref_dz)"
+    puts "Actual   ($dx, $dy, $dz)"
+    checkreal "dX " $dx $ref_dx $tolerance $tolerance
+    checkreal "dY " $dy $ref_dy $tolerance $tolerance
+    checkreal "dZ " $dz $ref_dz $tolerance $tolerance
+    puts "======================================="
+  }
+}

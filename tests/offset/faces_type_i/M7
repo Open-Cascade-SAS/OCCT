@@ -1,0 +1,12 @@
+cpulimit 1000
+
+circle w -20 0 0 20
+mkedge w w 0 pi*2/5
+wire w w
+polyline profile 0 0 0  10 0 0  5 0 5  0 0 0
+mkplane profile profile
+pipe s w profile
+
+OFFSETSHAPE -1 {s_2 s_4} $calcul $type
+
+checkprops result -v 259.68

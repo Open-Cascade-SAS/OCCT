@@ -1,0 +1,12 @@
+restore [locate_data_file bug29188_zt8_trim.brep] s
+
+offsetparameter 1.e-7 c i r
+offsetload s 5
+offsetperform result
+
+checkprops result -s 43255.5 -v 461843
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 14 -edge 21 -wire 9 -face 9 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

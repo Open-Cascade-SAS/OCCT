@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC23047"
+puts "================"
+puts ""
+########################################################################################################
+# Behaviour of XDE sample is non-stable
+########################################################################################################
+
+set BugNumber OCC23047
+
+pload QAcommands
+
+XNewDoc D
+box b 1 1 1
+ttranslate b 1 0 0
+XAddShape D b
+XRemoveShape D 0:1:1:1 0
+
+set xd [Xdump D]
+
+regexp {Free Shapes: ([-0-9.+eE]+)} $xd full FreeShapes
+puts "FreeShapes=${FreeShapes}"
+
+if { ${FreeShapes} != 1 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+

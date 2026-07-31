@@ -1,0 +1,38 @@
+
+## prism the diagonal face as we would in Euclid Designer
+
+vertex v1 0 0 0
+vertex v2 1 0 0
+vertex v3 1 1 0
+vertex v4 0 1 0
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire wa e1 e2 e3 e4
+mkplane fa wa
+prism ba fa 0 0 1
+
+# prism from bottom
+
+vertex v5 0 0 0
+vertex v6 1 1 0
+vertex v7 1 1 1
+vertex v8 0 0 1
+
+edge e5 v5 v6
+edge e6 v6 v7
+edge e7 v7 v8
+edge e8 v8 v5
+
+wire wb e5 e6 e7 e8
+mkplane fb wb
+
+prism bb fb -1 1 0
+
+bcommon result ba bb
+
+checkprops result -s 4.41421
+checkview -display result -2d -s -otherwise { ba bb } -path ${imagedir}/${test_image}.png

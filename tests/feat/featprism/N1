@@ -1,0 +1,15 @@
+# Original bug : id160074
+# Date : 23 Nov 98
+
+puts "*"
+
+restore [locate_data_file CFE900_id160gdu.rle] base
+restore [locate_data_file id160074_face1.brep] cont
+
+explode base face
+copy base_8 funtil
+
+featprism base cont cont 1 0 0 0 1
+featperform prism result funtil
+
+checkprops result -s 346145

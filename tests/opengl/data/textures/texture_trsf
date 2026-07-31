@@ -1,0 +1,40 @@
+puts "========"
+puts "Texture 2D transformation (UV coordinates generation)"
+puts "========"
+
+set aTexture [locate_data_file bug26122_texture_trsf_ref.png]
+
+pload MODELING VISUALIZATION
+box b 1 1 1
+explode b F
+
+for { set aPass 0 } { $aPass < 2 } { incr aPass } {
+  vclear
+  vclose ALL
+
+  set aSuffix ""
+  if { $aPass == 0 } {
+    set aSuffix "ffp"
+    vcaps -ffp 1
+  } else {
+    set aSuffix "glsl"
+    vcaps -ffp 0
+  }
+
+  vinit View1 w=512 h=512
+  vtop
+  vdisplay -dispMode 1 b_6
+  vfit
+
+  vtexture b_6 $aTexture -modulate off
+  vdump $::imagedir/${::casename}_identity_${aSuffix}.png
+
+  vtexture b_6 $aTexture -origin 0.0 0.0 -scale 1.25 0.5
+  vdump $::imagedir/${::casename}_scale_${aSuffix}.png
+
+  vtexture b_6 $aTexture -origin 0.25 -0.25 -scale 1.0 1.0
+  vdump $::imagedir/${::casename}_translate_${aSuffix}.png
+
+  vtexture b_6 $aTexture -origin 0.25 -0.25 -scale 1.1 0.8
+  vdump $::imagedir/${::casename}_${aSuffix}.png
+}

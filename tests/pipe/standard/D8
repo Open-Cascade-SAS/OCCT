@@ -1,0 +1,7 @@
+parabola profile 10 0 0 0 1 -1 50
+mkedge profile profile -pi*20. pi*20.
+wire profile profile
+polyline w 10 0 0 10 -30 30 10 -70 90
+pipe result w profile
+
+checkprops result -s 15270.1

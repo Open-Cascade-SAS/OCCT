@@ -1,0 +1,17 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : N4
+## Comment : from buc60330
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file CFI_buc60330.rle] a
+explode a e
+blend result a 10 a_5 10 a_6
+## ca marche mais pas ceci
+## blend rr a 10 a_5
+## blend result rr 10 a_6
+explode result sh
+renamevar result_1 result
+
+checkprops result -s 0

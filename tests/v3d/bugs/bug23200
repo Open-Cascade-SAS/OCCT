@@ -1,0 +1,50 @@
+puts "============"
+puts "CR23200"
+puts "Check that the shape is automatic re-triangulated with deflection-check logic"
+puts "in case of enabled auto triangulation feature (its own triangulation can be lost)."
+puts "And it keeps its already computed triangulation"
+puts "in case of disabled auto triangulation feature."
+puts "============"
+puts ""
+
+set aDefaultShape $imagedir/${casename}_shape.png
+set aShapeAutoTr $imagedir/${casename}_shape_auto_triangulation.png
+set aShapeNotAutoTr $imagedir/${casename}_shape_not_auto_triangulation.png
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdefaults -autoTriang on
+psphere s 0.5
+vdisplay s
+vfit
+vdump $aDefaultShape
+
+vclear
+tclean s
+incmesh s 0.1 -a 45
+set tri_info [trinfo s]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full triIncmesh1
+
+vdisplay s
+
+checktrinfo s -tri !${triIncmesh1}
+
+vfit
+vdump $aShapeAutoTr
+
+vclear
+vdefaults -autoTriang off
+tclean  s
+incmesh s 0.1 -a 45
+set tri_info [trinfo s]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full triIncmesh2
+
+vdisplay s
+
+checktrinfo s -tri ${triIncmesh2}
+
+vfit
+vdump $aShapeNotAutoTr

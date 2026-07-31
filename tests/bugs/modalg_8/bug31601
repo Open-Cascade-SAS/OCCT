@@ -1,0 +1,15 @@
+puts "================================================================="
+puts "0031601: Modeling Algorithms - BRepOffset_Tool Segmentation Fault"
+puts "================================================================="
+puts ""
+
+pload MODELING
+box b 50 50 10
+explode b E
+compound b_1 b_2 b_3 b_4 b_5 b_6 b_7 b_8 b_9 b_10 b_11 b_12 c
+fillet s b 4 c
+explode s F
+offsetparameter 1.e-7 c a
+offsetload s 1 s_11
+offsetperform r
+checkview -display r -2d -path ${imagedir}/${test_image}.png

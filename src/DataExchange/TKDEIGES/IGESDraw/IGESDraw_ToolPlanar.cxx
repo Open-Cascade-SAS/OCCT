@@ -1,0 +1,209 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDraw_Planar.hxx>
+#include <IGESDraw_ToolPlanar.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+
+IGESDraw_ToolPlanar::IGESDraw_ToolPlanar() = default;
+
+void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&         ent,
+                                        const occ::handle<IGESData_IGESReaderData>& IR,
+                                        IGESData_ParamReader&                       PR) const
+{
+  bool st;
+  int  nbval;
+
+  int                                                                nbMatrices;
+  occ::handle<IGESGeom_TransformationMatrix>                         transformationMatrix;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> entities;
+
+  // Reading nbMatrices(Integer)
+  st = PR.ReadInteger(PR.Current(), "No. of Transformation matrices", nbMatrices);
+  if (nbMatrices != 1)
+  {
+    PR.AddFail("No. of Transformation matrices != 1");
+  }
+
+  // Reading nbval(Integer)
+  st = PR.ReadInteger(PR.Current(), "No. of Entities in this plane", nbval);
+  if (!st)
+  {
+    nbval = 0; // szv#4:S4163:12Mar99 was bug: `nbval == 0`
+  }
+  if (nbval <= 0)
+  {
+    PR.AddFail("No. of Entities in this plane : Not Positive");
+  }
+
+  // Reading transformationMatrix(Instance of TransformationMatrix or Null)
+  st = PR.ReadEntity(IR,
+                     PR.Current(),
+                     "Instance of TransformationMatrix",
+                     STANDARD_TYPE(IGESGeom_TransformationMatrix),
+                     transformationMatrix,
+                     true);
+
+  if (nbval > 0)
+  {
+    st = PR.ReadEnts(IR, PR.CurrentList(nbval), "Planar Entities", entities);
+  }
+  /*
+      {
+        entities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
+        // Reading entities(HArray1OfIGESEntity)
+        occ::handle<IGESData_IGESEntity> tempEntity;
+        for (int i = 1; i <= nbval; i++)
+      {
+            st = PR.ReadEntity(IR, PR.Current(), "Plane entity", tempEntity);
+        if (st) entities->SetValue(i, tempEntity);
+      }
+      }
+  */
+
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(nbMatrices, transformationMatrix, entities);
+}
+
+void IGESDraw_ToolPlanar::WriteOwnParams(const occ::handle<IGESDraw_Planar>& ent,
+                                         IGESData_IGESWriter&                IW) const
+{
+  int Up = ent->NbEntities();
+  IW.Send(ent->NbMatrices());
+  IW.Send(Up);
+
+  IW.Send(ent->TransformMatrix());
+
+  for (int i = 1; i <= Up; i++)
+  {
+    IW.Send(ent->Entity(i));
+  }
+}
+
+void IGESDraw_ToolPlanar::OwnShared(const occ::handle<IGESDraw_Planar>& ent,
+                                    Interface_EntityIterator&           iter) const
+{
+  int Up = ent->NbEntities();
+  iter.GetOneItem(ent->TransformMatrix());
+  for (int i = 1; i <= Up; i++)
+  {
+    iter.GetOneItem(ent->Entity(i));
+  }
+}
+
+void IGESDraw_ToolPlanar::OwnCopy(const occ::handle<IGESDraw_Planar>& another,
+                                  const occ::handle<IGESDraw_Planar>& ent,
+                                  Interface_CopyTool&                 TC) const
+{
+  int                                                                nbval;
+  int                                                                nbMatrices;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> entities;
+
+  nbval      = another->NbEntities();
+  nbMatrices = another->NbMatrices();
+  DeclareAndCast(IGESGeom_TransformationMatrix,
+                 transformationMatrix,
+                 TC.Transferred(another->TransformMatrix()));
+
+  entities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
+  for (int i = 1; i <= nbval; i++)
+  {
+    DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Entity(i)));
+    entities->SetValue(i, tempEntity);
+  }
+
+  ent->Init(nbMatrices, transformationMatrix, entities);
+}
+
+bool IGESDraw_ToolPlanar::OwnCorrect(const occ::handle<IGESDraw_Planar>& ent) const
+{
+  if (ent->NbMatrices() == 1)
+  {
+    return false;
+  }
+  //  Forcer NbMNatrices a 1 -> Reconstruire
+  int                                                                nb = ent->NbEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ents =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  for (int i = 1; i <= nb; i++)
+  {
+    ents->SetValue(i, ent->Entity(i));
+  }
+  ent->Init(1, ent->TransformMatrix(), ents);
+  return true;
+}
+
+IGESData_DirChecker IGESDraw_ToolPlanar::DirChecker(
+  const occ::handle<IGESDraw_Planar>& /*ent*/) const
+{
+  IGESData_DirChecker DC(402, 16);
+  DC.Structure(IGESData_DefVoid);
+  DC.LineFont(IGESData_DefVoid);
+  DC.LineWeight(IGESData_DefVoid);
+  DC.Color(IGESData_DefVoid);
+  DC.BlankStatusIgnored();
+  DC.UseFlagRequired(5);
+  DC.HierarchyStatusIgnored();
+  return DC;
+}
+
+void IGESDraw_ToolPlanar::OwnCheck(const occ::handle<IGESDraw_Planar>& ent,
+                                   const Interface_ShareTool&,
+                                   occ::handle<Interface_Check>& ach) const
+{
+  if (ent->NbMatrices() != 1)
+  {
+    ach->AddFail("No. of Transformation matrices : Value != 1");
+  }
+}
+
+void IGESDraw_ToolPlanar::OwnDump(const occ::handle<IGESDraw_Planar>& ent,
+                                  const IGESData_IGESDumper&          dumper,
+                                  Standard_OStream&                   S,
+                                  const int                           level) const
+{
+  int sublevel = (level <= 4) ? 0 : 1;
+
+  S << "IGESDraw_Planar\n"
+    << "No. of Transformation Matrices : " << ent->NbMatrices() << "  "
+    << "i.e. : ";
+  if (ent->TransformMatrix().IsNull())
+  {
+    S << "Null Handle";
+  }
+  else
+  {
+    dumper.OwnDump(ent->TransformMatrix(), S, sublevel);
+  }
+  S << "\n"
+    << "Array of Entities on the specified plane : ";
+  IGESData_DumpEntities(S, dumper, level, 1, ent->NbEntities(), ent->Entity);
+  S << '\n';
+}

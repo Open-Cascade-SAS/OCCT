@@ -1,0 +1,83 @@
+name: 'CMake Basic Build'
+description: 'Configure and build OCCT with basic configuration'
+
+inputs:
+  generator:
+    description: 'CMake generator'
+    required: true
+    default: 'Ninja'
+  cc:
+    description: 'C compiler'
+    required: true
+  cxx:
+    description: 'C++ compiler'
+    required: true
+  build-type:
+    description: 'Build type (Debug, Release)'
+    required: false
+    default: 'Release'
+  compiler-flags:
+    description: 'Additional compiler flags'
+    required: false
+    default: ''
+  thirdparty-dir:
+    description: '3rd party directory'
+    required: false
+    default: ''
+  shell-type:
+    description: 'Shell type to use (powershell, msys2, bash)'
+    required: false
+    default: 'auto'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure basic build (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "${{ inputs.generator }}" \
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} \
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} \
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} \
+              ${{ inputs.compiler-flags }} ..
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
+
+    - name: Configure basic build (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ inputs.generator }}" `
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} `
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} `
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} `
+              ${{ inputs.compiler-flags }} ..
+      shell: pwsh
+
+    - name: Build basic (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
+      run: |
+        cd build
+        cmake --build . --config ${{ inputs.build-type }} -- -j 4
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
+
+    - name: Build basic (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
+      run: |
+        cd build
+        cmake --build . --config ${{ inputs.build-type }}
+      shell: pwsh
+
+    - name: Clean up build (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
+      run: rm -rf build
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
+
+    - name: Clean up build (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
+      run: Remove-Item -Recurse -Force build
+      shell: pwsh

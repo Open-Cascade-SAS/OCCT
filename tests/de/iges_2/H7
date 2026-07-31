@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename UKI60876.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 7 )  Warnings = 0  ( 0 )  Summary  = 0  ( 7 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 128  ( 287 )  Summary  = 128  ( 287 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 373  ( 373 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 373  ( 373 )   FreeWire = 1  ( 1 ) 
+TOLERANCE   : MaxTol   =   0.5291749398  (   0.5291749268 )  AvgTol   =  0.008496021304  (   0.00849604451 )
+LABELS      : N0Labels = 1597  ( 1597 )  N1Labels = 1  ( 1680 )  N2Labels = 0  ( 0 )   TotalLabels = 1598  ( 3277 )   NameLabels = 1597  ( 1597 )   ColorLabels = 1581  ( 3277 )   LayerLabels = 1580  ( 3277 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 11  ( 12 )
+COLORS      : Colors   = BURLYWOOD1 CHARTREUSE CYAN DARKORANGE GREEN KHAKI1 LIGHTSALMON1 LIGHTSTEELBLUE2 ORCHID1 WHITE YELLOW  ( BURLYWOOD1 CHARTREUSE CYAN DARKORANGE DEEPSKYBLUE1 GREEN KHAKI1 LIGHTSALMON1 LIGHTSTEELBLUE2 ORCHID1 WHITE YELLOW )
+NLAYERS     : NLayers  = 17  ( 19 )
+LAYERS      : Layers   = 11 12 130 14 15 16 17 18 19 21 62 63 65 66 68 69 75  ( 11 12 130 14 15 16 17 18 19 21 61 62 63 64 65 66 68 69 75 )
+
+}

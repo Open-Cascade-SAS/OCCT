@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "================"
+puts "OCC150"
+puts "SAM1048"
+puts "OCC53"
+puts "================"
+puts ""
+################################################################
+## SAM1048. Crash with all memory exhausted at attempt to fuse two solids in the file attached.
+################################################################
+## Segmentation violation detected during Fuse operation
+################################################################
+puts ""
+puts "Bug's advancement"
+puts "#################"
+puts ""
+
+restore [locate_data_file OCC150_compsolid_nofuse.brep] sh 
+explode sh
+
+checkshape sh_1
+checkshape sh_2
+
+bfuse result sh_2 sh_1
+checkshape result
+
+checkprops result -s 700
+checkview -display result -2d -path ${imagedir}/${test_image}.png

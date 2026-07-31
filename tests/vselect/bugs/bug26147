@@ -1,0 +1,56 @@
+puts "============"
+puts "CR26147: Visualization - restore the ability to pick only fully included objects in rectangular selection"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+box b1 0 0 0 1 1 1
+box b2 2 2 2 1 1 1
+box b3 4 4 4 1 1 1
+
+vinit View1
+vdisplay b1 b2 b3
+vfit
+
+vselmode b1 1 1
+vselmode b1 2 1
+vselmode b2 1 1
+vselmode b2 2 1
+
+vselect 75 230 235 320 -allowoverlap 0
+set aNbSelected1 [vnbselected]
+if {$aNbSelected1 != 4} {
+  puts "ERROR: Wrong number of entities in vertice-edge selection without overlap allowed!"
+}
+
+vselect 75 230 235 320 -allowoverlap 1
+vnbselected
+set aNbSelected2 [vnbselected]
+if {$aNbSelected2 != 11} {
+  puts "ERROR: Wrong number of entities in vertice-edge selection with overlap allowed!"
+}
+
+vselect 0 0
+
+vselmode b3 4 1
+
+vselect 75 230 235 320 -allowoverlap 0 -xor
+vselect 350 150 380 170 -xor
+vnbselected
+set aNbSelected3 [vnbselected]
+if {$aNbSelected3 != 4} {
+  puts "ERROR: Wrong number of entities in vertice-edge-face shift selection without overlap allowed!"
+}
+
+vselect 0 0
+
+vselect  75 230 235 320 -allowoverlap 1 -xor
+vselect 350 150 380 170 -allowOverlap 1 -xor
+vnbselected
+set aNbSelected4 [vnbselected]
+if {$aNbSelected4 != 13} {
+  puts "ERROR: Wrong number of entities in vertice-edge-face shift selection with overlap allowed!"
+}
+
+vdump $imagedir/${casename}.png

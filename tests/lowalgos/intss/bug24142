@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC24142"
+puts "================"
+puts ""
+#################################################################
+## Wrong section curve
+#################################################################
+
+restore [locate_data_file OCC152.brep] sh
+explode sh f
+
+mksurface s1 sh_3
+mksurface s2 sh_5
+
+trim st1 s1 0 6.28318530717959 0 74.9999999999999
+trim st2 s2 0 6.28318530717959 -74.0551172696384 125.944882730362
+
+intersect cur st1 st2
+
+if { [regexp -nocase "curve" [whatis cur]] } {
+  puts "Error: intersection curve is built while it should not"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

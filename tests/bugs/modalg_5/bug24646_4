@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC24646"
+puts "============"
+puts ""
+######################################################
+# Wrong result done by Boolean Operation algorithm
+######################################################
+
+restore [locate_data_file bug24646_b3.brep] b1
+restore [locate_data_file bug24646_b4.brep] b2
+
+nurbsconvert b1 b1
+nurbsconvert b2 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+bbuild result
+
+checkprops result -s 3.1449e+06 
+checkshape result
+
+checknbshapes result -vertex 22 -edge 38 -wire 20 -face 18 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 105 -t -m "Result done by Boolean Operation algorithm"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

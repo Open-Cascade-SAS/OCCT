@@ -1,0 +1,178 @@
+puts "Check History of Boolean operations"
+
+puts "Case with intersecting planes (two intersection edges)"
+
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+
+polyline p -5 0 -5 -5 0 10 5 0 10 5 0 -5 2 0 -5 2 0 5 -2 0 5 -2 0 -5 -5 0 -5
+mkplane f2 p
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2
+bfillds
+
+puts "Common operation"
+bbop rcom 0
+
+# get history of the operation
+savehistory com_hist
+
+# check that both f1 and f2 have been deleted
+if {[string trim [isdeleted com_hist f1]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [isdeleted com_hist f2]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the f1 and f2 have been Modified
+if {[string trim [modified rm com_hist f1]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [modified rm com_hist f2]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that none of the f1 and f2 have Generated shapes
+if {[string trim [generated rg com_hist f1]] != "No shapes were generated from the shape."} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+if {[string trim [generated rg com_hist f2]] != "No shapes were generated from the shape."} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+
+puts "Fuse operation"
+bbop rfuse 1
+
+# get history of the operation
+savehistory fuse_hist
+
+# check that both f1 and f2 have not been deleted
+if {[string trim [isdeleted fuse_hist f1]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [isdeleted fuse_hist f2]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that both f1 and f2 have been Modified
+modified rm fuse_hist f1
+checknbshapes rm -face 1 -m "Information about modification of f1"
+
+modified rm fuse_hist f2
+checknbshapes rm -face 3 -m "Information about modification of f2"
+
+# check that both f1 and f2 have Generated edges
+generated rg fuse_hist f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+generated rg fuse_hist f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+puts "CUT operation"
+bbop rcut 2
+
+# get history of the operation
+savehistory cut_hist
+
+# check that f1 has not been deleted
+if {[string trim [isdeleted cut_hist f1]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f2 has been deleted
+if {[string trim [isdeleted cut_hist f2]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f1 has been modified
+modified rm cut_hist f1
+checknbshapes rm -face 1 -m "Information about modification of f1"
+
+# check that f2 has not been modified
+if {[string trim [modified rm cut_hist f2]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both f1 and f2 have Generated edges
+generated rg cut_hist f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+generated rg cut_hist f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+puts "TUC operation"
+bbop rtuc 3
+
+# get history of the operation
+savehistory tuc_hist
+
+# check that f1 has been deleted
+if {[string trim [isdeleted tuc_hist f1]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f2 has not been deleted
+if {[string trim [isdeleted tuc_hist f2]] != "Not deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f1 has not been modified
+if {[string trim [modified rm tuc_hist f1]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that f2 has been modified
+modified rm tuc_hist f2
+checknbshapes rm -face 3 -m "Information about modification of f1"
+
+
+# check that both f1 and f2 have Generated vertices
+generated rg tuc_hist f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+generated rg tuc_hist f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+
+puts "SECTION operation"
+bbop rsec 4
+
+# get history of the operation
+savehistory sec_hist
+
+# check that both f1 and f2 have been deleted
+if {[string trim [isdeleted sec_hist f1]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [isdeleted sec_hist f2]] != "Deleted."} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the f1 and f2 have been Modified 
+if {[string trim [modified rm sec_hist f1]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [modified rm sec_hist f2]] != "The shape has not been modified."} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both f1 and f2 have Generated vertices
+generated rg sec_hist f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+generated rg sec_hist f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"

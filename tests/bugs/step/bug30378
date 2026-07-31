@@ -1,0 +1,14 @@
+puts "# ==============================================================================="
+puts "# 0030378: Data Exchange - extract of subset of model entities fails (regression)"
+puts "# ==============================================================================="
+
+puts "Prepare simple STEP model"
+pload MODELING XSDRAW
+box b 10 10 10
+stepwrite a b
+
+puts "Write entity #3"
+set res [writeent ${imagedir}/${test_image}.stp 3]
+if { ! [regexp {Write\s+Done} $res] } {
+  puts "Error: expected output is not found"
+}

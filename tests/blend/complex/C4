@@ -1,0 +1,13 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : G2
+## Comment : from pro5545
+## ====================================
+
+restore [locate_data_file CFI_pro5545.rle] a
+encoderegularity a 1
+tscale a 0 0 0 1000
+nexplode a e
+blend result a 3 a_18 3 a_36 3 a_20 3 a_9
+
+checkprops result -s 4990.42

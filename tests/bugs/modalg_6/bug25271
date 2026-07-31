@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC25271"
+puts "============"
+puts ""
+############################################################################
+# Wrong result obtained by solid classifier algorithm
+############################################################################
+
+restore [locate_data_file bug25509_Aggreg_4.brep] b1
+point p 0.67610067704688293 0.55732782339337006 0.45537637265191699
+
+explode b1
+shape b2 So
+add b1_1 b2
+
+set cls [bclassify b2 p]
+if { [regexp {OUT} $cls] } {
+   puts "OK : Good result obtained by solid classifier algorithm"
+} else {
+   puts "Error : Wrong result obtained by solid classifier algorithm"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

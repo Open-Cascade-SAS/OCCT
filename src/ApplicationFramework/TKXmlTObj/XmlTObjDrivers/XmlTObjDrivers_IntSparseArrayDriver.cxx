@@ -1,0 +1,108 @@
+// Created on: 2007-03-30
+// Created by: Michael SAZONOV
+// Copyright (c) 2007-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// The original implementation Copyright: (C) RINA S.p.A
+
+#include <XmlTObjDrivers_IntSparseArrayDriver.hxx>
+#include <Message_Messenger.hxx>
+#include <XmlObjMgt_Persistent.hxx>
+#include <TObj_TIntSparseArray.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Tool.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_IntSparseArrayDriver, XmlMDF_ADriver)
+
+#define ITEM_ID "itemId_"
+#define ITEM_VALUE "itemValue_"
+
+//=================================================================================================
+
+XmlTObjDrivers_IntSparseArrayDriver::XmlTObjDrivers_IntSparseArrayDriver(
+  const occ::handle<Message_Messenger>& theMessageDriver)
+    : XmlMDF_ADriver(theMessageDriver, nullptr)
+{
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
+{
+  return new TObj_TIntSparseArray;
+}
+
+//=================================================================================================
+
+bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                XmlObjMgt_RRelocationTable&) const
+{
+  const XmlObjMgt_Element&          anElement = theSource;
+  occ::handle<TObj_TIntSparseArray> aTarget   = occ::down_cast<TObj_TIntSparseArray>(theTarget);
+
+  // get pairs (ID, value) while ID != 0
+  int                     i = 1;
+  TCollection_AsciiString anItemID;
+  TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
+  anItemID                        = anElement.getAttribute(anIdStr.ToCString());
+  while (anItemID.IsIntegerValue() && anItemID.IntegerValue() != 0)
+  {
+    TCollection_AsciiString aStrIndex =
+      TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);
+    TCollection_AsciiString anItemValue = anElement.getAttribute(aStrIndex.ToCString());
+    if (anItemValue.IsIntegerValue())
+    {
+      // store the value in the target array
+      aTarget->SetDoBackup(false);
+      aTarget->SetValue(anItemID.IntegerValue(), anItemValue.IntegerValue());
+      aTarget->SetDoBackup(true);
+    }
+    i++;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                                XmlObjMgt_Persistent&             theTarget,
+                                                XmlObjMgt_SRelocationTable&) const
+{
+  occ::handle<TObj_TIntSparseArray> aSource = occ::down_cast<TObj_TIntSparseArray>(theSource);
+
+  // put only non-null values as pairs (ID, value)
+  // terminate the list by ID=0
+  TObj_TIntSparseArray::Iterator anIt = aSource->GetIterator();
+  int                            i    = 1;
+  for (; anIt.More(); anIt.Next())
+  {
+    int aValue = anIt.Value();
+    if (aValue == 0)
+    {
+      continue;
+    }
+    TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
+    TCollection_AsciiString aStrIndex =
+      TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);
+    theTarget.Element().setAttribute(anIdStr.ToCString(), (int)anIt.Index());
+    theTarget.Element().setAttribute(aStrIndex.ToCString(), anIt.Value());
+    i++;
+  }
+  // write last item
+  TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
+  TCollection_AsciiString aStrIndex =
+    TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);
+  theTarget.Element().setAttribute(anIdStr.ToCString(), 0);
+  theTarget.Element().setAttribute(aStrIndex.ToCString(), 0);
+}

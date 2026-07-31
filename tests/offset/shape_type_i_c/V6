@@ -1,0 +1,12 @@
+restore [locate_data_file bug26917_b1_slanted.brep] s
+explode s f
+donly s
+offsetparameter 1e-7 c i
+offsetload s 1
+offsetonface s_8 3
+offsetonface s_10 3
+offsetperform result
+
+checkprops result -v 1007.8
+
+checknbshapes result -shell 1

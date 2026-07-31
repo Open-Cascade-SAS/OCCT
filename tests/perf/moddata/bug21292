@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC21292"
+puts "========"
+puts ""
+######################################################
+# Shading on large model too long
+######################################################
+
+set BugNumber OCC21292
+
+# 1 munite
+cpulimit 60
+
+restore [locate_data_file OCC21292.brep] result
+
+vinit
+vsetdispmode 1
+
+dchrono h restart
+#
+# DISPLAY OPERATION ----- START
+#
+vdisplay result
+#
+# DISPLAY OPERATION ----- FINISH
+#
+dchrono h stop counter vdisplay
+
+checkprops result -s 1.40193e+07
+checknbshapes result -vertex 372 -edge 369 -wire 2 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 745
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,174 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Interface_ShareFlags.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
+                                           const Interface_GeneralLib&                  lib)
+    : theflags(amodel->NbEntities())
+{
+  occ::handle<Interface_GTool> gtool; // null
+  themodel = amodel;
+  Evaluate(lib, gtool);
+}
+
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
+                                           const occ::handle<Interface_GTool>&          gtool)
+    : theflags(amodel->NbEntities())
+{
+  themodel = amodel;
+  Evaluate(gtool->Lib(), gtool);
+}
+
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
+                                           const occ::handle<Interface_Protocol>&       protocol)
+    : theflags(amodel->NbEntities())
+{
+  occ::handle<Interface_GTool> gtool; // null
+  themodel = amodel;
+  Evaluate(Interface_GeneralLib(protocol), gtool);
+}
+
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel)
+    : theflags(amodel->NbEntities())
+{
+  occ::handle<Interface_GTool> gtool = themodel->GTool();
+  gtool->Reservate(amodel->NbEntities());
+  themodel = amodel;
+  Evaluate(gtool->Lib(), gtool);
+}
+
+Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
+    : theflags(agraph.Model()->NbEntities())
+{
+  themodel = agraph.Model();
+  int nb   = themodel->NbEntities();
+  if (nb == 0)
+  {
+    return;
+  }
+  theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  for (int i = 1; i <= nb; i++)
+  {
+    //    Result obtained from the Graph
+    occ::handle<Standard_Transient>                                     ent = themodel->Value(i);
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+      agraph.GetSharings(ent);
+
+    if (!list.IsNull() && list->Length() > 0)
+    {
+      theflags.SetTrue(i);
+    }
+    else
+    {
+      theroots->Append(ent);
+    }
+  }
+}
+
+void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
+                                    const occ::handle<Interface_GTool>& gtool)
+{
+  bool patool = gtool.IsNull();
+  int  nb     = themodel->NbEntities();
+  if (nb == 0)
+  {
+    return;
+  }
+  theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  int i; // svv Jan11 2000 : porting on DEC
+  for (i = 1; i <= nb; i++)
+  {
+
+    //    WARNING: If Entity not loaded hence unreadable, switch to its
+    //    equivalent "Content"
+    occ::handle<Standard_Transient> ent = themodel->Value(i);
+    if (themodel->IsRedefinedContent(i))
+    {
+      ent = themodel->ReportEntity(i)->Content();
+    }
+
+    //    Result obtained via GeneralLib
+    Interface_EntityIterator             iter;
+    occ::handle<Interface_GeneralModule> module;
+    int                                  CN;
+    if (patool)
+    {
+      if (lib.Select(ent, module, CN))
+      {
+        module->FillShared(themodel, CN, ent, iter);
+      }
+    }
+    else
+    {
+      if (gtool->Select(ent, module, CN))
+      {
+        module->FillShared(themodel, CN, ent, iter);
+      }
+    }
+
+    //    Entities shared by <ent>: need to mark each one as "Shared"
+    for (iter.Start(); iter.More(); iter.Next())
+    {
+      int num = themodel->Number(iter.Value());
+      theflags.SetTrue(num); // Et Voila
+    }
+  }
+  for (i = 1; i <= nb; i++)
+  {
+    if (!theflags.Value(i))
+    {
+      theroots->Append(themodel->Value(i));
+    }
+  }
+}
+
+occ::handle<Interface_InterfaceModel> Interface_ShareFlags::Model() const
+{
+  return themodel;
+}
+
+bool Interface_ShareFlags::IsShared(const occ::handle<Standard_Transient>& ent) const
+{
+  int num = themodel->Number(ent);
+  if (num == 0 || num > themodel->NbEntities())
+  {
+    throw Standard_DomainError("Interface ShareFlags : IsShared");
+  }
+  return theflags.Value(num);
+}
+
+Interface_EntityIterator Interface_ShareFlags::RootEntities() const
+{
+  Interface_EntityIterator iter(theroots);
+  return iter;
+}
+
+int Interface_ShareFlags::NbRoots() const
+{
+  return (theroots.IsNull() ? 0 : theroots->Length());
+}
+
+occ::handle<Standard_Transient> Interface_ShareFlags::Root(const int num) const
+{
+  return theroots->Value(num);
+}

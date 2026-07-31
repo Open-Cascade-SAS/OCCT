@@ -1,0 +1,43 @@
+puts "=============================================="
+puts "0032879: Visualization - Separate pan/zoom and move the object behavior in AIS_ViewController"
+puts "=============================================="
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1
+pcylinder c1  5 10
+vdisplay c1
+vsetdispmode 1
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+vfit
+
+# note: mouse events cannot be emulated here, so the original bug cannot be reproduced by this test case
+
+# pan for the left mouse button
+vchangemousegesture -button left -gesture pan
+
+set mouse_pick {204 194}
+set mouse_drag {369 35}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vdump $imagedir/${casename}_pan.png
+
+# zoom for the left mouse button
+vchangemousegesture -button left -gesture zoom
+
+set mouse_pick {206 32}
+set mouse_drag {365 330}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vdump $imagedir/${casename}_zoom.png

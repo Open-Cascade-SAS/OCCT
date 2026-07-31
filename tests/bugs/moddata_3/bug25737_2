@@ -1,0 +1,38 @@
+puts "============"
+puts "CR25737"
+puts "============"
+puts ""
+###################################################################################
+# GCPnts_TangentialDeflection does not produce points to approximate a knee
+###################################################################################
+
+restore [locate_data_file bug25737_face3535.brep] a
+
+explode a e
+mkcurve c a_1
+
+smallview
+donly a_1
+fit
+
+set deflection 1.
+set angular_deflection 0.349
+set info [crvtpoints r c ${deflection} ${angular_deflection}]
+
+set str1 "Nb points +: +(\[-0-9.+eE\]+)\n"
+set str2 "Max defl: +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+
+regexp "${str1}${str2}" ${info} full Nb dmax ufmax ulmax i
+
+#-1
+set min_Nb 7
+if { ${Nb} < ${min_Nb} } {
+    puts "Error : bad value of Nb points=${Nb}"
+}
+
+#-2
+if { ${dmax} > ${deflection} } {
+    puts "Error : bad value of deflection=${dmax}"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

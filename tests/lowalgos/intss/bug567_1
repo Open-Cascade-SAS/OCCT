@@ -1,0 +1,94 @@
+puts "========"
+puts "OCC567: Can not intersect two Rectangular Trimmed Surfaces ."
+puts "========"
+puts ""
+
+# Different result between Debian 7 and Debian 8 and between MSVC 2010 and 2017.
+puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 9 ones are found."
+puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 8 ones are found."
+puts "TODO ?OCC29910 Windows: Error: 10 curves are expected but 11 ones are found."
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 15"
+puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 8"
+puts "TODO ?OCC29910 Windows: Error: 0 vertices are expected but 2 are found"
+
+set GoodNbCurves 10
+
+foreach a [directory res*] {unset $a}
+
+restore [locate_data_file OCC567a.draw] s1 
+restore [locate_data_file OCC567b.draw] s2 
+
+if { [catch {intersect res s1 s2 } catch_result] } {
+    puts "Faulty OCC567: function intersection works wrongly with infinite Surfaces"
+} else {
+  set che [whatis res]
+  set ind [string first "3d curve" $che]
+  if {${ind} >= 0} {
+    #Only variable "res" exists
+    renamevar res res_1
+  }
+
+  bclearobjects
+  bcleartools
+  
+  set ic 1
+  set AllowRepeat 1
+  while { $AllowRepeat != 0 } {
+    set che [whatis res_$ic]
+    set ind [string first "3d curve" $che]
+    if {${ind} < 0} {
+      set AllowRepeat 0
+    } else {
+     
+      bounds res_$ic U1 U2
+      
+      if {[dval U2-U1] < 1.0e-9} {
+        puts "Error: Wrong curve's range!"
+      }
+      
+      xdistcs res_$ic s1 U1 U2 100 2.0e-7
+      xdistcs res_$ic s2 U1 U2 100 2.0e-7
+      
+      for { set ip [expr $ic-1] } { $ip > 0 } { incr ip -1 } {
+        mkedge e1 res_$ic
+        mkedge e2 res_$ip
+
+        set coe [checkoverlapedges e1 e2 5.0e-5]
+
+        puts "res_$ic <-> res_$ip: $coe"
+        if { [regexp "Edges are not overlapped" $coe] != 1 } {
+          puts "Error: res_$ic and res_$ip are overlapped"
+        }
+      }
+      
+      mkedge ee res_$ic
+      baddobjects ee
+      
+      incr ic
+    }
+  }
+
+  incr ic -1
+  
+  if {$ic != $GoodNbCurves} {
+    puts "Error: $GoodNbCurves curves are expected but $ic ones are found."
+  }
+  
+  if {$ic != 1} {
+    # Check of gaps between intersection curves
+    bfillds
+    bbuild rs
+
+    checknbshapes rs -edge 14
+    checksection rs -r 0
+  }
+}
+
+smallview
+don res_*
+
+fit
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC25612"
+puts "========"
+puts ""
+######################################################################################
+# Introduce possibility to disable adaptive reconfigutation of triangles in BRepMesh
+######################################################################################
+
+restore [locate_data_file bug25519_testtriangulation.brep] a
+
+tclean a
+incmesh a 0.01 -a 50
+set bug_info [trinfo a]
+set TNumber_1 [lindex $bug_info 5]
+set NNumber_1 [lindex $bug_info 7]
+
+tclean a
+incmesh a 0.01 -a 50 -surf_def_off
+set bug_info [trinfo a]
+set TNumber_2 [lindex $bug_info 5]
+set NNumber_2 [lindex $bug_info 7]
+
+if {$TNumber_2 >= $TNumber_1} {
+   puts "ERROR: OCC25612 is reproduced. Flag -surf_def_off does not work (triangles)."
+}
+
+if {$NNumber_2 >= $NNumber_1} {
+   puts "ERROR: OCC25612 is reproduced. Flag -surf_def_off does not work (nodes)."
+}

@@ -1,0 +1,30 @@
+
+puts "========================"
+puts " OCC534 "
+puts " case 2 "
+puts "========================"
+puts ""
+
+hyperbola hyperbola 0 0 0 30 10
+extsurf es_hyperbola hyperbola 0 0 1
+offset es_hyperbola_of es_hyperbola 5
+offset es_hyperbola_of_of es_hyperbola_of 5
+mkface result es_hyperbola_of_of 0 3 0 40
+
+set tolerance [maxtolerance result]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
+    puts "Faulty : Tolerance of shape is more then 1.0"
+} else {
+    puts "Tolerance is OK"
+}
+
+checkprops result -s 11460.7 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

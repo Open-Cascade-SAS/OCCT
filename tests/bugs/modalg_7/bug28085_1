@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC28085: Incorrect result of CUT operation"
+puts "============"
+puts ""
+
+# enable FPE signals
+dsetsignal 1
+
+restore [locate_data_file bug28085_object.brep] b1
+restore [locate_data_file bug28085_tool.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bbop rs 4
+
+checkprops rs -l 456.152
+checkmaxtol rs -ref 2.3840014382159325e-005
+checksection rs -r 8
+
+bbop result 2
+
+checkprops result -s 6168.4 -v 10554.5
+checknbshapes result -face 22 -shell 1 -solid 1
+checkshape result
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC9490"
+puts "============"
+puts ""
+#######################################################################
+# Increasing of tolerance in loop test for IGES
+#######################################################################
+
+set BugNumber OCC9490
+
+set IsOk 1
+set filepath [locate_data_file support_bobine.igs]
+if {[catch {igesread $filepath OCC9490a *}]} {
+   puts "Faulty ${BugNumber} : here is reading problem"
+   set IsOk 0
+}
+
+file delete ${imagedir}/OCC9490tmp.igs
+
+if {[catch {brepiges OCC9490a ${imagedir}/OCC9490tmp.igs}]} {
+    puts "Faulty ${BugNumber} : here is conversation to brep problem"
+    set IsOk 0
+}
+catch {exec chmod 777 ${imagedir}/OCC9490tmp.igs}
+
+if {[catch {igesread ${imagedir}/OCC9490tmp.igs OCC9490b *}]} {
+   puts "Faulty ${BugNumber} : here is 2nd reading problem"
+   set IsOk 0
+}
+
+if { ${IsOk} == 1} {
+   set aTokList {= }
+   set Tol1 [lindex [split [tolerance OCC9490a] ${aTokList}] 2]
+   set Tol2 [lindex [split [tolerance OCC9490b] ${aTokList}] 2]
+
+   checkreal "Tolerance" ${Tol1} ${Tol2} 0 0.001
+
+   checknbshapes OCC9490a -vertex 1770 -edge 1237 -wire 140 -face 123 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3271
+   checkprops OCC9490a -s 36259
+
+   checknbshapes OCC9490b -vertex 1770 -edge 1237 -wire 140 -face 123 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3271
+   checkprops OCC9490b -s 36259
+}
+
+renamevar OCC9490b result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

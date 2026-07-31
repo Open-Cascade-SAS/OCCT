@@ -1,0 +1,295 @@
+puts "========"
+puts "0032530: Data Exchange, RWGltf_CafWriter - add option merging Faces within the Part"
+puts "========"
+
+Close D0 -silent
+ReadStep D0 [locate_data_file as1-oc-214-mat.stp]
+XGetOneShape ss D0
+incmesh ss 1.0
+
+set aTmpGltf1 "${imagedir}/${casename}_tmp1.glb"
+set aTmpGltf2 "${imagedir}/${casename}_tmp2.glb"
+lappend occ_tmp_files $aTmpGltf1
+lappend occ_tmp_files $aTmpGltf2
+
+WriteGltf D0 "$aTmpGltf1"
+WriteGltf D0 "$aTmpGltf2" -mergeFaces
+
+ReadGltf D1 "$aTmpGltf1"
+XGetOneShape s1 D1
+checknbshapes s1 -face 53 -compound 28
+
+ReadGltf D "$aTmpGltf2"
+XGetOneShape s2 D
+checknbshapes s2 -face 5 -compound 10
+
+set THE_REF_DUMP_D1 {
+ASSEMBLY COMPOUND 0:1:1:1 "as1"
+	INSTANCE COMPOUND 0:1:1:1:1 (refers to 0:1:1:2) "rod-assembly_1"
+	INSTANCE COMPOUND 0:1:1:1:2 (refers to 0:1:1:6) "l-bracket-assembly_1"
+	INSTANCE COMPOUND 0:1:1:1:3 (refers to 0:1:1:17) "plate_1"
+	INSTANCE COMPOUND 0:1:1:1:4 (refers to 0:1:1:18) "l-bracket-assembly_2"
+ASSEMBLY COMPOUND 0:1:1:2 "rod-assembly_1"
+	INSTANCE COMPOUND 0:1:1:2:1 (refers to 0:1:1:3) "nut_1"
+	INSTANCE COMPOUND 0:1:1:2:2 (refers to 0:1:1:4) "nut_2"
+	INSTANCE COMPOUND 0:1:1:2:3 (refers to 0:1:1:5) "rod_1"
+PART COMPOUND 0:1:1:3 "nut"
+	FACE 0:1:1:3:1
+	FACE 0:1:1:3:2
+	FACE 0:1:1:3:3
+	FACE 0:1:1:3:4
+	FACE 0:1:1:3:5
+	FACE 0:1:1:3:6
+	FACE 0:1:1:3:7
+	FACE 0:1:1:3:8
+PART COMPOUND 0:1:1:4 "nut"
+	FACE 0:1:1:4:1
+	FACE 0:1:1:4:2
+	FACE 0:1:1:4:3
+	FACE 0:1:1:4:4
+	FACE 0:1:1:4:5
+	FACE 0:1:1:4:6
+	FACE 0:1:1:4:7
+	FACE 0:1:1:4:8
+PART COMPOUND 0:1:1:5 "rod"
+	FACE 0:1:1:5:1
+	FACE 0:1:1:5:2
+	FACE 0:1:1:5:3
+	FACE 0:1:1:5:4
+ASSEMBLY COMPOUND 0:1:1:6 "l-bracket-assembly_1"
+	INSTANCE COMPOUND 0:1:1:6:1 (refers to 0:1:1:7) "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:6:2 (refers to 0:1:1:10) "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:6:3 (refers to 0:1:1:13) "nut-bolt-assembly_3"
+	INSTANCE COMPOUND 0:1:1:6:4 (refers to 0:1:1:16) "l-bracket_1"
+ASSEMBLY COMPOUND 0:1:1:7 "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:7:1 (refers to 0:1:1:8) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:7:2 (refers to 0:1:1:9) "nut_3"
+PART COMPOUND 0:1:1:8 "bolt"
+	FACE 0:1:1:8:1
+	FACE 0:1:1:8:2
+	FACE 0:1:1:8:3
+	FACE 0:1:1:8:4
+	FACE 0:1:1:8:5
+	FACE 0:1:1:8:6
+	FACE 0:1:1:8:7
+PART COMPOUND 0:1:1:9 "nut"
+	FACE 0:1:1:9:1
+	FACE 0:1:1:9:2
+	FACE 0:1:1:9:3
+	FACE 0:1:1:9:4
+	FACE 0:1:1:9:5
+	FACE 0:1:1:9:6
+	FACE 0:1:1:9:7
+	FACE 0:1:1:9:8
+ASSEMBLY COMPOUND 0:1:1:10 "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:10:1 (refers to 0:1:1:11) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:10:2 (refers to 0:1:1:12) "nut_3"
+PART COMPOUND 0:1:1:11 "bolt"
+	FACE 0:1:1:11:1
+	FACE 0:1:1:11:2
+	FACE 0:1:1:11:3
+	FACE 0:1:1:11:4
+	FACE 0:1:1:11:5
+	FACE 0:1:1:11:6
+	FACE 0:1:1:11:7
+PART COMPOUND 0:1:1:12 "nut"
+	FACE 0:1:1:12:1
+	FACE 0:1:1:12:2
+	FACE 0:1:1:12:3
+	FACE 0:1:1:12:4
+	FACE 0:1:1:12:5
+	FACE 0:1:1:12:6
+	FACE 0:1:1:12:7
+	FACE 0:1:1:12:8
+ASSEMBLY COMPOUND 0:1:1:13 "nut-bolt-assembly_3"
+	INSTANCE COMPOUND 0:1:1:13:1 (refers to 0:1:1:14) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:13:2 (refers to 0:1:1:15) "nut_3"
+PART COMPOUND 0:1:1:14 "bolt"
+	FACE 0:1:1:14:1
+	FACE 0:1:1:14:2
+	FACE 0:1:1:14:3
+	FACE 0:1:1:14:4
+	FACE 0:1:1:14:5
+	FACE 0:1:1:14:6
+	FACE 0:1:1:14:7
+PART COMPOUND 0:1:1:15 "nut"
+	FACE 0:1:1:15:1
+	FACE 0:1:1:15:2
+	FACE 0:1:1:15:3
+	FACE 0:1:1:15:4
+	FACE 0:1:1:15:5
+	FACE 0:1:1:15:6
+	FACE 0:1:1:15:7
+	FACE 0:1:1:15:8
+PART COMPOUND 0:1:1:16 "l-bracket"
+	FACE 0:1:1:16:1
+	FACE 0:1:1:16:2
+	FACE 0:1:1:16:3
+	FACE 0:1:1:16:4
+	FACE 0:1:1:16:5
+	FACE 0:1:1:16:6
+	FACE 0:1:1:16:7
+	FACE 0:1:1:16:8
+	FACE 0:1:1:16:9
+	FACE 0:1:1:16:10
+	FACE 0:1:1:16:11
+	FACE 0:1:1:16:12
+	FACE 0:1:1:16:13
+	FACE 0:1:1:16:14
+	FACE 0:1:1:16:15
+	FACE 0:1:1:16:16
+PART COMPOUND 0:1:1:17 "plate"
+	FACE 0:1:1:17:1
+	FACE 0:1:1:17:2
+	FACE 0:1:1:17:3
+	FACE 0:1:1:17:4
+	FACE 0:1:1:17:5
+	FACE 0:1:1:17:6
+	FACE 0:1:1:17:7
+	FACE 0:1:1:17:8
+	FACE 0:1:1:17:9
+	FACE 0:1:1:17:10
+	FACE 0:1:1:17:11
+	FACE 0:1:1:17:12
+	FACE 0:1:1:17:13
+	FACE 0:1:1:17:14
+	FACE 0:1:1:17:15
+	FACE 0:1:1:17:16
+	FACE 0:1:1:17:17
+	FACE 0:1:1:17:18
+ASSEMBLY COMPOUND 0:1:1:18 "l-bracket-assembly_2"
+	INSTANCE COMPOUND 0:1:1:18:1 (refers to 0:1:1:19) "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:18:2 (refers to 0:1:1:22) "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:18:3 (refers to 0:1:1:25) "nut-bolt-assembly_3"
+	INSTANCE COMPOUND 0:1:1:18:4 (refers to 0:1:1:28) "l-bracket_1"
+ASSEMBLY COMPOUND 0:1:1:19 "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:19:1 (refers to 0:1:1:20) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:19:2 (refers to 0:1:1:21) "nut_3"
+PART COMPOUND 0:1:1:20 "bolt"
+	FACE 0:1:1:20:1
+	FACE 0:1:1:20:2
+	FACE 0:1:1:20:3
+	FACE 0:1:1:20:4
+	FACE 0:1:1:20:5
+	FACE 0:1:1:20:6
+	FACE 0:1:1:20:7
+PART COMPOUND 0:1:1:21 "nut"
+	FACE 0:1:1:21:1
+	FACE 0:1:1:21:2
+	FACE 0:1:1:21:3
+	FACE 0:1:1:21:4
+	FACE 0:1:1:21:5
+	FACE 0:1:1:21:6
+	FACE 0:1:1:21:7
+	FACE 0:1:1:21:8
+ASSEMBLY COMPOUND 0:1:1:22 "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:22:1 (refers to 0:1:1:23) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:22:2 (refers to 0:1:1:24) "nut_3"
+PART COMPOUND 0:1:1:23 "bolt"
+	FACE 0:1:1:23:1
+	FACE 0:1:1:23:2
+	FACE 0:1:1:23:3
+	FACE 0:1:1:23:4
+	FACE 0:1:1:23:5
+	FACE 0:1:1:23:6
+	FACE 0:1:1:23:7
+PART COMPOUND 0:1:1:24 "nut"
+	FACE 0:1:1:24:1
+	FACE 0:1:1:24:2
+	FACE 0:1:1:24:3
+	FACE 0:1:1:24:4
+	FACE 0:1:1:24:5
+	FACE 0:1:1:24:6
+	FACE 0:1:1:24:7
+	FACE 0:1:1:24:8
+ASSEMBLY COMPOUND 0:1:1:25 "nut-bolt-assembly_3"
+	INSTANCE COMPOUND 0:1:1:25:1 (refers to 0:1:1:26) "bolt_1"
+	INSTANCE COMPOUND 0:1:1:25:2 (refers to 0:1:1:27) "nut_3"
+PART COMPOUND 0:1:1:26 "bolt"
+	FACE 0:1:1:26:1
+	FACE 0:1:1:26:2
+	FACE 0:1:1:26:3
+	FACE 0:1:1:26:4
+	FACE 0:1:1:26:5
+	FACE 0:1:1:26:6
+	FACE 0:1:1:26:7
+PART COMPOUND 0:1:1:27 "nut"
+	FACE 0:1:1:27:1
+	FACE 0:1:1:27:2
+	FACE 0:1:1:27:3
+	FACE 0:1:1:27:4
+	FACE 0:1:1:27:5
+	FACE 0:1:1:27:6
+	FACE 0:1:1:27:7
+	FACE 0:1:1:27:8
+PART COMPOUND 0:1:1:28 "l-bracket"
+	FACE 0:1:1:28:1
+	FACE 0:1:1:28:2
+	FACE 0:1:1:28:3
+	FACE 0:1:1:28:4
+	FACE 0:1:1:28:5
+	FACE 0:1:1:28:6
+	FACE 0:1:1:28:7
+	FACE 0:1:1:28:8
+	FACE 0:1:1:28:9
+	FACE 0:1:1:28:10
+	FACE 0:1:1:28:11
+	FACE 0:1:1:28:12
+	FACE 0:1:1:28:13
+	FACE 0:1:1:28:14
+	FACE 0:1:1:28:15
+	FACE 0:1:1:28:16
+
+Free Shapes: 1
+ASSEMBLY COMPOUND  0:1:1:1 "as1"
+}
+checkXDump D1 $THE_REF_DUMP_D1
+
+set THE_REF_DUMP_D {
+ASSEMBLY COMPOUND 0:1:1:1 "as1"
+	INSTANCE COMPOUND 0:1:1:1:1 (refers to 0:1:1:2) "rod-assembly_1"
+	INSTANCE COMPOUND 0:1:1:1:2 (refers to 0:1:1:5) "l-bracket-assembly_1"
+	INSTANCE FACE 0:1:1:1:3 (refers to 0:1:1:11) "plate_1"
+	INSTANCE COMPOUND 0:1:1:1:4 (refers to 0:1:1:12) "l-bracket-assembly_2"
+ASSEMBLY COMPOUND 0:1:1:2 "rod-assembly_1"
+	INSTANCE FACE 0:1:1:2:1 (refers to 0:1:1:3) "nut_1"
+	INSTANCE FACE 0:1:1:2:2 (refers to 0:1:1:3) "nut_2"
+	INSTANCE FACE 0:1:1:2:3 (refers to 0:1:1:4) "rod_1"
+PART FACE 0:1:1:3 "nut"
+PART FACE 0:1:1:4 "rod"
+ASSEMBLY COMPOUND 0:1:1:5 "l-bracket-assembly_1"
+	INSTANCE COMPOUND 0:1:1:5:1 (refers to 0:1:1:6) "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:5:2 (refers to 0:1:1:8) "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:5:3 (refers to 0:1:1:9) "nut-bolt-assembly_3"
+	INSTANCE FACE 0:1:1:5:4 (refers to 0:1:1:10) "l-bracket_1"
+ASSEMBLY COMPOUND 0:1:1:6 "nut-bolt-assembly_1"
+	INSTANCE FACE 0:1:1:6:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:6:2 (refers to 0:1:1:3) "nut_3"
+PART FACE 0:1:1:7 "bolt"
+ASSEMBLY COMPOUND 0:1:1:8 "nut-bolt-assembly_2"
+	INSTANCE FACE 0:1:1:8:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:8:2 (refers to 0:1:1:3) "nut_3"
+ASSEMBLY COMPOUND 0:1:1:9 "nut-bolt-assembly_3"
+	INSTANCE FACE 0:1:1:9:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:9:2 (refers to 0:1:1:3) "nut_3"
+PART FACE 0:1:1:10 "l-bracket"
+PART FACE 0:1:1:11 "plate"
+ASSEMBLY COMPOUND 0:1:1:12 "l-bracket-assembly_2"
+	INSTANCE COMPOUND 0:1:1:12:1 (refers to 0:1:1:13) "nut-bolt-assembly_1"
+	INSTANCE COMPOUND 0:1:1:12:2 (refers to 0:1:1:14) "nut-bolt-assembly_2"
+	INSTANCE COMPOUND 0:1:1:12:3 (refers to 0:1:1:15) "nut-bolt-assembly_3"
+	INSTANCE FACE 0:1:1:12:4 (refers to 0:1:1:10) "l-bracket_1"
+ASSEMBLY COMPOUND 0:1:1:13 "nut-bolt-assembly_1"
+	INSTANCE FACE 0:1:1:13:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:13:2 (refers to 0:1:1:3) "nut_3"
+ASSEMBLY COMPOUND 0:1:1:14 "nut-bolt-assembly_2"
+	INSTANCE FACE 0:1:1:14:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:14:2 (refers to 0:1:1:3) "nut_3"
+ASSEMBLY COMPOUND 0:1:1:15 "nut-bolt-assembly_3"
+	INSTANCE FACE 0:1:1:15:1 (refers to 0:1:1:7) "bolt_1"
+	INSTANCE FACE 0:1:1:15:2 (refers to 0:1:1:3) "nut_3"
+
+Free Shapes: 1
+ASSEMBLY COMPOUND  0:1:1:1 "as1"
+}
+checkXDump D  $THE_REF_DUMP_D

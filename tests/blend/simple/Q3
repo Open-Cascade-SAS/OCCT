@@ -1,0 +1,7 @@
+puts "TODO OCC22817 All: TEST INCOMPLETE"
+restore [locate_data_file CFI_4_e1_ffr.rle] s
+tscale s 0 0 0 SCALE
+explode s E
+blend result s 1*SCALE s_5
+
+checkprops result -s 0

@@ -1,0 +1,13 @@
+parabola w1 0 0 0 1 0 0 0 0 1 50
+mkedge w1 w1 -100 100
+polyline w2 0 -100 50 0 100 50
+wire w w1 w2
+mkplane w w
+prism s w 20 0 100
+tscale s 0 0 0 SCALE1
+explode s E
+mkevol result s
+updatevol s_4 0 1*SCALE 1 2*SCALE 2 1*SCALE
+buildevol
+
+checkprops result -s 5.39403e+06

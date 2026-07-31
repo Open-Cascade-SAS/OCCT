@@ -1,0 +1,20 @@
+
+puts "=========="
+puts "PRO19424"
+puts "=========="
+
+restore [locate_data_file pro19424a.brep] b 
+checkshape b
+restore [locate_data_file pro19424b.brep] p
+checkshape p
+
+if [catch {evolved result -s b -p p -a } catch_result] {
+  puts "Faulty PRO19424 : function EVOLVED works wrongly"
+} else {
+  puts "PRO19424 OK: function EVOLVED works properly"
+}
+
+checkprops result -s 246.506 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

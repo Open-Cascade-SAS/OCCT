@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC25453"
+puts "========"
+puts ""
+#########################################
+# SIGSEGV in BRepFill_Sweep::BuildShell
+#########################################
+
+smallview
+
+restore [locate_data_file OCC25453_sweep9-draw-Sketch001.brep] Sketch001
+explode Sketch001 E
+wire Sweep-0-spine Sketch001_1
+mksweep Sweep-0-spine
+setsweep -CF
+restore [locate_data_file OCC25453_sweep9-draw-Sketch.brep] Sketch
+trotate Sketch 0 0 0 1 0 0 90
+addsweep Sketch
+buildsweep Sweep -C
+
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC26573"
+puts "========"
+puts ""
+##########################################################################
+# IGES file with one entity 128 is not read
+##########################################################################
+
+igesbrep [locate_data_file bug26573_loft.igs] a *
+tpcompound result
+
+checkprops result -s 240.546
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 4
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 11
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

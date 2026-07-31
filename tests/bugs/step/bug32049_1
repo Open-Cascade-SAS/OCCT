@@ -1,0 +1,12 @@
+puts "========================"
+puts "0032049: Data Exchange - STEP file import problems"
+puts "========================"
+
+pload OCAF
+
+# Read files
+ReadStep D_1 [locate_data_file bug32049_test.stp]
+ReadStep D_2 [locate_data_file bug32049_sp7_10nx_242.stp]
+
+Close D_1
+Close D_2

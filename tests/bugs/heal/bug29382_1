@@ -1,0 +1,24 @@
+puts "================================================================================"
+puts "OCC29382: ShapeUpgrade_UnifySameDomain algorithm incorrectly processes the shape"
+puts "================================================================================"
+puts ""
+
+restore [locate_data_file bug29382_Group_3.brep] a
+
+unifysamedom result a
+
+checkshape result
+checkshape a
+
+checknbshapes result -solid 3 -shell 3 -face 18 -wire 18 -edge 36 -vertex 22
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.8066863810061599e-05} {
+   puts "Error: bad tolerance of result"
+}
+
+explode result
+checkprops result_1 -v 4.41996e-06
+checkprops result_2 -v 1.30453e-06
+checkprops result_3 -v 1.16532e-06

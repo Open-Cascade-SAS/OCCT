@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC27222"
+puts "============"
+puts ""
+######################################################
+# Empty result of making volume operation
+######################################################
+
+restore [locate_data_file bug27222.brep] cf
+mkvolume result cf -c
+
+checkprops result -s 838000 -v 3.5068e+007
+checknbshapes result -solid 1

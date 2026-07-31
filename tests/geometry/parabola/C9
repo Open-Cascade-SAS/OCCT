@@ -1,0 +1,4 @@
+parabola result 70 1 0  0 0 1   0 1 0   10
+smirror result 0 0 0 1 0 -1
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{-1.55431223447522e-14 1 70} {-1 -0 -2.22044604925031e-16} {-0 1 -0} {2.22044604925031e-16 0 -1} {10}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

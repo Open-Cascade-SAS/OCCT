@@ -1,0 +1,61 @@
+puts "================================="
+puts "0032547: Visualization, Select3D_SensitiveCylinder - implement picking of a hollow cylinder"
+puts " "
+puts "================================="
+
+pload MODELING VISUALIZATION
+pcone      cone 10 5 10
+trotate    cone 0 0 0 1 1 0 30
+ttranslate cone 15 15 0
+
+pcylinder cyl 7 7
+trotate   cyl 0 0 0 1 1 0 30
+
+explode cyl F 
+explode cone F 
+
+vdisplay -dispmode 1 cyl_1 cone_1
+
+vaxo
+vfit
+
+vselect 60 220 140 220 140 190 60 190 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should not be detected" }
+
+vselect 60 220 140 220 140 190 60 190 -allowoverlap 1
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should not be detected" }
+
+vselect 60 220 140 190 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should not be detected" }
+
+vselect 60 220 140 190 -allowoverlap 1
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should not be detected" }
+
+vselect 270 210 310 210 310 160 270 160 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should not be detected" }
+
+vselect 270 210 310 210 310 160 270 160 -allowoverlap 1
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should not be detected" }
+
+vselect 270 210 310 160 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should not be detected" }
+
+vselect 270 210 310 160 -allowoverlap 1
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should not be detected" }
+
+
+vselect 60 210 310 210 310 200 60 200 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]]} { puts "Error: cone should not be detected" }
+
+vselect 60 210 310 210 310 200 60 200 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]]
+   && [string first "Select3D_SensitiveCylinder" [vstate -entities]]
+    != [string last "Select3D_SensitiveCylinder" [vstate -entities]]} { puts "Error: cone should be detected" }
+
+vselect 60 210 310 200 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should not be detected" }
+
+vselect 60 210 310 200 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]]
+   && [string first "Select3D_SensitiveCylinder" [vstate -entities]]
+    != [string last "Select3D_SensitiveCylinder" [vstate -entities]] } { puts "Error: cone should be detected" }

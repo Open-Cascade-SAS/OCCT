@@ -1,0 +1,33 @@
+# Section between shell and a plane
+
+boptions -default
+
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+mkface f2 p 10 30 -10 10
+mkface f3 p 30 50 -10 10
+sewing shell f1 f2 f3
+
+plane p 0 5 0 0 1 0
+mkface f p -100 100 -100 100
+
+bclearobjects
+bcleartools
+baddobjects shell
+baddtools f
+bfillds
+
+# build not simplified result
+bapibop sec 4
+checkshape sec
+checknbshapes sec -vertex 4 -edge 3
+checkprops sec -l 60
+
+# set option to simplify result
+bsimplify -e 1
+bapibop sec_simple 4
+checkshape sec_simple
+checknbshapes sec_simple -vertex 2 -edge 1
+checkprops sec_simple -l 60
+
+boptions -default

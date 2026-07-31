@@ -1,0 +1,67 @@
+puts "============"
+puts "OCC22646"
+puts "============"
+puts ""
+######################################################
+# Error in algorithms BRepOffsetAPI_ThruSections and BRepOffsetAPI_MakePipeShell: 
+# sections with degenerated edges are processed in
+######################################################
+
+set BugNumber OCC22646
+
+restore [locate_data_file bug22646_source.brep] s1
+restore [locate_data_file bug22646_scale_translate_xyz.brep] s2
+restore [locate_data_file bug22646_scale_translate_yz.brep] s3
+restore [locate_data_file bug22646_scale_translate_z.brep] s4
+
+explode s1
+explode s2
+explode s3
+explode s4
+
+thrusections res2 0 0 s1_1 s2_1
+savehistory hist
+
+foreach s {s1_1 s2_1} {
+  foreach type {v e} {
+    foreach ss [explode $s $type] {
+      if {[catch { generated g2 hist $ss } catch_res]} {
+        puts "Error: Unable to get generated shapes"
+      }
+    }
+  }
+}
+
+thrusections res3 0 0 s1_1 s3_1
+savehistory hist
+
+foreach s {s1_1 s3_1} {
+  foreach type {v e} {
+    foreach ss [explode $s $type] {
+      if {[catch { generated g3 hist $ss } catch_res]} {
+        puts "Error: Unable to get generated shapes"
+      }
+    }
+  }
+}
+
+thrusections res4 0 0 s1_1 s4_1
+savehistory hist
+
+foreach s {s1_1 s4_1} {
+  foreach type {v e} {
+    foreach ss [explode $s $type] {
+      if {[catch { generated g4 hist $ss } catch_res]} {
+        puts "Error: Unable to get generated shapes"
+      }
+    }
+  }
+}
+
+vinit
+vsetdispmode 1
+vdisplay g2
+vdisplay g3
+vdisplay g4
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

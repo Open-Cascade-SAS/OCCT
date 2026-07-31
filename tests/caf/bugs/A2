@@ -1,0 +1,58 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_Real
+#
+# Testing command:   SetReal
+# Testing command:   GetReal
+#
+
+# ANALOG: puts "caf001-B3"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aSetAttr1 100.0
+set aLabel 0:2
+SetReal Doc ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile} }
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc }
+
+# Get a value of the attribute
+set aGetAttr3 ""
+set IsDone [catch {set aGetAttr3 [GetReal DDoc ${aLabel}]} aResult]
+if { ${IsDone} != 0 ||
+	${aSetAttr1}!=${aGetAttr3} } {
+	puts ${aResult}
+	puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+	puts "Get a value of TDataStd_Real attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+} else {
+	puts "Get a value of TDataStd_Real attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

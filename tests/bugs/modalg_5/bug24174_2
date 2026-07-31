@@ -1,0 +1,20 @@
+puts "========================"
+puts "OCC24174"
+puts "========================" 
+puts ""
+#######################################################################
+# [regression] BRepBuilderAPI_Sewing returns result with very high tolerance
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file  bug24174_stitch.brep] a
+
+sewing result 0.1 a
+
+checkshape result
+checkmaxtol result -ref 0.58022137281123598 -source {a}
+checknbshapes result -shell 1
+checkfreebounds result 9
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

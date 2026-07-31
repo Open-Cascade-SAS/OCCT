@@ -1,0 +1,9 @@
+restore [locate_data_file CIN902_intcqhmr.rle] m
+explode m
+# m_1 : Bossage
+# m_2 : Carreau (Enveloppe)
+bsection result m_1 m_2
+
+checkprops result -l 202.944
+checksection result
+checkview -display result -2d -otherwise { m_1 m_2 } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC26657: STEP OCAF writers should keep hierarchy and colors when saving non-root elements"
+puts "========"
+puts ""
+
+pload OCAF TOPTEST XDE XDEDRAW
+ReadStep D1 [locate_data_file bug26657.stp]
+
+set aTmpFile ${imagedir}/${casename}_temp.stp
+WriteStep D1 $aTmpFile a 0:1:1:1:2
+if { [catch { Close D11 } catch_result] } {
+  puts "Document D11 is not exist"
+}
+ReadStep D11 $aTmpFile
+file delete -force $aTmpFile
+
+XGetOneShape result D11
+checkshape result f
+
+Close D1
+checknbshapes result -solid 3
+XShow D11
+vfit
+vsetdispmode 1
+vdump $imagedir/${casename}.png

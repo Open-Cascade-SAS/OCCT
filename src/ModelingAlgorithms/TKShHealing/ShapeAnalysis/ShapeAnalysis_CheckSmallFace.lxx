@@ -1,0 +1,64 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ShapeExtend.hxx>
+
+inline bool ShapeAnalysis_CheckSmallFace::Status(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, status);
+}
+
+inline void ShapeAnalysis_CheckSmallFace::SetTolerance(const double tol)
+{
+  myPrecision = tol;
+}
+
+inline double ShapeAnalysis_CheckSmallFace::Tolerance() const
+{
+  return myPrecision;
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusSpot(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSpot, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusStrip(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusStrip, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusPin(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusPin, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusTwisted(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusTwisted, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusPinFace(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusPinFace, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusPinEdges(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusPinEdges, status);
+}
+
+inline bool ShapeAnalysis_CheckSmallFace::StatusSplitVert(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSplitVert, status);
+}

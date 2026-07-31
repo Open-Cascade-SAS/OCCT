@@ -1,0 +1,11 @@
+## cts20528
+
+restore [locate_data_file CTO909_outil.brep] a
+restore [locate_data_file CTO902_cts20528-part.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 382.621
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

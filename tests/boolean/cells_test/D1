@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC26798"
+puts "========"
+puts ""
+#######################################################################
+# Boolean operations: keep desired cells and boundaries in the result
+#######################################################################
+
+smallview
+
+circle c1 0 10 0 15
+circle c2 20 10 0 15
+circle c3 10 0 0 15
+mkedge e1 c1
+mkedge e2 c2
+mkedge e3 c3
+wire w1 e1
+wire w2 e2
+wire w3 e3
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+
+donly f1 f2 f3
+fit
+
+bclearobjects
+bcleartools
+baddobjects f1 f2
+baddtools f3
+bfillds
+bcbuild r
+
+bcremoveall
+bcadd result f1 0 f3 1
+
+donly result
+fit
+
+checkprops result -s 407.98
+

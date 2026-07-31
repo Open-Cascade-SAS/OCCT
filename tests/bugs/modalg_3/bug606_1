@@ -1,0 +1,15 @@
+pload QAcommands
+
+puts "================"
+puts "OCC606"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC606_2.brep] w2 
+checkshape w2
+
+OCC606 result w2 -t
+
+checkprops result -s 508.243
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

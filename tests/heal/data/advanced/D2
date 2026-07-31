@@ -1,0 +1,4 @@
+if {[string compare $command "SplitAngle"] == 0 } {
+}
+restore [locate_data_file FRA61958.rle] a
+

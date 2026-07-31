@@ -1,0 +1,54 @@
+puts "================"
+puts "0030694: Data Exchange - support non-standard GB2312-encoded STEP files"
+puts ""
+puts "Test case:"
+puts "1) Creates a temporary STEP file-template using WriteStep."
+puts "2) Reads generated template and replaces @tmp_name@ entity in it with Simplified Chinese characters using Tcl."
+puts "3) Generates 2 STEP files in UTF-8 and GB2312 encodings (converted by Tcl)."
+puts "4) Reads generated files using StepRead and validates entity name."
+puts "================"
+puts ""
+
+proc fileToString { thePath } {
+  set aFile [open "$thePath" r]
+  set aText [read $aFile [file size "$thePath"]]
+  close $aFile
+  return $aText
+}
+
+proc fileFromString { thePath theContent theCodePage } {
+  set aFile [open "$thePath" w]
+  fconfigure $aFile -translation lf -encoding "$theCodePage"
+  puts $aFile $theContent
+  close $aFile
+}
+
+pload XDE OCAF MODELING VISUALIZATION
+set aTmpNameTmpl "@tmp_name@"
+set aTmpFileTmpl "${imagedir}/${casename}-tmp.stp"
+set aTmpFileUtf8 "${imagedir}/${casename}-tmp-utf8.stp"
+set aTmpFileGb   "${imagedir}/${casename}-tmp-gb.stp"
+# 国标
+set aName [encoding convertfrom unicode "\xFD\x56\x07\x68"]
+box b 1 2 3
+Close A T U G -silent
+XNewDoc   T
+XAddShape T b 0
+XSetColor T b 1 0 0
+SetName   T 0:1:1:1 "$aTmpNameTmpl"
+GetName   T 0:1:1:1
+WriteStep T "$aTmpFileTmpl"
+
+regsub -all -- $aTmpNameTmpl [fileToString "$aTmpFileTmpl"] "$aName" aContent
+fileFromString "$aTmpFileUtf8" "$aContent" "utf-8"
+fileFromString "$aTmpFileGb"   "$aContent" "gb2312"
+
+param read.step.codepage UTF8
+ReadStep U "$aTmpFileUtf8"
+ReadStep A "$aTmpFileGb"
+param read.step.codepage GB
+ReadStep G "$aTmpFileGb"
+
+if { [GetName U 0:1:1:1] != "$aName" } { puts "Error: unable to read UTF-8  STEP" }
+if { [GetName G 0:1:1:1] != "$aName" } { puts "Error: unable to read gb2312 STEP" }
+if { [GetName A 0:1:1:1] == "$aName" } { puts "Error: broken test case" }

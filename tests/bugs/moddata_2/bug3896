@@ -1,0 +1,46 @@
+puts "TODO OCC11111 ALL: Faulty OCC3896"
+
+puts "============"
+puts "OCC3896"
+puts "============"
+puts ""
+######################################################
+# BRepCheck_Analyzer does not detect faulty faces in solid shape.
+######################################################
+
+#
+# a_13 face is FORVARD (faulty), but checkshape command does not detect it
+#
+
+set BugNumber OCC3896
+
+restore [locate_data_file OCC3896-pipe.brep] a 
+
+explode a f
+compound a_1 a_13 result
+
+explode a_1 e
+explode a_13 e
+
+smallview
+donly result
+fit
+r
+
+normals result 200
+
+puts "Normal of a_13 face is red (FORWARD)"
+
+for {set i 1} {$i <= 14} {incr i} {
+    whatis a_$i
+}
+
+set info_result [checkshape result]
+
+if {[regexp {Faulty} $info_result] } {
+    puts "OK ${BugNumber} : checkshape detect faulty faces in solid shape"
+} else {
+    puts "Faulty ${BugNumber} : checkshape does not detect faulty faces in solid shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+puts "TODO OCC28739 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC28739"
+puts "========"
+puts ""
+#######################
+# Draft on face fails
+#######################
+
+restore [locate_data_file bug28739_draft.brep] draft
+
+explode draft f
+depouille result draft 0 1 0 draft_7 87 11 -5 0 1 0 0
+
+checkshape result

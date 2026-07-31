@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC25176"
+puts "=========="
+puts ""
+######################################################################
+# STEP Reader - no error report if referenced entity has wrong type
+######################################################################
+
+stepread [locate_data_file bug25176_occ25176.stp] step *
+set Log [data c]
+
+if {![regexp {F:APPLICATION_PROTOCOL_DEFINITION: Parameter n0.4} $Log]} {
+  puts "Error: wrong report on wrong type entity"
+} else {
+  puts "OK: correct report on wrong type entity"
+}

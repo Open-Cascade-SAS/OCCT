@@ -1,0 +1,11 @@
+# test script to check validity of shape
+
+########################################################################
+
+checkshape result
+maxtolerance result
+
+smallview
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

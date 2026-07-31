@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename Caliper.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 72  ( 497 )  Summary  = 72  ( 497 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 215  ( 215 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 215  ( 215 )   FreeWire = 0  ( 4 ) 
+TOLERANCE   : MaxTol   =   0.6931734571  (   0.6931734576 )  AvgTol   =  0.009873721107  (  0.009848531139 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 219  ( 1696 )  N2Labels = 0  ( 0 )   TotalLabels = 220  ( 1697 )   NameLabels = 220  ( 328 )   ColorLabels = 219  ( 1696 )   LayerLabels = 219  ( 1696 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN WHITE  ( GREEN WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 2  ( 2 )
+
+}

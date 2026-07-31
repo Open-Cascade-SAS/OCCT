@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC476"
+puts "============"
+puts ""
+######################################################
+# Regression on reading e3i files with respect of OCC30 and OCC40
+######################################################
+
+restore [locate_data_file OCC485b.brep] s1 
+restore [locate_data_file OCC485a.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bop s1 s2
+bopcut result
+
+checkprops result -s 99.5159 
+checkshape result
+checknbshapes result -vertex 12 -edge 19 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 52
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,16 @@
+# Original bug : pro12877
+# Date : 02 Dec 98
+
+#puts "TODO OCC22803 All: Error: The tolerance of the resulting shape is too big"
+#puts "TODO OCC23511 Linux: The area of the resulting shape is 186543"
+puts "TODO OCC26426 All: Faulty shapes in variables faulty_1 to faulty_"
+
+restore [locate_data_file CFE903_pro12ggx.rle] base
+
+nexplode base face
+
+depouille result base 0 -1 0 base_13 3 110 0 96.5000000000001  0 -1 0 base_24 3 110 0 96.5000000000001  0 -1 0 base_5  3 110 0 96.5000000000001  0 -1 0 base_8  3 110 0 96.5000000000001  0 -1 0 base_1  3 110 0 96.5000000000001  0 -1 0 base_6  3 110 0 96.5000000000001  0 -1 0 
+
+fsameparameter result
+
+checkprops result -s 186543

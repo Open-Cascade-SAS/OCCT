@@ -1,0 +1,22 @@
+puts "============"
+puts "CR26599: Visualization, TKOpenGl - gradient background should reset model transformation in Core profile"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+
+vbackground -gradient RED BLUE -gradientMode VERTICAL
+box b 1 2 3
+vdisplay b
+
+vfit
+
+vlocation b -rotate 0 0 0 0 0 1 50
+
+vmoveto 380 50
+checkcolor 380 50 0.87450981140136719 0 0.12156862765550613
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,19 @@
+#box b -20 -13 -20 40 25 20
+#ellipse w 0 0 0 15 10
+#mkedge w w
+#wire w w
+#mkplane w w
+#prism f w 2 0 30
+#fuse f1 f b
+#pcylinder c 8 25
+#trotate c 0 0 0 1 0 0 90
+#ttranslate c 0 0 -10
+#fuse s f1 c
+#save s 6_F56.draw
+
+restore [locate_data_file CFI_6_f56fhc.rle] s
+tscale s 0 0 0 SCALE2
+nexplode s E
+blend result s 6*SCALE2 s_8
+
+checkprops result -s 7479.62

@@ -1,0 +1,56 @@
+puts "============"
+puts "OCC30186"
+puts "============"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipe Generated() method produces no result for spine edges
+##############################################################################
+
+restore [locate_data_file bug25480_part1.brep] base 
+restore [locate_data_file bug25480_part2.brep] path 
+
+pipe q path base
+savehistory pipe_hist
+
+explode base f
+
+generated r1 pipe_hist base_1
+generated r8 pipe_hist base_8
+checknbshapes r1 -vertex 16 -edge 28 -wire 14 -face 14 -shell 1 -solid 1
+checknbshapes r8 -vertex 16 -edge 28 -wire 14 -face 14 -shell 1 -solid 1
+checkprops r1 -v 3219.23
+checkprops r8 -v 3181.78
+
+explode base e
+
+generated r10 pipe_hist base_10
+generated r25 pipe_hist base_25
+checknbshapes r10 -vertex 8 -edge 10 -wire 3 -face 3
+checknbshapes r25 -vertex 8 -edge 10 -wire 3 -face 3
+checkprops r10 -s 471.736
+checkprops r25 -s 1258.1
+
+explode base v
+
+generated r10 pipe_hist base_10
+generated r25 pipe_hist base_25
+checkprops r10 -l 186.888
+checkprops r25 -l 174.231
+
+explode path
+
+generated r1 pipe_hist path_1
+generated r2 pipe_hist path_2
+generated r3 pipe_hist path_3
+checknbshapes r1 -vertex 112 -edge 168 -wire 56 -face 56
+checknbshapes r2 -vertex 112 -edge 168 -wire 56 -face 56
+checknbshapes r3 -vertex 112 -edge 168 -wire 56 -face 56
+checkprops r1 -s 7017.89
+checkprops r2 -s 29728.3
+checkprops r3 -s 11198.9
+
+explode path v
+
+generated r3 pipe_hist path_3
+checknbshapes r3 -vertex 56 -edge 56
+checkprops r3 -l 266.84

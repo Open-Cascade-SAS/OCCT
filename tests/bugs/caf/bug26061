@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC26061"
+puts "============"
+puts ""
+#######################################################################
+# TNaming_Selector crash in select method.
+#######################################################################
+
+pload QAcommands
+
+NewDocument D BinOcaf
+
+## 1. Build Primitive face <f> 
+plane pl 0 0 0 0 0 1
+mkface f0 pl -10 10 -10 10
+set Lab900 [Label D 0:1:900]
+BuildNamedShape D $Lab900 P f0
+
+## 2. Mirror f0 
+tmirror f0 0 0 10 0 0 1
+renamevar f0 fmir
+GetShape D $Lab900 f0
+set Lab901 [Label D 0:1:901]
+BuildNamedShape D $Lab901 G f0 fmir
+
+## 3. Translate primitive face
+ttranslate f0 0 0 -5
+renamevar f0 ftr5
+set Lab902 [Label D 0:1:902]
+GetShape D $Lab900 f0
+BuildNamedShape D $Lab902 M f0 ftr5
+
+## 4. Translate mirrored face
+GetShape D $Lab901 fmir
+renamevar fmir fmirtr
+ttranslate  fmirtr 0 0 -5
+GetShape D $Lab901 fmir
+set Lab903 [Label D 0:1:903]
+BuildNamedShape D $Lab903 M fmir  fmirtr
+
+## 5. Select the face from step 4 (mirrored & translasted)
+set Lab904 [Label D 0:1:904]
+GetShape D $Lab903 fSel
+SelectShape D $Lab904 fSel
+## ==> No exception
+GetShape D $Lab904 fRes
+whatis fRes

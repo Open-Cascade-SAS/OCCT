@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : K8
+## Comment : from pro13225
+## ====================================
+
+restore [locate_data_file CFI_pro13225.rle] a
+explode a e
+blend result a 10 a_3 10 a_8 10 a_7 10 a_6
+
+checkprops result -s 397335

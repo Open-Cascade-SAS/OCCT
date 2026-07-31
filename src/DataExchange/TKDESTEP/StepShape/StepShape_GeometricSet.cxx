@@ -1,0 +1,56 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StepShape_GeometricSet.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
+
+StepShape_GeometricSet::StepShape_GeometricSet() = default;
+
+void StepShape_GeometricSet::Init(
+  const occ::handle<TCollection_HAsciiString>&                          aName,
+  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
+{
+  // --- classe own fields ---
+  elements = aElements;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
+}
+
+void StepShape_GeometricSet::SetElements(
+  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
+{
+  elements = aElements;
+}
+
+occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> StepShape_GeometricSet::Elements()
+  const
+{
+  return elements;
+}
+
+StepShape_GeometricSetSelect StepShape_GeometricSet::ElementsValue(const int num) const
+{
+  return elements->Value(num);
+}
+
+int StepShape_GeometricSet::NbElements() const
+{
+  if (elements.IsNull())
+  {
+    return 0;
+  }
+  return elements->Length();
+}

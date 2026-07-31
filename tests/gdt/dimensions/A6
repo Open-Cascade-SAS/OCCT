@@ -1,0 +1,22 @@
+
+box b 10 10 10
+box b1 20 20 20 30 30 30
+explode b
+explode b_1
+explode b1
+explode b1_1
+
+NewDocument D
+XAddShape D b
+XAddShape D b1
+XAddDimension D b_1_1  b1_1_1
+#0:1:4:1
+XSetDimensionType D  0:1:4:1 12
+XSetDimensionValue D  0:1:4:1 6
+XSetDimensionPlusMinusTol D  0:1:4:1 -0.001 0.002
+XSetDimensionDir D  0:1:4:1 1 1 0
+
+set c_value "6"
+set c_type "Location_Oriented"
+set c_plusminus "lower -0.001 upper 0.002"
+set c_dir "0.70710678118654757;0.70710678118654757;0"

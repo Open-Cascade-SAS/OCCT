@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj4_s1-ug-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 6  ( 35 )  Summary  = 6  ( 35 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 105  ( 105 ) 
+STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 138  ( 138 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002131642002  ( 0.002131642024 )  AvgTol   =  3.775281321e-005  (  4.00755825e-005 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 15  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 28  ( 28 )   NameLabels = 27  ( 27 )   ColorLabels = 9  ( 9 )   LayerLabels = 8  ( 8 )
+PROPS       : Centroid = 13  ( 13 )  Volume   = 13  ( 13 )  Area     = 13  ( 13 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = RED YELLOW  ( RED YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 11  ( 11 )
+
+}

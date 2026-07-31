@@ -1,0 +1,6 @@
+#D1-----------------------------------------------------
+wedge p 1 1 5 5
+nexplode p f
+depouille result p 1 0 0 p_4 5 0 0 0 1 0 0 
+
+checkprops result -s 59.4075

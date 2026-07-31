@@ -1,0 +1,71 @@
+// Created on: 1995-08-31
+// Created by: Remi LEQUETTE
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=================================================================================================
+
+inline bool BRepFilletAPI_MakeFillet2d::IsModified(const TopoDS_Edge& E) const
+{
+  return myMakeChFi2d.IsModified(E);
+}
+
+//=================================================================================================
+
+inline const NCollection_Sequence<TopoDS_Shape>& BRepFilletAPI_MakeFillet2d::FilletEdges() const
+{
+  return myMakeChFi2d.FilletEdges();
+}
+
+//=================================================================================================
+
+inline int BRepFilletAPI_MakeFillet2d::NbFillet() const
+{
+  return myMakeChFi2d.NbFillet();
+}
+
+//=================================================================================================
+
+inline const NCollection_Sequence<TopoDS_Shape>& BRepFilletAPI_MakeFillet2d::ChamferEdges() const
+{
+  return myMakeChFi2d.ChamferEdges();
+}
+
+//=================================================================================================
+
+inline int BRepFilletAPI_MakeFillet2d::NbChamfer() const
+{
+  return myMakeChFi2d.NbChamfer();
+}
+
+//=================================================================================================
+
+inline bool BRepFilletAPI_MakeFillet2d::HasDescendant(const TopoDS_Edge& E) const
+{
+  return myMakeChFi2d.HasDescendant(E);
+}
+
+//=================================================================================================
+
+inline const TopoDS_Edge& BRepFilletAPI_MakeFillet2d::DescendantEdge(const TopoDS_Edge& E) const
+{
+  return myMakeChFi2d.DescendantEdge(E);
+}
+
+//=================================================================================================
+
+inline ChFi2d_ConstructionError BRepFilletAPI_MakeFillet2d::Status() const
+{
+  return myMakeChFi2d.Status();
+}

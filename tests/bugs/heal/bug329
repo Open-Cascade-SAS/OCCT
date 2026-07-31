@@ -1,0 +1,33 @@
+puts "========================"
+puts " OCC329 "
+puts "========================"
+puts ""
+###########################################################
+##fixshape command does not fix incorrect tolerance order. 
+###########################################################
+
+restore [locate_data_file OCC329.brep] a 
+
+checkshape a
+set tol1 [maxtolerance a]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full face1
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full edge1
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full vert1
+
+fixshape result a 1.e-7 0.1
+
+checkshape result
+set tol2 [ maxtolerance result]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full face2
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full edge2
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full vert2
+
+if { ${face2} > ${face1} || ${edge2} > ${edge1} || ${vert2} > ${vert1} } {
+    puts "Error : Tolerance invalid. Function FixShape works WRONGLY"
+} else {
+    puts "Tolerance valed. Function FixShape works CORRECTLY"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

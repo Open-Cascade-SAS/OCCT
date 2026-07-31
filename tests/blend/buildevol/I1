@@ -1,0 +1,13 @@
+#box b -10 -10 -10 20 20 20
+#pcylinder c 8 15
+#ttranslate c 0 0 10
+#fuse s b c
+
+restore [locate_data_file CFI_6_a12fgr.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_4 0 1*SCALE2 1 3*SCALE2 2 2*SCALE2
+buildevol
+
+checkprops result -s 3133.42

@@ -1,0 +1,51 @@
+puts "========"
+puts "0029843: Modeling Algorithms - Boolean FUSE produces incorrect result"
+puts "========"
+puts ""
+
+puts "Boolean operation fails on the objects located far from origin (1.e+8)"
+
+restore [locate_data_file bug29843_loc.brep] s
+
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+bbuild r_5
+
+foreach i { 0 1 2 3 4 5} {
+  checkshape r_$i
+  if {![regexp "OK" [bopcheck r_$i]]} {
+    puts "Error: r_$i is self-intersecting shape"
+  }
+}
+
+checkprops r_0 -s 62185.2 -v 1.1761e+06
+checknbshapes r_0 -vertex 6 -edge 9 -wire 5 -face 5 -shell 1 -solid 1 -t
+
+checkprops r_1 -s 1.85327e+06 -v 5.92874e+07
+checknbshapes r_1 -vertex 15 -edge 24 -wire 11 -face 11 -shell 1 -solid 1 -t
+
+checkprops r_2 -s 1.85376e+06 -v 5.78639e+07
+checknbshapes r_2 -vertex 14 -edge 21 -wire 9 -face 9 -shell 1 -solid 1 -t
+
+checkprops r_3 -s 37189.7 -v 247431
+checknbshapes r_3 -vertex 6 -edge 9 -wire 5 -face 5 -shell 1 -solid 1 -t
+
+checkprops r_4 -l 952.189
+checksection r_4 -r 2
+checknbshapes r_4 -vertex 6 -edge 7 -t
+
+checkprops r_5 -s 2.01533e+06 -v 6.04635e+07
+checknbshapes r_5 -vertex 15 -edge 26 -wire 15 -face 15 -shell 3 -solid 3 -t
+
+checkview -display r_2 -2d -path ${imagedir}/${test_image}.png
+

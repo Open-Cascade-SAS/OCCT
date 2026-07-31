@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC22634"
+puts "============"
+puts ""
+######################################################
+# Cut operation on closed solids returns opened one
+######################################################
+
+restore [ locate_data_file bug22634_shape.brep ] shape
+restore [ locate_data_file bug22634_tool.brep ] tool
+
+checkshape shape
+
+checkshape tool
+
+bop shape tool
+bopcut result
+
+checkprops result -v 5.61524e+007
+
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : o
+ EDGE      : 12
+ WIRE      : 6
+ FACE      : 6
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 35
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

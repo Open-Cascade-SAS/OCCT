@@ -1,0 +1,23 @@
+puts "============"
+puts "CR23367"
+puts "============"
+puts ""
+##########################################################################################################
+# New functionality restoring the middle path of pipe-like shape
+##########################################################################################################
+
+ptorus a 50 10
+explode a e
+wire ww a_2
+donly a ww
+fit
+middlepath result a ww ww
+
+checkprops result -l 314.159 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

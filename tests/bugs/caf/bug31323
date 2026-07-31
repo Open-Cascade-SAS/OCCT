@@ -1,0 +1,36 @@
+puts "============"
+puts "0031323: OCAF, TObj - TObj_OcafObjectIterator does not go recursively to children if type argument is used"
+puts "============"
+puts ""
+
+pload TOBJ QAcommands
+
+# create document with object and 3 levels of sub-objects
+TObjNew TD1
+TObjAddObj TD1 obj
+TObjAddChild TD1 obj sub1
+TObjAddChild TD1 obj sub2
+TObjAddChild TD1 sub1 sub11
+TObjAddChild TD1 sub1 sub12
+TObjAddChild TD1 sub1 sub13
+TObjAddChild TD1 sub12 sub121
+
+# Check iteration without sub-children
+set flat_list [TObjGetChildren TD1 obj]
+if {[llength $flat_list] != 2} {
+  puts "Error : there must be two elements for the childrens only iteration, but got '$flat_list'"
+} else {
+  if {[lsort $flat_list] != "sub1 sub2"} {
+    puts "Error : not all elements found in the flat list iteration. Must be 'sub1 sub2', but got '$flat_list'"
+  }
+}
+
+# Check iteration with all sub-children
+set all_subs [TObjGetChildren TD1 obj -all]
+if {[llength $all_subs] != 6} {
+  puts "Error : there must be six elements for the all levels of childrens iteration, but got '$all_subs'"
+} else {
+  if {[lsort $all_subs] != "sub1 sub11 sub12 sub121 sub13 sub2"} {
+    puts "Error : not all elements found in the flat list iteration. Must be 'sub1 sub11 sub12 sub121 sub13 sub2', but got '$all_subs'"
+  }
+}

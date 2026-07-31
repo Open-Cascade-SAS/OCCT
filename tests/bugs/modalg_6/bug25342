@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25342"
+puts "============"
+puts ""
+###############################
+## [Regression] BRepAlgoAPI_Section returns wrong number of edges
+###############################
+
+restore [locate_data_file bug25342_pump2.brep] p
+
+explode p
+bop p_1 p_2
+bopsection result
+
+set nbshapes_expected "
+Number of shapes in shape
+ EDGE      : 4
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Number of edges"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

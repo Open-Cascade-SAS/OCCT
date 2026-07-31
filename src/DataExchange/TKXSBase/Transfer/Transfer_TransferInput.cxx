@@ -1,0 +1,139 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_IteratorOfProcessForFinder.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_MultipleBinder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransferFailure.hxx>
+#include <Transfer_TransferInput.hxx>
+#include <Transfer_TransferIterator.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <Transfer_VoidBinder.hxx>
+
+Transfer_TransferInput::Transfer_TransferInput() = default;
+
+//  Results : For the Model ...
+
+Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferIterator& list) const
+{
+  Interface_EntityIterator iter;
+  for (list.Start(); list.More(); list.Next())
+  {
+    const occ::handle<Transfer_Binder>& binder = list.Value();
+    if (binder.IsNull())
+    {
+      continue;
+    }
+    if (binder->IsKind(STANDARD_TYPE(Transfer_VoidBinder)))
+    {
+      continue;
+    }
+
+    // True result : must be transient (simple or list)
+    DeclareAndCast(Transfer_SimpleBinderOfTransient, transb, binder);
+    DeclareAndCast(Transfer_MultipleBinder, multi, binder);
+    if (!transb.IsNull())
+    {
+      if (transb->HasResult())
+      {
+        iter.AddItem(transb->Result());
+      }
+    }
+    else if (!multi.IsNull())
+    {
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> mulres =
+        multi->MultipleResult();
+      int nbres = 0;
+      if (!mulres.IsNull())
+      {
+        nbres = mulres->Length();
+      }
+      for (int i = 1; i <= nbres; i++)
+      {
+        iter.AddItem(mulres->Value(i));
+      }
+    }
+    else
+    {
+      throw Transfer_TransferFailure(
+        "TransferInput : Entities, one of the Results is not Transient Handle");
+    }
+  }
+  return iter;
+}
+
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                       const occ::handle<Interface_InterfaceModel>&  amodel) const
+{
+  Transfer_TransferIterator list = proc->CompleteResult();
+  Interface_EntityIterator  iter = Entities(list);
+  amodel->GetFromTransfer(iter);
+}
+
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                       const occ::handle<Interface_InterfaceModel>&  amodel,
+                                       const occ::handle<Interface_Protocol>&        proto,
+                                       const bool                                    roots) const
+{
+  Transfer_TransferIterator list;
+  if (roots)
+  {
+    list = proc->RootResult();
+  }
+  else
+  {
+    list = proc->CompleteResult();
+  }
+  Interface_EntityIterator iter = Entities(list);
+  for (iter.Start(); iter.More(); iter.Next())
+  {
+    amodel->AddWithRefs(iter.Value(), proto);
+  }
+}
+
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                       const occ::handle<Interface_InterfaceModel>& amodel) const
+{
+  Transfer_TransferIterator list = proc->CompleteResult();
+  Interface_EntityIterator  iter = Entities(list);
+  amodel->GetFromTransfer(iter);
+}
+
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                       const occ::handle<Interface_InterfaceModel>& amodel,
+                                       const occ::handle<Interface_Protocol>&       proto,
+                                       const bool                                   roots) const
+{
+  Transfer_TransferIterator list;
+  if (roots)
+  {
+    list = proc->RootResult();
+  }
+  else
+  {
+    list = proc->CompleteResult();
+  }
+  Interface_EntityIterator iter = Entities(list);
+  for (iter.Start(); iter.More(); iter.Next())
+  {
+    amodel->AddWithRefs(iter.Value(), proto);
+  }
+}

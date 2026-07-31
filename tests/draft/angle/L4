@@ -1,0 +1,12 @@
+# Original bug : cts20194
+# Date : 23 Nov 98
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
+
+restore [locate_data_file CFE903_cts20ggq.rle] base
+
+explode base face
+
+depouille result base 1 0 0 base_2 5 0 -250 250 1 0 0 base_3 5 0 -250 250 1 0 0 base_4 5 0 -250 250 1 0 0 base_5 5 0 -250 250 1 0 0
+
+fsameparameter result
+checkprops result -s 688897

@@ -1,0 +1,9 @@
+# Original bug : pro15488
+# Date : 23 Nov 98
+
+pcylinder base 5 10
+
+explode base face
+
+depouille result base 0 0 1 base_1 0.41 5 0 0 0 0 1
+checkprops result -s 466.767

@@ -1,0 +1,16 @@
+
+puts "========="
+puts " OCC956 "
+puts "(case 1)"
+puts "========="
+puts ""
+###############################################
+##possible regression in KAS:dev on checkshape. Fails on valid shape
+###############################################
+
+restore [locate_data_file OCC956_1.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

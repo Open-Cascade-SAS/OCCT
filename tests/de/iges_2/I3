@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename ims002.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 413 )  Summary  = 0  ( 413 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 268 )  Summary  = 19  ( 268 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 78  ( 78 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 78  ( 78 )   FreeWire = 75  ( 334 ) 
+TOLERANCE   : MaxTol   =   0.2587117061  (   0.2578045038 )  AvgTol   =  0.001366109272  (  0.001652733346 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 521  ( 1435 )  N2Labels = 0  ( 0 )   TotalLabels = 522  ( 1436 )   NameLabels = 457  ( 584 )   ColorLabels = 521  ( 1435 )   LayerLabels = 453  ( 1408 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = DODGERBLUE2 GRAY80 GREEN MAGENTA3 TURQUOISE2 WHITE  ( DODGERBLUE2 GRAY80 GREEN MAGENTA3 TURQUOISE2 WHITE YELLOW3 )
+NLAYERS     : NLayers  = 8  ( 10 )
+LAYERS      : Layers   = 1 10 12 13 16 19 4 5  ( 1 10 12 13 16 19 191 210 4 5 )
+
+}

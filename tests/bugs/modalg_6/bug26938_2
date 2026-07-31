@@ -1,0 +1,28 @@
+puts "=========="
+puts "OCC26938  "
+puts "=========="
+puts ""
+#####################################################
+# Boolean operations fail between two ellipsoids
+#####################################################
+
+restore [locate_data_file bug26938.brep] a
+explode a
+
+bcommon result a_1 a_2
+
+# Check shape validity
+checkshape result
+
+# Check area
+checkprops result -s 3.52497e+006
+
+# Check self-intersection
+set info [bopcheck result]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The result of General Fuse operation is self-interfered shape"
+}
+
+checknbshapes result -solid 1 -shell 1 -t -m "Result"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

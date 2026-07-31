@@ -1,0 +1,18 @@
+puts "# ============================================================="
+puts "# 0027356: BRepTools::Clean() does not clean free edges from Poly_Polygon3D"
+puts "# ============================================================="
+puts ""
+
+puts "Create simple straight edge and tessellate it"
+vertex v1 0 0 0
+vertex v2 1 0 0
+edge e v1 v2
+incmesh e 0.01
+
+puts "Clean triangulation and check that there are no Polygon3Ds remained"
+tclean e
+if { ! [regexp {Dump of ([0-9]+) Polygon3Ds} [dump e] res count] } {
+  puts "Error: Cannot find number of Polygon3Ds in output of trinfo command"
+} elseif { $count != 0 } {
+  puts "Error: $count Polygon3Ds are found (zero expected)!"
+}

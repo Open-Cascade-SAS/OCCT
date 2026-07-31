@@ -1,0 +1,11 @@
+# Original bug : cts20354
+# Date : 4June98
+
+restore [locate_data_file CTO904_cts20339-part.rle] a
+restore [locate_data_file cts20339-tool.rle] b
+
+bop a b 
+bopcut result
+
+checkprops result -s 407561
+checkview -display result -2d -otherwise { a b  } -s -path ${imagedir}/${test_image}.png

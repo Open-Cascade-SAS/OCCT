@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC16119"
+puts "============"
+puts ""
+#######################################################################
+# Bug in GeomFill_Coons algorithm
+#######################################################################
+
+set BugNumber OCC16119
+
+restore [locate_data_file OCC16119-c1.draw] c1
+restore [locate_data_file OCC16119-c2.draw] c2
+restore [locate_data_file OCC16119-c31.draw] c31
+restore [locate_data_file OCC16119-c32.draw] c32
+restore [locate_data_file OCC16119-c41.draw] c41
+restore [locate_data_file OCC16119-c42.draw] c42
+restore [locate_data_file OCC16119-cv.draw] cv
+
+fillcurves s11 c1 c41 cv c31
+fillcurves s12 cv c42 c2 c32
+
+svalue s11 .5 .5 x1 y1 z1 dux1 duy1 duz1 dvx1 dvy1 dvz1
+svalue s12 .5 .5 x2 y2 z2 dux2 duy2 duz2 dvx2 dvy2 dvz2
+
+set deltaX [dval dvx1-dvx2]
+set deltaY [dval dvy1-dvy2]
+set deltaZ [dval dvz1-dvz2]
+
+checkreal "deltaX" ${deltaX} -3.5527136788005009e-015 0 0.001
+checkreal "deltaY" ${deltaY} -3.5527136788005009e-015 0 0.001
+checkreal "deltaZ" ${deltaZ} 8.8817841970012523e-016  0 0.001

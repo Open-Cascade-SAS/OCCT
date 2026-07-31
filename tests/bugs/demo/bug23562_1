@@ -1,0 +1,11 @@
+puts "============"
+puts "CR23562"
+puts "============"
+puts ""
+##########################################################################################################
+# nbshapes command works incorrect with the attached shapes
+##########################################################################################################
+
+restore [locate_data_file bug23562_V3.brep] result
+
+checknbshapes result -vertex 25 -edge 45 -wire 15 -face 15 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 103

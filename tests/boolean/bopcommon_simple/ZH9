@@ -1,0 +1,10 @@
+pcylinder b1 4 8
+psphere b2 4
+ttranslate b2 0 0 8
+trotate b2 0 0 8 1 0 0 90
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 150.796
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

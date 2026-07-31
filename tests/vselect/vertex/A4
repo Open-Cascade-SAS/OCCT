@@ -1,0 +1,11 @@
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+vmoveto 0 0
+vselmode 1 1
+vviewparams -scale 6.063093 -proj 0.817216 -0.217801 0.535373 -up -0.420838 0.411627 0.808368 -at 26.4654518144607 56.2503832914726 34.5651685621603
+vfit
+vmoveto 73 302
+vmoveto 0 0
+

@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC28085: Incorrect result of CUT operation"
+puts "============"
+puts ""
+
+foreach a [directory c_*] {unset $a}
+
+# enable FPE signals
+dsetsignal 1
+
+restore [locate_data_file bug28883_Prism.brep] b1
+restore [locate_data_file bug28883_LES_2d_shell.brep] b2
+
+explode b1 f
+explode b2 f
+
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b1_74 b2_13 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 0.0 1.0e-7 0.0
+
+if {$NbCurv != 1} {
+  puts "Error: Please check NbCurves for intersector"
+} else {
+  puts "OK: good number of curves!"
+  checklength c_1 -l 0.036019405388914391 -eps 1.0e-3
+}
+
+don c_*
+smallview; fit;
+disp b1_74 b2_13
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

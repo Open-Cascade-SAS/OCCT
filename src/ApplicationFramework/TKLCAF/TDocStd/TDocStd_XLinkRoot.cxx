@@ -1,0 +1,146 @@
+// Created by: DAUTRY Philippe
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//      	------------------
+// Version:	0.0
+// Version	Date		Purpose
+//		0.0	Sep 15 1997	Creation
+
+#include <TDocStd_XLinkRoot.hxx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDocStd_XLink.hxx>
+#include <TDocStd_XLinkIterator.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_XLinkRoot, TDF_Attribute)
+
+//=======================================================================
+//             CLASS METHODS
+//=======================================================================
+//=================================================================================================
+
+const Standard_GUID& TDocStd_XLinkRoot::GetID()
+{
+  static Standard_GUID myID("5d587401-5690-11d1-8940-080009dc3333");
+  return myID;
+}
+
+//=================================================================================================
+
+occ::handle<TDocStd_XLinkRoot> TDocStd_XLinkRoot::Set(const occ::handle<TDF_Data>& aDF)
+{
+  occ::handle<TDocStd_XLinkRoot> xRefRoot;
+  if (!aDF->Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))
+  {
+    xRefRoot = new TDocStd_XLinkRoot;
+    aDF->Root().AddAttribute(xRefRoot);
+  }
+  return xRefRoot;
+}
+
+//=================================================================================================
+
+void TDocStd_XLinkRoot::Insert(const TDocStd_XLinkPtr& anXLinkPtr)
+{
+  occ::handle<TDocStd_XLinkRoot> xRefRoot = TDocStd_XLinkRoot::Set(anXLinkPtr->Label().Data());
+  // Insertion at beginning because the order is not significant.
+  anXLinkPtr->Next(xRefRoot->First());
+  xRefRoot->First(anXLinkPtr);
+}
+
+//=================================================================================================
+
+void TDocStd_XLinkRoot::Remove(const TDocStd_XLinkPtr& anXLinkPtr)
+{
+  occ::handle<TDocStd_XLinkRoot> xRefRoot;
+  if (anXLinkPtr->Label().Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))
+  {
+    TDocStd_XLink* previous = xRefRoot->First();
+    if (previous == anXLinkPtr)
+    {
+      xRefRoot->First(anXLinkPtr->Next());
+      previous = nullptr;
+      anXLinkPtr->Next(previous);
+    }
+    else
+    {
+      while (previous != nullptr && previous->Next() != anXLinkPtr)
+      {
+        previous = previous->Next();
+      }
+      if (previous != nullptr)
+      {
+        previous->Next(anXLinkPtr->Next());
+        previous = nullptr;
+        anXLinkPtr->Next(previous);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//             INSTANCE METHODS
+//=======================================================================
+
+//=================================================================================================
+
+TDocStd_XLinkRoot::TDocStd_XLinkRoot()
+    : myFirst(nullptr)
+{
+}
+
+//=================================================================================================
+
+const Standard_GUID& TDocStd_XLinkRoot::ID() const
+{
+  return GetID();
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> TDocStd_XLinkRoot::BackupCopy() const
+{
+  return new TDocStd_XLinkRoot;
+} // Does nothing.
+
+//=================================================================================================
+
+void TDocStd_XLinkRoot::Restore(const occ::handle<TDF_Attribute>& /*anAttribute*/) {
+} // Does nothing.
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> TDocStd_XLinkRoot::NewEmpty() const
+{
+  return new TDocStd_XLinkRoot;
+}
+
+//=================================================================================================
+
+void TDocStd_XLinkRoot::Paste(const occ::handle<TDF_Attribute>&,
+                              const occ::handle<TDF_RelocationTable>&) const
+{
+} // Does nothing.
+
+//=================================================================================================
+
+Standard_OStream& TDocStd_XLinkRoot::Dump(Standard_OStream& anOS) const
+{
+  return anOS;
+}

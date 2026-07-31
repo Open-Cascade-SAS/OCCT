@@ -1,0 +1,28 @@
+puts "==========="
+puts "OCC22717"
+puts "==========="
+puts ""
+#######################################################################
+#  Exception during sewing
+#######################################################################
+
+set BugNumber OCC22717
+
+catch { pload XDE }
+
+igesread [locate_data_file OCC22717-8_hole.igs] shape_8h *
+
+if [catch {sewing result 0.019 shape_8h} catch_result] {
+  puts "Faulty ${BugNumber} : function Sewing works wrongly"
+} else {
+  checkshape result f
+}
+
+checkmaxtol result -ref 0.99057887669774025
+checknbshapes result -shell 1
+checkfreebounds result 13
+
+checkprops result -s 16490.5 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

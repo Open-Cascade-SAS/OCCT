@@ -1,0 +1,28 @@
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
+
+puts "================"
+puts "OCC20"
+puts "================"
+puts ""
+###############################
+## Face apearence in shading mode is wrong
+###############################
+
+pload QAcommands
+restore [locate_data_file OCC20.brep] result
+
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+
+vviewparams -scale 5.1346924 -proj 0.23495967 -0.302 0.923899 -up -0.7304302 0.5722587 0.372815 -at 74.2909604913005 62.3380479127367 -22.4489114507273
+
+isos result 0
+triangles result
+
+checktrinfo result -tri 416 -nod 367
+checkview -display result -2d -path ${imagedir}/${test_image}.png

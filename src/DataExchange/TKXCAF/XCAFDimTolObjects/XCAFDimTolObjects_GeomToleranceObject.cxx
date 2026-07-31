@@ -1,0 +1,284 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
+{
+  myHasAxis           = false;
+  myHasPlane          = false;
+  myHasPnt            = false;
+  myHasPntText        = false;
+  myAffectedPlaneType = XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
+}
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(
+  const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObj)
+{
+  myType              = theObj->myType;
+  myTypeOfValue       = theObj->myTypeOfValue;
+  myValue             = theObj->myValue;
+  myMatReqModif       = theObj->myMatReqModif;
+  myZoneModif         = theObj->myZoneModif;
+  myValueOfZoneModif  = theObj->myValueOfZoneModif;
+  myModifiers         = theObj->myModifiers;
+  myMaxValueModif     = theObj->myMaxValueModif;
+  myAxis              = theObj->myAxis;
+  myHasAxis           = theObj->myHasAxis;
+  myPlane             = theObj->myPlane;
+  myPnt               = theObj->myPnt;
+  myPntText           = theObj->myPntText;
+  myHasPlane          = theObj->myHasPlane;
+  myHasPnt            = theObj->myHasPnt;
+  myHasPntText        = theObj->myHasPntText;
+  mySemanticName      = theObj->mySemanticName;
+  myAffectedPlaneType = theObj->myAffectedPlaneType;
+  myAffectedPlane     = theObj->myAffectedPlane;
+  myPresentation      = theObj->myPresentation;
+  myPresentationName  = theObj->myPresentationName;
+}
+
+//=================================================================================================
+
+occ::handle<TCollection_HAsciiString> XCAFDimTolObjects_GeomToleranceObject::GetSemanticName() const
+{
+  return mySemanticName;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetSemanticName(
+  const occ::handle<TCollection_HAsciiString>& theName)
+{
+  mySemanticName = theName;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetType(
+  const XCAFDimTolObjects_GeomToleranceType theType)
+{
+  myType = theType;
+}
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceType XCAFDimTolObjects_GeomToleranceObject::GetType() const
+{
+  return myType;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetTypeOfValue(
+  const XCAFDimTolObjects_GeomToleranceTypeValue theTypeOfValue)
+{
+  myTypeOfValue = theTypeOfValue;
+}
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceTypeValue XCAFDimTolObjects_GeomToleranceObject::GetTypeOfValue()
+  const
+{
+  return myTypeOfValue;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetValue(const double theValue)
+{
+  myValue = theValue;
+}
+
+//=================================================================================================
+
+double XCAFDimTolObjects_GeomToleranceObject::GetValue() const
+{
+  return myValue;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetMaterialRequirementModifier(
+  const XCAFDimTolObjects_GeomToleranceMatReqModif theMatReqModif)
+{
+  myMatReqModif = theMatReqModif;
+}
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceMatReqModif XCAFDimTolObjects_GeomToleranceObject::
+  GetMaterialRequirementModifier() const
+{
+  return myMatReqModif;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetZoneModifier(
+  const XCAFDimTolObjects_GeomToleranceZoneModif theZoneModif)
+{
+  myZoneModif = theZoneModif;
+}
+
+//=================================================================================================
+
+XCAFDimTolObjects_GeomToleranceZoneModif XCAFDimTolObjects_GeomToleranceObject::GetZoneModifier()
+  const
+{
+  return myZoneModif;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetValueOfZoneModifier(const double theValue)
+{
+  myValueOfZoneModif = theValue;
+}
+
+//=================================================================================================
+
+double XCAFDimTolObjects_GeomToleranceObject::GetValueOfZoneModifier() const
+{
+  return myValueOfZoneModif;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetModifiers(
+  const NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>& theModifiers)
+{
+  myModifiers = theModifiers;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::AddModifier(
+  const XCAFDimTolObjects_GeomToleranceModif theModifier)
+{
+  myModifiers.Append(theModifier);
+}
+
+//=================================================================================================
+
+NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> XCAFDimTolObjects_GeomToleranceObject::
+  GetModifiers() const
+{
+  return myModifiers;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetMaxValueModifier(const double theModifier)
+{
+  myMaxValueModif = theModifier;
+}
+
+//=================================================================================================
+
+double XCAFDimTolObjects_GeomToleranceObject::GetMaxValueModifier() const
+{
+  return myMaxValueModif;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetAxis(const gp_Ax2& theAxis)
+{
+  myAxis    = theAxis;
+  myHasAxis = true;
+}
+
+//=================================================================================================
+
+gp_Ax2 XCAFDimTolObjects_GeomToleranceObject::GetAxis() const
+{
+  return myAxis;
+}
+
+//=================================================================================================
+
+bool XCAFDimTolObjects_GeomToleranceObject::HasAxis() const
+{
+  return myHasAxis;
+}
+
+//=================================================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStream,
+                                                     int               theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTypeOfValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMatReqModif)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZoneModif)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValueOfZoneModif)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxValueModif)
+  if (myHasAxis)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myAxis)
+  }
+
+  if (myHasPlane)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPlane)
+  }
+
+  if (myHasPnt)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPnt)
+  }
+
+  if (myHasPntText)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPntText)
+  }
+
+  if (!myPresentation.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPresentation)
+  }
+
+  if (!mySemanticName.IsNull())
+  {
+    const char* aSemanticName = mySemanticName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aSemanticName)
+  }
+  if (!myPresentationName.IsNull())
+  {
+    const char* aPresentationName = myPresentationName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myAffectedPlane)
+
+  for (NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>::Iterator aModifIt(myModifiers);
+       aModifIt.More();
+       aModifIt.Next())
+  {
+    XCAFDimTolObjects_GeomToleranceModif aModifier = aModifIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aModifier)
+  }
+}

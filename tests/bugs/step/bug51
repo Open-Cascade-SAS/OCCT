@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC51"
+puts "================"
+puts ""
+
+puts " write STEP and IGES file "
+box b 12 34 56
+
+######################################################################
+catch {exec rm ${imagedir}/box.step}
+catch {exec rm ${imagedir}/box.igs}
+
+stepwrite a b ${imagedir}/box.step
+
+brepiges b ${imagedir}/box.igs
+####################################################
+dall
+puts " Read STEP  file "
+stepread ${imagedir}/box.step a *
+
+puts " Read IGES file "
+igesbrep ${imagedir}/box.igs b *
+
+compound a_1 b_1 result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

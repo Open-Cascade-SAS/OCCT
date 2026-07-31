@@ -1,0 +1,25 @@
+puts "========="
+puts "OCC25631"
+puts "========="
+puts ""
+#####################################################################
+## Bounding box is too big for the face.
+#####################################################################
+
+restore [locate_data_file bug25631_fbx.brep] result
+
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax
+
+set tol_abs 1.0e-4
+set tol_rel 1.0e-4
+
+checkreal "Xmin" [dval Xmin]  107.49999989999992 ${tol_abs} ${tol_rel}
+checkreal "Ymin" [dval Ymin] -12.487307730633276 ${tol_abs} ${tol_rel}
+checkreal "Zmin" [dval Zmin] -12.135364833115547 ${tol_abs} ${tol_rel}
+checkreal "Xmax" [dval Xmax]  140.20000009999987 ${tol_abs} ${tol_rel}
+checkreal "Ymax" [dval Ymax] -0.8336837432205401 ${tol_abs} ${tol_rel}
+checkreal "Zmax" [dval Zmax] -0.5631589698265231 ${tol_abs} ${tol_rel}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

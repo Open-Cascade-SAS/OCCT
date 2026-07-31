@@ -1,0 +1,16 @@
+puts "============"
+puts "0030807: Visualization, TKOpenGl - supporting cubemaps"
+puts "Test horizontal 6x1 tile orientation"
+puts "============"
+puts ""
+
+set aCubeMap_H [locate_data_file Circus_CubeMap_H.png]
+
+pload MODELING VISUALIZATION
+vclear
+vinit v -w 512 -h 512
+vcamera -fovy 100
+
+# horizontal tile orientation
+vbackground -cubemap $aCubeMap_H
+foreach {i} { front back top bottom left right } { v$i; vdump $imagedir/${casename}_${i}.png }

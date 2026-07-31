@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug26689_nist_ctc_04_asme1_ap242.stp
+
+set ref_data {
+Centre of mass: -38.158786810985518 394.05735693263932 -73.721980763012184
+Mass: 18090.902430013277
+
+}

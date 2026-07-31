@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC29204"
+puts "============"
+puts ""
+##################################################################################
+# BRepOffsetAPI_MakePipeShell produces invalid result and raises exception in Draw
+##################################################################################
+
+restore [locate_data_file bug29204_sweep_spine.brep] sp
+restore [locate_data_file bug29204_sweep_profile.brep] pr
+
+mksweep sp
+addsweep pr
+buildsweep result -C -S
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 28 -wire 28 -edge 64 -vertex 36 -shape 158
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.003} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1.16577e+007

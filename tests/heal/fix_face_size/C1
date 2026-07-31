@@ -1,0 +1,6 @@
+if { [info exists bug23197] == 0 || $bug23197 == 0 } {
+    puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+}
+puts "TODO OCC24156 MacOS: Faulty shapes in variables faulty_1 to faulty_"
+
+restore [locate_data_file rrr.rle] a

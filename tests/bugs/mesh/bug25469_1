@@ -1,0 +1,30 @@
+puts "========="
+puts "CR25469"
+puts "========="
+puts ""
+###############################################
+# BRepMesh corrupts triangulation of another not connected shape
+###############################################
+
+restore [locate_data_file bug25469_common_edge.brep] a
+
+explode a
+
+incmesh a_1 0.04
+set report [tricheck a_1]
+if {$report != ""} {
+   puts "Error: incorrect meshing of shape 1"
+}
+
+incmesh a_2 0.04
+set report [tricheck a_1]
+if {$report != ""} {
+   puts "Error: meshing of shape 2 corrupts mesh of shape 1"
+}
+
+vinit
+vsetdispmode 1
+vdisplay a_1 a_2
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

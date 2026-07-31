@@ -1,0 +1,17 @@
+puts "========="
+puts " OCC945 "
+puts "========="
+puts ""
+##############################################################
+# It is necessary to adapt ShapeFix_Face for correct work
+##############################################################
+
+restore [locate_data_file OCC945.brep] a
+
+if [catch {fixshape result a 29.9 } res] {
+    puts "Faulty OCC945: here is problem with FIXSHAPE function"
+}
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

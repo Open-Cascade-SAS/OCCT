@@ -1,0 +1,23 @@
+# test script on make volume operation
+# cone plane sphere
+
+# planar face 
+plane pln_f1 0 0.59246306999999998 -3.3217190109624537e-017 0 -1 1.1102230246251565e-016
+erase pln_f1
+mkface f1 pln_f1 -1000000 1000000 -1000000 1000000
+
+# spherical face 
+sphere sph_f2 0 0.3175 0 0 0 1 0.3175
+erase sph_f2
+mkface f2 sph_f2
+
+# conical face 
+cone con_f3 0 0.63500000000000001 0 0 -1 1.1102230246251565e-016 75.000001447462765 0
+erase con_f3
+mkface f3 con_f3 0 6.2831853071795862 0 1000000
+
+# make volume operation 
+mkvolume result f1 f2 f3
+
+checkprops result -s 1.58904
+

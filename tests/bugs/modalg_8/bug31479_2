@@ -1,0 +1,17 @@
+puts "================================================================="
+puts "0031479: Modeling Algorithms - exceptiion geometry transformation"
+puts "         of triangulation-only shapes (without geometry surface) "
+puts "================================================================="
+puts ""
+
+restore [locate_data_file bug31479_P-51-Mustang-2.brep] s
+
+# reference data
+regexp {([0-9+-.eE]*) faces.* ([0-9+-.eE]*) triangles.* ([0-9+-.eE]*) nodes} [trinfo s] full nbFaces nbTri nbNodes
+regexp {Mass :\s*([0-9+-.eE]*)} [vprops s] full mass
+
+deform res s 2 3 4
+checktrinfo res -face $nbFaces -nod $nbNodes -tri $nbTri
+checkprops res -v [expr $mass * 2 * 3 * 4] -eps 1.e-5
+
+checkview -display res -2d -path ${imagedir}/${test_image}.png

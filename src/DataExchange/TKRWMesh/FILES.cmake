@@ -1,0 +1,5 @@
+# Source files for TKRWMesh
+set(OCCT_TKRWMesh_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKRWMesh_FILES
+)

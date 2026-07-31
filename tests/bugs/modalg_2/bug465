@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC465"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC465.brep] result
+
+set dum [dump result]
+
+regexp {PCurve : 1 on surface 1, range : ([-0-9.+eE]+) ([-0-9.+eE]+)} $dum full err1 err2
+regexp {Curve 3D : 1, range : ([-0-9.+eE]+) ([-0-9.+eE]+)} $dum full err3 err4
+
+if { $err1== $err3 && $err2 == $err4 } {
+    puts "Faulty OCC465: it is reset the PCurve range by range of Curve3d after restoring Curve3d"
+} else {
+    puts "OCC465 OK"
+}
+
+checkprops result -l 4.21716 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

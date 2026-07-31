@@ -1,0 +1,17 @@
+puts "TODO OCC22394 ALL: Faulty shapes in variables"
+
+puts "========"
+puts "OCC22394"
+puts "========"
+puts ""
+##########################################################################
+# Not valid shape after read iges
+##########################################################################
+
+igesbrep [locate_data_file bug22394_029225A2S0.igs] a *
+tpcompound result
+
+checkshape result
+
+checkview -display result -3d -path ${imagedir}/${test_image}-3d.png
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

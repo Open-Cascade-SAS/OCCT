@@ -1,0 +1,10 @@
+# Original bug : cts20148
+# Date : 8April98
+
+restore [locate_data_file CTO904_cts20148a.rle] base
+restore [locate_data_file cts20148_face.rle] cont
+
+featprism base cont cont 0 -1 0 0 1 
+featperform prism result
+
+checkprops result -s 68758

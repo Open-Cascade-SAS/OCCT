@@ -1,0 +1,26 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : E8
+## Comment : similar to cts19347
+## ====================================
+
+set h1 1.5
+set h2 1.5
+vertex va 0 0 0
+vertex vb 8 0 0
+vertex vc 8 4 0
+vertex vd 4 4 0
+vertex ve 4 8 0
+vertex vf 0 8 0
+edge e1 va vb
+edge e2 vb vc
+edge e3 vc vd
+edge e4 vd ve
+edge e5 ve vf
+wire w e1 e2 e3 e4 e5
+revol a w 0 0 0 0 1 0 360
+explode a e
+blend result a $h1 a_4 $h2 a_5
+#hlr hlr result
+
+checkprops result -s 671.356

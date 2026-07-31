@@ -1,0 +1,8 @@
+box b -30 -30 -30 60 60 30
+ptorus s 20 5 0 90
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+explode s E
+bfuseblend result s b 1*SCALE1
+ 
+checkprops result -s 1.47825e+06

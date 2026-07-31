@@ -1,0 +1,10 @@
+SKIPPED /Tcl Exception: .*[fF]ile .* could not be found/ data file is missing
+IGNORE /Tcl Exception: [*][*] Exception [*][*]/ duplicate report on exception on Tcl level
+IGNORE /Relative error of mass computation :/ diagnostic message of *props* commands
+FAILED /\b[Ee]xception\b/ exception
+FAILED /\b[Ee][Rr][Rr][Oo][Rr]\b/ error
+FAILED /\b[Ff][Aa][Ii][Ll][0-9]\b/ error
+FAILED /\b[Ff][Aa][Ii][Ll][Ee][Dd]\b/ error
+FAILED /\b[Ff][Aa][Ii][Ll][Uu][Rr][Ee]\b/ error
+FAILED /Process killed by CPU limit/ Killed by CPU limit
+FAILED /Process killed by elapsed limit/ Killed by elapsed time limit

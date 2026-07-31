@@ -1,0 +1,49 @@
+puts "REQUIRED All: Not connected mesh inside face"
+puts "=========="
+puts "OCC25307"
+puts "=========="
+puts ""
+##################################################################
+# Problems resulted from re-triangulation
+##################################################################
+
+restore [locate_data_file OCC22095-selectNoTbb.brep] res
+tclean res
+vinit
+vsetdispmode 1
+vdisplay res
+vfit
+
+set info1 [tricheck res]
+set pattern "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)"
+regexp "${pattern}" $info1 full freelinks1 crossfaces1 asyncedges1 freenodes1
+
+vclear
+vdisplay res
+vsetdispmode 1
+vfit
+
+set info2 [tricheck res]
+regexp "${pattern}" $info2 full freelinks2 crossfaces2 asyncedges2 freenodes2
+if { $freelinks1 != $freelinks2 } {
+  puts "Error: Free links are not equal"
+} else {
+  puts "OK: Free links are equal"
+}
+if { $crossfaces1 != $crossfaces2 } {
+  puts "Error: Cross faces are not equal"
+} else {
+  puts "OK: Cross faces are equal"
+}
+if { $asyncedges1 != $asyncedges2 } {
+  puts "Error: Async edges are not equal"
+} else {
+  puts "OK: Async edges are equal"
+}
+if { $freenodes1 != $freenodes2 } {
+  puts "Error: Free nodes are not equal"
+} else {
+  puts "OK: Free nodes are not equal"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

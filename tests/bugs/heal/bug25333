@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC25333"
+puts "========"
+puts ""
+##########################################################################################
+# Result wires obtained after TestHarness command "connectedges" contains internal edges
+##########################################################################################
+
+restore [locate_data_file bug25318_TheShapeTotal.brep] a
+connectedges r a
+
+set WireSet [explode r]
+set ii 0
+set IsFixed "TRUE"
+while {$ii != [llength $WireSet]} {
+  set EdgeSet [explode [lindex $WireSet $ii]]
+  set iii 0
+  while {$iii != [llength $EdgeSet]} {
+    set EdgeInfo [whatis [lindex $EdgeSet $iii]]
+    if {[lindex $EdgeInfo 5] == "INTERNAL"} {
+      set IsFixed "FALSE"
+    }
+    set iii [expr $iii + 1]
+  }
+  set ii [expr $ii + 1]
+}
+
+if {$IsFixed == "FALSE"} {
+  puts "ERROR: OCC25333 is reproduced"
+  puts "       Internal edge is detected"
+}

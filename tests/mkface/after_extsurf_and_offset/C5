@@ -1,0 +1,7 @@
+ellipse ellipse 0 0 0 30 10
+extsurf es_ellipse ellipse 0 0 1
+offset es_ellipse_of es_ellipse 5
+mkface result es_ellipse_of 0 3 0 40
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 8.4933833532169454e-07
+set MaxVTol 8.4933833532169475e-07

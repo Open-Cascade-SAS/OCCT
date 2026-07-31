@@ -1,0 +1,91 @@
+puts "============"
+puts "OCC26150"
+puts "============"
+puts ""
+#########################################################################
+# BRepOffsetAPI_ThruSections doesn't implement history method Generated()
+#########################################################################
+
+restore [locate_data_file bug27386_pr2.brep] pr2
+polyline pr1 5 0 0  5 -5 0  -5 -5 0  -5 0 0
+explode pr2
+wire pr2 pr2_1 pr2_2
+circle cc 0 100 0  5
+trim cc cc 0 pi
+mkedge cc cc
+wire pr3 cc
+beziercurve c1 3  0 50 -45  5 50 -50  0 50 -55
+beziercurve c2 3  0 50 -45  -5 50 -50  0 50 -55
+trim c1 c1 0.5 1
+trim c2 c2 0.5 1
+mkedge e1 c1
+mkedge e2 c2
+orientation e2 R
+wire pr4 e1 e2
+donly pr1 pr2 pr3 pr4
+
+explode pr1
+explode pr2
+explode pr3
+explode pr4
+
+thrusections r 1 0 pr1 pr2 pr3 pr4 pr1
+
+savehistory hist
+
+generated r1 hist pr1_1
+generated r2 hist pr1_2
+generated r3 hist pr1_3
+generated r4 hist pr2_1
+generated r5 hist pr2_2
+generated r6 hist pr3_1
+generated r7 hist pr4_1
+generated r8 hist pr4_2
+
+checknbshapes r1 -face 1
+checkprops r1 -s 1427.73
+checknbshapes r2 -face 2
+checkprops r2 -s 2845.67
+checknbshapes r3 -face 1
+checkprops r3 -s 1427.73
+checknbshapes r4 -face 2
+checkprops r4 -s 2850.56
+checknbshapes r5 -face 2
+checkprops r5 -s 2850.56
+checknbshapes r6 -face 4
+checkprops r6 -s 5701.12
+checknbshapes r7 -face 2
+checkprops r7 -s 2850.56
+checknbshapes r8 -face 2
+checkprops r8 -s 2850.56
+
+explode pr1 v
+explode pr2 v
+explode pr3 v
+explode pr4 v
+
+generated r9 hist pr1_1
+generated r10 hist pr1_2
+generated r11 hist pr1_3
+generated r12 hist pr1_4
+generated r13 hist pr2_1
+generated r14 hist pr2_2
+generated r15 hist pr2_3
+generated r16 hist pr3_1
+generated r17 hist pr3_2
+generated r18 hist pr4_1
+generated r19 hist pr4_2
+generated r20 hist pr4_3
+
+checkprops r9 -l 322.713
+checkprops r10 -l 347.889
+checkprops r11 -l 347.889
+checkprops r12 -l 322.713
+checkprops r13 -l 322.713
+checkprops r14 -l 363.603
+checkprops r15 -l 322.713
+checkprops r16 -l 322.713
+checkprops r17 -l 322.713
+checkprops r18 -l 322.713
+checkprops r19 -l 363.603
+checkprops r20 -l 322.713

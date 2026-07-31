@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC22487"
+puts "========"
+puts ""
+##########################################################################
+# Reading IGES file produces invalid shape
+##########################################################################
+
+igesread [locate_data_file bug22487_351_linz.igs] result *
+
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png
+
+vinit
+vdefaults -autoTriang 0
+
+incmesh result 0.1 -a 20
+
+vdisplay result
+vfit
+vsetdispmode 1
+
+vviewparams -scale 10.5476 -eye 7.59599 54.7624 -4.57957 -at 58.2815 -22.8528 13.3243 -up -0.123529 -0.298943 -0.946242 -proj -0.536853 0.822087 -0.189635
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}-3d.png

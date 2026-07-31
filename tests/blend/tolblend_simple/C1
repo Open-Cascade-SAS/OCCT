@@ -1,0 +1,24 @@
+#pcone c 25 50 50 180
+#explode c F
+#prism s1 c_3 25.0001 0 -50
+#explode s1 F
+#glue t c s1 c_3 s1_4
+#trotate c 0 0 0 0 0 1 180
+#explode c F
+#prism s1 c_3 25.0001 0 -50
+#explode s1 F
+#glue t2 c s1 c_3 s1_4
+#explode t F
+#explode t2 F
+#don t_1 t_5 t2_1 t2_5
+#sewing s t_1 t_5 t2_1 t2_5
+#explode s Sh
+
+restore [locate_data_file CFI_7_c3_fhq.rle] s
+tscale  s 0 0 0 SCALE1 
+explode s e
+blend result s 5*SCALE1 s_3 5*SCALE1 s_8
+explode result Sh
+tcopy result_1 result 
+
+checkprops result -s 1.34325e+07

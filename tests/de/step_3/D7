@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: PROPS : Faulty" 
+
+
+set filename trj6_pm4-ec-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 22 )  Summary  = 4  ( 22 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 13  ( 13 )  Shell    = 13  ( 13 )  Face     = 801  ( 801 ) 
+STATSHAPE   : Solid    = 32  ( 32 )  Shell    = 32  ( 32 )  Face     = 840  ( 840 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0009956037508  ( 0.009298658856 )  AvgTol   =  1.276056437e-005  (  0.0002831958675 )
+LABELS      : N0Labels = 21  ( 21 )  N1Labels = 39  ( 39 )  N2Labels = 0  ( 0 )   TotalLabels = 60  ( 60 )   NameLabels = 60  ( 60 )   ColorLabels = 13  ( 13 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 21  ( 60 )  Volume   = 21  ( 21 )  Area     = 21  ( 21 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = GRAY20 GRAY8 GREEN GREENYELLOW PURPLE STEELBLUE YELLOW  ( GRAY20 GRAY8 GREEN GREENYELLOW PURPLE STEELBLUE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

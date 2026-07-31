@@ -1,0 +1,181 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_DimensionedGeometry.hxx>
+#include <IGESDimen_ToolDimensionedGeometry.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+
+IGESDimen_ToolDimensionedGeometry::IGESDimen_ToolDimensionedGeometry() = default;
+
+void IGESDimen_ToolDimensionedGeometry::ReadOwnParams(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  const occ::handle<IGESData_IGESReaderData>&       IR,
+  IGESData_ParamReader&                             PR) const
+{
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                                                                tempNbDimen;
+  occ::handle<IGESData_IGESEntity>                                   aDimEntity;
+  int                                                                nbgeom = 0;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> GeomEntities;
+
+  // clang-format off
+  PR.ReadInteger(PR.Current(),"Number of Dimensions",tempNbDimen); //szv#4:S4163:12Mar99 `st=` not needed
+
+  PR.ReadInteger(PR.Current(),"number of entities",nbgeom); //szv#4:S4163:12Mar99 `st=` not needed
+
+  PR.ReadEntity(IR,PR.Current(),"Dimension Entity",aDimEntity); //szv#4:S4163:12Mar99 `st=` not needed
+  // clang-format on
+
+  if (nbgeom > 0)
+  {
+    PR.ReadEnts(IR,
+                PR.CurrentList(nbgeom),
+                "Geometry Entities",
+                GeomEntities); // szv#4:S4163:12Mar99 `st=` not needed
+  }
+  /*
+      {
+        GeomEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1,nbgeom);
+        for (int i = 1; i <= nbgeom; i++)
+      {
+            occ::handle<IGESData_IGESEntity> anentity;
+            st = PR.ReadEntity(IR,PR.Current(),"Geometry Entity",anentity);
+        if (st) GeomEntities->SetValue(i,anentity);
+      }
+      }
+  */
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempNbDimen, aDimEntity, GeomEntities);
+}
+
+void IGESDimen_ToolDimensionedGeometry::WriteOwnParams(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  IGESData_IGESWriter&                              IW) const
+{
+  IW.Send(ent->NbDimensions());
+  IW.Send(ent->NbGeometryEntities());
+  IW.Send(ent->DimensionEntity());
+  for (int upper = ent->NbGeometryEntities(), i = 1; i <= upper; i++)
+  {
+    IW.Send(ent->GeometryEntity(i));
+  }
+}
+
+void IGESDimen_ToolDimensionedGeometry::OwnShared(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  Interface_EntityIterator&                         iter) const
+{
+  iter.GetOneItem(ent->DimensionEntity());
+  for (int upper = ent->NbGeometryEntities(), i = 1; i <= upper; i++)
+  {
+    iter.GetOneItem(ent->GeometryEntity(i));
+  }
+}
+
+void IGESDimen_ToolDimensionedGeometry::OwnCopy(
+  const occ::handle<IGESDimen_DimensionedGeometry>& another,
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  Interface_CopyTool&                               TC) const
+{
+  int nbDim = another->NbDimensions();
+  DeclareAndCast(IGESData_IGESEntity, anentity, TC.Transferred(another->DimensionEntity()));
+  int upper = another->NbGeometryEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, upper);
+  for (int i = 1; i <= upper; i++)
+  {
+    DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->GeometryEntity(i)));
+    EntArray->SetValue(i, myentity);
+  }
+  ent->Init(nbDim, anentity, EntArray);
+}
+
+bool IGESDimen_ToolDimensionedGeometry::OwnCorrect(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent) const
+{
+  if (ent->NbDimensions() == 1)
+  {
+    return false;
+  }
+  //  force NbDimensions to 1 -> reconstruct
+  int                                                                nb = ent->NbGeometryEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  for (int i = 1; i <= nb; i++)
+  {
+    EntArray->SetValue(i, ent->GeometryEntity(i));
+  }
+  ent->Init(1, ent->DimensionEntity(), EntArray);
+  return true;
+}
+
+IGESData_DirChecker IGESDimen_ToolDimensionedGeometry::DirChecker(
+  const occ::handle<IGESDimen_DimensionedGeometry>& /* ent */) const
+{
+  IGESData_DirChecker DC(402, 13); // type no = 402; form no. = 13
+  DC.Structure(IGESData_DefVoid);
+  DC.GraphicsIgnored();
+  DC.BlankStatusIgnored();
+  DC.HierarchyStatusIgnored();
+  return DC;
+}
+
+void IGESDimen_ToolDimensionedGeometry::OwnCheck(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
+{
+  if (ent->NbDimensions() != 1)
+  {
+    ach->AddFail("NbDimensions != 1");
+  }
+  if (ent->UseFlag() > 3)
+  {
+    ach->AddFail("Incorrect UseFlag");
+  }
+}
+
+void IGESDimen_ToolDimensionedGeometry::OwnDump(
+  const occ::handle<IGESDimen_DimensionedGeometry>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
+{
+  S << "IGESDimen_DimensionedGeometry\n";
+
+  // int lower = 1; //szv#4:S4163:12Mar99 unused
+  //  int upper = ent->NbGeometryEntities();
+
+  S << "Number of Dimensions : " << ent->NbDimensions() << "\n"
+    << "Dimension Entity : ";
+  dumper.Dump(ent->DimensionEntity(), S, (level <= 4) ? 0 : 1);
+  S << "\n"
+    << "Geometry Entities : ";
+  IGESData_DumpEntities(S, dumper, level, 1, ent->NbGeometryEntities(), ent->GeometryEntity);
+  S << '\n';
+}

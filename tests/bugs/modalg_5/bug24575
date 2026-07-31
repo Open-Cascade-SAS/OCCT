@@ -1,0 +1,13 @@
+puts "================"
+puts "OCC24575"
+puts "================"
+puts ""
+#######################################################################
+# Exception is raised during 'checkshape' operation.
+#######################################################################
+
+cpulimit 1000
+
+restore [locate_data_file bug24575_cx1.brep] b
+
+checkshape b

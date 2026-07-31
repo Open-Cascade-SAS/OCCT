@@ -1,0 +1,93 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#                  (name = FILTERBYNEIGHBOURGS)
+#                  Check type migration
+# ===============================================
+# Test case: F9 (testing using AttachShape & ComputeFun)
+# 1. Create 3 boxes $B1, $B2, $B3
+# 2. $FS1 = Fuse ($B1, $B2)
+# 3. $FS2 = Fuse ($B1, $B3)
+# 4. Make  selections of the face 'fuse2_19'
+# 5. Modify B2
+# 6. Recompute
+# ===============================================
+
+set doc d16
+NewDocument $doc BinOcaf
+AddDriver $doc Box Fuse Attach
+
+#1.create 3 boxes
+set B1 [AddBox $doc 100 200 350]
+set B2 [AddBox $doc 330 330 90]
+set B3 [AddBox $doc 60 450 150]
+ComputeFun $doc $B1:1
+ComputeFun $doc $B2:1
+ComputeFun $doc $B3:1
+
+#2. B1 = fuse (B1 B2)
+set FS1 [AddFuse $doc $B1 $B2]
+ComputeFun $doc $FS1
+
+#3. B1 = fuse (B1 B3)
+set FS2 [AddFuse $doc $B1 $B3]
+ComputeFun $doc $FS2
+GetShape $doc $FS2:2 fuse2
+explode fuse2 f
+
+
+
+#4. Select fuse2_19 using Attach 
+set Sel2 [AttachShape $doc fuse2_19 $B1]
+GetShape $doc $Sel2:1:2 nf19before
+#nf19before is face
+set info1 [whatis nf19before]
+
+
+#5. Modify
+BoxDZ $doc $B2 125
+
+#6. Recompute - Alternative way of solving
+InitLogBook $doc
+ComputeFun $doc $B1:1
+ComputeFun $doc $B2:1
+ComputeFun $doc $B3:1
+ComputeFun $doc $FS1
+ComputeFun $doc $FS2
+ComputeFun $doc $Sel2:1
+GetShape $doc $Sel2:1:2 nf19after
+#nf19after is face
+set info2 [whatis nf19after]
+
+if { [regexp "shape" $info1] != 1 } {
+    puts "Error : There is not word shape in nf19after"
+}
+if { [regexp "FACE" $info1] != 1 } {
+    puts "Error : There is not word FACE in nf19after"
+}
+if { [regexp "REVERSED" $info1] != 1 } {
+    puts "Error : There is not word REVERSED in nf19after"
+}
+if { [regexp "Modified" $info1] != 1 } {
+    puts "Error : There is not word Modified in nf19after"
+}
+if { [regexp "Orientable" $info1] != 1 } {
+    puts "Error : There is not word Orientable in nf19after"
+}
+
+if { [regexp "shape" $info2] != 1 } {
+    puts "Error : There is not word shape in nf19before"
+}
+if { [regexp "FACE" $info2] != 1 } {
+    puts "Error : There is not word FACE in nf19before"
+}
+if { [regexp "REVERSED" $info2] != 1 } {
+    puts "Error : There is not word REVERSED in nf19before"
+}
+if { [regexp "Modified" $info2] != 1 } {
+    puts "Error : There is not word Modified in nf19before"
+}
+if { [regexp "Orientable" $info2] != 1 } {
+    puts "Error : There is not word Orientable in nf19before"
+}

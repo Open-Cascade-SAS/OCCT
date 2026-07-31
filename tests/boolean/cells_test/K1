@@ -1,0 +1,56 @@
+puts "=========="
+puts "OCC28245"
+puts "=========="
+puts ""
+#################################################################################################
+# Result of Cells Builder algorithm becomes invalid after removal of internal boundaries on faces
+#################################################################################################
+
+circle c1 0 0 0 0 0 1 10
+circle c2 10 0 0 0 0 1 10
+circle c3 5 9 0 0 0 1 10
+
+mkedge e1 c1
+mkedge e2 c2
+mkedge e3 c3
+
+wire w1 e1
+wire w2 e2
+wire w3 e3
+
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+
+bclearobjects
+bcleartools
+baddobjects f1 f2 f3
+bfillds
+bcbuild rx
+
+bcadd r1 f1 1 -m 1 -u
+bcadd r1 f2 1 -m 2 -u
+
+checknbshapes r1 -face 2
+checkprops r1 -s 505.482
+
+bcremoveall
+bcadd r2 f1 1 -m 1 -u
+bcadd r2 f2 1 -m 1 -u
+
+checknbshapes r2 -face 1
+checkprops r2 -s 505.482
+
+bcremoveall
+bcadd result f1 1 -m 1
+bcadd result f2 1 f3 0 -m 1
+bcadd result f3 1 f1 0 -m 2
+bcremoveint result
+
+set bcheck [bopcheck result]
+if {![regexp {This shape seems to be OK.} $bcheck]} {
+    puts "Error: result shape is self intersected"
+}
+
+checknbshapes result -edge 8 -face 2
+checkprops result -s 651.238

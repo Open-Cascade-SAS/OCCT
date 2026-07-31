@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC28486"
+puts "========"
+puts ""
+#################################################
+# Fuse of several solids fails due to presence of common zones between faces
+#################################################
+
+restore [locate_data_file bug26789_All-Spikes.brep] a
+explode a
+# fusing first, third and fourth solids
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_3 a_4
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -solid 1 -shell 1
+checkprops result -s 2237.86 -v 5444.61
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

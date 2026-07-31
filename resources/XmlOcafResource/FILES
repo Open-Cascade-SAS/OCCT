@@ -1,0 +1,11 @@
+srcinc:::XmlOcaf.xsd
+srcinc:::XmlOcaf_SmallTypes.xsd
+srcinc:::XmlOcaf_TDataStd.xsd
+srcinc:::XmlOcaf_TDataStd_Name.xsd
+srcinc:::XmlOcaf_TDF.xsd
+srcinc:::XmlOcaf_TDocStd.xsd
+srcinc:::XmlOcaf_TFunction.xsd
+srcinc:::XmlOcaf_TNaming.xsd
+srcinc:::XmlOcaf_TNaming_NamedShape.xsd
+srcinc:::XmlOcaf_TPrsStd.xsd
+srcinc:::XmlXcaf.xsd

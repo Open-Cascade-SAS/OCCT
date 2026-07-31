@@ -1,0 +1,41 @@
+# in tests expression "set AddToDocument ASSEMBLY_C_L" means creating assembly and initializing colors and layers
+# and expression "set AddToDocument COLORS_LAYERS" means initializing colors and layers
+#
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+    pload OCAF
+    pload TOPTEST
+    pload XDE
+}
+
+cpulimit 1000
+
+set ErrorCode 0
+##############
+### ErrorCode means :
+### 0 - Success
+### 1 - Warning
+### 2 - Error
+###############
+
+#if {[string compare [datadir] "."] == 0} { 
+#  datadir [file dirname [info script]]/data
+#}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
+#set WorkDirectory "$env(TmpDir)"
+set WorkDirectory $imagedir
+
+if {![file exists $WorkDirectory]} {
+    catch {[file mkdir $WorkDirectory]}
+} else {
+    if {![file isdirectory $WorkDirectory]} {
+	puts "The assigned work directory $WorkDirectory is not directory! Exit ..."
+	exit
+    }
+}

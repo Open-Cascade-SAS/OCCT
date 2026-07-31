@@ -1,0 +1,34 @@
+restore [locate_data_file bug29481_boxes.brep] s
+explode s f
+
+# remove the hole inside compsolid
+
+compound s_30 s_31 s_32 s_60 s_39 s_54 s_48 s_58 s_7 s_12 s_46 s_25 s_21 s_40 s_9 s_38 s_45 s_13 s_59 s_8 s_22 s_51 s_52 s_18 hole
+removefeatures result s hole
+checkshape result
+checkprops result -s 4800 -v 8000
+checknbshapes result -vertex 27 -edge 54 -wire 36 -face 36 -shell 8 -solid 8
+CheckIsFeatureRemoved hole {v e f}
+
+# check that the shape is still a compsolid
+if {![regexp "COMPSOLID" [whatis result]]} {
+  puts "Error: the type of input shape is lost during feature removal"
+}
+
+# check that the sharing is kept
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: sharing is lost after feature removal"
+}
+
+# get history of the operation
+savehistory rf_hist
+
+# check modification of the solids
+foreach solid [explode s so] {
+  modified msol rf_hist $solid
+  checkprops msol -s 600 -v 1000
+  checknbshapes msol -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1 -t
+
+  bcommon com msol $solid
+  checkprops com -equal $solid
+}

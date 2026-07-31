@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "OCC528"
+puts "========================"
+puts ""
+##############################################
+## Result of bcut command is faulty although arguments are valid
+##############################################
+
+restore [locate_data_file OCC528_1.brep] c1 
+checkshape c1
+
+restore [locate_data_file OCC528_2.brep] c2 
+checkshape c2
+
+if { [catch { bcut result c1 c2 } catch_result] } {
+    puts "OCC528 Faulty: function BCUT works wrongly"
+} else {
+    puts "OCC528 OK:function BCUT works properly"
+}
+
+checkprops result -s 124.092 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

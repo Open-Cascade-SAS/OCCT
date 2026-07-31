@@ -1,0 +1,10 @@
+puts "BUC60321"
+puts "Creating fuse is impossible"
+
+restore [locate_data_file buc60321a.brep] a
+restore [locate_data_file buc60321b.brep] b
+
+bfuse result a b
+
+checkprops result -s 21190.7
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+#pcylinder s1 5 12 
+#pcylinder s2 3 15 
+#trotate s2 0 0 0 1 0 0 90
+#ttranslate s2 0 7 7
+#fuse s3 s1 s2
+#pcylinder s4 3 20 
+#fuse s s4 s3
+#save s 6_I56.draw 
+
+restore [locate_data_file CFI_6_i56fhi.rle]  s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 3*SCALE2 s_6
+
+checkprops result -s 0

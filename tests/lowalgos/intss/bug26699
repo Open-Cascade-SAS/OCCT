@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC26699"
+puts "================"
+puts ""
+#######################################################################
+# Wrong section curves
+#######################################################################
+
+set MaxTol 1.e-7
+set GoodNbCurv 2
+
+restore [locate_data_file bug26699_f1.brep] f1
+restore [locate_data_file bug26699_f2.brep] f2
+
+set log [bopcurves f1 f2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+checklength c_1 -l 3.0
+checklength c_2 -l 3.0
+
+axo
+donly f* c_*
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

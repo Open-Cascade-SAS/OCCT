@@ -1,0 +1,26 @@
+puts "============================================================================================="
+puts "0029789: Modeling Algorithms - General Fuse produces invalid shape for valid arguments"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug29789-hull.brep] h
+restore [locate_data_file bug29789-contour.brep] c
+
+bclearobjects
+bcleartools
+baddobjects h
+baddtools c
+bfillds
+
+bsplit result
+
+checkshape result
+checknbshapes result -wire 40 -face 40
+checkprops result -s 7.21423e+06
+
+bbop rcom 0
+checkshape rcom
+checkprops rcom -l 8383.67
+checksection rcom -r 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

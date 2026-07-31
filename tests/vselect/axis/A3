@@ -1,0 +1,55 @@
+puts "========"
+puts "0032388: Visualization - provide ray-picking interface with zero tolerance for rectangular frustum"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 200 300
+vinit View1
+puts "Display box"
+vdisplay -dispMode 1 b
+vfit
+vselprops -pixtol 0
+vaspects b -sensitivity 0 4
+set box_sens4 [vmoveto 321 319]
+vdump ${imagedir}/${casename}_box_sens4.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${box_sens4} full p
+checkpoint "box_sens4" $p {100 200 0} 0.001
+vaspects b -sensitivity 0 0
+set box_sens0_out [vmoveto 321 319]
+vdump ${imagedir}/${casename}_box_sens0_out.png
+if {[string first "e+308" $box_sens0_out] == -1} {
+  puts "Faulty : Selection of box with sensitivity 0"
+}
+set box_sens0_in [vmoveto 319 317]
+vdump ${imagedir}/${casename}_box_sens0_in.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${box_sens0_in} full p
+checkpoint "box_sens0_in" $p {100.00000000000003 196.92152736525867 0.4127082000112523} 0.001
+
+puts ""
+puts "Display 2d point"
+vpoint p 320 318 -2d
+vaspects p -markerType .
+set point_sens12_out [vmoveto 321 319]
+vdump ${imagedir}/${casename}_point_sens12_out.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point_sens12_out} full p
+checkpoint "point_sens12_out" $p {104.7974449617403 -102.98278630143884 -346.41016151377545} 0.001
+set point_sens12_in [vmoveto 319 317]
+vdump ${imagedir}/${casename}_point_sens12_in.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point_sens12_in} full p
+checkpoint "point_sens12_in" $p {104.7974449617403 -102.98278630143884 -346.41016151377545} 0.001
+vaspects p -sensitivity 0 0
+set point_sens0_out [vmoveto 321 319]
+vdump ${imagedir}/${casename}_point_sens0_out.png
+if {[string first "e+308" $point_sens0_out] == -1} {
+  puts "Faulty : Selection of point with sensitivity 0"
+}
+set point_sens0_eq [vmoveto 320 318]
+vdump ${imagedir}/${casename}_point_sens0_eq.png
+if {[string first "e+308" $point_sens0_eq] == -1} {
+  puts "Faulty : Selection of point with sensitivity 0"
+}
+set point_sens0_in [vmoveto 319 317]
+vdump ${imagedir}/${casename}_point_sens0_in.png
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point_sens0_in} full p
+checkpoint "point_sens0_in" $p {100.00000000000003 196.92152736525867 0.41270820001116704} 0.001

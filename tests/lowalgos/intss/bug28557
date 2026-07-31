@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC28557"
+puts "========"
+puts ""
+#################################################
+# Test case bugs modalg_6 bug27615 works differently on VC10 and VC12
+#################################################
+
+set MaxTolReached 5.0e-6
+set GoodNbCurv 1
+
+brestore [locate_data_file bug27615.brep] b
+explode b f
+copy b_1 f1; copy b_19 f2;
+don f1 f2
+set log [bopcurves f1 f2 -2d -p 2.2023968513463648  29.150590232723459 2. 0.085664915040461045 -p 2.2023968513457164 31.082210390953925 2.9507808705284453 0.085823752287563393]
+
+smallview
+donly c_1
+fit
+disp f1 f2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {$Toler > $MaxTolReached} {
+  puts "Error: Big tolerance is returned by intersector"
+}
+
+if {$NbCurv != $GoodNbCurv} {
+  puts "Error: Please check NbCurves for intersector"
+}

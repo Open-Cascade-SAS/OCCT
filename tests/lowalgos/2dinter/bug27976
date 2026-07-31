@@ -1,0 +1,37 @@
+puts "========"
+puts "0027976: Unstable work of 2d intersection algorithm for two lines"
+puts "========"
+puts ""
+
+puts "TODO OCC27976 All: Error: wrong 2-th intersection result"
+
+set aRefPx 170.0
+set aRefPy 9620.0
+
+binrestore [locate_data_file bug27976_fe.bin] b
+explode b
+don b_1
+pcurve b_1
+
+smallview -2D-
+point p1 169.98949375765261 9619.9910661265931
+point p2 170.00862369283078 9620.0101960617721
+don p1 p2
+2dfit
+don b_1_4 b_1_5
+set log(1) [2dintersect b_1_4 b_1_5 -tol 1.e-10]
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+trim c2d b_1_5 9610 9610.0000006891
+don b_1_4 c2d
+set log(2) [2dintersect b_1_4 c2d -tol 1.e-10]
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
+
+for {set i 1} {$i <= 2} {incr i} {
+  if { [regexp {Intersection point 1 : ([-0-9.+eE]+) ([-0-9.+eE]+)} $log($i) full cx($i) cy($i)] } {
+    set aDist($i) [2ddistpp $aRefPx $aRefPy $cx($i) $cy($i)]
+    checkreal Distance $aDist($i) 0.0 1.e-6 0.0
+  } else {
+    puts "Error: wrong $i-th intersection result"
+  }
+}

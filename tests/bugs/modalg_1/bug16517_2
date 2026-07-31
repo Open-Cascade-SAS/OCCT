@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC16517"
+puts "============"
+puts ""
+#######################################################################
+# Cylindrical projection is wrong
+#######################################################################
+
+set BugNumber OCC16517
+
+restore [locate_data_file OCC16517_c.brep] c
+restore [locate_data_file OCC16517_s.brep] s
+
+set Result_List [prj p c s 0 0 1]
+set Result_Numbers [llength ${Result_List}]
+set mistake 0
+if { ${Result_Numbers} != 2 } {
+  puts "Faulty ${BugNumber} : projection numbers are wrong"
+  set mistake 1
+} else {
+  puts "Second projection ..."
+  renamevar p_2 result
+  set status 0
+
+  checkprops result -l 110.167 
+checkshape result
+  checksection result
+  checknbshapes result -vertex 1 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 3
+}
+
+# Resume
+puts ""
+if { ${mistake} != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+vinit
+vdisplay c s result p_1
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

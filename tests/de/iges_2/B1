@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename CATIA01.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 480 )  Warnings = 321  ( 4694 )  Summary  = 321  ( 5174 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   FreeWire = 1612  ( 1613 ) 
+TOLERANCE   : MaxTol   =   0.6032674714  (   0.6032674714 )  AvgTol   =  0.001484584911  (  0.001489802052 )
+LABELS      : N0Labels = 4  ( 7 )  N1Labels = 10485  ( 16435 )  N2Labels = 0  ( 0 )   TotalLabels = 10489  ( 16442 )   NameLabels = 8504  ( 10969 )   ColorLabels = 10486  ( 16434 )   LayerLabels = 8801  ( 16282 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 17  ( 17 )
+COLORS      : Colors   = BLUE CYAN DARKGOLDENROD1 DARKSLATEGRAY1 GREEN GREEN4 LIGHTPINK1 MAGENTA MEDIUMPURPLE1 MEDIUMSPRINGGREEN PURPLE RED RED3 ROYALBLUE2 SEAGREEN2 WHITE YELLOW  ( BLUE CYAN DARKGOLDENROD1 DARKSLATEGRAY1 GREEN GREEN4 LIGHTPINK1 MAGENTA MEDIUMPURPLE1 MEDIUMSPRINGGREEN PURPLE RED RED3 ROYALBLUE2 SEAGREEN2 WHITE YELLOW )
+NLAYERS     : NLayers  = 13  ( 17 )
+LAYERS      : Layers   = 102 104 106 107 108 152 154 156 158 2 240 255 7  ( 1 101 102 104 106 107 108 152 154 156 158 2 239 240 255 6 7 )
+
+}

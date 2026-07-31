@@ -1,0 +1,28 @@
+
+puts "========================"
+puts " OCC534 "
+puts " case 6 "
+puts "========================"
+puts ""
+
+parabola parabola 0 0 0 30
+revsurf rs_parabola parabola 0 400 0 1 0 0
+offset rs_parabola_of rs_parabola 10
+offset rs_parabola_of_of rs_parabola_of 5
+mkface result rs_parabola_of_of .3 .5 .3 .5
+
+set tolerance [maxtolerance result]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
+    puts "Faulty : Tolerance of shape is more then 1.0"
+} else {
+    puts "Tolerance is OK"
+}
+
+checkprops result -s 11.9915 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

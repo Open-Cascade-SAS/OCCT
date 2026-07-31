@@ -1,0 +1,17 @@
+puts "TODO OCC23213 ALL: Error : The number of faces is wrong"
+
+puts "TODO OCC23213 ALL: Error : errors occur during test"
+
+restore [locate_data_file CTO908_topo108.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile "stp"
+
+set AddToDocument "COLORS_LAYERS"
+
+set CompareDocumentsMode "FACES VOLUME_EXACTLY COLORS_EXACTLY LAYERS_EXACTLY"
+
+
+

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC26041"
+puts "========"
+puts ""
+################################################
+# GeomAPI_ExtremaCurveSurface have inexact API
+################################################
+
+polyline l 0 -10 -10 0 10 -10 0 10 10 0 -10 10 0 -10 -10
+mkplane pl l
+mksurface surf pl
+
+vertex v1 10 -5 0
+vertex v2 10 5 0
+edge e v1 v2
+mkcurve curv e
+
+set bug_info [extrema surf curv]
+if {$bug_info != "Infinite number of extremas, distance = 10\n"} {
+  puts "ERROR: OCC25063 is reproduced."
+}
+
+smallview
+don pl e
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

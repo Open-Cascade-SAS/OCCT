@@ -1,0 +1,19 @@
+#polyline d 0 0 0  0 5 0 7 7 -1
+#polyline dd -5 0 -5  -5 0 5  5 0 5  5 0 -5 -5 0 -5
+#mkplane dd dd
+#wire d d
+#pipe s d dd
+#explode s F 
+#donly s_3  s_1 s_2  s_4  
+#sewing t  s_3  s_1 s_2  s_4 
+#explode t sh
+#save t_1 5_B12.draw 
+
+restore [locate_data_file CFI_5_b12fgg.rle] s
+tscale s 0 0 0 SCALE1
+explode s E 
+blend result s 0.5*SCALE1 s_4 0.5*SCALE1 s_8 0.5*SCALE1 s_7 
+explode result sh
+tcopy result_1 result
+
+checkprops result -s 4811.88

@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC25687"
+puts "AIS_ColoredShape should activate back-face culling for valid Solids."
+puts "============"
+puts ""
+
+set x_check_coord 225
+set y_check_coord 32
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+explode b f
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdisplay b
+vviewparams -proj 0.5 0.3 0.1
+vfit
+vaspects b -subshapes b_1 -setcolor GREEN
+
+if {"[vreadpixel ${x_check_coord} ${y_check_coord} rgb name]" == "GREEN"} {
+  puts "Error: back-face culling should be turned ON, but back-face is still visible."
+}
+
+vdump $imagedir/${casename}.png

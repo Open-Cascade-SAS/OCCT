@@ -1,0 +1,21 @@
+
+puts "================"
+puts "OCC28"
+puts "================"
+###############################################
+puts "Bug is limitation on currently version of topology (07.06.2002)."
+###############################################
+
+cpulimit 1000
+restore [locate_data_file OCC28.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_2 a_1
+checkshape result
+
+checkprops result -s 483935
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,209 @@
+// Created on: 2007-01-25
+// Created by: Sergey KOCHETKOV
+// Copyright (c) 2007-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <MeshVS_DataSource.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_MeshOwner.hxx>
+#include <PrsMgr_PresentationManager.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
+
+#ifndef MeshVS_PRSBUILDERHXX
+#endif
+
+//=================================================================================================
+
+MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject*     theSelObj,
+                                   const occ::handle<MeshVS_DataSource>& theDS,
+                                   const int                             thePriority)
+    : SelectMgr_EntityOwner(theSelObj, thePriority)
+{
+  myLastID = -1;
+  if (!theDS.IsNull())
+  {
+    myDataSource = theDS;
+  }
+}
+
+//=================================================================================================
+
+const occ::handle<MeshVS_DataSource>& MeshVS_MeshOwner::GetDataSource() const
+{
+  return myDataSource;
+}
+
+//=================================================================================================
+
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetSelectedNodes() const
+{
+  return mySelectedNodes;
+}
+
+//=================================================================================================
+
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetSelectedElements() const
+{
+  return mySelectedElems;
+}
+
+//=================================================================================================
+
+void MeshVS_MeshOwner::AddSelectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+                                           const occ::handle<TColStd_HPackedMapOfInteger>& Elems)
+{
+  if (mySelectedNodes.IsNull())
+  {
+    mySelectedNodes = Nodes;
+  }
+  else if (!Nodes.IsNull())
+  {
+    NCollection_PackedMapAlgo::Unite(mySelectedNodes->ChangeMap(), Nodes->Map());
+  }
+  if (mySelectedElems.IsNull())
+  {
+    mySelectedElems = Elems;
+  }
+  else if (!Elems.IsNull())
+  {
+    NCollection_PackedMapAlgo::Unite(mySelectedElems->ChangeMap(), Elems->Map());
+  }
+}
+
+//=================================================================================================
+
+void MeshVS_MeshOwner::ClearSelectedEntities()
+{
+  mySelectedNodes.Nullify();
+  mySelectedElems.Nullify();
+}
+
+//=================================================================================================
+
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetDetectedNodes() const
+{
+  return myDetectedNodes;
+}
+
+//=================================================================================================
+
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetDetectedElements() const
+{
+  return myDetectedElems;
+}
+
+//=================================================================================================
+
+void MeshVS_MeshOwner::SetDetectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+                                           const occ::handle<TColStd_HPackedMapOfInteger>& Elems)
+{
+  myDetectedNodes = Nodes;
+  myDetectedElems = Elems;
+  if (IsSelected())
+  {
+    SetSelected(false);
+  }
+}
+
+//=================================================================================================
+
+void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int /*theMode*/)
+{
+  occ::handle<SelectMgr_SelectableObject> aSelObj;
+  if (HasSelectable())
+  {
+    aSelObj = Selectable();
+  }
+
+  if (thePM->IsImmediateModeOn() && aSelObj->IsKind(STANDARD_TYPE(MeshVS_Mesh)))
+  {
+    // Update last detected entity ID
+    occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
+    occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
+    if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
+    {
+      TColStd_PackedMapOfInteger::Iterator anIt(aNodes->Map());
+      if (myLastID != anIt.Key())
+      {
+        myLastID = anIt.Key();
+      }
+    }
+    else if (!aElems.IsNull() && aElems->Map().Extent() == 1)
+    {
+      TColStd_PackedMapOfInteger::Iterator anIt(aElems->Map());
+      if (myLastID != anIt.Key())
+      {
+        myLastID = anIt.Key();
+      }
+    }
+
+    // hilight detected entities
+    occ::handle<MeshVS_Mesh> aMesh = occ::down_cast<MeshVS_Mesh>(aSelObj);
+    aMesh->HilightOwnerWithColor(thePM, theStyle, this);
+  }
+}
+
+void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM, const int)
+{
+  SelectMgr_EntityOwner::Unhilight(thePM);
+
+  occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
+  occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
+  if ((!aNodes.IsNull() && !aNodes->Map().Contains(myLastID))
+      || (!aElems.IsNull() && !aElems->Map().Contains(myLastID)))
+  {
+    return;
+  }
+  // Reset last detected ID
+  myLastID = -1;
+}
+
+bool MeshVS_MeshOwner::IsForcedHilight() const
+{
+  bool aHilight = true;
+  int  aKey     = -1;
+  if (myLastID > 0)
+  {
+    // Check the detected entity and
+    // allow to hilight it if it differs from the last detected entity <myLastID>
+    occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
+    if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
+    {
+      TColStd_PackedMapOfInteger::Iterator anIt(aNodes->Map());
+      aKey = anIt.Key();
+      if (myLastID == aKey)
+      {
+        aHilight = false;
+      }
+    }
+    occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
+    if (!aElems.IsNull() && aElems->Map().Extent() == 1)
+    {
+      TColStd_PackedMapOfInteger::Iterator anIt(aElems->Map());
+      aKey = anIt.Key();
+      if (myLastID == aKey)
+      {
+        aHilight = false;
+      }
+    }
+  }
+  return aHilight;
+}

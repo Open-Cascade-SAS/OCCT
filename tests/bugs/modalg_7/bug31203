@@ -1,0 +1,14 @@
+puts "======================================================="
+puts "0031203: Test harness command bsection on the planar faces return only one vertex instead edge representing intersection line"
+puts "======================================================="
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug31203.brep] s 
+
+explode s
+bsection sec s_1 s_2
+
+checknbshapes sec -edge 1 -vertex 2
+

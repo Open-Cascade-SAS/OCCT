@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC25264"
+puts "================"
+puts ""
+#######################################################################################
+# Mesh very slow for Revol shape
+######################################################################################
+
+restore [locate_data_file bug25264_wire.brep] w
+
+# right revol position, mesh is very fast.
+revol result1 w 20583.283203125 14039.0208237378 28443.2585934755 0 0 1 360
+dchrono i restart
+incmesh result1 0.1
+dchrono i stop counter incmesh_1
+
+# wrong revol position, mesh is very slow in occ6.7, while in occ6.2 is very fast.
+revol result2 w 20583.283203125 14039.0208217527 28443.25860033352 0 0 1 360
+dchrono j restart
+incmesh result2 0.1
+dchrono j stop counter incmesh_2
+
+checkview -display result1 -3d -path ${imagedir}/${test_image}_1.png
+checkview -display result2 -3d -path ${imagedir}/${test_image}_2.png
+

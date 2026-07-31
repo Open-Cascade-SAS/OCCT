@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Faulty OCC966 : Tolerance of shape is more than 0.000176"
+
+puts "========="
+puts " OCC966 "
+puts "========="
+puts ""
+###############################################
+##file cylinders.brep. It is increasing tolerance from  0.000176 to 51.1
+###############################################
+
+restore [locate_data_file OCC966.brep] a
+
+DT_ShapeConvertRev result a 0 1
+
+set tolerance [maxtolerance result]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+if { $MaxFaceTolerance > 0.000176 || $MaxEdgeTolerance > 0.000176 || $MaxVertexTolerance > 0.000176 } {
+   puts "Faulty OCC966 : Tolerance of shape is more than 0.000176"
+}
+
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

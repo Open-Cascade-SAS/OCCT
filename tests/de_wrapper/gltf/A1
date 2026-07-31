@@ -1,0 +1,23 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+catch { Close D_Second }
+
+ReadGltf D_First ${filename}
+XGetOneShape S_First D_First
+
+set file_path ${imagedir}/${casename}.gltf
+
+WriteGltf D_First $file_path
+
+ReadFile D_Second $file_path
+XGetOneShape S_Second D_Second
+
+checktrinfo S_Second -ref [trinfo S_First]
+
+file delete $file_path
+Close D_First
+Close D_Second

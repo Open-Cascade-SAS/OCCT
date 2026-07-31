@@ -1,0 +1,19 @@
+puts "============"
+puts "BUC30489"
+puts "============"
+puts ""
+###############################
+## 0030489: Modeling Algorithms - BRepBuilderAPI_GTransform hangs
+###############################
+
+
+restore [locate_data_file bug30489.brep] a
+dchrono h restart
+scalexyz r a 1. 1. 1.
+dchrono h stop counter scalexyz
+
+checkprops r -s 2.86706e+007
+checkshape r
+checkview -display r -2d -path ${imagedir}/${test_image}.png
+
+

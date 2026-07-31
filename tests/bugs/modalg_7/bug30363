@@ -1,0 +1,10 @@
+puts "=========================================================================="
+puts "OCC30363: BRepLib::SameParameter with option 'forced' corrupts valid shape"
+puts "=========================================================================="
+puts ""
+
+restore [locate_data_file bug30363_shell_3faces.brep] a
+checkshape a
+
+fsameparameter a 1.e-7
+checkshape a

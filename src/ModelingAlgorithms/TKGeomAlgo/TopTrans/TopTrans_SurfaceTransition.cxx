@@ -1,0 +1,672 @@
+// Created on: 1997-03-04
+// Created by: Prestataire Xuan PHAM PHU
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Modified: eap Mar 25 2002 (occ102,occ227), touch case
+
+#include <Precision.hxx>
+#include <TopAbs.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopTrans_SurfaceTransition.hxx>
+
+static gp_Dir FUN_nCinsideS(const gp_Dir& tgC, const gp_Dir& ngS)
+{
+  // Give us a curve C on surface S, <parOnC>, a parameter
+  // Purpose : compute normal vector to C, tangent to S at
+  //           given point , oriented INSIDE S
+  // <tgC> : geometric tangent at point of <parOnC>
+  // <ngS> : geometric normal at point of <parOnC>
+  gp_Dir XX(ngS ^ tgC);
+  return XX;
+}
+
+#define M_REVERSED(st) (st == TopAbs_REVERSED)
+#define M_INTERNAL(st) (st == TopAbs_INTERNAL)
+#define M_UNKNOWN(st) (st == TopAbs_UNKNOWN)
+
+static int FUN_OO(const int i)
+{
+  if (i == 1)
+  {
+    return 2;
+  }
+  if (i == 2)
+  {
+    return 1;
+  }
+  return 0;
+}
+
+// static double FUN_Ang(const gp_Dir& Normref,
+static double FUN_Ang(const gp_Dir&,
+                      const gp_Dir&            beafter,
+                      const gp_Dir&            TgC,
+                      const gp_Dir&            Norm,
+                      const TopAbs_Orientation O)
+{
+  gp_Dir dironF = FUN_nCinsideS(TgC, Norm);
+  if (M_REVERSED(O))
+  {
+    dironF.Reverse();
+  }
+
+  double ang = beafter.AngleWithRef(dironF, TgC);
+  return ang;
+}
+
+static void FUN_getSTA(const double Ang, const double tola, int& i, int& j)
+{
+  double cos     = std::cos(Ang);
+  double sin     = std::sin(Ang);
+  bool   nullcos = std::abs(cos) < tola;
+  bool   nullsin = std::abs(sin) < tola;
+  if (nullcos)
+  {
+    i = 0;
+  }
+  else
+  {
+    i = (cos > 0.) ? 1 : 2;
+  }
+  if (nullsin)
+  {
+    j = 0;
+  }
+  else
+  {
+    j = (sin > 0.) ? 1 : 2;
+  }
+}
+
+/*static void FUN_getSTA(const double Ang, const double tola,
+               const double Curv, const double CurvRef,
+               int& i, int& j)
+{
+  // Choosing UV referential (beafter,myNorm).
+  // purpose : computes position boundary face relative to the reference surface
+  //  notice : j==0 =>  j==1 : the boundary face is ABOVE the reference surface
+  //                    j==2 : the boundary face is UNDER the reference surface
+  //  - j==0 : the boundary and the reference objects are tangent-
+
+  FUN_getSTA(Ang,tola,i,j);
+  if (j == 0) {
+      double diff = Curv - CurvRef;
+      if (std::abs(diff) < tola) {STATIC_DEFINED = false; return;} // nyi FUN_Raise
+      j = (diff < 0.) ? 1 : 2;
+  }
+}*/
+#ifndef OCCT_DEBUG
+  #define M_Unknown (-100)
+#else
+  #define M_Unknown (-100.)
+#endif
+#define M_noupdate (0)
+#define M_updateREF (1)
+#define M_Ointernal (10)
+
+static int FUN_refnearest(const double             Angref,
+                          const TopAbs_Orientation Oriref,
+                          const double             Ang,
+                          const TopAbs_Orientation Ori,
+                          const double             tola)
+{
+  bool undef = (Angref == 100.);
+  if (undef)
+  {
+    return M_updateREF;
+  }
+
+  double cosref = std::cos(Angref), cos = std::cos(Ang);
+  double dcos = std::abs(cosref) - std::abs(cos);
+  if (std::abs(dcos) < tola)
+  {
+    // Analysis for tangent cases : if two boundary faces are same sided
+    // and have tangent normals, if they have opposite orientations
+    // we choose INTERNAL as resulting complex transition (case EXTERNAL
+    // referring to no logical case)
+    if (TopAbs::Complement(Ori) == Oriref)
+    {
+      return M_Ointernal;
+    }
+    else
+    {
+      return (int)M_Unknown; // nyi FUN_RAISE
+    }
+  }
+  int updateref = (dcos > 0.) ? M_noupdate : M_updateREF;
+  return updateref;
+}
+
+//=================================================================================================
+
+static int FUN_refnearest(const int                i,
+                          const int                j,
+                          const double             CurvSref,
+                          const double             Angref,
+                          const TopAbs_Orientation Oriref,
+                          const double             Curvref,
+                          const double             Ang,
+                          const TopAbs_Orientation Ori,
+                          const double             Curv,
+                          const double             tola,
+                          bool&                    TouchFlag) // eap Mar 25 2002
+{
+  bool   iisj      = (i == j);
+  double abscos    = std::abs(std::cos(Ang));
+  bool   i0        = (std::abs(1. - abscos) < tola);
+  bool   j0        = (abscos < tola);
+  bool   nullcurv  = (Curv == 0.);
+  bool   curvpos   = (Curv > tola);
+  bool   curvneg   = (Curv < -tola);
+  bool   nullcsref = (CurvSref == 0.);
+
+  bool undef = (Angref == 100.);
+  if (undef)
+  {
+    if (i0)
+    {
+      if (iisj && curvneg)
+      {
+        return M_noupdate;
+      }
+      if (!iisj && curvpos)
+      {
+        return M_noupdate;
+      }
+    }
+    if (j0)
+    {
+      if (!nullcsref && (j == 1) && iisj && (curvpos || nullcurv))
+      {
+        return M_updateREF;
+      }
+      if (!nullcsref && (j == 1) && !iisj && (curvneg || nullcurv))
+      {
+        return M_updateREF;
+      }
+
+      if (iisj && curvpos)
+      {
+        return M_noupdate;
+      }
+      if (!iisj && curvneg)
+      {
+        return M_noupdate;
+      }
+    }
+    return M_updateREF;
+  } // undef
+
+  double cosref = std::cos(Angref), cos = std::cos(Ang);
+  double dcos    = std::abs(cosref) - std::abs(cos);
+  bool   samecos = std::abs(dcos) < tola;
+  if (samecos)
+  {
+    // Analysis for tangent cases : if two boundary faces are same sided
+    // and have sma dironF.
+
+    if (std::abs(Curvref - Curv) < 1.e-4)
+    {
+      if (TopAbs::Complement(Ori) == Oriref)
+      {
+        return M_Ointernal;
+      }
+      else
+      {
+        return (int)M_Unknown; // nyi FUN_RAISE
+      }
+    }
+
+    bool noupdate = false;
+    if (iisj && (Curvref > Curv))
+    {
+      noupdate = true;
+    }
+    if (!iisj && (Curvref < Curv))
+    {
+      noupdate = true;
+    }
+    int updateref = noupdate ? M_noupdate : M_updateREF;
+    if (!j0)
+    {
+      return updateref;
+    }
+
+    if (!noupdate && !nullcsref)
+    {
+      // check for (j==1) the face is ABOVE Sref
+      // check for (j==2) the face is BELOW Sref
+      if ((j == 2) && (std::abs(Curv) < CurvSref))
+      {
+        updateref = M_noupdate;
+      }
+      if ((j == 1) && (std::abs(Curv) > CurvSref))
+      {
+        updateref = M_noupdate;
+      }
+    }
+    return updateref;
+  } // samecos
+
+  int updateref = (dcos > 0.) ? M_noupdate : M_updateREF;
+  if (Oriref != Ori)
+  {
+    TouchFlag = true; // eap Mar 25 2002
+  }
+
+  return updateref;
+}
+
+// ============================================================
+//                       methods
+// ============================================================
+
+TopTrans_SurfaceTransition::TopTrans_SurfaceTransition()
+    : myCurvRef(0.0),
+      myAng(1, 2, 1, 2),
+      myCurv(1, 2, 1, 2),
+      myOri(1, 2, 1, 2),
+      myIsDefined(false),
+      myTouchFlag(false)
+{
+}
+
+void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
+                                       const gp_Dir& Norm,
+                                       const gp_Dir& MaxD,
+                                       const gp_Dir& MinD,
+                                       const double  MaxCurv,
+                                       const double  MinCurv)
+{
+  myIsDefined = false;
+
+  myNorm  = Norm;
+  myTgt   = Tgt;
+  beafter = Norm ^ Tgt;
+
+  constexpr double tola     = Precision::Angular();
+  bool             curismax = (std::abs(MaxD.Dot(Tgt)) < tola);
+  bool             curismin = (std::abs(MinD.Dot(Tgt)) < tola);
+
+  if ((std::abs(MaxCurv) < tola) && (std::abs(MinCurv) < tola))
+  {
+    Reset(Tgt, Norm);
+    return;
+  }
+
+  if (!curismax && !curismin)
+  {
+    // In the plane normal to <myTgt>, we see the boundary face as
+    // a boundary curve.
+    // NYIxpu : compute the curvature of the curve if not MaxCurv
+    //          nor MinCurv.
+    return;
+  }
+
+  if (curismax)
+  {
+    myCurvRef = std::abs(MaxCurv);
+  }
+  if (curismin)
+  {
+    myCurvRef = std::abs(MinCurv);
+  }
+  if (myCurvRef < tola)
+  {
+    myCurvRef = 0.;
+  }
+
+  // ============================================================
+  // recall : <Norm> is oriented OUTSIDE the "geometric matter" described
+  //          by the surface
+  //          -  if (myCurvRef != 0.) Sref is UNDER axis (sin = 0)
+  //             referential (beafter,myNorm,myTgt)  -
+  // ============================================================
+
+  for (int i = 1; i <= 2; i++)
+  {
+    for (int j = 1; j <= 2; j++)
+    {
+      myAng(i, j) = 100.;
+    }
+  }
+
+  myTouchFlag = false; // eap Mar 25 2002
+  myIsDefined = true;
+}
+
+void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt, const gp_Dir& Norm)
+{
+  myIsDefined = false;
+
+  // beafter oriented (before, after) the intersection on the reference surface.
+  myNorm  = Norm;
+  myTgt   = Tgt;
+  beafter = Norm ^ Tgt;
+  for (int i = 1; i <= 2; i++)
+  {
+    for (int j = 1; j <= 2; j++)
+    {
+      myAng(i, j) = 100.;
+    }
+  }
+
+  myCurvRef   = 0.;
+  myTouchFlag = false; // eap Mar 25 2002
+  myIsDefined = true;
+}
+
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const gp_Dir&            MaxD,
+                                         const gp_Dir&            MinD,
+                                         const double             MaxCurv,
+                                         const double             MinCurv,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
+{
+  if (!myIsDefined)
+  {
+    return;
+  }
+
+  double Curv = 0.;
+  // ------
+  const double tola     = (Tole > 0.0) ? Tole : Precision::Angular();
+  bool         curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  bool         curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  if (!curismax && !curismin)
+  {
+    // In the plane normal to <myTgt>, we see the boundary face as
+    // a boundary curve.
+    // NYIxpu : compute the curvature of the curve if not MaxCurv
+    //          nor MinCurv.
+
+    myIsDefined = false;
+    return;
+  }
+  if (curismax)
+  {
+    Curv = std::abs(MaxCurv);
+  }
+  if (curismin)
+  {
+    Curv = std::abs(MinCurv);
+  }
+  if (myCurvRef < tola)
+  {
+    Curv = 0.;
+  }
+  gp_Dir dironF = FUN_nCinsideS(myTgt, Norm);
+  double prod   = (dironF ^ Norm).Dot(myTgt);
+  if (prod < 0.)
+  {
+    Curv = -Curv;
+  }
+
+  double Ang;
+  // -----
+  Ang = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
+
+  int i, j;
+  // -----
+  // i = 0,1,2 : cos = 0,>0,<0
+  // j = 0,1,2 : sin = 0,>0,<0
+  ::FUN_getSTA(Ang, tola, i, j);
+
+  // update nearest :
+  // ---------------
+  int kmax = M_INTERNAL(O) ? 2 : 1;
+  for (int k = 1; k <= kmax; k++)
+  {
+    if (k == 2)
+    {
+      // get the opposite Ang
+      i = ::FUN_OO(i);
+      j = ::FUN_OO(j);
+    }
+    bool i0 = (i == 0), j0 = (j == 0);
+    int  nmax = (i0 || j0) ? 2 : 1;
+    for (int n = 1; n <= nmax; n++)
+    {
+      if (i0)
+      {
+        i = n;
+      }
+      if (j0)
+      {
+        j = n;
+      }
+
+      // if (curvref == 0.) :
+      //      bool iisj = (i == j);
+      //      bool Curvpos = (Curv > 0.);
+      //      if ((Curv != 0.) && i0)  {
+      //	if (iisj  && !Curvpos) continue;
+      //	if (!iisj &&  Curvpos) continue;
+      //      }
+      //      if ((Curv != 0.) && j0)  {
+      //	if (iisj  && Curvpos)  continue;
+      //	if (!iisj && !Curvpos) continue;
+      //      }
+
+      int refn = ::FUN_refnearest(i,
+                                  j,
+                                  myCurvRef,
+                                  myAng(i, j),
+                                  myOri(i, j),
+                                  myCurv(i, j),
+                                  Ang,
+                                  /*O*/ S,
+                                  Curv,
+                                  tola,
+                                  myTouchFlag); // eap Mar 25 2002
+      if (refn == M_Unknown)
+      {
+        myIsDefined = false;
+        return;
+      }
+      if (refn > 0)
+      {
+        myAng(i, j)  = Ang;
+        myOri(i, j)  = (refn == M_Ointernal) ? TopAbs_INTERNAL : S;
+        myCurv(i, j) = Curv;
+      }
+    } // n=1..nmax
+  } // k=1..kmax
+}
+
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
+{
+  if (!myIsDefined)
+  {
+    return;
+  }
+
+  // oriented Ang(beafter,dironF),
+  // dironF normal to the curve, oriented INSIDE F, the added oriented support
+  double       Ang  = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
+  const double tola = (Tole > 0.0) ? Tole : Precision::Angular();
+
+  // i = 0,1,2 : cos = 0,>0,<0
+  // j = 0,1,2 : sin = 0,>0,<0
+  int i, j;
+  ::FUN_getSTA(Ang, tola, i, j);
+
+  int kmax = M_INTERNAL(O) ? 2 : 1;
+  for (int k = 1; k <= kmax; k++)
+  {
+    if (k == 2)
+    {
+      // get the opposite Ang
+      i = ::FUN_OO(i);
+      j = ::FUN_OO(j);
+    }
+
+    bool i0 = (i == 0), j0 = (j == 0);
+    int  nmax = (i0 || j0) ? 2 : 1;
+    for (int n = 1; n <= nmax; n++)
+    {
+      if (i0)
+      {
+        i = n;
+      }
+      if (j0)
+      {
+        j = n;
+      }
+
+      int refn = ::FUN_refnearest(myAng(i, j), myOri(i, j), Ang, /*O*/ S, tola); // eap
+      if (refn == M_Unknown)
+      {
+        myIsDefined = false;
+        return;
+      }
+
+      if (refn > 0)
+      {
+        myAng(i, j) = Ang;
+        myOri(i, j) = (refn == M_Ointernal) ? TopAbs_INTERNAL : S;
+      }
+    } // n=1..nmax
+  } // k=1..kmax
+}
+
+#define BEFORE (2)
+#define AFTER (1)
+
+static TopAbs_State FUN_getstate(const NCollection_Array2<double>&             Ang,
+                                 const NCollection_Array2<TopAbs_Orientation>& Ori,
+                                 const int                                     iSTA,
+                                 const int                                     iINDEX)
+{
+  double a1 = Ang(iSTA, 1), a2 = Ang(iSTA, 2);
+  bool   undef1 = (a1 == 100.), undef2 = (a2 == 100.);
+  bool   undef = undef1 && undef2;
+  if (undef)
+  {
+    return TopAbs_UNKNOWN;
+  }
+
+  if (undef1 || undef2)
+  {
+    int                jok = undef1 ? 2 : 1;
+    TopAbs_Orientation o   = Ori(iSTA, jok);
+    TopAbs_State       st  = (iINDEX == BEFORE) ? TopTrans_SurfaceTransition::GetBefore(o)
+                                                : TopTrans_SurfaceTransition::GetAfter(o);
+    return st;
+  }
+
+  TopAbs_Orientation o1 = Ori(iSTA, 1), o2 = Ori(iSTA, 2);
+  TopAbs_State       st1 = (iINDEX == BEFORE) ? TopTrans_SurfaceTransition::GetBefore(o1)
+                                              : TopTrans_SurfaceTransition::GetAfter(o1);
+  TopAbs_State       st2 = (iINDEX == BEFORE) ? TopTrans_SurfaceTransition::GetBefore(o2)
+                                              : TopTrans_SurfaceTransition::GetAfter(o2);
+  if (st1 != st2)
+  {
+    return TopAbs_UNKNOWN; // Incoherent data
+  }
+  return st1;
+}
+
+TopAbs_State TopTrans_SurfaceTransition::StateBefore() const
+{
+  if (!myIsDefined)
+  {
+    return TopAbs_UNKNOWN;
+  }
+
+  // we take the state before of before orientations
+  TopAbs_State before = ::FUN_getstate(myAng, myOri, BEFORE, BEFORE);
+  if (M_UNKNOWN(before))
+  {
+    // looking back in before for defined states
+    // we take the state before of after orientations
+    before = ::FUN_getstate(myAng, myOri, AFTER, BEFORE);
+    // eap Mar 25 2002
+    if (myTouchFlag)
+    {
+      if (before == TopAbs_OUT)
+      {
+        before = TopAbs_IN;
+      }
+      else if (before == TopAbs_IN)
+      {
+        before = TopAbs_OUT;
+      }
+    }
+  }
+  return before;
+}
+
+TopAbs_State TopTrans_SurfaceTransition::StateAfter() const
+{
+  if (!myIsDefined)
+  {
+    return TopAbs_UNKNOWN;
+  }
+
+  TopAbs_State after = ::FUN_getstate(myAng, myOri, AFTER, AFTER);
+  if (M_UNKNOWN(after))
+  {
+    // looking back in before for defined states
+    after = ::FUN_getstate(myAng, myOri, BEFORE, AFTER);
+    // eap Mar 25 2002
+    if (myTouchFlag)
+    {
+      if (after == TopAbs_OUT)
+      {
+        after = TopAbs_IN;
+      }
+      else if (after == TopAbs_IN)
+      {
+        after = TopAbs_OUT;
+      }
+    }
+  }
+  return after;
+}
+
+TopAbs_State TopTrans_SurfaceTransition::GetBefore(const TopAbs_Orientation Tran)
+{
+  switch (Tran)
+  {
+    case TopAbs_FORWARD:
+    case TopAbs_EXTERNAL:
+      return TopAbs_OUT;
+    case TopAbs_REVERSED:
+    case TopAbs_INTERNAL:
+      return TopAbs_IN;
+  }
+  return TopAbs_OUT;
+}
+
+TopAbs_State TopTrans_SurfaceTransition::GetAfter(const TopAbs_Orientation Tran)
+{
+  switch (Tran)
+  {
+    case TopAbs_FORWARD:
+    case TopAbs_INTERNAL:
+      return TopAbs_IN;
+    case TopAbs_REVERSED:
+    case TopAbs_EXTERNAL:
+      return TopAbs_OUT;
+  }
+  return TopAbs_OUT;
+}

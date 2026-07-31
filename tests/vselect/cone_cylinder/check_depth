@@ -1,0 +1,59 @@
+puts "================================="
+puts "0032281: Visualization - add Select3D_SensitiveCylinder"
+puts "Tests depth value returned by Select3D_SensitiveCylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+pcylinder cyl 10 20
+vdisplay cyl -dispmode 1
+vfit
+set center_cyl [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+checkpoint center_cyl_p $center_cyl {7.0710678118654755 -7.0710678118654755 16.970067811865476} 0.0001
+vtop
+vfit
+set top_cyl [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+checkpoint top_cyl_p $top_cyl {0 -0.050500000000000045 20} 0.0001
+vbottom
+set bottom_cyl [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+checkpoint bottom_cyl_p $bottom_cyl {0 0.050500000000000052 0} 0.0001
+vright
+vfit
+set right_cyl [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+checkpoint right_cyl_p $right_cyl {10 0 9.9495000000000005} 0.0001
+vleft
+set left_cyl [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+checkpoint left_cyl_p $left_cyl {-10 0 9.9495000000000005} 0.0001
+vremove cyl
+
+pcone cone 10 0 20
+vdisplay cone -dispmode 1
+vaxo
+vfit
+set center_cone [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should be detected" }
+checkpoint center_cone_p $center_cone {2.6384203410087546 -2.6384203410087546 12.537420341008755} 0.0001
+vtop
+vfit
+set top_cone [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should be detected" }
+checkpoint top_cone_p $top_cone {0 -0.050500000000000045 19.899000000000001} 0.0001
+vbottom
+set bottom_cone [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should be detected" }
+checkpoint bottom_cone_p $bottom_cone {0 0.050500000000000052 0} 0.0001
+vright
+vfit
+set right_cone [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should be detected" }
+checkpoint right_cone_p $right_cone {5.0252500000000007 0 9.9495000000000005} 0.0001
+vleft
+set left_cone [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cone should be detected" }
+checkpoint left_cone_p $left_cone {-5.0252500000000007 0 9.9495000000000005} 0.0001

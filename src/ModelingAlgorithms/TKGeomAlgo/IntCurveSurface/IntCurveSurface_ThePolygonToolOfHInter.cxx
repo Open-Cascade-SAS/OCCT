@@ -1,0 +1,43 @@
+// Created on: 1993-04-07
+// Created by: Laurent BUCHARD
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntCurveSurface_ThePolygonToolOfHInter.hxx>
+
+#include <Standard_OutOfRange.hxx>
+#include <gp_Pnt.hxx>
+#include <IntCurveSurface_ThePolygonOfHInter.hxx>
+#include <Bnd_Box.hxx>
+
+#include <iostream>
+
+void IntCurveSurface_ThePolygonToolOfHInter::Dump(const IntCurveSurface_ThePolygonOfHInter& L)
+{
+  static int num = 0;
+  num++;
+  int nbs = IntCurveSurface_ThePolygonToolOfHInter::NbSegments(L);
+  std::cout << "\npol2d " << num << " " << nbs << '\n';
+  std::cout << "Deflection " << IntCurveSurface_ThePolygonToolOfHInter::DeflectionOverEstimation(L)
+            << '\n';
+
+  for (int i = 1; i <= nbs; i++)
+  {
+    gp_Pnt P(IntCurveSurface_ThePolygonToolOfHInter::BeginOfSeg(L, i));
+    std::cout << "pnt " << num << " " << i << " " << P.X() << " " << P.Y() << " " << P.Z() << '\n';
+  }
+  gp_Pnt PF(IntCurveSurface_ThePolygonToolOfHInter::EndOfSeg(L, nbs));
+  std::cout << "pnt " << num << " " << nbs << " " << PF.X() << " " << PF.Y() << " " << PF.Z()
+            << '\n';
+}

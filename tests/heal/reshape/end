@@ -1,0 +1,5 @@
+if { [isdraw result] } {
+  puts [checkshape result]
+}
+
+checknbshapes result -face $ref_num_faces -wire $ref_num_wires -edge $ref_num_edges -vertex $ref_num_vertices

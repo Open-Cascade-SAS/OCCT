@@ -1,0 +1,23 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_Lantern.glb]
+XGetOneShape s D
+checknbshapes s -face 3 -compound 1
+checktrinfo s -tri 5394 -nod 4145
+
+set THE_REF_DUMP {
+INSTANCE COMPOUND 0:1:1:1 (refers to 0:1:1:2) "Lantern"
+ASSEMBLY COMPOUND 0:1:1:2 "Lantern"
+	INSTANCE FACE 0:1:1:2:1 (refers to 0:1:1:3) "LanternPole_Body"
+	INSTANCE FACE 0:1:1:2:2 (refers to 0:1:1:4) "LanternPole_Chain"
+	INSTANCE FACE 0:1:1:2:3 (refers to 0:1:1:5) "LanternPole_Lantern"
+PART FACE 0:1:1:3 "LanternPole_Body"
+PART FACE 0:1:1:4 "LanternPole_Chain"
+PART FACE 0:1:1:5 "LanternPole_Lantern"
+
+Free Shapes: 1
+INSTANCE COMPOUND  0:1:1:1 (refers to 0:1:1:2) "Lantern"
+}
+checkXDump D $THE_REF_DUMP

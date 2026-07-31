@@ -1,0 +1,15 @@
+puts "========================"
+puts "BUC60984"
+puts "OCC91"
+puts "OCC133" 
+puts "========================"
+puts ""
+#####################################################
+## Exception when translating an IGES file to Open CASCADE (loading phase).
+#####################################################
+
+catch {param read.iges.faulty.entities 1}
+
+igesbrep [locate_data_file frame.igs] a *
+
+

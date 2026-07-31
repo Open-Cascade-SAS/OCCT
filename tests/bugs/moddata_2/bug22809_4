@@ -1,0 +1,77 @@
+puts "============"
+puts "OCC22809"
+puts "============"
+puts ""
+############################################################################################################
+# BRepIntCS does not find intersections of an ellipsoid and a line passing through it's apex
+###########################################################################################################
+
+set BugNumber OCC22809
+
+psphere a 100
+scalexyz r2 a 2 1 1
+line l -0.000001 0.0000000001 -100 0 0 1
+BRepIntCS l r2
+
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_1 ] full info1
+
+# N.B. multiple result points are to be processed by other algorithms
+# Now there are 2 result points
+set info2 [ whatis brics_2 ]
+set info2 [ whatis brics_2 ]
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_2 ] full info2
+
+
+set word1 [string compare $info1 "point"]
+set word2 [string compare $info2 "point"]
+
+set status_point 0
+if { ${word1} == 0 && ${word2} == 0 } {
+    set status_point 0
+} else {
+    set status_point 1
+}
+
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_3 ] full info3
+set word3 [string compare $info3 "a"]
+
+set status_nb 0
+if { ${word3} == 0 } {
+    set status_nb 0
+} else {
+    set status_nb 1
+    # N.B. multiple result points are to be processed by other algorithms
+    set status_nb 0
+}
+
+set dump1 [ dump brics_1 ]
+
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump1 full x1 y1 z1
+
+set good_x1 -1.000000000000000e-06
+set good_y1 1.000000000000000e-10
+set good_z1 -1.000000000000000e+02
+
+checkreal "x1" ${x1} ${good_x1} 0 0.001
+checkreal "y1" ${y1} ${good_y1} 0 0.001
+checkreal "z1" ${z1} ${good_z1} 0 0.001
+
+set dump2 [ dump brics_2 ]
+# N.B. multiple result points are to be processed by other algorithms
+set dump2 [ dump brics_2 ]
+
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump2 full x2 y2 z2
+
+set good_x2 -1.000000000000000e-06
+set good_y2 1.000000000000000e-10
+set good_z2 1.000000000000000e+02
+
+checkreal "x2" ${x2} ${good_x2} 0 0.001
+checkreal "y2" ${y2} ${good_y2} 0 0.001
+checkreal "z2" ${z2} ${good_z2} 0 0.001
+
+if { ${status_point} == 0 && ${status_nb} == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}

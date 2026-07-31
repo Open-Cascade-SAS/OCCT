@@ -1,0 +1,18 @@
+puts "==========="
+puts "Test for issue #26146"
+puts "==========="
+puts "=================================="
+puts "Select3D_ISensitivePointSet: Crash when clearing selections (only with TBB)"
+puts "=================================="
+
+restore [locate_data_file bug26146_crash_compound.brep] crash_compound
+
+vinit
+vdisplay crash_compound
+vfit
+
+vdump ${imagedir}/${casename}_1.png
+
+vremove crash_compound ;# crashed here
+
+vdump ${imagedir}/${casename}_2.png

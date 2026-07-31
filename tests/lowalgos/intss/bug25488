@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC25488"
+puts "========"
+puts ""
+######################################################
+# Wrong result of two trimmed cylinders intersection
+######################################################
+
+set Tolerance 1.1e-7
+set Limit_Tol 1.0e-7
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+restore [locate_data_file OCC25488_sb1_1t.draw] sb1
+restore [locate_data_file OCC25488_sb2_1t.draw] sb2
+
+set bug_info [intersect res sb1 sb2]
+
+set i 0
+while {$i != [llength $bug_info]} {
+  set res_i [lindex $bug_info $i]
+
+  xdistcs ${res_i} sb1 0 1 10 ${Tolerance} ${Limit_Tol}
+  xdistcs ${res_i} sb2 0 1 10 ${Tolerance} ${Limit_Tol}
+
+  set i [expr {$i + 1}]
+}

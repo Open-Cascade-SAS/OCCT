@@ -1,0 +1,20 @@
+puts "============"
+puts "CR25852: Text to BRep algorithm produces bad faces for circled symbols"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+text2brep t "\u00ae" Courier 10
+whatis t
+
+vinit View1
+vclear
+vtop
+vsetdispmode 1
+vdisplay t
+vfit
+
+vmoveto 250 250
+checkshape t
+
+vdump $imagedir/${casename}.png

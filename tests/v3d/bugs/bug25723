@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC25723 Calculate the center of rotation taking into account structure visibility"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 0 0   0 10 10 10
+box b2 0 0  20 10 10 10
+box b3 0 0 -20 10 10 10
+box b4 0 0  40 10 10 10
+
+vclear
+vinit View1
+vaxo
+vsetdispmode 1
+
+# turn on solid selection
+vselmode 6 1
+vdisplay b1 b2 b3 b4
+vfit
+
+# select and hide boxes b2 b3 b4
+vselect 100 100 400 410
+verase
+
+# rotation
+vrotate -mouseStart 100 100 -mouseMove 300 300
+if {"[vreadpixel 220 50 rgb name]" != "GOLDENROD3"} { puts "Error: Rotation is not correct" }
+
+vdump ${imagedir}/${casename}.png

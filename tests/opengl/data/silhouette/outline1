@@ -1,0 +1,24 @@
+puts "========"
+puts "0024437: Visualization - silhouette edges based on OpenGL"
+puts "Draw box and sphere primitives"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vbackground -color GAINSBORO
+vaxo
+
+psphere s 1.0
+box b 2 -2 -2 1 2 3
+
+vdisplay -dispMode 1 b s
+vfit
+
+vaspects b s -setDrawSilhouette 1 -setEdgeColor RED -setEdgeWidth 4 -setFaceBoundaryDraw 1 -setFaceBoundaryColor BLUE -setFaceBoundaryWidth 1 -setInteriorStyle HIDDENLINE
+vdump $::imagedir/${::casename}_0.png
+
+vaspects b s -setDrawSilhouette 1 -setEdgeColor RED -setEdgeWidth 4 -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED   -setFaceBoundaryWidth 4 -setInteriorStyle HIDDENLINE
+vdump $::imagedir/${::casename}_1.png

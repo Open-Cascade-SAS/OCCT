@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : H5
+## Comment : from pro10391
+## ====================================
+
+set chamf_shape CFI_pro10391.rle
+set chamf_edge_face  [list "12  6" "14  6"]
+set chamf_dist_angle [list "10 30" "10 30"]
+set chamf_dist_dist  [list "10 10" "10 10"]
+set chamf_equal_dist [list "10   " "10   "]

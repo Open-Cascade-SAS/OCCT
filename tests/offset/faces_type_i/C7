@@ -1,0 +1,10 @@
+puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC23748 ALL: Error: The command cannot be built"
+puts "TODO OCC26556 ALL: Error : The offset cannot be built."
+
+psphere s 15 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE 1 {s_2 s_3} $calcul $type
+
+checkprops result -v 0

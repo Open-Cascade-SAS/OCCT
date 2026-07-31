@@ -1,0 +1,32 @@
+puts "========"
+puts "0030645: Modeling Algorithms - B-spline segmentation produces wrong parametrization"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30645.brep] result
+
+set tolerance 1.e-9
+segsur result 13.527990713022374 14.030423915738853 54.831990159753303 59.000000000000028 $tolerance
+
+set surf [dump result]
+
+regexp {VKnots +:\n(.*)} $surf full vknots
+set is_different_knots 1
+set vknots_list {}
+while { "$vknots" != "\n\n" && $is_different_knots } {
+  regexp { +([0-9]+) +: +([-0-9.+eE]+) *([0-9]+)\n(.*)} $vknots full index knot weight rest
+  foreach k $vknots_list {
+    if { [expr abs($k - $knot)] < $tolerance } {
+      set is_different_knots 0
+    }
+  }
+
+  lappend vknots_list $knot
+  set vknots $rest
+}
+
+if { $is_different_knots } {
+  puts "OK: all knots are different"
+} else {
+  puts "ERROR: segment has knots too close"
+}

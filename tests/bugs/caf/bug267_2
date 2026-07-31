@@ -1,0 +1,31 @@
+puts "TODO OCC12345 ALL: OCC267: Error"
+
+puts "========"
+puts "OCC267"
+puts "========"
+
+######################################################################
+
+pload QAcommands
+
+NewDocument D BinOcaf
+file delete -force ${imagedir}/OCC267.cbf
+catch { OCC267 D ${imagedir}/OCC267.cbf } status
+
+set list [split ${status}]
+set index [lsearch -exact ${list} "CDF_StoreStatus"]
+
+if { ${index} == -1 } then {
+   puts "OCC267: Error"
+   puts ${status}
+} else {
+   set CDF_StoreStatus [lindex ${list} [expr ${index} + 2] ]
+   if { ${CDF_StoreStatus} == "CDF_SS_OK" } then {
+      puts "OCC267: OK"
+   } else {
+      puts "OCC267: ERROR"
+      puts ${status}
+      puts "CDF_StoreStatus = ${CDF_StoreStatus}"
+   }
+}
+

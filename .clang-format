@@ -1,0 +1,44 @@
+# clang-format configuration file trying to apply OCCT coding style
+#
+# Clang formatting rules: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# The clang-format npm package (https://github.com/angular/clang-format) uses
+# a pre-built clang-format.exe from http://llvm.org/builds/
+#
+# We use defaults from the Microsoft style
+BasedOnStyle: Microsoft
+#
+# Style options
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+ColumnLimit: 100
+ContinuationIndentWidth: 2
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 2
+IndentWrappedFunctionNames: true
+PackConstructorInitializers: Never
+PointerAlignment: Left
+ReferenceAlignment: Left
+SeparateDefinitionBlocks: Always
+SortIncludes: false
+UseTab: Never
+#
+# OCCT specific settings
+StatementMacros:
+  - Standard_FALLTHROUGH
+  - OCC_CATCH_SIGNALS
+  - DEFINE_STANDARD_RTTIEXT
+  - Draw_Drawable3D_FACTORY
+  - Standard_DEPRECATED
+TypenameMacros:
+  - Handle

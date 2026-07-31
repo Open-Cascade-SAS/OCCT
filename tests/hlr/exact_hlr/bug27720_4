@@ -1,0 +1,10 @@
+puts "============================================"
+puts "OCC27720: HLRBrep_Algo BSpline missing edges"
+puts "============================================"
+puts ""
+
+set viewname "vleft"
+set length 0.81982
+
+restore [locate_data_file bug27720_BSpline.brep] a
+COMPUTE_HLR $viewname $algotype

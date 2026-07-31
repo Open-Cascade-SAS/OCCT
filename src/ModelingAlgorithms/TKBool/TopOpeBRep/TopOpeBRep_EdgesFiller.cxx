@@ -1,0 +1,648 @@
+// Created on: 1994-10-12
+// Created by: Jean Yves LEBEY
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRep_Tool.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_EdgesFiller.hxx>
+#include <TopOpeBRep_EdgesIntersector.hxx>
+#include <TopOpeBRep_Point2d.hxx>
+#include <TopOpeBRep_PointGeomTool.hxx>
+#include <TopOpeBRepDS.hxx>
+#include <TopOpeBRepDS_Config.hxx>
+#include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_InterferenceTool.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_TKI.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
+
+#ifdef OCCT_DEBUG
+  #include <TopOpeBRepDS_CurvePointInterference.hxx>
+extern bool TopOpeBRep_GettraceEEFF();
+
+Standard_EXPORT void debposesd(void)
+{ /*std::cout<<"+++ debposesd"<<std::endl;*/
+}
+
+Standard_EXPORT void debposnesd(void)
+{
+  std::cout << "+++ debposnesd" << std::endl;
+}
+
+Standard_EXPORT void debeeff() {}
+#endif
+
+#define M_REVERSED(O) (O == TopAbs_REVERSED)
+#define M_FORWARD(O) (O == TopAbs_FORWARD)
+#define M_INTERNAL(O) (O == TopAbs_INTERNAL)
+#define M_EXTERNAL(O) (O == TopAbs_EXTERNAL)
+
+//=================================================================================================
+
+TopOpeBRep_EdgesFiller::TopOpeBRep_EdgesFiller()
+    : myPDS(nullptr),
+      myPEI(nullptr)
+{
+}
+
+void rototo() {}
+
+//=================================================================================================
+
+void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape&                             E1,
+                                    const TopoDS_Shape&                             E2,
+                                    TopOpeBRep_EdgesIntersector&                    EDGINT,
+                                    const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
+{
+  myPEI = &EDGINT;
+  myPDS = &(HDS->ChangeDS());
+  myE1  = TopoDS::Edge(E1);
+  myE2  = TopoDS::Edge(E2);
+  myLI1.Clear();
+  myLI2.Clear();
+  myHDS = HDS;
+
+  bool esd = myPEI->SameDomain();
+  if (esd)
+  {
+    myPDS->FillShapesSameDomain(E1, E2);
+  }
+
+  // exit if no point.
+  myPEI->InitPoint();
+  if (!myPEI->MorePoint())
+  {
+    return;
+  }
+
+  // --- Add <E1,E2> in BDS
+  int E1index = myPDS->AddShape(E1, 1);
+  int E2index = myPDS->AddShape(E2, 2);
+
+  // --- get list of interferences connected to edges <E1>,<E2>
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& EIL1 =
+    myPDS->ChangeShapeInterferences(E1);
+
+  occ::handle<TopOpeBRepDS_Interference> EPI; // edge/point interference
+  occ::handle<TopOpeBRepDS_Interference> EVI; // edge/vertex interference
+
+  //  TopOpeBRepDS_Transition TposF,TposL;
+
+  for (; myPEI->MorePoint(); myPEI->NextPoint())
+  {
+    const TopOpeBRep_Point2d P2D  = myPEI->Point();
+    double                   par1 = P2D.Parameter(1);
+    double                   par2 = P2D.Parameter(2);
+    if (!myF1.IsNull())
+    {
+      myPDS->AddShape(myF1, 1);
+    }
+    if (!myF2.IsNull())
+    {
+      myPDS->AddShape(myF2, 2);
+    }
+
+    TopOpeBRepDS_Transition T1 = P2D.Transition(1);
+    TopOpeBRepDS_Transition T2 = P2D.Transition(2);
+
+    SetShapeTransition(P2D, T1, T2);
+
+    bool          isvertex1 = P2D.IsVertex(1);
+    TopoDS_Vertex V1;
+    if (isvertex1)
+    {
+      V1 = P2D.Vertex(1);
+    }
+    bool          isvertex2 = P2D.IsVertex(2);
+    TopoDS_Vertex V2;
+    if (isvertex2)
+    {
+      V2 = P2D.Vertex(2);
+    }
+    bool isvertex = isvertex1 || isvertex2;
+
+#ifdef OCCT_DEBUG
+    if (isvertex1 && isvertex2)
+    {
+      gp_Pnt P3D1 = BRep_Tool::Pnt(V1);
+      gp_Pnt P3D2 = BRep_Tool::Pnt(V2);
+      double tol1 = BRep_Tool::Tolerance(V1);
+      double tol2 = BRep_Tool::Tolerance(V2);
+      double dpp  = P3D1.Distance(P3D2);
+      if (dpp > tol1 + tol2)
+      {
+        std::cout << std::endl;
+        std::cout << "*** TopOpeBRep_EdgesFiller : isvertex1 && isvertex2 : P3D non confondus"
+                  << std::endl;
+        std::cout << "point PV1 " << P3D1.X() << " " << P3D1.Y() << " " << P3D1.Z() << std::endl;
+        std::cout << "point PV2 " << P3D2.X() << " " << P3D2.Y() << " " << P3D2.Z() << std::endl;
+        std::cout << std::endl;
+      }
+    }
+#endif
+
+    // xpu : 080498 : CTS20072 (e12,e3,p8)
+    //       edgesintersector called for tolerances = 0.
+    //       facesintersector called for greater tolerances
+    //       we assume facesintersector's output data to be valid
+    //       and we use it for correcting edgesintersector's output data
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itloI1(
+      myPDS->ShapeInterferences(E1));
+    int               G;
+    TopOpeBRepDS_Kind K;
+    bool              found = GetGeometry(itloI1, P2D, G, K);
+    if (!found)
+    {
+      MakeGeometry(P2D, G, K);
+    }
+
+    bool foundpoint  = (found) && (K == TopOpeBRepDS_POINT);
+    bool isnewpoint  = (!found) && (K == TopOpeBRepDS_POINT);
+    bool isnewvertex = (!found) && (K == TopOpeBRepDS_VERTEX);
+
+    bool faulty = (isvertex && isnewpoint) || (!isvertex && isnewvertex);
+    if (faulty)
+    {
+#ifdef OCCT_DEBUG
+      bool foundvertex = (found) && (K == TopOpeBRepDS_VERTEX);
+      std::cout << "- - - faulty EdgesFiller : G " << G << " K ";
+      TopOpeBRepDS::Print(K, std::cout);
+      std::cout.flush();
+      std::cout << " isvertex=" << isvertex;
+      std::cout.flush();
+      std::cout << " isop=" << foundpoint << " isov=" << foundvertex;
+      std::cout.flush();
+      std::cout << " isnp=" << isnewpoint << " isnv=" << isnewvertex << std::endl;
+      std::cout.flush();
+#endif
+    }
+
+    if (isvertex && foundpoint)
+    {
+      int is = 1, ns = myPDS->NbShapes();
+      for (; is <= ns; is++)
+      {
+        const TopoDS_Shape& s = myPDS->Shape(is);
+        if (s.ShapeType() != TopAbs_EDGE)
+        {
+          continue;
+        }
+        const TopoDS_Edge& e = TopoDS::Edge(s);
+
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>  linew;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& li =
+          myPDS->ChangeShapeInterferences(e);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(li);
+        while (it.More())
+        {
+
+          occ::handle<TopOpeBRepDS_Interference> I   = it.Value();
+          TopOpeBRepDS_Kind                      ki  = I->GeometryType();
+          int                                    gi  = I->Geometry();
+          occ::handle<Standard_Type>             DTI = I->DynamicType();
+          bool iscpi   = (DTI == STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference));
+          bool condcpi = ((ki == TopOpeBRepDS_POINT) && (gi == G) && iscpi);
+          if (condcpi)
+          { // remplacer G,K de I par le vertex courant
+
+#ifdef OCCT_DEBUG
+            rototo();
+#endif
+            occ::handle<TopOpeBRepDS_CurvePointInterference> epi =
+              occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I);
+            const TopOpeBRepDS_Transition& tevi = epi->Transition();
+            int                            sevi = epi->Support();
+
+            int gevi = 0;
+
+            if (isvertex1)
+            {
+              gevi = myPDS->AddShape(V1, 1);
+            }
+            else if (isvertex2)
+            {
+              gevi = myPDS->AddShape(V2, 2);
+            }
+            bool                bevi = false;
+            TopOpeBRepDS_Config cevi = TopOpeBRepDS_UNSHGEOMETRY;
+            double              pevi = epi->Parameter();
+
+            occ::handle<TopOpeBRepDS_Interference> evi;
+            evi = TopOpeBRepDS_InterferenceTool::MakeEdgeVertexInterference(tevi,
+                                                                            sevi,
+                                                                            gevi,
+                                                                            bevi,
+                                                                            cevi,
+                                                                            pevi);
+            const TopOpeBRepDS_Kind& kevi = epi->SupportType();
+            evi->SupportType(kevi);
+
+#ifdef OCCT_DEBUG
+            TopOpeBRepDS::Print(K, G, std::cout, "TopOpeBRep_EdgesFiller : remplacer ", " ");
+            TopOpeBRepDS::Print(TopOpeBRepDS_VERTEX,
+                                gevi,
+                                std::cout,
+                                "par ",
+                                " dans les courbes NYI\n");
+#endif
+            linew.Append(evi);
+            li.Remove(it);
+          } // cond
+          else
+          {
+            it.Next();
+          }
+        } // it.More()
+        if (!linew.IsEmpty())
+        {
+          myHDS->StoreInterferences(linew, is, "EdgesFiller modif : ");
+        }
+      } // (is<=ns)
+    } // (isvertex && foundpoint)
+
+    if (isvertex1)
+    {
+      const TopoDS_Vertex& VV1 = V1;
+      //      const TopoDS_Vertex& VV1 = TopoDS::Vertex(V1);
+      const TopoDS_Edge& EE1 = TopoDS::Edge(E1);
+      par1                   = BRep_Tool::Parameter(VV1, EE1);
+    }
+
+    if (isvertex2)
+    {
+      const TopoDS_Vertex& VV2 = V2;
+      //      const TopoDS_Vertex& VV2 = TopoDS::Vertex(V2);
+      const TopoDS_Edge& EE2 = TopoDS::Edge(E2);
+      par2                   = BRep_Tool::Parameter(VV2, EE2);
+    }
+
+    if (isvertex1 && isvertex2)
+    {
+      myPDS->FillShapesSameDomain(V1, V2);
+    }
+
+    int  DSPindex;
+    bool EPIfound;
+
+    if (!isvertex)
+    {
+
+      TopOpeBRepDS_Kind                                                  KKK;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itEIL1(EIL1);
+      EPIfound = GetGeometry(itEIL1, P2D, DSPindex, KKK);
+      if (!EPIfound)
+      {
+        MakeGeometry(P2D, DSPindex, KKK);
+      }
+
+      SetShapeTransition(P2D, T1, T2);
+
+      if (KKK == TopOpeBRepDS_POINT)
+      {
+        EPI = StorePI(P2D, T1, E2index, DSPindex, par1, 1);
+        EPI = StorePI(P2D, T2, E1index, DSPindex, par2, 2);
+      }
+      else if (KKK == TopOpeBRepDS_VERTEX)
+      {
+        int                 Vindex = DSPindex;
+        bool                bevi   = false;
+        TopOpeBRepDS_Config cevi   = TopOpeBRepDS_UNSHGEOMETRY;
+        EVI                        = StoreVI(P2D, T1, E2index, Vindex, bevi, cevi, par1, 1);
+        EVI                        = StoreVI(P2D, T2, E1index, Vindex, bevi, cevi, par2, 2);
+      }
+
+    } // ( ! isvertex )
+
+    else
+    {
+
+      SetShapeTransition(P2D, T1, T2);
+
+      if (isvertex1)
+      {
+        const TopoDS_Shape& V      = V1;
+        int                 Vindex = myPDS->AddShape(V, 1);
+        TopOpeBRepDS_Config SSC    = P2D.EdgesConfig();
+        EVI                        = StoreVI(P2D, T1, E2index, Vindex, true, SSC, par1, 1);
+        EVI                        = StoreVI(P2D, T2, E1index, Vindex, false, SSC, par2, 2);
+      }
+
+      if (isvertex2)
+      {
+        const TopoDS_Shape& V      = V2;
+        int                 Vindex = myPDS->AddShape(V, 2);
+        TopOpeBRepDS_Config SSC    = P2D.EdgesConfig();
+        EVI                        = StoreVI(P2D, T1, E2index, Vindex, false, SSC, par1, 1);
+        EVI                        = StoreVI(P2D, T2, E1index, Vindex, true, SSC, par2, 2);
+      }
+
+    } // ( isvertex )
+
+  } //  MorePoint()
+
+  RecomputeInterferences(myE1, myLI1);
+  RecomputeInterferences(myE2, myLI2);
+
+} // Insert
+
+// ===============
+// private methods
+// ===============
+
+//=================================================================================================
+
+void TopOpeBRep_EdgesFiller::SetShapeTransition(const TopOpeBRep_Point2d& P2D,
+                                                TopOpeBRepDS_Transition&  T1,
+                                                TopOpeBRepDS_Transition&  T2) const
+{
+  bool pointofsegment = P2D.IsPointOfSegment();
+  bool esd            = myPEI->SameDomain();
+  int  ie1 = 0, ie2 = 0, if1 = 0, if2 = 0;
+
+  if (pointofsegment && esd)
+  {
+    T1.ShapeBefore(TopAbs_EDGE);
+    T1.ShapeAfter(TopAbs_EDGE);
+    T2.ShapeBefore(TopAbs_EDGE);
+    T2.ShapeAfter(TopAbs_EDGE);
+    if (!myE1.IsNull())
+    {
+      ie1 = myPDS->AddShape(myE1, 1);
+    }
+    if (!myE2.IsNull())
+    {
+      ie2 = myPDS->AddShape(myE2, 2);
+    }
+    if (!myE2.IsNull())
+    {
+      T1.Index(ie2);
+    }
+    if (!myE1.IsNull())
+    {
+      T2.Index(ie1);
+    }
+  }
+  else
+  {
+    T1.ShapeBefore(TopAbs_FACE);
+    T1.ShapeAfter(TopAbs_FACE);
+    T2.ShapeBefore(TopAbs_FACE);
+    T2.ShapeAfter(TopAbs_FACE);
+    if (!myF1.IsNull())
+    {
+      if1 = myPDS->AddShape(myF1, 1);
+    }
+    if (!myF2.IsNull())
+    {
+      if2 = myPDS->AddShape(myF2, 2);
+    }
+    if (!myF1.IsNull())
+    {
+      T2.Index(if1);
+    }
+    if (!myF2.IsNull())
+    {
+      T1.Index(if2);
+    }
+  }
+}
+
+//=================================================================================================
+
+bool TopOpeBRep_EdgesFiller::GetGeometry(
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+  const TopOpeBRep_Point2d&                                           P2D,
+  int&                                                                G,
+  TopOpeBRepDS_Kind&                                                  K) const
+
+{
+  TopOpeBRepDS_Point DSP = TopOpeBRep_PointGeomTool::MakePoint(P2D);
+  bool               b   = myHDS->GetGeometry(IT, DSP, G, K);
+  return b;
+}
+
+//=================================================================================================
+
+bool TopOpeBRep_EdgesFiller::MakeGeometry(const TopOpeBRep_Point2d& P2D,
+                                          int&                      G,
+                                          TopOpeBRepDS_Kind&        K) const
+{
+  bool isvertex1 = P2D.IsVertex(1);
+  bool isvertex2 = P2D.IsVertex(2);
+  if (isvertex1 && isvertex2)
+  {
+    int G1 = myPDS->AddShape(P2D.Vertex(1), 1);
+    myPDS->AddShape(P2D.Vertex(2), 2);
+    G = G1;
+    K = TopOpeBRepDS_VERTEX;
+  }
+  else if (isvertex1)
+  {
+    G = myPDS->AddShape(P2D.Vertex(1), 1);
+    K = TopOpeBRepDS_VERTEX;
+  }
+  else if (isvertex2)
+  {
+    G = myPDS->AddShape(P2D.Vertex(2), 2);
+    K = TopOpeBRepDS_VERTEX;
+  }
+  else
+  {
+    G = myPDS->AddPoint(TopOpeBRep_PointGeomTool::MakePoint(P2D));
+    K = TopOpeBRepDS_POINT;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+void TopOpeBRep_EdgesFiller::Face(const int ISI, const TopoDS_Shape& F)
+{
+  if (ISI == 1)
+  {
+    myF1 = TopoDS::Face(F);
+  }
+  else if (ISI == 2)
+  {
+    myF2 = TopoDS::Face(F);
+  }
+  else
+  {
+    throw Standard_Failure("Face(i,f) : ISI incorrect");
+  }
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopOpeBRep_EdgesFiller::Face(const int ISI) const
+{
+  if (ISI == 1)
+  {
+    return myF1;
+  }
+  else if (ISI == 2)
+  {
+    return myF2;
+  }
+  else
+  {
+    throw Standard_Failure("Face(i) : ISI incorrect");
+  }
+}
+
+//=================================================================================================
+
+occ::handle<TopOpeBRepDS_Interference> TopOpeBRep_EdgesFiller::StorePI(
+  const TopOpeBRep_Point2d&      P2D,
+  const TopOpeBRepDS_Transition& T,
+  const int                      SI,
+  const int                      GI,
+  const double                   param,
+  const int                      IEmother)
+{
+  occ::handle<TopOpeBRepDS_Interference> I =
+    TopOpeBRepDS_InterferenceTool::MakeEdgeInterference(T,
+                                                        TopOpeBRepDS_EDGE,
+                                                        SI,
+                                                        TopOpeBRepDS_POINT,
+                                                        GI,
+                                                        param);
+  TopoDS_Shape Emother;
+  if (IEmother == 1)
+  {
+    Emother = myE1;
+  }
+  else if (IEmother == 2)
+  {
+    Emother = myE2;
+  }
+  myHDS->StoreInterference(I, Emother);
+  bool b = ToRecompute(P2D, I, IEmother);
+  if (b)
+  {
+    StoreRecompute(I, IEmother);
+  }
+  return I;
+}
+
+//=================================================================================================
+
+occ::handle<TopOpeBRepDS_Interference> TopOpeBRep_EdgesFiller::StoreVI(
+  const TopOpeBRep_Point2d&      P2D,
+  const TopOpeBRepDS_Transition& T,
+  const int                      EI,
+  const int                      VI,
+  const bool                     VisB,
+  const TopOpeBRepDS_Config      C,
+  const double                   param,
+  const int                      IEmother)
+{
+  occ::handle<TopOpeBRepDS_Interference> I =
+    TopOpeBRepDS_InterferenceTool::MakeEdgeVertexInterference(T, EI, VI, VisB, C, param);
+  TopoDS_Shape Emother;
+  if (IEmother == 1)
+  {
+    Emother = myE1;
+  }
+  else if (IEmother == 2)
+  {
+    Emother = myE2;
+  }
+  myHDS->StoreInterference(I, Emother);
+  bool b = ToRecompute(P2D, I, IEmother);
+  if (b)
+  {
+    StoreRecompute(I, IEmother);
+  }
+  return I;
+}
+
+//=================================================================================================
+
+bool TopOpeBRep_EdgesFiller::ToRecompute(const TopOpeBRep_Point2d& P2D,
+                                         const occ::handle<TopOpeBRepDS_Interference>& /*I*/,
+                                         const int /*IEmother*/)
+{
+  bool b              = true;
+  bool pointofsegment = P2D.IsPointOfSegment();
+  bool esd            = myPEI->SameDomain();
+  b                   = b && (pointofsegment && !esd);
+  return b;
+}
+
+//=================================================================================================
+
+void TopOpeBRep_EdgesFiller::StoreRecompute(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                            const int                                     IEmother)
+{
+  if (IEmother == 1)
+  {
+    myLI1.Append(I);
+  }
+  else if (IEmother == 2)
+  {
+    myLI2.Append(I);
+  }
+}
+
+//=================================================================================================
+
+void TopOpeBRep_EdgesFiller::RecomputeInterferences(
+  const TopoDS_Edge&                                        E,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI)
+{
+  if (LI.IsEmpty())
+  {
+    return;
+  }
+
+  TopOpeBRepDS_TKI tki;
+  tki.FillOnGeometry(LI);
+
+  for (tki.Init(); tki.More(); tki.Next())
+  {
+    TopOpeBRepDS_Kind K;
+    int               G;
+    tki.Value(K, G);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K, G);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>  Rloi;
+    int                                                       nloi = loi.Extent();
+    if (nloi == 0)
+    {
+      continue;
+    }
+
+    occ::handle<TopOpeBRepDS_Interference>& iloi = loi.First();
+    TopOpeBRepDS_Transition&                TU   = iloi->ChangeTransition();
+    int                                     ifb  = TU.IndexBefore();
+    const TopoDS_Face&                      fb   = TopoDS::Face(myPDS->Shape(ifb));
+
+    double                  pE = FDS_Parameter(iloi);
+    TopOpeBRepDS_Transition TN;
+    TN.ShapeBefore(TU.ShapeBefore());
+    TN.IndexBefore(TU.IndexBefore());
+    TN.ShapeAfter(TU.ShapeAfter());
+    TN.IndexAfter(TU.IndexAfter());
+
+    FDS_stateEwithF2d(*myPDS, E, pE, K, G, fb, TN);
+
+  } // tki.More
+} // RecomputeInterferences

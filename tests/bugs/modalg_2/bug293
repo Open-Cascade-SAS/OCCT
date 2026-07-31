@@ -1,0 +1,65 @@
+puts "================"
+puts "OCC293"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC293.brep] a 
+tclean a
+checkshape a
+
+vinit
+#vdisplay a
+#vfit
+
+renamevar a edge
+explode edge e
+
+renamevar edge face
+explode face f
+
+chamf result1 face edge_26 face_5 A 1 45
+checkshape result1
+
+chamf result2 face edge_30 face_5 A 1 45
+checkshape result2
+
+chamf result3 face edge_34 face_5 A 1 45
+checkshape result3
+
+chamf result4 face edge_39 face_5 A 1 45
+checkshape result4
+
+chamf result5 face edge_35 face_5 A 1 45
+checkshape result5
+
+chamf result6 face edge_31 face_5 A 1 45
+checkshape result6
+
+chamf result7 face edge_27 face_5 A 1 45
+checkshape result7
+
+chamf result8 face edge_24 face_5 A 1 45
+checkshape result8
+
+# all contour is :
+#chamf result face edge_26 face_5 A 1 45 edge_28 face_5 A 1 45 edge_30 face_5 A 1 45 edge_32 face_5 A 1 45 edge_34 face_5 A 1 45 edge_36 face_5 A 1 45 edge_38 face_5 A 1 45 edge_40 face_5 A 1 45 edge_13 face_5 A 1 45 edge_14 face_5 A 1 45 edge_39 face_5 A 1 45 edge_37 face_5 A 1 45 edge_35 face_5 A 1 45 edge_33 face_5 A 1 45 edge_31 face_5 A 1 45 edge_29 face_5 A 1 45 edge_27 face_5 A 1 45 edge_6 face_5 A 1 45 edge_4 face_5 A 1 45 edge_19 face_5 A 1 45 edge_22 face_5 A 1 45 edge_23 face_5 A 1 45 edge_24 face_5 A 1 45 edge_25 face_5 A 1 45 edge_26 face_5 A 1 45
+
+#checkshape result
+
+vclear
+
+#vdisplay result1
+#vdisplay result2
+#vdisplay result3
+#vdisplay result4
+#vdisplay result5
+#vdisplay result6
+#vdisplay result7
+#vdisplay result8
+compound result1 result2 result3 result4 result5 result6 result7 result8  result
+vdisplay result
+vfit
+
+checkprops result -s 9.80214e+06 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

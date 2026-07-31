@@ -1,0 +1,6 @@
+# Source files for TKBool
+set(OCCT_TKBool_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKBool_FILES
+  TKBool_pch.hxx
+)

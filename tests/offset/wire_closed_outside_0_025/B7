@@ -1,0 +1,9 @@
+#puts "TODO OCC23068 ALL: Error : big tolerance of shape result_1"
+#puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+restore [locate_data_file offset_wire_021.brep] s
+
+set length 164.679
+set nbsh_v 30
+set nbsh_e 30
+set nbsh_w 2
+

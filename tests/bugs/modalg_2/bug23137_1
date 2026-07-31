@@ -1,0 +1,21 @@
+puts "============"
+puts "CR23137"
+puts "============"
+puts ""
+##########################################################################################################
+# Class BRepAlgoAPI_Cut does not made correct result on attached shapes.
+##########################################################################################################
+
+restore [locate_data_file bug23137_bspl_cut.brep] b
+explode b
+copy b_1 b1
+copy b_2 b2
+#to provide positive volume of b2
+invert b2
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 44460.7 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

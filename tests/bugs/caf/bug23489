@@ -1,0 +1,32 @@
+# Test for #23489: memory leak in TNaming_NamedShape destructor
+
+pload OCAF
+
+# take some big file to be loaded
+set file [locate_data_file Bottom.brep]
+
+set listmem {}
+for {set i 1} {$i < 10} {incr i} {
+    # load big shape
+    restore $file a
+
+    # add shape to new OCAF document
+    NewDocument D BinOcaf
+
+    # add shape to document
+    SetShape D 0:1 a
+
+    # Note: if ForgetAll or Undo is called here, memory is correctly freed!
+    # ForgetAll D 0:1
+
+    # close document
+    Close D
+   
+
+    # unload shape (replace by small one)
+    vertex a 0 0 0
+
+    # check memory usage (with tolerance equal to half page size)
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 256 "Memory leak detected"
+}

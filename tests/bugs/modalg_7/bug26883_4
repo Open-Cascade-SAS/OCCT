@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC26883"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result of Boolean Operation
+#######################################################################
+
+restore [locate_data_file bug26883_object.brep] b1
+restore [locate_data_file bug26883_fuse_tool2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+ 
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+bbuild r_5
+
+foreach i { 0 1 2 3 4 5} {
+  checkshape r_$i
+  if {![regexp "OK" [bopcheck r_$i]]} {
+    puts "Error: r_$i is self-intersecting shape"
+  }
+}
+
+checkprops r_0 -s 9.84822 -v 0.639566
+checknbshapes r_0 -wire 7 -face 5 -shell 1 -solid 1 -t
+
+checkprops r_1 -s 2116.61 -v 607.386
+checknbshapes r_1 -wire 40 -face 34 -shell 3 -solid 1 -t
+
+checkprops r_2 -s 2110.46 -v 606.532
+checknbshapes r_2 -wire 36 -face 30 -shell 3 -solid 2 -t
+
+checkprops r_3 -s 15.9958 -v 0.215358
+checknbshapes r_3 -wire 11 -face 9 -shell 2 -solid 2 -t
+
+checkprops r_4 -l 24.818
+checksection r_4 -r 0
+
+checkprops r_5 -s 2146.15 -v 608.026
+checknbshapes r_5 -wire 47 -face 39 -shell 6 -solid 5 -t
+
+
+checkview -display r_1 -2d -path ${imagedir}/${test_image}.png

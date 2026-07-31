@@ -1,0 +1,28 @@
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
+
+puts "============"
+puts "OCC21652"
+puts "============"
+puts ""
+#######################################################################
+# Problem with offset on the wire
+#######################################################################
+
+set BugNumber OCC21652
+
+puts "Load shape ..."
+restore [locate_data_file OCC21652.brep] a 
+
+if [catch { mkoffset resoffset a 1 1.0 } ] {
+  puts "Faulty ${BugNumber} : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+checkprops result -l 372.531 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 93 -edge 93 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 187}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

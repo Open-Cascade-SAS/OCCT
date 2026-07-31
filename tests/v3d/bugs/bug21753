@@ -1,0 +1,26 @@
+puts "==========="
+puts "OCC21753: Poor display of shading on cones due to Gouraud shading limitations"
+puts "==========="
+
+pload MODELING VISUALIZATION
+
+# set rough meshing parameters
+vinit View1
+vdefaults -absDefl 10 -devCoeff 0.1
+
+puts "Displaying two equal cones, one with Phong shader"
+pcone p_gouraud 10 100 100
+trotate p_gouraud 0 0 0 0 1 0 -90
+vdisplay p_gouraud
+vsetdispmode p_gouraud 1
+#vsetmaterial p_gouraud bronze
+
+tcopy p_gouraud p_phong
+ttranslate p_phong 200 0 0 
+vdisplay p_phong
+vsetdispmode p_phong 1
+#vsetmaterial p_phong bronze
+vshaderprog p_phong phong
+
+vfit
+vdump $imagedir/${casename}.png

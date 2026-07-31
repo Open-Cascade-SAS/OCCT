@@ -1,0 +1,4 @@
+# File: begin
+
+set filename [locate_data_file "bug22869_Spring.igs"]
+

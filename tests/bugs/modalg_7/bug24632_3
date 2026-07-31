@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC24632"
+puts "========"
+puts ""
+###############################################################
+# Artifacts during Boolean cut operation on neighboring parts
+###############################################################
+
+box b1 10 10 10
+
+box b2 10 0 0 10 10 10
+
+plane p -10 5 5 1 0 0
+pcylinder cut p 2.5 40
+checkshape cut
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild c
+checkshape c
+
+bop c cut
+bopcut result
+checkshape result
+
+checknbshapes result -solid 2 -shell 2 -face 13 -wire 16
+checkprops result -v 1607.3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

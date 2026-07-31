@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC25568"
+puts "============"
+puts ""
+#########################################################################
+# SIGSEGV in thrusections with edge without 3D curve
+#########################################################################
+
+restore [locate_data_file bug25568_loft-inv1-draw-Loft-00-section.brep] Loft-00-section
+restore [locate_data_file bug25568_loft-inv1-draw-Loft-01-section.brep] Loft-01-section
+
+if [info exists result] {unset result}
+
+thrusections result 0 0 Loft-00-section Loft-01-section
+
+if ![isdraw result] {
+  if {[info commands fixshape] == ""} {pload XSDRAW}
+  fixshape Loft-00-section_fixed Loft-00-section
+  thrusections result 0 0 Loft-00-section_fixed Loft-01-section
+  if ![isdraw result] {
+    puts "Error : thrusection is failed even after fixing arguments"
+  }
+}
+
+checkprops result -s 25.236 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,69 @@
+puts "================"
+puts "OCC2932"
+puts "================"
+puts ""
+#######################################################################################
+# Create Attribute Delta depending on actual change of the attribute 
+#######################################################################################
+# Case 7 (TDataStd_Integer)
+#######################################################################################
+
+# Create a new document and set UndoLimit
+NewDocument D BinOcaf
+UndoLimit D 100
+
+# Create a label and set attributes
+NewCommand D
+set Label 0:2
+
+############################################
+set Integer 100
+############################################
+
+set Real1 300.
+set Real2 400.
+set modified_attribute TDataStd_Real
+
+############################################
+# Set TDataStd_Integer
+SetInteger D ${Label} ${Integer}
+############################################
+
+SetReal D ${Label} ${Real1}
+set list [DumpCommand D]
+
+# Open a transaction
+NewCommand D
+set list [DumpCommand D]
+
+############################################
+# Set old value for TDataStd_Integer
+SetInteger D ${Label} ${Integer}
+############################################
+
+# Set new value for TDataStd_Real
+SetReal D ${Label} ${Real2}
+set list [DumpCommand D]
+
+# Open a transaction
+NewCommand D
+set list [DumpCommand D]
+
+# Checking
+set ll [llength ${list}]
+set good_length 17
+puts "length = ${ll}"
+puts "good_length = ${good_length}"
+
+if { ${ll} != ${good_length} } {
+  puts "OCC2932 Error (case 1)"
+} else {
+  set name_attribute [lindex ${list} [expr ${good_length} - 1]]
+  puts "name_attribute = ${name_attribute}"
+  puts "modified_attribute = ${modified_attribute}"
+  if {[string compare ${name_attribute} ${modified_attribute}] == 0} {
+    puts "OCC2932 OK"
+  } else {
+    puts "OCC2932 Error (case 2)"
+  }
+}

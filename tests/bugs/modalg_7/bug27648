@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC27648"
+puts "========"
+puts ""
+#################################################
+# Regression vs 6.7.1: General Fuse operation fails to fuse the solids
+#################################################
+
+restore [locate_data_file bug27648_simple.brep] s
+explode s
+bsection r s_1 s_2
+explode s_2 f
+
+# find section edge belonging to the face s_2_3
+foreach e [explode r e] {
+  if {[catch {mk2dcurve c2d $e s_2_3}] == 0} {
+    break
+  }
+}
+
+mkcurve c $e
+
+# in a loop, check that curve has increased Z value along its length
+bounds c u1 u2
+set delta [dval (u2-u1)/1000.0]
+cvalue c 0 xp yp zp
+for {set p [dval u1] } {$p <= [dval u2] } {set p [expr $p + $delta]} {
+  cvalue c $p x y z
+  if {[dval z] < [dval zp]} {
+    puts "Error on parameter $p"
+  }
+  copy z zp
+}

@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC28903"
+puts "============"
+puts ""
+##################################################################################
+# BRepOffset_MakeOffset produces invalid shape (thickshell) in Intersection mode
+##################################################################################
+
+restore [locate_data_file bug28903_Fuse_3.brep] a
+
+thickshell result a 10 i
+donly result
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 6 -wire 7 -edge 12 -vertex 7 -shape 34
+
+checkmaxtol result -min_tol 0.0015
+
+checkprops result -v 1.1845e+006

@@ -1,0 +1,63 @@
+puts "========"
+puts "Sensitive box selection"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create sphere
+sphere ss 10
+mkface s ss
+incmesh s 0.01
+
+# draw sphere
+vinit View1
+vclear
+vsetdispmode 1
+vpointcloud p s -nonormals
+vselmode p 2 1
+vaxo
+vfit
+
+vclipplane pl1 -set -equation -1 0 0 0
+set p1 [vmoveto 200 200]
+if {[string first "e+308" $p1] != -1} {
+  puts "Faulty : Selection 1"
+}
+vpoint pp1 {*}$p1
+checkpoint pp1 $p1 {-1.7763568394002505e-15 -0.51078486684208357 0.59985611160264973} 0.0001
+vdump $::imagedir/${::casename}_clip1_selection_axo.png
+vtop
+vdump $::imagedir/${::casename}_clip1_selection_top.png
+vaxo
+verase pp1
+
+vmoveto 300 200
+vdump $::imagedir/${::casename}_clip1_no_selection.png
+
+vclipplane pl1 -set -equation -1 0 0 3
+vclipplane pl2 -set -equation 1 0 0 3
+set p2 [vmoveto 200 200]
+if {[string first "e+308" $p2] != -1} {
+  puts "Faulty : Selection 2"
+}
+vpoint pp2 {*}$p2
+checkpoint pp2 $p2 {2.9999999999999991 -3.5107848668420845 3.5998561116026506} 0.0001
+vdump $::imagedir/${::casename}_clip2_selection_axo.png
+vtop
+vdump $::imagedir/${::casename}_clip2_selection_top.png
+vaxo
+verase pp2
+
+vmoveto 75 200
+vdump $::imagedir/${::casename}_clip2_no_selection.png
+
+vtop
+vmoveto 250 200
+vdump $::imagedir/${::casename}_clip2_no_selection_top.png
+
+vaxo
+vfit
+vclipplane pl1 -delete
+vclipplane pl2 -delete
+vmoveto 200 200
+vdump $imagedir/${casename}.png

@@ -1,0 +1,23 @@
+puts "===================================="
+puts "Prs3d_ToolCylinder - create cylinder"
+puts "===================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+# cylinder
+vcylinder c1 8 8 20 
+vlocation c1 -translate 0 0 20
+
+# cone
+vcylinder c2 8 0 20 
+vlocation c2 -translate -20 -20 -20
+
+# frustum of a cone
+vcylinder c3 8 4 10 
+vlocation c3 -translate 20 20 -20
+
+vfit
+
+vdump $imagedir/${casename}.png

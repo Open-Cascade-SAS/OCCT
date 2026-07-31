@@ -1,0 +1,3 @@
+circle result 0 0 1 0 0.2
+checklength result -l 1.2566370614359172
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

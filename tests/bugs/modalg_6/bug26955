@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC26955"
+puts "========"
+puts ""
+#################################
+# Invalid result of General Fuse operation
+#################################
+
+
+restore [locate_data_file bug26955_input0.brep] b1
+restore [locate_data_file bug26955_input1.brep] b2
+restore [locate_data_file bug26955_input2.brep] b3
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+bfillds
+bbuild result
+
+checkprops result -s 24516.1
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 14
+ EDGE      : 22
+ WIRE      : 14
+ FACE      : 13
+ SHELL     : 4
+ SOLID     : 3
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 71
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

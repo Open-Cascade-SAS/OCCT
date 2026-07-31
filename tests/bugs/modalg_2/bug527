@@ -1,0 +1,17 @@
+pload QAcommands
+
+puts "========"
+puts "OCC527"
+puts "========"
+puts ""
+#####################################################
+## BRepAlgoAPI_Section creates very distant geometry on some planar sections
+#####################################################
+
+cpulimit 1000
+restore [locate_data_file OCC527.brep] result
+OCC527 result
+  
+checkprops result -s 3774.42 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

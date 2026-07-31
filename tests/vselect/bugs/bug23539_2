@@ -1,0 +1,24 @@
+puts "============"
+puts "CR23539: Test case for polygonal shift selection"
+puts "============"
+puts ""
+
+box a 10 10 10
+box b 50 50 50 10 10 10
+vinit
+vdisplay a b
+vfit
+vselmode 2 1
+vselect 0 0
+vselect 58 300
+vselect 300 200 300 60 400 60 407 150 -xor
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 13 } { puts "Error : Polygonal shift selection doesn't work properly" }
+
+vselect 350 121 -xor
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 12 } { puts "Error : (case 2)" }
+
+vdump ${imagedir}/${casename}.png

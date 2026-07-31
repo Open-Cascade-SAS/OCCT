@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC298 "
+puts "========================"
+puts ""
+#################################################################
+## Exception during "tcopy" command
+#################################################################
+
+restore [locate_data_file OCC298.brep] result
+checkshape result
+
+if [catch {tcopy result a } res] {
+  puts "Faulty OCC298: function TCOPY works wrongly"
+} else {
+  puts "OCC298 OK: function TCOPY works properly"
+}
+
+checkprops result -s 8e+100 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

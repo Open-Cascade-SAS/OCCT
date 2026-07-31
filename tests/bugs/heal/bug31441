@@ -1,0 +1,20 @@
+puts "============================================"
+puts "OCC31441: UnifySameDomain corrupts the shape"
+puts "============================================"
+puts ""
+
+brestore [locate_data_file bug31441.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 2 -face 46 -wire 48 -edge 128 -vertex 84
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1.10788

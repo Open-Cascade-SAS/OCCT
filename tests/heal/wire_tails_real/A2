@@ -1,0 +1,5 @@
+restore [locate_data_file  bug26261_a_3380.brep] s
+fixshape  r  s  -maxtaila 1  -maxtailw 3e-3
+
+checknbshapes  r  -vertex 5  -edge 5  -wire 1  -face 1  -shell 0  -solid 0  -compsolid 0  -compound 0
+checkprops r -l 1.9646975436380054

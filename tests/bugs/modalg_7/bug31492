@@ -1,0 +1,8 @@
+puts "==================================================="
+puts "OCC31492: BRepBuilderAPI_MakeFace crashes on a wire"
+puts "==================================================="
+puts ""
+
+brestore [locate_data_file bug31492.brep] a
+
+mkplane result a

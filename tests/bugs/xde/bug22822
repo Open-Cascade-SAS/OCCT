@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC22822"
+puts "================"
+puts ""
+######################################################################################
+# Skipping of the first and the last edges of a wire for opened wires
+######################################################################################
+
+set BugNumber OCC22822
+
+restore [locate_data_file OCC22822-selfIntersectingOpenWire.brep] result
+
+set aList [checkselfintersection result]
+
+if { [regexp {A self-intersecting wire.} $aList] } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkprops result -l 579.551
+checksection result
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

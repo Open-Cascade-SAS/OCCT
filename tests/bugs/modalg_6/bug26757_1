@@ -1,0 +1,51 @@
+puts "============"
+puts "OCC26757"
+puts "============"
+puts ""
+###############################################################################################
+# Wrong history of a fillet
+###############################################################################################
+
+restore [locate_data_file bug26757_s.brep] s
+
+explode s e
+blend r s 2 s_14
+checkhist
+explode generated_001
+
+set nbshapes_expected_1 "
+Number of shapes in shape
+ VERTEX    : 2
+ EDGE      : 1
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 3
+"
+checknbshapes generated_001_1 -ref ${nbshapes_expected_1} -t -m "selected edge"
+
+set nbshapes_expected_2 "
+Number of shapes in shape
+ VERTEX    : 5
+ EDGE      : 5
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 12
+"
+if { [info exists generated_001_2] == 0 } {
+   puts "Error: Wrong history of a fillet"
+} else {
+   checknbshapes generated_001_2 -ref ${nbshapes_expected_2} -t -m "fillet face"
+}
+
+smallview
+donly generated_001_1 generated_001_2
+fit
+xwd ${imagedir}/${test_image}.png

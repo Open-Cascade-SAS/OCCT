@@ -1,0 +1,24 @@
+#puts "TODO OCC27024 ALL: Error : The length of result shape is"
+
+puts "============="
+puts "BUC60462"
+puts "============="
+puts "Section"
+puts ""
+
+restore [locate_data_file buc60462a.brep] a 
+checkshape a
+restore [locate_data_file buc60462b.brep] b
+checkshape b
+bsection result a b
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full cs
+
+if { $cs != 0 } {
+    puts "Faulty : Section is incorrect"
+}
+
+checkprops result -l 282.421
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32333_178_trim3.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 15
+offsetperform result
+
+checkprops result -s 117600 -v 2.73811e+06
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 7 -face 7 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

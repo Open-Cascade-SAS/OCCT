@@ -1,0 +1,40 @@
+puts "Check History of General Fuse"
+
+puts "Case with an edge intersecting a face"
+
+polyline fw 0 0 0 10 0 0 10 10 0 0 10 0 0 0 0
+mkplane fs fw
+
+vertex ev1 5 5 5
+vertex ev2 5 5 -5
+edge es ev1 ev2
+
+bclearobjects
+bcleartools
+baddobjects fs
+baddtools es
+bfillds
+bbuild r
+
+# get history of the operation
+savehistory gf_hist
+
+modified fs_m gf_hist fs
+checknbshapes fs_m -face 1 -m "Information about Modification of fs"
+
+modified es_m gf_hist es
+checknbshapes es_m -edge 2 -m "Information about Modification of es"
+
+generated fs_g gf_hist fs
+checknbshapes fs_g -vertex 1 -m "Information about shapes Generated from fs"
+
+generated es_g gf_hist es
+checknbshapes es_g -vertex 1 -m "Information about shapes Generated from es"
+
+
+# In General Fuse operation there should be no Deleted elements
+foreach s [join [list es fs [explode es v] [explode fs e] [explode fs v]]] {
+  if {[string trim [isdeleted gf_hist $s]] != "Not deleted."} {
+    puts "Error: Incorrect information about Deleted shapes"
+  }
+}

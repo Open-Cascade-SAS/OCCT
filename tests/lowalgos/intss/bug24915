@@ -1,0 +1,50 @@
+puts "TODO OCC26927 ALL: Error: Tolerance is too big!"
+
+puts "========="
+puts "CR24915"
+puts "========="
+puts ""
+###############################
+## Wrong intersection curves between two cylinders
+###############################
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+
+restore [locate_data_file bug24915_ft2.brep] b1
+restore [locate_data_file bug24915_ft3.brep] b2
+
+# 1. topology
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild r
+checkshape r
+
+# 2. geometry
+set MaxTol 1.0e-7
+set GoodNBCurv 3
+
+set log [bopcurves b1 b2 -2d]
+
+if { ! [regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv] } {
+  puts "Error: Cannot find tolerance value in output of bopcurve command"
+}
+
+if { $NbCurv != $GoodNBCurv } {
+  puts "Error: Number of curves is wrong!"  
+}
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+smallview
+
+for {set i 1} {$i <= $GoodNBCurv} {incr i} {
+  donly b2 c_$i
+  fit
+  checkview -screenshot -2d -path ${imagedir}/${test_image}_$i.png
+}

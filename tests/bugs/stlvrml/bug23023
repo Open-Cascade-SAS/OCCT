@@ -1,0 +1,16 @@
+puts "========================"
+puts "OCC23023"
+puts "========================"
+puts ""
+#######################################################################
+# VRML reader fails on attempt to read an attached WRL file
+#######################################################################
+
+set filepath [locate_data_file OCC23023-2056132060_2_tutnicht.wrl]
+if [catch { set list [loadvrml result $filepath] } res] {
+    puts "Faulty: VRML reader fails"
+} else {
+    puts "OK: VRML reader work properly"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

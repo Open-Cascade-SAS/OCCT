@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC24181 Render text as BRep (check alphabet)"
+puts "============"
+puts ""
+pload MODELING VISUALIZATION
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+set THE_FONT_NAME SansFont
+set THE_FONT_SIZE 24
+set THE_TEXT {
+`1234567890-=
+~!@#$%^&*()_+
+qwertyuiop[]\\
+QWERTYUIOP{}|
+asdfghjkl;'
+ASDFGHJKL:"
+zxcvbnm,./
+ZXCVBNM<>?§
+AVATAR Y.
+}
+
+text2brep aBTextN $THE_TEXT -font $THE_FONT_NAME -height $THE_FONT_SIZE -aspect regular -composite off
+text2brep aBTextC $THE_TEXT -font $THE_FONT_NAME -height $THE_FONT_SIZE -aspect regular -composite on
+checkshape aBTextN
+checkshape aBTextC
+
+ttranslate aBTextC 220 0 0
+
+vclear
+vinit View1
+vtop
+vdisplay -dispMode 1 aBTextN aBTextC
+vfit
+vglinfo
+vdump ${imagedir}/${casename}.png

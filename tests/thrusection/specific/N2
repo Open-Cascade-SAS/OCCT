@@ -1,0 +1,118 @@
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+set z1 40
+set z2 20
+set z3 0
+set z4 100
+
+# spine
+polyline s1 0 0 ${z4} 0 0 -${z4}
+
+# beginning vertex
+vertex v4 40 0 ${z4}
+# ending vertex
+vertex v5 40 0 -${z4}
+
+# profile
+# top triangle
+vertex v1 0 0 ${z1}
+vertex v2 5 5 ${z1}
+vertex v3 0 10 ${z1}
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v1
+
+wire w1 e1 e2 e3
+
+# top quadrangle
+vertex v11 15 15 ${z2}
+vertex v12 -15 15 ${z2}
+vertex v13 -15 -15 ${z2}
+vertex v14 15 -15 ${z2}
+
+edge e11 v11 v12
+edge e12 v12 v13
+edge e13 v13 v14
+edge e14 v14 v11
+
+wire w11 e11 e12 e13 e14
+ 
+# top octagon
+vertex v21 25 25 ${z3}
+vertex v22 -25 25 ${z3}
+vertex v23 -30 10 ${z3}
+vertex v24 -30 -10 ${z3}
+vertex v25 -25 -25 ${z3}
+vertex v26 25 -25 ${z3}
+vertex v27 30 -10 ${z3}
+vertex v28 30 10 ${z3}
+
+edge e21 v21 v22
+edge e22 v22 v23
+edge e23 v23 v24
+edge e24 v24 v25
+edge e25 v25 v26
+edge e26 v26 v27
+edge e27 v27 v28
+edge e28 v28 v21
+
+wire w21 e21 e22 e23 e24 e25 e26 e27 e28
+
+# bottom quadrangle
+vertex v111 15 15 -${z2}
+vertex v112 -15 15 -${z2}
+vertex v113 -15 -15 -${z2}
+vertex v114 15 -15 -${z2}
+
+edge e111 v111 v112
+edge e112 v112 v113
+edge e113 v113 v114
+edge e114 v114 v111
+
+wire w111 e111 e112 e113 e114
+
+# bottom triangle
+vertex v101 0 0 -${z1}
+vertex v102 5 5 -${z1}
+vertex v103 0 10 -${z1}
+
+edge e101 v101 v102
+edge e102 v102 v103
+edge e103 v103 v101
+
+wire w101 e101 e102 e103
+
+mksweep s1
+
+addsweep v4
+addsweep w1 -T
+addsweep w11 -T
+addsweep w21 -T
+addsweep w111 -T
+addsweep w101 -T
+addsweep v5
+
+catch {buildsweep result}
+
+
+checkprops result -s 622222
+
+checknbshapes result -vertex 2 -edge 33 -wire 11 -face 11 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 58
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+

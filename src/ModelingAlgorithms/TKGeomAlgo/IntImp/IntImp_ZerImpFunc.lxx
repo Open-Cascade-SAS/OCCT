@@ -1,0 +1,69 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_UndefinedDerivative.hxx>
+
+inline void IntImp_ZerImpFunc::Set(const ThePSurface& PS)
+{
+  surf = (void*)(&PS);
+}
+
+inline void IntImp_ZerImpFunc::SetImplicitSurface(const TheISurface& IS)
+{
+  func = (void*)(&IS);
+}
+
+inline void IntImp_ZerImpFunc::Set(const double Tol)
+{
+  tol = Tol;
+}
+
+inline double IntImp_ZerImpFunc::Root() const
+{
+  return valf;
+}
+
+inline double IntImp_ZerImpFunc::Tolerance() const
+{
+  return tol;
+}
+
+inline const gp_Pnt& IntImp_ZerImpFunc::Point() const
+{
+  return pntsol;
+}
+
+inline const gp_Vec& IntImp_ZerImpFunc::Direction3d()
+{
+  if (IsTangent())
+    throw StdFail_UndefinedDerivative();
+  return d3d;
+}
+
+inline const gp_Dir2d& IntImp_ZerImpFunc::Direction2d()
+{
+  if (IsTangent())
+    throw StdFail_UndefinedDerivative();
+  return d2d;
+}
+
+inline const ThePSurface& IntImp_ZerImpFunc::PSurface() const
+{
+  return (*((ThePSurface*)(surf)));
+}
+
+inline const TheISurface& IntImp_ZerImpFunc::ISurface() const
+{
+  return (*((TheISurface*)(func)));
+}

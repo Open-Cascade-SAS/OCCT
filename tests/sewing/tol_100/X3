@@ -1,0 +1,8 @@
+restore [locate_data_file CTO904_cts21364a.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 0.011092740551156799
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

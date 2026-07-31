@@ -1,0 +1,13 @@
+puts "============"
+puts "CR23464"
+puts "============"
+puts ""
+##########################################################################################################
+# Projection algorithm produces wrong results
+##########################################################################################################
+
+restore [locate_data_file bug23464_c41.draw] c41
+restore [locate_data_file bug23464_s46.draw] s46
+
+project result c41 s46
+checklength result -l 3.1415926535898007

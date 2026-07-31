@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj7_pm5-hc-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 80 )  Summary  = 0  ( 80 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 21  ( 559 )  Summary  = 21  ( 559 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1504  ( 1504 ) 
+STATSHAPE   : Solid    = 272  ( 272 )  Shell    = 272  ( 272 )  Face     = 3214  ( 3214 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9320948364  (      3.3196868 )  AvgTol   =  0.0006686833198  (  0.003731109924 )
+LABELS      : N0Labels = 230  ( 230 )  N1Labels = 403  ( 403 )  N2Labels = 0  ( 0 )   TotalLabels = 633  ( 633 )   NameLabels = 633  ( 633 )   ColorLabels = 98  ( 98 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 99  ( 99 )  Volume   = 99  ( 99 )  Area     = 99  ( 99 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = DARKSEAGREEN1 LAVENDER LIGHTGOLDENROD LIGHTSTEELBLUE1 LIGHTSTEELBLUE3 STEELBLUE3  ( DARKSEAGREEN1 LAVENDER LIGHTGOLDENROD LIGHTSTEELBLUE1 LIGHTSTEELBLUE3 STEELBLUE3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

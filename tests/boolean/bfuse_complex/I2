@@ -1,0 +1,11 @@
+# Original bug : cts20493
+# Date : 13Mai98
+# C4
+
+restore [locate_data_file CTO902_cts20493a.rle] a
+restore [locate_data_file cts20493b.rle] b
+
+bfuse result a b
+
+checkprops result -s 186203
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

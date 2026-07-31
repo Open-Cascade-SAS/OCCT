@@ -1,0 +1,19 @@
+## pro15946
+puts "PRO15946"
+puts "Section"
+puts ""
+
+restore [locate_data_file pro15946a.rle] a
+restore [locate_data_file pro15946b.rle] b
+
+fsameparameter a
+fsameparameter b
+
+maxtolerance a
+maxtolerance b
+
+bsection result a b
+
+checkprops result -l 710.721
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC24959"
+puts "========"
+puts ""
+####################################################
+## GCPnts_TangentialDeflection does not implement functionality by its meaning in case of BSpline with local splash
+####################################################
+
+bsplinesurf s 2 4 0.0 3 0.34 1 0.67 1 1.0 3 1 2 0.0 2 1.0 2 10 0 0 1 6 0 0 1 4 0 0 1 2 0 0 1 0 0 0 1 10 5 0 1 6 5 0 1 4 5 0 1 1.5 9 0 1 0 5 0 1
+mkface result s
+incmesh result 1
+
+checktrinfo result -max_defl 1
+
+vdisplay result
+vsetdispmode 1
+vtop
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

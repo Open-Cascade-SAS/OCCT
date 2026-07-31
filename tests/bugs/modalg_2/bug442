@@ -1,0 +1,34 @@
+
+puts "========"                                                                 
+puts "OCC442"
+puts "========"                                                                 
+puts ""                                                                         
+########################################################
+## The Revolution Algo produces result, but during check using IsValid method from
+##  BRepAlgoAPI the exception is raised
+########################################################
+
+restore [locate_data_file OCC442.brep] a 
+checkshape a
+
+explode a v
+
+mkpoint p_1 a_1
+mkpoint p_2 a_3
+coord p_1 x1 y1 z1
+coord p_2 x2 y2 z2
+set ax [dval x1]
+set ay [dval y1]
+set az [dval z1]
+set bx [dval x2]
+set by [dval y2]
+set bz [dval z2]
+set dx [expr $ax - $bx]
+set dy [expr $ay - $by]
+set dz [expr $az - $bz]
+
+revol result a $ax $ay $az $dx $dy $dz 360
+
+checkprops result -s 692942 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

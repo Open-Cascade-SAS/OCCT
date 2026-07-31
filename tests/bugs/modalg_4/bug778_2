@@ -1,0 +1,21 @@
+
+puts "========"
+puts "OCC778"
+puts "SAM1656"
+puts "(case 2)"
+puts "========"
+puts ""
+#####################################
+## Incorrect result of cut of the cylinder from the shape
+#####################################
+
+restore [locate_data_file OCC778.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bcut result a_2 a_1
+
+checkprops result -s 678.584 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

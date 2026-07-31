@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC27910"
+puts "========"
+puts ""
+#######################################
+# Exception during offset computation
+#######################################
+
+restore [locate_data_file bug27910.brep] s
+
+offsetparameter 1e-7 p i
+offsetload s 10
+offsetperform result
+
+unifysamedom result_unif result
+
+
+checkshape result
+checkprops result -s 386834
+checknbshapes result -ref [lrange [nbshapes s] 8 19]
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,40 @@
+puts "============="
+puts "0030695: Visualization - selection by box should use clipping planes set for viewer"
+puts "============="
+
+pload MODELING VISUALIZATION
+
+box b 10 10 10
+box b1 -5 0 0 2 2 2
+box b2 13 0 0 2 2 2
+box b3 16 0 0 2 2 2
+
+vinit View1
+vtop
+vdisplay -dispMode 1 b b1 b2 b3
+vfit
+vzoom 0.5
+
+# apply selection with rectangle covering all visualized objects
+vselect 40 100 370 300
+if {[vnbselected] != 4} {
+  puts "ERROR: Initial objects are not selected!"
+}
+
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+# use clippling plane to have two objects visible (the second object is partially visible)
+vclipplane change pln equation -1 0 0 5
+
+# apply initial selection rectangle, expecting selection of only fully visible object
+vselect 40 100 370 300
+if {[vnbselected] != 1} {
+  puts "ERROR: Bad number of selected objects after clippling plane set on view!"
+}
+
+# apply initial selection rectangle, expecting selection of partially included object also
+vselect 40 100 370 300 -allowoverlap 1
+if {[vnbselected] != 2} {
+  puts "ERROR: Bad number of selected objects after clippling plane set on view with allow overlap selection!"
+}
+vdump $imagedir/${casename}.png

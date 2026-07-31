@@ -1,0 +1,12 @@
+pload TOPTEST
+
+# Execution time limit to prevent loops
+cpulimit 1000
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

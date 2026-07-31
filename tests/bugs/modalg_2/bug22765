@@ -1,0 +1,22 @@
+puts "========================"
+puts "OCC22765"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing produced invalid shape from attached compound with tolerance 0.1
+#######################################################################
+
+set BugNumber OCC22765
+
+restore [locate_data_file OCC22765.brep] a 
+sewing result 0.1 a
+
+checkshape result f
+
+checkmaxtol result -ref 1.0000280013370991e-005
+checknbshapes result -shell 1
+checkfreebounds result 456
+
+checkprops result -s 0.0141287 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

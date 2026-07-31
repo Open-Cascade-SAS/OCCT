@@ -1,0 +1,5 @@
+box s 5 5 5
+explode s E
+blend result s 1 s_6 1 s_10
+
+checkprops result -s 145.137

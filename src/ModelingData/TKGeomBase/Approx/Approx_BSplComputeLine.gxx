@@ -1,0 +1,1458 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <stdio.h>
+
+#include <Approx_ParametrizationType.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_HArray1.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <Precision.hxx>
+#include <math_IntegerVector.hxx>
+#include <math_Gauss.hxx>
+#include <math_Uzawa.hxx>
+#include Approx_BSpParLeastSquareOfMyBSplGradient_hxx
+
+#if defined(OCCT_DEBUG) && defined(DRAW) && !defined(WNT)
+
+static bool mydebug = false;
+
+  #include <Draw.hxx>
+  #include <Draw_Appli.hxx>
+  #include <DrawTrSurf.hxx>
+  #include <Draw_Text2D.hxx>
+  #include <Draw_Text3D.hxx>
+  #include <Standard_Integer.hxx>
+  #include <Geom_BSplineCurve.hxx>
+  #include <Geom2d_BSplineCurve.hxx>
+  #include <Geom_Line.hxx>
+  #include <Geom2d_Line.hxx>
+  #include <Geom_TrimmedCurve.hxx>
+  #include <Geom2d_TrimmedCurve.hxx>
+
+static void DUMP(const MultiLine& Line)
+{
+  int i, j, nbP2d, nbP3d, firstP, lastP;
+  firstP = LineTool::FirstPoint(Line);
+  lastP  = LineTool::LastPoint(Line);
+
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+
+  NCollection_Array1<gp_Pnt>       tabP(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d>     tabP2d(1, mynbP2d);
+  NCollection_Array1<gp_Vec>       TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d>     TabV2d(1, mynbP2d);
+  bool                             Ok;
+  occ::handle<Geom_Line>           L3d;
+  occ::handle<Geom2d_Line>         L2d;
+  occ::handle<Geom_TrimmedCurve>   L3dt;
+  occ::handle<Geom2d_TrimmedCurve> L2dt;
+  occ::handle<Draw_Text2D>         T2D;
+  occ::handle<Draw_Text3D>         T3D;
+
+  char solname[100];
+  char mytext[10];
+
+  for (i = firstP; i <= lastP; i++)
+  {
+    if (nbP3d != 0 && nbP2d != 0)
+      LineTool::Value(Line, i, tabP, tabP2d);
+    else if (nbP2d != 0)
+      LineTool::Value(Line, i, tabP2d);
+    else if (nbP3d != 0)
+      LineTool::Value(Line, i, tabP);
+
+    for (j = 1; j <= nbP3d; j++)
+    {
+      Sprintf(solname, "%s%i%s_%i", "p", j, "3d", i);
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, tabP(j));
+      //      DrawTrSurf::Set(solname, tabP(j));
+      if (i == firstP || i == lastP)
+      {
+        Sprintf(mytext, "%s%i", " ", i);
+        T3D = new Draw_Text3D(tabP(j), mytext, Draw_vert);
+        dout << T3D;
+      }
+    }
+    for (j = 1; j <= nbP2d; j++)
+    {
+      Sprintf(solname, "%s%i%s_%i", "p", j, "2d", i);
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, tabP2d(j));
+      //      DrawTrSurf::Set(solname, tabP2d(j));
+      if (i == firstP || i == lastP)
+      {
+        Sprintf(mytext, "%s%i", " ", i);
+        T2D = new Draw_Text2D(tabP2d(j), mytext, Draw_vert);
+        dout << T2D;
+      }
+    }
+
+    // The case of tangents at extremities:
+    if (i == firstP || i == lastP)
+    {
+      if (nbP3d != 0 && nbP2d != 0)
+        Ok = LineTool::Tangency(Line, i, TabV, TabV2d);
+      else if (nbP2d != 0)
+        Ok = LineTool::Tangency(Line, i, TabV2d);
+      else if (nbP3d != 0)
+        Ok = LineTool::Tangency(Line, i, TabV);
+
+      if (Ok)
+      {
+        for (j = 1; j <= nbP3d; j++)
+        {
+          Sprintf(solname, "%s%i%s_%i", "t", j, "3d", i);
+          L3d        = new Geom_Line(tabP(j), gp_Dir(TabV(j)));
+          L3dt       = new Geom_TrimmedCurve(L3d, 0.0, 0.3);
+          char* Temp = solname;
+          DrawTrSurf::Set(Temp, L3dt);
+          //	  DrawTrSurf::Set(solname, L3dt);
+        }
+        for (j = 1; j <= nbP2d; j++)
+        {
+          Sprintf(solname, "%s%i%s_%i", "t", j, "2d", i);
+          L2d        = new Geom2d_Line(tabP2d(j), gp_Dir2d(TabV2d(j)));
+          L2dt       = new Geom2d_TrimmedCurve(L2d, 0.0, 0.3);
+          char* Temp = solname;
+          DrawTrSurf::Set(Temp, L2dt);
+          //	  DrawTrSurf::Set(solname, L2dt);
+        }
+      }
+    }
+  }
+  dout.Flush();
+}
+
+static void DUMP(const AppParCurves_MultiBSpCurve& C)
+{
+  static int                        nbappel = 0;
+  int                               i, j, nbP2d, nbP3d;
+  int                               nbpoles = C.NbPoles();
+  int                               deg     = C.Degree();
+  const NCollection_Array1<double>& Knots   = C.Knots();
+  const NCollection_Array1<int>&    Mults   = C.Multiplicities();
+
+  occ::handle<Geom_BSplineCurve>   BSp;
+  occ::handle<Geom2d_BSplineCurve> BSp2d;
+
+  NCollection_Array1<gp_Pnt>   tabPoles(1, nbpoles);
+  NCollection_Array1<gp_Pnt2d> tabPoles2d(1, nbpoles);
+  char                         solname[100];
+
+  nbappel++;
+  for (i = 1; i <= C.NbCurves(); i++)
+  {
+    if (C.Dimension(i) == 3)
+    {
+      C.Curve(i, tabPoles);
+      BSp = new Geom_BSplineCurve(tabPoles, Knots, Mults, deg);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, BSp);
+      //      DrawTrSurf::Set(solname, BSp);
+    }
+    else
+    {
+      C.Curve(i, tabPoles2d);
+      BSp2d = new Geom2d_BSplineCurve(tabPoles2d, Knots, Mults, deg);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, BSp2d);
+      //      DrawTrSurf::Set(solname, BSp2d);
+    }
+  }
+  dout.Flush();
+}
+
+#endif
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine& Line,
+                                                 const int        index,
+                                                 math_Vector&     V) const
+{
+
+  int i, j, nbP2d, nbP3d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  bool                         Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  else if (nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV2d);
+  else if (nbP3d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV);
+
+  if (Ok)
+  {
+    if (nbP3d != 0)
+    {
+      j = 1;
+      for (i = TabV.Lower(); i <= TabV.Upper(); i++)
+      {
+        V(j)     = TabV(i).X();
+        V(j + 1) = TabV(i).Y();
+        V(j + 2) = TabV(i).Z();
+        j += 3;
+      }
+    }
+    if (nbP2d != 0)
+    {
+      j = nbP3d * 3 + 1;
+      for (i = TabV2d.Lower(); i <= TabV2d.Upper(); i++)
+      {
+        V(j)     = TabV2d(i).X();
+        V(j + 1) = TabV2d(i).Y();
+        j += 2;
+      }
+    }
+  }
+  else
+  {
+
+    // Search for a tangent vector by construction of a parabola:
+    AppParCurves_Constraint firstC, lastC;
+    firstC = lastC      = AppParCurves_PassPoint;
+    int         nbpoles = 3;
+    math_Vector mypar(index, index + 2);
+    Parameters(Line, index, index + 2, mypar);
+    Approx_BSpParLeastSquareOfMyBSplGradient
+                            LSQ(Line, index, index + 2, firstC, lastC, mypar, nbpoles);
+    AppParCurves_MultiCurve C = LSQ.BezierValue();
+
+    gp_Pnt   myP;
+    gp_Vec   myV;
+    gp_Pnt2d myP2d;
+    gp_Vec2d myV2d;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++)
+    {
+      C.D1(i, 0.0, myP, myV);
+      V(j)     = myV.X();
+      V(j + 1) = myV.Y();
+      V(j + 2) = myV.Z();
+      j += 3;
+    }
+    j = nbP3d * 3 + 1;
+    for (i = nbP3d + 1; i <= nbP3d + nbP2d; i++)
+    {
+      C.D1(i, 0.0, myP2d, myV2d);
+      V(j)     = myV2d.X();
+      V(j + 1) = myV2d.Y();
+      j += 2;
+    }
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::LastTangencyVector(const MultiLine& Line,
+                                                const int        index,
+                                                math_Vector&     V) const
+{
+  int i, j, nbP2d, nbP3d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  bool                         Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  else if (nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV2d);
+  else if (nbP3d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV);
+
+  if (Ok)
+  {
+    if (nbP3d != 0)
+    {
+      j = 1;
+      for (i = TabV.Lower(); i <= TabV.Upper(); i++)
+      {
+        V(j)     = TabV(i).X();
+        V(j + 1) = TabV(i).Y();
+        V(j + 2) = TabV(i).Z();
+        j += 3;
+      }
+    }
+    if (nbP2d != 0)
+    {
+      j = nbP3d * 3 + 1;
+      for (i = TabV2d.Lower(); i <= TabV2d.Upper(); i++)
+      {
+        V(j)     = TabV2d(i).X();
+        V(j + 1) = TabV2d(i).Y();
+        j += 2;
+      }
+    }
+  }
+  else
+  {
+
+    // Search for a tangent vector by construction of a parabola:
+    AppParCurves_Constraint firstC, lastC;
+    firstC = lastC      = AppParCurves_PassPoint;
+    int         nbpoles = 3;
+    math_Vector mypar(index - 2, index);
+    Parameters(Line, index - 2, index, mypar);
+    Approx_BSpParLeastSquareOfMyBSplGradient
+                            LSQ(Line, index - 2, index, firstC, lastC, mypar, nbpoles);
+    AppParCurves_MultiCurve C = LSQ.BezierValue();
+
+    gp_Pnt   myP;
+    gp_Vec   myV;
+    gp_Pnt2d myP2d;
+    gp_Vec2d myV2d;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++)
+    {
+      C.D1(i, 1.0, myP, myV);
+      V(j)     = myV.X();
+      V(j + 1) = myV.Y();
+      V(j + 2) = myV.Z();
+      j += 3;
+    }
+    j = nbP3d * 3 + 1;
+    for (i = nbP3d + 1; i <= nbP3d + nbP2d; i++)
+    {
+      C.D1(i, 1.0, myP2d, myV2d);
+      V(j)     = myV2d.X();
+      V(j + 1) = myV2d.Y();
+      j += 2;
+    }
+  }
+}
+
+//=================================================================================================
+
+double Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&                  Line,
+                                                 const math_Vector&                aPar,
+                                                 const NCollection_Array1<double>& Theknots,
+                                                 const math_Vector&                V,
+                                                 const int                         index) const
+{
+
+  // dq/dw = lambda* V = (p2-p1)/(u2-u1)
+
+  int      nbP2d, nbP3d;
+  gp_Pnt   P1, P2;
+  gp_Pnt2d P12d, P22d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index, tabP1, tabP12d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index, tabP12d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index, tabP1);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index + 1, tabP2, tabP22d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index + 1, tabP22d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index + 1, tabP2);
+
+  double U1 = aPar(index), U2 = aPar(index + 1);
+  double lambda, S;
+  int    low     = V.Lower();
+  int    nbknots = Theknots.Length();
+
+  if (nbP3d != 0)
+  {
+    P1 = tabP1(1);
+    P2 = tabP2(1);
+    gp_Vec P1P2(P1, P2), myV;
+    myV.SetCoord(V(low), V(low + 1), V(low + 2));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  else
+  {
+    P12d = tabP12d(1);
+    P22d = tabP22d(1);
+    gp_Vec2d P1P2(P12d, P22d), myV;
+    myV.SetCoord(V(low), V(low + 1));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  return ((S * lambda) * (Theknots(2) - Theknots(1)) / (Theknots(nbknots) - Theknots(1)));
+}
+
+//=================================================================================================
+
+double Approx_BSplComputeLine::SearchLastLambda(const MultiLine&                  Line,
+                                                const math_Vector&                aPar,
+                                                const NCollection_Array1<double>& Theknots,
+                                                const math_Vector&                V,
+                                                const int                         index) const
+
+{
+  // dq/dw = lambda* V = (p2-p1)/(u2-u1)
+
+  int      nbP2d, nbP3d;
+  gp_Pnt   P1, P2;
+  gp_Pnt2d P12d, P22d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index - 1, tabP, tabP2d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index - 1, tabP2d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index - 1, tabP);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index, tabP2, tabP22d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index, tabP22d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index, tabP2);
+
+  double U1 = aPar(index - 1), U2 = aPar(index);
+  double lambda, S;
+  int    low     = V.Lower();
+  int    nbknots = Theknots.Length();
+  if (nbP3d != 0)
+  {
+    P1 = tabP(1);
+    P2 = tabP2(1);
+    gp_Vec P1P2(P1, P2), myV;
+    myV.SetCoord(V(low), V(low + 1), V(low + 2));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  else
+  {
+    P12d = tabP2d(1);
+    P22d = tabP22d(1);
+    gp_Vec2d P1P2(P12d, P22d), myV;
+    myV.SetCoord(V(low), V(low + 1));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+
+  return ((S * lambda) * (Theknots(nbknots) - Theknots(nbknots - 1))
+          / (Theknots(nbknots) - Theknots(1)));
+}
+
+//=================================================================================================
+
+Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&   Line,
+                                               const math_Vector& Parameters,
+                                               const int          degreemin,
+                                               const int          degreemax,
+                                               const double       Tolerance3d,
+                                               const double       Tolerance2d,
+                                               const int          NbIterations,
+                                               const bool         cutting,
+                                               const bool         Squares)
+{
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  {
+    myfirstParam->SetValue(i, Parameters(i));
+  }
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = Approx_IsoParametric;
+  myPeriodic    = false;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  alldone       = false;
+  mycont        = -1;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  myhasknots    = false;
+  myhasmults    = false;
+  currenttol3d = currenttol2d = RealLast();
+  tolreached                  = false;
+  Perform(Line);
+}
+
+//=================================================================================================
+
+Approx_BSplComputeLine::Approx_BSplComputeLine(const math_Vector& Parameters,
+                                               const int          degreemin,
+                                               const int          degreemax,
+                                               const double       Tolerance3d,
+                                               const double       Tolerance2d,
+                                               const int          NbIterations,
+                                               const bool         cutting,
+                                               const bool         Squares)
+{
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  {
+    myfirstParam->SetValue(i, Parameters(i));
+  }
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = Approx_IsoParametric;
+  myPeriodic    = false;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  alldone       = false;
+  myhasknots    = false;
+  myhasmults    = false;
+  mycont        = -1;
+  currenttol3d = currenttol2d = RealLast();
+  tolreached                  = false;
+}
+
+//=================================================================================================
+
+Approx_BSplComputeLine::Approx_BSplComputeLine(const int                        degreemin,
+                                               const int                        degreemax,
+                                               const double                     Tolerance3d,
+                                               const double                     Tolerance2d,
+                                               const int                        NbIterations,
+                                               const bool                       cutting,
+                                               const Approx_ParametrizationType parametrization,
+                                               const bool                       Squares)
+{
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = parametrization;
+  myPeriodic    = false;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  alldone       = false;
+  myhasknots    = false;
+  myhasmults    = false;
+  mycont        = -1;
+  currenttol3d = currenttol2d = RealLast();
+  tolreached                  = false;
+}
+
+//=================================================================================================
+
+Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&                 Line,
+                                               const int                        degreemin,
+                                               const int                        degreemax,
+                                               const double                     Tolerance3d,
+                                               const double                     Tolerance2d,
+                                               const int                        NbIterations,
+                                               const bool                       cutting,
+                                               const Approx_ParametrizationType parametrization,
+                                               const bool                       Squares)
+{
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  alldone       = false;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  Par           = parametrization;
+  myPeriodic    = false;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  myhasknots    = false;
+  myhasmults    = false;
+  mycont        = -1;
+  currenttol3d = currenttol2d = RealLast();
+  tolreached                  = false;
+  Perform(Line);
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::Perform(const MultiLine& Line)
+{
+
+#if defined(OCCT_DEBUG) && defined(DRAW) && !defined(WNT)
+  if (mydebug)
+    DUMP(Line);
+#endif
+
+  int  i, Thefirstpt, Thelastpt;
+  bool Finish = false, begin = true;
+
+  // Search for the actual constraints given by the Line:
+  FindRealConstraints(Line);
+
+  Thefirstpt    = LineTool::FirstPoint(Line);
+  Thelastpt     = LineTool::LastPoint(Line);
+  int myfirstpt = Thefirstpt;
+  int mylastpt  = Thelastpt;
+
+  AppParCurves_ConstraintCouple myCouple1(myfirstpt, realfirstC);
+  AppParCurves_ConstraintCouple myCouple2(mylastpt, reallastC);
+  myConstraints->SetValue(1, myCouple1);
+  myConstraints->SetValue(2, myCouple2);
+
+  math_Vector TheParam(Thefirstpt, Thelastpt, 0.0);
+  if (myfirstParam.IsNull())
+  {
+    Parameters(Line, Thefirstpt, Thelastpt, TheParam);
+  }
+  else
+  {
+    for (i = myfirstParam->Lower(); i <= myfirstParam->Upper(); i++)
+    {
+      TheParam(i + Thefirstpt - 1) = myfirstParam->Value(i);
+    }
+  }
+
+  myParameters = new NCollection_HArray1<double>(TheParam.Lower(), TheParam.Upper());
+  for (i = TheParam.Lower(); i <= TheParam.Upper(); i++)
+  {
+    myParameters->SetValue(i, TheParam(i));
+  }
+  int    nbknots = 2;
+  double l;
+  alldone = false;
+
+  if (!mycut)
+  {
+
+    // Case where no additional knots are desired.
+    // ==================================================
+
+    if (!myhasknots)
+    {
+      NCollection_Array1<double> theknots(1, 2);
+      NCollection_Array1<int>    themults(1, 2);
+      theknots(1) = 0.0;
+      theknots(2) = 1.0;
+      alldone     = Compute(Line, myfirstpt, mylastpt, TheParam, theknots, themults);
+    }
+    else
+    {
+      if (!myhasmults)
+      {
+        NCollection_Array1<int> themults(1, myknots->Length());
+        alldone = Compute(Line, myfirstpt, mylastpt, TheParam, myknots->Array1(), themults);
+      }
+      else
+      {
+        alldone =
+          Compute(Line, myfirstpt, mylastpt, TheParam, myknots->Array1(), mymults->ChangeArray1());
+      }
+    }
+  }
+  else
+  {
+
+    // cas ou on va iterer a partir de noeuds donnes par l''utilisateur
+    // ou a partir d''une bezier.
+    // ================================================================
+
+    while (!Finish)
+    {
+
+      currenttol3d = currenttol2d = RealLast();
+
+      if (myhasknots && begin)
+      {
+
+        if (!myhasmults)
+        {
+
+          // 1st case: the user provides starting knots but
+          // it is up to us to set the multiplicities according to the
+          // desired continuity.
+          // ========================================================
+
+          NCollection_Array1<int> TheMults(1, myknots->Length());
+          alldone = Compute(Line, myfirstpt, mylastpt, TheParam, myknots->Array1(), TheMults);
+        }
+        else
+        {
+
+          // 2nd case: the user provides starting knots
+          // with their multiplicities.
+          // ===================================================
+
+          alldone = Compute(Line,
+                            myfirstpt,
+                            mylastpt,
+                            TheParam,
+                            myknots->Array1(),
+                            mymults->ChangeArray1());
+        }
+        begin = false;
+      }
+
+      else
+      {
+
+        // 3eme cas: l''utilisateur ne donne aucun noeuds de depart
+        // ========================================================
+
+        NCollection_Array1<double> Theknots(1, nbknots);
+        NCollection_Array1<int>    TheMults(1, nbknots);
+        Theknots(1)       = 0.0;
+        Theknots(nbknots) = 1.0;
+        for (i = 2; i <= nbknots - 1; i++)
+        {
+
+          l           = (mylastpt - myfirstpt) * double(i - 1) / double(nbknots - 1);
+          int    ll   = (int)(l);
+          double a    = l - ll;
+          double p1   = TheParam(ll + myfirstpt);
+          double p2   = TheParam(ll + 1 + myfirstpt);
+          Theknots(i) = (1. - a) * p1 + a * p2;
+        }
+
+        alldone = Compute(Line, myfirstpt, mylastpt, TheParam, Theknots, TheMults);
+      }
+
+      if (!alldone)
+        nbknots++;
+      else
+        Finish = true;
+    }
+  }
+
+#if defined(OCCT_DEBUG) && defined(DRAW) && !defined(WNT)
+  if (mydebug)
+    DUMP(TheMultiBSpCurve);
+#endif
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>& Approx_BSplComputeLine::Parameters() const
+{
+  return myParameters->Array1();
+}
+
+//=================================================================================================
+
+const AppParCurves_MultiBSpCurve& Approx_BSplComputeLine::Value() const
+{
+  return TheMultiBSpCurve;
+}
+
+//=================================================================================================
+
+AppParCurves_MultiBSpCurve& Approx_BSplComputeLine::ChangeValue()
+{
+  return TheMultiBSpCurve;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
+                                        const int        firstP,
+                                        const int        lastP,
+                                        math_Vector&     TheParameters) const
+{
+  int       i, j, nbP2d, nbP3d;
+  double    dist;
+  const int aNbp = lastP - firstP + 1;
+
+  // The first parameter should always be zero according to all the logic below,
+  // so division by any value will give zero anyway, so it should never be scaled
+  // to avoid case when there is only one parameter in the array thus division by zero happens.
+  TheParameters(firstP) = 0.0;
+  if (aNbp == 2)
+  {
+    TheParameters(lastP) = 1.0;
+  }
+  else if (Par == Approx_ChordLength || Par == Approx_Centripetal)
+  {
+    nbP3d       = LineTool::NbP3d(Line);
+    nbP2d       = LineTool::NbP2d(Line);
+    int mynbP3d = nbP3d, mynbP2d = nbP2d;
+    if (nbP3d == 0)
+      mynbP3d = 1;
+    if (nbP2d == 0)
+      mynbP2d = 1;
+
+    dist = 0.0;
+    NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt>   tabPP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d);
+    NCollection_Array1<gp_Pnt2d> tabPP2d(1, mynbP2d);
+
+    for (i = firstP + 1; i <= lastP; i++)
+    {
+      if (nbP3d != 0 && nbP2d != 0)
+        LineTool::Value(Line, i - 1, tabP, tabP2d);
+      else if (nbP2d != 0)
+        LineTool::Value(Line, i - 1, tabP2d);
+      else if (nbP3d != 0)
+        LineTool::Value(Line, i - 1, tabP);
+
+      if (nbP3d != 0 && nbP2d != 0)
+        LineTool::Value(Line, i, tabPP, tabPP2d);
+      else if (nbP2d != 0)
+        LineTool::Value(Line, i, tabPP2d);
+      else if (nbP3d != 0)
+        LineTool::Value(Line, i, tabPP);
+      dist = 0.0;
+      for (j = 1; j <= nbP3d; j++)
+      {
+        const gp_Pnt &aP1 = tabP(j), &aP2 = tabPP(j);
+        dist += aP2.SquareDistance(aP1);
+      }
+      for (j = 1; j <= nbP2d; j++)
+      {
+        const gp_Pnt2d &aP12d = tabP2d(j), &aP22d = tabPP2d(j);
+
+        dist += aP22d.SquareDistance(aP12d);
+      }
+
+      dist = std::sqrt(dist);
+      if (Par == Approx_ChordLength)
+      {
+        TheParameters(i) = TheParameters(i - 1) + dist;
+      }
+      else
+      { // Par == Approx_Centripetal
+        TheParameters(i) = TheParameters(i - 1) + std::sqrt(dist);
+      }
+    }
+    for (i = firstP + 1; i <= lastP; i++)
+      TheParameters(i) /= TheParameters(lastP);
+  }
+  else
+  {
+    for (i = firstP + 1; i <= lastP; i++)
+    {
+      TheParameters(i) = (double(i) - firstP) / (double(lastP - double(firstP)));
+    }
+  }
+}
+
+//=================================================================================================
+
+bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
+                                     const int                         fpt,
+                                     const int                         lpt,
+                                     math_Vector&                      Para,
+                                     const NCollection_Array1<double>& Knots,
+                                     NCollection_Array1<int>&          Mults)
+{
+  int    i, deg, nbpoles, multinter;
+  bool   mydone;
+  double Fv, TheTol3d, TheTol2d, l1, l2;
+  int    nbp = lpt - fpt + 1;
+  mylambda1  = 0.0;
+  mylambda2  = 0.0;
+
+  math_Vector aParams(Para.Lower(), Para.Upper());
+
+  for (deg = mydegremin; deg <= mydegremax; deg++)
+  {
+
+    aParams = Para;
+
+    if (!myhasmults)
+    {
+      Mults(Mults.Lower()) = deg + 1;
+      Mults(Mults.Upper()) = deg + 1;
+      nbpoles              = deg + 1;
+      if (mycont == -1)
+        multinter = 1;
+      else
+        multinter = std::max(1, deg - mycont);
+      for (i = Mults.Lower() + 1; i <= Mults.Upper() - 1; i++)
+      {
+        Mults(i) = multinter;
+        nbpoles += multinter;
+      }
+    }
+    else
+    {
+      nbpoles = -deg - 1;
+      for (i = Mults.Lower(); i <= Mults.Upper(); i++)
+      {
+        nbpoles += Mults.Value(i);
+      }
+    }
+
+    int nbpolestocompare = nbpoles;
+    if (realfirstC == AppParCurves_TangencyPoint)
+      nbpolestocompare++;
+    if (reallastC == AppParCurves_TangencyPoint)
+      nbpolestocompare++;
+    if (realfirstC == AppParCurves_CurvaturePoint)
+      nbpolestocompare++;
+    if (reallastC == AppParCurves_CurvaturePoint)
+      nbpolestocompare++;
+    if (nbpolestocompare > nbp)
+    {
+      Interpol(Line);
+      tolreached = true;
+      return true;
+    }
+
+    AppParCurves_MultiBSpCurve mySCU(nbpoles);
+
+    if (mysquares)
+    {
+      Approx_BSpParLeastSquareOfMyBSplGradient
+        SQ(Line, Knots, Mults, fpt, lpt, realfirstC, reallastC, aParams, nbpoles);
+      mydone = SQ.IsDone();
+      if (mydone)
+      {
+        mySCU = SQ.BSplineValue();
+        SQ.Error(Fv, TheTol3d, TheTol2d);
+      }
+      else
+        continue;
+    }
+    else
+    {
+      if (nbpoles != deg + 1)
+      {
+
+        if (deg == mydegremin
+            && (realfirstC >= AppParCurves_TangencyPoint
+                || reallastC >= AppParCurves_TangencyPoint))
+        {
+          Approx_BSpParLeastSquareOfMyBSplGradient
+            thefitt(Line, Knots, Mults, fpt, lpt, realfirstC, reallastC, aParams, nbpoles);
+          mylambda1 = thefitt.FirstLambda() * deg;
+          mylambda2 = thefitt.LastLambda() * deg;
+        }
+        l1 = mylambda1 / deg;
+        l2 = mylambda2 / deg;
+
+        Approx_MyBSplGradient GRAD(Line,
+                                   fpt,
+                                   lpt,
+                                   myConstraints,
+                                   aParams,
+                                   Knots,
+                                   Mults,
+                                   deg,
+                                   mytol3d,
+                                   mytol2d,
+                                   myitermax,
+                                   l1,
+                                   l2);
+
+        mydone = GRAD.IsDone();
+        if (mydone)
+        {
+          mySCU    = GRAD.Value();
+          TheTol3d = GRAD.MaxError3d();
+          TheTol2d = GRAD.MaxError2d();
+        }
+        else
+          continue;
+      }
+      else
+      {
+        Approx_MyGradientbis
+          GRAD2(Line, fpt, lpt, myConstraints, aParams, deg, mytol3d, mytol2d, myitermax);
+        mydone = GRAD2.IsDone();
+        if (mydone)
+        {
+          if (GRAD2.Value().NbCurves() == 0)
+            continue;
+          mySCU    = AppParCurves_MultiBSpCurve(GRAD2.Value(), Knots, Mults);
+          TheTol3d = GRAD2.MaxError3d();
+          TheTol2d = GRAD2.MaxError2d();
+        }
+        else
+          continue;
+      }
+    }
+    bool save = true;
+
+    for (i = aParams.Lower(); i <= aParams.Upper(); i++)
+    {
+      if (aParams(i) <= -0.000001 || aParams(i) >= 1.000001)
+      {
+        save = false;
+        break;
+      }
+    }
+
+    if (mydone)
+    {
+      if (TheTol3d <= mytol3d && TheTol2d <= mytol2d)
+      {
+        // Stockage de la multicurve approximee.
+        tolreached       = true;
+        TheMultiBSpCurve = mySCU;
+        currenttol3d     = TheTol3d;
+        currenttol2d     = TheTol2d;
+        if (save)
+        {
+          for (i = aParams.Lower(); i <= aParams.Upper(); i++)
+          {
+            myParameters->SetValue(i, aParams(i));
+          }
+        }
+        return true;
+      }
+    }
+
+    if (TheTol3d <= currenttol3d && TheTol2d <= currenttol2d)
+    {
+      TheMultiBSpCurve = mySCU;
+      currenttol3d     = TheTol3d;
+      currenttol2d     = TheTol2d;
+      if (save)
+      {
+        for (i = aParams.Lower(); i <= aParams.Upper(); i++)
+        {
+          myParameters->SetValue(i, aParams(i));
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetParameters(const math_Vector& ThePar)
+{
+  myfirstParam = new NCollection_HArray1<double>(ThePar.Lower(), ThePar.Upper());
+  for (int i = ThePar.Lower(); i <= ThePar.Upper(); i++)
+  {
+    myfirstParam->SetValue(i, ThePar(i));
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetKnots(const NCollection_Array1<double>& Knots)
+{
+  myhasknots = true;
+  myknots    = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
+  for (int i = Knots.Lower(); i <= Knots.Upper(); i++)
+  {
+    myknots->SetValue(i, Knots(i));
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetKnotsAndMultiplicities(const NCollection_Array1<double>& Knots,
+                                                       const NCollection_Array1<int>&    Mults)
+{
+  myhasknots = true;
+  myhasmults = true;
+  int i;
+  myknots = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
+  for (i = Knots.Lower(); i <= Knots.Upper(); i++)
+  {
+    myknots->SetValue(i, Knots(i));
+  }
+  mymults = new NCollection_HArray1<int>(Mults.Lower(), Mults.Upper());
+  for (i = Mults.Lower(); i <= Mults.Upper(); i++)
+  {
+    mymults->SetValue(i, Mults(i));
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::Init(const int                        degreemin,
+                                  const int                        degreemax,
+                                  const double                     Tolerance3d,
+                                  const double                     Tolerance2d,
+                                  const int                        NbIterations,
+                                  const bool                       cutting,
+                                  const Approx_ParametrizationType parametrization,
+                                  const bool                       Squares)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d    = Tolerance3d;
+  mytol2d    = Tolerance2d;
+  Par        = parametrization;
+  mysquares  = Squares;
+  mycut      = cutting;
+  myitermax  = NbIterations;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetDegrees(const int degreemin, const int degreemax)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetTolerances(const double Tolerance3d, const double Tolerance2d)
+{
+  mytol3d = Tolerance3d;
+  mytol2d = Tolerance2d;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetConstraints(const AppParCurves_Constraint FirstC,
+                                            const AppParCurves_Constraint LastC)
+{
+  myfirstC = FirstC;
+  mylastC  = LastC;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetPeriodic(const bool thePeriodic)
+{
+  myPeriodic = thePeriodic;
+}
+
+//=================================================================================================
+
+bool Approx_BSplComputeLine::IsAllApproximated() const
+{
+  return alldone;
+}
+
+//=================================================================================================
+
+bool Approx_BSplComputeLine::IsToleranceReached() const
+{
+  return tolreached;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::Error(double& tol3d, double& tol2d) const
+{
+  tol3d = currenttol3d;
+  tol2d = currenttol2d;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::SetContinuity(const int C)
+{
+  mycont = C;
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
+{
+  realfirstC = myfirstC;
+  reallastC  = mylastC;
+  int nbP2d, nbP3d;
+  nbP3d                           = LineTool::NbP3d(Line);
+  nbP2d                           = LineTool::NbP2d(Line);
+  bool                         Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, std::max(1, nbP3d));
+  NCollection_Array1<gp_Vec2d> TabV2d(1, std::max(1, nbP2d));
+  int                          Thefirstpt = LineTool::FirstPoint(Line);
+  int                          Thelastpt  = LineTool::LastPoint(Line);
+
+  if (myfirstC >= AppParCurves_TangencyPoint)
+  {
+
+    if (nbP3d != 0 && nbP2d != 0)
+      Ok = LineTool::Tangency(Line, Thefirstpt, TabV, TabV2d);
+    else if (nbP2d != 0)
+      Ok = LineTool::Tangency(Line, Thefirstpt, TabV2d);
+    else if (nbP3d != 0)
+      Ok = LineTool::Tangency(Line, Thefirstpt, TabV);
+
+    realfirstC = AppParCurves_PassPoint;
+    if (Ok)
+    {
+      realfirstC = AppParCurves_TangencyPoint;
+      if (myfirstC == AppParCurves_CurvaturePoint)
+      {
+        if (nbP3d != 0 && nbP2d != 0)
+          Ok = LineTool::Tangency(Line, Thefirstpt, TabV, TabV2d);
+        else if (nbP2d != 0)
+          Ok = LineTool::Tangency(Line, Thefirstpt, TabV2d);
+        else if (nbP3d != 0)
+          Ok = LineTool::Tangency(Line, Thefirstpt, TabV);
+        if (Ok)
+        {
+          realfirstC = AppParCurves_CurvaturePoint;
+        }
+      }
+    }
+  }
+
+  if (mylastC >= AppParCurves_TangencyPoint)
+  {
+
+    if (nbP3d != 0 && nbP2d != 0)
+      Ok = LineTool::Tangency(Line, Thelastpt, TabV, TabV2d);
+    else if (nbP2d != 0)
+      Ok = LineTool::Tangency(Line, Thelastpt, TabV2d);
+    else if (nbP3d != 0)
+      Ok = LineTool::Tangency(Line, Thelastpt, TabV);
+
+    reallastC = AppParCurves_PassPoint;
+    if (Ok)
+    {
+      reallastC = AppParCurves_TangencyPoint;
+      if (mylastC == AppParCurves_CurvaturePoint)
+      {
+        if (nbP3d != 0 && nbP2d != 0)
+          Ok = LineTool::Tangency(Line, Thelastpt, TabV, TabV2d);
+        else if (nbP2d != 0)
+          Ok = LineTool::Tangency(Line, Thelastpt, TabV2d);
+        else if (nbP3d != 0)
+          Ok = LineTool::Tangency(Line, Thelastpt, TabV);
+        if (Ok)
+        {
+          reallastC = AppParCurves_CurvaturePoint;
+        }
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
+{
+  int i, Thefirstpt, Thelastpt, deg = 3;
+  mycont     = 2;
+  Thefirstpt = LineTool::FirstPoint(Line);
+  Thelastpt  = LineTool::LastPoint(Line);
+  math_Vector TheParam(Thefirstpt, Thelastpt, 0.0);
+  // Par = Approx_ChordLength;
+  if (myfirstParam.IsNull())
+  {
+    Parameters(Line, Thefirstpt, Thelastpt, TheParam);
+  }
+  else
+  {
+    for (i = myfirstParam->Lower(); i <= myfirstParam->Upper(); i++)
+    {
+      TheParam(i + Thefirstpt - 1) = myfirstParam->Value(i);
+    }
+  }
+  AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
+  double                  lambda1, lambda2;
+  double                  Fv;
+
+  // Recherche du nombre de noeuds.
+  int nbknots, nbpoles, nbpoints;
+  nbpoints = Thelastpt - Thefirstpt + 1;
+
+  if (nbpoints == 2)
+  {
+    Cons      = AppParCurves_NoConstraint;
+    int mydeg = 1;
+    Approx_BSpParLeastSquareOfMyBSplGradient
+      LSQ(Line, Thefirstpt, Thelastpt, Cons, Cons, TheParam, mydeg + 1);
+    alldone = LSQ.IsDone();
+    NCollection_Array1<double> TheKnots(1, 2);
+    NCollection_Array1<int>    TheMults(1, 2);
+    TheKnots(1) = TheParam(Thefirstpt);
+    TheKnots(2) = TheParam(Thelastpt);
+    TheMults(1) = TheMults(2) = mydeg + 1;
+    TheMultiBSpCurve          = AppParCurves_MultiBSpCurve(LSQ.BezierValue(), TheKnots, TheMults);
+    LSQ.Error(Fv, currenttol3d, currenttol2d);
+  }
+  else
+  {
+    nbpoles = nbpoints + 2;
+    nbknots = nbpoints;
+
+    // Resolution:
+    NCollection_Array1<double> Theknots(1, nbknots);
+    Theknots(1)       = TheParam(Thefirstpt);
+    Theknots(nbknots) = TheParam(Thelastpt);
+    NCollection_Array1<int> TheMults(1, nbknots);
+    TheMults(1)       = deg + 1;
+    TheMults(nbknots) = deg + 1;
+
+    int low = TheParam.Lower();
+    for (i = 2; i <= nbknots - 1; i++)
+    {
+      Theknots(i) = TheParam(i + low - 1);
+      TheMults(i) = 1;
+    }
+
+    int         nbP = 3 * LineTool::NbP3d(Line) + 2 * LineTool::NbP2d(Line);
+    math_Vector V1(1, nbP), V2(1, nbP);
+
+    if (nbpoints == 3 || nbpoints == 4)
+    {
+      FirstTangencyVector(Line, Thefirstpt, V1);
+      lambda1 = SearchFirstLambda(Line, TheParam, Theknots, V1, Thefirstpt);
+
+      LastTangencyVector(Line, Thelastpt, V2);
+      lambda2 = SearchLastLambda(Line, TheParam, Theknots, V2, Thelastpt);
+
+      lambda1 = lambda1 / deg;
+      lambda2 = lambda2 / deg;
+    }
+    else
+    {
+      int nnpol, nnp = std::min(nbpoints, 9);
+      nnpol                                          = nnp;
+      int                                      lastp = std::min(Thelastpt, Thefirstpt + nnp - 1);
+      double                                   U;
+      Approx_BSpParLeastSquareOfMyBSplGradient SQ1(Line, Thefirstpt, lastp, Cons, Cons, nnpol);
+
+      math_Vector P1(Thefirstpt, lastp);
+      for (i = Thefirstpt; i <= lastp; i++)
+        P1(i) = TheParam(i);
+      SQ1.Perform(P1);
+      const AppParCurves_MultiCurve& C1 = SQ1.BezierValue();
+      U                                 = 0.0;
+      TangencyVector(Line, C1, U, V1);
+
+      int firstp = std::max(Thefirstpt, Thelastpt - nnp + 1);
+
+      if (firstp == Thefirstpt && lastp == Thelastpt)
+      {
+        U = 1.0;
+        TangencyVector(Line, C1, U, V2);
+      }
+      else
+      {
+        Approx_BSpParLeastSquareOfMyBSplGradient SQ2(Line, firstp, Thelastpt, Cons, Cons, nnpol);
+
+        math_Vector P2(firstp, Thelastpt);
+        for (i = firstp; i <= Thelastpt; i++)
+          P2(i) = TheParam(i);
+        SQ2.Perform(P2);
+        const AppParCurves_MultiCurve& C2 = SQ2.BezierValue();
+        U                                 = 1.0;
+        TangencyVector(Line, C2, U, V2);
+      }
+
+      lambda1 = 1. / deg;
+      lambda1 = lambda1 * (Theknots(2) - Theknots(1)) / (Theknots(nbknots) - Theknots(1));
+      lambda2 = 1. / deg;
+      lambda2 =
+        lambda2 * (Theknots(nbknots) - Theknots(nbknots - 1)) / (Theknots(nbknots) - Theknots(1));
+    }
+
+    if (myPeriodic)
+    {
+      V1 = 0.5 * (V1 + V2);
+      V2 = V1;
+    }
+
+    Approx_BSpParLeastSquareOfMyBSplGradient
+      SQ(Line, Theknots, TheMults, Thefirstpt, Thelastpt, Cons, Cons, nbpoles);
+
+    SQ.Perform(TheParam, V1, V2, lambda1, lambda2);
+    alldone          = SQ.IsDone();
+    TheMultiBSpCurve = SQ.BSplineValue();
+    SQ.Error(Fv, currenttol3d, currenttol2d);
+    tolreached = true;
+  }
+  myParameters = new NCollection_HArray1<double>(TheParam.Lower(), TheParam.Upper());
+  for (i = TheParam.Lower(); i <= TheParam.Upper(); i++)
+  {
+    myParameters->SetValue(i, TheParam(i));
+  }
+}
+
+//=================================================================================================
+
+void Approx_BSplComputeLine::TangencyVector(const MultiLine&               Line,
+                                            const AppParCurves_MultiCurve& C,
+                                            const double                   U,
+                                            math_Vector&                   V) const
+{
+
+  int i, j, nbP2d, nbP3d;
+  nbP3d = LineTool::NbP3d(Line);
+  nbP2d = LineTool::NbP2d(Line);
+
+  gp_Pnt   myP;
+  gp_Vec   myV;
+  gp_Pnt2d myP2d;
+  gp_Vec2d myV2d;
+  j = 1;
+  for (i = 1; i <= nbP3d; i++)
+  {
+    C.D1(i, U, myP, myV);
+    V(j)     = myV.X();
+    V(j + 1) = myV.Y();
+    V(j + 2) = myV.Z();
+    j += 3;
+  }
+  j = nbP3d * 3 + 1;
+  for (i = nbP3d + 1; i <= nbP3d + nbP2d; i++)
+  {
+    C.D1(i, U, myP2d, myV2d);
+    V(j)     = myV2d.X();
+    V(j + 1) = myV2d.Y();
+    j += 2;
+  }
+}

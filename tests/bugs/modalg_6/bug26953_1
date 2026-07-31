@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC26953"
+puts "============"
+puts ""
+###############################
+## First test case for Set-43
+###############################
+
+restore [locate_data_file bug26953_B43_1.brep] b1
+restore [locate_data_file bug26953_Tank43.brep] b2
+
+bfuzzyvalue 6.e-3
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 0
+
+checkprops result -s 14.0552
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

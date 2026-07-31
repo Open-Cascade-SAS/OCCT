@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC22196"
+puts "================"
+puts ""
+#######################################################################################
+# Problem with putting texture on the bottle.brep shape
+######################################################################################
+
+box b 1 2 3
+vdisplay b
+vfit
+vsetdispmode 1
+explode b f
+vdisplay b_2
+vtexture b_2 [locate_data_file OCC23385-carrelage1.gif]
+vtexrepeat b_2 3 2
+set scale    236.95268872530238
+set proj_X   0.92521193709866123
+set proj_Y   -0.1940727987718808
+set proj_Z   -0.32606536189388785
+set up_X     0.2658610208502189
+set up_Y     -0.28157324388568683
+set up_Z     0.92197311561681172
+set at_X     0.58906967866866666
+set at_Y     0.98487348454501
+set at_Z     1.4950272490152485
+set eye_X    3.7940978443168705
+set eye_Y    0.31258558886503313
+set eye_Z    0.36550370223815498
+vviewparams -scale ${scale} -eye ${eye_X} ${eye_Y} ${eye_Z} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+
+
+
+

@@ -1,0 +1,22 @@
+puts "TODO OCC24100 ALL: Error : Bad pcurve is built on a face while converting the shape from STEP format"
+
+puts "========"
+puts "OCC24100"
+puts "========"
+puts ""
+############################################################################
+# Bad pcurve is built on a face while converting the shape from STEP format.
+############################################################################
+
+pload XDE
+stepread [locate_data_file bug24100_REFLECT_CURVE_PART_5_SOL_ohne_Metadaten.stp] a *
+
+explode a_1 f
+
+pcurve a_1_686
+
+set inter2 [2dintersect a_1_686_4 a_1_686_3]
+set int2 [regexp {Intersection point 2} ${inter2}]
+if { ${int2} == 1 } {
+    puts "Error : Bad pcurve is built on a face while converting the shape from STEP format"
+} 

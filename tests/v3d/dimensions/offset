@@ -1,0 +1,23 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 2 faces"
+puts "===================================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+box b -5 -10 -15 10 20 30
+vdisplay b
+vfit
+
+set shift 1
+
+vselmode b 4 1
+vselect 100 200
+vlocation b -rotate 0 0 0 0 0 1 180
+vselect 100 200 $shift
+
+vrelation r -offset
+
+vdump $imagedir/${casename}.png

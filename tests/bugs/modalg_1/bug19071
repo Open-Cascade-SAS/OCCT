@@ -1,0 +1,34 @@
+puts "TODO CR33225 Linux: Error : The command is not valid. The area is 0."
+puts "TODO CR33225 Linux: Error : The area of result shape is 0, expected 177462"
+puts "TODO CR33225 Linux: is WRONG because number of "
+
+puts "============"
+puts "OCC19071"
+puts "============"
+puts ""
+
+#######################################################################
+# The MakeFuse or the MakePartition function crash together on 2 torus
+#######################################################################
+
+set BugNumber OCC19071
+
+puts "Load first shape ..."
+restore [locate_data_file OCC19071_Rotation_2.brep] b1 
+puts "Load second shape ..."
+restore [locate_data_file OCC19071_Torus_2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+checkprops result -s 177462 
+checkshape result
+
+checknbshapes result -vertex 6 -edge 16 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 37
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

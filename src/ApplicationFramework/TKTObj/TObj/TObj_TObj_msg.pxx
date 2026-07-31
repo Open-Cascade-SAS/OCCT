@@ -1,0 +1,104 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// clang-format off
+// This file has been automatically generated from resource file resources/TObj/TObj.msg
+
+static const char TObj_TObj_msg[] =
+  "!!!!!!!!!! ----- Messages file for TObj packages --------- !!!!!!!!!\n"
+  "!  Syntax for keywords: NameOfPackage_NameOfClass_NameOfMessage\n"
+  "!                 where NameOfClass is optional or abbreviated\n"
+  "!!!!!!!!!! --------------------------------------------------- !!!!!!!!!\n"
+  "\n"
+  ".TObj_Appl_SDriverFailure\n"
+  "  Error saving document %s : driver failure. Check presence of resource files.\n"
+  "\n"
+  ".TObj_Appl_SWriteFailure\n"
+  "  Error saving document %s : write failure\n"
+  "  \n"
+  ".TObj_Appl_SFailure\n"
+  "  Error saving document %s : general failure of persistence driver\n"
+  "  \n"
+  ".TObj_Appl_SDocIsNull\n"
+  "  Error saving document %s : No document to save\n"
+  "  \n"
+  ".TObj_Appl_SNoObj\n"
+  " Error saving document %s : No objects written\n"
+  " \n"
+  ".TObj_Appl_SInfoSectionError\n"
+  " Error saving document %s : Write info section failure\n"
+  "\n"
+  ".TObj_Appl_SUnknownFailure\n"
+  "  Error saving document %s : unknown failure\n"
+  "\n"
+  ".TObj_Appl_RUnknownDocument\n"
+  "  Error loading document %s : unknown document\n"
+  "\n"
+  ".TObj_Appl_RAlreadyRetrieved\n"
+  "  Error loading document %s : already retrieved\n"
+  "\n"
+  ".TObj_Appl_RAlreadyRetrievedAndModified\n"
+  "  Error loading document %s : already retrieved and modified\n"
+  "\n"
+  ".TObj_Appl_RNoDriver\n"
+  "  Error loading document %s : no appropriate driver was found\n"
+  "\n"
+  ".TObj_Appl_ROpenError\n"
+  "  Error loading document %s : cannot open file\n"
+  "\n"
+  ".TObj_Appl_RNoVersion\n"
+  "  Error loading document %s : no version\n"
+  "\n"
+  ".TObj_Appl_RNoModel\n"
+  "  Error loading document %s : no model\n"
+  "\n"
+  ".TObj_Appl_RNoDocument\n"
+  "  Error loading document %s : no document\n"
+  "\n"
+  ".TObj_Appl_RFormatFailure\n"
+  "  Error loading document %s : format failure\n"
+  "\n"
+  ".TObj_Appl_RTypeNotFound\n"
+  "  Error loading document %s : type not found in schema\n"
+  "\n"
+  ".TObj_Appl_RBadFileFormat\n"
+  "  Error loading document %s : unrecognized file format\n"
+  "\n"
+  ".TObj_Appl_RMakeFailure\n"
+  "  Error loading document %s : failure making document\n"
+  "\n"
+  ".TObj_Appl_RPermissionDenied\n"
+  "  Error loading document %s : permission denied\n"
+  "\n"
+  ".TObj_Appl_RDriverFailure\n"
+  "  Error loading document %s : driver failure\n"
+  "\n"
+  ".TObj_Appl_RUnknownFail\n"
+  "  Error loading document %s : unknown failure\n"
+  "\n"
+  ".TObj_Appl_RException\n"
+  "  Error loading document %s : the file is probably corrupted\n"
+  "\n"
+  ".TObj_Appl_Exception\n"
+  "  An exception was caught: %s\n"
+  "\n"
+  ".TObj_M_LoadDocument\n"
+  "  +++++ Load document %s\n"
+  "\n"
+  ".TObj_M_WrongFile\n"
+  "  File %s has wrong content\n"
+  "\n"
+  ".TObj_M_NoWriteAccess\n"
+  "  Cannot write the file %s, check permissions\n";
+
+// clang-format on

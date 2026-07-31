@@ -1,0 +1,10 @@
+box b1 0 0 0 1 1 1
+dset r sqrt(2)/2
+box b2 1-r 0 0 2*r 1.5*r 1
+trotate b2 1 0 0 0 0 1 45
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 1.95711
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

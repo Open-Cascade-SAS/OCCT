@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC22037"
+puts "============"
+puts ""
+#################################################################################
+#  Exception (Construction Error) during splitting face with hole by another face
+#################################################################################
+
+restore [locate_data_file bug22037a.brep] a
+restore [locate_data_file bug22037b.brep] b
+
+bop a b
+bopsection edges
+
+explode edges
+
+splitshape result b edges_1 edges_2
+
+checkshape result
+
+tolerance result
+
+donly result
+
+checknbshapes result -face 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png 

@@ -1,0 +1,14 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1"
+puts "============"
+puts "OCC25509"
+puts "============"
+puts ""
+######################################################
+# Wrong shape considered as valid by checkshape
+######################################################
+
+restore [locate_data_file bug25509_r_6.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

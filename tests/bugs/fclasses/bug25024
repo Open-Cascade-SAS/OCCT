@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC25024"
+puts "============"
+puts ""
+#######################################################################
+# BSplCLib::PrepareInsertKnots reports incorrect number of poles
+#######################################################################
+
+restore [locate_data_file bug25024_wires.brep] w
+explode w
+thrusections r 0 0 w_1 w_2

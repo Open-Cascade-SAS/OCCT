@@ -1,0 +1,25 @@
+puts "============"
+puts "CR23738"
+puts "============"
+puts ""
+#######################################################################
+# 
+#######################################################################
+
+puts "Load first shape ..."
+restore [locate_data_file bug23738_b1.brep] b1 
+puts "Load second shape ..."
+restore [locate_data_file bug23738_b2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+checkprops result -s 225009
+
+# Analysis of "nbshapes result"
+checknbshapes result -vertex 6 -edge 10 -wire 8 -face 6 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 31
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,73 @@
+cpulimit 1000
+
+puts "========"
+puts "CR24292"
+puts "========"
+puts ""
+#######################################################################
+# Testing parallelization of BO
+#######################################################################
+
+# test comparing building faces in parallel and serial mode
+# HAVE_TBB must be set
+# It is better using MMGT_OPT=2 (tbb memory allocator)
+
+restore [locate_data_file bug24292_x_256_stars.brep] b1
+
+tcopy b1 b2
+trotate b2 0 0 0 0 0 1 10
+
+tcopy b2 b3
+trotate b3 0 0 0 0 0 1 10
+
+tcopy b3 b4
+trotate b4 0 0 0 0 0 1 10
+#
+# b1 - 256 arguments (faces)
+# b2 - 256 arguments (faces)
+# b3 - 256 arguments (faces)
+# b4 - 256 arguments (faces)
+#
+bclearobjects; bcleartools;
+baddcompound b1
+baddcompound b2
+baddcompound b3
+baddcompound b4
+
+bfillds
+#
+puts "Comparing performance of building many faces"
+puts "in parallel and serial modes"
+
+#
+# parallel
+brunparallel 1
+puts "Build faces in parallel mode:"
+dchrono h start
+set info1 [bbuild rp -t]
+dchrono h stop counter Parallel_Builder
+regexp {Tps: +([-0-9.+eE]+)} ${info1} full Tps1
+puts "Tps1=${Tps1}"
+
+#
+# serial
+brunparallel 0
+puts "Build faces in serial mode:"
+dchrono h restart
+set info2 [bbuild rs -t]
+dchrono h stop counter Serial_Builder
+
+regexp {Tps: +([-0-9.+eE]+)} ${info2} full Tps2
+puts "Tps2=${Tps2}"
+
+checknbshapes rp -vertex 23060 -edge 35880 -wire 11704 -face 11704 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 82349
+checknbshapes rs -vertex 23060 -edge 35880 -wire 11704 -face 11704 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 82349
+
+# parallel execution is expected to be at least 20% faster than serial execution
+if {${Tps1} > [dval 0.8*${Tps2}]} {
+  puts "Error: Parallel execution does not give expected performance speed up"
+}
+
+vinit
+vdisplay rs
+vfit

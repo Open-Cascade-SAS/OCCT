@@ -1,0 +1,21 @@
+puts "========================"
+puts " OCC302 "
+puts "(case 1)"
+puts "========================"
+puts ""
+#################################################################
+## After performing command "checkbrep" to attached face I receive "Bad Orientation of Subshape"
+##  but I believe that orientation of this face is correct.
+#################################################################
+
+restore [locate_data_file OCC302a.brep] result
+
+set che [checkshape result r]
+if { [regexp {OK} $che] != 1} {
+    puts "Faulty OCC302 (case 1): command  checkbrep works wrongly"
+} else {
+    puts "OCC302 OK (case 1) :  command  checkbrep works properly"
+}
+
+checkprops result -s 271.611 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+## MFA's collection of bugs
+
+pcylinder cyl 9 3
+pcone kone 7 6 4
+
+bfuse body cyl kone
+
+pcylinder pcyl 1 9
+
+## translate in y direction and there is no problem
+## ttranslate pcyl 0 5 -2
+
+## translate in x direction and it doesn't work
+ttranslate pcyl 5 0 -2
+
+## the problem is clearly asscoaiated with the seam
+## edge of the cylinder meeting the seam of the cone
+
+bcut result body pcyl
+checkprops result -s 727.481
+checkview -display result -2d -s -otherwise { body pcyl } -path ${imagedir}/${test_image}.png

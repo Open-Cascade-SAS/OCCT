@@ -1,0 +1,89 @@
+# test script for multi_revol01.prt.1.gdml file
+compound result
+
+# tore 
+plane pln_sh4F61F90 0 0 0 0 0 1 1 0 0
+erase pln_sh4F61F90
+ptorus sh4F61F90 pln_sh4F61F90 127 51.718063649999998 360
+settolerance sh4F61F90 1.2699999999999999e-006
+
+# tore 
+plane pln_sh4F61900 0 0 0 0 0 1 1 0 0
+erase pln_sh4F61900
+ptorus sh4F61900 pln_sh4F61900 127 51.718063649999998 360
+settolerance sh4F61900 1.2699999999999999e-006
+
+# copy shape
+copy sh4F61900 sh4F61900_copy
+
+# shape transformation
+ttranslate sh4F61900_copy 0 2.8199664825478976e-014 -254
+
+# shape transformation
+trotate sh4F61900_copy 0 0 0 1 0 0 90 
+
+# tore 
+plane pln_sh4F635E0 0 0 0 0 0 1 1 0 0
+erase pln_sh4F635E0
+ptorus sh4F635E0 pln_sh4F635E0 127 51.718063649999998 360
+settolerance sh4F635E0 1.2699999999999999e-006
+
+# copy shape
+copy sh4F635E0 sh4F635E0_copy
+
+# shape transformation
+ttranslate sh4F635E0_copy 0 5.6399329650957952e-014 -508
+
+# shape transformation
+trotate sh4F635E0_copy 0 0 0 1 0 0 90 
+
+# tore 
+plane pln_sh4F64370 0 0 0 0 0 1 1 0 0
+erase pln_sh4F64370
+ptorus sh4F64370 pln_sh4F64370 127 51.718063649999998 360
+settolerance sh4F64370 1.2699999999999999e-006
+
+# copy shape
+copy sh4F64370 sh4F64370_copy
+
+# shape transformation
+ttranslate sh4F64370_copy 0 -2.8199664825478976e-014 254
+
+# shape transformation
+trotate sh4F64370_copy 0 0 0 1 0 0 90 
+
+# tore 
+plane pln_sh4F65100 0 0 0 0 0 1 1 0 0
+erase pln_sh4F65100
+ptorus sh4F65100 pln_sh4F65100 127 51.718063649999998 360
+settolerance sh4F65100 1.2699999999999999e-006
+
+# copy shape
+copy sh4F65100 sh4F65100_copy
+
+# shape transformation
+ttranslate sh4F65100_copy 0 -5.6399329650957952e-014 508
+
+# shape transformation
+trotate sh4F65100_copy 0 0 0 1 0 0 90 
+
+# copy shape
+copy sh4F61F90 sh4F61F90_copy
+
+# shape transformation
+trotate sh4F61F90_copy 0 0 0 1 0 0 90 
+
+# fuse operation
+bfuse sh4F66D00 sh4F61F90_copy sh4F61900_copy; copy sh4F66D00 sh4F66D00_copy 
+
+# fuse operation
+bfuse sh4BBD460 sh4F66D00_copy sh4F635E0_copy; copy sh4BBD460 sh4BBD460_copy 
+
+# fuse operation
+bfuse sh4BBD310 sh4BBD460_copy sh4F64370_copy; copy sh4BBD310 sh4BBD310_copy 
+
+# fuse operation
+bfuse sh4BBE810 sh4BBD310_copy sh4F65100_copy; copy sh4BBE810 sh4BBE810_copy 
+
+# result
+add sh4BBE810_copy result

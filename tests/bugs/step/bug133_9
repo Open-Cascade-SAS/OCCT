@@ -1,0 +1,16 @@
+puts "========================"
+puts "BUC60989"
+puts "OCC95"
+puts "OCC133"
+puts "========================"
+
+##########################################################
+## Exception when translating a STEP file to Open CASCADE (shape healing phase).
+## Exception is inside 2D intersector.
+##########################################################
+
+stepread [locate_data_file demo2.stp] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

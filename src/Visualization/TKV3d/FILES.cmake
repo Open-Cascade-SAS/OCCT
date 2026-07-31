@@ -1,0 +1,6 @@
+# Source files for TKV3d
+set(OCCT_TKV3d_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKV3d_FILES
+  TKV3d_pch.hxx
+)

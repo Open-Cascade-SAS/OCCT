@@ -1,0 +1,50 @@
+puts "TODO OCC27711 ALL: ERROR: OCC27711 is reproduced. Result of blend operation is WRONG."
+puts "TODO OCC27711 ALL: Error: tolerance"
+puts "TODO OCC27711 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC27711"
+puts "========"
+puts ""
+#####################################
+# Blend-on-blend corrupts the shape
+#####################################
+
+smallview
+
+restore [locate_data_file bug27711.brep] s
+
+clear
+display s
+fit
+xwd $imagedir/${casename}_step_0.png
+
+explode s e
+blend r1 s 0.5 s_7 0.5 s_12
+set bug_info [string trim [checkshape r1]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display r1
+xwd $imagedir/${casename}_step_1.png
+
+explode r1 e
+blend r1 r1 0.5 r1_1 0.5 r1_8
+set bug_info [string trim [checkshape r1]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display r1
+xwd $imagedir/${casename}_step_2.png
+
+explode r1 e
+blend result r1 0.35 r1_4 0.25 r1_15 0.2 r1_27
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: OCC27711 is reproduced. Result of blend operation is WRONG."
+}
+checkmaxtol result -min_tol 1.e-3
+clear
+display result
+xwd $imagedir/${casename}_step_3.png

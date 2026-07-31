@@ -1,0 +1,40 @@
+puts "============="
+puts "OCC22609"
+puts "============="
+puts ""
+###########################################################
+# Cut operation between two solids produces not valid shape
+###########################################################
+
+restore [locate_data_file bug22609.brep] s
+
+explode s
+
+checkshape s_1
+tolerance s_1
+
+checkshape s_2
+tolerance s_2
+
+bop s_2 s_1
+bopcut result
+
+checkshape result
+
+checkprops result -s 1.90251e+07 
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 68
+ EDGE      : 102
+ WIRE      : 36
+ FACE      : 36
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 245
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

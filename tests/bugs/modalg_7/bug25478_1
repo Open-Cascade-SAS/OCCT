@@ -1,0 +1,22 @@
+puts "TODO OCC25478 ALL: Error: Fillets can not touch"
+
+puts "============"
+puts "OCC25478"
+puts "============"
+puts ""
+########################
+# Fillets can not touch
+########################
+
+box Box 10 10 10
+explode Box E
+
+catch { blend Fillet Box 5 Box_1 5 Box_3 } msg
+
+if { [info exist Fillet] == 0 } {
+  puts "Error: Fillets can not touch"
+} else {
+  puts "OK: Fillets can touch"
+}
+
+checkview -display Fillet -2d -path ${imagedir}/${test_image}.png

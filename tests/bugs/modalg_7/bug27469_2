@@ -1,0 +1,21 @@
+puts "===================================================================="
+puts "OCC27469 Regression vs 6.9.1: Wrong result of Edge/Face intersection"
+puts "===================================================================="
+puts ""
+
+restore [locate_data_file bug27469_shapes.brep] b
+
+explode b
+
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -solid 7 -shell 7 -face 39 -wire 46 -edge 67 -vertex 34
+checkmaxtol result -min_tol 2.17e-2
+checkprops result -l 352002
+checkview -display result -2d -path ${imagedir}/${test_image}.png

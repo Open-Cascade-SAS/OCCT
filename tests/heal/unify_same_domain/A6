@@ -1,0 +1,27 @@
+puts "=========="
+puts "OCC28226"
+puts "=========="
+puts ""
+#####################################################################
+# Incorrect history support in ShapeUpgrade_UnifySameDomain algorithm
+#####################################################################
+
+restore [locate_data_file bug28228_face.brep] a
+
+explode a f
+explode a_1 v
+explode a e
+
+unifysamedom result a a_3 a_1_3 a_1_4 -e
+
+savehistory usd_hist
+
+set bug_info [isdeleted usd_hist a_1_8]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC28226 is reproduced. Command unifysamedomisdel does not work correctly."
+}
+
+set bug_info [isdeleted usd_hist a_1_9]
+if {$bug_info != "Deleted."} {
+  puts "ERROR: OCC28226 is reproduced. Command unifysamedomisdel does not work correctly."
+}

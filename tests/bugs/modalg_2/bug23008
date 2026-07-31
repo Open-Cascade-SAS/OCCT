@@ -1,0 +1,35 @@
+puts "================"
+puts "OCC23008"
+puts "================"
+puts ""
+######################################################################################
+# Too many intersection vertices between line and cylinder
+######################################################################################
+
+set BugNumber OCC23008
+
+restore [locate_data_file bug23008_ez15] b1 
+restore [locate_data_file bug23008_fz37] b2 
+bclearobjects; bcleartools
+baddobjects b1; baddtools b2
+bfillds
+set info [ bopnews v ]
+for {set i 0} {$i <= 100} {incr i} {
+    set word [lsearch $info z$i]
+    if {$word == -1} {
+	lappend check_z 0
+    } else {
+	lappend check_z 1
+    }
+}
+
+# Resume
+puts ""
+set result [lsearch $check_z 1]
+if { ${result} == -1 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

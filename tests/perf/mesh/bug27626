@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC27626: Attempt to display shape in 3d leads to very long calculation loop"
+puts "=========="
+puts ""
+
+pload XDE
+igesread [locate_data_file bug27626_badfil.igs] a *
+
+tclean a
+vinit
+vsetdispmode 1
+
+dchrono h -restart
+vdisplay a
+dchrono h -stop -counter display
+
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

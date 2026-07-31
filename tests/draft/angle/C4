@@ -1,0 +1,11 @@
+#F2----------------------------------------------
+polyline p 2 0 0 10 0 0 10 0 20 2 0 20 2 0 0 
+mkplane p p
+revol p p 0 0 0 0 0 1 180
+nexplode p e
+blend p p 2 p_12 1 p_4
+nexplode p f
+depouille result p 0 0 1 p_8 2 0 0 0 0 0 1 \
+p_1 1 0 0 10 0 0 1
+
+checkprops result -s 1273.54

@@ -1,0 +1,66 @@
+puts "============"
+puts "OCC26431"
+puts "============"
+puts ""
+###############################
+## Can't cut a sphere from a cylinder
+###############################
+
+restore [locate_data_file bug26431_Body.brep] b1
+restore [locate_data_file bug26431_Sphere.brep] b2
+
+bop b1 b2 
+bopcut result
+
+checkshape result
+
+decho off
+dlog reset
+dlog on
+
+bopargcheck result #F
+
+set info [dlog get]
+dlog reset
+dlog off
+decho on
+
+set MessageList {
+"Faulties for FIRST  shape found : 9"
+"Shapes are not suppotrted by BOP: NO"
+"Self-Intersections              : NO"
+"Check for SI has been aborted   : NO"
+"Too small edges                 : NO"
+"Bad faces                       : NO"
+"Too close vertices              : DISABLED"
+"Too close edges                 : DISABLED"
+"Shapes with Continuity C0       : YES  Cases\\(9\\)  Total shapes\\(9\\)"
+"Invalid Curve on Surface        : NO"
+"Faulties for SECOND  shape found : 0"
+}
+for {set i 1} {$i <= 11} {incr i} {
+   set str [ lindex ${MessageList} [expr $i - 1] ]
+   if { [regexp ${str} ${info}] == 1  } {
+      puts "OK : There is #$i message"
+   } else {
+      puts "Error : There is not #$i message"
+      puts $str
+   }
+}
+
+checkprops result -s 14.4399
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 7
+ EDGE      : 20
+ WIRE      : 7
+ FACE      : 6
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 43
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "solid construction"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

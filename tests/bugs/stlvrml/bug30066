@@ -1,0 +1,6 @@
+puts "========"
+puts "0030066: Data Exchange - Fail to load VRML from ArcGIS"
+puts "========"
+puts ""
+
+loadvrml sh [locate_data_file bug30066.wrl]

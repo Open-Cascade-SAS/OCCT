@@ -1,0 +1,48 @@
+puts "========================"
+puts " OCC26219"
+puts "========================"
+puts ""
+###########################################################
+## ShapeUpgrade_UnifySameDomain fails with StdFail_NotDone exception
+###########################################################
+
+restore [locate_data_file bug26219_unifysamedomain.valid_input.brep] p
+
+# -----------------------------------------------------------------------------
+# Attempt to simplify the model
+# -----------------------------------------------------------------------------
+
+set nbshapes_before_simplify "
+Number of shapes in shape
+ VERTEX    : 200
+ EDGE      : 348
+ WIRE      : 150
+ FACE      : 150
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 851
+"
+checknbshapes p -ref ${nbshapes_before_simplify} -t -m "result before attempt to simplify the model"
+
+axo; donly p; fit
+xwd ${imagedir}/${casename}_1.png
+
+unifysamedom p p
+
+set nbshapes_after_simplify "
+Number of shapes in shape
+ VERTEX    : 128
+ EDGE      : 192
+ WIRE      : 66
+ FACE      : 66
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 455
+"
+checknbshapes p -ref ${nbshapes_after_simplify} -t -m "result after attempt to simplify the model"
+
+xwd ${imagedir}/${casename}_2.png

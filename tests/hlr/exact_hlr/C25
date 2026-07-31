@@ -1,0 +1,7 @@
+puts "TODO OCC30286 ALL: Error : The length of result shape is 6115.27, expected 6040.95"
+
+set viewname "vright"
+set length 6040.95
+
+testreadstep [locate_data_file bug27341_Rundrohrverteiler.stp] a
+COMPUTE_HLR $viewname $algotype

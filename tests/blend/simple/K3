@@ -1,0 +1,11 @@
+pcylinder s1 5 15 
+pcylinder s2 3 15 
+trotate s2 0 0 0 1 0 0 90
+ttranslate s2 0 7 7
+ttranslate s1 s2 5 5 0
+bcut s s1 s2
+tscale s 0 0 0 SCALE1
+nexplode s e
+blend result s 0.5*SCALE1 s_4
+
+checkprops result -s 72440.6

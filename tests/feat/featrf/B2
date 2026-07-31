@@ -1,0 +1,12 @@
+#old revolrib10
+pcylinder c1 3 5
+profile w c 1 190 WW
+trotate w 0 0 0 1 0 0 90
+ttranslate w -3 0 1
+trotate w -3 0 1.5 0 0 1 180
+plane pl -3 0 1.5 0 1 0
+
+featrf c1 w pl 0 0 0 0 0 1 0.3 0.3 1 1
+featperform rf result
+
+checkprops result -s 154.636

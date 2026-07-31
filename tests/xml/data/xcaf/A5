@@ -1,0 +1,25 @@
+set aTestName "xcaf200-D1"
+puts $aTestName
+
+# Add an attribute to a data framework
+set aLabel 0:1:1:1
+Label D $aLabel
+set coords_before [XSetCentroid D $aLabel 12.34 56.78 90.12]
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set coords_after [XGetCentroid DD $aLabel]} aResult]
+if { ${IsDone} != 0 || ${coords_after} != ${coords_before} } {
+    puts "Error : Get a value of XCAFDoc_Centroid attribute from restoring document"
+}

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+<Type Name="gp_XY">
+    <DisplayString>[{(float)x} {(float)y}]</DisplayString>
+  </Type>
+  <Type Name="gp_Pnt2d">
+    <AlternativeType Name="gp_Vec2d"></AlternativeType>
+    <AlternativeType Name="gp_Dir2d"></AlternativeType>
+    <DisplayString>[{(float)cood.x} {(float)cood.y}]</DisplayString>
+  </Type>
+  <Type Name="gp_XYZ">
+    <DisplayString>[{(float)x} {(float)y} {(float)z}]</DisplayString>
+  </Type>
+  <Type Name="gp_Pnt">
+    <AlternativeType Name="gp_Vec"></AlternativeType>
+    <AlternativeType Name="gp_Dir"></AlternativeType>
+    <DisplayString>[{(float)coord.x} {(float)coord.y} {(float)coord.z}]</DisplayString>
+  </Type>
+  <Type Name="NCollection_Vec2&lt;*&gt;">
+    <DisplayString>[{v[0]} {v[1]}]</DisplayString>
+  </Type>
+  <Type Name="NCollection_Vec3&lt;*&gt;">
+    <DisplayString>[{v[0]} {v[1]} {v[2]}]</DisplayString>
+  </Type>
+  <Type Name="NCollection_Vec4&lt;*&gt;">
+    <DisplayString>[{v[0]} {v[1]} {v[2]} {v[3]}]</DisplayString>
+  </Type>
+  <Type Name="gp_Mat2d">
+    <DisplayString>
+      [{(float)matrix[0][0]} {(float)matrix[0][1]}], [{(float)matrix[1][0]} {(float)matrix[1][1]}]
+    </DisplayString>
+  </Type>
+  <Type Name="NCollection_Mat4&lt;*&gt;">
+    <Expand>
+      <Item Name="row0">((NCollection_Vec4&lt;$T1&gt;*)myMat)[0]</Item>
+      <Item Name="row1">((NCollection_Vec4&lt;$T1&gt;*)myMat)[1]</Item>
+      <Item Name="row2">((NCollection_Vec4&lt;$T1&gt;*)myMat)[2]</Item>
+      <Item Name="row3">((NCollection_Vec4&lt;$T1&gt;*)myMat)[3]</Item>
+    </Expand>
+  </Type>
+  <Type Name="Handle_Standard_Transient">
+    <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">[cnt={entity->count}]</DisplayString>
+    <Expand>
+      <ExpandedItem>*entity</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="NCollection_Handle&lt;*&gt;">
+    <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">{(void*)entity} [cnt={entity->count}]</DisplayString>
+    <Expand>
+      <ExpandedItem>*((NCollection_Handle&lt;$T1&gt;::Ptr*)entity)->myPtr</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="opencascade::handle&lt;*&gt;">
+    <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">{(void*)entity} [cnt={entity->count} {*entity}]</DisplayString>
+    <Expand>
+      <ExpandedItem>(opencascade::handle&lt;$T1&gt;::element_type*)entity</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="TCollection_AsciiString">
+    <DisplayString>{mylength}: {mystring,s}</DisplayString>
+    <Expand>
+      <Item Name="[utf-8]">mystring,s8</Item>
+    </Expand>
+  </Type>
+  <Type Name="TCollection_HAsciiString">
+    <DisplayString>{myString.mylength}: {myString.mystring,s}</DisplayString>
+  </Type>
+  <Type Name="NCollection_UtfString&lt;*&gt;">
+    <DisplayString>{myLength}: {myString,s}</DisplayString>
+  </Type>
+  <Type Name="TCollection_ExtendedString">
+    <DisplayString>{mylength}: {(wchar_t *)mystring,su}</DisplayString>
+  </Type>
+  <Type Name="TCollection_HExtendedString">
+    <DisplayString>{myString.mylength}: {(wchar_t *)myString.mystring,su}</DisplayString>
+  </Type>
+  <Type Name="TColStd_PackedMapOfInteger">
+    <DisplayString>TColStd_PackedMapOfInteger [{myExtent}]</DisplayString>
+  </Type>
+  <Type Name="NCollection_Vector&lt;*&gt;">
+    <DisplayString>NCollection_Vector [{myLength}]</DisplayString>
+    <Expand>
+      <IndexListItems Condition="myData->Length&lt;myLength">
+        <Size>myData->Length</Size>
+        <ValueNode>*($T1*)((char*)myData->DataPtr + $i * myItemSize)</ValueNode>
+      </IndexListItems>
+      <IndexListItems Condition="myData->Length&gt;=myLength">
+        <Size>myLength</Size>
+        <ValueNode>*($T1*)((char*)myData->DataPtr + $i * myItemSize)</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+  <Type Name="NCollection_List&lt;*&gt;">
+    <DisplayString>NCollection_List [{myLength}]</DisplayString>
+    <Expand>
+      <LinkedListItems>
+        <Size>myLength</Size>
+        <HeadPointer>myFirst</HeadPointer>
+        <NextPointer>myNext</NextPointer>
+        <ValueNode>*($T1*)(sizeof(NCollection_ListNode) + ((char *)this))</ValueNode>
+      </LinkedListItems>
+    </Expand>
+  </Type>
+  <Type Name="NCollection_Sequence&lt;*&gt;">
+    <DisplayString>NCollection_Sequence [{mySize}]</DisplayString>
+    <Expand>
+      <LinkedListItems>
+        <Size>mySize</Size>
+        <HeadPointer>myFirstItem</HeadPointer>
+        <NextPointer>myNext</NextPointer>
+        <ValueNode>*($T1*)(sizeof(NCollection_SeqNode) + ((char *)this))</ValueNode>
+      </LinkedListItems>
+    </Expand>
+  </Type>
+  <Type Name="Bnd_B2f">
+    <AlternativeType Name="Bnd_B2d"></AlternativeType>
+    <DisplayString Condition="myCenter[0] &gt; 1000000000000000000.">VOID</DisplayString>
+    <DisplayString Condition="myCenter[0] &lt; 1000000000000000000.">
+      Center: [{(float)myCenter[0]} {(float)myCenter[1]}], hSize: [{(float)myHSize[0]} {(float)myHSize[1]}]
+    </DisplayString>
+  </Type>
+  <Type Name="Bnd_B3f">
+    <AlternativeType Name="Bnd_B3d"></AlternativeType>
+    <DisplayString Condition="myCenter[0] &gt; 1000000000000000000.">VOID</DisplayString>
+    <DisplayString Condition="myCenter[0] &lt; 1000000000000000000.">
+      Center: [{(float)myCenter[0]} {(float)myCenter[1]} {(float)myCenter[2]}], hSize: [{(float)myHSize[0]} {(float)myHSize[1]} {(float)myHSize[2]}]
+    </DisplayString>
+  </Type>
+  <Type Name="TDF_Label">
+    <DisplayString Condition="myLabelNode==0">NULL</DisplayString>
+    <DisplayString Condition="myLabelNode!=0">[:{myLabelNode->myTag}]</DisplayString>
+    <Expand>
+      <ExpandedItem>*myLabelNode</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="TDF_LabelNode">
+    <DisplayString>[:{myTag}]</DisplayString>
+    <Expand>
+      <Item Name="brother" Condition="myBrother!=0">* myBrother</Item>
+      <Item Name="child" Condition="myFirstChild!=0">* myFirstChild</Item>
+      <ExpandedItem>myFirstAttribute</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="Handle_TDF_Attribute">
+    <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">
+      [transaction={((TDF_Attribute*)entity)->myTransaction}]
+    </DisplayString>
+    <Expand>
+      <!--Item Name="next" Condition="myNext.entity!=0x00000000">myNext</Item-->
+      <ExpandedItem>(TDF_Attribute*)entity</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="OpenGl_Context">
+    <DisplayString>[{myGlVerMajor}.{myGlVerMinor}]</DisplayString>
+  </Type>
+
+<!--ArrayItems Expansion-->
+<Type Name="TColStd_Array1OfInteger">
+    <DisplayString Condition="isAllocated != 1">empty</DisplayString> 
+    <DisplayString>{{size = {myUpperBound - myLowerBound + 1}}}</DisplayString>
+    <Expand>
+        <Item Condition="isAllocated == 1" Name="[size]">myUpperBound - myLowerBound + 1</Item>
+        <ArrayItems Condition="isAllocated == 1">
+            <Size>myUpperBound - myLowerBound + 1</Size>
+            <ValuePointer>(Standard_Integer*)(myStart) + myLowerBound</ValuePointer>
+        </ArrayItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_Array1OfReal">
+    <DisplayString Condition="isAllocated != 1">empty</DisplayString> 
+    <DisplayString>{{size = {myUpperBound - myLowerBound + 1}}}</DisplayString>
+    <Expand>
+        <Item Condition="isAllocated == 1" Name="[size]">myUpperBound - myLowerBound + 1</Item>
+        <ArrayItems Condition="isAllocated == 1">
+            <Size>myUpperBound - myLowerBound + 1</Size>
+            <ValuePointer>(Standard_Real*)(myStart) + myLowerBound</ValuePointer>
+        </ArrayItems>
+    </Expand>
+</Type>
+
+<!--Multi-dimensional Arrays-->
+<Type Name="TColStd_Array2OfInteger">
+    <DisplayString Condition="(myUpperColumn == myLowerColumn) &amp;&amp; (myUpperRow == myLowerRow)">empty</DisplayString>
+    <DisplayString>extent = {(myUpperColumn-myLowerColumn+1) * (myUpperRow-myLowerRow+1)}</DisplayString>
+</Type>
+
+
+<!--LinkedListItems Expansion-->
+<Type Name="TColStd_ListNodeOfListOfInteger">
+    <DisplayString>{{current = {myValue}}}</DisplayString>
+    <Expand>
+        <LinkedListItems>
+            <HeadPointer>this</HeadPointer>
+            <NextPointer>(TColStd_ListNodeOfListOfInteger*)myNext</NextPointer>
+            <ValueNode>this-&gt;myValue</ValueNode>
+        </LinkedListItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListOfInteger">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(TColStd_ListNodeOfListOfInteger*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListNodeOfListOfReal">
+    <DisplayString>{{current = {myValue}}}</DisplayString>
+    <Expand>
+        <LinkedListItems>
+            <HeadPointer>this</HeadPointer>
+            <NextPointer>(TColStd_ListNodeOfListOfReal*)myNext</NextPointer>
+            <ValueNode>this-&gt;myValue</ValueNode>
+        </LinkedListItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListOfReal">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(TColStd_ListNodeOfListOfReal*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="BRep_ListOfCurveRepresentation">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(BRep_ListNodeOfListOfCurveRepresentation*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="TopoDS_Shape">
+    <DisplayString>{myOrient} {myTShape} loc={myLocation}</DisplayString>
+</Type>
+
+<Type Name="TopoDS_TShape">
+    <DisplayString>subshapes={myShapes} flags={myFlags}</DisplayString>
+</Type>
+
+<Type Name="BOPDS_Pave">
+    <DisplayString>{{{myIndex} {myParameter}}}</DisplayString>
+</Type>
+
+<Type Name="BOPDS_PaveBlock">
+    <DisplayString>edge={myEdge} orig={myOriginalEdge} pave1={myPave1} pave2={myPave2} extpaves={myExtPaves}</DisplayString>
+</Type>
+
+</AutoVisualizer>

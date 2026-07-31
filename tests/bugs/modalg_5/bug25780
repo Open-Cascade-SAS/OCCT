@@ -1,0 +1,12 @@
+puts "=========="
+puts "OCC25780"
+puts "=========="
+puts ""
+######################################################
+# checkshape raises an exception Standard_OutOfMemory.
+######################################################
+
+restore [locate_data_file bug25780_checkshape] result
+checkshape result b
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

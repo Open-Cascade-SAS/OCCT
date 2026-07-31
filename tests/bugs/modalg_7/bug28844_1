@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC28844"
+puts "========"
+puts ""
+#######################################################
+# Regression vs 7.1.0: Exception is raised by the solid classification algorithm
+#######################################################
+
+restore [locate_data_file bug28844_Body.brep] b
+
+point p1 0 -10 0
+
+if {![regexp "The point is" [bclassify b p1]]} {
+  puts "Error: The Solid classification algorithm fails to classify the point"
+}
+
+point p2 10 10 10
+if {![regexp "The point is" [bclassify b p2]]} {
+  puts "Error: The Solid classification algorithm fails to classify the point"
+}
+
+point p3 0 10 0
+if {![regexp "The point is" [bclassify b p3]]} {
+  puts "Error: The Solid classification algorithm fails to classify the point"
+}

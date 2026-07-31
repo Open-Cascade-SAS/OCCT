@@ -1,0 +1,21 @@
+puts "==========="
+puts "OCC25697"
+puts "==========="
+puts ""
+##########################################################################################
+# Regression : Section obtained after command "bsection" in Test Harness is incorrect.
+##########################################################################################
+
+restore [locate_data_file bug25697_shell_for_seam.brep] s1
+restore [locate_data_file bug25697_prism.brep] p1
+bsection result s1 p1 -n2d2
+
+regexp {nb alone Vertices : +([-0-9.+eE]+)} [checksection result] full nb_alone_Vertices
+if { ${nb_alone_Vertices} == 2 } {
+  puts "OK: Good result done by Boolean Operation algorithm"
+} else {
+  puts "Error: Wrong result done by Boolean Operation algorithm"
+}
+
+checkprops result -l 107.503 
+checkshape result 

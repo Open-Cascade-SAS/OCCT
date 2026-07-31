@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC12918"
+puts "============"
+puts ""
+#######################################################################
+# Boolean Operations failed
+#######################################################################
+
+set BugNumber OCC12918
+
+restore [locate_data_file OCC12918_1.brep] b1
+restore [locate_data_file OCC12918_2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 0.00240038 
+checkshape result
+checknbshapes result -vertex 24 -edge 36 -wire 14 -face 14 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 91
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

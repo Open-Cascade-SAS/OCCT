@@ -1,0 +1,13 @@
+# Original bug :pro14621
+
+restore [locate_data_file shading_046.brep]  base
+restore [locate_data_file CTO900_pro14621d.rle]  prism
+
+bcut res1 prism base
+
+explode res1
+
+bfuse result base res1_1
+
+checkprops result -s 143829
+checkview -display result -2d -otherwise { base res1_1 } -s -path ${imagedir}/${test_image}.png

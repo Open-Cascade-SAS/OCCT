@@ -1,0 +1,23 @@
+puts "============"
+puts "BUC60907"
+puts "OCC81"
+puts "============"
+puts ""
+###############################
+## Section shell by plane gives overlapped edges
+###############################
+
+restore [locate_data_file BUC60907_px1.rle] sh 
+checkshape sh
+
+plane f 60 0 0 1 0 0
+mkface f f
+bsection result sh f
+puts "Info: it should be 12 edges"
+
+checknbshapes result -edge 12
+
+checkprops result -l 33.6353 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

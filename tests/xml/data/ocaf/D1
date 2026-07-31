@@ -1,0 +1,41 @@
+set aTestName "caf001-E3"
+puts ${aTestName}
+set LabelsList { \
+  { 0:11	"Tu sais je n'ai jamais t aussi hereux que ce matin-l" }		\
+  { 0:12	"\"Tu sais je n'ai jamais t aussi hereux que ce matin-l\"" }		\
+  { 0:13	"<Tu sais je n'ai jamais t aussi hereux que ce matin-l>" }		\
+  { 0:14        "Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous" }	\
+  { 0:15        "\"Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous\"" }	\
+  { 0:16	"Il <n'avait plus rien cr> dans ce monde triste" }			\
+}
+
+# Add an attribute to a data framework
+foreach Label $LabelsList {
+    Label D [lindex $Label 0]
+    SetName D [lindex $Label 0] [lindex $Label 1]
+}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Check the restored values
+
+foreach Label $LabelsList {
+    set IsDone [catch { set aGetAttr [GetName DD [lindex $Label 0]] } aResult]
+    if $IsDone {
+	puts "Error : Get a TDataStd_Name attribute from restored document"
+    } else {
+        if [string compare $aGetAttr [lindex $Label 1]] {
+	    puts "Error : different strings"
+	}
+    }
+}

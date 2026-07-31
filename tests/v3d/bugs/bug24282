@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC24282: Shaded presentation is not computed due to e x c e p t i o n in StdPrs_ToolShadedShape::Normal()"
+puts "========"
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug24282_box_no_uv.brep] b
+vinit View1
+vdisplay b
+vfit
+vsetdispmode b 1
+
+set x_coord 200
+set y_coord 200
+set RED 0.78039216995239258
+set GREEN 0.55294120311737061
+set BLUE 0.094117648899555206
+checkcolor ${x_coord} ${y_coord} ${RED} ${GREEN} ${BLUE}
+
+vdump ${imagedir}/${casename}.png

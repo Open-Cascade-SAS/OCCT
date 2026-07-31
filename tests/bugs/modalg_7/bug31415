@@ -1,0 +1,18 @@
+puts "======================================================="
+puts "0031415: Modeling Algorithms - Solid classifier works incorrectly on a cylinder"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31415_1.brep] comp
+restore [locate_data_file bug31415_2.brep] cyl
+
+explode comp v
+mkpoint p1 comp_1
+mkpoint p2 comp_2
+mkpoint p3 comp_3
+mkpoint p4 comp_4
+foreach p {p1 p2 p3 p4} {
+  if {![regexp "IN" [bclassify cyl $p]]} {
+    puts "Error: classyfication of $p is wrong"
+  }
+}

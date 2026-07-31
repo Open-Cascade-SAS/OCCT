@@ -1,0 +1,7 @@
+restore [locate_data_file CIN001_a17.rle] a
+restore [locate_data_file b17_bsect] b
+bsection result a b
+
+checkprops result -l 10
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

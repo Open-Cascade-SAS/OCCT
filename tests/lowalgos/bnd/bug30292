@@ -1,0 +1,68 @@
+puts "========"
+puts "0030292: Modeling Algorithms - BRepBndLib should avoid using Poly_Polygon3D when called with useTriangulation set to false"
+puts "========"
+puts ""
+
+## geometric edge without any discrete representations
+
+circle c 0 0 0 1
+mkedge e c
+set res1 [bounding e]
+set res2 [bounding e -noTriangulation]
+if {$res1 != $res2} {
+ puts "Error: bounding boxes are different for geometric edge"
+}
+
+## geometric edge with polygon 3d
+
+incmesh e 0.1
+set res1_ref "-1.1000000999999999 -1.0927089740980542 -0.10000010000000001 1.1000000999999999 1.092708974098054 0.10000010000000001"
+set res2_ref "-1.0000001000000001 -1.0000001000000001 -9.9999999999999995e-08 1.0000001000000001 1.0000001000000001 9.9999999999999995e-08"
+unset res1
+set res1 [bounding e]
+foreach dd $res1 {
+  if ![regexp $dd $res1_ref] {
+    puts "Error: bounding box is wrong"
+  }
+}
+unset res2
+set res2 [bounding e -noTriangulation]
+foreach dd $res2 {
+  if ![regexp $dd $res2_ref] {
+   puts "Error: bounding box is wrong"  
+  }
+}
+
+## geometric edge with polygon on triangulation
+
+pcylinder cyl 1 1
+incmesh cyl 0.1
+explode cyl e
+renamevar cyl_3 e
+unset res1
+set res1 [bounding e]
+foreach dd $res1 {
+  if ![regexp $dd $res1_ref] {
+    puts "Error: bounding box is wrong"
+  }
+}
+unset res2
+set res2 [bounding e -noTriangulation]
+foreach dd $res2 {
+  if ![regexp $dd $res2_ref] {
+   puts "Error: bounding box is wrong"  
+  }
+}
+
+## not geometric edge with polygon 3d
+
+polygon3d pol3d 5 1 0 0 0 1 0 -1 0 0 0 -1 0 1 0 0
+mkedge e pol3d
+unset res1
+set res1 [bounding e]
+unset res2
+set res2 [bounding e -noTriangulation]
+if {$res1 != $res2} {
+ puts "Error: bounding boxes are different for not geometric edge"
+}
+

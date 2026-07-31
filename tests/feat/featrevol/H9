@@ -1,0 +1,28 @@
+#puts "TODO OCC22810 All:No error"
+puts "*"
+puts "TODO OCC22810 All:Error in featperform"
+puts "TODO OCC22810 All:Error : The feat grid cannot be built."
+puts "TODO OCC22810 All: Error: The command cannot be built"
+#
+box b 8 8 8
+ttranslate b -4 0 0 
+pcylinder c1 2 8
+bfuse c b c1
+profile p x 1 y 1 x -1 y -1
+trotate p 0 0 0 1 0 0 90
+trotate p 0 0 0 0 0 1 90
+ttranslate p 0 -2 0.5
+explode c f
+explode p e
+mksurface sf c_5
+mksurface su c_2
+mkface ff sf
+mkface fu su
+
+featrevol c p p 0 0 0.5 0 0 1 0 1
+addslide revol p_4 c_3
+if { [catch { featperform revol result ff fu } ] != 0 } {
+  puts "Error in featperform"
+}
+
+checkprops result -s 0

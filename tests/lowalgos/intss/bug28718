@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC28718"
+puts "========"
+puts ""
+#################################################
+# Section result has a break
+#################################################
+
+restore [locate_data_file bug28718_bulk_1.brep] b1
+restore [locate_data_file bug28718_hull.brep] b2
+
+####
+
+explode b1 f
+explode b2 f
+axo
+don b2_61
+fit
+
+set log [bopcurves b1_1 b2_61 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+checkreal TolReached $Toler 3.589120933029448e-08 0.0 0.1
+
+nurbsconvert ff b2_61
+set log [bopcurves b1_1 ff -2d]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+checkreal TolReached $Toler 3.9019558966741645e-08 0.0 0.1
+
+bsection result b1 b2
+
+checkprops result -l 19.1199
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

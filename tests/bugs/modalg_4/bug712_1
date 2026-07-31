@@ -1,0 +1,24 @@
+
+puts "========"
+puts "OCC712"
+puts "========"
+puts ""
+#########################################################
+## Exception is raised in DRAW during building draft with help command "depouille"
+## on face in the attached shape.
+#########################################################
+
+restore [locate_data_file OCC712.brep] a 
+checkshape a
+
+explode a f
+
+if [catch {depouille result a 0 0 1 a_2 10 0 39.6875 0 0. 0. -1 } catch_result] {
+    puts "Faulty OCC712"
+} else {
+    puts "OCC712 OK"
+}
+
+checkprops result -s 41956.4 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

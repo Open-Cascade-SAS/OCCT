@@ -1,0 +1,42 @@
+puts "============"
+puts "CR26430: Visualization - segmentation fault in opened local context"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file bug26430.brep] aShape
+
+vinit View1
+vdisplay aShape
+vfit
+vsetdispmode aShape 1
+
+vselmode aShape 1 1
+vselmode aShape 2 1
+vselmode aShape 3 1
+vselmode aShape 4 1
+vselmode aShape 5 1
+
+# check selection for all problematic cases
+vselect 125 155
+set aNbSelected [vnbselected]
+if {$aNbSelected != 1} {
+  puts "ERROR: Vertex was not selected!"
+}
+
+vselect 0 0
+vselect 121 155 130 160
+set aNbSelected [vnbselected]
+if {$aNbSelected != 1} {
+  puts "ERROR: Vertex was not selected!"
+}
+
+vselect 0 0
+vselect 100 100 200 200
+set aNbSelected [vnbselected]
+if {$aNbSelected != 14} {
+  puts "ERROR: Vertex was not selected!"
+}
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,94 @@
+// Created on: 1993-06-22
+// Created by: Martine LANGLOIS
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <GeomToStep_MakeBoundedSurface.hxx>
+#include <GeomToStep_MakeElementarySurface.hxx>
+#include <GeomToStep_MakeSurface.hxx>
+#include <GeomToStep_MakeSweptSurface.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepData_Logical.hxx>
+#include <StepData_Factors.hxx>
+#include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_OffsetSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SweptSurface.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+//=============================================================================
+// Creation d' une Surface de prostep a partir d' une Surface de Geom
+//=============================================================================
+GeomToStep_MakeSurface::GeomToStep_MakeSurface(const occ::handle<Geom_Surface>& S,
+                                               const StepData_Factors&          theLocalFactors)
+{
+  done = true;
+  if (S->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
+  {
+    occ::handle<Geom_BoundedSurface> S1 = occ::down_cast<Geom_BoundedSurface>(S);
+    GeomToStep_MakeBoundedSurface    MkBoundedS(S1, theLocalFactors);
+    theSurface = MkBoundedS.Value();
+  }
+  else if (S->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
+  {
+    occ::handle<Geom_ElementarySurface> S1 = occ::down_cast<Geom_ElementarySurface>(S);
+    GeomToStep_MakeElementarySurface    MkElementaryS(S1, theLocalFactors);
+    theSurface = MkElementaryS.Value();
+  }
+  else if (S->IsKind(STANDARD_TYPE(Geom_SweptSurface)))
+  {
+    occ::handle<Geom_SweptSurface> S1 = occ::down_cast<Geom_SweptSurface>(S);
+    GeomToStep_MakeSweptSurface    MkSwept(S1, theLocalFactors);
+    theSurface = MkSwept.Value();
+  }
+  else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  {
+    occ::handle<Geom_OffsetSurface> S1 = occ::down_cast<Geom_OffsetSurface>(S);
+    GeomToStep_MakeSurface          MkBasis(S1->BasisSurface(), theLocalFactors);
+    done = MkBasis.IsDone();
+    if (!done)
+    {
+      return;
+    }
+    occ::handle<StepGeom_OffsetSurface> Surf = new StepGeom_OffsetSurface;
+    Surf->Init(new TCollection_HAsciiString(""),
+               MkBasis.Value(),
+               S1->Offset() / theLocalFactors.LengthFactor(),
+               StepData_LFalse);
+    theSurface = Surf;
+  }
+  else
+  {
+    done = false;
+#ifdef OCCT_DEBUG
+    std::cout << " unknown type " << S->DynamicType()->Name() << std::endl;
+#endif
+  }
+}
+
+//=============================================================================
+// renvoi des valeurs
+//=============================================================================
+
+const occ::handle<StepGeom_Surface>& GeomToStep_MakeSurface::Value() const
+{
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSurface::Value() - no result");
+  return theSurface;
+}

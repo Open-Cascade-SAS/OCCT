@@ -1,0 +1,33 @@
+puts "TODO OCC23902 ALL: Error: Cannot build fillet"
+
+puts "========"
+puts "OCC23902"
+puts "========"
+puts ""
+#####################
+# Cannot build fillet
+#####################
+
+bsplinecurve r 4 3 1 5 2 2 3 5 0 8 0 1 2 8 2 1 4 8 3 1 4 8 3 1 4 8 3 1 6 8 4 1 10 8 10 1
+
+mkedge e1 r
+vertex v1 10 8 10
+vertex v2 5 8 8
+edge e2 v1 v2
+vertex v3 0 8 0
+edge e3 v2 v3
+wire w e1 e2 e3
+mkplane f w
+prism p f 0 5 0
+explode p e
+
+if {![catch {fillet result p 0.5 p_3}]} {
+  if {[regexp "This shape seems to be valid" [checkshape result] ] != 1} {
+      puts "Error: Cannot build fillet (1)"
+  }
+  if {[regexp "This shape seems to be OK" [bopcheck result] ] != 1} {
+      puts "Error: Cannot build fillet (2)"
+  }
+} else {
+  puts "Error: Cannot build fillet (3)"
+}

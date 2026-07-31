@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC25166"
+puts "============"
+puts ""
+#####################################################
+# STEP Reader - allow GEOMETRIC_SET entity to accept non-geometric children
+#####################################################
+
+stepread [locate_data_file bug25166_piston.stp] a *
+tpcompound result
+
+checkprops result -s 45583 
+checkshape result
+
+checknbshapes result -vertex 176 -edge 176 -wire 176 -face 168 -shell 168 -solid 0 -compsolid 0 -compound 2 -shape 866
+checkview -display result -3d -path ${imagedir}/${test_image}.png

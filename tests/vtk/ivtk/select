@@ -1,0 +1,12 @@
+puts "============"
+puts "select: Tests selection of shapes in the IVtk view"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b 1 1 1
+ivtkinit
+ivtkdisplay b
+ivtkselect 100 100
+
+ivtkdump $imagedir/${casename}.png

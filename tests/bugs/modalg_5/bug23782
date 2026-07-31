@@ -1,0 +1,17 @@
+puts "========="
+puts "OCC23782"
+puts "========="
+puts ""
+#################################################################################
+# Intersection algorithm produces wrong section curves for the attached faces
+#################################################################################
+
+restore [locate_data_file bug23782_c.brep] f
+
+explode f
+bsection result f_1 f_2
+
+checknbshapes result -t -vertex 2 -edge 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

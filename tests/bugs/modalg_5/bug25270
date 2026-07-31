@@ -1,0 +1,18 @@
+puts "========="
+puts "OCC25270"
+puts "========="
+puts ""
+#####################################################################
+# OCCT fails to calculate extrema between extruded surface and line
+#####################################################################
+
+restore [locate_data_file bug25270_face.brep] f
+restore [locate_data_file bug25270_edge.brep] e
+
+distmini result f e
+regexp {([-0-9.+eE]+)} [dval result_val] full ddist
+if { $ddist > 1.e-7 } {
+  puts "Error: Extrema between extruded surface and line is incorrect $ddist"
+} else {
+  puts "OK: Extrema between extruded surface and line is correct $ddist"
+}

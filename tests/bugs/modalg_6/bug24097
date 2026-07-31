@@ -1,0 +1,28 @@
+puts "##################################################"
+puts "0024097: BRepAlgoAPI_Section returns wrong result"
+puts "##################################################"
+
+# load and check faces
+restore [locate_data_file bug24097_face1.brep] a
+tolerance a
+checkshape a
+
+restore [locate_data_file bug24097_face2.brep] b
+tolerance b
+checkshape b
+
+# build section
+bsection result a b
+
+# result should be single open edge with length 0.125
+checknbshapes result -vertex 2 -edge 1
+checkmaxtol result -ref 0.0001
+checkprops result -l 0.125
+
+# make snapshot
+vinit Driver1/Viewer1/View1
+vclear 
+eval vdisplay result [explode result v]
+vfit
+vdisplay a b
+vdump $imagedir/${test_image}.png

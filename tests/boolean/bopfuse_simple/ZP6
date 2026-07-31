@@ -1,0 +1,21 @@
+#
+# *10603
+#
+#Create 3 torus
+
+puts "TODO CR33225 Linux: Error : The area of result shape is 138625, expected 197700"
+
+ptorus a0 100 20
+tcopy a0 a1
+tcopy a0 a2
+trotate a1 0 0 0 1 0 0 90
+trotate a2 0 0 0 0 1 0 90
+
+bop a0 a1
+bopfuse x1
+
+bop x1 a2
+bopfuse result
+
+checkprops result -s 197700
+checkview -display result -2d -otherwise { x1 a2 } -s -path ${imagedir}/${test_image}.png

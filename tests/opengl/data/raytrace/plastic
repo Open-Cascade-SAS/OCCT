@@ -1,0 +1,36 @@
+puts "========"
+puts "Ray Tracing - check lighting on Plastic material"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create box
+box b 1 2 3
+
+# draw box
+vinit View1
+vclear
+vrenderparams -rasterization
+vsetdispmode 1
+vaxo
+vdisplay     b
+vsetmaterial b PLASTIC
+vsetcolor    b GREEN
+vfit
+vrotate 0.2 0.0 0.0
+
+# take snapshot with fixed pipeline
+vdump $::imagedir/${::casename}_OFF.png
+set aColorL [vreadpixel 150 250 rgb name]
+set aColorR [vreadpixel 250 250 rgb name]
+if { "$aColorL" != "GREEN3" || "$aColorR" != "GREEN4" } {
+  puts "Error: wrong color (fixed pipeline)!"
+}
+
+vrenderparams -raytrace
+set aColorL [vreadpixel 150 250 rgb name]
+set aColorR [vreadpixel 250 250 rgb name]
+#if { "$aColorL" != "GREEN3" || "$aColorR" != "GREEN4" } {
+#  puts "Error: wrong color (Ray Tracing)!"
+#}
+vdump ${imagedir}/${casename}.png

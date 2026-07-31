@@ -1,0 +1,13 @@
+if { [info exists occ_tmp_files] } {
+  foreach aTmpFileIter $occ_tmp_files {
+    if {[file exists "$aTmpFileIter"] == 1} {
+      puts "Deleting temporary file $aTmpFileIter"
+      file delete -force "$aTmpFileIter"
+    }
+  }
+  set occ_tmp_files ""
+}
+
+puts ""
+puts "TEST COMPLETED" 
+puts ""

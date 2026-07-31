@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24601"
+puts "============"
+puts ""
+#####################################################
+# Unwanted spheres shown after Step-Import
+#####################################################
+
+stepread [locate_data_file bug24601_216523_2_03.stp] a *
+tpcompound result
+
+checkprops result -s 38563.2 
+checkshape result
+
+checknbshapes result -vertex 150 -edge 228 -wire 135 -face 105 -shell 2 -solid 2 -compsolid 0 -compound 2 -shape 624
+checkview -display result -3d -path ${imagedir}/${test_image}.png

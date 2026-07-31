@@ -1,0 +1,14 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "============"
+puts "OCC22043"
+puts "============"
+puts ""
+#############################################################################################################
+# Checkshape command does not return faulty shapes for the face. CAS63-sp10-*. Appendix to SALOME bug 002019
+#############################################################################################################
+
+restore [locate_data_file bug22043_f181.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

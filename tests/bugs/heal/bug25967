@@ -1,0 +1,19 @@
+puts "TODO OCC25967 ALL: Error :  is WRONG because number of EDGE entities in shape"
+
+puts "========"
+puts "OCC25967"
+puts "========"
+puts ""
+########################################################################
+# Shape Healing fails to correct a face with missing poles and pcurves
+########################################################################
+
+restore [locate_data_file bug25967_face-no-sh-fwd.brep] f
+
+fixshape result f
+pcurve result
+checknbshapes result -edge 4
+
+v2d
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

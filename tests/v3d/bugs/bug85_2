@@ -1,0 +1,43 @@
+puts "==========="
+puts "BUC60918: Shape drawn in transparency mode does not always eclipse another shapes"
+puts "OCC85"
+puts "==========="
+puts ""
+
+pload OCAF MODELING VISUALIZATION
+
+restore [locate_data_file buc60918-psm1.brep] psm1
+restore [locate_data_file buc60918-psm2.brep] psm2
+restore [locate_data_file buc60918-shl.brep] shl
+
+NewDocument D
+SetShape D 0:1:1 shl
+SetShape D 0:1:2 psm1
+SetShape D 0:1:3 psm2
+AISSet   D 0:1:1 NS
+AISSet   D 0:1:2 NS
+AISSet   D 0:1:3 NS
+
+AISInitViewer D
+AISMaterial D 0:1:1 plastic
+AISMaterial D 0:1:2 plastic
+AISMaterial D 0:1:3 plastic
+AISTransparency D 0:1:1 0.6
+AISColor   D 0:1:1 MATRABLUE
+AISDisplay D 0:1:1
+AISDisplay D 0:1:2
+AISDisplay D 0:1:3
+vsetdispmode 1
+
+box b 10 10 10 
+SetShape D 0:1:4 b
+AISSet D 0:1:4 NS
+AISDisplay D 0:1:4
+vfit
+
+set x_coord 230
+set y_coord 160
+
+checkcolor $x_coord $y_coord 0.76 0.54 0.9
+
+vdump $imagedir/${casename}.png

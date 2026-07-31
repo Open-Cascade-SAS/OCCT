@@ -1,0 +1,39 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISHasOwnTransparency
+# Note:   After a start: AISHasOwnTransparency = false ( int 0 )
+#
+
+puts "caf003-F1"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Check own transparency
+set HasOwnTransparency [AISHasOwnTransparency D ${aLabel}]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${HasOwnTransparency} > 0 } {
+	puts "HasOwnTransparency=${HasOwnTransparency}"
+	puts "There is own transparency; AISHasOwnTransparency command: Error"
+        return
+}
+puts "There is not own transparency; AISHasOwnTransparency command: OK"

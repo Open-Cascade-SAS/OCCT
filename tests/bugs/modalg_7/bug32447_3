@@ -1,0 +1,42 @@
+puts "============================================"
+puts "0032447: BRepOffsetAPI_MakePipeShell result in inaccurate shape when using -DT mode and DT_ShapeDivide on the spine"
+puts "============================================"
+puts ""
+
+circle c 0 0 0  1
+trim c c 0 1
+convert c c
+mkedge c c
+
+line l 1 0 0  0 1 0
+trim l l -1 0
+convert l l
+mkedge l l 
+
+wire s l c
+
+circle c 0.9 0 0  0 1 0  0.1
+mkedge p c
+wire p p
+
+mksweep s -C 5 0.001
+
+explode s e
+savehistory cor_hist
+modified sc cor_hist s_1
+
+checkprops sc -l 2
+
+setsweep -DT
+addsweep p
+buildsweep r -C -S
+
+savehistory sweep_hist
+generated r1 sweep_hist sc
+
+checkprops r1 -s 1.19393
+
+checkshape r
+checknbshapes r -face 3
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png

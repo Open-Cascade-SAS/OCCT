@@ -1,0 +1,10 @@
+puts "====================================="
+puts "OCC27719: Incorrect exact HLR results"
+puts "====================================="
+puts ""
+
+set viewname "vback"
+set length 7.48768
+
+restore [locate_data_file bug27719_Extruded.brep] a
+COMPUTE_HLR $viewname $algotype

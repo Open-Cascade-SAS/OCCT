@@ -1,0 +1,45 @@
+puts "================"
+puts "OCC129"
+puts "================"
+puts ""
+#######################################################################################
+# Object is not selectable in the Cascade Viewer
+######################################################################################
+
+set BugNumber OCC22129
+
+cylinder c 0 0 1 10
+trimv ct c -1e+9 1e+9
+mkface ft ct
+
+vinit
+# change maximum uv parameter value in drawer to display
+# isolines correctly
+vaspects -defaults -setMaxParamValue 1e+9
+vdisplay ft
+
+set x1 207
+set y1 184
+set x2 222
+set y2 175
+
+vmoveto ${x1} ${y1}
+checkcolor ${x1} ${y1} 0 1 1
+
+vselect ${x1} ${y1}
+checkcolor ${x1} ${y1} 0.8 0.8 0.8
+
+vselect ${x2} ${y2}
+checkcolor ${x1} ${y1} 1 1 0
+
+# dump image, than restore default maximum parameter value
+set aViewInfo [split [vviewlist long] "/"]
+set aImgFile ${imagedir}/${casename}
+foreach aStr $aViewInfo {
+  append aImgFile "_" [string trim $aStr]
+}
+append aImgFile ".png"
+vdump $aImgFile
+
+vaspects -defaults -setMaxParamValue 500000
+vclose

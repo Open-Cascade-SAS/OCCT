@@ -1,0 +1,102 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_BezierSurfaceHasher_HeaderFile
+#define _GeomHash_BezierSurfaceHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <GeomHash_PointHasher.pxx>
+#include <cmath>
+#include <Precision.hxx>
+
+//! OCCT-style hasher for Geom_BezierSurface.
+//! Used for geometry deduplication.
+//! Hashes only metadata (degrees, pole counts, rationality) for efficiency.
+struct GeomHash_BezierSurfaceHasher
+{
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_BezierSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                               double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
+  // Hashes the Bezier surface metadata only.
+  std::size_t operator()(const occ::handle<Geom_BezierSurface>& theSurface) const noexcept
+  {
+    const std::size_t aHashes[5] = {
+      opencascade::hash(theSurface->UDegree()),
+      opencascade::hash(theSurface->VDegree()),
+      opencascade::hash(theSurface->NbUPoles()),
+      opencascade::hash(theSurface->NbVPoles()),
+      opencascade::hash(static_cast<int>(theSurface->IsURational())
+                        | (static_cast<int>(theSurface->IsVRational()) << 1))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two Bezier surfaces by full geometric data.
+  bool operator()(const occ::handle<Geom_BezierSurface>& theSurface1,
+                  const occ::handle<Geom_BezierSurface>& theSurface2) const noexcept
+  {
+    // Compare degrees
+    if (theSurface1->UDegree() != theSurface2->UDegree()
+        || theSurface1->VDegree() != theSurface2->VDegree())
+    {
+      return false;
+    }
+
+    // Compare rationality
+    if (theSurface1->IsURational() != theSurface2->IsURational()
+        || theSurface1->IsVRational() != theSurface2->IsVRational())
+    {
+      return false;
+    }
+
+    const GeomHash_PointHasher aPointHasher(CompTolerance, HashTolerance);
+
+    // Compare poles
+    for (int i = 1; i <= theSurface1->NbUPoles(); ++i)
+    {
+      for (int j = 1; j <= theSurface1->NbVPoles(); ++j)
+      {
+        if (!aPointHasher(theSurface1->Pole(i, j), theSurface2->Pole(i, j)))
+        {
+          return false;
+        }
+      }
+    }
+
+    // Compare weights if rational
+    if (theSurface1->IsURational() || theSurface1->IsVRational())
+    {
+      for (int i = 1; i <= theSurface1->NbUPoles(); ++i)
+      {
+        for (int j = 1; j <= theSurface1->NbVPoles(); ++j)
+        {
+          if (std::abs(theSurface1->Weight(i, j) - theSurface2->Weight(i, j)) > CompTolerance)
+          {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+};
+
+#endif // _GeomHash_BezierSurfaceHasher_HeaderFile

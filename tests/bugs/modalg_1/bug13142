@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC13142"
+puts "============"
+puts ""
+#######################################################################
+# Exception is raised while performing boolean operations
+#######################################################################
+
+restore [locate_data_file OCC13142.brep] result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+checkprops result -s 513.007 
+checkshape result
+checknbshapes result -vertex 34 -edge 66 -wire 47 -face 42 -shell 9 -solid 9 -compsolid 0 -compound 3 -shape 210
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

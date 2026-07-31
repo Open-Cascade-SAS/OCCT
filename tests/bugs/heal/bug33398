@@ -1,0 +1,12 @@
+puts "========================================="
+puts "0033398: Modeling Algorithms - ShapeUpgrade_UnifySameDomain fails on specific STEP model"
+puts "========================================="
+puts ""
+
+pload STEP
+
+testreadstep [locate_data_file bug33398.step] s 
+unifysamedom result s 
+
+checknbshapes result -vertex 506 -edge 908 -wire 394 -face 382 -shell 4 -solid 4    
+checkview -display result -2d -path ${imagedir}/${test_image}.png

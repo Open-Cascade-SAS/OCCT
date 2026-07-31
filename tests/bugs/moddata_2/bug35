@@ -1,0 +1,15 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "================"
+puts "OCC35"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC35.brep] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+ 

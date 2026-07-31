@@ -1,0 +1,27 @@
+# External dependencies for TKDraw
+set(OCCT_TKDraw_EXTERNAL_LIBS
+  TKernel
+  TKG2d
+  TKGeomBase
+  TKG3d
+  TKMath
+  TKBRep
+  TKGeomAlgo
+  TKShHealing
+  TKMesh
+  TKService
+  TKHLR
+  TKTopAlgo
+  CSF_TclLibs
+  CSF_TclTkLibs
+  CSF_XwLibs
+  CSF_gdi32
+  CSF_advapi32
+  CSF_user32
+  CSF_shell32
+  CSF_TBB
+  CSF_objc
+  CSF_Appkit
+  CSF_IOKit
+  CSF_ThreadLibs
+)

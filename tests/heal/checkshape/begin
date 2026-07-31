@@ -1,0 +1,24 @@
+set no_result 1
+
+proc CheckPerform {path} {
+  puts ""
+  puts "model: $path"
+  restore $path c
+  dchrono s reset; dchrono s start;
+  set cres [checkshape c]
+  dchrono s stop;
+  regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono s show] full s_Hours s_Minutes s_Seconds
+  set s_Time [expr ${s_Hours}*60.*60. + ${s_Minutes}*60. + ${s_Seconds} ]
+  puts "single-threaded time: $s_Time"  
+  dchrono p reset; dchrono p start;
+  set pres [checkshape c -parallel]
+  dchrono p stop;
+  regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono p show] full p_Hours p_Minutes p_Seconds
+  set p_Time [expr ${p_Hours}*60.*60. + ${p_Minutes}*60. + ${p_Seconds} ]
+  puts "multithreaded time: $p_Time"  
+  set ratio [expr ${s_Time}/${p_Time} ]
+  puts "acceleration in multi-threaded work: $ratio" 
+    if {[string compare $cres $pres] != 0} {
+    puts "Error: different result between single-thread and parallel on $path"
+  }
+}

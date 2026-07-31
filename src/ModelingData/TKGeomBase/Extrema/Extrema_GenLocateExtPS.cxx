@@ -1,0 +1,254 @@
+// Created on: 1995-07-18
+// Created by: Modelistation
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Extrema_GenLocateExtPS.hxx>
+
+#include <Extrema_FuncPSNorm.hxx>
+#include <Extrema_FuncPSDist.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <gp_Pnt.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
+#include <math_BFGS.hxx>
+#include <math_FRPR.hxx>
+#include <StdFail_NotDone.hxx>
+
+static void CorrectTol(const double theU0, const double theV0, math_Vector& theTol)
+{
+  // Correct tolerance for large values of UV parameters
+  constexpr double aTolRef  = Precision::PConfusion();
+  double           anEpsRef = Epsilon(1.);
+  double           epsu     = Epsilon(theU0);
+  const double     tolog10  = 0.43429;
+  if (epsu > anEpsRef)
+  {
+    int    n = RealToInt(tolog10 * std::log(epsu / anEpsRef) + 1) + 1;
+    int    i;
+    double tol = aTolRef;
+    for (i = 1; i <= n; ++i)
+    {
+      tol *= 10.;
+    }
+    theTol(1) = std::max(theTol(1), tol);
+  }
+  double epsv = Epsilon(theV0);
+  if (epsv > anEpsRef)
+  {
+    int    n = RealToInt(tolog10 * std::log(epsv / anEpsRef) + 1) + 1;
+    int    i;
+    double tol = aTolRef;
+    for (i = 1; i <= n; ++i)
+    {
+      tol *= 10.;
+    }
+    theTol(2) = std::max(theTol(2), tol);
+  }
+}
+
+//=================================================================================================
+
+bool Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP,
+                                       const Adaptor3d_Surface& theS,
+                                       const double             theU0,
+                                       const double             theV0)
+{
+  double du =
+    std::max(theS.UResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+  double dv =
+    std::max(theS.VResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+  double u, v;
+  gp_Pnt aP0 = theS.Value(theU0, theV0);
+  double d0  = theP.SquareDistance(aP0);
+  int    iu, iv;
+  for (iu = -1; iu <= 1; ++iu)
+  {
+    u = theU0 + iu * du;
+    if (!theS.IsUPeriodic())
+    {
+      u = std::max(u, theS.FirstUParameter());
+      u = std::min(u, theS.LastUParameter());
+    }
+    for (iv = -1; iv <= 1; ++iv)
+    {
+      if (iu == 0 && iv == 0)
+      {
+        continue;
+      }
+
+      v = theV0 + iv * dv;
+      if (!theS.IsVPeriodic())
+      {
+        v = std::max(v, theS.FirstVParameter());
+        v = std::min(v, theS.LastVParameter());
+      }
+      double d = theP.SquareDistance(theS.Value(u, v));
+      if (d < d0)
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+Extrema_GenLocateExtPS::Extrema_GenLocateExtPS(const Adaptor3d_Surface& theS,
+                                               const double             theTolU,
+                                               const double             theTolV)
+    : mySurf(theS),
+      myTolU(theTolU),
+      myTolV(theTolV),
+      myDone(false),
+      mySqDist(-1.0)
+{
+}
+
+//=================================================================================================
+
+void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
+                                     const double  theU0,
+                                     const double  theV0,
+                                     const bool    isDistanceCriteria)
+{
+  myDone = false;
+
+  // Prepare initial data structures.
+  math_Vector aTol(1, 2), aStart(1, 2), aBoundInf(1, 2), aBoundSup(1, 2);
+
+  // Tolerance.
+  aTol(1) = myTolU;
+  aTol(2) = myTolV;
+
+  // Initial solution approximation.
+  aStart(1) = theU0;
+  aStart(2) = theV0;
+
+  // Borders.
+  aBoundInf(1) = mySurf.FirstUParameter();
+  aBoundInf(2) = mySurf.FirstVParameter();
+  aBoundSup(1) = mySurf.LastUParameter();
+  aBoundSup(2) = mySurf.LastVParameter();
+
+  if (isDistanceCriteria)
+  {
+    // Distance criteria.
+    double      aRelTol = 1.e-8;
+    math_Vector aResPnt(1, 2);
+
+    Extrema_FuncPSDist F(mySurf, theP);
+
+    math_BFGS aSolver(2, aRelTol);
+    aSolver.Perform(F, aStart);
+
+    if (!aSolver.IsDone())
+    {
+      // Try another method
+      math_FRPR aSolver1(F, aRelTol);
+      aSolver1.Perform(F, aStart);
+      if (!aSolver1.IsDone())
+      {
+        return;
+      }
+      aSolver1.Location(aResPnt);
+      mySqDist = aSolver1.Minimum();
+    }
+    else
+    {
+      aSolver.Location(aResPnt);
+      mySqDist = aSolver.Minimum();
+    }
+
+    myPoint.SetParameters(aResPnt(1), aResPnt(2), mySurf.Value(aResPnt(1), aResPnt(2)));
+    myDone = true;
+  }
+  else
+  {
+    // Normal projection criteria.
+    Extrema_FuncPSNorm F(theP, mySurf);
+
+    if (mySurf.GetType() == GeomAbs_BSplineSurface)
+    {
+      aTol(1) = myTolU;
+      aTol(2) = myTolV;
+      CorrectTol(theU0, theV0, aTol);
+    }
+
+    bool isCorrectTol = (std::abs(aTol(1) - myTolU) > Precision::PConfusion()
+                         || std::abs(aTol(2) - myTolV) > Precision::PConfusion());
+
+    math_FunctionSetRoot aSR(F, aTol);
+    aSR.Perform(F, aStart, aBoundInf, aBoundSup);
+
+    if (!aSR.IsDone() || isCorrectTol)
+    {
+      if (isCorrectTol)
+      {
+        aTol(1) = myTolU;
+        aTol(2) = myTolV;
+      }
+      math_NewtonFunctionSetRoot aNSR(F, aTol, Precision::Confusion());
+      aNSR.Perform(F, aStart, aBoundInf, aBoundSup);
+      if (!aSR.IsDone() && !aNSR.IsDone())
+      {
+        return;
+      }
+    }
+
+    double aNbExt = F.NbExt();
+    mySqDist      = F.SquareDistance(1);
+    myPoint       = F.Point(1);
+    int i;
+    for (i = 2; i <= aNbExt; ++i)
+    {
+      if (F.SquareDistance(i) < mySqDist)
+      {
+        mySqDist = F.SquareDistance(i);
+        myPoint  = F.Point(i);
+      }
+    }
+    myDone = true;
+  }
+}
+
+//=================================================================================================
+
+bool Extrema_GenLocateExtPS::IsDone() const
+{
+  return myDone;
+}
+
+//=================================================================================================
+
+double Extrema_GenLocateExtPS::SquareDistance() const
+{
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+  return mySqDist;
+}
+
+//=================================================================================================
+
+const Extrema_POnSurf& Extrema_GenLocateExtPS::Point() const
+{
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+  return myPoint;
+}

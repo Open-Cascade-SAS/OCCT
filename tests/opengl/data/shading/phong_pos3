@@ -1,0 +1,46 @@
+puts "========"
+puts "0029290: Visualization, TKOpenGl - allow defining Light source per ZLayer"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+vclear
+vclose ALL
+vinit View1 -width 1024 -height 768
+
+vaxo
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+vlight -clear
+
+set THE_LIGHTS {
+  { -1 -1 -1 RED1 }
+  {  1 -1 -1 YELLOW }
+  { -1  1 -1 BLUE }
+  { -1 -1  1 CYAN }
+  {  1  1 -1 PURPLE }
+  {  1  1  1 WHITE }
+  { -1  1  1 HOTPINK }
+  {  1 -1  1 GREEN }
+  {  0 -1  0 MAGENTA }
+  {  0  1  0 MAGENTA3 }
+}
+
+set aLayers [list [vzlayer -add -disable depthClear] [vzlayer -add -disable depthClear] [vzlayer -add -disable depthClear]]
+for { set aLayIter 0 } { $aLayIter < 3 } { incr aLayIter } {
+  set aLayer [lindex $aLayers $aLayIter]
+  set aShiftX [expr $aLayIter * 4]
+  psphere s$aLayer 0.5
+  vdisplay -dispMode 1 -layer $aLayer s$aLayer
+  vsetlocation s$aLayer $aShiftX 0 0
+  for { set aLightIter 0 } { $aLightIter < 10 } { incr aLightIter } {
+	set aLight [lindex $THE_LIGHTS $aLightIter]
+    set aColor [lindex $aLight 3]
+    set aPos [list [expr $aShiftX + [lindex $aLight 0]] [lindex $aLight 1] [lindex $aLight 2]]
+    vlight -layer $aLayer -add positional -pos {*}$aPos -color $aColor -headLight 0
+    vpoint v${aLayIter}_${aLightIter} {*}$aPos
+    vdrawtext t${aLayIter}_${aLightIter} "l${aLayIter}_${aLightIter} $aColor" -pos {*}$aPos -color $aColor
+  }
+}
+vfit
+vdump $::imagedir/${::casename}.png

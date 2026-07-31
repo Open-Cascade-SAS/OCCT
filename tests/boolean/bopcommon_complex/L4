@@ -1,0 +1,9 @@
+restore [locate_data_file sh2] b1
+restore [locate_data_file sh3] b2
+
+bop b1 b2
+bopcommon result
+
+#common of two intersected shells is a wire
+checkprops result -s empty
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

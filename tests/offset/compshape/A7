@@ -1,0 +1,11 @@
+## ======================================
+## Grid    : CCV002
+## Test    : G1
+## Comment : From CV tests serie page 64
+## ======================================
+
+restore [locate_data_file CCV_2_g1_gsz.rle] s
+explode s F
+offsetcompshape result s -5 s_7
+
+checkprops result -v 237534

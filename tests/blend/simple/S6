@@ -1,0 +1,10 @@
+#box b -15 -15 -15 30 30 15
+#psphere s 13 0 90 
+#fuse s s b
+
+restore [locate_data_file CFI_6_c12fgv.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 3*SCALE2 s_7
+
+checkprops result -s 4089.28

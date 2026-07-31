@@ -1,0 +1,15 @@
+puts "=========="
+puts "BUC60686"
+puts "=========="
+puts ""
+#puts "=================================="
+#puts "It takes visual check for this BUG"
+#puts "=================================="
+
+igesbrep [locate_data_file BUC50029.igs] a xst-transferrable-roots
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

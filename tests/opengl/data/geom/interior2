@@ -1,0 +1,69 @@
+puts "============"
+puts "0029076: Visualization - implement element shrinking Shader"
+puts "Test case on boxes"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1 -width 768 -height 409
+vzbufftrihedron
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+box b1 -2 0  2 1 0.2 1
+box b2  2 0  2 1 0.2 1
+box b3  0 0  0 1 0.2 1
+box b4 -2 0 -2 1 0.2 1
+box b5  2 0 -2 1 0.2 1
+vdisplay -dispMode 1 b1 b2 b3 b4 b5
+vfit
+
+vaspects  b1 -setShadingModel PHONG -setInteriorStyle HOLLOW -setDrawEdges 1 -color BLACK
+vdrawtext t1 " b1: phong hollow-edges " -pos -2 0 2 -halign RIGHT -disptype SUBTITLE -color WHITE -subColor BLACK
+
+vaspects  b2 -setShadingModel GOURAUD -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeColor YELLOW
+vdrawtext t2 " b2: gouraud solid-edges " -pos 2 0 2 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor YELLOW
+
+vaspects  b3 -setShadingModel PHONG -setInteriorStyle SOLID -setDrawEdges 1 -edgeWidth 2 -setEdgeColor BLUE
+vdrawtext t3 " b3: phong solid-edges " -pos 0 0 0 -halign RIGHT -disptype SUBTITLE -color WHITE -subColor BLUE
+
+vaspects  b4 -setShadingModel GOURAUD -setInteriorStyle HIDDENLINE -setDrawEdges 1 -setEdgeColor RED
+vdrawtext t4 " b4: hiddenline-edges " -pos -2 0 -2 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor RED
+
+vaspects  b5 -setShadingModel FLAT -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeColor 0 1 0 0 -edgeWidth 3
+vdrawtext t5 " b5: flat solid-edges " -pos 2 0 -2 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor GREEN
+
+vdrawparray p6 triangles v 0 0 0 v 0 1 0 v 1 1 0 v 1 0 0 v 2 1 0 v 2 0 0 e 3 e 1 e 2 e 1 e 3 e 4 e 5 e 4 e 3 e 4 e 5 e 6
+vlocation p6 -setLocation 2 1 0
+vaspects p6 -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeColor FIREBRICK -setEdgeWidth 4 -setQuadEdges 1
+vdrawtext t6 " p6: quads " -pos 2 1 -0.4 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor FIREBRICK
+
+vrenderparams -msaa 0
+vcaps -polygonMode 1
+vdump $imagedir/${casename}_ortho_polmode.png
+
+vcaps -polygonMode 0
+vdump $imagedir/${casename}_ortho_glsl.png
+
+vrenderparams -msaa 4
+vcaps -polygonMode 1
+vdump $imagedir/${casename}_ortho_polmode_msaa.png
+
+vcaps -polygonMode 0
+vdump $imagedir/${casename}_ortho_glsl_msaa.png
+
+vcamera -persp
+vzoom 0.7
+vrenderparams -msaa 0
+vcaps -polygonMode 1
+vdump $imagedir/${casename}_persp_polmode.png
+
+vcaps -polygonMode 0
+vdump $imagedir/${casename}_persp_glsl.png
+
+vrenderparams -msaa 4
+vcaps -polygonMode 1
+vdump $imagedir/${casename}_persp_polmode_msaa.png
+
+vcaps -polygonMode 0
+vdump $imagedir/${casename}_persp_glsl_msaa.png

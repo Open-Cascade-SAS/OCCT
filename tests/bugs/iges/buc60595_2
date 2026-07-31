@@ -1,0 +1,18 @@
+puts "=================="
+puts "BUC60595"
+puts "=================="
+
+set bug_var [ igesbrep [locate_data_file buc60595b.igs] a * ] 
+
+tpcompound result
+
+if { [ string match "*Uninspired signal*" $bug_var ] == 1 } {
+    puts "Error : TEST FAILED"
+}
+
+isos 0
+isos result 15
+
+puts "Previously here was message:  Uninspired signal 8"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

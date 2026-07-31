@@ -1,0 +1,20 @@
+set subgroup modalg
+
+set calcul "p"
+set type "i"
+
+proc OFFSETSHAPE {distance faces calcul type} {
+        uplevel #0 explode s f
+        uplevel #0 offsetparameter 1e-7 $calcul $type
+        uplevel #0 offsetload s $distance $faces
+        uplevel #0 offsetperform result
+}
+
+
+
+
+
+
+
+
+

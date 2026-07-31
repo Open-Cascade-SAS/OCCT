@@ -1,0 +1,17 @@
+puts "============="
+puts "0030717: Visualization, AIS_InteractiveContext::Erase() - selection presentation in a mode other than the default after hiding an object"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+vclear
+vinit View1
+vdisplay -dispMode 1 -highMode 1 b
+vaxo
+vfit
+vselmode b Face on
+vmoveto 250 250
+vselect 250 250
+verase b
+if { [vreadpixel 300 300 rgb name] != "BLACK" } { puts "Error: hidden face is highlighted" }
+vdump ${imagedir}/${casename}.png

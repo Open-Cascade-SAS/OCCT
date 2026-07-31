@@ -1,0 +1,13 @@
+# Original bug : hkg60159
+# Date : 16 Sept 98
+
+restore [locate_data_file CFE900_hkg60gcr.rle] base
+restore [locate_data_file hkg60159_face.rle] cont
+
+explode base face
+copy base_5 funtil
+
+featprism base cont cont 0 -1 0 1 1
+featperform prism result funtil
+
+checkprops result -s 3718.33

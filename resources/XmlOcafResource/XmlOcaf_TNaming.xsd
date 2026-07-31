@@ -1,0 +1,128 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of attributes from TNaming package
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TNaming.xsd
+  </documentation>
+</annotation>
+
+<complexType name="ArrayOfShapes">
+  <sequence>
+    <element name="shape" minOccurs="0" maxOccurs="unbounded">
+      <complexType>
+        <attribute name="tshape" use="required">
+          <simpleType>
+            <restriction base="string">
+              <pattern value="[+-ie]\d+"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+        <attribute name="location" type="positiveInteger"/>
+        <attribute name="index" type="positiveInteger" use="required"/>
+        <attribute name="x" type="float"/>
+        <attribute name="y" type="float"/>
+        <attribute name="z" type="float"/>
+      </complexType>
+    </element>                              <!-- end of 'shape' -->
+  </sequence>
+  <attribute name="lower" type="positiveInteger" default="1"/>
+  <attribute name="upper" type="positiveInteger" default="1"/>
+</complexType>
+
+<element name="TNaming_NamedShape" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+          <element name="olds" type="ocaf:ArrayOfShapes" minOccurs="0"/>
+          <element name="news" type="ocaf:ArrayOfShapes" minOccurs="0"/>
+        </sequence>
+        <attribute name="evolution" use="required">
+          <simpleType>
+            <restriction base="string">
+              <enumeration value="primitive"/>
+              <enumeration value="generated"/>
+              <enumeration value="modify"/>
+              <enumeration value="delete"/>
+              <enumeration value="selected"/>
+              <enumeration value="replace"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+        <attribute name="version" type="positiveInteger" default="0"/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <unique name="OldShapeIndexUniq">
+    <selector xpath="."/>
+    <field xpath="@id"/>
+    <field xpath="ocaf:olds/ocaf:shape/@index"/>
+  </unique>
+  <unique name="NewShapeIndexUniq">
+    <selector xpath="."/>
+    <field xpath="@id"/>
+    <field xpath="ocaf:news/ocaf:shape/@index"/>
+  </unique>
+</element>
+
+<element name="TNaming_Naming" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="index" type="int" use="required"/>
+        <attribute name="stopNS" type="positiveInteger"/>
+        <attribute name="nametype" use="required">
+	  <simpleType>
+	    <restriction base="string">
+	      <enumeration value="unknown"/>
+	      <enumeration value="identity"/>
+	      <enumeration value="modifuntil"/>
+	      <enumeration value="generation"/>
+	      <enumeration value="intersection"/>
+	      <enumeration value="union"/>
+	      <enumeration value="subtraction"/>
+	      <enumeration value="constshape"/>
+	      <enumeration value="filterbyneigh"/>
+	    </restriction>
+	  </simpleType>
+        </attribute>
+        <attribute name="shapetype" use="required">
+	  <simpleType>
+	    <restriction base="string">
+	      <enumeration value="compound"/>
+	      <enumeration value="compsolid"/>
+	      <enumeration value="solid"/>
+	      <enumeration value="shell"/>
+	      <enumeration value="face"/>
+	      <enumeration value="wire"/>
+	      <enumeration value="edge"/>
+	      <enumeration value="vertex"/>
+	      <enumeration value="shape"/>
+	    </restriction>
+	  </simpleType>
+        </attribute>
+        <attribute name="arguments" type="ocaf:ListOfInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

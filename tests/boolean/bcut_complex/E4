@@ -1,0 +1,10 @@
+# Original bug : pro6066
+# Date : 07mar97
+
+## this saved protusion has length of 0.3 Meter (300 mm)
+restore [locate_data_file CTO900_pro6066a.rle] prot1
+restore [locate_data_file CTO900_pro6066b.rle] box2
+
+bcut result prot1 box2
+checkprops result -s 0.264921
+checkview -display result -2d -s -otherwise { prot1 box2 } -path ${imagedir}/${test_image}.png

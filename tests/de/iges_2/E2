@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename ctadtrim.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 32  ( 2377 )  Summary  = 32  ( 2377 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 27  ( 27 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 27  ( 27 )   FreeWire = 99  ( 99 ) 
+TOLERANCE   : MaxTol   =   0.5378466765  (   0.5378466739 )  AvgTol   =  0.002037876373  (  0.002051361294 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 171  ( 182 )  N2Labels = 0  ( 0 )   TotalLabels = 172  ( 183 )   NameLabels = 73  ( 172 )   ColorLabels = 171  ( 182 )   LayerLabels = 72  ( 182 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = GREEN RED YELLOW  ( GREEN RED YELLOW )
+NLAYERS     : NLayers  = 29  ( 32 )
+LAYERS      : Layers   = 1 102 103 104 105 106 107 108 109 12 13 14 16 18 19 20 21 22 23 24 4 42 43 7 72 73 74 75 76  ( 1 102 103 104 105 106 107 108 109 12 13 14 15 16 17 18 19 20 21 22 23 24 4 42 43 7 72 73 74 75 76 77 )
+
+}

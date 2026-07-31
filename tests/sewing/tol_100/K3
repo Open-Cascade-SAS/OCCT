@@ -1,0 +1,8 @@
+restore [locate_data_file CNP002_projoier.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 70.960954984042459
+checknbshapes result -shell 1
+checkfreebounds result 39
+checkfaults result a 0

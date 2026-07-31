@@ -1,0 +1,13 @@
+puts "========"
+puts "0030880: Bug in BRepExtrema_ExtCF"
+puts "========"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug30880_edge.brep] e
+restore [locate_data_file bug30880_face.brep] f
+
+if {![regexp "No solutions" [OCC30880 e f]]} {
+  puts "Error: Incorrect extrema solutions"
+}

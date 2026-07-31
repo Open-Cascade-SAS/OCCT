@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename tr10_r1101_sy.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 64  ( 64 )  Face     = 64  ( 64 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 64  ( 64 )  Face     = 64  ( 64 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.01969059797  (  0.03822476581 )  AvgTol   =  0.001190568033  (  0.002480845829 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 128  ( 128 )  N2Labels = 0  ( 0 )   TotalLabels = 129  ( 129 )   NameLabels = 1  ( 1 )   ColorLabels = 64  ( 64 )   LayerLabels = 64  ( 64 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = TURQUOISE  ( TURQUOISE )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 4 X  ( 4 X )
+
+}

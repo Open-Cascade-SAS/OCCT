@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC7141"
+puts "============"
+puts ""
+######################################################
+# STEP interface crashes exporting large assembly
+######################################################
+
+pload QAcommands
+
+set BugNumber OCC7141
+set aFile ${imagedir}/TestExportStructure.step
+file delete -force ${aFile}
+
+set nCount 20
+if [catch { set List [OCC7141 ${nCount} ${aFile}] } result] {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "${BugNumber}: OK"
+}
+

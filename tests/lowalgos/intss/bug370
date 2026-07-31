@@ -1,0 +1,24 @@
+puts "========================"
+puts "BUC61033"
+puts " OCC370 "
+puts "========================"
+puts ""
+#################################################################
+##Intersection between a sphere and trimmed plane, using IntPatch_Intersection, lead to infinite cycle. 
+#################################################################
+
+sphere gs1 1
+plane gs2 0 0 0 1 0 0
+trim trgs2 gs2 0 1.000001 -1 0.000001
+
+intersect result gs1 trgs2
+
+cpulimit 300
+
+puts "OCC370 OK: function INTERSECT works properly"
+
+erase gs2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

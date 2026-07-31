@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24949"
+puts "============"
+puts ""
+#######################################################################
+# Segmentation Violation during pipe creation
+#######################################################################
+
+restore [locate_data_file bug24949_Comp.brep] c
+explode c
+mksweep c_1
+addsweep c_2
+catch {buildsweep res}
+
+restore [locate_data_file bug24949_Comp.brep] c
+explode c
+pipe result c_1 c_2 2
+
+checkprops result -s 188.689 
+checkshape result
+
+checknbshapes result -vertex 14 -edge 19 -wire 6 -face 6 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 46
+checkview -display result -2d -path ${imagedir}/${test_image}.png

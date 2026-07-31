@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC25937"
+puts "============"
+puts ""
+###############################
+## Failed Cut Edge or Face by HalfSpace.
+###############################
+
+# Cut a wire by halfspace
+plane h 0 0 0 1 0 0
+mkface h h
+halfspace h h 10 0 0
+polyline a -10 -10 0 10 -10 0 10 10 0 -10 10 0 -10 -10 0
+
+bop a h
+bopcut result
+
+checkprops result -l 40. 
+checkshape result 
+checksection result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 3
+ WIRE      : 1
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 9
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Cut a wire by halfspace"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

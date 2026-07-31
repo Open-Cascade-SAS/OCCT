@@ -1,0 +1,28 @@
+## Extension of /users/skv/testref/cd1/ED/cto/009/B1
+
+vertex v1 -1 -1 0
+vertex v2 1 -1 0
+vertex v3 1 1 0
+vertex v4 -1 1 0
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire wa e1 e2 e3 e4
+mkplane fa wa
+prism ba fa 0 0 1
+
+
+circle c 0 0 0 1
+mkedge eb c
+wire wb eb
+mkplane fb wb
+prism cylb fb 0 0 2
+
+
+bcommon result ba cylb
+
+checkprops result -s 12.5664
+checkview -display result -2d -s -otherwise { ba cylb } -path ${imagedir}/${test_image}.png

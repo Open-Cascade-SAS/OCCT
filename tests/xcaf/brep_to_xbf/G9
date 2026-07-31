@@ -1,0 +1,13 @@
+restore [locate_data_file CTO909_tool_4.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "ALL CHECKSHAPE"
+
+
+

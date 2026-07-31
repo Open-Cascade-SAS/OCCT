@@ -1,0 +1,10 @@
+restore [locate_data_file case_9_wire_a.brep] a
+restore [locate_data_file case_9_wire2.brep] b
+
+bop a b
+bopcommon result
+
+checkprops result -l empty
+checksection result
+checknbshapes result -vertex 0 -edge 0 -t
+

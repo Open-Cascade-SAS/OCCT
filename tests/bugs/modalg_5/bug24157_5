@@ -1,0 +1,79 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+set L 300
+set dL 10
+set dS 10
+
+box b $L $L 20
+explode b f
+copy b_5 b1
+
+vertex v1 ${dS} -${dL} 0
+vertex v2 ${dS} [expr ${L}+${dL}] 0
+edge ex v1 v2
+
+vertex v1 -${dL} $dS 0
+vertex v2 [expr ${L}+${dL}] ${dS} 0
+edge ey v1 v2
+
+#--------------------------------------------
+set cx {}
+set N 29
+set N1 [expr $N+1]
+
+for {set i 0} {$i < $N} {incr i} {
+  tcopy ex ex$i
+  ttranslate ex$i [expr $i*${dS}] 0 0
+  lappend cx ex$i
+}
+
+for {set i 0} {$i < $N} {incr i} {
+  tcopy ey ey$i
+  ttranslate ey$i 0 [expr $i*${dS}] 0
+  lappend cx ey$i
+}
+
+pcylinder x 1 2
+explode x e
+tcopy x_3 ex
+
+for {set i 0} {$i < $N1} {incr i} {
+  for {set j 0} {$j < $N1} {incr j} {
+    for {set k 0} {$k < 3} {incr k} {
+      for {set m 0} {$m < 3} {incr m} {
+        tcopy ex ex_${i}_${j}_${k}_${m}
+        ttranslate  ex_${i}_${j}_${k}_${m} [expr $i*${dS}] [expr $j*${dS}] 0
+	ttranslate  ex_${i}_${j}_${k}_${m} [expr 2+${k}*3] [expr 2+${m}*3] 0
+        lappend cx  ex_${i}_${j}_${k}_${m}
+      }
+    }
+  }
+}
+
+eval compound $cx b2 
+bclearobjects
+bcleartools
+baddobjects b1
+baddcompound b2
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 50
+} else {
+  set check_time 20
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+# Original bug : cts20944
+# Date : 16July98
+
+restore [locate_data_file CTO904_cts20944a.rle] a 
+restore [locate_data_file CTO904_cts20944b.rle] b
+fsameparameter a
+
+bfuse result a b
+
+checkprops result -s 29628.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

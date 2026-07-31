@@ -1,0 +1,10 @@
+restore [locate_data_file case_4_solid.brep] a
+restore [locate_data_file case_4_wire2.brep] b
+
+bop a b
+bopcommon result
+
+checkprops result -l 2553.95
+checksection result
+checknbshapes result -vertex 3 -edge 3 -t
+

@@ -1,0 +1,51 @@
+cpulimit 1000
+
+restore [locate_data_file lh3d_px1.brep] a
+
+#removing intersection of faces a_3 and a_220
+
+set faces [explode a f]
+bop a_3 a_220
+bopcut a_3
+compound b
+foreach f $faces {
+  compound b $f b
+}
+
+compound result
+
+set i -5
+while {$i < 0} {
+  plane p_$i $i*1000 0 0 1 0 0
+  mkface f_$i p_$i
+  bsection s_$i b f_$i
+  compound result s_$i result
+  set dist [expr $i * 1000]
+  puts "OK Section$i:$dist"
+  incr i
+}
+
+incr i 5
+while {$i <= 30} {
+  plane p_$i $i*1000 0 0 1 0 0
+  mkface f_$i p_$i
+  bsection s_$i b f_$i
+  compound result s_$i result
+  set dist [expr $i * 1000]
+  puts "OK Section$i:$dist"
+  incr i 5
+}
+incr i 20
+while {$i <= 105} {
+  plane p_$i $i*1000 0 0 1 0 0
+  mkface f_$i p_$i
+  bsection s_$i b f_$i
+  compound result s_$i result
+  set dist [expr $i * 1000]
+  puts "OK Section$i:$dist"
+  incr i 5
+}
+
+checkprops result -l 624193
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC26224"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by Common operator.
+###############################
+
+restore [locate_data_file bug26224_b1.brep] b1
+restore [locate_data_file bug26224_b2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+bbop result 0
+
+checkprops result -s 35006.6 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 9
+ EDGE : 9
+ WIRE : 1
+ FACE : 1
+ SHELL : 0
+ SOLID : 0
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 21
+
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result obtained by Common operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

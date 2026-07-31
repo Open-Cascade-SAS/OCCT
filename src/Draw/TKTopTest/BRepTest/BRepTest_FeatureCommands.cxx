@@ -1,0 +1,3037 @@
+// Created on: 1995-06-16
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Draw_Interpretor.hxx>
+#include <Draw_Appli.hxx>
+#include <DrawTrSurf.hxx>
+#include <Draw_ProgressIndicator.hxx>
+
+#include <TopExp_Explorer.hxx>
+
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_CylindricalSurface.hxx>
+
+// #include <BRepFeat_LocalOperation.hxx>
+#include <BRepFeat_MakeCylindricalHole.hxx>
+#include <BRepFeat_SplitShape.hxx>
+#include <BRepFeat_Gluer.hxx>
+
+#include <BRepFeat.hxx>
+#include <BRepFeat_MakePrism.hxx>
+#include <BRepFeat_MakeRevol.hxx>
+#include <BRepFeat_MakePipe.hxx>
+#include <BRepFeat_MakeDPrism.hxx>
+#include <BRepFeat_MakeLinearForm.hxx>
+#include <BRepFeat_MakeRevolutionForm.hxx>
+
+#include <LocOpe_FindEdges.hxx>
+#include <LocOpe_FindEdgesInFace.hxx>
+
+#include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
+#include <BRepOffset_MakeSimpleOffset.hxx>
+#include <BRep_Builder.hxx>
+#include <DBRep.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <BRepTest.hxx>
+#include <BRepTest_Objects.hxx>
+
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <ChFi3d_FilletShape.hxx>
+#include <Message.hxx>
+
+#include <Precision.hxx>
+
+#ifdef _WIN32
+Standard_IMPORT Draw_Viewer dout;
+#endif
+
+static BRepFeat_MakeCylindricalHole& getHole()
+{
+  static BRepFeat_MakeCylindricalHole theHole;
+  return theHole;
+}
+
+static bool WithControl = true;
+
+bool DownCastingEnforcing = false;
+
+static BRepFeat_MakePrism& getPrism()
+{
+  static BRepFeat_MakePrism thePrism;
+  return thePrism;
+}
+
+static BRepFeat_MakeDPrism& getDPrism()
+{
+  static BRepFeat_MakeDPrism theDPrism;
+  return theDPrism;
+}
+
+static BRepFeat_MakeRevol& getRevol()
+{
+  static BRepFeat_MakeRevol theRevol;
+  return theRevol;
+}
+
+static BRepFeat_MakePipe& getPipe()
+{
+  static BRepFeat_MakePipe thePipe;
+  return thePipe;
+}
+
+static BRepFeat_MakeLinearForm& getLienarForm()
+{
+  static BRepFeat_MakeLinearForm theLF;
+  return theLF;
+}
+
+static BRepFeat_MakeRevolutionForm& getRevolutionForm()
+{
+  static BRepFeat_MakeRevolutionForm theRF;
+  return theRF;
+}
+
+// Input shapes for Prism, DPrism, Revol, Pipe
+static TopoDS_Shape theSbase, thePbase;
+static TopoDS_Face  theSkface;
+
+static bool dprdef = false;
+static bool prdef  = false;
+static bool rvdef  = false;
+static bool pidef  = false;
+static bool lfdef  = false;
+static bool rfdef  = false;
+
+static double                    tesp       = 1.0e-4;
+static double                    t3d        = 1.e-4;
+static double                    t2d        = 1.e-5;
+static double                    ta         = 1.e-2;
+static double                    fl         = 1.e-3;
+static double                    tapp_angle = 1.e-2;
+static GeomAbs_Shape             blend_cont = GeomAbs_C1;
+static BRepFilletAPI_MakeFillet* Rakk       = nullptr;
+
+static void Print(Draw_Interpretor& di, const BRepFeat_Status St)
+{
+  di << "  Error Status : ";
+  switch (St)
+  {
+    case BRepFeat_NoError:
+      di << "No error";
+      break;
+
+    case BRepFeat_InvalidPlacement:
+      di << "Invalid placement";
+      break;
+
+    case BRepFeat_HoleTooLong:
+      di << "Hole too long";
+      break;
+  }
+}
+
+static int Loc(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 6)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  TopoDS_Shape T = DBRep::Get(a[3]);
+
+  bool Fuse;
+  if (!strcasecmp("F", a[4]))
+  {
+    Fuse = true;
+  }
+  else if (!strcasecmp("C", a[4]))
+  {
+    Fuse = false;
+  }
+  else
+  {
+    return 1;
+  }
+
+  NCollection_List<TopoDS_Shape> LF;
+  for (int i = 0; i <= narg - 6; i++)
+  {
+    TopoDS_Shape aLocalShape(DBRep::Get(a[i + 5], TopAbs_FACE));
+    LF.Append(aLocalShape);
+    //    LF.Append(TopoDS::Face(DBRep::Get(a[i+5],TopAbs_FACE)));
+  }
+
+  // BRepFeat_LocalOperation BLoc(S);
+  // BLoc.Perform(T,LF,Fuse);
+  // BLoc.BuildPartsOfTool();
+  NCollection_List<TopoDS_Shape> parts;
+  BRepFeat_Builder               BLoc;
+  BLoc.Init(S, T);
+  BLoc.SetOperation(Fuse);
+  // BRepFeat_LocalOperation BLoc;
+  // BLoc.Init(S,T,Fuse);
+  BLoc.Perform();
+  BLoc.PartsOfTool(parts);
+
+#if 0
+  char newname[1024];
+  strcpy(newname, a[1]);
+  char* p = newname;
+  while (*p != '\0') p++;
+  *p = '_';
+  p++;
+  NCollection_List<TopoDS_Shape>::Iterator its(parts);
+  dout.Clear();
+  i = 0;
+  for (; its.More(); its.Next()) {
+    i++;
+    Sprintf(p, "%d", i);
+    DBRep::Set(newname, its.Value());
+  }
+  if (i >= 2) {
+    dout.Flush();
+    int qq, ww, ee, button;
+    TopoDS_Shell S;
+    do {
+      TopoDS_Shape aLocalShape(DBRep::Get(".", TopAbs_SHELL));
+      S = TopoDS::Shell(aLocalShape);
+      //      S = TopoDS::Shell(DBRep::Get(".",TopAbs_SHELL));
+      Draw::LastPick(qq, ww, ee, button);
+      if (!S.IsNull()) {
+
+        switch (button) {
+        case 1:
+          //BLoc.RemovePart(S);
+          break;
+        case 2:
+          BLoc.KeepPart(S);
+          break;
+        default:
+        {}
+        }
+      }
+      else {
+        button = 3;
+      }
+
+    } while (button != 3);
+  }
+#endif
+  BLoc.PerformResult();
+  if (!BLoc.HasErrors())
+  {
+    //    dout.Clear();
+    DBRep::Set(a[1], BLoc.Shape());
+    dout.Flush();
+    return 0;
+  }
+  theCommands << "Local operation not done";
+  return 1;
+}
+
+static int HOLE1(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 10 || narg == 11)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+
+  gp_Pnt Or(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+
+  double Radius = Draw::Atof(a[9]);
+
+  getHole().Init(S, gp_Ax1(Or, Di));
+
+  if (narg <= 10)
+  {
+    getHole().Perform(Radius);
+  }
+  else
+  {
+    double pfrom = Draw::Atof(a[10]);
+    double pto   = Draw::Atof(a[11]);
+    getHole().Perform(Radius, pfrom, pto, WithControl);
+  }
+
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
+    //    dout.Clear();
+    DBRep::Set(a[1], getHole().Shape());
+    dout.Flush();
+    return 0;
+  }
+  theCommands << "Echec de MakeCylindricalHole";
+  Print(theCommands, getHole().Status());
+  return 1;
+}
+
+static int HOLE2(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 10)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+
+  gp_Pnt Or(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+
+  double Radius = Draw::Atof(a[9]);
+
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformThruNext(Radius, WithControl);
+
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
+    //    dout.Clear();
+    DBRep::Set(a[1], getHole().Shape());
+    dout.Flush();
+    return 0;
+  }
+  theCommands << "Echec de MakeCylindricalHole";
+  Print(theCommands, getHole().Status());
+  return 1;
+}
+
+static int HOLE3(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 10)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+
+  gp_Pnt Or(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+
+  double Radius = Draw::Atof(a[9]);
+
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformUntilEnd(Radius, WithControl);
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
+    //    dout.Clear();
+    DBRep::Set(a[1], getHole().Shape());
+    dout.Flush();
+    return 0;
+  }
+  theCommands << "Echec de MakeCylindricalHole";
+  Print(theCommands, getHole().Status());
+  return 1;
+}
+
+static int HOLE4(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 11)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+
+  gp_Pnt Or(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+
+  double Radius = Draw::Atof(a[9]);
+  double Length = Draw::Atof(a[10]);
+
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformBlind(Radius, Length, WithControl);
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
+    //    dout.Clear();
+    DBRep::Set(a[1], getHole().Shape());
+    dout.Flush();
+    return 0;
+  }
+  theCommands << "Echec de MakeCylindricalHole";
+  Print(theCommands, getHole().Status());
+  return 1;
+}
+
+static int CONTROL(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg >= 2)
+  {
+    WithControl = strcmp("0", a[1]) != 0;
+  }
+  if (WithControl)
+  {
+    theCommands << "Mode avec controle";
+  }
+  else
+  {
+    theCommands << "Mode sans controle";
+  }
+  return 0;
+}
+
+//=======================================================================
+// function : reportOffsetState
+// purpose  : Print state of offset operation by error code.
+//=======================================================================
+static void reportOffsetState(Draw_Interpretor& theCommands, const BRepOffset_Error theErrorCode)
+{
+  switch (theErrorCode)
+  {
+    case BRepOffset_NoError: {
+      theCommands << "OK. Offset performed successfully.";
+      break;
+    }
+    case BRepOffset_BadNormalsOnGeometry: {
+      theCommands << "ERROR. Degenerated normal on input data.";
+      break;
+    }
+    case BRepOffset_C0Geometry: {
+      theCommands << "ERROR. C0 continuity of input data.";
+      break;
+    }
+    case BRepOffset_NullOffset: {
+      theCommands << "ERROR. Null offset of all faces.";
+      break;
+    }
+    case BRepOffset_NotConnectedShell: {
+      theCommands
+        << "ERROR. Incorrect set of faces to remove, the remaining shell is not connected.";
+      break;
+    }
+    case BRepOffset_CannotTrimEdges: {
+      theCommands << "ERROR. Can not trim edges.";
+      break;
+    }
+    case BRepOffset_CannotFuseVertices: {
+      theCommands << "ERROR. Can not fuse vertices.";
+      break;
+    }
+    case BRepOffset_CannotExtentEdge: {
+      theCommands << "ERROR. Can not extent edge.";
+      break;
+    }
+    case BRepOffset_MixedConnectivity: {
+      theCommands << "ERROR. Mixed connectivity of faces.";
+      break;
+    }
+    default: {
+      theCommands << "ERROR. offsetperform operation not done.";
+      break;
+    }
+  }
+}
+
+//=================================================================================================
+
+static int PRW(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 9)
+  {
+    return 1;
+  }
+  TopoDS_Shape       S = DBRep::Get(a[3]);
+  BRepFeat_MakePrism thePFace;
+  gp_Vec             V;
+  TopoDS_Shape       FFrom, FUntil;
+  int                borne;
+  bool               fuse;
+  if (a[1][0] == 'f' || a[1][0] == 'F')
+  {
+    fuse = true;
+  }
+  else if (a[1][0] == 'c' || a[1][0] == 'C')
+  {
+    fuse = false;
+  }
+  else
+  {
+    return 1;
+  }
+
+  if (a[4][0] == '.' || IsAlphabetic(a[4][0]))
+  {
+    if (narg < 10)
+    {
+      return 1;
+    }
+    if (a[5][0] == '.' || IsAlphabetic(a[5][0]))
+    {
+      if (narg < 11)
+      {
+        return 1;
+      }
+      V.SetCoord(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+      FFrom  = DBRep::Get(a[4], TopAbs_SHAPE);
+      FUntil = DBRep::Get(a[5], TopAbs_SHAPE);
+      borne  = 9;
+    }
+    else
+    {
+      V.SetCoord(Draw::Atof(a[5]), Draw::Atof(a[6]), Draw::Atof(a[7]));
+      FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
+      borne  = 8;
+    }
+  }
+  else
+  {
+    V.SetCoord(Draw::Atof(a[4]), Draw::Atof(a[5]), Draw::Atof(a[6]));
+    borne = 7;
+  }
+  double Length = V.Magnitude();
+  if (Length < Precision::Confusion())
+  {
+    return 1;
+  }
+
+  TopoDS_Shape aLocalShape(DBRep::Get(a[borne], TopAbs_FACE));
+  TopoDS_Face  F = TopoDS::Face(aLocalShape);
+  //  TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[borne],TopAbs_FACE));
+  BRepFeat_SplitShape Spls(F);
+  for (int i = borne + 1; i < narg; i++)
+  {
+    TopoDS_Wire wir;
+    if (a[i][0] != '-')
+    {
+      aLocalShape = DBRep::Get(a[i], TopAbs_WIRE);
+      wir         = TopoDS::Wire(aLocalShape);
+      //      wir = TopoDS::Wire(DBRep::Get(a[i],TopAbs_WIRE));
+    }
+    else
+    {
+      if (a[i][1] == '\0')
+      {
+        return 1;
+      }
+      const char* Temp = a[i] + 1;
+      aLocalShape      = DBRep::Get(Temp, TopAbs_WIRE);
+      wir              = TopoDS::Wire(aLocalShape);
+      //      wir = TopoDS::Wire(DBRep::Get(Temp,TopAbs_WIRE));
+      wir.Reverse();
+    }
+    Spls.Add(wir, F);
+  }
+  Spls.Build();
+
+  TopoDS_Shape                          ToPrism;
+  const NCollection_List<TopoDS_Shape>& lleft = Spls.DirectLeft();
+  if (lleft.Extent() == 1)
+  {
+    thePFace.Init(S, lleft.First(), F, V, fuse, true);
+    ToPrism = lleft.First();
+  }
+  else
+  {
+    BRep_Builder B;
+    TopoDS_Shell Sh;
+    B.MakeShell(Sh);
+    NCollection_List<TopoDS_Shape>::Iterator it;
+    for (it.Initialize(lleft); it.More(); it.Next())
+    {
+      B.Add(Sh, TopoDS::Face(it.Value()));
+    }
+    Sh.Closed(BRep_Tool::IsClosed(Sh));
+    thePFace.Init(S, Sh, F, V, fuse, true);
+    ToPrism = Sh;
+  }
+
+  // Recherche des faces de glissement, si on n`a pas sketche sur une face
+  // du shape de depart
+
+  //  for (TopExp_Explorer exp(S,TopAbs_FACE);exp.More();exp.Next()) {
+  TopExp_Explorer exp(S, TopAbs_FACE);
+  for (; exp.More(); exp.Next())
+  {
+    if (exp.Current().IsSame(F))
+    {
+      break;
+    }
+  }
+
+  if (!exp.More())
+  {
+    LocOpe_FindEdgesInFace FEIF;
+    for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
+    {
+      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+      {
+        Su = occ::down_cast<Geom_RectangularTrimmedSurface>(Su)->BasisSurface();
+      }
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_Plane))
+      {
+        gp_Pln pl = occ::down_cast<Geom_Plane>(Su)->Pln();
+        if (pl.Contains(gp_Lin(pl.Location(), V), Precision::Confusion(), Precision::Angular()))
+        {
+          FEIF.Set(ToPrism, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            thePFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+      else if (Su->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
+      {
+        gp_Cylinder cy = occ::down_cast<Geom_CylindricalSurface>(Su)->Cylinder();
+        if (V.IsParallel(cy.Axis().Direction(), Precision::Angular()))
+        {
+          FEIF.Set(ToPrism, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            thePFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+    }
+  }
+
+  if (borne == 7)
+  {
+    thePFace.Perform(Length);
+  }
+  else if (borne == 8)
+  {
+    thePFace.Perform(FUntil);
+  }
+  else if (borne == 9)
+  {
+    if (!(FFrom.IsNull() || FUntil.IsNull()))
+    {
+      thePFace.Perform(FFrom, FUntil);
+    }
+    else if (FFrom.IsNull())
+    {
+      if (!FUntil.IsNull())
+      {
+        thePFace.PerformFromEnd(FUntil);
+      }
+      else
+      {
+        thePFace.PerformThruAll();
+      }
+    }
+    else
+    {
+      // il faudrait inverser V et appeler PerfomFromEnd...
+      // std::cout << "Not Implemented" << std::endl;
+      theCommands << "Not Implemented\n";
+    }
+  }
+  if (!thePFace.IsDone())
+  {
+    theCommands << "Local operation not done";
+    return 1;
+  }
+
+  DBRep::Set(a[2], thePFace);
+  dout.Flush();
+  return 0;
+}
+
+//=================================================================================================
+
+static int PRF(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 8)
+  {
+    return 1;
+  }
+  TopoDS_Shape       S = DBRep::Get(a[3]);
+  BRepFeat_MakePrism thePFace;
+  int                borne;
+  gp_Vec             V;
+  TopoDS_Shape       FFrom, FUntil;
+  bool               fuse;
+  if (a[1][0] == 'f' || a[1][0] == 'F')
+  {
+    fuse = true;
+  }
+  else if (a[1][0] == 'c' || a[1][0] == 'C')
+  {
+    fuse = false;
+  }
+  else
+  {
+    return 1;
+  }
+
+  if (a[4][0] == '.' || IsAlphabetic(a[4][0]))
+  {
+    if (narg < 9)
+    {
+      return 1;
+    }
+    if (a[5][0] == '.' || IsAlphabetic(a[5][0]))
+    {
+      if (narg < 10)
+      {
+        return 1;
+      }
+      borne = 9;
+      V.SetCoord(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
+      FFrom  = DBRep::Get(a[4], TopAbs_SHAPE);
+      FUntil = DBRep::Get(a[5], TopAbs_SHAPE);
+    }
+    else
+    {
+      borne = 8;
+      V.SetCoord(Draw::Atof(a[5]), Draw::Atof(a[6]), Draw::Atof(a[7]));
+      FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
+    }
+  }
+  else
+  {
+    borne = 7;
+    V.SetCoord(Draw::Atof(a[4]), Draw::Atof(a[5]), Draw::Atof(a[6]));
+  }
+  double Length = V.Magnitude();
+  if (Length < Precision::Confusion())
+  {
+    return 1;
+  }
+
+  TopoDS_Shape ToPrism;
+  if (narg == borne + 1)
+  {
+    TopoDS_Shape aLocalShape(DBRep::Get(a[borne], TopAbs_FACE));
+    TopoDS_Face  F = TopoDS::Face(aLocalShape);
+    //    TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[borne],TopAbs_FACE));
+    thePFace.Init(S, F, F, V, fuse, true);
+    ToPrism = F;
+  }
+  else
+  {
+    TopoDS_Shell She;
+    BRep_Builder B;
+    B.MakeShell(She);
+    for (int i = borne; i < narg; i++)
+    {
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_FACE));
+      TopoDS_Face  F = TopoDS::Face(aLocalShape);
+      //      TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
+      if (!F.IsNull())
+      {
+        B.Add(She, F);
+      }
+    }
+    She.Closed(BRep_Tool::IsClosed(She));
+    thePFace.Init(S, She, TopoDS_Face(), V, fuse, false);
+    ToPrism = She;
+  }
+
+  // Recherche des faces de glissement, on ne prisme pas une face
+  // du shape de depart
+
+  //  for (TopExp_Explorer exp(ToPrism,TopAbs_FACE);exp.More();exp.Next()) {
+  TopExp_Explorer exp(ToPrism, TopAbs_FACE);
+  for (; exp.More(); exp.Next())
+  {
+    //    for (TopExp_Explorer exp2(S,TopAbs_FACE);exp2.More();exp2.Next()) {
+    TopExp_Explorer exp2(S, TopAbs_FACE);
+    for (; exp2.More(); exp2.Next())
+    {
+      if (exp2.Current().IsSame(exp.Current()))
+      {
+        break;
+      }
+    }
+    if (exp2.More())
+    {
+      break;
+    }
+  }
+
+  if (!exp.More())
+  {
+    LocOpe_FindEdgesInFace FEIF;
+    for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
+    {
+      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+      {
+        Su = occ::down_cast<Geom_RectangularTrimmedSurface>(Su)->BasisSurface();
+      }
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_Plane))
+      {
+        gp_Pln pl = occ::down_cast<Geom_Plane>(Su)->Pln();
+        if (pl.Contains(gp_Lin(pl.Location(), V), Precision::Confusion(), Precision::Angular()))
+        {
+          FEIF.Set(ToPrism, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            thePFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+      else if (Su->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
+      {
+        gp_Cylinder cy = occ::down_cast<Geom_CylindricalSurface>(Su)->Cylinder();
+        if (V.IsParallel(cy.Axis().Direction(), Precision::Angular()))
+        {
+          FEIF.Set(ToPrism, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            thePFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+    }
+  }
+
+  if (borne == 7)
+  {
+    thePFace.Perform(Length);
+  }
+  else if (borne == 8)
+  {
+    thePFace.Perform(FUntil);
+  }
+  else if (borne == 9)
+  {
+    if (!(FFrom.IsNull() || FUntil.IsNull()))
+    {
+      thePFace.Perform(FFrom, FUntil);
+    }
+    else if (FFrom.IsNull())
+    {
+      if (!FUntil.IsNull())
+      {
+        thePFace.PerformFromEnd(FUntil);
+      }
+      else
+      {
+        thePFace.PerformThruAll();
+      }
+    }
+    else
+    { // FUntil.IsNull()
+      // il faudrait inverser V et appeler PerfomFromEnd...
+      // std::cout << "Not Implemented" << std::endl;
+      theCommands << "Not Implemented\n";
+    }
+  }
+  if (!thePFace.IsDone())
+  {
+    theCommands << "Local operation not done";
+    return 1;
+  }
+
+  DBRep::Set(a[2], thePFace);
+  dout.Flush();
+  return 0;
+}
+
+//=================================================================================================
+
+static int SPLS(Draw_Interpretor&, int narg, const char** a)
+{
+  int newnarg;
+
+  if (narg < 3)
+  {
+    Message::SendFail()
+      << "Invalid number of arguments. Should be : splitshape result shape [splitedges] "
+         "[face wire/edge/compound [wire/edge/compound ...] "
+         "[face wire/edge/compound [wire/edge/compound...] ...] "
+         "[@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]";
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull())
+  {
+    Message::SendFail() << "Invalid input shape " << a[2];
+    return 1;
+  }
+  BRepFeat_SplitShape Spls(S);
+  bool                pick = false;
+  TopoDS_Shape        EF;
+  double              u, v;
+  int                 i = 3;
+
+  for (newnarg = 3; newnarg < narg; newnarg++)
+  {
+    if (a[newnarg][0] == '@')
+    {
+      break;
+    }
+  }
+
+  if (newnarg == 3 || (newnarg != narg && ((narg - newnarg) <= 2 || (narg - newnarg) % 2 != 1)))
+  {
+    return 1;
+  }
+  bool                               isSplittingEdges = false;
+  NCollection_Sequence<TopoDS_Shape> aSplitEdges;
+  if (i < newnarg)
+  {
+    pick = (a[i][0] == '.');
+
+    TopoDS_Shape aSh = DBRep::Get(a[i]);
+    if (aSh.IsNull())
+    {
+      Message::SendFail() << "Invalid input shape " << a[i];
+      return 1;
+    }
+
+    if (aSh.ShapeType() == TopAbs_FACE)
+    {
+      EF = TopoDS::Face(aSh);
+    }
+    else
+    {
+      if (aSh.ShapeType() == TopAbs_COMPOUND || aSh.ShapeType() == TopAbs_WIRE
+          || aSh.ShapeType() == TopAbs_EDGE)
+      {
+        TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
+        for (; aExpE.More(); aExpE.Next())
+        {
+          aSplitEdges.Append(aExpE.Current());
+        }
+
+        isSplittingEdges = !aSplitEdges.IsEmpty();
+      }
+    }
+  }
+  i++;
+  while (i < newnarg)
+  {
+    if (pick)
+    {
+      DBRep_DrawableShape::LastPick(EF, u, v);
+    }
+    if (!isSplittingEdges && !EF.IsNull() && EF.ShapeType() == TopAbs_FACE)
+    {
+      // face wire/edge ...
+
+      while (i < newnarg)
+      {
+        TopoDS_Shape W;
+        bool         rever = false;
+        if (a[i][0] == '-')
+        {
+          if (a[i][1] == '\0')
+          {
+            return 1;
+          }
+          pick             = (a[i][1] == '.');
+          const char* Temp = a[i] + 1;
+          W                = DBRep::Get(Temp, TopAbs_SHAPE, false);
+          rever            = true;
+        }
+        else
+        {
+          pick = (a[i][0] == '.');
+          W    = DBRep::Get(a[i], TopAbs_SHAPE, false);
+        }
+        if (W.IsNull())
+        {
+          return 1; // on n`a rien recupere
+        }
+        TopAbs_ShapeEnum wtyp = W.ShapeType();
+        if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && wtyp != TopAbs_COMPOUND && pick)
+        {
+          DBRep_DrawableShape::LastPick(W, u, v);
+          wtyp = W.ShapeType();
+        }
+        if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && wtyp != TopAbs_COMPOUND)
+        {
+          EF = DBRep::Get(a[i]);
+          break;
+        }
+        else
+        {
+          if (rever)
+          {
+            W.Reverse();
+          }
+          if (wtyp == TopAbs_WIRE)
+          {
+            Spls.Add(TopoDS::Wire(W), TopoDS::Face(EF));
+          }
+          else if (wtyp == TopAbs_EDGE)
+          {
+            Spls.Add(TopoDS::Edge(W), TopoDS::Face(EF));
+          }
+          else
+          {
+            Spls.Add(TopoDS::Compound(W), TopoDS::Face(EF));
+          }
+        }
+        i++;
+      }
+    }
+    else
+    {
+      if (isSplittingEdges)
+      {
+        TopoDS_Shape aSh = DBRep::Get(a[i]);
+        if (aSh.IsNull())
+        {
+          Message::SendFail() << "Invalid input shape " << a[i];
+          return 1;
+        }
+        TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
+        for (; aExpE.More(); aExpE.Next())
+        {
+          aSplitEdges.Append(aExpE.Current());
+        }
+      }
+      else
+      {
+        Message::SendFail()
+          << "Invalid input arguments. Should be : splitshape result shape [splitedges] "
+             "[face wire/edge/compound [wire/edge/compound ...] "
+             "[face wire/edge/compound [wire/edge/compound...] ...] "
+             "[@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]";
+        return 1;
+      }
+    }
+    i++;
+  }
+
+  if (isSplittingEdges)
+  {
+    Spls.Add(aSplitEdges);
+  }
+
+  // ici, i vaut newnarg
+  for (; i < narg; i += 2)
+  {
+    TopoDS_Shape Ew, Es;
+    TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_EDGE));
+    Es = TopoDS::Edge(aLocalShape);
+    //    Es = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+    if (Es.IsNull())
+    {
+      return 1;
+    }
+    aLocalShape = DBRep::Get(a[i + 1], TopAbs_EDGE);
+    Ew          = TopoDS::Edge(aLocalShape);
+    //    Ew = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
+    if (Ew.IsNull())
+    {
+      Message::SendFail() << "Invalid input shape " << a[i + 1];
+      return 1;
+    }
+    Spls.Add(TopoDS::Edge(Ew), TopoDS::Edge(Es));
+  }
+
+  DBRep::Set(a[1], Spls);
+  return 0;
+}
+
+//=================================================================================================
+
+int thickshell(Draw_Interpretor& theCommands, int n, const char** a)
+{
+  if (n < 4)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull())
+  {
+    return 1;
+  }
+
+  double Of = Draw::Atof(a[3]);
+
+  GeomAbs_JoinType JT = GeomAbs_Arc;
+  if (n > 4)
+  {
+    if (!strcmp(a[4], "i"))
+    {
+      JT = GeomAbs_Intersection;
+    }
+    if (!strcmp(a[4], "t"))
+    {
+      JT = GeomAbs_Tangent;
+    }
+  }
+
+  bool   Inter = false; // true;
+  double Tol   = Precision::Confusion();
+  if (n > 5)
+  {
+    Tol = Draw::Atof(a[5]);
+  }
+
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theCommands, 1);
+
+  BRepOffset_MakeOffset B;
+  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, false, JT, true);
+
+  B.MakeOffsetShape(aProgress->Start());
+
+  const BRepOffset_Error aRetCode = B.Error();
+  reportOffsetState(theCommands, aRetCode);
+
+  if (!B.Shape().IsNull())
+  {
+    DBRep::Set(a[1], B.Shape());
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+static int mkoffsetshape(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 4)
+  {
+    return 0;
+  }
+  TopoDS_Shape aShape = DBRep::Get(theArgVec[2]);
+  if (aShape.IsNull())
+  {
+    theDI << "Shape is null";
+    return 1;
+  }
+  double                        anOffVal = Draw::Atof(theArgVec[3]);
+  BRepOffsetAPI_MakeOffsetShape aMaker;
+  if (theArgNb == 4)
+  {
+    aMaker.PerformBySimple(aShape, anOffVal);
+  }
+  else
+  {
+    double aTol = Draw::Atof(theArgVec[4]);
+
+    bool anInt = false;
+    if (theArgNb > 5)
+    {
+      if ((Draw::Atof(theArgVec[5]) == 1))
+      {
+        anInt = true;
+      }
+    }
+
+    bool aSelfInt = false;
+    if (theArgNb > 6)
+    {
+      if (Draw::Atof(theArgVec[6]) == 1)
+      {
+        aSelfInt = true;
+      }
+    }
+
+    GeomAbs_JoinType aJoin = GeomAbs_Arc;
+    if (theArgNb > 7)
+    {
+      if (!strcmp(theArgVec[7], "i"))
+      {
+        aJoin = GeomAbs_Intersection;
+      }
+    }
+
+    bool aRemIntEdges = false;
+    if (theArgNb > 8)
+    {
+      if (Draw::Atof(theArgVec[8]) == 1)
+      {
+        aRemIntEdges = true;
+      }
+    }
+    aMaker
+      .PerformByJoin(aShape, anOffVal, aTol, BRepOffset_Skin, anInt, aSelfInt, aJoin, aRemIntEdges);
+  }
+
+  if (!aMaker.IsDone())
+  {
+    theDI << " Error: Offset is not done.\n";
+    return 1;
+  }
+  DBRep::Set(theArgVec[1], aMaker.Shape());
+  return 0;
+}
+
+//=================================================================================================
+
+int offsetshape(Draw_Interpretor& theCommands, int n, const char** a)
+{
+  if (n < 4)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull())
+  {
+    return 1;
+  }
+
+  double           Of    = Draw::Atof(a[3]);
+  bool             Inter = (!strcmp(a[0], "offsetcompshape"));
+  GeomAbs_JoinType JT    = GeomAbs_Arc;
+  if (!strcmp(a[0], "offsetinter"))
+  {
+    JT    = GeomAbs_Intersection;
+    Inter = true;
+  }
+
+  BRepOffset_MakeOffset B;
+  int                   IB  = 4;
+  double                Tol = Precision::Confusion();
+  if (n > 4)
+  {
+    TopoDS_Shape SF = DBRep::Get(a[4], TopAbs_FACE);
+    if (SF.IsNull())
+    {
+      IB  = 5;
+      Tol = Draw::Atof(a[4]);
+    }
+  }
+  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, false, JT);
+  //------------------------------------------
+  // recuperation et chargement des bouchons.
+  //----------------------------------------
+  bool YaBouchon = false;
+
+  for (int i = IB; i < n; i++)
+  {
+    TopoDS_Shape SF = DBRep::Get(a[i], TopAbs_FACE);
+    if (!SF.IsNull())
+    {
+      YaBouchon = true;
+      B.AddFace(TopoDS::Face(SF));
+    }
+  }
+
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theCommands, 1);
+  if (!YaBouchon)
+  {
+    B.MakeOffsetShape(aProgress->Start());
+  }
+  else
+  {
+    B.MakeThickSolid(aProgress->Start());
+  }
+
+  const BRepOffset_Error aRetCode = B.Error();
+  reportOffsetState(theCommands, aRetCode);
+
+  if (!B.Shape().IsNull())
+  {
+    DBRep::Set(a[1], B.Shape());
+  }
+
+  return 0;
+}
+
+static BRepOffset_MakeOffset TheOffset;
+static double                TheRadius;
+static bool                  theYaBouchon;
+static double                TheTolerance   = Precision::Confusion();
+static bool                  TheInter       = false;
+static GeomAbs_JoinType      TheJoin        = GeomAbs_Arc;
+static bool                  RemoveIntEdges = false;
+
+int offsetparameter(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n == 1)
+  {
+    di << " offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k)]\n";
+    di << " Current Values\n";
+    di << "   --> Tolerance : " << TheTolerance << "\n";
+    di << "   --> TheInter  : ";
+    if (TheInter)
+    {
+      di << "Complete";
+    }
+    else
+    {
+      di << "Partial";
+    }
+    di << "\n   --> TheJoin   : ";
+
+    switch (TheJoin)
+    {
+      case GeomAbs_Arc:
+        di << "Arc";
+        break;
+      case GeomAbs_Intersection:
+        di << "Intersection";
+        break;
+      default:
+        break;
+    }
+    //
+    di << "\n   --> Internal Edges : ";
+    if (RemoveIntEdges)
+    {
+      di << "Remove";
+    }
+    else
+    {
+      di << "Keep";
+    }
+    di << "\n";
+    //
+    return 0;
+  }
+
+  if (n < 4)
+  {
+    return 1;
+  }
+  //
+  TheTolerance = Draw::Atof(a[1]);
+  TheInter     = strcmp(a[2], "p") != 0;
+  //
+  if (!strcmp(a[3], "a"))
+  {
+    TheJoin = GeomAbs_Arc;
+  }
+  else if (!strcmp(a[3], "i"))
+  {
+    TheJoin = GeomAbs_Intersection;
+  }
+  else if (!strcmp(a[3], "t"))
+  {
+    TheJoin = GeomAbs_Tangent;
+  }
+  //
+  RemoveIntEdges = (n >= 5) ? !strcmp(a[4], "r") : false;
+  //
+  return 0;
+}
+
+//=================================================================================================
+
+int offsetload(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  TopoDS_Shape S = DBRep::Get(a[1]);
+  if (S.IsNull())
+  {
+    return 1;
+  }
+
+  double Of = Draw::Atof(a[2]);
+  TheRadius = Of;
+  //  bool Inter = true;
+
+  TheOffset.Initialize(S,
+                       Of,
+                       TheTolerance,
+                       BRepOffset_Skin,
+                       TheInter,
+                       false,
+                       TheJoin,
+                       false,
+                       RemoveIntEdges);
+  //------------------------------------------
+  // recuperation et chargement des bouchons.
+  //----------------------------------------
+  for (int i = 3; i < n; i++)
+  {
+    TopoDS_Shape SF = DBRep::Get(a[i], TopAbs_FACE);
+    if (!SF.IsNull())
+    {
+      TheOffset.AddFace(TopoDS::Face(SF));
+    }
+  }
+  theYaBouchon = n >= 4;
+
+  return 0;
+}
+
+//=================================================================================================
+
+int offsetonface(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 3)
+  {
+    return 1;
+  }
+
+  for (int i = 1; i < n; i += 2)
+  {
+    TopoDS_Shape SF = DBRep::Get(a[i], TopAbs_FACE);
+    if (!SF.IsNull())
+    {
+      double Of = Draw::Atof(a[i + 1]);
+      TheOffset.SetOffsetOnFace(TopoDS::Face(SF), Of);
+    }
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
+int offsetperform(Draw_Interpretor& theCommands, int theNArg, const char** a)
+{
+  if (theNArg < 2)
+  {
+    return 1;
+  }
+
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theCommands, 1);
+  if (theYaBouchon)
+  {
+    TheOffset.MakeThickSolid(aProgress->Start());
+  }
+  else
+  {
+    TheOffset.MakeOffsetShape(aProgress->Start());
+  }
+
+  if (TheOffset.IsDone())
+  {
+    DBRep::Set(a[1], TheOffset.Shape());
+  }
+  else
+  {
+    const BRepOffset_Error aRetCode = TheOffset.Error();
+    reportOffsetState(theCommands, aRetCode);
+  }
+
+  // Store the history of Boolean operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    NCollection_List<TopoDS_Shape> aLA;
+    aLA.Append(TheOffset.InitShape());
+    BRepTest_Objects::SetHistory<BRepOffset_MakeOffset>(aLA, TheOffset);
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
+static int ROW(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 13)
+  {
+    return 1;
+  }
+  TopoDS_Shape       S = DBRep::Get(a[3]);
+  BRepFeat_MakeRevol theRFace;
+  gp_Dir             D;
+  gp_Pnt             Or;
+  double             Angle = 0;
+  TopoDS_Shape       FFrom, FUntil;
+  int                i, borne;
+  bool               fuse;
+
+  if (a[1][0] == 'f' || a[1][0] == 'F')
+  {
+    fuse = true;
+  }
+  else if (a[1][0] == 'c' || a[1][0] == 'C')
+  {
+    fuse = false;
+  }
+  else
+  {
+    return 1;
+  }
+
+  FFrom = DBRep::Get(a[4], TopAbs_SHAPE);
+  if (FFrom.IsNull())
+  {
+    Angle = Draw::Atof(a[4]);
+    Angle *= M_PI / 180.;
+    i = 5;
+  }
+  else
+  {
+    FUntil = DBRep::Get(a[5], TopAbs_SHAPE);
+    if (FUntil.IsNull())
+    {
+      i      = 5;
+      FUntil = FFrom;
+      FFrom.Nullify();
+    }
+    else
+    {
+      if (narg < 14)
+      {
+        return 1;
+      }
+      i = 6;
+    }
+  }
+  borne = i + 6;
+
+  Or.SetCoord(Draw::Atof(a[i]), Draw::Atof(a[i + 1]), Draw::Atof(a[i + 2]));
+  D.SetCoord(Draw::Atof(a[i + 3]), Draw::Atof(a[i + 4]), Draw::Atof(a[i + 5]));
+  gp_Ax1 theAxis(Or, D);
+
+  TopoDS_Shape aLocalShape(DBRep::Get(a[borne], TopAbs_FACE));
+  TopoDS_Face  F = TopoDS::Face(aLocalShape);
+  //  TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[borne],TopAbs_FACE));
+  BRepFeat_SplitShape Spls(F);
+  for (i = borne + 1; i < narg; i++)
+  {
+    TopoDS_Wire wir;
+    if (a[i][0] != '-')
+    {
+      aLocalShape = DBRep::Get(a[i], TopAbs_WIRE);
+      wir         = TopoDS::Wire(aLocalShape);
+      //      wir = TopoDS::Wire(DBRep::Get(a[i],TopAbs_WIRE));
+    }
+    else
+    {
+      if (a[i][1] == '\0')
+      {
+        return 1;
+      }
+      const char* Temp = a[i] + 1;
+      aLocalShape      = DBRep::Get(Temp, TopAbs_WIRE);
+      wir              = TopoDS::Wire(aLocalShape);
+      //      wir = TopoDS::Wire(DBRep::Get(Temp,TopAbs_WIRE));
+      wir.Reverse();
+    }
+    Spls.Add(wir, F);
+  }
+  Spls.Build();
+
+  TopoDS_Shape                          ToRotate;
+  const NCollection_List<TopoDS_Shape>& lleft = Spls.DirectLeft();
+  if (lleft.Extent() == 1)
+  {
+    theRFace.Init(S, lleft.First(), F, theAxis, fuse, true);
+    ToRotate = lleft.First();
+  }
+  else
+  {
+    BRep_Builder B;
+    TopoDS_Shell Sh;
+    B.MakeShell(Sh);
+    NCollection_List<TopoDS_Shape>::Iterator it;
+    for (it.Initialize(lleft); it.More(); it.Next())
+    {
+      B.Add(Sh, TopoDS::Face(it.Value()));
+    }
+    Sh.Closed(BRep_Tool::IsClosed(Sh));
+    theRFace.Init(S, Sh, F, theAxis, fuse, true);
+    ToRotate = Sh;
+  }
+
+  // Recherche des faces de glissement
+  //  for (TopExp_Explorer exp(S,TopAbs_FACE);exp.More();exp.Next()) {
+  TopExp_Explorer exp(S, TopAbs_FACE);
+  for (; exp.More(); exp.Next())
+  {
+    if (exp.Current().IsSame(F))
+    {
+      break;
+    }
+  }
+
+  if (!exp.More())
+  {
+    LocOpe_FindEdgesInFace FEIF;
+    for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
+    {
+      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+      {
+        Su = occ::down_cast<Geom_RectangularTrimmedSurface>(Su)->BasisSurface();
+      }
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_Plane))
+      {
+        gp_Pln pl = occ::down_cast<Geom_Plane>(Su)->Pln();
+        if (pl.Axis().IsParallel(theAxis, Precision::Angular()))
+        {
+          FEIF.Set(ToRotate, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            theRFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+      else if (Su->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
+      {
+        gp_Cylinder cy = occ::down_cast<Geom_CylindricalSurface>(Su)->Cylinder();
+        if (cy.Axis().IsCoaxial(theAxis, Precision::Angular(), Precision::Confusion()))
+        {
+          FEIF.Set(ToRotate, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            theRFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+    }
+  }
+
+  if (borne == 11)
+  {
+    if (FUntil.IsNull())
+    {
+      theRFace.Perform(Angle);
+    }
+    else
+    {
+      theRFace.Perform(FUntil);
+    }
+  }
+  else
+  { // borne == 12
+    theRFace.Perform(FFrom, FUntil);
+  }
+
+  if (!theRFace.IsDone())
+  {
+    theCommands << "Local operation not done";
+    return 1;
+  }
+
+  DBRep::Set(a[2], theRFace);
+  dout.Flush();
+  return 0;
+}
+
+//=================================================================================================
+
+static int ROF(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 12)
+  {
+    return 1;
+  }
+  TopoDS_Shape       S = DBRep::Get(a[3]);
+  BRepFeat_MakeRevol theRFace;
+  gp_Dir             D;
+  gp_Pnt             Or;
+  double             Angle = 0;
+  TopoDS_Shape       FFrom, FUntil;
+  int                i, borne;
+  bool               fuse;
+
+  if (a[1][0] == 'f' || a[1][0] == 'F')
+  {
+    fuse = true;
+  }
+  else if (a[1][0] == 'c' || a[1][0] == 'C')
+  {
+    fuse = false;
+  }
+  else
+  {
+    return 1;
+  }
+
+  FFrom = DBRep::Get(a[4], TopAbs_SHAPE);
+  if (FFrom.IsNull())
+  {
+    Angle = Draw::Atof(a[4]);
+    Angle *= M_PI / 180.;
+    i = 5;
+  }
+  else
+  {
+    FUntil = DBRep::Get(a[5], TopAbs_SHAPE);
+    if (FUntil.IsNull())
+    {
+      i      = 5;
+      FUntil = FFrom;
+      FFrom.Nullify();
+    }
+    else
+    {
+      if (narg < 13)
+      {
+        return 1;
+      }
+      i = 6;
+    }
+  }
+
+  borne = i + 6;
+  Or.SetCoord(Draw::Atof(a[i]), Draw::Atof(a[i + 1]), Draw::Atof(a[i + 2]));
+  D.SetCoord(Draw::Atof(a[i + 3]), Draw::Atof(a[i + 4]), Draw::Atof(a[i + 5]));
+  gp_Ax1 theAxis(Or, D);
+
+  TopoDS_Shape ToRotate;
+  if (narg == borne + 1)
+  {
+    TopoDS_Shape aLocalShape(DBRep::Get(a[borne], TopAbs_FACE));
+    TopoDS_Face  F = TopoDS::Face(aLocalShape);
+    //    TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[borne],TopAbs_FACE));
+    theRFace.Init(S, F, F, theAxis, fuse, true);
+    ToRotate = F;
+  }
+  else
+  {
+    TopoDS_Shell She;
+    BRep_Builder B;
+    B.MakeShell(She);
+
+    for (i = borne; i < narg; i++)
+    {
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_FACE));
+      TopoDS_Face  F = TopoDS::Face(aLocalShape);
+      //      TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
+      if (!F.IsNull())
+      {
+        B.Add(She, F);
+      }
+    }
+    She.Closed(BRep_Tool::IsClosed(She));
+    theRFace.Init(S, She, TopoDS_Face(), theAxis, fuse, false);
+    ToRotate = She;
+  }
+
+  //  for (TopExp_Explorer exp(ToRotate,TopAbs_FACE);exp.More();exp.Next()) {
+  TopExp_Explorer exp(ToRotate, TopAbs_FACE);
+  for (; exp.More(); exp.Next())
+  {
+    //    for (TopExp_Explorer exp2(S,TopAbs_FACE);exp2.More();exp2.Next()) {
+    TopExp_Explorer exp2(S, TopAbs_FACE);
+    for (; exp2.More(); exp2.Next())
+    {
+      if (exp2.Current().IsSame(exp.Current()))
+      {
+        break;
+      }
+    }
+    if (exp2.More())
+    {
+      break;
+    }
+  }
+
+  if (!exp.More())
+  {
+    LocOpe_FindEdgesInFace FEIF;
+    for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
+    {
+      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+      {
+        Su = occ::down_cast<Geom_RectangularTrimmedSurface>(Su)->BasisSurface();
+      }
+      if (Su->DynamicType() == STANDARD_TYPE(Geom_Plane))
+      {
+        gp_Pln pl = occ::down_cast<Geom_Plane>(Su)->Pln();
+        if (pl.Axis().IsParallel(theAxis, Precision::Angular()))
+        {
+          FEIF.Set(ToRotate, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            theRFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+      else if (Su->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
+      {
+        gp_Cylinder cy = occ::down_cast<Geom_CylindricalSurface>(Su)->Cylinder();
+        if (cy.Axis().IsCoaxial(theAxis, Precision::Angular(), Precision::Confusion()))
+        {
+          FEIF.Set(ToRotate, fac);
+          for (FEIF.Init(); FEIF.More(); FEIF.Next())
+          {
+            theRFace.Add(FEIF.Edge(), fac);
+          }
+        }
+      }
+    }
+  }
+
+  if (borne == 11)
+  {
+    if (FUntil.IsNull())
+    {
+      theRFace.Perform(Angle);
+    }
+    else
+    {
+      theRFace.Perform(FUntil);
+    }
+  }
+  else
+  { // borne == 12
+    theRFace.Perform(FFrom, FUntil);
+  }
+
+  if (!theRFace.IsDone())
+  {
+    theCommands << "Local operation not done";
+    return 1;
+  }
+
+  DBRep::Set(a[2], theRFace);
+  dout.Flush();
+  return 0;
+}
+
+//=================================================================================================
+
+static int GLU(Draw_Interpretor&, int narg, const char** a)
+{
+  if (narg < 6 || narg % 2 != 0)
+  {
+    return 1;
+  }
+  TopoDS_Shape Sne = DBRep::Get(a[2]);
+  TopoDS_Shape Sba = DBRep::Get(a[3]);
+
+  bool pick;
+
+  BRepFeat_Gluer theGl(Sne, Sba);
+  TopoDS_Shape   Fne, Fba;
+
+  LocOpe_FindEdges fined;
+
+  int  i     = 4;
+  bool first = true;
+  while (i < narg)
+  {
+    pick = (a[i][0] == '.');
+    Fne  = DBRep::Get(a[i]);
+    if (Fne.IsNull())
+    {
+      return 1;
+    }
+    TopAbs_ShapeEnum sht = Fne.ShapeType();
+    if (pick && sht != TopAbs_FACE && sht != TopAbs_EDGE)
+    {
+      double u, v;
+      DBRep_DrawableShape::LastPick(Fne, u, v);
+      sht = Fne.ShapeType();
+    }
+    if (first && sht != TopAbs_FACE)
+    {
+      return 1;
+    }
+    first = false;
+    pick  = (a[i + 1][0] == '.');
+    Fba   = DBRep::Get(a[i + 1]);
+    if (Fba.IsNull())
+    {
+      return 1;
+    }
+    if (pick && Fba.ShapeType() != sht)
+    {
+      double u, v;
+      DBRep_DrawableShape::LastPick(Fba, u, v);
+    }
+    if (Fba.ShapeType() != sht)
+    {
+      return 1;
+    }
+    if (sht == TopAbs_FACE)
+    {
+      const TopoDS_Face& f1 = TopoDS::Face(Fne);
+      const TopoDS_Face& f2 = TopoDS::Face(Fba);
+      theGl.Bind(f1, f2);
+      fined.Set(Fne, Fba);
+      for (fined.InitIterator(); fined.More(); fined.Next())
+      {
+        theGl.Bind(fined.EdgeFrom(), fined.EdgeTo());
+      }
+    }
+    else
+    {
+      theGl.Bind(TopoDS::Edge(Fne), TopoDS::Edge(Fba));
+    }
+    i += 2;
+  }
+
+  DBRep::Set(a[1], theGl);
+  dout.Flush();
+  return 0;
+}
+
+static int DEFIN(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+
+  if (strcasecmp(a[0], "FEATPRISM") && strcasecmp(a[0], "FEATDPRISM")
+      && strcasecmp(a[0], "FEATREVOL") && strcasecmp(a[0], "FEATPIPE") && strcasecmp(a[0], "FEATLF")
+      && strcasecmp(a[0], "FEATRF"))
+  {
+    return 1;
+  }
+
+  if ((!strcasecmp(a[0], "FEATPRISM") && narg != 9)
+      || (!strcasecmp(a[0], "FEATREVOL") && narg != 12)
+      || (!strcasecmp(a[0], "FEATDPRISM") && narg != 7)
+      || (!strcasecmp(a[0], "FEATPIPE") && narg != 7) || (!strcasecmp(a[0], "FEATLF") && narg != 12)
+      || (!strcasecmp(a[0], "FEATRF") && narg != 14))
+  {
+    theCommands << "invalid number of arguments";
+    return 1;
+  }
+
+  TopoDS_Shape Sbase = DBRep::Get(a[1]);
+  if (Sbase.IsNull())
+  {
+    theCommands << "null basis shape";
+    return 1;
+  }
+  int Ifuse  = Draw::Atoi(a[narg - 2]);
+  int Imodif = Draw::Atoi(a[narg - 1]);
+
+  int  Fuse   = Ifuse;
+  bool Modify = (Imodif != 0);
+
+  TopoDS_Shape Pbase;
+  TopoDS_Face  Skface;
+  TopoDS_Wire  W;
+
+  occ::handle<Geom_Plane> P;
+
+  BRepFeat_StatusError se;
+
+  if (strcasecmp(a[0], "FEATLF") && strcasecmp(a[0], "FEATRF"))
+  {
+    Pbase = DBRep::Get(a[2]);
+    if (Pbase.IsNull())
+    {
+      theCommands << "null shape to transform";
+      return 1;
+    }
+    TopoDS_Shape aLocalShape(DBRep::Get(a[3], TopAbs_FACE));
+    Skface = TopoDS::Face(aLocalShape);
+    //    Skface = TopoDS::Face(DBRep::Get(a[3],TopAbs_FACE));
+    if (Skface.IsNull())
+    {
+      theCommands << "null face of Sketch";
+      return 1;
+    }
+  }
+  else
+  {
+    TopoDS_Shape aLocalShape(DBRep::Get(a[2], TopAbs_WIRE));
+    W = TopoDS::Wire(aLocalShape);
+    //    W = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
+    if (W.IsNull())
+    {
+      theCommands << "null profile for rib or slot";
+      return 1;
+    }
+    occ::handle<Geom_Surface> s = DrawTrSurf::GetSurface(a[3]);
+    P                           = occ::down_cast<Geom_Plane>(s);
+    if (P.IsNull())
+    {
+      theCommands << "null plane to transform";
+      return 1;
+    }
+  }
+  if (narg == 9 || narg == 12 || narg == 14)
+  {
+    //    double X,Y,Z,X1,Y1,Z1;
+    double X, Y, Z;
+    X = Draw::Atof(a[4]);
+    Y = Draw::Atof(a[5]);
+    Z = Draw::Atof(a[6]);
+
+    if (narg == 9)
+    { // prism
+      prdef     = true;
+      theSbase  = Sbase;
+      thePbase  = Pbase;
+      theSkface = Skface;
+      getPrism().Init(Sbase, Pbase, Skface, gp_Dir(X, Y, Z), Fuse, Modify);
+    }
+    else if (narg == 14)
+    {
+      rfdef = true;
+      gp_Pnt Or(X, Y, Z);
+      X         = Draw::Atof(a[7]);
+      Y         = Draw::Atof(a[8]);
+      Z         = Draw::Atof(a[9]);
+      double H1 = Draw::Atof(a[10]);
+      double H2 = Draw::Atof(a[11]);
+      gp_Ax1 ax1(Or, gp_Dir(X, Y, Z));
+      getRevolutionForm().Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
+      if (!getRevolutionForm().IsDone())
+      {
+        se = getRevolutionForm().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+    }
+    else if (narg == 12 && strcasecmp(a[0], "FEATLF"))
+    {
+      rvdef = true;
+      gp_Pnt Or(X, Y, Z);
+      X         = Draw::Atof(a[7]);
+      Y         = Draw::Atof(a[8]);
+      Z         = Draw::Atof(a[9]);
+      theSbase  = Sbase;
+      thePbase  = Pbase;
+      theSkface = Skface;
+      getRevol().Init(Sbase, Pbase, Skface, gp_Ax1(Or, gp_Dir(X, Y, Z)), Fuse, Modify);
+    }
+    else
+    {
+      lfdef = true;
+      gp_Vec Direct(X, Y, Z);
+      X = Draw::Atof(a[7]);
+      Y = Draw::Atof(a[8]);
+      Z = Draw::Atof(a[9]);
+      getLienarForm().Init(Sbase, W, P, Direct, gp_Vec(X, Y, Z), Fuse, Modify);
+      if (!getLienarForm().IsDone())
+      {
+        se = getLienarForm().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+    }
+  }
+  else if (narg == 7)
+  {
+    if (!strcasecmp(a[0], "FEATDPRISM"))
+    {
+      if (Pbase.ShapeType() != TopAbs_FACE)
+      {
+        theCommands << "Invalid DPrism base";
+        return 1;
+      }
+      double Angle = Draw::Atof(a[4]) * M_PI / 360;
+      dprdef       = true;
+      theSbase     = Sbase;
+      thePbase     = Pbase;
+      theSkface    = Skface;
+      getDPrism().Init(Sbase, TopoDS::Face(Pbase), Skface, Angle, Fuse, Modify);
+    }
+    else
+    { // FEATPIPE
+      TopoDS_Shape aLocalShape(DBRep::Get(a[4], TopAbs_WIRE));
+      TopoDS_Wire  Spine = TopoDS::Wire(aLocalShape);
+      //      TopoDS_Wire Spine = TopoDS::Wire(DBRep::Get(a[4],TopAbs_WIRE));
+      if (Spine.IsNull())
+      {
+        TopoDS_Shape Edspine = DBRep::Get(a[4], TopAbs_EDGE);
+        if (Edspine.IsNull())
+        {
+          theCommands << "null spine";
+          return 1;
+        }
+        BRep_Builder B;
+        B.MakeWire(Spine);
+        B.Add(Spine, Edspine);
+      }
+      pidef     = true;
+      theSbase  = Sbase;
+      thePbase  = Pbase;
+      theSkface = Skface;
+      getPipe().Init(Sbase, Pbase, Skface, Spine, Fuse, Modify);
+    }
+  }
+  return 0;
+}
+
+static int ADD(Draw_Interpretor&, int narg, const char** a)
+{
+  int i;
+  if (narg < 4 || narg % 2 != 0)
+  {
+    return 1;
+  }
+  if (!strcasecmp("PRISM", a[1]))
+  {
+    if (!prdef)
+    {
+      return 1;
+    }
+    for (i = 2; i < narg; i += 2)
+    {
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_EDGE));
+      TopoDS_Edge  edg = TopoDS::Edge(aLocalShape);
+      //      TopoDS_Edge edg = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+      if (edg.IsNull())
+      {
+        return 1;
+      }
+      aLocalShape     = DBRep::Get(a[i + 1], TopAbs_FACE);
+      TopoDS_Face fac = TopoDS::Face(aLocalShape);
+      //      TopoDS_Face fac = TopoDS::Face(DBRep::Get(a[i+1],TopAbs_FACE));
+      if (fac.IsNull())
+      {
+        return 1;
+      }
+      getPrism().Add(edg, fac);
+    }
+  }
+  else if (!strcasecmp("REVOL", a[1]))
+  {
+    if (!rvdef)
+    {
+      return 1;
+    }
+    for (i = 2; i < narg; i += 2)
+    {
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_EDGE));
+      TopoDS_Edge  edg = TopoDS::Edge(aLocalShape);
+      //      TopoDS_Edge edg = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+      if (edg.IsNull())
+      {
+        return 1;
+      }
+      aLocalShape     = DBRep::Get(a[i + 1], TopAbs_FACE);
+      TopoDS_Face fac = TopoDS::Face(aLocalShape);
+      //      TopoDS_Face fac = TopoDS::Face(DBRep::Get(a[i+1],TopAbs_FACE));
+      if (fac.IsNull())
+      {
+        return 1;
+      }
+      getRevol().Add(edg, fac);
+    }
+  }
+  else if (!strcasecmp("PIPE", a[1]))
+  {
+    if (!pidef)
+    {
+      return 1;
+    }
+    for (i = 2; i < narg; i += 2)
+    {
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_EDGE));
+      TopoDS_Edge  edg = TopoDS::Edge(aLocalShape);
+      //      TopoDS_Edge edg = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+      if (edg.IsNull())
+      {
+        return 1;
+      }
+      aLocalShape     = DBRep::Get(a[i + 1], TopAbs_FACE);
+      TopoDS_Face fac = TopoDS::Face(aLocalShape);
+      //      TopoDS_Face fac = TopoDS::Face(DBRep::Get(a[i+1],TopAbs_FACE));
+      if (fac.IsNull())
+      {
+        return 1;
+      }
+      getPipe().Add(edg, fac);
+    }
+  }
+  else
+  {
+    return 1;
+  }
+  return 0;
+}
+
+static int PERF(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 3)
+  {
+    return 1;
+  }
+  if (strcasecmp(a[0], "FEATPERFORM") && strcasecmp(a[0], "FEATPERFORMVAL"))
+  {
+    return 1;
+  }
+
+  NCollection_List<TopoDS_Shape> anArgs;
+  int                            Kas;
+  if (!strcasecmp("PRISM", a[1]))
+  {
+    Kas = 1;
+    if (!prdef)
+    {
+      theCommands << "prism not defined";
+      return 1;
+    }
+  }
+  else if (!strcasecmp("REVOL", a[1]))
+  {
+    Kas = 2;
+    if (!rvdef)
+    {
+      theCommands << "revol not defined";
+      return 1;
+    }
+  }
+  else if (!strcasecmp("PIPE", a[1]))
+  {
+    Kas = 3;
+    if (!pidef)
+    {
+      theCommands << "pipe not defined";
+      return 1;
+    }
+    if (!strcasecmp(a[0], "FEATPERFORMVAL"))
+    {
+      theCommands << "invalid command for pipe";
+      return 1;
+    }
+  }
+  else if (!strcasecmp("DPRISM", a[1]))
+  {
+    Kas = 4;
+    if (!dprdef)
+    {
+      theCommands << "dprism not defined";
+      return 1;
+    }
+  }
+  else if (!strcasecmp("LF", a[1]))
+  {
+    Kas = 5;
+    if (!lfdef)
+    {
+      theCommands << "lf not defined";
+      return 1;
+    }
+    if (!strcasecmp(a[0], "FEATPERFORMVAL"))
+    {
+      theCommands << "invalid command for lf";
+      return 1;
+    }
+  }
+  else if (!strcasecmp("RF", a[1]))
+  {
+    Kas = 6;
+    if (!rfdef)
+    {
+      theCommands << "rf not defined";
+      return 1;
+    }
+    if (!strcasecmp(a[0], "FEATPERFORMVAL"))
+    {
+      theCommands << "invalid command for rf";
+      return 1;
+    }
+  }
+  else
+  {
+    theCommands << "unknown argument : " << a[1];
+    return 1;
+  }
+
+  if (!strcasecmp(a[0], "FEATPERFORMVAL"))
+  {
+    if (narg != 4 && narg != 5)
+    {
+      theCommands << "invalid number of arguments";
+      return 1;
+    }
+    if (narg == 4)
+    {
+      double Val = Draw::Atof(a[3]);
+      if (Kas == 1)
+      {
+        getPrism().Perform(Val);
+      }
+      else if (Kas == 2)
+      {
+        Val *= (M_PI / 180.);
+        getRevol().Perform(Val);
+      }
+      else if (Kas == 4)
+      {
+        getDPrism().Perform(Val);
+      }
+      else if (Kas == 5)
+      {
+        theCommands << "invalid command for lf";
+        return 1;
+      }
+      else if (Kas == 6)
+      {
+        theCommands << "invalid command for rf";
+        return 1;
+      }
+    }
+    else if (narg == 5)
+    {
+      double       Val    = Draw::Atof(a[3]);
+      TopoDS_Shape FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
+      if (Kas == 1)
+      {
+        getPrism().PerformUntilHeight(FUntil, Val);
+      }
+      else if (Kas == 2)
+      {
+        Val *= (M_PI / 180.);
+        getRevol().PerformUntilAngle(FUntil, Val);
+      }
+      else if (Kas == 4)
+      {
+        getDPrism().PerformUntilHeight(FUntil, Val);
+      }
+      else
+      {
+        theCommands << "invalid command for ribs or slots";
+        return 1;
+      }
+    }
+  }
+  else if (!strcasecmp(a[0], "FEATPERFORM"))
+  {
+    if (narg == 3)
+    { // Thru all
+      switch (Kas)
+      {
+        case 1:
+          getPrism().PerformThruAll();
+          break;
+        case 2:
+          getRevol().PerformThruAll();
+          break;
+        case 3:
+          getPipe().Perform();
+          break;
+        case 4:
+          getDPrism().PerformThruAll();
+          break;
+        case 5:
+          getLienarForm().Perform();
+          break;
+        case 6:
+          getRevolutionForm().Perform();
+          break;
+        default:
+
+          return 1;
+      }
+    }
+    else if (narg == 4)
+    { // Until
+      TopoDS_Shape Funtil = DBRep::Get(a[3], TopAbs_SHAPE);
+      switch (Kas)
+      {
+        case 1: {
+          if (Funtil.IsNull())
+          {
+            getPrism().PerformUntilEnd();
+          }
+          else
+          {
+            getPrism().Perform(Funtil);
+          }
+        }
+        break;
+        case 2: {
+          if (!Funtil.IsNull())
+          {
+            getRevol().Perform(Funtil);
+          }
+          else
+          {
+            return 1;
+          }
+        }
+        break;
+        case 3: {
+          if (!Funtil.IsNull())
+          {
+            getPipe().Perform(Funtil);
+          }
+          else
+          {
+            theCommands << "invalid command for ribs pipe";
+            return 1;
+          }
+        }
+        break;
+        case 4: {
+          if (!Funtil.IsNull())
+          {
+            getDPrism().Perform(Funtil);
+          }
+          else
+          {
+            getDPrism().PerformUntilEnd();
+          }
+        }
+        break;
+        case 5: {
+          theCommands << "invalid command for lf";
+          return 1;
+        }
+        break;
+        case 6: {
+          theCommands << "invalid command for rf";
+          return 1;
+        }
+        break;
+        default:
+          return 1;
+      }
+    }
+    else if (narg == 5)
+    {
+      TopoDS_Shape Ffrom  = DBRep::Get(a[3], TopAbs_SHAPE);
+      TopoDS_Shape Funtil = DBRep::Get(a[4], TopAbs_SHAPE);
+      if (Funtil.IsNull())
+      {
+        return 1;
+      }
+      switch (Kas)
+      {
+        case 1: {
+          if (Ffrom.IsNull())
+          {
+            getPrism().PerformFromEnd(Funtil);
+          }
+          else
+          {
+            getPrism().Perform(Ffrom, Funtil);
+          }
+        }
+        break;
+        case 2: {
+          if (Ffrom.IsNull())
+          {
+            return 1;
+          }
+          getRevol().Perform(Ffrom, Funtil);
+        }
+        break;
+        case 3: {
+          if (Ffrom.IsNull())
+          {
+            return 1;
+          }
+          getPipe().Perform(Ffrom, Funtil);
+        }
+        break;
+        case 4: {
+          if (Ffrom.IsNull())
+          {
+            getDPrism().PerformFromEnd(Funtil);
+          }
+          else
+          {
+            getDPrism().Perform(Ffrom, Funtil);
+          }
+        }
+        break;
+
+        default:
+          return 1;
+      }
+    }
+  }
+
+  BRepFeat_StatusError se;
+  switch (Kas)
+  {
+    case 1:
+      if (!getPrism().IsDone())
+      {
+        se = getPrism().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      DBRep::Set(a[2], getPrism());
+      dout.Flush();
+      // History
+      if (BRepTest_Objects::IsHistoryNeeded())
+      {
+        anArgs.Clear();
+        anArgs.Append(theSbase);
+        anArgs.Append(thePbase);
+        anArgs.Append(theSkface);
+        BRepTest_Objects::SetHistory(anArgs, getPrism());
+      }
+      return 0;
+    case 2:
+      if (!getRevol().IsDone())
+      {
+        se = getRevol().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      // History
+      if (BRepTest_Objects::IsHistoryNeeded())
+      {
+        anArgs.Clear();
+        anArgs.Append(theSbase);
+        anArgs.Append(thePbase);
+        anArgs.Append(theSkface);
+        BRepTest_Objects::SetHistory(anArgs, getRevol());
+      }
+      DBRep::Set(a[2], getRevol());
+      dout.Flush();
+      return 0;
+    case 3:
+      if (!getPipe().IsDone())
+      {
+        se = getPipe().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      // History
+      if (BRepTest_Objects::IsHistoryNeeded())
+      {
+        anArgs.Clear();
+        anArgs.Append(theSbase);
+        anArgs.Append(thePbase);
+        anArgs.Append(theSkface);
+        BRepTest_Objects::SetHistory(anArgs, getPipe());
+      }
+      DBRep::Set(a[2], getPipe());
+      dout.Flush();
+      return 0;
+    case 4:
+      if (!getDPrism().IsDone())
+      {
+        se = getDPrism().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      // History
+      if (BRepTest_Objects::IsHistoryNeeded())
+      {
+        anArgs.Clear();
+        anArgs.Append(theSbase);
+        anArgs.Append(thePbase);
+        anArgs.Append(theSkface);
+        BRepTest_Objects::SetHistory(anArgs, getDPrism());
+      }
+      DBRep::Set(a[2], getDPrism());
+      dout.Flush();
+      return 0;
+    case 5:
+      if (!getLienarForm().IsDone())
+      {
+        se = getLienarForm().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      DBRep::Set(a[2], getLienarForm());
+      dout.Flush();
+      return 0;
+    case 6:
+      if (!getRevolutionForm().IsDone())
+      {
+        se = getRevolutionForm().CurrentStatusError();
+        // BRepFeat::Print(se,std::cout) << std::endl;
+        Standard_SStream aSStream;
+        BRepFeat::Print(se, aSStream);
+        theCommands << aSStream << "\n";
+        return 1;
+      }
+      DBRep::Set(a[2], getRevolutionForm());
+      dout.Flush();
+      return 0;
+    default:
+      return 1;
+  }
+}
+
+static int BOSS(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (strcasecmp(a[0], "ENDEDGES") && strcasecmp(a[0], "FILLET") && strcasecmp(a[0], "BOSSAGE"))
+  {
+    return 1;
+  }
+
+  if ((!strcasecmp(a[0], "ENDEDGES") && narg != 5)
+      || (!strcasecmp(a[0], "FILLET") && (narg < 5 || narg % 2 != 1))
+      || (!strcasecmp(a[0], "BOSSAGE") && narg != 6))
+  {
+    theCommands.PrintHelp(a[0]);
+    return 1;
+  }
+
+  int Kas    = 0;
+  int dprsig = 0;
+  if (!strcasecmp("ENDEDGES", a[0]))
+  {
+    Kas    = 1;
+    dprsig = Draw::Atoi(a[4]);
+  }
+  else if (!strcasecmp("FILLET", a[0]))
+  {
+    Kas = 2;
+  }
+  else if (!strcasecmp("BOSSAGE", a[0]))
+  {
+    Kas    = 3;
+    dprsig = Draw::Atoi(a[5]);
+  }
+
+  TopoDS_Shape theShapeTop;
+  TopoDS_Shape theShapeBottom;
+
+  if (Kas == 1 || Kas == 3)
+  {
+    if (!strcasecmp("DPRISM", a[1]))
+    {
+      if (!dprdef)
+      {
+        theCommands << "dprism not defined";
+        return 1;
+      }
+    }
+    else
+    {
+      theCommands << "unknown argument : " << a[1];
+      return 1;
+    }
+
+    getDPrism().BossEdges(dprsig);
+
+    NCollection_List<TopoDS_Shape> theTopEdges, theLatEdges;
+    theTopEdges = getDPrism().TopEdges();
+    theLatEdges = getDPrism().LatEdges();
+
+    NCollection_List<TopoDS_Shape>::Iterator it;
+    BRep_Builder                             B;
+
+    B.MakeCompound(TopoDS::Compound(theShapeTop));
+    it.Initialize(theTopEdges);
+    for (; it.More(); it.Next())
+    {
+      TopExp_Explorer exp;
+      for (exp.Init(it.Value(), TopAbs_EDGE); exp.More(); exp.Next())
+      {
+        B.Add(theShapeTop, exp.Current());
+      }
+    }
+    DBRep::Set(a[2], theShapeTop);
+    dout.Flush();
+
+    B.MakeCompound(TopoDS::Compound(theShapeBottom));
+    it.Initialize(theLatEdges);
+    for (; it.More(); it.Next())
+    {
+      B.Add(theShapeBottom, it.Value());
+    }
+    DBRep::Set(a[3], theShapeBottom);
+    dout.Flush();
+    if (Kas == 1)
+    {
+      return 0;
+    }
+  }
+
+  if (Kas == 2 || Kas == 3)
+  {
+
+    //    int nrad;
+    TopoDS_Shape V;
+    if (Kas == 2)
+    {
+      V = DBRep::Get(a[2], TopAbs_SHAPE);
+    }
+    else if (Kas == 3)
+    {
+      V = getDPrism();
+    }
+
+    if (V.IsNull())
+    {
+      return 1;
+    }
+    ChFi3d_FilletShape FSh = ChFi3d_Rational;
+    {
+      delete Rakk;
+    }
+    Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
+    Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
+    Rakk->SetContinuity(blend_cont, tapp_angle);
+    double       Rad;
+    TopoDS_Shape S;
+    TopoDS_Edge  E;
+    int          nbedge = 0;
+
+    if (Kas == 2)
+    {
+      for (int ii = 1; ii < (narg - 1) / 2; ii++)
+      {
+        Rad = Draw::Atof(a[2 * ii + 1]);
+        if (Rad == 0.)
+        {
+          continue;
+        }
+        S = DBRep::Get(a[(2 * ii + 2)], TopAbs_SHAPE);
+        TopExp_Explorer exp;
+        for (exp.Init(S, TopAbs_EDGE); exp.More(); exp.Next())
+        {
+          E = TopoDS::Edge(exp.Current());
+          if (!E.IsNull())
+          {
+            Rakk->Add(Rad, E);
+            nbedge++;
+          }
+        }
+      }
+    }
+    else if (Kas == 3)
+    {
+      Rad = Draw::Atof(a[3]);
+      if (Rad != 0.)
+      {
+        S = theShapeTop;
+        TopExp_Explorer exp;
+        for (exp.Init(S, TopAbs_EDGE); exp.More(); exp.Next())
+        {
+          E = TopoDS::Edge(exp.Current());
+          if (!E.IsNull())
+          {
+            Rakk->Add(Rad, E);
+            nbedge++;
+          }
+        }
+      }
+      Rad = Draw::Atof(a[4]);
+      if (Rad != 0.)
+      {
+        S = theShapeBottom;
+        TopExp_Explorer exp;
+        for (exp.Init(S, TopAbs_EDGE); exp.More(); exp.Next())
+        {
+          E = TopoDS::Edge(exp.Current());
+          if (!E.IsNull())
+          {
+            Rakk->Add(Rad, E);
+            nbedge++;
+          }
+        }
+      }
+    }
+
+    if (!nbedge)
+    {
+      return 1;
+    }
+    Rakk->Build();
+    if (!Rakk->IsDone())
+    {
+      return 1;
+    }
+    TopoDS_Shape res = Rakk->Shape();
+
+    if (Kas == 2)
+    {
+      DBRep::Set(a[1], res);
+    }
+    else if (Kas == 3)
+    {
+      DBRep::Set(a[2], res);
+    }
+    dout.Flush();
+
+    // Save history for fillet
+    if (BRepTest_Objects::IsHistoryNeeded())
+    {
+      NCollection_List<TopoDS_Shape> anArg;
+      anArg.Append(V);
+      BRepTest_Objects::SetHistory(anArg, *Rakk);
+    }
+
+    return 0;
+  }
+
+  return 1;
+}
+
+//=================================================================================================
+
+static int ComputeSimpleOffset(Draw_Interpretor& theCommands, int narg, const char** a)
+{
+  if (narg < 4)
+  {
+    theCommands << "offsetshapesimple result shape offsetvalue [solid] [tolerance=1e-7]\n";
+    return 1;
+  }
+
+  // Input data.
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    theCommands << "Input shape is null";
+    return 0;
+  }
+  const double anOffsetValue = Draw::Atof(a[3]);
+  if (std::abs(anOffsetValue) < gp::Resolution())
+  {
+    theCommands << "Null offset value";
+    return 0;
+  }
+
+  bool   makeSolid = (narg > 4 && !strcasecmp(a[4], "solid"));
+  int    iTolArg   = (makeSolid ? 5 : 4);
+  double aTol      = (narg > iTolArg ? Draw::Atof(a[iTolArg]) : Precision::Confusion());
+
+  BRepOffset_MakeSimpleOffset aMaker(aShape, anOffsetValue);
+  aMaker.SetTolerance(aTol);
+  aMaker.SetBuildSolidFlag(makeSolid);
+  aMaker.Perform();
+
+  if (!aMaker.IsDone())
+  {
+    theCommands << "ERROR:" << aMaker.GetErrorMessage() << "\n";
+    return 0;
+  }
+
+  DBRep::Set(a[1], aMaker.GetResultShape());
+
+  return 0;
+}
+
+//=================================================================================================
+
+void BRepTest::FeatureCommands(Draw_Interpretor& theCommands)
+{
+  static bool done = false;
+  if (done)
+  {
+    return;
+  }
+  done = true;
+
+  DBRep::BasicCommands(theCommands);
+
+  const char* g = "TOPOLOGY Feature commands";
+
+  theCommands.Add(
+    "localope",
+    " Performs a local top. operation : localope result shape tool F/C (fuse/cut) face [face...]",
+    __FILE__,
+    Loc,
+    g);
+
+  theCommands.Add(
+    "hole",
+    " Performs a hole : hole result shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius [Pfrom Pto]",
+    __FILE__,
+    HOLE1,
+    g);
+
+  theCommands.Add(
+    "firsthole",
+    " Performs the first hole : firsthole result shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius",
+    __FILE__,
+    HOLE2,
+    g);
+
+  theCommands.Add(
+    "holend",
+    " Performs the hole til end : holend result shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius",
+    __FILE__,
+    HOLE3,
+    g);
+
+  theCommands.Add("blindhole",
+                  " Performs the blind hole : blindhole result shape Or.X Or.Y Or.Z Dir.X Dir.Y "
+                  "Dir.Z Radius Length",
+                  __FILE__,
+                  HOLE4,
+                  g);
+
+  theCommands.Add("holecontrol",
+                  "Sets/Unsets or display controls on holes : holecontrol [0/1]",
+                  __FILE__,
+                  CONTROL,
+                  g);
+
+  theCommands.Add("wprism",
+                  "Prisms wires on a face : wprism f[use]/c[ut] result shape [[FaceFrom] "
+                  "FaceUntil] VecX VecY VecZ  SkecthFace wire1 [wire2 ....]",
+                  __FILE__,
+                  PRW,
+                  g);
+
+  theCommands.Add("fprism",
+                  "Prisms a set of faces of a shape : fprism f[use]/c[ut] result shape [[FaceFrom] "
+                  "FaceUntil] VecX VecY VecZ face1 [face2...]",
+                  __FILE__,
+                  PRF,
+                  g);
+
+  theCommands.Add("wrotate",
+                  "Rotates wires on a face : wrotate f[use]/c[ut] result shape Angle/[FFrom] "
+                  "FUntil OX OY OZ DX DY DZ SkecthFace wire1 [wire2 ....]",
+                  __FILE__,
+                  ROW,
+                  g);
+
+  theCommands.Add("frotate",
+                  "Rotates a set of faces of a shape : frotate f[use]/c[ut] result shape "
+                  "Angle/[FaceFrom] FaceUntil OX OY OZ DX DY DZ face1 [face2...]",
+                  __FILE__,
+                  ROF,
+                  g);
+
+  theCommands.Add("splitshape",
+                  "splitshape result shape [splitedges] [face wire/edge/compound "
+                  "[wire/edge/compound ...][face wire/edge/compound [wire/edge/compound...] ...] "
+                  "[@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]",
+                  __FILE__,
+                  SPLS,
+                  g);
+
+  theCommands.Add("thickshell",
+                  "thickshell r shape offset [jointype [tol] ]",
+                  __FILE__,
+                  thickshell,
+                  g);
+
+  theCommands.Add("mkoffsetshape",
+                  "mkoffsetshape r shape offset [Tol] [Intersection(0/1)] [SelfInter(0/1)] "
+                  "[JoinType(a/i)] [RemoveInternalEdges(0/1)]",
+                  __FILE__,
+                  mkoffsetshape,
+                  g);
+
+  theCommands.Add("offsetshape",
+                  "offsetshape r shape offset [tol] [face ...]",
+                  __FILE__,
+                  offsetshape,
+                  g);
+
+  theCommands.Add("offsetcompshape",
+                  "offsetcompshape r shape offset [face ...]",
+                  __FILE__,
+                  offsetshape,
+                  g);
+
+  theCommands.Add("offsetparameter",
+                  "offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k)]",
+                  __FILE__,
+                  offsetparameter,
+                  g);
+
+  theCommands.Add("offsetload",
+                  "offsetload shape offset bouchon1 bouchon2 ...",
+                  __FILE__,
+                  offsetload,
+                  g);
+
+  theCommands.Add("offsetonface",
+                  "offsetonface face1 offset1 face2 offset2 ...",
+                  __FILE__,
+                  offsetonface,
+                  g);
+
+  theCommands.Add("offsetperform", "offsetperform result", __FILE__, offsetperform, g);
+
+  theCommands.Add("glue",
+                  "glue result shapenew shapebase facenew facebase [facenew facebase...] [edgenew "
+                  "edgebase [edgenew edgebase...]]",
+                  __FILE__,
+                  GLU,
+                  g);
+
+  theCommands.Add("featprism",
+                  "Defines the arguments for a prism : featprism shape element skface  Dirx Diry "
+                  "Dirz Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("featrevol",
+                  "Defines the arguments for a revol : featrevol shape element skface  Ox Oy Oz Dx "
+                  "Dy Dz Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("featpipe",
+                  "Defines the arguments for a pipe : featpipe shape element skface  spine "
+                  "Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("featdprism",
+                  "Defines the arguments for a drafted prism : featdprism shape face skface angle "
+                  "Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("featlf",
+                  "Defines the arguments for a linear rib or slot : featlf shape wire plane DirX "
+                  "DirY DirZ DirX DirY DirZ Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("featrf",
+                  "Defines the arguments for a rib or slot of revolution : featrf shape wire plane "
+                  "X Y Z DirX DirY DirZ Size Size Fuse(0/1/2) Modify(0/1)",
+                  __FILE__,
+                  DEFIN,
+                  g);
+
+  theCommands.Add("addslide",
+                  " Adds sliding elements : addslide prism/revol/pipe edge face [edge face...]",
+                  __FILE__,
+                  ADD,
+                  g);
+
+  theCommands.Add("featperform",
+                  " Performs the prism revol dprism linform or pipe :featperform "
+                  "prism/revol/pipe/dprism/lf result [[Ffrom] Funtil]",
+                  __FILE__,
+                  PERF,
+                  g);
+
+  theCommands.Add("featperformval",
+                  " Performs the prism revol dprism or linform with a value :featperformval "
+                  "prism/revol/dprism/lf result value",
+                  __FILE__,
+                  PERF,
+                  g);
+
+  theCommands.Add("endedges",
+                  " Return top and bottom edges of dprism :endedges dprism shapetop shapebottom "
+                  "First/LastShape (1/2)",
+                  __FILE__,
+                  BOSS,
+                  g);
+
+  theCommands.Add(
+    "fillet",
+    " Perform fillet on compounds of edges :fillet result object rad1 comp1 rad2 comp2 ...",
+    __FILE__,
+    BOSS,
+    g);
+
+  theCommands.Add("bossage",
+                  " Perform fillet on top and bottom edges of dprism :bossage dprism result radtop "
+                  "radbottom First/LastShape (1/2)",
+                  __FILE__,
+                  BOSS,
+                  g);
+
+  theCommands.Add("offsetshapesimple",
+                  "offsetshapesimple result shape offsetvalue [solid] [tolerance=1e-7]",
+                  __FILE__,
+                  ComputeSimpleOffset,
+                  g);
+}

@@ -1,0 +1,15 @@
+puts "TODO OCC23190 ALL: ERROR. C0 continuity of input data."
+puts "TODO OCC23190 ALL: Error: The command cannot be built"
+puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+
+# Original bug : cts21271
+# Date : 11Sept98
+
+restore [locate_data_file CHE900_cts21271.rle] s
+explode s f
+
+## leaving out bottom face s_35
+
+offsetshape result s -1 s_35
+
+checkprops result -v 0

@@ -1,0 +1,15 @@
+puts "========="
+puts "0030785: Mesh - protect BRepMesh_IncrementalMesh::Perform from crash"
+puts "========="
+puts ""
+
+puts "REQUIRED All: Failure"
+
+restore [locate_data_file bug30785.brep] s
+
+# just check if the exception is not raised
+if {[catch {incmesh s 0.1}]} {
+  puts "Error: Exception is raised by BRepMesh_IncrementalMesh"
+}
+
+checktrinfo s -tri

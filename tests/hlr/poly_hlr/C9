@@ -1,0 +1,7 @@
+puts "TODO OCC30286 Linux: Error : The length of result shape is 2025.74, expected 2026.13"
+
+set viewname "vright"
+set length 2026.13
+
+testreadstep [locate_data_file bug27341_Adapter_MKG_SWS_CGS_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

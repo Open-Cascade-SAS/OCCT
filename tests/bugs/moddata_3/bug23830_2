@@ -1,0 +1,66 @@
+puts "================"
+puts "OCC23830_2"
+puts "================"
+puts ""
+#######################################################################
+# BRepExtrema_DistShapeShape does not find intersection of face with edge
+#######################################################################
+
+restore [locate_data_file bug23830_face.brep] f
+mksurface s f
+
+for {set i 1} {$i <= 45} {incr i} {
+  restore [locate_data_file bug23830_circle$i.brep] c_$i
+  mkcurve c_$i c_$i
+  extrema s c_$i 1
+  if {![isdraw ext_1_2] || ![isdraw ext_1_3]} {
+    puts "Error: invalid result"
+  }
+  vertex v${i}_1 ext_1_2
+  vertex v${i}_2 ext_1_3
+  unset ext_1_2
+  unset ext_1_3
+}
+
+for {set i 1} {$i <= 45} {incr i} {
+  regexp {Point\s3D\s:\s([-0-9+.e, ]+)} [dump v${i}_1] aDummy aP1
+  regexp {Point\s3D\s:\s([-0-9+.e, ]+)} [dump v${i}_2] aDummy aP2
+  regexp {(^[-0-9+.e]+)} $aP1 aDummy aX1
+  regexp {,\s([-0-9+.e]+),\s} $aP1 aDummy aY1
+  regexp {\s([-0-9+.e]+)$} $aP2 aDummy aZ1
+  regexp {(^[-0-9+.e]+)} $aP2 aDummy aX2
+  regexp {,\s([-0-9+.e]+),\s} $aP2 aDummy aY2
+  regexp {\s([-0-9+.e]+)$} $aP2 aDummy aZ2
+  set aC${i}_1 [concat "$aX1 $aY1 $aZ1"]
+  set aC${i}_2 [concat "$aX2 $aY2 $aZ2"]
+  set aD$i [expr sqrt(($aX2 - $aX1) * ($aX2 - $aX1) + ($aY2 - $aY1) * ($aY2 - $aY1) + ($aZ2 - $aZ1) * ($aZ2 - $aZ1))]
+  if {[set aD$i] > 1e-11} {
+    puts "Error: invalid result ($i)"
+  }
+}
+
+for {set i 1} {$i <= 45} {incr i} {
+  puts ""
+  puts "$i"
+  puts [set aC${i}_1]
+  puts [set aC${i}_2]
+  puts [set aD$i]
+}
+
+smallview
+l
+l
+l
+l
+l
+l
+l
+l
+erase
+display f
+for {set i 1} {$i <= 45} {incr i} {
+  display v${i}_1
+  display v${i}_2
+}
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "========================"
+puts " OCC810 "
+puts "========================"
+puts ""
+########################################################################
+## This bug reproducing by doing fixshape for face (In fixshape command invokes segment of bspline curve)
+## The fix for this bug is fix of OCC311 for Geom_BSplineCurve and Geom2d_BSplineCurve.
+########################################################################
+
+restore [locate_data_file OCC810.rle] a
+
+if { [catch { fixshape result a 1.e-7 0.1 } ] > 0 } {
+   puts "Faulty OCC810"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

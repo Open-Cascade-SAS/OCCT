@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC578"
+puts "OCC584"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC578_w1.brep] w1 
+checkshape w1
+
+restore [locate_data_file OCC578_w2.brep] w2 
+checkshape w2
+
+set x 1
+set y 1
+set z 0.5
+box b ${x} ${y} ${z}
+checkshape b
+
+bfuse res1 w1 w2
+checkshape res1
+
+bcut result b res1
+
+checkprops result -s 4.84596 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

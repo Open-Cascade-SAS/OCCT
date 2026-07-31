@@ -1,0 +1,26 @@
+
+puts "========================"
+puts "BUC60777"
+puts "========================"
+
+profile p x 30 y -10 x 10 y 10 x 10 y 30 t -30 -20 t -30 20 
+mkoffset result p 1 -1
+explode p w
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_1] full end
+regexp {Mass +: +([-0-9.+eE]+)} [lprops p_1] full end1
+
+if {  $end >=  $end1} {
+    puts " Faulty Mkoffset operation was made  wrongly"
+ }  else {
+    puts " Mkoffset  operation was made successfully"
+}
+
+#  Length of "profile" : 203.733802110964
+
+renamevar result_1 result
+
+checkprops result -l 191.044 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

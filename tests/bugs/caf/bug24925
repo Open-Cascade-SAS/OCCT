@@ -1,0 +1,38 @@
+puts "==========="
+puts "OCC24925 Enabling OCAF persistence without setting environment variables"
+puts "==========="
+
+pload QAcommands
+
+set THE_PLUGIN      "TKXml"
+set THE_SAVE_DRIVER "03a56820-8269-11d5-aab2-0050044b1af1"
+set THE_LOAD_DRIVER "03a56822-8269-11d5-aab2-0050044b1af1"
+
+set aFileName "$imagedir/${casename}_doc.xml"
+if { [file exists "$aFileName"] == 1} {
+  file delete $aFileName
+}
+
+# corrupt environment variable to Plugin file
+set anEnvOld [dgetenv CSF_PluginDefaults]
+dsetenv "CSF_PluginDefaults"
+set anEnvNow [dgetenv CSF_PluginDefaults]
+puts "Unset environment variable CSF_PluginDefaults (old='${anEnvOld}', new='${anEnvNow}')"
+
+OCC24925 "$aFileName" $THE_PLUGIN $THE_SAVE_DRIVER $THE_LOAD_DRIVER
+
+if { [file isfile "$aFileName"] == 1} {
+  set aFile     [open "$aFileName" r]
+  set aFileData [read $aFile]
+  close $aFile
+  if { [string first "My Proprietary Format" "$aFileData"] == -1} {
+    puts "Error: XML file does not contain 'My Proprietary Format'!"
+  }
+  if { [string first "QABugs_19.cxx" "$aFileData"] == -1} {
+    puts "Error: XML file does not contain 'QABugs_19.cxx'!"
+  }
+} else {
+  puts "Error: file is not created!"
+}
+
+#dsetenv "CSF_PluginDefaults" "anEnvOld"

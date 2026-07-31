@@ -1,0 +1,195 @@
+// Created on: 2005-02-14
+// Created by: Alexey MORENOV
+// Copyright (c) 2005-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ShapeAnalysis_BoxBndTree.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS.hxx>
+#include <ShapeAnalysis.hxx>
+#include <gp_Pnt.hxx>
+#include <BRep_Tool.hxx>
+
+//=================================================================================================
+
+bool ShapeAnalysis_BoxBndTreeSelector::Reject(const Bnd_Box& theBnd) const
+{
+  bool fch = myFBox.IsOut(theBnd);
+  bool lch = myLBox.IsOut(theBnd);
+  return fch && lch;
+}
+
+//=================================================================================================
+
+bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
+{
+  if (theObj < 1 || theObj > mySeq->Length())
+  {
+    throw Standard_NoSuchObject(
+      "ShapeAnalysis_BoxBndTreeSelector::Accept : no such object for current index");
+  }
+  bool IsAccept = false;
+  if (myList.Contains(theObj))
+  {
+    return false;
+  }
+
+  enum
+  {
+    First = 1,
+    Last  = 2
+  };
+
+  TopoDS_Wire   W = TopoDS::Wire(mySeq->Value(theObj));
+  TopoDS_Vertex V1, V2;
+  ShapeAnalysis::FindBounds(W, V1, V2);
+  if (myShared)
+  {
+    if (myLVertex.IsSame(V1))
+    {
+      myStatus           = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+      IsAccept           = true;
+      myArrIndices(Last) = theObj;
+    }
+    else
+    {
+      if (myLVertex.IsSame(V2))
+      {
+        myStatus           = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+        IsAccept           = true;
+        myArrIndices(Last) = theObj;
+      }
+      else
+      {
+        if (myFVertex.IsSame(V2))
+        {
+          myStatus            = ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+          IsAccept            = true;
+          myArrIndices(First) = theObj;
+        }
+        else
+        {
+          if (myFVertex.IsSame(V1))
+          {
+            myStatus            = ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+            IsAccept            = true;
+            myArrIndices(First) = theObj;
+          }
+          else
+          {
+            myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+          }
+        }
+      }
+    }
+
+    if (IsAccept)
+    {
+      SetNb(theObj);
+      if (myArrIndices(Last))
+      {
+        myStop = true;
+      }
+      return true;
+    }
+    else
+    {
+      myStop = false;
+    }
+  }
+
+  else
+  {
+    gp_Pnt p1 = BRep_Tool::Pnt(V1);
+    gp_Pnt p2 = BRep_Tool::Pnt(V2);
+
+    double tailhead, tailtail, headhead, headtail;
+    tailhead   = p1.Distance(myLPnt);
+    tailtail   = p2.Distance(myLPnt);
+    headhead   = p1.Distance(myFPnt);
+    headtail   = p2.Distance(myFPnt);
+    double dm1 = tailhead, dm2 = headtail;
+    int    res1 = 0, res2 = 0;
+    if (tailhead > tailtail)
+    {
+      res1 = 1;
+      dm1  = tailtail;
+    }
+    if (headtail > headhead)
+    {
+      res2 = 1;
+      dm2  = headhead;
+    }
+    int    result = res1;
+    double min3d;
+    min3d = std::min(dm1, dm2);
+    if (min3d > myMin3d)
+    {
+      return false;
+    }
+
+    int minInd           = (dm1 > dm2 ? First : Last);
+    int maxInd           = (dm1 > dm2 ? Last : First);
+    myArrIndices(minInd) = theObj;
+    if ((min3d - myMin3d) > RealSmall())
+    {
+      myArrIndices(maxInd) = 0;
+    }
+
+    myMin3d = min3d;
+    if (min3d > myTol)
+    {
+      myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+      return false;
+    }
+
+    int anObj = (myArrIndices(Last) ? myArrIndices(Last) : myArrIndices(First));
+    SetNb(anObj);
+
+    if (min3d == 0 && minInd == Last)
+    {
+      myStop = true;
+    }
+
+    if (dm1 > dm2)
+    {
+      dm1    = dm2;
+      result = res2 + 2;
+    }
+    if (anObj == theObj)
+    {
+      switch (result)
+      {
+        case 0:
+          myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+          break;
+        case 1:
+          myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+          break;
+        case 2:
+          myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+          break;
+        case 3:
+          myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+          break;
+      }
+    }
+    return true;
+  }
+
+  return false;
+}

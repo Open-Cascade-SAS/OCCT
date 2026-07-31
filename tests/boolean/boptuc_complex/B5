@@ -1,0 +1,15 @@
+restore [locate_data_file a102] a
+restore [locate_data_file b60] b
+
+bop a b
+boptuc result
+
+checkprops result -s 15000 -v 31250
+checknbshapes result -wire 24 -face 24 -shell 6 -solid 6
+foreach sol [explode result so] {
+  if {![regexp "This shape seems to be OK" [bopcheck $sol]]} {
+    puts "Error: the result solid $sol shape is self-interfered"
+  }
+}
+
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

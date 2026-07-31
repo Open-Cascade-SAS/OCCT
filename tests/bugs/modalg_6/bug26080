@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC26080"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+restore [locate_data_file bug26080_qef001.brep] q
+
+explode q
+copy q_1 b1
+copy q_2 b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+ 
+bfillds
+bbuild result
+
+checkprops result -s 1.36058e+06 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 7
+ EDGE      : 6
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 16
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by General Fuse operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

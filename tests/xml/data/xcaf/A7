@@ -1,0 +1,29 @@
+set aTestName "xcaf200-G1"
+puts $aTestName
+
+box aBox 10 20 30
+
+# Add an attribute to a data framework
+set aShLabel [XAddShape D aBox]
+set layer_before "Layer_1"
+set aLaLabel [XAddLayer D ${layer_before}]
+XSetLinkLayer D $aShLabel $aLaLabel
+
+# Close/Open the transaction
+NewCommand D
+set layer_before [XGetLayers D $aShLabel]
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set layer_after [XGetLayers DD $aShLabel]} aResult]
+if { ${IsDone} != 0 || ${layer_after} != ${layer_before} } {
+    puts "Error : Get a value of XCAFDoc_GraphNode attribute from restoring document"
+}

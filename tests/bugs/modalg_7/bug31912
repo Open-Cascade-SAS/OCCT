@@ -1,0 +1,46 @@
+puts "======================================================="
+puts "0031912: Modeling Algorithms - Boolean Cut can't build resulting shape"
+puts "======================================================="
+puts ""
+
+pload DATAEXCHANGE
+
+stepread [locate_data_file bug31912_s.stp] s *
+stepread [locate_data_file bug31912_b.stp] b *
+
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools b_1
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+bbuild rgf
+
+foreach r {r0 r1 r2 r3 r4 rgf} {
+  checkshape $r
+}
+
+checknbshapes r0 -wire 6 -face 6 -shell 1 -solid 1 -t
+checkprops r0 -s 279207 -v 5.32814e+06
+
+checknbshapes r1 -wire 12 -face 12 -shell 1 -solid 1 -t
+checkprops r1 -s 4.93771e+06 -v 1.56185e+08
+
+checknbshapes r2 -wire 8 -face 8 -shell 1 -solid 1 -t
+checkprops r2 -s 4.37427e+06 -v 1.34873e+08
+
+checknbshapes r3 -wire 6 -face 6 -shell 1 -solid 1 -t
+checkprops r3 -s 571214 -v 1.59844e+07
+
+checkprops r4 -l 3810.09
+checksection r4 -r 4
+
+checknbshapes rgf -wire 16 -face 16 -shell 3 -solid 3 -t
+checkprops rgf -s 5.22469e+06 -v 1.56185e+08
+
+checkview -display rgf -2d -path ${imagedir}/${test_image}.png

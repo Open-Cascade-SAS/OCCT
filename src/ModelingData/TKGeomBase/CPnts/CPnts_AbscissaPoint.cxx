@@ -1,0 +1,474 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//------------------------------------------------------------------------
+//  Calculate a point with given abscissa starting from a given point
+//  cases processed: straight segment, arc of circle, parameterized curve
+//  curve should be C1
+//  for a parameterized curve:
+//  calculate the total length of the curve
+//  calculate an approached point by assimilating the curve to a staight line
+//  calculate the length of the curve between the start point and the approached point
+//  by successive iteration find the point and its associated parameter
+//  call to FunctionRoot
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <CPnts_AbscissaPoint.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_FunctionRoot.hxx>
+#include <math_GaussSingleIntegration.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
+
+// auxiliary functions to compute the length of the derivative
+static double f3d(const double X, void* const C)
+{
+  gp_Pnt P;
+  gp_Vec V;
+  ((Adaptor3d_Curve*)C)->D1(X, P, V);
+  return V.Magnitude();
+}
+
+static double f2d(const double X, void* const C)
+{
+  gp_Pnt2d P;
+  gp_Vec2d V;
+  ((Adaptor2d_Curve2d*)C)->D1(X, P, V);
+  return V.Magnitude();
+}
+
+static int order(const Adaptor3d_Curve& C)
+{
+  switch (C.GetType())
+  {
+
+    case GeomAbs_Line:
+      return 2;
+
+    case GeomAbs_Parabola:
+      return 5;
+
+    case GeomAbs_BezierCurve:
+      return std::min(24, 2 * C.Degree());
+
+    case GeomAbs_BSplineCurve:
+      return std::min(24, 2 * C.NbPoles() - 1);
+
+    default:
+      return 10;
+  }
+}
+
+static int order(const Adaptor2d_Curve2d& C)
+{
+  switch (C.GetType())
+  {
+
+    case GeomAbs_Line:
+      return 2;
+
+    case GeomAbs_Parabola:
+      return 5;
+
+    case GeomAbs_BezierCurve:
+      return std::min(24, 2 * C.Bezier()->Degree());
+
+    case GeomAbs_BSplineCurve:
+      return std::min(24, 2 * C.BSpline()->NbPoles() - 1);
+
+    default:
+      return 10;
+  }
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C)
+{
+  return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter());
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C)
+{
+  return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter());
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double Tol)
+{
+  return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double Tol)
+{
+  return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double U1, const double U2)
+{
+  CPnts_MyGaussFunction FG;
+  // POP pout WNT
+  CPnts_RealFunction rf = f3d;
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f3d,(void*)&C);
+  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
+  if (!TheLength.IsDone())
+  {
+    throw Standard_ConstructionError();
+  }
+  return std::abs(TheLength.Value());
+}
+
+//=================================================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double U1, const double U2)
+{
+  CPnts_MyGaussFunction FG;
+  // POP pout WNT
+  CPnts_RealFunction rf = f2d;
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f2d,(void*)&C);
+  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
+  if (!TheLength.IsDone())
+  {
+    throw Standard_ConstructionError();
+  }
+  return std::abs(TheLength.Value());
+}
+
+//=======================================================================
+// function : Length
+// purpose  : 3d with parameters and tolerance
+//=======================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
+                                   const double           U1,
+                                   const double           U2,
+                                   const double           Tol)
+{
+  CPnts_MyGaussFunction FG;
+  // POP pout WNT
+  CPnts_RealFunction rf = f3d;
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f3d,(void*)&C);
+  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
+  if (!TheLength.IsDone())
+  {
+    throw Standard_ConstructionError();
+  }
+  return std::abs(TheLength.Value());
+}
+
+//=======================================================================
+// function : Length
+// purpose  : 2d with parameters and tolerance
+//=======================================================================
+
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
+                                   const double             U1,
+                                   const double             U2,
+                                   const double             Tol)
+{
+  CPnts_MyGaussFunction FG;
+  // POP pout WNT
+  CPnts_RealFunction rf = f2d;
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f2d,(void*)&C);
+  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
+  if (!TheLength.IsDone())
+  {
+    throw Standard_ConstructionError();
+  }
+  return std::abs(TheLength.Value());
+}
+
+//=================================================================================================
+
+CPnts_AbscissaPoint::CPnts_AbscissaPoint()
+    : myDone(false),
+      myL(0.0),
+      myParam(0.0),
+      myUMin(0.0),
+      myUMax(0.0)
+{
+}
+
+//=================================================================================================
+
+CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
+                                         const double           Abscissa,
+                                         const double           U0,
+                                         const double           Resolution)
+{
+  //  Init(C);
+  Init(C, Resolution); // rbv's modification
+  //
+  Perform(Abscissa, U0, Resolution);
+}
+
+//=================================================================================================
+
+CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
+                                         const double             Abscissa,
+                                         const double             U0,
+                                         const double             Resolution)
+{
+  Init(C);
+  Perform(Abscissa, U0, Resolution);
+}
+
+//=================================================================================================
+
+CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
+                                         const double           Abscissa,
+                                         const double           U0,
+                                         const double           Ui,
+                                         const double           Resolution)
+{
+  Init(C);
+  Perform(Abscissa, U0, Ui, Resolution);
+}
+
+//=================================================================================================
+
+CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
+                                         const double             Abscissa,
+                                         const double             U0,
+                                         const double             Ui,
+                                         const double             Resolution)
+{
+  Init(C);
+  Perform(Abscissa, U0, Ui, Resolution);
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C)
+{
+  Init(C, C.FirstParameter(), C.LastParameter());
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C)
+{
+  Init(C, C.FirstParameter(), C.LastParameter());
+}
+
+//=======================================================================
+// function : Init
+// purpose  : introduced by rbv for curvilinear parametrization
+//=======================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C, const double Tol)
+{
+  Init(C, C.FirstParameter(), C.LastParameter(), Tol);
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double Tol)
+{
+  Init(C, C.FirstParameter(), C.LastParameter(), Tol);
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C, const double U1, const double U2)
+{
+  // POP pout WNT
+  CPnts_RealFunction rf = f3d;
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f3d,(void*)&C,order(C));
+  myL       = CPnts_AbscissaPoint::Length(C, U1, U2);
+  myUMin    = std::min(U1, U2);
+  myUMax    = std::max(U1, U2);
+  double DU = myUMax - myUMin;
+  myUMin    = myUMin - DU;
+  myUMax    = myUMax + DU;
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double U1, const double U2)
+{
+  // POP pout WNT
+  CPnts_RealFunction rf = f2d;
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f2d,(void*)&C,order(C));
+  myL       = CPnts_AbscissaPoint::Length(C, U1, U2);
+  myUMin    = std::min(U1, U2);
+  myUMax    = std::max(U1, U2);
+  double DU = myUMax - myUMin;
+  myUMin    = myUMin - DU;
+  myUMax    = myUMax + DU;
+}
+
+//=======================================================================
+// function : Init
+// purpose  : introduced by rbv for curvilinear parametrization
+//=======================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
+                               const double           U1,
+                               const double           U2,
+                               const double           Tol)
+{
+  // POP pout WNT
+  CPnts_RealFunction rf = f3d;
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f3d,(void*)&C,order(C));
+  myL       = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
+  myUMin    = std::min(U1, U2);
+  myUMax    = std::max(U1, U2);
+  double DU = myUMax - myUMin;
+  myUMin    = myUMin - DU;
+  myUMax    = myUMax + DU;
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
+                               const double             U1,
+                               const double             U2,
+                               const double             Tol)
+{
+  // POP pout WNT
+  CPnts_RealFunction rf = f2d;
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f2d,(void*)&C,order(C));
+  myL       = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
+  myUMin    = std::min(U1, U2);
+  myUMax    = std::max(U1, U2);
+  double DU = myUMax - myUMin;
+  myUMin    = myUMin - DU;
+  myUMax    = myUMax + DU;
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Perform(const double Abscissa, const double U0, const double Resolution)
+{
+  if (myL < Precision::Confusion())
+  {
+    //
+    //  leave less violently : it is expected that
+    //  the increment of the level of myParam will not be great
+    //
+    myDone  = true;
+    myParam = U0;
+  }
+  else
+  {
+    double Ui = U0 + (Abscissa / myL) * (myUMax - myUMin) / 3.;
+    // exercise : why 3 ?
+    Perform(Abscissa, U0, Ui, Resolution);
+  }
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::Perform(const double Abscissa,
+                                  const double U0,
+                                  const double Ui,
+                                  const double Resolution)
+{
+  if (myL < Precision::Confusion())
+  {
+    //
+    //  leave less violently :
+    //
+    myDone  = true;
+    myParam = U0;
+  }
+  else
+  {
+    myDone = false;
+    myF.Init(U0, Abscissa);
+
+    math_FunctionRoot Solution(myF, Ui, Resolution, myUMin, myUMax);
+
+    // Temporarily suspend the validity test of the solution
+    // it is necessary to make a tolreached as soon as one will make a cdl
+    // lbo 21/03/97
+    //    if (Solution.IsDone()) {
+    //      double D;
+    //      myF.Derivative(Solution.Root(),D);
+    //      if (std::abs(Solution.Value()) < Resolution * D) {
+    //	myDone = true;
+    //	myParam = Solution.Root();
+    //      }
+    //    }
+    if (Solution.IsDone())
+    {
+      myDone  = true;
+      myParam = Solution.Root();
+    }
+  }
+}
+
+//=================================================================================================
+
+void CPnts_AbscissaPoint::AdvPerform(const double Abscissa,
+                                     const double U0,
+                                     const double Ui,
+                                     const double Resolution)
+{
+  if (myL < Precision::Confusion())
+  {
+    //
+    //  leave less violently :
+    //
+    myDone  = true;
+    myParam = U0;
+  }
+  else
+  {
+    myDone = false;
+    //    myF.Init(U0, Abscissa);
+    myF.Init(U0, Abscissa, Resolution / 10); // rbv's modification
+
+    math_FunctionRoot Solution(myF, Ui, Resolution, myUMin, myUMax);
+
+    // Temporarily suspend the validity test of the solution
+    // it is necessary to make a tolreached as soon as one will make a cdl
+    // lbo 21/03/97
+    //    if (Solution.IsDone()) {
+    //      double D;
+    //      myF.Derivative(Solution.Root(),D);
+    //      if (std::abs(Solution.Value()) < Resolution * D) {
+    //	myDone = true;
+    //	myParam = Solution.Root();
+    //      }
+    //    }
+    if (Solution.IsDone())
+    {
+      myDone  = true;
+      myParam = Solution.Root();
+    }
+  }
+}

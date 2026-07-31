@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename tr10_r1301_ms.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 42 )  Summary  = 1  ( 42 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 183  ( 183 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 183  ( 183 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.005574366633  (  0.00856471198 )  AvgTol   =   0.00116415979  (  0.001867051806 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 3  ( 3 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 2  ( 2 )   ColorLabels = 4  ( 4 )   LayerLabels = 4  ( 4 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = MAGENTA RED  ( MAGENTA RED )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 3 4  ( 3 4 )
+
+}

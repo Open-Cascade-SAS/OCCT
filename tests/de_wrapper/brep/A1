@@ -1,0 +1,16 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+readbrep ${filename} S_First
+
+set file_path ${imagedir}/${casename}.brep
+
+writebrep S_First $file_path
+
+readfile S_Second $file_path
+
+checknbshapes S_Second -ref [nbshapes S_First]
+
+file delete $file_path

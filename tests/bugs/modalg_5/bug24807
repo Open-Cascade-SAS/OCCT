@@ -1,0 +1,12 @@
+puts "=========="
+puts "OCC24807"
+puts "=========="
+puts ""
+#######################################################################
+# Exception in ShapeAnalysis_FreeBounds::ConnectEdgesToWires
+#######################################################################
+
+restore [locate_data_file bug24807_Compound.brep] a
+connectedges result a
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

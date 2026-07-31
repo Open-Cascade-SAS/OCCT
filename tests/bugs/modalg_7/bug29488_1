@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC29488"
+puts "========"
+puts ""
+#################################################
+# Regression: boolean operation " general fuse" creates solid containing 5 not connected shells lying on the one level
+#################################################
+
+restore [locate_data_file bug29488_shapes.brep] s
+eval mkvolume result [lrange [explode s] 1 end] 
+
+checkshape result
+checknbshapes result -wire 74 -face 74 -shell 1 -solid 1
+checkprops result -s 3073.39 -v 10240.8 
+
+set MinArea 0.001
+foreach f [explode result f] {
+  regexp {Mass +: +([-0-9.+eE]+)} [sprops $f 1.0e-4] full anArea
+  if { $anArea == 0.0 } {
+    puts "Error in area computation: it is equal to 0"
+  } elseif {$anArea < $MinArea} {
+    puts "Error: Too small face has been created (S < $MinArea)"
+  }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

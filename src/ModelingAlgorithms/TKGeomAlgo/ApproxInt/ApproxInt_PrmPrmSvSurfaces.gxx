@@ -1,0 +1,373 @@
+// Created on: 1993-03-17
+// Created by: Laurent BUCHARD
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#define TOLTANGENCY 0.0000000001
+
+#include <NCollection_Array1.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <Precision.hxx>
+
+#define Debug(expr) std::cout << " expr :" << expr;
+#define MySurf1 MyIntersectionOn2S.Function().AuxillarSurface1()
+#define MySurf2 MyIntersectionOn2S.Function().AuxillarSurface2()
+
+//=================================================================================================
+
+ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces(const ThePSurface& Surf1,
+                                                       const ThePSurface& Surf2)
+    : MyIsTangent(false),
+      MyHasBeenComputed(false),
+      MyIsTangentbis(false),
+      MyHasBeenComputedbis(false),
+      MyIntersectionOn2S(Surf1, Surf2, TOLTANGENCY)
+{
+}
+
+//=======================================================================
+// function : Compute
+// purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
+//            parameters on the surfaces.
+//=======================================================================
+bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
+                                         double&   v1,
+                                         double&   u2,
+                                         double&   v2,
+                                         gp_Pnt&   P,
+                                         gp_Vec&   Tg,
+                                         gp_Vec2d& Tguv1,
+                                         gp_Vec2d& Tguv2)
+{
+
+  double tu1 = u1;
+  double tu2 = u2;
+  double tv1 = v1;
+  double tv2 = v2;
+
+  if (MyHasBeenComputed)
+  {
+    if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2)
+        && (MyParOnS2.Y() == v2))
+    {
+      return (MyIsTangent);
+    }
+    else if (MyHasBeenComputedbis == false)
+    {
+      MyTgbis              = MyTg;
+      MyTguv1bis           = MyTguv1;
+      MyTguv2bis           = MyTguv2;
+      MyPntbis             = MyPnt;
+      MyParOnS1bis         = MyParOnS1;
+      MyParOnS2bis         = MyParOnS2;
+      MyIsTangentbis       = MyIsTangent;
+      MyHasBeenComputedbis = MyHasBeenComputed;
+    }
+  }
+  if (MyHasBeenComputedbis)
+  {
+    if ((MyParOnS1bis.X() == u1) && (MyParOnS1bis.Y() == v1) && (MyParOnS2bis.X() == u2)
+        && (MyParOnS2bis.Y() == v2))
+    {
+
+      gp_Vec   TV(MyTg);
+      gp_Vec2d TV1(MyTguv1);
+      gp_Vec2d TV2(MyTguv2);
+      gp_Pnt   TP(MyPnt);
+      gp_Pnt2d TP1(MyParOnS1);
+      gp_Pnt2d TP2(MyParOnS2);
+      bool     TB = MyIsTangent;
+
+      MyTg        = MyTgbis;
+      MyTguv1     = MyTguv1bis;
+      MyTguv2     = MyTguv2bis;
+      MyPnt       = MyPntbis;
+      MyParOnS1   = MyParOnS1bis;
+      MyParOnS2   = MyParOnS2bis;
+      MyIsTangent = MyIsTangentbis;
+
+      MyTgbis        = TV;
+      MyTguv1bis     = TV1;
+      MyTguv2bis     = TV2;
+      MyPntbis       = TP;
+      MyParOnS1bis   = TP1;
+      MyParOnS2bis   = TP2;
+      MyIsTangentbis = TB;
+
+      return (MyIsTangent);
+    }
+  }
+
+  MyIsTangent = true;
+
+  double                     aParam[4]; // stack vs heap allocation
+  NCollection_Array1<double> Param(aParam[0], 1, 4);
+  Param(1) = u1;
+  Param(2) = v1;
+  Param(3) = u2;
+  Param(4) = v2;
+  math_FunctionSetRoot Rsnld(MyIntersectionOn2S.Function());
+  MyIntersectionOn2S.Perform(Param, Rsnld);
+  if (!MyIntersectionOn2S.IsDone())
+  {
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
+  }
+  if (MyIntersectionOn2S.IsEmpty())
+  {
+    MyIsTangent = false;
+    // cout<<"\n----- Parametree Parametree : IsEmpty ds Compute "<<endl;
+    // Debug(u1); Debug(u2); Debug(v1); Debug(v2);   cout<<endl;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
+  }
+  MyHasBeenComputed = true;
+  MyPnt = P = MyIntersectionOn2S.Point().Value();
+
+  MyIntersectionOn2S.Point().Parameters(u1, v1, u2, v2);
+  MyParOnS1.SetCoord(tu1, tv1);
+  MyParOnS2.SetCoord(tu2, tv2);
+
+  if (MyIntersectionOn2S.IsTangent())
+  {
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
+  }
+  MyTg = Tg = MyIntersectionOn2S.Direction();
+  MyTguv1 = Tguv1 = MyIntersectionOn2S.DirectionOnS1();
+  MyTguv2 = Tguv2 = MyIntersectionOn2S.DirectionOnS2();
+
+  //----------------------------------------------------------------------
+  //-- Si ( Tg )    TU et TV sont normes
+  //--
+  //-- On a    Tg   =  DeltaU  *  TU    +   DeltaV  *  TV
+  //--
+  //-- soit :  Tg.TU  =  DeltaU  TU.TU  +   DeltaV  TU.TV
+  //--         Tg.TV  =  DeltaU  TV.TU  +   DeltaV  TV.TV
+  //--
+  //-- Donc :
+  //--
+  //--               Tg.TU TV.TV  - Tg.TV * TU.TV
+  //--   DeltaU = -------------------------------
+  //--               TU.TU TV.TV  - (TU.TV)**2
+  //--
+  //--               Tg.TV TU.TU  - Tg.TU * TU.TV
+  //--   DeltaV = -------------------------------
+  //--               TU.TU TV.TV  - (TU.TV)**2
+  //--
+  //--
+
+  Tg.Normalize();
+  MyTg = Tg;
+
+  double DeltaU, DeltaV;
+  gp_Vec TU, TV;
+  gp_Pnt Pbid;
+  double TUTV, TgTU, TgTV, TUTU, TVTV, DIS;
+  //------------------------------------------------------------
+  //-- Calcul de Tguv1
+  //--
+  ThePSurfaceTool::D1(MySurf1, u1, v1, Pbid, TU, TV);
+
+  TUTU = TU.Dot(TU);
+  TVTV = TV.Dot(TV);
+  TUTV = TU.Dot(TV);
+  TgTU = Tg.Dot(TU);
+  TgTV = Tg.Dot(TV);
+  DIS  = TUTU * TVTV - TUTV * TUTV;
+  if (fabs(DIS) < Precision::Angular())
+  {
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
+  }
+
+  DeltaU = (TgTU * TVTV - TgTV * TUTV) / DIS;
+  DeltaV = (TgTV * TUTU - TgTU * TUTV) / DIS;
+
+  Tguv1.SetCoord(DeltaU, DeltaV);
+  MyTguv1 = Tguv1;
+
+  //------------------------------------------------------------
+  //-- Calcul de Tguv2
+  //--
+  ThePSurfaceTool::D1(MySurf2, u2, v2, Pbid, TU, TV);
+
+  TUTU = TU.Dot(TU);
+  TVTV = TV.Dot(TV);
+  TUTV = TU.Dot(TV);
+  TgTU = Tg.Dot(TU);
+  TgTV = Tg.Dot(TV);
+  DIS  = TUTU * TVTV - TUTV * TUTV;
+  if (fabs(DIS) < Precision::Angular())
+  {
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
+  }
+
+  DeltaU = (TgTU * TVTV - TgTV * TUTV) / DIS;
+  DeltaV = (TgTV * TUTU - TgTU * TUTV) / DIS;
+
+  Tguv2.SetCoord(DeltaU, DeltaV);
+  MyTguv2 = Tguv2;
+
+  return (true);
+}
+
+//=================================================================================================
+
+void ApproxInt_PrmPrmSvSurfaces::Pnt(const double u1,
+                                     const double v1,
+                                     const double u2,
+                                     const double v2,
+                                     gp_Pnt&      P)
+{
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  P = MyPnt;
+}
+
+//=======================================================================
+// function : SeekPoint
+// purpose  :    Computes point on curve and
+//            parameters on the surfaces.
+//=======================================================================
+bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double     u1,
+                                           const double     v1,
+                                           const double     u2,
+                                           const double     v2,
+                                           IntSurf_PntOn2S& Point)
+{
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  if (!Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2))
+    return false;
+
+  Point.SetValue(aP, tu1, tv1, tu2, tv2);
+  return true;
+}
+
+//=================================================================================================
+
+bool ApproxInt_PrmPrmSvSurfaces::Tangency(const double u1,
+                                          const double v1,
+                                          const double u2,
+                                          const double v2,
+                                          gp_Vec&      T)
+{
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTg;
+  return (t);
+}
+
+//=================================================================================================
+
+bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const double u1,
+                                                 const double v1,
+                                                 const double u2,
+                                                 const double v2,
+                                                 gp_Vec2d&    T)
+{
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTguv1;
+  return (t);
+}
+
+//=================================================================================================
+
+bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const double u1,
+                                                 const double v1,
+                                                 const double u2,
+                                                 const double v2,
+                                                 gp_Vec2d&    T)
+{
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTguv2;
+  return (t);
+}
+
+//--------------------------------------------------------------------------------
+
+#if 0 
+  //------------------------------------------------------------
+  //-- Calcul de Tguv1
+  //--
+  ThePSurfaceTool::D1(MySurf1,u1,v1,P,TU,TV);
+  
+  TUTV = TU.Dot(TV);
+  TgTU = Tg.Dot(TU);
+  TgTV = Tg.Dot(TV);
+  UmTUTV2 = 1.0 - TUTV * TUTV;
+  
+  DeltaU = (TgTU - TgTV * TUTV ) / UmTUTV2 ; 
+  DeltaV = (TgTV - TgTU * TUTV ) / UmTUTV2 ;
+
+  Delta = 1.0 / std::sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
+  
+  Tguv1.Multiplied(Delta);  MyTguv1 = Tguv1;
+
+  //------------------------------------------------------------
+  //-- Calcul de Tguv2
+  //--  
+  ThePSurfaceTool::D1(MySurf2,u2,v2,P,TU,TV);
+
+  TUTV = TU.Dot(TV);
+  TgTU = Tg.Dot(TU);
+  TgTV = Tg.Dot(TV);
+  UmTUTV2 = 1.0 - TUTV * TUTV;
+  
+  DeltaU = (TgTU - TgTV * TUTV ) / UmTUTV2 ; 
+  DeltaV = (TgTV - TgTU * TUTV ) / UmTUTV2 ;
+  
+  Delta = 1.0 / std::sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
+  
+  Tguv2.Multiplied(Delta);  MyTguv2 = Tguv2;
+
+  return(true);
+}
+#endif

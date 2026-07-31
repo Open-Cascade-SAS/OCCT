@@ -1,0 +1,11 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : E2
+## Comment : From CV tests serie page 19
+## ===========================================
+
+restore [locate_data_file CCV_1_e12gsh.rle] s
+explode s E
+blend result s 15 s_5
+
+checkprops result -s 64076.6

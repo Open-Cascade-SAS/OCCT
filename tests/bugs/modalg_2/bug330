@@ -1,0 +1,24 @@
+# TODOs statements should be replaced by REQUIRED after bug fixing.
+puts "TODO OCC12345 ALL: Faulty OCC330: Checkshape command works wrongly"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
+
+puts "========================"
+puts " OCC330 "
+puts "========================"
+puts ""
+##################################################
+## checkshape command consider the shape with incorrect order of tolerance as valid.
+##################################################
+
+restore [locate_data_file OCC330.brep] result
+
+set che [checkshape result]
+
+if { [regexp {Faulty} $che ] != 1 } {
+    puts "Faulty OCC330: Checkshape command works wrongly"
+} else {
+    puts "OCC330 OK : Checkshape command works properly"
+}
+
+checkprops result -s 0 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

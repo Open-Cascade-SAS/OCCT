@@ -1,0 +1,50 @@
+// Created on: 1999-11-26
+// Created by: Andrey BETENEV
+// Copyright (c) 1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+
+#include <StepAP203_Change.hxx>
+#include <StepBasic_Action.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_Change, StepBasic_ActionAssignment)
+
+//=================================================================================================
+
+StepAP203_Change::StepAP203_Change() = default;
+
+//=================================================================================================
+
+void StepAP203_Change::Init(const occ::handle<StepBasic_Action>& aActionAssignment_AssignedAction,
+                            const occ::handle<NCollection_HArray1<StepAP203_WorkItem>>& aItems)
+{
+  StepBasic_ActionAssignment::Init(aActionAssignment_AssignedAction);
+
+  theItems = aItems;
+}
+
+//=================================================================================================
+
+occ::handle<NCollection_HArray1<StepAP203_WorkItem>> StepAP203_Change::Items() const
+{
+  return theItems;
+}
+
+//=================================================================================================
+
+void StepAP203_Change::SetItems(const occ::handle<NCollection_HArray1<StepAP203_WorkItem>>& aItems)
+{
+  theItems = aItems;
+}

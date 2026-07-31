@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC28528"
+puts "========"
+puts ""
+#######################################################################
+# Make the CellsBuilder algorithm to work with multi-dimensional arguments
+#######################################################################
+
+puts "Arguments: solid and a face"
+
+box b 10 10 10
+plane p 5 5 5 1 0 0
+mkface f p 0 10 0 10
+
+bclearobjects
+bcleartools
+baddobjects b f
+bfillds
+bcbuild r
+
+puts "Results"
+
+puts "All split shapes"
+bcaddall result
+checknbshapes result -solid 1 -m "Number of SOLIDs in the result containing all splits"
+checknbshapes result -face 8 -m "Number of FACEs in the result containing all splits"
+checkprops result -v 1000 -s 725
+
+puts "Cut solid from face"
+bcremoveall
+bcadd result f 1 b 0
+checknbshapes result -face 1 -m "Number of FACEs in the result of CUT(f, b) operation"
+
+puts "Cut face from solid"
+bcremoveall
+bcadd result b 1 f 0
+checknbshapes result -solid 1 -m "Number of SOLIDs in the result of CUT(b, f) operation"
+checknbshapes result -face 7 -m "Number of FACEs in the result of CUT(b, f) operation"
+
+puts "Common between face and solid"
+bcremoveall
+bcadd result b 1 f 1
+checknbshapes result -face 1 -m "Number of FACEs in the result of COMMON(b, f) operation"
+
+puts "Fuse operation between face and solid"
+bcremoveall
+bcadd result b 1 -m 1 -u
+checknbshapes result -face 7 -m "Number of faces in unified split of solid"
+bcadd result f 1 b 0
+checknbshapes result -solid 1 -m "Number of SOLIDs in the result of FUSE(b, f) operation"
+checknbshapes result -face 8 -m "Number of FACEs in the result of FUSE(b, f) operation"

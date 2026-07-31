@@ -1,0 +1,21 @@
+puts "============"
+puts "CR25060: Capping breaks highlighting of shaded AIS_Shape with displayed edges."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b 10 10 10
+vdisplay b
+vaspects b -setFaceBoundaryDraw 1
+vclipplane create pln1
+vclipplane set pln1 object b
+vclipplane change pln1 equation 0 1 0 -5
+vclipplane change pln1 capping on
+vsetdispmode 1
+vfit
+vmoveto 304 146
+checkcolor 304 146 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting is broken." }
+
+vdump $imagedir/${casename}.png

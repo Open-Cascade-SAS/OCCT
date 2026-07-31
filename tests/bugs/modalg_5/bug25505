@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25505"
+puts "============"
+puts ""
+###############################
+## General Fuse produces self-intersection shape
+###############################
+
+restore [locate_data_file bug25505_q.brep] q
+
+explode q
+
+bclearobjects
+bcleartools
+baddobjects q_1 q_2 q_3 q_4
+bfillds
+bbuild result
+
+set info [bopcheck result]
+
+if {[string compare ${info} " This shape seems to be OK.\n"] == 0} {
+    puts "OK: General Fuse produces good shape"
+} else {
+    puts "Error : General Fuse produces self-intersection shape"
+}
+
+checkprops result -s 68796.4 
+checkshape result
+
+checknbshapes result -vertex 14 -edge 21 -wire 9 -face 9 -shell 7 -solid 4 -compsolid 0 -compound 1 -shape 65
+checkview -display result -3d -path ${imagedir}/${test_image}.png

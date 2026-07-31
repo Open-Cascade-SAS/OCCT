@@ -1,0 +1,16 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR11111 ALL: Error on writing file"
+
+set filename bug33661_nist_ftc_08_asme1_ap242-e1-tg.stp
+
+set ref_data {
+Centre of mass: -62.99891835601813 78.203476181663817 20.269103705327481
+Mass: 47784.542040997127
+
+}
+
+set ref_data_write {
+Centre of mass: -261.12759307366923 196.9986700086933 -13.86055926862322
+Mass: 17568.06377585962
+
+}

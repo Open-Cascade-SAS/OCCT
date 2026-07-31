@@ -1,0 +1,24 @@
+puts "============"
+puts "0029127: Visualization - V3d_View::ToPixMap() crashes on tiled rendering without FBO"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3 
+
+# request software OpenGL implementation - which is OpenGL 1.1 in case of Windows
+# (test case is useless for other systems)
+pload OPENGL
+vcaps -softMode 1
+
+# disable FPE signals -- these often occur in software OpenGL drivers
+dsetsignal 0
+
+vclear
+vinit View1
+vsetdispmode 1
+vdisplay b
+vfit
+vdump $::imagedir/${::casename}_409.png -buffer rgb -width 409 -height 409
+vdump $::imagedir/${::casename}_412.png -buffer rgb -width 412 -height 412 -tileSize 409
+vdump $::imagedir/${::casename}_500.png -buffer rgb -width 500 -height 500 -tileSize 300

@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 14)
+# test2.tcl
+######################################################
+
+beziercurve c11 5 0 0 0 10 0 0 20 10 12 25 30 20 50 40 50
+beziercurve c12 4 50 40 50 70 30 30 90 20 20 100 50 0
+mkedge e11 c11
+mkedge e12 c12
+wire s1 e11 e12
+
+beziercurve c21 4 0 0 0 0 0 10 0 10 10 0 10 20
+mkedge e21 c21
+wire s2 e21
+
+puts "###############################################################################"
+puts "# (case /-/-/-/)"
+puts "###############################################################################"
+
+checkshape s1
+checkshape s2
+
+mksweep s1
+
+addsweep s2
+if [catch { buildsweep result } res] {
+  puts "Faulty OCC1477: buildsweep is wrong"
+}
+
+checkprops result -s 2570.32
+
+checknbshapes result -vertex 6 -edge 7 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 18

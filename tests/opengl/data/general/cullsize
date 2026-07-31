@@ -1,0 +1,57 @@
+puts "========"
+puts "0029295: Visualization, TKOpenGl - provide distance culling option"
+puts "Check size culling"
+puts "========"
+
+set THE_NB_BOXES 5
+set THE_COLORS { RED GREEN BLUE YELLOW PURPLE1 }
+set THE_PICK_PNTS1O { {  10 165 } { 100 200 } { 170 250 } { 250 250 } { 350 300 } }
+set THE_PICK_PNTS1P { {  40 170 } { 100 200 } { 170 250 } { 250 250 } { 380 350 } }
+set THE_PICK_PNTS2O { { 148 192 } { 175 200 } { 190 200 } { 200 220 } { 250 230 } }
+set THE_PICK_PNTS2P { { 152 192 } { 175 200 } { 190 200 } { 220 220 } { 250 230 } }
+set THE_PICK_PNTS3P { {  90 155 } { 105 160 } { 125 170 } { 140 175 } { 160 180 } }
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+for { set x 1 } { $x <= $THE_NB_BOXES } { incr x } { box b$x [expr $x * 1.0] 0 0 [expr $x * 0.2] [expr $x *0.1] [expr $x *0.3]; vdisplay -dispMode 1 b$x }
+for { set x 1 } { $x <= $THE_NB_BOXES } { incr x } { vsetcolor b$x [lindex $THE_COLORS [expr $x - 1]] }
+vline l 1 0 0 6 0 0
+vdisplay -mutable l
+vcamera -ortho
+vfit
+
+vzlayer default -cullsize 25
+vcamera -ortho
+for { set x 0 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1O $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+vdump $::imagedir/${::casename}_25o.png
+vcamera -persp
+for { set x 0 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1P $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+vdump $::imagedir/${::casename}_25p.png
+
+vzlayer default -cullsize 50
+vcamera -ortho
+for { set x 1 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1O $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+for { set x 0 } { $x < 1 }             { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1O $x] rgb name] != "BLACK" } { puts "Error: object $x is NOT culled" } }
+vdump $::imagedir/${::casename}_50o.png
+vcamera -persp
+for { set x 1 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1P $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+for { set x 0 } { $x < 1 }             { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS1P $x] rgb name] != "BLACK" } { puts "Error: object $x is NOT culled" } }
+vdump $::imagedir/${::casename}_50p.png
+
+vzoom 0.25
+vzlayer default -cullsize 30
+vcamera -ortho
+for { set x 2 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS2O $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+for { set x 0 } { $x < 2 }             { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS2O $x] rgb name] != "BLACK" } { puts "Error: object $x is NOT culled" } }
+vdump $::imagedir/${::casename}_30o.png
+vcamera -persp
+for { set x 2 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS2P $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+for { set x 0 } { $x < 2 }             { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS2P $x] rgb name] != "BLACK" } { puts "Error: object $x is NOT culled" } }
+vdump $::imagedir/${::casename}_30p.png
+
+vviewparams -eye 16.8333 -9.08333 10.0833 -at 7.5 0.25 0.75
+for { set x 3 } { $x < $THE_NB_BOXES } { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS3P $x] rgb name] == "BLACK" } { puts "Error: object $x is culled" } }
+for { set x 0 } { $x < 3 }             { incr x } { if { [vreadpixel {*}[lindex $THE_PICK_PNTS3P $x] rgb name] != "BLACK" } { puts "Error: object $x is NOT culled" } }
+vdump $::imagedir/${::casename}_30p2.png

@@ -1,0 +1,28 @@
+puts "================================="
+puts "0031704: Visualization - add an interactive object AIS_LightSource representing a light source"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vlight -clear
+vbackground -color GRAY
+vrenderparams -shadingModel PHONG
+vlight amblight -type AMBIENT -color WHITE -intensity 0.1
+box b 10 10 10 30 30 30
+vdisplay b -dispMode 1
+vaspects b -material Brass
+vfit
+
+puts "=== Check headlight option with spotlight ==="
+vlight aSpotlight -type SPOTLIGHT -dir 0 0 -1 -head 1 -intensity 1000000000 -color GREEN -display
+set aColor1 [vreadpixel 200 200 rgb name]
+if { "$aColor1" != "GREEN" } { puts "Error: expected color near the light is GREEN" }
+vdump $imagedir/${casename}_spot.png
+
+puts "=== Check headlight option with positional light ==="
+vlight aSpotlight -remove
+vlight aPosLight -type POSITIONAL -head 1 -color RED -display
+set aColor2 [vreadpixel 200 200 rgb name]
+if { "$aColor2" != "RED" } { puts "Error: expected color near the light is RED" }
+vdump $imagedir/${casename}_pos.png

@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+pload QAcommands
+
+set NbIters 101
+set step [expr 360.0/($NbIters-1) ]
+
+restore [locate_data_file bug29237_no_overlap.lhs.brep] a
+for {set i 1} { $i <= $NbIters} { incr i } {
+  OCC29311 a OBBL$i 5
+  if { $i != $NbIters } { trotate a 283 162 317 2 7 9 $step }
+}
+
+restore [locate_data_file bug29237_no_overlap.rhs.brep] a
+for {set i 1} { $i <= $NbIters} { incr i } {
+  OCC29311 a OBBR$i 5
+  if { $i != $NbIters } { trotate a 283 162 317 2 7 9 $step }
+}

@@ -1,0 +1,20 @@
+# Compute offset.
+offsetshapesimple result s $OffsetValue $SingularTol
+
+# 1% relative tolerance
+set TolRel 1.0e-2
+
+# Check result validity.
+checkshape result
+
+# Check result area.
+checkprops result -s $ExpectedMass -eps $TolRel
+
+# Check maximal tolerance
+checkmaxtol result -ref $ExpectedMaxTol
+
+# Make screenshot.
+smallview
+don result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

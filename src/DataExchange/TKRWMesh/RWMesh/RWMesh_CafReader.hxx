@@ -1,0 +1,345 @@
+// Author: Kirill Gavrilov
+// Copyright (c) 2016-2019 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWMesh_CafReader_HeaderFile
+#define _RWMesh_CafReader_HeaderFile
+
+#include <Message_ProgressRange.hxx>
+#include <OSD_OpenFile.hxx>
+#include <RWMesh_CoordinateSystemConverter.hxx>
+#include <RWMesh_NodeAttributes.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TDF_Label.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+
+class TDocStd_Document;
+class XCAFDoc_ShapeTool;
+class XCAFDoc_ColorTool;
+class XCAFDoc_VisMaterialTool;
+
+//! Extended status bits.
+enum RWMesh_CafReaderStatusEx
+{
+  RWMesh_CafReaderStatusEx_NONE = 0, //!< empty status
+  RWMesh_CafReaderStatusEx_Partial =
+    0x01, //!< partial read (due to unexpected EOF, syntax error, memory limit)
+};
+
+//! The general interface for importing mesh data into XDE document.
+//!
+//! The tool implements auxiliary structures for creating an XDE document in two steps:
+//! 1) Creating TopoDS_Shape hierarchy (myRootShapes)
+//!    and Shape attributes (myAttribMap) separately within performMesh().
+//!    Attributes include names and styles.
+//! 2) Filling XDE document from these auxiliary structures.
+//!    Named elements are expanded within document structure, while Compounds having no named
+//!    children will remain collapsed. In addition, unnamed nodes can be filled with generated names
+//!    like "Face", "Compound" via generateNames() method, and the very root unnamed node can be
+//!    filled from file name like "MyModel.obj".
+class RWMesh_CafReader : public Standard_Transient
+{
+  DEFINE_STANDARD_RTTIEXT(RWMesh_CafReader, Standard_Transient)
+public:
+  //! Structure holding tools for filling the document.
+  struct CafDocumentTools
+  {
+    occ::handle<XCAFDoc_ShapeTool>                                        ShapeTool;
+    occ::handle<XCAFDoc_ColorTool>                                        ColorTool;
+    occ::handle<XCAFDoc_VisMaterialTool>                                  VisMaterialTool;
+    NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> ComponentMap;
+    NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> OriginalShapeMap;
+  };
+
+public:
+  //! Empty constructor.
+  Standard_EXPORT RWMesh_CafReader();
+
+  //! Destructor.
+  Standard_EXPORT ~RWMesh_CafReader() override;
+
+  //! Return target document.
+  const occ::handle<TDocStd_Document>& Document() const { return myXdeDoc; }
+
+  //! Set target document.
+  //! Set system length unit according to the units of the document
+  Standard_EXPORT void SetDocument(const occ::handle<TDocStd_Document>& theDoc);
+
+  //! Return prefix for generating root labels names.
+  const TCollection_AsciiString& RootPrefix() const { return myRootPrefix; }
+
+  //! Set prefix for generating root labels names
+  void SetRootPrefix(const TCollection_AsciiString& theRootPrefix) { myRootPrefix = theRootPrefix; }
+
+  //! Flag indicating if partially read file content should be put into the XDE document, TRUE by
+  //! default.
+  //!
+  //! Partial read means unexpected end of file, critical parsing syntax errors in the middle of
+  //! file, or reached memory limit indicated by performMesh() returning FALSE. Partial read allows
+  //! importing a model even in case of formal reading failure, so that it will be up to user to
+  //! decide if processed data has any value.
+  //!
+  //! In case of partial read (performMesh() returns FALSE, but there are some data that could be
+  //! put into document), Perform() will return TRUE and result flag will have failure bit set.
+  //! @sa MemoryLimitMiB(), ExtraStatus().
+  bool ToFillIncompleteDocument() const { return myToFillIncomplete; }
+
+  //! Set flag allowing partially read file content to be put into the XDE document.
+  void SetFillIncompleteDocument(bool theToFillIncomplete)
+  {
+    myToFillIncomplete = theToFillIncomplete;
+  }
+
+  //! Return memory usage limit in MiB, -1 by default which means no limit.
+  int MemoryLimitMiB() const { return myMemoryLimitMiB; }
+
+  //! Set memory usage limit in MiB; can be ignored by reader implementation!
+  void SetMemoryLimitMiB(int theLimitMiB) { myMemoryLimitMiB = theLimitMiB; }
+
+public:
+  //! Return coordinate system converter.
+  const RWMesh_CoordinateSystemConverter& CoordinateSystemConverter() const
+  {
+    return myCoordSysConverter;
+  }
+
+  //! Set coordinate system converter.
+  void SetCoordinateSystemConverter(const RWMesh_CoordinateSystemConverter& theConverter)
+  {
+    myCoordSysConverter = theConverter;
+  }
+
+  //! Return the length unit to convert into while reading the file, defined as scale factor for m
+  //! (meters); -1.0 by default, which means that NO conversion will be applied.
+  double SystemLengthUnit() const { return myCoordSysConverter.OutputLengthUnit(); }
+
+  //! Set system length units to convert into while reading the file, defined as scale factor for m
+  //! (meters).
+  void SetSystemLengthUnit(double theUnits) { myCoordSysConverter.SetOutputLengthUnit(theUnits); }
+
+  //! Return TRUE if system coordinate system has been defined; FALSE by default.
+  bool HasSystemCoordinateSystem() const { return myCoordSysConverter.HasOutputCoordinateSystem(); }
+
+  //! Return system coordinate system; UNDEFINED by default, which means that no conversion will be
+  //! done.
+  const gp_Ax3& SystemCoordinateSystem() const
+  {
+    return myCoordSysConverter.OutputCoordinateSystem();
+  }
+
+  //! Set system origin coordinate system to perform conversion into during read.
+  void SetSystemCoordinateSystem(const gp_Ax3& theCS)
+  {
+    myCoordSysConverter.SetOutputCoordinateSystem(theCS);
+  }
+
+  //! Set system origin coordinate system to perform conversion into during read.
+  void SetSystemCoordinateSystem(RWMesh_CoordinateSystem theCS)
+  {
+    myCoordSysConverter.SetOutputCoordinateSystem(theCS);
+  }
+
+  //! Return the length unit to convert from while reading the file, defined as scale factor for m
+  //! (meters). Can be undefined (-1.0) if file format is unitless.
+  double FileLengthUnit() const { return myCoordSysConverter.InputLengthUnit(); }
+
+  //! Set (override) file length units to convert from while reading the file, defined as scale
+  //! factor for m (meters).
+  void SetFileLengthUnit(double theUnits) { myCoordSysConverter.SetInputLengthUnit(theUnits); }
+
+  //! Return TRUE if file origin coordinate system has been defined.
+  bool HasFileCoordinateSystem() const { return myCoordSysConverter.HasInputCoordinateSystem(); }
+
+  //! Return file origin coordinate system; can be UNDEFINED, which means no conversion will be
+  //! done.
+  const gp_Ax3& FileCoordinateSystem() const { return myCoordSysConverter.InputCoordinateSystem(); }
+
+  //! Set (override) file origin coordinate system to perform conversion during read.
+  void SetFileCoordinateSystem(const gp_Ax3& theCS)
+  {
+    myCoordSysConverter.SetInputCoordinateSystem(theCS);
+  }
+
+  //! Set (override) file origin coordinate system to perform conversion during read.
+  void SetFileCoordinateSystem(RWMesh_CoordinateSystem theCS)
+  {
+    myCoordSysConverter.SetInputCoordinateSystem(theCS);
+  }
+
+public:
+  //! Open stream and pass it to Perform method.
+  //! The Document instance should be set beforehand.
+  bool Perform(const TCollection_AsciiString& theFile, const Message_ProgressRange& theProgress)
+  {
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return Perform(aStream, theProgress, theFile);
+  }
+
+  //! Read the data from specified file.
+  bool Perform(std::istream&                  theStream,
+               const Message_ProgressRange&   theProgress,
+               const TCollection_AsciiString& theFile = "")
+  {
+    return perform(theStream, theFile, theProgress, false);
+  }
+
+  //! Return extended status flags.
+  //! @sa RWMesh_CafReaderStatusEx enumeration.
+  int ExtraStatus() const { return myExtraStatus; }
+
+public:
+  //! Return result as a single shape.
+  Standard_EXPORT TopoDS_Shape SingleShape() const;
+
+  //! Return the list of complementary files - external references (textures, data, etc.).
+  const NCollection_IndexedMap<TCollection_AsciiString>& ExternalFiles() const
+  {
+    return myExternalFiles;
+  }
+
+  //! Return metadata map.
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& Metadata()
+    const
+  {
+    return myMetadata;
+  }
+
+  //! Open stream and pass it to ProbeHeader method.
+  bool ProbeHeader(const TCollection_AsciiString& theFile,
+                   const Message_ProgressRange&   theProgress = Message_ProgressRange())
+  {
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return ProbeHeader(aStream, theFile, theProgress);
+  }
+
+  //! Read the header data from specified file without reading entire model.
+  //! The main purpose is collecting metadata and external references - for copying model into a new
+  //! location, for example. Can be NOT implemented (unsupported by format / reader).
+  bool ProbeHeader(std::istream&                  theStream,
+                   const TCollection_AsciiString& theFile     = "",
+                   const Message_ProgressRange&   theProgress = Message_ProgressRange())
+  {
+    return perform(theStream, theFile, theProgress, true);
+  }
+
+protected:
+  //! Open stream and pass it to Perform method.
+  //! @param theFile    file to read
+  //! @param optional   progress indicator
+  //! @param theToProbe flag indicating that mesh data should be skipped and only basing information
+  //! to be read
+  Standard_EXPORT virtual bool perform(const TCollection_AsciiString& theFile,
+                                       const Message_ProgressRange&   theProgress,
+                                       const bool                     theToProbe);
+
+  //! Read the data from specified file.
+  //! Default implementation calls performMesh() and fills XDE document from collected shapes.
+  //! @param theStream  input stream
+  //! @param theFile    path of additional files
+  //! @param optional   progress indicator
+  //! @param theToProbe flag indicating that mesh data should be skipped and only basing information
+  //! to be read
+  Standard_EXPORT virtual bool perform(std::istream&                  theStream,
+                                       const TCollection_AsciiString& theFile,
+                                       const Message_ProgressRange&   theProgress,
+                                       const bool                     theToProbe);
+
+  //! Read the mesh from specified file
+  Standard_EXPORT virtual bool performMesh(const TCollection_AsciiString& theFile,
+                                           const Message_ProgressRange&   theProgress,
+                                           const bool                     theToProbe)
+  {
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return performMesh(aStream, theFile, theProgress, theToProbe);
+  }
+
+  //! Read the mesh from specified file - interface to be implemented by sub-classes.
+  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
+                                           const TCollection_AsciiString& theFile,
+                                           const Message_ProgressRange&   theProgress,
+                                           const bool                     theToProbe) = 0;
+
+  //! @name tools for filling XDE document
+protected:
+  //! Fill document with new root shapes.
+  Standard_EXPORT virtual void fillDocument();
+
+  //! Append new shape into the document (recursively).
+  Standard_EXPORT bool addShapeIntoDoc(CafDocumentTools&              theTools,
+                                       const TopoDS_Shape&            theShape,
+                                       const TDF_Label&               theLabel,
+                                       const TCollection_AsciiString& theParentName);
+
+  //! Append new sub-shape into the document (recursively).
+  Standard_EXPORT bool addSubShapeIntoDoc(CafDocumentTools&   theTools,
+                                          const TopoDS_Shape& theShape,
+                                          const TDF_Label&    theParentLabel);
+
+  //! Put name attribute onto the label.
+  Standard_EXPORT void setShapeName(const TDF_Label&               theLabel,
+                                    const TopAbs_ShapeEnum         theShapeType,
+                                    const TCollection_AsciiString& theName,
+                                    const TDF_Label&               theParentLabel,
+                                    const TCollection_AsciiString& theParentName);
+
+  //! Put color and material attributes onto the label.
+  Standard_EXPORT void setShapeStyle(const CafDocumentTools& theTools,
+                                     const TDF_Label&        theLabel,
+                                     const XCAFPrs_Style&    theStyle);
+
+  //! Put name data (metadata) attribute onto the label.
+  Standard_EXPORT void setShapeNamedData(const CafDocumentTools&                theTools,
+                                         const TDF_Label&                       theLabel,
+                                         const occ::handle<TDataStd_NamedData>& theNameData);
+
+  //! Generate names for root labels starting from specified index.
+  Standard_EXPORT void generateNames(const TCollection_AsciiString& theFile,
+                                     const int                      theRootLower,
+                                     const bool                     theWithSubLabels);
+
+  //! Return shape type as string.
+  //! @sa TopAbs::ShapeTypeToString()
+  static TCollection_AsciiString shapeTypeToString(TopAbs_ShapeEnum theType)
+  {
+    TCollection_AsciiString aString = TopAbs::ShapeTypeToString(theType);
+    aString.Capitalize();
+    return aString;
+  }
+
+protected:
+  occ::handle<TDocStd_Document> myXdeDoc; //!< target document
+
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>
+    myMetadata; //!< metadata map
+  NCollection_IndexedMap<TCollection_AsciiString>
+    // clang-format off
+                            myExternalFiles;     //!< the list of complementary files - external references (textures, data, etc.)
+  TCollection_AsciiString   myRootPrefix;        //!< root folder for generating root labels names
+  NCollection_Sequence<TopoDS_Shape>  myRootShapes;        //!< sequence of result root shapes
+  NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>   myAttribMap;         //!< map of per-shape attributes
+
+  RWMesh_CoordinateSystemConverter
+                            myCoordSysConverter; //!< coordinate system converter
+  bool          myToFillDoc;         //!< fill document from shape sequence
+  bool          myToFillIncomplete;  //!< fill the document with partially retrieved data even if reader has failed with error
+  // clang-format on
+  int myMemoryLimitMiB; //!< memory usage limit
+  int myExtraStatus;    //!< extra status bitmask
+};
+
+#endif // _RWMesh_CafReader_HeaderFile

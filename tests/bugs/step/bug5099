@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC5099"
+puts "============"
+puts ""
+######################################################
+# After translation attached file obtained shape is invalid.
+######################################################
+
+stepread [locate_data_file OCC5099.stp] a *
+tpcompound result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

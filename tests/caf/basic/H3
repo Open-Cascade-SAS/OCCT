@@ -1,0 +1,90 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Axis
+#
+# Testing command:   SetAxis
+# Testing command:   GetAxis
+#
+
+puts "caf001-H3"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+line aLine1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aDumpLine1 [dump aLine1]
+
+# [llength ${aDumpLine1}] = 14
+# Format of ${aDumpLine1}:
+# *********** Dump of aLine1 *************
+# Line
+#   Origin :10, 20, 30 
+#   Axis   :0.267261241912424, 0.534522483824849, 0.801783725737273 
+
+set anOriginX_Line1 [lindex [split [lindex ${aDumpLine1} 7] ${aTokList}] 1]
+set anOriginY_Line1 [lindex [split [lindex ${aDumpLine1} 8] ${aTokList}] 0]
+set anOriginZ_Line1 [lindex [split [lindex ${aDumpLine1} 9] ${aTokList}] 0]
+set anAxisDX_Line1 [lindex [split [lindex ${aDumpLine1} 11] ${aTokList}] 1]
+set anAxisDY_Line1 [lindex [split [lindex ${aDumpLine1} 12] ${aTokList}] 0]
+set anAxisDZ_Line1 [lindex [split [lindex ${aDumpLine1} 13] ${aTokList}] 0]
+
+set aLabel 0:2
+SetAxis D ${aLabel} aLine1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-H3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {GetAxis DD ${aLabel} anAxis3} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_Axis attribute from restoring document: Error"
+	return
+}
+
+set aDumpAxis3 [dump anAxis3]
+set anOriginX_Axis3 [lindex [split [lindex ${aDumpAxis3} 7] ${aTokList}] 1]
+set anOriginY_Axis3 [lindex [split [lindex ${aDumpAxis3} 8] ${aTokList}] 0]
+set anOriginZ_Axis3 [lindex [split [lindex ${aDumpAxis3} 9] ${aTokList}] 0]
+set anAxisDX_Axis3 [lindex [split [lindex ${aDumpAxis3} 11] ${aTokList}] 1]
+set anAxisDY_Axis3 [lindex [split [lindex ${aDumpAxis3} 12] ${aTokList}] 0]
+set anAxisDZ_Axis3 [lindex [split [lindex ${aDumpAxis3} 13] ${aTokList}] 0]
+
+if { ${anOriginX_Line1} != ${anOriginX_Axis3} || 
+     ${anOriginY_Line1} != ${anOriginY_Axis3} || 
+     ${anOriginZ_Line1} != ${anOriginZ_Axis3} || 
+     ${anAxisDX_Line1} != ${anAxisDX_Axis3} || 
+     ${anAxisDY_Line1} != ${anAxisDY_Axis3} || 
+     ${anAxisDZ_Line1} != ${anAxisDZ_Axis3} } {
+	puts "anOriginX_Line1=${anOriginX_Line1} anOriginX_Axis3=${anOriginX_Axis3}"
+	puts "anOriginY_Line1=${anOriginY_Line1} anOriginY_Axis3=${anOriginY_Axis3}"
+	puts "anOriginZ_Line1=${anOriginZ_Line1} anOriginZ_Axis3=${anOriginZ_Axis3}"
+	puts "anAxisDX_Line1=${anAxisDX_Line1} anAxisDX_Axis3=${anAxisDX_Axis3}"
+	puts "anAxisDY_Line1=${anAxisDY_Line1} anAxisDY_Axis3=${anAxisDY_Axis3}"
+	puts "anAxisDZ_Line1=${anAxisDZ_Line1} anAxisDZ_Axis3=${anAxisDZ_Axis3}"
+	puts "Get a value of TDataStd_Axis attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDataStd_Axis attribute from restoring document: OK"

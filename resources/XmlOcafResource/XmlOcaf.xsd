@@ -1,0 +1,131 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+<include schemaLocation="XmlOcaf_SmallTypes.xsd"/>
+<include schemaLocation="XmlOcaf_TDataStd.xsd"/>
+<include schemaLocation="XmlOcaf_TDF.xsd"/>
+<include schemaLocation="XmlOcaf_TDocStd.xsd"/>
+<include schemaLocation="XmlOcaf_TFunction.xsd"/>
+<include schemaLocation="XmlOcaf_TNaming.xsd"/>
+<include schemaLocation="XmlOcaf_TPrsStd.xsd"/>
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of XmlOcaf Persistence format.
+    This Schema definition resides at: $(CASROOT)/src/XmlOcafResource/XmlOcaf.xsd
+  </documentation>
+</annotation>
+
+<complexType name="LabelType">
+  <sequence>
+    <choice minOccurs="0" maxOccurs="unbounded">
+      <element ref="ocaf:AbstractStringAtt"/>
+      <element ref="ocaf:AbstractIntegerAtt"/>
+      <element ref="ocaf:AbstractRealAtt"/>
+      <element ref="ocaf:AbstractListIntegerAtt"/>
+      <element ref="ocaf:AbstractListRealAtt"/>
+      <element ref="ocaf:AbstractAttribute"/>
+      <element ref="ocaf:AbstractXPathLabel"/>
+      <element ref="ocaf:AbstractList3RealAtt"/>
+    </choice>
+    <element name="label" type="ocaf:LabelType" minOccurs="0" maxOccurs="unbounded">
+<!-- This type of uniqueness does not allow recursive structures
+      <unique name="LabelUniqueness">
+        <selector xpath="ocaf:label"/>
+        <field xpath="@tag"/>
+      </unique> -->
+    </element>
+  </sequence>
+  <attribute name="tag" type="positiveInteger" use="required"/>
+</complexType>
+
+<!-- Declaration of document element +++++++++++++++++++++++++++ -->
+<element name="document">
+  <complexType>
+    <sequence>
+
+<!-- Declaration of element 'info' +++++++++++++++++++++++++++++ -->
+      <element name="info">
+        <complexType>
+          <sequence>
+            <element name="iitem" type="string" minOccurs="0" maxOccurs="unbounded"/>
+          </sequence>
+          <attribute name="date" type="date" use="required"/>
+          <attribute name="schemav" type="nonNegativeInteger" use="required"/>
+          <attribute name="DocVersion" type="nonNegativeInteger" use="required"/>
+          <attribute name="objnb" type="nonNegativeInteger" use="required"/>
+        </complexType>
+      </element>                                        <!-- END 'info' -->
+
+<!-- Declaration of element 'comments' ++++++++++++++++++++++++++ -->
+      <element name="comments">
+        <complexType>
+          <sequence>
+            <element name="citem" type="string" minOccurs="0" maxOccurs="unbounded"/>
+          </sequence>
+        </complexType>
+      </element>                                        <!-- END 'comments' -->
+
+<!-- Declaration of element 'label' +++++++++++++++++++++++++++++ -->
+      <element name="label">
+      <!-- Local type redefinition from ocaf:LabelType by restriction -->
+        <complexType>
+          <complexContent>
+            <restriction base="ocaf:LabelType">
+	      <sequence>
+                <choice minOccurs="0" maxOccurs="unbounded">
+                  <element ref="ocaf:AbstractStringAtt"/>
+                  <element ref="ocaf:AbstractIntegerAtt"/>
+                  <element ref="ocaf:AbstractRealAtt"/>
+                  <element ref="ocaf:AbstractListIntegerAtt"/>
+                  <element ref="ocaf:AbstractListRealAtt"/>
+                  <element ref="ocaf:AbstractAttribute"/>
+		  <element ref="ocaf:AbstractXPathLabel"/>
+                  <element ref="ocaf:AbstractList3RealAtt"/>
+                </choice>
+                <element name="label" type="ocaf:LabelType" minOccurs="0" maxOccurs="unbounded">
+                  <unique name="Label1Uniqueness">
+                    <selector xpath="ocaf:label"/>
+                    <field xpath="@tag"/>         <!-- label tags -->
+                  </unique>
+                </element>
+	      </sequence>
+            <!-- Difference from ocaf:LabelType is FIXEDNESS of tag attribute -->
+              <attribute name="tag" type="nonNegativeInteger" fixed="0"/>
+            </restriction>
+          </complexContent>
+        </complexType>
+<!-- Uniqueness of tags in sub-labels -->
+        <unique name="Label0Uniqueness">
+          <selector xpath="ocaf:label"/>
+          <field xpath="@tag"/>
+        </unique>
+<!-- Uniqueness of 'id' values of shareable objects -->
+        <unique name="ShareableIdUniqueness">
+          <selector xpath=".//ocaf:*"/>
+          <field xpath="@id"/>
+        </unique>
+      </element>                                        <!-- END 'label 0' -->
+
+<!-- Declaration of element 'shapes' +++++++++++++++++++++++++++ -->
+      <element name="shapes" type="string" minOccurs="0"/>
+
+    </sequence>
+    <attribute name="format" type="string" use="required"/>
+  </complexType>
+</element>                                              <!-- END 'document' -->
+</schema>

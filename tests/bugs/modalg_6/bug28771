@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC28771"
+puts "========"
+puts ""
+##############################################
+# BRepOffset_MakeOffset incorrect result
+##############################################
+
+restore [locate_data_file bug28771_shell.brep] s
+encoderegularity s 1
+thickshell r s .12
+checkshape r

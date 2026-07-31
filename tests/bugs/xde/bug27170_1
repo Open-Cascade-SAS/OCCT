@@ -1,0 +1,17 @@
+puts "============"
+puts "CR27170"
+puts "============"
+puts ""
+
+#############################################
+# Reading STEP files produces invalid shapes
+#############################################
+
+ReadStep D [locate_data_file bug27170_ComauRomanTransformerTAXXX-0000016267.stp]
+
+XGetOneShape result D
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${casename}-2d.png
+checkview -display result -3d -path ${imagedir}/${casename}-3d.png

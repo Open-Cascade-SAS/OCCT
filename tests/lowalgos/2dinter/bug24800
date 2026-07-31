@@ -1,0 +1,22 @@
+puts "============"
+puts "CR24800"
+puts "==========="
+puts ""
+###############################################################################
+# Point of intersection was not found for 2d offset curve.
+###############################################################################
+
+restore [locate_data_file bug24800_curve2.draw] c2
+
+set inter1 [2dintersect c2]
+
+set int1 [regexp {Intersection point 1} ${inter1}]
+
+if { ${int1} == 0 } {
+    puts "Error : Intersection is not found"
+} 
+
+smallview -2D-
+2dfit
+
+xwd ${imagedir}/${test_image}.png

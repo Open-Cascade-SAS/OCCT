@@ -1,0 +1,28 @@
+puts "========"
+puts "0029300: Visualization, TKOpenGl - provide depth pre-pass option"
+puts "========"
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1
+
+# display objects
+psphere s 1
+box b 1 2 3
+vaxo
+vdisplay -dispMode 1 s b
+vaspects b -setColor RED -setTransparency 0.5
+vfit
+vzbufftrihedron
+vmoveto 150 250
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+
+vrenderparams -depthPrePass off
+vdump $::imagedir/${::casename}_1.png
+
+vrenderparams -depthPrePass on
+vdump $::imagedir/${::casename}_2.png
+
+if { [diffimage $::imagedir/${::casename}_1.png $::imagedir/${::casename}_2.png 0 0 0 $::imagedir/${::casename}_diff.png] != 0 } { puts "Error: images differ" }

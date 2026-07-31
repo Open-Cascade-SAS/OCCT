@@ -1,0 +1,23 @@
+# Original bug : 
+
+puts "========================"
+puts " OCC419 "
+puts "FRA50047"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO904_fra50047a.rle] a 
+checkshape a
+
+restore [locate_data_file fra50047b.rle] b 
+checkshape b
+
+bsection sec a b
+checkshape -top sec
+
+bfuse result a b
+checkshape -top result
+
+checkprops result -s 508496. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

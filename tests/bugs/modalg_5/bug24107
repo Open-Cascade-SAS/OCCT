@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC24107"
+puts "================"
+puts ""
+#######################################################################
+# BRepAlgo::ConcatenateWireC0 method doesn't work on a translated wire
+#######################################################################
+
+restore [locate_data_file bug24107_wire.brep] w
+
+concatC0wire result w
+
+checkshape result
+checkmaxtol result -source {w} -multi_tol 2.

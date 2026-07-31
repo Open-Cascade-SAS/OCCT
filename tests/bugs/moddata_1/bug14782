@@ -1,0 +1,53 @@
+puts "========================"
+puts "OCC14782"
+puts "========================"
+puts ""
+#######################################################################
+# Method segment works wrongly for periodical BSpline curve
+#######################################################################
+
+set BugNumber OCC14782
+
+restore [locate_data_file OCC14782.draw] res
+
+bounds res t1 t2
+set bounds_list [dump res]
+
+puts ""
+if { [llength ${bounds_list}] < 7 } {
+   puts "Bad bounds_list"
+   puts "Faulty ${BugNumber}"
+} else {
+   set periodic_type [lindex ${bounds_list} 6]
+   puts "periodic_type=${periodic_type}"
+   if { ${periodic_type} != "periodic" } {
+      puts "1. Faulty ${BugNumber}"
+   } else {
+      puts "1. OK ${BugNumber}"
+   }
+}
+
+set ll1 [lindex [length res] end]
+puts "length1=${ll1}"
+
+segment res t1 t2
+set segment_list [dump res]
+
+puts ""
+if { [llength ${segment_list}] < 7 } {
+   puts "Bad segment_list"
+   puts "Faulty ${BugNumber}"
+} else {
+   set periodic_type [lindex ${segment_list} 6]
+   puts "periodic_type=${periodic_type}"
+   if { ${periodic_type} != "periodic" } {
+      puts "2. OK ${BugNumber}"
+   } else {
+      puts "2. Faulty ${BugNumber}"
+   }
+}
+
+set ll2 [lindex [length res] end]
+puts "length2=${ll2}"
+
+checkreal "length1" ${ll1} ${ll2} 0 0.001

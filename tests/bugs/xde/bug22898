@@ -1,0 +1,56 @@
+puts "TODO OCC24156 MacOS: Error: unsupported locale specification"
+puts "TODO CR33225 Linux: Error: unsupported locale specification"
+
+# Test for issue #22898 and other functionality that can be affected by locale.
+# Just run multiple conversions of the shape to and from different formats and 
+# check that the result is good shape with expected area
+
+if { [checkplatform -linux] } {
+  dlocale LC_ALL fr_FR
+} else {
+  dlocale LC_ALL French
+}
+
+pload MODELING
+pload XSTEP
+
+# original shape
+restore [locate_data_file hammer.brep] hammer
+checkshape hammer
+tolerance hammer
+checkarea hammer 3.978e8 1e6 0.001
+
+# BREP
+save hammer $imagedir/hammer.brep
+restore $imagedir/hammer.brep brep
+checkshape brep
+tolerance brep
+checkarea brep 3.978e8 1e6 0.001
+
+# IGES
+brepiges hammer $imagedir/hammer.igs
+igesbrep $imagedir/hammer.igs iges *
+checkshape iges
+tolerance iges
+checkarea iges 3.978e8 1e6 0.001
+
+# STEP
+stepwrite a hammer $imagedir/hammer.stp
+stepread $imagedir/hammer.stp step *
+checkshape step_1
+tolerance step_1
+checkarea step_1 3.978e8 1e6 0.001
+
+# STL
+incmesh hammer 30
+writestl hammer $imagedir/hammer.stl 
+readstl stl $imagedir/hammer.stl -brep
+checkshape stl
+tolerance stl
+checkarea stl 3.978e8 1e6 0.001
+
+# VRML: reading does not work regardless of locale...
+writevrml hammer $imagedir/hammer.vrml
+#loadvrml vrml $imagedir/hammer.vrml
+#checkshape vrml
+#tolerance vrml

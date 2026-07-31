@@ -1,0 +1,30 @@
+puts "TODO OCC24156 MacOS: Tcl Exception:"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC453"
+puts "(case 1)"
+puts "========"
+puts ""
+
+dchrono h2 restart
+
+set make_print_out 0
+
+dset SCALE 1000.
+dset SCALE1 5
+tolblend 0.01 1e-04 1e-05 1e-03
+
+restore [locate_data_file CFI_5_f12fgk.rle] s 
+tscale s 0 0 0 SCALE1
+explode s E
+
+blend result s 0.5*SCALE1 s_1 0.5*SCALE1 s_4 0.5*SCALE1 s_12 0.5*SCALE1 s_8 0.5*SCALE1 s_6
+explode result sh
+tcopy result_1 result
+
+dchrono h2 stop counter blend
+
+checkprops result -s 6021.51 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

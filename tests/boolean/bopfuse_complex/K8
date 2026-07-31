@@ -1,0 +1,15 @@
+#clear
+#dall
+restore [locate_data_file CTO907_topo002-o1.brep] coque1
+restore [locate_data_file CTO907_topo002-o2.brep] coque2
+
+## pkv f
+explode coque1 sh
+explode coque2 sh
+bop coque1_1 coque2_1
+## pkv t
+
+bopfuse result 
+
+checkprops result -s 3950.89
+checkview -display result -2d -otherwise { coque1_1 coque2_1 } -s -path ${imagedir}/${test_image}.png

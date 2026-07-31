@@ -1,0 +1,92 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug33661_nist_ftc_08_asme1_ap242-e1-tg.stp
+
+set ref_data {
+
+ NbOfDimensions          : 60
+ NbOfTolerances          : 0
+ NbOfDatumFeature        : 0
+ NbOfAttachedDatum       : 0
+ NbOfDatumTarget         : 0
+
+ 0:1:1:2:1 Shape.4
+ 	 0:1:4:32 Dimension.4.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:2 Shape.5
+ 	 0:1:4:4 Dimension.5.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:5 Dimension.5.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:4 Shape.7
+ 	 0:1:4:14 Dimension.7.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:18 Dimension.7.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:20 Dimension.7.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:14 Shape.17
+ 	 0:1:4:27 Dimension.17.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:62 Shape.65
+ 	 0:1:4:35 Dimension.65.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:65 Shape.68
+ 	 0:1:4:36 Dimension.68.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:72 Shape.75
+ 	 0:1:4:53 Dimension.75.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:84 Shape.87
+ 	 0:1:4:54 Dimension.87.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:90 Shape.93
+ 	 0:1:4:31 Dimension.93.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:33 Dimension.93.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:34 Dimension.93.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:94 Shape.97
+ 	 0:1:4:39 Dimension.97.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:40 Dimension.97.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:51 Dimension.97.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:52 Dimension.97.4 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:55 Dimension.97.5 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:96 Shape.99
+ 	 0:1:4:43 Dimension.99.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:44 Dimension.99.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:45 Dimension.99.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:46 Dimension.99.4 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:57 Dimension.99.5 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:98 Shape.101
+ 	 0:1:4:47 Dimension.101.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:48 Dimension.101.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:49 Dimension.101.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:50 Dimension.101.4 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:56 Dimension.101.5 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:100 Shape.103
+ 	 0:1:4:37 Dimension.103.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:38 Dimension.103.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:41 Dimension.103.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:42 Dimension.103.4 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:58 Dimension.103.5 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:102 Shape.105
+ 	 0:1:4:25 Dimension.105.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:26 Dimension.105.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:116 Shape.119
+ 	 0:1:4:24 Dimension.119.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:120 Shape.123
+ 	 0:1:4:23 Dimension.123.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:161 Shape.164
+ 	 0:1:4:15 Dimension.164.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:179 Shape.182
+ 	 0:1:4:1 Dimension.182.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:2 Dimension.182.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:3 Dimension.182.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:237 Shape.240
+ 	 0:1:4:17 Dimension.240.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:19 Dimension.240.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:246 Shape.249
+ 	 0:1:4:6 Dimension.249.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:8 Dimension.249.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:9 Dimension.249.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:248 Shape.251
+ 	 0:1:4:7 Dimension.251.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:10 Dimension.251.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:11 Dimension.251.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:250 Shape.253
+ 	 0:1:4:12 Dimension.253.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:13 Dimension.253.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:2:256 Shape.259
+ 	 0:1:4:28 Dimension.259.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:29 Dimension.259.2 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 	 0:1:4:30 Dimension.259.3 ( N "DGT:Dimension" T 31, V 0, P 0 )
+ 0:1:1:3:1 Shape.276
+ 	 0:1:4:16 Dimension.276.1 ( N "DGT:Dimension" T 31, V 0, P 0 )
+}

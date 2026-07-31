@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC26795"
+puts "================"
+puts ""
+#######################################################################
+# Unable to perform General Fuse operation on the attached faces
+#######################################################################
+
+restore [locate_data_file bug26795_c.brep] c
+
+explode c f
+
+bclearobjects
+bcleartools
+baddobjects c_1
+baddtools c_2
+
+bfillds
+
+bbuild result
+
+checkshape result
+checkprops result -l 38958.7 -s 1.88559e+007
+checknbshapes result -wire 4 -face 3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

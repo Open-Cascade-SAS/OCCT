@@ -1,0 +1,18 @@
+puts "================================================="
+puts "0032915: Geom2dAPI_InterCurveCurve, The algorithm lost an intersection point."
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug32915.brep] e
+mkcurve c3d e
+plane p 0 0 1
+project c2d c3d p
+
+set inter [2dintersect c2d]
+if {[regexp -all "Intersection point" $inter] != 29} {
+  puts "Error: Wrong number of self-intersections (expected 29 points)."
+}
+
+v2d
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

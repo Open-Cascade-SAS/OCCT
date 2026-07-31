@@ -1,0 +1,44 @@
+puts "========"
+puts "0029283: Visualization - allow defining more than 8 light sources"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# display objects
+vclear
+vclose ALL
+vinit View1 -width 1024 -height 768
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+vaxo
+for { set anObjIter 0 } { $anObjIter < 3 } { incr anObjIter } {
+  set aShiftX [expr -4 + $anObjIter * 4]
+  psphere s$anObjIter 0.5
+  vdisplay -dispMode 1 s$anObjIter
+  vsetlocation s$anObjIter $aShiftX 0 0
+}
+vfit
+
+# define lights
+set THE_LIGHTS {
+  { -1 -1 -1 RED1 }
+  {  1 -1 -1 YELLOW }
+  { -1  1 -1 BLUE }
+  { -1 -1  1 CYAN }
+  {  1  1 -1 PURPLE }
+  {  1  1  1 WHITE }
+  { -1  1  1 HOTPINK }
+  {  1 -1  1 GREEN }
+  { -4 -1  0 MAGENTA }
+  {  4 -1  0 MAGENTA3 }
+}
+vlight -clear
+for { set aLightIter 1 } { $aLightIter <= 10 } { incr aLightIter } {
+  set aLight [lindex $THE_LIGHTS [expr $aLightIter - 1]]
+  set aColor [lindex $aLight 3]
+  set aPos [list [lindex $aLight 0] [lindex $aLight 1] [lindex $aLight 2]]
+  vlight pntlight${aLightIter} -type POSITIONAL -pos {*}$aPos -color $aColor -headLight 0
+  vpoint v${aLightIter} {*}$aPos
+  vdrawtext t${aLightIter} "light${aLightIter} $aColor" -pos {*}$aPos -color $aColor
+  vdump $::imagedir/${::casename}_${aLightIter}.png
+}

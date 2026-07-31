@@ -1,0 +1,18 @@
+
+puts "============"
+puts "BUC60895"
+puts "============"
+puts ""
+##############################################################
+##If give command "sameparameter edge" on attached edge in the DRAW this command hang. 
+##############################################################
+
+restore [locate_data_file BUC60895.brep] result
+
+fsameparameter result
+checkshape result
+
+checkprops result -l 12.6012 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC697"
+puts "============"
+puts ""
+######################################################
+# Fuse operation does not work
+######################################################
+## (new topology)
+## (bopfuse)
+######################################################
+
+restore [locate_data_file OCC697_1.brep] b1 
+restore [locate_data_file OCC697_2.brep] b2 
+
+checkshape b1
+checkshape b2
+
+bop b1 b2
+if { [catch {bopfuse result} catch_result] } {
+   puts "Faulty OCC697"
+}
+checkprops result -s 8879.41 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

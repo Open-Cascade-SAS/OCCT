@@ -1,0 +1,18 @@
+
+puts "========================"
+puts "BUC60965"
+puts "========================"
+
+restore [locate_data_file buc60965-c.draw] c 
+restore [locate_data_file buc60965-s.draw] s
+
+project result c s
+checklength result -l 3.141968717040271
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+
+

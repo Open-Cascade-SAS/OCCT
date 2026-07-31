@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+bounding 50 100 30 180 200 100 -shape result
+checkprops result -v 910000

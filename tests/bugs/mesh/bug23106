@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC23106"
+puts "========"
+puts ""
+###########################################
+## BRepMesh_IncrementalMesh returns wrong status
+###########################################
+
+set BugNumber OCC23106
+
+restore [locate_data_file bug23106_face_0triangles.brep] result
+
+incmesh result 0.01
+triangles result 
+
+checktrinfo result -tri -nod
+checkview -display result -3d -path ${imagedir}/${test_image}.png

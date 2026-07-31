@@ -1,0 +1,10 @@
+puts "========================"
+puts "0031292: Data Exchange - SIGSEGV on reading STEP file with references to invalid entities"
+puts "========================"
+
+stepread [locate_data_file bug31292.stp] a *
+renamevar a_1 result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

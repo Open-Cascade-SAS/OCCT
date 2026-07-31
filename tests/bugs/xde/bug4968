@@ -1,0 +1,27 @@
+puts "========="
+puts " OCC4968 "
+puts "========="
+puts ""
+##################################################
+# Improve FixShape to correct case of touching wires
+##################################################
+
+set BugNumber OCC4968
+
+restore [locate_data_file OCC4968.brep] r
+regexp {WIRE +: +([-0-9.+eE]+)} [nbshapes r] full wire_number1
+
+fixshape result r
+regexp {WIRE +: +([-0-9.+eE]+)} [nbshapes result] full wire_number2
+checkshape result r
+
+puts "wire_number1 = ${wire_number1}"
+puts "wire_number2 = ${wire_number2}"
+if { ${wire_number2} > ${wire_number1}} {
+    puts "OK ${BugNumber}: wire number - OK"
+} else {
+    puts "Faulty ${BugNumber}: wrong wire number"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

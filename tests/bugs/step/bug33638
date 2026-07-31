@@ -1,0 +1,17 @@
+puts "===================================="
+puts "0033638: Data Exchange, Step Import - Style for tessellated object missed"
+puts "===================================="
+puts ""
+
+pload OCAF
+
+ReadStep D [locate_data_file bug33638.stp]
+
+if { [ XFindColor D 0 0 1 ] == "" } {
+  puts "Error: Color not found"
+}
+if { [ XFindColor D 1 0 0 ] == "" } {
+  puts "Error: Color not found"
+}
+
+Close D

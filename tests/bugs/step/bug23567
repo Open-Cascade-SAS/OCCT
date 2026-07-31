@@ -1,0 +1,15 @@
+puts "========================"
+puts "OCC23567"
+puts "========================"
+puts ""
+#######################################################################
+# Wrong STEP unit is returned by STEPControl_Reader.FileUnits() function
+#######################################################################
+
+set info [ stepfileunits [locate_data_file bug23567_a.step] ]
+set index1 [lsearch $info metre]
+
+puts ""
+if { ${index1} == -1 } {
+    puts "Error : bad unit"
+}

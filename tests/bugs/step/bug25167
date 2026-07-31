@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC25167"
+puts "========"
+puts ""
+############################################################################################
+# STEP Reader - allow NextAssemblyUsageOccurance to accept ProductDefinitionShape as child
+############################################################################################
+
+stepread [locate_data_file bug25167.stp] a *
+tpcompound result
+
+checkprops result -s 20800 
+checkshape result
+
+checknbshapes result -vertex 26 -edge 37 -wire 18 -face 18 -shell 3 -solid 3 -compsolid 0 -compound 5 -shape 110
+checkview -display result -3d -path ${imagedir}/${test_image}.png

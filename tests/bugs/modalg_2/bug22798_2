@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC22798"
+puts "============"
+puts ""
+#############################################################################
+# Regression: BRepBuilderAPI_GTransform produces an invalid result on sphere
+#############################################################################
+
+set BugNumber OCC22798
+
+psphere a 100
+scalexyz result a 2 3 4
+
+checkprops result -s 1.12112e+06 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 9
+checkview -display result -3d -path ${imagedir}/${test_image}.png

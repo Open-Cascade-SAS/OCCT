@@ -1,0 +1,17 @@
+puts "======="
+puts "0032471: Mesh - Deflection of the triangulation is not recomputed for planar face"
+puts "======="
+puts ""
+
+restore [locate_data_file bug32471.brep] result
+
+incmesh result 0.01
+
+checktrinfo result -tri 2 -nod 4 -defl 0 -tol_rel_defl 1e-7
+
+vinit
+vdefaults -autoTriang 0
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

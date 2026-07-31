@@ -1,0 +1,41 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
+
+box b1 10 10 10
+box b2 5 0 0 10 10 10
+
+shape s1 So
+shape s2 So
+shape sh1 Sh
+shape sh2 Sh
+
+foreach f [lrange [explode b1 f] 0 4] { add $f sh1 }
+foreach f [lrange [explode b2 f] 0 4] { add $f sh2 }
+
+add sh1 s1
+add sh2 s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+
+foreach r {r0 r1 r2 r3} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: shape is self-interfered"
+  }
+}
+
+checknbshapes r1 -vertex 16 -edge 26 -wire 11 -face 11 -shell 1 -solid 1
+checkprops r1 -s 650
+
+foreach r {r0 r2 r3} {
+  checknbshapes $r -vertex 8 -edge 12 -wire 5 -face 5 -shell 1 -solid 1
+  checkprops $r -s 350
+}

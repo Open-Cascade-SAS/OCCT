@@ -1,0 +1,9 @@
+set TheFileName shading_150.brep
+set bug_freenodes "OCC22687"
+if { [string compare $command "shading"] == 0 } {
+  set nbfreenodes(All) 9
+} else {
+##  set bug_freelinks "OCC22687"
+##  set nbfree(All) 3
+  set nbfreenodes(All) 5  
+}

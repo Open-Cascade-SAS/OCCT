@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename PRO10376.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 2 )  Summary  = 2  ( 2 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 36  ( 36 )  Face     = 36  ( 36 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 36  ( 36 )  Face     = 36  ( 36 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.0200634573  (   0.0230274088 )  AvgTol   =  0.001342918864  (  0.002493523389 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 72  ( 72 )  N2Labels = 0  ( 0 )   TotalLabels = 73  ( 73 )   NameLabels = 1  ( 1 )   ColorLabels = 36  ( 36 )   LayerLabels = 36  ( 36 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = GREEN RED TURQUOISE WHITE  ( GREEN RED TURQUOISE WHITE )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 10 20 250 30  ( 10 20 250 30 )
+
+}

@@ -1,0 +1,86 @@
+pload QAcommands
+
+puts "============"
+puts "OCC22982"
+puts "============"
+puts ""
+##################################################################
+# Generic color is overridden in STEPCAFControl_Writer::WriteColors
+##################################################################
+
+set BugNumber OCC22982
+pload OCAF
+
+NewDocument D11 BinXCAF
+UndoLimit D11 100
+
+# Open a transaction
+NewCommand D11
+
+ReadStep D11 [locate_data_file OCC22982-Air.step]
+
+XUnsetColor D11 0:1:1:1 s
+XUnsetColor D11 0:1:1:1:1 s
+XUnsetColor D11 0:1:1:1:2 s
+XUnsetColor D11 0:1:1:1:3 s
+XUnsetColor D11 0:1:1:1:4 s
+XUnsetColor D11 0:1:1:1:5 s
+XUnsetColor D11 0:1:1:1:6 s
+XSetColor D11 0:1:1:1 0 0 1
+XSetColor D11 0:1:1:1:1 1 0 0
+
+set XRedCoords {2 160 186 204}
+set XRedCoords [split $XRedCoords " "]
+set YRedCoords {177 48 162 78}
+set YRedCoords [split $YRedCoords " "]
+
+set XBlueCoords {238 315 406 348 370 204 171 62}
+set XBlueCoords [split $XBlueCoords " "]
+set YBlueCoords {172 87 188 175 290 271 238 303}
+set YBlueCoords [split $YBlueCoords " "]
+
+XShow D11
+vfit
+
+# Check colors of document with source shape
+for {set i 0} {$i < [llength $XRedCoords]} {incr i} {
+    set XCoord [lindex $XRedCoords $i]
+    set YCoord [lindex $YRedCoords $i]
+    checkcolor $XCoord $YCoord 1 0 0
+}
+for {set i 0} {$i < [llength $XBlueCoords]} {incr i} {
+    set XCoord [lindex $XBlueCoords $i]
+    set YCoord [lindex $YBlueCoords $i]
+    checkcolor $XCoord $YCoord 0 0 1
+}
+
+# Close/Open a transaction
+NewCommand D11
+
+file delete -force ${imagedir}/${test_image}.step
+WriteStep D11 ${imagedir}/${test_image}.step
+
+NewDocument D2 BinXCAF
+UndoLimit D2 100
+
+# Close/Open a transaction
+NewCommand D2
+
+ReadStep D2 ${imagedir}/${test_image}.step
+
+XShow D2
+vfit 
+
+# Check colors of document with resulting shape
+for {set i 0} {$i < [llength $XRedCoords]} {incr i} {
+    set XCoord [lindex $XRedCoords $i]
+    set YCoord [lindex $YRedCoords $i]
+    checkcolor $XCoord $YCoord 1 0 0
+}
+for {set i 0} {$i < [llength $XBlueCoords]} {incr i} {
+    set XCoord [lindex $XBlueCoords $i]
+    set YCoord [lindex $YBlueCoords $i]
+    checkcolor $XCoord $YCoord 0 0 1
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

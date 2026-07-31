@@ -1,0 +1,14 @@
+puts "=========="
+puts "seam_edges: Tests boundary edges draw without seam edges in the IVtk view"
+puts "=========="
+puts ""
+
+pload MODELING VIS
+psphere s 10 15 80
+ivtkinit
+ivtkdisplay s
+ivtksetdispmode 1 -faceBoundaryDraw 1 -smoothShading 0
+ivtkdump $imagedir/${casename}.png
+
+ivtksetdispmode 1 -faceBoundaryDraw 1 -smoothShading 1
+ivtkdump $imagedir/${casename}_smooth.png

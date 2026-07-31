@@ -1,0 +1,13 @@
+polyline w 0 0 0 10 10 0
+circle profile 0 0 0 1 0 0 5
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+pipe s w profile
+tscale s 0 0 0 SCALE1
+explode s E
+mkevol result s
+updatevol s_1 0 2*SCALE1 1 1*SCALE1 2 2*SCALE1
+buildevol
+ 
+checkprops result -s 50306.6

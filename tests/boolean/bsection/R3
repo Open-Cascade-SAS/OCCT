@@ -1,0 +1,10 @@
+## buc60289
+
+restore [locate_data_file heal-Face1.rle] a
+restore [locate_data_file Plan.rle] b
+
+bsection result a b
+
+checkprops result -l 1686.21
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

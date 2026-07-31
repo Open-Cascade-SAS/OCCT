@@ -1,0 +1,17 @@
+puts "TODO OCC22820 ALL: Error : SEWING IS NOT PERFORMED PROPERLY"
+puts "TODO OCC22820 ALL: The difference between volumes is"
+puts "TODO OCC22820 ALL: nbClosedShells is wrong"
+
+restore [locate_data_file CTO909_part_syb.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile "igs"
+
+set AddToDocument "COLORS_LAYERS"
+
+set CompareDocumentsMode "FACES VOLUME COLORS LAYERS"
+
+
+

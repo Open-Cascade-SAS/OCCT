@@ -1,0 +1,11 @@
+puts "================"
+puts "0031587: Modeling Data - Remove internal sub-shapes from the shape"
+puts "================"
+puts ""
+
+restore [locate_data_file bug31587_wall1.brep] s
+removeinternals s
+
+checkshape s
+checknbshapes s -vertex 6 -edge 6 -wire 1 -face 1
+

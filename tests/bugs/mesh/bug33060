@@ -1,0 +1,17 @@
+puts "========"
+puts "0033060: Mesh - Sub-precisional links provoke f a i l u r e on face"
+puts "========"
+puts ""
+
+restore [locate_data_file bug33060.brep] result
+
+tclean result
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}

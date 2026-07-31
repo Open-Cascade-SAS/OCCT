@@ -1,0 +1,12 @@
+# Original bug : cts20552
+# Date : 13Mai98
+# D1
+
+restore [locate_data_file cts20552-part.rle] a
+restore [locate_data_file cts20552-tool.rle] b
+
+
+bfuse result a b
+
+checkprops result -s 221130
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

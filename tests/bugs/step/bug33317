@@ -1,0 +1,32 @@
+puts "========================"
+puts "0033317: Data Exchange, Step Export - Ignoring color attached to the reference shape label"
+puts "========================"
+
+pload OCAF
+
+Close D -silent
+Close D1 -silent
+
+set TempFilename ${imagedir}/${casename}_temp.stp
+
+# Open document
+XOpen [locate_data_file bug33317_solids_7_7_0.xml] D
+
+# Get colors
+set colors_old [XGetShapeColor D 0:1:1:1 generic]
+
+# Write to STEP
+WriteStep D ${TempFilename}
+
+# Read and check
+ReadStep D1 ${TempFilename}
+
+set colors_new [XGetShapeColor D1 0:1:1:1:1 generic]
+if { [string equal ${colors_new} ${colors_old}] == -1 } {
+  puts "ERROR: OCC33317 is reproduced while STEP export."
+}
+
+# Clear temp file
+file delete -force $TempFilename
+Close D
+Close D1

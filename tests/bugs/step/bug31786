@@ -1,0 +1,15 @@
+puts "======="
+puts "0031786: Data Exchange - After the importing STEP file the free shape is empty"
+puts "======="
+puts ""
+
+pload ALL
+
+ReadStep D [locate_data_file bug31786_InternalUseOnly_714-236074-105_NXMBD_A_PNL_SIDE_ENCL_AC_DC_242.stp]
+XGetOneShape result D
+
+vinit
+vdisplay result
+vfit
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,93 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Plane
+#
+# Testing command:   SetPlane
+# Testing command:   GetPlane
+#
+
+puts "caf001-I3"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 -1
+set aSetDY1 0
+set aSetDZ1 0
+
+plane aPlane1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aDumpPlane1 [dump aPlane1]
+
+# [llength ${aDumpPlane1}] = 22
+# Format of ${aDumpPlane1}:
+# *********** Dump of aPlane1 *************
+# Plane
+#   Origin :10, 20, 30 
+#   Axis   :-1, 0, 0 
+#   XAxis  :-0, 0, -1 
+#   YAxis  :-0, -1, 0 
+
+set anOriginX_Plane1 [lindex [split [lindex ${aDumpPlane1} 7] ${aTokList}] 1]
+set anOriginY_Plane1 [lindex [split [lindex ${aDumpPlane1} 8] ${aTokList}] 0]
+set anOriginZ_Plane1 [lindex [split [lindex ${aDumpPlane1} 9] ${aTokList}] 0]
+set anAxisDX_Plane1 [lindex [split [lindex ${aDumpPlane1} 11] ${aTokList}] 1]
+set anAxisDY_Plane1 [lindex [split [lindex ${aDumpPlane1} 12] ${aTokList}] 0]
+set anAxisDZ_Plane1 [lindex [split [lindex ${aDumpPlane1} 13] ${aTokList}] 0]
+
+set aLabel 0:2
+SetPlane D ${aLabel} aPlane1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-I3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {GetPlane DD ${aLabel} aPlane5} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_Plane attribute from restoring document: Error"
+	return
+}
+
+set aDumpPlane5 [dump aPlane5]
+set anOriginX_Plane5 [lindex [split [lindex ${aDumpPlane5} 7] ${aTokList}] 1]
+set anOriginY_Plane5 [lindex [split [lindex ${aDumpPlane5} 8] ${aTokList}] 0]
+set anOriginZ_Plane5 [lindex [split [lindex ${aDumpPlane5} 9] ${aTokList}] 0]
+set anAxisDX_Plane5 [lindex [split [lindex ${aDumpPlane5} 11] ${aTokList}] 1]
+set anAxisDY_Plane5 [lindex [split [lindex ${aDumpPlane5} 12] ${aTokList}] 0]
+set anAxisDZ_Plane5 [lindex [split [lindex ${aDumpPlane5} 13] ${aTokList}] 0]
+
+if { ${anOriginX_Plane1} != ${anOriginX_Plane5} || 
+     ${anOriginY_Plane1} != ${anOriginY_Plane5} || 
+     ${anOriginZ_Plane1} != ${anOriginZ_Plane5} || 
+     ${anAxisDX_Plane1} != ${anAxisDX_Plane5} || 
+     ${anAxisDY_Plane1} != ${anAxisDY_Plane5} || 
+     ${anAxisDZ_Plane1} != ${anAxisDZ_Plane5} } {
+	puts "anOriginX_Plane1=${anOriginX_Plane1} anOriginX_Plane5=${anOriginX_Plane5}"
+	puts "anOriginY_Plane1=${anOriginY_Plane1} anOriginY_Plane5=${anOriginY_Plane5}"
+	puts "anOriginZ_Plane1=${anOriginZ_Plane1} anOriginZ_Plane5=${anOriginZ_Plane5}"
+	puts "anAxisDX_Plane1=${anAxisDX_Plane1} anAxisDX_Plane5=${anAxisDX_Plane5}"
+	puts "anAxisDY_Plane1=${anAxisDY_Plane1} anAxisDY_Plane5=${anAxisDY_Plane5}"
+	puts "anAxisDZ_Plane1=${anAxisDZ_Plane1} anAxisDZ_Plane5=${anAxisDZ_Plane5}"
+	puts "Get a value of TDataStd_Plane attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDataStd_Plane attribute from restoring document: OK"

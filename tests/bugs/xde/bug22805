@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC22805"
+puts "================"
+puts ""
+######################################################################################
+# Bug of STEP read/write
+######################################################################################
+
+set BugNumber OCC22805
+
+restore [locate_data_file OCC22805-spiral_solid.brep] s 
+stepwrite 0 s $imagedir/${test_image}.stp
+stepread $imagedir/${test_image}.stp result *
+set info [checkshape result_1]
+
+if { [regexp {This shape seems to be valid} $info]} {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+renamevar result_1 result
+checkprops result -s 14447.5
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

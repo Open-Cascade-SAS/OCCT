@@ -1,0 +1,25 @@
+puts "BUC60476"
+puts { Precision management doesn't follow the rule of tolerance (Tol(V) > Tol(E) > Tol(F) }
+puts ""
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+updatetolerance b1 1
+updatetolerance b2 1
+puts [maxtolerance b1]
+puts [maxtolerance b2]
+
+bfuse result b1 b2
+
+puts [set tolerance [maxtolerance result]]
+set MinFaceTolerance [ lindex $tolerance 14 ]
+set MinEdgeTolerance [ lindex $tolerance 18 ]
+set MinVertexTolerance [ lindex $tolerance 24 ]
+puts ""
+if {  $MinEdgeTolerance > $MinVertexTolerance } {
+puts { Error: The rule of tolerance Tol(V) > Tol(E) > Tol(F) is not observed . Tolerance min on vertex > Tolerance min on edge }
+}
+puts { The rule of tolerance Tol(V) > Tol(E) > Tol(F) is observed .} 
+
+checkprops result -s 1050
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

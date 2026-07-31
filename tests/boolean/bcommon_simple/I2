@@ -1,0 +1,20 @@
+## Extension of /users/skv/testref/cd1/ED/cto/014/A1
+
+circle ca 0 0 0 1
+mkedge ea ca
+wire wa ea
+mkplane fa wa
+prism cyla fa 0 0 2
+
+circle cb 0 0 0 0.5
+mkedge eb cb
+wire wb eb
+mkplane fb wb
+prism cylb fb 0 0 1
+
+ttranslate cylb 0 0 2
+
+bcommon result cyla cylb
+
+checkprops result -s empty
+checkview -display result -2d -s -otherwise { cyla cylb } -path ${imagedir}/${test_image}.png

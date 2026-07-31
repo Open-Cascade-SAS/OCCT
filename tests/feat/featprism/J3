@@ -1,0 +1,16 @@
+# Original bug : id260065
+# Date : 15 Oct 98
+
+# face non tangente
+restore [locate_data_file CFE900_id260gao.rle] base
+restore [locate_data_file id260065_face2.rle] cont
+
+explode base face
+copy base_26 funtil
+
+featprism base cont cont -0.8660254 0.50 0 1 1
+featperform prism result funtil
+
+#checkprops result -s 13742.4
+#sprops command returns correct value for result_6 face in OCCT6.5.3
+checkprops result -s 14135.9

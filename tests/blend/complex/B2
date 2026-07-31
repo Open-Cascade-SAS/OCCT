@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : E4
+## Comment : from pro10320
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file CFI_pro10320.rle] a
+explode a e
+blend result a 15 a_15
+
+checkprops result -s 0

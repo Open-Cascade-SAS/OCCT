@@ -1,0 +1,8 @@
+wedge s 10 7 10 5 5 5 5
+tscale s 0 0 0 SCALE1 
+explode s E
+blend result s 0.5*SCALE1 s_2 
+explode result So
+tcopy result_1 result 
+
+checkprops result -s 27107.8

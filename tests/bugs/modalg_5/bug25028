@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC25028"
+puts "============"
+puts ""
+###############################
+## BRepAlgo::ConcatenateWire raises an exception
+###############################
+
+restore [locate_data_file bug25028_profile.brep] s
+checkshape s
+whatis s
+concatwire r s

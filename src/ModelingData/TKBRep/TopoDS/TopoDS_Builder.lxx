@@ -1,0 +1,66 @@
+// Created on: 1991-04-09
+// Created by: Remi LEQUETTE
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TopoDS_TWire.hxx>
+#include <TopoDS_TShell.hxx>
+#include <TopoDS_TSolid.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Compound.hxx>
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
+{
+  occ::handle<TopoDS_TWire> TW = new TopoDS_TWire();
+  MakeShape(W, TW);
+}
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
+{
+  occ::handle<TopoDS_TShell> TS = new TopoDS_TShell();
+  MakeShape(S, TS);
+}
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
+{
+  occ::handle<TopoDS_TSolid> TS = new TopoDS_TSolid();
+  MakeShape(S, TS);
+}
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C) const
+{
+  occ::handle<TopoDS_TCompSolid> TC = new TopoDS_TCompSolid();
+  MakeShape(C, TC);
+}
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeCompound(TopoDS_Compound& C) const
+{
+  occ::handle<TopoDS_TCompound> TC = new TopoDS_TCompound();
+  MakeShape(C, TC);
+}

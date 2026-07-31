@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC22830"
+puts "================"
+puts ""
+#######################################################################################
+# BRep mesh can't apply mesh for the face
+######################################################################################
+
+set BugNumber OCC22830
+
+restore [locate_data_file OCC22830-maze.brep] result
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkprops result -s 52482 
+checkshape result
+
+checknbshapes result -vertex 300 -edge 300 -wire 30 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 631
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

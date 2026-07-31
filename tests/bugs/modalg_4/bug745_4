@@ -1,0 +1,46 @@
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+###########################################
+# Exception Standard_NullValue while performing the offset:
+###########################################
+
+pload QAcommands
+
+restore [locate_data_file OCC745_pocket1.brep] a 
+checkshape a
+
+if { [catch { mkoffset result a 1 -10 } status] } {
+    puts "Faulty OCC745"
+} else {
+    renamevar result_1 result
+    set nb_info [nbshapes result]
+    set ve 0
+    regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
+    puts [format "Result shape result contains %s vertexes" $ve]
+    if { $ve == 0 } {
+        puts [format "Faulty : Result shape is NULL shape"]
+    } else {
+        regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full wi
+        if {$wi > 1 } {
+            set ll [explode result w]
+            set num [llength $ll]
+            puts [format "Faulty : Result shape result is COMPOUND and contains %s wires" $num]
+            foreach {k} $ll {
+                checkshape $k
+                regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection $k] full cs
+                if { $cs != 0 } {
+                    puts [format "Faulty : Result shape is UNclosed wire !!! " $k]
+                } else {
+                    puts [format "OK: Result shape is CLOSED wire !!! "]
+                }
+            }
+        }
+    }
+}
+
+checkprops result -l 511.416 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

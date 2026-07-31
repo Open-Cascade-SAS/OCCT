@@ -1,0 +1,23 @@
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+
+puts "========"
+puts "OCC263"
+puts "========"
+
+restore [locate_data_file OCC263.brep] result
+
+isos result 0
+tclean result
+
+#Creating mesh
+incmesh result 0.01
+
+#View the result of mesh
+triangles result
+
+checktrinfo result -tri 989 -nod 535
+checkprops result -s 0 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

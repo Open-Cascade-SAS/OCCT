@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC24424"
+puts "========"
+puts ""
+########################################################################################
+# BRepAlgoAPI_Cut throws Standard_ConstructionError with disjoint, but adjacent solids
+########################################################################################
+
+restore [locate_data_file bug24424_a.brep] a
+restore [locate_data_file bug24424_b.brep] b
+
+bcut result a b
+
+if {[llength [whatis result]] < 4} {
+  puts "ERROR: OCC24424 is reproduced. Result of bcut operation is empty."
+}

@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC21"
+puts "================"
+puts ""
+
+#test for XSDRAWEXE application#
+#==============================#
+
+pload XDE
+
+restore [locate_data_file OCC21.brep] sh 
+checkshape sh
+puts "two faces in the compound share one edge"
+
+DT_SplitAngle result sh 90
+
+puts "in the resulting shape sharing is not preserved"
+
+checkprops result -s 12154.8 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

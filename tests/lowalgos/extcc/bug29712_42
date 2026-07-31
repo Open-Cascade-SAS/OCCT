@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+set ExpDist 5
+
+circle c1 0 0 0 0 0 1 5
+line c2 0 0 0 0 0 1
+trim c2 c2 2e-7 1
+
+if { ![regexp {No solutions!} [extrema c1 c2] ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}
+
+if { ![regexp {No solutions!} [extrema c2 c1] ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}

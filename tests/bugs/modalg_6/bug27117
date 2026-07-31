@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27117"
+puts "============"
+puts ""
+############################################################################
+# BRepClass3d_SolidClassifier doesn't take into account vertex/edge/face tolerances
+############################################################################
+
+restore [locate_data_file bug27117.brep] s
+point p 103.740000000001 1.85e-014 24.3498644581774
+
+set cls [bclassify s p]
+if { [regexp {IN} $cls] } {
+    puts "Error : Wrong result obtained by solid classifier algorithm"
+} else {
+    puts "OK : Good result obtained by solid classifier algorithm"
+}

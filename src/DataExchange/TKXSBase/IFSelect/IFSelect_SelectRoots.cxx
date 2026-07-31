@@ -1,0 +1,69 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IFGraph_Cumulate.hxx>
+#include <IFSelect_SelectRoots.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRoots, IFSelect_SelectExtract)
+
+IFSelect_SelectRoots::IFSelect_SelectRoots() = default;
+
+// Redone to work at once
+
+Interface_EntityIterator IFSelect_SelectRoots::RootResult(const Interface_Graph& G) const
+{
+  Interface_EntityIterator input = InputResult(G);
+  Interface_EntityIterator iter;
+  IFGraph_Cumulate         GC(G);
+
+  //  We note in the graph: the cumulation of each set (Entity + Shared all
+  //  levels). The initial Roots counted only once are good
+  for (input.Start(); input.More(); input.Next())
+  {
+    const occ::handle<Standard_Transient>& ent = input.Value();
+    GC.GetFromEntity(ent);
+  }
+  //  Now, we retain, among the inputs, those counted only once
+  for (input.Start(); input.More(); input.Next())
+  {
+    const occ::handle<Standard_Transient>& ent = input.Value();
+    if ((GC.NbTimes(ent) <= 1) == IsDirect())
+    {
+      iter.GetOneItem(ent);
+    }
+  }
+  return iter;
+}
+
+bool IFSelect_SelectRoots::HasUniqueResult() const
+{
+  return true;
+}
+
+bool IFSelect_SelectRoots::Sort(const int,
+                                const occ::handle<Standard_Transient>&,
+                                const occ::handle<Interface_InterfaceModel>&) const
+{
+  return true;
+}
+
+TCollection_AsciiString IFSelect_SelectRoots::ExtractLabel() const
+{
+  return TCollection_AsciiString("Local Roots");
+}

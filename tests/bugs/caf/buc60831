@@ -1,0 +1,50 @@
+puts "==========="
+puts "BUC60831"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+NewCommand D
+
+set L 0:3
+Label D $L
+
+set Status 0
+
+set Result [BUC60831_1 D]
+if { ${Result} != 0 } {
+    puts "BUC60831: Error 1"
+    set Status 1
+}
+
+NewCommand D
+
+set Result [BUC60831_2 D $L]
+if { ${Result} != 0 } {
+    puts "BUC60831: Error 2"
+    set Status 1
+}
+
+set Result [BUC60831_1 D]
+if { ${Result} != 1 } {
+    puts "BUC60831: Error 3"
+    set Status 1
+}
+
+NewCommand D
+
+Undo D
+
+set Result [BUC60831_1 D]
+if { ${Result} != 0 } {
+    puts "BUC60831: Error 4"
+    set Status 1
+}
+
+if { ${Status} != 0} then {
+ puts "BUC60831: Error"
+}
+

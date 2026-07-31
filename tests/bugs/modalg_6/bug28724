@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28724"
+puts "========"
+puts ""
+##############################################
+# Extrema between circle and plane cannot be found
+##############################################
+
+restore [locate_data_file bug28724_cmpd.brep] co
+explode co
+
+distmini d co_1 co_2
+
+if {[dval d_val] > 1.0e-7} {
+  puts "Error: Extrema cannot find minimal distance"
+}

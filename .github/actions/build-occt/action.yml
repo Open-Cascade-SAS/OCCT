@@ -1,0 +1,99 @@
+name: 'Build OCCT'
+description: 'Prepare and build OCCT on a specific platform'
+
+inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  compiler:
+    description: 'Compiler (msvc, clang, gcc)'
+    required: true
+  target-arch:
+    description: 'Target architecture (x64, arm64)'
+    required: false
+    default: 'x64'
+  artifact-name:
+    description: 'Name of the artifact to store build results'
+    required: true
+  additional-cmake-flags:
+    description: 'Additional CMake flags'
+    required: false
+    default: ''
+  use-vtk:
+    description: 'Enable VTK'
+    required: false
+    default: 'false'
+  build-use-pch:
+    description: 'Enable precompiled headers'
+    required: false
+    default: 'true'
+  build-opt-profile:
+    description: 'Build optimization profile'
+    required: false
+    default: 'Production'
+  cmake-build-type:
+    description: 'CMake build type (Release, Debug, etc)'
+    required: false
+    default: 'Release'
+  build-parallel-jobs:
+    description: 'Number of parallel build jobs (empty for auto)'
+    required: false
+    default: ''
+  github-token:
+    description: 'GitHub token for vcpkg NuGet package access'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure OCCT
+      uses: ./.github/actions/configure-occt
+      with:
+        platform: ${{ inputs.platform }}
+        compiler: ${{ inputs.compiler }}
+        target-arch: ${{ inputs.target-arch }}
+        additional-cmake-flags: ${{ inputs.additional-cmake-flags }}
+        use-vtk: ${{ inputs.use-vtk }}
+        build-use-pch: ${{ inputs.build-use-pch }}
+        build-opt-profile: ${{ inputs.build-opt-profile }}
+        cmake-build-type: ${{ inputs.cmake-build-type }}
+        github-token: ${{ inputs.github-token }}
+
+    - name: Upload vcpkg cache
+      uses: ./.github/actions/upload-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.artifact-name }}-cache
+        build-directory: build
+        include-debug: ${{ inputs.cmake-build-type == 'Debug' && 'true' || 'false' }}
+
+    - name: Build OCCT (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+          cd build
+          cmake --build . --target install --config Release
+      shell: pwsh
+
+    - name: Build OCCT (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: |
+        cd build
+        make install -j$(sysctl -n hw.logicalcpu)
+      shell: bash
+
+    - name: Build OCCT (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: |
+        cd build
+        if [ -n "${{ inputs.build-parallel-jobs }}" ]; then
+          cmake --build . --target install --config Release -- -j${{ inputs.build-parallel-jobs }}
+        else
+          cmake --build . --target install --config Release -- -j
+        fi
+      shell: bash
+
+    - name: Upload install directory
+      uses: ./.github/actions/upload-artifacts
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: install
+        retention-days: 7

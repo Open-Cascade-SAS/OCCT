@@ -1,0 +1,66 @@
+puts "========"
+puts "0029807: Impossible to cut cone from prism"
+puts "========"
+puts ""
+
+foreach a [directory res*] {unset $a}
+
+binrestore [locate_data_file bug29807_f1.bin] f1
+binrestore [locate_data_file bug29807_f2.bin] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+trim s1 s1
+trim s2 s2
+
+intersect res s1 s2 1.0e-4
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+   
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 2.0e-7
+    xdistcs res_$ic s2 U1 U2 100 2.0e-7
+    
+    mkedge ee res_$ic
+    baddobjects ee
+    incr ic
+  }
+}
+
+bfillds
+bbuild result
+
+smallview
+don result*
+fit
+
+# Check gaps between edges in ce
+checksection result -r 0
+checkmaxtol result -min_tol 2.0e-7
+
+checknbshapes result -edge 2 -vertex 2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

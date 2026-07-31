@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 2711.37
+
+testreadstep [locate_data_file bug27341_82-01_Solid_End_Mill_Radius_with_Shrink_Fit_and_extension_HeavyModel.stp] a
+COMPUTE_HLR $viewname $algotype

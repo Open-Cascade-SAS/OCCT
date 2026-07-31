@@ -1,0 +1,29 @@
+puts "========"
+puts "0026338: STL export (especially binary) needs a lot of time if selected export path is not local"
+puts "========"
+puts ""
+
+pload MODELING XSDRAW
+
+# check that export to STL correctly takes into account shape locations
+box b1 5 5 5 
+box b2 5 5 5 
+ttranslate b2 10 10 10 
+compound b1 b2 comp
+incmesh comp 1.
+
+# write to binary STL
+writestl comp $imagedir/${casename}.stl 1
+
+# load STL
+readstl result $imagedir/${casename}.stl -brep
+
+# check that bounding box is 
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax -nodraw
+
+checkreal "Xmin" [dval Xmin] 0.0 1e-5 0.
+checkreal "Ymin" [dval Ymin] 0.0 1e-5 0.
+checkreal "Zmin" [dval Zmin] 0.0 1e-5 0.
+checkreal "Xmax" [dval Xmax] 15. 1e-5 0.
+checkreal "Ymax" [dval Ymax] 15. 1e-5 0.
+checkreal "Zmax" [dval Zmax] 15. 1e-5 0.

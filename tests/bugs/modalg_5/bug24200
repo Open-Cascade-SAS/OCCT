@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC24200"
+puts "============"
+puts ""
+#################################################
+# Wrong result obtained by Extrema Curve/Curve
+#################################################
+
+restore [locate_data_file bug24200_c1] c1
+restore [locate_data_file bug24200_c2] c2
+set info_1 [extrema c1 c2]
+
+trim c1t c1 677.8 678.8
+trim c2t c2 2477 2479
+extrema c1t c2t
+
+cvalue c1t 678.34269564178146 x y z
+vertex v1 x y z
+cvalue c2t 2478.1205500811761 x y z
+vertex v2 x y z
+distmini d v1 v2
+regexp {([-0-9.+eE]+)} [dump d_val] full dist
+
+set checkdist 1.13686837721616e-013
+
+if { [expr 1.*abs($checkdist - $dist)/$checkdist] > 0.1 } {
+    puts "Error : Distance is wrong"
+} else {
+    puts "OK: Distance is correct"
+}

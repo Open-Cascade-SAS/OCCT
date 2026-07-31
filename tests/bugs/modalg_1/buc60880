@@ -1,0 +1,40 @@
+
+puts "============"
+puts "BUC60880"
+puts "============"
+puts ""
+##########################################
+## We have overlapping edges when section a shell by plane. 
+##########################################
+
+restore [locate_data_file BUC60880_sec_error2.brep] sh 
+checkshape sh
+
+plane pl 65000 19000 2600 1 0 0
+mkface f pl
+
+bsection result sh f
+
+set nb_info [nbshapes result]
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
+
+if { $ed == 1 } {
+    puts  "BUC60880 OK: SECTION operation was made properly"
+} else {
+    explode result e
+    set status [OCC333 result_1 result_2]
+    if {[llength ${status}] < 1} {
+	puts "BUC60880 ERROR"
+    } else {
+	regexp {([-0-9.+eE]+)} $status full code
+	if { ${code} == 3 || ${code} == 2} {
+	    puts "BUC60880  : Section command works properly"
+	} else {
+	    puts "Faulty BUC60880: Section was made WRONGLY"
+	}
+    }
+}
+checkprops result -l 1424.94 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

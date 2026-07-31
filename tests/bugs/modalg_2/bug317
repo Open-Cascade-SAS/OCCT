@@ -1,0 +1,36 @@
+puts "========================"
+puts " OCC317 "
+puts "========================"
+puts ""
+##################################################
+## A Solid "so" is valid, whereas wire "so_5" from the solid is not valid.
+##################################################
+
+restore [locate_data_file OCC317.brep] result
+
+set che [checkshape result]
+if { [regexp {Faulty} $che] == 1} {
+    puts "Faulty OCC317: Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+} else {
+    puts "OCC317 OK: Source shape is valid"
+    explode result w
+
+    set che [checkshape result_5]
+    if { [regexp {Faulty} $che] == 1} {
+        puts "Faulty OCC317: Wire is invalid. It was detected by Checkshape command"
+    } else {
+	puts "OCC317 OK : Wire is valid."
+    }	
+
+    set che [checkshape result r]
+    if { [regexp {OK} $che] != 1 } {
+	puts "Faulty OCC317: Wire is invalid. It was detected by Checkshape command"
+    } else {
+	puts "OCC317 OK :  Wire is valid."
+    }
+}
+
+checkprops result -s 2104.21 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

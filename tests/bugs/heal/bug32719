@@ -1,0 +1,20 @@
+puts "============================================================"
+puts "OCC32719: UnifySameDomain result has incorrect triangulation"
+puts "============================================================"
+puts ""
+
+restore [locate_data_file bug32719.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -solid 4 -shell 4 -face 20 -wire 20 -edge 32 -vertex 16
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 6.e-6} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 0.0222593 -v 5.17261e-05

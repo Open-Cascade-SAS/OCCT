@@ -1,0 +1,16 @@
+## ==================================
+## File : End file for FEAT grids
+## Date : 01.02.2012
+## ==================================
+
+if { [isdraw result] } {
+    #check if result is valid
+    puts [checkshape result]
+    
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+    puts "Error : The feat grid cannot be built."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

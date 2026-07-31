@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC29857"
+puts "========"
+puts ""
+####################################
+## Extrema between Point and Curve returns two results 
+## (there should be only one) that are actually the same
+####################################
+
+
+restore [locate_data_file bug29857.brep] c
+set info [proj c -53.9663741221239 118.723988602907 -57.6228206908223]
+
+set pp1 ""
+set pp2 ""
+regexp {ext_1} $info pp1
+regexp {ext_2} $info pp2
+
+if { $pp2 != "" } {
+   puts "Error : Projection is not correct"
+} 
+if { $pp1 != "" } {
+   puts "OK: Projection is correct"
+} else {
+   puts "Error : Projection is not correct"
+} 

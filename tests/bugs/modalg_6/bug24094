@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC24094"
+puts "========"
+puts ""
+##########################################
+## Issure by option of BRepAlgoAPI_Section
+##########################################
+
+
+restore [locate_data_file bug24094_face.brep] a
+plane p 183.6 0 0 1 0 0 0 1 0
+mkface f p
+
+bsection r1 a f
+bsection r2 a f -na
+bsection r3 a f -n2d2
+bsection r4 a f -n2d
+bsection r5 a f -n2d -na
+
+checknbshapes r1 -vertex 2 -edge 1 -t
+checknbshapes r2 -vertex 2 -edge 1 -t
+checknbshapes r3 -vertex 2 -edge 1 -t
+checknbshapes r4 -vertex 2 -edge 1 -t
+checknbshapes r5 -vertex 2 -edge 1 -t

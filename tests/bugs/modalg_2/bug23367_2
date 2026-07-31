@@ -1,0 +1,23 @@
+puts "============"
+puts "CR23367"
+puts "============"
+puts ""
+puts "TODO OCC24156 MacOS: Error : The length of result shape is"
+##########################################################################################################
+# New functionality restoring the middle path of pipe-like shape
+##########################################################################################################
+
+pcylinder a 10 30 180
+explode a f
+donly a a_2 a_3
+fit
+middlepath result a a_2 a_3
+
+checkprops result -l 30.0036 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

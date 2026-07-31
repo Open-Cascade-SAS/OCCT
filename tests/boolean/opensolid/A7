@@ -1,0 +1,59 @@
+box b1 10 10 10
+box b2 1 1 1 8 8 8
+box b3 -2 3 3 14 4 4
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+bfillds
+bbuild r
+
+buildbop r0 -o b3 -t b1 b2 -op common
+buildbop r1 -o b3 -t b1 b2 -op fuse
+buildbop r2 -o b3 -t b1 b2 -op cut
+buildbop r3 -o b3 -t b1 b2 -op tuc
+
+foreach r {r0 r1 r2 r3} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: shape is self-interfered"
+  }
+}
+
+checkprops r0 -s 256 -v 160
+checknbshapes r0 -vertex 16 -edge 28 -wire 16 -face 16 -shell 3 -solid 3
+
+checkprops r1 -s 664 -v 1064
+checknbshapes r1 -vertex 24 -edge 36 -wire 18 -face 16 -shell 1 -solid 1
+
+checkprops r2 -s 128 -v 64
+checknbshapes r2 -vertex 16 -edge 24 -wire 12 -face 12 -shell 2 -solid 2
+
+checkprops r3 -s 1432 -v 840
+checknbshapes r3 -vertex 32 -edge 52 -wire 28 -face 24 -shell 2 -solid 2
+
+
+
+buildbop r0 -o b2 -t b1 b3 -op common
+buildbop r1 -o b2 -t b1 b3 -op fuse
+buildbop r2 -o b2 -t b1 b3 -op cut
+buildbop r3 -o b2 -t b1 b3 -op tuc
+
+foreach r {r0 r1 r2 r3} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: shape is self-interfered"
+  }
+}
+
+checkprops r0 -s 640 -v 512
+checknbshapes r0 -vertex 16 -edge 24 -wire 14 -face 12 -shell 2 -solid 2
+
+checkprops r1 -s 664 -v 1064
+checknbshapes r1 -vertex 24 -edge 36 -wire 18 -face 16 -shell 1 -solid 1
+
+checkprops r2 -s empty -v empty
+checknbshapes r2 -vertex 0 -edge 0 -wire 0 -face 0 -shell 0 -solid 0
+
+checkprops r3 -s 1176 -v 552
+checknbshapes r3 -vertex 40 -edge 64 -wire 38 -face 34 -shell 5 -solid 5

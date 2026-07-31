@@ -1,0 +1,23 @@
+
+puts "================"
+puts "OCC12"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC12.brep] f 
+checkshape f
+
+mksurface su f
+clpoles su
+emptycopy f1 f
+vertex v 0 -170.63226587036002 82.2373635024
+don su v
+distmini d1 v f1
+if [expr [dval d1_val] > 0.01] {
+    set res "failed"
+    puts "Error : Result is incorrect"
+} else { 
+  set res "OK"
+}
+puts "Info: test $res, distance=[dval d1_val]"
+

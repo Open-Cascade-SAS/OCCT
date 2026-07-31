@@ -1,0 +1,9 @@
+puts "================================================="
+puts "0032744: Modeling Algorithms -Endless loop in GCPnts_UniformDeflection"
+puts "================================================="
+puts ""
+
+pload QAcommands
+# test execution time must be within the cpulimit
+restore [locate_data_file bug32744.brep] s
+OCC32744 s

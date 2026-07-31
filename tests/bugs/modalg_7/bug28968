@@ -1,0 +1,46 @@
+puts "# ===================================================================="
+puts "# 0028968: Incorrect offset for the faces with singularities "
+puts "# ===================================================================="
+puts ""
+puts "# This test checks that offset does not fail and produces valid shape with"
+puts "# reasonable tolerance; however the real check for the problem is to be"
+puts "# made visually using generated images that should have no loops"
+puts "# (see images attached to Mantis issue)"
+puts ""
+
+set models {
+bug28968_HA-3828b-31.brep
+bug28968_HA-3781-31.brep
+bug28968_HA-3781-25.brep
+bug28968_HA-3781-01.brep
+bug28968_HA-3623g-31.brep
+bug28968_HA-3623g-22.brep
+bug28968_HA-3623c-20.brep
+bug28968_HA-3623c-19.brep
+bug28968_HA-3623c-15.brep
+bug28968_HA-3623b-31.brep
+bug28968_HA-3623b-22.brep
+bug28968_HA-3623a-28.brep
+bug28968_HA-3623a-27.brep
+bug28968_HA-3623a-26.brep
+bug28968_HA-3623a-17.brep
+}
+
+set i 0
+foreach file $models {
+  incr i
+  restore [locate_data_file $file] s$i
+
+  foreach command {offsetshapesimple} {
+    catch {$command res$i s$i 20. 0.01}
+    checkmaxtol res$i -min_tol 0.002
+    checkshape res$i
+
+    smallview
+    donly s$i res$i
+    fit
+
+    xwd "${imagedir}/${casename}_${command}_${i}_[file rootname $file].png" 
+#    checkview -2d smallview -display face$i -display res$i -screenshot -path $savepath
+  }
+}

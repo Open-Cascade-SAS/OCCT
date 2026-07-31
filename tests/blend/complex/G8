@@ -1,0 +1,15 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : M6
+## Comment : from ID260039
+## ====================================
+
+restore [locate_data_file CFI_id260039.rle] a
+explode a e
+blend result a 5 a_16
+explode result e
+blend result result 5 result_4
+explode result e
+blend result result 5 result_33
+
+checkprops result -s 250844

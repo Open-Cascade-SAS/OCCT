@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC23175"
+puts "============"
+puts ""
+####################################################################################
+# Failed to segment a periodic B-Spline when parameter coincides with existing knot
+####################################################################################
+
+set BugNumber OCC23175
+
+restore [locate_data_file OCC23175-bspline-per-3_draw] result 
+
+catch { segment result 1 2.5 } msg
+
+set exception_status 0
+set index [lsearch $msg exception]
+if {$index > -1} {
+    set exception_status 1
+}
+
+if { ${exception_status} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

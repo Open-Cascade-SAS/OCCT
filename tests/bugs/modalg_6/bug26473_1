@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC26473"
+puts "=========="
+puts ""
+################################################
+# Offset API fails to create offset shape
+################################################
+
+restore [locate_data_file bug26473_offset_shape.input.brep] i
+offsetparameter 1e-7 c i
+offsetload i 1
+offsetperform result
+
+checkprops result -s 605144 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

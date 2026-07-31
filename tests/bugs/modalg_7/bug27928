@@ -1,0 +1,42 @@
+puts "=============================================================="
+puts "OCC27928: BOP common produces empty compound"
+puts "=============================================================="
+
+restore [locate_data_file bug27928_b1.brep] b1
+restore [locate_data_file bug27928_b2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+foreach r {r0 r1 r2 r3 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the result of BOP is self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 8 -face 8 -shell 1 -solid 1
+checkprops r0 -s 21820.6 -v 221499
+
+checknbshapes r1 -wire 14 -face 14 -shell 1 -solid 1
+checkprops r1 -s 22455.1 -v 224813
+
+checknbshapes r2 -wire 5 -face 5 -shell 1 -solid 1
+checkprops r2 -s 2075.44 -v 1489.33
+
+checknbshapes r3 -wire 5 -face 5 -shell 1 -solid 1
+checkprops r3 -s 2521.83 -v 1824.69
+
+checknbshapes r4 -vertex 13 -edge 19 -t
+checkprops r4 -l 825.645
+
+checkview -display r0 -2d -path ${imagedir}/${test_image}.png

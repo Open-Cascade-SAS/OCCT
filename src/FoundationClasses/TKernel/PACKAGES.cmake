@@ -1,0 +1,21 @@
+# Auto-generated list of packages for TKernel toolkit
+set(OCCT_TKernel_LIST_OF_PACKAGES
+  FSD
+  OSD
+  Plugin
+  Quantity
+  Resource
+  Standard
+  StdFail
+  Storage
+  TColStd
+  TCollection
+  TShort
+  Units
+  UnitsAPI
+  UnitsMethods
+  NCollection
+  Message
+  FlexLexer
+  Precision
+)

@@ -1,0 +1,5 @@
+# Source files for TKG2d
+set(OCCT_TKG2d_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKG2d_FILES
+)

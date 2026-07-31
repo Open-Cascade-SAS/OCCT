@@ -1,0 +1,141 @@
+puts "================"
+puts "BUC61039"
+puts "OCC343"
+puts "================"
+puts ""
+
+cpulimit 1000
+pload XDE
+
+set filepath [locate_data_file lh3d_px1.igs]
+if [catch {igesbrep $filepath a *} catch_result] { 
+    puts "Faulty OCC343: here is reading problem"
+} else {
+    puts "Reading OCC343  OK"
+    tpcompound a
+    #
+    # First sewing
+    #
+    sewing result1 100. a
+
+    checkmaxtol result1 -ref 66.0727572
+    checknbshapes result1 -shell 1
+    checkfreebounds result1 86
+
+    set FaceList [explode result1 f]
+    set FaceListLength [llength ${FaceList}]
+    if { ${FaceListLength} < 1 } {
+        puts "OCC343 - Error : FaceListLength= ${FaceListLength}"
+    }
+    
+    set X_List1 [list]
+    set Y_List1 [list]
+    set Z_List1 [list]
+    for {set i 1} {${i} <= ${FaceListLength}} {incr i} {
+        set props [sprops result1_${i}]
+        set list [split ${props} "\n\t"]
+        set listLength [llength ${list}]
+	if { ${listLength} < 20 } {
+    	    puts "OCC343 - Error : listLength= ${listLength}"
+        }
+        set Center_Gravity_X [lindex ${list} 5]
+        set Center_Gravity_Y [lindex ${list} 6]
+        set Center_Gravity_Z [lindex ${list} 7]
+    
+        set Center_Gravity_X [lindex [split ${Center_Gravity_X}] [expr [llength [split ${Center_Gravity_X}] ] - 1] ]
+        set Center_Gravity_Y [lindex [split ${Center_Gravity_Y}] [expr [llength [split ${Center_Gravity_Y}] ] - 1] ]
+        set Center_Gravity_Z [lindex [split ${Center_Gravity_Z}] [expr [llength [split ${Center_Gravity_Z}] ] - 1] ]
+    
+        lappend X_List1 ${Center_Gravity_X}
+        lappend Y_List1 ${Center_Gravity_Y}
+        lappend Z_List1 ${Center_Gravity_Z}
+    }
+
+    vinit
+    vdisplay result1
+    vfit
+    
+    set CycleNumber 10
+    for {set j 1} {${j} <= ${CycleNumber}} {incr j} {
+	veraseall
+	#
+	# Second sewing
+	#
+
+	if [catch {igesbrep $filepath a *} catch_result] {
+	    puts "Faulty OCC343: here is reading problem"
+        } else {
+	    puts "Reading OCC343  OK"
+	}
+
+        tpcompound a
+	sewing result2 100. a
+
+        checkmaxtol result2 -ref 66.072757207851282
+        checknbshapes result2 -shell 1
+        checkfreebounds result2 86
+
+        set FaceList [explode result2 f]
+        set FaceListLength [llength ${FaceList}]
+        if { ${FaceListLength} < 1 } then {puts "OCC343 - Error : FaceListLength= ${FaceListLength}"}
+
+	set X_List2 [list]
+        set Y_List2 [list]
+        set Z_List2 [list]
+	for {set i 1} {${i} <= ${FaceListLength}} {incr i} {
+	    set props [sprops result2_${i}]
+	    set list [split ${props} "\n\t"]
+	    set listLength [llength ${list}]
+	    if { ${listLength} < 20 } {
+	    	puts "OCC343 - Error : listLength= ${listLength}"
+	    }
+
+	    set Center_Gravity_X [lindex ${list} 5]
+	    set Center_Gravity_Y [lindex ${list} 6]
+	    set Center_Gravity_Z [lindex ${list} 7]
+
+	    set Center_Gravity_X [lindex [split ${Center_Gravity_X}] [expr [llength [split ${Center_Gravity_X}] ] - 1] ]
+	    set Center_Gravity_Y [lindex [split ${Center_Gravity_Y}] [expr [llength [split ${Center_Gravity_Y}] ] - 1] ]
+	    set Center_Gravity_Z [lindex [split ${Center_Gravity_Z}] [expr [llength [split ${Center_Gravity_Z}] ] - 1] ]
+
+	    lappend X_List2 ${Center_Gravity_X}
+	    lappend Y_List2 ${Center_Gravity_Y}
+	    lappend Z_List2 ${Center_Gravity_Z}
+	}
+
+	set ListLength [llength ${X_List1}]
+	if { ${ListLength} != [llength ${Y_List1}] } then {puts "OCC343 - Error : ListLength= ${ListLength}"}
+	if { ${ListLength} != [llength ${Z_List1}] } then {puts "OCC343 - Error : ListLength= ${ListLength}"}
+	if { ${ListLength} != [llength ${X_List2}] } then {puts "OCC343 - Error : ListLength= ${ListLength}"}
+	if { ${ListLength} != [llength ${Y_List2}] } then {puts "OCC343 - Error : ListLength= ${ListLength}"}
+	if { ${ListLength} != [llength ${Z_List2}] } then {puts "OCC343 - Error : ListLength= ${ListLength}"}
+
+	for {set i 0} {${i} < ${ListLength}} {incr i} {
+	    set X1 [lindex ${X_List1} ${i}]
+	    set X2 [lindex ${X_List2} ${i}]
+	    if { ${X1} != ${X2} } {
+		puts "OCC343 - Error : X1= ${X1}    X2= ${X2}"
+	    }
+	    set Y1 [lindex ${Y_List1} ${i}]
+	    set Y2 [lindex ${Y_List2} ${i}]
+	    if { ${Y1} != ${Y2} } {
+		puts "OCC343 - Error : Y1= ${Y1}    Y2= ${Y2}"
+    	    }
+	    set Z1 [lindex ${Z_List1} ${i}]
+	    set Z2 [lindex ${Z_List2} ${i}]
+	    if { ${Z1} != ${Z2} } {
+		puts "OCC343 - Error : Z1= ${Z1}    Z2= ${Z2}"
+	    }
+	}
+
+	tclean result1
+	vdisplay result1
+	vfit
+    }
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+
+
+

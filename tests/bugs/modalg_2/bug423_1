@@ -1,0 +1,28 @@
+
+puts "========================"
+puts " OCC423 "
+puts "(case 1)"
+puts "========================"
+puts ""
+
+restore [locate_data_file cylindre.rle] cyl 
+checkshape cyl
+
+restore [locate_data_file contour.rle] cont 
+checkshape cont
+
+mkplane cont cont
+nexplode cyl F
+
+ttranslate cont 0 200 0
+featdprism cyl cont cont -10 1 1
+
+if [catch {featperformval dprism result 55 cyl_3 } catch_result] {
+    puts "Faulty OCC423 (case 1): function FEATPERFORMVAL works wrongly"
+} else {
+    puts "OCC423 OK (case 1): function FEATPERFORMVAL works properly"
+}
+
+checkprops result -s 94944.4 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

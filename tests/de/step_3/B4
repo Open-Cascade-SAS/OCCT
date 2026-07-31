@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj12_ttmouse-ct-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 8 )  Summary  = 0  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 393  ( 264 )  Summary  = 393  ( 264 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 31  ( 31 )  Shell    = 349  ( 349 )  Face     = 1547  ( 1547 ) 
+STATSHAPE   : Solid    = 40  ( 40 )  Shell    = 359  ( 359 )  Face     = 1923  ( 1923 )   FreeWire = 0  ( 3 ) 
+TOLERANCE   : MaxTol   =  0.01535715949  (  0.01940030459 )  AvgTol   =  0.0005100286679  (  0.001067681414 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 2197  ( 2323 )  N2Labels = 0  ( 0 )   TotalLabels = 2210  ( 2336 )   NameLabels = 31  ( 31 )   ColorLabels = 2183  ( 2183 )   LayerLabels = 483  ( 609 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = BLUE GREEN GREEN4 MAGENTA TURQUOISE3 WHITE YELLOW  ( BLUE GREEN GREEN4 MAGENTA TURQUOISE3 WHITE YELLOW )
+NLAYERS     : NLayers  = 11  ( 11 )
+LAYERS      : Layers   = 0 1 10 2 3 4 5 6 7 8 9  ( 0 1 10 2 3 4 5 6 7 8 9 )
+
+}

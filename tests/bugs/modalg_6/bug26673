@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC26673"
+puts "============"
+puts ""
+##################################
+#  BOPTools_AlgoTools::ComputeVV incorrectly checks two vertices for intersection
+##################################
+
+box b -1 -1 0 2 2 2e-7+1e-14
+set out [bopargcheck b /RFPCS #F]
+if [regexp {Self-Intersections *: YES} $out] {
+  puts "OK: bopargcheck found the shape self-intersecting"
+} else {
+  puts "Error: bopargcheck must report self-intersections, but it did not"
+}

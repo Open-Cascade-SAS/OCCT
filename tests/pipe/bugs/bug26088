@@ -1,0 +1,27 @@
+puts "========"
+puts "0026088: E x c e p t i o n in pipe algorithm"
+puts "========"
+puts ""
+
+restore [locate_data_file bug26088_path0.brep] p
+restore [locate_data_file bug26088_profile0.brep] pr
+
+# result is invalid shape (twisted surface) because of placement 
+# path and profile
+pipe result p pr
+
+checkshape result
+
+checknbshapes result -vertex 8 -edge 14 -wire 6 -face 6 -shell 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.e-4} {
+   puts "Error: bad tolerance of result"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"

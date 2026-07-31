@@ -1,0 +1,24 @@
+puts "==========="
+puts "OCC27187"
+puts "==========="
+puts ""
+#################################
+# XmlMFunction_ScopeDriver fail to read and write function label including 0 tag in label path.
+#################################
+
+NewDocument Doc XmlOcaf
+# label that contains "0" tag not only in "Root"
+set Lab 0:1:4:9999:0:1:4:2001:4:2001:4:1:4:1001:4:1001
+Label Doc $Lab
+SetReference Doc 0:1 $Lab
+
+set aFileName ${imagedir}/${casename}_doc.xml
+SaveAs Doc ${aFileName}
+Close Doc
+
+# check that the reference is correctly restored
+Open ${aFileName} Doc
+if {[GetReference Doc 0:1] != $Lab} {
+   puts "Error: restored Reference attribute value is bad '[GetReference Doc 0:1]'"
+}
+Close Doc

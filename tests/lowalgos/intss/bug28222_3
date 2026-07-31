@@ -1,0 +1,46 @@
+puts "================"
+puts "OCC28222"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of two cylinders fails
+#######################################################################
+
+dsetsignal 1
+
+set GoodNbCurv 2
+
+foreach c [directory result*] {
+  unset $c
+}
+
+cylinder s1 -9 -5 -2.2058 0 -1 0 0.001
+cylinder s2 0 0 -2.2058 0 0 -1 9
+
+intersect result s1 s2
+
+foreach c [directory result*] {
+  bounds $c U1 U2
+  
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  xdistcs $c s1 U1 U2 10 2.0e-7
+  xdistcs $c s2 U1 U2 10 2.0e-7    
+}
+
+set NbCurv [llength [directory result*]]
+
+if { $NbCurv == $GoodNbCurv } {
+  puts "OK: Number of curves is good!"
+} else {
+  puts "Error: $GoodNbCurv is expected but $NbCurv is found!"
+}
+
+smallview
+don result*
+fit
+don  s1 s2
+disp result*
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

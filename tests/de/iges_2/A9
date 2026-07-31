@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename Amino_172448-65210.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 75  ( 15 )  Summary  = 75  ( 15 )
+CHECKSHAPE  : Wires    = 2  ( 1 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2344  ( 1106 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2344  ( 2342 )   FreeWire = 2328  ( 4220 ) 
+TOLERANCE   : MaxTol   =   0.9711309062  (   0.9711309063 )  AvgTol   =   0.01917041579  (   0.02395374369 )
+LABELS      : N0Labels = 250  ( 250 )  N1Labels = 2268  ( 4296 )  N2Labels = 0  ( 0 )   TotalLabels = 2518  ( 4546 )   NameLabels = 2518  ( 3454 )   ColorLabels = 2512  ( 4540 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = CYAN LIGHTPINK PALEGOLDENROD ROSYBROWN  ( CYAN LIGHTPINK PALEGOLDENROD ROSYBROWN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC267"
+puts "========"
+
+NewDocument D BinOcaf
+
+######################################################################
+
+SaveAs D ${imagedir}/${casename}.cbf
+file delete -force ${imagedir}/${casename}.cbf

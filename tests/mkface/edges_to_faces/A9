@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28426"
+puts "========"
+puts ""
+#################################################
+# Implementation of the EdgesToFaces function
+#################################################
+
+restore [locate_data_file bug26917_rm-104_input_3.brep] s
+eval compound [explode s e] c
+
+edgestofaces result c
+
+checkshape result
+checknbshapes result -face 2357 -wire 2575
+
+if { [regexp "This shape seems to be OK" [bopcheck result]] != 1 } {
+  puts "Error : The result is self-interfered"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

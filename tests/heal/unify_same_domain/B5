@@ -1,0 +1,17 @@
+puts "======="
+puts "0028913"
+puts "======="
+puts ""
+##################################################
+# UnifySameDomain crashes with error: "a shape is modified and removed simultaneously"
+##################################################
+
+restore [locate_data_file bug28995_fuse.brep] a
+
+unifysamedom result a
+
+checkshape result
+checknbshapes result -vertex 200 -edge 300 -wire 104 -face 103
+checkprops result -s 1.59154e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

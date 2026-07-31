@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC2986"
+puts "============"
+puts ""
+######################################################
+# Cut&fuse oprs. for 2 toroidal faces, sharing the same domain give invalid result 
+######################################################
+## (new topology)
+## (bop)
+## (bopcut)
+## (bfuse)
+######################################################
+
+############# data #############
+ptorus p1 10 4
+explode p1 f
+mksurface gs p1_1
+trim trgs gs 1 2 1 2
+mkface ff trgs
+############# testing faces are: p1_1 ff #############
+
+bop p1_1 ff
+bopcut rcut1
+checkshape rcut1
+
+bfuse result rcut1 ff
+
+checkprops result -s 1579.81 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

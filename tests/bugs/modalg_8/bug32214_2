@@ -1,0 +1,24 @@
+puts "========================================="
+puts "OCC32214: 2d Offset produces wrong result"
+puts "========================================="
+puts ""
+
+restore [locate_data_file bug31992.brep] a
+wire a a
+mkplane a a
+
+arclinconvert result a
+build3d result
+
+checkshape result
+
+checknbshapes result -t -vertex 187 -edge 187 -wire 1 -face 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.001e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 3.13603
+

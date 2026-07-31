@@ -1,0 +1,19 @@
+puts "================"
+puts "0031756: Data Exchange - broken parsing of STEP entity in case of missing last parameter"
+puts "================"
+puts ""
+
+pload OCAF
+
+stepread [locate_data_file bug26451_Test_STEP.stp] a *
+
+set entityInfo1 [ entity #71919 ]
+
+if { [regexp "'',83477:#84041,83477:#84041,#0,#0" $entityInfo1] != 1 } {
+   puts "Error : wrong arguments of parsed record"
+}
+
+set entityInfo2 [ entity #71920 ]
+if { [regexp "71356:#71920 = FILL_AREA_STYLE" $entityInfo2] != 1 } {
+   puts "Error : wrong record, parser skip record"
+}

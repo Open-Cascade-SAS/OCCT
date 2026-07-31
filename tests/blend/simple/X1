@@ -1,0 +1,16 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : E3
+## Comment : From CV tests serie page 20
+## ===========================================
+
+box b -50 -50 0 100 100 100
+pcylinder cyl 30 105
+ttranslate cyl 0 0 10
+bfuse tmp b cyl
+explode tmp e
+blend resultat tmp 10 tmp_3
+explode resultat E
+blend result resultat 15 resultat_5
+
+checkprops result -s 60963.9

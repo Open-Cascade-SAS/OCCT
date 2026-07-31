@@ -1,0 +1,24 @@
+puts "============"
+puts "0029768: Visualization, TKOpenGl - structure is entirely clipped by suppressed clipping"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vpoint p0 0 0 0
+vzbufftrihedron
+box b0 0 0 0 1 1 1
+box b1 3 0 0 1 1 1
+vdisplay -dispMode 1 b0 b1
+vsetcolor b0 RED
+vsetcolor b1 GREEN
+vfit
+
+vclipplane pv  equation -1 0 0  0.5 -set
+vclipplane pb0 equation  0 1 0 -0.5 -set b0
+vclipplane pb1 equation  0 1 0 -0.5 -setOverrideGlobal b1
+
+if { [vreadpixel 300 200 rgb name] != "GREEN2" } { puts "Error: box b1 is fully clipped" }
+vdump $imagedir/${casename}.png

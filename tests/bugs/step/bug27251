@@ -1,0 +1,25 @@
+puts "TODO OCC27251 All: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "============"
+puts "OCC27251"
+puts "============"
+puts ""
+###############################################################
+# Shape becomes invalid when exported to STEP and imported back
+###############################################################
+
+restore [locate_data_file bug27251_cc.brep] c
+whatis c
+checkshape c
+
+set aFile ${imagedir}/bug27251.stp
+catch { file delete ${aFile} }
+
+stepwrite 0 c ${aFile}
+
+stepread ${aFile} result *
+whatis result_1
+checkshape result_1
+
+checkview -display c -2d -path ${imagedir}/${test_image}_1.png
+checkview -display result_1 -2d -path ${imagedir}/${test_image}_2.png

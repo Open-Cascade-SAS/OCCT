@@ -1,0 +1,64 @@
+puts "TODO OCC11111 ALL: Faulty OCC1651"
+
+pload QAcommands
+
+puts "============"
+puts "OCC1651"
+puts "============"
+puts ""
+######################################################
+# No intersection found using BRepClass3d_Intersector3d
+######################################################
+
+restore [locate_data_file OCC1651.brep] face 
+
+checkshape face
+
+set PntX 164.6207
+set PntY -105.2869
+set PntZ 557.8805
+set DirX 0.5774
+set DirY -0.5774
+set DirZ 0.5774
+
+if { [catch { set PointList [OCC1651 face ${PntX} ${PntY} ${PntZ} ${DirX} ${DirY} ${DirZ}] } catch_result] } {
+    puts "Faulty OCC1651"
+} else {
+    set ll [ llength ${PointList} ]
+    if {${ll} != 3} {
+        puts "Faulty OCC1651"
+    } else {
+        set IntersectionPointX [lindex ${PointList} 0]
+        set IntersectionPointY [lindex ${PointList} 1]
+        set IntersectionPointZ [lindex ${PointList} 2]
+
+        set good_IntersectionPointX 42.6199
+        set good_IntersectionPointY 16.7139
+        set good_IntersectionPointZ 435.88
+
+        set X_percent [expr abs(${IntersectionPointX} - ${good_IntersectionPointX}) / double(${good_IntersectionPointX}) * 100.]
+        set Y_percent [expr abs(${IntersectionPointY} - ${good_IntersectionPointY}) / double(${good_IntersectionPointY}) * 100.]
+        set Z_percent [expr abs(${IntersectionPointZ} - ${good_IntersectionPointZ}) / double(${good_IntersectionPointZ}) * 100.]
+
+        set percent_max 0.1
+
+        set IsGood 1
+        if {${X_percent} > ${percent_max}} {
+            puts "OCC1651 Faulty"
+            set IsGood 0
+        }
+        if {${Y_percent} > ${percent_max}} {
+            puts "OCC1651 Faulty"
+            set IsGood 0
+        }
+        if {${Z_percent} > ${percent_max}} {
+            puts "OCC1651 Faulty"
+            set IsGood 0
+        }
+        if {${IsGood} == 1} {
+            puts "OCC1651 OK"
+        }
+    }
+}
+
+

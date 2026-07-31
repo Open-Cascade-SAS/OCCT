@@ -1,0 +1,24 @@
+puts "========================"
+puts "CR23184"
+puts "========================"
+puts ""
+#######################################################################
+# Bad face tessellation result
+#######################################################################
+
+brestore [locate_data_file bug23184_tessface.brep] result
+
+checkshape result
+
+tclean result
+
+set Deflection 0.045
+
+incmesh result ${Deflection}
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

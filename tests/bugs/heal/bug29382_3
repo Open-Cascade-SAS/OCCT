@@ -1,0 +1,24 @@
+puts "================================================================================"
+puts "OCC29382: ShapeUpgrade_UnifySameDomain algorithm incorrectly processes the shape"
+puts "================================================================================"
+puts ""
+
+beziercurve a 5  0 0 0  1 0 0  2 2 0  0 0.5 0  0 0 0
+mkedge a a
+wire a a
+mkplane a a
+prism a a 0 0 1
+box b -0.3 -0.2 0  1 0.4 1
+bcommon shape a b
+
+unifysamedom result shape +b
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 5 -wire 5 -edge 9 -vertex 5
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 6.e-6} {
+   puts "Error: bad tolerance of result"
+}

@@ -1,0 +1,35 @@
+# test connection points
+box b 10 10 10
+explode b e
+
+NewDocument D_init
+XAddShape D_init b
+XAddDimension D_init b_1 b_2
+#0:1:4:1
+XSetDimensionType D_init 0:1:4:1 2
+XSetDimensionValue D_init 0:1:4:1 10
+# Connection points
+vertex v1 1 0 0
+vertex v2 9 0 0 
+XSetDimensionPoints D_init 0:1:4:1 v1 v2
+
+# Export
+set isOK 1
+set filename $imagedir/${casename}_D_init.stp
+if { [catch { WriteStep D_init $filename } catch_result] } {
+  puts "Error: File was not written - exception"
+  set isOK 0
+  }
+# Import
+if {$isOK} {
+  if { [catch { ReadStep D $filename } catch_result] } {
+    puts "Error: File was not read - exception"
+    set isOK 0
+    }
+  }
+# Reference data
+if {$isOK} {
+  set c_value "10"
+  set c_type "Location_LinearDistance"
+  set c_pnts "1;0;0 9;0;0"
+}

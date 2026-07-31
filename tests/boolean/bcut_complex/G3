@@ -1,0 +1,15 @@
+# Original bug : cts18078
+# Date : 24mar98
+
+restore [locate_data_file cts18078-part.rle] part
+
+## Note that shape 'part' needed 
+## to be reparametrised
+fsameparameter part
+## Seems no longer to be necessary
+
+restore [locate_data_file cts18078-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 147330
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

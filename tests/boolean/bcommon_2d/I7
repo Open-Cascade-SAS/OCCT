@@ -1,0 +1,9 @@
+restore [locate_data_file case_5_face.brep] a
+restore [locate_data_file case_4_edge1.brep] b
+
+bcommon result b a
+
+checkprops result -l 887.185
+checksection result
+checknbshapes result -vertex 2 -edge 1 -t
+

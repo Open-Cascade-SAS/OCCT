@@ -1,0 +1,12 @@
+
+puts "================"
+puts "OCC41"
+puts "================"
+puts ""
+
+puts "Isos lines may be drawn incorrectly"
+psphere result 10 -90
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

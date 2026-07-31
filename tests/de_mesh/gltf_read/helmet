@@ -1,0 +1,21 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_DamagedHelmet.gltf]
+
+set anAssetInfo [ReadGltf [locate_data_file bug30691_DamagedHelmet.gltf] -assetInfo]
+if { "$anAssetInfo" != "generator: Khronos Blender glTF 2.0 exporter" } { puts "Error: unexpected asset info" }
+
+XGetOneShape s D
+checknbshapes s -face 1 -compound 0
+checktrinfo s -tri 15452 -nod 14556
+
+set THE_REF_DUMP {
+INSTANCE FACE 0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+PART FACE 0:1:1:2 "mesh_helmet_LP_13930damagedHelmet"
+
+Free Shapes: 1
+INSTANCE FACE  0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+}
+checkXDump D $THE_REF_DUMP

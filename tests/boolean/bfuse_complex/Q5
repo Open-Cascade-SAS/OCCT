@@ -1,0 +1,11 @@
+puts "BUC60382"
+puts "Problem with fuse operation "
+puts ""
+
+restore [locate_data_file IR2_TuyoPipeBSpline_20_draw2.brep] a
+restore [locate_data_file IR2_sphere2_20.brep] b 
+
+bfuse result a b
+
+checkprops result -s 35185.8
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

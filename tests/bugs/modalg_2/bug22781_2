@@ -1,0 +1,23 @@
+pload QAcommands
+
+puts "================"
+puts "OCC22781"
+puts "================"
+puts ""
+#######################################################################################
+# Regression in GCPnts_TangentialDeflection
+######################################################################################
+
+set BugNumber OCC22781
+
+restore [locate_data_file OCC22781-BeforeCont.brep] result
+vinit
+vdisplay result
+vfit
+vsetdispmode 0
+vselect 289 135
+
+checkprops result -l 5.82393 
+checkshape result 
+checksection result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

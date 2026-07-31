@@ -1,0 +1,32 @@
+puts "==========="
+puts "OCC6307"
+puts "==========="
+######################################################
+# DRAW: XShow command on WNT produces very bad shading
+######################################################
+
+set BugNumber OCC6307
+
+catch {pload OCAF}
+
+# Create a new document and set UndoLimit
+NewDocument D
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+ReadStep D [locate_data_file trj2_as1-tc-214.stp]
+
+XGetOneShape result D
+
+XShow D
+
+vsetdispmode 1
+vfit
+
+checkprops result -s 141051 
+checkshape result
+
+checknbshapes result -vertex 84 -edge 126 -wire 76 -face 53 -shell 5 -solid 5 -compsolid 0 -compound 4 -shape 353
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

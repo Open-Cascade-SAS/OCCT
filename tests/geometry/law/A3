@@ -1,0 +1,11 @@
+law law1 5 4 0.0e0 6 1.0e0 1 2.0e0 1 3.0e0 6  0  0 0.1 0.2  0.7  0.3  1  1
+set delta 0.01
+2dcvalue law1 1.5 x y dx dy
+set value [dval y]
+repeat 50 { 
+    movelaw law1 1.5 $value dy  0  
+    set value [expr $value + $delta] 
+    repaint
+}
+copy law1 result
+checklength result -l 3.3374712943009293

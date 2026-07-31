@@ -1,0 +1,15 @@
+#box b -30 -30 -30 60 60 30
+#ptorus s 20 5 0 90
+#fuse f1 s b
+#pcylinder c 6 45
+#trotate c 0 0 0 1 0 0 90
+#ttranslate c 0 0 -10
+#fuse s f1 c
+#save s 6_D56.draw
+
+restore [locate_data_file CFI_6_d56fgy.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 8*SCALE2 s_3
+
+checkprops result -s 15179.9

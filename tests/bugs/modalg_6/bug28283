@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28283"
+puts "========"
+puts ""
+#################################################
+# The command bopcheck crashes on the given shape
+#################################################
+
+restore [locate_data_file bug28283_shell.brep] a
+
+bfuzzyvalue 1
+if [catch {bopcheck a}] {
+  puts "Error: bopcheck crash"
+} else {
+  puts "OK: bopcheck passed"
+}

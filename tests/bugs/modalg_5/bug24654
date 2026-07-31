@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24654"
+puts "============"
+puts ""
+######################################################
+# Result of Boolean operation is invalid for bopargcheck if rotated
+######################################################
+
+restore [locate_data_file bug24654_qf.brep] result
+
+set info [bopargcheck result]
+
+if { [regexp "Faulties, that can not be treated by BOP, are detected" ${info}] == 1 } {
+    puts "Error : Wrong result"
+} else {
+    puts "OK : Good result"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

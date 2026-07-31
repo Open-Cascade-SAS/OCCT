@@ -1,0 +1,14 @@
+#I3----------------------------------------------
+polyline p 0 0 5  0 0 0  20 0 0  20 0 5  
+beziercurve bc 4  20 0 5  15 0 6  5 0 4  0 0 5
+mkedge bc bc
+wire p p bc
+mkplane p p
+prism p p 0 20 0
+plane pc 10 10 0 0 0 1
+pcone pc pc 5 4 10
+bfuse f p pc
+nexplode f f
+depouille result f 0 0 1 f_7 1 0 0 10 0 0 1
+
+checkprops result -s 1325.75

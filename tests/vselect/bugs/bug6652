@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC6652: Problem of mesh selection"
+puts "============"
+puts ""
+
+pload XDE
+set BugNumber OCC6652
+
+vinit View1
+
+meshfromstl result [locate_data_file OCC6652.stl]
+
+vsetdispmode result 3
+vselmode result 8 1
+
+vselect 5 5 400 400
+
+if {[vnbselected] != 26966} { puts "Faulty ${BugNumber}" }
+
+vdump $imagedir/${casename}.png

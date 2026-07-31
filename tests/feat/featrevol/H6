@@ -1,0 +1,14 @@
+pcylinder c1 2 5
+profile p x 1 y 1 x -1 y -1
+trotate p 0 0 0 1 0 0 90
+trotate p 0 0 0 0 0 1 90
+ttranslate p 0 -3 0.5
+explode c1 f
+explode p e
+
+featrevol c1 p p 0 0 0.5 0 0 1 1 1
+addslide revol p_2 c1_1
+featperformval revol result 30
+
+
+checkprops result -s 93.1062

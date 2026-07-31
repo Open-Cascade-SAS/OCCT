@@ -1,0 +1,16 @@
+puts "============"
+puts "CR23651"
+puts "============"
+puts ""
+###############################
+## Exception on fillet construction between NURBS and surface of revolution
+###############################
+
+restore [locate_data_file bug23651_turbine_shell_one_edge.brep ] a
+explode a e
+
+mkevol result a
+updatevol a_4 0. 1.5 0.05 1 0.45 1 0.5 1.5 0.55 2 0.95 2 1. 1.5
+buildevol
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

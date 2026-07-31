@@ -1,0 +1,23 @@
+puts "============="
+puts "0031341: Visualization - Graphic3d_Layer::UpdateCulling() ignores Presentation range"
+puts "============="
+
+pload MODELING VISUALIZATION
+# create big enough set of overlapped boxes, so that more than 1 structure appear on a leaf of BVH tree
+set aList {}
+for {set i 0} {$i < 2000} {incr i} { box b$i 2000-$i 2000-$i 2000-$i; lappend aList b$i }
+vclear
+vinit View1
+vtop
+vdefaults -autoTriang 0
+vdisplay -dispMode 0 {*}$aList
+
+vfit
+vzoom 5
+if { [vstatprofiler structs] != 1203 } { puts "Error: unexpected number of culled structures" }
+vdump $::imagedir/${::casename}_zoom.png
+
+vfit
+vzoom 0.9
+if { [vstatprofiler structs] != 2000 } { puts "Error: no culling is expected" }
+vdump $::imagedir/${::casename}.png

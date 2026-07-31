@@ -1,0 +1,8 @@
+restore [locate_data_file bug32264.brep] s
+set aTmpFile "$imagedir/${casename}.brep"
+testwritestep "$aTmpFile" s
+testreadstep  "$aTmpFile" s1
+file delete   "$aTmpFile"
+checkshape s1 f
+checkmaxtol s1 -ref 1.e-7
+checkprops s1 -v 16.1759 -deps 0.01

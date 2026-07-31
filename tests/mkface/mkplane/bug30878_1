@@ -1,0 +1,22 @@
+puts "============="
+puts "0030878: Modeling Algorithms - BRepLib_MakeFace produces face with abnormal surface"
+puts "============="
+
+brestore [locate_data_file bug30878_wire.brep] w
+
+# build the face on the original wire
+mkplane result w 1
+
+checkprops result -s 69458.1
+
+# reduce the tolerance
+settolerance w 0.7
+
+# build face again
+mkplane result w 1
+
+checkprops result -s 69458.1
+
+set MaxFTol 0.7
+set MaxETol 0.7
+set MaxVTol 0.7

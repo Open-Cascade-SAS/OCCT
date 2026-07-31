@@ -1,0 +1,9 @@
+# Original bug : pro8320
+# Date : 24mar98
+
+restore [locate_data_file CTO900_pro8320-part.rle] part
+restore [locate_data_file pro8320-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 13770
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,5 @@
+puts "TODO OCC23068 ALL: Error : The area of face "
+
+psphere s 15 270
+
+OFFSETSHAPE 1 {s_2} $calcul $type

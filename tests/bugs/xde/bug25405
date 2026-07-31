@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25405"
+puts "========"
+puts ""
+########################################
+# STL reader doesn't keep shared nodes
+########################################
+
+set GoodNodesNB 64215
+set GoodTrianglesNB 117694
+
+vinit
+
+meshfromstl s [locate_data_file head.stl]
+set bug_info [meshinfo s]
+
+if {$GoodNodesNB != [lindex $bug_info 3]} {
+  puts "ERROR: Number of nodes is incorrect: [lindex $bug_info 3] (should be $GoodNodesNB)"
+}
+
+if {$GoodTrianglesNB != [lindex $bug_info 7]} {
+  puts "ERROR: Number of triangles is incorrect: [lindex $bug_info 7] (should be $GoodTrianglesNB)"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

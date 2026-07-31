@@ -1,0 +1,14 @@
+
+puts "==========="
+puts "  BUC60955"
+puts "==========="
+
+puts "Restoring face from file"
+restore [locate_data_file buc60955.brep] result
+checkshape result
+
+build3d result
+
+checkprops result -s 8464.65
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

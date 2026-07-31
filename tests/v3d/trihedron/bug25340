@@ -1,0 +1,33 @@
+puts "========"
+puts "0025340: Visualization, AIS_InteractiveContext - properly apply selection filters at Neutral point"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+
+vinit View1
+
+box b 1 2 3
+vdisplay b
+vfit
+vtrihedron t
+set color_1 [vreadpixel 87 25 -rgb -name]
+
+OCC25340
+vselect 87 25
+set color_2 [vreadpixel 87 25 -rgb -name]
+
+if {$color_2 != $color_1} {
+  puts "ERROR: OCC25340 is reproduced"
+  puts "       initial color of trihedron is: $color_1"
+  puts "       final color of trihedron is:   $color_2"
+}
+
+if {$color_2 != "LIGHTSTEELBLUE4"} {
+  puts "ERROR: OCC25340 is reproduced"
+  puts "       additional investigation is needed"
+  puts "       expected color is: LIGHTSTEELBLUE4"
+  puts "       current color is:  $color_2"
+}
+
+vdump $imagedir/${casename}.png

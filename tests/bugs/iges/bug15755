@@ -1,0 +1,16 @@
+puts "==========="
+puts "OCC15755"
+puts "==========="
+
+set BugNumber OCC15755
+
+######################################################
+# IGESData_IGESEntity::NameValue returns nothing when nbname > 1
+######################################################
+
+pload QAcommands
+
+OCC15755 [locate_data_file OCC15755.igs] result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

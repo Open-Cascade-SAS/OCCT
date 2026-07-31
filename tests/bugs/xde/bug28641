@@ -1,0 +1,87 @@
+puts "========"
+puts "0028641: Data Exchange - Support alpha-channel of color"
+puts "========"
+puts ""
+
+pload OCAF
+
+# Create document with View
+NewDocument D_First BinXCAF
+box b 1 1 1
+explode b e
+explode b f
+XAddShape D_First b
+XSetColor D_First b_1 RED s
+XSetColor D_First b_2 YELLOW 0.3 s
+XSetColor D_First b_11 WHITE 0.2 c
+XSetColor D_First b_10 CYAN c
+XAddColor D_First 0.5 0.5 1 0.1
+
+XShow D_First
+vfit
+vsetdispmode 1
+vdump $::imagedir/${::casename}_first.png
+if { [vreadpixel 300 200 rgb name] != "GRAY63" } { puts "Error: wrong color in 3D Viewer" }
+
+# Write file
+set aTmpFile ${imagedir}/${casename}.xbf
+SaveAs D_First $aTmpFile
+Close D_First
+# Read document
+XOpen $aTmpFile D_Second
+file delete -force $aTmpFile
+
+# Results validation
+set isOK 1
+set color ""
+set alpha ""
+set prec 1e-7
+#0:1:2:1
+set res [XGetColor D_Second 0:1:2:1]
+if {$res != "RED"} {
+  set isOK 0
+}
+#0:1:2:2
+set res [XGetColor D_Second 0:1:2:2]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "YELLOW"} {
+  set isOK 0
+}
+if {[expr abs(0.3 - $alpha)] > $prec} {
+  set isOK 0
+}
+#0:1:2:3
+set res [XGetColor D_Second 0:1:2:3]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "WHITE"} {
+  set isOK 0
+}
+if {[expr abs(0.2 - $alpha)] > $prec} {
+  set isOK 0
+}
+#0:1:2:4
+set res [XGetColor D_Second 0:1:2:4]
+if {$res != "CYAN"} {
+  set isOK 0
+}
+#0:1:2:5
+set res [XGetColor D_Second 0:1:2:5]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "LIGHTSTEELBLUE2"} {
+  set isOK 0
+}
+if {[expr abs(0.1 - $alpha)] > $prec} {
+  set isOK 0
+}
+
+if {$isOK == 0} {
+  puts "Error: wrong color."
+}
+
+XShow D_Second
+vfit
+vsetdispmode 1
+vdump $::imagedir/${::casename}.png
+if { [vreadpixel 300 200 rgb name] != "GRAY63" } { puts "Error: wrong color in 3D Viewer" }
+
+Close D_Second

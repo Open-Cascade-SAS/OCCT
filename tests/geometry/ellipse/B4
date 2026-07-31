@@ -1,0 +1,4 @@
+ellipse result 0 0  1 0  400 300
+reverse result
+checklength result -l 2210.3492160709502
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

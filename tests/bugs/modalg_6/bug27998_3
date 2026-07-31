@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC27998"
+puts "============"
+puts ""
+######################################################
+# Self-intersection is not detected
+######################################################
+
+restore [locate_data_file bug20807_coil.brep] cc
+explode cc e
+mkcurve cc cc_1
+trim tc cc 0 6
+mkedge ee tc
+prism a ee 0 0 50
+donly a
+
+set info1 [bopcheck a 9]
+
+if { [regexp "F/F: x0 x0" $info1] != 1 } {
+    puts "Error : bopcheck a works wrong"
+} else {
+    puts "OK: bopcheck a works properly"
+}

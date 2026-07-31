@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC25723"
+puts "Calculate the center of rotation taking into account active selection"
+puts "============"
+puts ""
+
+set x_sel_coord 220
+set y_sel_coord 50
+
+set x_mouse_start_coord 100
+set y_mouse_start_coord 100
+
+set x_mouse_move_coord 300
+set y_mouse_move_coord 300
+
+set x_check_coord 220
+set y_check_coord 50
+
+pload MODELING VISUALIZATION
+box b1 0 0   0 10 10 10
+box b2 0 0  20 10 10 10
+box b3 0 0 -20 10 10 10
+box b4 0 0  40 10 10 10
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+# turn on solid selection
+vselmode 6 1
+vdisplay b1 b2 b3 b4
+vfit
+
+# select one (red) solid
+vselect ${x_sel_coord} ${y_sel_coord}
+
+# start rotation
+vrotate -mouseStart ${x_mouse_start_coord} ${y_mouse_start_coord} -mouseMove ${x_mouse_move_coord} ${y_mouse_move_coord}
+
+# unselect
+vselect 0 0
+
+# check color
+if {"[vreadpixel ${x_check_coord} ${y_check_coord} rgb name]" != "GOLDENROD3"} { puts "Error : Rotation is not correct" }
+
+vdump ${imagedir}/${test_image}.png

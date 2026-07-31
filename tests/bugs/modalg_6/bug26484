@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC26484"
+puts "=========="
+puts ""
+###########################################
+# BRepExtrema_DistShapeShape hangs
+###########################################
+
+restore [locate_data_file bug26484_shape.brep] s1
+restore [locate_data_file bug26484_face.brep] s2
+distmini dd s1 s2
+dump dd_val
+
+distmini dd s2 s1
+regexp {([-0-9.+eE]+)$} [dump dd_val] full dist
+
+set expected_dist 13.2039203316305
+set tol_abs_dist 1.0e-07
+set tol_rel_dist 0.01
+checkreal "Dump of dd_val" ${dist} ${expected_dist} ${tol_abs_dist} ${tol_rel_dist}

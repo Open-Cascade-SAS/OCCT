@@ -1,0 +1,35 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
+
+puts "============"
+puts "OCC4717"
+puts "============"
+puts ""
+######################################################
+# A regression of new Boolean Operations
+# (cfi/002/H3)
+######################################################
+
+dset SCALE1 10
+protect SCALE1
+
+box b -20 -20 -20 40 40 20
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 -pi/2 pi/2
+trotate w1 0 0 0 1 0 0 90
+wire w w1
+revol r w 0 0 0 0 0 1 360
+shape s So
+add r s
+trotate s b 0 0 0 1 1 0 -40
+trotate s b 0 0 0 0 0 1 -10
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+
+bop b s
+boptuc result
+
+checkprops result -s 181937 
+checkshape result
+
+checknbshapes result -vertex 3 -edge 4 -wire 2 -face 2 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 14
+checkview -display result -2d -path ${imagedir}/${test_image}.png

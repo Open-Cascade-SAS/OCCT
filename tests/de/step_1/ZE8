@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename trj7_c2-td-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 12 )  Warnings = 0  ( 0 )  Summary  = 0  ( 12 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4  ( 0 )  Face     = 4  ( 4 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4  ( 0 )  Face     = 4  ( 4 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 26  ( 26 )  N2Labels = 0  ( 0 )   TotalLabels = 29  ( 29 )   NameLabels = 5  ( 5 )   ColorLabels = 24  ( 24 )   LayerLabels = 4  ( 4 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = CYAN GOLD3 GREEN GREEN4 MAGENTA MAGENTA3 YELLOW  ( CYAN GOLD3 GREEN GREEN4 MAGENTA MAGENTA3 YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 001 002 003 004  ( 001 002 003 004 )
+
+}

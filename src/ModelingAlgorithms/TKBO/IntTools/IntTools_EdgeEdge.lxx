@@ -1,0 +1,208 @@
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Precision.hxx>
+#include <BRep_Tool.hxx>
+
+//=================================================================================================
+
+inline IntTools_EdgeEdge::IntTools_EdgeEdge()
+    : myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(0., 0.),
+      myRange2(0., 0.),
+      mySwap(false),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(false)
+{
+}
+
+//=================================================================================================
+
+inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
+                                            const TopoDS_Edge& theEdge2)
+    : myEdge1(theEdge1),
+      myEdge2(theEdge2),
+      myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(0., 0.),
+      myRange2(0., 0.),
+      mySwap(false),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(false)
+{
+}
+
+//=================================================================================================
+
+inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
+                                            const double       aT11,
+                                            const double       aT12,
+                                            const TopoDS_Edge& theEdge2,
+                                            const double       aT21,
+                                            const double       aT22)
+    : myEdge1(theEdge1),
+      myEdge2(theEdge2),
+      myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(aT11, aT12),
+      myRange2(aT21, aT22),
+      mySwap(false),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(false)
+{
+}
+
+//=================================================================================================
+
+inline IntTools_EdgeEdge::~IntTools_EdgeEdge() = default;
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge)
+{
+  myEdge1 = theEdge;
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetRange1(const IntTools_Range& theRange)
+{
+  myRange1 = theRange;
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetRange1(const double aT1, const double aT2)
+{
+  myRange1.SetFirst(aT1);
+  myRange1.SetLast(aT2);
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge,
+                                        const double       aT1,
+                                        const double       aT2)
+{
+  SetEdge1(theEdge);
+  SetRange1(aT1, aT2);
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge)
+{
+  myEdge2 = theEdge;
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetRange2(const IntTools_Range& theRange)
+{
+  myRange2 = theRange;
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetRange2(const double aT1, const double aT2)
+{
+  myRange2.SetFirst(aT1);
+  myRange2.SetLast(aT2);
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge,
+                                        const double       aT1,
+                                        const double       aT2)
+{
+  SetEdge2(theEdge);
+  SetRange2(aT1, aT2);
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::SetFuzzyValue(const double theFuzz)
+{
+  myFuzzyValue = std::max(theFuzz, Precision::Confusion());
+}
+
+//=================================================================================================
+
+inline double IntTools_EdgeEdge::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+
+//=================================================================================================
+
+inline const NCollection_Sequence<IntTools_CommonPrt>& IntTools_EdgeEdge::CommonParts() const
+{
+  return myCommonParts;
+}
+
+//=================================================================================================
+
+inline bool IntTools_EdgeEdge::IsDone() const
+{
+  return (myErrorStatus == 0);
+}
+
+//=================================================================================================
+
+inline void IntTools_EdgeEdge::CheckData()
+{
+  if (myEdge1.IsNull() || myEdge2.IsNull())
+  {
+    myErrorStatus = 1;
+    return;
+  }
+  //
+  if (BRep_Tool::Degenerated(myEdge1) || BRep_Tool::Degenerated(myEdge2))
+  {
+    myErrorStatus = 2;
+    return;
+  }
+  //
+  if (!BRep_Tool::IsGeometric(myEdge1) || !BRep_Tool::IsGeometric(myEdge2))
+  {
+    myErrorStatus = 3;
+    return;
+  }
+}

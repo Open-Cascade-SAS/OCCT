@@ -1,0 +1,1178 @@
+// Created on: 1992-11-09
+// Created by: Didier PIFFAULT
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Bnd_Box.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Intf.hxx>
+#include <IntPatch_BVHTraversal.hxx>
+#include <IntPatch_InterferencePolyhedron.hxx>
+#include <IntPatch_Polyhedron.hxx>
+#include <IntPatch_PolyhedronBVH.hxx>
+#include <IntPatch_PolyhedronTool.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+
+static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};
+
+//=================================================================================================
+
+IntPatch_InterferencePolyhedron::IntPatch_InterferencePolyhedron()
+    : Intf_Interference(false),
+      Incidence(0)
+{
+  memset(OI, 0, sizeof(OI));
+  memset(TI, 0, sizeof(TI));
+  memset(dpOeT, 0, sizeof(dpOeT));
+  memset(dpOpT, 0, sizeof(dpOpT));
+  memset(deOpT, 0, sizeof(deOpT));
+}
+
+//=================================================================================================
+
+IntPatch_InterferencePolyhedron::IntPatch_InterferencePolyhedron(
+  const IntPatch_Polyhedron& FirstPol,
+  const IntPatch_Polyhedron& SeconPol)
+    : Intf_Interference(false),
+      Incidence(0)
+{
+  memset(OI, 0, sizeof(OI));
+  memset(TI, 0, sizeof(TI));
+  memset(dpOeT, 0, sizeof(dpOeT));
+  memset(dpOpT, 0, sizeof(dpOpT));
+  memset(deOpT, 0, sizeof(deOpT));
+  if (!IntPatch_PolyhedronTool::Bounding(FirstPol).IsOut(
+        IntPatch_PolyhedronTool::Bounding(SeconPol)))
+  {
+    Tolerance = IntPatch_PolyhedronTool::DeflectionOverEstimation(FirstPol)
+                + IntPatch_PolyhedronTool::DeflectionOverEstimation(SeconPol);
+    if (Tolerance == 0.)
+    {
+      Tolerance = Epsilon(1000.);
+    }
+    Interference(FirstPol, SeconPol);
+  }
+}
+
+//=================================================================================================
+
+IntPatch_InterferencePolyhedron::IntPatch_InterferencePolyhedron(const IntPatch_Polyhedron& Objet)
+    : Intf_Interference(true),
+      Incidence(0)
+{
+  memset(OI, 0, sizeof(OI));
+  memset(TI, 0, sizeof(TI));
+  memset(dpOeT, 0, sizeof(dpOeT));
+  memset(dpOpT, 0, sizeof(dpOpT));
+  memset(deOpT, 0, sizeof(deOpT));
+  Tolerance = IntPatch_PolyhedronTool::DeflectionOverEstimation(Objet) * 2;
+  if (Tolerance == 0.)
+  {
+    Tolerance = Epsilon(1000.);
+  }
+  Interference(Objet, Objet); //-- lbr le 5 juillet 96
+}
+
+//=================================================================================================
+
+void IntPatch_InterferencePolyhedron::Perform(const IntPatch_Polyhedron& FirstPol,
+                                              const IntPatch_Polyhedron& SeconPol)
+{
+  SelfInterference(false);
+  if (!IntPatch_PolyhedronTool::Bounding(FirstPol).IsOut(
+        IntPatch_PolyhedronTool::Bounding(SeconPol)))
+  {
+    Tolerance = IntPatch_PolyhedronTool::DeflectionOverEstimation(FirstPol)
+                + IntPatch_PolyhedronTool::DeflectionOverEstimation(SeconPol);
+    if (Tolerance == 0.)
+    {
+      Tolerance = Epsilon(1000.);
+    }
+    Interference(FirstPol, SeconPol);
+  }
+}
+
+//=================================================================================================
+
+void IntPatch_InterferencePolyhedron::Perform(const IntPatch_Polyhedron& Objet)
+{
+  SelfInterference(true);
+  Tolerance = IntPatch_PolyhedronTool::DeflectionOverEstimation(Objet) * 2;
+  if (Tolerance == 0.)
+  {
+    Tolerance = Epsilon(1000.);
+  }
+  Interference(Objet);
+}
+
+//=================================================================================================
+
+void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron&) {}
+
+void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& theFirstPol,
+                                                   const IntPatch_Polyhedron& theSecondPol)
+{
+  // Build BVH sets for both polyhedra
+  IntPatch_PolyhedronBVH aSet1(theFirstPol);
+  IntPatch_PolyhedronBVH aSet2(theSecondPol);
+
+  // Find candidate triangle pairs via BVH traversal
+  IntPatch_BVHTraversal aTraversal;
+  aTraversal.Perform(aSet1, aSet2, SelfIntf);
+
+  // Process each candidate pair
+  const NCollection_DynamicArray<IntPatch_BVHTraversal::TrianglePair>& aPairs = aTraversal.Pairs();
+  for (const auto& aPair : aPairs)
+  {
+    Intersect(aPair.First, theFirstPol, aPair.Second, theSecondPol);
+  }
+}
+
+//=======================================================================
+// function : Intersect
+// purpose  : Intersection of two triangles issue from two Polyhedron.
+//=======================================================================
+
+void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
+                                                const IntPatch_Polyhedron& FirstPol,
+                                                const int                  Tri2,
+                                                const IntPatch_Polyhedron& SeconPol)
+{
+  IntPatch_PolyhedronTool::Triangle(FirstPol, Tri1, OI[0], OI[1], OI[2]);
+  IntPatch_PolyhedronTool::Triangle(SeconPol, Tri2, TI[0], TI[1], TI[2]);
+
+  // If there is an intersection of a polyhedron with itself, the
+  // intersections are excluded
+  // from a triangle with connected triangles :
+
+  if (SelfIntf)
+  {
+    if (OI[0] == TI[0] || OI[0] == TI[1] || OI[0] == TI[2] || OI[1] == TI[0] || OI[1] == TI[1]
+        || OI[1] == TI[2] || OI[2] == TI[0] || OI[2] == TI[1] || OI[2] == TI[2])
+    {
+      return;
+    }
+  }
+
+  // The precision of intersections includes two values ;
+
+  // - Tolerance :This value allows detecting potential
+  //              intersections in all cases.  The value should be the
+  //            sum of upper bounds of tops pof two polyhedrons.
+
+  // - floatGap : This value is the actual precision of calculation
+  //              of line of section.Its value is very small, it
+  //              allows having the same behaviour for
+  //              geometry tests as for the values used.
+
+  double floatGap = 1e-13; //-- Epsilon(1000.);
+
+  // Equation of the triangle plane of the objet
+  gp_XYZ ONor; // Normal vector.
+  double Odp;  // Polar Distance.
+  Intf::PlaneEquation(IntPatch_PolyhedronTool::Point(FirstPol, OI[0]),
+                      IntPatch_PolyhedronTool::Point(FirstPol, OI[1]),
+                      IntPatch_PolyhedronTool::Point(FirstPol, OI[2]),
+                      ONor,
+                      Odp);
+
+  // Equation of the triangle plane of the tool
+  gp_XYZ TNor; // Normal vector.
+  double Tdp;  // Polar distance.
+  Intf::PlaneEquation(IntPatch_PolyhedronTool::Point(SeconPol, TI[0]),
+                      IntPatch_PolyhedronTool::Point(SeconPol, TI[1]),
+                      IntPatch_PolyhedronTool::Point(SeconPol, TI[2]),
+                      TNor,
+                      Tdp);
+
+  // Scalar product of two normalized vectors -> cosinus of the angle
+  Incidence = std::abs(TNor * ONor);
+
+  // Distance of the plane of the triangle from the object by three points of SeconPol
+  double dfOpT[3];
+  dfOpT[0] = ONor * (IntPatch_PolyhedronTool::Point(SeconPol, TI[0]).XYZ()) - Odp;
+  dfOpT[1] = ONor * (IntPatch_PolyhedronTool::Point(SeconPol, TI[1]).XYZ()) - Odp;
+  dfOpT[2] = ONor * (IntPatch_PolyhedronTool::Point(SeconPol, TI[2]).XYZ()) - Odp;
+
+  // Distance of the plane of the triangle from the tool by three points of FirstPol
+  double dpOfT[3];
+  dpOfT[0] = TNor * (IntPatch_PolyhedronTool::Point(FirstPol, OI[0]).XYZ()) - Tdp;
+  dpOfT[1] = TNor * (IntPatch_PolyhedronTool::Point(FirstPol, OI[1]).XYZ()) - Tdp;
+  dpOfT[2] = TNor * (IntPatch_PolyhedronTool::Point(FirstPol, OI[2]).XYZ()) - Tdp;
+
+  // Values defining the couple of triangle dpOpT, dpOeT, deOpT
+  CoupleCharacteristics(FirstPol, SeconPol);
+
+  // If three  points  of the triangle of <SeconPol> are in the plane of the
+  // triangle of <Obje> within <Tolerance> the eventual tangency zone is found.
+
+  Intf_TangentZone TheTZ;
+  if ((std::abs(dfOpT[0]) <= Tolerance && std::abs(dfOpT[1]) <= Tolerance
+       && std::abs(dfOpT[2]) <= Tolerance)
+      && (std::abs(dpOfT[0]) <= Tolerance && std::abs(dpOfT[1]) <= Tolerance
+          && std::abs(dpOfT[2]) <= Tolerance)
+      && (std::abs(dfOpT[0] + dfOpT[1] + dfOpT[2])
+          != std::abs(dfOpT[0]) + std::abs(dfOpT[1]) + std::abs(dfOpT[2]))
+      && (std::abs(dpOfT[0] + dpOfT[1] + dpOfT[2])
+          != std::abs(dpOfT[0]) + std::abs(dpOfT[1]) + std::abs(dpOfT[2])))
+  {
+
+    if (TangentZoneValue(TheTZ, FirstPol, Tri1, SeconPol, Tri2))
+    {
+      if (!Insert(TheTZ))
+      {
+        myTZones.Append(TheTZ);
+      }
+    }
+  }
+
+  // Otherwise line of section is calculated:
+  else
+  {
+    int iObj, iToo;
+
+    // Zone de stockage des resultats :
+    int                                     nbpiOT = 0;
+    int                                     nbpiO  = 0;
+    int                                     nbpiT  = 0;
+    NCollection_Sequence<Intf_SectionPoint> piOT;
+    double                                  parO[3];
+    double                                  parT[3];
+
+    // Indicateurs d arete touchee
+    int edOT[3];
+    int edTT[3];
+
+    // Initializations
+    //--for (iObj=0; iObj<3; iObj++) {
+    //  parO[iObj]=parT[iObj]=-1.;
+    //  edOT[iObj]=edTT[iObj]=1;
+    //--}
+    parO[0] = parT[0] = parO[1] = parT[1] = parO[2] = parT[2] = -1.0;
+    edOT[0] = edTT[0] = edOT[1] = edTT[1] = edOT[2] = edTT[2] = 1;
+
+    // Singularite VERTEX VERTEX
+    // for (iObj=0; iObj<3; iObj++) {
+    //  for (iToo=0; iToo<3; iToo++) {
+    //	if (dpOpT[iObj][iToo] <= floatGap) {
+    //	  piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]),
+    //					Intf_VERTEX, OI[iObj], 0, 0.,
+    //					Intf_VERTEX, TI[iToo], 0, 0.,
+    //					Incidence));
+    //	  parO[iObj]=0.;
+    //	  parT[iToo]=0.;
+    //	  edOT[Pourcent3[iObj+2]]=0; edOT[iObj]=0;
+    //	  edTT[Pourcent3[iToo+2]]=0; edTT[iToo]=0;
+    //	  nbpiOT++; nbpiO++; nbpiT++;
+    //	}
+    // }
+    //}
+    //---------------------------->
+    for (iObj = 0; iObj < 3; iObj++)
+    {
+      for (iToo = 0; iToo < 3; iToo++)
+      {
+        if (dpOpT[iObj][iToo] <= floatGap)
+        {
+          piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]),
+                                        Intf_VERTEX,
+                                        OI[iObj],
+                                        0,
+                                        0.,
+                                        Intf_VERTEX,
+                                        TI[iToo],
+                                        0,
+                                        0.,
+                                        Incidence));
+          parO[iObj] = parT[iToo]   = 0.0;
+          edOT[Pourcent3[iObj + 2]] = edOT[iObj] = edTT[Pourcent3[iToo + 2]] = edTT[iToo] = 0;
+          nbpiOT++;
+          nbpiO++;
+          nbpiT++;
+        }
+      }
+    }
+
+    // Singularite VERTEX EDGE
+    int inext, jnext;
+    for (iObj = 0; iObj < 3; iObj++)
+    {
+      if (parO[iObj] == -1.)
+      {
+        for (iToo = 0; iToo < 3; iToo++)
+        {
+          inext = Pourcent3[iToo + 1];
+          if (edTT[iToo] == 1)
+          {
+            if (dpOeT[iObj][iToo] <= floatGap && dpOeT[iObj][iToo] >= -floatGap)
+            {
+              if ((dpOpT[iObj][iToo] + dpOpT[iObj][inext]) < vtt[iToo].Modulus())
+              {
+                parT[iToo] = dpOpT[iObj][iToo] / (dpOpT[iObj][iToo] + dpOpT[iObj][inext]);
+                if (TI[iToo] > TI[inext])
+                {
+                  parT[iToo] = 1. - parT[iToo];
+                }
+                piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]),
+                                              Intf_VERTEX,
+                                              OI[iObj],
+                                              0,
+                                              0.,
+                                              Intf_EDGE,
+                                              std::min(TI[iToo], TI[inext]),
+                                              std::max(TI[iToo], TI[inext]),
+                                              parT[iToo],
+                                              Incidence));
+                parO[iObj]                = 0.;
+                edOT[Pourcent3[iObj + 2]] = 0;
+                edOT[iObj]                = 0;
+                edTT[iToo]                = 0;
+                nbpiOT++;
+                nbpiO++;
+                nbpiT++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Singularite EDGE VERTEX
+    for (iToo = 0; iToo < 3; iToo++)
+    {
+      if (parT[iToo] == -1.)
+      {
+        for (iObj = 0; iObj < 3; iObj++)
+        {
+          inext = Pourcent3[iObj + 1];
+          if (edOT[iObj] == 1)
+          {
+            if (std::abs(deOpT[iObj][iToo]) <= floatGap)
+            {
+              if ((dpOpT[iObj][iToo] + dpOpT[inext][iToo]) < voo[iObj].Modulus())
+              {
+                parO[iObj] = dpOpT[iObj][iToo] / (dpOpT[iObj][iToo] + dpOpT[inext][iToo]);
+                if (OI[iObj] > OI[inext])
+                {
+                  parO[iObj] = 1. - parO[iObj];
+                }
+                piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]),
+                                              Intf_EDGE,
+                                              std::min(OI[iObj], OI[inext]),
+                                              std::max(OI[iObj], OI[inext]),
+                                              parO[iObj],
+                                              Intf_VERTEX,
+                                              TI[iToo],
+                                              0,
+                                              0.,
+                                              Incidence));
+                parT[iToo] = 0.;
+                edOT[iObj] = edTT[Pourcent3[iToo + 2]] = edTT[iToo] = 0;
+                nbpiOT++;
+                nbpiO++;
+                nbpiT++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Singularite FACE VERTEX
+    for (iToo = 0; iToo < 3; iToo++)
+    {
+      if (parT[iToo] != 0.)
+      {
+        if (std::abs(dfOpT[iToo]) <= floatGap)
+        {
+          piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]),
+                                        Intf_FACE,
+                                        Tri1,
+                                        0,
+                                        0.,
+                                        Intf_VERTEX,
+                                        TI[iToo],
+                                        0,
+                                        0.,
+                                        Incidence));
+          parT[iToo]                = 0.;
+          edTT[Pourcent3[iToo + 2]] = edTT[iToo] = 0;
+          nbpiOT++;
+          nbpiT++;
+        }
+      }
+    }
+
+    // Singularite VERTEX FACE
+    for (iObj = 0; iObj < 3; iObj++)
+    {
+      if (parO[iObj] != 0.)
+      {
+        if (std::abs(dpOfT[iObj]) <= floatGap)
+        {
+          piOT.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]),
+                                        Intf_VERTEX,
+                                        OI[iObj],
+                                        0,
+                                        0.,
+                                        Intf_FACE,
+                                        Tri2,
+                                        0,
+                                        0.,
+                                        Incidence));
+          parO[iObj]                = 0.;
+          edOT[Pourcent3[iObj + 2]] = edOT[iObj] = 0;
+          nbpiOT++;
+          nbpiO++;
+        }
+      }
+    }
+
+    // Singularite EDGE EDGE
+    gp_Pnt piO;
+    gp_XYZ piT;
+    double lg;
+    for (iObj = 0; iObj < 3; iObj++)
+    {
+      inext = Pourcent3[iObj + 1];
+      if (edOT[iObj] == 1 && (dpOfT[iObj] * dpOfT[inext]) < 0.)
+      {
+        lg = dpOfT[iObj] / (dpOfT[iObj] - dpOfT[inext]);
+        if (lg > 0. && lg < 1.)
+        {
+          for (iToo = 0; iToo < 3; iToo++)
+          {
+            jnext = Pourcent3[iToo + 1];
+            if (edTT[iToo] == 1 && (dfOpT[iToo] * dfOpT[jnext]) < 0.)
+            {
+              lg = dfOpT[iToo] / (dfOpT[iToo] - dfOpT[jnext]);
+              if (lg > 0. && lg < 1.)
+              {
+                bool Pb = false;
+                if (OI[iObj] > OI[inext])
+                {
+                  double div = (dpOeT[inext][iToo] - dpOeT[iObj][iToo]);
+                  if (div > floatGap || div < -floatGap)
+                  {
+                    parO[iObj] = dpOeT[inext][iToo] / div;
+                    piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[inext]).XYZ())
+                          + (voo[iObj].Reversed() * parO[iObj]);
+                  }
+                  else
+                  {
+                    Pb = true;
+                  }
+                }
+                else
+                {
+                  double div = dpOeT[iObj][iToo] - dpOeT[inext][iToo];
+                  if (div > floatGap || div < -floatGap)
+                  {
+                    parO[iObj] = dpOeT[iObj][iToo] / (dpOeT[iObj][iToo] - dpOeT[inext][iToo]);
+                    piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]).XYZ())
+                          + (voo[iObj] * parO[iObj]);
+                  }
+                  else
+                  {
+                    Pb = true;
+                  }
+                }
+                if (TI[iToo] > TI[jnext])
+                {
+                  double div = (deOpT[iObj][jnext] - deOpT[iObj][iToo]);
+                  if (div > floatGap || div < -floatGap)
+                  {
+                    parT[iToo] = deOpT[iObj][jnext] / div;
+                    piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[jnext]).XYZ())
+                          + (vtt[iToo].Reversed() * parT[iToo]);
+                  }
+                  else
+                  {
+                    Pb = true;
+                  }
+                }
+                else
+                {
+                  double div = (deOpT[iObj][iToo] - deOpT[iObj][jnext]);
+                  if (div > floatGap || div < -floatGap)
+                  {
+                    parT[iToo] = deOpT[iObj][iToo] / div;
+                    piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]).XYZ())
+                          + (vtt[iToo] * parT[iToo]);
+                  }
+                  else
+                  {
+                    Pb = true;
+                  }
+                }
+                if (!Pb)
+                {
+                  piT -= piO.XYZ();
+                  lg = piT.Modulus();
+                  if (lg <= floatGap)
+                  {
+                    piOT.Append(Intf_SectionPoint(piO,
+                                                  Intf_EDGE,
+                                                  std::min(OI[iObj], OI[inext]),
+                                                  std::max(OI[iObj], OI[inext]),
+                                                  parO[iObj],
+                                                  Intf_EDGE,
+                                                  std::min(TI[iToo], TI[jnext]),
+                                                  std::max(TI[iToo], TI[jnext]),
+                                                  parT[iToo],
+                                                  Incidence));
+                    edOT[iObj] = edTT[iToo] = 0;
+                    nbpiOT++;
+                    nbpiO++;
+                    nbpiT++;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Intersection EDGE FACE
+    for (iObj = 0; iObj < 3; iObj++)
+    {
+      inext = Pourcent3[iObj + 1];
+      if (edOT[iObj] == 1 && (dpOfT[iObj] * dpOfT[inext]) < 0.)
+      {
+        lg = dpOfT[iObj] / (dpOfT[iObj] - dpOfT[inext]);
+        if (lg > 0. && lg < 1.)
+        {
+          parO[iObj] = lg;
+          piO =
+            (IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]).XYZ()) + (voo[iObj] * parO[iObj]);
+          if (OI[iObj] > OI[inext])
+          {
+            parO[iObj] = 1. - parO[iObj];
+          }
+          piOT.Append(Intf_SectionPoint(piO,
+                                        Intf_EDGE,
+                                        std::min(OI[iObj], OI[inext]),
+                                        std::max(OI[iObj], OI[inext]),
+                                        parO[iObj],
+                                        Intf_FACE,
+                                        Tri2,
+                                        0,
+                                        0.,
+                                        Incidence));
+          nbpiOT++;
+          nbpiO++;
+        }
+      }
+    }
+
+    // Intersection FACE EDGE
+    for (iToo = 0; iToo < 3; iToo++)
+    {
+      jnext = Pourcent3[iToo + 1];
+      if (edTT[iToo] == 1 && (dfOpT[iToo] * dfOpT[jnext]) < 0.)
+      {
+        lg = dfOpT[iToo] / (dfOpT[iToo] - dfOpT[jnext]);
+        if (lg > 0. && lg < 1.)
+        {
+          parT[iToo] = lg;
+          piO =
+            (IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]).XYZ()) + (vtt[iToo] * parT[iToo]);
+          if (TI[iToo] > TI[jnext])
+          {
+            parT[iToo] = 1. - parT[iToo];
+          }
+          piOT.Append(Intf_SectionPoint(piO,
+                                        Intf_FACE,
+                                        Tri1,
+                                        0,
+                                        0.,
+                                        Intf_EDGE,
+                                        std::min(TI[iToo], TI[jnext]),
+                                        std::max(TI[iToo], TI[jnext]),
+                                        parT[iToo],
+                                        Incidence));
+          nbpiOT++;
+          nbpiT++;
+        }
+      }
+    }
+
+    NCollection_LocalArray<int> id(std::max(nbpiOT, 4));
+
+    int ideb = -1;
+    int ifin = -2;
+
+    if (nbpiOT > 1)
+    {
+
+      // Sort the <nbpiOT> sections points along the intersection between the
+      // two triangles :
+
+      gp_XYZ                         dir = ONor ^ TNor;
+      NCollection_LocalArray<double> d(nbpiOT);
+      int                            iPi, iPs;
+      for (iPi = 0; iPi < nbpiOT; iPi++)
+      {
+        d[iPi] = dir * piOT(iPi + 1).Pnt().XYZ();
+      }
+
+      int di;
+      id[0] = 0;
+      for (iPi = 1; iPi < nbpiOT; iPi++)
+      {
+        id[iPi] = iPi;
+        for (iPs = iPi - 1; iPs >= 0; iPs--)
+        {
+          if (d[id[iPs]] > d[id[iPs + 1]])
+          {
+            di          = id[iPs + 1];
+            id[iPs + 1] = id[iPs];
+            id[iPs]     = di;
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+    }
+
+    // Possibility of line of section :
+
+    if (nbpiO == 2 && nbpiT == 2)
+    {
+
+      // In the case when an edge is in the plane of the other triangle
+      // it is necessary to check if it has not been already processed
+      // on a connected triangle :
+
+      // Pour l objet :
+      int pivo = -1;
+      int pedg = -1;
+      if (parO[0] == 0.)
+      {
+        pivo = 0;
+        if (parO[1] == 0.)
+        {
+          pedg = 1;
+        }
+        else if (parO[2] == 0.)
+        {
+          pedg = 2;
+        }
+      }
+      else if (parO[1] == 0.)
+      {
+        pivo = 1;
+        if (parO[2] == 0.)
+        {
+          pedg = 2;
+        }
+      }
+      if (pivo >= 0 && pedg >= 0)
+      {
+        IntPatch_PolyhedronTool::TriConnex(FirstPol, Tri1, OI[pivo], OI[pedg], pivo, pedg);
+        if (pivo > Tri1)
+        {
+          nbpiOT = 0;
+          ideb   = -1; // On a deja trouve celle ci
+          ifin   = -2;
+        }
+      }
+
+      // For the tool :
+      pivo = -1;
+      pedg = -1;
+      if (parT[0] == 0.)
+      {
+        pivo = 0;
+        if (parT[1] == 0.)
+        {
+          pedg = 1;
+        }
+        else if (parT[2] == 0.)
+        {
+          pedg = 2;
+        }
+      }
+      else if (parT[1] == 0.)
+      {
+        pivo = 1;
+        if (parT[2] == 0.)
+        {
+          pedg = 2;
+        }
+      }
+      if (pivo >= 0 && pedg >= 0)
+      {
+        IntPatch_PolyhedronTool::TriConnex(SeconPol, Tri2, TI[pivo], TI[pedg], pivo, pedg);
+        if (pivo > Tri2)
+        {
+          nbpiOT = 0;
+          ideb   = -1; // It has been already found
+          ifin   = -2;
+        }
+      }
+
+      if (nbpiOT > 0)
+      {
+
+        // If there is a covering up : insert the section  line in  the existent
+        // list or create a new section line :
+
+        if (piOT(id[0] + 1).TypeOnFirst() == Intf_FACE)
+        {
+          if (piOT(id[1] + 1).TypeOnFirst() == Intf_FACE)
+          {
+            ideb = -id[0] - 1; // No line of section possible
+            ifin = -id[1] - 1; //
+          }
+          else if (piOT(id[1] + 1).TypeOnSecond() != Intf_FACE)
+          {
+            ideb = id[1]; // No line of section possible
+            ifin = id[1]; // only a pointersec
+          }
+          else if (nbpiOT >= 3)
+          {
+            ideb = id[1]; // Retrieve 2 segments of section
+            ifin = id[2]; //
+          }
+          else
+          {
+            ideb = -999; // No line of section possible
+            ifin = -999;
+          }
+        }
+        else if (piOT(id[0] + 1).TypeOnSecond() == Intf_FACE)
+        {
+          if (piOT(id[1] + 1).TypeOnSecond() == Intf_FACE)
+          {
+            ideb = -id[0] - 1; // No line of section possible
+            ifin = -id[1] - 1; //
+          }
+          else if (piOT(id[1] + 1).TypeOnFirst() != Intf_FACE)
+          {
+            ideb = id[1]; // No line of section possible
+            ifin = id[1]; // only a pointersec
+          }
+          else if (nbpiOT >= 3)
+          {
+            ideb = id[1]; // Recouvrement des 2 segments de section
+            ifin = id[2]; //
+          }
+          else
+          {
+            ideb = -999; // No line of section possible
+            ifin = -999;
+          }
+        }
+
+        else
+        {               // Singularity on the first point there is only two or
+          ideb = id[0]; // three pointersec, so the first is a solution
+          ifin = id[1]; // and the second too.
+        }
+      }
+
+      // Insertion of the segment found in the existing section lines :
+
+      if (ideb < 0)
+      {
+        if (ifin < 0)
+        {
+          if (ideb != -999)
+          {
+            // static unsigned nisp=0;
+            double d = piOT(-ideb).Pnt().Distance(piOT(-ifin).Pnt());
+            if (d < Tolerance)
+            {
+              Insert(piOT(-ideb), piOT(-ifin));
+              //-- std::cout<<"Insertion Point IntPatch_InterferencePolyhedron 1,2 d="<<d<<"
+              // Tol="<<Tolerance<<" num:"<<++nisp<<std::endl;
+              //-- piOT(-ideb).Dump(1);  piOT(-ifin).Dump(0);
+              //-- std::cout<<"point p"<<++nisp<<" "<<piOT(-ideb).Pnt().X()<<"
+              //"<<piOT(-ideb).Pnt().Y()<<" "<<piOT(-ideb).Pnt().Z()<<std::endl;
+            }
+            else
+            {
+              //-- std::cout<<"Insertion Point IntPatch_InterferencePolyhedron 1,2 d="<<d<<"
+              // Tol="<<Tolerance<<" NON INSERE "<<std::endl;
+            }
+          }
+        }
+      }
+      else if (ideb >= 0)
+      {
+        if (ideb != ifin)
+        {
+          Insert(piOT(ideb + 1), piOT(ifin + 1));
+
+          //	else
+          //	 un pointersec : It is necessary to check if it has not been already found
+          //                       and if not insert it in the list.
+          //                       Attention! It is necessary to check
+          //                       for each new segment if a point is in the list
+          //                       and in this case remove it from the list.
+        }
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+bool IntPatch_InterferencePolyhedron::TangentZoneValue(Intf_TangentZone&          TheTZ,
+                                                       const IntPatch_Polyhedron& FirstPol,
+                                                       const int                  Tri1,
+                                                       const IntPatch_Polyhedron& SeconPol,
+                                                       const int                  Tri2) const
+{
+  // Potential tangent Zone !
+  // ------------------------
+
+  bool   finished = false;
+  int    nob, nou, nob2, nou2;
+  double par;
+
+  Intf_PIType tOP[3];
+  Intf_PIType tTP[3];
+  for (nou = 0; nou < 3; nou++)
+  {
+    tOP[nou] = Intf_EXTERNAL;
+    tTP[nou] = Intf_EXTERNAL;
+  }
+
+  int                                     nbpInt = 0;
+  NCollection_Sequence<Intf_SectionPoint> Tpi;
+
+  // Compute the positions of the points of <Tri1> in the triangle <Tri2>.
+  for (nob = 0; nob <= 2; nob++)
+  {
+    nob2 = Pourcent3[nob + 1];
+    for (nou = 0; nou <= 2; nou++)
+    {
+      nou2 = Pourcent3[nou + 1];
+      if (dpOpT[nob][nou] <= Tolerance)
+      {
+        Tpi.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[nob]),
+                                     Intf_VERTEX,
+                                     OI[nob],
+                                     0,
+                                     0.,
+                                     Intf_VERTEX,
+                                     TI[nou],
+                                     0,
+                                     0.,
+                                     1.));
+        tOP[nob] = Intf_VERTEX;
+        tTP[nou] = Intf_VERTEX;
+        nbpInt++;
+        break;
+      }
+      else if (std::abs(dpOeT[nob][nou]) <= Tolerance)
+      {
+        if (dpOpT[nob][nou] + dpOpT[nob][nou2] < vtt[nou].Modulus())
+        {
+          par = dpOpT[nob][nou] / (dpOpT[nob][nou] + dpOpT[nob][nou2]);
+          if (TI[nou] > TI[nou2])
+          {
+            par = 1. - par;
+          }
+          Tpi.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[nob]),
+                                       Intf_VERTEX,
+                                       OI[nob],
+                                       0,
+                                       0.,
+                                       Intf_EDGE,
+                                       std::min(TI[nou], TI[nou2]),
+                                       std::max(TI[nou], TI[nou2]),
+                                       par,
+                                       1.));
+          tOP[nob] = Intf_EDGE;
+          nbpInt++;
+          break;
+        }
+      }
+    }
+    if (tOP[nob] == Intf_EXTERNAL)
+    {
+      if (Intf::Contain(IntPatch_PolyhedronTool::Point(SeconPol, TI[0]),
+                        IntPatch_PolyhedronTool::Point(SeconPol, TI[1]),
+                        IntPatch_PolyhedronTool::Point(SeconPol, TI[2]),
+                        IntPatch_PolyhedronTool::Point(FirstPol, OI[nob])))
+      {
+        Tpi.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(FirstPol, OI[nob]),
+                                     Intf_VERTEX,
+                                     OI[nob],
+                                     0,
+                                     0.,
+                                     Intf_FACE,
+                                     Tri2,
+                                     0,
+                                     0.,
+                                     1.));
+        tOP[nob] = Intf_FACE;
+        nbpInt++;
+      }
+    }
+  }
+
+  // If the three points of <Tri1> are in <Tri2> the triangle Tri1 is
+  // itself the tangent zone else compute the positions of the points
+  // of <Tri2> in <Tri1>.
+  if (nbpInt < 3)
+  {
+    for (nou = 0; nou <= 2; nou++)
+    {
+      nou2 = Pourcent3[nou + 1];
+      if (tTP[nou] == Intf_EXTERNAL)
+      {
+        for (nob = 0; nob <= 2; nob++)
+        {
+          nob2 = Pourcent3[nob + 1];
+          if (std::abs(deOpT[nob][nou]) <= Tolerance)
+          {
+            if (dpOpT[nob][nou] + dpOpT[nob2][nou] < voo[nob].Modulus())
+            {
+              par = dpOpT[nob][nou] / (dpOpT[nob][nou] + dpOpT[nob2][nou]);
+              if (OI[nob] > OI[nob2])
+              {
+                par = 1. - par;
+              }
+              Tpi.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(SeconPol, TI[nou]),
+                                           Intf_EDGE,
+                                           std::min(OI[nob], OI[nob2]),
+                                           std::max(OI[nob], OI[nob2]),
+                                           par,
+                                           Intf_VERTEX,
+                                           TI[nou],
+                                           0,
+                                           0.,
+                                           1.));
+              tTP[nou] = Intf_EDGE;
+              nbpInt++;
+              break;
+            }
+          }
+        }
+        if (tTP[nou] == Intf_EXTERNAL)
+        {
+          if (Intf::Contain(IntPatch_PolyhedronTool::Point(FirstPol, OI[0]),
+                            IntPatch_PolyhedronTool::Point(FirstPol, OI[1]),
+                            IntPatch_PolyhedronTool::Point(FirstPol, OI[2]),
+                            IntPatch_PolyhedronTool::Point(SeconPol, TI[nou])))
+          {
+            Tpi.Append(Intf_SectionPoint(IntPatch_PolyhedronTool::Point(SeconPol, TI[nou]),
+                                         Intf_FACE,
+                                         Tri1,
+                                         0,
+                                         0.,
+                                         Intf_VERTEX,
+                                         TI[nou],
+                                         0,
+                                         0.,
+                                         1.));
+            tTP[nou] = Intf_FACE;
+            nbpInt++;
+          }
+        }
+      }
+    }
+    if (tTP[0] != Intf_EXTERNAL && tTP[1] != Intf_EXTERNAL && tTP[2] != Intf_EXTERNAL)
+    {
+      finished = true;
+    }
+  }
+  else
+  {
+    finished = true;
+  }
+
+  // Insertion of the points of intersection in the zone of tangency :
+  for (nob = 1; nob <= nbpInt; nob++)
+  {
+    TheTZ.Append(Tpi(nob));
+  }
+
+  if (!finished)
+  {
+    // If one of the triangles is not in the zone of tangency, it is necessary to find
+    // the points of intersection edge/edge :
+
+    // Last indexes are not used.
+    // Arrays are increased to eliminate gcc warning.
+    double parO[10], parT[10];
+    int    nbNoInserted = 0;
+    int    piToInsert[17]; // for GCC 4.9
+
+    for (nob = 0; nob < 3; nob++)
+    {
+      // processing of the object segment P[nob], P[nob+1]
+      nob2 = Pourcent3[nob + 1];
+
+      for (nou = 0; nou < 3; nou++)
+      {
+        // processing of the segment of the tool P[nou], P[nou+1]
+        nou2 = Pourcent3[nou + 1];
+
+        if (dpOeT[nob][nou] * dpOeT[nob2][nou] < 0. && deOpT[nob][nou] * deOpT[nob][nou2] < 0.)
+        {
+
+          if (nbpInt >= 5)
+          {
+            break;
+          }
+          else
+          {
+            parO[nbpInt] = dpOeT[nob][nou] / (dpOeT[nob][nou] - dpOeT[nob2][nou]);
+            parT[nbpInt] = deOpT[nob][nou] / (deOpT[nob][nou] - deOpT[nob][nou2]);
+            gp_Pnt lepi  = IntPatch_PolyhedronTool::Point(SeconPol, TI[nou])
+                            .Translated(gp_Vec(vtt[nou] * parT[nbpInt]));
+            if (OI[nob] > OI[nob2])
+            {
+              parO[nbpInt] = 1. - parO[nbpInt];
+            }
+            if (TI[nou] > TI[nou2])
+            {
+              parT[nbpInt] = 1. - parT[nbpInt];
+            }
+            Tpi.Append(Intf_SectionPoint(lepi,
+                                         Intf_EDGE,
+                                         std::min(OI[nob], OI[nob2]),
+                                         std::max(OI[nob], OI[nob2]),
+                                         parO[nbpInt],
+                                         Intf_EDGE,
+                                         std::min(TI[nou], TI[nou2]),
+                                         std::max(TI[nou], TI[nou2]),
+                                         parT[nbpInt],
+                                         Incidence));
+            nbpInt++;
+            if (!TheTZ.Insert(Tpi(nbpInt)))
+            {
+              piToInsert[nbNoInserted] = nbpInt;
+              nbNoInserted++;
+            }
+          }
+        }
+      }
+      if (nbpInt >= 5)
+      {
+        break; // Number of pi passed in TZ !
+      }
+    }
+    nob = nbNoInserted - 1;
+    while (nob >= 0)
+    {
+      while (!TheTZ.Insert(Tpi(piToInsert[nob])))
+      {
+        nob--;
+        if (nob < 0)
+        {
+          break;
+        }
+      }
+      if (nob >= 0)
+      {
+        nbNoInserted--;
+        while (nob < nbNoInserted)
+        {
+          piToInsert[nob] = piToInsert[nob + 1];
+          nob++;
+        }
+        nob = nbNoInserted - 1;
+      }
+    }
+    if (nbNoInserted > 0)
+    {
+      nob = nbNoInserted - 1;
+      while (nob >= 0)
+      {
+        Tpi(piToInsert[nob--]).Dump(4);
+      }
+    }
+  }
+  if (nbpInt < 3)
+  {
+    nbpInt = 0;
+  }
+  return nbpInt > 0;
+}
+
+//=================================================================================================
+
+void IntPatch_InterferencePolyhedron::CoupleCharacteristics(const IntPatch_Polyhedron& FirstPol,
+                                                            const IntPatch_Polyhedron& SeconPol)
+{
+  int    n1, n2;
+  double lg;
+
+  for (n1 = 0; n1 < 3; n1++)
+  {
+    n2      = Pourcent3[n1 + 1];
+    voo[n1] = IntPatch_PolyhedronTool::Point(FirstPol, OI[n2]).XYZ()
+              - IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ();
+    vtt[n1] = IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ()
+              - IntPatch_PolyhedronTool::Point(SeconPol, TI[n1]).XYZ();
+  }
+
+  gp_XYZ vvec  = (voo[0] ^ voo[1]) + (voo[1] ^ voo[2]) + (voo[2] ^ voo[0]);
+  gp_XYZ vnorT = (vtt[0] ^ vtt[1]) + (vtt[1] ^ vtt[2]) + (vtt[2] ^ vtt[0]);
+  if (vnorT.Modulus() > vvec.Modulus())
+  {
+    vvec = vnorT;
+  }
+
+  for (n1 = 0; n1 < 3; n1++)
+  {
+
+    for (n2 = 0; n2 < 3; n2++)
+    {
+
+      gp_XYZ vto = IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ()
+                   - IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ();
+      dpOpT[n1][n2] = vto.Modulus();
+
+      lg = vtt[n2].Modulus();
+      if (lg > 1e-16)
+      { //-- RealEpsilon()
+        gp_XYZ vv     = vto ^ vtt[n2];
+        lg            = (vvec * vv) > 0.0 ? lg : -lg;
+        dpOeT[n1][n2] = vv.Modulus() / lg;
+      }
+      else
+      {
+        dpOeT[n1][n2] = dpOpT[n1][n2];
+      }
+
+      lg = voo[n1].Modulus();
+      if (lg > 1e-16)
+      { //-- RealEpsilon())
+        gp_XYZ vv     = vto ^ voo[n1];
+        lg            = (vvec * vv) > 0.0 ? -lg : lg;
+        deOpT[n1][n2] = vv.Modulus() / lg;
+      }
+      else
+      {
+        deOpT[n1][n2] = dpOpT[n1][n2];
+      }
+    }
+  }
+}

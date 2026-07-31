@@ -1,0 +1,38 @@
+puts "==========="
+puts "BUC60555"
+puts "CUT Case 1"
+puts "==========="
+#cpulim add aki 070704
+cpulimit 1000
+restore [locate_data_file buc60555a.brep] part 
+checkshape part
+restore [locate_data_file buc60555b.brep] trTool1
+checkshape trTool1
+halfspace hs1 trTool1 20000 10000 0
+bcut cut1 part hs1
+
+checkshape cut1
+
+tcopy cut1 result
+
+explode cut1 e
+mkcurve cu1 cut1_1
+mkcurve cu2 cut1_2
+mkcurve cu3 cut1_3
+mkcurve cu4 cut1_4
+
+set tolerance [ maxtolerance cut1 ]
+
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
+    puts "Faulty :Tolerance of shape is more then 1.0"
+} else {
+    puts "Tolerance of shape is less then 1.0"
+}
+
+checkprops result -s 3.77048e+007
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

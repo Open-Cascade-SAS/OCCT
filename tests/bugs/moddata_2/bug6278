@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC6278"
+puts "============"
+puts ""
+######################################################
+# Fuse operation produces incorrect result
+######################################################
+
+set BugNumber OCC6278
+
+restore [locate_data_file OCC6278-A.brep] a 
+restore [locate_data_file OCC6278-B.brep] b 
+
+bfuse result a b
+explode result v
+
+checknbshapes result -vertex 4
+
+set DumpList [dump result_2]
+if {[llength ${DumpList}] < 40} {
+    puts "Faulty ${BugNumber}: bad format of dump"
+} else {
+    regexp { *- *Point *3D *: *([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} ${DumpList} full x y z
+    puts $x
+    puts $y
+    puts $z
+
+    set good_x -32.3042674857046
+    set good_y 20.0000000000001
+    set good_z 0.
+
+    checkreal "x" ${x} ${good_x} 0 0.001
+    checkreal "y" ${y} ${good_y} 0 0.001
+    if { ${z} != 0. } {
+        checkreal "z" ${z} ${good_z} 0 0.001
+    }
+}
+
+checkprops result -l 278.725 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

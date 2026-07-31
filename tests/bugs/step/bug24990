@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC24990"
+puts "============"
+puts ""
+#######################################################################
+# StepWrite fails on the attached shape
+#######################################################################
+
+restore [locate_data_file bug24990_StepWrite_Exception.brep] a 
+
+stepwrite m a

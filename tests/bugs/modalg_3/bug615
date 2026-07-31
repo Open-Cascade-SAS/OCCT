@@ -1,0 +1,21 @@
+puts "========================"
+puts " OCC615"
+puts "========================"
+puts ""
+#############################
+## Wrong resultat of BLEND operation
+#############################
+
+restore [locate_data_file OCC615.brep] a 
+checkshape a
+explode a e
+
+if [catch {blend result a 9 a_15 } catch_result] {
+    puts "Faulty OCC615: function BLEND works with exception"
+} else {
+    puts "OCC615 OK: function CHAMF works OK"
+}
+
+checkprops result -s 197055.
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

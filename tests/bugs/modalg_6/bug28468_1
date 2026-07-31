@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC28468"
+puts "============"
+puts ""
+##############################################################################################
+# Sweep with different sections raises Standard_NoSuchObject: BRep_Tool:: no parameter on edge
+##############################################################################################
+
+restore [locate_data_file bug28468_wire3.brep] sp
+restore [locate_data_file bug28468_section_entree.brep] pr1
+restore [locate_data_file bug28468_section_passage1.brep] pr2
+restore [locate_data_file bug28468_section_passage2.brep] pr3
+restore [locate_data_file bug28468_section_sortie.brep] pr4
+
+wire pr1 pr1
+wire pr4 pr4
+
+explode sp V
+
+mksweep sp
+addsweep pr1 sp_1
+addsweep pr2 sp_2
+addsweep pr3 sp_3
+addsweep pr4 sp_4
+buildsweep r
+
+checkshape r
+
+checknbshapes r -shell 1 -face 3 -wire 3 -edge 7 -vertex 4
+checkprops r -s 222710

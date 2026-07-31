@@ -1,0 +1,11 @@
+beziercurve w1 5 0 0 0 20 0 0 20 5 0 25 10 0 10 20 0
+mkedge w1 w1 
+polyline w2 10 20 0 0 0 0
+wire w w1 w2
+mkplane w w
+prism s w 0 2 10
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_6
+
+checkprops result -s 107294

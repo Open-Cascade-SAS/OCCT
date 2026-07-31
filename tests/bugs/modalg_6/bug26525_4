@@ -1,0 +1,53 @@
+puts "================"
+puts "OCC26525"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by curve / surface intersection algorithm.
+#######################################################################
+
+pload QAcommands
+
+restore [locate_data_file bug26525_a.brep] b1
+restore [locate_data_file bug26525_b.brep] b2
+
+mksurface sb1 b1
+trimv sb1t sb1 -30000 30000
+mkface b1t sb1t
+
+explode b2 e
+
+# Case 2. The curve is from the edge: b2_1
+#
+# 2.2 The face b1 is based on trimmed surface
+
+set log [OCC26525 pt b2_1 b1t]
+
+regexp {([-0-9]+)} $log full Number
+
+if { $Number == 2} {
+   set tol_abs 0.0001
+   set tol_rel 0.01
+
+   regexp {point pt_1 +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full x1 y1 z1
+
+   set expected_x1 39.0504
+   set expected_y1 -12.8696
+   set expected_z1 82.6099
+
+   checkreal "x1" ${x1} ${expected_x1} ${tol_abs} ${tol_rel}
+   checkreal "y1" ${y1} ${expected_y1} ${tol_abs} ${tol_rel}
+   checkreal "z1" ${z1} ${expected_z1} ${tol_abs} ${tol_rel}
+
+   regexp {point pt_2 +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full x2 y2 z2
+
+   set expected_x2 43.1172
+   set expected_y2 -17.16
+   set expected_z2 82.6048
+
+   checkreal "x2" ${x2} ${expected_x2} ${tol_abs} ${tol_rel}
+   checkreal "y2" ${y2} ${expected_y2} ${tol_abs} ${tol_rel}
+   checkreal "z2" ${z2} ${expected_z2} ${tol_abs} ${tol_rel}
+} else {
+   puts "Error: Bad Number of intersection points"
+}

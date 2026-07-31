@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC770"
+puts "SAM1636"
+puts "========"
+puts ""
+############################
+## Impossible fusing 3 attached shapes
+############################
+
+restore [locate_data_file OCC770.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+checkshape a_3
+
+bfuse res1 a_1 a_2
+
+checkshape res1
+
+bfuse result res1 a_3
+
+checkprops result -s 962546. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

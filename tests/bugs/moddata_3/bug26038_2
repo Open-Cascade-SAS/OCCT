@@ -1,0 +1,18 @@
+puts "========="
+puts "CR26038"
+puts "========="
+puts ""
+###############################
+## Wrong result done by extrema for the circle and plane
+###############################
+
+restore [locate_data_file  bug26038_f1.brep] f
+restore [locate_data_file  bug26038_e1.brep] e
+
+mksurface s f
+mkcurve c e
+
+extrema c s
+checklength ext_1 -l 4.4408920985006262e-016
+
+xdistcs c s 1.57079 1.5708 10 1e-6

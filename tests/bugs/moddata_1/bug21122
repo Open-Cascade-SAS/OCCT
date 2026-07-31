@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC21122"
+puts "============"
+puts ""
+#######################################################################
+# Incremental mesh error
+#######################################################################
+
+set BugNumber OCC21122
+
+restore [locate_data_file OCC21122.brep] result
+
+tclean result
+
+set Deflection 0.1
+catch {incmesh result ${Deflection} }
+
+checktrinfo result -tri 4204 -nod 4206 -defl 2.3419011146460291e-07 -tol_rel_defl 0.1 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checkprops result -s 275.426
+checknbshapes result -vertex 964 -edge 964 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 1931
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

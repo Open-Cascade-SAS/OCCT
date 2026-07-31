@@ -1,0 +1,14 @@
+
+puts "=========="
+puts "BUC60652"
+puts "Case 1"
+puts "=========="
+
+pload QAcommands
+
+restore [locate_data_file buc60652a.brep] result
+checkshape result
+BUC60652 result
+
+checkprops result -s 19614.8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

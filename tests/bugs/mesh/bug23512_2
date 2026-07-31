@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC23512"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect triangulation on revolution shape
+######################################################################################
+
+set BugNumber OCC23512
+
+restore [locate_data_file bug23512_rev_bad_shading.brep] result
+
+vinit
+tclean result
+
+incmesh result 0.000001
+
+vsetdispmode 1
+vdisplay result
+vaxo
+vfit
+
+checknbshapes result -vertex 6 -edge 14 -wire 8 -face 7 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 37
+# relative tolerance (%)
+set rel_tol 1
+set area_eps 0
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

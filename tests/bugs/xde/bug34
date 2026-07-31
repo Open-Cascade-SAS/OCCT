@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC34"
+puts "================"
+puts ""
+###################################################
+## After work of function fixmeassingseam on attached face result is invalid.
+###################################################
+
+restore [locate_data_file OCC34.brep] sh 
+
+fixshape result sh 1.e-7 1
+checkshape result
+
+checkprops result -s 116.997
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

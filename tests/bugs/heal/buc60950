@@ -1,0 +1,17 @@
+puts "TODO CR23530 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "==========="
+puts "  BUC60950"
+puts "==========="
+
+restore [locate_data_file buc60950.rle] a 
+checkshape a
+
+fixshape result a 1e-7
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

@@ -1,0 +1,13 @@
+puts "======================================================="
+puts "0031242: Scaling with different coefficients along axes produces invalid shape"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31242.brep] f
+
+scalexyz result f 1 1 0.25
+
+checkshape result
+checkprops result -s  685.043
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

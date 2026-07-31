@@ -1,0 +1,16 @@
+puts "================================"
+puts "0033328: Modeling Algorithms - UnifySameDomain improvement"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug33328_Shell_2.brep] shell
+
+numshapes shell
+
+checknbshapes shell -vertex 6 -edge 7 -wire 2 -face 2 -shell 1 -solid 0
+
+unifysamedom res shell
+
+#Warning: BRepTools_ReShape::Replace: shape already recorded
+
+checknbshapes res -vertex 4 -edge 4 -wire 1 -face 1 -shell 1 -solid 0

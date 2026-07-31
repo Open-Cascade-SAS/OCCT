@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC26609"
+puts "============"
+puts ""
+############################################################################
+# Wrong result obtained by solid classifier algorithm.
+############################################################################
+
+restore [locate_data_file bug26609_p.draw] p
+restore [locate_data_file bug26609_z.brep] z
+
+set cls1 [bclassify z p]
+if { [regexp {OUT} $cls1] } {
+    puts "Error : Wrong result obtained by solid classifier algorithm"
+} else {
+    puts "OK : Good result obtained by solid classifier algorithm"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

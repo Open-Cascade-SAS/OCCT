@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC26498"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakeOffset causes segmentation fault
+#######################################################################
+
+polyline w 0 0 0 0.2 0 0 0.2 0.2 0 0.4 0.2 0 0.4 0.4 0 -0.06 0.57 0
+
+smallview
+display w
+fit
+
+if [catch { openoffset r w 1 -0.2 i } ] {
+  puts "Error : openoffset is wrong"
+} else {
+  renamevar r_1 result
+
+  checkprops result -l 0.272485 
+  checksection result
+
+  set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 3
+ EDGE      : 2
+ WIRE      : 1
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 6
+"
+  checknbshapes result -ref ${nbshapes_expected} -t -m "Offset"
+
+  checkshape result
+
+  display result
+  fit
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

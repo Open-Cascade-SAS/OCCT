@@ -1,0 +1,72 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Basic attributes
+#
+# Testing attribute: TDF_Reference
+#
+# Testing command:   SetReference
+# Testing command:   GetReference
+#
+
+# ANALOG: puts "caf001-L3"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aSetAttr2 200
+set aSetAttr3 300
+set aLabel1 0:2
+set aLabel2 0:3
+set aLabel3 0:4
+set aLabel4 0:5
+SetInteger Doc ${aLabel1} ${aSetAttr1}
+SetInteger Doc ${aLabel2} ${aSetAttr2}
+SetInteger Doc ${aLabel3} ${aSetAttr3}
+
+set aReference1 ${aLabel2}
+SetReference Doc ${aLabel4} ${aReference1}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set aReference5 ""
+set IsDone [catch {set aReference5 [GetReference DDoc ${aLabel4}]} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDF_Reference attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+}
+
+if { ${aReference1} != ${aReference5} } {
+	puts "aReference1=${aReference1} aReference5=${aReference5}"
+	puts "Get a value of TDF_Reference attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 3)"
+} else {
+	puts "Get a value of TDF_Reference attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

@@ -1,0 +1,9 @@
+box b1 4 4 4
+pcylinder b2 1 4
+ttranslate b2 4 3 0
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 23.708
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

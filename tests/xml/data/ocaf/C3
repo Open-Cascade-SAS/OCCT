@@ -1,0 +1,42 @@
+set aTestName "caf100-B1"
+puts ${aTestName}
+
+box aBox1 10 20 30 100 200 300
+
+# Create a label
+set aLabel 0:2
+Label D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a Geometry
+set asettype "pnt"
+SetGeometry D ${aLabel} ${asettype} aBox1
+
+# Close/Open transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a geometry type from the label
+set IsDone [catch {GetGeometryType DD ${aLabel}} aResult]
+if { ${IsDone} != 0 } {
+	puts "Error : Get a value of TDataStd_Geometry attribute from restoring document"
+} else {
+
+    # Check the type
+    set atype [GetGeometryType DD ${aLabel}]
+    puts "atype = ${atype}"
+
+    if { ${atype} != ${asettype} } {
+	puts "Error : Get a value of TDataStd_Geometry attribute from restoring document"
+    }
+}

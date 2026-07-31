@@ -1,0 +1,58 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_Directory
+#
+# Testing command:   NewDirectory
+#
+
+# ANALOG: puts "caf005-B3"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+catch {NewDirectory Doc ${aLabel1}}
+set aName1 Label1
+SetName Doc ${aLabel1} ${aName1}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set aGetName1 ""
+set IsDone [catch {set aGetName1 [GetName DDoc ${aLabel1}]} aResult]
+if { ${IsDone} != 0 ||
+	${aName1}!=${aGetName1} } {
+	puts "aName1=${aName1} aGetName1=${aGetName1}"
+	puts ${aResult}
+	puts "Get a value of TDataStd_Directory attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+} else {
+	puts "Get a value of TDataStd_Directory attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

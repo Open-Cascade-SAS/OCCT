@@ -1,0 +1,92 @@
+puts "========"
+puts "OCC26393"
+puts "========"
+puts ""
+#################################################################
+# Add draw commands to evaluate history of modifications of BOP
+#################################################################
+
+restore [locate_data_file OCC26393-w.brep] w
+restore [locate_data_file OCC26393-v1.brep] v0
+restore [locate_data_file OCC26393-v2.brep] v1
+
+bclearobjects
+bcleartools
+baddobjects w
+baddtools v0 v1
+bfillds
+bbuild r
+
+savehistory gf_hist
+
+set bug_info [modified v0m gf_hist v0]
+if {$bug_info != "The shape has not been modified."} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work."
+}
+
+set bug_info [modified v1m gf_hist v1]
+if {$bug_info != "The shape has not been modified."} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work."
+}
+
+set bug_info [isdeleted gf_hist v0]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+set bug_info [isdeleted gf_hist v1]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+explode w e
+
+set bug_info [modified w1m gf_hist w_1]
+if {$bug_info != ""} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work correctly."
+}
+
+set bug_info [isdeleted gf_hist w_1]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+set bug_info [modified w2m gf_hist w_2]
+if {$bug_info != "The shape has not been modified."} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work."
+}
+
+set bug_info [isdeleted gf_hist w_2]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+set bug_info [modified w3m gf_hist w_3]
+if {$bug_info != "The shape has not been modified."} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work."
+}
+
+set bug_info [isdeleted gf_hist w_3]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+set bug_info [modified w4m gf_hist w_4]
+if {$bug_info != ""} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work correctly."
+}
+
+set bug_info [isdeleted gf_hist w_4]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}
+
+set bug_info [modified w5m gf_hist w_5]
+if {$bug_info != "The shape has not been modified."} {
+  puts "ERROR: OCC26393 is reproduced. Command modified does not work."
+}
+
+set bug_info [isdeleted gf_hist w_5]
+if {$bug_info != "Not deleted."} {
+  puts "ERROR: OCC26393 is reproduced. Command isdeleted does not work."
+}

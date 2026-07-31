@@ -1,0 +1,24 @@
+puts "========================"
+puts " BUC60980 "
+puts " OCC360"
+puts "========================"
+puts ""
+##################################################################
+## Can not find a projection the circle on the sphere.
+##################################################################
+
+restore [locate_data_file OCC360a.draw] c 
+restore [locate_data_file OCC360b.draw] cf
+
+set che [project result c cf]
+puts $che
+
+if { [regexp {Projection} $che] && [regexp {Failed} $che] } {
+    puts "Faulty  OCC360: command PROJECT works wrongly"
+} else {
+    puts " OCC360 OK : command PROJECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

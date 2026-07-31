@@ -1,0 +1,15 @@
+puts "================"
+puts "CR24775"
+puts "================"
+puts ""
+###############################################
+## False detecting of intersection in BRepMesh_Classifier class.
+###############################################
+
+restore [locate_data_file bug24775_face.brep] face
+vinit
+vdisplay face
+vfit
+
+checktrinfo face -tri -nod -defl
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

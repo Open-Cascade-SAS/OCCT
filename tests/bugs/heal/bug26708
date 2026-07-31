@@ -1,0 +1,11 @@
+puts "========================"                                                                                      
+puts "Bug #26708"                                                                                                      
+puts "========================"                                                                                      
+
+brestore [locate_data_file bug26708_a_205.brep] face
+
+fixshape result face 1e-7 1
+checkshape result
+checknbshapes result -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

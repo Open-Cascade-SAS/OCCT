@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC1055"
+puts "============"
+puts ""
+######################################################
+# Exception is raised during mesh preparation for shading mode representation
+######################################################
+
+restore [locate_data_file OCC1055.brep] a
+checkshape a
+
+if [catch { fixshape result a 1e-7 } res] {
+    puts "Error : fixshape works wrongly"
+}
+
+checkprops result -s 162.581 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

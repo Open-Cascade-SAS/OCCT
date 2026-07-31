@@ -1,0 +1,55 @@
+puts "================================="
+puts "0032182: Visualization - add Select3D_SensitiveSphere"
+puts "Tests polygon selection of Select3D_SenstiveSphere"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s1 1
+psphere s2 1
+psphere s3 1
+psphere s4 1
+ttranslate s1 2 2 0
+ttranslate s2 2 -2 0
+ttranslate s3 -2 2 0
+ttranslate s4 -2 -2 0
+vdisplay -dispMode 1 s1 s2 s3 s4
+vfit
+vselect 15 200 300 15 585 200 300 385
+if { ![string match "*Selected*" [vstate s1]] ||
+     ![string match "*Selected*" [vstate s2]] ||
+     ![string match "*Selected*" [vstate s3]] ||
+     ![string match "*Selected*" [vstate s4]]} { puts "Error: all spheres should be selected" }
+vtop
+vselect 170 200 300 80 430 200 300 320
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]] ||
+     [string match "*Selected*" [vstate s3]] ||
+     [string match "*Selected*" [vstate s4]]} { puts "Error: all spheres should be unselected" }
+vselect 177 78 422 78 422 322 177 322 -allowoverlap 1
+if { ![string match "*Selected*" [vstate s1]] ||
+     ![string match "*Selected*" [vstate s2]] ||
+     ![string match "*Selected*" [vstate s3]] ||
+     ![string match "*Selected*" [vstate s4]]} { puts "Error: all spheres should be selected" }
+vright
+vselect 181 323 289 196 147 85 59 206
+if { [string match "*Selected*" [vstate s1]] ||
+     ![string match "*Selected*" [vstate s2]] ||
+     [string match "*Selected*" [vstate s3]] ||
+     ![string match "*Selected*" [vstate s4]]} { puts "Error: spheres s1 and s3 should be unselected" }
+vselect 131 197 177 156 219 198 179 247
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]] ||
+     [string match "*Selected*" [vstate s3]] ||
+     [string match "*Selected*" [vstate s4]]} { puts "Error: all spheres should be unselected" }
+vselect 131 197 177 156 219 198 179 247 -allowoverlap 1
+if { [string match "*Selected*" [vstate s1]] ||
+     ![string match "*Selected*" [vstate s2]] ||
+     [string match "*Selected*" [vstate s3]] ||
+     ![string match "*Selected*" [vstate s4]]} { puts "Error: spheres s1 and s3 should be unselected" }
+vselect 227 147 282 268 367 151 -allowoverlap 1
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]] ||
+     [string match "*Selected*" [vstate s3]] ||
+     [string match "*Selected*" [vstate s4]]} { puts "Error: all spheres should be unselected" }

@@ -1,0 +1,34 @@
+puts "========================"
+puts " OCC1642 "
+puts "========================"
+puts ""
+###########################################################
+puts " ShapeFix_Wire::FixSelfIntersectingEdge does not remove a loop"
+###########################################################
+
+pload QAcommands
+cpulimit 1000
+
+restore [locate_data_file OCC1642.brep] shape
+
+set list [OCC1642 result FinalFace InitWare InitFace shape FixReorder FixDegenerated FixConnected FixSelfIntersection]
+
+set FixSelfIntersection [string last "FixSelfIntersection" $list]
+set Intersectingpt [string last "Intersecting pt :" $list]
+
+puts "FixSelfIntersection=${FixSelfIntersection}"
+puts "Intersectingpt=${Intersectingpt}"
+if { ${Intersectingpt} == -1} {
+    puts "Warning: There are not intersecting points"
+}
+
+checkprops result -l 3880.52
+
+if { ${Intersectingpt} > ${FixSelfIntersection} } {
+    puts "OCC1642 Faulty"
+} else {
+    puts "OCC1642 OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

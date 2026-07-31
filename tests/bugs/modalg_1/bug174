@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC174"
+puts "========"
+puts ""
+###########################################################################
+## After analyze given face (file ff97.brep) using BRepCheck we receive problem - "Bad Orientation of Subshape".
+## But we believe that this shape must be OK or we have to receive more detail another reply from BRepCheck.
+###########################################################################
+
+restore [locate_data_file OCC174.brep] result
+
+checkprops result -s 376.873 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

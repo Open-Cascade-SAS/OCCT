@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC25867: Visualization, TKOpenGl - fix misprint in transformation persistence math"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b1 -1 -1 -1 3 3 3
+box b2 4 4 4 15 10 10
+vdisplay b1
+vdisplay b2 -trsfPers zoom -trsfPersPos 0 0 0
+vfit
+vdump $imagedir/${casename}_1.png
+
+vdisplay b2 -trsfPers zoom -trsfPersPos 1 1 1
+vdump $imagedir/${casename}_2.png

@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+line ll -5 3 8 -1 0 0
+trim ll ll -100 100
+mkedge result ll
+
+bounding result -obb
+

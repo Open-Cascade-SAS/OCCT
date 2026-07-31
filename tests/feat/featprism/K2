@@ -1,0 +1,14 @@
+# Original bug : cts20168
+# Date : 8April98
+
+restore [locate_data_file CFE900_cts20gaj.rle] base
+restore [locate_data_file cts20168_face.rle] cont
+
+explode base face
+copy base_1 ffrom
+copy base_4 funtil
+
+featprism base cont cont 0 1 0 0 1
+featperform prism result ffrom funtil
+
+checkprops result -s 41699.3

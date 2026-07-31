@@ -1,0 +1,10 @@
+# Original bug : pro16120
+# Date :  2 Feb 99
+
+restore [locate_data_file cts21244a.rle] base
+restore [locate_data_file pro16120_face.brep] cont
+
+featrevol base cont cont 200 0 200 0 1 0 1 1
+featperformval revol result 280
+
+checkprops result -s 176160

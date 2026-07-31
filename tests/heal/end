@@ -1,0 +1,11 @@
+if { ![info exists no_result] } {
+   if { [isdraw result] } {
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+  } elseif { [isdraw r] } {
+    pload VISUALIZATION
+    checkview -display r -3d -vdispmode 0 -path ${imagedir}/${test_image}.png
+  } else {
+     puts "Error : the resulting shape is not done."
+  }
+}
+puts "TEST COMPLETED"

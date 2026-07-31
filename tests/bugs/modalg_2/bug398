@@ -1,0 +1,26 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC398"
+puts "========"
+puts ""
+#############################################################
+## ShapeHealing modification 1:1 increases number of unique shapes in compound structure.
+#############################################################
+
+pload XDE
+
+restore [locate_data_file OCC398.brep] a 
+#statsh a
+#nbshapes a
+#Statshape should give 3 solids
+#Nbshape should return 1 solid
+
+scaleshape result a 10
+
+#statsh res
+
+checknbshapes result -solid 1
+
+checkprops result -s 180000. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

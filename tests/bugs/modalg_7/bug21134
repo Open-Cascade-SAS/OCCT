@@ -1,0 +1,18 @@
+puts "TODO OCC21134  ALL: Error: checkshape command does not return faulty shapes"
+
+puts "============"
+puts "OCC21134"
+puts "============"
+puts ""
+######################################################
+# checkshape command does not return faulty shapes.
+######################################################
+
+restore [locate_data_file bug21134_r.brep] res
+
+checkshape res
+
+set Log [bopcheck res]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: checkshape command does not return faulty shapes."
+}

@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC28373"
+puts "========"
+puts ""
+#################################################
+# Incomplete section between cylinder and plane
+#################################################
+
+restore [locate_data_file bug28373_face.brep] f
+restore [locate_data_file bug28373_hole.brep] h
+
+bclearobjects
+bcleartools
+baddobjects f
+baddtools h
+bfillds
+bbop rs 4
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection rs] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+bbop result 2
+
+checkshape result
+checkprops result -s 5.47202
+
+smallview
+don h
+fit
+don result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

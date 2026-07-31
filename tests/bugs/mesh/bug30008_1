@@ -1,0 +1,17 @@
+puts "======="
+puts "0030008: BRepMesh does not respect angular deflection in internal area of bspline surface"
+puts "======="
+puts ""
+
+restore [locate_data_file bug30008_badshape.brep] result
+
+vinit
+vsetdispmode 1
+
+vdisplay result
+vviewparams -scale 8.46292 -proj 0.653203 -0.644806 0.396926 -up -0.0109833 0.51609 0.856464 -at 347.559 1026.89 219.262 -eye 2080.75 -684.022 1272.45
+
+tricheck result
+checktrinfo result -tri 9460 -nod 6131 -defl 4.7757836297551908 -tol_abs_defl 1e-6
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

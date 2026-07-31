@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC6768"
+puts "============"
+puts ""
+#######################################################
+# Problems making offset wires
+#######################################################
+
+restore [locate_data_file bug6768.brep] co
+explode co
+foreach s {co_1 co_2 co_3 co_4} {
+
+puts "\n*** make offset of wire r$s\n"
+mkoffset r${s} ${s} 1 -1
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection r${s}_1] full nbv
+
+if { $nbv != 0 } { 
+  puts "Error : Section is incorrect" 
+} else {
+  puts "Section is correct" 
+}
+
+if { ${s} eq "co_1" } {
+  checkprops r${s}_1 -l 577.397
+  checknbshapes r${s}_1 -vertex  99
+} elseif { ${s} eq "co_2" } {
+  checkprops r${s}_1 -l 591.334
+  checknbshapes r${s}_1 -vertex  80
+} elseif { ${s} eq "co_3" } {
+  checkprops r${s}_1 -l 550.648
+  checknbshapes r${s}_1 -vertex 111
+} else {
+  checkprops r${s}_1 -l 545.219
+  checknbshapes r${s}_1 -vertex 290
+} 
+
+}
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png 

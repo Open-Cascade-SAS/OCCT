@@ -1,0 +1,50 @@
+puts "TODO OCC12345 ALL: Faulty : The distance between"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "========================"
+puts "BUC60690"
+puts "========================"
+puts ""
+
+restore [locate_data_file buc60690a.brep] a 
+restore [locate_data_file buc60690b.brep] b
+
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty BUC60690 (shape 1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar a result
+} else {
+    puts "BUC60690 OK (shape 1): Source shape is valid"
+    set che [checkshape b]
+    if { [regexp {Faulty} $che ] == 1 } {
+	puts "Faulty BUC60690 (shape 2): Source shape is invalid. It was detected by Checkshape command"
+	puts "Body of the script was NOT executed"
+	renamevar b result
+    } else {
+	puts "BUC60690 OK (shape 2): Source shape is valid"
+
+	bsection result a b
+
+	set le [explode result v]
+	distmini d1 result_1 b
+	distmini d2 [lindex $le [expr [llength $le] - 1]] b
+	
+	regexp {([-0-9.+eE]+)$} [dump d1_val] full du1
+	
+	if { [expr $du1 > 1e-7] } {
+	    puts "Faulty : The distance between first vertex and shellB is $du1. It is more then 1e-7."
+	}
+	
+	regexp {([-0-9.+eE]+)$} [dump d2_val] full du2
+	if { [expr $du2 > 1e-7] } {
+	    puts "Faulty : The distance between last vertex and shellB is $du2. It is more then 1e-7."
+	}
+    }
+}
+checkprops result -l 0 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

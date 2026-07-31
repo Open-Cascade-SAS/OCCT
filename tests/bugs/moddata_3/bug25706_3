@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC25706"
+puts "================"
+puts ""
+#######################################################################
+# Exception in conversion B-spline to rational
+#######################################################################
+
+bsplinesurf s \
+  2 2  0 3  1 3 \
+  2 2  0 3  1 3 \
+  0.0 0.0 0.0 1  0.5 0.0 0.0 1  1.0 0.0 0.0 1 \
+  0.0 0.5 0.0 1  0.5 0.5 1.0 1  1.0 0.5 0.0 1 \
+  0.0 1.0 0.0 1  0.5 1.0 0.0 1  1.0 1.0 0.0 1
+mkface f1 s
+
+dump s
+
+setweight s 2 2 0.5
+
+set info [dump s]
+if { [regexp {rational} ${info}] } {
+    puts "OK : B-spline is rational"
+} else {
+    puts "Error : B-spline is non-rational"
+}
+
+mkface result s
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

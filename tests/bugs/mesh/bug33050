@@ -1,0 +1,41 @@
+puts "================"
+puts "0033050: \[Regression to OCCT 7.3.0\] Mesh - meshing deflection is not reached"
+puts "================"
+puts ""
+
+restore [locate_data_file bug33050.brep] result
+
+################## Deflection: 0.001 ##################
+tclean result
+incmesh result 0.001
+
+checktrinfo result -tri 27652 -nod 28016 -defl 0.0027132671526737435 -tol_abs_defl 1e-6
+
+tclean result
+incmesh result 0.001 -surf_def_all
+
+checktrinfo result -tri 30102 -nod 29241 -defl 0.0010301984083541042 -tol_abs_defl 1e-6
+
+################## Deflection: 0.0001 #################
+
+tclean result
+incmesh result 0.0001
+
+checktrinfo result -tri 88140 -nod 84304 -defl 0.00073349807253346574 -tol_abs_defl 1e-6
+
+tclean result
+incmesh result 0.0001 -surf_def_all
+
+checktrinfo result -tri 103376 -nod 91922 -defl 0.00012553867394267057 -tol_abs_defl 1e-6
+
+################## Deflection: 0.00005 ################
+
+tclean result
+incmesh result 0.00005
+
+checktrinfo result -tri 127538 -nod 119773 -defl 0.00043153032084638013 -tol_abs_defl 1e-6
+
+tclean result
+incmesh result 0.00005 -surf_def_all
+
+checktrinfo result -tri 154246 -nod 133127 -defl 5.1157129731636775e-05 -tol_abs_defl 1e-6

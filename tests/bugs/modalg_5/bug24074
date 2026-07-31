@@ -1,0 +1,19 @@
+#puts "TODO OCC24074 ALL: An exception was caught"
+puts "TODO OCC24074 ALL: Error: Offset is not done"
+puts "TODO OCC24074 ALL: TEST INCOMPLETE"
+
+puts "============"
+puts "OCC24074"
+puts "============"
+puts ""
+##############################################################
+# The result of BRepOffsetAPI_MakeOffset is Null and Error
+##############################################################
+
+pload XDE
+
+igesread [locate_data_file bug24074_file.iges] a *
+
+mkoffset p a 1 -1.0
+mkoffset p a 1 -0.5
+mkoffset p a 1 -1.6

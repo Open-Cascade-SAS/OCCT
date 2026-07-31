@@ -1,0 +1,32 @@
+puts "============================================================================================="
+puts "0025462: BRepAlgoAPI_Fuse not work correctly for a planar face"
+puts "============================================================================================="
+puts ""
+
+polyline p 0 0 0 0.01 0 0 0 0.01 0 0 0 0
+mkplane f1 p
+ellipse e 0.01 0.01 0 0 0 1 1 0 0 0.01 0.005
+mkedge e e; wire w e; mkplane f2 w
+circle c 0 0 0 0 0 1 1 0 0 0.005
+mkedge e c; wire w e; mkplane f3 w
+polyline p -0.01 0.005 0 -0.01 0 0 0 0 0 0 0.005 0 -0.01 0.005 0
+mkplane f4 p
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2 f3 f4
+
+bsimplify -e 1 -f 1
+bapibop result 1
+checkshape result
+checkprops result -s 0.000293167
+checknbshapes result -wire 1 -face 1
+
+bsimplify -e 0 -f 0
+bapibop result1 1
+checkshape result1
+checkprops result1 -s 0.000293167
+checknbshapes result1 -wire 7 -face 7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

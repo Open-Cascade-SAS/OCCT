@@ -1,0 +1,12 @@
+# Original bug : pro5640
+# Date : 07mar97
+
+## this saved box has length of 0.3 Meter (300 mm)
+restore [locate_data_file CTO900_pro5640a.rle] box1
+restore [locate_data_file CTO900_pro5640b.rle] box2
+
+## we want a radius of 0.01 Meter (10 mm)
+bcutblend result box1 box2 0.01
+
+checkprops result -s 0.242811
+checkview -display result -2d -s -otherwise { box1 box2 } -path ${imagedir}/${test_image}.png

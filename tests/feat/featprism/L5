@@ -1,0 +1,12 @@
+# Original bug : pro8951
+# Date : 19mar98
+
+restore [locate_data_file CTO900_pro8951a.rle] base
+restore [locate_data_file pro8951b.rle] wire
+
+mkplane cont wire
+
+featprism base cont cont 0 -1 0 0 1
+featperform prism result
+
+checkprops result -s 298872

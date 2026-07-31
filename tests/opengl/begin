@@ -1,0 +1,7 @@
+cpulimit 300
+
+pload VISUALIZATION
+vdriver -load OPENGL
+vgldebug -glslWarn 1
+
+if { [info exists imagedir] == 0 } { set imagedir . }

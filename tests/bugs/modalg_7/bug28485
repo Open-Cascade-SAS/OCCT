@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28485"
+puts "========"
+puts ""
+##################################################################################
+# Fuse of two shapes using gluing and non-destructive options gives invalid result
+##################################################################################
+
+restore [locate_data_file bug28485_parts.brep] a
+explode a
+
+bnondestructive 1
+brunparallel 1
+bfuzzyvalue 0
+bglue 1
+
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -wire 324 -face 310 -shell 1 -solid 1
+checkprops result -s 103610 -v 111128
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

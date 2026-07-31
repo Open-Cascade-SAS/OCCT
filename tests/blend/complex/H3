@@ -1,0 +1,23 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : N2
+## Comment : from cts16288
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+# Il s'agit d'un model assez difficile :
+# - Il y des faces singulieres
+# - Il y des aretes partielement tangentes
+# - Et plein d'aretes de cassures de l'ordre de 1 ou 0.1 degree
+restore [locate_data_file cts16288.rle] m
+# Pour avoir un resultat valide, il faut un model valide
+fsameparameter m 0.001
+# Probleme de construction du model => 5 degree c'est tangent!
+encoderegularity m 5.
+explode m E
+# blend res m 5 m_49
+blend res m 5 m_49 5 m_12 5 m_78 5 m_44
+explode res Sh
+copy res_1 result
+
+checkprops result -s 0

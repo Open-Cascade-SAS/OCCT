@@ -1,0 +1,13 @@
+cone surf 30 0
+trimv surf surf -1 0
+convert surf surf
+mkface f surf
+getanasurf asurf f con  1.e-7
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {ConicalSurface} $log ] != 1 } {
+     puts "Error: surface is not a conical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}

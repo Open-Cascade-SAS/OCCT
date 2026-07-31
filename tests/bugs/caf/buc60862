@@ -1,0 +1,21 @@
+puts "==========="
+puts "BUC60862"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+NewCommand D
+
+vertex V1 10 20 0
+vertex V2 20 10 0
+
+catch {edge Shape ${V1} ${V2}}
+catch {set ResultError [BUC60862 D $Shape]}
+
+if { ${ResultError} != 0 } {
+    puts "BUC60862: Error = $ResultError"
+}
+

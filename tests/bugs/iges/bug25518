@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC25518: Colors are not written to IGES 5.3"
+puts "========"
+puts ""
+
+psphere s 10
+XNewDoc D
+XAddShape D s
+XSetColor D s 0 0 1
+param write.iges.brep.mode 1
+
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges D $aTmpFile
+ReadIges  T $aTmpFile
+file delete -force ${aTmpFile}
+if {[string trim [XGetAllColors T]] != "BLUE"} {
+  puts "ERROR: OCC25518 is reproduced. Color is lost."
+}
+XShow T
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

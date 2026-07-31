@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC26793"
+puts "================"
+puts ""
+###################################################
+# General Fuse algorithm produces incorrect result
+###################################################
+
+restore [locate_data_file bug26793_GenFuse_BaseFace.brep] bf
+restore [locate_data_file bug26793_GenFuse_Splitter.brep] sp
+
+bclearobjects
+bcleartools
+baddobjects bf
+baddtools sp
+
+bfillds
+
+bbuild result
+
+checkshape result
+checkprops result -s 8
+checknbshapes result -face 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

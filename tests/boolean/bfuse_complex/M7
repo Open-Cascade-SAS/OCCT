@@ -1,0 +1,13 @@
+# Original bug : cts20176
+# Date : 16July98
+
+restore [locate_data_file CTO904_cts20176a.rle] a 
+restore [locate_data_file cts20176b.rle] b
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean a
+
+bfuse result a b
+
+checkprops result -s 70265.2
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

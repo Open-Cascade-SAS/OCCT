@@ -1,0 +1,15 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========="
+puts "BUC61006"                
+puts "========="
+puts ""                                  
+#########################################################
+## Checkshape says that face is valid but it includes selfintersecting wire. 
+#########################################################
+
+restore [locate_data_file buc61006.brep] result 
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

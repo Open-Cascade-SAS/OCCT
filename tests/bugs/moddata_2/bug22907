@@ -1,0 +1,50 @@
+puts "========================"
+puts "OCC22907"
+puts "========================"
+puts ""
+#######################################################################
+# The function 'distmini' produces wrong result.
+#######################################################################
+
+set BugNumber OCC22907
+
+###rename to bug22907_e.brep
+restore [locate_data_file bug22907_e.brep] b2
+vertex b1 -15.652187256227142 3.2012899919486513 9.9763479999999998
+
+distmini d b1 b2
+puts "Distance=[dval d_val]"
+
+set Good_Distance 0
+
+regexp {Vertex *: Min [-0-9.+eE]+ *Max *([-0-9.+eE]+)} [maxtolerance b1] full tol1
+regexp {Edge *: Min [-0-9.+eE]+ *Max *([-0-9.+eE]+)} [maxtolerance b2] full tol2
+regexp {Vertex *: Min [-0-9.+eE]+ *Max *([-0-9.+eE]+)} [maxtolerance b2] full tol3
+
+set max_tolerance ${tol1}
+if { ${tol2} > ${max_tolerance} } {
+   set max_tolerance ${tol2}
+}
+if { ${tol3} > ${max_tolerance} } {
+   set max_tolerance ${tol3}
+}
+puts "max_tolerance=${max_tolerance}"
+
+if [expr abs( [dval d_val] - ${Good_Distance}) > ${max_tolerance}] {
+   set status 1
+} else {
+   set status 0
+}
+
+# Resume
+puts ""
+if { ${status} == 1 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+vinit
+vdisplay b1 b2
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

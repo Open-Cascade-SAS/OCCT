@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve command sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+restore [locate_data_file 22770-tramp.brep] a 
+restore [locate_data_file 22770-trans.brep] b 
+
+sewing result 0.1 a b +c -f
+
+checkprops result -s 1.88469e+07 -eps 0.1
+checkshape result
+
+checknbshapes result -vertex 1469 -edge 1474 -wire 273 -face 259 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3476
+checkmaxtol result -ref 0.0451323239933289
+checknbshapes result -shell 0
+checkfreebounds result 1469
+checkview -display result -3d -path ${imagedir}/${test_image}.png

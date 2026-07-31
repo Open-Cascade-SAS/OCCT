@@ -1,0 +1,21 @@
+puts "============="
+puts "0030672: Visualization - AIS_InteractiveContext::SetLocation() sets invalid selection BVH flag to removed object"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 -highMode 1 b
+vfit
+vremove -context b
+vlocation b -setLocation 2 0 0
+vdisplay -dispMode 1 b
+vmoveto 200 200
+if { [vreadpixel 150 150 -rgb -name] != "BLACK" } { puts "Error: wrong prs location" }
+if { [vreadpixel 300 300 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong sel location" }
+vmoveto 300 300
+if { [vreadpixel 300 300 -rgb -name] != "CYAN2" } { puts "Error: wrong highlighting" }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC25994"
+puts "========"
+puts ""
+#########################################
+# Boolean fuse result in invalid result
+#########################################
+
+restore [locate_data_file bug25994_body.brep] body
+restore [locate_data_file bug25994_wing.brep] wing
+
+bclearobjects
+bcleartools
+baddobjects body
+baddtools wing
+bfillds
+bbop rs 4
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is not closed" }
+
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance rs] full toler
+if { $toler > 5.0e-5 } {
+  puts "Error: Tolerance after section is too large"
+}
+
+bbop result 1
+
+checkshape result
+checknbshapes result -solid 1 -shell 1 -face 13 -wire 15
+
+checkprops result -s 1.76161e+006 -v 1.07392e+008
+
+smallview
+fit
+checkview -display result -2d -path ${imagedir}/${test_image}.png

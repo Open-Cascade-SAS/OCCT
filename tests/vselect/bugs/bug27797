@@ -1,0 +1,33 @@
+puts "========"
+puts "Consider ZLayer properties while sorting list of picked entities"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+box b1 0 0 0 2 3 4
+box b2 0 0 0 1 1 2
+vertex v 100 -300 0
+
+vclear
+vinit View1
+catch { vzlayer del 1 }
+set aLayerId [vzlayer add]
+vzlayer ${aLayerId} -enable depthClear
+vaxo
+vdisplay -noupdate -dispMode 1 -highMode 1 b1
+vdisplay -noupdate -dispMode 1 -highMode 1 -layer ${aLayerId} b2
+vsetcolor -noupdate b1 RED
+vsetcolor -noupdate b2 GREEN
+vfit
+vrotate 0.1 0 0
+vmoveto 100 300
+vstate
+vselect 100 300
+vmoveto 0 0
+
+set aSelColor [vreadpixel 100 300 rgb name]
+if { $aSelColor != "GRAY76"} { puts "Error: wrong object has been selected" }
+
+vdisplay -dispMode 0 -osd -2d -trsfPersPos -1 1 v
+
+vdump $imagedir/${casename}.png

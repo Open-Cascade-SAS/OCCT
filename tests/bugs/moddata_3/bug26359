@@ -1,0 +1,21 @@
+puts "============"
+puts "CR26359"
+puts "============"
+puts ""
+###################################################################################
+# Revolution shape of Parabola Curve has no triangles
+###################################################################################
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+restore [locate_data_file bug26359_parabola.brep] p
+
+vdisplay p
+vfit
+
+checktrinfo p -tri -nod -defl
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC30133"
+puts "================"
+puts ""
+##########################################
+# Modeling Data - Crash during visualization of invalid part
+##########################################
+
+restore [locate_data_file bug30133.brep] s
+
+vinit
+vdisplay s
+vfit
+puts "bug30131 is OK"
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,36 @@
+# Auto-generated list of packages for TKGeomAlgo toolkit
+set(OCCT_TKGeomAlgo_LIST_OF_PACKAGES
+  Hatch
+  GeomInt
+  IntStart
+  IntWalk
+  IntImp
+  IntCurveSurface
+  IntSurf
+  IntPatch
+  Geom2dInt
+  IntImpParGen
+  IntRes2d
+  IntCurve
+  TopTrans
+  Intf
+  ApproxInt
+  GccAna
+  GccEnt
+  GccInt
+  HatchGen
+  Geom2dHatch
+  Law
+  AppBlend
+  Plate
+  GeomPlate
+  LocalAnalysis
+  GeomAPI
+  GeomFill
+  Geom2dAPI
+  Geom2dGcc
+  FairCurve
+  NLPlate
+  IntPolyh
+  TopClass
+)

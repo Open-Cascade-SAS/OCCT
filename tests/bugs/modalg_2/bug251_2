@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC251: Section of two faces f1 and f2 depends on order of arguments:  section r1 f1 f2 and section r2 f2 f1 give different results, one of result is invalid - overlapped edges."
+puts "================"
+puts ""
+
+restore [locate_data_file OCC251.brep] f 
+explode f
+checkshape f_1
+checkshape f_2
+
+bsection result f_2 f_1
+explode result
+
+foreach a [explode result e] {
+  foreach b [explode result e] {
+    if { ![regexp {not} [compare b_1 n_1]] } {
+      continue;
+    }
+    
+    set coe [checkoverlapedges e1 e2 5.0e-5]
+
+    puts "$a <-> $b: $coe"
+    if { [regexp "Edges are not overlapped" $coe] != 1 } {
+      puts "Error: $a and $b are overlapped"
+    }
+  }
+}
+
+checkprops result -l 1. 
+checkshape result 
+checksection result -r 2
+
+smallview
+don result*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

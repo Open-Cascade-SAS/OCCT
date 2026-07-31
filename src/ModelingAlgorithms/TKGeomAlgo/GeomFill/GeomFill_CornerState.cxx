@@ -1,0 +1,105 @@
+// Created on: 1995-12-08
+// Created by: Laurent BOURESCHE
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <GeomFill_CornerState.hxx>
+
+//=================================================================================================
+
+GeomFill_CornerState::GeomFill_CornerState()
+    : gap(RealLast()),
+      tgtang(0.0),
+      isconstrained(false),
+      norang(0.0),
+      scal(1.),
+      coonscnd(true)
+{
+}
+
+//=================================================================================================
+
+double GeomFill_CornerState::Gap() const
+{
+  return gap;
+}
+
+//=================================================================================================
+
+void GeomFill_CornerState::Gap(const double G)
+{
+  gap = G;
+}
+
+//=================================================================================================
+
+double GeomFill_CornerState::TgtAng() const
+{
+  return tgtang;
+}
+
+//=================================================================================================
+
+void GeomFill_CornerState::TgtAng(const double Ang)
+{
+  tgtang = Ang;
+}
+
+//=================================================================================================
+
+bool GeomFill_CornerState::HasConstraint() const
+{
+  return isconstrained;
+}
+
+//=================================================================================================
+
+void GeomFill_CornerState::Constraint()
+{
+  isconstrained = true;
+}
+
+//=================================================================================================
+
+double GeomFill_CornerState::NorAng() const
+{
+  return norang;
+}
+
+//=================================================================================================
+
+void GeomFill_CornerState::NorAng(const double Ang)
+{
+  norang = Ang;
+}
+
+//=================================================================================================
+
+bool GeomFill_CornerState::IsToKill(double& Scal) const
+{
+  Scal = scal;
+  if (!isconstrained)
+  {
+    return false;
+  }
+  return !coonscnd;
+}
+
+//=================================================================================================
+
+void GeomFill_CornerState::DoKill(const double Scal)
+{
+  scal     = Scal;
+  coonscnd = false;
+}

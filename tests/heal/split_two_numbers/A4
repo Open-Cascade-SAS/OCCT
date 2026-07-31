@@ -1,0 +1,10 @@
+psphere a 10  0 90
+pcylinder cc 4 15
+ttranslate cc 0 -5 0
+bcut b a cc
+explode b f
+
+DT_SplitByNumber result b_1 3 5
+
+checknbshapes result -t -face 16
+

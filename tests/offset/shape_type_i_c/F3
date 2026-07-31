@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_undercut_1.brep] s
+
+OFFSETSHAPE 25 {} $calcul $type
+
+checkprops result -v 5.10815e+007
+
+checknbshapes result -shell 1

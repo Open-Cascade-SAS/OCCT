@@ -1,0 +1,17 @@
+puts "========="
+puts "CR23765"
+puts "========="
+puts ""
+##################################################
+## The result of section operation contains redundant vertex.
+##################################################
+
+restore [locate_data_file bug23765_b1.brep] b1
+restore [locate_data_file bug23765_b2.brep] b2
+
+bop b1 b2
+bopsection result
+
+checknbshapes result -vertex 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

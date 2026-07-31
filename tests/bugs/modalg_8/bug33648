@@ -1,0 +1,26 @@
+puts "==================================================="
+puts "0033648: Modeling Algorithms - Bad partition result"
+puts "==================================================="
+puts ""
+
+pload MODELING
+restore [locate_data_file bug33648_1.brep] s1
+restore [locate_data_file bug33648_2.brep] s2
+
+baddobjects s1 s2
+bfillds
+bbuild result
+
+checkprops result -s 87.2813
+checknbshapes result -vertex 58 -edge 97 -wire 44 -face 44 -shell 4 -solid 4 -compsolid 0 -compound 2 -shape 253
+
+set expected_MaxTolerance 0.05
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
+if { $MaxTolerance > $expected_MaxTolerance } {
+	puts "Error : too big tolerance for the shape (should be less than $expected_MaxTolerance, now $MaxTolerance)"
+}
+
+vinit
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

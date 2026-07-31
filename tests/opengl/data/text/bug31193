@@ -1,0 +1,19 @@
+puts "============="
+puts "0031193: Visualization - OpenGl_Flipping wrong text position if local transformation set"
+puts "============="
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vtrihedron trihedr
+
+vdrawtext Text "First line\nSecond line" -pos 10 0 0 -color red -plane 1 0 0 0 1 0 -flipping -halign center -valign top -height 50 -font SansFont
+
+vright
+vrotate 0 3.14 0
+vlocation Text -rotate 0 0 0 0 1 0 180
+
+if {[vreadpixel 67 126 rgb name] == "RED"} { puts "ERROR: the text is not flipped" }
+
+vdump $imagedir/${casename}.png

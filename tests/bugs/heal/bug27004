@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC27004"
+puts "========"
+puts ""
+#####################################################
+# ShapeUpgrade_UnifySameDomain produces invalid result
+#####################################################
+
+restore [locate_data_file bug27004_prim_0_1.brep]  s0
+restore [locate_data_file bug27004_prim_0_29.brep] s1
+restore [locate_data_file bug27004_prim_0_30.brep] s2
+
+bclear
+bfuzzyvalue 1e-5
+
+baddobjects s0 s1 s2
+baddtools s0 s1 s2
+
+bfillds
+
+bbop r 1
+
+unifysamedom result r
+
+checkshape result
+
+checknbshapes result -vertex 12 -edge 18 -wire 8 -face 8 -solid 1
+checkprops result -s 223704 -v 3.27888e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

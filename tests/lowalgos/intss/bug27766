@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC27766"
+puts "========"
+puts ""
+#################################################
+# Incorrect section curves between attached cylinders
+#################################################
+
+set ExpTol 1.0e-7
+set GoodNbCurv 3
+
+restore [locate_data_file bug27761_c1.brep] c1
+restore [locate_data_file bug27761_c2.brep] c2
+
+set log [bopcurves c1 c2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+
+checkreal TolReached $Toler $ExpTol 0.0 0.1
+
+smallview
+don c_*
+fit
+disp c1 c2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

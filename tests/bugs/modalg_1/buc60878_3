@@ -1,0 +1,27 @@
+puts "============="
+puts "BUC60878"
+puts "============="
+
+#restore BUC60878-wire5.brep a
+###############dtext 0 -10 0 "THE CASE IS INCORRECT"
+#mkoffset r a 1 4
+#tpcompound res
+#checkshape res
+
+restore [locate_data_file BUC60878-wire5.brep] a 
+checkshape a
+
+set che [checkshape a rr]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty : mistakes are found in SOURCE  shape by checkshape command"
+    puts "Body of the script was not executed"
+} else {
+    puts "Checking of SOURCE shape by checkshape - OK"
+    mkoffset result a 1 4
+    renamevar result_1 result
+}
+
+checkprops result -l 107.351 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

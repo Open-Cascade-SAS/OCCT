@@ -1,0 +1,12 @@
+#########################################################################################
+puts "OCC26989: Export of a reversed face leads to wrong data in 6.9.0"
+#########################################################################################
+
+restore [locate_data_file bug26989.brep] a
+newmodel
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges a $aTmpFile
+igesbrep $aTmpFile result *
+file delete -force ${aTmpFile}
+
+checkprops result -s 56.5487

@@ -1,0 +1,196 @@
+puts "==========="
+puts "0031770: To add tests of Abort command to 31748"
+puts "==========="
+
+# This test checks different combinations of creation/modification/forget of attributes in
+# transactions and Abort: when there are one or two attributes on a label, on father and child labels.
+
+NewDocument D
+UndoLimit D 100
+
+# enumeration of actions: first come actions where no attribute needed on the label, after none, after - attribute must be on the label
+set act_create 0
+set act_createforget 1
+set act_createmodify 2
+set act_none 3
+set act_modify 4
+set act_modifyforget 5
+set act_forget 6
+set act_forgetcreate 7
+# the number of possible actions that can be done on attribute
+set actions 8
+
+set act_afternone [expr $act_none+1]
+
+# returns 1 if after this action there exists attribute on the label
+proc produces_attribute1 {action} {
+  global act_create act_modify act_forgetcreate act_createmodify
+  if {$action==$act_create || $action==$act_createmodify || $action==$act_modify || $action==$act_forgetcreate} {
+    return 1
+  }
+  return 0
+}
+
+# returns 1 if after two actions there exists attribute on the label
+proc produces_attribute2 {action1 action2} {
+  global act_create act_modify act_modifyforget act_forget act_createforget
+  if {[produces_attribute1 $action2]} {
+    return 1
+  }
+  if {$action2!=$act_forget && $action2!=$act_createforget && $action2!=$act_modifyforget && [produces_attribute1 $action1]} {
+    return 1
+  }
+  return 0
+}
+
+# returns value of the attribute produced by two actions
+proc produces_value {action1 action2} {
+  global act_modify act_createmodify act_none act_forgetcreate
+  if {$action2==$act_modify} {
+    if {$action1==$act_createmodify} {
+      return 3
+    }
+    return 2
+  }
+  if {$action2==$act_createmodify} {
+    return 2
+  }
+  if {$action1==$act_createmodify && $action2!=$act_forgetcreate} {
+    return 2
+  }
+  if {$action1==$act_none && $action1==$act_createmodify} {
+    return 2
+  }
+  return 1
+}
+
+proc attribute_name attr_id {
+  if $attr_id==0 {
+    return Integer
+  }
+  return Real
+}
+
+proc do_action {label attr action} {
+  global D
+  set attrName [attribute_name $attr]
+  switch $action { # first there are atcions that leave attribute, then - none, then - that remove it
+    0 { # sets a new attribute
+      Set$attrName D $label 1
+    }
+    1 { # creates and immediately forgets a new attribute
+      Set$attrName D $label 1
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    2 { # sets and modifies attribute
+      Set$attrName D $label 1
+      Set$attrName D $label 2
+    }
+    3 { # nothing to do
+    }
+    4 { # modifies (increments) an attribute value if it is already exists on this label
+      set value [Get$attrName D $label]
+      Set$attrName D $label [expr $value+1]
+    }
+    5 { # modifies and immediately forgets an attribute
+      set value [Get$attrName D $label]
+      Set$attrName D $label [expr $value+1]
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    6 { # forgets the attribute
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    7 { # forgets and immediately creates an attribute
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+      Set$attrName D $label 1
+    }
+  }
+}
+
+proc check_attribute {action1 action2 lab attr} {
+  global D
+  set attrName [attribute_name $attr]
+  if [produces_attribute2 $action1 $action2] {
+    set value [Get$attrName D $lab]
+    set expected_value [produces_value $action1 $action2]
+    if $value!=$expected_value {
+      puts "Error : attribute $attrName value $value does not match the expected $expected_value at the label $lab"
+    }
+  } else {
+    set attributes [Attributes D $lab]
+    if {[lsearch $attributes TDataStd_$attrName]>=0} {
+      puts "Error : attribute $attrName exists but it should not at the label $lab"
+    }
+  }
+}
+
+
+set lab_index 1
+set num_variants 0
+# cycles by variables t<transaction number>l<label number>a<attribute number> = action id
+for {set t1l1a1 0} {$t1l1a1 < $act_afternone} {incr t1l1a1} {
+  for {set t1l2a1 0} {$t1l2a1 < $act_afternone} {incr t1l2a1} {
+    for {set t1l2a2 0} {$t1l2a2 < $act_afternone} {incr t1l2a2} {
+      set t2l1a1_min 0
+      set t2l1a1_max $actions
+      if [produces_attribute1 $t1l1a1] {set t2l1a1_min $act_none} {set t2l1a1_max $act_afternone}
+      for {set t2l1a1 $t2l1a1_min} {$t2l1a1 < $t2l1a1_max} {incr t2l1a1} {
+        set t2l2a1_min 0
+        set t2l2a1_max $actions
+        if [produces_attribute1 $t1l2a1] {set t2l2a1_min $act_none} {set t2l2a1_max $act_afternone}
+        for {set t2l2a1 $t2l2a1_min} {$t2l2a1 < $t2l2a1_max} {incr t2l2a1} {
+          set t2l2a2_min 0
+          set t2l2a2_max $actions
+          if [produces_attribute1 $t1l2a2] {set t2l2a2_min $act_none} {set t2l2a2_max $act_afternone}
+          for {set t2l2a2 $t2l2a2_min} {$t2l2a2 < $t2l2a2_max} {incr t2l2a2} {
+            set lab [Label D 0:$lab_index]
+            ForgetAll D $lab
+            set sublab [Label D $lab:1]
+            ForgetAll D $sublab
+            incr lab_index
+            incr num_variants
+            # avoid creation of too many labels (which is too slow)
+            if $lab_index==11 {
+              set lab_index 1
+            }
+            NewCommand D
+            do_action $lab 0 $t1l1a1
+            do_action $sublab 0 $t1l2a1
+            do_action $sublab 1 $t1l2a2
+            CommitCommand D
+            NewCommand D
+            do_action $lab 0 $t2l1a1
+            do_action $sublab 0 $t2l2a1
+            do_action $sublab 1 $t2l2a2
+            # check all attributes are correctly located in the tree
+            check_attribute $t1l1a1 $t2l1a1 $lab 0
+            check_attribute $t1l2a1 $t2l2a1 $sublab 0
+            check_attribute $t1l2a2 $t2l2a2 $sublab 1
+            # check attributes state after Abort
+            AbortCommand D
+            check_attribute $act_none $t1l1a1 $lab 0
+            check_attribute $act_none $t1l2a1 $sublab 0
+            check_attribute $act_none $t1l2a2 $sublab 1
+          }
+        }
+      }
+    }
+  }
+}
+puts "Checked $num_variants variants"

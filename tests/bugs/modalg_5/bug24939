@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC24939"
+puts "============"
+puts ""
+######################################################
+# Incorrect result of Fuse operation
+######################################################
+
+restore [locate_data_file bug24939_Comp.brep] c
+
+explode c
+bfuse result c_1 c_2
+
+checkprops result -s 31.0346 
+checkshape result
+
+checknbshapes result -vertex 70 -edge 111 -wire 42 -face 42 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 268
+checkview -display result -2d -path ${imagedir}/${test_image}.png

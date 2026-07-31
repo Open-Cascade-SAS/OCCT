@@ -1,0 +1,18 @@
+puts "========="
+puts "0030780: BRepMesh fails triangulating one face of the shape"
+puts "========="
+puts ""
+
+binrestore [locate_data_file bug30780_full.bin] result
+
+tclean result
+incmesh result 7.066 -a 20 -adjust_min
+
+checktrinfo result -tri
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}

@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC27856"
+puts "========"
+puts ""
+#################################################
+# Regression vs 6.7.1: General Fuse operation fails to fuse the solids
+#################################################
+
+restore [locate_data_file bug27856_int_solids.brep] b
+bclearobjects
+bcleartools
+baddcompound b
+bfillds
+bbuild result
+checknbshapes result -solid 12

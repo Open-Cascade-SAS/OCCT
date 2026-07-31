@@ -1,0 +1,16 @@
+#pcone c 25 50 50
+#ttranslate c 0 0 50
+#prism p c_3 0 25.0001 -50
+#explode c f
+#explode p F
+#glue s c p c_3 p_2
+
+restore [locate_data_file 7_C4.draw] s
+tscale  s 0 0 0 SCALE1 
+explode s e
+blend result s 15*SCALE1 s_2
+explode result So
+tcopy result_1 result 
+explode result V
+
+checkprops result -s 781867

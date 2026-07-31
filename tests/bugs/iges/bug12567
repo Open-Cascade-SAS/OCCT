@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC12567"
+puts "============"
+puts ""
+######################################################
+# Swapped first/last vertices or incorrect curve orientation after reading IGES file
+######################################################
+
+igesbrep [locate_data_file bug12567.igs] a *
+
+set tolerance [ maxtolerance a ]
+
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+
+if { $MaxFaceTolerance > 1e-7 || $MaxEdgeTolerance > 1e-7 || $MaxVertexTolerance > 1e-7 } {
+    puts "Faulty : Tolerance of shape is more then 1e-7"
+} else {
+    puts "Tolerance of shape is <= then 1e-7"
+}
+
+view 1 -2D- 728 450 400 400
+pcurve a
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

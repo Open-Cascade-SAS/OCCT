@@ -1,0 +1,21 @@
+puts "REQUIRED All: Info. Faulty shape is found in source shape"
+puts "============"
+puts "OCC25043"
+puts "============"
+puts ""
+############################################################################################################################
+## there is no possibility to know what exactly subshape of source shape has detected problems by BRepAlgoAPI_Check
+############################################################################################################################
+
+pload QAcommands
+restore [locate_data_file bug25043.brep] a
+subshape a v 3
+settolerance a_3 0.0005
+
+set info [OCC25043 a]
+
+if { [regexp "Faulty shape is found in source shape" ${info}] == 1 } {
+    puts "OK : Good result"
+} elseif { [regexp "Problems are not detected" $info] != 1 } {
+    puts "Error : Wrong result"
+}

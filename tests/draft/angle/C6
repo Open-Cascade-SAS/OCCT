@@ -1,0 +1,8 @@
+#G1----------------------------------------------
+profile p l 5 c 2 90 l 5 c 2 90 l 5 c 2 90 l 5 c 2 90
+polyline w 0 0 0 0 0 10
+pipe p w p
+nexplode p f
+depouille result p 0 0 1 p_7 -5 0 0 0 0 0 1
+
+checkprops result -s 540.527

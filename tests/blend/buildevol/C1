@@ -1,0 +1,9 @@
+psphere s 15 -90 60 90
+trotate s 0 0 0 0 0 1 90
+tscale s 0 0 0 SCALE1
+explode s E
+mkevol result s
+updatevol s_2 0 1*SCALE1 1 2*SCALE1 2 1*SCALE1
+buildevol
+
+checkprops result -s 135853

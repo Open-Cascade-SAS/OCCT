@@ -1,0 +1,15 @@
+puts "================"
+puts "CR24083"
+puts "================"
+puts ""
+#######################################################################
+# BRepCheck_Wire crashes processing a wire consisting of many edges
+#######################################################################
+
+restore [locate_data_file bug24083_polyline.brep] result
+
+checkprops result -l 141421 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

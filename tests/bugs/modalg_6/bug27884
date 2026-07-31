@@ -1,0 +1,44 @@
+puts "================================================================="
+puts "OCC27884: Modeling Algorithms - Possible improvement for 2d classifier"
+puts "================================================================="
+puts ""
+
+puts "TODO ?CR33225 Windows: Error: algorithm slowed down"
+
+pload ALL
+pload QAcommands
+
+circle c 1 0 0 150
+
+set res1 [OCC27884 c 400 0]
+regexp {Improving time: +([-0-9.+eE]+) %} $res1 full time1
+
+if { $time1 <= 4 } {
+  puts "Error: algorithm slowed down"
+}
+
+
+set res2 [OCC27884 c 250 1]
+regexp {Improving time: +([-0-9.+eE]+) %} $res2 full time2
+
+if { $time2 <= 3 } {
+  puts "Error: algorithm slowed down"
+}
+
+
+convert c1 c
+
+set res3 [OCC27884 c1 350 2]
+regexp {Improving time: +([-0-9.+eE]+) %} $res3 full time3
+
+if { $time3 <= 15 } {
+  puts "Error: algorithm slowed down"
+}
+
+
+set res4 [OCC27884 c1 250 1]
+regexp {Improving time: +([-0-9.+eE]+) %} $res4 full time4
+
+if { $time4 <= 15 } {
+  puts "Error: algorithm slowed down"
+}

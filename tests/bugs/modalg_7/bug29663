@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC29663"
+puts "========"
+puts ""
+#################################################
+# Exception in BRepFill_PipeShell algorithm
+#################################################
+
+restore [locate_data_file bug29523_cut_extrudewire08.brep] sw
+restore [locate_data_file bug29523_cut_toolwire08.brep] tw
+
+mksweep sw
+addsweep tw
+
+if { [catch {buildsweep rr -R} catch_result] } {
+    puts "Faulty OCC29663"
+}
+
+fixshape result rr
+
+checkshape result
+checkprops result -s 2.14316e+011
+
+checkmaxtol result -ref 0.046703571498366049
+
+checknbshapes result -shell 1 -face 201 -wire 201
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

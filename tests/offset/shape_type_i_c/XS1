@@ -1,0 +1,13 @@
+restore [locate_data_file bug30394_input_no_merged.brep] s
+
+unifysamedom s s +i
+offsetparameter 1.e-7 c i r
+offsetload s 25
+offsetperform result
+
+checkprops result -s 2.03958e+06 -v 7.33246e+07
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 162 -edge 243 -wire 113 -face 98 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

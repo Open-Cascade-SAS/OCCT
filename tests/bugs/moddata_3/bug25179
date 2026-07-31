@@ -1,0 +1,24 @@
+puts "============"
+puts "CR25179"
+puts "============"
+puts ""
+###################################################################################
+# BRepMesh cannot build a mesh on specific geometry
+###################################################################################
+
+cpulimit 1000
+
+restore [locate_data_file bug25179_nurbs-with-partial-seam.brep] result
+
+tclean result
+incmesh result 0.1
+
+checktrinfo result -tri -nod -defl
+
+if [catch { tricheck result } ] {
+  puts "Error : Problem of build a mesh on specific geometry"
+} else {
+  puts "OK : Building a mesh on specific geometry is good"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,53 @@
+puts "==========="
+puts "OCC23152"
+puts "==========="
+######################################################
+# Possibility to have echo of DRAW commands in log file
+######################################################
+
+set BugNumber OCC23152
+
+dchrono t stop
+dchrono t start
+dchrono t stop
+
+dlog reset
+dlog on
+dchrono t show
+set log_on [dlog get]
+
+dlog reset
+dlog off
+dchrono t show
+set log_off [dlog get]
+
+puts "log_on = ${log_on}"
+puts "log_off = ${log_off}"
+
+set llength_log_on  [llength ${log_on}]
+set llength_log_off [llength ${log_off}]
+
+puts "llength log_on= [llength ${log_on}]"
+puts "llength log_off= [llength ${log_off}]"
+
+set status 0
+if { ${llength_log_on} > 0 } {
+   puts "dlog on work OK"
+} else {
+   puts "dlog on work Faulty"
+   set status 1
+}
+if { ${llength_log_off} == 0 } {
+   puts "dlog off work OK"
+} else {
+   puts "dlog off work Faulty"
+   set status 1
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}

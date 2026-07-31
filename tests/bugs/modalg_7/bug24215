@@ -1,0 +1,27 @@
+puts "TODO OCC24215 ALL: ERROR: OCC24215 is reproduced."
+
+puts "========"
+puts "OCC24215"
+puts "========"
+puts ""
+###############################
+# Error in offset (bad curve)
+###############################
+
+restore [locate_data_file bug24215_face-10-012.brep] f
+
+mkoffset o f 1 0.4
+
+set bug_info [lprops o_1]
+
+# Length of o_1 SHOULD be less 58.8412 because offset is wrong and consists loop
+# "if" statement SHOULD be corrected than issue will be fixed
+if {[lindex $bug_info 2] == 58.8412} {
+  puts "ERROR: OCC24215 is reproduced."
+}
+
+vinit
+vdisplay f
+vdisplay o_1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

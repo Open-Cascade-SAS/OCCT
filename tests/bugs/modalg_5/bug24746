@@ -1,0 +1,21 @@
+puts "=========="
+puts "OCC24746"
+puts "=========="
+puts ""
+#######################
+# Bug in BRepAlgoAPI
+#######################
+
+pload XDE
+
+ReadStep doc [locate_data_file bug24746_ENI.stp]
+XGetShape c doc 0:1:1:1
+explode c f
+explode c_2 e
+bop c_1 c_2
+bopcommon res1
+bop c_1 c_2_4
+bopcommon result
+
+checknbshapes result -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
+checkview -display result -2d -path ${imagedir}/${test_image}.png

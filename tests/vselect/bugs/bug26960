@@ -1,0 +1,21 @@
+puts "========"
+puts "0026960: Visualization, TKOpenGl - update transformation of dynamically highlighted presentation"
+puts "========"
+puts ""
+
+pload VISUALIZATION MODELING
+
+box b 1 2 3
+
+vclear
+vinit View1
+
+vdisplay -dispmode 1 -highmode 1 b
+vfit
+vselmode 4 1
+vmoveto 250 250
+if {[vreadpixel 350 140 rgb name] != "BLACK"} { puts "ERROR: wrong initial location" }
+vsetlocation b 0.5 0 0
+if {[vreadpixel 350 140 rgb name] != "CYAN2"} { puts "ERROR: the transformation was not applied to highlight structure" }
+
+vdump ${imagedir}/${test_image}.png

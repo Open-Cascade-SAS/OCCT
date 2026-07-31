@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename USA60293.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 90  ( 56 )  Summary  = 90  ( 56 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 793  ( 793 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 793  ( 793 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9292857408  (   0.9292857413 )  AvgTol   =   0.05474058349  (    0.0547279268 )
+LABELS      : N0Labels = 800  ( 800 )  N1Labels = 3  ( 2558 )  N2Labels = 0  ( 0 )   TotalLabels = 803  ( 3358 )   NameLabels = 800  ( 800 )   ColorLabels = 802  ( 3358 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 9  ( 10 )
+COLORS      : Colors   = BLUE BURLYWOOD2 CYAN GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 YELLOW  ( BLUE BURLYWOOD2 CYAN GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 WHITE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

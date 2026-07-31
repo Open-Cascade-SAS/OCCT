@@ -1,0 +1,20 @@
+puts "============="
+puts "0029947: Visualization - SelectMgr_SelectableObject::GetSelectPresentation() should copy object clipping planes"
+puts "============="
+
+pload MODELING VISUALIZATION XDE
+vclear
+vinit View1
+vaxo
+meshfromstl m [locate_data_file shape.stl]
+vfit
+vdisplay -dispMode 2 m
+vselmode m 8 1
+vselect 160 170 320 370
+if { [vreadpixel 230 260 rgb name] == "BLACK" } { puts "Error" }
+vclipplane c -set m -equation 0 1 0 4
+if { [vreadpixel 230 260 rgb name] != "BLACK" } { puts "Error" }
+vmoveto 75 172
+if { [vreadpixel  70 170 rgb name] != "BLACK" } { puts "Error" }
+
+vdump ${imagedir}/${casename}.png

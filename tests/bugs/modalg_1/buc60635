@@ -1,0 +1,14 @@
+
+puts "============="
+puts "BUC60635"
+puts "============="
+
+restore [locate_data_file buc60635a.brep] a 
+checkshape a
+
+mkplane result a
+
+checkprops result -s 2035.58 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

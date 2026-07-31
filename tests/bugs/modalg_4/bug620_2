@@ -1,0 +1,25 @@
+
+puts "========================"
+puts "OCC620"
+puts "========================"
+puts ""
+############################
+## No possibility to cut the shapes. 
+############################
+
+restore [locate_data_file OCC620a.brep] a 
+checkshape a
+restore [locate_data_file OCC620b.brep] b 
+checkshape b
+
+bop a b
+
+if [catch { boptuc result } catch_result] {
+    puts "Faulty OCC620 : BOPTUC operation was made wrongly"
+} else {
+    puts "OCC620 OK: BOPTUC operation works OK"
+}
+
+checkprops result -s 1.15562e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

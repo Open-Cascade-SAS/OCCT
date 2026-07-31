@@ -1,0 +1,20 @@
+# Original bug : cts21832
+# Date : 26 Nov 98
+#restore cts21832_base.brep base
+#restore cts21832_cont.brep cont
+#explode cont wire
+#copy cont_1 wire
+#ttranslate wire 0 0 -1
+#plane plan 0 0 0 -1 0 0
+#featlf base wire plan -0.5 0 0 0.5 0 0 1 0
+#featperform lf result
+#fsameparameter result
+
+puts "The shapes are not valid" 
+box boite 200 200 200                                                                                                
+nexplode boite F                                                                                                     
+profile cont S boite_4 F 0 50 X 50 Y 100 X -50                                                                       
+featrevol boite cont boite_4 0 0 200 0 1 0 0 1                                                                       
+featperform revol result boite_4 boite_1
+
+checkprops result -s 241781

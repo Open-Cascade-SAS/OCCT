@@ -1,0 +1,25 @@
+puts "TODO OCC27471 ALL: ERROR: OCC27471 is reproduced."
+
+puts "========"
+puts "OCC27471"
+puts "========"
+puts ""
+########################
+# Wrong result of pipe
+########################
+
+restore [locate_data_file bug27471_s.brep] s
+restore [locate_data_file bug27471_p.brep] p
+
+pipe result s p
+
+set bug_info [string trim [bopcheck result]]
+if {$bug_info != "This shape seems to be OK."} {
+  puts "ERROR: OCC27471 is reproduced. Result of pipe creation is WRONG."
+}
+
+vinit
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

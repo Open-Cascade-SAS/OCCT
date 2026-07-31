@@ -1,0 +1,6 @@
+hyperbola result 70 0 0  0 0 1   1 0 0   20 10
+pscale result 0 0 0 5
+repeat 4 {pl}
+dmode result U
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{350 0 0} {0 0 1} {1 0 -0} {-0 1 0} {100 50}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

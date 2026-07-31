@@ -1,0 +1,9 @@
+# Test data:
+puts "USER GUID: N/A"
+restore [locate_data_file bug26663_test_offset_J9.brep] s
+
+set OffsetValue 80.0
+
+# Reference data.
+set ExpectedMass 3.54341e+006
+set ExpectedMaxTol 86.160

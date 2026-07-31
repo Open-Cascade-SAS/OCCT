@@ -1,0 +1,9 @@
+# Original bug : ger50084
+# Date : 21 Sept 98
+
+restore [locate_data_file CTO900_ger50084c.rle] prism
+restore [locate_data_file CTO900_ger50084d.rle] base
+
+bcut result prism base
+checkprops result -s 1290.02
+checkview -display result -2d -s -otherwise { prism base } -path ${imagedir}/${test_image}.png

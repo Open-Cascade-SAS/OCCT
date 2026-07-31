@@ -1,0 +1,39 @@
+# Check conversion of RGB colors to CIE Lab color space
+
+pload VISUALIZATION
+
+# Samples are obtained (with Ref. White D65, Gamma = 1 for linear RGB) using
+# http://brucelindbloom.com/index.html?ColorCalculator.html
+set rgb_to_lab_samples {
+  { # black, white, 50% gray }
+  { {0 0 0} {0 0 0} }
+  { {1 1 1} {100 0 0} }
+  { {0.5 0.5 0.5} {76.0693 0 0} }
+
+  { # pure colors }
+  { {1 0 0} {53.2408 80.0925 67.2032} }
+  { {0 1 0} {87.7347 -86.1827 83.1793} }
+  { {0 0 1} {32.2970 79.1875 -107.8602} }
+  { {0 1 1} {91.1132 -48.0875 -14.1312} }
+  { {1 1 0} {97.1393 -21.5537 94.4780} }
+  { {1 0 1} {60.3242 98.2343 -60.8249} }
+
+  { # shades of pure red }
+  { {0.1 0 0} {16.1387 37.1756 25.0600} }
+  { {0.3 0 0} {30.3521 53.6166 44.0349} }
+  { {0.5 0 0} {38.9565 63.5695 53.3392} }
+  { {0.7 0 0} {45.4792 71.1144 59.6700} }
+  { {0.9 0 0} {50.8512 77.3285 64.8840} }
+
+  { # random colors }
+  { {0.3 0.5 0.9} {75.2228 0.7560 -31.8425} }
+}
+
+foreach sample $rgb_to_lab_samples {
+  set rgb [lindex $sample 0]
+  if { $rgb == "#" } continue
+
+  set ref [lindex $sample 1]
+  set lab [vcolorconvert to lab {*}$rgb]
+  check3reals "RGB ($rgb) to Lab" {*}$lab {*}$ref 1e-4
+}

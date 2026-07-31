@@ -1,0 +1,31 @@
+puts "================"
+puts "OCC28009"
+puts "================"
+puts ""
+#######################################################################
+# [Regression vs OCCT7.0.0] Cut produces not valid shape
+#######################################################################
+
+set NbCurvGood 1
+set ExpToler 5.441959818453312e-008
+
+restore [locate_data_file bug28009_shape.brep] a
+
+explode a
+
+explode a_1 f
+explode a_2 f
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves a_1_6 a_2_1 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+
+checkreal TolReached $Toler $ExpToler 0.0 0.1
+
+smallview
+don c_*
+fit
+display a_1_6 a_2_1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

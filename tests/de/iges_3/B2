@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename 1stpunch-mcsrfs.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 2792 )  Summary  = 0  ( 2792 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 883  ( 1953 )  Summary  = 883  ( 1953 )
+CHECKSHAPE  : Wires    = 4  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002714431471  ( 0.001436622896 )  AvgTol   =  1.591279644e-06  (  9.779578932e-06 )
+LABELS      : N0Labels = 1215  ( 1215 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1215  ( 1215 )   NameLabels = 1215  ( 1215 )   ColorLabels = 0  ( 0 )   LayerLabels = 1207  ( 1215 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 30  ( 30 )
+
+}

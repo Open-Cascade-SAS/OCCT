@@ -1,0 +1,20 @@
+puts "========="
+puts "OCC24809"
+puts "========="
+puts ""
+##############################################################################
+# Exception is raised during perform of "bfillds" command on attached shape
+##############################################################################
+
+cpulimit 1000
+
+restore [locate_data_file bug24809_test3.brep] b
+
+bclearobjects
+bcleartools
+set shapes [explode b f]
+set nbs [llength $shapes]
+for {set i 1} {$i <= $nbs} {incr i} {
+  baddobjects b_$i
+}
+bfillds -s

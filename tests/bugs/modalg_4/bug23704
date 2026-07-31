@@ -1,0 +1,13 @@
+puts "========"
+puts "CR23704"
+puts "========"
+########################################################
+## The program hang-up during intersection of two edges.
+########################################################
+
+cpulimit 100
+
+restore [locate_data_file bug23704_e1.brep] b1
+restore [locate_data_file bug23704_e2.brep] b2
+
+bop b1 b2

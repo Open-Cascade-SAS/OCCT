@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27934_TEST_Machine_Part-brep-pmi.stp
+
+set ref_data {
+
+ NbOfDimensions          : 38
+  NbOfDimensionalSize    : 4
+  NbOfDimensionalLocation: 28
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 6
+ NbOfTolerances          : 0
+  NbOfGTWithModifiers    : 0
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 0
+ NbOfDatumFeature        : 0
+ NbOfAttachedDatum       : 0
+ NbOfDatumTarget         : 0
+}

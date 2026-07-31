@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename PRO11414-1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 190 )  Summary  = 11  ( 190 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 )   FreeWire = 22  ( 22 ) 
+TOLERANCE   : MaxTol   =     0.75178756  (   0.7517875657 )  AvgTol   =  0.001674553855  (   0.00167906973 )
+LABELS      : N0Labels = 2030  ( 2204 )  N1Labels = 30  ( 1187 )  N2Labels = 0  ( 0 )   TotalLabels = 2060  ( 3391 )   NameLabels = 2030  ( 2204 )   ColorLabels = 2028  ( 3217 )   LayerLabels = 2006  ( 3217 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 12  ( 12 )
+COLORS      : Colors   = GRAY61 GREEN LIGHTSALMON2 MAGENTA MAGENTA3 RED ROSYBROWN SPRINGGREEN4 TURQUOISE TURQUOISE2 WHITE YELLOW  ( GRAY61 GREEN LIGHTSALMON2 MAGENTA MAGENTA3 RED ROSYBROWN SPRINGGREEN4 TURQUOISE TURQUOISE2 WHITE YELLOW )
+NLAYERS     : NLayers  = 5  ( 6 )
+LAYERS      : Layers   = 107 109 152 155 156  ( 107 109 150 152 155 156 )
+
+}

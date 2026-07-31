@@ -1,0 +1,268 @@
+puts "==========="
+puts "0031748: Application Framework - Efficient OCAF transactions in OCCT"
+puts "==========="
+
+# This test checks behavior of attributes in different combinations of transactions:
+# creation/modification/deletion of attributes inside and outside of transaction and after
+# that on Undo/Redo.
+
+NewDocument D
+UndoLimit D 100
+
+# enumeration of actions: first come actions where no attribute needed on the label, after none, after - attribute must be on the label
+set act_create 0
+set act_createforget 1
+set act_createmodify 2
+set act_none 3
+set act_modify 4
+set act_modifyforget 5
+set act_forget 6
+set act_forgetcreate 7
+# the number of possible actions that can be done on attribute
+set actions 8
+# some action undome in transaction
+set act_undone 100
+
+set act_afternone [expr $act_none+1]
+
+# returns 1 if after this action there exists attribute on the label
+proc produces_attribute1 {action} {
+  global act_create act_modify act_forgetcreate act_createmodify
+  if {$action==$act_create || $action==$act_createmodify || $action==$act_modify || $action==$act_forgetcreate} {
+    return 1
+  }
+  return 0
+}
+
+# returns 1 if after two actions there exists attribute on the label
+proc produces_attribute2 {action1 action2} {
+  global act_create act_modify act_modifyforget act_forget act_createforget act_none act_forgetcreate act_undone
+
+  if {$action1 == $act_undone && $action2 == $act_modify} {
+    return 0
+  }
+  if {$action1 == $act_undone && $action2 == $act_forgetcreate} {
+    return 0
+  }
+  if {[produces_attribute1 $action2]} {
+    return 1
+  }
+  if {$action2!=$act_forget && $action2!=$act_createforget && $action2!=$act_modifyforget && [produces_attribute1 $action1]} {
+    return 1
+  }
+  return 0
+}
+
+# returns value of the attribute produced by two actions
+proc produces_value {action1 action2} {
+  global act_modify act_createmodify act_none act_forgetcreate
+  if {$action2==$act_modify} {
+    if {$action1==$act_createmodify} {
+      return 3
+    }
+    return 2
+  }
+  if {$action2==$act_createmodify} {
+    return 2
+  }
+  if {$action1==$act_createmodify && $action2!=$act_forgetcreate} {
+    return 2
+  }
+  if {$action1==$act_none && $action1==$act_createmodify} {
+    return 2
+  }
+  return 1
+}
+
+proc attribute_name attr_id {
+  if $attr_id==0 {
+    return Integer
+  }
+  return Real
+}
+
+proc do_action {label attr action} {
+  global D
+  set attrName [attribute_name $attr]
+  switch $action { # first there are atcions that leave attribute, then - none, then - that remove it
+    0 { # sets a new attribute
+      Set$attrName D $label 1
+    }
+    1 { # creates and immediately forgets a new attribute
+      Set$attrName D $label 1
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    2 { # sets and modifies attribute
+      Set$attrName D $label 1
+      Set$attrName D $label 2
+    }
+    3 { # nothing to do
+    }
+    4 { # modifies (increments) an attribute value if it is already exists on this label
+      set value [Get$attrName D $label]
+      Set$attrName D $label [expr $value+1]
+    }
+    5 { # modifies and immediately forgets an attribute
+      set value [Get$attrName D $label]
+      Set$attrName D $label [expr $value+1]
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    6 { # forgets the attribute
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+    }
+    7 { # forgets and immediately creates an attribute
+      if $attr==0 { # forget integer
+        ForgetAtt D $label 2a96b606-ec8b-11d0-bee7-080009dc3333
+      } else { # forget real
+        ForgetAtt D $label 2a96b60f-ec8b-11d0-bee7-080009dc3333
+      }
+      Set$attrName D $label 1
+    }
+  }
+}
+
+proc check_attribute {action1 action2 lab attr} {
+  global D
+  set attrName [attribute_name $attr]
+  if [produces_attribute2 $action1 $action2] {
+    set value [Get$attrName D $lab]
+    set expected_value [produces_value $action1 $action2]
+    if $value!=$expected_value {
+      puts "Error : attribute $attrName value $value does not match the expected $expected_value at the label $lab"
+    }
+  } else {
+    set attributes [Attributes D $lab]
+    if {[lsearch $attributes TDataStd_$attrName]>=0} {
+      puts "Error : attribute $attrName exists but it should not at the label $lab"
+    }
+  }
+}
+
+# special check for attributes if transaction->no transaction is performed and
+# Undo->Redo done: modified attributes become modified, but removed attributes in the no-transaction
+# do not removed after Redo
+proc check_attribute_notransaction {action1 action_notr lab attr} {
+  global D
+  set attrName [attribute_name $attr]
+  if [produces_attribute2 $action1 $action_notr] {
+    set value [Get$attrName D $lab]
+    set expected_value [produces_value $action1 $action_notr]
+    if $value!=$expected_value {
+      puts "Error : attribute $attrName value $value does not match the expected $expected_value at the label $lab"
+    }
+  } else {
+    if [produces_attribute1 $action_notr]==0 {
+      set attributes [Attributes D $lab]
+      if {[lsearch $attributes TDataStd_$attrName]>=0} {
+        puts "Error : attribute $attrName exists but it should not at the label $lab"
+      }
+    }
+  }
+}
+
+
+set lab_index 1
+set num_variants 0
+# cycles by variables t<operation number>a<attribute number> = action id
+for {set t1a1 0} {$t1a1 < $act_afternone} {incr t1a1} {
+  for {set t1a2 0} {$t1a2 < $act_afternone} {incr t1a2} {
+    set t2a1_min 0
+    set t2a1_max $actions
+    if [produces_attribute1 $t1a1] {set t2a1_min $act_none} {set t2a1_max $act_afternone}
+    for {set t2a1 $t2a1_min} {$t2a1 < $t2a1_max} {incr t2a1} {
+      set t2a2_min 0
+      set t2a2_max $actions
+      if [produces_attribute1 $t1a2] {set t2a2_min $act_none} {set t2a2_max $act_afternone}
+      for {set t2a2 $t2a2_min} {$t2a2 < $t2a2_max} {incr t2a2} {
+        set lab [Label D 0:$lab_index]
+        ForgetAll D $lab
+        incr lab_index
+        incr num_variants
+        # for the first operation no transaction opened and closed
+        do_action $lab 0 $t1a1
+        do_action $lab 1 $t1a2
+        # after do operation in transaction
+        NewCommand D
+        do_action $lab 0 $t2a1
+        do_action $lab 1 $t2a2
+        CommitCommand D
+        # check all attributes are correctly located in the tree
+        check_attribute $t1a1 $t2a1 $lab 0
+        check_attribute $t1a2 $t2a2 $lab 1
+        # check attributes state after undo and then - redo (but if all actions are None, there is no transaction, don't do it)
+        if {[expr $t2a1!=$act_none && $t2a1!=$act_createforget] || [expr $t2a2!=$act_none && $t2a2!=$act_createforget]} {
+          Undo D
+          check_attribute $act_none $t1a1 $lab 0
+          check_attribute $act_none $t1a2 $lab 1
+          Redo D
+          check_attribute $t1a1 $t2a1 $lab 0
+          check_attribute $t1a2 $t2a2 $lab 1
+        }
+      }
+    }
+  }
+}
+puts "Checked $num_variants variants in cycles no transaction->transaction"
+
+set num_variants 0
+# cycles by variables t<operation number>a<attribute number> = action id
+for {set t1a1 0} {$t1a1 < $act_afternone} {incr t1a1} {
+  for {set t1a2 0} {$t1a2 < $act_afternone} {incr t1a2} {
+    set t2a1_min 0
+    set t2a1_max $actions
+    if [produces_attribute1 $t1a1] {set t2a1_min $act_none} {set t2a1_max $act_afternone}
+    for {set t2a1 $t2a1_min} {$t2a1 < $t2a1_max} {incr t2a1} {
+      set t2a2_min 0
+      set t2a2_max $actions
+      if [produces_attribute1 $t1a2] {set t2a2_min $act_none} {set t2a2_max $act_afternone}
+      for {set t2a2 $t2a2_min} {$t2a2 < $t2a2_max} {incr t2a2} {
+        set lab [Label D 0:$lab_index]
+        incr lab_index
+        incr num_variants
+        # for the first operation open transaction
+        NewCommand D
+        do_action $lab 0 $t1a1
+        do_action $lab 1 $t1a2
+        CommitCommand D
+        # then no transaction is opened
+        do_action $lab 0 $t2a1
+        do_action $lab 1 $t2a2
+        # check all attributes are correctly located in the tree
+        check_attribute $t1a1 $t2a1 $lab 0
+        check_attribute $t1a2 $t2a2 $lab 1
+        # check attributes state after undo and then - redo (but if all actions are None, there is no transaction, don't do it)
+        if {[expr $t2a1!=$act_none && $t2a1!=$act_createforget] || [expr $t2a2!=$act_none && $t2a2!=$act_createforget]} {
+          Undo D
+          if {$t1a1 == $act_createforget || $t1a1 == $act_none} {
+            set first_tr $t1a1
+          } else {
+            set first_tr $act_undone
+          }
+          check_attribute $first_tr $t2a1 $lab 0
+          if {$t1a2 == $act_createforget || $t1a2 == $act_none} {
+            set first_tr $t1a2
+          } else {
+            set first_tr $act_undone
+          }
+          check_attribute $first_tr $t2a2 $lab 1
+          Redo D
+          check_attribute_notransaction $t1a1 $t2a1 $lab 0
+          check_attribute_notransaction $t1a2 $t2a2 $lab 1
+        }
+      }
+    }
+  }
+}
+puts "Checked $num_variants variants in cycles transaction->no transaction"

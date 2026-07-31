@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC450"
+puts "========"
+puts "(case 1)"
+puts ""
+#################################################################
+## After reading file5.igs, the surface of revolution written in this file becomes a plane. 
+#################################################################
+
+igesbrep [locate_data_file OCC450a.igs] a *
+
+explode a
+mksurface result a_3
+set info [dump result]
+
+if { [regexp "SurfaceOfRevolution" $info] != 1 } {
+    puts "Error : surface of revolution becomes a plane"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

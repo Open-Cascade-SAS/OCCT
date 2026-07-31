@@ -1,0 +1,13 @@
+puts "TODO OCC23190 ALL: ERROR. C0 continuity of input data."
+puts "TODO OCC23190 ALL: Error: The command cannot be built"
+puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+
+# Original bug : hkg60144/pro15325
+# Date : 17Juillet98
+
+restore [locate_data_file CHE900_hkg60ioc.rle] s
+explode s f
+
+offsetshape result s -5 s_1
+
+checkprops result -v 0

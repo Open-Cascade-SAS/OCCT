@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC660"
+puts "================"
+puts ""
+#######################################################
+## Surfaces types changed while reading IGES, causing problems with 2d mapping
+#######################################################
+
+set filepath [locate_data_file D44-11325-6.igs]
+if [catch { igesbrep $filepath a 6425 } res] {
+   puts "Faulty OCC660: here is reading problem"
+}
+
+renamevar a_1 a
+
+mksurface result a
+
+set info [dump result]
+
+if { [regexp "SurfaceOfLinearExtrusion" $info] != 1 } {
+   puts "Faulty OCC660"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

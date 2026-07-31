@@ -1,0 +1,101 @@
+// Created on: 1994-03-23
+// Created by: Jean Marc LACHAUME
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ElCLib.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <GeomLProp_CLProps.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <Precision.hxx>
+
+//=================================================================================================
+
+Geom2dHatch_Intersector::Geom2dHatch_Intersector()
+    : myConfusionTolerance(0.0),
+      myTangencyTolerance(0.0)
+{
+}
+
+//=================================================================================================
+
+void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
+                                      const double               P,
+                                      const double               Tol,
+                                      const Geom2dAdaptor_Curve& C)
+{
+
+  // double pfbid,plbid;
+  IntRes2d_Domain DL;
+  if (P != RealLast())
+  {
+    DL.SetValues(L.Location(), 0., Tol, ElCLib::Value(P, L), P, Tol);
+  }
+  else
+  {
+    DL.SetValues(L.Location(), 0., Tol, true);
+  }
+
+  IntRes2d_Domain DE(C.Value(C.FirstParameter()),
+                     C.FirstParameter(),
+                     Precision::PIntersection(),
+                     C.Value(C.LastParameter()),
+                     C.LastParameter(),
+                     Precision::PIntersection());
+
+  occ::handle<Geom2d_Line> GL = new Geom2d_Line(L);
+  Geom2dAdaptor_Curve      CGA(GL);
+  void*                    ptrpoureviterlesproblemesdeconst = (void*)(&C);
+
+  Geom2dInt_GInter Inter(CGA,
+                         DL,
+                         *((Geom2dAdaptor_Curve*)ptrpoureviterlesproblemesdeconst),
+                         DE,
+                         Precision::PConfusion(),
+                         Precision::PIntersection());
+  this->SetValues(Inter);
+}
+
+//=================================================================================================
+
+void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
+                                            const double               U,
+                                            gp_Dir2d&                  Tang,
+                                            gp_Dir2d&                  Norm,
+                                            double&                    C) const
+{
+  GeomLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
+
+  C = 0.;
+  if (Prop.IsTangentDefined())
+  {
+    Prop.Tangent(Tang);
+    C = Prop.Curvature();
+  }
+  else
+  {
+    Tang = gp_Dir2d(1., 0.);
+  }
+
+  if (C > Precision::PConfusion() && C < RealLast())
+  {
+    Prop.Normal(Norm);
+  }
+  else
+  {
+    Norm.SetCoord(Tang.Y(), -Tang.X());
+  }
+}

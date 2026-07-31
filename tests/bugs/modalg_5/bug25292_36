@@ -1,0 +1,73 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+# intersect command for trimmed surfaces
+
+#This value must be equal to the analogical value in bug25292_35 and bug25292_36 of "bugs modalg_5" testgrid. 
+set GoodNbCurv 2
+
+restore [locate_data_file bug25292_f1.brep] f1
+restore [locate_data_file bug25292_f2.brep] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+# trim s1 in accordance with the UV-bounds of f1:
+trimv s1t s1 19.1600000005 19.6600000005
+
+# trim s2 in accordance with the UV-bounds of f2:
+trim s2t s2 0. 1.570796326795 -275 275
+
+###################
+intersect res s2t s1t
+###################
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    display res_$ic
+    
+    bounds res_$ic U1 U2
+    
+    dval U1
+    dval U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 10 1.0e-7
+    xdistcs res_$ic s2 U1 U2 10 1.0e-7
+    
+    incr ic
+  }
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad!"
+}

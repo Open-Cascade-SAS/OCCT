@@ -1,0 +1,15 @@
+#I4----------------------------------------------
+polyline p 0 0 7  0 0 0  20 0 0  20 0 7  
+beziercurve bc 4  20 0 7  15 0 5  5 0 5  0 0 7
+mkedge bc bc
+wire p p bc
+mkplane p p
+prism p p 0 20 0
+#profile pf o 7 7 0 l 4 c 3 90 l 4 d -1 0 l 7
+profile pf o 5 5 1 l 10 d 0 1 l 10 d -1 0 l 10
+prism pr pf 0 0 12
+bfuse f p pr
+nexplode f f
+depouille result f 0 0 1 f_10 5 7 7 10 0 0 1
+
+checkprops result -s 1610.35

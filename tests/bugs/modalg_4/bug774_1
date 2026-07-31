@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC774"
+puts "SAM1647"
+puts "(case 1)"
+puts "========"
+puts ""
+#################################
+## It's impossible to cut one shape from another.
+#################################
+
+restore [locate_data_file OCC774.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+if { [catch { bcut result a_1 a_2 } status] } {
+    puts "Faulty OCC774 (case 1)"
+} 
+
+checkprops result -s 50704.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

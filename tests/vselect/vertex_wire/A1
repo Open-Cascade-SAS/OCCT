@@ -1,0 +1,11 @@
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+vmoveto 0 0
+vselmode 1 1
+vmoveto 102 204
+#QASetChoiceMode WIRE ON
+vmoveto 295 54
+vmoveto 27 307
+

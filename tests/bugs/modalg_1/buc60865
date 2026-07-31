@@ -1,0 +1,24 @@
+
+puts "============"
+puts "BUC60865"
+puts "BUC60864"
+puts "============"
+puts ""
+##########################
+## Section gives duplicate edges. 
+##########################
+
+restore [locate_data_file BUC60865_sh6.brep] sh 
+checkshape sh
+
+plane pl 1.1 0.99999 1 0 1 0
+mkface f pl
+bsection result sh f
+
+checknbshapes result -edge 5 -m "SECTION operation"
+
+checkprops result -l 4.5 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

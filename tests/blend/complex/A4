@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : B2
+## Comment : from original bug PRO4497
+## ====================================
+
+restore [locate_data_file CCH_indushep.rle] s
+tscale s 0 0 0 1000
+explode s e
+blend result s 5 s_12
+
+checkprops result -s 3737.48

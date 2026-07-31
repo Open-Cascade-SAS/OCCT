@@ -1,0 +1,39 @@
+box b 10 10 10
+copy b bf
+foreach e [explode b e] {
+  nurbsconvert ne $e
+  eval mkvolume s ne [explode bf f]
+
+  savehistory mv_hist
+  modified m mv_hist ne
+
+  mkcurve cur m
+  if {![regexp "BSplineCurve" [dump cur]]} {
+    puts "Error: Boolean Operation took the second face"
+  }
+
+  # make the shape periodic in all directions
+  makeperiodic res s -x 10 -y 10 -z 10
+
+  savehistory h
+  modified me h m
+
+  # get twins for the edge
+  periodictwins twins me
+
+  checknbshapes twins -edge 2 -m "Periodic twins" -t
+  mkcurve c_me me
+  if {![regexp {Basis curve :\n([^ \n]*)} [dump c_me] full e_type]} {
+    puts "Error: Unable to get the type"
+  }
+
+  foreach t [explode twins e] {
+    mkcurve c_$t $t
+    if {![regexp {Basis curve :\n([^ \n]*)} [dump c_$t] full t_type]} {
+      puts "Error: Unable to get the type"
+    }
+    if {$e_type != $t_type} {
+      puts "Error: Twins have different geometries"
+    }
+  }
+}

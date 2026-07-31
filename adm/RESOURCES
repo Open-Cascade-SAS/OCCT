@@ -1,0 +1,13 @@
+DrawResources
+samples/tcl
+StdResource
+SHMessage
+Textures
+Shaders
+XRResources
+XSMessage
+XSTEPResource
+XmlOcafResource
+UnitsAPI/Units.dat
+TObj/TObj.msg
+BOPAlgo/BOPAlgo.msg

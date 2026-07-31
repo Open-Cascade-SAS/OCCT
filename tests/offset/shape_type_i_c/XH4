@@ -1,0 +1,18 @@
+restore [locate_data_file bug26917_rm-095_input_trim4.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 5
+
+set faces [explode s f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs(abs($z) - 1) < 1.e-7} {
+    offsetonface $f 0
+  }
+}
+offsetperform result
+
+checkprops result -v 210428 -s 28315.7
+
+checknbshapes result -shell 1

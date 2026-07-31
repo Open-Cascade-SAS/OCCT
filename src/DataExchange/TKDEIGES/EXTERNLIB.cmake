@@ -1,0 +1,19 @@
+# External dependencies for TKDEIGES
+set(OCCT_TKDEIGES_EXTERNAL_LIBS
+  TKBRep
+  TKDE
+  TKernel
+  TKMath
+  TKTopAlgo
+  TKShHealing
+  TKXSBase
+  TKGeomBase
+  TKGeomAlgo
+  TKBool
+  TKPrim
+  TKCDF
+  TKLCAF
+  TKG2d
+  TKG3d
+  TKXCAF
+)

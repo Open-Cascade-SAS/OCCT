@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC25551"
+puts "================"
+puts ""
+#######################################################################################
+# BRepMesh can produce internal nodes outside the face interior based on distorted BSpline surface
+#######################################################################################
+
+restore [locate_data_file bug25551_m-a-i-B6.brep] result
+
+tclean result
+vdisplay -noupdate -redisplay result
+vsetdispmode 1
+vclear
+ 
+explode result f
+triangles result_2
+isos result_2 0
+
+smallview
+donly result_2
+top
+fit
+
+vtop
+vdefaults -autoTriang 0
+vdisplay result_2
+vdefaults -autoTriang 1
+vfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d.png
+checkview -screenshot -3d -path ${imagedir}/${test_image}_3d.png

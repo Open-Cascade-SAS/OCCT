@@ -1,0 +1,15 @@
+# SAMEORIENTED fond de poche FORWARD FORWARD (faces de l'objet FORWARD faces de l'outil REVERSED)
+
+profile p1 o 0 0 40 x 150 y 200 x -150
+prism pr1 p1 0 0 -40
+profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100
+prism pr2 p2 0 0 -30
+
+bcut po1 pr1 pr2
+
+profile p3 o 0 0 -10 f 50 75 x 75 y 100 x -75
+prism pr3 p3 0 0 30
+
+bcut result po1 pr3
+checkprops result -s 97000
+checkview -display result -2d -s -otherwise { po1 pr3 } -path ${imagedir}/${test_image}.png

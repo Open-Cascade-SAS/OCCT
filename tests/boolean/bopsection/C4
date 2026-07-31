@@ -1,0 +1,11 @@
+#uki60922
+
+restore [locate_data_file uki60922_part.brep] a
+restore [locate_data_file CTO909_uki60922_tool.brep] b
+
+bop a b
+bopsection result
+
+checkprops result -l 40.645
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

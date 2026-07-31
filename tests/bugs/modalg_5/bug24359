@@ -1,0 +1,68 @@
+puts "================"
+puts "OCC24359"
+puts "================"
+puts ""
+#######################################################
+# Crash on BRepAlgoAPI_Fuse
+#######################################################
+
+psphere s01 2; ttranslate s01 1 1 1
+psphere s02 2; ttranslate s02 1 1 2
+psphere s03 2; ttranslate s03 1 1 3
+psphere s04 2; ttranslate s04 1 2 1
+psphere s05 2; ttranslate s05 1 2 2
+psphere s06 2; ttranslate s06 1 2 3
+psphere s07 2; ttranslate s07 1 3 1
+psphere s08 2; ttranslate s08 1 3 2
+psphere s09 2; ttranslate s09 1 3 3
+psphere s10 2; ttranslate s10 2 1 1
+psphere s11 2; ttranslate s11 2 1 2
+psphere s12 2; ttranslate s12 2 1 3
+psphere s13 2; ttranslate s13 2 2 1
+psphere s14 2; ttranslate s14 2 2 2
+psphere s15 2; ttranslate s15 2 2 3
+psphere s16 2; ttranslate s16 2 3 1
+psphere s17 2; ttranslate s17 2 3 2
+psphere s18 2; ttranslate s18 2 3 3
+psphere s19 2; ttranslate s19 3 1 1
+psphere s20 2; ttranslate s20 3 1 2
+psphere s21 2; ttranslate s21 3 1 3
+psphere s22 2; ttranslate s22 3 2 1
+psphere s23 2; ttranslate s23 3 2 2
+psphere s24 2; ttranslate s24 3 2 3
+psphere s25 2; ttranslate s25 3 3 1
+psphere s26 2; ttranslate s26 3 3 2
+psphere s27 2; ttranslate s27 3 3 3
+
+bop s01 s02; bopfuse s
+bop s s03; bopfuse s
+bop s s04; bopfuse s
+bop s s05; bopfuse s
+bop s s06; bopfuse s
+bop s s07; bopfuse s
+bop s s08; bopfuse s
+bop s s09; bopfuse s
+bop s s10; bopfuse s
+bop s s11; bopfuse s
+bop s s12; bopfuse s
+bop s s13; bopfuse s
+bop s s14; bopfuse s
+bop s s15; bopfuse s
+bop s s16; bopfuse s
+bop s s17; bopfuse s
+bop s s18; bopfuse s
+bop s s19; bopfuse s
+bop s s20; bopfuse s
+bop s s21; bopfuse s
+bop s s22; bopfuse s
+bop s s23; bopfuse s
+bop s s24; bopfuse s
+bop s s25; bopfuse s
+bop s s26; bopfuse s
+bop s s27; bopfuse result
+
+checknbshapes result -vertex 60 -edge 105 -wire 29 -face 29 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 226
+checkprops result -s 150.187 
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

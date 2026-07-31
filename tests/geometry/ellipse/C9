@@ -1,0 +1,4 @@
+ellipse result 70 0 0  0 0 1   1 0 0   40 20
+smirror result 0 0 0 1 0 -1
+checklength result -l 193.76896441095104
+checkview -display result -2d -path ${imagedir}/${test_image}.png

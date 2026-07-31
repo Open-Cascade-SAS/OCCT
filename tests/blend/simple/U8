@@ -1,0 +1,8 @@
+box s 10 10 10
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_5
+explode result So
+tcopy result_1 result
+
+checkprops result -s 59527.9

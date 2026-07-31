@@ -1,0 +1,16 @@
+#box b -15 -15 -15 15 30 30
+#polyline w 0 0 0 10 10 0
+#circle p 0 0 0 1 0 0 12
+#mkedge p p
+#wire p p
+#mkplane p p
+#pipe s1 w p
+#fuse s s1 b
+
+restore [locate_data_file CFI_6_h12fhf.rle] s
+explode s E
+mkevol result s
+updatevol s_3 0 2*SCALE2 1 5*SCALE2 2 2*SCALE2
+buildevol
+
+checkprops result -s 4470.07

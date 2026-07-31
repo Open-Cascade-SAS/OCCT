@@ -1,0 +1,45 @@
+# Auto-generated list of packages for TKDESTEP toolkit
+set(OCCT_TKDESTEP_LIST_OF_PACKAGES
+  STEPCAFControl
+  StepAP214
+  RWStepAP214
+  StepAP203
+  RWStepAP203
+  STEPConstruct
+  STEPEdit
+  GeomToStep
+  StepToGeom
+  StepToTopoDS
+  TopoDSToStep
+  STEPControl
+  STEPSelections
+  StepAP209
+  RWStepAP242
+  StepAP242
+  StepElement
+  StepFEA
+  RWStepElement
+  RWStepFEA
+  StepVisual
+  RWStepVisual
+  StepDimTol
+  RWStepDimTol
+  StepKinematics
+  RWStepKinematics
+  StepBasic
+  RWStepBasic
+  StepRepr
+  RWStepRepr
+  StepGeom
+  RWStepGeom
+  StepShape
+  RWStepShape
+  StepSelect
+  StepData
+  StepFile
+  RWHeaderSection
+  APIHeaderSection
+  HeaderSection
+  DESTEP
+  StepTidy
+)

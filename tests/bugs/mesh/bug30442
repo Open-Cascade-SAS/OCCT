@@ -1,0 +1,25 @@
+puts "======="
+puts "0030442: Mesh - broken triangulation on pipe shape"
+puts "======="
+puts ""
+
+bsmooth aSmoothCurve 1.0 [locate_data_file bug30442_points.txt]
+
+circle aCircle 0 0 0 1 1 1 20
+
+mkedge aSpineEdge aSmoothCurve
+mkedge aProfileEdge aCircle
+
+wire aSpineWire aSpineEdge
+wire aProfileWire aProfileEdge
+
+pipe result aSpineWire aProfileWire
+
+vinit View1
+vdisplay result
+vsetdispmode 1
+vfit
+
+checktrinfo result -tri 25814 -nod 12955
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

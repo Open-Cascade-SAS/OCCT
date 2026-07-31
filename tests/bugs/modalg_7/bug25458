@@ -1,0 +1,34 @@
+puts "TODO OCC25458 ALL: Error : 1-fold tori is bad"
+
+puts "============"
+puts "OCC25458"
+puts "============"
+puts ""
+###########################################################################
+## can a sweep be used to create 1-fold tori (using a closed wire as path)
+###########################################################################
+
+restore [locate_data_file bug25458_sweep-torus1-draw-Wire.brep] Wire
+
+explode Wire E
+wire Sweep-0-spine Wire_1
+
+mksweep Sweep-0-spine
+setsweep -FR
+
+circle Circle-curve 0 0 0 10
+mkedge Circle-edge Circle-curve 0 0
+wire Circle Circle-edge
+trotate Circle 0 0 0 1 0 0 90
+ttranslate Circle 40.1121575545 0 36.5930306315
+
+addsweep Circle
+buildsweep Sweep -C -S
+
+set info [bopcheck Sweep]
+
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : 1-fold tori is bad"
+}
+
+checkview -display Sweep -3d -path ${imagedir}/${test_image}.png

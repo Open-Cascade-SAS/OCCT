@@ -1,0 +1,13 @@
+
+puts "============="
+puts "BUC60684"
+puts "============="
+
+restore [locate_data_file buc60684a.brep] w 
+checkshape w
+
+prism result w 0 0 10
+
+checkprops result -s 148.875 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

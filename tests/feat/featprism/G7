@@ -1,0 +1,10 @@
+restore [locate_data_file CFE_e_lonfzx.rle] E
+nexplode E face E_1 E_2 E_3 E_4 E_5 E_6 E_7 E_8 E_9 E_10 E_11 E_12 E_13 E_14
+
+profile cont S E_10 F 150 -100 X 50 Y -100 X -50
+nexplode cont E
+featprism E cont E_10 0 0 -1 1 1
+addslide prism cont_1 E_3
+featperformval prism result -50
+
+checkprops result -s 945000

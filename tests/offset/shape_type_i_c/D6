@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_input_offset_shape_tc80_3_smaller.brep] s
+
+OFFSETSHAPE 15 {} $calcul $type
+
+checkprops result -v 3.72139e+008
+
+checknbshapes result -shell 1

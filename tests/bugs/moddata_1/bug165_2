@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC165"
+puts "Bug regression in BRepOffsetAPI_MakeOffset class (offsetting in OY direction)"
+puts "========"
+
+restore [locate_data_file offset_wire_019.brep] a 
+checkshape a
+
+mkplane f a
+checkshape f
+
+if [catch {mkoffset res1 f 1 4.8 } result] {
+  puts "Faulty OCC165 (case 1) : function MKOFFSET works wrongly"
+} else {
+  puts "OCC165 OK (case 1): function MKOFFSET works properly"
+  checkshape res1_1
+  mkplane pl1 res1_1
+  checkshape pl1
+}
+
+if [catch {mkoffset res2 f 1 -2.9 } result] {
+  puts "Faulty OCC165 (case 2) : function MKOFFSET works wrongly"
+} else {
+  puts "OCC165 OK (case 2): function MKOFFSET works properly"
+  checkshape res2_1
+  mkplane pl2 res2_1 
+  checkshape pl2
+}
+
+compound a res1_1 res2_1 res
+checkprops res1_1 -l 1112.29
+checkprops res2_1 -l 1063.91

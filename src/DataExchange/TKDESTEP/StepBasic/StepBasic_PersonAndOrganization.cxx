@@ -1,0 +1,50 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StepBasic_Organization.hxx>
+#include <StepBasic_Person.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization, Standard_Transient)
+
+StepBasic_PersonAndOrganization::StepBasic_PersonAndOrganization() = default;
+
+void StepBasic_PersonAndOrganization::Init(
+  const occ::handle<StepBasic_Person>&       aThePerson,
+  const occ::handle<StepBasic_Organization>& aTheOrganization)
+{
+  // --- classe own fields ---
+  thePerson       = aThePerson;
+  theOrganization = aTheOrganization;
+}
+
+void StepBasic_PersonAndOrganization::SetThePerson(const occ::handle<StepBasic_Person>& aThePerson)
+{
+  thePerson = aThePerson;
+}
+
+occ::handle<StepBasic_Person> StepBasic_PersonAndOrganization::ThePerson() const
+{
+  return thePerson;
+}
+
+void StepBasic_PersonAndOrganization::SetTheOrganization(
+  const occ::handle<StepBasic_Organization>& aTheOrganization)
+{
+  theOrganization = aTheOrganization;
+}
+
+occ::handle<StepBasic_Organization> StepBasic_PersonAndOrganization::TheOrganization() const
+{
+  return theOrganization;
+}

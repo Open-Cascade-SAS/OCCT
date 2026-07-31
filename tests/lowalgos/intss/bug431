@@ -1,0 +1,23 @@
+puts "========================"
+puts " OCC431 "
+puts "========================"
+puts ""
+#####################################
+## Intersection of two surfaces is not complete curve. 
+#####################################
+
+restore [locate_data_file OCC431a.draw] su1 
+restore [locate_data_file OCC431b.draw] su2
+
+intersect result su1 su2
+
+set che [whatis result]
+
+if { ![regexp {curve} $che] || ![regexp {3d} $che]} {
+    puts "Faulty OCC431 : Command INTERSECT works WRONGLY"
+} else {
+    puts "OCC431 OK  :  Command INTERSECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

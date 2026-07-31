@@ -1,0 +1,108 @@
+puts "========"
+puts "0029830: Data Exchange, STEPCAFControl_Reader poor performance - quadratic dependence"
+puts "========"
+puts ""
+
+set copy_cmd tcopy
+
+if $use_sharing {
+  set copy_cmd copy
+}
+
+set dx 2
+set dy 4
+set dz 6
+set nx0 20
+set ny 10
+set nz 10
+
+if [info exists D] {Close D}
+if [info exists D1] {Close D1}
+
+set aTmpFile ${imagedir}/${casename}_tmp.stp
+
+for {set npass 1} {$npass <= 2} {incr npass} {
+
+  set nx [expr $nx0 * $npass]
+  puts "Creating assembly of $nx*$ny*$nz boxes"
+  plane a 0 0 0 1 0 0
+  mkface a a 0 3 0 2
+  shape co C
+
+  for {set i 0} {$i < $nx} {incr i} {
+    for {set j 0} {$j < $ny} {incr j} {
+      for {set k 0} {$k < $nz} {incr k} {
+        eval $copy_cmd a a1
+        ttranslate a1 $dx*$i $dy*$j $dz*$k
+        add a1 co
+      }
+    }
+  }
+  XNewDoc D
+  XAddShape D co
+
+  puts "Assigning colors to components"
+  set i 0
+  set j 0
+  set k 0
+  set shlist [explode co]
+  set lab [lindex [XFindComponent D co_1] 0]
+  set taglist [split $lab :]
+  foreach c $shlist {
+    set r [expr ($i%3)/3.]
+    set g [expr ($j%3)/3.]
+    set b [expr ($k%3)/3.]
+    set lab [join $taglist :]
+    XSetColor D $lab $r $g $b
+    incr k
+    if {$k%3 == 0} {
+      incr j
+      if {$j%3 == 0} {
+        incr i
+      }
+    }
+    set taglist "[lrange $taglist 0 end-1] [expr [lindex $taglist end] + 1]"
+  }
+
+  puts "Writing STEP model"
+  chrono cr1 restart
+  WriteStep D $aTmpFile
+  chrono cr1 stop
+  Close D
+
+  puts "Reading STEP model"
+  chrono cr2 restart
+  ReadStep D1 $aTmpFile
+  chrono cr2 stop
+
+  # check one solid with different locations
+  XGetOneShape result D1
+  if $use_sharing {
+    checknbshapes result -face 1
+    checknbshapes result -face [expr $nx*$ny*$nz] -t
+  } else {
+    checknbshapes result -face [expr $nx*$ny*$nz]
+    checknbshapes result -face [expr $nx*$ny*$nz] -t
+  }
+  
+  if {$npass == 2} {
+    XShow D1
+    vfit
+    vsetdispmode 1
+    checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+  }
+  Close D1
+
+  set time_write_$npass [lindex [dchrono cr1 counter "WriteStep_$npass"] end]
+  set time_read_$npass [lindex [dchrono cr2 counter "ReadStep_$npass"] end]
+  file delete -force $aTmpFile
+}
+
+puts "time_write_1=$time_write_1"
+puts "time_write_2=$time_write_2"
+puts "time_read_1=$time_read_1"
+puts "time_read_2=$time_read_2"
+set time_raise_write [expr $time_write_2 / $time_write_1]
+set time_raise_read [expr $time_read_2 / $time_read_1]
+puts "time_raise_write=$time_raise_write"
+puts "time_raise_read=$time_raise_read"

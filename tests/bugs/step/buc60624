@@ -1,0 +1,10 @@
+puts "========================"
+puts "BUC60624"
+puts "========================"
+
+stepread [locate_data_file buc60624a.stp] a *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

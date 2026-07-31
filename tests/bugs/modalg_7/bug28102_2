@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC28102"
+puts "========"
+puts ""
+#######################################################
+# Problem cutting a plate with several holes (670)
+#######################################################
+
+restore [locate_data_file bug28102_plate.brep] pl0
+restore [locate_data_file bug28102_holes.brep] hl
+
+bclearobjects
+bcleartools
+baddobjects pl0
+baddtools hl
+bfillds
+
+bbop result 2
+
+checknbshapes result -vertex 274 -edge 275 -face 2 -shell 1
+
+checkprops result -s 13.3806
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

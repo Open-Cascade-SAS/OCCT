@@ -1,0 +1,85 @@
+// Created on: 2001-07-25
+// Created by: Julia DOROVSKIKH
+// Copyright (c) 2001-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _XmlLDrivers_DocumentStorageDriver_HeaderFile
+#define _XmlLDrivers_DocumentStorageDriver_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <XmlLDrivers_NamespaceDef.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <XmlObjMgt_SRelocationTable.hxx>
+#include <PCDM_StorageDriver.hxx>
+#include <XmlObjMgt_Element.hxx>
+#include <Standard_Integer.hxx>
+#include <TDocStd_FormatVersion.hxx>
+
+class XmlMDF_ADriverTable;
+class CDM_Document;
+class TCollection_AsciiString;
+class Message_Messenger;
+
+class XmlLDrivers_DocumentStorageDriver : public PCDM_StorageDriver
+{
+
+public:
+  Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
+
+  Standard_EXPORT void Write(
+    const occ::handle<CDM_Document>&  theDocument,
+    const TCollection_ExtendedString& theFileName,
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
+
+  Standard_EXPORT void Write(
+    const occ::handle<CDM_Document>& theDocument,
+    Standard_OStream&                theOStream,
+    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
+
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver);
+
+  DEFINE_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver, PCDM_StorageDriver)
+
+protected:
+  Standard_EXPORT virtual bool WriteToDomDocument(
+    const occ::handle<CDM_Document>& theDocument,
+    XmlObjMgt_Element&               thePDoc,
+    const Message_ProgressRange&     theRange = Message_ProgressRange());
+
+  Standard_EXPORT virtual int MakeDocument(
+    const occ::handle<CDM_Document>& theDocument,
+    XmlObjMgt_Element&               thePDoc,
+    const Message_ProgressRange&     theRange = Message_ProgressRange());
+
+  Standard_EXPORT void AddNamespace(const TCollection_AsciiString& thePrefix,
+                                    const TCollection_AsciiString& theURI);
+
+  Standard_EXPORT virtual bool WriteShapeSection(
+    XmlObjMgt_Element&           thePDoc,
+    const TDocStd_FormatVersion  theStorageFormatVersion,
+    const Message_ProgressRange& theRange = Message_ProgressRange());
+
+  occ::handle<XmlMDF_ADriverTable> myDrivers;
+  XmlObjMgt_SRelocationTable       myRelocTable;
+
+private:
+  NCollection_Sequence<XmlLDrivers_NamespaceDef> mySeqOfNS;
+  TCollection_ExtendedString                     myCopyright;
+  TCollection_ExtendedString                     myFileName;
+};
+
+#endif // _XmlLDrivers_DocumentStorageDriver_HeaderFile

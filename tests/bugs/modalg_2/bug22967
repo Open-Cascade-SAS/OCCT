@@ -1,0 +1,50 @@
+puts "TODO OCC25597 ALL: Error: Vertex tolerance"
+puts "TODO OCC25597 ALL: Error: Edge tolerance"
+puts "============"
+puts "OCC22967"
+puts "============"
+puts ""
+############################################################################################################
+# Boolean operations between two cylinders with orthogonal axis generate a shape with big vertex tolerance
+###########################################################################################################
+
+set BugNumber OCC22967
+
+restore [locate_data_file bug22967_Cylinder_1.brep] b1 
+restore [locate_data_file bug22967_Scale_1.brep] b2 
+bop b1 b2
+bopfuse result
+set info [ maxtolerance result ]
+
+regexp {Edge[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last1
+regexp {Vertex[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last
+
+set check_value 8.46459e-006
+
+checkreal "Vertex tolerance" ${last} ${check_value} 0 0.05
+checkreal "Edge tolerance" ${last1} ${check_value} 0 0.05
+checkprops result -s 668843 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+############################################################################################################
+# Addition checks according to the issue OCC26918
+###########################################################################################################
+
+set i 1
+set Lf [explode result f]
+foreach ff $Lf {
+  set Le [explode $ff e]
+  
+  set j 1
+  foreach ee $Le {
+    if { [string first "Tolerance cannot be computed" [xdistef $ee $ff]] >= 0 } {
+      puts "Error: \"xdistef result_$i_$j result_$i\" cannot find maximal distance "
+    }
+    
+    incr j
+  }
+  
+  incr i
+}

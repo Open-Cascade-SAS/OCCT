@@ -1,0 +1,34 @@
+puts "==========="
+puts "BUC60688"
+puts "==========="
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+vinit
+vertex v_1 .003 .0 .0
+vertex v_2 .003 .0 .003
+vertex v_3 .0 .0 .003
+vertex v_4 .0 .0 .0
+edge e_1 v_1 v_2
+edge e_2 v_2 v_3
+edge e_3 v_3 v_4
+edge e_4 v_4 v_1
+wire w_1 e_1 e_2 e_3 e_4
+mkplane r w_1
+vdisplay r
+vfit
+vselect 120 22
+
+puts "WARNING : The rectangular MUST be highlighted !"
+puts ""
+
+set x_coord 88
+set y_coord 272
+
+vaspects -setwidth 5
+if {"[vreadpixel $x_coord $y_coord rgb name]" != "GRAY80"} {
+   puts "Error : The rectangular is NOT highlighted."
+}
+
+vdump $imagedir/${casename}.png

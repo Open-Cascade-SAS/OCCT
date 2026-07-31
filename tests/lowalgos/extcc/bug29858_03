@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC29858"
+puts "========"
+puts ""
+#################################################
+# Regression in GeomAPI_ExtremaCurveCurve
+#################################################
+
+# Read input
+restore [locate_data_file bug29858_03_e1.brep] e1
+restore [locate_data_file bug29858_03_e2.brep] e2
+
+# Extract geometry from topology
+mkcurve c1 e1
+mkcurve c2 e2
+
+# Run extrema
+set info [extrema c1 c2]
+
+# Check result
+if {[regexp "ext_1" $info]} {
+  set dist [lindex [length ext_1] end]
+  if { $dist > 1.0e-10 } {
+    puts "Error: Extrema distance is too big"
+  }
+} else {
+  puts "Error: Extrema is not found"
+}
+

@@ -1,0 +1,55 @@
+set aTestName "caf001-L3"
+puts $aTestName
+set LabelsList [list \
+    0:3									\
+    0:2076534922:524398634:912349856					\
+    0:3:9283:12:1:9843:46793:321					\
+    0:4:81245034:321:1:1:1:345:8542:1:90:6453				\
+    0:5:8:4:2:213:3242:123456789:987654321				\
+    0:2:15:123:31214:452398:421:3:2:1:3:1:2:9:10:2:1:1:4		\
+    0:2:2:1:1:1:3:1:2:1:34:1:2:4:1:5:4:1:9:3:1:2:1:8:2:3:1:9:5:2:7	\
+    0:2:9]
+# Add an attribute to a data framework
+set i "0"
+set ref [lindex $LabelsList end]
+SetInteger D $ref $i
+foreach Label $LabelsList {
+    set i [expr "$i + 1"]
+    SetInteger D $Label $i
+    SetReference D $Label $ref
+    set ref $Label
+}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open $aFile DD
+
+# Check the restored values
+
+set ListLen [llength $LabelsList]
+set i $ListLen
+foreach Label $LabelsList {
+    set IsDone [catch { set aRef [GetReference DD $Label] } aResult]
+    if ${IsDone} {
+	puts "Error : Get a TDF_Reference attribute from restored document"
+    }
+    set IsDone [catch { set anInt [GetInteger DD $aRef] } aResult]
+    if ${IsDone} {
+	puts "Error : Get the integer under the referenced label from restored document"
+    }
+    if { $anInt == $i } {
+	puts "Comparison OK for ref $aRef on $Label: $anInt = $i"
+    } else {
+	puts "Error : $anInt != $i : wrong integer value restored"
+    }
+    set i [expr "($i + 1) % $ListLen"]
+}
+

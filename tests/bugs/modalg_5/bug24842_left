@@ -1,0 +1,20 @@
+puts "========="
+puts "OCC24842"
+puts "========="
+puts ""
+##############################################################################
+# Crash on change of HLR-algo in top and bottom views of customer's shape
+##############################################################################
+
+restore [locate_data_file bug24842_10265.brep] b
+
+vinit
+vdisplay b
+
+vback
+
+vfit
+vhlr on
+vhlrtype algo b
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

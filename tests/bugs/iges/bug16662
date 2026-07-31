@@ -1,0 +1,14 @@
+puts "==========="
+puts "OCC16662"
+puts "==========="
+puts ""
+#######################################################################
+# Crash in ShapeAnalysis_Wire::CheckSmall
+#######################################################################
+
+set BugNumber OCC16662
+
+igesread [locate_data_file OCC16662.igs] a *
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

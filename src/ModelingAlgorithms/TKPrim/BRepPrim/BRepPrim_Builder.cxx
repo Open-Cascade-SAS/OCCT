@@ -1,0 +1,236 @@
+// Created on: 1991-07-25
+// Created by: Christophe MARION
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRep_Builder.hxx>
+#include <BRepPrim_Builder.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+
+//=================================================================================================
+
+BRepPrim_Builder::BRepPrim_Builder() = default;
+
+//=================================================================================================
+
+BRepPrim_Builder::BRepPrim_Builder(const BRep_Builder& B)
+    : myBuilder(B)
+{
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeShell(TopoDS_Shell& S) const
+{
+  myBuilder.MakeShell(S);
+  S.Closed(true);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeFace(TopoDS_Face& F, const gp_Pln& P) const
+{
+  myBuilder.MakeFace(F, new Geom_Plane(P), Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeWire(TopoDS_Wire& W) const
+{
+  myBuilder.MakeWire(W);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeDegeneratedEdge(TopoDS_Edge& E) const
+{
+  myBuilder.MakeEdge(E);
+  myBuilder.Degenerated(E, true);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Lin& L) const
+{
+  myBuilder.MakeEdge(E, new Geom_Line(L), Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Circ& C) const
+{
+  myBuilder.MakeEdge(E, new Geom_Circle(C), Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::SetPCurve(TopoDS_Edge& E, const TopoDS_Face& F, const gp_Lin2d& L) const
+{
+  myBuilder.UpdateEdge(E, new Geom2d_Line(L), F, Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::SetPCurve(TopoDS_Edge&       E,
+                                 const TopoDS_Face& F,
+                                 const gp_Lin2d&    L1,
+                                 const gp_Lin2d&    L2) const
+{
+  TopoDS_Shape aLocalShape = E.Oriented(TopAbs_FORWARD);
+  myBuilder.UpdateEdge(TopoDS::Edge(aLocalShape),
+                       new Geom2d_Line(L1),
+                       new Geom2d_Line(L2),
+                       F,
+                       Precision::Confusion());
+  //  myBuilder.UpdateEdge(TopoDS::Edge(E.Oriented(TopAbs_FORWARD)),
+  //		       new Geom2d_Line(L1),
+  //		       new Geom2d_Line(L2),
+  //		       F,Precision::Confusion());
+  myBuilder.Continuity(E, F, F, GeomAbs_CN);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::SetPCurve(TopoDS_Edge& E, const TopoDS_Face& F, const gp_Circ2d& C) const
+{
+  myBuilder.UpdateEdge(E, new Geom2d_Circle(C), F, Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::MakeVertex(TopoDS_Vertex& V, const gp_Pnt& P) const
+{
+  myBuilder.MakeVertex(V, P, Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::ReverseFace(TopoDS_Face& F) const
+{
+  F.Reverse();
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
+                                     const TopoDS_Vertex& V,
+                                     const double         P,
+                                     const bool           direct) const
+{
+  TopoDS_Vertex VV = V;
+  if (!direct)
+  {
+    VV.Reverse();
+  }
+  myBuilder.Add(E, VV);
+  myBuilder.UpdateVertex(VV, P, E, Precision::Confusion());
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
+                                     const TopoDS_Vertex& V,
+                                     const double         P1,
+                                     const double         P2) const
+{
+  TopoDS_Vertex VV = V;
+  VV.Orientation(TopAbs_FORWARD);
+  myBuilder.Add(E, VV);
+  VV.Orientation(TopAbs_REVERSED);
+  myBuilder.Add(E, VV);
+  myBuilder.Range(E, P1, P2);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::SetParameters(TopoDS_Edge& E,
+                                     const TopoDS_Vertex&,
+                                     const double P1,
+                                     const double P2) const
+{
+  myBuilder.Range(E, P1, P2);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::AddWireEdge(TopoDS_Wire& W, const TopoDS_Edge& E, const bool direct) const
+{
+  TopoDS_Edge EE = E;
+  if (!direct)
+  {
+    EE.Reverse();
+  }
+  myBuilder.Add(W, EE);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::AddFaceWire(TopoDS_Face& F, const TopoDS_Wire& W) const
+{
+  myBuilder.Add(F, W);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::AddShellFace(TopoDS_Shell& S, const TopoDS_Face& F) const
+{
+  myBuilder.Add(S, F);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::CompleteEdge(TopoDS_Edge& E) const
+{
+  BRepTools::Update(E);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::CompleteWire(TopoDS_Wire& W) const
+{
+  W.Closed(BRep_Tool::IsClosed(W));
+  BRepTools::Update(W);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::CompleteFace(TopoDS_Face& F) const
+{
+  BRepTools::Update(F);
+}
+
+//=================================================================================================
+
+void BRepPrim_Builder::CompleteShell(TopoDS_Shell& S) const
+{
+  S.Closed(BRep_Tool::IsClosed(S));
+  BRepTools::Update(S);
+}

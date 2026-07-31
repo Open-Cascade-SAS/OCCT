@@ -1,0 +1,12 @@
+restore [locate_data_file bug26917_t114_c2.recipe_art1.brep] s
+
+offsetparameter 1.e-7 c i r
+offsetload s 2
+offsetperform result
+
+checkprops result -s 454.58 -v 475
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 14 -edge 21 -wire 9 -face 9 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+
+puts "================"
+puts "OCC3"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC3-1.brep] a 
+restore [locate_data_file OCC3-2.brep] b
+checkshape a
+checkshape b
+
+bfuse result b a
+checkshape result
+
+checkprops result -s 11400
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,130 @@
+# ============= OCAF ============================
+# Naming
+#
+# Testing purpose: Shape evolution history 
+#
+# Test case: D4
+#
+# 1. Create Box B1
+# 2. Create Box B2
+#    Translate B2 to -100 400 -130
+# 4. Cut (B1, B2)
+# 5. Create Box B3
+#    Translate B3 to -100 -20 -130
+# 5. Cut (B1, B3)
+# 6. Check descendant of B1
+# 7. CurrentShape of 6 faces of B1
+# ===============================================
+
+pload ALL
+NewDocument D BinOcaf
+
+AddDriver D Box PTxyz Cut Fuse Prism
+
+#1 Box1 creation
+NewCommand D
+set B1 [AddObject D];			## add object
+set F1 [AddFunction D $B1 Box];		## add function
+BoxDX D $B1 190
+BoxDY D $B1 890
+BoxDZ D $B1 290
+InitLogBook D;
+ComputeFun D $F1;
+## GetShape D $F1:2 Box2;
+GetReference D $B1
+
+#2 Box2 creation
+NewCommand D
+set B2 [AddBox D 390 190 490]
+ComputeFun D $B2:1
+GetShape D $B2:1:2 Box;
+NewCommand D
+set FTr1 [PTranslateDXYZ D $B2 -100 400 -130]
+ComputeFun D $FTr1
+## GetShape D $B2:2:2 Box
+
+#3 First cut
+NewCommand D
+set CS1 [AddCut D $B1 $B2]
+ComputeFun D $CS1
+GetShape D $CS1:2 S1
+NewCommand D
+
+#4 Box3 creation
+set B3 [AddBox D 390 490 490]
+ComputeFun D $B3:1
+set FTr2 [PTranslateDXYZ D $B3 -100 -20 -130]
+ComputeFun D $FTr2
+
+#5 Second  cut
+NewCommand D
+set CS2 [AddCut D $B1 $B3]
+ComputeFun D $CS2
+
+#6 CurrentShape of B1
+CurrentShape D $F1:2 B13
+
+GetShape D $F1:2 BB
+Descendants D BB
+Descendants D BB_new_0
+set info0 [whatis BB_new_0_new_0]
+## to be: BB_new_0_new_0 is a shape SOLID FORWARD Modified
+if { [regexp "SOLID" $info0] != 1 } {
+    puts "Error: current descendant of BB is incorrect"
+} else {
+    puts "OK: current descendant of BB is correct"
+}
+
+
+#7 CurrentShape of faces of B1
+CurrentShape D $F1:2:1 f1
+set info1 [whatis f1]
+## to be: f1 is a shape FACE REVERSED Modified Orientable
+if { [regexp "FACE REVERSED" $info1] != 1 } {
+    puts "Error: current shape of face1 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face1 of Box1 is correct"
+}
+
+CurrentShape D $F1:2:2 f2
+set info2 [whatis f2]
+## to be: f2 is a shape FACE FORWARD Modified Orientable
+if { [regexp "FACE FORWARD" $info2] != 1 } {
+    puts "Error: current shape of face2 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face2 of Box1 is correct"
+}
+
+CurrentShape D $F1:2:3 f3
+set info3 [whatis f3]
+## to be: f3 is a shape FACE FORWARD Modified Orientable
+if { [regexp "FACE FORWARD" $info3] != 1 } {
+    puts "Error: current shape of face3 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face3 of Box1 is correct"
+}
+CurrentShape D $F1:2:4 f4
+set info4 [whatis f4]
+## to be: f4 is a shape FACE FORWARD Modified Orientable
+if { [regexp "FACE FORWARD" $info4] != 1 } {
+    puts "Error: current shape of face4 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face4 of Box1 is correct"
+}
+
+CurrentShape D $F1:2:5 f5
+set info5 [whatis f5]
+## to be: f5 is a shape FACE REVERSED Modified Orientable
+if { [regexp "FACE REVERSED" $info5] != 1 } {
+    puts "Error: current shape of face5 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face5 of Box1 is correct"
+}
+CurrentShape D $F1:2:6 f6
+set info6 [whatis f6]
+## to be: f6 is a
+if { [regexp "f6 is a" $info6] != 1 } {
+    puts "Error: current shape of face6 of Box1 is incorrect"
+} else {
+    puts "OK: current shape of face6 of Box1 is correct (deleted)"
+}

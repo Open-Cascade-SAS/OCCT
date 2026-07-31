@@ -1,0 +1,46 @@
+puts "========="
+puts " OCC498 "
+puts "========="
+puts ""
+######################################
+## Wrong 3d point from offset surface by parameters 
+######################################
+
+restore [locate_data_file OCC498.draw] su 
+
+set u1 4.71238898038469
+set u2 7.85398163397449
+ 
+svalue su 0 $u1 x1 y1 z1
+vertex v1 x1 y1 z1
+
+svalue su 0 $u2 x2 y2 z2
+vertex v2 x2 y2 z2
+
+set newU1 [expr $u1 - 1e-11]
+set newU2 [expr $u2 + 1e-11]
+
+svalue su 0 $newU1 x1 y1 z1
+vertex vv1 x1 y1 z1
+
+svalue su 0 $newU2 x2 y2 z2
+vertex vv2 x2 y2 z2
+
+distmini d v1 vv1
+regexp {([-0-9.+eE]+)} [dump d_val] full err1
+
+distmini d v2 vv2
+regexp {([-0-9.+eE]+)} [dump d_val] full err2
+
+if { $err1 > 1.e-7 || $err2 > 1.e-7} {
+    puts "Faulty OCC498: Wrong 3d point from offset surface by parameters "
+} else {
+    puts "OCC498 OK: Correct 3d point from offset surface by parameters"
+}
+
+
+
+
+
+
+

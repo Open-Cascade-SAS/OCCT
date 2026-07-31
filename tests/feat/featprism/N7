@@ -1,0 +1,18 @@
+# Original bug : cts20449
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_cts20geh.rle] base
+restore [locate_data_file cts20449_face.brep] cont
+
+explode base face
+copy base_5 funtil
+
+mksurface p5 base_5
+mkface f5 p5
+
+featprism base cont cont -1 0 0 1 1
+featperform prism result f5
+
+# Prendre option face Until + support
+
+checkprops result -s 4.89101e+06

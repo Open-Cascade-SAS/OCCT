@@ -1,0 +1,12 @@
+puts "# ====================================================================="
+puts "# 0033665: Data Exchange, Step Import - TransferRoots crashes for"
+puts "# invalid STEP files."
+puts "# ====================================================================="
+
+# Step entity #18 is intentionally removed from test file,
+# but it is still referenced by other step entities.
+# Parsing and root transfer should not cause crash for such invalid file.
+
+set aFilePath [locate_data_file bug33665.step]
+testreadstep "$aFilePath" aShape
+checkshape aShape

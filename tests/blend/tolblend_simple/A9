@@ -1,0 +1,22 @@
+#wedge b 10 10 10 0 5 0 5
+#explode b f
+#depouille s1 b 1 0 0 b_5 15  0 0 10 5 0 0
+#polyline p1 0 0 0 0 10 5 0 0 10 0 0 0
+#mkplane p1 p1
+#prism p p1 -5 0 0
+#explode p f
+#depouille s2 p 1 0 0 p_1 -15  0 0 10 5 0 0
+#explode s2 f
+#explode s1 f
+#glue s s1 s2 s1_1 s2_4
+#trotate s 0 0 0 0 0 1 -20
+#save s 5_E12.draw
+
+restore [locate_data_file CFI_5_e12fgj.rle] s 
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1.2*SCALE1 s_13 1.4*SCALE1 s_12 6*SCALE1 s_10 1*SCALE1 s_2 5*SCALE1 s_3
+explode result So
+tcopy result_1 result
+
+checkprops result -s 10467.1

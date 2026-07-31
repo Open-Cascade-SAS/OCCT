@@ -1,0 +1,13 @@
+# This test group is aimed to demonstrate how test cases are created,
+# and test the test system itself
+
+001 configuration
+002 brep
+003 gltf
+004 iges
+005 obj
+006 ply
+007 step
+008 stl
+009 vrml
+010 xcaf

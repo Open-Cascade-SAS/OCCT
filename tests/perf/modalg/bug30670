@@ -1,0 +1,32 @@
+puts "==============================================================="
+puts "0030670: Modeling Algorithms - Performance improvement of Boolean Operations algorithm"
+puts "==============================================================="
+puts ""
+
+autodisplay 0
+restore [locate_data_file bug30670_prisms.brep] c
+
+bglue 1
+bfuzzyvalue 0
+set exp [explode c]
+bclearobjects
+bcleartools
+baddobjects c_1
+eval baddtools [lrange $exp 1 end]
+
+dchrono fillds reset
+dchrono fillds start
+bfillds 
+dchrono fillds stop counter FILLER
+
+dchrono fuse reset
+dchrono fuse start
+bbop result 1
+dchrono fuse stop counter BUILDER
+
+bglue 0
+
+checknbshapes result -wire 12686 -face 12598 -shell 1 -solid 1 -t
+checkprops result -s 1.34932e+06 -v 2.60155e+07
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+
+puts "========="
+puts " OCC500 "
+puts "========="
+puts ""
+###############################
+## Result of pipe command of Draw is faulty
+###############################
+
+restore [locate_data_file OCC500a.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC500b.brep] a_2
+checkshape a_2
+
+if [catch {pipe result a_1 a_2 } catch_result] {
+    puts "Faulty OCC500 : function PIPE works wrongly "
+} else {
+    puts "OCC500 : function PIPE works without hangs up "
+}
+checkprops result -s 1246.13 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

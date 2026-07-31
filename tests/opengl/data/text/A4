@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case performs rendering of big number of small text labels"
+puts "============"
+puts ""
+
+cpulimit 1000
+
+pload TOPTEST VISUALIZATION
+vinit View1
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vtrihedron trihedr
+
+set aFileHandle [open [locate_data_file screw.step] r]
+set aFileData   [read $aFileHandle]
+close $aFileHandle
+
+vpoint p0     0      0 -400
+vpoint p1     0  10000 -400
+vpoint p2  1000      0 -400
+
+set data [split $aFileData "\n"]
+set aLineId 0
+foreach aLine $data {
+  set aLineY  [expr $aLineId * 400]
+  vdrawtext "Line_$aLineId" "$aLine" -noupdate -pos 100  $aLineY -400 -color CYAN -halign left -valign bottom -angle 000 -zoom 0 -height 20 -aspect regular -font SansFont
+  set aLineId [expr $aLineId + 1]
+}
+
+puts "Number of labels: $aLineId"
+
+vfit
+vzfit
+vzoom 20
+
+vfps
+
+vglinfo
+vdump $imagedir/${casename}.png

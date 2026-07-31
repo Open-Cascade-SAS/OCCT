@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC12627"
+puts "============"
+puts ""
+#######################################################################
+# Classification of a point comparing to a face is incorrect
+#######################################################################
+
+set BugNumber OCC12627
+
+restore [locate_data_file OCC12627_1.brep] b1
+restore [locate_data_file OCC12627_2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 272295 
+checkshape result
+checknbshapes result -vertex 13 -edge 20 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 54
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

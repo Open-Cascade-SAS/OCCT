@@ -1,0 +1,10 @@
+# Original bug : cts20459
+# Date : 13Mai98
+# A7.gif
+
+restore [locate_data_file CTO902_cts20459-part.rle] part
+restore [locate_data_file CTO902_cts20459-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 26347.6
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "==========="
+puts "0028365: Visualization, AIS_InteractiveContext - apply selection filter in AddOrRemoveSelected at Neutral point"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+
+vclear
+vinit View1
+vdisplay b
+vfit
+vselfilter -type VERTEX
+vchangeselected b
+
+set aNbSelected [vnbselected]
+if { $aNbSelected != 0 } { puts "Error: Vertex filter was not applied" }
+vdump ${imagedir}/${casename}.png

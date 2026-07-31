@@ -1,0 +1,83 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_Shape
+#
+# Testing command:   SetShape
+# Testing command:   GetShape
+#
+
+# ANALOG: puts "caf001-K3"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+
+set aLabel 0:2
+SetShape Doc ${aLabel} aBox1
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set IsDone [catch {GetShape DDoc ${aLabel} aBox5} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_Shape attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+}
+
+bounding aBox5 -save X1_Box5 Y1_Box5 Z1_Box5 X2_Box5 Y2_Box5 Z2_Box5
+
+if { [dval X1_Box1] != [dval X1_Box5] || 
+     [dval Y1_Box1] != [dval Y1_Box5] || 
+     [dval Z1_Box1] != [dval Z1_Box5] || 
+     [dval X2_Box1] != [dval X2_Box5] || 
+     [dval Y2_Box1] != [dval Y2_Box5] || 
+     [dval Z2_Box1] != [dval Z2_Box5] } {
+	puts "X1_Box1=[dval X1_Box1] X1_Box5=[dval X1_Box5]"
+	puts "Y1_Box1=[dval Y1_Box1] Y1_Box5=[dval Y1_Box5]"
+	puts "Z1_Box1=[dval Z1_Box1] Z1_Box5=[dval Z1_Box5]"
+	puts "X2_Box1=[dval X2_Box1] X2_Box5=[dval X2_Box5]"
+	puts "Y2_Box1=[dval Y2_Box1] Y2_Box5=[dval Y2_Box5]"
+	puts "Z2_Box1=[dval Z2_Box1] Z2_Box5=[dval Z2_Box5]"
+	puts "Get a value of TDataStd_Shape attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 3)"
+} else {
+	puts "Get a value of TDataStd_Shape attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

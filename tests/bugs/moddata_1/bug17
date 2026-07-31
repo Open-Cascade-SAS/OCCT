@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC17"
+puts "================"
+puts ""
+
+#####################################################
+puts " Solid_14 will be the face which is unvisible during displaying entire solid."
+#####################################################
+
+restore [locate_data_file OCC17.brep] sh 
+
+checkshape sh
+
+explode sh f
+renamevar sh_14 result
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri 96 -nod 94
+checkview -display result -2d -path ${imagedir}/${test_image}.png

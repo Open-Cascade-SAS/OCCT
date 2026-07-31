@@ -1,0 +1,94 @@
+// Created on: 1995-05-31
+// Created by: Xavier BENVENISTE
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_ConstructionError.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+
+//=================================================================================================
+
+inline bool AdvApprox_ApproxAFunction::HasResult() const
+{
+  return myHasResult;
+}
+
+//=================================================================================================
+
+inline bool AdvApprox_ApproxAFunction::IsDone() const
+{
+  return myDone;
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HArray2<double>> AdvApprox_ApproxAFunction::Poles1d() const
+{
+  return my1DPoles;
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HArray2<gp_Pnt2d>> AdvApprox_ApproxAFunction::Poles2d() const
+{
+  return my2DPoles;
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HArray2<gp_Pnt>> AdvApprox_ApproxAFunction::Poles() const
+{
+  return my3DPoles;
+}
+
+//=================================================================================================
+
+inline int AdvApprox_ApproxAFunction::Degree() const
+{
+  return myDegree;
+}
+
+//=================================================================================================
+
+inline int AdvApprox_ApproxAFunction::NbKnots() const
+{
+  return myKnots->Length();
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HArray1<double>> AdvApprox_ApproxAFunction::Knots() const
+
+{
+  return myKnots;
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HArray1<int>> AdvApprox_ApproxAFunction::Multiplicities() const
+
+{
+  return myMults;
+}
+
+//=================================================================================================
+
+inline int AdvApprox_ApproxAFunction::NumSubSpaces(const int Dimension) const
+{
+  if (Dimension < 1 || Dimension > 3)
+    throw Standard_ConstructionError();
+  return myNumSubSpaces[Dimension - 1];
+}

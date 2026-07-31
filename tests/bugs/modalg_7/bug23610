@@ -1,0 +1,34 @@
+puts "TODO OCC23610 ALL: should be less then or equal to the minimal tolerance value of its sub-shapes"
+
+puts "========"
+puts "OCC23610"
+puts "========"
+puts ""
+########################################################################################################
+## checkshape command does not detect mismatch of the tolerance values among the sub-shapes of the shape
+########################################################################################################
+
+restore [locate_data_file buc60462b.brep] b
+
+foreach Face [explode b f] {
+  if {[checkshape $Face] == "This shape seems to be valid"} {
+     set ToleranceList [tolerance $Face]
+     regexp {FACE +: +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=([-0-9.+eE]+)} $ToleranceList full MaxTol_face AvgTol_face MinTol_face
+     regexp {EDGE +: +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=([-0-9.+eE]+)} $ToleranceList full MaxTol_edge AvgTol_edge MinTol_edge
+     regexp {VERTEX +: +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=([-0-9.+eE]+)} $ToleranceList full MaxTol_vertex AvgTol_vertex MinTol_vertex
+     if {${MaxTol_face} > ${MinTol_edge} || ${MaxTol_face} > ${MinTol_vertex}} {
+        puts "Error: the tolerance value of the FACE $Face should be less then or equal to the minimal tolerance value of its sub-shapes(EDGES and VERTICES)"
+     }
+  }
+}
+
+foreach Edge [explode b e] {
+  if {[checkshape $Edge] == "This shape seems to be valid"} {
+     set ToleranceList [tolerance $Edge]
+     regexp {EDGE +: +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=([-0-9.+eE]+)} $ToleranceList full MaxTol_edge AvgTol_edge MinTol_edge
+     regexp {VERTEX +: +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=([-0-9.+eE]+)} $ToleranceList full MaxTol_vertex AvgTol_vertex MinTol_vertex
+     if {${MaxTol_edge} > ${MinTol_vertex}} {
+        puts "Error: the tolerance value of the EDGE $Edge should be less then or equal to the minimal tolerance value of its sub-shapes(VERTICES)"
+     }
+  }
+}

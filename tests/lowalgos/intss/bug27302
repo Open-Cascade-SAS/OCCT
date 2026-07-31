@@ -1,0 +1,48 @@
+puts "============"
+puts "OCC27302"
+puts "============"
+puts ""
+###############################
+## Invalid curves number in intersection result
+###############################
+
+set MaxTol 6.5952839365451194e-008
+set GoodNbCurv 1
+
+restore [locate_data_file CTO900_pro12913a.rle] a
+restore [locate_data_file CTO900_pro12913b.rle] b
+
+explode a f
+explode b f
+
+smallview
+don a_34 b_9
+fit
+
+set log [bopcurves a_34 b_9 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+checkreal ToleranceReached ${Toler} ${MaxTol} 0.0 0.1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+  
+  for {set i 1} {$i < ${NbCurv}} {incr i} {
+    for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+      mkedge e1 c_$i
+      mkedge e2 c_$j
+      
+      dset dd_val 100.0*${Toler}
+      distmini dd e1 e2
+      
+      if { [dval dd_val] > ${Toler} } {
+        puts "Error: Intersection result is not closed"
+      }
+    }
+  }
+} else {
+  checklength c_1 -l 86.536841230136204
+}

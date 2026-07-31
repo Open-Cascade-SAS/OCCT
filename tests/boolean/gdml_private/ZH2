@@ -1,0 +1,2 @@
+source [locate_data_file 51678_flame-sbr.prt.1.gdml.tcl]
+

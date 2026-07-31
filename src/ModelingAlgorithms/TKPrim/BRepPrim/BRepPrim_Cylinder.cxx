@@ -1,0 +1,107 @@
+// Created on: 1992-11-06
+// Created by: Remi LEQUETTE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRepPrim_Cylinder.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Face.hxx>
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Ax2& Position,
+                                     const double  Radius,
+                                     const double  Height)
+    : BRepPrim_Revolution(Position, 0, Height),
+      myRadius(Radius)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const double Radius)
+    : BRepPrim_Revolution(gp::XOY(), RealFirst(), RealLast()),
+      myRadius(Radius)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt& Center, const double Radius)
+    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
+                          RealFirst(),
+                          RealLast()),
+      myRadius(Radius)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Ax2& Axes, const double Radius)
+    : BRepPrim_Revolution(Axes, RealFirst(), RealLast()),
+      myRadius(Radius)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const double R, const double H)
+    : BRepPrim_Revolution(gp::XOY(), 0, H),
+      myRadius(R)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt& Center, const double R, const double H)
+    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, H),
+      myRadius(R)
+{
+  SetMeridian();
+}
+
+//=================================================================================================
+
+TopoDS_Face BRepPrim_Cylinder::MakeEmptyLateralFace() const
+{
+  occ::handle<Geom_CylindricalSurface> C = new Geom_CylindricalSurface(Axes(), myRadius);
+  TopoDS_Face                          F;
+  myBuilder.Builder().MakeFace(F, C, Precision::Confusion());
+  return F;
+}
+
+//=================================================================================================
+
+void BRepPrim_Cylinder::SetMeridian()
+{
+  gp_Vec V = Axes().XDirection();
+  V.Multiply(myRadius);
+  gp_Ax1 A = Axes().Axis();
+  A.Translate(V);
+  occ::handle<Geom_Line>   L   = new Geom_Line(A);
+  occ::handle<Geom2d_Line> L2d = new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(gp_Dir2d::D::Y));
+  Meridian(L, L2d);
+}

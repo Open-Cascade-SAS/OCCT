@@ -1,0 +1,13 @@
+if { [string compare $command "shading"] != 0 } {
+  puts "TODO OCC30056 All: Meshing statuses: SelfIntersectingWire Failure"
+}
+
+set TheFileName shading_wrongshape_008.brep
+set bug_withouttri "OCC22687"
+set nbwithouttri(All) 2
+###set bug_freelinks "OCC22687"
+###if { [string compare $command "shading"] == 0 } {
+###  set nbfree(All) 8
+###} else {
+###  set nbfree(All) 16
+###}

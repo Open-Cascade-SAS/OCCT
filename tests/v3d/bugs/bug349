@@ -1,0 +1,69 @@
+puts "========"
+puts "OCC349 - Hidden line removal algorithm works incorrect in the perspective view"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b 100 900 300
+vcamera -persp
+vdisplay b
+vhlr 1
+vfit
+
+set yellow_coords {{135 119} {387 33} {172 144} {28 190} {212 272} {60 343} {26 255} {389 113} {60 276}}
+set black_coords {{160 257} {365 150} {353 99}}
+
+#
+#              ___________2________________
+#             /|                          /|
+#            / |                         / |
+#           /  |                        /  |
+#          /   |                       /   |
+#         /    |                      /    |
+#        1     |                     3     |
+#       /      |                    /      |
+#      /       |                   /       |
+#     /        |                  /        |
+#    /         |                 /         |
+#   ----------------4------------          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |         10                |         11
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   9          |               12          |
+#   |          |___________6____|__________|
+#   |         /                 |         /
+#   |        /                  |        /
+#   |       /                   |       /
+#   |      /                    |      /
+#   |     5                     |     /
+#   |    /                      |    7
+#   |   /                       |   /
+#   |  /                        |  /
+#   | /                         | /
+#   |/                          |/
+#   |--------------8------------|
+#
+#
+
+vaspects -setwidth 5
+
+foreach i $yellow_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "YELLOW" } {
+    puts "Error : ${i} is not yellow"
+  }
+}
+
+foreach i $black_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "BLACK" } {
+    puts "Error : ${i} is not black"
+  }
+}
+
+vdump ${imagedir}/${test_image}.png

@@ -1,0 +1,29 @@
+puts "========="
+puts "OCC27239"
+puts "========="
+puts ""
+#################################
+# Meshing algorithm creates wrong triangulation
+#################################
+pload ALL
+restore [locate_data_file bug27239_f1.brep] result
+
+set bug_info [incmesh result 0.1]
+if {[regexp "NoError" $bug_info] != 1} {
+    puts "Error: failure during triangulation"
+}
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Some faces has failed to mesh"
+}
+
+checkshape result
+
+explode result e
+set edge_dump [dump result_4]
+if {[regexp "5 5" $edge_dump] != 0} {
+    puts "Error: there are duplicating nodes in polygon on triangulation"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

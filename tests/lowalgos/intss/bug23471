@@ -1,0 +1,63 @@
+puts "TODO OCC26190 ALL: Error: Curve Number is bad"
+puts "TODO OCC26190 ALL: Error: Length of intersection line is bad!"
+
+puts "============"
+puts "CR23471"
+puts "============"
+puts ""
+#######################################################################
+# Intersection algorithm produces overlapping intersection curves
+#######################################################################
+
+# Attention!!!!
+# Change these values is strictly forbidden (see bug #26190)
+set GoodNbCurv 1
+set GoodLength 79655.615367318111
+
+restore [locate_data_file OCC22790-cx.brep] b
+
+explode b
+mksurface s1 b_1
+mksurface s2 b_3
+intersect res s1 s2
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  copy res res_1
+}
+
+set SumLength 0
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    set log [length res_$ic]
+    set exp_string "The length res_$ic is +(\[-0-9.+eE\]+)"
+    regexp ${exp_string} ${log} full len
+    set SumLength [expr $SumLength+$len]
+
+    incr ic
+  }
+}
+
+set NbCurv [expr {$ic - 1}]
+if {$NbCurv == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad ($NbCurv curve(s) found, but $GoodNbCurv expected)!"
+}
+
+if { abs($SumLength - $GoodLength) < 0.01*$GoodLength } {
+  puts "OK: Length of intersection line is good!"
+} else {
+  puts "Error: Length of intersection line is bad!"
+  puts "Expected length is: $GoodLength"
+  puts "Found length is:    $SumLength"
+}

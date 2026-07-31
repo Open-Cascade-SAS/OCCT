@@ -1,0 +1,16 @@
+# Edge 1
+line l1 100 0 0 -1 0 0
+mkedge e1 l1 0 100
+
+# Edge 2
+line l2 0 0 0 0 1 0
+mkedge e2 l2 0 100
+
+# Make wire
+wire w e1 e2
+
+# Fillet (analytical)
+fillet2d result w 10
+
+checkprops result -l 195.708
+

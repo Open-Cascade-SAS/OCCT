@@ -1,0 +1,4 @@
+hyperbola result 70 0 1 0 20 10
+2drotate result 0 0 90
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{4.28612223837832e-15 70} {6.12303176911189e-17 1} {6.12303176911189e-17 1} {-1 6.12303176911189e-17} {20 10}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

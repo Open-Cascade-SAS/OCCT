@@ -1,0 +1,16 @@
+if { [info exists rel_tol] } {
+   puts "\nChecking triangulation area (triarea command)..."
+   set rel_err [expr abs([CheckTriArea result $area_eps])]
+   if { $rel_err > $rel_tol } {
+      puts "Error   : area by triangles differs from the actual area by $rel_err %"
+   } else {
+      if { $rel_tol > 1 && $rel_tol < 100 } {
+        puts "Error: Improvement: The current area difference is $rel_err instead of $rel_tol"
+      }
+   }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+# to end a test script
+puts "TEST COMPLETED"

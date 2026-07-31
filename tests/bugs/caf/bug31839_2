@@ -1,0 +1,55 @@
+puts "==========="
+puts "0031839: Application Framework - Add ability to partially load OCAF document"
+puts "==========="
+
+# This test checks partial opening of the document shapes, append and overwrite modes
+# for them checking that after overwrite the shapes keep shared topology.
+
+NewDocument D0 BinOcaf
+UndoLimit D0 10
+
+NewCommand D0
+
+box b 1 2 3
+explode b F
+
+SetShape D0 0:1 b
+for {set i 1} {$i <= 6} {incr i} {
+  set lab [Label D0 0:1:${i}]
+  SetShape D0 ${lab} b_${i}
+}
+
+CommitCommand D0
+
+set docname ${imagedir}/doc_${casename}.cbf
+SaveAs D0 ${docname}
+Close D0
+
+# open document with shapes skipped
+Open ${docname} D1 -skipTNaming_NamedShape
+if {![catch {GetShape D1 0:1 b1}]} {
+  puts "Error: found box at the label 0:1, but it should not be there"
+}
+if {![catch {GetShape D1 0:1:1 f0}]} {
+  puts "Error: found face at the label 0:1:1, but it should not be there"
+}
+
+# append one face
+Open ${docname} D1 -append -read0:1:1
+
+if {[catch {GetShape D1 0:1:1 f1}]} {
+  puts "Error: Can not find face at the label 0:1:1"
+}
+if {![catch {GetShape D1 0:1:2 f2}]} {
+  puts "Error: found face at the label 0:1:2, but it should not be there"
+}
+
+# append others, rewrite the first face
+Open ${docname} D1 -overwrite
+GetShape D1 0:1 box
+GetShape D1 0:1:1 f11
+
+set same [CheckSame box f11 F]
+if {$same == ""} {
+  puts "Error: shapes loaded in append mode do not share subshapes (so, face at 0:1:1 was not replaced)"
+}

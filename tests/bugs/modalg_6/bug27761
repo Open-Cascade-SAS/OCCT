@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC27761"
+puts "========"
+puts ""
+#################################################
+# Intersection loops infinitely
+#################################################
+
+restore [locate_data_file bug27761_c1.brep] c1
+restore [locate_data_file bug27761_c2.brep] c2
+
+bsection result c1 c2
+
+checkshape result
+# approximate theoretical length of the result
+checkprops result -l 0.00192624
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+smallview
+don result
+fit
+clear
+disp c1 c2
+disp result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+#C5----------------------------------------------
+plane p 0 0 0 1 0 0 0 1 0
+pcone p p 15 18 30 180
+profile p2 o 5 -7 10 d 1 0 l 10 c 5 90 l 10 x -15 
+polyline w 0 0 10 0 0 25
+pipe p2 w p2
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_9 4 0 0 22 0 0 1
+
+checkprops result -s 3972.17

@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC22715"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect faces of the filleted cube after import from iges file
+#######################################################################
+
+testreadstep [locate_data_file bug22715_cube.stp] s1
+puts [whatis s1]
+explode s1 F
+
+checkshape s1_1
+checkshape s1_2
+checkshape s1_3
+checkshape s1_4
+checkshape s1_5
+checkshape s1_6
+checkshape s1_7
+checkshape s1_8
+checkshape s1_9
+checkshape s1_10
+checkshape s1_12
+checkshape s1_13
+checkshape s1_14
+checkshape s1_15
+checkshape s1_16
+checkshape s1_17
+checkshape s1_18
+checkshape s1_19
+checkshape s1_20
+checkshape s1_21
+checkshape s1_22
+checkshape s1_23
+checkshape s1_24
+checkshape s1_25
+checkshape s1_26
+
+renamevar s1 result
+
+checkprops result -s 49245
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

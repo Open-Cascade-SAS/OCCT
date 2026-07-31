@@ -1,0 +1,6 @@
+restore [locate_data_file CFI_4_h1_ffu.rle] s
+tscale s 0 0 0 SCALE
+explode s E
+blend result s SCALE*2 s_5
+ 
+checkprops result -s 1.65391e+008

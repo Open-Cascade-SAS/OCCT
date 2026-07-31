@@ -1,0 +1,61 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_TreeNode
+#
+# Testing command:   SetNode
+#
+# Testing command:   RootNode
+#
+
+# ANALOG: puts "caf005-C2"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aLabel_Root 0:2
+set aName_Root Label_1
+Label Doc ${aLabel_Root}
+SetName Doc ${aLabel_Root} ${aName_Root}
+SetNode Doc ${aLabel_Root}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-[file tail [info script]].cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set aGetLabel_Root ""
+set IsDone [catch {set aGetLabel_Root [RootNode DDoc ${aLabel_Root}]} aResult]
+if { ${IsDone} != 0 ||
+	${aLabel_Root}!=${aGetLabel_Root} } {
+	puts "aLabel_Root=${aLabel_Root} aGetLabel_Root=${aGetLabel_Root}"
+	puts ${aResult}
+	puts "Get a value of TDataStd_TreeNode attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+} else {
+	puts "Get a value of TDataStd_TreeNode attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

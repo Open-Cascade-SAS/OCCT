@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC22989"
+puts "================"
+puts ""
+#######################################################################################
+# BSplCLib::Reparametrize() fails on near knots
+######################################################################################
+
+set BugNumber OCC22989
+
+restore [locate_data_file OCC22989-edge-nosameparameter.brep] result
+
+sameparameter result
+
+checkprops result -l 85.0797 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

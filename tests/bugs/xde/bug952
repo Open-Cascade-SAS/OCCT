@@ -1,0 +1,27 @@
+puts "========="
+puts " OCC952 "
+puts "========="
+puts ""
+##################################################
+## Reading STEP file produces invalid shape
+##################################################
+
+stepread [locate_data_file OCC951.stp] a *
+tpcompound rrr
+
+######################################################################
+
+file delete ${imagedir}/OCC952.brep
+save rrr ${imagedir}/OCC952.brep
+catch {exec chmod 777 ${imagedir}/OCC952.brep}
+######################################################################
+
+restore ${imagedir}/OCC952.brep result
+checkshape result
+
+######################################################################
+file delete ${imagedir}/OCC952.brep
+######################################################################
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

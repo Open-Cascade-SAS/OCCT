@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22361"
+puts "============"
+puts ""
+################################################################################################################################
+# Incorrect result of BRepOffsetAPI_MakePipeShell algorithm: it tries to build conical surface between two non-coaxial circles
+################################################################################################################################
+set BugNumber 22361
+
+circle c1 0 0 0 7
+circle c2 5.28270543795374 13.2067635948844 26.4135271897687 21
+polyline pp 0 0 0  5.28270543795374 13.2067635948844 26.4135271897687
+mkedge c1 c1
+wire c1 c1
+mkedge c2 c2
+wire c2 c2
+fit
+
+mksweep pp
+addsweep c1
+addsweep c2
+
+buildsweep result
+
+checkprops result -s 2745.88 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -display result -3d -path ${imagedir}/${test_image}.png

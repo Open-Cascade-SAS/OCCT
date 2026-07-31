@@ -1,0 +1,14 @@
+puts "=========="
+puts "OCC24852: C r a s h on storage of an Ocaf document in XML file format"
+puts "=========="
+puts ""
+
+NewDocument D XmlOcaf
+
+set aTmpFile ${imagedir}/${casename}.xml
+if { [catch {set res [SaveAs D $aTmpFile]}] != 0 } {
+  puts "Error : Crash on storage of an Ocaf document in XML file format"
+} else {
+  puts "OK : Storage of an Ocaf document in XML file format is good"
+}
+file delete -force $aTmpFile

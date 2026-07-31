@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC306"
+puts "================"
+puts ""
+#############################################################################
+##After applying sewing on the model from the file TibTray_Size3.igs (see the attachment) one surface is not shaded.
+#############################################################################
+
+igesbrep [locate_data_file TibTray_Size3.igs] a *
+
+tpcompound a
+tclean a
+
+sewing result a
+
+checkshape result
+
+vinit
+vsetdispmode result 1
+vdisplay result
+vfit
+
+checktrinfo result -tri 6014 -nod 5910
+
+checkmaxtol result -ref 0.92213088179312575
+checknbshapes result -shell 1
+checkfreebounds result 239
+checkview -display result -3d -path ${imagedir}/${test_image}.png

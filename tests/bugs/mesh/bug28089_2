@@ -1,0 +1,27 @@
+puts "========"
+puts "0028089: Mesh - New algorithm for triangulation of 2d polygons"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+psphere s1 1
+psphere s2 1
+box b1 0 2 0 1 2 2
+box b2 2 2 0 1 2 2
+ttranslate s2 2 0 0
+incmesh s1 0.5 -algo 0 -a 50
+incmesh s2 0.5 -algo 1 -a 50
+incmesh b1 0.5 -algo 0
+incmesh b2 0.5 -algo 1
+
+vclear
+vinit View1
+vdefaults -autotriang 0
+vdisplay -dispMode 1 s1 s2 b1 b2
+vfit
+vaspects s1 -drawEdges 1
+vaspects s2 -drawEdges 1
+vaspects b1 -drawEdges 1
+vaspects b2 -drawEdges 1
+
+vdump ${imagedir}/${casename}.png

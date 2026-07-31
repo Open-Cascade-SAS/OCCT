@@ -1,0 +1,104 @@
+puts "================"
+puts "OCC23174"
+puts "================"
+puts ""
+##############################################################################
+# BRepLib_MakeFace(Wire) creates an invalid face on a wire of cylinder bottom
+##############################################################################
+
+set BugNumber OCC23174
+
+catch {pload XDE}
+
+set status 0
+
+# make a cylinder
+pcylinder cyl 50 150
+
+# get wires
+explode cyl W
+
+# make a face from the 3-d wire (planar bottom of the cylinder)
+mkplane f cyl_3 0
+
+# BUG: face is built on a cylindrical face of the cylinder instead of
+# a bottom face
+set reslog [checkshape f -short]
+puts $reslog
+if { $reslog != "This shape seems to be valid" } { set status 1 }
+
+# ========================================================================
+# Make a new cylindrical face from a wire composed from more than 3 edges
+# to check that the bug fix is valid for a wire of more than 1 edge
+# ========================================================================
+
+# get a bottom edge cyl_1; cyl_2 is a top edge; cyl_3 is a seam edge
+nexplode cyl E
+
+# get its 3D curve
+mkcurve c3D cyl_1
+
+# split cyl_1 into 3 edges
+mkedge e1 c3D 0 2
+mkedge e2 c3D 2 4
+mkedge e3 c3D 4 6.28318530717959
+
+# make a reversed seam
+copy cyl_3 cyl_3_r
+treverse cyl_3_r
+
+# make a new wire for a new cylindrical face
+wire w e1 e2 e3 cyl_3 cyl_2 cyl_3_r
+
+# get a surface for a new face
+nexplode cyl F
+mksurface cyl_surf cyl_3
+
+# make a new cylindrical face
+mkface cyl_face_0 cyl_surf w
+fixshape cyl_face cyl_face_0
+
+# make a wire of 3 bottom edges to check the fix
+explode cyl_face E
+wire w cyl_face_2 cyl_face_1 cyl_face_3
+
+# check the fix, i.e. that cylindrical surface is rejected and thus a valid face is built
+mkplane f w 0
+donly f
+set res_log [checkshape f -short]
+puts $reslog
+if { $reslog != "This shape seems to be valid" } { set status 1 }
+
+# =================================================================
+#check that mkplane finds cyl_surf if the wire of cyl_face is given
+# =================================================================
+
+explode cyl_face W
+mkplane f cyl_face_1 0
+
+# get surface of f
+mksurface cyl_surf_2 f
+
+# compare points of 2 surfaces at same UV
+svalue cyl_surf   1 1 x1 y1 z1
+svalue cyl_surf_2 1 1 x2 y2 z2
+
+if { [ expr [dval x1] - [dval x2] ] > 0.0 } { set status 1 }
+if { [ expr [dval y1] - [dval y2] ] > 0.0 } { set status 1 }
+if { [ expr [dval z1] - [dval z2] ] > 0.0 } { set status 1 }
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+renamevar f result
+checkprops result -s 47123.9 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

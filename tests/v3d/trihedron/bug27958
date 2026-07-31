@@ -1,0 +1,45 @@
+puts "==========="
+puts "OCC27958: Visualization - add a shading mode for AIS_Trihedron"
+puts "==========="
+puts ""
+
+pload VISUALIZATION
+vclear
+vinit View1
+
+vzbufftrihedron -colorLabelX RED -colorLabelY GREEN -colorLabelZ BLUE
+
+vtrihedron t0
+
+vtrihedron t1
+vselprops -selColor 1.0 0.0 0.0
+vselmode t1 1 1
+
+vselmode t1 2 1
+vselmode t1 3 1
+
+vtrihedron t1 -dispMode shading
+vtrihedron t1 -origin -200 -200 -300
+vtrihedron t1 -attribute XAxisLength|YAxisLength|ZAxisLength 80
+vtrihedron t1 -xaxis 40 60 120 -zaxis -120 0 40
+
+vtrihedron t1 -attribute TubeRadiusPercent 0.03
+vtrihedron t1 -attribute ConeRadiusPercent|OriginRadiusPercent 0.05
+vtrihedron t1 -color XAxis|XArrow RED         -textColor XAxis RED
+vtrihedron t1 -color YAxis|YArrow GREEN       -textColor YAxis GREEN
+vtrihedron t1 -color ZAxis|ZArrow|Origin BLUE -textColor ZAxis BLUE
+
+vtrihedron t2 -origin 0 0 -300
+vtrihedron t2 -color Whole PEACHPUFF
+vselmode t2 1 1
+vselmode t2 2 1
+vselmode t2 3 1
+
+vtrihedron t3 -dispMode shading -origin 200 200 -300 -color Whole 1.0 0.0 0.0
+vtrihedron t3 -drawAxes XY -hideLabels on
+
+vtrihedron t4 -origin -200 -200 300 -hideArrows
+
+vfit
+
+vdump $::imagedir/${::casename}.png

@@ -1,0 +1,65 @@
+puts "================"
+puts "OCC25050"
+puts "================"
+puts ""
+######################################################################################
+# Shape can not be stored to VRML format
+######################################################################################
+
+#1
+box b 10 10 10
+
+incmesh b 0.1
+trinfo b
+
+set nbshapes_expected_b "
+Number of shapes in shape
+ VERTEX    : 8
+ EDGE      : 12
+ WIRE      : 6
+ FACE      : 6
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 34
+"
+
+checknbshapes b -ref ${nbshapes_expected_b} -t -m "Box"
+checktrinfo b -tri 12 -nod 24
+
+vinit
+vsetdispmode 1
+
+vdisplay b
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+#2
+set aFile ${imagedir}/bug25050.wrl
+
+writevrml b ${aFile} 2 2
+
+loadvrml res ${aFile}
+
+checktrinfo res -tri 12 -nod 24
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 0
+ EDGE      : 24
+ WIRE      : 24
+ FACE      : 6
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 55
+"
+
+checknbshapes res -ref ${nbshapes_expected} -t -m "Box from VRML file"
+
+vclear
+vdisplay res
+vfit
+vdump ${imagedir}/${casename}_2.png

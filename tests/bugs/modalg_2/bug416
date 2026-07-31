@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC416 "
+puts "CTS19305"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO900_cts19305-part.rle] part 
+checkshape part
+
+restore [locate_data_file CTO900_cts19305-tool.rle] tool
+checkshape tool
+
+bcut result part tool
+
+checkshape -top result
+
+checkprops result -s 76632.9 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

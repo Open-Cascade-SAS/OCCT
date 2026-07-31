@@ -1,0 +1,24 @@
+puts "============"
+puts "0033017: Implement an algorithm to find a proximity between a pair of shapes"
+puts "==========="
+puts ""
+
+circle c 0 0 0 1 0 0 5
+mkedge e1 c pi/2 pi
+mkedge e2 c -pi/2 0
+incmesh e1 1.e-3
+incmesh e2 1.e-3
+
+set log [proximity e1 e2 -value -profile]
+
+regexp {Proximity value: ([0-9+-.eE]*)} $log full val
+set tol 1.e-3
+set expected 10.0
+
+regexp {Status of ProxPnt1 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status1 ${val2}
+set expected_status1 Middle
+
+regexp {Status of ProxPnt2 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status2 ${val2}
+set expected_status2 Middle

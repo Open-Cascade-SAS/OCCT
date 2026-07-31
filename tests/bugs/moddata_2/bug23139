@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC23139"
+puts "================"
+puts ""
+########################################################################################################
+# BRepFilletAPI_MakeFillet algorithm builds edges with wrong first and last parameters: out of pcurve
+########################################################################################################
+
+set BugNumber OCC23139
+
+### rename to bug23139_aShape_for_fillet.brep
+restore [locate_data_file bug23139_aShape_for_fillet.brep] b 
+explode b e
+donly b b_6
+blend result b 20 b_6
+explode result f
+#av2d
+set exception_status [ catch { pcurve result_1 } ]
+
+if { ${exception_status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+checkprops result -l 5558.88 
+checksection result

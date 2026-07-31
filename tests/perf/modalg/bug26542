@@ -1,0 +1,23 @@
+puts "============"
+puts "0026452: Infinite loop in Edge/Edge intersection"
+puts "============"
+puts ""
+
+restore [locate_data_file bug26452_edges.brep] e
+explode e
+
+dchrono h restart
+bfuse r1 e_1 e_2
+dchrono h stop counter COUNTER1
+
+tcopy e_1 e1
+tcopy e_2 e2
+
+dchrono h restart
+bfuse r2 e1 e2
+dchrono h stop counter COUNTER2
+
+checkprops r1 -l 78.3329
+checknbshapes r1 -vertex 3 -edge 2
+checkprops r2 -equal r1
+checknbshapes r2 -ref [nbshapes r1]

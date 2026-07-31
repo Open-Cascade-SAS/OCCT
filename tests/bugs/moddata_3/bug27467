@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC27467"
+puts "============"
+puts ""
+#########################################################################
+# Modeling Algorithms - class Extrema_ExtCC2d does not find extremum between two intersecting lines
+# Analytical solver can not work on 2 lines.
+#########################################################################
+
+line l1 0 0 0 -1
+trim l1 l1 0 23
+
+line l2 1 -9.5 -1 -0
+trim l2 l2 0 2
+set info [2dextrema l1 l2]
+
+# Number of solutions check. 
+# There should be only one solution - intersection point.
+if {[llength $info] != 4} {
+  ERROR: Incorrect number of solutions.
+}
+
+# Check distance.
+regexp "dist 1: +(\[-0-9.+eE\]+)" $info full aDist
+set absTol 1.0e-9
+set relTol 0.001
+set aDist_Exp 0.0
+checkreal "Distance value check" $aDist $aDist_Exp $absTol $relTol

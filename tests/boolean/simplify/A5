@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC28747: Incorrect result of the section operation after edge refinement"
+puts "========"
+puts ""
+
+restore [locate_data_file bug28747_shell.brep] s1
+restore [locate_data_file bug28747_contour.brep] s2
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+# try to unify edges of the result
+bsimplify -e 1
+
+bapibop result 4
+
+# restore default settings
+bsimplify -e 0
+
+checkshape result
+checknbshapes result -vertex 7 -edge 6
+checkprops result -l 73320.3

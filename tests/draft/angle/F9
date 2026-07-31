@@ -1,0 +1,12 @@
+#E3----------------------------------------------
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC22803 All :Error : The area of result shape is"
+
+ptorus pt 25 24 90
+plane p 20 20 10 0 0 1
+pcone p p 10 8 40
+bfuse f pt p
+nexplode f f
+depouille result f 0 0 1 f_4 1 0 0 50 0 0 1
+
+checkprops result -s 0

@@ -1,0 +1,3 @@
+restore [locate_data_file arx.rle] a
+
+set rel_tol 0.015

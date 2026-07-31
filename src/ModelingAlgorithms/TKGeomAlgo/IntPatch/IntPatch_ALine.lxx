@@ -1,0 +1,106 @@
+// Created on: 1992-04-06
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+#include <Precision.hxx>
+#include <IntPatch_Point.hxx>
+
+inline void IntPatch_ALine::Replace(const int Index, const IntPatch_Point& Pnt)
+{
+  svtx(Index) = Pnt;
+}
+
+inline void IntPatch_ALine::SetFirstPoint(const int IndFirst)
+{
+  fipt = true;
+  indf = IndFirst;
+}
+
+inline void IntPatch_ALine::SetLastPoint(const int IndLast)
+{
+  lapt = true;
+  indl = IndLast;
+}
+
+inline double IntPatch_ALine::FirstParameter(bool& IsIncluded) const
+{
+  double bid, first;
+  curv.Domain(first, bid);
+  IsIncluded = !curv.IsFirstOpen();
+  return first;
+}
+
+inline double IntPatch_ALine::LastParameter(bool& IsIncluded) const
+{
+  double bid, last;
+  curv.Domain(bid, last);
+  IsIncluded = !curv.IsLastOpen();
+  return last;
+}
+
+inline gp_Pnt IntPatch_ALine::Value(const double U)
+{
+  return curv.Value(U); // Value leve l exception DomainError
+}
+
+inline bool IntPatch_ALine::D1(const double U, gp_Pnt& P, gp_Vec& Du)
+{
+  return curv.D1u(U, P, Du); // D1u leve l exception DomainError
+}
+
+inline void IntPatch_ALine::FindParameter(const gp_Pnt&             theP,
+                                          NCollection_List<double>& theParams) const
+{
+  curv.FindParameter(theP, theParams);
+}
+
+inline bool IntPatch_ALine::HasFirstPoint() const
+{
+  return fipt;
+}
+
+inline bool IntPatch_ALine::HasLastPoint() const
+{
+  return lapt;
+}
+
+inline const IntPatch_Point& IntPatch_ALine::FirstPoint() const
+{
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_ALine::LastPoint() const
+{
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
+  return svtx(indl);
+}
+
+inline int IntPatch_ALine::NbVertex() const
+{
+  return svtx.Length();
+}
+
+inline const IntPatch_Point& IntPatch_ALine::Vertex(const int Index) const
+{
+  return svtx(Index);
+}

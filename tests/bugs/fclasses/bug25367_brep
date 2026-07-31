@@ -1,0 +1,25 @@
+puts "=========="
+puts "OCC25367"
+puts "=========="
+puts ""
+################################################################
+# IGES and BRep persistence - support unicode file names on Windows
+################################################################
+
+set s [encoding convertfrom unicode "\xDE\x30\xF9\x30\xF1\x30"]
+
+set NameFile ${imagedir}/OCC25367_${s}.brep
+
+box b 1 1 1
+
+bsave b ${NameFile}
+
+brestore ${NameFile} result
+
+checkprops result -s 6
+checkshape result
+
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 34
+file delete -force [glob -nocomplain ${NameFile}]
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

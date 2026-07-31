@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC25477"
+puts "========"
+puts ""
+############################################################################
+#  Boolean Operations with additional tolerance - Fuzzy Boolean operations
+############################################################################
+
+pload XDE
+
+testreadstep [locate_data_file OCC25477_test3_profile.stp] b1
+testreadstep [locate_data_file OCC25477_test3.stp] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfuzzyvalue 5.e-5
+bfillds
+bbop res 2
+checkshape res

@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC21308"
+puts "================"
+puts ""
+######################################################################################
+# Problem of Interface_Tracefile. There are not messages.
+######################################################################################
+
+igesbrep [locate_data_file annie_surf.igs] a *
+
+set out [tpstat c]
+set err 0
+set nb [llength $out]
+if { $nb == 0 } {
+    set err 1
+}
+
+regexp {[ \t]*([-0-9.+eE]+)[ \t]*W:126 } $out full val
+if { $val == 0 } {
+    set err 1
+}
+
+if { $err != 0 } {
+    puts "Error : No output warnings from command tpstat"
+} else {
+    puts "OK : Command tpstat works properly"
+}

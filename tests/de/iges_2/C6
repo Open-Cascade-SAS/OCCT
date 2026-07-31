@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename PRO19800.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1  ( 1 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1  ( 1 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.04476896343  (  0.04476636368 )  AvgTol   =   0.02404075037  (   0.02403970427 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 5 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 6 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 6 )   LayerLabels = 1  ( 6 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 2 )
+COLORS      : Colors   = WHITE  ( CYAN WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 31  ( 31 )
+
+}

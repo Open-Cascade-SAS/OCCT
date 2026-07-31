@@ -1,0 +1,39 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC714"
+puts "========"
+puts ""
+####################################################
+## After command sew in DRAW on attached shape free wires are disappeared.
+####################################################
+
+restore [locate_data_file OCC714.brep] a 
+checkshape a
+
+set nb_info1 [nbshapes a]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info1 full ve1
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info1 full ed1
+regexp {WIRE +: +([-0-9.+eE]+)} $nb_info1 full we1
+
+sewing result 0.1 a
+
+set nb_info2 [nbshapes a]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info2 full ve2
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info2 full ed2
+regexp {WIRE +: +([-0-9.+eE]+)} $nb_info2 full we2
+
+if { $ve1 != $ve2 || $ed1 != $ed2 || $we1 != $we2} {
+    puts  [format "Faulty OCC714 : SEWING operation was made WRONGLY: vertexes before %s, edges before %s, wires before %s" $ve1 $ed1 $we1] 
+    puts  [format "                                                   vertexes after  %s, edges after  %s, wires after  %s" $ve1 $ed1 $we1] 
+} else {
+    puts "OK OCC714: SEWING operation was made PROPERLY"
+}
+
+checkmaxtol result -ref 0.17933517948246736
+checknbshapes result -shell 1
+checkfreebounds result 0
+
+checkprops result -s 12917.1 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

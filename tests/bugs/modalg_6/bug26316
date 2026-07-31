@@ -1,0 +1,48 @@
+puts "============"
+puts "OCC26316"
+puts "============"
+puts ""
+###############################
+## Infinite modification of the shapes in General Fuse operation
+###############################
+
+restore [locate_data_file bug26316_shape1.brep] b1
+restore [locate_data_file bug26316_shape2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild r
+ 
+explode r so
+ 
+bclearobjects
+bcleartools
+baddobjects r_1
+baddtools r_2
+bfillds
+bbuild r1
+
+explode r1 so
+
+set info1 [compare r_1 r1_1]
+
+set info2 [compare r_2 r1_2]
+
+if { [regexp "same shapes" $info1] == 1  } {
+    puts "OK: r_1 and r1_1 shapes are equal"
+} else {
+    puts "Error : r_1 and r1_1 shapes are not equal"
+}
+
+if { [regexp "same shapes" $info2] == 1  } {
+    puts "OK: r_2 and r1_2 shapes are equal"
+} else {
+    puts "Error : r_2 and r1_2 shapes are not equal"
+}
+
+smallview
+fit
+xwd ${imagedir}/${test_image}.png

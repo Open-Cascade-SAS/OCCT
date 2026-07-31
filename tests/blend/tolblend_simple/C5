@@ -1,0 +1,8 @@
+restore [locate_data_file CFI_11_a2fex.rle]  s
+tscale s 0 0 0 SCALE1 
+explode s E 
+blend result s 10*SCALE1 s_7
+explode result Sh
+tcopy result_1 result 
+
+checkprops result -s 43290.5

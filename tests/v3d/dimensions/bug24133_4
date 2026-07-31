@@ -1,0 +1,29 @@
+puts "============"
+puts "CR24133: Development of improvement of dimensions implementation - Diameter dimension"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint diamP1 0 0 0
+vpoint diamP2 50 50 0
+vpoint diamP3 100 0 0
+vcircle circle1 diamP1 diamP2 diamP3 0
+verase diamP1 diamP2 diamP3
+vdimension dim1 -diameter -shapes circle1 -font SansFont
+vfit
+vmoveto 208 205
+checkcolor 296 257 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of diameter dimension with 2d text is wrong." }
+
+vinit Viewer2/View2
+vcircle circle2 diamP1 diamP2 diamP3 0
+vdimension dim2 -diameter -text 3d -shapes circle2 -font SansFont
+vfit
+vmoveto 208 205
+checkcolor 296 257 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of diameter dimension with 3d text is wrong." }
+
+vdump $imagedir/${casename}.png

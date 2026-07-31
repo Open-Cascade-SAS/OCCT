@@ -1,0 +1,20 @@
+puts "========"
+puts "0029262: Visualization - AIS_InteractiveContext::Load() does not register Object in the Viewer"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1
+vinit View2
+box b 1 2 3
+vdisplay -dispMode 1 -inview -erased b
+vdisplay b
+vfit
+if { [vreadpixel 200 200 rgb name] != "DARKGOLDENROD" } { puts "Error: object is not displayed in Shaded mode" }
+vdump $imagedir/${casename}_view2.png
+
+vactivate View1
+if { [vreadpixel 200 200 rgb name] != "BLACK" } { puts "Error: object view affinity is ignored" }
+vdump $imagedir/${casename}_view1.png

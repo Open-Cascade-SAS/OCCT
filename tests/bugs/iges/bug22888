@@ -1,0 +1,40 @@
+puts "============"
+puts "CR22888"
+puts "============"
+puts ""
+#######################################################################
+# Wrong shape result imported from IGES file
+#######################################################################
+pload QAcommands
+
+set x1 166
+set y1 225
+
+igesread [locate_data_file CR22888-data.igs] a *
+if { [regexp "This shape seems to be valid" [checkshape a]] != 1 } {
+    puts "Error : checkshape is faulty"
+}
+
+explode a f
+vinit
+vsetdispmode 0
+vdisplay a_1
+vfit
+vzfit
+tclean a_1
+trinfo a_1
+
+vsetdispmode a_1 1
+
+checktrinfo a_1 -tri -nod
+
+set color [vreadpixel ${x1} ${y1} rgb]
+set rd [lindex $color 0]
+set gr [lindex $color 1]
+set bl [lindex $color 2]
+
+if { $rd == 0 || $gr == 0 || $bl == 0 } {
+    puts "Error : Face is not shaded (colors are not equal)"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

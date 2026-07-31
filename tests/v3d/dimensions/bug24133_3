@@ -1,0 +1,29 @@
+puts "============"
+puts "CR24133: Development of improvement of dimensions implementation - Radius dimension"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle1 radP1 radP2 radP3 0
+verase radP1 radP2 radP3
+vdimension dim1 -radius -shapes circle1 -font SansFont
+vfit
+vmoveto 123 158
+checkcolor 112 151 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of radius dimension with 2d text is wrong." }
+
+vinit Viewer2/View2
+vcircle circle2 radP1 radP2 radP3 0
+vdimension dim2 -radius -text 3d -shapes circle2 -font SansFont
+vfit
+vmoveto 191 196
+checkcolor 112 151 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of radius dimension with 3d text is wrong." }
+
+vdump $imagedir/${casename}.png

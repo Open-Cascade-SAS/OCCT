@@ -1,0 +1,25 @@
+puts "============"
+puts "CR23539: Test case for polygonal selection"
+puts "============"
+puts ""
+
+box b 10 10 10
+vinit View1
+vdisplay b
+vfit
+vselmode 2 1
+vselect 1 1 1 407 407 407 407 1
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 12 } {
+   puts "Error : Bad number of selected edges after polygonal selection of all edges"
+}
+
+vselect 10 10 10 20 20 20 20 10
+
+set NbSelected2 [vnbselected]
+if { ${NbSelected2} != 0 } {
+   puts "Error : Bad number of selected edges after polyginal selection of empty space"
+}
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,22 @@
+puts "========"
+puts "0030140: Modeling Algorithms - Access Null Pointer"
+puts "========"
+puts ""
+
+line l_path 0 0 0 1 0 0
+trim l_path l_path 0 10
+circle c_profile 0 0 2 1 0 0 5
+mkedge profile c_profile
+wire profile profile
+point dir 0 1 0
+offsetcurve offset_path l_path 2 dir
+mkedge path offset_path
+wire path path
+
+# Before the fix - Exception.
+pipe result path profile 0
+
+checkshape result
+checkprops result -s 314.159
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

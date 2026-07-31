@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC11615: Anisotropic scaling in 3D view"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 10 10 10
+vinit View1
+vdisplay b
+vfit
+vscale 1 1 1
+
+set x1 [list 165 340 70]
+set y1 [list 384 283 79]
+vaspects -setwidth 5
+puts ""
+for {set i 0} {$i < 3} {incr i} {
+  set x_coord [lindex ${x1} $i]
+  set y_coord [lindex ${y1} $i]
+  if {  "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW"  } {
+    puts "Error : color is not yellow"
+  }
+}
+
+vscale 0.5 1.5 0.7
+vfit
+
+set x2 [list 80 390 25]
+set y2 [list 390 218 167]
+
+puts ""
+for {set i 0} {$i < 3} {incr i} {
+  set x_coord [lindex ${x2} $i]
+  set y_coord [lindex ${y2} $i]
+  if {  "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW"  } {
+    puts "Error : color is not yellow"
+  }
+}
+
+vdump $imagedir/${casename}.png

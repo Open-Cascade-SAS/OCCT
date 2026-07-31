@@ -1,0 +1,49 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDF_Reference
+#
+# Testing command:   SetReference
+# Testing command:   GetReference
+#
+
+puts "caf001-L1"
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aSetAttr2 200
+set aSetAttr3 300
+set aLabel1 0:2
+set aLabel2 0:3
+set aLabel3 0:4
+set aLabel4 0:5
+SetInteger D ${aLabel1} ${aSetAttr1}
+SetInteger D ${aLabel2} ${aSetAttr2}
+SetInteger D ${aLabel3} ${aSetAttr3}
+
+set aReference1 ${aLabel2}
+SetReference D ${aLabel4} ${aReference1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel4}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aReference2 [GetReference D ${aLabel4}]
+
+if { ${aReference1} != ${aReference2} } {
+	puts "aReference1=${aReference1} aReference2=${aReference2}"
+	puts "Add TDF_Reference attribute: Error"
+	return
+}
+puts "Add TDF_Reference attribute: OK"

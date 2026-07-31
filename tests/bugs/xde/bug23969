@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC23969"
+puts "============"
+puts ""
+##########################################################################
+# It's impossible to display shape in 3d viewer. Wrong displaying in axo.
+##########################################################################
+
+ReadIges D_First [locate_data_file coque-sup.igs]
+
+XGetOneShape res_1 D_First
+vinit
+vsetdispmode 1
+vdisplay res_1
+
+vfit
+vdump $::imagedir/${::casename}_fit.png
+
+vviewparams -eye 106.849 -177.049 169.775 -at -70.2 -5.456e-015 -7.274 -up -0.408 0.408 0.816 -scale 3.048
+
+set ver_color [vreadpixel 157 104]
+if {$ver_color == "0 0 0 0"} {
+  puts "ERROR: OCC23969 is reproduced"
+}
+set ver_color [vreadpixel 111 347]
+if {$ver_color == "0 0 0 0"} {
+  puts "ERROR: OCC23969 is reproduced"
+}
+set ver_color [vreadpixel 252 265]
+if {$ver_color == "0 0 0 0"} {
+  puts "ERROR: OCC23969 is reproduced"
+}
+set ver_color [vreadpixel 307 77]
+if {$ver_color == "0 0 0 0"} {
+  puts "ERROR: OCC23969 is reproduced"
+}
+set ver_color [vreadpixel 243 323]
+if {$ver_color == "0 0 0 0"} {
+  puts "ERROR: OCC23969 is reproduced"
+}
+vdump $::imagedir/${::casename}_center.png

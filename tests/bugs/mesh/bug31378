@@ -1,0 +1,20 @@
+puts "======="
+puts "0031378: Modeling algorithms - brep incremental mesh is frozen during STEP file loading"
+puts "======="
+puts ""
+
+pload ALL
+
+ReadStep D [locate_data_file bug31378_lego-FP.stp]
+XGetOneShape result D
+incmesh result 1.7 -parallel
+
+vinit
+vdefaults -autoTriang 0
+vsetdispmode 1
+vdisplay result
+vfit
+
+checktrinfo result -tri
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

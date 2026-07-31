@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 533.738
+
+testreadstep [locate_data_file bug27341_Adapter_Zylinder_2_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

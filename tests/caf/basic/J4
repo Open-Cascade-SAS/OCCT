@@ -1,0 +1,55 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_UAttribute
+#
+# Testing command:   SetUAttribute
+# Testing command:   GetUAttribute
+#
+
+puts "caf001-J4"
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute D ${aLabel} ${aSetAttr1}
+
+# Add new ID to a label
+set aSetAttr2 "c73bd076-22ee-11d2-acde-080009dc4422"
+SetUAttribute D ${aLabel} ${aSetAttr2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetAttr1 [GetUAttribute D ${aLabel} ${aSetAttr1}]
+if { ${aSetAttr1} != ${aGetAttr1} } {
+	puts "First ID:"
+	puts "aSetAttr1=${aSetAttr1}"
+	puts "aGetAttr1=${aGetAttr1}"
+	puts "Add TDataStd_UAttribute attribute: Error"
+	return
+}
+
+# Get a value of the attribute
+set aGetAttr2 [GetUAttribute D ${aLabel} ${aSetAttr2}]
+if { ${aSetAttr2} != ${aGetAttr2} } {
+	puts "Second ID:"
+	puts "aSetAttr2=${aSetAttr2}"
+	puts "aGetAttr2=${aGetAttr2}"
+	puts "Add TDataStd_UAttribute attribute: Error"
+	return
+}
+
+puts "Add TDataStd_UAttribute attribute: OK"

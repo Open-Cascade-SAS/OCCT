@@ -1,0 +1,40 @@
+puts "============"
+puts "CR25207"
+puts "==========="
+puts ""
+###############################################################################
+# GCPnts_QuasiUniformDeflection achieves incorrect result on some curve.
+###############################################################################
+
+restore [locate_data_file bug25207_DumpShape2.brep] cc
+mkcurve cc cc
+
+set info [crvpoints r cc 1.e-3]
+
+set str1 "Nb points +: +(\[-0-9.+eE\]+)\n"
+set str2 "Max defl: +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+
+regexp "${str1}${str2}" ${info} full Nb dmax ufmax ulmax i
+
+set expected_Nb 76
+if { ${Nb} != ${expected_Nb} } {
+    puts "Error : bad value of Nb points=${Nb}"
+}
+
+set tol_abs 1.0e-05
+set tol_rel 0.01
+
+set expected_dmax 0.00099617706819476581
+set expected_ufmax 0.875
+
+checkreal "dmax" ${dmax} ${expected_dmax} ${tol_abs} ${tol_rel}
+checkreal "ufmax" ${ufmax} ${expected_ufmax} ${tol_abs} ${tol_rel}
+
+set expected_ulmax 0.890625
+if { ${ulmax} != ${expected_ulmax} } {
+    puts "Error : bad value of ulmax=${ulmax}"
+}
+set expected_i 68
+if { ${i} != ${expected_i} } {
+    puts "Error : bad value of i=${i}"
+}

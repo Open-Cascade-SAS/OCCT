@@ -1,0 +1,4 @@
+set TheFileName shading_092.brep
+# count_parallel variable was used in order to control instability in parallel incmesh algorithm.
+# It is not needed anymore
+#set count_parallel 1000

@@ -1,0 +1,28 @@
+# test script on make volume operation
+# cone cylinder plane
+
+# cylindrical face 
+cylinder cyl_f1 0 0 6.1367577686155528e-014 0 1 1.1102230246251565e-016 276
+erase cyl_f1
+mkface f1 cyl_f1 0 6.2831853071795862 -1000000 1000000
+
+# planar face 
+plane pln_f2 0 -547.5 5.8286708792820718e-016 0 -1 -1.1102230246251565e-016
+erase pln_f2
+mkface f2 pln_f2 -1000000 1000000 -1000000 1000000
+
+# planar face 
+plane pln_f3 0 -558 -5.8286708792820718e-016 0 1 1.1102230246251565e-016
+erase pln_f3
+mkface f3 pln_f3 -1000000 1000000 -1000000 1000000
+
+# conical face 
+cone con_f4 0 -60.919306349999999 0 0 -1 1.1102230246251565e-016 28.800000000062262 0
+erase con_f4
+mkface f4 con_f4 0 6.2831853071795862 0 1000000
+
+# make volume operation 
+mkvolume result f1 f2 f3 f4
+
+checkprops result -s 1.25206e+006
+

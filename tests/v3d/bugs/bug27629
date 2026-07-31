@@ -1,0 +1,14 @@
+puts "========"
+puts "0027629: Visualization - apply a correct model-world matrix to normals in fixed function pipeline with enabled zoom persistence"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b0 25 25 25
+vdisplay b0 -dispMode 1 -trsfPers zoom
+vzoom 10
+
+if { [vreadpixel 220 200 -rgb -name] != "DARKGOLDENROD"} { puts "Error: normals aren't normalized!" }
+
+vdump ${imagedir}/${test_image}.png

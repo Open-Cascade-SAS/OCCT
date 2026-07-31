@@ -1,0 +1,39 @@
+
+puts "========"
+puts "OCC203"
+puts "========"
+
+set dx 100
+set dy 100
+set dz 100
+
+box b ${dx} ${dy} ${dz}
+
+renamevar b edge
+explode edge e
+
+renamevar edge face
+explode face f
+
+set radis 5
+set angle 45
+
+chamf result1 face edge_1 face_3 A ${radis} ${angle}
+
+explode result1 e
+
+if { [catch {fillet result result1 ${radis} result1_1 ${radis} result1_7 } catch_result] } {
+    set mistake 1
+} else {
+    set  mistake 0
+}
+
+if { $mistake != 0} {
+    puts "OK OCC203"
+    puts "Filet can not be created"
+} else {
+    puts "Faulty OCC203: function FILLET works wrongly"
+    checkshape result
+}
+
+

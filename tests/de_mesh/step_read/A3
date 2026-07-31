@@ -1,0 +1,15 @@
+
+puts "0032666: Cannot write STEP file from an XCAF document containing only triangulations in the faces"
+
+set filename "bug32666.xbf"
+
+XOpen [locate_data_file ${filename}] D0
+WriteStep D0 ${imagedir}/${casename}.stp
+
+ReadStep D ${imagedir}/${casename}.stp
+
+XGetOneShape S D
+
+set nb_faces     3
+set nb_nodes     428
+set nb_triangles 372

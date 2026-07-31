@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC26929"
+puts "============"
+puts ""
+#############################################################################################
+## Extrema_ECC hang/crash in ShapeSplitter
+#############################################################################################
+cpulimit 100
+
+restore [locate_data_file OCC26629-face.brep] aF
+restore [locate_data_file OCC26629-edge.brep] aE
+
+pload MODELING
+
+# Hang check.
+dchrono cr restart
+
+set ss ""
+foreach s [explode aE e] {set ss "$ss aF $s"}
+eval splitshape result aF $ss
+
+dchrono cr stop counter splitshape
+
+# Check result validity.
+checkshape result
+
+# Visual check.
+set 2dviewer 1

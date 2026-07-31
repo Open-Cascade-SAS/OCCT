@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC24568"
+puts "========"
+puts ""
+##########################################
+# Split shape produces an invalid result
+##########################################
+
+restore [locate_data_file bug24568_face.brep] face
+restore [locate_data_file bug24568_wire.brep] wire
+
+splitshape result face face wire
+
+checkshape result
+
+smallview
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

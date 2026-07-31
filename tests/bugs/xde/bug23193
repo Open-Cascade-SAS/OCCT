@@ -1,0 +1,21 @@
+puts "============"
+puts "0023193: Some triangles are inverted when writing an STL file"
+puts "============"
+puts ""
+
+pload QAcommands
+
+set aFile $imagedir/bug23193_sample.stl
+
+vinit View1
+stepread [locate_data_file bug23193_sample.stp] a *
+incmesh a_1 1
+writestl a_1 ${aFile} 0
+
+meshfromstl m1 ${aFile}
+meshcolors m1 elem2 1
+vrotate 4 0 0
+vfit
+
+if { [vreadpixel 189 236 -rgb -name] != "BLUE3" } { puts "Error : There is missing triangle" }
+vdump ${imagedir}/${test_image}.png

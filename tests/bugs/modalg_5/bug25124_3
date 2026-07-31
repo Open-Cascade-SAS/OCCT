@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC25124"
+puts "========"
+puts ""
+######################################################
+# Removal of continuity checks for offset geometries
+######################################################
+
+smallview
+
+set ver_info_1 "\n\n*********** Dump of ss *************\nRectangularTrimmedSurface\nParameters : 1 5.5 -0.8 0.5\nBasisSurface :\nOffsetSurface\nOffset : 10\nBasisSurface :\nRectangularTrimmedSurface\nParameters : 1 5.5 -0.8 0.5\nBasisSurface :\nSphericalSurface"
+set ver_info_2 "\n\n*********** Dump of os *************\nOffsetSurface\nOffset : 20\nBasisSurface :\nRectangularTrimmedSurface\nParameters : 1 5.5 -0.8 0.5\nBasisSurface :\nSphericalSurface"
+
+sphere ss 30
+trim ss ss 0.5 6 -1 1
+offset os ss 10
+trim ss os 1 5.5 -0.8 0.5
+set bug_info_1 [dump ss]
+offset os ss 10
+set bug_info_2 [dump os]
+
+if {[string first $ver_info_1 $bug_info_1] == -1} {
+  puts "ERROR: OCC25124 is reproduced (dump of ss)."
+}
+if {[string first $ver_info_2 $bug_info_2] == -1} {
+  puts "ERROR: OCC25124 is reproduced (dump of os)."
+}
+
+donly os ss
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

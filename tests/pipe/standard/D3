@@ -1,0 +1,7 @@
+polyline profile 0 0 0 0 -20 20
+bsplinecurve w 2 3 0 3 1 1 2 3 0 0 0 2 100 100 100 1 100 0 0 1 0 0 0 2
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 8049.06

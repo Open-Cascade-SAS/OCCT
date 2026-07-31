@@ -1,0 +1,181 @@
+// Created on: 2016-06-07
+// Created by: Nikolai BUKHALOV
+// Copyright (c) 2016 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Bnd_Range.hxx>
+#include <Standard_Dump.hxx>
+
+//=================================================================================================
+
+void Bnd_Range::Common(const Bnd_Range& theOther)
+{
+  if (theOther.IsVoid())
+  {
+    SetVoid();
+    return;
+  }
+
+  if (IsVoid())
+  {
+    return;
+  }
+
+  myFirst = std::max(myFirst, theOther.myFirst);
+  myLast  = std::min(myLast, theOther.myLast);
+}
+
+//=================================================================================================
+
+bool Bnd_Range::Union(const Bnd_Range& theOther)
+{
+  if (IsVoid() || theOther.IsVoid())
+  {
+    return false;
+  }
+
+  if (myLast < theOther.myFirst)
+  {
+    return false;
+  }
+
+  if (myFirst > theOther.myLast)
+  {
+    return false;
+  }
+
+  myFirst = std::min(myFirst, theOther.myFirst);
+  myLast  = std::max(myLast, theOther.myLast);
+
+  return true;
+}
+
+//=================================================================================================
+
+Bnd_Range::IntersectStatus Bnd_Range::IsIntersected(const double theVal,
+                                                    const double thePeriod) const
+{
+  if (IsVoid())
+  {
+    return IntersectStatus_Out;
+  }
+
+  const double aPeriod = std::abs(thePeriod);
+  const double aDF = myFirst - theVal, aDL = myLast - theVal;
+
+  if (aPeriod <= RealSmall())
+  {
+    const double aDelta = aDF * aDL;
+    if (IsEqual(aDelta, 0.0))
+    {
+      return IntersectStatus_Boundary;
+    }
+
+    if (aDelta > 0.0)
+    {
+      return IntersectStatus_Out;
+    }
+
+    return IntersectStatus_In;
+  }
+
+  // If <this> intersects theVal then there exists an integer
+  // number N such as
+  //     (myFirst <= theVal+aPeriod*N <= myLast) <=>
+  //     ((myFirst-theVal)/aPeriod <= N <= (myLast-theVal)/aPeriod).
+  // I.e. the interval [aDF/aPeriod, aDL/aPeriod] must contain at least one
+  // integer number.
+  // In this case, std::floor(aDF/aPeriod) and std::floor(aDL/aPeriod)
+  // return different values or aDF/aPeriod (aDL/aPeriod)
+  // is strictly integer number.
+  // Examples:
+  //   1. (aDF/aPeriod==2.8, aDL/aPeriod==3.5 =>
+  //         std::floor(aDF/aPeriod) == 2, std::floor(aDL/aPeriod) == 3.
+  //   2. aDF/aPeriod==2.0, aDL/aPeriod==2.6 =>
+  //         std::floor(aDF/aPeriod) == std::floor(aDL/aPeriod) == 2.
+
+  const double aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
+  const int    aPar1 = static_cast<int>(std::floor(aVal1));
+  const int    aPar2 = static_cast<int>(std::floor(aVal2));
+  if (aPar1 != aPar2)
+  { // Interval (myFirst, myLast] intersects seam-edge
+    if (IsEqual(aVal2, static_cast<double>(aPar2)))
+    { // aVal2 is an integer number => myLast lies ON the "seam-edge"
+      return IntersectStatus_Boundary;
+    }
+
+    return IntersectStatus_In;
+  }
+
+  // Here, aPar1 == aPar2.
+
+  if (IsEqual(aVal1, static_cast<double>(aPar1)))
+  { // aVal1 is an integer number => myFirst lies ON the "seam-edge"
+    return IntersectStatus_Boundary;
+  }
+
+  return IntersectStatus_Out;
+}
+
+//=================================================================================================
+
+void Bnd_Range::Split(const double                 theVal,
+                      NCollection_List<Bnd_Range>& theList,
+                      const double                 thePeriod) const
+{
+  const double aPeriod = std::abs(thePeriod);
+  if (IsIntersected(theVal, aPeriod) != IntersectStatus_In)
+  {
+    theList.Append(*this);
+    return;
+  }
+
+  const bool isPeriodic = (aPeriod > 0.0);
+
+  if (!isPeriodic)
+  {
+    theList.Append(Bnd_Range(myFirst, theVal));
+    theList.Append(Bnd_Range(theVal, myLast));
+    return;
+  }
+
+  double aValPrev = theVal + aPeriod * std::ceil((myFirst - theVal) / aPeriod);
+
+  // Now, (myFirst <= aValPrev < myFirst+aPeriod).
+
+  if (aValPrev > myFirst)
+  {
+    theList.Append(Bnd_Range(myFirst, aValPrev));
+  }
+
+  for (double aVal = aValPrev + aPeriod; aVal <= myLast; aVal += aPeriod)
+  {
+    theList.Append(Bnd_Range(aValPrev, aVal));
+    aValPrev = aVal;
+  }
+
+  if (aValPrev < myLast)
+  {
+    theList.Append(Bnd_Range(aValPrev, myLast));
+  }
+}
+
+//=================================================================================================
+
+void Bnd_Range::DumpJson(Standard_OStream& theOStream, int) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, Bnd_Range)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFirst)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLast)
+}

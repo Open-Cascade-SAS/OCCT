@@ -1,0 +1,33 @@
+puts "============"
+puts "CR26870: Visualization - deactivated selections are not updated after object's re-computation"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+vinit View1
+box b 1 1 1
+vdisplay b
+vfit
+
+vselmode b 2 1
+vselmode b 4 1
+vselmode b 4 0
+
+box b 3 3 3
+vdisplay b
+vfit
+
+vselmode 4 1
+
+# pick a point onto previously computed face
+vmoveto 80 265
+if {[vreadpixel 90 206 name] == "CYAN 1"} {
+  puts "ERROR: previously computed entities are highlighted! Selection mode 4 was not updated after redisplaying the box."
+}
+# pick a point onto box
+if {[vreadpixel 29 216 name] == "YELLOW 1"} {
+  puts "ERROR: the box's face is not highlighted! Selection mode 4 was not updated after redisplaying the box."
+}
+
+vdump ${imagedir}/${casename}.png

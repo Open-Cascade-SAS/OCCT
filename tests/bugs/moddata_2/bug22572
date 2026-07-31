@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC22572"
+puts "============"
+puts ""
+###########################################################################
+# Support of progress indicator in RWStl and optimization of reading Ascii.
+###########################################################################
+
+set BugNumber OCC22572
+
+catch { pload XSDRAW STL}
+vinit
+XProgress -t
+set List1 [meshfromstl result [locate_data_file bearing.stl]]
+puts "----------------------"
+XProgress +t
+set List2 [meshfromstl result [locate_data_file bearing.stl]]
+
+set status 0
+
+if { ${List1} != ${List2} && [ regexp {Progress:} $List2 ] } {
+    puts "$BugNumber OK"
+} else {
+    puts  "Faulty $BugNumber"
+}

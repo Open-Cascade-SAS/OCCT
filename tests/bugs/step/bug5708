@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC5708"
+puts "OCC6284"
+puts "============"
+puts ""
+######################################################
+# New feature for fixing position vertices made during project COLORVIZ
+# Following after bug OCC5708. Exception during reading on the file attached to the bug OCC5708
+######################################################
+
+cpulimit 1000
+
+set BugNumber OCC5708
+
+#set env(CSF_STEPDefaults) ${filedir}/OCC5708_STEPDefaults/.
+
+stepread [locate_data_file OCC5708.step] a *
+tpcompound result
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

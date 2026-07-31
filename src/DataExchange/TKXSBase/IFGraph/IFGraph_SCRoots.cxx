@@ -1,0 +1,74 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IFGraph_ExternalSources.hxx>
+#include <IFGraph_SCRoots.hxx>
+#include <IFGraph_StrongComponants.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
+
+// #include <Interface_GraphContent.hxx>
+IFGraph_SCRoots::IFGraph_SCRoots(const Interface_Graph& agraph, const bool whole)
+    : IFGraph_StrongComponants(agraph, whole)
+{
+}
+
+IFGraph_SCRoots::IFGraph_SCRoots(IFGraph_StrongComponants& subparts)
+    : IFGraph_StrongComponants(subparts)
+{
+}
+
+// Root StrongComponants of a given set
+// We don't consider the possible remainder (it's another problem)
+// We start from the fact that StrongComponants gives Components in the order of
+// dependence, the first depending on nothing (the others, we don't know ...)
+
+void IFGraph_SCRoots::Evaluate()
+{
+  IFGraph_StrongComponants complist(Model(), false);
+  complist.GetFromIter(Loaded());
+  //  Interface_Graph G(Model());
+  Interface_Graph G(thegraph);
+#ifdef OCCT_DEBUG
+  std::cout << " SCRoots:" << std::endl;
+#endif
+  G.ResetStatus();
+  for (complist.Start(); complist.More(); complist.Next())
+  {
+    occ::handle<Standard_Transient> ent = complist.FirstEntity();
+    int                             num = G.EntityNumber(ent);
+#ifdef OCCT_DEBUG
+    std::cout << "   Iteration,num=" << num << (G.IsPresent(num) ? " Taken" : " To take")
+              << std::endl;
+#endif
+    if (!G.IsPresent(num))
+    { //  register for following
+      G.GetFromEntity(ent, true);
+      Interface_EntityIterator list = complist.Entities();
+      AddPart();
+      GetFromIter(list);
+    }
+  }
+}
+
+/*     what follows, it was something else: the SC that have no ExternalSource
+    Interface_EntityIterator list = complist.Entities();
+    IFGraph_ExternalSources  eval (Model());
+    eval.GetFromIter(list);
+    if (eval.IsEmpty()) {
+      AddPart();
+      GetFromIter(list);
+    }
+  }
+}
+*/

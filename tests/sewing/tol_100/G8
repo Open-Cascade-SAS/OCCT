@@ -1,0 +1,8 @@
+restore [locate_data_file CHE_cc1.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 0.0043402717339514531
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

@@ -1,0 +1,113 @@
+// Created on: 1998-08-17
+// Created by: Pavel DURANDIN
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ShapeAnalysis_FreeBoundData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+//=================================================================================================
+
+inline TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
+{
+  return myShape;
+}
+
+//=======================================================================
+// function : IsLoaded
+// purpose  : Returns True if shape is loaded
+//=======================================================================
+
+inline bool ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
+{
+  return !(myShape.IsNull());
+}
+
+//=================================================================================================
+
+inline double ShapeAnalysis_FreeBoundsProperties::Tolerance() const
+{
+  return myTolerance;
+}
+
+//=================================================================================================
+
+inline int ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
+{
+  return (myClosedFreeBounds->Length() + myOpenFreeBounds->Length());
+}
+
+//=======================================================================
+// function : NbClosedFreeBounds
+// purpose  : Returns number of closed free bounds
+//=======================================================================
+
+inline int ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds() const
+{
+  return myClosedFreeBounds->Length();
+}
+
+//=======================================================================
+// function : NbOpenFreeBounds
+// purpose  : Returns number of open free bounds
+//=======================================================================
+
+inline int ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
+{
+  return myOpenFreeBounds->Length();
+}
+
+//=======================================================================
+// function : ClosedFreeBounds
+// purpose  : Returns all closed free bounds
+//=======================================================================
+
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>>
+  ShapeAnalysis_FreeBoundsProperties::ClosedFreeBounds() const
+{
+  return myClosedFreeBounds;
+}
+
+//=================================================================================================
+
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>>
+  ShapeAnalysis_FreeBoundsProperties::OpenFreeBounds() const
+{
+  return myOpenFreeBounds;
+}
+
+//=======================================================================
+// function : ClosedFreeBound
+// purpose  : Returns properties of closed free bound specified by its rank
+//           number
+//=======================================================================
+
+inline occ::handle<ShapeAnalysis_FreeBoundData> ShapeAnalysis_FreeBoundsProperties::ClosedFreeBound(
+  const int index) const
+{
+  return myClosedFreeBounds->Value(index);
+}
+
+//=======================================================================
+// function : OpenFreeBound
+// purpose  : Returns properties of open free bound specified by its rank
+//           number
+//=======================================================================
+
+inline occ::handle<ShapeAnalysis_FreeBoundData> ShapeAnalysis_FreeBoundsProperties::OpenFreeBound(
+  const int index) const
+{
+  return myOpenFreeBounds->Value(index);
+}

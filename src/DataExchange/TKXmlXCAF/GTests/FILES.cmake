@@ -1,0 +1,5 @@
+# Test source files for TKXmlXCAF
+set(OCCT_TKXmlXCAF_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKXmlXCAF_GTests_FILES
+)

@@ -1,0 +1,8 @@
+restore [locate_data_file CCH_indushek.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 9.9999999999999995e-007
+checknbshapes result -shell 1
+checkfreebounds result 46
+checkfaults result a 0

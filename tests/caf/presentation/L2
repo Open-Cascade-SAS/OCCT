@@ -1,0 +1,55 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISDriver
+#
+
+puts "caf003-L2"
+
+# Create a box
+box aBox 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+set aDriverGUID1 [lindex [AISSet D ${aLabel} NS] 0]
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set driver GUID
+set IsDone [catch {set aDriverGUID2 [lindex [AISDriver D ${aLabel} A] 0]} aResult]
+if { ${IsDone} != 0 } {
+	puts "It is not necessary to have the photo for this case."
+	puts ${aResult}
+	puts "Set the driver GUID; AISDriver command: Error"
+        return
+}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Get driver GUID
+set aDriverGUID3 [lindex [AISDriver D ${aLabel}] 0]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${aDriverGUID1} == ${aDriverGUID2} ||
+     ${aDriverGUID1} != ${aDriverGUID3} } {
+	puts "aDriverGUID1=${aDriverGUID1} aDriverGUID2=${aDriverGUID2}"
+	puts "aDriverGUID1=${aDriverGUID1} aDriverGUID3=${aDriverGUID3}"
+	puts "Set the driver GUID; AISDriver command: Error"
+        return
+}
+puts "Set the driver GUID; AISDriver command: OK"

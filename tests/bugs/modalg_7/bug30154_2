@@ -1,0 +1,23 @@
+puts "========"
+puts "0030154: Modeling Algorithms - Boolean Operation on planar geometry hangs inside BRepLib::FindValidRange()"
+puts "========"
+puts ""
+
+set toler 3.e-7
+
+box b -94190864 -46229000 -17178478.4 519231048 93653000 120025348.8
+
+foreach e [explode b e] {
+  mkcurve c $e
+  regexp {Parameters : ([-0-9.+eE]*) ([-0-9.+eE]*)} [dump c] full t1 t2
+  set range [validrange $e]
+  set ts1 [lindex $range 0]
+  set ts2 [lindex $range 1]
+
+  set delta1 [expr $ts1 - $t1]
+  set delta2 [expr $t2 - $ts2]
+
+  if {$delta1 < 1.e-7 || $delta1 > $toler || $delta2 < 1.e-7 || $delta2 > $toler} {
+    puts "Error: incorrect computation of the valid range"
+  }
+}

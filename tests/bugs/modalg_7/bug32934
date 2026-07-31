@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC32934"
+puts "========"
+puts ""
+###############################################################################################
+# BRepExtrema_DistShapeShape BRepExtrema_DistShapeShape returns two solutions instead of one.
+###############################################################################################
+
+pload ALL
+restore [locate_data_file bug32934.brep] edges
+explode edges E
+
+distmini di edges_1 edges_2
+if { ([isdraw di2]) } {
+  puts "Error : result of distmini is wrong"
+} else {
+  checknbshapes di -vertex 1 -edge 0
+}
+
+distmini dii edges_2 edges_1
+if { ([isdraw dii2]) } {
+  puts "Error : result of distmini is wrong"
+} else {
+  checknbshapes dii -vertex 1 -edge 0
+}

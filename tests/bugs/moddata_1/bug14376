@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC14376"
+puts "============"
+puts ""
+#######################################################################
+# Shading triangulation of face is not computed
+#######################################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC14376.brep] Face_8
+OCC14376 Face_8
+

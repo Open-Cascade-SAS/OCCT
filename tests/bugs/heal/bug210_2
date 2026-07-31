@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC210"
+puts "(case 2)"
+puts "========"
+
+##########################################
+## Improve FixShape to correct case of touching wires 
+##########################################
+
+restore [locate_data_file OCC210b.brep] a 
+
+fixshape result a 0.01 0.01
+
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

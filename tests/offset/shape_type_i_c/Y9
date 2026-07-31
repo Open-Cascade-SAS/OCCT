@@ -1,0 +1,13 @@
+restore [locate_data_file bug26917_double_cave_2.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 1
+explode s f
+offsetonface s_6 6
+offsetonface s_12 6
+offsetperform result
+
+checkprops result -v 2376
+checkprops result -s 1140
+
+checknbshapes result -shell 1

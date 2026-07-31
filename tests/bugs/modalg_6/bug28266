@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28266"
+puts "========"
+puts ""
+#################################################
+# Boolean CUT produces incorrect result with quasi-planar cone
+#################################################
+
+brestore [locate_data_file bug28261_face.brep] f
+brestore [locate_data_file bug28266_tool1.brep] t1
+brestore [locate_data_file bug28266_tool2.brep] t2
+
+explode f E
+mkcurve c f_1
+cvalue c 0 x y z dx dy dz
+revol rev f $x $y $z $dx $dy $dz 360
+
+bcut r rev t1
+
+checkshape r
+checknbshapes r -solid 1 -face 86 -edge 267 -vertex 184
+checkprops r -v 17215.5 -s 4033.34
+
+bcut result r t2
+
+checkshape result
+checknbshapes result -solid 1 -face 90 -edge 278 -vertex 190
+checkprops result -v 17215.5 -s 4033.52

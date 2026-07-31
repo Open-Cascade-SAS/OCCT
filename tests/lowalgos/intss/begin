@@ -1,0 +1,44 @@
+
+# General check of the result of geometrical intersection
+help CheckIntersectionResult { surf1 surf2 ListOfCurves NbPoints TolerS1 TolerS2 }
+proc CheckIntersectionResult {theSurf1 theSurf2 theListOfCurves theNbPoints theTolerS1 theTolerS2} {
+  upvar #0 $theSurf1 s1
+  upvar #0 $theSurf2 s2
+
+  foreach a $theListOfCurves {
+    puts "** Check of $a **"
+    upvar #0 $a aCurve
+    bounds aCurve U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong range of $a"
+    }
+    
+    xdistcs aCurve s1 U1 U2 $theNbPoints $theTolerS1
+    xdistcs aCurve s2 U1 U2 $theNbPoints $theTolerS2
+  }
+}
+
+# Check whether given list contain overlapped curves 
+help CheckOverlapIntCurves { theListOfCurves }
+proc CheckOverlapIntCurves { theListOfCurves {theTolerance 1.0e-7} } {
+  set NbEdges [expr [llength $theListOfCurves] - 1 ]
+  for { set i1 0 } { $i1 < $NbEdges } { incr i1 } {
+    for { set i2 [expr $i1 + 1] } { $i2 <= $NbEdges } { incr i2 } {
+      upvar #0 [ lindex $theListOfCurves $i1 ] aCurve1
+      upvar #0 [ lindex $theListOfCurves $i2 ] aCurve2
+
+      mkedge e1 aCurve1
+      mkedge e2 aCurve2
+      
+      set coe [ checkoverlapedges e1 e2 $theTolerance ]
+
+      if { [regexp "Edges are not overlapped" $coe] != 1 } {
+        set cIdx1 [ expr $i1 + 1 ]
+        set cIdx2 [ expr $i2 + 1 ]
+        
+        puts "Error: Curves $cIdx1 and $cIdx2 are overlapped"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC8229"
+puts "============"
+puts ""
+#######################################################################
+# Exception is raised during the ReadStep in DRAW on the attached shape
+#######################################################################
+
+set BugNumber OCC8229
+
+set filepath [locate_data_file OCC8229.stp]
+if [catch { stepread $filepath a * } res] {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+

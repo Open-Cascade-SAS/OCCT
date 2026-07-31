@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27645_nist_ftc_09_asme1_ct5240_rd-1.stp
+
+set ref_data {
+
+ NbOfDimensions          : 27
+  NbOfDimensionalSize    : 16
+  NbOfDimensionalLocation: 7
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 1
+ NbOfTolerances          : 31
+  NbOfGTWithModifiers    : 6
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 30
+ NbOfDatumFeature        : 22
+ NbOfAttachedDatum       : 126
+ NbOfDatumTarget         : 0
+}

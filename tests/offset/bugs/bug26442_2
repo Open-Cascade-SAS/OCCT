@@ -1,0 +1,17 @@
+puts "========="
+puts "OCC26442"
+puts "========="
+puts ""
+###############################################
+# Access violation in BRepOffset_MakeOffset
+###############################################
+
+restore [locate_data_file OCC26464-extracted_Plate5520contour.brep] sh
+
+offsetparameter 1.e-7 p i
+offsetload sh 60
+offsetperform result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

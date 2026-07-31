@@ -1,0 +1,12 @@
+line l -3 0 0 1 2 0
+trim l l -1 2
+copy l lr
+translate lr 0 -4 0
+reverse lr
+convert result lr
+pl
+pl
+pu
+pu
+checklength result -l 2.9999999999999996
+checkview -display result -2d -path ${imagedir}/${test_image}.png

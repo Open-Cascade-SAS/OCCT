@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24220"
+puts "============"
+puts ""
+######################################################
+# bopargcheck returns valid for C0 shape but results of boolean operations are broken with such shapes
+######################################################
+
+restore [locate_data_file bug24220_A.brep] result
+
+set info [bopargcheck result]
+
+if { [regexp "Faulties, that can not be treated by BOP, are detected" ${info}] != 1 } {
+    puts "Error : message is not correct"
+} else {
+    puts "OK : message is correct"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC168"
+puts "OCC279"
+puts "========"
+puts "Fix missing seam don't add seam "
+puts ""
+
+restore [locate_data_file OCC168.brep] a
+
+fixshape result a 1e-7
+checkshape result
+
+checkprops result -s 992.596 
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

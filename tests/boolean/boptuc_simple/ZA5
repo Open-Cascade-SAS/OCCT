@@ -1,0 +1,8 @@
+pcylinder b1 1 2
+box b2 -0.8 -0.8 0 1.6 1.6 2
+
+bop b1 b2
+boptuc result
+
+checkprops result -s 5.61518
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

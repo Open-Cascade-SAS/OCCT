@@ -1,0 +1,5 @@
+dall
+restore [locate_data_file buc60318.rle] w 
+explode w W 
+thrusections result 0 0 w_1 w_2 w_3 w_4 w_5 
+checkprops result -s 254109

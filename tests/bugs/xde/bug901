@@ -1,0 +1,58 @@
+puts "======="
+puts "OCC901"
+puts "OCC884"
+puts "======="
+puts ""
+
+###########################################
+## ShapeFix_Wire::FixSelfIntersection does not remove all loops
+############################################
+
+pload QAcommands
+
+restore [locate_data_file OCC884.brep] a
+
+OCC884 result a 1.1 1.1
+
+explode result e
+mkplane p result
+pcurve c2d result_1 p
+mkcurve c3d result_1
+
+set list_3 [length $c3d]
+set list_4 [length $c2d]
+
+# len2 is the length of 3d curve
+regexp {The length c3d is +([-0-9.+eE]+)} $list_3 full len2
+
+# len1 is the length of 2d curve
+regexp {The length c2d is +([-0-9.+eE]+)} $list_4 full len1
+
+set percent_max 0.1
+set percent1 [expr abs(${len2} - ${len1}) / double(${len1}) * 100.]
+
+set len3 1.55056
+set percent2 [expr abs(${len2} - ${len3}) / double(${len3}) * 100.]
+
+puts "len1 = ${len1}"
+puts "len2 = ${len2}"
+puts "percent1 = ${percent1}"
+puts "percent2 = ${percent2}"
+
+set status 0
+
+if {${percent1} > ${percent_max}} {
+   puts "OCC901: Error (case 1)"
+   set status 1
+}
+
+if {${percent2} > ${percent_max}} {
+   puts "OCC901: Error (case 2)"
+   set status 1
+}
+
+if {${status} == 0} {
+   puts "OCC901: OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

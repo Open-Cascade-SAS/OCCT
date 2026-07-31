@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC22194"
+puts "============"
+puts ""
+#######################################################################
+# Exception in LocOpe_SplitShape algorithm
+#######################################################################
+
+restore [locate_data_file OCC22194-sh.brep] s 
+restore [locate_data_file OCC22194-pl.brep] pl 
+bsection r s pl
+savehistory sec_hist
+
+set sections {}
+foreach f [explode s f] {
+  if {![regexp "No shapes" [generated g_$f sec_hist $f]]} {
+    puts "$f g_$f"
+    lappend sections $f g_$f
+  }
+}
+
+eval splitshape result s $sections
+
+checkprops result -s 24041.4
+checknbshapes result -face 352
+checkview -display result -2d -path ${imagedir}/${test_image}.png

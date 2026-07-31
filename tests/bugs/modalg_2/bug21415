@@ -1,0 +1,47 @@
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+pload QAcommands
+
+puts "============"
+puts "OCC21415"
+puts "============"
+puts ""
+#######################################################################
+# Bad triangulation of cylindrical face with large vertex tolerances
+#######################################################################
+
+set BugNumber OCC21415
+
+# Data
+
+set scale    19.469810863701095
+set proj_X   0.99999862909317017
+set proj_Y   0.0012245246907696128
+set proj_Z   -0.0011169711360707879
+set up_X     0.00037844621692784131
+set up_Y     0.48741284012794495
+set up_Z     0.87317168712615967
+set at_X     290.970210143045
+set at_Y     -0.0594423932820831
+set at_Z     -1.29683163874688
+
+# Start
+
+restore [locate_data_file OCC21415-face_bad_meshed.brep] result
+vinit
+vdisplay result
+vfit
+
+vsetdispmode 1
+vfit
+
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+puts "TEMPORARY!!!!!!!!!!!!!!!!!"
+checkprops result -s 400000 
+checkshape result
+puts "TEMPORARY!!!!!!!!!!!!!!!!!"
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 1 -edge 2 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 5
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

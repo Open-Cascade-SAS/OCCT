@@ -1,0 +1,22 @@
+puts "========="
+puts "CR24299"
+puts "========="
+puts ""
+###############################
+## Wrong section curve
+###############################
+
+restore [locate_data_file pro19653a.brep] b1
+restore [locate_data_file pro19653b.brep] b2
+
+explode b1 f
+explode b2 f
+mksurface s1 b1_1
+mksurface s2 b2_1
+intersect i s1 s2
+
+xdistcs i_2 s1 0 1 10 1e-5
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

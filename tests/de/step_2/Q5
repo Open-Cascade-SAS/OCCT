@@ -1,0 +1,55 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename t1m.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 2 )  Summary  = 2  ( 2 )
+CHECKSHAPE  : Wires    = 2  ( 3 )  Faces    = 2  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 2  ( 2 )  Face     = 63  ( 63 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 2  ( 2 )  Face     = 63  ( 63 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.05215797993  (  0.05215797993 )  AvgTol   =  0.001571041351  (  0.001522350681 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}
+
+# Due to the ambiguous interpretation of the "inner" wire on the surfaces
+# that have natural bound (is it the cutout in the whole surface, or it's just wrong wire orientation),
+# we must manually turn off the adding of the natural bound option of the shape healing for this test.
+
+set de_use_custom_scripts 1
+
+proc de_before_script {TheFileName} {
+    # remember the path to the old resource file
+    set old_resource_path $::env(CSF_STEPDefaults)
+    # reading old resource file
+    set anOptions [parse_resource_file "${old_resource_path}/STEP"]
+    # activation of ignoring the adding of natural bound
+    dict set anOptions "FromSTEP.FixShape.FixAddNaturalBoundMode" "0"
+    # path to new resource file
+    global imagedir new_resource_path
+    set new_resource_path "${imagedir}[file rootname $TheFileName]"
+    # creating resource file
+    create_resource_file "${new_resource_path}/STEP" $anOptions
+    # changing the path to the resource file
+    set ::env(CSF_STEPDefaults) ${new_resource_path}
+    puts "New path to STEP resource file is: \"${new_resource_path}\""
+    
+    return ${old_resource_path}
+}
+
+proc de_after_script {old_resource_path} {
+   # Restoring the path to the old resource file
+   set ::env(CSF_STEPDefaults) ${old_resource_path}
+   puts "Restore path to STEP resource file: \"${old_resource_path}\""
+   # Remove the newly created resource directory and its contents
+   global new_resource_path
+   if {[info exists new_resource_path] && [file exists ${new_resource_path}]} {
+       file delete -force ${new_resource_path}
+       puts "Deleted temporary directory: \"${new_resource_path}\""
+   }
+}

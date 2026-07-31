@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC272"
+puts "========"
+
+cpulimit 1000
+
+stepread [locate_data_file 612319029MB-HEAD-CYLINDER.stp] a *
+
+tpcompound result
+if { [llength [whatis result]] == 3 } {
+    puts "Error : There is no result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

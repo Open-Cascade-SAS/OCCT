@@ -1,0 +1,23 @@
+puts "========="
+puts "OCC24585"
+puts "========="
+puts ""
+###########################################################
+# Wrong pcurve of the section curve
+###########################################################
+
+restore [locate_data_file bug24585_b1.brep] b1
+restore [locate_data_file bug24585_b2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+bfillds
+bbuild result
+
+checkprops result -s 933.33 
+checkshape result
+
+checknbshapes result -vertex 10 -edge 11 -wire 4 -face 3 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 29
+checkview -display result -2d -path ${imagedir}/${test_image}.png

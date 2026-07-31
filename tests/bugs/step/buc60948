@@ -1,0 +1,25 @@
+puts "TODO OCC24156 MacOS: \\*\\*\\* Abort"
+puts "TODO OCC24156 MacOS: ... The exception is"
+
+puts "========================"
+puts "BUC60948"
+puts "========================"
+
+restore [locate_data_file pump4.brep] a_1 
+checkshape a_1
+
+#####################################################################
+catch {exec rm ${imagedir}/buc60948.stp}
+stepwrite a a_1 ${imagedir}/buc60948.stp
+
+dall
+
+stepread ${imagedir}/buc60948.stp a *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

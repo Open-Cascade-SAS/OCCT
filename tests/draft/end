@@ -1,0 +1,27 @@
+if { [isdraw result] } {
+    #check if result is valid
+    set ch [checkshape result]
+    puts $ch
+
+    if { [string compare $ch "This shape seems to be valid"] == 0 } {
+        #check if tolerance is less 1.
+        set tol 10.
+        if { [regexp {Face +:.+Max +([-0-9.+eE]+)} [maxtolerance result] full tol]  == 0 } {
+            #Avoiding maxtolerance bug on Windows
+            if { [array get Draw_Groups "Shape Healing"] == "" } {
+                pload XSDRAW
+            }
+            regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full tol
+        }
+        if { $tol > 1. } {
+            puts "Error: The tolerance of the resulting shape is too big ($tol)."
+        }
+    }
+
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+    puts "Error : The skin cannot be built."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

@@ -1,0 +1,22 @@
+puts "======="
+puts "CR28500: Artifact in shaded view of the shape"
+puts "======="
+puts ""
+
+restore [locate_data_file bug28500_shape_mesh_artifact.brep] result
+
+tclean result
+incmesh result 0.01
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0 
+vdisplay result
+vfit
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Mesh contains faulties"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

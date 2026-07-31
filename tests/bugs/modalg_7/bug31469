@@ -1,0 +1,43 @@
+puts "========"
+puts "0031469: Modeling Algorithms - 0031469: BRepFeat_MakePrism has problem with method IsDeleted(...)"
+puts "========"
+puts ""
+
+box S 400 250 300
+
+explode S face 
+mksurface pl2 S_2
+trim pl2 pl2 100 200 -200 -100
+mkface pbase pl2
+featprism S pbase S_2 -1 0 0 0 1
+featperformval prism pp 200
+checkshape pp
+checknbshapes pp -vertex 12 -edge 20 -face 11 -solid 1
+savehistory ph
+if { ![regexp "Not deleted" [isdeleted ph S]] } {
+  puts "Error: S has wrong delete status"
+}
+
+if { ![regexp "Not deleted" [isdeleted ph S_2]] } {
+  puts "Error: S_2 has wrong delete status"
+}
+
+if {![regexp "The shape has not been modified." [modified m1 ph S]] } {
+   checknbshapes m1 -vertex 12 -edge 20 -face 11 -solid 1
+} else {
+  puts "Error: S has wrong modified list"
+}
+
+if {![regexp "The shape has not been modified." [modified m2 ph S_2]] } {
+   checknbshapes m2 -vertex 8 -edge 8 -wire 2 -face 1
+} else {
+  puts "Error: S_2 has wrong modified list"
+}
+
+explode pbase e
+if {![regexp "No shapes were generated from the shape." [generated g1 ph pbase_1]] } {
+   checknbshapes g1 -vertex 2 -edge 3 -wire 1 -face 1
+   checkprops g1 -s 20000
+} else {
+  puts "Error: pbase_1 has wrong generated list"
+}

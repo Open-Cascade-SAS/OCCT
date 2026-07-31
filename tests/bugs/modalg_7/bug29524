@@ -1,0 +1,14 @@
+puts "========"
+puts "0029524: Modeling Algorithms - access violation in HLRBRep_PolyAlgo while computing HLR for triangulation-only surface"
+puts "========"
+puts ""
+
+pload VISUALIZATION XDE MODELING
+readstl m [locate_data_file model_stl_045.stl]
+vclear
+vinit View1
+vdisplay -dispMode 1 m
+vfit
+vdump $imagedir/${casename}_shading.png
+vhlr on -showHidden 0 -algoType polyAlgo
+vdump $imagedir/${casename}_hlr.png

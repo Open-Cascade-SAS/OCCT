@@ -1,0 +1,5 @@
+ptorus s 10 10 0 45 90
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 3238.1

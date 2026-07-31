@@ -1,0 +1,246 @@
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _gp_Pnt2d_HeaderFile
+#define _gp_Pnt2d_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <gp_XY.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Boolean.hxx>
+
+class gp_Ax2d;
+class gp_Trsf2d;
+class gp_Vec2d;
+
+//! Defines a non-persistent 2D cartesian point.
+class gp_Pnt2d
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Creates a point with zero coordinates.
+  constexpr gp_Pnt2d() noexcept
+
+    = default;
+
+  //! Creates a point with a doublet of coordinates.
+  constexpr gp_Pnt2d(const gp_XY& theCoord) noexcept
+      : coord(theCoord)
+  {
+  }
+
+  //! Creates a point with its 2 cartesian's coordinates: theXp, theYp.
+  constexpr gp_Pnt2d(const double theXp, const double theYp) noexcept
+      : coord(theXp, theYp)
+  {
+  }
+
+  //! Assigns the value Xi to the coordinate that corresponds to theIndex:
+  //! theIndex = 1 => X is modified
+  //! theIndex = 2 => Y is modified
+  //! Raises OutOfRange if theIndex != {1, 2}.
+  constexpr void SetCoord(const int theIndex, const double theXi)
+  {
+    coord.SetCoord(theIndex, theXi);
+  }
+
+  //! For this point, assigns the values theXp and theYp to its two coordinates
+  constexpr void SetCoord(const double theXp, const double theYp) noexcept
+  {
+    coord.SetCoord(theXp, theYp);
+  }
+
+  //! Assigns the given value to the X coordinate of this point.
+  constexpr void SetX(const double theX) noexcept { coord.SetX(theX); }
+
+  //! Assigns the given value to the Y coordinate of this point.
+  constexpr void SetY(const double theY) noexcept { coord.SetY(theY); }
+
+  //! Assigns the two coordinates of Coord to this point.
+  constexpr void SetXY(const gp_XY& theCoord) noexcept { coord = theCoord; }
+
+  //! Returns the coordinate of range theIndex :
+  //! theIndex = 1 => X is returned
+  //! theIndex = 2 => Y is returned
+  //! Raises OutOfRange if theIndex != {1, 2}.
+  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
+
+  //! For this point returns its two coordinates as a number pair.
+  constexpr void Coord(double& theXp, double& theYp) const noexcept { coord.Coord(theXp, theYp); }
+
+  //! For this point, returns its X coordinate.
+  constexpr double X() const noexcept { return coord.X(); }
+
+  //! For this point, returns its Y coordinate.
+  constexpr double Y() const noexcept { return coord.Y(); }
+
+  //! For this point, returns its two coordinates as a number pair.
+  constexpr const gp_XY& XY() const noexcept { return coord; }
+
+  //! For this point, returns its two coordinates as a number pair.
+  constexpr const gp_XY& Coord() const noexcept { return coord; }
+
+  //! Returns the coordinates of this point.
+  //! Note: This syntax allows direct modification of the returned value.
+  constexpr gp_XY& ChangeCoord() noexcept { return coord; }
+
+  //! Comparison
+  //! Returns True if the distance between the two
+  //! points is lower or equal to theLinearTolerance.
+  bool IsEqual(const gp_Pnt2d& theOther, const double theLinearTolerance) const
+  {
+    return Distance(theOther) <= theLinearTolerance;
+  }
+
+  //! Computes the distance between two points.
+  double Distance(const gp_Pnt2d& theOther) const;
+
+  //! Computes the square distance between two points.
+  constexpr double SquareDistance(const gp_Pnt2d& theOther) const noexcept;
+
+  //! Performs the symmetrical transformation of a point
+  //! with respect to the point theP which is the center of
+  //! the symmetry.
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
+
+  //! Performs the symmetrical transformation of a point
+  //! with respect to an axis placement which is the axis
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d Mirrored(const gp_Pnt2d& theP) const noexcept;
+
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
+
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d Mirrored(const gp_Ax2d& theA) const noexcept;
+
+  //! Rotates a point. theA1 is the axis of the rotation.
+  //! Ang is the angular value of the rotation in radians.
+  void Rotate(const gp_Pnt2d& theP, const double theAng);
+
+  [[nodiscard]] gp_Pnt2d Rotated(const gp_Pnt2d& theP, const double theAng) const
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Rotate(theP, theAng);
+    return aPres;
+  }
+
+  //! Scales a point. theS is the scaling value.
+  constexpr void Scale(const gp_Pnt2d& theP, const double theS) noexcept;
+
+  [[nodiscard]] constexpr gp_Pnt2d Scaled(const gp_Pnt2d& theP, const double theS) const noexcept
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Scale(theP, theS);
+    return aPres;
+  }
+
+  //! Transforms a point with the transformation theT.
+  Standard_EXPORT void Transform(const gp_Trsf2d& theT) noexcept;
+
+  [[nodiscard]] gp_Pnt2d Transformed(const gp_Trsf2d& theT) const
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Transform(theT);
+    return aPres;
+  }
+
+  //! Translates a point in the direction of the vector theV.
+  //! The magnitude of the translation is the vector's magnitude.
+  constexpr void Translate(const gp_Vec2d& theV) noexcept;
+
+  [[nodiscard]] constexpr gp_Pnt2d Translated(const gp_Vec2d& theV) const noexcept;
+
+  //! Translates a point from the point theP1 to the point theP2.
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    coord.Add(theP2.coord);
+    coord.Subtract(theP1.coord);
+  }
+
+  [[nodiscard]] constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1,
+                                              const gp_Pnt2d& theP2) const noexcept
+  {
+    gp_Pnt2d aP = *this;
+    aP.Translate(theP1, theP2);
+    return aP;
+  }
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+
+private:
+  gp_XY coord;
+};
+
+#include <gp_Vec2d.hxx>
+#include <gp_Trsf2d.hxx>
+
+//=================================================================================================
+
+inline double gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
+{
+  const gp_XY& aXY = theOther.coord;
+  double       aX  = coord.X() - aXY.X();
+  double       aY  = coord.Y() - aXY.Y();
+  return sqrt(aX * aX + aY * aY);
+}
+
+//=================================================================================================
+
+inline constexpr double gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const noexcept
+{
+  const gp_XY& aXY = theOther.coord;
+  double       aX  = coord.X() - aXY.X();
+  double       aY  = coord.Y() - aXY.Y();
+  return (aX * aX + aY * aY);
+}
+
+//=================================================================================================
+
+inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const double theAng)
+{
+  gp_Trsf2d aT;
+  aT.SetRotation(theP, theAng);
+  aT.Transforms(coord);
+}
+
+//=================================================================================================
+
+inline constexpr void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const double theS) noexcept
+{
+  gp_XY aXY = theP.coord;
+  aXY.Multiply(1.0 - theS);
+  coord.Multiply(theS);
+  coord.Add(aXY);
+}
+
+//=================================================================================================
+
+inline constexpr void gp_Pnt2d::Translate(const gp_Vec2d& theV) noexcept
+{
+  coord.Add(theV.XY());
+}
+
+//=================================================================================================
+
+inline constexpr gp_Pnt2d gp_Pnt2d::Translated(const gp_Vec2d& theV) const noexcept
+{
+  gp_Pnt2d aP = *this;
+  aP.coord.Add(theV.XY());
+  return aP;
+}
+
+#endif // _gp_Pnt2d_HeaderFile

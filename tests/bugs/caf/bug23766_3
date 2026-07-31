@@ -1,0 +1,33 @@
+puts "TODO OCC24156 MacOS: Error: orientation of E2 is incorrect"
+
+puts "==========="
+puts "OCC23766"
+puts "==========="
+puts ""
+############################################################
+# Shape orientation processing mechanism redesign
+############################################################
+
+# test to check compatibility of old xml format
+
+Open [locate_data_file bug23766_ttt1_old.xml] D
+
+GetShape D 0:1:2:1:2 E1
+set info1 [whatis E1]
+
+## to be FORWARD:
+if { [regexp "FORWARD" $info1] != 1 } {
+    puts "Error: orientation of E1 is incorrect"
+} else {
+    puts "OK: orientation of E1 is correct"
+}
+
+GetShape D 0:1:3:1:2 E2
+set info2 [whatis E2]
+
+## to be REVERSED:
+if { [regexp "REVERSED" $info2] != 1 } {
+    puts "Error: orientation of E2 is incorrect"
+} else {
+    puts "OK: orientation of E2 is correct"
+}

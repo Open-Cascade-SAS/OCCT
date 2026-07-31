@@ -1,0 +1,12 @@
+restore [locate_data_file CTO908_topo106-p.brep] poche
+restore [locate_data_file CTO908_topo106-n.brep] nervure
+
+# it does not make sense to fuse the not closed solids.
+# get the shells from the solids, and fuse them.
+explode poche sh
+explode nervure sh
+
+bfuse result poche_1 nervure_1
+
+checkprops result -s 105275
+checkview -display result -2d -otherwise { poche nervure } -s -path ${imagedir}/${test_image}.png

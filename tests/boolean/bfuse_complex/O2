@@ -1,0 +1,16 @@
+# Original bug : pro15203
+# Date : 26Aout98
+
+# part 2 of 4
+
+restore [locate_data_file pro15203a.rle] a 
+restore [locate_data_file pro15203d.rle] d 
+
+#pkv f
+explode a f
+explode d f
+bfuse result a_1 d_1
+#pkv t
+
+checkprops result -s 570.047
+checkview -display result -2d -otherwise { a_1 d_1 } -s -path ${imagedir}/${test_image}.png

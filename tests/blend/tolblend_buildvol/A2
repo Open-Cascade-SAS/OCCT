@@ -1,0 +1,14 @@
+#box s 0 0 0 100 100 100
+#explode s f
+#sewing s s_1 s_3
+
+restore [locate_data_file 7_B2.draw] s
+tscale  s 0 0 0 SCALE1
+explode s E
+mkevol P s
+updatevol s_1 0 10*SCALE1 1 20*SCALE1 2 0*SCALE1
+buildevol
+explode P Sh
+copy P_1 result
+
+checkprops result -s 485351

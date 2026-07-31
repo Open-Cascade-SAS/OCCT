@@ -1,0 +1,28 @@
+cpulimit 1000
+
+restore [locate_data_file OCC62.brep] sh
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean sh
+
+explode sh
+
+bop sh_1 sh_3
+bopfuse res1
+
+bop res1 sh_2
+bopfuse res2
+btolx sh_6
+
+bop res2 sh_6
+bopfuse res3
+
+bop res3 sh_4
+bopfuse res4
+btolx sh_5
+
+bop res4 sh_5
+bopfuse result
+
+checkprops result -s 1.20917e+07
+checkview -display result -2d -otherwise { res4 sh_5 } -s -path ${imagedir}/${test_image}.png

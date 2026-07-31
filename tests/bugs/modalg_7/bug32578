@@ -1,0 +1,28 @@
+puts "================================================="
+puts "OCC32578: Modeling Algorithms - Splitting face by set of edges fails"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug32578_face.brep] f
+restore [locate_data_file bug32578_edges.brep] ce
+
+bfuzzyvalue 0.01
+
+bclearobjects
+bcleartools
+baddobjects f
+eval baddtools [explode ce]
+bfillds
+bsplit result
+
+checkshape result
+if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+  puts "Error: result is a self-interferring shape"
+}
+
+checknbshapes result -vertex 646 -edge 1234 -wire 589 -face 589 -t
+checkprops result -s 351.033
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+boptions -default

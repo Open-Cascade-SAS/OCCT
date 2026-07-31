@@ -1,0 +1,11 @@
+puts "==========="
+puts "BUC60850"
+puts "==========="
+
+igesbrep [locate_data_file BUC60850.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC27371"
+puts "========"
+puts ""
+##############################################
+# Regression: BRepExtrema works too much slower in 691 (from 670) 
+##############################################
+restore [locate_data_file bug27371.brep] aShape
+explode aShape
+
+cpulimit 20
+
+# Check computation time
+dchrono h restart
+for { set i 1 } { $i <= 100 } { incr i } {
+  distmini d aShape_1 aShape_2
+  distmini d aShape_2 aShape_1
+}
+dchrono h stop counter distmini
+
+# Check result of distance distance
+set absTol 1.0e-10
+set relTol 0.001
+set aDist_Exp 0.2
+set aDist [dval d_val]
+checkreal "Distance value check" $aDist $aDist_Exp $absTol $relTol

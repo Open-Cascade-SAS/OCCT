@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC79"
+puts "========"
+
+set i_max 20
+set dispMode 0
+
+pload VISUALIZATION
+
+# disable VBO to avoid false memory leaks reported on NVIDIA graphics, see issue #29996
+pload OPENGL
+vcaps -vbo 0
+
+vinit View1
+restore [locate_data_file OCC162.brep] s
+vdisplay -dispMode $dispMode s
+
+set listmem {}
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+  verase s
+  vdisplay -dispMode $dispMode s
+
+  lappend listmem [meminfo h]
+}
+
+puts $listmem
+checktrend $listmem 0 1 "Memory leak detected"

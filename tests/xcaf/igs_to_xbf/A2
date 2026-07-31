@@ -1,0 +1,5 @@
+ReadIges D_First [locate_data_file BUC50025.igs]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL CHECKSHAPE"
+

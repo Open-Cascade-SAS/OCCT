@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC27051"
+puts "============"
+puts ""
+###########################################################################################################
+#  BRepBuilderAPI_GTransform produces invalid result
+###########################################################################################################
+
+restore [locate_data_file bug27051_Fuse_1.brep] a
+scalexyz result a 1 1 1
+
+checkprops result -v 21011.2
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

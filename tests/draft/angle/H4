@@ -1,0 +1,16 @@
+#G5----------------------------------------------
+beziersurf bs 4 4 \
+  0  0 0   5  0 0  10  0 0  15  0 0 \
+  0  5 0   5  5 0  10  5 0  15  5 0 \
+  0 10 0   5 10 0  10 10 0  15 10 0 \
+  0 15 0   5 15 0  10 15 0  15 15 0 
+mkface bs bs
+prism pr bs 0 0 5
+profile pf o 4 4 2 l 4 c 3 90 l 4 d -1 0 l 7
+polyline pl 0 0 2 0 0 20
+pipe p pl pf
+bfuse f p pr
+nexplode f f
+depouille result f 0 0 1 f_10 2 0 0 18 0 0 1
+
+checkprops result -s 1154.28

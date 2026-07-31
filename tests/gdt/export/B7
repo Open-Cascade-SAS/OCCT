@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28315_part_step-pmi.stp
+
+set ref_data {
+
+ NbOfDimensions          : 13
+  NbOfDimensionalSize    : 0
+  NbOfDimensionalLocation: 0
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 3
+ NbOfTolerances          : 0
+  NbOfGTWithModifiers    : 0
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 0
+ NbOfDatumFeature        : 0
+ NbOfAttachedDatum       : 0
+ NbOfDatumTarget         : 0
+}

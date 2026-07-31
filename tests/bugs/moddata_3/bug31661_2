@@ -1,0 +1,26 @@
+puts ""
+puts "=========================================================================="
+puts "OCC31661: Modeling Data - Algorithm crashes when projecting parabola or hyperbola to plane"
+puts "=========================================================================="
+puts ""
+
+hyperbola h 0 0 0  1 1 1  2 0 -2  10 10
+plane pln 0 0 0  0 0 1
+projonplane rh h pln 0
+
+if {![regexp {Hyperbola} [dump rh]]} {
+  puts "ERROR: Projected curve is not a hyperbola"
+}
+
+trim h h -5 5
+projonplane rh h pln 0
+
+if {![regexp {Hyperbola} [dump rh]]} {
+  puts "ERROR: Projected curve is not a hyperbola"
+}
+
+checklength rh -l 1664.3732976598988
+bounds rh t1 t2
+checkreal t1 [dval t1] -5.23179933356147 1.e-7 1.e-7
+checkreal t2 [dval t2] 4.76820064934972 1.e-7 1.e-7
+

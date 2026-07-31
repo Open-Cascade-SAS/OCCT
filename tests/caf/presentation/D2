@@ -1,0 +1,62 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISMaterial
+# Testing command:   AISHasOwnMaterial
+# Note:   AISMaterial-command: set AISMaterial  and set AISHasOwnMaterial = true ( int 1 )
+#
+
+puts "caf003-D2"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a material of the shape as NOM_JADE
+set JadeMaterial 18
+AISMaterial D ${aLabel} ${JadeMaterial}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+# Check own material
+set HasOwnMaterial [AISHasOwnMaterial D ${aLabel}]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${HasOwnMaterial} == 0 } {
+	puts "HasOwnMaterial=${HasOwnMaterial}"
+	puts "There is not own material; AISHasOwnMaterial command: Error"
+        return
+}
+puts "There is own material; AISHasOwnMaterial command: OK"

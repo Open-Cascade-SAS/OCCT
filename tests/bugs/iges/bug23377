@@ -1,0 +1,23 @@
+# Original bug : 23377
+# Date : 12 Aug 2012
+
+set check_nb 7
+igesbrep [locate_data_file OCC23377-Input.igs] result *
+regexp {Number of Rational BSpline surfaces +([-0-9.+eE]+)} [expshape result 1 1] full nb
+if { ${nb} != ${check_nb} } {
+    puts "Error : The Number of Rational BSpline surfaces is wrong!"
+    puts "Error : It's $nb indtead of $check_nb!"
+}
+puts "Number of Rational BSpline surfaces is $nb"
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+
+
+
+
+
+
+

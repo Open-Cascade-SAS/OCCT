@@ -1,0 +1,13 @@
+puts "========"
+puts "0025923: Remove small wires on face read from STEP"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC25923_FixSmallWire_Orientation.brep] a
+
+checkshape a
+
+fixshape r a +s +o 1e-3
+
+checkshape r
+checknbshapes r -face 1 -wire 2 -edge 32 -vertex 32

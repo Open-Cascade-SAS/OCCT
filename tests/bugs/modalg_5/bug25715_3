@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC25715"
+puts "=========="
+puts ""
+#############################################################
+# Intersection between cylinders produces excess vertices
+#############################################################
+# don't change nbshapes values according to 25715
+
+restore [locate_data_file bug25715_p02c3s1.brep] s1
+restore [locate_data_file bug25715_p02c3s3.brep] s3
+bfuse result s1 s3
+unifysamedom result result +b
+
+checknbshapes result -vertex 6 -edge 9 -wire 5 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 27
+checkview -display result -2d -path ${imagedir}/${test_image}.png

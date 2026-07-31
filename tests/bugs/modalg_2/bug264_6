@@ -1,0 +1,20 @@
+
+puts "========"
+puts "OCC264"
+puts " (case 6)"
+puts "========"
+
+restore [locate_data_file OCC264_06.brep] result 
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vclear
+
+isos result 0
+triangles result
+
+checktrinfo result -tri 20 -nod 22
+checkprops result -s 19.2399 
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC24032"
+puts "========"
+puts ""
+#######################################################################
+# An exception raised during projection of the curve on the surface
+#######################################################################
+
+restore [locate_data_file bug24032_f.brep] f
+restore [locate_data_file bug24032_c.draw] c
+
+mksurface s f
+project c2d c s
+
+v2d
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

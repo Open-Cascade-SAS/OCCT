@@ -1,0 +1,21 @@
+puts "================"
+puts "BUC60609"
+puts "================"
+
+restore [locate_data_file buc60609a.brep] a
+
+# two points will be classified
+point p1 0.14 5.1
+point p2 1.28 5.1
+
+if {![regexp "IN" [b2dclassify a p1]]} {
+  puts "Faulty BUC60609 first: $first is not right result. It should be INSIDE"
+} else {
+  puts "BUC60609 first OK:  It is INSIDE"
+}
+
+if {![regexp "IN" [b2dclassify a p2]]} {
+  puts "Faulty BUC60609 second: $second is not right result. It should be INSIDE"
+} else {
+  puts "BUC60609 second OK:  It is INSIDE"
+}

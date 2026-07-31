@@ -1,0 +1,26 @@
+puts "# ===================================================================="
+puts "# OCC25730: result of MakeThickSolid aborts the BOPCheck in Geom_OffsetSurface::SetD0"
+puts "# ===================================================================="
+puts ""
+
+puts "# Load shape"
+restore [locate_data_file bug25730_thickness8-draw-fillet001.brep] Fillet001
+
+explode Fillet001 F
+
+puts "# Perform offset"
+offsetparameter 1e-7 p a
+offsetload Fillet001 -1 Fillet001_4
+offsetperform Thickness
+
+puts "# Check result"
+if { [regexp "errors" [bopcheck Fillet001]] == 1 } {
+    puts "Error : bopcheck fails on initial shape"
+}
+
+if { [regexp "errors" [bopcheck Thickness]] == 1 } {
+    puts "Error : bopcheck fails on offsetted shape"
+}
+
+checkview -display Fillet001 -2d -path ${imagedir}/${test_image}-Fillet001-2d.png
+checkview -display Thickness -2d -path ${imagedir}/${test_image}-Thickness-2d.png

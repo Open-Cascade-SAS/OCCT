@@ -1,0 +1,9 @@
+# Original bug : pro12880
+# Date : 21 Sept 98
+
+restore [locate_data_file CTO900_pro12880c.rle] part
+restore [locate_data_file pro12880d.rle] tool
+
+bcut result part tool
+checkprops result -s 200102
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "==========="
+puts "OCC23004"
+puts "==========="
+######################################################
+# Boolean operation cut produces incorrect result
+######################################################
+
+set BugNumber OCC23004
+
+restore [locate_data_file bug23004_b_7_1] b1 
+restore [locate_data_file bug23004_b_7_2] b2 
+bop b1 b2
+bopcut result
+
+checkprops result -s 31308.8 
+checkshape result
+
+checknbshapes result -vertex 26 -edge 41 -wire 17 -face 17 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 104
+checkview -display result -3d -path ${imagedir}/${test_image}.png

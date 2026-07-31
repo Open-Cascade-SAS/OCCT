@@ -1,0 +1,12 @@
+# Original bug : pro5557
+# Date : 10mar97
+
+restore [locate_data_file pro5557_revol.brep] revol1
+restore [locate_data_file pro5557_bsurf.brep] bsurf2
+#normals bsurf2 0.27
+point pnt1 0 -0.3 0
+halfspace space2 bsurf2 0 -0.3 0
+
+bcut result revol1 space2
+checkprops result -s 0.402138
+checkview -display result -2d -s -otherwise { revol1 space2 } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC22701: Regression in 6.5.1 - Wrong visualization"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+# Data
+set scale 276.45658048904141
+set proj_X -0.8895147442817688
+set proj_Y -0.37965071201324463
+set proj_Z 0.25422060489654541
+set up_X -0.055201318114995956
+set up_Y 0.64161688089370728
+set up_Z 0.76503568887710571
+set at_X 0.248127012715387
+set at_Y 0.109238834542233
+set at_Z -1.2607059785715
+
+set x1 105
+set y1 275
+
+set x2 112
+set y2 248
+
+set Hole1_R 1
+set Hole1_G 0.76470500230789185
+set Hole1_B 0.16078400611877441
+set Hole2_R 0.68235200643539429
+set Hole2_G 0.48235198855400085
+set Hole2_B 0.078431002795696259
+
+# Start
+
+restore [locate_data_file PFS04041r1.brep] result
+vinit View1
+vdisplay result
+vfit
+
+vsetdispmode 1
+vfit
+
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+checkcolor ${x1} ${y1} ${Hole1_R} ${Hole1_G} ${Hole1_B}
+checkcolor ${x2} ${y2} ${Hole2_R} ${Hole2_G} ${Hole2_B}
+
+vdump $imagedir/${casename}.png

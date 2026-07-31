@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC26493"
+puts "============"
+puts ""
+#######################################################################
+# BRepProj_Projection failed to project a wire on a shell
+#######################################################################
+
+restore [locate_data_file bug26493_plate.brep] plate
+restore [locate_data_file bug26493_wire.brep] wire
+
+prj res wire plate 0 0 -1
+
+checkprops res_1 -l 1189.91
+checknbshapes res_1 -vertex 3 -edge 2 -wire 1
+
+smallview
+donly plate wire res_1
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

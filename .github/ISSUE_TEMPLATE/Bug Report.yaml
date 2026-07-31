@@ -1,0 +1,92 @@
+name: "Bug Report"
+description: "Report a bug related to the OCCT"
+labels: ["2. Bug", "0. New"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please provide the following information:**
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "A detailed description of the bug"
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: "What you expected to happen"
+    validations:
+      required: true
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: "What actually happened"
+    validations:
+      required: true
+  - type: textarea
+    id: sample_code
+    attributes:
+      label: Sample Code or DRAW Tcl Script
+      description: "Provide a C++ sample or DRAW Tcl script to reproduce the issue"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: "Select the operating system"
+      options:
+        - Linux
+        - Windows
+        - macOS
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: compiler
+    attributes:
+      label: Compiler
+      description: "Select the compiler"
+      options:
+        - GCC
+        - Clang
+        - MSVC
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: bitness
+    attributes:
+      label: Bitness
+      description: "Select the bitness"
+      options:
+        - 32-bit
+        - 64-bit
+      default: 1
+    validations:
+      required: true
+  - type: dropdown
+    id: occt_version
+    attributes:
+      label: OCCT Version
+      description: "Select the OCCT version where the issue was detected"
+      options:
+        - 7.4
+        - 7.5
+        - 7.6
+        - 7.7
+        - 7.8
+        - 7.9
+        - latest
+      default: 6
+    validations:
+      required: true
+  - type: textarea
+    id: additional_files
+    attributes:
+      label: Additional Files
+      description: "Attach any additional files that may help in reproducing the issue"

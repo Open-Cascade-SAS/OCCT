@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC22910"
+puts "================"
+puts ""
+#######################################################################################
+# Failure to compute iso-line for NURBS surface
+######################################################################################
+
+set BugNumber OCC22910
+
+restore [locate_data_file s.rle] s 
+mkface result s
+set exception_status [ catch { incmesh result 0.0038476968063336017 } ]
+
+if { ${exception_status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 0.110535
+checkview -display result -3d -path ${imagedir}/${test_image}.png

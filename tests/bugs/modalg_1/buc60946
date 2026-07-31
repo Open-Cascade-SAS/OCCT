@@ -1,0 +1,27 @@
+
+puts "============"
+puts "BUC60946"
+puts "============"
+
+restore [locate_data_file BUC60946_prism.brep] c 
+explode c
+checkshape c_1
+checkshape c_2
+
+renamevar c_1 sh
+renamevar c_2 pr
+bsection result sh pr
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_vertices
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_edges
+
+if { $nb_vertices != $nb_edges } {                                         
+    puts "Section is opened: Faulty shape"
+} else {
+    puts "Section is closed: OK"
+}
+checkprops result -l 52.5057 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

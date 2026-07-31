@@ -1,0 +1,66 @@
+puts "================"
+puts "OCC27190"
+puts "================"
+puts ""
+#######################################################################
+# IntPatch_ImpPrmIntersection algorithm does not split intersection curve by the seam-edge of the quadric
+#######################################################################
+
+set MaxTol 1.e-3
+set GoodNbCurv 12
+
+restore [locate_data_file bug27167_pipe.brep] a1
+pcylinder a2 100 300
+
+explode a1 f
+explode a2 f
+
+set log [bopcurves a1_2 a2_1 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+set Period [dval 2*pi]
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c2d2_$i u1 u2
+  
+  2dcvalue c2d2_$i u1 x1 y
+  2dcvalue c2d2_$i u2 x2 y
+  
+  set X1 [dval x1/$Period]
+  set X2 [dval x2/$Period]
+  
+  # Example: x1 = 5.3*pi, x2 = 12.8*pi ==> [x1, x2] intersects seam
+  if { [expr abs($X1 - $X2) > 1.0] } {
+    puts "Error: c2d2_$i intersects seam (0.0 or $Period): x1=[dval x1], x2=[dval x2]"
+    continue;
+  }
+
+  set iX1 [expr floor($X1)]
+  set iX2 [expr floor($X2)]
+  
+  # Examples:
+  #   1. x1 = 5*pi/2, x2 = 3*pi ==> [x1, x2] does not intersect seam and
+  #     ($iX1 == $iX2 == 0). I.e. if ($iX1 == $iX2) then seam is not intersected.
+  #   2. x1 = 3*pi, x2 = 5*pi ==> [x1, x2] intersects seam and
+  #     ($iX1 == 1, $iX2 == 2) ==> ($iX1 != $iX2).
+  #   3. x1 = pi/4, x2 = 2*pi ==> [x1, x2] does not intersect seam and
+  #     ($iX1 == 0, $iX2 == 1) ==> ($iX1 != $iX2) and ($X2 == $iX2 = 1)
+  if { ($iX1 != $iX2) && ($X2 != $iX2) } {
+    puts "Error: c2d2_$i intersects seam (0.0 or $Period): x1=[dval x1], x2=[dval x2]"
+  }
+}
+
+smallview
+don c_*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,85 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_UAttribute
+#
+# Testing command:   SetUAttribute
+# Testing command:   GetUAttribute
+#
+
+# ANALOG: puts "caf001-J6"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute Doc ${aLabel} ${aSetAttr1}
+
+# Add new ID to a label
+set aSetAttr2 "c73bd076-22ee-11d2-acde-080009dc4422"
+SetUAttribute Doc ${aLabel} ${aSetAttr2}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of first ID
+set IsDone [catch {GetUAttribute DDoc ${aLabel} ${aSetAttr1}} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+}
+set aGetAttr1 ""
+catch {set aGetAttr1 [GetUAttribute DDoc ${aLabel} ${aSetAttr1}]}
+if { ${aSetAttr1}!=${aGetAttr1} } {
+	puts "First ID:"
+	puts "aSetAttr1=${aSetAttr1}"
+	puts "aGetAttr1=${aGetAttr1}"
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 3)"
+}
+
+# Get a value of second ID
+set IsDone [catch {GetUAttribute DDoc ${aLabel} ${aSetAttr2}} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 4)"
+}
+set aGetAttr2 ""
+catch {set aGetAttr2 [GetUAttribute DDoc ${aLabel} ${aSetAttr2}]}
+if { ${aSetAttr2}!=${aGetAttr2} } {
+	puts "Second ID:"
+	puts "aSetAttr2=${aSetAttr2}"
+	puts "aGetAttr2=${aGetAttr2}"
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 5)"
+} else {
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

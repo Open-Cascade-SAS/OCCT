@@ -1,0 +1,119 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ShapeExtend.hxx>
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixWireMode()
+{
+  return myFixWireMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixOrientationMode()
+{
+  return myFixOrientationMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixAddNaturalBoundMode()
+{
+  return myFixAddNaturalBoundMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixMissingSeamMode()
+{
+  return myFixMissingSeamMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixSmallAreaWireMode()
+{
+  return myFixSmallAreaWireMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::RemoveSmallAreaFaceMode()
+{
+  return myRemoveSmallAreaFaceMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixIntersectingWiresMode()
+{
+  return myFixIntersectingWiresMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixLoopWiresMode()
+{
+  return myFixLoopWiresMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixSplitFaceMode()
+{
+  return myFixSplitFaceMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::AutoCorrectPrecisionMode()
+{
+  return myAutoCorrectPrecisionMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Face::FixPeriodicDegeneratedMode()
+{
+  return myFixPeriodicDegenerated;
+}
+
+//=================================================================================================
+
+inline TopoDS_Face ShapeFix_Face::Face() const
+{
+  return myFace;
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape ShapeFix_Face::Result() const
+{
+  return myResult;
+}
+
+//=================================================================================================
+
+inline bool ShapeFix_Face::Status(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, status);
+}
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Wire> ShapeFix_Face::FixWireTool()
+{
+  return myFixWire;
+}

@@ -1,0 +1,56 @@
+puts "============="
+puts "BUC60555"
+puts "CUT Case2"
+puts "============="
+cpulimit 1000
+restore [locate_data_file buc60555a.brep] part 
+checkshape part
+restore [locate_data_file buc60555b.brep] trTool1
+checkshape trTool1
+
+halfspace hs1 trTool1 20000 10000 0
+bcut cut1 part hs1
+checkshape cut1
+
+set che [checkshape cut1 r]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty : mistakes are found in checked shape by checkshape command"
+} else {
+    puts "Checking by checkshape - OK"
+}
+
+puts [maxtolerance cut1]
+
+restore [locate_data_file buc60555c.brep] trTool2
+halfspace hs2 trTool2 10000 10000 0
+bcut cut2 cut1 hs2
+
+tcopy cut2 result
+
+explode cut2 e
+mkcurve cu1 cut2_1
+mkcurve cu2 cut2_2
+mkcurve cu3 cut2_3
+mkcurve cu4 cut2_4
+
+set che [checkshape cut2 r]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty : mistakes are found in checked shape by checkshape command"
+} else {
+    puts "Checking by checkshape - OK"
+}
+
+checkshape cut2
+set tolerance [ maxtolerance cut2 ]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
+if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
+    puts "Faulty : Tolerance of shape is more then 1.0"
+} else {
+    puts "Tolerance of shape is less then 1.0"
+}
+
+checkprops result -s 3.66928e+007
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

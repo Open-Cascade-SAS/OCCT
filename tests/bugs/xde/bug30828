@@ -1,0 +1,16 @@
+puts "======="
+puts "0030828: Data Exchange - The commands getting shapes from XCAF document should be available in C++"
+puts "======="
+
+pload OCAF
+XNewDoc D
+box b1 10 10 10
+XAddShape D b1 1 
+XGetOneShape b D
+checknbshapes b -shape 34 
+box b2 10 10 10
+ttranslate b2 20 0 0 
+XAddShape D b2 1
+XGetOneShape c D
+checknbshapes c -shape 69 -compound 1
+Close D -silent

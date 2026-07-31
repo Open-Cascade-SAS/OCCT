@@ -1,0 +1,12 @@
+# Original bug : ger60038
+# Date : 25Mai98
+
+restore [locate_data_file CTO904_ger60038.rle] a
+
+tcopy a b
+tmirror b 0 0 0 1 0 0
+
+bfuse result a b
+
+checkprops result -s 19185.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

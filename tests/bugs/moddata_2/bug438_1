@@ -1,0 +1,20 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC438"
+puts " (case 1)"
+puts "========"
+
+##########################################################
+## Exception during checking of shape from OCC428
+##########################################################
+
+restore [locate_data_file OCC428.brep] result
+
+if [catch { checkshape result } catch_result] {
+    puts "Faulty OCC438 (case 1): here is checking problem"
+} else {
+    puts "OCC438 (case 1) OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

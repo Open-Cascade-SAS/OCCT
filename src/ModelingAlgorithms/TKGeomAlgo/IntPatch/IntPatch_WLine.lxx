@@ -1,0 +1,140 @@
+// Created on: 1991-05-27
+// Created by: Isabelle GRIGNON
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntPatch_Point.hxx>
+
+inline void IntPatch_WLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
+{
+  if (theIsPrepend)
+    svtx.Prepend(thePnt);
+  else
+    svtx.Append(thePnt);
+}
+
+inline void IntPatch_WLine::Replace(const int Index, const IntPatch_Point& Pnt)
+{
+  svtx(Index) = Pnt;
+}
+
+inline void IntPatch_WLine::SetFirstPoint(const int IndFirst)
+{
+  fipt = true;
+  indf = IndFirst;
+}
+
+inline void IntPatch_WLine::SetLastPoint(const int IndLast)
+{
+  lapt = true;
+  indl = IndLast;
+}
+
+inline int IntPatch_WLine::NbPnts() const
+{
+  return curv->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntPatch_WLine::Point(const int Index) const
+{
+  return curv->Value(Index);
+}
+
+inline bool IntPatch_WLine::HasFirstPoint() const
+{
+  return fipt;
+}
+
+inline bool IntPatch_WLine::HasLastPoint() const
+{
+  return lapt;
+}
+
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint() const
+{
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::LastPoint() const
+{
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
+  return svtx(indl);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint(int& Indfirst) const
+{
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
+  Indfirst = indf;
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::LastPoint(int& Indlast) const
+{
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
+  Indlast = indl;
+  return svtx(indl);
+}
+
+inline int IntPatch_WLine::NbVertex() const
+{
+  return svtx.Length();
+}
+
+inline const IntPatch_Point& IntPatch_WLine::Vertex(const int Index) const
+{
+  return svtx(Index);
+}
+
+inline IntPatch_Point& IntPatch_WLine::ChangeVertex(const int Index)
+{
+  return svtx(Index);
+}
+
+inline void IntPatch_WLine::ClearVertexes()
+{
+  svtx.Clear();
+}
+
+inline void IntPatch_WLine::RemoveVertex(const int theIndex)
+{
+  if ((theIndex < 1) || (theIndex > NbVertex()))
+    throw Standard_OutOfRange("Cannot delete not existing vertex");
+  svtx.Remove(theIndex);
+}
+
+inline void IntPatch_WLine::InsertVertexBefore(const int theIndex, const IntPatch_Point& thePnt)
+{
+  const int aNbVertexes = NbVertex();
+  int       anIndex     = std::max(theIndex, 1);
+
+  if (anIndex > aNbVertexes)
+    svtx.Append(thePnt);
+  else
+    svtx.InsertBefore(theIndex, thePnt);
+}

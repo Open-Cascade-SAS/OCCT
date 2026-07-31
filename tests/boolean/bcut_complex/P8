@@ -1,0 +1,9 @@
+# Original bug : cfe002C5
+# Date : 09 Nov 98
+
+restore [locate_data_file pro16389a.rle] base
+restore [locate_data_file pro16389b.rle] prism
+
+bcut result base prism
+checkprops result -s 312467
+checkview -display result -2d -s -otherwise { base prism } -path ${imagedir}/${test_image}.png

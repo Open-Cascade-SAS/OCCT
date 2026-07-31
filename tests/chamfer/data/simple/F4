@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : M3
+## Comment : from cts21348
+## ====================================
+
+set chamf_shape CFI_cts21348.rle
+set chamf_edge_face  [list "12  9"]
+set chamf_dist_angle [list " 1 30"]
+set chamf_dist_dist  [list " 1  1"]
+set chamf_equal_dist [list " 1   "]

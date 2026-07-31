@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC25163"
+puts "============"
+puts ""
+###############################################################################################
+# Wrong result of common operation for faces.
+###############################################################################################
+
+restore [locate_data_file bug25163_qf_25_39.brep] b
+
+explode b f
+copy b_1 b1
+copy b_2 b2
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 3417.71 
+checkshape result
+
+# Analysis of "nbshapes result"
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 11
+checkview -display result -2d -path ${imagedir}/${test_image}.png

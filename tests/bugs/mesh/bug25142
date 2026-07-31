@@ -1,0 +1,45 @@
+puts "============"
+puts "CR25142"
+puts "============"
+puts ""
+###################################################################################
+# Visualization breaks triangulation on shared solids in composite solid model
+###################################################################################
+
+# make two adjacent boxes share their common face
+box b1 20 10 10
+box b2 10 10 10 
+
+bclear
+baddobjects b1 b2
+bfillds
+bbuild r
+explode r
+
+# do all possible checks of validity
+tolerance r
+checkshape r
+bopargcheck r #F
+bopargcheck r_1 r_2 -F #F
+
+# mesh one-by-one
+incmesh r_1 0.1
+tricheck r_1
+
+# note it will be Ok if we use the same deflection here, and bad otherwise...
+incmesh r_2 0.1
+tricheck r_2
+
+# now check again mesh on r_1
+tricheck r_1
+
+# now vdisplay solids separately causing their automatic re-mesh
+tclean r
+vinit View1
+vsetdispmode 1
+vdisplay r_1
+vdisplay r_2
+tricheck r_1
+
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

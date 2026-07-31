@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC29322"
+puts "========"
+puts ""
+#################################################
+# Unify faces classification procedures in Boolean Operations
+#################################################
+
+binrestore [locate_data_file bug29322_ZF6.bin] cs
+
+explode cs
+
+bclearobjects
+bcleartools
+baddobjects cs_1
+baddtools cs_2
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -vertex 10 -edge 17 -wire 9 -face 9 -shell 1 -solid 1
+checkprops result -s 11.4557 -v 0.541187
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: the result is self-interfered"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

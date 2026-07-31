@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename wgehaeuse_solid.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 47  ( 73 )  Summary  = 47  ( 73 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 37  ( 37 )  Shell    = 58  ( 58 )  Face     = 2694  ( 2694 ) 
+STATSHAPE   : Solid    = 81  ( 81 )  Shell    = 104  ( 104 )  Face     = 3190  ( 3190 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.07893773499  (  0.07893771726 )  AvgTol   =   0.00118546284  (  0.006574793842 )
+LABELS      : N0Labels = 37  ( 37 )  N1Labels = 76  ( 76 )  N2Labels = 0  ( 0 )   TotalLabels = 113  ( 113 )   NameLabels = 113  ( 113 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

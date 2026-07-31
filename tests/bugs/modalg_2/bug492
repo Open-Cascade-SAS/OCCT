@@ -1,0 +1,23 @@
+
+puts "========="
+puts " OCC492 "
+puts "========="
+puts ""
+##############################
+## Exception occurs during fuse operation 
+##############################
+
+restore [locate_data_file OCC492a.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC492b.brep] a_2
+checkshape a_2
+
+if [catch {bfuse result a_1 a_2 } catch_result] {
+    puts "Faulty OCC492: command FUSE works wrongly"
+} else {
+    puts "OCC492 : function FUSE works without hangs up "
+}
+checkprops result -s 64.2386 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

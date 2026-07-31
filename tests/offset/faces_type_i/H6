@@ -1,0 +1,5 @@
+wedge s 4 10 10 2 2 7 7
+
+OFFSETSHAPE 1 {s_2 s_1} $calcul $type
+
+checkprops result -v 175.914

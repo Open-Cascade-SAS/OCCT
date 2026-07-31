@@ -1,0 +1,14 @@
+puts "============="
+puts "0032964: Modeling Algorithms - 2d Offset sometimes 'split' straight edges"
+puts "============="
+
+pload MODELING
+vertex p1 -90 40 0
+vertex p2 40 40 0
+vertex p3 40 -90 0
+edge e1 p1 p2
+edge e2 p2 p3
+wire w1 e1 e2
+openoffset oo w1 1 40
+checknbshapes oo_1 -vertex 3 -edge 2 -wire 1 -shape 6
+checkview -display oo_1 -2d -path ${imagedir}/${test_image}.png

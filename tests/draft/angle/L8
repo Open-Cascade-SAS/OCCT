@@ -1,0 +1,9 @@
+# Original bug : pro13199
+# Date : 26 Nov 98
+
+restore [locate_data_file CFE903_pro13ggy.rle] base
+
+explode base face
+
+depouille result base 1 0 0 base_9 3 0 0 0 1 0 0  base_15 3 0 0 0 1 0 0
+checkprops result -s 1.12567e+06

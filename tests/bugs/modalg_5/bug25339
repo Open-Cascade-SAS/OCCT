@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC25339"
+puts "=========="
+puts ""
+######################################################################################
+# Draw command "mkoffset" does not take into account "intersection" mode on faces
+######################################################################################
+
+restore [locate_data_file bug25339_face1.brep] a
+mkoffset r a 1 1. i
+axo
+fit
+renamevar r_1 result
+
+checkprops result -l 36.1042 
+checkshape result 
+checksection result
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

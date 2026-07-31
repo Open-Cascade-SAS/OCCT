@@ -1,0 +1,13 @@
+#######################################################################
+puts "OCC26931: Exporting a face throws an e x c e p t i o n"
+#######################################################################
+
+# restore initial face
+restore [locate_data_file bug26931.brep] face
+set square 6416.6
+# export face to IGES 
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges face $aTmpFile
+# import back to check similarity
+igesbrep $aTmpFile result *
+file delete -force ${aTmpFile}

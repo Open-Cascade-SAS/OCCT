@@ -1,0 +1,66 @@
+puts "============"
+puts "CR25436"
+puts "Test case check work of the new commands vselnext and vselprev"
+puts "============"
+puts ""
+
+proc check_highlighting { theEdgeIdx theCoords } {
+  set aNext [expr ($theEdgeIdx + 1) % 3]
+  set aNextNext [expr ($theEdgeIdx + 2) % 3]
+  set hiColor [vreadpixel [lindex $theCoords [expr $theEdgeIdx * 2] ] [lindex $theCoords [expr $theEdgeIdx * 2 + 1] ] name]
+  set nextColor [vreadpixel [lindex $theCoords [expr $aNext * 2] ] [lindex $theCoords [expr $aNext * 2 + 1] ] name]
+  set nextNextColor [vreadpixel [lindex $theCoords [expr $aNextNext * 2] ] [lindex $theCoords [expr $aNextNext * 2 + 1] ] name]
+
+  if {$hiColor == "CYAN 1" && $nextColor == "YELLOW 1" && $nextNextColor == "YELLOW 1"} {
+    return true
+  } else {
+    return false
+  }
+}
+
+set coords { }
+# e10_x, e10_y
+lappend coords 94
+lappend coords 140
+# e2_x, e2_y
+lappend coords 103
+lappend coords 60
+# e1_x, e1_y
+lappend coords 29
+lappend coords 208
+
+box b 10 10 10
+vdisplay b
+vfit
+vselmode 2 1
+vmoveto 30 101
+
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 10"
+}
+
+vselnext
+if { ![check_highlighting 2 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 1 after vselnext call"
+}
+vselnext
+if { ![check_highlighting 1 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 2 after vselnext call"
+}
+vselnext
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 10 after vselnext call"
+}
+
+vselprev
+if { ![check_highlighting 1 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 2 after vselprev call"
+}
+vselprev
+if { ![check_highlighting 2 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 1 after vselprev call"
+}
+vselprev
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 10 after vselprev call"
+}

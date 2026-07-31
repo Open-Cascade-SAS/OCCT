@@ -1,0 +1,15 @@
+#box b -30 -30 -30 60 60 30
+#ptorus f 35 10 90 180
+#explode b F
+#explode f F
+#glue s f b f_2 b_6
+#trotate s 0 0 0 1 1 0 -40
+#trotate s 0 0 0 0 0 1 -10
+#save s 6_E1234.draw
+
+restore [locate_data_file CFI_6_e12fgz.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 4*SCALE2 s_13
+
+checkprops result -s 18559.7

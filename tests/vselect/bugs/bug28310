@@ -1,0 +1,12 @@
+puts "==========="
+puts "OCC28310: Visualization - crash on iteration through detected interactive objects"
+puts "==========="
+puts ""
+
+pload VISUALIZATION QAcommands
+
+vinit View1
+
+# Sequence of C++ commands crashes the application
+OCC28310
+vdump ${imagedir}/${casename}.png

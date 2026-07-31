@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC26281"
+puts "========"
+puts ""
+####################################################################
+# BRepCheck_Edge::Tolerance() raises exception on the given shapes
+####################################################################
+
+restore [locate_data_file OCC26281_a_6213.brep] a
+computetolerance a

@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC184"
+puts "========"
+#
+## Bad IGES/BREP translation
+#
+puts "FaceBrep must be identical FaceIGES!!!"
+puts "========"
+
+restore [locate_data_file OCC184.brep] FaceBrep 
+checkshape FaceBrep
+
+catch {exec rm ${imagedir}/OCC184.igs}
+brepiges FaceBrep ${imagedir}/OCC184.igs
+catch {exec chmod 777 ${imagedir}/OCC184.igs}
+
+igesbrep ${imagedir}/OCC184.igs FaceIGES *
+
+sewing result FaceIGES
+
+checkshape result
+checknbshapes result -ref [nbshapes FaceBrep]
+checkprops result -s -equal FaceBrep
+
+checkmaxtol result -ref 9.9999999999999995e-008
+checknbshapes result -shell 0
+checkfreebounds result 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

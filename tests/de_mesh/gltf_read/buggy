@@ -1,0 +1,406 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_Buggy.glb]
+XGetOneShape s D
+checknbshapes s -face 148 -compound 48
+checktrinfo s -tri 531955 -nod 412855
+
+set THE_REF_DUMP {
+INSTANCE COMPOUND 0:1:1:1 (refers to 0:1:1:2) "bug30691_Buggy.glb"
+
+ASSEMBLY COMPOUND 0:1:1:2 "bug30691_Buggy.glb"
+	INSTANCE FACE 0:1:1:2:1 (refers to 0:1:1:3) "body_1"
+	INSTANCE FACE 0:1:1:2:2 (refers to 0:1:1:4) "body_3"
+	INSTANCE FACE 0:1:1:2:3 (refers to 0:1:1:5) "body_5"
+	INSTANCE FACE 0:1:1:2:4 (refers to 0:1:1:6) "body_7"
+	INSTANCE FACE 0:1:1:2:5 (refers to 0:1:1:7) "body_9"
+	INSTANCE FACE 0:1:1:2:6 (refers to 0:1:1:8) "body_11"
+	INSTANCE FACE 0:1:1:2:7 (refers to 0:1:1:9) "body_13"
+	INSTANCE FACE 0:1:1:2:8 (refers to 0:1:1:10) "body_15"
+	INSTANCE FACE 0:1:1:2:9 (refers to 0:1:1:11) "body_17"
+	INSTANCE FACE 0:1:1:2:10 (refers to 0:1:1:12) "body_19"
+	INSTANCE FACE 0:1:1:2:11 (refers to 0:1:1:13) "body_21"
+	INSTANCE FACE 0:1:1:2:12 (refers to 0:1:1:14) "body_23"
+	INSTANCE FACE 0:1:1:2:13 (refers to 0:1:1:15) "body_25"
+	INSTANCE FACE 0:1:1:2:14 (refers to 0:1:1:16) "body_27"
+	INSTANCE FACE 0:1:1:2:15 (refers to 0:1:1:17) "body_29"
+	INSTANCE FACE 0:1:1:2:16 (refers to 0:1:1:18) "body_31"
+	INSTANCE FACE 0:1:1:2:17 (refers to 0:1:1:19) "body_33"
+	INSTANCE FACE 0:1:1:2:18 (refers to 0:1:1:20) "body_35"
+	INSTANCE FACE 0:1:1:2:19 (refers to 0:1:1:21) "body_37"
+	INSTANCE FACE 0:1:1:2:20 (refers to 0:1:1:22) "body_39"
+	INSTANCE FACE 0:1:1:2:21 (refers to 0:1:1:23) "body_41"
+	INSTANCE FACE 0:1:1:2:22 (refers to 0:1:1:24) "body_43"
+	INSTANCE FACE 0:1:1:2:23 (refers to 0:1:1:25) "body_45"
+	INSTANCE FACE 0:1:1:2:24 (refers to 0:1:1:26) "body_47"
+	INSTANCE FACE 0:1:1:2:25 (refers to 0:1:1:27) "body_49"
+	INSTANCE FACE 0:1:1:2:26 (refers to 0:1:1:28) "body_51"
+	INSTANCE FACE 0:1:1:2:27 (refers to 0:1:1:29) "body_52"
+	INSTANCE FACE 0:1:1:2:28 (refers to 0:1:1:29) "body_52"
+	INSTANCE FACE 0:1:1:2:29 (refers to 0:1:1:29) "body_52"
+	INSTANCE FACE 0:1:1:2:30 (refers to 0:1:1:30) "body_53"
+	INSTANCE FACE 0:1:1:2:31 (refers to 0:1:1:30) "body_53"
+	INSTANCE COMPOUND 0:1:1:2:32 (refers to 0:1:1:31) "prt_1_12_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:33 (refers to 0:1:1:32) "prt_1_12_SOLIDS_3"
+	INSTANCE COMPOUND 0:1:1:2:34 (refers to 0:1:1:33) "prt_1_16_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:35 (refers to 0:1:1:34) "prt_1_16_SOLIDS_3"
+	INSTANCE FACE 0:1:1:2:36 (refers to 0:1:1:35) "body_54"
+	INSTANCE FACE 0:1:1:2:37 (refers to 0:1:1:35) "body_54"
+	INSTANCE FACE 0:1:1:2:38 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:39 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:40 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:41 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:42 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:43 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:44 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:45 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:46 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:47 (refers to 0:1:1:36) "body_55"
+	INSTANCE FACE 0:1:1:2:48 (refers to 0:1:1:37) "body_56"
+	INSTANCE FACE 0:1:1:2:49 (refers to 0:1:1:38) "body_57"
+	INSTANCE FACE 0:1:1:2:50 (refers to 0:1:1:38) "body_57"
+	INSTANCE FACE 0:1:1:2:51 (refers to 0:1:1:38) "body_57"
+	INSTANCE FACE 0:1:1:2:52 (refers to 0:1:1:38) "body_57"
+	INSTANCE FACE 0:1:1:2:53 (refers to 0:1:1:39) "body_58"
+	INSTANCE FACE 0:1:1:2:54 (refers to 0:1:1:39) "body_58"
+	INSTANCE COMPOUND 0:1:1:2:55 (refers to 0:1:1:40) "prt_1_6_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:56 (refers to 0:1:1:41) "prt_1_6_SOLIDS_3"
+	INSTANCE FACE 0:1:1:2:57 (refers to 0:1:1:42) "body_59"
+	INSTANCE FACE 0:1:1:2:58 (refers to 0:1:1:42) "body_59"
+	INSTANCE FACE 0:1:1:2:59 (refers to 0:1:1:42) "body_59"
+	INSTANCE FACE 0:1:1:2:60 (refers to 0:1:1:42) "body_59"
+	INSTANCE FACE 0:1:1:2:61 (refers to 0:1:1:43) "body_60"
+	INSTANCE FACE 0:1:1:2:62 (refers to 0:1:1:44) "body_61"
+	INSTANCE FACE 0:1:1:2:63 (refers to 0:1:1:45) "body_62"
+	INSTANCE FACE 0:1:1:2:64 (refers to 0:1:1:45) "body_62"
+	INSTANCE FACE 0:1:1:2:65 (refers to 0:1:1:45) "body_62"
+	INSTANCE COMPOUND 0:1:1:2:66 (refers to 0:1:1:46) "prt_2_8_t_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:67 (refers to 0:1:1:46) "prt_2_8_t_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:68 (refers to 0:1:1:47) "prt_2_8_t_SOLIDS_4"
+	INSTANCE FACE 0:1:1:2:69 (refers to 0:1:1:48) "body_63"
+	INSTANCE FACE 0:1:1:2:70 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:71 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:72 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:73 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:74 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:75 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:76 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:77 (refers to 0:1:1:49) "body_64"
+	INSTANCE FACE 0:1:1:2:78 (refers to 0:1:1:50) "body_65"
+	INSTANCE FACE 0:1:1:2:79 (refers to 0:1:1:51) "body_66"
+	INSTANCE FACE 0:1:1:2:80 (refers to 0:1:1:51) "body_66"
+	INSTANCE FACE 0:1:1:2:81 (refers to 0:1:1:51) "body_66"
+	INSTANCE COMPOUND 0:1:1:2:82 (refers to 0:1:1:52) "technic_1_1_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:83 (refers to 0:1:1:52) "technic_1_1_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:84 (refers to 0:1:1:52) "technic_1_1_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:85 (refers to 0:1:1:53) "technic_1_1_p_SOLIDS_5"
+	INSTANCE FACE 0:1:1:2:86 (refers to 0:1:1:54) "body_67"
+	INSTANCE COMPOUND 0:1:1:2:87 (refers to 0:1:1:55) "technic_1_2_side_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:88 (refers to 0:1:1:56) "technic_1_2_side_p_SOLIDS_3"
+	INSTANCE FACE 0:1:1:2:89 (refers to 0:1:1:57) "body_68"
+	INSTANCE FACE 0:1:1:2:90 (refers to 0:1:1:58) "body_69"
+	INSTANCE COMPOUND 0:1:1:2:91 (refers to 0:1:1:59) "technic_bump_support_p_SOLIDS_1"
+	INSTANCE FACE 0:1:1:2:92 (refers to 0:1:1:60) "body_70"
+	INSTANCE FACE 0:1:1:2:93 (refers to 0:1:1:60) "body_70"
+	INSTANCE FACE 0:1:1:2:94 (refers to 0:1:1:60) "body_70"
+	INSTANCE COMPOUND 0:1:1:2:95 (refers to 0:1:1:61) "technic_shaft_x10_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:96 (refers to 0:1:1:62) "technic_shaft_x4_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:97 (refers to 0:1:1:62) "technic_shaft_x4_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:98 (refers to 0:1:1:63) "technic_shaft_x4_SOLIDS_4"
+	INSTANCE COMPOUND 0:1:1:2:99 (refers to 0:1:1:64) "technic_shaft_x8_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:100 (refers to 0:1:1:65) "technic_shaft_x8_SOLIDS_3"
+	INSTANCE FACE 0:1:1:2:101 (refers to 0:1:1:66) "body_71"
+	INSTANCE FACE 0:1:1:2:102 (refers to 0:1:1:67) "body_72"
+	INSTANCE FACE 0:1:1:2:103 (refers to 0:1:1:67) "body_72"
+	INSTANCE FACE 0:1:1:2:104 (refers to 0:1:1:67) "body_72"
+	INSTANCE FACE 0:1:1:2:105 (refers to 0:1:1:67) "body_72"
+	INSTANCE FACE 0:1:1:2:106 (refers to 0:1:1:67) "body_72"
+	INSTANCE FACE 0:1:1:2:107 (refers to 0:1:1:68) "body_73"
+	INSTANCE FACE 0:1:1:2:108 (refers to 0:1:1:68) "body_73"
+	INSTANCE FACE 0:1:1:2:109 (refers to 0:1:1:68) "body_73"
+	INSTANCE FACE 0:1:1:2:110 (refers to 0:1:1:68) "body_73"
+	INSTANCE FACE 0:1:1:2:111 (refers to 0:1:1:68) "body_73"
+	INSTANCE FACE 0:1:1:2:112 (refers to 0:1:1:69) "body_74"
+	INSTANCE FACE 0:1:1:2:113 (refers to 0:1:1:69) "body_74"
+	INSTANCE FACE 0:1:1:2:114 (refers to 0:1:1:69) "body_74"
+	INSTANCE COMPOUND 0:1:1:2:115 (refers to 0:1:1:70) "x_prt_1_2_a_u_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:2:116 (refers to 0:1:1:71) "x_prt_1_2_a_u_SOLIDS_3"
+	INSTANCE COMPOUND 0:1:1:2:117 (refers to 0:1:1:72) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:118 (refers to 0:1:1:75) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:119 (refers to 0:1:1:78) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:120 (refers to 0:1:1:82) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:121 (refers to 0:1:1:86) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:122 (refers to 0:1:1:107) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:123 (refers to 0:1:1:108) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:124 (refers to 0:1:1:109) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:125 (refers to 0:1:1:110) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:126 (refers to 0:1:1:111) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:127 (refers to 0:1:1:112) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:128 (refers to 0:1:1:113) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:129 (refers to 0:1:1:114) "Compound"
+PART FACE 0:1:1:3 "body_1"
+PART FACE 0:1:1:4 "body_3"
+PART FACE 0:1:1:5 "body_5"
+PART FACE 0:1:1:6 "body_7"
+PART FACE 0:1:1:7 "body_9"
+PART FACE 0:1:1:8 "body_11"
+PART FACE 0:1:1:9 "body_13"
+PART FACE 0:1:1:10 "body_15"
+PART FACE 0:1:1:11 "body_17"
+PART FACE 0:1:1:12 "body_19"
+PART FACE 0:1:1:13 "body_21"
+PART FACE 0:1:1:14 "body_23"
+PART FACE 0:1:1:15 "body_25"
+PART FACE 0:1:1:16 "body_27"
+PART FACE 0:1:1:17 "body_29"
+PART FACE 0:1:1:18 "body_31"
+PART FACE 0:1:1:19 "body_33"
+PART FACE 0:1:1:20 "body_35"
+PART FACE 0:1:1:21 "body_37"
+PART FACE 0:1:1:22 "body_39"
+PART FACE 0:1:1:23 "body_41"
+PART FACE 0:1:1:24 "body_43"
+PART FACE 0:1:1:25 "body_45"
+PART FACE 0:1:1:26 "body_47"
+PART FACE 0:1:1:27 "body_49"
+PART FACE 0:1:1:28 "body_51"
+PART FACE 0:1:1:29 "body_52"
+PART FACE 0:1:1:30 "body_53"
+PART COMPOUND 0:1:1:31 "prt_1_12_SOLIDS_1"
+	FACE 0:1:1:31:1
+	FACE 0:1:1:31:2
+	FACE 0:1:1:31:3
+PART COMPOUND 0:1:1:32 "prt_1_12_SOLIDS_3"
+	FACE 0:1:1:32:1
+	FACE 0:1:1:32:2
+	FACE 0:1:1:32:3
+PART COMPOUND 0:1:1:33 "prt_1_16_SOLIDS_1"
+	FACE 0:1:1:33:1
+	FACE 0:1:1:33:2
+	FACE 0:1:1:33:3
+PART COMPOUND 0:1:1:34 "prt_1_16_SOLIDS_3"
+	FACE 0:1:1:34:1
+	FACE 0:1:1:34:2
+	FACE 0:1:1:34:3
+PART FACE 0:1:1:35 "body_54"
+PART FACE 0:1:1:36 "body_55"
+PART FACE 0:1:1:37 "body_56"
+PART FACE 0:1:1:38 "body_57"
+PART FACE 0:1:1:39 "body_58"
+PART COMPOUND 0:1:1:40 "prt_1_6_SOLIDS_1"
+	FACE 0:1:1:40:1
+	FACE 0:1:1:40:2
+PART COMPOUND 0:1:1:41 "prt_1_6_SOLIDS_3"
+	FACE 0:1:1:41:1
+	FACE 0:1:1:41:2
+PART FACE 0:1:1:42 "body_59"
+PART FACE 0:1:1:43 "body_60"
+PART FACE 0:1:1:44 "body_61"
+PART FACE 0:1:1:45 "body_62"
+PART COMPOUND 0:1:1:46 "prt_2_8_t_SOLIDS_1"
+	FACE 0:1:1:46:1
+	FACE 0:1:1:46:2
+PART COMPOUND 0:1:1:47 "prt_2_8_t_SOLIDS_4"
+	FACE 0:1:1:47:1
+	FACE 0:1:1:47:2
+PART FACE 0:1:1:48 "body_63"
+PART FACE 0:1:1:49 "body_64"
+PART FACE 0:1:1:50 "body_65"
+PART FACE 0:1:1:51 "body_66"
+PART COMPOUND 0:1:1:52 "technic_1_1_p_SOLIDS_1"
+	FACE 0:1:1:52:1
+	FACE 0:1:1:52:2
+PART COMPOUND 0:1:1:53 "technic_1_1_p_SOLIDS_5"
+	FACE 0:1:1:53:1
+	FACE 0:1:1:53:2
+PART FACE 0:1:1:54 "body_67"
+PART COMPOUND 0:1:1:55 "technic_1_2_side_p_SOLIDS_1"
+	FACE 0:1:1:55:1
+	FACE 0:1:1:55:2
+PART COMPOUND 0:1:1:56 "technic_1_2_side_p_SOLIDS_3"
+	FACE 0:1:1:56:1
+	FACE 0:1:1:56:2
+PART FACE 0:1:1:57 "body_68"
+PART FACE 0:1:1:58 "body_69"
+PART COMPOUND 0:1:1:59 "technic_bump_support_p_SOLIDS_1"
+	FACE 0:1:1:59:1
+	FACE 0:1:1:59:2
+PART FACE 0:1:1:60 "body_70"
+PART COMPOUND 0:1:1:61 "technic_shaft_x10_SOLIDS_1"
+	FACE 0:1:1:61:1
+	FACE 0:1:1:61:2
+PART COMPOUND 0:1:1:62 "technic_shaft_x4_SOLIDS_1"
+	FACE 0:1:1:62:1
+	FACE 0:1:1:62:2
+PART COMPOUND 0:1:1:63 "technic_shaft_x4_SOLIDS_4"
+	FACE 0:1:1:63:1
+	FACE 0:1:1:63:2
+PART COMPOUND 0:1:1:64 "technic_shaft_x8_SOLIDS_1"
+	FACE 0:1:1:64:1
+	FACE 0:1:1:64:2
+PART COMPOUND 0:1:1:65 "technic_shaft_x8_SOLIDS_3"
+	FACE 0:1:1:65:1
+	FACE 0:1:1:65:2
+PART FACE 0:1:1:66 "body_71"
+PART FACE 0:1:1:67 "body_72"
+PART FACE 0:1:1:68 "body_73"
+PART FACE 0:1:1:69 "body_74"
+PART COMPOUND 0:1:1:70 "x_prt_1_2_a_u_SOLIDS_1"
+	FACE 0:1:1:70:1
+	FACE 0:1:1:70:2
+PART COMPOUND 0:1:1:71 "x_prt_1_2_a_u_SOLIDS_3"
+	FACE 0:1:1:71:1
+	FACE 0:1:1:71:2
+ASSEMBLY COMPOUND 0:1:1:72 "Compound"
+	INSTANCE COMPOUND 0:1:1:72:1 (refers to 0:1:1:73) "tech_light_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:72:2 (refers to 0:1:1:74) "technic_2_2_l_p_SOLIDS_1"
+PART COMPOUND 0:1:1:73 "tech_light_p_SOLIDS_1"
+	FACE 0:1:1:73:1
+	FACE 0:1:1:73:2
+PART COMPOUND 0:1:1:74 "technic_2_2_l_p_SOLIDS_1"
+	FACE 0:1:1:74:1
+	FACE 0:1:1:74:2
+ASSEMBLY COMPOUND 0:1:1:75 "Compound"
+	INSTANCE COMPOUND 0:1:1:75:1 (refers to 0:1:1:76) "tech_light_p_SOLIDS_3"
+	INSTANCE COMPOUND 0:1:1:75:2 (refers to 0:1:1:77) "technic_2_2_l_p_SOLIDS_3"
+PART COMPOUND 0:1:1:76 "tech_light_p_SOLIDS_3"
+	FACE 0:1:1:76:1
+	FACE 0:1:1:76:2
+PART COMPOUND 0:1:1:77 "technic_2_2_l_p_SOLIDS_3"
+	FACE 0:1:1:77:1
+	FACE 0:1:1:77:2
+ASSEMBLY COMPOUND 0:1:1:78 "Compound"
+	INSTANCE FACE 0:1:1:78:1 (refers to 0:1:1:79) "body_76"
+	INSTANCE FACE 0:1:1:78:2 (refers to 0:1:1:80) "body_78"
+	INSTANCE FACE 0:1:1:78:3 (refers to 0:1:1:81) "body_79"
+	INSTANCE COMPOUND 0:1:1:78:4 (refers to 0:1:1:64) "technic_shaft_x8_SOLIDS_1"
+PART FACE 0:1:1:79 "body_76"
+PART FACE 0:1:1:80 "body_78"
+PART FACE 0:1:1:81 "body_79"
+ASSEMBLY COMPOUND 0:1:1:82 "Compound"
+	INSTANCE FACE 0:1:1:82:1 (refers to 0:1:1:83) "body_81"
+	INSTANCE FACE 0:1:1:82:2 (refers to 0:1:1:84) "body_82"
+	INSTANCE COMPOUND 0:1:1:82:3 (refers to 0:1:1:85) "technic_shaft_x6_SOLIDS_1"
+	INSTANCE FACE 0:1:1:82:4 (refers to 0:1:1:66) "body_71"
+	INSTANCE FACE 0:1:1:82:5 (refers to 0:1:1:66) "body_71"
+	INSTANCE FACE 0:1:1:82:6 (refers to 0:1:1:66) "body_71"
+PART FACE 0:1:1:83 "body_81"
+PART FACE 0:1:1:84 "body_82"
+PART COMPOUND 0:1:1:85 "technic_shaft_x6_SOLIDS_1"
+	FACE 0:1:1:85:1
+	FACE 0:1:1:85:2
+ASSEMBLY COMPOUND 0:1:1:86 "Compound"
+	INSTANCE FACE 0:1:1:86:1 (refers to 0:1:1:87) "body_84"
+	INSTANCE FACE 0:1:1:86:2 (refers to 0:1:1:88) "body_86"
+	INSTANCE FACE 0:1:1:86:3 (refers to 0:1:1:89) "body_88"
+	INSTANCE FACE 0:1:1:86:4 (refers to 0:1:1:90) "body_90"
+	INSTANCE FACE 0:1:1:86:5 (refers to 0:1:1:91) "body_92"
+	INSTANCE FACE 0:1:1:86:6 (refers to 0:1:1:92) "body_94"
+	INSTANCE FACE 0:1:1:86:7 (refers to 0:1:1:93) "body_96"
+	INSTANCE COMPOUND 0:1:1:86:8 (refers to 0:1:1:94) "technic_driver_arm_joint_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:9 (refers to 0:1:1:94) "technic_driver_arm_joint_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:10 (refers to 0:1:1:94) "technic_driver_arm_joint_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:11 (refers to 0:1:1:95) "technic_driver_arm_joint_p_SOLIDS_5"
+	INSTANCE FACE 0:1:1:86:12 (refers to 0:1:1:96) "body_97"
+	INSTANCE FACE 0:1:1:86:13 (refers to 0:1:1:96) "body_97"
+	INSTANCE FACE 0:1:1:86:14 (refers to 0:1:1:96) "body_97"
+	INSTANCE FACE 0:1:1:86:15 (refers to 0:1:1:97) "body_98"
+	INSTANCE FACE 0:1:1:86:16 (refers to 0:1:1:97) "body_98"
+	INSTANCE FACE 0:1:1:86:17 (refers to 0:1:1:97) "body_98"
+	INSTANCE FACE 0:1:1:86:18 (refers to 0:1:1:98) "body_99"
+	INSTANCE FACE 0:1:1:86:19 (refers to 0:1:1:99) "body_100"
+	INSTANCE COMPOUND 0:1:1:86:20 (refers to 0:1:1:100) "technic_driver_head_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:21 (refers to 0:1:1:101) "technic_driver_helmet_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:22 (refers to 0:1:1:102) "technic_driver_hip_joint_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:23 (refers to 0:1:1:103) "technic_driver_shin_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:24 (refers to 0:1:1:104) "technic_driver_shin_p_SOLIDS_3"
+	INSTANCE COMPOUND 0:1:1:86:25 (refers to 0:1:1:105) "technic_driver_thigh_l_p_SOLIDS_1"
+	INSTANCE COMPOUND 0:1:1:86:26 (refers to 0:1:1:106) "technic_driver_torso_p_SOLIDS_1"
+PART FACE 0:1:1:87 "body_84"
+PART FACE 0:1:1:88 "body_86"
+PART FACE 0:1:1:89 "body_88"
+PART FACE 0:1:1:90 "body_90"
+PART FACE 0:1:1:91 "body_92"
+PART FACE 0:1:1:92 "body_94"
+PART FACE 0:1:1:93 "body_96"
+PART COMPOUND 0:1:1:94 "technic_driver_arm_joint_p_SOLIDS_1"
+	FACE 0:1:1:94:1
+	FACE 0:1:1:94:2
+PART COMPOUND 0:1:1:95 "technic_driver_arm_joint_p_SOLIDS_5"
+	FACE 0:1:1:95:1
+	FACE 0:1:1:95:2
+PART FACE 0:1:1:96 "body_97"
+PART FACE 0:1:1:97 "body_98"
+PART FACE 0:1:1:98 "body_99"
+PART FACE 0:1:1:99 "body_100"
+PART COMPOUND 0:1:1:100 "technic_driver_head_p_SOLIDS_1"
+	FACE 0:1:1:100:1
+	FACE 0:1:1:100:2
+	FACE 0:1:1:100:3
+PART COMPOUND 0:1:1:101 "technic_driver_helmet_p_SOLIDS_1"
+	FACE 0:1:1:101:1
+	FACE 0:1:1:101:2
+PART COMPOUND 0:1:1:102 "technic_driver_hip_joint_p_SOLIDS_1"
+	FACE 0:1:1:102:1
+	FACE 0:1:1:102:2
+PART COMPOUND 0:1:1:103 "technic_driver_shin_p_SOLIDS_1"
+	FACE 0:1:1:103:1
+	FACE 0:1:1:103:2
+PART COMPOUND 0:1:1:104 "technic_driver_shin_p_SOLIDS_3"
+	FACE 0:1:1:104:1
+	FACE 0:1:1:104:2
+PART COMPOUND 0:1:1:105 "technic_driver_thigh_l_p_SOLIDS_1"
+	FACE 0:1:1:105:1
+	FACE 0:1:1:105:2
+PART COMPOUND 0:1:1:106 "technic_driver_torso_p_SOLIDS_1"
+	FACE 0:1:1:106:1
+	FACE 0:1:1:106:2
+PART COMPOUND 0:1:1:107 "Compound"
+	FACE 0:1:1:107:1 "body_102"
+	FACE 0:1:1:107:2 "body_104"
+	FACE 0:1:1:107:3 "body_106"
+	FACE 0:1:1:107:4 "body_107"
+	FACE 0:1:1:107:5 "body_107"
+	FACE 0:1:1:107:6 "body_108"
+	FACE 0:1:1:107:7 "body_72"
+	FACE 0:1:1:107:8 "body_72"
+PART COMPOUND 0:1:1:108 "Compound"
+	FACE 0:1:1:108:1 "body_109"
+	FACE 0:1:1:108:2 "body_107"
+	FACE 0:1:1:108:3 "body_107"
+	FACE 0:1:1:108:4 "body_107"
+	FACE 0:1:1:108:5 "body_108"
+	FACE 0:1:1:108:6 "body_108"
+	FACE 0:1:1:108:7 "body_72"
+	FACE 0:1:1:108:8 "body_72"
+PART COMPOUND 0:1:1:109 "Compound"
+	FACE 0:1:1:109:1 "body_111"
+	FACE 0:1:1:109:2 "body_113"
+	FACE 0:1:1:109:3 "body_72"
+PART COMPOUND 0:1:1:110 "Compound"
+	FACE 0:1:1:110:1 "body_114"
+	FACE 0:1:1:110:2 "body_72"
+	FACE 0:1:1:110:3 "body_115"
+PART COMPOUND 0:1:1:111 "Compound"
+	FACE 0:1:1:111:1 "body_114"
+	FACE 0:1:1:111:2 "body_72"
+	FACE 0:1:1:111:3 "body_115"
+PART COMPOUND 0:1:1:112 "Compound"
+	FACE 0:1:1:112:1 "body_114"
+	FACE 0:1:1:112:2 "body_72"
+	FACE 0:1:1:112:3 "body_115"
+PART COMPOUND 0:1:1:113 "Compound"
+	FACE 0:1:1:113:1 "body_114"
+	FACE 0:1:1:113:2 "body_72"
+	FACE 0:1:1:113:3 "body_115"
+PART COMPOUND 0:1:1:114 "Compound"
+	FACE 0:1:1:114:1 "body_114"
+	FACE 0:1:1:114:2 "body_72"
+	FACE 0:1:1:114:3 "body_115"
+
+Free Shapes: 1
+INSTANCE COMPOUND  0:1:1:1 (refers to 0:1:1:2) "bug30691_Buggy.glb"
+}
+checkXDump D $THE_REF_DUMP

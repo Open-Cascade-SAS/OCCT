@@ -1,0 +1,36 @@
+puts "================"
+puts "OCC23012: Detection gives incorrect results"
+puts "================"
+puts ""
+
+set BugNumber OCC23012
+
+catch {pload XDE}
+
+set x1 210
+set y1 184
+
+set x2 207
+set y2 182
+
+stepread [locate_data_file OCC23012-Sample_3.stp] a *
+stepread [locate_data_file OCC23012-Sample_9.stp] b *
+vdisplay a_1 b_1
+vsetdispmode a_1 1
+vsetdispmode b_1 1
+vselprops -pixtol 0
+
+set ColorBefore [vreadpixel ${x1} ${y1} rgb]
+
+vmoveto ${x2} ${y2}
+
+set ColorAfter [vreadpixel ${x2} ${y2} rgb]
+
+if { "$ColorBefore" == "$ColorAfter" } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+vfit
+vdump ${imagedir}/${casename}.png

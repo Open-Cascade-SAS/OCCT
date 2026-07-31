@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC24249"
+puts "============"
+puts ""
+######################################################
+# Crash on ShapeFix_Shape
+######################################################
+
+pload XDE
+
+restore [locate_data_file bug24249_ShapeFix_Fail.brep] a
+
+fixshape result a

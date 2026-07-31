@@ -1,0 +1,17 @@
+# cts20088
+
+restore [locate_data_file cts20088_base.brep] base
+restore [locate_data_file contour_pkv.rle] cont
+
+explode base face
+
+mksurface p54 base_54
+mkface f54 p54
+mksurface p55 base_55
+mkface f55 p55
+
+featprism base cont cont 1 0 0 1 1
+featperform prism result f54 f55
+
+checkprops result -s 4685.62
+

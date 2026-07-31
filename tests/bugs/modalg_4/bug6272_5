@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+
+explode a1
+
+bop a1_1 a1_2
+bopfuse result
+
+checkprops result -s 6552.67 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 116 -edge 176 -wire 72 -face 70 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 445
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

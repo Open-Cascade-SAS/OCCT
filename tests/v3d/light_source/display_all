@@ -1,0 +1,63 @@
+puts "================================="
+puts "0031704: Visualization - add an interactive object AIS_LightSource representing a light source"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1 -width 1280 -height 720
+vlight -clear
+vbackground -color GRAY
+vrenderparams -shadingModel PBR
+box b 10 10 10 30 30 30
+vdisplay b -dispMode 1
+vaspects b -material Brass
+vfit
+
+puts "=== Add light sources and display their presentations ==="
+vlight AMBIENT    -type AMBIENT -color WHITE -display
+vlight DIR        -type DIRECTIONAL -dir 0 1 0 -color GREEN -display
+vlight SPOT       -type SPOTLIGHT  -pos 50 25 25 -dir -1 0 0 -intensity 1000000000 -color RED -display
+vlight POSITIONAL -type POSITIONAL -pos 25 25 50 -intensity 10000000000 -range 20 -color BLUE -display
+
+vdump $imagedir/${casename}_def.png
+
+puts "=== Turn off light sources ==="
+set mouse_pick_amb  {105 97}
+set mouse_pick_spot {897 508}
+set mouse_pick_pos  {640 62}
+set mouse_pick_dir  {330 536}
+vselect {*}$mouse_pick_amb
+vselect {*}$mouse_pick_spot
+vselect {*}$mouse_pick_pos
+vselect {*}$mouse_pick_dir
+vdump $imagedir/${casename}_off.png
+
+set aColor_spot [vreadpixel 796 454 rgb name]
+set aColor_pos  [vreadpixel 630 177 rgb name]
+if { "$aColor_spot" != "LIGHTSALMON3" }    { puts "Error: expected color near the light spot is LIGHTSALMON3" }
+if { "$aColor_pos"  != "THISTLE4"} { puts "Error: expected color near the positional light is THISTLE4" }
+
+puts "=== Delete presentations of light sources ==="
+vremove AMBIENT DIR SPOT POSITIONAL
+
+puts "=== Display all light sources ==="
+vlight -change 0 -display
+vlight -change 1 -display
+vlight -change 2 -display -showRange 1
+vlight -change 3 -display -showRange 1
+vdump $imagedir/${casename}_on.png
+
+puts "=== Turn on light sources ==="
+vselect {*}$mouse_pick_amb
+vselect {*}$mouse_pick_spot
+vselect {*}$mouse_pick_pos
+vselect {*}$mouse_pick_dir
+set aColor_spot [vreadpixel 796 454 rgb name]
+set aColor_pos  [vreadpixel 630 177 rgb name]
+set aColor_dir  [vreadpixel 453 453 rgb name]
+if { "$aColor_spot" != "CORAL" }         { puts "Error: expected color near the light spot is CORAL" }
+if { "$aColor_pos"  != "LIGHTSLATEBLUE"} { puts "Error: expected color near the positional light is LIGHTSLATEBLUE" }
+if { "$aColor_dir"  != "BURLYWOOD3" }    { puts "Error: expected color near the directional light is BURLYWOOD3" }
+
+#vlight -clear
+#vdump $imagedir/${casename}_cleared.png

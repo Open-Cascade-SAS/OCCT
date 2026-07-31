@@ -1,0 +1,6 @@
+restore [locate_data_file CFI_11_d2ffd.rle]  s
+tscale s 0 0 0 SCALE1 
+explode s E 
+blend result s 20*SCALE1 s_16
+
+checkprops result -s 1.85726e+06

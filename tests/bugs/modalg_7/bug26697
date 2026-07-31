@@ -1,0 +1,15 @@
+puts "================"
+puts "bug26697: BRepFeat_MakePrism returns empty compound"
+puts "================"
+puts ""
+
+restore [locate_data_file bug26697_aBase.brep] aB
+restore [locate_data_file bug26697_aFrom.brep] aF
+restore [locate_data_file bug26697_aTo.brep] aT
+
+featprism aB aB aB 0 -1 0 2 1
+featperform prism result aF aT
+
+checknbshapes result -face 3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

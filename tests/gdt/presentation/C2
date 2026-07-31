@@ -1,0 +1,16 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR11111 ALL: Error on writing file"
+
+set filename bug33484.stp
+
+set ref_data {
+Centre of mass: 9.0027001005108751 9.2917129312715954 -5.5470782136393613
+Mass: 8176.9848537285679
+
+}
+
+set ref_data_write {
+Centre of mass: 9.4672345259051625 8.9728431848515342 -5.6865065278091702
+Mass: 8083.3051701204768
+
+}

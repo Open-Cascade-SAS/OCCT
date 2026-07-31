@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC24391: Erased AIS object can not be displayed in AIS_InteractiveContext after AIS_InteractiveContext::Remove"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box a 1 1 1
+vdisplay a
+verase a
+vremove -context a
+vdisplay a
+vfit
+
+vaspects -setwidth 5
+vmoveto 204 205
+if {  "[vreadpixel 204 205 rgb name]" != "CYAN"  } {
+  puts "Error : Erased object is not displayed after its removing."
+}
+
+vdump $imagedir/${casename}_with_lines.png

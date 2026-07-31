@@ -1,0 +1,5 @@
+cpulimit 1000
+puts "TODO OCC26018 ALL: Tcl Exception:"
+puts "TODO OCC26018 ALL: Error: sh59D36470_copy is not a valid shape"
+puts "TODO ALL: TEST INCOMPLETE"
+source [locate_data_file 20000_asm-gene.asm.6.gdml.tcl]

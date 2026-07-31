@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC25632: IGES writer looses face orientation"
+puts "============"
+puts ""
+
+plane p 0 0 0 0 0 1 1 0 0
+mkface face p 0 100 0 100
+
+smallview
+donly face
+
+setflags face locked
+nurbsconvert r face
+mksurface s r
+
+mkface f s 10 20 30 40
+
+treverse f
+normals f 100
+
+xwd ${imagedir}/${casename}_1.png
+
+set aTmpFile ${imagedir}/${casename}.igs
+testwriteiges $aTmpFile f
+testreadiges  $aTmpFile ff
+file delete -force ${aTmpFile}
+
+donly ff
+
+normals ff 100
+
+xwd ${imagedir}/${casename}_2.png

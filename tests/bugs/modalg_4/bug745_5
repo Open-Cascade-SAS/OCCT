@@ -1,0 +1,25 @@
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+############################
+# Not correct creation of bisector loci:
+############################
+
+restore [locate_data_file OCC745_pocket4.brep] w 
+checkshape w
+plane p
+mkface result p w
+topoload result
+drawcont
+
+smallview -2D-
+2dfit
+
+mat
+result
+
+checkprops result -s 5844.21 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

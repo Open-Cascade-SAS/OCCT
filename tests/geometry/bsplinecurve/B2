@@ -1,0 +1,12 @@
+bsplinecurve b1 3 3 0 4 3 1 4 4  0 0 0 1  1 2 0 1   2 3 0 1  3 2 0 1   1 0 0 1
+copy b1 b2
+pl
+pl
+pl
+pl
+repeat 10 {
+    rotate b2 0 0 0 1 0 0 10
+    copy b2 .
+}
+renamevar b2 result
+checklength result -l 6.8205704232858668

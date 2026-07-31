@@ -1,0 +1,297 @@
+// Created on: 1999-04-26
+// Created by: Andrey BETENEV
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//    gka  01.06.99 S4205: changing order of splitting surface/curves for converting to bezier
+
+#include <Bnd_Box2d.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_SplitSurface.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
+
+//=================================================================================================
+
+ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide()
+    : myStatus(0)
+{
+  mySegmentMode      = true;
+  mySplitSurfaceTool = new ShapeUpgrade_SplitSurface;
+  myWireDivideTool   = new ShapeUpgrade_WireDivide;
+}
+
+//=================================================================================================
+
+ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide(const TopoDS_Face& F)
+    : myStatus(0)
+{
+  mySegmentMode      = true;
+  mySplitSurfaceTool = new ShapeUpgrade_SplitSurface;
+  myWireDivideTool   = new ShapeUpgrade_WireDivide;
+  Init(F);
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_FaceDivide::Init(const TopoDS_Face& F)
+{
+  myResult = myFace = F;
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_FaceDivide::SetSurfaceSegmentMode(const bool Segment)
+{
+  mySegmentMode = Segment;
+}
+
+//=================================================================================================
+
+bool ShapeUpgrade_FaceDivide::Perform(const double theArea)
+{
+  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  if (myFace.IsNull())
+  {
+    return false;
+  }
+  if (Context().IsNull())
+  {
+    SetContext(new ShapeBuild_ReShape);
+  }
+  myResult = myFace;
+  SplitSurface(theArea);
+  SplitCurves();
+  return Status(ShapeExtend_DONE);
+}
+
+//=================================================================================================
+
+bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
+{
+  occ::handle<ShapeUpgrade_SplitSurface> SplitSurf = GetSplitSurfaceTool();
+  if (SplitSurf.IsNull())
+  {
+    return false;
+  }
+
+  // myResult should be face; else return with FAIL
+  if (myResult.IsNull() || myResult.ShapeType() != TopAbs_FACE)
+  {
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
+    return false;
+  }
+  TopoDS_Face face = TopoDS::Face(myResult);
+
+  TopLoc_Location           L;
+  occ::handle<Geom_Surface> surf;
+  surf = BRep_Tool::Surface(face, L);
+
+  double Uf, Ul, Vf, Vl;
+  //  BRepTools::UVBounds(myFace,Uf,Ul,Vf,Vl);
+  ShapeAnalysis::GetFaceUVBounds(face, Uf, Ul, Vf, Vl);
+  if (Precision::IsInfinite(Uf) || Precision::IsInfinite(Ul) || Precision::IsInfinite(Vf)
+      || Precision::IsInfinite(Vl))
+  {
+    return false;
+  }
+
+  // make little extension to ensure all pcurves fit inside new surface bounds
+  double aSUf, aSUl, aSVf, aSVl;
+  surf->Bounds(aSUf, aSUl, aSVf, aSVl);
+  if (!surf->IsUPeriodic())
+  {
+    double dU = (Ul - Uf) * 0.01;
+    if (Uf > aSUf)
+    {
+      Uf -= std::min(dU, Uf - aSUf);
+    }
+    if (Ul < aSUl)
+    {
+      Ul += std::min(dU, aSUl - Ul);
+    }
+  }
+  if (!surf->IsVPeriodic())
+  {
+    double dV = (Vl - Vf) * 0.01;
+    if (Vf > aSVf)
+    {
+      Vf -= std::min(dV, Vf - aSVf);
+    }
+    if (Vl < aSVl)
+    {
+      Vl += std::min(dV, aSVl - Vl);
+    }
+  }
+
+  SplitSurf->Init(surf, Uf, Ul, Vf, Vl, theArea);
+  SplitSurf->Perform(mySegmentMode);
+
+  // If surface was neither split nor modified, do nothing
+  if (!SplitSurf->Status(ShapeExtend_DONE))
+  {
+    return false;
+  }
+
+  // if surface was modified, force copying all vertices (and edges as consequence)
+  // to protect original shape from increasing tolerance after SameParameter
+  if (SplitSurf->Status(ShapeExtend_DONE3))
+  {
+    for (TopExp_Explorer exp(face, TopAbs_VERTEX); exp.More(); exp.Next())
+    {
+      if (Context()->IsRecorded(exp.Current()))
+      {
+        continue;
+      }
+      // smh#8
+      TopoDS_Shape  emptyCopied = exp.Current().EmptyCopied();
+      TopoDS_Vertex V           = TopoDS::Vertex(emptyCopied);
+      Context()->Replace(exp.Current(), V);
+    }
+  }
+
+  occ::handle<ShapeExtend_CompositeSurface> Grid = SplitSurf->ResSurfaces();
+
+  ShapeFix_ComposeShell CompShell;
+  CompShell.Init(Grid, L, face, Precision());
+  CompShell.SetContext(Context());
+  CompShell.SetMaxTolerance(MaxTolerance());
+  occ::handle<ShapeUpgrade_WireDivide> SplitWire = GetWireDivideTool();
+  if (!SplitWire.IsNull())
+  {
+    CompShell.SetTransferParamTool(GetWireDivideTool()->GetTransferParamTool());
+  }
+  CompShell.Perform();
+  if (CompShell.Status(ShapeExtend_FAIL) || !CompShell.Status(ShapeExtend_DONE))
+  {
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
+
+  myResult = CompShell.Result();
+  myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+
+  return true;
+}
+
+//=================================================================================================
+
+bool ShapeUpgrade_FaceDivide::SplitCurves()
+{
+  occ::handle<ShapeUpgrade_WireDivide> SplitWire = GetWireDivideTool();
+  if (SplitWire.IsNull())
+  {
+    return false;
+  }
+
+  SplitWire->SetMaxTolerance(MaxTolerance());
+  for (TopExp_Explorer explf(myResult, TopAbs_FACE); explf.More(); explf.Next())
+  {
+    TopoDS_Shape S = Context()->Apply(explf.Current(), TopAbs_SHAPE);
+
+    // S should be face; else return with FAIL
+    if (S.IsNull() || S.ShapeType() != TopAbs_FACE)
+    {
+      myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
+      return false;
+    }
+    TopoDS_Face F = TopoDS::Face(S);
+
+    SplitWire->SetFace(F);
+    for (TopoDS_Iterator wi(F, false); wi.More(); wi.Next())
+    {
+      // TopoDS_Wire wire = TopoDS::Wire ( wi.Value() );
+      //  modifications already defined in context are to be applied inside SplitWire
+      if (wi.Value().ShapeType() != TopAbs_WIRE)
+      {
+        continue;
+      }
+      TopoDS_Wire wire = TopoDS::Wire(wi.Value());
+      SplitWire->Load(wire);
+      SplitWire->SetContext(Context());
+      SplitWire->Perform();
+      if (SplitWire->Status(ShapeExtend_FAIL))
+      {
+        myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      }
+      if (SplitWire->Status(ShapeExtend_DONE))
+      {
+        myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+        Context()->Replace(wire, SplitWire->Wire());
+      }
+    }
+  }
+  myResult = Context()->Apply(myResult);
+  return Status(ShapeExtend_DONE);
+}
+
+//=================================================================================================
+
+TopoDS_Shape ShapeUpgrade_FaceDivide::Result() const
+{
+  return myResult;
+}
+
+//=================================================================================================
+
+bool ShapeUpgrade_FaceDivide::Status(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, status);
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_FaceDivide::SetSplitSurfaceTool(
+  const occ::handle<ShapeUpgrade_SplitSurface>& splitSurfaceTool)
+{
+  mySplitSurfaceTool = splitSurfaceTool;
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_FaceDivide::SetWireDivideTool(
+  const occ::handle<ShapeUpgrade_WireDivide>& wireDivideTool)
+{
+  myWireDivideTool = wireDivideTool;
+}
+
+//=================================================================================================
+
+occ::handle<ShapeUpgrade_SplitSurface> ShapeUpgrade_FaceDivide::GetSplitSurfaceTool() const
+{
+  return mySplitSurfaceTool;
+}
+
+//=================================================================================================
+
+occ::handle<ShapeUpgrade_WireDivide> ShapeUpgrade_FaceDivide::GetWireDivideTool() const
+{
+  return myWireDivideTool;
+}

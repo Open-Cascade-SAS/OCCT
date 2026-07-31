@@ -1,0 +1,87 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Modif JCV 10/01/91
+
+#include <gp_Elips2d.hxx>
+
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+
+void gp_Elips2d::Coefficients(double& A, double& B, double& C, double& D, double& E, double& F)
+  const
+{
+  double DMin = minorRadius * minorRadius;
+  double DMaj = majorRadius * majorRadius;
+  if (DMin <= gp::Resolution() && DMaj <= gp::Resolution())
+  {
+    A = B = C = D = E = F = 0.0;
+  }
+  else
+  {
+    gp_Trsf2d T;
+    T.SetTransformation(pos.XAxis());
+    double T11 = T.Value(1, 1);
+    double T12 = T.Value(1, 2);
+    double T13 = T.Value(1, 3);
+    if (DMin <= gp::Resolution())
+    {
+      A = T11 * T11;
+      B = T12 * T12;
+      C = T11 * T12;
+      D = T11 * T13;
+      E = T12 * T13;
+      F = T13 * T13 - DMaj;
+    }
+    else
+    {
+      double T21 = T.Value(2, 1);
+      double T22 = T.Value(2, 2);
+      double T23 = T.Value(2, 3);
+      A          = (T11 * T11 / DMaj) + (T21 * T21 / DMin);
+      B          = (T12 * T12 / DMaj) + (T22 * T22 / DMin);
+      C          = (T11 * T12 / DMaj) + (T21 * T22 / DMin);
+      D          = (T11 * T13 / DMaj) + (T21 * T23 / DMin);
+      E          = (T12 * T13 / DMaj) + (T22 * T23 / DMin);
+      F          = (T13 * T13 / DMaj) + (T23 * T23 / DMin) - 1.0;
+    }
+  }
+}
+
+void gp_Elips2d::Mirror(const gp_Pnt2d& P) noexcept
+{
+  pos.Mirror(P);
+}
+
+gp_Elips2d gp_Elips2d::Mirrored(const gp_Pnt2d& P) const noexcept
+{
+  gp_Elips2d E = *this;
+  E.pos.Mirror(P);
+  return E;
+}
+
+void gp_Elips2d::Mirror(const gp_Ax2d& A) noexcept
+{
+  pos.Mirror(A);
+}
+
+gp_Elips2d gp_Elips2d::Mirrored(const gp_Ax2d& A) const noexcept
+{
+  gp_Elips2d E = *this;
+  E.pos.Mirror(A);
+  return E;
+}

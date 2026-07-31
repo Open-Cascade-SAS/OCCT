@@ -1,0 +1,19 @@
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+
+puts "============"
+puts "FRA62476"
+puts ""                                                                                  
+puts "=================================="                                                
+puts "It takes visual check for this BUG"                                                
+puts "=================================="                                                
+puts ""
+
+restore [locate_data_file fra62476a.brep] result
+checkshape result
+
+tclean result
+incmesh result .1
+triangles result
+
+checktrinfo result -tri 93 -nod 56
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC22923"
+puts "============"
+#######################################################################
+# The command "intersect" throws an exception
+#######################################################################
+
+set BugNumber OCC22923
+
+restore [locate_data_file bug22923_Face-2_7.brep] b1 
+restore [locate_data_file bug22923_Face-7_0.brep] b2 
+
+set exception_status 0
+
+mksurface s1 b1
+mksurface s2 b2
+
+set msg [ intersect i s1 s2 ]
+set index [ lsearch $msg Exception ]
+
+if {$index > -1} {
+  set exception_status 1 }   
+
+if { ${exception_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

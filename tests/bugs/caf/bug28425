@@ -1,0 +1,58 @@
+puts "==========="
+puts "OCC28425"
+puts "==========="
+puts ""
+############################################################
+# Open/save NamedShape changes order of shapes
+############################################################
+
+pload QAcommands
+set aTestFileBin $imagedir/${casename}.cbf
+set aTestFileXml $imagedir/${casename}.xml
+
+vertex v 1 2 3
+box b 10 20 30
+
+# Test bin document
+NewDocument D1 BinOcaf
+BuildNamedShape D1 0:1 PRIMITIVE v b
+GetNewShapes D1 0:1 s
+set info [whatis s_1]
+if { [regexp "SOLID" $info] != 1 } {
+    puts "Error: first shape should be solid"
+} else {
+    puts "OK: order of shapes is correct"
+}
+SaveAs D1 ${aTestFileBin}
+Close D1
+Open ${aTestFileBin} D2
+GetNewShapes D2 0:1 s
+set info [whatis s_1]
+if { [regexp "SOLID" $info] != 1 } {
+    puts "Error: first shape should be solid"
+} else {
+    puts "OK: order of shapes is correct"
+}
+Close D2
+
+# Test xml document
+NewDocument D1 XmlOcaf
+BuildNamedShape D1 0:1 PRIMITIVE v b
+GetNewShapes D1 0:1 s
+set info [whatis s_1]
+if { [regexp "SOLID" $info] != 1 } {
+    puts "Error: first shape should be solid"
+} else {
+    puts "OK: order of shapes is correct"
+}
+SaveAs D1 ${aTestFileXml}
+Close D1
+Open ${aTestFileXml} D2
+GetNewShapes D2 0:1 s
+set info [whatis s_1]
+if { [regexp "SOLID" $info] != 1 } {
+    puts "Error: first shape should be solid"
+} else {
+    puts "OK: order of shapes is correct"
+}
+Close D2

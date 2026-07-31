@@ -1,0 +1,194 @@
+// Created on: 1991-12-20
+// Created by: Remi GILET
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//========================================================================
+// CREATION D UNE LIGNE TANGENTE A UNE COURBE ET PARALLELE A UNE DROITE. +
+//========================================================================
+
+#include <GccEnt_BadQualifier.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_FunctionTanObl.hxx>
+#include <Geom2dGcc_IsParallel.hxx>
+#include <Geom2dGcc_Lin2dTanOblIter.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <math_FunctionRoot.hxx>
+#include <StdFail_NotDone.hxx>
+
+Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qualified1,
+                                                     const gp_Lin2d&         TheLin,
+                                                     const double            Param1,
+                                                     const double            TolAng,
+                                                     const double            Angle)
+    : par2sol(0.0),
+      pararg2(0.0)
+{
+
+  par1sol  = 0.;
+  pararg1  = 0.;
+  WellDone = false;
+  if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
+        || Qualified1.IsUnqualified()))
+  {
+    throw GccEnt_BadQualifier();
+    return;
+  }
+  Paral2                  = false;
+  Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
+  double              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
+  double              U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
+  gp_Dir2d            Dir(TheLin.Direction());
+  double              A = Dir.X();
+  double              B = Dir.Y();
+  gp_Dir2d            TheDirection(Dir);
+  if (std::abs(Angle) > std::abs(TolAng))
+  {
+    if (std::abs(std::abs(Angle) - M_PI) <= std::abs(TolAng))
+    {
+      Paral2       = true;
+      TheDirection = Dir.Reversed();
+    }
+    else if (std::abs(Angle - M_PI / 2) <= std::abs(TolAng))
+    {
+      TheDirection = gp_Dir2d(-B, A);
+    }
+    else if (std::abs(Angle + M_PI / 2) <= std::abs(TolAng))
+    {
+      TheDirection = gp_Dir2d(B, -A);
+    }
+    else
+    {
+      TheDirection = gp_Dir2d(A * std::cos(Angle) - B * std::sin(Angle),
+                              A * std::sin(Angle) + B * std::cos(Angle));
+    }
+  }
+  else
+  {
+    Paral2 = true;
+  }
+  Geom2dGcc_FunctionTanObl func(Cu1, TheDirection);
+  math_FunctionRoot        sol(func,
+                        Param1,
+                        Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(TolAng)),
+                        U1,
+                        U2,
+                        100);
+  if (sol.IsDone())
+  {
+    double   Usol = sol.Root();
+    gp_Pnt2d Origine;
+    gp_Vec2d Vect1, Vect2;
+    Geom2dGcc_CurveTool::D2(Cu1, Usol, Origine, Vect1, Vect2);
+    double sign1 = Vect1.XY().Dot(TheDirection.XY());
+    double sign2 = Vect2.XY().Crossed(TheDirection.XY());
+    if (Qualified1.IsUnqualified() || (Qualified1.IsEnclosing() && sign2 <= 0.)
+        || (Qualified1.IsOutside() && sign1 <= 0. && sign2 >= 0.)
+        || (Qualified1.IsEnclosed() && sign1 >= 0. && sign2 >= 0.))
+    {
+      WellDone   = true;
+      linsol     = gp_Lin2d(Origine, TheDirection);
+      pnttg1sol  = Origine;
+      qualifier1 = Qualified1.Qualifier();
+      pararg1    = Usol;
+      par1sol    = 0.;
+      if (!Paral2)
+      {
+        IntAna2d_AnaIntersection Intp(linsol, TheLin);
+        if (Intp.IsDone() && !Intp.IsEmpty())
+        {
+          if (Intp.NbPoints() == 1)
+          {
+            pntint2sol = Intp.Point(1).Value();
+            par2sol    = gp_Vec2d(linsol.Direction()).Dot(gp_Vec2d(linsol.Location(), pntint2sol));
+            pararg2    = gp_Vec2d(TheLin.Direction()).Dot(gp_Vec2d(TheLin.Location(), pntint2sol));
+          }
+        }
+      }
+    }
+  }
+}
+
+bool Geom2dGcc_Lin2dTanOblIter::IsDone() const
+{
+  return WellDone;
+}
+
+gp_Lin2d Geom2dGcc_Lin2dTanOblIter::ThisSolution() const
+{
+  if (!WellDone)
+  {
+    throw StdFail_NotDone();
+  }
+
+  return linsol;
+}
+
+void Geom2dGcc_Lin2dTanOblIter::WhichQualifier(GccEnt_Position& Qualif1) const
+{
+  if (!WellDone)
+  {
+    throw StdFail_NotDone();
+  }
+  else
+  {
+    Qualif1 = qualifier1;
+  }
+}
+
+bool Geom2dGcc_Lin2dTanOblIter::IsParallel2() const
+{
+  return Paral2;
+}
+
+void Geom2dGcc_Lin2dTanOblIter::Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const
+{
+  if (!WellDone)
+  {
+    throw StdFail_NotDone();
+  }
+  else
+  {
+    ParSol = par1sol;
+    ParArg = pararg1;
+    PntSol = gp_Pnt2d(pnttg1sol);
+  }
+}
+
+void Geom2dGcc_Lin2dTanOblIter::Intersection2(double&   ParSol,
+                                              double&   ParArg,
+                                              gp_Pnt2d& PntSol) const
+{
+  if (!WellDone)
+  {
+    throw StdFail_NotDone();
+  }
+  else if (Paral2)
+  {
+    throw Geom2dGcc_IsParallel();
+  }
+  else
+  {
+    PntSol = pntint2sol;
+    ParSol = par2sol;
+    ParArg = pararg2;
+  }
+}

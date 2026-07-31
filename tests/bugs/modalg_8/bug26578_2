@@ -1,0 +1,12 @@
+puts "REQUIRED ALL: ERROR. Can not trim edges."
+
+puts "================================"
+puts "0026578: Modeling Algorithm - Exceptions in offset operation with intersection"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug26578_plate2.brep] s
+
+offsetparameter 1e-7 p i
+offsetload s -30
+offsetperform r

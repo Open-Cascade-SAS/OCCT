@@ -1,0 +1,12 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : K6
+## Comment : from cts20970
+## ====================================
+
+restore [locate_data_file CFI_cts20970.rle] a
+explode a e
+blend result a 1 a_108
+# radius of 0.8 is OK
+
+checkprops result -s 2614.55

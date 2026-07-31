@@ -1,0 +1,32 @@
+puts "========================"
+puts " OCC429 "
+puts "========================"
+puts ""
+#######################################
+## Projection for a point on a surface works wrong
+#######################################
+
+restore [locate_data_file OCC429a.draw] a 
+restore [locate_data_file OCC429b.draw] b
+
+intersect i a b
+
+cvalue i_2 0.43213918 x y z
+point p x y z
+proj b x y z
+
+set err1 [string range [dump ext_1] 55 64]
+set err2 [string range [dump ext_2] 55 64]
+set err3 [string range [dump ext_3] 55 64]
+set err4 [string range [dump ext_4] 55 64]
+set err5 [string range [dump ext_5] 55 64]
+set err6 [string range [dump ext_6] 55 64]
+
+if { $err1 != "Parameters" || $err2 != "Parameters" || $err3 != "Parameters" || $err4 != "Parameters" || $err5 != "Parameters" || $err6 != "Parameters" } {
+    puts " OCC286 OK : Projection for a point on a surface works properly"
+} else {
+    puts "Faulty OCC429 : Attempt to project the point on surface gives incorrect result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

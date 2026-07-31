@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC29890"
+puts "=========="
+puts ""
+##############################
+# Problem in Expand Compounds
+##############################
+pload ALL
+
+# Open file and expand
+XOpen [locate_data_file bug29890.xbf] D
+XExpand D 1 0:1:1:1238
+
+# Check
+set children [Children D 0:1:1:1239]
+if {$children != "0:1:1:1239:1 0:1:1:1239:3 "} {
+  puts "Error: wrong expand compounds."
+}
+Close D

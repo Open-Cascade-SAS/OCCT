@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj7_pm5-ug-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 184 )  Summary  = 3  ( 184 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 236  ( 236 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 236  ( 236 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.004380869792  (  0.01854047103 )  AvgTol   =  0.0001630183528  (  0.0006019917644 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 34  ( 34 )  N2Labels = 0  ( 0 )   TotalLabels = 35  ( 35 )   NameLabels = 1  ( 1 )   ColorLabels = 35  ( 35 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 11  ( 11 )
+COLORS      : Colors   = DARKORCHID FIREBRICK3 GRAY40 GRAY77 LIGHTPINK3 LIGHTSEAGREEN OLIVEDRAB OLIVEDRAB4 ROYALBLUE SIENNA3 TAN4  ( DARKORCHID FIREBRICK3 GRAY40 GRAY77 LIGHTPINK3 LIGHTSEAGREEN OLIVEDRAB OLIVEDRAB4 ROYALBLUE SIENNA3 TAN4 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 50  ( 50 )
+
+}

@@ -1,0 +1,61 @@
+puts "================"
+puts "OCC23176"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of cylinder and cone produces open curve
+#######################################################################
+
+restore [locate_data_file bug23176_surface1_draw.draw] s1
+restore [locate_data_file bug23176_surface2_draw.draw] s2
+
+intersect result s1 s2
+
+set che [whatis result]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "result" exists
+  renamevar result result_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis result_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+   
+    bounds result_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs result_$ic s1 U1 U2 10 2.0e-7
+    xdistcs result_$ic s2 U1 U2 10 2.0e-7
+    
+    mkedge ee result_$ic
+    baddobjects ee
+    incr ic
+  }
+}
+
+# Check gaps in result
+bfillds
+bbuild rw
+
+checksection rw -r 0
+checkmaxtol rw -min_tol 2.0e-7
+
+checknbshapes rw -edge 4 -vertex 4
+
+smallview
+don result*
+fit
+display s1 s2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

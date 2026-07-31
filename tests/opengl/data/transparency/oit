@@ -1,0 +1,65 @@
+puts "========"
+puts "0031571: Visualization, TKOpenGl - provide depth peeling OIT option"
+puts "========"
+
+pload MODELING VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
+# create objects
+pcylinder c 0.5 1
+box b1 -1 -1 -0.5 1 1 1
+box b2  0 0 -0.5 1 1 1
+box b3 -1  0 -0.5 1 1 1
+
+vclear
+vinit View1
+vdisplay -dispMode 1 c b1 b2 b3
+vaspects c  -color yellow -transparency 0.4
+vaspects b1 -color blue   -transparency 0.8
+vaspects b2 -color green  -transparency 0.0
+vaspects b3 -color red    -transparency 0.5
+vfit
+vaxo
+vzoom 0.9
+
+if { ![string match "OpenGL ES 2.0*" [vglinfo VERSION]] && ![string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  vraytrace 1
+  vrenderparams -rayDepth 10
+  vdump $imagedir/${casename}_raytrace.png
+}
+
+vraytrace 0
+vrenderparams -oit off
+vdump $imagedir/${casename}_nooit.png
+vrenderparams -oit weight 0.0
+vdump $imagedir/${casename}_weight.png
+vrenderparams -oit peeling 4
+vdump $imagedir/${casename}_peel.png
+
+# test opaqueAlpha option - result should be the same
+vcaps -opaqueAlpha 1
+vdump $imagedir/${casename}_peel_rgb.png
+vcaps -opaqueAlpha 0
+
+# VTK viewer, just for comparison
+set hasVtk 0
+if { [vdriver -default] == "TKOpenGl" } {
+  set hasVtk 1
+  if { [catch { pload VIS }] } { set hasVtk 0 }
+}
+if { $hasVtk == 1 } {
+  ivtkinit -msaa 0 -srgb 0
+  ivtkdisplay c b1 b2 b3
+  ivtkaxo
+  ivtksetdispmode 1
+  ivtksetcolor c yellow
+  ivtksetcolor b1 blue
+  ivtksetcolor b2 green
+  ivtksetcolor b3 red
+  ivtksettransparency c  0.4
+  ivtksettransparency b1 0.8
+  ivtksettransparency b2 0.0
+  ivtksettransparency b3 0.5
+  ivtkrenderparams -depthPeeling 4
+  ivtkdump $imagedir/${casename}_vtk.png
+}

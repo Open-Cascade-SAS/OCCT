@@ -1,0 +1,20 @@
+puts "================"
+puts "0031449: Mesh - BRepMesh works too long and produces many free nodes on a valid face"
+puts "================"
+puts ""
+
+pload XDE
+
+set aTmpFile ${imagedir}/${casename}.stp
+ReadStep D [locate_data_file bug31301.stp]
+WriteStep D ${aTmpFile}
+param xstep.cascade.unit M
+ReadStep Q ${aTmpFile}
+XShow Q
+vfit
+vsetdispmode 1
+
+XGetOneShape result Q
+checktrinfo result -tri 9097 -nod 6634
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

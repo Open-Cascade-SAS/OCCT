@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC24532"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakePipeShell raises an exception in a case with auxiliary guide
+#######################################################################
+
+polyline w1 -4 -3 0 4 -3 0 4 3 0 -4 3 0 -4 -3 0
+polyline w2 4 3 80 -4 3 80 -4 -3 80 4 -3 80 4 3 80
+polyline sp 0 0 0 0 0 80
+
+cylinder cc 0 0 0 0 0 1 -4 -3 0 5
+line ll 0 0 pi 80
+trim ll ll 0 sqrt(pi*pi+80*80)
+explode w1 v
+explode w2 v
+mkedge ee ll cc w1_1 w2_1
+wire gg ee
+
+mksweep sp
+setsweep -G gg 0 0
+addsweep w1
+buildsweep result -S
+
+checkprops result -s 2343.46 
+checkshape result
+
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 34
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC27079"
+puts "============"
+puts ""
+##################################################################
+# Bad approximation of intersection curves with variable curvature
+##################################################################
+
+restore [locate_data_file bug27079_s3.draw] s3
+restore [locate_data_file bug27079_s4.draw] s4
+
+smallview
+donly s4
+fit
+
+intersect result s3 s4
+
+checklength result_1 -l 4.2844275555620923
+checklength result_2 -l 4.2844275531269931
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

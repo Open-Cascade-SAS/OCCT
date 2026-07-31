@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500"
+   height="300"
+   id="svg4656"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="visualization_image020.svg">
+  <defs
+     id="defs4658" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="408.79147"
+     inkscape:cy="193.9858"
+     inkscape:document-units="px"
+     inkscape:current-layer="g9010"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="976"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata4661">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-87.454854,-696.05721)">
+    <g
+       id="g9010"
+       transform="translate(12.75,28.5)">
+      <g
+         id="g4235"
+         transform="translate(9.102291,335.55339)">
+        <g
+           id="g4226">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 261.39235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4222"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4224"
+             d="m 126.21266,412.7994 7.86719,4.13281 135.1875,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <rect
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
+             id="rect4218"
+             width="135.25"
+             height="20"
+             x="126.20485"
+             y="392.80722" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4231"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4233"
+             sodipodi:role="line">AIS_Shape::SetColor</tspan></text>
+      </g>
+      <g
+         transform="translate(241.03331,337.84807)"
+         id="g4243">
+        <g
+           id="g4245">
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4247"
+             d="m 307.14235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.21266,412.7994 7.86719,4.13281 180.9375,0 -7.88187,-4.23084 z"
+             id="path4249"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.20485,392.80722 181,0 0,20 -181,0 z"
+             id="rect4251"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="133.70485"
+           y="405.80722"
+           id="text4253"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan4255"
+             x="133.70485"
+             y="405.80722"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'">Prs3d_Drawer::FreeBoundaryAspect</tspan></text>
+      </g>
+      <g
+         id="g4258"
+         transform="translate(241.03331,372.18141)">
+        <g
+           id="g4260">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 320.14235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4262"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4264"
+             d="m 126.21266,412.7994 7.86719,4.13281 193.9375,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4266"
+             d="m 126.20485,392.80722 194,0 0,20 -194,0 z"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4268"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4270"
+             sodipodi:role="line">Prs3d_Drawer::UnFreeBoundaryAspect</tspan></text>
+      </g>
+      <g
+         id="g4272"
+         transform="translate(241.03331,406.51476)">
+        <g
+           id="g4274">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 263.89235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4276"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4278"
+             d="m 126.21266,412.7994 7.86719,4.13281 137.6875,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4280"
+             d="m 126.20485,392.80722 137.75,0 0,20 -137.75,0 z"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4282"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4284"
+             sodipodi:role="line">Prs3d_Drawer::UIsoAspect</tspan></text>
+      </g>
+      <g
+         transform="translate(241.03331,440.84807)"
+         id="g4286">
+        <g
+           id="g4288">
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4290"
+             d="m 263.89235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.21266,412.7994 7.86719,4.13281 137.6875,0 -7.88187,-4.23084 z"
+             id="path4292"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.20485,392.80722 137.75,0 0,20 -137.75,0 z"
+             id="path4294"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="133.70485"
+           y="405.80722"
+           id="text4296"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan4298"
+             x="133.70485"
+             y="405.80722"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'">Prs3d_Drawer::VIsoAspect</tspan></text>
+      </g>
+      <g
+         id="g4300"
+         transform="translate(241.03331,475.18141)">
+        <g
+           id="g4302">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 278.64235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4304"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4306"
+             d="m 126.21266,412.7994 7.86719,4.13281 152.4375,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4308"
+             d="m 126.20485,392.80722 152.5,0 0,20 -152.5,0 z"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4310"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4312"
+             sodipodi:role="line">Prs3d_Drawer::ShadingAspect</tspan></text>
+      </g>
+      <g
+         transform="translate(241.03331,509.51473)"
+         id="g4314">
+        <g
+           id="g4316">
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4318"
+             d="m 282.89235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.21266,412.7994 7.86719,4.13281 156.6875,0 -7.88187,-4.23084 z"
+             id="path4320"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.20485,392.80722 156.75,0 0,20 -156.75,0 z"
+             id="path4322"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="133.70485"
+           y="405.80722"
+           id="text4324"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan4326"
+             x="133.70485"
+             y="405.80722"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'">Prs3d_Drawer::SeenLineAspect</tspan></text>
+      </g>
+      <g
+         id="g4334"
+         transform="translate(241.03331,543.84807)">
+        <g
+           id="g4336">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 292.64235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4338"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4340"
+             d="m 126.21266,412.7994 7.86719,4.13281 166.4375,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4342"
+             d="m 126.20485,392.80722 166.5,0 0,20 -166.5,0 z"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4344"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4346"
+             sodipodi:role="line">Prs3d_Drawer::HiddenLineAspect</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="82.119072"
+         y="740.68671"
+         id="text4348"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4350"
+           x="82.119072"
+           y="740.68671"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold'">Change:</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4352"
+         y="736.18671"
+         x="298.11908"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold'"
+           y="736.18671"
+           x="298.11908"
+           id="tspan4354"
+           sodipodi:role="line">redefine:</tspan></text>
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 285.11906,740.81172 58,0 0,210"
+         id="path4356"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 367.0034,946.85011 -24.04163,0"
+         id="path4358"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4360"
+         d="m 367.0034,912.51677 -24.04163,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 367.0034,878.18345 -24.04163,0"
+         id="path4362"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4364"
+         d="m 367.0034,843.85011 -24.04163,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 367.0034,809.5168 -24.04163,0"
+         id="path4366"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4368"
+         d="m 367.0034,775.18345 -24.04163,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 367.0034,740.85011 -24.04163,0"
+         id="path4370"
+         inkscape:connector-curvature="0" />
+      <g
+         transform="translate(9.102291,289.55339)"
+         id="g4417">
+        <g
+           id="g4419">
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4421"
+             d="m 261.39235,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 126.21266,412.7994 7.86719,4.13281 135.1875,0 -7.88187,-4.23084 z"
+             id="path4423"
+             inkscape:connector-curvature="0" />
+          <rect
+             y="392.80722"
+             x="126.20485"
+             height="20"
+             width="135.25"
+             id="rect4425"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="133.70485"
+           y="405.80722"
+           id="text4427"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan4429"
+             x="133.70485"
+             y="405.80722"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'">AIS_TextLabel::SetColor</tspan></text>
+      </g>
+      <g
+         id="g4431"
+         transform="translate(241.03331,291.84807)">
+        <g
+           id="g4433">
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             d="m 264.36239,392.80721 7.875,4.25 0,19.875 -7.8975,-4.09022 z"
+             id="path4435"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path4437"
+             d="m 126.21266,412.7994 7.86719,4.13281 138.15754,0 -7.88187,-4.23084 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+             sodipodi:nodetypes="ccccc" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="path4439"
+             d="m 126.20485,392.80722 138.22004,0 0,20 -138.22004,0 z"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1" />
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4441"
+           y="405.80722"
+           x="133.70485"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
+             y="405.80722"
+             x="133.70485"
+             id="tspan4443"
+             sodipodi:role="line">Prs3d_Drawer::TextAspect</tspan></text>
+      </g>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4445"
+         y="694.68671"
+         x="82.119072"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold'"
+           y="694.68671"
+           x="82.119072"
+           id="tspan4447"
+           sodipodi:role="line">Change:</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="298.11908"
+         y="690.18671"
+         id="text4449"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4451"
+           x="298.11908"
+           y="690.18671"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold'">redefine:</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         id="path4453"
+         d="m 367.0034,694.85011 -82.02439,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="cc" />
+    </g>
+  </g>
+</svg>

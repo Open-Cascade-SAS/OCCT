@@ -1,0 +1,22 @@
+
+# create comment_1 note
+set comment_1 [XNoteCreateComment D "Hello, World!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_1}
+
+# create comment_2 note
+set comment_2 [XNoteCreateComment D "Hello, Everyone!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_2}
+
+# annotate box_1
+XNoteRefDump D [XNoteAdd D ${comment_1} ${box_1}]
+
+# annotate box_2
+XNoteRefDump D [XNoteAdd D ${comment_2} ${box_2}]
+
+# list annotations
+XNoteAnnotations D
+
+# expected results
+set nb_annotations_result 2
+set nb_notes_result 2
+set nb_orphan_result 0

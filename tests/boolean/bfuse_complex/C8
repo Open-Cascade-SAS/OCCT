@@ -1,0 +1,17 @@
+# Original bug : cts40185
+# Date : 22apr97
+
+dset SCALE 100
+
+## restore the revol created in Designer ED2FCS (size ? mm)
+restore [locate_data_file CTO900_cts40185_top.rle] p1
+tscale p1 0 0 0 1*SCALE
+
+## restore the prismed oblong (size ? mm)
+restore [locate_data_file cts40185_ailette.rle] p2
+tscale p2 0 0 0 1*SCALE
+
+bfuse result p2 p1
+
+checkprops result -s 74.7286
+checkview -display result -2d -otherwise { p2 p1 } -s -path ${imagedir}/${test_image}.png

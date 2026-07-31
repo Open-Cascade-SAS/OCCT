@@ -1,0 +1,22 @@
+puts "============"
+puts "0032206: Visualization, TKOpenGl - move out OpenGL ES support to dedicated library TKOpenGles"
+puts "============"
+puts ""
+
+set to_dump_screen 0
+pload MODELING VISUALIZATION
+vdriver -load GLES
+vclear
+vinit View1
+box b 3 0 0 1 2 3
+psphere s 1
+vdisplay -dispMode 1 b s
+set anInfo [vglinfo]
+if { [regexp {OpenGL ES} $anInfo] } {
+  puts "OK: OpenGL ES has been found"
+} else {
+  puts "Error: OpenGL ES is expected"
+}
+vfit
+vrenderparams -shadingModel PHONG
+vdump ${imagedir}/${casename}.png

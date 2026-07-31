@@ -1,0 +1,28 @@
+###############################################################################
+# setsweep options [arg1 [arg2 [...]]] : options are :
+#    -FR : Tangent and Normal are given by Frenet trihedron
+#    -CF : Tangente is given by Frenet,
+#          the Normal is computed to minimize the torsion 
+###############################################################################
+# addsweep wire [Vertex] [-T] [-R] [u0 v0 u1 v1 [...[uN vN]]] : options are :
+#    -T : the wire have to be translated to assume contact
+#         with the spine
+#    -R : the wire have to be rotated to assume orthogonality
+#         with the spine's tangent
+###############################################################################
+# buildsweep result [-M/-C/-R] [-S] [tol] : options are
+# -M : Discontinuities are treated by Modification of
+#         the sweeping mode : it is the default
+#    -C : Discontinuities are treated like Right Corner
+#         Treatment is Extent && Intersect
+#    -R : Discontinuities are treated like Round Corner
+#         Treatment is Intersect and Fill
+###############################################################################
+
+if { [isdraw result] } {
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}
+
+# to end a test script
+puts "TEST COMPLETED"
+

@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC27842"
+puts "============"
+puts ""
+######################################################
+# Exception in intersection algorithm if FPE is switched on
+######################################################
+
+dsetsignal 1
+
+restore [locate_data_file bug27842_shape1_fix.brep] b1 
+restore [locate_data_file bug27842_shape2_fix.brep] b2
+
+explode b2 f
+
+bopcurves b1 b2_33 -2d
+
+bcommon result b1 b2
+
+checknbshapes result -wire 3 -face 1
+
+checkshape result
+
+checkprops result -s 10.8848
+
+smallview;
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

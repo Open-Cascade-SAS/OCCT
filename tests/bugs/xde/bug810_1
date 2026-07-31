@@ -1,0 +1,17 @@
+puts "========================"
+puts "OCC810"
+puts "========================"
+puts ""
+########################################################################
+## xalloc in optimise mode 
+########################################################################
+
+set BugNumber OCC810
+
+restore [locate_data_file OCC810.rle] a 
+
+fixshape result a 1.e-7 0.1
+
+checkprops result -s 3616.53
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

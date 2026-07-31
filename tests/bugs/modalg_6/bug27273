@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC27273"
+puts "============"
+puts ""
+###########################################################################################################
+#  The computation of linear properties on shared shapes is not correct
+###########################################################################################################
+
+restore [locate_data_file bug27273_my_shape.brep] a
+checkprops a -l 8
+checkprops a -l 7 -skip
+
+box b 1 1 1
+checkprops b -l 24
+checkprops b -l 12 -skip
+
+#Create a compsolid with a face repeated in two solids
+plane f 0 0 0 1 0 0
+mkface f f 0 1 0 1
+prism p1 f 1 0 0
+prism p2 f -1 0 0
+shape cs Cs
+add p1 cs
+add p2 cs
+checkprops cs -s 12
+checkprops cs -s 11 -skip
+
+#Create a compound of two compounds sharing the same solid
+box b1 2 0 0 1 1 1
+box b2 -2 0 0 1 1 1
+compound b1 b c1
+compound b2 b c2
+compound c1 c2 c3
+checkprops c3 -v 4
+checkprops c3 -v 3 -skip

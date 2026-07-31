@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC26572"
+puts "========"
+puts ""
+#######################################################################
+# Error in ShapeUpgrade_UnifySameDomain algorithm: can not merge two edges in customer's shape
+#######################################################################
+
+restore [locate_data_file bug26572_issue_12_new_input.brep] s
+
+smallview
+donly s
+fit
+xwd ${imagedir}/${casename}_1.png
+
+unifysamedom res s
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 48
+ EDGE      : 72
+ WIRE      : 28
+ FACE      : 27
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 178
+"
+checknbshapes res -ref ${nbshapes_expected} -t -m "Shape Upgrade"
+
+donly res
+
+xwd ${imagedir}/${casename}_2.png

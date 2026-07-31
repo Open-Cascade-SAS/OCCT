@@ -1,0 +1,79 @@
+puts "============================================================================================="
+puts "OCC31499: Boolean Operations - Custom fuzzy value corrupts the result of CUT"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31499.brep] s
+
+# perform operation with default fuzzy value
+bfuzzyvalue 1.e-7
+
+tcopy s s1
+explode s1 So
+
+bclearobjects
+bcleartools
+baddobjects s1_1
+baddtools s1_2 s1_3 s1_4
+bfillds
+
+bbop r1_0 0
+bbop r1_1 1
+bbop r1_2 2
+bbop r1_3 3
+bbop r1_4 4
+bbuild r1_5
+
+
+# perform operation with custom fuzzy value
+bfuzzyvalue 1.e-5
+
+tcopy s s2
+explode s2 So
+
+bclearobjects
+bcleartools
+baddobjects s2_1
+baddtools s2_2 s2_3 s2_4
+bfillds
+ 
+bbop r2_0 0
+bbop r2_1 1
+bbop r2_2 2
+bbop r2_3 3
+bbop r2_4 4
+bbuild r2_5
+
+foreach j {1 2} {
+  foreach i {0 1 2 3 4 5} {
+    checkshape r${j}_$i
+    if {![regexp "OK" [bopcheck r${j}_$i]]} {
+      puts "Error: r${j}_$i is self-intersecting shape"
+    }
+  }
+}
+
+checkprops r1_0 -s 858.419 -v 687.948
+checknbshapes r1_0 -wire 21 -face 21 -shell 3 -solid 3 -t
+
+checkprops r1_1 -s 29829.2 -v 219732
+checknbshapes r1_1 -wire 34 -face 34 -shell 1 -solid 1 -t
+
+checkprops r1_2 -s 1987.39 -v 6408.07
+checknbshapes r1_2 -wire 19 -face 19 -shell 1 -solid 1 -t
+
+checkprops r1_3 -s 37868.2 -v 212636
+checknbshapes r1_3 -wire 60 -face 60 -shell 6 -solid 6 -t
+
+checkprops r1_4 -l 379.04
+checksection r1_4 -r 0
+
+checkprops r1_5 -s 40714 -v 219732
+checknbshapes r1_5 -wire 79 -face 79 -shell 10 -solid 10 -t
+
+foreach i {0 1 2 3 4 5} {
+  checkprops r2_$i -equal r1_$i
+  checknbshapes r2_$i -ref [nbshapes r2_$i]
+}
+
+checkview -display r2_2 -2d -path ${imagedir}/${test_image}.png
