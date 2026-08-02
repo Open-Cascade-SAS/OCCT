@@ -30,8 +30,9 @@ runs:
       shell: pwsh
       run: |
         $version = clang-tidy --version
-        Write-Output "Detected clang-tidy version: $version"
-        if ($version -notmatch "version\s+${{ inputs.clang-tidy-version }}\.") {
+        $versionText = $version | Out-String
+        Write-Output "Detected clang-tidy version: $versionText"
+        if ($versionText -notmatch "version\s+${{ inputs.clang-tidy-version }}\.") {
           echo "::error::Wrong clang-tidy version. Expected major ${{ inputs.clang-tidy-version }}"
           Write-Output "Error: Version mismatch - expected major ${{ inputs.clang-tidy-version }}"
           exit 1
@@ -41,8 +42,9 @@ runs:
       shell: pwsh
       run: |
         $version = clang-format --version
-        Write-Output "Detected clang-format version: $version"
-        if ($version -notmatch "version\s+${{ inputs.clang-format-version }}\.") {
+        $versionText = $version | Out-String
+        Write-Output "Detected clang-format version: $versionText"
+        if ($versionText -notmatch "version\s+${{ inputs.clang-format-version }}\.") {
           echo "::error::Wrong clang-format version. Expected major ${{ inputs.clang-format-version }}"
           Write-Output "Error: Version mismatch - expected major ${{ inputs.clang-format-version }}"
           exit 1
