@@ -276,6 +276,12 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
 
 void ShapeUpgrade_WireDivide::Perform()
 {
+  // Every Context() dereference below assumes a live context, as in the
+  // ShapeUpgrade_FaceDivide::Perform() that drives this class; SetContext() is optional
+  if (Context().IsNull())
+  {
+    SetContext(new ShapeBuild_ReShape);
+  }
 
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
