@@ -25,6 +25,7 @@
 #include <PCDM_Writer.hxx>
 #include <PCDM_Document.hxx>
 #include <NCollection_Sequence.hxx>
+#include <mutex>
 class PCDM_Document;
 class CDM_Document;
 
@@ -84,12 +85,16 @@ public:
 
   Standard_EXPORT void SetStoreStatus(const PCDM_StoreStatus theStoreStatus);
 
+  //! Guards Write(), which is not reentrant on a shared driver instance.
+  std::mutex& Mutex() const { return myMutex; }
+
   DEFINE_STANDARD_RTTIEXT(PCDM_StorageDriver, PCDM_Writer)
 
 private:
   TCollection_ExtendedString myFormat;
   bool                       myIsError;
   PCDM_StoreStatus           myStoreStatus;
+  mutable std::mutex         myMutex;
 };
 
 #endif // _PCDM_StorageDriver_HeaderFile

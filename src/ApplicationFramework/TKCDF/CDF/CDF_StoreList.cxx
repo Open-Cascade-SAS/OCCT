@@ -23,6 +23,7 @@
 #include <CDM_ReferenceIterator.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_StoreList, Standard_Transient)
 
@@ -126,6 +127,10 @@ PCDM_StoreStatus CDF_StoreList::Store(occ::handle<CDM_MetaData>&   aMetaData,
           }
           else
           {
+            // aDocumentStorageDriver is shared across threads/calls for this format;
+            // Write() is not reentrant.
+            std::lock_guard<std::mutex> aDriverLock(aDocumentStorageDriver->Mutex());
+
             // Reset the store-status.
             // It has sense in multi-threaded access to the storage driver - this way we reset the
             // status for each call.
