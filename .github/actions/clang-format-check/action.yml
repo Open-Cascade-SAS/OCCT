@@ -104,14 +104,23 @@ runs:
       if: steps.changed-files.outputs.has_tidy_files == 'true'
       shell: pwsh
       run: |
-        # Run in a single thread for deterministic fixes and lower CI load.
-        $files = Get-Content "changed_tidy_files.txt" | Where-Object { Test-Path $_ }
-        foreach ($file in $files) {
-          clang-tidy --config-file=.clang-tidy -p build-clang-tidy --fix --format-style=file $file
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-          }
+        $clangTidyPath = (Get-Command clang-tidy).Source
+        $clangTidyRoot = Split-Path (Split-Path $clangTidyPath)
+        $clangTidyDiff = Join-Path $clangTidyRoot 'share\clang\clang-tidy-diff.py'
+        if (-not (Test-Path $clangTidyDiff)) {
+          Write-Error "Could not find clang-tidy-diff.py next to clang-tidy at $clangTidyDiff"
+          exit 1
         }
+
+        $files = Get-Content "changed_tidy_files.txt" | Where-Object { Test-Path $_ }
+        if ($files.Count -eq 0) {
+          Write-Output "No clang-tidy translation units changed"
+          exit 0
+        }
+
+        $throttleLimit = [Math]::Max([Environment]::ProcessorCount, 1)
+        $diff = git diff -U0 origin/${{ inputs.base-ref }} HEAD -- $files
+    $diff | python3 $clangTidyDiff -path build-clang-tidy -p 1 -j $throttleLimit -fix -config-file .clang-tidy -clang-tidy-binary $clangTidyPath -only-check-in-db
 
     - name: Validate and add license headers
       if: steps.changed-files.outputs.has_files == 'true'
