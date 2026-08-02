@@ -81,7 +81,9 @@ runs:
         cmake -S . -B build-clang-tidy -G Ninja `
           -D CMAKE_BUILD_TYPE=Release `
           -D CMAKE_EXPORT_COMPILE_COMMANDS=ON `
+          -D CMAKE_POSITION_INDEPENDENT_CODE=OFF `
           -D BUILD_USE_VCPKG=OFF `
+          -D BUILD_LIBRARY_TYPE=Static `
           -D BUILD_MODULE_Draw=OFF `
           -D BUILD_GTEST=OFF `
           -D BUILD_USE_PCH=OFF `
