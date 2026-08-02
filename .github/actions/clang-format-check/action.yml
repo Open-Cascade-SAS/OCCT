@@ -1,18 +1,22 @@
-name: 'Clang-Format Code Check'
-description: 'Check code formatting of changed files using clang-format'
+name: 'Clang-Tidy and Clang-Format Code Check'
+description: 'Run clang-tidy and clang-format on changed source files'
 inputs:
   base-ref:
     description: 'Base reference to compare changes against'
     required: true
     default: 'master'
   file-pattern:
-    description: 'Pattern to match files for formatting check'
+    description: 'Pattern to match files for clang-tidy and clang-format checks'
     required: false
     default: '^(src)/.*\.(cpp|hxx|cxx|lxx|h|pxx|hpp|gxx)$'
-  clang-format-version:
-    description: 'Required clang-format version'
+  clang-tidy-version:
+    description: 'Required clang-tidy major version'
     required: false
-    default: '18.1.8'
+    default: '20'
+  clang-format-version:
+    description: 'Required clang-format major version'
+    required: false
+    default: '20'
 
 outputs:
   has-changes:
@@ -22,15 +26,27 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Check clang-tidy version
+      shell: pwsh
+      run: |
+        $version = clang-tidy --version
+        $versionText = $version | Out-String
+        Write-Output "Detected clang-tidy version: $versionText"
+        if ($versionText -notmatch "version\s+${{ inputs.clang-tidy-version }}\.") {
+          echo "::error::Wrong clang-tidy version. Expected major ${{ inputs.clang-tidy-version }}"
+          Write-Output "Error: Version mismatch - expected major ${{ inputs.clang-tidy-version }}"
+          exit 1
+        }
+
     - name: Check clang-format version
       shell: pwsh
       run: |
         $version = clang-format --version
-        Write-Output "Detected clang-format version: $version"
-        $version | Select-String "${{ inputs.clang-format-version }}" >$null
-        if ($LASTEXITCODE -ne 0) {
-          echo "::error::Wrong clang-format version. Expected ${{ inputs.clang-format-version }}"
-          Write-Output "Error: Version mismatch - expected ${{ inputs.clang-format-version }}"
+        $versionText = $version | Out-String
+        Write-Output "Detected clang-format version: $versionText"
+        if ($versionText -notmatch "version\s+${{ inputs.clang-format-version }}\.") {
+          echo "::error::Wrong clang-format version. Expected major ${{ inputs.clang-format-version }}"
+          Write-Output "Error: Version mismatch - expected major ${{ inputs.clang-format-version }}"
           exit 1
         }
 
@@ -38,14 +54,73 @@ runs:
       id: changed-files
       shell: pwsh
       run: |
-        $changedFiles = git diff --name-only origin/${{ inputs.base-ref }} HEAD |
+        $allChangedFiles = git diff --name-only origin/${{ inputs.base-ref }} HEAD |
+          Where-Object { Test-Path $_ }
+
+        $tidyFiles = $allChangedFiles |
+          Where-Object { $_ -match '${{ inputs.file-pattern }}' }
+
+        $changedFiles = $allChangedFiles |
           Where-Object { $_ -match '${{ inputs.file-pattern }}' } |
           Where-Object { Test-Path $_ }
         
+        $tidyFiles | Set-Content "changed_tidy_files.txt"
         $changedFiles | Set-Content "changed_files.txt"
+
+        if ($tidyFiles.Count -gt 0) {
+          echo "has_tidy_files=true" >> $env:GITHUB_OUTPUT
+        }
         if ($changedFiles.Count -gt 0) {
           echo "has_files=true" >> $env:GITHUB_OUTPUT
         }
+
+    - name: Configure CMake database for clang-tidy
+      if: steps.changed-files.outputs.has_tidy_files == 'true'
+      shell: pwsh
+      run: |
+        cmake -S . -B build-clang-tidy -G Ninja `
+          -D CMAKE_BUILD_TYPE=Release `
+          -D CMAKE_EXPORT_COMPILE_COMMANDS=ON `
+          -D CMAKE_POSITION_INDEPENDENT_CODE=OFF `
+          -D BUILD_USE_VCPKG=OFF `
+          -D BUILD_LIBRARY_TYPE=Static `
+          -D BUILD_MODULE_Draw=OFF `
+          -D BUILD_GTEST=OFF `
+          -D BUILD_USE_PCH=OFF `
+          -D USE_FREETYPE=OFF `
+          -D USE_DRACO=OFF `
+          -D USE_FFMPEG=OFF `
+          -D USE_FREEIMAGE=OFF `
+          -D USE_GLES2=OFF `
+          -D USE_OPENVR=OFF `
+          -D USE_VTK=OFF `
+          -D USE_TBB=OFF `
+          -D USE_RAPIDJSON=OFF `
+          -D USE_OPENGL=OFF `
+          -D USE_TK=OFF `
+          -D USE_D3D=OFF
+
+    - name: Run clang-tidy with auto-fixes
+      if: steps.changed-files.outputs.has_tidy_files == 'true'
+      shell: pwsh
+      run: |
+        $clangTidyPath = (Get-Command clang-tidy).Source
+        $clangTidyRoot = Split-Path (Split-Path $clangTidyPath)
+        $clangTidyDiff = Join-Path $clangTidyRoot 'share\clang\clang-tidy-diff.py'
+        if (-not (Test-Path $clangTidyDiff)) {
+          Write-Error "Could not find clang-tidy-diff.py next to clang-tidy at $clangTidyDiff"
+          exit 1
+        }
+
+        $files = Get-Content "changed_tidy_files.txt" | Where-Object { Test-Path $_ }
+        if ($files.Count -eq 0) {
+          Write-Output "No clang-tidy translation units changed"
+          exit 0
+        }
+
+        $throttleLimit = [Math]::Max([Environment]::ProcessorCount, 1)
+        $diff = git diff -U0 origin/${{ inputs.base-ref }} HEAD -- $files
+        $diff | python3 $clangTidyDiff -path build-clang-tidy -p 1 -j $throttleLimit -fix -config-file .clang-tidy -clang-tidy-binary $clangTidyPath -only-check-in-db
 
     - name: Validate and add license headers
       if: steps.changed-files.outputs.has_files == 'true'

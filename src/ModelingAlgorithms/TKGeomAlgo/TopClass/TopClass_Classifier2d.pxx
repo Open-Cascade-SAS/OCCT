@@ -72,9 +72,13 @@ inline void Compare(int&                      theClosest,
   theClosest = 0;
   theIntersector.Perform(theLin, theParam, theTolerance, theEdge);
   if (!theIntersector.IsDone())
+  {
     return;
+  }
   if ((theIntersector.NbPoints() == 0) && (theIntersector.NbSegments() == 0))
+  {
     return;
+  }
 
   // Find the closest point.
   int aPoint, aSegment, aNbPoints, aNbSegments;
@@ -125,7 +129,9 @@ inline void Compare(int&                      theClosest,
 
   // If no point was found return.
   if (theClosest == 0)
+  {
     return;
+  }
 
   // If the edge is INTERNAL or EXTERNAL, no problem.
   if (theOr == TopAbs_INTERNAL)
@@ -142,14 +148,18 @@ inline void Compare(int&                      theClosest,
   if (!theFirstCompare)
   {
     if (aDMin > theParam)
+    {
       return;
+    }
   }
 
   // Process the closest point aPClosest, found at aDMin on line.
   theFirstCompare = false;
 
   if (theParam > aDMin)
+  {
     theFirstTrans = true;
+  }
 
   theParam                       = aDMin;
   const IntRes2d_Transition& aT2 = aPClosest->TransitionOfSecond();

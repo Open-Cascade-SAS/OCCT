@@ -131,29 +131,45 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   {
     IntRes2d_Position Pos1 = this->Point(i).TransitionOfFirst().PositionOnCurve();
     if (Pos1 == IntRes2d_Head)
+    {
       HeadOn1 = true;
+    }
     else if (Pos1 == IntRes2d_End)
+    {
       EndOn1 = true;
+    }
 
     IntRes2d_Position Pos2 = this->Point(i).TransitionOfSecond().PositionOnCurve();
     if (Pos2 == IntRes2d_Head)
+    {
       HeadOn2 = true;
+    }
     else if (Pos2 == IntRes2d_End)
+    {
       EndOn2 = true;
+    }
 
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
   }
 
@@ -162,56 +178,88 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   {
     IntRes2d_Position Pos1 = this->Segment(i).FirstPoint().TransitionOfFirst().PositionOnCurve();
     if (Pos1 == IntRes2d_Head)
+    {
       HeadOn1 = true;
+    }
     else if (Pos1 == IntRes2d_End)
+    {
       EndOn1 = true;
+    }
 
     IntRes2d_Position Pos2 = this->Segment(i).FirstPoint().TransitionOfSecond().PositionOnCurve();
     if (Pos2 == IntRes2d_Head)
+    {
       HeadOn2 = true;
+    }
     else if (Pos2 == IntRes2d_End)
+    {
       EndOn2 = true;
+    }
 
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
 
     Pos1 = this->Segment(i).LastPoint().TransitionOfFirst().PositionOnCurve();
     if (Pos1 == IntRes2d_Head)
+    {
       HeadOn1 = true;
+    }
     else if (Pos1 == IntRes2d_End)
+    {
       EndOn1 = true;
+    }
 
     Pos2 = this->Segment(i).LastPoint().TransitionOfSecond().PositionOnCurve();
     if (Pos2 == IntRes2d_Head)
+    {
       HeadOn2 = true;
+    }
     else if (Pos2 == IntRes2d_End)
+    {
       EndOn2 = true;
+    }
 
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
   }
 
@@ -236,7 +284,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                        EndOn1,
                        EndOn2,
                        PosSegment))
+    {
       this->Insert(IntPt);
+    }
   }
   if (D1.FirstTolerance() || D2.LastTolerance())
   {
@@ -253,7 +303,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                        EndOn1,
                        EndOn2,
                        PosSegment))
+    {
       this->Insert(IntPt);
+    }
   }
   if (D1.LastTolerance() || D2.FirstTolerance())
   {
@@ -270,7 +322,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                        EndOn1,
                        EndOn2,
                        PosSegment))
+    {
       this->Insert(IntPt);
+    }
   }
   if (D1.LastTolerance() || D2.LastTolerance())
   {
@@ -287,7 +341,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                        EndOn1,
                        EndOn2,
                        PosSegment))
+    {
       this->Insert(IntPt);
+    }
   }
 }
 
@@ -330,16 +386,24 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
   }
 
@@ -352,16 +416,24 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
 
     Pos1 = this->Segment(i).LastPoint().TransitionOfFirst().PositionOnCurve();
@@ -370,16 +442,24 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
     if (Pos1 == IntRes2d_Head)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 1;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 2;
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if (Pos2 == IntRes2d_Head)
+      {
         PosSegment |= 4;
+      }
       else if (Pos2 == IntRes2d_End)
+      {
         PosSegment |= 8;
+      }
     }
   }
   (void)PosSegment;
@@ -405,7 +485,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   nbsamples = TheCurveTool::NbSamples(C1, D1.FirstParameter(), D1.LastParameter());
 
   if (NbIter > 3 || (NbIter > 2 && nbsamples > 100))
+  {
     return;
+  }
 
   nbsamples *= 2; //---  We take systematically two times more points
                   //--   than on a normal curve.
@@ -569,14 +651,22 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
               //-- Calculate Positions of Points on the curve
               //--
               if (P1.Distance(DomainOnCurve1.FirstPoint()) <= DomainOnCurve1.FirstTolerance())
+              {
                 Pos1 = IntRes2d_Head;
+              }
               else if (P1.Distance(DomainOnCurve1.LastPoint()) <= DomainOnCurve1.LastTolerance())
+              {
                 Pos1 = IntRes2d_End;
+              }
 
               if (P2.Distance(DomainOnCurve2.FirstPoint()) <= DomainOnCurve2.FirstTolerance())
+              {
                 Pos2 = IntRes2d_Head;
+              }
               else if (P2.Distance(DomainOnCurve2.LastPoint()) <= DomainOnCurve2.LastTolerance())
+              {
                 Pos2 = IntRes2d_End;
+              }
               //-----------------------------------------------------------------
               if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
                   == false)
@@ -666,14 +756,22 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
       //----------------------------------------------------------------------
 
       if (ParamInfOnCurve1 > _PolyUInf)
+      {
         ParamInfOnCurve1 = _PolyUInf;
+      }
       if (ParamInfOnCurve2 > _PolyVInf)
+      {
         ParamInfOnCurve2 = _PolyVInf;
+      }
 
       if (ParamSupOnCurve1 < _PolyUInf)
+      {
         ParamSupOnCurve1 = _PolyUInf;
+      }
       if (ParamSupOnCurve2 < _PolyVInf)
+      {
         ParamSupOnCurve2 = _PolyVInf;
+      }
     }
 
     PolyUInf = ParamInfOnCurve1;
@@ -1005,16 +1103,24 @@ bool HeadOrEndPoint(const IntRes2d_Domain&      D1,
     if (Pos1 == IntRes2d_Head)
     {
       if ((Pos2 == IntRes2d_Head) && (PosSegment & 1))
+      {
         return (false);
+      }
       if ((Pos2 == IntRes2d_End) && (PosSegment & 2))
+      {
         return (false);
+      }
     }
     else if (Pos1 == IntRes2d_End)
     {
       if ((Pos2 == IntRes2d_Head) && (PosSegment & 4))
+      {
         return (false);
+      }
       if ((Pos2 == IntRes2d_End) && (PosSegment & 8))
+      {
         return (false);
+      }
     }
 
     if (IntImpParGen::DetermineTransition(Pos1, T1, Trans1, Pos2, T2, Trans2, TolConf) == false)
@@ -1027,7 +1133,9 @@ bool HeadOrEndPoint(const IntRes2d_Domain&      D1,
     return (true);
   }
   else
+  {
     return (false);
+  }
 }
 
 //=======================================================================
@@ -1049,7 +1157,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   done = false;
 
   if (NbIter > NBITER_MAX_POLYGON)
+  {
     return;
+  }
 
   // Number of samples running.
   nbsamplesOnC1 = TheCurveTool::NbSamples(C1, D1.FirstParameter(), D1.LastParameter());
@@ -1187,7 +1297,9 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
     AnErrorOccurred = EIP.AnErrorOccurred();
 
     if (!EIP.NbRoots() && !isFullPolygon)
+    {
       return false;
+    }
 
     if (AnErrorOccurred)
     {
@@ -1248,14 +1360,22 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
       //-- Calculate the Positions of Points on the curve
       //--
       if (P1.Distance(DomainOnCurve1.FirstPoint()) <= DomainOnCurve1.FirstTolerance())
+      {
         Pos1 = IntRes2d_Head;
+      }
       else if (P1.Distance(DomainOnCurve1.LastPoint()) <= DomainOnCurve1.LastTolerance())
+      {
         Pos1 = IntRes2d_End;
+      }
 
       if (P2.Distance(DomainOnCurve2.FirstPoint()) <= DomainOnCurve2.FirstTolerance())
+      {
         Pos2 = IntRes2d_Head;
+      }
       else if (P2.Distance(DomainOnCurve2.LastPoint()) <= DomainOnCurve2.LastTolerance())
+      {
         Pos2 = IntRes2d_End;
+      }
       //-----------------------------------------------------------------
       //-- Calculate the Transitions (see IntImpParGen.cxx)
       //--
@@ -1340,14 +1460,22 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
       //----------------------------------------------------------------------
 
       if (ParamInfOnCurve1 > _PolyUInf)
+      {
         ParamInfOnCurve1 = _PolyUInf;
+      }
       if (ParamInfOnCurve2 > _PolyVInf)
+      {
         ParamInfOnCurve2 = _PolyVInf;
+      }
 
       if (ParamSupOnCurve1 < _PolyUInf)
+      {
         ParamSupOnCurve1 = _PolyUInf;
+      }
       if (ParamSupOnCurve2 < _PolyVInf)
+      {
         ParamSupOnCurve2 = _PolyVInf;
+      }
     }
 
     PolyUInf = ParamInfOnCurve1;

@@ -45,7 +45,9 @@ inline bool Units_Sentence::IsDone() const
 inline void Units_Sentence::Dump() const
 {
   int index;
-  std::cout << " UNIT SENTENCE with : " << std::endl;
+  std::cout << " UNIT SENTENCE with : " << '\n';
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
+  {
     thesequenceoftokens->Value(index)->Dump(1, 1);
+  }
 }

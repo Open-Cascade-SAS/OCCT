@@ -282,7 +282,9 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
 
   EpsX = EPSX;
   if (EpsX > 1.0e-10)
+  {
     EpsX = 1.0e-10;
+  }
   EpsNul  = (TolConf <= 1.0e-10) ? 1.0e-10 : TolConf;
   EpsDist = (Tol <= 1.0e-10) ? 1.0e-10 : Tol;
 
@@ -352,13 +354,21 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
       IntImpParGen::DeterminePosition(Pos2, TheParCurveDomain, pt2, param2);
 
       if (Pos1 == IntRes2d_End)
+      {
         EndOnImp = true;
+      }
       else if (Pos1 == IntRes2d_Head)
+      {
         HeadOnImp = true;
+      }
       if (Pos2 == IntRes2d_End)
+      {
         EndOnPar = true;
+      }
       else if (Pos2 == IntRes2d_Head)
+      {
         HeadOnPar = true;
+      }
 
       IntImpParGen::DetermineTransition(Pos1,
                                         Tan1,
@@ -423,9 +433,13 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
       ParTool::D2(TheParCurve, param2_inf, Ptemp, T2, N2);
       TheImpTool.D2(param1_inf, Ptemp, T1, N1);
       if (T1.Magnitude() <= gp::Resolution())
+      {
         T1 = N1;
+      }
       if (T2.Magnitude() <= gp::Resolution())
+      {
         T2 = N2;
+      }
 
       if (T1.Dot(T2) >= 0.0)
       {
@@ -565,13 +579,21 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
       IntImpParGen::DeterminePosition(Pos2, TheParCurveDomain, Pt1_on2, Param1_on2);
 
       if (Pos1 == IntRes2d_End)
+      {
         EndOnImp = true;
+      }
       else if (Pos1 == IntRes2d_Head)
+      {
         HeadOnImp = true;
+      }
       if (Pos2 == IntRes2d_End)
+      {
         EndOnPar = true;
+      }
       else if (Pos2 == IntRes2d_Head)
+      {
         HeadOnPar = true;
+      }
 
       IntImpParGen::DetermineTransition(Pos1,
                                         Tan1,
@@ -614,13 +636,21 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
         IntImpParGen::DeterminePosition(Pos2, TheParCurveDomain, Pt2_on2, Param2_on2);
 
         if (Pos1 == IntRes2d_End)
+        {
           EndOnImp = true;
+        }
         else if (Pos1 == IntRes2d_Head)
+        {
           HeadOnImp = true;
+        }
         if (Pos2 == IntRes2d_End)
+        {
           EndOnPar = true;
+        }
         else if (Pos2 == IntRes2d_Head)
+        {
           HeadOnPar = true;
+        }
 
         IntImpParGen::DetermineTransition(Pos1,
                                           Tan1,
@@ -816,9 +846,13 @@ double IntImpParGen_Intersector::FindV(const double           parameter,
     //--??????????????????????????????????????????????????????????????????????
     double X = ProjectOnPCurveTool::FindParameter(TheParCurve, point, VV0, VV1, Tolerance);
     if (X > VV1)
+    {
       X = VV1;
+    }
     else if (X < VV0)
+    {
       X = VV0;
+    }
     return (X);
   }
 }

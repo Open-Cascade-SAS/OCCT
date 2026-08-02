@@ -59,7 +59,9 @@ public:
   bool IsEqual(const BRepMesh_Edge& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
+    {
       return false;
+    }
 
     return IsSameOrientation(theOther)
            || (FirstNode() == theOther.LastNode() && LastNode() == theOther.FirstNode());

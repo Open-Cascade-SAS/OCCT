@@ -118,12 +118,9 @@ public:
   ~NCollection_UBTreeFiller()
   {
     if (mySeqPtr.Length() > 0)
-#ifdef OCCT_DEBUG_UBTREE
-      std::cout << "~NCollection_UBTreeFiller: " << Fill() << " objects added to the tree"
-                << std::endl;
-#else
+    {
       Fill();
-#endif
+    }
   }
 
 private:
@@ -184,7 +181,7 @@ int NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(Standard_OStream
   const double aLen0 = log(num) / log(2.);
   char         buf[128];
   Sprintf(buf, "Checking UBTree:%8d leaves, balance =%7.2f", aNumber, aLen1 / aLen0);
-  theStream << buf << std::endl;
+  theStream << buf << '\n';
   return aNumber;
 }
 
@@ -198,8 +195,10 @@ double NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(
 {
   double aLength;
   if (!theNode.IsLeaf())
+  {
     aLength = (checkNode(theNode.Child(0), theLength + 1, theNumber)
                + checkNode(theNode.Child(1), theLength + 1, theNumber));
+  }
   else
   {
     theNumber++;

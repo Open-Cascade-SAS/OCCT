@@ -110,17 +110,19 @@ public:
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
-  virtual bool Value(const double theX, double& theFVal)
+  bool Value(const double theX, double& theFVal) override
   {
     if (!myFunc->Value(theX, theFVal))
+    {
       return false;
+    }
 
     theFVal *= theFVal;
     return true;
   }
 
   // see analogical method for abstract owner class math_Function
-  virtual int GetStateNumber() { return 0; }
+  int GetStateNumber() override { return 0; }
 
 private:
   TheFunction* myFunc;
@@ -170,7 +172,9 @@ bool IsDegenerated(const occ::handle<Adaptor3d_CurveOnSurface>& theCurve)
   {
     gp_Circ aCirc = theCurve->Circle();
     if (aCirc.Radius() <= Precision::Confusion())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -183,7 +187,9 @@ bool IsDegenerated(const IntSurf_Quadric& theQuadric)
     gp_Cone aCone      = theQuadric.Cone();
     double  aSemiAngle = std::abs(aCone.SemiAngle());
     if (aSemiAngle < 0.02 || aSemiAngle > 1.55)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -266,7 +272,9 @@ static void BoundedArc(const TheArc&                    A,
   //  int NbEchant = TheSOBTool::NbSamplesOnArc(A);
   int NbEchant = Func.NbSamples();
   if (NbEchant < 100)
+  {
     NbEchant = 100; //-- lbr le 22 Avril 96
+  }
   //-- Toujours des pbs
 
   //-- Modif 24  Aout 93 -----------------------------
@@ -303,16 +311,24 @@ static void BoundedArc(const TheArc&                    A,
     {
       double lminr, lmaxr;
       if (D < 0.0)
+      {
         D = -D;
+      }
       D *= dur + dur;
       if (D > maxdr)
+      {
         maxdr = D;
+      }
       lminr = F - D;
       lmaxr = F + D;
       if (lminr < minr)
+      {
         minr = lminr;
+      }
       if (lmaxr > maxr)
+      {
         maxr = lmaxr;
+      }
       if (minr < 0.0 && maxr > 0.0)
       {
         Rejection = false;
@@ -468,7 +484,9 @@ static void BoundedArc(const TheArc&                    A,
       // If we have not got intersection, it may be touch with some tolerance,
       // need to be checked
       if (Nbp == 0 && Nbi == 0)
+      {
         IsIntCSdone = false;
+      }
 
     } // if (TypeQuad != GeomAbs_OtherSurface) - intersection of boundary curve and quadric surface
 
@@ -535,9 +553,13 @@ static void BoundedArc(const TheArc&                    A,
             SolAgain.GetInterval(i, pardeb, parfin);
 
             if (std::abs(pardeb - Pdeb) <= Precision::PConfusion())
+            {
               pardeb = Pdeb;
+            }
             if (std::abs(parfin - Pfin) <= Precision::PConfusion())
+            {
               parfin = Pfin;
+            }
 
             SolAgain.GetIntervalState(i, ideb, ifin);
 
@@ -572,9 +594,13 @@ static void BoundedArc(const TheArc&                    A,
       for (i = 1; i <= Nbp; i++)
       {
         if (IsIntCSdone)
+        {
           aSI(i).Init(IntCS, i);
+        }
         else
+        {
           aSI(i).Init(*pSol, i);
+        }
       }
 
       std::sort(aSI.begin(), aSI.end());
@@ -630,7 +656,9 @@ static void BoundedArc(const TheArc&                    A,
               // Compute the number of nodes.
               double aTol = TolBoundary * 1000.0;
               if (aTol > 0.001)
+              {
                 aTol = 0.001;
+              }
 
               // fix floating point exception 569, chl-922-e9
               parap1 = (std::abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
@@ -685,10 +713,14 @@ static void BoundedArc(const TheArc&                    A,
         {
           para = aSI(i).Value();
           if ((para - Pdeb) < EpsX || (Pfin - para) < EpsX)
+          {
             continue;
+          }
 
           if (!Func.Value(para, dist))
+          {
             continue;
+          }
 
           dist = std::abs(dist);
 
@@ -742,7 +774,9 @@ static void BoundedArc(const TheArc&                    A,
     //   Ajouter intervalle dans la liste des segments
 
     if (!IsIntCSdone)
+    {
       Nbi = pSol->NbIntervals();
+    }
 
     if (!RecheckOnRegularity && Nbp)
     {
@@ -975,8 +1009,10 @@ void PointProcess(const gp_Pnt&                    Pt,
     for (k = 1; k <= pnt.Length(); k++)
     {
       ptsol = pnt.Value(k);
-      if (ptsol.Arc() != A || !ptsol.IsNew()) // vertex
+      if (ptsol.Arc() != A || !ptsol.IsNew())
+      { // vertex
         continue;
+      }
       if (std::abs(ptsol.Parameter() - Para) <= Precision::PConfusion())
       {
         found_internal = true;
@@ -991,7 +1027,9 @@ void PointProcess(const gp_Pnt&                    Pt,
       TOL *= 1000.0;
       // if(TOL>0.001) TOL=0.001;
       if (TOL > 0.005)
+      {
         TOL = 0.005; // #24643
+      }
 
       ptsol.SetValue(Pt, TOL, A, Para);
       pnt.Append(ptsol);
@@ -1112,7 +1150,9 @@ int TreatLC(const TheArc&                    A,
   // printf("TreatLC()=> tangent line is found\n");
   TOL = 1000. * TolBoundary;
   if (TOL > 0.001)
+  {
     TOL = 0.001;
+  }
 
   IntStart_ThePathPoint ptsol;
   ptsol.SetValue(PEdge, TOL, A, UEgde);

@@ -101,22 +101,38 @@ private:
     const bool isV2Inf = Precision::IsInfinite(theVMax);
 
     if (isU1Inf && isU2Inf)
+    {
       aU = 0;
+    }
     else if (isU1Inf)
+    {
       aU = theUMax - 10.;
+    }
     else if (isU2Inf)
+    {
       aU = theUMin + 10.;
+    }
     else
+    {
       aU = (theUMin + theUMax) / 2.;
+    }
 
     if (isV1Inf && isV2Inf)
+    {
       aV = 0;
+    }
     else if (isV1Inf)
+    {
       aV = theVMax - 10.;
+    }
     else if (isV2Inf)
+    {
       aV = theVMin + 10.;
+    }
     else
+    {
       aV = (theVMin + theVMax) / 2.;
+    }
 
     return ElSLib::Value(aU, aV, thePlane);
   }

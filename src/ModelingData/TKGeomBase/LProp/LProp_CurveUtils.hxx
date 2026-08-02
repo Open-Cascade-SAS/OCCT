@@ -193,9 +193,13 @@ void ComputeTangent(Curve&     theCurve,
 
   double aDu;
   if ((anUsupremum >= RealLast()) || (anUinfimum <= RealFirst()))
+  {
     aDu = 0.0;
+  }
   else
+  {
     aDu = anUsupremum - anUinfimum;
+  }
 
   const double aDelta = std::max(aDu * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
@@ -203,9 +207,13 @@ void ComputeTangent(Curve&     theCurve,
 
   double anOtherU;
   if (theU - anUinfimum < aDelta)
+  {
     anOtherU = theU + aDelta;
+  }
   else
+  {
     anOtherU = theU - aDelta;
+  }
 
   Pnt aP1, aP2;
   Access::D0(theCurve, std::min(theU, anOtherU), aP1);
@@ -213,7 +221,9 @@ void ComputeTangent(Curve&     theCurve,
 
   Vec aChord(aP1, aP2);
   if (aV.Dot(aChord) < 0.0)
+  {
     aV = -aV;
+  }
 
   theDir = Dir(aV);
 }
@@ -231,12 +241,16 @@ double ComputeCurvature(const Vec& theD1, const Vec& theD2, double theTolSq)
   const double aDD2 = theD2.SquareMagnitude();
 
   if (aDD2 <= theTolSq)
+  {
     return 0.0;
+  }
 
   const double aN = theD1.CrossSquareMagnitude(theD2);
   const double aT = aN / aDD1 / aDD2;
   if (aT <= theTolSq)
+  {
     return 0.0;
+  }
 
   return sqrt(aN) / aDD1 / sqrt(aDD1);
 }
@@ -337,9 +351,13 @@ bool IsTangentDefined(Props&        theProps,
                       LProp_Status& theTanStatus)
 {
   if (theTanStatus == LProp_Undefined)
+  {
     return false;
+  }
   if (theTanStatus >= LProp_Defined)
+  {
     return true;
+  }
 
   const double aTolSq  = theLinTol * theLinTol;
   int          anOrder = 0;
@@ -397,7 +415,9 @@ void Tangent(Props&     theProps,
              Dir&       theDir)
 {
   if (!theProps.IsTangentDefined())
+  {
     throw LProp_NotDefined();
+  }
   ComputeTangent<Access>(theCurve, theU, theDerivArr, theRefPnt, theSigOrder, theDir);
 }
 
@@ -421,7 +441,9 @@ double Curvature(Props&     theProps,
   (void)anIsDefined;
   LProp_NotDefined_Raise_if(!anIsDefined, "CLProps::Curvature()");
   if (theSigOrder > 1)
+  {
     return RealLast();
+  }
   theCurvature = ComputeCurvature(theD1, theD2, theLinTol * theLinTol);
   return theCurvature;
 }
@@ -437,7 +459,9 @@ void Normal(Props& theProps, const Vec& theD1, const Vec& theD2, double theLinTo
 {
   const double aCurvature = theProps.Curvature();
   if (aCurvature == RealLast() || std::abs(aCurvature) <= theLinTol)
+  {
     throw LProp_NotDefined("CLProps::Normal(): Curvature is null or infinity");
+  }
   ComputeNormal(theD1, theD2, theDir);
 }
 
@@ -459,7 +483,9 @@ void CentreOfCurvature(Props&     theProps,
                        Pnt&       theCentre)
 {
   if (std::abs(theProps.Curvature()) <= theLinTol)
+  {
     throw LProp_NotDefined();
+  }
   ComputeCentreOfCurvature(thePnt, theD1, theD2, theCurvature, theCentre);
 }
 

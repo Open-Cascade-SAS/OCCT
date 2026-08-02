@@ -240,14 +240,18 @@ inline bool IntPatch_TheIWLineOfTheIWalking::HasFirstPoint() const
 inline int IntPatch_TheIWLineOfTheIWalking::FirstPointIndex() const
 {
   if (!hasFirst)
+  {
     throw Standard_DomainError();
+  }
   return firstIndex;
 }
 
 inline const IntSurf_PathPoint& IntPatch_TheIWLineOfTheIWalking::FirstPoint() const
 {
   if (!hasFirst)
+  {
     throw Standard_DomainError();
+  }
   return theFirstPoint;
 }
 
@@ -259,14 +263,18 @@ inline bool IntPatch_TheIWLineOfTheIWalking::HasLastPoint() const
 inline const IntSurf_PathPoint& IntPatch_TheIWLineOfTheIWalking::LastPoint() const
 {
   if (!hasLast)
+  {
     throw Standard_DomainError();
+  }
   return theLastPoint;
 }
 
 inline int IntPatch_TheIWLineOfTheIWalking::LastPointIndex() const
 {
   if (!hasLast)
+  {
     throw Standard_DomainError();
+  }
   return lastIndex;
 }
 

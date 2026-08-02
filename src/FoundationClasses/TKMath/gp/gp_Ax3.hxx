@@ -396,39 +396,63 @@ inline constexpr gp_Dir::D gp_Ax3::crossStandardDir(const gp_Dir::D theA,
   if (theA == gp_Dir::D::X)
   {
     if (theB == gp_Dir::D::Y)
+    {
       return gp_Dir::D::Z;
+    }
     if (theB == gp_Dir::D::Z)
+    {
       return gp_Dir::D::NY;
+    }
     if (theB == gp_Dir::D::NY)
+    {
       return gp_Dir::D::NZ;
+    }
     if (theB == gp_Dir::D::NZ)
+    {
       return gp_Dir::D::Y;
+    }
     // X x X = 0, X x NX = 0 (parallel, should not happen)
     return gp_Dir::D::Z; // fallback
   }
   if (theA == gp_Dir::D::Y)
   {
     if (theB == gp_Dir::D::Z)
+    {
       return gp_Dir::D::X;
+    }
     if (theB == gp_Dir::D::X)
+    {
       return gp_Dir::D::NZ;
+    }
     if (theB == gp_Dir::D::NX)
+    {
       return gp_Dir::D::Z;
+    }
     if (theB == gp_Dir::D::NZ)
+    {
       return gp_Dir::D::NX;
+    }
     // Y x Y = 0, Y x NY = 0 (parallel, should not happen)
     return gp_Dir::D::X; // fallback
   }
   if (theA == gp_Dir::D::Z)
   {
     if (theB == gp_Dir::D::X)
+    {
       return gp_Dir::D::Y;
+    }
     if (theB == gp_Dir::D::Y)
+    {
       return gp_Dir::D::NX;
+    }
     if (theB == gp_Dir::D::NX)
+    {
       return gp_Dir::D::NY;
+    }
     if (theB == gp_Dir::D::NY)
+    {
       return gp_Dir::D::X;
+    }
     // Z x Z = 0, Z x NZ = 0 (parallel, should not happen)
     return gp_Dir::D::Y; // fallback
   }
@@ -436,37 +460,61 @@ inline constexpr gp_Dir::D gp_Ax3::crossStandardDir(const gp_Dir::D theA,
   if (theA == gp_Dir::D::NX)
   {
     if (theB == gp_Dir::D::Y)
+    {
       return gp_Dir::D::NZ;
+    }
     if (theB == gp_Dir::D::Z)
+    {
       return gp_Dir::D::Y;
+    }
     if (theB == gp_Dir::D::NY)
+    {
       return gp_Dir::D::Z;
+    }
     if (theB == gp_Dir::D::NZ)
+    {
       return gp_Dir::D::NY;
+    }
     return gp_Dir::D::NZ; // fallback
   }
   if (theA == gp_Dir::D::NY)
   {
     if (theB == gp_Dir::D::Z)
+    {
       return gp_Dir::D::NX;
+    }
     if (theB == gp_Dir::D::X)
+    {
       return gp_Dir::D::Z;
+    }
     if (theB == gp_Dir::D::NX)
+    {
       return gp_Dir::D::NZ;
+    }
     if (theB == gp_Dir::D::NZ)
+    {
       return gp_Dir::D::X;
+    }
     return gp_Dir::D::NX; // fallback
   }
   if (theA == gp_Dir::D::NZ)
   {
     if (theB == gp_Dir::D::X)
+    {
       return gp_Dir::D::NY;
+    }
     if (theB == gp_Dir::D::Y)
+    {
       return gp_Dir::D::X;
+    }
     if (theB == gp_Dir::D::NX)
+    {
       return gp_Dir::D::Y;
+    }
     if (theB == gp_Dir::D::NY)
+    {
       return gp_Dir::D::NX;
+    }
     return gp_Dir::D::NY; // fallback
   }
   return gp_Dir::D::Z; // fallback

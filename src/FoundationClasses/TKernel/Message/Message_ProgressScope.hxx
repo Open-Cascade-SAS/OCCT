@@ -550,12 +550,16 @@ inline void Message_ProgressScope::Show()
 inline double Message_ProgressScope::localToGlobal(const double theVal) const
 {
   if (theVal <= 0.)
+  {
     return 0.;
+  }
 
   if (!myIsInfinite)
   {
     if (myMax - theVal < RealSmall())
+    {
       return myPortion;
+    }
     return myPortion * theVal / myMax;
   }
 
@@ -579,12 +583,16 @@ inline double Message_ProgressScope::Value() const
 
   // if progress has not reached yet the start of this scope, return 0
   if (aVal <= 0.)
+  {
     return 0.;
+  }
 
   // if at end of the scope (or behind), report the maximum
   double aDist = myPortion - aVal;
   if (aDist <= Precision::Confusion())
+  {
     return myIsInfinite ? Precision::Infinite() : myMax;
+  }
 
   // map the value to the range of this scope [0, Max],
   // rounding up to integer, with small correction applied

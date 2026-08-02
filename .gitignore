@@ -6,6 +6,7 @@
 # Root level: Ignore everything except tracked items
 /*
 !/.clang-format
+!/.clang-tidy
 !/.git-blame-ignore-revs
 !/.gitattributes
 !/.gitignore

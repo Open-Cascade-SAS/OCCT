@@ -37,7 +37,9 @@ inline MoniTool_TimerSentry::MoniTool_TimerSentry(const occ::handle<MoniTool_Tim
 inline MoniTool_TimerSentry::~MoniTool_TimerSentry()
 {
   if (!myTimer.IsNull())
+  {
     myTimer->Stop();
+  }
 }
 
 //=================================================================================================
@@ -52,6 +54,8 @@ inline occ::handle<MoniTool_Timer> MoniTool_TimerSentry::Timer() const
 inline void MoniTool_TimerSentry::Stop()
 {
   if (!myTimer.IsNull())
+  {
     myTimer->Stop();
+  }
   myTimer.Nullify();
 }

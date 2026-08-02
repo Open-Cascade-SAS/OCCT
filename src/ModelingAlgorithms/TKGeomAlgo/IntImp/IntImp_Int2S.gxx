@@ -146,13 +146,17 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
   Epsuv[3] = ThePSurfaceTool::VResolution(Caro2, Precision::Confusion());
 
   for (int j = 0; j <= 3; j++)
+  {
     UVd[j] = Param(j + 1);
+  }
 
   empty = true;
 
   bool Tangent = IntImp_ComputeTangence(DPUV, Epsuv, UVd, ChoixIso);
   if (Tangent)
+  {
     return BestChoix;
+  }
 
   int                       i            = 0;
   IntImp_ConstIsoparametric CurrentChoix = BestChoix; //-- Modif 17 Mai 93
@@ -230,7 +234,9 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
       Iiso   = 3;
     }
     else
+    {
       return BestChoix; // on a gagne
+    }
     empty     = true;
     BestChoix = ChoixRef(Iiso); // en attendant
     BestChoix = Perform(Duv, Rsnld, BestChoix);
@@ -239,9 +245,13 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
       // reciproque
       Nc = 3 - Nc;
       if (Duv(Nc) <= UVd[Nc - 1] - Epsuv[Nc - 1])
+      {
         Duv(Nc) = UVd[Nc - 1];
+      }
       else if (Duv(Nc) >= UVf[Nc - 1] + Epsuv[Nc - 1])
+      {
         Duv(Nc) = UVf[Nc - 1];
+      }
       else if (Duv(Nc + 1) <= UVd[Nc])
       {
         Nc      = Nc + 1;
@@ -253,12 +263,16 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
         Duv(Nc) = UVf[Nc - 1];
       }
       else
+      {
         return BestChoix;
+      }
 
       empty = true;
 
       if (Nc == 4)
+      {
         Nc = 0;
+      }
 
       BestChoix = ChoixRef(Nc); // en attendant
       BestChoix = Perform(Duv, Rsnld, BestChoix);

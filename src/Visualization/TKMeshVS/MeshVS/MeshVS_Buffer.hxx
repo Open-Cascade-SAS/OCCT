@@ -38,7 +38,9 @@ public:
       : myDynData(nullptr)
   {
     if (theSize > MeshVS_BufSize)
+    {
       myDynData = Standard::Allocate(theSize);
+    }
   }
 
   //! Destructor

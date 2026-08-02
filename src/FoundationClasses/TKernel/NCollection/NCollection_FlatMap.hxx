@@ -343,7 +343,9 @@ public:
   bool Contains(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return false;
+    }
     size_t anIndex = 0;
     return findSlotIndex(theKey, anIndex);
   }
@@ -353,10 +355,14 @@ public:
   std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return std::nullopt;
+    }
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
+    {
       return std::nullopt;
+    }
     return std::cref(mySlots[aIdx].Key());
   }
 
@@ -364,10 +370,14 @@ public:
   const TheKeyType* Seek(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return nullptr;
+    }
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
+    {
       return nullptr;
+    }
     return &mySlots[aIdx].Key();
   }
 
@@ -375,10 +385,14 @@ public:
   TheKeyType* ChangeSeek(const TheKeyType& theKey)
   {
     if (mySize == 0)
+    {
       return nullptr;
+    }
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
+    {
       return nullptr;
+    }
     return &mySlots[aIdx].Key();
   }
 
@@ -469,7 +483,9 @@ public:
   bool Remove(const TheKeyType& theKey)
   {
     if (mySize == 0)
+    {
       return false;
+    }
 
     size_t aFoundIndex = 0;
     if (!findSlotIndex(theKey, aFoundIndex))
@@ -558,7 +574,9 @@ private:
   static size_t nextPowerOf2(size_t n) noexcept
   {
     if (n == 0)
+    {
       return THE_DEFAULT_CAPACITY;
+    }
     --n;
     n |= n >> 1;
     n |= n >> 2;
@@ -750,19 +768,29 @@ private:
         aSlot.SetProbeDistance(aProbe);
         ++mySize;
         if constexpr (ReturnRef)
+        {
           return aSlot.Key();
+        }
         else
+        {
           return true;
+        }
       }
 
       if (aSlot.myHash == aHashToInsert && myHasher(aSlot.Key(), aKeyToInsert))
       {
         if constexpr (!IsTry)
+        {
           aSlot.Key() = std::move(aKeyToInsert);
+        }
         if constexpr (ReturnRef)
+        {
           return aSlot.Key();
+        }
         else
+        {
           return false;
+        }
       }
 
       if (aProbe > aSlot.ProbeDistance())

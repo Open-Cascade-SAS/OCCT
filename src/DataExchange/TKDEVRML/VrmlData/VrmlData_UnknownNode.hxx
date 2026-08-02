@@ -43,7 +43,9 @@ public:
       : VrmlData_Node(theScene, theName)
   {
     if (theTitle)
+    {
       myTitle = (const char*)theTitle;
+    }
   }
 
   /**

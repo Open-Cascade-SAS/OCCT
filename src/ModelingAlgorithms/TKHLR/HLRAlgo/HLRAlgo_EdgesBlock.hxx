@@ -104,9 +104,13 @@ public:
   void OutLine(const int I, const bool B)
   {
     if (B)
+    {
       myFlags(I) |= EMaskOutLine;
+    }
     else
+    {
       myFlags(I) &= ~EMaskOutLine;
+    }
   }
 
   bool Internal(const int I) const { return (myFlags(I) & EMaskInternal) != 0; }
@@ -114,9 +118,13 @@ public:
   void Internal(const int I, const bool B)
   {
     if (B)
+    {
       myFlags(I) |= EMaskInternal;
+    }
     else
+    {
       myFlags(I) &= ~EMaskInternal;
+    }
   }
 
   bool Double(const int I) const { return (myFlags(I) & EMaskDouble) != 0; }
@@ -124,9 +132,13 @@ public:
   void Double(const int I, const bool B)
   {
     if (B)
+    {
       myFlags(I) |= EMaskDouble;
+    }
     else
+    {
       myFlags(I) &= ~EMaskDouble;
+    }
   }
 
   bool IsoLine(const int I) const { return (myFlags(I) & EMaskIsoLine) != 0; }
@@ -134,9 +146,13 @@ public:
   void IsoLine(const int I, const bool B)
   {
     if (B)
+    {
       myFlags(I) |= EMaskIsoLine;
+    }
     else
+    {
       myFlags(I) &= ~EMaskIsoLine;
+    }
   }
 
   void UpdateMinMax(const MinMaxIndices& TotMinMax) { myMinMax = TotMinMax; }

@@ -142,8 +142,10 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
 
   const double coeff = 4.; // 2*2
 
-  if (nbp3d > 1) // only simple cases are analysed
+  if (nbp3d > 1)
+  { // only simple cases are analysed
     return true;
+  }
 
   const double     MinScalProd = -0.9;
   constexpr double SqTol3d     = Precision::SquareConfusion();
@@ -252,7 +254,9 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
           }
         }
         if (LoopFound == false)
+        {
           break;
+        }
       }
     }
     if (LoopFound)
@@ -273,12 +277,17 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
           indbads[1] = k;
         }
         if (aSqDist > gp::Resolution() && aSqDist < MinSqDist)
+        {
           MinSqDist = aSqDist;
+        }
       }
       double Relation = MaxSqDist / MinSqDist;
       if (Relation < coeff)
+      {
         LoopFound = false;
+      }
       else
+      {
         for (int indcur = 2; indcur <= NbCur; indcur++)
         {
           MaxSqDist = 0.;
@@ -296,6 +305,7 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
             }
           }
         }
+      }
     }
   } // if (myNbP3d == 1)
   else // 2d case
@@ -381,7 +391,9 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
           }
         }
         if (LoopFound == false)
+        {
           break;
+        }
       }
     }
     if (LoopFound)
@@ -404,25 +416,33 @@ static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
             indbads[indcur] = k;
           }
           if (aSqDist > gp::Resolution() && aSqDist < MinSqDist)
+          {
             MinSqDist = aSqDist;
+          }
         }
         double Relation = MaxSqDist / MinSqDist;
         if (Relation < coeff)
+        {
           LoopFound = false;
+        }
       }
     }
   }
 
   // Define <indbad>
   for (int i = 1; i <= 3; i++)
+  {
     if (indbads[i] != 0)
     {
       theIndbad = indbads[i];
       break;
     }
+  }
 
   if (!LoopFound)
+  {
     theIndbad = 0;
+  }
 
   return (!LoopFound);
 }
@@ -437,19 +457,29 @@ void Approx_ComputeLine::FirstTangencyVector(const MultiLine& Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   bool                         Ok = false;
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  }
   else if (nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV2d);
+  }
   else if (nbP3d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV);
+  }
 
   if (Ok)
   {
@@ -520,19 +550,29 @@ void Approx_ComputeLine::LastTangencyVector(const MultiLine& Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   bool                         Ok = false;
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  }
   else if (nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV2d);
+  }
   else if (nbP3d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV);
+  }
 
   if (Ok)
   {
@@ -609,25 +649,41 @@ double Approx_ComputeLine::SearchFirstLambda(const MultiLine&   Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP1, tabP12d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP12d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index, tabP1);
+  }
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP2, tabP22d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP22d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP2);
+  }
 
   double U1 = TheParam(index), U2 = TheParam(index + 1);
   double lambda, S;
@@ -668,25 +724,41 @@ double Approx_ComputeLine::SearchLastLambda(const MultiLine&   Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d), tabP2(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP, tabP2d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP2d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP);
+  }
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP2, tabP22d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP22d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index, tabP2);
+  }
 
   double U1 = TheParam(index - 1), U2 = TheParam(index);
   double lambda, S;
@@ -844,7 +916,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
     myMultiLineNb = 0;
   }
   else
+  {
     myIsClear = false;
+  }
 
   int           i, nbp, Thefirstpt, Thelastpt, oldlastpt;
   bool          Finish = false, begin = true, Ok = false, GoUp = false, Interpol;
@@ -909,7 +983,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
       occ::handle<NCollection_HArray1<double>> ThePar =
         new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
       for (i = 0; i < aLen; i++)
+      {
         ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+      }
       myPar.Append(ThePar);
     }
   }
@@ -984,7 +1060,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
           {
             //-- cout<<" ** ApproxComputeLine MakeML Echec ** LBR lbr "<<endl;
             if (myfirstpt == mylastpt)
+            {
               break; // Pour etre sur de ne pas
+            }
             // planter la station !!
             myCouple1.SetIndex(myfirstpt);
             myCouple2.SetIndex(mylastpt);
@@ -1021,9 +1099,13 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
               AppParCurves_MultiCurve                  saveMultiCurve = TheMultiCurve;
 
               if (SavePar != Approx_IsoParametric)
+              {
                 Par = SavePar;
+              }
               else
+              {
                 Par = Approx_ChordLength;
+              }
 
               Parameters(Line, myfirstpt, mylastpt, Param);
               isOtherLine2Made = false;
@@ -1098,7 +1180,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
                 occ::handle<NCollection_HArray1<double>> ThePar =
                   new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
                 for (i = 0; i < aLen; i++)
+                {
                   ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+                }
                 myPar.Append(ThePar);
               }
             }
@@ -1139,7 +1223,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
           occ::handle<NCollection_HArray1<double>> ThePar =
             new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
           for (i = 0; i < aLen; i++)
+          {
             ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+          }
           myPar.Append(ThePar);
 
           myfirstpt = oldlastpt;
@@ -1166,7 +1252,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
       if (!GoUp)
       {
         if (myfirstpt == mylastpt)
+        {
           break; // Pour etre sur de ne pas
+        }
                  // planter la station !!
         myCouple1.SetIndex(myfirstpt);
         myCouple2.SetIndex(mylastpt);
@@ -1260,9 +1348,13 @@ void Approx_ComputeLine::Parameters(const MultiLine& Line,
     nbP2d       = LineTool::NbP2d(Line);
     int mynbP3d = nbP3d, mynbP2d = nbP2d;
     if (nbP3d == 0)
+    {
       mynbP3d = 1;
+    }
     if (nbP2d == 0)
+    {
       mynbP2d = 1;
+    }
 
     TheParameters(firstP) = 0.0;
     dist                  = 0.0;
@@ -1274,18 +1366,30 @@ void Approx_ComputeLine::Parameters(const MultiLine& Line,
     for (i = firstP + 1; i <= lastP; i++)
     {
       if (nbP3d != 0 && nbP2d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP, tabP2d);
+      }
       else if (nbP2d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP2d);
+      }
       else if (nbP3d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP);
+      }
 
       if (nbP3d != 0 && nbP2d != 0)
+      {
         LineTool::Value(Line, i, tabPP, tabPP2d);
+      }
       else if (nbP2d != 0)
+      {
         LineTool::Value(Line, i, tabPP2d);
+      }
       else if (nbP3d != 0)
+      {
         LineTool::Value(Line, i, tabPP);
+      }
       dist = 0;
       for (j = 1; j <= nbP3d; j++)
       {
@@ -1310,7 +1414,9 @@ void Approx_ComputeLine::Parameters(const MultiLine& Line,
       }
     }
     for (i = firstP; i <= lastP; i++)
+    {
       TheParameters(i) /= TheParameters(lastP);
+    }
   }
   else
   {
@@ -1367,7 +1473,9 @@ bool Approx_ComputeLine::Compute(const MultiLine& Line,
       mydone = GRAD.IsDone();
       mySCU  = GRAD.Value();
       if (mySCU.NbCurves() == 0)
+      {
         continue;
+      }
       TheTol3d = GRAD.MaxError3d();
       TheTol2d = GRAD.MaxError2d();
     }
@@ -1461,9 +1569,13 @@ bool Approx_ComputeLine::ComputeCurve(const MultiLine& Line, const int firstpt, 
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
 
   NCollection_Array1<gp_Vec>   tabV1(1, mynbP3d), tabV2(1, mynbP3d);
   NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d), tabP(1, mynbP3d);

@@ -379,7 +379,9 @@ public:
   bool IsBound(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return false;
+    }
     size_t anIndex = 0;
     return findSlotIndex(theKey, anIndex);
   }
@@ -391,10 +393,14 @@ public:
     Contained(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return std::nullopt;
+    }
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(mySlots[aIdx].Key()), std::cref(mySlots[aIdx].Item()));
   }
 
@@ -405,10 +411,14 @@ public:
     Contained(const TheKeyType& theKey)
   {
     if (mySize == 0)
+    {
       return std::nullopt;
+    }
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(mySlots[aIdx].Key()), std::ref(mySlots[aIdx].Item()));
   }
 
@@ -416,7 +426,9 @@ public:
   const TheItemType* Seek(const TheKeyType& theKey) const
   {
     if (mySize == 0)
+    {
       return nullptr;
+    }
     size_t aFoundIndex = 0;
     if (findSlotIndex(theKey, aFoundIndex))
     {
@@ -429,7 +441,9 @@ public:
   TheItemType* ChangeSeek(const TheKeyType& theKey)
   {
     if (mySize == 0)
+    {
       return nullptr;
+    }
     size_t aFoundIndex = 0;
     if (findSlotIndex(theKey, aFoundIndex))
     {
@@ -640,7 +654,9 @@ public:
   bool UnBind(const TheKeyType& theKey)
   {
     if (mySize == 0)
+    {
       return false;
+    }
 
     size_t aFoundIndex = 0;
     if (!findSlotIndex(theKey, aFoundIndex))
@@ -781,7 +797,9 @@ private:
   static size_t nextPowerOf2(size_t n) noexcept
   {
     if (n == 0)
+    {
       return THE_DEFAULT_CAPACITY;
+    }
     --n;
     n |= n >> 1;
     n |= n >> 2;
@@ -1024,7 +1042,9 @@ private:
       if (aSlot.myHash == aHashToInsert && myHasher(aSlot.Key(), aKeyToInsert))
       {
         if constexpr (!IsTry)
+        {
           aSlot.Item() = TheItemType(std::forward<Args>(theArgs)...);
+        }
         return false;
       }
 
@@ -1104,7 +1124,9 @@ private:
       if (aSlot.myHash == aHashToInsert && myHasher(aSlot.Key(), aKeyToInsert))
       {
         if constexpr (!IsTry)
+        {
           aSlot.Item() = TheItemType(std::forward<Args>(theArgs)...);
+        }
         return aSlot.Item();
       }
 

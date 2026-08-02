@@ -156,12 +156,16 @@ public:
           myintuinf = std::max(theInter(inter), myumin);
           myintusup = std::min(theInter(inter + 1), myusup);
           if ((local_u0 >= myintuinf) && (local_u0 < myintusup))
+          {
             found = true;
+          }
           inter++;
         }
 
         if (found)
+        {
           inter--; // IFV 16.06.00 - inter is increased after found!
+        }
 
         // Try on found interval
         myLocExtPC.Initialize(*myC, myintuinf, myintusup, mytol);
@@ -298,7 +302,9 @@ public:
         }
 
         if (numberext == 0)
+        {
           myDone = false;
+        }
 
         break;
       }

@@ -292,7 +292,9 @@ public:
   NCollection_IndexedMap& Assign(const NCollection_IndexedMap& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     Clear();
     int anExt = theOther.Extent();
@@ -323,7 +325,9 @@ public:
   NCollection_IndexedMap& operator=(NCollection_IndexedMap&& theOther) noexcept
   {
     if (this == &theOther)
+    {
       return *this;
+    }
     exchangeMapsData(theOther);
     return *this;
   }
@@ -438,7 +442,9 @@ public:
   {
     IndexedMapNode* p;
     if (!lookup(theKey1, p))
+    {
       return std::nullopt;
+    }
     return std::cref(p->Value());
   }
 
@@ -469,11 +475,15 @@ public:
     const size_t    iK = HashCode(aNode->Key1(), NbBuckets());
     IndexedMapNode* q  = (IndexedMapNode*)myData1[iK];
     if (q == aNode)
+    {
       myData1[iK] = (IndexedMapNode*)aNode->Next();
+    }
     else
     {
       while (q->Next() != aNode)
+      {
         q = (IndexedMapNode*)q->Next();
+      }
       q->Next() = aNode->Next();
     }
 
@@ -530,11 +540,15 @@ public:
     const size_t    iK1 = HashCode(p->Key1(), NbBuckets());
     IndexedMapNode* q   = (IndexedMapNode*)myData1[iK1];
     if (q == p)
+    {
       myData1[iK1] = (IndexedMapNode*)p->Next();
+    }
     else
     {
       while (q->Next() != p)
+      {
         q = (IndexedMapNode*)q->Next();
+      }
       q->Next() = p->Next();
     }
     p->~IndexedMapNode();
@@ -636,12 +650,16 @@ protected:
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (IndexedMapNode*)myData1[theHash]; theNode;
          theNode = (IndexedMapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key1(), theKey))
+      {
         return true;
+      }
     }
     return false; // Not found
   }
@@ -653,7 +671,9 @@ protected:
   bool lookup(const TheKeyType& theKey, IndexedMapNode*& theNode) const
   {
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (IndexedMapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
          theNode = (IndexedMapNode*)theNode->Next())
     {
@@ -693,9 +713,13 @@ protected:
     if (lookup(theKey1, aNode, aHash))
     {
       if constexpr (ReturnRef)
+      {
         return aNode->Key1();
+      }
       else
+      {
         return aNode->Index();
+      }
     }
     const int aNewIndex = Extent() + 1;
     aNode =
@@ -704,9 +728,13 @@ protected:
     myData2[aNewIndex - 1] = aNode;
     Increment();
     if constexpr (ReturnRef)
+    {
       return aNode->Key1();
+    }
     else
+    {
       return aNewIndex;
+    }
   }
 
   //! Implementation helper for Emplace/Emplaced.
@@ -719,7 +747,9 @@ protected:
     -> std::conditional_t<ReturnRef, const TheKeyType&, int>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     // First construct the key to compute hash and check for existence
     TheKeyType      aTempKey(std::forward<Args>(theArgs)...);
     IndexedMapNode* aNode;
@@ -727,11 +757,17 @@ protected:
     if (lookup(aTempKey, aNode, aHash))
     {
       if constexpr (!IsTry)
+      {
         aNode->Key1() = std::move(aTempKey);
+      }
       if constexpr (ReturnRef)
+      {
         return aNode->Key1();
+      }
       else
+      {
         return aNode->Index();
+      }
     }
     const int aNewIndex = Extent() + 1;
     aNode = new (this->myAllocator) IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
@@ -739,9 +775,13 @@ protected:
     myData2[aNewIndex - 1] = aNode;
     Increment();
     if constexpr (ReturnRef)
+    {
       return aNode->Key1();
+    }
     else
+    {
       return aNewIndex;
+    }
   }
 
 protected:

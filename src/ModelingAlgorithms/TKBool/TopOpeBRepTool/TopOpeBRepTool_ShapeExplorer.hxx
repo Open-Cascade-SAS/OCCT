@@ -61,7 +61,9 @@ public:
   void Next()
   {
     if (More())
+    {
       myIndex++;
+    }
     TopExp_Explorer::Next();
   }
 

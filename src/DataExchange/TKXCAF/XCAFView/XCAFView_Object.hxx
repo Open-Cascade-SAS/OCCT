@@ -108,7 +108,9 @@ public:
   void CreateGDTPoints(const int theLenght)
   {
     if (theLenght > 0)
+    {
       myGDTPoints = new NCollection_HArray1<gp_Pnt>(1, theLenght);
+    }
   }
 
   bool HasGDTPoints() { return (!myGDTPoints.IsNull()); }
@@ -116,26 +118,38 @@ public:
   int NbGDTPoints()
   {
     if (myGDTPoints.IsNull())
+    {
       return 0;
+    }
     return myGDTPoints->Length();
   }
 
   void SetGDTPoint(const int theIndex, const gp_Pnt& thePoint)
   {
     if (myGDTPoints.IsNull())
+    {
       return;
+    }
     if (theIndex > 0 && theIndex <= myGDTPoints->Length())
+    {
       myGDTPoints->SetValue(theIndex, thePoint);
+    }
   }
 
   gp_Pnt GDTPoint(const int theIndex)
   {
     if (myGDTPoints.IsNull())
+    {
       return gp_Pnt();
+    }
     if (theIndex > 0 && theIndex <= myGDTPoints->Length())
+    {
       return myGDTPoints->Value(theIndex);
+    }
     else
+    {
       return gp_Pnt();
+    }
   }
 
   DEFINE_STANDARD_RTTIEXT(XCAFView_Object, Standard_Transient)

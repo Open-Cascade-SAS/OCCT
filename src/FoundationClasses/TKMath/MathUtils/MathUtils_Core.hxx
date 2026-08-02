@@ -89,9 +89,13 @@ inline double SafeDiv(double theNumerator, double theDenominator, double theDefa
 inline int Sign(double theValue)
 {
   if (theValue > THE_ZERO_TOL)
+  {
     return 1;
+  }
   if (theValue < -THE_ZERO_TOL)
+  {
     return -1;
+  }
   return 0;
 }
 

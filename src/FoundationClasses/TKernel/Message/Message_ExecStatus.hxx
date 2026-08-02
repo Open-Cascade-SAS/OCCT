@@ -244,13 +244,21 @@ public:
   {
     int indx = theIndex - 1;
     if (indx < 32)
+    {
       return (Message_Status)(Message_DONE + indx);
+    }
     else if (indx < 64)
+    {
       return (Message_Status)(Message_WARN + (indx - 32));
+    }
     else if (indx < 96)
+    {
       return (Message_Status)(Message_ALARM + (indx - 64));
+    }
     else if (indx < 128)
+    {
       return (Message_Status)(Message_FAIL + (indx - 96));
+    }
     return Message_None;
   }
 

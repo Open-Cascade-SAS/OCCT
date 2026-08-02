@@ -45,10 +45,14 @@ public:
   void Import(const occ::handle<TDocStd_XLink>& theAttribute) const
   {
     if (myDocEntry)
+    {
       theAttribute->DocumentEntry(myDocEntry->Value()->String());
+    }
 
     if (myLabEntry)
+    {
       theAttribute->LabelEntry(myLabEntry->Value()->String());
+    }
   }
 
 private:

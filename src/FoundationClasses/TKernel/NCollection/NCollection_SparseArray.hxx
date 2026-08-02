@@ -57,7 +57,9 @@ public:
   NCollection_SparseArray& Assign(const NCollection_SparseArray& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
     this->assign(theOther, createItemImpl, destroyItemImpl, copyItemImpl);
     return *this;
   }

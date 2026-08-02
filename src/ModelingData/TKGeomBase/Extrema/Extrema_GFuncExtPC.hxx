@@ -169,9 +169,13 @@ public:
         const double DivisionFactor = 1.e-3;
         double       du;
         if ((myUsupremum >= RealLast()) || (myUinfium <= RealFirst()))
+        {
           du = 0.0;
+        }
         else
+        {
           du = myUsupremum - myUinfium;
+        }
 
         const double aDelta = std::max(du * DivisionFactor, MinStep);
         // Derivative is approximated by Taylor-series
@@ -192,9 +196,13 @@ public:
           double u;
 
           if (myU - myUinfium < aDelta)
+          {
             u = myU + aDelta;
+          }
           else
+          {
             u = myU - aDelta;
+          }
 
           ThePoint P1, P2;
           TheCurveTool::D0(*myC, std::min(myU, u), P1);
@@ -204,9 +212,13 @@ public:
           double    aDirFactor = V.Dot(V1);
 
           if (aDirFactor < 0.0)
+          {
             D1c = -V;
+          }
           else
+          {
             D1c = V;
+          }
         }
         else
         {
@@ -233,9 +245,13 @@ public:
           TheVector V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
 
           if (IsParameterGrown)
+          {
             D1c = -3 * V1 + 4 * V2 - V3;
+          }
           else
+          {
             D1c = V1 - 4 * V2 + 3 * V3;
+          }
         }
         Ndu = D1c.Magnitude();
       }
@@ -300,9 +316,13 @@ public:
       const double DivisionFactor = 0.01;
       double       du;
       if ((myUsupremum >= RealLast()) || (myUinfium <= RealFirst()))
+      {
         du = 0.0;
+      }
       else
+      {
         du = myUsupremum - myUinfium;
+      }
 
       const double aDelta = std::max(du * DivisionFactor, MinStep);
 
@@ -437,7 +457,9 @@ public:
     {
       double u = myUinfium + aNum * aStep;
       if (u > myUsupremum)
+      {
         u = myUsupremum;
+      }
 
       ThePoint  Ptemp;
       TheVector VDer;
@@ -450,7 +472,9 @@ public:
 
       double vm = VDer.Magnitude();
       if (vm > aMax)
+      {
         aMax = vm;
+      }
     } while (++aNum < NPoint + 1);
 
     return std::max(aMax * TolFactor, MinTol);

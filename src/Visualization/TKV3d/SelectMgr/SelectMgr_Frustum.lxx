@@ -230,7 +230,9 @@ bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
 {
   const gp_XYZ& aDir = theEndPnt.XYZ() - theStartPnt.XYZ();
   if (aDir.Modulus() < Precision::Confusion())
+  {
     return true;
+  }
 
   const int anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (int aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)

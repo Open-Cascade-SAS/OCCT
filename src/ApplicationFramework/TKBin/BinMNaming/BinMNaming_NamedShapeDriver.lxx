@@ -19,7 +19,9 @@ inline void BinMNaming_NamedShapeDriver::SetWithTriangles(const bool isWithTrian
 {
   myWithTriangles = isWithTriangles;
   if (myShapeSet)
+  {
     myShapeSet->SetWithTriangles(isWithTriangles);
+  }
 }
 
 //=================================================================================================
@@ -28,5 +30,7 @@ inline void BinMNaming_NamedShapeDriver::SetWithNormals(const bool isWithNormals
 {
   myWithNormals = isWithNormals;
   if (myShapeSet)
+  {
     myShapeSet->SetWithNormals(isWithNormals);
+  }
 }

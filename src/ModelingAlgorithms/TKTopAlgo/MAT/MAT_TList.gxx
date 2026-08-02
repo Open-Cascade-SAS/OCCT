@@ -46,7 +46,9 @@ void MAT_TList::Init(const Item& anitem)
   while (More())
   {
     if (anitem == thecurrentnode->GetItem())
+    {
       break;
+    }
     Next();
   }
 }
@@ -182,7 +184,9 @@ void MAT_TList::LinkBefore(const Item& anitem)
 {
   thenumberofitems++;
   if (thecurrentindex)
+  {
     thecurrentindex++;
+  }
 
   occ::handle<MAT_TListNode> previous;
 
@@ -235,7 +239,9 @@ void MAT_TList::FrontAdd(const Item& anitem)
 {
   thenumberofitems++;
   if (thecurrentindex)
+  {
     thecurrentindex++;
+  }
 
   occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
 
@@ -303,9 +309,13 @@ void MAT_TList::Permute()
     current->Next(null);
   }
   if (thefirstnode == current)
+  {
     thefirstnode = next;
+  }
   if (thelastnode == next)
+  {
     thelastnode = current;
+  }
   thecurrentindex++;
 }
 
@@ -322,7 +332,9 @@ void MAT_TList::Loop() const
 void MAT_TList::Dump(const int ashift, const int alevel)
 {
   for (First(); More(); Next())
+  {
     Current()->Dump(ashift, alevel);
+  }
 }
 
 //=======================================================================
@@ -336,8 +348,8 @@ MAT_TList::~MAT_TList()
   while (!aNode.IsNull())
   {
     occ::handle<MAT_TListNode> aNext = aNode->Next();
-    aNode->Next(NULL);
-    aNode->Previous(NULL);
+    aNode->Next(nullptr);
+    aNode->Previous(nullptr);
     aNode = aNext;
   }
   thecurrentnode.Nullify();

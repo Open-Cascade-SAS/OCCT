@@ -185,7 +185,9 @@ public:
       if (myDomain.has_value())
       {
         if (aU < myDomain->Min - aTolU || aU > myDomain->Max + aTolU)
+        {
           continue;
+        }
       }
 
       gp_Pnt aCurvePt = ElCLib::Value(aU, myCircle);

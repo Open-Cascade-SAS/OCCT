@@ -22,11 +22,15 @@ int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH)
 {
   if (theBVH.IsNull())
+  {
     return 0;
+  }
 
   const BVH_Array4i& aBVHNodes = theBVH->NodeInfoBuffer();
   if (aBVHNodes.IsEmpty())
+  {
     return 0;
+  }
 
   // Create stack
   BVH_NodeInStack aStack[BVH_Constants_MaxTreeDepth];
@@ -56,14 +60,18 @@ int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
         bool       isGoodLft =
           !RejectNode(theBVH->MinPoint(aData.y()), theBVH->MaxPoint(aData.y()), aMetricLft);
         if (this->Stop())
+        {
           return aNbAccepted;
+        }
 
         // Test the right branch
         MetricType aMetricRgh;
         bool       isGoodRgh =
           !RejectNode(theBVH->MinPoint(aData.z()), theBVH->MaxPoint(aData.z()), aMetricRgh);
         if (this->Stop())
+        {
           return aNbAccepted;
+        }
 
         if (isGoodLft && isGoodRgh)
         {
@@ -103,24 +111,32 @@ int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
       for (int iN = aData.y(); iN <= aData.z(); ++iN)
       {
         if (Accept(iN, aNode.Metric))
+        {
           ++aNbAccepted;
+        }
 
         if (this->Stop())
+        {
           return aNbAccepted;
+        }
       }
     }
 
     if (aNode.NodeID == aPrevNode.NodeID)
     {
       if (aHead < 0)
+      {
         return aNbAccepted;
+      }
 
       // Remove the nodes with bad metric from the stack
       aNode = aStack[aHead--];
       while (this->RejectMetric(aNode.Metric))
       {
         if (aHead < 0)
+        {
           return aNbAccepted;
+        }
         aNode = aStack[aHead--];
       }
     }
@@ -137,12 +153,16 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2)
 {
   if (theBVH1.IsNull() || theBVH2.IsNull())
+  {
     return 0;
+  }
 
   const BVH_Array4i& aBVHNodes1 = theBVH1->NodeInfoBuffer();
   const BVH_Array4i& aBVHNodes2 = theBVH2->NodeInfoBuffer();
   if (aBVHNodes1.IsEmpty() || aBVHNodes2.IsEmpty())
+  {
     return 0;
+  }
 
   // On each iteration we can add max four new pairs of nodes to process.
   // One of these pairs goes directly to processing, while others
@@ -186,10 +206,14 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
           for (int iN2 = aData2.y(); iN2 <= aData2.z(); ++iN2)
           {
             if (Accept(iN1, iN2))
+            {
               ++aNbAccepted;
+            }
 
             if (this->Stop())
+            {
               return aNbAccepted;
+            }
           }
         }
       }
@@ -261,14 +285,18 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
     {
       // No pairs to add
       if (aHead < 0)
+      {
         return aNbAccepted;
+      }
 
       // Remove the pairs of nodes with bad metric from the stack
       aNode = aStack[aHead--];
       while (this->RejectMetric(aNode.Metric))
       {
         if (aHead < 0)
+        {
           return aNbAccepted;
+        }
         aNode = aStack[aHead--];
       }
     }

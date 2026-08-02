@@ -79,7 +79,9 @@ public:
   {
     myFlags = (aStatus) ? (myFlags | TDF_LabelNodeAttModMsk) : (myFlags & ~TDF_LabelNodeAttModMsk);
     if (aStatus)
+    {
       AllMayBeModified();
+    }
   }
 
   inline bool AttributesModified() const { return ((myFlags & TDF_LabelNodeAttModMsk) != 0); }

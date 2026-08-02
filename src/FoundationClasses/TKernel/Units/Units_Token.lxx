@@ -79,9 +79,13 @@ inline bool Units_Token::IsNotEqual(const char* const astring) const
   TCollection_AsciiString string = Word();
   int                     length = string.Length();
   if (strlen(astring) == (unsigned int)length)
+  {
     return strncmp(string.ToCString(), astring, unsigned(length)) != 0;
+  }
   else
+  {
     return true;
+  }
 }
 
 //=================================================================================================
@@ -92,9 +96,13 @@ inline bool Units_Token::IsNotEqual(const occ::handle<Units_Token>& atoken) cons
   TCollection_AsciiString string2 = atoken->Word();
   int                     length  = string1.Length();
   if (length == atoken->Length())
+  {
     return strcmp(string1.ToCString(), string2.ToCString()) != 0;
+  }
   else
+  {
     return true;
+  }
 }
 
 //=================================================================================================
@@ -104,9 +112,13 @@ inline bool Units_Token::IsLessOrEqual(const char* const astring) const
   TCollection_AsciiString string = Word();
   int                     length = string.Length();
   if (strlen(astring) >= (unsigned int)length)
+  {
     return strncmp(string.ToCString(), astring, unsigned(length)) == 0;
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================

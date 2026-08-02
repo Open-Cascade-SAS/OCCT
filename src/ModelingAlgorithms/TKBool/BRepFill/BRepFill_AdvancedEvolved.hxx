@@ -54,7 +54,9 @@ public:
   bool IsDone(unsigned int* theErrorCode = nullptr) const
   {
     if (theErrorCode)
+    {
       *theErrorCode = myErrorStatus;
+    }
 
     return (myErrorStatus == BRepFill_AdvancedEvolved_OK);
   }

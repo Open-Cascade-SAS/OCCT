@@ -96,13 +96,21 @@ public:
   {
     isnull = false;
     if (Domain.HasFirstPoint())
+    {
       Binf = Domain.FirstParameter();
+    }
     else
+    {
       Binf = -1.0;
+    }
     if (Domain.HasLastPoint())
+    {
       Bsup = Domain.LastParameter();
+    }
     else
+    {
       Bsup = 20.0;
+    }
   }
 
   PeriodicInterval()
@@ -117,7 +125,9 @@ public:
     Binf   = a;
     Bsup   = b;
     if ((b - a) < PIpPI)
+    {
       this->Normalize();
+    }
   }
 
   void SetValues(const double a, const double b)
@@ -126,7 +136,9 @@ public:
     Binf   = a;
     Bsup   = b;
     if ((b - a) < PIpPI)
+    {
       this->Normalize();
+    }
   }
 
   void Normalize()
@@ -134,13 +146,21 @@ public:
     if (!isnull)
     {
       while (Binf > PIpPI)
+      {
         Binf -= PIpPI;
+      }
       while (Binf < 0.0)
+      {
         Binf += PIpPI;
+      }
       while (Bsup < Binf)
+      {
         Bsup += PIpPI;
+      }
       while (Bsup >= (Binf + PIpPI))
+      {
         Bsup -= PIpPI;
+      }
     }
   }
 

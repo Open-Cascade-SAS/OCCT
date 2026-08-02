@@ -52,7 +52,9 @@ public: //! @name History methods
   const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS)
   {
     if (myFillHistory && myHistory)
+    {
       return myHistory->Modified(theS);
+    }
     myHistShapes.Clear();
     return myHistShapes;
   }
@@ -61,7 +63,9 @@ public: //! @name History methods
   const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& theS)
   {
     if (myFillHistory && myHistory)
+    {
       return myHistory->Generated(theS);
+    }
     myHistShapes.Clear();
     return myHistShapes;
   }
@@ -95,10 +99,12 @@ public: //! @name History methods
     if (myFillHistory)
     {
       if (myHistory.IsNull())
+      {
         // It seems the algorithm has exited with error before filling
         // the history. Initialize the History tool to return the empty
         // History instead of NULL.
         myHistory = new BRepTools_History();
+      }
 
       return myHistory;
     }

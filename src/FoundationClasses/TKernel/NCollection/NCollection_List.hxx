@@ -147,7 +147,9 @@ public:
   {
     PClear(ListNode::delNode);
     if (!theAllocator.IsNull())
+    {
       this->myAllocator = theAllocator;
+    }
   }
 
   //! First item
@@ -215,7 +217,9 @@ public:
   void Append(NCollection_List& theOther)
   {
     if (this == &theOther || theOther.Extent() < 1)
+    {
       return;
+    }
     if (this->myAllocator == theOther.myAllocator)
     {
       // Then we take the list and glue it to our end -
@@ -250,7 +254,9 @@ public:
   void Prepend(NCollection_List& theOther)
   {
     if (this == &theOther || theOther.Extent() < 1)
+    {
       return;
+    }
     if (this->myAllocator == theOther.myAllocator)
     {
       // Then we take the list and glue it to our head -
@@ -309,7 +315,9 @@ public:
   void InsertBefore(NCollection_List& theOther, Iterator& theIter)
   {
     if (this == &theOther)
+    {
       return;
+    }
 
     if (this->myAllocator == theOther.myAllocator)
     {

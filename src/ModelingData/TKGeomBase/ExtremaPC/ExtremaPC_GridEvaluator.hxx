@@ -422,7 +422,9 @@ private:
       }
 
       if (!aConverged)
+      {
         continue;
+      }
 
       // Check for duplicate
       bool aDuplicate = false;
@@ -435,7 +437,9 @@ private:
         }
       }
       if (aDuplicate)
+      {
         continue;
+      }
 
       gp_Pnt aPt     = theCurve.Value(aRootU);
       double aSqDist = theP.SquareDistance(aPt);

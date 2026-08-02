@@ -35,9 +35,13 @@ inline const occ::handle<Adaptor2d_Curve2d>& IntPatch_RLine::ArcOnS2() const
 inline void IntPatch_RLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
 {
   if (theIsPrepend)
+  {
     svtx.Prepend(thePnt);
+  }
   else
+  {
     svtx.Append(thePnt);
+  }
 }
 
 inline void IntPatch_RLine::Replace(const int Index, const IntPatch_Point& Pnt)
@@ -118,7 +122,9 @@ inline IntPatch_Point& IntPatch_RLine::ChangeVertex(const int Index)
 inline void IntPatch_RLine::RemoveVertex(const int theIndex)
 {
   if ((theIndex < 1) || (theIndex > NbVertex()))
+  {
     throw Standard_OutOfRange("Cannot delete not existing vertex");
+  }
   svtx.Remove(theIndex);
 }
 

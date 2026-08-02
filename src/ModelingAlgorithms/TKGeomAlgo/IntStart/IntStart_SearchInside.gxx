@@ -72,15 +72,21 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
   double toler2 = toler(2) = ThePSurfaceTool::VResolution(PS, Precision::Confusion());
   double Maxtoler1toler2   = toler1;
   if (toler2 > Maxtoler1toler2)
+  {
     Maxtoler1toler2 = toler2;
+  }
 
   //-- lbr le 15 mai 97
   //-- on interdit aux points d'etre trop prets des restrictions
   Maxtoler1toler2 *= 1000;
   if (Maxtoler1toler2 > du * 0.001)
+  {
     Maxtoler1toler2 = du * 0.001;
+  }
   if (Maxtoler1toler2 > dv * 0.001)
+  {
     Maxtoler1toler2 = dv * 0.001;
+  }
 
   Func.Set(PS);
   double Tol = Func.Tolerance();

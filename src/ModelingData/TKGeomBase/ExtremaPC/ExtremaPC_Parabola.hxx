@@ -238,7 +238,9 @@ private:
       if (theDomain.has_value())
       {
         if (aU < theDomain->Min || aU > theDomain->Max)
+        {
           continue;
+        }
       }
 
       gp_Pnt aCurvePt = Value(aU);
@@ -254,7 +256,9 @@ private:
         }
       }
       if (aDuplicate)
+      {
         continue;
+      }
 
       // Determine if minimum or maximum using neighbor comparison
       double aSqDist = theP.SquareDistance(aCurvePt);
@@ -276,9 +280,13 @@ private:
 
       // Filter by search mode
       if (theMode == ExtremaPC::SearchMode::Min && !aIsMin)
+      {
         continue;
+      }
       if (theMode == ExtremaPC::SearchMode::Max && aIsMin)
+      {
         continue;
+      }
 
       ExtremaPC::ExtremumResult anExt;
       anExt.Parameter      = aU;

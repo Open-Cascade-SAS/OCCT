@@ -128,21 +128,21 @@ extern "C++"
     void ctor_common();
 
   public:
-    virtual ~yyFlexLexer();
+    ~yyFlexLexer() override;
 
-    void             yy_switch_to_buffer(yy_buffer_state* new_buffer);
-    yy_buffer_state* yy_create_buffer(std::istream* s, int size);
-    yy_buffer_state* yy_create_buffer(std::istream& s, int size);
-    void             yy_delete_buffer(yy_buffer_state* b);
-    void             yyrestart(std::istream* s);
-    void             yyrestart(std::istream& s);
+    void             yy_switch_to_buffer(yy_buffer_state* new_buffer) override;
+    yy_buffer_state* yy_create_buffer(std::istream* s, int size) override;
+    yy_buffer_state* yy_create_buffer(std::istream& s, int size) override;
+    void             yy_delete_buffer(yy_buffer_state* b) override;
+    void             yyrestart(std::istream* s) override;
+    void             yyrestart(std::istream& s) override;
 
     void yypush_buffer_state(yy_buffer_state* new_buffer);
     void yypop_buffer_state();
 
-    virtual int  yylex();
-    virtual void switch_streams(std::istream& new_in, std::ostream& new_out);
-    virtual void switch_streams(std::istream* new_in = nullptr, std::ostream* new_out = nullptr);
+    int  yylex() override;
+    void switch_streams(std::istream& new_in, std::ostream& new_out) override;
+    void switch_streams(std::istream* new_in = nullptr, std::ostream* new_out = nullptr) override;
     virtual int  yywrap();
 
   protected:

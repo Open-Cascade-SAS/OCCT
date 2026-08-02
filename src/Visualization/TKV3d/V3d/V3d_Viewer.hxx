@@ -498,7 +498,9 @@ public: //! @name deprecated methods
   void NextActiveViews()
   {
     if (!myActiveViews.IsEmpty())
+    {
       myActiveViewsIterator.Next();
+    }
   }
 
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
@@ -517,7 +519,9 @@ public: //! @name deprecated methods
   void NextDefinedViews()
   {
     if (!myDefinedViews.IsEmpty())
+    {
       myDefinedViewsIterator.Next();
+    }
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
@@ -551,7 +555,9 @@ public: //! @name deprecated methods
   void NextDefinedLights()
   {
     if (!myDefinedLights.IsEmpty())
+    {
       myDefinedLightsIterator.Next();
+    }
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")

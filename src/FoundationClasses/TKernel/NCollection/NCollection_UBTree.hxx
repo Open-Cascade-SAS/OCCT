@@ -229,7 +229,9 @@ public:
     static void delNode(TreeNode* theNode, const occ::handle<NCollection_BaseAllocator>& theAlloc)
     {
       if (!theNode)
+      {
         return;
+      }
 
       // Collect children arrays during pre-order traversal, free them after.
       constexpr int                                          THE_INIT_STACK_SIZE = 64;
@@ -247,12 +249,16 @@ public:
         {
           // Record children array for later freeing
           if (aNumArrays >= static_cast<int>(aChildArrays.Size()))
+          {
             aChildArrays.Reallocate(aChildArrays.Size() * 2, true);
+          }
           aChildArrays[aNumArrays++] = aNode->myChildren;
 
           // Push both children for traversal
           if (aTop + 2 > static_cast<int>(aStack.Size()))
+          {
             aStack.Reallocate(aStack.Size() * 2, true);
+          }
           aStack[aTop++] = &aNode->myChildren[1];
           aStack[aTop++] = &aNode->myChildren[0];
         }
@@ -261,7 +267,9 @@ public:
 
       // Free all collected children arrays
       for (int i = 0; i < aNumArrays; ++i)
+      {
         theAlloc->Free(aChildArrays[i]);
+      }
     }
 
   private:
@@ -361,7 +369,9 @@ public:
       myRoot = nullptr;
     }
     if (!aNewAlloc.IsNull())
+    {
       myAlloc = aNewAlloc;
+    }
   }
 
   bool IsEmpty() const noexcept { return !myRoot; }
@@ -455,7 +465,9 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
     int  iBest   = 0;
     bool isOut[] = {pBranch->Child(0).Bnd().IsOut(theBnd), pBranch->Child(1).Bnd().IsOut(theBnd)};
     if (isOut[0] != isOut[1])
+    {
       iBest = (isOut[0] ? 1 : 0);
+    }
     else
     {
       TheBndType aUnion[] = {theBnd, theBnd};
@@ -464,7 +476,9 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
       const double d1 = aUnion[0].SquareExtent();
       const double d2 = aUnion[1].SquareExtent();
       if (d1 > d2)
+      {
         iBest = 1;
+      }
     }
 
     // Continue with the selected branch
@@ -494,20 +508,28 @@ int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch
     const TreeNode* aNode = aStack[--aTop];
 
     if (theSelector.Reject(aNode->Bnd()))
+    {
       continue;
+    }
 
     if (aNode->IsLeaf())
     {
       if (theSelector.Accept(aNode->Object()))
+      {
         nSel++;
+      }
       if (theSelector.Stop())
+      {
         break;
+      }
     }
     else
     {
       // Ensure stack has space for 2 children
       if (aTop + 2 > static_cast<int>(aStack.Size()))
+      {
         aStack.Reallocate(aStack.Size() * 2, true);
+      }
       // Push child(1) first so child(0) is processed first (LIFO order)
       aStack[aTop++] = &aNode->Child(1);
       aStack[aTop++] = &aNode->Child(0);

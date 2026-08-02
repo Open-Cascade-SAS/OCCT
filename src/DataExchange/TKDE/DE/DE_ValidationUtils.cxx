@@ -41,12 +41,10 @@ bool DE_ValidationUtils::ValidateConfigurationNode(
 
   if (!theNode->IsKind(theExpectedType))
   {
-    if (theIsVerbose)
-    {
+    if (theIsVerbose && NULL)
       Message::SendFail() << "Error during " << theContext
                           << ": Configuration Node is not of expected type. Expected: "
                           << theExpectedType->Name() << ", got: " << theNode->DynamicType()->Name();
-    }
     return false;
   }
 

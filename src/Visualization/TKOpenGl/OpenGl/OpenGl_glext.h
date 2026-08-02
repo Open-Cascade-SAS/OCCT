@@ -856,7 +856,7 @@ extern "C"
                                                       GLuint        index,
                                                       const GLchar* name);
   typedef void(APIENTRYP PFNGLCOMPILESHADERPROC)(GLuint shader);
-  typedef GLuint(APIENTRYP PFNGLCREATEPROGRAMPROC)(void);
+  typedef GLuint(APIENTRYP PFNGLCREATEPROGRAMPROC)();
   typedef GLuint(APIENTRYP PFNGLCREATESHADERPROC)(GLenum type);
   typedef void(APIENTRYP PFNGLDELETEPROGRAMPROC)(GLuint program);
   typedef void(APIENTRYP PFNGLDELETESHADERPROC)(GLuint shader);
@@ -1460,7 +1460,7 @@ extern "C"
   typedef void(APIENTRYP PFNGLDISABLEIPROC)(GLenum target, GLuint index);
   typedef GLboolean(APIENTRYP PFNGLISENABLEDIPROC)(GLenum target, GLuint index);
   typedef void(APIENTRYP PFNGLBEGINTRANSFORMFEEDBACKPROC)(GLenum primitiveMode);
-  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKPROC)(void);
+  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKPROC)();
   typedef void(APIENTRYP PFNGLBINDBUFFERRANGEPROC)(GLenum     target,
                                                    GLuint     index,
                                                    GLuint     buffer,
@@ -1480,7 +1480,7 @@ extern "C"
                                                                GLchar*  name);
   typedef void(APIENTRYP PFNGLCLAMPCOLORPROC)(GLenum target, GLenum clamp);
   typedef void(APIENTRYP PFNGLBEGINCONDITIONALRENDERPROC)(GLuint id, GLenum mode);
-  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERPROC)(void);
+  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERPROC)();
   typedef void(APIENTRYP PFNGLVERTEXATTRIBIPOINTERPROC)(GLuint      index,
                                                         GLint       size,
                                                         GLenum      type,
@@ -2503,8 +2503,8 @@ extern "C"
   typedef void(APIENTRYP PFNGLDELETETRANSFORMFEEDBACKSPROC)(GLsizei n, const GLuint* ids);
   typedef void(APIENTRYP PFNGLGENTRANSFORMFEEDBACKSPROC)(GLsizei n, GLuint* ids);
   typedef GLboolean(APIENTRYP PFNGLISTRANSFORMFEEDBACKPROC)(GLuint id);
-  typedef void(APIENTRYP PFNGLPAUSETRANSFORMFEEDBACKPROC)(void);
-  typedef void(APIENTRYP PFNGLRESUMETRANSFORMFEEDBACKPROC)(void);
+  typedef void(APIENTRYP PFNGLPAUSETRANSFORMFEEDBACKPROC)();
+  typedef void(APIENTRYP PFNGLRESUMETRANSFORMFEEDBACKPROC)();
   typedef void(APIENTRYP PFNGLDRAWTRANSFORMFEEDBACKPROC)(GLenum mode, GLuint id);
   typedef void(APIENTRYP PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC)(GLenum mode,
                                                                GLuint id,
@@ -2654,7 +2654,7 @@ extern "C"
   #define GL_LAYER_PROVOKING_VERTEX 0x825E
   #define GL_VIEWPORT_INDEX_PROVOKING_VERTEX 0x825F
   #define GL_UNDEFINED_VERTEX 0x8260
-  typedef void(APIENTRYP PFNGLRELEASESHADERCOMPILERPROC)(void);
+  typedef void(APIENTRYP PFNGLRELEASESHADERCOMPILERPROC)();
   typedef void(APIENTRYP PFNGLSHADERBINARYPROC)(GLsizei       count,
                                                 const GLuint* shaders,
                                                 GLenum        binaryFormat,
@@ -3876,7 +3876,7 @@ extern "C"
                                                   GLuint        id,
                                                   GLsizei       length,
                                                   const GLchar* message);
-  typedef void(APIENTRYP PFNGLPOPDEBUGGROUPPROC)(void);
+  typedef void(APIENTRYP PFNGLPOPDEBUGGROUPPROC)();
   typedef void(APIENTRYP PFNGLOBJECTLABELPROC)(GLenum        identifier,
                                                GLuint        name,
                                                GLsizei       length,
@@ -4621,7 +4621,7 @@ extern "C"
                                                                 GLsizei depth,
                                                                 GLsizei bufSize,
                                                                 void*   pixels);
-  typedef GLenum(APIENTRYP PFNGLGETGRAPHICSRESETSTATUSPROC)(void);
+  typedef GLenum(APIENTRYP PFNGLGETGRAPHICSRESETSTATUSPROC)();
   typedef void(APIENTRYP PFNGLGETNCOMPRESSEDTEXIMAGEPROC)(GLenum  target,
                                                           GLint   lod,
                                                           GLsizei bufSize,
@@ -4702,7 +4702,7 @@ extern "C"
                                               GLenum    type,
                                               GLsizei   bufSize,
                                               void*     values);
-  typedef void(APIENTRYP PFNGLTEXTUREBARRIERPROC)(void);
+  typedef void(APIENTRYP PFNGLTEXTUREBARRIERPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY      glClipControl(GLenum origin, GLenum depth);
   GLAPI void APIENTRY      glCreateTransformFeedbacks(GLsizei n, GLuint* ids);
@@ -6806,7 +6806,7 @@ extern "C"
   #define GL_UNKNOWN_CONTEXT_RESET_ARB 0x8255
   #define GL_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
   #define GL_NO_RESET_NOTIFICATION_ARB 0x8261
-  typedef GLenum(APIENTRYP PFNGLGETGRAPHICSRESETSTATUSARBPROC)(void);
+  typedef GLenum(APIENTRYP PFNGLGETGRAPHICSRESETSTATUSARBPROC)();
   typedef void(APIENTRYP PFNGLGETNTEXIMAGEARBPROC)(GLenum  target,
                                                    GLint   level,
                                                    GLenum  format,
@@ -6984,7 +6984,7 @@ extern "C"
                                                                         GLuint         start,
                                                                         GLsizei        count,
                                                                         const GLfloat* v);
-  typedef void(APIENTRYP PFNGLEVALUATEDEPTHVALUESARBPROC)(void);
+  typedef void(APIENTRYP PFNGLEVALUATEDEPTHVALUESARBPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFramebufferSampleLocationsfvARB(GLenum         target,
                                                         GLuint         start,
@@ -7112,7 +7112,7 @@ extern "C"
                                                    const GLcharARB** string,
                                                    const GLint*      length);
   typedef void(APIENTRYP PFNGLCOMPILESHADERARBPROC)(GLhandleARB shaderObj);
-  typedef GLhandleARB(APIENTRYP PFNGLCREATEPROGRAMOBJECTARBPROC)(void);
+  typedef GLhandleARB(APIENTRYP PFNGLCREATEPROGRAMOBJECTARBPROC)();
   typedef void(APIENTRYP PFNGLATTACHOBJECTARBPROC)(GLhandleARB containerObj, GLhandleARB obj);
   typedef void(APIENTRYP PFNGLLINKPROGRAMARBPROC)(GLhandleARB programObj);
   typedef void(APIENTRYP PFNGLUSEPROGRAMOBJECTARBPROC)(GLhandleARB programObj);
@@ -8254,7 +8254,7 @@ extern "C"
   #define GL_HSL_SATURATION_KHR 0x92AE
   #define GL_HSL_COLOR_KHR 0x92AF
   #define GL_HSL_LUMINOSITY_KHR 0x92B0
-  typedef void(APIENTRYP PFNGLBLENDBARRIERKHRPROC)(void);
+  typedef void(APIENTRYP PFNGLBLENDBARRIERKHRPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glBlendBarrierKHR(void);
   #endif
@@ -10034,8 +10034,8 @@ extern "C"
   typedef GLuint(APIENTRYP PFNGLGENFRAGMENTSHADERSATIPROC)(GLuint range);
   typedef void(APIENTRYP PFNGLBINDFRAGMENTSHADERATIPROC)(GLuint id);
   typedef void(APIENTRYP PFNGLDELETEFRAGMENTSHADERATIPROC)(GLuint id);
-  typedef void(APIENTRYP PFNGLBEGINFRAGMENTSHADERATIPROC)(void);
-  typedef void(APIENTRYP PFNGLENDFRAGMENTSHADERATIPROC)(void);
+  typedef void(APIENTRYP PFNGLBEGINFRAGMENTSHADERATIPROC)();
+  typedef void(APIENTRYP PFNGLENDFRAGMENTSHADERATIPROC)();
   typedef void(APIENTRYP PFNGLPASSTEXCOORDATIPROC)(GLuint dst, GLuint coord, GLenum swizzle);
   typedef void(APIENTRYP PFNGLSAMPLEMAPATIPROC)(GLuint dst, GLuint interp, GLenum swizzle);
   typedef void(APIENTRYP PFNGLCOLORFRAGMENTOP1ATIPROC)(GLenum op,
@@ -10678,7 +10678,7 @@ extern "C"
   #define GL_ARRAY_ELEMENT_LOCK_FIRST_EXT 0x81A8
   #define GL_ARRAY_ELEMENT_LOCK_COUNT_EXT 0x81A9
   typedef void(APIENTRYP PFNGLLOCKARRAYSEXTPROC)(GLint first, GLsizei count);
-  typedef void(APIENTRYP PFNGLUNLOCKARRAYSEXTPROC)(void);
+  typedef void(APIENTRYP PFNGLUNLOCKARRAYSEXTPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glLockArraysEXT(GLint first, GLsizei count);
   GLAPI void APIENTRY glUnlockArraysEXT(void);
@@ -11018,7 +11018,7 @@ extern "C"
   #define GL_EXT_debug_marker 1
   typedef void(APIENTRYP PFNGLINSERTEVENTMARKEREXTPROC)(GLsizei length, const GLchar* marker);
   typedef void(APIENTRYP PFNGLPUSHGROUPMARKEREXTPROC)(GLsizei length, const GLchar* marker);
-  typedef void(APIENTRYP PFNGLPOPGROUPMARKEREXTPROC)(void);
+  typedef void(APIENTRYP PFNGLPOPGROUPMARKEREXTPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glInsertEventMarkerEXT(GLsizei length, const GLchar* marker);
   GLAPI void APIENTRY glPushGroupMarkerEXT(GLsizei length, const GLchar* marker);
@@ -14569,7 +14569,7 @@ extern "C"
 
 #ifndef GL_EXT_shader_framebuffer_fetch_non_coherent
   #define GL_EXT_shader_framebuffer_fetch_non_coherent 1
-  typedef void(APIENTRYP PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC)(void);
+  typedef void(APIENTRYP PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFramebufferFetchBarrierEXT(void);
   #endif
@@ -15207,7 +15207,7 @@ extern "C"
   #define GL_TRANSFORM_FEEDBACK_BUFFER_MODE_EXT 0x8C7F
   #define GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH_EXT 0x8C76
   typedef void(APIENTRYP PFNGLBEGINTRANSFORMFEEDBACKEXTPROC)(GLenum primitiveMode);
-  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKEXTPROC)(void);
+  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKEXTPROC)();
   typedef void(APIENTRYP PFNGLBINDBUFFERRANGEEXTPROC)(GLenum     target,
                                                       GLuint     index,
                                                       GLuint     buffer,
@@ -15516,8 +15516,8 @@ extern "C"
   #define GL_INVARIANT_DATATYPE_EXT 0x87EB
   #define GL_LOCAL_CONSTANT_VALUE_EXT 0x87EC
   #define GL_LOCAL_CONSTANT_DATATYPE_EXT 0x87ED
-  typedef void(APIENTRYP PFNGLBEGINVERTEXSHADEREXTPROC)(void);
-  typedef void(APIENTRYP PFNGLENDVERTEXSHADEREXTPROC)(void);
+  typedef void(APIENTRYP PFNGLBEGINVERTEXSHADEREXTPROC)();
+  typedef void(APIENTRYP PFNGLENDVERTEXSHADEREXTPROC)();
   typedef void(APIENTRYP PFNGLBINDVERTEXSHADEREXTPROC)(GLuint id);
   typedef GLuint(APIENTRYP PFNGLGENVERTEXSHADERSEXTPROC)(GLuint range);
   typedef void(APIENTRYP PFNGLDELETEVERTEXSHADEREXTPROC)(GLuint id);
@@ -15710,7 +15710,7 @@ extern "C"
 
 #ifndef GL_GREMEDY_frame_terminator
   #define GL_GREMEDY_frame_terminator 1
-  typedef void(APIENTRYP PFNGLFRAMETERMINATORGREMEDYPROC)(void);
+  typedef void(APIENTRYP PFNGLFRAMETERMINATORGREMEDYPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFrameTerminatorGREMEDY(void);
   #endif
@@ -15988,7 +15988,7 @@ extern "C"
 
 #ifndef GL_INTEL_framebuffer_CMAA
   #define GL_INTEL_framebuffer_CMAA 1
-  typedef void(APIENTRYP PFNGLAPPLYFRAMEBUFFERATTACHMENTCMAAINTELPROC)(void);
+  typedef void(APIENTRYP PFNGLAPPLYFRAMEBUFFERATTACHMENTCMAAINTELPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glApplyFramebufferAttachmentCMAAINTEL(void);
   #endif
@@ -16176,7 +16176,7 @@ extern "C"
 
 #ifndef GL_MESA_resize_buffers
   #define GL_MESA_resize_buffers 1
-  typedef void(APIENTRYP PFNGLRESIZEBUFFERSMESAPROC)(void);
+  typedef void(APIENTRYP PFNGLRESIZEBUFFERSMESAPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glResizeBuffersMESA(void);
   #endif
@@ -16261,7 +16261,7 @@ extern "C"
 #ifndef GL_NVX_conditional_render
   #define GL_NVX_conditional_render 1
   typedef void(APIENTRYP PFNGLBEGINCONDITIONALRENDERNVXPROC)(GLuint id);
-  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERNVXPROC)(void);
+  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERNVXPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glBeginConditionalRenderNVX(GLuint id);
   GLAPI void APIENTRY glEndConditionalRenderNVX(void);
@@ -16408,7 +16408,7 @@ extern "C"
                                                            GLsizei    width,
                                                            GLsizei    height,
                                                            GLsizei    depth);
-  typedef void(APIENTRYP PFNGLLGPUINTERLOCKNVXPROC)(void);
+  typedef void(APIENTRYP PFNGLLGPUINTERLOCKNVXPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glLGPUNamedBufferSubDataNVX(GLbitfield  gpuMask,
                                                   GLuint      buffer,
@@ -16438,7 +16438,7 @@ extern "C"
 
 #ifndef GL_NVX_progress_fence
   #define GL_NVX_progress_fence 1
-  typedef GLuint(APIENTRYP PFNGLCREATEPROGRESSFENCENVXPROC)(void);
+  typedef GLuint(APIENTRYP PFNGLCREATEPROGRESSFENCENVXPROC)();
   typedef void(APIENTRYP PFNGLSIGNALSEMAPHOREUI64NVXPROC)(GLuint          signalGpu,
                                                           GLsizei         fenceObjectCount,
                                                           const GLuint*   semaphoreArray,
@@ -16638,7 +16638,7 @@ extern "C"
   #define GL_VIVIDLIGHT_NV 0x92A6
   #define GL_XOR_NV 0x1506
   typedef void(APIENTRYP PFNGLBLENDPARAMETERINVPROC)(GLenum pname, GLint value);
-  typedef void(APIENTRYP PFNGLBLENDBARRIERNVPROC)(void);
+  typedef void(APIENTRYP PFNGLBLENDBARRIERNVPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glBlendParameteriNV(GLenum pname, GLint value);
   GLAPI void APIENTRY glBlendBarrierNV(void);
@@ -16791,7 +16791,7 @@ extern "C"
   #define GL_QUERY_BY_REGION_WAIT_NV 0x8E15
   #define GL_QUERY_BY_REGION_NO_WAIT_NV 0x8E16
   typedef void(APIENTRYP PFNGLBEGINCONDITIONALRENDERNVPROC)(GLuint id, GLenum mode);
-  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERNVPROC)(void);
+  typedef void(APIENTRYP PFNGLENDCONDITIONALRENDERNVPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glBeginConditionalRenderNV(GLuint id, GLenum mode);
   GLAPI void APIENTRY glEndConditionalRenderNV(void);
@@ -16940,7 +16940,7 @@ extern "C"
 
 #ifndef GL_NV_draw_vulkan_image
   #define GL_NV_draw_vulkan_image 1
-  typedef void(APIENTRY* GLVULKANPROCNV)(void);
+  typedef void(APIENTRY* GLVULKANPROCNV)();
   typedef void(APIENTRYP PFNGLDRAWVKIMAGENVPROC)(GLuint64 vkImage,
                                                  GLuint   sampler,
                                                  GLfloat  x0,
@@ -17385,7 +17385,7 @@ extern "C"
                                                                            GLuint  start,
                                                                            GLsizei count,
                                                                            const GLfloat* v);
-  typedef void(APIENTRYP PFNGLMULTICASTBARRIERNVPROC)(void);
+  typedef void(APIENTRYP PFNGLMULTICASTBARRIERNVPROC)();
   typedef void(APIENTRYP PFNGLMULTICASTWAITSYNCNVPROC)(GLuint signalGpu, GLbitfield waitGpuMask);
   typedef void(APIENTRYP PFNGLMULTICASTGETQUERYOBJECTIVNVPROC)(GLuint gpu,
                                                                GLuint id,
@@ -17988,7 +17988,7 @@ extern "C"
   typedef void(APIENTRYP PFNGLDELETEOCCLUSIONQUERIESNVPROC)(GLsizei n, const GLuint* ids);
   typedef GLboolean(APIENTRYP PFNGLISOCCLUSIONQUERYNVPROC)(GLuint id);
   typedef void(APIENTRYP PFNGLBEGINOCCLUSIONQUERYNVPROC)(GLuint id);
-  typedef void(APIENTRYP PFNGLENDOCCLUSIONQUERYNVPROC)(void);
+  typedef void(APIENTRYP PFNGLENDOCCLUSIONQUERYNVPROC)();
   typedef void(APIENTRYP PFNGLGETOCCLUSIONQUERYIVNVPROC)(GLuint id, GLenum pname, GLint* params);
   typedef void(APIENTRYP PFNGLGETOCCLUSIONQUERYUIVNVPROC)(GLuint id, GLenum pname, GLuint* params);
   #ifdef GL_GLEXT_PROTOTYPES
@@ -18793,7 +18793,7 @@ extern "C"
   #define GL_NV_primitive_restart 1
   #define GL_PRIMITIVE_RESTART_NV 0x8558
   #define GL_PRIMITIVE_RESTART_INDEX_NV 0x8559
-  typedef void(APIENTRYP PFNGLPRIMITIVERESTARTNVPROC)(void);
+  typedef void(APIENTRYP PFNGLPRIMITIVERESTARTNVPROC)();
   typedef void(APIENTRYP PFNGLPRIMITIVERESTARTINDEXNVPROC)(GLuint index);
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glPrimitiveRestartNV(void);
@@ -19035,7 +19035,7 @@ extern "C"
                                                                        GLuint         start,
                                                                        GLsizei        count,
                                                                        const GLfloat* v);
-  typedef void(APIENTRYP PFNGLRESOLVEDEPTHVALUESNVPROC)(void);
+  typedef void(APIENTRYP PFNGLRESOLVEDEPTHVALUESNVPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFramebufferSampleLocationsfvNV(GLenum         target,
                                                        GLuint         start,
@@ -19257,7 +19257,7 @@ extern "C"
 
 #ifndef GL_NV_texture_barrier
   #define GL_NV_texture_barrier 1
-  typedef void(APIENTRYP PFNGLTEXTUREBARRIERNVPROC)(void);
+  typedef void(APIENTRYP PFNGLTEXTUREBARRIERNVPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glTextureBarrierNV(void);
   #endif
@@ -19555,7 +19555,7 @@ extern "C"
   #define GL_SKIP_COMPONENTS2_NV -5
   #define GL_SKIP_COMPONENTS1_NV -6
   typedef void(APIENTRYP PFNGLBEGINTRANSFORMFEEDBACKNVPROC)(GLenum primitiveMode);
-  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKNVPROC)(void);
+  typedef void(APIENTRYP PFNGLENDTRANSFORMFEEDBACKNVPROC)();
   typedef void(APIENTRYP PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC)(GLsizei      count,
                                                               const GLint* attribs,
                                                               GLenum       bufferMode);
@@ -19640,8 +19640,8 @@ extern "C"
   typedef void(APIENTRYP PFNGLDELETETRANSFORMFEEDBACKSNVPROC)(GLsizei n, const GLuint* ids);
   typedef void(APIENTRYP PFNGLGENTRANSFORMFEEDBACKSNVPROC)(GLsizei n, GLuint* ids);
   typedef GLboolean(APIENTRYP PFNGLISTRANSFORMFEEDBACKNVPROC)(GLuint id);
-  typedef void(APIENTRYP PFNGLPAUSETRANSFORMFEEDBACKNVPROC)(void);
-  typedef void(APIENTRYP PFNGLRESUMETRANSFORMFEEDBACKNVPROC)(void);
+  typedef void(APIENTRYP PFNGLPAUSETRANSFORMFEEDBACKNVPROC)();
+  typedef void(APIENTRYP PFNGLRESUMETRANSFORMFEEDBACKNVPROC)();
   typedef void(APIENTRYP PFNGLDRAWTRANSFORMFEEDBACKNVPROC)(GLenum mode, GLuint id);
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY      glBindTransformFeedbackNV(GLenum target, GLuint id);
@@ -19669,7 +19669,7 @@ extern "C"
   #define GL_SURFACE_MAPPED_NV 0x8700
   #define GL_WRITE_DISCARD_NV 0x88BE
   typedef void(APIENTRYP PFNGLVDPAUINITNVPROC)(const void* vdpDevice, const void* getProcAddress);
-  typedef void(APIENTRYP PFNGLVDPAUFININVPROC)(void);
+  typedef void(APIENTRYP PFNGLVDPAUFININVPROC)();
   typedef GLvdpauSurfaceNV(APIENTRYP PFNGLVDPAUREGISTERVIDEOSURFACENVPROC)(
     const void*   vdpSurface,
     GLenum        target,
@@ -19741,7 +19741,7 @@ extern "C"
   #define GL_VERTEX_ARRAY_RANGE_VALID_NV 0x851F
   #define GL_MAX_VERTEX_ARRAY_RANGE_ELEMENT_NV 0x8520
   #define GL_VERTEX_ARRAY_RANGE_POINTER_NV 0x8521
-  typedef void(APIENTRYP PFNGLFLUSHVERTEXARRAYRANGENVPROC)(void);
+  typedef void(APIENTRYP PFNGLFLUSHVERTEXARRAYRANGENVPROC)();
   typedef void(APIENTRYP PFNGLVERTEXARRAYRANGENVPROC)(GLsizei length, const void* pointer);
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFlushVertexArrayRangeNV(void);
@@ -20939,7 +20939,7 @@ extern "C"
 
 #ifndef GL_SGIX_flush_raster
   #define GL_SGIX_flush_raster 1
-  typedef void(APIENTRYP PFNGLFLUSHRASTERSGIXPROC)(void);
+  typedef void(APIENTRYP PFNGLFLUSHRASTERSGIXPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFlushRasterSGIX(void);
   #endif
@@ -21052,11 +21052,11 @@ extern "C"
   #define GL_SGIX_instruments 1
   #define GL_INSTRUMENT_BUFFER_POINTER_SGIX 0x8180
   #define GL_INSTRUMENT_MEASUREMENTS_SGIX 0x8181
-  typedef GLint(APIENTRYP PFNGLGETINSTRUMENTSSGIXPROC)(void);
+  typedef GLint(APIENTRYP PFNGLGETINSTRUMENTSSGIXPROC)();
   typedef void(APIENTRYP PFNGLINSTRUMENTSBUFFERSGIXPROC)(GLsizei size, GLint* buffer);
   typedef GLint(APIENTRYP PFNGLPOLLINSTRUMENTSSGIXPROC)(GLint* marker_p);
   typedef void(APIENTRYP PFNGLREADINSTRUMENTSSGIXPROC)(GLint marker);
-  typedef void(APIENTRYP PFNGLSTARTINSTRUMENTSSGIXPROC)(void);
+  typedef void(APIENTRYP PFNGLSTARTINSTRUMENTSSGIXPROC)();
   typedef void(APIENTRYP PFNGLSTOPINSTRUMENTSSGIXPROC)(GLint marker);
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI GLint APIENTRY glGetInstrumentsSGIX(void);
@@ -21266,7 +21266,7 @@ extern "C"
 
 #ifndef GL_SGIX_tag_sample_buffer
   #define GL_SGIX_tag_sample_buffer 1
-  typedef void(APIENTRYP PFNGLTAGSAMPLEBUFFERSGIXPROC)(void);
+  typedef void(APIENTRYP PFNGLTAGSAMPLEBUFFERSGIXPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glTagSampleBufferSGIX(void);
   #endif
@@ -21415,7 +21415,7 @@ extern "C"
   #define GL_SUNX_constant_data 1
   #define GL_UNPACK_CONSTANT_DATA_SUNX 0x81D5
   #define GL_TEXTURE_CONSTANT_DATA_SUNX 0x81D6
-  typedef void(APIENTRYP PFNGLFINISHTEXTURESUNXPROC)(void);
+  typedef void(APIENTRYP PFNGLFINISHTEXTURESUNXPROC)();
   #ifdef GL_GLEXT_PROTOTYPES
   GLAPI void APIENTRY glFinishTextureSUNX(void);
   #endif

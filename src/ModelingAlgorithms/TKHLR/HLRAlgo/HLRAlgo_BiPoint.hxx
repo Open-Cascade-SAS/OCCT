@@ -195,9 +195,13 @@ public:
   void Rg1Line(const bool B)
   {
     if (B)
+    {
       myIndices.SegFlags |= EMskRg1Line;
+    }
     else
+    {
       myIndices.SegFlags &= ~EMskRg1Line;
+    }
   }
 
   bool RgNLine() const { return (myIndices.SegFlags & EMskRgNLine) != 0; }
@@ -205,9 +209,13 @@ public:
   void RgNLine(const bool B)
   {
     if (B)
+    {
       myIndices.SegFlags |= EMskRgNLine;
+    }
     else
+    {
       myIndices.SegFlags &= ~EMskRgNLine;
+    }
   }
 
   bool OutLine() const { return (myIndices.SegFlags & EMskOutLine) != 0; }
@@ -215,9 +223,13 @@ public:
   void OutLine(const bool B)
   {
     if (B)
+    {
       myIndices.SegFlags |= EMskOutLine;
+    }
     else
+    {
       myIndices.SegFlags &= ~EMskOutLine;
+    }
   }
 
   bool IntLine() const { return (myIndices.SegFlags & EMskIntLine) != 0; }
@@ -225,9 +237,13 @@ public:
   void IntLine(const bool B)
   {
     if (B)
+    {
       myIndices.SegFlags |= EMskIntLine;
+    }
     else
+    {
       myIndices.SegFlags &= ~EMskIntLine;
+    }
   }
 
   bool Hidden() const { return (myIndices.SegFlags & EMskHidden) != 0; }
@@ -235,9 +251,13 @@ public:
   void Hidden(const bool B)
   {
     if (B)
+    {
       myIndices.SegFlags |= EMskHidden;
+    }
     else
+    {
       myIndices.SegFlags &= ~EMskHidden;
+    }
   }
 
   IndicesT& Indices() { return myIndices; }

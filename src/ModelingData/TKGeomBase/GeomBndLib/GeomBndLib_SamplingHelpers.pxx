@@ -228,9 +228,13 @@ template <typename TAdaptor>
 inline int ComputeNbSamplesT(const TAdaptor& theCurve, const double theU1, const double theU2)
 {
   if constexpr (std::is_base_of_v<Adaptor3d_Curve, TAdaptor>)
+  {
     return ComputeNbSamples(theCurve, theU1, theU2);
+  }
   else
+  {
     return ComputeNbSamples2d(theCurve, theU1, theU2);
+  }
 }
 
 } // namespace GeomBndLib_SamplingHelpers

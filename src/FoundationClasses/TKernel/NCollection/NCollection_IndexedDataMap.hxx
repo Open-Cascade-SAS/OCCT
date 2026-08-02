@@ -414,7 +414,9 @@ public:
   NCollection_IndexedDataMap& Assign(const NCollection_IndexedDataMap& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     Clear();
     int anExt = theOther.Extent();
@@ -446,7 +448,9 @@ public:
   NCollection_IndexedDataMap& operator=(NCollection_IndexedDataMap&& theOther) noexcept
   {
     if (this == &theOther)
+    {
       return *this;
+    }
     exchangeMapsData(theOther);
     return *this;
   }
@@ -702,7 +706,9 @@ public:
   {
     IndexedDataMapNode* aNode;
     if (!lookup(theKey1, aNode))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(aNode->Key()), std::cref(aNode->Value()));
   }
 
@@ -714,7 +720,9 @@ public:
   {
     IndexedDataMapNode* aNode;
     if (!lookup(theKey1, aNode))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(aNode->Key()), std::ref(aNode->ChangeValue()));
   }
 
@@ -747,11 +755,15 @@ public:
     const size_t        iK = HashCode(aNode->Key1(), NbBuckets());
     IndexedDataMapNode* q  = (IndexedDataMapNode*)myData1[iK];
     if (q == aNode)
+    {
       myData1[iK] = (IndexedDataMapNode*)aNode->Next();
+    }
     else
     {
       while (q->Next() != aNode)
+      {
         q = (IndexedDataMapNode*)q->Next();
+      }
       q->Next() = aNode->Next();
     }
 
@@ -809,11 +821,15 @@ public:
     const size_t        iK1 = HashCode(p->Key1(), NbBuckets());
     IndexedDataMapNode* q   = (IndexedDataMapNode*)myData1[iK1];
     if (q == p)
+    {
       myData1[iK1] = (IndexedDataMapNode*)p->Next();
+    }
     else
     {
       while (q->Next() != p)
+      {
         q = (IndexedDataMapNode*)q->Next();
+      }
       q->Next() = p->Next();
     }
     p->~IndexedDataMapNode();
@@ -1006,12 +1022,16 @@ protected:
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (IndexedDataMapNode*)myData1[theHash]; theNode;
          theNode = (IndexedDataMapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key1(), theKey))
+      {
         return true;
+      }
     }
     return false; // Not found
   }
@@ -1023,7 +1043,9 @@ protected:
   bool lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode) const
   {
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (IndexedDataMapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
          theNode = (IndexedDataMapNode*)theNode->Next())
     {
@@ -1089,17 +1111,25 @@ protected:
                    Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, int>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     IndexedDataMapNode* aNode;
     size_t              aHash;
     if (lookup(theKey1, aNode, aHash))
     {
       if constexpr (!IsTry)
+      {
         aNode->ChangeValue() = TheItemType(std::forward<Args>(theArgs)...);
+      }
       if constexpr (ReturnRef)
+      {
         return aNode->ChangeValue();
+      }
       else
+      {
         return aNode->Index();
+      }
     }
     const int aNewIndex    = Extent() + 1;
     aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
@@ -1111,9 +1141,13 @@ protected:
     myData2[aNewIndex - 1] = aNode;
     Increment();
     if constexpr (ReturnRef)
+    {
       return aNode->ChangeValue();
+    }
     else
+    {
       return aNewIndex;
+    }
   }
 
   //! Implementation helper for Bind/TryBind/Bound/TryBound operations.
@@ -1127,17 +1161,25 @@ protected:
     -> std::conditional_t<ReturnRef, TheItemType&, bool>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     IndexedDataMapNode* aNode;
     size_t              aHash;
     if (lookup(theKey1, aNode, aHash))
     {
       if constexpr (!IsTry)
+      {
         aNode->ChangeValue() = std::forward<V>(theItem);
+      }
       if constexpr (ReturnRef)
+      {
         return aNode->ChangeValue();
+      }
       else
+      {
         return false;
+      }
     }
     const int aNewIndex    = Extent() + 1;
     aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
@@ -1148,9 +1190,13 @@ protected:
     myData2[aNewIndex - 1] = aNode;
     Increment();
     if constexpr (ReturnRef)
+    {
       return aNode->ChangeValue();
+    }
     else
+    {
       return true;
+    }
   }
 
 protected:

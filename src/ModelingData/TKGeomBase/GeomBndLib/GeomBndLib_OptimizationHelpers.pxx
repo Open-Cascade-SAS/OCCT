@@ -593,9 +593,13 @@ inline double AdjustExtrT(const TAdaptor& theCurve,
                           const bool      theIsMin)
 {
   if constexpr (std::is_base_of_v<Adaptor3d_Curve, TAdaptor>)
+  {
     return AdjustExtrCurve(theCurve, theUMin, theUMax, theExtr0, theCoordIdx, theTol, theIsMin);
+  }
   else
+  {
     return AdjustExtrCurve2d(theCurve, theUMin, theUMax, theExtr0, theCoordIdx, theTol, theIsMin);
+  }
 }
 
 } // namespace GeomBndLib_OptimizationHelpers

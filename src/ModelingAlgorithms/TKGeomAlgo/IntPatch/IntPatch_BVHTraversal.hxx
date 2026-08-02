@@ -47,7 +47,7 @@ public:
   Standard_EXPORT IntPatch_BVHTraversal();
 
   //! Destructor.
-  Standard_EXPORT virtual ~IntPatch_BVHTraversal();
+  Standard_EXPORT ~IntPatch_BVHTraversal() override;
 
   //! Performs BVH traversal and collects candidate triangle pairs.
   //! @param[in] theSet1 BVH set for the first polyhedron
@@ -73,17 +73,17 @@ public: //! @name BVH_PairTraverse interface implementation
   //! @param[in] theCMax2 maximum corner of the second node's bounding box
   //! @param[out] theMetric unused metric parameter
   //! @return true if the pair should be rejected (no overlap), false otherwise
-  Standard_EXPORT virtual bool RejectNode(const BVH_Vec3d& theCMin1,
-                                          const BVH_Vec3d& theCMax1,
-                                          const BVH_Vec3d& theCMin2,
-                                          const BVH_Vec3d& theCMax2,
-                                          double&          theMetric) const override;
+  Standard_EXPORT bool RejectNode(const BVH_Vec3d& theCMin1,
+                                  const BVH_Vec3d& theCMax1,
+                                  const BVH_Vec3d& theCMin2,
+                                  const BVH_Vec3d& theCMax2,
+                                  double&          theMetric) const override;
 
   //! Accepts a pair of leaf elements and stores their original indices.
   //! @param[in] theIndex1 0-based index in the first BVH set
   //! @param[in] theIndex2 0-based index in the second BVH set
   //! @return true (always accepts the pair)
-  Standard_EXPORT virtual bool Accept(const int theIndex1, const int theIndex2) override;
+  Standard_EXPORT bool Accept(const int theIndex1, const int theIndex2) override;
 
 private:
   IntPatch_PolyhedronBVH*                mySet1;             //!< First BVH set

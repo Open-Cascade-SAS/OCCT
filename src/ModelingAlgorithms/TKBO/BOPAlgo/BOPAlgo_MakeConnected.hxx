@@ -232,9 +232,13 @@ public: //! @name Clearing the contents of the algorithm from previous runs
     myOrigins.Clear();
     myMaterials.Clear();
     if (!myGlueHistory.IsNull())
+    {
       myGlueHistory->Clear();
+    }
     if (!myHistory.IsNull())
+    {
       myHistory->Clear();
+    }
     myGlued.Nullify();
     myShape.Nullify();
   }

@@ -1419,12 +1419,16 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
   for (BRepGraph_VertexId aV(0); aV.IsValid(NbVertices()); ++aV)
   {
     if (aV.IsValid(theSource.NbVertices()))
+    {
       ChangeVertexRelationsInternal(aV).EdgeIds = theSource.VertexRelations(aV).EdgeIds;
+    }
   }
   for (BRepGraph_EdgeId anE(0); anE.IsValid(NbEdges()); ++anE)
   {
     if (anE.IsValid(theSource.NbEdges()))
+    {
       ChangeEdgeRelationsInternal(anE).CoEdgeIds = theSource.EdgeRelations(anE).CoEdgeIds;
+    }
   }
   for (BRepGraph_WireId aW(0); aW.IsValid(NbWires()); ++aW)
   {
@@ -1465,25 +1469,33 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
   for (BRepGraph_CompSolidId aCS(0); aCS.IsValid(NbCompSolids()); ++aCS)
   {
     if (aCS.IsValid(theSource.NbCompSolids()))
+    {
       ChangeCompSolidRelationsInternal(aCS).SolidRefIds =
         theSource.CompSolidRelations(aCS).SolidRefIds;
+    }
   }
   for (BRepGraph_CompoundId aC(0); aC.IsValid(NbCompounds()); ++aC)
   {
     if (aC.IsValid(theSource.NbCompounds()))
+    {
       ChangeCompoundRelationsInternal(aC).ChildRefIds = theSource.CompoundRelations(aC).ChildRefIds;
+    }
   }
   for (BRepGraph_ProductId aP(0); aP.IsValid(NbProducts()); ++aP)
   {
     if (aP.IsValid(theSource.NbProducts()))
+    {
       ChangeProductRelationsInternal(aP).OccurrenceRefIds =
         theSource.ProductRelations(aP).OccurrenceRefIds;
+    }
   }
   for (BRepGraph_OccurrenceId anO(0); anO.IsValid(NbOccurrences()); ++anO)
   {
     if (anO.IsValid(theSource.NbOccurrences()))
+    {
       ChangeOccurrenceRelationsInternal(anO).ParentOccurrenceRefIds =
         theSource.OccurrenceRelations(anO).ParentOccurrenceRefIds;
+    }
   }
 
   // Copy sparse reverse maps (node -> compound/occurrence child refs).

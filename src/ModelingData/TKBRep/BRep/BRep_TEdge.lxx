@@ -33,7 +33,9 @@ inline void BRep_TEdge::Tolerance(const double T)
 inline void BRep_TEdge::UpdateTolerance(const double T)
 {
   if (T > myTolerance)
+  {
     myTolerance = T;
+  }
 }
 
 //=================================================================================================

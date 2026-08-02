@@ -105,7 +105,9 @@ public:
       math_Vector Ff(1, 2);
       F.Value(Start, Ff);
       if ((Ff(1) < Tolf) && (Ff(2) < Tolf))
+      {
         myDone = true;
+      }
     }
   }
 

@@ -99,19 +99,25 @@ public:
     void PNext() noexcept
     {
       if (!myBuckets)
+      {
         return;
+      }
       if (myNode)
       {
         myNode = myNode->Next();
         if (myNode)
+        {
           return;
+        }
       }
       ++myBucket;
       while (myBucket <= myNbBuckets)
       {
         myNode = myBuckets[myBucket];
         if (myNode)
+        {
           return;
+        }
         ++myBucket;
       }
     }
@@ -121,12 +127,16 @@ public:
     void findFirst() noexcept
     {
       if (!myBuckets)
+      {
         return;
+      }
       for (; myBucket <= myNbBuckets; ++myBucket)
       {
         myNode = myBuckets[myBucket];
         if (myNode)
+        {
           return;
+        }
       }
     }
 

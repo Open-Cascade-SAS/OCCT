@@ -143,7 +143,9 @@ inline void BinObjMgt_Persistent::alignOffset(const int theSize, const bool toCl
   if (anOffset > myOffset)
   {
     if (toClear && anOffset <= BP_PIECESIZE)
+    {
       memset(((char*)myData(myIndex)) + myOffset, 0, anOffset - myOffset);
+    }
     ((BinObjMgt_Persistent*)this)->myOffset = anOffset;
   }
 
@@ -167,11 +169,15 @@ inline int BinObjMgt_Persistent::prepareForPut(const int theSize)
   int nbPieces = (myOffset + theSize - 1) / BP_PIECESIZE;
   int nbToAdd  = myIndex + nbPieces - myData.Length();
   if (nbToAdd > 0)
+  {
     // create needed pieces
     incrementData(nbToAdd);
+  }
   int aNewPosition = Position() + theSize;
   if (aNewPosition > mySize)
+  {
     mySize = aNewPosition;
+  }
   return nbPieces;
 }
 

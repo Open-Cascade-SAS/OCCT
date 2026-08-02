@@ -176,9 +176,13 @@ protected:
   void setBit(uint16_t theBit, bool theIsOn)
   {
     if (theIsOn)
+    {
       myState |= theBit;
+    }
     else
+    {
       myState &= ~theBit;
+    }
   }
 
 private:

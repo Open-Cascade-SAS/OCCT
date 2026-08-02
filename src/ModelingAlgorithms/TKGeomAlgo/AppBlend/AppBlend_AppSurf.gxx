@@ -33,7 +33,7 @@
 #include <NCollection_HArray1.hxx>
 #include <AppDef_Variational.hxx>
 
-static bool scal = 1;
+static bool scal = true;
 
 Standard_EXPORT bool AppBlend_GetContextSplineApprox();
 Standard_EXPORT bool AppBlend_GetContextApproxWithNoTgt();
@@ -131,7 +131,9 @@ void AppBlend_AppSurf::CriteriumWeight(double& W1, double& W2, double& W3) const
 void AppBlend_AppSurf::SetCriteriumWeight(const double W1, const double W2, const double W3)
 {
   if (W1 < 0 || W2 < 0 || W3 < 0)
+  {
     throw Standard_DomainError();
+  }
   critweights[0] = W1;
   critweights[1] = W2;
   critweights[2] = W3;
@@ -236,7 +238,9 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
   withderiv = F.Section(Lin->Point(1), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
 
   if (AppBlend_GetContextApproxWithNoTgt())
+  {
     withderiv = false;
+  }
 
   for (j = 1; j <= NbPoles2d; j++)
   {
@@ -296,7 +300,9 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
     {
       withderiv = F.Section(Lin->Point(i), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
       if (AppBlend_GetContextApproxWithNoTgt())
+      {
         withderiv = false;
+      }
 
       for (j = 1; j <= NbPoles2d; j++)
       {
@@ -334,7 +340,9 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
 
   withderiv = F.Section(Lin->Point(NbPoint), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
   if (AppBlend_GetContextApproxWithNoTgt())
+  {
     withderiv = false;
+  }
 
   for (j = 1; j <= NbPoles2d; j++)
   {
@@ -423,7 +431,9 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
     {
       bool UseSquares = false;
       if (nbit == 0)
+      {
         UseSquares = true;
+      }
       AppDef_BSplineCompute theapprox(dmin, dmax, tol3d, tol2d, nbit, true, paramtype, UseSquares);
       if (continuity == GeomAbs_C0)
       {
@@ -799,7 +809,9 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       reste = NbPointTot - (nbtronc * nmax);
     }
     else
+    {
       nmax = NbMaxP;
+    }
   }
   else if (nbtronc == 0)
   {
@@ -842,7 +854,9 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       double x, y, z;
       withderiv = F.Section(Lin->Point(iLin), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
       if (AppBlend_GetContextApproxWithNoTgt())
+      {
         withderiv = false;
+      }
 
       for (j = 1; j <= NbPoles2d; j++)
       {
@@ -873,17 +887,25 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       {
         multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d, tabAppV, tabAppV2d);
         if (i == 1)
+        {
           Cfirst = AppParCurves_TangencyPoint;
+        }
         else if (i == NbPoint)
+        {
           Clast = AppParCurves_TangencyPoint;
+        }
       }
       else
       {
         multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
         if (i == 1)
+        {
           Cfirst = AppParCurves_PassPoint;
+        }
         else if (i == NbPoint)
+        {
           Clast = AppParCurves_PassPoint;
+        }
       }
       multL.SetValue(i, multP);
     }

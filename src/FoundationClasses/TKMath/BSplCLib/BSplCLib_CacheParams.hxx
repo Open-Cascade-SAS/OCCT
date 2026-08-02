@@ -89,7 +89,9 @@ struct BSplCLib_CacheParams
     }
 
     if (SpanIndex == SpanIndexMax)
+    {
       return true;
+    }
 
     // from BSplCLib::LocateParameter() check hitting of the next knot
     // within double floating point precision

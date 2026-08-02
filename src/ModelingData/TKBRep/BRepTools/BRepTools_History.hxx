@@ -105,7 +105,9 @@ public: //! @name Constructors for History creation
     for (; aIt.More(); aIt.Next())
     {
       if (!aIt.Value().IsNull())
+      {
         TopExp::MapShapes(aIt.Value(), anArgsMap);
+      }
     }
 
     // Copy the history for all supported shapes from the algorithm
@@ -114,20 +116,28 @@ public: //! @name Constructors for History creation
     {
       const TopoDS_Shape& aS = anArgsMap(i);
       if (!IsSupportedType(aS))
+      {
         continue;
+      }
 
       if (theAlgo.IsDeleted(aS))
+      {
         Remove(aS);
+      }
 
       // Check Modified
       const NCollection_List<TopoDS_Shape>& aModified = theAlgo.Modified(aS);
       for (aIt.Initialize(aModified); aIt.More(); aIt.Next())
+      {
         AddModified(aS, aIt.Value());
+      }
 
       // Check Generated
       const NCollection_List<TopoDS_Shape>& aGenerated = theAlgo.Generated(aS);
       for (aIt.Initialize(aGenerated); aIt.More(); aIt.Next())
+      {
         AddGenerated(aS, aIt.Value());
+      }
     }
   }
 

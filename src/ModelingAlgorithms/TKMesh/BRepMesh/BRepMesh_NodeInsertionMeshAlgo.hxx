@@ -210,7 +210,9 @@ private:
       gp_Pnt2d aPnt2d = BRep_Tool::Parameters(theVertex, this->getDFace()->GetFace());
       // check UV values for internal vertices
       if (myClassifier->Perform(aPnt2d) != TopAbs_IN)
+      {
         return;
+      }
 
       this->registerNode(BRep_Tool::Pnt(theVertex), aPnt2d, BRepMesh_Fixed, false);
     }

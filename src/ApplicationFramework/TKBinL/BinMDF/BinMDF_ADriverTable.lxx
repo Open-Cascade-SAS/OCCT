@@ -43,7 +43,9 @@ inline int BinMDF_ADriverTable::GetDriver(const occ::handle<Standard_Type>& theT
   {
     theDriver = myMap(theType);
     if (myMapId.IsBound1(theType))
+    {
       anId = myMapId.Find1(theType);
+    }
   }
   return anId;
 }

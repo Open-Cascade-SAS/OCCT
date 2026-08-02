@@ -175,7 +175,9 @@ public: //! @name Setting input data for the algorithm
   {
     NCollection_List<TopoDS_Shape>::Iterator it(theFaces);
     for (; it.More(); it.Next())
+    {
       myFacesToRemove.Append(it.Value());
+    }
   }
 
   //! Returns the list of faces which have been requested for removal

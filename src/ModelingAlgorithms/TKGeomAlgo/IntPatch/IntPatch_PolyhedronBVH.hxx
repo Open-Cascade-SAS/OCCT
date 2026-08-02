@@ -37,7 +37,7 @@ public:
   Standard_EXPORT IntPatch_PolyhedronBVH(const IntPatch_Polyhedron& thePoly);
 
   //! Destructor.
-  Standard_EXPORT virtual ~IntPatch_PolyhedronBVH();
+  Standard_EXPORT ~IntPatch_PolyhedronBVH() override;
 
   //! Initializes BVH set from the given polyhedron.
   //! @param[in] thePoly the polyhedron to wrap (must remain valid during BVH lifetime)
@@ -51,21 +51,21 @@ public: //! @name BVH_Set interface implementation
   using BVH_PrimitiveSet<double, 3>::Box;
 
   //! Returns the total number of triangles.
-  Standard_EXPORT virtual int Size() const override;
+  Standard_EXPORT int Size() const override;
 
   //! Returns AABB of the triangle with the given index.
   //! @param[in] theIndex 0-based triangle index (after BVH reordering)
-  Standard_EXPORT virtual BVH_Box<double, 3> Box(const int theIndex) const override;
+  Standard_EXPORT BVH_Box<double, 3> Box(const int theIndex) const override;
 
   //! Returns centroid coordinate of the triangle along the given axis.
   //! @param[in] theIndex 0-based triangle index (after BVH reordering)
   //! @param[in] theAxis axis index (0=X, 1=Y, 2=Z)
-  Standard_EXPORT virtual double Center(const int theIndex, const int theAxis) const override;
+  Standard_EXPORT double Center(const int theIndex, const int theAxis) const override;
 
   //! Swaps two triangles in the set (used during BVH construction).
   //! @param[in] theIndex1 first triangle index
   //! @param[in] theIndex2 second triangle index
-  Standard_EXPORT virtual void Swap(const int theIndex1, const int theIndex2) override;
+  Standard_EXPORT void Swap(const int theIndex1, const int theIndex2) override;
 
 public: //! @name Additional methods
   //! Returns the original (1-based) triangle index in the polyhedron

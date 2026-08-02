@@ -28,5 +28,7 @@ inline void ShapeUpgrade_SplitSurfaceArea::SetNumbersUVSplits(const int theNbUsp
   myUnbSplit = theNbUsplits;
   myVnbSplit = theNbVsplits;
   if (myUnbSplit > 0 && myVnbSplit > 0)
+  {
     myNbParts = myUnbSplit * myVnbSplit;
+  }
 }

@@ -24,9 +24,13 @@ inline double Plate_Plate::Polm(const gp_XY& point2d,
                                 const int    idv) const
 {
   if (idu > iu)
+  {
     return 0;
+  }
   if (idv > iv)
+  {
     return 0;
+  }
   double u = point2d.X();
   double v = point2d.Y();
 
@@ -35,15 +39,23 @@ inline double Plate_Plate::Polm(const gp_XY& point2d,
   int degu = iu - idu;
   int i;
   for (i = 0; i < degu; i++)
+  {
     value *= u;
+  }
   for (i = iu; i > degu; i--)
+  {
     value *= i;
+  }
 
   int degv = iv - idv;
   for (i = 0; i < degv; i++)
+  {
     value *= v;
+  }
   for (i = iv; i > degv; i--)
+  {
     value *= i;
+  }
 
   // le produit par ddu[iu]*ddv[iv] n'est pas indispensable !! (il change
   // les valeurs claculles pour la partie coef polynomiaux de Sol

@@ -59,7 +59,9 @@ public:
       }
     }
     else
+    {
       anAtt->SetID(T::GetID());
+    }
   }
 };
 

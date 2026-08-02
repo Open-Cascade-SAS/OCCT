@@ -60,7 +60,9 @@ IntImp_IntCS::IntImp_IntCS(const double       U,
     {
       double marg = (u1 - u0) * MarginCoef;
       if (u0 > u1)
+      {
         marg = -marg;
+      }
       u0 -= marg;
       u1 += marg;
     }
@@ -68,7 +70,9 @@ IntImp_IntCS::IntImp_IntCS(const double       U,
     {
       double marg = (v1 - v0) * MarginCoef;
       if (v0 > v1)
+      {
         marg = -marg;
+      }
       v0 -= marg;
       v1 += marg;
     }
@@ -160,25 +164,35 @@ bool IntImp_IntCS::IsDone() const
 bool IntImp_IntCS::IsEmpty() const
 {
   if (!done)
+  {
     throw StdFail_NotDone();
+  }
   return empty;
 }
 
 const gp_Pnt& IntImp_IntCS::Point() const
 {
   if (!done)
+  {
     throw StdFail_NotDone();
+  }
   if (empty)
+  {
     throw Standard_DomainError();
+  }
   return myFunction.Point();
 }
 
 void IntImp_IntCS::ParameterOnSurface(double& U, double& V) const
 {
   if (!done)
+  {
     throw StdFail_NotDone();
+  }
   if (empty)
+  {
     throw Standard_DomainError();
+  }
   U = u;
   V = v;
 }
@@ -186,9 +200,13 @@ void IntImp_IntCS::ParameterOnSurface(double& U, double& V) const
 double IntImp_IntCS::ParameterOnCurve() const
 {
   if (!done)
+  {
     throw StdFail_NotDone();
+  }
   if (empty)
+  {
     throw Standard_DomainError();
+  }
   return w;
 }
 

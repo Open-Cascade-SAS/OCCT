@@ -132,7 +132,9 @@ public:
     Handle(instance<ArrayClass>) aPArray = new instance<ArrayClass>;
     aPArray->myArray                     = new ArrayClass(theArray.Lower(), theArray.Upper());
     for (int i = theArray.Lower(); i <= theArray.Upper(); ++i)
+    {
       aPArray->myArray->ChangeValue(i) = theArray.Value(i);
+    }
     return aPArray;
   }
 
@@ -142,7 +144,9 @@ public:
     Handle(named_instance<ArrayClass>) aPArray = new named_instance<ArrayClass>(thePName);
     aPArray->myArray                           = new ArrayClass(theArray.Lower(), theArray.Upper());
     for (int i = theArray.Lower(); i <= theArray.Upper(); ++i)
+    {
       aPArray->myArray->ChangeValue(i) = theArray.Value(i);
+    }
     return aPArray;
   }
 };
@@ -181,7 +185,9 @@ inline void StdLPersistent_HArray1::
     StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   for (int i = myArray->Lower(); i <= myArray->Upper(); ++i)
+  {
     theChildren.Append(myArray->Value(i));
+  }
 }
 
 #endif

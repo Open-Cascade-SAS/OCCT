@@ -204,7 +204,9 @@ public:
   void Profiles(NCollection_List<TopoDS_Shape>& theProfiles)
   {
     for (int i = 1; i <= mySeq.Length(); ++i)
+    {
       theProfiles.Append(mySeq(i).OriginalShape());
+    }
   }
 
   //! Returns the spine

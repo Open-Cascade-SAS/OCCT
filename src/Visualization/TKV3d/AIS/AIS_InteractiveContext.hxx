@@ -1640,7 +1640,9 @@ protected: //! @name internal methods
   void clearDynamicHighlight() const
   {
     if (myLastPicked.IsNull())
+    {
       return;
+    }
 
     myLastPicked->Selectable()->ClearDynamicHighlight(myMainPM);
   }

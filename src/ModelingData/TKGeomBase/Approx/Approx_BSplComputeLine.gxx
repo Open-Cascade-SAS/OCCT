@@ -203,19 +203,29 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine& Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   bool                         Ok = false;
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  }
   else if (nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV2d);
+  }
   else if (nbP3d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV);
+  }
 
   if (Ok)
   {
@@ -289,19 +299,29 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine& Line,
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   bool                         Ok = false;
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  }
   else if (nbP2d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV2d);
+  }
   else if (nbP3d != 0)
+  {
     Ok = LineTool::Tangency(Line, index, TabV);
+  }
 
   if (Ok)
   {
@@ -382,25 +402,41 @@ double Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&               
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP1, tabP12d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP12d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index, tabP1);
+  }
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP2, tabP22d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP22d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index + 1, tabP2);
+  }
 
   double U1 = aPar(index), U2 = aPar(index + 1);
   double lambda, S;
@@ -446,25 +482,41 @@ double Approx_BSplComputeLine::SearchLastLambda(const MultiLine&                
   nbP2d       = LineTool::NbP2d(Line);
   int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d), tabP2(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP, tabP2d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP2d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index - 1, tabP);
+  }
 
   if (nbP3d != 0 && nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP2, tabP22d);
+  }
   else if (nbP2d != 0)
+  {
     LineTool::Value(Line, index, tabP22d);
+  }
   else if (nbP3d != 0)
+  {
     LineTool::Value(Line, index, tabP2);
+  }
 
   double U1 = aPar(index - 1), U2 = aPar(index);
   double lambda, S;
@@ -775,9 +827,13 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
       }
 
       if (!alldone)
+      {
         nbknots++;
+      }
       else
+      {
         Finish = true;
+      }
     }
   }
 
@@ -833,9 +889,13 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
     nbP2d       = LineTool::NbP2d(Line);
     int mynbP3d = nbP3d, mynbP2d = nbP2d;
     if (nbP3d == 0)
+    {
       mynbP3d = 1;
+    }
     if (nbP2d == 0)
+    {
       mynbP2d = 1;
+    }
 
     dist = 0.0;
     NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d);
@@ -846,18 +906,30 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
     for (i = firstP + 1; i <= lastP; i++)
     {
       if (nbP3d != 0 && nbP2d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP, tabP2d);
+      }
       else if (nbP2d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP2d);
+      }
       else if (nbP3d != 0)
+      {
         LineTool::Value(Line, i - 1, tabP);
+      }
 
       if (nbP3d != 0 && nbP2d != 0)
+      {
         LineTool::Value(Line, i, tabPP, tabPP2d);
+      }
       else if (nbP2d != 0)
+      {
         LineTool::Value(Line, i, tabPP2d);
+      }
       else if (nbP3d != 0)
+      {
         LineTool::Value(Line, i, tabPP);
+      }
       dist = 0.0;
       for (j = 1; j <= nbP3d; j++)
       {
@@ -882,7 +954,9 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
       }
     }
     for (i = firstP + 1; i <= lastP; i++)
+    {
       TheParameters(i) /= TheParameters(lastP);
+    }
   }
   else
   {
@@ -922,9 +996,13 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
       Mults(Mults.Upper()) = deg + 1;
       nbpoles              = deg + 1;
       if (mycont == -1)
+      {
         multinter = 1;
+      }
       else
+      {
         multinter = std::max(1, deg - mycont);
+      }
       for (i = Mults.Lower() + 1; i <= Mults.Upper() - 1; i++)
       {
         Mults(i) = multinter;
@@ -942,13 +1020,21 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
 
     int nbpolestocompare = nbpoles;
     if (realfirstC == AppParCurves_TangencyPoint)
+    {
       nbpolestocompare++;
+    }
     if (reallastC == AppParCurves_TangencyPoint)
+    {
       nbpolestocompare++;
+    }
     if (realfirstC == AppParCurves_CurvaturePoint)
+    {
       nbpolestocompare++;
+    }
     if (reallastC == AppParCurves_CurvaturePoint)
+    {
       nbpolestocompare++;
+    }
     if (nbpolestocompare > nbp)
     {
       Interpol(Line);
@@ -969,7 +1055,9 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
         SQ.Error(Fv, TheTol3d, TheTol2d);
       }
       else
+      {
         continue;
+      }
     }
     else
     {
@@ -1010,7 +1098,9 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
           TheTol2d = GRAD.MaxError2d();
         }
         else
+        {
           continue;
+        }
       }
       else
       {
@@ -1020,13 +1110,17 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
         if (mydone)
         {
           if (GRAD2.Value().NbCurves() == 0)
+          {
             continue;
+          }
           mySCU    = AppParCurves_MultiBSpCurve(GRAD2.Value(), Knots, Mults);
           TheTol3d = GRAD2.MaxError3d();
           TheTol2d = GRAD2.MaxError2d();
         }
         else
+        {
           continue;
+        }
       }
     }
     bool save = true;
@@ -1222,11 +1316,17 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
   {
 
     if (nbP3d != 0 && nbP2d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thefirstpt, TabV, TabV2d);
+    }
     else if (nbP2d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thefirstpt, TabV2d);
+    }
     else if (nbP3d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thefirstpt, TabV);
+    }
 
     realfirstC = AppParCurves_PassPoint;
     if (Ok)
@@ -1235,11 +1335,17 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
       if (myfirstC == AppParCurves_CurvaturePoint)
       {
         if (nbP3d != 0 && nbP2d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thefirstpt, TabV, TabV2d);
+        }
         else if (nbP2d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thefirstpt, TabV2d);
+        }
         else if (nbP3d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thefirstpt, TabV);
+        }
         if (Ok)
         {
           realfirstC = AppParCurves_CurvaturePoint;
@@ -1252,11 +1358,17 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
   {
 
     if (nbP3d != 0 && nbP2d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thelastpt, TabV, TabV2d);
+    }
     else if (nbP2d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thelastpt, TabV2d);
+    }
     else if (nbP3d != 0)
+    {
       Ok = LineTool::Tangency(Line, Thelastpt, TabV);
+    }
 
     reallastC = AppParCurves_PassPoint;
     if (Ok)
@@ -1265,11 +1377,17 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
       if (mylastC == AppParCurves_CurvaturePoint)
       {
         if (nbP3d != 0 && nbP2d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thelastpt, TabV, TabV2d);
+        }
         else if (nbP2d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thelastpt, TabV2d);
+        }
         else if (nbP3d != 0)
+        {
           Ok = LineTool::Tangency(Line, Thelastpt, TabV);
+        }
         if (Ok)
         {
           reallastC = AppParCurves_CurvaturePoint;
@@ -1367,7 +1485,9 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 
       math_Vector P1(Thefirstpt, lastp);
       for (i = Thefirstpt; i <= lastp; i++)
+      {
         P1(i) = TheParam(i);
+      }
       SQ1.Perform(P1);
       const AppParCurves_MultiCurve& C1 = SQ1.BezierValue();
       U                                 = 0.0;
@@ -1386,7 +1506,9 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 
         math_Vector P2(firstp, Thelastpt);
         for (i = firstp; i <= Thelastpt; i++)
+        {
           P2(i) = TheParam(i);
+        }
         SQ2.Perform(P2);
         const AppParCurves_MultiCurve& C2 = SQ2.BezierValue();
         U                                 = 1.0;

@@ -125,7 +125,9 @@ public:
     {
       const TopoDS_Edge& aE = TopoDS::Edge(aIt.Value());
       if (!aE.IsNull())
+      {
         BRepLib::BuildPCurveForEdgeOnPlane(aE, theF);
+      }
     }
   }
 

@@ -182,14 +182,18 @@ double Extrema_GFuncExtCC<TheCurve1,
   {
     double u = aStartParam + aNum * aStep;
     if (u > anEndParam)
+    {
       u = anEndParam;
+    }
 
     ThePoint  Ptemp;
     TheVector VDer;
     TheCurveTool1::D1(*((TheCurve1*)theC), u, Ptemp, VDer);
     double vm = VDer.Magnitude();
     if (vm > aMax)
+    {
       aMax = vm;
+    }
   } while (++aNum < NPoint + 1);
 
   return std::max(aMax * THE_TOL_FACTOR, THE_MIN_TOL);
@@ -385,9 +389,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
       const double DivisionFactor = 1.e-3;
       double       du;
       if ((myUsupremum >= RealLast()) || (myUinfium <= RealFirst()))
+      {
         du = 0.0;
+      }
       else
+      {
         du = myUsupremum - myUinfium;
+      }
 
       const double aDelta = std::max(du * DivisionFactor, THE_MIN_STEP);
 
@@ -407,9 +415,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         double u;
 
         if (myU - myUinfium < aDelta)
+        {
           u = myU + aDelta;
+        }
         else
+        {
           u = myU - aDelta;
+        }
 
         ThePoint P1, P2;
         TheCurveTool1::D0(*((TheCurve1*)myC1), std::min(myU, u), P1);
@@ -419,9 +431,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         double    aDirFactor = V.Dot(V1);
 
         if (aDirFactor < 0.0)
+        {
           myDu = -V;
+        }
         else
+        {
           myDu = V;
+        }
       }
       else
       {
@@ -447,9 +463,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         TheVector V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
 
         if (IsParameterGrown)
+        {
           myDu = -3 * V1 + 4 * V2 - V3;
+        }
         else
+        {
           myDu = V1 - 4 * V2 + 3 * V3;
+        }
       }
       Ndu = myDu.Magnitude();
     }
@@ -469,9 +489,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
       const double DivisionFactor = 1.e-3;
       double       dv;
       if ((myVsupremum >= RealLast()) || (myVinfium <= RealFirst()))
+      {
         dv = 0.0;
+      }
       else
+      {
         dv = myVsupremum - myVinfium;
+      }
 
       const double aDelta = std::max(dv * DivisionFactor, THE_MIN_STEP);
 
@@ -491,9 +515,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         double v;
 
         if (myV - myVinfium < aDelta)
+        {
           v = myV + aDelta;
+        }
         else
+        {
           v = myV - aDelta;
+        }
 
         ThePoint P1, P2;
         TheCurveTool2::D0(*((TheCurve2*)myC2), std::min(myV, v), P1);
@@ -503,9 +531,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         double    aDirFactor = V.Dot(V1);
 
         if (aDirFactor < 0.0)
+        {
           myDv = -V;
+        }
         else
+        {
           myDv = V;
+        }
       }
       else
       {
@@ -531,9 +563,13 @@ bool Extrema_GFuncExtCC<TheCurve1,
         TheVector V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
 
         if (IsParameterGrown)
+        {
           myDv = -3 * V1 + 4 * V2 - V3;
+        }
         else
+        {
           myDv = V1 - 4 * V2 + 3 * V3;
+        }
       }
 
       Ndv = myDv.Magnitude();
@@ -615,17 +651,25 @@ bool Extrema_GFuncExtCC<TheCurve1,
 
   double du;
   if ((myUsupremum >= RealLast()) || (myUinfium <= RealFirst()))
+  {
     du = 0.0;
+  }
   else
+  {
     du = myUsupremum - myUinfium;
+  }
 
   const double aDeltaU = std::max(du * DivisionFactor, THE_MIN_STEP);
 
   double dv;
   if ((myVsupremum >= RealLast()) || (myVinfium <= RealFirst()))
+  {
     dv = 0.0;
+  }
   else
+  {
     dv = myVsupremum - myVinfium;
+  }
 
   const double aDeltaV = std::max(dv * DivisionFactor, THE_MIN_STEP);
 
