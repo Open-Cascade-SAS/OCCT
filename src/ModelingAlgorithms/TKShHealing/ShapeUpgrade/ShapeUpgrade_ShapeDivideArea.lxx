@@ -25,7 +25,9 @@ inline void ShapeUpgrade_ShapeDivideArea::SetSplittingByNumber(const bool theIsS
 {
   myIsSplittingByNumber = theIsSplittingByNumber;
   if (myIsSplittingByNumber)
+  {
     myMaxArea = -1;
+  }
 }
 
 inline void ShapeUpgrade_ShapeDivideArea::SetNumbersUVSplits(const int theNbUsplits,
@@ -36,5 +38,7 @@ inline void ShapeUpgrade_ShapeDivideArea::SetNumbersUVSplits(const int theNbUspl
   myUnbSplit            = theNbUsplits;
   myVnbSplit            = theNbVsplits;
   if (myUnbSplit > 0 && myVnbSplit > 0)
+  {
     myNbParts = myUnbSplit * myVnbSplit;
+  }
 }

@@ -85,7 +85,9 @@ public:
     BRepMesh_Circle& aCircle = myCircles(theTargetIndex);
     const double&    aRadius = aCircle.Radius();
     if (aRadius < 0.)
+    {
       return CellFilter_Purge;
+    }
 
     gp_XY& aLoc = const_cast<gp_XY&>(aCircle.Location());
 
@@ -110,7 +112,9 @@ public:
     // So, this correction is better to be implemented in the future.
 
     if ((aDX * aDX + aDY * aDY) - (aRadius * aRadius) <= mySqTolerance)
+    {
       myResIndices.Append(theTargetIndex);
+    }
 
     return CellFilter_Keep;
   }

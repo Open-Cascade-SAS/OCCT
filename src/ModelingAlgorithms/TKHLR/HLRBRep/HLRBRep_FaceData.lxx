@@ -26,9 +26,13 @@ inline bool HLRBRep_FaceData::Selected() const
 inline void HLRBRep_FaceData::Selected(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskSelected;
+  }
   else
+  {
     myFlags &= ~((int)FMaskSelected);
+  }
 }
 
 //=================================================================================================
@@ -43,9 +47,13 @@ inline bool HLRBRep_FaceData::Back() const
 inline void HLRBRep_FaceData::Back(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskBack;
+  }
   else
+  {
     myFlags &= ~((int)FMaskBack);
+  }
 }
 
 //=================================================================================================
@@ -60,9 +68,13 @@ inline bool HLRBRep_FaceData::Side() const
 inline void HLRBRep_FaceData::Side(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskSide;
+  }
   else
+  {
     myFlags &= ~((int)FMaskSide);
+  }
 }
 
 //=================================================================================================
@@ -77,9 +89,13 @@ inline bool HLRBRep_FaceData::Closed() const
 inline void HLRBRep_FaceData::Closed(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskClosed;
+  }
   else
+  {
     myFlags &= ~((int)FMaskClosed);
+  }
 }
 
 //=================================================================================================
@@ -94,9 +110,13 @@ inline bool HLRBRep_FaceData::Hiding() const
 inline void HLRBRep_FaceData::Hiding(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskHiding;
+  }
   else
+  {
     myFlags &= ~((int)FMaskHiding);
+  }
 }
 
 //=================================================================================================
@@ -111,9 +131,13 @@ inline bool HLRBRep_FaceData::Simple() const
 inline void HLRBRep_FaceData::Simple(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskSimple;
+  }
   else
+  {
     myFlags &= ~((int)FMaskSimple);
+  }
 }
 
 //=================================================================================================
@@ -128,9 +152,13 @@ inline bool HLRBRep_FaceData::Cut() const
 inline void HLRBRep_FaceData::Cut(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskCut;
+  }
   else
+  {
     myFlags &= ~((int)FMaskCut);
+  }
 }
 
 //=================================================================================================
@@ -145,9 +173,13 @@ inline bool HLRBRep_FaceData::WithOutL() const
 inline void HLRBRep_FaceData::WithOutL(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskWithOutL;
+  }
   else
+  {
     myFlags &= ~((int)FMaskWithOutL);
+  }
 }
 
 //=================================================================================================
@@ -162,9 +194,13 @@ inline bool HLRBRep_FaceData::Plane() const
 inline void HLRBRep_FaceData::Plane(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskPlane;
+  }
   else
+  {
     myFlags &= ~((int)FMaskPlane);
+  }
 }
 
 //=================================================================================================
@@ -179,9 +215,13 @@ inline bool HLRBRep_FaceData::Cylinder() const
 inline void HLRBRep_FaceData::Cylinder(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskCylinder;
+  }
   else
+  {
     myFlags &= ~((int)FMaskCylinder);
+  }
 }
 
 //=================================================================================================
@@ -196,9 +236,13 @@ inline bool HLRBRep_FaceData::Cone() const
 inline void HLRBRep_FaceData::Cone(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskCone;
+  }
   else
+  {
     myFlags &= ~((int)FMaskCone);
+  }
 }
 
 //=================================================================================================
@@ -213,9 +257,13 @@ inline bool HLRBRep_FaceData::Sphere() const
 inline void HLRBRep_FaceData::Sphere(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskSphere;
+  }
   else
+  {
     myFlags &= ~((int)FMaskSphere);
+  }
 }
 
 //=================================================================================================
@@ -230,9 +278,13 @@ inline bool HLRBRep_FaceData::Torus() const
 inline void HLRBRep_FaceData::Torus(const bool B)
 {
   if (B)
+  {
     myFlags |= (int)FMaskTorus;
+  }
   else
+  {
     myFlags &= ~((int)FMaskTorus);
+  }
 }
 
 //=================================================================================================

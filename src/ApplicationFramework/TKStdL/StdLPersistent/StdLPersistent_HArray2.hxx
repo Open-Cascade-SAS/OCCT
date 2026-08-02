@@ -151,8 +151,12 @@ public:
                                       theArray.LowerCol(),
                                       theArray.UpperCol());
     for (int i = theArray.LowerRow(); i <= theArray.UpperRow(); ++i)
+    {
       for (int j = theArray.LowerCol(); j <= theArray.UpperCol(); ++j)
+      {
         aPArray->myArray->ChangeValue(i, j) = theArray.Value(i, j);
+      }
+    }
     return aPArray;
   }
 
@@ -165,8 +169,12 @@ public:
                                       theArray.LowerCol(),
                                       theArray.UpperCol());
     for (int i = theArray.LowerRow(); i <= theArray.UpperRow(); ++i)
+    {
       for (int j = theArray.LowerCol(); j <= theArray.UpperCol(); ++j)
+      {
         aPArray->myArray->ChangeValue(i, j) = theArray.Value(i, j);
+      }
+    }
     return aPArray;
   }
 };
@@ -189,8 +197,12 @@ inline void StdLPersistent_HArray2::
     StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   for (int i = myArray->LowerRow(); i <= myArray->UpperRow(); ++i)
+  {
     for (int j = myArray->LowerCol(); j <= myArray->UpperCol(); ++j)
+    {
       theChildren.Append(myArray->Value(i, j));
+    }
+  }
 }
 
 #endif

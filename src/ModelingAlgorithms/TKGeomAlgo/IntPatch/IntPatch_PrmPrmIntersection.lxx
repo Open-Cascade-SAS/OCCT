@@ -24,7 +24,9 @@
 inline int IntPatch_PrmPrmIntersection::NbLines() const
 {
   if (!done)
+  {
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
+  }
   return (SLin.Length());
 }
 
@@ -32,7 +34,9 @@ inline int IntPatch_PrmPrmIntersection::NbLines() const
 inline const occ::handle<IntPatch_Line>& IntPatch_PrmPrmIntersection::Line(const int n) const
 {
   if (!done)
+  {
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
+  }
   return (SLin.Value(n));
 }
 
@@ -40,7 +44,9 @@ inline const occ::handle<IntPatch_Line>& IntPatch_PrmPrmIntersection::Line(const
 inline bool IntPatch_PrmPrmIntersection::IsEmpty() const
 {
   if (!done)
+  {
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
+  }
   return (empt);
 }
 
@@ -104,16 +110,28 @@ inline int IntPatch_PrmPrmIntersection::CodeReject(const double x0,
 {
   int code = 0;
   if (x < x0)
+  {
     code = 1;
+  }
   if (y < y0)
+  {
     code |= 2;
+  }
   if (z < z0)
+  {
     code |= 4;
+  }
   if (x > x1)
+  {
     code |= 8;
+  }
   if (y > y1)
+  {
     code |= 16;
+  }
   if (z > z1)
+  {
     code |= 32;
+  }
   return (code);
 }

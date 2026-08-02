@@ -150,7 +150,9 @@ public:
     void Remove(const int theValue)
     {
       if (myIterReady && myIter.More() && myIter.Key() == theValue)
+      {
         myIter.Next();
+      }
       myMap.Remove(theValue);
     }
 
@@ -230,7 +232,9 @@ protected:
   {
     Link aLink = myMapLink(std::abs(theSegIndex));
     if (theSegIndex < 0)
+    {
       aLink.Reverse();
+    }
     return aLink;
   }
 #ifdef OCCT_DEBUG

@@ -63,9 +63,13 @@ inline ChFiDS_State ChFiDS_Spine::LastStatus() const
 inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const bool IsFirst)
 {
   if (IsFirst)
+  {
     firstState = S;
+  }
   else
+  {
     lastState = S;
+  }
 }
 
 //=================================================================================================
@@ -73,9 +77,13 @@ inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const bool IsFirst)
 inline ChFiDS_State ChFiDS_Spine::Status(const bool IsFirst) const
 {
   if (IsFirst)
+  {
     return firstState;
+  }
   else
+  {
     return lastState;
+  }
 }
 
 //=================================================================================================
@@ -83,9 +91,13 @@ inline ChFiDS_State ChFiDS_Spine::Status(const bool IsFirst) const
 inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency, const bool IsFirst)
 {
   if (IsFirst)
+  {
     firstistgt = IsTangency;
+  }
   else
+  {
     lastistgt = IsTangency;
+  }
 }
 
 //=================================================================================================
@@ -93,9 +105,13 @@ inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency, const bool
 inline bool ChFiDS_Spine::IsTangencyExtremity(const bool IsFirst) const
 {
   if (IsFirst)
+  {
     return firstistgt;
+  }
   else
+  {
     return lastistgt;
+  }
 }
 
 //=================================================================================================

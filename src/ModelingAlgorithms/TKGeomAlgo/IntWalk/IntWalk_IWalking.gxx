@@ -78,10 +78,14 @@ static bool IsTangentExtCheck(TheIWFunction& theFunc,
     aX.Value(2) = aParV[i];
 
     if (!theFunc.Value(aX, aVal))
+    {
       continue;
+    }
 
     if (std::abs(theFunc.Root()) > aTol)
+    {
       return false;
+    }
   }
 
   return true;
@@ -97,9 +101,7 @@ IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
       tolerance(1, 2),
       epsilon(Epsilon * Epsilon),
       reversed(false),
-      wd1(),
-      wd2(),
-      nbMultiplicities(),
+
       Um(0.0),
       UM(0.0),
       Vm(0.0),
@@ -200,9 +202,13 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     IntWalk_WalkingData   aWD1;
     aWD1.etat = 1;
     if (!ThePointOfPathTool::IsPassingPnt(PathPnt))
+    {
       aWD1.etat = 11;
+    }
     if (!ThePointOfPathTool::IsTangent(PathPnt))
+    {
       ++aWD1.etat;
+    }
 
     if (aWD1.etat == 2)
     {
@@ -236,7 +242,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     mySRangeV.Add(aWD2.vstart);
 
     if (!IsTangentExtCheck(Func, aWD2.ustart, aWD2.vstart, aStepU, aStepV, Um, UM, Vm, VM))
+    {
       aWD2.etat = 13;
+    }
 
     wd2.Append(aWD2);
   }
@@ -268,11 +276,15 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
   // calculation of all open lines
   if (nbPnts1 != 0)
+  {
     ComputeOpenLine(Umult, Vmult, Pnts1, Func, Rajout);
+  }
 
   // calculation of all closed lines
   if (nbPnts2 != 0)
+  {
     ComputeCloseLine(Umult, Vmult, Pnts1, Pnts2, Func, Rajout);
+  }
 
   if (ToFillHoles)
   {
@@ -305,7 +317,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   for (I = 1; I <= nbPnts1; I++)
   {
     if (wd1[I].etat > 0)
+    {
       seqSingle.Append(Pnts1(I));
+    }
   }
   done = true;
 }
@@ -339,9 +353,13 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     IntWalk_WalkingData   aWD1;
     aWD1.etat = 1;
     if (!ThePointOfPathTool::IsPassingPnt(PathPnt))
+    {
       aWD1.etat = 11;
+    }
     if (!ThePointOfPathTool::IsTangent(PathPnt))
+    {
       ++aWD1.etat;
+    }
     ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
     wd1.Append(aWD1);
     int aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
@@ -380,12 +398,16 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
   // calcul de toutes les lignes ouvertes
   if (nbPnts1 != 0)
+  {
     ComputeOpenLine(Umult, Vmult, Pnts1, Func, Rajout);
+  }
 
   for (I = 1; I <= nbPnts1; I++)
   {
     if (wd1[I].etat > 0)
+    {
       seqSingle.Append(Pnts1(I));
+    }
   }
   done = true;
 }
@@ -400,9 +422,13 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 static void CutVectorByTolerances(gp_Vec2d& theVector, const math_Vector& theTolerance)
 {
   if (std::abs(theVector.X()) < theTolerance(1))
+  {
     theVector.SetX(0.);
+  }
   if (std::abs(theVector.Y()) < theTolerance(2))
+  {
     theVector.SetY(0.);
+  }
 }
 
 // _______________________________________________
@@ -541,7 +567,9 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
     {
       double aStep = std::abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
       if (aStep < Step)
+      {
         Step = aStep;
+      }
     }
     BornSup(1) = BornInf(1); // limit the parameter
     UVap(1)    = BornInf(1);
@@ -554,7 +582,9 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
     {
       double aStep = std::abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
       if (aStep < Step)
+      {
         Step = aStep;
+      }
     }
     BornInf(1) = BornSup(1); // limit the parameter
     UVap(1)    = BornSup(1);
@@ -567,7 +597,9 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
     {
       double aStep = std::abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
       if (aStep < Step)
+      {
         Step = aStep;
+      }
     }
     BornSup(2) = BornInf(2);
     UVap(1) += Step * Duvx * StepSign;
@@ -580,7 +612,9 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
     {
       double aStep = std::abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
       if (aStep < Step)
+      {
         Step = aStep;
+      }
     }
     BornInf(2) = BornSup(2);
     UVap(1) += Step * Duvx * StepSign;
@@ -696,9 +730,13 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
     for (size_t i = 1; i < wd1.Size(); i++)
     {
       if (l == 1)
+      {
         isToCheck = (wd1[i].etat > 0);
+      }
       else
+      {
         isToCheck = (wd1[i].etat < 0);
+      }
 
       if (isToCheck)
       {
@@ -761,11 +799,13 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
     {
       double MinSqDist = RealLast();
       for (ind = 1; ind <= i_candidates.Length(); ind++)
+      {
         if (SqDist_candidates(ind) < MinSqDist)
         {
           MinSqDist = SqDist_candidates(ind);
           Irang     = i_candidates(ind);
         }
+      }
       Arrive = true;
       UV(1)  = wd1[Irang].ustart;
       UV(2)  = wd1[Irang].vstart;
@@ -939,12 +979,16 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
 
       if (((Up - Utest) * (UV1 - Utest) + (Vp - Vtest) * (UV2 - Vtest) < 0)
           || (std::abs(UV1 - Utest) < tolu && std::abs(UV2 - Vtest) < tolv))
+      {
         Irang = i;
+      }
       else if (nbMultiplicities[i] > 0)
       {
         N = 0;
         for (k = 1; k < i; k++)
+        {
           N = N + nbMultiplicities[k];
+        }
         for (int j = N + 1; j <= N + nbMultiplicities[i]; j++)
         {
           double Umultj = Umult(j) / deltau;
@@ -1001,9 +1045,13 @@ bool IntWalk_IWalking::TestArretAjout(TheIWFunction&   sp,
     {
       const occ::handle<IntWalk_TheIWLine>& Line = lines.Value(std::abs(Irang));
       if (Irang > 0)
+      {
         Psol = Line->Value(Line->NbPoints());
+      }
       else
+      {
         Psol = Line->Value(1);
+      }
       if (!reversed)
       {
         Psol.ParametersOnS2(U1, V1);
@@ -1047,14 +1095,20 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                           
   {
     int Irang1 = CopySeqAlone(i);
     if (Irang1 == 0)
+    {
       continue;
+    }
     bool                                  ToRemove = false;
     IntSurf_PntOn2S                       PointAlone1, PointAlone2;
     const occ::handle<IntWalk_TheIWLine>& Line1 = lines.Value(std::abs(Irang1));
     if (Irang1 > 0)
+    {
       PointAlone1 = Line1->Value(Line1->NbPoints());
+    }
     else
+    {
       PointAlone1 = Line1->Value(1);
+    }
     gp_Pnt2d P2d1      = PointAlone1.ValueOnSurface(reversed), P2d2;
     double   MinSqDist = RealLast();
     int      MinRang = 0, MinIndex = 0;
@@ -1062,12 +1116,18 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                           
     {
       int Irang2 = CopySeqAlone(j);
       if (Irang2 == 0 || BadSolutions.Contains(Irang2))
+      {
         continue;
+      }
       const occ::handle<IntWalk_TheIWLine>& Line2 = lines.Value(std::abs(Irang2));
       if (Irang2 > 0)
+      {
         PointAlone2 = Line2->Value(Line2->NbPoints());
+      }
       else
+      {
         PointAlone2 = Line2->Value(1);
+      }
       P2d2           = PointAlone2.ValueOnSurface(reversed);
       double aSqDist = P2d1.SquareDistance(P2d2);
       if (aSqDist < MinSqDist)
@@ -1097,17 +1157,23 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                           
     ///////////////////
     const occ::handle<IntWalk_TheIWLine>& Line2 = lines.Value(std::abs(MinRang));
     if (MinRang > 0)
+    {
       PointAlone2 = Line2->Value(Line2->NbPoints());
+    }
     else
+    {
       PointAlone2 = Line2->Value(1);
+    }
     gp_Pnt Pnt1        = PointAlone1.Value();
     gp_Pnt Pnt2        = PointAlone2.Value();
     P2d2               = PointAlone2.ValueOnSurface(reversed);
     double MinSqDist3d = Pnt1.SquareDistance(Pnt2);
     if (MinSqDist3d <= epsilon
         || (std::abs(P2d1.X() - P2d2.X()) <= tolerance(1)
-            && std::abs(P2d1.Y() - P2d2.Y()) <= tolerance(2))) // close points
+            && std::abs(P2d1.Y() - P2d2.Y()) <= tolerance(2)))
+    { // close points
       ToRemove = true;
+    }
     else // real curve
     {
       math_Vector UVap(1, 2), UV(1, 2);
@@ -1128,11 +1194,13 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                           
         if (IsPmidValid)
         {
           for (int iline = 1; iline <= lines.Length(); iline++)
+          {
             if (IsPointOnLine(Pmid, iline))
             {
               IsPmidValid = false;
               break;
             }
+          }
         }
         if (IsPmidValid)
         {
@@ -1172,12 +1240,16 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                           
   }
 
   for (int i = 1; i <= SeqToRemove.Length(); i++)
+  {
     for (int j = 1; j <= seqAlone.Length(); j++)
+    {
       if (seqAlone(j) == SeqToRemove(i))
       {
         seqAlone.Remove(j);
         break;
       }
+    }
+  }
 }
 
 void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umult,
@@ -1208,7 +1280,9 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umul
       if (nbMultiplicities[i] > 0)
       {
         for (int k = 1; k < i; k++)
+        {
           N += nbMultiplicities[k];
+        }
       }
       if (!reversed)
       {
@@ -1602,7 +1676,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
               // Step collapsed below tolerance, or Cadrage keeps resetting
               // the step (preventing convergence) after too many attempts.
               if (CurrentLine->NbPoints() == 1)
+              {
                 break;
+              }
               Arrive = true;
               CurrentLine->AddStatusLast(false);
               Tgtend = true; // check
@@ -1665,7 +1741,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
               if (!ArretAjout && Cadre)
               {
                 if (CurrentLine->NbPoints() == 1)
+                {
                   break; // cancel the line
+                }
                 TestArretCadre(Umult, Vmult, CurrentLine, Func, UVap, N);
                 //		if (N == 0) {
                 if (N <= 0)
@@ -1701,11 +1779,13 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
               CurrentLine->AddPoint(Psol);
               // Remove <SaveN> from <seqAlone>
               for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+              {
                 if (seqAlone(iseq) == SaveN)
                 {
                   seqAlone.Remove(iseq);
                   break;
                 }
+              }
 
               if (Cadre && N == 0)
               {
@@ -1820,7 +1900,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
           if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
           {
             if (CurrentLine->NbPoints() == 1)
+            {
               break;
+            }
             Arrive = true;
             CurrentLine->AddStatusLast(false);
             Tgtend = true; // need check
@@ -1831,7 +1913,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
         }
 
         if (aNbIter < 0)
+        {
           break;
+        }
       } // end of started line
 
       if (Arrive)
@@ -1841,8 +1925,10 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
         // modified by NIZHNY-MKK  Fri Oct 27 12:59:29 2000.BEGIN
         movementdirectioninfo[I] = 0;
         if (wd1[I].etat > 0)
+        {
           // modified by NIZHNY-MKK  Fri Oct 27 12:59:42 2000.END
           wd1[I].etat = -wd1[I].etat;
+        }
 
         //-- lbr le 5 juin 97 (Pb ds Contap)
         for (int av = 1; av <= nbPath; av++)
@@ -2272,8 +2358,10 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                   {
                     // Make linear extrapolation.
                     if (std::abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
+                    {
                       aScaleCoeff = std::abs((Uvap(aCoordIdx) - uv[aCoordIdx - 1])
                                              / (uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]));
+                    }
                     int aFixIdx = aCoordIdx == 1 ? 2 : 1; // Fixing index;
                     Uvap(aFixIdx) =
                       uv[aFixIdx - 1] + (uv[aFixIdx - 1] - uvprev[aFixIdx - 1]) * aScaleCoeff;
@@ -2334,7 +2422,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                   MakeWalkingPoint(2, Uvap(1), Uvap(2), Func, Psol);
                   Tgtend = Func.IsTangent(); // jag 940616
                   if (isOnDegeneratedBorder)
+                  {
                     Tgtend = true;
+                  }
                   N = -N;
                 }
                 Arrive = (wd2[I].etat == 12); // the line is open
@@ -2344,7 +2434,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
               TestDeflection(Func, Arrive, Uvap, StatusPrecedent, NbDivision, PasC, StepSign);
 
             if (isOnDegeneratedBorder && Tgtend)
+            {
               aStatus = IntWalk_ArretSurPoint;
+            }
 
             StatusPrecedent = aStatus;
             if (aStatus == IntWalk_PasTropGrand)
@@ -2374,18 +2466,24 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 if (IsValidEndPoint(I, SaveN))
                 {
                   for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                  {
                     if (seqAlone(iseq) == SaveN)
                     {
                       seqAlone.Remove(iseq);
                       break;
                     }
+                  }
                   if (CurrentLine->NbPoints() <= 3)
+                  {
                     for (int iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                    {
                       if (seqAjout(iseq) == SaveN)
                       {
                         seqAjout.Remove(iseq);
                         break;
                       }
+                    }
+                  }
                 }
                 else
                 {
@@ -2433,18 +2531,24 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 if (IsValidEndPoint(I, SaveN))
                 {
                   for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                  {
                     if (seqAlone(iseq) == SaveN)
                     {
                       seqAlone.Remove(iseq);
                       break;
                     }
+                  }
                   if (CurrentLine->NbPoints() <= 2)
+                  {
                     for (int iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                    {
                       if (seqAjout(iseq) == SaveN)
                       {
                         seqAjout.Remove(iseq);
                         break;
                       }
+                    }
+                  }
                 }
                 else
                 {
@@ -2548,7 +2652,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
             else if (aStatus == IntWalk_OK)
             {
               if (Ipass != 0)
+              {
                 CurrentLine->AddIndexPassing(Ipass);
+              }
               previousPoint.SetValue(Func.Point(), reversed, Uvap(1), Uvap(2));
               previousd3d = Func.Direction3d();
               previousd2d = Func.Direction2d();
@@ -2609,7 +2715,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
         }
 
         if (aNbIter < 0)
+        {
           break;
+        }
       } // end of started line
       if (Arrive)
       {
@@ -2700,7 +2808,9 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     { // angle 3d <= pi/2 !!!!
       const double aDiv = previousd3d.SquareMagnitude() * Norme;
       if (aDiv == 0)
+      {
         return aStatus;
+      }
       Cosi2 = Cosi * Cosi / aDiv;
     }
     if (Cosi2 < CosRef3D)
@@ -2708,9 +2818,13 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       Step         = Step / 2.0;
       double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
+      {
         aStatus = IntWalk_ArretSurPointPrecedent;
+      }
       else
+      {
         aStatus = IntWalk_PasTropGrand;
+      }
       return aStatus;
     }
   }
@@ -2737,11 +2851,15 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   double Cosi = StepSign * (Du * previousd2d.X() + Dv * previousd2d.Y());
 
   if (Cosi < 0 && aStatus == IntWalk_PointConfondu)
+  {
     return IntWalk_ArretSurPointPrecedent; // leave as step back
+  }
                                            // with confused point
 
   if (sp.IsTangent())
+  {
     return IntWalk_ArretSurPoint;
+  }
 
   // if during routing one has subdivided more than  MaxDivision for each
   // previous step, bug on the square; do nothing (experience U4)
@@ -2756,9 +2874,13 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
 
       if (StepU < tolerance(1) && StepV < tolerance(2))
+      {
         aStatus = IntWalk_ArretSurPointPrecedent;
+      }
       else
+      {
         aStatus = IntWalk_PasTropGrand;
+      }
       NbDivision = NbDivision + 1;
       return aStatus;
     }
@@ -2770,9 +2892,13 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       Step         = Step / 2.;
       double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
+      {
         aStatus = IntWalk_ArretSurPoint;
+      }
       else
+      {
         aStatus = IntWalk_PasTropGrand;
+      }
       return aStatus;
     }
     Cosi  = Du * sp.Direction2d().X() + Dv * sp.Direction2d().Y();
@@ -2783,9 +2909,13 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       Step         = Step / 2.;
       double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
+      {
         aStatus = IntWalk_ArretSurPointPrecedent;
+      }
       else
+      {
         aStatus = IntWalk_PasTropGrand;
+      }
       return aStatus;
     }
   }
@@ -2867,9 +2997,13 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
           double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
 
           if (StepU < tolerance(1) && StepV < tolerance(2))
+          {
             aStatus = IntWalk_ArretSurPointPrecedent;
+          }
           else
+          {
             aStatus = IntWalk_PasTropGrand;
+          }
         }
         else
         {
@@ -2989,7 +3123,9 @@ void IntWalk_IWalking::OpenLine(const int                             N,
   else
   {
     if (N < 0)
+    {
       Line->AddPoint(Psol);
+    }
     Line->AddStatusFirst(false, false);
     // mark the line as open without given stop point
   }
@@ -3000,15 +3136,19 @@ void IntWalk_IWalking::OpenLine(const int                             N,
 bool IntWalk_IWalking::IsValidEndPoint(const int IndOfPoint, const int IndOfLine)
 {
   if (PointLineLine.IsEmpty())
+  {
     return true;
+  }
 
   NCollection_List<int>::Iterator itl(PointLineLine(IndOfPoint));
   for (; itl.More(); itl.Next())
+  {
     if (itl.Value() == IndOfLine)
     {
       PointLineLine(IndOfPoint).Remove(itl);
       return true;
     }
+  }
   return false;
 }
 
@@ -3021,7 +3161,9 @@ void IntWalk_IWalking::RemoveTwoEndPoints(const int IndOfPoint)
     for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
     {
       if (seqAlone(iseq) == Line1 || seqAlone(iseq) == Line2)
+      {
         seqAlone.Remove(iseq--);
+      }
     }
   }
 }
@@ -3034,14 +3176,18 @@ bool IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d& theP2d, const int Irang)
     gp_Pnt2d P2d1 = aLine->Value(i).ValueOnSurface(reversed);
     if (std::abs(P2d1.X() - theP2d.X()) <= tolerance(1)
         && std::abs(P2d1.Y() - theP2d.Y()) <= tolerance(2))
+    {
       return true;
+    }
     if (i < aLine->NbPoints())
     {
       gp_Pnt2d P2d2 = aLine->Value(i + 1).ValueOnSurface(reversed);
       gp_Vec2d PP1(theP2d, P2d1);
       gp_Vec2d PP2(theP2d, P2d2);
       if (PP1 * PP2 < 0)
+      {
         return true;
+      }
     }
   }
   return false;
@@ -3070,7 +3216,9 @@ bool IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
     const occ::handle<IntSurf_LineOn2S>& aL = lines(aLIdx)->Line();
 
     if (aL->IsOutBox(aP3d))
+    {
       continue;
+    }
 
     // Look for the nearest segment
     double aUMin = 0.0, aVMin = 0.0;
@@ -3086,7 +3234,9 @@ bool IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
       const double aSq12 = aP1P2.SquareModulus();
 
       if (aSq12 < gp::Resolution())
+      {
         continue;
+      }
 
       const double aDP = aP1P.Dot(aP1P2);
 
@@ -3126,14 +3276,18 @@ bool IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
     }
 
     if (aMinSqDist > Precision::Infinite())
+    {
       continue;
+    }
 
     math_Vector aVecPrms(1, 2);
     aVecPrms(1) = aUMin;
     aVecPrms(2) = aVMin;
     theSolver.Perform(theFunc, aVecPrms, theInfBounds, theSupBounds);
     if (!theSolver.IsDone())
+    {
       continue;
+    }
 
     theSolver.Root(aVecPrms);
 

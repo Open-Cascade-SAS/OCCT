@@ -21,9 +21,13 @@
 inline void IntPatch_WLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
 {
   if (theIsPrepend)
+  {
     svtx.Prepend(thePnt);
+  }
   else
+  {
     svtx.Append(thePnt);
+  }
 }
 
 inline void IntPatch_WLine::Replace(const int Index, const IntPatch_Point& Pnt)
@@ -124,7 +128,9 @@ inline void IntPatch_WLine::ClearVertexes()
 inline void IntPatch_WLine::RemoveVertex(const int theIndex)
 {
   if ((theIndex < 1) || (theIndex > NbVertex()))
+  {
     throw Standard_OutOfRange("Cannot delete not existing vertex");
+  }
   svtx.Remove(theIndex);
 }
 
@@ -134,7 +140,11 @@ inline void IntPatch_WLine::InsertVertexBefore(const int theIndex, const IntPatc
   int       anIndex     = std::max(theIndex, 1);
 
   if (anIndex > aNbVertexes)
+  {
     svtx.Append(thePnt);
+  }
   else
+  {
     svtx.InsertBefore(theIndex, thePnt);
+  }
 }

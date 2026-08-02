@@ -75,9 +75,13 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   Done = false;
 
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   TabP(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> TabP2d(1, mynbP2d);
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
@@ -111,7 +115,9 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     SCU.Curve(k, TabPole);
     BSplCLib::PolesCoefficients(TabPole, PLib::NoWeights(), TabCoef, PLib::NoWeights());
     for (j = 1; j <= deg + 1; j++)
+    {
       TheCoef(j + i2) = TabCoef(j);
+    }
     i2 += deg + 1;
   }
   i2 = 0;
@@ -120,7 +126,9 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     SCU.Curve(nbP3d + k, TabPole2d);
     BSplCLib::PolesCoefficients(TabPole2d, PLib::NoWeights(), TabCoef2d, PLib::NoWeights());
     for (j = 1; j <= deg + 1; j++)
+    {
       TheCoef2d(j + i2) = TabCoef2d(j);
+    }
     i2 += deg + 1;
   }
 
@@ -134,11 +142,17 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   {
     UF = Parameters(j);
     if (nbP != 0 && nbP2d != 0)
+    {
       ToolLine::Value(SSP, j, TabP, TabP2d);
+    }
     else if (nbP2d != 0)
+    {
       ToolLine::Value(SSP, j, TabP2d);
+    }
     else
+    {
       ToolLine::Value(SSP, j, TabP);
+    }
 
     FU  = 0.0;
     DFU = 0.0;
@@ -146,7 +160,9 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     for (k = 1; k <= nbP3d; k++)
     {
       for (l = 1; l <= deg + 1; l++)
+      {
         TabCoef(l) = TheCoef(l + i2);
+      }
       i2 += deg + 1;
       BSplCLib::CoefsD1(UF, TabCoef, BSplCLib::NoWeights(), Pt, V1);
       MyV = gp_Vec(Pt, TabP(k));
@@ -157,7 +173,9 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     for (k = 1; k <= nbP2d; k++)
     {
       for (l = 1; l <= deg + 1; l++)
+      {
         TabCoef2d(l) = TheCoef2d(l + i2);
+      }
       i2 += deg + 1;
       BSplCLib::CoefsD1(UF, TabCoef2d, BSplCLib::NoWeights(), Pt2d, V12d);
       MyV2d = gp_Vec2d(Pt2d, TabP2d(k));

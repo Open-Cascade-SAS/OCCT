@@ -140,7 +140,9 @@ public:
     constexpr double t3d = Precision::Confusion();
 
     if (Precision::IsInfinite(myuinf))
+    {
       mydist1 = RealLast();
+    }
     else
     {
       Pf      = TheCurveTool::Value(*myC, myuinf);
@@ -148,7 +150,9 @@ public:
     }
 
     if (Precision::IsInfinite(myusup))
+    {
       mydist2 = RealLast();
+    }
     else
     {
       Pl      = TheCurveTool::Value(*myC, myusup);
@@ -199,7 +203,9 @@ public:
         {
           int aPeriodShift = int((myuinf - aKnots(aFirstIdx)) / TheCurveTool::Period(aCurve));
           if (myuinf < aKnots(aFirstIdx) - aTolCoeff)
+          {
             aPeriodShift--;
+          }
           aPeriodJump = TheCurveTool::Period(aCurve) * aPeriodShift;
         }
 
@@ -209,17 +215,25 @@ public:
         {
           double aKnot = aKnots(anIdx) + aPeriodJump;
           if (myuinf >= aKnot - aTolCoeff)
+          {
             aFirstUsedKnot = anIdx;
+          }
           else
+          {
             break;
+          }
         }
         for (anIdx = aLastIdx; anIdx >= aFirstIdx; anIdx--)
         {
           double aKnot = aKnots(anIdx) + aPeriodJump;
           if (myusup <= aKnot + aTolCoeff)
+          {
             aLastUsedKnot = anIdx;
+          }
           else
+          {
             break;
+          }
         }
 
         if (aFirstUsedKnot == aLastUsedKnot)
@@ -241,9 +255,13 @@ public:
             double aF = aKnots(anIdx) + aPeriodJump, aL = aKnots(anIdx + 1) + aPeriodJump;
 
             if (anIdx == aFirstUsedKnot)
+            {
               aF = myuinf;
+            }
             else if (anIdx == aLastUsedKnot - 1)
+            {
               aL = myusup;
+            }
 
             ThePoint aP1, aP2;
             TheCurveTool::D0(aCurve, aF, aP1);
@@ -253,7 +271,9 @@ public:
             double    aVal1 = aV.Dot(aBase1);
             double    aVal2 = aV.Dot(aBase2);
             if (anIdx == aFirstUsedKnot)
+            {
               aMin1 = theP.SquareDistance(aP1);
+            }
             else
             {
               aMin1 = aMin2;
@@ -306,9 +326,13 @@ public:
             double aF = aKnots(anIdx) + aPeriodJump, aL = aKnots(anIdx + 1) + aPeriodJump;
 
             if (anIdx == aFirstUsedKnot)
+            {
               aF = myuinf;
+            }
             if (anIdx == aLastUsedKnot - 1)
+            {
               aL = myusup;
+            }
 
             double aStep = (aL - aF) / mysample;
             for (int aPntIdx = 0; aPntIdx < mysample; aPntIdx++)
@@ -409,7 +433,9 @@ public:
         {
           double dt = theHInter->Value(i + 1) - theHInter->Value(i);
           if (maxint < dt)
+          {
             maxint = dt;
+          }
         }
         bool      isPeriodic = TheCurveTool::IsPeriodic(aCurve);
         TheVector V1;
@@ -435,14 +461,22 @@ public:
           IntIsNotValid = (myuinf > aSupToCheck) || (myusup < anInfToCheck);
 
           if (IntIsNotValid)
+          {
             continue;
+          }
 
           if (myuinf >= anInfToCheck)
+          {
             anInfToCheck = myuinf;
+          }
           if (myusup <= aSupToCheck)
+          {
             aSupToCheck = myusup;
+          }
           if ((aSupToCheck - anInfToCheck) <= mytolu)
+          {
             continue;
+          }
 
           if (i != 1)
           {
@@ -482,9 +516,13 @@ public:
         {
           U = mypoint.Value(i).Parameter();
           if (std::abs(U - myuinf) < mytolu)
+          {
             isFirstAdded = true;
+          }
           else if (std::abs(myusup - U) < mytolu)
+          {
             isLastAdded = true;
+          }
         }
         if (!isFirstAdded && mydist1 < Precision::SquareConfusion())
         {
@@ -536,7 +574,9 @@ public:
   double SquareDistance(const int theN) const
   {
     if ((theN < 1) || (theN > NbExt()))
+    {
       throw Standard_OutOfRange();
+    }
     return mySqDist.Value(theN);
   }
 
@@ -545,7 +585,9 @@ public:
   int NbExt() const
   {
     if (!IsDone())
+    {
       throw StdFail_NotDone();
+    }
     return mySqDist.Length();
   }
 
@@ -555,7 +597,9 @@ public:
   bool IsMin(const int theN) const
   {
     if ((theN < 1) || (theN > NbExt()))
+    {
       throw Standard_OutOfRange();
+    }
     return myismin.Value(theN);
   }
 
@@ -565,7 +609,9 @@ public:
   const ThePOnC& Point(const int theN) const
   {
     if ((theN < 1) || (theN > NbExt()))
+    {
       throw Standard_OutOfRange();
+    }
     return mypoint.Value(theN);
   }
 

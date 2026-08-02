@@ -130,7 +130,9 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Ax3& t
   theReadData >> anAx >> aYDir >> aXDir;
   theAx = gp_Ax3(anAx.Location(), anAx.Direction(), aXDir);
   if (aYDir * theAx.YDirection() < 0.)
+  {
     theAx.YReverse();
+  }
   return theReadData;
 }
 

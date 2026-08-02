@@ -49,9 +49,13 @@ struct KeyValueRef
   decltype(auto) get() const noexcept
   {
     if constexpr (I == 0)
+    {
       return Key;
+    }
     else if constexpr (I == 1)
+    {
       return Value;
+    }
   }
 };
 
@@ -75,11 +79,17 @@ struct KeyValueIndexRef
   decltype(auto) get() const noexcept
   {
     if constexpr (I == 0)
+    {
       return Key;
+    }
     else if constexpr (I == 1)
+    {
       return Value;
+    }
     else if constexpr (I == 2)
+    {
       return Index;
+    }
   }
 };
 
@@ -98,9 +108,13 @@ struct KeyIndexRef
   decltype(auto) get() const noexcept
   {
     if constexpr (I == 0)
+    {
       return Key;
+    }
     else if constexpr (I == 1)
+    {
       return Index;
+    }
   }
 };
 

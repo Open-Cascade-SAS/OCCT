@@ -40,7 +40,7 @@ public:
 
   Standard_EXPORT const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int val, const char* const text) override;
+  Standard_EXPORT void SetEnumText(const int val, const char* const text) override;
 
   Standard_EXPORT void SetValue(const StepVisual_MarkerType val);
 

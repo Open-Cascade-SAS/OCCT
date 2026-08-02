@@ -32,7 +32,9 @@ bool Unite(NCollection_PackedMap<IntType>&       theMap,
            const NCollection_PackedMap<IntType>& theOtherMap)
 {
   if (theOtherMap.IsEmpty() || &theMap == &theOtherMap)
+  {
     return false;
+  }
   else if (theMap.IsEmpty())
   {
     theMap.Assign(theOtherMap);
@@ -59,13 +61,21 @@ void Union(NCollection_PackedMap<IntType>&       theMap,
            const NCollection_PackedMap<IntType>& theRightMap)
 {
   if (theLeftMap.IsEmpty())
+  {
     theMap.Assign(theRightMap);
+  }
   else if (theRightMap.IsEmpty())
+  {
     theMap.Assign(theLeftMap);
+  }
   else if (&theMap == &theLeftMap)
+  {
     Unite(theMap, theRightMap);
+  }
   else if (&theMap == &theRightMap)
+  {
     Unite(theMap, theLeftMap);
+  }
   else
   {
     theMap.Clear();
@@ -91,14 +101,18 @@ bool Intersect(NCollection_PackedMap<IntType>&       theMap,
                const NCollection_PackedMap<IntType>& theOtherMap)
 {
   if (theMap.IsEmpty())
+  {
     return false;
+  }
   else if (theOtherMap.IsEmpty())
   {
     theMap.Clear();
     return true;
   }
   else if (&theMap == &theOtherMap)
+  {
     return false;
+  }
 
   const int                      anOldExtent = theMap.Extent();
   NCollection_PackedMap<IntType> aCopy;
@@ -124,11 +138,17 @@ void Intersection(NCollection_PackedMap<IntType>&       theMap,
                   const NCollection_PackedMap<IntType>& theRightMap)
 {
   if (theLeftMap.IsEmpty() || theRightMap.IsEmpty())
+  {
     theMap.Clear();
+  }
   else if (&theMap == &theLeftMap)
+  {
     Intersect(theMap, theRightMap);
+  }
   else if (&theMap == &theRightMap)
+  {
     Intersect(theMap, theLeftMap);
+  }
   else
   {
     theMap.Clear();
@@ -169,7 +189,9 @@ bool Subtract(NCollection_PackedMap<IntType>&       theMap,
   }
 
   if (theMap.IsEmpty() || theOtherMap.IsEmpty())
+  {
     return false;
+  }
 
   const int anOldExtent = theMap.Extent();
   for (typename NCollection_PackedMap<IntType>::Iterator anIter(theOtherMap); anIter.More();
@@ -225,7 +247,9 @@ bool Differ(NCollection_PackedMap<IntType>&       theMap,
   }
 
   if (theOtherMap.IsEmpty())
+  {
     return false;
+  }
   else if (theMap.IsEmpty())
   {
     theMap.Assign(theOtherMap);
@@ -238,9 +262,13 @@ bool Differ(NCollection_PackedMap<IntType>&       theMap,
   {
     const IntType aKey = anIter.Key();
     if (theMap.Contains(aKey))
+    {
       theMap.Remove(aKey);
+    }
     else
+    {
       theMap.Add(aKey);
+    }
   }
   return anOldExtent != theMap.Extent();
 }
@@ -296,10 +324,14 @@ bool HasIntersection(const NCollection_PackedMap<IntType>& theMap,
                      const NCollection_PackedMap<IntType>& theOtherMap)
 {
   if (theMap.IsEmpty() || theOtherMap.IsEmpty())
+  {
     return false;
+  }
 
   if (&theMap == &theOtherMap)
+  {
     return true;
+  }
 
   const NCollection_PackedMap<IntType>* aSmaller = &theMap;
   const NCollection_PackedMap<IntType>* aLarger  = &theOtherMap;

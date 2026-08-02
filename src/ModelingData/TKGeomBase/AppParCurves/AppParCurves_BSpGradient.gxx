@@ -171,9 +171,13 @@ void AppParCurves_BSpGradient::Perform(
   Done = false;
 
   if (nbP3d == 0)
+  {
     mynbP3d = 1;
+  }
   if (nbP2d == 0)
+  {
     mynbP2d = 1;
+  }
   NCollection_Array1<gp_Pnt>   TabP(1, mynbP3d);
   NCollection_Array1<gp_Pnt2d> TabP2d(1, mynbP2d);
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
@@ -241,7 +245,9 @@ void AppParCurves_BSpGradient::Perform(
     {
       SCU.Curve(k, TabPole);
       for (j = 1; j <= nbpoles; j++)
+      {
         ThePoles(j + i2) = TabPole(j);
+      }
       i2 += nbpoles;
     }
     i2 = 0;
@@ -249,7 +255,9 @@ void AppParCurves_BSpGradient::Perform(
     {
       SCU.Curve(nbP3d + k, TabPole2d);
       for (j = 1; j <= nbpoles; j++)
+      {
         ThePoles2d(j + i2) = TabPole2d(j);
+      }
       i2 += nbpoles;
     }
 
@@ -268,11 +276,17 @@ void AppParCurves_BSpGradient::Perform(
 
       UF = Parameters(j);
       if (nbP3d != 0 && nbP2d != 0)
+      {
         ToolLine::Value(SSP, j, TabP, TabP2d);
+      }
       else if (nbP2d != 0)
+      {
         ToolLine::Value(SSP, j, TabP2d);
+      }
       else
+      {
         ToolLine::Value(SSP, j, TabP);
+      }
 
       FU  = 0.0;
       DFU = 0.0;

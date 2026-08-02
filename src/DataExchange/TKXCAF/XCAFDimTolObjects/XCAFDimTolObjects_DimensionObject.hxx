@@ -319,7 +319,9 @@ public:
   occ::handle<TCollection_HAsciiString> GetDescription(const int theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+    {
       return new TCollection_HAsciiString();
+    }
     return myDescriptions.Value(theNumber);
   }
 
@@ -327,7 +329,9 @@ public:
   occ::handle<TCollection_HAsciiString> GetDescriptionName(const int theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+    {
       return new TCollection_HAsciiString();
+    }
     return myDescriptionNames.Value(theNumber);
   }
 

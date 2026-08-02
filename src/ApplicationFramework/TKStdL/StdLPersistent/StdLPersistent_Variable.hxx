@@ -51,7 +51,9 @@ public:
   {
     theAttribute->Constant(myIsConstant);
     if (myUnit)
+    {
       theAttribute->Unit(myUnit->Value()->String());
+    }
   }
 
 private:

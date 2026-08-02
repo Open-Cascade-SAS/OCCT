@@ -187,7 +187,9 @@ inline void TCollection_AsciiString::InsertAfter(const int                      
 inline void TCollection_AsciiString::InsertAfter(const int theIndex, const char* const theCString)
 {
   if (theCString)
+  {
     InsertAfter(theIndex, theCString, static_cast<int>(strlen(theCString)));
+  }
 }
 
 //=================================================================================================
@@ -221,7 +223,9 @@ inline void TCollection_AsciiString::InsertBefore(const int                     
 inline void TCollection_AsciiString::InsertBefore(const int theIndex, const char* const theCString)
 {
   if (theCString)
+  {
     InsertBefore(theIndex, theCString, static_cast<int>(strlen(theCString)));
+  }
 }
 
 //=================================================================================================
@@ -575,7 +579,9 @@ inline bool TCollection_AsciiString::IsSameString(const TCollection_AsciiString&
                                                   const bool                     theIsCaseSensitive)
 {
   if (!theCString)
+  {
     return theString1.Length() == 0;
+  }
 
   return IsSameString(theString1.ToCString(),
                       theString1.Length(),
@@ -627,9 +633,13 @@ inline bool TCollection_AsciiString::IsSameString(const char* const theCString1,
                                                   const bool        theIsCaseSensitive)
 {
   if (!theCString1 && !theCString2)
+  {
     return true;
+  }
   if (!theCString1 || !theCString2)
+  {
     return false;
+  }
 
   return IsSameString(theCString1,
                       static_cast<int>(strlen(theCString1)),

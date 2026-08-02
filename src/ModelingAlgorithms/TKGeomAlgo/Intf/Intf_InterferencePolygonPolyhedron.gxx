@@ -40,18 +40,28 @@ static bool IsInSegment(const gp_Vec& P1P2,
                         const double  Tolerance)
 {
   if (NP1P2 < Precision::Computational())
+  {
     return false;
+  }
   Param = P1P2.Dot(P1P);
   Param /= NP1P2;
   if (Param > (NP1P2 + Tolerance))
+  {
     return (false);
+  }
   if (Param < (-Tolerance))
+  {
     return (false);
+  }
   Param /= NP1P2;
   if (Param < 0.0)
+  {
     Param = 0.0;
+  }
   if (Param > 1.0)
+  {
     Param = 1.0;
+  }
   return (true);
 }
 
@@ -79,7 +89,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Pol
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   if (!ToolPolygon3d::Bounding(thePolyg).IsOut(ToolPolyh::Bounding(thePolyh)))
   {
@@ -97,7 +109,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Pol
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   if (!ToolPolygon3d::Bounding(thePolyg).IsOut(ToolPolyh::Bounding(thePolyh)))
   {
@@ -119,7 +133,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   BeginOfClosedPolygon = false;
 
@@ -161,7 +177,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   Bnd_Box   bofLin;
   Intf_Tool bToo;
@@ -201,7 +219,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const Polygon3d&  thePolyg,
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   if (!ToolPolygon3d::Bounding(thePolyg).IsOut(ToolPolyh::Bounding(thePolyh)))
   {
@@ -216,7 +236,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin& theLin, const Pol
   SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   BeginOfClosedPolygon = false;
 
@@ -256,7 +278,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const NCollection_Array1<gp_Lin
   SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   Bnd_Box   bofLin;
   Intf_Tool Btoo;
@@ -333,7 +357,9 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       gp_Vec Normale      = PaPb.Crossed(PaPc);
       double Norm_Normale = Normale.Magnitude();
       if (Norm_Normale < 1e-14)
+      {
         continue;
+      }
       Normale.Multiply(defPh / Norm_Normale);
       gp_Pnt p1m = p1.Translated(-Normale);
       gp_Pnt p1p = p1.Translated(Normale);
@@ -362,7 +388,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   BeginOfClosedPolygon = false;
 
@@ -401,7 +429,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   Bnd_Box   bofLin;
   Intf_Tool bToo;
@@ -439,7 +469,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const Polygon3d&  thePolyg,
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   if (!ToolPolygon3d::Bounding(thePolyg).IsOut(ToolPolyh::Bounding(thePolyh)))
   {
@@ -456,7 +488,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin&     theLin,
   SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   BeginOfClosedPolygon = false;
 
@@ -494,7 +528,9 @@ void Intf_InterferencePolygonPolyhedron::Perform(const NCollection_Array1<gp_Lin
   SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
+  {
     Tolerance = Epsilon(1000.);
+  }
 
   Bnd_Box   bofLin;
   Intf_Tool Btoo;
@@ -764,9 +800,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
   double param;
   t = dBegTri - dEndTri;
   if (t >= 1.e-16 || t <= -1.e-16)
+  {
     param = dBegTri / t;
+  }
   else
+  {
     param = dBegTri;
+  }
   double floatgap = Epsilon(1000.);
 
   if (!Infinite)
@@ -776,7 +816,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       param  = 0.;
       typOnG = Intf_VERTEX;
       if (BeginOfClosedPolygon)
+      {
         NoIntersectionWithTriangle = false;
+      }
     }
     else if (dEndTri <= floatgap && dEndTri >= -floatgap)
     {
@@ -814,9 +856,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
         double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                       = segT_x_vecP * triNor;
         if (sigd > floatgap)
+        {
           sigd = 1.0;
+        }
         else if (sigd < -floatgap)
+        {
           sigd = -1.0;
+        }
         else
         {
           sigd = 0.0;
@@ -849,9 +895,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
         double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                       = segT_x_vecP * triNor;
         if (sigd > floatgap)
+        {
           sigd = 1.0;
+        }
         else if (sigd < -floatgap)
+        {
           sigd = -1.0;
+        }
         else
         {
           sigd = 0.0;
@@ -880,9 +930,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
       sigd                       = segT_x_vecP * triNor;
       if (sigd > floatgap)
+      {
         sigd = 1.0;
+      }
       else if (sigd < -floatgap)
+      {
         sigd = -1.0;
+      }
       else
       {
         sigd = 0.0;
@@ -990,7 +1044,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
     gp_Vec VecPol(BegO, EndO);
     double NVecPol = VecPol.Magnitude();
     if (NVecPol < Precision::Computational())
+    {
       return;
+    }
     gp_Dir DirPol(VecPol);
     gp_Lin LinPol(BegO, DirPol);
     double dist2, ParamOnO, ParamOnT;
@@ -1004,7 +1060,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       gp_Vec        VecTri(BegT, EndT);
       double        NVecTri = VecTri.Magnitude();
       if (NVecTri < Precision::Computational())
+      {
         continue;
+      }
       gp_Dir         DirTri(VecTri);
       gp_Lin         LinTri(BegT, DirTri);
       Extrema_ExtElC Extrema(LinPol, LinTri, 0.00000001);
@@ -1079,9 +1137,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
   double param;
   t = dBegTri - dEndTri;
   if (t >= 1.e-16 || t <= -1.e-16)
+  {
     param = dBegTri / t;
+  }
   else
+  {
     param = dBegTri;
+  }
   double floatgap = Epsilon(1000.);
 
   if (!Infinite)
@@ -1091,7 +1153,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       param  = 0.;
       typOnG = Intf_VERTEX;
       if (BeginOfClosedPolygon)
+      {
         NoIntersectionWithTriangle = false;
+      }
     }
     else if (dEndTri <= floatgap && dEndTri >= -floatgap)
     {
@@ -1129,9 +1193,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
         double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                       = segT_x_vecP * triNor;
         if (sigd > floatgap)
+        {
           sigd = 1.0;
+        }
         else if (sigd < -floatgap)
+        {
           sigd = -1.0;
+        }
         else
         {
           sigd = 0.0;
@@ -1164,9 +1232,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
         double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                       = segT_x_vecP * triNor;
         if (sigd > floatgap)
+        {
           sigd = 1.0;
+        }
         else if (sigd < -floatgap)
+        {
           sigd = -1.0;
+        }
         else
         {
           sigd = 0.0;
@@ -1195,9 +1267,13 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
       sigd                       = segT_x_vecP * triNor;
       if (sigd > floatgap)
+      {
         sigd = 1.0;
+      }
       else if (sigd < -floatgap)
+      {
         sigd = -1.0;
+      }
       else
       {
         sigd = 0.0;
@@ -1305,7 +1381,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
     gp_Vec VecPol(BegO, EndO);
     double NVecPol = VecPol.Magnitude();
     if (NVecPol < Precision::Computational())
+    {
       return;
+    }
     gp_Dir DirPol(VecPol);
     gp_Lin LinPol(BegO, DirPol);
     double dist2, ParamOnO, ParamOnT;
@@ -1319,7 +1397,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
       gp_Vec        VecTri(BegT, EndT);
       double        NVecTri = VecTri.Magnitude();
       if (NVecTri < Precision::Computational())
+      {
         continue;
+      }
       gp_Dir         DirTri(VecTri);
       gp_Lin         LinTri(BegT, DirTri);
       Extrema_ExtElC Extrema(LinPol, LinTri, 0.00000001);

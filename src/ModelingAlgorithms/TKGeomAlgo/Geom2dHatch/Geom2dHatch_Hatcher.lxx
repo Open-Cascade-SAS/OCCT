@@ -92,9 +92,13 @@ inline bool Geom2dHatch_Hatcher::KeepSegments() const
 inline void Geom2dHatch_Hatcher::Clear()
 {
   if (myNbHatchings != 0)
+  {
     ClrHatchings();
+  }
   if (myNbElements != 0)
+  {
     ClrElements();
+  }
 }
 
 //=================================================================================================

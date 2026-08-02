@@ -89,6 +89,8 @@ inline occ::handle<NCollection_HArray1<int>> AdvApprox_ApproxAFunction::Multipli
 inline int AdvApprox_ApproxAFunction::NumSubSpaces(const int Dimension) const
 {
   if (Dimension < 1 || Dimension > 3)
+  {
     throw Standard_ConstructionError();
+  }
   return myNumSubSpaces[Dimension - 1];
 }

@@ -373,7 +373,9 @@ bool IntImp_ZerParFunc::IsTangent(const math_Vector&          UVap,
 
   tangent = IntImp_ComputeTangence(dpuv, EpsUV, tgduv, TabIso);
   if (!tangent)
+  {
     chxIso = TabIso[0];
+  }
   BestChoix = chxIso;
   return tangent;
 }

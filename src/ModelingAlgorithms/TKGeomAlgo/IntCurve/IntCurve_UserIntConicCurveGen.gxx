@@ -119,13 +119,19 @@ void IntCurve_UserIntConicCurveGen::Perform(const gp_Lin2d&        Lin1,
     {
       ThePCurveTool::GetInterval(C2, NumInterC2, Tab2, ParamInf, ParamSup);
       if ((ParamInf > D2LastParam) || (ParamSup < D2FirstParam))
+      {
         Ok = false;
+      }
       else
       {
         if (ParamInf < D2FirstParam)
+        {
           ParamInf = D2FirstParam;
+        }
         if (ParamSup > D2LastParam)
+        {
           ParamSup = D2LastParam;
+        }
         if ((ParamSup - ParamInf) > RealEpsilon())
         {
           DomainC2NumInter.SetValues(ThePCurveTool::Value(C2, ParamInf),
@@ -176,13 +182,19 @@ void IntCurve_UserIntConicCurveGen::Perform(const gp_Circ2d&       Circ1,
     {
       ThePCurveTool::GetInterval(C2, NumInterC2, Tab2, ParamInf, ParamSup);
       if ((ParamInf > D2LastParam) || (ParamSup < D2FirstParam))
+      {
         Ok = false;
+      }
       else
       {
         if (ParamInf < D2FirstParam)
+        {
           ParamInf = D2FirstParam;
+        }
         if (ParamSup > D2LastParam)
+        {
           ParamSup = D2LastParam;
+        }
         if ((ParamSup - ParamInf) > RealEpsilon())
         {
           DomainC2NumInter.SetValues(ThePCurveTool::Value(C2, ParamInf),
@@ -232,13 +244,19 @@ void IntCurve_UserIntConicCurveGen::Perform(const gp_Parab2d&      Parab1,
     {
       ThePCurveTool::GetInterval(C2, NumInterC2, Tab2, ParamInf, ParamSup);
       if ((ParamInf > D2LastParam) || (ParamSup < D2FirstParam))
+      {
         Ok = false;
+      }
       else
       {
         if (ParamInf < D2FirstParam)
+        {
           ParamInf = D2FirstParam;
+        }
         if (ParamSup > D2LastParam)
+        {
           ParamSup = D2LastParam;
+        }
         if ((ParamSup - ParamInf) > RealEpsilon())
         {
           DomainC2NumInter.SetValues(ThePCurveTool::Value(C2, ParamInf),
@@ -288,13 +306,19 @@ void IntCurve_UserIntConicCurveGen::Perform(const gp_Elips2d&      Elips1,
     {
       ThePCurveTool::GetInterval(C2, NumInterC2, Tab2, ParamInf, ParamSup);
       if ((ParamInf > D2LastParam) || (ParamSup < D2FirstParam))
+      {
         Ok = false;
+      }
       else
       {
         if (ParamInf < D2FirstParam)
+        {
           ParamInf = D2FirstParam;
+        }
         if (ParamSup > D2LastParam)
+        {
           ParamSup = D2LastParam;
+        }
         if ((ParamSup - ParamInf) > RealEpsilon())
         {
           DomainC2NumInter.SetValues(ThePCurveTool::Value(C2, ParamInf),
@@ -344,13 +368,19 @@ void IntCurve_UserIntConicCurveGen::Perform(const gp_Hypr2d&       Hyper1,
     {
       ThePCurveTool::GetInterval(C2, NumInterC2, Tab2, ParamInf, ParamSup);
       if ((ParamInf > D2LastParam) || (ParamSup < D2FirstParam))
+      {
         Ok = false;
+      }
       else
       {
         if (ParamInf < D2FirstParam)
+        {
           ParamInf = D2FirstParam;
+        }
         if (ParamSup > D2LastParam)
+        {
           ParamSup = D2LastParam;
+        }
         if ((ParamSup - ParamInf) > RealEpsilon())
         {
           DomainC2NumInter.SetValues(ThePCurveTool::Value(C2, ParamInf),

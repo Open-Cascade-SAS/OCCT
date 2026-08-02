@@ -48,7 +48,9 @@ inline void Perform(bool&              theRejected,
   theRejected = theFexp.Reject(aPoint);
 
   if (theRejected)
+  {
     return;
+  }
 
   gp_Lin2d                   aLine;
   double                     aParam;
@@ -122,7 +124,9 @@ inline void Perform(bool&              theRejected,
               aState = theClassifier.State();
 
               if (aState == TopAbs_ON)
+              {
                 return;
+              }
             }
           }
         }
@@ -131,12 +135,16 @@ inline void Perform(bool&              theRejected,
         aState = theClassifier.State();
 
         if (aState == TopAbs_OUT)
+        {
           return;
+        }
       }
     }
 
     if (!theClassifier.IsHeadOrEnd() && aState != TopAbs_UNKNOWN)
+    {
       break;
+    }
 
     // Bad case for classification. Trying to get another segment.
     aIsValidSegment = theFexp.OtherSegment(aPoint, aLine, aParam);
@@ -151,11 +159,17 @@ inline TopAbs_State State(const bool      theRejected,
                           const FClass2d& theClassifier)
 {
   if (theRejected)
+  {
     return TopAbs_OUT;
+  }
   else if (theNoWires)
+  {
     return TopAbs_IN;
+  }
   else
+  {
     return theClassifier.State();
+  }
 }
 
 //=================================================================================================

@@ -143,7 +143,9 @@ inline bool Extrema_GGenExtCC_comp(const gp_XY& theA, const gp_XY& theB)
     if (theA.X() == theB.X())
     {
       if (theA.Y() < theB.Y())
+      {
         return true;
+      }
     }
   }
   return false;
@@ -256,7 +258,9 @@ double Extrema_GGenExtCC_ProjPOnC(const ThePointType& theP, TheExtPCType& thePro
     {
       double aD = theProjTool.SquareDistance(i);
       if (aD < aDist)
+      {
         aDist = aD;
+      }
     }
   }
   return aDist;
@@ -546,7 +550,9 @@ void Extrema_GGenExtCC<TheCurve1,
   const double aMaxDer2 = 1.0 / C2.Resolution(1.0);
   double       aMaxDer  = std::max(aMaxDer1, aMaxDer2) * M_SQRT2;
   if (aLC > aMaxDer)
+  {
     aLC = aMaxDer;
+  }
 
   bool         isConstLockedFlag = false;
   const double aCR               = 0.001;
@@ -657,7 +663,9 @@ void Extrema_GGenExtCC<TheCurve1,
       if (aCurrF > aF - aSameTol * aValueTol)
       {
         if (aCurrF < aF)
+        {
           aF = aCurrF;
+        }
       }
       else
       {
@@ -672,8 +680,8 @@ void Extrema_GGenExtCC<TheCurve1,
         aFinder.Points(k, sol);
         gp_XY aPnt2d(sol(1), sol(2));
 
-        gp_XY aXYmin = anInspector.Shift(aPnt2d, -aCellSize);
-        gp_XY aXYmax = anInspector.Shift(aPnt2d, aCellSize);
+        gp_XY aXYmin = Extrema_GGenExtCC_PointsInspector::Shift(aPnt2d, -aCellSize);
+        gp_XY aXYmax = Extrema_GGenExtCC_PointsInspector::Shift(aPnt2d, aCellSize);
 
         anInspector.ClearFind();
         anInspector.SetCurrent(aPnt2d);
@@ -760,7 +768,9 @@ void Extrema_GGenExtCC<TheCurve1,
   aSolutions.Append(aNbSol - 1);
 
   if (!bDifferentSolutions)
+  {
     isParallel = false;
+  }
 
   if (isParallel)
   {
@@ -839,7 +849,9 @@ bool Extrema_GGenExtCC<TheCurve1,
                        TheExtPC>::IsParallel() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myParallel;
 }
 
@@ -861,7 +873,9 @@ int Extrema_GGenExtCC<TheCurve1,
                       TheExtPC>::NbExt() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myPoints1.Length();
 }
 

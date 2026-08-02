@@ -198,7 +198,9 @@ public:
         ++myBufferPos;
 
         if (isEndLineFound)
+        {
           break;
+        }
       }
 
       if (isEndLineFound)

@@ -72,7 +72,9 @@ DE_Wrapper::DE_Wrapper(const occ::handle<DE_Wrapper>& theWrapper)
            aVendorIter(aFormatIter.Value());
          aVendorIter.More();
          aVendorIter.Next())
+    {
       Bind(aVendorIter.Value());
+    }
   }
   theWrapper->myKeepUpdates = myKeepUpdates;
 }

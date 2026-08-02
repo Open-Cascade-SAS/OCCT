@@ -487,7 +487,9 @@ Bnd_B3<RealType> Bnd_B3<RealType>::Transformed(const gp_Trsf& theTrsf) const
   const double      aScale    = theTrsf.ScaleFactor();
   const double      aScaleAbs = std::abs(aScale);
   if (aForm == gp_Identity)
+  {
     aResult = *this;
+  }
   else if (aForm == gp_Translation || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult.myCenter[0] = (RealType)(myCenter[0] * aScale + theTrsf.TranslationPart().X());
@@ -538,11 +540,17 @@ bool Bnd_B3<RealType>::IsOut(const gp_XYZ& theCenter,
                              std::abs(theCenter.Z() - double(myCenter[2])) - double(myHSize[2])};
     double       aD(0.);
     if (aDist[0] > 0.)
+    {
       aD = aDist[0] * aDist[0];
+    }
     if (aDist[1] > 0.)
+    {
       aD += aDist[1] * aDist[1];
+    }
     if (aDist[2] > 0.)
+    {
       aD += aDist[2] * aDist[2];
+    }
     aResult = (aD > theRadius * theRadius);
   }
   else
@@ -556,11 +564,17 @@ bool Bnd_B3<RealType>::IsOut(const gp_XYZ& theCenter,
                        aDistC[2] - double(myHSize[2])};
     double aD(0.);
     if (aDist[0] > 0.)
+    {
       aD = aDist[0] * aDist[0];
+    }
     if (aDist[1] > 0.)
+    {
       aD += aDist[1] * aDist[1];
+    }
     if (aDist[2] > 0.)
+    {
       aD += aDist[2] * aDist[2];
+    }
     if (aD < theRadius * theRadius)
     {
       // the box intersects the solid sphere; check if it is completely
@@ -569,7 +583,9 @@ bool Bnd_B3<RealType>::IsOut(const gp_XYZ& theCenter,
       aDist[1] = aDistC[1] + double(myHSize[1]);
       aDist[2] = aDistC[2] + double(myHSize[2]);
       if (aDist[0] * aDist[0] + aDist[1] * aDist[1] + aDist[2] * aDist[2] > theRadius * theRadius)
+      {
         aResult = false;
+      }
     }
   }
   return aResult;
@@ -632,8 +648,9 @@ bool Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox, const gp_Trsf& theT
                   * (aMatAbs[6] * theBox.myHSize[0] + aMatAbs[7] * theBox.myHSize[1]
                      + aMatAbs[8] * theBox.myHSize[2])
                 + (double)myHSize[2]))
+    {
       aResult = true;
-
+    }
     else
     {
       // theBox is rotated, scaled and translated. We apply the reverse
@@ -647,7 +664,9 @@ bool Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox, const gp_Trsf& theT
           || (std::abs(aMat[2] * aDist[0] + aMat[5] * aDist[1] + aMat[8] * aDist[2])
               > theBox.myHSize[2] * aScaleAbs
                   + (aMatAbs[2] * myHSize[0] + aMatAbs[5] * myHSize[1] + aMatAbs[8] * myHSize[2])))
+      {
         aResult = true;
+      }
     }
   }
   return aResult;
@@ -659,7 +678,9 @@ template <typename RealType>
 bool Bnd_B3<RealType>::IsOut(const gp_Ax3& thePlane) const
 {
   if (IsVoid())
+  {
     return true;
+  }
   const gp_XYZ& anOrigin = thePlane.Location().XYZ();
   const gp_XYZ& aDir     = thePlane.Direction().XYZ();
   const gp_XYZ  aBoxCenter((double)myCenter[0], (double)myCenter[1], (double)myCenter[2]);
@@ -681,7 +702,9 @@ bool Bnd_B3<RealType>::IsOut(const gp_Ax1& theLine,
 {
   const double aRes = gp::Resolution() * 100.;
   if (IsVoid())
+  {
     return true;
+  }
   double        anInter0[2] = {-RealLast(), RealLast()}, anInter1[2] = {-RealLast(), RealLast()};
   const gp_XYZ& aDir = theLine.Direction().XYZ();
   const gp_XYZ  aDiff((double)myCenter[0] - theLine.Location().X(),
@@ -703,7 +726,9 @@ bool Bnd_B3<RealType>::IsOut(const gp_Ax1& theLine,
   else
     // the line is orthogonal to OX axis. Test for inclusion in box limits
     if (std::abs(aDiff.X()) > aHSize)
+    {
       return true;
+    }
 
   // Find the parameter interval in Y dimension
   aHSize = (double)myHSize[1] + theOverthickness;
@@ -720,17 +745,27 @@ bool Bnd_B3<RealType>::IsOut(const gp_Ax1& theLine,
   else
     // the line is orthogonal to OY axis. Test for inclusion in box limits
     if (std::abs(aDiff.Y()) > aHSize)
+    {
       return true;
+    }
 
   // Intersect Y-interval with X-interval
   if (anInter0[0] > (anInter1[1] + aRes) || anInter0[1] < (anInter1[0] - aRes))
+  {
     return true;
+  }
   if (anInter1[0] > anInter0[0])
+  {
     anInter0[0] = anInter1[0];
+  }
   if (anInter1[1] < anInter0[1])
+  {
     anInter0[1] = anInter1[1];
+  }
   if (isRay && anInter0[1] < -aRes)
+  {
     return true;
+  }
 
   // Find the parameter interval in Z dimension
   aHSize = (double)myHSize[2] + theOverthickness;
@@ -745,10 +780,14 @@ bool Bnd_B3<RealType>::IsOut(const gp_Ax1& theLine,
     anInter1[1] = (aDiff.Z() - aHSize) / aDir.Z();
   }
   else
+  {
     // the line is orthogonal to OZ axis. Test for inclusion in box limits
     return (std::abs(aDiff.Z()) > aHSize);
+  }
   if (isRay && anInter1[1] < -aRes)
+  {
     return true;
+  }
 
   return (anInter0[0] > (anInter1[1] + aRes) || anInter0[1] < (anInter1[0] - aRes));
 }
@@ -798,7 +837,9 @@ bool Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox, const gp_Trsf& theTr
             < theBox.myHSize[2] * aScaleAbs
                 - (std::abs(aMat[2]) * myHSize[0] + std::abs(aMat[5]) * myHSize[1]
                    + std::abs(aMat[8]) * myHSize[2])))
+    {
       aResult = true;
+    }
   }
   return aResult;
 }

@@ -53,23 +53,35 @@ inline void OpenMin<gp_Dir, Bnd_Box>(const gp_Dir& theDir, Bnd_Box& theBox)
   if (theDir.IsParallel(gp::DX(), Precision::Angular()))
   {
     if (theDir.X() > 0.)
+    {
       theBox.OpenXmin();
+    }
     else
+    {
       theBox.OpenXmax();
+    }
   }
   else if (theDir.IsParallel(gp::DY(), Precision::Angular()))
   {
     if (theDir.Y() > 0.)
+    {
       theBox.OpenYmin();
+    }
     else
+    {
       theBox.OpenYmax();
+    }
   }
   else if (theDir.IsParallel(gp::DZ(), Precision::Angular()))
   {
     if (theDir.Z() > 0.)
+    {
       theBox.OpenZmin();
+    }
     else
+    {
       theBox.OpenZmax();
+    }
   }
   else
   {
@@ -85,23 +97,35 @@ inline void OpenMax<gp_Dir, Bnd_Box>(const gp_Dir& theDir, Bnd_Box& theBox)
   if (theDir.IsParallel(gp::DX(), Precision::Angular()))
   {
     if (theDir.X() > 0.)
+    {
       theBox.OpenXmax();
+    }
     else
+    {
       theBox.OpenXmin();
+    }
   }
   else if (theDir.IsParallel(gp::DY(), Precision::Angular()))
   {
     if (theDir.Y() > 0.)
+    {
       theBox.OpenYmax();
+    }
     else
+    {
       theBox.OpenYmin();
+    }
   }
   else if (theDir.IsParallel(gp::DZ(), Precision::Angular()))
   {
     if (theDir.Z() > 0.)
+    {
       theBox.OpenZmax();
+    }
     else
+    {
       theBox.OpenZmin();
+    }
   }
   else
   {
@@ -150,16 +174,24 @@ inline void OpenMin<gp_Dir2d, Bnd_Box2d>(const gp_Dir2d& theDir, Bnd_Box2d& theB
   if (theDir.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     if (theDir.X() > 0.)
+    {
       theBox.OpenXmin();
+    }
     else
+    {
       theBox.OpenXmax();
+    }
   }
   else if (theDir.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     if (theDir.Y() > 0.)
+    {
       theBox.OpenYmin();
+    }
     else
+    {
       theBox.OpenYmax();
+    }
   }
   else
   {
@@ -174,16 +206,24 @@ inline void OpenMax<gp_Dir2d, Bnd_Box2d>(const gp_Dir2d& theDir, Bnd_Box2d& theB
   if (theDir.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     if (theDir.X() > 0.)
+    {
       theBox.OpenXmax();
+    }
     else
+    {
       theBox.OpenXmin();
+    }
   }
   else if (theDir.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     if (theDir.Y() > 0.)
+    {
       theBox.OpenYmax();
+    }
     else
+    {
       theBox.OpenYmin();
+    }
   }
   else
   {

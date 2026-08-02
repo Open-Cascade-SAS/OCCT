@@ -147,7 +147,9 @@ struct hash<occ::handle<Font_SystemFont>>
   size_t operator()(const occ::handle<Font_SystemFont>& theLink) const noexcept
   {
     if (theLink.IsNull())
+    {
       return 0;
+    }
     return std::hash<TCollection_AsciiString>{}(theLink->FontKey());
   }
 };

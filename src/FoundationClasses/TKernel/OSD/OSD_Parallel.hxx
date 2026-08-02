@@ -319,7 +319,9 @@ public: //! @name public methods
     if (isForceSingleThreadExecution || theNbItems == 1)
     {
       for (InputIterator it(theBegin); it != theEnd; ++it)
+      {
         theFunctor(*it);
+      }
     }
     else
     {
@@ -358,7 +360,9 @@ public: //! @name public methods
     if (isForceSingleThreadExecution || aRange == 1)
     {
       for (int it(theBegin); it != theEnd; ++it)
+      {
         theFunctor(it);
+      }
     }
     else if (ToUseOcctThreads())
     {

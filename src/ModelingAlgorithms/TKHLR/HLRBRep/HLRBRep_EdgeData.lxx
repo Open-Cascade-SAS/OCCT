@@ -26,9 +26,13 @@ inline bool HLRBRep_EdgeData::Selected() const
 inline void HLRBRep_EdgeData::Selected(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskSelected;
+  }
   else
+  {
     myFlags &= ~EMaskSelected;
+  }
 }
 
 //=================================================================================================
@@ -43,9 +47,13 @@ inline bool HLRBRep_EdgeData::Rg1Line() const
 inline void HLRBRep_EdgeData::Rg1Line(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskRg1Line;
+  }
   else
+  {
     myFlags &= ~EMaskRg1Line;
+  }
 }
 
 //=================================================================================================
@@ -60,9 +68,13 @@ inline bool HLRBRep_EdgeData::RgNLine() const
 inline void HLRBRep_EdgeData::RgNLine(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskRgNLine;
+  }
   else
+  {
     myFlags &= ~EMaskRgNLine;
+  }
 }
 
 //=================================================================================================
@@ -77,9 +89,13 @@ inline bool HLRBRep_EdgeData::Vertical() const
 inline void HLRBRep_EdgeData::Vertical(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskVertical;
+  }
   else
+  {
     myFlags &= ~EMaskVertical;
+  }
 }
 
 //=================================================================================================
@@ -94,9 +110,13 @@ inline bool HLRBRep_EdgeData::Simple() const
 inline void HLRBRep_EdgeData::Simple(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskSimple;
+  }
   else
+  {
     myFlags &= ~EMaskSimple;
+  }
 }
 
 //=================================================================================================
@@ -111,9 +131,13 @@ inline bool HLRBRep_EdgeData::OutLVSta() const
 inline void HLRBRep_EdgeData::OutLVSta(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskOutLVSta;
+  }
   else
+  {
     myFlags &= ~EMaskOutLVSta;
+  }
 }
 
 //=================================================================================================
@@ -128,9 +152,13 @@ inline bool HLRBRep_EdgeData::OutLVEnd() const
 inline void HLRBRep_EdgeData::OutLVEnd(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskOutLVEnd;
+  }
   else
+  {
     myFlags &= ~EMaskOutLVEnd;
+  }
 }
 
 //=================================================================================================
@@ -145,9 +173,13 @@ inline bool HLRBRep_EdgeData::CutAtSta() const
 inline void HLRBRep_EdgeData::CutAtSta(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskCutAtSta;
+  }
   else
+  {
     myFlags &= ~EMaskCutAtSta;
+  }
 }
 
 //=================================================================================================
@@ -162,9 +194,13 @@ inline bool HLRBRep_EdgeData::CutAtEnd() const
 inline void HLRBRep_EdgeData::CutAtEnd(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskCutAtEnd;
+  }
   else
+  {
     myFlags &= ~EMaskCutAtEnd;
+  }
 }
 
 //=================================================================================================
@@ -179,9 +215,13 @@ inline bool HLRBRep_EdgeData::VerAtSta() const
 inline void HLRBRep_EdgeData::VerAtSta(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskVerAtSta;
+  }
   else
+  {
     myFlags &= ~EMaskVerAtSta;
+  }
 }
 
 //=================================================================================================
@@ -196,9 +236,13 @@ inline bool HLRBRep_EdgeData::VerAtEnd() const
 inline void HLRBRep_EdgeData::VerAtEnd(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskVerAtEnd;
+  }
   else
+  {
     myFlags &= ~EMaskVerAtEnd;
+  }
 }
 
 //=================================================================================================
@@ -213,9 +257,13 @@ inline bool HLRBRep_EdgeData::AutoIntersectionDone() const
 inline void HLRBRep_EdgeData::AutoIntersectionDone(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskIntDone;
+  }
   else
+  {
     myFlags &= ~EMaskIntDone;
+  }
 }
 
 //=================================================================================================
@@ -230,9 +278,13 @@ inline bool HLRBRep_EdgeData::Used() const
 inline void HLRBRep_EdgeData::Used(const bool B)
 {
   if (B)
+  {
     myFlags |= EMaskUsed;
+  }
   else
+  {
     myFlags &= ~EMaskUsed;
+  }
 }
 
 //=================================================================================================

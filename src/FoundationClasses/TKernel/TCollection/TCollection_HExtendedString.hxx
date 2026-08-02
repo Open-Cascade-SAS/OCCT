@@ -216,7 +216,9 @@ struct hash<occ::handle<TCollection_HExtendedString>>
   size_t operator()(const occ::handle<TCollection_HExtendedString>& theString) const
   {
     if (theString.IsNull())
+    {
       return 0;
+    }
     return std::hash<TCollection_ExtendedString>{}(theString->String());
   }
 };

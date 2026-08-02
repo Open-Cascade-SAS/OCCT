@@ -53,7 +53,9 @@ public:
     {
       const typename TheMap::key_type& n = theMILI.FindKey(i);
       if (!aMFence.Add(n))
+      {
         continue;
+      }
       //
       // Start the chain
       typename TheList::value_type& aChain =

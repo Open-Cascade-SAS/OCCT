@@ -34,7 +34,9 @@ inline bool TDF_DataSet::IsEmpty() const
 inline void TDF_DataSet::AddLabel(const TDF_Label& aLabel)
 {
   if (!aLabel.IsNull())
+  {
     myLabelMap.Add(aLabel);
+  }
 }
 
 inline bool TDF_DataSet::ContainsLabel(const TDF_Label& aLabel) const
@@ -53,7 +55,9 @@ inline NCollection_Map<TDF_Label>& TDF_DataSet::Labels()
 inline void TDF_DataSet::AddAttribute(const occ::handle<TDF_Attribute>& anAttribute)
 {
   if (!anAttribute.IsNull())
+  {
     myAttributeMap.Add(anAttribute);
+  }
 }
 
 inline bool TDF_DataSet::ContainsAttribute(const occ::handle<TDF_Attribute>& anAttribute) const
@@ -72,7 +76,9 @@ inline NCollection_Map<occ::handle<TDF_Attribute>>& TDF_DataSet::Attributes()
 inline void TDF_DataSet::AddRoot(const TDF_Label& aLabel)
 {
   if (ContainsLabel(aLabel))
+  {
     myRootLabels.Append(aLabel);
+  }
 }
 
 inline NCollection_List<TDF_Label>& TDF_DataSet::Roots()

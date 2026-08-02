@@ -260,7 +260,9 @@ public:
   [[nodiscard]] double SquareExtent() const noexcept
   {
     if (IsVoid())
+    {
       return 0.0;
+    }
     const double aDx = Xmax - Xmin + Gap + Gap;
     const double aDy = Ymax - Ymin + Gap + Gap;
     return aDx * aDx + aDy * aDy;

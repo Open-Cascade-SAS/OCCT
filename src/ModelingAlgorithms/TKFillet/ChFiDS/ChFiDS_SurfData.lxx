@@ -33,7 +33,9 @@ inline bool ChFiDS_SurfData::IsOnCurve1() const
 inline int ChFiDS_SurfData::IndexOfC1() const
 {
   if (!isoncurv1)
+  {
     throw Standard_Failure("Interference pas sur courbe");
+  }
   return indexOfC1;
 }
 
@@ -64,7 +66,9 @@ inline bool ChFiDS_SurfData::IsOnCurve2() const
 inline int ChFiDS_SurfData::IndexOfC2() const
 {
   if (!isoncurv2)
+  {
     throw Standard_Failure("Interference pas sur courbe");
+  }
   return indexOfC2;
 }
 
@@ -207,7 +211,9 @@ inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS2()
 inline bool ChFiDS_SurfData::IsOnCurve(const int OnS) const
 {
   if (OnS == 1)
+  {
     return isoncurv1;
+  }
   return isoncurv2;
 }
 
@@ -218,11 +224,15 @@ inline int ChFiDS_SurfData::IndexOfC(const int OnS) const
   if (OnS == 1)
   {
     if (!isoncurv1)
+    {
       throw Standard_Failure("Interference pas sur courbe");
+    }
     return indexOfC1;
   }
   if (!isoncurv2)
+  {
     throw Standard_Failure("Interference pas sur courbe");
+  }
   return indexOfC2;
 }
 

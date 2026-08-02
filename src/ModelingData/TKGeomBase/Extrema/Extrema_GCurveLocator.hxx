@@ -102,9 +102,13 @@ public:
     double aU12 = std::max(theUmin, theUsup);
 
     if (aU11 < aU1 - RealEpsilon())
+    {
       aU11 = aU1;
+    }
     if (aU12 > aU2 + RealEpsilon())
+    {
       aU12 = aU2;
+    }
 
     double   aU        = aU11;
     double   aPasU     = (aU12 - aU) / (theNbU - 1);

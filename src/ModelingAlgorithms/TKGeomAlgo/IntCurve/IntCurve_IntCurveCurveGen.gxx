@@ -31,7 +31,9 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C, const double TolConf,
   IntRes2d_Domain D1;
   double          TolDomain = Tol;
   if (Tol < TolConf)
+  {
     TolDomain = TolConf;
+  }
   GeomAbs_CurveType typ = TheCurveTool::GetType(C);
   switch (typ)
   {
@@ -831,7 +833,9 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
 {
 
   if (NumInterC2 > NbInterC2)
+  {
     return;
+  }
 
   IntRes2d_Domain DomainC1NumInter;
   IntRes2d_Domain DomainC2NumInter;
@@ -955,7 +959,9 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&        
   //  bool Arret=false;
 
   if (NumInterC2 > NbInterC2)
+  {
     return;
+  }
 
   if (!RecursOnC2)
   {

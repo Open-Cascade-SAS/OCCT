@@ -158,14 +158,18 @@ public:
     const int anIdx = (std::min)(theIndex, line->NbPoints());
 
     if (anIdx < 1)
+    {
       return;
+    }
 
     if (anIdx <= myTangentIdx)
     {
       myTangentIdx--;
 
       if (myTangentIdx < 1)
+      {
         myTangentIdx = 1;
+      }
     }
 
     line->RemovePoint(anIdx);

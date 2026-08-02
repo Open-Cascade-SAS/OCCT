@@ -409,7 +409,9 @@ public: //! @name Starting the repetitions over
     {
       myHistory->Clear();
       if (!mySplitHistory.IsNull())
+      {
         myHistory->Merge(mySplitHistory);
+      }
     }
   }
 
@@ -443,9 +445,13 @@ public: //! @name Clearing the algorithm from previous runs
     myPeriodicityParams.Clear();
     myShape.Nullify();
     if (!mySplitHistory.IsNull())
+    {
       mySplitHistory->Clear();
+    }
     if (!myHistory.IsNull())
+    {
       myHistory->Clear();
+    }
 
     ClearRepetitions();
   }

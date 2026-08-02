@@ -43,16 +43,22 @@ bool Interface_Recognizer::Evaluate(const TheKey& akey, occ::handle<TheResul>& r
     return true;
   }
   else if (hasnext)
+  {
     return thenext->Evaluate(akey, res);
+  }
   return false;
 }
 
 occ::handle<TheResul> Interface_Recognizer::Result() const
 {
   if (!theres.IsNull())
+  {
     return theres;
+  }
   if (hasnext)
+  {
     return thenext->Result();
+  }
   throw Standard_NoSuchObject("Recognizer evaluation has failed");
 }
 

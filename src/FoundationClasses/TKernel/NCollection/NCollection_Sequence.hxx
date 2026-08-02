@@ -205,7 +205,9 @@ public:
   {
     ClearSeq(delNode);
     if (!theAllocator.IsNull())
+    {
       this->myAllocator = theAllocator;
+    }
   }
 
   //! Replace this sequence by the items of theOther.
@@ -283,7 +285,9 @@ public:
   void Append(NCollection_Sequence& theSeq)
   {
     if (this == &theSeq || theSeq.IsEmpty())
+    {
       return;
+    }
     if (this->myAllocator == theSeq.myAllocator)
     {
       // Then we take the sequence and glue it to our end -
@@ -311,7 +315,9 @@ public:
   void Prepend(NCollection_Sequence& theSeq)
   {
     if (this == &theSeq || theSeq.IsEmpty())
+    {
       return;
+    }
     if (this->myAllocator == theSeq.myAllocator)
     {
       // Then we take the sequence and glue it to our head -
@@ -384,7 +390,9 @@ public:
   void InsertAfter(const size_t theIndex, NCollection_Sequence& theSeq)
   {
     if (this == &theSeq || theSeq.IsEmpty())
+    {
       return;
+    }
     if (this->myAllocator == theSeq.myAllocator)
     {
       // Then we take the list and glue it to our head -
@@ -642,7 +650,9 @@ private:
   void prependSeq(const Node* pCur, size_t ind)
   {
     if (ind > 0)
+    {
       --ind;
+    }
     while (pCur)
     {
       Node* pNew = new (this->myAllocator) Node(pCur->Value());

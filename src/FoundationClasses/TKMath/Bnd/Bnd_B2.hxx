@@ -434,7 +434,9 @@ Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
   const double      aScale    = theTrsf.ScaleFactor();
   const double      aScaleAbs = std::abs(aScale);
   if (aForm == gp_Identity)
+  {
     aResult = *this;
+  }
   else if (aForm == gp_Translation || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult.myCenter[0] = (RealType)(myCenter[0] * aScale + theTrsf.TranslationPart().X());
@@ -473,9 +475,13 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
                              std::abs(theCenter.Y() - double(myCenter[1])) - double(myHSize[1])};
     double       aD(0.);
     if (aDist[0] > 0.)
+    {
       aD = aDist[0] * aDist[0];
+    }
     if (aDist[1] > 0.)
+    {
       aD += aDist[1] * aDist[1];
+    }
     aResult = (aD > theRadius * theRadius);
   }
   else
@@ -486,9 +492,13 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
     double aDist[2] = {aDistC[0] - double(myHSize[0]), aDistC[1] - double(myHSize[1])};
     double aD(0.);
     if (aDist[0] > 0.)
+    {
       aD = aDist[0] * aDist[0];
+    }
     if (aDist[1] > 0.)
+    {
       aD += aDist[1] * aDist[1];
+    }
     if (aD < theRadius * theRadius)
     {
       // the box intersects the solid circle; check if it is completely
@@ -496,7 +506,9 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
       aDist[0] = aDistC[0] + double(myHSize[0]);
       aDist[1] = aDistC[1] + double(myHSize[1]);
       if (aDist[0] * aDist[0] + aDist[1] * aDist[1] > theRadius * theRadius)
+      {
         aResult = false;
+      }
     }
   }
   return aResult;
@@ -539,8 +551,9 @@ bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& th
         || std::abs(aDist[1])
              > (aScaleAbs * (aMatAbs[2] * theBox.myHSize[0] + aMatAbs[3] * theBox.myHSize[1])
                 + (double)myHSize[1]))
+    {
       aResult = true;
-
+    }
     else
     {
       // theBox is rotated, scaled and translated. We apply the reverse
@@ -550,7 +563,9 @@ bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& th
           || (std::abs(aMat[1] * aDist[0] + aMat[3] * aDist[1])
               > theBox.myHSize[1] * aScaleAbs
                   + (aMatAbs[1] * myHSize[0] + aMatAbs[3] * myHSize[1])))
+      {
         aResult = true;
+      }
     }
   }
   return aResult;
@@ -562,7 +577,9 @@ template <typename RealType>
 bool Bnd_B2<RealType>::IsOut(const gp_Ax2d& theLine) const
 {
   if (IsVoid())
+  {
     return true;
+  }
   // Intersect the line containing the segment.
   const double aProd[3] = {
     theLine.Direction().XY()
@@ -629,7 +646,9 @@ bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& the
         && (std::abs(aMat[1] * aDist[0] + aMat[3] * aDist[1])
             < theBox.myHSize[1] * aScaleAbs
                 - (std::abs(aMat[1]) * myHSize[0] + std::abs(aMat[3]) * myHSize[1])))
+    {
       aResult = true;
+    }
   }
   return aResult;
 }

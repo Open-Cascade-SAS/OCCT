@@ -265,7 +265,9 @@ bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double     u1,
   double   tv1 = v1;
   double   tv2 = v2;
   if (!Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2))
+  {
     return false;
+  }
 
   Point.SetValue(aP, tu1, tv1, tu2, tv2);
   return true;

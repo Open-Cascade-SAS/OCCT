@@ -90,9 +90,13 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
     myindex  = mycouple.Index();
     Cons     = mycouple.Constraint();
     if (myindex == FirstPoint)
+    {
       FC = Cons;
+    }
     if (myindex == LastPoint)
+    {
       LC = Cons;
+    }
     if (Cons >= 1)
     {
       IncPass++; // IncPass = nbre de points de passage.
@@ -120,9 +124,13 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
   nb2d       = ToolLine::NbP2d(SSP);
   int mynb3d = nb3d, mynb2d = nb2d;
   if (nb3d == 0)
+  {
     mynb3d = 1;
+  }
   if (nb2d == 0)
+  {
     mynb2d = 1;
+  }
   CCol = nb3d * 3 + nb2d * 2;
 
   // Declaration et initialisation des matrices et vecteurs de contraintes:
@@ -473,9 +481,13 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
 
   int polinit = 1, polfin = Npol;
   if (FC >= 1)
+  {
     polinit = 2;
+  }
   if (LC >= 1)
+  {
     polfin = Npol - 1;
+  }
 
   for (i = polinit; i <= polfin; i++)
   {
@@ -592,9 +604,13 @@ const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const Mult
   nb2d       = ToolLine::NbP2d(SSP);
   int mynb3d = nb3d, mynb2d = nb2d;
   if (nb3d == 0)
+  {
     mynb3d = 1;
+  }
   if (nb2d == 0)
+  {
     mynb2d = 1;
+  }
   CCol = nb3d * 3 + nb2d * 2;
 
   NCollection_Array1<gp_Vec>   tabV(1, mynb3d);
@@ -603,8 +619,12 @@ const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const Mult
   NCollection_Array1<gp_Pnt2d> tabP2d(1, mynb2d);
 
   for (i = 1; i <= DeCont.RowNumber(); i++)
+  {
     for (j = 1; j <= DeCont.ColNumber(); j++)
+    {
       DeCont(i, j) = 0.0;
+    }
+  }
 
   //  Remplissage de DK pour les points de passages:
 
@@ -612,7 +632,9 @@ const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const Mult
   {
     Npt = IPas(i);
     for (j = 1; j <= Npol; j++)
+    {
       DeCInit(i, j) = DA(Npt, j);
+    }
   }
   for (i = 1; i <= CCol; i++)
   {

@@ -301,10 +301,14 @@ public:
   {
     const int anExt = theOther.Extent();
     if (anExt <= 0)
+    {
       return;
+    }
     ReSize(anExt - 1);
     for (Iterator anIter(theOther); anIter.More(); anIter.Next())
+    {
       Bind(anIter.Key(), anIter.Value());
+    }
   }
 
   //! Move constructor
@@ -330,7 +334,9 @@ public:
   NCollection_DataMap& Assign(const NCollection_DataMap& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     Clear();
     int anExt = theOther.Extent();
@@ -339,7 +345,9 @@ public:
       ReSize(anExt - 1);
       Iterator anIter(theOther);
       for (; anIter.More(); anIter.Next())
+      {
         Bind(anIter.Key(), anIter.Value());
+      }
     }
     return *this;
   }
@@ -351,7 +359,9 @@ public:
   NCollection_DataMap& operator=(NCollection_DataMap&& theOther) noexcept
   {
     if (this == &theOther)
+    {
       return *this;
+    }
     exchangeMapsData(theOther);
     return *this;
   }
@@ -614,7 +624,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(p->Key()), std::cref(p->Value()));
   }
 
@@ -626,7 +638,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       return std::nullopt;
+    }
     return std::make_pair(std::cref(p->Key()), std::ref(p->ChangeValue()));
   }
 
@@ -634,7 +648,9 @@ public:
   bool UnBind(const TheKeyType& theKey)
   {
     if (IsEmpty())
+    {
       return false;
+    }
     DataMapNode** data = (DataMapNode**)myData1;
     const size_t  k    = HashCode(theKey, NbBuckets());
     DataMapNode*  p    = data[k];
@@ -645,9 +661,13 @@ public:
       {
         Decrement();
         if (q)
+        {
           q->Next() = p->Next();
+        }
         else
+        {
           data[k] = (DataMapNode*)p->Next();
+        }
         p->~DataMapNode();
         this->myAllocator->Free(p);
         return true;
@@ -664,7 +684,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       return nullptr;
+    }
     return &p->Value();
   }
 
@@ -673,7 +695,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       throw Standard_NoSuchObject("NCollection_DataMap::Find");
+    }
     return p->Value();
   }
 
@@ -683,7 +707,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       return false;
+    }
 
     theValue = p->Value();
     return true;
@@ -698,7 +724,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       return nullptr;
+    }
     return &p->ChangeValue();
   }
 
@@ -707,7 +735,9 @@ public:
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
+    {
       throw Standard_NoSuchObject("NCollection_DataMap::Find");
+    }
     return p->ChangeValue();
   }
 
@@ -737,12 +767,16 @@ protected:
   bool lookup(const TheKeyType& theKey, DataMapNode*& theNode) const
   {
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (DataMapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
          theNode = (DataMapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key(), theKey))
+      {
         return true;
+      }
     }
     return false; // Not found
   }
@@ -756,7 +790,9 @@ protected:
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (DataMapNode*)myData1[theHash]; theNode; theNode = (DataMapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key(), theKey))
@@ -792,7 +828,9 @@ protected:
                    Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, bool>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     size_t       aHash;
     DataMapNode* aNode;
     if (lookup(theKey, aNode, aHash))
@@ -802,9 +840,13 @@ protected:
         aNode->ChangeValue() = TheItemType(std::forward<Args>(theArgs)...);
       }
       if constexpr (ReturnRef)
+      {
         return aNode->ChangeValue();
+      }
       else
+      {
         return false;
+      }
     }
     DataMapNode** data = (DataMapNode**)myData1;
     data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<K>(theKey),
@@ -813,9 +855,13 @@ protected:
                                                       std::forward<Args>(theArgs)...);
     Increment();
     if constexpr (ReturnRef)
+    {
       return data[aHash]->ChangeValue();
+    }
     else
+    {
       return true;
+    }
   }
 
 private:

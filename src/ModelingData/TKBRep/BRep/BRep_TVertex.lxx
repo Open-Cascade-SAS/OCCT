@@ -33,7 +33,9 @@ inline void BRep_TVertex::Tolerance(const double T)
 inline void BRep_TVertex::UpdateTolerance(const double T)
 {
   if (T > myTolerance)
+  {
     myTolerance = T;
+  }
 }
 
 //=================================================================================================

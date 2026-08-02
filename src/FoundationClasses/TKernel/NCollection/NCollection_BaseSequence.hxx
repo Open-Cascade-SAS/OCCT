@@ -90,7 +90,9 @@ public:
     {
       myCurrent = myPrevious;
       if (myCurrent)
+      {
         myPrevious = myCurrent->Previous();
+      }
     }
 
   protected:

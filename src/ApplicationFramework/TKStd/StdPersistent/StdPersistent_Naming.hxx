@@ -46,9 +46,13 @@ public:
     inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
     {
       if (!myOldShapes.IsNull())
+      {
         theChildren.Append(myOldShapes);
+      }
       if (!myNewShapes.IsNull())
+      {
         theChildren.Append(myNewShapes);
+      }
     }
 
     //! Returns persistent type name
@@ -76,9 +80,13 @@ public:
     inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override
     {
       if (!myArgs.IsNull())
+      {
         theChildren.Append(myArgs);
+      }
       if (!myStop.IsNull())
+      {
         theChildren.Append(myStop);
+      }
     }
 
     //! Returns persistent type name
@@ -109,7 +117,9 @@ public:
     {
       Name::PChildren(theChildren);
       if (!myContextLabel.IsNull())
+      {
         theChildren.Append(myContextLabel);
+      }
     }
 
     //! Returns persistent type name

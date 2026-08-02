@@ -164,7 +164,9 @@ public:
   bool SetMapWriter(const occ::handle<Transfer_FinderProcess>& theFP)
   {
     if (theFP.IsNull())
+    {
       return false;
+    }
     myTransferWriter->SetFinderProcess(theFP);
     return true;
   }

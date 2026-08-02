@@ -40,7 +40,9 @@ inline void MoniTool_Timer::Start()
 {
   //  AmendStart();
   if (!myNesting)
+  {
     myTimer.Start();
+  }
   myCount++;
   myNesting++;
 }
@@ -51,7 +53,9 @@ inline void MoniTool_Timer::Stop()
 {
   myNesting--;
   if (!myNesting)
+  {
     myTimer.Stop();
+  }
   //  AmendStop();
 }
 

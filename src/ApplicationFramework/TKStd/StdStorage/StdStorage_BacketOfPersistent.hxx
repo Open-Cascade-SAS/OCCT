@@ -104,7 +104,9 @@ public:
       return myCurrentBucket->mySpace[myCurrentIndex];
     }
     else
+    {
       return nullptr;
+    }
   }
 
   bool More() const { return myMoreObject; }

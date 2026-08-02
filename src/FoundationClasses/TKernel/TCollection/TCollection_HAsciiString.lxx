@@ -54,7 +54,9 @@ struct hash<occ::handle<TCollection_HAsciiString>>
   size_t operator()(const occ::handle<TCollection_HAsciiString>& theString) const
   {
     if (theString.IsNull())
+    {
       return 0;
+    }
     return std::hash<TCollection_AsciiString>{}(theString->String());
   }
 };

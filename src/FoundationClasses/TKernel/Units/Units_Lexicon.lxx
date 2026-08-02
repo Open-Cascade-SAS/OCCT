@@ -30,7 +30,9 @@ inline occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Units_Lexico
 inline void Units_Lexicon::Dump() const
 {
   int index;
-  std::cout << " LEXICON : " << std::endl;
+  std::cout << " LEXICON : " << '\n';
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
+  {
     thesequenceoftokens->Value(index)->Dump(1, 0);
+  }
 }

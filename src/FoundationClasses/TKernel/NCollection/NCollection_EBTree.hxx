@@ -89,7 +89,9 @@ public:
         {
           TreeNode** aNeiPtr = myObjNodeMap.ChangeSeek(aNeiNode.Object());
           if (aNeiPtr)
+          {
             *aNeiPtr = &aNeiNode;
+          }
         }
       }
       result = true;
@@ -147,7 +149,9 @@ bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj
   // Single lookup using ChangeSeek instead of Contains() + operator()()
   TreeNode** pNodePtr = myObjNodeMap.ChangeSeek(theObj);
   if (!pNodePtr)
+  {
     return false;
+  }
 
   TreeNode* pNode = *pNodePtr;
   if (pNode->IsRoot())
@@ -169,7 +173,9 @@ bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj
       // so update the map entry to point to the new address.
       TreeNode** aParentPtr = myObjNodeMap.ChangeSeek(pParent->Object());
       if (aParentPtr)
+      {
         *aParentPtr = pParent;
+      }
     }
     while (!pParent->IsRoot())
     {

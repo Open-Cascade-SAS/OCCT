@@ -216,7 +216,9 @@ public:
   NCollection_DoubleMap& Assign(const NCollection_DoubleMap& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     Clear();
     int anExt = theOther.Extent();
@@ -364,7 +366,9 @@ public:
   bool AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
+    {
       return false;
+    }
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode *pNode1, *pNode2;
@@ -372,20 +376,28 @@ public:
     while (pNode1)
     {
       if (IsEqual1(pNode1->Key1(), theKey1))
+      {
         break;
+      }
       pNode1 = (DoubleMapNode*)pNode1->Next();
     }
     if (pNode1 == NULL)
+    {
       return false;
+    }
     pNode2 = (DoubleMapNode*)myData2[iK2];
     while (pNode2)
     {
       if (IsEqual2(pNode2->Key2(), theKey2))
+      {
         break;
+      }
       pNode2 = (DoubleMapNode*)pNode2->Next();
     }
     if (pNode2 == NULL)
+    {
       return false;
+    }
 
     return (pNode1 == pNode2);
   }
@@ -394,14 +406,18 @@ public:
   bool IsBound1(const TheKey1Type& theKey1) const
   {
     if (IsEmpty())
+    {
       return false;
+    }
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     DoubleMapNode* pNode1;
     pNode1 = (DoubleMapNode*)myData1[iK1];
     while (pNode1)
     {
       if (IsEqual1(pNode1->Key1(), theKey1))
+      {
         return true;
+      }
       pNode1 = (DoubleMapNode*)pNode1->Next();
     }
     return false;
@@ -411,14 +427,18 @@ public:
   bool IsBound2(const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
+    {
       return false;
+    }
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode* pNode2;
     pNode2 = (DoubleMapNode*)myData2[iK2];
     while (pNode2)
     {
       if (IsEqual2(pNode2->Key2(), theKey2))
+      {
         return true;
+      }
       pNode2 = (DoubleMapNode*)pNode2->Next2();
     }
     return false;
@@ -428,7 +448,9 @@ public:
   bool UnBind1(const TheKey1Type& theKey1)
   {
     if (IsEmpty())
+    {
       return false;
+    }
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
     q1 = q2 = nullptr;
@@ -439,9 +461,13 @@ public:
       {
         // remove from the data1
         if (q1)
+        {
           q1->Next() = p1->Next();
+        }
         else
+        {
           myData1[iK1] = (DoubleMapNode*)p1->Next();
+        }
         const size_t iK2 = HashCode2(p1->Key2(), NbBuckets());
         p2               = (DoubleMapNode*)myData2[iK2];
         while (p2)
@@ -450,9 +476,13 @@ public:
           {
             // remove from the data2
             if (q2)
+            {
               q2->Next2() = p2->Next2();
+            }
             else
+            {
               myData2[iK2] = (DoubleMapNode*)p2->Next2();
+            }
             break;
           }
           q2 = p2;
@@ -473,7 +503,9 @@ public:
   bool UnBind2(const TheKey2Type& theKey2)
   {
     if (IsEmpty())
+    {
       return false;
+    }
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
     q1 = q2 = nullptr;
@@ -488,7 +520,9 @@ public:
           q2->Next2() = p2->Next2();
         }
         else
+        {
           myData2[iK2] = (DoubleMapNode*)p2->Next2();
+        }
         const size_t iK1 = HashCode1(p2->Key1(), NbBuckets());
         p1               = (DoubleMapNode*)myData1[iK1];
         while (p1)
@@ -497,9 +531,13 @@ public:
           {
             // remove from the data1
             if (q1)
+            {
               q1->Next() = p1->Next();
+            }
             else
+            {
               myData1[iK1] = (DoubleMapNode*)p1->Next();
+            }
             break;
           }
           q1 = p1;
@@ -650,12 +688,16 @@ protected:
   {
     theHash = HashCode1(theKey1, NbBuckets());
     if (IsEmpty())
+    {
       return false;
+    }
     for (theNode = (DoubleMapNode*)myData1[theHash]; theNode;
          theNode = (DoubleMapNode*)theNode->Next())
     {
       if (IsEqual1(theNode->Key1(), theKey1))
+      {
         return true;
+      }
     }
     return false;
   }
@@ -669,12 +711,16 @@ protected:
   {
     theHash = HashCode2(theKey2, NbBuckets());
     if (IsEmpty())
+    {
       return false;
+    }
     for (theNode = (DoubleMapNode*)myData2[theHash]; theNode;
          theNode = (DoubleMapNode*)theNode->Next2())
     {
       if (IsEqual2(theNode->Key2(), theKey2))
+      {
         return true;
+      }
     }
     return false;
   }
@@ -691,22 +737,32 @@ protected:
   bool bindImpl(K1&& theKey1, K2&& theKey2, std::bool_constant<IsTry>)
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     DoubleMapNode* aNode;
     size_t         iK1, iK2;
     if (lookup1(theKey1, aNode, iK1))
     {
       if constexpr (IsTry)
+      {
         return false;
+      }
       else
+      {
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
+      }
     }
     if (lookup2(theKey2, aNode, iK2))
     {
       if constexpr (IsTry)
+      {
         return false;
+      }
       else
+      {
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
+      }
     }
     DoubleMapNode* pNode = new (this->myAllocator) DoubleMapNode(std::forward<K1>(theKey1),
                                                                  std::forward<K2>(theKey2),

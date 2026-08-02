@@ -294,7 +294,9 @@ public:
   constexpr bool IsOut(const BVH_Box<T, N>& theOther) const
   {
     if (!theOther.IsValid())
+    {
       return true;
+    }
 
     return IsOut(theOther.myMinPoint, theOther.myMaxPoint);
   }
@@ -303,12 +305,16 @@ public:
   constexpr bool IsOut(const BVH_VecNt& theMinPoint, const BVH_VecNt& theMaxPoint) const
   {
     if (!IsValid())
+    {
       return true;
+    }
 
     for (int i = 0; i < N; ++i)
     {
       if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
+      {
         return true;
+      }
     }
     return false;
   }
@@ -318,7 +324,9 @@ public:
   {
     hasOverlap = false;
     if (!theOther.IsValid())
+    {
       return false;
+    }
 
     return Contains(theOther.myMinPoint, theOther.myMaxPoint, hasOverlap);
   }
@@ -330,14 +338,18 @@ public:
   {
     hasOverlap = false;
     if (!IsValid())
+    {
       return false;
+    }
 
     bool isInside = true;
     for (int i = 0; i < N; ++i)
     {
       hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
       if (!hasOverlap)
+      {
         return false;
+      }
       isInside = isInside && (myMinPoint[i] <= theMinPoint[i] && myMaxPoint[i] >= theMaxPoint[i]);
     }
     return isInside;
@@ -347,12 +359,16 @@ public:
   constexpr bool IsOut(const BVH_VecNt& thePoint) const
   {
     if (!IsValid())
+    {
       return true;
+    }
 
     for (int i = 0; i < N; ++i)
     {
       if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
+      {
         return true;
+      }
     }
     return false;
   }

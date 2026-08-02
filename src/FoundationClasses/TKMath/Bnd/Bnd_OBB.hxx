@@ -231,7 +231,9 @@ public:
   bool GetVertex(gp_Pnt theP[8]) const
   {
     if (IsVoid())
+    {
       return false;
+    }
 
     theP[0].SetXYZ(myCenter - myHDims[0] * myAxes[0] - myHDims[1] * myAxes[1]
                    - myHDims[2] * myAxes[2]);

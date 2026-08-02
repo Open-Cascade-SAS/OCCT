@@ -37,7 +37,9 @@ static void LibCtl_AddProtocolImpl(occ::handle<LibCtl_Node>&              theTar
 {
   occ::handle<TheProtocol> aProtocol = occ::down_cast<TheProtocol>(theProtocol);
   if (aProtocol.IsNull())
+  {
     return;
+  }
 
   for (occ::handle<LibCtl_GlobalNode> aCurrent = THE_GLOBAL; !aCurrent.IsNull();)
   {
@@ -45,7 +47,9 @@ static void LibCtl_AddProtocolImpl(occ::handle<LibCtl_Node>&              theTar
     if (!aNodeProto.IsNull() && aNodeProto->DynamicType() == aProtocol->DynamicType())
     {
       if (theTargetList.IsNull())
+      {
         theTargetList = new LibCtl_Node;
+      }
       theTargetList->AddNode(aCurrent);
       break;
     }
@@ -68,7 +72,9 @@ void LibCtl_Library::SetGlobal(const occ::handle<TheModule>&   theModule,
 {
   std::lock_guard<std::mutex> aLock(LibCtl_TheWriterLock());
   if (THE_GLOBAL.IsNull())
+  {
     THE_GLOBAL = new LibCtl_GlobalNode;
+  }
   THE_GLOBAL->Add(theModule, theProtocol);
 }
 
@@ -76,7 +82,9 @@ void LibCtl_Library::SetGlobal(const occ::handle<TheModule>&   theModule,
 LibCtl_Library::LibCtl_Library(const occ::handle<TheProtocol>& theProtocol)
 {
   if (theProtocol.IsNull())
+  {
     return; // NO protocol = EMPTY Lib
+  }
 
   LibCtl_AddProtocolImpl(thelist, theProtocol);
 }
@@ -102,7 +110,9 @@ void LibCtl_Library::SetComplete()
   {
     const occ::handle<TheProtocol>& aNodeProto = aCurrent->Protocol();
     if (!aNodeProto.IsNull())
+    {
       thelist->AddNode(aCurrent);
+    }
     aCurrent = aCurrent->Next();
   }
 }
@@ -117,7 +127,9 @@ bool LibCtl_Library::Select(const TheObject&        theObj,
   theModule.Nullify();
   theCN = 0; // Response "not found"
   if (thelist.IsNull())
+  {
     return false;
+  }
   occ::handle<LibCtl_Node> aCurrent = thelist;
   for (aCurrent = thelist; !aCurrent.IsNull();)
   { // aCurrent->Next : plus loin
@@ -149,19 +161,25 @@ bool LibCtl_Library::More() const
 void LibCtl_Library::Next()
 {
   if (!thecurr.IsNull())
+  {
     thecurr = thecurr->Next();
+  }
 }
 
 const occ::handle<TheModule>& LibCtl_Library::Module() const
 {
   if (thecurr.IsNull())
+  {
     throw Standard_NoSuchObject("Library from LibCtl");
+  }
   return thecurr->Module();
 }
 
 const occ::handle<TheProtocol>& LibCtl_Library::Protocol() const
 {
   if (thecurr.IsNull())
+  {
     throw Standard_NoSuchObject("Library from LibCtl");
+  }
   return thecurr->Protocol();
 }

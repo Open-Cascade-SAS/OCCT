@@ -242,14 +242,18 @@ inline bool Contap_TheIWLineOfTheIWalking::HasFirstPoint() const
 inline int Contap_TheIWLineOfTheIWalking::FirstPointIndex() const
 {
   if (!hasFirst)
+  {
     throw Standard_DomainError();
+  }
   return firstIndex;
 }
 
 inline const IntSurf_PathPoint& Contap_TheIWLineOfTheIWalking::FirstPoint() const
 {
   if (!hasFirst)
+  {
     throw Standard_DomainError();
+  }
   return theFirstPoint;
 }
 
@@ -261,14 +265,18 @@ inline bool Contap_TheIWLineOfTheIWalking::HasLastPoint() const
 inline const IntSurf_PathPoint& Contap_TheIWLineOfTheIWalking::LastPoint() const
 {
   if (!hasLast)
+  {
     throw Standard_DomainError();
+  }
   return theLastPoint;
 }
 
 inline int Contap_TheIWLineOfTheIWalking::LastPointIndex() const
 {
   if (!hasLast)
+  {
     throw Standard_DomainError();
+  }
   return lastIndex;
 }
 

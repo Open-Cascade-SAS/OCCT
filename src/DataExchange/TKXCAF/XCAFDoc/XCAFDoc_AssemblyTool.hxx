@@ -48,7 +48,9 @@ public:
     for (; theIterator.More(); theIterator.Next())
     {
       if (!theFunc(theIterator.Current()))
+      {
         break;
+      }
     }
   }
 
@@ -85,7 +87,9 @@ public:
       if (theFilter(theGraph, aN))
       {
         if (!theFunc(theGraph, aN))
+        {
           break;
+        }
       }
     }
   }

@@ -118,10 +118,14 @@ public:
       if (myF.Value(uu, ff))
       {
         if (std::abs(ff) >= 1.e-07)
+        {
           myDone = false;
+        }
       }
       else
+      {
         myDone = false;
+      }
     }
   }
 

@@ -39,19 +39,25 @@ static bool IsSingular(const gp_Vec& theDU,
   const double aSqMagnDU = aDU.SquareMagnitude(), aSqMagnDV = aDV.SquareMagnitude();
 
   if (aSqMagnDU < theSqLinTol)
+  {
     return true;
+  }
 
   aDU.Divide(sqrt(aSqMagnDU));
 
   if (aSqMagnDV < theSqLinTol)
+  {
     return true;
+  }
 
   aDV.Divide(sqrt(aSqMagnDV));
 
   // Here aDU and aDV vectors have magnitude 1.0.
 
   if (aDU.Crossed(aDV).SquareMagnitude() < theAngTol * theAngTol)
+  {
     return true;
+  }
 
   return false;
 }
@@ -554,7 +560,9 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
     Rsnld.Perform(MyZerImpFunc, X, BornInf, BornSup);
     aRsnldIsDone = Rsnld.IsDone();
     if (aRsnldIsDone)
+    {
       Rsnld.Root(X);
+    }
   }
   if (aRsnldIsDone || !GetUseSolver())
   {
@@ -578,9 +586,13 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
         if (aQSurf.TypeQuadric() != GeomAbs_Plane)
         {
           while (u1 - tu1 > M_PI)
+          {
             u1 -= M_PI + M_PI;
+          }
           while (tu1 - u1 > M_PI)
+          {
             u1 += M_PI + M_PI;
+          }
         }
 
         MyParOnS1.SetCoord(tu1, tv1);
@@ -602,9 +614,13 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
         if (aQSurf.TypeQuadric() != GeomAbs_Plane)
         {
           while (u2 - tu2 > M_PI)
+          {
             u2 -= M_PI + M_PI;
+          }
           while (tu2 - u2 > M_PI)
+          {
             u2 += M_PI + M_PI;
+          }
         }
 
         MyParOnS1.SetCoord(tu1, tv1);
@@ -810,7 +826,9 @@ bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
                                    X,
                                    TranslationU,
                                    TranslationV))
+  {
     return false;
+  }
 
   double NewU1, NewV1, NewU2, NewV2;
 
@@ -835,7 +853,9 @@ bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
       {
         double sign = (NewU1 > u1) ? -1 : 1;
         while (std::abs(u1 - NewU1) > M_PI)
+        {
           NewU1 += sign * (M_PI + M_PI);
+        }
       }
     }
     else
@@ -849,12 +869,16 @@ bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
       {
         double sign = (NewU2 > u2) ? -1 : 1;
         while (std::abs(u2 - NewU2) > M_PI)
+        {
           NewU2 += sign * (M_PI + M_PI);
+        }
       }
     }
   }
   else
+  {
     return false;
+  }
 
   Point.SetValue(MyPnt, NewU1, NewV1, NewU2, NewV2);
   return true;
@@ -894,7 +918,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (u2 + TranslationU < binfu);
       }
       else
+      {
         return (false);
+      }
     }
     else if (u2 > bsupu + 0.0000000001)
     {
@@ -907,7 +933,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (u2 + TranslationU > bsupu);
       }
       else
+      {
         return (false);
+      }
     }
     if (v2 < binfv - 0.0000000001)
     {
@@ -920,7 +948,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (v2 + TranslationV < binfv);
       }
       else
+      {
         return (false);
+      }
     }
     else if (v2 > bsupv + 0.0000000001)
     {
@@ -933,7 +963,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (v2 + TranslationV > bsupv);
       }
       else
+      {
         return (false);
+      }
     }
     X(1) = u2 + TranslationU;
     X(2) = v2 + TranslationV;
@@ -951,7 +983,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (u1 + TranslationU < binfu);
       }
       else
+      {
         return (false);
+      }
     }
     else if (u1 > bsupu + 0.0000000001)
     {
@@ -964,7 +998,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (u1 + TranslationU > bsupu);
       }
       else
+      {
         return (false);
+      }
     }
     if (v1 < binfv - 0.0000000001)
     {
@@ -977,7 +1013,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (v1 + TranslationV < binfv);
       }
       else
+      {
         return (false);
+      }
     }
     else if (v1 > bsupv + 0.0000000001)
     {
@@ -990,7 +1028,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
         } while (v1 + TranslationV > bsupv);
       }
       else
+      {
         return (false);
+      }
     }
     X(1) = u1 + TranslationU;
     X(2) = v1 + TranslationV;
@@ -1007,13 +1047,21 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
     double dv = std::max(Precision::Confusion(),
                          ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
     if (X(1) - 0.0000000001 <= binfu)
+    {
       X(1) = X(1) + du;
+    }
     if (X(1) + 0.0000000001 >= bsupu)
+    {
       X(1) = X(1) - du;
+    }
     if (X(2) - 0.0000000001 <= binfv)
+    {
       X(2) = X(2) + dv;
+    }
     if (X(2) + 0.0000000001 >= bsupv)
+    {
       X(2) = X(2) - dv;
+    }
   }
 
   return true;

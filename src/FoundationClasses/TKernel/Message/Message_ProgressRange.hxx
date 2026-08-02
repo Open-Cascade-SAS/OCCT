@@ -127,7 +127,9 @@ inline bool Message_ProgressRange::UserBreak() const
 inline void Message_ProgressRange::Close()
 {
   if (!IsActive())
+  {
     return;
+  }
 
   myParentScope->myProgress->Increment(myDelta, *myParentScope);
   myParentScope = nullptr;

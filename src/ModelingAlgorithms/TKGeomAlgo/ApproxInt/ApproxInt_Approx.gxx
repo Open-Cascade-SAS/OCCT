@@ -66,9 +66,13 @@ static void ComputeTrsf2d(const occ::handle<TheWLine>& theline,
   void (IntSurf_PntOn2S::*pfunc)(double&, double&) const;
 
   if (onFirst)
+  {
     pfunc = &IntSurf_PntOn2S::ParametersOnS1;
+  }
   else
+  {
     pfunc = &IntSurf_PntOn2S::ParametersOnS2;
+  }
 
   for (int i = 1; i <= aNbPnts; i++)
   {
@@ -100,9 +104,13 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
     nbP2d       = ApproxInt_TheMultiLineTool::NbP2d(Line);
     int mynbP3d = nbP3d, mynbP2d = nbP2d;
     if (nbP3d == 0)
+    {
       mynbP3d = 1;
+    }
     if (nbP2d == 0)
+    {
       mynbP2d = 1;
+    }
 
     TheParameters(firstP) = 0.0;
     dist                  = 0.0;
@@ -114,18 +122,30 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
     for (i = firstP + 1; i <= lastP; i++)
     {
       if (nbP3d != 0 && nbP2d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i - 1, tabP, tabP2d);
+      }
       else if (nbP2d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i - 1, tabP2d);
+      }
       else if (nbP3d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i - 1, tabP);
+      }
 
       if (nbP3d != 0 && nbP2d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i, tabPP, tabPP2d);
+      }
       else if (nbP2d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i, tabPP2d);
+      }
       else if (nbP3d != 0)
+      {
         ApproxInt_TheMultiLineTool::Value(Line, i, tabPP);
+      }
       dist = 0;
       for (j = 1; j <= nbP3d; j++)
       {
@@ -150,7 +170,9 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
       }
     }
     for (i = firstP; i <= lastP; i++)
+    {
       TheParameters(i) /= TheParameters(lastP);
+    }
   }
   else
   {
@@ -193,15 +215,19 @@ void ApproxInt_Approx::Perform(const occ::handle<TheWLine>& theline,
 
   const int nbpntbez = myData.indicemax - myData.indicemin;
   if (nbpntbez < aMinNbPointsForApprox)
+  {
     myData.myBezierApprox = false;
+  }
   else
+  {
     myData.myBezierApprox = true;
+  }
 
   // Fill data structure.
   fillData(theline);
 
   // Build knots.
-  buildKnots(theline, NULL);
+  buildKnots(theline, nullptr);
   if (myKnots.Length() == 2 && indicemax - indicemin > 2 * myData.myNbPntMax)
   {
     // At least 3 knots for BrepApprox.
@@ -214,7 +240,7 @@ void ApproxInt_Approx::Perform(const occ::handle<TheWLine>& theline,
   myComputeLineBezier
     .Init(myDegMin, myDegMax, myTol3d, myTol2d, myNbIterMax, true, myData.parametrization);
 
-  buildCurve(theline, NULL);
+  buildCurve(theline, nullptr);
 }
 
 //=================================================================================================
@@ -501,19 +527,31 @@ const AppParCurves_MultiBSpCurve& ApproxInt_Approx::Value(const int) const
 void ApproxInt_Approx::fillData(const occ::handle<TheWLine>& theline)
 {
   if (myData.ApproxXYZ)
+  {
     ComputeTrsf3d(theline, myData.Xo, myData.Yo, myData.Zo);
+  }
   else
+  {
     myData.Xo = myData.Yo = myData.Zo = 0.0;
+  }
 
   if (myData.ApproxU1V1)
+  {
     ComputeTrsf2d(theline, true, myData.U1o, myData.V1o);
+  }
   else
+  {
     myData.U1o = myData.V1o = 0.0;
+  }
 
   if (myData.ApproxU2V2)
+  {
     ComputeTrsf2d(theline, false, myData.U2o, myData.V2o);
+  }
   else
+  {
     myData.U2o = myData.V2o = 0.0;
+  }
 }
 
 //=================================================================================================
@@ -573,11 +611,17 @@ void ApproxInt_Approx::buildKnots(const occ::handle<TheWLine>& theline, void* co
   for (int i = myData.indicemin; i <= myData.indicemax; ++i)
   {
     if (nbp3d != 0 && nbp2d != 0)
+    {
       aTestLine.Value(i, aTabPnt3d, aTabPnt2d);
+    }
     else if (nbp2d != 0)
+    {
       aTestLine.Value(i, aTabPnt2d);
+    }
     else if (nbp3d != 0)
+    {
       aTestLine.Value(i, aTabPnt3d);
+    }
     //
     if (nbp3d > 0)
     {
@@ -657,7 +701,9 @@ void ApproxInt_Approx::buildCurve(const occ::handle<TheWLine>& theline, void* co
     {
       myComputeLineBezier.Perform(myMultiLine);
       if (myComputeLineBezier.NbMultiCurves() == 0)
+      {
         return;
+      }
     }
     else
     {

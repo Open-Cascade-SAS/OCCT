@@ -149,7 +149,9 @@ public:
   void Reset(double theCellSize, const occ::handle<NCollection_IncAllocator>& theAlloc = nullptr)
   {
     for (int i = 0; i < myDim; i++)
+    {
       myCellSize(i) = theCellSize;
+    }
     resetAllocator(theAlloc);
   }
 
@@ -294,7 +296,9 @@ protected:
     ~Cell()
     {
       for (ListNode* aNode = Objects; aNode; aNode = aNode->Next)
+      {
         aNode->Object.~Target();
+      }
       // note that list nodes need not to be freed, since IncAllocator is used
       Objects = nullptr;
     }
@@ -304,10 +308,16 @@ protected:
     {
       const size_t aDim = index.Size();
       if (aDim != theOther.index.Size())
+      {
         return false;
+      }
       for (size_t i = 0; i < aDim; i++)
+      {
         if (index[i] != theOther.index[i])
+        {
           return false;
+        }
+      }
       return true;
     }
 
@@ -340,9 +350,13 @@ protected:
   void resetAllocator(const occ::handle<NCollection_IncAllocator>& theAlloc)
   {
     if (theAlloc.IsNull())
+    {
       myAllocator = new NCollection_IncAllocator;
+    }
     else
+    {
       myAllocator = theAlloc;
+    }
     myCells.Clear(myAllocator);
   }
 
@@ -389,7 +403,9 @@ protected:
     // Modifying the Objects field does not affect the hash, const_cast is safe
     auto aMapCellOpt = myCells.Contained(theCell);
     if (!aMapCellOpt)
+    {
       return;
+    }
 
     Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
 
@@ -406,13 +422,17 @@ protected:
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
+      {
         aPrev = aNode;
+      }
       aNode = aNext;
     }
 
     // cleanup empty cell to prevent dead cell accumulation
     if (!aMapCell.Objects)
+    {
       myCells.Remove(theCell);
+    }
   }
 
   //! Internal removal function, performing iteration for adjacent cells
@@ -445,7 +465,9 @@ protected:
     // Modifying the Objects field does not affect the hash, const_cast is safe
     auto aMapCellOpt = myCells.Contained(theCell);
     if (!aMapCellOpt)
+    {
       return;
+    }
 
     Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
 
@@ -464,13 +486,17 @@ protected:
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
+      {
         aPrev = aNode;
+      }
       aNode = aNext;
     }
 
     // cleanup empty cell to prevent dead cell accumulation
     if (!aMapCell.Objects)
+    {
       myCells.Remove(theCell);
+    }
   }
 
   //! Inspect the target objects in the specified range of the cells

@@ -247,7 +247,7 @@ void Standard_ErrorHandler::Abort(const T& theError)
   Standard_ErrorHandler* anActive = FindHandler();
   if (anActive == nullptr)
   {
-    std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
+    std::cerr << "*** Abort *** an exception was raised, but no catch was found." << '\n';
     std::cerr << "\t... The exception is: " << theError.what() << std::endl;
     exit(1);
   }

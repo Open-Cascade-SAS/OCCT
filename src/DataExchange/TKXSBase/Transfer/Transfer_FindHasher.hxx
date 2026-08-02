@@ -43,7 +43,9 @@ public:
                   const occ::handle<Transfer_Finder>& theK2) const
   {
     if (theK1.IsNull())
+    {
       return false;
+    }
     return theK1->Equates(theK2);
   }
 };

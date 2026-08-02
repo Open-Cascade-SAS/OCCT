@@ -52,7 +52,9 @@ public:
         myLast(theMax)
   {
     if (myLast < myFirst)
+    {
       throw Standard_ConstructionError("Last < First");
+    }
   }
 
   //! Replaces <this> with common-part of <this> and theOther
@@ -178,7 +180,9 @@ public:
   [[nodiscard]] std::optional<Bounds> Get() const noexcept
   {
     if (IsVoid())
+    {
       return std::nullopt;
+    }
     return Bounds{myFirst, myLast};
   }
 
@@ -206,7 +210,9 @@ public:
   [[nodiscard]] std::optional<double> Center() const noexcept
   {
     if (IsVoid())
+    {
       return std::nullopt;
+    }
     return 0.5 * (myFirst + myLast);
   }
 
@@ -297,7 +303,9 @@ public:
   [[nodiscard]] std::optional<double> Min() const noexcept
   {
     if (IsVoid())
+    {
       return std::nullopt;
+    }
     return myFirst;
   }
 
@@ -306,7 +314,9 @@ public:
   [[nodiscard]] std::optional<double> Max() const noexcept
   {
     if (IsVoid())
+    {
       return std::nullopt;
+    }
     return myLast;
   }
 

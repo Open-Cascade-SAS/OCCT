@@ -224,10 +224,14 @@ public:
   {
     const int anExt = theOther.Extent();
     if (anExt <= 0)
+    {
       return;
+    }
     ReSize(anExt - 1);
     for (Iterator anIter(theOther); anIter.More(); anIter.Next())
+    {
       Add(anIter.Key());
+    }
   }
 
   //! Move constructor
@@ -253,7 +257,9 @@ public:
   NCollection_Map& Assign(const NCollection_Map& theOther)
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     Clear();
     int anExt = theOther.Extent();
@@ -262,7 +268,9 @@ public:
       ReSize(anExt - 1);
       Iterator anIter(theOther);
       for (; anIter.More(); anIter.Next())
+      {
         Add(anIter.Key());
+      }
     }
     return *this;
   }
@@ -274,7 +282,9 @@ public:
   NCollection_Map& operator=(NCollection_Map&& theOther) noexcept
   {
     if (this == &theOther)
+    {
       return *this;
+    }
     exchangeMapsData(theOther);
     return *this;
   }
@@ -383,7 +393,9 @@ public:
   {
     MapNode* p;
     if (!lookup(theKey, p))
+    {
       return std::nullopt;
+    }
     return std::cref(p->Key());
   }
 
@@ -391,7 +403,9 @@ public:
   bool Remove(const TheKeyType& K)
   {
     if (IsEmpty())
+    {
       return false;
+    }
     MapNode**    data = (MapNode**)myData1;
     const size_t k    = HashCode(K, NbBuckets());
     MapNode*     p    = data[k];
@@ -402,9 +416,13 @@ public:
       {
         Decrement();
         if (q)
+        {
           q->Next() = p->Next();
+        }
         else
+        {
           data[k] = (MapNode*)p->Next();
+        }
         p->~MapNode();
         this->myAllocator->Free(p);
         return true;
@@ -557,11 +575,15 @@ protected:
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (MapNode*)myData1[theHash]; theNode; theNode = (MapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key(), theKey))
+      {
         return true;
+      }
     }
     return false; // Not found
   }
@@ -573,7 +595,9 @@ protected:
   bool lookup(const TheKeyType& theKey, MapNode*& theNode) const
   {
     if (IsEmpty())
+    {
       return false; // Not found
+    }
     for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
          theNode = (MapNode*)theNode->Next())
     {
@@ -605,23 +629,33 @@ protected:
     -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     MapNode* aNode;
     size_t   aHash;
     if (lookup(theKey, aNode, aHash))
     {
       if constexpr (ReturnRef)
+      {
         return aNode->Key();
+      }
       else
+      {
         return false;
+      }
     }
     MapNode** data = (MapNode**)myData1;
     data[aHash]    = new (this->myAllocator) MapNode(std::forward<K>(theKey), data[aHash]);
     Increment();
     if constexpr (ReturnRef)
+    {
       return data[aHash]->Key();
+    }
     else
+    {
       return true;
+    }
   }
 
   //! Implementation helper for Emplace/TryEmplace/Emplaced/TryEmplaced.
@@ -634,7 +668,9 @@ protected:
     -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
     if (Resizable())
+    {
       ReSize(Extent());
+    }
     // First construct the key to compute hash and check for existence
     TheKeyType aTempKey(std::forward<Args>(theArgs)...);
     MapNode*   aNode;
@@ -648,17 +684,25 @@ protected:
         new (&aNode->ChangeValue()) TheKeyType(std::move(aTempKey));
       }
       if constexpr (ReturnRef)
+      {
         return aNode->Key();
+      }
       else
+      {
         return false;
+      }
     }
     MapNode** data = (MapNode**)myData1;
     data[aHash]    = new (this->myAllocator) MapNode(std::move(aTempKey), data[aHash]);
     Increment();
     if constexpr (ReturnRef)
+    {
       return data[aHash]->Key();
+    }
     else
+    {
       return true;
+    }
   }
 
 protected:

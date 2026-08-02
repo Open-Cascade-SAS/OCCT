@@ -372,7 +372,9 @@ private:
   void Assign(Standard_Transient* thePtr)
   {
     if (thePtr == entity)
+    {
       return;
+    }
     EndScope();
     entity = thePtr;
     BeginScope();
@@ -382,14 +384,18 @@ private:
   void BeginScope()
   {
     if (entity != nullptr)
+    {
       entity->IncrementRefCounter();
+    }
   }
 
   //! Decrement reference counter and if 0, destroy referred object
   void EndScope()
   {
     if (entity != nullptr && entity->DecrementRefCounter() == 0)
+    {
       entity->Delete();
+    }
     entity = nullptr;
   }
 

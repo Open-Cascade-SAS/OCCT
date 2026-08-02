@@ -448,7 +448,9 @@ public:
           if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
           {
             if (myGraph.Topo().Gen().IsActive(aChildId))
+            {
               return;
+            }
           }
           else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
           {

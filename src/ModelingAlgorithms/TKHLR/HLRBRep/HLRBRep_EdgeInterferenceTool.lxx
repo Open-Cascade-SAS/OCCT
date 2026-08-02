@@ -49,9 +49,13 @@ inline const HLRAlgo_Intersection& HLRBRep_EdgeInterferenceTool::CurrentVertex()
 inline TopAbs_Orientation HLRBRep_EdgeInterferenceTool::CurrentOrientation() const
 {
   if (cur == 0)
+  {
     return TopAbs_FORWARD;
+  }
   else
+  {
     return TopAbs_REVERSED;
+  }
 }
 
 //=================================================================================================

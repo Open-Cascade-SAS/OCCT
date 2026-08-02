@@ -287,9 +287,13 @@ void ComputeSurfTangent(Surface&      theSurf,
   {
     double aDu;
     if ((anUsupremum >= RealLast()) || (anUinfimum <= RealFirst()))
+    {
       aDu = 0.0;
+    }
     else
+    {
       aDu = anUsupremum - anUinfimum;
+    }
 
     const double aDelta = std::max(aDu * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
@@ -297,9 +301,13 @@ void ComputeSurfTangent(Surface&      theSurf,
 
     double anOtherU;
     if (theU - anUinfimum < aDelta)
+    {
       anOtherU = theU + aDelta;
+    }
     else
+    {
       anOtherU = theU - aDelta;
+    }
 
     gp_Pnt aP1, aP2;
     Access::D0(theSurf, std::min(theU, anOtherU), theV, aP1);
@@ -307,7 +315,9 @@ void ComputeSurfTangent(Surface&      theSurf,
 
     gp_Vec aChord(aP1, aP2);
     if (aV.Dot(aChord) < 0.0)
+    {
       aV = -aV;
+    }
 
     theDir = gp_Dir(aV);
   }
@@ -315,9 +325,13 @@ void ComputeSurfTangent(Surface&      theSurf,
   {
     double aDv;
     if ((anVsupremum >= RealLast()) || (anVinfimum <= RealFirst()))
+    {
       aDv = 0.0;
+    }
     else
+    {
       aDv = anVsupremum - anVinfimum;
+    }
 
     const double aDelta = std::max(aDv * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
@@ -325,9 +339,13 @@ void ComputeSurfTangent(Surface&      theSurf,
 
     double anOtherV;
     if (theV - anVinfimum < aDelta)
+    {
       anOtherV = theV + aDelta;
+    }
     else
+    {
       anOtherV = theV - aDelta;
+    }
 
     gp_Pnt aP1, aP2;
     Access::D0(theSurf, theU, std::min(theV, anOtherV), aP1);
@@ -335,7 +353,9 @@ void ComputeSurfTangent(Surface&      theSurf,
 
     gp_Vec aChord(aP1, aP2);
     if (aV.Dot(aChord) < 0.0)
+    {
       aV = -aV;
+    }
 
     theDir = gp_Dir(aV);
   }
@@ -428,7 +448,9 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
   {
     math_DirectPolynomialRoots aRoot(anA, aB, aC);
     if (aRoot.NbSolutions() != 2)
+    {
       return false;
+    }
 
     const double aRoot1 = aRoot.Value(1);
     const double aRoot2 = aRoot.Value(2);
@@ -441,7 +463,9 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
   {
     math_DirectPolynomialRoots aRoot(aC, aB, anA);
     if (aRoot.NbSolutions() != 2)
+    {
       return false;
+    }
 
     const double aRoot1 = aRoot.Value(1);
     const double aRoot2 = aRoot.Value(2);
@@ -543,9 +567,13 @@ bool IsTangentUDefined(Props&        theProps,
                        LProp_Status& theTanStatus)
 {
   if (theTanStatus == LProp_Undefined)
+  {
     return false;
+  }
   if (theTanStatus >= LProp_Defined)
+  {
     return true;
+  }
   return FindSurfTangentOrder(theProps.D1U(),
                               theProps.D2U(),
                               theCN,
@@ -563,9 +591,13 @@ bool IsTangentVDefined(Props&        theProps,
                        LProp_Status& theTanStatus)
 {
   if (theTanStatus == LProp_Undefined)
+  {
     return false;
+  }
   if (theTanStatus >= LProp_Defined)
+  {
     return true;
+  }
   return FindSurfTangentOrder(theProps.D1V(),
                               theProps.D2V(),
                               theCN,
@@ -586,7 +618,9 @@ void TangentU(Props&        theProps,
               gp_Dir&       theDir)
 {
   if (!theProps.IsTangentUDefined())
+  {
     throw LProp_NotDefined();
+  }
   ComputeSurfTangent<Access>(theSurf, theU, theV, theD1u, theD2u, theSigOrder, true, theDir);
 }
 
@@ -602,7 +636,9 @@ void TangentV(Props&        theProps,
               gp_Dir&       theDir)
 {
   if (!theProps.IsTangentVDefined())
+  {
     throw LProp_NotDefined();
+  }
   ComputeSurfTangent<Access>(theSurf, theU, theV, theD1v, theD2v, theSigOrder, false, theDir);
 }
 
@@ -614,9 +650,13 @@ inline bool IsNormalDefined(const gp_Vec& theD1u,
                             LProp_Status& theNormStatus)
 {
   if (theNormStatus == LProp_Undefined)
+  {
     return false;
+  }
   if (theNormStatus >= LProp_Defined)
+  {
     return true;
+  }
   if (ComputeSurfNormal(theD1u, theD1v, theLinTol, theNormal))
   {
     theNormStatus = LProp_Computed;
@@ -631,7 +671,9 @@ template <typename Props>
 const gp_Dir& Normal(Props& theProps, const gp_Dir& theNormal)
 {
   if (!theProps.IsNormalDefined())
+  {
     throw LProp_NotDefined();
+  }
   return theNormal;
 }
 
@@ -656,9 +698,13 @@ bool IsCurvatureDefined(Props&        theProps,
                         LProp_Status& theCurvStatus)
 {
   if (theCurvStatus == LProp_Undefined)
+  {
     return false;
+  }
   if (theCurvStatus >= LProp_Defined)
+  {
     return true;
+  }
   if (theCN < 2)
   {
     theCurvStatus = LProp_Undefined;
@@ -675,7 +721,9 @@ bool IsCurvatureDefined(Props&        theProps,
     return false;
   }
   if (theDerOrder < 2)
+  {
     theProps.D2U();
+  }
   if (ComputeSurfCurvatures(theD1u,
                             theD1v,
                             theD2u,
@@ -701,7 +749,9 @@ template <typename Props>
 double RequireCurvature(Props& theProps, double theValue)
 {
   if (!theProps.IsCurvatureDefined())
+  {
     throw LProp_NotDefined();
+  }
   return theValue;
 }
 
@@ -710,7 +760,9 @@ template <typename Props>
 bool IsUmbilic(Props& theProps, double theMaxCurv, double theMinCurv)
 {
   if (!theProps.IsCurvatureDefined())
+  {
     throw LProp_NotDefined();
+  }
   return std::abs(theMaxCurv - theMinCurv) < std::abs(Epsilon(theMaxCurv));
 }
 
@@ -723,7 +775,9 @@ void CurvatureDirections(Props&        theProps,
                          gp_Dir&       theMin)
 {
   if (!theProps.IsCurvatureDefined())
+  {
     throw LProp_NotDefined();
+  }
   theMax = theDirMax;
   theMin = theDirMin;
 }
