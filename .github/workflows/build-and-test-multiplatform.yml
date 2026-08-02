@@ -30,7 +30,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Run clang-format check
+    - name: Run clang-tidy and clang-format check
       uses: ./.github/actions/clang-format-check
       with:
         base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
