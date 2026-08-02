@@ -43,8 +43,10 @@ static void PutSlash(TCollection_ExtendedString& anXSTRING)
 //=================================================================================================
 
 CDF_FWOSDriver::CDF_FWOSDriver(
-  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable)
-    : myLookUpTable(&theLookUpTable)
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+  std::mutex&                                                                 theMutex)
+    : myLookUpTable(&theLookUpTable),
+      myMutex(&theMutex)
 {
 }
 
@@ -102,7 +104,7 @@ occ::handle<CDM_MetaData> CDF_FWOSDriver::MetaData(const TCollection_ExtendedStr
                                                    const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder, aName);
-  return CDM_MetaData::LookUp(*myLookUpTable, aFolder, aName, p, p, UTL::IsReadOnly(p));
+  return CDM_MetaData::LookUp(*myLookUpTable, *myMutex, aFolder, aName, p, p, UTL::IsReadOnly(p));
 }
 
 //=================================================================================================
@@ -112,6 +114,7 @@ occ::handle<CDM_MetaData> CDF_FWOSDriver::CreateMetaData(
   const TCollection_ExtendedString& aFileName)
 {
   return CDM_MetaData::LookUp(*myLookUpTable,
+                              *myMutex,
                               aDocument->RequestedFolder(),
                               aDocument->RequestedName(),
                               Concatenate(aDocument->RequestedFolder(), aDocument->RequestedName()),

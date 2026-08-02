@@ -66,27 +66,32 @@ CDM_MetaData::CDM_MetaData(const TCollection_ExtendedString& aFolder,
 
 bool CDM_MetaData::IsRetrieved() const
 {
+  std::lock_guard<std::mutex> aLock(myDocumentMutex);
   return myIsRetrieved;
 }
 
 occ::handle<CDM_Document> CDM_MetaData::Document() const
 {
+  std::lock_guard<std::mutex> aLock(myDocumentMutex);
   return myDocument;
 }
 
 void CDM_MetaData::SetDocument(const occ::handle<CDM_Document>& aDocument)
 {
+  std::lock_guard<std::mutex> aLock(myDocumentMutex);
   myIsRetrieved = true;
   myDocument    = aDocument.operator->();
 }
 
 void CDM_MetaData::UnsetDocument()
 {
+  std::lock_guard<std::mutex> aLock(myDocumentMutex);
   myIsRetrieved = false;
 }
 
 occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+  std::mutex&                                                                 theMutex,
   const TCollection_ExtendedString&                                           aFolder,
   const TCollection_ExtendedString&                                           aName,
   const TCollection_ExtendedString&                                           aPath,
@@ -96,6 +101,8 @@ occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
   occ::handle<CDM_MetaData>  theMetaData;
   TCollection_ExtendedString aConventionalPath = aPath;
   aConventionalPath.ChangeAll('\\', '/');
+
+  std::lock_guard<std::mutex> aLock(theMutex);
   if (!theLookUpTable.IsBound(aConventionalPath))
   {
     theMetaData = new CDM_MetaData(aFolder, aName, aPath, aFileName, ReadOnly);
@@ -111,6 +118,7 @@ occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
 
 occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+  std::mutex&                                                                 theMutex,
   const TCollection_ExtendedString&                                           aFolder,
   const TCollection_ExtendedString&                                           aName,
   const TCollection_ExtendedString&                                           aPath,
@@ -121,6 +129,8 @@ occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
   occ::handle<CDM_MetaData>  theMetaData;
   TCollection_ExtendedString aConventionalPath = aPath;
   aConventionalPath.ChangeAll('\\', '/');
+
+  std::lock_guard<std::mutex> aLock(theMutex);
   if (!theLookUpTable.IsBound(aConventionalPath))
   {
     theMetaData = new CDM_MetaData(aFolder, aName, aPath, aVersion, aFileName, ReadOnly);

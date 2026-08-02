@@ -45,12 +45,13 @@ void PCDM_ReferenceIterator::LoadReferences(const occ::handle<CDM_Document>&    
 {
   for (Init(aMetaData); More(); Next())
   {
-    aDocument->CreateReference(
-      MetaData(anApplication->MetaDataLookUpTable(), UseStorageConfiguration),
-      ReferenceIdentifier(),
-      anApplication,
-      DocumentVersion(),
-      UseStorageConfiguration);
+    aDocument->CreateReference(MetaData(anApplication->MetaDataLookUpTable(),
+                                        anApplication->MetaDataLookUpTableMutex(),
+                                        UseStorageConfiguration),
+                               ReferenceIdentifier(),
+                               anApplication,
+                               DocumentVersion(),
+                               UseStorageConfiguration);
   }
 }
 
@@ -83,6 +84,7 @@ void PCDM_ReferenceIterator::Next()
 
 occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+  std::mutex&                                                                 theMutex,
   const bool) const
 {
 
@@ -131,6 +133,7 @@ occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
 #endif // _WIN32
 
   return CDM_MetaData::LookUp(theLookUpTable,
+                              theMutex,
                               theFolder,
                               theName,
                               theFile,

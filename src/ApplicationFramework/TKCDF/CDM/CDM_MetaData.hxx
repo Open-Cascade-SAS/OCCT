@@ -28,22 +28,27 @@
 #include <CDM_Application.hxx>
 #include <Standard_OStream.hxx>
 #include <NCollection_DataMap.hxx>
+#include <mutex>
 class CDM_MetaData;
 
 class CDM_MetaData : public Standard_Transient
 {
 
 public:
+  //! theMutex must guard theLookUpTable (CDM_Application::MetaDataLookUpTableMutex()).
   Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+    std::mutex&                                                                 theMutex,
     const TCollection_ExtendedString&                                           aFolder,
     const TCollection_ExtendedString&                                           aName,
     const TCollection_ExtendedString&                                           aPath,
     const TCollection_ExtendedString&                                           aFileName,
     const bool                                                                  ReadOnly);
 
+  //! theMutex must guard theLookUpTable (CDM_Application::MetaDataLookUpTableMutex()).
   Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+    std::mutex&                                                                 theMutex,
     const TCollection_ExtendedString&                                           aFolder,
     const TCollection_ExtendedString&                                           aName,
     const TCollection_ExtendedString&                                           aPath,
@@ -131,6 +136,7 @@ private:
   TCollection_ExtendedString myPath;
   int                        myDocumentVersion;
   bool                       myIsReadOnly;
+  mutable std::mutex         myDocumentMutex; //!< guards myIsRetrieved/myDocument
 };
 
 #endif // _CDM_MetaData_HeaderFile
