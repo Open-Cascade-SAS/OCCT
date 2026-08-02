@@ -120,7 +120,7 @@ runs:
 
         $throttleLimit = [Math]::Max([Environment]::ProcessorCount, 1)
         $diff = git diff -U0 origin/${{ inputs.base-ref }} HEAD -- $files
-    $diff | python3 $clangTidyDiff -path build-clang-tidy -p 1 -j $throttleLimit -fix -config-file .clang-tidy -clang-tidy-binary $clangTidyPath -only-check-in-db
+        $diff | python3 $clangTidyDiff -path build-clang-tidy -p 1 -j $throttleLimit -fix -config-file .clang-tidy -clang-tidy-binary $clangTidyPath -only-check-in-db
 
     - name: Validate and add license headers
       if: steps.changed-files.outputs.has_files == 'true'
