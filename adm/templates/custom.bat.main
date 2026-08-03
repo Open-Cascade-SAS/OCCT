@@ -1,0 +1,5 @@
+echo off
+
+rem include other custom.bat files with specific 3rdparty paths
+@ADDITIONAL_CUSTOM_CONTENT@
+
