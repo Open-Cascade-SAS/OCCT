@@ -99,6 +99,10 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge& E1,
   // on <newFace>
   TopoDS_Edge EE1, EE2;
   status = ChFi2d::FindConnectedEdges(newFace, commonVertex, EE1, EE2);
+  if (status == ChFi2d_ConnexionError)
+  {
+    return chamfer;
+  }
   if (EE1.IsSame(E2))
   {
     TopAbs_Orientation orient = EE1.Orientation();
