@@ -46,7 +46,7 @@ static int OCC162(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
 
-  double               tolValue = 0.0001;
+  double                tolValue = 0.0001;
   BRepBuilderAPI_Sewing sew(tolValue);
   sew.Add(aShape);
   sew.Perform();

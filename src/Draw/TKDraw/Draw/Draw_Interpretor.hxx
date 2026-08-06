@@ -272,11 +272,11 @@ protected:
 
 private:
   Tcl_Interp* myInterp;
-  bool         isAllocated;
-  bool         myDoLog;
-  bool         myDoEcho;
-  bool         myToColorize;
-  int          myFDLog; //!< file descriptor of log file
+  bool        isAllocated;
+  bool        myDoLog;
+  bool        myDoEcho;
+  bool        myToColorize;
+  int         myFDLog; //!< file descriptor of log file
 
 public:
   DEFINE_STANDARD_ALLOC
