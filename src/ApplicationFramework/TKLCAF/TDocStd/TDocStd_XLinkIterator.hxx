@@ -20,9 +20,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDocStd_XLinkPtr.hxx>
 #include <Standard_Boolean.hxx>
 class TDocStd_Document;
+class TDocStd_XLink;
 
 //! Iterates on Reference attributes.
 //! This is an iterator giving all the external references
@@ -49,12 +49,12 @@ public:
   Standard_EXPORT void Next();
 
   //! Returns the current item; a null handle if there is none.
-  TDocStd_XLinkPtr Value() const;
+  TDocStd_XLink* Value() const;
 
 private:
   Standard_EXPORT void Init(const occ::handle<TDocStd_Document>& D);
 
-  TDocStd_XLinkPtr myValue;
+  TDocStd_XLink*   myValue;
 };
 
 #include <TDocStd_XLinkIterator.lxx>

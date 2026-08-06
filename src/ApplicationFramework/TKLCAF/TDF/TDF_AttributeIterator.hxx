@@ -23,8 +23,6 @@
 #define TDF_AttributeIterator_HeaderFile
 
 #include <TDF_Label.hxx>
-#include <TDF_LabelNodePtr.hxx>
-
 // This class provides a way to iterates on the
 // up-to-date (current) valid attributes of a label.
 //
@@ -36,6 +34,7 @@
 // in generic way, like copy-tool, specific save/restore algorithms,
 // etc.
 //
+class TDF_LabelNode;
 // Even a forgotten attribute may be found if this
 // option is set. To use this possibility, look at
 // the constructor.
@@ -49,7 +48,7 @@ public:
   Standard_EXPORT      TDF_AttributeIterator();
   Standard_EXPORT      TDF_AttributeIterator(const TDF_Label& aLabel,
                                              const bool       withoutForgotten = true);
-  Standard_EXPORT      TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
+  Standard_EXPORT      TDF_AttributeIterator(TDF_LabelNode* const aLabelNode,
                                              const bool             withoutForgotten = true);
   Standard_EXPORT void Initialize(const TDF_Label& aLabel, const bool withoutForgotten = true);
   inline bool          More() const;

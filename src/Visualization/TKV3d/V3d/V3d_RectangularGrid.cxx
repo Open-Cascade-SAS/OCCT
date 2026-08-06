@@ -58,7 +58,7 @@ private:
 
 //=================================================================================================
 
-V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
+V3d_RectangularGrid::V3d_RectangularGrid(V3d_Viewer* const& aViewer,
                                          const Quantity_Color&    aColor,
                                          const Quantity_Color&    aTenthColor)
     : Aspect_RectangularGrid(1., 1.),

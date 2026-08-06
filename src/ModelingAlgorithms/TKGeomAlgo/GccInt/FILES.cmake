@@ -14,7 +14,5 @@ set(OCCT_GccInt_FILES
   GccInt_BLine.hxx
   GccInt_BParab.cxx
   GccInt_BParab.hxx
-  GccInt_BPoint.cxx
-  GccInt_BPoint.hxx
   GccInt_IType.hxx
 )

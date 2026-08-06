@@ -28,6 +28,4 @@ set(OCCT_XSControl_FILES
   XSControl_Vars.hxx
   XSControl_WorkSession.cxx
   XSControl_WorkSession.hxx
-  XSControl_Writer.cxx
-  XSControl_Writer.hxx
 )

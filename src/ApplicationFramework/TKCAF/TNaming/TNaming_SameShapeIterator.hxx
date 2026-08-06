@@ -21,13 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TNaming_PtrNode.hxx>
 class Standard_NoMoreObject;
 class Standard_NoSuchObject;
 class TNaming_Tool;
 class TopoDS_Shape;
 class TNaming_UsedShapes;
 class TDF_Label;
+class TNaming_Node;
 
 //! To iterate on all the label which contained a
 //! given shape.
@@ -50,7 +50,7 @@ private:
   Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape&                    aShape,
                                             const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_PtrNode myNode;
+  TNaming_Node*   myNode;
   bool            myIsNew;
 };
 

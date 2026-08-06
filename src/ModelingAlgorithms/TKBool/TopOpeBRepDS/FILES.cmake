@@ -5,8 +5,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS.cxx
   TopOpeBRepDS.hxx
 
-  TopOpeBRepDS_Association.cxx
-  TopOpeBRepDS_Association.hxx
   TopOpeBRepDS_BuildTool.cxx
   TopOpeBRepDS_BuildTool.hxx
   TopOpeBRepDS_Check.cxx
@@ -40,8 +38,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_EdgeVertexInterference.hxx
   TopOpeBRepDS_EIR.cxx
   TopOpeBRepDS_EIR.hxx
-  TopOpeBRepDS_Explorer.cxx
-  TopOpeBRepDS_Explorer.hxx
   TopOpeBRepDS_EXPORT.cxx
   TopOpeBRepDS_EXPORT.hxx
   TopOpeBRepDS_FaceEdgeInterference.cxx
@@ -56,10 +52,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_FIR.cxx
   TopOpeBRepDS_FIR.hxx
   TopOpeBRepDS_funk.cxx
-  TopOpeBRepDS_GapFiller.cxx
-  TopOpeBRepDS_GapFiller.hxx
-  TopOpeBRepDS_GapTool.cxx
-  TopOpeBRepDS_GapTool.hxx
   TopOpeBRepDS_GeometryData.cxx
   TopOpeBRepDS_GeometryData.hxx
 
@@ -77,9 +69,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_ListOfShapeOn1State.cxx
   TopOpeBRepDS_ListOfShapeOn1State.hxx
 
-  TopOpeBRepDS_Marker.cxx
-  TopOpeBRepDS_Marker.hxx
-  TopOpeBRepDS_PDataStructure.hxx
   TopOpeBRepDS_Point.cxx
   TopOpeBRepDS_Point.hxx
   TopOpeBRepDS_PointData.cxx
@@ -97,8 +86,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_Reducer.hxx
   TopOpeBRepDS_repvg.cxx
   TopOpeBRepDS_repvg.hxx
-  TopOpeBRepDS_samdom.cxx
-  TopOpeBRepDS_samdom.hxx
   TopOpeBRepDS_ShapeData.cxx
   TopOpeBRepDS_ShapeData.hxx
   TopOpeBRepDS_ShapeShapeInterference.cxx
@@ -114,8 +101,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_SurfaceCurveInterference.hxx
   TopOpeBRepDS_SurfaceData.cxx
   TopOpeBRepDS_SurfaceData.hxx
-  TopOpeBRepDS_SurfaceExplorer.cxx
-  TopOpeBRepDS_SurfaceExplorer.hxx
   TopOpeBRepDS_SurfaceIterator.cxx
   TopOpeBRepDS_SurfaceIterator.hxx
   TopOpeBRepDS_TKI.cxx

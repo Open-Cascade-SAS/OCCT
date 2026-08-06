@@ -20,8 +20,9 @@
 #define _Storage_HArrayOfSchema_hxx
 
 #include <Standard_Macro.hxx>
-#include <Storage_ArrayOfSchema.hxx>
 #include <NCollection_HArray1.hxx>
+
+class Storage_Schema;
 
 Standard_HEADER_DEPRECATED("Storage_HArrayOfSchema.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<Storage_Schema>> directly.")

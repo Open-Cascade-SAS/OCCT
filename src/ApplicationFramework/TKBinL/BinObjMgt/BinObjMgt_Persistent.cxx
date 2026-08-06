@@ -438,7 +438,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutGUID(const Standard_GUID& theValu
 // purpose  : Put C array of char, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(const BinObjMgt_PChar theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(char* const theArray,
                                                          const int             theLength)
 {
   alignOffset(1);
@@ -452,7 +452,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(const BinObjMgt_PChar t
 // purpose  : Put C array of byte, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(const BinObjMgt_PByte theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(uint8_t* const theArray,
                                                          const int             theLength)
 {
   alignOffset(1);
@@ -466,7 +466,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(const BinObjMgt_PByte t
 // purpose  : Put C array of ExtCharacter, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray(const BinObjMgt_PExtChar theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray(char16_t* const theArray,
                                                             const int                theLength)
 {
   alignOffset(BP_EXTCHARSIZE, true);
@@ -488,7 +488,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray(const BinObjMgt_PExt
 // purpose  : Put C array of int, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray(const BinObjMgt_PInteger theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray(int* const theArray,
                                                         const int                theLength)
 {
   alignOffset(BP_INTSIZE, true);
@@ -510,7 +510,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray(const BinObjMgt_PInteger
 // purpose  : Put C array of double, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(const BinObjMgt_PReal theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(double* const theArray,
                                                          const int             theLength)
 {
   alignOffset(BP_INTSIZE, true);
@@ -532,7 +532,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(const BinObjMgt_PReal t
 // purpose  : Put C array of float, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortRealArray(const BinObjMgt_PShortReal theArray,
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortRealArray(float* const theArray,
                                                               const int                  theLength)
 {
   alignOffset(BP_INTSIZE, true);
@@ -853,7 +853,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetGUID(Standard_GUID& theValu
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(const BinObjMgt_PChar theArray,
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(char* const theArray,
                                                                const int theLength) const
 {
   alignOffset(1);
@@ -872,7 +872,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(const BinObjMgt_P
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(const BinObjMgt_PByte theArray,
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(uint8_t* const theArray,
                                                                const int theLength) const
 {
   alignOffset(1);
@@ -891,7 +891,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(const BinObjMgt_P
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(const BinObjMgt_PExtChar theArray,
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(char16_t* const theArray,
                                                                   const int theLength) const
 {
   alignOffset(BP_EXTCHARSIZE, true);
@@ -915,7 +915,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(const BinObjMg
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(const BinObjMgt_PInteger theArray,
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(int* const theArray,
                                                               const int theLength) const
 {
   alignOffset(BP_INTSIZE, true);
@@ -939,7 +939,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(const BinObjMgt_PI
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(const BinObjMgt_PReal theArray,
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(double* const theArray,
                                                                const int theLength) const
 {
   alignOffset(BP_INTSIZE, true);
@@ -964,7 +964,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(const BinObjMgt_P
 //=======================================================================
 
 const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray(
-  const BinObjMgt_PShortReal theArray,
+  float* const               theArray,
   const int                  theLength) const
 {
   alignOffset(BP_INTSIZE, true);

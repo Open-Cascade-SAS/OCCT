@@ -23,8 +23,9 @@
 #include <IntPolyh_ArrayOfTangentZones.hxx>
 #include <NCollection_List.hxx>
 #include <IntPolyh_Couple.hxx>
-#include <IntPolyh_PMaillageAffinage.hxx>
 #include <NCollection_Array1.hxx>
+
+class IntPolyh_MaillageAffinage;
 
 //! API algorithm for intersection of two surfaces by intersection
 //! of their triangulations.
@@ -135,7 +136,7 @@ private: //! @name Performing the intersection
                                   const NCollection_Array1<double>& theVPars2,
                                   const double                      theDeflTol1,
                                   const double                      theDeflTol2,
-                                  IntPolyh_PMaillageAffinage&       theMaillageS,
+                                  IntPolyh_MaillageAffinage*&      theMaillageS,
                                   int&                              theNbCouples);
 
   //! Performs the advanced intersection of the triangles - four intersection with
@@ -146,10 +147,10 @@ private: //! @name Performing the intersection
                                   const NCollection_Array1<double>& theVPars2,
                                   const double                      theDeflTol1,
                                   const double                      theDeflTol2,
-                                  IntPolyh_PMaillageAffinage&       theMaillageFF,
-                                  IntPolyh_PMaillageAffinage&       theMaillageFR,
-                                  IntPolyh_PMaillageAffinage&       theMaillageRF,
-                                  IntPolyh_PMaillageAffinage&       theMaillageRR,
+                                  IntPolyh_MaillageAffinage*&      theMaillageFF,
+                                  IntPolyh_MaillageAffinage*&      theMaillageFR,
+                                  IntPolyh_MaillageAffinage*&      theMaillageRF,
+                                  IntPolyh_MaillageAffinage*&      theMaillageRR,
                                   int&                              theNbCouples);
 
   //! Performs the advanced intersection of the triangles.
@@ -159,7 +160,7 @@ private: //! @name Performing the intersection
                                        const NCollection_Array1<double>& theVPars2,
                                        const double                      theDeflTol1,
                                        const double                      theDeflTol2,
-                                       IntPolyh_PMaillageAffinage&       theMaillage);
+                                       IntPolyh_MaillageAffinage*&      theMaillage);
 
   //! Performs the advanced intersection of the triangles.
   Standard_EXPORT bool PerformMaillage(const NCollection_Array1<double>&  theUPars1,
@@ -172,7 +173,7 @@ private: //! @name Performing the intersection
                                        const IntPolyh_ArrayOfPointNormal& thePoints2,
                                        const bool                         theIsFirstFwd,
                                        const bool                         theIsSecondFwd,
-                                       IntPolyh_PMaillageAffinage&        theMaillage);
+                                       IntPolyh_MaillageAffinage*&       theMaillage);
 
   //! Clears the arrays from the duplicate couples, keeping only one instance of it.
   Standard_EXPORT void MergeCouples(NCollection_List<IntPolyh_Couple>& theArrayFF,
@@ -180,8 +181,8 @@ private: //! @name Performing the intersection
                                     NCollection_List<IntPolyh_Couple>& theArrayRF,
                                     NCollection_List<IntPolyh_Couple>& theArrayRR) const;
 
-  bool AnalyzeIntersection(IntPolyh_PMaillageAffinage& theMaillage);
-  bool IsAdvRequired(IntPolyh_PMaillageAffinage& theMaillage);
+  bool AnalyzeIntersection(IntPolyh_MaillageAffinage*& theMaillage);
+  bool IsAdvRequired(IntPolyh_MaillageAffinage*& theMaillage);
 
 private: //! @name Fields
   // Inputs

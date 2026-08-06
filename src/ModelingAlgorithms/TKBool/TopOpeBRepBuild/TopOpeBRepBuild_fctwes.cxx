@@ -40,8 +40,8 @@ extern void debaddpwes(const int                           iFOR,
                        const TopAbs_State                  TB1,
                        const int                           iEG,
                        const TopAbs_Orientation            neworiE,
-                       const TopOpeBRepBuild_PBuilder&     PB,
-                       const TopOpeBRepBuild_PWireEdgeSet& PWES,
+                       TopOpeBRepBuild_Builder* const&     PB,
+                       TopOpeBRepBuild_WireEdgeSet* const& PWES,
                        const TCollection_AsciiString&      str1,
                        const TCollection_AsciiString&      str2);
 #endif

@@ -68,9 +68,6 @@ public:
   //! current value from Drawer won't be used.
   //! This value is used by:
   //!
-  //! VrmlConverter_Curve
-  //! VrmlConverter_WFRestrictedFace
-  //! VrmlConverter_WFShape
   Standard_EXPORT void SetDiscretisation(const int d);
 
   Standard_EXPORT int Discretisation() const;
@@ -78,9 +75,6 @@ public:
   //! defines the maximum value allowed for the first and last
   //! parameters of an infinite curve.
   //! Default value: 500.
-  //! VrmlConverter_Curve
-  //! VrmlConverter_WFRestrictedFace
-  //! VrmlConverter_WFShape
   Standard_EXPORT void SetMaximalParameterValue(const double Value);
 
   Standard_EXPORT double MaximalParameterValue() const;
@@ -98,8 +92,6 @@ public:
   //! The default values are the same default values from Vrml package.
   //!
   //! These attributes are used by the following algorithms:
-  //! VrmlConverter_WFRestrictedFace
-  //! VrmlConverter_WFDeflectionRestrictedFace
   Standard_EXPORT occ::handle<VrmlConverter_IsoAspect> UIsoAspect();
 
   Standard_EXPORT void SetUIsoAspect(const occ::handle<VrmlConverter_IsoAspect>& anAspect);
@@ -110,15 +102,12 @@ public:
   //! The default values are the same default values from Vrml package.
   //!
   //! These attributes are used by the following algorithms:
-  //! VrmlConverter_WFRestrictedFace
-  //! VrmlConverter_WFDeflectionRestrictedFace
   Standard_EXPORT occ::handle<VrmlConverter_IsoAspect> VIsoAspect();
 
   Standard_EXPORT void SetVIsoAspect(const occ::handle<VrmlConverter_IsoAspect>& anAspect);
 
   //! The default values are the same default values from Vrml package.
   //! These attributes are used by the following algorithms:
-  //! VrmlConverter_WFShape
   //! VrmlConverter_WFDeflectionShape
   Standard_EXPORT occ::handle<VrmlConverter_LineAspect> FreeBoundaryAspect();
 
@@ -133,7 +122,6 @@ public:
 
   //! The default values are the same default values from Vrml package.
   //! These attributes are used by the following algorithms:
-  //! VrmlConverter_WFShape
   //! VrmlConverter_WFDeflectionShape
   Standard_EXPORT occ::handle<VrmlConverter_LineAspect> WireAspect();
 
@@ -148,7 +136,6 @@ public:
 
   //! The default values are the same default values from Vrml package.
   //! These attributes are used by the following algorithms:
-  //! VrmlConverter_WFShape
   //! VrmlConverter_WFDeflectionShape
   Standard_EXPORT occ::handle<VrmlConverter_LineAspect> UnFreeBoundaryAspect();
 

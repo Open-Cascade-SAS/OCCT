@@ -17,7 +17,7 @@
 #ifndef _FSD_BinaryFile_HeaderFile
 #define _FSD_BinaryFile_HeaderFile
 
-#include <FSD_BStream.hxx>
+#include <stdio.h>
 #include <FSD_FileHeader.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_Error.hxx>
@@ -359,7 +359,7 @@ private:
   void ReadHeader();
 
 private:
-  FSD_BStream    myStream;
+  FILE*          myStream;
   FSD_FileHeader myHeader{};
 };
 

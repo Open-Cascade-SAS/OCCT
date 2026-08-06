@@ -28,7 +28,6 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_AttribBuffer.cxx
   Graphic3d_AttribBuffer.hxx
   Graphic3d_BndBox3d.hxx
-  Graphic3d_BndBox4d.hxx
   Graphic3d_BndBox4f.hxx
   Graphic3d_BoundBuffer.hxx
   Graphic3d_BSDF.cxx
@@ -109,10 +108,8 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_MediaTextureSet.cxx
   Graphic3d_MediaTextureSet.hxx
   Graphic3d_NameOfMaterial.hxx
-  Graphic3d_NameOfTexture1D.hxx
   Graphic3d_NameOfTexture2D.hxx
   Graphic3d_NameOfTextureEnv.hxx
-  Graphic3d_NameOfTexturePlane.hxx
 
   Graphic3d_PBRMaterial.cxx
   Graphic3d_PBRMaterial.hxx
@@ -148,17 +145,9 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_TextPath.hxx
   Graphic3d_Text.cxx
   Graphic3d_Text.hxx
-  Graphic3d_Texture1D.cxx
-  Graphic3d_Texture1D.hxx
-  Graphic3d_Texture1Dmanual.cxx
-  Graphic3d_Texture1Dmanual.hxx
-  Graphic3d_Texture1Dsegment.cxx
-  Graphic3d_Texture1Dsegment.hxx
   Graphic3d_Texture2D.cxx
   Graphic3d_Texture2D.hxx
 
-  Graphic3d_Texture2Dplane.cxx
-  Graphic3d_Texture2Dplane.hxx
   Graphic3d_Texture3D.cxx
   Graphic3d_Texture3D.hxx
   Graphic3d_TextureEnv.cxx

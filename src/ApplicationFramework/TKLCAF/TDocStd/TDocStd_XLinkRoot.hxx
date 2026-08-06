@@ -19,12 +19,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDocStd_XLinkPtr.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
 class TDF_Data;
 class TDF_RelocationTable;
+class TDocStd_XLink;
 
 //! This attribute is the root of all external
 //! references contained in a Data from TDF. Only one
@@ -43,10 +43,10 @@ public:
   Standard_EXPORT static occ::handle<TDocStd_XLinkRoot> Set(const occ::handle<TDF_Data>& aDF);
 
   //! Inserts <anXLinkPtr> at the beginning of the XLink chain.
-  Standard_EXPORT static void Insert(const TDocStd_XLinkPtr& anXLinkPtr);
+  Standard_EXPORT static void Insert(TDocStd_XLink* const& anXLinkPtr);
 
   //! Removes <anXLinkPtr> from the XLink chain, if it exists.
-  Standard_EXPORT static void Remove(const TDocStd_XLinkPtr& anXLinkPtr);
+  Standard_EXPORT static void Remove(TDocStd_XLink* const& anXLinkPtr);
 
   //! Returns the ID of the attribute.
   Standard_EXPORT const Standard_GUID& ID() const override;
@@ -77,12 +77,12 @@ private:
   Standard_EXPORT TDocStd_XLinkRoot();
 
   //! Sets the field <myFirst> with <anXLinkPtr>.
-  void First(const TDocStd_XLinkPtr& anXLinkPtr);
+  void First(TDocStd_XLink* const& anXLinkPtr);
 
   //! Returns the contents of the field <myFirst>.
-  TDocStd_XLinkPtr First() const;
+  TDocStd_XLink* First() const;
 
-  TDocStd_XLinkPtr myFirst;
+  TDocStd_XLink*   myFirst;
 };
 
 #include <TDocStd_XLinkRoot.lxx>

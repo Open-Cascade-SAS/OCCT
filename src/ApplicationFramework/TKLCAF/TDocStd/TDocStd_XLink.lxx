@@ -19,12 +19,12 @@
 // Version	Date		Purpose
 //		0.0	Sep 16 1997	Creation
 
-inline void TDocStd_XLink::Next(const TDocStd_XLinkPtr& anXLinkPtr)
+inline void TDocStd_XLink::Next(TDocStd_XLink* const& anXLinkPtr)
 {
   myNext = anXLinkPtr;
 }
 
-inline TDocStd_XLinkPtr TDocStd_XLink::Next() const
+inline TDocStd_XLink* TDocStd_XLink::Next() const
 {
   return myNext;
 }

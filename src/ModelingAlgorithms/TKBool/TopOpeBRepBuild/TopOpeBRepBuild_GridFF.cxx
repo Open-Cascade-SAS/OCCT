@@ -79,8 +79,8 @@ extern void          debaddpwes(const int                           iFOR,
                                 const TopAbs_State                  TB1,
                                 const int                           iEG,
                                 const TopAbs_Orientation            neworiE,
-                                const TopOpeBRepBuild_PBuilder&     PB,
-                                const TopOpeBRepBuild_PWireEdgeSet& PWES,
+                                TopOpeBRepBuild_Builder* const&     PB,
+                                TopOpeBRepBuild_WireEdgeSet* const& PWES,
                                 const TCollection_AsciiString&      str1,
                                 const TCollection_AsciiString&      str2);
 #endif
@@ -103,10 +103,10 @@ static TopAbs_State ClassifyEdgeToSolidByOnePoint(const TopoDS_Edge& E, const To
 static bool         FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                                           const TopoDS_Face&             F,
                                           const TopoDS_Edge&             E,
-                                          TopOpeBRepDS_PDataStructure&   pDS2d);
+                                          TopOpeBRepDS_DataStructure*&   pDS2d);
 static bool         FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                                           const TopoDS_Face&             F,
-                                          TopOpeBRepDS_PDataStructure&   pDS2d);
+                                          TopOpeBRepDS_DataStructure*&   pDS2d);
 
 //-------------------------------------------------------------
 // Unused :
@@ -144,7 +144,7 @@ bool TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const TopoDS_Shape&
 bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                            const TopoDS_Face&             F,
                            const TopoDS_Edge&             E,
-                           TopOpeBRepDS_PDataStructure&   pDS2d)
+                           TopOpeBRepDS_DataStructure*&   pDS2d)
 // purpose : compute new face/face interferences F FTRA,
 //  {I = (T(F),ES,FTRA)} / Fsdm F and ES interferes with E which has splits ON
 //  E is edge of F
@@ -311,7 +311,7 @@ bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 
 bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                            const TopoDS_Face&             F,
-                           TopOpeBRepDS_PDataStructure&   pDS2d)
+                           TopOpeBRepDS_DataStructure*&   pDS2d)
 {
   TopExp_Explorer ex(F, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
@@ -328,7 +328,7 @@ bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 
 //=================================================================================================
 
-Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = nullptr;
+Standard_EXPORT TopOpeBRepDS_DataStructure* GLOBAL_DS2d = nullptr;
 
 //=================================================================================================
 
@@ -342,7 +342,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
   }
   if (GLOBAL_DS2d == nullptr)
   {
-    GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
+    GLOBAL_DS2d = (TopOpeBRepDS_DataStructure*) new TopOpeBRepDS_DataStructure();
   }
   GLOBAL_DS2d->Init();
 
