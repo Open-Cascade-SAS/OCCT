@@ -12,13 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <BSplCLib.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepTools.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomFill_Gordon.hxx>
 #include <GeomFill_NetworkSurface.hxx>
 #include <NCollection_Array1.hxx>
@@ -31,8 +30,6 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
-#include <filesystem>
-#include <string>
 
 namespace
 {
@@ -58,7 +55,9 @@ occ::handle<Geom_BSplineCurve> makeLinearBSpline(const gp_Pnt& theP1, const gp_P
 //! Helper: create a quadratic BSpline curve through 3 control points on [0,1].
 occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
                                                     const gp_Pnt& theP2,
-                                                    const gp_Pnt& theP3)
+                                                    const gp_Pnt& theP3,
+                                                    const double  theFirstParameter = 0.0,
+                                                    const double  theLastParameter  = 1.0)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = theP1;
@@ -66,8 +65,8 @@ occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
   aPoles(3) = theP3;
 
   NCollection_Array1<double> aKnots(1, 2);
-  aKnots(1) = 0.0;
-  aKnots(2) = 1.0;
+  aKnots(1) = theFirstParameter;
+  aKnots(2) = theLastParameter;
 
   NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
@@ -249,6 +248,57 @@ occ::handle<Geom_BSplineCurve> makePeriodicGuide(const double theX)
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
 }
 
+occ::handle<Geom_BSplineCurve> makeClosedBSplineProfile(const double theY,
+                                                        const double theXRadius,
+                                                        const double theZRadius)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 9);
+  aPoles(1) = gp_Pnt(theXRadius, theY, 0.0);
+  aPoles(2) = gp_Pnt(theXRadius, theY, 0.7 * theZRadius);
+  aPoles(3) = gp_Pnt(0.3 * theXRadius, theY, theZRadius);
+  aPoles(4) = gp_Pnt(-0.7 * theXRadius, theY, 0.8 * theZRadius);
+  aPoles(5) = gp_Pnt(-theXRadius, theY, 0.0);
+  aPoles(6) = gp_Pnt(-0.7 * theXRadius, theY, -0.8 * theZRadius);
+  aPoles(7) = gp_Pnt(0.3 * theXRadius, theY, -theZRadius);
+  aPoles(8) = gp_Pnt(theXRadius, theY, -0.7 * theZRadius);
+  aPoles(9) = gp_Pnt(theXRadius, theY, 0.0);
+
+  NCollection_Array1<double> aKnots(1, 7);
+  for (int aKnotIdx = 1; aKnotIdx <= 7; ++aKnotIdx)
+  {
+    aKnots(aKnotIdx) = static_cast<double>(aKnotIdx - 1) / 6.0;
+  }
+
+  NCollection_Array1<int> aMults(1, 7);
+  aMults(1) = 4;
+  aMults(7) = 4;
+  for (int aKnotIdx = 2; aKnotIdx < 7; ++aKnotIdx)
+  {
+    aMults(aKnotIdx) = 1;
+  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, false);
+}
+
+occ::handle<Geom_BSplineCurve> makeInterpolatedPeriodicProfile(const double theY,
+                                                               const int    theSeamShift)
+{
+  constexpr int    THE_NB_POINTS = 8;
+  constexpr double THE_PI        = 3.14159265358979323846;
+
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPoints =
+    new NCollection_HArray1<gp_Pnt>(1, THE_NB_POINTS);
+  for (int aPointIdx = 0; aPointIdx < THE_NB_POINTS; ++aPointIdx)
+  {
+    const double anAngle =
+      2.0 * THE_PI * static_cast<double>(aPointIdx + theSeamShift) / THE_NB_POINTS;
+    aPoints->SetValue(aPointIdx + 1, gp_Pnt(std::cos(anAngle), theY, std::sin(anAngle)));
+  }
+
+  GeomAPI_Interpolate anInterpolator(aPoints, true, Precision::Confusion());
+  anInterpolator.Perform();
+  return anInterpolator.Curve();
+}
+
 //! Helper: create a cubic BSpline through 4 interpolation points on [0,1].
 occ::handle<Geom_BSplineCurve> makeCubicInterpBSpline(const gp_Pnt& theP1,
                                                       const gp_Pnt& theP2,
@@ -332,6 +382,119 @@ void verifyPointOnSurface(const occ::handle<Geom_BSplineSurface>& theSurf,
                            << ", " << aSurfPt.Y() << ", " << aSurfPt.Z()
                            << ") differs from expected (" << theExpected.X() << ", "
                            << theExpected.Y() << ", " << theExpected.Z() << ") by " << aDist;
+}
+
+using HeightFunction = double (*)(double, double);
+
+double wavyHeight(const double theU, const double theV)
+{
+  return 0.35 * std::sin(M_PI * theU) * (0.4 + theV)
+         + 0.12 * std::sin(2.0 * M_PI * theV) * (1.0 - theU);
+}
+
+double saddleHeight(const double theU, const double theV)
+{
+  return 0.6 * (theU - 0.5) * (theV - 0.5) + 0.15 * std::sin(M_PI * theU) * std::sin(M_PI * theV);
+}
+
+double rippleHeight(const double theU, const double theV)
+{
+  return 0.2 * std::sin(2.0 * M_PI * theU) * std::cos(M_PI * theV)
+         + 0.1 * std::sin(3.0 * M_PI * theV);
+}
+
+struct AnalyticNetwork
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> Profiles;
+  NCollection_Array1<occ::handle<Geom_Curve>> Guides;
+
+  AnalyticNetwork(const size_t   theNbProfiles,
+                  const size_t   theNbGuides,
+                  HeightFunction theHeight,
+                  const gp_XYZ&  theOrigin = gp_XYZ(0.0, 0.0, 0.0),
+                  const double   theScale  = 1.0)
+      : Profiles(1, static_cast<int>(theNbProfiles)),
+        Guides(1, static_cast<int>(theNbGuides))
+  {
+    for (size_t aProfileIdx = 0; aProfileIdx < theNbProfiles; ++aProfileIdx)
+    {
+      const double aV = static_cast<double>(aProfileIdx) / static_cast<double>(theNbProfiles - 1);
+      occ::handle<NCollection_HArray1<gp_Pnt>> aPoints =
+        new NCollection_HArray1<gp_Pnt>(1, static_cast<int>(theNbGuides));
+      occ::handle<NCollection_HArray1<double>> aParams =
+        new NCollection_HArray1<double>(1, static_cast<int>(theNbGuides));
+      for (size_t aGuideIdx = 0; aGuideIdx < theNbGuides; ++aGuideIdx)
+      {
+        const double aU = static_cast<double>(aGuideIdx) / static_cast<double>(theNbGuides - 1);
+        aPoints->SetValue(
+          static_cast<int>(aGuideIdx) + 1,
+          gp_Pnt(theOrigin + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
+        aParams->SetValue(static_cast<int>(aGuideIdx) + 1, aU);
+      }
+      GeomAPI_Interpolate anInterpolator(aPoints, aParams, false, Precision::Confusion());
+      anInterpolator.Perform();
+      Profiles.ChangeAt(aProfileIdx) = anInterpolator.Curve();
+    }
+
+    for (size_t aGuideIdx = 0; aGuideIdx < theNbGuides; ++aGuideIdx)
+    {
+      const double aU = static_cast<double>(aGuideIdx) / static_cast<double>(theNbGuides - 1);
+      occ::handle<NCollection_HArray1<gp_Pnt>> aPoints =
+        new NCollection_HArray1<gp_Pnt>(1, static_cast<int>(theNbProfiles));
+      occ::handle<NCollection_HArray1<double>> aParams =
+        new NCollection_HArray1<double>(1, static_cast<int>(theNbProfiles));
+      for (size_t aProfileIdx = 0; aProfileIdx < theNbProfiles; ++aProfileIdx)
+      {
+        const double aV = static_cast<double>(aProfileIdx) / static_cast<double>(theNbProfiles - 1);
+        aPoints->SetValue(
+          static_cast<int>(aProfileIdx) + 1,
+          gp_Pnt(theOrigin + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
+        aParams->SetValue(static_cast<int>(aProfileIdx) + 1, aV);
+      }
+      GeomAPI_Interpolate anInterpolator(aPoints, aParams, false, Precision::Confusion());
+      anInterpolator.Perform();
+      Guides.ChangeAt(aGuideIdx) = anInterpolator.Curve();
+    }
+  }
+};
+
+void verifyUniformNetworkInterpolation(const occ::handle<Geom_BSplineSurface>& theSurface,
+                                       const AnalyticNetwork&                  theNetwork,
+                                       const double                            theTolerance)
+{
+  ASSERT_FALSE(theSurface.IsNull());
+  constexpr size_t THE_NB_SAMPLES = 32;
+  const double     aUMin          = theSurface->UKnot(1);
+  const double     aUMax          = theSurface->UKnot(theSurface->NbUKnots());
+  const double     aVMin          = theSurface->VKnot(1);
+  const double     aVMax          = theSurface->VKnot(theSurface->NbVKnots());
+  for (size_t aProfileIdx = 0; aProfileIdx < theNetwork.Profiles.Size(); ++aProfileIdx)
+  {
+    const double aV = aVMin
+                      + static_cast<double>(aProfileIdx)
+                          / static_cast<double>(theNetwork.Profiles.Size() - 1) * (aVMax - aVMin);
+    for (size_t aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+    {
+      const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+      const double aU     = aUMin + aParam * (aUMax - aUMin);
+      EXPECT_LE(
+        theSurface->Value(aU, aV).Distance(theNetwork.Profiles.At(aProfileIdx)->Value(aParam)),
+        theTolerance);
+    }
+  }
+  for (size_t aGuideIdx = 0; aGuideIdx < theNetwork.Guides.Size(); ++aGuideIdx)
+  {
+    const double aU = aUMin
+                      + static_cast<double>(aGuideIdx)
+                          / static_cast<double>(theNetwork.Guides.Size() - 1) * (aUMax - aUMin);
+    for (size_t aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+    {
+      const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+      const double aV     = aVMin + aParam * (aVMax - aVMin);
+      EXPECT_LE(theSurface->Value(aU, aV).Distance(theNetwork.Guides.At(aGuideIdx)->Value(aParam)),
+                theTolerance);
+    }
+  }
 }
 
 } // namespace
@@ -541,6 +704,77 @@ TEST(GeomFill_Gordon, CurvedBSplineNetwork_ProducesValidSurface)
   EXPECT_NEAR(aMidPt.Z(), 0.3, 1.0e-6) << "Surface should have Z-bump at center";
 }
 
+TEST(GeomFill_Gordon, NonAffineProfileReparametrization_PreservesProfilesAndGuideContinuity)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeCubicInterpBSpline(gp_Pnt(0, 0, 0),
+                                        gp_Pnt(0.25, 0, 0.4),
+                                        gp_Pnt(0.75, 0, -0.3),
+                                        gp_Pnt(1, 0, 0));
+  aProfiles(2) = makeCubicInterpBSpline(gp_Pnt(0, 0.5, 0),
+                                        gp_Pnt(0.25, 0.5, 0.2),
+                                        gp_Pnt(0.75, 0.5, -0.5),
+                                        gp_Pnt(1, 0.5, 0));
+  aProfiles(3) = makeCubicInterpBSpline(gp_Pnt(0, 1, 0),
+                                        gp_Pnt(0.25, 1, 0.5),
+                                        gp_Pnt(0.75, 1, -0.2),
+                                        gp_Pnt(1, 1, 0));
+
+  occ::handle<NCollection_HArray1<gp_Pnt>> aGuidePoints = new NCollection_HArray1<gp_Pnt>(1, 3);
+  aGuidePoints->SetValue(1, aProfiles(1)->Value(0.4));
+  aGuidePoints->SetValue(2, aProfiles(2)->Value(0.5));
+  aGuidePoints->SetValue(3, aProfiles(3)->Value(0.6));
+  occ::handle<NCollection_HArray1<double>> aGuideParams = new NCollection_HArray1<double>(1, 3);
+  aGuideParams->SetValue(1, 0.0);
+  aGuideParams->SetValue(2, 0.5);
+  aGuideParams->SetValue(3, 1.0);
+  GeomAPI_Interpolate anInterpolator(aGuidePoints, aGuideParams, false, Precision::Confusion());
+  anInterpolator.Perform();
+  ASSERT_TRUE(anInterpolator.IsDone());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(aProfiles(1)->Value(0.0), aProfiles(3)->Value(0.0));
+  aGuides(2) = anInterpolator.Curve();
+  aGuides(3) = makeLinearBSpline(aProfiles(1)->Value(1.0), aProfiles(3)->Value(1.0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  const occ::handle<Geom_BSplineSurface>& aSurface = aGordon.Surface();
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
+  const double aMiddleProfileV = 0.5 * (aSurface->VKnot(1) + aSurface->VKnot(aSurface->NbVKnots()));
+  constexpr int THE_NB_SAMPLES = 32;
+  for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+  {
+    const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+    const double aU =
+      aSurface->UKnot(1) + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
+    const double aProfile1Param = aRatio <= 0.5 ? 0.8 * aRatio : 1.2 * aRatio - 0.2;
+    const double aProfile3Param = aRatio <= 0.5 ? 1.2 * aRatio : 0.2 + 0.8 * aRatio;
+
+    EXPECT_LE(aSurface->Value(aU, aSurface->VKnot(1)).Distance(aProfiles(1)->Value(aProfile1Param)),
+              Precision::Confusion());
+    EXPECT_LE(aSurface->Value(aU, aMiddleProfileV).Distance(aProfiles(2)->Value(aRatio)),
+              Precision::Confusion());
+    EXPECT_LE(aSurface->Value(aU, aSurface->VKnot(aSurface->NbVKnots()))
+                .Distance(aProfiles(3)->Value(aProfile3Param)),
+              Precision::Confusion());
+  }
+
+  const double aGuideU = 0.5 * (aSurface->UKnot(1) + aSurface->UKnot(aSurface->NbUKnots()));
+  for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+  {
+    const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+    const double aV =
+      aSurface->VKnot(1) + aRatio * (aSurface->VKnot(aSurface->NbVKnots()) - aSurface->VKnot(1));
+    EXPECT_LE(aSurface->Value(aGuideU, aV).Distance(aGuides(2)->Value(aRatio)),
+              Precision::Confusion());
+  }
+}
+
 TEST(GeomFill_Gordon, MixedCurveTypes_ProducesValidSurface)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
@@ -609,6 +843,78 @@ TEST(GeomFill_Gordon, PeriodicBSplineGuides_AreExpandedBeforeConstruction)
   EXPECT_TRUE(aGordon.Surface()->IsVPeriodic());
 }
 
+TEST(GeomFill_Gordon, InterpolatedPeriodicProfilesWithAlignedSeams_InterpolateWithoutDeviation)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
+  aProfiles(1) = makeInterpolatedPeriodicProfile(0.0, 0);
+  aProfiles(2) = makeInterpolatedPeriodicProfile(1.0, 2);
+
+  const occ::handle<Geom_BSplineCurve> aFirstProfile =
+    occ::down_cast<Geom_BSplineCurve>(aProfiles(1));
+  const occ::handle<Geom_BSplineCurve> aSecondProfile =
+    occ::down_cast<Geom_BSplineCurve>(aProfiles(2));
+  const gp_Pnt                aFirstSeam = aFirstProfile->Value(aFirstProfile->FirstParameter());
+  GeomAPI_ProjectPointOnCurve aSeamProjection(gp_Pnt(aFirstSeam.X(), 1.0, aFirstSeam.Z()),
+                                              aSecondProfile);
+  ASSERT_GT(aSeamProjection.NbPoints(), 0);
+  aSecondProfile->SetOrigin(aSeamProjection.LowerDistanceParameter(), Precision::Confusion());
+  const double aFirstProfileMiddle =
+    0.5 * (aFirstProfile->FirstParameter() + aFirstProfile->LastParameter());
+  const double aSecondProfileMiddle =
+    0.5 * (aSecondProfile->FirstParameter() + aSecondProfile->LastParameter());
+  const gp_Pnt aSecondSeam   = aSecondProfile->Value(aSecondProfile->FirstParameter());
+  const gp_Pnt aFirstMiddle  = aFirstProfile->Value(aFirstProfileMiddle);
+  const gp_Pnt aSecondMiddle = aSecondProfile->Value(aSecondProfileMiddle);
+  ASSERT_LE(aFirstSeam.Distance(gp_Pnt(aSecondSeam.X(), aFirstSeam.Y(), aSecondSeam.Z())),
+            Precision::Confusion());
+  ASSERT_LE(aFirstMiddle.Distance(gp_Pnt(aSecondMiddle.X(), aFirstMiddle.Y(), aSecondMiddle.Z())),
+            Precision::Confusion());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
+                                 aSecondProfile->Value(aSecondProfile->FirstParameter()));
+  aGuides(2) = makeLinearBSpline(aFirstProfile->Value(aFirstProfileMiddle),
+                                 aSecondProfile->Value(aSecondProfileMiddle));
+  aGuides(3) = makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
+                                 aSecondProfile->Value(aSecondProfile->FirstParameter()));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  const occ::handle<Geom_BSplineSurface>& aSurface = aGordon.Surface();
+  EXPECT_TRUE(aSurface->IsUPeriodic());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
+
+  const double aMiddleV = 0.5 * (aSurface->VKnot(1) + aSurface->VKnot(aSurface->NbVKnots()));
+  const Geom_Surface::ResD1 aFirstSeamD1 = aSurface->EvalD1(aSurface->UKnot(1), aMiddleV);
+  const Geom_Surface::ResD1 aLastSeamD1 =
+    aSurface->EvalD1(aSurface->UKnot(aSurface->NbUKnots()), aMiddleV);
+  EXPECT_LE(aFirstSeamD1.D1U.Angle(aLastSeamD1.D1U), Precision::Angular());
+
+  constexpr int THE_NB_SAMPLES = 16;
+  for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+  {
+    const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+    const double aU =
+      aSurface->UKnot(1) + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
+    const double aFirstProfileParam =
+      aFirstProfile->FirstParameter()
+      + aRatio * (aFirstProfile->LastParameter() - aFirstProfile->FirstParameter());
+    const double aSecondProfileParam =
+      aSecondProfile->FirstParameter()
+      + aRatio * (aSecondProfile->LastParameter() - aSecondProfile->FirstParameter());
+    EXPECT_LE(
+      aSurface->Value(aU, aSurface->VKnot(1)).Distance(aFirstProfile->Value(aFirstProfileParam)),
+      Precision::Confusion());
+    EXPECT_LE(aSurface->Value(aU, aSurface->VKnot(aSurface->NbVKnots()))
+                .Distance(aSecondProfile->Value(aSecondProfileParam)),
+              Precision::Confusion());
+  }
+}
+
 TEST(GeomFill_Gordon, MultipleIntersections_SelectsMonotoneBranch)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
@@ -627,10 +933,17 @@ TEST(GeomFill_Gordon, MultipleIntersections_SelectsMonotoneBranch)
 
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
   ASSERT_FALSE(aGordon.Surface().IsNull());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, 1.0e-5);
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, 1.0e-5);
   verifyPointOnSurface(aGordon.Surface(), 0.0, 0.0, gp_Pnt(0.0, 0.0, 0.0), 1.0e-3);
   verifyPointOnSurface(aGordon.Surface(), 1.0, 0.0, gp_Pnt(1.0, 0.0, 0.0), 1.0e-3);
   verifyPointOnSurface(aGordon.Surface(), 0.0, 1.0, gp_Pnt(0.0, 1.0, 0.0), 1.0e-3);
   verifyPointOnSurface(aGordon.Surface(), 1.0, 1.0, gp_Pnt(1.0, 1.0, 0.0), 1.0e-3);
+
+  const gp_Pnt aFirstCenter = aGordon.Surface()->Value(0.5, 0.5);
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_LE(aFirstCenter.Distance(aGordon.Surface()->Value(0.5, 0.5)), Precision::Confusion());
 }
 
 TEST(GeomFill_Gordon, FourByThreeGrid_NonUniformParams)
@@ -1769,6 +2082,34 @@ TEST(GeomFill_Gordon, RationalProfilesWithPolynomialGuidesProducesSurface)
   ASSERT_TRUE(aGordon.IsDone());
   EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_TRUE(aGordon.Surface()->IsURational() || aGordon.Surface()->IsVRational());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, PolynomialProfilesWithRationalGuidesProducesSurface)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  aProfiles(2) = makeLinearBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(1, 0.5, 0));
+  aProfiles(3) = makeLinearBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 0.5, 0), gp_Pnt(0, 1, 0), 0.5);
+  aGuides(2) =
+    makeRationalQuadraticBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 0.5, 0), gp_Pnt(0.5, 1, 0), 0.5);
+  aGuides(3) =
+    makeRationalQuadraticBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 0.5, 0), gp_Pnt(1, 1, 0), 0.5);
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_TRUE(aGordon.Surface()->IsURational() || aGordon.Surface()->IsVRational());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
 }
 
 TEST(GeomFill_Gordon, ApproximateFallbackCanRecoverRationalDegreeOverflow)
@@ -1795,8 +2136,32 @@ TEST(GeomFill_Gordon, ApproximateFallbackCanRecoverRationalDegreeOverflow)
   EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
   EXPECT_TRUE(aGordon.Report().IsApproximate);
   EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
-  EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.015625557595219788, 1.0e-12);
+  EXPECT_LE(aGordon.Report().MaxApproximationDeviation, 0.001);
   EXPECT_FALSE(aGordon.Surface().IsNull());
+
+  constexpr size_t                        THE_NB_QUALITY_SAMPLES = 48;
+  const occ::handle<Geom_BSplineSurface>& aSurface               = aGordon.Surface();
+  const double                            aUMin                  = aSurface->UKnot(1);
+  const double                            aUMax         = aSurface->UKnot(aSurface->NbUKnots());
+  const double                            aVMin         = aSurface->VKnot(1);
+  const double                            aVMax         = aSurface->VKnot(aSurface->NbVKnots());
+  double                                  aMaxDeviation = 0.0;
+  for (size_t aUIdx = 0; aUIdx <= THE_NB_QUALITY_SAMPLES; ++aUIdx)
+  {
+    const double aUParam = static_cast<double>(aUIdx) / THE_NB_QUALITY_SAMPLES;
+    const double aU      = aUMin + aUParam * (aUMax - aUMin);
+    for (size_t aVIdx = 0; aVIdx <= THE_NB_QUALITY_SAMPLES; ++aVIdx)
+    {
+      const double aVParam       = static_cast<double>(aVIdx) / THE_NB_QUALITY_SAMPLES;
+      const double aV            = aVMin + aVParam * (aVMax - aVMin);
+      const gp_Pnt aProfilePoint = aProfiles.At(0)->Value(aUParam);
+      const gp_Pnt aGuidePoint   = aGuides.At(0)->Value(aVParam);
+      const gp_Pnt anExpectedPoint(aProfilePoint.X(), aGuidePoint.Y(), 0.0);
+      aMaxDeviation = std::max(aMaxDeviation, aSurface->Value(aU, aV).Distance(anExpectedPoint));
+    }
+  }
+  // An interior Gordon point combines the independently approximated profile and guide skins.
+  EXPECT_LE(aMaxDeviation, 0.002);
 }
 
 TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
@@ -1826,7 +2191,7 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
   EXPECT_FALSE(aGordon.Report().IsApproximate);
 }
 
-TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
+TEST(GeomFill_Gordon, ExactOnlyReparametrizesRationalCurves)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
   aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
@@ -1843,15 +2208,16 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
   aGordon.Init(aProfiles, aGuides, Precision::Confusion());
   aGordon.Perform();
 
-  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_TRUE(aGordon.IsDone());
   EXPECT_FALSE(aGordon.IsApproximate());
-  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalReparametrizationFailed);
-  EXPECT_EQ(aGordon.Report().Status,
-            GeomFill_Gordon::ResultStatus::RationalReparametrizationFailed);
-  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::Reparametrization);
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
 }
 
-TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
+TEST(GeomFill_Gordon, ApproximationModeUsesExactRationalReparametrizationWhenPossible)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
   aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
@@ -1870,14 +2236,14 @@ TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
   aGordon.Perform();
 
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
-  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
-  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
   EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
   EXPECT_FALSE(aGordon.Surface().IsNull());
 }
 
-TEST(GeomFill_Gordon, ApproximateFallbackRepeatPerformKeepsReportStable)
+TEST(GeomFill_Gordon, ExactRationalReparametrizationRepeatPerformKeepsReportStable)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
   aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
@@ -1896,10 +2262,10 @@ TEST(GeomFill_Gordon, ApproximateFallbackRepeatPerformKeepsReportStable)
 
   aGordon.Perform();
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
-  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
   EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
-  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
   EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
   EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
   EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.0, 1.0e-12);
@@ -1907,10 +2273,10 @@ TEST(GeomFill_Gordon, ApproximateFallbackRepeatPerformKeepsReportStable)
 
   aGordon.Perform();
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
-  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
   EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
-  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
   EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
   EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
   EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.0, 1.0e-12);
@@ -1957,4 +2323,225 @@ TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)
   const occ::handle<Geom_BSplineSurface>& aSurf = aNetwork.Surface();
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->IsVPeriodic());
+}
+
+TEST(GeomFill_Gordon, DenseWavyFiveByFiveNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(5, 5, wavyHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, DenseSaddleSevenByFourNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(7, 4, saddleHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, DenseRippleFourBySevenNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(4, 7, rippleHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, DenseWavyEightByEightNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(8, 8, wavyHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, TranslatedScaledSixByFiveNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(6, 5, rippleHeight, gp_XYZ(1.0e5, -2.0e5, 3.0e5), 250.0);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, 1.0e-5);
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, 1.0e-5);
+}
+
+TEST(GeomFill_Gordon, SmallScaledFiveBySixNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(5, 6, saddleHeight, gp_XYZ(0.0, 0.0, 0.0), 0.01);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, DenseWavyNetwork_ParallelConstructionMatchesSerialQuality)
+{
+  const AnalyticNetwork aNetwork(6, 6, wavyHeight);
+  GeomFill_Gordon       aSerial;
+  aSerial.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aSerial.Perform();
+  ASSERT_TRUE(aSerial.IsDone()) << static_cast<int>(aSerial.Status());
+
+  GeomFill_Gordon aParallel;
+  aParallel.SetParallelMode(true);
+  aParallel.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aParallel.Perform();
+  ASSERT_TRUE(aParallel.IsDone()) << static_cast<int>(aParallel.Status());
+
+  verifyUniformNetworkInterpolation(aSerial.Surface(), aNetwork, Precision::Confusion());
+  verifyUniformNetworkInterpolation(aParallel.Surface(), aNetwork, Precision::Confusion());
+  constexpr size_t THE_NB_SAMPLES = 24;
+  for (size_t aUIdx = 0; aUIdx <= THE_NB_SAMPLES; ++aUIdx)
+  {
+    for (size_t aVIdx = 0; aVIdx <= THE_NB_SAMPLES; ++aVIdx)
+    {
+      const double aU = static_cast<double>(aUIdx) / THE_NB_SAMPLES;
+      const double aV = static_cast<double>(aVIdx) / THE_NB_SAMPLES;
+      EXPECT_LE(aSerial.Surface()->Value(aU, aV).Distance(aParallel.Surface()->Value(aU, aV)),
+                Precision::Confusion());
+    }
+  }
+}
+
+TEST(GeomFill_Gordon, DenseSaddleNetwork_RepeatedPerformMaintainsQuality)
+{
+  const AnalyticNetwork aNetwork(6, 5, saddleHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  const occ::handle<Geom_BSplineSurface> aFirstSurface = aGordon.Surface();
+
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+  constexpr size_t THE_NB_SAMPLES = 24;
+  for (size_t aUIdx = 0; aUIdx <= THE_NB_SAMPLES; ++aUIdx)
+  {
+    for (size_t aVIdx = 0; aVIdx <= THE_NB_SAMPLES; ++aVIdx)
+    {
+      const double aU = static_cast<double>(aUIdx) / THE_NB_SAMPLES;
+      const double aV = static_cast<double>(aVIdx) / THE_NB_SAMPLES;
+      EXPECT_LE(aFirstSurface->Value(aU, aV).Distance(aGordon.Surface()->Value(aU, aV)),
+                Precision::Confusion());
+    }
+  }
+}
+
+TEST(GeomFill_Gordon, DenseRippleNineByThreeNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(9, 3, rippleHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, DenseWavyThreeByNineNetwork_InterpolatesAllInputCurves)
+{
+  const AnalyticNetwork aNetwork(3, 9, wavyHeight);
+  GeomFill_Gordon       aGordon;
+  aGordon.Init(aNetwork.Profiles, aNetwork.Guides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, ClosedBSplineProfilesWithInteriorGuides_ProducePeriodicSurface)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
+  aProfiles(1) = makeClosedBSplineProfile(0.0, 1.0, 1.0);
+  aProfiles(2) = makeClosedBSplineProfile(1.0, 1.15, 0.85);
+  ASSERT_FALSE(occ::down_cast<Geom_BSplineCurve>(aProfiles(1))->IsPeriodic());
+  ASSERT_LE(aProfiles(1)
+              ->Value(aProfiles(1)->FirstParameter())
+              .Distance(aProfiles(1)->Value(aProfiles(1)->LastParameter())),
+            Precision::Confusion());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 4);
+  NCollection_Array1<double>                  aGuideParameters(1, 4);
+  aGuideParameters(1) = 0.12;
+  aGuideParameters(2) = 0.34;
+  aGuideParameters(3) = 0.59;
+  aGuideParameters(4) = 0.83;
+  for (int aGuideIdx = aGuides.Lower(); aGuideIdx <= aGuides.Upper(); ++aGuideIdx)
+  {
+    const double aParameter = aGuideParameters(aGuideIdx);
+    aGuides(aGuideIdx) =
+      makeLinearBSpline(aProfiles(1)->Value(aParameter), aProfiles(2)->Value(aParameter));
+  }
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_TRUE(aGordon.Surface()->IsUPeriodic());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_ClosedNetworkWithNonUnitUParameters_ProducesUPeriodicSurface)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 2);
+  aProfiles(1) = makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(0, 0, 0), 2.0, 5.0);
+  aProfiles(2) = makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(0, 1, 0), 2.0, 5.0);
+
+  NCollection_Array1<double> aGuideParameters(1, 2);
+  aGuideParameters(1) = 2.0;
+  aGuideParameters(2) = 3.5;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  for (int aGuideIdx = aGuides.Lower(); aGuideIdx <= aGuides.Upper(); ++aGuideIdx)
+  {
+    const double aParameter = aGuideParameters(aGuideIdx);
+    aGuides(aGuideIdx) =
+      makeLinearBSpline(aProfiles(1)->Value(aParameter), aProfiles(2)->Value(aParameter));
+  }
+
+  NCollection_Array1<double> aProfileParameters(1, 2);
+  aProfileParameters(1) = 0.0;
+  aProfileParameters(2) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParameters,
+                aGuideParameters,
+                makeIntersectionGrid(aProfiles, aGuideParameters),
+                makeUnitWeightGrid(aProfiles, aGuideParameters),
+                Precision::Confusion(),
+                true,
+                false);
+  aNetwork.Perform();
+
+  ASSERT_TRUE(aNetwork.IsDone()) << static_cast<int>(aNetwork.Status());
+  EXPECT_TRUE(aNetwork.Surface()->IsUPeriodic());
 }

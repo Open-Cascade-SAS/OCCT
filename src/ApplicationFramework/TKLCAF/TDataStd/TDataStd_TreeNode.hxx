@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 
-#include <TDataStd_PtrTreeNode.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
@@ -214,12 +213,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDataStd_TreeNode, TDF_Attribute)
 
 private:
-  TDataStd_PtrTreeNode myFather;
-  TDataStd_PtrTreeNode myPrevious;
-  TDataStd_PtrTreeNode myNext;
-  TDataStd_PtrTreeNode myFirst;
-  TDataStd_PtrTreeNode myLast;
-  Standard_GUID        myTreeID;
+  TDataStd_TreeNode* myFather;
+  TDataStd_TreeNode* myPrevious;
+  TDataStd_TreeNode* myNext;
+  TDataStd_TreeNode* myFirst;
+  TDataStd_TreeNode* myLast;
+  Standard_GUID      myTreeID;
 };
 
 #include <TDataStd_TreeNode.lxx>

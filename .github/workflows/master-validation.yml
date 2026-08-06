@@ -75,10 +75,10 @@ jobs:
         use-vtk: ${{ matrix.config.name == 'MSVC' && 'ON' || 'OFF' }}
         use-tbb: "ON"
 
-  # Windows MinGW builds
+  # Windows MSYS2 builds using packages from the selected system prefix
   windows-mingw:
     if: github.repository == 'Open-Cascade-SAS/OCCT'
-    name: Windows MinGW validation
+    name: Windows MSYS2 ${{ matrix.config.name }} ${{ matrix.build_type }} validation
     runs-on: windows-2025
 
     strategy:
@@ -138,7 +138,7 @@ jobs:
         shell-type: "msys2"
         compiler-flags: ${{ matrix.config.compiler_flags }}
         use-vtk: "OFF"
-        use-tbb: "OFF"
+        use-tbb: "ON"
 
   # Windows ARM64 test lane moved from PR validation.
   windows-arm64-prepare-build:

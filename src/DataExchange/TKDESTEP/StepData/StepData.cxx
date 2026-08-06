@@ -15,12 +15,10 @@
 
 #include <MoniTool_Macros.hxx>
 #include <Interface_Statics.hxx>
-#include <StepData_DefaultGeneral.hxx>
 #include <StepData_FileProtocol.hxx>
 #include <StepData_Protocol.hxx>
 
 StaticHandle(StepData_Protocol, proto);
-// svv #2: StaticHandle(StepData_DefaultGeneral,stmod);
 
 StaticHandleA(StepData_Protocol, theheader);
 

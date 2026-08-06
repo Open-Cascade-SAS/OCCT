@@ -41,6 +41,7 @@
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 
@@ -143,6 +144,35 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersAndWriters)
     }
   }));
   EXPECT_TRUE(allOk);
+}
+
+// Verify that STEP transfer restores the default shape-processing setup when it is missing.
+TEST(STEPCAFControl_ControllerTest, STEPControlWriter_InitializesMissingShapeProcessingParameters)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+
+  STEPControl_Writer aStepWriter;
+  aStepWriter.SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap());
+  ASSERT_TRUE(aStepWriter.GetShapeFixParameters().IsEmpty());
+  EXPECT_EQ(aStepWriter.Transfer(aBox, STEPControl_AsIs), IFSelect_RetDone);
+  EXPECT_FALSE(aStepWriter.GetShapeFixParameters().IsEmpty());
+}
+
+// Verify that XDE transfer uses STEP writer shape-processing defaults when they are missing.
+TEST(STEPCAFControl_ControllerTest,
+     STEPCAFControlWriter_InitializesMissingShapeProcessingParameters)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+
+  occ::handle<TDocStd_Document>        aDoc       = new TDocStd_Document("dummy");
+  const occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  aShapeTool->SetShape(aShapeTool->NewShape(), aBox);
+
+  STEPCAFControl_Writer aStepCAFWriter;
+  aStepCAFWriter.SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap());
+  EXPECT_TRUE(aStepCAFWriter.GetShapeFixParameters().IsEmpty());
+  EXPECT_TRUE(aStepCAFWriter.Transfer(aDoc));
+  EXPECT_FALSE(aStepCAFWriter.GetShapeFixParameters().IsEmpty());
 }
 
 // Test OCC23951: STEPCAFControl_Writer can write an XCAF document with a box

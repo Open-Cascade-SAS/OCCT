@@ -81,6 +81,4 @@ set(OCCT_NCollection_FILES
   NCollection_Vec3.hxx
   NCollection_Vec4.hxx
   NCollection_Vector.hxx
-  NCollection_WinHeapAllocator.cxx
-  NCollection_WinHeapAllocator.hxx
 )
