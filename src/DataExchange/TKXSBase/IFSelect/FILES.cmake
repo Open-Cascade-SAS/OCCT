@@ -2,8 +2,6 @@
 set(OCCT_IFSelect_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_IFSelect_FILES
-  IFSelect.cxx
-  IFSelect.hxx
   IFSelect_Act.cxx
   IFSelect_Act.hxx
   IFSelect_ActFunc.hxx
@@ -11,8 +9,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_Activator.hxx
   IFSelect_AppliedModifiers.cxx
   IFSelect_AppliedModifiers.hxx
-  IFSelect_BasicDumper.cxx
-  IFSelect_BasicDumper.hxx
   IFSelect_CheckCounter.cxx
   IFSelect_CheckCounter.hxx
   IFSelect_ContextModif.cxx
@@ -49,8 +45,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_ListEditor.hxx
   IFSelect_ModelCopier.cxx
   IFSelect_ModelCopier.hxx
-  IFSelect_ModifEditForm.cxx
-  IFSelect_ModifEditForm.hxx
   IFSelect_Modifier.cxx
   IFSelect_Modifier.hxx
   IFSelect_ModifReorder.cxx
@@ -89,8 +83,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_SelectFlag.hxx
   IFSelect_SelectIncorrectEntities.cxx
   IFSelect_SelectIncorrectEntities.hxx
-  IFSelect_SelectInList.cxx
-  IFSelect_SelectInList.hxx
   IFSelect_SelectIntersection.cxx
   IFSelect_SelectIntersection.hxx
   IFSelect_Selection.cxx
@@ -109,18 +101,12 @@ set(OCCT_IFSelect_FILES
   IFSelect_SelectRootComps.hxx
   IFSelect_SelectRoots.cxx
   IFSelect_SelectRoots.hxx
-  IFSelect_SelectSent.cxx
-  IFSelect_SelectSent.hxx
   IFSelect_SelectShared.cxx
   IFSelect_SelectShared.hxx
   IFSelect_SelectSharing.cxx
   IFSelect_SelectSharing.hxx
   IFSelect_SelectSignature.cxx
   IFSelect_SelectSignature.hxx
-  IFSelect_SelectSignedShared.cxx
-  IFSelect_SelectSignedShared.hxx
-  IFSelect_SelectSignedSharing.cxx
-  IFSelect_SelectSignedSharing.hxx
   IFSelect_SelectSuite.cxx
   IFSelect_SelectSuite.hxx
   IFSelect_SelectType.cxx
@@ -130,10 +116,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_SelectUnknownEntities.cxx
   IFSelect_SelectUnknownEntities.hxx
 
-  IFSelect_SessionDumper.cxx
-  IFSelect_SessionDumper.hxx
-  IFSelect_SessionFile.cxx
-  IFSelect_SessionFile.hxx
   IFSelect_SessionPilot.cxx
   IFSelect_SessionPilot.hxx
   IFSelect_ShareOut.cxx
