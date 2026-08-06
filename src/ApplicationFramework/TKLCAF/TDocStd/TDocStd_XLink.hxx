@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TDocStd_XLinkPtr.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
@@ -111,14 +110,14 @@ public:
 
 private:
   //! Sets the field <myNext> with <anXLinkPtr>.
-  void Next(const TDocStd_XLinkPtr& anXLinkPtr);
+  void Next(TDocStd_XLink* const& anXLinkPtr);
 
   //! Returns the contents of the field <myNext>.
-  TDocStd_XLinkPtr Next() const;
+  TDocStd_XLink* Next() const;
 
   TCollection_AsciiString myDocEntry;
   TCollection_AsciiString myLabelEntry;
-  TDocStd_XLinkPtr        myNext;
+  TDocStd_XLink*          myNext;
 };
 
 #include <TDocStd_XLink.lxx>
