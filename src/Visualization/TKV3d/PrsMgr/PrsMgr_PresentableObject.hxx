@@ -21,7 +21,6 @@
 #include <gp_GTrsf.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <NCollection_Sequence.hxx>
 #include <PrsMgr_DisplayStatus.hxx>

@@ -15,7 +15,7 @@
 #ifndef _AIS_Animation_HeaderFile
 #define _AIS_Animation_HeaderFile
 
-#include <AIS_AnimationTimer.hxx>
+#include <Media_Timer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_AsciiString.hxx>
 

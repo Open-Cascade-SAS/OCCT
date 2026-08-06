@@ -6,8 +6,6 @@ set(OCCT_PrsDim_FILES
   PrsDim.hxx
   PrsDim_AngleDimension.cxx
   PrsDim_AngleDimension.hxx
-  PrsDim_Chamf2dDimension.cxx
-  PrsDim_Chamf2dDimension.hxx
   PrsDim_Chamf3dDimension.cxx
   PrsDim_Chamf3dDimension.hxx
   PrsDim_ConcentricRelation.cxx

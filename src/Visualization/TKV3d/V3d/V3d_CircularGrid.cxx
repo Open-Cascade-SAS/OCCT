@@ -59,7 +59,7 @@ private:
 
 //=================================================================================================
 
-V3d_CircularGrid::V3d_CircularGrid(const V3d_ViewerPointer& aViewer,
+V3d_CircularGrid::V3d_CircularGrid(V3d_Viewer* const& aViewer,
                                    const Quantity_Color&    aColor,
                                    const Quantity_Color&    aTenthColor)
     : Aspect_CircularGrid(1., THE_DEFAULT_DIVISION),
