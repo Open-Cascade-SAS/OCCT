@@ -36,11 +36,11 @@
 //
 static TopoDS_Shape MakeShape(const occ::handle<Geom_Surface>&);
 
-static bool HasAncestorFaces(const BOPAlgo_PPaveFiller&,
+static bool HasAncestorFaces(BOPAlgo_PaveFiller* const&,
                              const TopoDS_Shape&,
                              TopoDS_Shape&,
                              TopoDS_Shape&);
-static bool HasAncestorFace(const BOPAlgo_PPaveFiller&, int, const TopoDS_Shape&, TopoDS_Shape&);
+static bool HasAncestorFace(BOPAlgo_PaveFiller* const&, int, const TopoDS_Shape&, TopoDS_Shape&);
 
 //
 //=================================================================================================
@@ -241,7 +241,7 @@ bool BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& aE, TopoDS_Shap
 
 //=================================================================================================
 
-bool HasAncestorFace(const BOPAlgo_PPaveFiller& pPF,
+bool HasAncestorFace(BOPAlgo_PaveFiller* const& pPF,
                      int                        aIndex,
                      const TopoDS_Shape&        aE,
                      TopoDS_Shape&              aF)
@@ -272,7 +272,7 @@ bool HasAncestorFace(const BOPAlgo_PPaveFiller& pPF,
 
 //=================================================================================================
 
-bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
+bool HasAncestorFaces(BOPAlgo_PaveFiller* const& pPF,
                       const TopoDS_Shape&        aEx,
                       TopoDS_Shape&              aF1,
                       TopoDS_Shape&              aF2)
@@ -281,7 +281,7 @@ bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
   int                                                      aNbFF, i, j, nE, nF1, nF2, aNbVC;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  const BOPDS_PDS&                          pDS  = pPF->PDS();
+  BOPDS_DS* const&                           pDS = pPF->PDS();
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   // section edges

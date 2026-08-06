@@ -150,7 +150,7 @@ bool BOPDS_Iterator::RunParallel() const
 
 //=================================================================================================
 
-void BOPDS_Iterator::SetDS(const BOPDS_PDS& aDS)
+void BOPDS_Iterator::SetDS(BOPDS_DS* const& aDS)
 {
   myDS = aDS;
 }

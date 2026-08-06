@@ -24,7 +24,6 @@
 #include <BOPDS_IteratorSI.hxx>
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
-#include <BOPDS_PIteratorSI.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <BRep_Tool.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -139,7 +138,7 @@ void BOPAlgo_CheckerSI::Init(const Message_ProgressRange& /*theRange*/)
   myContext = new IntTools_Context;
   //
   // 3.myIterator
-  BOPDS_PIteratorSI theIterSI = new BOPDS_IteratorSI(myAllocator);
+  BOPDS_IteratorSI* theIterSI = new BOPDS_IteratorSI(myAllocator);
   theIterSI->SetDS(myDS);
   theIterSI->Prepare(myContext, myUseOBB, myFuzzyValue);
   theIterSI->UpdateByLevelOfCheck(myLevelOfCheck);

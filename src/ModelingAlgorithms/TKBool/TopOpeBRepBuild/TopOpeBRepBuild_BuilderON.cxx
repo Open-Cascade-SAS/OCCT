@@ -80,8 +80,8 @@ Standard_EXPORT void debfillonfemess3d(const int f, const int e)
 
 Standard_EXPORT void debfillonfemess(const int                           iFOR,
                                      const int                           iEG,
-                                     const TopOpeBRepBuild_PBuilder&     PB,
-                                     const TopOpeBRepBuild_PWireEdgeSet& PWES,
+                                     TopOpeBRepBuild_Builder* const&     PB,
+                                     TopOpeBRepBuild_WireEdgeSet* const& PWES,
                                      const TCollection_AsciiString&      str)
 {
   PB->GdumpSHASTA(iEG, TopAbs_ON, *PWES, str);
@@ -92,8 +92,8 @@ Standard_EXPORT void debaddpwes(const int                           iFOR,
                                 const TopAbs_State                  TB1,
                                 const int                           iEG,
                                 const TopAbs_Orientation            neworiE,
-                                const TopOpeBRepBuild_PBuilder&     PB,
-                                const TopOpeBRepBuild_PWireEdgeSet& PWES,
+                                TopOpeBRepBuild_Builder* const&     PB,
+                                TopOpeBRepBuild_WireEdgeSet* const& PWES,
                                 const TCollection_AsciiString&      str1,
                                 const TCollection_AsciiString&      str2)
 {
@@ -144,22 +144,22 @@ TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON() = default;
 
 //=================================================================================================
 
-TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON(const TopOpeBRepBuild_PBuilder&     PB,
+TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON(TopOpeBRepBuild_Builder* const&     PB,
                                                      const TopoDS_Shape&                 FOR,
-                                                     const TopOpeBRepBuild_PGTopo&       PG,
-                                                     const TopOpeBRepTool_Plos&          PLSclass,
-                                                     const TopOpeBRepBuild_PWireEdgeSet& PWES)
+                                                     TopOpeBRepBuild_GTopo* const&       PG,
+                                     NCollection_List<TopoDS_Shape>* const& PLSclass,
+                                                     TopOpeBRepBuild_WireEdgeSet* const& PWES)
 {
   Perform(PB, FOR, PG, PLSclass, PWES);
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_BuilderON::Perform(const TopOpeBRepBuild_PBuilder&     PB,
+void TopOpeBRepBuild_BuilderON::Perform(TopOpeBRepBuild_Builder* const&     PB,
                                         const TopoDS_Shape&                 FOR,
-                                        const TopOpeBRepBuild_PGTopo&       PG,
-                                        const TopOpeBRepTool_Plos&          PLSclass,
-                                        const TopOpeBRepBuild_PWireEdgeSet& PWES)
+                                        TopOpeBRepBuild_GTopo* const&       PG,
+                                        NCollection_List<TopoDS_Shape>* const& PLSclass,
+                                        TopOpeBRepBuild_WireEdgeSet* const& PWES)
 {
   myPB       = PB;
   myFace     = FOR;
@@ -409,7 +409,7 @@ bool FUN_keepEON(const TopOpeBRepBuild_Builder&,
   return keep3;
 }
 
-Standard_EXPORT TopAbs_State FUN_build_TB(const TopOpeBRepBuild_PBuilder& PB, const int rank)
+Standard_EXPORT TopAbs_State FUN_build_TB(TopOpeBRepBuild_Builder* const& PB, const int rank)
 {
   bool         opeFus = PB->Opefus();
   bool         opec12 = PB->Opec12();
