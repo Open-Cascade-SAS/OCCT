@@ -38,7 +38,6 @@
 #include <TopOpeBRepDS_InterferenceTool.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
-#include <TopOpeBRepTool_defineG.hxx>
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
@@ -76,13 +75,13 @@ static void FUN_traceGLine(const TopOpeBRep_LineInter&) {}
 #define CLOSING (5)
 
 Standard_EXPORT void FUN_GetdgData(
-  TopOpeBRepDS_PDataStructure& pDS,
+  TopOpeBRepDS_DataStructure*& pDS,
   const TopOpeBRep_LineInter&  L,
   const TopoDS_Face&           F1,
   const TopoDS_Face&           F2,
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     datamap);
-Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_PDataStructure pDS);
+Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_DataStructure* pDS);
 
 #define M_FINDVP (0)  // only look for new vp
 #define M_MKNEWVP (1) // only make newvp
@@ -165,7 +164,7 @@ static bool FUN_IwithToniS(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
   return ok;
 }
 
-static bool FUN_supponF(const TopOpeBRepDS_PDataStructure                               pDS,
+static bool FUN_supponF(TopOpeBRepDS_DataStructure*                               pDS,
                         const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
                         const int                                                       iF,
                         NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lIsupponF,
@@ -200,7 +199,7 @@ static bool FUN_supponF(const TopOpeBRepDS_PDataStructure                       
   return losupp.Extent() >= 1;
 }
 
-static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure                         pDS,
+static bool FUN_IoflSsuppS(TopOpeBRepDS_DataStructure*                         pDS,
                            const int                                                 iS,
                            const NCollection_List<int>&                              lShape,
                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& IsuppiS)
@@ -225,7 +224,7 @@ static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure                    
 // purpose : The compute of a transition edge/face given interferences
 //           attached to the edge (stored in the DS).
 //=======================================================================
-static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
+static bool FUN_findTF(TopOpeBRepDS_DataStructure* pDS,
                        const int                         iE,
                        const int,
                        const int                iOOF,
@@ -333,7 +332,7 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
   return ok;
 }
 
-static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
+static bool FUN_findTOOF(TopOpeBRepDS_DataStructure* pDS,
                          const int                         iE,
                          const int                         iF,
                          const int                         iOOF,

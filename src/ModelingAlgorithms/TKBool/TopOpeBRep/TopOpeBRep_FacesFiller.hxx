@@ -22,27 +22,27 @@
 #include <Standard_Handle.hxx>
 
 #include <TopAbs_Orientation.hxx>
-#include <TopOpeBRep_PFacesIntersector.hxx>
-#include <TopOpeBRepDS_PDataStructure.hxx>
 #include <Standard_Integer.hxx>
-#include <TopOpeBRep_PLineInter.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopAbs_State.hxx>
 class TopOpeBRepDS_HDataStructure;
+class TopOpeBRepDS_DataStructure;
 class TopOpeBRep_FFDumper;
+class TopOpeBRep_FacesIntersector;
 class TopoDS_Shape;
 class TopOpeBRep_VPointInter;
 class TopOpeBRep_VPointInterClassifier;
 class TopOpeBRep_VPointInterIterator;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Point;
+class TopOpeBRep_LineInter;
 class gp_Pnt;
+class TopOpeBRepTool_ShapeClassifier;
 
 //! Fills a DataStructure from TopOpeBRepDS with the result
 //! of Face/Face intersection described by FacesIntersector from TopOpeBRep.
@@ -67,10 +67,10 @@ public:
   Standard_EXPORT TopOpeBRep_PointClassifier& ChangePointClassifier();
 
   //! return field myPShapeClassifier.
-  Standard_EXPORT TopOpeBRepTool_PShapeClassifier PShapeClassifier() const;
+  Standard_EXPORT TopOpeBRepTool_ShapeClassifier* PShapeClassifier() const;
 
   //! set field myPShapeClassifier.
-  Standard_EXPORT void SetPShapeClassifier(const TopOpeBRepTool_PShapeClassifier& PSC);
+  Standard_EXPORT void SetPShapeClassifier(TopOpeBRepTool_ShapeClassifier* const& PSC);
 
   Standard_EXPORT void LoadLine(TopOpeBRep_LineInter& L);
 
@@ -213,11 +213,11 @@ public:
 
   Standard_EXPORT const TopOpeBRepDS_Transition& FaceFaceTransition(const int I) const;
 
-  Standard_EXPORT TopOpeBRep_PFacesIntersector PFacesIntersectorDummy() const;
+  Standard_EXPORT TopOpeBRep_FacesIntersector* PFacesIntersectorDummy() const;
 
-  Standard_EXPORT TopOpeBRepDS_PDataStructure PDataStructureDummy() const;
+  Standard_EXPORT TopOpeBRepDS_DataStructure* PDataStructureDummy() const;
 
-  Standard_EXPORT TopOpeBRep_PLineInter PLineInterDummy() const;
+  Standard_EXPORT TopOpeBRep_LineInter* PLineInterDummy() const;
 
   Standard_EXPORT void SetTraceIndex(const int exF1, const int exF2);
 
@@ -287,11 +287,11 @@ private:
   TopoDS_Face                              myF2;
   TopAbs_Orientation                       myF1ori;
   TopAbs_Orientation                       myF2ori;
-  TopOpeBRep_PFacesIntersector             myFacesIntersector;
+  TopOpeBRep_FacesIntersector*             myFacesIntersector;
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopOpeBRepDS_PDataStructure              myDS;
+  TopOpeBRepDS_DataStructure*              myDS;
   int                                      myFFfirstDSP;
-  TopOpeBRep_PLineInter                    myLine;
+  TopOpeBRep_LineInter*                    myLine;
   bool                                     myLineOK;
   bool                                     myLineINL;
   TopOpeBRepDS_Transition                  myLineTonF1;
@@ -305,7 +305,7 @@ private:
   int                                                      myDSCIndex;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myDSCIL;
   TopOpeBRep_PointClassifier                               myPointClassifier;
-  TopOpeBRepTool_PShapeClassifier                          myPShapeClassifier;
+  TopOpeBRepTool_ShapeClassifier*                         myPShapeClassifier;
   int                                                      myexF1;
   int                                                      myexF2;
   occ::handle<TopOpeBRep_FFDumper>                         myHFFD;

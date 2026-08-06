@@ -36,7 +36,6 @@
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
-#include <TNaming_PtrNode.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_SameShapeIterator.hxx>
 #include <TNaming_Tool.hxx>
@@ -62,7 +61,7 @@ const Standard_GUID& TNaming_NamedShape::GetID()
 class TNaming_Node
 {
 public:
-  TNaming_Node(TNaming_PtrRefShape Old, TNaming_PtrRefShape New)
+  TNaming_Node(TNaming_RefShape* Old, TNaming_RefShape* New)
       : myOld(Old),
         myNew(New),
         myAtt(nullptr),
@@ -89,12 +88,12 @@ public:
   // Memory management
   DEFINE_STANDARD_ALLOC
 
-  TNaming_PtrRefShape myOld;
-  TNaming_PtrRefShape myNew;
+  TNaming_RefShape*   myOld;
+  TNaming_RefShape*   myNew;
   TNaming_NamedShape* myAtt;
-  TNaming_PtrNode     nextSameAttribute;
-  TNaming_PtrNode     nextSameOld;
-  TNaming_PtrNode     nextSameNew;
+  TNaming_Node*       nextSameAttribute;
+  TNaming_Node*       nextSameOld;
+  TNaming_Node*       nextSameNew;
 };
 
 //=================================================================================================
@@ -171,7 +170,7 @@ TopoDS_Shape TNaming_NamedShape::Get() const
 
 static void RemoveNode(
   bool                                                                             MapExist,
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& M,
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& M,
   TNaming_Node*&                                                                   N)
 {
   TNaming_RefShape* pos = N->myOld;
@@ -284,7 +283,7 @@ void TNaming_NamedShape::Clear()
 
   occ::handle<TNaming_UsedShapes> US;
 
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>* M = nullptr;
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>* M = nullptr;
 
   // Recuperation de la map si celle-ci n est pas deja detruite.
   // bool MapExist = Ins.FindInRoot(TNaming_UsedShapes::GetID(),US);
@@ -342,7 +341,7 @@ bool TNaming_NamedShape::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttD
   {
     occ::handle<TNaming_UsedShapes> US;
 
-    NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>* M = nullptr;
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>* M = nullptr;
 
     // Recuperation de la map si celle-ci n est pas deja detruite.
     // bool MapExist = Ins.FindInRoot(TNaming_UsedShapes::GetID(),US);

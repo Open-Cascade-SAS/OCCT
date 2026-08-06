@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopOpeBRep_PFacesFiller.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -29,6 +28,7 @@
 #include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 class TopOpeBRep_LineInter;
+class TopOpeBRep_FacesFiller;
 class TopOpeBRep_VPointInter;
 class TopoDS_Shape;
 
@@ -36,9 +36,9 @@ class TopOpeBRep_FFDumper : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller& PFF);
+  Standard_EXPORT TopOpeBRep_FFDumper(TopOpeBRep_FacesFiller* const& PFF);
 
-  Standard_EXPORT void Init(const TopOpeBRep_PFacesFiller& PFF);
+  Standard_EXPORT void Init(TopOpeBRep_FacesFiller* const& PFF);
 
   Standard_EXPORT void DumpLine(const int I);
 
@@ -55,12 +55,12 @@ public:
                                const int                     G,
                                const bool                    newinDS) const;
 
-  Standard_EXPORT TopOpeBRep_PFacesFiller PFacesFillerDummy() const;
+  Standard_EXPORT TopOpeBRep_FacesFiller* PFacesFillerDummy() const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRep_FFDumper, Standard_Transient)
 
 private:
-  TopOpeBRep_PFacesFiller                                         myPFF;
+  TopOpeBRep_FacesFiller*                                         myPFF;
   TopoDS_Face                                                     myF1;
   TopoDS_Face                                                     myF2;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myEM1;

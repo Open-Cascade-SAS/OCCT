@@ -6,7 +6,6 @@ set(OCCT_StdPrs_FILES
   StdPrs_BRepFont.hxx
   StdPrs_BRepTextBuilder.cxx
   StdPrs_BRepTextBuilder.hxx
-  StdPrs_BndBox.hxx
   StdPrs_Curve.cxx
   StdPrs_Curve.hxx
   StdPrs_DeflectionCurve.cxx
@@ -24,12 +23,8 @@ set(OCCT_StdPrs_FILES
   StdPrs_Plane.cxx
   StdPrs_Plane.hxx
   StdPrs_Point.hxx
-  StdPrs_PoleCurve.cxx
-  StdPrs_PoleCurve.hxx
   StdPrs_ShadedShape.cxx
   StdPrs_ShadedShape.hxx
-  StdPrs_ShadedSurface.cxx
-  StdPrs_ShadedSurface.hxx
   StdPrs_ShapeTool.cxx
   StdPrs_ShapeTool.hxx
   StdPrs_ToolPoint.cxx
@@ -38,20 +33,7 @@ set(OCCT_StdPrs_FILES
   StdPrs_ToolRFace.hxx
   StdPrs_ToolTriangulatedShape.cxx
   StdPrs_ToolTriangulatedShape.hxx
-  StdPrs_ToolVertex.cxx
-  StdPrs_ToolVertex.hxx
-  StdPrs_Vertex.hxx
   StdPrs_Volume.hxx
-  StdPrs_WFDeflectionRestrictedFace.cxx
-  StdPrs_WFDeflectionRestrictedFace.hxx
-  StdPrs_WFDeflectionSurface.cxx
-  StdPrs_WFDeflectionSurface.hxx
-  StdPrs_WFPoleSurface.cxx
-  StdPrs_WFPoleSurface.hxx
-  StdPrs_WFRestrictedFace.cxx
-  StdPrs_WFRestrictedFace.hxx
   StdPrs_WFShape.cxx
   StdPrs_WFShape.hxx
-  StdPrs_WFSurface.cxx
-  StdPrs_WFSurface.hxx
 )

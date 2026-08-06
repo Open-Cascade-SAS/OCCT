@@ -49,8 +49,6 @@ set(OCCT_LocOpe_FILES
   LocOpe_RevolutionForm.cxx
   LocOpe_RevolutionForm.hxx
 
-  LocOpe_SplitDrafts.cxx
-  LocOpe_SplitDrafts.hxx
   LocOpe_Spliter.cxx
   LocOpe_Spliter.hxx
   LocOpe_Spliter.lxx

@@ -25,7 +25,7 @@
 
 #include <V3d_View.hxx>
 
-#include <BRepOffsetAPI_Sewing.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 
 #include <AIS_InteractiveObject.hxx>
 #include <NCollection_List.hxx>
@@ -47,7 +47,7 @@ static int OCC162(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   double               tolValue = 0.0001;
-  BRepOffsetAPI_Sewing sew(tolValue);
+  BRepBuilderAPI_Sewing sew(tolValue);
   sew.Add(aShape);
   sew.Perform();
   TopoDS_Shape aSewed = sew.SewedShape();

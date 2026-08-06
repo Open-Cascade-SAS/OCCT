@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRep_PThePointOfIntersection.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Shape.hxx>
@@ -28,6 +27,7 @@
 #include <Standard_OStream.hxx>
 class gp_Pnt;
 class gp_Pnt2d;
+class IntPatch_Point;
 class TopoDS_Edge;
 class TopoDS_Face;
 
@@ -174,10 +174,10 @@ public:
                                          const TopoDS_Face& F2,
                                          Standard_OStream&  OS) const;
 
-  Standard_EXPORT TopOpeBRep_PThePointOfIntersection PThePointOfIntersectionDummy() const;
+  Standard_EXPORT IntPatch_Point* PThePointOfIntersectionDummy() const;
 
 private:
-  TopOpeBRep_PThePointOfIntersection myPPOI;
+  IntPatch_Point*                   myPPOI;
   int                                myShapeIndex;
   TopAbs_State                       myState1;
   TopAbs_State                       myState2;

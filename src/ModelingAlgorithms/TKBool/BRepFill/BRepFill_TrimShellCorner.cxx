@@ -73,7 +73,7 @@ static bool FindCommonVertex(const TopoDS_Edge&   theFirstEdge,
                              const TopoDS_Vertex& theLastVertex,
                              TopoDS_Vertex&       theCommonVertex);
 
-static bool FindCommonVertex(const BOPDS_PDS& theDS,
+static bool FindCommonVertex(BOPDS_DS* const& theDS,
                              const int        theEIndex1,
                              const int        theEIndex2,
                              const gp_Vec&    theCrossDirection,
@@ -83,7 +83,7 @@ static bool FindCommonVertex(const BOPDS_PDS& theDS,
 
 static bool SplitUEdges(
   const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theUEdges,
-  const BOPDS_PDS&                                      theDS,
+  BOPDS_DS* const&                                      theDS,
   const gp_Vec&                                         theCrossDirection,
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theHistMap);
@@ -126,7 +126,7 @@ static bool FindNextEdge(
 static bool FindVertex(
   const TopoDS_Edge& theEdge,
   const int          theRank,
-  const BOPDS_PDS&   theDS,
+  BOPDS_DS* const&   theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                  theHistMap,
   TopoDS_Vertex& theVertex,
@@ -134,13 +134,13 @@ static bool FindVertex(
 
 static bool FindNextVertex(const int         theEdgeIndex,
                            const BOPDS_Pave& thePrevPave,
-                           const BOPDS_PDS&  theDS,
+                           BOPDS_DS* const&  theDS,
                            TopoDS_Vertex&    theNextVertex,
                            BOPDS_Pave&       thePave);
 
 static bool GetPave(const int        theEdgeIndex,
                     const bool       isFirst,
-                    const BOPDS_PDS& theDS,
+                    BOPDS_DS* const& theDS,
                     BOPDS_Pave&      thePave);
 
 static bool FindFromUEdge(
@@ -153,7 +153,7 @@ static bool FindFromUEdge(
   const int              theRank,
   const TopoDS_Edge&     theBoundEdge,
   const int              theBoundEdgeIndex,
-  const BOPDS_PDS&       theDS,
+  BOPDS_DS* const&       theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                                   theHistMap,
   TopoDS_Compound&                theSecEdgesNew,
@@ -171,7 +171,7 @@ static bool FindFromVEdge(
   const int              theRank,
   const TopoDS_Edge&     theBoundEdge,
   const int              theBoundEdgeIndex,
-  const BOPDS_PDS&       theDS,
+  BOPDS_DS* const&       theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                                   theHistMap,
   NCollection_List<TopoDS_Shape>& theListOfWireEdges,
@@ -183,7 +183,7 @@ static void RemoveEdges(const TopoDS_Compound&                theSourceComp,
 
 static bool FilterSectionEdges(const NCollection_DynamicArray<BOPDS_Curve>& theBCurves,
                                const TopoDS_Face&                           theSecPlane,
-                               const BOPDS_PDS&                             theDS,
+                               BOPDS_DS* const&                             theDS,
                                TopoDS_Compound&                             theResult);
 
 static bool GetUEdges(const int                                             theIndex,
@@ -330,7 +330,7 @@ void BRepFill_TrimShellCorner::Perform()
     return;
   }
   //
-  const BOPDS_PDS& theDS = aPF.PDS();
+  BOPDS_DS* const& theDS = aPF.PDS();
   //
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = theDS->InterfFF();
   int                                       aNbFFs = aFFs.Length();
@@ -441,7 +441,7 @@ void BRepFill_TrimShellCorner::Modified(const TopoDS_Shape&             theShape
 // purpose:         Updates <myHistMap> by new faces in the case when old faces do not intersect
 // ----------------------------------------------------------------------------------------------------
 bool BRepFill_TrimShellCorner::MakeFacesNonSec(const int        theIndex,
-                                               const BOPDS_PDS& theDS,
+                                               BOPDS_DS* const& theDS,
                                                const int        theFaceIndex1,
                                                const int        theFaceIndex2)
 {
@@ -787,7 +787,7 @@ bool BRepFill_TrimShellCorner::MakeFacesNonSec(const int        theIndex,
 // purpose:  Updates <myHistMap> by new faces in the case when old faces intersect each other
 // ----------------------------------------------------------------------------------------------------
 bool BRepFill_TrimShellCorner::MakeFacesSec(const int        theIndex,
-                                            const BOPDS_PDS& theDS,
+                                            BOPDS_DS* const& theDS,
                                             const int        theFaceIndex1,
                                             const int        theFaceIndex2,
                                             const int        theSSInterfIndex)
@@ -1288,7 +1288,7 @@ bool BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape&  Comp,
 
 bool SplitUEdges(
   const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theUEdges,
-  const BOPDS_PDS&                                      theDS,
+  BOPDS_DS* const&                                      theDS,
   const gp_Vec&                                         theCrossDirection,
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theHistMap)
@@ -1437,7 +1437,7 @@ void FindFreeVertices(
 
 //=================================================================================================
 
-bool FindCommonVertex(const BOPDS_PDS& theDS,
+bool FindCommonVertex(BOPDS_DS* const& theDS,
                       const int        theEIndex1,
                       const int        theEIndex2,
                       const gp_Vec&    theCrossDirection,
@@ -1829,7 +1829,7 @@ bool CheckAndOrientEdges(const NCollection_List<TopoDS_Shape>& theOrderedList,
 bool FindVertex(
   const TopoDS_Edge& theEdge,
   const int          theRank,
-  const BOPDS_PDS&   theDS,
+  BOPDS_DS* const&   theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                  theHistMap,
   TopoDS_Vertex& theVertex,
@@ -1888,7 +1888,7 @@ bool FindVertex(
 
 bool FindNextVertex(const int         theEdgeIndex,
                     const BOPDS_Pave& thePrevPave,
-                    const BOPDS_PDS&  theDS,
+                    BOPDS_DS* const&  theDS,
                     TopoDS_Vertex&    theNextVertex,
                     BOPDS_Pave&       thePave)
 {
@@ -1932,7 +1932,7 @@ bool FindNextVertex(const int         theEdgeIndex,
 
 bool GetPave(const int        theEdgeIndex,
              const bool       isFirst,
-             const BOPDS_PDS& theDS,
+             BOPDS_DS* const& theDS,
              BOPDS_Pave&      thePave)
 {
 
@@ -1969,7 +1969,7 @@ bool FindFromUEdge(
   const int              theRank,
   const TopoDS_Edge&     theBoundEdge,
   const int              theBoundEdgeIndex,
-  const BOPDS_PDS&       theDS,
+  BOPDS_DS* const&       theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                                   theHistMap,
   TopoDS_Compound&                theSecEdgesNew,
@@ -2080,7 +2080,7 @@ bool FindFromVEdge(
   const int              theRank,
   const TopoDS_Edge&     theBoundEdge,
   const int              theBoundEdgeIndex,
-  const BOPDS_PDS&       theDS,
+  BOPDS_DS* const&       theDS,
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                                   theHistMap,
   NCollection_List<TopoDS_Shape>& theListOfWireEdges,
@@ -2548,7 +2548,7 @@ void RemoveEdges(const TopoDS_Compound&                theSourceComp,
 
 bool FilterSectionEdges(const NCollection_DynamicArray<BOPDS_Curve>& theBCurves,
                         const TopoDS_Face&                           theSecPlane,
-                        const BOPDS_PDS&                             theDS,
+                        BOPDS_DS* const&                             theDS,
                         TopoDS_Compound&                             theResult)
 {
 

@@ -9,15 +9,9 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_Bipoint.hxx
 
   TopOpeBRep_define.hxx
-  TopOpeBRep_DSFiller.cxx
-  TopOpeBRep_DSFiller.hxx
-  TopOpeBRep_EdgesFiller.cxx
-  TopOpeBRep_EdgesFiller.hxx
   TopOpeBRep_EdgesIntersector.cxx
   TopOpeBRep_EdgesIntersector.hxx
   TopOpeBRep_EdgesIntersector_1.cxx
-  TopOpeBRep_FaceEdgeFiller.cxx
-  TopOpeBRep_FaceEdgeFiller.hxx
   TopOpeBRep_FaceEdgeFiller_DEB.cxx
   TopOpeBRep_FaceEdgeIntersector.cxx
   TopOpeBRep_FaceEdgeIntersector.hxx
@@ -44,11 +38,6 @@ set(OCCT_TopOpeBRep_FILES
 
   TopOpeBRep_mergePDS.cxx
   TopOpeBRep_P2Dstatus.hxx
-  TopOpeBRep_PEdgesIntersector.hxx
-  TopOpeBRep_PFacesFiller.hxx
-  TopOpeBRep_PFacesIntersector.hxx
-  TopOpeBRep_PIntRes2d_IntersectionPoint.hxx
-  TopOpeBRep_PLineInter.hxx
   TopOpeBRep_Point2d.cxx
   TopOpeBRep_Point2d.hxx
   TopOpeBRep_Point2d.lxx
@@ -56,23 +45,13 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_PointClassifier.hxx
   TopOpeBRep_PointGeomTool.cxx
   TopOpeBRep_PointGeomTool.hxx
-  TopOpeBRep_PPntOn2S.hxx
   TopOpeBRep_ProcessGR.cxx
   TopOpeBRep_ProcessSectionEdges.cxx
-  TopOpeBRep_PThePointOfIntersection.hxx
 
-  TopOpeBRep_ShapeIntersector.cxx
-  TopOpeBRep_ShapeIntersector.hxx
-  TopOpeBRep_ShapeIntersector2d.cxx
-  TopOpeBRep_ShapeIntersector2d.hxx
-  TopOpeBRep_ShapeScanner.cxx
-  TopOpeBRep_ShapeScanner.hxx
   TopOpeBRep_sort.cxx
   TopOpeBRep_trace.cxx
   TopOpeBRep_traceALWL.cxx
   TopOpeBRep_traceBOOPNINT.cxx
-  TopOpeBRep_traceSIFF.cxx
-  TopOpeBRep_traceSIFF.hxx
   TopOpeBRep_TypeLineCurve.hxx
   TopOpeBRep_VPointInter.cxx
   TopOpeBRep_VPointInter.hxx

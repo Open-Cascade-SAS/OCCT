@@ -9,15 +9,11 @@ set(OCCT_ShapeFix_FILES
 
   ShapeFix_Edge.cxx
   ShapeFix_Edge.hxx
-  ShapeFix_EdgeConnect.cxx
-  ShapeFix_EdgeConnect.hxx
   ShapeFix_EdgeProjAux.cxx
   ShapeFix_EdgeProjAux.hxx
   ShapeFix_Face.cxx
   ShapeFix_Face.hxx
   ShapeFix_Face.lxx
-  ShapeFix_FaceConnect.cxx
-  ShapeFix_FaceConnect.hxx
   ShapeFix_FixSmallFace.cxx
   ShapeFix_FixSmallFace.hxx
   ShapeFix_FixSmallSolid.cxx

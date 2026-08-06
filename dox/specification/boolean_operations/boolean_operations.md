@@ -499,7 +499,7 @@ The information about pave blocks is stored in objects of type *BOPDS_PaveBlock*
 | *myCommonBlock* | The reference to common block (in terms of *BOPDS_CommonBlock*) if  the pave block is a common block |
 | *myShrunkData* | The shrunk range of the pave block |
 
-* To be bound to an edge (or intersection curve) the structures of type *BOPDS_PaveBlock* are stored in one container of list type <i>(BOPDS_ListOfPaveBlock)</i>.
+* To be bound to an edge (or intersection curve) the structures of type *BOPDS_PaveBlock* are stored in one container of list type <i>(NCollection_List&lt;occ::handle&lt;BOPDS_PaveBlock&gt;&gt;)</i>.
 * In case of edge, all the lists of pave blocks above are stored in one container of array type. The array allows getting the access to the information by index of the list of pave blocks for the edge. This index (if exists) is stored in the field *myReference*.
 
 The information about common block is stored in objects of type *BOPDS_CommonBlock*.
@@ -3559,5 +3559,4 @@ baddtools b2
 # 4 means Section operation
 bapibop r 4
 ~~~~
-
 
