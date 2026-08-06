@@ -22,7 +22,7 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 
 class OpenGl_FrameBuffer;
 class OpenGl_Structure;
@@ -85,12 +85,12 @@ public:
                                       const Graphic3d_DisplayPriority theNewPriority);
 
   //! Returns reference to the layer with given ID.
-  OpenGl_Layer& Layer(const Graphic3d_ZLayerId theLayerId) { return *myLayerIds.Find(theLayerId); }
+  OpenGl_Layer& Layer(const Graphic3d_ZLayerId theLayerId) { return *findLayer(theLayerId); }
 
   //! Returns reference to the layer with given ID.
   const OpenGl_Layer& Layer(const Graphic3d_ZLayerId theLayerId) const
   {
-    return *myLayerIds.Find(theLayerId);
+    return *findLayer(theLayerId);
   }
 
   //! Assign new settings to the layer.
@@ -109,14 +109,8 @@ public:
                               OpenGl_FrameBuffer*                  theReadDrawFbo,
                               OpenGl_FrameBuffer*                  theOitAccumFbo) const;
 
-  //! Returns the set of OpenGL Z-layers.
-  const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const { return myLayers; }
-
-  //! Returns the map of Z-layer IDs to indexes.
-  const NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>>& LayerIDs() const
-  {
-    return myLayerIds;
-  }
+  //! Returns the list of Z-layers in render order.
+  const NCollection_LinearVector<occ::handle<Graphic3d_Layer>>& Layers() const { return myLayers; }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
@@ -211,8 +205,23 @@ protected:
                                    const Graphic3d_Layer&               theLayer) const;
 
 protected:
-  NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;
-  NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>> myLayerIds;
+  //! Linear-scan lookup of a layer by id; returns null when not found.
+  //! Defined inline so the const/non-const Layer() accessors stay header-resident.
+  Graphic3d_Layer* findLayer(const Graphic3d_ZLayerId theLayerId) const
+  {
+    for (size_t i = 0; i < myLayers.Size(); ++i)
+    {
+      const occ::handle<Graphic3d_Layer>& aLayer = myLayers.Value(i);
+      if (aLayer->LayerId() == theLayerId)
+      {
+        return aLayer.get();
+      }
+    }
+    return nullptr;
+  }
+
+protected:
+  NCollection_LinearVector<occ::handle<Graphic3d_Layer>> myLayers; //!< layers in render order
   occ::handle<BVH_Builder3d> myBVHBuilder; //!< BVH tree builder for frustum culling
 
   int myNbStructures;

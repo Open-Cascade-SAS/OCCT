@@ -99,16 +99,16 @@ void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& the
                               || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0
                               || toCountGroups;
 
-  myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers] = aView->LayerList().Layers().Size();
+  myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers] =
+    static_cast<int>(aView->LayerList().Layers().Size());
   if (toCountStructs || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
   {
-    const int aViewId = aView->Identification();
-    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(
-           aView->LayerList().Layers());
-         aLayerIter.More();
-         aLayerIter.Next())
+    const int                                                     aViewId = aView->Identification();
+    const NCollection_LinearVector<occ::handle<Graphic3d_Layer>>& aLayers_ =
+      aView->LayerList().Layers();
+    for (size_t aLayerIdx_ = 0; aLayerIdx_ < aLayers_.Size(); ++aLayerIdx_)
     {
-      const occ::handle<OpenGl_Layer>& aLayer = aLayerIter.Value();
+      const occ::handle<OpenGl_Layer>& aLayer = aLayers_.Value(aLayerIdx_);
       myCountersTmp[Graphic3d_FrameStatsCounter_NbStructs] += aLayer->NbStructures();
       if (theIsImmediateOnly && !aLayer->LayerSettings().IsImmediate())
       {

@@ -34,6 +34,24 @@ namespace
 {
 static const occ::handle<SelectMgr_Selection>   THE_NULL_SELECTION;
 static const occ::handle<SelectMgr_EntityOwner> THE_NULL_ENTITYOWNER;
+
+//! Linear scan for the selection of the given mode.
+//! Returns its index or NPOS when not found.
+constexpr size_t THE_NPOS = static_cast<size_t>(-1);
+
+static size_t findSelectionIndex(
+  const NCollection_LinearVector<occ::handle<SelectMgr_Selection>>& theSelections,
+  const int                                                         theMode)
+{
+  for (size_t i = 0; i < theSelections.Size(); ++i)
+  {
+    if (theSelections.Value(i)->Mode() == theMode)
+    {
+      return i;
+    }
+  }
+  return THE_NPOS;
+}
 } // namespace
 
 //=================================================================================================
@@ -52,11 +70,9 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject(
 //==================================================
 SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    aSelIter.Value()->Clear();
+    myselections.Value(i)->Clear();
   }
 }
 
@@ -72,11 +88,16 @@ SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 //==================================================
 void SelectMgr_SelectableObject::RecomputePrimitives()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  // Snapshot modes upfront - RecomputePrimitives(mode) may grow the vector and invalidate
+  // references.
+  NCollection_LinearVector<int> aModes(myselections.Size());
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    RecomputePrimitives(aSelIter.Value()->Mode());
+    aModes.Append(myselections.Value(i)->Mode());
+  }
+  for (size_t i = 0; i < aModes.Size(); ++i)
+  {
+    RecomputePrimitives(aModes.Value(i));
   }
 }
 
@@ -93,26 +114,22 @@ void SelectMgr_SelectableObject::RecomputePrimitives()
 void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
 {
   SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject*>(Parent());
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  const size_t                anIndex    = findSelectionIndex(myselections, theMode);
+  if (anIndex != THE_NPOS)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    if (aSel->Mode() == theMode)
+    occ::handle<SelectMgr_Selection>& aSel = myselections.ChangeValue(anIndex);
+    aSel->Clear();
+    ComputeSelection(aSel, theMode);
+    aSel->UpdateStatus(SelectMgr_TOU_Partial);
+    aSel->UpdateBVHStatus(SelectMgr_TBU_Renew);
+    if (theMode == 0 && aSelParent != nullptr)
     {
-      aSel->Clear();
-      ComputeSelection(aSel, theMode);
-      aSel->UpdateStatus(SelectMgr_TOU_Partial);
-      aSel->UpdateBVHStatus(SelectMgr_TBU_Renew);
-      if (theMode == 0 && aSelParent != nullptr)
+      if (const occ::handle<SelectMgr_EntityOwner>& anAsmOwner = aSelParent->GetAssemblyOwner())
       {
-        if (const occ::handle<SelectMgr_EntityOwner>& anAsmOwner = aSelParent->GetAssemblyOwner())
-        {
-          SetAssemblyOwner(anAsmOwner, theMode);
-        }
+        SetAssemblyOwner(anAsmOwner, theMode);
       }
-      return;
     }
+    return;
   }
 
   occ::handle<SelectMgr_Selection> aNewSel = new SelectMgr_Selection(theMode);
@@ -136,11 +153,9 @@ void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
 
 void SelectMgr_SelectableObject::ClearSelections(const bool theToUpdate)
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSel = myselections.Value(i);
     aSel->Clear();
     aSel->UpdateBVHStatus(SelectMgr_TBU_Remove);
     if (theToUpdate)
@@ -160,17 +175,8 @@ const occ::handle<SelectMgr_Selection>& SelectMgr_SelectableObject::Selection(
     return THE_NULL_SELECTION;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
-  {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    if (aSel->Mode() == theMode)
-    {
-      return aSel;
-    }
-  }
-  return THE_NULL_SELECTION;
+  const size_t anIndex = findSelectionIndex(myselections, theMode);
+  return anIndex != THE_NPOS ? myselections.Value(anIndex) : THE_NULL_SELECTION;
 }
 
 //=================================================================================================
@@ -185,23 +191,16 @@ void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Select
     theSel->UpdateBVHStatus(SelectMgr_TBU_Add);
   }
 
-  bool isReplaced = false;
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  const size_t anExistingIndex = findSelectionIndex(myselections, theMode);
+  const bool   isReplaced      = anExistingIndex != THE_NPOS;
+  if (isReplaced)
   {
-    if (aSelIter.Value()->Mode() == theMode)
-    {
-      isReplaced = true;
-      myselections.Remove(aSelIter);
-      break;
-    }
+    myselections.Erase(anExistingIndex);
   }
-
   myselections.Append(theSel);
   if (isReplaced)
   {
-    myselections.Last()->UpdateBVHStatus(SelectMgr_TBU_Renew);
+    theSel->UpdateBVHStatus(SelectMgr_TBU_Renew);
   }
 
   if (theMode == 0)
@@ -221,11 +220,9 @@ void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Select
 
 void SelectMgr_SelectableObject::ResetTransformation()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSel = myselections.Value(i);
     aSel->UpdateStatus(SelectMgr_TOU_Partial);
     aSel->UpdateBVHStatus(SelectMgr_TBU_None);
   }
@@ -237,11 +234,9 @@ void SelectMgr_SelectableObject::ResetTransformation()
 
 void SelectMgr_SelectableObject::UpdateTransformation()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    aSelIter.Value()->UpdateStatus(SelectMgr_TOU_Partial);
+    myselections.Value(i)->UpdateStatus(SelectMgr_TOU_Partial);
   }
 
   PrsMgr_PresentableObject::UpdateTransformation();
@@ -389,11 +384,9 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
   }
 
   // update all entity owner presentations
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSel = myselections.Value(i);
     for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
@@ -436,26 +429,17 @@ void SelectMgr_SelectableObject::updateSelection(const int theMode)
 {
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t i = 0; i < myselections.Size(); ++i)
     {
-      const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-      aSel->UpdateStatus(SelectMgr_TOU_Full);
+      myselections.Value(i)->UpdateStatus(SelectMgr_TOU_Full);
     }
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  const size_t anIndex = findSelectionIndex(myselections, theMode);
+  if (anIndex != THE_NPOS)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    if (aSel->Mode() == theMode)
-    {
-      aSel->UpdateStatus(SelectMgr_TOU_Full);
-      return;
-    }
+    myselections.Value(anIndex)->UpdateStatus(SelectMgr_TOU_Full);
   }
 }
 
@@ -469,11 +453,9 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(
 {
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t i = 0; i < myselections.Size(); ++i)
     {
-      const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+      const occ::handle<SelectMgr_Selection>& aSel = myselections.Value(i);
       for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSel->Entities());
            aSelEntIter.More();
@@ -485,22 +467,17 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  const size_t anIndex = findSelectionIndex(myselections, theMode);
+  if (anIndex == THE_NPOS)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    if (aSel->Mode() == theMode)
-    {
-      for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
-             aSel->Entities());
-           aSelEntIter.More();
-           aSelEntIter.Next())
-      {
-        aSelEntIter.Value()->BaseSensitive()->Set(theOwner);
-      }
-      return;
-    }
+    return;
+  }
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+         myselections.Value(anIndex)->Entities());
+       aSelEntIter.More();
+       aSelEntIter.Next())
+  {
+    aSelEntIter.Value()->BaseSensitive()->Set(theOwner);
   }
 }
 
@@ -516,11 +493,9 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
   }
 
   Bnd_Box aBnd;
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSel = myselections.Value(i);
     if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
     {
       continue;
@@ -586,11 +561,9 @@ void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream, int theD
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySelectionPrs.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myHilightPrs.get())
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator anIterator(myselections);
-       anIterator.More();
-       anIterator.Next())
+  for (size_t i = 0; i < myselections.Size(); ++i)
   {
-    const occ::handle<SelectMgr_Selection>& aSelection = anIterator.Value();
+    const occ::handle<SelectMgr_Selection>& aSelection = myselections.Value(i);
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aSelection.get())
   }
 

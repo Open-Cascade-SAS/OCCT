@@ -515,11 +515,9 @@ void Graphic3d_CView::InvalidateZLayerBoundingBox(const Graphic3d_ZLayerId theLa
     return;
   }
 
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(Layers());
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < Layers().Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = Layers().Value(i);
     if (aLayer->NbOfTransformPersistenceObjects() > 0)
     {
       aLayer->InvalidateBoundingBox();
@@ -554,11 +552,9 @@ Bnd_Box Graphic3d_CView::MinMaxValues(const bool theToIncludeAuxiliary) const
   Window()->Size(aWinSize.x(), aWinSize.y());
 
   Bnd_Box aResult;
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(Layers());
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < Layers().Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = Layers().Value(i);
     Bnd_Box                             aBox   = aLayer->BoundingBox(Identification(),
                                        aCamera,
                                        aWinSize.x(),
@@ -583,11 +579,9 @@ double Graphic3d_CView::ConsiderZoomPersistenceObjects()
   Window()->Size(aWinSize.x(), aWinSize.y());
 
   double aMaxCoef = 1.0;
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(Layers());
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < Layers().Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = Layers().Value(i);
     aMaxCoef                                   = std::max(aMaxCoef,
                         aLayer->considerZoomPersistenceObjects(Identification(),
                                                                aCamera,

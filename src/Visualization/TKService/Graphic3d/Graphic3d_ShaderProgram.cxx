@@ -108,11 +108,9 @@ bool Graphic3d_ShaderProgram::IsDone() const
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (!anIt.Value()->IsDone())
+    if (!myShaderObjects.Value(i)->IsDone())
     {
       return false;
     }
@@ -132,16 +130,13 @@ bool Graphic3d_ShaderProgram::AttachShader(const occ::handle<Graphic3d_ShaderObj
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (anIt.Value() == theShader)
+    if (myShaderObjects.Value(i) == theShader)
     {
       return false;
     }
   }
-
   myShaderObjects.Append(theShader);
   return true;
 }
@@ -157,17 +152,14 @@ bool Graphic3d_ShaderProgram::DetachShader(const occ::handle<Graphic3d_ShaderObj
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (anIt.Value() == theShader)
+    if (myShaderObjects.Value(i) == theShader)
     {
-      myShaderObjects.Remove(anIt);
+      myShaderObjects.Erase(i);
       return true;
     }
   }
-
   return false;
 }
 
@@ -183,7 +175,11 @@ void Graphic3d_ShaderProgram::ClearVariables()
 //=================================================================================================
 
 void Graphic3d_ShaderProgram::SetVertexAttributes(
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes)
+  const NCollection_LinearVector<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes)
 {
-  myAttributes = theAttributes;
+  myAttributes.Clear();
+  for (size_t i = 0; i < theAttributes.Size(); ++i)
+  {
+    myAttributes.Append(theAttributes.Value(i));
+  }
 }

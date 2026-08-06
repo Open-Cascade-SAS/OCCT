@@ -16,6 +16,62 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Aspects.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_ShaderObject.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
+#include <Graphic3d_ShaderVariable.hxx>
+
+TEST(Graphic3d_ShaderProgramTest, PushVariable_OverwritesByNamePreservesOrder)
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgram = new Graphic3d_ShaderProgram();
+
+  EXPECT_TRUE(aProgram->PushVariableFloat("uFirst", 1.0f));
+  EXPECT_TRUE(aProgram->PushVariableInt("uSecond", 2));
+  EXPECT_TRUE(aProgram->PushVariableFloat("uFirst", 3.0f));
+
+  const NCollection_OrderedDataMap<TCollection_AsciiString, occ::handle<Graphic3d_ShaderVariable>>&
+    aVariables = aProgram->Variables();
+  ASSERT_EQ(2, aVariables.Extent());
+
+  NCollection_OrderedDataMap<TCollection_AsciiString,
+                             occ::handle<Graphic3d_ShaderVariable>>::Iterator
+    aVariableIter(aVariables);
+  ASSERT_TRUE(aVariableIter.More());
+  EXPECT_EQ(TCollection_AsciiString("uFirst"), aVariableIter.Key());
+  EXPECT_FLOAT_EQ(3.0f, aVariableIter.Value()->Value()->As<float>());
+
+  aVariableIter.Next();
+  ASSERT_TRUE(aVariableIter.More());
+  EXPECT_EQ(TCollection_AsciiString("uSecond"), aVariableIter.Key());
+  EXPECT_EQ(2, aVariableIter.Value()->Value()->As<int>());
+
+  aProgram->ClearVariables();
+  EXPECT_TRUE(aProgram->Variables().IsEmpty());
+}
+
+TEST(Graphic3d_ShaderProgramTest, AttachShader_DeduplicatesAndPreservesOrder)
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgram = new Graphic3d_ShaderProgram();
+  occ::handle<Graphic3d_ShaderObject>  aVertexShader =
+    Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_VERTEX, "void main() {}\n");
+  occ::handle<Graphic3d_ShaderObject> aFragmentShader =
+    Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_FRAGMENT, "void main() {}\n");
+
+  ASSERT_FALSE(aVertexShader.IsNull());
+  ASSERT_FALSE(aFragmentShader.IsNull());
+  EXPECT_TRUE(aProgram->AttachShader(aVertexShader));
+  EXPECT_FALSE(aProgram->AttachShader(aVertexShader));
+  EXPECT_TRUE(aProgram->AttachShader(aFragmentShader));
+  ASSERT_EQ(size_t(2), aProgram->ShaderObjects().Size());
+
+  EXPECT_EQ(aVertexShader, aProgram->ShaderObjects().Value(0));
+  EXPECT_EQ(aFragmentShader, aProgram->ShaderObjects().Value(1));
+
+  EXPECT_TRUE(aProgram->DetachShader(aVertexShader));
+  EXPECT_FALSE(aProgram->DetachShader(aVertexShader));
+  ASSERT_EQ(size_t(1), aProgram->ShaderObjects().Size());
+
+  EXPECT_EQ(aFragmentShader, aProgram->ShaderObjects().Value(0));
+}
 
 // Test: default shading model is DEFAULT.
 TEST(Graphic3d_AspectsTest, ShadingModel_Default)

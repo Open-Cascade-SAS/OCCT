@@ -23,7 +23,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Map.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <V3d_Light.hxx>
@@ -573,7 +573,7 @@ private:
 private:
   occ::handle<Graphic3d_GraphicDriver>    myDriver;
   occ::handle<Graphic3d_StructureManager> myStructureManager;
-  NCollection_Map<int>                    myLayerIds;
+  NCollection_FlatMap<int>                myLayerIds;
   Aspect_GenId                            myZLayerGenId;
 
   NCollection_List<occ::handle<V3d_View>>         myDefinedViews;

@@ -21,13 +21,8 @@
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <NCollection_Sequence.hxx>
-
-//! List of shader objects.
-
-//! List of custom uniform shader variables.
-
-//! List of custom vertex shader attributes
+#include <NCollection_LinearVector.hxx>
+#include <NCollection_OrderedDataMap.hxx>
 
 //! This class is responsible for managing shader programs.
 class Graphic3d_ShaderProgram : public Standard_Transient
@@ -112,21 +107,23 @@ public:
   //! Detaches shader object from the program object.
   Standard_EXPORT bool DetachShader(const occ::handle<Graphic3d_ShaderObject>& theShader);
 
-  //! Returns list of attached shader objects.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& ShaderObjects() const
+  //! Returns list of attached shader objects in attachment order.
+  const NCollection_LinearVector<occ::handle<Graphic3d_ShaderObject>>& ShaderObjects() const
   {
     return myShaderObjects;
   }
 
   //! The list of currently pushed but not applied custom uniform variables.
-  //! This list is automatically cleared after applying to GLSL program.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>& Variables() const
+  //! Keyed by variable name; pushing a same-name variable replaces the previous entry while
+  //! preserving the original insertion position. Cleared after applying to GLSL program.
+  const NCollection_OrderedDataMap<TCollection_AsciiString, occ::handle<Graphic3d_ShaderVariable>>&
+    Variables() const
   {
     return myVariables;
   }
 
   //! Return the list of custom vertex attributes.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& VertexAttributes() const
+  const NCollection_LinearVector<occ::handle<Graphic3d_ShaderAttribute>>& VertexAttributes() const
   {
     return myAttributes;
   }
@@ -134,7 +131,7 @@ public:
   //! Assign the list of custom vertex attributes.
   //! Should be done before GLSL program initialization.
   Standard_EXPORT void SetVertexAttributes(
-    const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes);
+    const NCollection_LinearVector<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes);
 
   //! Returns the number (1+) of Fragment Shader outputs to be written to
   //! (more than 1 can be in case of multiple draw buffers); 1 by default.
@@ -266,11 +263,11 @@ public:
 
 private:
   TCollection_AsciiString myID; //!< the unique identifier of program object
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>
-    myShaderObjects; //!< the list of attached shader objects
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>
-    myVariables; //!< the list of custom uniform variables
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>
+  NCollection_LinearVector<occ::handle<Graphic3d_ShaderObject>>
+    myShaderObjects; //!< attached shader objects in attachment order
+  NCollection_OrderedDataMap<TCollection_AsciiString, occ::handle<Graphic3d_ShaderVariable>>
+    myVariables; //!< pushed uniform variables keyed by name (replace-by-name semantics)
+  NCollection_LinearVector<occ::handle<Graphic3d_ShaderAttribute>>
     myAttributes; //!< the list of custom vertex attributes
   // clang-format off
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
@@ -301,7 +298,7 @@ inline bool Graphic3d_ShaderProgram::PushVariable(const TCollection_AsciiString&
     return false;
   }
 
-  myVariables.Append(aVariable);
+  myVariables.Bind(theName, aVariable);
   return true;
 }
 

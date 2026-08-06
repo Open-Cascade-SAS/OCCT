@@ -847,18 +847,16 @@ void OpenGl_View::SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
 int OpenGl_View::ZLayerMax() const
 {
   int aLayerMax = Graphic3d_ZLayerId_Default;
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myZLayers.Layers());
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < myZLayers.Layers().Size(); ++i)
   {
-    aLayerMax = std::max(aLayerMax, aLayerIter.Value()->LayerId());
+    aLayerMax = std::max(aLayerMax, myZLayers.Layers().Value(i)->LayerId());
   }
   return aLayerMax;
 }
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<Graphic3d_Layer>>& OpenGl_View::Layers() const
+const NCollection_LinearVector<occ::handle<Graphic3d_Layer>>& OpenGl_View::Layers() const
 {
   return myZLayers.Layers();
 }
@@ -867,12 +865,19 @@ const NCollection_List<occ::handle<Graphic3d_Layer>>& OpenGl_View::Layers() cons
 
 occ::handle<Graphic3d_Layer> OpenGl_View::Layer(const Graphic3d_ZLayerId theLayerId) const
 {
-  occ::handle<Graphic3d_Layer> aLayer;
-  if (theLayerId != Graphic3d_ZLayerId_UNKNOWN)
+  if (theLayerId == Graphic3d_ZLayerId_UNKNOWN)
   {
-    myZLayers.LayerIDs().Find(theLayerId, aLayer);
+    return occ::handle<Graphic3d_Layer>();
   }
-  return aLayer;
+  for (size_t i = 0; i < myZLayers.Layers().Size(); ++i)
+  {
+    const occ::handle<Graphic3d_Layer>& aLayer = myZLayers.Layers().Value(i);
+    if (aLayer->LayerId() == theLayerId)
+    {
+      return aLayer;
+    }
+  }
+  return occ::handle<Graphic3d_Layer>();
 }
 
 //=================================================================================================

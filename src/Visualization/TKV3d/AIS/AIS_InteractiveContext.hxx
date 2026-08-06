@@ -1516,8 +1516,8 @@ protected: //! @name internal methods
   //! @param[in] theOwners  list of owners to highlight
   //! @param[in] theStyle   highlight style to apply or NULL to apply selection style
   Standard_EXPORT void highlightOwners(
-    const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-    const occ::handle<Prs3d_Drawer>&                            theStyle);
+    const NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+    const occ::handle<Prs3d_Drawer>&                                  theStyle);
 
   //! Helper function that highlights global owner of the object given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
@@ -1536,8 +1536,8 @@ protected: //! @name internal methods
   //! Helper function that unhighlights the owners with check
   //! for AutoHighlight, e.g. is used for selection.
   Standard_EXPORT void unhighlightOwners(
-    const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-    const bool                                                  theIsToHilightSubIntensity = false);
+    const NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+    const bool theIsToHilightSubIntensity = false);
 
   //! Helper function that unhighlights global selection owner of given interactive.
   //! The function does not perform any updates of global or owner status

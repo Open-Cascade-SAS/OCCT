@@ -344,19 +344,14 @@ void PrsMgr_PresentationManager::BeginImmediateDraw()
 
 void PrsMgr_PresentationManager::ClearImmediateDraw()
 {
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myImmediateList.Size(); ++i)
   {
-    anIter.Value()->Erase();
+    myImmediateList.Value(i)->Erase();
   }
 
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(
-         myViewDependentImmediateList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myViewDependentImmediateList.Size(); ++i)
   {
-    anIter.Value()->Erase();
+    myViewDependentImmediateList.Value(i)->Erase();
   }
 
   myImmediateList.Clear();
@@ -376,11 +371,9 @@ void PrsMgr_PresentationManager::displayImmediate(const occ::handle<V3d_Viewer>&
        anActiveViewIter.Next())
   {
     const occ::handle<Graphic3d_CView>& aView = anActiveViewIter.Value()->View();
-    for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList);
-         anIter.More();
-         anIter.Next())
+    for (size_t aPrsIdx_ = 0; aPrsIdx_ < myImmediateList.Size(); ++aPrsIdx_)
     {
-      const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
+      const occ::handle<Prs3d_Presentation>& aPrs = myImmediateList.Value(aPrsIdx_);
       if (aPrs.IsNull())
       {
         continue;
@@ -451,18 +444,13 @@ void PrsMgr_PresentationManager::RedrawImmediate(const occ::handle<V3d_Viewer>& 
   }
 
   // Clear previously displayed structures
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myImmediateList.Size(); ++i)
   {
-    anIter.Value()->Erase();
+    myImmediateList.Value(i)->Erase();
   }
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(
-         myViewDependentImmediateList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myViewDependentImmediateList.Size(); ++i)
   {
-    anIter.Value()->Erase();
+    myViewDependentImmediateList.Value(i)->Erase();
   }
   myViewDependentImmediateList.Clear();
 
@@ -478,16 +466,13 @@ void PrsMgr_PresentationManager::AddToImmediateList(const occ::handle<Prs3d_Pres
     return;
   }
 
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myImmediateList.Size(); ++i)
   {
-    if (anIter.Value() == thePrs)
+    if (myImmediateList.Value(i) == thePrs)
     {
       return;
     }
   }
-
   myImmediateList.Append(thePrs);
 }
 
@@ -688,15 +673,13 @@ namespace
 //! and applies transformation theTrsf to them in case if parent ID
 //! of shadow presentation is equal to theRefId
 static void updatePrsTransformation(
-  const NCollection_List<occ::handle<Prs3d_Presentation>>& thePrsList,
-  const int                                                theRefId,
-  const occ::handle<TopLoc_Datum3D>&                       theTrsf)
+  const NCollection_LinearVector<occ::handle<Prs3d_Presentation>>& thePrsList,
+  const int                                                        theRefId,
+  const occ::handle<TopLoc_Datum3D>&                               theTrsf)
 {
-  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(thePrsList);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < thePrsList.Size(); ++i)
   {
-    const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
+    const occ::handle<Prs3d_Presentation>& aPrs = thePrsList.Value(i);
     if (aPrs.IsNull())
     {
       continue;

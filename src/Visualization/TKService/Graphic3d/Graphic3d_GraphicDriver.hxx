@@ -19,11 +19,13 @@
 
 #include <Aspect_GenId.hxx>
 #include <Graphic3d_CStructure.hxx>
+#include <Graphic3d_Layer.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_TypeOfLimit.hxx>
-#include <Standard_Integer.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 
 class Aspect_DisplayConnection;
 class Aspect_Window;
@@ -147,10 +149,9 @@ protected:
   Standard_EXPORT Graphic3d_GraphicDriver(const occ::handle<Aspect_DisplayConnection>& theDisp);
 
 protected:
-  occ::handle<Aspect_DisplayConnection>                                 myDisplayConnection;
-  Aspect_GenId                                                          myStructGenId;
-  NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;
-  NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>> myLayerIds;
+  occ::handle<Aspect_DisplayConnection>                  myDisplayConnection;
+  Aspect_GenId                                           myStructGenId;
+  NCollection_LinearVector<occ::handle<Graphic3d_Layer>> myLayers; //!< layers in render order
 };
 
 #endif // _Graphic3d_GraphicDriver_HeaderFile

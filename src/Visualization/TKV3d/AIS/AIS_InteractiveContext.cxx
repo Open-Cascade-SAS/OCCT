@@ -21,6 +21,7 @@
 #include <AIS_GlobalStatus.hxx>
 
 #include <NCollection_DataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_MultipleConnectedInteractive.hxx>
 #include <Precision.hxx>
@@ -187,12 +188,9 @@ AIS_InteractiveContext::~AIS_InteractiveContext()
   {
     const occ::handle<AIS_InteractiveObject>& anObj = anObjIter.Key();
     anObj->SetContext(aNullContext);
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           anObj->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < anObj->Selections().Size(); ++aSelIdx)
     {
-      aSelIter.Value()->UpdateBVHStatus(SelectMgr_TBU_Renew);
+      anObj->Selections().Value(aSelIdx)->UpdateBVHStatus(SelectMgr_TBU_Renew);
     }
   }
 }
@@ -606,7 +604,7 @@ void AIS_InteractiveContext::DisplayAll(const bool theToUpdateViewer)
 
 void AIS_InteractiveContext::DisplaySelected(const bool theToUpdateViewer)
 {
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
        aSelIter.Next())
@@ -627,10 +625,10 @@ void AIS_InteractiveContext::DisplaySelected(const bool theToUpdateViewer)
 void AIS_InteractiveContext::EraseSelected(const bool theToUpdateViewer)
 {
   bool isFound = false;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
-       aSelIter.Init(mySelection->Objects()))
+       aSelIter.Initialize(mySelection->Objects()))
   {
     occ::handle<AIS_InteractiveObject> anObj =
       occ::down_cast<AIS_InteractiveObject>(aSelIter.Value()->Selectable());
@@ -1601,7 +1599,7 @@ void AIS_InteractiveContext::SetSelectedAspect(const occ::handle<Prs3d_BasicAspe
                                                const bool theToUpdateViewer)
 {
   Standard_DISABLE_DEPRECATION_WARNINGS bool isFound = false;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
        aSelIter.Next())
@@ -1689,7 +1687,7 @@ void AIS_InteractiveContext::Status(const occ::handle<AIS_InteractiveObject>& th
   }
 
   theStatus += "\t| Active Selection Modes in the MainViewer :\n";
-  for (NCollection_List<int>::Iterator aSelModeIter(aStatus->SelectionModes()); aSelModeIter.More();
+  for (AIS_SelectionModes::Iterator aSelModeIter(aStatus->SelectionModes()); aSelModeIter.More();
        aSelModeIter.Next())
   {
     theStatus += "\t\t Mode ";
@@ -1749,7 +1747,7 @@ void AIS_InteractiveContext::EraseGlobal(const occ::handle<AIS_InteractiveObject
     myMainPM->SetVisibility(theIObj, aDispMode, false);
   }
 
-  for (NCollection_List<int>::Iterator aSelModeIter(aStatus->SelectionModes()); aSelModeIter.More();
+  for (AIS_SelectionModes::Iterator aSelModeIter(aStatus->SelectionModes()); aSelModeIter.More();
        aSelModeIter.Next())
   {
     mgrSelector->Deactivate(theIObj, aSelModeIter.Value());
@@ -1767,22 +1765,20 @@ void AIS_InteractiveContext::EraseGlobal(const occ::handle<AIS_InteractiveObject
 
 void AIS_InteractiveContext::unselectOwners(const occ::handle<AIS_InteractiveObject>& theObject)
 {
-  NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> aSeq;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  NCollection_LinearVector<occ::handle<SelectMgr_EntityOwner>> anOwnersToUnselect;
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
        aSelIter.Next())
   {
     if (aSelIter.Value()->IsSameSelectable(theObject))
     {
-      aSeq.Append(aSelIter.Value());
+      anOwnersToUnselect.Append(aSelIter.Value());
     }
   }
-  for (NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>::Iterator aDelIter(aSeq);
-       aDelIter.More();
-       aDelIter.Next())
+  for (const occ::handle<SelectMgr_EntityOwner>& anOwner : anOwnersToUnselect)
   {
-    AddOrRemoveSelected(aDelIter.Value(), false);
+    AddOrRemoveSelected(anOwner, false);
   }
 }
 
@@ -2129,7 +2125,7 @@ Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection(const occ::handle<V3d_Vie
   Bnd_Box               aBndSelected;
   AIS_MapOfObjectOwners anObjectOwnerMap;
   const int             aViewId = !theView.IsNull() ? theView->View()->Identification() : -1;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
        aSelIter.Next())
@@ -2321,8 +2317,8 @@ void AIS_InteractiveContext::highlightWithColor(const occ::handle<SelectMgr_Enti
 
 void AIS_InteractiveContext::highlightSelected(const occ::handle<SelectMgr_EntityOwner>& theOwner)
 {
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>> anOwners;
-  const occ::handle<AIS_InteractiveObject>             anObj =
+  NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>> anOwners;
+  const occ::handle<AIS_InteractiveObject>                   anObj =
     occ::down_cast<AIS_InteractiveObject>(theOwner->Selectable());
   if (anObj.IsNull())
   {
@@ -2331,21 +2327,20 @@ void AIS_InteractiveContext::highlightSelected(const occ::handle<SelectMgr_Entit
 
   if (!theOwner->IsAutoHilight())
   {
-    NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> aSeq;
-    for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+    for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
            mySelection->Objects());
          aSelIter.More();
          aSelIter.Next())
     {
       if (aSelIter.Value()->IsSameSelectable(anObj))
       {
-        anOwners.Append(aSelIter.Value());
+        anOwners.Add(aSelIter.Value());
       }
     }
   }
   else
   {
-    anOwners.Append(theOwner);
+    anOwners.Add(theOwner);
   }
   highlightOwners(anOwners, occ::handle<Prs3d_Drawer>());
 }
@@ -2370,24 +2365,23 @@ void AIS_InteractiveContext::highlightGlobal(const occ::handle<AIS_InteractiveOb
     return;
   }
 
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>> anOwners;
+  NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>> anOwners;
   if (!aGlobOwner->IsAutoHilight())
   {
-    NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> aSeq;
-    for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+    for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
            mySelection->Objects());
          aSelIter.More();
          aSelIter.Next())
     {
       if (aSelIter.Value()->IsSameSelectable(theObj))
       {
-        anOwners.Append(aSelIter.Value());
+        anOwners.Add(aSelIter.Value());
       }
     }
   }
   else
   {
-    anOwners.Append(aGlobOwner);
+    anOwners.Add(aGlobOwner);
   }
   highlightOwners(anOwners, theStyle);
 }
@@ -2402,11 +2396,11 @@ void AIS_InteractiveContext::unhighlightSelected(const bool theIsToHilightSubInt
 //=================================================================================================
 
 void AIS_InteractiveContext::unhighlightOwners(
-  const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-  const bool                                                  theIsToHilightSubIntensity)
+  const NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+  const bool                                                        theIsToHilightSubIntensity)
 {
   NCollection_IndexedMap<occ::handle<AIS_InteractiveObject>> anObjToClear;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(theOwners);
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(theOwners);
        aSelIter.More();
        aSelIter.Next())
   {
@@ -2469,8 +2463,8 @@ void AIS_InteractiveContext::unhighlightGlobal(const occ::handle<AIS_Interactive
     return;
   }
 
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>> anOwners;
-  anOwners.Append(aGlobOwner);
+  NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>> anOwners;
+  anOwners.Add(aGlobOwner);
   unhighlightOwners(anOwners);
 }
 
@@ -2484,26 +2478,7 @@ void AIS_InteractiveContext::turnOnSubintensity(const occ::handle<AIS_Interactiv
   const occ::handle<Prs3d_Drawer>& aSubStyle = myStyles[Prs3d_TypeOfHighlight_SubIntensity];
   aSubStyle->SetTransparency(myStyles[Prs3d_TypeOfHighlight_Selected]->Transparency());
 
-  if (theObject.IsNull())
-  {
-    for (NCollection_DataMap<occ::handle<AIS_InteractiveObject>,
-                             occ::handle<AIS_GlobalStatus>>::Iterator anObjsIter(myObjects);
-         anObjsIter.More();
-         anObjsIter.Next())
-    {
-      const occ::handle<AIS_GlobalStatus>& aStatus = anObjsIter.Value();
-      if (theObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed && theIsDisplayedOnly)
-      {
-        continue;
-      }
-
-      aStatus->SetSubIntensity(true);
-      myMainPM->Color(anObjsIter.Key(),
-                      aSubStyle,
-                      theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
-    }
-  }
-  else
+  if (!theObject.IsNull())
   {
     occ::handle<AIS_GlobalStatus> aStatus;
     if (!myObjects.Find(theObject, aStatus))
@@ -2511,13 +2486,30 @@ void AIS_InteractiveContext::turnOnSubintensity(const occ::handle<AIS_Interactiv
       return;
     }
 
-    if (theObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed && theIsDisplayedOnly)
+    if (theIsDisplayedOnly && theObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed)
     {
       return;
     }
 
     aStatus->SetSubIntensity(true);
     myMainPM->Color(theObject, aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
+    return;
+  }
+
+  for (NCollection_DataMap<occ::handle<AIS_InteractiveObject>,
+                           occ::handle<AIS_GlobalStatus>>::Iterator anObjIter(myObjects);
+       anObjIter.More();
+       anObjIter.Next())
+  {
+    const occ::handle<AIS_InteractiveObject>& anObject = anObjIter.Key();
+    if (theIsDisplayedOnly && anObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed)
+    {
+      continue;
+    }
+
+    const occ::handle<AIS_GlobalStatus>& aStatus = anObjIter.Value();
+    aStatus->SetSubIntensity(true);
+    myMainPM->Color(anObject, aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
   }
 }
 
@@ -2949,13 +2941,13 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
   const AIS_SelectionScheme                                     theSelScheme)
 {
   NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>> aSelOwnerMap(
-    myAutoHilight ? mySelection->Objects().Length() : 0);
+    myAutoHilight ? mySelection->Extent() : 0);
   if (myAutoHilight)
   {
     clearDynamicHighlight();
 
     // collect currently selected owners
-    for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator anOwnerIter(
+    for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator anOwnerIter(
            mySelection->Objects());
          anOwnerIter.More();
          anOwnerIter.Next())
@@ -2972,8 +2964,9 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
   if (myAutoHilight)
   {
     // collect lists of owners to unhighlight (unselected) and to highlight (selected)
-    NCollection_List<occ::handle<SelectMgr_EntityOwner>> anOwnersToUnhighlight, anOwnersToHighlight;
-    for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator anOwnerIter(
+    NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>> anOwnersToUnhighlight,
+      anOwnersToHighlight;
+    for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator anOwnerIter(
            mySelection->Objects());
          anOwnerIter.More();
          anOwnerIter.Next())
@@ -2983,7 +2976,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
       if (!aSelOwnerMap.RemoveKey(anOwner))
       {
         // newly selected owner
-        anOwnersToHighlight.Append(anOwner);
+        anOwnersToHighlight.Add(anOwner);
       }
       else
       {
@@ -2992,12 +2985,12 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
             && theSelScheme != AIS_SelectionScheme_Add)
         {
           // hack to perform AIS_InteractiveObject::ClearSelected() before highlighting
-          anOwnersToUnhighlight.Append(anOwner);
-          anOwnersToHighlight.Append(anOwner);
+          anOwnersToUnhighlight.Add(anOwner);
+          anOwnersToHighlight.Add(anOwner);
         }
         else if (anOwner->IsForcedHilight() || !anOwner->IsAutoHilight())
         {
-          anOwnersToHighlight.Append(anOwner);
+          anOwnersToHighlight.Add(anOwner);
         }
       }
     }
@@ -3009,7 +3002,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
     {
       // owners removed from selection
       const occ::handle<SelectMgr_EntityOwner>& anOwner = anOwnerIter.Value();
-      anOwnersToUnhighlight.Append(anOwner);
+      anOwnersToUnhighlight.Add(anOwner);
     }
 
     unhighlightOwners(anOwnersToUnhighlight);
@@ -3040,13 +3033,13 @@ void AIS_InteractiveContext::HilightSelected(const bool theToUpdateViewer)
 //=================================================================================================
 
 void AIS_InteractiveContext::highlightOwners(
-  const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-  const occ::handle<Prs3d_Drawer>&                            theStyle)
+  const NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+  const occ::handle<Prs3d_Drawer>&                                  theStyle)
 {
   NCollection_DataMap<occ::handle<AIS_InteractiveObject>,
-                      NCollection_Handle<NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>>>
+                      NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>>
     anObjOwnerMap;
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(theOwners);
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(theOwners);
        aSelIter.More();
        aSelIter.Next())
   {
@@ -3072,17 +3065,9 @@ void AIS_InteractiveContext::highlightOwners(
     }
     if (!anOwner->IsAutoHilight())
     {
-      NCollection_Handle<NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>> aSeq;
-      if (anObjOwnerMap.Find(anObj, aSeq))
-      {
-        aSeq->Append(anOwner);
-      }
-      else
-      {
-        aSeq = new NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>();
-        aSeq->Append(anOwner);
-        anObjOwnerMap.Bind(anObj, aSeq);
-      }
+      NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& aSeq =
+        anObjOwnerMap.TryBound(anObj, NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>());
+      aSeq.Append(anOwner);
     }
     else
     {
@@ -3093,14 +3078,13 @@ void AIS_InteractiveContext::highlightOwners(
 
   if (!anObjOwnerMap.IsEmpty())
   {
-    for (NCollection_DataMap<
-           occ::handle<AIS_InteractiveObject>,
-           NCollection_Handle<NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>>>::Iterator
+    for (NCollection_DataMap<occ::handle<AIS_InteractiveObject>,
+                             NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>>::Iterator
            anIter(anObjOwnerMap);
          anIter.More();
          anIter.Next())
     {
-      anIter.Key()->HilightSelected(myMainPM, *anIter.Value());
+      anIter.Key()->HilightSelected(myMainPM, anIter.Value());
     }
     anObjOwnerMap.Clear();
   }
@@ -3203,7 +3187,7 @@ void AIS_InteractiveContext::SetSelected(const occ::handle<AIS_InteractiveObject
     return;
   }
 
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(
          mySelection->Objects());
        aSelIter.More();
        aSelIter.Next())
@@ -3368,8 +3352,8 @@ void AIS_InteractiveContext::AddOrRemoveSelected(const occ::handle<SelectMgr_Ent
     }
     else
     {
-      NCollection_List<occ::handle<SelectMgr_EntityOwner>> anOwners;
-      anOwners.Append(theOwner);
+      NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>> anOwners;
+      anOwners.Add(theOwner);
       unhighlightOwners(anOwners);
 
       (*aStatusPtr)->SetHilightStyle(occ::handle<Prs3d_Drawer>());
@@ -3436,19 +3420,14 @@ bool AIS_InteractiveContext::IsSelected(const occ::handle<AIS_InteractiveObject>
     return false;
   }
 
-  const int                    aGlobalSelMode   = theObj->GlobalSelectionMode();
-  const NCollection_List<int>& anActivatedModes = (*aStatus)->SelectionModes();
-  for (NCollection_List<int>::Iterator aModeIter(anActivatedModes); aModeIter.More();
-       aModeIter.Next())
+  if (!(*aStatus)->IsSModeIn(theObj->GlobalSelectionMode()))
   {
-    if (aModeIter.Value() == aGlobalSelMode)
-    {
-      if (occ::handle<SelectMgr_EntityOwner> aGlobOwner = theObj->GlobalSelOwner())
-      {
-        return aGlobOwner->IsSelected();
-      }
-      return false;
-    }
+    return false;
+  }
+
+  if (occ::handle<SelectMgr_EntityOwner> aGlobOwner = theObj->GlobalSelOwner())
+  {
+    return aGlobOwner->IsSelected();
   }
   return false;
 }
@@ -3689,8 +3668,7 @@ void AIS_InteractiveContext::SetSelectionModeActive(
     {
       if (theMode == -1)
       {
-        for (NCollection_List<int>::Iterator aModeIter((*aStat)->SelectionModes());
-             aModeIter.More();
+        for (AIS_SelectionModes::Iterator aModeIter((*aStat)->SelectionModes()); aModeIter.More();
              aModeIter.Next())
         {
           mgrSelector->Deactivate(theObj, aModeIter.Value());
@@ -3717,7 +3695,7 @@ void AIS_InteractiveContext::SetSelectionModeActive(
     return;
   }
 
-  if ((*aStat)->SelectionModes().Size() == 1 && (*aStat)->SelectionModes().First() == theMode)
+  if ((*aStat)->HasOnlySelectionMode(theMode))
   {
     return;
   }
@@ -3727,8 +3705,7 @@ void AIS_InteractiveContext::SetSelectionModeActive(
     switch (theActiveFilter)
     {
       case AIS_SelectionModesConcurrency_Single: {
-        for (NCollection_List<int>::Iterator aModeIter((*aStat)->SelectionModes());
-             aModeIter.More();
+        for (AIS_SelectionModes::Iterator aModeIter((*aStat)->SelectionModes()); aModeIter.More();
              aModeIter.Next())
         {
           mgrSelector->Deactivate(theObj, aModeIter.Value());
@@ -3739,8 +3716,7 @@ void AIS_InteractiveContext::SetSelectionModeActive(
       case AIS_SelectionModesConcurrency_GlobalOrLocal: {
         const int             aGlobSelMode = theObj->GlobalSelectionMode();
         NCollection_List<int> aRemovedModes;
-        for (NCollection_List<int>::Iterator aModeIter((*aStat)->SelectionModes());
-             aModeIter.More();
+        for (AIS_SelectionModes::Iterator aModeIter((*aStat)->SelectionModes()); aModeIter.More();
              aModeIter.Next())
         {
           if ((theMode == aGlobSelMode && aModeIter.Value() != aGlobSelMode)
@@ -3750,7 +3726,7 @@ void AIS_InteractiveContext::SetSelectionModeActive(
             aRemovedModes.Append(aModeIter.Value());
           }
         }
-        if (aRemovedModes.Size() == (*aStat)->SelectionModes().Size())
+        if (aRemovedModes.Size() == (*aStat)->NbSelectionModes())
         {
           (*aStat)->ClearSelectionModes();
         }
@@ -3825,7 +3801,7 @@ void AIS_InteractiveContext::ActivatedModes(const occ::handle<AIS_InteractiveObj
   const occ::handle<AIS_GlobalStatus>* aStatus = myObjects.Seek(theObj);
   if (aStatus != nullptr)
   {
-    for (NCollection_List<int>::Iterator aModeIter((*aStatus)->SelectionModes()); aModeIter.More();
+    for (AIS_SelectionModes::Iterator aModeIter((*aStatus)->SelectionModes()); aModeIter.More();
          aModeIter.Next())
     {
       theList.Append(aModeIter.Value());
@@ -3894,7 +3870,7 @@ void AIS_InteractiveContext::DisplayActiveSensitive(
     return;
   }
 
-  for (NCollection_List<int>::Iterator aModeIter((*aStatus)->SelectionModes()); aModeIter.More();
+  for (AIS_SelectionModes::Iterator aModeIter((*aStatus)->SelectionModes()); aModeIter.More();
        aModeIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = theObj->Selection(aModeIter.Value());

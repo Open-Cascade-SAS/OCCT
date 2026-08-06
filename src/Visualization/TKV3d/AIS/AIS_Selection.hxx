@@ -17,17 +17,17 @@
 #ifndef _AIS_Selection_HeaderFile
 #define _AIS_Selection_HeaderFile
 
-#include <NCollection_Array1.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <NCollection_List.hxx>
 #include <AIS_SelectionScheme.hxx>
 #include <AIS_SelectStatus.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_OrderedMap.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
 class SelectMgr_Filter;
 
-//! Class holding the list of selected owners.
+//! Class holding the ordered set of selected owners.
 class AIS_Selection : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
@@ -71,23 +71,26 @@ public:
   //! checks if the object is in the selection.
   bool IsSelected(const occ::handle<SelectMgr_EntityOwner>& theObject) const
   {
-    return myResultMap.IsBound(theObject);
+    return myOwners.Contains(theObject);
   }
 
-  //! Return the list of selected objects.
-  const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& Objects() const { return myresult; }
+  //! Return the ordered set of selected objects.
+  const NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>& Objects() const
+  {
+    return myOwners;
+  }
 
   //! Return the number of selected objects.
-  int Extent() const { return myresult.Length(); }
+  int Extent() const { return myOwners.Extent(); }
 
   //! Return true if list of selected objects is empty.
-  bool IsEmpty() const { return myresult.IsEmpty(); }
+  bool IsEmpty() const { return myOwners.IsEmpty(); }
 
 public:
   //! Start iteration through selected objects.
   void Init()
   {
-    myIterator = NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator(myresult);
+    myIterator = NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator(myOwners);
   }
 
   //! Return true if iterator points to selected object.
@@ -120,11 +123,8 @@ protected:
     const occ::handle<SelectMgr_Filter>&      theFilter);
 
 protected:
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>           myresult;
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator myIterator;
-  NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>,
-                      NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator>
-    myResultMap;
+  NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>           myOwners;
+  NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator myIterator;
 };
 
 #endif // _AIS_Selection_HeaderFile

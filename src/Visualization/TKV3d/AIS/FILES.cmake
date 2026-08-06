@@ -79,6 +79,7 @@ set(OCCT_AIS_FILES
   AIS_RubberBand.cxx
   AIS_Selection.cxx
   AIS_Selection.hxx
+  AIS_SelectionModes.hxx
   AIS_SelectStatus.hxx
   AIS_SelectionModesConcurrency.hxx
   AIS_SelectionScheme.hxx

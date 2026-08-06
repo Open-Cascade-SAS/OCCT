@@ -199,7 +199,7 @@ bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& th
   {
     if (theProgram->Share())
     {
-      myProgramList.Append(theProgram);
+      myProgramList.Add(theProgram);
     }
     return true;
   }
@@ -213,7 +213,7 @@ bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& th
     return false;
   }
 
-  myProgramList.Append(theProgram);
+  myProgramList.Add(theProgram);
   myContext->ShareResource(theShareKey, theProgram);
   return true;
 }
@@ -225,23 +225,19 @@ bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& th
 void OpenGl_ShaderManager::Unregister(TCollection_AsciiString&           theShareKey,
                                       occ::handle<OpenGl_ShaderProgram>& theProgram)
 {
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>::Iterator anIt(myProgramList);
-       anIt.More();
-       anIt.Next())
+  if (!myProgramList.Contains(theProgram))
   {
-    if (anIt.Value() == theProgram)
-    {
-      if (!theProgram->UnShare())
-      {
-        theShareKey.Clear();
-        theProgram.Nullify();
-        return;
-      }
-
-      myProgramList.Remove(anIt);
-      break;
-    }
+    return;
   }
+
+  if (!theProgram->UnShare())
+  {
+    theShareKey.Clear();
+    theProgram.Nullify();
+    return;
+  }
+
+  myProgramList.Remove(theProgram);
 
   const TCollection_AsciiString anID = theProgram->myProxy->GetId();
   if (anID.IsEmpty())

@@ -108,11 +108,9 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
   // of changes in OpenGL scene (only for path tracing)
   NCollection_Map<int> aNonRaytraceIDs;
 
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myZLayers.Layers());
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t aLayerIdx_ = 0; aLayerIdx_ < myZLayers.Layers().Size(); ++aLayerIdx_)
   {
-    const occ::handle<OpenGl_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<OpenGl_Layer>& aLayer = myZLayers.Layers().Value(aLayerIdx_);
     if (aLayer->NbStructures() == 0 || !aLayer->LayerSettings().IsRaytracable()
         || aLayer->LayerSettings().IsImmediate())
     {

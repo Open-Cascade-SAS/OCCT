@@ -20,6 +20,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 
+namespace
+{
+constexpr size_t THE_NPOS = static_cast<size_t>(-1);
+
+static size_t findLayerIndex(
+  const NCollection_LinearVector<occ::handle<Graphic3d_Layer>>& theLayers,
+  const Graphic3d_ZLayerId                                      theLayerId)
+{
+  for (size_t i = 0; i < theLayers.Size(); ++i)
+  {
+    if (theLayers.Value(i)->LayerId() == theLayerId)
+    {
+      return i;
+    }
+  }
+  return THE_NPOS;
+}
+} // namespace
+
 //=================================================================================================
 
 Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
@@ -41,7 +60,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
       new Graphic3d_Layer(Graphic3d_ZLayerId_BotOSD, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
-    myLayerIds.Bind(aLayer->LayerId(), aLayer);
   }
 
   {
@@ -58,7 +76,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
       new Graphic3d_Layer(Graphic3d_ZLayerId_Default, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
-    myLayerIds.Bind(aLayer->LayerId(), aLayer);
   }
 
   {
@@ -75,7 +92,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
       new Graphic3d_Layer(Graphic3d_ZLayerId_Top, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
-    myLayerIds.Bind(aLayer->LayerId(), aLayer);
   }
 
   {
@@ -92,7 +108,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
       new Graphic3d_Layer(Graphic3d_ZLayerId_Topmost, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
-    myLayerIds.Bind(aLayer->LayerId(), aLayer);
   }
 
   {
@@ -109,7 +124,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
       new Graphic3d_Layer(Graphic3d_ZLayerId_TopOSD, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
-    myLayerIds.Bind(aLayer->LayerId(), aLayer);
   }
 }
 
@@ -139,13 +153,13 @@ void Graphic3d_GraphicDriver::RemoveIdentification(const int theId)
 const Graphic3d_ZLayerSettings& Graphic3d_GraphicDriver::ZLayerSettings(
   const Graphic3d_ZLayerId theLayerId) const
 {
-  const occ::handle<Graphic3d_Layer>* aLayer = myLayerIds.Seek(theLayerId);
-  if (aLayer == nullptr)
+  const size_t anIndex = findLayerIndex(myLayers, theLayerId);
+  if (anIndex == THE_NPOS)
   {
     throw Standard_OutOfRange(
       "Graphic3d_GraphicDriver::ZLayerSettings, Layer with theLayerId does not exist");
   }
-  return (*aLayer)->LayerSettings();
+  return myLayers.Value(anIndex)->LayerSettings();
 }
 
 //=================================================================================================
@@ -155,11 +169,9 @@ void Graphic3d_GraphicDriver::ZLayers(NCollection_Sequence<int>& theLayerSeq) co
   theLayerSeq.Clear();
 
   // append normal layers
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < myLayers.Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = myLayers.Value(i);
     if (!aLayer->IsImmediate())
     {
       theLayerSeq.Append(aLayer->LayerId());
@@ -167,11 +179,9 @@ void Graphic3d_GraphicDriver::ZLayers(NCollection_Sequence<int>& theLayerSeq) co
   }
 
   // append immediate layers
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < myLayers.Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = myLayers.Value(i);
     if (aLayer->IsImmediate())
     {
       theLayerSeq.Append(aLayer->LayerId());
@@ -189,32 +199,23 @@ void Graphic3d_GraphicDriver::InsertLayerBefore(const Graphic3d_ZLayerId        
     theNewLayerId > 0,
     "Graphic3d_GraphicDriver::InsertLayerBefore, negative and zero IDs are reserved");
   Standard_ASSERT_RAISE(
-    !myLayerIds.IsBound(theNewLayerId),
+    findLayerIndex(myLayers, theNewLayerId) == THE_NPOS,
     "Graphic3d_GraphicDriver::InsertLayerBefore, Layer with theLayerId already exists");
 
   occ::handle<Graphic3d_Layer> aNewLayer =
     new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
-  occ::handle<Graphic3d_Layer> anOtherLayer;
-  if (theLayerAfter != Graphic3d_ZLayerId_UNKNOWN && myLayerIds.Find(theLayerAfter, anOtherLayer))
+  const size_t anAnchor = theLayerAfter != Graphic3d_ZLayerId_UNKNOWN
+                            ? findLayerIndex(myLayers, theLayerAfter)
+                            : THE_NPOS;
+  if (anAnchor == THE_NPOS)
   {
-    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-         aLayerIter.More();
-         aLayerIter.Next())
-    {
-      if (aLayerIter.Value() == anOtherLayer)
-      {
-        myLayers.InsertBefore(aNewLayer, aLayerIter);
-        break;
-      }
-    }
+    // anchor not found - prepend
+    myLayers.InsertBefore(0, aNewLayer);
+    return;
   }
-  else
-  {
-    myLayers.Prepend(aNewLayer);
-  }
-  myLayerIds.Bind(theNewLayerId, aNewLayer);
+  myLayers.InsertBefore(anAnchor, aNewLayer);
 }
 
 //=================================================================================================
@@ -227,32 +228,23 @@ void Graphic3d_GraphicDriver::InsertLayerAfter(const Graphic3d_ZLayerId        t
     theNewLayerId > 0,
     "Graphic3d_GraphicDriver::InsertLayerAfter, negative and zero IDs are reserved");
   Standard_ASSERT_RAISE(
-    !myLayerIds.IsBound(theNewLayerId),
+    findLayerIndex(myLayers, theNewLayerId) == THE_NPOS,
     "Graphic3d_GraphicDriver::InsertLayerAfter, Layer with theLayerId already exists");
 
   occ::handle<Graphic3d_Layer> aNewLayer =
     new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
-  occ::handle<Graphic3d_Layer> anOtherLayer;
-  if (theLayerBefore != Graphic3d_ZLayerId_UNKNOWN && myLayerIds.Find(theLayerBefore, anOtherLayer))
+  const size_t anAnchor = theLayerBefore != Graphic3d_ZLayerId_UNKNOWN
+                            ? findLayerIndex(myLayers, theLayerBefore)
+                            : THE_NPOS;
+  if (anAnchor == THE_NPOS)
   {
-    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-         aLayerIter.More();
-         aLayerIter.Next())
-    {
-      if (aLayerIter.Value() == anOtherLayer)
-      {
-        myLayers.InsertAfter(aNewLayer, aLayerIter);
-        break;
-      }
-    }
-  }
-  else
-  {
+    // anchor not found - append
     myLayers.Append(aNewLayer);
+    return;
   }
-  myLayerIds.Bind(theNewLayerId, aNewLayer);
+  myLayers.InsertAfter(anAnchor, aNewLayer);
 }
 
 //=================================================================================================
@@ -263,13 +255,11 @@ void Graphic3d_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
                         "Graphic3d_GraphicDriver::RemoveZLayer, negative and zero IDs are reserved "
                         "and cannot be removed");
 
-  occ::handle<Graphic3d_Layer> aLayerDef;
-  myLayerIds.Find(theLayerId, aLayerDef);
+  const size_t anIndex = findLayerIndex(myLayers, theLayerId);
   Standard_ASSERT_RAISE(
-    !aLayerDef.IsNull(),
+    anIndex != THE_NPOS,
     "Graphic3d_GraphicDriver::RemoveZLayer, Layer with theLayerId does not exist");
-  myLayers.Remove(aLayerDef);
-  myLayerIds.UnBind(theLayerId);
+  myLayers.Erase(anIndex);
 }
 
 //=================================================================================================
@@ -277,12 +267,11 @@ void Graphic3d_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
 void Graphic3d_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings)
 {
-  occ::handle<Graphic3d_Layer> aLayerDef;
-  myLayerIds.Find(theLayerId, aLayerDef);
+  const size_t anIndex = findLayerIndex(myLayers, theLayerId);
   Standard_ASSERT_RAISE(
-    !aLayerDef.IsNull(),
+    anIndex != THE_NPOS,
     "Graphic3d_GraphicDriver::SetZLayerSettings, Layer with theLayerId does not exist");
-  aLayerDef->SetLayerSettings(theSettings);
+  myLayers.Value(anIndex)->SetLayerSettings(theSettings);
 }
 
 //=================================================================================================
@@ -293,10 +282,9 @@ void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream, int theDept
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myStructGenId)
 
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator anIter(myLayers); anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myLayers.Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = anIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = myLayers.Value(i);
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aLayer.get())
   }
 }

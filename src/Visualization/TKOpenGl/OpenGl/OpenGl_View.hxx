@@ -149,7 +149,8 @@ public:
   Standard_EXPORT int ZLayerMax() const override;
 
   //! Returns the list of layers.
-  Standard_EXPORT const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const override;
+  Standard_EXPORT const NCollection_LinearVector<occ::handle<Graphic3d_Layer>>& Layers()
+    const override;
 
   //! Returns layer with given ID or NULL if undefined.
   Standard_EXPORT occ::handle<Graphic3d_Layer> Layer(
