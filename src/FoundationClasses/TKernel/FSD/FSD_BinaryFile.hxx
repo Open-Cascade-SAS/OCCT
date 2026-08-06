@@ -17,7 +17,6 @@
 #ifndef _FSD_BinaryFile_HeaderFile
 #define _FSD_BinaryFile_HeaderFile
 
-#include <FSD_BStream.hxx>
 #include <FSD_FileHeader.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_Error.hxx>
@@ -28,6 +27,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
+
+#include <stdio.h>
 
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
@@ -359,7 +360,7 @@ private:
   void ReadHeader();
 
 private:
-  FSD_BStream    myStream;
+  FILE*          myStream;
   FSD_FileHeader myHeader{};
 };
 
