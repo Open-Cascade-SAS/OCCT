@@ -193,10 +193,10 @@ void IntPolyh_Intersection::Perform(const NCollection_Array1<double>& theUPars1,
   {
     // Default intersection is done, but too few interferences found.
     // Perform advanced intersection - perform intersection four times with different shifts.
-  IntPolyh_MaillageAffinage* pMaillageFF  = nullptr;
-  IntPolyh_MaillageAffinage* pMaillageFR  = nullptr;
-  IntPolyh_MaillageAffinage* pMaillageRF  = nullptr;
-  IntPolyh_MaillageAffinage* pMaillageRR  = nullptr;
+    IntPolyh_MaillageAffinage* pMaillageFF  = nullptr;
+    IntPolyh_MaillageAffinage* pMaillageFR  = nullptr;
+    IntPolyh_MaillageAffinage* pMaillageRF  = nullptr;
+    IntPolyh_MaillageAffinage* pMaillageRR  = nullptr;
     int                        nbCouplesAdv = 0;
 
     bool isAdvDone = PerformAdv(theUPars1,
@@ -247,7 +247,7 @@ bool IntPolyh_Intersection::PerformStd(const NCollection_Array1<double>& theUPar
                                        const NCollection_Array1<double>& theVPars2,
                                        const double                      theDeflTol1,
                                        const double                      theDeflTol2,
-                                       IntPolyh_MaillageAffinage*&      theMaillageS,
+                                       IntPolyh_MaillageAffinage*&       theMaillageS,
                                        int&                              theNbCouples)
 {
   bool isDone  = PerformMaillage(theUPars1,
@@ -269,10 +269,10 @@ bool IntPolyh_Intersection::PerformAdv(const NCollection_Array1<double>& theUPar
                                        const NCollection_Array1<double>& theVPars2,
                                        const double                      theDeflTol1,
                                        const double                      theDeflTol2,
-                                       IntPolyh_MaillageAffinage*&      theMaillageFF,
-                                       IntPolyh_MaillageAffinage*&      theMaillageFR,
-                                       IntPolyh_MaillageAffinage*&      theMaillageRF,
-                                       IntPolyh_MaillageAffinage*&      theMaillageRR,
+                                       IntPolyh_MaillageAffinage*&       theMaillageFF,
+                                       IntPolyh_MaillageAffinage*&       theMaillageFR,
+                                       IntPolyh_MaillageAffinage*&       theMaillageRF,
+                                       IntPolyh_MaillageAffinage*&       theMaillageRR,
                                        int&                              theNbCouples)
 {
   // Compute the points on the surface and normal directions in these points
@@ -354,7 +354,7 @@ bool IntPolyh_Intersection::PerformMaillage(const NCollection_Array1<double>& th
                                             const NCollection_Array1<double>& theVPars2,
                                             const double                      theDeflTol1,
                                             const double                      theDeflTol2,
-                                            IntPolyh_MaillageAffinage*&      theMaillage)
+                                            IntPolyh_MaillageAffinage*&       theMaillage)
 {
   theMaillage = new IntPolyh_MaillageAffinage(mySurf1,
                                               theUPars1.Length(),
@@ -405,7 +405,7 @@ bool IntPolyh_Intersection::PerformMaillage(const NCollection_Array1<double>&  t
                                             const IntPolyh_ArrayOfPointNormal& thePoints2,
                                             const bool                         theIsFirstFwd,
                                             const bool                         theIsSecondFwd,
-                                            IntPolyh_MaillageAffinage*&       theMaillage)
+                                            IntPolyh_MaillageAffinage*&        theMaillage)
 {
   theMaillage = new IntPolyh_MaillageAffinage(mySurf1,
                                               theUPars1.Length(),

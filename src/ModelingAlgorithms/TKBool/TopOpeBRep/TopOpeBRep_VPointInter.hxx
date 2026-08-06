@@ -177,19 +177,19 @@ public:
   Standard_EXPORT IntPatch_Point* PThePointOfIntersectionDummy() const;
 
 private:
-  IntPatch_Point*                   myPPOI;
-  int                                myShapeIndex;
-  TopAbs_State                       myState1;
-  TopAbs_State                       myState2;
-  bool                               myKeep;
-  TopoDS_Shape                       myEdgeON1;
-  TopoDS_Shape                       myEdgeON2;
-  double                             myEdgeONPar1;
-  double                             myEdgeONPar2;
-  int                                myIndex;
-  TopoDS_Shape                       myNullShape;
-  int                                myS1;
-  int                                myS2;
+  IntPatch_Point* myPPOI;
+  int             myShapeIndex;
+  TopAbs_State    myState1;
+  TopAbs_State    myState2;
+  bool            myKeep;
+  TopoDS_Shape    myEdgeON1;
+  TopoDS_Shape    myEdgeON2;
+  double          myEdgeONPar1;
+  double          myEdgeONPar2;
+  int             myIndex;
+  TopoDS_Shape    myNullShape;
+  int             myS1;
+  int             myS2;
 };
 
 #include <TopOpeBRep_VPointInter.lxx>

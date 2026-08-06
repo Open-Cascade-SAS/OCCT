@@ -60,7 +60,7 @@ public:
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopOpeBRepTool_ShapeClassifier*         myPShapeClassif;
+  TopOpeBRepTool_ShapeClassifier*          myPShapeClassif;
 };
 
 #endif // _TopOpeBRepDS_Filter_HeaderFile

@@ -126,7 +126,7 @@ public:
 
   Standard_EXPORT static double ComputeToleranceOfCB(
     const occ::handle<BOPDS_CommonBlock>& theCB,
-    BOPDS_DS* const                        theDS,
+    BOPDS_DS* const                       theDS,
     const occ::handle<IntTools_Context>&  theContext);
 
   //! Creates planar wires from the given edges.

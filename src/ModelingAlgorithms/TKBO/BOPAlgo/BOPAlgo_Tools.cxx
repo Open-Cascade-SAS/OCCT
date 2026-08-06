@@ -246,7 +246,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
 //=================================================================================================
 
 double BOPAlgo_Tools::ComputeToleranceOfCB(const occ::handle<BOPDS_CommonBlock>& theCB,
-                                           BOPDS_DS* const                        theDS,
+                                           BOPDS_DS* const                       theDS,
                                            const occ::handle<IntTools_Context>&  theContext)
 {
   double aTolMax = 0.;

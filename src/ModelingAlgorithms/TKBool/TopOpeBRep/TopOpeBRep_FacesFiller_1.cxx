@@ -164,7 +164,7 @@ static bool FUN_IwithToniS(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
   return ok;
 }
 
-static bool FUN_supponF(TopOpeBRepDS_DataStructure*                               pDS,
+static bool FUN_supponF(TopOpeBRepDS_DataStructure*                                     pDS,
                         const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
                         const int                                                       iF,
                         NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lIsupponF,
@@ -199,7 +199,7 @@ static bool FUN_supponF(TopOpeBRepDS_DataStructure*                             
   return losupp.Extent() >= 1;
 }
 
-static bool FUN_IoflSsuppS(TopOpeBRepDS_DataStructure*                         pDS,
+static bool FUN_IoflSsuppS(TopOpeBRepDS_DataStructure*                               pDS,
                            const int                                                 iS,
                            const NCollection_List<int>&                              lShape,
                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& IsuppiS)
@@ -225,7 +225,7 @@ static bool FUN_IoflSsuppS(TopOpeBRepDS_DataStructure*                         p
 //           attached to the edge (stored in the DS).
 //=======================================================================
 static bool FUN_findTF(TopOpeBRepDS_DataStructure* pDS,
-                       const int                         iE,
+                       const int                   iE,
                        const int,
                        const int                iOOF,
                        TopOpeBRepDS_Transition& TF)
@@ -333,10 +333,10 @@ static bool FUN_findTF(TopOpeBRepDS_DataStructure* pDS,
 }
 
 static bool FUN_findTOOF(TopOpeBRepDS_DataStructure* pDS,
-                         const int                         iE,
-                         const int                         iF,
-                         const int                         iOOF,
-                         TopOpeBRepDS_Transition&          TOOF)
+                         const int                   iE,
+                         const int                   iF,
+                         const int                   iOOF,
+                         TopOpeBRepDS_Transition&    TOOF)
 {
   double factor = 0.5;
 

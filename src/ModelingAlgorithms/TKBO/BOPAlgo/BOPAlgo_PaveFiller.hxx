@@ -118,7 +118,7 @@ public:
 
   Standard_EXPORT BOPDS_DS* PDS();
 
-    Standard_EXPORT BOPDS_Iterator* const& Iterator();
+  Standard_EXPORT BOPDS_Iterator* const& Iterator();
 
   //! Sets the arguments for operation
   void SetArguments(const NCollection_List<TopoDS_Shape>& theLS) { myArguments = theLS; }

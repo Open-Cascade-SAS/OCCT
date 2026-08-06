@@ -626,7 +626,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 // purpose  : Updates the saved tolerance of the vertices of the edge
 //           with new tolerance of edge
 //=======================================================================
-static void UpdateSavedTolerance(BOPDS_DS* const&                 theDS,
+static void UpdateSavedTolerance(BOPDS_DS* const&                  theDS,
                                  const int                         theNE,
                                  const double                      theTolNew,
                                  NCollection_DataMap<int, double>& theMVTol)

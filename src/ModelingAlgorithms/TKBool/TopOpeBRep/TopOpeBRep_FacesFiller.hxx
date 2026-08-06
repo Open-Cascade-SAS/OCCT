@@ -305,7 +305,7 @@ private:
   int                                                      myDSCIndex;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myDSCIL;
   TopOpeBRep_PointClassifier                               myPointClassifier;
-  TopOpeBRepTool_ShapeClassifier*                         myPShapeClassifier;
+  TopOpeBRepTool_ShapeClassifier*                          myPShapeClassifier;
   int                                                      myexF1;
   int                                                      myexF2;
   occ::handle<TopOpeBRep_FFDumper>                         myHFFD;

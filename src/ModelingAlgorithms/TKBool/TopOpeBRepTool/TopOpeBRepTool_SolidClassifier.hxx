@@ -54,7 +54,7 @@ public:
   Standard_EXPORT TopAbs_State State() const;
 
 private:
-  BRepClass3d_SolidClassifier*                                              myPClassifier;
+  BRepClass3d_SolidClassifier*                                             myPClassifier;
   NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> myShapeClassifierMap;
   TopAbs_State                                                             myState;
   TopoDS_Shell                                                             myShell;

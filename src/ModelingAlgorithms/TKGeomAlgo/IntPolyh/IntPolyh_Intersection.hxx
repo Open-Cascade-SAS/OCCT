@@ -136,7 +136,7 @@ private: //! @name Performing the intersection
                                   const NCollection_Array1<double>& theVPars2,
                                   const double                      theDeflTol1,
                                   const double                      theDeflTol2,
-                                  IntPolyh_MaillageAffinage*&      theMaillageS,
+                                  IntPolyh_MaillageAffinage*&       theMaillageS,
                                   int&                              theNbCouples);
 
   //! Performs the advanced intersection of the triangles - four intersection with
@@ -147,10 +147,10 @@ private: //! @name Performing the intersection
                                   const NCollection_Array1<double>& theVPars2,
                                   const double                      theDeflTol1,
                                   const double                      theDeflTol2,
-                                  IntPolyh_MaillageAffinage*&      theMaillageFF,
-                                  IntPolyh_MaillageAffinage*&      theMaillageFR,
-                                  IntPolyh_MaillageAffinage*&      theMaillageRF,
-                                  IntPolyh_MaillageAffinage*&      theMaillageRR,
+                                  IntPolyh_MaillageAffinage*&       theMaillageFF,
+                                  IntPolyh_MaillageAffinage*&       theMaillageFR,
+                                  IntPolyh_MaillageAffinage*&       theMaillageRF,
+                                  IntPolyh_MaillageAffinage*&       theMaillageRR,
                                   int&                              theNbCouples);
 
   //! Performs the advanced intersection of the triangles.
@@ -160,7 +160,7 @@ private: //! @name Performing the intersection
                                        const NCollection_Array1<double>& theVPars2,
                                        const double                      theDeflTol1,
                                        const double                      theDeflTol2,
-                                       IntPolyh_MaillageAffinage*&      theMaillage);
+                                       IntPolyh_MaillageAffinage*&       theMaillage);
 
   //! Performs the advanced intersection of the triangles.
   Standard_EXPORT bool PerformMaillage(const NCollection_Array1<double>&  theUPars1,
@@ -173,7 +173,7 @@ private: //! @name Performing the intersection
                                        const IntPolyh_ArrayOfPointNormal& thePoints2,
                                        const bool                         theIsFirstFwd,
                                        const bool                         theIsSecondFwd,
-                                       IntPolyh_MaillageAffinage*&       theMaillage);
+                                       IntPolyh_MaillageAffinage*&        theMaillage);
 
   //! Clears the arrays from the duplicate couples, keeping only one instance of it.
   Standard_EXPORT void MergeCouples(NCollection_List<IntPolyh_Couple>& theArrayFF,

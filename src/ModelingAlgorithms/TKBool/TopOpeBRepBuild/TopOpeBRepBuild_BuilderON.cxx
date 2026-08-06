@@ -144,22 +144,23 @@ TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON() = default;
 
 //=================================================================================================
 
-TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON(TopOpeBRepBuild_Builder* const&     PB,
-                                                     const TopoDS_Shape&                 FOR,
-                                                     TopOpeBRepBuild_GTopo* const&       PG,
-                                     NCollection_List<TopoDS_Shape>* const& PLSclass,
-                                                     TopOpeBRepBuild_WireEdgeSet* const& PWES)
+TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON(
+  TopOpeBRepBuild_Builder* const&        PB,
+  const TopoDS_Shape&                    FOR,
+  TopOpeBRepBuild_GTopo* const&          PG,
+  NCollection_List<TopoDS_Shape>* const& PLSclass,
+  TopOpeBRepBuild_WireEdgeSet* const&    PWES)
 {
   Perform(PB, FOR, PG, PLSclass, PWES);
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_BuilderON::Perform(TopOpeBRepBuild_Builder* const&     PB,
-                                        const TopoDS_Shape&                 FOR,
-                                        TopOpeBRepBuild_GTopo* const&       PG,
+void TopOpeBRepBuild_BuilderON::Perform(TopOpeBRepBuild_Builder* const&        PB,
+                                        const TopoDS_Shape&                    FOR,
+                                        TopOpeBRepBuild_GTopo* const&          PG,
                                         NCollection_List<TopoDS_Shape>* const& PLSclass,
-                                        TopOpeBRepBuild_WireEdgeSet* const& PWES)
+                                        TopOpeBRepBuild_WireEdgeSet* const&    PWES)
 {
   myPB       = PB;
   myFace     = FOR;

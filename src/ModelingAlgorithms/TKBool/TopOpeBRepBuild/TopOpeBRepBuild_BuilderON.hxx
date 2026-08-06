@@ -36,17 +36,17 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_BuilderON();
 
-  Standard_EXPORT TopOpeBRepBuild_BuilderON(TopOpeBRepBuild_Builder* const&     PB,
-                                            const TopoDS_Shape&                 F,
-                                            TopOpeBRepBuild_GTopo* const&       PG,
+  Standard_EXPORT TopOpeBRepBuild_BuilderON(TopOpeBRepBuild_Builder* const&        PB,
+                                            const TopoDS_Shape&                    F,
+                                            TopOpeBRepBuild_GTopo* const&          PG,
                                             NCollection_List<TopoDS_Shape>* const& PLSclass,
-                                            TopOpeBRepBuild_WireEdgeSet* const& PWES);
+                                            TopOpeBRepBuild_WireEdgeSet* const&    PWES);
 
-  Standard_EXPORT void Perform(TopOpeBRepBuild_Builder* const&     PB,
-                               const TopoDS_Shape&                 F,
-                               TopOpeBRepBuild_GTopo* const&       PG,
+  Standard_EXPORT void Perform(TopOpeBRepBuild_Builder* const&        PB,
+                               const TopoDS_Shape&                    F,
+                               TopOpeBRepBuild_GTopo* const&          PG,
                                NCollection_List<TopoDS_Shape>* const& PLSclass,
-                               TopOpeBRepBuild_WireEdgeSet* const& PWES);
+                               TopOpeBRepBuild_WireEdgeSet* const&    PWES);
 
   Standard_EXPORT bool GFillONCheckI(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
@@ -55,11 +55,11 @@ public:
   Standard_EXPORT void GFillONPartsWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
                                         const TopoDS_Shape&                           EspON);
 
-  Standard_EXPORT void Perform2d(TopOpeBRepBuild_Builder* const&     PB,
-                                 const TopoDS_Shape&                 F,
-                                 TopOpeBRepBuild_GTopo* const&       PG,
+  Standard_EXPORT void Perform2d(TopOpeBRepBuild_Builder* const&        PB,
+                                 const TopoDS_Shape&                    F,
+                                 TopOpeBRepBuild_GTopo* const&          PG,
                                  NCollection_List<TopoDS_Shape>* const& PLSclass,
-                                 TopOpeBRepBuild_WireEdgeSet* const& PWES);
+                                 TopOpeBRepBuild_WireEdgeSet* const&    PWES);
 
   Standard_EXPORT void GFillONParts2dWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
                                           const TopoDS_Shape&                           EspON);

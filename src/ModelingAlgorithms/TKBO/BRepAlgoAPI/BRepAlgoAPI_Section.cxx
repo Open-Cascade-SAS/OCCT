@@ -281,7 +281,7 @@ bool HasAncestorFaces(BOPAlgo_PaveFiller* const& pPF,
   int                                                      aNbFF, i, j, nE, nF1, nF2, aNbVC;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  BOPDS_DS* const&                           pDS = pPF->PDS();
+  BOPDS_DS* const&                          pDS  = pPF->PDS();
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   // section edges

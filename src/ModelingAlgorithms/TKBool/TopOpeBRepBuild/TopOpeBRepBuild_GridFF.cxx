@@ -342,7 +342,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
   }
   if (GLOBAL_DS2d == nullptr)
   {
-    GLOBAL_DS2d = (TopOpeBRepDS_DataStructure*) new TopOpeBRepDS_DataStructure();
+    GLOBAL_DS2d = (TopOpeBRepDS_DataStructure*)new TopOpeBRepDS_DataStructure();
   }
   GLOBAL_DS2d->Init();
 
