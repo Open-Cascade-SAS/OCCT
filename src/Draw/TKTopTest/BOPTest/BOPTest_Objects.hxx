@@ -18,10 +18,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <BOPDS_PDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <BOPAlgo_PBuilder.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 //
@@ -30,6 +28,7 @@ class BOPAlgo_Builder;
 class BOPAlgo_BOP;
 class BOPAlgo_Section;
 class BOPAlgo_Splitter;
+class BOPDS_DS;
 
 class BOPTest_Objects
 {
@@ -42,7 +41,7 @@ public:
 
   Standard_EXPORT static void Clear();
 
-  Standard_EXPORT static BOPDS_PDS PDS();
+  Standard_EXPORT static BOPDS_DS* PDS();
 
   Standard_EXPORT static BOPAlgo_Builder& Builder();
 
@@ -58,7 +57,7 @@ public:
 
   Standard_EXPORT static NCollection_List<TopoDS_Shape>& Tools();
 
-  Standard_EXPORT static void SetBuilder(const BOPAlgo_PBuilder& theBuilder);
+  Standard_EXPORT static void SetBuilder(BOPAlgo_Builder* const& theBuilder);
 
   Standard_EXPORT static void SetBuilderDefault();
 
