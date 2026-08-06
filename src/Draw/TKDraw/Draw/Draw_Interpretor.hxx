@@ -21,12 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Boolean.hxx>
-#include <Draw_PInterp.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Real.hxx>
 
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
+struct Tcl_Interp;
 
 //! Provides an encapsulation of the TCL interpreter to define Draw commands.
 class Draw_Interpretor
@@ -226,11 +226,11 @@ public:
   //! Destructor
   Standard_EXPORT ~Draw_Interpretor();
 
-  Standard_EXPORT Draw_Interpretor(const Draw_PInterp& theInterp);
+  Standard_EXPORT Draw_Interpretor(Tcl_Interp* const& theInterp);
 
-  Standard_EXPORT void Set(const Draw_PInterp& theInterp);
+  Standard_EXPORT void Set(Tcl_Interp* const& theInterp);
 
-  Standard_EXPORT Draw_PInterp Interp() const;
+  Standard_EXPORT Tcl_Interp* Interp() const;
 
   //! Enables or disables logging of all commands and their results
   Standard_EXPORT void SetDoLog(const bool theDoLog);
@@ -271,7 +271,7 @@ protected:
                            const char* const theGroup);
 
 private:
-  Draw_PInterp myInterp;
+  Tcl_Interp* myInterp;
   bool         isAllocated;
   bool         myDoLog;
   bool         myDoEcho;

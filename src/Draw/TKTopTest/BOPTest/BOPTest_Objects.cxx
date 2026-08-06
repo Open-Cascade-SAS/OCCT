@@ -233,7 +233,7 @@ BOPAlgo_PaveFiller& BOPTest_Objects::PaveFiller()
 
 //=================================================================================================
 
-BOPDS_PDS BOPTest_Objects::PDS()
+BOPDS_DS* BOPTest_Objects::PDS()
 {
   return BOPTest_Objects::PaveFiller().PDS();
 }
@@ -247,11 +247,11 @@ BOPAlgo_Builder& BOPTest_Objects::Builder()
 
 //=================================================================================================
 
-void BOPTest_Objects::SetBuilder(const BOPAlgo_PBuilder& theBuilder)
+void BOPTest_Objects::SetBuilder(BOPAlgo_Builder* const& theBuilder)
 {
   BOPAlgo_Builder* pB;
   //
-  pB = (BOPAlgo_Builder*)theBuilder;
+  pB = theBuilder;
   GetSession().SetBuilder(pB);
 }
 

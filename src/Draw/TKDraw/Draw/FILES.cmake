@@ -14,10 +14,6 @@ set(OCCT_Draw_FILES
   Draw_Box.hxx
   Draw_Chronometer.cxx
   Draw_Chronometer.hxx
-  Draw_Circle2D.cxx
-  Draw_Circle2D.hxx
-  Draw_Circle3D.cxx
-  Draw_Circle3D.hxx
   Draw_Color.cxx
   Draw_Color.hxx
   Draw_ColorKind.hxx
@@ -47,7 +43,6 @@ set(OCCT_Draw_FILES
   Draw_MessageCommands.cxx
   Draw_Number.cxx
   Draw_Number.hxx
-  Draw_PInterp.hxx
   Draw_PloadCommands.cxx
   Draw_PluginMacro.hxx
   Draw_Printer.cxx
