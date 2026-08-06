@@ -12,8 +12,6 @@ set(OCCT_AdvApprox_FILES
   AdvApprox_EvaluatorFunction.hxx
   AdvApprox_PrefAndRec.cxx
   AdvApprox_PrefAndRec.hxx
-  AdvApprox_PrefCutting.cxx
-  AdvApprox_PrefCutting.hxx
   AdvApprox_SimpleApprox.cxx
   AdvApprox_SimpleApprox.hxx
 )

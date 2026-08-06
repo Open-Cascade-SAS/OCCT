@@ -76,7 +76,6 @@
 #include <GeomConvert_ApproxSurface.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLib_DenominatorMultiplier.hxx>
-#include <GeomLib_DenominatorMultiplierPtr.hxx>
 #include <GeomLib_LogSample.hxx>
 #include <GeomLib_MakeCurvefromApprox.hxx>
 #include <GeomLib_PolyFunc.hxx>
@@ -2175,7 +2174,7 @@ class law_evaluator : public BSplSLib_EvaluatorFunction
 {
 
 public:
-  law_evaluator(const GeomLib_DenominatorMultiplierPtr theDenominatorPtr)
+  law_evaluator(GeomLib_DenominatorMultiplier* theDenominatorPtr)
       : myDenominator(theDenominatorPtr)
   {
   }
@@ -2198,7 +2197,7 @@ public:
   }
 
 private:
-  GeomLib_DenominatorMultiplierPtr myDenominator;
+  GeomLib_DenominatorMultiplier* myDenominator;
 };
 
 //=================================================================================================
