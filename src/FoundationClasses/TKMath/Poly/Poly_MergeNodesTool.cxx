@@ -75,8 +75,6 @@ Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
 
 Poly_MergeNodesTool::MergedNodesMap::~MergedNodesMap()
 {
-  // NCollection_BaseMap does not free the bucket arrays in its destructor;
-  // without this call they leak on every Poly_MergeNodesTool instance.
   Destroy(DataMapNode::delNode, true);
 }
 
