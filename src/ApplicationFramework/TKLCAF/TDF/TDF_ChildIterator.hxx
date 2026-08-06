@@ -23,6 +23,7 @@
 #include <Standard_Boolean.hxx>
 #include <TDF_Label.hxx>
 class TDF_Label;
+class TDF_LabelNode;
 
 //! Iterates on the children of a label, at the first
 //! level only. It is possible to ask the iterator to
@@ -92,7 +93,7 @@ public:
   const TDF_Label Value() const;
 
 private:
-  TDF_LabelNodePtr myNode;
+  TDF_LabelNode*   myNode;
   int              myFirstLevel;
 };
 

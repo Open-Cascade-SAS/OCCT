@@ -22,10 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TNaming_PtrNode.hxx>
 class TopoDS_Shape;
 class TDF_Label;
 class TNaming_NamedShape;
+class TNaming_Node;
 
 class TNaming_RefShape
 {
@@ -38,9 +38,9 @@ public:
 
   void Shape(const TopoDS_Shape& S);
 
-  void FirstUse(const TNaming_PtrNode& aPtr);
+  void FirstUse(TNaming_Node* const& aPtr);
 
-  TNaming_PtrNode FirstUse() const;
+  TNaming_Node* FirstUse() const;
 
   const TopoDS_Shape& Shape() const;
 
@@ -53,7 +53,7 @@ public:
 
 private:
   TopoDS_Shape    myShape;
-  TNaming_PtrNode myFirstUse;
+  TNaming_Node*   myFirstUse;
 };
 
 #include <TNaming_RefShape.lxx>
