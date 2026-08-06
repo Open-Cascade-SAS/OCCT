@@ -108,8 +108,8 @@ static void MapShapes(const TDF_Label& LCible,
 //=================================================================================================
 
 static void SubstituteShape(
-  const TopoDS_Shape&                                                              oldShape,
-  const TopoDS_Shape&                                                              newShape,
+  const TopoDS_Shape&                                                            oldShape,
+  const TopoDS_Shape&                                                            newShape,
   NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& amap)
 {
   if (oldShape.IsSame(newShape))

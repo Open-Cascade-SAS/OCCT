@@ -50,8 +50,8 @@ private:
   Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape&                    aShape,
                                             const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_Node*   myNode;
-  bool            myIsNew;
+  TNaming_Node* myNode;
+  bool          myIsNew;
 };
 
 #include <TNaming_SameShapeIterator.lxx>

@@ -82,7 +82,7 @@ private:
   //! Returns the contents of the field <myFirst>.
   TDocStd_XLink* First() const;
 
-  TDocStd_XLink*   myFirst;
+  TDocStd_XLink* myFirst;
 };
 
 #include <TDocStd_XLinkRoot.lxx>

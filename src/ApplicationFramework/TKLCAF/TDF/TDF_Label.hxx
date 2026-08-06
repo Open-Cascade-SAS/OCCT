@@ -286,7 +286,7 @@ private:
                                     NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap,
                                     const bool extended) const;
 
-  TDF_LabelNode*   myLabelNode;
+  TDF_LabelNode* myLabelNode;
 };
 
 #include <TDF_Label.lxx>

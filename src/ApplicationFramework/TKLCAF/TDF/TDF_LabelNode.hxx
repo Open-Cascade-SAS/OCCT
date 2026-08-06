@@ -144,13 +144,13 @@ private:
   // Private Fields
   // --------------------------------------------------------------------------
 
-  TDF_LabelNode*                myFather;
-  TDF_LabelNode*                myBrother;
-  TDF_LabelNode*                myFirstChild;
-  std::atomic<TDF_LabelNode*>   myLastFoundChild; // jfa 10.01.2003
-  int                           myTag;
-  int                           myFlags; // Flags & Depth
-  occ::handle<TDF_Attribute>    myFirstAttribute;
+  TDF_LabelNode*              myFather;
+  TDF_LabelNode*              myBrother;
+  TDF_LabelNode*              myFirstChild;
+  std::atomic<TDF_LabelNode*> myLastFoundChild; // jfa 10.01.2003
+  int                         myTag;
+  int                         myFlags; // Flags & Depth
+  occ::handle<TDF_Attribute>  myFirstAttribute;
 #ifdef KEEP_LOCAL_ROOT
   TDF_Data* myData;
 #endif

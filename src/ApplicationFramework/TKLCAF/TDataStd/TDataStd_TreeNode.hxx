@@ -213,12 +213,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDataStd_TreeNode, TDF_Attribute)
 
 private:
-  TDataStd_TreeNode*   myFather;
-  TDataStd_TreeNode*   myPrevious;
-  TDataStd_TreeNode*   myNext;
-  TDataStd_TreeNode*   myFirst;
-  TDataStd_TreeNode*   myLast;
-  Standard_GUID        myTreeID;
+  TDataStd_TreeNode* myFather;
+  TDataStd_TreeNode* myPrevious;
+  TDataStd_TreeNode* myNext;
+  TDataStd_TreeNode* myFirst;
+  TDataStd_TreeNode* myLast;
+  Standard_GUID      myTreeID;
 };
 
 #include <TDataStd_TreeNode.lxx>

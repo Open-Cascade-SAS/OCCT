@@ -79,8 +79,8 @@ private:
   Standard_EXPORT TNaming_NewShapeIterator(const TopoDS_Shape&                    aShape,
                                            const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_Node*   myNode;
-  int             myTrans;
+  TNaming_Node* myNode;
+  int           myTrans;
 };
 
 #include <TNaming_NewShapeIterator.lxx>

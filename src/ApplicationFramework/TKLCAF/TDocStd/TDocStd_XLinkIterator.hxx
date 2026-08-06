@@ -54,7 +54,7 @@ public:
 private:
   Standard_EXPORT void Init(const occ::handle<TDocStd_Document>& D);
 
-  TDocStd_XLink*   myValue;
+  TDocStd_XLink* myValue;
 };
 
 #include <TDocStd_XLinkIterator.lxx>

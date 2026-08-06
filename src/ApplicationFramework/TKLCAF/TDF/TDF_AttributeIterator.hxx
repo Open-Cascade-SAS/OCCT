@@ -35,6 +35,7 @@
 // etc.
 //
 class TDF_LabelNode;
+
 // Even a forgotten attribute may be found if this
 // option is set. To use this possibility, look at
 // the constructor.
@@ -49,7 +50,7 @@ public:
   Standard_EXPORT      TDF_AttributeIterator(const TDF_Label& aLabel,
                                              const bool       withoutForgotten = true);
   Standard_EXPORT      TDF_AttributeIterator(TDF_LabelNode* const aLabelNode,
-                                             const bool             withoutForgotten = true);
+                                             const bool           withoutForgotten = true);
   Standard_EXPORT void Initialize(const TDF_Label& aLabel, const bool withoutForgotten = true);
   inline bool          More() const;
   Standard_EXPORT void Next();

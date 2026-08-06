@@ -93,8 +93,8 @@ public:
   const TDF_Label Value() const;
 
 private:
-  TDF_LabelNode*   myNode;
-  int              myFirstLevel;
+  TDF_LabelNode* myNode;
+  int            myFirstLevel;
 };
 
 #include <TDF_ChildIterator.lxx>

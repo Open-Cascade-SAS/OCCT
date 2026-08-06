@@ -52,8 +52,8 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  TopoDS_Shape    myShape;
-  TNaming_Node*   myFirstUse;
+  TopoDS_Shape  myShape;
+  TNaming_Node* myFirstUse;
 };
 
 #include <TNaming_RefShape.lxx>

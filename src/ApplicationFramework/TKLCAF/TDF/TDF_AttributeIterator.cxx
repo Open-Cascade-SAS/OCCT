@@ -45,7 +45,7 @@ TDF_AttributeIterator::TDF_AttributeIterator(const TDF_Label& aLabel, const bool
 //=================================================================================================
 
 TDF_AttributeIterator::TDF_AttributeIterator(TDF_LabelNode* const aLabelNode,
-                                             const bool             withoutForgotten)
+                                             const bool           withoutForgotten)
     : myValue(nullptr),
       myWithoutForgotten(withoutForgotten)
 {

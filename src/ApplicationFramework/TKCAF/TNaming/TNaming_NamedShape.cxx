@@ -169,9 +169,9 @@ TopoDS_Shape TNaming_NamedShape::Get() const
 //=================================================================================================
 
 static void RemoveNode(
-  bool                                                                             MapExist,
+  bool                                                                           MapExist,
   NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& M,
-  TNaming_Node*&                                                                   N)
+  TNaming_Node*&                                                                 N)
 {
   TNaming_RefShape* pos = N->myOld;
   if (pos != nullptr)
@@ -341,7 +341,7 @@ bool TNaming_NamedShape::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttD
   {
     occ::handle<TNaming_UsedShapes> US;
 
-  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>* M = nullptr;
+    NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>* M = nullptr;
 
     // Recuperation de la map si celle-ci n est pas deja detruite.
     // bool MapExist = Ins.FindInRoot(TNaming_UsedShapes::GetID(),US);
