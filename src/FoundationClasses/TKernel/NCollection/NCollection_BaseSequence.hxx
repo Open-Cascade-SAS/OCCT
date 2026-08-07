@@ -142,6 +142,23 @@ protected:
     BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
+    //! Compatibility conversion for code that historically used mutable sequence iterators
+    //! with a const sequence. Prefer const_iterator in new code.
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    BasicIterator(const BasicIterator<TheNode, TheItemType, true>& theOther) noexcept
+        : Iterator()
+    {
+      theOther.CopyTo(*this);
+    }
+
+    //! Compatibility assignment for the historical mutable iterator API.
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    BasicIterator& operator=(const BasicIterator<TheNode, TheItemType, true>& theOther) noexcept
+    {
+      theOther.CopyTo(*this);
+      return *this;
+    }
+
     explicit BasicIterator(const Iterator& theOther) noexcept
         : Iterator(theOther)
     {

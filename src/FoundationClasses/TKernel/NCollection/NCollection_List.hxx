@@ -64,6 +64,22 @@ public:
     {
     }
 
+    //! Legacy conversion preserving the historical mutable cursor API.
+    Iterator(const const_iterator& theOther) noexcept
+        : iterator()
+    {
+      this->myCurrent  = theOther.myCurrent;
+      this->myPrevious = theOther.myPrevious;
+    }
+
+    //! Legacy assignment preserving the historical mutable cursor API.
+    Iterator& operator=(const const_iterator& theOther) noexcept
+    {
+      this->myCurrent  = theOther.myCurrent;
+      this->myPrevious = theOther.myPrevious;
+      return *this;
+    }
+
     void Init(NCollection_List& theList) noexcept { *this = Iterator(theList); }
 
     void Init(const NCollection_List& theList) noexcept { *this = Iterator(theList); }
