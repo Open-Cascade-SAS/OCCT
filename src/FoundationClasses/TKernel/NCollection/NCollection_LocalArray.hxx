@@ -66,7 +66,10 @@ public:
   {
   }
 
-  ~NCollection_LocalArray()
+  ~NCollection_LocalArray() { Deallocate(); }
+
+  //! Destroy elements, release heap storage, and reset to the empty inline state.
+  void Deallocate() noexcept
   {
     if constexpr (!IS_TRIVIAL)
     {
@@ -76,6 +79,8 @@ public:
       }
     }
     deallocate();
+    myPtr  = inlinePtr();
+    mySize = 0;
   }
 
   void Allocate(const size_t theSize) { Reallocate(theSize, false); }

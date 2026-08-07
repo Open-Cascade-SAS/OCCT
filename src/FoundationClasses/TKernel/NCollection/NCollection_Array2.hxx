@@ -92,7 +92,7 @@ public:
   }
 
 private:
-  size_t offsetOf(const int theRow, const int theCol, const char* theMessage) const
+  size_t offsetOf(const int theRow, const int theCol, [[maybe_unused]] const char* theMessage) const
   {
     const std::ptrdiff_t aRowOffset =
       static_cast<std::ptrdiff_t>(theRow) - static_cast<std::ptrdiff_t>(myLowerRow);
