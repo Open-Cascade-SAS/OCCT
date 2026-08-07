@@ -2,4 +2,5 @@
 set(OCCT_TKFeat_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKFeat_GTests_FILES
+  BRepFeat_MakeCylindricalHole_Test.cxx
 )
