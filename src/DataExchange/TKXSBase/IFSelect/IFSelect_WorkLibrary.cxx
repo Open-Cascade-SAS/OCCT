@@ -122,3 +122,11 @@ int IFSelect_WorkLibrary::ReadStream(const char* const /*name*/,
 {
   return 1;
 }
+
+//==================================================================================================
+
+bool IFSelect_WorkLibrary::WriteStream(IFSelect_ContextWrite& /*theContext*/,
+                                       Standard_OStream& /*theOStream*/) const
+{
+  return false;
+}
