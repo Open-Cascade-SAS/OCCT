@@ -4,5 +4,4 @@ set(OCCT_TKLCAF_LIST_OF_PACKAGES
   TDataStd
   TFunction
   TDocStd
-  AppStdL
 )

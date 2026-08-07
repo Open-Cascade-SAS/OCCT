@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepTool_Plos.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopAbs_State.hxx>
@@ -131,7 +130,7 @@ private:
   TopoDS_Shape                                                  myS;
   TopoDS_Shape                                                  myRef;
   TopoDS_Shape                                                  myAvS;
-  TopOpeBRepTool_Plos                                           myPAvLS;
+  NCollection_List<TopoDS_Shape>*                               myPAvLS;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapAvS;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mymre;
   int                                                           mymren;

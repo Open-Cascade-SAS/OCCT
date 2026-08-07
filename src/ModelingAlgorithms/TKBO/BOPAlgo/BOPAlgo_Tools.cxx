@@ -108,7 +108,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
   NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>,
                              NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aMPBLPB,
   const occ::handle<NCollection_BaseAllocator>&                               aAllocator,
-  BOPDS_PDS&                                                                  pDS,
+  BOPDS_DS*&                                                                  pDS,
   const occ::handle<IntTools_Context>&                                        theContext)
 {
   int aNbCB;
@@ -191,7 +191,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
 void BOPAlgo_Tools::PerformCommonBlocks(
   const NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>& aMPBLI,
   const occ::handle<NCollection_BaseAllocator>&, // aAllocator
-  BOPDS_PDS&                           pDS,
+  BOPDS_DS*&                           pDS,
   const occ::handle<IntTools_Context>& theContext)
 {
   int                             nF, i, aNb;
@@ -246,7 +246,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
 //=================================================================================================
 
 double BOPAlgo_Tools::ComputeToleranceOfCB(const occ::handle<BOPDS_CommonBlock>& theCB,
-                                           const BOPDS_PDS                       theDS,
+                                           BOPDS_DS* const                       theDS,
                                            const occ::handle<IntTools_Context>&  theContext)
 {
   double aTolMax = 0.;

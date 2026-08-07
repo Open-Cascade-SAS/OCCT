@@ -99,8 +99,6 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_RunoutZoneDefinition.hxx
   StepDimTol_RunoutZoneOrientation.cxx
   StepDimTol_RunoutZoneOrientation.hxx
-  StepDimTol_ShapeToleranceSelect.cxx
-  StepDimTol_ShapeToleranceSelect.hxx
   StepDimTol_SimpleDatumReferenceModifier.hxx
   StepDimTol_SimpleDatumReferenceModifierMember.cxx
   StepDimTol_SimpleDatumReferenceModifierMember.hxx

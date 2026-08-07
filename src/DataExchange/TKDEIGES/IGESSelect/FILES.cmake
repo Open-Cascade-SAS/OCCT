@@ -2,14 +2,6 @@
 set(OCCT_IGESSelect_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_IGESSelect_FILES
-  IGESSelect.cxx
-  IGESSelect.hxx
-  IGESSelect_Activator.cxx
-  IGESSelect_Activator.hxx
-  IGESSelect_AddFileComment.cxx
-  IGESSelect_AddFileComment.hxx
-  IGESSelect_AddGroup.cxx
-  IGESSelect_AddGroup.hxx
   IGESSelect_AutoCorrect.cxx
   IGESSelect_AutoCorrect.hxx
   IGESSelect_ChangeLevelList.cxx
@@ -24,8 +16,6 @@ set(OCCT_IGESSelect_FILES
   IGESSelect_DispPerDrawing.hxx
   IGESSelect_DispPerSingleView.cxx
   IGESSelect_DispPerSingleView.hxx
-  IGESSelect_Dumper.cxx
-  IGESSelect_Dumper.hxx
   IGESSelect_EditDirPart.cxx
   IGESSelect_EditDirPart.hxx
   IGESSelect_EditHeader.cxx
