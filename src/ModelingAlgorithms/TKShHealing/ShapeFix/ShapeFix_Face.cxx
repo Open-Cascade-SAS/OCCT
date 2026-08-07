@@ -352,6 +352,17 @@ bool ShapeFix_Face::Perform(const Message_ProgressRange& theProgress)
     return false;
   }
 
+  // Skip if an earlier fix already removed this face or replaced it with a non-face.
+  if (!Context().IsNull())
+  {
+    const TopoDS_Shape anApplied = Context()->Apply(myFace);
+    if (anApplied.IsNull() || anApplied.ShapeType() != TopAbs_FACE)
+    {
+      myResult = anApplied;
+      return false;
+    }
+  }
+
   BRep_Builder B;
   TopoDS_Shape aInitFace = myFace;
   // perform first part of fixes on wires
@@ -3253,7 +3264,10 @@ bool ShapeFix_Face::FixPeriodicDegenerated()
 
   // Adjust the resulting state of the healing tool
   myResult = aNewFace;
-  Context()->Replace(myFace, myResult);
+  if (!Context().IsNull())
+  {
+    Context()->Replace(myFace, myResult);
+  }
 
   return true;
 }

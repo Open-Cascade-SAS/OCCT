@@ -83,7 +83,6 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
     int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
-      // StepElement_VolumeElementPurpose anIt0;
       occ::handle<StepElement_VolumeElementPurposeMember> aMember =
         new StepElement_VolumeElementPurposeMember;
       // data->ReadEntity (num2, i0, "volume_element_purpose", ach, anIt0);

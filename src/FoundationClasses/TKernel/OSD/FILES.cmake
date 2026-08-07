@@ -12,8 +12,6 @@ set(OCCT_OSD_FILES
   OSD_Directory.hxx
   OSD_DirectoryIterator.cxx
   OSD_DirectoryIterator.hxx
-  OSD_Disk.cxx
-  OSD_Disk.hxx
   OSD_Environment.cxx
   OSD_Environment.hxx
   OSD_Error.cxx

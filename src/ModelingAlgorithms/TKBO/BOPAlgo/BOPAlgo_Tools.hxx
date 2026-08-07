@@ -23,7 +23,6 @@
 #include <NCollection_List.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <Standard_Handle.hxx>
-#include <BOPDS_PDS.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Bnd_Box.hxx>
 #include <TopoDS_Shape.hxx>
@@ -34,6 +33,7 @@
 
 class BOPDS_PaveBlock;
 class BOPDS_CommonBlock;
+class BOPDS_DS;
 class IntTools_Context;
 class TopoDS_Shape;
 
@@ -113,7 +113,7 @@ public:
     NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>,
                                NCollection_List<occ::handle<BOPDS_PaveBlock>>>& theMBlocks,
     const occ::handle<NCollection_BaseAllocator>&                               theAllocator,
-    BOPDS_PDS&                                                                  theDS,
+    BOPDS_DS*&                                                                  theDS,
     const occ::handle<IntTools_Context>& theContext = occ::handle<IntTools_Context>());
 
   //! Create Common Blocks on faces using the PB->Faces connection map <theMBlocks>.
@@ -121,12 +121,12 @@ public:
     const NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>&
                                                   theMBlocks,
     const occ::handle<NCollection_BaseAllocator>& theAllocator,
-    BOPDS_PDS&                                    pDS,
+    BOPDS_DS*&                                    pDS,
     const occ::handle<IntTools_Context>&          theContext = occ::handle<IntTools_Context>());
 
   Standard_EXPORT static double ComputeToleranceOfCB(
     const occ::handle<BOPDS_CommonBlock>& theCB,
-    const BOPDS_PDS                       theDS,
+    BOPDS_DS* const                       theDS,
     const occ::handle<IntTools_Context>&  theContext);
 
   //! Creates planar wires from the given edges.

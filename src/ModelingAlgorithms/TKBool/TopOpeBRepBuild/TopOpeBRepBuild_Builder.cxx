@@ -70,7 +70,8 @@ Standard_EXPORT void debspf(const int i)
 }
 #endif
 
-static int STATIC_SOLIDINDEX = 0;
+// Per-thread: a SplitSolid/FillSolid state flag; sharing it races concurrent builds.
+static thread_local int STATIC_SOLIDINDEX = 0;
 
 //=================================================================================================
 

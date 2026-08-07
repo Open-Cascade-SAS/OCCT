@@ -119,7 +119,7 @@ public:
   double Tolerance() const { return myTol; }
 
   //
-  void SetDS(const BOPDS_PDS theDS) { myDS = theDS; }
+  void SetDS(BOPDS_DS* const theDS) { myDS = theDS; }
 
   //
   void SetContext(const occ::handle<IntTools_Context>& aContext) { myContext = aContext; }
@@ -154,7 +154,7 @@ protected:
   Bnd_Box     myBox;
   double      myTol;
   //
-  BOPDS_PDS                     myDS;
+  BOPDS_DS*                     myDS;
   occ::handle<IntTools_Context> myContext;
 };
 

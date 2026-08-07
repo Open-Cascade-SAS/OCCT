@@ -38,7 +38,7 @@ extern bool TopOpeBRep_GetcontextNEWKP();
 
 // VP<STATIC_lastVPind> is the vp on which was computed the last CPI.
 // if no CPI is computed yet, <STATIC_lastVPind> = 0.
-static int STATIC_lastVPind;
+static thread_local int STATIC_lastVPind; // per-thread cross-call cache
 
 #define M_FORWARD(st) (st == TopAbs_FORWARD)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)

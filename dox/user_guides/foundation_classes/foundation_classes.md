@@ -344,7 +344,7 @@ To get the type descriptor for a given class type, use macro *STANDARD_TYPE()* w
 
 Example of usage:
 ~~~~{.cpp}
-if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (dynamic_cast<Geom_Line>(aCurve.get()) != 0)"
+if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (!occ::down_cast<Geom_Line>(aCurve).IsNull())"
 {
 ...
 }
@@ -418,7 +418,7 @@ t = aSeq.Value (1);
 // here, you cannot write:
 // a = t; // ERROR !
 // so you downcast:
-a = occ::down_cast<A>(t)
+a = occ::down_cast<A>(t);
 if (!a.IsNull())
 {
   // types are compatible, you can use a
@@ -695,7 +695,7 @@ The recommended location for it is first statement after opening brace of <i>try
 As an example, consider the exceptions of type *Standard_NumericError, Standard_Overflow, Standard_Underflow* and *Standard_DivideByZero*, where *Standard_NumericError* is the parent type of the three others.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   try
   {
@@ -720,7 +720,7 @@ The handlers are checked in order of appearance, from the nearest to the try blo
 For a try block, it would be a mistake to place a handler for a base exception type ahead of a handler for its derived type since that would ensure that the handler for the derived exception would never be invoked.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   int i = 0;
   {
@@ -1221,7 +1221,7 @@ void Perform (const MyPackage_SequenceOfPnt& theSequence)
 {
   for (MyPackage_SequenceOfPnt::Iterator anIter (theSequence); anIter.More(); anIter.Next())
   {
-    const gp_Pnt aPnt& = anIter.Value();
+    const gp_Pnt& aPnt = anIter.Value();
     ...
   }
 }
@@ -1579,7 +1579,7 @@ Now the main program uses the math_Gauss class to solve the equations _a*x1=b1_ 
 ~~~~{.cpp}
 #include <math_Vector.hxx> 
 #include <math_Matrix.hxx>
-main()
+int main()
 {
   math_Matrix a(1, 3, 1, 3);
   math_Vector b1(1, 3), b2(1, 3);
@@ -1650,21 +1650,24 @@ public:
   virtual bool Value (const double x, double& f) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
+    return true;
   }
 
   virtual bool Derivative (const double x, double& d) override
   {
     d = myCoefA * x * 2.0 + myCoefB;
+    return true;
   }
 
   virtual bool Values (const double x, double& f, double& d) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
     d = myCoefA * x *  2.0 + myCoefB;
+    return true;
   }
 };
 
-main()
+int main()
 {
   myFunction aFunc (1.0, 0.0, -4.0); // f(x) = x^2 - 4, root at x=2
   math_BissecNewton aSol (0.000001);

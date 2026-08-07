@@ -123,7 +123,14 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
     set (ENV{FREETYPE_DIR} "${3RDPARTY_FREETYPE_DIR}")
   endif()
 
+  unset (FREETYPE_LIBRARY_RELEASE CACHE)
   unset (FREETYPE_LIBRARY_RELEASE)
+  unset (FREETYPE_LIBRARY_DEBUG CACHE)
+  unset (FREETYPE_LIBRARY_DEBUG)
+  unset (FREETYPE_INCLUDE_DIR_ft2build CACHE)
+  unset (FREETYPE_INCLUDE_DIR_ft2build)
+  unset (FREETYPE_INCLUDE_DIR_freetype2 CACHE)
+  unset (FREETYPE_INCLUDE_DIR_freetype2)
   find_package(Freetype)
 
   # Only for UNIX (not APPLE)
@@ -252,7 +259,12 @@ endif()
 # freetype library
 #if (BUILD_SHARED_LIBS)
   if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+    set (FREETYPE_CMAKE_FIND_LIBRARY_SUFFIXES "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+    if (MINGW)
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .dll.a .lib .so .dylib .a)
+    else()
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+    endif()
 
     set (FREETYPE_PATH_SUFFIXES lib)
     if (ANDROID)
@@ -273,6 +285,9 @@ endif()
                                               PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
                                               CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
+
+    set (CMAKE_FIND_LIBRARY_SUFFIXES "${FREETYPE_CMAKE_FIND_LIBRARY_SUFFIXES}")
+    unset (FREETYPE_CMAKE_FIND_LIBRARY_SUFFIXES)
 
     # Only for UNIX (not APPLE)
     if ((NOT WIN32) AND (NOT APPLE))
@@ -303,21 +318,24 @@ endif()
   # freetype shared library
   if (WIN32)
     if (NOT 3RDPARTY_FREETYPE_DLL OR NOT EXISTS "${3RDPARTY_FREETYPE_DLL}")
-
-      set (CMAKE_FIND_LIBRARY_SUFFIXES .dll)
-
-      # set 3RDPARTY_FREETYPE_DLL as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_DLL
+      # set 3RDPARTY_FREETYPE_DLL as notfound, otherwise find_file can't assign a new value to 3RDPARTY_FREETYPE_DLL
       set (3RDPARTY_FREETYPE_DLL "3RDPARTY_FREETYPE_DLL-NOTFOUND" CACHE FILEPATH "The path to freetype shared library" FORCE)
 
-      if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-        find_library (3RDPARTY_FREETYPE_DLL ${CSF_FREETYPE}
-                                            PATHS "${3RDPARTY_FREETYPE_DIR}"
-                                            PATH_SUFFIXES bin
-                                            NO_DEFAULT_PATH)
-      else()
-        find_library (3RDPARTY_FREETYPE_DLL ${CSF_FREETYPE}
-                                            PATH_SUFFIXES bin)
+      set (FREETYPE_DLL_NAMES freetype.dll)
+      if (MINGW)
+        list (APPEND FREETYPE_DLL_NAMES libfreetype-6.dll freetype-6.dll)
       endif()
+
+      if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
+        find_file (3RDPARTY_FREETYPE_DLL NAMES ${FREETYPE_DLL_NAMES}
+                                          PATHS "${3RDPARTY_FREETYPE_DIR}"
+                                          PATH_SUFFIXES bin
+                                          NO_DEFAULT_PATH)
+      else()
+        find_file (3RDPARTY_FREETYPE_DLL NAMES ${FREETYPE_DLL_NAMES}
+                                          PATH_SUFFIXES bin)
+      endif()
+      unset (FREETYPE_DLL_NAMES)
 
       if (3RDPARTY_FREETYPE_DLL AND EXISTS "${3RDPARTY_FREETYPE_DLL}")
         get_filename_component (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL}" PATH)
@@ -329,7 +347,7 @@ endif()
       endif()
     endif()
 
-    if (3RDPARTY_FREETYPE_DLL_DIR OR EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
+    if (3RDPARTY_FREETYPE_DLL_DIR AND EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
       list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_FREETYPE_DLL_DIR}")
     else()
       list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_FREETYPE_DLL_DIR)

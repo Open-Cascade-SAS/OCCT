@@ -54,7 +54,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   * \<_\\n\>: = " "*\<\\n\>;
   * \<_\>: = " "+; It is a not empty sequence of space characters  with ASCII code 21h;
   * \<flag\>: = "0" | "1";
-  * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  denary system;  
+  * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  decimal system;
   * \<real\>: It is a real from -1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> to 1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<short real\>: It is a real from -3.402823 @f$\cdot@f$ 10<sup>38</sup> to 3.402823 @f$\cdot@f$ 10<sup>38</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<2D point\>: = \<real\>\<_\>\<real\>;  

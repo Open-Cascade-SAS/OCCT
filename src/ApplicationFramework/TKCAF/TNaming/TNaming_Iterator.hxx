@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TNaming_PtrNode.hxx>
 #include <Standard_Integer.hxx>
 #include <TNaming_Evolution.hxx>
 class Standard_NoMoreObject;
@@ -31,6 +30,7 @@ class TNaming_OldShapeIterator;
 class TNaming_NamedShape;
 class TDF_Label;
 class TopoDS_Shape;
+class TNaming_Node;
 
 //! A tool to visit the contents of a named shape attribute.
 //! Pairs of shapes in the attribute are iterated, one
@@ -82,8 +82,8 @@ public:
   friend class TNaming_OldShapeIterator;
 
 private:
-  TNaming_PtrNode myNode;
-  int             myTrans;
+  TNaming_Node* myNode;
+  int           myTrans;
 };
 
 #include <TNaming_Iterator.lxx>

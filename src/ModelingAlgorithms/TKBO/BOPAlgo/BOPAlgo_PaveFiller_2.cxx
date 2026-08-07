@@ -400,7 +400,7 @@ void BOPAlgo_PaveFiller::IntersectVE(
 //=======================================================================
 static void MakeNewCommonBlock(const NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB,
                                const NCollection_List<int>&                          theLFaces,
-                               BOPDS_PDS&                                            theDS)
+                               BOPDS_DS*&                                            theDS)
 {
   // Make Common Block from the pave blocks in the list
   occ::handle<BOPDS_CommonBlock> aCBNew = new BOPDS_CommonBlock;

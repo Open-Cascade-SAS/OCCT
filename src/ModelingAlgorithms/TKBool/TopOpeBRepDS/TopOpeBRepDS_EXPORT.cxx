@@ -3276,7 +3276,7 @@ Standard_EXPORT void FUN_ds_redusamsha(const occ::handle<TopOpeBRepDS_HDataStruc
   } // i=1..nse
 } // FUN_ds_redusamsha
 
-Standard_EXPORT bool FUN_ds_hasFEI(const TopOpeBRepDS_PDataStructure& pDS2d,
+Standard_EXPORT bool FUN_ds_hasFEI(TopOpeBRepDS_DataStructure* const& pDS2d,
                                    const TopoDS_Shape&                F,
                                    const int                          GI,
                                    const int                          ITRA)
