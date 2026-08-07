@@ -428,7 +428,7 @@ public:
 
 protected:
   //! Check an integer index and return its zero-based offset.
-  size_t offsetOf(const int theIndex, const char* theMessage) const
+  size_t offsetOf(const int theIndex, [[maybe_unused]] const char* theMessage) const
   {
     const std::ptrdiff_t anOffset =
       static_cast<std::ptrdiff_t>(theIndex) - static_cast<std::ptrdiff_t>(myLowerBound);
