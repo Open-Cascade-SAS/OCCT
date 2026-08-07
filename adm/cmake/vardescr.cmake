@@ -4,10 +4,17 @@ set (OCCT_PROJECT_NAME_DESCR
 "Project name used in install directory paths for Unix and vcpkg layouts.
 Allows customization of directory structure for different package names.")
 
-set (BUILD_LIBRARY_TYPE_DESCR 
+set (BUILD_LIBRARY_TYPE_DESCR
 "Specifies the type of library to be created. 'Shared' libraries
 are linked dynamically and loaded at runtime. 'Static' libraries
 are archives of object files for use when linking other targets")
+
+set (BUILD_LIBRARY_GRANULARITY_DESCR
+"Controls library build granularity:
+- Toolkit: One library per toolkit (default, current behavior)
+- Module: One library per module (TKFoundationClasses, TKModelingData, etc.)
+- Monolithic: Single TKOpenCascade library containing all non-Draw toolkits
+Note: Draw module toolkits are ALWAYS built separately as plugins.")
 
 set (BUILD_YACCLEX_DESCR 
 "Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and
@@ -209,6 +216,10 @@ macro (BUILD_MODULE MODULE_NAME)
     OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/PACKAGES)
     OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/EXTERNLIB)
     OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/FILES)
+    # Load optional PLUGIN.cmake to mark toolkit as plugin (must be built separately)
+    if (EXISTS "${OCCT_ROOT_DIR}/src/${MODULE_NAME}/${TOOLKIT}/PLUGIN.cmake")
+      include ("${OCCT_ROOT_DIR}/src/${MODULE_NAME}/${TOOLKIT}/PLUGIN.cmake")
+    endif()
     foreach (PACKAGE ${OCCT_${TOOLKIT}_LIST_OF_PACKAGES})
       OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/${PACKAGE}/FILES)
     endforeach()
