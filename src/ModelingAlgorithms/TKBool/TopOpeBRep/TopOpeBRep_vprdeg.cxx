@@ -48,12 +48,12 @@ static thread_local NCollection_DataMap<TopoDS_Shape,
                                         NCollection_List<TopoDS_Shape>,
                                         TopTools_ShapeMapHasher>
                                           aMapOfTreatedVertexListOfEdge;
-static thread_local TopOpeBRep_PLineInter localCurrentLine = nullptr;
+static thread_local TopOpeBRep_LineInter* localCurrentLine = nullptr;
 
 static bool local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
                                           const TopoDS_Vertex& theVertex);
 
-static void local_ReduceMapOfTreatedVertices(const TopOpeBRep_PLineInter& theCurrentLine);
+static void local_ReduceMapOfTreatedVertices(TopOpeBRep_LineInter* const& theCurrentLine);
 
 static bool local_FindVertex(
   const TopOpeBRep_VPointInter&                              theVP,
@@ -102,7 +102,7 @@ Standard_EXPORT void FUN_VPIndex(
   occ::handle<TopOpeBRepDS_Interference>&                         ICPI, // out
   const int                                                       mkVP);
 
-Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_PDataStructure pDS)
+Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_DataStructure* pDS)
 {
   TopOpeBRep_VPointInterIterator itvp(L);
   for (; itvp.More(); itvp.Next())
@@ -177,7 +177,7 @@ static void FUN_addmapve(
 }
 
 Standard_EXPORT void FUN_GetdgData(
-  TopOpeBRepDS_PDataStructure& pDS,
+  TopOpeBRepDS_DataStructure*& pDS,
   const TopOpeBRep_LineInter&  L,
   const TopoDS_Face&           F1,
   const TopoDS_Face&           F2,
@@ -841,7 +841,7 @@ static bool local_FindVertex(
   return vertexfound;
 }
 
-static void local_ReduceMapOfTreatedVertices(const TopOpeBRep_PLineInter& theCurrentLine)
+static void local_ReduceMapOfTreatedVertices(TopOpeBRep_LineInter* const& theCurrentLine)
 {
 
   if (localCurrentLine == nullptr)

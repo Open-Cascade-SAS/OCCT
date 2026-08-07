@@ -225,7 +225,7 @@ namespace
 //=================================================================================================
 
 template <class InterfType>
-void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_DynamicArray<InterfType>& theInterfs)
+void UpdateIntfsWithSDVertices(BOPDS_DS* theDS, NCollection_DynamicArray<InterfType>& theInterfs)
 {
   for (int i = 0; i < theInterfs.Length(); i++)
   {

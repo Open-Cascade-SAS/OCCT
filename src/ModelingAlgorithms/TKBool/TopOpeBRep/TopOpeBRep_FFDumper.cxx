@@ -39,10 +39,10 @@ static TCollection_AsciiString PRODINP("dinp ");
 //=================================================================================================
 
 #ifndef OCCT_DEBUG
-TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller&)
+TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(TopOpeBRep_FacesFiller* const&)
 {
 #else
-TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller& PFF)
+TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(TopOpeBRep_FacesFiller* const& PFF)
 {
   Init(PFF);
 #endif
@@ -51,7 +51,7 @@ TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller& PFF)
 //=================================================================================================
 
 #ifndef OCCT_DEBUG
-void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller&)
+void TopOpeBRep_FFDumper::Init(TopOpeBRep_FacesFiller* const&)
 {
   // just shut up compiler warnings
   (void)myEn1;
@@ -59,7 +59,7 @@ void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller&)
   (void)myLineIndex;
 }
 #else
-void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller& PFF)
+void TopOpeBRep_FFDumper::Init(TopOpeBRep_FacesFiller* const& PFF)
 {
   myPFF                     = PFF;
   const TopoDS_Face& fpff1  = myPFF->Face(1);
@@ -339,7 +339,7 @@ void TopOpeBRep_FFDumper::DumpDSP(const TopOpeBRep_VPointInter& VP,
 #endif
 }
 
-TopOpeBRep_PFacesFiller TopOpeBRep_FFDumper::PFacesFillerDummy() const
+TopOpeBRep_FacesFiller* TopOpeBRep_FFDumper::PFacesFillerDummy() const
 {
   return myPFF;
 }
