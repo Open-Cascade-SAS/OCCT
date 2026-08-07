@@ -73,10 +73,15 @@ public:
   bool IsEmpty() const noexcept { return myData == nullptr; }
 
   iterator begin() noexcept { return myData; }
+
   const_iterator begin() const noexcept { return myData; }
+
   const_iterator cbegin() const noexcept { return myData; }
+
   iterator end() noexcept { return mySize == 0 ? myData : myData + mySize; }
+
   const_iterator end() const noexcept { return mySize == 0 ? myData : myData + mySize; }
+
   const_iterator cend() const noexcept { return mySize == 0 ? myData : myData + mySize; }
 
   //! Return buffer length in bytes.

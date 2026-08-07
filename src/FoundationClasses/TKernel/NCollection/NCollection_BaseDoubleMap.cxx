@@ -22,10 +22,9 @@ namespace
 NCollection_ListNode** allocateDoubleBuckets(const size_t            theNbBuckets,
                                              NCollection_ListNode**& theData2)
 {
-  const size_t aCount = theNbBuckets + 1;
-  const size_t aBytes = aCount * sizeof(NCollection_ListNode*) * 2;
-  NCollection_ListNode** aData1 =
-    static_cast<NCollection_ListNode**>(Standard::Allocate(aBytes));
+  const size_t           aCount = theNbBuckets + 1;
+  const size_t           aBytes = aCount * sizeof(NCollection_ListNode*) * 2;
+  NCollection_ListNode** aData1 = static_cast<NCollection_ListNode**>(Standard::Allocate(aBytes));
   std::memset(aData1, 0, aBytes);
   theData2 = aData1 + aCount;
   return aData1;
@@ -72,8 +71,7 @@ void NCollection_BaseDoubleMap::endResize(const size_t           theExtent,
 
 //=================================================================================================
 
-void NCollection_BaseDoubleMap::destroy(NCollection_DelMapNode fDel,
-                                        const bool               theReleaseMemory)
+void NCollection_BaseDoubleMap::destroy(NCollection_DelMapNode fDel, const bool theReleaseMemory)
 {
   if (!IsEmpty())
   {
@@ -110,8 +108,7 @@ void NCollection_BaseDoubleMap::destroy(NCollection_DelMapNode fDel,
 
 //=================================================================================================
 
-void NCollection_BaseDoubleMap::exchangeDoubleMapsData(
-  NCollection_BaseDoubleMap& theOther) noexcept
+void NCollection_BaseDoubleMap::exchangeDoubleMapsData(NCollection_BaseDoubleMap& theOther) noexcept
 {
   exchangeMapsData(theOther);
   std::swap(myData2, theOther.myData2);

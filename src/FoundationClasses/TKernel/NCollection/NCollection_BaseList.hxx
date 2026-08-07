@@ -109,7 +109,7 @@ protected:
     using iterator_category = std::forward_iterator_tag;
     using value_type        = TheItemType;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
     using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
 
     BasicIterator() noexcept = default;
@@ -126,7 +126,7 @@ protected:
     {
     }
 
-    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
@@ -214,25 +214,26 @@ protected:
 
     //! Access the native iterator state for legacy cursor construction.
     const BasicIterator& Iterator() const noexcept { return *this; }
-    BasicIterator&       ChangeIterator() noexcept { return *this; }
+
+    BasicIterator& ChangeIterator() noexcept { return *this; }
 
     template <bool theOtherIsConstant>
-    bool IsEqual(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool IsEqual(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return this->myCurrent == theOther.myCurrent;
     }
 
     template <bool theOtherIsConstant>
-    bool operator==(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool operator==(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return this->myCurrent == theOther.myCurrent;
     }
 
     template <bool theOtherIsConstant>
-    bool operator!=(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool operator!=(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return !(*this == theOther);
     }
@@ -283,11 +284,13 @@ protected:
   // ******** pClear
   // Purpose: deletes all nodes
   Standard_EXPORT void pClear(NCollection_DelListNode fDel);
+
   void PClear(NCollection_DelListNode fDel) { pClear(fDel); }
 
   // ******** pFirst
   // Purpose: Returns pointer to the first node
   const NCollection_ListNode* pFirst() const noexcept { return myFirst; }
+
   const NCollection_ListNode* PFirst() const noexcept { return pFirst(); }
 
   //! Returns a mutable pointer to the first node for mutable native iterators.
@@ -296,6 +299,7 @@ protected:
   // ******** pLast
   // Purpose: Returns pointer to the last node
   const NCollection_ListNode* pLast() const noexcept { return myLast; }
+
   const NCollection_ListNode* PLast() const noexcept { return pLast(); }
 
   //! Returns a mutable pointer to the last node for mutable native iterators.
@@ -304,6 +308,7 @@ protected:
   // ******** pAppend
   // Purpose: Appends theNode at the end
   Standard_EXPORT void pAppend(NCollection_ListNode* theNode) noexcept;
+
   void PAppend(NCollection_ListNode* theNode) noexcept { pAppend(theNode); }
 
   // ******** pAppend
@@ -314,39 +319,43 @@ protected:
     pAppend(theNode);
     theIt.init(*this, aPrev);
   }
-  void PAppend(NCollection_ListNode* theNode, Iterator& theIt) noexcept
-  {
-    pAppend(theNode, theIt);
-  }
+
+  void PAppend(NCollection_ListNode* theNode, Iterator& theIt) noexcept { pAppend(theNode, theIt); }
 
   // ******** pAppend
   // Purpose: Appends theOther list at the end (clearing it)
   Standard_EXPORT void pAppend(NCollection_BaseList& theOther) noexcept;
+
   void PAppend(NCollection_BaseList& theOther) noexcept { pAppend(theOther); }
 
   // ******** pPrepend
   // Purpose: Prepends theNode at the beginning
   Standard_EXPORT void pPrepend(NCollection_ListNode* theNode) noexcept;
+
   void PPrepend(NCollection_ListNode* theNode) noexcept { pPrepend(theNode); }
 
   // ******** pPrepend
   // Purpose: Prepends theOther list at the beginning (clearing it)
   Standard_EXPORT void pPrepend(NCollection_BaseList& theOther) noexcept;
+
   void PPrepend(NCollection_BaseList& theOther) noexcept { pPrepend(theOther); }
 
   // ******** pRemoveFirst
   // Purpose: Removes first node
   Standard_EXPORT void pRemoveFirst(NCollection_DelListNode fDel);
+
   void PRemoveFirst(NCollection_DelListNode fDel) { pRemoveFirst(fDel); }
 
   // ******** pRemove
   // Purpose: Removes the node pointed by theIter[ator]
   Standard_EXPORT void pRemove(Iterator& theIter, NCollection_DelListNode fDel);
+
   void PRemove(Iterator& theIter, NCollection_DelListNode fDel) { pRemove(theIter, fDel); }
 
   // ******** pInsertBefore
   // Purpose: Inserts theNode before one pointed by theIter[ator]
   Standard_EXPORT void pInsertBefore(NCollection_ListNode* theNode, Iterator& theIter);
+
   void PInsertBefore(NCollection_ListNode* theNode, Iterator& theIter)
   {
     pInsertBefore(theNode, theIter);
@@ -355,6 +364,7 @@ protected:
   // ******** pInsertBefore
   // Purpose: Inserts theOther list before the node pointed by theIter[ator]
   Standard_EXPORT void pInsertBefore(NCollection_BaseList& theOther, Iterator& theIter);
+
   void PInsertBefore(NCollection_BaseList& theOther, Iterator& theIter)
   {
     pInsertBefore(theOther, theIter);
@@ -363,6 +373,7 @@ protected:
   // ******** pInsertAfter
   // Purpose: Inserts theNode after one pointed by theIter[ator]
   Standard_EXPORT void pInsertAfter(NCollection_ListNode* theNode, Iterator& theIter);
+
   void PInsertAfter(NCollection_ListNode* theNode, Iterator& theIter)
   {
     pInsertAfter(theNode, theIter);
@@ -371,6 +382,7 @@ protected:
   // ******** pInsertAfter
   // Purpose: Inserts theOther list after the node pointed by theIter[ator]
   Standard_EXPORT void pInsertAfter(NCollection_BaseList& theOther, Iterator& theIter);
+
   void PInsertAfter(NCollection_BaseList& theOther, Iterator& theIter)
   {
     pInsertAfter(theOther, theIter);
@@ -379,6 +391,7 @@ protected:
   // ******** pReverse
   // Purpose: Reverse the list
   Standard_EXPORT void pReverse() noexcept;
+
   void PReverse() noexcept { pReverse(); }
 
   // ******** pExchange
@@ -392,6 +405,7 @@ protected:
     std::swap(myLast, theOther.myLast);
     std::swap(myLength, theOther.myLength);
   }
+
   void PExchange(NCollection_BaseList& theOther) noexcept { pExchange(theOther); }
 
 protected:

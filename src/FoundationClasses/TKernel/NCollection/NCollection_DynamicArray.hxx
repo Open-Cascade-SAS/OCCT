@@ -87,11 +87,10 @@ private:
     using iterator_category = std::random_access_iterator_tag;
     using value_type        = TheItemType;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
     using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
-    using container_pointer = typename std::conditional<IsConstant,
-                                                        const NCollection_DynamicArray*,
-                                                        NCollection_DynamicArray*>::type;
+    using container_pointer = typename std::
+      conditional<IsConstant, const NCollection_DynamicArray*, NCollection_DynamicArray*>::type;
 
     BasicIterator() noexcept = default;
 
@@ -129,7 +128,7 @@ private:
       setIndex(theIndex);
     }
 
-    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
@@ -154,7 +153,9 @@ private:
     }
 
     reference operator*() const noexcept { return *myCurrent; }
+
     pointer operator->() const noexcept { return myCurrent; }
+
     reference Value() const noexcept { return operator*(); }
 
     template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
@@ -245,8 +246,7 @@ private:
     template <bool theOtherIsConstant>
     difference_type operator-(const BasicIterator<theOtherIsConstant>& theOther) const noexcept
     {
-      return static_cast<difference_type>(myIndex)
-             - static_cast<difference_type>(theOther.myIndex);
+      return static_cast<difference_type>(myIndex) - static_cast<difference_type>(theOther.myIndex);
     }
 
     reference operator[](const difference_type theOffset) const noexcept
@@ -319,13 +319,14 @@ private:
     container_pointer myContainer = nullptr;
     size_t            myIndex     = 0;
     size_t            myEnd       = 0;
-    pointer            myCurrent   = nullptr;
-    pointer            myBlockEnd  = nullptr;
+    pointer           myCurrent   = nullptr;
+    pointer           myBlockEnd  = nullptr;
   };
 
 public:
   using iterator       = BasicIterator<false>;
   using const_iterator = BasicIterator<true>;
+
   class Iterator : public iterator
   {
   public:
@@ -343,13 +344,19 @@ public:
     }
 
     virtual bool More() const noexcept { return iterator::More(); }
+
     virtual void Next() noexcept { ++(*this); }
+
     const_reference Value() const noexcept { return iterator::Value(); }
+
     reference ChangeValue() noexcept { return iterator::ChangeValue(); }
 
     void Init(NCollection_DynamicArray& theArray) noexcept { *this = Iterator(theArray); }
+
     void Init(const NCollection_DynamicArray& theArray) noexcept { *this = Iterator(theArray); }
+
     void Initialize(NCollection_DynamicArray& theArray) noexcept { Init(theArray); }
+
     void Initialize(const NCollection_DynamicArray& theArray) noexcept { Init(theArray); }
   };
 
@@ -364,13 +371,16 @@ public:
     }
 
     bool More() const noexcept { return const_iterator::More(); }
+
     void Next() noexcept { ++(*this); }
+
     const_reference Value() const noexcept { return const_iterator::Value(); }
 
     void Init(const NCollection_DynamicArray& theArray) noexcept
     {
       *this = ConstIterator(theArray);
     }
+
     void Initialize(const NCollection_DynamicArray& theArray) noexcept { Init(theArray); }
   };
 
@@ -404,10 +414,7 @@ public: //! @name public methods
   bool IsEmpty() const noexcept { return myUsedSize == 0; }
 
   //! Return the allocator used for element blocks.
-  const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept
-  {
-    return myAllocator;
-  }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 
   //! Change the initial block size while the array is empty.
   void SetIncrement(const size_t theIncrement)
@@ -519,12 +526,12 @@ public: //! @name public methods
       return *this;
     }
     Clear(true);
-    myContainer    = std::move(theOther.myContainer);
-    myAllocator    = std::move(theOther.myAllocator);
-    myInternalSize = theOther.myInternalSize;
-    myBlockShift   = theOther.myBlockShift;
-    myBlockMask    = theOther.myBlockMask;
-    myUsedSize     = theOther.myUsedSize;
+    myContainer         = std::move(theOther.myContainer);
+    myAllocator         = std::move(theOther.myAllocator);
+    myInternalSize      = theOther.myInternalSize;
+    myBlockShift        = theOther.myBlockShift;
+    myBlockMask         = theOther.myBlockMask;
+    myUsedSize          = theOther.myUsedSize;
     theOther.myUsedSize = 0;
     return *this;
   }
@@ -968,7 +975,7 @@ protected:
   void setUsedSize(const size_t theSize) noexcept { myUsedSize = theSize; }
 
   void copyParameters(const NCollection_DynamicArray& theOther,
-                      const bool                       theCopyAllocator) noexcept
+                      const bool                      theCopyAllocator) noexcept
   {
     if (theCopyAllocator)
     {
@@ -997,9 +1004,9 @@ protected:
     {
       const TheItemType* aCurStart = static_cast<const TheItemType*>(theOther.blockAt(aBlockInd));
       TheItemType*       aNewBlock = static_cast<TheItemType*>(allocateBlock(sizeof(TheItemType)));
-      const size_t           aCount = aUsedSize < theOther.myUsedSize
-                                        ? std::min(myInternalSize, theOther.myUsedSize - aUsedSize)
-                                        : 0;
+      const size_t       aCount    = aUsedSize < theOther.myUsedSize
+                                       ? std::min(myInternalSize, theOther.myUsedSize - aUsedSize)
+                                       : 0;
       if constexpr (std::is_trivially_copyable_v<TheItemType>)
       {
         std::memcpy(aNewBlock, aCurStart, aCount * sizeof(TheItemType));

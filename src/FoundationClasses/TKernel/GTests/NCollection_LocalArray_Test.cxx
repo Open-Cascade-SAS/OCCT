@@ -661,9 +661,10 @@ static_assert(HasToArray1<const NCollection_LocalArray<int>>::value,
 static_assert(std::is_same_v<decltype(std::declval<NCollection_LocalArray<int>&>().ToArray1()),
                              NCollection_Array1<int>>,
               "Mutable NCollection_LocalArray should expose mutable Array1 view");
-static_assert(std::is_same_v<decltype(std::declval<const NCollection_LocalArray<int>&>().ToArray1()),
-                             NCollection_Array1<int>>,
-              "Const NCollection_LocalArray should expose shared Array1 view");
+static_assert(
+  std::is_same_v<decltype(std::declval<const NCollection_LocalArray<int>&>().ToArray1()),
+                 NCollection_Array1<int>>,
+  "Const NCollection_LocalArray should expose shared Array1 view");
 static_assert(std::is_nothrow_move_constructible_v<NCollection_LocalArray<int>>,
               "NCollection_LocalArray move construction should remain noexcept");
 static_assert(std::is_nothrow_move_assignable_v<NCollection_LocalArray<int>>,

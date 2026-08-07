@@ -54,12 +54,10 @@ public:
   using const_pointer   = const TheItemType*;
   using reference       = TheItemType&;
   using const_reference = const TheItemType&;
-  using iterator       = NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray,
-                                                                     TheItemType,
-                                                                     false>;
-  using const_iterator = NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray,
-                                                                     TheItemType,
-                                                                     true>;
+  using iterator =
+    NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray, TheItemType, false>;
+  using const_iterator =
+    NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray, TheItemType, true>;
 
 public:
   //! Constructor; accepts size of blocks
@@ -226,10 +224,7 @@ public:
     }
 
     //! Initialisation
-    void Init(NCollection_SparseArray& theVector) noexcept
-    {
-      *this = Iterator(theVector);
-    }
+    void Init(NCollection_SparseArray& theVector) noexcept { *this = Iterator(theVector); }
 
     //! Restart iterations on the same array
     void Restart() noexcept { iterator::Restart(); }

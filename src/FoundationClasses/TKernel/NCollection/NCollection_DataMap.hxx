@@ -124,18 +124,10 @@ public:
   };
 
 public:
-  using iterator = NCollection_BaseMap::BasicIterator<NCollection_DataMap,
-                                                       DataMapNode,
-                                                       TheKeyType,
-                                                       TheItemType,
-                                                       false,
-                                                       false>;
-  using const_iterator = NCollection_BaseMap::BasicIterator<NCollection_DataMap,
-                                                             DataMapNode,
-                                                             TheKeyType,
-                                                             TheItemType,
-                                                             false,
-                                                             true>;
+  using iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_DataMap, DataMapNode, TheKeyType, TheItemType, false, false>;
+  using const_iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_DataMap, DataMapNode, TheKeyType, TheItemType, false, true>;
 
   // **************** Implementation of the Iterator interface.
   class Iterator : public iterator
@@ -168,15 +160,9 @@ public:
     void Next() noexcept { ++(*this); }
 
     //! Initialize
-    void Initialize(NCollection_DataMap& theMap) noexcept
-    {
-      *this = Iterator(theMap);
-    }
+    void Initialize(NCollection_DataMap& theMap) noexcept { *this = Iterator(theMap); }
 
-    void Initialize(const NCollection_DataMap& theMap) noexcept
-    {
-      *this = Iterator(theMap);
-    }
+    void Initialize(const NCollection_DataMap& theMap) noexcept { *this = Iterator(theMap); }
 
     //! Reset
     void Reset() noexcept

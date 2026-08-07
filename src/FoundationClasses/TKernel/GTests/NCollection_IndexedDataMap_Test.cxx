@@ -1285,7 +1285,8 @@ TEST(NCollection_IndexedDataMapTest, StandardIteratorContract)
   static_assert(std::is_same_v<decltype(std::declval<MapType&>().begin()), MapType::iterator>);
   static_assert(
     std::is_same_v<decltype(std::declval<const MapType&>().begin()), MapType::const_iterator>);
-  static_assert(std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
+  static_assert(
+    std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
 
   MapType aMap;
   aMap.Add(1, "one");

@@ -23,7 +23,7 @@ TEST(NCollection_AliasedArrayTest, ResizeEmptyWithCopy)
 
   EXPECT_EQ(2, anArray.Size());
   anArray.ChangeValue<int>(0) = 10;
-  anArray.ChangeLast<int>()    = 20;
+  anArray.ChangeLast<int>()   = 20;
   EXPECT_EQ(10, anArray.Value<int>(0));
   EXPECT_EQ(20, anArray.Value<int>(1));
 }

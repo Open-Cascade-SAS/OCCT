@@ -37,7 +37,7 @@ NCollection_BaseIndexedMap::~NCollection_BaseIndexedMap()
 
 void NCollection_BaseIndexedMap::resizeIndexTable(const size_t theNewBuckets)
 {
-  const size_t aNewCount = theNewBuckets + 1;
+  const size_t aNewCount  = theNewBuckets + 1;
   const size_t anOldCount = myData1 == nullptr || myData2 == nullptr ? 0 : NbBuckets() + 1;
   const size_t aNewBytes  = aNewCount * sizeof(NCollection_ListNode*);
   myData2 = static_cast<NCollection_ListNode**>(Standard::Reallocate(myData2, aNewBytes));
@@ -47,9 +47,7 @@ void NCollection_BaseIndexedMap::resizeIndexTable(const size_t theNewBuckets)
   }
   else if (aNewCount > anOldCount)
   {
-    std::memset(myData2 + anOldCount,
-                0,
-                (aNewCount - anOldCount) * sizeof(NCollection_ListNode*));
+    std::memset(myData2 + anOldCount, 0, (aNewCount - anOldCount) * sizeof(NCollection_ListNode*));
   }
 }
 

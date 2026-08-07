@@ -144,12 +144,8 @@ public:
     DoubleMapNode* myNext2;
   };
 
-  using iterator = NCollection_BaseMap::BasicIterator<NCollection_DoubleMap,
-                                                       DoubleMapNode,
-                                                       TheKey2Type,
-                                                       TheKey2Type,
-                                                       true,
-                                                       true>;
+  using iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_DoubleMap, DoubleMapNode, TheKey2Type, TheKey2Type, true, true>;
   using const_iterator = iterator;
 
 public:
@@ -177,10 +173,7 @@ public:
     void Initialize(const NCollection_DoubleMap& theMap) noexcept { *this = Iterator(theMap); }
 
     //! Reset
-    void Reset() noexcept
-    {
-      *this = myMap != nullptr ? Iterator(*myMap) : Iterator();
-    }
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
 
     //! Performs comparison of two iterators.
     bool IsEqual(const Iterator& theOther) const noexcept
@@ -226,6 +219,7 @@ public:
   const_iterator end() const noexcept { return const_iterator(); }
 
   const_iterator cbegin() const noexcept { return const_iterator(*this); }
+
   const_iterator cend() const noexcept { return const_iterator(); }
 
 public:
@@ -263,9 +257,9 @@ public:
   }
 
   //! Move constructor.
-  NCollection_DoubleMap(
-    NCollection_DoubleMap&& theOther) noexcept(std::is_nothrow_move_constructible<Hasher1>::value
-                                               && std::is_nothrow_move_constructible<Hasher2>::value)
+  NCollection_DoubleMap(NCollection_DoubleMap&& theOther) noexcept(
+    std::is_nothrow_move_constructible<Hasher1>::value
+    && std::is_nothrow_move_constructible<Hasher2>::value)
       : NCollection_BaseDoubleMap(theOther.NbBuckets(), theOther.myAllocator),
         myHasher1(std::move(theOther.myHasher1)),
         myHasher2(std::move(theOther.myHasher2))

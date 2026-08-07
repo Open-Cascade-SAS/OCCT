@@ -24,10 +24,9 @@ namespace
 {
 NCollection_ListNode** allocateBuckets(const size_t theNbBuckets)
 {
-  const size_t aCount = theNbBuckets + 1;
-  const size_t aBytes = aCount * sizeof(NCollection_ListNode*);
-  NCollection_ListNode** aBuckets =
-    static_cast<NCollection_ListNode**>(Standard::Allocate(aBytes));
+  const size_t           aCount   = theNbBuckets + 1;
+  const size_t           aBytes   = aCount * sizeof(NCollection_ListNode*);
+  NCollection_ListNode** aBuckets = static_cast<NCollection_ListNode**>(Standard::Allocate(aBytes));
   std::memset(aBuckets, 0, aBytes);
   return aBuckets;
 }

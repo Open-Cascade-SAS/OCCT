@@ -218,7 +218,7 @@ public:
       myDeletable = false;
     }
 
-    uint8_t*     aNewData  = (uint8_t*)Standard::AllocateAligned(aNewBytes, MyAlignSize);
+    uint8_t* aNewData = (uint8_t*)Standard::AllocateAligned(aNewBytes, MyAlignSize);
     if (aNewData == nullptr)
     {
       throw Standard_OutOfMemory("NCollection_AliasedArray, allocation failed");

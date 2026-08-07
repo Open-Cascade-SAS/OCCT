@@ -149,12 +149,10 @@ private:
   };
 
 public:
-  using iterator = NCollection_BaseMap::IndexedIterator<NCollection_IndexedDataMap,
-                                                         TheItemType,
-                                                         false>;
-  using const_iterator = NCollection_BaseMap::IndexedIterator<NCollection_IndexedDataMap,
-                                                               TheItemType,
-                                                               true>;
+  using iterator =
+    NCollection_BaseMap::IndexedIterator<NCollection_IndexedDataMap, TheItemType, false>;
+  using const_iterator =
+    NCollection_BaseMap::IndexedIterator<NCollection_IndexedDataMap, TheItemType, true>;
 
   //! Legacy OCCT cursor backed by the standard iterator state.
   class Iterator : public iterator
@@ -185,8 +183,7 @@ public:
 
     TheItemType& ChangeValue() const
     {
-      Standard_NoSuchObject_Raise_if(!More(),
-                                     "NCollection_IndexedDataMap::Iterator::ChangeValue");
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::ChangeValue");
       return iterator::operator*();
     }
 
@@ -466,7 +463,7 @@ public:
   {
     NCollection_ListNode** ppNewData1 = nullptr;
     size_t                 newBuck;
-    const size_t aRequestedBuckets = nextPrimeForMap(N);
+    const size_t           aRequestedBuckets = nextPrimeForMap(N);
     if (aRequestedBuckets <= NbBuckets() && myData1 != nullptr)
       return;
     newBuck = !myData1 && aRequestedBuckets <= NbBuckets() ? NbBuckets() : aRequestedBuckets;

@@ -26,16 +26,15 @@ class NCollection_Iterator
 {
 public:
   using owner_type    = typename std::conditional<IsConstant, const Container, Container>::type;
-  using iterator_type = typename std::conditional<IsConstant,
-                                                   typename Container::const_iterator,
-                                                   typename Container::iterator>::type;
+  using iterator_type = typename std::
+    conditional<IsConstant, typename Container::const_iterator, typename Container::iterator>::type;
 
-  NCollection_Iterator() = default;
-  NCollection_Iterator(const NCollection_Iterator&) = default;
-  NCollection_Iterator(NCollection_Iterator&&) noexcept = default;
-  NCollection_Iterator& operator=(const NCollection_Iterator&) = default;
+  NCollection_Iterator()                                           = default;
+  NCollection_Iterator(const NCollection_Iterator&)                = default;
+  NCollection_Iterator(NCollection_Iterator&&) noexcept            = default;
+  NCollection_Iterator& operator=(const NCollection_Iterator&)     = default;
   NCollection_Iterator& operator=(NCollection_Iterator&&) noexcept = default;
-  ~NCollection_Iterator() noexcept = default;
+  ~NCollection_Iterator() noexcept                                 = default;
 
   template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
   NCollection_Iterator(const NCollection_Iterator<Container, false>& theOther)
@@ -45,8 +44,7 @@ public:
   }
 
   template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-  NCollection_Iterator& operator=(
-    const NCollection_Iterator<Container, false>& theOther)
+  NCollection_Iterator& operator=(const NCollection_Iterator<Container, false>& theOther)
   {
     myCur  = theOther.myCur;
     myLast = theOther.myLast;
@@ -107,9 +105,12 @@ public:
   void Next() noexcept { ++myCur; }
 
   const iterator_type& ValueIter() const noexcept { return myCur; }
-  iterator_type&       ChangeValueIter() noexcept { return myCur; }
+
+  iterator_type& ChangeValueIter() noexcept { return myCur; }
+
   const iterator_type& EndIter() const noexcept { return myLast; }
-  iterator_type&       ChangeEndIter() noexcept { return myLast; }
+
+  iterator_type& ChangeEndIter() noexcept { return myLast; }
 
   typename Container::const_reference Value() const { return *myCur; }
 

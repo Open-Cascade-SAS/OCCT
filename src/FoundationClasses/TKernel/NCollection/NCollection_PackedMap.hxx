@@ -233,19 +233,23 @@ private:
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
     BasicIterator& operator=(const BasicIterator<false>& theOther) noexcept
     {
-      myBuckets  = theOther.myBuckets;
-      myNode     = theOther.myNode;
+      myBuckets   = theOther.myBuckets;
+      myNode      = theOther.myNode;
       myNbBuckets = theOther.myNbBuckets;
-      myBucket   = theOther.myBucket;
-      myIntMask  = theOther.myIntMask;
-      myKey      = theOther.myKey;
+      myBucket    = theOther.myBucket;
+      myIntMask   = theOther.myIntMask;
+      myKey       = theOther.myKey;
       return *this;
     }
 
     reference operator*() const noexcept { return myKey; }
+
     pointer operator->() const noexcept { return &myKey; }
+
     const IntType& Key() const noexcept { return myKey; }
+
     const IntType& Value() const noexcept { return myKey; }
+
     bool More() const noexcept { return myNode != nullptr; }
 
     BasicIterator& operator++()
@@ -271,10 +275,10 @@ private:
 
     void Reset() noexcept
     {
-      myBucket   = 0;
-      myNode     = nullptr;
-      myIntMask  = ~BlockType(0);
-      myKey      = 0;
+      myBucket  = 0;
+      myNode    = nullptr;
+      myIntMask = ~BlockType(0);
+      myKey     = 0;
       findFirst();
       if (myNode != nullptr)
       {
@@ -343,11 +347,11 @@ private:
     }
 
     PackedMapNode* const* myBuckets;
-    PackedMapNode*         myNode;
-    size_t                  myNbBuckets;
-    size_t                  myBucket;
-    BlockType               myIntMask;
-    IntType                 myKey;
+    PackedMapNode*        myNode;
+    size_t                myNbBuckets;
+    size_t                myBucket;
+    BlockType             myIntMask;
+    IntType               myKey;
   };
 
 public:
@@ -366,10 +370,7 @@ public:
     {
     }
 
-    void Initialize(const NCollection_PackedMap& theMap) noexcept
-    {
-      *this = Iterator(theMap);
-    }
+    void Initialize(const NCollection_PackedMap& theMap) noexcept { *this = Iterator(theMap); }
 
     void Reset() noexcept { const_iterator::Reset(); }
 
@@ -515,10 +516,10 @@ public:
       aNewBuck = myNbBuckets;
     }
 
-    const size_t aBucketCount = aNewBuck + 1;
-    const size_t aBucketBytes = aBucketCount * sizeof(PackedMapNode*);
-    PackedMapNode** aNewData = reinterpret_cast<PackedMapNode**>(
-      Standard::AllocateOptimal(aBucketBytes));
+    const size_t    aBucketCount = aNewBuck + 1;
+    const size_t    aBucketBytes = aBucketCount * sizeof(PackedMapNode*);
+    PackedMapNode** aNewData =
+      reinterpret_cast<PackedMapNode**>(Standard::AllocateOptimal(aBucketBytes));
     memset(aNewData, 0, aBucketBytes);
     if (myData1 != nullptr)
     {

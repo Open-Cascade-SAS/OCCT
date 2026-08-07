@@ -148,9 +148,9 @@ protected:
             class TheNode,
             class TheKey,
             class TheValue,
-            bool  IsKeyOnly,
-            bool  IsConstant,
-            bool  IsOrdered = false>
+            bool IsKeyOnly,
+            bool IsConstant,
+            bool IsOrdered = false>
   class BasicIterator
   {
   private:
@@ -158,13 +158,10 @@ protected:
     class State
     {
     public:
-      using node_pointer = typename std::conditional<theIsConstant,
-                                                     const TheNode*,
-                                                     TheNode*>::type;
+      using node_pointer = typename std::conditional<theIsConstant, const TheNode*, TheNode*>::type;
       using bucket_pointer = NCollection_ListNode* const*;
-      using reference = typename std::conditional<IsKeyOnly || theIsConstant,
-                                                  const TheValue&,
-                                                  TheValue&>::type;
+      using reference =
+        typename std::conditional<IsKeyOnly || theIsConstant, const TheValue&, TheValue&>::type;
 
       State() noexcept = default;
 
@@ -203,7 +200,7 @@ protected:
         }
       }
 
-      State(const State&) noexcept = default;
+      State(const State&) noexcept            = default;
       State& operator=(const State&) noexcept = default;
 
       template <bool B = theIsConstant, typename std::enable_if<B, int>::type = 0>
@@ -307,18 +304,13 @@ protected:
     using iterator_category = std::forward_iterator_tag;
     using value_type        = TheValue;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsKeyOnly || IsConstant,
-                                              const TheValue*,
-                                              TheValue*>::type;
-    using reference = typename std::conditional<IsKeyOnly || IsConstant,
-                                                const TheValue&,
-                                                TheValue&>::type;
-    using node_pointer = typename std::conditional<IsConstant,
-                                                   const TheNode*,
-                                                   TheNode*>::type;
-    using container_type = typename std::conditional<IsConstant,
-                                                     const TheContainer,
-                                                     TheContainer>::type;
+    using pointer =
+      typename std::conditional<IsKeyOnly || IsConstant, const TheValue*, TheValue*>::type;
+    using reference =
+      typename std::conditional<IsKeyOnly || IsConstant, const TheValue&, TheValue&>::type;
+    using node_pointer = typename std::conditional<IsConstant, const TheNode*, TheNode*>::type;
+    using container_type =
+      typename std::conditional<IsConstant, const TheContainer, TheContainer>::type;
 
     BasicIterator() noexcept = default;
 
@@ -332,38 +324,34 @@ protected:
     {
     }
 
-    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-    BasicIterator(const BasicIterator<TheContainer,
-                                      TheNode,
-                                      TheKey,
-                                      TheValue,
-                                      IsKeyOnly,
-                                      false,
-                                      IsOrdered>& theOther) noexcept
+    BasicIterator(
+      const BasicIterator<TheContainer, TheNode, TheKey, TheValue, IsKeyOnly, false, IsOrdered>&
+        theOther) noexcept
         : myState(theOther.myState)
     {
     }
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-    BasicIterator& operator=(const BasicIterator<TheContainer,
-                                                 TheNode,
-                                                 TheKey,
-                                                 TheValue,
-                                                 IsKeyOnly,
-                                                 false,
-                                                 IsOrdered>& theOther) noexcept
+    BasicIterator& operator=(
+      const BasicIterator<TheContainer, TheNode, TheKey, TheValue, IsKeyOnly, false, IsOrdered>&
+        theOther) noexcept
     {
       myState = theOther.myState;
       return *this;
     }
 
     reference operator*() const noexcept { return myState.Value(); }
-    pointer   operator->() const noexcept { return &myState.Value(); }
+
+    pointer operator->() const noexcept { return &myState.Value(); }
+
     const TheNode* Node() const noexcept { return myState.Node(); }
-    const TheKey&  Key() const noexcept { return myState.Key(); }
+
+    const TheKey& Key() const noexcept { return myState.Key(); }
+
     bool More() const noexcept { return myState.Node() != nullptr; }
 
     BasicIterator& operator++() noexcept
@@ -421,14 +409,13 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     using value_type        = TheValue;
     using difference_type   = std::ptrdiff_t;
-    using container_type = typename std::conditional<IsConstant,
-                                                     const TheContainer,
-                                                     TheContainer>::type;
+    using container_type =
+      typename std::conditional<IsConstant, const TheContainer, TheContainer>::type;
     using reference = decltype(std::declval<container_type&>()(std::declval<size_t>()));
-    using pointer = typename std::add_pointer<
-      typename std::remove_reference<reference>::type>::type;
-    using key_reference = decltype(
-      std::declval<const TheContainer&>().FindKey(std::declval<size_t>()));
+    using pointer =
+      typename std::add_pointer<typename std::remove_reference<reference>::type>::type;
+    using key_reference =
+      decltype(std::declval<const TheContainer&>().FindKey(std::declval<size_t>()));
 
     IndexedIterator() noexcept = default;
 
@@ -440,14 +427,13 @@ public:
     }
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-    explicit IndexedIterator(const TheContainer& theContainer,
-                             const size_t           theIndex = 1) noexcept
+    explicit IndexedIterator(const TheContainer& theContainer, const size_t theIndex = 1) noexcept
         : myContainer(&theContainer),
           myIndex(theIndex)
     {
     }
 
-    IndexedIterator(const IndexedIterator&) noexcept = default;
+    IndexedIterator(const IndexedIterator&) noexcept            = default;
     IndexedIterator& operator=(const IndexedIterator&) noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
@@ -467,15 +453,18 @@ public:
     }
 
     reference operator*() const { return (*myContainer)(myIndex); }
+
     pointer operator->() const { return &operator*(); }
+
     key_reference Key() const { return myContainer->FindKey(myIndex); }
+
     size_t Index() const noexcept { return myIndex; }
+
     const IndexedIterator& Iterator() const noexcept { return *this; }
-    IndexedIterator&       ChangeIterator() noexcept { return *this; }
-    bool More() const noexcept
-    {
-      return myContainer != nullptr && myIndex <= myContainer->Size();
-    }
+
+    IndexedIterator& ChangeIterator() noexcept { return *this; }
+
+    bool More() const noexcept { return myContainer != nullptr && myIndex <= myContainer->Size(); }
 
     IndexedIterator& operator++() noexcept
     {
@@ -529,67 +518,58 @@ public:
     }
 
     template <bool theOtherIsConstant>
-    difference_type operator-(const IndexedIterator<TheContainer,
-                                                    TheValue,
-                                                    theOtherIsConstant>& theOther)
-      const noexcept
+    difference_type operator-(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
-      return static_cast<difference_type>(myIndex)
-             - static_cast<difference_type>(theOther.myIndex);
+      return static_cast<difference_type>(myIndex) - static_cast<difference_type>(theOther.myIndex);
     }
 
     reference operator[](const difference_type theOffset) const { return *(*this + theOffset); }
 
     template <bool theOtherIsConstant>
-    bool operator==(const IndexedIterator<TheContainer,
-                                          TheValue,
-                                          theOtherIsConstant>& theOther) const noexcept
+    bool operator==(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return (!More() && !theOther.More())
              || (myContainer == theOther.myContainer && myIndex == theOther.myIndex);
     }
 
     template <bool theOtherIsConstant>
-    bool operator!=(const IndexedIterator<TheContainer,
-                                          TheValue,
-                                          theOtherIsConstant>& theOther) const noexcept
+    bool operator!=(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return !(*this == theOther);
     }
 
     template <bool theOtherIsConstant>
-    bool operator<(const IndexedIterator<TheContainer,
-                                         TheValue,
-                                         theOtherIsConstant>& theOther) const noexcept
+    bool operator<(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return (*this - theOther) < 0;
     }
 
     template <bool theOtherIsConstant>
-    bool operator>(const IndexedIterator<TheContainer,
-                                         TheValue,
-                                         theOtherIsConstant>& theOther) const noexcept
+    bool operator>(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return theOther < *this;
     }
 
     template <bool theOtherIsConstant>
-    bool operator<=(const IndexedIterator<TheContainer,
-                                          TheValue,
-                                          theOtherIsConstant>& theOther) const noexcept
+    bool operator<=(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return !(theOther < *this);
     }
 
     template <bool theOtherIsConstant>
-    bool operator>=(const IndexedIterator<TheContainer,
-                                          TheValue,
-                                          theOtherIsConstant>& theOther) const noexcept
+    bool operator>=(
+      const IndexedIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return !(*this < theOther);
     }
 
-    friend IndexedIterator operator+(const difference_type theOffset,
+    friend IndexedIterator operator+(const difference_type  theOffset,
                                      const IndexedIterator& theIter) noexcept
     {
       return theIter + theOffset;
@@ -640,10 +620,7 @@ protected:
     return static_cast<size_t>(theNbBuckets);
   }
 
-  static size_t NbBucketsFromInt(const int theNbBuckets)
-  {
-    return nbBucketsFromInt(theNbBuckets);
-  }
+  static size_t NbBucketsFromInt(const int theNbBuckets) { return nbBucketsFromInt(theNbBuckets); }
 
   //! Constructor
   NCollection_BaseMap(const size_t                                  theNbBuckets,
@@ -657,7 +634,7 @@ protected:
   }
 
   //! Legacy constructor retained for source compatibility with custom maps.
-  NCollection_BaseMap(const size_t                                  theNbBuckets,
+  NCollection_BaseMap(const size_t theNbBuckets,
                       const bool,
                       const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : NCollection_BaseMap(theNbBuckets, theAllocator)
@@ -733,18 +710,22 @@ protected:
 
   //! resizable
   bool resizable() const noexcept { return IsEmpty() || (mySize > myNbBuckets); }
+
   bool Resizable() const noexcept { return resizable(); }
 
   //! increment
   size_t increment() noexcept { return ++mySize; }
+
   size_t Increment() noexcept { return increment(); }
 
   //! decrement
   size_t decrement() noexcept { return --mySize; }
+
   size_t Decrement() noexcept { return decrement(); }
 
   //! destroy
   Standard_EXPORT void destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
+
   void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true)
   {
     destroy(fDel, doReleaseMemory);
@@ -752,6 +733,7 @@ protected:
 
   //! nextPrimeForMap
   Standard_EXPORT size_t nextPrimeForMap(const size_t N) const noexcept;
+
   size_t NextPrimeForMap(const size_t theExtent) const noexcept
   {
     return nextPrimeForMap(theExtent);
@@ -766,10 +748,7 @@ protected:
     std::swap(mySize, theOther.mySize);
   }
 
-  void ExchangeMapsData(NCollection_BaseMap& theOther) noexcept
-  {
-    exchangeMapsData(theOther);
-  }
+  void ExchangeMapsData(NCollection_BaseMap& theOther) noexcept { exchangeMapsData(theOther); }
 
   //! Move operator
   NCollection_BaseMap& operator=(NCollection_BaseMap&&) noexcept = delete;
@@ -787,8 +766,8 @@ protected:
 
 protected:
   // ---------- PRIVATE FIELDS ------------
-  size_t     myNbBuckets;
-  size_t     mySize;
+  size_t myNbBuckets;
+  size_t mySize;
 
 private:
   // ---------- FRIEND CLASSES ------------

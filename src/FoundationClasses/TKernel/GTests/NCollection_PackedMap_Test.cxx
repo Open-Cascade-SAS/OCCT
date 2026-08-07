@@ -729,13 +729,12 @@ TYPED_TEST(NCollection_PackedMapTypedTest, STLIterators)
   EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(30)), aValues.end());
 
   const typename TestFixture::MapType& aConstMap = aMap;
-  const auto                          anFound =
-    std::find(aConstMap.cbegin(), aConstMap.cend(), TypeParam(20));
+  const auto anFound = std::find(aConstMap.cbegin(), aConstMap.cend(), TypeParam(20));
   ASSERT_NE(aConstMap.cend(), anFound);
   EXPECT_EQ(TypeParam(20), *anFound);
   EXPECT_EQ(1, std::count(aConstMap.cbegin(), aConstMap.cend(), TypeParam(10)));
 
-  int                                  aCount    = 0;
+  int aCount = 0;
   for (auto it = aConstMap.cbegin(); it != aConstMap.cend(); ++it)
   {
     ++aCount;

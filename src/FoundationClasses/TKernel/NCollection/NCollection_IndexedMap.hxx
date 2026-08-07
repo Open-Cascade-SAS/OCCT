@@ -334,7 +334,7 @@ public:
   {
     NCollection_ListNode** ppNewData1 = nullptr;
     size_t                 newBuck;
-    const size_t aRequestedBuckets = nextPrimeForMap(theExtent);
+    const size_t           aRequestedBuckets = nextPrimeForMap(theExtent);
     if (aRequestedBuckets <= NbBuckets() && myData1 != nullptr)
       return;
     newBuck = !myData1 && aRequestedBuckets <= NbBuckets() ? NbBuckets() : aRequestedBuckets;

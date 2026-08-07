@@ -147,6 +147,7 @@ public:
 
     //! Next node in insertion order.
     OrderedDataMapNode* OrderNext() noexcept { return myOrderNext; }
+
     const OrderedDataMapNode* OrderNext() const noexcept { return myOrderNext; }
 
     //! Static deleter to be passed to BaseMap
@@ -164,20 +165,20 @@ public:
     TheKeyType myKey;
   };
 
-  using iterator = NCollection_BaseMap::BasicIterator<NCollection_OrderedDataMap,
-                                                       OrderedDataMapNode,
-                                                       TheKeyType,
-                                                       TheItemType,
-                                                       false,
-                                                       false,
-                                                       true>;
+  using iterator       = NCollection_BaseMap::BasicIterator<NCollection_OrderedDataMap,
+                                                            OrderedDataMapNode,
+                                                            TheKeyType,
+                                                            TheItemType,
+                                                            false,
+                                                            false,
+                                                            true>;
   using const_iterator = NCollection_BaseMap::BasicIterator<NCollection_OrderedDataMap,
-                                                             OrderedDataMapNode,
-                                                             TheKeyType,
-                                                             TheItemType,
-                                                             false,
-                                                             true,
-                                                             true>;
+                                                            OrderedDataMapNode,
+                                                            TheKeyType,
+                                                            TheItemType,
+                                                            false,
+                                                            true,
+                                                            true>;
 
 public:
   //! Legacy OCCT cursor backed by the standard iterator state.
@@ -211,8 +212,7 @@ public:
 
     TheItemType& ChangeValue() const
     {
-      Standard_NoSuchObject_Raise_if(!More(),
-                                     "NCollection_OrderedDataMap::Iterator::ChangeValue");
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_OrderedDataMap::Iterator::ChangeValue");
       return iterator::operator*();
     }
 
@@ -227,20 +227,11 @@ public:
       return iterator::operator==(static_cast<const iterator&>(theOther));
     }
 
-    void Initialize(NCollection_OrderedDataMap& theMap) noexcept
-    {
-      *this = Iterator(theMap);
-    }
+    void Initialize(NCollection_OrderedDataMap& theMap) noexcept { *this = Iterator(theMap); }
 
-    void Initialize(const NCollection_OrderedDataMap& theMap) noexcept
-    {
-      *this = Iterator(theMap);
-    }
+    void Initialize(const NCollection_OrderedDataMap& theMap) noexcept { *this = Iterator(theMap); }
 
-    void Reset() noexcept
-    {
-      *this = myMap != nullptr ? Iterator(*myMap) : Iterator();
-    }
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
 
   private:
     NCollection_OrderedDataMap* myMap = nullptr;

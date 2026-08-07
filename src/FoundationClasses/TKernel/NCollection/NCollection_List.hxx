@@ -44,7 +44,7 @@ public:
   using const_reference = const TheItemType&;
 
 public:
-  typedef NCollection_TListNode<TheItemType>     ListNode;
+  typedef NCollection_TListNode<TheItemType> ListNode;
   using iterator       = NCollection_BaseList::BasicIterator<ListNode, TheItemType, false>;
   using const_iterator = NCollection_BaseList::BasicIterator<ListNode, TheItemType, true>;
 
@@ -64,17 +64,12 @@ public:
     {
     }
 
-    void Init(NCollection_List& theList) noexcept
-    {
-      *this = Iterator(theList);
-    }
+    void Init(NCollection_List& theList) noexcept { *this = Iterator(theList); }
 
-    void Init(const NCollection_List& theList) noexcept
-    {
-      *this = Iterator(theList);
-    }
+    void Init(const NCollection_List& theList) noexcept { *this = Iterator(theList); }
 
     void Initialize(NCollection_List& theList) noexcept { Init(theList); }
+
     void Initialize(const NCollection_List& theList) noexcept { Init(theList); }
 
     bool IsEqual(const Iterator& theOther) const noexcept

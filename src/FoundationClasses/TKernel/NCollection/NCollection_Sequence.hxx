@@ -264,10 +264,7 @@ public:
   }
 
   //! Remove one item
-  void Remove(Iterator& thePosition)
-  {
-    removeSeq(thePosition, delNode);
-  }
+  void Remove(Iterator& thePosition) { removeSeq(thePosition, delNode); }
 
   //! Remove one item
   void Remove(const size_t theIndex) { removeSeq(theIndex, delNode); }

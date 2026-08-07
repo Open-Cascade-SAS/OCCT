@@ -97,8 +97,7 @@ private:
     //! Compute required size for block data, in bytes
     static constexpr size_t Size(const size_t theNbItems, const size_t theItemSize) noexcept
     {
-      return sizeof(size_t)
-             + sizeof(Cell) * ((theNbItems + bitsPerCell() - 1) / bitsPerCell())
+      return sizeof(size_t) + sizeof(Cell) * ((theNbItems + bitsPerCell() - 1) / bitsPerCell())
              + theNbItems * theItemSize;
     }
 
@@ -198,11 +197,10 @@ protected:
     using iterator_category = std::forward_iterator_tag;
     using value_type        = TheValue;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsConstant, const TheValue*, TheValue*>::type;
+    using pointer   = typename std::conditional<IsConstant, const TheValue*, TheValue*>::type;
     using reference = typename std::conditional<IsConstant, const TheValue&, TheValue&>::type;
-    using container_pointer = typename std::conditional<IsConstant,
-                                                        const TheContainer*,
-                                                        TheContainer*>::type;
+    using container_pointer =
+      typename std::conditional<IsConstant, const TheContainer*, TheContainer*>::type;
 
     BasicIterator() noexcept = default;
 
@@ -240,7 +238,7 @@ protected:
       skipUnset();
     }
 
-    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
@@ -256,8 +254,7 @@ protected:
     }
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-    BasicIterator& operator=(const BasicIterator<TheContainer, TheValue, false>& theOther)
-      noexcept
+    BasicIterator& operator=(const BasicIterator<TheContainer, TheValue, false>& theOther) noexcept
     {
       myHasMore   = theOther.myHasMore;
       myContainer = theOther.myContainer;
@@ -269,14 +266,14 @@ protected:
       return *this;
     }
 
-    reference operator*() const noexcept
-    {
-      return *itemPointer();
-    }
+    reference operator*() const noexcept { return *itemPointer(); }
 
     pointer operator->() const noexcept { return itemPointer(); }
+
     size_t Key() const noexcept { return myIndex; }
+
     size_t Index() const noexcept { return myIndex; }
+
     bool More() const noexcept { return myHasMore; }
 
     void Restart() noexcept
@@ -306,18 +303,16 @@ protected:
     }
 
     template <bool theOtherIsConstant>
-    bool operator==(const BasicIterator<TheContainer,
-                                        TheValue,
-                                        theOtherIsConstant>& theOther) const noexcept
+    bool operator==(
+      const BasicIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return (!More() && !theOther.More())
              || (myContainer == theOther.myContainer && myIndex == theOther.myIndex);
     }
 
     template <bool theOtherIsConstant>
-    bool operator!=(const BasicIterator<TheContainer,
-                                        TheValue,
-                                        theOtherIsConstant>& theOther) const noexcept
+    bool operator!=(
+      const BasicIterator<TheContainer, TheValue, theOtherIsConstant>& theOther) const noexcept
     {
       return !(*this == theOther);
     }
@@ -342,14 +337,12 @@ protected:
     void findNext() noexcept
     {
       myHasMore = false;
-      while (myContainer != nullptr && myIndex < myEnd
-             && myIBlock < myContainer->myNbBlocks)
+      while (myContainer != nullptr && myIndex < myEnd && myIBlock < myContainer->myNbBlocks)
       {
         if (myContainer->myData[myIBlock] != nullptr)
         {
-          myBlock = Block(myContainer->myData[myIBlock],
-                          myContainer->myBlockSize,
-                          myContainer->myItemSize);
+          myBlock =
+            Block(myContainer->myData[myIBlock], myContainer->myBlockSize, myContainer->myItemSize);
           for (; myInd < myContainer->myBlockSize; ++myInd, ++myIndex)
           {
             if (myBlock.IsSet(myInd))
@@ -373,13 +366,13 @@ protected:
       return static_cast<pointer>(myContainer->getItem(myBlock, myInd));
     }
 
-    bool             myHasMore = false;
+    bool              myHasMore   = false;
     container_pointer myContainer = nullptr;
     size_t            myIndex     = 0;
     size_t            myEnd       = 0;
     size_t            myIBlock    = 0;
     size_t            myInd       = 0;
-    Block              myBlock{nullptr, 0, 0};
+    Block             myBlock{nullptr, 0, 0};
   };
   friend class Iterator;
 

@@ -118,29 +118,28 @@ protected:
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type        = TheItemType;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
     using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
-    using node_pointer = typename std::conditional<IsConstant,
-                                                   const NCollection_SeqNode*,
-                                                   NCollection_SeqNode*>::type;
+    using node_pointer =
+      typename std::conditional<IsConstant, const NCollection_SeqNode*, NCollection_SeqNode*>::type;
 
     BasicIterator() noexcept = default;
 
     template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
     explicit BasicIterator(NCollection_BaseSequence& theSequence,
-                           const bool              isStart = true) noexcept
+                           const bool                isStart = true) noexcept
         : Iterator(theSequence, isStart)
     {
     }
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
     explicit BasicIterator(const NCollection_BaseSequence& theSequence,
-                           const bool                    isStart = true) noexcept
+                           const bool                      isStart = true) noexcept
         : Iterator(theSequence, isStart)
     {
     }
 
-    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator(const BasicIterator&) noexcept            = default;
     BasicIterator& operator=(const BasicIterator&) noexcept = default;
 
     explicit BasicIterator(const Iterator& theOther) noexcept
@@ -228,13 +227,13 @@ protected:
     }
 
     void Next() noexcept { ++(*this); }
+
     void Previous() noexcept { Iterator::Previous(); }
 
-    node_pointer Node() const noexcept
-    {
-      return static_cast<node_pointer>(this->myCurrent);
-    }
+    node_pointer Node() const noexcept { return static_cast<node_pointer>(this->myCurrent); }
+
     const NCollection_SeqNode* CurrentNode() const noexcept { return this->myCurrent; }
+
     const NCollection_SeqNode* PreviousNode() const noexcept { return this->myPrevious; }
 
     template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
@@ -268,29 +267,28 @@ protected:
     }
 
     template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
-    void Initialize(const NCollection_BaseSequence& theSequence,
-                    const bool                    isStart = true) noexcept
+    void Initialize(const NCollection_BaseSequence& theSequence, const bool isStart = true) noexcept
     {
       Init(theSequence, isStart);
     }
 
     template <bool theOtherIsConstant>
-    bool IsEqual(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool IsEqual(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return this->myCurrent == theOther.CurrentNode();
     }
 
     template <bool theOtherIsConstant>
-    bool operator==(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool operator==(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return this->myCurrent == theOther.CurrentNode();
     }
 
     template <bool theOtherIsConstant>
-    bool operator!=(const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther)
-      const noexcept
+    bool operator!=(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
     {
       return !(*this == theOther);
     }
@@ -332,58 +330,81 @@ protected:
   virtual ~NCollection_BaseSequence() = default;
 
   Standard_EXPORT void clearSeq(NCollection_DelSeqNode fDel);
+
   void ClearSeq(NCollection_DelSeqNode fDel) { clearSeq(fDel); }
+
   Standard_EXPORT void pAppend(NCollection_SeqNode*);
+
   void PAppend(NCollection_SeqNode* theNode) { pAppend(theNode); }
+
   Standard_EXPORT void pAppend(NCollection_BaseSequence& S);
+
   void PAppend(NCollection_BaseSequence& theSequence) { pAppend(theSequence); }
+
   Standard_EXPORT void pPrepend(NCollection_SeqNode*);
+
   void PPrepend(NCollection_SeqNode* theNode) { pPrepend(theNode); }
+
   Standard_EXPORT void pPrepend(NCollection_BaseSequence& S);
+
   void PPrepend(NCollection_BaseSequence& theSequence) { pPrepend(theSequence); }
+
   Standard_EXPORT void pInsertAfter(Iterator& thePosition, NCollection_SeqNode*);
+
   void PInsertAfter(Iterator& thePosition, NCollection_SeqNode* theNode)
   {
     pInsertAfter(thePosition, theNode);
   }
+
   Standard_EXPORT void pInsertAfter(const size_t Index, NCollection_SeqNode*);
+
   void PInsertAfter(const size_t theIndex, NCollection_SeqNode* theNode)
   {
     pInsertAfter(theIndex, theNode);
   }
+
   Standard_EXPORT void pInsertAfter(const size_t Index, NCollection_BaseSequence& S);
+
   void PInsertAfter(const size_t theIndex, NCollection_BaseSequence& theSequence)
   {
     pInsertAfter(theIndex, theSequence);
   }
+
   Standard_EXPORT void pSplit(const size_t Index, NCollection_BaseSequence& Sub);
+
   void PSplit(const size_t theIndex, NCollection_BaseSequence& theSubSequence)
   {
     pSplit(theIndex, theSubSequence);
   }
+
   Standard_EXPORT void removeSeq(Iterator& thePosition, NCollection_DelSeqNode fDel);
+
   void RemoveSeq(Iterator& thePosition, NCollection_DelSeqNode fDel)
   {
     removeSeq(thePosition, fDel);
   }
+
   Standard_EXPORT void removeSeq(const size_t Index, NCollection_DelSeqNode fDel);
-  void RemoveSeq(const size_t theIndex, NCollection_DelSeqNode fDel)
-  {
-    removeSeq(theIndex, fDel);
-  }
+
+  void RemoveSeq(const size_t theIndex, NCollection_DelSeqNode fDel) { removeSeq(theIndex, fDel); }
+
   Standard_EXPORT void removeSeq(const size_t From, const size_t To, NCollection_DelSeqNode fDel);
+
   void RemoveSeq(const size_t theFrom, const size_t theTo, NCollection_DelSeqNode fDel)
   {
     removeSeq(theFrom, theTo, fDel);
   }
+
   Standard_EXPORT void pReverse() noexcept;
+
   void PReverse() noexcept { pReverse(); }
+
   Standard_EXPORT void pExchange(const size_t I, const size_t J);
-  void PExchange(const size_t theFirst, const size_t theSecond)
-  {
-    pExchange(theFirst, theSecond);
-  }
+
+  void PExchange(const size_t theFirst, const size_t theSecond) { pExchange(theFirst, theSecond); }
+
   Standard_EXPORT NCollection_SeqNode* find(const size_t) const noexcept;
+
   NCollection_SeqNode* Find(const size_t theIndex) const noexcept { return find(theIndex); }
 
 protected:

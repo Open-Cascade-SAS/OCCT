@@ -203,7 +203,7 @@ TEST(NCollection_SparseArrayTest, STLIterators)
   EXPECT_EQ(anArray.begin(), aConstArray.cbegin());
   EXPECT_EQ(anArray.end(), aConstArray.cend());
 
-  const NCollection_SparseArray<ItemType>::iterator anBegin = anArray.begin();
+  const NCollection_SparseArray<ItemType>::iterator       anBegin = anArray.begin();
   const NCollection_SparseArray<ItemType>::const_iterator aConstBegin(anBegin);
   EXPECT_EQ(anBegin, aConstBegin);
   EXPECT_EQ(50, *aConstBegin);

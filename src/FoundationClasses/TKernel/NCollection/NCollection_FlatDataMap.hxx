@@ -77,13 +77,13 @@ public:
   using key_type = TheKeyType;
 
   //! STL-compliant type alias for value type
-  using value_type = TheItemType;
-  using size_type = size_t;
+  using value_type      = TheItemType;
+  using size_type       = size_t;
   using difference_type = std::ptrdiff_t;
-  using reference = TheItemType&;
+  using reference       = TheItemType&;
   using const_reference = const TheItemType&;
-  using pointer = TheItemType*;
-  using const_pointer = const TheItemType*;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
 
 private:
   //! Internal slot structure holding key, value, and metadata.
@@ -163,16 +163,11 @@ private:
     using iterator_category = std::forward_iterator_tag;
     using value_type        = TheItemType;
     using difference_type   = std::ptrdiff_t;
-    using pointer = typename std::conditional<IsConstant,
-                                              const TheItemType*,
-                                              TheItemType*>::type;
-    using reference = typename std::conditional<IsConstant,
-                                                const TheItemType&,
-                                                TheItemType&>::type;
-    using slot_pointer = typename std::conditional<IsConstant, const Slot*, Slot*>::type;
-    using container_type = typename std::conditional<IsConstant,
-                                                     const NCollection_FlatDataMap,
-                                                     NCollection_FlatDataMap>::type;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
+    using slot_pointer   = typename std::conditional<IsConstant, const Slot*, Slot*>::type;
+    using container_type = typename std::
+      conditional<IsConstant, const NCollection_FlatDataMap, NCollection_FlatDataMap>::type;
 
     iterator_impl() noexcept = default;
 
@@ -201,8 +196,11 @@ private:
     }
 
     reference operator*() const noexcept { return mySlots[myIndex].Item(); }
+
     pointer operator->() const noexcept { return &operator*(); }
+
     const TheKeyType& Key() const noexcept { return mySlots[myIndex].Key(); }
+
     bool More() const noexcept { return myIndex < myCapacity; }
 
     iterator_impl& operator++() noexcept
@@ -362,13 +360,12 @@ public:
         {
           new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
           new (&slotData()[i].Item()) TheItemType(theOther.slotData()[i].Item());
-          slotData()[i].myHash = theOther.slotData()[i].myHash;
-          slotData()[i].myProbeDistancePlus1 =
-            theOther.slotData()[i].myProbeDistancePlus1;
+          slotData()[i].myHash               = theOther.slotData()[i].myHash;
+          slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
         }
       }
       myCapacity = theOther.myCapacity;
-      mySize = theOther.mySize;
+      mySize     = theOther.mySize;
     }
   }
 
@@ -401,13 +398,12 @@ public:
           {
             new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
             new (&slotData()[i].Item()) TheItemType(theOther.slotData()[i].Item());
-            slotData()[i].myHash = theOther.slotData()[i].myHash;
-            slotData()[i].myProbeDistancePlus1 =
-              theOther.slotData()[i].myProbeDistancePlus1;
+            slotData()[i].myHash               = theOther.slotData()[i].myHash;
+            slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
           }
         }
         myCapacity = theOther.myCapacity;
-        mySize = theOther.mySize;
+        mySize     = theOther.mySize;
       }
     }
     return *this;
@@ -855,8 +851,7 @@ private:
       return THE_DEFAULT_CAPACITY;
     }
 
-    size_t aCapacity = (theElementCount * THE_MAX_LOAD_DENOMINATOR
-                        + THE_MAX_LOAD_NUMERATOR - 1)
+    size_t aCapacity = (theElementCount * THE_MAX_LOAD_DENOMINATOR + THE_MAX_LOAD_NUMERATOR - 1)
                        / THE_MAX_LOAD_NUMERATOR;
     if (aCapacity < THE_DEFAULT_CAPACITY)
     {
@@ -887,10 +882,7 @@ private:
     return myCapacity * 2;
   }
 
-  bool needsGrowth() const
-  {
-    return myCapacity == 0 || capacityFor(mySize + 1) > myCapacity;
-  }
+  bool needsGrowth() const { return myCapacity == 0 || capacityFor(mySize + 1) > myCapacity; }
 
   static void* allocateBytes(const size_t theBytes) { return Standard::Allocate(theBytes); }
 
@@ -927,7 +919,7 @@ private:
   //! Rehash to new capacity
   void rehash(size_t theNewCapacity)
   {
-    Slot* aOldSlots = slotData();
+    Slot*        aOldSlots    = slotData();
     const size_t aOldCapacity = myCapacity;
 
     mySlots = static_cast<Slot*>(allocateBytes(theNewCapacity * sizeof(Slot)));
@@ -944,9 +936,9 @@ private:
       {
         if (aOldSlots[i].IsUsed())
         {
-        insertRehashedImpl(std::move_if_noexcept(aOldSlots[i].Key()),
-                           std::move_if_noexcept(aOldSlots[i].Item()),
-                           aOldSlots[i].myHash);
+          insertRehashedImpl(std::move_if_noexcept(aOldSlots[i].Key()),
+                             std::move_if_noexcept(aOldSlots[i].Item()),
+                             aOldSlots[i].myHash);
           aOldSlots[i].Key().~TheKeyType();
           aOldSlots[i].Item().~TheItemType();
           aOldSlots[i].SetEmpty();
@@ -1310,15 +1302,9 @@ private:
   }
 
 private:
-  Slot* slotData() noexcept
-  {
-    return static_cast<Slot*>(mySlots);
-  }
+  Slot* slotData() noexcept { return static_cast<Slot*>(mySlots); }
 
-  const Slot* slotData() const noexcept
-  {
-    return static_cast<const Slot*>(mySlots);
-  }
+  const Slot* slotData() const noexcept { return static_cast<const Slot*>(mySlots); }
 
   void*  mySlots    = nullptr;
   size_t myCapacity = 0;

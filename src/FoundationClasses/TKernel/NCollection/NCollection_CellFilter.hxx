@@ -258,7 +258,7 @@ protected:
       for (int i = 0; i < theCellSize.Length(); i++)
       {
         const double aCellSize = theCellSize(theCellSize.Lower() + i);
-        double aVal = (double)(Inspector::Coord(i, thePnt) / aCellSize);
+        double       aVal      = (double)(Inspector::Coord(i, thePnt) / aCellSize);
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -317,7 +317,7 @@ protected:
     bool operator==(const Cell& theOther) const noexcept { return IsEqual(theOther); }
 
   public:
-    CellIndex index;
+    CellIndex         index;
     mutable ListNode* Objects;
   };
 

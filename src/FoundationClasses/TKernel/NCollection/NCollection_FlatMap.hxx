@@ -71,14 +71,14 @@ class NCollection_FlatMap
 {
 public:
   //! STL-compliant type alias for key type
-  using key_type = TheKeyType;
-  using value_type = TheKeyType;
-  using size_type = size_t;
+  using key_type        = TheKeyType;
+  using value_type      = TheKeyType;
+  using size_type       = size_t;
   using difference_type = std::ptrdiff_t;
-  using reference = const TheKeyType&;
+  using reference       = const TheKeyType&;
   using const_reference = const TheKeyType&;
-  using pointer = const TheKeyType*;
-  using const_pointer = const TheKeyType*;
+  using pointer         = const TheKeyType*;
+  using const_pointer   = const TheKeyType*;
 
 private:
   //! Internal slot structure holding key and metadata.
@@ -146,10 +146,9 @@ private:
     using difference_type   = std::ptrdiff_t;
     using pointer           = const TheKeyType*;
     using reference         = const TheKeyType&;
-    using slot_pointer = typename std::conditional<IsConstant, const Slot*, Slot*>::type;
-    using container_type = typename std::conditional<IsConstant,
-                                                     const NCollection_FlatMap,
-                                                     NCollection_FlatMap>::type;
+    using slot_pointer      = typename std::conditional<IsConstant, const Slot*, Slot*>::type;
+    using container_type =
+      typename std::conditional<IsConstant, const NCollection_FlatMap, NCollection_FlatMap>::type;
 
     iterator_impl() noexcept = default;
 
@@ -178,8 +177,11 @@ private:
     }
 
     reference operator*() const noexcept { return mySlots[myIndex].Key(); }
+
     pointer operator->() const noexcept { return &operator*(); }
+
     const TheKeyType& Key() const noexcept { return mySlots[myIndex].Key(); }
+
     bool More() const noexcept { return myIndex < myCapacity; }
 
     iterator_impl& operator++() noexcept
@@ -229,7 +231,7 @@ private:
 public:
   // **************** Iterator interface ****************
 
-  using iterator = iterator_impl<true>;
+  using iterator       = iterator_impl<true>;
   using const_iterator = iterator;
 
   //! Legacy OCCT cursor backed by the standard iterator state.
@@ -321,12 +323,11 @@ public:
         {
           new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
           slotData()[i].myHash               = theOther.slotData()[i].myHash;
-          slotData()[i].myProbeDistancePlus1 =
-            theOther.slotData()[i].myProbeDistancePlus1;
+          slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
         }
       }
       myCapacity = theOther.myCapacity;
-      mySize = theOther.mySize;
+      mySize     = theOther.mySize;
     }
   }
 
@@ -359,12 +360,11 @@ public:
           {
             new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
             slotData()[i].myHash               = theOther.slotData()[i].myHash;
-            slotData()[i].myProbeDistancePlus1 =
-              theOther.slotData()[i].myProbeDistancePlus1;
+            slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
           }
         }
         myCapacity = theOther.myCapacity;
-        mySize = theOther.mySize;
+        mySize     = theOther.mySize;
       }
     }
     return *this;
@@ -621,8 +621,7 @@ private:
       return THE_DEFAULT_CAPACITY;
     }
 
-    size_t aCapacity = (theElementCount * THE_MAX_LOAD_DENOMINATOR
-                        + THE_MAX_LOAD_NUMERATOR - 1)
+    size_t aCapacity = (theElementCount * THE_MAX_LOAD_DENOMINATOR + THE_MAX_LOAD_NUMERATOR - 1)
                        / THE_MAX_LOAD_NUMERATOR;
     if (aCapacity < THE_DEFAULT_CAPACITY)
     {
@@ -653,10 +652,7 @@ private:
     return myCapacity * 2;
   }
 
-  bool needsGrowth() const
-  {
-    return myCapacity == 0 || capacityFor(mySize + 1) > myCapacity;
-  }
+  bool needsGrowth() const { return myCapacity == 0 || capacityFor(mySize + 1) > myCapacity; }
 
   static void* allocateBytes(const size_t theBytes) { return Standard::Allocate(theBytes); }
 
@@ -690,7 +686,7 @@ private:
 
   void rehash(size_t theNewCapacity)
   {
-    Slot* aOldSlots = slotData();
+    Slot*        aOldSlots    = slotData();
     const size_t aOldCapacity = myCapacity;
 
     mySlots = static_cast<Slot*>(allocateBytes(theNewCapacity * sizeof(Slot)));
@@ -922,15 +918,9 @@ private:
   }
 
 private:
-  Slot* slotData() noexcept
-  {
-    return static_cast<Slot*>(mySlots);
-  }
+  Slot* slotData() noexcept { return static_cast<Slot*>(mySlots); }
 
-  const Slot* slotData() const noexcept
-  {
-    return static_cast<const Slot*>(mySlots);
-  }
+  const Slot* slotData() const noexcept { return static_cast<const Slot*>(mySlots); }
 
   void*  mySlots    = nullptr;
   size_t myCapacity = 0;

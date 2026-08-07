@@ -127,10 +127,7 @@ public:
   int Lower() const noexcept { return myLowerBound; }
 
   //! Return the inclusive upper bound.
-  int Upper() const noexcept
-  {
-    return myLowerBound + static_cast<int>(mySize) - 1;
-  }
+  int Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
 
   //! Return TRUE when this array owns its storage.
   bool IsDeletable() const noexcept { return myIsOwner; }
@@ -386,8 +383,7 @@ public:
   //! Set value
   void SetValue(const int theIndex, value_type&& theItem)
   {
-    data()[offsetOf(theIndex, "NCollection_Array1::SetValue")] =
-      std::forward<value_type>(theItem);
+    data()[offsetOf(theIndex, "NCollection_Array1::SetValue")] = std::forward<value_type>(theItem);
   }
 
   //! Emplace value at the specified index, constructing it in-place
@@ -398,7 +394,7 @@ public:
   reference EmplaceValue(const int theIndex, Args&&... theArgs)
   {
     const size_t aPos = offsetOf(theIndex, "NCollection_Array1::EmplaceValue");
-    data()[aPos] = value_type(std::forward<Args>(theArgs)...);
+    data()[aPos]      = value_type(std::forward<Args>(theArgs)...);
     return data()[aPos];
   }
 
@@ -434,8 +430,8 @@ protected:
   //! Check an integer index and return its zero-based offset.
   size_t offsetOf(const int theIndex, const char* theMessage) const
   {
-    const std::ptrdiff_t anOffset = static_cast<std::ptrdiff_t>(theIndex)
-                                    - static_cast<std::ptrdiff_t>(myLowerBound);
+    const std::ptrdiff_t anOffset =
+      static_cast<std::ptrdiff_t>(theIndex) - static_cast<std::ptrdiff_t>(myLowerBound);
     Standard_OutOfRange_Raise_if(anOffset < 0 || static_cast<size_t>(anOffset) >= mySize,
                                  theMessage);
     return static_cast<size_t>(anOffset);
@@ -451,10 +447,10 @@ protected:
   static void deallocate(void* thePointer) noexcept { Standard::Free(thePointer); }
 
   //! Replace raw storage state.
-  void setStorage(void*       thePointer,
+  void setStorage(void*        thePointer,
                   const size_t theSize,
-                  const int   theLowerBound,
-                  const bool  theIsOwner) noexcept
+                  const int    theLowerBound,
+                  const bool   theIsOwner) noexcept
   {
     myPointer    = thePointer;
     mySize       = theSize;
@@ -499,7 +495,7 @@ protected:
           setStorage(nullptr, 0, theNewLower, false);
           return;
         }
-        myPointer = Standard::Reallocate(myPointer, theNewSize * sizeof(TheItemType));
+        myPointer    = Standard::Reallocate(myPointer, theNewSize * sizeof(TheItemType));
         mySize       = theNewSize;
         myLowerBound = theNewLower;
         myIsOwner    = true;
@@ -508,7 +504,7 @@ protected:
       }
     }
 
-    pointer       aNewPtr   = nullptr;
+    pointer aNewPtr = nullptr;
     if (theNewSize != 0)
     {
       aNewPtr = static_cast<pointer>(allocate(theNewSize, sizeof(TheItemType)));
@@ -573,7 +569,7 @@ protected:
   typename std::enable_if<!std::is_trivially_default_constructible<U>::value, void>::type construct(
     const size_t theFrom,
     const size_t theTo,
-    pointer       thePointer)
+    pointer      thePointer)
   {
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
@@ -677,6 +673,7 @@ protected:
 
 private:
   pointer data() noexcept { return static_cast<pointer>(myPointer); }
+
   const_pointer data() const noexcept { return static_cast<const_pointer>(myPointer); }
 
   pointer allocateRaw()
@@ -702,10 +699,10 @@ private:
   }
 
 private:
-  int     myLowerBound = 1;
-  size_t  mySize       = 0;
-  void*   myPointer    = nullptr;
-  bool    myIsOwner    = false;
+  int    myLowerBound = 1;
+  size_t mySize       = 0;
+  void*  myPointer    = nullptr;
+  bool   myIsOwner    = false;
 };
 
 #endif

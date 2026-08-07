@@ -112,9 +112,9 @@ public:
   //! Move constructor.
   NCollection_LinearVector(NCollection_LinearVector&& theOther) noexcept
   {
-    myData     = theOther.myData;
-    mySize     = theOther.mySize;
-    myCapacity = theOther.myCapacity;
+    myData              = theOther.myData;
+    mySize              = theOther.mySize;
+    myCapacity          = theOther.myCapacity;
     theOther.myData     = nullptr;
     theOther.mySize     = 0;
     theOther.myCapacity = 0;
@@ -166,9 +166,9 @@ public:
     if (this != &theOther)
     {
       Clear(true);
-      myData     = theOther.myData;
-      mySize     = theOther.mySize;
-      myCapacity = theOther.myCapacity;
+      myData              = theOther.myData;
+      mySize              = theOther.mySize;
+      myCapacity          = theOther.myCapacity;
       theOther.myData     = nullptr;
       theOther.mySize     = 0;
       theOther.myCapacity = 0;
@@ -569,9 +569,8 @@ private:
 
   size_t nextCapacity(const size_t theMinimum, const size_t theMaximum) const
   {
-    size_t aNewCapacity = myCapacity == 0
-                            ? 2
-                            : (myCapacity > theMaximum / 2 ? theMaximum : myCapacity * 2);
+    size_t aNewCapacity =
+      myCapacity == 0 ? 2 : (myCapacity > theMaximum / 2 ? theMaximum : myCapacity * 2);
     if (aNewCapacity > theMaximum)
     {
       aNewCapacity = theMaximum;

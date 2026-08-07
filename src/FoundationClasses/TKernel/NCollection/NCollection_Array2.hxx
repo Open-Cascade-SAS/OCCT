@@ -94,12 +94,11 @@ public:
 private:
   size_t offsetOf(const int theRow, const int theCol, const char* theMessage) const
   {
-    const std::ptrdiff_t aRowOffset = static_cast<std::ptrdiff_t>(theRow)
-                                      - static_cast<std::ptrdiff_t>(myLowerRow);
-    const std::ptrdiff_t aColOffset = static_cast<std::ptrdiff_t>(theCol)
-                                      - static_cast<std::ptrdiff_t>(myLowerCol);
-    Standard_OutOfRange_Raise_if(aRowOffset < 0
-                                   || aColOffset < 0
+    const std::ptrdiff_t aRowOffset =
+      static_cast<std::ptrdiff_t>(theRow) - static_cast<std::ptrdiff_t>(myLowerRow);
+    const std::ptrdiff_t aColOffset =
+      static_cast<std::ptrdiff_t>(theCol) - static_cast<std::ptrdiff_t>(myLowerCol);
+    Standard_OutOfRange_Raise_if(aRowOffset < 0 || aColOffset < 0
                                    || static_cast<size_t>(aRowOffset) >= mySizeRow
                                    || static_cast<size_t>(aColOffset) >= mySizeCol,
                                  theMessage);
@@ -108,10 +107,15 @@ private:
 
 public:
   iterator begin() noexcept { return NCollection_Array1<TheItemType>::begin(); }
+
   const_iterator begin() const noexcept { return NCollection_Array1<TheItemType>::begin(); }
+
   const_iterator cbegin() const noexcept { return NCollection_Array1<TheItemType>::cbegin(); }
+
   iterator end() noexcept { return NCollection_Array1<TheItemType>::end(); }
+
   const_iterator end() const noexcept { return NCollection_Array1<TheItemType>::end(); }
+
   const_iterator cend() const noexcept { return NCollection_Array1<TheItemType>::cend(); }
 
   //! Return the flat storage pointer.
@@ -157,14 +161,9 @@ public:
                      const int theRowUpper,
                      const int theColLower,
                      const int theColUpper)
-      : NCollection_Array1<TheItemType>(BeginPosition(theRowLower,
-                                                      theRowUpper,
-                                                      theColLower,
-                                                      theColUpper),
-                                        LastPosition(theRowLower,
-                                                     theRowUpper,
-                                                     theColLower,
-                                                     theColUpper)),
+      : NCollection_Array1<TheItemType>(
+          BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+          LastPosition(theRowLower, theRowUpper, theColLower, theColUpper)),
         myLowerRow(theRowLower),
         mySizeRow(RangeSize(theRowLower, theRowUpper)),
         myLowerCol(theColLower),
@@ -202,16 +201,11 @@ public:
                               const int          theRowUpper,
                               const int          theColLower,
                               const int          theColUpper)
-      : NCollection_Array1<TheItemType>(theBegin,
-                                        BeginPosition(theRowLower,
-                                                      theRowUpper,
-                                                      theColLower,
-                                                      theColUpper),
-                                        LastPosition(theRowLower,
-                                                     theRowUpper,
-                                                     theColLower,
-                                                     theColUpper),
-                                        true),
+      : NCollection_Array1<TheItemType>(
+          theBegin,
+          BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+          LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+          true),
         myLowerRow(theRowLower),
         mySizeRow(RangeSize(theRowLower, theRowUpper)),
         myLowerCol(theColLower),
@@ -631,7 +625,6 @@ protected:
   size_t mySizeRow;
   int    myLowerCol;
   size_t mySizeCol;
-
 };
 
 #endif

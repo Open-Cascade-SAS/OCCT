@@ -638,15 +638,16 @@ TEST_F(NCollection_DataMapTest, StandardIteratorContract)
   static_assert(std::is_same_v<decltype(std::declval<MapType&>().begin()), MapType::iterator>);
   static_assert(
     std::is_same_v<decltype(std::declval<const MapType&>().begin()), MapType::const_iterator>);
-  static_assert(std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
+  static_assert(
+    std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
 
   MapType aMap;
   aMap.Bind(1, "one");
   aMap.Bind(2, "two");
 
   const MapType& aConstMap = aMap;
-  auto          anIt      = aMap.begin();
-  auto          aConstIt  = aConstMap.begin();
+  auto           anIt      = aMap.begin();
+  auto           aConstIt  = aConstMap.begin();
   EXPECT_EQ(anIt, aConstIt);
   EXPECT_EQ(aMap.end(), aConstMap.end());
 

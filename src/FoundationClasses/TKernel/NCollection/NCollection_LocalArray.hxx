@@ -100,11 +100,11 @@ public:
     }
 
     const bool   aWasInline = isInline();
-    const size_t aCopy       = theToCopy ? std::min(mySize, theNewSize) : 0;
-    const size_t aNewBytes   = theNewSize * sizeof(theItem);
-    const bool   aUseInline  = theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE);
-    theItem*     anOldPtr    = myPtr;
-    const size_t anOldSize   = mySize;
+    const size_t aCopy      = theToCopy ? std::min(mySize, theNewSize) : 0;
+    const size_t aNewBytes  = theNewSize * sizeof(theItem);
+    const bool   aUseInline = theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE);
+    theItem*     anOldPtr   = myPtr;
+    const size_t anOldSize  = mySize;
 
     if constexpr (IS_TRIVIAL)
     {
@@ -129,8 +129,8 @@ public:
       return;
     }
 
-    theItem* aNewPtr = aUseInline ? inlinePtr()
-                                  : static_cast<theItem*>(Standard::Allocate(aNewBytes));
+    theItem* aNewPtr =
+      aUseInline ? inlinePtr() : static_cast<theItem*>(Standard::Allocate(aNewBytes));
     if constexpr (IS_TRIVIAL)
     {
       if (aCopy > 0)
@@ -161,7 +161,7 @@ public:
     {
       Standard::Free(anOldPtr);
     }
-    myPtr = aNewPtr;
+    myPtr  = aNewPtr;
     mySize = theNewSize;
   }
 
@@ -252,8 +252,8 @@ public:
     else
     {
       // Destroy our current elements.
-      const bool   aWasInline = isInline();
-      theItem*     anOldPtr   = myPtr;
+      const bool aWasInline = isInline();
+      theItem*   anOldPtr   = myPtr;
       for (size_t i = 0; i < mySize; ++i)
       {
         myPtr[i].~theItem();
@@ -294,10 +294,7 @@ public:
   //! Returns a span as Array1 with shared memory.
   //! Modifying the local array or the array view may invalidate the shared buffer.
   //! @return array view of the local array data
-  NCollection_Array1<theItem> ToArray1()
-  {
-    return NCollection_Array1<theItem>(myPtr, mySize);
-  }
+  NCollection_Array1<theItem> ToArray1() { return NCollection_Array1<theItem>(myPtr, mySize); }
 
   NCollection_Array1<theItem> ToArray1() const
   {

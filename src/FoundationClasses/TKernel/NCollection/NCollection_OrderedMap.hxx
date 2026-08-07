@@ -104,10 +104,12 @@ public:
 
     //! Key
     const TheKeyType& Key() noexcept { return this->Value(); }
+
     const TheKeyType& Key() const noexcept { return this->Value(); }
 
     //! Next node in insertion order.
     OrderedMapNode* OrderNext() noexcept { return myOrderNext; }
+
     const OrderedMapNode* OrderNext() const noexcept { return myOrderNext; }
 
     //! Static deleter to be passed to BaseMap
@@ -122,13 +124,8 @@ public:
     OrderedMapNode* myOrderNext; //!< Next node in insertion order
   };
 
-  using iterator = NCollection_BaseMap::BasicIterator<NCollection_OrderedMap,
-                                                       OrderedMapNode,
-                                                       TheKeyType,
-                                                       TheKeyType,
-                                                       true,
-                                                       true,
-                                                       true>;
+  using iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_OrderedMap, OrderedMapNode, TheKeyType, TheKeyType, true, true, true>;
   using const_iterator = iterator;
 
 public:
@@ -167,10 +164,7 @@ public:
 
     void Initialize(const NCollection_OrderedMap& theMap) noexcept { *this = Iterator(theMap); }
 
-    void Reset() noexcept
-    {
-      *this = myMap != nullptr ? Iterator(*myMap) : Iterator();
-    }
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
 
   private:
     const NCollection_OrderedMap* myMap = nullptr;

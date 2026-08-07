@@ -99,22 +99,15 @@ public:
 
     //! Key
     const TheKeyType& Key() noexcept { return this->Value(); }
+
     const TheKeyType& Key() const noexcept { return this->Value(); }
   };
 
 public:
-  using iterator = NCollection_BaseMap::BasicIterator<NCollection_Map,
-                                                       MapNode,
-                                                       TheKeyType,
-                                                       TheKeyType,
-                                                       true,
-                                                       false>;
-  using const_iterator = NCollection_BaseMap::BasicIterator<NCollection_Map,
-                                                             MapNode,
-                                                             TheKeyType,
-                                                             TheKeyType,
-                                                             true,
-                                                             true>;
+  using iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_Map, MapNode, TheKeyType, TheKeyType, true, false>;
+  using const_iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_Map, MapNode, TheKeyType, TheKeyType, true, true>;
 
   //!   Implementation of the Iterator interface.
   class Iterator : public const_iterator
@@ -143,10 +136,7 @@ public:
     void Initialize(const NCollection_Map& theMap) noexcept { *this = Iterator(theMap); }
 
     //! Reset
-    void Reset() noexcept
-    {
-      *this = myMap != nullptr ? Iterator(*myMap) : Iterator();
-    }
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
 
     //! Performs comparison of two iterators.
     bool IsEqual(const Iterator& theOther) const noexcept
@@ -281,8 +271,8 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_Map& theOther) noexcept(
-    noexcept(std::swap(std::declval<Hasher&>(), std::declval<Hasher&>())))
+  void Exchange(NCollection_Map& theOther) noexcept(noexcept(std::swap(std::declval<Hasher&>(),
+                                                                       std::declval<Hasher&>())))
   {
     std::swap(myHasher, theOther.myHasher);
     this->exchangeMapsData(theOther);

@@ -595,8 +595,7 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 
   // Verify the common 4x4 sub-matrix was not scrambled.
   // This will fail if the copy logic in Resize is incorrect.
-  for (int anElemInd = anArray.Array1().Lower();
-       anElemInd < anArray.Array1().Lower() + 16;
+  for (int anElemInd = anArray.Array1().Lower(); anElemInd < anArray.Array1().Lower() + 16;
        ++anElemInd)
   {
     EXPECT_EQ(anElemInd - anArray.Array1().Lower(), anArray.Array1().Value(anElemInd));

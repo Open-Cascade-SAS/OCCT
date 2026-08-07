@@ -149,10 +149,7 @@ public:
   }
 
   //! Equality comparison
-  bool operator==(const Iterator& theOther) const
-  {
-    return myInner == theOther.myInner;
-  }
+  bool operator==(const Iterator& theOther) const { return myInner == theOther.myInner; }
 
   //! Inequality comparison
   bool operator!=(const Iterator& theOther) const { return !(*this == theOther); }
@@ -172,11 +169,10 @@ template <class MapType, class RefType, class Extractor, bool IsConst>
 class View
 {
 public:
-  using MapRef   = std::conditional_t<IsConst, const MapType&, MapType&>;
-  using base_iterator = std::conditional_t<IsConst,
-                                           typename MapType::const_iterator,
-                                           typename MapType::iterator>;
-  using iterator      = Iterator<base_iterator, RefType, Extractor>;
+  using MapRef = std::conditional_t<IsConst, const MapType&, MapType&>;
+  using base_iterator =
+    std::conditional_t<IsConst, typename MapType::const_iterator, typename MapType::iterator>;
+  using iterator       = Iterator<base_iterator, RefType, Extractor>;
   using const_iterator = iterator;
 
   //! Constructor
