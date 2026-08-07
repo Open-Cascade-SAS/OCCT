@@ -15,6 +15,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <vector>
 
 // Basic test types for the DoubleMap
 typedef int    Key1Type;
@@ -391,6 +393,30 @@ TEST(NCollection_DoubleMapTest, Iterator)
   EXPECT_TRUE(found10);
   EXPECT_TRUE(found20);
   EXPECT_TRUE(found30);
+}
+
+TEST(NCollection_DoubleMapTest, STLIterators)
+{
+  NCollection_DoubleMap<Key1Type, Key2Type> aMap;
+  aMap.Bind(10, 1.0);
+  aMap.Bind(20, 2.0);
+  aMap.Bind(30, 3.0);
+
+  const NCollection_DoubleMap<Key1Type, Key2Type>& aConstMap = aMap;
+  EXPECT_EQ(aMap.begin(), aConstMap.cbegin());
+  EXPECT_EQ(aMap.end(), aConstMap.cend());
+
+  EXPECT_EQ(1, std::count(aConstMap.cbegin(), aConstMap.cend(), 2.0));
+  const auto anFound = std::find(aConstMap.cbegin(), aConstMap.cend(), 3.0);
+  ASSERT_NE(aConstMap.cend(), anFound);
+  EXPECT_EQ(3.0, *anFound);
+
+  std::vector<Key2Type> aValues;
+  for (const Key2Type aValue : aConstMap)
+  {
+    aValues.push_back(aValue);
+  }
+  EXPECT_EQ(3u, aValues.size());
 }
 
 TEST(NCollection_DoubleMapTest, StringKeys)

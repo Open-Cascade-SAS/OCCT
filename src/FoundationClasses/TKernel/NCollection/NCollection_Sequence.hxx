@@ -17,10 +17,9 @@
 #define NCollection_Sequence_HeaderFile
 
 #include <NCollection_BaseSequence.hxx>
-#include <NCollection_StlIterator.hxx>
-
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <cstddef>
 #include <utility>
 
 /**
@@ -33,6 +32,12 @@ class NCollection_Sequence : public NCollection_BaseSequence
 public:
   //! STL-compliant typedef for value type
   typedef TheItemType value_type;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
+  using reference       = TheItemType&;
+  using const_reference = const TheItemType&;
 
 public:
   //!   Class defining sequence node - for internal use by Sequence
@@ -72,74 +77,87 @@ public:
   }; // End of nested class Node
 
 public:
+  using iterator       = NCollection_BaseSequence::BasicIterator<Node, TheItemType, false>;
+  using const_iterator = NCollection_BaseSequence::BasicIterator<Node, TheItemType, true>;
+
+public:
   //!   Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseSequence::Iterator
+  class Iterator : public iterator
   {
   public:
     //! Empty constructor - for later Init
-    Iterator() = default;
+    Iterator() noexcept = default;
 
     //! Constructor with initialisation
-    Iterator(const NCollection_Sequence& theSeq, const bool isStart = true)
-        : NCollection_BaseSequence::Iterator(theSeq, isStart)
+    Iterator(NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+        : iterator(theSeq, isStart)
     {
     }
 
-    //! Check end
-    bool More() const noexcept { return (myCurrent != nullptr); }
-
-    //! Make step
-    void Next() noexcept
+    //! Legacy cursor construction from a const sequence.
+    //! The standard const_iterator must be used when const-correctness is required.
+    Iterator(const NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+        : iterator(const_cast<NCollection_Sequence&>(theSeq), isStart)
     {
-      if (myCurrent)
-      {
-        myPrevious = myCurrent;
-        myCurrent  = myCurrent->Next();
-      }
     }
 
-    //! Constant value access
-    const TheItemType& Value() const noexcept { return ((const Node*)myCurrent)->Value(); }
+    //! Check end.
+    bool More() const noexcept { return iterator::More(); }
 
-    //! Variable value access
-    TheItemType& ChangeValue() const noexcept { return ((Node*)myCurrent)->ChangeValue(); }
+    //! Make step.
+    void Next() noexcept { ++(*this); }
+
+    //! Constant value access.
+    const TheItemType& Value() const noexcept { return iterator::Value(); }
+
+    //! Variable value access.
+    TheItemType& ChangeValue() const noexcept { return iterator::ChangeValue(); }
+
+    //! Initialize
+    void Init(NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+    {
+      *this = Iterator(theSeq, isStart);
+    }
+
+    void Init(const NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+    {
+      *this = Iterator(theSeq, isStart);
+    }
+
+    void Initialize(NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+    {
+      Init(theSeq, isStart);
+    }
+
+    void Initialize(const NCollection_Sequence& theSeq, const bool isStart = true) noexcept
+    {
+      Init(theSeq, isStart);
+    }
 
     //! Performs comparison of two iterators.
     bool IsEqual(const Iterator& theOther) const noexcept
     {
-      return myCurrent == theOther.myCurrent;
+      return iterator::operator==(static_cast<const iterator&>(theOther));
     }
   }; // End of nested class Iterator
 
-  //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false>
-    iterator;
-
-  //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
-
   //! Returns an iterator pointing to the first element in the sequence.
-  iterator begin() const noexcept { return Iterator(*this, true); }
-
-  //! Returns an iterator referring to the past-the-end element in the sequence.
-  iterator end() const noexcept
-  {
-    Iterator anIter(*this, false);
-    anIter.Next();
-    return anIter;
-  }
+  iterator begin() noexcept { return iterator(*this, true); }
 
   //! Returns a const iterator pointing to the first element in the sequence.
-  const_iterator cbegin() const noexcept { return Iterator(*this, true); }
+  const_iterator begin() const noexcept { return const_iterator(*this, true); }
+
+  //! Returns an iterator referring to the past-the-end element in the sequence.
+  iterator end() noexcept { return iterator(*this, false); }
+
+  //! Returns a const iterator referring to the past-the-end element.
+  const_iterator end() const noexcept { return const_iterator(*this, false); }
+
+  //! Returns a const iterator pointing to the first element in the sequence.
+  const_iterator cbegin() const noexcept { return begin(); }
 
   //! Returns a const iterator referring to the past-the-end element in the sequence.
-  const_iterator cend() const noexcept
-  {
-    Iterator anIter(*this, false);
-    anIter.Next();
-    return anIter;
-  }
+  const_iterator cend() const noexcept { return end(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -182,15 +200,15 @@ public:
   bool IsEmpty() const noexcept { return (mySize == 0); }
 
   //! Reverse sequence
-  void Reverse() { PReverse(); }
+  void Reverse() { pReverse(); }
 
   //! Exchange two members
-  void Exchange(const size_t I, const size_t J) { PExchange(I, J); }
+  void Exchange(const size_t I, const size_t J) { pExchange(I, J); }
 
   void Exchange(const int I, const int J)
   {
     Standard_OutOfRange_Raise_if(I < 0 || J < 0, "NCollection_Sequence::Exchange: negative index");
-    PExchange(static_cast<size_t>(I), static_cast<size_t>(J));
+    pExchange(static_cast<size_t>(I), static_cast<size_t>(J));
   }
 
   //! Static deleter to be passed to BaseSequence
@@ -203,7 +221,7 @@ public:
   //! Clear the items out, take a new allocator if non null
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
-    ClearSeq(delNode);
+    clearSeq(delNode);
     if (!theAllocator.IsNull())
       this->myAllocator = theAllocator;
   }
@@ -246,37 +264,40 @@ public:
   }
 
   //! Remove one item
-  void Remove(Iterator& thePosition) { RemoveSeq(thePosition, delNode); }
+  void Remove(Iterator& thePosition)
+  {
+    removeSeq(thePosition, delNode);
+  }
 
   //! Remove one item
-  void Remove(const size_t theIndex) { RemoveSeq(theIndex, delNode); }
+  void Remove(const size_t theIndex) { removeSeq(theIndex, delNode); }
 
   void Remove(const int theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex < 0, "NCollection_Sequence::Remove: negative index");
-    RemoveSeq(static_cast<size_t>(theIndex), delNode);
+    removeSeq(static_cast<size_t>(theIndex), delNode);
   }
 
   //! Remove range of items
   void Remove(const size_t theFromIndex, const size_t theToIndex)
   {
-    RemoveSeq(theFromIndex, theToIndex, delNode);
+    removeSeq(theFromIndex, theToIndex, delNode);
   }
 
   void Remove(const int theFromIndex, const int theToIndex)
   {
     Standard_OutOfRange_Raise_if(theFromIndex < 0 || theToIndex < 0,
                                  "NCollection_Sequence::Remove: negative index");
-    RemoveSeq(static_cast<size_t>(theFromIndex), static_cast<size_t>(theToIndex), delNode);
+    removeSeq(static_cast<size_t>(theFromIndex), static_cast<size_t>(theToIndex), delNode);
   }
 
   //! Append one item
-  void Append(const TheItemType& theItem) { PAppend(new (this->myAllocator) Node(theItem)); }
+  void Append(const TheItemType& theItem) { pAppend(new (this->myAllocator) Node(theItem)); }
 
   //! Append one item
   void Append(TheItemType&& theItem)
   {
-    PAppend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
+    pAppend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
   }
 
   //! Append another sequence (making it empty)
@@ -288,7 +309,7 @@ public:
     {
       // Then we take the sequence and glue it to our end -
       // deallocation will bring no problem
-      PAppend(theSeq);
+      pAppend(theSeq);
     }
     else
     {
@@ -299,12 +320,12 @@ public:
   }
 
   //! Prepend one item
-  void Prepend(const TheItemType& theItem) { PPrepend(new (this->myAllocator) Node(theItem)); }
+  void Prepend(const TheItemType& theItem) { pPrepend(new (this->myAllocator) Node(theItem)); }
 
   //! Prepend one item
   void Prepend(TheItemType&& theItem)
   {
-    PPrepend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
+    pPrepend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
   }
 
   //! Prepend another sequence (making it empty)
@@ -316,7 +337,7 @@ public:
     {
       // Then we take the sequence and glue it to our head -
       // deallocation will bring no problem
-      PPrepend(theSeq);
+      pPrepend(theSeq);
     }
     else
     {
@@ -371,13 +392,13 @@ public:
   //! InsertAfter the position of iterator
   void InsertAfter(Iterator& thePosition, const TheItemType& theItem)
   {
-    PInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
+    pInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
   }
 
   //! InsertAfter the position of iterator
   void InsertAfter(Iterator& thePosition, TheItemType&& theItem)
   {
-    PInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
+    pInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
   }
 
   //! InsertAfter theIndex another sequence (making it empty)
@@ -389,7 +410,7 @@ public:
     {
       // Then we take the list and glue it to our head -
       // deallocation will bring no problem
-      PInsertAfter(theIndex, theSeq);
+      pInsertAfter(theIndex, theSeq);
     }
     else
     {
@@ -409,7 +430,7 @@ public:
   void InsertAfter(const size_t theIndex, const TheItemType& theItem)
   {
     Standard_OutOfRange_Raise_if(theIndex > mySize, "NCollection_Sequence::InsertAfter");
-    PInsertAfter(theIndex, new (this->myAllocator) Node(theItem));
+    pInsertAfter(theIndex, new (this->myAllocator) Node(theItem));
   }
 
   void InsertAfter(const int theIndex, const TheItemType& theItem)
@@ -422,7 +443,7 @@ public:
   void InsertAfter(const size_t theIndex, TheItemType&& theItem)
   {
     Standard_OutOfRange_Raise_if(theIndex > mySize, "NCollection_Sequence::InsertAfter");
-    PInsertAfter(theIndex, new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
+    pInsertAfter(theIndex, new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
   }
 
   void InsertAfter(const int theIndex, TheItemType&& theItem)
@@ -438,7 +459,7 @@ public:
   TheItemType& EmplaceAppend(Args&&... theArgs)
   {
     Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
-    PAppend(pNew);
+    pAppend(pNew);
     return ((Node*)myLastItem)->ChangeValue();
   }
 
@@ -449,7 +470,7 @@ public:
   TheItemType& EmplacePrepend(Args&&... theArgs)
   {
     Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
-    PPrepend(pNew);
+    pPrepend(pNew);
     return ((Node*)myFirstItem)->ChangeValue();
   }
 
@@ -461,7 +482,7 @@ public:
   TheItemType& EmplaceAfter(Iterator& thePosition, Args&&... theArgs)
   {
     Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
-    PInsertAfter(thePosition, pNew);
+    pInsertAfter(thePosition, pNew);
     return pNew->ChangeValue();
   }
 
@@ -474,7 +495,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex > mySize, "NCollection_Sequence::EmplaceAfter");
     Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
-    PInsertAfter(theIndex, pNew);
+    pInsertAfter(theIndex, pNew);
     return pNew->ChangeValue();
   }
 
@@ -509,7 +530,7 @@ public:
   void Split(const size_t theIndex, NCollection_Sequence& theSeq)
   {
     theSeq.Clear(this->myAllocator);
-    PSplit(theIndex, theSeq);
+    pSplit(theIndex, theSeq);
   }
 
   void Split(const int theIndex, NCollection_Sequence& theSeq)
@@ -552,7 +573,7 @@ public:
     Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > mySize, "NCollection_Sequence::Value");
 
     NCollection_Sequence* const aLocalTHIS = (NCollection_Sequence*)this;
-    aLocalTHIS->myCurrentItem              = Find(theIndex);
+    aLocalTHIS->myCurrentItem              = find(theIndex);
     aLocalTHIS->myCurrentIndex             = theIndex;
     return ((const Node*)myCurrentItem)->Value();
   }
@@ -574,7 +595,7 @@ public:
     Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > mySize,
                                  "NCollection_Sequence::ChangeValue");
 
-    myCurrentItem  = Find(theIndex);
+    myCurrentItem  = find(theIndex);
     myCurrentIndex = theIndex;
     return ((Node*)myCurrentItem)->ChangeValue();
   }
@@ -619,7 +640,7 @@ public:
   }
 
   // ******** Destructor - clears the Sequence
-  ~NCollection_Sequence() override { Clear(); }
+  ~NCollection_Sequence() { Clear(); }
 
 private:
   // ---------- FRIEND CLASSES ------------
@@ -633,7 +654,7 @@ private:
     while (pCur)
     {
       Node* pNew = new (this->myAllocator) Node(pCur->Value());
-      PAppend(pNew);
+      pAppend(pNew);
       pCur = (const Node*)pCur->Next();
     }
   }
@@ -646,7 +667,7 @@ private:
     while (pCur)
     {
       Node* pNew = new (this->myAllocator) Node(pCur->Value());
-      PInsertAfter(ind++, pNew);
+      pInsertAfter(ind++, pNew);
       pCur = (const Node*)pCur->Next();
     }
   }

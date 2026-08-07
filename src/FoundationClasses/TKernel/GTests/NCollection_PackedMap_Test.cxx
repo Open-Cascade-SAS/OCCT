@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cstdint>
 #include <vector>
 
@@ -33,6 +34,8 @@ protected:
 using TestedTypes = ::testing::Types<int, unsigned int, long, int64_t, size_t>;
 
 TYPED_TEST_SUITE(NCollection_PackedMapTypedTest, TestedTypes);
+
+static_assert(sizeof(NCollection_PackedMap<int64_t>::IndexType) >= sizeof(int64_t));
 
 //=================================================================================================
 // Basic Construction Tests
@@ -189,6 +192,22 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Clear)
   aMap.Add(TypeParam(100));
   EXPECT_EQ(aMap.Extent(), 1);
   EXPECT_TRUE(aMap.Contains(TypeParam(100)));
+}
+
+TYPED_TEST(NCollection_PackedMapTypedTest, STLIterator)
+{
+  typename TestFixture::MapType aMap;
+  aMap.Add(TypeParam(1));
+  aMap.Add(TypeParam(32));
+  aMap.Add(TypeParam(100));
+
+  std::vector<TypeParam> aValues;
+  for (const TypeParam aValue : aMap)
+  {
+    aValues.push_back(aValue);
+  }
+
+  EXPECT_EQ((std::vector<TypeParam>{TypeParam(1), TypeParam(32), TypeParam(100)}), aValues);
 }
 
 //=================================================================================================
@@ -689,6 +708,39 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IteratorBasic)
   EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(10)), aValues.end());
   EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(20)), aValues.end());
   EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(30)), aValues.end());
+}
+
+TYPED_TEST(NCollection_PackedMapTypedTest, STLIterators)
+{
+  typename TestFixture::MapType aMap;
+  aMap.Add(TypeParam(10));
+  aMap.Add(TypeParam(20));
+  aMap.Add(TypeParam(30));
+
+  std::vector<TypeParam> aValues;
+  for (auto it = aMap.begin(); it != aMap.end(); ++it)
+  {
+    aValues.push_back(*it);
+  }
+
+  EXPECT_EQ(aValues.size(), 3);
+  EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(10)), aValues.end());
+  EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(20)), aValues.end());
+  EXPECT_NE(std::find(aValues.begin(), aValues.end(), TypeParam(30)), aValues.end());
+
+  const typename TestFixture::MapType& aConstMap = aMap;
+  const auto                          anFound =
+    std::find(aConstMap.cbegin(), aConstMap.cend(), TypeParam(20));
+  ASSERT_NE(aConstMap.cend(), anFound);
+  EXPECT_EQ(TypeParam(20), *anFound);
+  EXPECT_EQ(1, std::count(aConstMap.cbegin(), aConstMap.cend(), TypeParam(10)));
+
+  int                                  aCount    = 0;
+  for (auto it = aConstMap.cbegin(); it != aConstMap.cend(); ++it)
+  {
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 3);
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IteratorEmpty)

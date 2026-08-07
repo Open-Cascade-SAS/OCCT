@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <type_traits>
 #include <vector>
 
 // Basic test types for the IndexedDataMap
@@ -392,7 +393,7 @@ TEST(NCollection_IndexedDataMapTest, Clear)
   EXPECT_EQ(aMap.Extent(), 3);
 
   // Clear the map
-  aMap.Clear();
+  aMap.Clear(true);
 
   EXPECT_TRUE(aMap.IsEmpty());
   EXPECT_EQ(aMap.Extent(), 0);
@@ -1276,6 +1277,29 @@ TEST(NCollection_IndexedDataMapTest, ConstIndexedItemsIteration)
   }
 
   EXPECT_EQ(3, aIndexSum); // 1 + 2 = 3
+}
+
+TEST(NCollection_IndexedDataMapTest, StandardIteratorContract)
+{
+  using MapType = NCollection_IndexedDataMap<int, TCollection_AsciiString>;
+  static_assert(std::is_same_v<decltype(std::declval<MapType&>().begin()), MapType::iterator>);
+  static_assert(
+    std::is_same_v<decltype(std::declval<const MapType&>().begin()), MapType::const_iterator>);
+  static_assert(std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
+
+  MapType aMap;
+  aMap.Add(1, "one");
+  aMap.Add(2, "two");
+  const MapType& aConstMap = aMap;
+
+  EXPECT_EQ(aMap.begin(), aConstMap.begin());
+  EXPECT_EQ(aMap.end(), aConstMap.end());
+  for (auto& aValue : aMap)
+  {
+    aValue += "!";
+  }
+  EXPECT_STREQ("one!", aMap.FindFromIndex(1).ToCString());
+  EXPECT_STREQ("two!", aMap.FindFromIndex(2).ToCString());
 }
 
 // Test iterator equality for Items() view

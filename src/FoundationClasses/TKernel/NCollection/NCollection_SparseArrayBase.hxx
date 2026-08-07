@@ -20,6 +20,10 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_OutOfRange.hxx>
 
+#include <cstddef>
+#include <iterator>
+#include <type_traits>
+
 /**
  * Base class for NCollection_SparseArray;
  * provides non-template implementation of general mechanics
@@ -52,6 +56,9 @@ public:
   //! Returns number of currently contained items
   size_t Size() const noexcept { return mySize; }
 
+  //! Returns the index span covered by allocated blocks.
+  size_t Capacity() const noexcept { return myNbBlocks * myBlockSize; }
+
   //! Check whether the value at given index is set
   Standard_EXPORT bool HasValue(const size_t theIndex) const;
 
@@ -76,7 +83,7 @@ private:
     typedef unsigned char Cell; //!< type of items used to hold bits
 
     //! Number of bits in each cell
-    static constexpr size_t BitsPerCell() noexcept { return sizeof(Cell) * 8; }
+    static constexpr size_t bitsPerCell() noexcept { return sizeof(Cell) * 8; }
 
   public:
     //! Initializes the block by pointer to block data
@@ -90,7 +97,8 @@ private:
     //! Compute required size for block data, in bytes
     static constexpr size_t Size(const size_t theNbItems, const size_t theItemSize) noexcept
     {
-      return sizeof(size_t) + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
+      return sizeof(size_t)
+             + sizeof(Cell) * ((theNbItems + bitsPerCell() - 1) / bitsPerCell())
              + theNbItems * theItemSize;
     }
 
@@ -107,8 +115,8 @@ private:
     //! not been set previously
     Cell Set(size_t i) noexcept
     {
-      Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
+      Cell* abyte = Bits + i / bitsPerCell();
+      Cell  amask = (Cell)('\1' << (i % bitsPerCell()));
       Cell  anold = (Cell)(*abyte & amask);
       *abyte      = (Cell)(*abyte | amask);
       return !anold;
@@ -117,8 +125,8 @@ private:
     //! Check bit for i-th item; returns non-null if that bit is set
     Cell IsSet(size_t i) noexcept
     {
-      Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
+      Cell* abyte = Bits + i / bitsPerCell();
+      Cell  amask = (Cell)('\1' << (i % bitsPerCell()));
       return (Cell)(*abyte & amask);
     }
 
@@ -126,8 +134,8 @@ private:
     //! has been set previously
     Cell Unset(size_t i) noexcept
     {
-      Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
+      Cell* abyte = Bits + i / bitsPerCell();
+      Cell  amask = (Cell)('\1' << (i % bitsPerCell()));
       Cell  anold = (Cell)(*abyte & amask);
       *abyte      = (Cell)(*abyte & ~amask);
       return anold;
@@ -179,6 +187,199 @@ public:
     size_t                             myIBlock;
     size_t                             myInd;
     Block                              myBlock;
+  };
+
+protected:
+  //! STL-style iterator over the defined entries of a sparse array.
+  template <class TheContainer, class TheValue, bool IsConstant>
+  class BasicIterator
+  {
+  public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type        = TheValue;
+    using difference_type   = std::ptrdiff_t;
+    using pointer = typename std::conditional<IsConstant, const TheValue*, TheValue*>::type;
+    using reference = typename std::conditional<IsConstant, const TheValue&, TheValue&>::type;
+    using container_pointer = typename std::conditional<IsConstant,
+                                                        const TheContainer*,
+                                                        TheContainer*>::type;
+
+    BasicIterator() noexcept = default;
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    explicit BasicIterator(TheContainer& theContainer) noexcept
+        : myContainer(&theContainer),
+          myEnd(theContainer.Capacity())
+    {
+      skipUnset();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    explicit BasicIterator(const TheContainer& theContainer) noexcept
+        : myContainer(&theContainer),
+          myEnd(theContainer.Capacity())
+    {
+      skipUnset();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    BasicIterator(TheContainer& theContainer, const size_t theIndex) noexcept
+        : myContainer(&theContainer),
+          myIndex(theIndex),
+          myEnd(theContainer.Capacity())
+    {
+      skipUnset();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator(const TheContainer& theContainer, const size_t theIndex) noexcept
+        : myContainer(&theContainer),
+          myIndex(theIndex),
+          myEnd(theContainer.Capacity())
+    {
+      skipUnset();
+    }
+
+    BasicIterator(const BasicIterator&) noexcept = default;
+    BasicIterator& operator=(const BasicIterator&) noexcept = default;
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator(const BasicIterator<TheContainer, TheValue, false>& theOther) noexcept
+        : myHasMore(theOther.myHasMore),
+          myContainer(theOther.myContainer),
+          myIndex(theOther.myIndex),
+          myEnd(theOther.myEnd),
+          myIBlock(theOther.myIBlock),
+          myInd(theOther.myInd),
+          myBlock(theOther.myBlock)
+    {
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator& operator=(const BasicIterator<TheContainer, TheValue, false>& theOther)
+      noexcept
+    {
+      myHasMore   = theOther.myHasMore;
+      myContainer = theOther.myContainer;
+      myIndex     = theOther.myIndex;
+      myEnd       = theOther.myEnd;
+      myIBlock    = theOther.myIBlock;
+      myInd       = theOther.myInd;
+      myBlock     = theOther.myBlock;
+      return *this;
+    }
+
+    reference operator*() const noexcept
+    {
+      return *itemPointer();
+    }
+
+    pointer operator->() const noexcept { return itemPointer(); }
+    size_t Key() const noexcept { return myIndex; }
+    size_t Index() const noexcept { return myIndex; }
+    bool More() const noexcept { return myHasMore; }
+
+    void Restart() noexcept
+    {
+      myIndex = 0;
+      skipUnset();
+    }
+
+    BasicIterator& operator++() noexcept
+    {
+      if (!More())
+      {
+        return *this;
+      }
+
+      ++myIndex;
+      ++myInd;
+      findNext();
+      return *this;
+    }
+
+    BasicIterator operator++(int) noexcept
+    {
+      BasicIterator anOld(*this);
+      ++(*this);
+      return anOld;
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator==(const BasicIterator<TheContainer,
+                                        TheValue,
+                                        theOtherIsConstant>& theOther) const noexcept
+    {
+      return (!More() && !theOther.More())
+             || (myContainer == theOther.myContainer && myIndex == theOther.myIndex);
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator!=(const BasicIterator<TheContainer,
+                                        TheValue,
+                                        theOtherIsConstant>& theOther) const noexcept
+    {
+      return !(*this == theOther);
+    }
+
+  private:
+    template <class, class, bool>
+    friend class BasicIterator;
+
+    void skipUnset() noexcept
+    {
+      if (myContainer == nullptr || myIndex >= myEnd)
+      {
+        myHasMore = false;
+        return;
+      }
+
+      myIBlock = myIndex / myContainer->myBlockSize;
+      myInd    = myIndex % myContainer->myBlockSize;
+      findNext();
+    }
+
+    void findNext() noexcept
+    {
+      myHasMore = false;
+      while (myContainer != nullptr && myIndex < myEnd
+             && myIBlock < myContainer->myNbBlocks)
+      {
+        if (myContainer->myData[myIBlock] != nullptr)
+        {
+          myBlock = Block(myContainer->myData[myIBlock],
+                          myContainer->myBlockSize,
+                          myContainer->myItemSize);
+          for (; myInd < myContainer->myBlockSize; ++myInd, ++myIndex)
+          {
+            if (myBlock.IsSet(myInd))
+            {
+              myHasMore = true;
+              return;
+            }
+          }
+        }
+
+        ++myIBlock;
+        myInd   = 0;
+        myIndex = myIBlock * myContainer->myBlockSize;
+      }
+
+      myIndex = myEnd;
+    }
+
+    pointer itemPointer() const noexcept
+    {
+      return static_cast<pointer>(myContainer->getItem(myBlock, myInd));
+    }
+
+    bool             myHasMore = false;
+    container_pointer myContainer = nullptr;
+    size_t            myIndex     = 0;
+    size_t            myEnd       = 0;
+    size_t            myIBlock    = 0;
+    size_t            myInd       = 0;
+    Block              myBlock{nullptr, 0, 0};
   };
   friend class Iterator;
 

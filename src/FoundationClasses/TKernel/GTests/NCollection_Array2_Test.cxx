@@ -15,6 +15,9 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <numeric>
+#include <vector>
 
 // --- Constructor Tests ---
 
@@ -379,6 +382,15 @@ TEST(NCollection_Array2Test, STLIteration)
     EXPECT_EQ(aExpectedValues[anIndex++], aValue);
   }
   EXPECT_EQ(6, anIndex); // Ensure all elements were visited
+
+  const NCollection_Array2<int>& aConstArray = anArray;
+  EXPECT_EQ(anArray.begin(), aConstArray.cbegin());
+  EXPECT_EQ(anArray.end(), aConstArray.cend());
+  EXPECT_EQ(102, std::accumulate(aConstArray.cbegin(), aConstArray.cend(), 0));
+
+  std::for_each(anArray.begin(), anArray.end(), [](int& theValue) { theValue += 1; });
+  EXPECT_EQ(12, anArray(1, 1));
+  EXPECT_EQ(24, anArray(2, 3));
 }
 
 TEST(NCollection_Array2Test, ResizeWithTrim_PreservesElementPositions)
@@ -583,10 +595,11 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 
   // Verify the common 4x4 sub-matrix was not scrambled.
   // This will fail if the copy logic in Resize is incorrect.
-  for (int anElemInd = anArray.Lower(); anElemInd < anArray.Lower() + 16; ++anElemInd)
+  for (int anElemInd = anArray.Array1().Lower();
+       anElemInd < anArray.Array1().Lower() + 16;
+       ++anElemInd)
   {
-    EXPECT_EQ(anElemInd - anArray.Lower(),
-              static_cast<NCollection_Array1<int>&>(anArray).Value(anElemInd));
+    EXPECT_EQ(anElemInd - anArray.Array1().Lower(), anArray.Array1().Value(anElemInd));
   }
 }
 

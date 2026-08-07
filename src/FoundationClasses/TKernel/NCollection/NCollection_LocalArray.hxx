@@ -21,6 +21,7 @@
 
 #include <cstring>
 #include <algorithm>
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 
@@ -37,7 +38,19 @@
 template <class theItem, int MAX_ARRAY_SIZE = 1024>
 class NCollection_LocalArray
 {
+  static_assert(MAX_ARRAY_SIZE > 0, "NCollection_LocalArray requires positive inline capacity");
   static constexpr bool IS_TRIVIAL = std::is_trivially_copyable_v<theItem>;
+
+public:
+  using value_type      = theItem;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using pointer         = theItem*;
+  using const_pointer   = const theItem*;
+  using reference       = theItem&;
+  using const_reference = const theItem&;
+  using iterator        = pointer;
+  using const_iterator  = const_pointer;
 
 public:
   explicit NCollection_LocalArray(const size_t theSize)
@@ -62,7 +75,7 @@ public:
         myPtr[i].~theItem();
       }
     }
-    Deallocate();
+    deallocate();
   }
 
   void Allocate(const size_t theSize) { Reallocate(theSize, false); }
@@ -87,125 +100,100 @@ public:
     }
 
     const bool   aWasInline = isInline();
-    const size_t aNewBytes  = theNewSize * sizeof(theItem);
+    const size_t aCopy       = theToCopy ? std::min(mySize, theNewSize) : 0;
+    const size_t aNewBytes   = theNewSize * sizeof(theItem);
+    const bool   aUseInline  = theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE);
+    theItem*     anOldPtr    = myPtr;
+    const size_t anOldSize   = mySize;
 
-    if (theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE))
+    if constexpr (IS_TRIVIAL)
     {
-      // New size fits in inline buffer.
-      if (!aWasInline)
+      if (!aUseInline && !aWasInline && theToCopy)
       {
-        if constexpr (IS_TRIVIAL)
-        {
-          if (theToCopy && mySize > 0)
-          {
-            std::memcpy(inlinePtr(), myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
-          }
-          Standard::Free(myPtr);
-        }
-        else
-        {
-          theItem*     anOldPtr  = myPtr;
-          const size_t anOldSize = mySize;
-          const size_t aCopy     = theToCopy ? std::min(anOldSize, theNewSize) : 0;
-          myPtr                  = inlinePtr();
-          for (size_t i = 0; i < aCopy; ++i)
-          {
-            new (myPtr + i) theItem(std::move(anOldPtr[i]));
-          }
-          for (size_t i = aCopy; i < theNewSize; ++i)
-          {
-            new (myPtr + i) theItem();
-          }
-          for (size_t i = 0; i < anOldSize; ++i)
-          {
-            anOldPtr[i].~theItem();
-          }
-          Standard::Free(anOldPtr);
-        }
-        myPtr = inlinePtr();
+        myPtr  = static_cast<theItem*>(Standard::Reallocate(myPtr, aNewBytes));
+        mySize = theNewSize;
+        return;
       }
-      else
+    }
+
+    if (aUseInline && aWasInline)
+    {
+      if constexpr (!IS_TRIVIAL)
       {
-        // Already inline, growing within buffer.
-        if constexpr (!IS_TRIVIAL)
+        for (size_t anIndex = mySize; anIndex < theNewSize; ++anIndex)
         {
-          for (size_t i = mySize; i < theNewSize; ++i)
-          {
-            new (myPtr + i) theItem();
-          }
+          new (myPtr + anIndex) theItem();
         }
       }
       mySize = theNewSize;
       return;
     }
 
-    // Need heap allocation (theNewSize > MAX_ARRAY_SIZE).
+    theItem* aNewPtr = aUseInline ? inlinePtr()
+                                  : static_cast<theItem*>(Standard::Allocate(aNewBytes));
     if constexpr (IS_TRIVIAL)
     {
-      if (!aWasInline)
+      if (aCopy > 0)
       {
-        if (theToCopy)
-        {
-          myPtr = static_cast<theItem*>(Standard::Reallocate(myPtr, aNewBytes));
-        }
-        else
-        {
-          Standard::Free(myPtr);
-          myPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
-        }
-      }
-      else
-      {
-        theItem* aNewPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
-        if (theToCopy && mySize > 0)
-        {
-          std::memcpy(aNewPtr, myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
-        }
-        myPtr = aNewPtr;
+        std::memcpy(aNewPtr, anOldPtr, aCopy * sizeof(theItem));
       }
     }
     else
     {
-      // Non-trivial: Standard::Reallocate (realloc) cannot be used because
-      // it does not call constructors or destructors.
-      theItem*     aNewPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
-      const size_t aCopy   = theToCopy ? std::min(mySize, theNewSize) : 0;
-      for (size_t i = 0; i < aCopy; ++i)
+      for (size_t anIndex = 0; anIndex < aCopy; ++anIndex)
       {
-        new (aNewPtr + i) theItem(std::move(myPtr[i]));
+        new (aNewPtr + anIndex) theItem(std::move(anOldPtr[anIndex]));
       }
-      for (size_t i = aCopy; i < theNewSize; ++i)
+      for (size_t anIndex = aCopy; anIndex < theNewSize; ++anIndex)
       {
-        new (aNewPtr + i) theItem();
+        new (aNewPtr + anIndex) theItem();
       }
-      for (size_t i = 0; i < mySize; ++i)
-      {
-        myPtr[i].~theItem();
-      }
-      if (!aWasInline)
-      {
-        Standard::Free(myPtr);
-      }
-      myPtr = aNewPtr;
     }
+
+    if constexpr (!IS_TRIVIAL)
+    {
+      for (size_t anIndex = 0; anIndex < anOldSize; ++anIndex)
+      {
+        anOldPtr[anIndex].~theItem();
+      }
+    }
+    if (!aWasInline)
+    {
+      Standard::Free(anOldPtr);
+    }
+    myPtr = aNewPtr;
     mySize = theNewSize;
   }
 
   size_t Size() const noexcept { return mySize; }
 
-  operator theItem*() const noexcept { return myPtr; }
+  iterator begin() noexcept { return myPtr; }
+
+  const_iterator begin() const noexcept { return myPtr; }
+
+  const_iterator cbegin() const noexcept { return myPtr; }
+
+  iterator end() noexcept { return myPtr + mySize; }
+
+  const_iterator end() const noexcept { return myPtr + mySize; }
+
+  const_iterator cend() const noexcept { return myPtr + mySize; }
+
+  operator pointer() noexcept { return myPtr; }
+
+  operator const_pointer() const noexcept { return myPtr; }
 
   NCollection_LocalArray(NCollection_LocalArray&& theOther) noexcept
       : myPtr(inlinePtr()),
-        mySize(theOther.mySize)
+        mySize(0)
   {
     if (theOther.isInline())
     {
       // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
-      const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+      const size_t aNb = std::min(theOther.mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
       if constexpr (IS_TRIVIAL)
       {
-        std::memcpy(inlinePtr(), theOther.inlinePtr(), aNb * sizeof(theItem));
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), theOther.mySize * sizeof(theItem));
       }
       else
       {
@@ -218,10 +206,12 @@ public:
           theOther.inlinePtr()[i].~theItem();
         }
       }
+      mySize = theOther.mySize;
     }
     else
     {
       myPtr          = theOther.myPtr;
+      mySize         = theOther.mySize;
       theOther.myPtr = theOther.inlinePtr();
     }
     theOther.mySize = 0;
@@ -239,7 +229,7 @@ public:
       mySize = theOther.mySize;
       if (theOther.isInline())
       {
-        Deallocate();
+        deallocate();
         myPtr = inlinePtr();
         // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
         const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
@@ -262,25 +252,28 @@ public:
     else
     {
       // Destroy our current elements.
+      const bool   aWasInline = isInline();
+      theItem*     anOldPtr   = myPtr;
       for (size_t i = 0; i < mySize; ++i)
       {
         myPtr[i].~theItem();
       }
+      if (!aWasInline)
+      {
+        Standard::Free(anOldPtr);
+      }
+      myPtr  = inlinePtr();
+      mySize = 0;
 
       if (theOther.isInline())
       {
-        if (!isInline())
-        {
-          Standard::Free(myPtr);
-        }
-        myPtr  = inlinePtr();
-        mySize = theOther.mySize;
         // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
-        const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+        const size_t aNb = std::min(theOther.mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
         for (size_t i = 0; i < aNb; ++i)
         {
           new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
         }
+        mySize = theOther.mySize;
         for (size_t i = 0; i < aNb; ++i)
         {
           theOther.inlinePtr()[i].~theItem();
@@ -289,10 +282,6 @@ public:
       else
       {
         // Take ownership of theOther's heap allocation directly.
-        if (!isInline())
-        {
-          Standard::Free(myPtr);
-        }
         myPtr          = theOther.myPtr;
         mySize         = theOther.mySize;
         theOther.myPtr = theOther.inlinePtr();
@@ -305,6 +294,11 @@ public:
   //! Returns a span as Array1 with shared memory.
   //! Modifying the local array or the array view may invalidate the shared buffer.
   //! @return array view of the local array data
+  NCollection_Array1<theItem> ToArray1()
+  {
+    return NCollection_Array1<theItem>(myPtr, mySize);
+  }
+
   NCollection_Array1<theItem> ToArray1() const
   {
     return NCollection_Array1<theItem>(myPtr, mySize);
@@ -314,7 +308,7 @@ public:
   NCollection_LocalArray& operator=(const NCollection_LocalArray&) = delete;
 
 protected:
-  void Deallocate()
+  void deallocate()
   {
     if (!isInline())
     {

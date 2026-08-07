@@ -14,6 +14,7 @@
 #include <NCollection_LocalArray.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <type_traits>
 #include <utility>
 
@@ -33,6 +34,40 @@ TEST(NCollection_LocalArrayTest, DefaultConstructor)
 {
   NCollection_LocalArray<int> array;
   EXPECT_EQ(0, array.Size());
+  EXPECT_EQ(array.begin(), array.end());
+  EXPECT_EQ(array.cbegin(), array.cend());
+}
+
+TEST(NCollection_LocalArrayTest, STLIterators)
+{
+  NCollection_LocalArray<int, 4> anArray(3);
+  anArray[0] = 10;
+  anArray[1] = 20;
+  anArray[2] = 30;
+
+  int aSum = 0;
+  for (const int aValue : anArray)
+  {
+    aSum += aValue;
+  }
+  EXPECT_EQ(60, aSum);
+
+  for (int& aValue : anArray)
+  {
+    aValue /= 10;
+  }
+
+  const NCollection_LocalArray<int, 4>& aConstArray = anArray;
+  EXPECT_EQ(aConstArray.begin(), aConstArray.cbegin());
+  EXPECT_EQ(aConstArray.end(), aConstArray.cend());
+
+  const auto anIt = std::find(aConstArray.cbegin(), aConstArray.cend(), 2);
+  ASSERT_NE(aConstArray.cend(), anIt);
+  EXPECT_EQ(2, *anIt);
+
+  std::reverse(anArray.begin(), anArray.end());
+  EXPECT_EQ(3, anArray[0]);
+  EXPECT_EQ(1, anArray[2]);
 }
 
 // Test constructor with size
@@ -626,6 +661,13 @@ static_assert(HasToArray1<const NCollection_LocalArray<int>>::value,
 static_assert(std::is_same_v<decltype(std::declval<NCollection_LocalArray<int>&>().ToArray1()),
                              NCollection_Array1<int>>,
               "Mutable NCollection_LocalArray should expose mutable Array1 view");
+static_assert(std::is_same_v<decltype(std::declval<const NCollection_LocalArray<int>&>().ToArray1()),
+                             NCollection_Array1<int>>,
+              "Const NCollection_LocalArray should expose shared Array1 view");
+static_assert(std::is_nothrow_move_constructible_v<NCollection_LocalArray<int>>,
+              "NCollection_LocalArray move construction should remain noexcept");
+static_assert(std::is_nothrow_move_assignable_v<NCollection_LocalArray<int>>,
+              "NCollection_LocalArray move assignment should remain noexcept");
 
 // Verify that ToArray1() returns an Array1 sharing the same memory buffer.
 TEST(NCollection_LocalArrayTest, ToArray1_SamePointer)

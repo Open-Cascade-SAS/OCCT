@@ -20,6 +20,7 @@
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_Macro.hxx>
 
+#include <algorithm>
 #include <cstring>
 
 //! Defines an array of values of configurable size.
@@ -204,30 +205,39 @@ public:
       return;
     }
 
-    const int      anOldLen  = mySize;
-    const uint8_t* anOldData = myData;
-    mySize                   = theLength;
+    const int    anOldLen  = mySize;
+    uint8_t*     anOldData = myData;
+    const size_t aNewBytes = size_t(myStride) * size_t(theLength);
+
     if (!theToCopyData && myDeletable)
     {
+      // Discarded owned data can be released before allocation to avoid a temporary memory peak.
       Standard::FreeAligned(myData);
+      myData      = nullptr;
+      mySize      = 0;
+      myDeletable = false;
     }
-    myData = (uint8_t*)Standard::AllocateAligned(SizeBytes(), MyAlignSize);
-    if (myData == nullptr)
+
+    uint8_t*     aNewData  = (uint8_t*)Standard::AllocateAligned(aNewBytes, MyAlignSize);
+    if (aNewData == nullptr)
     {
       throw Standard_OutOfMemory("NCollection_AliasedArray, allocation failed");
     }
-    if (!theToCopyData)
-    {
-      myDeletable = true;
-      return;
-    }
 
-    const size_t aLenCopy = size_t((std::min)(anOldLen, theLength)) * size_t(myStride);
-    memcpy(myData, anOldData, aLenCopy);
+    if (theToCopyData)
+    {
+      const size_t aLenCopy = size_t((std::min)(anOldLen, theLength)) * size_t(myStride);
+      if (aLenCopy > 0)
+      {
+        memcpy(aNewData, anOldData, aLenCopy);
+      }
+    }
     if (myDeletable)
     {
       Standard::FreeAligned(anOldData);
     }
+    myData      = aNewData;
+    mySize      = theLength;
     myDeletable = true;
   }
 
@@ -355,7 +365,7 @@ public:
   template <typename Type_t>
   Type_t& ChangeLast()
   {
-    return Value<Type_t>(mySize - 1);
+    return ChangeValue<Type_t>(mySize - 1);
   }
 
 protected:

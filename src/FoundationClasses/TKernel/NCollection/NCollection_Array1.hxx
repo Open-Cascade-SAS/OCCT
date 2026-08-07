@@ -14,18 +14,20 @@
 #ifndef NCollection_Array1_HeaderFile
 #define NCollection_Array1_HeaderFile
 
+#include <Standard.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Assert.hxx>
 
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_Iterator.hxx>
 #include <NCollection_Allocator.hxx>
 #include <StdFail_NotDone.hxx>
-#include <NCollection_IndexedIterator.hxx>
 
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
 #include <memory>
 #include <type_traits>
@@ -81,54 +83,75 @@ public:
   // Define various type aliases for convenience
   using value_type      = TheItemType;
   using size_type       = size_t;
-  using difference_type = size_t;
+  using difference_type = std::ptrdiff_t;
   using pointer         = TheItemType*;
   using const_pointer   = const TheItemType*;
   using reference       = TheItemType&;
   using const_reference = const TheItemType&;
 
-  using iterator       = NCollection_IndexedIterator<std::random_access_iterator_tag,
-                                                     NCollection_Array1,
-                                                     value_type,
-                                                     false>;
-  using const_iterator = NCollection_IndexedIterator<std::random_access_iterator_tag,
-                                                     NCollection_Array1,
-                                                     value_type,
-                                                     true>;
-  using Iterator       = NCollection_Iterator<NCollection_Array1<TheItemType>>;
+  using iterator       = pointer;
+  using const_iterator = const_pointer;
+  using Iterator       = NCollection_Iterator<NCollection_Array1<TheItemType>, false>;
+  using ConstIterator  = NCollection_Iterator<NCollection_Array1<TheItemType>, true>;
 
 public:
-  const_iterator begin() const noexcept { return const_iterator(*this); }
+  //! Return the flat storage pointer.
+  pointer Data() noexcept { return data(); }
 
-  iterator begin() noexcept { return iterator(*this); }
+  //! Return the flat storage pointer.
+  const_pointer Data() const noexcept { return data(); }
 
-  const_iterator cbegin() const noexcept { return const_iterator(*this); }
+  const_iterator begin() const noexcept { return data(); }
 
-  iterator end() noexcept { return iterator(mySize, *this); }
+  iterator begin() noexcept { return data(); }
 
-  const_iterator end() const noexcept { return const_iterator(mySize, *this); }
+  const_iterator cbegin() const noexcept { return data(); }
 
-  const_iterator cend() const noexcept { return const_iterator(mySize, *this); }
+  iterator end() noexcept { return mySize == 0 ? data() : data() + mySize; }
+
+  const_iterator end() const noexcept { return mySize == 0 ? data() : data() + mySize; }
+
+  const_iterator cend() const noexcept { return mySize == 0 ? data() : data() + mySize; }
+
+public:
+  //! Return the number of elements in the array.
+  size_t Size() const noexcept { return mySize; }
+
+  //! Return the number of elements as the legacy integer length.
+  int Length() const noexcept { return static_cast<int>(mySize); }
+
+  //! Return TRUE when the array is empty.
+  bool IsEmpty() const noexcept { return mySize == 0; }
+
+  //! Return the inclusive lower bound.
+  int Lower() const noexcept { return myLowerBound; }
+
+  //! Return the inclusive upper bound.
+  int Upper() const noexcept
+  {
+    return myLowerBound + static_cast<int>(mySize) - 1;
+  }
+
+  //! Return TRUE when this array owns its storage.
+  bool IsDeletable() const noexcept { return myIsOwner; }
+
+  //! Compute the number of elements in an inclusive integer range.
+  static size_t RangeSize(const int theLower, const int theUpper)
+  {
+    return static_cast<size_t>(theUpper - theLower + 1);
+  }
 
 public:
   // Constructors
-  NCollection_Array1() noexcept
-      : myLowerBound(1),
-        mySize(0)
-  {
-  }
+  NCollection_Array1() noexcept = default;
 
   explicit NCollection_Array1(const int theLower, const int theUpper)
       : myLowerBound(theLower),
-        mySize(theUpper - theLower + 1)
+        mySize(RangeSize(theLower, theUpper)),
+        myPointer(nullptr),
+        myIsOwner(false)
   {
-    if (mySize == 0)
-    {
-      return;
-    }
-    myPointer = myAllocator.allocate(mySize);
-    myIsOwner = true;
-    construct(0, mySize);
+    allocateAndConstruct();
   }
 
   explicit NCollection_Array1(const_reference theBegin,
@@ -136,17 +159,16 @@ public:
                               const int       theUpper,
                               const bool      theUseBuffer = true)
       : myLowerBound(theLower),
-        mySize(theUpper - theLower + 1),
-        myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
-        myIsOwner(!theUseBuffer)
+        mySize(RangeSize(theLower, theUpper)),
+        myPointer(nullptr),
+        myIsOwner(false)
   {
-    if (!myIsOwner)
+    if (theUseBuffer)
     {
+      setStorage(const_cast<pointer>(&theBegin), mySize, myLowerBound, false);
       return;
     }
-    myPointer = myAllocator.allocate(mySize);
-    myIsOwner = true;
-    construct(0, mySize);
+    allocateAndConstruct();
   }
 
   //! Zero-based constructor from first element reference.
@@ -157,31 +179,26 @@ public:
                               const bool      theUseBuffer)
       : myLowerBound(0),
         mySize(theSize),
-        myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
-        myIsOwner(!theUseBuffer)
+        myPointer(nullptr),
+        myIsOwner(false)
   {
-    if (!myIsOwner)
+    if (theUseBuffer)
     {
+      setStorage(const_cast<pointer>(&theBegin), mySize, myLowerBound, false);
       return;
     }
-    myPointer = myAllocator.allocate(mySize);
-    myIsOwner = true;
-    construct(0, mySize);
+    allocateAndConstruct();
   }
 
   //! Zero-based constructor: allocates theSize elements with lower bound 0.
   //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
   explicit NCollection_Array1(const size_t theSize)
       : myLowerBound(0),
-        mySize(theSize)
+        mySize(theSize),
+        myPointer(nullptr),
+        myIsOwner(false)
   {
-    if (mySize == 0)
-    {
-      return;
-    }
-    myPointer = myAllocator.allocate(mySize);
-    myIsOwner = true;
-    construct(0, mySize);
+    allocateAndConstruct();
   }
 
   //! Zero-based buffer-reuse constructor: wraps an existing C array of theSize elements.
@@ -198,15 +215,16 @@ public:
   //! Copy constructor
   NCollection_Array1(const NCollection_Array1& theOther)
       : myLowerBound(theOther.myLowerBound),
-        mySize(theOther.mySize)
+        mySize(theOther.mySize),
+        myPointer(nullptr),
+        myIsOwner(false)
   {
-    if (mySize == 0)
+    pointer aPointer = allocateRaw();
+    if (aPointer == nullptr)
     {
       return;
     }
-    myPointer = myAllocator.allocate(mySize);
-    myIsOwner = true;
-    copyConstruct(theOther.myPointer, mySize);
+    copyConstruct(static_cast<const_pointer>(theOther.myPointer), mySize);
   }
 
   //! Move constructor
@@ -216,20 +234,19 @@ public:
         myPointer(theOther.myPointer),
         myIsOwner(theOther.myIsOwner)
   {
-    theOther.myIsOwner    = false;
-    theOther.myPointer    = nullptr;
-    theOther.mySize       = 0;
     theOther.myLowerBound = 1;
+    theOther.mySize       = 0;
+    theOther.myPointer    = nullptr;
+    theOther.myIsOwner    = false;
   }
 
   virtual ~NCollection_Array1()
   {
-    if (!myIsOwner)
+    if (myIsOwner)
     {
-      return;
+      destroy(data(), 0, mySize);
     }
-    destroy(myPointer, 0, mySize);
-    myAllocator.deallocate(myPointer, mySize);
+    releaseStorage();
   }
 
   //! Initialise the items with theValue
@@ -237,24 +254,9 @@ public:
   {
     for (size_t anIter = 0; anIter < mySize; anIter++)
     {
-      myPointer[anIter] = theValue;
+      data()[anIter] = theValue;
     }
   }
-
-  //! Size query.
-  size_t Size() const noexcept { return mySize; }
-
-  //! Length query (legacy int-returning API).
-  int Length() const noexcept { return static_cast<int>(mySize); }
-
-  //! Return TRUE if array has zero length.
-  bool IsEmpty() const noexcept { return mySize == 0; }
-
-  //! Lower bound
-  int Lower() const noexcept { return myLowerBound; }
-
-  //! Upper bound
-  int Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
 
   //! Replaces this array by a copy of theOther array.
   //! Bounds and length are copied from theOther.
@@ -270,7 +272,7 @@ public:
     {
       return *this;
     }
-    assign(theOther.myPointer, theOther.mySize, theOther.myLowerBound);
+    assign(static_cast<const_pointer>(theOther.myPointer), theOther.mySize, theOther.myLowerBound);
     return *this;
   }
 
@@ -286,7 +288,7 @@ public:
     Standard_DimensionMismatch_Raise_if(mySize != theOther.mySize,
                                         "NCollection_Array1::CopyValues");
     const size_t aCommonSize = (std::min)(mySize, theOther.mySize);
-    copyAssign(myPointer, theOther.myPointer, aCommonSize);
+    copyAssign(data(), static_cast<const_pointer>(theOther.myPointer), aCommonSize);
     return *this;
   }
 
@@ -302,17 +304,18 @@ public:
     }
     if (myIsOwner)
     {
-      destroy(myPointer, 0, mySize);
-      myAllocator.deallocate(myPointer, mySize);
+      destroy(data(), 0, mySize);
     }
-    myLowerBound          = theOther.myLowerBound;
-    mySize                = theOther.mySize;
-    myPointer             = theOther.myPointer;
-    myIsOwner             = theOther.myIsOwner;
-    theOther.myIsOwner    = false;
-    theOther.myPointer    = nullptr;
-    theOther.mySize       = 0;
+    releaseStorage();
+    myLowerBound = theOther.myLowerBound;
+    mySize       = theOther.mySize;
+    myPointer    = theOther.myPointer;
+    myIsOwner    = theOther.myIsOwner;
+
     theOther.myLowerBound = 1;
+    theOther.mySize       = 0;
+    theOther.myPointer    = nullptr;
+    theOther.myIsOwner    = false;
     return *this;
   }
 
@@ -331,23 +334,21 @@ public:
   }
 
   //! @return first element
-  const_reference First() const noexcept { return myPointer[0]; }
+  const_reference First() const noexcept { return data()[0]; }
 
   //! @return first element
-  reference ChangeFirst() noexcept { return myPointer[0]; }
+  reference ChangeFirst() noexcept { return data()[0]; }
 
   //! @return last element
-  const_reference Last() const noexcept { return myPointer[mySize - 1]; }
+  const_reference Last() const noexcept { return data()[mySize - 1]; }
 
   //! @return last element
-  reference ChangeLast() noexcept { return myPointer[mySize - 1]; }
+  reference ChangeLast() noexcept { return data()[mySize - 1]; }
 
   //! Constant value access
   const_reference Value(const int theIndex) const
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::Value");
-    return myPointer[aPos];
+    return data()[offsetOf(theIndex, "NCollection_Array1::Value")];
   }
 
   //! operator() - alias to Value
@@ -359,9 +360,7 @@ public:
   //! Variable value access
   reference ChangeValue(const int theIndex)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::ChangeValue");
-    return myPointer[aPos];
+    return data()[offsetOf(theIndex, "NCollection_Array1::ChangeValue")];
   }
 
   //! operator() - alias to ChangeValue
@@ -381,17 +380,14 @@ public:
   //! Set value
   void SetValue(const int theIndex, const value_type& theItem)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
-    myPointer[aPos] = theItem;
+    data()[offsetOf(theIndex, "NCollection_Array1::SetValue")] = theItem;
   }
 
   //! Set value
   void SetValue(const int theIndex, value_type&& theItem)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
-    myPointer[aPos] = std::forward<value_type>(theItem);
+    data()[offsetOf(theIndex, "NCollection_Array1::SetValue")] =
+      std::forward<value_type>(theItem);
   }
 
   //! Emplace value at the specified index, constructing it in-place
@@ -401,10 +397,9 @@ public:
   template <typename... Args>
   reference EmplaceValue(const int theIndex, Args&&... theArgs)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::EmplaceValue");
-    myPointer[aPos] = value_type(std::forward<Args>(theArgs)...);
-    return myPointer[aPos];
+    const size_t aPos = offsetOf(theIndex, "NCollection_Array1::EmplaceValue");
+    data()[aPos] = value_type(std::forward<Args>(theArgs)...);
+    return data()[aPos];
   }
 
   //! Changes the lowest bound. Do not move data
@@ -424,8 +419,7 @@ public:
   //! @param theToCopyData flag to copy existing data into new array
   void Resize(const int theLower, const int theUpper, const bool theToCopyData)
   {
-    Standard_RangeError_Raise_if(theUpper < theLower, "NCollection_Array1::Resize");
-    resizeImpl(static_cast<size_t>(theUpper - theLower + 1), theLower, theToCopyData);
+    resizeImpl(RangeSize(theLower, theUpper), theLower, theToCopyData);
   }
 
   //! Resizes the array to theSize elements, keeping the lower bound unchanged.
@@ -436,85 +430,119 @@ public:
     resizeImpl(theSize, myLowerBound, theToCopyData);
   }
 
-  bool IsDeletable() const noexcept { return myIsOwner; }
-
-  friend iterator;
-  friend const_iterator;
-
 protected:
+  //! Check an integer index and return its zero-based offset.
+  size_t offsetOf(const int theIndex, const char* theMessage) const
+  {
+    const std::ptrdiff_t anOffset = static_cast<std::ptrdiff_t>(theIndex)
+                                    - static_cast<std::ptrdiff_t>(myLowerBound);
+    Standard_OutOfRange_Raise_if(anOffset < 0 || static_cast<size_t>(anOffset) >= mySize,
+                                 theMessage);
+    return static_cast<size_t>(anOffset);
+  }
+
+  //! Allocate raw storage for the array.
+  static void* allocate(const size_t theSize, const size_t theItemSize)
+  {
+    return Standard::AllocateOptimal(theSize * theItemSize);
+  }
+
+  //! Free raw storage.
+  static void deallocate(void* thePointer) noexcept { Standard::Free(thePointer); }
+
+  //! Replace raw storage state.
+  void setStorage(void*       thePointer,
+                  const size_t theSize,
+                  const int   theLowerBound,
+                  const bool  theIsOwner) noexcept
+  {
+    myPointer    = thePointer;
+    mySize       = theSize;
+    myLowerBound = theLowerBound;
+    myIsOwner    = theIsOwner;
+  }
+
+  //! Release owned storage and reset the array state.
+  void releaseStorage() noexcept
+  {
+    if (myIsOwner && myPointer != nullptr)
+    {
+      deallocate(myPointer);
+    }
+    myLowerBound = 1;
+    mySize       = 0;
+    myPointer    = nullptr;
+    myIsOwner    = false;
+  }
+
   //! Core resize implementation used by all public Resize() overloads.
   //! @param theNewSize new number of elements
   //! @param theNewLower new lower bound value to store
   //! @param theToCopyData whether to preserve existing elements
   void resizeImpl(const size_t theNewSize, const int theNewLower, const bool theToCopyData)
   {
-    const pointer aPrevPtr = myPointer;
     if (theNewSize == mySize)
     {
       myLowerBound = theNewLower;
       return;
     }
-    if (myIsOwner)
+    const pointer aPrevPtr  = data();
+    const size_t  aPrevSize = mySize;
+
+    if constexpr (std::is_trivially_copyable_v<TheItemType>)
     {
+      if (myIsOwner && theToCopyData)
+      {
+        if (theNewSize == 0)
+        {
+          releaseStorage();
+          setStorage(nullptr, 0, theNewLower, false);
+          return;
+        }
+        myPointer = Standard::Reallocate(myPointer, theNewSize * sizeof(TheItemType));
+        mySize       = theNewSize;
+        myLowerBound = theNewLower;
+        myIsOwner    = true;
+        construct(aPrevSize, theNewSize);
+        return;
+      }
+    }
+
+    pointer       aNewPtr   = nullptr;
+    if (theNewSize != 0)
+    {
+      aNewPtr = static_cast<pointer>(allocate(theNewSize, sizeof(TheItemType)));
       if (theToCopyData)
       {
-        destroy(myPointer, theNewSize, mySize);
+        const size_t aMinSize = (std::min)(theNewSize, aPrevSize);
+        copyConstruct(aNewPtr, aPrevPtr, aMinSize);
+        construct(aMinSize, theNewSize, aNewPtr);
       }
       else
       {
-        destroy(myPointer, 0, mySize);
+        construct(0, theNewSize, aNewPtr);
       }
     }
-    myLowerBound = theNewLower;
-    if (theNewSize == 0)
+
+    if (myIsOwner)
     {
-      if (myIsOwner)
-      {
-        myAllocator.deallocate(aPrevPtr, mySize);
-      }
-      myPointer = nullptr;
-      mySize    = 0;
-      myIsOwner = false;
-      return;
+      destroy(aPrevPtr, 0, aPrevSize);
     }
-    if (theToCopyData)
-    {
-      const size_t aMinSize = (std::min)(theNewSize, mySize);
-      if (myIsOwner)
-      {
-        myPointer = myAllocator.reallocate(myPointer, theNewSize);
-      }
-      else
-      {
-        myPointer = myAllocator.allocate(theNewSize);
-        copyConstruct(aPrevPtr, aMinSize);
-      }
-      construct(mySize < theNewSize ? mySize : theNewSize, theNewSize);
-    }
-    else
-    {
-      if (myIsOwner)
-      {
-        myAllocator.deallocate(aPrevPtr, mySize);
-      }
-      myPointer = myAllocator.allocate(theNewSize);
-      construct(0, theNewSize);
-    }
-    mySize    = theNewSize;
-    myIsOwner = true;
+    releaseStorage();
+    setStorage(aNewPtr, theNewSize, theNewLower, aNewPtr != nullptr);
   }
 
 protected:
   const_reference at(const size_t theIndex) const
   {
     Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_Array1::at");
-    return myPointer[theIndex];
+    return data()[theIndex];
   }
 
   reference at(const size_t theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_Array1::at");
-    return myPointer[theIndex];
+    return data()[theIndex];
   }
 
   template <typename U = TheItemType>
@@ -522,7 +550,7 @@ protected:
     const size_t,
     const size_t)
   {
-    // Do nothing
+    // Do nothing for the existing storage.
   }
 
   template <typename U = TheItemType>
@@ -530,9 +558,26 @@ protected:
     const size_t theFrom,
     const size_t theTo)
   {
+    construct(theFrom, theTo, data());
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<std::is_trivially_default_constructible<U>::value, void>::type construct(
+    const size_t,
+    const size_t,
+    pointer)
+  {
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<!std::is_trivially_default_constructible<U>::value, void>::type construct(
+    const size_t theFrom,
+    const size_t theTo,
+    pointer       thePointer)
+  {
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
-      myAllocator.construct(myPointer + anInd);
+      ::new (static_cast<void*>(thePointer + anInd)) TheItemType();
     }
   }
 
@@ -553,7 +598,7 @@ protected:
   {
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
-      myAllocator.destroy(theWhat + anInd);
+      (theWhat + anInd)->~TheItemType();
     }
   }
 
@@ -561,26 +606,23 @@ protected:
   {
     if (theSize == mySize)
     {
-      copyAssign(myPointer, theFrom, theSize);
+      copyAssign(data(), theFrom, theSize);
       myLowerBound = theLower;
       return;
     }
     pointer aNewPointer = nullptr;
     if (theSize != 0)
     {
-      aNewPointer = myAllocator.allocate(theSize);
+      aNewPointer = static_cast<pointer>(allocate(theSize, sizeof(TheItemType)));
       copyConstruct(aNewPointer, theFrom, theSize);
     }
 
     if (myIsOwner)
     {
-      destroy(myPointer, 0, mySize);
-      myAllocator.deallocate(myPointer, mySize);
+      destroy(data(), 0, mySize);
     }
-    myLowerBound = theLower;
-    mySize       = theSize;
-    myPointer    = aNewPointer;
-    myIsOwner    = theSize != 0;
+    releaseStorage();
+    setStorage(aNewPointer, theSize, theLower, aNewPointer != nullptr);
   }
 
   template <typename U = TheItemType>
@@ -607,9 +649,9 @@ protected:
     }
   }
 
-  void copyConstruct(const pointer theFrom, const size_t theCount)
+  void copyConstruct(const_pointer theFrom, const size_t theCount)
   {
-    copyConstruct(myPointer, theFrom, theCount);
+    copyConstruct(data(), theFrom, theCount);
   }
 
   template <typename U = TheItemType>
@@ -629,16 +671,41 @@ protected:
   {
     for (size_t anInd = 0; anInd < theCount; anInd++)
     {
-      myAllocator.construct(theTarget + anInd, theFrom[anInd]);
+      ::new (static_cast<void*>(theTarget + anInd)) TheItemType(theFrom[anInd]);
     }
   }
 
-  // ---------- PROTECTED FIELDS -----------
-  int            myLowerBound;
-  size_t         mySize;
-  pointer        myPointer = nullptr;
-  bool           myIsOwner = false;
-  allocator_type myAllocator;
+private:
+  pointer data() noexcept { return static_cast<pointer>(myPointer); }
+  const_pointer data() const noexcept { return static_cast<const_pointer>(myPointer); }
+
+  pointer allocateRaw()
+  {
+    if (mySize == 0)
+    {
+      return nullptr;
+    }
+    pointer aPointer = static_cast<pointer>(allocate(mySize, sizeof(TheItemType)));
+    myPointer        = aPointer;
+    myIsOwner        = true;
+    return aPointer;
+  }
+
+  void allocateAndConstruct()
+  {
+    pointer aPointer = allocateRaw();
+    if (aPointer == nullptr)
+    {
+      return;
+    }
+    construct(0, mySize);
+  }
+
+private:
+  int     myLowerBound = 1;
+  size_t  mySize       = 0;
+  void*   myPointer    = nullptr;
+  bool    myIsOwner    = false;
 };
 
 #endif
