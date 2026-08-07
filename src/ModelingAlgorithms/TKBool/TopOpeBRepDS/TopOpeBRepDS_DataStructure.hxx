@@ -309,7 +309,6 @@ public:
   Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
                   ChangeMapOfRejectedShapesTool();
 
-  friend class TopOpeBRepDS_SurfaceExplorer;
   friend class TopOpeBRepDS_CurveExplorer;
   friend class TopOpeBRepDS_PointExplorer;
 

@@ -19,11 +19,10 @@
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 
 // ----------------------------------------------------------------------
-static thread_local TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = nullptr;
+static thread_local TopOpeBRepTool_ShapeClassifier* TopOpeBRepTool_PSC = nullptr;
 
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC()
 {

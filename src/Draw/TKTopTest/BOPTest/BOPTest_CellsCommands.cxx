@@ -92,7 +92,7 @@ int bcbuild(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";

@@ -75,7 +75,7 @@ const gp_Pnt& TopOpeBRep_WPointInter::Value() const
   return myPP2S->Value();
 }
 
-TopOpeBRep_PPntOn2S TopOpeBRep_WPointInter::PPntOn2SDummy() const
+IntSurf_PntOn2S* TopOpeBRep_WPointInter::PPntOn2SDummy() const
 {
   return myPP2S;
 }

@@ -5,7 +5,7 @@ set(OCCT_Storage_FILES
   Storage.cxx
   Storage.hxx
 
-  Storage_ArrayOfSchema.hxx
+
   Storage_BaseDriver.cxx
   Storage_BaseDriver.hxx
   Storage_BucketOfPersistent.hxx

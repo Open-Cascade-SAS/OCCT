@@ -30,7 +30,8 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <BOPDS_PDS.hxx>
+
+class BOPDS_DS;
 
 //! Trims sets of faces in the corner to make proper parts of pipe
 class BRepFill_TrimShellCorner
@@ -67,13 +68,13 @@ public:
 
 private:
   bool MakeFacesSec(const int        theIndex,
-                    const BOPDS_PDS& theDS,
+                    BOPDS_DS* const& theDS,
                     const int        theFaceIndex1,
                     const int        theFaceIndex2,
                     const int        theSSInterfIndex);
 
   bool MakeFacesNonSec(const int        theIndex,
-                       const BOPDS_PDS& theDS,
+                       BOPDS_DS* const& theDS,
                        const int        theFaceIndex1,
                        const int        theFaceIndex2);
 

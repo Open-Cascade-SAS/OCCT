@@ -809,7 +809,7 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&              F1,
 //=======================================================================
 
 static bool IsAutonomVertex(const TopoDS_Shape& theVertex,
-                            const BOPDS_PDS&    thePDS,
+                            BOPDS_DS* const&    thePDS,
                             const TopoDS_Face&  theFace1,
                             const TopoDS_Face&  theFace2)
 {
@@ -836,7 +836,7 @@ static bool IsAutonomVertex(const TopoDS_Shape& theVertex,
 // purpose  : Checks whether a vertex is "autonom" or not
 //=======================================================================
 
-static bool IsAutonomVertex(const TopoDS_Shape& aVertex, const BOPDS_PDS& pDS)
+static bool IsAutonomVertex(const TopoDS_Shape& aVertex, BOPDS_DS* const& pDS)
 {
   int index;
   int aNbVVs, aNbEEs, aNbEFs, aInt;
@@ -1261,7 +1261,7 @@ static TopoDS_Edge Glue(const TopoDS_Edge&   E1,
 
 //=================================================================================================
 
-static void CheckIntersFF(const BOPDS_PDS&                                               pDS,
+static void CheckIntersFF(BOPDS_DS* const&                                               pDS,
                           const TopoDS_Edge&                                             RefEdge,
                           NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TrueEdges)
 {
@@ -1342,7 +1342,7 @@ static void CheckIntersFF(const BOPDS_PDS&                                      
 
 //=================================================================================================
 
-static TopoDS_Edge AssembleEdge(const BOPDS_PDS&                          pDS,
+static TopoDS_Edge AssembleEdge(BOPDS_DS* const&                          pDS,
                                 const TopoDS_Face&                        F1,
                                 const TopoDS_Face&                        F2,
                                 const bool                                addPCurve1,
@@ -1489,7 +1489,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
   bool addPCurve1 = true;
   bool addPCurve2 = true;
 
-  const BOPDS_PDS&                          pDS  = aPF.PDS();
+  BOPDS_DS* const&                          pDS  = aPF.PDS();
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   int                                       aNb  = aFFs.Length();
   int                                       i = 0, j = 0, k;

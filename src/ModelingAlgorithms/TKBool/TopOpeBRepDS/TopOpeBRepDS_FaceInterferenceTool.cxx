@@ -163,7 +163,7 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
 //=================================================================================================
 
 TopOpeBRepDS_FaceInterferenceTool::TopOpeBRepDS_FaceInterferenceTool(
-  const TopOpeBRepDS_PDataStructure& PBDS)
+  TopOpeBRepDS_DataStructure* const& PBDS)
     : myPBDS(PBDS),
       myrefdef(false),
       myOnEdDef(false)
