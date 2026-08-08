@@ -4,8 +4,6 @@ set(OCCT_SelectMgr_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_SelectMgr_FILES
   SelectMgr.cxx
   SelectMgr.hxx
-  SelectMgr_AndFilter.cxx
-  SelectMgr_AndFilter.hxx
   SelectMgr_AndOrFilter.cxx
   SelectMgr_AndOrFilter.hxx
   SelectMgr_AxisIntersector.cxx
@@ -29,8 +27,6 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_FrustumBuilder.hxx
 
 
-  SelectMgr_OrFilter.cxx
-  SelectMgr_OrFilter.hxx
   SelectMgr_PickingStrategy.hxx
   SelectMgr_RectangularFrustum.cxx
   SelectMgr_RectangularFrustum.hxx

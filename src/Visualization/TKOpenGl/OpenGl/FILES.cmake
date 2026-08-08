@@ -87,7 +87,6 @@ set(OCCT_OpenGl_FILES
   OpenGl_DepthPeeling.cxx
   OpenGl_DepthPeeling.hxx
   OpenGl_ExtGS.hxx
-  OpenGl_GLESExtensions.hxx
   OpenGl_GlFunctions.cxx
   OpenGl_GlFunctions.hxx
   OpenGl_GlNative.hxx
@@ -148,8 +147,6 @@ set(OCCT_OpenGl_FILES
   OpenGl_TextureBuffer.cxx
   OpenGl_TextureBuffer.hxx
 
-  OpenGl_UniformBuffer.cxx
-  OpenGl_UniformBuffer.hxx
   OpenGl_Vec.hxx
   OpenGl_VertexBuffer.cxx
   OpenGl_VertexBuffer.hxx

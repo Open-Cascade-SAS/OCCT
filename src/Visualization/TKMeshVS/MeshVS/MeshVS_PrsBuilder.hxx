@@ -16,7 +16,6 @@
 #ifndef _MeshVS_PrsBuilder_HeaderFile
 #define _MeshVS_PrsBuilder_HeaderFile
 
-#include <MeshVS_MeshPtr.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
@@ -126,7 +125,7 @@ protected:
   Standard_EXPORT occ::handle<MeshVS_Drawer> Drawer() const;
 
 protected:
-  MeshVS_MeshPtr myParentMesh;
+  MeshVS_Mesh* myParentMesh;
 
 private:
   bool                                    myIsExcluding;

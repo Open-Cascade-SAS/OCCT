@@ -38,5 +38,4 @@ set(OCCT_V3d_FILES
   V3d_View.hxx
   V3d_Viewer.cxx
   V3d_Viewer.hxx
-  V3d_ViewerPointer.hxx
 )

@@ -10,8 +10,6 @@ set(OCCT_MeshVS_FILES
 
   MeshVS_DataSource.cxx
   MeshVS_DataSource.hxx
-  MeshVS_DataSource3D.cxx
-  MeshVS_DataSource3D.hxx
   MeshVS_DeformedDataSource.cxx
   MeshVS_DeformedDataSource.hxx
   MeshVS_DisplayModeFlags.hxx
@@ -32,7 +30,6 @@ set(OCCT_MeshVS_FILES
   MeshVS_MeshOwner.hxx
   MeshVS_MeshPrsBuilder.cxx
   MeshVS_MeshPrsBuilder.hxx
-  MeshVS_MeshPtr.hxx
   MeshVS_MeshSelectionMethod.hxx
   MeshVS_NodalColorPrsBuilder.cxx
   MeshVS_NodalColorPrsBuilder.hxx
