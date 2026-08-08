@@ -73,6 +73,13 @@ Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
 
 //=================================================================================================
 
+Poly_MergeNodesTool::MergedNodesMap::~MergedNodesMap()
+{
+  Destroy(DataMapNode::delNode, true);
+}
+
+//=================================================================================================
+
 void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
 {
   myTolerance = (float)theTolerance;

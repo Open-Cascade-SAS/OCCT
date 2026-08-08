@@ -222,6 +222,9 @@ private:
     //! Main constructor.
     Standard_EXPORT MergedNodesMap(const int theNbBuckets);
 
+    //! Destructor.
+    Standard_EXPORT ~MergedNodesMap();
+
     //! Return merge angle in radians;
     double MergeAngle() const { return myAngle; }
 
