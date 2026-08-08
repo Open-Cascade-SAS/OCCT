@@ -766,8 +766,16 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
   int                                                      Nb1 = 1, Nb2 = 1;
 
   // Cutting of tangency lines (hatching).
-  Geom2dHatch_Intersector   Inter(pitol, pitol);
-  Geom2dHatch_Hatcher       H1(Inter, tol2d, tolapp3d), H2(Inter, tol2d, tolapp3d);
+  Geom2dHatch_Intersector Inter(pitol, pitol);
+  // Keep points and segments while hatching (issue #1177): when the fillet
+  // radius is large enough that its tangency line reaches the opposite edge of
+  // an adjacent face, that line becomes coincident with a boundary edge of the
+  // face. The hatcher then reports it as a boundary segment rather than an
+  // interior domain. Retaining points and segments lets such a fully spanning
+  // segment be turned into a valid domain instead of being discarded (which
+  // previously left NbDomains() == 0 and aborted the stripe).
+  Geom2dHatch_Hatcher H1(Inter, tol2d, tolapp3d, true, true),
+    H2(Inter, tol2d, tolapp3d, true, true);
   int                       ie;
   occ::handle<Geom2d_Curve> C1 = Data->InterferenceOnS1().PCurveOnFace();
   Geom2dAdaptor_Curve       ll1;
