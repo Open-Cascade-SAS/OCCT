@@ -256,9 +256,9 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
                                          aSecond.FirstParameter,
                                          aSecond.LastParameter);
         Geom2dInt_GInter    anIntersector(aFirstCurve,
-                                          aSecondCurve,
-                                          Precision::PConfusion(),
-                                          Precision::PConfusion());
+                                       aSecondCurve,
+                                       Precision::PConfusion(),
+                                       Precision::PConfusion());
         bool                isReversed = false;
         if (TopOpeBRepBuild_HasCompleteCoincidence(anIntersector,
                                                    aFirstCurve,
