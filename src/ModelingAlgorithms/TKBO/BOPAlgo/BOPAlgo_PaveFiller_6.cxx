@@ -2788,7 +2788,7 @@ void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
     gp_Pnt                         aPC[2], aPV;
     gp_Dir                         aDN[2];
     gp_Pnt2d                       aP2D;
-    NCollection_Map<int>::Iterator aItMI, aItMI1;
+    NCollection_Map<int>::Iterator aItMI;
     //
     aDT2   = 2e-7;  // the rich criteria
     aDScPr = 5.e-9; // the creasing criteria
