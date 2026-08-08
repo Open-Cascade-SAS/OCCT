@@ -45,7 +45,7 @@ protected:
   Standard_EXPORT void destroy(NCollection_DelMapNode fDel, bool theReleaseMemory = true);
 
   //! Exchange both bucket tables and common map state.
-  void exchangeDoubleMapsData(NCollection_BaseDoubleMap& theOther) noexcept;
+  Standard_EXPORT void exchangeDoubleMapsData(NCollection_BaseDoubleMap& theOther) noexcept;
 
 protected:
   NCollection_ListNode** myData2 = nullptr;
