@@ -659,7 +659,11 @@ TEST(XmlOcaf_Storage_Test, DemoBug_14673_4_UnicodeNames)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
 
-  const char* aNames[] = {"test", "l'épreuve", "опыт", "테스트", "größten 市"};
+  const char* aNames[] = {"test",
+                          "l'\xC3\xA9preuve",
+                          "\xD0\xBE\xD0\xBF\xD1\x8B\xD1\x82",
+                          "\xED\x85\x8C\xEC\x8A\xA4\xED\x8A\xB8",
+                          "gr\xC3\xB6\xC3\x9Ften \xE5\xB8\x82"};
   for (int anIndex = 0; anIndex < 5; ++anIndex)
   {
     const TDF_Label aLabel = aDocument->GetData()->Root().FindChild(anIndex + 1, true);

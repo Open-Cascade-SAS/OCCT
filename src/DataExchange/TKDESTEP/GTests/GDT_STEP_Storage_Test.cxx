@@ -691,7 +691,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_31670_1_CP125xNames)
                   TCollection_ExtendedString(u"Test \u05DE\u05B4\u05D1\u05B0\u05D7\u05B8\u05DF"));
   aNames.SetValue(7, TCollection_ExtendedString(u"Test \u0627\u062E\u062A\u0628\u0627\u0631"));
   aNames.SetValue(8, TCollection_ExtendedString(u"Test P\u0101rbaude"));
-  // CP1258 represents 'ệ' as 'ê' followed by combining dot below.
+  // CP1258 represents U+1EC7 as U+00EA followed by combining dot below.
   aNames.SetValue(9, TCollection_ExtendedString(u"Test Th\u00ED nghi\u00EA\u0323m"));
 
   for (int anIndex = aFormats.Lower(); anIndex <= aFormats.Upper(); ++anIndex)
@@ -1197,7 +1197,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_31851_UnicodeShapeName)
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_FALSE(aShapeLabel.IsNull());
-  const TCollection_ExtendedString anExpected(u8"ボックス", true);
+  const TCollection_ExtendedString anExpected(u"\u30DC\u30C3\u30AF\u30B9");
   ASSERT_FALSE(TDataStd_Name::Set(aShapeLabel, anExpected).IsNull());
 
   occ::handle<TDocStd_Document> aRestored = RoundTrip(aDocument);
