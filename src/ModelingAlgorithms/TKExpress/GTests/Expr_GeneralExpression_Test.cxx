@@ -89,3 +89,20 @@ TEST(Expr_GeneralExpression_Test, OCC22611_ParseNumericLiteral)
     EXPECT_FALSE(aExpr.IsNull()) << "Expression should not be null on iteration " << i;
   }
 }
+
+// fclasses/bugs/bug23403: a lexical-error input must not escape the expression
+// parser as an exception.
+TEST(Expr_GeneralExpression_Test, FClassesBug_23403_TabInputDoesNotThrow)
+{
+  occ::handle<ExprIntrp_GenExp> aGenerator = ExprIntrp_GenExp::Create();
+  EXPECT_NO_THROW(aGenerator->Process(TCollection_AsciiString("\t")));
+}
+
+// fclasses/bugs/bug24897: a long invalid expression must also be rejected
+// without an exception or uncontrolled exit.
+TEST(Expr_GeneralExpression_Test, FClassesBug_24897_InvalidInputDoesNotThrow)
+{
+  occ::handle<ExprIntrp_GenExp> aGenerator = ExprIntrp_GenExp::Create();
+  EXPECT_NO_THROW(aGenerator->Process(
+    TCollection_AsciiString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")));
+}

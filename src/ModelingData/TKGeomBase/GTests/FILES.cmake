@@ -37,6 +37,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   GC_MakeParabola2d_Test.cxx
   GC_MakeSegment2d_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
+  GCPnts_QuasiUniformDeflection_Test.cxx
+  GeomProjLib_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx

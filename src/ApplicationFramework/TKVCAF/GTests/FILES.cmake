@@ -2,4 +2,5 @@
 set(OCCT_TKVCAF_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKVCAF_GTests_FILES
+  TPrsStd_AISPresentation_Test.cxx
 )
