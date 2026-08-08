@@ -430,6 +430,13 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
                           << ": Unknown binary format version";
       return false;
     }
+    if (aNode->InternalParameters.WriteNormals
+        && aNode->InternalParameters.WriteVersionBin < BinTools_FormatVersion_VERSION_4)
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during " << aFullContext
+                          << ": Vertex normals require binary format version 4 or later";
+      return false;
+    }
     BinTools::Write(theShape,
                     aStream,
                     aNode->InternalParameters.WriteTriangles,
@@ -445,6 +452,13 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
     {
       Message::SendFail() << "Error in the DEBREP_Provider during " << aFullContext
                           << ": Unknown ASCII format version";
+      return false;
+    }
+    if (aNode->InternalParameters.WriteNormals
+        && aNode->InternalParameters.WriteVersionAscii < TopTools_FormatVersion_VERSION_3)
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during " << aFullContext
+                          << ": Vertex normals require ascii format version 3 or later";
       return false;
     }
     BRepTools::Write(theShape,

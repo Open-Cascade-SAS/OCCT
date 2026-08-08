@@ -15,6 +15,8 @@
 #include <DEBREP_Provider.hxx>
 #include <DE_Provider.hxx>
 #include <DE_Wrapper.hxx>
+#include <BinTools_FormatVersion.hxx>
+#include <TopTools_FormatVersion.hxx>
 
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -182,4 +184,30 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A4_ShapeRoundTrip)
   TopoDS_Shape aSecondShape;
   ASSERT_TRUE(aWrapper.Read(aSecondReadStreams, aSecondShape));
   ExpectSameShape(aFirstShape, aSecondShape);
+}
+
+TEST(DEBREP_Provider_Test, StreamWriteRejectsNormalsForOldVersions)
+{
+  const TopoDS_Shape aShape = MakeSourceShape();
+
+  {
+    occ::handle<DEBREP_ConfigurationNode> aNode = new DEBREP_ConfigurationNode();
+    aNode->InternalParameters.WriteVersionBin   = BinTools_FormatVersion_VERSION_3;
+    occ::handle<DEBREP_Provider> aProvider      = new DEBREP_Provider(aNode);
+    std::ostringstream           aOutput;
+    DE_Provider::WriteStreamList aStreams;
+    aStreams.Append(DE_Provider::WriteStreamNode("old-version.brep", aOutput));
+    EXPECT_FALSE(aProvider->Write(aStreams, aShape));
+  }
+
+  {
+    occ::handle<DEBREP_ConfigurationNode> aNode = new DEBREP_ConfigurationNode();
+    aNode->InternalParameters.WriteBinary       = false;
+    aNode->InternalParameters.WriteVersionAscii = TopTools_FormatVersion_VERSION_2;
+    occ::handle<DEBREP_Provider> aProvider      = new DEBREP_Provider(aNode);
+    std::ostringstream           aOutput;
+    DE_Provider::WriteStreamList aStreams;
+    aStreams.Append(DE_Provider::WriteStreamNode("old-version.brep", aOutput));
+    EXPECT_FALSE(aProvider->Write(aStreams, aShape));
+  }
 }

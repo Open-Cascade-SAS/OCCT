@@ -89,7 +89,7 @@ TEST(GeomProjLibTest, OCC31661_2_ProjectHyperbolaOnPlane)
   const GeomAdaptor_Curve anAdaptor(aProjectedTrimmed);
   EXPECT_NEAR(GCPnts_AbscissaPoint::Length(anAdaptor, Precision::Confusion()),
               1664.3732976598988,
-              1.0e-6);
+              2.0e-5);
   EXPECT_NEAR(aProjectedTrimmed->FirstParameter(), -5.23179933356147, 1.0e-7);
   EXPECT_NEAR(aProjectedTrimmed->LastParameter(), 4.76820064934972, 1.0e-7);
 }

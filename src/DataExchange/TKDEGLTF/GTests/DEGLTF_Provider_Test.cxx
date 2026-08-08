@@ -13,7 +13,9 @@
 
 #include <DEGLTF_ConfigurationNode.hxx>
 #include <DEGLTF_Provider.hxx>
+#include <DE_Wrapper.hxx>
 #include <FSD_Base64.hxx>
+#include <Image_Texture.hxx>
 #include <NCollection_Buffer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
@@ -136,7 +138,7 @@ static void WriteMeshData(NCollection_Buffer& theBuffer,
   }
 }
 
-static TCollection_AsciiString MakeEmbeddedTextureGltf()
+static occ::handle<NCollection_Buffer> MakeEmbeddedTextureBuffer()
 {
   // A valid 1x1 PNG kept in the same buffer as the mesh data.
   static const uint8_t anImage[] = {
@@ -145,11 +147,19 @@ static TCollection_AsciiString MakeEmbeddedTextureGltf()
     0x00, 0xb5, 0x1c, 0x0c, 0x02, 0x00, 0x00, 0x00, 0x0b, 0x49, 0x44, 0x41, 0x54, 0x78,
     0xda, 0x63, 0x64, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4,
     0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82};
-  const size_t       anImageOffset = 840;
-  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator(),
-                             anImageOffset + sizeof(anImage));
-  WriteMeshData(aBuffer, 0, 288, 576, 768, false);
-  std::memcpy(aBuffer.ChangeData() + anImageOffset, anImage, sizeof(anImage));
+  const size_t                    anImageOffset = 840;
+  occ::handle<NCollection_Buffer> aBuffer =
+    new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(),
+                           anImageOffset + sizeof(anImage));
+  WriteMeshData(*aBuffer, 0, 288, 576, 768, false);
+  std::memcpy(aBuffer->ChangeData() + anImageOffset, anImage, sizeof(anImage));
+  return aBuffer;
+}
+
+static TCollection_AsciiString MakeEmbeddedTextureJson(const NCollection_Buffer& theBuffer,
+                                                       const bool                theWithDataUri)
+{
+  const size_t anImageOffset = 840;
 
   TCollection_AsciiString aJson =
     R"({"asset":{"version":"2.0"},"scene":0,"scenes":[{"nodes":[0]}],)"
@@ -166,13 +176,25 @@ static TCollection_AsciiString MakeEmbeddedTextureGltf()
     R"({"buffer":0,"byteLength":192,"byteOffset":576},)"
     R"({"buffer":0,"byteLength":72,"byteOffset":768},)"
     R"({"buffer":0,"byteLength":)";
-  aJson += static_cast<int>(sizeof(anImage));
-  aJson += R"(,"byteOffset":840}],"buffers":[{"byteLength":)";
-  aJson += static_cast<int>(aBuffer.Size());
-  aJson += R"(,"uri":"data:application/octet-stream;base64,)";
-  aJson += FSD_Base64::Encode(aBuffer.Data(), aBuffer.Size());
-  aJson += R"("}]})";
+  aJson += static_cast<int>(theBuffer.Size() - anImageOffset);
+  aJson += R"(,"byteOffset":)";
+  aJson += static_cast<int>(anImageOffset);
+  aJson += R"(}],"buffers":[{"byteLength":)";
+  aJson += static_cast<int>(theBuffer.Size());
+  if (theWithDataUri)
+  {
+    aJson += R"(,"uri":"data:application/octet-stream;base64,)";
+    aJson += FSD_Base64::Encode(theBuffer.Data(), theBuffer.Size());
+    aJson += "\"";
+  }
+  aJson += R"(}]})";
   return aJson;
+}
+
+static TCollection_AsciiString MakeEmbeddedTextureGltf()
+{
+  const occ::handle<NCollection_Buffer> aBuffer = MakeEmbeddedTextureBuffer();
+  return MakeEmbeddedTextureJson(*aBuffer, true);
 }
 
 static TCollection_AsciiString MakeInterleavedJson(const bool theWithDataUri)
@@ -208,15 +230,15 @@ static TCollection_AsciiString MakeInterleavedGltf()
   return MakeInterleavedJson(true);
 }
 
-static occ::handle<NCollection_Buffer> MakeInterleavedGlb()
+static occ::handle<NCollection_Buffer> MakeGlb(const TCollection_AsciiString& theJson,
+                                               const NCollection_Buffer&      theBinary)
 {
-  const TCollection_AsciiString   aJson              = MakeInterleavedJson(false);
-  const size_t                    aJsonLength        = static_cast<size_t>(aJson.Length());
+  const size_t                    aJsonLength        = static_cast<size_t>(theJson.Length());
   const size_t                    aJsonPaddedLength  = (aJsonLength + 3) & ~size_t(3);
   const size_t                    aJsonChunkOffset   = 12;
   const size_t                    aBinaryChunkOffset = aJsonChunkOffset + 8 + aJsonPaddedLength;
   const size_t                    aBinaryOffset      = aBinaryChunkOffset + 8;
-  const size_t                    aTotalLength       = aBinaryOffset + 648;
+  const size_t                    aTotalLength       = aBinaryOffset + theBinary.Size();
   occ::handle<NCollection_Buffer> aBuffer =
     new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aTotalLength);
 
@@ -225,14 +247,45 @@ static occ::handle<NCollection_Buffer> MakeInterleavedGlb()
   WriteUint32(*aBuffer, 8, static_cast<uint32_t>(aTotalLength));
   WriteUint32(*aBuffer, aJsonChunkOffset, static_cast<uint32_t>(aJsonPaddedLength));
   WriteUint32(*aBuffer, aJsonChunkOffset + 4, 0x4e4f534a); // JSON
-  std::memcpy(aBuffer->ChangeData() + aJsonChunkOffset + 8, aJson.ToCString(), aJsonLength);
+  std::memcpy(aBuffer->ChangeData() + aJsonChunkOffset + 8, theJson.ToCString(), aJsonLength);
   std::memset(aBuffer->ChangeData() + aJsonChunkOffset + 8 + aJsonLength,
               ' ',
               aJsonPaddedLength - aJsonLength);
-  WriteUint32(*aBuffer, aBinaryChunkOffset, 648);
+  WriteUint32(*aBuffer, aBinaryChunkOffset, static_cast<uint32_t>(theBinary.Size()));
   WriteUint32(*aBuffer, aBinaryChunkOffset + 4, 0x004e4942); // BIN\0
-  WriteMeshData(*aBuffer, aBinaryOffset, aBinaryOffset, aBinaryOffset, aBinaryOffset + 576, true);
+  std::memcpy(aBuffer->ChangeData() + aBinaryOffset, theBinary.Data(), theBinary.Size());
   return aBuffer;
+}
+
+static occ::handle<NCollection_Buffer> MakeInterleavedGlb()
+{
+  occ::handle<NCollection_Buffer> aBinary =
+    new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 648);
+  WriteMeshData(*aBinary, 0, 0, 0, 576, true);
+  return MakeGlb(MakeInterleavedJson(false), *aBinary);
+}
+
+static occ::handle<NCollection_Buffer> MakeEmbeddedTextureGlb()
+{
+  const occ::handle<NCollection_Buffer> aBinary = MakeEmbeddedTextureBuffer();
+  return MakeGlb(MakeEmbeddedTextureJson(*aBinary, false), *aBinary);
+}
+
+static TCollection_AsciiString MakePointGltf()
+{
+  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator(), 12);
+  WriteFloat(aBuffer, 0, 1.0f);
+  WriteFloat(aBuffer, 4, 2.0f);
+  WriteFloat(aBuffer, 8, 3.0f);
+
+  TCollection_AsciiString aJson =
+    R"({"asset":{"version":"2.0"},"scene":0,"scenes":[{"nodes":[0]}],)"
+    R"("nodes":[{"mesh":0}],"meshes":[{"primitives":[{"attributes":{"POSITION":0},"mode":0}]}],)"
+    R"("accessors":[{"bufferView":0,"componentType":5126,"count":1,"type":"VEC3"}],)"
+    R"("bufferViews":[{"buffer":0,"byteLength":12}],"buffers":[{"byteLength":12,"uri":"data:application/octet-stream;base64,)";
+  aJson += FSD_Base64::Encode(aBuffer.Data(), aBuffer.Size());
+  aJson += R"("}]})";
+  return aJson;
 }
 
 static occ::handle<TDocStd_Document> NewDocument()
@@ -277,6 +330,58 @@ TEST(DEGLTF_Bug_Test, MeshBug_31312_StreamEmbeddedTexture)
   EXPECT_FALSE(aMaterial->PbrMaterial().BaseColorTexture.IsNull());
 }
 
+TEST(DEGLTF_Bug_Test, DEWrapper_StreamRead)
+{
+  DE_Wrapper aWrapper;
+  ASSERT_TRUE(aWrapper.Bind(new DEGLTF_ConfigurationNode()));
+
+  std::istringstream          anInput(MakeInterleavedGltf().ToCString());
+  DE_Provider::ReadStreamList aStreams;
+  aStreams.Append(DE_Provider::ReadStreamNode("interleaved.gltf", anInput));
+  TopoDS_Shape aShape;
+
+  ASSERT_TRUE(aWrapper.Read(aStreams, aShape));
+  EXPECT_FALSE(aShape.IsNull());
+  EXPECT_EQ(CountShapeElements(aShape, TopAbs_FACE), 1);
+}
+
+TEST(DEGLTF_Bug_Test, MeshStreamPoints)
+{
+  occ::handle<DEGLTF_Provider> aProvider = new DEGLTF_Provider(new DEGLTF_ConfigurationNode());
+  std::istringstream           anInput(MakePointGltf().ToCString());
+  DE_Provider::ReadStreamList  aStreams;
+  aStreams.Append(DE_Provider::ReadStreamNode("points.gltf", anInput));
+  TopoDS_Shape aShape;
+
+  ASSERT_TRUE(aProvider->Read(aStreams, aShape));
+  EXPECT_EQ(CountShapeElements(aShape, TopAbs_VERTEX), 1);
+}
+
+TEST(DEGLTF_Bug_Test, MeshBug_31312_GlbStreamEmbeddedTexture)
+{
+  occ::handle<DEGLTF_Provider>    aProvider = new DEGLTF_Provider(new DEGLTF_ConfigurationNode());
+  occ::handle<NCollection_Buffer> aGlb      = MakeEmbeddedTextureGlb();
+  Standard_ArrayStreamBuffer      aStreamBuffer(reinterpret_cast<const char*>(aGlb->Data()),
+                                                aGlb->Size());
+  std::istream                    anInput(&aStreamBuffer);
+  DE_Provider::ReadStreamList     aStreams;
+  aStreams.Append(DE_Provider::ReadStreamNode("cube.glb", anInput));
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
+
+  ASSERT_TRUE(aProvider->Read(aStreams, aDocument));
+  occ::handle<XCAFDoc_VisMaterialTool> aMaterialTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDocument->Main());
+  NCollection_Sequence<TDF_Label> aMaterialLabels;
+  aMaterialTool->GetMaterials(aMaterialLabels);
+  ASSERT_EQ(aMaterialLabels.Length(), 1);
+  occ::handle<XCAFDoc_VisMaterial> aMaterial = aMaterialTool->GetMaterial(aMaterialLabels.First());
+  ASSERT_FALSE(aMaterial.IsNull());
+  ASSERT_FALSE(aMaterial->PbrMaterial().BaseColorTexture.IsNull());
+  EXPECT_TRUE(aMaterial->PbrMaterial().BaseColorTexture->FilePath().IsEmpty());
+  EXPECT_EQ(aMaterial->PbrMaterial().BaseColorTexture->FileOffset(), -1);
+  EXPECT_NE(aMaterial->PbrMaterial().BaseColorTexture->TextureId().Search("texturebuf://"), -1);
+}
+
 // bugs/de_mesh/gltf_read/boxinterleaved: byteStride is applied to interleaved vertex attributes
 // when the glTF document is read from a stream.
 TEST(DEGLTF_Bug_Test, MeshBug_31332_StreamInterleavedBuffer)
@@ -306,7 +411,7 @@ TEST(DEGLTF_Bug_Test, MeshBug_31332_GlbStreamInterleavedBuffer)
   ASSERT_EQ(aGlb->Data()[2], uint8_t('T'));
   ASSERT_EQ(aGlb->Data()[3], uint8_t('F'));
   Standard_ArrayStreamBuffer  aStreamBuffer(reinterpret_cast<const char*>(aGlb->Data()),
-                                           aGlb->Size());
+                                            aGlb->Size());
   std::istream                anInput(&aStreamBuffer);
   DE_Provider::ReadStreamList aStreams;
   aStreams.Append(DE_Provider::ReadStreamNode("interleaved.glb", anInput));

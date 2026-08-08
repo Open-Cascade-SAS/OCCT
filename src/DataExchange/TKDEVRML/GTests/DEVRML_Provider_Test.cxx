@@ -42,6 +42,7 @@
 #include <XCAFDoc_ShapeTool.hxx>
 
 #include <sstream>
+#include <regex>
 #include <string>
 #include <gtest/gtest.h>
 
@@ -733,7 +734,9 @@ TEST(DEVRML_Bug_Test, StlVrmlBug_25740_EdgeIndexTermination)
   const std::string aContent = aOutput.str();
   ASSERT_FALSE(aContent.empty());
   EXPECT_NE(aContent.find("#VRML"), std::string::npos);
-  EXPECT_NE(aContent.find("-1"), std::string::npos);
+  const std::regex anExpectedIndices(
+    R"(coordIndex\s*\[\s*0\s*,\s*1\s*,\s*2\s*,\s*3\s*,\s*4\s*,\s*5\s*,\s*6\s*,\s*7\s*,\s*8\s*,\s*9\s*,\s*10\s*,\s*11\s*,\s*12\s*,\s*13\s*,\s*14\s*,\s*15\s*,\s*-1\s*,?\s*\])");
+  EXPECT_TRUE(std::regex_search(aContent, anExpectedIndices));
 }
 
 // bugs/xde/bug30409: exporting a triangulated XDE face to VRML does not throw
