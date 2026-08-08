@@ -17,9 +17,13 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <GeomAPI_IntSS.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
@@ -27,6 +31,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
+
+#include <cmath>
 
 //! OCC26675: BSplineSurface intersect SurfaceOfLinearExtrusion
 //! Verifies that GeomAPI_IntSS finds exactly one intersection curve with a valid (non-degenerate)
@@ -3629,5 +3635,119 @@ TEST(GeomAPI_IntSSTest, OCC23972_TwoConesIntersection)
     }
 
     ASSERT_GT(aU2 - aU1, 1.0e-20) << "Degenerate parameter range for curve " << anIdx;
+  }
+}
+
+// Migrated from tests/lowalgos/intss/bug25782_2.  The DRAW test expects the
+// intersection of two parallel cylinders to be two exact straight lines and
+// checks both lines against both source surfaces.
+TEST(GeomAPI_IntSSTest, OCC25782_2_ParallelCylindersProduceTwoLines)
+{
+  const gp_Dir anAxisDirection(12.0, 35.0, 47.0);
+  const occ::handle<Geom_CylindricalSurface> aCylinder1 =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), anAxisDirection), 5.0);
+  const occ::handle<Geom_CylindricalSurface> aCylinder2 =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(3.0, 2.0, 8.0), anAxisDirection), 4.0);
+
+  GeomAPI_IntSS anIntersection(aCylinder1, aCylinder2, 1.e-7);
+  ASSERT_TRUE(anIntersection.IsDone());
+  ASSERT_EQ(anIntersection.NbLines(), 2);
+
+  const double aParameters[] = {0.0, 50.0, 100.0};
+  for (int anIndex = 1; anIndex <= anIntersection.NbLines(); ++anIndex)
+  {
+    const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(anIndex);
+    const occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(aCurve);
+    ASSERT_FALSE(aLine.IsNull()) << "Intersection " << anIndex << " is not a line";
+
+    for (const double aParameter : aParameters)
+    {
+      const gp_Pnt aPoint = aLine->Value(aParameter);
+      GeomAPI_ProjectPointOnSurf aProjection1(aPoint, aCylinder1, 1.e-7);
+      GeomAPI_ProjectPointOnSurf aProjection2(aPoint, aCylinder2, 1.e-7);
+      ASSERT_TRUE(aProjection1.IsDone());
+      ASSERT_TRUE(aProjection2.IsDone());
+      ASSERT_GT(aProjection1.NbPoints(), 0);
+      ASSERT_GT(aProjection2.NbPoints(), 0);
+      EXPECT_LE(aProjection1.LowerDistance(), 1.e-7);
+      EXPECT_LE(aProjection2.LowerDistance(), 1.e-7);
+    }
+  }
+}
+
+// Migrated from tests/lowalgos/intss/bug33244.  Preserve the exact cone
+// parameters because the original issue was a duplicate intersection curve.
+TEST(GeomAPI_IntSSTest, OCC33244_TwoConesDoNotDuplicateCurves)
+{
+  const occ::handle<Geom_ConicalSurface> aCone1 = new Geom_ConicalSurface(
+    gp_Ax3(gp_Pnt(-1.11630646267172, -4.54487349779333, 13.2493435203532),
+           gp_Dir(-1.05794851588922e-07, -1.39278337794573e-08, 0.999999999999994)),
+    0.785398163360967,
+    0.560000000061149);
+  const occ::handle<Geom_ConicalSurface> aCone2 = new Geom_ConicalSurface(
+    gp_Ax3(gp_Pnt(-2.08647872350287e-07, -5.78732475509323, 13.2493436211),
+           gp_Dir(-1.05794850062242e-07, -1.39278350756825e-08, 0.999999999999994)),
+    0.785398163396248,
+    0.785398163396248);
+
+  GeomAPI_IntSS anIntersection;
+  ASSERT_NO_THROW(anIntersection.Perform(aCone1, aCone2, Precision::Confusion()));
+  ASSERT_TRUE(anIntersection.IsDone());
+  ASSERT_EQ(anIntersection.NbLines(), 2);
+  for (int anIndex = 1; anIndex <= anIntersection.NbLines(); ++anIndex)
+  {
+    const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(anIndex);
+    ASSERT_FALSE(aCurve.IsNull());
+    EXPECT_GT(aCurve->LastParameter() - aCurve->FirstParameter(), 0.0);
+  }
+}
+
+// Migrated from tests/lowalgos/intss/bug24418_2.  The original DRAW case
+// samples the first intersection curve and verifies its distance to both
+// trimmed analytical surfaces.
+TEST(GeomAPI_IntSSTest, OCC24418_2_AnalyticalSurfaceIntersection)
+{
+  const double aPi = 3.1415926535897932384626433832795;
+  const occ::handle<Geom_ToroidalSurface> aTorus =
+    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 25.0, 24.0);
+  const occ::handle<Geom_ConicalSurface> aCone =
+    new Geom_ConicalSurface(gp_Ax3(gp_Pnt(20.0, 20.0, 10.0), gp_Dir(0.0, 0.0, 1.0)),
+                            std::atan2(2.0, 40.0),
+                            10.0);
+
+  const occ::handle<Geom_Surface> aTorusTrimmed =
+    new Geom_RectangularTrimmedSurface(aTorus, 0.0, 0.5 * aPi, true, true);
+  const occ::handle<Geom_Surface> aConeTrimmed =
+    new Geom_RectangularTrimmedSurface(aCone, 0.0, 40.049968789001575, false, true);
+
+  GeomAPI_IntSS anIntersection;
+  ASSERT_NO_THROW(anIntersection.Perform(aTorusTrimmed, aConeTrimmed, Precision::Confusion()));
+  ASSERT_TRUE(anIntersection.IsDone());
+  ASSERT_GT(anIntersection.NbLines(), 0);
+
+  const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(1);
+  ASSERT_FALSE(aCurve.IsNull());
+  const double aFirstParameter = aCurve->FirstParameter();
+  const double aLastParameter  = aCurve->LastParameter();
+  ASSERT_GT(aLastParameter, aFirstParameter);
+
+  for (int anIndex = 0; anIndex < 10; ++anIndex)
+  {
+    double aParameter = aFirstParameter
+                        + (aLastParameter - aFirstParameter) * anIndex / 9.0;
+    gp_Pnt aPoint;
+    aCurve->D0(aParameter, aPoint);
+
+    GeomAPI_ProjectPointOnSurf aTorusProjection(aPoint, aTorusTrimmed, 1.0e-7);
+    ASSERT_TRUE(aTorusProjection.IsDone()) << "Torus projection failed at sample " << anIndex;
+    ASSERT_GT(aTorusProjection.NbPoints(), 0);
+    EXPECT_LE(aTorusProjection.LowerDistance(), 2.0e-7)
+      << "Intersection curve is off the torus at sample " << anIndex;
+
+    GeomAPI_ProjectPointOnSurf aConeProjection(aPoint, aConeTrimmed, 1.0e-7);
+    ASSERT_TRUE(aConeProjection.IsDone()) << "Cone projection failed at sample " << anIndex;
+    ASSERT_GT(aConeProjection.NbPoints(), 0);
+    EXPECT_LE(aConeProjection.LowerDistance(), 2.0e-7)
+      << "Intersection curve is off the cone at sample " << anIndex;
   }
 }

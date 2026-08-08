@@ -35,6 +35,7 @@
 #include <gp_Quaternion.hxx>
 
 #include <fstream>
+#include <limits>
 
 #ifdef HAVE_RAPIDJSON
 namespace
@@ -2298,9 +2299,37 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
     RWGltf_GltfPrimArrayData& aData = theMeshData->AddPrimArrayData(theType);
     aData.Accessor                  = theAccessor;
     aData.Accessor.ByteStride       = aByteStride;
-    aData.StreamOffset              = anOffset;
     aData.StreamLength              = theView.ByteLength;
     aData.StreamUri                 = myFilePath;
+    if (myStream != nullptr)
+    {
+      occ::handle<NCollection_Buffer> aBinBuffer;
+      if (!myDecodedBuffers.Find(theName, aBinBuffer))
+      {
+        if (myBinBodyLen <= 0 || size_t(myBinBodyLen) > std::numeric_limits<size_t>::max())
+        {
+          reportGltfError("Binary buffer '" + theName + "' has invalid length.");
+          return false;
+        }
+
+        aBinBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(),
+                                            size_t(myBinBodyLen));
+        myStream->seekg(myBinBodyOffset, std::ios_base::beg);
+        myStream->read(reinterpret_cast<char*>(aBinBuffer->ChangeData()), myBinBodyLen);
+        if (!myStream->good())
+        {
+          reportGltfError("Binary buffer '" + theName + "' cannot be read from stream.");
+          return false;
+        }
+        myDecodedBuffers.Bind(theName, aBinBuffer);
+      }
+      aData.StreamData   = aBinBuffer;
+      aData.StreamOffset = theView.ByteOffset + theAccessor.ByteOffset;
+    }
+    else
+    {
+      aData.StreamOffset = anOffset;
+    }
     return true;
   }
 

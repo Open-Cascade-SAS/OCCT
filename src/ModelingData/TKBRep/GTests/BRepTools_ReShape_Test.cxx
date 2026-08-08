@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -21,6 +22,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
@@ -363,4 +365,47 @@ TEST(BRepTools_ReShapeTest, ValueLeaf_ConsidersLocationMode)
   aReShape.Replace(aA, aB);
 
   EXPECT_TRUE(aReShape.ValueLeaf(aA).IsSame(aB));
+}
+
+// Migrated from tests/bugs/moddata_3/bug29662. Replacing a compound up to the
+// compound level must preserve the solids from the untouched branch and add
+// the replacement branch as one solid.
+TEST(BRepTools_ReShapeTest, ModDataBug_29662_ReplaceCompound)
+{
+  const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox3 =
+    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox4 =
+    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox5 =
+    BRepPrimAPI_MakeBox(gp_Pnt(20.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+
+  BRep_Builder aBuilder;
+  TopoDS_Compound aC1, aC2, aC, aC3;
+  aBuilder.MakeCompound(aC1);
+  aBuilder.Add(aC1, aBox1);
+  aBuilder.Add(aC1, aBox2);
+  aBuilder.MakeCompound(aC2);
+  aBuilder.Add(aC2, aBox3);
+  aBuilder.Add(aC2, aBox4);
+  aBuilder.MakeCompound(aC);
+  aBuilder.Add(aC, aC1);
+  aBuilder.Add(aC, aC2);
+  aBuilder.MakeCompound(aC3);
+  aBuilder.Add(aC3, aBox5);
+
+  BRepTools_ReShape aReShape;
+  aReShape.Replace(aC2, aC3);
+  const TopoDS_Shape aResult = aReShape.Apply(aC, TopAbs_COMPOUND);
+  ASSERT_FALSE(aResult.IsNull());
+
+  int aNbSolids = 0;
+  for (TopExp_Explorer anExplorer(aResult, TopAbs_SOLID); anExplorer.More();
+       anExplorer.Next())
+  {
+    ++aNbSolids;
+  }
+  EXPECT_EQ(aNbSolids, 3);
 }

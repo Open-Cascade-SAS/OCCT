@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <OSD_Path.hxx>
+#include <OSD_File.hxx>
 #include <OSD_Process.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -51,6 +52,29 @@ TEST_F(OSD_PathTest, UncPaths)
   EXPECT_TRUE(OSD_Path::IsUncPath("\\\\share\\file.pdf"));
   EXPECT_FALSE(OSD_Path::IsDosPath("\\\\share\\file.pdf"));
   EXPECT_FALSE(OSD_Path::IsUnixPath("\\\\share\\file.pdf"));
+}
+
+// fclasses/bugs/bug23852: UNC paths must retain their server/share trek and
+// split the file name and extension consistently on every host.
+TEST_F(OSD_PathTest, FClassesBug_23852_UncPathComponents)
+{
+#if defined(_WIN32) || defined(__WIN32__)
+  OSD_Path aPath("\\\\Server\\Shared\\Folder\\File.Extension");
+#else
+  OSD_Path aPath("//Server/Shared/Folder/File.Extension");
+#endif
+
+  EXPECT_STREQ("||Server|Shared|Folder|", aPath.Trek().ToCString());
+  EXPECT_STREQ("File", aPath.Name().ToCString());
+  EXPECT_STREQ(".Extension", aPath.Extension().ToCString());
+
+#if defined(_WIN32) || defined(__WIN32__)
+  // DRAW also covers the slash-separated spelling on Windows.
+  OSD_Path aSlashPath("//Server/Shared/Folder/File.Extension");
+  EXPECT_STREQ("||Server|Shared|Folder|", aSlashPath.Trek().ToCString());
+  EXPECT_STREQ("File", aSlashPath.Name().ToCString());
+  EXPECT_STREQ(".Extension", aSlashPath.Extension().ToCString());
+#endif
 }
 
 TEST_F(OSD_PathTest, NtExtendedPaths)
@@ -274,6 +298,26 @@ TEST_F(OSD_PathTest, OCC309_CurrentDirectoryAndUpTrek)
   EXPECT_FALSE(aSystemName2.IsEmpty());
   EXPECT_NE(aSystemName1, aSystemName2);
   EXPECT_LT(aSystemName2.Length(), aSystemName1.Length());
+}
+
+TEST_F(OSD_PathTest, FClassesBuc_60944_DotDotPathSystemName)
+{
+  // fclasses/buc60944: portable conversion must preserve a relative dot-dot path.
+  const TCollection_AsciiString anInput("../../..");
+  OSD_Path                     aPath(anInput);
+  TCollection_AsciiString      aSystemName;
+  aPath.SystemName(aSystemName);
+  EXPECT_EQ(aSystemName, anInput);
+}
+
+// fclasses/bugs/bug710: checking an OSD file with an empty path must not raise.
+TEST(OSD_FileTest, FClassesBug_710_EmptyFilePathDoesNotThrow)
+{
+  const TCollection_AsciiString anEmptyPath;
+  EXPECT_NO_THROW({
+    OSD_File aFile(anEmptyPath);
+    (void)aFile.Exists();
+  });
 }
 
 //=================================================================================================

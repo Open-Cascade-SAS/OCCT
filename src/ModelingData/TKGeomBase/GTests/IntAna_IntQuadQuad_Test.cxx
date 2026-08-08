@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <IntAna_IntQuadQuad.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntAna_Quadric.hxx>
 #include <gp_Sphere.hxx>
@@ -19,7 +20,11 @@
 #include <gp_Cone.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <gtest/gtest.h>
 
@@ -270,4 +275,52 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
   const gp_Pnt aP = anInter.Point(1);
   EXPECT_NEAR(gp_Lin(aCyl1.Axis()).Distance(aP), aR1, 1.0e-7);
   EXPECT_NEAR(gp_Lin(aCyl2.Axis()).Distance(aP), aR2, 1.0e-7);
+}
+
+// Migrated from tests/bugs/moddata_3/bug23939. Internally tangent circles
+// intersect at the X-axis point and both analytical parameters must be zero.
+TEST(IntAna2d_AnaIntersectionTest, ModDataBug_23939_TangentCircleParameters)
+{
+  const gp_Ax2d  anXAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  const gp_Circ2d aCircle1(anXAxis, 10.0);
+  const gp_Circ2d aCircle2(
+    gp_Ax2d(gp_Pnt2d(7.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
+
+  IntAna2d_AnaIntersection anIntersection(aCircle1, aCircle2);
+  ASSERT_TRUE(anIntersection.IsDone());
+  ASSERT_EQ(anIntersection.NbPoints(), 1);
+  const IntAna2d_IntPoint& anIntersectionPoint = anIntersection.Point(1);
+  EXPECT_NEAR(anIntersectionPoint.ParamOnFirst(), 0.0, 1.0e-15);
+  EXPECT_NEAR(anIntersectionPoint.ParamOnSecond(), 0.0, 1.0e-15);
+  EXPECT_NEAR(anIntersectionPoint.Value().X(), 10.0, 1.0e-12);
+  EXPECT_NEAR(anIntersectionPoint.Value().Y(), 0.0, 1.0e-12);
+
+  IntAna2d_AnaIntersection aReversedIntersection(aCircle2, aCircle1);
+  ASSERT_TRUE(aReversedIntersection.IsDone());
+  ASSERT_EQ(aReversedIntersection.NbPoints(), 1);
+  const IntAna2d_IntPoint& aReversedPoint = aReversedIntersection.Point(1);
+  EXPECT_NEAR(aReversedPoint.ParamOnFirst(), 0.0, 1.0e-15);
+  EXPECT_NEAR(aReversedPoint.ParamOnSecond(), 0.0, 1.0e-15);
+}
+
+// Migrated from tests/bugs/moddata_3/bug24375. Nearly coincident equal circles
+// must retain the two diametrically opposite analytical intersection points.
+TEST(IntAna2d_AnaIntersectionTest, ModDataBug_24375_NearlyCoincidentCircleParameters)
+{
+  const gp_Circ2d aCircle1(
+    gp_Ax2d(gp_Pnt2d(10.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
+  const gp_Circ2d aCircle2(
+    gp_Ax2d(gp_Pnt2d(10.00000000000001, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
+
+  IntAna2d_AnaIntersection anIntersection(aCircle1, aCircle2);
+  ASSERT_TRUE(anIntersection.IsDone());
+  ASSERT_EQ(anIntersection.NbPoints(), 2);
+
+  const double anExpectedParameters[2] = {M_PI / 2.0, 3.0 * M_PI / 2.0};
+  for (int anIndex = 1; anIndex <= 2; ++anIndex)
+  {
+    const IntAna2d_IntPoint& anIntersectionPoint = anIntersection.Point(anIndex);
+    EXPECT_NEAR(anIntersectionPoint.ParamOnFirst(), anExpectedParameters[anIndex - 1], 1.0e-7);
+    EXPECT_NEAR(anIntersectionPoint.ParamOnSecond(), anExpectedParameters[anIndex - 1], 1.0e-7);
+  }
 }

@@ -2,6 +2,7 @@
 set(OCCT_TKCAF_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKCAF_GTests_FILES
+  TDataXtd_Attribute_Test.cxx
   TNaming_NamedShape_Test.cxx
   TNaming_Tool_Test.cxx
 )

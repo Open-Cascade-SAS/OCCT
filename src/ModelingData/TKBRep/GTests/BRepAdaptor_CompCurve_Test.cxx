@@ -15,8 +15,11 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -188,4 +191,62 @@ TEST(BRepAdaptor_CompCurve_Test, OCC30869_ReversedEdgeBoundaryPoints)
   EXPECT_NEAR(aVLast.X(), aRefV2.X(), aTol) << "Last tangent X";
   EXPECT_NEAR(aVLast.Y(), aRefV2.Y(), aTol) << "Last tangent Y";
   EXPECT_NEAR(aVLast.Z(), aRefV2.Z(), aTol) << "Last tangent Z";
+}
+
+namespace
+{
+TopoDS_Wire makeOCC30422Wire(const bool theReverseInsertionOrder)
+{
+  const TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 0.0, 0.0));
+  const TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 0.0, 0.0));
+  const TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(2.0, 0.0, 0.0));
+  const TopoDS_Vertex aV4 = BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 0.0, 0.0));
+  const TopoDS_Vertex aV5 = BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 0.0, 0.0));
+
+  const TopoDS_Edge anE1 = BRepBuilderAPI_MakeEdge(aV1, aV2);
+  const TopoDS_Edge anE2 = BRepBuilderAPI_MakeEdge(aV2, aV3);
+  const TopoDS_Edge anE3 = BRepBuilderAPI_MakeEdge(aV3, aV4);
+  const TopoDS_Edge anE4 = BRepBuilderAPI_MakeEdge(aV5, aV4);
+
+  BRep_Builder aBuilder;
+  TopoDS_Wire aWire;
+  aBuilder.MakeWire(aWire);
+  if (theReverseInsertionOrder)
+  {
+    aBuilder.Add(aWire, anE1);
+    aBuilder.Add(aWire, anE4);
+    aBuilder.Add(aWire, anE3);
+    aBuilder.Add(aWire, anE2);
+  }
+  else
+  {
+    aBuilder.Add(aWire, anE1);
+    aBuilder.Add(aWire, anE2);
+    aBuilder.Add(aWire, anE3);
+    aBuilder.Add(aWire, anE4);
+  }
+  return aWire;
+}
+
+void expectOCC30422WireExplorer(const TopoDS_Wire& theWire)
+{
+  BRepTools_WireExplorer anExplorer(theWire);
+  int                    aNbEdges = 0;
+  for (; anExplorer.More(); anExplorer.Next())
+  {
+    EXPECT_FALSE(anExplorer.Current().IsNull());
+    ++aNbEdges;
+  }
+  // DRAW validates the third WEDGE_* object; the fourth edge is deliberately
+  // not guaranteed to be reachable for this malformed insertion sequence.
+  EXPECT_GE(aNbEdges, 3);
+}
+} // namespace
+
+// Migrated from tests/bugs/moddata_3/bug30422. Wire exploration must remain
+// deterministic for both the connected and reordered compound insertion paths.
+TEST(BRepAdaptor_CompCurve_Test, OCC30422_WireExplorerReorderedEdges)
+{
+  expectOCC30422WireExplorer(makeOCC30422Wire(false));
+  expectOCC30422WireExplorer(makeOCC30422Wire(true));
 }

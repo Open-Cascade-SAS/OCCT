@@ -18,6 +18,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -263,4 +264,39 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
     << "Expected 2 wires with circumference pi*50 = " << aExpLen2;
   EXPECT_GE(countMatching(aExpLen4), 1)
     << "No wire found with circumference pi*(dia2+2*wall) = " << aExpLen4;
+}
+
+// pipe/bugs/bug24909_2: the original DRAW test is an explicit TODO because
+// buildsweep throws "Not Done" for this closed-spine configuration.
+TEST(BRepOffsetAPI_MakePipeShellTest, Bug24909_2_ClosedCircularSpine)
+{
+  const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 40.0);
+  const TopoDS_Wire aBaseWire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle)).Wire();
+
+  gp_Trsf aRotate;
+  aRotate.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)), M_PI / 2.0);
+  const TopoDS_Wire aRotatedWire =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aBaseWire, aRotate, false).Shape());
+
+  gp_Trsf aTranslateUp;
+  aTranslateUp.SetTranslation(gp_Vec(0.0, 0.0, 75.0));
+  const TopoDS_Wire aSketch =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aRotatedWire, aTranslateUp, false).Shape());
+
+  gp_Trsf aTranslateDown;
+  aTranslateDown.SetTranslation(gp_Vec(0.0, 0.0, -75.0));
+  const TopoDS_Wire aSketch001 =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aRotatedWire, aTranslateDown, false).Shape());
+
+  gp_Trsf aTranslateSpine;
+  aTranslateSpine.SetTranslation(gp_Vec(50.0, 0.0, 0.0));
+  const TopoDS_Wire aSketch002 =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aBaseWire, aTranslateSpine, false).Shape());
+
+  BRepOffsetAPI_MakePipeShell aSweep(aSketch002);
+  aSweep.SetMode(false); // setsweep -CF
+  aSweep.Add(aSketch001);
+  aSweep.Add(aSketch);
+
+  EXPECT_ANY_THROW(aSweep.Build());
 }

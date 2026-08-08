@@ -128,6 +128,70 @@ public:
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
+  //! Reads a CAD stream, according internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD stream, according internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[in] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&             theStreams,
+    const TopoDS_Shape&           theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
+  //! Reads a CAD stream into a document, according internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD document to a stream, according internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[in] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    TopoDS_Shape&                        theShape,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const TopoDS_Shape&                  theShape,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
 public:
   //! Gets CAD format name of associated provider
   //! @return provider CAD format

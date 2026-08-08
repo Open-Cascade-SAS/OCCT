@@ -22,10 +22,12 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
@@ -421,4 +423,113 @@ TEST_F(IntTools_FaceFaceTest, OCC24005_PlaneCylinderIntersection)
   const NCollection_Sequence<IntTools_Curve>& aCurves = anInters.Lines();
   EXPECT_GE(aCurves.Length() + anInters.Points().Length(), 1)
     << "Expected at least one intersection result (curve or point)";
+}
+
+//! Migrated from tests/lowalgos/intss/bug32850.  Keep the original
+//! IntTools_FaceFace path used by DRAW's bopcurves command: four intersection
+//! curves must be prepared with a reached tolerance no greater than 1.e-12.
+TEST_F(IntTools_FaceFaceTest, OCC32850_TrimmedCylindersKeepFourCurves)
+{
+  const gp_Ax3 anAxes1(gp_Pnt(25.8071575178163, 0.0, -373.974517822281),
+                       gp_Dir(0.0, 1.0, 0.0),
+                       gp_Dir(-1.73024882663956e-06, 0.0, 0.999999999998503));
+  const gp_Ax3 anAxes2(gp_Pnt(0.0, 1974.19284248218, -373.974517822281),
+                       gp_Dir(1.0, 0.0, 0.0),
+                       gp_Dir(0.0, 1.73024882663956e-06, 0.999999999998503));
+  const occ::handle<Geom_CylindricalSurface> aCylinder1 =
+    new Geom_CylindricalSurface(anAxes1, 408.974517822893);
+  const occ::handle<Geom_CylindricalSurface> aCylinder2 =
+    new Geom_CylindricalSurface(anAxes2, 408.974517822893);
+
+  BRepBuilderAPI_MakeFace aFaceBuilder1(aCylinder1,
+                                         0.0,
+                                         0.0225015452057227,
+                                         -146.010003766057,
+                                         2146.01000376606,
+                                         1.e-7);
+  BRepBuilderAPI_MakeFace aFaceBuilder2(aCylinder2,
+                                         0.0,
+                                         0.0225015452057227,
+                                         -146.010003766057,
+                                         946.010003766057,
+                                         1.e-7);
+  ASSERT_TRUE(aFaceBuilder1.IsDone());
+  ASSERT_TRUE(aFaceBuilder2.IsDone());
+
+  IntTools_FaceFace anInters;
+  anInters.SetParameters(true, false, false, 1.e-7);
+  anInters.Perform(aFaceBuilder1.Face(), aFaceBuilder2.Face());
+  ASSERT_TRUE(anInters.IsDone());
+
+  anInters.PrepareLines3D(false);
+  const NCollection_Sequence<IntTools_Curve>& aCurves = anInters.Lines();
+  ASSERT_EQ(aCurves.Length(), 4);
+
+  double aMaximumTolerance = 0.0;
+  for (int anIndex = 1; anIndex <= aCurves.Length(); ++anIndex)
+  {
+    const IntTools_Curve& aCurve = aCurves(anIndex);
+    ASSERT_FALSE(aCurve.Curve().IsNull());
+    aMaximumTolerance = std::max(aMaximumTolerance, aCurve.Tolerance());
+  }
+  EXPECT_LE(aMaximumTolerance, 1.e-12);
+}
+
+//! Migrated from tests/lowalgos/intss/bug24313.  A face based on a linear
+//! extrusion of a circle must be accepted by the face-face intersector when
+//! paired with a plane face.
+TEST_F(IntTools_FaceFaceTest, OCC24313_ExtrusionAndPlaneIntersection)
+{
+  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(
+    gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)), 100.0);
+  const occ::handle<Geom_SurfaceOfLinearExtrusion> anExtrusion =
+    new Geom_SurfaceOfLinearExtrusion(aCircle, gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_Plane> aPlane =
+    new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+
+  BRep_Builder aBuilder;
+  TopoDS_Face  anExtrusionFace;
+  TopoDS_Face  aPlaneFace;
+  aBuilder.MakeFace(anExtrusionFace, anExtrusion, Precision::Confusion());
+  aBuilder.MakeFace(aPlaneFace, aPlane, Precision::Confusion());
+  ASSERT_FALSE(anExtrusionFace.IsNull());
+  ASSERT_FALSE(aPlaneFace.IsNull());
+
+  IntTools_FaceFace anInters;
+  anInters.SetParameters(true, false, false, Precision::Confusion());
+  ASSERT_NO_THROW(anInters.Perform(anExtrusionFace, aPlaneFace));
+  ASSERT_TRUE(anInters.IsDone());
+  anInters.PrepareLines3D(false);
+  EXPECT_GT(anInters.Lines().Length() + anInters.Points().Length(), 0);
+}
+
+//! Migrated from tests/lowalgos/intss/bug23644.  Coaxial conical lateral
+//! faces have no regular 3D intersection curve; the face-face algorithm must
+//! complete without escaping an exception.
+TEST_F(IntTools_FaceFaceTest, OCC23644_CoaxialConesNoRegularCurve)
+{
+  BRepPrimAPI_MakeCone aConeMaker1(10.0, 0.0, 20.0);
+  BRepPrimAPI_MakeCone aConeMaker2(20.0, 0.0, 20.0);
+  const TopoDS_Shape& aSolid1 = aConeMaker1.Shape();
+  const TopoDS_Shape& aSolid2 = aConeMaker2.Shape();
+  ASSERT_FALSE(aSolid1.IsNull());
+  ASSERT_FALSE(aSolid2.IsNull());
+
+  TopExp_Explorer anFaceExplorer1(aSolid1, TopAbs_FACE);
+  TopExp_Explorer anFaceExplorer2(aSolid2, TopAbs_FACE);
+  ASSERT_TRUE(anFaceExplorer1.More());
+  ASSERT_TRUE(anFaceExplorer2.More());
+  const TopoDS_Face aFace1 = TopoDS::Face(anFaceExplorer1.Current());
+  const TopoDS_Face aFace2 = TopoDS::Face(anFaceExplorer2.Current());
+  ASSERT_FALSE(aFace1.IsNull());
+  ASSERT_FALSE(aFace2.IsNull());
+
+  IntTools_FaceFace anInters;
+  anInters.SetParameters(true, false, false, 1.e-7);
+  ASSERT_NO_THROW(anInters.Perform(aFace1, aFace2));
+  ASSERT_TRUE(anInters.IsDone());
+  anInters.PrepareLines3D(false);
+  EXPECT_EQ(anInters.Lines().Length(), 0);
+  ASSERT_EQ(anInters.Points().Length(), 1);
+  EXPECT_TRUE(anInters.Points()(1).P1().Pnt().IsEqual(gp_Pnt(0.0, 0.0, 20.0), 1.e-7));
 }
