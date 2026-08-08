@@ -621,11 +621,11 @@ TEST(ShapeUpgrade_UnifySameDomainTest, MissingSourcePCurveDuringTransformation)
 TEST(ShapeUpgrade_UnifySameDomainTest, OCC29382_CommonShapeHasStableTopology)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 5);
-  aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
-  aPoles(2) = gp_Pnt(1.0, 0.0, 0.0);
-  aPoles(3) = gp_Pnt(2.0, 2.0, 0.0);
-  aPoles(4) = gp_Pnt(0.0, 0.5, 0.0);
-  aPoles(5) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(1)                                   = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2)                                   = gp_Pnt(1.0, 0.0, 0.0);
+  aPoles(3)                                   = gp_Pnt(2.0, 2.0, 0.0);
+  aPoles(4)                                   = gp_Pnt(0.0, 0.5, 0.0);
+  aPoles(5)                                   = gp_Pnt(0.0, 0.0, 0.0);
   const occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
 
   BRepBuilderAPI_MakeEdge aEdgeBuilder(aBezier);
@@ -661,8 +661,7 @@ TEST(ShapeUpgrade_UnifySameDomainTest, OCC29382_CommonShapeHasStableTopology)
   double aMaxTolerance = 0.0;
   for (TopExp_Explorer anExp(aResult, TopAbs_VERTEX); anExp.More(); anExp.Next())
   {
-    aMaxTolerance =
-      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+    aMaxTolerance = std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
   }
   for (TopExp_Explorer anExp(aResult, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
@@ -710,7 +709,7 @@ TEST(ShapeUpgrade_UnifySameDomainTest, OCC30927_FusedSolidKeepsClosedWires)
 TEST(ShapeUpgrade_UnifySameDomainTest, OCC29544_NearbyLinearSplitIsUnified)
 {
   const occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  BRepBuilderAPI_MakeEdge aEdgeBuilder(aLine, 0.0, 10.0);
+  BRepBuilderAPI_MakeEdge      aEdgeBuilder(aLine, 0.0, 10.0);
   ASSERT_TRUE(aEdgeBuilder.IsDone());
   const TopoDS_Edge aReferenceEdge = aEdgeBuilder.Edge();
 

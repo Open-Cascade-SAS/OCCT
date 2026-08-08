@@ -315,8 +315,8 @@ struct LabDifferenceSample
 };
 
 void expectColorValues(const ColorConversionSample& theSample,
-                       const Quantity_TypeOfColor  theType,
-                       const double                theTolerance)
+                       const Quantity_TypeOfColor   theType,
+                       const double                 theTolerance)
 {
   Quantity_Color aColor(theSample.myR, theSample.myG, theSample.myB, Quantity_TOC_RGB);
   double         aC1, aC2, aC3;
@@ -328,14 +328,8 @@ void expectColorValues(const ColorConversionSample& theSample,
 
 void expectLabDifference(const LabDifferenceSample& theSample)
 {
-  const Quantity_Color aColor1(theSample.myL1,
-                               theSample.myA1,
-                               theSample.myB1,
-                               Quantity_TOC_CIELab);
-  const Quantity_Color aColor2(theSample.myL2,
-                               theSample.myA2,
-                               theSample.myB2,
-                               Quantity_TOC_CIELab);
+  const Quantity_Color aColor1(theSample.myL1, theSample.myA1, theSample.myB1, Quantity_TOC_CIELab);
+  const Quantity_Color aColor2(theSample.myL2, theSample.myA2, theSample.myB2, Quantity_TOC_CIELab);
   EXPECT_NEAR(aColor1.DeltaE2000(aColor2), theSample.myExpected, theSample.myTolerance);
 }
 } // namespace

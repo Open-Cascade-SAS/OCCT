@@ -22,8 +22,8 @@
 // viewer or otherwise exercise visualization output.
 TEST(TPrsStd_AISPresentationTest, CafBug_60910_ModeState)
 {
-  const occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinOcaf");
-  const TDF_Label                       aLabel = aDocument->Main().FindChild(2, true);
+  const occ::handle<TDocStd_Document>        aDocument = new TDocStd_Document("BinOcaf");
+  const TDF_Label                            aLabel    = aDocument->Main().FindChild(2, true);
   const occ::handle<TPrsStd_AISPresentation> aPresentation =
     TPrsStd_AISPresentation::Set(aLabel, TDataXtd_Constraint::GetID());
   ASSERT_FALSE(aPresentation.IsNull());

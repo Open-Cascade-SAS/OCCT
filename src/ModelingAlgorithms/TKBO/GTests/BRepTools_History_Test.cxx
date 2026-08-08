@@ -62,12 +62,12 @@ static int CountShapes(const NCollection_List<TopoDS_Shape>& theShapes,
 }
 
 static void ExpectHistory(const BRepTools_History& theHistory,
-                          const TopoDS_Shape&       theShape,
-                          const bool                theDeleted,
-                          const TopAbs_ShapeEnum    theModifiedType,
-                          const int                 theModifiedCount,
-                          const TopAbs_ShapeEnum    theGeneratedType,
-                          const int                 theGeneratedCount)
+                          const TopoDS_Shape&      theShape,
+                          const bool               theDeleted,
+                          const TopAbs_ShapeEnum   theModifiedType,
+                          const int                theModifiedCount,
+                          const TopAbs_ShapeEnum   theGeneratedType,
+                          const int                theGeneratedCount)
 {
   EXPECT_EQ(theHistory.IsRemoved(theShape), theDeleted);
   EXPECT_EQ(CountShapes(theHistory.Modified(theShape), theModifiedType), theModifiedCount);
@@ -134,9 +134,9 @@ static void ExpectBooleanHistory(const TopoDS_Shape&     theFirst,
                                  const int               theSecondModified,
                                  const int               theSecondGenerated)
 {
-  BOPAlgo_BOP*    anBOP       = nullptr;
-  BOPAlgo_BOP     aBOP;
-  BOPAlgo_Section aSection;
+  BOPAlgo_BOP*     anBOP = nullptr;
+  BOPAlgo_BOP      aBOP;
+  BOPAlgo_Section  aSection;
   BOPAlgo_Builder* anAlgorithm = nullptr;
   switch (theOperation)
   {
@@ -320,7 +320,7 @@ TEST(BRepTools_HistoryTest, A8_FuseAndSimplifyHistory)
 // Equivalent to tests/boolean/history/A9.
 TEST(BRepTools_HistoryTest, A9_SectionExpandedBoxFacesHistory)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   NCollection_List<TopoDS_Shape> anInputFaces;
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
@@ -337,8 +337,7 @@ TEST(BRepTools_HistoryTest, A9_SectionExpandedBoxFacesHistory)
   ASSERT_FALSE(aFiller.HasErrors());
 
   BOPAlgo_Section aSection;
-  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(aFiller.Arguments());
-       anIterator.More();
+  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(aFiller.Arguments()); anIterator.More();
        anIterator.Next())
   {
     aSection.AddArgument(anIterator.Value());

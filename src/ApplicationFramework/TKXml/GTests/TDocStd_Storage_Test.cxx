@@ -76,7 +76,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_TagSource.hxx>
-#include <TDF_TagSource.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
@@ -158,7 +157,7 @@ static occ::handle<TDocStd_Document> SaveAndOpen(
   }
 
   OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path     aPath;
+  OSD_Path      aPath;
   aDirectory.Path(aPath);
   aPath.SetName(theTestName);
   aPath.SetExtension(strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
@@ -221,11 +220,10 @@ static occ::handle<TDocStd_Document> OpenDocumentStream(
   return aRestored;
 }
 
-static PCDM_ReaderStatus OpenDocumentStream(
-  const occ::handle<TDocStd_Application>& theApplication,
-  std::stringstream&                      theStream,
-  occ::handle<TDocStd_Document>&           theDocument,
-  const occ::handle<PCDM_ReaderFilter>&   theFilter)
+static PCDM_ReaderStatus OpenDocumentStream(const occ::handle<TDocStd_Application>& theApplication,
+                                            std::stringstream&                      theStream,
+                                            occ::handle<TDocStd_Document>&          theDocument,
+                                            const occ::handle<PCDM_ReaderFilter>&   theFilter)
 {
   theStream.clear();
   theStream.seekg(0);
@@ -243,8 +241,7 @@ static void RunBinaryEmptyLists()
   ASSERT_FALSE(TDataStd_IntegerList::Set(aRoot.FindChild(1, true).FindChild(2, true)).IsNull());
   ASSERT_FALSE(TDataStd_RealList::Set(aRoot.FindChild(1, true).FindChild(3, true)).IsNull());
   ASSERT_FALSE(TDataStd_ExtStringList::Set(aRoot.FindChild(1, true).FindChild(4, true)).IsNull());
-  ASSERT_FALSE(
-    TDataStd_ReferenceList::Set(aRoot.FindChild(1, true).FindChild(5, true)).IsNull());
+  ASSERT_FALSE(TDataStd_ReferenceList::Set(aRoot.FindChild(1, true).FindChild(5, true)).IsNull());
 
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
@@ -252,32 +249,32 @@ static void RunBinaryEmptyLists()
   ASSERT_FALSE(aRestoredRoot.IsNull());
 
   occ::handle<TDataStd_BooleanList> aBooleanList;
-  ASSERT_TRUE(aRestoredRoot.FindChild(1, false)
-                .FindAttribute(TDataStd_BooleanList::GetID(), aBooleanList));
+  ASSERT_TRUE(
+    aRestoredRoot.FindChild(1, false).FindAttribute(TDataStd_BooleanList::GetID(), aBooleanList));
   EXPECT_TRUE(aBooleanList->IsEmpty());
   EXPECT_EQ(aBooleanList->Extent(), 0);
 
   occ::handle<TDataStd_IntegerList> anIntegerList;
-  ASSERT_TRUE(aRestoredRoot.FindChild(2, false)
-                .FindAttribute(TDataStd_IntegerList::GetID(), anIntegerList));
+  ASSERT_TRUE(
+    aRestoredRoot.FindChild(2, false).FindAttribute(TDataStd_IntegerList::GetID(), anIntegerList));
   EXPECT_TRUE(anIntegerList->IsEmpty());
   EXPECT_EQ(anIntegerList->Extent(), 0);
 
   occ::handle<TDataStd_RealList> aRealList;
-  ASSERT_TRUE(aRestoredRoot.FindChild(3, false)
-                .FindAttribute(TDataStd_RealList::GetID(), aRealList));
+  ASSERT_TRUE(
+    aRestoredRoot.FindChild(3, false).FindAttribute(TDataStd_RealList::GetID(), aRealList));
   EXPECT_TRUE(aRealList->IsEmpty());
   EXPECT_EQ(aRealList->Extent(), 0);
 
   occ::handle<TDataStd_ExtStringList> anExtStringList;
-  ASSERT_TRUE(aRestoredRoot.FindChild(4, false)
-                .FindAttribute(TDataStd_ExtStringList::GetID(), anExtStringList));
+  ASSERT_TRUE(aRestoredRoot.FindChild(4, false).FindAttribute(TDataStd_ExtStringList::GetID(),
+                                                              anExtStringList));
   EXPECT_TRUE(anExtStringList->IsEmpty());
   EXPECT_EQ(anExtStringList->Extent(), 0);
 
   occ::handle<TDataStd_ReferenceList> aReferenceList;
-  ASSERT_TRUE(aRestoredRoot.FindChild(5, false)
-                .FindAttribute(TDataStd_ReferenceList::GetID(), aReferenceList));
+  ASSERT_TRUE(aRestoredRoot.FindChild(5, false).FindAttribute(TDataStd_ReferenceList::GetID(),
+                                                              aReferenceList));
   EXPECT_TRUE(aReferenceList->IsEmpty());
   EXPECT_EQ(aReferenceList->Extent(), 0);
 }
@@ -334,9 +331,9 @@ private:
 
 private:
   occ::handle<TDocStd_Application> myApplication;
-  std::string                       myData;
-  occ::handle<TDocStd_Document>     myDocument;
-  PCDM_ReaderStatus                 myStatus;
+  std::string                      myData;
+  occ::handle<TDocStd_Document>    myDocument;
+  PCDM_ReaderStatus                myStatus;
 };
 
 // bugs/caf/bug31785: an XBF document can be opened from a background thread.
@@ -347,7 +344,7 @@ TEST(TDocStd_Storage_Test, CafBug_31785_BackgroundXbfStreamOpen)
   occ::handle<TDocStd_Document> aDocument = NewDocument(anApplication, "BinXCAF");
   ASSERT_FALSE(aDocument.IsNull());
 
-  std::stringstream aStream;
+  std::stringstream      aStream;
   const PCDM_StoreStatus aStoreStatus = anApplication->SaveAs(aDocument, aStream);
   ASSERT_TRUE(aStoreStatus == PCDM_SS_OK || aStoreStatus == PCDM_SS_No_Obj);
   const std::string aData = aStream.str();
@@ -376,7 +373,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_26229_1_StreamInteger)
 
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredLabel = aRestored->GetData()->Root().FindChild(2, false);
+  const TDF_Label               aRestoredLabel = aRestored->GetData()->Root().FindChild(2, false);
   occ::handle<TDataStd_Integer> anInteger;
   ASSERT_TRUE(aRestoredLabel.FindAttribute(TDataStd_Integer::GetID(), anInteger));
   EXPECT_EQ(anInteger->Get(), 100);
@@ -399,8 +396,9 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_23306_ExtStringArray)
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringArray> aRestoredArray;
-  ASSERT_TRUE(aRestored->GetData()->Root().FindChild(1, false).FindChild(1, false)
-                .FindAttribute(TDataStd_ExtStringArray::GetID(), aRestoredArray));
+  ASSERT_TRUE(aRestored->GetData()->Root().FindChild(1, false).FindChild(1, false).FindAttribute(
+    TDataStd_ExtStringArray::GetID(),
+    aRestoredArray));
   ASSERT_FALSE(aRestoredArray.IsNull());
   ASSERT_EQ(aRestoredArray->Lower(), 1);
   ASSERT_EQ(aRestoredArray->Upper(), 3);
@@ -422,8 +420,8 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_425_EmptyName)
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_Name> aRestoredName;
-  ASSERT_TRUE(aRestored->GetData()->Root().FindChild(2, false)
-                .FindAttribute(TDataStd_Name::GetID(), aRestoredName));
+  ASSERT_TRUE(aRestored->GetData()->Root().FindChild(2, false).FindAttribute(TDataStd_Name::GetID(),
+                                                                             aRestoredName));
   ASSERT_FALSE(aRestoredName.IsNull());
   EXPECT_TRUE(aRestoredName->Get().IsEmpty());
 }
@@ -435,15 +433,15 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_28428_EmptyNamedShape)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
 
-  const TDF_Label aLabel = aDocument->GetData()->Root().FindChild(1, true);
-  TNaming_Builder aBuilder(aLabel);
+  const TDF_Label                 aLabel = aDocument->GetData()->Root().FindChild(1, true);
+  TNaming_Builder                 aBuilder(aLabel);
   occ::handle<TNaming_NamedShape> aNamedShape;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape));
 
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TNaming_NamedShape> aRestoredNamedShape;
-  const TDF_Label aRestoredLabel = aRestored->GetData()->Root().FindChild(1, false);
+  const TDF_Label                 aRestoredLabel = aRestored->GetData()->Root().FindChild(1, false);
   ASSERT_TRUE(aRestoredLabel.FindAttribute(TNaming_NamedShape::GetID(), aRestoredNamedShape));
   TNaming_Iterator anIterator(aRestoredNamedShape);
   EXPECT_FALSE(anIterator.More());
@@ -458,8 +456,8 @@ static void SetShape(const TDF_Label& theLabel, const TopoDS_Shape& theShape)
 static occ::handle<TDataStd_UAttribute> AddNamingObject(
   const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<TDataStd_TreeNode> aRootNode = TDataStd_TreeNode::Set(theDocument->Main());
-  const TDF_Label                 anObjectLabel = TDF_TagSource::NewChild(theDocument->Main());
+  occ::handle<TDataStd_TreeNode>   aRootNode     = TDataStd_TreeNode::Set(theDocument->Main());
+  const TDF_Label                  anObjectLabel = TDF_TagSource::NewChild(theDocument->Main());
   occ::handle<TDataStd_UAttribute> anObject =
     TDataStd_UAttribute::Set(anObjectLabel, GEOMOBJECT_GUID);
   occ::handle<TDataStd_TreeNode> anObjectNode = TDataStd_TreeNode::Set(anObjectLabel);
@@ -476,9 +474,9 @@ static occ::handle<TFunction_Function> AddNamingFunction(
   const occ::handle<TDataStd_UAttribute>& theObject,
   const Standard_GUID&                    theDriverGuid)
 {
-  const TDF_Label aFunctionLabel = TDF_TagSource::NewChild(theObject->Label());
+  const TDF_Label                 aFunctionLabel = TDF_TagSource::NewChild(theObject->Label());
   occ::handle<TFunction_Function> aFunction =
-  TFunction_Function::Set(aFunctionLabel, theDriverGuid);
+    TFunction_Function::Set(aFunctionLabel, theDriverGuid);
   occ::handle<TDataStd_TreeNode> aFunctionNode = TDataStd_TreeNode::Set(aFunctionLabel);
   occ::handle<TDataStd_TreeNode> anObjectNode;
   if (aFunction.IsNull() || aFunctionNode.IsNull()
@@ -489,10 +487,10 @@ static occ::handle<TFunction_Function> AddNamingFunction(
     return occ::handle<TFunction_Function>();
   }
 
-  const TDF_Label anArgumentsLabel = TDF_TagSource::NewChild(aFunctionLabel);
-  const TDF_Label aResultLabel = TDF_TagSource::NewChild(aFunctionLabel);
-  occ::handle<TDataStd_TreeNode> anArgumentsNode = TDataStd_TreeNode::Set(anArgumentsLabel);
-  occ::handle<TDataStd_TreeNode> aResultNode = TDataStd_TreeNode::Set(aResultLabel);
+  const TDF_Label                anArgumentsLabel = TDF_TagSource::NewChild(aFunctionLabel);
+  const TDF_Label                aResultLabel     = TDF_TagSource::NewChild(aFunctionLabel);
+  occ::handle<TDataStd_TreeNode> anArgumentsNode  = TDataStd_TreeNode::Set(anArgumentsLabel);
+  occ::handle<TDataStd_TreeNode> aResultNode      = TDataStd_TreeNode::Set(aResultLabel);
   if (anArgumentsNode.IsNull() || aResultNode.IsNull() || !aFunctionNode->Append(anArgumentsNode)
       || !aFunctionNode->Append(aResultNode)
       || TDF_Reference::Set(theObject->Label(), aResultLabel).IsNull())
@@ -573,10 +571,10 @@ static TDF_Label LabelByEntry(const occ::handle<TDocStd_Document>& theDocument,
   return aLabel;
 }
 
-static int CollectUniqueSubShapes(const TopoDS_Shape&     theShape,
-                                  const TopAbs_ShapeEnum  theType,
-                                  TopoDS_Shape*           theSubShapes,
-                                  const int               theCapacity)
+static int CollectUniqueSubShapes(const TopoDS_Shape&    theShape,
+                                  const TopAbs_ShapeEnum theType,
+                                  TopoDS_Shape*          theSubShapes,
+                                  const int              theCapacity)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(theShape);
@@ -596,8 +594,8 @@ static int CollectUniqueSubShapes(const TopoDS_Shape&     theShape,
 }
 
 static void SelectImportedShape(const TDF_Label&    theSelectionLabel,
-                                const TopoDS_Shape&  theSelection,
-                                const TopoDS_Shape&  theContext)
+                                const TopoDS_Shape& theSelection,
+                                const TopoDS_Shape& theContext)
 {
   TNaming_Selector aSelector(theSelectionLabel);
   ASSERT_TRUE(aSelector.Select(theSelection, theContext, false));
@@ -605,10 +603,10 @@ static void SelectImportedShape(const TDF_Label&    theSelectionLabel,
 }
 
 static void ExpectNamingSelection(const TDF_Label&       theSelectionLabel,
-                                  const TNaming_NameType  theExpectedType,
-                                  const TopAbs_ShapeEnum  theExpectedShapeType,
-                                  const TDF_Label*        theExpectedArguments,
-                                  const int               theExpectedArgumentCount)
+                                  const TNaming_NameType theExpectedType,
+                                  const TopAbs_ShapeEnum theExpectedShapeType,
+                                  const TDF_Label*       theExpectedArguments,
+                                  const int              theExpectedArgumentCount)
 {
   occ::handle<TNaming_Naming> aNaming;
   ASSERT_TRUE(theSelectionLabel.FindAttribute(TNaming_Naming::GetID(), aNaming));
@@ -623,8 +621,7 @@ static void ExpectNamingSelection(const TDF_Label&       theSelectionLabel,
   for (int anExpectedIndex = 0; anExpectedIndex < theExpectedArgumentCount; ++anExpectedIndex)
   {
     bool hasArgument = false;
-    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator anIterator(
-           aName.Arguments());
+    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator anIterator(aName.Arguments());
          anIterator.More();
          anIterator.Next())
     {
@@ -649,9 +646,8 @@ static void RunB7(const char* theFormat, const bool theUseStream = false)
   const TDF_Label aTarget = aDocument->Main().FindChild(3, true);
   ASSERT_FALSE(TDataStd_Name::Set(aSource, "SLabel").IsNull());
   ASSERT_FALSE(TDataStd_Name::Set(aTarget, "TLabel1").IsNull());
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0),
-                                                gp_Pnt(110.0, 220.0, 330.0))
-                              .Shape();
+  const TopoDS_Shape aBox =
+    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)).Shape();
   SetShape(aSource, aBox);
 
   aDocument->NewCommand();
@@ -660,11 +656,7 @@ static void RunB7(const char* theFormat, const bool theUseStream = false)
   ASSERT_TRUE(aTool.IsDone());
 
   occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication,
-                aDocument,
-                theFormat,
-                "draw_ocaf_copy_with_link",
-                theUseStream);
+    SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_copy_with_link", theUseStream);
   ASSERT_FALSE(aRestored.IsNull());
   const TDF_Label aRestoredSource = aRestored->Main().FindChild(2, false);
   const TDF_Label aRestoredTarget = aRestored->Main().FindChild(3, false);
@@ -679,17 +671,16 @@ static void RunC2(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aShapeLabel = aDocument->Main().FindChild(2, true);
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0),
-                                                gp_Pnt(110.0, 220.0, 330.0))
-                              .Shape();
+  const TDF_Label    aShapeLabel = aDocument->Main().FindChild(2, true);
+  const TopoDS_Shape aBox =
+    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)).Shape();
   SetShape(aShapeLabel, aBox);
   occ::handle<TNaming_NamedShape> aNamedShape;
   ASSERT_TRUE(aShapeLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape));
 
-  const TDF_Label aRealLabel = aDocument->Main().FindChild(1, true).FindChild(1, true);
-  const TDF_Label aConstraintLabel = aDocument->Main().FindChild(3, true);
-  occ::handle<TDataStd_Real> aReal = TDataStd_Real::Set(aRealLabel, 123.456789);
+  const TDF_Label            aRealLabel = aDocument->Main().FindChild(1, true).FindChild(1, true);
+  const TDF_Label            aConstraintLabel = aDocument->Main().FindChild(3, true);
+  occ::handle<TDataStd_Real> aReal            = TDataStd_Real::Set(aRealLabel, 123.456789);
   ASSERT_FALSE(aReal.IsNull());
   occ::handle<TDataXtd_Constraint> aConstraint = TDataXtd_Constraint::Set(aConstraintLabel);
   aConstraint->SetType(TDataXtd_TANGENT);
@@ -703,8 +694,8 @@ static void RunC2(const char* theFormat)
   const TDF_Label aRestoredConstraintLabel = aRestored->Main().FindChild(3, false);
   ASSERT_FALSE(aRestoredConstraintLabel.IsNull());
   occ::handle<TDataXtd_Constraint> aRestoredConstraint;
-  ASSERT_TRUE(aRestoredConstraintLabel.FindAttribute(TDataXtd_Constraint::GetID(),
-                                                     aRestoredConstraint));
+  ASSERT_TRUE(
+    aRestoredConstraintLabel.FindAttribute(TDataXtd_Constraint::GetID(), aRestoredConstraint));
   EXPECT_EQ(aRestoredConstraint->GetType(), TDataXtd_TANGENT);
   ASSERT_EQ(aRestoredConstraint->NbGeometries(), 1);
   ASSERT_FALSE(aRestoredConstraint->GetGeometry(1).IsNull());
@@ -725,8 +716,8 @@ static void RunC3(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aLabel = aDocument->Main().FindChild(2, true);
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  const TDF_Label    aLabel = aDocument->Main().FindChild(2, true);
+  const TopoDS_Shape aBox   = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
   SetShape(aLabel, aBox);
   occ::handle<TDataXtd_Geometry> aGeometry = TDataXtd_Geometry::Set(aLabel);
   ASSERT_FALSE(aGeometry.IsNull());
@@ -747,10 +738,10 @@ static void RunC4(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 777.0).Shape();
-  const TDF_Label aShapeLabel = aDocument->Main().FindChild(1, true);
+  const TopoDS_Shape aBox        = BRepPrimAPI_MakeBox(10.0, 20.0, 777.0).Shape();
+  const TDF_Label    aShapeLabel = aDocument->Main().FindChild(1, true);
   SetShape(aShapeLabel, aBox);
-  const TDF_Label aSelectionLabel = aShapeLabel.FindChild(1, true);
+  const TDF_Label  aSelectionLabel = aShapeLabel.FindChild(1, true);
   TNaming_Selector aSelector(aSelectionLabel);
   ASSERT_TRUE(aSelector.Select(aBox));
 
@@ -769,14 +760,14 @@ static void RunC5(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aShapeLabel = aDocument->Main().FindChild(2, true);
-  const TDF_Label aRealLabel = aDocument->Main().FindChild(3, true);
+  const TDF_Label aShapeLabel    = aDocument->Main().FindChild(2, true);
+  const TDF_Label aRealLabel     = aDocument->Main().FindChild(3, true);
   const TDF_Label anIntegerLabel = aDocument->Main().FindChild(4, true);
-  const TDF_Label aPatternLabel = aDocument->Main().FindChild(1, true).FindChild(1, true);
+  const TDF_Label aPatternLabel  = aDocument->Main().FindChild(1, true).FindChild(1, true);
   SetShape(aShapeLabel, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   occ::handle<TNaming_NamedShape> aNamedShape;
   ASSERT_TRUE(aShapeLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape));
-  occ::handle<TDataStd_Real> aReal = TDataStd_Real::Set(aRealLabel, 45.0);
+  occ::handle<TDataStd_Real>    aReal     = TDataStd_Real::Set(aRealLabel, 45.0);
   occ::handle<TDataStd_Integer> anInteger = TDataStd_Integer::Set(anIntegerLabel, 7);
   ASSERT_FALSE(aReal.IsNull());
   ASSERT_FALSE(anInteger.IsNull());
@@ -789,14 +780,19 @@ static void RunC5(const char* theFormat)
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_pattern");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredPatternLabel =
-    aRestored->Main().FindChild(1, false).FindChild(1, false);
+  const TDF_Label aRestoredPatternLabel = aRestored->Main().FindChild(1, false).FindChild(1, false);
   ASSERT_FALSE(aRestoredPatternLabel.IsNull());
   occ::handle<TDataXtd_PatternStd> aRestoredPattern;
   ASSERT_TRUE(aRestoredPatternLabel.FindAttribute(TDataXtd_Pattern::GetID(), aRestoredPattern));
   EXPECT_EQ(aRestoredPattern->Signature(), 1);
   ASSERT_FALSE(aRestoredPattern->Axis1().IsNull());
-  ExpectBoxBounds(TNaming_Tool::GetShape(aRestoredPattern->Axis1()), 0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
+  ExpectBoxBounds(TNaming_Tool::GetShape(aRestoredPattern->Axis1()),
+                  0.0,
+                  0.0,
+                  0.0,
+                  10.0,
+                  20.0,
+                  30.0);
   ASSERT_FALSE(aRestoredPattern->Value1().IsNull());
   ASSERT_FALSE(aRestoredPattern->NbInstances1().IsNull());
   EXPECT_DOUBLE_EQ(aRestoredPattern->Value1()->Get(), 45.0);
@@ -809,14 +805,13 @@ static void RunC7(const char* theFormat)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aLabel = aDocument->Main().FindChild(1, true).FindChild(1, true);
-  const gp_Pnt anExpected(123.456, 789.012, 345.678);
+  const gp_Pnt    anExpected(123.456, 789.012, 345.678);
   TDataXtd_Position::Set(aLabel, anExpected);
 
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_position");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredLabel =
-    aRestored->Main().FindChild(1, false).FindChild(1, false);
+  const TDF_Label aRestoredLabel = aRestored->Main().FindChild(1, false).FindChild(1, false);
   ASSERT_FALSE(aRestoredLabel.IsNull());
   gp_Pnt anActual;
   ASSERT_TRUE(TDataXtd_Position::Get(aRestoredLabel, anActual));
@@ -828,16 +823,16 @@ static void RunD2(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const int aTags[][6] = {{3},
-                          {2076534922, 524398634, 912349856},
-                          {3, 9283, 12, 1, 9843, 46793},
-                          {4, 81245034, 321, 1, 1, 1},
-                          {5, 8, 4, 2, 213, 3242},
-                          {2, 15, 123, 31214, 452398, 421},
-                          {2, 2, 1, 1, 1, 3},
-                          {2, 9}};
-  const int aTagLengths[] = {1, 3, 6, 6, 6, 6, 6, 2};
-  NCollection_Array1<TDF_Label> aLabels(1, 8);
+  const int                                   aTags[][6]    = {{3},
+                                                               {2076534922, 524398634, 912349856},
+                                                               {3, 9283, 12, 1, 9843, 46793},
+                                                               {4, 81245034, 321, 1, 1, 1},
+                                                               {5, 8, 4, 2, 213, 3242},
+                                                               {2, 15, 123, 31214, 452398, 421},
+                                                               {2, 2, 1, 1, 1, 3},
+                                                               {2, 9}};
+  const int                                   aTagLengths[] = {1, 3, 6, 6, 6, 6, 6, 2};
+  NCollection_Array1<TDF_Label>               aLabels(1, 8);
   NCollection_Array1<TCollection_AsciiString> anEntries(1, 8);
   for (int anIndex = 1; anIndex <= 8; ++anIndex)
   {
@@ -878,10 +873,14 @@ static void RunD3(const char* theFormat)
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aVariableLabel1 = aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
-  const TDF_Label aVariableLabel2 = aDocument->GetData()->Root().FindChild(1, true).FindChild(2, true);
-  const TDF_Label aVariableLabel3 = aDocument->GetData()->Root().FindChild(1, true).FindChild(3, true);
-  const TDF_Label aRelationLabel = aDocument->GetData()->Root().FindChild(1, true).FindChild(13, true);
+  const TDF_Label aVariableLabel1 =
+    aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
+  const TDF_Label aVariableLabel2 =
+    aDocument->GetData()->Root().FindChild(1, true).FindChild(2, true);
+  const TDF_Label aVariableLabel3 =
+    aDocument->GetData()->Root().FindChild(1, true).FindChild(3, true);
+  const TDF_Label aRelationLabel =
+    aDocument->GetData()->Root().FindChild(1, true).FindChild(13, true);
   occ::handle<TDataStd_Variable> aVariable1 = TDataStd_Variable::Set(aVariableLabel1);
   occ::handle<TDataStd_Variable> aVariable2 = TDataStd_Variable::Set(aVariableLabel2);
   occ::handle<TDataStd_Variable> aVariable3 = TDataStd_Variable::Set(aVariableLabel3);
@@ -909,14 +908,14 @@ static void RunD3(const char* theFormat)
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_relation_alias");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredRelationLabel = LabelByEntry(aRestored, aRelationEntry);
+  const TDF_Label                aRestoredRelationLabel = LabelByEntry(aRestored, aRelationEntry);
   occ::handle<TDataStd_Relation> aRestoredRelation;
   ASSERT_TRUE(aRestoredRelationLabel.FindAttribute(TDataStd_Relation::GetID(), aRestoredRelation));
   EXPECT_EQ(aRestoredRelation->GetRelation(), TCollection_ExtendedString("f = m*a"));
   const TCollection_AsciiString anExpectedEntries[] = {aVariableEntry1,
                                                        aVariableEntry2,
                                                        aVariableEntry3};
-  int anIndex = 0;
+  int                           anIndex             = 0;
   for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator anIterator(
          aRestoredRelation->GetVariables());
        anIterator.More();
@@ -929,9 +928,9 @@ static void RunD3(const char* theFormat)
   }
   EXPECT_EQ(anIndex, 3);
 
-  const TDF_Label aRestoredVariable1 = LabelByEntry(aRestored, aVariableEntry1);
-  const TDF_Label aRestoredVariable2 = LabelByEntry(aRestored, aVariableEntry2);
-  const TDF_Label aRestoredVariable3 = LabelByEntry(aRestored, aVariableEntry3);
+  const TDF_Label                aRestoredVariable1 = LabelByEntry(aRestored, aVariableEntry1);
+  const TDF_Label                aRestoredVariable2 = LabelByEntry(aRestored, aVariableEntry2);
+  const TDF_Label                aRestoredVariable3 = LabelByEntry(aRestored, aVariableEntry3);
   occ::handle<TDataStd_Variable> aRestoredVariable;
   ASSERT_TRUE(aRestoredVariable1.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
   EXPECT_TRUE(aRestoredVariable->IsConstant());
@@ -943,6 +942,7 @@ static void RunD3(const char* theFormat)
   EXPECT_FALSE(aRestoredVariable->IsConstant());
   EXPECT_EQ(aRestoredVariable->Unit(), TCollection_AsciiString("m/s2"));
 }
+
 static TDF_Label AttributeLabel(const occ::handle<TDocStd_Document>& theDocument)
 {
   return theDocument->Main().FindChild(2, true);
@@ -951,7 +951,7 @@ static TDF_Label AttributeLabel(const occ::handle<TDocStd_Document>& theDocument
 static void RunA1(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   ASSERT_FALSE(TDataStd_Integer::Set(AttributeLabel(aDocument), 100).IsNull());
 
@@ -966,7 +966,7 @@ static void RunA1(const char* theFormat, const bool theUseStream = false)
 static void RunA2(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   ASSERT_FALSE(TDataStd_Real::Set(AttributeLabel(aDocument), 100.0).IsNull());
 
@@ -981,7 +981,7 @@ static void RunA2(const char* theFormat, const bool theUseStream = false)
 static void RunA3(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<TDataStd_RealArray> anArray =
     TDataStd_RealArray::Set(AttributeLabel(aDocument), 1, 2);
@@ -1003,7 +1003,7 @@ static void RunA3(const char* theFormat, const bool theUseStream = false)
 static void RunA4(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<TDataStd_IntegerArray> anArray =
     TDataStd_IntegerArray::Set(AttributeLabel(aDocument), 1, 2);
@@ -1026,7 +1026,7 @@ static void RunA4(const char* theFormat, const bool theUseStream = false)
 static void RunA5(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TCollection_ExtendedString anExpected("New Attribute");
   ASSERT_FALSE(TDataStd_Name::Set(AttributeLabel(aDocument), anExpected).IsNull());
@@ -1042,7 +1042,7 @@ static void RunA5(const char* theFormat, const bool theUseStream = false)
 static void RunA6(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TCollection_ExtendedString anExpected("New Attribute");
   ASSERT_FALSE(TDataStd_Comment::Set(AttributeLabel(aDocument), anExpected).IsNull());
@@ -1058,7 +1058,7 @@ static void RunA6(const char* theFormat, const bool theUseStream = false)
 static void RunA7(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const gp_Pnt anExpected(10.0, 20.0, 30.0);
   ASSERT_FALSE(TDataXtd_Point::Set(AttributeLabel(aDocument), anExpected).IsNull());
@@ -1074,7 +1074,7 @@ static void RunA7(const char* theFormat, const bool theUseStream = false)
 static void RunA8(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const gp_Lin anExpected(gp_Pnt(10.0, 20.0, 30.0), gp_Dir(100.0, 200.0, 300.0));
   ASSERT_FALSE(TDataXtd_Axis::Set(AttributeLabel(aDocument), anExpected).IsNull());
@@ -1091,7 +1091,7 @@ static void RunA8(const char* theFormat, const bool theUseStream = false)
 static void RunA9(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const gp_Pln anExpected(gp_Pnt(10.0, 20.0, 30.0), gp_Dir(-1.0, 0.0, 0.0));
   ASSERT_FALSE(TDataXtd_Plane::Set(AttributeLabel(aDocument), anExpected).IsNull());
@@ -1102,24 +1102,20 @@ static void RunA9(const char* theFormat, const bool theUseStream = false)
   gp_Pln aPlane;
   ASSERT_TRUE(TDataXtd_Geometry::Plane(AttributeLabel(aRestored), aPlane));
   EXPECT_TRUE(aPlane.Location().IsEqual(anExpected.Location(), Precision::Confusion()));
-  EXPECT_TRUE(aPlane.Axis().Direction().IsEqual(anExpected.Axis().Direction(),
-                                                 Precision::Confusion()));
+  EXPECT_TRUE(
+    aPlane.Axis().Direction().IsEqual(anExpected.Axis().Direction(), Precision::Confusion()));
 }
 
 static void RunB1(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const Standard_GUID aGuid("c73bd075-22ee-11d2-acde-080009dc4422");
   ASSERT_FALSE(TDataStd_UAttribute::Set(AttributeLabel(aDocument), aGuid).IsNull());
 
   occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication,
-                aDocument,
-                theFormat,
-                "draw_ocaf_user_attribute_bin",
-                theUseStream);
+    SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_user_attribute_bin", theUseStream);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_UAttribute> anAttribute;
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, anAttribute));
@@ -1129,7 +1125,7 @@ static void RunB1(const char* theFormat, const bool theUseStream = false)
 static void RunB2(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const Standard_GUID aGuid1("c73bd075-22ee-11d2-acde-080009dc4422");
   const Standard_GUID aGuid2("c73bd076-22ee-11d2-acde-080009dc4422");
@@ -1137,12 +1133,11 @@ static void RunB2(const char* theFormat, const bool theUseStream = false)
   ASSERT_FALSE(TDataStd_UAttribute::Set(aLabel, aGuid1).IsNull());
   ASSERT_FALSE(TDataStd_UAttribute::Set(aLabel, aGuid2).IsNull());
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication,
-                aDocument,
-                theFormat,
-                "draw_ocaf_two_user_attributes_bin",
-                theUseStream);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication,
+                                                        aDocument,
+                                                        theFormat,
+                                                        "draw_ocaf_two_user_attributes_bin",
+                                                        theUseStream);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_UAttribute> anAttribute1;
   occ::handle<TDataStd_UAttribute> anAttribute2;
@@ -1154,7 +1149,7 @@ static void RunB2(const char* theFormat, const bool theUseStream = false)
 static void RunB3(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   SetShape(AttributeLabel(aDocument),
            BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)));
@@ -1168,18 +1163,17 @@ static void RunB3(const char* theFormat, const bool theUseStream = false)
 static void RunB5(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->NewCommand();
   SetShape(AttributeLabel(aDocument),
            BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)));
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication,
-                aDocument,
-                theFormat,
-                "draw_ocaf_named_shape_transaction_bin",
-                theUseStream);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication,
+                                                        aDocument,
+                                                        theFormat,
+                                                        "draw_ocaf_named_shape_transaction_bin",
+                                                        theUseStream);
   ASSERT_FALSE(aRestored.IsNull());
   ExpectBoxBounds(ShapeOf(AttributeLabel(aRestored)), 10.0, 20.0, 30.0, 110.0, 220.0, 330.0);
 }
@@ -1187,7 +1181,7 @@ static void RunB5(const char* theFormat, const bool theUseStream = false)
 static void RunB8(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aLabel = AttributeLabel(aDocument);
   ASSERT_FALSE(TDataStd_Name::Set(aLabel, TCollection_ExtendedString("Label1")).IsNull());
@@ -1210,7 +1204,7 @@ static void RunB8(const char* theFormat, const bool theUseStream = false)
 static void RunB9(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aLabel = AttributeLabel(aDocument);
   ASSERT_FALSE(TDataStd_Directory::New(aLabel).IsNull());
@@ -1257,7 +1251,7 @@ static void RunCafBugC2Stream()
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
 
-  const TDF_Label aLabel = AttributeLabel(aDocument);
+  const TDF_Label                      aLabel  = AttributeLabel(aDocument);
   occ::handle<TDataStd_ExtStringArray> anArray = TDataStd_ExtStringArray::Set(aLabel, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   anArray->SetValue(1, TCollection_ExtendedString("TDataStd"));
@@ -1266,8 +1260,8 @@ static void RunCafBugC2Stream()
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringArray> aRestoredArray;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(),
-                                                       aRestoredArray));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(), aRestoredArray));
   ASSERT_FALSE(aRestoredArray.IsNull());
   EXPECT_EQ(aRestoredArray->Lower(), 1);
   EXPECT_EQ(aRestoredArray->Upper(), 2);
@@ -1276,7 +1270,7 @@ static void RunCafBugC2Stream()
 }
 
 static void RestoreAfterForget(const occ::handle<TDocStd_Document>& theDocument,
-                               const TDF_Label&                      theLabel)
+                               const TDF_Label&                     theLabel)
 {
   theDocument->NewCommand();
   theLabel.ForgetAllAttributes();
@@ -1287,8 +1281,8 @@ static void RestoreAfterForget(const occ::handle<TDocStd_Document>& theDocument,
 }
 
 static void ExpectCafExtendedArray(const occ::handle<TDataStd_ExtStringArray>& theArray,
-                                   const TCollection_ExtendedString&             theFirst,
-                                   const TCollection_ExtendedString&             theSecond)
+                                   const TCollection_ExtendedString&           theFirst,
+                                   const TCollection_ExtendedString&           theSecond)
 {
   ASSERT_FALSE(theArray.IsNull());
   EXPECT_EQ(theArray->Lower(), 1);
@@ -1299,8 +1293,8 @@ static void ExpectCafExtendedArray(const occ::handle<TDataStd_ExtStringArray>& t
 }
 
 static void ExpectCafBooleanArray(const occ::handle<TDataStd_BooleanArray>& theArray,
-                                  const bool                                  theFirst,
-                                  const bool                                  theSecond)
+                                  const bool                                theFirst,
+                                  const bool                                theSecond)
 {
   ASSERT_FALSE(theArray.IsNull());
   EXPECT_EQ(theArray->Lower(), 1);
@@ -1327,7 +1321,7 @@ static void RunCafBasicM3Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aLabel = AttributeLabel(aDocument);
+  const TDF_Label                      aLabel  = AttributeLabel(aDocument);
   occ::handle<TDataStd_ExtStringArray> anArray = TDataStd_ExtStringArray::Set(aLabel, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   anArray->SetValue(1, TCollection_ExtendedString("TDataStd"));
@@ -1336,8 +1330,8 @@ static void RunCafBasicM3Stream()
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringArray> aRestoredArray;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(),
-                                                       aRestoredArray));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(), aRestoredArray));
   ExpectCafExtendedArray(aRestoredArray,
                          TCollection_ExtendedString("TDataStd"),
                          TCollection_ExtendedString("ExtStringArray"));
@@ -1348,8 +1342,8 @@ static void RunCafBasicM6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94515-6dbc-11d4-b9c8-0060b0ee281b");
+  const TDF_Label                      aLabel = AttributeLabel(aDocument);
+  const Standard_GUID                  aGuid("12e94515-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_ExtStringArray> anArray = TDataStd_ExtStringArray::Set(aLabel, 1, 2);
   occ::handle<TDataStd_ExtStringArray> aGuidArray =
     TDataStd_ExtStringArray::Set(aLabel, aGuid, 1, 2);
@@ -1365,8 +1359,8 @@ static void RunCafBasicM6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringArray> aRestoredArray;
   occ::handle<TDataStd_ExtStringArray> aRestoredGuidArray;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(),
-                                                       aRestoredArray));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringArray::GetID(), aRestoredArray));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidArray));
   ExpectCafExtendedArray(aRestoredArray,
                          TCollection_ExtendedString("xxxxxxxx"),
@@ -1411,8 +1405,8 @@ static void RunCafBasicN7Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_AsciiString> aDefaultAttribute;
   occ::handle<TDataStd_AsciiString> aGuidAttribute;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_AsciiString::GetID(),
-                                                       aDefaultAttribute));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_AsciiString::GetID(), aDefaultAttribute));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aGuidAttribute));
   EXPECT_EQ(aDefaultAttribute->Get(), TCollection_AsciiString("New Attribute_1"));
   EXPECT_EQ(aGuidAttribute->Get(), TCollection_AsciiString("New Attribute_2"));
@@ -1423,11 +1417,10 @@ static void RunCafBasicO6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94516-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_BooleanArray> anArray = TDataStd_BooleanArray::Set(aLabel, 1, 2);
-  occ::handle<TDataStd_BooleanArray> aGuidArray =
-    TDataStd_BooleanArray::Set(aLabel, aGuid, 1, 2);
+  const TDF_Label                    aLabel = AttributeLabel(aDocument);
+  const Standard_GUID                aGuid("12e94516-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_BooleanArray> anArray    = TDataStd_BooleanArray::Set(aLabel, 1, 2);
+  occ::handle<TDataStd_BooleanArray> aGuidArray = TDataStd_BooleanArray::Set(aLabel, aGuid, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   ASSERT_FALSE(aGuidArray.IsNull());
   anArray->SetValue(1, false);
@@ -1440,8 +1433,8 @@ static void RunCafBasicO6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_BooleanArray> aRestoredArray;
   occ::handle<TDataStd_BooleanArray> aRestoredGuidArray;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_BooleanArray::GetID(),
-                                                       aRestoredArray));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_BooleanArray::GetID(), aRestoredArray));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidArray));
   ExpectCafBooleanArray(aRestoredArray, false, true);
   ExpectCafBooleanArray(aRestoredGuidArray, false, true);
@@ -1452,9 +1445,9 @@ static void RunCafBasicP6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94517-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_ByteArray> anArray = TDataStd_ByteArray::Set(aLabel, 1, 2);
+  const TDF_Label                 aLabel = AttributeLabel(aDocument);
+  const Standard_GUID             aGuid("12e94517-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_ByteArray> anArray    = TDataStd_ByteArray::Set(aLabel, 1, 2);
   occ::handle<TDataStd_ByteArray> aGuidArray = TDataStd_ByteArray::Set(aLabel, aGuid, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   ASSERT_FALSE(aGuidArray.IsNull());
@@ -1468,8 +1461,7 @@ static void RunCafBasicP6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ByteArray> aRestoredArray;
   occ::handle<TDataStd_ByteArray> aRestoredGuidArray;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ByteArray::GetID(),
-                                                       aRestoredArray));
+  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ByteArray::GetID(), aRestoredArray));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidArray));
   ExpectCafByteArray(aRestoredArray, 10, 12);
   ExpectCafByteArray(aRestoredGuidArray, 10, 12);
@@ -1480,10 +1472,10 @@ static void RunCafBasicQ6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel    = AttributeLabel(aDocument);
-  const TDF_Label     aTarget1  = aDocument->Main().FindChild(3, true);
-  const TDF_Label     aTarget2  = aDocument->Main().FindChild(4, true);
-  const Standard_GUID aGuid("12e94518-6dbc-11d4-b9c8-0060b0ee281b");
+  const TDF_Label                      aLabel   = AttributeLabel(aDocument);
+  const TDF_Label                      aTarget1 = aDocument->Main().FindChild(3, true);
+  const TDF_Label                      aTarget2 = aDocument->Main().FindChild(4, true);
+  const Standard_GUID                  aGuid("12e94518-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_ReferenceArray> anArray = TDataStd_ReferenceArray::Set(aLabel, 1, 2);
   occ::handle<TDataStd_ReferenceArray> aGuidArray =
     TDataStd_ReferenceArray::Set(aLabel, aGuid, 1, 2);
@@ -1497,7 +1489,7 @@ static void RunCafBasicQ6Stream()
 
   occ::handle<TDocStd_Document> aRestored = SaveAndOpenStream(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredLabel = AttributeLabel(aRestored);
+  const TDF_Label aRestoredLabel   = AttributeLabel(aRestored);
   const TDF_Label aRestoredTarget1 = aRestored->Main().FindChild(3, false);
   const TDF_Label aRestoredTarget2 = aRestored->Main().FindChild(4, false);
   ASSERT_FALSE(aRestoredTarget1.IsNull());
@@ -1519,9 +1511,9 @@ static void RunCafBasicR6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94521-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_RealList> aList = TDataStd_RealList::Set(aLabel);
+  const TDF_Label                aLabel = AttributeLabel(aDocument);
+  const Standard_GUID            aGuid("12e94521-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_RealList> aList     = TDataStd_RealList::Set(aLabel);
   occ::handle<TDataStd_RealList> aGuidList = TDataStd_RealList::Set(aLabel, aGuid);
   ASSERT_FALSE(aList.IsNull());
   ASSERT_FALSE(aGuidList.IsNull());
@@ -1550,9 +1542,9 @@ static void RunCafBasicS6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94531-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_IntegerList> aList = TDataStd_IntegerList::Set(aLabel);
+  const TDF_Label                   aLabel = AttributeLabel(aDocument);
+  const Standard_GUID               aGuid("12e94531-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_IntegerList> aList     = TDataStd_IntegerList::Set(aLabel);
   occ::handle<TDataStd_IntegerList> aGuidList = TDataStd_IntegerList::Set(aLabel, aGuid);
   ASSERT_FALSE(aList.IsNull());
   ASSERT_FALSE(aGuidList.IsNull());
@@ -1566,7 +1558,8 @@ static void RunCafBasicS6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_IntegerList> aRestoredList;
   occ::handle<TDataStd_IntegerList> aRestoredGuidList;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_IntegerList::GetID(), aRestoredList));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_IntegerList::GetID(), aRestoredList));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidList));
   EXPECT_EQ(aRestoredList->Extent(), 2);
   EXPECT_EQ(aRestoredList->First(), 33);
@@ -1581,9 +1574,9 @@ static void RunCafBasicT6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_ExtStringList> aList = TDataStd_ExtStringList::Set(aLabel);
+  const TDF_Label                     aLabel = AttributeLabel(aDocument);
+  const Standard_GUID                 aGuid("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_ExtStringList> aList     = TDataStd_ExtStringList::Set(aLabel);
   occ::handle<TDataStd_ExtStringList> aGuidList = TDataStd_ExtStringList::Set(aLabel, aGuid);
   ASSERT_FALSE(aList.IsNull());
   ASSERT_FALSE(aGuidList.IsNull());
@@ -1597,7 +1590,8 @@ static void RunCafBasicT6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringList> aRestoredList;
   occ::handle<TDataStd_ExtStringList> aRestoredGuidList;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringList::GetID(), aRestoredList));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_ExtStringList::GetID(), aRestoredList));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidList));
   EXPECT_EQ(aRestoredList->Extent(), 2);
   EXPECT_EQ(aRestoredList->First(), TCollection_ExtendedString("xxxx"));
@@ -1612,9 +1606,9 @@ static void RunCafBasicU6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel = AttributeLabel(aDocument);
-  const Standard_GUID aGuid("12e94551-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_BooleanList> aList = TDataStd_BooleanList::Set(aLabel);
+  const TDF_Label                   aLabel = AttributeLabel(aDocument);
+  const Standard_GUID               aGuid("12e94551-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_BooleanList> aList     = TDataStd_BooleanList::Set(aLabel);
   occ::handle<TDataStd_BooleanList> aGuidList = TDataStd_BooleanList::Set(aLabel, aGuid);
   ASSERT_FALSE(aList.IsNull());
   ASSERT_FALSE(aGuidList.IsNull());
@@ -1628,7 +1622,8 @@ static void RunCafBasicU6Stream()
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_BooleanList> aRestoredList;
   occ::handle<TDataStd_BooleanList> aRestoredGuidList;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_BooleanList::GetID(), aRestoredList));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_BooleanList::GetID(), aRestoredList));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidList));
   EXPECT_EQ(aRestoredList->Extent(), 2);
   EXPECT_EQ(aRestoredList->First(), false);
@@ -1643,11 +1638,11 @@ static void RunCafBasicV6Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label     aLabel   = AttributeLabel(aDocument);
-  const TDF_Label     aTarget1 = aDocument->Main().FindChild(3, true);
-  const TDF_Label     aTarget2 = aDocument->Main().FindChild(4, true);
-  const Standard_GUID aGuid("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_ReferenceList> aList = TDataStd_ReferenceList::Set(aLabel);
+  const TDF_Label                     aLabel   = AttributeLabel(aDocument);
+  const TDF_Label                     aTarget1 = aDocument->Main().FindChild(3, true);
+  const TDF_Label                     aTarget2 = aDocument->Main().FindChild(4, true);
+  const Standard_GUID                 aGuid("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDataStd_ReferenceList> aList     = TDataStd_ReferenceList::Set(aLabel);
   occ::handle<TDataStd_ReferenceList> aGuidList = TDataStd_ReferenceList::Set(aLabel, aGuid);
   ASSERT_FALSE(aList.IsNull());
   ASSERT_FALSE(aGuidList.IsNull());
@@ -1665,8 +1660,8 @@ static void RunCafBasicV6Stream()
   ASSERT_FALSE(aRestoredTarget2.IsNull());
   occ::handle<TDataStd_ReferenceList> aRestoredList;
   occ::handle<TDataStd_ReferenceList> aRestoredGuidList;
-  ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_ReferenceList::GetID(),
-                                                       aRestoredList));
+  ASSERT_TRUE(
+    AttributeLabel(aRestored).FindAttribute(TDataStd_ReferenceList::GetID(), aRestoredList));
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(aGuid, aRestoredGuidList));
   EXPECT_EQ(aRestoredList->Extent(), 2);
   EXPECT_EQ(aRestoredList->First(), aRestoredTarget1);
@@ -1709,7 +1704,7 @@ static occ::handle<Poly_Triangulation> MakeCafTriangulation(const bool theDense)
   return aResult;
 }
 
-static void ExpectCafTriangulation(const TDF_Label&                         theLabel,
+static void ExpectCafTriangulation(const TDF_Label&                       theLabel,
                                    const occ::handle<Poly_Triangulation>& theExpected)
 {
   occ::handle<TDataXtd_Triangulation> anAttribute;
@@ -1723,8 +1718,8 @@ static void ExpectCafTriangulation(const TDF_Label&                         theL
   EXPECT_EQ(anAttribute->HasNormals(), theExpected->HasNormals());
   for (int anIndex = 1; anIndex <= theExpected->NbNodes(); ++anIndex)
   {
-    EXPECT_TRUE(anAttribute->Node(anIndex).IsEqual(theExpected->Node(anIndex),
-                                                   Precision::Confusion()));
+    EXPECT_TRUE(
+      anAttribute->Node(anIndex).IsEqual(theExpected->Node(anIndex), Precision::Confusion()));
   }
   for (int anIndex = 1; anIndex <= theExpected->NbTriangles(); ++anIndex)
   {
@@ -1747,7 +1742,7 @@ static void RunCafBasicN1Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aLabel = aDocument->Main().FindChild(1, true);
+  const TDF_Label                       aLabel      = aDocument->Main().FindChild(1, true);
   const occ::handle<Poly_Triangulation> aFirstMesh  = MakeCafTriangulation(false);
   const occ::handle<Poly_Triangulation> aSecondMesh = MakeCafTriangulation(true);
 
@@ -1782,7 +1777,7 @@ static void RunCafBug24164_2Stream()
   occ::handle<TDocStd_Application> anApplication = NewApplication();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aRoot = aDocument->Main().FindChild(1, true);
+  const TDF_Label aRoot   = aDocument->Main().FindChild(1, true);
   const TDF_Label aLabel1 = aRoot.FindChild(1, true);
   const TDF_Label aLabel2 = aRoot.FindChild(2, true);
   const TDF_Label aLabel3 = aRoot.FindChild(3, true);
@@ -1890,7 +1885,8 @@ static void RunCafBug24164_1Stream()
   EXPECT_EQ(aRestoredFunction->GetFailure(), DONE);
   ExpectBoxBounds(NamingFunctionShape(aRestoredFunction), 0.0, 0.0, 0.0, 190.0, 290.0, 390.0);
 
-  const TDF_Label aRestoredResultLabel = aRestoredFunctionLabel.FindChild(FUNCTION_RESULT_LABEL, false);
+  const TDF_Label aRestoredResultLabel =
+    aRestoredFunctionLabel.FindChild(FUNCTION_RESULT_LABEL, false);
   ASSERT_FALSE(aRestoredResultLabel.IsNull());
   EXPECT_EQ(TopExp_Explorer(NamingFunctionShape(aRestoredFunction), TopAbs_FACE).More(), true);
   EXPECT_NO_THROW(anApplication->Close(aRestored));
@@ -1899,17 +1895,17 @@ static void RunCafBug24164_1Stream()
 static void RunC1(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aRootLabel = AttributeLabel(aDocument);
   ASSERT_FALSE(TDataStd_Name::Set(aRootLabel, TCollection_ExtendedString("Label_1")).IsNull());
-  occ::handle<TDataStd_TreeNode> aRootNode = TDataStd_TreeNode::Set(aRootLabel);
-  const TDF_Label aChildLabel1 = aDocument->Main().FindChild(7, true);
-  const TDF_Label aChildLabel2 = aDocument->Main().FindChild(8, true);
-  const TDF_Label aChildLabel3 = aDocument->Main().FindChild(9, true);
-  occ::handle<TDataStd_TreeNode> aChildNode1 = TDataStd_TreeNode::Set(aChildLabel1);
-  occ::handle<TDataStd_TreeNode> aChildNode2 = TDataStd_TreeNode::Set(aChildLabel2);
-  occ::handle<TDataStd_TreeNode> aChildNode3 = TDataStd_TreeNode::Set(aChildLabel3);
+  occ::handle<TDataStd_TreeNode> aRootNode    = TDataStd_TreeNode::Set(aRootLabel);
+  const TDF_Label                aChildLabel1 = aDocument->Main().FindChild(7, true);
+  const TDF_Label                aChildLabel2 = aDocument->Main().FindChild(8, true);
+  const TDF_Label                aChildLabel3 = aDocument->Main().FindChild(9, true);
+  occ::handle<TDataStd_TreeNode> aChildNode1  = TDataStd_TreeNode::Set(aChildLabel1);
+  occ::handle<TDataStd_TreeNode> aChildNode2  = TDataStd_TreeNode::Set(aChildLabel2);
+  occ::handle<TDataStd_TreeNode> aChildNode3  = TDataStd_TreeNode::Set(aChildLabel3);
   ASSERT_TRUE(aRootNode->Append(aChildNode1));
   ASSERT_TRUE(aRootNode->Append(aChildNode2));
   ASSERT_TRUE(aRootNode->Append(aChildNode3));
@@ -1920,7 +1916,7 @@ static void RunC1(const char* theFormat)
   occ::handle<TDataStd_TreeNode> aRestoredRoot = TDataStd_TreeNode::Set(AttributeLabel(aRestored));
   ASSERT_FALSE(aRestoredRoot.IsNull());
   EXPECT_EQ(aRestoredRoot->NbChildren(false), 3);
-  const int aExpectedTags[] = {7, 8, 9};
+  const int                  aExpectedTags[] = {7, 8, 9};
   TDataStd_ChildNodeIterator anIterator(aRestoredRoot, false);
   for (int anIndex = 0; anIterator.More() && anIndex < 3; anIterator.Next(), ++anIndex)
   {
@@ -1932,10 +1928,10 @@ static void RunC1(const char* theFormat)
 static void RunC6(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const Standard_GUID aDriverGuid("5b35ca00-5b78-11d1-8940-080009dc3333");
-  const TDF_Label aLabel = aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
+  const TDF_Label     aLabel = aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
   occ::handle<TFunction_Function> aFunction = TFunction_Function::Set(aLabel, aDriverGuid);
   ASSERT_FALSE(aFunction.IsNull());
   aFunction->SetFailure(13);
@@ -1945,7 +1941,7 @@ static void RunC6(const char* theFormat)
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_function_bin");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredLabel = LabelByEntry(aRestored, aLabelEntry);
+  const TDF_Label                 aRestoredLabel = LabelByEntry(aRestored, aLabelEntry);
   occ::handle<TFunction_Function> aRestoredFunction;
   ASSERT_TRUE(aRestoredLabel.FindAttribute(TFunction_Function::GetID(), aRestoredFunction));
   EXPECT_EQ(aRestoredFunction->GetDriverGUID(), aDriverGuid);
@@ -1955,15 +1951,14 @@ static void RunC6(const char* theFormat)
 static void RunD1(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const char* const aNames[] = {
-    "Tu sais je n'ai jamais t aussi hereux que ce matin-l",
-    "\"Tu sais je n'ai jamais t aussi hereux que ce matin-l\"",
-    "<Tu sais je n'ai jamais t aussi hereux que ce matin-l>",
-    "Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous",
-    "\"Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous\"",
-    "Il <n'avait plus rien cr> dans ce monde triste"};
+  const char* const aNames[] = {"Tu sais je n'ai jamais t aussi hereux que ce matin-l",
+                                "\"Tu sais je n'ai jamais t aussi hereux que ce matin-l\"",
+                                "<Tu sais je n'ai jamais t aussi hereux que ce matin-l>",
+                                "Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous",
+                                "\"Tu m'as dit \"J'ai rendez-vous dans un sous-sol avec des fous\"",
+                                "Il <n'avait plus rien cr> dans ce monde triste"};
   for (int anIndex = 0; anIndex < 6; ++anIndex)
   {
     const TDF_Label aLabel = aDocument->Main().FindChild(11 + anIndex, true);
@@ -1975,7 +1970,7 @@ static void RunD1(const char* theFormat)
   ASSERT_FALSE(aRestored.IsNull());
   for (int anIndex = 0; anIndex < 6; ++anIndex)
   {
-    const TDF_Label aLabel = aRestored->Main().FindChild(11 + anIndex, false);
+    const TDF_Label            aLabel = aRestored->Main().FindChild(11 + anIndex, false);
     occ::handle<TDataStd_Name> aName;
     ASSERT_TRUE(aLabel.FindAttribute(TDataStd_Name::GetID(), aName));
     EXPECT_EQ(aName->Get(), TCollection_ExtendedString(aNames[anIndex]));
@@ -1985,7 +1980,7 @@ static void RunD1(const char* theFormat)
 static void RunD4(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<TDataStd_IntegerArray> anArray =
     TDataStd_IntegerArray::Set(AttributeLabel(aDocument), 1, 1);
@@ -2006,7 +2001,7 @@ static void RunD4(const char* theFormat)
 static void RunD5(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<TDataStd_RealArray> anArray =
     TDataStd_RealArray::Set(AttributeLabel(aDocument), 1, 1);
@@ -2026,10 +2021,10 @@ static void RunD5(const char* theFormat)
 static void RunD6(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  ASSERT_FALSE(TDataStd_Name::Set(AttributeLabel(aDocument), TCollection_ExtendedString("00"))
-                 .IsNull());
+  ASSERT_FALSE(
+    TDataStd_Name::Set(AttributeLabel(aDocument), TCollection_ExtendedString("00")).IsNull());
 
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_leading_zero_name_bin");
@@ -2042,7 +2037,7 @@ static void RunD6(const char* theFormat)
 static void RunBasicIntegerUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid1("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
@@ -2066,7 +2061,7 @@ static void RunBasicIntegerUserGUID(const char* theFormat)
 static void RunBasicIntegerDefaultAndUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
@@ -2142,7 +2137,7 @@ static void RunBug29669(const char* theFormat)
 static void RunBasicRealUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid1("12e94551-6dbc-11d4-b9c8-0060b0ee281b");
@@ -2166,7 +2161,7 @@ static void RunBasicRealUserGUID(const char* theFormat)
 static void RunBasicRealDefaultAndUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid("12e94552-6dbc-11d4-b9c8-0060b0ee281b");
@@ -2187,7 +2182,7 @@ static void RunBasicRealDefaultAndUserGUID(const char* theFormat)
 }
 
 static void RestoreAttributesAfterUndo(const occ::handle<TDocStd_Document>& theDocument,
-                                        const TDF_Label&                     theLabel)
+                                       const TDF_Label&                     theLabel)
 {
   theDocument->NewCommand();
   theLabel.ForgetAllAttributes();
@@ -2200,12 +2195,12 @@ static void RestoreAttributesAfterUndo(const occ::handle<TDocStd_Document>& theD
 static void RunBasicRealArrayDefaultAndUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid("12e94511-6dbc-11d4-b9c8-0060b0ee281b");
   aDocument->NewCommand();
-  occ::handle<TDataStd_RealArray> anArray = TDataStd_RealArray::Set(aLabel, 1, 2);
+  occ::handle<TDataStd_RealArray> anArray    = TDataStd_RealArray::Set(aLabel, 1, 2);
   occ::handle<TDataStd_RealArray> aGuidArray = TDataStd_RealArray::Set(aLabel, aGuid, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   ASSERT_FALSE(aGuidArray.IsNull());
@@ -2238,14 +2233,13 @@ static void RunBasicRealArrayDefaultAndUserGUID(const char* theFormat)
 static void RunBasicIntegerArrayDefaultAndUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid("12e94511-6dbc-11d4-b9c8-0060b0ee281b");
   aDocument->NewCommand();
-  occ::handle<TDataStd_IntegerArray> anArray = TDataStd_IntegerArray::Set(aLabel, 1, 2);
-  occ::handle<TDataStd_IntegerArray> aGuidArray =
-    TDataStd_IntegerArray::Set(aLabel, aGuid, 1, 2);
+  occ::handle<TDataStd_IntegerArray> anArray    = TDataStd_IntegerArray::Set(aLabel, 1, 2);
+  occ::handle<TDataStd_IntegerArray> aGuidArray = TDataStd_IntegerArray::Set(aLabel, aGuid, 1, 2);
   ASSERT_FALSE(anArray.IsNull());
   ASSERT_FALSE(aGuidArray.IsNull());
   anArray->SetValue(1, 3);
@@ -2277,15 +2271,15 @@ static void RunBasicIntegerArrayDefaultAndUserGUID(const char* theFormat)
 static void RunBasicNameDefaultAndUserGUID(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid1("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
   const Standard_GUID aGuid2("12e94562-6dbc-11d4-b9c8-0060b0ee281b");
-  ASSERT_FALSE(TDataStd_Name::Set(aLabel, aGuid1, TCollection_ExtendedString("New Attribute_1"))
-                 .IsNull());
-  ASSERT_FALSE(TDataStd_Name::Set(aLabel, aGuid2, TCollection_ExtendedString("New Attribute_2"))
-                 .IsNull());
+  ASSERT_FALSE(
+    TDataStd_Name::Set(aLabel, aGuid1, TCollection_ExtendedString("New Attribute_1")).IsNull());
+  ASSERT_FALSE(
+    TDataStd_Name::Set(aLabel, aGuid2, TCollection_ExtendedString("New Attribute_2")).IsNull());
 
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_caf_basic_name_user_guids");
@@ -2303,14 +2297,13 @@ static void RunBasicNameDefaultAndUserGUID(const char* theFormat)
 static void RunBasicNameDefaultAndUserGUIDPair(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label     aLabel = AttributeLabel(aDocument);
   const Standard_GUID aGuid("12e94562-6dbc-11d4-b9c8-0060b0ee281b");
-  ASSERT_FALSE(TDataStd_Name::Set(aLabel, TCollection_ExtendedString("New Attribute_1"))
-                 .IsNull());
-  ASSERT_FALSE(TDataStd_Name::Set(aLabel, aGuid, TCollection_ExtendedString("New Attribute_2"))
-                 .IsNull());
+  ASSERT_FALSE(TDataStd_Name::Set(aLabel, TCollection_ExtendedString("New Attribute_1")).IsNull());
+  ASSERT_FALSE(
+    TDataStd_Name::Set(aLabel, aGuid, TCollection_ExtendedString("New Attribute_2")).IsNull());
 
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_caf_basic_name_default_and_guid");
@@ -2376,8 +2369,7 @@ static int NumberOfAttributes(const TDF_Label& theLabel)
   return aCount;
 }
 
-static bool HasAttributeType(const TDF_Label&                       theLabel,
-                             const occ::handle<Standard_Type>& theType)
+static bool HasAttributeType(const TDF_Label& theLabel, const occ::handle<Standard_Type>& theType)
 {
   for (TDF_AttributeIterator anIterator(theLabel); anIterator.More(); anIterator.Next())
   {
@@ -2392,7 +2384,7 @@ static bool HasAttributeType(const TDF_Label&                       theLabel,
 static void RunBasicEmptyAttributes(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aLabel = AttributeLabel(aDocument);
   aDocument->NewCommand();
@@ -2444,7 +2436,7 @@ static void RunBasicEmptyAttributes(const char* theFormat)
 static void RunBasicReference(const char* theFormat, const bool theUseStream = false)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aLabel1 = aDocument->Main().FindChild(2, true);
   const TDF_Label aLabel2 = aDocument->Main().FindChild(3, true);
@@ -2485,28 +2477,25 @@ static TDF_Label FindOrCreatePath(const occ::handle<TDocStd_Document>& theDocume
 static void RunB4(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const int aTags1[] = {3};
-  const int aTags2[] = {2076534922, 524398634, 912349856};
-  const int aTags3[] = {3, 9283, 12, 1, 9843, 46793, 321};
-  const int aTags4[] = {4, 81245034, 321, 1, 1, 1, 345, 8542, 1, 90, 6453};
-  const int aTags5[] = {5, 8, 4, 2, 213, 3242, 123456789, 987654321};
-  const int aTags6[] = {2, 15, 123, 31214, 452398, 421, 3, 2, 1, 3, 1, 2, 9,
-                        10, 2, 1, 1, 4};
-  const int aTags7[] = {2, 2, 1, 1, 1, 3, 1, 2, 1, 34, 1, 2, 4, 1, 5, 4, 1, 9,
-                        3, 1, 2, 1, 8, 2, 3, 1, 9, 5, 2, 7};
-  const int aTags8[] = {2, 9};
-  const int* const aTags[] = {aTags1, aTags2, aTags3, aTags4, aTags5, aTags6, aTags7, aTags8};
-  const int aTagLengths[] = {1, 3, 7, 11, 8, 18, 30, 2};
-  NCollection_Array1<TDF_Label> aLabels(1, 8);
+  const int        aTags1[] = {3};
+  const int        aTags2[] = {2076534922, 524398634, 912349856};
+  const int        aTags3[] = {3, 9283, 12, 1, 9843, 46793, 321};
+  const int        aTags4[] = {4, 81245034, 321, 1, 1, 1, 345, 8542, 1, 90, 6453};
+  const int        aTags5[] = {5, 8, 4, 2, 213, 3242, 123456789, 987654321};
+  const int        aTags6[] = {2, 15, 123, 31214, 452398, 421, 3, 2, 1, 3, 1, 2, 9, 10, 2, 1, 1, 4};
+  const int        aTags7[] = {2, 2, 1, 1, 1, 3, 1, 2, 1, 34, 1, 2, 4, 1, 5,
+                               4, 1, 9, 3, 1, 2, 1, 8, 2, 3,  1, 9, 5, 2, 7};
+  const int        aTags8[] = {2, 9};
+  const int* const aTags[]  = {aTags1, aTags2, aTags3, aTags4, aTags5, aTags6, aTags7, aTags8};
+  const int        aTagLengths[] = {1, 3, 7, 11, 8, 18, 30, 2};
+  NCollection_Array1<TDF_Label>               aLabels(1, 8);
   NCollection_Array1<TCollection_AsciiString> aEntries(1, 8);
   for (int anIndex = 1; anIndex <= 8; ++anIndex)
   {
     aLabels.SetValue(anIndex,
-                     FindOrCreatePath(aDocument,
-                                      aTags[anIndex - 1],
-                                      aTagLengths[anIndex - 1]));
+                     FindOrCreatePath(aDocument, aTags[anIndex - 1], aTagLengths[anIndex - 1]));
     TDF_Tool::Entry(aLabels.Value(anIndex), aEntries.ChangeValue(anIndex));
   }
 
@@ -2537,7 +2526,7 @@ static void RunB4(const char* theFormat)
 static void RunC8(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label aVariableLabel1 =
     aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
@@ -2565,13 +2554,13 @@ static void RunC8(const char* theFormat)
   TCollection_AsciiString aRelationEntry;
   TDF_Tool::Entry(aRelationLabel, aRelationEntry);
   const TCollection_AsciiString anExpectedEntries[] = {TCollection_AsciiString("0:1:1"),
-                                                        TCollection_AsciiString("0:1:2"),
-                                                        TCollection_AsciiString("0:1:3")};
+                                                       TCollection_AsciiString("0:1:2"),
+                                                       TCollection_AsciiString("0:1:3")};
 
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_relation_c8_bin");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredRelationLabel = LabelByEntry(aRestored, aRelationEntry);
+  const TDF_Label                aRestoredRelationLabel = LabelByEntry(aRestored, aRelationEntry);
   occ::handle<TDataStd_Relation> aRestoredRelation;
   ASSERT_TRUE(aRestoredRelationLabel.FindAttribute(TDataStd_Relation::GetID(), aRestoredRelation));
   EXPECT_EQ(aRestoredRelation->GetRelation(), TCollection_ExtendedString("f = m*a"));
@@ -2588,20 +2577,17 @@ static void RunC8(const char* theFormat)
   }
   EXPECT_EQ(anIndex, 3);
 
-  const TDF_Label aRestoredVariableLabel1 = LabelByEntry(aRestored, "0:1:1");
-  const TDF_Label aRestoredVariableLabel2 = LabelByEntry(aRestored, "0:1:2");
-  const TDF_Label aRestoredVariableLabel3 = LabelByEntry(aRestored, "0:1:3");
+  const TDF_Label                aRestoredVariableLabel1 = LabelByEntry(aRestored, "0:1:1");
+  const TDF_Label                aRestoredVariableLabel2 = LabelByEntry(aRestored, "0:1:2");
+  const TDF_Label                aRestoredVariableLabel3 = LabelByEntry(aRestored, "0:1:3");
   occ::handle<TDataStd_Variable> aRestoredVariable;
-  ASSERT_TRUE(
-    aRestoredVariableLabel1.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
+  ASSERT_TRUE(aRestoredVariableLabel1.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
   EXPECT_TRUE(aRestoredVariable->IsConstant());
   EXPECT_EQ(aRestoredVariable->Unit(), TCollection_AsciiString("N"));
-  ASSERT_TRUE(
-    aRestoredVariableLabel2.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
+  ASSERT_TRUE(aRestoredVariableLabel2.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
   EXPECT_FALSE(aRestoredVariable->IsConstant());
   EXPECT_EQ(aRestoredVariable->Unit(), TCollection_AsciiString("kg"));
-  ASSERT_TRUE(
-    aRestoredVariableLabel3.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
+  ASSERT_TRUE(aRestoredVariableLabel3.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
   EXPECT_FALSE(aRestoredVariable->IsConstant());
   EXPECT_EQ(aRestoredVariable->Unit(), TCollection_AsciiString("m/s2"));
 }
@@ -2609,10 +2595,9 @@ static void RunC8(const char* theFormat)
 static void RunC9(const char* theFormat)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument = NewDocument(anApplication, theFormat);
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aLabel =
-    aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
+  const TDF_Label aLabel = aDocument->GetData()->Root().FindChild(1, true).FindChild(1, true);
   occ::handle<TDataStd_Variable> aVariable = TDataStd_Variable::Set(aLabel);
   ASSERT_FALSE(aVariable.IsNull());
   aVariable->Constant(true);
@@ -2621,7 +2606,7 @@ static void RunC9(const char* theFormat)
   occ::handle<TDocStd_Document> aRestored =
     SaveAndOpen(anApplication, aDocument, theFormat, "draw_ocaf_variable_c9_bin");
   ASSERT_FALSE(aRestored.IsNull());
-  const TDF_Label aRestoredLabel = LabelByEntry(aRestored, "0:1:1");
+  const TDF_Label                aRestoredLabel = LabelByEntry(aRestored, "0:1:1");
   occ::handle<TDataStd_Variable> aRestoredVariable;
   ASSERT_TRUE(aRestoredLabel.FindAttribute(TDataStd_Variable::GetID(), aRestoredVariable));
   EXPECT_TRUE(aRestoredVariable->IsConstant());
@@ -2667,8 +2652,7 @@ static void RunCafBug31839_1Stream()
   occ::handle<PCDM_ReaderFilter> aSkipInteger = new PCDM_ReaderFilter;
   aSkipInteger->AddSkipped("TDataStd_Integer");
   occ::handle<TDocStd_Document> aPartialDocument;
-  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aPartialDocument, aSkipInteger),
-            PCDM_RS_OK);
+  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aPartialDocument, aSkipInteger), PCDM_RS_OK);
   ASSERT_FALSE(aPartialDocument.IsNull());
   const TDF_Label aFirstSubLabel = LabelByEntry(aPartialDocument, "0:1:1:1");
   ASSERT_FALSE(aFirstSubLabel.IsNull());
@@ -2722,8 +2706,7 @@ static void RunCafBug31839_1Stream()
   occ::handle<PCDM_ReaderFilter> anOverwrite =
     new PCDM_ReaderFilter(PCDM_ReaderFilter::AppendMode_Overwrite);
   anOverwrite->AddPath("0:1:1");
-  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aPartialDocument, anOverwrite),
-            PCDM_RS_OK);
+  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aPartialDocument, anOverwrite), PCDM_RS_OK);
   ASSERT_TRUE(aChangedIntegerLabel.FindAttribute(TDataStd_Integer::GetID(), anInteger));
   ASSERT_TRUE(aChangedRealLabel.FindAttribute(TDataStd_Real::GetID(), aReal));
   EXPECT_EQ(anInteger->Get(), 10);
@@ -2748,7 +2731,7 @@ static void RunCafBug31839_2Stream()
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
 
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+  const TopoDS_Shape               aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
   NCollection_Array1<TopoDS_Shape> aFaces(1, 6);
   int                              aFaceIndex = 1;
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
@@ -2774,7 +2757,7 @@ static void RunCafBug31839_2Stream()
   occ::handle<PCDM_ReaderFilter> aSkipShapes = new PCDM_ReaderFilter;
   aSkipShapes->AddSkipped("TNaming_NamedShape");
   occ::handle<TDocStd_Document> aRestored;
-  const PCDM_ReaderStatus aSkipStatus =
+  const PCDM_ReaderStatus       aSkipStatus =
     OpenDocumentStream(anApplication, aStream, aRestored, aSkipShapes);
   // BinOcaf reports a generic driver failure when the filter rejects every attribute;
   // DRAW ignores this status and validates the resulting document contents instead.
@@ -2807,7 +2790,7 @@ static void RunCafBug31839_2Stream()
   occ::handle<PCDM_ReaderFilter> anOverwriteShapes =
     new PCDM_ReaderFilter(PCDM_ReaderFilter::AppendMode_Overwrite);
   ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aRestored, anOverwriteShapes), PCDM_RS_OK);
-  const TopoDS_Shape aRestoredBox  = ShapeOf(aRestoredBoxLabel);
+  const TopoDS_Shape aRestoredBox                 = ShapeOf(aRestoredBoxLabel);
   const TopoDS_Shape aRestoredFace1AfterOverwrite = ShapeOf(aRestoredFace1);
   ASSERT_FALSE(aRestoredBox.IsNull());
   ASSERT_FALSE(aRestoredFace1AfterOverwrite.IsNull());
@@ -2861,9 +2844,8 @@ static void RunCafBug31918_1Stream()
   {
     for (int aSubLabelIndex = 1; aSubLabelIndex <= 100; ++aSubLabelIndex)
     {
-      const TDF_Label aLabel = aDocument->GetData()->Root()
-                                 .FindChild(aLabelIndex, true)
-                                 .FindChild(aSubLabelIndex, true);
+      const TDF_Label aLabel =
+        aDocument->GetData()->Root().FindChild(aLabelIndex, true).FindChild(aSubLabelIndex, true);
       occ::handle<TDataStd_IntegerArray> anArray =
         TDataStd_IntegerArray::Set(aLabel, aValues.Lower(), aValues.Upper());
       ASSERT_FALSE(anArray.IsNull());
@@ -2906,10 +2888,10 @@ static void RunCafBug31918_1Stream()
     return aMinTime;
   };
 
-  const double aWholeTime = MeasureOpen(occ::handle<PCDM_ReaderFilter>());
+  const double                   aWholeTime     = MeasureOpen(occ::handle<PCDM_ReaderFilter>());
   occ::handle<PCDM_ReaderFilter> aQuarterFilter = new PCDM_ReaderFilter;
   aQuarterFilter->AddPath("0:2");
-  const double aQuarterTime = MeasureOpen(aQuarterFilter);
+  const double                   aQuarterTime       = MeasureOpen(aQuarterFilter);
   occ::handle<PCDM_ReaderFilter> aFourQuarterFilter = new PCDM_ReaderFilter;
   aFourQuarterFilter->AddPath("0:1");
   aFourQuarterFilter->AddPath("0:2");
@@ -2923,7 +2905,7 @@ static void RunCafBug31918_1Stream()
   // Keep the DRAW ratio check while allowing small wall-clock measurement jitter.
   EXPECT_LE(aFourQuarterTime * 0.9, aWholeTime * 1.05);
 
-  occ::handle<TDocStd_Document> aNoArrayDocument;
+  occ::handle<TDocStd_Document>  aNoArrayDocument;
   occ::handle<PCDM_ReaderFilter> aNoArrayFilter = new PCDM_ReaderFilter;
   aNoArrayFilter->AddSkipped("TDataStd_IntegerArray");
   aNoArrayFilter->AddPath("0:2");
@@ -2933,14 +2915,14 @@ static void RunCafBug31918_1Stream()
 
   const TDF_Label aQuarterLabel = LabelByEntry(aNoArrayDocument, "0:2:13");
   ASSERT_FALSE(aQuarterLabel.IsNull());
-  occ::handle<TDataStd_Real> aReal;
+  occ::handle<TDataStd_Real>         aReal;
   occ::handle<TDataStd_IntegerArray> anIntegerArray;
   ASSERT_TRUE(aQuarterLabel.FindAttribute(TDataStd_Real::GetID(), aReal));
   EXPECT_DOUBLE_EQ(aReal->Get(), 0.1);
   EXPECT_FALSE(aQuarterLabel.FindAttribute(TDataStd_IntegerArray::GetID(), anIntegerArray));
 
-  const TDF_Label aFirstTreeLabel = LabelByEntry(aNoArrayDocument, "0:1:1:13");
-  const TDF_Label aThirdTreeLabel = LabelByEntry(aNoArrayDocument, "0:1:3:14");
+  const TDF_Label aFirstTreeLabel  = LabelByEntry(aNoArrayDocument, "0:1:1:13");
+  const TDF_Label aThirdTreeLabel  = LabelByEntry(aNoArrayDocument, "0:1:3:14");
   const TDF_Label aFourthTreeLabel = LabelByEntry(aNoArrayDocument, "0:1:4:1");
   if (!aFirstTreeLabel.IsNull())
   {
@@ -3018,16 +3000,13 @@ static void RunCafBasicY1Stream()
   occ::handle<TDataStd_Integer> anInteger;
   occ::handle<TDataStd_Real>    aReal;
   const TDF_Label aRestoredValueWithEmptyLabels = aParentWithEmptyLabels.FindChild(2, false);
-  ASSERT_TRUE(
-    aRestoredValueWithEmptyLabels.FindAttribute(TDataStd_Integer::GetID(), anInteger));
+  ASSERT_TRUE(aRestoredValueWithEmptyLabels.FindAttribute(TDataStd_Integer::GetID(), anInteger));
   ASSERT_TRUE(aRestoredValueWithEmptyLabels.FindAttribute(TDataStd_Real::GetID(), aReal));
   EXPECT_EQ(anInteger->Get(), 321);
   EXPECT_DOUBLE_EQ(aReal->Get(), 871.33);
 
-  const TDF_Label aRestoredValueWithoutEmptyLabels =
-    aParentWithoutEmptyLabels.FindChild(2, false);
-  ASSERT_TRUE(
-    aRestoredValueWithoutEmptyLabels.FindAttribute(TDataStd_Integer::GetID(), anInteger));
+  const TDF_Label aRestoredValueWithoutEmptyLabels = aParentWithoutEmptyLabels.FindChild(2, false);
+  ASSERT_TRUE(aRestoredValueWithoutEmptyLabels.FindAttribute(TDataStd_Integer::GetID(), anInteger));
   ASSERT_TRUE(aRestoredValueWithoutEmptyLabels.FindAttribute(TDataStd_Real::GetID(), aReal));
   EXPECT_EQ(anInteger->Get(), 321);
   EXPECT_DOUBLE_EQ(aReal->Get(), 871.33);
@@ -3052,8 +3031,7 @@ static void RunCafBug9746Stream()
     BRepPrimAPI_MakeCylinder(50.0, 120.0, 230.0 * M_PI / 180.0).Shape();
   gp_Trsf aCylinderTranslation;
   aCylinderTranslation.SetTranslation(gp_Vec(1.0, 1.0, 75.0));
-  const TopoDS_Shape aCylinder =
-    aCylinderBase.Moved(TopLoc_Location(aCylinderTranslation));
+  const TopoDS_Shape aCylinder = aCylinderBase.Moved(TopLoc_Location(aCylinderTranslation));
   ASSERT_EQ(aBox.ShapeType(), TopAbs_SOLID);
   ASSERT_EQ(aCylinder.ShapeType(), TopAbs_SOLID);
 
@@ -3066,15 +3044,14 @@ static void RunCafBug9746Stream()
 
   TopoDS_Shape aCylinderFaces[8];
   TopoDS_Shape aCylinderVertices[16];
-  const int     aCylinderFaceCount =
-    CollectUniqueSubShapes(aCylinder, TopAbs_FACE, aCylinderFaces, 8);
+  const int aCylinderFaceCount = CollectUniqueSubShapes(aCylinder, TopAbs_FACE, aCylinderFaces, 8);
   const int aCylinderVertexCount =
     CollectUniqueSubShapes(aCylinder, TopAbs_VERTEX, aCylinderVertices, 16);
   ASSERT_GE(aCylinderFaceCount, 3);
   ASSERT_GE(aCylinderVertexCount, 3);
 
-  const TDF_Label aRoot = aDocument->GetData()->Root();
-  const TDF_Label aBoxLabel = aRoot.FindChild(2, true);
+  const TDF_Label aRoot          = aDocument->GetData()->Root();
+  const TDF_Label aBoxLabel      = aRoot.FindChild(2, true);
   const TDF_Label aCylinderLabel = aRoot.FindChild(3, true);
   DNaming::LoadImportedShape(aBoxLabel, aBox);
   DNaming::LoadImportedShape(aCylinderLabel, aCylinder);
@@ -3107,12 +3084,12 @@ static void RunCafBug9746Stream()
   occ::handle<TDocStd_Document> aRestored = OpenDocumentStream(anApplication, aStream);
   ASSERT_FALSE(aRestored.IsNull());
 
-  const TDF_Label aRestoredRoot = aRestored->GetData()->Root();
-  const TDF_Label aRestoredBoxLabel = aRestoredRoot.FindChild(2, false);
+  const TDF_Label aRestoredRoot          = aRestored->GetData()->Root();
+  const TDF_Label aRestoredBoxLabel      = aRestoredRoot.FindChild(2, false);
   const TDF_Label aRestoredCylinderLabel = aRestoredRoot.FindChild(3, false);
   ASSERT_FALSE(aRestoredBoxLabel.IsNull());
   ASSERT_FALSE(aRestoredCylinderLabel.IsNull());
-  const TopoDS_Shape aRestoredBox = ShapeOf(aRestoredBoxLabel);
+  const TopoDS_Shape aRestoredBox      = ShapeOf(aRestoredBoxLabel);
   const TopoDS_Shape aRestoredCylinder = ShapeOf(aRestoredCylinderLabel);
   ASSERT_FALSE(aRestoredBox.IsNull());
   ASSERT_FALSE(aRestoredCylinder.IsNull());
@@ -3127,18 +3104,12 @@ static void RunCafBug9746Stream()
 
   TopoDS_Shape aRestoredCylinderFaces[8];
   TopoDS_Shape aRestoredCylinderVertices[16];
-  ASSERT_EQ(CollectUniqueSubShapes(aRestoredCylinder,
-                                   TopAbs_FACE,
-                                   aRestoredCylinderFaces,
-                                   8),
+  ASSERT_EQ(CollectUniqueSubShapes(aRestoredCylinder, TopAbs_FACE, aRestoredCylinderFaces, 8),
             aCylinderFaceCount);
-  ASSERT_EQ(CollectUniqueSubShapes(aRestoredCylinder,
-                                   TopAbs_VERTEX,
-                                   aRestoredCylinderVertices,
-                                   16),
+  ASSERT_EQ(CollectUniqueSubShapes(aRestoredCylinder, TopAbs_VERTEX, aRestoredCylinderVertices, 16),
             aCylinderVertexCount);
 
-  const TDF_Label aRestoredBoxSelectionRoot = aRestoredRoot.FindChild(4, false);
+  const TDF_Label aRestoredBoxSelectionRoot      = aRestoredRoot.FindChild(4, false);
   const TDF_Label aRestoredCylinderSelectionRoot = aRestoredRoot.FindChild(5, false);
   ASSERT_FALSE(aRestoredBoxSelectionRoot.IsNull());
   ASSERT_FALSE(aRestoredCylinderSelectionRoot.IsNull());
@@ -3147,18 +3118,16 @@ static void RunCafBug9746Stream()
     EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(aFaceIndex + 1, false))
                   .IsSame(aRestoredBoxFaces[aFaceIndex]));
   }
-  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(10, false))
-                .IsSame(aRestoredBoxEdges[0]));
-  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(11, false))
-                .IsSame(aRestoredBoxEdges[2]));
-  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(21, false))
-                .IsSame(aRestoredBoxVertices[2]));
-  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(22, false))
-                .IsSame(aRestoredBoxVertices[4]));
-  EXPECT_TRUE(ShapeOf(aRestoredCylinderSelectionRoot.FindChild(1, false))
-                .IsSame(aRestoredCylinderFaces[0]));
-  EXPECT_TRUE(ShapeOf(aRestoredCylinderSelectionRoot.FindChild(2, false))
-                .IsSame(aRestoredCylinderFaces[1]));
+  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(10, false)).IsSame(aRestoredBoxEdges[0]));
+  EXPECT_TRUE(ShapeOf(aRestoredBoxSelectionRoot.FindChild(11, false)).IsSame(aRestoredBoxEdges[2]));
+  EXPECT_TRUE(
+    ShapeOf(aRestoredBoxSelectionRoot.FindChild(21, false)).IsSame(aRestoredBoxVertices[2]));
+  EXPECT_TRUE(
+    ShapeOf(aRestoredBoxSelectionRoot.FindChild(22, false)).IsSame(aRestoredBoxVertices[4]));
+  EXPECT_TRUE(
+    ShapeOf(aRestoredCylinderSelectionRoot.FindChild(1, false)).IsSame(aRestoredCylinderFaces[0]));
+  EXPECT_TRUE(
+    ShapeOf(aRestoredCylinderSelectionRoot.FindChild(2, false)).IsSame(aRestoredCylinderFaces[1]));
   EXPECT_TRUE(ShapeOf(aRestoredCylinderSelectionRoot.FindChild(10, false))
                 .IsSame(aRestoredCylinderVertices[0]));
   EXPECT_TRUE(ShapeOf(aRestoredCylinderSelectionRoot.FindChild(11, false))
@@ -3166,9 +3135,9 @@ static void RunCafBug9746Stream()
   EXPECT_TRUE(ShapeOf(aRestoredCylinderSelectionRoot.FindChild(12, false))
                 .IsSame(aRestoredCylinderVertices[2]));
 
-  const TDF_Label aCylSelection10 = aRestoredCylinderSelectionRoot.FindChild(10, false);
-  const TDF_Label aCylSelection11 = aRestoredCylinderSelectionRoot.FindChild(11, false);
-  const TDF_Label aCylSelection12 = aRestoredCylinderSelectionRoot.FindChild(12, false);
+  const TDF_Label aCylSelection10      = aRestoredCylinderSelectionRoot.FindChild(10, false);
+  const TDF_Label aCylSelection11      = aRestoredCylinderSelectionRoot.FindChild(11, false);
+  const TDF_Label aCylSelection12      = aRestoredCylinderSelectionRoot.FindChild(12, false);
   const TDF_Label aCylSelection10Child = aCylSelection10.FindChild(1, false);
   const TDF_Label aCylSelection11Child = aCylSelection11.FindChild(1, false);
   const TDF_Label aCylSelection12Child = aCylSelection12.FindChild(1, false);
@@ -3184,32 +3153,16 @@ static void RunCafBug9746Stream()
   ASSERT_FALSE(aCylinderChild2.IsNull());
   ASSERT_FALSE(aCylinderChild3.IsNull());
   ASSERT_FALSE(aCylinderChild5.IsNull());
-  const TDF_Label aIntersectionArguments[] = {aCylinderChild5,
-                                               aCylinderChild1,
-                                               aCylinderChild2};
-  const TDF_Label aVertexArguments[] = {aCylinderChild3,
-                                        aCylinderChild5,
-                                        aCylinderChild1};
-  ExpectNamingSelection(aCylSelection10,
-                        TNaming_IDENTITY,
-                        TopAbs_VERTEX,
-                        &aCylSelection10Child,
-                        1);
+  const TDF_Label aIntersectionArguments[] = {aCylinderChild5, aCylinderChild1, aCylinderChild2};
+  const TDF_Label aVertexArguments[]       = {aCylinderChild3, aCylinderChild5, aCylinderChild1};
+  ExpectNamingSelection(aCylSelection10, TNaming_IDENTITY, TopAbs_VERTEX, &aCylSelection10Child, 1);
   ExpectNamingSelection(aCylSelection10Child,
                         TNaming_INTERSECTION,
                         TopAbs_VERTEX,
                         aIntersectionArguments,
                         3);
-  ExpectNamingSelection(aCylSelection11,
-                        TNaming_IDENTITY,
-                        TopAbs_VERTEX,
-                        &aCylSelection11Child,
-                        1);
-  ExpectNamingSelection(aCylSelection12,
-                        TNaming_IDENTITY,
-                        TopAbs_VERTEX,
-                        &aCylSelection12Child,
-                        1);
+  ExpectNamingSelection(aCylSelection11, TNaming_IDENTITY, TopAbs_VERTEX, &aCylSelection11Child, 1);
+  ExpectNamingSelection(aCylSelection12, TNaming_IDENTITY, TopAbs_VERTEX, &aCylSelection12Child, 1);
   ExpectNamingSelection(aCylSelection12Child,
                         TNaming_INTERSECTION,
                         TopAbs_VERTEX,
@@ -3219,7 +3172,6 @@ static void RunCafBug9746Stream()
   anApplication->Close(aRestored);
 }
 } // namespace
-
 
 // xml/data/ocaf/B7: a linked named shape survives XML and binary OCAF storage.
 TEST(TDocStd_Storage_Test, Xml_B7_CopyWithLink)
@@ -3828,7 +3780,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_158_EmptyDocumentStreamSave)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
 
-  std::stringstream aStream;
+  std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
   EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
   EXPECT_NO_THROW(anApplication->Close(aDocument));
@@ -3842,7 +3794,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_267_1_EmptyDocumentStreamSave)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
   ASSERT_FALSE(aDocument.IsNull());
 
-  std::stringstream aStream;
+  std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
   EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
   EXPECT_FALSE(aStream.str().empty());
@@ -3890,11 +3842,9 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_31136_5_StorageDriverOptions)
   BinXCAFDrivers::DefineFormat(anApplication);
 
   const occ::handle<BinDrivers_DocumentStorageDriver> aXcafDriver =
-    occ::down_cast<BinDrivers_DocumentStorageDriver>(
-      anApplication->WriterFromFormat("BinXCAF"));
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApplication->WriterFromFormat("BinXCAF"));
   const occ::handle<BinDrivers_DocumentStorageDriver> anOcafDriver =
-    occ::down_cast<BinDrivers_DocumentStorageDriver>(
-      anApplication->WriterFromFormat("BinOcaf"));
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApplication->WriterFromFormat("BinOcaf"));
   ASSERT_FALSE(aXcafDriver.IsNull());
   ASSERT_FALSE(anOcafDriver.IsNull());
 

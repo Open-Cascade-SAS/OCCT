@@ -270,7 +270,7 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
 // buildsweep throws "Not Done" for this closed-spine configuration.
 TEST(BRepOffsetAPI_MakePipeShellTest, Bug24909_2_ClosedCircularSpine)
 {
-  const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 40.0);
+  const gp_Circ     aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 40.0);
   const TopoDS_Wire aBaseWire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle)).Wire();
 
   gp_Trsf aRotate;

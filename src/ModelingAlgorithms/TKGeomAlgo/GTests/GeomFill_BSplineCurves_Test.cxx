@@ -133,8 +133,8 @@ double surfaceArea(const TopoDS_Shape& theShape)
 }
 
 occ::handle<Geom_BSplineCurve> makeTwoPoleCurve(const gp_Pnt& theFirst,
-                                                 const gp_Pnt& theLast,
-                                                 const double   theLastKnot)
+                                                const gp_Pnt& theLast,
+                                                const double  theLastKnot)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 2);
   aPoles(1) = theFirst;
@@ -222,11 +222,7 @@ TEST(GeomFill_BSplineCurvesTest, OCC13904_AppSurfBetweenCircleAndEllipse)
   aSection.Perform(Precision::PConfusion());
 
   occ::handle<GeomFill_Line> aLine = new GeomFill_Line(2);
-  GeomFill_AppSurf           anApproximation(3,
-                                   8,
-                                   Precision::Confusion(),
-                                   Precision::PConfusion(),
-                                   0);
+  GeomFill_AppSurf anApproximation(3, 8, Precision::Confusion(), Precision::PConfusion(), 0);
   ASSERT_NO_THROW(anApproximation.Perform(aLine, aSection));
   ASSERT_TRUE(anApproximation.IsDone());
 
@@ -236,12 +232,7 @@ TEST(GeomFill_BSplineCurvesTest, OCC13904_AppSurfBetweenCircleAndEllipse)
   int aNbVPoles = 0;
   int aNbUKnots = 0;
   int aNbVKnots = 0;
-  anApproximation.SurfShape(aUDegree,
-                            aVDegree,
-                            aNbUPoles,
-                            aNbVPoles,
-                            aNbUKnots,
-                            aNbVKnots);
+  anApproximation.SurfShape(aUDegree, aVDegree, aNbUPoles, aNbVPoles, aNbUKnots, aNbVKnots);
   EXPECT_GE(aUDegree, 3);
   EXPECT_GE(aVDegree, 1);
   EXPECT_GT(aNbUPoles, 0);
@@ -275,10 +266,6 @@ TEST(GeomFill_BSplineCurvesTest, OCC27704_InvalidTwoPoleCurvesRaiseConstructionE
   const occ::handle<Geom_BSplineCurve> aCurve3 = makeTwoPoleCurve(aP3, aP1, 33.1099999999979);
   const occ::handle<Geom_BSplineCurve> aCurve4 = makeTwoPoleCurve(aP3, aP4, 100.000001513789);
 
-  EXPECT_THROW(GeomFill_BSplineCurves(aCurve1,
-                                      aCurve2,
-                                      aCurve3,
-                                      aCurve4,
-                                      GeomFill_CoonsStyle),
+  EXPECT_THROW(GeomFill_BSplineCurves(aCurve1, aCurve2, aCurve3, aCurve4, GeomFill_CoonsStyle),
                Standard_ConstructionError);
 }

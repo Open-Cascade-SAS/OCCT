@@ -73,8 +73,7 @@ static TopoDS_Shape ShapeFromDocument(const occ::handle<TDocStd_Document>& theDo
     return TopoDS_Shape();
   }
 
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   NCollection_Sequence<TDF_Label> aLabels;
   aShapeTool->GetFreeShapes(aLabels);
   if (aLabels.IsEmpty())
@@ -367,7 +366,7 @@ bool DEBREP_Provider::Read(ReadStreamList&              theStreams,
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
   const TCollection_AsciiString  aFullContext = aContext + " " + aFirstKey;
   if (ValidateConfigurationNode(GetNode(), aFullContext).IsNull())
   {
@@ -412,8 +411,8 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  const TCollection_AsciiString  aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString&        aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString         aFullContext = aContext + " " + aFirstKey;
   occ::handle<DEBREP_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
@@ -421,7 +420,7 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
   }
 
   Standard_OStream& aStream = theStreams.First().Stream;
-  bool              isDone = false;
+  bool              isDone  = false;
   if (aNode->InternalParameters.WriteBinary)
   {
     if (aNode->InternalParameters.WriteVersionBin < BinTools_FormatVersion_LOWER
@@ -529,8 +528,8 @@ bool DEBREP_Provider::Write(WriteStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Read(ReadStreamList&              theStreams,
-                           TopoDS_Shape&                theShape,
+bool DEBREP_Provider::Read(ReadStreamList& theStreams,
+                           TopoDS_Shape&   theShape,
                            occ::handle<XSControl_WorkSession>&,
                            const Message_ProgressRange& theProgress)
 {
@@ -539,8 +538,8 @@ bool DEBREP_Provider::Read(ReadStreamList&              theStreams,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
-                            const TopoDS_Shape&          theShape,
+bool DEBREP_Provider::Write(WriteStreamList&    theStreams,
+                            const TopoDS_Shape& theShape,
                             occ::handle<XSControl_WorkSession>&,
                             const Message_ProgressRange& theProgress)
 {

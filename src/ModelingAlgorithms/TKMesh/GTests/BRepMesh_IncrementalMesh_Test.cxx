@@ -63,7 +63,8 @@ TEST(BRepMesh_IncrementalMeshTest, OCC26407_PlanarPolygonMeshStatus)
   NCollection_Array1<gp_Pnt> aPnts(1, 8);
   aPnts(1) = gp_Pnt(587.90000000000009094947, 40.6758179230516248026106, 88.5);
   aPnts(2) = gp_Pnt(807.824182076948432040808, 260.599999999999965893949, 88.5);
-  aPnts(3) = gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547);
+  aPnts(3) =
+    gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547);
   aPnts(4) = gp_Pnt(629.978025792618950617907, 424.25, 88.5);
   aPnts(5) = gp_Pnt(793.628025792618700506864, 260.599999999999852207111, 88.5);
   aPnts(6) = gp_Pnt(587.900000000000204636308, 54.8719742073813492311274, 88.5);
@@ -80,8 +81,8 @@ TEST(BRepMesh_IncrementalMeshTest, OCC26407_PlanarPolygonMeshStatus)
   for (int anIndex = aVertices.Lower(); anIndex <= aVertices.Upper(); ++anIndex)
   {
     const TopoDS_Vertex& aV = aVertices(anIndex);
-    const int             aNextIndex = anIndex == aVertices.Upper() ? aVertices.Lower() : anIndex + 1;
-    const TopoDS_Vertex&  aW = aVertices(aNextIndex);
+    const int aNextIndex    = anIndex == aVertices.Upper() ? aVertices.Lower() : anIndex + 1;
+    const TopoDS_Vertex& aW = aVertices(aNextIndex);
     aWireBuilder.Add(BRepBuilderAPI_MakeEdge(aV, aW));
   }
   ASSERT_TRUE(aWireBuilder.IsDone()) << "Wire construction failed";
@@ -291,8 +292,7 @@ TEST(BRepMesh_IncrementalMeshTest, OCC32692_UnboundedCylinderFaceReportsFailure)
 
   BRepMesh_IncrementalMesh aMesher(aFace, 0.01, false, 0.5, true);
   EXPECT_TRUE(aMesher.IsDone());
-  EXPECT_EQ(aMesher.GetStatusFlags(),
-            IMeshData_OpenWire | IMeshData_Failure | IMeshData_Outdated);
+  EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_OpenWire | IMeshData_Failure | IMeshData_Outdated);
 
   int aNbFaces = 0;
   for (TopExp_Explorer anExplorer(aFace, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
@@ -302,10 +302,9 @@ TEST(BRepMesh_IncrementalMeshTest, OCC32692_UnboundedCylinderFaceReportsFailure)
   EXPECT_EQ(aNbFaces, 1);
 
   TopLoc_Location                       aLocation;
-  const occ::handle<Poly_Triangulation> aTriangulation =
-    BRep_Tool::Triangulation(aFace, aLocation);
-  int aNbNodes     = 0;
-  int aNbTriangles = 0;
+  const occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aFace, aLocation);
+  int                                   aNbNodes       = 0;
+  int                                   aNbTriangles   = 0;
   if (!aTriangulation.IsNull())
   {
     aNbNodes     = aTriangulation->NbNodes();
@@ -325,8 +324,7 @@ TEST(BRepMesh_IncrementalMeshTest, OCC25445_AngularDeflectionChangesMesh)
     int NbTriangles;
   };
 
-  const auto countMeshElements = [](const TopoDS_Shape& theShape,
-                                    const double         theAngleDegrees) {
+  const auto countMeshElements = [](const TopoDS_Shape& theShape, const double theAngleDegrees) {
     IMeshTools_Parameters aParameters;
     aParameters.Deflection = 0.01;
     aParameters.Angle      = theAngleDegrees * M_PI / 180.0;
@@ -336,8 +334,7 @@ TEST(BRepMesh_IncrementalMeshTest, OCC25445_AngularDeflectionChangesMesh)
 
     int aNbNodes     = 0;
     int aNbTriangles = 0;
-    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More();
-         anExplorer.Next())
+    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
     {
       TopLoc_Location                       aLocation;
       const occ::handle<Poly_Triangulation> aTriangulation =
@@ -366,9 +363,8 @@ TEST(BRepMesh_IncrementalMeshTest, OCC25445_AngularDeflectionChangesMesh)
 // legitimate degenerate input and must not acquire a face triangulation.
 TEST(BRepMesh_IncrementalMeshTest, OCC30234_ZeroLengthFreeEdgeHasNoTriangles)
 {
-  const occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 0.0);
-  BRepBuilderAPI_MakeEdge aEdgeBuilder(aCircle);
+  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 0.0);
+  BRepBuilderAPI_MakeEdge        aEdgeBuilder(aCircle);
   ASSERT_TRUE(aEdgeBuilder.IsDone());
 
   IMeshTools_Parameters aParameters;
@@ -422,8 +418,7 @@ TEST(BRepMesh_IncrementalMeshTest, OCC31461_AllowQualityDecreaseRebuildsMesh)
   const auto countMeshElements = [](const TopoDS_Shape& theShape) {
     int aNbNodes     = 0;
     int aNbTriangles = 0;
-    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More();
-         anExplorer.Next())
+    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
     {
       TopLoc_Location                       aLocation;
       const occ::handle<Poly_Triangulation> aTriangulation =

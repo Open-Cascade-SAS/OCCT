@@ -47,8 +47,8 @@ void CheckToroidalRevolution(const gp_Dir& theXDirection, const double theRadius
   BRepBuilderAPI_MakeEdge aMakeEdge(aCircle);
   ASSERT_TRUE(aMakeEdge.IsDone());
 
-  const gp_Ax1             aRevolutionAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  BRepPrimAPI_MakeRevol    aMakeRevol(aMakeEdge.Edge(), aRevolutionAxis, M_PI / 2.0);
+  const gp_Ax1          aRevolutionAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  BRepPrimAPI_MakeRevol aMakeRevol(aMakeEdge.Edge(), aRevolutionAxis, M_PI / 2.0);
   ASSERT_TRUE(aMakeRevol.IsDone());
 
   const TopoDS_Shape aResult = aMakeRevol.Shape();
@@ -87,8 +87,9 @@ TEST(BRepPrimAPI_MakeRevolTest, ModalgBug_24328_RevolvedWireIsValid)
   const TopoDS_Edge   anEdge2  = BRepBuilderAPI_MakeEdge(aVertex2, aVertex3);
   const TopoDS_Wire   aWire    = BRepBuilderAPI_MakeWire(anEdge1, anEdge2);
 
-  BRepPrimAPI_MakeRevol aMakeRevol(
-    aWire, gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 2.0 * M_PI);
+  BRepPrimAPI_MakeRevol aMakeRevol(aWire,
+                                   gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
+                                   2.0 * M_PI);
   ASSERT_TRUE(aMakeRevol.IsDone());
   const TopoDS_Shape aResult = aMakeRevol.Shape();
   ASSERT_FALSE(aResult.IsNull());
@@ -107,12 +108,12 @@ TEST(BRepPrimAPI_MakeRevolTest, ModalgBug_25578_PartialSphereRevolutions)
   ASSERT_TRUE(aFaceExplorer.More());
   const TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
 
-  const gp_Ax1 anAxisZ(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const gp_Ax1          anAxisZ(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   BRepPrimAPI_MakeRevol aRevolZ(aFace, anAxisZ, 2.0 * M_PI);
   ASSERT_TRUE(aRevolZ.IsDone());
   ASSERT_FALSE(aRevolZ.Shape().IsNull());
 
-  const gp_Ax1 anAxisX(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const gp_Ax1          anAxisX(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   BRepPrimAPI_MakeRevol aRevolX(aFace, anAxisX, M_PI / 2.0);
   ASSERT_TRUE(aRevolX.IsDone());
   ASSERT_FALSE(aRevolX.Shape().IsNull());

@@ -30,9 +30,8 @@ typedef BVH_BoxSet<double, 3, TopoDS_Shape> ShapeBoxSet;
 
 occ::handle<ShapeBoxSet> makeShapeBoxSet(const TopoDS_Shape& theShape)
 {
-  const occ::handle<BVH_LinearBuilder<double, 3>> aBuilder =
-    new BVH_LinearBuilder<double, 3>();
-  const occ::handle<ShapeBoxSet> aSet = new ShapeBoxSet(aBuilder);
+  const occ::handle<BVH_LinearBuilder<double, 3>> aBuilder = new BVH_LinearBuilder<double, 3>();
+  const occ::handle<ShapeBoxSet>                  aSet     = new ShapeBoxSet(aBuilder);
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aShapes;
   TopExp::MapShapes(theShape, TopAbs_VERTEX, aShapes);
@@ -83,7 +82,7 @@ public:
 
 private:
   BVH_Box<double, 3> myBox;
-  int                 myAccepted = 0;
+  int                myAccepted = 0;
 };
 
 class ShapeSelectorVoid : public BVH_Traverse<double, 3, void, bool>
@@ -124,7 +123,7 @@ public:
 private:
   const ShapeBoxSet* mySet = nullptr;
   BVH_Box<double, 3> myBox;
-  int                 myAccepted = 0;
+  int                myAccepted = 0;
 };
 
 class PairSelector : public BVH_PairTraverse<double, 3, ShapeBoxSet, bool>
@@ -190,9 +189,9 @@ public:
   int Accepted() const { return myAccepted; }
 
 private:
-  const ShapeBoxSet* mySet1 = nullptr;
-  const ShapeBoxSet* mySet2 = nullptr;
-  int                 myAccepted = 0;
+  const ShapeBoxSet* mySet1     = nullptr;
+  const ShapeBoxSet* mySet2     = nullptr;
+  int                myAccepted = 0;
 };
 } // namespace
 
@@ -201,11 +200,11 @@ private:
 // interfering sub-shape boxes, respectively.
 TEST(BVH_ShapeSelectTest, Bug30655_ShapeSelectionTypedAndVoid)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+  const TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
   const occ::handle<ShapeBoxSet> aSet = makeShapeBoxSet(aBox);
 
-  const TopAbs_ShapeEnum aTypes[] = {TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE};
-  const int               anExpected[] = {7, 11, 17};
+  const TopAbs_ShapeEnum aTypes[]     = {TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE};
+  const int              anExpected[] = {7, 11, 17};
   for (int aTypeIndex = 0; aTypeIndex < 3; ++aTypeIndex)
   {
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aShapes;
@@ -230,7 +229,7 @@ TEST(BVH_ShapeSelectTest, Bug30655_ShapeSelectionTypedAndVoid)
 
 TEST(BVH_ShapeSelectTest, Bug30655_PairSelectionTypedAndVoid)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+  const TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
   const occ::handle<ShapeBoxSet> aSet = makeShapeBoxSet(aBox);
 
   PairSelector aSelector;

@@ -43,7 +43,7 @@ protected:
     aMessage += static_cast<int>(100. * GetPosition() + 0.5);
     aMessage += "%";
     for (const Message_ProgressScope* aScope = &theScope; aScope != nullptr;
-         aScope                     = aScope->Parent())
+         aScope                              = aScope->Parent())
     {
       if (aScope->Name() != nullptr)
       {
@@ -90,7 +90,7 @@ TopoDS_Edge createBezierEdge(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_
 
 void addCurveConstraint(GeomPlate_BuildPlateSurface& theBuilder, const TopoDS_Edge& theEdge)
 {
-  occ::handle<BRepAdaptor_Curve> aCurve = new BRepAdaptor_Curve(theEdge);
+  occ::handle<BRepAdaptor_Curve>      aCurve        = new BRepAdaptor_Curve(theEdge);
   const occ::handle<Adaptor3d_Curve>& aCurveAdaptor = aCurve;
   theBuilder.Add(new GeomPlate_CurveConstraint(aCurveAdaptor, 0));
 }
@@ -147,18 +147,14 @@ TEST(GeomPlate_BuildPlateSurface, Progress_A1_FourBezierEdgesWithPlane)
   GeomPlate_BuildPlateSurface aBuilder(3, 15, 2);
   aBuilder.LoadInitSurface(new Geom_Plane(gp_Pln(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.))));
 
-  const TopoDS_Edge anEdge1 = createBezierEdge(gp_Pnt(0., 0., 0.),
-                                               gp_Pnt(1., 0., 1.),
-                                               gp_Pnt(2., 0., 0.));
-  const TopoDS_Edge anEdge2 = createBezierEdge(gp_Pnt(0., 2., 0.),
-                                               gp_Pnt(1., 2., 1.),
-                                               gp_Pnt(2., 2., 0.));
-  const TopoDS_Edge anEdge3 = createBezierEdge(gp_Pnt(0., 0., 0.),
-                                               gp_Pnt(0., 1., 1.),
-                                               gp_Pnt(0., 2., 0.));
-  const TopoDS_Edge anEdge4 = createBezierEdge(gp_Pnt(2., 0., 0.),
-                                               gp_Pnt(2., 1., 1.),
-                                               gp_Pnt(2., 2., 0.));
+  const TopoDS_Edge anEdge1 =
+    createBezierEdge(gp_Pnt(0., 0., 0.), gp_Pnt(1., 0., 1.), gp_Pnt(2., 0., 0.));
+  const TopoDS_Edge anEdge2 =
+    createBezierEdge(gp_Pnt(0., 2., 0.), gp_Pnt(1., 2., 1.), gp_Pnt(2., 2., 0.));
+  const TopoDS_Edge anEdge3 =
+    createBezierEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 1., 1.), gp_Pnt(0., 2., 0.));
+  const TopoDS_Edge anEdge4 =
+    createBezierEdge(gp_Pnt(2., 0., 0.), gp_Pnt(2., 1., 1.), gp_Pnt(2., 2., 0.));
   addCurveConstraint(aBuilder, anEdge1);
   addCurveConstraint(aBuilder, anEdge2);
   addCurveConstraint(aBuilder, anEdge3);
@@ -177,21 +173,13 @@ TEST(GeomPlate_BuildPlateSurface, Progress_A2_FourBezierEdgesWithoutPlane)
 {
   GeomPlate_BuildPlateSurface aBuilder(3, 15, 2);
   addCurveConstraint(aBuilder,
-                     createBezierEdge(gp_Pnt(0., 0., 0.),
-                                      gp_Pnt(1., 0., 1.),
-                                      gp_Pnt(2., 0., 0.)));
+                     createBezierEdge(gp_Pnt(0., 0., 0.), gp_Pnt(1., 0., 1.), gp_Pnt(2., 0., 0.)));
   addCurveConstraint(aBuilder,
-                     createBezierEdge(gp_Pnt(0., 2., 0.),
-                                      gp_Pnt(1., 2., 1.),
-                                      gp_Pnt(2., 2., 0.)));
+                     createBezierEdge(gp_Pnt(0., 2., 0.), gp_Pnt(1., 2., 1.), gp_Pnt(2., 2., 0.)));
   addCurveConstraint(aBuilder,
-                     createBezierEdge(gp_Pnt(0., 0., 0.),
-                                      gp_Pnt(0., 1., 2.),
-                                      gp_Pnt(0., 2., 0.)));
+                     createBezierEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 1., 2.), gp_Pnt(0., 2., 0.)));
   addCurveConstraint(aBuilder,
-                     createBezierEdge(gp_Pnt(2., 0., 0.),
-                                      gp_Pnt(2., 1., 2.),
-                                      gp_Pnt(2., 2., 0.)));
+                     createBezierEdge(gp_Pnt(2., 0., 0.), gp_Pnt(2., 1., 2.), gp_Pnt(2., 2., 0.)));
 
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
   aBuilder.Perform(Message_ProgressIndicator::Start(aProgress));
@@ -238,9 +226,7 @@ TEST(GeomPlate_BuildPlateSurface, Progress_A4_OneHundredPointContour)
   {
     const double aParameter = 2. * M_PI * anIndex / 100.;
     aBuilder.Add(new GeomPlate_PointConstraint(
-      gp_Pnt(std::sin(aParameter),
-             std::cos(aParameter),
-             std::abs(1. - 2. * anIndex / 100.)),
+      gp_Pnt(std::sin(aParameter), std::cos(aParameter), std::abs(1. - 2. * anIndex / 100.)),
       0));
   }
 

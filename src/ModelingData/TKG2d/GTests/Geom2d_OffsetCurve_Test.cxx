@@ -117,14 +117,13 @@ TEST(Geom2d_OffsetCurve_AdditionalTest, FClassesBug_31381_RationalBSplineApproxi
   occ::handle<Geom2d_BSplineCurve> aConvertedCircle = Geom2dConvert::CurveToBSplineCurve(aCircle);
   ASSERT_FALSE(aConvertedCircle.IsNull());
 
-  occ::handle<Geom2d_OffsetCurve> anOffsetCurve =
-    new Geom2d_OffsetCurve(aConvertedCircle, -0.5);
-  Geom2dConvert_ApproxCurve anApproximation(anOffsetCurve, 1.0e-4, GeomAbs_C2, 25, 5);
+  occ::handle<Geom2d_OffsetCurve> anOffsetCurve = new Geom2d_OffsetCurve(aConvertedCircle, -0.5);
+  Geom2dConvert_ApproxCurve       anApproximation(anOffsetCurve, 1.0e-4, GeomAbs_C2, 25, 5);
   ASSERT_TRUE(anApproximation.HasResult());
   occ::handle<Geom2d_BSplineCurve> anApproximatedCurve = anApproximation.Curve();
   ASSERT_FALSE(anApproximatedCurve.IsNull());
 
   Geom2dAdaptor_Curve anAdaptor(anApproximatedCurve);
-  const double         aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
+  const double        aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
   EXPECT_NEAR(aLength, 3.1415850499856011, 1.0e-6);
 }

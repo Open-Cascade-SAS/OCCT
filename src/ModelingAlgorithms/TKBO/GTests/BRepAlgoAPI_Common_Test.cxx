@@ -43,13 +43,11 @@ TEST_F(BOPCommonSimpleTest, OCC23855_CoincidentSpheresPreserveSolid)
 
   int aNbSolids = 0;
   int aNbFaces  = 0;
-  for (TopExp_Explorer anExplorer(aResult, TopAbs_SOLID); anExplorer.More();
-       anExplorer.Next())
+  for (TopExp_Explorer anExplorer(aResult, TopAbs_SOLID); anExplorer.More(); anExplorer.Next())
   {
     ++aNbSolids;
   }
-  for (TopExp_Explorer anExplorer(aResult, TopAbs_FACE); anExplorer.More();
-       anExplorer.Next())
+  for (TopExp_Explorer anExplorer(aResult, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
     ++aNbFaces;
   }

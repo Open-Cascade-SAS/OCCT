@@ -35,7 +35,7 @@ namespace
 static occ::handle<TDocStd_Document> NewDocument()
 {
   static occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>         aDocument;
+  occ::handle<TDocStd_Document>           aDocument;
   anApplication->NewDocument("BinOcaf", aDocument);
   return aDocument;
 }
@@ -101,25 +101,15 @@ static bool SameBounds(const TopoDS_Shape& theFirst, const TopoDS_Shape& theSeco
   double aSecondXMax = 0.0;
   double aSecondYMax = 0.0;
   double aSecondZMax = 0.0;
-  aFirstBox.Get(aFirstXMin,
-                aFirstYMin,
-                aFirstZMin,
-                aFirstXMax,
-                aFirstYMax,
-                aFirstZMax);
-  aSecondBox.Get(aSecondXMin,
-                 aSecondYMin,
-                 aSecondZMin,
-                 aSecondXMax,
-                 aSecondYMax,
-                 aSecondZMax);
+  aFirstBox.Get(aFirstXMin, aFirstYMin, aFirstZMin, aFirstXMax, aFirstYMax, aFirstZMax);
+  aSecondBox.Get(aSecondXMin, aSecondYMin, aSecondZMin, aSecondXMax, aSecondYMax, aSecondZMax);
 
   return std::fabs(aFirstXMin - aSecondXMin) <= 1.0e-12
-      && std::fabs(aFirstYMin - aSecondYMin) <= 1.0e-12
-      && std::fabs(aFirstZMin - aSecondZMin) <= 1.0e-12
-      && std::fabs(aFirstXMax - aSecondXMax) <= 1.0e-12
-      && std::fabs(aFirstYMax - aSecondYMax) <= 1.0e-12
-      && std::fabs(aFirstZMax - aSecondZMax) <= 1.0e-12;
+         && std::fabs(aFirstYMin - aSecondYMin) <= 1.0e-12
+         && std::fabs(aFirstZMin - aSecondZMin) <= 1.0e-12
+         && std::fabs(aFirstXMax - aSecondXMax) <= 1.0e-12
+         && std::fabs(aFirstYMax - aSecondYMax) <= 1.0e-12
+         && std::fabs(aFirstZMax - aSecondZMax) <= 1.0e-12;
 }
 
 static void EnableUndo(const occ::handle<TDocStd_Document>& theDocument)
@@ -151,9 +141,9 @@ TEST(TDocStd_XLink_Test, CafXLink_A1_CopySameDocument)
 {
   occ::handle<TDocStd_Document> aDocument = NewDocument();
   EnableUndo(aDocument);
-  const TDF_Label aSource = NewLabel(aDocument, 2);
-  const TDF_Label aTarget = NewLabel(aDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aDocument->NewCommand();
@@ -173,9 +163,9 @@ TEST(TDocStd_XLink_Test, CafXLink_A2_CopyOtherDocument)
   occ::handle<TDocStd_Document> aSourceDocument = NewDocument();
   occ::handle<TDocStd_Document> aTargetDocument = NewDocument();
   EnableUndo(aTargetDocument);
-  const TDF_Label aSource = NewLabel(aSourceDocument, 2);
-  const TDF_Label aTarget = NewLabel(aTargetDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aSourceDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aTargetDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aTargetDocument->NewCommand();
@@ -194,9 +184,9 @@ TEST(TDocStd_XLink_Test, CafXLink_B1_CopyWithLinkSameDocument)
 {
   occ::handle<TDocStd_Document> aDocument = NewDocument();
   EnableUndo(aDocument);
-  const TDF_Label aSource = NewLabel(aDocument, 2);
-  const TDF_Label aTarget = NewLabel(aDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aDocument->NewCommand();
@@ -214,9 +204,9 @@ TEST(TDocStd_XLink_Test, CafXLink_B2_SourceUndoRedo)
 {
   occ::handle<TDocStd_Document> aDocument = NewDocument();
   EnableUndo(aDocument);
-  const TDF_Label aSource = NewLabel(aDocument, 2);
-  const TDF_Label aTarget = NewLabel(aDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aDocument->NewCommand();
@@ -243,9 +233,9 @@ TEST(TDocStd_XLink_Test, CafXLink_B4_CopyWithLinkOtherDocument)
   occ::handle<TDocStd_Document> aSourceDocument = NewDocument();
   occ::handle<TDocStd_Document> aTargetDocument = NewDocument();
   EnableUndo(aTargetDocument);
-  const TDF_Label aSource = NewLabel(aSourceDocument, 2);
-  const TDF_Label aTarget = NewLabel(aTargetDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aSourceDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aTargetDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aTargetDocument->NewCommand();
@@ -265,9 +255,9 @@ TEST(TDocStd_XLink_Test, CafXLink_B5_SourceHistoryOtherDocument)
   occ::handle<TDocStd_Document> aTargetDocument = NewDocument();
   EnableUndo(aSourceDocument);
   EnableUndo(aTargetDocument);
-  const TDF_Label aSource = NewLabel(aSourceDocument, 2);
-  const TDF_Label aTarget = NewLabel(aTargetDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aSourceDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aTargetDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aTargetDocument->NewCommand();
@@ -294,9 +284,9 @@ TEST(TDocStd_XLink_Test, CafXLink_C1_UpdateReferences)
 {
   occ::handle<TDocStd_Document> aDocument = NewDocument();
   EnableUndo(aDocument);
-  const TDF_Label aSource = NewLabel(aDocument, 2);
-  const TDF_Label aTarget = NewLabel(aDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aDocument->NewCommand();
@@ -325,9 +315,9 @@ TEST(TDocStd_XLink_Test, CafXLink_D1_UpdateOtherDocument)
   occ::handle<TDocStd_Document> aTargetDocument = NewDocument();
   EnableUndo(aSourceDocument);
   EnableUndo(aTargetDocument);
-  const TDF_Label aSource = NewLabel(aSourceDocument, 2);
-  const TDF_Label aTarget = NewLabel(aTargetDocument, 3);
-  const TopoDS_Shape aBox = MakeBox(100.0, 200.0, 300.0);
+  const TDF_Label    aSource = NewLabel(aSourceDocument, 2);
+  const TDF_Label    aTarget = NewLabel(aTargetDocument, 3);
+  const TopoDS_Shape aBox    = MakeBox(100.0, 200.0, 300.0);
   SetShape(aSource, aBox);
 
   aTargetDocument->NewCommand();
@@ -358,12 +348,12 @@ TEST(TDocStd_XLink_Test, CafXLink_D2_UpdateAllOtherDocumentLinks)
   occ::handle<TDocStd_Document> aTargetDocument = NewDocument();
   EnableUndo(aSourceDocument);
   EnableUndo(aTargetDocument);
-  const TDF_Label aSource1 = NewLabel(aSourceDocument, 2);
-  const TDF_Label aSource2 = NewLabel(aSourceDocument, 22);
-  const TDF_Label aTarget1 = NewLabel(aTargetDocument, 3);
-  const TDF_Label aTarget2 = NewLabel(aTargetDocument, 32);
-  const TopoDS_Shape aBox1 = MakeBox(100.0, 200.0, 300.0);
-  const TopoDS_Shape aBox2 = MakeBox(2100.0, 2200.0, 2300.0);
+  const TDF_Label    aSource1 = NewLabel(aSourceDocument, 2);
+  const TDF_Label    aSource2 = NewLabel(aSourceDocument, 22);
+  const TDF_Label    aTarget1 = NewLabel(aTargetDocument, 3);
+  const TDF_Label    aTarget2 = NewLabel(aTargetDocument, 32);
+  const TopoDS_Shape aBox1    = MakeBox(100.0, 200.0, 300.0);
+  const TopoDS_Shape aBox2    = MakeBox(2100.0, 2200.0, 2300.0);
   SetShape(aSource1, aBox1);
   SetShape(aSource2, aBox2);
 

@@ -57,9 +57,9 @@ protected:
 
 namespace
 {
-static TopoDS_Shape ShapeAt(const TopoDS_Shape& theShape,
+static TopoDS_Shape ShapeAt(const TopoDS_Shape&    theShape,
                             const TopAbs_ShapeEnum theType,
-                            const int theIndex)
+                            const int              theIndex)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aSeenShapes;
   aSeenShapes.Add(theShape);
@@ -78,9 +78,9 @@ static TopoDS_Shape ShapeAt(const TopoDS_Shape& theShape,
   return TopoDS_Shape();
 }
 
-static void BuildPrimitive(const TDF_Label& theLabel,
+static void BuildPrimitive(const TDF_Label&    theLabel,
                            const TopoDS_Shape* theShapes,
-                           const int theNbShapes)
+                           const int           theNbShapes)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theNbShapes; ++anIndex)
@@ -89,10 +89,10 @@ static void BuildPrimitive(const TDF_Label& theLabel,
   }
 }
 
-static void BuildGenerated(const TDF_Label& theLabel,
+static void BuildGenerated(const TDF_Label&    theLabel,
                            const TopoDS_Shape* theOldShapes,
                            const TopoDS_Shape* theNewShapes,
-                           const int theNbShapes)
+                           const int           theNbShapes)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theNbShapes; ++anIndex)
@@ -101,10 +101,10 @@ static void BuildGenerated(const TDF_Label& theLabel,
   }
 }
 
-static void BuildModified(const TDF_Label& theLabel,
+static void BuildModified(const TDF_Label&    theLabel,
                           const TopoDS_Shape* theOldShapes,
                           const TopoDS_Shape* theNewShapes,
-                          const int theNbShapes)
+                          const int           theNbShapes)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theNbShapes; ++anIndex)
@@ -113,9 +113,9 @@ static void BuildModified(const TDF_Label& theLabel,
   }
 }
 
-static void BuildDeleted(const TDF_Label& theLabel,
+static void BuildDeleted(const TDF_Label&    theLabel,
                          const TopoDS_Shape* theOldShapes,
-                         const int theNbShapes)
+                         const int           theNbShapes)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theNbShapes; ++anIndex)
@@ -124,9 +124,9 @@ static void BuildDeleted(const TDF_Label& theLabel,
   }
 }
 
-static void BuildSelected(const TDF_Label& theLabel,
+static void BuildSelected(const TDF_Label&    theLabel,
                           const TopoDS_Shape* theShapes,
-                          const int theNbShapes)
+                          const int           theNbShapes)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theNbShapes; ++anIndex)
@@ -247,8 +247,8 @@ static int CountAllOldShapesAtLabel(const TDF_Label& theLabel, const TDF_Label& 
   return aCount;
 }
 
-static void CollectAllNewShapes(const TopoDS_Shape& theShape,
-                                const TDF_Label& theAccess,
+static void CollectAllNewShapes(const TopoDS_Shape&             theShape,
+                                const TDF_Label&                theAccess,
                                 NCollection_List<TopoDS_Shape>& theShapes)
 {
   for (TNaming_NewShapeIterator anIterator(theShape, theAccess); anIterator.More();
@@ -262,8 +262,8 @@ static void CollectAllNewShapes(const TopoDS_Shape& theShape,
   }
 }
 
-static void CollectAllOldShapes(const TopoDS_Shape& theShape,
-                                const TDF_Label& theAccess,
+static void CollectAllOldShapes(const TopoDS_Shape&             theShape,
+                                const TDF_Label&                theAccess,
                                 NCollection_List<TopoDS_Shape>& theShapes)
 {
   occ::handle<TNaming_NamedShape> aNamedShape = TNaming_Tool::NamedShape(theShape, theAccess);
@@ -283,8 +283,8 @@ static void CollectAllOldShapes(const TopoDS_Shape& theShape,
   }
 }
 
-static void CollectAllNewShapesAtLabel(const TDF_Label& theLabel,
-                                       const TDF_Label& theAccess,
+static void CollectAllNewShapesAtLabel(const TDF_Label&                theLabel,
+                                       const TDF_Label&                theAccess,
                                        NCollection_List<TopoDS_Shape>& theShapes)
 {
   occ::handle<TNaming_NamedShape> aNamedShape;
@@ -302,8 +302,8 @@ static void CollectAllNewShapesAtLabel(const TDF_Label& theLabel,
   }
 }
 
-static void CollectAllOldShapesAtLabel(const TDF_Label& theLabel,
-                                       const TDF_Label& theAccess,
+static void CollectAllOldShapesAtLabel(const TDF_Label&                theLabel,
+                                       const TDF_Label&                theAccess,
                                        NCollection_List<TopoDS_Shape>& theShapes)
 {
   occ::handle<TNaming_NamedShape> aNamedShape;
@@ -710,8 +710,8 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A1_SetShapeUndoRedo)
 {
   occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("BinOcaf");
   aDoc->SetUndoLimit(10);
-  TDF_Label                    aLabel = aDoc->Main().FindChild(2, true);
-  const TopoDS_Shape           aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  TDF_Label          aLabel = aDoc->Main().FindChild(2, true);
+  const TopoDS_Shape aBox   = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
 
   aDoc->NewCommand();
   TNaming_Builder aBuilder(aLabel);
@@ -740,11 +740,11 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A1_SetShapeUndoRedo)
 // and same-shape relationships from the DRAW case.
 TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
 {
-  occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinOcaf");
-  const TDF_Label               aTestLabel = aDocument->Main().FindChild(1, true);
+  occ::handle<TDocStd_Document> aDocument     = new TDocStd_Document("BinOcaf");
+  const TDF_Label               aTestLabel    = aDocument->Main().FindChild(1, true);
   const TDF_Label               anAccessLabel = aDocument->GetData()->Root();
 
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
   const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(200.0, 300.0, 400.0).Shape();
   const TopoDS_Shape aBox3 = BRepPrimAPI_MakeBox(300.0, 400.0, 500.0).Shape();
   const TopoDS_Shape aBox4 =
@@ -769,19 +769,19 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
     ASSERT_FALSE(aBox4Faces[anIndex - 1].IsNull());
   }
 
-  const TDF_Label aLabel1 = aTestLabel.FindChild(1, true);
+  const TDF_Label aLabel1  = aTestLabel.FindChild(1, true);
   const TDF_Label aLabel11 = aLabel1.FindChild(1, true);
   const TDF_Label aLabel12 = aLabel1.FindChild(2, true);
-  const TDF_Label aLabel2 = aTestLabel.FindChild(2, true);
+  const TDF_Label aLabel2  = aTestLabel.FindChild(2, true);
   const TDF_Label aLabel21 = aLabel2.FindChild(1, true);
   const TDF_Label aLabel22 = aLabel2.FindChild(2, true);
-  const TDF_Label aLabel3 = aTestLabel.FindChild(3, true);
+  const TDF_Label aLabel3  = aTestLabel.FindChild(3, true);
   const TDF_Label aLabel31 = aLabel3.FindChild(1, true);
   const TDF_Label aLabel32 = aLabel3.FindChild(2, true);
   const TDF_Label aLabel41 = aTestLabel.FindChild(4, true).FindChild(1, true);
-  const TDF_Label aLabel5 = aTestLabel.FindChild(5, true);
+  const TDF_Label aLabel5  = aTestLabel.FindChild(5, true);
   const TDF_Label aLabel51 = aLabel5.FindChild(1, true);
-  const TDF_Label aLabel6 = aTestLabel.FindChild(6, true);
+  const TDF_Label aLabel6  = aTestLabel.FindChild(6, true);
   const TDF_Label aLabel61 = aLabel6.FindChild(1, true);
 
   BuildPrimitive(aLabel1, &aBox, 1);
@@ -869,10 +869,10 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
                                                    TNaming_MODIFY,
                                                    TNaming_SELECTED,
                                                    TNaming_SELECTED};
-  const int anExpectedNew[] = {1, 3, 3, 1, 3, 3, 1, 3, 3, 0, 1, 2, 1, 2};
-  const int anExpectedOld[] = {0, 0, 0, 1, 3, 3, 1, 3, 3, 2, 1, 2, 1, 2};
-  const int anExpectedAllNew[] = {3, 14, 2, 2, 3, 5, 1, 1, 2, 0, 0, 0, 0, 2};
-  const int anExpectedAllOld[] = {0, 0, 0, 1, 3, 3, 2, 6, 5, 0, 3, 5, 3, 2};
+  const int               anExpectedNew[]       = {1, 3, 3, 1, 3, 3, 1, 3, 3, 0, 1, 2, 1, 2};
+  const int               anExpectedOld[]       = {0, 0, 0, 1, 3, 3, 1, 3, 3, 2, 1, 2, 1, 2};
+  const int               anExpectedAllNew[]    = {3, 14, 2, 2, 3, 5, 1, 1, 2, 0, 0, 0, 0, 2};
+  const int               anExpectedAllOld[]    = {0, 0, 0, 1, 3, 3, 2, 6, 5, 0, 3, 5, 3, 2};
   for (int anIndex = 1; anIndex <= aLabels.Upper(); ++anIndex)
   {
     occ::handle<TNaming_NamedShape> aNamedShape;
@@ -894,12 +894,12 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
   EXPECT_EQ(anOldIteratorShapes.Extent(), 6);
   NCollection_Array1<TopoDS_Shape> aCollectedOldShapes(1, 6);
   int                              anOldIndex = 1;
-  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(anOldIteratorShapes);
-       anIterator.More(); anIterator.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(anOldIteratorShapes); anIterator.More();
+       anIterator.Next())
   {
     aCollectedOldShapes.SetValue(anOldIndex++, anIterator.Value());
   }
-  const int anOldShapeOrder[] = {5, 6, 1, 2, 3, 4};
+  const int                        anOldShapeOrder[] = {5, 6, 1, 2, 3, 4};
   NCollection_Array1<TopoDS_Shape> anOrderedOldShapes(1, 6);
   for (int anIndex = 1; anIndex <= 6; ++anIndex)
   {
@@ -908,8 +908,8 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
   NCollection_Array1<TopoDS_Shape> aShapes(1, 21);
   aShapes.SetValue(1, aBox);
   int anShapeIndex = 2;
-  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(anIteratorShapes);
-       anIterator.More(); anIterator.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator anIterator(anIteratorShapes); anIterator.More();
+       anIterator.Next())
   {
     ASSERT_LE(anShapeIndex, 15);
     aShapes.SetValue(anShapeIndex++, anIterator.Value());
@@ -922,8 +922,7 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
   }
   ASSERT_EQ(anShapeIndex, 22);
 
-  const int anExpectedSame[] = {1, 2, 2, 1, 3, 2, 1, 2, 1, 1, 2,
-                                1, 3, 2, 1, 3, 4, 3, 4, 1, 2};
+  const int anExpectedSame[] = {1, 2, 2, 1, 3, 2, 1, 2, 1, 1, 2, 1, 3, 2, 1, 3, 4, 3, 4, 1, 2};
   const int anExpectedSameLabels[] = {2, 3, 3, 1, 4, 3, 2, 3, 1, 2, 3,
                                       1, 4, 3, 2, 4, 5, 4, 5, 2, 3};
   for (int anIndex = 1; anIndex <= aShapes.Upper(); ++anIndex)
@@ -934,10 +933,20 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
               anExpectedSame[anIndex - 1]);
   }
 
-  const int anExpectedSamePairs[][2] = {{20, 10}, {19, 17}, {18, 16}, {18, 13},
-                                        {18, 5},  {16, 13}, {16, 5},  {15, 7},
-                                        {14, 6},  {14, 3},  {13, 5},  {12, 9},
-                                        {11, 8},  {6, 3}};
+  const int anExpectedSamePairs[][2] = {{20, 10},
+                                        {19, 17},
+                                        {18, 16},
+                                        {18, 13},
+                                        {18, 5},
+                                        {16, 13},
+                                        {16, 5},
+                                        {15, 7},
+                                        {14, 6},
+                                        {14, 3},
+                                        {13, 5},
+                                        {12, 9},
+                                        {11, 8},
+                                        {6, 3}};
   for (const int (&aPair)[2] : anExpectedSamePairs)
   {
     EXPECT_TRUE(aShapes.Value(aPair[0]).IsSame(aShapes.Value(aPair[1])));

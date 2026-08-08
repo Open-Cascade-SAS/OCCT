@@ -306,7 +306,7 @@ TEST(DEGLTF_Bug_Test, MeshBug_31332_GlbStreamInterleavedBuffer)
   ASSERT_EQ(aGlb->Data()[2], uint8_t('T'));
   ASSERT_EQ(aGlb->Data()[3], uint8_t('F'));
   Standard_ArrayStreamBuffer  aStreamBuffer(reinterpret_cast<const char*>(aGlb->Data()),
-                                            aGlb->Size());
+                                           aGlb->Size());
   std::istream                anInput(&aStreamBuffer);
   DE_Provider::ReadStreamList aStreams;
   aStreams.Append(DE_Provider::ReadStreamNode("interleaved.glb", anInput));

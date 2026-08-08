@@ -53,7 +53,7 @@ double triangleTriangleSqDistance(const BVH_Vec3d& theNode11,
                                   const BVH_Vec3d& theNode22,
                                   const BVH_Vec3d& theNode23)
 {
-  double aMinDistance = std::numeric_limits<double>::max();
+  double          aMinDistance = std::numeric_limits<double>::max();
   const BVH_Vec3d aNodes[2][3] = {{theNode11, theNode12, theNode13},
                                   {theNode21, theNode22, theNode23}};
 
@@ -63,11 +63,11 @@ double triangleTriangleSqDistance(const BVH_Vec3d& theNode11,
   {
     for (int aPointIndex = 0; aPointIndex < 3; ++aPointIndex)
     {
-      const double aDistance = BVH_Tools<double, 3>::PointTriangleSquareDistance(
-        aNodes[aTriangleIndex][aPointIndex],
-        aNodes[(aTriangleIndex + 1) % 2][0],
-        aNodes[(aTriangleIndex + 1) % 2][1],
-        aNodes[(aTriangleIndex + 1) % 2][2]);
+      const double aDistance =
+        BVH_Tools<double, 3>::PointTriangleSquareDistance(aNodes[aTriangleIndex][aPointIndex],
+                                                          aNodes[(aTriangleIndex + 1) % 2][0],
+                                                          aNodes[(aTriangleIndex + 1) % 2][1],
+                                                          aNodes[(aTriangleIndex + 1) % 2][2]);
       if (aDistance < aMinDistance)
       {
         aMinDistance = aDistance;
@@ -81,9 +81,9 @@ double triangleTriangleSqDistance(const BVH_Vec3d& theNode11,
     const BVH_Vec3d aEdgeStarts[3] = {aNodes[aTriangleIndex][0],
                                       aNodes[aTriangleIndex][1],
                                       aNodes[aTriangleIndex][2]};
-    const BVH_Vec3d aEdgeEnds[3] = {aNodes[aTriangleIndex][1],
-                                    aNodes[aTriangleIndex][2],
-                                    aNodes[aTriangleIndex][0]};
+    const BVH_Vec3d aEdgeEnds[3]   = {aNodes[aTriangleIndex][1],
+                                      aNodes[aTriangleIndex][2],
+                                      aNodes[aTriangleIndex][0]};
     for (int anEdgeIndex = 0; anEdgeIndex < 3; ++anEdgeIndex)
     {
       const BVH_Vec3d aFirstPoint = aEdgeStarts[anEdgeIndex];
@@ -100,11 +100,11 @@ double triangleTriangleSqDistance(const BVH_Vec3d& theNode11,
       for (int aPointIndex = 1; aPointIndex < aNbSegments; ++aPointIndex)
       {
         const BVH_Vec3d aPoint = aFirstPoint + anEdge.Multiplied(aPointIndex * aDelta);
-        const double aDistance = BVH_Tools<double, 3>::PointTriangleSquareDistance(
-          aPoint,
-          aNodes[(aTriangleIndex + 1) % 2][0],
-          aNodes[(aTriangleIndex + 1) % 2][1],
-          aNodes[(aTriangleIndex + 1) % 2][2]);
+        const double    aDistance =
+          BVH_Tools<double, 3>::PointTriangleSquareDistance(aPoint,
+                                                            aNodes[(aTriangleIndex + 1) % 2][0],
+                                                            aNodes[(aTriangleIndex + 1) % 2][1],
+                                                            aNodes[(aTriangleIndex + 1) % 2][2]);
         if (aDistance < aMinDistance)
         {
           aMinDistance = aDistance;
@@ -129,7 +129,7 @@ opencascade::handle<TriangleBoxSet> makeTriangleBoxSet(const TopoDS_Shape& theSh
   TopExp::MapShapes(theShape, TopAbs_FACE, aFaces);
   for (int aFaceIndex = 1; aFaceIndex <= aFaces.Extent(); ++aFaceIndex)
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                   aLocation;
     const Handle(Poly_Triangulation)& aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(aFaces(aFaceIndex)), aLocation);
     if (aTriangulation.IsNull())
@@ -173,7 +173,7 @@ public:
   {
     const Triangle& aTriangle1 = myBVHSet1->Element(theIndex1);
     const Triangle& aTriangle2 = myBVHSet2->Element(theIndex2);
-    const double aDistance = triangleTriangleSqDistance(aTriangle1.myNode1,
+    const double    aDistance  = triangleTriangleSqDistance(aTriangle1.myNode1,
                                                         aTriangle1.myNode2,
                                                         aTriangle1.myNode3,
                                                         aTriangle2.myNode1,
@@ -220,8 +220,7 @@ TEST(BVH_PairDistanceTest, Bug30655_BoxDistance)
 TEST(BVH_PairDistanceTest, Bug30655_SphereDistance)
 {
   const TopoDS_Shape aSphere1 = BRepPrimAPI_MakeSphere(100.).Shape();
-  const TopoDS_Shape aSphere2 =
-    BRepPrimAPI_MakeSphere(gp_Pnt(150., 150., 150.), 110.).Shape();
+  const TopoDS_Shape aSphere2 = BRepPrimAPI_MakeSphere(gp_Pnt(150., 150., 150.), 110.).Shape();
   meshShape(aSphere1, 0.01);
   meshShape(aSphere2, 0.01);
 

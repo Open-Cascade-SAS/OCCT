@@ -94,15 +94,15 @@ TopoDS_Compound MakeCylinderIsoEdges()
   const int    aNbUEdges = 10;
   for (int anIndex = 0; anIndex <= aNbUEdges; ++anIndex)
   {
-    const double                       anAngle = 2.0 * aPi * double(anIndex) / double(aNbUEdges);
-    const occ::handle<Geom_Curve>       aCurve = aSurface->UIso(anAngle);
+    const double                  anAngle = 2.0 * aPi * double(anIndex) / double(aNbUEdges);
+    const occ::handle<Geom_Curve> aCurve  = aSurface->UIso(anAngle);
     aBuilder.Add(anEdges, BRepBuilderAPI_MakeEdge(aCurve, -25.0, 25.0).Edge());
   }
 
   const int aNbVEdges = 10;
   for (int anIndex = 0; anIndex <= aNbVEdges; ++anIndex)
   {
-    const double aZ = -20.0 + 40.0 * double(anIndex) / double(aNbVEdges);
+    const double                  aZ     = -20.0 + 40.0 * double(anIndex) / double(aNbVEdges);
     const occ::handle<Geom_Curve> aCurve = aSurface->VIso(aZ);
     aBuilder.Add(anEdges, BRepBuilderAPI_MakeEdge(aCurve).Edge());
   }

@@ -81,7 +81,7 @@ protected:
 
     NCollection_List<const Message_ProgressScope*> aScopes;
     for (const Message_ProgressScope* aScope = &theScope; aScope != nullptr;
-         aScope                     = aScope->Parent())
+         aScope                              = aScope->Parent())
     {
       aScopes.Prepend(aScope);
     }
@@ -142,9 +142,9 @@ static occ::handle<TDocStd_Document> NewDocument(
 }
 
 static TCollection_ExtendedString MakeTemporaryFile(OSD_Directory& theDirectory,
-                                                     OSD_Path&      thePath,
-                                                     const char*    theName,
-                                                     const char*    theExtension)
+                                                    OSD_Path&      thePath,
+                                                    const char*    theName,
+                                                    const char*    theExtension)
 {
   theDirectory.Path(thePath);
   thePath.SetName(theName);
@@ -162,8 +162,7 @@ static void SetBox(const TDF_Label& theLabel)
 
 static bool HasMessage(const ProgressObserver& theObserver, const char* theText)
 {
-  for (NCollection_Sequence<TCollection_AsciiString>::Iterator anIterator(
-         theObserver.Messages());
+  for (NCollection_Sequence<TCollection_AsciiString>::Iterator anIterator(theObserver.Messages());
        anIterator.More();
        anIterator.Next())
   {
@@ -184,7 +183,8 @@ static void ExpectMessages(const ProgressObserver& theObserver,
   EXPECT_TRUE(HasMessage(theObserver, "100%"));
   for (int anIndex = 0; anIndex < theNbExpectedMessages; ++anIndex)
   {
-    EXPECT_TRUE(HasMessage(theObserver, theExpectedMessages[anIndex])) << theExpectedMessages[anIndex];
+    EXPECT_TRUE(HasMessage(theObserver, theExpectedMessages[anIndex]))
+      << theExpectedMessages[anIndex];
   }
 }
 
@@ -198,15 +198,17 @@ static void RunSaveAsProgress(const char*       theFormat,
   ASSERT_FALSE(aDocument.IsNull());
   SetBox(aDocument->Main().FindChild(1, true));
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path     aPath;
-  const TCollection_ExtendedString aFileName = MakeTemporaryFile(
-    aDirectory, aPath, theName, strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
+  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
+  OSD_Path                         aPath;
+  const TCollection_ExtendedString aFileName =
+    MakeTemporaryFile(aDirectory,
+                      aPath,
+                      theName,
+                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
-  EXPECT_EQ(anApplication->SaveAs(aDocument,
-                                  aFileName,
-                                  Message_ProgressIndicator::Start(aProgress)),
-            PCDM_SS_OK);
+  EXPECT_EQ(
+    anApplication->SaveAs(aDocument, aFileName, Message_ProgressIndicator::Start(aProgress)),
+    PCDM_SS_OK);
   OSD_File aFile(aPath);
   EXPECT_TRUE(aFile.Exists());
   ExpectMessages(*aProgress, theExpectedMessages, theNbExpectedMessages);
@@ -227,18 +229,19 @@ static void RunOpenProgress(const char*       theFormat,
   ASSERT_FALSE(aDocument.IsNull());
   SetBox(aDocument->Main().FindChild(1, true));
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path     aPath;
-  const TCollection_ExtendedString aFileName = MakeTemporaryFile(
-    aDirectory, aPath, theName, strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
+  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
+  OSD_Path                         aPath;
+  const TCollection_ExtendedString aFileName =
+    MakeTemporaryFile(aDirectory,
+                      aPath,
+                      theName,
+                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
   EXPECT_EQ(anApplication->SaveAs(aDocument, aFileName), PCDM_SS_OK);
   anApplication->Close(aDocument);
 
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
   occ::handle<TDocStd_Document> aRestored;
-  EXPECT_EQ(anApplication->Open(aFileName,
-                                aRestored,
-                                Message_ProgressIndicator::Start(aProgress)),
+  EXPECT_EQ(anApplication->Open(aFileName, aRestored, Message_ProgressIndicator::Start(aProgress)),
             PCDM_RS_OK);
   ASSERT_FALSE(aRestored.IsNull());
   ExpectMessages(*aProgress, theExpectedMessages, theNbExpectedMessages);
@@ -260,10 +263,13 @@ static void RunSaveProgress(const char*       theFormat,
   ASSERT_FALSE(aDocument.IsNull());
   SetBox(aDocument->Main().FindChild(1, true));
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path     aPath;
-  const TCollection_ExtendedString aFileName = MakeTemporaryFile(
-    aDirectory, aPath, theName, strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
+  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
+  OSD_Path                         aPath;
+  const TCollection_ExtendedString aFileName =
+    MakeTemporaryFile(aDirectory,
+                      aPath,
+                      theName,
+                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
   EXPECT_EQ(anApplication->SaveAs(aDocument, aFileName), PCDM_SS_OK);
   anApplication->Close(aDocument);
 
@@ -284,9 +290,9 @@ static void RunSaveProgress(const char*       theFormat,
   }
 }
 
-static void RunNestedProgress(const bool         theIsInfinite,
-                              const char* const  theExpectedMessages[],
-                              const int          theNbExpectedMessages)
+static void RunNestedProgress(const bool        theIsInfinite,
+                              const char* const theExpectedMessages[],
+                              const int         theNbExpectedMessages)
 {
   occ::handle<DrawTextProgressObserver> aProgress = new DrawTextProgressObserver();
   {
@@ -294,8 +300,7 @@ static void RunNestedProgress(const bool         theIsInfinite,
     for (int anOuterIndex = 0; anOuterIndex < 3 && anOuter.More(); ++anOuterIndex)
     {
       Message_ProgressScope anInner(anOuter.Next(), "Inner", 2, theIsInfinite);
-      for (int anInnerIndex = 0;
-           anInnerIndex < (theIsInfinite ? 4 : 2) && anInner.More();
+      for (int anInnerIndex = 0; anInnerIndex < (theIsInfinite ? 4 : 2) && anInner.More();
            ++anInnerIndex, anInner.Next())
       {
       }
@@ -305,8 +310,7 @@ static void RunNestedProgress(const bool         theIsInfinite,
   ASSERT_EQ(aProgress->Messages().Length(), theNbExpectedMessages);
   for (int anIndex = 1; anIndex <= theNbExpectedMessages; ++anIndex)
   {
-    EXPECT_STREQ(theExpectedMessages[anIndex - 1],
-                 aProgress->Messages()(anIndex).ToCString())
+    EXPECT_STREQ(theExpectedMessages[anIndex - 1], aProgress->Messages()(anIndex).ToCString())
       << "Unexpected progress message at index " << anIndex;
   }
 }

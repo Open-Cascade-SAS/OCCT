@@ -29,7 +29,7 @@ TEST(TDocStd_Application_Test, CafBug_159_OwnerClearedOnClose)
   anApplication->NewDocument("BinOcaf", aDocument);
   ASSERT_FALSE(aDocument.IsNull());
 
-  const int aReferenceCountBeforeClose = aDocument->GetRefCount();
+  const int                  aReferenceCountBeforeClose = aDocument->GetRefCount();
   occ::handle<TDocStd_Owner> anOwner;
   ASSERT_TRUE(aDocument->Main().Root().FindAttribute(TDocStd_Owner::GetID(), anOwner));
   occ::handle<TDocStd_Document> anOwnedDocument = anOwner->GetDocument();

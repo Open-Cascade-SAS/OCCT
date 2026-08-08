@@ -176,9 +176,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_1_DegenerateThreeCircleCase)
   const Geom2dGcc_QualifiedCurve aQual2 = createQualifiedCircle(2900.0, 900.0, 400.0);
   const Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(2900.0, 1000.0, 300.0);
 
-  EXPECT_NO_THROW({
-    Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0);
-  });
+  EXPECT_NO_THROW({ Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0); });
 }
 
 // Migrated from tests/lowalgos/2dgcc/buc60622_2.  Keep the three explicit
@@ -193,9 +191,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_2_AllKnownSolutionLengths)
   ASSERT_TRUE(aSolver.IsDone());
   ASSERT_EQ(aSolver.NbSolutions(), 3);
 
-  const double anExpectedLengths[] = {2513.2741228703289,
-                                      837.75804095727631,
-                                      279.2526803190928};
+  const double anExpectedLengths[] = {2513.2741228703289, 837.75804095727631, 279.2526803190928};
   for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
   {
     EXPECT_NEAR(circleLength(aSolver.ThisSolution(anIndex)),
@@ -217,10 +213,10 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_3_AllTangentCircleLengths)
   ASSERT_EQ(aSolver.NbSolutions(), 5);
 
   const double anExpectedLengths[] = {1570.7963267948965,
-                                     785.39816339744868,
-                                     785.39816339744823,
-                                     523.59877559829806,
-                                     523.59877559829806};
+                                      785.39816339744868,
+                                      785.39816339744823,
+                                      523.59877559829806,
+                                      523.59877559829806};
   for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
   {
     const gp_Circ2d aSolution = aSolver.ThisSolution(anIndex);
@@ -243,13 +239,13 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60618_FilteringKeepsAllSolutions)
   ASSERT_EQ(aSolver.NbSolutions(), 8);
 
   const double anExpectedLengths[] = {3568.9587306060739,
-                                     9964.7111736227271,
-                                     2082.9371204466097,
-                                     32696.069757517998,
-                                     1681.9298517645602,
-                                     3097.3731840080009,
-                                     1545.2428620020787,
-                                     772.26646380656518};
+                                      9964.7111736227271,
+                                      2082.9371204466097,
+                                      32696.069757517998,
+                                      1681.9298517645602,
+                                      3097.3731840080009,
+                                      1545.2428620020787,
+                                      772.26646380656518};
   for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
   {
     const gp_Circ2d aSolution = aSolver.ThisSolution(anIndex);
@@ -278,7 +274,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, ToleranceImpact_Analysis)
 
   for (int anIndex = aTestTolerances.Lower(); anIndex <= aTestTolerances.Upper(); ++anIndex)
   {
-    const double aTol = aTestTolerances(anIndex);
+    const double         aTol = aTestTolerances(anIndex);
     Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, aTol, 0, 0, 0);
 
     EXPECT_TRUE(aSolver.IsDone()) << "Algorithm should succeed with tolerance " << aTol;

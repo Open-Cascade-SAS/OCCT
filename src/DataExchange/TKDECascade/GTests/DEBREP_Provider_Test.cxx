@@ -64,18 +64,12 @@ static void ExpectSameShape(const TopoDS_Shape& theExpected, const TopoDS_Shape&
   ASSERT_FALSE(theExpected.IsNull());
   ASSERT_FALSE(theActual.IsNull());
   EXPECT_EQ(theActual.ShapeType(), theExpected.ShapeType());
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_SOLID),
-            CountSubShapes(theExpected, TopAbs_SOLID));
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_SHELL),
-            CountSubShapes(theExpected, TopAbs_SHELL));
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_FACE),
-            CountSubShapes(theExpected, TopAbs_FACE));
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_WIRE),
-            CountSubShapes(theExpected, TopAbs_WIRE));
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_EDGE),
-            CountSubShapes(theExpected, TopAbs_EDGE));
-  EXPECT_EQ(CountSubShapes(theActual, TopAbs_VERTEX),
-            CountSubShapes(theExpected, TopAbs_VERTEX));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_SOLID), CountSubShapes(theExpected, TopAbs_SOLID));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_SHELL), CountSubShapes(theExpected, TopAbs_SHELL));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_FACE), CountSubShapes(theExpected, TopAbs_FACE));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_WIRE), CountSubShapes(theExpected, TopAbs_WIRE));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_EDGE), CountSubShapes(theExpected, TopAbs_EDGE));
+  EXPECT_EQ(CountSubShapes(theActual, TopAbs_VERTEX), CountSubShapes(theExpected, TopAbs_VERTEX));
 
   GProp_GProps anExpectedProps;
   GProp_GProps anActualProps;
@@ -96,11 +90,11 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A1_ShapeRoundTrip)
   const TopoDS_Shape aFirstShape = MakeSourceShape();
   const std::string  aContent    = MakeAsciiBRep(aFirstShape);
 
-  std::istringstream aInput(aContent);
+  std::istringstream          aInput(aContent);
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("source.brep", aInput));
 
-  DE_Wrapper   aWrapper;
+  DE_Wrapper aWrapper;
   BindWrapper(aWrapper);
   TopoDS_Shape aSecondShape;
   ASSERT_TRUE(aWrapper.Read(aReadStreams, aSecondShape));
@@ -110,14 +104,14 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A1_ShapeRoundTrip)
 // de_wrapper/brep/A2: wrapper document write followed by direct BRep read.
 TEST(DEBREP_Provider_Test, DEWrapper_Brep_A2_DocumentWrite)
 {
-  const TopoDS_Shape aFirstShape = MakeSourceShape();
+  const TopoDS_Shape               aFirstShape   = MakeSourceShape();
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   occ::handle<TDocStd_Document>    aDocument;
   anApplication->NewDocument("BinXCAF", aDocument);
   ASSERT_FALSE(aDocument.IsNull());
   XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(aFirstShape);
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("document.brep", aOutput));
 
@@ -126,11 +120,11 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A2_DocumentWrite)
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, aDocument));
   ASSERT_FALSE(aOutput.str().empty());
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("document.brep", aInput));
   occ::handle<DEBREP_Provider> aProvider = new DEBREP_Provider(new DEBREP_ConfigurationNode());
-  TopoDS_Shape aSecondShape;
+  TopoDS_Shape                 aSecondShape;
   ASSERT_TRUE(aProvider->Read(aReadStreams, aSecondShape));
   ExpectSameShape(aFirstShape, aSecondShape);
 }
@@ -138,8 +132,8 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A2_DocumentWrite)
 // de_wrapper/brep/A3: wrapper shape write followed by wrapper document read.
 TEST(DEBREP_Provider_Test, DEWrapper_Brep_A3_DocumentRead)
 {
-  const TopoDS_Shape aFirstShape = MakeSourceShape();
-  std::ostringstream aOutput;
+  const TopoDS_Shape           aFirstShape = MakeSourceShape();
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("shape.brep", aOutput));
 
@@ -148,7 +142,7 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A3_DocumentRead)
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, aFirstShape));
   ASSERT_FALSE(aOutput.str().empty());
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("shape.brep", aInput));
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
@@ -171,18 +165,18 @@ TEST(DEBREP_Provider_Test, DEWrapper_Brep_A4_ShapeRoundTrip)
   DE_Wrapper         aWrapper;
   BindWrapper(aWrapper);
 
-  std::istringstream aFirstInput(aContent);
+  std::istringstream          aFirstInput(aContent);
   DE_Provider::ReadStreamList aFirstReadStreams;
   aFirstReadStreams.Append(DE_Provider::ReadStreamNode("source.brep", aFirstInput));
   TopoDS_Shape aReadShape;
   ASSERT_TRUE(aWrapper.Read(aFirstReadStreams, aReadShape));
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("roundtrip.brep", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, aReadShape));
 
-  std::istringstream aSecondInput(aOutput.str());
+  std::istringstream          aSecondInput(aOutput.str());
   DE_Provider::ReadStreamList aSecondReadStreams;
   aSecondReadStreams.Append(DE_Provider::ReadStreamNode("roundtrip.brep", aSecondInput));
   TopoDS_Shape aSecondShape;

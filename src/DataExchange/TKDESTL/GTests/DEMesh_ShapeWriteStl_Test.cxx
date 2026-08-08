@@ -81,8 +81,8 @@ private:
 
 static TopoDS_Shape MakeRegularTriangulatedFace()
 {
-  const int aNbU = 100;
-  const int aNbV = 100;
+  const int   aNbU  = 100;
+  const int   aNbV  = 100;
   TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(), 0.0, 100.0, 0.0, 100.0).Face();
   occ::handle<Poly_Triangulation> aTriangulation =
     new Poly_Triangulation((aNbU + 1) * (aNbV + 1), 2 * aNbU * aNbV, false);
@@ -100,12 +100,9 @@ static TopoDS_Shape MakeRegularTriangulatedFace()
     for (int iV = 0; iV < aNbV; ++iV)
     {
       const int aBase = 1 + iU * (aNbV + 1) + iV;
-      aTriangulation->SetTriangle(aTriangle++, Poly_Triangle(aBase,
-                                                               aBase + aNbV + 2,
-                                                               aBase + 1));
-      aTriangulation->SetTriangle(aTriangle++, Poly_Triangle(aBase,
-                                                               aBase + aNbV + 1,
-                                                               aBase + aNbV + 2));
+      aTriangulation->SetTriangle(aTriangle++, Poly_Triangle(aBase, aBase + aNbV + 2, aBase + 1));
+      aTriangulation->SetTriangle(aTriangle++,
+                                  Poly_Triangle(aBase, aBase + aNbV + 1, aBase + aNbV + 2));
     }
   }
   BRep_Builder aBuilder;
@@ -113,8 +110,7 @@ static TopoDS_Shape MakeRegularTriangulatedFace()
   return aFace;
 }
 
-static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory& theDirectory,
-                                                    OSD_Path&      thePath)
+static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory& theDirectory, OSD_Path& thePath)
 {
   theDirectory.Path(thePath);
   thePath.SetName("draw_shape_write_stl");
@@ -140,7 +136,7 @@ static int CountTriangles(const TopoDS_Shape& theShape)
   int aNbTriangles = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                 aLocation;
     occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -151,9 +147,9 @@ static int CountTriangles(const TopoDS_Shape& theShape)
   return aNbTriangles;
 }
 
-static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory&             theDirectory,
-                                                    const char* const           theName,
-                                                    OSD_Path&                   thePath)
+static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory&    theDirectory,
+                                                    const char* const theName,
+                                                    OSD_Path&         thePath)
 {
   theDirectory.Path(thePath);
   thePath.SetName(theName);
@@ -175,8 +171,7 @@ static void WriteTemporaryFile(const OSD_Path& thePath, const void* theBuffer, c
   aFile.Close();
 }
 
-static void WriteTemporaryFile(const OSD_Path&                 thePath,
-                               const TCollection_AsciiString& theBuffer)
+static void WriteTemporaryFile(const OSD_Path& thePath, const TCollection_AsciiString& theBuffer)
 {
   WriteTemporaryFile(thePath, (void*)theBuffer.ToCString(), theBuffer.Length());
 }
@@ -189,7 +184,7 @@ static void WriteBinaryStl(const OSD_Path& thePath, const bool theHasFacet)
   {
     aBuffer[80] = 1;
 
-    const float aNormal[3] = {0.0f, 0.0f, 1.0f};
+    const float aNormal[3]  = {0.0f, 0.0f, 1.0f};
     const float aVertex1[3] = {0.0f, 0.0f, 0.0f};
     const float aVertex2[3] = {1.0f, 0.0f, 0.0f};
     const float aVertex3[3] = {0.0f, 1.0f, 0.0f};
@@ -218,7 +213,7 @@ static TopoDS_Shape RoundTripStl(const TopoDS_Shape& theShape, const bool theAsc
   }
 
   aStream.seekg(0);
-  TopoDS_Shape aRestoredShape;
+  TopoDS_Shape  aRestoredShape;
   StlAPI_Reader aReader;
   if (!aReader.Read(aRestoredShape, aStream))
   {
@@ -259,10 +254,10 @@ TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
   const TopoDS_Shape aShape = MakeRegularTriangulatedFace();
   ASSERT_FALSE(aShape.IsNull());
 
-  OSD_Directory                       aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                            aPath;
+  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
+  OSD_Path                      aPath;
   const TCollection_AsciiString aFileName = MakeTemporaryStlFile(aDirectory, aPath);
-  occ::handle<ProgressObserver> aProgress  = new ProgressObserver();
+  occ::handle<ProgressObserver> aProgress = new ProgressObserver();
   StlAPI_Writer                 aWriter;
   aWriter.ASCIIMode() = false;
 
@@ -290,7 +285,8 @@ TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
     "Progress: 95% Triangles: 19000 / 20000",
     "Progress: 100% Triangles: 20000 / 20000",
   };
-  ASSERT_EQ(aProgress->Messages().Length(), static_cast<int>(sizeof(anExpected) / sizeof(*anExpected)));
+  ASSERT_EQ(aProgress->Messages().Length(),
+            static_cast<int>(sizeof(anExpected) / sizeof(*anExpected)));
   for (int anIndex = 1; anIndex <= aProgress->Messages().Length(); ++anIndex)
   {
     EXPECT_STREQ(aProgress->Messages().Value(anIndex).ToCString(), anExpected[anIndex - 1]);
@@ -300,7 +296,7 @@ TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
   OSD_File aFile(aPath);
   ASSERT_TRUE(aFile.Exists());
 
-  TopoDS_Shape aRestored;
+  TopoDS_Shape  aRestored;
   StlAPI_Reader aReader;
   EXPECT_TRUE(aReader.Read(aRestored, aFileName.ToCString()));
   EXPECT_FALSE(aRestored.IsNull());
@@ -313,38 +309,36 @@ TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
 // a missing final EOL, and a binary STL, while rejecting empty files.
 TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
 {
-  const TCollection_AsciiString aMinimalAsciiStl(
-    "solid\n"
-    "facet normal 0 0 1\n"
-    "outer loop\n"
-    "vertex 0 0 0\n"
-    "vertex 1 0 0\n"
-    "vertex 0 1 0\n"
-    "endloop\n"
-    "endfacet\n"
-    "endsolid");
+  const TCollection_AsciiString aMinimalAsciiStl("solid\n"
+                                                 "facet normal 0 0 1\n"
+                                                 "outer loop\n"
+                                                 "vertex 0 0 0\n"
+                                                 "vertex 1 0 0\n"
+                                                 "vertex 0 1 0\n"
+                                                 "endloop\n"
+                                                 "endfacet\n"
+                                                 "endsolid");
 
   OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
 
-  OSD_Path aDosPath;
+  OSD_Path                      aDosPath;
   const TCollection_AsciiString aDosName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_dos", aDosPath);
-  const TCollection_AsciiString aDosAscii(
-    "solid\r\n"
-    "facet normal 0 0 1\r\n"
-    "outer loop\r\n"
-    "vertex 0 0 0\r\n"
-    "vertex 1 0 0\r\n"
-    "vertex 0 1 0\r\n"
-    "endloop\r\n"
-    "endfacet\r\n"
-    "endsolid\r\n");
+  const TCollection_AsciiString aDosAscii("solid\r\n"
+                                          "facet normal 0 0 1\r\n"
+                                          "outer loop\r\n"
+                                          "vertex 0 0 0\r\n"
+                                          "vertex 1 0 0\r\n"
+                                          "vertex 0 1 0\r\n"
+                                          "endloop\r\n"
+                                          "endfacet\r\n"
+                                          "endsolid\r\n");
   WriteTemporaryFile(aDosPath, aDosAscii);
   TopoDS_Shape aDosShape;
   ASSERT_TRUE(ReadStl(aDosName, aDosShape));
   EXPECT_EQ(CountFaces(aDosShape), 1);
 
-  OSD_Path aUnixPath;
+  OSD_Path                      aUnixPath;
   const TCollection_AsciiString aUnixName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_unix", aUnixPath);
   WriteTemporaryFile(aUnixPath, aMinimalAsciiStl + "\n");
@@ -352,7 +346,7 @@ TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
   ASSERT_TRUE(ReadStl(aUnixName, aUnixShape));
   EXPECT_EQ(CountFaces(aUnixShape), 1);
 
-  OSD_Path aNoEolPath;
+  OSD_Path                      aNoEolPath;
   const TCollection_AsciiString aNoEolName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_noeol", aNoEolPath);
   WriteTemporaryFile(aNoEolPath, aMinimalAsciiStl);
@@ -361,15 +355,15 @@ TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
   EXPECT_EQ(CountFaces(aNoEolShape), 1);
 
   const TCollection_AsciiString aZeroAsciiStl("solid \nendsolid");
-  OSD_Path                       aZeroAsciiPath;
-  const TCollection_AsciiString  aZeroAsciiName =
+  OSD_Path                      aZeroAsciiPath;
+  const TCollection_AsciiString aZeroAsciiName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_zero_ascii", aZeroAsciiPath);
   WriteTemporaryFile(aZeroAsciiPath, aZeroAsciiStl);
   TopoDS_Shape aZeroAsciiShape;
   EXPECT_FALSE(ReadStl(aZeroAsciiName, aZeroAsciiShape));
   EXPECT_TRUE(aZeroAsciiShape.IsNull());
 
-  OSD_Path aBinaryPath;
+  OSD_Path                      aBinaryPath;
   const TCollection_AsciiString aBinaryName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_one_binary", aBinaryPath);
   WriteBinaryStl(aBinaryPath, true);
@@ -377,7 +371,7 @@ TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
   ASSERT_TRUE(ReadStl(aBinaryName, aBinaryShape));
   EXPECT_EQ(CountFaces(aBinaryShape), 1);
 
-  OSD_Path aZeroBinaryPath;
+  OSD_Path                      aZeroBinaryPath;
   const TCollection_AsciiString aZeroBinaryName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_zero_binary", aZeroBinaryPath);
   WriteBinaryStl(aZeroBinaryPath, false);
@@ -385,7 +379,7 @@ TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
   EXPECT_FALSE(ReadStl(aZeroBinaryName, aZeroBinaryShape));
   EXPECT_TRUE(aZeroBinaryShape.IsNull());
 
-  OSD_Path aEmptyPath;
+  OSD_Path                      aEmptyPath;
   const TCollection_AsciiString aEmptyName =
     MakeTemporaryStlFile(aDirectory, "draw_stl_empty", aEmptyPath);
   const char* anEmptyBuffer = "";
@@ -407,8 +401,8 @@ TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
 // bugs/modalg_7/bug30829: STL round-trips remain usable by shape proximity.
 TEST(DEMesh_ShapeWriteStl_Test, ModalgBug_30829_ProximityAfterStlRoundTrip)
 {
-  const TopoDS_Shape aBox      = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(5.0, 10.0).Shape();
+  const TopoDS_Shape       aBox      = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape       aCylinder = BRepPrimAPI_MakeCylinder(5.0, 10.0).Shape();
   BRepMesh_IncrementalMesh aBoxMesher(aBox, 0.1);
   BRepMesh_IncrementalMesh aCylinderMesher(aCylinder, 0.1);
 
@@ -430,11 +424,11 @@ TEST(DEMesh_ShapeWriteStl_Test, ModalgBug_30829_ProximityAfterStlRoundTrip)
 TEST(DEMesh_ShapeWriteStl_Test, StlBug_26338_CompoundLocations)
 {
   const TopoDS_Shape aFirstBox = BRepPrimAPI_MakeBox(5.0, 5.0, 5.0).Shape();
-  gp_Trsf           aTranslation;
+  gp_Trsf            aTranslation;
   aTranslation.SetTranslation(gp_Vec(10.0, 10.0, 10.0));
   const TopoDS_Shape aSecondBox = BRepBuilderAPI_Transform(aFirstBox, aTranslation).Shape();
 
-  BRep_Builder   aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aFirstBox);
@@ -469,8 +463,7 @@ TEST(DEMesh_ShapeWriteStl_Test, StlBug_30389_MissingFaceTriangulation)
   TopoDS_Compound    aMeshedFaces;
   aBuilder.MakeCompound(aMeshedFaces);
   int aFaceIndex = 0;
-  for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE);
-       anExplorer.More() && aFaceIndex < 5;
+  for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More() && aFaceIndex < 5;
        anExplorer.Next(), ++aFaceIndex)
   {
     aBuilder.Add(aMeshedFaces, anExplorer.Current());
@@ -486,9 +479,9 @@ TEST(DEMesh_ShapeWriteStl_Test, StlBug_30389_MissingFaceTriangulation)
 // bugs/xde/bug25357: STL writing does not remesh an already triangulated torus.
 TEST(DEMesh_ShapeWriteStl_Test, XdeBug_25357_PreserveTriangulation)
 {
-  const TopoDS_Shape aTorus = BRepPrimAPI_MakeTorus(10.0, 8.0).Shape();
+  const TopoDS_Shape       aTorus = BRepPrimAPI_MakeTorus(10.0, 8.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aTorus, 0.5);
-  const int                 aTrianglesBefore = CountTriangles(aTorus);
+  const int                aTrianglesBefore = CountTriangles(aTorus);
   ASSERT_GT(aTrianglesBefore, 0);
 
   std::stringstream aStream;

@@ -67,10 +67,10 @@ static occ::handle<Geom_BSplineSurface> makeOCC26979BSplineSurface()
   NCollection_Array1<int>    aUMultiplicities(1, 5), aVMultiplicities(1, 5);
   for (int anIndex = 1; anIndex <= 5; ++anIndex)
   {
-    aUKnots(anIndex)            = anIndex - 1;
-    aVKnots(anIndex)            = anIndex - 1;
-    aUMultiplicities(anIndex)   = 1;
-    aVMultiplicities(anIndex)   = 1;
+    aUKnots(anIndex)          = anIndex - 1;
+    aVKnots(anIndex)          = anIndex - 1;
+    aUMultiplicities(anIndex) = 1;
+    aVMultiplicities(anIndex) = 1;
   }
 
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
@@ -104,12 +104,13 @@ static occ::handle<Geom_BSplineSurface> makeOCC26979BSplineSurface()
 
 static occ::handle<Geom_SurfaceOfRevolution> makeOCC26979RevolutionSurface()
 {
-  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, -1.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 3.0);
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, -1.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
+                    3.0);
   const occ::handle<Geom_TrimmedCurve> aTrimmedCircle =
     new Geom_TrimmedCurve(aCircle, -M_PI / 2.0, M_PI / 2.0);
-  return new Geom_SurfaceOfRevolution(
-    aTrimmedCircle, gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
+  return new Geom_SurfaceOfRevolution(aTrimmedCircle,
+                                      gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
 }
 } // namespace
 

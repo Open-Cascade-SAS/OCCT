@@ -143,9 +143,8 @@ TEST(ShapeFix_ShapeTest, OCC24881_ValidBoxHasNoWireGapFailures)
   ASSERT_FALSE(aBox.IsNull());
 
   occ::handle<ShapeFix_Wire> aWireFix = new ShapeFix_Wire;
-  int                       aNbWires = 0;
-  for (TopExp_Explorer aFaceExplorer(aBox, TopAbs_FACE); aFaceExplorer.More();
-       aFaceExplorer.Next())
+  int                        aNbWires = 0;
+  for (TopExp_Explorer aFaceExplorer(aBox, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
   {
     const TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
     for (TopoDS_Iterator aWireIterator(aFace); aWireIterator.More(); aWireIterator.Next())
@@ -179,7 +178,7 @@ TEST(ShapeFix_ShapeTest, OCC25014_EmptyWireReorderDoesNotThrow)
   TopoDS_Wire  anEmptyWire;
   aBuilder.MakeWire(anEmptyWire);
 
-  occ::handle<ShapeExtend_WireData> aWireData = new ShapeExtend_WireData;
+  occ::handle<ShapeExtend_WireData> aWireData  = new ShapeExtend_WireData;
   occ::handle<ShapeAnalysis_Wire>   anAnalyzer = new ShapeAnalysis_Wire;
   anAnalyzer->Load(aWireData);
 

@@ -82,8 +82,8 @@ TopoDS_Edge makePolygon3dEdge()
   aNodes(5) = gp_Pnt(1.0, 0.0, 0.0);
 
   const occ::handle<Poly_Polygon3D> aPolygon = new Poly_Polygon3D(aNodes);
-  TopoDS_Edge                              anEdge;
-  BRep_Builder                             aBuilder;
+  TopoDS_Edge                       anEdge;
+  BRep_Builder                      aBuilder;
   aBuilder.MakeEdge(anEdge, aPolygon);
   return anEdge;
 }
@@ -114,8 +114,8 @@ TEST(BRepBndLibTest, OCC30292_GeometricEdgeWithoutDiscreteRepresentation)
 // boxes for a meshed circular edge; both are checked against DRAW's references.
 TEST(BRepBndLibTest, OCC30292_MeshedGeometricEdgeUsesRequestedRepresentation)
 {
-  const TopoDS_Edge aCircleEdge = makeCircleEdge();
-  BRepMesh_IncrementalMesh    aMesher(aCircleEdge, 0.1);
+  const TopoDS_Edge        aCircleEdge = makeCircleEdge();
+  BRepMesh_IncrementalMesh aMesher(aCircleEdge, 0.1);
   ASSERT_TRUE(aMesher.IsDone());
 
   Bnd_Box aWithTriangulation;
@@ -130,19 +130,13 @@ TEST(BRepBndLibTest, OCC30292_MeshedGeometricEdgeUsesRequestedRepresentation)
                1.1000001,
                1.092708974098054,
                0.1000001);
-  expectBounds(aWithoutTriangulation,
-               -1.0000001,
-               -1.0000001,
-               -1.e-7,
-               1.0000001,
-               1.0000001,
-               1.e-7);
+  expectBounds(aWithoutTriangulation, -1.0000001, -1.0000001, -1.e-7, 1.0000001, 1.0000001, 1.e-7);
 }
 
 TEST(BRepBndLibTest, OCC30292_MeshedCylinderEdgeUsesPolygon3d)
 {
-  const TopoDS_Shape aCylinder    = BRepPrimAPI_MakeCylinder(1.0, 1.0).Shape();
-  const TopoDS_Edge  aCylinderEdge = thirdCylinderEdge(aCylinder);
+  const TopoDS_Shape       aCylinder     = BRepPrimAPI_MakeCylinder(1.0, 1.0).Shape();
+  const TopoDS_Edge        aCylinderEdge = thirdCylinderEdge(aCylinder);
   BRepMesh_IncrementalMesh aMesher(aCylinder, 0.1);
   ASSERT_TRUE(aMesher.IsDone());
 
@@ -158,13 +152,7 @@ TEST(BRepBndLibTest, OCC30292_MeshedCylinderEdgeUsesPolygon3d)
                1.1000001,
                1.092708974098054,
                0.1000001);
-  expectBounds(aWithoutTriangulation,
-               -1.0000001,
-               -1.0000001,
-               -1.e-7,
-               1.0000001,
-               1.0000001,
-               1.e-7);
+  expectBounds(aWithoutTriangulation, -1.0000001, -1.0000001, -1.e-7, 1.0000001, 1.0000001, 1.e-7);
 }
 
 // A polygon-only edge has no geometric curve, so the representation flag must
@@ -212,7 +200,7 @@ TEST(BRepBndLibTest, OCC23575_PlanarBSplineEdgeBounds)
   const Bnd_Box::Limits aLimits = aBox.Get();
   // Keep the 0.1 tolerance from DRAW's checkreal commands: the curve does not
   // interpolate all of its control points (its actual Ymax is about 0.90023).
-  constexpr double      aTolerance = 0.1;
+  constexpr double aTolerance = 0.1;
   EXPECT_NEAR(aLimits.Xmin, 0.0, aTolerance);
   EXPECT_NEAR(aLimits.Ymin, 0.0, aTolerance);
   EXPECT_NEAR(aLimits.Zmin, 0.0, aTolerance);
@@ -234,8 +222,8 @@ TEST(BRepBndLibTest, OCC6503_InfinitePlaneBounds)
   BRepBndLib::Add(aFace, aBox);
   ASSERT_FALSE(aBox.IsVoid());
 
-  const Bnd_Box::Limits aLimits = aBox.Get();
-  const double anOpenBound = Precision::Infinite() / 2.0;
+  const Bnd_Box::Limits aLimits     = aBox.Get();
+  const double          anOpenBound = Precision::Infinite() / 2.0;
   EXPECT_EQ(aLimits.Xmin, -anOpenBound);
   EXPECT_EQ(aLimits.Xmax, anOpenBound);
   EXPECT_EQ(aLimits.Ymin, -anOpenBound);

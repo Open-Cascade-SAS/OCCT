@@ -209,7 +209,7 @@ TopoDS_Wire makeOCC30422Wire(const bool theReverseInsertionOrder)
   const TopoDS_Edge anE4 = BRepBuilderAPI_MakeEdge(aV5, aV4);
 
   BRep_Builder aBuilder;
-  TopoDS_Wire aWire;
+  TopoDS_Wire  aWire;
   aBuilder.MakeWire(aWire);
   if (theReverseInsertionOrder)
   {

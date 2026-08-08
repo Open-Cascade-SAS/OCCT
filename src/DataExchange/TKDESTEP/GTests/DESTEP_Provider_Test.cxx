@@ -84,7 +84,7 @@ TriangulationStats getTriangulationStats(const TopoDS_Shape& theShape)
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
     ++aStats.myFaces;
-    TopLoc_Location aLocation;
+    TopLoc_Location                       aLocation;
     const occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -96,19 +96,18 @@ TriangulationStats getTriangulationStats(const TopoDS_Shape& theShape)
   return aStats;
 }
 
-bool writeReadTessellatedStep(const TopoDS_Shape&                       theSource,
+bool writeReadTessellatedStep(const TopoDS_Shape&                         theSource,
                               const DESTEP_Parameters::RWMode_Tessellated theWriteMode,
                               const DESTEP_Parameters::RWMode_Tessellated theReadMode,
-                              TopoDS_Shape&                             theResult,
-                              std::string&                              theContent)
+                              TopoDS_Shape&                               theResult,
+                              std::string&                                theContent)
 {
   occ::handle<DESTEP_ConfigurationNode> aWriteNode = new DESTEP_ConfigurationNode();
-  aWriteNode->InternalParameters.WriteSchema =
-    DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aWriteNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
   aWriteNode->InternalParameters.WriteTessellated = theWriteMode;
-  occ::handle<DESTEP_Provider> aWriteProvider = new DESTEP_Provider(aWriteNode);
+  occ::handle<DESTEP_Provider> aWriteProvider     = new DESTEP_Provider(aWriteNode);
 
-  std::ostringstream aWriteStream;
+  std::ostringstream           aWriteStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("tessellated.step", aWriteStream));
   if (!aWriteProvider->Write(aWriteStreams, theSource))
@@ -118,10 +117,10 @@ bool writeReadTessellatedStep(const TopoDS_Shape&                       theSourc
   theContent = aWriteStream.str();
 
   occ::handle<DESTEP_ConfigurationNode> aReadNode = new DESTEP_ConfigurationNode();
-  aReadNode->InternalParameters.ReadTessellated = theReadMode;
-  occ::handle<DESTEP_Provider> aReadProvider = new DESTEP_Provider(aReadNode);
+  aReadNode->InternalParameters.ReadTessellated   = theReadMode;
+  occ::handle<DESTEP_Provider> aReadProvider      = new DESTEP_Provider(aReadNode);
 
-  std::istringstream aReadStream(theContent);
+  std::istringstream          aReadStream(theContent);
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("tessellated.step", aReadStream));
   return aReadProvider->Read(aReadStreams, theResult);
@@ -228,7 +227,7 @@ TEST_F(DESTEP_ProviderTest, StreamShapeWriteRead)
 // a meshed box with AP242 tessellation enabled.
 TEST_F(DESTEP_ProviderTest, MeshStep_B1_MeshedBox)
 {
-  const TopoDS_Shape aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
+  const TopoDS_Shape       aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
   BRepMesh_IncrementalMesh aMesh(aSource, 0.1);
   (void)aMesh;
 
@@ -239,12 +238,11 @@ TEST_F(DESTEP_ProviderTest, MeshStep_B1_MeshedBox)
 
   TopoDS_Shape aResult;
   std::string  aContent;
-  ASSERT_TRUE(writeReadTessellatedStep(
-    aSource,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    aResult,
-    aContent));
+  ASSERT_TRUE(writeReadTessellatedStep(aSource,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       aResult,
+                                       aContent));
   ASSERT_TRUE(IsValidSTEPContent(aContent));
 
   const TriangulationStats aResultStats = getTriangulationStats(aResult);
@@ -256,11 +254,9 @@ TEST_F(DESTEP_ProviderTest, MeshStep_B1_MeshedBox)
 // Migrated from tests/de_mesh/step_write/B2.
 TEST_F(DESTEP_ProviderTest, MeshStep_B2_MeshedBoxWithVoid)
 {
-  const TopoDS_Shape anOuterBox =
-    BRepPrimAPI_MakeBox(gp_Pnt(-5., -5., -5.), 10., 10., 10.).Shape();
-  const TopoDS_Shape anInnerBox =
-    BRepPrimAPI_MakeBox(gp_Pnt(-3., -3., -3.), 6., 6., 6.).Shape();
-  const TopoDS_Shape aSource = BRepAlgoAPI_Cut(anOuterBox, anInnerBox).Shape();
+  const TopoDS_Shape anOuterBox = BRepPrimAPI_MakeBox(gp_Pnt(-5., -5., -5.), 10., 10., 10.).Shape();
+  const TopoDS_Shape anInnerBox = BRepPrimAPI_MakeBox(gp_Pnt(-3., -3., -3.), 6., 6., 6.).Shape();
+  const TopoDS_Shape aSource    = BRepAlgoAPI_Cut(anOuterBox, anInnerBox).Shape();
   ASSERT_FALSE(aSource.IsNull());
   BRepMesh_IncrementalMesh aMesh(aSource, 0.1);
   (void)aMesh;
@@ -272,12 +268,11 @@ TEST_F(DESTEP_ProviderTest, MeshStep_B2_MeshedBoxWithVoid)
 
   TopoDS_Shape aResult;
   std::string  aContent;
-  ASSERT_TRUE(writeReadTessellatedStep(
-    aSource,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    aResult,
-    aContent));
+  ASSERT_TRUE(writeReadTessellatedStep(aSource,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       aResult,
+                                       aContent));
   ASSERT_TRUE(IsValidSTEPContent(aContent));
 
   const TriangulationStats aResultStats = getTriangulationStats(aResult);
@@ -290,7 +285,7 @@ TEST_F(DESTEP_ProviderTest, MeshStep_B2_MeshedBoxWithVoid)
 // surfaces and curves but keeps the polygonal representation for STEP export.
 TEST_F(DESTEP_ProviderTest, MeshStep_C1_MeshWithoutBRepGeometry)
 {
-  const TopoDS_Shape aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
+  const TopoDS_Shape       aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
   BRepMesh_IncrementalMesh aMesh(aSource, 0.1);
   (void)aMesh;
   BRepTools::CleanGeometry(aSource);
@@ -302,12 +297,11 @@ TEST_F(DESTEP_ProviderTest, MeshStep_C1_MeshWithoutBRepGeometry)
 
   TopoDS_Shape aResult;
   std::string  aContent;
-  ASSERT_TRUE(writeReadTessellatedStep(
-    aSource,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    aResult,
-    aContent));
+  ASSERT_TRUE(writeReadTessellatedStep(aSource,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       aResult,
+                                       aContent));
   ASSERT_TRUE(IsValidSTEPContent(aContent));
 
   const TriangulationStats aResultStats = getTriangulationStats(aResult);
@@ -320,7 +314,7 @@ TEST_F(DESTEP_ProviderTest, MeshStep_C1_MeshWithoutBRepGeometry)
 // representation without the analytic BRep representation.
 TEST_F(DESTEP_ProviderTest, MeshStep_C2_TessellatedWithoutBRep)
 {
-  const TopoDS_Shape aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
+  const TopoDS_Shape       aSource = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
   BRepMesh_IncrementalMesh aMesh(aSource, 0.1);
   (void)aMesh;
 
@@ -331,12 +325,11 @@ TEST_F(DESTEP_ProviderTest, MeshStep_C2_TessellatedWithoutBRep)
 
   TopoDS_Shape aResult;
   std::string  aContent;
-  ASSERT_TRUE(writeReadTessellatedStep(
-    aSource,
-    DESTEP_Parameters::RWMode_Tessellated_OnNoBRep,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    aResult,
-    aContent));
+  ASSERT_TRUE(writeReadTessellatedStep(aSource,
+                                       DESTEP_Parameters::RWMode_Tessellated_OnNoBRep,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       aResult,
+                                       aContent));
   ASSERT_TRUE(IsValidSTEPContent(aContent));
 
   const TriangulationStats aResultStats = getTriangulationStats(aResult);
@@ -349,8 +342,7 @@ TEST_F(DESTEP_ProviderTest, MeshStep_C2_TessellatedWithoutBRep)
 // intentionally restores only the tessellated representation.
 TEST_F(DESTEP_ProviderTest, MeshStep_Read_B1_TessellatedWithoutBRep)
 {
-  const TopoDS_Shape aSource =
-    BRepPrimAPI_MakeBox(gp_Pnt(-5., -5., -5.), 10., 10., 10.).Shape();
+  const TopoDS_Shape aSource = BRepPrimAPI_MakeBox(gp_Pnt(-5., -5., -5.), 10., 10., 10.).Shape();
   BRepMesh_IncrementalMesh aMesh(aSource, 0.1);
   (void)aMesh;
 
@@ -361,12 +353,11 @@ TEST_F(DESTEP_ProviderTest, MeshStep_Read_B1_TessellatedWithoutBRep)
 
   TopoDS_Shape aResult;
   std::string  aContent;
-  ASSERT_TRUE(writeReadTessellatedStep(
-    aSource,
-    DESTEP_Parameters::RWMode_Tessellated_On,
-    DESTEP_Parameters::RWMode_Tessellated_OnNoBRep,
-    aResult,
-    aContent));
+  ASSERT_TRUE(writeReadTessellatedStep(aSource,
+                                       DESTEP_Parameters::RWMode_Tessellated_On,
+                                       DESTEP_Parameters::RWMode_Tessellated_OnNoBRep,
+                                       aResult,
+                                       aContent));
   ASSERT_TRUE(IsValidSTEPContent(aContent));
 
   const TriangulationStats aResultStats = getTriangulationStats(aResult);
@@ -415,7 +406,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_25989_FusedShapeVolumeRoundTrip)
   ASSERT_FALSE(aFusionShape.IsNull());
   ASSERT_TRUE(BRepCheck_Analyzer(aFusionShape).IsValid());
 
-  BOPAlgo_CheckerSI aSourceChecker;
+  BOPAlgo_CheckerSI              aSourceChecker;
   NCollection_List<TopoDS_Shape> aSourceCheckArguments;
   aSourceCheckArguments.Append(aFusionShape);
   aSourceChecker.SetArguments(aSourceCheckArguments);
@@ -427,13 +418,13 @@ TEST_F(DESTEP_ProviderTest, StepBug_25989_FusedShapeVolumeRoundTrip)
   GProp_GProps aSourceVolume;
   BRepGProp::VolumeProperties(aFusionShape, aSourceVolume);
 
-  std::ostringstream aWriteStream;
+  std::ostringstream           aWriteStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("bug25989.step", aWriteStream));
   ASSERT_TRUE(myProvider->Write(aWriteStreams, aFusionShape));
   ASSERT_FALSE(aWriteStream.str().empty());
 
-  std::istringstream aReadStream(aWriteStream.str());
+  std::istringstream          aReadStream(aWriteStream.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("bug25989.step", aReadStream));
   TopoDS_Shape aRestoredShape;
@@ -441,7 +432,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_25989_FusedShapeVolumeRoundTrip)
   ASSERT_FALSE(aRestoredShape.IsNull());
   ASSERT_TRUE(BRepCheck_Analyzer(aRestoredShape).IsValid());
 
-  BOPAlgo_CheckerSI aRestoredChecker;
+  BOPAlgo_CheckerSI              aRestoredChecker;
   NCollection_List<TopoDS_Shape> aRestoredCheckArguments;
   aRestoredCheckArguments.Append(aRestoredShape);
   aRestoredChecker.SetArguments(aRestoredCheckArguments);
@@ -452,8 +443,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_25989_FusedShapeVolumeRoundTrip)
 
   GProp_GProps aRestoredVolume;
   BRepGProp::VolumeProperties(aRestoredShape, aRestoredVolume);
-  const double aVolumeTolerance =
-    1.0e-6 * std::max(1.0, std::abs(aSourceVolume.Mass()));
+  const double aVolumeTolerance = 1.0e-6 * std::max(1.0, std::abs(aSourceVolume.Mass()));
   EXPECT_NEAR(aRestoredVolume.Mass(), aSourceVolume.Mass(), aVolumeTolerance);
 }
 
@@ -467,8 +457,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_25694_DefaultSchemaIsAP214IS)
 
   const std::string aStepContent = anOStream.str();
   ASSERT_TRUE(IsValidSTEPContent(aStepContent));
-  EXPECT_NE(aStepContent.find("AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }"),
-            std::string::npos);
+  EXPECT_NE(aStepContent.find("AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }"), std::string::npos);
 }
 
 // bugs/step/bug27070: writing a null shape reports a translation failure.
@@ -485,9 +474,9 @@ TEST_F(DESTEP_ProviderTest, StepBug_27070_NullShapeWriteFails)
 // and preserves the negative orientation of the input triangular face.
 TEST_F(DESTEP_ProviderTest, StepBug_28024_DisabledOrientationFix)
 {
-  const TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 0.0, 0.0)).Vertex();
-  const TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 0.0, 0.0)).Vertex();
-  const TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 1.0, 0.0)).Vertex();
+  const TopoDS_Vertex aV1  = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 0.0, 0.0)).Vertex();
+  const TopoDS_Vertex aV2  = BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 0.0, 0.0)).Vertex();
+  const TopoDS_Vertex aV3  = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 1.0, 0.0)).Vertex();
   const TopoDS_Edge   anE1 = BRepBuilderAPI_MakeEdge(aV2, aV1).Edge();
   const TopoDS_Edge   anE2 = BRepBuilderAPI_MakeEdge(aV3, aV2).Edge();
   const TopoDS_Edge   anE3 = BRepBuilderAPI_MakeEdge(aV1, aV3).Edge();
@@ -498,8 +487,9 @@ TEST_F(DESTEP_ProviderTest, StepBug_28024_DisabledOrientationFix)
   aWireBuilder.Add(anE2);
   ASSERT_TRUE(aWireBuilder.IsDone());
 
-  BRepBuilderAPI_MakeFace aFaceBuilder(
-    gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), aWireBuilder.Wire(), false);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                                       aWireBuilder.Wire(),
+                                       false);
   ASSERT_TRUE(aFaceBuilder.IsDone());
   const TopoDS_Face aFace = aFaceBuilder.Face();
 
@@ -507,17 +497,17 @@ TEST_F(DESTEP_ProviderTest, StepBug_28024_DisabledOrientationFix)
   BRepGProp::SurfaceProperties(aFace, aSourceProperties);
   EXPECT_NEAR(aSourceProperties.Mass(), -0.5, 1.0e-6);
 
-  occ::handle<DESTEP_ConfigurationNode> aWriteNode = new DESTEP_ConfigurationNode();
+  occ::handle<DESTEP_ConfigurationNode> aWriteNode     = new DESTEP_ConfigurationNode();
   occ::handle<DESTEP_Provider>          aWriteProvider = new DESTEP_Provider(aWriteNode);
-  std::ostringstream aWriteStream;
-  DE_Provider::WriteStreamList aWriteStreams;
+  std::ostringstream                    aWriteStream;
+  DE_Provider::WriteStreamList          aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("bug28024.stp", aWriteStream));
   ASSERT_TRUE(aWriteProvider->Write(aWriteStreams, aFace));
   ASSERT_FALSE(aWriteStream.str().empty());
 
-  occ::handle<DESTEP_ConfigurationNode> aReadNode = new DESTEP_ConfigurationNode();
+  occ::handle<DESTEP_ConfigurationNode> aReadNode  = new DESTEP_ConfigurationNode();
   aReadNode->ShapeFixParameters.FixOrientationMode = DE_ShapeFixParameters::FixMode::NotFix;
-  occ::handle<DESTEP_Provider> aReadProvider = new DESTEP_Provider(aReadNode);
+  occ::handle<DESTEP_Provider> aReadProvider       = new DESTEP_Provider(aReadNode);
 
   std::istringstream          aReadStream(aWriteStream.str());
   DE_Provider::ReadStreamList aReadStreams;
@@ -535,24 +525,21 @@ TEST_F(DESTEP_ProviderTest, StepBug_28024_DisabledOrientationFix)
 // a revolved surface, including its local X and Y directions.
 TEST_F(DESTEP_ProviderTest, StepBug_23203_EllipseRevolutionAxes)
 {
-  const gp_Ax2 anEllipseAxis(gp_Pnt(0.0, 0.0, 0.0),
-                             gp_Dir(0.0, -1.0, 0.0),
-                             gp_Dir(1.0, 0.0, -1.0));
+  const gp_Ax2 anEllipseAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, -1.0, 0.0), gp_Dir(1.0, 0.0, -1.0));
   const occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anEllipseAxis, 10.0, 5.0);
   const occ::handle<Geom_SurfaceOfRevolution> aSurface =
-    new Geom_SurfaceOfRevolution(anEllipse,
-                                 gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
+    new Geom_SurfaceOfRevolution(anEllipse, gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
   BRepBuilderAPI_MakeFace aFaceBuilder(aSurface, 0.0, 3.0, 0.0, 1.0, Precision::Confusion());
   ASSERT_TRUE(aFaceBuilder.IsDone());
   const TopoDS_Face aFace = aFaceBuilder.Face();
 
-  std::ostringstream aWriteStream;
+  std::ostringstream           aWriteStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("bug23203.step", aWriteStream));
   ASSERT_TRUE(myProvider->Write(aWriteStreams, aFace));
   ASSERT_FALSE(aWriteStream.str().empty());
 
-  std::istringstream aReadStream(aWriteStream.str());
+  std::istringstream          aReadStream(aWriteStream.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("bug23203.step", aReadStream));
   TopoDS_Shape aRestoredShape;
@@ -561,8 +548,8 @@ TEST_F(DESTEP_ProviderTest, StepBug_23203_EllipseRevolutionAxes)
 
   TopExp_Explorer aFaceExplorer(aRestoredShape, TopAbs_FACE);
   ASSERT_TRUE(aFaceExplorer.More());
-  const TopoDS_Face aRestoredFace = TopoDS::Face(aFaceExplorer.Current());
-  const occ::handle<Geom_Surface> aRestoredSurface = BRep_Tool::Surface(aRestoredFace);
+  const TopoDS_Face                           aRestoredFace = TopoDS::Face(aFaceExplorer.Current());
+  const occ::handle<Geom_Surface>             aRestoredSurface = BRep_Tool::Surface(aRestoredFace);
   const occ::handle<Geom_SurfaceOfRevolution> aRestoredRevolution =
     occ::down_cast<Geom_SurfaceOfRevolution>(aRestoredSurface);
   ASSERT_FALSE(aRestoredRevolution.IsNull());
@@ -588,23 +575,20 @@ TEST_F(DESTEP_ProviderTest, XdeBug_27722_EllipseRevolutionTopology)
 {
   const occ::handle<Geom_Ellipse> anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 20.0, 10.0);
-  const TopoDS_Edge anEdge =
-    BRepBuilderAPI_MakeEdge(anEllipse, 0.0, 0.5 * M_PI).Edge();
+  const TopoDS_Edge  anEdge = BRepBuilderAPI_MakeEdge(anEllipse, 0.0, 0.5 * M_PI).Edge();
   const TopoDS_Shape aSource =
-    BRepPrimAPI_MakeRevol(anEdge,
-                          gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)),
-                          2.0 * M_PI)
+    BRepPrimAPI_MakeRevol(anEdge, gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)), 2.0 * M_PI)
       .Shape();
   ASSERT_FALSE(aSource.IsNull());
   ASSERT_TRUE(BRepCheck_Analyzer(aSource).IsValid());
 
-  std::ostringstream aWriteStream;
+  std::ostringstream           aWriteStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("bug27722.step", aWriteStream));
   ASSERT_TRUE(myProvider->Write(aWriteStreams, aSource));
   ASSERT_FALSE(aWriteStream.str().empty());
 
-  std::istringstream aReadStream(aWriteStream.str());
+  std::istringstream          aReadStream(aWriteStream.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("bug27722.step", aReadStream));
   TopoDS_Shape aRestored;
@@ -638,10 +622,10 @@ TEST_F(DESTEP_ProviderTest, XdeBug_27722_EllipseRevolutionTopology)
   bool hasTopologyDifference = false;
   for (int anIndex = 1; anIndex <= 9; ++anIndex)
   {
-    const TopAbs_ShapeEnum aType = aTypes.Value(anIndex);
-    const int aSourceCount   = CountShapeElements(aSource, aType);
-    const int aRestoredCount = CountShapeElements(aRestored, aType);
-    hasTopologyDifference = hasTopologyDifference || aSourceCount != aRestoredCount;
+    const TopAbs_ShapeEnum aType          = aTypes.Value(anIndex);
+    const int              aSourceCount   = CountShapeElements(aSource, aType);
+    const int              aRestoredCount = CountShapeElements(aRestored, aType);
+    hasTopologyDifference                 = hasTopologyDifference || aSourceCount != aRestoredCount;
     RecordProperty((std::string("source_") + aTypeNames.Value(anIndex)).c_str(), aSourceCount);
     RecordProperty((std::string("restored_") + aTypeNames.Value(anIndex)).c_str(), aRestoredCount);
   }
@@ -886,7 +870,7 @@ TEST_F(DESTEP_ProviderTest, DE_WrapperFileExtensions)
   for (NCollection_Array1<const char*>::Iterator anIterator(aExtensions); anIterator.More();
        anIterator.Next())
   {
-    const char*                 anExt = anIterator.Value();
+    const char*                  anExt = anIterator.Value();
     std::ostringstream           anOStream;
     DE_Provider::WriteStreamList aWriteStreams;
     aWriteStreams.Append(DE_Provider::WriteStreamNode(anExt, anOStream));
@@ -1040,8 +1024,8 @@ TEST_F(DESTEP_ProviderTest, DocumentWorkSessionIntegration)
 // without depending on the filesystem.
 TEST_F(DESTEP_ProviderTest, StepBug_29830_LargeCompoundWriteAndDestruction)
 {
-  const int              aShapeCount = 1000;
-  const TopoDS_Shape      aBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
+  const int          aShapeCount = 1000;
+  const TopoDS_Shape aBox        = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
 
   std::ostringstream aWriteStream;
   {
@@ -1058,8 +1042,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_29830_LargeCompoundWriteAndDestruction)
     anApp->NewDocument("BinXCAF", aDocument);
     ASSERT_FALSE(aDocument.IsNull());
 
-    occ::handle<XCAFDoc_ShapeTool> aShapeTool =
-      XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+    occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
     ASSERT_FALSE(aShapeTool.IsNull());
     const TDF_Label aShapeLabel = aShapeTool->AddShape(aCompound);
     ASSERT_FALSE(aShapeLabel.IsNull());

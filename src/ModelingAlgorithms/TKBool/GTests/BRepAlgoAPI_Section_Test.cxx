@@ -59,10 +59,9 @@ static void CheckCylinderSection(const gp_Ax3& theFirstAxis,
                                  const double  theSecondRadius,
                                  const double  theExpectedLength)
 {
-  const double aPi = 3.14159265358979323846;
-  const TopoDS_Face aFirstFace = MakeHalfCylinderFace(theFirstAxis, theFirstRadius, 0.0, aPi);
-  const TopoDS_Face aSecondFace =
-    MakeHalfCylinderFace(theSecondAxis, theSecondRadius, 0.0, aPi);
+  const double      aPi         = 3.14159265358979323846;
+  const TopoDS_Face aFirstFace  = MakeHalfCylinderFace(theFirstAxis, theFirstRadius, 0.0, aPi);
+  const TopoDS_Face aSecondFace = MakeHalfCylinderFace(theSecondAxis, theSecondRadius, 0.0, aPi);
   ASSERT_FALSE(aFirstFace.IsNull());
   ASSERT_FALSE(aSecondFace.IsNull());
 
@@ -98,7 +97,7 @@ TEST(BRepAlgoAPI_SectionTest, OCCN2_CylinderSphereSectionIsDone)
 // trimmed plane must stay two-pole curves, both with and without approximation.
 TEST(BRepAlgoAPI_SectionTest, OCC21564_PlaneIntersectionKeepsTwoPoles)
 {
-  const occ::handle<Geom_Plane> aHorizontalPlane = new Geom_Plane(gp::XOY());
+  const occ::handle<Geom_Plane>                     aHorizontalPlane = new Geom_Plane(gp::XOY());
   const occ::handle<Geom_RectangularTrimmedSurface> aTrimmedPlane =
     new Geom_RectangularTrimmedSurface(aHorizontalPlane, -10.0, 10.0, -10.0, 10.0);
   const occ::handle<Geom_BSplineSurface> aBSplinePlane =
@@ -108,14 +107,12 @@ TEST(BRepAlgoAPI_SectionTest, OCC21564_PlaneIntersectionKeepsTwoPoles)
   BRepBuilderAPI_MakeFace aHorizontalFaceBuilder(aBSplinePlane, Precision::Confusion());
   ASSERT_TRUE(aHorizontalFaceBuilder.IsDone());
 
-  const gp_Pln             aVerticalPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const gp_Pln            aVerticalPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   BRepBuilderAPI_MakeFace aVerticalFaceBuilder(aVerticalPlane, -10.0, 10.0, -10.0, 10.0);
   ASSERT_TRUE(aVerticalFaceBuilder.IsDone());
 
   const auto checkTwoPoleSection = [&](const bool theApproximation) {
-    BRepAlgoAPI_Section aSection(aHorizontalFaceBuilder.Face(),
-                                 aVerticalFaceBuilder.Face(),
-                                 false);
+    BRepAlgoAPI_Section aSection(aHorizontalFaceBuilder.Face(), aVerticalFaceBuilder.Face(), false);
     aSection.Approximation(theApproximation);
     aSection.Build();
     ASSERT_TRUE(aSection.IsDone());
@@ -124,8 +121,8 @@ TEST(BRepAlgoAPI_SectionTest, OCC21564_PlaneIntersectionKeepsTwoPoles)
     for (TopExp_Explorer anExplorer(aSection.Shape(), TopAbs_EDGE); anExplorer.More();
          anExplorer.Next())
     {
-      double aFirst = 0.0;
-      double aLast  = 0.0;
+      double                        aFirst = 0.0;
+      double                        aLast  = 0.0;
       const occ::handle<Geom_Curve> aCurve =
         BRep_Tool::Curve(TopoDS::Edge(anExplorer.Current()), aFirst, aLast);
       const occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(aCurve);

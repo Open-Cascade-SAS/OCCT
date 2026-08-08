@@ -329,14 +329,10 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
 // essential: the corresponding infinite lines have infinitely many extrema.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC26269_1_TrimmedParallelLines)
 {
-  const occ::handle<Geom_Line> aLine1 =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  const occ::handle<Geom_Line> aLine2 =
-    new Geom_Line(gp_Pnt(2.0, 2.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  const occ::handle<Geom_TrimmedCurve> aTrimmed1 =
-    new Geom_TrimmedCurve(aLine1, 0.0, 1.0);
-  const occ::handle<Geom_TrimmedCurve> aTrimmed2 =
-    new Geom_TrimmedCurve(aLine2, 0.0, 1.0);
+  const occ::handle<Geom_Line> aLine1 = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const occ::handle<Geom_Line> aLine2 = new Geom_Line(gp_Pnt(2.0, 2.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const occ::handle<Geom_TrimmedCurve> aTrimmed1 = new Geom_TrimmedCurve(aLine1, 0.0, 1.0);
+  const occ::handle<Geom_TrimmedCurve> aTrimmed2 = new Geom_TrimmedCurve(aLine2, 0.0, 1.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema(aTrimmed1, aTrimmed2);
   ASSERT_FALSE(anExtrema.Extrema().IsParallel());
@@ -352,10 +348,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC26269_2_TrimmedConcentricArcs)
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 10.0);
   const occ::handle<Geom_Circle> aCircle2 =
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
-  const occ::handle<Geom_TrimmedCurve> aTrimmed1 =
-    new Geom_TrimmedCurve(aCircle1, 0.0, 1.0);
-  const occ::handle<Geom_TrimmedCurve> aTrimmed2 =
-    new Geom_TrimmedCurve(aCircle2, 3.0, 4.0);
+  const occ::handle<Geom_TrimmedCurve> aTrimmed1 = new Geom_TrimmedCurve(aCircle1, 0.0, 1.0);
+  const occ::handle<Geom_TrimmedCurve> aTrimmed2 = new Geom_TrimmedCurve(aCircle2, 3.0, 4.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema(aTrimmed1, aTrimmed2);
   ASSERT_FALSE(anExtrema.Extrema().IsParallel());
@@ -369,11 +363,11 @@ void checkOCC29426CircleSphere(const double theCircleCenterY,
                                const double theCircleCenterZ,
                                const double theSphereRadius)
 {
-  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0.0, theCircleCenterY, theCircleCenterZ),
-           gp_Dir(-3.67401855705945e-17, -0.943656647634893, 0.330926172090505),
-           gp_Dir(-2.2723161366922e-16, 0.330926172090505, 0.943656647634893)),
-    1.30000000000039);
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, theCircleCenterY, theCircleCenterZ),
+                           gp_Dir(-3.67401855705945e-17, -0.943656647634893, 0.330926172090505),
+                           gp_Dir(-2.2723161366922e-16, 0.330926172090505, 0.943656647634893)),
+                    1.30000000000039);
   const occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(
     gp_Ax3(gp_Pnt(0.0, 2.425, 0.0), gp_Dir(0.0, 1.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
     theSphereRadius);
@@ -387,14 +381,14 @@ void checkOCC29426CircleSphere(const double theCircleCenterY,
     for (int anIndex = 2; anIndex <= anExtrema.NbExtrema(); ++anIndex)
     {
       const double aDistance = anExtrema.Distance(anIndex);
-      aMinimumDistance = aDistance < aMinimumDistance ? aDistance : aMinimumDistance;
+      aMinimumDistance       = aDistance < aMinimumDistance ? aDistance : aMinimumDistance;
     }
     EXPECT_NEAR(aMinimumDistance, 0.0, 1.e-10);
   }
 }
 
 static occ::handle<Geom_BSplineCurve> makeLinearBSpline(const gp_Pnt& thePoint1,
-                                                         const gp_Pnt& thePoint2)
+                                                        const gp_Pnt& thePoint2)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 2);
   aPoles(1) = thePoint1;
@@ -469,10 +463,9 @@ static occ::handle<Geom_Curve> makeOCC29712TrimmedCircle(const double theRadius,
   return new Geom_TrimmedCurve(aCircle, theFirstParameter, theLastParameter);
 }
 
-static occ::handle<Geom_Curve> makeOCC29712MirroredTrimmedCircle(
-  const double theRadius,
-  const double theFirstParameter,
-  const double theLastParameter)
+static occ::handle<Geom_Curve> makeOCC29712MirroredTrimmedCircle(const double theRadius,
+                                                                 const double theFirstParameter,
+                                                                 const double theLastParameter)
 {
   const occ::handle<Geom_Circle> aCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), theRadius);
@@ -549,14 +542,10 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_2_BoundedParallelBSplines)
 // covered because the original regression checked both extrema orientations.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_10_BoundedParallelLines)
 {
-  const occ::handle<Geom_Line> aLine1 =
-    new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  const occ::handle<Geom_Line> aLine2 =
-    new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  const occ::handle<Geom_TrimmedCurve> aTrimmed1 =
-    new Geom_TrimmedCurve(aLine1, -1.0e100, 5.0);
-  const occ::handle<Geom_TrimmedCurve> aTrimmed2 =
-    new Geom_TrimmedCurve(aLine2, 5.0, 20.0);
+  const occ::handle<Geom_Line> aLine1 = new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_Line> aLine2 = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_TrimmedCurve> aTrimmed1 = new Geom_TrimmedCurve(aLine1, -1.0e100, 5.0);
+  const occ::handle<Geom_TrimmedCurve> aTrimmed2 = new Geom_TrimmedCurve(aLine2, 5.0, 20.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aTrimmed1, aTrimmed2);
   ASSERT_FALSE(anExtrema12.Extrema().IsParallel());
@@ -587,10 +576,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_40_CircleAndAxisSegment)
 {
   const occ::handle<Geom_Circle> aCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
-  const occ::handle<Geom_Line> aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  const occ::handle<Geom_TrimmedCurve> aSegment =
-    new Geom_TrimmedCurve(aLine, -1.0, -5.e-8);
+  const occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_TrimmedCurve> aSegment = new Geom_TrimmedCurve(aLine, -1.0, -5.e-8);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCircle, aSegment);
   ASSERT_TRUE(anExtrema12.Extrema().IsParallel());
@@ -607,10 +594,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_43_CircleAndDegenerateSegment)
 {
   const occ::handle<Geom_Circle> aCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
-  const occ::handle<Geom_Line> aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  const occ::handle<Geom_TrimmedCurve> aSegment =
-    new Geom_TrimmedCurve(aLine, -1.5e-7, -1.0);
+  const occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_TrimmedCurve> aSegment = new Geom_TrimmedCurve(aLine, -1.5e-7, -1.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCircle, aSegment);
   EXPECT_FALSE(anExtrema12.Extrema().IsParallel());
@@ -625,13 +610,9 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_43_CircleAndDegenerateSegment)
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_3_BoundedParallelSegments)
 {
   const occ::handle<Geom_Curve> aCurve1 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
-                          0.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 0.0, 1.0);
   const occ::handle<Geom_Curve> aCurve2 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(3.0, 4.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
-                          0.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(3.0, 4.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 0.0, 1.0);
   checkOneFiniteExtremum(aCurve1, aCurve2, std::sqrt(20.0));
 }
 
@@ -639,13 +620,9 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_3_BoundedParallelSegments)
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_4_ParallelTrimmedLines)
 {
   const occ::handle<Geom_Curve> aCurve1 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
-                          0.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 0.0, 1.0);
   const occ::handle<Geom_Curve> aCurve2 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 4.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
-                          0.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 4.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 0.0, 1.0);
   checkParallelExtrema(aCurve1, aCurve2, 4.0);
 }
 
@@ -658,9 +635,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_5_SeparatedTrimmedLines)
                           -1.0e100,
                           5.0);
   const occ::handle<Geom_Curve> aCurve2 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                          10.0,
-                          20.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 10.0, 20.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCurve1, aCurve2);
   ASSERT_FALSE(anExtrema12.Extrema().IsParallel());
@@ -686,9 +661,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_7_ParallelTrimmedLine)
   const occ::handle<Geom_Curve> aCurve1 =
     new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 1.0, 0.0));
   const occ::handle<Geom_Curve> aCurve2 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(10.0, 9.0, 8.0), gp_Dir(0.0, 1.0, 0.0)),
-                          -1.0,
-                          2.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(10.0, 9.0, 8.0), gp_Dir(0.0, 1.0, 0.0)), -1.0, 2.0);
   checkParallelExtrema(aCurve1, aCurve2, std::sqrt(106.0));
 }
 
@@ -708,9 +681,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_8_ParallelTrimmedFirstLine)
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_9_OppositeDirectionLines)
 {
   const occ::handle<Geom_Curve> aCurve1 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, -1.0)),
-                          -5.0,
-                          2.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, -1.0)), -5.0, 2.0);
   const occ::handle<Geom_Curve> aCurve2 =
     new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
                           -1.0e100,
@@ -722,9 +693,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_9_OppositeDirectionLines)
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_11_SeparatedOppositeLines)
 {
   const occ::handle<Geom_Curve> aCurve1 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                          0.0,
-                          3.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 0.0, 3.0);
   const occ::handle<Geom_Curve> aCurve2 =
     new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, -1.0)),
                           -9.9e-8,
@@ -736,13 +705,9 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_11_SeparatedOppositeLines)
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_12_OppositeTrimmedSegments)
 {
   const occ::handle<Geom_Curve> aCurve1 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)),
-                          0.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)), 0.0, 1.0);
   const occ::handle<Geom_Curve> aCurve2 =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 4.0, 0.0), gp_Dir(-1.0, 0.0, 0.0)),
-                          -2.0,
-                          -1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 4.0, 0.0), gp_Dir(-1.0, 0.0, 0.0)), -2.0, -1.0);
   checkOneFiniteExtremum(aCurve1, aCurve2, 4.0);
 }
 
@@ -866,10 +831,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_33_ParallelConcentricArcs)
 // arcs intentionally exercise the asymmetric extrema enumeration order.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_34_AsymmetricConcentricArcs)
 {
-  const occ::handle<Geom_Curve> aCurve1 =
-    makeOCC29712TrimmedCircle(100.0, 0.0, M_PI);
-  const occ::handle<Geom_Curve> aCurve2 =
-    makeOCC29712TrimmedCircle(50.0, -2.0, 0.0);
+  const occ::handle<Geom_Curve> aCurve1 = makeOCC29712TrimmedCircle(100.0, 0.0, M_PI);
+  const occ::handle<Geom_Curve> aCurve2 = makeOCC29712TrimmedCircle(50.0, -2.0, 0.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCurve1, aCurve2);
   ASSERT_FALSE(anExtrema12.Extrema().IsParallel());
@@ -889,10 +852,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_34_AsymmetricConcentricArcs)
 // produce the two finite radial extrema for these opposite half-arcs.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_35_OppositeConcentricArcs)
 {
-  const occ::handle<Geom_Curve> aCurve1 =
-    makeOCC29712TrimmedCircle(100.0, 0.0, M_PI);
-  const occ::handle<Geom_Curve> aCurve2 =
-    makeOCC29712TrimmedCircle(50.0, M_PI, 2.0 * M_PI);
+  const occ::handle<Geom_Curve> aCurve1 = makeOCC29712TrimmedCircle(100.0, 0.0, M_PI);
+  const occ::handle<Geom_Curve> aCurve2 = makeOCC29712TrimmedCircle(50.0, M_PI, 2.0 * M_PI);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCurve1, aCurve2);
   ASSERT_FALSE(anExtrema12.Extrema().IsParallel());
@@ -920,10 +881,9 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_36_ParallelFullCircleAndArc)
 // Migrated from tests/lowalgos/extcc/bug29712_37.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_37_SeparatedConcentricArcs)
 {
-  const occ::handle<Geom_Curve> aCurve1 =
-    makeOCC29712MirroredTrimmedCircle(100.0, 3.0, 6.5);
+  const occ::handle<Geom_Curve> aCurve1 = makeOCC29712MirroredTrimmedCircle(100.0, 3.0, 6.5);
   const occ::handle<Geom_Curve> aCurve2 = makeOCC29712TrimmedCircle(50.0, 4.0, 6.0);
-  GeomAPI_ExtremaCurveCurve anExtrema12(aCurve1, aCurve2);
+  GeomAPI_ExtremaCurveCurve     anExtrema12(aCurve1, aCurve2);
   ASSERT_FALSE(anExtrema12.Extrema().IsParallel());
   EXPECT_GT(anExtrema12.NbExtrema(), 0);
   GeomAPI_ExtremaCurveCurve anExtrema21(aCurve2, aCurve1);
@@ -934,8 +894,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_37_SeparatedConcentricArcs)
 // Migrated from tests/lowalgos/extcc/bug29712_38.
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_38_ParallelConcentricArcs)
 {
-  const occ::handle<Geom_Curve> aCurve1 =
-    makeOCC29712MirroredTrimmedCircle(100.0, 0.0, 4.0);
+  const occ::handle<Geom_Curve> aCurve1 = makeOCC29712MirroredTrimmedCircle(100.0, 0.0, 4.0);
   const occ::handle<Geom_Curve> aCurve2 = makeOCC29712TrimmedCircle(50.0, 4.0, 6.0);
   checkParallelExtrema(aCurve1, aCurve2, 50.0);
 }
@@ -945,9 +904,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_39_CircleAndAxisSegment)
 {
   const occ::handle<Geom_Curve> aCircle = makeOCC29712TrimmedCircle(5.0, 0.0, 2.0 * M_PI);
   const occ::handle<Geom_Curve> aSegment =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                          -1.0,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), -1.0, 1.0);
   checkParallelExtrema(aCircle, aSegment, 5.0);
 }
 
@@ -956,9 +913,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_41_CircleAndNearAxisSegment)
 {
   const occ::handle<Geom_Curve> aCircle = makeOCC29712TrimmedCircle(5.0, 0.0, 2.0 * M_PI);
   const occ::handle<Geom_Curve> aSegment =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                          3.e-8,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 3.e-8, 1.0);
   checkParallelExtrema(aCircle, aSegment, 5.0);
 }
 
@@ -967,9 +922,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC29712_42_CircleAndTooNearAxisSegment)
 {
   const occ::handle<Geom_Curve> aCircle = makeOCC29712TrimmedCircle(5.0, 0.0, 2.0 * M_PI);
   const occ::handle<Geom_Curve> aSegment =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                          2.e-7,
-                          1.0);
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 2.e-7, 1.0);
 
   GeomAPI_ExtremaCurveCurve anExtrema12(aCircle, aSegment);
   EXPECT_FALSE(anExtrema12.Extrema().IsParallel());

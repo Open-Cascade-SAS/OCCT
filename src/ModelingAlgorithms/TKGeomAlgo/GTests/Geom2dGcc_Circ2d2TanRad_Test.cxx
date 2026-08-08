@@ -177,10 +177,9 @@ TEST(Geom2dGcc_Circ2d2TanRadTest, BUC60607_4_PointLineFixedRadiusNoSolution)
 // the two-curve constructor not raising while processing a BSpline curve.
 TEST(Geom2dGcc_Circ2d2TanRadTest, BUC60941_TwoCurveFixedRadiusDoesNotThrow)
 {
-  const occ::handle<Geom2d_Circle> aCircle =
-    new Geom2d_Circle(gp_Circ2d(gp_Ax2d(gp_Pnt2d(1.79356127430613, -11.9148900515605),
-                                        gp_Dir2d(1.0, 0.0)),
-                                12.0491272292007));
+  const occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(
+    gp_Circ2d(gp_Ax2d(gp_Pnt2d(1.79356127430613, -11.9148900515605), gp_Dir2d(1.0, 0.0)),
+              12.0491272292007));
 
   NCollection_Array1<gp_Pnt2d> aPoles(1, 6);
   aPoles(1) = gp_Pnt2d(0.0, 0.0);
@@ -212,10 +211,10 @@ TEST(Geom2dGcc_Circ2d2TanRadTest, BUC60941_TwoCurveFixedRadiusDoesNotThrow)
 
   Geom2dAdaptor_Curve      anAdaptor1(aCircle);
   Geom2dAdaptor_Curve      anAdaptor2(aBSpline);
-  Geom2dGcc_QualifiedCurve aQualifiedCircle = Geom2dGcc::Unqualified(anAdaptor1);
+  Geom2dGcc_QualifiedCurve aQualifiedCircle  = Geom2dGcc::Unqualified(anAdaptor1);
   Geom2dGcc_QualifiedCurve aQualifiedBSpline = Geom2dGcc::Unqualified(anAdaptor2);
 
-  bool anIsDone = false;
+  bool anIsDone     = false;
   int  aNbSolutions = -1;
   EXPECT_NO_THROW({
     Geom2dGcc_Circ2d2TanRad aSolver(aQualifiedCircle,
@@ -253,8 +252,8 @@ TEST(Geom2dGcc_Circ2d2TanRadTest, Bug29694_CurvePointCenter)
   Geom2dAdaptor_Curve      anAdaptor(aSegment);
   Geom2dGcc_QualifiedCurve aQualifiedSegment = Geom2dGcc::Unqualified(anAdaptor);
   Geom2dGcc_Circ2dTanCen   aSolver(aQualifiedSegment,
-                                   new Geom2d_CartesianPoint(gp_Pnt2d(1.0, 1.0)),
-                                   Precision::Confusion());
+                                 new Geom2d_CartesianPoint(gp_Pnt2d(1.0, 1.0)),
+                                 Precision::Confusion());
 
   ASSERT_TRUE(aSolver.IsDone());
   ASSERT_EQ(aSolver.NbSolutions(), 1);

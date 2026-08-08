@@ -51,28 +51,26 @@ static NotesContext NewContext()
   aContext.Application->NewDocument("BinXCAF", aContext.Document);
   occ::handle<XCAFDoc_ShapeTool> aShapeTool =
     XCAFDoc_DocumentTool::ShapeTool(aContext.Document->Main());
-  aContext.Item1 = aShapeTool->AddShape(BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
-  aContext.Item2 = aShapeTool->AddShape(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape());
-  aContext.Tool  = XCAFDoc_DocumentTool::NotesTool(aContext.Document->Main());
+  aContext.Item1         = aShapeTool->AddShape(BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
+  aContext.Item2         = aShapeTool->AddShape(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape());
+  aContext.Tool          = XCAFDoc_DocumentTool::NotesTool(aContext.Document->Main());
   aContext.AttributeGuid = Standard_GUID("27927843-72A0-41ef-901D-621FAB01C27A");
   TDataStd_Integer::Set(aContext.Item1, aContext.AttributeGuid, 1965);
   return aContext;
 }
 
-static occ::handle<XCAFDoc_Note> Comment(const NotesContext& theContext,
-                                         const char*          theText)
+static occ::handle<XCAFDoc_Note> Comment(const NotesContext& theContext, const char* theText)
 {
   return theContext.Tool->CreateComment(TCollection_ExtendedString("The user"),
-                                         TCollection_ExtendedString("2026-08-07T00:00:00"),
-                                         TCollection_ExtendedString(theText));
+                                        TCollection_ExtendedString("2026-08-07T00:00:00"),
+                                        TCollection_ExtendedString(theText));
 }
 
-static occ::handle<XCAFDoc_Note> Balloon(const NotesContext& theContext,
-                                         const char*          theText)
+static occ::handle<XCAFDoc_Note> Balloon(const NotesContext& theContext, const char* theText)
 {
   return theContext.Tool->CreateBalloon(TCollection_ExtendedString("The user"),
-                                         TCollection_ExtendedString("2026-08-07T00:00:00"),
-                                         TCollection_ExtendedString(theText));
+                                        TCollection_ExtendedString("2026-08-07T00:00:00"),
+                                        TCollection_ExtendedString(theText));
 }
 
 static occ::handle<XCAFDoc_Note> BinaryNote(const NotesContext& theContext)
@@ -83,10 +81,10 @@ static occ::handle<XCAFDoc_Note> BinaryNote(const NotesContext& theContext)
     aData->SetValue(anIndex, static_cast<uint8_t>('a' + anIndex - 1));
   }
   return theContext.Tool->CreateBinData(TCollection_ExtendedString("The user"),
-                                         TCollection_ExtendedString("2026-08-07T00:00:00"),
-                                         TCollection_ExtendedString("Binary data"),
-                                         TCollection_AsciiString("application/octet-stream"),
-                                         aData);
+                                        TCollection_ExtendedString("2026-08-07T00:00:00"),
+                                        TCollection_ExtendedString("Binary data"),
+                                        TCollection_AsciiString("application/octet-stream"),
+                                        aData);
 }
 
 static TDF_Label NoteLabel(const occ::handle<XCAFDoc_Note>& theNote)
@@ -101,26 +99,26 @@ static XCAFDoc_AssemblyItemId ItemId(const TDF_Label& theItem)
   return XCAFDoc_AssemblyItemId(anEntry);
 }
 
-static void AddBase(const NotesContext& theContext,
+static void AddBase(const NotesContext&              theContext,
                     const occ::handle<XCAFDoc_Note>& theNote,
-                    const TDF_Label& theItem)
+                    const TDF_Label&                 theItem)
 {
   ASSERT_FALSE(theNote.IsNull());
   ASSERT_FALSE(theContext.Tool->AddNote(NoteLabel(theNote), theItem).IsNull());
 }
 
-static void AddAttribute(const NotesContext& theContext,
+static void AddAttribute(const NotesContext&              theContext,
                          const occ::handle<XCAFDoc_Note>& theNote,
-                         const TDF_Label& theItem)
+                         const TDF_Label&                 theItem)
 {
   ASSERT_FALSE(theNote.IsNull());
   ASSERT_FALSE(
     theContext.Tool->AddNoteToAttr(NoteLabel(theNote), theItem, theContext.AttributeGuid).IsNull());
 }
 
-static void AddSubshape(const NotesContext& theContext,
+static void AddSubshape(const NotesContext&              theContext,
                         const occ::handle<XCAFDoc_Note>& theNote,
-                        const TDF_Label& theItem)
+                        const TDF_Label&                 theItem)
 {
   ASSERT_FALSE(theNote.IsNull());
   ASSERT_FALSE(theContext.Tool->AddNoteToSubshape(NoteLabel(theNote), theItem, 1).IsNull());
@@ -164,7 +162,7 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_A3_CreateBinary)
 // gdt/notes/A4: deleting one note leaves the other orphan note intact.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_A4_DeleteOne)
 {
-  const NotesContext aContext = NewContext();
+  const NotesContext              aContext = NewContext();
   const occ::handle<XCAFDoc_Note> aComment = Comment(aContext, "Hello, World!");
   ASSERT_FALSE(aComment.IsNull());
   ASSERT_FALSE(Balloon(aContext, "Hello, Everyone!").IsNull());
@@ -185,8 +183,8 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_A5_DeleteAll)
 // gdt/notes/B1: one note may annotate two items.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B1_TwoItemsOneNote)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote, aContext.Item1);
   AddBase(aContext, aNote, aContext.Item2);
   ExpectCounts(aContext, 2, 1, 0);
@@ -195,9 +193,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B1_TwoItemsOneNote)
 // gdt/notes/B2: two notes may annotate two different items.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B2_TwoItemsTwoNotes)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item2);
   ExpectCounts(aContext, 2, 2, 0);
@@ -206,9 +204,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B2_TwoItemsTwoNotes)
 // gdt/notes/B3: deleting orphan notes removes only the unreferenced note.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B3_DeleteOrphan)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote1, aContext.Item2);
   EXPECT_EQ(aContext.Tool->DeleteOrphanNotes(), 1);
@@ -218,9 +216,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B3_DeleteOrphan)
 // gdt/notes/B4: two notes on one item share one annotated-item label.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B4_TwoNotesOneItem)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item1);
   ExpectCounts(aContext, 1, 2, 0);
@@ -229,17 +227,18 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B4_TwoNotesOneItem)
 // gdt/notes/B5-B7: base, attribute, and subshape annotations are distinct references.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B5_AttributeAnnotation)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddAttribute(aContext, aNote, aContext.Item1);
   ExpectCounts(aContext, 1, 1, 0);
-  EXPECT_FALSE(aContext.Tool->FindAnnotatedItemAttr(aContext.Item1, aContext.AttributeGuid).IsNull());
+  EXPECT_FALSE(
+    aContext.Tool->FindAnnotatedItemAttr(aContext.Item1, aContext.AttributeGuid).IsNull());
 }
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B6_BaseAndAttribute)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote, aContext.Item1);
   AddAttribute(aContext, aNote, aContext.Item1);
   ExpectCounts(aContext, 2, 1, 0);
@@ -247,8 +246,8 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B6_BaseAndAttribute)
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_B7_BaseAttributeAndSubshape)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote, aContext.Item1);
   AddAttribute(aContext, aNote, aContext.Item1);
   AddSubshape(aContext, aNote, aContext.Item1);
@@ -258,8 +257,8 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_B7_BaseAttributeAndSubshape)
 // gdt/notes/C1-C2: deleting notes removes their annotations as well.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C1_DeleteLinkedNote)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote, aContext.Item1);
   AddBase(aContext, aNote, aContext.Item2);
   EXPECT_TRUE(aContext.Tool->DeleteNote(aNote->Label()));
@@ -268,9 +267,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C1_DeleteLinkedNote)
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C2_DeleteOneLinkedNote)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item2);
   EXPECT_TRUE(aContext.Tool->DeleteNote(aNote1->Label()));
@@ -280,9 +279,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C2_DeleteOneLinkedNote)
 // gdt/notes/C3-C4: removing selected links preserves unrelated links.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C3_RemoveBaseAnnotation)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item2);
   EXPECT_TRUE(aContext.Tool->RemoveNote(aNote1->Label(), aContext.Item1));
@@ -291,12 +290,13 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C3_RemoveBaseAnnotation)
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C4_RemoveExtraAnnotations)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote = Comment(aContext, "Hello, World!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote    = Comment(aContext, "Hello, World!");
   AddBase(aContext, aNote, aContext.Item1);
   AddAttribute(aContext, aNote, aContext.Item1);
   AddSubshape(aContext, aNote, aContext.Item1);
-  EXPECT_TRUE(aContext.Tool->RemoveAttrNote(aNote->Label(), aContext.Item1, aContext.AttributeGuid));
+  EXPECT_TRUE(
+    aContext.Tool->RemoveAttrNote(aNote->Label(), aContext.Item1, aContext.AttributeGuid));
   EXPECT_TRUE(aContext.Tool->RemoveSubshapeNote(aNote->Label(), aContext.Item1, 1));
   ExpectCounts(aContext, 1, 1, 0);
 }
@@ -304,23 +304,22 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C4_RemoveExtraAnnotations)
 // gdt/notes/C5-C6: remove all notes of one extra-reference kind.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C5_RemoveAllAttributeAnnotations)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddAttribute(aContext, aNote1, aContext.Item1);
   AddAttribute(aContext, aNote2, aContext.Item1);
   AddSubshape(aContext, aNote1, aContext.Item1);
-  EXPECT_TRUE(
-    aContext.Tool->RemoveAllAttrNotes(aContext.Item1, aContext.AttributeGuid));
+  EXPECT_TRUE(aContext.Tool->RemoveAllAttrNotes(aContext.Item1, aContext.AttributeGuid));
   ExpectCounts(aContext, 2, 2, 1);
 }
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C6_RemoveAllSubshapeAnnotations)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddAttribute(aContext, aNote1, aContext.Item1);
   AddSubshape(aContext, aNote1, aContext.Item1);
@@ -332,9 +331,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C6_RemoveAllSubshapeAnnotations)
 // gdt/notes/C7-C9: remove all annotations, optionally deleting orphans.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C7_RemoveBaseAnnotations)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item1);
   AddAttribute(aContext, aNote1, aContext.Item1);
@@ -347,9 +346,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C7_RemoveBaseAnnotations)
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C8_RemoveAllAnnotations)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item1);
   AddAttribute(aContext, aNote1, aContext.Item1);
@@ -364,9 +363,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C8_RemoveAllAnnotations)
 
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_C9_RemoveAllAndDeleteOrphans)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item1);
   AddAttribute(aContext, aNote1, aContext.Item1);
@@ -382,9 +381,9 @@ TEST(XCAFDoc_NotesTool_Test, GdtNotes_C9_RemoveAllAndDeleteOrphans)
 // gdt/notes/D1: repeated annotations of the same kind reuse the same item label.
 TEST(XCAFDoc_NotesTool_Test, GdtNotes_D1_ReuseAnnotatedItemLabels)
 {
-  const NotesContext aContext = NewContext();
-  const occ::handle<XCAFDoc_Note> aNote1 = Comment(aContext, "Hello, World!");
-  const occ::handle<XCAFDoc_Note> aNote2 = Comment(aContext, "Hello, Everyone!");
+  const NotesContext              aContext = NewContext();
+  const occ::handle<XCAFDoc_Note> aNote1   = Comment(aContext, "Hello, World!");
+  const occ::handle<XCAFDoc_Note> aNote2   = Comment(aContext, "Hello, Everyone!");
   AddBase(aContext, aNote1, aContext.Item1);
   const TDF_Label aBaseLabel = aContext.Tool->FindAnnotatedItem(aContext.Item1);
   AddBase(aContext, aNote2, aContext.Item1);

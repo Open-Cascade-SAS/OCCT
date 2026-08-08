@@ -27,11 +27,11 @@
 TEST(TDataStd_List_Test, CafBug_23465_ListInsertRemove)
 {
   occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("XmlOcaf");
-  const TDF_Label aLabel1 = aDocument->Main().FindChild(1, true);
-  const TDF_Label aLabel2 = aDocument->Main().FindChild(2, true);
-  const TDF_Label aLabel3 = aDocument->Main().FindChild(3, true);
-  const TDF_Label aLabel4 = aDocument->Main().FindChild(4, true);
-  const TDF_Label aLabel5 = aDocument->Main().FindChild(5, true);
+  const TDF_Label               aLabel1   = aDocument->Main().FindChild(1, true);
+  const TDF_Label               aLabel2   = aDocument->Main().FindChild(2, true);
+  const TDF_Label               aLabel3   = aDocument->Main().FindChild(3, true);
+  const TDF_Label               aLabel4   = aDocument->Main().FindChild(4, true);
+  const TDF_Label               aLabel5   = aDocument->Main().FindChild(5, true);
 
   occ::handle<TDataStd_BooleanList> aBooleanList = TDataStd_BooleanList::Set(aLabel1);
   aBooleanList->Append(false);
@@ -82,7 +82,7 @@ TEST(TDataStd_List_Test, CafBug_23465_ListInsertRemove)
 
   ASSERT_EQ(aBooleanList->Extent(), 5);
   const uint8_t anExpectedBooleanValues[5] = {0, 0, 1, 1, 1};
-  int           anIndex                  = 0;
+  int           anIndex                    = 0;
   for (NCollection_List<uint8_t>::Iterator anIterator(aBooleanList->List()); anIterator.More();
        anIterator.Next(), ++anIndex)
   {
@@ -113,13 +113,12 @@ TEST(TDataStd_List_Test, CafBug_23465_ListInsertRemove)
   EXPECT_EQ(anIndex, 5);
 
   ASSERT_EQ(anExtStringList->Extent(), 5);
-  const TCollection_ExtendedString anExpectedStringValues[5] = {
-    TCollection_ExtendedString("0"),
-    TCollection_ExtendedString("0"),
-    TCollection_ExtendedString("1"),
-    TCollection_ExtendedString("1"),
-    TCollection_ExtendedString("1")};
-  anIndex = 0;
+  const TCollection_ExtendedString anExpectedStringValues[5] = {TCollection_ExtendedString("0"),
+                                                                TCollection_ExtendedString("0"),
+                                                                TCollection_ExtendedString("1"),
+                                                                TCollection_ExtendedString("1"),
+                                                                TCollection_ExtendedString("1")};
+  anIndex                                                    = 0;
   for (NCollection_List<TCollection_ExtendedString>::Iterator anIterator(anExtStringList->List());
        anIterator.More();
        anIterator.Next(), ++anIndex)
@@ -131,9 +130,8 @@ TEST(TDataStd_List_Test, CafBug_23465_ListInsertRemove)
 
   ASSERT_EQ(aReferenceList->Extent(), 4);
   const TDF_Label anExpectedReferenceValues[4] = {aLabel2, aLabel3, aLabel4, aLabel5};
-  anIndex                                       = 0;
-  for (NCollection_List<TDF_Label>::Iterator anIterator(aReferenceList->List());
-       anIterator.More();
+  anIndex                                      = 0;
+  for (NCollection_List<TDF_Label>::Iterator anIterator(aReferenceList->List()); anIterator.More();
        anIterator.Next(), ++anIndex)
   {
     ASSERT_LT(anIndex, 4);
@@ -146,17 +144,16 @@ TEST(TDataStd_List_Test, CafBug_23465_ListInsertRemove)
 // own index.
 TEST(TDataStd_List_Test, CafBug_23912_ExtStringArrayValues)
 {
-  occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinOcaf");
+  occ::handle<TDocStd_Document>        aDocument = new TDocStd_Document("BinOcaf");
   occ::handle<TDataStd_ExtStringArray> anArray =
     TDataStd_ExtStringArray::Set(aDocument->Main(), 1, 5);
   ASSERT_FALSE(anArray.IsNull());
 
-  const TCollection_ExtendedString anExpectedValues[5] = {
-    TCollection_ExtendedString("A"),
-    TCollection_ExtendedString("B"),
-    TCollection_ExtendedString("C"),
-    TCollection_ExtendedString("D"),
-    TCollection_ExtendedString("E")};
+  const TCollection_ExtendedString anExpectedValues[5] = {TCollection_ExtendedString("A"),
+                                                          TCollection_ExtendedString("B"),
+                                                          TCollection_ExtendedString("C"),
+                                                          TCollection_ExtendedString("D"),
+                                                          TCollection_ExtendedString("E")};
   for (int anIndex = 1; anIndex <= 5; ++anIndex)
   {
     anArray->SetValue(anIndex, anExpectedValues[anIndex - 1]);

@@ -304,8 +304,8 @@ TEST_F(OSD_PathTest, FClassesBuc_60944_DotDotPathSystemName)
 {
   // fclasses/buc60944: portable conversion must preserve a relative dot-dot path.
   const TCollection_AsciiString anInput("../../..");
-  OSD_Path                     aPath(anInput);
-  TCollection_AsciiString      aSystemName;
+  OSD_Path                      aPath(anInput);
+  TCollection_AsciiString       aSystemName;
   aPath.SystemName(aSystemName);
   EXPECT_EQ(aSystemName, anInput);
 }

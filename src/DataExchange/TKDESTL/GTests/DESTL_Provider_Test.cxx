@@ -49,7 +49,7 @@ static int CountTriangles(const TopoDS_Shape& theShape)
   int aCount = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                       aLocation;
     const occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -276,12 +276,12 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
 // de_wrapper/stl/A1: direct STL write followed by wrapper stream read.
 TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A1_ShapeRoundTrip)
 {
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("source.stl", aOutput));
   ASSERT_TRUE(myProvider->Write(aWriteStreams, myTriangularFace));
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("source.stl", aInput));
   DE_Wrapper aWrapper;
@@ -303,21 +303,21 @@ TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A2_DocumentWrite)
   XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(myTriangularFace);
 
   occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
-  aNode->InternalParameters.WriteAscii = true;
+  aNode->InternalParameters.WriteAscii       = true;
   DE_Wrapper aWrapper;
   ASSERT_TRUE(aWrapper.Bind(aNode));
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("document.stl", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, aDocument));
   ASSERT_FALSE(aOutput.str().empty());
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("document.stl", aInput));
   occ::handle<DESTL_Provider> aProvider = new DESTL_Provider(new DESTL_ConfigurationNode());
-  TopoDS_Shape aReadShape;
+  TopoDS_Shape                aReadShape;
   ASSERT_TRUE(aProvider->Read(aReadStreams, aReadShape));
   EXPECT_EQ(CountShapeElements(aReadShape, TopAbs_FACE), 1);
 }
@@ -326,16 +326,16 @@ TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A2_DocumentWrite)
 TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A3_DocumentRead)
 {
   occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
-  aNode->InternalParameters.WriteAscii = true;
+  aNode->InternalParameters.WriteAscii       = true;
   DE_Wrapper aWrapper;
   ASSERT_TRUE(aWrapper.Bind(aNode));
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("shape.stl", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, myTriangularFace));
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("shape.stl", aInput));
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
@@ -355,26 +355,25 @@ TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A3_DocumentRead)
 // de_wrapper/stl/A4: wrapper shape stream read/write/read round trip.
 TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A4_ShapeRoundTrip)
 {
-  std::ostringstream aSourceOutput;
+  std::ostringstream           aSourceOutput;
   DE_Provider::WriteStreamList aSourceWriteStreams;
   aSourceWriteStreams.Append(DE_Provider::WriteStreamNode("source.stl", aSourceOutput));
   ASSERT_TRUE(myProvider->Write(aSourceWriteStreams, myTriangularFace));
 
   DE_Wrapper aWrapper;
   ASSERT_TRUE(aWrapper.Bind(new DESTL_ConfigurationNode()));
-  std::istringstream aSourceInput(aSourceOutput.str());
+  std::istringstream          aSourceInput(aSourceOutput.str());
   DE_Provider::ReadStreamList aSourceReadStreams;
   aSourceReadStreams.Append(DE_Provider::ReadStreamNode("source.stl", aSourceInput));
   TopoDS_Shape aReadShape;
   ASSERT_TRUE(aWrapper.Read(aSourceReadStreams, aReadShape));
 
-  std::ostringstream aRoundTripOutput;
+  std::ostringstream           aRoundTripOutput;
   DE_Provider::WriteStreamList aRoundTripWriteStreams;
-  aRoundTripWriteStreams.Append(
-    DE_Provider::WriteStreamNode("roundtrip.stl", aRoundTripOutput));
+  aRoundTripWriteStreams.Append(DE_Provider::WriteStreamNode("roundtrip.stl", aRoundTripOutput));
   ASSERT_TRUE(aWrapper.Write(aRoundTripWriteStreams, aReadShape));
 
-  std::istringstream aRoundTripInput(aRoundTripOutput.str());
+  std::istringstream          aRoundTripInput(aRoundTripOutput.str());
   DE_Provider::ReadStreamList aRoundTripReadStreams;
   aRoundTripReadStreams.Append(DE_Provider::ReadStreamNode("roundtrip.stl", aRoundTripInput));
   TopoDS_Shape aRoundTripShape;
@@ -555,8 +554,8 @@ TEST_F(DESTL_ProviderTest, DE_WrapperFileExtensions)
   for (int anIndex = aExtensions.Lower(); anIndex <= aExtensions.Upper(); ++anIndex)
   {
     const TCollection_AsciiString& anExt = aExtensions.Value(anIndex);
-    std::ostringstream           anOStream;
-    DE_Provider::WriteStreamList aWriteStreams;
+    std::ostringstream             anOStream;
+    DE_Provider::WriteStreamList   aWriteStreams;
     aWriteStreams.Append(DE_Provider::WriteStreamNode(anExt, anOStream));
 
     EXPECT_TRUE(aWrapper.Write(aWriteStreams, myTriangularFace))

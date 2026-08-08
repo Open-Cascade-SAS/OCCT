@@ -114,20 +114,20 @@ TEST(BRepBuilderAPI_CopyTest, CopyGeomFalse)
 // retains the source location when the source is copied after translation.
 TEST(BRepBuilderAPI_CopyTest, CafNamedShape_A4_CopyAndTranslate)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(12.0, 13.0, 14.0).Shape();
+  const TopoDS_Shape  aBox = BRepPrimAPI_MakeBox(12.0, 13.0, 14.0).Shape();
   BRepBuilderAPI_Copy aCopyBuilder(aBox);
-  const TopoDS_Shape aCopy = aCopyBuilder.Shape();
+  const TopoDS_Shape  aCopy = aCopyBuilder.Shape();
   ASSERT_FALSE(aCopy.IsNull());
 
   int anOriginalFaceCount = 0;
-  int aCopiedFaceCount = 0;
+  int aCopiedFaceCount    = 0;
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
     ++anOriginalFaceCount;
     GProp_GProps anOriginalProperties;
     BRepGProp::SurfaceProperties(anExplorer.Current(), anOriginalProperties);
     const gp_Pnt anOriginalCenter = anOriginalProperties.CentreOfMass();
-    int aMatchingFaces = 0;
+    int          aMatchingFaces   = 0;
     for (TopExp_Explorer aCopyExplorer(aCopy, TopAbs_FACE); aCopyExplorer.More();
          aCopyExplorer.Next())
     {
@@ -150,18 +150,18 @@ TEST(BRepBuilderAPI_CopyTest, CafNamedShape_A4_CopyAndTranslate)
 
   gp_Trsf aTranslation;
   aTranslation.SetTranslation(gp_Vec(50.0, 40.0, 30.0));
-  const TopoDS_Shape aTranslatedBox = BRepBuilderAPI_Transform(aBox, aTranslation).Shape();
+  const TopoDS_Shape  aTranslatedBox = BRepBuilderAPI_Transform(aBox, aTranslation).Shape();
   BRepBuilderAPI_Copy aTranslatedCopyBuilder(aTranslatedBox);
-  const TopoDS_Shape aTranslatedCopy = aTranslatedCopyBuilder.Shape();
+  const TopoDS_Shape  aTranslatedCopy = aTranslatedCopyBuilder.Shape();
   ASSERT_FALSE(aTranslatedCopy.IsNull());
 
   GProp_GProps aTranslatedProperties;
   GProp_GProps aTranslatedCopyProperties;
   BRepGProp::VolumeProperties(aTranslatedBox, aTranslatedProperties);
   BRepGProp::VolumeProperties(aTranslatedCopy, aTranslatedCopyProperties);
-  EXPECT_TRUE(aTranslatedProperties.CentreOfMass().IsEqual(
-    aTranslatedCopyProperties.CentreOfMass(), Precision::Confusion()));
-  EXPECT_TRUE(aTranslatedProperties.CentreOfMass().IsEqual(
-    gp_Pnt(56.0, 46.5, 37.0), Precision::Confusion()));
+  EXPECT_TRUE(aTranslatedProperties.CentreOfMass().IsEqual(aTranslatedCopyProperties.CentreOfMass(),
+                                                           Precision::Confusion()));
+  EXPECT_TRUE(
+    aTranslatedProperties.CentreOfMass().IsEqual(gp_Pnt(56.0, 46.5, 37.0), Precision::Confusion()));
   EXPECT_TRUE(BRepCheck_Analyzer(aTranslatedCopy).IsValid());
 }

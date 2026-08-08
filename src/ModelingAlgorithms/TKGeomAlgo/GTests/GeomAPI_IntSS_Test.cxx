@@ -3643,7 +3643,7 @@ TEST(GeomAPI_IntSSTest, OCC23972_TwoConesIntersection)
 // checks both lines against both source surfaces.
 TEST(GeomAPI_IntSSTest, OCC25782_2_ParallelCylindersProduceTwoLines)
 {
-  const gp_Dir anAxisDirection(12.0, 35.0, 47.0);
+  const gp_Dir                               anAxisDirection(12.0, 35.0, 47.0);
   const occ::handle<Geom_CylindricalSurface> aCylinder1 =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), anAxisDirection), 5.0);
   const occ::handle<Geom_CylindricalSurface> aCylinder2 =
@@ -3657,12 +3657,12 @@ TEST(GeomAPI_IntSSTest, OCC25782_2_ParallelCylindersProduceTwoLines)
   for (int anIndex = 1; anIndex <= anIntersection.NbLines(); ++anIndex)
   {
     const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(anIndex);
-    const occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(aCurve);
+    const occ::handle<Geom_Line>   aLine  = occ::down_cast<Geom_Line>(aCurve);
     ASSERT_FALSE(aLine.IsNull()) << "Intersection " << anIndex << " is not a line";
 
     for (const double aParameter : aParameters)
     {
-      const gp_Pnt aPoint = aLine->Value(aParameter);
+      const gp_Pnt               aPoint = aLine->Value(aParameter);
       GeomAPI_ProjectPointOnSurf aProjection1(aPoint, aCylinder1, 1.e-7);
       GeomAPI_ProjectPointOnSurf aProjection2(aPoint, aCylinder2, 1.e-7);
       ASSERT_TRUE(aProjection1.IsDone());
@@ -3707,7 +3707,7 @@ TEST(GeomAPI_IntSSTest, OCC33244_TwoConesDoNotDuplicateCurves)
 // trimmed analytical surfaces.
 TEST(GeomAPI_IntSSTest, OCC24418_2_AnalyticalSurfaceIntersection)
 {
-  const double aPi = 3.1415926535897932384626433832795;
+  const double                            aPi = 3.1415926535897932384626433832795;
   const occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 25.0, 24.0);
   const occ::handle<Geom_ConicalSurface> aCone =
@@ -3733,8 +3733,7 @@ TEST(GeomAPI_IntSSTest, OCC24418_2_AnalyticalSurfaceIntersection)
 
   for (int anIndex = 0; anIndex < 10; ++anIndex)
   {
-    double aParameter = aFirstParameter
-                        + (aLastParameter - aFirstParameter) * anIndex / 9.0;
+    double aParameter = aFirstParameter + (aLastParameter - aFirstParameter) * anIndex / 9.0;
     gp_Pnt aPoint;
     aCurve->D0(aParameter, aPoint);
 

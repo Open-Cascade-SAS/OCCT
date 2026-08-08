@@ -373,16 +373,12 @@ TEST(BRepTools_ReShapeTest, ValueLeaf_ConsidersLocationMode)
 TEST(BRepTools_ReShapeTest, ModDataBug_29662_ReplaceCompound)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 =
-    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox3 =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox4 =
-    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox5 =
-    BRepPrimAPI_MakeBox(gp_Pnt(20.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox3 = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox4 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 10.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox5 = BRepPrimAPI_MakeBox(gp_Pnt(20.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aC1, aC2, aC, aC3;
   aBuilder.MakeCompound(aC1);
   aBuilder.Add(aC1, aBox1);
@@ -402,8 +398,7 @@ TEST(BRepTools_ReShapeTest, ModDataBug_29662_ReplaceCompound)
   ASSERT_FALSE(aResult.IsNull());
 
   int aNbSolids = 0;
-  for (TopExp_Explorer anExplorer(aResult, TopAbs_SOLID); anExplorer.More();
-       anExplorer.Next())
+  for (TopExp_Explorer anExplorer(aResult, TopAbs_SOLID); anExplorer.More(); anExplorer.Next())
   {
     ++aNbSolids;
   }

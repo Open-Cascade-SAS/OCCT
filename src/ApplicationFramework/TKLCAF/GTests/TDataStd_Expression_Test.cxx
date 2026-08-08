@@ -28,7 +28,7 @@ static occ::handle<TDocStd_Document> NewExpressionDocument()
   return new TDocStd_Document("BinOcaf");
 }
 
-static occ::handle<TDataStd_Variable> SetVariable(const TDF_Label&                  theLabel,
+static occ::handle<TDataStd_Variable> SetVariable(const TDF_Label&               theLabel,
                                                   const TCollection_AsciiString& theUnit)
 {
   occ::handle<TDataStd_Variable> aVariable = TDataStd_Variable::Set(theLabel);
@@ -37,10 +37,9 @@ static occ::handle<TDataStd_Variable> SetVariable(const TDF_Label&              
   return aVariable;
 }
 
-static occ::handle<TDataStd_Relation> SetRelation(
-  const TDF_Label&                             theLabel,
-  const TCollection_ExtendedString&            theExpression,
-  const occ::handle<TDataStd_Variable>&        theVariable)
+static occ::handle<TDataStd_Relation> SetRelation(const TDF_Label&                  theLabel,
+                                                  const TCollection_ExtendedString& theExpression,
+                                                  const occ::handle<TDataStd_Variable>& theVariable)
 {
   occ::handle<TDataStd_Relation> aRelation = TDataStd_Relation::Set(theLabel);
   aRelation->SetRelation(theExpression);

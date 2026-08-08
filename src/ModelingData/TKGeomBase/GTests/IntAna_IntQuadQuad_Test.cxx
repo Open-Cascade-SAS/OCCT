@@ -281,10 +281,9 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
 // intersect at the X-axis point and both analytical parameters must be zero.
 TEST(IntAna2d_AnaIntersectionTest, ModDataBug_23939_TangentCircleParameters)
 {
-  const gp_Ax2d  anXAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  const gp_Ax2d   anXAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   const gp_Circ2d aCircle1(anXAxis, 10.0);
-  const gp_Circ2d aCircle2(
-    gp_Ax2d(gp_Pnt2d(7.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
+  const gp_Circ2d aCircle2(gp_Ax2d(gp_Pnt2d(7.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
 
   IntAna2d_AnaIntersection anIntersection(aCircle1, aCircle2);
   ASSERT_TRUE(anIntersection.IsDone());
@@ -307,10 +306,8 @@ TEST(IntAna2d_AnaIntersectionTest, ModDataBug_23939_TangentCircleParameters)
 // must retain the two diametrically opposite analytical intersection points.
 TEST(IntAna2d_AnaIntersectionTest, ModDataBug_24375_NearlyCoincidentCircleParameters)
 {
-  const gp_Circ2d aCircle1(
-    gp_Ax2d(gp_Pnt2d(10.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
-  const gp_Circ2d aCircle2(
-    gp_Ax2d(gp_Pnt2d(10.00000000000001, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
+  const gp_Circ2d aCircle1(gp_Ax2d(gp_Pnt2d(10.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
+  const gp_Circ2d aCircle2(gp_Ax2d(gp_Pnt2d(10.00000000000001, 0.0), gp_Dir2d(1.0, 0.0)), 100.0);
 
   IntAna2d_AnaIntersection anIntersection(aCircle1, aCircle2);
   ASSERT_TRUE(anIntersection.IsDone());

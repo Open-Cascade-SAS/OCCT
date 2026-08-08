@@ -52,7 +52,7 @@ static int CountTriangulationTriangles(const TopoDS_Shape& theShape)
   int aNbTriangles = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                       aLocation;
     const occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -68,7 +68,7 @@ static int CountTriangulationNodes(const TopoDS_Shape& theShape)
   int aNbNodes = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                       aLocation;
     const occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -82,8 +82,8 @@ static int CountTriangulationNodes(const TopoDS_Shape& theShape)
 static bool ReadVrmlShape(const std::string& theContent, TopoDS_Shape& theShape)
 {
   occ::handle<DEVRML_Provider> aProvider = new DEVRML_Provider(new DEVRML_ConfigurationNode());
-  std::istringstream            anInput(theContent);
-  DE_Provider::ReadStreamList   aStreams;
+  std::istringstream           anInput(theContent);
+  DE_Provider::ReadStreamList  aStreams;
   aStreams.Append(DE_Provider::ReadStreamNode("bug.vrml", anInput));
   return aProvider->Read(aStreams, theShape);
 }
@@ -506,12 +506,12 @@ TEST_F(DEVRML_ProviderTest, DEWrapper_Vrml_A1_DocumentWrite)
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
   ASSERT_FALSE(aShapeTool->AddShape(myTriangularFace).IsNull());
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("document.vrml", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, myDocument));
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("document.vrml", aInput));
   TopoDS_Shape aReadShape;
@@ -531,12 +531,12 @@ TEST_F(DEVRML_ProviderTest, DEWrapper_Vrml_A2_ShadedDocumentWrite)
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
   ASSERT_FALSE(aShapeTool->AddShape(myTriangularFace).IsNull());
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("document.wrl", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, myDocument));
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("document.wrl", aInput));
   TopoDS_Shape aReadShape;
@@ -553,12 +553,12 @@ TEST_F(DEVRML_ProviderTest, DEWrapper_Vrml_A3_ShadedShapeRoundTrip)
     DEVRML_ConfigurationNode::WriteMode_RepresentationType_Shaded;
   ASSERT_TRUE(aWrapper.Bind(aNode));
 
-  std::ostringstream aOutput;
+  std::ostringstream           aOutput;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("shape.wrl", aOutput));
   ASSERT_TRUE(aWrapper.Write(aWriteStreams, myTriangularFace));
 
-  std::istringstream aInput(aOutput.str());
+  std::istringstream          aInput(aOutput.str());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("shape.wrl", aInput));
   TopoDS_Shape aReadShape;
@@ -574,28 +574,28 @@ TEST_F(DEVRML_ProviderTest, DEWrapper_Vrml_A4_ShapeRoundTrip)
     DEVRML_ConfigurationNode::WriteMode_RepresentationType_Shaded;
   DEVRML_Provider aProvider(aNode);
 
-  std::ostringstream aSourceOutput;
+  std::ostringstream           aSourceOutput;
   DE_Provider::WriteStreamList aSourceWriteStreams;
   aSourceWriteStreams.Append(DE_Provider::WriteStreamNode("source.wrl", aSourceOutput));
   ASSERT_TRUE(aProvider.Write(aSourceWriteStreams, myTriangularFace));
 
-  DE_Wrapper aWrapper;
+  DE_Wrapper                            aWrapper;
   occ::handle<DEVRML_ConfigurationNode> aWrapperNode = new DEVRML_ConfigurationNode();
   aWrapperNode->InternalParameters.WriteRepresentationType =
     DEVRML_ConfigurationNode::WriteMode_RepresentationType_Both;
   ASSERT_TRUE(aWrapper.Bind(aWrapperNode));
-  std::istringstream aSourceInput(aSourceOutput.str());
+  std::istringstream          aSourceInput(aSourceOutput.str());
   DE_Provider::ReadStreamList aSourceReadStreams;
   aSourceReadStreams.Append(DE_Provider::ReadStreamNode("source.wrl", aSourceInput));
   TopoDS_Shape aReadShape;
   ASSERT_TRUE(aWrapper.Read(aSourceReadStreams, aReadShape));
 
-  std::ostringstream aRoundTripOutput;
+  std::ostringstream           aRoundTripOutput;
   DE_Provider::WriteStreamList aRoundTripWriteStreams;
   aRoundTripWriteStreams.Append(DE_Provider::WriteStreamNode("roundtrip.wrl", aRoundTripOutput));
   ASSERT_TRUE(aWrapper.Write(aRoundTripWriteStreams, aReadShape));
 
-  std::istringstream aRoundTripInput(aRoundTripOutput.str());
+  std::istringstream          aRoundTripInput(aRoundTripOutput.str());
   DE_Provider::ReadStreamList aRoundTripReadStreams;
   aRoundTripReadStreams.Append(DE_Provider::ReadStreamNode("roundtrip.wrl", aRoundTripInput));
   TopoDS_Shape aRoundTripShape;
@@ -682,11 +682,11 @@ TEST_F(DEVRML_ProviderTest, ConfigurationModes)
 // back through the stream provider without changing the source triangulation.
 TEST(DEVRML_Bug_Test, StlVrmlBug_25279_StreamRoundTrip)
 {
-  const double aPi = 3.14159265358979323846;
+  const double       aPi = 3.14159265358979323846;
   const TopoDS_Shape aTorus =
     BRepPrimAPI_MakeTorus(10.0, 8.0, 0.0, 90.0 * aPi / 180.0, 270.0 * aPi / 180.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aTorus, 0.1);
-  const int aTrianglesBefore = CountTriangulationTriangles(aTorus);
+  const int                aTrianglesBefore = CountTriangulationTriangles(aTorus);
   ASSERT_GT(aTrianglesBefore, 0);
 
   VrmlAPI_Writer aWriter;
@@ -708,7 +708,7 @@ TEST(DEVRML_Bug_Test, StlVrmlBug_25279_StreamRoundTrip)
 // correctly and does not append an extra point index.
 TEST(DEVRML_Bug_Test, StlVrmlBug_25740_EdgeIndexTermination)
 {
-  const double aPi = 3.14159265358979323846;
+  const double       aPi = 3.14159265358979323846;
   const TopoDS_Shape aTorus =
     BRepPrimAPI_MakeTorus(10.0, 8.0, 0.0, 90.0 * aPi / 180.0, 120.0 * aPi / 180.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aTorus, 0.1);

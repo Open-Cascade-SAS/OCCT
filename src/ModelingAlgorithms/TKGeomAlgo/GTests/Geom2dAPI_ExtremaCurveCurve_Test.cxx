@@ -28,10 +28,8 @@ TEST(Geom2dAPI_ExtremaCurveCurveTest, ModDataBug_27467_IntersectingTrimmedLines)
     new Geom2d_Line(gp_Lin2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, -1.0)));
   const occ::handle<Geom2d_Line> aLine2 =
     new Geom2d_Line(gp_Lin2d(gp_Pnt2d(1.0, -9.5), gp_Dir2d(-1.0, 0.0)));
-  const occ::handle<Geom2d_TrimmedCurve> aTrimmedLine1 =
-    new Geom2d_TrimmedCurve(aLine1, 0.0, 23.0);
-  const occ::handle<Geom2d_TrimmedCurve> aTrimmedLine2 =
-    new Geom2d_TrimmedCurve(aLine2, 0.0, 2.0);
+  const occ::handle<Geom2d_TrimmedCurve> aTrimmedLine1 = new Geom2d_TrimmedCurve(aLine1, 0.0, 23.0);
+  const occ::handle<Geom2d_TrimmedCurve> aTrimmedLine2 = new Geom2d_TrimmedCurve(aLine2, 0.0, 2.0);
 
   Geom2dAPI_ExtremaCurveCurve anExtrema(aTrimmedLine1,
                                         aTrimmedLine2,

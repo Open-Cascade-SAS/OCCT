@@ -43,18 +43,16 @@ gp_Ax2 makeOCC31661CurveAxis()
 // the XY plane must preserve its conic type and the trimmed parameter range.
 TEST(GeomProjLibTest, OCC31661_1_ProjectParabolaOnPlane)
 {
-  const occ::handle<Geom_Parabola> aParabola =
-    new Geom_Parabola(makeOCC31661CurveAxis(), 10.0);
-  const occ::handle<Geom_Plane> aPlane = makeOCC31661Plane();
+  const occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(makeOCC31661CurveAxis(), 10.0);
+  const occ::handle<Geom_Plane>    aPlane    = makeOCC31661Plane();
 
   const occ::handle<Geom_Curve> aProjected =
     GeomProjLib::ProjectOnPlane(aParabola, aPlane, gp_Dir(0.0, 0.0, 1.0), false);
   ASSERT_FALSE(aProjected.IsNull());
   EXPECT_STREQ(aProjected->DynamicType()->Name(), "Geom_Parabola");
 
-  const occ::handle<Geom_TrimmedCurve> aTrimmed =
-    new Geom_TrimmedCurve(aParabola, -100.0, 100.0);
-  const occ::handle<Geom_Curve> aProjectedTrimmed =
+  const occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aParabola, -100.0, 100.0);
+  const occ::handle<Geom_Curve>        aProjectedTrimmed =
     GeomProjLib::ProjectOnPlane(aTrimmed, aPlane, gp_Dir(0.0, 0.0, 1.0), false);
   ASSERT_FALSE(aProjectedTrimmed.IsNull());
   EXPECT_STREQ(aProjectedTrimmed->DynamicType()->Name(), "Geom_TrimmedCurve");
@@ -82,9 +80,8 @@ TEST(GeomProjLibTest, OCC31661_2_ProjectHyperbolaOnPlane)
   ASSERT_FALSE(aProjected.IsNull());
   EXPECT_STREQ(aProjected->DynamicType()->Name(), "Geom_Hyperbola");
 
-  const occ::handle<Geom_TrimmedCurve> aTrimmed =
-    new Geom_TrimmedCurve(aHyperbola, -5.0, 5.0);
-  const occ::handle<Geom_Curve> aProjectedTrimmed =
+  const occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aHyperbola, -5.0, 5.0);
+  const occ::handle<Geom_Curve>        aProjectedTrimmed =
     GeomProjLib::ProjectOnPlane(aTrimmed, aPlane, gp_Dir(0.0, 0.0, 1.0), false);
   ASSERT_FALSE(aProjectedTrimmed.IsNull());
   EXPECT_STREQ(aProjectedTrimmed->DynamicType()->Name(), "Geom_TrimmedCurve");

@@ -119,10 +119,10 @@ static occ::handle<TDocStd_Document> NewNamingDocument()
 static occ::handle<TDataStd_UAttribute> AddNamingObject(
   const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<TDataStd_TreeNode> aRootNode = TDataStd_TreeNode::Set(theDocument->Main());
-  const TDF_Label                  aLabel = TDF_TagSource::NewChild(theDocument->Main());
-  occ::handle<TDataStd_UAttribute> anObject = TDataStd_UAttribute::Set(aLabel, GEOMOBJECT_GUID);
-  occ::handle<TDataStd_TreeNode>   aNode = TDataStd_TreeNode::Set(aLabel);
+  occ::handle<TDataStd_TreeNode>   aRootNode = TDataStd_TreeNode::Set(theDocument->Main());
+  const TDF_Label                  aLabel    = TDF_TagSource::NewChild(theDocument->Main());
+  occ::handle<TDataStd_UAttribute> anObject  = TDataStd_UAttribute::Set(aLabel, GEOMOBJECT_GUID);
+  occ::handle<TDataStd_TreeNode>   aNode     = TDataStd_TreeNode::Set(aLabel);
   aRootNode->Append(aNode);
   return anObject;
 }
@@ -132,18 +132,19 @@ static occ::handle<TFunction_Function> AddNamingFunction(
   const Standard_GUID&                    theDriverGuid)
 {
   const TDF_Label                 aFunctionLabel = TDF_TagSource::NewChild(theObject->Label());
-  occ::handle<TFunction_Function> aFunction = TFunction_Function::Set(aFunctionLabel, theDriverGuid);
-  occ::handle<TDataStd_TreeNode>  aFunctionNode = TDataStd_TreeNode::Set(aFunctionLabel);
-  occ::handle<TDataStd_TreeNode>  anObjectNode;
+  occ::handle<TFunction_Function> aFunction =
+    TFunction_Function::Set(aFunctionLabel, theDriverGuid);
+  occ::handle<TDataStd_TreeNode> aFunctionNode = TDataStd_TreeNode::Set(aFunctionLabel);
+  occ::handle<TDataStd_TreeNode> anObjectNode;
   theObject->Label().FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), anObjectNode);
   anObjectNode->Append(aFunctionNode);
 
   const TDF_Label                anArgumentsLabel = TDF_TagSource::NewChild(aFunctionLabel);
-  occ::handle<TDataStd_TreeNode> anArgumentsNode = TDataStd_TreeNode::Set(anArgumentsLabel);
+  occ::handle<TDataStd_TreeNode> anArgumentsNode  = TDataStd_TreeNode::Set(anArgumentsLabel);
   aFunctionNode->Append(anArgumentsNode);
 
   const TDF_Label                aResultLabel = TDF_TagSource::NewChild(aFunctionLabel);
-  occ::handle<TDataStd_TreeNode> aResultNode = TDataStd_TreeNode::Set(aResultLabel);
+  occ::handle<TDataStd_TreeNode> aResultNode  = TDataStd_TreeNode::Set(aResultLabel);
   aFunctionNode->Append(aResultNode);
   TDF_Reference::Set(theObject->Label(), aResultLabel);
   return aFunction;
@@ -252,9 +253,9 @@ static occ::handle<TFunction_Function> MakeNamingFillet(
   return aFunction;
 }
 
-static TopoDS_Shape NamingSubShape(const TopoDS_Shape& theShape,
+static TopoDS_Shape NamingSubShape(const TopoDS_Shape&    theShape,
                                    const TopAbs_ShapeEnum theType,
-                                   const int theIndex)
+                                   const int              theIndex)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(theShape);
@@ -269,10 +270,10 @@ static TopoDS_Shape NamingSubShape(const TopoDS_Shape& theShape,
   return TopoDS_Shape();
 }
 
-static int CollectNamingSubShapes(const TopoDS_Shape& theShape,
+static int CollectNamingSubShapes(const TopoDS_Shape&    theShape,
                                   const TopAbs_ShapeEnum theType,
-                                  TopoDS_Shape* theShapes,
-                                  const int theCapacity)
+                                  TopoDS_Shape*          theShapes,
+                                  const int              theCapacity)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(theShape);
@@ -293,9 +294,9 @@ static int CollectNamingSubShapes(const TopoDS_Shape& theShape,
 
 static gp_Pnt NamingVertexAverage(const TopoDS_Shape& theShape)
 {
-  double aX = 0.0;
-  double aY = 0.0;
-  double aZ = 0.0;
+  double aX     = 0.0;
+  double aY     = 0.0;
+  double aZ     = 0.0;
   int    aCount = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_VERTEX); anExplorer.More(); anExplorer.Next())
   {
@@ -319,9 +320,9 @@ static bool NamingNear(const double theValue, const double theExpected)
   return std::abs(theValue - theExpected) <= 1.0e-7;
 }
 
-static void AddNamingPrimitives(const TDF_Label& theLabel,
+static void AddNamingPrimitives(const TDF_Label&    theLabel,
                                 const TopoDS_Shape* theShapes,
-                                const int theCount)
+                                const int           theCount)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theCount; ++anIndex)
@@ -330,10 +331,10 @@ static void AddNamingPrimitives(const TDF_Label& theLabel,
   }
 }
 
-static void AddNamingGenerated(const TDF_Label& theLabel,
+static void AddNamingGenerated(const TDF_Label&    theLabel,
                                const TopoDS_Shape* theOldShapes,
                                const TopoDS_Shape* theNewShapes,
-                               const int theCount)
+                               const int           theCount)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theCount; ++anIndex)
@@ -342,10 +343,10 @@ static void AddNamingGenerated(const TDF_Label& theLabel,
   }
 }
 
-static void AddNamingModified(const TDF_Label& theLabel,
+static void AddNamingModified(const TDF_Label&    theLabel,
                               const TopoDS_Shape* theOldShapes,
                               const TopoDS_Shape* theNewShapes,
-                              const int theCount)
+                              const int           theCount)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theCount; ++anIndex)
@@ -354,9 +355,9 @@ static void AddNamingModified(const TDF_Label& theLabel,
   }
 }
 
-static void AddNamingDeleted(const TDF_Label& theLabel,
+static void AddNamingDeleted(const TDF_Label&    theLabel,
                              const TopoDS_Shape* theShapes,
-                             const int theCount)
+                             const int           theCount)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theCount; ++anIndex)
@@ -365,10 +366,10 @@ static void AddNamingDeleted(const TDF_Label& theLabel,
   }
 }
 
-static void AddNamingSelected(const TDF_Label& theLabel,
+static void AddNamingSelected(const TDF_Label&    theLabel,
                               const TopoDS_Shape* theShapes,
                               const TopoDS_Shape* theContexts,
-                              const int theCount)
+                              const int           theCount)
 {
   TNaming_Builder aBuilder(theLabel);
   for (int anIndex = 0; anIndex < theCount; ++anIndex)
@@ -385,8 +386,8 @@ static void ExpectNamingAttribute(const TDF_Label& theLabel)
 }
 
 static void ExpectNamingLabel(const TopoDS_Shape& theShape,
-                              const TDF_Label& theExpectedLabel,
-                              const TDF_Label& theAccessLabel)
+                              const TDF_Label&    theExpectedLabel,
+                              const TDF_Label&    theAccessLabel)
 {
   const occ::handle<TNaming_NamedShape> aNamedShape =
     TNaming_Tool::NamedShape(theShape, theAccessLabel);
@@ -394,7 +395,7 @@ static void ExpectNamingLabel(const TopoDS_Shape& theShape,
   EXPECT_TRUE(aNamedShape->Label().IsEqual(theExpectedLabel));
 }
 
-static void ExpectNamingCurrentShape(const TDF_Label& theLabel,
+static void ExpectNamingCurrentShape(const TDF_Label&    theLabel,
                                      const TopoDS_Shape& theExpectedShape)
 {
   occ::handle<TNaming_NamedShape> aNamedShape;
@@ -405,8 +406,7 @@ static void ExpectNamingCurrentShape(const TDF_Label& theLabel,
     << "CurrentShape mismatch at " << aLabelEntry.ToCString();
 }
 
-static void ExpectNamingGetShape(const TDF_Label& theLabel,
-                                 const TopoDS_Shape& theExpectedShape)
+static void ExpectNamingGetShape(const TDF_Label& theLabel, const TopoDS_Shape& theExpectedShape)
 {
   occ::handle<TNaming_NamedShape> aNamedShape;
   ASSERT_TRUE(theLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape));
@@ -423,8 +423,8 @@ static void ExpectNamingShape(const TDF_Label& theLabel, const TopoDS_Shape& the
 }
 
 static void ExpectNamingCompoundFaces(const TDF_Label& theLabel,
-                                      const int theCurrentCount,
-                                      const int theShapeCount)
+                                      const int        theCurrentCount,
+                                      const int        theShapeCount)
 {
   occ::handle<TNaming_NamedShape> aNamedShape;
   ASSERT_TRUE(theLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape));
@@ -432,7 +432,7 @@ static void ExpectNamingCompoundFaces(const TDF_Label& theLabel,
   EXPECT_EQ(NamingFaceCount(TNaming_Tool::GetShape(aNamedShape)), theShapeCount);
 }
 
-static void CollectNamingShapes(const TopoDS_Shape& theShape,
+static void CollectNamingShapes(const TopoDS_Shape&             theShape,
                                 NCollection_List<TopoDS_Shape>& theShapes)
 {
   theShapes.Append(theShape);
@@ -442,19 +442,19 @@ static void CollectNamingShapes(const TopoDS_Shape& theShape,
   }
 }
 
-static void FillSelectionValidMap(const TDF_Label& theLabel,
+static void FillSelectionValidMap(const TDF_Label&            theLabel,
                                   NCollection_Map<TDF_Label>& theValidMap);
 
 static occ::handle<TFunction_Function> AddNamingSelection(
   const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theContextObject,
-  const TopoDS_Shape&                      theSelection,
-  const bool                               theKeepOrientation,
-  occ::handle<TDataStd_UAttribute>&        theSelectionObject)
+  const TopoDS_Shape&                     theSelection,
+  const bool                              theKeepOrientation,
+  occ::handle<TDataStd_UAttribute>&       theSelectionObject)
 {
   const occ::handle<TDataStd_UAttribute> anObject = AddNamingObject(theDocument);
-  theSelectionObject = anObject;
-  occ::handle<TDataStd_TreeNode>         anObjectNode;
+  theSelectionObject                              = anObject;
+  occ::handle<TDataStd_TreeNode> anObjectNode;
   anObject->Label().FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), anObjectNode);
   anObjectNode->Remove();
   occ::handle<TDataStd_TreeNode> aContextNode;
@@ -462,8 +462,7 @@ static occ::handle<TFunction_Function> AddNamingSelection(
   aContextNode->Append(anObjectNode);
 
   const occ::handle<TFunction_Function> aFunction = AddNamingFunction(anObject, ATTCH_GUID);
-  const TDF_Label                       aResultLabel =
-    aFunction->Label().FindChild(FUNCTION_RESULT_LABEL, true);
+  const TDF_Label aResultLabel = aFunction->Label().FindChild(FUNCTION_RESULT_LABEL, true);
   TDF_Reference::Set(anObject->Label(), aResultLabel);
 
   const occ::handle<TNaming_NamedShape> aContextNS = DNaming::GetObjectValue(theContextObject);
@@ -482,8 +481,7 @@ static occ::handle<TFunction_Function> AddNamingSelection(
   return aFunction;
 }
 
-static TopoDS_Shape SolveNamingFunctionSelection(
-  const occ::handle<TFunction_Function>& theFunction)
+static TopoDS_Shape SolveNamingFunctionSelection(const occ::handle<TFunction_Function>& theFunction)
 {
   const TDF_Label aResultLabel = theFunction->Label().FindChild(FUNCTION_RESULT_LABEL, true);
   NCollection_Map<TDF_Label> aValidLabels;
@@ -509,7 +507,7 @@ static TopoDS_Shape SolveNamingFunctionSelection(
   return TNaming_Tool::CurrentShape(DNaming::GetFunctionResult(theFunction));
 }
 
-static void FillSelectionValidMap(const TDF_Label& theLabel,
+static void FillSelectionValidMap(const TDF_Label&            theLabel,
                                   NCollection_Map<TDF_Label>& theValidMap)
 {
   NCollection_Map<occ::handle<TDF_Attribute>> anExternalAttributes;
@@ -542,9 +540,9 @@ static void FillSelectionValidMap(const TDF_Label& theLabel,
 static TopoDS_Shape SolveSelectionAfterModification(const TopoDS_Shape& theInitial,
                                                     const TopoDS_Shape& theModified)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
-  const TDF_Label       aContextLabel = aRoot.FindChild(1);
+  occ::handle<TDF_Data> aData           = new TDF_Data();
+  const TDF_Label       aRoot           = aData->Root();
+  const TDF_Label       aContextLabel   = aRoot.FindChild(1);
   const TDF_Label       aSelectionLabel = aRoot.FindChild(2);
 
   DNaming::LoadImportedShape(aContextLabel, theInitial);
@@ -940,13 +938,13 @@ TEST_F(TNaming_ToolTest, NamedShape_MissingUsedShapes)
 // caf/named_shape/D1: SelectGeometry resolves every box edge.
 TEST(TNaming_Tool_Test, CafNamedShape_D1_SelectGeometryEdges)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
+  occ::handle<TDF_Data> aData         = new TDF_Data();
+  const TDF_Label       aRoot         = aData->Root();
   const TDF_Label       aContextLabel = aRoot.FindChild(1);
-  const TopoDS_Shape    aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  const TopoDS_Shape    aBox          = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
   DNaming::LoadImportedShape(aContextLabel, aBox);
 
-  int anIndex = 0;
+  int                                                    anIndex = 0;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(aBox);
   for (TopExp_Explorer anExplorer(aBox, TopAbs_EDGE); anExplorer.More(); anExplorer.Next())
@@ -955,7 +953,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_D1_SelectGeometryEdges)
     {
       continue;
     }
-    const TDF_Label aSelectionLabel = aRoot.FindChild(1001 + anIndex++);
+    const TDF_Label  aSelectionLabel = aRoot.FindChild(1001 + anIndex++);
     TNaming_Selector aSelector(aSelectionLabel);
     ASSERT_TRUE(aSelector.Select(anExplorer.Current(), aBox, true));
     NCollection_Map<TDF_Label> aValidLabels;
@@ -969,13 +967,13 @@ TEST(TNaming_Tool_Test, CafNamedShape_D1_SelectGeometryEdges)
 // caf/named_shape/D2: SelectGeometry resolves every box face.
 TEST(TNaming_Tool_Test, CafNamedShape_D2_SelectGeometryFaces)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
+  occ::handle<TDF_Data> aData         = new TDF_Data();
+  const TDF_Label       aRoot         = aData->Root();
   const TDF_Label       aContextLabel = aRoot.FindChild(1);
-  const TopoDS_Shape    aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  const TopoDS_Shape    aBox          = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
   DNaming::LoadImportedShape(aContextLabel, aBox);
 
-  int anIndex = 0;
+  int                                                    anIndex = 0;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(aBox);
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
@@ -984,7 +982,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_D2_SelectGeometryFaces)
     {
       continue;
     }
-    const TDF_Label aSelectionLabel = aRoot.FindChild(2001 + anIndex++);
+    const TDF_Label  aSelectionLabel = aRoot.FindChild(2001 + anIndex++);
     TNaming_Selector aSelector(aSelectionLabel);
     ASSERT_TRUE(aSelector.Select(anExplorer.Current(), aBox, true));
     NCollection_Map<TDF_Label> aValidLabels;
@@ -998,13 +996,13 @@ TEST(TNaming_Tool_Test, CafNamedShape_D2_SelectGeometryFaces)
 // caf/named_shape/D3: SelectGeometry resolves every box vertex.
 TEST(TNaming_Tool_Test, CafNamedShape_D3_SelectGeometryVertices)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
+  occ::handle<TDF_Data> aData         = new TDF_Data();
+  const TDF_Label       aRoot         = aData->Root();
   const TDF_Label       aContextLabel = aRoot.FindChild(1);
-  const TopoDS_Shape    aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  const TopoDS_Shape    aBox          = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
   DNaming::LoadImportedShape(aContextLabel, aBox);
 
-  int anIndex = 0;
+  int                                                    anIndex = 0;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
   aShapeMap.Add(aBox);
   for (TopExp_Explorer anExplorer(aBox, TopAbs_VERTEX); anExplorer.More(); anExplorer.Next())
@@ -1013,7 +1011,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_D3_SelectGeometryVertices)
     {
       continue;
     }
-    const TDF_Label aSelectionLabel = aRoot.FindChild(3001 + anIndex++);
+    const TDF_Label  aSelectionLabel = aRoot.FindChild(3001 + anIndex++);
     TNaming_Selector aSelector(aSelectionLabel);
     ASSERT_TRUE(aSelector.Select(anExplorer.Current(), aBox, true));
     NCollection_Map<TDF_Label> aValidLabels;
@@ -1032,7 +1030,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_D4_CurrentShapeAfterBoolean)
     BRepPrimAPI_MakeBox(gp_Pnt(-100.0, 400.0, -130.0), 390.0, 190.0, 490.0).Shape();
   const TopoDS_Shape aCut = BRepAlgoAPI_Fuse(aBox, aTool).Shape();
 
-  occ::handle<TDF_Data> aData = new TDF_Data();
+  occ::handle<TDF_Data> aData  = new TDF_Data();
   const TDF_Label       aLabel = aData->Root().FindChild(1);
   TNaming_Builder       aBuilder(aLabel);
   aBuilder.Generated(aBox);
@@ -1048,9 +1046,9 @@ TEST(TNaming_Tool_Test, CafNamedShape_D4_CurrentShapeAfterBoolean)
 TEST(TNaming_Tool_Test, CafNamedShape_E2_SelectionAfterTransformations)
 {
   RegisterNamingDrivers();
-  const occ::handle<TDocStd_Document> aDocument = NewNamingDocument();
+  const occ::handle<TDocStd_Document>    aDocument  = NewNamingDocument();
   const occ::handle<TDataStd_UAttribute> aBoxObject = AddNamingObject(aDocument);
-  const occ::handle<TFunction_Function> aBoxFunction =
+  const occ::handle<TFunction_Function>  aBoxFunction =
     MakeNamingBox(aBoxObject, 190.0, 290.0, 390.0);
   const occ::handle<TFunction_Function> aTranslate1 =
     MakeNamingTranslation(aBoxObject, 150.0, 40.0, 90.0);
@@ -1059,7 +1057,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_E2_SelectionAfterTransformations)
   const TopoDS_Shape aLineShape =
     NamingSubShape(NamingSubShape(aBox2, TopAbs_FACE, 1), TopAbs_EDGE, 1);
   ASSERT_FALSE(aLineShape.IsNull());
-  occ::handle<TDataStd_UAttribute> aLineObject;
+  occ::handle<TDataStd_UAttribute>      aLineObject;
   const occ::handle<TFunction_Function> aLineSelection =
     AddNamingSelection(aDocument, aBoxObject, aLineShape, true, aLineObject);
   const occ::handle<TFunction_Function> aAlongLine =
@@ -1068,30 +1066,28 @@ TEST(TNaming_Tool_Test, CafNamedShape_E2_SelectionAfterTransformations)
   const TopoDS_Shape aBox3 = NamingFunctionShape(aAlongLine);
   const TopoDS_Shape aRotationLine =
     NamingSubShape(NamingSubShape(aBox3, TopAbs_FACE, 1), TopAbs_EDGE, 3);
-  occ::handle<TDataStd_UAttribute> aRotationLineObject;
+  occ::handle<TDataStd_UAttribute>      aRotationLineObject;
   const occ::handle<TFunction_Function> aRotationLineSelection =
     AddNamingSelection(aDocument, aBoxObject, aRotationLine, true, aRotationLineObject);
   const occ::handle<TFunction_Function> aRotate =
     MakeNamingRotation(aBoxObject, aRotationLineObject, 120.0);
 
-  const TopoDS_Shape aBox4 = NamingFunctionShape(aRotate);
+  const TopoDS_Shape aBox4       = NamingFunctionShape(aRotate);
   const TopoDS_Shape aMirrorFace = NamingSubShape(aBox4, TopAbs_FACE, 3);
   ASSERT_FALSE(aMirrorFace.IsNull());
-  occ::handle<TDataStd_UAttribute> aPlaneObject;
+  occ::handle<TDataStd_UAttribute>      aPlaneObject;
   const occ::handle<TFunction_Function> aPlaneSelection =
     AddNamingSelection(aDocument, aBoxObject, aMirrorFace, true, aPlaneObject);
-  const occ::handle<TFunction_Function> aMirror =
-    MakeNamingMirror(aBoxObject, aPlaneObject);
+  const occ::handle<TFunction_Function> aMirror = MakeNamingMirror(aBoxObject, aPlaneObject);
 
   const TopoDS_Shape aBox5 = NamingFunctionShape(aMirror);
   const TopoDS_Shape aFilletPath =
     NamingSubShape(NamingSubShape(aBox5, TopAbs_FACE, 1), TopAbs_EDGE, 3);
   ASSERT_FALSE(aFilletPath.IsNull());
-  occ::handle<TDataStd_UAttribute> aPathObject;
+  occ::handle<TDataStd_UAttribute>      aPathObject;
   const occ::handle<TFunction_Function> aPathSelection =
     AddNamingSelection(aDocument, aBoxObject, aFilletPath, true, aPathObject);
-  const occ::handle<TFunction_Function> aFillet =
-    MakeNamingFillet(aBoxObject, aPathObject);
+  const occ::handle<TFunction_Function> aFillet = MakeNamingFillet(aBoxObject, aPathObject);
   ASSERT_FALSE(NamingFunctionShape(aFillet).IsNull());
 
   NCollection_List<occ::handle<TFunction_Function>> aSelectionFunctions;
@@ -1109,11 +1105,8 @@ TEST(TNaming_Tool_Test, CafNamedShape_E2_SelectionAfterTransformations)
       continue;
     }
     occ::handle<TDataStd_UAttribute> aSelectionObject;
-    aSelectionFunctions.Append(AddNamingSelection(aDocument,
-                                                  aBoxObject,
-                                                  anIterator.Value(),
-                                                  true,
-                                                  aSelectionObject));
+    aSelectionFunctions.Append(
+      AddNamingSelection(aDocument, aBoxObject, anIterator.Value(), true, aSelectionObject));
     aSelectionShapes.Append(anIterator.Value());
   }
 
@@ -1150,7 +1143,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_F2_FusedSelectionAfterRecompute)
   const TopoDS_Shape aChangedSecond =
     BRepPrimAPI_MakeBox(gp_Pnt(80.0, 20.0, 20.0), 80.0, 100.0, 140.0).Shape();
   const TopoDS_Shape aChangedFused = BRepAlgoAPI_Fuse(aFirst, aChangedSecond).Shape();
-  const TopoDS_Shape aSelected = SolveSelectionAfterModification(aFused, aChangedFused);
+  const TopoDS_Shape aSelected     = SolveSelectionAfterModification(aFused, aChangedFused);
   ASSERT_FALSE(aSelected.IsNull());
   EXPECT_EQ(aSelected.ShapeType(), TopAbs_FACE);
 }
@@ -1164,19 +1157,18 @@ TEST(TNaming_Tool_Test, CafNamedShape_F3_CutSelectionAfterRecompute)
   const TopoDS_Shape aChangedSecond =
     BRepPrimAPI_MakeBox(gp_Pnt(30.0, 20.0, 20.0), 30.0, 30.0, 30.0).Shape();
   const TopoDS_Shape aChangedCut = BRepAlgoAPI_Cut(aFirst, aChangedSecond).Shape();
-  const TopoDS_Shape aSelected = SolveSelectionAfterModification(aCut, aChangedCut);
+  const TopoDS_Shape aSelected   = SolveSelectionAfterModification(aCut, aChangedCut);
   ASSERT_FALSE(aSelected.IsNull());
   EXPECT_EQ(aSelected.ShapeType(), TopAbs_FACE);
 }
 
 TEST(TNaming_Tool_Test, CafNamedShape_E9_SelectionAfterMultipleFusions)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(130.0, 140.0, 150.0).Shape();
-  const TopoDS_Shape aSphere1 =
-    BRepPrimAPI_MakeSphere(gp_Pnt(20.0, 20.0, 20.0), 25.0).Shape();
-  const TopoDS_Shape aSphere2 =
-    BRepPrimAPI_MakeSphere(gp_Pnt(70.0, 70.0, 70.0), 25.0).Shape();
-  const TopoDS_Shape aFused = BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox, aSphere1).Shape(), aSphere2).Shape();
+  const TopoDS_Shape aBox     = BRepPrimAPI_MakeBox(130.0, 140.0, 150.0).Shape();
+  const TopoDS_Shape aSphere1 = BRepPrimAPI_MakeSphere(gp_Pnt(20.0, 20.0, 20.0), 25.0).Shape();
+  const TopoDS_Shape aSphere2 = BRepPrimAPI_MakeSphere(gp_Pnt(70.0, 70.0, 70.0), 25.0).Shape();
+  const TopoDS_Shape aFused =
+    BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox, aSphere1).Shape(), aSphere2).Shape();
   const TopoDS_Shape aChangedSphere =
     BRepPrimAPI_MakeSphere(gp_Pnt(70.0, 70.0, 80.0), 25.0).Shape();
   const TopoDS_Shape aChangedFused =
@@ -1193,7 +1185,8 @@ TEST(TNaming_Tool_Test, CafNamedShape_F8_SelectShapeAfterFusion)
     BRepPrimAPI_MakeBox(gp_Pnt(80.0, 80.0, 20.0), 330.0, 330.0, 90.0).Shape();
   const TopoDS_Shape aBox3 =
     BRepPrimAPI_MakeBox(gp_Pnt(40.0, 40.0, 40.0), 60.0, 450.0, 150.0).Shape();
-  const TopoDS_Shape aFused = BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox1, aBox2).Shape(), aBox3).Shape();
+  const TopoDS_Shape aFused =
+    BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox1, aBox2).Shape(), aBox3).Shape();
   const TopoDS_Shape aChangedBox2 =
     BRepPrimAPI_MakeBox(gp_Pnt(80.0, 80.0, 20.0), 330.0, 330.0, 120.0).Shape();
   const TopoDS_Shape aChangedFused =
@@ -1210,7 +1203,8 @@ TEST(TNaming_Tool_Test, CafNamedShape_F9_AttachedSelectionAfterFusion)
     BRepPrimAPI_MakeBox(gp_Pnt(80.0, 80.0, 20.0), 330.0, 330.0, 90.0).Shape();
   const TopoDS_Shape aBox3 =
     BRepPrimAPI_MakeBox(gp_Pnt(40.0, 40.0, 40.0), 60.0, 450.0, 150.0).Shape();
-  const TopoDS_Shape aFused = BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox1, aBox2).Shape(), aBox3).Shape();
+  const TopoDS_Shape aFused =
+    BRepAlgoAPI_Fuse(BRepAlgoAPI_Fuse(aBox1, aBox2).Shape(), aBox3).Shape();
   const TopoDS_Shape aChangedBox2 =
     BRepPrimAPI_MakeBox(gp_Pnt(80.0, 80.0, 20.0), 330.0, 330.0, 125.0).Shape();
   const TopoDS_Shape aChangedFused =
@@ -1224,34 +1218,34 @@ TEST(TNaming_Tool_Test, CafNamedShape_F9_AttachedSelectionAfterFusion)
 // replacement, and selected evolutions without DRAW command wrappers.
 TEST(TNaming_Tool_Test, CafNamedShape_A1_BuilderEvolutions)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
+  occ::handle<TDF_Data> aData      = new TDF_Data();
+  const TDF_Label       aRoot      = aData->Root();
   const TDF_Label       aTestLabel = aRoot.FindChild(1, true);
 
-  const TDF_Label aLabel1 = aTestLabel.FindChild(1, true);
+  const TDF_Label aLabel1  = aTestLabel.FindChild(1, true);
   const TDF_Label aLabel11 = aLabel1.FindChild(1, true);
   const TDF_Label aLabel12 = aLabel1.FindChild(2, true);
-  const TDF_Label aLabel2 = aTestLabel.FindChild(2, true);
+  const TDF_Label aLabel2  = aTestLabel.FindChild(2, true);
   const TDF_Label aLabel21 = aLabel2.FindChild(1, true);
   const TDF_Label aLabel22 = aLabel2.FindChild(2, true);
-  const TDF_Label aLabel3 = aTestLabel.FindChild(3, true);
+  const TDF_Label aLabel3  = aTestLabel.FindChild(3, true);
   const TDF_Label aLabel31 = aLabel3.FindChild(1, true);
   const TDF_Label aLabel32 = aLabel3.FindChild(2, true);
-  const TDF_Label aLabel4 = aTestLabel.FindChild(4, true);
+  const TDF_Label aLabel4  = aTestLabel.FindChild(4, true);
   const TDF_Label aLabel41 = aLabel4.FindChild(1, true);
-  const TDF_Label aLabel5 = aTestLabel.FindChild(5, true);
+  const TDF_Label aLabel5  = aTestLabel.FindChild(5, true);
   const TDF_Label aLabel51 = aLabel5.FindChild(1, true);
-  const TDF_Label aLabel6 = aTestLabel.FindChild(6, true);
+  const TDF_Label aLabel6  = aTestLabel.FindChild(6, true);
   const TDF_Label aLabel61 = aLabel6.FindChild(1, true);
 
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
   const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(200.0, 300.0, 400.0).Shape();
   const TopoDS_Shape aBox3 = BRepPrimAPI_MakeBox(300.0, 400.0, 500.0).Shape();
   const TopoDS_Shape aBox4 = BRepPrimAPI_MakeBox(300.0, 400.0, 500.0).Shape();
-  TopoDS_Shape aBoxEdges[16];
-  TopoDS_Shape aBox2Faces[8];
-  TopoDS_Shape aBox3Faces[8];
-  TopoDS_Shape aBox4Faces[8];
+  TopoDS_Shape       aBoxEdges[16];
+  TopoDS_Shape       aBox2Faces[8];
+  TopoDS_Shape       aBox3Faces[8];
+  TopoDS_Shape       aBox4Faces[8];
   ASSERT_EQ(CollectNamingSubShapes(aBox, TopAbs_EDGE, aBoxEdges, 16), 12);
   ASSERT_EQ(CollectNamingSubShapes(aBox2, TopAbs_FACE, aBox2Faces, 8), 6);
   ASSERT_EQ(CollectNamingSubShapes(aBox3, TopAbs_FACE, aBox3Faces, 8), 6);
@@ -1273,10 +1267,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_A1_BuilderEvolutions)
   AddNamingGenerated(aLabel22, aGeneratedOld22, aGeneratedNew22, 3);
   const TopoDS_Shape aGeneratedOld21Second[] = {aBoxEdges[2], aBoxEdges[2], aBoxEdges[3]};
   const TopoDS_Shape aGeneratedNew21Second[] = {aBox2Faces[0], aBox2Faces[2], aBox2Faces[3]};
-  AddNamingGenerated(aLabel21,
-                     aGeneratedOld21Second,
-                     aGeneratedNew21Second,
-                     3);
+  AddNamingGenerated(aLabel21, aGeneratedOld21Second, aGeneratedNew21Second, 3);
 
   const TopoDS_Shape aModifiedOld3[] = {aBox2};
   const TopoDS_Shape aModifiedNew3[] = {aBox3};
@@ -1289,10 +1280,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_A1_BuilderEvolutions)
   AddNamingModified(aLabel32, aModifiedOld32, aModifiedNew32, 3);
   const TopoDS_Shape aModifiedOld31Second[] = {aBox2Faces[2], aBoxEdges[2], aBox2Faces[3]};
   const TopoDS_Shape aModifiedNew31Second[] = {aBox3Faces[0], aBox3Faces[2], aBox3Faces[3]};
-  AddNamingModified(aLabel31,
-                    aModifiedOld31Second,
-                    aModifiedNew31Second,
-                    3);
+  AddNamingModified(aLabel31, aModifiedOld31Second, aModifiedNew31Second, 3);
 
   AddNamingDeleted(aLabel41, &aBox3Faces[0], 1);
   const TopoDS_Shape aDeletedFaces[] = {aBox3Faces[0], aBox3Faces[3]};
@@ -1308,13 +1296,30 @@ TEST(TNaming_Tool_Test, CafNamedShape_A1_BuilderEvolutions)
   const TopoDS_Shape aSelectedOld6[] = {aBox4};
   const TopoDS_Shape aSelectedNew6[] = {aBox4};
   AddNamingSelected(aLabel6, aSelectedOld6, aSelectedNew6, 1);
-  const TopoDS_Shape aSelectedOld61[] = {aBox4Faces[1], aBox4Faces[1], aBox2Faces[4], aBox2Faces[4]};
-  const TopoDS_Shape aSelectedNew61[] = {aBox4Faces[1], aBox4Faces[1], aBox2Faces[4], aBox2Faces[4]};
+  const TopoDS_Shape aSelectedOld61[] = {aBox4Faces[1],
+                                         aBox4Faces[1],
+                                         aBox2Faces[4],
+                                         aBox2Faces[4]};
+  const TopoDS_Shape aSelectedNew61[] = {aBox4Faces[1],
+                                         aBox4Faces[1],
+                                         aBox2Faces[4],
+                                         aBox2Faces[4]};
   AddNamingSelected(aLabel61, aSelectedOld61, aSelectedNew61, 4);
 
-  const TDF_Label aLabels[] = {aLabel1,  aLabel11, aLabel12, aLabel2,  aLabel21, aLabel22,
-                               aLabel3,  aLabel31, aLabel32, aLabel41, aLabel5,  aLabel51,
-                               aLabel6,  aLabel61};
+  const TDF_Label aLabels[] = {aLabel1,
+                               aLabel11,
+                               aLabel12,
+                               aLabel2,
+                               aLabel21,
+                               aLabel22,
+                               aLabel3,
+                               aLabel31,
+                               aLabel32,
+                               aLabel41,
+                               aLabel5,
+                               aLabel51,
+                               aLabel6,
+                               aLabel61};
   for (const TDF_Label& aLabel : aLabels)
   {
     ExpectNamingAttribute(aLabel);
@@ -1330,25 +1335,25 @@ TEST(TNaming_Tool_Test, CafNamedShape_A1_BuilderEvolutions)
 // insufficient valid-label map when solving an intersection selection.
 TEST(TNaming_Tool_Test, CafNamedShape_A5_SelectorCommandFlow)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
-  const TDF_Label       aTestLabel = aRoot.FindChild(1, true);
-  const TDF_Label       aFaceLabel = aTestLabel.FindChild(1, true);
+  occ::handle<TDF_Data> aData       = new TDF_Data();
+  const TDF_Label       aRoot       = aData->Root();
+  const TDF_Label       aTestLabel  = aRoot.FindChild(1, true);
+  const TDF_Label       aFaceLabel  = aTestLabel.FindChild(1, true);
   const TDF_Label       anEdgeLabel = aFaceLabel.FindChild(1, true);
 
-  const gp_Pnt aP1(0.0, 0.0, 0.0);
-  const gp_Pnt aP2(0.0, 100.0, 0.0);
-  const gp_Pnt aP3(100.0, 0.0, 0.0);
-  const TopoDS_Vertex aVertex1 = BRepBuilderAPI_MakeVertex(aP1).Vertex();
-  const TopoDS_Vertex aVertex2 = BRepBuilderAPI_MakeVertex(aP2).Vertex();
-  const TopoDS_Vertex aVertex3 = BRepBuilderAPI_MakeVertex(aP3).Vertex();
-  const occ::handle<Geom_Line> aLine1 = new Geom_Line(aP1, gp_Dir(0.0, 1.0, 0.0));
-  const occ::handle<Geom_Line> aLine2 = new Geom_Line(aP2, gp_Dir(1.0, -1.0, 0.0));
-  const occ::handle<Geom_Line> aLine3 = new Geom_Line(aP3, gp_Dir(-1.0, 0.0, 0.0));
-  const TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aLine1, aVertex1, aVertex2).Edge();
-  const TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge(aLine2, aVertex2, aVertex3).Edge();
-  const TopoDS_Edge aEdge3 = BRepBuilderAPI_MakeEdge(aLine3, aVertex3, aVertex1).Edge();
-  BRepBuilderAPI_MakeWire aWireBuilder;
+  const gp_Pnt                 aP1(0.0, 0.0, 0.0);
+  const gp_Pnt                 aP2(0.0, 100.0, 0.0);
+  const gp_Pnt                 aP3(100.0, 0.0, 0.0);
+  const TopoDS_Vertex          aVertex1 = BRepBuilderAPI_MakeVertex(aP1).Vertex();
+  const TopoDS_Vertex          aVertex2 = BRepBuilderAPI_MakeVertex(aP2).Vertex();
+  const TopoDS_Vertex          aVertex3 = BRepBuilderAPI_MakeVertex(aP3).Vertex();
+  const occ::handle<Geom_Line> aLine1   = new Geom_Line(aP1, gp_Dir(0.0, 1.0, 0.0));
+  const occ::handle<Geom_Line> aLine2   = new Geom_Line(aP2, gp_Dir(1.0, -1.0, 0.0));
+  const occ::handle<Geom_Line> aLine3   = new Geom_Line(aP3, gp_Dir(-1.0, 0.0, 0.0));
+  const TopoDS_Edge            aEdge1 = BRepBuilderAPI_MakeEdge(aLine1, aVertex1, aVertex2).Edge();
+  const TopoDS_Edge            aEdge2 = BRepBuilderAPI_MakeEdge(aLine2, aVertex2, aVertex3).Edge();
+  const TopoDS_Edge            aEdge3 = BRepBuilderAPI_MakeEdge(aLine3, aVertex3, aVertex1).Edge();
+  BRepBuilderAPI_MakeWire      aWireBuilder;
   aWireBuilder.Add(aEdge1);
   aWireBuilder.Add(aEdge2);
   aWireBuilder.Add(aEdge3);
@@ -1357,10 +1362,10 @@ TEST(TNaming_Tool_Test, CafNamedShape_A5_SelectorCommandFlow)
     BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
                             aWireBuilder.Wire())
       .Face();
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 100.0, 100.0).Shape();
+  const TopoDS_Shape aBox             = BRepPrimAPI_MakeBox(100.0, 100.0, 100.0).Shape();
   const TopoDS_Shape aFirstFaceVertex = NamingSubShape(aFace, TopAbs_VERTEX, 1);
-  const TopoDS_Shape aFirstBoxEdge = NamingSubShape(aBox, TopAbs_EDGE, 1);
-  const TopoDS_Shape aFirstBoxVertex = NamingSubShape(aBox, TopAbs_VERTEX, 1);
+  const TopoDS_Shape aFirstBoxEdge    = NamingSubShape(aBox, TopAbs_EDGE, 1);
+  const TopoDS_Shape aFirstBoxVertex  = NamingSubShape(aBox, TopAbs_VERTEX, 1);
   ASSERT_FALSE(aFirstFaceVertex.IsNull());
   ASSERT_FALSE(aFirstBoxEdge.IsNull());
   ASSERT_FALSE(aFirstBoxVertex.IsNull());
@@ -1370,7 +1375,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_A5_SelectorCommandFlow)
   AddNamingPrimitives(aFaceLabel.FindChild(3, true), &aEdge3, 1);
   AddNamingPrimitives(anEdgeLabel, &aEdge1, 1);
 
-  const TDF_Label aSelectionRoot = aTestLabel.FindChild(10, true);
+  const TDF_Label  aSelectionRoot = aTestLabel.FindChild(10, true);
   TNaming_Selector aSelector1(aSelectionRoot.FindChild(1, true));
   TNaming_Selector aSelector2(aSelectionRoot.FindChild(2, true));
   TNaming_Selector aSelector3(aSelectionRoot.FindChild(3, true));
@@ -1399,34 +1404,34 @@ TEST(TNaming_Tool_Test, CafNamedShape_A5_SelectorCommandFlow)
 // a triangle prism cut preserve the complete DRAW naming graph.
 TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
+  occ::handle<TDF_Data> aData      = new TDF_Data();
+  const TDF_Label       aRoot      = aData->Root();
   const TDF_Label       aTestLabel = aRoot.FindChild(1, true);
 
-  const TDF_Label aLabel1 = aTestLabel.FindChild(1, true);
+  const TDF_Label aLabel1  = aTestLabel.FindChild(1, true);
   const TDF_Label aLabel11 = aLabel1.FindChild(1, true);
   const TDF_Label aLabel12 = aLabel1.FindChild(2, true);
   const TDF_Label aLabel13 = aLabel1.FindChild(3, true);
-  const TDF_Label aLabel2 = aTestLabel.FindChild(2, true);
+  const TDF_Label aLabel2  = aTestLabel.FindChild(2, true);
   const TDF_Label aLabel21 = aLabel2.FindChild(1, true);
-  const TDF_Label aLabel3 = aTestLabel.FindChild(3, true);
-  const TDF_Label aLabel4 = aTestLabel.FindChild(4, true);
+  const TDF_Label aLabel3  = aTestLabel.FindChild(3, true);
+  const TDF_Label aLabel4  = aTestLabel.FindChild(4, true);
   const TDF_Label aLabel41 = aLabel4.FindChild(1, true);
   const TDF_Label aLabel42 = aLabel4.FindChild(2, true);
 
-  const gp_Pnt aP1(0.0, 0.0, 0.0);
-  const gp_Pnt aP2(0.0, 100.0, 0.0);
-  const gp_Pnt aP3(100.0, 0.0, 0.0);
-  const TopoDS_Vertex aVertex1 = BRepBuilderAPI_MakeVertex(aP1).Vertex();
-  const TopoDS_Vertex aVertex2 = BRepBuilderAPI_MakeVertex(aP2).Vertex();
-  const TopoDS_Vertex aVertex3 = BRepBuilderAPI_MakeVertex(aP3).Vertex();
-  const occ::handle<Geom_Line> aLine1 = new Geom_Line(aP1, gp_Dir(0.0, 1.0, 0.0));
-  const occ::handle<Geom_Line> aLine2 = new Geom_Line(aP2, gp_Dir(1.0, -1.0, 0.0));
-  const occ::handle<Geom_Line> aLine3 = new Geom_Line(aP3, gp_Dir(-1.0, 0.0, 0.0));
-  const TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aLine1, aVertex1, aVertex2).Edge();
-  const TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge(aLine2, aVertex2, aVertex3).Edge();
-  const TopoDS_Edge aEdge3 = BRepBuilderAPI_MakeEdge(aLine3, aVertex3, aVertex1).Edge();
-  BRepBuilderAPI_MakeWire aWireBuilder;
+  const gp_Pnt                 aP1(0.0, 0.0, 0.0);
+  const gp_Pnt                 aP2(0.0, 100.0, 0.0);
+  const gp_Pnt                 aP3(100.0, 0.0, 0.0);
+  const TopoDS_Vertex          aVertex1 = BRepBuilderAPI_MakeVertex(aP1).Vertex();
+  const TopoDS_Vertex          aVertex2 = BRepBuilderAPI_MakeVertex(aP2).Vertex();
+  const TopoDS_Vertex          aVertex3 = BRepBuilderAPI_MakeVertex(aP3).Vertex();
+  const occ::handle<Geom_Line> aLine1   = new Geom_Line(aP1, gp_Dir(0.0, 1.0, 0.0));
+  const occ::handle<Geom_Line> aLine2   = new Geom_Line(aP2, gp_Dir(1.0, -1.0, 0.0));
+  const occ::handle<Geom_Line> aLine3   = new Geom_Line(aP3, gp_Dir(-1.0, 0.0, 0.0));
+  const TopoDS_Edge            aEdge1 = BRepBuilderAPI_MakeEdge(aLine1, aVertex1, aVertex2).Edge();
+  const TopoDS_Edge            aEdge2 = BRepBuilderAPI_MakeEdge(aLine2, aVertex2, aVertex3).Edge();
+  const TopoDS_Edge            aEdge3 = BRepBuilderAPI_MakeEdge(aLine3, aVertex3, aVertex1).Edge();
+  BRepBuilderAPI_MakeWire      aWireBuilder;
   aWireBuilder.Add(aEdge1);
   aWireBuilder.Add(aEdge2);
   aWireBuilder.Add(aEdge3);
@@ -1442,11 +1447,9 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
   AddNamingPrimitives(aLabel12, &aEdge2, 1);
   AddNamingPrimitives(aLabel13, &aEdge3, 1);
 
-  const TopoDS_Shape aPrism =
-    BRepPrimAPI_MakePrism(aFace, gp_Vec(0.0, 0.0, 100.0), false).Shape();
-  TopoDS_Shape          aPrismFaces[6];
-  const int              aPrismFaceCount =
-    CollectNamingSubShapes(aPrism, TopAbs_FACE, aPrismFaces, 6);
+  const TopoDS_Shape aPrism = BRepPrimAPI_MakePrism(aFace, gp_Vec(0.0, 0.0, 100.0), false).Shape();
+  TopoDS_Shape       aPrismFaces[6];
+  const int          aPrismFaceCount = CollectNamingSubShapes(aPrism, TopAbs_FACE, aPrismFaces, 6);
   ASSERT_EQ(aPrismFaceCount, 5);
   AddNamingPrimitives(aLabel2, &aPrism, 1);
 
@@ -1457,7 +1460,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
   for (int aFaceIndex = 0; aFaceIndex < aPrismFaceCount; ++aFaceIndex)
   {
     TopoDS_Shape anEdges[8];
-    const int     anEdgeCount =
+    const int    anEdgeCount =
       CollectNamingSubShapes(aPrismFaces[aFaceIndex], TopAbs_EDGE, anEdges, 8);
     if (anEdgeCount == 4)
     {
@@ -1486,9 +1489,8 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
   ASSERT_EQ(aGeneratedCount, 3);
   AddNamingGenerated(aLabel21, aGeneratedOld, aGeneratedNew, aGeneratedCount);
 
-  const TopoDS_Shape aBox =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 20.0), 100.0, 100.0, 20.0).Shape();
-  TopoDS_Shape aBoxFaces[6];
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 20.0), 100.0, 100.0, 20.0).Shape();
+  TopoDS_Shape       aBoxFaces[6];
   ASSERT_EQ(CollectNamingSubShapes(aBox, TopAbs_FACE, aBoxFaces, 6), 6);
   AddNamingPrimitives(aLabel3, &aBox, 1);
   for (int aFaceIndex = 0; aFaceIndex < 6; ++aFaceIndex)
@@ -1499,7 +1501,7 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
   const TopoDS_Shape aCut = BRepAlgoAPI_Cut(aPrism, aBox).Shape();
   ASSERT_FALSE(aCut.IsNull());
   TopoDS_Shape aCutFaces[16];
-  const int aCutFaceCount = CollectNamingSubShapes(aCut, TopAbs_FACE, aCutFaces, 16);
+  const int    aCutFaceCount = CollectNamingSubShapes(aCut, TopAbs_FACE, aCutFaces, 16);
   ASSERT_EQ(aCutFaceCount, 10);
   AddNamingModified(aLabel4, &aPrism, &aCut, 1);
 
@@ -1540,23 +1542,23 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
     const gp_Pnt aCenter = NamingVertexAverage(aCutFaces[aFaceIndex]);
     if (NamingNear(aCenter.X(), 50.0))
     {
-      const TopoDS_Shape& anOldShape = NamingNear(aCenter.Y(), 50.0) ? aPXY : aPX;
-      aCutGeneratedOld[aCutGeneratedCount] = anOldShape;
+      const TopoDS_Shape& anOldShape         = NamingNear(aCenter.Y(), 50.0) ? aPXY : aPX;
+      aCutGeneratedOld[aCutGeneratedCount]   = anOldShape;
       aCutGeneratedNew[aCutGeneratedCount++] = aCutFaces[aFaceIndex];
     }
     else if (NamingNear(aCenter.Y(), 50.0))
     {
-      aCutGeneratedOld[aCutGeneratedCount] = aPY;
+      aCutGeneratedOld[aCutGeneratedCount]   = aPY;
       aCutGeneratedNew[aCutGeneratedCount++] = aCutFaces[aFaceIndex];
     }
     else if (NamingNear(aCenter.Z(), 20.0))
     {
-      aCutModifiedOld[aCutModifiedCount] = aBoxFaces[4];
+      aCutModifiedOld[aCutModifiedCount]   = aBoxFaces[4];
       aCutModifiedNew[aCutModifiedCount++] = aCutFaces[aFaceIndex];
     }
     else if (NamingNear(aCenter.Z(), 40.0))
     {
-      aCutModifiedOld[aCutModifiedCount] = aBoxFaces[5];
+      aCutModifiedOld[aCutModifiedCount]   = aBoxFaces[5];
       aCutModifiedNew[aCutModifiedCount++] = aCutFaces[aFaceIndex];
     }
   }
@@ -1641,16 +1643,16 @@ TEST(TNaming_Tool_Test, CafNamedShape_A3_NamingToolGraph)
   ExpectNamingCompoundFaces(aLabel41, 6, 6);
   ExpectNamingCompoundFaces(aLabel42, 2, 2);
 
-  const TDF_Label aSelectionRoot = aTestLabel.FindChild(10, true);
-  TNaming_Selector aSelector1(aSelectionRoot.FindChild(1, true));
-  TNaming_Selector aSelector2(aSelectionRoot.FindChild(2, true));
-  TNaming_Selector aSelector3(aSelectionRoot.FindChild(3, true));
-  TNaming_Selector aSelector4(aSelectionRoot.FindChild(4, true));
-  TNaming_Selector aSelector5(aSelectionRoot.FindChild(5, true));
-  TNaming_Selector aSelector6(aSelectionRoot.FindChild(6, true));
+  const TDF_Label    aSelectionRoot = aTestLabel.FindChild(10, true);
+  TNaming_Selector   aSelector1(aSelectionRoot.FindChild(1, true));
+  TNaming_Selector   aSelector2(aSelectionRoot.FindChild(2, true));
+  TNaming_Selector   aSelector3(aSelectionRoot.FindChild(3, true));
+  TNaming_Selector   aSelector4(aSelectionRoot.FindChild(4, true));
+  TNaming_Selector   aSelector5(aSelectionRoot.FindChild(5, true));
+  TNaming_Selector   aSelector6(aSelectionRoot.FindChild(6, true));
   const TopoDS_Shape aFirstFaceVertex = NamingSubShape(aFace, TopAbs_VERTEX, 1);
-  const TopoDS_Shape aFirstBoxEdge = NamingSubShape(aBox, TopAbs_EDGE, 1);
-  const TopoDS_Shape aFirstBoxVertex = NamingSubShape(aBox, TopAbs_VERTEX, 1);
+  const TopoDS_Shape aFirstBoxEdge    = NamingSubShape(aBox, TopAbs_EDGE, 1);
+  const TopoDS_Shape aFirstBoxVertex  = NamingSubShape(aBox, TopAbs_VERTEX, 1);
   ASSERT_TRUE(aSelector1.Select(aFace, false));
   ASSERT_TRUE(aSelector2.Select(aEdge1, aFace, false));
   ASSERT_TRUE(aSelector3.Select(aEdge2, false));
@@ -1687,15 +1689,13 @@ TEST_F(TNaming_ToolTest, Buc_CafBug_60847_GeneratedBoxNaming)
 TEST_F(TNaming_ToolTest, Buc_CafBug_60862_GeneratedEdgeNaming)
 {
   const TDF_Label    aLabel = myRoot.FindChild(2, true);
-  const TopoDS_Shape anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(10.0, 20.0, 0.0),
-                                                      gp_Pnt(20.0, 10.0, 0.0))
-                                .Shape();
+  const TopoDS_Shape anEdge =
+    BRepBuilderAPI_MakeEdge(gp_Pnt(10.0, 20.0, 0.0), gp_Pnt(20.0, 10.0, 0.0)).Shape();
   ASSERT_FALSE(anEdge.IsNull());
   TNaming_Builder aBuilder(aLabel);
   aBuilder.Generated(anEdge);
 
-  const occ::handle<TNaming_NamedShape> aNamedShape =
-    TNaming_Naming::Name(aLabel, anEdge, anEdge);
+  const occ::handle<TNaming_NamedShape> aNamedShape = TNaming_Naming::Name(aLabel, anEdge, anEdge);
   ASSERT_FALSE(aNamedShape.IsNull());
   EXPECT_FALSE(aNamedShape->IsEmpty());
   EXPECT_TRUE(TNaming_Tool::GetShape(aNamedShape).IsSame(anEdge));
@@ -1715,13 +1715,13 @@ TEST_F(TNaming_ToolTest, CafBug_23799_CopySelectionAfterSourceForget)
   ASSERT_TRUE(aFaceExplorer.More());
   const TopoDS_Shape aFace = aFaceExplorer.Current();
 
-  const TDF_Label aSelectionLabel = myRoot.FindChild(2, true);
+  const TDF_Label  aSelectionLabel = myRoot.FindChild(2, true);
   TNaming_Selector aSelector(aSelectionLabel);
   ASSERT_TRUE(aSelector.Select(aFace, true));
   aSourceLabel.ForgetAllAttributes();
 
   const TDF_Label aCopyLabel = myRoot.FindChild(3, true);
-  TDF_CopyLabel  aCopier;
+  TDF_CopyLabel   aCopier;
   aCopier.Load(aSelectionLabel, aCopyLabel);
   aCopier.Perform();
   EXPECT_TRUE(aCopier.IsDone());
@@ -1731,9 +1731,9 @@ TEST_F(TNaming_ToolTest, CafBug_23799_CopySelectionAfterSourceForget)
 // imported source label has forgotten its attributes.
 TEST(TNaming_Tool_Test, CafBug_25153_ArgumentsAfterSourceForget)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
-  const TDF_Label       aRoot = aData->Root();
-  const TDF_Label       aSourceLabel = aRoot.FindChild(1, true);
+  occ::handle<TDF_Data> aData           = new TDF_Data();
+  const TDF_Label       aRoot           = aData->Root();
+  const TDF_Label       aSourceLabel    = aRoot.FindChild(1, true);
   const TDF_Label       aSelectionLabel = aRoot.FindChild(2, true);
   const TopoDS_Face     aFace =
     BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
@@ -1785,7 +1785,8 @@ TEST(TNaming_Tool_Test, CafBug_26061_TranslatedMirroredSelection)
   aMirroredTranslationBuilder.Modify(aMirroredFace, aTranslatedMirroredFace);
 
   occ::handle<TNaming_NamedShape> aModifiedShape;
-  ASSERT_TRUE(aRoot.FindChild(903, true).FindAttribute(TNaming_NamedShape::GetID(), aModifiedShape));
+  ASSERT_TRUE(
+    aRoot.FindChild(903, true).FindAttribute(TNaming_NamedShape::GetID(), aModifiedShape));
   const TopoDS_Shape aCurrentShape = TNaming_Tool::GetShape(aModifiedShape);
   ASSERT_FALSE(aCurrentShape.IsNull());
 
@@ -1800,13 +1801,13 @@ TEST(TNaming_Tool_Test, CafBug_26061_TranslatedMirroredSelection)
 // named shape contains only a generated (new) shape.
 TEST(TNaming_Tool_Test, CafBug_26428_NewAndOldShapeIterators)
 {
-  occ::handle<TDF_Data> aData = new TDF_Data();
+  occ::handle<TDF_Data> aData  = new TDF_Data();
   const TDF_Label       aLabel = aData->Root().FindChild(1, true);
-  const TopoDS_Shape    aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
-  TNaming_Builder      aBuilder(aLabel);
+  const TopoDS_Shape    aBox   = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  TNaming_Builder       aBuilder(aLabel);
   aBuilder.Generated(aBox);
 
-  TNaming_Iterator        aNameIterator(aLabel);
+  TNaming_Iterator         aNameIterator(aLabel);
   TNaming_NewShapeIterator aNewIterator(aNameIterator);
   TNaming_OldShapeIterator anOldIterator(aNameIterator);
   EXPECT_NO_THROW({
@@ -1827,7 +1828,7 @@ TEST(TNaming_Tool_Test, CafBug_24263_CopyShapePreservesOrientation)
   TNaming_Translator aTranslator;
   aTranslator.Add(aBox);
 
-  int aNbFaces = 0;
+  int aNbFaces         = 0;
   int aNbReversedFaces = 0;
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
@@ -1844,7 +1845,7 @@ TEST(TNaming_Tool_Test, CafBug_24263_CopyShapePreservesOrientation)
   ASSERT_FALSE(aCopiedBox.IsNull());
   EXPECT_EQ(aCopiedBox.Orientation(), TopAbs_FORWARD);
 
-  int aCopiedFaceCount = 0;
+  int aCopiedFaceCount         = 0;
   int aCopiedReversedFaceCount = 0;
   for (TopExp_Explorer anExplorer(aBox, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
@@ -1865,8 +1866,8 @@ TEST(TNaming_Tool_Test, CafBug_26155_ModificationOrderStable)
   const occ::handle<TDocStd_Document> aDocument = NewNamingDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
-  const double aTolerance = 0.1;
-  double       aReferenceX = 0.0;
+  const double aTolerance   = 0.1;
+  double       aReferenceX  = 0.0;
   bool         hasReference = false;
   for (int anIndex = 1; anIndex <= 50; ++anIndex)
   {
@@ -1920,7 +1921,7 @@ TEST(TNaming_Tool_Test, CafBug_26155_ModificationOrderStable)
     const double aCurrentX = aProperties.CentreOfMass().X();
     if (!hasReference)
     {
-      aReferenceX = aCurrentX;
+      aReferenceX  = aCurrentX;
       hasReference = true;
     }
     else

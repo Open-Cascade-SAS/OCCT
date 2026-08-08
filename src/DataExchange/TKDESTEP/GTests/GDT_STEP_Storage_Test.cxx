@@ -80,10 +80,8 @@ static occ::handle<TDocStd_Document> NewDocument(occ::handle<TDocStd_Application
 
 static TDF_Label AddBoxAndDimension(const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
-  const TDF_Label aShapeLabel =
-    aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   occ::handle<XCAFDoc_DimTolTool> aDimTolTool =
     XCAFDoc_DocumentTool::DimTolTool(theDocument->Main());
   const TDF_Label aDimensionLabel = aDimTolTool->AddDimension();
@@ -116,16 +114,15 @@ static occ::handle<XCAFDimTolObjects_DimensionObject> RestoreDimension(
   return DimensionObject(aDimensionLabels.First());
 }
 
-static occ::handle<TDocStd_Document> RoundTrip(
-  const occ::handle<TDocStd_Document>& theDocument,
-  const bool                            theWriteNonmanifold = false)
+static occ::handle<TDocStd_Document> RoundTrip(const occ::handle<TDocStd_Document>& theDocument,
+                                               const bool theWriteNonmanifold = false)
 {
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  aNode->InternalParameters.WriteNonmanifold = theWriteNonmanifold;
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aNode->InternalParameters.WriteNonmanifold  = theWriteNonmanifold;
   DESTEP_Provider aProvider(aNode);
 
-  std::stringstream aStream;
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("gdt.step", aStream));
   if (!aProvider.Write(aWriteStreams, theDocument))
@@ -164,11 +161,11 @@ static void ExpectDirection(const gp_Dir& theActual, const gp_Dir& theExpected)
 }
 
 static bool WriteStepStream(const occ::handle<TDocStd_Document>& theDocument,
-                            std::stringstream&                    theStream)
+                            std::stringstream&                   theStream)
 {
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  DESTEP_Provider aProvider(aNode);
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  DESTEP_Provider              aProvider(aNode);
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("draw_step.stream", theStream));
   return aProvider.Write(aWriteStreams, theDocument);
@@ -271,8 +268,7 @@ static TCollection_ExtendedString FindFirstLabelName(const TDF_Label& theLabel)
 static TCollection_ExtendedString FindFirstSubShapeName(
   const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   NCollection_Sequence<TDF_Label> aShapeLabels;
   aShapeTool->GetShapes(aShapeLabels);
   for (NCollection_Sequence<TDF_Label>::Iterator aShapeIterator(aShapeLabels);
@@ -285,8 +281,7 @@ static TCollection_ExtendedString FindFirstSubShapeName(
          aSubShapeIterator.More();
          aSubShapeIterator.Next())
     {
-      const TCollection_ExtendedString aName =
-        FindFirstLabelName(aSubShapeIterator.Value());
+      const TCollection_ExtendedString aName = FindFirstLabelName(aSubShapeIterator.Value());
       if (!aName.IsEmpty())
       {
         return aName;
@@ -305,9 +300,9 @@ static TCollection_AsciiString MakeStepNameTemplate()
     return TCollection_AsciiString();
   }
 
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  const TDF_Label aShapeLabel = aShapeTool->AddShape(aBox, false);
+  const TopoDS_Shape             aBox        = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  const TDF_Label                aShapeLabel = aShapeTool->AddShape(aBox, false);
   if (aShapeLabel.IsNull())
   {
     return TCollection_AsciiString();
@@ -326,12 +321,12 @@ static TCollection_AsciiString MakeStepNameTemplate()
     return TCollection_AsciiString();
   }
 
-  occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  aNode->InternalParameters.WriteName = true;
+  occ::handle<DESTEP_ConfigurationNode> aNode  = new DESTEP_ConfigurationNode();
+  aNode->InternalParameters.WriteSchema        = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aNode->InternalParameters.WriteName          = true;
   aNode->InternalParameters.WriteSubshapeNames = true;
-  DESTEP_Provider aProvider(aNode);
-  std::stringstream aStream;
+  DESTEP_Provider              aProvider(aNode);
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("codepage_template.step", aStream));
   if (!aProvider.Write(aWriteStreams, aDocument))
@@ -343,7 +338,7 @@ static TCollection_AsciiString MakeStepNameTemplate()
 }
 
 static TCollection_AsciiString EncodeStepName(const TCollection_ExtendedString& theName,
-                                              const Resource_FormatType           theFormat)
+                                              const Resource_FormatType         theFormat)
 {
   if (theFormat >= Resource_FormatType_CP1250 && theFormat <= Resource_FormatType_CP850)
   {
@@ -357,11 +352,10 @@ static TCollection_AsciiString EncodeStepName(const TCollection_ExtendedString& 
         continue;
       }
 
-      char               aCharBuffer[4];
-      Standard_PCharacter aCharBufferPtr = aCharBuffer;
+      char                             aCharBuffer[4];
+      Standard_PCharacter              aCharBufferPtr = aCharBuffer;
       const TCollection_ExtendedString aSingleChar(1, aChar);
-      if (!Resource_Unicode::ConvertUnicodeToFormat(
-            theFormat, aSingleChar, aCharBufferPtr, 2))
+      if (!Resource_Unicode::ConvertUnicodeToFormat(theFormat, aSingleChar, aCharBufferPtr, 2))
       {
         return TCollection_AsciiString();
       }
@@ -370,11 +364,10 @@ static TCollection_AsciiString EncodeStepName(const TCollection_ExtendedString& 
     return aResult;
   }
 
-  char               aBuffer[512];
+  char                aBuffer[512];
   Standard_PCharacter aBufferPtr = aBuffer;
-  const int aBufferSize = theFormat == Resource_FormatType_UTF8
-                            ? theName.LengthOfCString() + 1
-                            : sizeof(aBuffer);
+  const int           aBufferSize =
+    theFormat == Resource_FormatType_UTF8 ? theName.LengthOfCString() + 1 : sizeof(aBuffer);
   if (!Resource_Unicode::ConvertUnicodeToFormat(theFormat, theName, aBufferPtr, aBufferSize))
   {
     return TCollection_AsciiString();
@@ -382,12 +375,12 @@ static TCollection_AsciiString EncodeStepName(const TCollection_ExtendedString& 
   return TCollection_AsciiString(aBuffer);
 }
 
-static TCollection_AsciiString ReplaceStepName(const TCollection_AsciiString&   theTemplate,
+static TCollection_AsciiString ReplaceStepName(const TCollection_AsciiString&    theTemplate,
                                                const TCollection_ExtendedString& theName,
-                                               const Resource_FormatType          theFormat)
+                                               const Resource_FormatType         theFormat)
 {
   const TCollection_AsciiString aPlaceholder("@tmp_name@");
-  const int                     aPosition = theTemplate.Search(aPlaceholder);
+  const int                     aPosition     = theTemplate.Search(aPlaceholder);
   const TCollection_AsciiString anEncodedName = EncodeStepName(theName, theFormat);
   if (aPosition < 1 || anEncodedName.IsEmpty())
   {
@@ -409,11 +402,11 @@ static TCollection_AsciiString ReplaceStepName(const TCollection_AsciiString&   
 }
 
 static TCollection_ExtendedString ReadStepName(const TCollection_AsciiString& thePayload,
-                                               const Resource_FormatType        theFormat)
+                                               const Resource_FormatType      theFormat)
 {
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.ReadCodePage = theFormat;
-  aNode->InternalParameters.ReadName = true;
+  aNode->InternalParameters.ReadCodePage      = theFormat;
+  aNode->InternalParameters.ReadName          = true;
   aNode->InternalParameters.ReadSubshapeNames = true;
   DESTEP_Provider aProvider(aNode);
 
@@ -432,9 +425,9 @@ static TCollection_ExtendedString ReadStepName(const TCollection_AsciiString& th
   return FindFirstSubShapeName(aDocument);
 }
 
-static void ExpectStepCodePageName(const TCollection_AsciiString&   theTemplate,
+static void ExpectStepCodePageName(const TCollection_AsciiString&    theTemplate,
                                    const TCollection_ExtendedString& theExpectedName,
-                                   const Resource_FormatType          theFormat)
+                                   const Resource_FormatType         theFormat)
 {
   const TCollection_AsciiString aUtf8Payload =
     ReplaceStepName(theTemplate, theExpectedName, Resource_FormatType_UTF8);
@@ -500,7 +493,7 @@ TEST(GDT_STEP_Storage_Test, A7_DimensionDescriptions)
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aDimensionLabel = AddBoxAndDimension(aDocument);
+  const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
   ASSERT_TRUE(aDimensionLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
   occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimension->GetObject();
@@ -531,7 +524,7 @@ TEST(GDT_STEP_Storage_Test, A8_DimensionAnnotationPlane)
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aDimensionLabel = AddBoxAndDimension(aDocument);
+  const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
   ASSERT_TRUE(aDimensionLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
   occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimension->GetObject();
@@ -542,9 +535,9 @@ TEST(GDT_STEP_Storage_Test, A8_DimensionAnnotationPlane)
   const gp_Dir anXDirection(0.0, 1.0, 0.0);
   anObject->SetPlane(gp_Ax2(aPoint, aNormal, anXDirection));
   anObject->SetPointTextAttach(aPoint);
-  anObject->SetPresentation(BRepBuilderAPI_MakeEdge(gp_Pnt(-5.0, 0.0, 0.0),
-                                                    gp_Pnt(-5.0, 0.0, 10.0)),
-                            new TCollection_HAsciiString("presentation"));
+  anObject->SetPresentation(
+    BRepBuilderAPI_MakeEdge(gp_Pnt(-5.0, 0.0, 0.0), gp_Pnt(-5.0, 0.0, 10.0)),
+    new TCollection_HAsciiString("presentation"));
   aDimension->SetObject(anObject);
 
   occ::handle<TDocStd_Document> aRestored = RoundTrip(aDocument);
@@ -566,7 +559,7 @@ TEST(GDT_STEP_Storage_Test, A9_DimensionConnectionPoints)
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
-  const TDF_Label aDimensionLabel = AddBoxAndDimension(aDocument);
+  const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
   ASSERT_TRUE(aDimensionLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
   occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimension->GetObject();
@@ -597,8 +590,7 @@ static TCollection_ExtendedString StepSpecialName()
 static TCollection_ExtendedString RestoredFirstShapeName(
   const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   NCollection_Sequence<TDF_Label> aShapeLabels;
   aShapeTool->GetShapes(aShapeLabels);
   if (aShapeLabels.IsEmpty())
@@ -683,7 +675,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_31670_1_CP125xNames)
   const TCollection_AsciiString aTemplate = MakeStepNameTemplate();
   ASSERT_FALSE(aTemplate.IsEmpty());
 
-  NCollection_Array1<Resource_FormatType>     aFormats(1, 9);
+  NCollection_Array1<Resource_FormatType>        aFormats(1, 9);
   NCollection_Array1<TCollection_ExtendedString> aNames(1, 9);
   for (int anIndex = 1; anIndex <= 9; ++anIndex)
   {
@@ -695,7 +687,8 @@ TEST(GDT_STEP_Storage_Test, StepBug_31670_1_CP125xNames)
   aNames.SetValue(3, TCollection_ExtendedString(u"Test Prob\u00EDh\u00E1"));
   aNames.SetValue(4, TCollection_ExtendedString(u"Test \u0394\u03BF\u03BA\u03B9\u03BC\u03AE"));
   aNames.SetValue(5, TCollection_ExtendedString(u"Test \u00D6l\u00E7ek"));
-  aNames.SetValue(6, TCollection_ExtendedString(u"Test \u05DE\u05B4\u05D1\u05B0\u05D7\u05B8\u05DF"));
+  aNames.SetValue(6,
+                  TCollection_ExtendedString(u"Test \u05DE\u05B4\u05D1\u05B0\u05D7\u05B8\u05DF"));
   aNames.SetValue(7, TCollection_ExtendedString(u"Test \u0627\u062E\u062A\u0628\u0627\u0631"));
   aNames.SetValue(8, TCollection_ExtendedString(u"Test P\u0101rbaude"));
   // CP1258 represents 'ệ' as 'ê' followed by combining dot below.
@@ -713,10 +706,10 @@ TEST(GDT_STEP_Storage_Test, StepBug_31923_CP850Name)
 {
   const TCollection_AsciiString aTemplate = MakeStepNameTemplate();
   ASSERT_FALSE(aTemplate.IsEmpty());
-  ExpectStepCodePageName(aTemplate,
-                         TCollection_ExtendedString(
-                           u"\u00DCberpr\u00FCfung de codifica\u00E7\u00E3o"),
-                         Resource_FormatType_CP850);
+  ExpectStepCodePageName(
+    aTemplate,
+    TCollection_ExtendedString(u"\u00DCberpr\u00FCfung de codifica\u00E7\u00E3o"),
+    Resource_FormatType_CP850);
 }
 
 // bugs/xde/bug22728: STEP export can write the result to a caller-owned stream.
@@ -762,9 +755,9 @@ static void ExpectStepEdgeExport(const TopoDS_Shape& theEdge)
   ASSERT_FALSE(aShapeTool->AddShape(theEdge).IsNull());
 
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  DESTEP_Provider aProvider(aNode);
-  std::stringstream aStream;
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  DESTEP_Provider              aProvider(aNode);
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("untrimmed_edge.step", aStream));
   EXPECT_TRUE(aProvider.Write(aWriteStreams, aDocument));
@@ -775,7 +768,7 @@ static void ExpectStepEdgeExport(const TopoDS_Shape& theEdge)
 // bugs/step/bug32817_1: STEP export accepts an untrimmed line edge.
 TEST(GDT_STEP_Storage_Test, StepBug_32817_1_UntrimmedLine)
 {
-  const gp_Lin aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  const gp_Lin       aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
   const TopoDS_Shape anEdge = BRepBuilderAPI_MakeEdge(aLine).Edge();
   ASSERT_FALSE(anEdge.IsNull());
   ExpectStepEdgeExport(anEdge);
@@ -784,7 +777,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_32817_1_UntrimmedLine)
 // bugs/step/bug32817_2: STEP export accepts a line edge with a huge end value.
 TEST(GDT_STEP_Storage_Test, StepBug_32817_2_HugeEndParameter)
 {
-  const gp_Lin aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  const gp_Lin       aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
   const TopoDS_Shape anEdge = BRepBuilderAPI_MakeEdge(aLine, 10.0, 2.0e100).Edge();
   ASSERT_FALSE(anEdge.IsNull());
   ExpectStepEdgeExport(anEdge);
@@ -793,7 +786,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_32817_2_HugeEndParameter)
 // bugs/step/bug32817_3: STEP export accepts a line edge with a huge negative start value.
 TEST(GDT_STEP_Storage_Test, StepBug_32817_3_HugeStartParameter)
 {
-  const gp_Lin aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 1.0, 0.0));
+  const gp_Lin       aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 1.0, 0.0));
   const TopoDS_Shape anEdge = BRepBuilderAPI_MakeEdge(aLine, -2.0e100, 10.0).Edge();
   ASSERT_FALSE(anEdge.IsNull());
   ExpectStepEdgeExport(anEdge);
@@ -819,9 +812,9 @@ TEST(GDT_STEP_Storage_Test, XdeBug_25910_ZeroDensityMaterial)
                              new TCollection_HAsciiString("POSITIVE_RATIO_MEASURE"));
 
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  DESTEP_Provider aProvider(aNode);
-  std::stringstream aStream;
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  DESTEP_Provider              aProvider(aNode);
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("zero_density.step", aStream));
   EXPECT_TRUE(aProvider.Write(aWriteStreams, aDocument));
@@ -839,11 +832,10 @@ TEST(GDT_STEP_Storage_Test, StepBug_27313_PmiExport)
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_FALSE(aShapeLabel.IsNull());
-  occ::handle<XCAFDoc_DimTolTool> aDimTolTool =
-    XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
-  const TDF_Label aToleranceLabel = aDimTolTool->AddGeomTolerance();
+  occ::handle<XCAFDoc_DimTolTool> aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
+  const TDF_Label                 aToleranceLabel = aDimTolTool->AddGeomTolerance();
   aDimTolTool->SetGeomTolerance(aShapeLabel, aToleranceLabel);
-  const TDF_Label aDatumLabel = aDimTolTool->AddDatum();
+  const TDF_Label                 aDatumLabel = aDimTolTool->AddDatum();
   NCollection_Sequence<TDF_Label> aShapeLabels;
   aShapeLabels.Append(aShapeLabel);
   aDimTolTool->SetDatum(aShapeLabels, aDatumLabel);
@@ -888,7 +880,7 @@ TEST(GDT_STEP_Storage_Test, ModalgBug_33165_AssemblyInstanceNames)
   aBuilder.Add(aCompound, aSecondBox);
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  const TDF_Label                 anAssembly = aShapeTool->AddShape(aCompound, true);
+  const TDF_Label                anAssembly = aShapeTool->AddShape(aCompound, true);
   ASSERT_FALSE(anAssembly.IsNull());
   NCollection_Sequence<TDF_Label> aComponents;
   ASSERT_TRUE(aShapeTool->GetComponents(anAssembly, aComponents));
@@ -904,8 +896,7 @@ TEST(GDT_STEP_Storage_Test, ModalgBug_33165_AssemblyInstanceNames)
   aRestoredShapeTool->GetFreeShapes(aRestoredAssemblies);
   ASSERT_EQ(aRestoredAssemblies.Length(), 1);
   NCollection_Sequence<TDF_Label> aRestoredComponents;
-  ASSERT_TRUE(
-    aRestoredShapeTool->GetComponents(aRestoredAssemblies.First(), aRestoredComponents));
+  ASSERT_TRUE(aRestoredShapeTool->GetComponents(aRestoredAssemblies.First(), aRestoredComponents));
   ASSERT_EQ(aRestoredComponents.Length(), 2);
 
   occ::handle<TDataStd_Name> aName1;
@@ -924,7 +915,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_7141_LargeAssemblyExport)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
 
-  const TopoDS_Compound aCompound = MakeLocatedBoxAssembly(20);
+  const TopoDS_Compound          aCompound  = MakeLocatedBoxAssembly(20);
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label                anAssembly = aShapeTool->AddShape(aCompound, true);
   ASSERT_FALSE(anAssembly.IsNull());
@@ -933,10 +924,10 @@ TEST(GDT_STEP_Storage_Test, XdeBug_7141_LargeAssemblyExport)
   ASSERT_EQ(aComponents.Length(), 400);
 
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  aNode->InternalParameters.WriteAssembly = DESTEP_Parameters::WriteMode_Assembly_On;
-  DESTEP_Provider aProvider(aNode);
-  std::stringstream aStream;
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aNode->InternalParameters.WriteAssembly     = DESTEP_Parameters::WriteMode_Assembly_On;
+  DESTEP_Provider              aProvider(aNode);
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("bug7141.step", aStream));
   ASSERT_TRUE(aProvider.Write(aWriteStreams, aDocument));
@@ -961,7 +952,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_30189_2_LocatedRootStructure)
   const TopoDS_Shape aThirdBox =
     BRepPrimAPI_MakeBox(gp_Pnt(4.0, 0.0, 0.0), gp_Pnt(5.0, 1.0, 1.0)).Shape();
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);
@@ -1007,7 +998,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_1669_NestedAssemblyNames)
   const TopoDS_Shape aBox2 =
     TranslateShape(BRepPrimAPI_MakeBox(20.0, 10.0, 10.0).Shape(), 20.0, 0.0, 0.0);
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aBlock;
   aBuilder.MakeCompound(aBlock);
   aBuilder.Add(aBlock, aBox1);
@@ -1030,7 +1021,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_1669_NestedAssemblyNames)
   aBuilder.Add(aWall, aBrick);
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  const TDF_Label                 aWallLabel = aShapeTool->AddShape(aWall, true);
+  const TDF_Label                aWallLabel = aShapeTool->AddShape(aWall, true);
   ASSERT_FALSE(aWallLabel.IsNull());
 
   NCollection_Sequence<TDF_Label> aShapes;
@@ -1081,7 +1072,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_1669_NestedAssemblyNames)
 // bugs/step/bug_ocp1949_2: STEP tessellated export applies the document unit scaling.
 TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
   BRepMesh_IncrementalMesh aMesh(aBox, 1.0);
   ASSERT_TRUE(aMesh.IsDone());
 
@@ -1093,11 +1084,11 @@ TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
   ASSERT_FALSE(aShapeTool->AddShape(aBox).IsNull());
 
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
-  aNode->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
-  aNode->InternalParameters.WriteTessellated = DESTEP_Parameters::RWMode_Tessellated_On;
+  aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aNode->InternalParameters.WriteTessellated  = DESTEP_Parameters::RWMode_Tessellated_On;
   DESTEP_Provider aProvider(aNode);
 
-  std::stringstream aStream;
+  std::stringstream            aStream;
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("ocp1949_2.step", aStream));
   ASSERT_TRUE(aProvider.Write(aWriteStreams, aDocument));
@@ -1106,7 +1097,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
 
   aStream.seekg(0);
   occ::handle<TDocStd_Application> aRestoredApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aRestoredDocument     = NewDocument(aRestoredApplication);
+  occ::handle<TDocStd_Document>    aRestoredDocument    = NewDocument(aRestoredApplication);
   ASSERT_FALSE(aRestoredDocument.IsNull());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("ocp1949_2.step", aStream));
@@ -1126,10 +1117,10 @@ TEST(GDT_STEP_Storage_Test, StepBug_30189_3_LocatedRootSharing)
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
 
-  const TopoDS_Shape aBaseBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
-  gp_Trsf            aTranslation;
+  const TopoDS_Shape             aBaseBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
+  gp_Trsf                        aTranslation;
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  const TDF_Label                 aBaseLabel = aShapeTool->AddShape(aBaseBox);
+  const TDF_Label                aBaseLabel = aShapeTool->AddShape(aBaseBox);
   ASSERT_FALSE(aBaseLabel.IsNull());
 
   aTranslation.SetTranslation(gp_Vec(2.0, 0.0, 0.0));
@@ -1178,10 +1169,9 @@ TEST(GDT_STEP_Storage_Test, XdeBug_13175_SingleVertex)
   occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  const TDF_Label aVertexLabel = aShapeTool->NewShape();
-  aShapeTool->SetShape(aVertexLabel,
-                        BRepBuilderAPI_MakeVertex(gp_Pnt(10.0, 10.0, 10.0)).Shape());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool   = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  const TDF_Label                aVertexLabel = aShapeTool->NewShape();
+  aShapeTool->SetShape(aVertexLabel, BRepBuilderAPI_MakeVertex(gp_Pnt(10.0, 10.0, 10.0)).Shape());
 
   occ::handle<TDocStd_Document> aRestored = RoundTripWithSTEPCAF(aDocument);
   ASSERT_FALSE(aRestored.IsNull());

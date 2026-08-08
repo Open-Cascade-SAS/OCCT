@@ -175,7 +175,7 @@ void ExpectEqualProperties(const TopoDS_Shape& theFirst,
               aSecondProperties.Mass(),
               1.0e-6 * std::max(1.0, std::abs(aSecondProperties.Mass())));
 
-  aFirstProperties = GProp_GProps();
+  aFirstProperties  = GProp_GProps();
   aSecondProperties = GProp_GProps();
   BRepGProp::SurfaceProperties(theFirst, aFirstProperties, 1.0, theSkipShared);
   BRepGProp::SurfaceProperties(theSecond, aSecondProperties, 1.0, theSkipShared);
@@ -183,7 +183,7 @@ void ExpectEqualProperties(const TopoDS_Shape& theFirst,
               aSecondProperties.Mass(),
               1.0e-6 * std::max(1.0, std::abs(aSecondProperties.Mass())));
 
-  aFirstProperties = GProp_GProps();
+  aFirstProperties  = GProp_GProps();
   aSecondProperties = GProp_GProps();
   BRepGProp::VolumeProperties(theFirst, aFirstProperties, 1.0, false, theSkipShared);
   BRepGProp::VolumeProperties(theSecond, aSecondProperties, 1.0, false, theSkipShared);
@@ -196,12 +196,12 @@ NCollection_List<TopoDS_Face> GetFaces(const TopoDS_Shape& theShape);
 
 void ExpectModifiedMaterials(BOPAlgo_MakeConnected&                theConnected,
                              const NCollection_List<TopoDS_Shape>& theModified,
-                             const TopoDS_Shape&                     thePositive1,
-                             const TopoDS_Shape&                     thePositive2,
-                             const TopoDS_Shape&                     theNegative1,
-                             const TopoDS_Shape&                     theNegative2 = TopoDS_Shape())
+                             const TopoDS_Shape&                   thePositive1,
+                             const TopoDS_Shape&                   thePositive2,
+                             const TopoDS_Shape&                   theNegative1,
+                             const TopoDS_Shape&                   theNegative2 = TopoDS_Shape())
 {
-  const TopoDS_Shape aModifiedShape = MakeCompound(theModified);
+  const TopoDS_Shape                  aModifiedShape = MakeCompound(theModified);
   const NCollection_List<TopoDS_Face> aModifiedFaces = GetFaces(aModifiedShape);
   ASSERT_FALSE(aModifiedFaces.IsEmpty());
 
@@ -247,7 +247,7 @@ TopoDS_Shape MakePeriodicityProfile()
 
 NCollection_List<TopoDS_Face> GetFaces(const TopoDS_Shape& theShape)
 {
-  NCollection_List<TopoDS_Face> aFaces;
+  NCollection_List<TopoDS_Face>                          aFaces;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
   aMap.Add(theShape);
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
@@ -262,7 +262,7 @@ NCollection_List<TopoDS_Face> GetFaces(const TopoDS_Shape& theShape)
 
 NCollection_List<TopoDS_Edge> GetEdges(const TopoDS_Shape& theShape)
 {
-  NCollection_List<TopoDS_Edge> anEdges;
+  NCollection_List<TopoDS_Edge>                          anEdges;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
   aMap.Add(theShape);
   for (TopExp_Explorer anExplorer(theShape, TopAbs_EDGE); anExplorer.More(); anExplorer.Next())
@@ -290,9 +290,9 @@ TopoDS_Face GetFace(const TopoDS_Shape& theShape, const int theIndex)
 
 occ::handle<Geom_Curve> BasisCurve(const TopoDS_Edge& theEdge)
 {
-  double                        aFirst = 0.0;
-  double                        aLast  = 0.0;
-  occ::handle<Geom_Curve>       aCurve = BRep_Tool::Curve(theEdge, aFirst, aLast);
+  double                  aFirst = 0.0;
+  double                  aLast  = 0.0;
+  occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theEdge, aFirst, aLast);
   while (!aCurve.IsNull())
   {
     const occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve);
@@ -343,8 +343,8 @@ bool IsBSplineSurface(const TopoDS_Face& theFace)
   return !occ::down_cast<Geom_BSplineSurface>(BasisSurface(theFace)).IsNull();
 }
 
-occ::handle<BRepTools_History> MakeVolume(BOPAlgo_MakerVolume&                  theMaker,
-                                          const TopoDS_Shape&                   theModifiedShape,
+occ::handle<BRepTools_History> MakeVolume(BOPAlgo_MakerVolume&                 theMaker,
+                                          const TopoDS_Shape&                  theModifiedShape,
                                           const NCollection_List<TopoDS_Face>& theFaces)
 {
   NCollection_List<TopoDS_Shape> anArguments;
@@ -376,7 +376,7 @@ void MakeBoxPeriodic(BOPAlgo_MakePeriodic& theMaker,
                      const double          theXFirst          = 0.0,
                      const double          theYFirst          = 0.0,
                      const double          theZFirst          = 0.0,
-                     const bool            theSetTrimmed     = true)
+                     const bool            theSetTrimmed      = true)
 {
   theMaker.SetShape(theShape);
   theMaker.MakeXPeriodic(true, theXPeriod);
@@ -475,17 +475,15 @@ TEST(BOPAlgo_MakePeriodicTest, A2_ProfilePeriodicity_HistoryAndRepetitionAreCons
     EXPECT_EQ(CountShapes(aModified, TopAbs_WIRE), 2);
     EXPECT_EQ(CountShapes(aModified, TopAbs_FACE), 2);
 
-    const TopoDS_Shape aModifiedShape = MakeCompound(aModified);
+    const TopoDS_Shape                  aModifiedShape = MakeCompound(aModified);
     const NCollection_List<TopoDS_Face> aModifiedFaces = GetFaces(aModifiedShape);
     ASSERT_EQ(aModifiedFaces.Extent(), 2);
     NCollection_List<TopoDS_Shape> aTwins;
     for (NCollection_List<TopoDS_Face>::Iterator anIterator(aModifiedFaces); anIterator.More();
          anIterator.Next())
     {
-      const NCollection_List<TopoDS_Shape>& aFaceTwins =
-        aMaker.GetTwins(anIterator.Value());
-      for (NCollection_List<TopoDS_Shape>::Iterator aTwinIterator(aFaceTwins);
-           aTwinIterator.More();
+      const NCollection_List<TopoDS_Shape>& aFaceTwins = aMaker.GetTwins(anIterator.Value());
+      for (NCollection_List<TopoDS_Shape>::Iterator aTwinIterator(aFaceTwins); aTwinIterator.More();
            aTwinIterator.Next())
       {
         aTwins.Append(aTwinIterator.Value());
@@ -523,9 +521,7 @@ TEST(BOPAlgo_MakePeriodicTest, A2_ProfilePeriodicity_HistoryAndRepetitionAreCons
   EXPECT_EQ(CountShapes(aTopGenerated, TopAbs_WIRE), 6);
   EXPECT_EQ(CountShapes(aTopGenerated, TopAbs_FACE), 6);
   const TopoDS_Shape aTopGeneratedShape = MakeCompound(aTopGenerated);
-  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aTopGeneratedShape),
-              150.0,
-              Precision::Confusion());
+  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aTopGeneratedShape), 150.0, Precision::Confusion());
   ExpectValidShape(aTopGeneratedShape);
 
   for (NCollection_List<TopoDS_Shape>::Iterator anIterator(aTopGenerated); anIterator.More();
@@ -535,9 +531,7 @@ TEST(BOPAlgo_MakePeriodicTest, A2_ProfilePeriodicity_HistoryAndRepetitionAreCons
     EXPECT_EQ(CountShapes(aTwins, TopAbs_WIRE), 11);
     EXPECT_EQ(CountShapes(aTwins, TopAbs_FACE), 11);
     const TopoDS_Shape aTwinsShape = MakeCompound(aTwins);
-    EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aTwinsShape),
-                275.0,
-                Precision::Confusion());
+    EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aTwinsShape), 275.0, Precision::Confusion());
     ExpectValidShape(aTwinsShape);
   }
 
@@ -604,8 +598,8 @@ TEST(BOPAlgo_MakePeriodicTest, A4_PeriodicCutResult_RepeatsInBothDirections)
 // Equivalent to tests/boolean/periodicity/A5.
 TEST(BOPAlgo_MakePeriodicTest, A5_NurbsEdges_PeriodicTwinsPreserveCurveType)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const NCollection_List<TopoDS_Face> aFaces = GetFaces(aBox);
+  const TopoDS_Shape                  aBox    = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const NCollection_List<TopoDS_Face> aFaces  = GetFaces(aBox);
   const NCollection_List<TopoDS_Edge> anEdges = GetEdges(aBox);
 
   for (NCollection_List<TopoDS_Edge>::Iterator anEdgeIterator(anEdges); anEdgeIterator.More();
@@ -618,9 +612,8 @@ TEST(BOPAlgo_MakePeriodicTest, A5_NurbsEdges_PeriodicTwinsPreserveCurveType)
     const TopoDS_Shape aNurbsEdge = aConverter.Shape();
     ASSERT_FALSE(aNurbsEdge.IsNull());
 
-    BOPAlgo_MakerVolume aVolume;
-    const occ::handle<BRepTools_History> aVolumeHistory =
-      MakeVolume(aVolume, aNurbsEdge, aFaces);
+    BOPAlgo_MakerVolume                  aVolume;
+    const occ::handle<BRepTools_History> aVolumeHistory = MakeVolume(aVolume, aNurbsEdge, aFaces);
     ASSERT_FALSE(aVolume.HasErrors());
     const TopoDS_Shape& aSolid = aVolume.Shape();
     ASSERT_FALSE(aSolid.IsNull());
@@ -641,7 +634,7 @@ TEST(BOPAlgo_MakePeriodicTest, A5_NurbsEdges_PeriodicTwinsPreserveCurveType)
       aMaker.History()->Modified(aModifiedEdge);
     ASSERT_EQ(CountShapes(aPeriodicModified, TopAbs_EDGE), 1);
     const TopoDS_Edge aPeriodicModifiedEdge = TopoDS::Edge(aPeriodicModified.First());
-    const char* aPeriodicCurveType = CurveTypeName(aPeriodicModifiedEdge);
+    const char*       aPeriodicCurveType    = CurveTypeName(aPeriodicModifiedEdge);
     ASSERT_NE(aPeriodicCurveType, nullptr);
 
     const NCollection_List<TopoDS_Shape>& aTwins = aMaker.GetTwins(aPeriodicModifiedEdge);
@@ -659,7 +652,7 @@ TEST(BOPAlgo_MakePeriodicTest, A5_NurbsEdges_PeriodicTwinsPreserveCurveType)
 // Equivalent to tests/boolean/periodicity/A6.
 TEST(BOPAlgo_MakePeriodicTest, A6_NurbsFaces_PeriodicTwinsPreserveGeometryTypes)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape                  aBox   = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const NCollection_List<TopoDS_Face> aFaces = GetFaces(aBox);
 
   for (NCollection_List<TopoDS_Face>::Iterator aFaceIterator(aFaces); aFaceIterator.More();
@@ -672,7 +665,7 @@ TEST(BOPAlgo_MakePeriodicTest, A6_NurbsFaces_PeriodicTwinsPreserveGeometryTypes)
     const TopoDS_Shape aNurbsFace = aConverter.Shape();
     ASSERT_FALSE(aNurbsFace.IsNull());
 
-    BOPAlgo_MakerVolume aVolume;
+    BOPAlgo_MakerVolume                  aVolume;
     const occ::handle<BRepTools_History> aVolumeHistory = MakeVolume(aVolume, aNurbsFace, aFaces);
     ASSERT_FALSE(aVolume.HasErrors());
     const TopoDS_Shape& aSolid = aVolume.Shape();
@@ -693,7 +686,7 @@ TEST(BOPAlgo_MakePeriodicTest, A6_NurbsFaces_PeriodicTwinsPreserveGeometryTypes)
       aMaker.History()->Modified(aModifiedFace);
     ASSERT_EQ(CountShapes(aPeriodicModified, TopAbs_FACE), 1);
     const TopoDS_Face aPeriodicModifiedFace = TopoDS::Face(aPeriodicModified.First());
-    const char* aPeriodicSurfaceType = SurfaceTypeName(aPeriodicModifiedFace);
+    const char*       aPeriodicSurfaceType  = SurfaceTypeName(aPeriodicModifiedFace);
     ASSERT_NE(aPeriodicSurfaceType, nullptr);
 
     const NCollection_List<TopoDS_Shape>& aFaceTwins = aMaker.GetTwins(aPeriodicModifiedFace);
@@ -711,8 +704,8 @@ TEST(BOPAlgo_MakePeriodicTest, A6_NurbsFaces_PeriodicTwinsPreserveGeometryTypes)
          anEdgeIterator.More();
          anEdgeIterator.Next())
     {
-      const TopoDS_Edge& aModifiedEdge = anEdgeIterator.Value();
-      const char* aModifiedCurveType = CurveTypeName(aModifiedEdge);
+      const TopoDS_Edge& aModifiedEdge      = anEdgeIterator.Value();
+      const char*        aModifiedCurveType = CurveTypeName(aModifiedEdge);
       ASSERT_NE(aModifiedCurveType, nullptr);
       const NCollection_List<TopoDS_Shape>& anEdgeTwins = aMaker.GetTwins(aModifiedEdge);
       EXPECT_EQ(CountShapes(anEdgeTwins, TopAbs_EDGE), 2);
@@ -816,21 +809,16 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A2_PeriodicAndRepeatedConnectedSoli
       .Shape();
 
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 5.0).Shape();
-  const TopoDS_Shape aBox2 =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 5.0), 10.0, 10.0, 1.0).Shape();
-  const TopoDS_Shape aBox3 =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 6.0), 3.0, 3.0, 4.0).Shape();
+  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 5.0), 10.0, 10.0, 1.0).Shape();
+  const TopoDS_Shape aBox3 = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 0.0, 6.0), 3.0, 3.0, 4.0).Shape();
   NCollection_List<TopoDS_Shape> anArguments;
   anArguments.Append(aBox1);
   anArguments.Append(aBox2);
   anArguments.Append(aBox3);
   anArguments.Append(aPrism);
-  const TopoDS_Shape aBox5 =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 9.0, 6.0), 4.0, 1.0, 4.0).Shape();
-  const TopoDS_Shape aBox6 =
-    BRepPrimAPI_MakeBox(gp_Pnt(9.0, 9.0, 6.0), 1.0, 1.0, 4.0).Shape();
-  const TopoDS_Shape aBox7 =
-    BRepPrimAPI_MakeBox(gp_Pnt(9.0, 0.0, 6.0), 1.0, 3.0, 4.0).Shape();
+  const TopoDS_Shape aBox5 = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 9.0, 6.0), 4.0, 1.0, 4.0).Shape();
+  const TopoDS_Shape aBox6 = BRepPrimAPI_MakeBox(gp_Pnt(9.0, 9.0, 6.0), 1.0, 1.0, 4.0).Shape();
+  const TopoDS_Shape aBox7 = BRepPrimAPI_MakeBox(gp_Pnt(9.0, 0.0, 6.0), 1.0, 3.0, 4.0).Shape();
   anArguments.Append(aBox5);
   anArguments.Append(aBox6);
   anArguments.Append(aBox7);
@@ -850,9 +838,11 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A2_PeriodicAndRepeatedConnectedSoli
   aConnected.MakePeriodic(aParams);
   ASSERT_FALSE(aConnected.PeriodicityTool().HasErrors());
   ExpectShapeCounts(aConnected.PeriodicShape(), 49, 83, 42, 42, 7, 7);
-  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()), 888.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()),
+              888.0,
               Precision::Confusion());
-  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()), 696.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()),
+              696.0,
               Precision::Confusion());
 
   const TopoDS_Face aMaterialFace = GetFace(aBox6, 3);
@@ -874,9 +864,11 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A2_PeriodicAndRepeatedConnectedSoli
   aConnected.RepeatShape(1, -1);
   aConnected.RepeatShape(1, 1);
   ExpectShapeCounts(aConnected.PeriodicShape(), 496, 947, 564, 564, 112, 112);
-  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()), 14208.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()),
+              14208.0,
               Precision::Confusion());
-  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()), 11136.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()),
+              11136.0,
               Precision::Confusion());
   ExpectModifiedMaterials(aConnected,
                           aConnected.GetModified(aMaterialFace),
@@ -902,9 +894,11 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A2_PeriodicAndRepeatedConnectedSoli
   aConnected.RepeatShape(1, -1);
   aConnected.RepeatShape(1, 1);
   ExpectShapeCounts(aConnected.PeriodicShape(), 736, 1264, 656, 656, 112, 112);
-  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()), 14208.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aConnected.PeriodicShape()),
+              14208.0,
               Precision::Confusion());
-  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()), 11136.0,
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aConnected.PeriodicShape()),
+              11136.0,
               Precision::Confusion());
   ExpectModifiedMaterials(aConnected,
                           aConnected.GetModified(aMaterialFace),
@@ -917,10 +911,8 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A2_PeriodicAndRepeatedConnectedSoli
 TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A5_PeriodicRepetitionCanBeCleared)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(5.0, 5.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 =
-    BRepPrimAPI_MakeBox(gp_Pnt(5.0, 0.0, 0.0), 5.0, 5.0, 5.0).Shape();
-  const TopoDS_Shape aBox3 =
-    BRepPrimAPI_MakeBox(gp_Pnt(0.0, 5.0, 0.0), 5.0, 5.0, 5.0).Shape();
+  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(5.0, 0.0, 0.0), 5.0, 5.0, 5.0).Shape();
+  const TopoDS_Shape aBox3 = BRepPrimAPI_MakeBox(gp_Pnt(0.0, 5.0, 0.0), 5.0, 5.0, 5.0).Shape();
   NCollection_List<TopoDS_Shape> anArguments;
   anArguments.Append(aBox1);
   anArguments.Append(aBox2);
@@ -951,10 +943,9 @@ TEST(BOPAlgo_MakePeriodicTest, MakeConnected_A5_PeriodicRepetitionCanBeCleared)
   EXPECT_EQ(CountShapes(aConnected.PeriodicShape(), TopAbs_SHELL), 3);
   EXPECT_EQ(CountShapes(aConnected.PeriodicShape(), TopAbs_SOLID), 3);
 
-  const NCollection_List<TopoDS_Shape>& aModifiedMaterial =
-    aConnected.GetModified(aMaterialFace);
-  const TopoDS_Shape aModifiedMaterialShape = MakeCompound(aModifiedMaterial);
-  const NCollection_List<TopoDS_Face> aModifiedMaterialFaces = GetFaces(aModifiedMaterialShape);
+  const NCollection_List<TopoDS_Shape>& aModifiedMaterial = aConnected.GetModified(aMaterialFace);
+  const TopoDS_Shape                    aModifiedMaterialShape = MakeCompound(aModifiedMaterial);
+  const NCollection_List<TopoDS_Face>   aModifiedMaterialFaces = GetFaces(aModifiedMaterialShape);
   ASSERT_FALSE(aModifiedMaterialFaces.IsEmpty());
   const TopoDS_Face& aModifiedFace = aModifiedMaterialFaces.First();
   ExpectMaterials(aConnected.MaterialsOnPositiveSide(aModifiedFace), aBox2);

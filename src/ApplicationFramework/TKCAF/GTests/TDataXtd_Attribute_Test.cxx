@@ -163,9 +163,9 @@ TEST(TDataXtd_Attribute_Test, CafBasic_I2_PlaneUndo)
 // caf/named_shape/B1: NewShape stores and restores an associated shape.
 TEST(TDataXtd_Attribute_Test, CafNamedShape_B1_NewShapeUndoRedo)
 {
-  occ::handle<TDocStd_Document> aDoc = NewDocument();
-  TDF_Label                    aLabel = NewGeometryLabel(aDoc);
-  const TopoDS_Shape           aBox   = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  occ::handle<TDocStd_Document> aDoc   = NewDocument();
+  TDF_Label                     aLabel = NewGeometryLabel(aDoc);
+  const TopoDS_Shape            aBox   = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
 
   aDoc->NewCommand();
   ASSERT_FALSE(TDataXtd_Shape::Set(aLabel, aBox).IsNull());

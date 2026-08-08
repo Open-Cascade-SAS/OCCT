@@ -81,10 +81,10 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC24889_IntersectionParameterWithinLimits)
 TEST(Geom2dAPI_InterCurveCurve_Test, FClassesBug_25635_1_TangentEllipses)
 {
   // fclasses/bug25635_1: extrema between two tangent ellipses includes the zero-distance result.
-  occ::handle<Geom2d_Ellipse> anEllipse1 = new Geom2d_Ellipse(
-    gp_Elips2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
-  occ::handle<Geom2d_Ellipse> anEllipse2 = new Geom2d_Ellipse(
-    gp_Elips2d(gp_Ax2d(gp_Pnt2d(4.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
+  occ::handle<Geom2d_Ellipse> anEllipse1 =
+    new Geom2d_Ellipse(gp_Elips2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
+  occ::handle<Geom2d_Ellipse> anEllipse2 =
+    new Geom2d_Ellipse(gp_Elips2d(gp_Ax2d(gp_Pnt2d(4.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
 
   Geom2dAPI_ExtremaCurveCurve anExtrema(anEllipse1,
                                         anEllipse2,

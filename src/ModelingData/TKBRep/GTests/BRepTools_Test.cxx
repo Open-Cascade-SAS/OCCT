@@ -24,7 +24,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BinTools.hxx>
@@ -422,7 +421,7 @@ int NbTriangles(const TopoDS_Shape& theShape)
   int aNbTriangles = 0;
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    TopLoc_Location aLocation;
+    TopLoc_Location                       aLocation;
     const occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
     if (!aTriangulation.IsNull())
@@ -445,7 +444,7 @@ int NbSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
 
 void ExpectEquivalentShape(const TopoDS_Shape& theExpected,
                            const TopoDS_Shape& theActual,
-                           const int            theExpectedTriangles)
+                           const int           theExpectedTriangles)
 {
   ASSERT_FALSE(theExpected.IsNull());
   ASSERT_FALSE(theActual.IsNull());
@@ -525,17 +524,14 @@ TopoDS_Face UniqueFace(const TopoDS_Shape& theShape, const int theIndex)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaces;
   TopExp::MapShapes(theShape, TopAbs_FACE, aFaces);
   return theIndex > 0 && theIndex <= aFaces.Extent() ? TopoDS::Face(aFaces(theIndex))
-                                                      : TopoDS_Face();
+                                                     : TopoDS_Face();
 }
 
-TopoDS_Face MakeCircleFace(const gp_Pnt& theCenter,
-                           const gp_Dir& theNormal,
-                           const double  theRadius)
+TopoDS_Face MakeCircleFace(const gp_Pnt& theCenter, const gp_Dir& theNormal, const double theRadius)
 {
-  const occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(theCenter, theNormal), theRadius);
-  const TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge(aCircle).Edge();
-  const TopoDS_Wire anWire = BRepBuilderAPI_MakeWire(aEdge).Wire();
+  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(theCenter, theNormal), theRadius);
+  const TopoDS_Edge              aEdge   = BRepBuilderAPI_MakeEdge(aCircle).Edge();
+  const TopoDS_Wire              anWire  = BRepBuilderAPI_MakeWire(aEdge).Wire();
   return BRepBuilderAPI_MakeFace(anWire).Face();
 }
 
@@ -649,9 +645,9 @@ TEST(BRepTools_Test, ParallelRead_RepeatedRuns)
 // bugs/moddata_3/bug29723: all supported BRep format versions preserve NURBS geometry.
 TEST(BRepTools_Test, ModDataBug_29723_FormatVersions)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  const TopoDS_Shape          aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
   BRepBuilderAPI_NurbsConvert aConverter(aBox);
-  const TopoDS_Shape aNurbsBox = aConverter.Shape();
+  const TopoDS_Shape          aNurbsBox = aConverter.Shape();
   ASSERT_FALSE(aNurbsBox.IsNull());
 
   const TopoDS_Shape anAsciiVersion1 =
@@ -675,7 +671,7 @@ TEST(BRepTools_Test, ModDataBug_29723_FormatVersions)
 // bugs/moddata_3/bug31946: BRep ASCII/binary writers honor triangle options.
 TEST(BRepTools_Test, ModDataBug_31946_TriangleOptions)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aBox, 0.1);
   ASSERT_EQ(NbTriangles(aBox), 12);
 
@@ -715,11 +711,7 @@ TEST(BRepTools_Test, DemoBinPersist_1_BinaryStreamRoundTrip)
   ASSERT_FALSE(aSource.IsNull());
 
   std::stringstream aStream;
-  BinTools::Write(aSource,
-                  aStream,
-                  true,
-                  false,
-                  BinTools_FormatVersion_CURRENT);
+  BinTools::Write(aSource, aStream, true, false, BinTools_FormatVersion_CURRENT);
   ASSERT_TRUE(aStream.good());
   ASSERT_FALSE(aStream.str().empty());
 
@@ -930,18 +922,18 @@ TEST(BRepTools_Test, ModalgBug_29939_MissingCurve2dProperties)
 namespace
 {
 static void ExpectSamePrincipalProperties(const GProp_GProps& theExact,
-                                           const GProp_GProps& theTriangulated)
+                                          const GProp_GProps& theTriangulated)
 {
   EXPECT_NEAR(theExact.Mass(), theTriangulated.Mass(), 1.0e-7);
 
-  GProp_PrincipalProps anExactPrincipal = theExact.PrincipalProperties();
+  GProp_PrincipalProps anExactPrincipal       = theExact.PrincipalProperties();
   GProp_PrincipalProps aTriangulatedPrincipal = theTriangulated.PrincipalProperties();
-  double anExactIx = 0.0;
-  double anExactIy = 0.0;
-  double anExactIz = 0.0;
-  double aTriangulatedIx = 0.0;
-  double aTriangulatedIy = 0.0;
-  double aTriangulatedIz = 0.0;
+  double               anExactIx              = 0.0;
+  double               anExactIy              = 0.0;
+  double               anExactIz              = 0.0;
+  double               aTriangulatedIx        = 0.0;
+  double               aTriangulatedIy        = 0.0;
+  double               aTriangulatedIz        = 0.0;
   anExactPrincipal.Moments(anExactIx, anExactIy, anExactIz);
   aTriangulatedPrincipal.Moments(aTriangulatedIx, aTriangulatedIy, aTriangulatedIz);
   EXPECT_NEAR(anExactIx, aTriangulatedIx, 1.0e-7);
@@ -950,7 +942,7 @@ static void ExpectSamePrincipalProperties(const GProp_GProps& theExact,
 }
 
 static void CompareExactAndTriangulatedProperties(const TopoDS_Shape& theShape,
-                                                  const int             thePropertyType)
+                                                  const int           thePropertyType)
 {
   GProp_GProps anExactProperties;
   GProp_GProps aTriangulatedProperties;
@@ -971,13 +963,13 @@ static void CompareExactAndTriangulatedProperties(const TopoDS_Shape& theShape,
   }
   ExpectSamePrincipalProperties(anExactProperties, aTriangulatedProperties);
 }
-}
+} // namespace
 
 // bugs/modalg_7/bug29734: global properties computed from planar face
 // triangulations must agree with the exact-geometry calculations.
 TEST(BRepTools_Test, ModalgBug_29734_ExactAndTriangulatedProperties)
 {
-  const TopoDS_Shape aFirstBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+  const TopoDS_Shape aFirstBox  = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
   const TopoDS_Shape aSecondBox = BRepPrimAPI_MakeBox(3.0, 2.0, 1.0).Shape();
 
   gp_Trsf aTranslation;
@@ -1003,17 +995,16 @@ TEST(BRepTools_Test, ModalgBug_29734_ExactAndTriangulatedProperties)
 // default tolerances consistently on every supported platform.
 TEST(BRepTools_Test, DemoBug_23130_BoxMaxTolerance)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 100.0, 100.0).Shape();
-  const TopAbs_ShapeEnum aTypes[] = {TopAbs_FACE, TopAbs_EDGE, TopAbs_VERTEX};
+  const TopoDS_Shape     aBox               = BRepPrimAPI_MakeBox(100.0, 100.0, 100.0).Shape();
+  const TopAbs_ShapeEnum aTypes[]           = {TopAbs_FACE, TopAbs_EDGE, TopAbs_VERTEX};
   const int              anExpectedCounts[] = {6, 12, 8};
 
   for (int aTypeIndex = 0; aTypeIndex < 3; ++aTypeIndex)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap;
-    double aMinTolerance = 1.0e100;
-    double aMaxTolerance = -1.0;
-    for (TopExp_Explorer anExplorer(aBox, aTypes[aTypeIndex]); anExplorer.More();
-         anExplorer.Next())
+    double                                                 aMinTolerance = 1.0e100;
+    double                                                 aMaxTolerance = -1.0;
+    for (TopExp_Explorer anExplorer(aBox, aTypes[aTypeIndex]); anExplorer.More(); anExplorer.Next())
     {
       double aTolerance = 0.0;
       switch (aTypes[aTypeIndex])
@@ -1064,7 +1055,7 @@ TEST(BRepTools_Test, ModDataBug_27356_CleanRemovesFreeEdgePolygon3d)
 // face must remain its full parametric limits after the successive cuts.
 TEST(BRepTools_Test, ModalgBug_24404_BoxFaceUVBounds)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1500.0, 1500.0, 1500.0).Shape();
+  const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(1500.0, 1500.0, 1500.0).Shape();
   TopoDS_Face        aFace = UniqueFace(aBox, 4);
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
@@ -1072,33 +1063,25 @@ TEST(BRepTools_Test, ModalgBug_24404_BoxFaceUVBounds)
   const gp_Dir aNormal(0.0, 1.0, 0.0);
   aFace = CutAndSelectFirstFace(
     aFace,
-    MakeCircleFace(gp_Pnt(1361.60462531413, 1500.0, 275.105307765905),
-                   aNormal,
-                   182.781239888725));
+    MakeCircleFace(gp_Pnt(1361.60462531413, 1500.0, 275.105307765905), aNormal, 182.781239888725));
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
 
   aFace = CutAndSelectFirstFace(
     aFace,
-    MakeCircleFace(gp_Pnt(398.623694869499, 1500.0, 5.77182937332096),
-                   aNormal,
-                   181.948898616306));
+    MakeCircleFace(gp_Pnt(398.623694869499, 1500.0, 5.77182937332096), aNormal, 181.948898616306));
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
 
   aFace = CutAndSelectFirstFace(
     aFace,
-    MakeCircleFace(gp_Pnt(66.2457890511211, 1500.0, 832.500519113239),
-                   aNormal,
-                   176.393473166564));
+    MakeCircleFace(gp_Pnt(66.2457890511211, 1500.0, 832.500519113239), aNormal, 176.393473166564));
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
 
   aFace = CutAndSelectFirstFace(
     aFace,
-    MakeCircleFace(gp_Pnt(1177.73545803307, 1500.0, 1406.03245550006),
-                   aNormal,
-                   150.768085993996));
+    MakeCircleFace(gp_Pnt(1177.73545803307, 1500.0, 1406.03245550006), aNormal, 150.768085993996));
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
 }

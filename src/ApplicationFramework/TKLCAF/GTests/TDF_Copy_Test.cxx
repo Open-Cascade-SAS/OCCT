@@ -36,9 +36,9 @@ static TDF_Label RootChild(const occ::handle<TDocStd_Document>& theDocument, con
   return theDocument->Main().Root().FindChild(theTag, true);
 }
 
-static void ExpectCopiedLabel(const TDF_Label& theLabel,
+static void ExpectCopiedLabel(const TDF_Label&                  theLabel,
                               const TCollection_ExtendedString& theExpectedName,
-                              const double                        theExpectedReal)
+                              const double                      theExpectedReal)
 {
   occ::handle<TDataStd_Name> aName;
   if (!theLabel.FindAttribute(TDataStd_Name::GetID(), aName))
@@ -65,7 +65,7 @@ TEST(TDF_Copy_Test, Buc_CafBug_60813_CopyLabelTwice)
   aDocument->SetUndoLimit(100);
   aDocument->NewCommand();
 
-  const TDF_Label aSource = aDocument->Main();
+  const TDF_Label aSource  = aDocument->Main();
   const TDF_Label aTarget1 = RootChild(aDocument, 2);
   const TDF_Label aTarget2 = RootChild(aDocument, 3);
   TDataStd_Name::Set(aSource, TCollection_ExtendedString("SourceLabel"));

@@ -442,17 +442,17 @@ TEST_F(IntTools_FaceFaceTest, OCC32850_TrimmedCylindersKeepFourCurves)
     new Geom_CylindricalSurface(anAxes2, 408.974517822893);
 
   BRepBuilderAPI_MakeFace aFaceBuilder1(aCylinder1,
-                                         0.0,
-                                         0.0225015452057227,
-                                         -146.010003766057,
-                                         2146.01000376606,
-                                         1.e-7);
+                                        0.0,
+                                        0.0225015452057227,
+                                        -146.010003766057,
+                                        2146.01000376606,
+                                        1.e-7);
   BRepBuilderAPI_MakeFace aFaceBuilder2(aCylinder2,
-                                         0.0,
-                                         0.0225015452057227,
-                                         -146.010003766057,
-                                         946.010003766057,
-                                         1.e-7);
+                                        0.0,
+                                        0.0225015452057227,
+                                        -146.010003766057,
+                                        946.010003766057,
+                                        1.e-7);
   ASSERT_TRUE(aFaceBuilder1.IsDone());
   ASSERT_TRUE(aFaceBuilder2.IsDone());
 
@@ -480,8 +480,9 @@ TEST_F(IntTools_FaceFaceTest, OCC32850_TrimmedCylindersKeepFourCurves)
 //! paired with a plane face.
 TEST_F(IntTools_FaceFaceTest, OCC24313_ExtrusionAndPlaneIntersection)
 {
-  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)), 100.0);
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+                    100.0);
   const occ::handle<Geom_SurfaceOfLinearExtrusion> anExtrusion =
     new Geom_SurfaceOfLinearExtrusion(aCircle, gp_Dir(0.0, 0.0, 1.0));
   const occ::handle<Geom_Plane> aPlane =
@@ -510,8 +511,8 @@ TEST_F(IntTools_FaceFaceTest, OCC23644_CoaxialConesNoRegularCurve)
 {
   BRepPrimAPI_MakeCone aConeMaker1(10.0, 0.0, 20.0);
   BRepPrimAPI_MakeCone aConeMaker2(20.0, 0.0, 20.0);
-  const TopoDS_Shape& aSolid1 = aConeMaker1.Shape();
-  const TopoDS_Shape& aSolid2 = aConeMaker2.Shape();
+  const TopoDS_Shape&  aSolid1 = aConeMaker1.Shape();
+  const TopoDS_Shape&  aSolid2 = aConeMaker2.Shape();
   ASSERT_FALSE(aSolid1.IsNull());
   ASSERT_FALSE(aSolid2.IsNull());
 

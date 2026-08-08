@@ -38,9 +38,8 @@ class ShapeTriangulation : public BVH_Triangulation<double, 3>
 public:
   bool Build(const TopoDS_Face& theFace)
   {
-    TopLoc_Location aLocation;
-    const Handle(Poly_Triangulation)& aTriangulation =
-      BRep_Tool::Triangulation(theFace, aLocation);
+    TopLoc_Location                   aLocation;
+    const Handle(Poly_Triangulation)& aTriangulation = BRep_Tool::Triangulation(theFace, aLocation);
     if (aTriangulation.IsNull())
     {
       return false;
@@ -78,8 +77,7 @@ public:
     TopExp::MapShapes(theShape, TopAbs_FACE, aFaces);
     for (int aFaceIndex = 1; aFaceIndex <= aFaces.Extent(); ++aFaceIndex)
     {
-      const opencascade::handle<ShapeTriangulation> aTriangulation =
-        new ShapeTriangulation();
+      const opencascade::handle<ShapeTriangulation> aTriangulation = new ShapeTriangulation();
       if (!aTriangulation->Build(TopoDS::Face(aFaces(aFaceIndex))))
       {
         return false;
@@ -99,7 +97,7 @@ public:
 // output contract explicit without relying on printed voxel data.
 TEST(BVH_DistanceFieldTest, Bug30655_BoxDistanceField)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
   BRepMesh_IncrementalMesh aMesh(aBox, 0.1);
   (void)aMesh;
 

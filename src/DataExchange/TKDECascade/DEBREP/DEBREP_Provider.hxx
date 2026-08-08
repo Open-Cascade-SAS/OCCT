@@ -145,7 +145,7 @@ public:
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
     WriteStreamList&             theStreams,
-    const TopoDS_Shape&           theShape,
+    const TopoDS_Shape&          theShape,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Reads a CAD stream into a document, according internal configuration
@@ -181,16 +181,16 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT bool Read(
-    ReadStreamList&                      theStreams,
-    TopoDS_Shape&                        theShape,
-    occ::handle<XSControl_WorkSession>&  theWS,
-    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+    ReadStreamList&                     theStreams,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT bool Write(
-    WriteStreamList&                     theStreams,
-    const TopoDS_Shape&                  theShape,
-    occ::handle<XSControl_WorkSession>&  theWS,
-    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+    WriteStreamList&                    theStreams,
+    const TopoDS_Shape&                 theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
 
 public:
   //! Gets CAD format name of associated provider

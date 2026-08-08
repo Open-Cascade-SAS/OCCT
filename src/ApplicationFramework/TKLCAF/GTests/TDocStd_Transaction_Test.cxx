@@ -98,7 +98,7 @@ static double RealValue(const TDF_Label& theLabel)
 }
 
 static void ExpectLastDeltaIs(const occ::handle<TDocStd_Document>& theDocument,
-                              const char*                           theAttributeName)
+                              const char*                          theAttributeName)
 {
   ASSERT_FALSE(theDocument->GetUndos().IsEmpty());
   const occ::handle<TDF_Delta>& aDelta = theDocument->GetUndos().Last();
@@ -112,8 +112,7 @@ static void ExpectLastDeltaIsReal(const occ::handle<TDocStd_Document>& theDocume
   ExpectLastDeltaIs(theDocument, "TDataStd_Real");
 }
 
-static bool DeltaHasAttribute(const occ::handle<TDF_Delta>& theDelta,
-                              const char*                   theAttributeName)
+static bool DeltaHasAttribute(const occ::handle<TDF_Delta>& theDelta, const char* theAttributeName)
 {
   for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIterator(
          theDelta->AttributeDeltas());
@@ -130,8 +129,8 @@ static bool DeltaHasAttribute(const occ::handle<TDF_Delta>& theDelta,
 }
 
 static void ExpectLastDeltaHas(const occ::handle<TDocStd_Document>& theDocument,
-                               const char*                           theFirstAttributeName,
-                               const char*                           theSecondAttributeName)
+                               const char*                          theFirstAttributeName,
+                               const char*                          theSecondAttributeName)
 {
   ASSERT_FALSE(theDocument->GetUndos().IsEmpty());
   const occ::handle<TDF_Delta>& aDelta = theDocument->GetUndos().Last();
@@ -158,7 +157,7 @@ TEST(TDocStd_Transaction_Test, Buc_CafBug_60790_TreeNodeDeltaNames)
   const TCollection_ExtendedString aNames[3] = {TCollection_ExtendedString("n1"),
                                                 TCollection_ExtendedString("n2"),
                                                 TCollection_ExtendedString("n3")};
-  int                             anIndex = 0;
+  int                              anIndex   = 0;
   for (NCollection_List<occ::handle<TDF_Delta>>::Iterator anIterator(aDocument->GetUndos());
        anIterator.More();
        anIterator.Next(), ++anIndex)
@@ -199,9 +198,8 @@ TEST(TDocStd_Transaction_Test, Buc_CafBug_60831_ModifiedAttributeUndo)
 // second value while preserving the value set before the managed transaction.
 TEST(TDocStd_Transaction_Test, CafBug_1722_MultiTransactionManagerUndoRedo)
 {
-  occ::handle<TDocStd_Document>            aDocument = NewTransactionDocument();
-  occ::handle<TDocStd_MultiTransactionManager> aManager =
-    new TDocStd_MultiTransactionManager();
+  occ::handle<TDocStd_Document>                aDocument = NewTransactionDocument();
+  occ::handle<TDocStd_MultiTransactionManager> aManager  = new TDocStd_MultiTransactionManager();
   aDocument->SetUndoLimit(4);
   aManager->SetUndoLimit(4);
   aManager->AddDocument(aDocument);
@@ -288,7 +286,7 @@ TEST(TDocStd_Transaction_Test, CafBug_29142_ForgetAndReplaceIntegerUndoRedo)
 TEST(TDocStd_Transaction_Test, CafBug_31920_AccessLabelByEntry)
 {
   occ::handle<TDocStd_Document> aDocument = NewTransactionDocument();
-  const TDF_Label               aLabel = aDocument->Main().Root().FindChild(2, true);
+  const TDF_Label               aLabel    = aDocument->Main().Root().FindChild(2, true);
   TDataStd_Integer::Set(aLabel, 5);
 
   occ::handle<TDataStd_Integer> aValue;
@@ -472,7 +470,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_4_UnchangedCommentKeepsRealDelta)
 {
   occ::handle<TDocStd_Document> aDocument = NewTransactionDocument();
   aDocument->SetUndoLimit(100);
-  const TDF_Label aLabel = RootChild(aDocument, 2);
+  const TDF_Label                  aLabel = RootChild(aDocument, 2);
   const TCollection_ExtendedString aComment("New Comment");
 
   aDocument->NewCommand();
@@ -496,8 +494,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_10_UnchangedIntegerArrayKeepsRealDelt
   const TDF_Label aLabel = RootChild(aDocument, 2);
 
   aDocument->NewCommand();
-  occ::handle<TDataStd_IntegerArray> anArray =
-    TDataStd_IntegerArray::Set(aLabel, 1, 2, false);
+  occ::handle<TDataStd_IntegerArray> anArray = TDataStd_IntegerArray::Set(aLabel, 1, 2, false);
   anArray->SetValue(1, 3);
   anArray->SetValue(2, 4);
   TDataStd_Real::Set(aLabel, 300.0);
@@ -538,7 +535,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_7_UnchangedExpressionKeepsRealDelta)
 {
   occ::handle<TDocStd_Document> aDocument = NewTransactionDocument();
   aDocument->SetUndoLimit(100);
-  const TDF_Label aLabel = RootChild(aDocument, 2);
+  const TDF_Label                  aLabel = RootChild(aDocument, 2);
   const TCollection_ExtendedString anExpression("New Expression");
 
   aDocument->NewCommand();
@@ -579,7 +576,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_17_UnchangedRelationKeepsRealDelta)
 {
   occ::handle<TDocStd_Document> aDocument = NewTransactionDocument();
   aDocument->SetUndoLimit(100);
-  const TDF_Label aLabel = RootChild(aDocument, 2);
+  const TDF_Label                  aLabel = RootChild(aDocument, 2);
   const TCollection_ExtendedString aRelation("New Relation");
 
   aDocument->NewCommand();
@@ -665,12 +662,11 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_22_UnchangedFunctionKeepsRealDelta)
 {
   occ::handle<TDocStd_Document> aDocument = NewTransactionDocument();
   aDocument->SetUndoLimit(100);
-  const TDF_Label aLabel = RootChild(aDocument, 2);
+  const TDF_Label     aLabel = RootChild(aDocument, 2);
   const Standard_GUID aDriverGuid("5b35ca00-5b78-11d1-8940-080009dc3333");
 
   aDocument->NewCommand();
-  occ::handle<TFunction_Function> aFunction =
-    TFunction_Function::Set(aLabel, aDriverGuid);
+  occ::handle<TFunction_Function> aFunction = TFunction_Function::Set(aLabel, aDriverGuid);
   aFunction->SetFailure(13);
   TDataStd_Real::Set(aLabel, 300.0);
   aDocument->NewCommand();
@@ -709,11 +705,10 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_24_UnchangedPositionKeepsRealDelta)
 TEST(TDocStd_Transaction_Test, CafBug_2932_8_UnchangedGeometryKeepsBothDeltas)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
-  const TDF_Label   aLabel = RootChild(aDocument, 2);
+  const TDF_Label    aLabel = RootChild(aDocument, 2);
   const TopoDS_Shape aBox =
     BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), 100.0, 200.0, 300.0).Shape();
 
@@ -736,8 +731,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_8_UnchangedGeometryKeepsBothDeltas)
 TEST(TDocStd_Transaction_Test, CafBug_2932_13_UnchangedPlaneKeepsRealDelta)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
   const TDF_Label aLabel = RootChild(aDocument, 2);
@@ -760,8 +754,7 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_13_UnchangedPlaneKeepsRealDelta)
 TEST(TDocStd_Transaction_Test, CafBug_2932_14_UnchangedPointKeepsRealDelta)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
   const TDF_Label aLabel = RootChild(aDocument, 2);
@@ -784,11 +777,10 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_14_UnchangedPointKeepsRealDelta)
 TEST(TDocStd_Transaction_Test, CafBug_2932_18_UnchangedShapeKeepsBothDeltas)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
-  const TDF_Label   aLabel = RootChild(aDocument, 2);
+  const TDF_Label    aLabel = RootChild(aDocument, 2);
   const TopoDS_Shape aBox =
     BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), 100.0, 200.0, 300.0).Shape();
 
@@ -809,13 +801,12 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_18_UnchangedShapeKeepsBothDeltas)
 TEST(TDocStd_Transaction_Test, CafBug_2932_5_UnchangedConstraintKeepsRealDelta)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
-  const TDF_Label   aLabel      = RootChild(aDocument, 2);
-  const TDF_Label   aShapeLabel = RootChild(aDocument, 3);
-  const TDF_Label   anIntLabel  = RootChild(aDocument, 4);
+  const TDF_Label    aLabel      = RootChild(aDocument, 2);
+  const TDF_Label    aShapeLabel = RootChild(aDocument, 3);
+  const TDF_Label    anIntLabel  = RootChild(aDocument, 4);
   const TopoDS_Shape aBox =
     BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), 100.0, 200.0, 300.0).Shape();
 
@@ -849,14 +840,13 @@ TEST(TDocStd_Transaction_Test, CafBug_2932_5_UnchangedConstraintKeepsRealDelta)
 TEST(TDocStd_Transaction_Test, CafBug_2932_12_UnchangedPatternKeepsRealDelta)
 {
   occ::handle<TDocStd_Application> anApplication;
-  occ::handle<TDocStd_Document>    aDocument =
-    NewApplicationTransactionDocument(anApplication);
+  occ::handle<TDocStd_Document>    aDocument = NewApplicationTransactionDocument(anApplication);
   ASSERT_FALSE(aDocument.IsNull());
   aDocument->SetUndoLimit(100);
-  const TDF_Label   aLabel       = RootChild(aDocument, 2);
-  const TDF_Label   aShapeLabel  = RootChild(aDocument, 3);
-  const TDF_Label   aRealLabel   = RootChild(aDocument, 4);
-  const TDF_Label   anIntLabel   = RootChild(aDocument, 5);
+  const TDF_Label    aLabel      = RootChild(aDocument, 2);
+  const TDF_Label    aShapeLabel = RootChild(aDocument, 3);
+  const TDF_Label    aRealLabel  = RootChild(aDocument, 4);
+  const TDF_Label    anIntLabel  = RootChild(aDocument, 5);
   const TopoDS_Shape aBox =
     BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), 100.0, 200.0, 300.0).Shape();
 

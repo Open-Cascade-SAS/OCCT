@@ -165,14 +165,13 @@ TEST(TDataStd_TreeNode_Test, CafBug_24645_UndoDetachedChildren)
   occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinOcaf");
   aDocument->SetUndoLimit(1000);
 
-  const TDF_Label                                aRootLabel = aDocument->Main().FindChild(1, true);
-  occ::handle<TDataStd_TreeNode>                 aRoot = TDataStd_TreeNode::Set(aRootLabel);
+  const TDF_Label                aRootLabel = aDocument->Main().FindChild(1, true);
+  occ::handle<TDataStd_TreeNode> aRoot      = TDataStd_TreeNode::Set(aRootLabel);
   NCollection_Array1<occ::handle<TDataStd_TreeNode>> aChildren(1, 5);
   aDocument->NewCommand();
   for (int anIndex = 1; anIndex <= aChildren.Upper(); ++anIndex)
   {
-    aChildren.SetValue(anIndex,
-                       TDataStd_TreeNode::Set(aRootLabel.FindChild(anIndex, true)));
+    aChildren.SetValue(anIndex, TDataStd_TreeNode::Set(aRootLabel.FindChild(anIndex, true)));
     ASSERT_TRUE(aRoot->Append(aChildren(anIndex)));
     aDocument->NewCommand();
   }

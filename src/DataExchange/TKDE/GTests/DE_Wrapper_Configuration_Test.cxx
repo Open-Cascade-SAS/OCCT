@@ -49,7 +49,7 @@ static occ::handle<DE_Wrapper> NewWrapper()
 static bool SameConfiguration(const TCollection_AsciiString& theFirst,
                               const TCollection_AsciiString& theSecond)
 {
-  occ::handle<DE_ConfigurationContext> aFirstContext = new DE_ConfigurationContext();
+  occ::handle<DE_ConfigurationContext> aFirstContext  = new DE_ConfigurationContext();
   occ::handle<DE_ConfigurationContext> aSecondContext = new DE_ConfigurationContext();
   if (!aFirstContext->Load(theFirst) || !aSecondContext->Load(theSecond))
   {
@@ -589,7 +589,7 @@ static void ExpectConfiguration(const TCollection_AsciiString& theActual,
 // de_wrapper/configuration/A1: provider values can be changed to one and saved stably.
 TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A1_ChangeToOne)
 {
-  occ::handle<DE_Wrapper> aWrapper = NewWrapper();
+  occ::handle<DE_Wrapper>       aWrapper           = NewWrapper();
   const TCollection_AsciiString anOldConfiguration = aWrapper->Save();
   const TCollection_AsciiString aChangedConfiguration =
     ChangeProviderValues(anOldConfiguration, "1");
@@ -600,7 +600,7 @@ TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A1_ChangeToOne)
 // de_wrapper/configuration/A2: provider values can be changed to zero and saved stably.
 TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A2_ChangeToZero)
 {
-  occ::handle<DE_Wrapper> aWrapper = NewWrapper();
+  occ::handle<DE_Wrapper>       aWrapper           = NewWrapper();
   const TCollection_AsciiString anOldConfiguration = aWrapper->Save();
   const TCollection_AsciiString aChangedConfiguration =
     ChangeProviderValues(anOldConfiguration, "0");
@@ -618,17 +618,18 @@ TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A3_InitialConfigurati
 // de_wrapper/configuration/A4: filtering the saved configuration to STEP and IGES is stable.
 TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A4_TwoFormats)
 {
-  occ::handle<DE_Wrapper> aWrapper = NewWrapper();
+  occ::handle<DE_Wrapper>                   aWrapper = NewWrapper();
   NCollection_List<TCollection_AsciiString> aFormats;
   aFormats.Append("STEP");
   aFormats.Append("IGES");
-  ExpectConfiguration(aWrapper->Save(true, aFormats), TCollection_AsciiString(TwoFormatsConfiguration()));
+  ExpectConfiguration(aWrapper->Save(true, aFormats),
+                      TCollection_AsciiString(TwoFormatsConfiguration()));
 }
 
 // de_wrapper/configuration/A5: loading an empty configuration preserves defaults.
 TEST(DE_Wrapper_Configuration_Test, DeWrapperConfiguration_A5_EmptyLoad)
 {
-  occ::handle<DE_Wrapper> aWrapper = NewWrapper();
+  occ::handle<DE_Wrapper>       aWrapper           = NewWrapper();
   const TCollection_AsciiString anOldConfiguration = aWrapper->Save();
   ASSERT_TRUE(aWrapper->Load(""));
   ExpectConfiguration(aWrapper->Save(), anOldConfiguration);

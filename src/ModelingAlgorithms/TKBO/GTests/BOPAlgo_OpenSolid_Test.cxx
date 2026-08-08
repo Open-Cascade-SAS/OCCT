@@ -367,9 +367,17 @@ TEST(BOPAlgo_OpenSolidTest, A4_MultiObjectOpenSolidOperations)
   CheckBuildBOP(anAll, aSingleObject, anAllTools, BOPAlgo_FUSE, aFuse, "single object/tools fuse");
   CheckBuildBOP(anAll, aSingleObject, aTools, BOPAlgo_CUT, aSingleCut, "single object/tools cut");
   CheckBuildBOP(anAll, aSecondObject, aTools, BOPAlgo_CUT, aSingleCut, "second object/tools cut");
-  CheckBuildBOP(anAll, aSingleObject, aTools, BOPAlgo_COMMON, aSingleCommon,
+  CheckBuildBOP(anAll,
+                aSingleObject,
+                aTools,
+                BOPAlgo_COMMON,
+                aSingleCommon,
                 "first object/tools common");
-  CheckBuildBOP(anAll, aSecondObject, aTools, BOPAlgo_COMMON, aSingleCommon,
+  CheckBuildBOP(anAll,
+                aSecondObject,
+                aTools,
+                BOPAlgo_COMMON,
+                aSingleCommon,
                 "second object/tools common");
 }
 

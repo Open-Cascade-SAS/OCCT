@@ -55,10 +55,10 @@ static GdtContext NewContext()
   GdtContext aContext;
   aContext.Application = new TDocStd_Application();
   aContext.Application->NewDocument("BinXCAF", aContext.Document);
-  aContext.ShapeTool = XCAFDoc_DocumentTool::ShapeTool(aContext.Document->Main());
+  aContext.ShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aContext.Document->Main());
   aContext.DimTolTool = XCAFDoc_DocumentTool::DimTolTool(aContext.Document->Main());
-  aContext.Shape1 = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
-  aContext.Shape2 = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape());
+  aContext.Shape1     = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  aContext.Shape2     = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape());
   return aContext;
 }
 
@@ -77,8 +77,7 @@ static TDF_Label AddDimension(GdtContext& theContext, const bool theHasSecondSha
   return aDimension;
 }
 
-static occ::handle<XCAFDimTolObjects_DimensionObject> DimensionObject(
-  const TDF_Label& theLabel)
+static occ::handle<XCAFDimTolObjects_DimensionObject> DimensionObject(const TDF_Label& theLabel)
 {
   occ::handle<XCAFDoc_Dimension> anAttribute;
   EXPECT_TRUE(theLabel.FindAttribute(XCAFDoc_Dimension::GetID(), anAttribute));
@@ -101,13 +100,13 @@ static occ::handle<XCAFDimTolObjects_GeomToleranceObject> GeomToleranceObject(
   return anAttribute->GetObject();
 }
 
-static TDF_Label AddDatum(GdtContext& theContext,
+static TDF_Label AddDatum(GdtContext&      theContext,
                           const TDF_Label& theTolerance,
                           const char*      theName,
                           const int        thePosition,
                           const bool       theAddDistanceModifier)
 {
-  const TDF_Label aDatum = theContext.DimTolTool->AddDatum();
+  const TDF_Label                 aDatum = theContext.DimTolTool->AddDatum();
   NCollection_Sequence<TDF_Label> aShapeLabels;
   aShapeLabels.Append(theContext.Shape1);
   theContext.DimTolTool->SetDatum(aShapeLabels, aDatum);
@@ -133,8 +132,8 @@ static occ::handle<XCAFDimTolObjects_DatumObject> DatumObject(const TDF_Label& t
   return anAttribute->GetObject();
 }
 
-static NCollection_Sequence<TDF_Label> DatumReferences(const TDF_Label& theTolerance,
-                                                        const GdtContext& theContext)
+static NCollection_Sequence<TDF_Label> DatumReferences(const TDF_Label&  theTolerance,
+                                                       const GdtContext& theContext)
 {
   NCollection_Sequence<TDF_Label> aDatums;
   EXPECT_TRUE(theContext.DimTolTool->GetDatumOfTolerLabels(theTolerance, aDatums));
@@ -145,9 +144,9 @@ static NCollection_Sequence<TDF_Label> DatumReferences(const TDF_Label& theToler
 // gdt/dimensions/A1: a curve-length dimension stores its type and value.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A1_CurveLength)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, false);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, false);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Size_CurveLength);
   anObject->SetValue(1.5);
   XCAFDoc_Dimension::Set(aDimension)->SetObject(anObject);
@@ -160,9 +159,9 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A1_CurveLength)
 // gdt/dimensions/A2: a diameter dimension stores its maximum qualifier.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A2_DiameterQualifier)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, false);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, false);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Size_Diameter);
   anObject->SetValue(2.5);
   anObject->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Max);
@@ -178,9 +177,9 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A2_DiameterQualifier)
 // gdt/dimensions/A3: a dimension may store a lower and upper range.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A3_Range)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, false);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, false);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Size_CurveLength);
   anObject->SetLowerBound(1.5);
   anObject->SetUpperBound(2.5);
@@ -196,29 +195,29 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A3_Range)
 // gdt/dimensions/A4: class-of-tolerance, decimal places, and modifiers are persisted.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A4_ClassAndModifiers)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, false);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, false);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Size_Diameter);
   anObject->SetValue(2.5);
   anObject->SetClassOfTolerance(true,
-                               XCAFDimTolObjects_DimensionFormVariance_F,
-                               XCAFDimTolObjects_DimensionGrade_IT6);
+                                XCAFDimTolObjects_DimensionFormVariance_F,
+                                XCAFDimTolObjects_DimensionGrade_IT6);
   anObject->SetNbOfDecimalPlaces(3, 3);
   anObject->AddModifier(XCAFDimTolObjects_DimensionModif_AverageSize);
   anObject->AddModifier(XCAFDimTolObjects_DimensionModif_ControlledRadius);
   XCAFDoc_Dimension::Set(aDimension)->SetObject(anObject);
 
-  anObject = DimensionObject(aDimension);
-  bool                                    aHole = false;
-  XCAFDimTolObjects_DimensionFormVariance aForm = XCAFDimTolObjects_DimensionFormVariance_None;
+  anObject                                       = DimensionObject(aDimension);
+  bool                                    aHole  = false;
+  XCAFDimTolObjects_DimensionFormVariance aForm  = XCAFDimTolObjects_DimensionFormVariance_None;
   XCAFDimTolObjects_DimensionGrade        aGrade = XCAFDimTolObjects_DimensionGrade_IT01;
   EXPECT_TRUE(anObject->GetClassOfTolerance(aHole, aForm, aGrade));
   EXPECT_TRUE(aHole);
   EXPECT_EQ(aForm, XCAFDimTolObjects_DimensionFormVariance_F);
   EXPECT_EQ(aGrade, XCAFDimTolObjects_DimensionGrade_IT6);
 
-  int aLeft = 0;
+  int aLeft  = 0;
   int aRight = 0;
   anObject->GetNbOfDecimalPlaces(aLeft, aRight);
   EXPECT_EQ(aLeft, 3);
@@ -234,9 +233,9 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A4_ClassAndModifiers)
 // gdt/dimensions/A5: a linear-location dimension stores two points and plus/minus tolerances.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A5_LinearDistance)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, true);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, true);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Location_LinearDistance);
   anObject->SetValue(6.0);
   ASSERT_TRUE(anObject->SetLowerTolValue(-0.001));
@@ -260,9 +259,9 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A5_LinearDistance)
 // gdt/dimensions/A6: an oriented dimension stores direction and plus/minus tolerances.
 TEST(XCAFDoc_GDT_Test, GdtDimensions_A6_Oriented)
 {
-  GdtContext aContext = NewContext();
-  const TDF_Label aDimension = AddDimension(aContext, true);
-  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = DimensionObject(aDimension);
+  GdtContext                                     aContext   = NewContext();
+  const TDF_Label                                aDimension = AddDimension(aContext, true);
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject   = DimensionObject(aDimension);
   anObject->SetType(XCAFDimTolObjects_DimensionType_Location_Oriented);
   anObject->SetValue(6.0);
   ASSERT_TRUE(anObject->SetLowerTolValue(-0.001));
@@ -286,12 +285,11 @@ TEST(XCAFDoc_GDT_Test, GdtDimensions_A6_Oriented)
 // gdt/tolerances/A1: a tolerance stores datum, type, material, zone, and modifiers.
 TEST(XCAFDoc_GDT_Test, GdtTolerances_A1_FullDefinition)
 {
-  GdtContext aContext = NewContext();
+  GdtContext      aContext   = NewContext();
   const TDF_Label aTolerance = AddGeomTolerance(aContext);
-  const TDF_Label aDatum = AddDatum(aContext, aTolerance, "A", 1, true);
+  const TDF_Label aDatum     = AddDatum(aContext, aTolerance, "A", 1, true);
 
-  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject =
-    GeomToleranceObject(aTolerance);
+  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = GeomToleranceObject(aTolerance);
   anObject->SetValue(0.5);
   anObject->SetType(XCAFDimTolObjects_GeomToleranceType_Angularity);
   anObject->SetTypeOfValue(XCAFDimTolObjects_GeomToleranceTypeValue_Diameter);
@@ -334,13 +332,12 @@ TEST(XCAFDoc_GDT_Test, GdtTolerances_A1_FullDefinition)
 // gdt/tolerances/A2: two datums can reference one geometric tolerance.
 TEST(XCAFDoc_GDT_Test, GdtTolerances_A2_TwoDatums)
 {
-  GdtContext aContext = NewContext();
+  GdtContext      aContext   = NewContext();
   const TDF_Label aTolerance = AddGeomTolerance(aContext);
-  const TDF_Label aDatumA = AddDatum(aContext, aTolerance, "A", 1, true);
-  const TDF_Label aDatumB = AddDatum(aContext, aTolerance, "B", 2, false);
+  const TDF_Label aDatumA    = AddDatum(aContext, aTolerance, "A", 1, true);
+  const TDF_Label aDatumB    = AddDatum(aContext, aTolerance, "B", 2, false);
 
-  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject =
-    GeomToleranceObject(aTolerance);
+  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = GeomToleranceObject(aTolerance);
   anObject->SetValue(0.5);
   XCAFDoc_GeomTolerance::Set(aTolerance)->SetObject(anObject);
 

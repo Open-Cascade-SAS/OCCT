@@ -31,25 +31,23 @@ namespace
 {
 static occ::handle<Geom_Circle> makeCircle(const gp_Pnt& theCenter,
                                            const gp_Dir& theNormal,
-                                           const double   theRadius)
+                                           const double  theRadius)
 {
   return new Geom_Circle(gp_Ax2(theCenter, theNormal), theRadius);
 }
 
 static occ::handle<Geom_SphericalSurface> makeSphere(const double theRadius)
 {
-  return new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                                   theRadius);
+  return new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), theRadius);
 }
 
 static void expectCircleSphereExtrema(const gp_Pnt& theCenter,
                                       const gp_Dir& theNormal,
-                                      const double   theCircleRadius,
-                                      const double   theExpectedDistance,
-                                      const bool     theIsParallel)
+                                      const double  theCircleRadius,
+                                      const double  theExpectedDistance,
+                                      const bool    theIsParallel)
 {
-  const occ::handle<Geom_Circle>          aCircle =
-    makeCircle(theCenter, theNormal, theCircleRadius);
+  const occ::handle<Geom_Circle> aCircle = makeCircle(theCenter, theNormal, theCircleRadius);
   const occ::handle<Geom_SphericalSurface> aSphere = makeSphere(10.0);
 
   double aCurveFirst = 0.0, aCurveLast = 0.0;
@@ -112,8 +110,8 @@ TEST(GeomAPI_ExtremaCurveSurfaceTest, CircSph_NoIntersection)
 // line and a sphere must retain the intersection point on the curve.
 TEST(GeomAPI_ExtremaCurveSurfaceTest, ModalgBug_25368_TrimmedLineSphere)
 {
-  const occ::handle<Geom_TrimmedCurve> aLine = new Geom_TrimmedCurve(
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.2), gp_Dir(1.0, 1.0, 0.0)), 0.0, 10.0);
+  const occ::handle<Geom_TrimmedCurve> aLine =
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0.0, 0.0, 0.2), gp_Dir(1.0, 1.0, 0.0)), 0.0, 10.0);
   const occ::handle<Geom_SphericalSurface> aSphere = makeSphere(5.0);
 
   double aUFirst = 0.0, aULast = 0.0, aVFirst = 0.0, aVLast = 0.0;
@@ -142,9 +140,8 @@ TEST(GeomAPI_ExtremaCurveSurfaceTest, ModalgBug_25368_TrimmedLineSphere)
 TEST(GeomAPI_ExtremaCurveSurfaceTest, ModalgBug_25368_RotatedSphereLine)
 {
   const occ::handle<Geom_SphericalSurface> aSphere = makeSphere(4.5);
-  gp_Trsf aRotation;
-  aRotation.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.5, 1.0), gp_Dir(1.0, 1.0, 0.5)),
-                        34.9 * M_PI / 180.0);
+  gp_Trsf                                  aRotation;
+  aRotation.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.5, 1.0), gp_Dir(1.0, 1.0, 0.5)), 34.9 * M_PI / 180.0);
   aSphere->Transform(aRotation);
 
   const occ::handle<Geom_Line> aLine =
@@ -163,7 +160,7 @@ TEST(GeomAPI_ExtremaCurveSurfaceTest, ModalgBug_25368_RotatedSphereLine)
   ASSERT_EQ(anExtrema.NbExtrema(), 4);
   const gp_Pnt anExpectedPoint1(-2.2838350838816694, -3.6737459810900646, -0.2660950057268425);
   const gp_Pnt anExpectedPoint2(0.29086178559218934, 4.1748550113475211, 2.2952614654595873);
-  gp_Pnt aCurvePoint, aSurfacePoint;
+  gp_Pnt       aCurvePoint, aSurfacePoint;
   anExtrema.Points(1, aCurvePoint, aSurfacePoint);
   EXPECT_TRUE(aCurvePoint.IsEqual(anExpectedPoint1, 0.01));
   EXPECT_TRUE(aSurfacePoint.IsEqual(anExpectedPoint1, 0.01));

@@ -60,19 +60,18 @@ static occ::handle<TDocStd_Document> NewDocument()
   return new TDocStd_Document("BinOcaf");
 }
 
-static occ::handle<TDataStd_UAttribute> AddObject(
-  const occ::handle<TDocStd_Document>& theDocument)
+static occ::handle<TDataStd_UAttribute> AddObject(const occ::handle<TDocStd_Document>& theDocument)
 {
-  occ::handle<TDataStd_TreeNode> aRootNode = TDataStd_TreeNode::Set(theDocument->Main());
-  const TDF_Label                   aLabel = TDF_TagSource::NewChild(theDocument->Main());
-  occ::handle<TDataStd_UAttribute>  anObject = TDataStd_UAttribute::Set(aLabel, GEOMOBJECT_GUID);
-  occ::handle<TDataStd_TreeNode>    aNode    = TDataStd_TreeNode::Set(aLabel);
+  occ::handle<TDataStd_TreeNode>   aRootNode = TDataStd_TreeNode::Set(theDocument->Main());
+  const TDF_Label                  aLabel    = TDF_TagSource::NewChild(theDocument->Main());
+  occ::handle<TDataStd_UAttribute> anObject  = TDataStd_UAttribute::Set(aLabel, GEOMOBJECT_GUID);
+  occ::handle<TDataStd_TreeNode>   aNode     = TDataStd_TreeNode::Set(aLabel);
   aRootNode->Append(aNode);
   return anObject;
 }
 
 static void SetObjectShape(const occ::handle<TDataStd_UAttribute>& theObject,
-                           const TopoDS_Shape&                       theShape)
+                           const TopoDS_Shape&                     theShape)
 {
   const TDF_Label aShapeLabel = TDF_TagSource::NewChild(theObject->Label());
   TNaming_Builder aBuilder(aShapeLabel);
@@ -84,11 +83,11 @@ static occ::handle<TFunction_Function> AddFunction(
   const occ::handle<TDataStd_UAttribute>& theObject,
   const Standard_GUID&                    theDriverGuid)
 {
-  const TDF_Label                   aFunctionLabel = TDF_TagSource::NewChild(theObject->Label());
-  occ::handle<TFunction_Function>   aFunction     =
+  const TDF_Label                 aFunctionLabel = TDF_TagSource::NewChild(theObject->Label());
+  occ::handle<TFunction_Function> aFunction =
     TFunction_Function::Set(aFunctionLabel, theDriverGuid);
-  occ::handle<TDataStd_TreeNode>    aFunctionNode = TDataStd_TreeNode::Set(aFunctionLabel);
-  occ::handle<TDataStd_TreeNode>    anObjectNode;
+  occ::handle<TDataStd_TreeNode> aFunctionNode = TDataStd_TreeNode::Set(aFunctionLabel);
+  occ::handle<TDataStd_TreeNode> anObjectNode;
   theObject->Label().FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), anObjectNode);
   anObjectNode->Append(aFunctionNode);
 
@@ -110,9 +109,9 @@ static occ::handle<TFunction_Function> AddFunction(
   return aFunction;
 }
 
-static int ExecuteFunction(const occ::handle<TDocStd_Document>& theDocument,
+static int ExecuteFunction(const occ::handle<TDocStd_Document>&   theDocument,
                            const occ::handle<TFunction_Function>& theFunction,
-                           const occ::handle<TFunction_Driver>& theDriver)
+                           const occ::handle<TFunction_Driver>&   theDriver)
 {
   (void)theDocument;
   occ::handle<TFunction_Logbook> aLogbook = TFunction_Logbook::Set(theFunction->Label());
@@ -129,7 +128,7 @@ static TopoDS_Shape FunctionShape(const occ::handle<TFunction_Function>& theFunc
 
 static occ::handle<TDataStd_UAttribute> MakePointObject(
   const occ::handle<TDocStd_Document>& theDocument,
-  const gp_Pnt&                       thePoint)
+  const gp_Pnt&                        thePoint)
 {
   occ::handle<TDataStd_UAttribute> anObject = AddObject(theDocument);
   SetObjectShape(anObject, BRepBuilderAPI_MakeVertex(thePoint).Vertex());
@@ -137,11 +136,11 @@ static occ::handle<TDataStd_UAttribute> MakePointObject(
 }
 
 static occ::handle<TFunction_Function> MakeBoxFunction(
-  const occ::handle<TDocStd_Document>& theDocument,
+  const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theObject,
-  const double theDx,
-  const double theDy,
-  const double theDz)
+  const double                            theDx,
+  const double                            theDy,
+  const double                            theDz)
 {
   occ::handle<TFunction_Function> aFunction = AddFunction(theObject, BOX_GUID);
   DNaming::GetReal(aFunction, BOX_DX)->Set(theDx);
@@ -152,10 +151,10 @@ static occ::handle<TFunction_Function> MakeBoxFunction(
 }
 
 static occ::handle<TFunction_Function> MakeSphereFunction(
-  const occ::handle<TDocStd_Document>& theDocument,
+  const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theObject,
   const occ::handle<TDataStd_UAttribute>& theCenter,
-  const double theRadius)
+  const double                            theRadius)
 {
   occ::handle<TFunction_Function> aFunction = AddFunction(theObject, SPH_GUID);
   DNaming::SetObjectArg(aFunction, SPHERE_CENTER, theCenter);
@@ -165,7 +164,7 @@ static occ::handle<TFunction_Function> MakeSphereFunction(
 }
 
 static occ::handle<TFunction_Function> AddFuseFunction(
-  const occ::handle<TDocStd_Document>& theDocument,
+  const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theObject,
   const occ::handle<TDataStd_UAttribute>& theTool)
 {
@@ -176,7 +175,7 @@ static occ::handle<TFunction_Function> AddFuseFunction(
 }
 
 static occ::handle<TFunction_Function> AddCutFunction(
-  const occ::handle<TDocStd_Document>& theDocument,
+  const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theObject,
   const occ::handle<TDataStd_UAttribute>& theTool)
 {
@@ -187,9 +186,9 @@ static occ::handle<TFunction_Function> AddCutFunction(
 }
 
 static occ::handle<TFunction_Function> AddSectionFunction(
-  const occ::handle<TDocStd_Document>&       theDocument,
-  const occ::handle<TDataStd_UAttribute>&   theObject,
-  const occ::handle<TDataStd_UAttribute>&   theTool)
+  const occ::handle<TDocStd_Document>&    theDocument,
+  const occ::handle<TDataStd_UAttribute>& theObject,
+  const occ::handle<TDataStd_UAttribute>& theTool)
 {
   occ::handle<TFunction_Function> aFunction = AddFunction(theObject, SECTION_GUID);
   DNaming::SetObjectArg(aFunction, BOOL_TOOL, theTool);
@@ -198,11 +197,11 @@ static occ::handle<TFunction_Function> AddSectionFunction(
 }
 
 static occ::handle<TFunction_Function> AddTranslationFunction(
-  const occ::handle<TDocStd_Document>& theDocument,
+  const occ::handle<TDocStd_Document>&    theDocument,
   const occ::handle<TDataStd_UAttribute>& theObject,
-  const double theDx,
-  const double theDy,
-  const double theDz)
+  const double                            theDx,
+  const double                            theDy,
+  const double                            theDz)
 {
   occ::handle<TFunction_Function> aFunction = AddFunction(theObject, PTXYZ_GUID);
   DNaming::GetReal(aFunction, PTRANSF_DX)->Set(theDx);
@@ -231,9 +230,9 @@ static void AddDriversToTable()
 TEST(DNaming_Driver_Test, CafDriver_A2_TransformationChain)
 {
   AddDriversToTable();
-  occ::handle<TDocStd_Document> aDocument = NewDocument();
+  occ::handle<TDocStd_Document>    aDocument  = NewDocument();
   occ::handle<TDataStd_UAttribute> aBoxObject = AddObject(aDocument);
-  occ::handle<TFunction_Function> aBoxFunction =
+  occ::handle<TFunction_Function>  aBoxFunction =
     MakeBoxFunction(aDocument, aBoxObject, 190.0, 290.0, 390.0);
   ASSERT_FALSE(FunctionShape(aBoxFunction).IsNull());
 
@@ -242,9 +241,9 @@ TEST(DNaming_Driver_Test, CafDriver_A2_TransformationChain)
   ASSERT_FALSE(FunctionShape(aTranslate).IsNull());
 
   occ::handle<TDataStd_UAttribute> aLineObject = AddObject(aDocument);
-  SetObjectShape(aLineObject,
-                 BRepBuilderAPI_MakeEdge(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)))
-                   .Edge());
+  SetObjectShape(
+    aLineObject,
+    BRepBuilderAPI_MakeEdge(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0))).Edge());
   occ::handle<TFunction_Function> aAlongLine = AddFunction(aBoxObject, PTALINE_GUID);
   DNaming::SetObjectArg(aAlongLine, PTRANSF_LINE, aLineObject);
   DNaming::GetReal(aAlongLine, PTRANSF_OFF)->Set(210.0);
@@ -316,16 +315,16 @@ TEST(DNaming_Driver_Test, CafBug_24869_SectionNamingCounts)
 TEST(DNaming_Driver_Test, CafDriver_A9_SpheresAndFuses)
 {
   AddDriversToTable();
-  occ::handle<TDocStd_Document> aDocument = NewDocument();
+  occ::handle<TDocStd_Document>    aDocument  = NewDocument();
   occ::handle<TDataStd_UAttribute> aBoxObject = AddObject(aDocument);
-  occ::handle<TFunction_Function> aBoxFunction =
+  occ::handle<TFunction_Function>  aBoxFunction =
     MakeBoxFunction(aDocument, aBoxObject, 130.0, 140.0, 150.0);
   occ::handle<TDataStd_UAttribute> aCenterObject =
     MakePointObject(aDocument, gp_Pnt(0.0, 0.0, 0.0));
 
   occ::handle<TDataStd_UAttribute> aSphereObject1 = AddObject(aDocument);
   occ::handle<TDataStd_UAttribute> aSphereObject2 = AddObject(aDocument);
-  occ::handle<TFunction_Function> aSphere1 =
+  occ::handle<TFunction_Function>  aSphere1 =
     MakeSphereFunction(aDocument, aSphereObject1, aCenterObject, 25.0);
   occ::handle<TFunction_Function> aSphere2 =
     MakeSphereFunction(aDocument, aSphereObject2, aCenterObject, 25.0);
@@ -351,21 +350,22 @@ TEST(DNaming_Driver_Test, CafDriver_A9_SpheresAndFuses)
 TEST(DNaming_Driver_Test, CafDriver_B2_RecomputeFuse)
 {
   AddDriversToTable();
-  occ::handle<TDocStd_Document> aDocument = NewDocument();
+  occ::handle<TDocStd_Document>    aDocument  = NewDocument();
   occ::handle<TDataStd_UAttribute> aBoxObject = AddObject(aDocument);
-  occ::handle<TFunction_Function> aBoxFunction =
+  occ::handle<TFunction_Function>  aBoxFunction =
     MakeBoxFunction(aDocument, aBoxObject, 130.0, 140.0, 150.0);
   occ::handle<TDataStd_UAttribute> aCenterObject =
     MakePointObject(aDocument, gp_Pnt(0.0, 0.0, 0.0));
   occ::handle<TDataStd_UAttribute> aSphereObject1 = AddObject(aDocument);
   occ::handle<TDataStd_UAttribute> aSphereObject2 = AddObject(aDocument);
-  occ::handle<TFunction_Function> aSphere1 =
+  occ::handle<TFunction_Function>  aSphere1 =
     MakeSphereFunction(aDocument, aSphereObject1, aCenterObject, 250.0);
   occ::handle<TFunction_Function> aSphere2 =
     MakeSphereFunction(aDocument, aSphereObject2, aCenterObject, 30.0);
   occ::handle<TFunction_Function> aTranslate =
     AddTranslationFunction(aDocument, aSphereObject2, 0.0, -253.0, 0.0);
-  occ::handle<TFunction_Function> aFuse = AddFuseFunction(aDocument, aSphereObject1, aSphereObject2);
+  occ::handle<TFunction_Function> aFuse =
+    AddFuseFunction(aDocument, aSphereObject1, aSphereObject2);
   ASSERT_FALSE(FunctionShape(aTranslate).IsNull());
   ASSERT_FALSE(FunctionShape(aFuse).IsNull());
 
@@ -382,21 +382,21 @@ TEST(DNaming_Driver_Test, CafDriver_B2_RecomputeFuse)
 TEST(DNaming_Driver_Test, CafDriver_B3_RecomputeCuts)
 {
   AddDriversToTable();
-  occ::handle<TDocStd_Document> aDocument = NewDocument();
+  occ::handle<TDocStd_Document>    aDocument  = NewDocument();
   occ::handle<TDataStd_UAttribute> aBoxObject = AddObject(aDocument);
-  occ::handle<TFunction_Function> aBoxFunction =
+  occ::handle<TFunction_Function>  aBoxFunction =
     MakeBoxFunction(aDocument, aBoxObject, 130.0, 140.0, 150.0);
   occ::handle<TDataStd_UAttribute> aCenterObject =
     MakePointObject(aDocument, gp_Pnt(0.0, 0.0, 0.0));
   occ::handle<TDataStd_UAttribute> aMainSphereObject = AddObject(aDocument);
-  occ::handle<TFunction_Function> aMainSphere =
+  occ::handle<TFunction_Function>  aMainSphere =
     MakeSphereFunction(aDocument, aMainSphereObject, aCenterObject, 250.0);
 
   occ::handle<TDataStd_UAttribute> aToolObject1 = AddObject(aDocument);
   occ::handle<TDataStd_UAttribute> aToolObject2 = AddObject(aDocument);
   occ::handle<TDataStd_UAttribute> aToolObject3 = AddObject(aDocument);
   occ::handle<TDataStd_UAttribute> aToolObject4 = AddObject(aDocument);
-  occ::handle<TFunction_Function> aTool1 =
+  occ::handle<TFunction_Function>  aTool1 =
     MakeSphereFunction(aDocument, aToolObject1, aCenterObject, 30.0);
   occ::handle<TFunction_Function> aTool2 =
     MakeSphereFunction(aDocument, aToolObject2, aCenterObject, 30.0);
@@ -408,10 +408,14 @@ TEST(DNaming_Driver_Test, CafDriver_B3_RecomputeCuts)
   AddTranslationFunction(aDocument, aToolObject2, 0.0, 251.0, 0.0);
   AddTranslationFunction(aDocument, aToolObject3, -251.0, 0.0, 0.0);
   AddTranslationFunction(aDocument, aToolObject4, 251.0, -40.0, 0.0);
-  occ::handle<TFunction_Function> aCut1 = AddCutFunction(aDocument, aMainSphereObject, aToolObject1);
-  occ::handle<TFunction_Function> aCut2 = AddCutFunction(aDocument, aMainSphereObject, aToolObject2);
-  occ::handle<TFunction_Function> aCut3 = AddCutFunction(aDocument, aMainSphereObject, aToolObject3);
-  occ::handle<TFunction_Function> aCut4 = AddCutFunction(aDocument, aMainSphereObject, aToolObject4);
+  occ::handle<TFunction_Function> aCut1 =
+    AddCutFunction(aDocument, aMainSphereObject, aToolObject1);
+  occ::handle<TFunction_Function> aCut2 =
+    AddCutFunction(aDocument, aMainSphereObject, aToolObject2);
+  occ::handle<TFunction_Function> aCut3 =
+    AddCutFunction(aDocument, aMainSphereObject, aToolObject3);
+  occ::handle<TFunction_Function> aCut4 =
+    AddCutFunction(aDocument, aMainSphereObject, aToolObject4);
   (void)aMainSphere;
   (void)aTool1;
   (void)aTool2;

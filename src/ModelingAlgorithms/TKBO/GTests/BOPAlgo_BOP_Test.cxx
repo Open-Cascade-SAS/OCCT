@@ -48,8 +48,7 @@ static void ConfigureArgumentAnalyzer(BOPAlgo_ArgumentAnalyzer& theAnalyzer)
   theAnalyzer.CurveOnSurfaceMode() = true;
 }
 
-static int CountUniqueBOPSubShapes(const TopoDS_Shape& theShape,
-                                   const TopAbs_ShapeEnum theType)
+static int CountUniqueBOPSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
 {
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aShapes;
   TopExp::MapShapes(theShape, theType, aShapes);
@@ -86,9 +85,9 @@ static int CountCheckerInterferences(const TopoDS_Shape& theShape, const int the
   aChecker.Perform();
   EXPECT_FALSE(aChecker.HasErrors());
 
-  const BOPDS_DS&                    aData = *aChecker.PDS();
+  const BOPDS_DS&                    aData  = *aChecker.PDS();
   const NCollection_Map<BOPDS_Pair>& aPairs = aData.Interferences();
-  int                               aCount = 0;
+  int                                aCount = 0;
   for (NCollection_Map<BOPDS_Pair>::Iterator anIterator(aPairs); anIterator.More();
        anIterator.Next())
   {
@@ -111,7 +110,7 @@ TEST(BOPAlgo_CheckerSITest, ModalgBug_24029_CheckLevelControlsInterferences)
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(5, 5, 5), 10.0, 10.0, 10.0);
 
   const TopoDS_Shape aCompound = [&]() {
-    BRep_Builder  aBuilder;
+    BRep_Builder    aBuilder;
     TopoDS_Compound aResult;
     aBuilder.MakeCompound(aResult);
     aBuilder.Add(aResult, aBox1);
@@ -147,7 +146,7 @@ TEST(BOPAlgo_ArgumentAnalyzerTest, ModalgBug_24492_MixedDimensionalCompoundIsFau
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 10.0, 10.0, 10.0);
   const TopoDS_Shape aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 3.0, 3.0));
 
-  BRep_Builder  aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);
@@ -168,14 +167,9 @@ TEST(BOPAlgo_ArgumentAnalyzerTest, ModalgBug_24492_MixedDimensionalCompoundIsFau
 // small gap between the two boxes and produce one solid with the DRAW counts.
 TEST(BOPAlgo_BOPTest, ModalgBug_25477_FuzzyFuseBridgesSmallGap)
 {
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0),
-                                                          10.0,
-                                                          10.0,
-                                                          10.0);
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(10.00001, 0.0, 0.0),
-                                                          10.0,
-                                                          10.0,
-                                                          10.0);
+  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 10.0, 10.0, 10.0);
+  const TopoDS_Shape aBox2 =
+    BOPTest_Utilities::CreateBox(gp_Pnt(10.00001, 0.0, 0.0), 10.0, 10.0, 10.0);
 
   BOPAlgo_BOP aFuse;
   aFuse.AddArgument(aBox1);

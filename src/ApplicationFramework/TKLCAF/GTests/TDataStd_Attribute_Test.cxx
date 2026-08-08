@@ -304,8 +304,8 @@ TEST(TDataStd_Attribute_Test, CafBasic_C1_RealArraySetGet)
 
 TEST(TDataStd_Attribute_Test, CafBasic_C2_RealArrayUndo)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
+  occ::handle<TDocStd_Document>   aDoc    = NewDocument();
+  const TDF_Label                 aLabel  = NewAttributeLabel(aDoc);
   occ::handle<TDataStd_RealArray> anArray = TDataStd_RealArray::Set(aLabel, 1, 2);
   anArray->SetValue(1, 3.0);
   anArray->SetValue(2, 4.0);
@@ -349,8 +349,8 @@ TEST(TDataStd_Attribute_Test, CafBasic_D1_IntegerArraySetGet)
 
 TEST(TDataStd_Attribute_Test, CafBasic_D2_IntegerArrayUndo)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
+  occ::handle<TDocStd_Document>      aDoc    = NewDocument();
+  const TDF_Label                    aLabel  = NewAttributeLabel(aDoc);
   occ::handle<TDataStd_IntegerArray> anArray = TDataStd_IntegerArray::Set(aLabel, 1, 2);
   anArray->SetValue(1, 3);
   anArray->SetValue(2, 4);
@@ -408,7 +408,7 @@ TEST(TDataStd_Attribute_Test, CafBasic_E2_NameUndo)
 {
   occ::handle<TDocStd_Document> aDoc   = NewDocument();
   const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  occ::handle<TDataStd_Name> aName =
+  occ::handle<TDataStd_Name>    aName =
     TDataStd_Name::Set(aLabel, TCollection_ExtendedString("New Attribute"));
   aDoc->NewCommand();
   aName->Set(TCollection_ExtendedString("Old Attribute"));
@@ -441,7 +441,7 @@ TEST(TDataStd_Attribute_Test, CafBasic_E5_NameUserGuidUndo)
   const TDF_Label               aLabel = NewAttributeLabel(aDoc);
   const Standard_GUID           aGuid1("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
   const Standard_GUID           aGuid2("12e94562-6dbc-11d4-b9c8-0060b0ee281b");
-  occ::handle<TDataStd_Name> aName1 =
+  occ::handle<TDataStd_Name>    aName1 =
     TDataStd_Name::Set(aLabel, aGuid1, TCollection_ExtendedString("New Attribute1"));
   occ::handle<TDataStd_Name> aName2 =
     TDataStd_Name::Set(aLabel, aGuid2, TCollection_ExtendedString("New Attribute2"));
@@ -562,7 +562,7 @@ TEST(TDataStd_Attribute_Test, CafBasic_L2_ReferenceUndo)
   const TDF_Label               aTarget1        = aDoc->Main().FindChild(3, true);
   const TDF_Label               aTarget2        = aDoc->Main().FindChild(4, true);
   const TDF_Label               aReferenceLabel = aDoc->Main().FindChild(5, true);
-  occ::handle<TDF_Reference> aReference = TDF_Reference::Set(aReferenceLabel, aTarget1);
+  occ::handle<TDF_Reference>    aReference      = TDF_Reference::Set(aReferenceLabel, aTarget1);
   aDoc->NewCommand();
   aReference->Set(aTarget2);
   aDoc->NewCommand();
@@ -626,11 +626,8 @@ TEST(TDataStd_Attribute_Test, CafBasic_K2_ShapeReplacementUndo)
   occ::handle<TDocStd_Document> aDoc   = NewDocument();
   TDF_Label                     aLabel = NewAttributeLabel(aDoc);
   const TopoDS_Shape            aBox1  = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
-  const TopoDS_Shape            aBox2  = BRepPrimAPI_MakeBox(gp_Pnt(-10.0, -20.0, -30.0),
-                                                              100.0,
-                                                              200.0,
-                                                              300.0)
-                                           .Shape();
+  const TopoDS_Shape            aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(-10.0, -20.0, -30.0), 100.0, 200.0, 300.0).Shape();
   TDataXtd_Shape::Set(aLabel, aBox1);
   aDoc->NewCommand();
   TDataXtd_Shape::Set(aLabel, aBox2);
@@ -653,10 +650,9 @@ TEST(TDataStd_Attribute_Test, CafBasic_K2_ShapeReplacementUndo)
 // caf/basic/M1-M2: extension-string arrays preserve values and undo changes.
 TEST(TDataStd_Attribute_Test, CafBasic_M1_ExtStringArrayUndo)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  occ::handle<TDataStd_ExtStringArray> anArray =
-    TDataStd_ExtStringArray::Set(aLabel, 1, 2);
+  occ::handle<TDocStd_Document>        aDoc    = NewDocument();
+  const TDF_Label                      aLabel  = NewAttributeLabel(aDoc);
+  occ::handle<TDataStd_ExtStringArray> anArray = TDataStd_ExtStringArray::Set(aLabel, 1, 2);
   anArray->SetValue(1, TCollection_ExtendedString("TDataStd"));
   anArray->SetValue(2, TCollection_ExtendedString("ExtStringArray"));
   aDoc->NewCommand();
@@ -673,10 +669,9 @@ TEST(TDataStd_Attribute_Test, CafBasic_M1_ExtStringArrayUndo)
 
 TEST(TDataStd_Attribute_Test, CafBasic_M2_ExtStringArrayReplacementUndo)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  occ::handle<TDataStd_ExtStringArray> anArray =
-    TDataStd_ExtStringArray::Set(aLabel, 1, 2);
+  occ::handle<TDocStd_Document>        aDoc    = NewDocument();
+  const TDF_Label                      aLabel  = NewAttributeLabel(aDoc);
+  occ::handle<TDataStd_ExtStringArray> anArray = TDataStd_ExtStringArray::Set(aLabel, 1, 2);
   anArray->SetValue(1, TCollection_ExtendedString("TDataStd"));
   anArray->SetValue(2, TCollection_ExtendedString("ExtStringArray"));
   aDoc->NewCommand();
@@ -739,11 +734,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_N5_AsciiStringReplacementUndo)
 // caf/basic/O5-P5: array attributes can be restored under a second GUID.
 TEST(TDataStd_Attribute_Test, CafBasic_O5_BooleanArrayUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94516-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>      aDoc   = NewDocument();
+  const TDF_Label                    aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID                aGuid("12e94516-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_BooleanArray> aDefault = TDataStd_BooleanArray::Set(aLabel, 1, 2);
-  occ::handle<TDataStd_BooleanArray> aCustom = TDataStd_BooleanArray::Set(aLabel, aGuid, 1, 2);
+  occ::handle<TDataStd_BooleanArray> aCustom  = TDataStd_BooleanArray::Set(aLabel, aGuid, 1, 2);
   aDefault->SetValue(1, false);
   aDefault->SetValue(2, true);
   aCustom->SetValue(1, false);
@@ -764,11 +759,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_O5_BooleanArrayUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_P5_ByteArrayUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94517-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>   aDoc   = NewDocument();
+  const TDF_Label                 aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID             aGuid("12e94517-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_ByteArray> aDefault = TDataStd_ByteArray::Set(aLabel, 1, 2);
-  occ::handle<TDataStd_ByteArray> aCustom = TDataStd_ByteArray::Set(aLabel, aGuid, 1, 2);
+  occ::handle<TDataStd_ByteArray> aCustom  = TDataStd_ByteArray::Set(aLabel, aGuid, 1, 2);
   aDefault->SetValue(1, 10);
   aDefault->SetValue(2, 12);
   aCustom->SetValue(1, 10);
@@ -787,15 +782,13 @@ TEST(TDataStd_Attribute_Test, CafBasic_P5_ByteArrayUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_Q5_ReferenceArrayUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94518-6dbc-11d4-b9c8-0060b0ee281b");
-  const TDF_Label               aTarget1 = aDoc->Main().FindChild(3, true);
-  const TDF_Label               aTarget2 = aDoc->Main().FindChild(4, true);
-  occ::handle<TDataStd_ReferenceArray> aDefault =
-    TDataStd_ReferenceArray::Set(aLabel, 1, 2);
-  occ::handle<TDataStd_ReferenceArray> aCustom =
-    TDataStd_ReferenceArray::Set(aLabel, aGuid, 1, 2);
+  occ::handle<TDocStd_Document>        aDoc   = NewDocument();
+  const TDF_Label                      aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID                  aGuid("12e94518-6dbc-11d4-b9c8-0060b0ee281b");
+  const TDF_Label                      aTarget1 = aDoc->Main().FindChild(3, true);
+  const TDF_Label                      aTarget2 = aDoc->Main().FindChild(4, true);
+  occ::handle<TDataStd_ReferenceArray> aDefault = TDataStd_ReferenceArray::Set(aLabel, 1, 2);
+  occ::handle<TDataStd_ReferenceArray> aCustom  = TDataStd_ReferenceArray::Set(aLabel, aGuid, 1, 2);
   aDefault->SetValue(1, aTarget1);
   aDefault->SetValue(2, aTarget2);
   aCustom->SetValue(1, aTarget1);
@@ -815,11 +808,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_Q5_ReferenceArrayUserGuid)
 // caf/basic/R5-V5: list attributes preserve values for default and custom GUIDs.
 TEST(TDataStd_Attribute_Test, CafBasic_R5_RealListUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94521-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>  aDoc   = NewDocument();
+  const TDF_Label                aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID            aGuid("12e94521-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_RealList> aDefault = TDataStd_RealList::Set(aLabel);
-  occ::handle<TDataStd_RealList> aCustom = TDataStd_RealList::Set(aLabel, aGuid);
+  occ::handle<TDataStd_RealList> aCustom  = TDataStd_RealList::Set(aLabel, aGuid);
   aDefault->Append(3.0);
   aDefault->Append(4.0);
   aCustom->Append(3.0);
@@ -839,11 +832,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_R5_RealListUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_S5_IntegerListUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94531-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>     aDoc   = NewDocument();
+  const TDF_Label                   aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID               aGuid("12e94531-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_IntegerList> aDefault = TDataStd_IntegerList::Set(aLabel);
-  occ::handle<TDataStd_IntegerList> aCustom = TDataStd_IntegerList::Set(aLabel, aGuid);
+  occ::handle<TDataStd_IntegerList> aCustom  = TDataStd_IntegerList::Set(aLabel, aGuid);
   aDefault->Append(33);
   aDefault->Append(44);
   aCustom->Append(33);
@@ -863,11 +856,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_S5_IntegerListUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_T5_ExtStringListUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>       aDoc   = NewDocument();
+  const TDF_Label                     aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID                 aGuid("12e94541-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_ExtStringList> aDefault = TDataStd_ExtStringList::Set(aLabel);
-  occ::handle<TDataStd_ExtStringList> aCustom = TDataStd_ExtStringList::Set(aLabel, aGuid);
+  occ::handle<TDataStd_ExtStringList> aCustom  = TDataStd_ExtStringList::Set(aLabel, aGuid);
   aDefault->Append(TCollection_ExtendedString("aaaaa"));
   aDefault->Append(TCollection_ExtendedString("bbbbbb"));
   aCustom->Append(TCollection_ExtendedString("aaaaa"));
@@ -887,11 +880,11 @@ TEST(TDataStd_Attribute_Test, CafBasic_T5_ExtStringListUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_U5_BooleanListUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94551-6dbc-11d4-b9c8-0060b0ee281b");
+  occ::handle<TDocStd_Document>     aDoc   = NewDocument();
+  const TDF_Label                   aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID               aGuid("12e94551-6dbc-11d4-b9c8-0060b0ee281b");
   occ::handle<TDataStd_BooleanList> aDefault = TDataStd_BooleanList::Set(aLabel);
-  occ::handle<TDataStd_BooleanList> aCustom = TDataStd_BooleanList::Set(aLabel, aGuid);
+  occ::handle<TDataStd_BooleanList> aCustom  = TDataStd_BooleanList::Set(aLabel, aGuid);
   aDefault->Append(false);
   aDefault->Append(true);
   aCustom->Append(false);
@@ -911,13 +904,13 @@ TEST(TDataStd_Attribute_Test, CafBasic_U5_BooleanListUserGuid)
 
 TEST(TDataStd_Attribute_Test, CafBasic_V5_ReferenceListUserGuid)
 {
-  occ::handle<TDocStd_Document> aDoc   = NewDocument();
-  const TDF_Label               aLabel = NewAttributeLabel(aDoc);
-  const Standard_GUID           aGuid("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
-  const TDF_Label               aTarget1 = aDoc->Main().FindChild(3, true);
-  const TDF_Label               aTarget2 = aDoc->Main().FindChild(4, true);
+  occ::handle<TDocStd_Document>       aDoc   = NewDocument();
+  const TDF_Label                     aLabel = NewAttributeLabel(aDoc);
+  const Standard_GUID                 aGuid("12e94561-6dbc-11d4-b9c8-0060b0ee281b");
+  const TDF_Label                     aTarget1 = aDoc->Main().FindChild(3, true);
+  const TDF_Label                     aTarget2 = aDoc->Main().FindChild(4, true);
   occ::handle<TDataStd_ReferenceList> aDefault = TDataStd_ReferenceList::Set(aLabel);
-  occ::handle<TDataStd_ReferenceList> aCustom = TDataStd_ReferenceList::Set(aLabel, aGuid);
+  occ::handle<TDataStd_ReferenceList> aCustom  = TDataStd_ReferenceList::Set(aLabel, aGuid);
   aDefault->Append(aTarget1);
   aDefault->Append(aTarget2);
   aCustom->Append(aTarget1);

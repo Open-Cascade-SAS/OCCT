@@ -112,7 +112,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_TestObject, TObj_Object)
 IMPLEMENT_TOBJOCAF_PERSISTENCE(TObj_TestObject)
 
 static occ::handle<TObj_TestObject> FindTestObject(const occ::handle<TObj_Model>& theModel,
-                                                    const char*                  theName)
+                                                   const char*                    theName)
 {
   occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString(theName);
   return occ::down_cast<TObj_TestObject>(theModel->FindObject(aName, theModel->GetDictionary()));
@@ -308,7 +308,7 @@ TEST_F(TObj_ModelTest, CafBug_29901_StreamInteger)
   ASSERT_FALSE(aStream.str().empty());
   ASSERT_TRUE(myModel->Close());
 
-  std::istringstream aInput(aStream.str());
+  std::istringstream          aInput(aStream.str());
   occ::handle<TObj_TestModel> aRestored = new TObj_TestModel();
   ASSERT_TRUE(aRestored->Load(aInput));
   occ::handle<TObj_TestObject> aRestoredObject = FindTestObject(aRestored, "obj1");
@@ -354,7 +354,7 @@ TEST_F(TObj_ModelTest, CafBug_21231_StreamObjectGraph)
   ASSERT_FALSE(aStream.str().empty());
   ASSERT_TRUE(myModel->Close());
 
-  std::istringstream aInput(aStream.str());
+  std::istringstream          aInput(aStream.str());
   occ::handle<TObj_TestModel> aRestored = new TObj_TestModel();
   ASSERT_TRUE(aRestored->Load(aInput));
   occ::handle<TObj_TestObject> aRestoredObject1 = FindTestObject(aRestored, "obj1");

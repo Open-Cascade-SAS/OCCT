@@ -41,11 +41,20 @@ occ::handle<Geom_BSplineCurve> makeOCC33828Curve()
   aMultiplicities(6) = 2;
   aMultiplicities(7) = 4;
 
-  const double aPoleCoordinates[14][3] = {
-    {0.163, 0.233, 0.0}, {0.158, 0.204, 0.0}, {0.139, 0.180, 0.0}, {0.086, 0.159, 0.0},
-    {0.055, 0.163, 0.0}, {0.009, 0.196, 0.0},  {-0.004, 0.225, 0.0}, {0.002, 0.281, 0.0},
-    {0.019, 0.307, 0.0}, {0.070, 0.332, 0.0},  {0.101, 0.331, 0.0}, {0.149, 0.301, 0.0},
-    {0.164, 0.274, 0.0}, {0.163, 0.246, 0.0}};
+  const double aPoleCoordinates[14][3] = {{0.163, 0.233, 0.0},
+                                          {0.158, 0.204, 0.0},
+                                          {0.139, 0.180, 0.0},
+                                          {0.086, 0.159, 0.0},
+                                          {0.055, 0.163, 0.0},
+                                          {0.009, 0.196, 0.0},
+                                          {-0.004, 0.225, 0.0},
+                                          {0.002, 0.281, 0.0},
+                                          {0.019, 0.307, 0.0},
+                                          {0.070, 0.332, 0.0},
+                                          {0.101, 0.331, 0.0},
+                                          {0.149, 0.301, 0.0},
+                                          {0.164, 0.274, 0.0},
+                                          {0.163, 0.246, 0.0}};
 
   NCollection_Array1<gp_Pnt> aPoles(1, 14);
   for (int anIndex = 0; anIndex < 14; ++anIndex)
@@ -74,7 +83,7 @@ void checkOCC33828Deflection(const GeomAdaptor_Curve& theCurve,
 TEST(GCPnts_QuasiUniformDeflectionTest, ModDataBug_33828_StablePointCounts)
 {
   const occ::handle<Geom_BSplineCurve> aCurve = makeOCC33828Curve();
-  const GeomAdaptor_Curve               anAdaptor(aCurve);
+  const GeomAdaptor_Curve              anAdaptor(aCurve);
 
   checkOCC33828Deflection(anAdaptor, 0.5, 2);
   checkOCC33828Deflection(anAdaptor, 0.1, 3);

@@ -179,7 +179,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC23706_4_BSplineIntersectionCoordinates)
 {
   const occ::handle<Geom2d_BSplineCurve> aCurve1 = createOCC23706Curve1();
   const occ::handle<Geom2d_BSplineCurve> aCurve2 = createOCC23706Curve2(true);
-  Geom2dAPI_InterCurveCurve                  anIntersector(aCurve1, aCurve2, 0.001);
+  Geom2dAPI_InterCurveCurve              anIntersector(aCurve1, aCurve2, 0.001);
 
   ASSERT_EQ(anIntersector.NbPoints(), 2);
   const gp_Pnt2d aPoint1 = anIntersector.Point(1);
@@ -196,7 +196,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC23706_5_BSplineIntersectionCoordinates)
 {
   const occ::handle<Geom2d_BSplineCurve> aCurve1 = createOCC23706Curve1();
   const occ::handle<Geom2d_BSplineCurve> aCurve2 = createOCC23706Curve2(false);
-  Geom2dAPI_InterCurveCurve                  anIntersector(aCurve1, aCurve2, 0.001);
+  Geom2dAPI_InterCurveCurve              anIntersector(aCurve1, aCurve2, 0.001);
 
   ASSERT_EQ(anIntersector.NbPoints(), 2);
   const gp_Pnt2d aPoint1 = anIntersector.Point(1);
@@ -213,17 +213,17 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC23706_5_BSplineIntersectionCoordinates)
 // default 1.e-3 intersection tolerance.
 TEST(Geom2dAPI_InterCurveCurve_Test, OCC29162_TrimmedEllipseLineIntersection)
 {
-  const occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(
-    gp_Ax22d(gp_Pnt2d(-610.348096534595, -710.720096056787),
-             gp_Dir2d(0.999999902285153, 0.000442074298181498)),
-    15.0066332711999,
-    0.291884102212871);
+  const occ::handle<Geom2d_Ellipse> anEllipse =
+    new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(-610.348096534595, -710.720096056787),
+                                gp_Dir2d(0.999999902285153, 0.000442074298181498)),
+                       15.0066332711999,
+                       0.291884102212871);
   const occ::handle<Geom2d_TrimmedCurve> aTrimmedEllipse =
     new Geom2d_TrimmedCurve(anEllipse, 3.09462291909258, 9.37780822627216);
 
-  const occ::handle<Geom2d_Line> aLine = new Geom2d_Line(
-    gp_Pnt2d(-625.34430362036, -680.713463264921),
-    gp_Dir2d(-0.000252749178714602, -0.999999968058926));
+  const occ::handle<Geom2d_Line> aLine =
+    new Geom2d_Line(gp_Pnt2d(-625.34430362036, -680.713463264921),
+                    gp_Dir2d(-0.000252749178714602, -0.999999968058926));
   const occ::handle<Geom2d_TrimmedCurve> aTrimmedLine =
     new Geom2d_TrimmedCurve(aLine, 0.0, 30.0132665523925);
 

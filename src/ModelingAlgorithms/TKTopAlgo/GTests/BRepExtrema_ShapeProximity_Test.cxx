@@ -48,10 +48,10 @@ namespace
 {
 using ProximityStatus = BRepExtrema_ProximityDistTool::ProxPnt_Status;
 
-void expectProximityValue(const TopoDS_Shape& theShape1,
-                          const TopoDS_Shape& theShape2,
-                          const double         theExpectedValue,
-                          const double         theTolerance,
+void expectProximityValue(const TopoDS_Shape&   theShape1,
+                          const TopoDS_Shape&   theShape2,
+                          const double          theExpectedValue,
+                          const double          theTolerance,
                           const ProximityStatus theExpectedStatus1,
                           const ProximityStatus theExpectedStatus2,
                           const double          theMeshDeflection,
@@ -74,8 +74,8 @@ void expectProximityValue(const TopoDS_Shape& theShape1,
     EXPECT_EQ(aProximity.ProxPntStatus1(), theExpectedStatus1);
     EXPECT_EQ(aProximity.ProxPntStatus2(), theExpectedStatus2);
   }
-  EXPECT_FALSE(aProximity.ProximityPoint1().IsEqual(aProximity.ProximityPoint2(),
-                                                     Precision::Confusion()));
+  EXPECT_FALSE(
+    aProximity.ProximityPoint1().IsEqual(aProximity.ProximityPoint2(), Precision::Confusion()));
 }
 
 TopoDS_Edge makeCircularArc(const gp_Pnt& theCenter,
@@ -117,11 +117,7 @@ TopoDS_Face makePlanePatch(const gp_Pnt& theLocation,
                            const double  theVMin,
                            const double  theVMax)
 {
-  return BRepBuilderAPI_MakeFace(gp_Pln(theLocation, theNormal),
-                                 theUMin,
-                                 theUMax,
-                                 theVMin,
-                                 theVMax)
+  return BRepBuilderAPI_MakeFace(gp_Pln(theLocation, theNormal), theUMin, theUMax, theVMin, theVMax)
     .Face();
 }
 
@@ -136,11 +132,7 @@ TopoDS_Face makeCylinderPatch(const gp_Pnt& theLocation,
   const occ::handle<Geom_CylindricalSurface> aCylinder =
     new Geom_CylindricalSurface(gp_Ax3(theLocation, theDirection), theRadius);
   const occ::handle<Geom_RectangularTrimmedSurface> aTrimmedCylinder =
-    new Geom_RectangularTrimmedSurface(aCylinder,
-                                       theFirstU,
-                                       theLastU,
-                                       theFirstV,
-                                       theLastV);
+    new Geom_RectangularTrimmedSurface(aCylinder, theFirstU, theLastU, theFirstV, theLastV);
   return BRepBuilderAPI_MakeFace(aTrimmedCylinder, Precision::Confusion()).Face();
 }
 
@@ -173,7 +165,7 @@ TopoDS_Face makePolygonFace()
 
 TopoDS_Shape makeSplitSphere(const gp_Pnt& theCenter)
 {
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, makeSpherePatch(theCenter, 0.0, 0.5 * M_PI));
@@ -192,16 +184,10 @@ TopoDS_Edge makeBezierEdge(const NCollection_Array1<gp_Pnt>& thePoles)
 // have a proximity value equal to the diameter and interior proximity points.
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A1_OppositeCircularArcs)
 {
-  const TopoDS_Edge anEdge1 = makeCircularArc(gp_Pnt(0.0, 0.0, 0.0),
-                                              gp_Dir(1.0, 0.0, 0.0),
-                                              5.0,
-                                              0.5 * M_PI,
-                                              M_PI);
-  const TopoDS_Edge anEdge2 = makeCircularArc(gp_Pnt(0.0, 0.0, 0.0),
-                                              gp_Dir(1.0, 0.0, 0.0),
-                                              5.0,
-                                              -0.5 * M_PI,
-                                              0.0);
+  const TopoDS_Edge anEdge1 =
+    makeCircularArc(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 5.0, 0.5 * M_PI, M_PI);
+  const TopoDS_Edge anEdge2 =
+    makeCircularArc(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 5.0, -0.5 * M_PI, 0.0);
   expectProximityValue(anEdge1,
                        anEdge2,
                        10.0,
@@ -215,18 +201,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A1_OppositeCircularArcs)
 // at their boundary triangulation nodes.
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B1_ParallelPlanePatches)
 {
-  const TopoDS_Face aFace1 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
-  const TopoDS_Face aFace2 = makePlanePatch(gp_Pnt(0.0, 0.0, 1.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
+  const TopoDS_Face aFace1 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
+  const TopoDS_Face aFace2 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 1.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
   expectProximityValue(aFace1,
                        aFace2,
                        1.0,
@@ -240,19 +218,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B1_ParallelPlanePatches)
 // cylinder exercise the mixed middle/border status classification.
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_C1_PlaneAndCylinder)
 {
-  const TopoDS_Face aPlane = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
-  const TopoDS_Face aCylinder = makeCylinderPatch(gp_Pnt(0.0, 0.0, 0.0),
-                                                  gp_Dir(0.0, 1.0, 0.0),
-                                                  0.1,
-                                                  0.0,
-                                                  2.0 * M_PI,
-                                                  0.0,
-                                                  1.0);
+  const TopoDS_Face aPlane =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
+  const TopoDS_Face aCylinder =
+    makeCylinderPatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0), 0.1, 0.0, 2.0 * M_PI, 0.0, 1.0);
   expectProximityValue(aPlane,
                        aCylinder,
                        0.1,
@@ -294,16 +263,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A2_PerpendicularFullCircles)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A3_OffsetSemicircles)
 {
-  const TopoDS_Edge anEdge1 = makeTrimmedCircularArc(gp_Pnt(0.0, -1.0, 0.0),
-                                                     gp_Dir(1.0, 0.0, 0.0),
-                                                     1.0,
-                                                     -M_PI,
-                                                     0.0);
-  const TopoDS_Edge anEdge2 = makeTrimmedCircularArc(gp_Pnt(0.0, 1.0, 0.0),
-                                                     gp_Dir(1.0, 0.0, 0.0),
-                                                     1.0,
-                                                     0.0,
-                                                     M_PI);
+  const TopoDS_Edge anEdge1 =
+    makeTrimmedCircularArc(gp_Pnt(0.0, -1.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 1.0, -M_PI, 0.0);
+  const TopoDS_Edge anEdge2 =
+    makeTrimmedCircularArc(gp_Pnt(0.0, 1.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 1.0, 0.0, M_PI);
   expectProximityValue(anEdge1,
                        anEdge2,
                        std::sqrt(5.0) - 1.0,
@@ -348,9 +311,8 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A5_TrimmedCircularEdges)
 
   const occ::handle<Geom_Circle> aCircle2 =
     new Geom_Circle(gp_Circ(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.5, 0.0)), 1.0));
-  const occ::handle<Geom_TrimmedCurve> aTrimmedCircle2 =
-    new Geom_TrimmedCurve(aCircle2, 0.0, M_PI);
-  const TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(aTrimmedCircle2).Edge();
+  const occ::handle<Geom_TrimmedCurve> aTrimmedCircle2 = new Geom_TrimmedCurve(aCircle2, 0.0, M_PI);
+  const TopoDS_Edge                    anEdge2 = BRepBuilderAPI_MakeEdge(aTrimmedCircle2).Edge();
 
   TopoDS_Vertex anEdge1First;
   TopoDS_Vertex anEdge1Last;
@@ -379,18 +341,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_A5_TrimmedCircularEdges)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B2_OrthogonalPlanePatches)
 {
-  const TopoDS_Face aFace1 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
-  const TopoDS_Face aFace2 = makePlanePatch(gp_Pnt(0.0, 0.0, 1.0),
-                                            gp_Dir(-1.0, 0.0, 0.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
+  const TopoDS_Face aFace1 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
+  const TopoDS_Face aFace2 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 1.0), gp_Dir(-1.0, 0.0, 0.0), -1.0, 1.0, -1.0, 1.0);
   expectProximityValue(aFace1,
                        aFace2,
                        1.0,
@@ -402,18 +356,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B2_OrthogonalPlanePatches)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B3_IntersectingPlanePatches)
 {
-  const TopoDS_Face aFace1 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
-  const TopoDS_Face aFace2 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(-1.0, 0.0, 0.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
+  const TopoDS_Face aFace1 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
+  const TopoDS_Face aFace2 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(-1.0, 0.0, 0.0), -1.0, 1.0, -1.0, 1.0);
   expectProximityValue(aFace1,
                        aFace2,
                        1.0,
@@ -425,18 +371,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B3_IntersectingPlanePatches)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B4_OffsetIntersectingPlanePatches)
 {
-  const TopoDS_Face aFace1 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
-  const TopoDS_Face aFace2 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.5),
-                                            gp_Dir(-1.0, 0.0, 0.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
+  const TopoDS_Face aFace1 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
+  const TopoDS_Face aFace2 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.5), gp_Dir(-1.0, 0.0, 0.0), -1.0, 1.0, -1.0, 1.0);
   expectProximityValue(aFace1,
                        aFace2,
                        1.0,
@@ -448,12 +386,8 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B4_OffsetIntersectingPlanePatches)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B5_SlopedPolygonPatch)
 {
-  const TopoDS_Face aFace1 = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -1.0,
-                                            1.0,
-                                            -1.0,
-                                            1.0);
+  const TopoDS_Face aFace1 =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
   const TopoDS_Face aFace2 = makePolygonFace();
   expectProximityValue(aFace1,
                        aFace2,
@@ -466,12 +400,8 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_B5_SlopedPolygonPatch)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_C2_ObliqueCylinderAndPlane)
 {
-  const TopoDS_Face aPlane = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                            gp_Dir(0.0, 0.0, 1.0),
-                                            -2.0,
-                                            2.0,
-                                            -2.0,
-                                            2.0);
+  const TopoDS_Face aPlane =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -2.0, 2.0, -2.0, 2.0);
   const TopoDS_Face aCylinder = makeCylinderPatch(gp_Pnt(0.0, 0.0, 1.0),
                                                   gp_Dir(0.0, std::sqrt(0.5), std::sqrt(0.5)),
                                                   0.1,
@@ -490,20 +420,10 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_C2_ObliqueCylinderAndPlane)
 
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_C3_ParallelCylinderPatches)
 {
-  const TopoDS_Face aCylinder1 = makeCylinderPatch(gp_Pnt(0.0, 0.0, 1.0),
-                                                   gp_Dir(1.0, 0.0, 0.0),
-                                                   0.1,
-                                                   0.0,
-                                                   2.0 * M_PI,
-                                                   0.0,
-                                                   1.0);
-  const TopoDS_Face aCylinder2 = makeCylinderPatch(gp_Pnt(0.0, 0.0, 0.0),
-                                                   gp_Dir(1.0, 0.0, 0.0),
-                                                   0.1,
-                                                   0.0,
-                                                   2.0 * M_PI,
-                                                   0.0,
-                                                   1.0);
+  const TopoDS_Face aCylinder1 =
+    makeCylinderPatch(gp_Pnt(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0), 0.1, 0.0, 2.0 * M_PI, 0.0, 1.0);
+  const TopoDS_Face aCylinder2 =
+    makeCylinderPatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 0.1, 0.0, 2.0 * M_PI, 0.0, 1.0);
   expectProximityValue(aCylinder1,
                        aCylinder2,
                        1.0,
@@ -554,12 +474,8 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_D2_FullOpposingSpheres)
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_D3_SplitSphereAndPlane)
 {
   const TopoDS_Shape aSphere = makeSplitSphere(gp_Pnt(0.0, 1.0, 0.0));
-  const TopoDS_Face  aPlane  = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                             gp_Dir(0.0, 1.0, 0.0),
-                                             -2.0,
-                                             2.0,
-                                             -2.0,
-                                             2.0);
+  const TopoDS_Face  aPlane =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0), -2.0, 2.0, -2.0, 2.0);
   expectProximityValue(aSphere,
                        aPlane,
                        2.0,
@@ -572,12 +488,8 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_D3_SplitSphereAndPlane)
 TEST(BRepExtrema_ShapeProximityTest, LowAlgo_D4_TrimmedSphereAndPlane)
 {
   const TopoDS_Face aSphere = makeSpherePatch(gp_Pnt(0.0, 1.0, 0.0), 0.0, M_PI);
-  const TopoDS_Face aPlane  = makePlanePatch(gp_Pnt(0.0, 0.0, 0.0),
-                                             gp_Dir(0.0, 1.0, 0.0),
-                                             -1.0,
-                                             1.0,
-                                             -1.0,
-                                             1.0);
+  const TopoDS_Face aPlane =
+    makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0), -1.0, 1.0, -1.0, 1.0);
   expectProximityValue(aSphere,
                        aPlane,
                        2.0,
