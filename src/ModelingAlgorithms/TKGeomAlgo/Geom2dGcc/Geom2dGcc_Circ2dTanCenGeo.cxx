@@ -78,7 +78,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
   }
   while (i <= nbext)
   {
-    thePar = distmin.Point(i).Parameter();
+    thePar                       = distmin.Point(i).Parameter();
     const double aSquareDistance = distmin.SquareDistance(i);
     if (Index(1) == 0 || aSquareDistance < theDist2(1))
     {
