@@ -30,7 +30,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN(
   const NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepDS_ListOfShapeOn1State,
                             TopTools_ShapeMapHasher>&       MEsp,
-  TopOpeBRepTool_PShapeClassifier                           pClassif);
+  TopOpeBRepTool_ShapeClassifier*                           pClassif);
 
 //=================================================================================================
 

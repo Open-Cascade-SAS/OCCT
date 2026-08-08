@@ -27,7 +27,6 @@ set(OCCT_BRepOffsetAPI_FILES
   BRepOffsetAPI_NormalProjection.cxx
   BRepOffsetAPI_NormalProjection.hxx
 
-  BRepOffsetAPI_Sewing.hxx
   BRepOffsetAPI_ThruSections.cxx
   BRepOffsetAPI_ThruSections.hxx
 )

@@ -6,12 +6,8 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool.hxx
   TopOpeBRepTool_2d.cxx
   TopOpeBRepTool_2d.hxx
-  TopOpeBRepTool_AncestorsTool.cxx
-  TopOpeBRepTool_AncestorsTool.hxx
   TopOpeBRepTool_box.cxx
   TopOpeBRepTool_box.hxx
-  TopOpeBRepTool_BoxSort.cxx
-  TopOpeBRepTool_BoxSort.hxx
   TopOpeBRepTool_C2DF.cxx
   TopOpeBRepTool_C2DF.hxx
   TopOpeBRepTool_CLASSI.cxx
@@ -23,7 +19,6 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_CurveTool.cxx
   TopOpeBRepTool_CurveTool.hxx
 
-  TopOpeBRepTool_defineG.hxx
 
   TopOpeBRepTool_face.cxx
   TopOpeBRepTool_face.hxx
@@ -45,11 +40,8 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_mkTondgE.cxx
   TopOpeBRepTool_mkTondgE.hxx
   TopOpeBRepTool_OutCurveType.hxx
-  TopOpeBRepTool_Plos.hxx
   TopOpeBRepTool_PROJECT.cxx
   TopOpeBRepTool_PROJECT.hxx
-  TopOpeBRepTool_PShapeClassifier.hxx
-  TopOpeBRepTool_PSoClassif.hxx
   TopOpeBRepTool_PURGE.cxx
   TopOpeBRepTool_PURGE.hxx
   TopOpeBRepTool_PurgeInternalEdges.cxx

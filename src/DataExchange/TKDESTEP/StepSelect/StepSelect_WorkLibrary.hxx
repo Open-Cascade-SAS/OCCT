@@ -62,7 +62,14 @@ public:
   //! Writes a File from a STEP Model
   //! Returns False (and writes no file) if <ctx> does not bring a
   //! STEP Model
-  Standard_EXPORT bool WriteFile(IFSelect_ContextWrite& ctx) const override;
+  Standard_EXPORT bool WriteFile(IFSelect_ContextWrite& theContext) const override;
+
+  //! Writes a STEP model and its applicable file modifiers to a stream.
+  //! @param[in,out] theContext writing context
+  //! @param[out] theOStream destination stream
+  //! @return true on success, or false if the context is not for STEP or writing fails
+  Standard_EXPORT bool WriteStream(IFSelect_ContextWrite& theContext,
+                                   Standard_OStream&      theOStream) const override;
 
   //! Performs the copy of entities from an original model to a new
   //! one. Works according <copymode> :

@@ -17,23 +17,21 @@
 #ifndef _BRepClass_FaceExplorer_HeaderFile
 #define _BRepClass_FaceExplorer_HeaderFile
 
-#include <Standard.hxx>
+#include <BRepClass_Edge.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Standard_Integer.hxx>
+
+#include <cstdint>
+
 class gp_Pnt2d;
 class gp_Lin2d;
-class BRepClass_Edge;
 
 //! Provide an exploration of a BRep Face for the
 //! classification. Return UV edges.
+//! The explored topology and pcurves form a snapshot. Reconstruct the explorer after modifying the
+//! underlying face or its edge representations.
 class BRepClass_FaceExplorer
 {
 public:
@@ -65,10 +63,10 @@ public:
   Standard_EXPORT void InitWires();
 
   //! Returns True if there is a current wire.
-  bool MoreWires() const { return myWExplorer.More(); }
+  bool MoreWires() const { return myCurrentWire < myWires.Size(); }
 
   //! Sets the explorer to the next wire.
-  void NextWire() { myWExplorer.Next(); }
+  void NextWire() { ++myCurrentWire; }
 
   //! Returns True if the wire bounding volume does not
   //! intersect the segment.
@@ -79,10 +77,10 @@ public:
   Standard_EXPORT void InitEdges();
 
   //! Returns True if there is a current edge.
-  bool MoreEdges() const { return myEExplorer.More(); }
+  bool MoreEdges() const { return myCurrentEdge < myCurrentEdgeEnd; }
 
   //! Sets the explorer to the next edge.
-  void NextEdge() { myEExplorer.Next(); }
+  void NextEdge() { ++myCurrentEdge; }
 
   //! Returns True if the edge bounding volume does not
   //! intersect the segment.
@@ -104,22 +102,33 @@ public:
 
   //! Sets the status of whether we are
   //! using boxes or not
-  void SetUseBndBox(const bool theValue) { myUseBndBox = theValue; }
+  Standard_EXPORT void SetUseBndBox(const bool theValue);
+
+  //! Returns true when cached boxes are expected to benefit this face.
+  Standard_EXPORT bool ShouldUseBndBox() const;
 
 protected:
   //! Computes UV bounds of a face
   Standard_EXPORT void ComputeFaceBounds();
 
 private:
-  TopoDS_Face     myFace;
-  TopExp_Explorer myWExplorer;
-  TopExp_Explorer myEExplorer;
-  int             myCurEdgeInd;
-  double          myCurEdgePar;
-  double          myMaxTolerance;
-  bool            myUseBndBox;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myMapVE;
+  struct WireData
+  {
+    uint32_t FirstEdge = 0;
+    uint32_t NbEdges   = 0;
+  };
+
+  TopoDS_Face                              myFace;
+  NCollection_LinearVector<WireData>       myWires;
+  NCollection_LinearVector<BRepClass_Edge> myEdges;
+  NCollection_LinearVector<uint32_t>       myProbeEdges;
+  size_t                                   myCurrentWire;
+  size_t                                   myCurrentEdge;
+  size_t                                   myCurrentEdgeEnd;
+  size_t                                   myCurEdgeInd;
+  double                                   myCurEdgePar;
+  double                                   myMaxTolerance;
+  bool                                     myUseBndBox;
 
   double myUMin;
   double myUMax;

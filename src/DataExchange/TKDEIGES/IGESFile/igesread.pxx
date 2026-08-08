@@ -1,0 +1,205 @@
+/*
+ Copyright (c) 1999-2014 OPEN CASCADE SAS
+
+ This file is part of Open CASCADE Technology software library.
+
+ This library is free software; you can redistribute it and/or modify it under
+ the terms of the GNU Lesser General Public License version 2.1 as published
+ by the Free Software Foundation, with special exception defined in the file
+ OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+ distribution for complete text of the license and disclaimer of any warranty.
+
+ Alternatively, this file may be used under the terms of Open CASCADE
+ commercial license or contractual agreement.
+*/
+
+//! Internal declarations for the IGES parser.
+
+#ifndef _IGESFile_igesread_HeaderFile
+#define _IGESFile_igesread_HeaderFile
+
+#include <cstddef>
+
+/*  structiges : */
+struct parlist
+{
+  struct oneparam* first;
+  struct oneparam* last;
+  int              nbparam;
+};
+
+struct dirpart
+{
+  int            typ, poi, pdef, tra, niv, vue, trf, aff, blk, sub, use, her; /* line 1 */
+  int            typ2, epa, col, nbl, form;                                   /* line 2 */
+  char           res1[10], res2[10], nom[10], num[10];
+  struct parlist list;    /* Psect list */
+  int            numpart; /* n0 en Dsect */
+};
+
+//! Byte-reader and record-reader status values.
+enum IGES_ReadStatus
+{
+  IGES_ReadStatus_Error = -1,
+  IGES_ReadStatus_End   = 0,
+  IGES_ReadStatus_Data  = 1
+};
+
+//! Parameter categories recognized by the IGES parser.
+enum IGES_ParameterType
+{
+  IGES_ParameterType_Void,
+  IGES_ParameterType_Misc,
+  IGES_ParameterType_Text,
+  IGES_ParameterType_Integer,
+  IGES_ParameterType_SignedInteger,
+  IGES_ParameterType_Real,
+  IGES_ParameterType_IncompleteExponent,
+  IGES_ParameterType_RealExponent,
+  IGES_ParameterType_IntegerExponent,
+  IGES_ParameterType_NbTypes
+};
+
+//! Reads a block of source bytes.
+//! @param[in] theContext opaque source context
+//! @param[out] theBuffer buffer receiving source bytes
+//! @param[in] theBufferSize capacity of the output buffer
+//! @return positive byte count, IGES_ReadStatus_End, or IGES_ReadStatus_Error
+using IGES_ReadBytesCallback = int (*)(void*       theContext,
+                                       char*       theBuffer,
+                                       std::size_t theBufferSize);
+
+//! Buffered byte-reader state used while splitting the input into IGES records.
+struct IGES_InputState
+{
+  void*                  Context;
+  IGES_ReadBytesCallback ReadBytes;
+  char                   Buffer[4096];
+  std::size_t            BufferOffset;
+  std::size_t            BufferSize;
+  bool                   HasPendingByte;
+  char                   PendingByte;
+};
+
+//! Reads and parses IGES data supplied by a byte callback.
+//! Parser allocations are released before returning on failure.
+//! @param[in] theContext opaque context passed to the callback
+//! @param[in] theReadBytes callback supplying successive blocks of input bytes
+//! @param[out] theSectionCounts record counts for IGES sections S through T
+//! @param[in] theIsFNES true to decode FNES records
+//! @return 0 on success or -1 on invalid input or a read failure
+int igesread_stream(void*                  theContext,
+                    IGES_ReadBytesCallback theReadBytes,
+                    int                    theSectionCounts[6],
+                    bool                   theIsFNES);
+
+//! Returns the next directory entry and its parameter count.
+//! @param[out] theValues directory entry integer fields
+//! @param[out] theReserved1 first reserved field
+//! @param[out] theReserved2 second reserved field
+//! @param[out] theName entity label
+//! @param[out] theNumber entity subscript number
+//! @param[out] theParameterCount number of entity parameters
+//! @return directory entry sequence number, or 0 at the end
+int iges_lirpart(int**  theValues,
+                 char** theReserved1,
+                 char** theReserved2,
+                 char** theName,
+                 char** theNumber,
+                 int*   theParameterCount);
+
+//! Prepares parser data for traversal and returns its statistics.
+//! @param[out] thePartCount number of directory entries
+//! @param[out] theParameterCount total number of parameters
+void iges_stats(int* thePartCount, int* theParameterCount);
+
+//! Selects the global parameter list.
+void iges_setglobal();
+
+//! Advances to the next directory entry.
+void iges_nextpart();
+
+//! Returns the next parameter in the selected parameter list.
+//! @param[out] theParameterType parsed IGES_ParameterType value
+//! @param[out] theParameterValue parameter text
+//! @return 1 when a parameter is available, or 0 at the end
+int iges_lirparam(int* theParameterType, char** theParameterValue);
+
+//! Releases parser allocations.
+//! @param[in] theMode 0 for all data, 1 for directory and parameter data, 2 for text data
+void iges_finfile(int theMode);
+
+//! Returns the currently selected directory entry.
+//! @return current directory entry, or nullptr if none is selected
+dirpart* iges_get_curp();
+
+//! Initializes parser storage for a new file.
+void iges_initfile();
+
+//! Reads an IGES record and identifies its section and sequence number.
+//! @param[in,out] theInput buffered parser state
+//! @param[in,out] theSectionNumber sequence number parsed from the record trailer
+//! @param[out] theRecord record contents with the section trailer removed
+//! @param[in] theIsFNES true to decode FNES records
+//! @return section number 1 through 5, IGES_ReadStatus_End,
+//!         IGES_ReadStatus_Error, or -2 for a malformed record trailer
+int iges_lire_stream(IGES_InputState* theInput,
+                     int*             theSectionNumber,
+                     char             theRecord[100],
+                     bool             theIsFNES);
+
+//! Appends a newly parsed parameter to the selected parameter list.
+//! @param[in] theParameterType parsed IGES_ParameterType value
+//! @param[in] theValueLength parameter buffer length including its terminator
+//! @param[in] theParameterValue parameter text
+void iges_newparam(int theParameterType, int theValueLength, char* theParameterValue);
+
+//! Parses parameters from one IGES parameter or global record.
+//! @param[in,out] theParameterStatus current parameter parser state
+//! @param[in] theRecord source record
+//! @param[in] theSeparator parameter separator
+//! @param[in] theTerminator record terminator
+//! @param[in] theRecordLength usable source record length
+void iges_param(int*  theParameterStatus,
+                char* theRecord,
+                char  theSeparator,
+                char  theTerminator,
+                int   theRecordLength);
+
+//! Parses one line of an IGES directory entry.
+//! @param[in,out] theDirectoryStatus zero for the first line, one for the second line
+//! @param[in] theSectionNumber directory entry sequence number
+//! @param[in] theRecord source record
+void iges_Dsect(int* theDirectoryStatus, int theSectionNumber, char* theRecord);
+
+//! Pre-analyzes a parameter record and selects its directory entry.
+//! @param[in] theSectionNumber parameter record sequence number
+//! @param[in,out] theRecord source record, truncated after its parameter data
+void iges_Psect(int theSectionNumber, char theRecord[80]);
+
+//! Creates and selects a directory entry.
+//! @param[in] theSectionNumber directory entry sequence number
+void iges_newpart(int theSectionNumber);
+
+//! Selects the directory entry referenced by a parameter record.
+//! @param[in] theDirectoryNumber directory entry sequence number
+void iges_curpart(int theDirectoryNumber);
+
+//! Appends text to the current parameter.
+//! @param[in] theLength number of characters to append
+//! @param[in] theValue source text
+void iges_addparam(int theLength, char* theValue);
+
+//! Sends a parser diagnostic containing a record and section.
+//! @param[in] theMode diagnostic severity
+//! @param[in] theCode message catalog key
+//! @param[in] theNumber record number
+//! @param[in] theText section name
+void IGESFile_Check2(int theMode, const char* theCode, int theNumber, const char* theText);
+
+//! Sends a parser diagnostic without message arguments.
+//! @param[in] theMode diagnostic severity
+//! @param[in] theCode message catalog key
+void IGESFile_Check3(int theMode, const char* theCode);
+
+#endif // _IGESFile_igesread_HeaderFile

@@ -20,14 +20,14 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPAlgo_GlueEnum.hxx>
-#include <BOPAlgo_PPaveFiller.hxx>
-#include <BOPAlgo_PBuilder.hxx>
 #include <BRepAlgoAPI_Algo.hxx>
 #include <BRepTools_History.hxx>
 #include <Precision.hxx>
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+class BOPAlgo_Builder;
+class BOPAlgo_PaveFiller;
 
 //! The class contains API level of the General Fuse algorithm.
 //!
@@ -194,10 +194,10 @@ public: //! @name Getting the section edges
 
 public: //! @name Getting tools performing the job
   //! Returns the Intersection tool
-  const BOPAlgo_PPaveFiller& DSFiller() const { return myDSFiller; }
+  BOPAlgo_PaveFiller* const& DSFiller() const { return myDSFiller; }
 
   //! Returns the Building tool
-  const BOPAlgo_PBuilder& Builder() const { return myBuilder; }
+  BOPAlgo_Builder* const& Builder() const { return myBuilder; }
 
   //! History tool
   occ::handle<BRepTools_History> History() const { return myFillHistory ? myHistory : nullptr; }
@@ -232,9 +232,9 @@ protected: //! @name Fields
   // Tools
   bool myIsIntersectionNeeded;              //!< Flag to control whether the intersection
                                             //! of arguments should be performed or not
-  BOPAlgo_PPaveFiller myDSFiller;           //!< Intersection tool performs intersection of the
+  BOPAlgo_PaveFiller* myDSFiller;           //!< Intersection tool performs intersection of the
                                             //! argument shapes.
-  BOPAlgo_PBuilder myBuilder;               //!< Building tool performs construction of the result
+  BOPAlgo_Builder* myBuilder;               //!< Building tool performs construction of the result
                                             //! basing on the results of intersection
   occ::handle<BRepTools_History> myHistory; //!< General History tool, containing all History of
                                             //! shapes modifications during the operation

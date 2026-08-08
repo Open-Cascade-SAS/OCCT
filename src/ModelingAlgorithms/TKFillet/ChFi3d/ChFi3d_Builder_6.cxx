@@ -32,7 +32,6 @@
 #include <BRepBlend_AppSurface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
-#include <BRepBlend_CSWalking.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepBlend_RstRstLineBuilder.hxx>
 #include <BRepBlend_SurfRstLineBuilder.hxx>

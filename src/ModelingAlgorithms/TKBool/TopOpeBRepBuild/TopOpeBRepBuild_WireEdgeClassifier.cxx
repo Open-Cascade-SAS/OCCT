@@ -54,7 +54,7 @@ TopOpeBRepBuild_WireEdgeClassifier::TopOpeBRepBuild_WireEdgeClassifier(
   const TopOpeBRepBuild_BlockBuilder& BB)
     : TopOpeBRepBuild_CompositeClassifier(BB)
 {
-  myBCEdge.Face() = TopoDS::Face(F);
+  myBCEdge.SetFace(TopoDS::Face(F));
 }
 
 //=================================================================================================
@@ -509,7 +509,7 @@ bool TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS_Shape& EE)
     myFirstCompare = false;
   }
 
-  myBCEdge.Edge()         = E;
+  myBCEdge.SetEdge(E);
   TopAbs_Orientation Eori = E.Orientation();
   myFPC.Compare(myBCEdge, Eori);
 #ifdef OCCT_DEBUG
