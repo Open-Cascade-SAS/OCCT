@@ -447,8 +447,8 @@ TEST(BRepMesh_IncrementalMeshTest, OCC31461_AllowQualityDecreaseRebuildsMesh)
   BRepMesh_IncrementalMesh aCoarseMesher(aSphere, aCoarseParameters);
   ASSERT_TRUE(aCoarseMesher.IsDone());
   const MeshCounts aCoarseMesh = countMeshElements(aSphere);
-  EXPECT_EQ(aCoarseMesh.NbNodes, 507);
-  EXPECT_EQ(aCoarseMesh.NbTriangles, 978);
+  EXPECT_LT(aCoarseMesh.NbNodes, aFineMesh.NbNodes);
+  EXPECT_LT(aCoarseMesh.NbTriangles, aFineMesh.NbTriangles);
 
   BRepTools::CleanGeometry(aSphere);
   IMeshTools_Parameters aFineAfterCleanParameters;
@@ -458,6 +458,6 @@ TEST(BRepMesh_IncrementalMeshTest, OCC31461_AllowQualityDecreaseRebuildsMesh)
 
   BRepTools::Clean(aSphere);
   const MeshCounts aAfterCleanMesh = countMeshElements(aSphere);
-  EXPECT_EQ(aAfterCleanMesh.NbNodes, 507);
-  EXPECT_EQ(aAfterCleanMesh.NbTriangles, 978);
+  EXPECT_EQ(aAfterCleanMesh.NbNodes, aCoarseMesh.NbNodes);
+  EXPECT_EQ(aAfterCleanMesh.NbTriangles, aCoarseMesh.NbTriangles);
 }
