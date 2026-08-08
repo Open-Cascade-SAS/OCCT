@@ -107,7 +107,7 @@ struct KeyIndexRef
 //=================================================================================================
 
 //! Generic forward iterator for View classes.
-//! @tparam BaseIterator the map's native Iterator type
+//! @tparam BaseIterator the map's native STL iterator type
 //! @tparam RefType      the reference type returned by operator*
 //! @tparam Extractor    functor class with static Extract(iter) returning RefType
 template <class BaseIterator, class RefType, class Extractor>
@@ -115,7 +115,7 @@ class Iterator
 {
 public:
   using iterator_category = std::forward_iterator_tag;
-  using value_type        = RefType;
+  using value_type        = std::decay_t<RefType>;
   using difference_type   = std::ptrdiff_t;
   using pointer           = void;
   using reference         = RefType;
@@ -125,8 +125,8 @@ public:
 
   //! Constructor from map
   template <class MapType>
-  explicit Iterator(const MapType& theMap)
-      : myInner(theMap)
+  explicit Iterator(MapType& theMap)
+      : myInner(theMap.begin())
   {
   }
 
@@ -136,7 +136,7 @@ public:
   //! Prefix increment
   Iterator& operator++()
   {
-    myInner.Next();
+    ++myInner;
     return *this;
   }
 
@@ -149,11 +149,7 @@ public:
   }
 
   //! Equality comparison
-  bool operator==(const Iterator& theOther) const
-  {
-    return myInner.More() == theOther.myInner.More()
-           && (!myInner.More() || myInner.IsEqual(theOther.myInner));
-  }
+  bool operator==(const Iterator& theOther) const { return myInner == theOther.myInner; }
 
   //! Inequality comparison
   bool operator!=(const Iterator& theOther) const { return !(*this == theOther); }
@@ -173,8 +169,11 @@ template <class MapType, class RefType, class Extractor, bool IsConst>
 class View
 {
 public:
-  using MapRef   = std::conditional_t<IsConst, const MapType&, MapType&>;
-  using iterator = Iterator<typename MapType::Iterator, RefType, Extractor>;
+  using MapRef = std::conditional_t<IsConst, const MapType&, MapType&>;
+  using base_iterator =
+    std::conditional_t<IsConst, typename MapType::const_iterator, typename MapType::iterator>;
+  using iterator       = Iterator<base_iterator, RefType, Extractor>;
+  using const_iterator = iterator;
 
   //! Constructor
   explicit View(MapRef theMap)
@@ -187,6 +186,18 @@ public:
 
   //! Returns iterator past the end
   iterator end() const { return iterator(); }
+
+  //! Returns a const-qualified view iterator to the first element.
+  const_iterator cbegin() const { return begin(); }
+
+  //! Returns a const-qualified view iterator past the end.
+  const_iterator cend() const { return end(); }
+
+  //! Returns number of mapped entries.
+  size_t size() const noexcept { return myMap.Size(); }
+
+  //! Returns whether the view is empty.
+  bool empty() const noexcept { return myMap.IsEmpty(); }
 
 private:
   MapRef myMap;

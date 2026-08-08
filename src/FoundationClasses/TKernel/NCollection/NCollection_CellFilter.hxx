@@ -22,6 +22,8 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_IncAllocator.hxx>
 
+#include <cmath>
+
 //! Auxiliary enumeration serving as response from method Inspect
 enum NCollection_CellFilter_Action
 {
@@ -255,7 +257,8 @@ protected:
     {
       for (int i = 0; i < theCellSize.Length(); i++)
       {
-        double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+        const double aCellSize = theCellSize(theCellSize.Lower() + i);
+        double       aVal      = (double)(Inspector::Coord(i, thePnt) / aCellSize);
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -314,8 +317,8 @@ protected:
     bool operator==(const Cell& theOther) const noexcept { return IsEqual(theOther); }
 
   public:
-    CellIndex index;
-    ListNode* Objects;
+    CellIndex         index;
+    mutable ListNode* Objects;
   };
 
   struct CellHasher
@@ -350,7 +353,7 @@ protected:
   void add(const CellIndex& theIndex, const Target& theTarget)
   {
     // add a new cell or get reference to existing one
-    Cell& aMapCell = const_cast<Cell&>(myCells.TryEmplaced(theIndex));
+    const Cell& aMapCell = myCells.TryEmplaced(theIndex);
 
     // create a new list node and add it to the beginning of the list
     ListNode* aNode = (ListNode*)myAllocator->Allocate(sizeof(ListNode));
@@ -369,7 +372,11 @@ protected:
   {
     const Cell_IndexType aStart = theMinIndex.index[idim];
     const Cell_IndexType anEnd  = theMaxIndex.index[idim];
-    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    if (aStart > anEnd)
+    {
+      return;
+    }
+    for (Cell_IndexType i = aStart;; ++i)
     {
       theIndex[idim] = i;
       if (idim) // recurse
@@ -380,18 +387,22 @@ protected:
       {
         add(theIndex, theTarget);
       }
+      if (i == anEnd)
+      {
+        break;
+      }
     }
   }
 
   //! Remove the target object from the specified cell
   void remove(const Cell& theCell, const Target& theTarget)
   {
-    // Modifying the Objects field does not affect the hash, const_cast is safe
+    // Objects is mutable bookkeeping and is not part of the cell key.
     auto aMapCellOpt = myCells.Contained(theCell);
     if (!aMapCellOpt)
       return;
 
-    Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
+    const Cell& aMapCell = aMapCellOpt->get();
 
     // iterate by objects in the cell and check each
     ListNode* aNode = aMapCell.Objects;
@@ -425,7 +436,11 @@ protected:
   {
     const Cell_IndexType aStart = theCellMin.index[idim];
     const Cell_IndexType anEnd  = theCellMax.index[idim];
-    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    if (aStart > anEnd)
+    {
+      return;
+    }
+    for (Cell_IndexType i = aStart;; ++i)
     {
       theCell.index[idim] = i;
       if (idim) // recurse
@@ -436,18 +451,22 @@ protected:
       {
         remove(theCell, theTarget);
       }
+      if (i == anEnd)
+      {
+        break;
+      }
     }
   }
 
   //! Inspect the target objects in the specified cell.
   void inspect(const Cell& theCell, Inspector& theInspector)
   {
-    // Modifying the Objects field does not affect the hash, const_cast is safe
+    // Objects is mutable bookkeeping and is not part of the cell key.
     auto aMapCellOpt = myCells.Contained(theCell);
     if (!aMapCellOpt)
       return;
 
-    Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
+    const Cell& aMapCell = aMapCellOpt->get();
 
     // iterate by objects in the cell and check each
     ListNode* aNode = aMapCell.Objects;
@@ -482,7 +501,11 @@ protected:
   {
     const Cell_IndexType aStart = theCellMin.index[idim];
     const Cell_IndexType anEnd  = theCellMax.index[idim];
-    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    if (aStart > anEnd)
+    {
+      return;
+    }
+    for (Cell_IndexType i = aStart;; ++i)
     {
       theCell.index[idim] = i;
       if (idim) // recurse
@@ -492,6 +515,10 @@ protected:
       else // inspect this cell
       {
         inspect(theCell, theInspector);
+      }
+      if (i == anEnd)
+      {
+        break;
       }
     }
   }

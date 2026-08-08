@@ -186,7 +186,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
                                                       const NCollection_Vec3<float>& thePos,
                                                       const NCollection_Vec3<float>& theNorm)
 {
-  if (Resizable())
+  if (resizable())
   {
     ReSize(Extent());
   }
@@ -230,7 +230,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
   }
   // theIsOpposite = false;
   aData[aHash] = new (this->myAllocator) DataMapNode(thePos, theNorm, theIndex, aData[aHash]);
-  Increment();
+  increment();
   return true;
 }
 
@@ -241,7 +241,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
   NCollection_ListNode** aNewData   = nullptr;
   NCollection_ListNode** aDummy     = nullptr;
   size_t                 aNbNewBuck = 0;
-  if (BeginResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy))
+  if (beginResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy))
   {
     if (DataMapNode** anOldData = (DataMapNode**)myData1)
     {
@@ -257,7 +257,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
         }
       }
     }
-    EndResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy);
+    endResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy);
   }
 }
 

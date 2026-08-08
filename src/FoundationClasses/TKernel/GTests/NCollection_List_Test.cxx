@@ -115,6 +115,12 @@ TEST_F(NCollection_ListTest, STLIterators)
     EXPECT_EQ(expectedValues[index++], value);
   }
   EXPECT_EQ(3, index);
+
+  const NCollection_List<int>& aConstList = aList;
+  EXPECT_EQ(aList.begin(), aConstList.cbegin());
+  EXPECT_EQ(aList.end(), aConstList.cend());
+  EXPECT_EQ(1, std::count(aConstList.cbegin(), aConstList.cend(), 20));
+  EXPECT_NE(aConstList.cend(), std::find(aConstList.cbegin(), aConstList.cend(), 30));
 }
 
 TEST_F(NCollection_ListTest, RemoveFirst)
