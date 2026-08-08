@@ -34,6 +34,7 @@
 #include <Extrema_LocateExtCC.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -77,6 +78,9 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
 #include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 extern bool   ChFi3d_GetcontextFORCEBLEND();
@@ -3360,10 +3364,106 @@ bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector)
 
 //=======================================================================
 
+static bool ChFi3d_HasCompleteCoincidence(const Geom2dInt_GInter&    theIntersector,
+                                          const Geom2dAdaptor_Curve& theFirstCurve,
+                                          const Geom2dAdaptor_Curve& theSecondCurve,
+                                          const double               theTolerance,
+                                          bool*                      theIsReversed)
+{
+  if (theIntersector.NbSegments() != 1)
+  {
+    return false;
+  }
+
+  const IntRes2d_IntersectionSegment& aSegment = theIntersector.Segment(1);
+  if (!aSegment.HasFirstPoint() || !aSegment.HasLastPoint())
+  {
+    return false;
+  }
+
+  const double aFirstOnFirst  = aSegment.FirstPoint().ParamOnFirst();
+  const double aLastOnFirst   = aSegment.LastPoint().ParamOnFirst();
+  const double aFirstOnSecond = aSegment.FirstPoint().ParamOnSecond();
+  const double aLastOnSecond  = aSegment.LastPoint().ParamOnSecond();
+  const bool   isComplete =
+    std::abs(std::min(aFirstOnFirst, aLastOnFirst) - theFirstCurve.FirstParameter()) <= theTolerance
+    && std::abs(std::max(aFirstOnFirst, aLastOnFirst) - theFirstCurve.LastParameter())
+         <= theTolerance
+    && std::abs(std::min(aFirstOnSecond, aLastOnSecond) - theSecondCurve.FirstParameter())
+         <= theTolerance
+    && std::abs(std::max(aFirstOnSecond, aLastOnSecond) - theSecondCurve.LastParameter())
+         <= theTolerance;
+  if (isComplete && theIsReversed != nullptr)
+  {
+    *theIsReversed = (aLastOnFirst - aFirstOnFirst) * (aLastOnSecond - aFirstOnSecond) < 0.0;
+  }
+  return isComplete;
+}
+
+//=======================================================================
+
+bool ChFi3d_HasCommonEndpoint(const Geom2dInt_GInter&    theIntersector,
+                              const Geom2dAdaptor_Curve& theFirstCurve,
+                              const Geom2dAdaptor_Curve& theSecondCurve,
+                              const double               theTolerance,
+                              bool&                      theFirstCurveStart,
+                              bool&                      theSecondCurveStart)
+{
+  const auto isEndpoint = [theTolerance](const double               theParameter,
+                                         const Geom2dAdaptor_Curve& theCurve,
+                                         bool&                      theCurveStart) {
+    if (std::abs(theParameter - theCurve.FirstParameter()) <= theTolerance)
+    {
+      theCurveStart = true;
+      return true;
+    }
+    if (std::abs(theParameter - theCurve.LastParameter()) <= theTolerance)
+    {
+      theCurveStart = false;
+      return true;
+    }
+    return false;
+  };
+
+  for (int anIndex = 1; anIndex <= theIntersector.NbPoints(); ++anIndex)
+  {
+    const IntRes2d_IntersectionPoint& aPoint = theIntersector.Point(anIndex);
+    if (isEndpoint(aPoint.ParamOnFirst(), theFirstCurve, theFirstCurveStart)
+        && isEndpoint(aPoint.ParamOnSecond(), theSecondCurve, theSecondCurveStart))
+    {
+      return true;
+    }
+  }
+
+  for (int anIndex = 1; anIndex <= theIntersector.NbSegments(); ++anIndex)
+  {
+    const IntRes2d_IntersectionSegment& aSegment = theIntersector.Segment(anIndex);
+    if (!aSegment.HasFirstPoint() || !aSegment.HasLastPoint())
+    {
+      continue;
+    }
+    const IntRes2d_IntersectionPoint& aFirstPoint = aSegment.FirstPoint();
+    const IntRes2d_IntersectionPoint& aLastPoint  = aSegment.LastPoint();
+    if (std::abs(aFirstPoint.ParamOnFirst() - aLastPoint.ParamOnFirst()) > theTolerance
+        || std::abs(aFirstPoint.ParamOnSecond() - aLastPoint.ParamOnSecond()) > theTolerance)
+    {
+      continue;
+    }
+    if (isEndpoint(aFirstPoint.ParamOnFirst(), theFirstCurve, theFirstCurveStart)
+        && isEndpoint(aFirstPoint.ParamOnSecond(), theSecondCurve, theSecondCurveStart))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=======================================================================
+
 void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                             const occ::handle<ChFiDS_Stripe>& theStripe2,
-                            TopOpeBRepDS_DataStructure& /*DStr*/,
-                            const double tol2d)
+                            TopOpeBRepDS_DataStructure&       DStr,
+                            const double                      tol2d)
 {
   // Do not check the stripeshaving common corner points
   for (int iSur1 = 1; iSur1 <= 2; iSur1++)
@@ -3444,9 +3544,28 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                                    aFI2.FirstParameter(),
                                    aFI2.LastParameter());
       anIntersector.Perform(aPCurve1, aPCurve2, tol2d, Precision::PConfusion());
+      bool isReversed = false;
+      if (ChFi3d_HasCompleteCoincidence(anIntersector, aPCurve1, aPCurve2, tol2d, &isReversed))
+      {
+        DStr.MergeEquivalentCurves(aFI1.LineIndex(), aFI2.LineIndex(), isReversed);
+      }
       if (ChFi3d_HasTransversalIntersection(anIntersector))
       {
         throw StdFail_NotDone("StripeEdgeInter : fillets have too big radiuses");
+      }
+      bool isFirstCurveStart  = false;
+      bool isSecondCurveStart = false;
+      if (ChFi3d_HasCommonEndpoint(anIntersector,
+                                   aPCurve1,
+                                   aPCurve2,
+                                   tol2d,
+                                   isFirstCurveStart,
+                                   isSecondCurveStart))
+      {
+        DStr.MergeEquivalentCurvePoints(aFI1.LineIndex(),
+                                        isFirstCurveStart,
+                                        aFI2.LineIndex(),
+                                        isSecondCurveStart);
       }
     }
   }

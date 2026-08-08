@@ -18,6 +18,7 @@
 #include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
 #include <BRepBlend_Line.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
@@ -56,6 +57,9 @@
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 extern bool ChFi3d_GettraceDRAWFIL();
@@ -741,6 +745,77 @@ static void FillSD(TopOpeBRepDS_DataStructure&                               DSt
   }
 }
 
+//=================================================================================================
+
+static TopoDS_Edge CoincidentDomainEdge(
+  const NCollection_DataMap<int, occ::handle<Adaptor2d_Curve2d>>& theElements,
+  const HatchGen_Domain&                                          theDomain)
+{
+  if (!theDomain.HasFirstPoint() || !theDomain.HasSecondPoint())
+  {
+    return TopoDS_Edge();
+  }
+
+  const HatchGen_PointOnHatching& aFirst  = theDomain.FirstPoint();
+  const HatchGen_PointOnHatching& aSecond = theDomain.SecondPoint();
+  if (!aFirst.SegmentBeginning() || !aSecond.SegmentEnd())
+  {
+    return TopoDS_Edge();
+  }
+
+  for (int i = 1; i <= aFirst.NbPoints(); ++i)
+  {
+    const HatchGen_PointOnElement& aFirstOnElement = aFirst.Point(i);
+    if (aFirstOnElement.Position() == TopAbs_INTERNAL)
+    {
+      continue;
+    }
+    for (int j = 1; j <= aSecond.NbPoints(); ++j)
+    {
+      const HatchGen_PointOnElement& aSecondOnElement = aSecond.Point(j);
+      if (aFirstOnElement.Index() != aSecondOnElement.Index()
+          || aSecondOnElement.Position() == TopAbs_INTERNAL
+          || aFirstOnElement.Position() == aSecondOnElement.Position())
+      {
+        continue;
+      }
+
+      const int anElementIndex = aFirstOnElement.Index();
+      if (!theElements.IsBound(anElementIndex))
+      {
+        continue;
+      }
+      occ::handle<BRepAdaptor_Curve2d> anElement =
+        occ::down_cast<BRepAdaptor_Curve2d>(theElements(anElementIndex));
+      if (!anElement.IsNull())
+      {
+        return anElement->Edge();
+      }
+    }
+  }
+  return TopoDS_Edge();
+}
+
+//=================================================================================================
+
+static void SetCoincidentDomainEdge(
+  TopOpeBRepDS_DataStructure&                                     theDS,
+  const ChFiDS_FaceInterference&                                  theInterference,
+  const NCollection_DataMap<int, occ::handle<Adaptor2d_Curve2d>>& theElements,
+  const HatchGen_Domain&                                          theDomain,
+  const bool                                                      theWholeDomain)
+{
+  if (!theWholeDomain)
+  {
+    return;
+  }
+  const TopoDS_Edge anEdge = CoincidentDomainEdge(theElements, theDomain);
+  if (!anEdge.IsNull())
+  {
+    theDS.ChangeCurve(theInterference.LineIndex()).SetExistingEdge(anEdge);
+  }
+}
+
 //=======================================================================
 // function : SplitKPart
 // purpose  : Reconstruct SurfData depending on restrictions of faces.
@@ -911,6 +986,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       const HatchGen_Domain& Dom2 = H2.Domain(iH2, Ind2(i));
       FillSD(DStr, CD, M2, Dom2, Dom2.FirstPoint().Parameter(), true, 2, pitol, bout1);
       FillSD(DStr, CD, M2, Dom2, Dom2.SecondPoint().Parameter(), false, 2, pitol, bout2);
+      SetCoincidentDomainEdge(DStr, CD->InterferenceOnS2(), M2, Dom2, true);
       SetData.Append(CD);
       CD = CpSD(DStr, CD);
     }
@@ -965,6 +1041,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       const HatchGen_Domain& Dom1 = H1.Domain(iH1, Ind1(i));
       FillSD(DStr, CD, M1, Dom1, Dom1.FirstPoint().Parameter(), true, 1, pitol, bout1);
       FillSD(DStr, CD, M1, Dom1, Dom1.SecondPoint().Parameter(), false, 1, pitol, bout2);
+      SetCoincidentDomainEdge(DStr, CD->InterferenceOnS1(), M1, Dom1, true);
       SetData.Append(CD);
       CD = CpSD(DStr, CD);
     }
@@ -1055,6 +1132,8 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
           {
             if (f2 <= l1 && f1 <= l2)
             {
+              const double aFirst = std::max(f1, f2);
+              const double aLast  = std::min(l1, l2);
               if (f1 >= f2 - tol2d)
               {
                 FillSD(DStr, CD, M1, Dom1, f1, true, 1, pitol, bout1);
@@ -1071,6 +1150,18 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
               {
                 FillSD(DStr, CD, M1, Dom1, l1, false, 1, pitol, bout2);
               }
+              SetCoincidentDomainEdge(DStr,
+                                      CD->InterferenceOnS1(),
+                                      M1,
+                                      Dom1,
+                                      std::abs(aFirst - f1) <= tol2d
+                                        && std::abs(aLast - l1) <= tol2d);
+              SetCoincidentDomainEdge(DStr,
+                                      CD->InterferenceOnS2(),
+                                      M2,
+                                      Dom2,
+                                      std::abs(aFirst - f2) <= tol2d
+                                        && std::abs(aLast - l2) <= tol2d);
               SetData.Append(CD);
               CD = CpSD(DStr, CD);
               ion1.Append(i);

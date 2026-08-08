@@ -107,10 +107,7 @@ TEST(BRepFilletAPI_MakeChamferTest, Issue1177_ChamferAllEdgesFlatBox_SucceedsWit
   ASSERT_FALSE(aResult.IsNull());
 
   BRepCheck_Analyzer anAnalyzer(aResult);
-  if (!anAnalyzer.IsValid())
-  {
-    GTEST_SKIP() << "Valid consumed-face topology requires the follow-up reconstruction fix";
-  }
+  EXPECT_TRUE(anAnalyzer.IsValid());
 }
 
 TEST(BRepFilletAPI_MakeChamferTest, ChamferMoreFaces)
