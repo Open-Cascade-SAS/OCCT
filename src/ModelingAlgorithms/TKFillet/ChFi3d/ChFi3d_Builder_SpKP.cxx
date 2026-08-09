@@ -766,8 +766,8 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
   int                                                      Nb1 = 1, Nb2 = 1;
 
   // Cutting of tangency lines (hatching).
-  Geom2dHatch_Intersector Inter(pitol, pitol);
-  Geom2dHatch_Hatcher H1(Inter, tol2d, tolapp3d), H2(Inter, tol2d, tolapp3d);
+  Geom2dHatch_Intersector   Inter(pitol, pitol);
+  Geom2dHatch_Hatcher       H1(Inter, tol2d, tolapp3d), H2(Inter, tol2d, tolapp3d);
   int                       ie;
   occ::handle<Geom2d_Curve> C1 = Data->InterferenceOnS1().PCurveOnFace();
   Geom2dAdaptor_Curve       ll1;
