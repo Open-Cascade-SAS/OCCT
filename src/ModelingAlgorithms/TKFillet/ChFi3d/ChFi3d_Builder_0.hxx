@@ -56,7 +56,8 @@ class Geom2dHatch_Hatcher;
 class Geom2dInt_GInter;
 
 //! Computes hatching domains using coincident segments only when no interior domain exists.
-bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher, const int theHatchingIndex);
+Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,
+                                                   const int            theHatchingIndex);
 
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
