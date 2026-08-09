@@ -95,6 +95,8 @@ set(OCCT_TKMath_GTests_FILES
   MathPoly_Test.cxx
   MathPoly_Comparison_Test.cxx
   MathPoly_Laguerre_Test.cxx
+  # Poly tests
+  Poly_ArrayOfNodes_Test.cxx
   # MathLin tests
   MathLin_Test.cxx
   MathLin_EigenSearch_Test.cxx

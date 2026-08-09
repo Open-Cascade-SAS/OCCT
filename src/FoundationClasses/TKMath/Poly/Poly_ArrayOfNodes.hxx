@@ -25,14 +25,14 @@ class Poly_ArrayOfNodes : public NCollection_AliasedArray<>
 public:
   //! Empty constructor of double-precision array.
   Poly_ArrayOfNodes()
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt))
+      : NCollection_AliasedArray(sizeof(gp_Pnt))
   {
     //
   }
 
   //! Constructor of double-precision array.
   Poly_ArrayOfNodes(int theLength)
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt), theLength)
+      : NCollection_AliasedArray(sizeof(gp_Pnt), theLength)
   {
     //
   }
@@ -42,14 +42,14 @@ public:
 
   //! Constructor wrapping pre-allocated C-array of values without copying them.
   Poly_ArrayOfNodes(const gp_Pnt& theBegin, int theLength)
-      : NCollection_AliasedArray(theBegin, theLength)
+      : NCollection_AliasedArray(&theBegin, theLength)
   {
     //
   }
 
   //! Constructor wrapping pre-allocated C-array of values without copying them.
   Poly_ArrayOfNodes(const NCollection_Vec3<float>& theBegin, int theLength)
-      : NCollection_AliasedArray(theBegin, theLength)
+      : NCollection_AliasedArray(&theBegin, theLength)
   {
     //
   }
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT ~Poly_ArrayOfNodes();
 
   //! Returns TRUE if array defines nodes with double precision.
-  bool IsDoublePrecision() const { return myStride == (int)sizeof(gp_Pnt); }
+  bool IsDoublePrecision() const { return myStride == sizeof(gp_Pnt); }
 
   //! Sets if array should define nodes with double or single precision.
   //! Raises exception if array was already allocated.
@@ -69,7 +69,7 @@ public:
       throw Standard_ProgramError(
         "Poly_ArrayOfNodes::SetDoublePrecision() should be called before allocation");
     }
-    myStride = int(theIsDouble ? sizeof(gp_Pnt) : sizeof(NCollection_Vec3<float>));
+    myStride = checkedStride(theIsDouble ? sizeof(gp_Pnt) : sizeof(NCollection_Vec3<float>));
   }
 
   //! Copies data of theOther array to this.
@@ -115,7 +115,15 @@ public:
 
 inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
 {
-  if (myStride == (int)sizeof(gp_Pnt))
+  Standard_OutOfRange_Raise_if(theIndex < 0, "Poly_ArrayOfNodes::Value(), out of range index");
+  return Value(static_cast<size_t>(theIndex));
+}
+
+//=================================================================================================
+
+inline gp_Pnt Poly_ArrayOfNodes::Value(const size_t theIndex) const
+{
+  if (myStride == sizeof(gp_Pnt))
   {
     return NCollection_AliasedArray::Value<gp_Pnt>(theIndex);
   }
@@ -129,18 +137,17 @@ inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
 
 //=================================================================================================
 
-inline gp_Pnt Poly_ArrayOfNodes::Value(const size_t theIndex) const
+inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
 {
-  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
-                               "Poly_ArrayOfNodes::Value(), out of range index");
-  return Value(static_cast<int>(theIndex));
+  Standard_OutOfRange_Raise_if(theIndex < 0, "Poly_ArrayOfNodes::SetValue(), out of range index");
+  SetValue(static_cast<size_t>(theIndex), theValue);
 }
 
 //=================================================================================================
 
-inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
+inline void Poly_ArrayOfNodes::SetValue(const size_t theIndex, const gp_Pnt& theValue)
 {
-  if (myStride == (int)sizeof(gp_Pnt))
+  if (myStride == sizeof(gp_Pnt))
   {
     NCollection_AliasedArray::ChangeValue<gp_Pnt>(theIndex) = theValue;
   }
@@ -150,15 +157,6 @@ inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
       NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
     aVec3.SetValues((float)theValue.X(), (float)theValue.Y(), (float)theValue.Z());
   }
-}
-
-//=================================================================================================
-
-inline void Poly_ArrayOfNodes::SetValue(const size_t theIndex, const gp_Pnt& theValue)
-{
-  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
-                               "Poly_ArrayOfNodes::SetValue(), out of range index");
-  SetValue(static_cast<int>(theIndex), theValue);
 }
 
 #endif // _Poly_ArrayOfNodes_HeaderFile

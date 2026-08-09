@@ -21,7 +21,8 @@ TEST(NCollection_AliasedArrayTest, ResizeEmptyWithCopy)
 
   anArray.Resize(2, true);
 
-  EXPECT_EQ(2, anArray.Size());
+  EXPECT_EQ(size_t{2}, anArray.Size());
+  EXPECT_EQ(2, anArray.Length());
   anArray.ChangeValue<int>(0) = 10;
   anArray.ChangeLast<int>()   = 20;
   EXPECT_EQ(10, anArray.Value<int>(0));
@@ -31,12 +32,42 @@ TEST(NCollection_AliasedArrayTest, ResizeEmptyWithCopy)
 TEST(NCollection_AliasedArrayTest, ResizeWithoutCopy)
 {
   NCollection_AliasedArray<> anArray(sizeof(int), 2);
+  EXPECT_EQ(sizeof(int), anArray.Stride());
+  EXPECT_TRUE(anArray.IsDeletable());
   anArray.ChangeValue<int>(0) = 10;
   anArray.ChangeValue<int>(1) = 20;
 
-  anArray.Resize(4, false);
+  anArray.Resize(size_t{4}, false);
 
-  EXPECT_EQ(4, anArray.Size());
+  EXPECT_EQ(size_t{4}, anArray.Size());
+  EXPECT_EQ(4, anArray.Length());
   anArray.ChangeLast<int>() = 40;
   EXPECT_EQ(40, anArray.Value<int>(3));
+}
+
+TEST(NCollection_AliasedArrayTest, WrapExternalArray)
+{
+  int                        anExternalArray[] = {10, 20};
+  NCollection_AliasedArray<> anArray(anExternalArray, size_t{2});
+
+  EXPECT_EQ(sizeof(int), anArray.Stride());
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(10, anArray.Value<int>(0));
+  anArray.ChangeValue<int>(size_t{1}) = 30;
+  EXPECT_EQ(30, anExternalArray[1]);
+}
+
+TEST(NCollection_AliasedArrayTest, TypedDataAndInit)
+{
+  NCollection_AliasedArray<> anArray(sizeof(int), size_t{3});
+
+  anArray.Init<int>(7);
+  const int* aData = anArray.Data<int>();
+  EXPECT_EQ(7, aData[0]);
+  EXPECT_EQ(7, aData[1]);
+  EXPECT_EQ(7, aData[2]);
+
+  int* aChangeData = anArray.ChangeData<int>();
+  aChangeData[1]   = 9;
+  EXPECT_EQ(9, anArray.Value<int>(size_t{1}));
 }
