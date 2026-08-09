@@ -49,10 +49,10 @@
 #include <TFunction_Function.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
-
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pln.hxx>
 
 namespace
 {
