@@ -50,9 +50,7 @@ Poly_ArrayOfNodes& Poly_ArrayOfNodes::Assign(const Poly_ArrayOfNodes& theOther)
     const NCollection_Vec3<float>* aSource = theOther.Data<NCollection_Vec3<float>>();
     for (size_t anIter = 0; anIter < mySize; ++anIter)
     {
-      aTarget[anIter].SetCoord(aSource[anIter].x(),
-                               aSource[anIter].y(),
-                               aSource[anIter].z());
+      aTarget[anIter].SetCoord(aSource[anIter].x(), aSource[anIter].y(), aSource[anIter].z());
     }
   }
   else
