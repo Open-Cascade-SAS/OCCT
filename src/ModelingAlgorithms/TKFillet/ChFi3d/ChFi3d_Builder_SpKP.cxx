@@ -829,7 +829,7 @@ static void SetCoincidentDomainEdge(
 
 //=================================================================================================
 
-static bool ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher, const int theHatchingIndex)
+bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher, const int theHatchingIndex)
 {
   theHatcher.ComputeDomains(theHatchingIndex);
   if (!theHatcher.IsDone(theHatchingIndex) || theHatcher.NbDomains(theHatchingIndex) != 0)
@@ -919,7 +919,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M1.Bind(ie, I1->Value());
     }
     iH1 = H1.Trim(ll1);
-    if (!ComputeHatchingDomains(H1, iH1))
+    if (!ChFi3d_ComputeHatchingDomains(H1, iH1))
     {
       return false;
     }
@@ -953,7 +953,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M2.Bind(ie, I2->Value());
     }
     iH2 = H2.Trim(ll2);
-    if (!ComputeHatchingDomains(H2, iH2))
+    if (!ChFi3d_ComputeHatchingDomains(H2, iH2))
     {
       return false;
     }
