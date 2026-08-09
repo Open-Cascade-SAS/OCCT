@@ -13,7 +13,7 @@
 
 #include <ChFi3d_Builder_0.hxx>
 
-#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeSegment2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
 #include <Geom2dHatch_Intersector.hxx>
@@ -35,7 +35,7 @@ void AddContour(Geom2dHatch_Hatcher& theHatcher, const NCollection_Array1<gp_Pnt
   for (int anIndex = thePoints.Lower(); anIndex <= thePoints.Upper(); ++anIndex)
   {
     const int aNextIndex = anIndex == thePoints.Upper() ? thePoints.Lower() : anIndex + 1;
-    theHatcher.AddElement(GCE2d_MakeSegment(thePoints(anIndex), thePoints(aNextIndex)).Value(),
+    theHatcher.AddElement(GC_MakeSegment2d(thePoints(anIndex), thePoints(aNextIndex)).Value(),
                           TopAbs_FORWARD);
   }
 }
