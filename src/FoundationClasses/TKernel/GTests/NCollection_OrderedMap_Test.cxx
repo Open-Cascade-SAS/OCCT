@@ -15,6 +15,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <vector>
 
 namespace
@@ -363,6 +364,19 @@ TEST(NCollection_OrderedMapTest, STLBeginEnd)
 
   const std::vector<int> anExpected = {10, 20, 30};
   EXPECT_EQ(anExpected, anOrder);
+
+  const NCollection_OrderedMap<int>& aConstMap = aMap;
+  std::vector<int>                   aConstOrder;
+  for (auto it = aConstMap.cbegin(); it != aConstMap.cend(); ++it)
+  {
+    aConstOrder.push_back(*it);
+  }
+  EXPECT_EQ(anExpected, aConstOrder);
+
+  const auto aFound = std::find(aConstMap.cbegin(), aConstMap.cend(), 20);
+  ASSERT_NE(aConstMap.cend(), aFound);
+  EXPECT_EQ(20, *aFound);
+  EXPECT_TRUE(std::equal(aConstMap.cbegin(), aConstMap.cend(), anExpected.begin()));
 }
 
 TEST(NCollection_OrderedMapTest, RangeBasedFor)

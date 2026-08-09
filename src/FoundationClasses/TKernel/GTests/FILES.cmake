@@ -8,7 +8,9 @@ set(OCCT_TKernel_GTests_FILES
   Message_Messenger_Test.cxx
   NCollection_Array1_Test.cxx
   NCollection_Array2_Test.cxx
+  NCollection_AliasedArray_Test.cxx
   NCollection_BaseAllocator_Test.cxx
+  NCollection_Buffer_Test.cxx
   NCollection_CellFilter_Test.cxx
   NCollection_DynamicArray_Test.cxx
   NCollection_LinearVector_Test.cxx
