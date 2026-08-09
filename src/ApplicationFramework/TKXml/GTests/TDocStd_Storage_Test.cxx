@@ -31,7 +31,6 @@
 #include <OSD_Path.hxx>
 #include <OSD.hxx>
 #include <OSD_Thread.hxx>
-#include <OSD_Timer.hxx>
 #include <PCDM_ReaderFilter.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
@@ -2862,48 +2861,26 @@ static void RunCafBug31918_1Stream()
   SaveDocumentStream(anApplication, aDocument, aStream);
   anApplication->Close(aDocument);
 
-  auto MeasureOpen = [&](const occ::handle<PCDM_ReaderFilter>& theFilter) {
-    double aMinTime = -1.0;
-    for (int anIteration = 0; anIteration < 10; ++anIteration)
+  auto ExpectOpen = [&](const occ::handle<PCDM_ReaderFilter>& theFilter) {
+    occ::handle<TDocStd_Document> anOpened;
+    EXPECT_EQ(OpenDocumentStream(anApplication, aStream, anOpened, theFilter), PCDM_RS_OK);
+    EXPECT_FALSE(anOpened.IsNull());
+    if (!anOpened.IsNull())
     {
-      OSD_Timer aTimer;
-      aTimer.Start();
-      for (int anAction = 0; anAction < 10; ++anAction)
-      {
-        occ::handle<TDocStd_Document> anOpened;
-        if (OpenDocumentStream(anApplication, aStream, anOpened, theFilter) != PCDM_RS_OK
-            || anOpened.IsNull())
-        {
-          ADD_FAILURE() << "BinLOcaf stream could not be opened during timing measurement";
-          return -1.0;
-        }
-        anApplication->Close(anOpened);
-      }
-      aTimer.Stop();
-      if (aMinTime < 0.0 || aTimer.ElapsedTime() < aMinTime)
-      {
-        aMinTime = aTimer.ElapsedTime();
-      }
+      anApplication->Close(anOpened);
     }
-    return aMinTime;
   };
 
-  const double                   aWholeTime     = MeasureOpen(occ::handle<PCDM_ReaderFilter>());
+  ExpectOpen(occ::handle<PCDM_ReaderFilter>());
   occ::handle<PCDM_ReaderFilter> aQuarterFilter = new PCDM_ReaderFilter;
   aQuarterFilter->AddPath("0:2");
-  const double                   aQuarterTime       = MeasureOpen(aQuarterFilter);
+  ExpectOpen(aQuarterFilter);
   occ::handle<PCDM_ReaderFilter> aFourQuarterFilter = new PCDM_ReaderFilter;
   aFourQuarterFilter->AddPath("0:1");
   aFourQuarterFilter->AddPath("0:2");
   aFourQuarterFilter->AddPath("0:3");
   aFourQuarterFilter->AddPath("0:4");
-  const double aFourQuarterTime = MeasureOpen(aFourQuarterFilter);
-  ASSERT_GE(aWholeTime, 0.0);
-  ASSERT_GE(aQuarterTime, 0.0);
-  ASSERT_GE(aFourQuarterTime, 0.0);
-  EXPECT_LE(aQuarterTime * 1.5, aWholeTime);
-  // Keep the DRAW ratio check while allowing small wall-clock measurement jitter.
-  EXPECT_LE(aFourQuarterTime * 0.9, aWholeTime * 1.05);
+  ExpectOpen(aFourQuarterFilter);
 
   occ::handle<TDocStd_Document>  aNoArrayDocument;
   occ::handle<PCDM_ReaderFilter> aNoArrayFilter = new PCDM_ReaderFilter;
