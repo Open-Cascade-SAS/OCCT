@@ -827,6 +827,50 @@ static void SetCoincidentDomainEdge(
   }
 }
 
+//=================================================================================================
+
+static bool ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher, const int theHatchingIndex)
+{
+  theHatcher.ComputeDomains(theHatchingIndex);
+  if (!theHatcher.IsDone(theHatchingIndex) || theHatcher.NbDomains(theHatchingIndex) != 0)
+  {
+    return theHatcher.IsDone(theHatchingIndex);
+  }
+
+  int    aSegmentDepth = 0;
+  double aSegmentStart = 0.0;
+  bool   hasSegment    = false;
+  for (int aPointIndex = 1; aPointIndex <= theHatcher.NbPoints(theHatchingIndex); ++aPointIndex)
+  {
+    const HatchGen_PointOnHatching& aPoint = theHatcher.Point(theHatchingIndex, aPointIndex);
+    if (aPoint.SegmentBeginning())
+    {
+      if (aSegmentDepth == 0)
+      {
+        aSegmentStart = aPoint.Parameter();
+      }
+      ++aSegmentDepth;
+    }
+    if (aPoint.SegmentEnd() && aSegmentDepth > 0)
+    {
+      --aSegmentDepth;
+      if (aSegmentDepth == 0
+          && std::abs(aPoint.Parameter() - aSegmentStart) > theHatcher.Confusion2d())
+      {
+        hasSegment = true;
+        break;
+      }
+    }
+  }
+
+  if (hasSegment)
+  {
+    theHatcher.KeepSegments(true);
+    theHatcher.ComputeDomains(theHatchingIndex);
+  }
+  return theHatcher.IsDone(theHatchingIndex);
+}
+
 //=======================================================================
 // function : SplitKPart
 // purpose  : Reconstruct SurfData depending on restrictions of faces.
@@ -852,9 +896,8 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
   int                                                      Nb1 = 1, Nb2 = 1;
 
   // Cutting of tangency lines (hatching).
-  Geom2dHatch_Intersector Inter(pitol, pitol);
-  Geom2dHatch_Hatcher     H1(Inter, tol2d, tolapp3d, true, true),
-    H2(Inter, tol2d, tolapp3d, true, true);
+  Geom2dHatch_Intersector   Inter(pitol, pitol);
+  Geom2dHatch_Hatcher       H1(Inter, tol2d, tolapp3d), H2(Inter, tol2d, tolapp3d);
   int                       ie;
   occ::handle<Geom2d_Curve> C1 = Data->InterferenceOnS1().PCurveOnFace();
   Geom2dAdaptor_Curve       ll1;
@@ -876,8 +919,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M1.Bind(ie, I1->Value());
     }
     iH1 = H1.Trim(ll1);
-    H1.ComputeDomains(iH1);
-    if (!H1.IsDone(iH1))
+    if (!ComputeHatchingDomains(H1, iH1))
     {
       return false;
     }
@@ -911,8 +953,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M2.Bind(ie, I2->Value());
     }
     iH2 = H2.Trim(ll2);
-    H2.ComputeDomains(iH2);
-    if (!H2.IsDone(iH2))
+    if (!ComputeHatchingDomains(H2, iH2))
     {
       return false;
     }
