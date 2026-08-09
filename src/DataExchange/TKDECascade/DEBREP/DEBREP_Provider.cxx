@@ -423,8 +423,10 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
   bool              isDone  = false;
   if (aNode->InternalParameters.WriteBinary)
   {
-    if (aNode->InternalParameters.WriteVersionBin < BinTools_FormatVersion_LOWER
-        || aNode->InternalParameters.WriteVersionBin > BinTools_FormatVersion_UPPER)
+    if (aNode->InternalParameters.WriteVersionBin
+          < static_cast<BinTools_FormatVersion>(BinTools_FormatVersion_LOWER)
+        || aNode->InternalParameters.WriteVersionBin
+             > static_cast<BinTools_FormatVersion>(BinTools_FormatVersion_UPPER))
     {
       Message::SendFail() << "Error in the DEBREP_Provider during " << aFullContext
                           << ": Unknown binary format version";
@@ -447,8 +449,10 @@ bool DEBREP_Provider::Write(WriteStreamList&             theStreams,
   }
   else
   {
-    if (aNode->InternalParameters.WriteVersionAscii < TopTools_FormatVersion_LOWER
-        || aNode->InternalParameters.WriteVersionAscii > TopTools_FormatVersion_UPPER)
+    if (aNode->InternalParameters.WriteVersionAscii
+          < static_cast<TopTools_FormatVersion>(TopTools_FormatVersion_LOWER)
+        || aNode->InternalParameters.WriteVersionAscii
+             > static_cast<TopTools_FormatVersion>(TopTools_FormatVersion_UPPER))
     {
       Message::SendFail() << "Error in the DEBREP_Provider during " << aFullContext
                           << ": Unknown ASCII format version";
