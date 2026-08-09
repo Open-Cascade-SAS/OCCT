@@ -17,7 +17,6 @@
 #include <Standard_Integer.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -52,6 +51,40 @@ struct TopOpeBRepBuild_SurfaceCurve
   double                    FirstParameter;
   double                    LastParameter;
 };
+
+bool TopOpeBRepBuild_CurveRange(const TopOpeBRepDS_Curve&        theCurve,
+                                const occ::handle<Geom2d_Curve>& thePCurve,
+                                double&                          theFirst,
+                                double&                          theLast)
+{
+  const auto isValidRange = [](const double theRangeFirst, const double theRangeLast) {
+    return theRangeFirst < theRangeLast && !Precision::IsInfinite(theRangeFirst)
+           && !Precision::IsInfinite(theRangeLast);
+  };
+
+  if (theCurve.Range(theFirst, theLast) && isValidRange(theFirst, theLast))
+  {
+    return true;
+  }
+  if (!thePCurve.IsNull())
+  {
+    theFirst = thePCurve->FirstParameter();
+    theLast  = thePCurve->LastParameter();
+    if (isValidRange(theFirst, theLast))
+    {
+      return true;
+    }
+  }
+
+  const occ::handle<Geom_Curve>& aCurve3d = theCurve.Curve();
+  if (!aCurve3d.IsNull())
+  {
+    theFirst = aCurve3d->FirstParameter();
+    theLast  = aCurve3d->LastParameter();
+    return isValidRange(theFirst, theLast);
+  }
+  return false;
+}
 
 bool TopOpeBRepBuild_HasCompleteCoincidence(const Geom2dInt_GInter&    theIntersector,
                                             const Geom2dAdaptor_Curve& theFirstCurve,
@@ -94,13 +127,13 @@ bool TopOpeBRepBuild_FindCurveEnd(const occ::handle<TopOpeBRepDS_HDataStructure>
                                   int&                                            theGeometryIndex,
                                   bool&                                           theIsPoint)
 {
-  const occ::handle<Geom_Curve>& aCurve = theHDS->Curve(theCurveIndex).Curve();
-  if (aCurve.IsNull())
+  double aFirst, aLast;
+  if (!TopOpeBRepBuild_CurveRange(theHDS->Curve(theCurveIndex), nullptr, aFirst, aLast))
   {
     return false;
   }
 
-  const double aParameter    = theCurveStart ? aCurve->FirstParameter() : aCurve->LastParameter();
+  const double aParameter    = theCurveStart ? aFirst : aLast;
   double       aBestDistance = RealLast();
   for (TopOpeBRepDS_PointIterator aPointIt(theHDS->CurvePoints(theCurveIndex)); aPointIt.More();
        aPointIt.Next())
@@ -230,18 +263,18 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
     for (TopOpeBRepDS_CurveIterator aCurveIt(HDS->SurfaceCurves(aSurfaceIndex)); aCurveIt.More();
          aCurveIt.Next())
     {
-      const occ::handle<Geom2d_Curve>& aPCurve  = aCurveIt.PCurve();
-      const occ::handle<Geom_Curve>&   aCurve3d = HDS->Curve(aCurveIt.Current()).Curve();
-      if (aPCurve.IsNull() || aCurve3d.IsNull())
+      const occ::handle<Geom2d_Curve>& aPCurve = aCurveIt.PCurve();
+      const TopOpeBRepDS_Curve&        aCurve  = HDS->Curve(aCurveIt.Current());
+      if (aPCurve.IsNull() || aCurve.Curve().IsNull())
       {
         continue;
       }
 
-      GeomAdaptor_Curve aCurveAdaptor(aCurve3d);
-      aSurfaceCurves.Append({aCurveIt.Current(),
-                             aPCurve,
-                             aCurveAdaptor.FirstParameter(),
-                             aCurveAdaptor.LastParameter()});
+      double aFirst, aLast;
+      if (TopOpeBRepBuild_CurveRange(aCurve, aPCurve, aFirst, aLast))
+      {
+        aSurfaceCurves.Append({aCurveIt.Current(), aPCurve, aFirst, aLast});
+      }
     }
 
     for (size_t aFirstIndex = 0; aFirstIndex < aSurfaceCurves.Size(); ++aFirstIndex)

@@ -2705,7 +2705,11 @@ void ChFi3d_FilDS(const int                         SolidIndex,
         if (ChFi3d_Contains(DStr.ShapeInterferences(Iarc1), Iarc1, Ipoin1)
             && (V1.TransitionOnArc() != V3.TransitionOnArc()))
         {
-          Interfp1 = ChFi3d_FilPointInDS(V1.TransitionOnArc(), Iarc1, Ipoin1, V1.ParameterOnArc());
+          Interfp1 = ChFi3d_FilPointInDS(V1.TransitionOnArc(),
+                                         Iarc1,
+                                         Ipoin1,
+                                         V1.ParameterOnArc(),
+                                         V1.IsVertex());
           DStr.ChangeShapeInterferences(V1.Arc()).Append(Interfp1);
         }
       }
@@ -2717,7 +2721,11 @@ void ChFi3d_FilDS(const int                         SolidIndex,
         if (ChFi3d_Contains(DStr.ShapeInterferences(Iarc2), Iarc2, Ipoin2)
             && (V2.TransitionOnArc() != V4.TransitionOnArc()))
         {
-          Interfp2 = ChFi3d_FilPointInDS(V2.TransitionOnArc(), Iarc2, Ipoin2, V2.ParameterOnArc());
+          Interfp2 = ChFi3d_FilPointInDS(V2.TransitionOnArc(),
+                                         Iarc2,
+                                         Ipoin2,
+                                         V2.ParameterOnArc(),
+                                         V2.IsVertex());
           DStr.ChangeShapeInterferences(V2.Arc()).Append(Interfp2);
         }
       }

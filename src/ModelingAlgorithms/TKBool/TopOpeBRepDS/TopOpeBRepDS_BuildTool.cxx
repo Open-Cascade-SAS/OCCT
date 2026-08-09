@@ -905,10 +905,16 @@ void TopOpeBRepDS_BuildTool::AddEdgeVertex(const TopoDS_Shape& Ein,
                                            TopoDS_Shape&       Eou,
                                            const TopoDS_Shape& V) const
 {
-  myBuilder.Add(Eou, V);
   TopoDS_Edge   e1 = TopoDS::Edge(Ein);
   TopoDS_Edge   e2 = TopoDS::Edge(Eou);
   TopoDS_Vertex v1 = TopoDS::Vertex(V);
+  if (e1.Orientation() == TopAbs_REVERSED)
+  {
+    v1.Reverse();
+  }
+  e1.Orientation(TopAbs_FORWARD);
+  e2.Orientation(TopAbs_FORWARD);
+  myBuilder.Add(e2, v1);
   myBuilder.Transfert(e1, e2, v1, v1);
 }
 
