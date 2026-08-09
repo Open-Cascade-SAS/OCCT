@@ -18,6 +18,7 @@
 #include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
 #include <BRepBlend_Line.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
@@ -56,6 +57,9 @@
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 extern bool ChFi3d_GettraceDRAWFIL();
@@ -741,6 +745,132 @@ static void FillSD(TopOpeBRepDS_DataStructure&                               DSt
   }
 }
 
+//=================================================================================================
+
+struct ChFi3d_CoincidentDomainEdge
+{
+  TopoDS_Edge Edge;
+  bool        IsReversed = false;
+};
+
+//=================================================================================================
+
+static ChFi3d_CoincidentDomainEdge CoincidentDomainEdge(
+  const NCollection_DataMap<int, occ::handle<Adaptor2d_Curve2d>>& theElements,
+  const HatchGen_Domain&                                          theDomain)
+{
+  if (!theDomain.HasFirstPoint() || !theDomain.HasSecondPoint())
+  {
+    return {};
+  }
+
+  const HatchGen_PointOnHatching& aFirst  = theDomain.FirstPoint();
+  const HatchGen_PointOnHatching& aSecond = theDomain.SecondPoint();
+  if (!aFirst.SegmentBeginning() || !aSecond.SegmentEnd())
+  {
+    return {};
+  }
+
+  for (int i = 1; i <= aFirst.NbPoints(); ++i)
+  {
+    const HatchGen_PointOnElement& aFirstOnElement = aFirst.Point(i);
+    if (aFirstOnElement.Position() == TopAbs_INTERNAL)
+    {
+      continue;
+    }
+    for (int j = 1; j <= aSecond.NbPoints(); ++j)
+    {
+      const HatchGen_PointOnElement& aSecondOnElement = aSecond.Point(j);
+      if (aFirstOnElement.Index() != aSecondOnElement.Index()
+          || aSecondOnElement.Position() == TopAbs_INTERNAL
+          || aFirstOnElement.Position() == aSecondOnElement.Position())
+      {
+        continue;
+      }
+
+      const int anElementIndex = aFirstOnElement.Index();
+      if (!theElements.IsBound(anElementIndex))
+      {
+        continue;
+      }
+      occ::handle<BRepAdaptor_Curve2d> anElement =
+        occ::down_cast<BRepAdaptor_Curve2d>(theElements(anElementIndex));
+      if (!anElement.IsNull())
+      {
+        const double aHatchingDelta = aSecond.Parameter() - aFirst.Parameter();
+        const double anElementDelta = aSecondOnElement.Parameter() - aFirstOnElement.Parameter();
+        return {anElement->Edge(), aHatchingDelta * anElementDelta < 0.0};
+      }
+    }
+  }
+  return {};
+}
+
+//=================================================================================================
+
+static void SetCoincidentDomainEdge(
+  TopOpeBRepDS_DataStructure&                                     theDS,
+  const ChFiDS_FaceInterference&                                  theInterference,
+  const NCollection_DataMap<int, occ::handle<Adaptor2d_Curve2d>>& theElements,
+  const HatchGen_Domain&                                          theDomain,
+  const bool                                                      theWholeDomain)
+{
+  if (!theWholeDomain)
+  {
+    return;
+  }
+  const ChFi3d_CoincidentDomainEdge aCoincidentEdge = CoincidentDomainEdge(theElements, theDomain);
+  if (!aCoincidentEdge.Edge.IsNull())
+  {
+    theDS.ChangeCurve(theInterference.LineIndex())
+      .SetExistingEdge(aCoincidentEdge.Edge, aCoincidentEdge.IsReversed);
+  }
+}
+
+//=================================================================================================
+
+bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher, const int theHatchingIndex)
+{
+  theHatcher.ComputeDomains(theHatchingIndex);
+  if (!theHatcher.IsDone(theHatchingIndex) || theHatcher.NbDomains(theHatchingIndex) != 0)
+  {
+    return theHatcher.IsDone(theHatchingIndex);
+  }
+
+  int    aSegmentDepth = 0;
+  double aSegmentStart = 0.0;
+  bool   hasSegment    = false;
+  for (int aPointIndex = 1; aPointIndex <= theHatcher.NbPoints(theHatchingIndex); ++aPointIndex)
+  {
+    const HatchGen_PointOnHatching& aPoint = theHatcher.Point(theHatchingIndex, aPointIndex);
+    if (aPoint.SegmentBeginning())
+    {
+      if (aSegmentDepth == 0)
+      {
+        aSegmentStart = aPoint.Parameter();
+      }
+      ++aSegmentDepth;
+    }
+    if (aPoint.SegmentEnd() && aSegmentDepth > 0)
+    {
+      --aSegmentDepth;
+      if (aSegmentDepth == 0
+          && std::abs(aPoint.Parameter() - aSegmentStart) > theHatcher.Confusion2d())
+      {
+        hasSegment = true;
+        break;
+      }
+    }
+  }
+
+  if (hasSegment)
+  {
+    theHatcher.KeepSegments(true);
+    theHatcher.ComputeDomains(theHatchingIndex);
+  }
+  return theHatcher.IsDone(theHatchingIndex);
+}
+
 //=======================================================================
 // function : SplitKPart
 // purpose  : Reconstruct SurfData depending on restrictions of faces.
@@ -789,8 +919,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M1.Bind(ie, I1->Value());
     }
     iH1 = H1.Trim(ll1);
-    H1.ComputeDomains(iH1);
-    if (!H1.IsDone(iH1))
+    if (!ChFi3d_ComputeHatchingDomains(H1, iH1))
     {
       return false;
     }
@@ -824,8 +953,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       M2.Bind(ie, I2->Value());
     }
     iH2 = H2.Trim(ll2);
-    H2.ComputeDomains(iH2);
-    if (!H2.IsDone(iH2))
+    if (!ChFi3d_ComputeHatchingDomains(H2, iH2))
     {
       return false;
     }
@@ -910,6 +1038,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       const HatchGen_Domain& Dom2 = H2.Domain(iH2, Ind2(i));
       FillSD(DStr, CD, M2, Dom2, Dom2.FirstPoint().Parameter(), true, 2, pitol, bout1);
       FillSD(DStr, CD, M2, Dom2, Dom2.SecondPoint().Parameter(), false, 2, pitol, bout2);
+      SetCoincidentDomainEdge(DStr, CD->InterferenceOnS2(), M2, Dom2, true);
       SetData.Append(CD);
       CD = CpSD(DStr, CD);
     }
@@ -964,6 +1093,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       const HatchGen_Domain& Dom1 = H1.Domain(iH1, Ind1(i));
       FillSD(DStr, CD, M1, Dom1, Dom1.FirstPoint().Parameter(), true, 1, pitol, bout1);
       FillSD(DStr, CD, M1, Dom1, Dom1.SecondPoint().Parameter(), false, 1, pitol, bout2);
+      SetCoincidentDomainEdge(DStr, CD->InterferenceOnS1(), M1, Dom1, true);
       SetData.Append(CD);
       CD = CpSD(DStr, CD);
     }
@@ -1054,6 +1184,8 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
           {
             if (f2 <= l1 && f1 <= l2)
             {
+              const double aFirst = std::max(f1, f2);
+              const double aLast  = std::min(l1, l2);
               if (f1 >= f2 - tol2d)
               {
                 FillSD(DStr, CD, M1, Dom1, f1, true, 1, pitol, bout1);
@@ -1070,6 +1202,18 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
               {
                 FillSD(DStr, CD, M1, Dom1, l1, false, 1, pitol, bout2);
               }
+              SetCoincidentDomainEdge(DStr,
+                                      CD->InterferenceOnS1(),
+                                      M1,
+                                      Dom1,
+                                      std::abs(aFirst - f1) <= tol2d
+                                        && std::abs(aLast - l1) <= tol2d);
+              SetCoincidentDomainEdge(DStr,
+                                      CD->InterferenceOnS2(),
+                                      M2,
+                                      Dom2,
+                                      std::abs(aFirst - f2) <= tol2d
+                                        && std::abs(aLast - l2) <= tol2d);
               SetData.Append(CD);
               CD = CpSD(DStr, CD);
               ion1.Append(i);

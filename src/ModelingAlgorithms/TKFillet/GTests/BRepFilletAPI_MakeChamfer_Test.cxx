@@ -16,6 +16,7 @@
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRep_Tool.hxx>
 #include <gp_Ax2.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -31,8 +32,10 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 
 TEST(BRepFilletAPI_MakeChamferTest, SymmetricChamfer)
 {
@@ -106,11 +109,22 @@ TEST(BRepFilletAPI_MakeChamferTest, Issue1177_ChamferAllEdgesFlatBox_SucceedsWit
   const TopoDS_Shape& aResult = aChamfer.Shape();
   ASSERT_FALSE(aResult.IsNull());
 
-  BRepCheck_Analyzer anAnalyzer(aResult);
-  if (!anAnalyzer.IsValid())
+  BRepCheck_Analyzer anAnalyzer(aResult, true, false, true);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+
+  double aMaxTolerance = 0.0;
+  for (TopExp_Explorer aVertexExp(aResult, TopAbs_VERTEX); aVertexExp.More(); aVertexExp.Next())
   {
-    GTEST_SKIP() << "Valid consumed-face topology requires the follow-up reconstruction fix";
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(aVertexExp.Current())));
   }
+  for (TopExp_Explorer anEdgeExp(aResult, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Edge(anEdgeExp.Current())));
+  }
+  EXPECT_LE(aMaxTolerance, 1.01e-4)
+    << "Chamfer construction must not hide inconsistent edge parameterization with tolerance";
 }
 
 TEST(BRepFilletAPI_MakeChamferTest, ChamferMoreFaces)

@@ -1171,6 +1171,23 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
         {
           throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
         }
+        bool isCorkStart  = false;
+        bool isOtherStart = false;
+        if (ChFi3d_HasCommonEndpoint(anIntersector,
+                                     aCorkPCurve,
+                                     anOtherPCurve,
+                                     tol2d,
+                                     isCorkStart,
+                                     isOtherStart))
+        {
+          const int anOtherCurveIndex = IShape == aData->IndexOfS1()
+                                          ? aData->InterferenceOnS1().LineIndex()
+                                          : aData->InterferenceOnS2().LineIndex();
+          if (anOtherCurveIndex > 0)
+          {
+            DStr.MergeEquivalentCurvePoints(ICurve, isCorkStart, anOtherCurveIndex, isOtherStart);
+          }
+        }
       }
     }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator anIter(
@@ -1199,6 +1216,20 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       if (ChFi3d_HasTransversalIntersection(anIntersector))
       {
         throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
+      }
+      bool isCorkStart  = false;
+      bool isOtherStart = false;
+      if (ChFi3d_HasCommonEndpoint(anIntersector,
+                                   aCorkPCurve,
+                                   anOtherPCurve,
+                                   tol2d,
+                                   isCorkStart,
+                                   isOtherStart))
+      {
+        DStr.MergeEquivalentCurvePoints(ICurve,
+                                        isCorkStart,
+                                        anOtherIntrf->Geometry(),
+                                        isOtherStart);
       }
     }
     // 31/01/02 akm ^^^

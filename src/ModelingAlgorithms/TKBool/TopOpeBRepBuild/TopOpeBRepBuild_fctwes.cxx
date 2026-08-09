@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_define.hxx>
@@ -21,6 +22,7 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurveIterator.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
@@ -196,13 +198,47 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     return;
   }
 
-  int                                      iG    = FCit.Current();
+  int iG = FCit.Current();
+  if (myDataStructure->Curve(iG).IsEquivalentCurveReversed())
+  {
+    neworiE = TopAbs::Reverse(neworiE);
+  }
+  const int          anEquivalentCurve = myDataStructure->Curve(iG).EquivalentCurve();
+  const TopoDS_Edge& aRestrictionEdge  = myDataStructure->Curve(iG).ExistingEdge();
+  if (!aRestrictionEdge.IsNull())
+  {
+    for (TopExp_Explorer anEdgeIt(WESF, TopAbs_EDGE); anEdgeIt.More(); anEdgeIt.Next())
+    {
+      if (aRestrictionEdge.IsSame(anEdgeIt.Current()))
+      {
+        return;
+      }
+    }
+  }
   const NCollection_List<TopoDS_Shape>&    LnewE = NewEdges(iG);
   NCollection_List<TopoDS_Shape>::Iterator Iti(LnewE);
   for (; Iti.More(); Iti.Next())
   {
     TopoDS_Shape EE = Iti.Value();
     TopoDS_Edge& E  = TopoDS::Edge(EE);
+
+    if (anEquivalentCurve > 0)
+    {
+      bool isAlreadyAdded = false;
+      for (NCollection_List<TopoDS_Shape>::Iterator aStartIt(WES.StartElements()); aStartIt.More();
+           aStartIt.Next())
+      {
+        if (E.IsSame(aStartIt.Value()))
+        {
+          isAlreadyAdded = true;
+          break;
+        }
+      }
+      if (isAlreadyAdded)
+      {
+        continue;
+      }
+    }
 
     // modified by NIZHNY-MZV  Fri Mar 17 12:51:03 2000
     if (BRep_Tool::Degenerated(E))
@@ -221,7 +257,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     // modified by NIZHNY-MZV  Mon Mar 27 15:24:39 2000
     if (!EhasPConFTF)
     {
-      myBuildTool.PCurve(FTF, E, PC);
+      myBuildTool.PCurve(FTF, E, myDataStructure->Curve(iG), PC);
     }
 
     bool EhasPConWESF = FC2D_HasCurveOnSurface(E, WESF);
