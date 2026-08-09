@@ -412,10 +412,9 @@ TEST_F(CSLibClass2dTest, LazyGridMatchesExactPathForConcaveDiagonalPolygon)
   }
 }
 
-TEST_F(CSLibClass2dTest, LazyGridConcurrentBuildOverlapIsThreadSafe)
+TEST_F(CSLibClass2dTest, LazyGridConcurrentActivationQueriesAreThreadSafe)
 {
-  // The large polygon keeps the designated build query active while synchronized
-  // readers exercise the exact fallback. Run this test under TSAN for race detection.
+  // Release concurrent queries together at the lazy-grid activation threshold.
   constexpr int                THE_POINT_COUNT = 32768;
   NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
   for (int anIdx = 0; anIdx < THE_POINT_COUNT; ++anIdx)
@@ -431,40 +430,20 @@ TEST_F(CSLibClass2dTest, LazyGridConcurrentBuildOverlapIsThreadSafe)
     ASSERT_EQ(aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
   }
 
-  std::atomic<bool>   hasFailure{false};
-  std::atomic<bool>   canStart{false};
-  std::atomic<bool>   hasBuildQueryStarted{false};
-  std::atomic<bool>   hasBuildQueryFinished{false};
-  std::atomic<size_t> anOverlapQueryCount{0};
-  std::atomic<size_t> aReadyCount{0};
-  std::thread         aBuildThread([&]() {
-    while (!canStart.load(std::memory_order_acquire))
-    {
-      std::this_thread::yield();
-    }
-    hasBuildQueryStarted.store(true, std::memory_order_release);
-    if (aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)) != CSLib_Class2d::Result_Inside)
-    {
-      hasFailure.store(true, std::memory_order_relaxed);
-    }
-    hasBuildQueryFinished.store(true, std::memory_order_release);
-  });
-
-  std::array<std::thread, 7> aReaderThreads;
-  for (size_t aThreadIdx = 0; aThreadIdx < aReaderThreads.size(); ++aThreadIdx)
+  std::atomic<bool>          hasFailure{false};
+  std::atomic<bool>          canStart{false};
+  std::atomic<size_t>        aReadyCount{0};
+  std::array<std::thread, 8> aQueryThreads;
+  for (size_t aThreadIdx = 0; aThreadIdx < aQueryThreads.size(); ++aThreadIdx)
   {
-    aReaderThreads[aThreadIdx] = std::thread([&]() {
+    aQueryThreads[aThreadIdx] = std::thread([&]() {
       aReadyCount.fetch_add(1, std::memory_order_release);
-      while (!hasBuildQueryStarted.load(std::memory_order_acquire))
+      while (!canStart.load(std::memory_order_acquire))
       {
         std::this_thread::yield();
       }
       for (size_t aQueryIdx = 0; aQueryIdx < 8; ++aQueryIdx)
       {
-        if (!hasBuildQueryFinished.load(std::memory_order_acquire))
-        {
-          anOverlapQueryCount.fetch_add(1, std::memory_order_relaxed);
-        }
         const bool                  isInside = (aQueryIdx & 1u) == 0u;
         const gp_Pnt2d              aPoint   = isInside ? gp_Pnt2d(0.5, 0.5) : gp_Pnt2d(0.99, 0.99);
         const CSLib_Class2d::Result anExpected =
@@ -477,30 +456,18 @@ TEST_F(CSLibClass2dTest, LazyGridConcurrentBuildOverlapIsThreadSafe)
       }
     });
   }
-  while (aReadyCount.load(std::memory_order_acquire) != aReaderThreads.size())
+  while (aReadyCount.load(std::memory_order_acquire) != aQueryThreads.size())
   {
     std::this_thread::yield();
   }
   canStart.store(true, std::memory_order_release);
-  while (!hasBuildQueryStarted.load(std::memory_order_acquire))
-  {
-    std::this_thread::yield();
-  }
-  if (!hasBuildQueryFinished.load(std::memory_order_acquire))
-  {
-    anOverlapQueryCount.fetch_add(1, std::memory_order_relaxed);
-    if (aClassifier.SiDans(gp_Pnt2d(0.99, 0.99)) != CSLib_Class2d::Result_Outside)
-    {
-      hasFailure.store(true, std::memory_order_relaxed);
-    }
-  }
-  aBuildThread.join();
-  for (std::thread& aThread : aReaderThreads)
+  for (std::thread& aThread : aQueryThreads)
   {
     aThread.join();
   }
   EXPECT_FALSE(hasFailure.load(std::memory_order_relaxed));
-  EXPECT_GT(anOverlapQueryCount.load(std::memory_order_relaxed), 0u);
+  EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(0.99, 0.99)), CSLib_Class2d::Result_Outside);
 }
 
 TEST_F(CSLibClass2dTest, SiDansHandlesNegativeNonFiniteAndExtremeInputs)

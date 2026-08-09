@@ -13,7 +13,6 @@
 
 #include <BinXCAFDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
-
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Sequence.hxx>
 #include <OSD_Directory.hxx>
@@ -43,12 +42,11 @@
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Volume.hxx>
-
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
+#include <Quantity_ColorRGBA.hxx>
 
 #include <gtest/gtest.h>
-
 #include <sstream>
 
 namespace
