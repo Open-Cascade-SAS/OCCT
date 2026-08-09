@@ -55,6 +55,8 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
   NCollection_Array1<double>   theParam(1, 2);
   theDist2(1)               = RealLast();
   theDist2(2)               = 0.;
+  Index(1)                  = 0;
+  Index(2)                  = 0;
   int                 i     = 1;
   int                 nbsol = 0;
   gp_Dir2d            dirx(gp_Dir2d::D::X);
@@ -76,18 +78,21 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
   }
   while (i <= nbext)
   {
-    thePar = distmin.Point(i).Parameter();
-    if (distmin.SquareDistance(i) < theDist2(1))
+    thePar                       = distmin.Point(i).Parameter();
+    const double aSquareDistance = distmin.SquareDistance(i);
+    if (Index(1) == 0 || aSquareDistance < theDist2(1))
     {
-      theDist2(1) = distmin.SquareDistance(i);
+      theDist2(1) = aSquareDistance;
       theParam(1) = thePar;
       pTan(1)     = distmin.Point(i).Value();
+      Index(1)    = i;
     }
-    if (distmin.SquareDistance(i) > theDist2(2))
+    if (Index(2) == 0 || aSquareDistance > theDist2(2))
     {
-      theDist2(2) = distmin.SquareDistance(i);
+      theDist2(2) = aSquareDistance;
       theParam(2) = thePar;
       pTan(2)     = distmin.Point(i).Value();
+      Index(2)    = i;
     }
     i++;
   }

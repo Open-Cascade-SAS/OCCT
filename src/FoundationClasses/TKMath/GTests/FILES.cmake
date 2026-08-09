@@ -18,9 +18,12 @@ set(OCCT_TKMath_GTests_FILES
   BVH_Box_Test.cxx
   BVH_BuildQueue_Test.cxx
   BVH_LinearBuilder_Test.cxx
+  BVH_DistanceField_Test.cxx
+  BVH_PairDistance_Test.cxx
   BVH_QuickSorter_Test.cxx
   BVH_RadixSorter_Test.cxx
   BVH_Ray_Test.cxx
+  BVH_ShapeSelect_Test.cxx
   BVH_SpatialMedianBuilder_Test.cxx
   BVH_SweepPlaneBuilder_Test.cxx
   BVH_Tools_Test.cxx

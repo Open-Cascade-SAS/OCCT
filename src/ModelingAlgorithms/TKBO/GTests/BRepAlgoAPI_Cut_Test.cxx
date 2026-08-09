@@ -14,6 +14,10 @@
 #include "BOPTest_Utilities.pxx"
 
 #include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopExp.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
@@ -48,6 +52,13 @@ static int countSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum t
   return aCount;
 }
 
+static int countUniqueSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
+{
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aShapes;
+  TopExp::MapShapes(theShape, theType, aShapes);
+  return aShapes.Extent();
+}
+
 // Test bcut_simple/A1: psphere s 1; box b 1 1 1; bcut result s b; checkprops result -s 13.3518
 TEST_F(BCutSimpleTest, SphereMinusBox_A1)
 {
@@ -56,6 +67,54 @@ TEST_F(BCutSimpleTest, SphereMinusBox_A1)
 
   const TopoDS_Shape aResult = PerformCut(aSphere, aBox);
   ValidateResult(aResult, 13.3518);
+}
+
+// Migrated from tests/bugs/modalg_5/bug24706.  A Boolean cut must retain the
+// Closed flag on the shell of the resulting box-with-spherical-cut solid.
+TEST_F(BCutSimpleTest, ModalgBug_24706_CutResultShellIsClosed)
+{
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 10.0, 10.0, 10.0);
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 2.0);
+
+  BRepAlgoAPI_Cut aCut(aBox, aSphere);
+  aCut.Build();
+  ASSERT_TRUE(aCut.IsDone());
+  const TopoDS_Shape aResult = aCut.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+  EXPECT_EQ(countSubShapes(aResult, TopAbs_SOLID), 1);
+  EXPECT_EQ(countSubShapes(aResult, TopAbs_SHELL), 1);
+
+  TopExp_Explorer anExplorer(aResult, TopAbs_SHELL);
+  ASSERT_TRUE(anExplorer.More());
+  EXPECT_TRUE(TopoDS::Shell(anExplorer.Current()).Closed());
+}
+
+// Migrated from tests/bugs/modalg_5/bug25242.  Cutting one disjoint member
+// from a fused compound must leave the other box with the DRAW topology.
+TEST_F(BCutSimpleTest, ModalgBug_25242_CutFusedDisjointBoxesKeepsTopology)
+{
+  const TopoDS_Shape aBoxA = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 10.0, 10.0, 10.0);
+  const TopoDS_Shape aBoxB = BOPTest_Utilities::CreateBox(gp_Pnt(20, 0, 0), 10.0, 10.0, 10.0);
+
+  BRepAlgoAPI_Fuse aFuse(aBoxA, aBoxB);
+  aFuse.Build();
+  ASSERT_TRUE(aFuse.IsDone());
+
+  BRepAlgoAPI_Cut aCut(aFuse.Shape(), aBoxA);
+  aCut.Build();
+  ASSERT_TRUE(aCut.IsDone());
+  const TopoDS_Shape aResult = aCut.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  EXPECT_EQ(aResult.ShapeType(), TopAbs_COMPOUND);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_VERTEX), 8);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_EDGE), 12);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_WIRE), 6);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_FACE), 6);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_SHELL), 1);
+  EXPECT_EQ(countUniqueSubShapes(aResult, TopAbs_SOLID), 1);
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aResult), 1000.0, Precision::Confusion());
 }
 
 // Test bcut_simple/A2: rotated sphere - box

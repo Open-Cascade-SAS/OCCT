@@ -107,6 +107,15 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const theName,
                                                    std::istream&     theIStream);
 
+  //! Loads a file from stream with specified parameters and returns the read status.
+  //! @param[in] theName  auxiliary stream name
+  //! @param[in] theParams  default configuration parameters
+  //! @param[in] theIStream  stream to read from
+  //! @return read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const        theName,
+                                                   const DESTEP_Parameters& theParams,
+                                                   std::istream&            theIStream);
+
   //! Returns number of roots recognized for transfer
   //! Shortcut for Reader().NbRootsForTransfer()
   Standard_EXPORT int NbRootsForTransfer();

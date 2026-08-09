@@ -2,4 +2,5 @@
 set(OCCT_TKDECascade_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDECascade_GTests_FILES
+  DEBREP_Provider_Test.cxx
 )
