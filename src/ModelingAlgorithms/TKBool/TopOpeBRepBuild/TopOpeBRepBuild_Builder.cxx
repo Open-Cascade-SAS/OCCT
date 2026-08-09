@@ -361,7 +361,7 @@ void TopOpeBRepBuild_Builder::AddIntersectionEdges(TopoDS_Shape&             aFa
 
       myBuildTool.Orientation(anEdge, newori);
       const occ::handle<Geom2d_Curve>& PC = FCurves.PCurve();
-      myBuildTool.PCurve(aFace, anEdge, PC);
+      myBuildTool.PCurve(aFace, anEdge, myDataStructure->Curve(iC), PC);
       WES.AddStartElement(anEdge);
     }
   }

@@ -747,20 +747,28 @@ static void FillSD(TopOpeBRepDS_DataStructure&                               DSt
 
 //=================================================================================================
 
-static TopoDS_Edge CoincidentDomainEdge(
+struct ChFi3d_CoincidentDomainEdge
+{
+  TopoDS_Edge Edge;
+  bool        IsReversed = false;
+};
+
+//=================================================================================================
+
+static ChFi3d_CoincidentDomainEdge CoincidentDomainEdge(
   const NCollection_DataMap<int, occ::handle<Adaptor2d_Curve2d>>& theElements,
   const HatchGen_Domain&                                          theDomain)
 {
   if (!theDomain.HasFirstPoint() || !theDomain.HasSecondPoint())
   {
-    return TopoDS_Edge();
+    return {};
   }
 
   const HatchGen_PointOnHatching& aFirst  = theDomain.FirstPoint();
   const HatchGen_PointOnHatching& aSecond = theDomain.SecondPoint();
   if (!aFirst.SegmentBeginning() || !aSecond.SegmentEnd())
   {
-    return TopoDS_Edge();
+    return {};
   }
 
   for (int i = 1; i <= aFirst.NbPoints(); ++i)
@@ -789,11 +797,13 @@ static TopoDS_Edge CoincidentDomainEdge(
         occ::down_cast<BRepAdaptor_Curve2d>(theElements(anElementIndex));
       if (!anElement.IsNull())
       {
-        return anElement->Edge();
+        const double aHatchingDelta = aSecond.Parameter() - aFirst.Parameter();
+        const double anElementDelta = aSecondOnElement.Parameter() - aFirstOnElement.Parameter();
+        return {anElement->Edge(), aHatchingDelta * anElementDelta < 0.0};
       }
     }
   }
-  return TopoDS_Edge();
+  return {};
 }
 
 //=================================================================================================
@@ -809,10 +819,11 @@ static void SetCoincidentDomainEdge(
   {
     return;
   }
-  const TopoDS_Edge anEdge = CoincidentDomainEdge(theElements, theDomain);
-  if (!anEdge.IsNull())
+  const ChFi3d_CoincidentDomainEdge aCoincidentEdge = CoincidentDomainEdge(theElements, theDomain);
+  if (!aCoincidentEdge.Edge.IsNull())
   {
-    theDS.ChangeCurve(theInterference.LineIndex()).SetExistingEdge(anEdge);
+    theDS.ChangeCurve(theInterference.LineIndex())
+      .SetExistingEdge(aCoincidentEdge.Edge, aCoincidentEdge.IsReversed);
   }
 }
 

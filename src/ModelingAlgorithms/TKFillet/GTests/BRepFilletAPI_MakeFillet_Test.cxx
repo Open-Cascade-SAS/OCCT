@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <cmath>
-
 #include <BRep_Builder.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
@@ -64,6 +62,8 @@
 #include <Standard_Failure.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <cmath>
 
 // Regression for fillets that must remove an intervening face or meet on opposite
 // edges of a prism. Related reports:
@@ -276,8 +276,22 @@ TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletAllEdgesFlatBox_SucceedsWitho
   const TopoDS_Shape& aResult = aFillet.Shape();
   ASSERT_FALSE(aResult.IsNull());
 
-  BRepCheck_Analyzer anAnalyzer(aResult);
+  BRepCheck_Analyzer anAnalyzer(aResult, true, false, true);
   EXPECT_TRUE(anAnalyzer.IsValid());
+
+  double aMaxTolerance = 0.0;
+  for (TopExp_Explorer aVertexExp(aResult, TopAbs_VERTEX); aVertexExp.More(); aVertexExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(aVertexExp.Current())));
+  }
+  for (TopExp_Explorer anEdgeExp(aResult, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Edge(anEdgeExp.Current())));
+  }
+  EXPECT_LE(aMaxTolerance, 1.01 * Precision::Confusion())
+    << "Fillet construction must not hide inconsistent edge parameterization with tolerance";
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, FilletOneEdge)

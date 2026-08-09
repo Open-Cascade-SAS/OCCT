@@ -147,9 +147,10 @@ TopoDS_Shape& TopOpeBRepDS_Curve::ChangeShape2()
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::SetExistingEdge(const TopoDS_Edge& theEdge)
+void TopOpeBRepDS_Curve::SetExistingEdge(const TopoDS_Edge& theEdge, const bool theIsReversed)
 {
-  myExistingEdge = theEdge;
+  myExistingEdge           = theEdge;
+  myIsExistingEdgeReversed = theIsReversed;
 }
 
 //=================================================================================================
@@ -157,6 +158,13 @@ void TopOpeBRepDS_Curve::SetExistingEdge(const TopoDS_Edge& theEdge)
 const TopoDS_Edge& TopOpeBRepDS_Curve::ExistingEdge() const
 {
   return myExistingEdge;
+}
+
+//=================================================================================================
+
+bool TopOpeBRepDS_Curve::IsExistingEdgeReversed() const
+{
+  return myIsExistingEdgeReversed;
 }
 
 //=================================================================================================

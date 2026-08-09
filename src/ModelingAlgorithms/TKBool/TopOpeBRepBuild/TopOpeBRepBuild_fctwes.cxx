@@ -257,7 +257,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     // modified by NIZHNY-MZV  Mon Mar 27 15:24:39 2000
     if (!EhasPConFTF)
     {
-      myBuildTool.PCurve(FTF, E, PC);
+      myBuildTool.PCurve(FTF, E, myDataStructure->Curve(iG), PC);
     }
 
     bool EhasPConWESF = FC2D_HasCurveOnSurface(E, WESF);
