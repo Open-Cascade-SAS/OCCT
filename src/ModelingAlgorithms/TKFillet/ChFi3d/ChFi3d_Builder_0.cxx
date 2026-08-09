@@ -3341,14 +3341,25 @@ void ChFi3d_FilDS(const int                         SolidIndex,
 }
 
 //=======================================================================
-// function : StripeEdgeInter
-// purpose  : This function examines two stripes for an intersection
-//           between curves of interference with faces. If the intersection
-//           exists, it will cause bad result, so it's better to quit.
-// remark   : If someone somewhen computes the interference between stripes,
-//           this function will become useless.
-// author   : akm, 06/02/02. Against bug OCC119.
+
+bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector)
+{
+  for (int anIndex = 1; anIndex <= theIntersector.NbPoints(); ++anIndex)
+  {
+    const IntRes2d_IntersectionPoint& aPoint      = theIntersector.Point(anIndex);
+    const IntRes2d_TypeTrans          aFirstType  = aPoint.TransitionOfFirst().TransitionType();
+    const IntRes2d_TypeTrans          aSecondType = aPoint.TransitionOfSecond().TransitionType();
+    if (aFirstType == IntRes2d_In || aFirstType == IntRes2d_Out || aSecondType == IntRes2d_In
+        || aSecondType == IntRes2d_Out)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 //=======================================================================
+
 void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                             const occ::handle<ChFiDS_Stripe>& theStripe2,
                             TopOpeBRepDS_DataStructure& /*DStr*/,
@@ -3433,7 +3444,7 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                                    aFI2.FirstParameter(),
                                    aFI2.LastParameter());
       anIntersector.Perform(aPCurve1, aPCurve2, tol2d, Precision::PConfusion());
-      if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+      if (ChFi3d_HasTransversalIntersection(anIntersector))
       {
         throw StdFail_NotDone("StripeEdgeInter : fillets have too big radiuses");
       }

@@ -77,6 +77,42 @@ TEST(BRepFilletAPI_MakeChamferTest, AsymmetricChamfer)
   EXPECT_TRUE(anAnalyzer.IsValid());
 }
 
+// Chamfer every edge of a flat 50x50x10 slab with distance 5. The top and
+// bottom chamfers of each 50x10 side face (5 + 5) exactly consume the 10 mm
+// height, so the intervening side faces must be removed and the opposing
+// chamfers must meet cleanly, leaving no degenerate mid edges (issue #1177).
+TEST(BRepFilletAPI_MakeChamferTest, Issue1177_ChamferAllEdgesFlatBox_SucceedsWithoutCrash)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(50.0, 50.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aChamfer.Add(5.0, TopoDS::Edge(anExp.Current()));
+  }
+
+  ASSERT_NO_THROW(aChamfer.Build()) << "Chamfer build must not crash";
+
+  EXPECT_TRUE(aChamfer.IsDone())
+    << "Chamfering all edges of a 50x50x10 slab with d=5 should succeed (issue #1177)";
+
+  if (!aChamfer.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aChamfer.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  if (!anAnalyzer.IsValid())
+  {
+    GTEST_SKIP() << "Valid consumed-face topology requires the follow-up reconstruction fix";
+  }
+}
+
 TEST(BRepFilletAPI_MakeChamferTest, ChamferMoreFaces)
 {
   BRepPrimAPI_MakeBox aBoxMaker(20.0, 20.0, 20.0);

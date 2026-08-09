@@ -50,6 +50,9 @@
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+
+class Geom2dInt_GInter;
+
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 extern OSD_Chronometer simul, elspine, chemine;
@@ -382,6 +385,11 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                             const occ::handle<ChFiDS_Stripe>& theStripe2,
                             TopOpeBRepDS_DataStructure&       DStr,
                             const double                      tol2d);
+
+//! Checks whether a 2D intersection contains a transversal crossing.
+//! @param[in] theIntersector intersection result to examine
+//! @return true if at least one intersection point crosses either curve
+bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector);
 
 int ChFi3d_IndexOfSurfData(const TopoDS_Vertex&              V1,
                            const occ::handle<ChFiDS_Stripe>& CD,
