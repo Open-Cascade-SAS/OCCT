@@ -364,7 +364,7 @@ static TopoDS_Wire MakePolygonalWire(const gp_Pnt& theCenter,
   {
     double anAngle = 2.0 * M_PI * i / theNbSides;
     gp_Pnt aPnt    = theCenter.Translated(gp_Vec(aXDir) * theRadius * cos(anAngle)
-                                          + gp_Vec(aYDir) * theRadius * sin(anAngle));
+                                       + gp_Vec(aYDir) * theRadius * sin(anAngle));
     aPolygon.Add(aPnt);
   }
 
