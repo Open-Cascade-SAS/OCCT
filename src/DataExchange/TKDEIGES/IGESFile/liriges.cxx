@@ -293,60 +293,58 @@ int iges_lire_stream(IGES_InputState* theInput,
   }
 
   // Recover a non-standard record with omitted padding before its section trailer.
+  std::size_t aRecordLength = std::strlen(theRecord);
+  while (aRecordLength > 0 && theRecord[aRecordLength - 1] == ' ')
   {
-    std::size_t aRecordLength = std::strlen(theRecord);
-    while (aRecordLength > 0 && theRecord[aRecordLength - 1] == ' ')
-    {
-      --aRecordLength;
-    }
-    std::size_t aNumberStart = aRecordLength;
-    while (aNumberStart > 0 && theRecord[aNumberStart - 1] >= '0'
-           && theRecord[aNumberStart - 1] <= '9')
-    {
-      --aNumberStart;
-    }
-    if (aNumberStart == aRecordLength)
-    {
-      return -2;
-    }
+    --aRecordLength;
+  }
+  std::size_t aNumberStart = aRecordLength;
+  while (aNumberStart > 0 && theRecord[aNumberStart - 1] >= '0'
+         && theRecord[aNumberStart - 1] <= '9')
+  {
+    --aNumberStart;
+  }
+  if (aNumberStart == aRecordLength)
+  {
+    return -2;
+  }
 
-    char*      anEndPtr;
-    const long aParsedSectionNumber = std::strtol(&theRecord[aNumberStart], &anEndPtr, 10);
-    if (anEndPtr == &theRecord[aNumberStart])
-    {
-      return -2;
-    }
-    *theSectionNumber = static_cast<int>(aParsedSectionNumber);
+  char*      anEndPtr;
+  const long aParsedSectionNumber = std::strtol(&theRecord[aNumberStart], &anEndPtr, 10);
+  if (anEndPtr == &theRecord[aNumberStart])
+  {
+    return -2;
+  }
+  *theSectionNumber = static_cast<int>(aParsedSectionNumber);
 
-    std::size_t aSectionIndex = aNumberStart;
-    while (aSectionIndex > 0 && theRecord[aSectionIndex - 1] == ' ')
-    {
-      --aSectionIndex;
-    }
-    if (aSectionIndex == 0)
-    {
-      return -2;
-    }
+  std::size_t aSectionIndex = aNumberStart;
+  while (aSectionIndex > 0 && theRecord[aSectionIndex - 1] == ' ')
+  {
     --aSectionIndex;
-    switch (theRecord[aSectionIndex])
-    {
-      case 'S':
-        theRecord[aSectionIndex] = '\0';
-        return 1;
-      case 'G':
-        theRecord[aSectionIndex] = '\0';
-        return 2;
-      case 'D':
-        theRecord[aSectionIndex] = '\0';
-        return 3;
-      case 'P':
-        theRecord[aSectionIndex] = '\0';
-        return 4;
-      case 'T':
-        theRecord[aSectionIndex] = '\0';
-        return 5;
-      default:
-        return -2;
-    }
+  }
+  if (aSectionIndex == 0)
+  {
+    return -2;
+  }
+  --aSectionIndex;
+  switch (theRecord[aSectionIndex])
+  {
+    case 'S':
+      theRecord[aSectionIndex] = '\0';
+      return 1;
+    case 'G':
+      theRecord[aSectionIndex] = '\0';
+      return 2;
+    case 'D':
+      theRecord[aSectionIndex] = '\0';
+      return 3;
+    case 'P':
+      theRecord[aSectionIndex] = '\0';
+      return 4;
+    case 'T':
+      theRecord[aSectionIndex] = '\0';
+      return 5;
+    default:
+      return -2;
   }
 }
