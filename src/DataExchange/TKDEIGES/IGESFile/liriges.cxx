@@ -142,7 +142,8 @@ static bool iges_decode_fnes_record(char theRecord[100], bool theIsFNES)
   return true;
 }
 
-//! Reads one IGES record, accepting CR, LF, CRLF, or fixed-width separation.
+//! Reads one IGES record using the legacy reader's fixed-width framing.
+//! CR and LF are skipped before a record, while a CR inside its first 80 bytes is preserved.
 //! @param[in,out] theInput input state whose buffer position is advanced
 //! @param[out] theRecord zero-terminated record buffer
 //! @param[out] theRecordLength number of bytes stored in the record
@@ -176,20 +177,6 @@ static int iges_read_record(IGES_InputState* theInput,
     }
     if (aReadStatus == IGES_ReadStatus_End || aByte == '\n')
     {
-      *theRecordLength = aRecordLength;
-      return IGES_ReadStatus_Data;
-    }
-    if (aByte == '\r')
-    {
-      aReadStatus = iges_read_byte(theInput, &aByte);
-      if (aReadStatus == IGES_ReadStatus_Error)
-      {
-        return IGES_ReadStatus_Error;
-      }
-      if (aReadStatus == IGES_ReadStatus_Data && aByte != '\n')
-      {
-        iges_unread_byte(theInput, aByte);
-      }
       *theRecordLength = aRecordLength;
       return IGES_ReadStatus_Data;
     }

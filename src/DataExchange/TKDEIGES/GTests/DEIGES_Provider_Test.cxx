@@ -281,6 +281,26 @@ TEST_F(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
   EXPECT_FALSE(aReadShape.IsNull());
 }
 
+TEST_F(DEIGES_ProviderTest, ReadStream_CRInsideFixedWidthRecord_PreservesStartRecord)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  const TopoDS_Shape                 aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  std::string anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
+  ASSERT_GE(anIGESContent.size(), 80u);
+  ASSERT_EQ(anIGESContent[72], 'S');
+  const std::string aStartText = "Legacy fixed-width Start record";
+  anIGESContent.replace(0, 45, aStartText + std::string(45 - aStartText.size(), ' '));
+  anIGESContent[45] = '\r';
+
+  const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  EXPECT_EQ(aModel->NbStartLines(), 1);
+  EXPECT_EQ(aModel->NbEntities(), 49);
+}
+
 TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
