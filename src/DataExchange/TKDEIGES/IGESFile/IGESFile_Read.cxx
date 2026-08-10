@@ -14,7 +14,6 @@
 // dce 21.01.99 : move of general message to IGESToBRep_Reader
 
 #include <cstdlib>
-#include <iostream>
 // declarations of basic C programs:
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESReaderTool.hxx>
@@ -150,10 +149,6 @@ int IGESFile_Read(char*                                       theFileName,
                   const occ::handle<IGESData_FileRecognizer>& theRecognizer,
                   bool                                        theIsFNES)
 {
-  if (theFileName[0] == '\0')
-  {
-    return IGESFile_Read("", std::cin, theModel, theProtocol, theRecognizer, theIsFNES);
-  }
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(theFileName, std::ios::in | std::ios::binary);

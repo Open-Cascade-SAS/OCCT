@@ -293,7 +293,7 @@ int iges_lire_stream(IGES_InputState* theInput,
   }
 
   // Recover a non-standard record with omitted padding before its section trailer.
-  std::size_t aRecordLength = std::strlen(theRecord);
+  aRecordLength = std::strlen(theRecord);
   while (aRecordLength > 0 && theRecord[aRecordLength - 1] == ' ')
   {
     --aRecordLength;

@@ -301,6 +301,16 @@ TEST_F(DEIGES_ProviderTest, ReadStream_CRInsideFixedWidthRecord_PreservesStartRe
   EXPECT_EQ(aModel->NbEntities(), 49);
 }
 
+TEST_F(DEIGES_ProviderTest, ReadFile_EmptyName_ReturnsOpenError)
+{
+  char                                 anEmptyName[] = "";
+  occ::handle<IGESData_IGESModel>      aModel        = new IGESData_IGESModel();
+  occ::handle<IGESData_Protocol>       aProtocol     = new IGESData_Protocol();
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+
+  EXPECT_EQ(IGESFile_Read(anEmptyName, aModel, aProtocol, aRecognizer, false), -1);
+}
+
 TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
