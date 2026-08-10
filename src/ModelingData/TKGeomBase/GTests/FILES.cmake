@@ -64,4 +64,5 @@ set(OCCT_TKGeomBase_GTests_FILES
   Extrema_ExtCS_Test.cxx
   Extrema_ExtSS_Test.cxx
   AppDef_LeastSquare_Test.cxx
+  GeomConvert_ApproxSurface_Test.cxx
 )

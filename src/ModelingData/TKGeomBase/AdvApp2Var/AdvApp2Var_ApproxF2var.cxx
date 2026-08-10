@@ -3949,7 +3949,7 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(int*    numdec,
   /* ------------------- Return max polynoms of  Jacobi ------------
    */
 
-  AdvApp2Var_ApproxF2var::mma2jmx_(ndjacu, iordru, &wrkar_off[ipt5]);
+  AdvApp2Var_ApproxF2var::mma2jmx_(ndjacu, iordru, &wrkar_off[ipt4]);
   AdvApp2Var_ApproxF2var::mma2jmx_(ndjacv, iordrv, &wrkar_off[ipt5]);
 
   /* ------ Calculate the coefficients and their contribution to the error ----
