@@ -15,6 +15,9 @@
 #include <DEIGES_Provider.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESFile_Read.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Application.hxx>
@@ -26,10 +29,26 @@
 
 #include <gtest/gtest.h>
 
+#include <mutex>
 #include <sstream>
 
 namespace
 {
+//! Serializes tests because the legacy IGES reader stores parser state in process-global data.
+std::mutex THE_IGES_TEST_MUTEX;
+
+class DEIGES_ProviderTest : public testing::Test
+{
+public:
+  DEIGES_ProviderTest()
+      : myLock(THE_IGES_TEST_MUTEX)
+  {
+  }
+
+private:
+  std::unique_lock<std::mutex> myLock;
+};
+
 //! Creates an IGES provider with default configuration.
 //! @return configured provider
 occ::handle<DEIGES_Provider> createProvider()
@@ -149,9 +168,24 @@ bool readShape(const occ::handle<DEIGES_Provider>& theProvider,
   return theProvider->Read(aStreams, theShape);
 }
 
+//! Reads IGES text directly into a model without transferring its entities.
+//! @param[in] theContent serialized IGES content
+//! @param[in] theIsFNES whether FNES compatibility mode is enabled
+//! @return parsed model, or a null handle on failure
+occ::handle<IGESData_IGESModel> readModel(const std::string& theContent, bool theIsFNES = false)
+{
+  std::istringstream                   anInputStream(theContent);
+  occ::handle<IGESData_IGESModel>      aModel    = new IGESData_IGESModel();
+  occ::handle<IGESData_Protocol>       aProtocol = new IGESData_Protocol();
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+  const int                            aStatus =
+    IGESFile_Read("memory.igs", anInputStream, aModel, aProtocol, aRecognizer, theIsFNES);
+  return aStatus == 0 ? aModel : occ::handle<IGESData_IGESModel>();
+}
+
 } // namespace
 
-TEST(DEIGES_ProviderTest, BasicProperties)
+TEST_F(DEIGES_ProviderTest, BasicProperties)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   EXPECT_STREQ("IGES", aProvider->GetFormat().ToCString());
@@ -159,7 +193,7 @@ TEST(DEIGES_ProviderTest, BasicProperties)
   EXPECT_FALSE(aProvider->GetNode().IsNull());
 }
 
-TEST(DEIGES_ProviderTest, StreamShapeWriteRead)
+TEST_F(DEIGES_ProviderTest, StreamShapeWriteRead)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -179,16 +213,12 @@ TEST(DEIGES_ProviderTest, StreamShapeWriteRead)
   aReadStreams.Append(DE_Provider::ReadStreamNode("shape.igs", anIStream));
 
   TopoDS_Shape aReadShape;
-  EXPECT_TRUE(aProvider->Read(aReadStreams, aReadShape));
-  EXPECT_FALSE(aReadShape.IsNull());
-
-  if (!aReadShape.IsNull())
-  {
-    EXPECT_GT(countShapeElements(aReadShape, TopAbs_FACE), 0);
-  }
+  ASSERT_TRUE(aProvider->Read(aReadStreams, aReadShape));
+  ASSERT_FALSE(aReadShape.IsNull());
+  EXPECT_EQ(countShapeElements(aReadShape, TopAbs_FACE), 6);
 }
 
-TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
+TEST_F(DEIGES_ProviderTest, StreamDocumentWriteRead)
 {
   const occ::handle<DEIGES_Provider>  aProvider = createProvider();
   const occ::handle<TDocStd_Document> aDocument = createDocument();
@@ -220,10 +250,10 @@ TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
     XCAFDoc_DocumentTool::ShapeTool(aReadDocument->Main());
   NCollection_Sequence<TDF_Label> aLabels;
   aReadShapeTool->GetShapes(aLabels);
-  EXPECT_GT(aLabels.Length(), 0);
+  EXPECT_EQ(aLabels.Length(), 1);
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
+TEST_F(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -251,7 +281,37 @@ TEST(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
   EXPECT_FALSE(aReadShape.IsNull());
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
+TEST_F(DEIGES_ProviderTest, ReadStream_CRInsideFixedWidthRecord_PreservesStartRecord)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  const TopoDS_Shape                 aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  std::string anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
+  ASSERT_GE(anIGESContent.size(), 80u);
+  ASSERT_EQ(anIGESContent[72], 'S');
+  const std::string aStartText = "Legacy fixed-width Start record";
+  anIGESContent.replace(0, 45, aStartText + std::string(45 - aStartText.size(), ' '));
+  anIGESContent[45] = '\r';
+
+  const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  EXPECT_EQ(aModel->NbStartLines(), 1);
+  EXPECT_EQ(aModel->NbEntities(), 49);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadFile_EmptyName_ReturnsOpenError)
+{
+  char                                 anEmptyName[] = "";
+  occ::handle<IGESData_IGESModel>      aModel        = new IGESData_IGESModel();
+  occ::handle<IGESData_Protocol>       aProtocol     = new IGESData_Protocol();
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+
+  EXPECT_EQ(IGESFile_Read(anEmptyName, aModel, aProtocol, aRecognizer, false), -1);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -275,7 +335,50 @@ TEST(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
   EXPECT_FALSE(aReadShape.IsNull());
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
+TEST_F(DEIGES_ProviderTest, ReadStream_ShiftedDExponentRecord_RestoresValue)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::string                        anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
+  ASSERT_GE(anIGESContent.size(), 81u);
+
+  const std::string aStartValue = ".123D-4";
+  anIGESContent.replace(0, 72, aStartValue + std::string(72 - aStartValue.size(), ' '));
+  ASSERT_EQ(anIGESContent[72], 'S');
+  anIGESContent.erase(0, 1);
+
+  const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  ASSERT_EQ(aModel->NbStartLines(), 1);
+  EXPECT_STREQ(aStartValue.c_str(), aModel->StartLine(1));
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::string                        anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
+
+  const std::string                     aPreamble = "FNES compatibility preamble\n";
+  const occ::handle<IGESData_IGESModel> aModel    = readModel(aPreamble + anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  EXPECT_EQ(aModel->NbEntities(), 49);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_LongFNESPreamble_IsSkippedAsPhysicalLine)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::string                        anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
+
+  std::string aPreamble(96, 'X');
+  aPreamble.push_back('\n');
+  const occ::handle<IGESData_IGESModel> aModel = readModel(aPreamble + anIGESContent, true);
+  ASSERT_FALSE(aModel.IsNull());
+  EXPECT_EQ(aModel->NbEntities(), 49);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   std::istringstream                 anInputStream;
