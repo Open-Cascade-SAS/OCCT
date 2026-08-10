@@ -70,17 +70,93 @@ static void iges_unread_byte(IGES_InputState* theInput, char theByte)
   theInput->HasPendingByte = true;
 }
 
+//! Discards bytes remaining on the current physical line.
+//! This is used only for a legacy preamble, which is defined as a physical line rather than
+//! an 80-column IGES record.
+//! @param[in,out] theInput input state whose position is advanced
+//! @return IGES_ReadStatus_Data, IGES_ReadStatus_End, or IGES_ReadStatus_Error
+static int iges_discard_line_remainder(IGES_InputState* theInput)
+{
+  if (!theInput->HasPendingByte)
+  {
+    return IGES_ReadStatus_Data;
+  }
+
+  char aByte;
+  for (;;)
+  {
+    const int aReadStatus = iges_read_byte(theInput, &aByte);
+    if (aReadStatus <= 0)
+    {
+      return aReadStatus;
+    }
+    if (aByte == '\r' || aByte == '\n')
+    {
+      return IGES_ReadStatus_Data;
+    }
+  }
+}
+
+//! Restores a leading decimal point lost from a non-standard 79-column real-valued record.
+//! The legacy reader performed this recovery for records starting with a D-exponent value.
+//! @param[in,out] theRecord record to normalize
+//! @param[in] theRecordLength number of bytes in the record
+static void iges_recover_shifted_real_record(char theRecord[100], std::size_t theRecordLength)
+{
+  if (theRecordLength != 79 || theRecord[0] < '0' || theRecord[0] > '9')
+  {
+    return;
+  }
+
+  std::size_t anExponentIndex = 1;
+  while (anExponentIndex < theRecordLength && theRecord[anExponentIndex] >= '0'
+         && theRecord[anExponentIndex] <= '9')
+  {
+    ++anExponentIndex;
+  }
+  if (anExponentIndex >= theRecordLength
+      || (theRecord[anExponentIndex] != 'D' && theRecord[anExponentIndex] != 'd'))
+  {
+    return;
+  }
+
+  std::memmove(&theRecord[1], theRecord, theRecordLength + 1);
+  theRecord[0] = '.';
+}
+
+//! Decodes an FNES record when its high bit marks encoded content.
+//! @param[in,out] theRecord record to decode
+//! @param[in] theIsFNES whether FNES decoding is enabled
+//! @return true when the record was decoded
+static bool iges_decode_fnes_record(char theRecord[100], bool theIsFNES)
+{
+  if (!theIsFNES || (static_cast<unsigned char>(theRecord[0]) & 128U) == 0)
+  {
+    return false;
+  }
+
+  for (std::size_t aByteIndex = 0; aByteIndex < 80; ++aByteIndex)
+  {
+    theRecord[aByteIndex] = static_cast<char>(theRecord[aByteIndex] ^ (150 + (aByteIndex & 3)));
+  }
+  return true;
+}
+
 //! Reads one IGES record, accepting CR, LF, CRLF, or fixed-width separation.
 //! @param[in,out] theInput input state whose buffer position is advanced
 //! @param[out] theRecord zero-terminated record buffer
+//! @param[out] theRecordLength number of bytes stored in the record
 //! @return IGES_ReadStatus_Data, IGES_ReadStatus_End, or IGES_ReadStatus_Error
-static int iges_read_record(IGES_InputState* theInput, char theRecord[100])
+static int iges_read_record(IGES_InputState* theInput,
+                            char             theRecord[100],
+                            std::size_t*     theRecordLength)
 {
   std::size_t aRecordLength = 0;
   char        aByte;
   int         aReadStatus;
 
   std::memset(theRecord, 0, 100);
+  *theRecordLength = 0;
   do
   {
     aReadStatus = iges_read_byte(theInput, &aByte);
@@ -100,6 +176,7 @@ static int iges_read_record(IGES_InputState* theInput, char theRecord[100])
     }
     if (aReadStatus == IGES_ReadStatus_End || aByte == '\n')
     {
+      *theRecordLength = aRecordLength;
       return IGES_ReadStatus_Data;
     }
     if (aByte == '\r')
@@ -113,6 +190,7 @@ static int iges_read_record(IGES_InputState* theInput, char theRecord[100])
       {
         iges_unread_byte(theInput, aByte);
       }
+      *theRecordLength = aRecordLength;
       return IGES_ReadStatus_Data;
     }
     theRecord[aRecordLength++] = aByte;
@@ -125,6 +203,7 @@ static int iges_read_record(IGES_InputState* theInput, char theRecord[100])
   }
   if (aReadStatus == IGES_ReadStatus_End || aByte == '\n')
   {
+    *theRecordLength = aRecordLength;
     return IGES_ReadStatus_Data;
   }
   if (aByte == '\r')
@@ -138,11 +217,13 @@ static int iges_read_record(IGES_InputState* theInput, char theRecord[100])
     {
       iges_unread_byte(theInput, aByte);
     }
+    *theRecordLength = aRecordLength;
     return IGES_ReadStatus_Data;
   }
 
   // A non-separator byte after column 80 starts the next delimiter-free record.
   iges_unread_byte(theInput, aByte);
+  *theRecordLength = aRecordLength;
   return IGES_ReadStatus_Data;
 }
 
@@ -157,30 +238,33 @@ int iges_lire_stream(IGES_InputState* theInput,
     return IGES_ReadStatus_Error;
   }
 
-  int aReadStatus = iges_read_record(theInput, theRecord);
+  std::size_t aRecordLength = 0;
+  int         aReadStatus   = iges_read_record(theInput, theRecord, &aRecordLength);
   if (aReadStatus <= 0)
   {
     return aReadStatus;
   }
 
-  // A plain first record without an S trailer is an optional FNES preamble. The high bit
-  // distinguishes encoded FNES data whose section trailer is not readable until decoding.
-  if (theIsFNES && *theSectionNumber == 0 && theRecord[72] != 'S'
-      && (static_cast<unsigned char>(theRecord[0]) & 128U) == 0)
+  const bool isEncodedFNESRecord = iges_decode_fnes_record(theRecord, theIsFNES);
+  iges_recover_shifted_real_record(theRecord, aRecordLength);
+
+  // Historically, both ordinary and FNES reads accepted one plain physical preamble line.
+  // An encoded FNES record is data, not a preamble, even though its trailer is not readable yet.
+  if (*theSectionNumber == 0 && theRecord[72] != 'S' && !isEncodedFNESRecord
+      && (theIsFNES || aRecordLength < 80 || theRecord[79] == ' '))
   {
-    aReadStatus = iges_read_record(theInput, theRecord);
+    aReadStatus = iges_discard_line_remainder(theInput);
+    if (aReadStatus == IGES_ReadStatus_Error)
+    {
+      return aReadStatus;
+    }
+    aReadStatus = iges_read_record(theInput, theRecord, &aRecordLength);
     if (aReadStatus <= 0)
     {
       return aReadStatus;
     }
-  }
-
-  if ((static_cast<unsigned char>(theRecord[0]) & 128U) != 0 && theIsFNES)
-  {
-    for (std::size_t aByteIndex = 0; aByteIndex < 80; ++aByteIndex)
-    {
-      theRecord[aByteIndex] = static_cast<char>(theRecord[aByteIndex] ^ (150 + (aByteIndex & 3)));
-    }
+    iges_decode_fnes_record(theRecord, theIsFNES);
+    iges_recover_shifted_real_record(theRecord, aRecordLength);
   }
 
   {
