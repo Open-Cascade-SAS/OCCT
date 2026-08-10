@@ -64,22 +64,30 @@ void IGESDraw_ToolPerspectiveView::ReadOwnParams(const occ::handle<IGESDraw_Pers
   // st = PR.ReadReal(PR.Current(), "Left Side Of Clipping Window", tempLeft); //szv#4:S4163:12Mar99
   // moved in if
   if (PR.ReadReal(PR.Current(), "Left Side Of Clipping Window", tempLeft))
+  {
     tempTopLeft.SetX(tempLeft);
+  }
 
   // st = PR.ReadReal(PR.Current(), "Right Side Of Clipping Window", tempRight);
   // //szv#4:S4163:12Mar99 moved in if
   if (PR.ReadReal(PR.Current(), "Right Side Of Clipping Window", tempRight))
+  {
     tempBottomRight.SetX(tempRight);
+  }
 
   // st = PR.ReadReal(PR.Current(), "Bottom Of Clipping Window", tempBottom); //szv#4:S4163:12Mar99
   // moved in if
   if (PR.ReadReal(PR.Current(), "Bottom Of Clipping Window", tempBottom))
+  {
     tempBottomRight.SetY(tempBottom);
+  }
 
   // st = PR.ReadReal(PR.Current(), "Top Of Clipping Window", tempTop); //szv#4:S4163:12Mar99 moved
   // in if
   if (PR.ReadReal(PR.Current(), "Top Of Clipping Window", tempTop))
+  {
     tempTopLeft.SetY(tempTop);
+  }
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Depth Clipping Indicator", tempDepthClip);
@@ -171,11 +179,15 @@ void IGESDraw_ToolPerspectiveView::OwnCheck(const occ::handle<IGESDraw_Perspecti
                                             occ::handle<Interface_Check>& ach) const
 {
   if ((ent->DepthClip() < 0) || (ent->DepthClip() > 3))
+  {
     ach->AddFail("DepthClip has invalid value");
+  }
   if (ent->HasTransf())
   {
     if (ent->Transf()->FormNumber() != 0)
+    {
       ach->AddFail("Associated Matrix has not Form Number 0");
+    }
   }
 }
 
@@ -221,5 +233,5 @@ void IGESDraw_ToolPerspectiveView::OwnDump(const occ::handle<IGESDraw_Perspectiv
   }
   S << "Back Plane Distance  : " << ent->BackPlaneDistance() << "  "
     << "Front Plane Distance : " << ent->FrontPlaneDistance() << "\n"
-    << std::endl;
+    << '\n';
 }

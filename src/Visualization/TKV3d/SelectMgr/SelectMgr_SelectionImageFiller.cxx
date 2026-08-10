@@ -36,7 +36,7 @@ public:
            aSelIter.Next())
       {
         const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+        for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
@@ -90,7 +90,7 @@ public:
            aSelIter.Next())
       {
         const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+        for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
@@ -251,7 +251,7 @@ public:
            aSelIter.Next())
       {
         const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+        for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
@@ -330,7 +330,7 @@ public:
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
-      for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+      for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSelection->Entities());
            aSelEntIter.More();
            aSelEntIter.Next())

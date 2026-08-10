@@ -43,11 +43,15 @@ int IGESSelect::WhatIges(const occ::handle<IGESData_IGESEntity>& ent,
 {
   const occ::handle<IGESData_IGESEntity>& igesent = ent;
   if (igesent.IsNull())
+  {
     return false;
+  }
   //  int igt = igesent->TypeNumber();
   DeclareAndCast(IGESData_IGESModel, model, G.Model());
   if (igesent.IsNull() || model.IsNull())
+  {
     return 0;
+  }
 
   //  Plane : from View? from SingleParent? otherwise see TrimmedSurface & co
 

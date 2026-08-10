@@ -40,7 +40,9 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
                              double&                        U)
 {
   if (Curve.IsNull())
+  {
     return false;
+  }
   //
   U           = 0.;
   double aTol = MaxDist * MaxDist;
@@ -49,11 +51,15 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
   Extrema_ExtPC     extrema(Point, aGAC);
   //
   if (!extrema.IsDone())
+  {
     return false;
+  }
   //
   int n = extrema.NbExt();
   if (n <= 0)
+  {
     return false;
+  }
   //
   int    i = 0, iMin = 0;
   double Dist2Min = RealLast();
@@ -86,7 +92,9 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
                               double&                          V)
 {
   if (Surface.IsNull())
+  {
     return false;
+  }
   //
   U           = 0.;
   V           = 0.;
@@ -98,11 +106,15 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
   Extrema_ExtPS extrema(Point, aGAS, aTolU, aTolV, Extrema_ExtFlag_MIN);
   //
   if (!extrema.IsDone())
+  {
     return false;
+  }
   //
   int n = extrema.NbExt();
   if (n <= 0)
+  {
     return false;
+  }
   //
   double Dist2Min = RealLast();
   int    i = 0, iMin = 0;
@@ -134,7 +146,9 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom2d_Curve>& Curve,
                              double&                          U)
 {
   if (Curve.IsNull())
+  {
     return false;
+  }
   //
   U           = 0.;
   double aTol = MaxDist * MaxDist;
@@ -142,10 +156,14 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom2d_Curve>& Curve,
   Geom2dAdaptor_Curve aGAC(Curve);
   Extrema_ExtPC2d     extrema(Point, aGAC);
   if (!extrema.IsDone())
+  {
     return false;
+  }
   int n = extrema.NbExt();
   if (n <= 0)
+  {
     return false;
+  }
   int    i = 0, iMin = 0;
   double Dist2Min = RealLast();
   for (i = 1; i <= n; i++)

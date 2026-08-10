@@ -104,10 +104,14 @@ public:
   bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
   {
     if (!Value(theX, theF))
+    {
       return false;
+    }
 
     if (!Derivatives(theX, theD))
+    {
       return false;
+    }
 
     return true;
   }
@@ -245,9 +249,13 @@ bool IntPatch_SpecialPoints::AddCrossUVIsoPoint(const occ::handle<Adaptor3d_Surf
   // Not quadric point
   double aU0 = 0.0, aV0 = 0.0;
   if (theIsReversed)
+  {
     theRefPt.ParametersOnS1(aU0, aV0);
+  }
   else
+  {
     theRefPt.ParametersOnS2(aU0, aV0);
+  }
 
   // Quadric point
   double aUquad = 0.0, aVquad = 0.0;
@@ -271,9 +279,13 @@ bool IntPatch_SpecialPoints::AddCrossUVIsoPoint(const occ::handle<Adaptor3d_Surf
   gp_Pnt aP0(anExtr.Point().Value());
 
   if (theIsReversed)
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
+  }
   else
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
+  }
 
   AdjustPointAndVertex(theRefPt, anArrOfPeriod, theAddedPoint);
 
@@ -325,9 +337,13 @@ bool IntPatch_SpecialPoints::AddPointOnUorVIso(const occ::handle<Adaptor3d_Surfa
   const gp_Pnt aP0(thePSurf->Value(aU0, aV0));
 
   if (theIsReversed)
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
+  }
   else
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
+  }
 
   AdjustPointAndVertex(theRefPt, anArrOfPeriod, theAddedPoint);
   return true;
@@ -453,9 +469,13 @@ bool IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& thePtIso,
 #endif
     double aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
+    {
       thePtIso.ParametersOnS2(aUIso, aVIso);
+    }
     else
+    {
       thePtIso.ParametersOnS1(aUIso, aVIso);
+    }
 
     theUquad        = aUIso;
     theIsIsoChoosen = true;
@@ -478,9 +498,13 @@ bool IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& thePtIso,
     aV1.Normalize();
 
     if (std::abs(aV1.X()) > std::abs(aV1.Y()))
+    {
       theUquad = std::copysign(asin(aV1.Y()), theVquad);
+    }
     else
+    {
       theUquad = std::copysign(acos(aV1.X()), theVquad);
+    }
   }
 
   return true;
@@ -597,9 +621,13 @@ bool IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& thePtIso,
     const double aPeriod = M_PI + M_PI;
     double       aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
+    {
       thePtIso.ParametersOnS2(aUIso, aVIso);
+    }
     else
+    {
       thePtIso.ParametersOnS1(aUIso, aVIso);
+    }
 
     aUIso = ElCLib::InPeriod(aUIso, 0.0, aPeriod);
 
@@ -648,7 +676,9 @@ bool IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& thePtIso,
       anUq          = ElCLib::InPeriod(anUq, 0.0, aPeriod);
       double aDelta = std::abs(anUq - aUIso);
       if (aDelta > M_PI)
+      {
         aDelta = aPeriod - aDelta;
+      }
 
       if (aDelta < aMinDelta)
       {
@@ -669,9 +699,13 @@ bool IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& thePtIso,
 
     double aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
+    {
       thePtIso.ParametersOnS2(aUIso, aVIso);
+    }
     else
+    {
       thePtIso.ParametersOnS1(aUIso, aVIso);
+    }
 
     theUquad = aUIso;
     return true;
@@ -783,9 +817,13 @@ bool IntPatch_SpecialPoints::AddSingularPole(const occ::handle<Adaptor3d_Surface
   gp_Pnt aPQuad, aP0;
   double aUquad = 0.0, aVquad = 0.0;
   if (theIsReversed)
+  {
     theVertex.Parameters(aU0, aV0, aUquad, aVquad);
+  }
   else
+  {
     theVertex.Parameters(aUquad, aVquad, aU0, aV0);
+  }
 
   aUquad = 0.0;
 
@@ -822,9 +860,13 @@ bool IntPatch_SpecialPoints::AddSingularPole(const occ::handle<Adaptor3d_Surface
   //(lies in the quadric and the parametric surface)
 
   if (theIsReversed)
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
+  }
   else
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
+  }
 
   const bool isSame = theAddedPoint.IsSame(theVertex.PntOn2S(), Precision::Confusion());
 
@@ -880,9 +922,13 @@ bool IntPatch_SpecialPoints::AddSingularPole(const occ::handle<Adaptor3d_Surface
   }
 
   if (theIsReversed)
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
+  }
   else
+  {
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
+  }
 
   if (isSame)
   {
@@ -951,7 +997,9 @@ bool IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
   const bool                            theIsReversed)
 {
   if (theSPType == IntPatch_SPntNone)
+  {
     return false;
+  }
 
   if (theNewPoint.IsSame(theRefPt, Precision::Confusion(), theTol2D))
   {
@@ -970,9 +1018,13 @@ bool IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
     double aUquad = 0.0, aVquad = 0.0;
 
     if (theIsReversed)
+    {
       theNewPoint.Parameters(aU0, aV0, aUquad, aVquad);
+    }
     else
+    {
       theNewPoint.Parameters(aUquad, aVquad, aU0, aV0);
+    }
 
     gp_Pnt aPtemp;
     gp_Vec aVecDu, aVecDv;
@@ -1039,7 +1091,9 @@ void IntPatch_SpecialPoints::AdjustPointAndVertex(const IntSurf_PntOn2S& theRefP
   for (int i = 0; i < 4; i++)
   {
     if (theArrPeriods[i] == 0)
+    {
       continue;
+    }
 
     const double aPeriod = theArrPeriods[i], aHalfPeriod = 0.5 * theArrPeriods[i];
 
@@ -1066,7 +1120,9 @@ void IntPatch_SpecialPoints::AdjustPointAndVertex(const IntSurf_PntOn2S& theRefP
   }
 
   if (theVertex)
+  {
     (*theVertex).SetParameters(aPar[0], aPar[1], aPar[2], aPar[3]);
+  }
 
   theNewPoint.SetValue(aPar[0], aPar[1], aPar[2], aPar[3]);
 }

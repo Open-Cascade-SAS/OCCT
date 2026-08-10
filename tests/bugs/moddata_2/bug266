@@ -1,6 +1,3 @@
-puts "TODO OCC24156 MacOS: compute of chamfer failed"
-puts "TODO OCC33548 Windows: compute of chamfer failed"
-
 puts "================"
 puts "OCC266"
 puts "================"

@@ -101,9 +101,11 @@ public:
 public:
   //! A generalized accessor to point.
   inline gp_Pnt Value(int theIndex) const;
+  inline gp_Pnt Value(const size_t theIndex) const;
 
   //! A generalized setter for point.
   inline void SetValue(int theIndex, const gp_Pnt& theValue);
+  inline void SetValue(const size_t theIndex, const gp_Pnt& theValue);
 
   //! operator[] - alias to Value
   gp_Pnt operator[](int theIndex) const { return Value(theIndex); }
@@ -127,6 +129,15 @@ inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
 
 //=================================================================================================
 
+inline gp_Pnt Poly_ArrayOfNodes::Value(const size_t theIndex) const
+{
+  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
+                               "Poly_ArrayOfNodes::Value(), out of range index");
+  return Value(static_cast<int>(theIndex));
+}
+
+//=================================================================================================
+
 inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
 {
   if (myStride == (int)sizeof(gp_Pnt))
@@ -139,6 +150,15 @@ inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
       NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
     aVec3.SetValues((float)theValue.X(), (float)theValue.Y(), (float)theValue.Z());
   }
+}
+
+//=================================================================================================
+
+inline void Poly_ArrayOfNodes::SetValue(const size_t theIndex, const gp_Pnt& theValue)
+{
+  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
+                               "Poly_ArrayOfNodes::SetValue(), out of range index");
+  SetValue(static_cast<int>(theIndex), theValue);
 }
 
 #endif // _Poly_ArrayOfNodes_HeaderFile

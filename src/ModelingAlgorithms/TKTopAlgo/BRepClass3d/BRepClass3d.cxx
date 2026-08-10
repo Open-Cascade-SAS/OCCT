@@ -56,7 +56,9 @@ TopoDS_Shell BRepClass3d::OuterShell(const TopoDS_Solid& aSolid)
       aShell = *((TopoDS_Shell*)&aSx);
       aShellCounter++;
       if (aShellCounter >= 2)
+      {
         break;
+      }
     }
   }
   if (aShellCounter == 0)

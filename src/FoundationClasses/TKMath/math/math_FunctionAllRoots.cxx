@@ -244,8 +244,8 @@ void math_FunctionAllRoots::Dump(Standard_OStream& o) const
   if (done)
   {
     o << " Status = Done \n";
-    o << " Number of null intervals = " << pdeb.Length() << std::endl;
-    o << " Number of points where the function is null: " << piso.Length() << std::endl;
+    o << " Number of null intervals = " << pdeb.Length() << '\n';
+    o << " Number of points where the function is null: " << piso.Length() << '\n';
   }
   else
   {

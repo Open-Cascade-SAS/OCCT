@@ -29,11 +29,17 @@ StepDimTol_ShapeToleranceSelect::StepDimTol_ShapeToleranceSelect() = default;
 int StepDimTol_ShapeToleranceSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_PlusMinusTolerance)))
+  {
     return 2;
+  }
   return 0;
 }
 

@@ -148,7 +148,6 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
   }
   TheStatus = math_TooManyIterations;
   Done      = false;
-  return;
 }
 
 //=================================================================================================
@@ -160,8 +159,8 @@ void math_BissecNewton::Dump(Standard_OStream& o) const
   if (Done)
   {
     o << " Status = Done \n";
-    o << " The Root  is: " << x << std::endl;
-    o << " The value at this Root is: " << f << std::endl;
+    o << " The Root  is: " << x << '\n';
+    o << " The value at this Root is: " << f << '\n';
   }
   else
   {

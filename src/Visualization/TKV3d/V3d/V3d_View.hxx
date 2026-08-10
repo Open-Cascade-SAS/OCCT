@@ -17,6 +17,7 @@
 #ifndef _V3d_View_HeaderFile
 #define _V3d_View_HeaderFile
 
+#include <Aspect_GridParams.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
@@ -35,6 +36,7 @@ class Aspect_Window;
 class Graphic3d_Group;
 class Graphic3d_Structure;
 class Graphic3d_TextureEnv;
+class Graphic3d_Vertex;
 
 //! Defines the application object VIEW for the
 //! VIEWER application.
@@ -670,6 +672,21 @@ public:
                                      double&   Yg,
                                      double&   Zg) const;
 
+  //! Converts the projected point into the nearest visible grid point.
+  //! @return TRUE when an active grid accepts the point; FALSE otherwise.
+  //! Unlike the double-output overload, this method has no unproject fallback
+  //! and is intended for grid echo / snap-hit callers.
+  Standard_EXPORT bool ConvertToGrid(const int         Xp,
+                                     const int         Yp,
+                                     Graphic3d_Vertex& theGridPoint) const;
+
+  //! Converts the projected point into the nearest visible grid point and echo display point.
+  //! The echo display point is suitable only for displaying the grid echo marker.
+  Standard_EXPORT bool ConvertToGridEcho(const int         Xp,
+                                         const int         Yp,
+                                         Graphic3d_Vertex& theGridPoint,
+                                         Graphic3d_Vertex& theEchoPoint) const;
+
   //! Converts the point into the nearest grid point
   //! and display the grid marker.
   Standard_EXPORT void ConvertToGrid(const double X,
@@ -906,13 +923,42 @@ public:
                                  const double                         theResolution = 0.0,
                                  const bool theToEnlargeIfLine                      = true) const;
 
-  //! Defines or Updates the definition of the
-  //! grid in <me>
+public: //! @name Viewer grid plumbing
+  //! Viewer-managed grid plane and snap object. It is separate from the per-view
+  //! shader grid controlled by GridDisplay().
+
+  //! Defines or updates the grid plane and snap object on this view.
+  //! @param[in] aPlane grid plane (origin + axes)
+  //! @param[in] aGrid  snap object (Aspect_RectangularGrid or Aspect_CircularGrid)
   Standard_EXPORT void SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGrid);
 
-  //! Defines or Updates the activity of the
-  //! grid in <me>
+  //! Activates / deactivates snap on this view.
+  //! @param[in] aFlag true to enable snap, false to disable
   Standard_EXPORT void SetGridActivity(const bool aFlag);
+
+  //! Return TRUE if either viewer-managed grid or per-view shader grid is active.
+  bool IsGridActive() const { return MyViewer->IsGridActive() || myShaderGridActive; }
+
+  //! Return TRUE if the per-view shader grid is active.
+  bool IsShaderGridActive() const { return myShaderGridActive; }
+
+public: //! @name Shader grid
+  //! Per-view immediate-mode shader grid; supports unbounded extents, AA, background,
+  //! circular grids, arc range and view-adaptive spacing.
+
+  //! Display a shader-rendered grid on the viewer's privileged plane.
+  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background /
+  //! view-adaptive flags
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
+
+  //! Display a shader-rendered grid on an explicit plane (overrides the viewer's
+  //! privileged plane for this view only).
+  //! @param[in] theParams appearance parameters; see the single-argument overload
+  //! @param[in] thePlane  world-space grid plane (origin + axes)
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane);
+
+  //! Erase the shader-rendered grid from this view.
+  Standard_EXPORT void GridErase();
 
   //! Dumps the full contents of the View into the image file. This is an alias for ToPixMap() with
   //! Image_AlienPixMap.
@@ -1185,6 +1231,7 @@ private:
   occ::handle<Aspect_Grid>                                  MyGrid;
   gp_Ax3                                                    MyPlane;
   NCollection_Array2<double>                                MyTrsf;
+  bool                                                      myShaderGridActive = false;
   occ::handle<Graphic3d_Structure>                          MyGridEchoStructure;
   occ::handle<Graphic3d_Group>                              MyGridEchoGroup;
   gp_Vec                                                    myXscreenAxis;

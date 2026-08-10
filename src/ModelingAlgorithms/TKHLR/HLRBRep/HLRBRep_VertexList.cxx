@@ -55,9 +55,13 @@ bool HLRBRep_VertexList::More() const
 void HLRBRep_VertexList::Next()
 {
   if (fromInterf)
+  {
     myIterator.Next();
+  }
   if (fromEdge)
+  {
     myTool.NextVertex();
+  }
   fromInterf = myIterator.More();
   fromEdge   = myTool.MoreVertices();
   if (fromEdge && fromInterf)
@@ -81,11 +85,17 @@ void HLRBRep_VertexList::Next()
 const HLRAlgo_Intersection& HLRBRep_VertexList::Current() const
 {
   if (fromEdge)
+  {
     return myTool.CurrentVertex();
+  }
   else if (fromInterf)
+  {
     return myIterator.Value().Intersection();
+  }
   else
+  {
     throw Standard_NoSuchObject("HLRBRep_VertexList::Current");
+  }
 }
 
 //=================================================================================================
@@ -107,9 +117,13 @@ bool HLRBRep_VertexList::IsInterference() const
 TopAbs_Orientation HLRBRep_VertexList::Orientation() const
 {
   if (fromEdge)
+  {
     return myTool.CurrentOrientation();
+  }
   else
+  {
     throw Standard_DomainError("HLRBRep_VertexList::Orientation");
+  }
 }
 
 //=================================================================================================
@@ -117,9 +131,13 @@ TopAbs_Orientation HLRBRep_VertexList::Orientation() const
 TopAbs_Orientation HLRBRep_VertexList::Transition() const
 {
   if (fromInterf)
+  {
     return myIterator.Value().Transition();
+  }
   else
+  {
     throw Standard_DomainError("HLRBRep_VertexList::Transition");
+  }
 }
 
 //=================================================================================================
@@ -127,7 +145,11 @@ TopAbs_Orientation HLRBRep_VertexList::Transition() const
 TopAbs_Orientation HLRBRep_VertexList::BoundaryTransition() const
 {
   if (fromInterf)
+  {
     return myIterator.Value().BoundaryTransition();
+  }
   else
+  {
     throw Standard_DomainError("HLRBRep_VertexList::BoundaryTransition");
+  }
 }

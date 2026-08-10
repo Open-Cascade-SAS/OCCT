@@ -151,7 +151,7 @@ public:
 
   //! Returns the number of direct sub-shapes (children).
   //! @sa TopoDS_Iterator for accessing sub-shapes
-  int NbChildren() const { return myShapes.Size(); }
+  int NbChildren() const { return myShapes.Length(); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;

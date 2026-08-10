@@ -70,7 +70,9 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.IsInterfering())
+    {
       continue;
+    }
 
     const Bnd_Box& aBoxEx = aSI.Box();
     aBBTree.Add(i, Bnd_Tools::Bnd2BVH(aBoxEx));
@@ -86,8 +88,8 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const int aNbPairs = static_cast<int>(aPairs.Size());
 
   for (int iPair = 0; iPair < aNbPairs; ++iPair)
   {
@@ -105,7 +107,9 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
     // avoid interfering of the shape with its sub-shapes
     if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
         || ((iType1 > iType2) && aSI2.HasSubShape(aPair.ID1)))
+    {
       continue;
+    }
 
     if (theCheckOBB)
     {
@@ -114,7 +118,9 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
       const Bnd_OBB& anOBB2 = theCtx->OBB(aSI2.Shape(), theFuzzyValue);
 
       if (anOBB1.IsOut(anOBB2))
+      {
         continue;
+      }
     }
 
     int iX = BOPDS_Tools::TypeToInteger(aType1, aType2);

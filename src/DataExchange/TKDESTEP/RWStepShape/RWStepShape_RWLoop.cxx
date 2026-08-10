@@ -27,7 +27,9 @@ void RWStepShape_RWLoop::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "loop"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -52,11 +52,15 @@ static int DDataStd_SetConstraint(Draw_Interpretor& di, int nb, const char** arg
 
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label L;
   if (!DDF::FindLabel(DF, arg[2], L))
+  {
     return 1;
+  }
 
   TDataXtd_ConstraintEnum aCT;
   const char*             aT = arg[3];
@@ -65,11 +69,15 @@ static int DDataStd_SetConstraint(Draw_Interpretor& di, int nb, const char** arg
   {
     occ::handle<TDataXtd_Constraint> C;
     if (!L.FindAttribute(TDataXtd_Constraint::GetID(), C))
+    {
       return 1;
+    }
 
     TDF_Label aLab;
     if (!DDF::FindLabel(DF, arg[4], aLab))
+    {
       return 1;
+    }
     occ::handle<TNaming_NamedShape> aSh;
     if (aLab.FindAttribute(TNaming_NamedShape::GetID(), aSh))
     {
@@ -80,11 +88,15 @@ static int DDataStd_SetConstraint(Draw_Interpretor& di, int nb, const char** arg
   {
     occ::handle<TDataXtd_Constraint> C;
     if (!L.FindAttribute(TDataXtd_Constraint::GetID(), C))
+    {
       return 1;
+    }
 
     TDF_Label aLab;
     if (!DDF::FindLabel(DF, arg[4], aLab))
+    {
       return 1;
+    }
     occ::handle<TDataStd_Real> aR;
     if (aLab.FindAttribute(TDataStd_Real::GetID(), aR))
     {
@@ -97,58 +109,110 @@ static int DDataStd_SetConstraint(Draw_Interpretor& di, int nb, const char** arg
 
     // planar constraints
     if (strcmp(aT, "rad") == 0)
+    {
       aCT = TDataXtd_RADIUS;
+    }
     else if (strcmp(aT, "dia") == 0)
+    {
       aCT = TDataXtd_DIAMETER;
+    }
     else if (strcmp(aT, "minr") == 0)
+    {
       aCT = TDataXtd_MINOR_RADIUS;
+    }
     else if (strcmp(aT, "majr") == 0)
+    {
       aCT = TDataXtd_MAJOR_RADIUS;
+    }
     else if (strcmp(aT, "tan") == 0)
+    {
       aCT = TDataXtd_TANGENT;
+    }
     else if (strcmp(aT, "par") == 0)
+    {
       aCT = TDataXtd_PARALLEL;
+    }
     else if (strcmp(aT, "perp") == 0)
+    {
       aCT = TDataXtd_PERPENDICULAR;
+    }
     else if (strcmp(aT, "concentric") == 0)
+    {
       aCT = TDataXtd_CONCENTRIC;
+    }
     else if (strcmp(aT, "equal") == 0)
+    {
       aCT = TDataXtd_COINCIDENT;
+    }
     else if (strcmp(aT, "dist") == 0)
+    {
       aCT = TDataXtd_DISTANCE;
+    }
     else if (strcmp(aT, "angle") == 0)
+    {
       aCT = TDataXtd_ANGLE;
+    }
     else if (strcmp(aT, "eqrad") == 0)
+    {
       aCT = TDataXtd_EQUAL_RADIUS;
+    }
     else if (strcmp(aT, "symm") == 0)
+    {
       aCT = TDataXtd_SYMMETRY;
+    }
     else if (strcmp(aT, "midp") == 0)
+    {
       aCT = TDataXtd_MIDPOINT;
+    }
     else if (strcmp(aT, "eqdist") == 0)
+    {
       aCT = TDataXtd_EQUAL_DISTANCE;
+    }
     else if (strcmp(aT, "fix") == 0)
+    {
       aCT = TDataXtd_FIX;
+    }
     else if (strcmp(aT, "rigid") == 0)
+    {
       aCT = TDataXtd_RIGID;
-    // placement constraints
+      // placement constraints
+    }
     else if (strcmp(aT, "from") == 0)
+    {
       aCT = TDataXtd_FROM;
+    }
     else if (strcmp(aT, "axis") == 0)
+    {
       aCT = TDataXtd_AXIS;
+    }
     else if (strcmp(aT, "mate") == 0)
+    {
       aCT = TDataXtd_MATE;
+    }
     else if (strcmp(aT, "alignf") == 0)
+    {
       aCT = TDataXtd_ALIGN_FACES;
+    }
     else if (strcmp(aT, "aligna") == 0)
+    {
       aCT = TDataXtd_ALIGN_AXES;
+    }
     else if (strcmp(aT, "axesa") == 0)
+    {
       aCT = TDataXtd_AXES_ANGLE;
+    }
     else if (strcmp(aT, "facesa") == 0)
+    {
       aCT = TDataXtd_FACES_ANGLE;
+    }
     else if (strcmp(aT, "round") == 0)
+    {
       aCT = TDataXtd_ROUND;
+    }
     else if (strcmp(aT, "offset") == 0)
+    {
       aCT = TDataXtd_OFFSET;
+    }
     else
     {
       di << "DDataStd_SetConstraint : unknown type, must be one of:\n";
@@ -169,7 +233,9 @@ static int DDataStd_SetConstraint(Draw_Interpretor& di, int nb, const char** arg
     for (i = 1; i <= nbSh; i++)
     {
       if (!DDF::FindLabel(DF, arg[i + 3], aLab))
+      {
         return 1;
+      }
       if (aLab.FindAttribute(TNaming_NamedShape::GetID(), aSh))
       {
         C->SetGeometry(i, aSh);
@@ -191,9 +257,13 @@ static int DDataStd_GetConstraint(Draw_Interpretor& di, int nb, const char** arg
     occ::handle<TDF_Data> DF;
     TDF_Label             L;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, arg[2], L))
+    {
       return 1;
+    }
     if (L.FindAttribute(TDataXtd_Constraint::GetID(), CTR))
     {
       Standard_SStream aStream;
@@ -236,11 +306,15 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label L;
   if (!DDF::FindLabel(DF, arg[2], L))
+  {
     return 1;
+  }
 
   occ::handle<TDataXtd_PatternStd> aP = TDataXtd_PatternStd::Set(L);
 
@@ -267,7 +341,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
     // NSentry
     if (!DDF::FindLabel(DF, arg[4], aLab))
+    {
       return 1;
+    }
     if (aLab.FindAttribute(TNaming_NamedShape::GetID(), TNS))
     {
       aP->Axis1(TNS);
@@ -275,7 +351,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
     // realEntry
     if (!DDF::FindLabel(DF, arg[5], aLab))
+    {
       return 1;
+    }
     if (aLab.FindAttribute(TDataStd_Real::GetID(), TReal))
     {
       aP->Value1(TReal);
@@ -283,7 +361,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
     // intEntry
     if (!DDF::FindLabel(DF, arg[6], aLab))
+    {
       return 1;
+    }
     if (aLab.FindAttribute(TDataStd_Integer::GetID(), TInt))
     {
       aP->NbInstances1(TInt);
@@ -301,7 +381,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
       // NSentry
       if (!DDF::FindLabel(DF, arg[7], aLab))
+      {
         return 1;
+      }
       if (aLab.FindAttribute(TNaming_NamedShape::GetID(), TNS))
       {
         aP->Axis2(TNS);
@@ -309,7 +391,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
       // realEntry
       if (!DDF::FindLabel(DF, arg[8], aLab))
+      {
         return 1;
+      }
       if (aLab.FindAttribute(TDataStd_Real::GetID(), TReal))
       {
         aP->Value2(TReal);
@@ -317,7 +401,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
 
       // intEntry
       if (!DDF::FindLabel(DF, arg[9], aLab))
+      {
         return 1;
+      }
       if (aLab.FindAttribute(TDataStd_Integer::GetID(), TInt))
       {
         aP->NbInstances2(TInt);
@@ -333,7 +419,9 @@ static int DDataStd_SetPattern(Draw_Interpretor& di, int nb, const char** arg)
     }
 
     if (!DDF::FindLabel(DF, arg[4], aLab))
+    {
       return 1;
+    }
     if (aLab.FindAttribute(TNaming_NamedShape::GetID(), TNS))
     {
       aP->Mirror(TNS);
@@ -355,9 +443,13 @@ static int DDataStd_DumpPattern(Draw_Interpretor& di, int nb, const char** arg)
     occ::handle<TDF_Data> DF;
     TDF_Label             L;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, arg[2], L))
+    {
       return 1;
+    }
     if (L.FindAttribute(TDataXtd_PatternStd::GetID(), CTR))
     {
       //      Standard_SStream aStream;
@@ -442,7 +534,9 @@ static int DDataStd_SetPosition(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
 
@@ -466,7 +560,9 @@ static int DDataStd_GetPosition(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
 
@@ -493,7 +589,9 @@ void DDataStd::ConstraintCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DData : Standard Attribute Commands";
 

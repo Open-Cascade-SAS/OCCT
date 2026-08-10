@@ -46,7 +46,9 @@ static int multsign(const TCollection_AsciiString&                 signtext,
     }
   }
   if (mode == 0)
+  {
     return mode;
+  }
   //  On va tronconner
   TCollection_AsciiString item;
   int                     imod = 1;
@@ -65,18 +67,28 @@ static int multsign(const TCollection_AsciiString&                 signtext,
       imod = (unsign == '|' ? 1 : 2);
     }
     else if (unsign == '<')
+    {
       imod += 16;
+    }
     else if (unsign == '>')
+    {
       imod += 32;
+    }
     else if (unsign == '=')
     {
       if (imod < 8)
+      {
         imod += 2;
+      }
       else
+      {
         imod += 8;
+      }
     }
     else
+    {
       item.AssignCat(unsign);
+    }
   }
   if (item.Length() > 0)
   {
@@ -95,7 +107,9 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
       theexact(exact ? -1 : 0)
 {
   if (!exact)
+  {
     theexact = multsign(thesigntext, thesignlist, thesignmode);
+  }
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Signature>& matcher,
@@ -106,7 +120,9 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
       theexact(exact ? -1 : 0)
 {
   if (!exact)
+  {
     theexact = multsign(thesigntext, thesignlist, thesignmode);
+  }
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_SignCounter>& counter,
@@ -117,7 +133,9 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
       theexact(exact ? -1 : 0)
 {
   if (!exact)
+  {
     theexact = multsign(thesigntext, thesignlist, thesignmode);
+  }
 }
 
 occ::handle<IFSelect_Signature> IFSelect_SelectSignature::Signature() const
@@ -140,7 +158,9 @@ bool IFSelect_SelectSignature::SortInGraph(const int,
   if (theexact <= 0)
   {
     if (!thematcher.IsNull())
+    {
       return thematcher->Matches(ent, model, thesigntext, (theexact < 0));
+    }
     txt = thecounter->ComputedSign(ent, G);
     return IFSelect_Signature::MatchValue(txt, thesigntext, (theexact < 0));
   }
@@ -166,17 +186,25 @@ bool IFSelect_SelectSignature::SortInGraph(const int,
     if (jmod == 0)
     {
       if (!thematcher.IsNull())
+      {
         quid = thematcher->Matches(ent, model, signtext, (imod > 2));
+      }
       else
+      {
         quid =
           IFSelect_Signature::MatchValue(thecounter->ComputedSign(ent, G), signtext, (imod > 2));
+      }
     }
     else
     {
       if (!thematcher.IsNull())
+      {
         txt = thematcher->Value(ent, model);
+      }
       else
+      {
         txt = thecounter->ComputedSign(ent, G);
+      }
 
       int val = atoi(txt);
       int lav = atoi(signtext);
@@ -200,9 +228,13 @@ bool IFSelect_SelectSignature::SortInGraph(const int,
       }
     }
     if ((imod == 1 || imod == 3) && quid)
+    {
       res = true;
+    }
     if ((imod == 2 || imod == 4) && quid)
+    {
       res = false;
+    }
   }
   return res;
 }
@@ -228,15 +260,25 @@ TCollection_AsciiString IFSelect_SelectSignature::ExtractLabel() const
 {
   TCollection_AsciiString lab;
   if (!thematcher.IsNull())
+  {
     lab.AssignCat(thematcher->Name());
+  }
   else
+  {
     lab.AssignCat(thecounter->Name());
+  }
   if (theexact < 0)
+  {
     lab.AssignCat(" matching ");
+  }
   else if (theexact == 0)
+  {
     lab.AssignCat(" containing ");
+  }
   else
+  {
     lab.AssignCat(" matching list ");
+  }
   lab.AssignCat(thesigntext);
   return lab;
 }

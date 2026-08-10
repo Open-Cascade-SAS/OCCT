@@ -64,7 +64,9 @@ void StepKinematics_UniversalPair::Init(
     myInputSkewAngle = theInputSkewAngle;
   }
   else
+  {
     myInputSkewAngle = 0;
+  }
 }
 
 //=================================================================================================

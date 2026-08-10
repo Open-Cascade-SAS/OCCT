@@ -22,11 +22,17 @@ StepAP214_PresentedItemSelect::StepAP214_PresentedItemSelect() = default;
 int StepAP214_PresentedItemSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 2;
+  }
   return 0;
 }
 

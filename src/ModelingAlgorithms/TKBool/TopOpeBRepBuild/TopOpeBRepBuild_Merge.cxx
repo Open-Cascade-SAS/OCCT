@@ -55,11 +55,15 @@ static void CorrectEdgeOrientation(TopoDS_Shape& aWire)
 
   TopoDS_Iterator tdi(aWire, false, false);
   for (; tdi.More(); tdi.Next())
+  {
     anEdgeList.Append(tdi.Value());
+  }
 
   int n = anEdgeList.Extent();
   if (n <= 1)
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>::Iterator anIt(anEdgeList);
 
@@ -118,13 +122,17 @@ static void CorrectEdgeOrientation(TopoDS_Shape& aWire)
   }
 
   if (n > 0)
+  {
     aTrueEdgeList.Append(anEdgeList);
+  }
 
   aWire.Nullify();
   BB.MakeWire(TopoDS::Wire(aWire));
   anIt.Initialize(aTrueEdgeList);
   for (; anIt.More(); anIt.Next())
+  {
     BB.Add(aWire, anIt.Value());
+  }
 }
 
 static void CorrectUnclosedWire(TopoDS_Shape& aWire)
@@ -246,7 +254,9 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,
       ex1.Init(S1, tex1);
     }
     else
+    {
       ex1.Init(S1, tex1);
+    }
     SplitShapes(ex1, ToBuild1, ToBuild2, SFS, RevOri1);
   }
 
@@ -283,7 +293,9 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,
       ex2.Init(S2, tex2);
     }
     else
+    {
       ex2.Init(S2, tex2);
+    }
     SplitShapes(ex2, ToBuild2, ToBuild1, SFS, RevOri2);
   }
 
@@ -371,7 +383,9 @@ void TopOpeBRepBuild_Builder::MakeSolids(TopOpeBRepBuild_SolidBuilder&   SOBU,
     {
       bool isold = SOBU.IsOldShell();
       if (isold)
+      {
         newShell = SOBU.OldShell();
+      }
       else
       {
         myBuildTool.MakeShell(newShell);
@@ -400,7 +414,9 @@ void TopOpeBRepBuild_Builder::MakeShells(TopOpeBRepBuild_SolidBuilder&   SOBU,
   {
     bool isold = SOBU.IsOldShell();
     if (isold)
+    {
       newShell = SOBU.OldShell();
+    }
     else
     {
       myBuildTool.MakeShell(newShell);
@@ -451,7 +467,9 @@ void TopOpeBRepBuild_Builder::MakeFaces(const TopoDS_Shape&             aFace,
     {
       bool isold = FABU.IsOldWire();
       if (isold)
+      {
         newWire = FABU.OldWire();
+      }
       else
       {
         myBuildTool.MakeWire(newWire);
@@ -459,7 +477,9 @@ void TopOpeBRepBuild_Builder::MakeFaces(const TopoDS_Shape&             aFace,
         {
           const TopoDS_Shape& E = FABU.Edge();
           if (hns)
+          {
             myBuildTool.UpdateSurface(E, aFace, newFace);
+          }
           myBuildTool.AddWireEdge(newWire, E);
         }
       }
@@ -510,9 +530,13 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape&             anEdge,
     // 1 vertex sur edge courante => suppression edge
     int nloop = 0;
     for (EDBU.InitVertex(); EDBU.MoreVertex(); EDBU.NextVertex())
+    {
       nloop++;
+    }
     if (nloop <= 1)
+    {
       continue;
+    }
 
     myBuildTool.CopyEdge(anEdge, newEdge);
 
@@ -591,7 +615,9 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape&             anEdge,
 #endif
 
     if (hasvertex)
+    {
       L.Append(newEdge);
+    }
   } // loop on EDBU edges
 } // MakeEdges
 
@@ -603,13 +629,21 @@ bool TopOpeBRepBuild_Builder::IsMerged(const TopoDS_Shape& S, const TopAbs_State
                             TopOpeBRepDS_ListOfShapeOn1State,
                             TopTools_ShapeMapHasher>* p = nullptr;
   if (ToBuild == TopAbs_OUT)
+  {
     p = &myMergedOUT;
+  }
   else if (ToBuild == TopAbs_IN)
+  {
     p = &myMergedIN;
+  }
   else if (ToBuild == TopAbs_ON)
+  {
     p = &myMergedON;
+  }
   if (p == nullptr)
+  {
     return false;
+  }
 
   bool notbound = !(*p).IsBound(S);
   if (notbound)
@@ -634,13 +668,21 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Merged(
                             TopOpeBRepDS_ListOfShapeOn1State,
                             TopTools_ShapeMapHasher>* p = nullptr;
   if (ToBuild == TopAbs_OUT)
+  {
     p = &myMergedOUT;
+  }
   else if (ToBuild == TopAbs_IN)
+  {
     p = &myMergedIN;
+  }
   else if (ToBuild == TopAbs_ON)
+  {
     p = &myMergedON;
+  }
   if (p == nullptr)
+  {
     return myEmptyShapeList;
+  }
 
   if (!(*p).IsBound(S))
   {
@@ -661,13 +703,21 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeMerged(const Topo
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
     nullptr;
   if (ToBuild == TopAbs_OUT)
+  {
     p = &myMergedOUT;
+  }
   else if (ToBuild == TopAbs_IN)
+  {
     p = &myMergedIN;
+  }
   else if (ToBuild == TopAbs_ON)
+  {
     p = &myMergedON;
+  }
   if (p == nullptr)
+  {
     return myEmptyShapeList;
+  }
 
   if (!(*p).IsBound(S))
   {

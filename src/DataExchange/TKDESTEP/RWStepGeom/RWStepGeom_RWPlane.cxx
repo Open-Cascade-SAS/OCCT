@@ -29,7 +29,9 @@ void RWStepGeom_RWPlane::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "plane"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

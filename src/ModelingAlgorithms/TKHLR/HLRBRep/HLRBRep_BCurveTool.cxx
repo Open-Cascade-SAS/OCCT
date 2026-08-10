@@ -29,9 +29,13 @@ int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C, const double U0, c
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
+  {
     nbs = 2;
+  }
   else if (typC == GeomAbs_BezierCurve)
+  {
     nbs = 3 + C.NbPoles();
+  }
   else if (typC == GeomAbs_BSplineCurve)
   {
     nbs = C.NbKnots();
@@ -39,10 +43,14 @@ int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C, const double U0, c
     nbs *= C.LastParameter() - C.FirstParameter();
     nbs /= U1 - U0;
     if (nbs < 2.0)
+    {
       nbs = 2;
+    }
   }
   if (nbs > 50)
+  {
     nbs = 50;
+  }
   return ((int)nbs);
 }
 
@@ -55,14 +63,18 @@ void HLRBRep_BCurveTool::Poles(const BRepAdaptor_Curve& C, NCollection_Array1<gp
     occ::handle<Geom_BezierCurve>     aBez      = C.Bezier();
     const NCollection_Array1<gp_Pnt>& aSrcPoles = aBez->Poles();
     for (int i = T.Lower(); i <= T.Upper(); i++)
+    {
       T(i) = aSrcPoles(i);
+    }
   }
   else if (C.GetType() == GeomAbs_BSplineCurve)
   {
     occ::handle<Geom_BSplineCurve>    aBSpl     = C.BSpline();
     const NCollection_Array1<gp_Pnt>& aSrcPoles = aBSpl->Poles();
     for (int i = T.Lower(); i <= T.Upper(); i++)
+    {
       T(i) = aSrcPoles(i);
+    }
   }
 }
 
@@ -78,9 +90,13 @@ void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve&    C,
     const NCollection_Array1<gp_Pnt>&   aSrcPoles   = HB->Poles();
     const NCollection_Array1<double>&   aSrcWeights = HB->WeightsArray();
     for (int i = T.Lower(); i <= T.Upper(); i++)
+    {
       T(i) = aSrcPoles(i);
+    }
     for (int i = W.Lower(); i <= W.Upper(); i++)
+    {
       W(i) = aSrcWeights(i);
+    }
   }
   else if (C.GetType() == GeomAbs_BSplineCurve)
   {
@@ -88,9 +104,13 @@ void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve&    C,
     const NCollection_Array1<gp_Pnt>&    aSrcPoles   = HB->Poles();
     const NCollection_Array1<double>&    aSrcWeights = HB->WeightsArray();
     for (int i = T.Lower(); i <= T.Upper(); i++)
+    {
       T(i) = aSrcPoles(i);
+    }
     for (int i = W.Lower(); i <= W.Upper(); i++)
+    {
       W(i) = aSrcWeights(i);
+    }
   }
 }
 

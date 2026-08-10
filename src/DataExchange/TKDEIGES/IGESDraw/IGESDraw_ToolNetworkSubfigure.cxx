@@ -69,35 +69,55 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams(const occ::handle<IGESDraw_Net
   // clang-format on
 
   // Reading scale(XYZ)
-  if (PR.DefinedElseSkip())                                // Reading scale(X)
+  if (PR.DefinedElseSkip())
+  {                                                        // Reading scale(X)
     PR.ReadReal(PR.Current(), "Scale factors(X)", scaleX); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
+  {
     scaleX = 1.0; // Default Value
+  }
 
-  if (PR.DefinedElseSkip())                                // Reading scale(Y)
+  if (PR.DefinedElseSkip())
+  {                                                        // Reading scale(Y)
     PR.ReadReal(PR.Current(), "Scale factors(Y)", scaleY); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
+  {
     scaleY = scaleX; // Default Value
+  }
 
-  if (PR.DefinedElseSkip())                                // Reading scale(Z)
+  if (PR.DefinedElseSkip())
+  {                                                        // Reading scale(Z)
     PR.ReadReal(PR.Current(), "Scale factors(Z)", scaleZ); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
+  {
     scaleZ = scaleX; // Default Value
+  }
 
   scale.SetCoord(scaleX, scaleY, scaleZ);
 
-  if (PR.DefinedElseSkip())                              // Reading typeflag(Integer)
+  if (PR.DefinedElseSkip())
+  {                                                      // Reading typeflag(Integer)
     PR.ReadInteger(PR.Current(), "Type flag", typeflag); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
+  {
     typeflag = 0; // Default Value
+  }
 
   // Reading designator(String)
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadText(PR.Current(), "Primary reference designator", designator); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     PR.AddWarning("Primary reference designator : Null definition");
+  }
 
   // Reading textTemplate(Instance of TextDisplayTemplate or Null)
   bool st = PR.ReadEntity(IR,
@@ -109,11 +129,15 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams(const occ::handle<IGESDraw_Net
 
   // Reading nbval(Integer)
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     st = PR.ReadInteger(PR.Current(),"Count of Connect Points", nbval); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     nbval = 0;
+  }
   if (st && nbval > 0)
   {
     // Reading connectPoints(HArray1OfConnectPoint)
@@ -130,11 +154,15 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams(const occ::handle<IGESDraw_Net
                         STANDARD_TYPE(IGESDraw_ConnectPoint),
                         tempConnectPoint,
                         true))
+      {
         connectPoints->SetValue(i, tempConnectPoint);
+      }
     }
   }
   else if (nbval < 0)
+  {
     PR.AddFail("Count of Connect point entities : Less than Zero");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(definition, translation, scale, typeflag, designator, textTemplate, connectPoints);
@@ -160,7 +188,9 @@ void IGESDraw_ToolNetworkSubfigure::WriteOwnParams(
 
   int Up = ent->NbConnectPoints();
   for (int i = 1; i <= Up; i++)
+  {
     IW.Send(ent->ConnectPoint(i));
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigure::OwnShared(const occ::handle<IGESDraw_NetworkSubfigure>& ent,
@@ -170,7 +200,9 @@ void IGESDraw_ToolNetworkSubfigure::OwnShared(const occ::handle<IGESDraw_Network
   iter.GetOneItem(ent->DesignatorTemplate());
   int Up = ent->NbConnectPoints();
   for (int i = 1; i <= Up; i++)
+  {
     iter.GetOneItem(ent->ConnectPoint(i));
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigure::OwnCopy(const occ::handle<IGESDraw_NetworkSubfigure>& another,
@@ -194,14 +226,18 @@ void IGESDraw_ToolNetworkSubfigure::OwnCopy(const occ::handle<IGESDraw_NetworkSu
   scale       = another->ScaleFactors();
   typeflag    = another->TypeFlag();
   if (!another->ReferenceDesignator().IsNull())
+  {
     designator = new TCollection_HAsciiString(another->ReferenceDesignator());
+  }
 
   DeclareAndCast(IGESGraph_TextDisplayTemplate,
                  textTemplate,
                  TC.Transferred(another->DesignatorTemplate()));
 
   if (nbval > 0)
+  {
     connectPoints = new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, nbval);
+  }
   for (int i = 1; i <= nbval; i++)
   {
     DeclareAndCast(IGESDraw_ConnectPoint,
@@ -229,11 +265,17 @@ void IGESDraw_ToolNetworkSubfigure::OwnCheck(const occ::handle<IGESDraw_NetworkS
                                              occ::handle<Interface_Check>& ach) const
 {
   if (ent->TypeFlag() != 0 && ent->TypeFlag() != 1 && ent->TypeFlag() != 2)
+  {
     ach->AddFail("Type Flag : Value != 0/1/2");
+  }
   if (ent->NbConnectPoints() != ent->SubfigureDefinition()->NbPointEntities())
+  {
     ach->AddFail("Count of associated Connect Points inconsistent with Definition");
+  }
   if (ent->ReferenceDesignator().IsNull())
+  {
     ach->AddFail("Primary Reference Designator : not defined");
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigure::OwnDump(const occ::handle<IGESDraw_NetworkSubfigure>& ent,
@@ -257,5 +299,5 @@ void IGESDraw_ToolNetworkSubfigure::OwnDump(const occ::handle<IGESDraw_NetworkSu
   dumper.Dump(ent->DesignatorTemplate(), S, sublevel);
   S << "\nConnect Points  : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbConnectPoints(), ent->ConnectPoint);
-  S << std::endl;
+  S << '\n';
 }

@@ -115,11 +115,17 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   {
     Evaluator(&Dimension, FirstLast, &param, &derive, pResult, &ErrorCode);
     if (ErrorCode != 0)
+    {
       return; // Evaluation error
+    }
     if (derive >= 1)
+    {
       Result *= Fact;
+    }
     if (derive == 2)
+    {
       Result *= Fact;
+    }
     for (idim = 1; idim <= myTotalDimension; idim++)
     {
       myFirstConstr->SetValue(idim, derive, Result(idim));
@@ -130,11 +136,17 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   {
     Evaluator(&Dimension, FirstLast, &param, &derive, pResult, &ErrorCode);
     if (ErrorCode != 0)
+    {
       return; // Evaluation error
+    }
     if (derive >= 1)
+    {
       Result *= Fact;
+    }
     if (derive == 2)
+    {
       Result *= Fact;
+    }
     for (idim = 1; idim <= myTotalDimension; idim++)
     {
       myLastConstr->SetValue(idim, derive, Result(idim));
@@ -168,7 +180,9 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
     tip = alin * ti + blin;
     Evaluator(&Dimension, FirstLast, &tip, &derive, pFti, &ErrorCode);
     if (ErrorCode != 0)
+    {
       return; // Evaluation error
+    }
     for (idim = 1; idim <= myTotalDimension; idim++)
     {
       mySomTab->SetValue(i_idim, Fti(idim));
@@ -183,7 +197,9 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
     tin = -alin * ti + blin;
     Evaluator(&Dimension, FirstLast, &tin, &derive, pFti, &ErrorCode);
     if (ErrorCode != 0)
+    {
       return; // Evaluation error
+    }
     PLib::EvalPolynomial(ti, derive, DegreeR, myTotalDimension, Coef1[0], Rpti(1));
     ti = -ti;
     PLib::EvalPolynomial(ti, derive, DegreeR, myTotalDimension, Coef1[0], Rmti(1));
@@ -203,7 +219,9 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
     tip = blin;
     Evaluator(&Dimension, FirstLast, &tip, &derive, pFti, &ErrorCode);
     if (ErrorCode != 0)
+    {
       return; // Evaluation error
+    }
     PLib::EvalPolynomial(ti, derive, DegreeR, myTotalDimension, Coef1[0], Rpti(1));
     for (idim = 1; idim <= myTotalDimension; idim++)
     {
@@ -279,7 +297,9 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
     double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
     myJacPol.ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
     if (NewDegree > NewDegreeMax)
+    {
       NewDegreeMax = NewDegree;
+    }
     RangSS       = RangSS + Dim;
     RangJacCoeff = RangJacCoeff + (myWorkDegree + 1) * Dim;
   }
@@ -371,9 +391,9 @@ double AdvApprox_SimpleApprox::AverageError(const int Index) const
 void AdvApprox_SimpleApprox::Dump(Standard_OStream& o) const
 {
   int ii;
-  o << "Dump of SimpleApprox " << std::endl;
+  o << "Dump of SimpleApprox " << '\n';
   for (ii = 1; ii <= myTotalNumSS; ii++)
   {
-    o << "Error   " << MaxError(ii) << std::endl;
+    o << "Error   " << MaxError(ii) << '\n';
   }
 }

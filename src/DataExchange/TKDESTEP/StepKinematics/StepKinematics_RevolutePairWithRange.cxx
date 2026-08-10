@@ -67,7 +67,9 @@ void StepKinematics_RevolutePairWithRange::Init(
     myLowerLimitActualRotation = theLowerLimitActualRotation;
   }
   else
+  {
     myLowerLimitActualRotation = 0;
+  }
 
   defUpperLimitActualRotation = hasUpperLimitActualRotation;
   if (defUpperLimitActualRotation)
@@ -75,7 +77,9 @@ void StepKinematics_RevolutePairWithRange::Init(
     myUpperLimitActualRotation = theUpperLimitActualRotation;
   }
   else
+  {
     myUpperLimitActualRotation = 0;
+  }
 }
 
 //=================================================================================================

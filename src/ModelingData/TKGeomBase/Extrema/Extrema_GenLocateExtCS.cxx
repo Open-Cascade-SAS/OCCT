@@ -88,7 +88,9 @@ void Extrema_GenLocateExtCS::Perform(const Adaptor3d_Curve&   C,
   math_FunctionSetRoot SR(F, Tol);
   SR.Perform(F, Start, BInf, BSup);
   if (!SR.IsDone())
+  {
     return;
+  }
 
   mySqDist = F.SquareDistance(1);
   myPoint1 = F.PointOnCurve(1);

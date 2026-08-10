@@ -32,20 +32,28 @@ void BOPAlgo_MakeConnected::Perform()
   // Check the input data
   CheckData();
   if (HasErrors())
+  {
     return;
+  }
 
   if (myHistory.IsNull())
+  {
     myHistory = new BRepTools_History;
+  }
 
   // Glue the arguments
   MakeConnected();
   if (HasErrors())
+  {
     return;
+  }
 
   // Perform material associations for the faces
   AssociateMaterials();
   if (HasErrors())
+  {
     return;
+  }
 }
 
 //=======================================================================
@@ -71,7 +79,9 @@ void BOPAlgo_MakeConnected::CheckData()
 
   NCollection_List<TopoDS_Shape>::Iterator itLA(myArguments);
   for (; itLA.More(); itLA.Next())
+  {
     BOPTools_AlgoTools::TreatCompound(itLA.Value(), aLA, &aMFence);
+  }
 
   if (aLA.IsEmpty())
   {
@@ -100,7 +110,9 @@ void BOPAlgo_MakeConnected::MakeConnected()
 {
   // Initialize the history
   if (myGlueHistory.IsNull())
+  {
     myGlueHistory = new BRepTools_History;
+  }
 
   if (myArguments.Extent() == 1)
   {
@@ -122,7 +134,9 @@ void BOPAlgo_MakeConnected::MakeConnected()
       TopoDS_Compound aCW;
       BRep_Builder().MakeCompound(aCW);
       for (NCollection_List<TopoDS_Shape>::Iterator it(myArguments); it.More(); it.Next())
+      {
         BRep_Builder().Add(aCW, it.Value());
+      }
       AddError(new BOPAlgo_AlertUnableToGlue(aCW));
       return;
     }
@@ -150,7 +164,9 @@ void BOPAlgo_MakeConnected::FillOrigins()
   {
     NCollection_List<TopoDS_Shape>::Iterator itLA(myArguments);
     for (; itLA.More(); itLA.Next())
+    {
       TopExp::MapShapes(itLA.Value(), myAllInputsMap);
+    }
   }
 
   const int aNbS = myAllInputsMap.Extent();
@@ -158,7 +174,9 @@ void BOPAlgo_MakeConnected::FillOrigins()
   {
     const TopoDS_Shape& aS = myAllInputsMap(i);
     if (!BRepTools_History::IsSupportedType(aS))
+    {
       continue;
+    }
 
     // Get Modified & Generated shapes
     for (int j = 0; j < 2; ++j)
@@ -171,9 +189,13 @@ void BOPAlgo_MakeConnected::FillOrigins()
         const TopoDS_Shape&             aHS  = itLH.Value();
         NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aHS);
         if (!pLOr)
+        {
           pLOr = myOrigins.Bound(aHS, NCollection_List<TopoDS_Shape>());
+        }
         if (!pLOr->Contains(aS))
+        {
           pLOr->Append(aS);
+        }
       }
     }
   }
@@ -193,19 +215,29 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
   BOPTools_AlgoTools::TreatCompound(myShape, aLShapes, &aMFence);
 
   if (aLShapes.IsEmpty())
+  {
     return;
+  }
 
   // Define the element type and the material type
   TopAbs_ShapeEnum       anElemType;
   const TopAbs_ShapeEnum aMaterialType = aLShapes.First().ShapeType();
   if (aMaterialType == TopAbs_SOLID || aMaterialType == TopAbs_COMPSOLID)
+  {
     anElemType = TopAbs_FACE;
+  }
   else if (aMaterialType == TopAbs_FACE || aMaterialType == TopAbs_SHELL)
+  {
     anElemType = TopAbs_EDGE;
+  }
   else if (aMaterialType == TopAbs_EDGE || aMaterialType == TopAbs_WIRE)
+  {
     anElemType = TopAbs_VERTEX;
+  }
   else
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>::Iterator itLS(aLShapes);
   for (; itLS.More(); itLS.Next())
@@ -220,7 +252,9 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
       const TopoDS_Shape&             anElement = anExp.Current();
       NCollection_List<TopoDS_Shape>* pLM       = myMaterials.ChangeSeek(anElement);
       if (!pLM)
+      {
         pLM = myMaterials.Bound(anElement, NCollection_List<TopoDS_Shape>());
+      }
       pLM->Append(aSOr);
     }
   }
@@ -236,9 +270,13 @@ void BOPAlgo_MakeConnected::Update()
   // Update history
   myHistory->Clear();
   if (!myGlueHistory.IsNull())
+  {
     myHistory->Merge(myGlueHistory);
+  }
   if (!myPeriodicityMaker.History().IsNull())
+  {
     myHistory->Merge(myPeriodicityMaker.History());
+  }
 
   // Fill the map of origins
   FillOrigins();
@@ -254,7 +292,9 @@ void BOPAlgo_MakeConnected::Update()
 void BOPAlgo_MakeConnected::MakePeriodic(const BOPAlgo_MakePeriodic::PeriodicityParams& theParams)
 {
   if (HasErrors())
+  {
     return;
+  }
 
   // Make the shape periodic
   myPeriodicityMaker.Clear();
@@ -283,7 +323,9 @@ void BOPAlgo_MakeConnected::MakePeriodic(const BOPAlgo_MakePeriodic::Periodicity
 void BOPAlgo_MakeConnected::RepeatShape(const int theDirectionID, const int theTimes)
 {
   if (HasErrors())
+  {
     return;
+  }
 
   if (myPeriodicityMaker.Shape().IsNull() || myPeriodicityMaker.HasErrors())
   {
@@ -307,7 +349,9 @@ void BOPAlgo_MakeConnected::RepeatShape(const int theDirectionID, const int theT
 void BOPAlgo_MakeConnected::ClearRepetitions()
 {
   if (HasErrors())
+  {
     return;
+  }
 
   if (myPeriodicityMaker.Shape().IsNull() || myPeriodicityMaker.HasErrors())
   {

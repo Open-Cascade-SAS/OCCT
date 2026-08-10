@@ -29,7 +29,9 @@ void RWStepVisual_RWTextStyle::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "text_style has not 2 parameter(s)"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

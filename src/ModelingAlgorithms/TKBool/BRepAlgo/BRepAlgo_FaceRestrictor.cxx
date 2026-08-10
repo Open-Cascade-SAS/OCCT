@@ -76,7 +76,9 @@ static bool ChangePCurve(TopoDS_Edge& E, const occ::handle<Geom_Surface>& S, Top
 
   BRep_Tool::CurveOnSurface(E, C2, SE, LE, f, l, 1);
   if (!C2.IsNull())
+  {
     BB.UpdateEdge(E, C2, S, L, Precision::Confusion());
+  }
   return (C2.IsNull());
 }
 
@@ -210,7 +212,9 @@ static bool IsClosed(const TopoDS_Wire& W)
 
 {
   if (W.Closed())
+  {
     return true;
+  }
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(W, V1, V2);
   return (V1.IsSame(V2));
@@ -298,7 +302,9 @@ static void BuildFaceIn(
   BRep_Builder B;
 
   if (!KeyContains.IsBound(W) || KeyContains(W).IsEmpty())
+  {
     return;
+  }
 
   // Removal of W in KeyIsIn.
   //  for (NCollection_List<TopoDS_Shape>::Iterator it(KeyContains(W)); it.More(); it.Next()) {

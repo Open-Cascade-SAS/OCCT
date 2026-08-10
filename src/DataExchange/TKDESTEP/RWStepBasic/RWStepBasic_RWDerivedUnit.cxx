@@ -32,7 +32,9 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "derived_unit"))
+  {
     return;
+  }
 
   // --- own field : elements ---
 
@@ -52,7 +54,9 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderDa
                            ach,
                            STANDARD_TYPE(StepBasic_DerivedUnitElement),
                            anelt))
+      {
         elts->SetValue(i1, anelt);
+      }
     }
   }
 

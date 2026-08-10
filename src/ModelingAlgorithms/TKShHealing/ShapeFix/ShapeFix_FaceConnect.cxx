@@ -66,8 +66,12 @@ bool ShapeFix_FaceConnect::Add(const TopoDS_Face& aFirst, const TopoDS_Face& aSe
       // Append second face to the first list
       NCollection_List<TopoDS_Shape>::Iterator theIter;
       for (theIter.Initialize(theFirstList); theIter.More(); theIter.Next())
+      {
         if (theIter.Value().IsSame(aSecond))
+        {
           return true;
+        }
+      }
       theFirstList.Append(aSecond);
     }
     else
@@ -131,9 +135,13 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
     {
       theEdge = expe.Current();
       if (theFreeEdges.IsBound(theEdge))
+      {
         theFreeEdges.UnBind(theEdge);
+      }
       else
+      {
         theFreeEdges.Bind(theEdge, theFace);
+      }
     }
   }
 
@@ -263,8 +271,12 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               for (theProcCnxListIter.Initialize(theProcCnxList);
                    theProcCnxListIter.More() && !skip_pair;
                    theProcCnxListIter.Next())
+              {
                 if (theFirstFace.IsSame(theProcCnxListIter.Value()))
+                {
                   skip_pair = true;
+                }
+              }
             }
             if (!skip_pair)
             {
@@ -278,7 +290,9 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
 #endif
               }
               else
+              {
                 theNumOfFacesToSew = 2;
+              }
 
               NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
                                     theSewerWires;
@@ -328,8 +342,12 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
                 }
               }
               if (sewing_ok)
+              {
                 if (theSewer.SewedShape().IsNull())
+                {
                   sewing_ok = false;
+                }
+              }
 
               if (sewing_ok)
               {
@@ -368,13 +386,17 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
                             theResultEdges.UnBind(theAuxE);
                           }
                           else
+                          {
                             theResultEdges.Bind(theAuxE, theOrigE);
+                          }
                         }
                         // Remove modified free edge from the list
                         theOldFreeList.Remove(theResultsIter);
                       }
                       else
+                      {
                         theResultsIter.Next();
+                      }
                     }
                   }
                 }
@@ -463,9 +485,13 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
         {
           // Select list of free or shared edges
           if (i == 1)
+          {
             theResultsIter.Initialize(myResFreeEdges(theOldE));
+          }
           else
+          {
             theResultsIter.Initialize(myResSharEdges(theOldE));
+          }
           // Iterate on new edges
           for (; theResultsIter.More(); theResultsIter.Next())
           {
@@ -517,13 +543,17 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               NCollection_List<TopoDS_Shape>::Iterator theIter1;
               bool                                     found = false;
               for (theIter1.Initialize(theList1); theIter1.More(); theIter1.Next())
+              {
                 if (theIter1.Value().IsSame(theNewV1))
                 {
                   found = true;
                   break;
                 }
+              }
               if (!found)
+              {
                 theList1.Append(theNewV1);
+              }
             }
             else
             {
@@ -540,13 +570,17 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               NCollection_List<TopoDS_Shape>::Iterator theIter2;
               bool                                     found = false;
               for (theIter2.Initialize(theList2); theIter2.More(); theIter2.Next())
+              {
                 if (theIter2.Value().IsSame(theNewV2))
                 {
                   found = true;
                   break;
                 }
+              }
               if (!found)
+              {
                 theList2.Append(theNewV2);
+              }
             }
             else
             {
@@ -615,7 +649,9 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
           for (TopoDS_Iterator itw(newface); itw.More(); itw.Next())
           {
             if (itw.Value().ShapeType() != TopAbs_WIRE)
+            {
               continue;
+            }
             TopoDS_Wire theWire = TopoDS::Wire(itw.Value());
 
             sewd = new ShapeExtend_WireData(theWire);
@@ -626,7 +662,9 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               // smh#8
               TopoDS_Shape tmpFace = EmpFace.Oriented(TopAbs_FORWARD);
               if (!SAE.PCurve(sewd->Edge(i), TopoDS::Face(tmpFace), c2d, f, l))
+              {
                 continue;
+              }
               SAWO.Add(c2d->Value(f).XY(), c2d->Value(l).XY());
             }
             SAWO.Perform();
@@ -652,7 +690,9 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
             MapWires;
           MapWires.Clear();
           if (SFF->FixOrientation(MapWires))
+          {
             EmpFace = SFF->Face();
+          }
           theBuilder.Add(theShell, EmpFace);
         }
         theShell.Closed(BRep_Tool::IsClosed(theShell));
@@ -724,19 +764,31 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               thePosition = BRep_Tool::Pnt(TopoDS::Vertex(theN2Iter.Value()));
               double val  = thePosition.X();
               if (val < theLBound.X())
+              {
                 theLBound.SetX(val);
+              }
               else if (val > theRBound.X())
+              {
                 theRBound.SetX(val);
+              }
               val = thePosition.Y();
               if (val < theLBound.Y())
+              {
                 theLBound.SetY(val);
+              }
               else if (val > theRBound.Y())
+              {
                 theRBound.SetY(val);
+              }
               val = thePosition.Z();
               if (val < theLBound.Z())
+              {
                 theLBound.SetZ(val);
+              }
               else if (val > theRBound.Z())
+              {
                 theRBound.SetZ(val);
+              }
             }
             thePosition         = gp_Pnt((theLBound.XYZ() + theRBound.XYZ()) / 2.);
             double theTolerance = 0., curtoler;
@@ -747,12 +799,16 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               curtoler =
                 thePosition.Distance(BRep_Tool::Pnt(theOldVert)) + BRep_Tool::Tolerance(theOldVert);
               if (curtoler > theTolerance)
+              {
                 theTolerance = curtoler;
+              }
             }
             curtoler =
               thePosition.Distance(BRep_Tool::Pnt(theNewVert)) + BRep_Tool::Tolerance(theNewVert);
             if (curtoler > theTolerance)
+            {
               theTolerance = curtoler;
+            }
             theBuilder.UpdateVertex(theNewVert, thePosition, theTolerance);
           }
 
@@ -762,8 +818,10 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
                  theNVIter(theOldVertices);
                theNVIter.More();
                theNVIter.Next())
+          {
             theReShape->Replace(theNVIter.Key().Oriented(TopAbs_FORWARD),
                                 theNVIter.Value().Oriented(TopAbs_FORWARD));
+          }
           // smh#8
           TopoDS_Shape tmpshape = theReShape->Apply(result);
           result                = TopoDS::Shell(tmpshape);

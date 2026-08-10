@@ -52,18 +52,24 @@ bool BinMDataStd_ExpressionDriver::Paste(const BinObjMgt_Persistent&       theSo
   // variables
   int nbvar;
   if (!(theSource >> nbvar) || nbvar < 0)
+  {
     return false;
+  }
   NCollection_List<occ::handle<TDF_Attribute>>& aList = aC->GetVariables();
   for (; nbvar > 0; nbvar--)
   {
     occ::handle<TDF_Attribute> aV;
     int                        aNb;
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
+      {
         aV = occ::down_cast<TDataStd_Variable>(theRelocTable.Find(aNb));
+      }
       else
       {
         aV = new TDataStd_Variable;
@@ -76,7 +82,9 @@ bool BinMDataStd_ExpressionDriver::Paste(const BinObjMgt_Persistent&       theSo
   // expression
   TCollection_ExtendedString aString;
   if (!(theSource >> aString))
+  {
     return false;
+  }
   aC->SetExpression(aString);
 
   return true;
@@ -103,9 +111,13 @@ void BinMDataStd_ExpressionDriver::Paste(
     const occ::handle<TDF_Attribute>& TV = it.Value();
     int                               aNb;
     if (!TV.IsNull())
+    {
       aNb = theRelocTable.Add(TV);
+    }
     else
+    {
       aNb = -1;
+    }
     theTarget << aNb;
   }
 

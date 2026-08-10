@@ -40,7 +40,9 @@ void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 14, theArch, "prismatic_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -216,7 +218,9 @@ void RWStepKinematics_RWPrismaticPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -247,14 +251,18 @@ void RWStepKinematics_RWPrismaticPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitActualTranslation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualTranslation())
   {
     theSW.Send(theEnt->UpperLimitActualTranslation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

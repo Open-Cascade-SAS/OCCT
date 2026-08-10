@@ -48,6 +48,8 @@ gp_Pnt IGESGeom_TabulatedCylinder::TransformedEndPoint() const
 {
   gp_XYZ EndPoint = theEnd;
   if (HasTransf())
+  {
     Location().Transforms(EndPoint);
+  }
   return (gp_Pnt(EndPoint));
 }

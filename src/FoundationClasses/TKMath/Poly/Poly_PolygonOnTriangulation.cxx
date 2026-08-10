@@ -58,11 +58,13 @@ Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(
 
 occ::handle<Poly_PolygonOnTriangulation> Poly_PolygonOnTriangulation::Copy() const
 {
-  occ::handle<Poly_PolygonOnTriangulation> aCopy;
-  if (myParameters.IsNull())
-    aCopy = new Poly_PolygonOnTriangulation(myNodes);
-  else
-    aCopy = new Poly_PolygonOnTriangulation(myNodes, myParameters->Array1());
+  occ::handle<Poly_PolygonOnTriangulation> aCopy =
+    new Poly_PolygonOnTriangulation(NbNodes(), !myParameters.IsNull());
+  aCopy->ChangeNodeArray().CopyValues(myNodes);
+  if (!myParameters.IsNull())
+  {
+    aCopy->ChangeParameterArray().CopyValues(myParameters->Array1());
+  }
   aCopy->Deflection(myDeflection);
   return aCopy;
 }

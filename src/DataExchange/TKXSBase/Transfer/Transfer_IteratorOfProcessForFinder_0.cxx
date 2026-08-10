@@ -30,7 +30,9 @@ Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const b
 
 {
   if (withstarts)
+  {
     thestarts = new NCollection_HSequence<occ::handle<Transfer_Finder>>();
+  }
 }
 
 //=================================================================================================
@@ -38,8 +40,10 @@ Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const b
 void Transfer_IteratorOfProcessForFinder::Add(const occ::handle<Transfer_Binder>& binder)
 {
   if (!thestarts.IsNull())
+  {
     throw Standard_NoSuchObject(
       "Transfer_IteratorOfProcessForFinder : Add, Starting Object required not provided");
+  }
   AddItem(binder);
 }
 
@@ -50,7 +54,9 @@ void Transfer_IteratorOfProcessForFinder::Add(const occ::handle<Transfer_Binder>
 {
   AddItem(binder);
   if (!thestarts.IsNull())
+  {
     thestarts->Append(start);
+  }
 }
 
 //=================================================================================================
@@ -60,10 +66,14 @@ void Transfer_IteratorOfProcessForFinder::Filter(
   const bool                                                              keep)
 {
   if (list.IsNull() || thestarts.IsNull())
+  {
     return;
+  }
   int i, j, nb = thestarts->Length();
   if (nb == 0)
+  {
     return;
+  }
   occ::handle<Transfer_Binder> factice;
   NCollection_IndexedDataMap<occ::handle<Transfer_Finder>,
                              occ::handle<Transfer_Binder>,
@@ -81,7 +91,9 @@ void Transfer_IteratorOfProcessForFinder::Filter(
   {
     j = amap.FindIndex(list->Value(i));
     if (j > 0)
+    {
       SelectItem(j, keep);
+    }
   }
 }
 
@@ -97,6 +109,8 @@ bool Transfer_IteratorOfProcessForFinder::HasStarting() const
 const occ::handle<Transfer_Finder>& Transfer_IteratorOfProcessForFinder::Starting() const
 {
   if (thestarts.IsNull())
+  {
     throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
+  }
   return thestarts->Value(thecurr);
 }

@@ -61,6 +61,8 @@ occ::handle<StepVisual_CurveStyleFontPattern> StepVisual_CurveStyleFont::Pattern
 int StepVisual_CurveStyleFont::NbPatternList() const
 {
   if (patternList.IsNull())
+  {
     return 0;
+  }
   return patternList->Length();
 }

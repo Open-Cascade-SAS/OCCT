@@ -31,7 +31,9 @@ void RWStepVisual_RWDraughtingPreDefinedColour::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "draughting_pre_defined_colour has not 1 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

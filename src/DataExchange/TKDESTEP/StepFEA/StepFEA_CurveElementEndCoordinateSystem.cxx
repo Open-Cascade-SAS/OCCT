@@ -31,13 +31,21 @@ int StepFEA_CurveElementEndCoordinateSystem::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepFEA_FeaAxis2Placement3d)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepFEA_AlignedCurve3dElementCoordinateSystem)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepFEA_ParametricCurve3dElementCoordinateSystem)))
+  {
     return 3;
+  }
   return 0;
 }
 

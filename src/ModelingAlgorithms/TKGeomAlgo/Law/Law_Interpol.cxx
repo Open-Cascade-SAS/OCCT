@@ -41,9 +41,13 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad, const bool
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
+  {
     rad = new NCollection_HArray1<double>(1, nbp - 1);
+  }
   else
+  {
     rad = new NCollection_HArray1<double>(1, nbp);
+  }
   double x, y;
   int    i;
   for (i = 1; i <= nbp; i++)
@@ -51,7 +55,9 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad, const bool
     ParAndRad(l + i - 1).Coord(x, y);
     par->SetValue(i, x);
     if (!Periodic || i != nbp)
+    {
       rad->SetValue(i, y);
+    }
   }
   Law_Interpolate inter(rad, par, Periodic, Precision::Confusion());
   inter.Perform();
@@ -73,9 +79,13 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
+  {
     rad = new NCollection_HArray1<double>(1, nbp - 1);
+  }
   else
+  {
     rad = new NCollection_HArray1<double>(1, nbp);
+  }
   double x, y;
   int    i;
   for (i = 1; i <= nbp; i++)
@@ -83,7 +93,9 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
     ParAndRad(l + i - 1).Coord(x, y);
     par->SetValue(i, (Uf * (x - wd) + Ud * (wf - x)) / (wf - wd));
     if (!Periodic || i != nbp)
+    {
       rad->SetValue(i, y);
+    }
   }
   Law_Interpolate inter(rad, par, Periodic, Precision::Confusion());
   inter.Perform();
@@ -105,9 +117,13 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
+  {
     rad = new NCollection_HArray1<double>(1, nbp - 1);
+  }
   else
+  {
     rad = new NCollection_HArray1<double>(1, nbp);
+  }
   double x, y;
   int    i;
   for (i = 1; i <= nbp; i++)
@@ -115,7 +131,9 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
     ParAndRad(l + i - 1).Coord(x, y);
     par->SetValue(i, x);
     if (!Periodic || i != nbp)
+    {
       rad->SetValue(i, y);
+    }
   }
   Law_Interpolate inter(rad, par, Periodic, Precision::Confusion());
   inter.Load(Dd, Df);
@@ -138,9 +156,13 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
+  {
     rad = new NCollection_HArray1<double>(1, nbp - 1);
+  }
   else
+  {
     rad = new NCollection_HArray1<double>(1, nbp);
+  }
   double x, y;
   int    i;
   for (i = 1; i <= nbp; i++)
@@ -148,7 +170,9 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
     ParAndRad(l + i - 1).Coord(x, y);
     par->SetValue(i, (Uf * (x - wd) + Ud * (wf - x)) / (wf - wd));
     if (!Periodic || i != nbp)
+    {
       rad->SetValue(i, y);
+    }
   }
   Law_Interpolate inter(rad, par, Periodic, Precision::Confusion());
   inter.Load(Dd, Df);

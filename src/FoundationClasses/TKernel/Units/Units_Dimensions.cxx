@@ -153,35 +153,55 @@ void Units_Dimensions::Dump(const int ashift) const
 {
   int i;
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << " with the physical dimensions : " << std::endl;
+  }
+  std::cout << " with the physical dimensions : " << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         mass                      : " << themass << std::endl;
+  }
+  std::cout << "         mass                      : " << themass << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         length                    : " << thelength << std::endl;
+  }
+  std::cout << "         length                    : " << thelength << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         time                      : " << thetime << std::endl;
+  }
+  std::cout << "         time                      : " << thetime << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         electric current          : " << theelectriccurrent << std::endl;
+  }
+  std::cout << "         electric current          : " << theelectriccurrent << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         thermodynamic temperature : " << thethermodynamictemperature << std::endl;
+  }
+  std::cout << "         thermodynamic temperature : " << thethermodynamictemperature << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         amount of substance       : " << theamountofsubstance << std::endl;
+  }
+  std::cout << "         amount of substance       : " << theamountofsubstance << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         luminous intensity        : " << theluminousintensity << std::endl;
+  }
+  std::cout << "         luminous intensity        : " << theluminousintensity << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         plane angle               : " << theplaneangle << std::endl;
+  }
+  std::cout << "         plane angle               : " << theplaneangle << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "         solid angle               : " << thesolidangle << std::endl;
+  }
+  std::cout << "         solid angle               : " << thesolidangle << '\n';
 }
 
 //=======================================================================
@@ -234,7 +254,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::ALess()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -242,7 +264,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::AMass()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(1., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -250,7 +274,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::ALength()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 1., 0., 0., 0., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -258,7 +284,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::ATime()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 1., 0., 0., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -266,7 +294,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::AElectricCurrent()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 1., 0., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -274,7 +304,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::AThermodynamicTemperature()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 1., 0., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -282,7 +314,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::AAmountOfSubstance()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 1., 0., 0., 0.);
+  }
   return aDim;
 }
 
@@ -290,7 +324,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::ALuminousIntensity()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 1., 0., 0.);
+  }
   return aDim;
 }
 
@@ -298,7 +334,9 @@ occ::handle<Units_Dimensions> Units_Dimensions::APlaneAngle()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 1., 0.);
+  }
   return aDim;
 }
 
@@ -306,6 +344,8 @@ occ::handle<Units_Dimensions> Units_Dimensions::ASolidAngle()
 {
   static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
+  {
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 1.);
+  }
   return aDim;
 }

@@ -32,7 +32,9 @@ void RWStepGeom_RWSurfaceCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "surface_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -59,7 +61,9 @@ void RWStepGeom_RWSurfaceCurve::ReadStep(const occ::handle<StepData_StepReaderDa
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
+      {
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
+      }
     }
   }
 
@@ -76,7 +80,9 @@ void RWStepGeom_RWSurfaceCurve::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (master_representation) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

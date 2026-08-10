@@ -36,7 +36,9 @@ void RWStepElement_RWCurveElementSectionDefinition::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_section_definition"))
+  {
     return;
+  }
 
   // Own fields of CurveElementSectionDefinition
 

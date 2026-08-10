@@ -47,7 +47,9 @@ bool BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&       theSource
   occ::handle<TObj_TXYZ> aTarget = occ::down_cast<TObj_TXYZ>(theTarget);
   double                 aX, aY, aZ;
   if (!(theSource >> aX >> aY >> aZ))
+  {
     return false;
+  }
   aTarget->Set(gp_XYZ(aX, aY, aZ));
   return true;
 }

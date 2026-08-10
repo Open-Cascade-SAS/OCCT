@@ -74,7 +74,9 @@ void IGESSolid_ToolVertexList::ReadOwnParams(const occ::handle<IGESSolid_VertexL
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), Msg183, anXYZ); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Vertices", anXYZ);
       if (PR.ReadXYZ(PR.CurrentList(1, 3), Msg183, anXYZ))
+      {
         tempVertices->SetValue(i, anXYZ);
+      }
     }
   }
   else
@@ -85,7 +87,9 @@ void IGESSolid_ToolVertexList::ReadOwnParams(const occ::handle<IGESSolid_VertexL
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   if (nbitems > 0)
+  {
     ent->Init(tempVertices);
+  }
 }
 
 //=================================================================================================
@@ -177,5 +181,5 @@ void IGESSolid_ToolVertexList::OwnDump(const occ::handle<IGESSolid_VertexList>& 
   S << "IGESSolid_VertexList\n"
     << "Vertices : ";
   IGESData_DumpListXYZL(S, level, 1, ent->NbVertices(), ent->Vertex, ent->Location());
-  S << std::endl;
+  S << '\n';
 }

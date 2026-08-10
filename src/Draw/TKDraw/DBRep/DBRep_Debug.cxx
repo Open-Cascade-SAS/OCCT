@@ -23,7 +23,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BRep_Builder.hxx>
 
 // This file defines global functions not declared in any public header,
@@ -89,7 +89,7 @@ Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListP
                                                                                       aC)
       || fromContainer<NCollection_Sequence<TopoDS_Shape>>(theListPtr, aC)
       || fromContainer<NCollection_Array1<TopoDS_Shape>>(theListPtr, aC)
-      || fromContainer<NCollection_Vector<TopoDS_Shape>>(theListPtr, aC))
+      || fromContainer<NCollection_DynamicArray<TopoDS_Shape>>(theListPtr, aC))
   {
     DBRep::Set(theNameStr, aC);
     return theNameStr;

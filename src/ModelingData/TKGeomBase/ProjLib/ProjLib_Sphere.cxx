@@ -80,9 +80,13 @@ static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
   }
 
   if (Z > 1.)
+  {
     Z = 1.;
+  }
   else if (Z < -1.)
+  {
     Z = -1.;
+  }
   V = std::asin(Z);
 
   return gp_Pnt2d(U, V);
@@ -139,9 +143,13 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
       //   so V2 = PI - V2;
       P2d2.SetX(P2d1.X());
       if (P2d2.Y() < 0.)
+      {
         P2d2.SetY(-M_PI - P2d2.Y());
+      }
       else
+      {
         P2d2.SetY(M_PI - P2d2.Y());
+      }
     }
     else
     {
@@ -158,7 +166,9 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
     // P2d(U,V) :first point of the PCurve.
     double U = Xs.AngleWithRef(Xc, Xs ^ Ys);
     if (U < 0)
+    {
       U += 2 * M_PI;
+    }
     double Z = gp_Vec(O, C.Location()).Dot(Zs);
     double V = std::asin(Z / mySphere.Radius());
     P2d1     = gp_Pnt2d(U, V);
@@ -222,7 +232,9 @@ void ProjLib_Sphere::SetInBounds(const double U)
     Axis = gp_Ax2d(gp_Pnt2d(0., -M_PI / 2.), gp::DX2d());
   }
   else
+  {
     return;
+  }
 
   Trsf.SetMirror(Axis);
   myLin.Transform(Trsf);

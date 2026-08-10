@@ -39,7 +39,9 @@ void IGESDimen_NewDimensionedGeometry::Init(
   int num = allEntities->Length();
   if (allEntities->Lower() != 1 || allLocations->Lower() != 1 || allLocations->Length() != num
       || allPoints->Lower() != 1 || allPoints->Length() != num)
+  {
     throw Standard_DimensionMismatch("IGESDimen_NewDimensionedGeometry: Init");
+  }
   theNbDimensions             = nbDimens;
   theDimensionEntity          = aDimen;
   theDimensionOrientationFlag = anOrientation;
@@ -95,6 +97,8 @@ gp_Pnt IGESDimen_NewDimensionedGeometry::TransformedPoint(const int Index) const
 {
   gp_XYZ point = thePoints->Value(Index);
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }

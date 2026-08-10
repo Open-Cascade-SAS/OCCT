@@ -70,7 +70,9 @@ void BOPTest::BOPCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -240,7 +242,9 @@ int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation 
 
   // Store the history of Boolean operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aBOP.History());
+  }
 
   if (aBOP.HasErrors())
   {
@@ -309,7 +313,9 @@ int bopsection(Draw_Interpretor& di, int n, const char** a)
 
   // Store the history of Section operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aBOP.History());
+  }
 
   if (aBOP.HasErrors())
   {
@@ -423,7 +429,9 @@ int bsection(Draw_Interpretor& di, int n, const char** a)
   aSec.Build(aProgress->Start());
   // Store the history of Section operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aSec.History());
+  }
 
   //
   if (aSec.HasWarnings())
@@ -496,7 +504,9 @@ int bsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aO
 
   // Store the history of Boolean operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aBOP.PDS()->Arguments(), aBOP);
+  }
 
   if (aBOP.HasErrors())
   {
@@ -844,7 +854,9 @@ int mkvolume(Draw_Interpretor& di, int n, const char** a)
 
   // Store the history of Volume Maker into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aLS, aMV);
+  }
 
   if (aMV.HasErrors())
   {

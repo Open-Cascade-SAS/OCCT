@@ -27,7 +27,9 @@ void RWStepBasic_RWApprovalStatus::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "approval_status"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

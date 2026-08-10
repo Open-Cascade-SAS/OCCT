@@ -122,7 +122,9 @@ void BRepTools_Modifier::Perform(const occ::handle<BRepTools_Modification>& M,
   FillNewSurfaceInfo(M);
 
   if (!myMutableInput)
+  {
     CreateOtherVertices(aMVE, aMEF, M);
+  }
 
   bool aNewGeom;
   Rebuild(myShape, M, aNewGeom, aPS.Next());
@@ -260,7 +262,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
                    aNSinfo.myToler);
         result.Location(S.Location(), false);
         if (aNSinfo.myRevFace)
+        {
           ResOr = TopAbs_REVERSED;
+        }
         // set specifics flags of a Face
         B.NaturalRestriction(TopoDS::Face(result), BRep_Tool::NaturalRestriction(TopoDS::Face(S)));
       }
@@ -269,8 +273,10 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
       occ::handle<Poly_Triangulation> aTriangulation;
       if (M->NewTriangulation(TopoDS::Face(S), aTriangulation))
       {
-        if (rebuild) // the copied face already exists => update it
+        if (rebuild)
+        { // the copied face already exists => update it
           B.UpdateFace(TopoDS::Face(result), aTriangulation);
+        }
         else
         { // create new face with bare triangulation
           B.MakeFace(TopoDS::Face(result), aTriangulation);
@@ -313,8 +319,10 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
       occ::handle<Poly_Polygon3D> aPolygon;
       if (M->NewPolygon(TopoDS::Edge(S), aPolygon))
       {
-        if (rebuild) // the copied edge already exists => update it
+        if (rebuild)
+        { // the copied edge already exists => update it
           B.UpdateEdge(TopoDS::Edge(result), aPolygon, S.Location());
+        }
         else
         { // create new edge with bare polygon
           B.MakeEdge(TopoDS::Edge(result), aPolygon);
@@ -338,7 +346,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
     int aShapeCount = 0;
     {
       for (it.Initialize(S, false); it.More(); it.Next())
+      {
         ++aShapeCount;
+      }
     }
 
     Message_ProgressScope aPS(theProgress, "Converting SubShapes", aShapeCount);
@@ -358,7 +368,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
     }
   }
   if (theNewGeom)
+  {
     myHasNewGeom.Add(S);
+  }
 
   // make an empty copy
   if (rebuild && !newgeom)
@@ -389,7 +401,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
       TopoDS_Face               face = TopoDS::Face(S);
       TopAbs_Orientation        fcor = face.Orientation();
       if (fcor != TopAbs_REVERSED)
+      {
         fcor = TopAbs_FORWARD;
+      }
 
       TopExp_Explorer ex(face.Oriented(fcor), TopAbs_EDGE);
       for (; ex.More(); ex.Next())
@@ -425,7 +439,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
               TopLoc_Location aLoc;
               TopoDS_Shape    resface = (myMap.IsBound(face) ? myMap(face) : face);
               if (resface.IsNull())
+              {
                 resface = face;
+              }
               occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(TopoDS::Face(resface), aLoc);
               // check other faces sharing the same surface
               TopExp_Explorer aExpF(myShape, TopAbs_FACE);
@@ -433,10 +449,14 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
               {
                 TopoDS_Face anOther = TopoDS::Face(aExpF.Current());
                 if (anOther.IsSame(face))
+                {
                   continue;
+                }
                 TopoDS_Shape resface2 = (myMap.IsBound(anOther) ? myMap(anOther) : anOther);
                 if (resface2.IsNull())
+                {
                   resface2 = anOther;
+                }
                 TopLoc_Location           anOtherLoc;
                 occ::handle<Geom_Surface> anOtherSurf =
                   BRep_Tool::Surface(TopoDS::Face(resface2), anOtherLoc);
@@ -444,7 +464,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
                 {
                   TopExp_Explorer aExpE(anOther, TopAbs_EDGE);
                   for (; aExpE.More() && !isClosed; aExpE.Next())
+                  {
                     isClosed = edge.IsSame(aExpE.Current());
+                  }
                 }
               }
             }
@@ -463,7 +485,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
               CurE.Orientation(TopAbs_FORWARD);
               curve2d1 = BRep_Tool::CurveOnSurface(CurE, CurF, f, l);
               if (curve2d1.IsNull())
+              {
                 curve2d1 = new Geom2d_Line(gp::OX2d());
+              }
               B.UpdateEdge(CurE, curve2d1, curve2d, CurF, 0.);
             }
             else
@@ -471,7 +495,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
               CurE.Orientation(TopAbs_REVERSED);
               curve2d1 = BRep_Tool::CurveOnSurface(CurE, CurF, f, l);
               if (curve2d1.IsNull())
+              {
                 curve2d1 = new Geom2d_Line(gp::OX2d());
+              }
               B.UpdateEdge(CurE, curve2d, curve2d1, CurF, 0.);
             }
             currcurv = BRep_Tool::CurveOnSurface(CurE, CurF, f, l);
@@ -542,13 +568,19 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
             BRep_Tool::Triangulation(TopoDS::Face(myMap(face)), aLocation);
           TopoDS_Edge aNewEdge = TopoDS::Edge(myMap(edge));
           if (aPolyOnTria_2.IsNull())
+          {
             B.UpdateEdge(aNewEdge, aPolyOnTria_1, aNewFaceTria, aLocation);
+          }
           else
           {
             if (edge.Orientation() == TopAbs_FORWARD)
+            {
               B.UpdateEdge(aNewEdge, aPolyOnTria_1, aPolyOnTria_2, aNewFaceTria, aLocation);
+            }
             else
+            {
               B.UpdateEdge(aNewEdge, aPolyOnTria_2, aPolyOnTria_1, aNewFaceTria, aLocation);
+            }
           }
         }
       }
@@ -562,7 +594,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
       const TopoDS_Edge& edge = TopoDS::Edge(S);
       TopAbs_Orientation edor = edge.Orientation();
       if (edor != TopAbs_REVERSED)
+      {
         edor = TopAbs_FORWARD;
+      }
       TopExp_Explorer ex(edge.Oriented(edor), TopAbs_VERTEX);
       while (ex.More())
       {
@@ -588,7 +622,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
         aLocalVertex.Orientation(vtxrelat);
         // B.UpdateVertex(TopoDS::Vertex(myMap(vertex).Oriented(vtxrelat)),
         if (myMutableInput || !aLocalVertex.IsSame(vertex))
+        {
           B.UpdateVertex(aLocalVertex, param, TopoDS::Edge(result), tol);
+        }
         ex.Next();
       }
     }
@@ -600,7 +636,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
     result.Infinite(S.Infinite());
   }
   else
+  {
     result = S;
+  }
 
   // Set flag of the shape.
   result.Orientation(ResOr);
@@ -633,7 +671,9 @@ void BRepTools_Modifier::CreateNewVertices(
       myHasNewGeom.Add(aV);
     }
     else if (myMutableInput)
+    {
       myMap(aV) = aV.Oriented(TopAbs_FORWARD);
+    }
   }
 }
 
@@ -751,7 +791,9 @@ void BRepTools_Modifier::CreateOtherVertices(
       {
         const TopoDS_Edge& anE = TopoDS::Edge(it.Value());
         if (myNCInfo.IsBound(anE) && !myNCInfo(anE).myCurve.IsNull())
+        {
           toReplace = true;
+        }
 
         if (!toReplace)
         {
@@ -776,9 +818,13 @@ void BRepTools_Modifier::CreateOtherVertices(
         }
       }
       if (toReplace)
+      {
         aNewV = TopoDS::Vertex(aV.EmptyCopied());
+      }
       else
+      {
         aNewV = aV;
+      }
       aNewV.Orientation(TopAbs_FORWARD);
       myMap(aV) = aNewV;
     }

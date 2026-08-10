@@ -71,7 +71,9 @@ void IGESToBRep::Init()
 {
   static bool init = false;
   if (init)
+  {
     return;
+  }
   init = true;
   XSAlgo::Init();
   theContainer = new IGESToBRep_AlgoContainer;
@@ -100,13 +102,21 @@ bool IGESToBRep::IsCurveAndSurface(const occ::handle<IGESData_IGESEntity>& start
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (IsTopoCurve(start))
+  {
     return true;
+  }
   if (IsTopoSurface(start))
+  {
     return true;
+  }
   if (IsBRepEntity(start))
+  {
     return true;
+  }
   return false;
 }
 
@@ -119,19 +129,33 @@ bool IGESToBRep::IsBasicCurve(const occ::handle<IGESData_IGESEntity>& start)
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineCurve)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_ConicArc)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CopiousData)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineCurve)))
+  {
     return true;
+  }
   return false;
 }
 
@@ -144,22 +168,38 @@ bool IGESToBRep::IsBasicSurface(const occ::handle<IGESData_IGESEntity>& start)
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineSurface)))
+  {
     return true;
+  }
   // S4181 pdn 15.04.99 added to basic surfaces
   if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_CylindricalSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_ConicalSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_SphericalSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_ToroidalSurface)))
+  {
     return true;
+  }
 
   return false;
 }
@@ -173,19 +213,33 @@ bool IGESToBRep::IsTopoCurve(const occ::handle<IGESData_IGESEntity>& start)
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (IsBasicCurve(start))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CompositeCurve)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_Boundary)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_Point)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetCurve)))
+  {
     return true;
+  }
   return false;
 }
 
@@ -198,23 +252,41 @@ bool IGESToBRep::IsTopoSurface(const occ::handle<IGESData_IGESEntity>& start)
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (IsBasicSurface(start))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_TrimmedSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_SurfaceOfRevolution)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_TabulatedCylinder)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_RuledSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_BoundedSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetSurface)))
+  {
     return true;
+  }
   // S4181 pdn 15.04.99 removing to basic surface
   // if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))       return true;
   //  SingleParent, special case (Perforated Face: contains only PLANEs)
@@ -222,12 +294,16 @@ bool IGESToBRep::IsTopoSurface(const occ::handle<IGESData_IGESEntity>& start)
   {
     DeclareAndCast(IGESBasic_SingleParent, sp, start);
     if (!sp->SingleParent()->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+    {
       return false;
+    }
     int nb = sp->NbChildren();
     for (int i = 1; i <= nb; i++)
     {
       if (!sp->Child(i)->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+      {
         return false;
+      }
     }
     return true;
   }
@@ -243,19 +319,33 @@ bool IGESToBRep::IsBRepEntity(const occ::handle<IGESData_IGESEntity>& start)
 {
   // S4054
   if (start.IsNull())
+  {
     return false;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_Face)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_Shell)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_ManifoldSolid)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_VertexList)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_EdgeList)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(IGESSolid_Loop)))
+  {
     return true;
+  }
   return false;
 }
 
@@ -275,7 +365,9 @@ int IGESToBRep::IGESCurveToSequenceOfIGESCurve(
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& sequence)
 {
   if (sequence.IsNull())
+  {
     sequence = new NCollection_HSequence<occ::handle<Standard_Transient>>;
+  }
   if (!curve.IsNull())
   {
     if (curve->IsKind(STANDARD_TYPE(IGESGeom_CompositeCurve)))
@@ -289,7 +381,9 @@ int IGESToBRep::IGESCurveToSequenceOfIGESCurve(
       }
     }
     else if (IGESToBRep::IsTopoCurve(curve) && !curve->IsKind(STANDARD_TYPE(IGESGeom_Point)))
+    {
       sequence->Append(curve);
+    }
   }
   return sequence->Length();
 }
@@ -347,17 +441,21 @@ bool IGESToBRep::TransferPCurve(const TopoDS_Edge& fromedge,
       }
     }
     if (toedge.Orientation() == TopAbs_FORWARD)
+    {
       B.UpdateEdge(toedge,
                    occ::down_cast<Geom2d_Curve>(pcurve->Copy()),
                    occ::down_cast<Geom2d_Curve>(oldpcurve->Copy()),
                    face,
                    0);
+    }
     else
+    {
       B.UpdateEdge(toedge,
                    occ::down_cast<Geom2d_Curve>(oldpcurve->Copy()),
                    occ::down_cast<Geom2d_Curve>(pcurve->Copy()),
                    face,
                    0);
+    }
   }
   else
   {
@@ -368,8 +466,12 @@ bool IGESToBRep::TransferPCurve(const TopoDS_Edge& fromedge,
   B.Range(toedge, face, a, b);
   double first, last;
   if (!BRep_Tool::Curve(toedge, first, last).IsNull() && (first != a || last != b))
+  {
     B.SameRange(toedge, false);
+  }
   else
+  {
     B.SameRange(toedge, true);
+  }
   return result;
 }

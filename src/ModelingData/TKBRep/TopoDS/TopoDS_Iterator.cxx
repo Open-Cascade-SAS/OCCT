@@ -24,14 +24,22 @@
 void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const bool cumLoc)
 {
   if (cumLoc)
+  {
     myLocation = S.Location();
+  }
   else
+  {
     myLocation.Identity();
+  }
 
   if (cumOri)
+  {
     myOrientation = S.Orientation();
+  }
   else
+  {
     myOrientation = TopAbs_FORWARD;
+  }
 
   if (S.IsNull())
   {
@@ -66,5 +74,7 @@ void TopoDS_Iterator::updateCurrentShape()
   myShape = myIterator.Value();
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
+  {
     myShape.Move(myLocation, false);
+  }
 }

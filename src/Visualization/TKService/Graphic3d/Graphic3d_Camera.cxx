@@ -563,11 +563,17 @@ static NCollection_Vec4<double> safePointCast(const gp_Pnt& thePnt)
   gp_Pnt       aSafePoint = thePnt;
   const double aBigFloat  = aLim * 0.1f;
   if (std::abs(aSafePoint.X()) > aLim)
+  {
     aSafePoint.SetX(aSafePoint.X() >= 0 ? aBigFloat : -aBigFloat);
+  }
   if (std::abs(aSafePoint.Y()) > aLim)
+  {
     aSafePoint.SetY(aSafePoint.Y() >= 0 ? aBigFloat : -aBigFloat);
+  }
   if (std::abs(aSafePoint.Z()) > aLim)
+  {
     aSafePoint.SetZ(aSafePoint.Z() >= 0 ? aBigFloat : -aBigFloat);
+  }
 
   // convert point
   NCollection_Vec4<double> aPnt(aSafePoint.X(), aSafePoint.Y(), aSafePoint.Z(), 1.0);

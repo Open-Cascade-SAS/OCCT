@@ -31,7 +31,9 @@ void RWHeaderSection_RWFileDescription::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "file_description has not 2 parameter(s)"))
+  {
     return;
+  }
 
   // --- own field : description ---
 
@@ -48,7 +50,9 @@ void RWHeaderSection_RWFileDescription::ReadStep(
       {
         bool stat1 = data->ReadString(nsub1, i1, "description", ach, aDescriptionItem);
         if (stat1)
+        {
           aDescription->SetValue(i1, aDescriptionItem);
+        }
       }
     }
   }
@@ -65,7 +69,9 @@ void RWHeaderSection_RWFileDescription::ReadStep(
   //--- Initialisation of the read entity ---
 
   if (!ach->HasFailed())
+  {
     ent->Init(aDescription, aImplementationLevel);
+  }
 }
 
 void RWHeaderSection_RWFileDescription::WriteStep(

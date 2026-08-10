@@ -25,7 +25,7 @@ int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
     return 0;
 
   const BVH_Array4i& aBVHNodes = theBVH->NodeInfoBuffer();
-  if (aBVHNodes.empty())
+  if (aBVHNodes.IsEmpty())
     return 0;
 
   // Create stack
@@ -141,7 +141,7 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
 
   const BVH_Array4i& aBVHNodes1 = theBVH1->NodeInfoBuffer();
   const BVH_Array4i& aBVHNodes2 = theBVH2->NodeInfoBuffer();
-  if (aBVHNodes1.empty() || aBVHNodes2.empty())
+  if (aBVHNodes1.IsEmpty() || aBVHNodes2.IsEmpty())
     return 0;
 
   // On each iteration we can add max four new pairs of nodes to process.

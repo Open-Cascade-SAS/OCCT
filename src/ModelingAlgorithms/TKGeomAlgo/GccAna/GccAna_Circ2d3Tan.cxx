@@ -100,7 +100,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   if ((std::abs(R1 - R2) <= Tolerance && center1.IsEqual(center2, Tolerance))
       || (std::abs(R1 - R3) <= Tolerance && center1.IsEqual(center3, Tolerance))
       || (std::abs(R2 - R3) <= Tolerance && center2.IsEqual(center3, Tolerance)))
+  {
     return;
+  }
   else
   {
     if (std::abs(dir2 ^ dir3) <= Tolerance)
@@ -113,12 +115,16 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         if (std::abs(std::abs(R1 - R3) - Dist2) <= Tolerance)
         {
           if (std::abs(std::abs(R2 - R3) - Dist3) <= Tolerance)
+          {
             return;
+          }
         }
         else if (std::abs(R1 + R3 - Dist2) <= Tolerance)
         {
           if (std::abs(R2 + R3 - Dist3) <= Tolerance)
+          {
             return;
+          }
         }
       }
       else if (std::abs(R1 + R2 - Dist1) <= Tolerance)
@@ -131,7 +137,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         {
           if (std::abs(std::abs(R2 - R3) - Dist3) <= Tolerance
               && std::abs(R1 + R3 - Dist2) <= Tolerance)
+          {
             return;
+          }
         }
       }
     }
@@ -332,17 +340,23 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
     if (((i == 2 || i == 5 || i == 6 || i == 8)
          && (Qualified1.IsEnclosed() || Qualified1.IsEnclosing()))
         || ((i == 1 || i == 3 || i == 4 || i == 7) && Qualified1.IsOutside()))
+    {
       continue;
+    }
 
     if (((i == 3 || i == 5 || i == 7 || i == 8)
          && (Qualified2.IsEnclosed() || Qualified2.IsEnclosing()))
         || ((i == 1 || i == 2 || i == 4 || i == 6) && Qualified2.IsOutside()))
+    {
       continue;
+    }
 
     if (((i == 4 || i == 6 || i == 7 || i == 8)
          && (Qualified3.IsEnclosed() || Qualified3.IsEnclosing()))
         || ((i == 1 || i == 2 || i == 3 || i == 5) && Qualified3.IsOutside()))
+    {
       continue;
+    }
 
     // Check is Cir1 a solution of this system or not
     // In that case equations are equal to each other
@@ -366,6 +380,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       C = f2;
       math_DirectPolynomialRoots yRoots(A, B, C);
       if (yRoots.IsDone() && !yRoots.InfiniteRoots())
+      {
         for (k = 1; k <= yRoots.NbSolutions(); k++)
         {
           //   for each y solution:
@@ -379,6 +394,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             C = c3 * (y * y) + 2 * e3 * y + f3;
             math_DirectPolynomialRoots xRoots(A, B, C);
             if (xRoots.IsDone() && !xRoots.InfiniteRoots())
+            {
               for (j = 1; j <= xRoots.NbSolutions(); j++)
               {
                 x = xRoots.Value(j);
@@ -389,8 +405,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   CurSol++;
                 }
               }
+            }
           }
         }
+      }
 
       // 1.2) b2y + d2 != 0
       A = a3 * c2 * c2 - 4 * b2 * (b3 * c2 - b2 * c3);
@@ -409,14 +427,19 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         // Derivation of the equation Ay4 + By3 + Cy2 + Dy + E
         math_DirectPolynomialRoots yRoots1(4 * A, 3 * B, 2 * C, D);
         if (yRoots1.IsDone() && !yRoots1.InfiniteRoots())
+        {
           for (k = 1; k <= yRoots1.NbSolutions(); k++)
           {
             y = yRoots1.Value(k);
             // Check if this value is already caught
             IsSame = false;
             for (l = 1; l < k; l++)
+            {
               if (std::abs(y - yRoots1.Value(l)) <= 10 * Tolerance)
+              {
                 IsSame = true;
+              }
+            }
 
             Epsilon =
               (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
@@ -433,10 +456,12 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               }
             }
           }
+        }
       }
 
       math_DirectPolynomialRoots yRoots1(A, B, C, D, E);
       if (yRoots1.IsDone() && !yRoots1.InfiniteRoots())
+      {
         for (k = 1; k <= yRoots1.NbSolutions(); k++)
         {
           y = yRoots1.Value(k);
@@ -444,8 +469,12 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           IsSame     = false;
           FirstIndex = (i == 1) ? 1 : FirstSol(i);
           for (l = FirstIndex; l < CurSol; l++)
+          {
             if (std::abs(y - ySol(l)) <= 10 * Tolerance)
+            {
               IsSame = true;
+            }
+          }
 
           if (!IsSame && std::abs(b2 * y + d2) > b2 * Tolerance)
           {
@@ -455,6 +484,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             CurSol++;
           }
         }
+      }
     }
     else
     {
@@ -473,6 +503,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       {
         math_DirectPolynomialRoots yRoots(m, n, t);
         if (yRoots.IsDone() && !yRoots.InfiniteRoots())
+        {
           for (k = 1; k <= yRoots.NbSolutions(); k++)
           {
             //   for each y solution:
@@ -492,6 +523,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               C = c2 * y * y + 2 * e2 * y + f2;
               math_DirectPolynomialRoots xRoots(A, B, C);
               if (xRoots.IsDone() && !xRoots.InfiniteRoots())
+              {
                 for (l = 1; l <= xRoots.NbSolutions(); l++)
                 {
                   //   for each x solution:
@@ -504,8 +536,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     CurSol++;
                   }
                 }
+              }
             }
           }
+        }
       }
       else
       {
@@ -526,6 +560,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           // Derivation of the equation Ay4 + By3 + Cy2 + Dy + E
           math_DirectPolynomialRoots yRoots1(4 * A, 3 * B, 2 * C, D);
           if (yRoots1.IsDone() && !yRoots1.InfiniteRoots())
+          {
             for (k = 1; k <= yRoots1.NbSolutions(); k++)
             {
               y = yRoots1.Value(k);
@@ -537,8 +572,12 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               IsSame     = false;
               FirstIndex = (i == 1) ? 1 : FirstSol(i);
               for (l = FirstIndex; l < CurSol; l++)
+              {
                 if (std::abs(y - ySol(l)) <= 10 * Tolerance)
+                {
                   IsSame = true;
+                }
+              }
 
               Epsilon =
                 (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
@@ -558,6 +597,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   C = c2 * y * y + 2 * e2 * y + f2;
                   math_DirectPolynomialRoots xRoots(A, B, C);
                   if (xRoots.IsDone() && !xRoots.InfiniteRoots())
+                  {
                     for (l = 1; l <= xRoots.NbSolutions(); l++)
                     {
                       //   for each x solution:
@@ -570,13 +610,16 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                         CurSol++;
                       }
                     }
+                  }
                 }
               }
             }
+          }
         }
 
         math_DirectPolynomialRoots yRoots(A, B, C, D, E);
         if (yRoots.IsDone() && !yRoots.InfiniteRoots())
+        {
           for (k = 1; k <= yRoots.NbSolutions(); k++)
           {
             //   for each y solution:
@@ -588,8 +631,12 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             // Check if this value is already caught
             IsSame = false;
             for (l = 1; l < k; l++)
+            {
               if (std::abs(y - yRoots.Value(l)) <= 10 * Tolerance)
+              {
                 IsSame = true;
+              }
+            }
 
             Epsilon = 2.
                       * (std::abs((b2 * b2 + std::abs(a2 * c2)) * y) + std::abs(b2 * d2)
@@ -602,6 +649,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               C = c2 * y * y + 2 * e2 * y + f2;
               math_DirectPolynomialRoots xRoots(A, B, C);
               if (xRoots.IsDone() && !xRoots.InfiniteRoots())
+              {
                 for (l = 1; l <= xRoots.NbSolutions(); l++)
                 {
                   //   for each x solution:
@@ -614,8 +662,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     CurSol++;
                   }
                 }
+              }
             }
           }
+        }
       }
     }
   }
@@ -767,6 +817,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         // Other cases
         Epsilon = 10 * (std::abs(Beta3(i)) + std::abs(Gamma3(i)) + 1.);
         if (i == 1 || i == 3)
+        {
           if (std::abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -774,7 +825,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             rSol(CurSol) = r;
             CurSol++;
           }
+        }
         if (i == 6 || i == 8)
+        {
           if (std::abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) + r) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -782,7 +835,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             rSol(CurSol) = r;
             CurSol++;
           }
+        }
         if (i == 4 || i == 7)
+        {
           if (std::abs(Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r - R3) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -790,7 +845,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             rSol(CurSol) = r;
             CurSol++;
           }
+        }
         if (i == 2 || i == 5)
+        {
           if (std::abs(r - R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i)) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -798,6 +855,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             rSol(CurSol) = r;
             CurSol++;
           }
+        }
       }
     }
   }
@@ -811,17 +869,25 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
     {
 
       if ((Qualified1.IsEnclosed() && rSol(j) > R1) || (Qualified1.IsEnclosing() && rSol(j) < R1))
+      {
         continue;
+      }
       if ((Qualified2.IsEnclosed() && rSol(j) > R2) || (Qualified2.IsEnclosing() && rSol(j) < R2))
+      {
         continue;
+      }
       if ((Qualified3.IsEnclosed() && rSol(j) > R3) || (Qualified3.IsEnclosing() && rSol(j) < R3))
+      {
         continue;
+      }
 
       NbrSol++;
 
       // RLE, avoid out of range
       if (NbrSol > cirsol.Upper())
+      {
         NbrSol = cirsol.Upper();
+      }
 
       gp_Pnt2d Center = gp_Pnt2d(xSol(j), ySol(j));
 
@@ -830,76 +896,118 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       //   ==========================================================
       double distcc1 = Center.Distance(center1);
       if (!Qualified1.IsUnqualified())
+      {
         qualifier1(NbrSol) = Qualified1.Qualifier();
+      }
       else if (std::abs(distcc1 + rSol(j) - R1) <= Tol)
+      {
         qualifier1(NbrSol) = GccEnt_enclosed;
+      }
       else if (std::abs(distcc1 - R1 - rSol(j)) <= Tol)
+      {
         qualifier1(NbrSol) = GccEnt_outside;
+      }
       else
+      {
         qualifier1(NbrSol) = GccEnt_enclosing;
+      }
 
       double distcc2 = Center.Distance(center1);
       if (!Qualified2.IsUnqualified())
+      {
         qualifier2(NbrSol) = Qualified2.Qualifier();
+      }
       else if (std::abs(distcc2 + rSol(j) - R2) <= Tol)
+      {
         qualifier2(NbrSol) = GccEnt_enclosed;
+      }
       else if (std::abs(distcc2 - R2 - rSol(j)) <= Tol)
+      {
         qualifier2(NbrSol) = GccEnt_outside;
+      }
       else
+      {
         qualifier2(NbrSol) = GccEnt_enclosing;
+      }
 
       double distcc3 = Center.Distance(center1);
       if (!Qualified3.IsUnqualified())
+      {
         qualifier3(NbrSol) = Qualified3.Qualifier();
+      }
       else if (std::abs(distcc3 + rSol(j) - R3) <= Tol)
+      {
         qualifier3(NbrSol) = GccEnt_enclosed;
+      }
       else if (std::abs(distcc3 - R3 - rSol(j)) <= Tol)
+      {
         qualifier3(NbrSol) = GccEnt_outside;
+      }
       else
+      {
         qualifier3(NbrSol) = GccEnt_enclosing;
+      }
 
       //   ==========================================================
 
       if (Center.Distance(Cir1.Location()) <= Tolerance)
+      {
         TheSame1(NbrSol) = 1;
+      }
       else
       {
         TheSame1(NbrSol) = 0;
         gp_Dir2d dc;
         if ((i == 2 || i == 5 || i == 6 || i == 8) || rSol(j) > R1)
+        {
           dc.SetXY(Cir1.Location().XY() - Center.XY());
+        }
         else
+        {
           dc.SetXY(Center.XY() - Cir1.Location().XY());
+        }
         pnttg1sol(NbrSol) = gp_Pnt2d(Center.XY() + rSol(j) * dc.XY());
         par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
         pararg1(NbrSol)   = ElCLib::Parameter(Cir1, pnttg1sol(NbrSol));
       }
 
       if (Center.Distance(Cir2.Location()) <= Tolerance)
+      {
         TheSame2(NbrSol) = 1;
+      }
       else
       {
         TheSame2(NbrSol) = 0;
         gp_Dir2d dc;
         if ((i == 3 || i == 5 || i == 7 || i == 8) || rSol(j) > R2)
+        {
           dc.SetXY(Cir2.Location().XY() - Center.XY());
+        }
         else
+        {
           dc.SetXY(Center.XY() - Cir2.Location().XY());
+        }
         pnttg2sol(NbrSol) = gp_Pnt2d(Center.XY() + rSol(j) * dc.XY());
         par2sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
         pararg2(NbrSol)   = ElCLib::Parameter(Cir2, pnttg2sol(NbrSol));
       }
 
       if (Center.Distance(Cir3.Location()) <= Tolerance)
+      {
         TheSame3(NbrSol) = 1;
+      }
       else
       {
         TheSame3(NbrSol) = 0;
         gp_Dir2d dc;
         if ((i == 4 || i == 6 || i == 7 || i == 8) || rSol(j) > R3)
+        {
           dc.SetXY(Cir3.Location().XY() - Center.XY());
+        }
         else
+        {
           dc.SetXY(Center.XY() - Cir3.Location().XY());
+        }
         pnttg3sol(NbrSol) = gp_Pnt2d(Center.XY() + rSol(j) * dc.XY());
         par3sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg3sol(NbrSol));
         pararg3(NbrSol)   = ElCLib::Parameter(Cir3, pnttg3sol(NbrSol));
@@ -924,10 +1032,14 @@ int GccAna_Circ2d3Tan::NbSolutions() const
 gp_Circ2d GccAna_Circ2d3Tan::ThisSolution(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   return cirsol(Index);
 }
@@ -1040,13 +1152,19 @@ void GccAna_Circ2d3Tan::Tangency3(const int Index,
 bool GccAna_Circ2d3Tan::IsTheSame1(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame1(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -1054,13 +1172,19 @@ bool GccAna_Circ2d3Tan::IsTheSame1(const int Index) const
 bool GccAna_Circ2d3Tan::IsTheSame2(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame2(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -1068,13 +1192,19 @@ bool GccAna_Circ2d3Tan::IsTheSame2(const int Index) const
 bool GccAna_Circ2d3Tan::IsTheSame3(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame3(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }

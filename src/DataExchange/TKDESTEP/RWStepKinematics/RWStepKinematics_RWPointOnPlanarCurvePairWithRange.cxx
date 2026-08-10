@@ -43,7 +43,9 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 15, theArch, "point_on_planar_curve_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -245,7 +247,9 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -270,42 +274,54 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitYaw());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitYaw())
   {
     theSW.Send(theEnt->UpperLimitYaw());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitPitch())
   {
     theSW.Send(theEnt->LowerLimitPitch());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitPitch())
   {
     theSW.Send(theEnt->UpperLimitPitch());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitRoll())
   {
     theSW.Send(theEnt->LowerLimitRoll());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitRoll())
   {
     theSW.Send(theEnt->UpperLimitRoll());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

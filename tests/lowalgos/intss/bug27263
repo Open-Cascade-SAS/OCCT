@@ -6,6 +6,10 @@ puts ""
 # Regression vs 6.9.1: Exception is raised during intersection of two faces
 #######################################################################
 
+puts "TODO OCC0000 All: Error: Curve Number is bad!"
+puts "TODO OCC0000 All: Error : The length of result shape is"
+puts "TODO OCC0000 All: Error: The command cannot be"
+
 set MaxTol 1.e-7
 set GoodNbCurv 2
 

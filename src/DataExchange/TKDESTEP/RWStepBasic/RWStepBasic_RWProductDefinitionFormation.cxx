@@ -32,7 +32,9 @@ void RWStepBasic_RWProductDefinitionFormation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "product_definition_formation"))
+  {
     return;
+  }
 
   // --- own field : id ---
 

@@ -38,29 +38,53 @@ StepBasic_RoleSelect::StepBasic_RoleSelect() = default;
 int StepBasic_RoleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ActionAssignment)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ActionRequestAssignment)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ApprovalAssignment)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ApprovalDateTime)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_CertificationAssignment)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ContractAssignment)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DocumentReference)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_EffectivityAssignment)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_GroupAssignment)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_NameAssignment)))
+  {
     return 10;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassificationAssignment)))
+  {
     return 11;
+  }
   return 0;
 }
 

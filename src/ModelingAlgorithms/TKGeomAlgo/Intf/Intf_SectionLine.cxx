@@ -99,8 +99,12 @@ bool Intf_SectionLine::IsClosed() const
 bool Intf_SectionLine::Contains(const Intf_SectionPoint& ThePI) const
 {
   for (int i = 1; i <= myPoints.Length(); i++)
+  {
     if (ThePI.IsEqual(myPoints(i)))
+    {
       return true;
+    }
+  }
   return false;
 }
 
@@ -109,9 +113,13 @@ bool Intf_SectionLine::Contains(const Intf_SectionPoint& ThePI) const
 int Intf_SectionLine::IsEnd(const Intf_SectionPoint& ThePI) const
 {
   if (myPoints.First().IsEqual(ThePI))
+  {
     return 1;
+  }
   if (myPoints.Last().IsEqual(ThePI))
+  {
     return myPoints.Length();
+  }
   return 0;
 }
 
@@ -120,10 +128,16 @@ int Intf_SectionLine::IsEnd(const Intf_SectionPoint& ThePI) const
 bool Intf_SectionLine::IsEqual(const Intf_SectionLine& Other) const
 {
   if (myPoints.Length() != Other.myPoints.Length())
+  {
     return false;
+  }
   for (int i = 1; i <= myPoints.Length(); i++)
+  {
     if (!myPoints(i).IsEqual(Other.myPoints(i)))
+    {
       return false;
+    }
+  }
   return true;
 }
 
@@ -132,12 +146,18 @@ bool Intf_SectionLine::IsEqual(const Intf_SectionLine& Other) const
 void Intf_SectionLine::Dump(const int Indent) const
 {
   for (int id = 0; id < Indent; id++)
+  {
     std::cout << " ";
+  }
   std::cout << "LS ";
   if (IsClosed())
-    std::cout << "Closed :" << std::endl;
+  {
+    std::cout << "Closed :" << '\n';
+  }
   else
-    std::cout << "Open :" << std::endl;
+  {
+    std::cout << "Open :" << '\n';
+  }
   for (int p = 1; p <= myPoints.Length(); p++)
   {
     myPoints.Value(p).Dump(Indent + 2);

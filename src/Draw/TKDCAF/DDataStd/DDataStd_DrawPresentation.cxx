@@ -68,9 +68,13 @@ void DDataStd_DrawPresentation::Display(const TDF_Label& L)
   }
   // display
   if (P->IsDisplayed())
+  {
     return;
+  }
   if (P->GetDrawable().IsNull())
+  {
     P->DrawBuild();
+  }
   DrawDisplay(P->Label(), P);
   P->SetDisplayed(true);
 }
@@ -202,7 +206,9 @@ void DDataStd_DrawPresentation::BeforeForget()
 {
   // std::cout<< "DDataStd_DrawPresentation::BeforeForget" << std::endl;
   if (isDisplayed)
+  {
     DrawErase(Label(), this);
+  }
 }
 
 //=================================================================================================
@@ -211,7 +217,9 @@ void DDataStd_DrawPresentation::AfterResume()
 {
   // std::cout<< "DDataStd_DrawPresentation::AfterResume"<< std::endl;
   if (isDisplayed)
+  {
     DrawDisplay(Label(), this);
+  }
 }
 
 //=======================================================================
@@ -240,7 +248,9 @@ bool DDataStd_DrawPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>
   {
     // std::cout<< "DDataStd_DrawPresentation::BeforeUndo : delta on addition" << std::endl;
     if (Pfw->IsDisplayed())
+    {
       DrawErase(AD->Label(), Pfw);
+    }
     // TDF appelle BeforeRemoval effacer
   }
   else if (AD->IsKind(STANDARD_TYPE(TDF_DefaultDeltaOnRemoval)))
@@ -251,7 +261,9 @@ bool DDataStd_DrawPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>
   {
     // std::cout<< "DDataStd_DrawPresentation::BeforeUndo : delta on modification" << std::endl;
     if (Pfw->IsDisplayed())
+    {
       DrawErase(AD->Label(), Pfw);
+    }
   }
   else
   {
@@ -292,13 +304,17 @@ bool DDataStd_DrawPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>&
   {
     // std::cout<< "DDataStd_DrawPresentation::AfterUndo : delta on removal" << std::endl;
     if (Pdt->IsDisplayed())
+    {
       DrawDisplay(AD->Label(), Pdt);
+    }
   }
   else if (AD->IsKind(STANDARD_TYPE(TDF_DefaultDeltaOnModification)))
   {
     // std::cout<< "DDataStd_DrawPresentation::AfterUndo : delta on modification" << std::endl;
     if (Pdt->IsDisplayed())
+    {
       DrawDisplay(AD->Label(), Pdt);
+    }
   }
   else
   {
@@ -322,7 +338,9 @@ void DDataStd_DrawPresentation::DrawBuild()
   }
   occ::handle<Draw_Drawable3D> D3D = DD->Drawable(Label());
   if (D3D.IsNull())
-    std::cout << "DDataStd_DrawPresentation::DrawBuild : null drawable" << std::endl;
+  {
+    std::cout << "DDataStd_DrawPresentation::DrawBuild : null drawable" << '\n';
+  }
   myDrawable = D3D;
 }
 
@@ -347,7 +365,7 @@ void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                    
       return;
     }
   }
-  std::cout << "DDataStd_DrawPresentation::DrawDisplay : null Label" << std::endl;
+  std::cout << "DDataStd_DrawPresentation::DrawDisplay : null Label" << '\n';
 }
 
 //=================================================================================================
@@ -368,5 +386,5 @@ void DDataStd_DrawPresentation::DrawErase(const TDF_Label&                      
       return;
     }
   }
-  std::cout << "DDataStd_DrawPresentation::DrawErase : null Label" << std::endl;
+  std::cout << "DDataStd_DrawPresentation::DrawErase : null Label" << '\n';
 }

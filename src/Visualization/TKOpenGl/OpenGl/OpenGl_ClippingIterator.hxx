@@ -66,7 +66,7 @@ public:
 private:
   Graphic3d_SequenceOfHClipPlane::Iterator myIter1;
   Graphic3d_SequenceOfHClipPlane::Iterator myIter2;
-  const NCollection_Vector<bool>*          myDisabled;
+  const NCollection_DynamicArray<bool>*    myDisabled;
   int                                      myCurrIndex;
 };
 

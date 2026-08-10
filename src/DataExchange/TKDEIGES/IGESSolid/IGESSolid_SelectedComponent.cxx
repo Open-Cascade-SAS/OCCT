@@ -48,7 +48,9 @@ gp_Pnt IGESSolid_SelectedComponent::SelectPoint() const
 gp_Pnt IGESSolid_SelectedComponent::TransformedSelectPoint() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theSelectPoint);
+  }
   else
   {
     gp_XYZ tmp = theSelectPoint;

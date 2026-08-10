@@ -30,7 +30,9 @@ void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "product_type"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -66,7 +68,9 @@ void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderDa
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "product", ach, STANDARD_TYPE(StepBasic_Product), anent3))
+      {
         aProducts->SetValue(i3, anent3);
+      }
     }
   }
 

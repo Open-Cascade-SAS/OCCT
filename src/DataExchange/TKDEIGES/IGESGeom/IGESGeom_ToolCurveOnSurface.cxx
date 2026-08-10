@@ -183,10 +183,14 @@ bool IGESGeom_ToolCurveOnSurface::OwnCorrect(const occ::handle<IGESGeom_CurveOnS
 {
   occ::handle<IGESData_IGESEntity> c2d = ent->CurveUV();
   if (c2d.IsNull())
+  {
     return false;
+  }
   int uf = c2d->UseFlag();
   if (uf == 5)
+  {
     return false;
+  }
   c2d->InitStatus(c2d->BlankStatus(), c2d->SubordinateStatus(), 5, c2d->HierarchyStatus());
   return true;
 }
@@ -249,15 +253,25 @@ void IGESGeom_ToolCurveOnSurface::OwnDump(const occ::handle<IGESGeom_CurveOnSurf
   int crem = ent->CreationMode();
   S << "Creation Mode : " << crem << "  i.e. ";
   if (crem == 0)
+  {
     S << " <Unspecified>\n";
+  }
   else if (crem == 1)
+  {
     S << " Projection of a Curve on a Surface\n";
+  }
   else if (crem == 2)
+  {
     S << " Intersection of two Surfaces\n";
+  }
   else if (crem == 3)
+  {
     S << " Isoparametric Curve (either U or V)\n";
+  }
   else
+  {
     S << " <Incorrect Value>\n";
+  }
   S << "The Surface on which the curve lies : ";
   dumper.Dump(ent->Surface(), S, sublevel);
   S << "\n"
@@ -270,13 +284,23 @@ void IGESGeom_ToolCurveOnSurface::OwnDump(const occ::handle<IGESGeom_CurveOnSurf
   int pref = ent->PreferenceMode();
   S << "Preferred representation mode : " << pref << "  i.e. ";
   if (pref == 0)
+  {
     S << " <Unspecified>\n";
+  }
   else if (pref == 1)
+  {
     S << " Curve B on Surface\n";
+  }
   else if (pref == 2)
+  {
     S << " Curve C in 3D Space\n";
+  }
   else if (pref == 3)
+  {
     S << " Curves B & C equally preferred\n";
+  }
   else
+  {
     S << " <Incorrect Value>\n";
+  }
 }

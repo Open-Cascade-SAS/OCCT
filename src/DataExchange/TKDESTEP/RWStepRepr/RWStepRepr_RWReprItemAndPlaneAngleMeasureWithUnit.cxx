@@ -38,7 +38,9 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit::ReadStep(
   int num = 0; // num0;
   data->NamedForComplex("MEASURE_WITH_UNIT", "MSWTUN", num0, num, ach);
   if (!data->CheckNbParams(num, 2, ach, "measure_with_unit"))
+  {
     return;
+  }
   // --- own field : valueComponent ---
   occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
@@ -50,7 +52,9 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit::ReadStep(
 
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
   // --- own field : name ---
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);

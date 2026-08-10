@@ -42,7 +42,9 @@ void RWStepKinematics_RWLinearFlexibleLinkRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "linear_flexible_link_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

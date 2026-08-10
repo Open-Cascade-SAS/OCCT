@@ -31,7 +31,9 @@ void BRepGProp_Domain::Next()
   {
     TopAbs_Orientation Or = myExplorer.Current().Orientation();
     if ((Or == TopAbs_FORWARD) || (Or == TopAbs_REVERSED))
+    {
       return;
+    }
     myExplorer.Next();
   }
 }

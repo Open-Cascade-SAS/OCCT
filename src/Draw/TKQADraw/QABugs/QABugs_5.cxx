@@ -43,7 +43,9 @@ static int OCC6001(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<Adaptor3d_Curve> hcurve;
   occ::handle<Geom_Curve>      curve = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
+  {
     hcurve = new GeomAdaptor_Curve(curve);
+  }
   else
   {
     TopoDS_Shape wire = DBRep::Get(argv[2]);
@@ -89,6 +91,4 @@ void QABugs::Commands_5(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC6001,
                   group);
-
-  return;
 }

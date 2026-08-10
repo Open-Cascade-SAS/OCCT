@@ -35,7 +35,9 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
   // --- Instance of plex component ConversionBasedUnit ---
 
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -59,14 +61,18 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
   // --- Instance of plex component LengthUnit ---
 
   if (!data->CheckNbParams(num, 0, ach, "length_unit"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype NamedUnit ---
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
   // --- field : dimensions ---
 
   occ::handle<StepBasic_DimensionalExponents> aDimensions;

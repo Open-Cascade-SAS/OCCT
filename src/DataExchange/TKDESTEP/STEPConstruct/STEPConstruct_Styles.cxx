@@ -330,7 +330,9 @@ occ::handle<StepVisual_StyledItem> STEPConstruct_Styles::AddStyle(
   occ::handle<StepRepr_RepresentationItem> item = STEPConstruct::FindEntity(FinderProcess(), Shape);
   occ::handle<StepVisual_StyledItem>       Style;
   if (!item.IsNull())
+  {
     Style = AddStyle(item, PSA, Override);
+  }
   return Style;
 }
 
@@ -342,13 +344,17 @@ bool STEPConstruct_Styles::CreateMDGPR(
   occ::handle<StepData_StepModel>&                                             theStepModel)
 {
   if (myStyles.Extent() < 1)
+  {
     return false;
+  }
 
   // create MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> elems =
     new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, myStyles.Extent());
   for (int i = 1; i <= myStyles.Extent(); i++)
+  {
     elems->SetValue(i, occ::down_cast<StepRepr_RepresentationItem>(myStyles.FindKey(i)));
+  }
   // create new MDGPR
   Repr = new StepVisual_MechanicalDesignGeometricPresentationRepresentation;
   occ::handle<TCollection_HAsciiString> ReprName = new TCollection_HAsciiString("");
@@ -386,18 +392,26 @@ bool STEPConstruct_Styles::CreateNAUOSRD(
   // get PDS
   occ::handle<StepRepr_ProductDefinitionShape> aPDS;
   if (initPDS.IsNull())
+  {
     aPDS = CDSR->RepresentedProductRelation();
+  }
   else
+  {
     aPDS = initPDS; // for SHUO
+  }
   occ::handle<StepRepr_ShapeRepresentationRelationship> aRepRelationShip =
     CDSR->RepresentationRelation();
   occ::handle<StepRepr_RepresentationRelationshipWithTransformation> aRRwTRSF =
     occ::down_cast<StepRepr_RepresentationRelationshipWithTransformation>(aRepRelationShip);
   StepRepr_Transformation SetReprTRSF;
   if (!aRRwTRSF.IsNull())
+  {
     SetReprTRSF = aRRwTRSF->TransformationOperator();
+  }
   else
+  {
     return false;
+  }
   // take Item defined transformation
   occ::handle<StepRepr_ItemDefinedTransformation> anItDT = SetReprTRSF.ItemDefinedTransformation();
   elems->SetValue(1, anItDT->TransformItem2());
@@ -409,7 +423,9 @@ bool STEPConstruct_Styles::CreateNAUOSRD(
     occ::handle<StepVisual_PresentationStyleByContext> PSA =
       occ::down_cast<StepVisual_PresentationStyleByContext>(myPSA.Value(psbci));
     if (PSA.IsNull())
+    {
       continue;
+    }
     // register the reference
     StepVisual_StyleContextSelect aStyleCntxSlct;
     aStyleCntxSlct.SetValue(aSR);
@@ -459,7 +475,9 @@ occ::handle<StepRepr_RepresentationContext> STEPConstruct_Styles::FindContext(
 //	std::cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << std::endl;
 #endif
         if (!subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+        {
           continue;
+        }
         sr      = occ::down_cast<StepShape_ShapeRepresentation>(subs.Value());
         Context = sr->ContextOfItems();
       }
@@ -505,7 +523,9 @@ bool STEPConstruct_Styles::LoadStyles()
         occ::handle<StepVisual_StyledItem> style =
           occ::down_cast<StepVisual_StyledItem>(container->ItemsValue(j));
         if (style.IsNull())
+        {
           continue;
+        }
         auto anItem = style->ItemAP242().Value();
         if (!anItem.IsNull() && anItem->IsKind(tSR))
         {
@@ -547,7 +567,9 @@ bool STEPConstruct_Styles::LoadInvisStyles(
   {
     occ::handle<Standard_Transient> enti = model->Value(i);
     if (enti->DynamicType() != tInvisibility)
+    {
       continue;
+    }
     // search for styled items
     occ::handle<StepVisual_Invisibility> container = occ::down_cast<StepVisual_Invisibility>(enti);
     int                                  nbi       = container->NbInvisibleItems();
@@ -556,10 +578,14 @@ bool STEPConstruct_Styles::LoadInvisStyles(
       StepVisual_InvisibleItem           anInvItem = container->InvisibleItemsValue(j);
       occ::handle<StepVisual_StyledItem> style     = anInvItem.StyledItem();
       if (style.IsNull())
+      {
         continue;
+      }
       // collect the invisible styled items
       if (theInvStyles.IsNull())
+      {
         theInvStyles = new NCollection_HSequence<occ::handle<Standard_Transient>>;
+      }
       theInvStyles->Append(style);
     }
   }
@@ -672,9 +698,13 @@ occ::handle<StepVisual_PresentationStyleAssignment> STEPConstruct_Styles::MakeCo
     PSSs->SetValue(i, PSS);
   }
   if (!isForNAUO)
+  {
     PSA = new StepVisual_PresentationStyleAssignment;
+  }
   else
+  {
     PSA = new StepVisual_PresentationStyleByContext;
+  }
   PSA->Init(PSSs);
 
   return PSA;
@@ -746,21 +776,37 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(const Quantity_
   // detect if color corresponds to one of pre-defined colors
   const char* cName = nullptr;
   if (C == Quantity_Color(Quantity_NOC_GREEN))
+  {
     cName = "green";
+  }
   else if (C == Quantity_Color(Quantity_NOC_RED))
+  {
     cName = "red";
+  }
   else if (C == Quantity_Color(Quantity_NOC_BLUE1))
+  {
     cName = "blue";
+  }
   else if (C == Quantity_Color(Quantity_NOC_YELLOW))
+  {
     cName = "yellow";
+  }
   else if (C == Quantity_Color(Quantity_NOC_MAGENTA1))
+  {
     cName = "magenta";
+  }
   else if (C == Quantity_Color(Quantity_NOC_CYAN1))
+  {
     cName = "cyan";
+  }
   else if (C == Quantity_Color(Quantity_NOC_BLACK))
+  {
     cName = "black";
+  }
   else if (C == Quantity_Color(Quantity_NOC_WHITE))
+  {
     cName = "white";
+  }
 
   if (cName)
   {
@@ -792,21 +838,37 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
   // detect if color corresponds to one of pre-defined colors
   const char* cName = nullptr;
   if (C == Quantity_Color(Quantity_NOC_GREEN))
+  {
     cName = "green";
+  }
   else if (C == Quantity_Color(Quantity_NOC_RED))
+  {
     cName = "red";
+  }
   else if (C == Quantity_Color(Quantity_NOC_BLUE1))
+  {
     cName = "blue";
+  }
   else if (C == Quantity_Color(Quantity_NOC_YELLOW))
+  {
     cName = "yellow";
+  }
   else if (C == Quantity_Color(Quantity_NOC_MAGENTA1))
+  {
     cName = "magenta";
+  }
   else if (C == Quantity_Color(Quantity_NOC_CYAN1))
+  {
     cName = "cyan";
+  }
   else if (C == Quantity_Color(Quantity_NOC_BLACK))
+  {
     cName = "black";
+  }
   else if (C == Quantity_Color(Quantity_NOC_WHITE))
+  {
     cName = "white";
+  }
 
   if (cName)
   {
@@ -816,7 +878,9 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
     {
       ColPr = occ::down_cast<StepVisual_DraughtingPreDefinedColour>(DPDCs.Find(aName));
       if (!ColPr.IsNull())
+      {
         return ColPr;
+      }
     }
     ColPr                                         = new StepVisual_DraughtingPreDefinedColour;
     occ::handle<StepVisual_PreDefinedItem> preDef = new StepVisual_PreDefinedItem;
@@ -837,7 +901,9 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
     {
       ColRGB = occ::down_cast<StepVisual_ColourRgb>(ColRGBs.Find(P));
       if (!ColRGB.IsNull())
+      {
         return ColRGB;
+      }
     }
     occ::handle<TCollection_HAsciiString> ColName = new TCollection_HAsciiString("");
     ColRGB                                        = new StepVisual_ColourRgb;
@@ -859,13 +925,19 @@ bool STEPConstruct_Styles::DecodeColor(const occ::handle<StepVisual_Colour>& Col
     {
       double norm = rgb->Red();
       if (norm < rgb->Green())
+      {
         norm = rgb->Green();
+      }
       if (norm < rgb->Blue())
+      {
         norm = rgb->Blue();
+      }
       Col.SetValues(rgb->Red() / norm, rgb->Green() / norm, rgb->Blue() / norm, Quantity_TOC_sRGB);
     }
     else
+    {
       Col.SetValues(rgb->Red(), rgb->Green(), rgb->Blue(), Quantity_TOC_sRGB);
+    }
     return true;
   }
   else if (Colour->IsKind(STANDARD_TYPE(StepVisual_PreDefinedColour)))
@@ -875,21 +947,37 @@ bool STEPConstruct_Styles::DecodeColor(const occ::handle<StepVisual_Colour>& Col
     occ::handle<StepVisual_PreDefinedItem> pdi  = pdc->GetPreDefinedItem();
     const TCollection_AsciiString          name = pdi->Name()->String();
     if (name.IsEqual("red"))
+    {
       Col.SetValues(Quantity_NOC_RED);
+    }
     else if (name.IsEqual("green"))
+    {
       Col.SetValues(Quantity_NOC_GREEN);
+    }
     else if (name.IsEqual("blue"))
+    {
       Col.SetValues(Quantity_NOC_BLUE1);
+    }
     else if (name.IsEqual("yellow"))
+    {
       Col.SetValues(Quantity_NOC_YELLOW);
+    }
     else if (name.IsEqual("magenta"))
+    {
       Col.SetValues(Quantity_NOC_MAGENTA1);
+    }
     else if (name.IsEqual("cyan"))
+    {
       Col.SetValues(Quantity_NOC_CYAN1);
+    }
     else if (name.IsEqual("black"))
+    {
       Col.SetValues(Quantity_NOC_BLACK);
+    }
     else if (name.IsEqual("white"))
+    {
       Col.SetValues(Quantity_NOC_WHITE);
+    }
     else
     {
 #ifdef OCCT_DEBUG

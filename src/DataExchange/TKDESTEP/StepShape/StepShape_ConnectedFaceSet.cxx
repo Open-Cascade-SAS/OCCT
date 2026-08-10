@@ -49,6 +49,8 @@ occ::handle<StepShape_Face> StepShape_ConnectedFaceSet::CfsFacesValue(const int 
 int StepShape_ConnectedFaceSet::NbCfsFaces() const
 {
   if (cfsFaces.IsNull())
+  {
     return 0;
+  }
   return cfsFaces->Length();
 }

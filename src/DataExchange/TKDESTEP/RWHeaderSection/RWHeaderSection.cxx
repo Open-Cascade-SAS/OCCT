@@ -29,7 +29,11 @@ void RWHeaderSection::Init()
   occ::handle<HeaderSection_Protocol> proto = HeaderSection::Protocol();
   StepData::AddHeaderProtocol(proto);
   if (rwm.IsNull())
+  {
     rwm = new RWHeaderSection_ReadWriteModule;
+  }
   if (rwg.IsNull())
+  {
     rwg = new RWHeaderSection_GeneralModule;
+  }
 }

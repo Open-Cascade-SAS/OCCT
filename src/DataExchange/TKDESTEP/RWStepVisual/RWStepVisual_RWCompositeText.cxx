@@ -32,7 +32,9 @@ void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "composite_text has not 2 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -54,7 +56,9 @@ void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReade
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "collected_text", ach, aCollectedTextItem))
+      {
         aCollectedText->SetValue(i2, aCollectedTextItem);
+      }
     }
   }
   else

@@ -161,7 +161,9 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
       // points sur courbe
       occ::handle<Geom2d_Curve> GC = DrawTrSurf::GetCurve2d(a[3]);
       if (GC.IsNull())
+      {
         return 1;
+      }
 
       double U, U1, U2;
       U1           = GC->FirstParameter();
@@ -203,7 +205,9 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
         }
       }
       else
+      {
         return 1;
+      }
     }
     // display the points
     for (i = 1; i <= Nb; i++)
@@ -299,9 +303,13 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     // Infinity solutions flag may be set with 0 number of
     // solutions in analytic extrema Curve/Curve.
     if (isInfinitySolutions)
+    {
       di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
+    }
     else
+    {
       di << "No solutions!\n";
+    }
   }
 
   for (int i = 1; i <= aNExtr; i++)
@@ -692,7 +700,9 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
 
   const char* g;
 

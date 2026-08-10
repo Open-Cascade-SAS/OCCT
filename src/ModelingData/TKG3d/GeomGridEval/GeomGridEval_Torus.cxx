@@ -394,8 +394,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid(
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
   const Data                 aData = extractData();
@@ -425,8 +425,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1(
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
   const Data                               aData = extractData();
@@ -456,8 +456,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2(
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
   const Data                               aData = extractData();
@@ -487,8 +487,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3(
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
   const Data                               aData = extractData();
@@ -521,8 +521,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
   const Data                 aData = extractData();

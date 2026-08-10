@@ -197,7 +197,9 @@ void GeomFill_Sweep::Build(const occ::handle<GeomFill_SectionLaw>& Section,
 
   // Traitement des KPart
   if (myKPart)
+  {
     isKPart = BuildKPart();
+  }
 
   if (!isKPart)
   {
@@ -341,7 +343,9 @@ bool GeomFill_Sweep::BuildAll(const GeomAbs_Shape Continuity, const int Degmax, 
       }
       ifin += myLoc->TraceNumber();
       if (myLoc->HasLastRestriction())
+      {
         ifin++;
+      }
 
       for (ii = ideb, kk = 1; ii <= ifin; ii++, kk++)
       {
@@ -394,7 +398,9 @@ bool GeomFill_Sweep::BuildProduct(const GeomAbs_Shape Continuity,
   occ::handle<Geom_BSplineSurface> BSurf =
     occ::down_cast<Geom_BSplineSurface>(mySec->BSplineSurface()->Copy());
   if (BSurf.IsNull())
+  {
     return Ok; // Ce mode de construction est impossible
+  }
 
   int                  NbIntervalC2, NbIntervalC3;
   GeomFill_LocFunction Func(myLoc);
@@ -636,7 +642,9 @@ bool GeomFill_Sweep::BuildKPart()
       {
         //  Modified by skv - Thu Feb  5 11:39:06 2004 OCC5073 Begin
         if (!IsSweepParallelSpine(myLoc, mySec, Tol))
+        {
           return false;
+        }
         //  Modified by skv - Thu Feb  5 11:39:08 2004 OCC5073 End
         gp_Lin L = AC.Line();
         L.Transform(Tf2);
@@ -651,7 +659,9 @@ bool GeomFill_Sweep::BuildKPart()
           S = new (Geom_Plane)(AxisOfPlane);
         }
         else
+        {
           SError = 0.;
+        }
       }
 
       // (1.1.b) Cas Cylindrique
@@ -683,7 +693,9 @@ bool GeomFill_Sweep::BuildKPart()
           }
         }
         else
+        {
           SError = 0.;
+        }
       }
 
       // (1.1.c) C'est bien une extrusion
@@ -750,7 +762,9 @@ bool GeomFill_Sweep::BuildKPart()
       if ((Angle > 0.01) && (Angle < M_PI / 2 - 0.01))
       {
         if (R2 < R1)
+        {
           Angle = -Angle;
+        }
         SError = error;
         gp_Ax3 Axis(Centre0, Dir, N);
         S = new (Geom_ConicalSurface)(Axis, Angle, C.Radius());
@@ -765,7 +779,9 @@ bool GeomFill_Sweep::BuildKPart()
         gp_Pnt pbis;
         S->VIso(VLast)->D1(0, pbis, diso);
         if (diso.Magnitude() > 1.e-9 && dsection.Magnitude() > 1.e-9)
+        {
           isUReversed = diso.IsOpposite(dsection, 0.1);
+        }
         if (isUReversed)
         {
           double f, l;
@@ -800,9 +816,13 @@ bool GeomFill_Sweep::BuildKPart()
       DS.SetXYZ(V.XYZ() - Centre.XYZ());
       RotRadius = DS.Magnitude();
       if (RotRadius > 1.e-15)
+      {
         DS.Normalize();
+      }
       else
+      {
         return false; // Pas de KPart, rotation degeneree
+      }
       DN = DS ^ DP;
       DN.Normalize();
       DP = DN ^ DS;
@@ -855,9 +875,13 @@ bool GeomFill_Sweep::BuildKPart()
         DC.SetXYZ(C.Location().XYZ() - Centre.XYZ());
         Radius = DC.Magnitude(); // grand Rayon du tore
         if ((Radius > Tol) && (DC.Dot(DS) < 0))
+        {
           IsGoodSide = false;
+        }
         if (Radius < Tol / 100)
+        {
           DC = DS; // Pour definir le tore
+        }
 
         // On verifie d'abord que le plan de la section est // a
         // l'axe de rotation
@@ -964,7 +988,9 @@ bool GeomFill_Sweep::BuildKPart()
             // Attention l'arete de couture dans le cas periodique
             // n'est peut etre pas a la bonne place...
             if (isUPeriodic && std::abs(UFirst) > Precision::PConfusion())
+            {
               isUPeriodic = false; // Pour trimmer la surface...
+            }
             Ok = true;
           }
         }
@@ -1021,9 +1047,13 @@ bool GeomFill_Sweep::BuildKPart()
             // On evalue l'angle du cone
             double Angle = std::abs(Dir.Angle(L));
             if (Angle > M_PI / 2)
+            {
               Angle = M_PI - Angle;
+            }
             if (reverse)
+            {
               Angle = -Angle;
+            }
             aux = DS.Dot(DL);
             if (aux < 0)
             {
@@ -1061,7 +1091,9 @@ bool GeomFill_Sweep::BuildKPart()
           }
         }
         else
+        {
           SError = 0.;
+        }
       }
 
       // (2.3) Revolution
@@ -1098,16 +1130,24 @@ bool GeomFill_Sweep::BuildKPart()
     }
 
     if (!isUPeriodic && !isVPeriodic)
+    {
       mySurface = new (Geom_RectangularTrimmedSurface)(S, UFirst, ULast, VFirst, VLast);
+    }
     else if (isUPeriodic)
     {
       if (isVPeriodic)
+      {
         mySurface = S;
+      }
       else
+      {
         mySurface = new (Geom_RectangularTrimmedSurface)(S, VFirst, VLast, false);
+      }
     }
     else
+    {
       mySurface = new (Geom_RectangularTrimmedSurface)(S, UFirst, ULast, true);
+    }
 
 #ifdef OCCT_DEBUG
     if (isUPeriodic && !mySurface->IsUPeriodic())
@@ -1144,9 +1184,13 @@ void GeomFill_Sweep::ErrorOnRestriction(const bool IsFirst, double& UError, doub
 {
   int ind;
   if (IsFirst)
+  {
     ind = 1;
+  }
   else
+  {
     ind = myCurve2d->Length();
+  }
 
   UError = CError->Value(1, ind);
   VError = CError->Value(2, ind);
@@ -1158,7 +1202,9 @@ void GeomFill_Sweep::ErrorOnTrace(const int IndexOfTrace, double& UError, double
 {
   int ind = IndexOfTrace + 1;
   if (IndexOfTrace > myLoc->TraceNumber())
+  {
     throw Standard_OutOfRange(" GeomFill_Sweep::ErrorOnTrace");
+  }
 
   UError = CError->Value(1, ind);
   VError = CError->Value(2, ind);
@@ -1176,7 +1222,9 @@ occ::handle<Geom_Surface> GeomFill_Sweep::Surface() const
 occ::handle<Geom2d_Curve> GeomFill_Sweep::Restriction(const bool IsFirst) const
 {
   if (IsFirst)
+  {
     return myCurve2d->Value(1);
+  }
   return myCurve2d->Value(myCurve2d->Length());
 }
 
@@ -1193,6 +1241,8 @@ occ::handle<Geom2d_Curve> GeomFill_Sweep::Trace(const int IndexOfTrace) const
 {
   int ind = IndexOfTrace + 1;
   if (IndexOfTrace > myLoc->TraceNumber())
+  {
     throw Standard_OutOfRange(" GeomFill_Sweep::Trace");
+  }
   return myCurve2d->Value(ind);
 }

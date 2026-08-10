@@ -283,7 +283,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Modified(const TopoDS_Sh
     {
       const TopoDS_Shape& sh = ite.Value();
       if (!sh.IsSame(F))
+      {
         list.Append(sh);
+      }
     }
     return list;
   }
@@ -313,12 +315,16 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_S
         {
           const TopoDS_Shape& sh = ite.Value();
           if (!sh.IsSame(S))
+          {
             list.Append(sh);
+          }
         }
         return list;
       }
       else
+      {
         return myGenerated;
+      }
     }
     else
     {
@@ -335,7 +341,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_S
           {
             const TopoDS_Shape& sh = it1.Value();
             if (!sh.IsSame(S))
+            {
               list.Append(sh);
+            }
           }
         }
       }
@@ -343,7 +351,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_S
     }
   }
   else
+  {
     return myGenerated;
+  }
 }
 
 //=================================================================================================
@@ -453,7 +463,9 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
   cc->D1(par, pp, tgt);
 
   if (e.Orientation() == TopAbs_REVERSED)
+  {
     tgt.Reverse();
+  }
 
   gp_Vec D = -tgt.Crossed(Pln->Pln().Position().Direction()) / 10.;
   pp.Translate(D);
@@ -510,7 +522,9 @@ gp_Dir BRepFeat_RibSlot::Normal(const TopoDS_Face& F, const gp_Pnt& P)
   CSLib_DerivativeStatus St;
   CSLib::Normal(D1U, D1V, Precision::Confusion(), St, N);
   if (F.Orientation() == TopAbs_FORWARD)
+  {
     N.Reverse();
+  }
   return N;
 }
 
@@ -523,7 +537,9 @@ double BRepFeat_RibSlot::IntPar(const occ::handle<Geom_Curve>& C, const gp_Pnt& 
 
 {
   if (C.IsNull())
+  {
     return 0.;
+  }
 
   GeomAdaptor_Curve AC(C);
   double            U;
@@ -667,7 +683,9 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>& face
     LocOpe_CSIntersector ASI(f);
     ASI.Perform(scur);
     if (!ASI.IsDone())
+    {
       continue;
+    }
     for (int jj = 1; jj <= Counter; jj++)
     {
       if (ASI.NbPoints(jj) >= 1)
@@ -712,7 +730,9 @@ double BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
   for (int i = 0; i < 6; i++)
   {
     if (c[i] > bnd)
+    {
       bnd = c[i];
+    }
   }
   p1.SetCoord(c[0] - 2. * bnd, c[1] - 2. * bnd, c[2] - 2. * bnd);
   p2.SetCoord(c[3] + 2. * bnd, c[4] + 2. * bnd, c[5] + 2. * bnd);
@@ -831,7 +851,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           const TopoDS_Face& fx = TopoDS::Face(ex4.Current());
           if (!Map.Add(fx))
+          {
             continue;
+          }
           ex5.Init(ex4.Current(), TopAbs_EDGE);
           for (; ex5.More(); ex5.Next())
           {
@@ -846,7 +868,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           TopoDS_Face FFF = ChoiceOfFaces(faces, cc, FirstPar + bnd / 50., bnd / 50., Pln);
           if (!FFF.IsNull())
+          {
             FirstFace = FFF;
+          }
         }
       }
       else if (PtOnFirstVertex)
@@ -862,7 +886,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           const TopoDS_Face& fx = TopoDS::Face(ex4.Current());
           if (!Map.Add(fx))
+          {
             continue;
+          }
           ex5.Init(ex4.Current(), TopAbs_VERTEX);
           for (; ex5.More(); ex5.Next())
           {
@@ -878,7 +904,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           TopoDS_Face FFF = ChoiceOfFaces(faces, cc, FirstPar + bnd / 50., bnd / 50., Pln);
           if (!FFF.IsNull())
+          {
             FirstFace = FFF;
+          }
         }
       }
       FirstEdge = E;
@@ -902,7 +930,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           const TopoDS_Face& fx = TopoDS::Face(ex4.Current());
           if (!Map.Add(fx))
+          {
             continue;
+          }
           ex5.Init(ex4.Current(), TopAbs_EDGE);
           for (; ex5.More(); ex5.Next())
           {
@@ -918,7 +948,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           TopoDS_Face FFF = ChoiceOfFaces(faces, cc, LastPar - bnd / 50., bnd / 50., Pln);
           if (!FFF.IsNull())
+          {
             LastFace = FFF;
+          }
         }
       }
       else if (PtOnLastEdge && PtOnLastVertex)
@@ -934,7 +966,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           const TopoDS_Face& fx = TopoDS::Face(ex4.Current());
           if (!Map.Add(fx))
+          {
             continue;
+          }
           ex5.Init(ex4.Current(), TopAbs_VERTEX);
           for (; ex5.More(); ex5.Next())
           {
@@ -950,7 +984,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         {
           TopoDS_Face FFF = ChoiceOfFaces(faces, cc, LastPar - bnd / 50., bnd / 50., Pln);
           if (!FFF.IsNull())
+          {
             LastFace = FFF;
+          }
         }
       }
       LastEdge = E;
@@ -1074,7 +1110,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         GeomAdaptor_Curve  aGAC(curve);
         inter.Init(aCurFace, aGAC, BRep_Tool::Tolerance(aCurFace));
         if (!inter.More())
+        {
           continue;
+        }
         for (; inter.More(); inter.Next())
         {
           gp_Pnt thePoint = inter.Pnt();
@@ -1144,7 +1182,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
               }
               TopoDS_Face FFF = ChoiceOfFaces(faces, curve, intpar + bnd / 10., bnd / 10., Pln);
               if (!FFF.IsNull())
+              {
                 FirstFace = FFF;
+              }
             }
             else if (PtOnEdge && PtOnVertex)
             {
@@ -1169,7 +1209,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
               }
               TopoDS_Face FFF = ChoiceOfFaces(faces, curve, intpar + bnd / 10., bnd / 10., Pln);
               if (!FFF.IsNull())
+              {
                 FirstFace = FFF;
+              }
             }
             if (!FirstEdge.IsNull() && !FirstFace.IsNull() && !FirstVertex.IsNull())
             {
@@ -1207,7 +1249,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
               }
               TopoDS_Face FFF = ChoiceOfFaces(faces, curve, intpar - bnd / 10., bnd / 10., Pln);
               if (!FFF.IsNull())
+              {
                 LastFace = FFF;
+              }
             }
             else if (PtOnEdge && PtOnVertex)
             {
@@ -1232,7 +1276,9 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
               }
               TopoDS_Face FFF = ChoiceOfFaces(faces, curve, intpar - bnd / 10., bnd / 10., Pln);
               if (!FFF.IsNull())
+              {
                 LastFace = FFF;
+              }
             }
             if (!LastEdge.IsNull() && !LastFace.IsNull() && !LastVertex.IsNull())
             {
@@ -1307,11 +1353,15 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
   {
     const TopoDS_Edge& e = TopoDS::Edge(EXP.Current());
     if (!Map.Add(e))
+    {
       continue;
+    }
     if (!RevolRib)
     {
       if (BRep_Tool::Degenerated(e))
+      {
         continue;
+      }
     }
     double                  fff, lll;
     occ::handle<Geom_Curve> ccc = BRep_Tool::Curve(e, fff, lll);
@@ -1324,12 +1374,16 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
     if (!RevolRib)
     {
       if (proj.NbPoints() == 1)
+      {
         TestOK = true;
+      }
     }
     else
     {
       if (proj.NbPoints() >= 1)
+      {
         TestOK = true;
+      }
     }
     if (TestOK && proj.Distance(1) <= BRep_Tool::Tolerance(e))
     {
@@ -1432,7 +1486,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
     if (d1.IsEqual(d2, myTol))
     {
       if (Concavite == 3)
+      {
         TestOK = false;
+      }
     }
   }
 
@@ -1444,7 +1500,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
       myPln->D0(P.X(), P.Y(), Pt);
       double par = IntPar(ln1, Pt);
       if (par > 0)
+      {
         Concavite = 1; // concave
+      }
     }
   }
 
@@ -1505,7 +1563,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
         }
       }
       if (!BndEdge1.IsNull() && !BndEdge2.IsNull())
+      {
         break;
+      }
     }
 
     if (BndEdge1.IsNull() || BndEdge2.IsNull())
@@ -1557,10 +1617,14 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
       {
         explo.Next();
         if (explo.Current().IsNull())
+        {
           explo.Init(BndWire);
+        }
       }
       else
+      {
         explo.Init(BndWire);
+      }
 
       // Check if this is BndEdge2
       // -> if yes : it is required to turn to join FirstPnt
@@ -1595,7 +1659,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
           }
         }
         else
+        {
           explo.Init(BndWire);
+        }
       }
 
       BRepLib_MakeEdge e3(BndPnt2, myFirstPnt);
@@ -1622,7 +1688,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
     {
       const TopoDS_Edge& E = EX.Current();
       if (E.IsSame(FirstEdge))
+      {
         break;
+      }
     }
     EX.Next();
     for (; EX.More(); EX.Next())
@@ -1633,7 +1701,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
         WW.Add(E);
       }
       else
+      {
         break;
+      }
     }
     occ::handle<Geom_Curve> LastCurve = BRep_Tool::Curve(LastEdge, ff, ll);
     TopoDS_Vertex           LFVert    = TopExp::FirstVertex(LastEdge, true);
@@ -1648,9 +1718,13 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
     double                  lpar = IntPar(FirstCurve, myLastPnt);
     occ::handle<Geom_Curve> c;
     if (fpar > lpar)
+    {
       c = FirstCurve->Reversed();
+    }
     else
+    {
       c = FirstCurve;
+    }
 
     BRepLib_MakeEdge ef(c, myFirstPnt, myLastPnt);
     WW.Add(ef);
@@ -1782,12 +1856,16 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       double par1 = ElCLib::Parameter(firstln->Lin(), myFirstPnt);
       double par2 = ElCLib::Parameter(lastln->Lin(), myLastPnt);
       if (par1 >= myTol || par2 >= myTol)
+      {
         Concavite = 2; // parallel and concave
+      }
     }
     if (d1.IsEqual(d2, myTol))
     {
       if (Concavite == 3)
+      {
         TestOK = false;
+      }
     }
   }
 
@@ -1799,7 +1877,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       myPln->D0(P.X(), P.Y(), Pt);
       double par = IntPar(firstln, Pt);
       if (par > 0)
+      {
         Concavite = 1; // concave
+      }
     }
   }
 
@@ -1817,7 +1897,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       cc->D1(f, firstpoint, firstvect);
       lastln = new Geom_Line(firstpoint, -firstvect);
       if (FirstEdge.IsSame(LastEdge))
+      {
         FalseOnlyOne = FalseFirstEdge;
+      }
       ln2d2 = GeomAPI::To2d(lastln, myPln->Pln());
     }
     if (OnLastFace)
@@ -1830,7 +1912,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       else
       {
         if (FalseOnlyOne.IsNull())
+        {
           FalseOnlyOne = LastEdge;
+        }
         FalseLastEdge = FalseOnlyOne;
       }
       EdgeExtention(FalseLastEdge, bnd, false);
@@ -1890,7 +1974,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
         }
       }
       if (!BndEdge1.IsNull() && !BndEdge2.IsNull())
+      {
         break;
+      }
     }
 
     if (BndEdge1.IsNull() || BndEdge2.IsNull())
@@ -2008,10 +2094,14 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       {
         explo.Next();
         if (explo.Current().IsNull())
+        {
           explo.Init(BndWire);
+        }
       }
       else
+      {
         explo.Init(BndWire);
+      }
       bool Fin = false;
       while (!Fin)
       {
@@ -2076,7 +2166,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           }
         }
         else
+        {
           explo.Init(BndWire);
+        }
       }
 
       TopoDS_Edge eee3;
@@ -2148,7 +2240,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FalseOnlyOne, true);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         theEdge = TopoDS::Edge(e.Shape());
       }
@@ -2162,14 +2256,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FalseOnlyOne, true);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         theEdge = TopoDS::Edge(e.Shape());
       }
       myLFMap(FirstEdge).Append(theEdge);
       BB.Add(w, theEdge);
       if (theFV.IsNull())
+      {
         theFV = TopExp::FirstVertex(theEdge, true);
+      }
       theLastEdge = theEdge;
     }
     else
@@ -2188,7 +2286,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FirstEdge);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         theEdge = TopoDS::Edge(e.Shape());
       }
@@ -2202,14 +2302,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FirstEdge, true);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         theEdge = TopoDS::Edge(e.Shape());
       }
       myLFMap(FirstEdge).Append(theEdge);
       BB.Add(w, theEdge);
       if (theFV.IsNull())
+      {
         theFV = TopExp::FirstVertex(theEdge, true);
+      }
       theLastEdge = theEdge;
     }
   }
@@ -2239,7 +2343,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       myLFMap(FirstEdge).Append(theEdge);
       BB.Add(w, theEdge);
       if (theFV.IsNull())
+      {
         theFV = TopExp::FirstVertex(theEdge, true);
+      }
       theLastEdge = theEdge;
     }
     else
@@ -2261,7 +2367,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       myLFMap(FirstEdge).Append(theEdge);
       BB.Add(w, theEdge);
       if (theFV.IsNull())
+      {
         theFV = TopExp::FirstVertex(theEdge, true);
+      }
       theLastEdge = theEdge;
     }
 
@@ -2270,7 +2378,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     {
       const TopoDS_Edge& E = ex.Current();
       if (E.IsSame(FirstEdge))
+      {
         break;
+      }
     }
 
     ex.Next();
@@ -2302,11 +2412,15 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
         myLFMap(E).Append(eee);
         BB.Add(w, eee);
         if (theFV.IsNull())
+        {
           theFV = TopExp::FirstVertex(eee, true);
+        }
         theLastEdge = eee;
       }
       else
+      {
         break;
+      }
     }
 
     if (!OnLastFace)
@@ -2332,7 +2446,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
             v2 = theFV;
           }
           else
+          {
             v2 = TopExp::LastVertex(edg, true);
+          }
           BRepLib_MakeEdge e(cc, v1, v2);
           eee = TopoDS::Edge(e.Shape());
         }
@@ -2346,14 +2462,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
             v2 = theFV;
           }
           else
+          {
             v2 = TopExp::LastVertex(edg, true);
+          }
           BRepLib_MakeEdge e(cc, v1, v2);
           eee = TopoDS::Edge(e.Shape());
         }
         myLFMap(edg).Append(eee);
         BB.Add(w, eee);
         if (theFV.IsNull())
+        {
           theFV = TopExp::FirstVertex(eee, true);
+        }
         theLastEdge = eee;
       }
       else
@@ -2376,7 +2496,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
             v2 = theFV;
           }
           else
+          {
             v2 = TopExp::LastVertex(FalseOnlyOne, true);
+          }
           BRepLib_MakeEdge e(cc, v1, v2);
           eee = TopoDS::Edge(e.Shape());
         }
@@ -2390,14 +2512,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
             v2 = theFV;
           }
           else
+          {
             v2 = TopExp::LastVertex(FalseOnlyOne, true);
+          }
           BRepLib_MakeEdge e(cc, v1, v2);
           eee = TopoDS::Edge(e.Shape());
         }
         myLFMap(LastEdge).Append(eee);
         BB.Add(w, eee);
         if (theFV.IsNull())
+        {
           theFV = TopExp::FirstVertex(eee, true);
+        }
         theLastEdge = eee;
       }
     }
@@ -2421,7 +2547,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FalseLastEdge, true);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         eee = TopoDS::Edge(e.Shape());
       }
@@ -2435,14 +2563,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           v2 = theFV;
         }
         else
+        {
           v2 = TopExp::LastVertex(FalseLastEdge, true);
+        }
         BRepLib_MakeEdge e(cc, v1, v2);
         eee = TopoDS::Edge(e.Shape());
       }
       myLFMap(LastEdge).Append(eee);
       BB.Add(w, eee);
       if (theFV.IsNull())
+      {
         theFV = TopExp::FirstVertex(eee, true);
+      }
       theLastEdge = eee;
     }
   }
@@ -2461,14 +2593,18 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       BRepLib_MakeVertex   vv(Pt);
       TopoDS_Vertex        v2 = TopoDS::Vertex(vv.Shape());
       if (!theFV.IsNull() && Pt.Distance(theFirstpoint) <= myTol)
+      {
         v2 = theFV;
+      }
 
       BRepLib_MakeEdge ef(v1, v2);
       eef = TopoDS::Edge(ef.Shape());
     }
     BB.Add(w, eef);
     if (theFV.IsNull())
+    {
       theFV = TopExp::FirstVertex(eef, true);
+    }
     theLastEdge = eef;
   }
 
@@ -2558,7 +2694,9 @@ void BRepFeat_RibSlot::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBO
     {
       const TopoDS_Shape& sh = it.Value();
       if (sh.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
       const TopoDS_Face& fdsc = TopoDS::Face(it.Value());
       for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
       {

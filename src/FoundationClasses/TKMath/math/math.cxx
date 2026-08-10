@@ -1971,7 +1971,9 @@ void math::GaussPoints(const int Index, math_Vector& GPoint)
   {
     GPoint(i) = Point[Som + i];
     if ((i + ind) <= Index)
+    {
       GPoint(i + ind) = -GPoint(i);
+    }
   }
 }
 
@@ -1990,7 +1992,9 @@ void math::GaussWeights(const int Index, math_Vector& GWeight)
   {
     GWeight(i) = Weight[Som + i];
     if ((i + ind) <= Index)
+    {
       GWeight(i + ind) = GWeight(i);
+    }
   }
 }
 
@@ -2005,8 +2009,10 @@ bool math::OrderedGaussPointsAndWeights(const int Index, math_Vector& Points, ma
 {
   if (Index < 1 ||                // Index is not positive
       Points.Length() != Index || // Inconsistent length of Points.
-      Weights.Length() != Index)  // Inconsistent length of Weights.
+      Weights.Length() != Index)
+  { // Inconsistent length of Weights.
     return false;
+  }
 
   if (Index <= 61)
   {
@@ -2016,7 +2022,9 @@ bool math::OrderedGaussPointsAndWeights(const int Index, math_Vector& Points, ma
 
     // Compute the index of starting point in the array.
     for (i = 1; i < Index; i++)
+    {
       aStartInd += (i + 1) / 2;
+    }
 
     // Get points from the array.
     int aNbPts   = Index / 2;
@@ -2044,7 +2052,9 @@ bool math::OrderedGaussPointsAndWeights(const int Index, math_Vector& Points, ma
   {
     math_ComputeGaussPointsAndWeights PWcomputer(Index);
     if (!PWcomputer.IsDone())
+    {
       return false;
+    }
     Points  = PWcomputer.Points();
     Weights = PWcomputer.Weights();
     return true;

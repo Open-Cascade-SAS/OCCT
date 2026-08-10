@@ -31,13 +31,21 @@ int StepBasic_ProductOrFormationOrDefinition::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Product)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 3;
+  }
   return 0;
 }
 

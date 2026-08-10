@@ -94,7 +94,9 @@ int IGESFile_Read(char*                                       nomfic,
   int result = igesread(ficnom, lesect, modefnes);
 
   if (result != 0)
+  {
     return result;
+  }
 
   //  Loading results into an IGESReader
 
@@ -133,7 +135,9 @@ int IGESFile_Read(char*                                       nomfic,
       {
         OCC_CATCH_SIGNALS
         if (nbparts > 0)
+        {
           IGESFile_ReadContent(IR);
+        }
 
         // Sending of message : Loaded data
       } // end attempt 2 (entities)
@@ -169,7 +173,9 @@ int IGESFile_Read(char*                                       nomfic,
   // Sending of message : Loading of Model : Beginning
   IT.LoadModel(amodel);
   if (amodel->Protocol().IsNull())
+  {
     amodel->SetProtocol(protocol);
+  }
   iges_finfile(2);
 
   //  Now, the check
@@ -216,17 +222,25 @@ void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
   {
     int j; // svv Jan11 2000 : porting on DEC
     for (j = 72; j >= 0; j--)
+    {
       if (parval[j] > 32)
+      {
         break;
+      }
+    }
     parval[j + 1] = '\0';
     if (j >= 0 || l > 0)
+    {
       IR->AddStartLine(parval);
+    }
     l++;
   }
   //  then the Global Section
   iges_setglobal();
   while (iges_lirparam(&typarg, &parval) != 0)
+  {
     IR->AddGlobal(LesTypes[typarg], parval);
+  }
   IR->SetGlobalSection();
 }
 
@@ -276,15 +290,23 @@ void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR)
       {
         int nument = atoi(parval);
         if (nument < 0)
+        {
           nument = -nument;
+        }
         if (nument & 1)
+        {
           nument = (nument + 1) / 2;
+        }
         else
+        {
           nument = 0;
+        }
         IR->AddParam(recupne, parval, LesTypes[typarg], nument);
       }
       else
+      {
         IR->AddParam(recupne, parval, LesTypes[typarg]);
+      }
     }
     IR->InitParams(recupne);
     iges_nextpart();

@@ -36,30 +36,38 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
   myHistShapes.Clear();
 
   if (theS.IsNull())
+  {
     return myHistShapes;
+  }
 
   // Only EDGES and FACES should be considered
   TopAbs_ShapeEnum aType = theS.ShapeType();
   if (aType != TopAbs_EDGE && aType != TopAbs_FACE)
+  {
     // Wrong type
     return myHistShapes;
+  }
 
   // Check that DS contains the shape, i.e. it is from the arguments of the operation
   int nS = myDS->Index(theS);
   if (nS < 0)
+  {
     // Unknown shape
     return myHistShapes;
+  }
 
   // Check that the shape has participated in any intersections
   const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nS);
   if (!aSI.HasReference())
+  {
     // Untouched shape
     return myHistShapes;
+  }
 
   // Analyze all types of Interferences which can produce
   // new vertices - Edge/Edge and Edge/Face
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
 
   // Fence map to avoid duplicates in the list of Generated;
   NCollection_Map<int> aMFence;
@@ -76,29 +84,39 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
     {
       BOPDS_Interf* aInt = !k ? (BOPDS_Interf*)(&aEEs(i)) : (BOPDS_Interf*)(&aEFs(i));
       if (!aInt->HasIndexNew())
+      {
         // No new vertices created
         continue;
+      }
 
       if (!aInt->Contains(nS))
+      {
         continue;
+      }
 
       int nVNew = aInt->IndexNew();
       myDS->HasShapeSD(nVNew, nVNew);
       if (!aMFence.Add(nVNew))
+      {
         continue;
+      }
 
       // Get the new vertex
       const TopoDS_Shape& aVNew = myDS->Shape(nVNew);
 
       // Check that the result shape contains vertex
       if (myMapShape.Contains(aVNew))
+      {
         // Save the vertex as generated
         myHistShapes.Append(aVNew);
+      }
     }
   }
 
   if (!isFace)
+  {
     return myHistShapes;
+  }
 
   // For the FACE it is also necessary to collect all
   // section elements created in FACE/FACE interferences.
@@ -113,7 +131,9 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
   {
     const TopoDS_Shape& aENew = myDS->Shape(aMPBSc(i)->Edge());
     if (myMapShape.Contains(aENew))
+    {
       myHistShapes.Append(aENew);
+    }
   }
 
   // Section vertices of the face
@@ -124,7 +144,9 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
   {
     const TopoDS_Shape& aVNew = myDS->Shape(aItM.Value());
     if (myMapShape.Contains(aVNew))
+    {
       myHistShapes.Append(aVNew);
+    }
   }
 
   return myHistShapes;
@@ -142,7 +164,9 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_Builder::LocModified(const TopoDS_
 void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
 {
   if (!HasHistory())
+  {
     return;
+  }
 
   // Initializing history tool
   myHistory = new BRepTools_History;
@@ -166,7 +190,9 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
 
     // Check if History information is available for this kind of shape.
     if (!BRepTools_History::IsSupportedType(aS))
+    {
       continue;
+    }
 
     if (UserBreak(aPS))
     {
@@ -190,9 +216,13 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
           // Add modified shape with proper orientation
           TopAbs_ShapeEnum aType = aSp.ShapeType();
           if (aType == TopAbs_VERTEX || aType == TopAbs_SOLID)
+          {
             aSp.Orientation(aS.Orientation());
+          }
           else if (BOPTools_AlgoTools::IsSplitToReverse(aSp, aS, myContext))
+          {
             aSp.Reverse();
+          }
 
           myHistory->AddModified(aS, aSp);
           isModified = true;
@@ -207,12 +237,16 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
     {
       const TopoDS_Shape& aG = aIt.Value();
       if (myMapShape.Contains(aG))
+      {
         myHistory->AddGenerated(aS, aG);
+      }
     }
 
     // Check if the shape has been deleted, i.e. it is not contained in the result
     // and has no Modified shapes.
     if (!isModified && !myMapShape.Contains(aS))
+    {
       myHistory->Remove(aS);
+    }
   }
 }

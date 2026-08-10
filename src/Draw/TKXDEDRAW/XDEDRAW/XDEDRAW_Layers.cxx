@@ -101,7 +101,9 @@ static int removeLayer(Draw_Interpretor& di, int argc, const char** argv)
     aLabel                            = localLayerTool->FindLayer(aLayer);
   }
   if (aLabel.IsNull())
+  {
     return 1;
+  }
   localLayerTool->RemoveLayer(aLabel);
   return 0;
 }
@@ -115,7 +117,9 @@ static int setLayer(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool shapeInOneLayer = false;
   if ((argc == 5) && (Draw::Atoi(argv[4]) == 1))
+  {
     shapeInOneLayer = true;
+  }
   occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
@@ -176,10 +180,12 @@ static int getLayers(Draw_Interpretor& di, int argc, const char** argv)
   }
   int i = 1;
   if (!aLayerS.IsNull() && aLayerS->Length() != 0)
+  {
     for (; i <= aLayerS->Length(); i++)
     {
       di << "\"" << aLayerS->Value(i) << "\" ";
     }
+  }
   return 0;
 }
 
@@ -253,7 +259,9 @@ static int setLinkLayer(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool shapeInOneLayer = false;
   if ((argc == 5) && (Draw::Atoi(argv[4]) == 1))
+  {
     shapeInOneLayer = true;
+  }
   occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
@@ -439,7 +447,9 @@ static int setVisibility(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   bool                           isvisible      = false;
   if ((argc == 4) && (Draw::Atoi(argv[3]) == 1))
+  {
     isvisible = true;
+  }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -449,7 +459,9 @@ static int setVisibility(Draw_Interpretor& di, int argc, const char** argv)
     aLabel                            = localLayerTool->FindLayer(aLayer);
   }
   if (aLabel.IsNull())
+  {
     return 1;
+  }
   localLayerTool->SetVisibility(aLabel, isvisible);
   return 0;
 }
@@ -478,11 +490,17 @@ static int isVisible(Draw_Interpretor& di, int argc, const char** argv)
     aLabel                            = localLayerTool->FindLayer(aLayer);
   }
   if (aLabel.IsNull())
+  {
     return 1;
+  }
   if (localLayerTool->IsVisible(aLabel))
+  {
     di << 1;
+  }
   else
+  {
     di << 0;
+  }
   return 0;
 }
 

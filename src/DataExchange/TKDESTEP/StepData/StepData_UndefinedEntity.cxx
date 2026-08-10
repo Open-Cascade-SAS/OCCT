@@ -60,7 +60,9 @@ occ::handle<StepData_UndefinedEntity> StepData_UndefinedEntity::Next() const
 const char* StepData_UndefinedEntity::StepType() const
 {
   if (thetype.IsNull())
+  {
     return "";
+  }
   return thetype->ToCString();
 }
 
@@ -124,15 +126,23 @@ void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderD
       }
     }
     if (nume == 0)
+    {
       hval = new TCollection_HAsciiString(val);
+    }
     if (nume > 0)
+    {
       thecont->AddEntity(partyp, anent);
+    }
     else
+    {
       thecont->AddLiteral(partyp, hval);
+    }
   }
   int nextyp = SR->NextForComplex(num);
   if (nextyp == 0)
+  {
     return;
+  }
   thenext = new StepData_UndefinedEntity;
   thenext->ReadRecord(SR, nextyp, ach);
 }
@@ -140,7 +150,9 @@ void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderD
 void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
 {
   if (!IsSub())
+  {
     SW.StartEntity(TCollection_AsciiString(StepType()));
+  }
   int                             nb = thecont->NbParams();
   occ::handle<Standard_Transient> anent;
   for (int i = 1; i <= nb; i++)
@@ -151,10 +163,14 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
       DeclareAndCast(StepData_UndefinedEntity, und, thecont->ParamEntity(i));
       und->StepType(); // svv #2
       if (und->IsSub())
+      {
         SW.OpenTypedSub(und->StepType());
+      }
       und->WriteParams(SW);
       if (und->IsSub())
+      {
         SW.CloseSub();
+      }
     }
     else if (partyp == Interface_ParamIdent)
     {
@@ -162,12 +178,16 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
       SW.Send(anent);
     }
     else
+    {
       SW.SendString(thecont->ParamValue(i)->ToCString());
+    }
   }
   //  if (IsSub()) return;
   //  SW.NewLine(true);
   if (thenext.IsNull())
+  {
     return;
+  }
   thenext->WriteParams(SW);
 }
 
@@ -181,9 +201,13 @@ void StepData_UndefinedEntity::GetFromAnother(const occ::handle<StepData_Undefin
 
   thesub = another->IsSub();
   if (another->IsComplex())
+  {
     thenext = GetCasted(StepData_UndefinedEntity, TC.Transferred(another->Next()));
+  }
   else
+  {
     thenext.Nullify();
+  }
 }
 
 void StepData_UndefinedEntity::FillShared(Interface_EntityIterator& list) const
@@ -203,5 +227,7 @@ void StepData_UndefinedEntity::FillShared(Interface_EntityIterator& list) const
     }
   }
   if (!thenext.IsNull())
+  {
     thenext->FillShared(list);
+  }
 }

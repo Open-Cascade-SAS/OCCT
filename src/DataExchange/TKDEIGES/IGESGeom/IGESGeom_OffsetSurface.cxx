@@ -44,7 +44,9 @@ gp_Vec IGESGeom_OffsetSurface::OffsetIndicator() const
 gp_Vec IGESGeom_OffsetSurface::TransformedOffsetIndicator() const
 {
   if (!HasTransf())
+  {
     return gp_Vec(theIndicator);
+  }
   gp_XYZ   temp(theIndicator);
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));

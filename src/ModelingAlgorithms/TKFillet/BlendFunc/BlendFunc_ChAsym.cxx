@@ -183,7 +183,9 @@ bool BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const double Tol)
         istangent = false;
       }
       else
+      {
         istangent = true;
+      }
     }
 
     if (!istangent)
@@ -215,7 +217,9 @@ double BlendFunc_ChAsym::GetMinimalDistance() const
 bool BlendFunc_ChAsym::ComputeValues(const math_Vector& X, const int DegF, const int DegL)
 {
   if (DegF > DegL)
+  {
     return false;
+  }
 
   gp_Vec np, d1gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2, Nsurf1;
   gp_Pnt ptgui;
@@ -226,7 +230,9 @@ bool BlendFunc_ChAsym::ComputeValues(const math_Vector& X, const int DegF, const
   np    = nplan;
 
   if (choix % 2 != 0)
+  {
     np.Reverse();
+  }
 
   if ((DegF == 0) && (DegL == 0))
   {
@@ -353,7 +359,9 @@ bool BlendFunc_ChAsym::IsTangencyPoint() const
 const gp_Vec& BlendFunc_ChAsym::TangentOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::TangentOnS1");
+  }
   return tg1;
 }
 
@@ -362,7 +370,9 @@ const gp_Vec& BlendFunc_ChAsym::TangentOnS1() const
 const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::Tangent2dOnS1");
+  }
   return tg12d;
 }
 
@@ -371,7 +381,9 @@ const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS1() const
 const gp_Vec& BlendFunc_ChAsym::TangentOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::TangentOnS2");
+  }
   return tg2;
 }
 
@@ -380,7 +392,9 @@ const gp_Vec& BlendFunc_ChAsym::TangentOnS2() const
 const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::Tangent2dOnS2");
+  }
   return tg22d;
 }
 
@@ -389,7 +403,9 @@ const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS2() const
 bool BlendFunc_ChAsym::TwistOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS1");
+  }
   return tg1.Dot(nplan) < 0.;
 }
 
@@ -398,7 +414,9 @@ bool BlendFunc_ChAsym::TwistOnS1() const
 bool BlendFunc_ChAsym::TwistOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS2");
+  }
   return tg2.Dot(nplan) < 0.;
 }
 
@@ -442,15 +460,23 @@ void BlendFunc_ChAsym::Tangent(const double U1,
   }
 
   if ((choix == 4) || (choix == 7))
+  {
     revL = true;
+  }
 
   if ((choix == 3) || (choix == 8))
+  {
     revF = true;
+  }
 
   if (revF)
+  {
     TgF.Reverse();
+  }
   if (revL)
+  {
     TgL.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -667,7 +693,9 @@ bool BlendFunc_ChAsym::Section(const Blend_Point&            P,
       istangent = false;
     }
     else
+    {
       istangent = true;
+    }
   }
 
   if (!istangent)

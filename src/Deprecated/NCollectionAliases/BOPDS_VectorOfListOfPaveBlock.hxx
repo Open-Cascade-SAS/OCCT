@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfListOfPaveBlock.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_ListOfPaveBlock> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_ListOfPaveBlock> directly instead.
 
 #ifndef _BOPDS_VectorOfListOfPaveBlock_hxx
 #define _BOPDS_VectorOfListOfPaveBlock_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfListOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_ListOfPaveBlock> directly.")
+                           "NCollection_DynamicArray<BOPDS_ListOfPaveBlock> directly.")
 
   Standard_DEPRECATED("BOPDS_VectorOfListOfPaveBlock is deprecated, use "
-                      "NCollection_Vector<BOPDS_ListOfPaveBlock> directly")
-typedef NCollection_Vector<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;
+                      "NCollection_DynamicArray<BOPDS_ListOfPaveBlock> directly")
+typedef NCollection_DynamicArray<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;
 
 #endif // _BOPDS_VectorOfListOfPaveBlock_hxx

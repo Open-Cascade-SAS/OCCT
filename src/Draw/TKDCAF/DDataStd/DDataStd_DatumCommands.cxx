@@ -50,11 +50,15 @@
 static int DDataStd_SetPoint(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   TDF_Label             L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   DDF::AddLabel(DF, arg[2], L);
   if (nb == 3)
   {
@@ -85,11 +89,15 @@ static int DDataStd_SetPoint(Draw_Interpretor& di, int nb, const char** arg)
 static int DDataStd_SetAxis(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   TDF_Label             L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   DDF::AddLabel(DF, arg[2], L);
   if (nb == 3)
   {
@@ -117,11 +125,15 @@ static int DDataStd_SetAxis(Draw_Interpretor& di, int nb, const char** arg)
 static int DDataStd_SetPlane(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   TDF_Label             L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   DDF::AddLabel(DF, arg[2], L);
   if (nb == 3)
   {
@@ -149,20 +161,30 @@ static int DDataStd_SetPlane(Draw_Interpretor& di, int nb, const char** arg)
 static int DDataStd_GetPoint(Draw_Interpretor&, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   occ::handle<TDataXtd_Point> A;
   gp_Pnt                      P;
   if (!DDF::Find(DF, arg[2], TDataXtd_Point::GetID(), A))
+  {
     return 1;
+  }
   if (TDataXtd_Geometry::Point(A->Label(), P))
   {
     if (nb == 4)
+    {
       DrawTrSurf::Set(arg[3], P);
+    }
     else
+    {
       DrawTrSurf::Set(arg[2], P);
+    }
     return 0;
   }
   return 1;
@@ -176,21 +198,31 @@ static int DDataStd_GetPoint(Draw_Interpretor&, int nb, const char** arg)
 static int DDataStd_GetAxis(Draw_Interpretor&, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   occ::handle<TDataXtd_Axis> A;
   if (!DDF::Find(DF, arg[2], TDataXtd_Axis::GetID(), A))
+  {
     return 1;
+  }
   gp_Lin l;
   if (TDataXtd_Geometry::Line(A->Label(), l))
   {
     occ::handle<Geom_Line> L = new Geom_Line(l);
     if (nb == 4)
+    {
       DrawTrSurf::Set(arg[3], L);
+    }
     else
+    {
       DrawTrSurf::Set(arg[2], L);
+    }
     return 0;
   }
   return 1;
@@ -204,21 +236,31 @@ static int DDataStd_GetAxis(Draw_Interpretor&, int nb, const char** arg)
 static int DDataStd_GetPlane(Draw_Interpretor&, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   occ::handle<TDataXtd_Plane> A;
   if (!DDF::Find(DF, arg[2], TDataXtd_Plane::GetID(), A))
+  {
     return 1;
+  }
   gp_Pln p;
   if (TDataXtd_Geometry::Plane(A->Label(), p))
   {
     occ::handle<Geom_Plane> P = new Geom_Plane(p);
     if (nb == 4)
+    {
       DrawTrSurf::Set(arg[3], P);
+    }
     else
+    {
       DrawTrSurf::Set(arg[2], P);
+    }
     return 0;
   }
   return 1;
@@ -231,15 +273,21 @@ static int DDataStd_GetPlane(Draw_Interpretor&, int nb, const char** arg)
 static int DDataStd_SetGeometry(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb < 3)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label L;
   if (!DDF::FindLabel(DF, arg[2], L))
+  {
     DDF::AddLabel(DF, arg[2], L);
+  }
 
   if (nb == 5)
   {
@@ -263,21 +311,37 @@ static int DDataStd_SetGeometry(Draw_Interpretor& di, int nb, const char** arg)
   {
     const char* aT = arg[3];
     if (strcmp(aT, "any") == 0)
+    {
       aType = TDataXtd_ANY_GEOM;
+    }
     else if (strcmp(aT, "pnt") == 0)
+    {
       aType = TDataXtd_POINT;
+    }
     else if (strcmp(aT, "lin") == 0)
+    {
       aType = TDataXtd_LINE;
+    }
     else if (strcmp(aT, "cir") == 0)
+    {
       aType = TDataXtd_CIRCLE;
+    }
     else if (strcmp(aT, "ell") == 0)
+    {
       aType = TDataXtd_ELLIPSE;
+    }
     else if (strcmp(aT, "spl") == 0)
+    {
       aType = TDataXtd_SPLINE;
+    }
     else if (strcmp(aT, "pln") == 0)
+    {
       aType = TDataXtd_PLANE;
+    }
     else if (strcmp(aT, "cyl") == 0)
+    {
       aType = TDataXtd_CYLINDER;
+    }
     else
     {
       di << "DDataStd_SetGeometry : unknown type, must be one of:\n";
@@ -302,15 +366,21 @@ static int DDataStd_SetGeometry(Draw_Interpretor& di, int nb, const char** arg)
 static int DDataStd_GetGeometryType(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb != 3)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label L;
   if (!DDF::FindLabel(DF, arg[2], L))
+  {
     DDF::AddLabel(DF, arg[2], L);
+  }
 
   // get geometry attribute
   occ::handle<TDataXtd_Geometry> aGA;
@@ -364,7 +434,9 @@ void DDataStd::DatumCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DData : Standard Attribute Commands";
 

@@ -46,8 +46,12 @@ void FairCurve_DistributionOfEnergy::SetDerivativeOrder(const int DerivativeOrde
 {
   MyNbEqua = 1;
   if (DerivativeOrder >= 1)
+  {
     MyNbEqua += 2 * MyPoles->Length() + MyNbValAux;
+  }
   if (DerivativeOrder >= 2)
+  {
     MyNbEqua = MyNbEqua + (MyNbEqua - 1) * MyNbEqua / 2;
+  }
   MyDerivativeOrder = DerivativeOrder;
 }

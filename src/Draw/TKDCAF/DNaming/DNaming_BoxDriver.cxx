@@ -61,7 +61,9 @@ int DNaming_BoxDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   // perform calculations
 
@@ -97,7 +99,9 @@ int DNaming_BoxDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
+  }
 
   theLog->SetValid(RESPOSITION(aFunction), true);
 

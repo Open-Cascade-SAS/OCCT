@@ -37,7 +37,9 @@ TopoDS_Shape ShapeExtend_Explorer::CompoundFromSeq(
   B.MakeCompound(C);
   int i, n = seqval->Length();
   for (i = 1; i <= n; i++)
+  {
     B.Add(C, seqval->Value(i));
+  }
   return C;
 }
 
@@ -51,11 +53,17 @@ static void FillList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& lis
   {
     const TopoDS_Shape& sub = it.Value();
     if (sub.ShapeType() != TopAbs_COMPOUND)
+    {
       list->Append(sub);
+    }
     else if (!expcomp)
+    {
       list->Append(sub);
+    }
     else
+    {
       FillList(list, sub, expcomp);
+    }
   }
 }
 
@@ -65,7 +73,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromCo
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> list = new NCollection_HSequence<TopoDS_Shape>();
   if (comp.IsNull())
+  {
     return list;
+  }
   if (comp.ShapeType() != TopAbs_COMPOUND)
   {
     list->Append(comp);
@@ -83,12 +93,18 @@ void ShapeExtend_Explorer::ListFromSeq(
   const bool                                              clear) const
 {
   if (clear)
+  {
     lisval.Clear();
+  }
   if (seqval.IsNull())
+  {
     return;
+  }
   int i, nb = seqval->Length();
   for (i = 1; i <= nb; i++)
+  {
     lisval.Append(seqval->Value(i));
+  }
 }
 
 //=================================================================================================
@@ -100,7 +116,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromLi
     new NCollection_HSequence<TopoDS_Shape>();
   NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(lisval); it.More(); it.Next())
+  {
     seqval->Append(it.Value());
+  }
   return seqval;
 }
 
@@ -110,32 +128,52 @@ TopAbs_ShapeEnum ShapeExtend_Explorer::ShapeType(const TopoDS_Shape& shape,
                                                  const bool          compound) const
 {
   if (shape.IsNull())
+  {
     return TopAbs_SHAPE;
+  }
   TopAbs_ShapeEnum res = shape.ShapeType();
   if (!compound || res != TopAbs_COMPOUND)
+  {
     return res;
+  }
   res = TopAbs_SHAPE;
   for (TopoDS_Iterator iter(shape); iter.More(); iter.Next())
   {
     const TopoDS_Shape& sh = iter.Value();
     if (sh.IsNull())
+    {
       continue;
+    }
     TopAbs_ShapeEnum typ = sh.ShapeType();
     if (typ == TopAbs_COMPOUND)
+    {
       typ = ShapeType(sh, compound);
+    }
     if (res == TopAbs_SHAPE)
+    {
       res = typ;
-    //   Egalite : OK;  Pseudo-Egalite : EDGE/WIRE ou FACE/SHELL
+      //   Egalite : OK;  Pseudo-Egalite : EDGE/WIRE ou FACE/SHELL
+    }
     else if (res == TopAbs_EDGE && typ == TopAbs_WIRE)
+    {
       res = typ;
+    }
     else if (res == TopAbs_WIRE && typ == TopAbs_EDGE)
+    {
       continue;
+    }
     else if (res == TopAbs_FACE && typ == TopAbs_SHELL)
+    {
       res = typ;
+    }
     else if (res == TopAbs_SHELL && typ == TopAbs_FACE)
+    {
       continue;
+    }
     else if (res != typ)
+    {
       return TopAbs_COMPOUND;
+    }
   }
   return res;
 }
@@ -148,7 +186,9 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
                                                   const bool             compound) const
 {
   if (shape.IsNull())
+  {
     return shape;
+  }
   TopAbs_ShapeEnum typ = shape.ShapeType();
   TopoDS_Shape     sh, sh0;
   int              nb = 0;
@@ -163,7 +203,9 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
     {
       sh0 = SortedCompound(it.Value(), type, explore, compound);
       if (sh0.IsNull())
+      {
         continue;
+      }
       sh  = sh0;
       typ = sh.ShapeType();
       if (typ == TopAbs_COMPOUND && !compound)
@@ -182,15 +224,21 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
       }
     }
     if (nb == 0)
+    {
       C.Nullify();
+    }
     else if (nb == 1)
+    {
       return sh;
+    }
     return C;
   }
 
   //   Egalite : OK;  Pseudo-Egalite : EDGE/WIRE ou FACE/SHELL
   if (typ == type)
+  {
     return shape;
+  }
   if (typ == TopAbs_EDGE && type == TopAbs_WIRE)
   {
     BRep_Builder B;
@@ -226,15 +274,21 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
     {
       sh0 = SortedCompound(it.Value(), type, explore, compound);
       if (sh0.IsNull())
+      {
         continue;
+      }
       sh = sh0;
       nb++;
       B.Add(C, sh);
     }
     if (nb == 0)
+    {
       C.Nullify();
+    }
     else if (nb == 1)
+    {
       return sh;
+    }
     return C;
   }
 
@@ -250,9 +304,13 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
     BB.Add(CC, sh);
   }
   if (nb == 0)
+  {
     CC.Nullify();
+  }
   else if (nb == 1)
+  {
     return sh;
+  }
   return CC;
 }
 
@@ -270,30 +328,50 @@ void ShapeExtend_Explorer::DispatchList(
   occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const
 {
   if (list.IsNull())
+  {
     return;
+  }
   if (vertices.IsNull())
+  {
     vertices = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (edges.IsNull())
+  {
     edges = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (wires.IsNull())
+  {
     wires = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (faces.IsNull())
+  {
     faces = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (shells.IsNull())
+  {
     shells = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (solids.IsNull())
+  {
     solids = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (compsols.IsNull())
+  {
     compsols = new NCollection_HSequence<TopoDS_Shape>();
+  }
   if (compounds.IsNull())
+  {
     compounds = new NCollection_HSequence<TopoDS_Shape>();
+  }
 
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
   {
     TopoDS_Shape sh = list->Value(i);
     if (sh.IsNull())
+    {
       continue;
+    }
     switch (sh.ShapeType())
     {
       case TopAbs_VERTEX:

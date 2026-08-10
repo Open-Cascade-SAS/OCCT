@@ -89,9 +89,13 @@ void ChFiDS_Stripe::SetParameters(const bool First, const double Pdeb, const dou
 int ChFiDS_Stripe::Curve(const bool First) const
 {
   if (First)
+  {
     return indexOfcurve1;
+  }
   else
+  {
     return indexOfcurve2;
+  }
 }
 
 //=================================================================================================
@@ -99,9 +103,13 @@ int ChFiDS_Stripe::Curve(const bool First) const
 void ChFiDS_Stripe::SetCurve(const int Index, const bool First)
 {
   if (First)
+  {
     indexOfcurve1 = Index;
+  }
   else
+  {
     indexOfcurve2 = Index;
+  }
 }
 
 //=======================================================================
@@ -112,9 +120,13 @@ void ChFiDS_Stripe::SetCurve(const int Index, const bool First)
 const occ::handle<Geom2d_Curve>& ChFiDS_Stripe::PCurve(const bool First) const
 {
   if (First)
+  {
     return pcrv1;
+  }
   else
+  {
     return pcrv2;
+  }
 }
 
 //=================================================================================================
@@ -122,9 +134,13 @@ const occ::handle<Geom2d_Curve>& ChFiDS_Stripe::PCurve(const bool First) const
 occ::handle<Geom2d_Curve>& ChFiDS_Stripe::ChangePCurve(const bool First)
 {
   if (First)
+  {
     return pcrv1;
+  }
   else
+  {
     return pcrv2;
+  }
 }
 
 //=================================================================================================
@@ -132,9 +148,13 @@ occ::handle<Geom2d_Curve>& ChFiDS_Stripe::ChangePCurve(const bool First)
 TopAbs_Orientation ChFiDS_Stripe::Orientation(const int OnS) const
 {
   if (OnS == 1)
+  {
     return myOr1;
+  }
   else
+  {
     return myOr2;
+  }
 }
 
 //=================================================================================================
@@ -142,9 +162,13 @@ TopAbs_Orientation ChFiDS_Stripe::Orientation(const int OnS) const
 void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const int OnS)
 {
   if (OnS == 1)
+  {
     myOr1 = Or;
+  }
   else
+  {
     myOr2 = Or;
+  }
 }
 
 //=================================================================================================
@@ -152,9 +176,13 @@ void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const int OnS)
 TopAbs_Orientation ChFiDS_Stripe::Orientation(const bool First) const
 {
   if (First)
+  {
     return orcurv1;
+  }
   else
+  {
     return orcurv2;
+  }
 }
 
 //=================================================================================================
@@ -162,9 +190,13 @@ TopAbs_Orientation ChFiDS_Stripe::Orientation(const bool First) const
 void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const bool First)
 {
   if (First)
+  {
     orcurv1 = Or;
+  }
   else
+  {
     orcurv2 = Or;
+  }
 }
 
 //=================================================================================================
@@ -174,16 +206,24 @@ int ChFiDS_Stripe::IndexPoint(const bool First, const int OnS) const
   if (First)
   {
     if (OnS == 1)
+    {
       return indexfirstPOnS1;
+    }
     else
+    {
       return indexfirstPOnS2;
+    }
   }
   else
   {
     if (OnS == 1)
+    {
       return indexlastPOnS1;
+    }
     else
+    {
       return indexlastPOnS2;
+    }
   }
 }
 
@@ -194,16 +234,24 @@ void ChFiDS_Stripe::SetIndexPoint(const int Index, const bool First, const int O
   if (First)
   {
     if (OnS == 1)
+    {
       indexfirstPOnS1 = Index;
+    }
     else
+    {
       indexfirstPOnS2 = Index;
+    }
   }
   else
   {
     if (OnS == 1)
+    {
       indexlastPOnS1 = Index;
+    }
     else
+    {
       indexlastPOnS2 = Index;
+    }
   }
 }
 
@@ -237,7 +285,11 @@ void ChFiDS_Stripe::InDS(const bool First,
 int ChFiDS_Stripe::IsInDS(const bool First) const
 {
   if (First)
+  {
     return begfilled;
+  }
   else
+  {
     return endfilled;
+  }
 }

@@ -57,7 +57,9 @@ void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_Soli
       // st = PR.ReadEntity(IR,PR.Current(), "Solid assembly items", anent); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadEntity(IR, PR.Current(), "Solid assembly items", anent))
+      {
         tempItems->SetValue(i, anent);
+      }
     }
 
     occ::handle<IGESGeom_TransformationMatrix> amatr;
@@ -72,11 +74,15 @@ void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_Soli
                         STANDARD_TYPE(IGESGeom_TransformationMatrix),
                         amatr,
                         true))
+      {
         tempMatrices->SetValue(i, amatr);
+      }
     }
   }
   else
+  {
     PR.AddFail("Number of Items : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempItems, tempMatrices);
@@ -90,9 +96,13 @@ void IGESSolid_ToolSolidAssembly::WriteOwnParams(const occ::handle<IGESSolid_Sol
 
   IW.Send(nbitems);
   for (i = 1; i <= nbitems; i++)
+  {
     IW.Send(ent->Item(i));
+  }
   for (i = 1; i <= nbitems; i++)
+  {
     IW.Send(ent->TransfMatrix(i));
+  }
 }
 
 void IGESSolid_ToolSolidAssembly::OwnShared(const occ::handle<IGESSolid_SolidAssembly>& ent,
@@ -101,9 +111,13 @@ void IGESSolid_ToolSolidAssembly::OwnShared(const occ::handle<IGESSolid_SolidAss
   int nbitems = ent->NbItems();
   int i;
   for (i = 1; i <= nbitems; i++)
+  {
     iter.GetOneItem(ent->Item(i));
+  }
   for (i = 1; i <= nbitems; i++)
+  {
     iter.GetOneItem(ent->TransfMatrix(i));
+  }
 }
 
 void IGESSolid_ToolSolidAssembly::OwnCopy(const occ::handle<IGESSolid_SolidAssembly>& another,
@@ -167,5 +181,5 @@ void IGESSolid_ToolSolidAssembly::OwnDump(const occ::handle<IGESSolid_SolidAssem
   S << "\n"
     << "Matrices : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbItems(), ent->TransfMatrix);
-  S << std::endl;
+  S << '\n';
 }

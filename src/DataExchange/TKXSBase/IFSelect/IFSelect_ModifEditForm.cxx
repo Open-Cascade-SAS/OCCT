@@ -42,9 +42,13 @@ void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                     
   {
     bool done = theedit->ApplyData(ctx.ValueResult(), target);
     if (done)
+    {
       ctx.Trace();
+    }
     else
+    {
       ctx.AddWarning(ctx.ValueResult(), "EditForm could not be applied");
+    }
   }
 }
 

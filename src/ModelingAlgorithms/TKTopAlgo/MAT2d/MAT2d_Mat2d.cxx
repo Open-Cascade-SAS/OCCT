@@ -264,7 +264,9 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:28 2000 Begin
     if (theedgelist->Number() < 3)
+    {
       break;
+    }
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:37 2000 End
 
     //---------------------------------------------------
@@ -283,15 +285,21 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
       //--------------------------------------------------------------
 
       if (NbIterBis <= EvenNbIterBis + 1)
+      {
         EdgeNumbers(NbIterBis) = theedgelist->Number();
+      }
       else
       {
         for (k = 1; k <= EvenNbIterBis; k++)
+        {
           EdgeNumbers(k) = EdgeNumbers(k + 1);
+        }
         EdgeNumbers(EvenNbIterBis + 1) = theedgelist->Number();
       }
       if (EdgeNumbers(EvenNbIterBis + 1) == EdgeNumbers(1))
+      {
         ToNullifyNoofbisectorstoremove = true;
+      }
 
       for (i = 1; i < theedgelist->Number() - 1; i++)
       {
@@ -307,7 +315,9 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
           {
             if (firstbisector->IndexNumber() >= beginbisector
                 || secondbisector->IndexNumber() >= beginbisector)
+            {
               Intersect(atool, 0, noofbisectorstoremove, firstbisector, secondbisector);
+            }
           }
           else
           {
@@ -329,9 +339,13 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
       //-------------------------------
 
       if (ToNullifyNoofbisectorstoremove)
+      {
         noofbisectorstoremove = 0;
+      }
       if (noofbisectorstoremove == 0)
+      {
         break;
+      }
 
       //---------------------------------------------------
       // Annulation des bissectrices a effacer. (etape 2.4)
@@ -417,16 +431,22 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
           //-----------------------------------------------------------
 
           if (bisectortoremove->BisectorNumber() == bisectortwotoremove(i)->BisectorNumber())
+          {
             break;
+          }
 
           //-----------------------
           // Descente dans l arbre.
           //-----------------------
 
           if (typeofbisectortoremove(i) == 1)
+          {
             bisectortoremove = bisectortoremove->FirstBisector();
+          }
           else
+          {
             bisectortoremove = bisectortoremove->LastBisector();
+          }
 
         } //----------------------------------------------------
           // Fin boucle d annulation des bissectrices issue de
@@ -618,12 +638,16 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
     shift         = 0;
     all           = 0;
     if (narea == 1 && noofarea(0) == theedgelist->Number())
+    {
       all = 1;
+    }
 
     for (i = 0; i < narea; i++)
     {
       if (i == 1)
+      {
         shift = shift - compact;
+      }
       theedgelist->First();
       theedgelist->Next();
       edgetoremove = theedgelist->Brackets(firstarea(i) - shift);
@@ -729,7 +753,9 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   //----------------------------------------------
 
   if (interrupt)
+  {
     semiInfinite = true;
+  }
   else
   {
     semiInfinite = false;
@@ -754,11 +780,15 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
         if (atool.TrimBisector(edge->SecondBisector(), edge->FirstBisector()->IssuePoint()))
         {
           if (edge->SecondBisector()->EndPoint() == 0)
+          {
             edge->SecondBisector()->EndPoint(edge->FirstBisector()->IssuePoint());
+          }
           bisectormap(noofbisectors - 1)->AddBisector(edge->SecondBisector());
         }
         else
+        {
           semiInfinite = true;
+        }
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       else
@@ -767,11 +797,15 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
         if (atool.TrimBisector(edge->FirstBisector(), edge->SecondBisector()->IssuePoint()))
         {
           if (edge->FirstBisector()->EndPoint() == 0)
+          {
             edge->FirstBisector()->EndPoint(edge->SecondBisector()->IssuePoint());
+          }
           bisectormap(noofbisectors - 1)->AddBisector(edge->FirstBisector());
         }
         else
+        {
           semiInfinite = true;
+        }
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       if (!semiInfinite)
@@ -1002,7 +1036,9 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:28 2000 Begin
     if (theedgelist->Number() < 3)
+    {
       break;
+    }
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:37 2000 End
 
     //---------------------------------------------------
@@ -1020,15 +1056,21 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       //--------------------------------------------------------------
 
       if (NbIterBis <= EvenNbIterBis + 1)
+      {
         EdgeNumbers(NbIterBis) = theedgelist->Number();
+      }
       else
       {
         for (k = 1; k <= EvenNbIterBis; k++)
+        {
           EdgeNumbers(k) = EdgeNumbers(k + 1);
+        }
         EdgeNumbers(EvenNbIterBis + 1) = theedgelist->Number();
       }
       if (EdgeNumbers(EvenNbIterBis + 1) == EdgeNumbers(1))
+      {
         ToNullifyNoofbisectorstoremove = true;
+      }
 
       for (i = 0; i < theedgelist->Number(); i++)
       {
@@ -1044,7 +1086,9 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
           {
             if (firstbisector->IndexNumber() >= beginbisector
                 || secondbisector->IndexNumber() >= beginbisector)
+            {
               Intersect(atool, 0, noofbisectorstoremove, firstbisector, secondbisector);
+            }
           }
           else
           {
@@ -1066,9 +1110,13 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       //-------------------------------
 
       if (ToNullifyNoofbisectorstoremove)
+      {
         noofbisectorstoremove = 0;
+      }
       if (noofbisectorstoremove == 0)
+      {
         break;
+      }
 
       //---------------------------------------------------
       // Annulation des bissectrices a effacer. (etape 2.4)
@@ -1154,16 +1202,22 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
           //-----------------------------------------------------------
 
           if (bisectortoremove->BisectorNumber() == bisectortwotoremove(i)->BisectorNumber())
+          {
             break;
+          }
 
           //-----------------------
           // Descente dans l arbre.
           //-----------------------
 
           if (typeofbisectortoremove(i) == 1)
+          {
             bisectortoremove = bisectortoremove->FirstBisector();
+          }
           else
+          {
             bisectortoremove = bisectortoremove->LastBisector();
+          }
 
         } //----------------------------------------------------
         // Fin boucle d annulation des bissectrices issue de
@@ -1361,12 +1415,16 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
     shift         = 0;
     all           = 0;
     if (narea == 1 && noofarea(0) == theedgelist->Number())
+    {
       all = 1;
+    }
 
     for (i = 0; i < narea; i++)
     {
       if (i == 1)
+      {
         shift = shift - compact;
+      }
       theedgelist->First();
       edgetoremove = theedgelist->Brackets(firstarea(i) - shift);
 
@@ -1471,7 +1529,9 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   //----------------------------------------------
 
   if (interrupt)
+  {
     semiInfinite = true;
+  }
   else
   {
     semiInfinite = false;
@@ -1496,11 +1556,15 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
         if (atool.TrimBisector(edge->SecondBisector(), edge->FirstBisector()->IssuePoint()))
         {
           if (edge->SecondBisector()->EndPoint() == 0)
+          {
             edge->SecondBisector()->EndPoint(edge->FirstBisector()->IssuePoint());
+          }
           bisectormap(noofbisectors - 1)->AddBisector(edge->SecondBisector());
         }
         else
+        {
           semiInfinite = true;
+        }
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       else
@@ -1509,11 +1573,15 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
         if (atool.TrimBisector(edge->FirstBisector(), edge->SecondBisector()->IssuePoint()))
         {
           if (edge->FirstBisector()->EndPoint() == 0)
+          {
             edge->FirstBisector()->EndPoint(edge->SecondBisector()->IssuePoint());
+          }
           bisectormap(noofbisectors - 1)->AddBisector(edge->FirstBisector());
         }
         else
+        {
           semiInfinite = true;
+        }
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       if (!semiInfinite)
@@ -1581,11 +1649,17 @@ void MAT2d_Mat2d::LoadBisectorsToRemove(int&                             noofbis
   lastbisectortoremove[1]  = lastbisectortoremove2;
 
   if (distance1 < Precision::Infinite() && distance2 == Precision::Infinite())
+  {
     index = 0;
+  }
   else if (distance2 < Precision::Infinite() && distance1 == Precision::Infinite())
+  {
     index = 1;
+  }
   else
+  {
     index = -1;
+  }
 
   if (index != -1)
   {
@@ -1598,7 +1672,9 @@ void MAT2d_Mat2d::LoadBisectorsToRemove(int&                             noofbis
         found = j;
         if (bisectortwotoremove(j)->BisectorNumber()
             < lastbisectortoremove[index]->BisectorNumber())
+        {
           found = -1;
+        }
         break;
       }
     }
@@ -1615,7 +1691,9 @@ void MAT2d_Mat2d::LoadBisectorsToRemove(int&                             noofbis
       typeofbisectortoremove.Bind(found, index + 1);
 
       if (found == noofbisectorstoremove)
+      {
         noofbisectorstoremove++;
+      }
     }
   }
 }
@@ -1657,9 +1735,13 @@ void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&                    atool,
     if (aside == 0)
     {
       if (bisectornumber == 0)
+      {
         firstbisectortoremove[bisectornumber] = secondbisector;
+      }
       else
+      {
         firstbisectortoremove[bisectornumber] = firstbisector;
+      }
     }
     else if (aside == 1)
     {
@@ -1679,12 +1761,18 @@ void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&                    atool,
     else
     {
       if (firstbisectortoremove[bisectornumber]->List()->IsEmpty())
+      {
         continue;
+      }
 
       if (bisectornumber == 0)
+      {
         previousbisector = firstbisectortoremove[bisectornumber]->FirstBisector();
+      }
       else
+      {
         previousbisector = firstbisectortoremove[bisectornumber]->LastBisector();
+      }
     }
 
     distant = distance[bisectornumber];
@@ -1692,9 +1780,13 @@ void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&                    atool,
     {
 
       if (bisectornumber == 0)
+      {
         previousbisector = previousbisector->FirstBisector();
+      }
       else
+      {
         previousbisector = previousbisector->LastBisector();
+      }
 
       if (aside == 1 || (aside == 0 && bisectornumber == 0))
       {

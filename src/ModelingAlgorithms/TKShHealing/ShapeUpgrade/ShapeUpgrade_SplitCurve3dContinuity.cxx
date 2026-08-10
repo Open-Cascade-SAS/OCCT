@@ -81,9 +81,13 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
   double           Last      = mySplitValues->Value(mySplitValues->Length());
   constexpr double precision = Precision::PConfusion();
   if (myCurve->Continuity() < myCriterion)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (myCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve>      tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
@@ -165,9 +169,13 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
     {
       double valknot = MyBSpline->Knot(iknot);
       if (valknot <= First + precision)
+      {
         continue;
+      }
       if (valknot > Last - precision)
+      {
         break;
+      }
       int Continuity = Deg - MyBSpline->Multiplicity(iknot);
       if (Continuity < myCont)
       {
@@ -175,7 +183,9 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
         bool corrected       = false;
         int  newMultiplicity = Deg - myCont;
         if (newMultiplicity < 0)
+        {
           newMultiplicity = 0;
+        }
         {
           try
           {
@@ -220,7 +230,9 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
   }
 
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
 }
 
 //=================================================================================================

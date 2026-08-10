@@ -252,6 +252,20 @@ int IVtkOCC_ShapePickerAlgo::NbPicked()
 
 //=================================================================================================
 
+void IVtkOCC_ShapePickerAlgo::SetPixelTolerance(const int theTolerance)
+{
+  myViewerSelector->SetPixelTolerance(theTolerance);
+}
+
+//=================================================================================================
+
+int IVtkOCC_ShapePickerAlgo::PixelTolerance() const
+{
+  return myViewerSelector->PixelTolerance();
+}
+
+//=================================================================================================
+
 bool IVtkOCC_ShapePickerAlgo::processPicked()
 {
   int aNbPicked = myViewerSelector->NbPicked();

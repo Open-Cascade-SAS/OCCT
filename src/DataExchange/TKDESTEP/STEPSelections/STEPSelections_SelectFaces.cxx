@@ -37,10 +37,14 @@ bool STEPSelections_SelectFaces::Explore(const int /*level*/,
                                          Interface_EntityIterator&              explored) const
 {
   if (start.IsNull())
+  {
     return false;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceSurface)))
+  {
     return true;
+  }
 
   bool isInFaceOfInSurface = false;
   if (start->IsKind(STANDARD_TYPE(StepGeom_Surface)))
@@ -49,11 +53,17 @@ bool STEPSelections_SelectFaces::Explore(const int /*level*/,
     for (subs.Start(); subs.More(); subs.Next())
     {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
+      {
         return true;
+      }
       if (subs.Value()->IsKind(STANDARD_TYPE(StepGeom_Surface)))
+      {
         isInFaceOfInSurface = true;
+      }
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_FaceSurface)))
+      {
         isInFaceOfInSurface = true;
+      }
     }
     return !isInFaceOfInSurface;
   }
@@ -61,7 +71,9 @@ bool STEPSelections_SelectFaces::Explore(const int /*level*/,
   subs.Start();
   bool isSome = subs.More();
   for (; subs.More(); subs.Next())
+  {
     explored.AddItem(subs.Value());
+  }
 
   return isSome;
 }

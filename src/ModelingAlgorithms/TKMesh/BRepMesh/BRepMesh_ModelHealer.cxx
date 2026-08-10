@@ -186,8 +186,8 @@ void BRepMesh_ModelHealer::amplifyEdges()
     OSD_Parallel::ForEach(aEdgesToUpdate.cbegin(),
                           aEdgesToUpdate.cend(),
                           anEdgeAmplifier,
-                          !myParameters.InParallel || aEdgesToUpdate.Size() <= 1,
-                          aEdgesToUpdate.Size());
+                          !myParameters.InParallel || aEdgesToUpdate.Length() <= 1,
+                          aEdgesToUpdate.Length());
 
     IMeshData::MapOfIFacePtr           aFacesToCheck(1, aTmpAlloc);
     IMeshData::MapOfIEdgePtr::Iterator aEdgeIt(aEdgesToUpdate);
@@ -203,8 +203,8 @@ void BRepMesh_ModelHealer::amplifyEdges()
     OSD_Parallel::ForEach(aFacesToCheck.cbegin(),
                           aFacesToCheck.cend(),
                           *this,
-                          !myParameters.InParallel || aFacesToCheck.Size() <= 1,
-                          aFacesToCheck.Size());
+                          !myParameters.InParallel || aFacesToCheck.Length() <= 1,
+                          aFacesToCheck.Length());
 
     aEdgesToUpdate.Clear();
     aTmpAlloc->Reset(false);
@@ -387,7 +387,9 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   // This shape is invalid and can lead to exception in this code.
 
   if (aVertex1_1.IsNull() || aVertex1_2.IsNull())
+  {
     return TopoDS_Vertex();
+  }
 
   if (theEdge1->GetEdge().IsSame(theEdge2->GetEdge()))
   {
@@ -398,7 +400,9 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   TopExp::Vertices(theEdge2->GetEdge(), aVertex2_1, aVertex2_2);
 
   if (aVertex2_1.IsNull() || aVertex2_2.IsNull())
+  {
     return TopoDS_Vertex();
+  }
 
   if (isSameWithSomeOf(aVertex1_1, aVertex2_1, aVertex2_2))
   {

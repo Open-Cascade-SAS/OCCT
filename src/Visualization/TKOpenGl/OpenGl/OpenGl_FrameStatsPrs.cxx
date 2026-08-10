@@ -137,7 +137,7 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
   const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
   const Graphic3d_RenderingParams&      aRendParams = theWorkspace->View()->RenderingParams();
 
-  const int aNbBins = aStats->DataFrames().Size();
+  const int aNbBins = aStats->DataFrames().Length();
   if (aNbBins <= 1)
   {
     myChartIndices->Release(aCtx.get());

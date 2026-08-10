@@ -98,7 +98,9 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
         {
           mapV.Add(vtx);
           if (vtx.IsSame(Vb))
+          {
             continue;
+          }
           lsubs.Clear();
           TopoDS_Vertex vsub = TopoDS::Vertex(vtx.Oriented(TopAbs_FORWARD));
           gp_Pnt        p1 = BRep_Tool::Pnt(vsub), p2 = BRep_Tool::Pnt(Vb);
@@ -160,7 +162,9 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
         {
           // on devrait verifier que le vtx n`existe pas deja sur l`edge
           if (!myMap.IsBound(Ed))
+          {
             continue;
+          }
           Ed = TopoDS::Edge(myMap(Ed).First());
           theCFace.Add(vtx, prm, Ed);
         }
@@ -176,11 +180,15 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
     {
       TopoDS_Face fac = PW->OnFace();
       if (!myMap.IsBound(fac))
+      {
         continue;
+      }
       bool IsFaceWithSec = PW->IsFaceWithSection(fac);
       fac                = TopoDS::Face(myMap(fac).First());
       if (IsFaceWithSec)
+      {
         theFacesWithSection.Add(fac);
+      }
       if (!mapFE.Contains(fac))
       {
         NCollection_List<TopoDS_Shape> thelist;
@@ -202,10 +210,16 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
     RebuildWires(ledges, PW);
     //  Modified by skv - Mon May 31 12:32:54 2004 OCC5865 End
     if (theFacesWithSection.Contains(fac))
+    {
       theCFace.Add(ledges, fac);
+    }
     else
+    {
       for (itl.Initialize(ledges); itl.More(); itl.Next())
+      {
         theCFace.Add(TopoDS::Wire(itl.Value()), fac);
+      }
+    }
   }
 
   // Mise a jour des descendants
@@ -374,14 +388,18 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(Emap(i));
     if (BRep_Tool::Degenerated(anEdge))
+    {
       DegEdges.Append(anEdge);
+    }
   }
 
   NCollection_Sequence<TopoDS_Shape> DegWires;
   for (;;)
   {
     if (DegEdges.IsEmpty())
+    {
       break;
+    }
     TopoDS_Wire aDegWire;
     BB.MakeWire(aDegWire);
     BB.Add(aDegWire, DegEdges(1));
@@ -405,7 +423,9 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
         }
       }
       if (!found)
+      {
         break;
+      }
     }
     DegWires.Append(aDegWire);
   }
@@ -419,12 +439,16 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
     for (j = 2; j <= Vmap.Extent(); j++)
     {
       if (!Vmap(j).IsSame(Vmap(1)))
+      {
         theSubs.Substitute(Vmap(j), LV);
+      }
     }
   }
   theSubs.Build(myRes);
   if (theSubs.IsCopied(myRes))
+  {
     myRes = theSubs.Copy(myRes).First();
+  }
   ////
 
   myDLeft.Clear();
@@ -560,7 +584,9 @@ const NCollection_List<TopoDS_Shape>& LocOpe_Spliter::DescendantShapes(const Top
     throw StdFail_NotDone();
   }
   if (myMap.IsBound(F))
+  {
     return myMap(F);
+  }
   else
   {
     static NCollection_List<TopoDS_Shape> empty;

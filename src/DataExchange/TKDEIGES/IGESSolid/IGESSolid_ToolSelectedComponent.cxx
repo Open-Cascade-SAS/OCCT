@@ -121,5 +121,5 @@ void IGESSolid_ToolSelectedComponent::OwnDump(const occ::handle<IGESSolid_Select
   dumper.Dump(ent->Component(), S, (level <= 4) ? 0 : 1);
   S << "Selected Point       : ";
   IGESData_DumpXYZL(S, level, ent->SelectPoint(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

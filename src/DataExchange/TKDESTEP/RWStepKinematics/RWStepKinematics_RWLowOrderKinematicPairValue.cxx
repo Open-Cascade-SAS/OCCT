@@ -39,7 +39,9 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theArch, "low_order_kinematic_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

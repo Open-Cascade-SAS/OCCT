@@ -86,10 +86,14 @@ void HLRBRep_Hider::Hide(
   // *****************************************************************
 
   myDS->InitEdge(FI, MST);
-  if (!myDS->MoreEdge()) // there is nothing to do
-    return;              // **********************
+  if (!myDS->MoreEdge())
+  {         // there is nothing to do
+    return; // **********************
+  }
   if (myDS->IsBadFace())
+  {
     return;
+  }
   HLRBRep_EdgeInterferenceTool          EIT(myDS); // List of Intersections
   NCollection_Array1<HLRBRep_EdgeData>& myEData = myDS->EDataArray();
 
@@ -187,7 +191,9 @@ void HLRBRep_Hider::Hide(
                         }
                       }
                       if (Int1.Intersection().Index() == 0 && Int2.Intersection().Index() == 0)
+                      {
                         nind = 0;
+                      }
 
                       if (nind != -1)
                       {
@@ -380,8 +386,10 @@ void HLRBRep_Hider::Hide(
       {
         HLRBRep_EdgeData& ed = myEData(E);
         TopAbs_State      st = myDS->Compare(E, ed); // Classification
-        if (st == TopAbs_IN || st == TopAbs_ON)      // **************
+        if (st == TopAbs_IN || st == TopAbs_ON)
+        { // **************
           ed.Status().HideAll();
+        }
       }
       else
       {
@@ -399,8 +407,10 @@ void HLRBRep_Hider::Hide(
           HLRBRep_EdgeIList::ProcessComplex // complex transition on ILHidden
             (ILHidden, EIT);                // ******************************
           int level = 0;
-          if (!myDS->SimpleHidingFace())                     // Level at Start
+          if (!myDS->SimpleHidingFace())
+          {                                                  // Level at Start
             level = myDS->HidingStartLevel(E, ed, ILHidden); // **************
+          }
 
           NCollection_List<HLRAlgo_Interference>::Iterator It(ILHidden);
           if (myDS->SimpleHidingFace()) // remove excess interferences
@@ -438,6 +448,7 @@ void HLRBRep_Hider::Hide(
               double aParam = It.Value().Intersection().Parameter();
               bool   found  = false;
               for (int i = 1; i <= ToRemove.Length(); i++)
+              {
                 if (aParam == ToRemove(i))
                 {
                   found = true;
@@ -445,8 +456,11 @@ void HLRBRep_Hider::Hide(
                   ToRemove.Remove(i);
                   break;
                 }
+              }
               if (!found)
+              {
                 It.Next();
+              }
             }
           } // remove excess interferences
 
@@ -462,18 +476,26 @@ void HLRBRep_Hider::Hide(
               case TopAbs_FORWARD: {
                 int decal = Int.Intersection().Level();
                 if (level > 0)
+                {
                   ILHidden.Remove(It);
+                }
                 else
+                {
                   It.Next();
+                }
                 level = level + decal;
               }
               break;
               case TopAbs_REVERSED: {
                 level = level - Int.Intersection().Level();
                 if (level > 0)
+                {
                   ILHidden.Remove(It);
+                }
                 else
+                {
                   It.Next();
+                }
               }
               break;
               case TopAbs_EXTERNAL:
@@ -487,10 +509,14 @@ void HLRBRep_Hider::Hide(
                 break;
             }
           }
-          if (ILHidden.IsEmpty()) // Edge hidden
-            ES.HideAll();         // ***********
+          if (ILHidden.IsEmpty())
+          {               // Edge hidden
+            ES.HideAll(); // ***********
+          }
           else
+          {
             foundHidden = true;
+          }
         }
 
         if (!ILHidden.IsEmpty())
@@ -520,9 +546,13 @@ void HLRBRep_Hider::Hide(
               allRev   = allRev && (It.Value().Transition() == TopAbs_REVERSED);
               allInt   = allInt && (It.Value().Transition() == TopAbs_INTERNAL);
               if (p < pmin)
+              {
                 pmin = p;
+              }
               if (p > pmax)
+              {
                 pmax = p;
+              }
             }
           }
 
@@ -568,9 +598,13 @@ void HLRBRep_Hider::Hide(
             if (allInt)
             {
               if (p1 < pmin)
+              {
                 p1 = pmin;
+              }
               if (p2 > pmax)
+              {
                 p2 = pmax;
+              }
               // HLRBRep_EdgeData& ed = myEData(E);
               // TopAbs_State st = myDS->Compare(E,ed);              // Classification
             }
@@ -641,12 +675,14 @@ void HLRBRep_Hider::Hide(
             }
 
             if (aTestState != TopAbs_OUT)
+            {
               ES.Hide(p1,
                       tol1,
                       p2,
                       tol2,
                       false, // under the Face
                       true); // on the boundary
+            }
 
             EB.NextEdge();
           }
@@ -655,8 +691,10 @@ void HLRBRep_Hider::Hide(
         if (!ILOn.IsEmpty())
         {
           int level = 0;
-          if (!myDS->SimpleHidingFace())                 // Level at Start
+          if (!myDS->SimpleHidingFace())
+          {                                              // Level at Start
             level = myDS->HidingStartLevel(E, ed, ILOn); // **************
+          }
           if (level > 0)
           {
             NCollection_List<HLRAlgo_Interference>::Iterator It(ILOn);
@@ -672,18 +710,26 @@ void HLRBRep_Hider::Hide(
                 case TopAbs_FORWARD: {
                   int decal = Int.Intersection().Level();
                   if (level > 0)
+                  {
                     ILOn.Remove(It);
+                  }
                   else
+                  {
                     It.Next();
+                  }
                   level = level + decal;
                 }
                 break;
                 case TopAbs_REVERSED:
                   level = level - Int.Intersection().Level();
                   if (level > 0)
+                  {
                     ILOn.Remove(It);
+                  }
                   else
+                  {
                     It.Next();
+                  }
                   break;
                 case TopAbs_EXTERNAL:
                 case TopAbs_INTERNAL:
@@ -692,8 +738,10 @@ void HLRBRep_Hider::Hide(
                   break;
               }
             }
-            if (ILOn.IsEmpty() && !foundHidden) // Edge hidden
-              ES.HideAll();                     // ***********
+            if (ILOn.IsEmpty() && !foundHidden)
+            {               // Edge hidden
+              ES.HideAll(); // ***********
+            }
           }
         }
 

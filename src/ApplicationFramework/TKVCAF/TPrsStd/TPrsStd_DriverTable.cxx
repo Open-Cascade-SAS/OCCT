@@ -63,7 +63,9 @@ TPrsStd_DriverTable::TPrsStd_DriverTable()
 void TPrsStd_DriverTable::InitStandardDrivers()
 {
   if (myDrivers.Extent() > 0)
+  {
     return;
+  }
 
   occ::handle<TPrsStd_AxisDriver>       axisdrv   = new TPrsStd_AxisDriver;
   occ::handle<TPrsStd_ConstraintDriver> cnstrdrv  = new TPrsStd_ConstraintDriver;

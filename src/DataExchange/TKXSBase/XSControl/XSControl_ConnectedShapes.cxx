@@ -51,12 +51,18 @@ bool XSControl_ConnectedShapes::Explore(const int /*level*/,
 {
   occ::handle<Transfer_TransientProcess> TP;
   if (!theTR.IsNull())
+  {
     TP = theTR->TransientProcess();
+  }
   if (TP.IsNull())
+  {
     return false;
+  }
   TopoDS_Shape Shape = TransferBRep::ShapeResult(TP, ent);
   if (Shape.IsNull())
+  {
     return false;
+  }
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li =
     AdjacentEntities(Shape, TP, TopAbs_FACE);
   explored.AddList(li);
@@ -90,9 +96,13 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Co
     occ::handle<Transfer_Binder> bnd = TP->MapItem(i);
     TopoDS_Shape                 sh  = TransferBRep::ShapeResult(bnd);
     if (sh.IsNull())
+    {
       continue;
+    }
     if (sh.ShapeType() != type)
+    {
       continue;
+    }
     for (TopExp_Explorer vsh(sh, TopAbs_VERTEX); vsh.More(); vsh.Next())
     {
       const TopoDS_Shape& avtx = vsh.Current();

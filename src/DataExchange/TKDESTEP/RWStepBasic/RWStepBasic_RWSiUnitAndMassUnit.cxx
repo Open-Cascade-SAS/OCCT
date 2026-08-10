@@ -39,15 +39,21 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(
 
   // --- Instance of plex component LengthUnit ---
   if (!data->CheckNbParams(num, 0, ach, "mass_unit"))
+  {
     return;
+  }
 
   if (!sorted)
+  {
     num = 0; // pdn unsorted case
+  }
   sorted &= data->NamedForComplex("NAMED_UNIT", "NMDUNT", num0, num, ach);
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- field : dimensions ---
   // --- this field is redefined ---
@@ -55,12 +61,16 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(
   data->CheckDerived(num, 1, "dimensions", ach, false);
 
   if (!sorted)
+  {
     num = 0; // pdn unsorted case
+  }
   data->NamedForComplex("SI_UNIT", "SUNT", num0, num, ach);
 
   // --- Instance of plex component SiUnit ---
   if (!data->CheckNbParams(num, 2, ach, "si_unit"))
+  {
     return;
+  }
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
@@ -126,9 +136,13 @@ void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(
   // --- field : prefix ---
   bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
+  {
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // --- field : name ---
   SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));

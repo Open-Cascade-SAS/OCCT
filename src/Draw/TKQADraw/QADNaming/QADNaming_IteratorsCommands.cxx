@@ -57,7 +57,9 @@ static int GetNewShapes(Draw_Interpretor& di, int nb, const char** arg)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
+    {
       return 1;
+    }
     occ::handle<TNaming_NamedShape> aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
@@ -71,7 +73,9 @@ static int GetNewShapes(Draw_Interpretor& di, int nb, const char** arg)
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
       if (anIter.NewShape().IsNull())
+      {
         a--;
+      }
       else if (nb == 4)
       {
         Sprintf(aName, "%s_%d", arg[3], a);
@@ -94,7 +98,9 @@ static int GetOldShapes(Draw_Interpretor& di, int nb, const char** arg)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
+    {
       return 1;
+    }
     occ::handle<TNaming_NamedShape> aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
@@ -108,7 +114,9 @@ static int GetOldShapes(Draw_Interpretor& di, int nb, const char** arg)
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
       if (anIter.OldShape().IsNull())
+      {
         a--;
+      }
       else if (nb == 4)
       {
         Sprintf(aName, "%s_%d", arg[3], a);
@@ -159,7 +167,9 @@ static int GetAllNewShapes(Draw_Interpretor& di, int nb, const char** arg)
     { // label
       TDF_Label aLabel;
       if (!QADNaming::Entry(arg, aLabel))
+      {
         return 1;
+      }
       occ::handle<TNaming_NamedShape> aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
@@ -211,11 +221,14 @@ static int GetAllOld(const TopoDS_Shape&            theShape,
   TCollection_AsciiString         aName;
   occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(theShape, theAccess);
   if (aNS.IsNull())
+  {
     return theIndex;
+  }
   TNaming_Iterator anIter(aNS);
   for (; anIter.More(); anIter.Next())
   {
     if (!anIter.OldShape().IsNull() && !anIter.NewShape().IsNull())
+    {
       if (anIter.NewShape().IsSame(theShape))
       {
         theIndex++;
@@ -226,6 +239,7 @@ static int GetAllOld(const TopoDS_Shape&            theShape,
         }
         theIndex = GetAllOld(anIter.OldShape(), theAccess, theName, theIndex);
       }
+    }
   }
   return theIndex;
 }
@@ -241,7 +255,9 @@ static int GetAllOldShapes(Draw_Interpretor& di, int nb, const char** arg)
     { // label
       TDF_Label aLabel;
       if (!QADNaming::Entry(arg, aLabel))
+      {
         return 1;
+      }
       occ::handle<TNaming_NamedShape> aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
@@ -306,9 +322,13 @@ static int GetSameShapes(Draw_Interpretor& di, int nb, const char** arg)
         TCollection_AsciiString Name;
         TDF_Tool::Entry(anIter.Label(), Name);
         if (aResult != 0)
+        {
           aRes = aRes + Name + " ";
+        }
         else
+        {
           aRes = Name;
+        }
         aResult++;
       }
     }
@@ -326,7 +346,9 @@ void QADNaming::IteratorsCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "Naming builder commands";

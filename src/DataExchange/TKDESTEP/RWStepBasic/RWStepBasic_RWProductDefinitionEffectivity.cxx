@@ -31,7 +31,9 @@ void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "product_definition_effectivity"))
+  {
     return;
+  }
 
   // --- inherited field : product_data_type ---
 

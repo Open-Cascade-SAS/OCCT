@@ -61,7 +61,9 @@ void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const int /*theV
 {
   int aVal = tool.Value(theText);
   if (aVal >= 0)
+  {
     SetInt(aVal);
+  }
 }
 
 //=================================================================================================

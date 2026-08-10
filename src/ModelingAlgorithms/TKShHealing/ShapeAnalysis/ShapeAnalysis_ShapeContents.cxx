@@ -124,9 +124,13 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     mapsh.Add(sol);
     int nbs = 0;
     for (TopExp_Explorer shel(sol, TopAbs_SHELL); shel.More(); shel.Next())
+    {
       nbs++;
+    }
     if (nbs > 1)
+    {
       myNbSolidsWithVoids++;
+    }
     myNbSolids++;
   }
   myNbSharedSolids = mapsh.Extent();
@@ -142,7 +146,9 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     she.Location(TopLoc_Location());
     mapsh.Add(she);
     for (TopExp_Explorer shel(she, TopAbs_FACE); shel.More(); shel.Next())
+    {
       nbfaceshell++;
+    }
   }
   myNbSharedShells = mapsh.Extent();
   //  On note pour les FACES pas mal de choses (surface, topologie)
@@ -184,7 +190,9 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
       {
         myNbBigSplines++;
         if (myBigSplineMode)
+        {
           myBigSplineSec->Append(face);
+        }
       }
     }
     occ::handle<Geom_ElementarySurface> els = occ::down_cast<Geom_ElementarySurface>(surf);
@@ -194,14 +202,18 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
       {
         myNbIndirectSurf++;
         if (myIndirectMode)
+        {
           myIndirectSec->Append(face);
+        }
       }
     }
     if (surf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
     {
       myNbOffsetSurf++;
       if (myOffsetSurfaceMode)
+      {
         myOffsetSurfaceSec->Append(face);
+      }
     }
     else if (surf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
     {
@@ -219,7 +231,9 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
         TopoDS_Edge edge = TopoDS::Edge(edg.Current());
         double      first, last;
         if (BRep_Tool::IsClosed(edge, face))
+        {
           nbseam++;
+        }
         occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, first, last);
         if (!c3d.IsNull())
         {
@@ -227,34 +241,50 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
           {
             myNbTrimmedCurve3d++;
             if (myTrimmed3dMode)
+            {
               myTrimmed3dSec->Append(face);
+            }
           }
         }
         occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(edge, face, first, last);
         if (c2d.IsNull())
+        {
           myNbNoPCurve++;
+        }
         else if (c2d->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
         {
           myNbOffsetCurves++;
           if (myOffsetCurveMode)
+          {
             myOffsetCurveSec->Append(face);
+          }
         }
         else if (c2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
         {
           myNbTrimmedCurve2d++;
           if (myTrimmed2dMode)
+          {
             myTrimmed2dSec->Append(face);
+          }
         }
       }
       if (nbseam > maxseam)
+      {
         maxseam = nbseam;
+      }
     }
     if (maxseam == 1)
+    {
       myNbWireWitnSeam++;
+    }
     else if (maxseam > 1)
+    {
       myNbWireWithSevSeams++;
+    }
     if (nbwires > 1)
+    {
       myNbFaceWithSevWires++;
+    }
   }
   myNbSharedFaces = mapsh.Extent();
 
@@ -285,10 +315,14 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     {
       myNbOffsetCurves++;
       if (myOffsetCurveMode)
+      {
         myOffsetCurveSec->Append(edge);
+      }
     }
     if (!c3d.IsNull() && !c3d->IsCN(1))
+    {
       myNbC0Curves++;
+    }
   }
   myNbSharedEdges = mapsh.Extent();
 

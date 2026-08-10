@@ -33,7 +33,9 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
   // --- Instance of plex component GeometricRepresentationContext ---
 
   if (!data->CheckNbParams(num, 1, ach, "geometric_representation_context"))
+  {
     return;
+  }
 
   // --- field : coordinateSpaceDimension ---
 
@@ -46,7 +48,9 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
   // --- Instance of plex component GlobalUnitAssignedContext ---
 
   if (!data->CheckNbParams(num, 1, ach, "global_unit_assigned_context"))
+  {
     return;
+  }
 
   // --- field : units ---
 
@@ -61,7 +65,9 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "unit", ach, STANDARD_TYPE(StepBasic_NamedUnit), anent2))
+      {
         aUnits->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -70,7 +76,9 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
   // --- Instance of common supertype RepresentationContext ---
 
   if (!data->CheckNbParams(num, 2, ach, "representation_context"))
+  {
     return;
+  }
   // --- field : contextIdentifier ---
 
   occ::handle<TCollection_HAsciiString> aContextIdentifier;

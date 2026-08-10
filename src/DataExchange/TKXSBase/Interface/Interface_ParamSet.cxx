@@ -53,7 +53,9 @@ int Interface_ParamSet::Append(const char* const         val,
     Interface_FileParameter& FP = thelist->ChangeValue(thenbpar);
     FP.Init(val, typ);
     if (nument != 0)
+    {
       FP.SetEntityNumber(nument);
+    }
   }
   else
   {
@@ -65,7 +67,9 @@ int Interface_ParamSet::Append(const char* const         val,
       int   newres = (int)(thelnres * 2 + lnval);
       char* newval = new char[newres];
       for (i = 0; i < thelnval; i++)
+      {
         newval[i] = theval[i]; // szv#4:S4163:12Mar99 `<= thelnres` was wrong
+      }
       //      and that's not all: must realign Params already recorded on
       //      the old character reservation ...
       // int delta = (int) (newval - theval);
@@ -83,7 +87,9 @@ int Interface_ParamSet::Append(const char* const         val,
         int onum = OFP.EntityNumber();
         OFP.Init(pnewVal + delta, otyp); // and there we go; we put back in the box
         if (onum != 0)
+        {
           OFP.SetEntityNumber(onum);
+        }
       }
       //      Confirm the new reservation
       char* anOldVal = theval;
@@ -93,13 +99,17 @@ int Interface_ParamSet::Append(const char* const         val,
     }
     //      Register this parameter
     for (i = 0; i < lnval; i++)
+    {
       theval[thelnval + i] = val[i];
+    }
     theval[thelnval + lnval] = '\0';
 
     Interface_FileParameter& FP = thelist->ChangeValue(thenbpar);
     FP.Init(&theval[thelnval], typ);
     if (nument != 0)
+    {
       FP.SetEntityNumber(nument);
+    }
     thelnval += (int)(lnval + 1);
   }
   return thenbpar;
@@ -127,45 +137,65 @@ int Interface_ParamSet::NbParams() const
 const Interface_FileParameter& Interface_ParamSet::Param(const int num) const
 {
   if (num > themxpar)
+  {
     return thenext->Param(num - themxpar);
+  }
   else
+  {
     return thelist->Value(num);
+  }
 }
 
 Interface_FileParameter& Interface_ParamSet::ChangeParam(const int num)
 {
   if (num > themxpar)
+  {
     return thenext->ChangeParam(num - themxpar);
+  }
   else
+  {
     return thelist->ChangeValue(num);
+  }
 }
 
 void Interface_ParamSet::SetParam(const int num, const Interface_FileParameter& FP)
 {
   if (num > themxpar)
+  {
     thenext->SetParam(num - themxpar, FP);
+  }
   else
+  {
     thelist->SetValue(num, FP);
+  }
 }
 
 occ::handle<Interface_ParamList> Interface_ParamSet::Params(const int num, const int nb) const
 {
   int i, n0 = num - 1, nbp = nb;
   if (num > themxpar)
+  {
     return thenext->Params(num - themxpar, nb);
+  }
   if (num == 0 && nb == 0)
   {
     n0  = 0;
     nbp = thenbpar;
     if (thenbpar <= themxpar)
+    {
       return thelist; // and there you go
+    }
   }
   occ::handle<Interface_ParamList> list = new Interface_ParamList;
   if (nb == 0)
+  {
     return list;
+  }
 
   for (i = 1; i <= nbp; i++)
+  {
     list->SetValue(i, Param(n0 + i));
+  }
   return list;
 }
 

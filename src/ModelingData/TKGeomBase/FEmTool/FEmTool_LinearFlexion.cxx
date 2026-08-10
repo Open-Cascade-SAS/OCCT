@@ -48,7 +48,9 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const int           WorkDegree,
   {
     // Calculating RefMatrix
     if (WorkDegree > WDeg)
+    {
       throw Standard_ConstructionError("Degree too high");
+    }
     Order                                = myOrder;
     int                         DerOrder = 2;
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
@@ -78,7 +80,9 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const int           WorkDegree,
 occ::handle<NCollection_HArray2<int>> FEmTool_LinearFlexion::DependenceTable() const
 {
   if (myCoeff.IsNull())
+  {
     throw Standard_DomainError("FEmTool_LinearFlexion::DependenceTable");
+  }
 
   occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
                                                                               myCoeff->UpperCol(),
@@ -87,7 +91,9 @@ occ::handle<NCollection_HArray2<int>> FEmTool_LinearFlexion::DependenceTable() c
                                                                               0);
   int                                   i;
   for (i = myCoeff->LowerCol(); i <= myCoeff->UpperCol(); i++)
+  {
     DepTab->SetValue(i, i, 1);
+  }
 
   return DepTab;
 }
@@ -113,13 +119,17 @@ double FEmTool_LinearFlexion::Value()
     k1    = (i <= myOrder) ? i : i - myOrder - 1;
     mfact = std::pow(coeff, k1);
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim) * mfact;
+    }
   }
 
   for (i = degH + 1; i <= deg; i++)
   {
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim);
+    }
   }
 
   for (dim = 1; dim <= NbDim; dim++)
@@ -128,13 +138,17 @@ double FEmTool_LinearFlexion::Value()
     {
       Jline = 0.5 * RefMatrix(i, i) * NewCoeff(dim, i);
       for (j = 0; j < i; j++)
+      {
         Jline += RefMatrix(i, j) * NewCoeff(dim, j);
+      }
       J += Jline * NewCoeff(dim, i);
     }
   }
 
   if (J < 0.)
+  {
     J = 0.;
+  }
   return cteh3 * J;
 }
 
@@ -147,10 +161,14 @@ void FEmTool_LinearFlexion::Hessian(const int Dimension1, const int Dimension2, 
 
   if (Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow()
       || Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearJerk::Hessian");
+  }
 
   if (DepTab->Value(Dimension1, Dimension2) == 0)
+  {
     throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
+  }
 
   int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
       degH = std::min(2 * myOrder + 1, deg);
@@ -170,7 +188,9 @@ void FEmTool_LinearFlexion::Hessian(const int Dimension1, const int Dimension2, 
       k2      = (j <= myOrder) ? j : j - myOrder - 1;
       H(i, j) = mfact * std::pow(coeff, k2) * RefMatrix(i, j);
       if (i != j)
+      {
         H(j, i) = H(i, j);
+      }
     }
     // Hermite*Jacobi part of matrix
     for (j = degH + 1; j <= deg; j++)
@@ -186,7 +206,9 @@ void FEmTool_LinearFlexion::Hessian(const int Dimension1, const int Dimension2, 
     {
       H(i, j) = cteh3 * RefMatrix(i, j);
       if (i != j)
+      {
         H(j, i) = H(i, j);
+      }
     }
   }
 }
@@ -196,7 +218,9 @@ void FEmTool_LinearFlexion::Hessian(const int Dimension1, const int Dimension2, 
 void FEmTool_LinearFlexion::Gradient(const int Dimension, math_Vector& G)
 {
   if (Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearFlexion::Gradient");
+  }
 
   int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
@@ -204,7 +228,9 @@ void FEmTool_LinearFlexion::Gradient(const int Dimension, math_Vector& G)
   math_Matrix H(0, deg, 0, deg);
   int         i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
+  {
     X(i) = myCoeff->Value(i1 + i, Dimension);
+  }
 
   Hessian(Dimension, Dimension, H);
 

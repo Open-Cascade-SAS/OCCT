@@ -172,26 +172,34 @@ double Bisector_BisecAna::Distance(const gp_Pnt2d&                  apoint,
       if ((afirstdir ^ secdirrev) * adirection < -0.1)
       { // input
         if ((afirstdir ^ tangdir) * adirection < aTol && (secdirrev ^ tangdir) * adirection < aTol)
+        {
           asense = false;
+        }
       }
       else if ((afirstdir ^ secdirrev) * adirection > 0.1)
       { // output
         if ((afirstdir ^ tangdir) * adirection < aTol || (secdirrev ^ tangdir) * adirection < aTol)
+        {
           asense = false;
+        }
       }
       else
       { // flat
         if (afirstdir.Dot(secdirrev) > 0.)
         { // tangent
           if ((afirstdir ^ tangdir) * adirection < 0.)
+          {
             asense = false;
+          }
         }
         else
         { // turn back
           //  Modified by Sergey KHROMOV - Thu Oct 31 14:16:53 2002
           // 	if ((afirstdir.Dot(tangdir))*adirection > 0.) asense = false;
           if (afirstdir.Dot(tangdir) < 0.)
+          {
             asense = false;
+          }
           //  Modified by Sergey KHROMOV - Thu Oct 31 14:16:54 2002
         }
       }
@@ -200,7 +208,9 @@ double Bisector_BisecAna::Distance(const gp_Pnt2d&                  apoint,
       {
         gp_Dir2d DirRef = VecRef;
         if (tangdir * DirRef < 0.)
+        {
           asense = false;
+        }
       }
       ///////////////////
       //  Modified by Sergey KHROMOV - Tue Oct 22 16:35:51 2002 End
@@ -260,14 +270,22 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   tan1.Reverse();
 
   if (type1 == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  {
     CurveF = occ::down_cast<Geom2d_TrimmedCurve>(afirstcurve)->BasisCurve();
+  }
   else
+  {
     CurveF = afirstcurve;
+  }
 
   if (type2 == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  {
     CurveE = occ::down_cast<Geom2d_TrimmedCurve>(asecondcurve)->BasisCurve();
+  }
   else
+  {
     CurveE = asecondcurve;
+  }
 
   type1         = CurveF->DynamicType();
   type2         = CurveE->DynamicType();
@@ -299,7 +317,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
     }
     else
     {
-      std::cout << "Not yet implemented" << std::endl;
+      std::cout << "Not yet implemented" << '\n';
     }
   }
   else if (type1 == STANDARD_TYPE(Geom2d_Line))
@@ -322,12 +340,12 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
     }
     else
     {
-      std::cout << "Not yet implemented" << std::endl;
+      std::cout << "Not yet implemented" << '\n';
     }
   }
   else
   {
-    std::cout << "Not yet implemented" << std::endl;
+    std::cout << "Not yet implemented" << '\n';
   }
 
   switch (cas)
@@ -383,9 +401,12 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         // 			       afirstvector,asecondvector,
         // 			       adirection,parameter,sense,ok);
         if (oncurve)
+        {
           distanceptsol =
             Distance(apoint, solution, tan2, tan1, LineBisVec, adirection, parameter, sense, ok);
+        }
         else
+        {
           distanceptsol = Distance(apoint,
                                    solution,
                                    afirstvector,
@@ -395,10 +416,13 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                    parameter,
                                    sense,
                                    ok);
+        }
         //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
         occ::handle<Geom2d_Curve> bisectorcurve = new Geom2d_Line(line);
         if (!sense)
+        {
           thebisector = new Geom2d_TrimmedCurve(bisectorcurve, parameter, -Precision::Infinite());
+        }
         else
         {
           double parameter2;
@@ -481,6 +505,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
             // 			       afirstvector,asecondvector,
             // 			       adirection,parameter,sense,ok);
             if (oncurve)
+            {
               distanceptsol = Distance(apoint,
                                        solution,
                                        tan2,
@@ -490,7 +515,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                        parameter,
                                        sense,
                                        ok);
+            }
             else
+            {
               distanceptsol = Distance(apoint,
                                        solution,
                                        afirstvector,
@@ -500,6 +527,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                        parameter,
                                        sense,
                                        ok);
+            }
             //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
             if (distanceptsol <= distancemini)
             {
@@ -521,7 +549,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
 
             double secondparameter = Precision::Infinite();
             if (!thesense)
+            {
               secondparameter = -Precision::Infinite();
+            }
 
             if (oncurve)
             {
@@ -568,16 +598,24 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                   if (!thesense)
                   {
                     if (MaxPar < firstparameter)
+                    {
                       secondparameter = MaxPar - 1.E-8;
+                    }
                     else if (MinPar < firstparameter)
+                    {
                       secondparameter = MinPar - 1.E-8;
+                    }
                   }
                   else
                   {
                     if (MinPar > firstparameter)
+                    {
                       secondparameter = MinPar + 1.E-8;
+                    }
                     else if (MaxPar > firstparameter)
+                    {
                       secondparameter = MaxPar + 1.E-8;
+                    }
                   }
                 }
               }
@@ -589,39 +627,51 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
           {
             bisectorcurve = new Geom2d_Circle(TheSol->Circle());
             if (!thesense)
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter - 2.0 * M_PI,
                                                     firstparameter,
                                                     thesense);
+            }
             else
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter,
                                                     firstparameter + 2.0 * M_PI,
                                                     thesense);
+            }
           }
           else if (type == GccInt_Hpr)
           {
             bisectorcurve = new Geom2d_Hyperbola(TheSol->Hyperbola());
             if (!thesense)
+            {
               thebisector =
                 new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, -Precision::Infinite());
+            }
             else
+            {
               thebisector =
                 new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, Precision::Infinite());
+            }
           }
           else if (type == GccInt_Ell)
           {
             bisectorcurve = new Geom2d_Ellipse(TheSol->Ellipse());
             if (!thesense)
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter - 2.0 * M_PI,
                                                     firstparameter,
                                                     thesense);
+            }
             else
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter,
                                                     firstparameter + 2.0 * M_PI,
                                                     thesense);
+            }
           }
         }
       }
@@ -670,6 +720,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
             // 			       afirstvector,asecondvector,
             // 			       adirection,parameter,sense,ok);
             if (oncurve)
+            {
               distanceptsol = Distance(apoint,
                                        solution,
                                        tan2,
@@ -679,7 +730,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                        parameter,
                                        sense,
                                        ok);
+            }
             else
+            {
               distanceptsol = Distance(apoint,
                                        solution,
                                        afirstvector,
@@ -689,6 +742,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                        parameter,
                                        sense,
                                        ok);
+            }
             //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
             if (distanceptsol <= distancemini)
             {
@@ -757,18 +811,20 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
             if (!thesense)
             {
               if (ajointype == GeomAbs_Intersection && TolPar < firstparameter
-                  && ChordLen
-                       >= circle1.Radius()) // first parameter is too far from peak of parabola
+                  && ChordLen >= circle1.Radius())
+              { // first parameter is too far from peak of parabola
                 secondparameter = 0.;
+              }
               thebisector =
                 new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, -secondparameter);
             }
             else
             {
               if (ajointype == GeomAbs_Intersection && firstparameter < -TolPar
-                  && ChordLen
-                       >= circle1.Radius()) // first parameter is too far from peak of parabola
+                  && ChordLen >= circle1.Radius())
+              { // first parameter is too far from peak of parabola
                 secondparameter = 0.;
+              }
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, secondparameter);
             }
           }
@@ -794,9 +850,13 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       {
         //  Modified by Sergey KHROMOV - Tue Sep 10 15:58:45 2002 End
         if (line1.Distance(line2.Location()) / 2. <= Precision::Confusion())
+        {
           line = gp_Lin2d(apoint, gp_Dir2d(-line1.Direction().Y(), line1.Direction().X()));
+        }
         else
+        {
           line = gp_Lin2d(apoint, line2.Direction());
+        }
 
         occ::handle<GccInt_Bisec> solution = new GccInt_BLine(line);
         //  Modified by skv - Wed Jul  7 17:21:09 2004 IDEM(Airbus) Begin
@@ -812,9 +872,12 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         // 			       afirstvector,asecondvector,
         // 			       adirection,parameter,sense,ok);
         if (oncurve)
+        {
           distanceptsol =
             Distance(apoint, solution, tan2, tan1, LineBisVec, adirection, parameter, sense, ok);
+        }
         else
+        {
           distanceptsol = Distance(apoint,
                                    solution,
                                    afirstvector,
@@ -824,17 +887,22 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                    parameter,
                                    sense,
                                    ok);
+        }
         //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
         // 	if (distanceptsol <= distancemini) {
         firstparameter = parameter;
         occ::handle<Geom2d_Curve> bisectorcurve;
         bisectorcurve = new Geom2d_Line(line);
         if (!sense)
+        {
           thebisector =
             new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, -Precision::Infinite());
+        }
         else
+        {
           thebisector =
             new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, Precision::Infinite());
+        }
         // 	}
         //       }
         //  Modified by skv - Wed Jul  7 17:21:09 2004 IDEM(Airbus) End
@@ -850,9 +918,12 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         // 			       afirstvector,asecondvector,
         // 			       adirection,parameter,sense,ok);
         if (oncurve)
+        {
           distanceptsol =
             Distance(apoint, solution, tan2, tan1, LineBisVec, adirection, parameter, sense, isOk);
+        }
         else
+        {
           distanceptsol = Distance(apoint,
                                    solution,
                                    afirstvector,
@@ -863,6 +934,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                    sense,
                                    isOk,
                                    true);
+        }
         //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
         if (isOk || !oncurve)
         {
@@ -873,9 +945,13 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         occ::handle<Geom2d_Curve> bisectorcurve;
         bisectorcurve = new Geom2d_Line(TheSol->Line());
         if (!thesense)
+        {
           thebisector = new Geom2d_TrimmedCurve(bisectorcurve, 0., -Precision::Infinite());
+        }
         else
+        {
           thebisector = new Geom2d_TrimmedCurve(bisectorcurve, 0., Precision::Infinite());
+        }
       }
     }
     break;
@@ -948,7 +1024,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   }
   else
   {
-    std::cout << "Not yet implemented" << std::endl;
+    std::cout << "Not yet implemented" << '\n';
   }
 
   switch (cas)
@@ -1035,39 +1111,51 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
           {
             bisectorcurve = new Geom2d_Circle(TheSol->Circle());
             if (!thesense)
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter - 2.0 * M_PI,
                                                     firstparameter,
                                                     thesense);
+            }
             else
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter,
                                                     firstparameter + 2.0 * M_PI,
                                                     thesense);
+            }
           }
           else if (aSolType == GccInt_Hpr)
           {
             bisectorcurve = new Geom2d_Hyperbola(TheSol->Hyperbola());
             if (!thesense)
+            {
               thebisector =
                 new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, -Precision::Infinite());
+            }
             else
+            {
               thebisector =
                 new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, Precision::Infinite());
+            }
           }
           else if (aSolType == GccInt_Ell)
           {
             bisectorcurve = new Geom2d_Ellipse(TheSol->Ellipse());
             if (!thesense)
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter - 2.0 * M_PI,
                                                     firstparameter,
                                                     thesense);
+            }
             else
+            {
               thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
                                                     firstparameter,
                                                     firstparameter + 2.0 * M_PI,
                                                     thesense);
+            }
           }
         }
       }
@@ -1116,15 +1204,19 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       }
 
       if (!thesense)
+      {
         thebisector =
           new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, -Precision::Infinite());
+      }
       else
+      {
         thebisector = new Geom2d_TrimmedCurve(bisectorcurve, firstparameter, Precision::Infinite());
+      }
     }
     break;
 
     default: {
-      std::cout << "Not yet implemented" << std::endl;
+      std::cout << "Not yet implemented" << '\n';
       break;
     }
   }
@@ -1201,9 +1293,13 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
   {
     occ::handle<Geom2d_Curve> bisectorcurve = new Geom2d_Line(line);
     if (!sense)
+    {
       thebisector = new Geom2d_TrimmedCurve(bisectorcurve, parameter, -Precision::Infinite());
+    }
     else
+    {
       thebisector = new Geom2d_TrimmedCurve(bisectorcurve, parameter, Precision::Infinite());
+    }
   }
 }
 
@@ -1608,7 +1704,9 @@ int Bisector_BisecAna::NbIntervals() const
 double Bisector_BisecAna::IntervalFirst(const int I) const
 {
   if (I != 1)
+  {
     throw Standard_OutOfRange();
+  }
   return FirstParameter();
 }
 
@@ -1617,7 +1715,9 @@ double Bisector_BisecAna::IntervalFirst(const int I) const
 double Bisector_BisecAna::IntervalLast(const int I) const
 {
   if (I != 1)
+  {
     throw Standard_OutOfRange();
+  }
   return LastParameter();
 }
 
@@ -1719,7 +1819,7 @@ static void Indent(const int Offset)
 void Bisector_BisecAna::Dump(const int, const int Offset) const
 {
   Indent(Offset);
-  std::cout << "Bisector_BisecAna" << std::endl;
+  std::cout << "Bisector_BisecAna" << '\n';
   Indent(Offset);
   //  thebisector->Dump();
 }

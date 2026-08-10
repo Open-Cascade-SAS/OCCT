@@ -113,10 +113,14 @@ void TopOpeBRepBuild_PaveSet::SortPave(
         L1.Append(PV);
       }
       else
+      {
         L2.Append(PV);
+      }
     }
     else
+    {
       L1.Append(PV);
+    }
   }
 
   SortedList.Clear();
@@ -200,7 +204,9 @@ void TopOpeBRepBuild_PaveSet::Prepare()
       {
         EdgeVertexIndex++; // skip edge vertices inserted at the head of the list
         if (EdgeVertexIndex <= EdgeVertexCount)
+        {
           continue;
+        }
 
         // PV = Parametrized vertex, VI = interference vertex
         const occ::handle<TopOpeBRepBuild_Pave>& PV     = it.Value();
@@ -208,13 +214,17 @@ void TopOpeBRepBuild_PaveSet::Prepare()
         bool                                     hasVSD = PV->HasSameDomain();
         TopoDS_Vertex                            VSD;
         if (hasVSD)
+        {
           VSD = TopoDS::Vertex(PV->SameDomain());
+        }
 
         TopAbs_Orientation VIori     = VI.Orientation();
         bool               visameve  = (VI.IsSame(VE));
         bool               vsdsameve = false;
         if (hasVSD)
+        {
           vsdsameve = (VSD.IsSame(VE));
+        }
         bool samevertexprocessing = (visameve || vsdsameve) && !isEd;
 
         if (samevertexprocessing)
@@ -242,7 +252,9 @@ void TopOpeBRepBuild_PaveSet::Prepare()
                   myVertices.Remove(it); // ofv
                   bool islook = FUN_islook(myEdge);
                   if ((VEbound && (vsdsameve || visameve)) && islook)
+                  {
                     add = true; // ofv
+                  }
                 }
                 break;
             }
@@ -304,7 +316,6 @@ void TopOpeBRepBuild_PaveSet::Prepare()
 #endif
 
   myPrepareDone = true;
-  return;
 }
 
 //=================================================================================================
@@ -312,7 +323,9 @@ void TopOpeBRepBuild_PaveSet::Prepare()
 void TopOpeBRepBuild_PaveSet::InitLoop()
 {
   if (!myPrepareDone)
+  {
     Prepare();
+  }
   myVerticesIt.Initialize(myVertices);
 }
 
@@ -362,7 +375,9 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
     {
       const TopoDS_Shape& v2 = it2.Value()->Vertex();
       if (v2.IsEqual(v1))
+      {
         continue;
+      }
 
       p2       = it2.Value()->Parameter();
       double d = std::abs(p1 - p2);
@@ -389,7 +404,9 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
       double                  ff, ll;
       occ::handle<Geom_Curve> CmyEdge = BRep_Tool::Curve(myEdge, loc, ff, ll);
       if (CmyEdge.IsNull())
+      {
         rd = false;
+      }
       else
       {
         f  = ff;
@@ -445,7 +462,9 @@ double TopOpeBRepBuild_PaveSet::EqualParameters() const
 bool TopOpeBRepBuild_PaveSet::ClosedVertices()
 {
   if (myVertices.IsEmpty())
+  {
     return false;
+  }
 
   TopoDS_Shape Vmin, Vmax;
   double       parmin = RealLast(), parmax = RealFirst();

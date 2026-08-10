@@ -161,9 +161,13 @@ void GeomAPI_ProjectPointOnCurve::Perform(const gp_Pnt& aP3D)
 int GeomAPI_ProjectPointOnCurve::NbPoints() const
 {
   if (myIsDone)
+  {
     return myExtPC.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

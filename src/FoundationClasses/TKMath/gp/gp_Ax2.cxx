@@ -47,23 +47,35 @@ gp_Ax2::gp_Ax2(const gp_Pnt& P, const gp_Dir& V)
   if (Babs <= Aabs && Babs <= Cabs)
   {
     if (Aabs > Cabs)
+    {
       D.SetCoord(-C, 0., A);
+    }
     else
+    {
       D.SetCoord(C, 0., -A);
+    }
   }
   else if (Aabs <= Babs && Aabs <= Cabs)
   {
     if (Babs > Cabs)
+    {
       D.SetCoord(0., -C, B);
+    }
     else
+    {
       D.SetCoord(0., C, -B);
+    }
   }
   else
   {
     if (Aabs > Babs)
+    {
       D.SetCoord(-B, A, 0.);
+    }
     else
+    {
       D.SetCoord(B, -A, 0.);
+    }
   }
   SetXDirection(D);
 }
@@ -182,7 +194,9 @@ bool gp_Ax2::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
   vydir = gp_Dir(anYDir);
 
   if (!Direction().IsEqual(aDir, Precision::Confusion()))
+  {
     return false;
+  }
 
   theStreamPos = aPos;
   return true;

@@ -178,7 +178,9 @@ TopoDS_Shape ShapeCustom::ApplyModifier(
   MD.Perform(M, aPS.Next());
 
   if (!aPS.More() || !MD.IsDone())
+  {
     return S;
+  }
 
   TopoDS_Shape aResult = MD.ModifiedShape(SF);
   aResult.Orientation(S.Orientation());

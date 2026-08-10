@@ -29,7 +29,9 @@ IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* const la
 {
   SetNbValues(0);
   if (thelabel.Length() == 0)
+  {
     thelabel.AssignCat("Param Editor");
+  }
 }
 
 void IFSelect_ParamEditor::AddValue(const occ::handle<Interface_TypedValue>& val,
@@ -73,7 +75,9 @@ bool IFSelect_ParamEditor::Load(const occ::handle<IFSelect_EditForm>& form,
 {
   int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
+  {
     form->LoadValue(i, TypedValue(i)->HStringValue());
+  }
 
   return true;
 }
@@ -84,8 +88,12 @@ bool IFSelect_ParamEditor::Apply(const occ::handle<IFSelect_EditForm>& form,
 {
   int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
+  {
     if (form->IsModified(i))
+    {
       TypedValue(i)->SetHStringValue(form->EditedValue(i));
+    }
+  }
 
   return true;
 }
@@ -96,7 +104,9 @@ occ::handle<IFSelect_ParamEditor> IFSelect_ParamEditor::StaticEditor(
 {
   occ::handle<IFSelect_ParamEditor> editor;
   if (list.IsNull())
+  {
     return editor;
+  }
   int i, nb = list->Length();
   //  if (nb == 0) return editor;
   editor = new IFSelect_ParamEditor(nb + 10, label);
@@ -104,7 +114,9 @@ occ::handle<IFSelect_ParamEditor> IFSelect_ParamEditor::StaticEditor(
   {
     occ::handle<Interface_Static> val = Interface_Static::Static(list->Value(i)->ToCString());
     if (!val.IsNull())
+    {
       editor->AddValue(val);
+    }
   }
   return editor;
 }

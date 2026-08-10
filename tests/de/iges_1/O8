@@ -6,12 +6,12 @@ set filename USA60023-4.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
-TPSTAT      : Faulties = 0  ( 39 )  Warnings = 0  ( 12 )  Summary  = 0  ( 51 )
+TPSTAT      : Faulties = 1  ( 39 )  Warnings = 0  ( 12 )  Summary  = 1  ( 51 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 9  ( 9 ) 
 TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
-LABELS      : N0Labels = 4555  ( 4555 )  N1Labels = 337  ( 884 )  N2Labels = 0  ( 0 )   TotalLabels = 4892  ( 5439 )   NameLabels = 4555  ( 4555 )   ColorLabels = 3761  ( 4340 )   LayerLabels = 4851  ( 4868 )
+LABELS      : N0Labels = 4555  ( 4556 )  N1Labels = 337  ( 884 )  N2Labels = 0  ( 0 )   TotalLabels = 4892  ( 5440 )   NameLabels = 4555  ( 4556 )   ColorLabels = 3761  ( 4341 )   LayerLabels = 4851  ( 4868 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
 COLORS      : Colors   = BLUE CYAN GREEN MAGENTA RED YELLOW  ( BLUE CYAN GREEN MAGENTA RED YELLOW )

@@ -34,7 +34,9 @@ void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
@@ -84,7 +86,9 @@ int RemoveFeatures(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
         aRF.SetRunParallel(true);
       }
       else
+      {
         theDI << "Warning: " << theArgv[i] << " is a null shape. Skip it.\n";
+      }
 
       continue;
     }
@@ -101,10 +105,14 @@ int RemoveFeatures(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   BOPTest::ReportAlerts(aRF.GetReport());
 
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aRF.History());
+  }
 
   if (aRF.HasErrors())
+  {
     return 0;
+  }
 
   const TopoDS_Shape& aResult = aRF.Shape();
   DBRep::Set(theArgv[1], aResult);

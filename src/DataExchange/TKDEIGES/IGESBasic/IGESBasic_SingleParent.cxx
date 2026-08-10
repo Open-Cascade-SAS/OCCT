@@ -31,7 +31,9 @@ void IGESBasic_SingleParent::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren)
 {
   if (!allChildren.IsNull() && allChildren->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESBasic_SingleParent : Init");
+  }
   theParentEntity     = aParentEntity;
   theChildren         = allChildren;
   theNbParentEntities = nbParentEntities;

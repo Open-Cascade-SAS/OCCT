@@ -50,16 +50,22 @@ void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVi
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempNbViewsVisible <= 0)
+    {
       PR.AddFail("Number Of Views Visible : Not Positive");
+    }
     else
+    {
       tempViewEntities =
         new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, tempNbViewsVisible);
+    }
   }
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(),
                    "Number of Entities Displayed",
                    tempNbDisplayedEntities); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
   {
     tempNbDisplayedEntities = 0;
@@ -67,7 +73,9 @@ void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVi
   }
   // Initialise HArray1 only if there is no error reading its Length
   if (tempNbDisplayedEntities < 0)
+  {
     PR.AddFail("Number Of Entities Displayed : Less than Zero");
+  }
   //  else if (tempNbDisplayedEntities > 0) {
 
   if (!tempViewEntities.IsNull())
@@ -84,7 +92,9 @@ void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVi
                         "View Entity",
                         STANDARD_TYPE(IGESData_ViewKindEntity),
                         tempViewEntity1))
+      {
         tempViewEntities->SetValue(I, tempViewEntity1);
+      }
     }
   }
 
@@ -122,10 +132,14 @@ void IGESDraw_ToolViewsVisible::WriteOwnParams(const occ::handle<IGESDraw_ViewsV
   int I;
   int up = ent->NbViews();
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->ViewItem(I));
+  }
   up = ent->NbDisplayedEntities();
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->DisplayedEntity(I));
+  }
 }
 
 void IGESDraw_ToolViewsVisible::OwnShared(const occ::handle<IGESDraw_ViewsVisible>& ent,
@@ -134,7 +148,9 @@ void IGESDraw_ToolViewsVisible::OwnShared(const occ::handle<IGESDraw_ViewsVisibl
   int I, up;
   up = ent->NbViews();
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->ViewItem(I));
+  }
   //  Displayed -> Implied
 }
 
@@ -144,7 +160,9 @@ void IGESDraw_ToolViewsVisible::OwnImplied(const occ::handle<IGESDraw_ViewsVisib
   int I, up;
   up = ent->NbDisplayedEntities();
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->DisplayedEntity(I));
+  }
 }
 
 void IGESDraw_ToolViewsVisible::OwnCopy(const occ::handle<IGESDraw_ViewsVisible>& another,
@@ -173,19 +191,25 @@ void IGESDraw_ToolViewsVisible::OwnRenew(const occ::handle<IGESDraw_ViewsVisible
   int                      I, up;
   up = another->NbDisplayedEntities();
   if (up == 0)
+  {
     return;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempDisplayEntities;
   occ::handle<Standard_Transient>                                    anew;
   for (I = 1; I <= up; I++)
   {
     if (TC.Search(another->DisplayedEntity(I), anew))
+    {
       newdisp.GetOneItem(anew);
+    }
   }
 
   up = newdisp.NbEntities();
   I  = 0;
   if (up > 0)
+  {
     tempDisplayEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, up);
+  }
   for (newdisp.Start(); newdisp.More(); newdisp.Next())
   {
     I++;
@@ -222,10 +246,14 @@ void IGESDraw_ToolViewsVisible::OwnCheck(const occ::handle<IGESDraw_ViewsVisible
   {
     occ::handle<IGESData_IGESEntity> displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View())
+    {
       res++;
+    }
   }
   if (!res)
+  {
     return;
+  }
   char mess[80];
   Sprintf(mess, "Mismatch for %d Entities displayed", res);
   ach->AddFail(mess, "Mismatch for %d Entities displayed");
@@ -248,7 +276,7 @@ void IGESDraw_ToolViewsVisible::OwnDump(const occ::handle<IGESDraw_ViewsVisible>
   S << "\n"
     << "Entities Displayed : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbDisplayedEntities(), ent->DisplayedEntity);
-  S << std::endl;
+  S << '\n';
 }
 
 bool IGESDraw_ToolViewsVisible::OwnCorrect(const occ::handle<IGESDraw_ViewsVisible>& ent) const
@@ -261,10 +289,14 @@ bool IGESDraw_ToolViewsVisible::OwnCorrect(const occ::handle<IGESDraw_ViewsVisib
   {
     occ::handle<IGESData_IGESEntity> displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View())
+    {
       res = true;
+    }
   }
   if (!res)
+  {
     return res;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> nulDisplayEntities;
   ent->InitImplied(nulDisplayEntities);
   return res;

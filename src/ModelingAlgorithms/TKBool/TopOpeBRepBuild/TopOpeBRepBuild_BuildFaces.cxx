@@ -101,5 +101,7 @@ void TopOpeBRepBuild_Builder::BuildFaces(const occ::handle<TopOpeBRepDS_HDataStr
   int iS, n = HDS->NbSurfaces();
   myNewFaces = new NCollection_HArray1<NCollection_List<TopoDS_Shape>>(0, n);
   for (iS = 1; iS <= n; iS++)
+  {
     BuildFaces(iS, HDS);
+  }
 }

@@ -32,7 +32,9 @@ void RWStepShape_RWFaceBound::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "face_bound"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -111,9 +113,13 @@ void RWStepShape_RWFaceBound::Check(const occ::handle<StepShape_FaceBound>& ent,
         occ::handle<StepShape_OrientedEdge> refOE2 =
           occ::down_cast<StepShape_OrientedEdge>(myShRef.Value());
         if (theOE1 == refOE1)
+        {
           theOE2 = refOE2;
+        }
         else if (theOE1 == refOE2)
+        {
           theOE2 = refOE1;
+        }
 
         // get the FaceBound orientation for theOE2
 

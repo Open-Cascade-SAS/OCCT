@@ -37,7 +37,9 @@ void RWStepDimTol_RWParallelismTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "parallelism_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

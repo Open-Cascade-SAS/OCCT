@@ -36,7 +36,9 @@
 static int QADNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb < 4)
+  {
     return 1;
+  }
   TopoDS_Shape S1 = DBRep::Get(arg[1]);
   if (S1.IsNull())
   {
@@ -55,13 +57,21 @@ static int QADNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg
   strtok(M, " \t");
   TopAbs_ShapeEnum mod = TopAbs_FACE;
   if (M[0] == 'F' || M[0] == 'f')
+  {
     mod = TopAbs_FACE;
+  }
   else if (M[0] == 'E' || M[0] == 'e')
+  {
     mod = TopAbs_EDGE;
+  }
   else if (M[0] == 'V' || M[0] == 'v')
+  {
     mod = TopAbs_VERTEX;
+  }
   else
+  {
     return 1;
+  }
 
   TopExp_Explorer Exp1, Exp2;
 
@@ -85,7 +95,9 @@ static int QADNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg
     {
       const TopoDS_Shape& s2 = itr2.Key();
       if (s1.IsSame(s2))
+      {
         di << "Shapes " << arg[1] << " and " << arg[2] << " have SAME subshapes\n";
+      }
     }
   }
 
@@ -102,7 +114,9 @@ static int QADNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
 {
   TNaming_Translator TR;
   if (nb < 2)
+  {
     return (1);
+  }
 
   NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>
     aDMapOfShapeOfName;
@@ -119,7 +133,9 @@ static int QADNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
 
     // Add to Map
     if (S.IsNull())
+    {
       return (1);
+    }
     else
     {
       aDMapOfShapeOfName.Bind(S, name);
@@ -156,7 +172,9 @@ void QADNaming::ToolsCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "Naming data commands";
 

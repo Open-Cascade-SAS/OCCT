@@ -222,7 +222,9 @@ void IGESGeom_ToolPlane::OwnCheck(const occ::handle<IGESGeom_Plane>& ent,
   //  if ( (A*A + B*B + C*C) < eps)    //  not null !
   //    ach.SendFail("Incorrect Coefficients for the Plane");
   if (!ent->HasBoundingCurve())
+  {
     return;
+  }
   //  Symbol : check if Size defined > 0 (otherwise, has no meaning)
   /*  double ec = 0.;
     if (ent->SymbolSize() > 0.) ec = A*ent->SymbolAttach().X() + B*ent->SymbolAttach().Y() +
@@ -257,5 +259,5 @@ void IGESGeom_ToolPlane::OwnDump(const occ::handle<IGESGeom_Plane>& ent,
   S << "\n"
     << "Display Symbol Location : ";
   IGESData_DumpXYZL(S, level, ent->SymbolAttach(), ent->Location());
-  S << "  Size  : " << ent->SymbolSize() << std::endl;
+  S << "  Size  : " << ent->SymbolSize() << '\n';
 }

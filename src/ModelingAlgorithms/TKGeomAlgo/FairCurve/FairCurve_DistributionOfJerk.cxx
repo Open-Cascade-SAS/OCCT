@@ -63,7 +63,9 @@ bool FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, math_Vector&
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
+  {
     return false;
+  }
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -89,7 +91,9 @@ bool FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, math_Vector&
 
   Ok = MyLaw.Value(TParam(TParam.Lower()), Hauteur);
   if (!Ok)
+  {
     return Ok;
+  }
 
   Mesure             = pow(Hauteur, 3) / 12;
   WVal               = Numerateur / Denominateur;

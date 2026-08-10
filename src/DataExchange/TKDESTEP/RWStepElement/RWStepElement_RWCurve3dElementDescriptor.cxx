@@ -41,7 +41,9 @@ void RWStepElement_RWCurve3dElementDescriptor::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve3d_element_descriptor"))
+  {
     return;
+  }
 
   // Inherited fields of ElementDescriptor
 
@@ -50,16 +52,26 @@ void RWStepElement_RWCurve3dElementDescriptor::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".LINEAR.") == 0)
+    {
       aElementDescriptor_TopologyOrder = StepElement_Linear;
+    }
     else if (strcmp(text, ".QUADRATIC.") == 0)
+    {
       aElementDescriptor_TopologyOrder = StepElement_Quadratic;
+    }
     else if (strcmp(text, ".CUBIC.") == 0)
+    {
       aElementDescriptor_TopologyOrder = StepElement_Cubic;
+    }
     else
+    {
       ach->AddFail("Parameter #1 (element_descriptor.topology_order) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #1 (element_descriptor.topology_order) is not enumeration");
+  }
 
   occ::handle<TCollection_HAsciiString> aElementDescriptor_Description;
   data->ReadString(num, 2, "element_descriptor.description", ach, aElementDescriptor_Description);

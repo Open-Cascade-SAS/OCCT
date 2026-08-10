@@ -58,7 +58,9 @@ void ShapeFix_WireSegment::Load(const occ::handle<ShapeExtend_WireData>& wire)
   Clear();
   myWire->ManifoldMode() = wire->ManifoldMode();
   for (int i = 1; i <= wire->NbEdges(); i++)
+  {
     AddEdge(i, wire->Edge(i));
+  }
 }
 
 //=================================================================================================
@@ -188,7 +190,9 @@ void ShapeFix_WireSegment::SetPatchIndex(const int i,
 void ShapeFix_WireSegment::DefineIUMin(const int i, const int iumin)
 {
   if (myIUMin->Value(i) < iumin)
+  {
     myIUMin->SetValue(i, iumin);
+  }
 #ifdef OCCT_DEBUG
   if (myIUMin->Value(i) > myIUMax->Value(i))
     std::cout << "Warning: ShapeFix_WireSegment::DefineIUMin: indexation error" << std::endl;
@@ -200,7 +204,9 @@ void ShapeFix_WireSegment::DefineIUMin(const int i, const int iumin)
 void ShapeFix_WireSegment::DefineIUMax(const int i, const int iumax)
 {
   if (myIUMax->Value(i) > iumax)
+  {
     myIUMax->SetValue(i, iumax);
+  }
 #ifdef OCCT_DEBUG
   int iun = myIUMin->Value(i), iux = myIUMax->Value(i);
   if (iun > iux)
@@ -213,7 +219,9 @@ void ShapeFix_WireSegment::DefineIUMax(const int i, const int iumax)
 void ShapeFix_WireSegment::DefineIVMin(const int i, const int ivmin)
 {
   if (myIVMin->Value(i) < ivmin)
+  {
     myIVMin->SetValue(i, ivmin);
+  }
 #ifdef OCCT_DEBUG
   int ivn = myIVMin->Value(i), ivx = myIVMax->Value(i);
   if (ivn > ivx)
@@ -226,7 +234,9 @@ void ShapeFix_WireSegment::DefineIVMin(const int i, const int ivmin)
 void ShapeFix_WireSegment::DefineIVMax(const int i, const int ivmax)
 {
   if (myIVMax->Value(i) > ivmax)
+  {
     myIVMax->SetValue(i, ivmax);
+  }
 #ifdef OCCT_DEBUG
   int ivn = myIVMin->Value(i), ivx = myIVMax->Value(i);
   if (ivn > ivx)

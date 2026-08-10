@@ -68,7 +68,9 @@ bool StdSelect_BRepOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManag
 {
   int M = (aMode < 0) ? myCurMode : aMode;
   if (myPrsSh.IsNull())
+  {
     return PM->IsHighlighted(Selectable(), M);
+  }
   return PM->IsHighlighted(myPrsSh, M);
 }
 
@@ -135,7 +137,9 @@ void StdSelect_BRepOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& P
 {
   int M = (aMode < 0) ? myCurMode : aMode;
   if (!myPrsSh.IsNull())
+  {
     PM->Clear(myPrsSh, M);
+  }
   myPrsSh.Nullify();
 }
 

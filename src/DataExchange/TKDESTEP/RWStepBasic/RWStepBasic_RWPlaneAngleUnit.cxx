@@ -29,7 +29,9 @@ void RWStepBasic_RWPlaneAngleUnit::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "plane_angle_unit"))
+  {
     return;
+  }
 
   // --- inherited field : dimensions ---
 

@@ -244,7 +244,9 @@ static TopoDS_Shape MakeShape(
       BRep_Builder    B;
       B.MakeCompound(C);
       for (int anIt = 1; anIt <= MS.Extent(); ++anIt)
+      {
         B.Add(C, MS(anIt));
+      }
       return C;
     }
   }
@@ -256,29 +258,43 @@ static TopoDS_Shape MakeShape(
 static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
 {
   if (theShape.IsNull() || theType == TopAbs_SHAPE)
+  {
     return theShape;
+  }
   int aType = theShape.ShapeType();
   if (aType == theType)
+  {
     return theShape;
+  }
 
   NCollection_List<TopoDS_Shape> aShapes;
   if (aType == TopAbs_COMPOUND)
   {
     TopoDS_Iterator anIter(theShape);
     if (anIter.More())
+    {
       aType = anIter.Value().ShapeType();
+    }
     for (; anIter.More(); anIter.Next())
+    {
       aShapes.Append(anIter.Value());
+    }
     if (aType == theType)
     {
       if (aShapes.Extent() == 1)
+      {
         return aShapes.First();
+      }
       else
+      {
         return theShape;
+      }
     }
   }
   else
+  {
     aShapes.Append(theShape);
+  }
 
   TopoDS_Shape                             aResult;
   NCollection_List<TopoDS_Shape>::Iterator aListIter(aShapes);
@@ -296,12 +312,16 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
           aResult = anExp.Current();
           aCount++;
           if (aCount > 1)
+          {
             return theShape;
+          }
         }
       }
     }
     if (aCount == 1)
+    {
       return aResult;
+    }
   }
   else
   { // if the shape type more complex than shapes from aShapes list, try make it
@@ -312,13 +332,19 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
       case TopAbs_EDGE: {
         // make wire from edges
         if (theType <= TopAbs_SOLID)
+        {
           break;
+        }
         BRepBuilderAPI_MakeWire aMakeWire;
         aMakeWire.Add(aShapes);
         if (!aMakeWire.IsDone())
+        {
           return theShape;
+        }
         if (theType == TopAbs_WIRE)
+        {
           return aMakeWire.Wire();
+        }
         aShapes.Clear(); // don't break: we can do something more of it
         aShapes.Append(aMakeWire.Wire());
         aListIter.Initialize(aShapes);
@@ -327,18 +353,24 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
       case TopAbs_WIRE: {
         // make faceS from wires (one per one)
         if (theType < TopAbs_SOLID)
+        {
           break;
+        }
         NCollection_List<TopoDS_Shape> aFaces;
         for (; aListIter.More(); aListIter.Next())
         {
           BRepBuilderAPI_MakeFace aMakeFace(TopoDS::Wire(aListIter.Value()));
           if (!aMakeFace.IsDone())
+          {
             aFaces.Append(aMakeFace.Face());
+          }
         }
         if (theType == TopAbs_FACE)
         {
           if (aFaces.Extent() == 1)
+          {
             return aFaces.First();
+          }
           return theShape;
         }
         aShapes.Assign(aFaces); // don't break: we can do something more of it
@@ -348,15 +380,21 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
       case TopAbs_FACE: {
         // make shell from faces
         if (theType < TopAbs_SOLID)
+        {
           break;
+        }
         BRep_Builder aShellBuilder;
         TopoDS_Shell aShell;
         aShellBuilder.MakeShell(aShell);
         for (; aListIter.More(); aListIter.Next())
+        {
           aShellBuilder.Add(aShell, TopoDS::Face(aListIter.Value()));
+        }
         aShell.Closed(BRep_Tool::IsClosed(aShell));
         if (theType == TopAbs_SHELL)
+        {
           return aShell;
+        }
         aShapes.Clear(); // don't break: we can do something more of it
         aShapes.Append(aShell);
         aListIter.Initialize(aShapes);
@@ -369,12 +407,16 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         {
           BRepBuilderAPI_MakeSolid aMakeSolid(TopoDS::Shell(aListIter.Value()));
           if (aMakeSolid.IsDone())
+          {
             aSolids.Append(aMakeSolid.Solid());
+          }
         }
         if (theType == TopAbs_SOLID)
         {
           if (aSolids.Extent() == 1)
+          {
             return aSolids.First();
+          }
           return theShape;
         }
         aShapes.Assign(aSolids); // don't break: we can do something more of it
@@ -387,9 +429,13 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         TopoDS_CompSolid aCompSolid;
         aCompBuilder.MakeCompSolid(aCompSolid);
         for (; aListIter.More(); aListIter.Next())
+        {
           aCompBuilder.Add(aCompSolid, TopoDS::Solid(aListIter.Value()));
+        }
         if (theType == TopAbs_COMPSOLID)
+        {
           return aCompSolid;
+        }
       }
     }
   }
@@ -480,7 +526,9 @@ static bool ModifUntil(const TDF_Label&                                         
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
   NCollection_Map<TDF_Label>                                    Forbiden;
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   TNaming_NamingTool::BuildDescendants(Stop, Forbiden); // fills Forbidden from Stop
   // all last modifications of the last argument
   TNaming_NamingTool::CurrentShape(Valid, Forbiden, Args.Last(), MS);
@@ -509,7 +557,9 @@ static bool ConstShape(const TDF_Label&                                         
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
   NCollection_Map<TDF_Label>                                    Forbiden;
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   TNaming_NamingTool::BuildDescendants(Stop, Forbiden);
 
   TopoDS_Shape S;
@@ -523,7 +573,9 @@ static bool ConstShape(const TDF_Label&                                         
     }
   }
   if (S.IsNull())
+  {
     return false;
+  }
 
   TNaming_NamingTool::CurrentShapeFromShape(Valid, Forbiden, L, S, MS);
 
@@ -557,9 +609,13 @@ static bool Intersection(const TDF_Label&                                       
                          const int                                                Index)
 {
   if (Args.IsEmpty())
+  {
     return false;
+  }
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator   it(Args);
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
   NCollection_Map<TDF_Label>                                    Forbiden;
@@ -607,9 +663,13 @@ static bool Intersection(const TDF_Label&                                       
     int aCaseW(0);
     int aNbW = aS.NbChildren();
     if (aNbW == nbW)
+    {
       aCaseW = 1; // exact solution for wire (nb of wires is kept)
+    }
     else
+    {
       aCaseW = 2; // indefinite description ==> compound which can include expected wire
+    }
     if (aCaseW == 1)
     {
       TopoDS_Shape aWire;
@@ -625,9 +685,13 @@ static bool Intersection(const TDF_Label&                                       
       int aCaseE(0);
       int aNbE = aWire.NbChildren();
       if (aNbE == nbE)
+      {
         aCaseE = 1; // exact solution for edge
+      }
       else
+      {
         aCaseE = 2;
+      }
       if (aCaseE == 1)
       {
         i = 1;
@@ -667,7 +731,9 @@ static void KeepInList(const TopoDS_Shape&             CS,
                        NCollection_List<TopoDS_Shape>& aList)
 {
   if (CS.IsNull())
+  {
     return;
+  }
 
   if (Type == TopAbs_SHAPE)
   {
@@ -714,9 +780,13 @@ static bool Union(const TDF_Label&                                         L,
                   const TDF_Label&                                         ContextLabel)
 {
   if (Args.IsEmpty())
+  {
     return false;
+  }
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   // temporary solution for Orientation name
   bool isOr(true);
   /* not completed
@@ -755,8 +825,9 @@ static bool Union(const TDF_Label&                                         L,
   TopoDS_Shape  CS = MakeShape(MS);
 
   NCollection_List<TopoDS_Shape> aListS;
-  if(isOr)
+  if(isOr) {
     KeepInList(CS,ShapeType,aListS);
+}
   TNaming_ShapesSet S(CS,ShapeType);//fill internal map of shapeset by shapes of the specified type
   // clang-format on
   it.Next();
@@ -768,7 +839,9 @@ static bool Union(const TDF_Label&                                         L,
     // clang-format on
     CS = MakeShape(MS);
     if (isOr)
+    {
       KeepInList(CS, ShapeType, aListS);
+    }
     TNaming_ShapesSet OS(CS, ShapeType);
     S.Add(OS); // concatenate both shapesets
   }
@@ -789,7 +862,9 @@ static bool Union(const TDF_Label&                                         L,
     }
     NCollection_List<TopoDS_Shape> aList;
     for (TopExp_Explorer anExpl(aContext, ShapeType); anExpl.More(); anExpl.Next())
+    {
       aList.Append(anExpl.Current());
+    }
     NCollection_List<TopoDS_Shape>::Iterator itl(aList);
     for (; itl.More(); itl.Next())
     {
@@ -800,7 +875,9 @@ static bool Union(const TDF_Label&                                         L,
            anExpl.Next())
       {
         if (S.Map().Contains(anExpl.Current()))
+        {
           num--;
+        }
       }
       if (num == 0)
       {
@@ -813,24 +890,30 @@ static bool Union(const TDF_Label&                                         L,
 
   TNaming_Builder B(L);
   if (found)
+  {
     B.Select(aCand, aCand);
+  }
   else
   {
     BRep_Builder    aCompoundBuilder;
     TopoDS_Compound aCompound;
     aCompoundBuilder.MakeCompound(aCompound);
     if (!isOr)
+    {
       for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itM(S.Map());
            itM.More();
            itM.Next())
       {
         aCompoundBuilder.Add(aCompound, itM.Key());
       }
+    }
     else
+    {
       for (NCollection_List<TopoDS_Shape>::Iterator itL(aListS); itL.More(); itL.Next())
       {
         aCompoundBuilder.Add(aCompound, itL.Value());
       }
+    }
     TopoDS_Shape aShape = ShapeWithType(aCompound, ShapeType);
     B.Select(aShape, aShape);
   }
@@ -845,7 +928,9 @@ static TopoDS_Shape FindShape(
   TopoDS_Shape aResult;
   int          aNum = DM.Extent();
   if (aNum < 1)
+  {
     return aResult;
+  }
   NCollection_List<TopoDS_Shape>                                             List;
   NCollection_DataMap<TopoDS_Shape, NCollection_Map<TopoDS_Shape>>::Iterator it(DM);
   if (it.More())
@@ -863,19 +948,29 @@ static TopoDS_Shape FindShape(
       {
         const TopoDS_Shape& aKey2 = it2.Key();
         if (aKey2 == aKey1)
+        {
           continue;
+        }
         const NCollection_Map<TopoDS_Shape>& aMap2 = it2.Value();
         if (!aMap2.Contains(aS))
+        {
           isCand = false;
+        }
       }
       if (isCand)
+      {
         List.Append(aS);
+      }
     }
   }
   if (List.IsEmpty())
+  {
     return aResult;
+  }
   if (List.Extent() == 1)
+  {
     return List.First();
+  }
   NCollection_List<TopoDS_Shape>::Iterator itl(List);
   TopoDS_Compound                          Compound;
   BRep_Builder                             B;
@@ -904,7 +999,9 @@ static bool Generated(const TDF_Label&                                         L
   // Next arguments : generators.
 
   if (!ValidArgs(Args))
+  {
     return false;
+  }
 
   TDF_Label LabelOfGeneration = Args.First()->Label();
   // Nouvell valeurs des generateurs dans l attribut de generation
@@ -917,12 +1014,16 @@ static bool Generated(const TDF_Label&                                         L
   TopoDS_Shape                aSelection;
   L.FindAttribute(TNaming_Naming::GetID(), aNaming);
   if (!aNaming.IsNull())
+  {
     aSelection = aNaming->GetName().Shape();
+  }
   occ::handle<TNaming_NamedShape> anOldNS;
   int                             aVer = -1; // Initial build of name
   L.FindAttribute(TNaming_NamedShape::GetID(), anOldNS);
   if (!anOldNS.IsNull())
+  {
     aVer = anOldNS->Version();
+  }
   TNaming_Builder                                                  B(L); // NS
   NCollection_List<TopoDS_Shape>                                   aList;
   NCollection_DataMap<TopoDS_Shape, NCollection_Map<TopoDS_Shape>> aDM;
@@ -931,13 +1032,17 @@ static bool Generated(const TDF_Label&                                         L
     const TopoDS_Shape&           OS = aMS(anItMS);
     NCollection_Map<TopoDS_Shape> aMapDM;
     for (TNaming_NewShapeIterator itNew(OS, L); itNew.More(); itNew.Next())
+    {
       if (itNew.Label() == LabelOfGeneration)
       {
         aMapDM.Add(itNew.Shape());
         aList.Append(itNew.Shape()); // szy 21.10.03
       }
+    }
     if (aMapDM.Extent())
+    {
       aDM.Bind(OS, aMapDM);
+    }
   }
 
   if (aVer == -1)
@@ -960,7 +1065,9 @@ static bool Generated(const TDF_Label&                                         L
     else
     { // Selection == Null
       for (; it.More(); it.Next())
+      {
         B.Select(it.Value(), it.Value());
+      }
     }
   }
   else
@@ -978,16 +1085,22 @@ static bool Generated(const TDF_Label&                                         L
       NCollection_List<TopoDS_Shape>::Iterator it(aList);
       for (; it.More(); it.Next())
       {
-        if (it.Value().ShapeType() == aType) // collect only the same type
+        if (it.Value().ShapeType() == aType)
+        { // collect only the same type
           aList2.Append(it.Value());
+        }
       }
       if (!aList2.Extent())
+      {
         return false; // Empty
+      }
 
       bool         found  = false;
       TopoDS_Shape aShape = FindShape(aDM);
       if (!aShape.IsNull())
+      {
         found = true;
+      }
       if (found)
       {
         NCollection_List<TopoDS_Shape> aLM;
@@ -1001,7 +1114,9 @@ static bool Generated(const TDF_Label&                                         L
                itg.Next())
           {
             if (!aMS.Contains(itg.Value()->Get()))
+            {
               aLM.Append(itg.Value()->Get());
+            }
           }
           if (aLM.Extent() == 1)
           { // lost 1
@@ -1055,18 +1170,24 @@ static bool Generated(const TDF_Label&                                         L
             // 	    }
           }
         }
-        if (!aHas)                  // all arguments were kept
+        if (!aHas)
+        {                           // all arguments were kept
           B.Select(aShape, aShape); // only this case is correct on 100%
+        }
         else
         {
-          if (a1NB) // Has, but may be ...
+          if (a1NB)
+          { // Has, but may be ...
             B.Select(aShape, aShape);
+          }
           else
           {
             // put Compound, may be if possible processed later in Sel. Driver
             NCollection_List<TopoDS_Shape>::Iterator it1(aList2);
             for (; it1.More(); it1.Next())
+            {
               B.Select(it1.Value(), it1.Value());
+            }
           }
         }
       }
@@ -1074,7 +1195,9 @@ static bool Generated(const TDF_Label&                                         L
       { // not found
         NCollection_List<TopoDS_Shape>::Iterator it2(aList2);
         for (; it2.More(); it2.Next())
+        {
           B.Select(it2.Value(), it2.Value());
+        }
       }
     }
   }
@@ -1095,7 +1218,9 @@ static bool Identity(const TDF_Label&                                         L,
     throw Standard_ConstructionError("TNaming_Name::Solve");
   }
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   const occ::handle<TNaming_NamedShape>&                        A = Args.First();
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
   NCollection_Map<TDF_Label>                                    Forbiden;
@@ -1124,12 +1249,16 @@ static bool FilterByNeighbourgs(const TDF_Label&                                
 
   NCollection_Map<TDF_Label> Forbiden;
   if (!ValidArgs(Args))
+  {
     return false;
+  }
   // clang-format off
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); //all descendants of Stop (New shapes) are forbidden
   // clang-format on
   if (!Stop.IsNull())
+  {
     Forbiden.Remove(Stop->Label());
+  }
   //----------------------------------------
   // First argument: collection has to be filtered.
   //----------------------------------------
@@ -1146,35 +1275,46 @@ static bool FilterByNeighbourgs(const TDF_Label&                                
   //------------------------------------------------------------
   TopAbs_ShapeEnum TC = TopAbs_EDGE;
   if (ShapeType == TopAbs_EDGE)
+  {
     TC = TopAbs_VERTEX;
+  }
   // clang-format off
-  if (ShapeType == TopAbs_VERTEX) TC = TopAbs_VERTEX; // szy 31.03.10 - to process case when Candidate is of type Vertex
+  if (ShapeType == TopAbs_VERTEX) { TC = TopAbs_VERTEX; // szy 31.03.10 - to process case when Candidate is of type Vertex
+}
   // clang-format on
   bool isDone = false;
   if (SCand.Extent() == 1)
   { // check if a collection is inside
     TopoDS_Shape aS = SCand(1);
     if (!aS.IsNull())
+    {
       if (aS.ShapeType() == TopAbs_COMPOUND && aS.ShapeType() != ShapeType)
       {
         SCand.Clear();
         TopoDS_Iterator itt(aS);
         for (; itt.More(); itt.Next())
+        {
           SCand.Add(itt.Value());
+        }
       }
+    }
   }
   for (int anItSCand = 1; anItSCand <= SCand.Extent(); ++anItSCand)
   { // 1
     const TopoDS_Shape&                                    S = SCand(anItSCand);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Boundaries;
-    if (S.ShapeType() == TopAbs_VERTEX) // # szy 31.03.10
-      Boundaries.Add(S);                // #
-    else                                // #
-                                        // clang-format off
+    if (S.ShapeType() == TopAbs_VERTEX)
+    {                    // # szy 31.03.10
+      Boundaries.Add(S); // #
+    }
+    else
+    { // #
+      // clang-format off
       for (TopExp_Explorer exp(S,TC); exp.More(); exp.Next()) { //put boundaries of each candidate (from SCand) to the Boundaries map
         // clang-format on
         Boundaries.Add(exp.Current());
       }
+    }
 
     NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(Args);
     it.Next();
@@ -1205,7 +1345,9 @@ static bool FilterByNeighbourgs(const TDF_Label&                                
           }
         } // 7
         if (Connected)
+        {
           break;
+        }
       } // 6
       if (!Connected)
       {
@@ -1231,7 +1373,9 @@ static const TopoDS_Shape FindSubShapeInAncestor(const TopoDS_Shape& Selection,
     for (TopExp_Explorer anExpl(Context, Selection.ShapeType()); anExpl.More(); anExpl.Next())
     {
       if (anExpl.Current().IsSame(Selection))
+      {
         return anExpl.Current();
+      }
     }
   }
 
@@ -1257,7 +1401,9 @@ static int Aggregation(const TopoDS_Shape& S, const TopoDS_Shape& AS, TNaming_Bu
       }
     }
     else
+    {
       N += Aggregation(sel, AS, B);
+    }
   }
   return N;
 }
@@ -1274,7 +1420,9 @@ static bool ORientation(const TDF_Label&                                        
 {
 
   if (!ValidArgs(Args))
+  {
     return false;
+  }
 
   const occ::handle<TNaming_NamedShape>&                        A = Args.First();
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
@@ -1299,7 +1447,9 @@ static bool ORientation(const TDF_Label&                                        
 
   TNaming_Builder B(L);
   if (aShape.IsNull())
+  {
     return false;
+  }
 
   NCollection_List<TopoDS_Shape> aSList;
   // tmp. solution
@@ -1307,7 +1457,9 @@ static bool ORientation(const TDF_Label&                                        
   {
     TopoDS_Iterator it(aShape);
     for (; it.More(); it.Next())
+    {
       aSList.Append(it.Value());
+    }
   } //
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MSC;
@@ -1340,11 +1492,15 @@ static bool ORientation(const TDF_Label&                                        
               }
             }
             if (found)
+            {
               break;
+            }
           }
         }
         else
+        {
           CS = FindSubShapeInAncestor(aShape, AS);
+        }
         if (!CS.IsNull())
         {
           B.Select(CS, CS);
@@ -1352,7 +1508,9 @@ static bool ORientation(const TDF_Label&                                        
         else
         {
           if (!Aggregation(aShape, AS, B))
+          {
             return false;
+          }
         }
       }
     }
@@ -1367,7 +1525,9 @@ static bool ORientation(const TDF_Label&                                        
       else
       {
         if (!Aggregation(aShape, AS, B))
+        {
           return false;
+        }
       }
     }
   }
@@ -1409,7 +1569,9 @@ static bool ORientation(const TDF_Label&                                        
           B.Select(CS, CS);
         }
         else
+        {
           return false;
+        }
       }
       else
       {
@@ -1433,7 +1595,9 @@ static bool ORientation(const TDF_Label&                                        
             B.Select(CS, CS);
           }
           else
+          {
             return false;
+          }
         }
         else
         {
@@ -1459,15 +1623,21 @@ static bool WireIN(const TDF_Label&                                         L,
 {
   bool aResult(false);
   if (!ValidArgs(Args))
+  {
     return aResult;
+  }
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfSh;
   NCollection_Map<TDF_Label>                                    aForbiden;
   if (Args.Extent() < 1)
+  {
     throw Standard_ConstructionError("TNaming_Name::Solve");
+  }
   const occ::handle<TNaming_NamedShape>& A = Args.First();
   TNaming_NamingTool::CurrentShape(Valid, aForbiden, A, aMapOfSh);
   if (aMapOfSh.Extent() != 1)
+  {
     return aResult;
+  }
   const TopoDS_Shape& aCF = aMapOfSh(1);
   TNaming_Builder     B(L);
   if (Index == 1)
@@ -1520,7 +1690,9 @@ static bool WireIN(const TDF_Label&                                         L,
           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aView;
           int                                                    aNum(0x7FFFFFFF);
           for (TopoDS_Iterator it(S); it.More(); it.Next())
+          {
             aView.Add(it.Value()); // edges of wire of the face in map
+          }
 
           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(aSet.Map());
           aNum = aView.Extent();
@@ -1556,7 +1728,9 @@ static bool WireIN(const TDF_Label&                                         L,
           if (!S.IsNull() && S.ShapeType() == TopAbs_WIRE)
           {
             if (S.IsEqual(anOuterWire))
+            {
               continue;
+            }
             B.Select(S, S);
           }
         }
@@ -1578,15 +1752,21 @@ static bool ShellIN(const TDF_Label&                                         L,
 {
   bool aResult(false);
   if (!ValidArgs(Args))
+  {
     return aResult;
+  }
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfSh;
   NCollection_Map<TDF_Label>                                    aForbiden;
   if (Args.Extent() < 1)
+  {
     throw Standard_ConstructionError("TNaming_Name::Solve");
+  }
   const occ::handle<TNaming_NamedShape>& A = Args.First();
   TNaming_NamingTool::CurrentShape(Valid, aForbiden, A, aMapOfSh);
   if (aMapOfSh.Extent() != 1)
+  {
     return aResult;
+  }
   const TopoDS_Shape& aCSO = aMapOfSh(1);
   TNaming_Builder     B(L);
   if (Index == 1)
@@ -1639,7 +1819,9 @@ static bool ShellIN(const TDF_Label&                                         L,
           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aView;
           int                                                    aNum(0x7FFFFFFF);
           for (TopoDS_Iterator it(S); it.More(); it.Next())
+          {
             aView.Add(it.Value()); // faces of shell of the solid in map
+          }
 
           aNum = aView.Extent();
           if (aNum == aSet.Map().Extent())
@@ -1675,7 +1857,9 @@ static bool ShellIN(const TDF_Label&                                         L,
           if (!S.IsNull() && S.ShapeType() == TopAbs_SHELL)
           {
             if (S.IsEqual(anOuterShell))
+            {
               continue;
+            }
             B.Select(S, S);
           }
         }

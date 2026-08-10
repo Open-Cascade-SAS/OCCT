@@ -96,7 +96,8 @@ void IGESBasic_ToolSingleParent::ReadOwnParams(const occ::handle<IGESBasic_Singl
   }
 
   // clang-format off
-  if (nbval > 0) PR.ReadEnts (IR,PR.CurrentList(nbval),Msg207,tempChildren); //szv#4:S4163:12Mar99 `st=` not needed
+  if (nbval > 0) { PR.ReadEnts (IR,PR.CurrentList(nbval),Msg207,tempChildren); //szv#4:S4163:12Mar99 `st=` not needed
+}
   //st = PR.ReadEnts (IR,PR.CurrentList(nbval),"Child Entities",tempChildren);
   // clang-format on
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -111,7 +112,9 @@ void IGESBasic_ToolSingleParent::WriteOwnParams(const occ::handle<IGESBasic_Sing
   IW.Send(upper);
   IW.Send(ent->SingleParent());
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Child(i));
+  }
 }
 
 void IGESBasic_ToolSingleParent::OwnShared(const occ::handle<IGESBasic_SingleParent>& ent,
@@ -120,7 +123,9 @@ void IGESBasic_ToolSingleParent::OwnShared(const occ::handle<IGESBasic_SinglePar
   iter.GetOneItem(ent->SingleParent());
   int upper = ent->NbChildren();
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Child(i));
+  }
 }
 
 void IGESBasic_ToolSingleParent::OwnCopy(const occ::handle<IGESBasic_SingleParent>& another,
@@ -143,12 +148,16 @@ void IGESBasic_ToolSingleParent::OwnCopy(const occ::handle<IGESBasic_SingleParen
 bool IGESBasic_ToolSingleParent::OwnCorrect(const occ::handle<IGESBasic_SingleParent>& ent) const
 {
   if (ent->NbParentEntities() == 1)
+  {
     return false;
+  }
   int                                                                nb = ent->NbChildren();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
     new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (int i = 1; i <= nb; i++)
+  {
     EntArray->SetValue(i, ent->Child(i));
+  }
   ent->Init(1, ent->SingleParent(), EntArray);
   return true; // nbparents = 1
 }
@@ -192,5 +201,5 @@ void IGESBasic_ToolSingleParent::OwnDump(const occ::handle<IGESBasic_SingleParen
   S << "\n"
     << "Children : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbChildren(), ent->Child);
-  S << std::endl;
+  S << '\n';
 }

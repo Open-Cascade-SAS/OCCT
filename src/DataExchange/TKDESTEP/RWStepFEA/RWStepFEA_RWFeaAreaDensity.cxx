@@ -34,7 +34,9 @@ void RWStepFEA_RWFeaAreaDensity::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_area_density"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

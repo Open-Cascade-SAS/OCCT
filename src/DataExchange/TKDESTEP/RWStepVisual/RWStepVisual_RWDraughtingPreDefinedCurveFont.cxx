@@ -29,7 +29,9 @@ void RWStepVisual_RWDraughtingPreDefinedCurveFont::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "draughting_pre_defined_curve_font has not 1 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -49,7 +49,7 @@ BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor() = defa
 
 int BRepMesh_EdgeTessellationExtractor::PointsNb() const
 {
-  return myIndices->Size();
+  return myIndices->Length();
 }
 
 //=================================================================================================

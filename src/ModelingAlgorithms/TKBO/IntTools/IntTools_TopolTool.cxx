@@ -159,16 +159,24 @@ void IntTools_TopolTool::ComputeSamplePoints()
       nbsv /= 10;
 
       if (nbsu < 2)
+      {
         nbsu = 2;
+      }
       if (nbsv < 2)
+      {
         nbsv = 2;
+      }
 
       //    if(nbsu < 10) nbsu = 10;
       //    if(nbsv < 10) nbsv = 10;
       if (nbsu > aMaxNbSample)
+      {
         nbsu = aMaxNbSample;
+      }
       if (nbsv > aMaxNbSample)
+      {
         nbsv = aMaxNbSample;
+      }
     }
     break;
     case GeomAbs_Cone: {
@@ -179,7 +187,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
       aCircle = ElSLib::ConeVIso(aCone.Position(), aCone.RefRadius(), aCone.SemiAngle(), vsup);
 
       if (aRadius < aCircle.Radius())
+      {
         aRadius = aCircle.Radius();
+      }
       double aMaxAngle   = M_PI * 0.5;
       double aDeflection = 1.e-02;
 
@@ -199,13 +209,21 @@ void IntTools_TopolTool::ComputeSamplePoints()
       //     if(nbsv < 2) nbsv = 2;
 
       if (nbsu < 10)
+      {
         nbsu = 10;
+      }
       if (nbsv < 10)
+      {
         nbsv = 10;
+      }
       if (nbsu > aMaxNbSample)
+      {
         nbsu = aMaxNbSample;
+      }
       if (nbsv > aMaxNbSample)
+      {
         nbsv = aMaxNbSample;
+      }
     }
     break;
     case GeomAbs_Sphere:
@@ -260,13 +278,21 @@ void IntTools_TopolTool::ComputeSamplePoints()
         nbsv = int((vsup - vinf) / aMaxAngle);
       }
       if (nbsu < 10)
+      {
         nbsu = 10;
+      }
       if (nbsv < 10)
+      {
         nbsv = 10;
+      }
       if (nbsu > aMaxNbSample)
+      {
         nbsu = aMaxNbSample;
+      }
       if (nbsv > aMaxNbSample)
+      {
         nbsv = aMaxNbSample;
+      }
     }
     break;
     case GeomAbs_BezierSurface: {
@@ -280,20 +306,28 @@ void IntTools_TopolTool::ComputeSamplePoints()
       }
 
       if (nbsu < 10)
+      {
         nbsu = 10;
+      }
       if (nbsv < 10)
+      {
         nbsv = 10;
+      }
     }
     break;
     case GeomAbs_BSplineSurface: {
       nbsv = myS->NbVKnots();
       nbsv *= myS->VDegree();
       if (nbsv < 4)
+      {
         nbsv = 4;
+      }
       nbsu = myS->NbUKnots();
       nbsu *= myS->UDegree();
       if (nbsu < 4)
+      {
         nbsu = 4;
+      }
 
       if (nbsu > 10 || nbsv > 10)
       {
@@ -301,9 +335,13 @@ void IntTools_TopolTool::ComputeSamplePoints()
         Analyse(array2, nbsu, nbsv);
       }
       if (nbsu < 10)
+      {
         nbsu = 10;
+      }
       if (nbsv < 10)
+      {
         nbsv = 10;
+      }
       // Check anisotropy
       double anULen = (usup - uinf) / myS->UResolution(1.);
       double anVLen = (vsup - vinf) / myS->VResolution(1.);
@@ -325,9 +363,13 @@ void IntTools_TopolTool::ComputeSamplePoints()
       nbsv = (int)(vsup - vinf);
       nbsv /= 10;
       if (nbsv < 15)
+      {
         nbsv = 15;
+      }
       if (nbsv > aMaxNbSample)
+      {
         nbsv = aMaxNbSample;
+      }
     }
     break;
     case GeomAbs_SurfaceOfRevolution: {
@@ -402,7 +444,9 @@ void IntTools_TopolTool::SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d
     P3d = myS->Value(u, v);
   }
   else
+  {
     Adaptor3d_TopolTool::SamplePoint(Index, P2d, P3d);
+  }
 }
 
 //=================================================================================================
@@ -511,7 +555,9 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2, int& theNbSamplesU, int& 
         }
       }
       if (locnbch > nbch)
+      {
         nbch = locnbch;
+      }
     }
   }
   theNbSamplesU = nbch + 5;

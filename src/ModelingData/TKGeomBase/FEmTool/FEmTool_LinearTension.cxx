@@ -47,7 +47,9 @@ FEmTool_LinearTension::FEmTool_LinearTension(const int           WorkDegree,
   {
     // Calculating RefMatrix
     if (WorkDegree > WDeg)
+    {
       throw Standard_ConstructionError("Degree too high");
+    }
     Order                                = myOrder;
     int                         DerOrder = 1;
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
@@ -76,7 +78,9 @@ FEmTool_LinearTension::FEmTool_LinearTension(const int           WorkDegree,
 occ::handle<NCollection_HArray2<int>> FEmTool_LinearTension::DependenceTable() const
 {
   if (myCoeff.IsNull())
+  {
     throw Standard_DomainError("FEmTool_LinearTension::DependenceTable");
+  }
 
   occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
                                                                               myCoeff->UpperCol(),
@@ -85,7 +89,9 @@ occ::handle<NCollection_HArray2<int>> FEmTool_LinearTension::DependenceTable() c
                                                                               0);
   int                                   i;
   for (i = 1; i <= myCoeff->RowLength(); i++)
+  {
     DepTab->SetValue(i, i, 1);
+  }
 
   return DepTab;
 }
@@ -109,13 +115,17 @@ double FEmTool_LinearTension::Value()
     k1    = (i <= myOrder) ? i : i - myOrder - 1;
     mfact = std::pow(coeff, k1);
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim) * mfact;
+    }
   }
 
   for (i = degH + 1; i <= deg; i++)
   {
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim);
+    }
   }
 
   for (dim = 1; dim <= NbDim; dim++)
@@ -127,7 +137,9 @@ double FEmTool_LinearTension::Value()
       Jline = 0.5 * RefMatrix(i, i) * NewCoeff(dim, i);
 
       for (j = 0; j < i; j++)
+      {
         Jline += RefMatrix(i, j) * NewCoeff(dim, j);
+      }
 
       J += Jline * NewCoeff(dim, i);
     }
@@ -143,10 +155,14 @@ void FEmTool_LinearTension::Hessian(const int Dimension1, const int Dimension2, 
 
   if (Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow()
       || Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearTension::Hessian");
+  }
 
   if (DepTab->Value(Dimension1, Dimension2) == 0)
+  {
     throw Standard_DomainError("FEmTool_LinearTension::Hessian");
+  }
 
   int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
       degH = std::min(2 * myOrder + 1, deg);
@@ -168,7 +184,9 @@ void FEmTool_LinearTension::Hessian(const int Dimension1, const int Dimension2, 
       k2        = (j <= myOrder) ? j : j - myOrder - 1;
       H(i1, j1) = mfact * std::pow(coeff, k2) * RefMatrix(i, j);
       if (i != j)
+      {
         H(j1, i1) = H(i1, j1);
+      }
       j1++;
     }
     // Hermite*Jacobi part of matrix
@@ -191,7 +209,9 @@ void FEmTool_LinearTension::Hessian(const int Dimension1, const int Dimension2, 
     {
       H(i1, j1) = cteh3 * RefMatrix(i, j);
       if (i != j)
+      {
         H(j1, i1) = H(i1, j1);
+      }
       j1++;
     }
     i1++;
@@ -201,14 +221,18 @@ void FEmTool_LinearTension::Hessian(const int Dimension1, const int Dimension2, 
 void FEmTool_LinearTension::Gradient(const int Dimension, math_Vector& G)
 {
   if (Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearTension::Gradient");
+  }
 
   int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
   math_Vector X(0, deg);
   int         i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
+  {
     X(i) = myCoeff->Value(i1 + i, Dimension);
+  }
 
   math_Matrix H(0, deg, 0, deg);
   Hessian(Dimension, Dimension, H);

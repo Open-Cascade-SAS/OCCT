@@ -39,7 +39,9 @@ void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "measure_representation_item"))
+  {
     return;
+  }
 
   // --- inherited from representation_item : name ---
   occ::handle<TCollection_HAsciiString> aName;

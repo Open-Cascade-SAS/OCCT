@@ -50,7 +50,9 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
                        const bool                            GeomCtrl)
 {
   if (theResult.IsNull())
+  {
     return true;
+  }
   bool validate = false;
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> allFaces;
@@ -74,10 +76,14 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
   if (allFaces.IsEmpty())
   {
     if (validate)
+    {
       return true;
+    }
     BRepCheck_Analyzer ana(theResult, GeomCtrl);
     if (!ana.IsValid())
+    {
       return false;
+    }
   }
   else if (!validate)
   {
@@ -89,7 +95,9 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
       if (!allFaces.Contains(curf))
       {
         if (toCheck.IsNull())
+        {
           bB.MakeCompound(toCheck);
+        }
         BRepTools::Update(curf);
         bB.Add(toCheck, curf);
       }
@@ -154,7 +162,9 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
         // corrected
         ana.Init(toCheck, true);
         if (!ana.IsValid())
+        {
           return false;
+        }
       }
     }
   }
@@ -163,17 +173,27 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
   for (tEx.Init(theResult, TopAbs_SHELL); tEx.More(); tEx.Next())
   {
     if (HR.IsNull())
+    {
       HR = new BRepCheck_Shell(TopoDS::Shell(tEx.Current()));
+    }
     else
+    {
       HR->Init(tEx.Current());
+    }
     if (HR->Status().First() != BRepCheck_NoError)
+    {
       return false;
+    }
     if (HR->Orientation(false) != BRepCheck_NoError)
+    {
       return false;
+    }
     if (closedSolid)
     {
       if (HR->Closed() != BRepCheck_NoError)
+      {
         return false;
+      }
     }
   }
 

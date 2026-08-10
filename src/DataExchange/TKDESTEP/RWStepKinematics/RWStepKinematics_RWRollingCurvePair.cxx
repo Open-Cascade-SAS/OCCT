@@ -40,7 +40,9 @@ void RWStepKinematics_RWRollingCurvePair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "rolling_curve_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -156,7 +158,9 @@ void RWStepKinematics_RWRollingCurvePair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

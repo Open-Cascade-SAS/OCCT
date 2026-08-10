@@ -151,13 +151,21 @@ TEST(NCollection_SparseArrayTest, IteratorFunctions)
     ItemType value = anIt.Value();
 
     if (index == 5 && value == 50)
+    {
       found5 = true;
+    }
     else if (index == 10 && value == 100)
+    {
       found10 = true;
+    }
     else if (index == 20 && value == 200)
+    {
       found20 = true;
+    }
     else if (index == 30 && value == 300)
+    {
       found30 = true;
+    }
   }
 
   EXPECT_EQ(count, 4);

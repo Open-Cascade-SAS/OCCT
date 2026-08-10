@@ -146,7 +146,9 @@ void STEPConstruct_UnitContext::Init(const double                           Tol3
     lengthUnit = convUnit;
   }
   else
+  {
     lengthUnit = siUnit;
+  }
 
   occ::handle<StepBasic_SiUnitAndPlaneAngleUnit> radianUnit = new StepBasic_SiUnitAndPlaneAngleUnit;
   radianUnit->Init(false,
@@ -307,7 +309,9 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
 
   //: f3 abv 8 Apr 98: ProSTEP TR8 tr8_as_sd_sw: the case of unrecognized entity
   if (aUnit.IsNull())
+  {
     return -1;
+  }
 
   int    status    = 0;
   double theFactor = 0.;
@@ -357,7 +361,9 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
         }
         // Treat the SiUnitName
         if (!SiUnitNameFactor(theSIU, theSIUNF))
+        {
           status = 11; // et continue
+        }
       }
       else
       {
@@ -389,7 +395,9 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
 
     // Treat the SiUnitName
     if (!SiUnitNameFactor(theSIU, theSIUNF))
+    {
       status = 11;
+    }
 
     // final computation for lengthFactor
     theFactor = theSIPFactor * theSIUNF;
@@ -420,7 +428,9 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
     lengthFactor = parameter * 1000. / aCascadeUnit;
 #endif
     if (!lengthDone)
+    {
       lengthDone = true;
+    }
     else
     {
       status = 14;
@@ -477,9 +487,13 @@ int STEPConstruct_UnitContext::ComputeTolerance(
   int nbUncertainty = 0;
 
   if (!aContext.IsNull())
+  {
     nbUncertainty = aContext->NbUncertainty();
+  }
   else
+  {
     return 40;
+  }
 
   for (int un = 1; un <= nbUncertainty; un++)
   {
@@ -498,7 +512,9 @@ int STEPConstruct_UnitContext::ComputeTolerance(
       // Update it according to the Length Unit Factor
       // pdn r_47-sd.stp to choose minimal uncertainty
       if (theUncertainty > LengthUncertainty)
+      {
         theUncertainty = LengthUncertainty;
+      }
       hasUncertainty = true;
     }
     else
@@ -513,7 +529,8 @@ int STEPConstruct_UnitContext::ComputeTolerance(
         // Update it according to the Length Unit Factor
         // pdn r_47-sd.stp to choose minimal uncertainty
         // clang-format off
-	if(theUncertainty > LengthUncertainty) theUncertainty =  LengthUncertainty; // *lengthFactor; fait par appelant
+	if(theUncertainty > LengthUncertainty) { theUncertainty =  LengthUncertainty; // *lengthFactor; fait par appelant
+}
         // clang-format on
         hasUncertainty = true;
       }

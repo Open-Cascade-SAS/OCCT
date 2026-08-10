@@ -40,7 +40,9 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "applied_group_assignment"))
+  {
     return;
+  }
 
   // Inherited fields of GroupAssignment
 

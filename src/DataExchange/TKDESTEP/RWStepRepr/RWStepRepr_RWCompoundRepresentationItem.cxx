@@ -32,7 +32,9 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "compound_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -57,7 +59,9 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -88,5 +92,7 @@ void RWStepRepr_RWCompoundRepresentationItem::Share(
 {
   int i, nb = ent->NbItemElement();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->ItemElementValue(i));
+  }
 }

@@ -29,7 +29,9 @@ void RWStepShape_RWFacetedBrep::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "faceted_brep"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

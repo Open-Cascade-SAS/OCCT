@@ -37,7 +37,9 @@ void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& theRange)
   GetReport()->Merge(myFeatureRemovalTool.GetReport());
 
   if (HasErrors())
+  {
     return;
+  }
 
   // Set done state
   Done();

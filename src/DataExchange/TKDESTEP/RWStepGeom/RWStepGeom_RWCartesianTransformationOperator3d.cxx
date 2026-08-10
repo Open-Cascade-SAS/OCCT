@@ -37,7 +37,9 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 8, ach, "cartesian_transformation_operator_3d"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

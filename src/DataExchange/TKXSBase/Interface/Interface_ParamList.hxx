@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Interface_FileParameter.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
@@ -62,7 +62,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Interface_ParamList, Standard_Transient)
 
 private:
-  NCollection_Vector<Interface_FileParameter> myVector;
+  NCollection_DynamicArray<Interface_FileParameter> myVector;
 };
 
 #include <Interface_ParamList.lxx>

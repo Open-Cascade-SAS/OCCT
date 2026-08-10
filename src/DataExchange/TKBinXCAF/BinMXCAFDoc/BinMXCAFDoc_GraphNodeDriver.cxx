@@ -48,7 +48,9 @@ bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSou
 
   // Read Fathers
   if (!(theSource >> anID))
+  {
     return false;
+  }
   while (anID != -1)
   {
     occ::handle<XCAFDoc_GraphNode> aNode;
@@ -64,12 +66,16 @@ bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSou
     aT->SetFather(aNode);
 
     if (!(theSource >> anID))
+    {
       return false;
+    }
   }
 
   // Read Children
   if (!(theSource >> anID))
+  {
     return false;
+  }
   while (anID != -1)
   {
     occ::handle<XCAFDoc_GraphNode> aNode;
@@ -85,13 +91,17 @@ bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSou
     aT->SetChild(aNode);
 
     if (!(theSource >> anID))
+    {
       return false;
+    }
   }
 
   // Graph id
   Standard_GUID aGUID;
   if (!(theSource >> aGUID))
+  {
     return false;
+  }
   aT->SetGraphID(aGUID);
 
   return true;

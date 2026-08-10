@@ -39,7 +39,9 @@ void BOPTest::APICommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -165,7 +167,9 @@ int bapibop(Draw_Interpretor& di, int n, const char** a)
 
   // Store the history of operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(pBuilder->History());
+  }
 
   if (pBuilder->HasWarnings())
   {
@@ -234,7 +238,9 @@ int bapibuild(Draw_Interpretor& di, int n, const char** a)
 
   // Store the history of operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aBuilder.History());
+  }
 
   if (aBuilder.HasWarnings())
   {
@@ -295,7 +301,9 @@ int bapisplit(Draw_Interpretor& di, int n, const char** a)
 
   // Store the history of operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aSplitter.History());
+  }
 
   // check warning status
   if (aSplitter.HasWarnings())

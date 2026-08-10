@@ -35,7 +35,9 @@ void RWStepDimTol_RWDatumTarget::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "datum_target"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

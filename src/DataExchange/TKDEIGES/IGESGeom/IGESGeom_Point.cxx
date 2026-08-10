@@ -43,7 +43,9 @@ gp_Pnt IGESGeom_Point::TransformedValue() const
 {
   gp_XYZ Val = thePoint;
   if (HasTransf())
+  {
     Location().Transforms(Val);
+  }
   gp_Pnt transVal(Val);
   return transVal;
 }

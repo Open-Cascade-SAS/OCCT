@@ -32,7 +32,9 @@ Geom2dConvert_BSplineCurveKnotSplitting::Geom2dConvert_BSplineCurveKnotSplitting
 {
 
   if (ContinuityRange < 0)
+  {
     throw Standard_RangeError();
+  }
 
   int FirstIndex = BasisCurve->FirstUKnotIndex();
   int LastIndex  = BasisCurve->LastUKnotIndex();

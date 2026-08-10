@@ -65,6 +65,7 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_COMMON_MATERIAL,
   OpenGl_OCCT_ALPHA_CUTOFF,
   OpenGl_OCCT_COLOR,
+  OpenGl_OCCT_BACK_COLOR,
 
   // Weighted, Blended Order-Independent Transparency rendering state
   OpenGl_OCCT_OIT_OUTPUT,

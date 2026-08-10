@@ -74,7 +74,9 @@ bool StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theShape)
       // have to use BRep_Tool::IsClosed() because it checks the face connectivity
       // inside the shape
       if (!BRep_Tool::IsClosed(theShape))
+      {
         return false;
+      }
 
       for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
       {

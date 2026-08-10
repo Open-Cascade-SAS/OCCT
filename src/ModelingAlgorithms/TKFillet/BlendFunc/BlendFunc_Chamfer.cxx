@@ -67,7 +67,9 @@ bool BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const double Tol)
   issol      = issol && corde2.IsSolution(Sol2, Tol);
   tol        = Tol;
   if (issol)
+  {
     distmin = std::min(distmin, corde1.PointOnS().Distance(corde2.PointOnS()));
+  }
 
   return issol;
 }
@@ -215,14 +217,22 @@ void BlendFunc_Chamfer::Tangent(const double U1,
     revL = true;
   }
   if ((choix == 4) || (choix == 7))
+  {
     revL = true;
+  }
   if ((choix == 3) || (choix == 8))
+  {
     revF = true;
+  }
 
   if (revF)
+  {
     TgF.Reverse();
+  }
   if (revL)
+  {
     TgL.Reverse();
+  }
 }
 
 //=======================================================================

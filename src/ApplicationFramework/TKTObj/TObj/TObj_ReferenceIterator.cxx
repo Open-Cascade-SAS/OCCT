@@ -44,7 +44,9 @@ void TObj_ReferenceIterator::MakeStep()
     {
       myObject = A->Get();
       if (!myType.IsNull() && !myObject.IsNull() && !myObject->IsKind(myType))
+      {
         continue;
+      }
 
       myNode = L;
     }

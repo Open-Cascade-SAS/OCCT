@@ -35,9 +35,13 @@ void OSD_Error::Reset()
 bool OSD_Error::Failed() const
 {
   if (myErrno == 0)
+  {
     return (false);
+  }
   else
+  {
     return (true);
+  }
 }
 
 void OSD_Error::SetValue(const int errcode, const int from, const TCollection_AsciiString& message)
@@ -57,7 +61,9 @@ void OSD_Error::Perror()
   TCollection_AsciiString buffer;
 
   if (myErrno == 0)
+  {
     return;
+  }
 
   buffer += " :\n ";
   extCode = ERR_SURPRISE;
@@ -386,7 +392,9 @@ void OSD_Error::Perror()
         case OSD_WFileNode:
         case OSD_WFile:
           if (myMessage != "Open")
+          {
             buffer += "File doesn't exist or";
+          }
           buffer += "Invalid path (empty string)";
           extCode = ERR_NOENT;
           break;

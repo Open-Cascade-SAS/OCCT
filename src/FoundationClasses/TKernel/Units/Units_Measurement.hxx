@@ -124,8 +124,7 @@ public:
 
 private:
   double                   themeasurement;
-  occ::handle<Units_Token> thetoken;
-  bool                     myHasToken;
+  occ::handle<Units_Token> myToken;
 };
 
 #endif // _Units_Measurement_HeaderFile

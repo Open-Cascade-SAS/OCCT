@@ -15,7 +15,7 @@
 #define NCollection_DynamicArray_HeaderFile
 
 #include <NCollection_Allocator.hxx>
-#include <NCollection_BasePointerVector.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -25,7 +25,6 @@
 #include <NCollection_Iterator.hxx>
 #include <NCollection_OccAllocator.hxx>
 #include <StdFail_NotDone.hxx>
-#include <NCollection_IndexedIterator.hxx>
 
 #include <cstring>
 #include <locale>
@@ -61,8 +60,8 @@ public:
   DEFINE_NCOLLECTION_ALLOC;
 
 public:
-  typedef NCollection_OccAllocator<TheItemType> allocator_type;
-  typedef NCollection_BasePointerVector         vector;
+  typedef NCollection_OccAllocator<TheItemType>  allocator_type;
+  typedef NCollection_LinearVector<TheItemType*> vector;
 
 public:
   // Define various type aliases for convenience
@@ -70,19 +69,250 @@ public:
   using size_type       = size_t;
   using difference_type = size_t;
   using pointer         = TheItemType*;
-  using const_pointer   = TheItemType&;
+  using const_pointer   = const TheItemType*;
   using reference       = TheItemType&;
   using const_reference = const TheItemType&;
 
 public:
-  using iterator       = NCollection_IndexedIterator<std::random_access_iterator_tag,
-                                                     NCollection_DynamicArray,
-                                                     value_type,
-                                                     false>;
-  using const_iterator = NCollection_IndexedIterator<std::random_access_iterator_tag,
-                                                     NCollection_DynamicArray,
-                                                     value_type,
-                                                     true>;
+  template <bool IsConstant>
+  class DynamicIterator
+  {
+  public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type        = TheItemType;
+    using difference_type   = ptrdiff_t;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
+
+  public:
+    DynamicIterator() noexcept
+        : myOwner(nullptr),
+          myIndex(0),
+          myUsedSize(0),
+          myInternalSize(1),
+          myBlockShift(0),
+          myBlockMask(0),
+          myBlockIndex(0),
+          myCurrPtr(nullptr),
+          myBlockEnd(nullptr)
+    {
+    }
+
+    DynamicIterator(const NCollection_DynamicArray& theArray) noexcept
+        : DynamicIterator(0, theArray)
+    {
+    }
+
+    DynamicIterator(const size_t theIndex, const NCollection_DynamicArray& theArray) noexcept
+        : myOwner(&theArray),
+          myIndex(theIndex),
+          myUsedSize(theArray.myUsedSize),
+          myInternalSize(theArray.myInternalSize),
+          myBlockShift(theArray.myBlockShift),
+          myBlockMask(theArray.myBlockMask),
+          myBlockIndex(0),
+          myCurrPtr(nullptr),
+          myBlockEnd(nullptr)
+    {
+      setIndex(theIndex);
+    }
+
+    DynamicIterator(const DynamicIterator<false>& theOther) noexcept
+        : myOwner(theOther.myOwner),
+          myIndex(theOther.myIndex),
+          myUsedSize(theOther.myUsedSize),
+          myInternalSize(theOther.myInternalSize),
+          myBlockShift(theOther.myBlockShift),
+          myBlockMask(theOther.myBlockMask),
+          myBlockIndex(theOther.myBlockIndex),
+          myCurrPtr(theOther.myCurrPtr),
+          myBlockEnd(theOther.myBlockEnd)
+    {
+    }
+
+    DynamicIterator& operator=(const DynamicIterator<false>& theOther) noexcept
+    {
+      myOwner        = theOther.myOwner;
+      myIndex        = theOther.myIndex;
+      myUsedSize     = theOther.myUsedSize;
+      myInternalSize = theOther.myInternalSize;
+      myBlockShift   = theOther.myBlockShift;
+      myBlockMask    = theOther.myBlockMask;
+      myBlockIndex   = theOther.myBlockIndex;
+      myCurrPtr      = theOther.myCurrPtr;
+      myBlockEnd     = theOther.myBlockEnd;
+      return *this;
+    }
+
+  public:
+    bool operator==(const DynamicIterator& theOther) const noexcept
+    {
+      return myOwner == theOther.myOwner && myIndex == theOther.myIndex;
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator==(const DynamicIterator<theOtherIsConstant>& theOther) const noexcept
+    {
+      return myOwner == theOther.myOwner && myIndex == theOther.myIndex;
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator!=(const DynamicIterator<theOtherIsConstant>& theOther) const noexcept
+    {
+      return myOwner != theOther.myOwner || myIndex != theOther.myIndex;
+    }
+
+    bool operator!=(const DynamicIterator& theOther) const noexcept { return !(*this == theOther); }
+
+    reference operator*() const noexcept { return *myCurrPtr; }
+
+    pointer operator->() const noexcept { return myCurrPtr; }
+
+    DynamicIterator& operator++() noexcept
+    {
+      ++myIndex;
+      ++myCurrPtr;
+      if (myIndex >= myUsedSize)
+      {
+        myCurrPtr  = nullptr;
+        myBlockEnd = nullptr;
+      }
+      else if (myCurrPtr == myBlockEnd)
+      {
+        ++myBlockIndex;
+        myCurrPtr  = blockStart(myBlockIndex);
+        myBlockEnd = myCurrPtr + myInternalSize;
+      }
+      return *this;
+    }
+
+    DynamicIterator operator++(int) noexcept
+    {
+      DynamicIterator theOld(*this);
+      ++(*this);
+      return theOld;
+    }
+
+    DynamicIterator& operator--() noexcept
+    {
+      if (myIndex == myUsedSize)
+      {
+        setIndex(myUsedSize - 1);
+        return *this;
+      }
+
+      --myIndex;
+      if (myCurrPtr > blockStart(myBlockIndex))
+      {
+        --myCurrPtr;
+      }
+      else
+      {
+        --myBlockIndex;
+        myCurrPtr  = blockStart(myBlockIndex) + (myInternalSize - 1);
+        myBlockEnd = blockStart(myBlockIndex) + myInternalSize;
+      }
+      return *this;
+    }
+
+    DynamicIterator operator--(int) noexcept
+    {
+      DynamicIterator theOld(*this);
+      --(*this);
+      return theOld;
+    }
+
+    DynamicIterator& operator+=(const difference_type theOffset) noexcept
+    {
+      setIndex(static_cast<size_t>(static_cast<difference_type>(myIndex) + theOffset));
+      return *this;
+    }
+
+    DynamicIterator operator+(const difference_type theOffset) const noexcept
+    {
+      DynamicIterator aTemp(*this);
+      aTemp += theOffset;
+      return aTemp;
+    }
+
+    DynamicIterator& operator-=(const difference_type theOffset) noexcept
+    {
+      return *this += -theOffset;
+    }
+
+    DynamicIterator operator-(const difference_type theOffset) const noexcept
+    {
+      DynamicIterator aTemp(*this);
+      aTemp += -theOffset;
+      return aTemp;
+    }
+
+    difference_type operator-(const DynamicIterator& theOther) const noexcept
+    {
+      return static_cast<difference_type>(myIndex) - static_cast<difference_type>(theOther.myIndex);
+    }
+
+    reference operator[](const difference_type theOffset) const noexcept
+    {
+      return *(*this + theOffset);
+    }
+
+    bool operator<(const DynamicIterator& theOther) const noexcept
+    {
+      return (*this - theOther) < 0;
+    }
+
+    bool operator>(const DynamicIterator& theOther) const noexcept { return theOther < *this; }
+
+    bool operator<=(const DynamicIterator& theOther) const noexcept { return !(theOther < *this); }
+
+    bool operator>=(const DynamicIterator& theOther) const noexcept { return !(*this < theOther); }
+
+    friend DynamicIterator operator+(const difference_type  theOffset,
+                                     const DynamicIterator& theIter) noexcept
+    {
+      return theIter + theOffset;
+    }
+
+    friend class DynamicIterator<!IsConstant>;
+
+  private:
+    void setIndex(const size_t theIndex) noexcept
+    {
+      myIndex = theIndex;
+      if (myIndex >= myUsedSize || myOwner == nullptr)
+      {
+        myCurrPtr    = nullptr;
+        myBlockEnd   = nullptr;
+        myBlockIndex = 0;
+        return;
+      }
+
+      myBlockIndex             = myIndex >> myBlockShift;
+      const size_t aLocalIndex = myIndex & myBlockMask;
+      myCurrPtr                = blockStart(myBlockIndex) + aLocalIndex;
+      myBlockEnd               = blockStart(myBlockIndex) + myInternalSize;
+    }
+
+    TheItemType* blockStart(const size_t theBlockIndex) const noexcept
+    {
+      return myOwner->getArray()[theBlockIndex];
+    }
+
+  private:
+    const NCollection_DynamicArray* myOwner;
+    size_t                          myIndex;
+    size_t                          myUsedSize;
+    size_t                          myInternalSize;
+    size_t                          myBlockShift;
+    size_t                          myBlockMask;
+    size_t                          myBlockIndex;
+    TheItemType*                    myCurrPtr;
+    TheItemType*                    myBlockEnd;
+  };
+
+  using iterator       = DynamicIterator<false>;
+  using const_iterator = DynamicIterator<true>;
   using Iterator       = NCollection_Iterator<NCollection_DynamicArray<TheItemType>>;
 
 public:
@@ -99,27 +329,51 @@ public:
   const_iterator cend() const noexcept { return const_iterator(myUsedSize, *this); }
 
 public: //! @name public methods
-  NCollection_DynamicArray(const int theIncrement = 256)
+  NCollection_DynamicArray(const size_t theIncrement)
       : myAlloc(),
-        myInternalSize(theIncrement),
+        myInternalSize(roundUpPow2(theIncrement)),
+        myBlockShift(log2Pow2(myInternalSize)),
+        myBlockMask(myInternalSize - 1),
         myUsedSize(0)
   {
   }
 
+  NCollection_DynamicArray(const int theIncrement = 256)
+      : NCollection_DynamicArray(static_cast<size_t>(theIncrement < 1 ? 1 : theIncrement))
+  {
+  }
+
   // Constructor taking an allocator
-  explicit NCollection_DynamicArray(const int                                     theIncrement,
+  explicit NCollection_DynamicArray(const size_t                                  theIncrement,
                                     const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : myAlloc(allocator_type(theAllocator)),
-        myInternalSize(theIncrement),
+        myInternalSize(roundUpPow2(theIncrement)),
+        myBlockShift(log2Pow2(myInternalSize)),
+        myBlockMask(myInternalSize - 1),
         myUsedSize(0)
   {
   }
 
+  explicit NCollection_DynamicArray(const int                                     theIncrement,
+                                    const occ::handle<NCollection_BaseAllocator>& theAllocator)
+      : NCollection_DynamicArray(static_cast<size_t>(theIncrement < 1 ? 1 : theIncrement),
+                                 theAllocator)
+  {
+  }
+
   // Constructor taking an allocator
-  explicit NCollection_DynamicArray(const int theIncrement, const allocator_type& theAllocator)
+  explicit NCollection_DynamicArray(const size_t theIncrement, const allocator_type& theAllocator)
       : myAlloc(theAllocator),
-        myInternalSize(theIncrement),
+        myInternalSize(roundUpPow2(theIncrement)),
+        myBlockShift(log2Pow2(myInternalSize)),
+        myBlockMask(myInternalSize - 1),
         myUsedSize(0)
+  {
+  }
+
+  explicit NCollection_DynamicArray(const int theIncrement, const allocator_type& theAllocator)
+      : NCollection_DynamicArray(static_cast<size_t>(theIncrement < 1 ? 1 : theIncrement),
+                                 theAllocator)
   {
   }
 
@@ -128,6 +382,8 @@ public: //! @name public methods
       : myContainer(theOther.myContainer),
         myAlloc(theOther.myAlloc),
         myInternalSize(theOther.myInternalSize),
+        myBlockShift(theOther.myBlockShift),
+        myBlockMask(theOther.myBlockMask),
         myUsedSize(theOther.myUsedSize)
   {
     copyDate();
@@ -137,6 +393,8 @@ public: //! @name public methods
       : myContainer(std::move(theOther.myContainer)),
         myAlloc(theOther.myAlloc),
         myInternalSize(theOther.myInternalSize),
+        myBlockShift(theOther.myBlockShift),
+        myBlockMask(theOther.myBlockMask),
         myUsedSize(theOther.myUsedSize)
   {
     theOther.myUsedSize = 0;
@@ -144,11 +402,11 @@ public: //! @name public methods
 
   ~NCollection_DynamicArray() { Clear(true); }
 
-  //! Total number of items
-  int Length() const noexcept { return static_cast<int>(myUsedSize); }
+  //! Total number of items in the vector.
+  size_t Size() const noexcept { return myUsedSize; }
 
-  //! Total number of items in the vector
-  int Size() const noexcept { return Length(); }
+  //! Total number of items (legacy int-returning API).
+  int Length() const noexcept { return static_cast<int>(myUsedSize); }
 
   //! Method for consistency with other collections.
   //! @return Lower bound (inclusive) for iteration.
@@ -156,7 +414,7 @@ public: //! @name public methods
 
   //! Method for consistency with other collections.
   //! @return Upper bound (inclusive) for iteration.
-  int Upper() const noexcept { return Length() - 1; }
+  int Upper() const noexcept { return static_cast<int>(myUsedSize) - 1; }
 
   //! Empty query
   bool IsEmpty() const noexcept { return myUsedSize == 0; }
@@ -180,6 +438,8 @@ public: //! @name public methods
     }
     myContainer    = theOther.myContainer;
     myInternalSize = theOther.myInternalSize;
+    myBlockShift   = theOther.myBlockShift;
+    myBlockMask    = theOther.myBlockMask;
     myUsedSize     = theOther.myUsedSize;
     copyDate();
     return *this;
@@ -195,6 +455,8 @@ public: //! @name public methods
     myContainer         = std::move(theOther.myContainer);
     myAlloc             = theOther.myAlloc;
     myInternalSize      = theOther.myInternalSize;
+    myBlockShift        = theOther.myBlockShift;
+    myBlockMask         = theOther.myBlockMask;
     myUsedSize          = theOther.myUsedSize;
     theOther.myUsedSize = 0;
     return *this;
@@ -237,59 +499,93 @@ public: //! @name public methods
   }
 
   //! Insert a value after the element at theIndex, shifting subsequent elements right.
-  //! @param theIndex index after which to insert (must be in [0, Length()-1])
+  //! @param theIndex index after which to insert (must be in [0, Size()-1])
   //! @param theValue value to insert
   //! @return reference to the inserted element
-  reference InsertAfter(const int theIndex, const TheItemType& theValue)
+  reference InsertAfter(const size_t theIndex, const TheItemType& theValue)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+    Standard_OutOfRange_Raise_if(theIndex >= myUsedSize,
                                  "NCollection_DynamicArray::InsertAfter: index out of range");
-    // Grow by one element at the end.
     Appended();
-    // Shift elements [theIndex+1 .. myUsedSize-2] right by one position.
-    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+    for (size_t i = myUsedSize - 1; i > theIndex + 1; --i)
+    {
       at(i) = std::move(at(i - 1));
-    at(static_cast<size_t>(theIndex) + 1) = theValue;
-    return at(static_cast<size_t>(theIndex) + 1);
+    }
+    at(theIndex + 1) = theValue;
+    return at(theIndex + 1);
   }
 
   //! Insert a value after the element at theIndex (move version).
-  reference InsertAfter(const int theIndex, TheItemType&& theValue)
+  reference InsertAfter(const size_t theIndex, TheItemType&& theValue)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+    Standard_OutOfRange_Raise_if(theIndex >= myUsedSize,
                                  "NCollection_DynamicArray::InsertAfter: index out of range");
     Appended();
-    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+    for (size_t i = myUsedSize - 1; i > theIndex + 1; --i)
+    {
       at(i) = std::move(at(i - 1));
-    at(static_cast<size_t>(theIndex) + 1) = std::forward<TheItemType>(theValue);
-    return at(static_cast<size_t>(theIndex) + 1);
+    }
+    at(theIndex + 1) = std::forward<TheItemType>(theValue);
+    return at(theIndex + 1);
+  }
+
+  reference InsertAfter(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    return InsertAfter(static_cast<size_t>(theIndex), theValue);
+  }
+
+  reference InsertAfter(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    return InsertAfter(static_cast<size_t>(theIndex), std::forward<TheItemType>(theValue));
   }
 
   //! Insert a value before the element at theIndex, shifting it and subsequent elements right.
-  //! @param theIndex index before which to insert (must be in [0, Length()-1])
+  //! @param theIndex index before which to insert (must be in [0, Size()-1])
   //! @param theValue value to insert
   //! @return reference to the inserted element
-  reference InsertBefore(const int theIndex, const TheItemType& theValue)
+  reference InsertBefore(const size_t theIndex, const TheItemType& theValue)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+    Standard_OutOfRange_Raise_if(theIndex >= myUsedSize,
                                  "NCollection_DynamicArray::InsertBefore: index out of range");
     Appended();
-    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+    for (size_t i = myUsedSize - 1; i > theIndex; --i)
+    {
       at(i) = std::move(at(i - 1));
-    at(static_cast<size_t>(theIndex)) = theValue;
-    return at(static_cast<size_t>(theIndex));
+    }
+    at(theIndex) = theValue;
+    return at(theIndex);
   }
 
   //! Insert a value before the element at theIndex (move version).
-  reference InsertBefore(const int theIndex, TheItemType&& theValue)
+  reference InsertBefore(const size_t theIndex, TheItemType&& theValue)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+    Standard_OutOfRange_Raise_if(theIndex >= myUsedSize,
                                  "NCollection_DynamicArray::InsertBefore: index out of range");
     Appended();
-    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+    for (size_t i = myUsedSize - 1; i > theIndex; --i)
+    {
       at(i) = std::move(at(i - 1));
-    at(static_cast<size_t>(theIndex)) = std::forward<TheItemType>(theValue);
-    return at(static_cast<size_t>(theIndex));
+    }
+    at(theIndex) = std::forward<TheItemType>(theValue);
+    return at(theIndex);
+  }
+
+  reference InsertBefore(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    return InsertBefore(static_cast<size_t>(theIndex), theValue);
+  }
+
+  reference InsertBefore(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    return InsertBefore(static_cast<size_t>(theIndex), std::forward<TheItemType>(theValue));
   }
 
   void EraseLast()
@@ -339,25 +635,20 @@ public: //! @name public methods
   //! @param theArgs arguments forwarded to TheItemType constructor
   //! @return reference to the newly constructed item
   template <typename... Args>
-  reference EmplaceValue(const int theIndex, Args&&... theArgs)
+  reference EmplaceValue(const size_t theIndex, Args&&... theArgs)
   {
-    const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
-    const size_t anIndex   = static_cast<size_t>(theIndex);
-    for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
-    {
-      expandArray();
-    }
-    const bool isExisting = anIndex < myUsedSize;
+    ensureStorageForIndex(theIndex);
+    const bool isExisting = theIndex < myUsedSize;
     if (!isExisting)
     {
-      for (; myUsedSize < anIndex; myUsedSize++)
+      for (; myUsedSize < theIndex; myUsedSize++)
       {
         pointer aPnt = &at(myUsedSize);
         myAlloc.construct(aPnt);
       }
       myUsedSize++;
     }
-    pointer aPnt = &at(anIndex);
+    pointer aPnt = &at(theIndex);
     if (isExisting)
     {
       if constexpr (!std::is_trivially_destructible_v<TheItemType>)
@@ -369,18 +660,35 @@ public: //! @name public methods
     return *aPnt;
   }
 
-  //! Operator() - query the const value
-  const_reference operator()(const int theIndex) const noexcept { return Value(theIndex); }
+  template <typename... Args>
+  reference EmplaceValue(const int theIndex, Args&&... theArgs)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::EmplaceValue: index out of range");
+    return EmplaceValue(static_cast<size_t>(theIndex), std::forward<Args>(theArgs)...);
+  }
 
-  //! Operator[] - query the const value
-  const_reference operator[](const int theIndex) const noexcept { return Value(theIndex); }
+  //! Operator() - query the const value
+  const_reference operator()(const size_t theIndex) const noexcept { return at(theIndex); }
+
+  const_reference operator()(const int theIndex) const noexcept
+  {
+    return at(static_cast<size_t>(theIndex));
+  }
 
   //! Operator[] - query the const value
   const_reference operator[](const size_t theIndex) const noexcept { return at(theIndex); }
 
+  const_reference operator[](const int theIndex) const noexcept
+  {
+    return at(static_cast<size_t>(theIndex));
+  }
+
+  const_reference Value(const size_t theIndex) const noexcept { return at(theIndex); }
+
   const_reference Value(const int theIndex) const noexcept
   {
-    return at(static_cast<int>(theIndex));
+    return at(static_cast<size_t>(theIndex));
   }
 
   //! @return first element
@@ -396,36 +704,34 @@ public: //! @name public methods
   reference ChangeLast() noexcept { return at(myUsedSize - 1); }
 
   //! Operator() - query the value
-  reference operator()(const int theIndex) noexcept { return ChangeValue(theIndex); }
+  reference operator()(const size_t theIndex) noexcept { return at(theIndex); }
 
-  //! Operator[] - query the value
-  reference operator[](const int theIndex) noexcept { return ChangeValue(theIndex); }
+  reference operator()(const int theIndex) noexcept { return at(static_cast<size_t>(theIndex)); }
 
   //! Operator[] - query the value
   reference operator[](const size_t theIndex) noexcept { return at(theIndex); }
 
-  reference ChangeValue(const int theIndex) noexcept { return at(static_cast<int>(theIndex)); }
+  reference operator[](const int theIndex) noexcept { return at(static_cast<size_t>(theIndex)); }
+
+  reference ChangeValue(const size_t theIndex) noexcept { return at(theIndex); }
+
+  reference ChangeValue(const int theIndex) noexcept { return at(static_cast<size_t>(theIndex)); }
 
   //! SetValue () - set or append a value
-  reference SetValue(const int theIndex, const TheItemType& theValue)
+  reference SetValue(const size_t theIndex, const TheItemType& theValue)
   {
-    const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
-    const size_t anIndex   = static_cast<size_t>(theIndex);
-    for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
-    {
-      expandArray();
-    }
-    const bool isExisting = anIndex < myUsedSize;
+    ensureStorageForIndex(theIndex);
+    const bool isExisting = theIndex < myUsedSize;
     if (!isExisting)
     {
-      for (; myUsedSize < anIndex; myUsedSize++)
+      for (; myUsedSize < theIndex; myUsedSize++)
       {
         pointer aPnt = &at(myUsedSize);
         myAlloc.construct(aPnt);
       }
       myUsedSize++;
     }
-    pointer aPnt = &at(anIndex);
+    pointer aPnt = &at(theIndex);
     if (isExisting)
     {
       if constexpr (!std::is_trivially_destructible_v<TheItemType>)
@@ -438,25 +744,20 @@ public: //! @name public methods
   }
 
   //! SetValue () - set or append a value
-  reference SetValue(const int theIndex, TheItemType&& theValue)
+  reference SetValue(const size_t theIndex, TheItemType&& theValue)
   {
-    const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
-    const size_t anIndex   = static_cast<size_t>(theIndex);
-    for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
-    {
-      expandArray();
-    }
-    const bool isExisting = anIndex < myUsedSize;
+    ensureStorageForIndex(theIndex);
+    const bool isExisting = theIndex < myUsedSize;
     if (!isExisting)
     {
-      for (; myUsedSize < anIndex; myUsedSize++)
+      for (; myUsedSize < theIndex; myUsedSize++)
       {
         pointer aPnt = &at(myUsedSize);
         myAlloc.construct(aPnt);
       }
       myUsedSize++;
     }
-    pointer aPnt = &at(anIndex);
+    pointer aPnt = &at(theIndex);
     if (isExisting)
     {
       if constexpr (!std::is_trivially_destructible_v<TheItemType>)
@@ -466,6 +767,20 @@ public: //! @name public methods
     }
     myAlloc.construct(aPnt, std::forward<TheItemType>(theValue));
     return *aPnt;
+  }
+
+  reference SetValue(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::SetValue: index out of range");
+    return SetValue(static_cast<size_t>(theIndex), theValue);
+  }
+
+  reference SetValue(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_DynamicArray::SetValue: index out of range");
+    return SetValue(static_cast<size_t>(theIndex), std::forward<TheItemType>(theValue));
   }
 
   void Clear(const bool theReleaseMemory = false)
@@ -485,27 +800,61 @@ public: //! @name public methods
         }
       }
       if (theReleaseMemory)
+      {
         myAlloc.deallocate(aCurStart, myInternalSize);
+      }
     }
     if (theReleaseMemory)
+    {
       myContainer.Clear(theReleaseMemory);
+    }
     myUsedSize = 0;
   }
 
-  void SetIncrement(const int theIncrement) noexcept
+  void SetIncrement(const size_t theIncrement) noexcept
   {
     if (myUsedSize != 0)
     {
       return;
     }
-    myInternalSize = static_cast<size_t>(theIncrement);
+    myInternalSize = roundUpPow2(theIncrement);
+    myBlockShift   = log2Pow2(myInternalSize);
+    myBlockMask    = myInternalSize - 1;
+  }
+
+  void SetIncrement(const int theIncrement) noexcept
+  {
+    SetIncrement(static_cast<size_t>(theIncrement < 1 ? 1 : theIncrement));
   }
 
   friend iterator;
   friend const_iterator;
 
 protected:
-  size_t availableSize() const noexcept { return myContainer.Size() * myInternalSize; }
+  size_t availableSize() const noexcept
+  {
+    return static_cast<size_t>(myContainer.Size()) << myBlockShift;
+  }
+
+  //! Ensure storage blocks exist to access theIndex.
+  void ensureStorageForIndex(const size_t theIndex)
+  {
+    const size_t aRequiredBlocks = (theIndex >> myBlockShift) + 1;
+    ensureBlockCount(aRequiredBlocks);
+  }
+
+  //! Ensure at least theBlockCount blocks are allocated in myContainer.
+  void ensureBlockCount(const size_t theBlockCount)
+  {
+    if (theBlockCount > myContainer.Capacity())
+    {
+      myContainer.Reserve(theBlockCount);
+    }
+    while (myContainer.Size() < theBlockCount)
+    {
+      expandArray();
+    }
+  }
 
   TheItemType* expandArray()
   {
@@ -516,12 +865,12 @@ protected:
 
   reference at(const size_t theInd) noexcept
   {
-    return getArray()[theInd / myInternalSize][theInd % myInternalSize];
+    return getArray()[theInd >> myBlockShift][theInd & myBlockMask];
   }
 
   const_reference at(const size_t theInd) const noexcept
   {
-    return getArray()[theInd / myInternalSize][theInd % myInternalSize];
+    return getArray()[theInd >> myBlockShift][theInd & myBlockMask];
   }
 
   void copyDate()
@@ -551,13 +900,53 @@ protected:
     }
   }
 
-  //! Wrapper to extract array
-  TheItemType** getArray() const noexcept { return (TheItemType**)myContainer.GetArray(); }
+  //! Wrapper to extract array of block pointers.
+  TheItemType** getArray() noexcept { return myContainer.IsEmpty() ? nullptr : &myContainer[0]; }
+
+  //! Wrapper to extract array of block pointers (const overload).
+  TheItemType* const* getArray() const noexcept
+  {
+    return myContainer.IsEmpty() ? nullptr : &myContainer[0];
+  }
+
+  //! Round up to the nearest power of 2 (returns theValue if already power of 2).
+  //! Works correctly for both 32-bit and 64-bit size_t.
+  static constexpr size_t roundUpPow2(const size_t theValue) noexcept
+  {
+    size_t v = (theValue < 1 ? 1 : theValue);
+    v--;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    if constexpr (sizeof(size_t) > 4)
+    {
+      v |= v >> 32;
+    }
+    v++;
+    return v;
+  }
+
+  //! Compute log2 of a power-of-2 value.
+  static constexpr size_t log2Pow2(const size_t theValue) noexcept
+  {
+    size_t aShift = 0;
+    size_t v      = theValue;
+    while (v > 1)
+    {
+      v >>= 1;
+      ++aShift;
+    }
+    return aShift;
+  }
 
 protected:
   vector         myContainer;
   allocator_type myAlloc;
   size_t         myInternalSize;
+  size_t         myBlockShift; //!< log2(myInternalSize) for fast index-to-block mapping
+  size_t         myBlockMask;  //!< myInternalSize - 1 for fast index-within-block mapping
   size_t         myUsedSize;
 };
 

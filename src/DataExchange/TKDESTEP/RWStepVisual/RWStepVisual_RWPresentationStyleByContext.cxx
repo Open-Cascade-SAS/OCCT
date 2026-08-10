@@ -33,7 +33,9 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "presentation_style_by_context"))
+  {
     return;
+  }
 
   // --- inherited field : styles ---
 
@@ -93,7 +95,9 @@ void RWStepVisual_RWPresentationStyleByContext::WriteStep(
       SW.CloseSub();
     }
     else
+    {
       SW.Send(aStyle.Value());
+    }
   }
   SW.CloseSub();
 

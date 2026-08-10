@@ -30,7 +30,9 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
       myFix(Fix)
 {
   if (myFix > 3 || myFix < 1)
+  {
     throw Standard_ConstructionError();
+  }
   mySolution = gp_Pnt2d(0., 0.);
   myCurve    = &C;
   mySurface  = &S;
@@ -99,7 +101,9 @@ void ProjLib_PrjResolve::Perform(const double    t,
     S1.Perform(F, Start, BInf, BSup);
 
     if (!S1.IsDone())
+    {
       return;
+    }
   }
 
   mySolution.SetXY(F.Solution().XY());
@@ -113,16 +117,26 @@ void ProjLib_PrjResolve::Perform(const double    t,
   ExtraV = 2. * Tol2d.Y();
   //  }
   if (mySolution.X() > Inf.X() - Tol2d.X() && mySolution.X() < Inf.X())
+  {
     mySolution.SetX(Inf.X());
+  }
   if (mySolution.X() > Sup.X() && mySolution.X() < Sup.X() + Tol2d.X())
+  {
     mySolution.SetX(Sup.X());
+  }
   if (mySolution.Y() > Inf.Y() - Tol2d.Y() && mySolution.Y() < Inf.Y())
+  {
     mySolution.SetY(Inf.Y());
+  }
   if (mySolution.Y() > Sup.Y() && mySolution.Y() < Sup.Y() + Tol2d.Y())
+  {
     mySolution.SetY(Sup.Y());
+  }
   if (mySolution.X() < Inf.X() - ExtraU || mySolution.X() > Sup.X() + ExtraU
       || mySolution.Y() < Inf.Y() - ExtraV || mySolution.Y() > Sup.Y() + ExtraV)
+  {
     myDone = false;
+  }
   else if (FuncTol > 0)
   {
     math_Vector X(1, 2, 0.), FVal(1, 2, 0.);
@@ -134,7 +148,9 @@ void ProjLib_PrjResolve::Perform(const double    t,
     if (!SR.IsDone())
     {
       if ((FVal(1) * FVal(1) + FVal(2) * FVal(2)) > FuncTol)
+      {
         myDone = false;
+      }
     }
   }
 }
@@ -147,6 +163,8 @@ bool ProjLib_PrjResolve::IsDone() const
 gp_Pnt2d ProjLib_PrjResolve::Solution() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return mySolution;
 }

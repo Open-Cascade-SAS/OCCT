@@ -189,9 +189,13 @@ void BOPDS_PaveBlock::RemoveExtPave(const int theVertNum)
     while (itPaves.More())
     {
       if (itPaves.Value().Index() == theVertNum)
+      {
         myExtPaves.Remove(itPaves);
+      }
       else
+      {
         itPaves.Next();
+      }
     }
     myMFence.Remove(theVertNum);
   }

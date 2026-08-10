@@ -140,13 +140,21 @@ double IntTools_Root::LayerHeight() const
 bool IntTools_Root::IsValid() const
 {
   if (myStateBefore == TopAbs_OUT && myStateAfter == TopAbs_IN)
+  {
     return true;
+  }
   if (myStateBefore == TopAbs_OUT && myStateAfter == TopAbs_ON)
+  {
     return true;
+  }
   if (myStateBefore == TopAbs_ON && myStateAfter == TopAbs_OUT)
+  {
     return true;
+  }
   if (myStateBefore == TopAbs_IN && myStateAfter == TopAbs_OUT)
+  {
     return true;
+  }
 
   return false;
 }

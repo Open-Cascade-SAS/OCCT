@@ -30,7 +30,9 @@ void RWStepVisual_RWTessellatedItem::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 1, ach, "tessellated_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

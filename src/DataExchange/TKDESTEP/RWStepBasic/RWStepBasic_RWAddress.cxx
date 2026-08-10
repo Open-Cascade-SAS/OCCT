@@ -27,7 +27,9 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 12, ach, "address"))
+  {
     return;
+  }
   // --- own field : internalLocation ---
 
   occ::handle<TCollection_HAsciiString> aInternalLocation;

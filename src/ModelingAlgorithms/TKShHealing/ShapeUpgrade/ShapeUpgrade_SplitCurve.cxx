@@ -59,9 +59,13 @@ void ShapeUpgrade_SplitCurve::SetSplitValues(
 {
   constexpr double precision = Precision::PConfusion();
   if (SplitValues.IsNull())
+  {
     return;
+  }
   if (SplitValues->Length() == 0)
+  {
     return;
+  }
 
   double First = mySplitValues->Value(1), Last = mySplitValues->Value(mySplitValues->Length());
   int    i   = 1;
@@ -72,9 +76,13 @@ void ShapeUpgrade_SplitCurve::SetSplitValues(
     for (; i <= len; i++)
     {
       if ((First + precision) >= SplitValues->Value(i))
+      {
         continue;
+      }
       if ((Last - precision) <= SplitValues->Value(i))
+      {
         break;
+      }
       mySplitValues->InsertBefore(k++, SplitValues->Value(i));
     }
     First = Last;

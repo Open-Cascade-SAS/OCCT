@@ -31,13 +31,21 @@ int StepKinematics_KinematicTopologyRepresentationSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_KinematicTopologyDirectedStructure)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_KinematicTopologyNetworkStructure)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_KinematicTopologyStructure)))
+  {
     return 3;
+  }
   return 0;
 }
 

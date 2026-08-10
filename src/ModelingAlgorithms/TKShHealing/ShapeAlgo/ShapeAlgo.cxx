@@ -25,7 +25,9 @@ void ShapeAlgo::Init()
 {
   static bool init = false;
   if (init)
+  {
     return;
+  }
   init         = true;
   theContainer = new ShapeAlgo_AlgoContainer;
 

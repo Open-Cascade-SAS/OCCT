@@ -38,7 +38,9 @@ void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "external_identification_assignment"))
+  {
     return;
+  }
 
   // Inherited fields of IdentificationAssignment
 

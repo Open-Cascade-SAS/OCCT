@@ -48,18 +48,21 @@ void IGESDimen_ToolDimensionUnits::ReadOwnParams(
   occ::handle<TCollection_HAsciiString> tempFormatString;
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(), "Number of Properties", tempNbProps); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempNbProps = 6;
+}
 
   PR.ReadInteger(PR.Current(), "Secondary Dimension Position",
 		 tempSecondDimenPos); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Units Indicator", tempUnitsIndic); //szv#4:S4163:12Mar99 `st=` not needed
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadInteger(PR.Current(), "Character Set", tempCharSet); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempCharSet = 1;
+}
 
   PR.ReadText(PR.Current(), "Format String", tempFormatString); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Fraction Flag", tempFracFlag); //szv#4:S4163:12Mar99 `st=` not needed
@@ -119,6 +122,7 @@ bool IGESDimen_ToolDimensionUnits::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 6);
   if (res)
+  {
     ent->Init(6,
               ent->SecondaryDimenPosition(),
               ent->UnitsIndicator(),
@@ -126,6 +130,7 @@ bool IGESDimen_ToolDimensionUnits::OwnCorrect(
               ent->FormatString(),
               ent->FractionFlag(),
               ent->PrecisionOrDenominator());
+  }
   return res; // nbpropertyvalues = 6
 }
 
@@ -150,13 +155,21 @@ void IGESDimen_ToolDimensionUnits::OwnCheck(const occ::handle<IGESDimen_Dimensio
                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 6)
+  {
     ach->AddFail("Number of properties != 6");
+  }
   if (ent->SecondaryDimenPosition() < 0 || ent->SecondaryDimenPosition() > 4)
+  {
     ach->AddFail("Secondary Dimension Position != 0-4");
+  }
   if ((ent->CharacterSet() != 1) && ((ent->CharacterSet() < 1001) || (ent->CharacterSet() > 1003)))
+  {
     ach->AddFail("Character Set != 1,1001-1003");
+  }
   if ((ent->FractionFlag() != 0) && (ent->FractionFlag() != 1))
+  {
     ach->AddFail("Fraction Flag != 0,1");
+  }
 }
 
 void IGESDimen_ToolDimensionUnits::OwnDump(const occ::handle<IGESDimen_DimensionUnits>& ent,
@@ -174,8 +187,12 @@ void IGESDimen_ToolDimensionUnits::OwnDump(const occ::handle<IGESDimen_Dimension
   S << "\n"
     << "Fraction Flag   : " << ent->FractionFlag();
   if (ent->FractionFlag() == 0)
+  {
     S << " Decimal  , Precision   : ";
+  }
   else
+  {
     S << " Fraction , Denominator : ";
-  S << ent->PrecisionOrDenominator() << std::endl;
+  }
+  S << ent->PrecisionOrDenominator() << '\n';
 }

@@ -45,11 +45,15 @@ static occ::handle<TDocStd_MultiTransactionManager> sMultiTransactionManager = n
 static int mtmCreate(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (!sMultiTransactionManager.IsNull())
+  {
     sMultiTransactionManager->SetUndoLimit(0);
+  }
 
   sMultiTransactionManager = new TDocStd_MultiTransactionManager();
   if (n > 1)
+  {
     sMultiTransactionManager->SetUndoLimit(Draw::Atoi(a[1]));
+  }
   return 0;
 }
 
@@ -110,9 +114,13 @@ static int mtmCommitTransaction(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   if (n > 1)
+  {
     sMultiTransactionManager->CommitCommand(TCollection_ExtendedString(a[1], true));
+  }
   else
+  {
     sMultiTransactionManager->CommitCommand();
+  }
   return 0;
 }
 
@@ -224,7 +232,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
   int                   num = Draw::Atoi(argv[3]);
   TDF_AttributeIterator itr(lab, false);
   for (int i = 1; itr.More() && i < num; i++)
+  {
     itr.Next();
+  }
 
   if (!itr.More())
   {
@@ -250,7 +260,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
       {
         TDF_Tool::Entry(child->Label(), ref);
         if (child != TN->First())
+        {
           di << ", ";
+        }
         di << ref.ToCString();
         child = child->Next();
       }
@@ -297,7 +309,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         di << ", ";
+      }
       TCollection_AsciiString str(val->Value(j));
       di << str.ToCString();
     }
@@ -308,7 +322,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         di << ", ";
+      }
       TCollection_AsciiString str(val->Value(j));
       di << str.ToCString();
     }
@@ -319,7 +335,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         di << ", ";
+      }
       TCollection_AsciiString str(val->Value(j));
       di << str.ToCString();
     }
@@ -330,7 +348,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Shape                    S   = val->Get();
     di << S.TShape()->DynamicType()->Name();
     if (!S.Location().IsIdentity())
+    {
       di << "(located)";
+    }
   }
 
   return 0;
@@ -373,7 +393,9 @@ void DDocStd::MTMCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "MTM test commands";

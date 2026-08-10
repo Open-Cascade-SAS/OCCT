@@ -35,7 +35,9 @@ void RWStepFEA_RWNodeDefinition::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_definition"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

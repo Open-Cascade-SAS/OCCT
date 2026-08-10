@@ -30,7 +30,9 @@ void RWStepShape_RWBoxedHalfSpace::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "boxed_half_space"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

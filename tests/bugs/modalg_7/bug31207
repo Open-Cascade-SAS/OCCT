@@ -23,7 +23,7 @@ checknbshapes r0 -wire 10 -face 10 -shell 1 -solid 1 -t
 checkprops r0 -s 0.00309819 -v 1.751e-07
 
 checkshape r1
-checknbshapes r1 -wire 15 -face 15 -shell 1 -solid 1 -t
+checknbshapes r1 -wire 19 -face 19 -shell 3 -solid 3 -t
 checkprops r1 -s 0.0266469 -v 9.78558e-05
 
 checkshape r2
@@ -31,7 +31,7 @@ checknbshapes r2 -wire 9 -face 9 -shell 1 -solid 1 -t
 checkprops r2 -s 0.0241535 -v 9.41001e-05
 
 checkshape r3
-checknbshapes r3 -wire 12 -face 12 -shell 1 -solid 1 -t
+checknbshapes r3 -wire 16 -face 16 -shell 3 -solid 3 -t
 checkprops r3 -s 0.00559005 -v 3.58054e-06
 
 checkshape r4

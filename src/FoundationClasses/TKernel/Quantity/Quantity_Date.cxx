@@ -80,28 +80,44 @@ bool Quantity_Date::IsValid(const int mm,
 {
 
   if (mm < 1 || mm > 12)
+  {
     return false;
+  }
 
   if (yy < 1979)
+  {
     return false;
+  }
 
   if (dd < 1 || dd > getDaysInMonth(mm, yy))
+  {
     return false;
+  }
 
   if (hh < 0 || hh > 23)
+  {
     return false;
+  }
 
   if (mn < 0 || mn > 59)
+  {
     return false;
+  }
 
   if (ss < 0 || ss > 59)
+  {
     return false;
+  }
 
   if (mis < 0 || mis > 999)
+  {
     return false;
+  }
 
   if (mics < 0 || mics > 999)
+  {
     return false;
+  }
 
   return true;
 }
@@ -144,16 +160,22 @@ void Quantity_Date::SetValues(const int mm,
   int i;
 
   if (!Quantity_Date::IsValid(mm, dd, yy, hh, mn, ss, mis, mics))
+  {
     throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
+  }
 
   mySec  = 0;
   myUSec = 0;
   for (i = 1979; i < yy; i++)
   {
     if (!Quantity_Date::IsLeap(i))
+    {
       mySec += SecondsByYear;
+    }
     else
+    {
       mySec += SecondsByLeapYear;
+    }
   }
 
   for (i = 1; i < mm; i++)
@@ -196,16 +218,24 @@ void Quantity_Date::Values(int& mm,
     if (!Quantity_Date::IsLeap(yy))
     {
       if (carry >= SecondsByYear)
+      {
         carry -= SecondsByYear;
+      }
       else
+      {
         break;
+      }
     }
     else
     {
       if (carry >= SecondsByLeapYear)
+      {
         carry -= SecondsByLeapYear;
+      }
       else
+      {
         break;
+      }
     }
   }
 
@@ -213,9 +243,13 @@ void Quantity_Date::Values(int& mm,
   {
     int i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
     if (carry >= i)
+    {
       carry -= i;
+    }
     else
+    {
       break;
+    }
   }
 
   // Extract day within the month
@@ -287,8 +321,10 @@ Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
   normalizeSubtractionBorrow(result.mySec, result.myUSec);
 
   if (result.mySec < 0)
+  {
     throw Quantity_DateDefinitionError(
       "Quantity_Date::Subtract : The result date is anterior to Jan,1 1979");
+  }
 
   return (result);
 }

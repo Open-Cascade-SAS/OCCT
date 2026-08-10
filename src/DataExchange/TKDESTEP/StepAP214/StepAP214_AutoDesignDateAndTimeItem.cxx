@@ -23,13 +23,21 @@ StepAP214_AutoDesignDateAndTimeItem::StepAP214_AutoDesignDateAndTimeItem() = def
 int StepAP214_AutoDesignDateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ApprovalPersonOrganization)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP214_AutoDesignDateAndPersonAssignment)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionEffectivity)))
+  {
     return 3;
+  }
   return 0;
 }
 

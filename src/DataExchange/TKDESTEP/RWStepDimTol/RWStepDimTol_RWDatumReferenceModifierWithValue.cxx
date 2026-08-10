@@ -35,7 +35,9 @@ void RWStepDimTol_RWDatumReferenceModifierWithValue::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "datum_reference_modifier_with_value"))
+  {
     return;
+  }
 
   // own fields of DatumReferenceModifierWithValue
 
@@ -44,18 +46,30 @@ void RWStepDimTol_RWDatumReferenceModifierWithValue::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".CIRCULAR_OR_CYLINDRICAL.") == 0)
+    {
       aModifierType = StepDimTol_CircularOrCylindrical;
+    }
     else if (strcmp(text, ".DISTANCE.") == 0)
+    {
       aModifierType = StepDimTol_Distance;
+    }
     else if (strcmp(text, ".PROJECTED.") == 0)
+    {
       aModifierType = StepDimTol_Projected;
+    }
     else if (strcmp(text, ".SPHERICAL.") == 0)
+    {
       aModifierType = StepDimTol_Spherical;
+    }
     else
+    {
       ach->AddFail("Parameter #1 (modifier_type) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #1 (modifier_type) is not an enumeration");
+  }
 
   occ::handle<StepBasic_LengthMeasureWithUnit> aModifierValue;
   data->ReadEntity(num,

@@ -41,27 +41,43 @@ const char* IFSelect_SignValidity::CVal(const occ::handle<Standard_Transient>&  
                                         const occ::handle<Interface_InterfaceModel>& model)
 {
   if (ent.IsNull() || model.IsNull())
+  {
     return nulsign;
+  }
   int num = model->Number(ent);
   int cas = 0;
   if (model->IsUnknownEntity(num))
+  {
     return "UNKNOWN";
+  }
   if (model->IsRedefinedContent(num))
+  {
     return "UNLOADED";
+  }
 
   const occ::handle<Interface_Check> ch1 = model->Check(num, true);
   const occ::handle<Interface_Check> ch2 = model->Check(num, false);
   if (ch1->NbFails() > 0)
+  {
     return "Load-Error";
+  }
   else if (ch1->NbWarnings() > 0)
+  {
     cas = 1;
+  }
 
   if (ch2->NbFails() > 0)
+  {
     return "Data-Error";
+  }
   else if (cas == 1)
+  {
     return "Load-Warning";
+  }
   else if (ch2->NbWarnings() > 0)
+  {
     return "Data-Warning";
+  }
 
   return "OK";
 }

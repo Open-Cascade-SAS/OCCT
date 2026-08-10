@@ -225,7 +225,9 @@ occ::handle<V3d_View> AIS_InteractiveContext::LastActiveView() const
 void AIS_InteractiveContext::UpdateCurrentViewer()
 {
   if (!myMainVwr.IsNull())
+  {
     myMainVwr->Update();
+  }
 }
 
 //=================================================================================================
@@ -772,7 +774,9 @@ bool AIS_InteractiveContext::IsHilighted(const occ::handle<AIS_InteractiveObject
 bool AIS_InteractiveContext::IsHilighted(const occ::handle<SelectMgr_EntityOwner>& theOwner) const
 {
   if (theOwner.IsNull() || !theOwner->HasSelectable())
+  {
     return false;
+  }
 
   const occ::handle<AIS_InteractiveObject> anObj =
     occ::down_cast<AIS_InteractiveObject>(theOwner->Selectable());
@@ -780,7 +784,9 @@ bool AIS_InteractiveContext::IsHilighted(const occ::handle<SelectMgr_EntityOwner
   if (anObj->GlobalSelOwner() == theOwner)
   {
     if (!myObjects.IsBound(anObj))
+    {
       return false;
+    }
 
     return myObjects(anObj)->IsHilighted();
   }
@@ -812,7 +818,9 @@ bool AIS_InteractiveContext::HighlightStyle(const occ::handle<SelectMgr_EntityOw
                                             occ::handle<Prs3d_Drawer>& theStyle) const
 {
   if (theOwner.IsNull() || !theOwner->HasSelectable())
+  {
     return false;
+  }
 
   if (IsHilighted(theOwner))
   {
@@ -844,7 +852,9 @@ bool AIS_InteractiveContext::HighlightStyle(const occ::handle<SelectMgr_EntityOw
 bool AIS_InteractiveContext::IsDisplayed(const occ::handle<AIS_InteractiveObject>& theObj) const
 {
   if (theObj.IsNull())
+  {
     return false;
+  }
 
   const occ::handle<AIS_GlobalStatus>* aStatus = myObjects.Seek(theObj);
   return aStatus != nullptr && theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed;
@@ -1674,7 +1684,9 @@ void AIS_InteractiveContext::Status(const occ::handle<AIS_InteractiveObject>& th
   theStatus += "\n";
 
   if (IsSelected(theIObj))
+  {
     theStatus += "\t| Selected\n";
+  }
 
   theStatus += "\t| Active Selection Modes in the MainViewer :\n";
   for (NCollection_List<int>::Iterator aSelModeIter(aStatus->SelectionModes()); aSelModeIter.More();
@@ -2039,7 +2051,9 @@ void AIS_InteractiveContext::SetZLayer(const occ::handle<AIS_InteractiveObject>&
                                        const Graphic3d_ZLayerId                  theLayerId)
 {
   if (theIObj.IsNull())
+  {
     return;
+  }
 
   theIObj->SetZLayer(theLayerId);
 }
@@ -2094,7 +2108,9 @@ void AIS_InteractiveContext::Disconnect(
     mgrSelector->Remove(anObj);
   }
   else
+  {
     return;
+  }
 }
 
 //=======================================================================
@@ -2933,7 +2949,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
   const AIS_SelectionScheme                                     theSelScheme)
 {
   NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>> aSelOwnerMap(
-    myAutoHilight ? mySelection->Objects().Size() : 0);
+    myAutoHilight ? mySelection->Objects().Length() : 0);
   if (myAutoHilight)
   {
     clearDynamicHighlight();
@@ -3038,7 +3054,9 @@ void AIS_InteractiveContext::highlightOwners(
     const occ::handle<AIS_InteractiveObject> anObj =
       occ::down_cast<AIS_InteractiveObject>(anOwner->Selectable());
     if (anObj.IsNull())
+    {
       continue;
+    }
 
     const occ::handle<Prs3d_Drawer>& anObjSelStyle =
       !theStyle.IsNull() ? theStyle : getSelStyle(anObj, anOwner);
@@ -3515,7 +3533,7 @@ void AIS_InteractiveContext::EntityOwners(
       continue;
     }
 
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())

@@ -175,9 +175,13 @@ int IGESData_IGESReaderData::NbEntities() const
 int IGESData_IGESReaderData::FindNextRecord(const int num) const
 {
   if (num >= thedirs.Upper())
+  {
     return 0;
+  }
   else
+  {
     return (num + 1);
+  }
 }
 
 // Reference to other entities: this is both very simple and problematic

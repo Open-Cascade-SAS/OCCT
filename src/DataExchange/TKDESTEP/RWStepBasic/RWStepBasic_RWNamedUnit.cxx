@@ -29,7 +29,9 @@ void RWStepBasic_RWNamedUnit::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- own field : dimensions ---
 

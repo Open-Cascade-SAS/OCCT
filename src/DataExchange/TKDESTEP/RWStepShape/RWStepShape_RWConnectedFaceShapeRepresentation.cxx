@@ -39,7 +39,9 @@ void RWStepShape_RWConnectedFaceShapeRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "connected_face_shape_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

@@ -130,9 +130,13 @@ bool StepAP209_Construct::IsDesing(
     occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
       occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
+    {
       continue;
+    }
     if (PDF == PDFR->RelatingProductDefinitionFormation())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -148,9 +152,13 @@ bool StepAP209_Construct::IsAnalys(
     occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
       occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
+    {
       continue;
+    }
     if (PDF == PDFR->RelatedProductDefinitionFormation())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -206,20 +214,28 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::GetShReprForElem
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (ElemRepr.IsNull())
+  {
     return SR;
+  }
   Interface_EntityIterator subs = Graph().Sharings(ElemRepr);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepFEA_ElementGeometricRelationship> EGR =
       occ::down_cast<StepFEA_ElementGeometricRelationship>(subs.Value());
     if (EGR.IsNull())
+    {
       continue;
+    }
     occ::handle<StepElement_AnalysisItemWithinRepresentation> AIWR = EGR->Item();
     if (AIWR.IsNull())
+    {
       continue;
+    }
     occ::handle<StepRepr_Representation> Repr = AIWR->Rep();
     if (Repr.IsNull())
+    {
       continue;
+    }
     SR = occ::down_cast<StepShape_ShapeRepresentation>(Repr);
   }
   return SR;
@@ -234,14 +250,18 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
 {
   occ::handle<StepFEA_FeaModel> FM;
   if (Prod.IsNull())
+  {
     return FM;
+  }
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinitionFormation> PDF =
       occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
     FM = FeaModel(PDF);
   }
   return FM;
@@ -256,14 +276,18 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
   // int nb = model->NbEntities();
   occ::handle<StepFEA_FeaModel> FM;
   if (PD.IsNull())
+  {
     return FM;
+  }
   Interface_EntityIterator subs = Graph().Shareds(PD);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinitionFormation> PDF =
       occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
     FM = FeaModel(PDF);
   }
   return FM;
@@ -276,7 +300,9 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
 {
   occ::handle<StepFEA_FeaModel> FM;
   if (PDF.IsNull())
+  {
     return FM;
+  }
   occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                          subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
@@ -284,25 +310,33 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
     occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
       occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
+    {
       continue;
+    }
     PDF2 = PDFR->RelatedProductDefinitionFormation();
   }
   if (PDF2.IsNull())
+  {
     return FM;
+  }
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinition> PD =
       occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && FM.IsNull(); subs2.Next())
     {
       occ::handle<StepRepr_ProductDefinitionShape> PDS =
         occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
+      {
         continue;
+      }
       FM = FeaModel(PDS);
     }
   }
@@ -321,7 +355,9 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
     occ::handle<StepFEA_FeaModelDefinition> FMD =
       occ::down_cast<StepFEA_FeaModelDefinition>(subs.Value());
     if (FMD.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = Graph().Sharings(FMD);
     for (subs2.Start(); subs2.More() && FM.IsNull(); subs2.Next())
     {
@@ -329,7 +365,9 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
       occ::handle<StepRepr_StructuralResponseProperty> SRP =
         occ::down_cast<StepRepr_StructuralResponseProperty>(subs2.Value());
       if (SRP.IsNull())
+      {
         continue;
+      }
       Interface_EntityIterator subs3 = Graph().Sharings(SRP);
       for (subs3.Start(); subs3.More() && FM.IsNull(); subs3.Next())
       {
@@ -339,12 +377,18 @@ occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
           occ::down_cast<StepRepr_StructuralResponsePropertyDefinitionRepresentation>(
             subs3.Value());
         if (SRPDR.IsNull())
+        {
           continue;
+        }
         occ::handle<StepRepr_Representation> Repr = SRPDR->UsedRepresentation();
         if (Repr.IsNull())
+        {
           continue;
+        }
         if (Repr->IsKind(STANDARD_TYPE(StepFEA_FeaModel)))
+        {
           FM = occ::down_cast<StepFEA_FeaModel>(Repr);
+        }
       }
     }
   }
@@ -358,13 +402,17 @@ occ::handle<StepFEA_FeaAxis2Placement3d> StepAP209_Construct::GetFeaAxis2Placeme
 {
   occ::handle<StepFEA_FeaAxis2Placement3d> FA2P3D = new StepFEA_FeaAxis2Placement3d;
   if (theFeaModel.IsNull())
+  {
     return FA2P3D;
+  }
   Interface_EntityIterator subs = Graph().Shareds(theFeaModel);
   for (subs.Start(); subs.More(); subs.Next())
   {
     FA2P3D = occ::down_cast<StepFEA_FeaAxis2Placement3d>(subs.Value());
     if (FA2P3D.IsNull())
+    {
       continue;
+    }
     return FA2P3D;
   }
   return FA2P3D;
@@ -379,14 +427,18 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (Prod.IsNull())
+  {
     return SR;
+  }
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinitionFormation> PDF =
       occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
     SR = IdealShape(PDF);
   }
   return SR;
@@ -399,14 +451,18 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (PD.IsNull())
+  {
     return SR;
+  }
   Interface_EntityIterator subs = Graph().Shareds(PD);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinitionFormation> PDF =
       occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
     SR = IdealShape(PDF);
   }
   return SR;
@@ -419,7 +475,9 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (PDF.IsNull())
+  {
     return SR;
+  }
   occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                          subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
@@ -427,25 +485,33 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
     occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
       occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
+    {
       continue;
+    }
     PDF2 = PDFR->RelatedProductDefinitionFormation();
   }
   if (PDF2.IsNull())
+  {
     return SR;
+  }
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinition> PD =
       occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
       occ::handle<StepRepr_ProductDefinitionShape> PDS =
         occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
+      {
         continue;
+      }
       SR = IdealShape(PDS);
     }
   }
@@ -464,7 +530,9 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
     occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
       occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
     if (SDR.IsNull())
+    {
       continue;
+    }
     SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
   }
   return SR;
@@ -479,14 +547,18 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::NominShape(
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (Prod.IsNull())
+  {
     return SR;
+  }
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinitionFormation> PDF =
       occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
     SR = NominShape(PDF);
   }
   return SR;
@@ -499,7 +571,9 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::NominShape(
 {
   occ::handle<StepShape_ShapeRepresentation> SR;
   if (PDF.IsNull())
+  {
     return SR;
+  }
   occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                          subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
@@ -507,32 +581,42 @@ occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::NominShape(
     occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
       occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
+    {
       continue;
+    }
     PDF2 = PDFR->RelatingProductDefinitionFormation();
   }
   if (PDF2.IsNull())
+  {
     return SR;
+  }
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
     occ::handle<StepBasic_ProductDefinition> PD =
       occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
       occ::handle<StepRepr_ProductDefinitionShape> PDS =
         occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
+      {
         continue;
+      }
       Interface_EntityIterator subs3 = Graph().Sharings(PDS);
       for (subs3.Start(); subs3.More() && SR.IsNull(); subs3.Next())
       {
         occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
           occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs3.Value());
         if (SDR.IsNull())
+        {
           continue;
+        }
         SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
       }
     }
@@ -572,12 +656,16 @@ occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> S
 {
   occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> aSequence;
   if (!theType->SubType(STANDARD_TYPE(StepFEA_ElementRepresentation)))
+  {
     return aSequence;
+  }
 
   Interface_EntityIterator anIter = Graph().Sharings(theFeaModel);
   anIter.Start();
   if (anIter.More())
+  {
     aSequence = new NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>;
+  }
 
   for (; anIter.More(); anIter.Next())
   {
@@ -601,23 +689,31 @@ occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDef
   occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>>
     aSequence = new NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>;
   if (ElemRepr.IsNull())
+  {
     return aSequence;
+  }
 
   occ::handle<StepFEA_Curve3dElementProperty> C3dEP = ElemRepr->Property();
   if (C3dEP.IsNull())
+  {
     return aSequence;
+  }
 
   occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>> ACEI =
     C3dEP->IntervalDefinitions();
   if (ACEI.IsNull())
+  {
     return aSequence;
+  }
 
   for (int i = 1; i <= ACEI->Length(); i++)
   {
     occ::handle<StepFEA_CurveElementIntervalConstant> CEIC =
       occ::down_cast<StepFEA_CurveElementIntervalConstant>(ACEI->Value(i));
     if (CEIC.IsNull())
+    {
       continue;
+    }
     aSequence->Append(CEIC->Section());
   }
   return aSequence;
@@ -628,17 +724,23 @@ occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDef
 bool StepAP209_Construct::CreateAnalysStructure(const occ::handle<StepBasic_Product>& Prod) const
 {
   if (Prod.IsNull())
+  {
     return false;
+  }
   Interface_EntityIterator                          subs = Graph().Sharings(Prod);
   occ::handle<StepBasic_ProductDefinitionFormation> PDF;
   for (subs.Start(); subs.More() && PDF.IsNull(); subs.Next())
   {
     PDF = occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
+    {
       continue;
+    }
   }
   if (PDF.IsNull())
+  {
     return false;
+  }
   // if( IsDesing(PDF) || IsAnalys(PDF) ) return false;
 
   // find nominal_design_shape:
@@ -649,27 +751,35 @@ bool StepAP209_Construct::CreateAnalysStructure(const occ::handle<StepBasic_Prod
   {
     PD = occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
       occ::handle<StepRepr_ProductDefinitionShape> PDS =
         occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
+      {
         continue;
+      }
       Interface_EntityIterator subs3 = Graph().Sharings(PDS);
       for (subs3.Start(); subs3.More() && SR.IsNull(); subs3.Next())
       {
         occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
           occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs3.Value());
         if (SDR.IsNull())
+        {
           continue;
+        }
         SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
       }
     }
   }
   if (SR.IsNull())
+  {
     return false; // no nominal_design_shape
+  }
 
   // create structure:
   ReplaceCcDesingToApplied();
@@ -817,7 +927,9 @@ bool StepAP209_Construct::CreateFeaStructure(const occ::handle<StepBasic_Product
     occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
       occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
     if (SDR.IsNull())
+    {
       continue;
+    }
     AnaPDS = occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().Value());
   }
 
@@ -882,7 +994,9 @@ bool StepAP209_Construct::CreateFeaStructure(const occ::handle<StepBasic_Product
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> NewHANU =
     new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, OldHANU->Length() + 3);
   for (int i = 1; i <= OldHANU->Length(); i++)
+  {
     NewHANU->SetValue(i, OldHANU->Value(i));
+  }
   // create SiUnitAndTimeUnit
   occ::handle<StepBasic_SiUnitAndTimeUnit> SUTU = new StepBasic_SiUnitAndTimeUnit;
   SUTU->Init(false, StepBasic_spExa, StepBasic_sunSecond);
@@ -1286,7 +1400,9 @@ occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() cons
   occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
   occ::handle<StepData_StepModel> nmodel; // = new StepData_StepModel;
   if (smodel.IsNull())
+  {
     return nmodel;
+  }
   // nmodel->SetProtocol(smodel->Protocol());
   occ::handle<StepBasic_ProductDefinitionFormation>    PDF;
   occ::handle<StepBasic_ProductDefinition>             PD;
@@ -1300,10 +1416,14 @@ occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() cons
       SDR = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(smodel->Value(i));
       PDS = occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().Value());
       if (PDS.IsNull())
+      {
         continue;
+      }
       PD = occ::down_cast<StepBasic_ProductDefinition>(PDS->Definition().Value());
       if (PD.IsNull())
+      {
         continue;
+      }
       occ::handle<StepBasic_ProductDefinitionFormation> PDF1 = PD->Formation();
       if (IsDesing(PDF1))
       {
@@ -1313,7 +1433,9 @@ occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() cons
     }
   }
   if (PDF.IsNull())
+  {
     return nmodel;
+  }
   nmodel = new StepData_StepModel;
   nmodel->SetProtocol(smodel->Protocol());
 
@@ -1380,7 +1502,9 @@ occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() cons
     {
       APD = occ::down_cast<StepBasic_ApplicationProtocolDefinition>(subs.Value());
       if (APD.IsNull())
+      {
         continue;
+      }
       nmodel->AddWithRefs(APD);
     }
   }
@@ -1410,7 +1534,9 @@ occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() cons
   occ::handle<HeaderSection_FileSchema> FS = occ::down_cast<HeaderSection_FileSchema>(
     smodel->HeaderEntity(STANDARD_TYPE(HeaderSection_FileSchema)));
   if (!FS.IsNull())
+  {
     nmodel->AddHeaderEntity(FS);
+  }
   occ::handle<HeaderSection_FileDescription> FD = occ::down_cast<HeaderSection_FileDescription>(
     smodel->HeaderEntity(STANDARD_TYPE(HeaderSection_FileDescription)));
   if (!FD.IsNull())
@@ -1449,7 +1575,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
     occ::handle<StepAP214_AppliedSecurityClassificationAssignment> ASCA =
       occ::down_cast<StepAP214_AppliedSecurityClassificationAssignment>(subs.Value());
     if (ASCA.IsNull())
+    {
       continue;
+    }
     SC = ASCA->AssignedSecurityClassification();
   }
   if (SC.IsNull())
@@ -1500,12 +1628,16 @@ bool StepAP209_Construct::CreateAdding203Entities(
         occ::handle<StepBasic_ApprovalDateTime> ADT =
           occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
+        {
           continue;
+        }
         aModel->AddWithRefs(ADT);
         occ::handle<StepBasic_DateAndTime> DT1 =
           occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
+        {
           continue;
+        }
         DT = DT1;
       }
     }
@@ -1536,12 +1668,16 @@ bool StepAP209_Construct::CreateAdding203Entities(
         occ::handle<StepBasic_ApprovalDateTime> ADT =
           occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
+        {
           continue;
+        }
         aModel->AddWithRefs(ADT);
         occ::handle<StepBasic_DateAndTime> DT1 =
           occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
+        {
           continue;
+        }
         DT = DT1;
       }
     }
@@ -1572,12 +1708,16 @@ bool StepAP209_Construct::CreateAdding203Entities(
         occ::handle<StepBasic_ApprovalDateTime> ADT =
           occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
+        {
           continue;
+        }
         aModel->AddWithRefs(ADT);
         occ::handle<StepBasic_DateAndTime> DT1 =
           occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
+        {
           continue;
+        }
         DT = DT1;
       }
     }
@@ -1592,7 +1732,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
       occ::handle<StepAP214_AppliedDateAndTimeAssignment> ADTA =
         occ::down_cast<StepAP214_AppliedDateAndTimeAssignment>(subs.Value());
       if (ADTA.IsNull())
+      {
         continue;
+      }
       occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> HADTI214 = ADTA->Items();
       occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>    HADTI =
         new NCollection_HArray1<StepAP203_DateTimeItem>(1, HADTI214->Length());
@@ -1616,7 +1758,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
     occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
       occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
     occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
       new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
@@ -1637,7 +1781,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
     occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
       occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
     occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
       new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
@@ -1658,7 +1804,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
     occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
       occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
     occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
       new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
@@ -1679,7 +1827,9 @@ bool StepAP209_Construct::CreateAdding203Entities(
     occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
       occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
     occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
       new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());

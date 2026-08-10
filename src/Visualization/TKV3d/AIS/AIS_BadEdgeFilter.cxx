@@ -44,11 +44,15 @@ bool AIS_BadEdgeFilter::ActsOn(const TopAbs_ShapeEnum aType) const
 bool AIS_BadEdgeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
   if (myContour == 0)
+  {
     return true;
+  }
 
   occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
+  {
     return true;
+  }
 
   const TopoDS_Shape& aShape = aBO->Shape();
 
@@ -58,7 +62,9 @@ bool AIS_BadEdgeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
     for (; it.More(); it.Next())
     {
       if (it.Value().IsSame(aShape))
+      {
         return false;
+      }
     }
   }
   return true;

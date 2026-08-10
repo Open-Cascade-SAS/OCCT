@@ -63,7 +63,9 @@ static void suppressarg(int& na, const char** a, const int d)
 static int mkface(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> S = DrawTrSurf::GetSurface(a[2]);
   if (S.IsNull())
@@ -85,36 +87,48 @@ static int mkface(Draw_Interpretor&, int n, const char** a)
   if (n == 3)
   {
     if (mkface)
+    {
       res = BRepBuilderAPI_MakeFace(S, Precision::Confusion());
+    }
     else
+    {
       res = BRepBuilderAPI_MakeShell(S, Segment);
+    }
   }
   else if (n <= 5)
   {
     if (!mkface)
+    {
       return 1;
+    }
     bool         orient = (n == 4);
     TopoDS_Shape W      = DBRep::Get(a[3], TopAbs_WIRE);
     if (W.IsNull())
+    {
       return 1;
+    }
     res = BRepBuilderAPI_MakeFace(S, TopoDS::Wire(W), orient);
   }
   else
   {
     if (mkface)
+    {
       res = BRepBuilderAPI_MakeFace(S,
                                     Draw::Atof(a[3]),
                                     Draw::Atof(a[4]),
                                     Draw::Atof(a[5]),
                                     Draw::Atof(a[6]),
                                     Precision::Confusion());
+    }
     else
+    {
       res = BRepBuilderAPI_MakeShell(S,
                                      Draw::Atof(a[3]),
                                      Draw::Atof(a[4]),
                                      Draw::Atof(a[5]),
                                      Draw::Atof(a[6]),
                                      Segment);
+    }
   }
 
   DBRep::Set(a[1], res);
@@ -128,7 +142,9 @@ static int mkface(Draw_Interpretor&, int n, const char** a)
 static int quilt(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   BRepTools_Quilt Q;
 
   int i = 2;
@@ -186,11 +202,15 @@ static int quilt(Draw_Interpretor&, int n, const char** a)
 static int mksurface(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2], TopAbs_FACE);
   if (S.IsNull())
+  {
     return 1;
+  }
   TopLoc_Location           L;
   occ::handle<Geom_Surface> C = BRep_Tool::Surface(TopoDS::Face(S), L);
 
@@ -205,11 +225,15 @@ static int mksurface(Draw_Interpretor&, int n, const char** a)
 static int mkplane(Draw_Interpretor& theDI, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2], TopAbs_WIRE);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   bool OnlyPlane = false;
   if (n == 4)
@@ -268,10 +292,14 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
     // pcurves of a face
     TopoDS_Shape S = DBRep::Get(a[1], TopAbs_FACE);
     if (S.IsNull())
+    {
       return 1;
+    }
 
     if (!mute)
+    {
       DBRep_WriteColorOrientation();
+    }
     Draw_Color col, savecol = DrawTrSurf_CurveColor(Draw_rouge);
 
     char*  name = new char[100];
@@ -284,7 +312,7 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
         BRep_Tool::CurveOnSurface(TopoDS::Edge(ex.Current()), TopoDS::Face(S), f, l);
       if (c.IsNull())
       {
-        std::cout << "Error: Edge " << i << " does not have pcurve" << std::endl;
+        std::cout << "Error: Edge " << i << " does not have pcurve" << '\n';
         continue;
       }
       col = DBRep_ColorOrientation(ex.Current().Orientation());
@@ -315,10 +343,14 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
   {
     TopoDS_Shape SE = DBRep::Get(a[2], TopAbs_EDGE);
     if (SE.IsNull())
+    {
       return 1;
+    }
     TopoDS_Shape SF = DBRep::Get(a[3], TopAbs_FACE);
     if (SF.IsNull())
+    {
       return 1;
+    }
 
     Draw_Color                      col, savecol = DrawTrSurf_CurveColor(Draw_rouge);
     double                          f, l;
@@ -400,7 +432,9 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
           if (tolower(theArgv[i][2]) == 'a' && i + 1 < theArgc)
           {
             if (Draw::Atof(theArgv[i + 1]))
+            {
               aMaxTol = Draw::Atof(theArgv[++i]);
+            }
             else
             {
               theDi << "Error! max tolerance can't possess the null value\n";
@@ -443,7 +477,9 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
       else
       {
         if (Draw::Atof(theArgv[i]))
+        {
           aTol = Draw::Atof(theArgv[i]);
+        }
       }
     }
   }
@@ -472,11 +508,17 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
   }
 
   if (!aSetMinTol)
+  {
     aMinTol = aTol * 1e-4;
+  }
   if (aTol < Precision::Confusion())
+  {
     aTol = Precision::Confusion();
+  }
   if (aMinTol < Precision::Confusion())
+  {
     aMinTol = Precision::Confusion();
+  }
   if (aMinTol > aTol)
   {
     theDi << "Error! min tolerance can't exceed working tolerance\n";
@@ -496,7 +538,9 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
   aSewing.SetMaxTolerance(aMaxTol);
 
   for (int i = 1; i <= aSeq.Length(); i++)
+  {
     aSewing.Add(aSeq.Value(i));
+  }
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDi, 1);
   aSewing.Perform(aProgress->Start());
@@ -504,7 +548,9 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
 
   const TopoDS_Shape& aRes = aSewing.SewedShape();
   if (!aRes.IsNull())
+  {
     DBRep::Set(theArgv[1], aRes);
+  }
   return 0;
 }
 
@@ -571,7 +617,9 @@ int fastsewing(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 static int continuity(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
+  {
     return (1);
+  }
 
   BRepOffsetAPI_FindContigousEdges aFind;
 
@@ -580,7 +628,9 @@ static int continuity(Draw_Interpretor&, int n, const char** a)
   if (sh.IsNull())
   {
     if (n < 3)
+    {
       return (1);
+    }
     double tol = Draw::Atof(a[1]);
     aFind.Init(tol, false);
     i = 2;
@@ -606,12 +656,18 @@ static int encoderegularity(Draw_Interpretor&, int n, const char** a)
 
 {
   if (n < 2)
+  {
     return 1;
+  }
   TopoDS_Shape sh = DBRep::Get(a[1]);
   if (sh.IsNull())
+  {
     return 1;
+  }
   if (n == 2)
+  {
     BRepLib::EncodeRegularity(sh);
+  }
   else
   {
     double Tol = Draw::Atof(a[2]);
@@ -789,7 +845,9 @@ void BRepTest::SurfaceCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

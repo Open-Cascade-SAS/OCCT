@@ -17,9 +17,18 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BSplCLib.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GProp_GProps.hxx>
+#include <gce_MakeCirc.hxx>
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
@@ -323,4 +332,62 @@ TEST(BRepOffsetAPI_ThruSections_Test, BSplineProfilesWithDifferentPoleCount)
   {
     EXPECT_FALSE(aThruSections.Shape().IsNull()) << "ThruSections should produce a valid shape";
   }
+}
+
+// Test OCC895: BRepOffsetAPI_ThruSections with two circular arc wires.
+// Regression test for incorrect computation of mutual orientations of wire segments
+// that caused a twisted surface to be created.
+TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
+{
+  // Build the two wires using circular arcs at different positions,
+  // reproducing exactly the OCC895 DRAW command with angle=5, reverse=0, order=0.
+  const double aRad   = 1.0;
+  const double aAngle = 5.0 * M_PI / 180.0;
+
+  // Wire 1: arc from a circle whose axis is rotated 5 degrees around Z
+  gp_Pnt aCenter1(0, 10, 0);
+  gp_Ax2 aAxis1(aCenter1, -gp::DY(), gp::DX());
+  aAxis1.Rotate(gp_Ax1(aCenter1, gp::DZ()), aAngle);
+
+  gce_MakeCirc aMakeCirc1(aAxis1, aRad);
+  ASSERT_TRUE(aMakeCirc1.IsDone());
+  GC_MakeArcOfCircle aMakeArc1(aMakeCirc1.Value(), 0, M_PI / 2, true);
+  ASSERT_TRUE(aMakeArc1.IsDone());
+  const occ::handle<Geom_TrimmedCurve>& aArc1 = aMakeArc1.Value();
+
+  BRepBuilderAPI_MakeEdge aMakeEdge1(aArc1, aArc1->StartPoint(), aArc1->EndPoint());
+  ASSERT_TRUE(aMakeEdge1.IsDone());
+  BRepBuilderAPI_MakeWire aMakeWire1(aMakeEdge1.Edge());
+  ASSERT_TRUE(aMakeWire1.IsDone());
+  const TopoDS_Wire& aWire1 = aMakeWire1.Wire();
+
+  // Wire 2: arc from a circle at a different center with fixed axis
+  gp_Pnt aCenter2(10, 0, 0);
+  gp_Ax2 aAxis2(aCenter2, -gp::DX(), gp::DZ());
+
+  gce_MakeCirc aMakeCirc2(aAxis2, aRad);
+  ASSERT_TRUE(aMakeCirc2.IsDone());
+  GC_MakeArcOfCircle aMakeArc2(aMakeCirc2.Value(), 0, M_PI / 2, true);
+  ASSERT_TRUE(aMakeArc2.IsDone());
+  const occ::handle<Geom_TrimmedCurve>& aArc2 = aMakeArc2.Value();
+
+  BRepBuilderAPI_MakeEdge aMakeEdge2(aArc2, aArc2->StartPoint(), aArc2->EndPoint());
+  ASSERT_TRUE(aMakeEdge2.IsDone());
+  BRepBuilderAPI_MakeWire aMakeWire2(aMakeEdge2.Edge());
+  ASSERT_TRUE(aMakeWire2.IsDone());
+  const TopoDS_Wire& aWire2 = aMakeWire2.Wire();
+
+  // Build ThruSections shell with order=0: wire2 first, then wire1
+  BRepOffsetAPI_ThruSections aThruSect(false, true);
+  aThruSect.AddWire(aWire2);
+  aThruSect.AddWire(aWire1);
+  aThruSect.Build();
+
+  ASSERT_TRUE(aThruSect.IsDone()) << "ThruSections must succeed";
+  ASSERT_FALSE(aThruSect.Shape().IsNull()) << "ThruSections must produce a non-null shape";
+
+  // Verify surface area is approximately 18.1614 (reference value from DRAW test)
+  GProp_GProps aProps;
+  BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
+  EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
 }

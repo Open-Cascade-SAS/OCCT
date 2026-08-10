@@ -39,7 +39,9 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep(
   // --- Instance of plex component definitional_representation ---
 
   if (!data->CheckNbParams(num, 3, ach, "representation"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -63,7 +65,9 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

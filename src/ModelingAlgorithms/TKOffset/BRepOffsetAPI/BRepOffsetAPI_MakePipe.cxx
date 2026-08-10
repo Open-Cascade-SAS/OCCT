@@ -72,9 +72,13 @@ void BRepOffsetAPI_MakePipe::Build(const Message_ProgressRange& /*theRange*/)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
   TopExp::MapShapes(myShape, theMap);
   if (theMap.Extent() == 1)
+  {
     NotDone();
+  }
   else
+  {
     Done();
+  }
 }
 
 //=================================================================================================

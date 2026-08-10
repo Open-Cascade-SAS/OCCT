@@ -142,7 +142,9 @@ static bool Arrange(const occ::handle<Geom_BezierCurve>& C1,
       }
     }
     if (!Trouve)
+    {
       return false;
+    }
   }
 
   CC1 = GC[0];
@@ -217,13 +219,21 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
   }
 
   if (CC1->Degree() < DegU)
+  {
     CC1->Increase(DegU);
+  }
   if (CC2->Degree() < DegV)
+  {
     CC2->Increase(DegV);
+  }
   if (CC3->Degree() < DegU)
+  {
     CC3->Increase(DegU);
+  }
   if (CC4->Degree() < DegV)
+  {
     CC4->Increase(DegV);
+  }
 
   const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
   const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
@@ -302,15 +312,23 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
   Tol                               = Tol * Tol;
   if (C1->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C1->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
+  {
     Poles(1) = C1->StartPoint();
+  }
   else
+  {
     Poles(1) = C1->EndPoint();
+  }
 
   if (C3->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C3->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
+  {
     Poles(2) = C3->StartPoint();
+  }
   else
+  {
     Poles(2) = C3->EndPoint();
+  }
   //  Poles(1) = C1->StartPoint();
   //  Poles(2) = C1->StartPoint();
   C4 = new Geom_BezierCurve(Poles);
@@ -336,9 +354,13 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     int DegU = std::max(Deg1, Deg2);
 
     if (CC1->Degree() < DegU)
+    {
       CC1->Increase(DegU);
+    }
     if (CC2->Degree() < DegU)
+    {
       CC2->Increase(DegU);
+    }
 
     NCollection_Array2<gp_Pnt>        Poles(1, DegU + 1, 1, 2);
     const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
@@ -393,7 +415,9 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     }
 
     if (!IsOK)
+    {
       throw Standard_OutOfRange("GeomFill_BezierCurves: Courbes non jointives");
+    }
 
     const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
     const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();

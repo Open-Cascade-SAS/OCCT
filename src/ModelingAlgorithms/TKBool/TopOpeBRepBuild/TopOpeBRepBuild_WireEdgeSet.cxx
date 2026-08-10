@@ -66,14 +66,20 @@ void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
     bool                uc = bas.IsUClosed();
     bool                vc = bas.IsVClosed();
     if (uc || vc)
+    {
       tocheck = false;
+    }
   }
   bool chk = true;
   if (tocheck)
+  {
     chk = CheckShape(S);
+  }
 
   if (!chk)
+  {
     return;
+  }
   ProcessAddShape(S);
 }
 
@@ -95,10 +101,14 @@ void TopOpeBRepBuild_WireEdgeSet::AddStartElement(const TopoDS_Shape& S)
   }
   bool chk = true;
   if (tocheck)
+  {
     chk = CheckShape(S);
+  }
 
   if (!chk)
+  {
     return;
+  }
   ProcessAddStartElement(S);
 }
 
@@ -145,9 +155,13 @@ void TopOpeBRepBuild_WireEdgeSet::FindNeighbours()
 
     myIncidentShapesIter.Initialize(l);
     if (myIncidentShapesIter.More())
+    {
       break;
+    }
     else
+    {
       mySubShapeExplorer.Next();
+    }
   }
 }
 
@@ -201,13 +215,19 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
       occ::handle<Geom2d_Curve> PCE    = FC2D_CurveOnSurface(E, F, fiE, laE, tolpc, trim3d);
 
       if (!PCE.IsNull())
+      {
         PCE->D1(parE, pE, d1E);
+      }
       else
+      {
         LocalD1(F, E, V, pE, d1E);
+      }
 
       TopAbs_Orientation Eori = E.Orientation();
       if (Eori == TopAbs_REVERSED)
+      {
         d1E.Reverse();
+      }
 
       NCollection_List<TopoDS_Shape>::Iterator lclo(myCurrentShapeNeighbours);
       while (lclo.More())
@@ -226,13 +246,19 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
         occ::handle<Geom2d_Curve> PCEE = FC2D_CurveOnSurface(EE, F, fiEE, laEE, tolpc1, trim3d);
 
         if (!PCEE.IsNull())
+        {
           PCEE->D1(parEE, pEE, d1EE);
+        }
         else
+        {
           LocalD1(F, EE, V, pEE, d1EE);
+        }
 
         TopAbs_Orientation EEori = EE.Orientation();
         if (EEori == TopAbs_REVERSED)
+        {
           d1EE.Reverse();
+        }
 
         double             cross = d1E.Crossed(d1EE);
         TopAbs_Orientation oVE, oVEE;
@@ -281,7 +307,9 @@ bool TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdges(const TopoDS_Shape& V,
           o1 = ex1.Current().Orientation();
           o2 = ex2.Current().Orientation();
           if (o1 != o2)
+          {
             return true;
+          }
         }
       }
     }
@@ -368,7 +396,9 @@ int TopOpeBRepBuild_WireEdgeSet::NbClosingShapes(const NCollection_List<TopoDS_S
   {
     const TopoDS_Shape& S = it.Value();
     if (IsClosed(S))
+    {
       n++;
+    }
   }
   return n;
 }
@@ -437,7 +467,9 @@ void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,
   bool                      trim3d = true;
   PC                               = FC2D_CurveOnSurface(E, F, fE, lE, tolpc, trim3d);
   if (PC.IsNull())
+  {
     throw Standard_ProgramError("TopOpeBRepBuild_WireEdgeSet::IsUVISO");
+  }
 
   occ::handle<Standard_Type> TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line))
@@ -447,9 +479,13 @@ void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,
     double                   tol = Precision::Angular();
 
     if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::Y), tol))
+    {
       uiso = true;
+    }
     else if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::X), tol))
+    {
       viso = true;
+    }
   }
 }
 

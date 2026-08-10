@@ -77,26 +77,36 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&              
     {
       occ::handle<Standard_Transient> newent;
       if (TC.Search(setl.Value(), newent))
+      {
         newset.AddItem(newent);
+      }
     }
     if (newset.NbEntities() == 0)
+    {
       continue;
+    }
     //    On en tient un : le transferer (le reconstruire)
     occ::handle<IGESData_IGESEntity> item = sorter->SetItem(is, true);
     if (item->TypeNumber() != PourDrawing)
+    {
       continue;
+    }
     if (item->IsKind(STANDARD_TYPE(IGESDraw_Drawing)))
     {
       DeclareAndCast(IGESDraw_Drawing, draw, item);
       int                                                                    nbv = draw->NbViews();
       occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
       if (nbv > 0)
+      {
         views = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbv);
+      }
       //  Passer ses vues : toutes
       //  Aussi les positions des vues
       occ::handle<NCollection_HArray1<gp_XY>> origs;
       if (nbv > 0)
+      {
         origs = new NCollection_HArray1<gp_XY>(1, nbv);
+      }
       for (int iv = 1; iv <= nbv; iv++)
       {
         DeclareAndCast(IGESData_ViewKindEntity, aview, TC.Transferred(draw->ViewItem(iv)));
@@ -113,12 +123,16 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&              
       {
         occ::handle<Standard_Transient> annot;
         if (TC.Search(draw->Annotation(ia), annot))
+        {
           framelist.GetOneItem(annot);
+        }
       }
       nba = framelist.NbEntities();
       ia  = 0;
       if (nba > 0)
+      {
         frame = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nba);
+      }
       for (framelist.Start(); framelist.More(); framelist.Next())
       {
         ia++;
@@ -137,12 +151,16 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&              
       int                                                                    nbv = draw->NbViews();
       occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
       if (nbv > 0)
+      {
         views = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbv);
+      }
       //  Passer ses vues : toutes
       //  Aussi les positions des vues .. et les rotations
       occ::handle<NCollection_HArray1<gp_XY>> origs;
       if (nbv > 0)
+      {
         origs = new NCollection_HArray1<gp_XY>(1, nbv);
+      }
       occ::handle<NCollection_HArray1<double>> rots;
       if (nbv > 0)
       {
@@ -167,12 +185,16 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&              
       {
         occ::handle<Standard_Transient> annot;
         if (TC.Search(draw->Annotation(ia), annot))
+        {
           framelist.GetOneItem(annot);
+        }
       }
       nba = framelist.NbEntities();
       ia  = 0;
       if (nba > 0)
+      {
         frame = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nba);
+      }
       for (framelist.Start(); framelist.More(); framelist.Next())
       {
         ia++;
@@ -192,13 +214,19 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&              
       DeclareAndCast(IGESData_IGESEntity, ent, setl.Value());
       occ::handle<IGESData_ViewKindEntity> vieworig = ent->View();
       if (vieworig.IsNull())
+      {
         continue;
+      }
       occ::handle<Standard_Transient> aView;
       if (!TC.Search(vieworig, aView))
+      {
         continue;
+      }
       occ::handle<IGESData_ViewKindEntity> viewnew = occ::down_cast<IGESData_ViewKindEntity>(aView);
       if (!viewnew.IsNull())
+      {
         ent->InitView(viewnew);
+      }
     }
   }
 }

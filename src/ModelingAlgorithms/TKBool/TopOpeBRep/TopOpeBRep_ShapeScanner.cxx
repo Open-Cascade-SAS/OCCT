@@ -68,7 +68,9 @@ void TopOpeBRep_ShapeScanner::Init(TopOpeBRepTool_ShapeExplorer& E)
     Init(cur);
     bool b = More();
     if (b)
+    {
       break;
+    }
   }
 }
 
@@ -122,7 +124,9 @@ int TopOpeBRep_ShapeScanner::Index() const
 {
   int n = 0;
   if (myListIterator.More())
+  {
     n = myListIterator.Value();
+  }
   return n;
 }
 

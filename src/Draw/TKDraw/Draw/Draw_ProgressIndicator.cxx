@@ -75,7 +75,9 @@ void Draw_ProgressIndicator::Reset()
 void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope, const bool force)
 {
   if (!myGraphMode && !myTclMode && !myConsoleMode)
+  {
     return;
+  }
 
   // remember time of the first call to Show as process start time
   if (!myStartTime)
@@ -93,7 +95,9 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope, const b
   double aPosition = GetPosition();
   if (!force && (1. - aPosition) > Precision::Confusion()
       && std::abs(aPosition - myLastPosition) < myUpdateThreshold)
+  {
     return; // return if update interval has not elapsed
+  }
 
   myLastPosition = aPosition;
 
@@ -104,12 +108,16 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope, const b
   aText << "Progress: " << 100. * GetPosition() << "%";
   NCollection_List<const Message_ProgressScope*> aScopes;
   for (const Message_ProgressScope* aPS = &theScope; aPS; aPS = aPS->Parent())
+  {
     aScopes.Prepend(aPS);
+  }
   for (NCollection_List<const Message_ProgressScope*>::Iterator it(aScopes); it.More(); it.Next())
   {
     const Message_ProgressScope* aPS = it.Value();
     if (!aPS->Name())
+    {
       continue; // skip unnamed scopes
+    }
     aText << " " << aPS->Name() << ": ";
 
     // print progress info differently for finite and infinite scopes

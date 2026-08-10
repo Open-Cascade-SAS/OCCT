@@ -33,7 +33,9 @@ void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 9, ach, "view_volume"))
+  {
     return;
+  }
 
   // --- own field : projectionType ---
 
@@ -47,7 +49,9 @@ void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #1 (projection_type) is not an enumeration");
+  }
 
   // --- own field : projectionPoint ---
 

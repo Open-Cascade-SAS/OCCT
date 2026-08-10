@@ -95,7 +95,9 @@ static int QADNaming_Select(Draw_Interpretor& di, int n, const char** a)
     bool                  geometry = (strcmp(a[0], "SelectGeometry") == 0 ? 1 : 0);
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, a[2], L);
     TNaming_Selector SL(L);
@@ -127,7 +129,9 @@ static int QADNaming_SolveSelection(Draw_Interpretor& di, int n, const char** a)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(a, aLabel))
+    {
       return 1;
+    }
     char                       name[100];
     TNaming_Selector           SL(aLabel);
     NCollection_Map<TDF_Label> valid;
@@ -136,9 +140,13 @@ static int QADNaming_SolveSelection(Draw_Interpretor& di, int n, const char** a)
     {
       TDF_Label aValidLab;
       if (!DDF::FindLabel(aLabel.Data(), a[i], aValidLab))
+      {
         di << "Warning: label " << a[i] << " not exists\n";
+      }
       else
+      {
         valid.Add(aValidLab);
+      }
     }
     bool         done = SL.Solve(valid);
     TopoDS_Shape Res  = TNaming_Tool::CurrentShape(SL.NamedShape());
@@ -162,10 +170,14 @@ static int QADNaming_DumpSelection(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
+    {
       return 1;
+    }
     occ::handle<TNaming_Naming> naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
@@ -186,7 +198,9 @@ static int QADNaming_DumpSelection(Draw_Interpretor& di, int n, const char** a)
         {
           curdepth = (naming->Label().Depth() - depth);
           for (int i = 1; i <= curdepth; i++)
+          {
             di << " ";
+          }
           TDF_Tool::Entry(naming->Label(), Entry);
           di << Entry.ToCString() << " ";
           DumpNaming(naming, di);
@@ -208,10 +222,14 @@ static int QADNaming_ArgsSelection(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
+    {
       return 1;
+    }
     occ::handle<TNaming_Naming> naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
@@ -246,7 +264,9 @@ static void CollectAttachment(const TDF_Label&                                  
   for (itarg.Initialize(args); itarg.More(); itarg.Next())
   {
     if (!itarg.Value()->Label().IsDescendant(root))
+    {
       attachment.Add(itarg.Value());
+    }
   }
   occ::handle<TNaming_Naming> subnaming;
   for (TDF_ChildIterator it(naming->Label(), true); it.More(); it.Next())
@@ -258,7 +278,9 @@ static void CollectAttachment(const TDF_Label&                                  
       for (itarg.Initialize(subargs); itarg.More(); itarg.Next())
       {
         if (!itarg.Value()->Label().IsDescendant(root))
+        {
           attachment.Add(itarg.Value());
+        }
       }
     }
   }
@@ -272,10 +294,14 @@ static int QADNaming_Attachment(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
+    {
       return 1;
+    }
     occ::handle<TNaming_Naming>                      naming;
     NCollection_Map<occ::handle<TNaming_NamedShape>> attachment;
     if (L.FindAttribute(TNaming_Naming::GetID(), naming))
@@ -317,7 +343,9 @@ void QADNaming::SelectionCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "Naming data commands";

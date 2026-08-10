@@ -50,7 +50,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
 
-#include <GProp_PrincipalProps.hxx>
+#include <GProp_GProps.hxx>
 
 #include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
@@ -222,7 +222,9 @@ static int BUC60972(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Edge             aSecond = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
   occ::handle<Geom_Plane> aPlane  = occ::down_cast<Geom_Plane>(DrawTrSurf::GetSurface(argv[3]));
   if (aPlane.IsNull())
+  {
     return 1;
+  }
 
   di << aPlane->Pln().SquareDistance(gp_Pnt(0, 0, 0)) << "\n";
 
@@ -344,9 +346,13 @@ static int OCC295(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape Sh1 = DBRep::Get(argv[2]);
   TopoDS_Shape Sh2 = DBRep::Get(argv[3]);
   if (Sh1.IsNull() || Sh2.IsNull())
+  {
     return 1;
+  }
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
+  {
     return 1;
+  }
   TopoDS_Edge                    e1 = TopoDS::Edge(Sh1);
   TopoDS_Edge                    e2 = TopoDS::Edge(Sh2);
   double                         f1, l1, f2, l2;
@@ -356,13 +362,17 @@ static int OCC295(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<Geom_BSplineCurve> bsplc1 = occ::down_cast<Geom_BSplineCurve>(ac1);
   occ::handle<Geom_BSplineCurve> bsplc2 = occ::down_cast<Geom_BSplineCurve>(ac2);
   if (bsplc1.IsNull() || bsplc2.IsNull())
+  {
     return 1;
+  }
   gp_Pnt pmid = 0.5 * (bsplc1->Pole(bsplc1->NbPoles()).XYZ() + bsplc2->Pole(1).XYZ());
   bsplc1->SetPole(bsplc1->NbPoles(), pmid);
   bsplc2->SetPole(1, pmid);
   GeomConvert_CompCurveToBSplineCurve connect3d(bsplc1);
   if (!connect3d.Add(bsplc2, Precision::Confusion(), After, false))
+  {
     return 1;
+  }
   BRepBuilderAPI_MakeEdge MkEdge(connect3d.BSplineCurve());
   if (MkEdge.IsDone())
   {
@@ -371,35 +381,9 @@ static int OCC295(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
   else
-    return 1;
-}
-
-static int OCC49(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 2)
   {
-    di << "Usage : " << argv[0] << " name\n";
     return 1;
   }
-
-  TopoDS_Shape S = DBRep::Get(argv[1]);
-  if (S.IsNull())
-    return 0;
-
-  GProp_GProps G;
-  BRepGProp::VolumeProperties(S, G);
-  GProp_PrincipalProps Pr     = G.PrincipalProperties();
-  bool                 Result = Pr.HasSymmetryAxis();
-  if (Result)
-  {
-    di << "1\n";
-  }
-  else
-  {
-    di << "0\n";
-  }
-  return 0;
 }
 
 static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
@@ -413,9 +397,13 @@ static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape Sh1 = DBRep::Get(argv[2]);
   TopoDS_Shape Sh2 = DBRep::Get(argv[3]);
   if (Sh1.IsNull() || Sh2.IsNull())
+  {
     return 1;
+  }
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
+  {
     return 1;
+  }
   TopoDS_Edge             e1 = TopoDS::Edge(Sh1);
   TopoDS_Edge             e2 = TopoDS::Edge(Sh2);
   double                  f1, l1, f2, l2;
@@ -439,7 +427,9 @@ static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<Geom_BSplineCurve> bsplc1 = occ::down_cast<Geom_BSplineCurve>(ac1);
   occ::handle<Geom_BSplineCurve> bsplc2 = occ::down_cast<Geom_BSplineCurve>(ac2);
   if (bsplc1.IsNull() || bsplc2.IsNull())
+  {
     return 1;
+  }
   if (bsplc1->FirstParameter() < f1 - Precision::PConfusion()
       || bsplc1->LastParameter() > l1 + Precision::PConfusion())
   {
@@ -459,7 +449,9 @@ static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
   bsplc2->SetPole(1, pmid);
   GeomConvert_CompCurveToBSplineCurve connect3d(bsplc1);
   if (!connect3d.Add(bsplc2, Precision::Confusion(), After, false))
+  {
     return 1;
+  }
   BRepBuilderAPI_MakeEdge MkEdge(connect3d.BSplineCurve());
   if (MkEdge.IsDone())
   {
@@ -468,7 +460,9 @@ static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 static int OCC395(Draw_Interpretor& di, int argc, const char** argv)
@@ -483,9 +477,13 @@ static int OCC395(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape Sh1 = DBRep::Get(argv[2]);
   TopoDS_Shape Sh2 = DBRep::Get(argv[3]);
   if (Sh1.IsNull() || Sh2.IsNull())
+  {
     return 1;
+  }
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
+  {
     return 1;
+  }
   TopoDS_Edge             e1 = TopoDS::Edge(Sh1);
   TopoDS_Edge             e2 = TopoDS::Edge(Sh2);
   double                  f1, l1, f2, l2;
@@ -509,13 +507,17 @@ static int OCC395(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<Geom_BSplineCurve> bsplc1 = occ::down_cast<Geom_BSplineCurve>(ac1);
   occ::handle<Geom_BSplineCurve> bsplc2 = occ::down_cast<Geom_BSplineCurve>(ac2);
   if (bsplc1.IsNull() || bsplc2.IsNull())
+  {
     return 1;
+  }
   gp_Pnt pmid = 0.5 * (bsplc1->Pole(bsplc1->NbPoles()).XYZ() + bsplc2->Pole(1).XYZ());
   bsplc1->SetPole(bsplc1->NbPoles(), pmid);
   bsplc2->SetPole(1, pmid);
   GeomConvert_CompCurveToBSplineCurve connect3d(bsplc1);
   if (!connect3d.Add(bsplc2, Precision::Confusion(), After, false))
+  {
     return 1;
+  }
   BRepBuilderAPI_MakeEdge MkEdge(connect3d.BSplineCurve());
   if (MkEdge.IsDone())
   {
@@ -524,7 +526,9 @@ static int OCC395(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 static int OCC394(Draw_Interpretor& di, int argc, const char** argv)
@@ -541,13 +545,19 @@ static int OCC394(Draw_Interpretor& di, int argc, const char** argv)
   int    mode   = 2;
   double tolang = M_PI / 2;
   if (argc > k)
+  {
     tol = Draw::Atof(argv[k++]);
+  }
 
   if (argc > k)
+  {
     mode = Draw::Atoi(argv[k++]);
+  }
 
   if (argc > k)
+  {
     tolang = Draw::Atof(argv[k++]);
+  }
 
   occ::handle<ShapeFix_Wireframe> aSfwr    = new ShapeFix_Wireframe();
   occ::handle<ShapeBuild_ReShape> aReShape = new ShapeBuild_ReShape;
@@ -556,7 +566,9 @@ static int OCC394(Draw_Interpretor& di, int argc, const char** argv)
   aSfwr->SetPrecision(tol);
   bool aModeDrop = true;
   if (mode == 2)
+  {
     aModeDrop = false;
+  }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theSmallEdges, theMultyEdges;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
@@ -635,7 +647,9 @@ static int OCC261(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 #include <OSD_File.hxx>
@@ -651,9 +665,13 @@ static int OCC710(Draw_Interpretor& di, int argc, const char** argv)
   OSD_File*               aFile    = new OSD_File(in);
   bool                    anExists = aFile->Exists();
   if (anExists)
+  {
     di << "1\n";
+  }
   else
+  {
     di << "0\n";
+  }
   return 0;
 }
 
@@ -690,7 +708,6 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60972", "BUC60972 edge edge plane val text ", __FILE__, BUC60972, group);
   theCommands.Add("OCC218", "OCC218 name plane Xlabel Ylabel", __FILE__, OCC218bug, group);
   theCommands.Add("OCC295", "OCC295 edge_result edge1 edge2", __FILE__, OCC295, group);
-  theCommands.Add("OCC49", "OCC49 name", __FILE__, OCC49, group);
   theCommands.Add("OCC405",
                   "OCC405 edge_result edge1 edge2; merge two edges",
                   __FILE__,
@@ -706,6 +723,4 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   theCommands.Add("OCC261", "OCC261 Doc", __FILE__, OCC261, group);
   theCommands.Add("OCC710", "OCC710 path", __FILE__, OCC710, group);
   theCommands.Add("OCC904", "OCC904 result shape nonmanifoldmode(0/1)", __FILE__, OCC904, group);
-
-  return;
 }

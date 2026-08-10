@@ -128,20 +128,139 @@ TEST(NCollection_Array2Test, CopyConstructor)
 
 TEST(NCollection_Array2Test, AssignmentOperator)
 {
-  NCollection_Array2<int> anArray1(1, 3, 1, 4);
-  anArray1.Init(123);
+  NCollection_Array2<int> anArray1(5, 7, 10, 13);
+  for (int aRowIter = anArray1.LowerRow(); aRowIter <= anArray1.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = anArray1.LowerCol(); aColIter <= anArray1.UpperCol(); ++aColIter)
+    {
+      anArray1(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
 
-  NCollection_Array2<int> anArray2(1, 3, 1, 4);
+  NCollection_Array2<int> anArray2(1, 1, 1, 1);
   anArray2.Init(0);
 
   anArray2 = anArray1; // Assign
 
-  // Verify data is copied
-  EXPECT_EQ(123, anArray2(2, 3));
+  // Verify dimensions and data are copied
+  EXPECT_EQ(anArray1.NbRows(), anArray2.NbRows());
+  EXPECT_EQ(anArray1.NbColumns(), anArray2.NbColumns());
+  EXPECT_EQ(anArray1.LowerRow(), anArray2.LowerRow());
+  EXPECT_EQ(anArray1.LowerCol(), anArray2.LowerCol());
+  EXPECT_EQ(612, anArray2(6, 12));
 
   // Modify original to ensure it was a deep copy
-  anArray1.SetValue(2, 3, 999);
-  EXPECT_EQ(123, anArray2(2, 3));
+  anArray1.SetValue(6, 12, 999);
+  EXPECT_EQ(612, anArray2(6, 12));
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorReusesSameSizeOwnedStorage)
+{
+  NCollection_Array2<int> anArray(1, 3, 1, 4);
+  int*                    anInitialPointer = &anArray.ChangeFirst();
+
+  NCollection_Array2<int> aSource(10, 12, 20, 23);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_EQ(anInitialPointer, &anArray.ChangeFirst());
+  EXPECT_EQ(10, anArray.LowerRow());
+  EXPECT_EQ(12, anArray.UpperRow());
+  EXPECT_EQ(20, anArray.LowerCol());
+  EXPECT_EQ(23, anArray.UpperCol());
+  EXPECT_EQ(1122, anArray(11, 22));
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorReusesSameSizeExternalBuffer)
+{
+  int aBuffer[4] = {0, 0, 0, 0};
+
+  NCollection_Array2<int> anArray(aBuffer, 2, 2);
+  NCollection_Array2<int> aSource(5, 6, 7, 8);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(5, anArray.LowerRow());
+  EXPECT_EQ(7, anArray.LowerCol());
+  EXPECT_EQ(507, aBuffer[0]);
+  EXPECT_EQ(508, aBuffer[1]);
+  EXPECT_EQ(607, aBuffer[2]);
+  EXPECT_EQ(608, aBuffer[3]);
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorDetachesDifferentSizeExternalBuffer)
+{
+  int aBuffer[4] = {1, 2, 3, 4};
+
+  NCollection_Array2<int> anArray(aBuffer, 2, 2);
+  NCollection_Array2<int> aSource(5, 6, 7, 9);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_TRUE(anArray.IsDeletable());
+  EXPECT_NE(aBuffer, &anArray.ChangeFirst());
+  EXPECT_EQ(2, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+  EXPECT_EQ(5, anArray.LowerRow());
+  EXPECT_EQ(7, anArray.LowerCol());
+  EXPECT_EQ(1, aBuffer[0]);
+  EXPECT_EQ(2, aBuffer[1]);
+  EXPECT_EQ(3, aBuffer[2]);
+  EXPECT_EQ(4, aBuffer[3]);
+  EXPECT_EQ(608, anArray(6, 8));
+}
+
+TEST(NCollection_Array2Test, CopyValuesPreservesBounds)
+{
+  NCollection_Array2<int> aSource(5, 6, 7, 9);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  NCollection_Array2<int> anArray(1, 2, 1, 3);
+  anArray.CopyValues(aSource);
+
+  EXPECT_EQ(1, anArray.LowerRow());
+  EXPECT_EQ(2, anArray.UpperRow());
+  EXPECT_EQ(1, anArray.LowerCol());
+  EXPECT_EQ(3, anArray.UpperCol());
+  EXPECT_EQ(507, anArray(1, 1));
+  EXPECT_EQ(609, anArray(2, 3));
+}
+
+TEST(NCollection_Array2Test, CopyValuesDifferentDimensions)
+{
+  [[maybe_unused]] NCollection_Array2<int> anArray(1, 2, 1, 3);
+  [[maybe_unused]] NCollection_Array2<int> aSource(1, 3, 1, 2);
+#ifndef No_Exception
+  EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
+#endif
 }
 
 TEST(NCollection_Array2Test, MoveConstructor)
@@ -627,6 +746,135 @@ TEST(NCollection_Array2Test, ResizeWithTrim_GrowPreservesOldRegion)
     for (int aCol = 1; aCol <= 2; ++aCol)
     {
       EXPECT_EQ(99, anArray(aRow, aCol));
+    }
+  }
+}
+
+// ============================================================================
+// Zero-based (size_t) construction mode tests
+// ============================================================================
+
+TEST(NCollection_Array2Test, SizeConstructor_AllocatesCorrectly)
+{
+  const size_t            aNbRows = 3;
+  const size_t            aNbCols = 4;
+  NCollection_Array2<int> anArray(aNbRows, aNbCols);
+
+  EXPECT_EQ(aNbRows, static_cast<size_t>(anArray.NbRows()));
+  EXPECT_EQ(aNbCols, static_cast<size_t>(anArray.NbColumns()));
+  EXPECT_EQ(aNbRows * aNbCols, anArray.Size());
+  EXPECT_EQ(0, anArray.LowerRow());
+  EXPECT_EQ(0, anArray.LowerCol());
+  EXPECT_EQ(static_cast<int>(aNbRows) - 1, anArray.UpperRow());
+  EXPECT_EQ(static_cast<int>(aNbCols) - 1, anArray.UpperCol());
+  EXPECT_TRUE(anArray.IsDeletable());
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_AtAccess)
+{
+  const size_t            aNbRows = 3;
+  const size_t            aNbCols = 5;
+  NCollection_Array2<int> anArray(aNbRows, aNbCols);
+
+  for (size_t aRow = 0; aRow < aNbRows; ++aRow)
+  {
+    for (size_t aCol = 0; aCol < aNbCols; ++aCol)
+    {
+      anArray.ChangeAt(aRow, aCol) = static_cast<int>(aRow * 100 + aCol);
+    }
+  }
+
+  for (size_t aRow = 0; aRow < aNbRows; ++aRow)
+  {
+    for (size_t aCol = 0; aCol < aNbCols; ++aCol)
+    {
+      EXPECT_EQ(static_cast<int>(aRow * 100 + aCol), anArray.At(aRow, aCol));
+    }
+  }
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_LegacyOperatorZeroBased)
+{
+  // When LowerRow/Col == 0, operator()(row, col) is also 0-based
+  NCollection_Array2<int> anArray(static_cast<size_t>(2), static_cast<size_t>(3));
+  anArray(0, 0) = 1;
+  anArray(0, 1) = 2;
+  anArray(1, 2) = 9;
+
+  EXPECT_EQ(1, anArray.At(0, 0));
+  EXPECT_EQ(2, anArray.At(0, 1));
+  EXPECT_EQ(9, anArray.At(1, 2));
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_BufferReuse_NotOwner)
+{
+  int                     aBuf[6] = {1, 2, 3, 4, 5, 6};
+  NCollection_Array2<int> anArray(aBuf, 2, 3);
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(2, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+  EXPECT_EQ(0, anArray.LowerRow());
+  EXPECT_EQ(0, anArray.LowerCol());
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_BufferReuse_DataPreserved)
+{
+  // Row-major layout: buf[row * nbCols + col]
+  int                     aBuf[6] = {10, 20, 30, 40, 50, 60};
+  NCollection_Array2<int> anArray(aBuf, 2, 3);
+
+  EXPECT_EQ(10, anArray.At(0, 0));
+  EXPECT_EQ(20, anArray.At(0, 1));
+  EXPECT_EQ(30, anArray.At(0, 2));
+  EXPECT_EQ(40, anArray.At(1, 0));
+  EXPECT_EQ(50, anArray.At(1, 1));
+  EXPECT_EQ(60, anArray.At(1, 2));
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_Resize_Grow)
+{
+  NCollection_Array2<int> anArray(static_cast<size_t>(2), static_cast<size_t>(2));
+  anArray.Init(7);
+
+  anArray.Resize(static_cast<size_t>(3), static_cast<size_t>(3), true);
+
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+  // Original 2x2 values (linear copy) should be preserved in first 4 elements
+  EXPECT_EQ(7, anArray.At(0, 0));
+  EXPECT_EQ(7, anArray.At(0, 1));
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_Resize_NoData)
+{
+  NCollection_Array2<int> anArray(static_cast<size_t>(3), static_cast<size_t>(4));
+  anArray.Init(5);
+
+  anArray.Resize(static_cast<size_t>(2), static_cast<size_t>(2), false);
+
+  EXPECT_EQ(2, anArray.NbRows());
+  EXPECT_EQ(2, anArray.NbColumns());
+  EXPECT_EQ(0, anArray.LowerRow());
+  EXPECT_EQ(0, anArray.LowerCol());
+  EXPECT_TRUE(anArray.IsDeletable());
+}
+
+TEST(NCollection_Array2Test, SizeConstructor_ResizeWithTrim_GrowPreserves)
+{
+  NCollection_Array2<int> anArray(static_cast<size_t>(2), static_cast<size_t>(2));
+  anArray.Init(42);
+
+  anArray.ResizeWithTrim(static_cast<size_t>(3), static_cast<size_t>(3), true);
+
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+  // Original 2x2 corner should be preserved
+  for (size_t aRow = 0; aRow < 2; ++aRow)
+  {
+    for (size_t aCol = 0; aCol < 2; ++aCol)
+    {
+      EXPECT_EQ(42, anArray.At(aRow, aCol));
     }
   }
 }

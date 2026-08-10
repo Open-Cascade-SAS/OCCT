@@ -68,7 +68,9 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
       //        End of the loop
       aPtr = strchr(aSrcPtr, '\0');
       if (anIncrCount == 0)
+      {
         theLen = (int)(aPtr - theSrc);
+      }
       else
       {
         int aByteCount = (int)(aPtr - aSrcPtr);
@@ -79,7 +81,9 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
     }
     int aByteCount = (int)(aPtr - aSrcPtr);
     if (aByteCount > 0 && aDstPtr != aSrcPtr)
+    {
       memmove(aDstPtr, aSrcPtr, aByteCount);
+    }
     aSrcPtr = aPtr;
     if (aSrcPtr[1] == '#')
     {
@@ -87,12 +91,18 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
       char*         aNewPtr;
       aDstPtr = aSrcPtr - anIncrCount + 1;
       if (aSrcPtr[2] == 'x')
+      {
         aChar = strtoul(&aSrcPtr[3], &aNewPtr, 16); // hex encoding
+      }
       else
+      {
         aChar = strtoul(&aSrcPtr[2], &aNewPtr, 10); // decimal encoding
+      }
       if (aNewPtr[0] != ';' || aChar == 0 || aChar > 255UL)
+      {
         //      Error reading an XML string
         return nullptr;
+      }
       aDstPtr[-1] = (char)aChar;
       anIncrCount += (int)(aNewPtr - aSrcPtr);
       aSrcPtr = &aNewPtr[1];
@@ -174,13 +184,19 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
       break;
     }
     if (myTab[iSrc] != NORMAL_C)
+    {
       if (isAttribute || myTab[iSrc] != ENTI_QUOT)
+      {
         aCount++;
+      }
+    }
     ptrSrc++;
   }
   //    If there are such, copy the string with replacements
   if (!aCount)
+  {
     theLen = (int)(endSrc - theSrc);
+  }
   else
   {
     char* ptrDest = new char[(endSrc - theSrc) + aCount * 5 + 1];
@@ -189,8 +205,10 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
     {
       const unsigned int iSrc  = (unsigned int)*(const unsigned char*)ptrSrc;
       const int          aCode = myTab[iSrc];
-      if (aCode == NORMAL_C) // normal (regular) character
+      if (aCode == NORMAL_C)
+      { // normal (regular) character
         *ptrDest++ = *ptrSrc;
+      }
       else if (aCode == CHAR_REF)
       { // character reference
         Sprintf(ptrDest, "&#x%02x;", iSrc);
@@ -198,7 +216,9 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
       }
       else // predefined entity reference
         if (!isAttribute && aCode == ENTI_QUOT)
+        {
           *ptrDest++ = *ptrSrc;
+        }
         else
         {
           memcpy(ptrDest, entity_ref[aCode].name, entity_ref[aCode].length + 1);

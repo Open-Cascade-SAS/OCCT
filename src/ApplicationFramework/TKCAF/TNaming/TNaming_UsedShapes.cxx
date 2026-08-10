@@ -116,7 +116,7 @@ void TNaming_UsedShapes::Paste(const occ::handle<TDF_Attribute>&,
 
 Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 {
-  anOS << "The content of UsedShapes attribute:" << std::endl;
+  anOS << "The content of UsedShapes attribute:" << '\n';
   NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>::Iterator itr(
     myMap);
   for (; itr.More(); itr.Next())
@@ -125,7 +125,7 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
     {
       anOS << "Empty Shape at label =";
       itr.Value()->Label().EntryDump(anOS);
-      anOS << std::endl;
+      anOS << '\n';
       continue;
     }
     anOS << "  ";
@@ -134,7 +134,7 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
     itr.Value()->Label().EntryDump(anOS);
     anOS << " Key_TShape   = " << itr.Key().TShape()->This();
     anOS << " Value_TShape = " << itr.Value()->Shape().TShape()->This();
-    anOS << std::endl;
+    anOS << '\n';
   }
   return anOS;
 }

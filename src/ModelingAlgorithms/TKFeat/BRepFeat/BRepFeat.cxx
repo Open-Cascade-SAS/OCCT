@@ -395,7 +395,9 @@ static void PutInBoundsU(double                     umin,
     double d1 = maxC - umax;
     double d2 = umin - minC + period;
     if (d2 < d1)
+    {
       du = -period;
+    }
     if (du != 0.)
     {
       gp_Vec2d T2(du, 0.);
@@ -449,7 +451,9 @@ static void PutInBoundsV(double                     vmin,
     double d1 = maxC - vmax;
     double d2 = vmin - minC + period;
     if (d2 < d1)
+    {
       dv = -period;
+    }
     if (dv != 0.)
     {
       gp_Vec2d T2(0., dv);
@@ -498,9 +502,13 @@ bool BRepFeat::IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2)
       double eps = BRep_Tool::Tolerance(E);
       BRep_Tool::Range(E, f1, l1);
       if (flagu == 1)
+      {
         PutInBoundsU(umin, umax, eps, uperiod, f1, l1, C);
+      }
       if (flagv == 1)
+      {
         PutInBoundsV(vmin, vmax, eps, vperiod, f1, l1, C);
+      }
     }
     Geom2dAdaptor_Curve AC(C, f1, l1);
     if (!IsIn(FC, AC))
@@ -542,13 +550,21 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
           gp_Pnt aP(x[i], y[j], z[k]);
           ElSLib::Parameters(aPln, aP, u, v);
           if (u < umin)
+          {
             umin = u;
+          }
           if (u > umax)
+          {
             umax = u;
+          }
           if (v < vmin)
+          {
             vmin = v;
+          }
           if (v > vmax)
+          {
             vmax = v;
+          }
         }
       }
     }
@@ -571,9 +587,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
           gp_Pnt aP(x[i], y[j], z[k]);
           ElSLib::Parameters(aCyl, aP, u, v);
           if (v < vmin)
+          {
             vmin = v;
+          }
           if (v > vmax)
+          {
             vmax = v;
+          }
         }
       }
     }
@@ -594,9 +614,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
           gp_Pnt aP(x[i], y[j], z[k]);
           ElSLib::Parameters(aCon, aP, u, v);
           if (v < vmin)
+          {
             vmin = v;
+          }
           if (v > vmax)
+          {
             vmax = v;
+          }
         }
       }
     }

@@ -69,6 +69,8 @@ void Units_ShiftedToken::Dump(const int ashift, const int alevel) const
 {
   Units_Token::Dump(ashift, alevel);
   for (int i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "  move  : " << themove << std::endl;
+  }
+  std::cout << "  move  : " << themove << '\n';
 }

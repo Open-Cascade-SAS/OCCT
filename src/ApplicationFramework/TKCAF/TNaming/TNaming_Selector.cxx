@@ -56,14 +56,20 @@ inline static void MapOfOrientedShapes(const TopoDS_Shape& S, NCollection_Map<To
 static void BuildAtomicMap(const TopoDS_Shape& S, NCollection_Map<TopoDS_Shape>& M)
 {
   if (S.ShapeType() > TopAbs_COMPSOLID)
+  {
     return;
+  }
   TopoDS_Iterator it(S);
   for (; it.More(); it.Next())
   {
     if (it.Value().ShapeType() > TopAbs_COMPSOLID)
+    {
       M.Add(it.Value());
+    }
     else
+    {
       BuildAtomicMap(it.Value(), M);
+    }
   }
 }
 
@@ -108,7 +114,9 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
         cit.Initialize(aNS->Label(), TNaming_NamedShape::GetID(), false);
       }
       else
+      {
         return true;
+      }
     }
 
     for (; cit.More(); cit.Next())
@@ -118,7 +126,9 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
       {
         TopoDS_Shape aS = TNaming_Tool::CurrentShape(NS);
         if (aS.IsNull())
+        {
           continue;
+        }
         if (aS.ShapeType() != TopAbs_COMPOUND)
         { // single shape at the child label
           if (!shapesOfContext.Contains(aS))
@@ -140,7 +150,9 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
               break;
             }
             if (isFound)
+            {
               break;
+            }
           }
         }
       }
@@ -201,7 +213,9 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
   if (Ident.IsFeature())
   {
     if (!OnlyOne)
+    {
       return false;
+    }
     else
     {
       NS = Ident.FeatureArg();
@@ -239,7 +253,9 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
         for (; itl.More(); itl.Next())
         {
           if (itl.Value() == aC)
+          {
             isEq = true;
+          }
           else
           {
             isEq = false;
@@ -250,7 +266,9 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
       }
     }
     else
+    {
       return false;
+    }
   }
   return false;
 }
@@ -277,13 +295,17 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
     bool            isVertex(true);
     TopoDS_Iterator it(Selection);
     for (; it.More(); it.Next())
+    {
       if (it.Value().ShapeType() != TopAbs_VERTEX)
       {
         isVertex = false;
         break;
       }
+    }
     if (isVertex)
+    {
       aKeepOrientation = false;
+    }
   }
 
   if (aKeepOrientation)
@@ -301,7 +323,9 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
     NS = TNaming_Naming::Name(myLabel, Selection, Context, Geometry, aKeepOrientation);
   }
   if (NS.IsNull())
+  {
     return false;
+  }
   //
   // namedshape with SELECTED Evolution
   //
@@ -310,9 +334,13 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
   //      then naming structure becomes more complex, can be cycles
   const TopoDS_Shape& aSelection = TNaming_Tool::CurrentShape(NS); // szy
   if (aSelection.ShapeType() == TopAbs_COMPOUND && aSelection.ShapeType() != Selection.ShapeType())
+  {
     B.Select(aSelection, aSelection); // type migration
+  }
   else
+  {
     B.Select(Selection, Selection);
+  }
   //
   // naming with IDENTITY NameType
   //

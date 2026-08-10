@@ -70,7 +70,9 @@ void TopExp::MapShapes(const TopoDS_Shape&                                     S
   M.Add(S);
   TopoDS_Iterator It(S, cumOri, cumLoc);
   for (; It.More(); It.Next())
+  {
     MapShapes(It.Value(), M);
+  }
 }
 
 //=================================================================================================
@@ -95,7 +97,9 @@ void TopExp::MapShapesAndAncestors(
     {
       int index = M.FindIndex(exs.Current());
       if (index == 0)
+      {
         index = M.Add(exs.Current(), empty);
+      }
       M(index).Append(anc);
       exs.Next();
     }
@@ -108,7 +112,9 @@ void TopExp::MapShapesAndAncestors(
   {
     int index = M.FindIndex(ex.Current());
     if (index == 0)
+    {
       index = M.Add(ex.Current(), empty);
+    }
     ex.Next();
   }
 }
@@ -136,15 +142,23 @@ void TopExp::MapShapesAndUniqueAncestors(
     {
       int index = M.FindIndex(exs.Current());
       if (index == 0)
+      {
         index = M.Add(exs.Current(), empty);
+      }
       NCollection_List<TopoDS_Shape>& aList = M(index);
       // check if anc already exists in a list
       NCollection_List<TopoDS_Shape>::Iterator it(aList);
       for (; it.More(); it.Next())
+      {
         if (useOrientation ? anc.IsEqual(it.Value()) : anc.IsSame(it.Value()))
+        {
           break;
+        }
+      }
       if (!it.More())
+      {
         aList.Append(anc);
+      }
       exs.Next();
     }
     exa.Next();
@@ -156,7 +170,9 @@ void TopExp::MapShapesAndUniqueAncestors(
   {
     int index = M.FindIndex(ex.Current());
     if (index == 0)
+    {
       M.Add(ex.Current(), empty);
+    }
     ex.Next();
   }
 }
@@ -169,7 +185,9 @@ TopoDS_Vertex TopExp::FirstVertex(const TopoDS_Edge& E, const bool CumOri)
   while (ite.More())
   {
     if (ite.Value().Orientation() == TopAbs_FORWARD)
+    {
       return TopoDS::Vertex(ite.Value());
+    }
     ite.Next();
   }
   return TopoDS_Vertex();
@@ -183,7 +201,9 @@ TopoDS_Vertex TopExp::LastVertex(const TopoDS_Edge& E, const bool CumOri)
   while (ite.More())
   {
     if (ite.Value().Orientation() == TopAbs_REVERSED)
+    {
       return TopoDS::Vertex(ite.Value());
+    }
     ite.Next();
   }
   return TopoDS_Vertex();
@@ -220,10 +240,14 @@ void TopExp::Vertices(const TopoDS_Edge& E,
   }
 
   if (!isFirstDefined)
+  {
     Vfirst.Nullify();
+  }
 
   if (!isLastDefined)
+  {
     Vlast.Nullify();
+  }
 }
 
 //=================================================================================================
@@ -240,16 +264,24 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
   {
     const TopoDS_Edge& E = TopoDS::Edge(it.Value());
     if (E.Orientation() == TopAbs_REVERSED)
+    {
       TopExp::Vertices(E, V2, V1);
+    }
     else
+    {
       TopExp::Vertices(E, V1, V2);
+    }
     // add or remove in the vertex map
     V1.Orientation(TopAbs_FORWARD);
     V2.Orientation(TopAbs_REVERSED);
     if (!vmap.Add(V1))
+    {
       vmap.Remove(V1);
+    }
     if (!vmap.Add(V2))
+    {
       vmap.Remove(V2);
+    }
 
     it.Next();
   }
@@ -267,14 +299,22 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ite(vmap);
 
     while (ite.More() && ite.Key().Orientation() != TopAbs_FORWARD)
+    {
       ite.Next();
+    }
     if (ite.More())
+    {
       Vfirst = TopoDS::Vertex(ite.Key());
+    }
     ite.Initialize(vmap);
     while (ite.More() && ite.Key().Orientation() != TopAbs_REVERSED)
+    {
       ite.Next();
+    }
     if (ite.More())
+    {
       Vlast = TopoDS::Vertex(ite.Key());
+    }
   }
 }
 

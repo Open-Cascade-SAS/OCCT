@@ -29,6 +29,10 @@ All definitions in IGES  version 5.3 are recognized but only 3D geometric entiti
 
 @ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
+@warning **The IGES translator is not thread-safe.** Unlike the STEP translator, IGES reading and writing rely on shared global state inside the IGES engine itself; running two IGES `Read`/`Write` calls in parallel from different threads -- even via the @ref occt_user_guides__de_wrapper "DE_Wrapper" -- is **not supported** and will produce undefined behaviour. Serialise IGES translation calls in your application (e.g. via a process-wide mutex) when working with several files. For the same reason, configuring IGES through `Interface_Static::SetCVal` / `SetIVal` / `SetRVal` (described later in this document) remains the historical practice but must not be relied on from libraries that may be used concurrently by other code.
+
+@note **Modern alternative.** For format-agnostic loading the unified `DE_Wrapper` exposes the same IGES parameters via `DEIGES_ConfigurationNode::InternalParameters` (`DEIGES_Parameters`). A `DE_ShapeFixParameters` value built from `DEIGES_Parameters::GetDefaultShapeFixParameters()` can be passed to `SetShapeFixParameters()` on the legacy `IGESControl_Writer` / `IGESCAFControl_Writer` to keep Shape Processing parameters out of `Interface_Static`. The bullet points above about thread safety still apply.
+
 @section occt_iges_2 Reading IGES
 @subsection occt_iges_2_1 Procedure
 You can translate an  IGES file to an OCCT shape by following the steps below: 
@@ -62,22 +66,15 @@ Administrative data, in the Global Section of the IGES  file (such as the file n
 Before performing any  other operation, you have to load the file using the syntax below. 
 ~~~~{.cpp}
 IGESControl_Reader reader; 
-IFSelect_ReturnStatus stat  = reader.ReadFile(“filename.igs”); 
+IFSelect_ReturnStatus stat  = reader.ReadFile("filename.igs"); 
 ~~~~
 The loading operation  only loads the IGES file into computer memory; it does not translate it. 
 
 @subsubsection occt_iges_2_3_2 Checking the IGES file
-This step is not obligatory.  Check the loaded file with:  
+This step is not obligatory.  Check the loaded file with:
 ~~~~{.cpp}
-bool ok =  reader.Check(true); 
-~~~~
-The variable “ok is  True” is returned if no fail message was found; “ok is False” is returned if  there was at least one fail message.  
-~~~~{.cpp}
-reader.PrintCheckLoad  (failsonly, mode); 
-~~~~
-Error messages are  displayed if there are invalid or incomplete IGES entities, giving you  information on the cause of the error.  
-~~~~{.cpp}
-bool failsonly  = true or false; 
+bool failsonly = true; // or false — true shows fail messages only, false shows both fail and warning messages
+reader.PrintCheckLoad (failsonly, mode); 
 ~~~~
 If you give True, you  will see fail messages only. If you give False, you will see both fail and  warning messages.  
 
@@ -255,20 +252,20 @@ This parameter is obsolete (it is rarely used in real  practice). If set to True
 
 Read this parameter with:  
 ~~~~{.cpp}
-double bam =   Interface_Static::CVal("read.iges.bspline.approxd1.mode"); 
+int bam = Interface_Static::IVal ("read.iges.bspline.approxd1.mode");
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal ("read.encoderegularity.angle","On"))   
+if  (!Interface_Static::SetIVal ("read.iges.bspline.approxd1.mode", 1))
 .. error ..; 
 ~~~~
-Default value is Off.  
+Default value is 0 (Off).
 
 
 <h4>read.iges.resource.name and read.iges.sequence</h4>
 These two parameters define the name of the resource file  and the name of the sequence of operators   (defined in that file) for Shape Processing, which is automatically performed  by the IGES   translator. The Shape Processing is a user-configurable step, which is  performed after   the translation and consists in application of a set of operators to a  resulting shape. This is   a very powerful tool allowing to customize the shape and to adapt it to the  needs of   a receiving application. By default, the sequence consists of a single operator  *ShapeFix* that calls Shape Healing from the IGES translator.  
 
-Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) in the Open CASCADE Technology sources by the path <i>%CASROOT%/src/XSTEPResource/IGES</i>. 
+Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) at the location pointed to by the <i>$CSF_IGESDefaults</i> environment variable. 
 
 IGES translator will use that file if you define the environment variable *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
 
@@ -291,33 +288,33 @@ Several predefined  operators can be used to select a list of entities of a spec
 To make a selection, use the method *IGESControl_Reader::GiveList* with the selection type in  quotation marks as an argument. You can also make cumulative selections. For  example, you would use the following Syntax:
 1. Requesting the faces in the  file: 
 ~~~~{.cpp}
-faces =  Reader.GiveList("iges-faces"); 
+faces =  reader.GiveList("iges-faces"); 
 ~~~~
 2. Requesting the visible roots  in the file: 
 ~~~~{.cpp}
-visibles =  Reader.GiveList(iges-visible-roots); 
+visibles =  reader.GiveList("iges-visible-roots");
 ~~~~
 3.  Requesting the visible faces:
 ~~~~{.cpp}
-visfac =  Reader.GiveList(iges-visible-roots,faces); 
+visfac =  reader.GiveList("iges-visible-roots",faces); 
 ~~~~
 Using a signature, you  can define a selection dynamically, filtering the string by means of a  criterion. When you request a selection using the method GiveList, you can give  either a predefined selection or a selection by signature. You make your selection  by signature using the predefined signature followed by your criterion in  parentheses as shown in the example below. The syntaxes given are equivalent to  each other. 
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(SurfaceOfRevolution)”); 
-faces =  Reader.GiveList(“iges-type(120)”); 
+faces =  reader.GiveList("xst-type(SurfaceOfRevolution)"); 
+faces =  reader.GiveList("iges-type(120)"); 
 ~~~~
 You can also look for: 
   * values returned by your  signature which match your criterion exactly
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(=SurfaceOfRevolution)”); 
+faces =  reader.GiveList("xst-type(=SurfaceOfRevolution)"); 
 ~~~~
   * values returned by your  signature which do not contain your criterion
 ~~~~{.cpp}
-faces = Reader.GiveList(“xst-type(!SurfaceOfRevolution)”); 
+faces = reader.GiveList("xst-type(!SurfaceOfRevolution)"); 
 ~~~~
   * values returned by your  signature which do not exactly match your criterion.
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”); 
+faces =  reader.GiveList("xst-type(!=SurfaceOfRevolution)"); 
 ~~~~
 
 <h4>List of predefined operators that can be used:</h4>
@@ -345,7 +342,7 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
 Perform translation  according to what you want to translate:  
 1.  Translate an entity identified  by its rank with:  
 ~~~~{.cpp}
-bool ok =  reader.Transfer (rank); 
+bool ok =  reader.TransferOne (rank); 
 ~~~~
 2.  Translate an entity  identified by its handle with: 
 ~~~~{.cpp}
@@ -354,32 +351,32 @@ bool ok =  reader.TransferEntity (ent);
 3. Translate a list of entities  in one operation with:  
 ~~~~{.cpp}
 int nbtrans =  reader.TransferList (list); 
-reader.IsDone(); 
 ~~~~
-where *nbtrans* returns the number of items  in the list that produced a shape and    *reader.IsDone()* indicates  whether at least one entity was translated. 
+where *nbtrans* returns the number of items  in the list that produced a shape. 
 4. Translate a list of entities,  entity by entity: 
 ~~~~{.cpp}
-int i,nb =  list-Length();  
-for (i = 1; i  <= nb; i ++) {  
-    occ::handle<Standard_Transient> ent = list-Value(i);  
+int i,nb =  list->Length();  
+...
+    occ::handle<Standard_Transient> ent = list->Value(i);
     bool OK = reader.TransferEntity (ent);  
 } 
 ~~~~
 5.  Translate the whole file (all  entities or only visible entities) with:  
 ~~~~{.cpp}
-bool  onlyvisible = true or false;  
-reader.TransferRoots(onlyvisible) 
+bool  onlyvisible = true;
+reader.SetReadVisible(onlyvisible);
+reader.TransferRoots();
 ~~~~
 
 @subsubsection occt_iges_2_3_6 Getting the  translation results
 Each successful  translation operation outputs one shape. A series of translations gives a  series of shapes.  
-Each time you invoke  *TransferEntity, Transfer* or *Transferlist*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
+Each time you invoke  *TransferEntity*, *TransferOne()*, *TransferRoot()* or *TransferList*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
 ~~~~{.cpp}
 int nbs =  reader.NbShapes(); 
 ~~~~
 returns the number of  shapes recorded in the result.  
 ~~~~{.cpp}
-TopoDS_Shape shape =  reader.Shape(num);, 
+TopoDS_Shape aShape = reader.Shape (num); 
 ~~~~
 returns the result *num*, where *num* is an integer between 1 and *NbShapes*.  
 ~~~~{.cpp}
@@ -402,7 +399,7 @@ reader.PrintTransferInfo  (failsonly, mode);
 ~~~~
 displays the messages  that appeared during the last invocation of *Transfer* or *TransferRoots*.  
 
-If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter “mode” can have  *IFSelect_xxx* values where *xxx* can be:
+If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter "mode" can have  *IFSelect_xxx* values where *xxx* can be:
   * *GeneralCount* -- gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
   * *CountByItem* -- gives the number of IGES  entities with their types per message. 
   * *ListByItem* -- gives the number of IGES  entities with their type and DE numbers per message.  
@@ -429,13 +426,13 @@ Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves*
 | 104: Conic Arc | TopoDS_Edge | The geometric support depends on whether the IGES entity's form is 0 (*Geom_Circle*), 1 (*Geom_Ellipse*), 2 (*Geom_Hyperbola*), or 3 (*Geom_Parabola*). A *Geom_TrimmedCurve* is output if the arc is not closed. |
 | 106: Copious Data | TopoDS_Edge or TopoDS_Wire | IGES entity Copious Data (type 106, forms 1-3) is translated just as the IGES entities Linear Path (106/11-13) and the Simple Closed Planar Curve (106/63). Vectors applying to forms other than 11,12 or 63 are ignored. The *Geom_BSplineCurve* (geometrical support) has C0 continuity. If the Copious Data has vectors (DataType = 3) they will be ignored. |
 | 110: Line | TopoDS_Edge | The supporting curve is a *Geom_TrimmedCurve* whose basis curve is a *Geom_Line*. |
-| 112: Parametric Spline Curve | TopoDS_Edge or TopoDS_Wire | The geometric support is a Geom_BsplineCurve. |
+| 112: Parametric Spline Curve | TopoDS_Edge or TopoDS_Wire | The geometric support is a *Geom_BSplineCurve*. |
 | 126: BSpline Curve | TopoDS_Edge or TopoDS_Wire | |
 | 130: Offset Curve | TopoDS_Edge or TopoDS_Wire | The resulting shape is a *TopoDS_Edge* or a *TopoDS_Wire* (depending on the translation of the basis curve) whose geometrical support is a *Geom_OffsetCurve* built from a basis *Geom_Curve*. Limitation: The IGES Offset Type value must be 1. |
 | 141: Boundary | TopoDS_Wire | Same behavior as for the Curve On Surface (see below). The translation of a non-referenced Boundary IGES entity in a *BoundedSurface* IGES entity outputs a *TopoDS_Edge* or a *TopoDS_Wire* with a *Geom_Curve*. |
 | 142: Curve On Surface | TopoDS_Wire | Each *TopoDS_Edge* is defined by a 3D curve and by a 2D curve that references the surface. |
 
-The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter. 
+The type of OCCT shapes (either *TopoDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter.
 
 @subsubsection occt_iges_2_4_3 Surfaces
 Translation of a surface outputs either a *TopoDS_Face* or a  *TopoDS_Shell*.  
@@ -448,7 +445,7 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 | 118: Ruled Surface | TopoDS_Face or TopoDS_Shell | The translation of a Ruled Surface outputs a *TopoDS_Face* if the profile curves become *TopoDS_Edges*, or a *TopoDS_Shell* if the profile curves become *TopoDS_Wires*. Limitation: This translation cannot be completed when these two *TopoDS_Wires* are oriented in different directions.  |
 | 120: Surface Of Revolution | TopoDS_Face or TopoDS_Shell | The translation of a Surface Of Revolution outputs: a *TopoDS_Face* if the generatrix becomes a *TopoDS_Edge*, a *TopoDS_Shell* if the generatrix becomes a *TopoDS_Wire*. The geometrical support may be: *Geom_CylindricalSurface, Geom_ConicalSurface, Geom_SphericalSurface, Geom_ToroidalSurface* or a *Geom_SurfaceOfRevolution* depending on the result of the CASCADE computation (based on the generatrix type). | 
 | 122: Tabulated Cylinder | TopoDS_Face or TopoDS_Shell | The translation outputs a *TopoDS_Face* if the base becomes a *TopoDS_Edge* or a *TopoDS_Shell* if the base becomes a *TopoDS_Wire*. The geometrical support may be *Geom_Plane, Geom_Cylindrical Surface* or a *Geom_SurfaceOfLinearExtrusion* depending on the result of the CASCADE computation (based on the generatrix type). The *Geom_Surface* geometrical support is limited according to the generatrix. |
-| 128: BSpline Surface | TopoDS_Face | The geometrical support of the *TopoDS_Face* is a *Geom_BsplineSurface*. |
+| 128: BSpline Surface | TopoDS_Face | The geometrical support of the *TopoDS_Face* is a *Geom_BSplineSurface*. |
 | 140: Offset Surface | TopoDS_Face | The translation of an Offset Surface outputs a *TopoDS_Face* whose geometrical support is a *Geom_OffsetSurface*. Limitations: For OCCT algorithms, the original surface must be C1-continuous so that the *Geom_OffsetSurface* can be created. If the basis surface is not C1-continuous, its translation outputs a *TopoDS_Shell* and only the first *TopoDS_Face* in the *TopoDS_Shell* is offset. |
 | 143: Bounded Surface | TopoDS_Face or TopoDS_Shell | If the basis surface outputs a *TopoDS_Shell* (that has more than one *TopoDS_Face*), the IGES boundaries are not translated. Limitations: If the bounding curves define holes, natural bounds are not created. If the orientation of the contours is wrong, it is not corrected. |
 | 144: Trimmed Surface | TopoDS_Face or TopoDS_Shell | For the needs of interface processing, the basis surface must be a face. Shells are only processed if they are single-face. The contours (wires that are correctly oriented according to the definition of the IGES 142: Curve On Surface entity) are added to the face that is already created. If the orientation of the contours is wrong, it is corrected. |
@@ -490,28 +487,16 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 
 
 @subsection occt_iges_2_5 Messages
-Messages are displayed concerning the normal functioning of  the processor (transfer, loading, etc.).  
-You must declare an include file: 
-~~~~{.cpp}
-#include \<Interface_DT.hxx\> 
-~~~~
 
-You have the choice of the following options for messages: 
+Diagnostic and progress messages are routed through OCCT's *Message_Messenger*. By default messages go to standard output; redirect them by attaching custom printers (see *Message_Messenger::AddPrinter* / *Message_PrinterOStream*) on the singleton returned by *Message::DefaultMessenger*.
+
+Verbosity for the IGES translators is controlled via the trace level on `Interface_Static`:
+
 ~~~~{.cpp}
-IDT_SetLevel (level); 
+// 0: no messages, 1: errors only, 2: errors + warnings (default 1)
+Interface_Static::SetIVal ("read.iges.trace.level", 2);
+Interface_Static::SetIVal ("write.iges.trace.level", 2);
 ~~~~
-level modifies the level of messages: 
-  * 0: no messages
-  * 1: raise and fail messages are displayed, as are messages  concerning file access,
-  * 2: warnings are also displayed.
-~~~~{.cpp}
-IDT_SetFile (“tracefile.log”); 
-~~~~
-prints the messages in a file, 
-~~~~{.cpp}
-IDT_SetStandard(); 
-~~~~
-restores screen output. 
 
 @subsection occt_iges_2_6 Tolerance management
 @subsubsection occt_iges_2_6_1 Values used for tolerances during reading IGES
@@ -523,13 +508,13 @@ During the transfer of IGES to Open CASCADE Technology  several parameters are u
 * Package method  *Precision\::Confusion* equal to 10<sup>-7</sup> is used as a minimal  distance between points, which are considered distinct. 
 * Resolution in the IGES  file is defined in the Global section of an IGES  file. It is used as a fundamental value of precision during the transfer. 
 * User-defined variable  *read.precision.val* can be used instead of resolution from the file when  parameter *read.precision.mode* is set to 1 ("User"). 
-* Field *EpsGeom*  of the  class *IGESToBRep_CurveAndSurface* is a basic precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. It is initialized for the root of transfer either by value of  resolution from the file or by value of *read.precision.val*, depending on  the value of *read.precision.mode* parameter. It is returned by call to method  *IGESToBRep_CurvAndSurface::GetEpsGeom*.  As this value belongs to measurement units of the IGES  file, it is usually multiplied by the coefficient *UnitFactor* (returned by  method *IGESToBRep_CurvAndSurface::GetUnitFactor*) to convert it to Open CASCADE  Technology units. 
-* Field *MaxTol* of the class *IGESToBRep_CurveAndSurface* is used as the maximum tolerance for some  algorithms. Currently, it is computed as the maximum between 1 and  *GetEpsGeom* \* *GetUnitFactor*. This field is returned by method  *IGESToBRep_CurvAndSurface::GetMaxTol*.
+* Field *EpsGeom*  of the  class *IGESToBRep_CurveAndSurface* is a basic precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. It is initialized for the root of transfer either by value of  resolution from the file or by value of *read.precision.val*, depending on  the value of *read.precision.mode* parameter. It is returned by call to method  *IGESToBRep_CurveAndSurface::GetEpsGeom*.  As this value belongs to measurement units of the IGES  file, it is usually multiplied by the coefficient *UnitFactor* (returned by  method *IGESToBRep_CurveAndSurface::GetUnitFactor*) to convert it to Open CASCADE  Technology units. 
+* Field *MaxTol* of the class *IGESToBRep_CurveAndSurface* is used as the maximum tolerance for some  algorithms. Currently, it is computed as the maximum between 1 and  *GetEpsGeom* \* *GetUnitFactor*. This field is returned by method  *IGESToBRep_CurveAndSurface::GetMaxTol*.
  
 <h4>2D (parametric) tolerances</h4>
 
 * Package method  *Precision\::PConfusion* equal to <i> 0.01*Precision\::Confusion</i>, i.e. 10<sup>-9</sup>.  It is used to compare parametric bounds of curves. 
-* Field *EpsCoeff* of the  class *IGESToBRep_CurveAndSurface* is a parametric precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. Currently, it always has its default value 10<sup>-6</sup>. It  is returned by call to method *IGESToBRep_CurvAndSurface::GetEpsCoeff*.  This value is used for translating 2d objects (for instance, parametric  curves). 
+* Field *EpsCoeff* of the  class *IGESToBRep_CurveAndSurface* is a parametric precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. Currently, it always has its default value 10<sup>-6</sup>. It  is returned by call to method *IGESToBRep_CurveAndSurface::GetEpsCoeff*.  This value is used for translating 2d objects (for instance, parametric  curves). 
 * Methods  *UResolution(tolerance3d)* and *VResolution(tolerance3d)* of the class  *GeomAdaptor_Surface* or *BRepAdaptor_Surface* return tolerance in parametric space of a surface computed  from 3D tolerance. When one tolerance value is to be used for both U and V  parametric directions, the maximum or the minimum value of *UResolution* and  *VResolution* is used.
 * Methods *Resolution(tolerance3d)* of the class *GeomAdaptor_Curve* or *BRepAdaptor_Curve* return tolerance in the parametric space of a curve computed  from 3d tolerance. 
 
@@ -608,25 +593,25 @@ The highlighted classes produce OCCT geometry.
 @subsection occt_iges_2_8 Example
 
 ~~~~{.cpp}
-#include “IGESControl_Reader.hxx” 
-#include “NCollection_HSequence<occ::handle<Standard_Transient>>.hxx” 
-#include “TopoDS_Shape.hxx” 
+#include <IGESControl_Reader.hxx> 
+#include <NCollection_HSequence.hxx> 
+#include <TopoDS_Shape.hxx> 
 { 
-IGESControl_Reader myIgesReader; 
+IGESControl_Reader anIgesReader; 
 int nIgesFaces,nTransFaces; 
 
-myIgesReader.ReadFile (“MyFile.igs”); 
+anIgesReader.ReadFile ("MyFile.igs"); 
 //loads file MyFile.igs 
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myList =  myIgesReader.GiveList(“iges-faces”); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aList =  anIgesReader.GiveList("iges-faces"); 
 //selects all IGES faces in the file and puts them into a list  called //MyList, 
 
-nIgesFaces = myList-Length();  
-nTransFaces = myIgesReader.TransferList(myList); 
+nIgesFaces = aList->Length();  
+nTransFaces = anIgesReader.TransferList(aList); 
 //translates MyList, 
 
-cout<<"IGES Faces: "<<nIgesFaces<<"   Transferred:"<<nTransFaces<<endl; 
-TopoDS_Shape sh = myIgesReader.OneShape(); 
+std::cout << "IGES Faces: " << nIgesFaces << "   Transferred:" << nTransFaces << std::endl; 
+TopoDS_Shape sh = anIgesReader.OneShape(); 
 //and obtains the results in an OCCT shape. 
 } 
 ~~~~
@@ -685,7 +670,7 @@ Default value is "Faces" (0).
 * *write.iges.header.company:* gives the name of the  sending company.  The default value is  "" (empty).
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.company");*
  * Modify this value with *Interface_Static::SetCVal ("write.iges.header.company", "Open CASCADE");* 
-* *write.iges.header.product:* gives the name of the  sending product. The default value is  "CAS.CADE IGES processor Vx.x", where *x.x* means the current version of  Open CASCADE Technology.  
+* *write.iges.header.product:* gives the name of the  sending product. The default value is  "Open CASCADE Technology IGES Processor", where *x.x* means the current version of  Open CASCADE Technology.  
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
  * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
 * *write.iges.header.receiver:* -- gives the name of the  receiving company.  The default value is  "" (empty).
@@ -703,11 +688,11 @@ Default value is "Faces" (0).
 
 Read this parameter  with:  
 ~~~~{.cpp}
-double rp =  Interface_Static::RVal(;write.precision.val;); 
+double rp =  Interface_Static::RVal("write.precision.val"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal(;write.precision.val;,0.01))  
+if  (!Interface_Static::SetRVal("write.precision.val",0.01))  
 .. error .. 
 ~~~~
 Default value is 0.0001. 
@@ -724,7 +709,7 @@ write.iges.sequence - ToIGES.
 
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
 ~~~~{.cpp}
-bool ok =  writer.AddShape (TopoDS_Shape); 
+bool ok =  writer.AddShape (aShape); 
 ~~~~
 *ok* is True if translation was correctly performed and False if there was at least one entity that was not translated.  
 ~~~~{.cpp}
@@ -753,7 +738,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 
 | CASCADE shape | IGES entity type | Comments |
 | :------------ | :---------------- | :------- | 
-| Geom_BsplineCurve | 126: BSpline Curve | |
+| Geom_BSplineCurve | 126: BSpline Curve | |
 | Geom_BezierCurve | 126: BSpline Curve | |
 | Geom_TrimmedCurve | All types of translatable IGES curves | The type of entity output depends on the type of the basis curve. If the curve is not trimmed, limiting points will be defined by the CASCADE RealLast value. |
 | Geom_Circle | 100: Circular Arc or 126: BSpline Curve | A BSpline Curve is output if the *Geom_Circle* is closed |
@@ -832,13 +817,13 @@ The highlighted classes are intended to translate geometry.
 int main() 
 { 
   IGESControl_Controller::Init(); 
-  IGESControl_Writer ICW (;MM;, 0); 
+  IGESControl_Writer ICW ("MM", 0); 
   //creates a writer object for writing in Face mode with  millimeters 
   TopoDS_Shape sh; 
   ICW.AddShape (sh); 
   //adds shape sh to IGES model 
   ICW.ComputeModel(); 
-  bool OK = ICW.Write (;MyFile.igs;); 
+  bool OK = ICW.Write ("MyFile.igs"); 
   //writes a model to the file MyFile.igs 
 } 
 ~~~~
@@ -854,7 +839,7 @@ In the description of  commands, square brackets ([]) are used to indicate optio
 
 A set of parameters for  importing and exporting IGES files is defined in the XSTEP resource file. In  XSTEPDRAW, these parameters can be viewed or changed using command  
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> param [<parameter_name> [<value>]]  
 ~~~~
 
@@ -885,13 +870,13 @@ These parameters are set  by command *param* :
 It is possible either only to load an IGES file into memory  (i.e. to fill the model with data from the file), or to read it (i.e. to load  and convert all entities to OCCT shapes).  
 
 Loading is done by the command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> xload <file_name>
 ~~~~
 Once the file is loaded, it is possible to investigate the  structure of the loaded data. To learn how to do it see @ref occt_iges_4_4 "Analyzing the  transferred".
  
 Reading of an IGES file is done by the command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> igesbrep <file_name> <result_shape_name> [<selection>]
 ~~~~
 Here a dot can be used instead of a filename if the file is  already loaded by *xload* or *igesbrep* command. In that case, only  conversion of IGES entities to OCCT shapes will be done. 
@@ -910,20 +895,20 @@ After the selected set of entities is loaded the user will  be asked how loaded 
 
 The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter is ‘s’, they will be <i>s_1,  ... s_N.</i> 
 
-<i>\<selection\></i> specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values of  *selection* refer to @ref occt_iges_2_3_4 "Selecting entities" section. 
+<i>\<selection\></i> specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk "*" can be  specified instead of *iges-visible-transf-roots*. For possible values of  *selection* refer to @ref occt_iges_2_3_4 "Selecting entities" section. 
 
 
 Instead of *igesbrep* it is possible to use commands:
-~~~~{.php}
+~~~~{.tcl}
 Draw> trimport <file_name> <result_shape_name> <selection>
 ~~~~
 which outputs the result of translation of each selected  entity into one shape, or
-~~~~{.php}
+~~~~{.tcl}
 Draw> trimpcomp <file_name> <result_shape_name> <selection>
 ~~~~
 which outputs the result of translation of all selected  entities into one shape (*TopoDS_Compound* for several entities). 
 
-An asterisk “*” can be specified instead of  *selection*, it means *xst-transferrable-roots*.
+An asterisk "*" can be specified instead of  *selection*, it means *xst-transferrable-roots*.
  
 During the IGES translation, a map of correspondence between  IGES entities and OCCT shapes is created. 
 The following commands are available:  
@@ -942,7 +927,7 @@ The procedure of analysis of the data import can be divided  into two stages:
 @subsubsection occt_iges_4_4_1 Checking file contents
 
 General statistics on the loaded data can be obtained by  using command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> data <symbol> 
 ~~~~
 The information printed by this command depends on the  symbol specified: 
@@ -965,16 +950,16 @@ There is a set of special objects, which can be used to  operate with the loaded
 
 
 A list of these objects defined in the current session can  be printed in DRAW by command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> listitems 
 ~~~~
 In the following commands if several <i>\<selection\></i>  arguments are specified the results of each following selection are applied to the results of the previous one. 
-~~~~{.php}
+~~~~{.tcl}
 Draw> givelist <selection_name> [<selection_name>]
 ~~~~
 prints a list of loaded entities defined by selection argument. 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> givecount <selection_name> [<selection_name>]
 ~~~~
 prints a number of loaded entities defined by <i>selection</i> argument. 
@@ -993,7 +978,7 @@ Optional <i>\<selection\></i> argument, if specified, defines a subset of entiti
 | iges-levels | Calculates how much entities lie in different IGES levels |
 
 The command:
-~~~~{.php}
+~~~~{.tcl}
 Draw> listtypes <selection_name> ...
 ~~~~
 gives a list of entity types which were encountered in the  last loaded file (with a number of IGES entities of each type). The list can be  shown not for all entities but for a subset of them. This subset is defined by  an optional selection argument. 
@@ -1008,7 +993,7 @@ Entities in the IGES file are numbered in the succeeding  order. An entity can b
 @subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
 All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tpstat [*|?]<symbol> [<selection>]
 ~~~~
 provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines  what information will be printed: 
@@ -1030,11 +1015,11 @@ Optional argument <i>\<selection\></i> can limit the action of  the command with
 To get help, run this command without arguments. 
 
 For example, to get translation ratio on IGES faces, you can use. 
-~~~~{.php}
+~~~~{.tcl}
 Draw:> tpstat *l iges-faces
 ~~~~
 The second version of the same command is TPSTAT (not  capital spelling). 
-~~~~{.php}
+~~~~{.tcl}
 Draw:> TPSTAT <symbol> 
 ~~~~
 Symbol can be of the following values: 
@@ -1047,7 +1032,7 @@ Symbol can be of the following values:
 Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. 
 
 The number of lost trims and the corresponding IGES entities can be obtained by the command:
-~~~~{.php}
+~~~~{.tcl}
 Draw> tplosttrim [<IGES_type>] 
 ~~~~
 It outputs the rank and DE numbers of faces that  lost their trims and their numbers for each type (143, 144, 510) and their  total number. If a face lost several of its trims it is output only once. 
@@ -1055,11 +1040,11 @@ It outputs the rank and DE numbers of faces that  lost their trims and their num
 Optional parameter <i>\<IGES_type\></i> can be *TrimmedSurface,  BoundedSurface* or *Face* to specify the only type of IGES faces. 
 
 For example, to get untrimmed 144 entities, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tplosttrim TrimmedSurface 
 ~~~~
 To get the information on OCCT shape contents, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> statshape <shape_name> 
 ~~~~
 It outputs the number of each kind of shapes (vertex, edge,  wire, etc.) in a shape and some geometrical data (number of C0 surfaces,  curves, indirect surfaces, etc.). 
@@ -1067,7 +1052,7 @@ It outputs the number of each kind of shapes (vertex, edge,  wire, etc.) in a sh
 Note. The number of faces is returned as a number of  references. To obtain the number of single instances the standard command (from  TTOPOLOGY executable) **nbshapes** can be used. 
 
 To analyze the internal validity of a shape, use command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> checkbrep <shape_name> <expurged_shape_name>
 ~~~~
 It checks the geometry and topology of a shape for  different cases of inconsistency, like self-intersecting wires or wrong  orientation of trimming contours. If an error is found, it copies bad parts of  the shape with the names "expurged_subshape_name _#" and generates  an appropriate message. If possible, this command also tries to find IGES  entities the OCCT shape was produced from. 
@@ -1075,7 +1060,7 @@ It checks the geometry and topology of a shape for  different cases of inconsist
 <i>\<expurged_shape_name\></i> will contain the original shape  without invalid subshapes. 
 
 To get information on tolerances of subshapes, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tolerance <shape_name> [<min> [<max>] [<symbol>]]
 ~~~~
 It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
@@ -1094,24 +1079,24 @@ Refer to @ref occt_iges_3_3_2 "Setting the translation parameters" for a descrip
 
 | Description | Name | Values |
 | :-----------  | :---- | :----- |
-| Author | XSTEP.iges.header.author | String |
-| Company | XSTEP.iges.header.company | String |
-| Receiver | XSTEP.iges.header.receiver | String |
-| Write mode for shapes | XSTEP.iges.writebrep.mode | 0/Faces or 1/BRep |
-| Measurement units | XSTEP.iges.unit | 1-11 (or a string value) |
+| Author | write.iges.header.author | String |
+| Company | write.iges.header.company | String |
+| Receiver | write.iges.header.receiver | String |
+| Write mode for shapes | write.iges.brep.mode | 0/Faces or 1/BRep |
+| Measurement units | write.iges.unit | 1-11 (or a string value) |
 
 Several shapes can be written in one file. To start writing  a new file, enter command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> newmodel 
 ~~~~
 This command clears the *InterfaceModel* to make it empty.
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> brepiges <shape_name_1> [<filename.igs>]
 ~~~~
 Converts the  specified shapes into IGES entities and puts them into the *InterfaceModel*.
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> writeall <filename.igs>
 ~~~~
 Allows writing the prepared model to a file with name *filename.igs*.
@@ -1124,8 +1109,8 @@ Allows writing the prepared model to a file with name *filename.igs*.
 
 Before performing any other operation, you must load an IGES  file with: 
 ~~~~{.cpp}
-IGESCAFControl_Reader reader(XSDRAW::Session(),  false); 
-IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”); 
+IGESCAFControl_Reader reader;
+IFSelect_ReturnStatus stat = reader.ReadFile("filename.igs"); 
 ~~~~
 Loading the file only memorizes, but does not translate the  data. 
 
@@ -1162,7 +1147,7 @@ where *doc* is a variable which contains a handle to the output document and sho
 
 The translation from XDE to IGES can be initialized as follows: 
 ~~~~{.cpp}
-IGESCAFControl_Writer aWriter(XSDRAW::Session(),false); 
+IGESCAFControl_Writer aWriter;
 ~~~~
 
 ### Set parameters for translation from XDE to IGES
@@ -1183,7 +1168,7 @@ aWriter.SetNameMode(mode);
 
 You can perform the translation of a document by calling the  function: 
 ~~~~{.cpp}
-IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
+bool aRetSt = aWriter.Transfer(doc); 
 ~~~~
 where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *occ::handle\<TDocStd_Document\>*.
  
@@ -1191,13 +1176,11 @@ where "doc" is a variable which contains a handle to the input document for tran
 
 Write an IGES file with: 
 ~~~~{.cpp}
-IFSelect_ReturnStatus statw =  aWriter.WriteFile("filename.igs"); 
+bool statw = aWriter.Write("filename.igs"); 
 ~~~~
 or 
 ~~~~{.cpp}
-IFSelect_ReturnStatus statw = writer.WriteFile (S); 
+bool statw = aWriter.Write (S); 
 ~~~~
 where S is OStream.  
-
-
 

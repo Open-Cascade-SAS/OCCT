@@ -39,14 +39,14 @@ IntCurve_DistBetweenPCurvesGen::IntCurve_DistBetweenPCurvesGen(const TheCurve& C
 
 //=================================================================================================
 
-int IntCurve_DistBetweenPCurvesGen::NbVariables(void) const
+int IntCurve_DistBetweenPCurvesGen::NbVariables() const
 {
   return (2);
 }
 
 //=================================================================================================
 
-int IntCurve_DistBetweenPCurvesGen::NbEquations(void) const
+int IntCurve_DistBetweenPCurvesGen::NbEquations() const
 {
   return (2);
 }

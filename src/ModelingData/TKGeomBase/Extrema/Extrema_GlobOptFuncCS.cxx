@@ -120,7 +120,9 @@ bool Extrema_GlobOptFuncCS::Value(const math_Vector& X, double& F)
 {
   double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
+  {
     return false;
+  }
 
   value(cu, su, sv, F);
   return true;
@@ -132,7 +134,9 @@ bool Extrema_GlobOptFuncCS::Gradient(const math_Vector& X, math_Vector& G)
 {
   double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
+  {
     return false;
+  }
 
   gradient(cu, su, sv, G);
   return true;
@@ -144,7 +148,9 @@ bool Extrema_GlobOptFuncCS::Values(const math_Vector& X, double& F, math_Vector&
 {
   double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
+  {
     return false;
+  }
 
   value(cu, su, sv, F);
   gradient(cu, su, sv, G);
@@ -157,7 +163,9 @@ bool Extrema_GlobOptFuncCS::Values(const math_Vector& X, double& F, math_Vector&
 {
   double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
+  {
     return false;
+  }
 
   value(cu, su, sv, F);
   gradient(cu, su, sv, G);

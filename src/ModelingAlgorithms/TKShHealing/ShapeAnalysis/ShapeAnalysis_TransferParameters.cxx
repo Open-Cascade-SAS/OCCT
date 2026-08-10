@@ -64,7 +64,9 @@ void ShapeAnalysis_TransferParameters::Init(const TopoDS_Edge& E, const TopoDS_F
   myLast2d  = l2d;
   myFace    = F;
   if (curve3d.IsNull() || curve2d.IsNull())
+  {
     return;
+  }
 
   double ln2d = l2d - f2d;
   double ln3d = l - f;
@@ -87,7 +89,9 @@ occ::handle<NCollection_HSequence<double>> ShapeAnalysis_TransferParameters::Per
 {
   occ::handle<NCollection_HSequence<double>> res = new NCollection_HSequence<double>;
   for (int i = 1; i <= Params->Length(); i++)
+  {
     res->Append(Perform(Params->Value(i), To2d));
+  }
   return res;
 }
 
@@ -97,9 +101,13 @@ double ShapeAnalysis_TransferParameters::Perform(const double Param, const bool 
 {
   double NewParam;
   if (To2d)
+  {
     NewParam = myShift + Param * myScale;
+  }
   else
+  {
     NewParam = -myShift / myScale + Param * 1. / myScale;
+  }
   return NewParam;
 }
 

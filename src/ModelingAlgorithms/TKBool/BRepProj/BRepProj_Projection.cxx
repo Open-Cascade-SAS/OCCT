@@ -90,7 +90,9 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
   TopoDS_Shape aShape;
   if (theShape.ShapeType() == TopAbs_FACE || theShape.ShapeType() == TopAbs_SHELL
       || theShape.ShapeType() == TopAbs_SOLID || theShape.ShapeType() == TopAbs_COMPSOLID)
+  {
     aShape = theShape;
+  }
   else if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
     TopoDS_Compound C;
@@ -99,13 +101,17 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     for (; exp.More(); exp.Next())
     {
       if (C.IsNull())
+      {
         B.MakeCompound(C);
+      }
       B.Add(C, exp.Current());
     }
     aShape = C;
   }
   if (aShape.IsNull())
+  {
     throw Standard_ConstructionError(__FILE__ ": target shape has no faces");
+  }
 
   // build section computing p-curves on both shapes to get higher precision
   BRepAlgoAPI_Section aSectionTool(aShape, theTool, false);
@@ -118,18 +124,24 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
 
   // check for successful work of the section tool
   if (!aSectionTool.IsDone())
+  {
     return;
+  }
 
   // get edges of the result
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anEdges =
     new NCollection_HSequence<TopoDS_Shape>;
   TopExp_Explorer exp(aSectionTool.Shape(), TopAbs_EDGE);
   for (; exp.More(); exp.Next())
+  {
     anEdges->Append(exp.Current());
+  }
 
   // if no edges are found, this means that this section yields no result
   if (anEdges->Length() <= 0)
+  {
     return;
+  }
 
   // connect edges to wires using ShapeAnalysis functionality
   mySection = ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges, Precision::Confusion(), true);
@@ -141,7 +153,9 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     BRep_Builder B;
     B.MakeCompound(myShape);
     for (int i = 1; i <= mySection->Length(); i++)
+    {
       B.Add(myShape, mySection->Value(i));
+    }
 
     // initialize iteration (for compatibility with previous versions)
     myItr = 1;
@@ -159,7 +173,9 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   // Check the input
   Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()), __FILE__ ": null input shape");
   if (Wire.ShapeType() != TopAbs_EDGE && Wire.ShapeType() != TopAbs_WIRE)
+  {
     throw Standard_ConstructionError(__FILE__ ": projected shape is neither wire nor edge");
+  }
 
   // compute the "length" of the cylindrical surface to build
   double mdis = DistanceIn(Wire, Shape);
@@ -192,7 +208,9 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   // Check the input
   Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()), __FILE__ ": null input shape");
   if (Wire.ShapeType() != TopAbs_EDGE && Wire.ShapeType() != TopAbs_WIRE)
+  {
     throw Standard_ConstructionError(__FILE__ ": projected shape is neither wire nor edge");
+  }
 
   // if Wire is only an edge, transform it into a Wire
   TopoDS_Wire aWire;
@@ -203,7 +221,9 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
     BB.Add(aWire, Wire);
   }
   else
+  {
     aWire = TopoDS::Wire(Wire);
+  }
 
   // compute the "length" of the conical surface to build
   double mdis = DistanceIn(Wire, Shape);
@@ -218,7 +238,9 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   // compute the ratio of the scale transformation
   double Scale = PC.Distance(P);
   if (std::abs(Scale) < Precision::Confusion())
+  {
     throw Standard_ConstructionError("Projection");
+  }
   Scale = 1. + mdis / Scale;
 
   // move the base of the conical surface by scaling it with ratio Scale

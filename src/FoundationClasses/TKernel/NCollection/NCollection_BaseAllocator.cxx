@@ -42,6 +42,9 @@ void NCollection_BaseAllocator::Free(void* theAddress)
 //=======================================================================
 const occ::handle<NCollection_BaseAllocator>& NCollection_BaseAllocator::CommonBaseAllocator()
 {
-  static occ::handle<NCollection_BaseAllocator> THE_SINGLETON_ALLOC = new NCollection_BaseAllocator;
-  return THE_SINGLETON_ALLOC;
+  // Intentionally never destroyed: collection statics in other toolkits may
+  // free their nodes through this allocator during process finalization.
+  static occ::handle<NCollection_BaseAllocator>* THE_SINGLETON_ALLOC =
+    new occ::handle<NCollection_BaseAllocator>(new NCollection_BaseAllocator);
+  return *THE_SINGLETON_ALLOC;
 }

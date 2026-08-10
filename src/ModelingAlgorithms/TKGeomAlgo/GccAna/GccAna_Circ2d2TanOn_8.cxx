@@ -96,7 +96,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
     if (d1 > Tol || d2 > Tol)
     {
       if (!SameCenter)
+      {
         pinterm = gp_Pnt2d(center1.XY() + (distcco + Ron) * dircc.XY());
+      }
       distcc2 = pinterm.Distance(Point2);
       distcc1 = pinterm.Distance(center1);
       d1      = std::abs(distcc2 - std::abs(distcc1 - R1));
@@ -134,7 +136,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
           //    ===========================================================
           gp_Dir2d dc1;
           if (!SameCenter)
+          {
             dc1 = gp_Dir2d(center1.XY() - pinterm.XY());
+          }
           if (!Qualified1.IsUnqualified())
           {
             qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -153,9 +157,13 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
           }
           qualifier2(NbrSol) = GccEnt_noqualifier;
           if (!SameCenter)
+          {
             pnttg1sol(NbrSol) = gp_Pnt2d(pinterm.XY() + Radius(i) * dc1.XY());
+          }
           else
+          {
             pnttg1sol(NbrSol) = gp_Pnt2d(pinterm.XY());
+          }
           pnttg2sol(NbrSol) = Point2;
           pntcen(NbrSol)    = cirsol(NbrSol).Location();
           par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
@@ -255,7 +263,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                   continue;
                 }
                 if (NbrSol == 4)
+                {
                   break;
+                }
                 NbrSol++;
                 cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius(k));
                 //              ==========================================================

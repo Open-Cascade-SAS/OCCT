@@ -34,10 +34,14 @@ void IGESGeom_TransformationMatrix::Init(const occ::handle<NCollection_HArray2<d
     theData->Init(0.0);
     int i = 1;
     for (; i <= 3; i++)
+    {
       theData->SetValue(i, i, 1.0);
+    }
   }
   if ((aMatrix->RowLength() != 4) || (aMatrix->ColLength() != 3))
+  {
     throw Standard_DimensionMismatch("IGESGeom_TransformationMatrix : Init");
+  }
 
   theData = aMatrix;
   if (theData.IsNull())
@@ -50,9 +54,13 @@ void IGESGeom_TransformationMatrix::Init(const occ::handle<NCollection_HArray2<d
 void IGESGeom_TransformationMatrix::SetFormNumber(const int fm)
 {
   if (theData.IsNull())
-    std::cout << "Inavalid Transformation Data" << std::endl;
+  {
+    std::cout << "Inavalid Transformation Data" << '\n';
+  }
   if ((fm < 0 || fm > 1) && (fm < 10 || fm > 12))
+  {
     throw Standard_OutOfRange("IGESGeom_TransformationMatrix : SetFormNumber");
+  }
   InitTypeAndForm(124, fm);
 }
 

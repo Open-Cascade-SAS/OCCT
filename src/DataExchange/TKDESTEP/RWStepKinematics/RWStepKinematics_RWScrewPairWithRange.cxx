@@ -40,7 +40,9 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "screw_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -164,7 +166,9 @@ void RWStepKinematics_RWScrewPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -185,14 +189,18 @@ void RWStepKinematics_RWScrewPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotation())
   {
     theSW.Send(theEnt->UpperLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

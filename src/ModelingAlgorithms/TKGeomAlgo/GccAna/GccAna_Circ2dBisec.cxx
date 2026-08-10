@@ -179,9 +179,13 @@ occ::handle<GccInt_Bisec> GccAna_Circ2dBisec::ThisSolution(const int Index) cons
     {
       double R;
       if (Index == 1)
+      {
         R = (R1 + R2) / 2.0;
+      }
       else
+      {
         R = (R1 - R2) / 2.0;
+      }
       gp_Circ2d C(acenx, R);
       bissol = new GccInt_BCirc(C);
       //     =============================
@@ -402,7 +406,9 @@ bool GccAna_Circ2dBisec::IsDone() const
 int GccAna_Circ2dBisec::NbSolutions() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   return NbrSol;
 }

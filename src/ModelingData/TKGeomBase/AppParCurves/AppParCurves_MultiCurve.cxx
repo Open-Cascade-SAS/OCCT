@@ -56,7 +56,9 @@ int AppParCurves_MultiCurve::Dimension(const int Index) const
 int AppParCurves_MultiCurve::NbCurves() const
 {
   if (tabPoint.IsNull())
+  {
     return 0;
+  }
   AppParCurves_MultiPoint MP = tabPoint->Value(1);
   return MP.NbPoints() + MP.NbPoints2d();
 }
@@ -64,7 +66,9 @@ int AppParCurves_MultiCurve::NbCurves() const
 int AppParCurves_MultiCurve::NbPoles() const
 {
   if (tabPoint.IsNull())
+  {
     return 0;
+  }
   return tabPoint->Length();
 }
 
@@ -148,7 +152,9 @@ void AppParCurves_MultiCurve::Transform(const int    CuIndex,
                                         const double dz)
 {
   if (Dimension(CuIndex) != 3)
+  {
     throw Standard_OutOfRange();
+  }
 
   for (int i = 1; i <= tabPoint->Length(); i++)
   {
@@ -163,7 +169,9 @@ void AppParCurves_MultiCurve::Transform2d(const int    CuIndex,
                                           const double dy)
 {
   if (Dimension(CuIndex) != 2)
+  {
     throw Standard_OutOfRange();
+  }
 
   for (int i = 1; i <= tabPoint->Length(); i++)
   {
@@ -175,7 +183,9 @@ void AppParCurves_MultiCurve::Value(const int CuIndex, const double U, gp_Pnt& P
 {
 
   if (Dimension(CuIndex) != 3)
+  {
     throw Standard_OutOfRange();
+  }
 
   NCollection_Array1<gp_Pnt> TabPoles(1, tabPoint->Length());
 
@@ -289,10 +299,10 @@ void AppParCurves_MultiCurve::D2(const int    CuIndex,
 
 void AppParCurves_MultiCurve::Dump(Standard_OStream& o) const
 {
-  o << "AppParCurves_MultiCurve dump:" << std::endl;
+  o << "AppParCurves_MultiCurve dump:" << '\n';
   o << " It contains " << NbCurves() << " Bezier curves of degree " << tabPoint->Length() - 1
-    << std::endl;
-  o << " The poles are: " << std::endl;
+    << '\n';
+  o << " The poles are: " << '\n';
   /*  for (int i = 1; i <= NbCurves(); i++) {
       o << " Curve No. " << i << std::endl;
       if (Dimension(i) == 3) {

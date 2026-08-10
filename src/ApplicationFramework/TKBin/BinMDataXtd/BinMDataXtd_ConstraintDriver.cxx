@@ -53,12 +53,16 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
 
   // value
   if (!(theSource >> aNb))
+  {
     return false;
+  }
   if (aNb > 0)
   {
     occ::handle<TDataStd_Real> aTValue;
     if (theRelocTable.IsBound(aNb))
+    {
       aTValue = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+    }
     else
     {
       aTValue = new TDataStd_Real;
@@ -70,17 +74,23 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
   // geometries
   int NbGeom;
   if (!(theSource >> NbGeom))
+  {
     return false;
+  }
   int iG = 1;
   while (iG <= NbGeom)
   {
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (aNb > 0)
     {
       occ::handle<TNaming_NamedShape> aG;
       if (theRelocTable.IsBound(aNb))
+      {
         aG = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         aG = new TNaming_NamedShape;
@@ -92,12 +102,16 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
 
   // plane
   if (!(theSource >> aNb))
+  {
     return false;
+  }
   if (aNb > 0)
   {
     occ::handle<TNaming_NamedShape> aTPlane;
     if (theRelocTable.IsBound(aNb))
+    {
       aTPlane = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+    }
     else
     {
       aTPlane = new TNaming_NamedShape;
@@ -109,13 +123,17 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
   // constraint type
   int aType;
   if (!(theSource >> aType))
+  {
     return false;
+  }
   aC->SetType((TDataXtd_ConstraintEnum)aType);
 
   // flags
   int flags;
   if (!(theSource >> flags))
+  {
     return false;
+  }
   aC->Verified((flags & 1) != 0);
   aC->Inverted((flags & 2) != 0);
   aC->Reversed((flags & 4) != 0);
@@ -137,9 +155,13 @@ void BinMDataXtd_ConstraintDriver::Paste(
   // value
   occ::handle<TDataStd_Real> aValue = aC->GetValue();
   if (!aValue.IsNull())
+  {
     aNb = theRelocTable.Add(aValue); // create and/or get index
+  }
   else
+  {
     aNb = -1;
+  }
   theTarget << aNb;
 
   // geometries
@@ -150,18 +172,26 @@ void BinMDataXtd_ConstraintDriver::Paste(
   {
     occ::handle<TNaming_NamedShape> aG = aC->GetGeometry(iG);
     if (!aG.IsNull())
+    {
       aNb = theRelocTable.Add(aG);
+    }
     else
+    {
       aNb = -1;
+    }
     theTarget << aNb;
   }
 
   // plane
   occ::handle<TNaming_NamedShape> aTPlane = aC->GetPlane();
   if (!aTPlane.IsNull())
+  {
     aNb = theRelocTable.Add(aTPlane);
+  }
   else
+  {
     aNb = -1;
+  }
   theTarget << aNb;
 
   // constraint type
@@ -170,10 +200,16 @@ void BinMDataXtd_ConstraintDriver::Paste(
   // flags
   int flags = 0;
   if (aC->Verified())
+  {
     flags |= 1;
+  }
   if (aC->Inverted())
+  {
     flags |= 2;
+  }
   if (aC->Reversed())
+  {
     flags |= 4;
+  }
   theTarget << flags;
 }

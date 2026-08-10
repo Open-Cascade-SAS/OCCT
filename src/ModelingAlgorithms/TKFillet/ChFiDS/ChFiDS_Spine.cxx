@@ -109,14 +109,18 @@ occ::handle<ChFiDS_ElSpine> ChFiDS_Spine::ElSpine(const int IE) const
 {
   double wmil = 0.5 * (FirstParameter(IE) + LastParameter(IE));
   if (IsPeriodic())
+  {
     wmil = ElCLib::InPeriod(wmil, FirstParameter(), LastParameter());
+  }
   return ElSpine(wmil);
 }
 
 occ::handle<ChFiDS_ElSpine> ChFiDS_Spine::ElSpine(const double W) const
 {
   if (elspines.Extent() == 1)
+  {
     return elspines.First();
+  }
   else
   {
     NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator It(elspines);
@@ -126,7 +130,9 @@ occ::handle<ChFiDS_ElSpine> ChFiDS_Spine::ElSpine(const double W) const
       double                      uf  = cur->FirstParameter();
       double                      ul  = cur->LastParameter();
       if (uf <= W && W <= ul)
+      {
         return cur;
+      }
     }
     return occ::handle<ChFiDS_ElSpine>();
   }
@@ -180,7 +186,9 @@ void ChFiDS_Spine::Reset(const bool AllData)
 double ChFiDS_Spine::FirstParameter() const
 {
   if (firstprolon)
+  {
     return firstparam;
+  }
   return 0.;
 }
 
@@ -189,7 +197,9 @@ double ChFiDS_Spine::FirstParameter() const
 double ChFiDS_Spine::LastParameter() const
 {
   if (lastprolon)
+  {
     return lastparam;
+  }
   return abscissa->Value(abscissa->Upper());
 }
 
@@ -227,7 +237,9 @@ void ChFiDS_Spine::SetLastParameter(const double Par)
 double ChFiDS_Spine::FirstParameter(const int IndexSpine) const
 {
   if (IndexSpine == 1)
+  {
     return 0.;
+  }
   return abscissa->Value(IndexSpine - 1);
 }
 
@@ -243,7 +255,9 @@ double ChFiDS_Spine::LastParameter(const int IndexSpine) const
 double ChFiDS_Spine::Length(const int IndexSpine) const
 {
   if (IndexSpine == 1)
+  {
     return abscissa->Value(IndexSpine);
+  }
   return abscissa->Value(IndexSpine) - abscissa->Value(IndexSpine - 1);
 }
 
@@ -267,7 +281,9 @@ TopoDS_Vertex ChFiDS_Spine::FirstVertex() const
 {
   TopoDS_Edge E = TopoDS::Edge(spine.First());
   if (E.Orientation() == TopAbs_FORWARD)
+  {
     return TopExp::FirstVertex(E);
+  }
   return TopExp::LastVertex(E);
 }
 
@@ -277,7 +293,9 @@ TopoDS_Vertex ChFiDS_Spine::LastVertex() const
 {
   TopoDS_Edge E = TopoDS::Edge(spine.Last());
   if (E.Orientation() == TopAbs_FORWARD)
+  {
     return TopExp::LastVertex(E);
+  }
   return TopExp::FirstVertex(E);
 }
 
@@ -316,7 +334,9 @@ double ChFiDS_Spine::Absc(const TopoDS_Vertex& V) const
 double ChFiDS_Spine::Period() const
 {
   if (!IsPeriodic())
+  {
     throw Standard_Failure("Non-periodic Spine");
+  }
   return abscissa->Value(abscissa->Upper());
 }
 
@@ -332,7 +352,9 @@ double ChFiDS_Spine::Resolution(const double R3d) const
 void ChFiDS_Spine::SetFirstTgt(const double W)
 {
   if (IsPeriodic())
+  {
     throw Standard_Failure("No extension by tangent on periodic contours");
+  }
 #ifdef OCCT_DEBUG
   if (W >= Precision::Confusion())
     std::cout << "Interior extension at start of the guideline" << std::endl;
@@ -351,7 +373,9 @@ void ChFiDS_Spine::SetFirstTgt(const double W)
 void ChFiDS_Spine::SetLastTgt(const double W)
 {
   if (IsPeriodic())
+  {
     throw Standard_Failure("No extension by tangent periodic contours");
+  }
 
 #ifdef OCCT_DEBUG
   double L = W - abscissa->Value(abscissa->Upper());
@@ -388,9 +412,13 @@ void ChFiDS_Spine::SetReference(const double W)
   hasref     = true;
   double lll = abscissa->Value(abscissa->Upper());
   if (IsPeriodic())
+  {
     valref = ElCLib::InPeriod(W, 0., lll);
+  }
   else
+  {
     valref = W;
+  }
 }
 
 //=================================================================================================
@@ -399,9 +427,13 @@ void ChFiDS_Spine::SetReference(const int I)
 {
   hasref = true;
   if (I == 1)
+  {
     valref = abscissa->Value(1) * 0.5;
+  }
   else
+  {
     valref = (abscissa->Value(I) + abscissa->Value(I - 1)) * 0.5;
+  }
 }
 
 //=================================================================================================
@@ -413,23 +445,35 @@ int ChFiDS_Spine::Index(const double W, const bool Forward) const
   double f = 0., l = 0., t = std::max(tolesp, Precision::Confusion());
 
   if (IsPeriodic() && std::abs(par) >= t && std::abs(par - last) >= t)
+  {
     par = ElCLib::InPeriod(par, 0., last);
+  }
 
   for (ind = 1; ind <= len; ind++)
   {
     f = l;
     l = abscissa->Value(ind);
     if (par < l || ind == len)
+    {
       break;
+    }
   }
   if (Forward && ind < len && std::abs(par - l) < t)
+  {
     ind++;
+  }
   else if (!Forward && ind > 1 && std::abs(par - f) < t)
+  {
     ind--;
+  }
   else if (Forward && IsPeriodic() && ind == len && std::abs(par - l) < t)
+  {
     ind = 1;
+  }
   else if (!Forward && IsPeriodic() && ind == 1 && std::abs(par - f) < t)
+  {
     ind = len;
+  }
   return ind;
 }
 
@@ -440,7 +484,9 @@ int ChFiDS_Spine::Index(const TopoDS_Edge& E) const
   for (int IE = 1; IE <= spine.Length(); IE++)
   {
     if (E.IsSame(spine.Value(IE)))
+    {
       return IE;
+    }
   }
   return 0;
 }
@@ -524,7 +570,9 @@ void ChFiDS_Spine::Parameter(const double AbsC, double& U, const bool Oriented)
   for (Index = 1; Index < abscissa->Length(); Index++)
   {
     if (AbsC < abscissa->Value(Index))
+    {
       break;
+    }
   }
   Parameter(Index, AbsC, U, Oriented);
 }
@@ -574,7 +622,9 @@ void ChFiDS_Spine::Prepare(double& L, int& Ind) const
   double last = abscissa->Value(abscissa->Upper());
   int    len  = abscissa->Length();
   if (IsPeriodic() && std::abs(L) >= tol && std::abs(L - last) >= tol)
+  {
     L = ElCLib::InPeriod(L, 0., last);
+  }
 
   if (hasfirsttgt && (L <= firsttgtpar))
   {
@@ -613,19 +663,25 @@ void ChFiDS_Spine::Prepare(double& L, int& Ind) const
     for (Ind = 1; Ind < len; Ind++)
     {
       if (L < abscissa->Value(Ind))
+      {
         break;
+      }
     }
     if (hasref)
     {
       if (L >= valref && Ind != 1)
       {
         if (std::abs(L - abscissa->Value(Ind - 1)) <= Precision::Confusion())
+        {
           Ind--;
+        }
       }
       else if (L <= valref && Ind != len)
       {
         if (std::abs(L - abscissa->Value(Ind)) <= Precision::Confusion())
+        {
           Ind++;
+        }
       }
     }
   }
@@ -730,7 +786,9 @@ void ChFiDS_Spine::D1(const double AbsC, gp_Pnt& P, gp_Vec& V1)
     myCurve.D1(GCP.Parameter(), P, V1);
     double D1 = 1. / V1.Magnitude();
     if (spine.Value(Index).Orientation() == TopAbs_REVERSED)
+    {
       D1 = -D1;
+    }
     V1.Multiply(D1);
   }
 }
@@ -785,7 +843,9 @@ void ChFiDS_Spine::D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
     V2.Add(Va);
     double D1 = 1. / N1;
     if (spine.Value(Index).Orientation() == TopAbs_REVERSED)
+    {
       D1 = -D1;
+    }
     V1.Multiply(D1);
   }
 }

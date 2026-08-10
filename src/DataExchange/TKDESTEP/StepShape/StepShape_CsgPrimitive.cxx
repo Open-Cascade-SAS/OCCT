@@ -26,19 +26,33 @@ StepShape_CsgPrimitive::StepShape_CsgPrimitive() = default;
 int StepShape_CsgPrimitive::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Sphere)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Block)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_RightAngularWedge)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Torus)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_RightCircularCone)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_RightCircularCylinder)))
+  {
     return 6;
+  }
   return 0;
 }
 

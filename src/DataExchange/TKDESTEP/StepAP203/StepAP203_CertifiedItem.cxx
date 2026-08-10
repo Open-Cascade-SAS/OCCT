@@ -29,9 +29,13 @@ StepAP203_CertifiedItem::StepAP203_CertifiedItem() = default;
 int StepAP203_CertifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_SuppliedPartRelationship)))
+  {
     return 1;
+  }
   return 0;
 }
 

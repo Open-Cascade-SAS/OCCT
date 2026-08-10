@@ -80,7 +80,9 @@ bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&       Sou
         return false;
       }
       if (!aHMap->ChangeMap().Add(aKey))
+      {
         return false;
+      }
     }
     aTagAtt->ChangeMap(aHMap);
   }
@@ -91,9 +93,13 @@ bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&       Sou
   {
     uint8_t aDeltaValue;
     if (!(Source >> aDeltaValue))
+    {
       return false;
+    }
     else
+    {
       aDelta = (aDeltaValue != 0);
+    }
   }
   aTagAtt->SetDelta(aDelta);
   return true;
@@ -121,7 +127,9 @@ void BinMDataStd_IntPackedMapDriver::Paste(
   {
     TColStd_PackedMapOfInteger::Iterator anIt(anAtt->GetMap());
     for (; anIt.More(); anIt.Next())
+    {
       Target << anIt.Key();
+    }
   }
   Target << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 }

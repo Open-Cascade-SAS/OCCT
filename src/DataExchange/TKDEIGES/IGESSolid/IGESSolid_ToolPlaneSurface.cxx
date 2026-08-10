@@ -159,7 +159,9 @@ void IGESSolid_ToolPlaneSurface::WriteOwnParams(const occ::handle<IGESSolid_Plan
   IW.Send(ent->LocationPoint());
   IW.Send(ent->Normal());
   if (ent->IsParametrised())
+  {
     IW.Send(ent->ReferenceDir());
+  }
 }
 
 //=================================================================================================
@@ -223,7 +225,9 @@ void IGESSolid_ToolPlaneSurface::OwnCheck(const occ::handle<IGESSolid_PlaneSurfa
 
   int fn = 0;
   if (ent->IsParametrised())
+  {
     fn = 1;
+  }
   if (fn != ent->FormNumber())
   {
     Message_Msg Msg177("XSTEP_177");
@@ -251,8 +255,10 @@ void IGESSolid_ToolPlaneSurface::OwnDump(const occ::handle<IGESSolid_PlaneSurfac
   {
     S << "Surface is Parametrised  -  Reference direction : ";
     dumper.Dump(ent->ReferenceDir(), S, sublevel);
-    S << std::endl;
+    S << '\n';
   }
   else
-    S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is UnParametrised" << '\n';
+  }
 }

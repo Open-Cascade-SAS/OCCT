@@ -17,7 +17,7 @@
 #define NCollection_UBTreeFiller_HeaderFile
 
 #include <NCollection_UBTree.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <random>
 
@@ -135,10 +135,10 @@ private:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  UBTree&                    myTree;
-  NCollection_Vector<ObjBnd> mySeqPtr;
-  std::mt19937               myRandGen; //!< random number generator
-  bool                       myIsFullRandom;
+  UBTree&                          myTree;
+  NCollection_DynamicArray<ObjBnd> mySeqPtr;
+  std::mt19937                     myRandGen; //!< random number generator
+  bool                             myIsFullRandom;
 };
 
 //=================================================================================================
@@ -152,8 +152,7 @@ int NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
   {
     for (i = nbAdd; i > 0; i--)
     {
-      unsigned int ind      = (unsigned int)myRandGen();
-      ind                   = ind % i;
+      const int     ind     = static_cast<int>(static_cast<unsigned int>(myRandGen()) % i);
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add(aObjBnd.myObj, aObjBnd.myBnd);
       mySeqPtr(ind) = mySeqPtr(i - 1);
@@ -163,8 +162,7 @@ int NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
   {
     for (i = nbAdd; i > 0; i--)
     {
-      unsigned int ind      = (unsigned int)myRandGen();
-      ind                   = i - (ind % i) - 1;
+      const int     ind     = i - static_cast<int>(static_cast<unsigned int>(myRandGen()) % i) - 1;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add(aObjBnd.myObj, aObjBnd.myBnd);
       mySeqPtr(ind) = mySeqPtr(i - 1);

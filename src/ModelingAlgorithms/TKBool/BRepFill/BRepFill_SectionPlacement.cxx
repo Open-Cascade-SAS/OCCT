@@ -97,11 +97,15 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
   {
     const TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
     if (anEdge.IsNull() || BRep_Tool::Degenerated(anEdge))
+    {
       continue;
+    }
 
     aCurve = BRep_Tool::Curve(anEdge, anEdgeStartParam, anEdgeEndParam);
     if (aCurve.IsNull())
+    {
       continue;
+    }
 
     break;
   }
@@ -130,11 +134,15 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
         TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
         // avoid null, degenerated edges
         if (anEdge.IsNull() || BRep_Tool::Degenerated(anEdge))
+        {
           continue;
+        }
 
         aCurve = BRep_Tool::Curve(anEdge, anEdgeStartParam, anEdgeEndParam);
         if (aCurve.IsNull())
+        {
           continue;
+        }
 
         TopoDS_Vertex aFirstVertex;
         TopoDS_Vertex aLastVertex;
@@ -247,7 +255,9 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
     else
     {
       if (aLawIndex1 == aLawIndex2)
+      {
         aVertex.Reverse();
+      }
       aSectionPlacement.Perform(SearchParam(myLaw, aLawIndex2, aVertex), Precision::Confusion());
     }
     if (aSectionPlacement.Angle() > Angle)

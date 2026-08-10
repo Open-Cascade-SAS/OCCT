@@ -203,7 +203,9 @@ static bool SearchFD(TopOpeBRepDS_DataStructure&       DStr,
       }
     }
     if (fini1 && fini2)
+    {
       break;
+    }
   }
   return found;
 }
@@ -434,7 +436,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
       }
     }
     if (!c1toric)
+    {
       c1spheric = (std::abs(qr[0] - qr[1]) < tolapp3d && std::abs(qr[0] - qr[2]) < tolapp3d);
+    }
   }
 
   //  Previously to avoid loops the points were always located
@@ -506,18 +510,26 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                           bidr);
     double distest = ptestdeb.Distance(ptestfin);
     if (distest < (Rdp + Rfp) * 0.05)
+    {
       filling = true;
+    }
     if (distest < (Rdp + Rfp) * 0.005)
+    {
       c1pointu = true;
+    }
   }
 
   if (!c1pointu)
   {
     if (!pivdif)
+    {
       c1pointu = (std::abs(p[deb][pivot] - p[deb][fin]) <= tol2d
                   && std::abs(p[fin][pivot] - p[fin][deb]) <= tol2d);
+    }
     if (std::abs(p[pivot][deb] - p[pivot][fin]) <= tol2d)
+    {
       c1toric = ToricCorner(face[pivot], Rdeb, Rfin, Vdp);
+    }
   }
   // there is a pivot, the start and the end CD (finally !?!) :
   // -------------------------------------------------------------
@@ -608,9 +620,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     if (sens[deb] == 1)
     {
       if (choix % 2 == 1)
+      {
         choix++;
+      }
       else
+      {
         choix--;
+      }
     }
   }
   else
@@ -619,9 +635,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     if (sens[deb] == -1)
     {
       if (choix % 2 == 1)
+      {
         choix++;
+      }
       else
+      {
         choix--;
+      }
     }
   }
 
@@ -751,7 +771,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
         WLast     = 1.;
       }
       else
+      {
         locfleche = radpondere * (WLast - WFirst) * fleche;
+      }
       double                      pasmax      = (WLast - WFirst) * 0.05;
       occ::handle<ChFiDS_ElSpine> cornerspine = new ChFiDS_ElSpine();
       cornerspine->SetCurve(spinecoin);
@@ -822,7 +844,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
           filling = !done;
         }
         else
+        {
           filling = true;
+        }
       }
       else
       {
@@ -873,7 +897,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
           filling = !done;
         }
         else
+        {
           filling = true;
+        }
       }
 
 #ifdef OCCT_DEBUG
@@ -894,6 +920,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
       occ::handle<GeomFill_Boundary> Bdeb, Bfin, Bpiv, Bfac;
       occ::handle<Geom2d_Curve>      PCurveOnFace;
       if (!c1pointu)
+      {
         Bfac = ChFi3d_mkbound(Fac,
                               PCurveOnFace,
                               sens[deb],
@@ -904,6 +931,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                               vfac2,
                               tolapp3d,
                               2.e-4);
+      }
       int    kkk;
       gp_Pnt ppbid;
       gp_Vec vp1, vp2;
@@ -958,9 +986,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
 
       GeomFill_ConstrainedFilling fil(11, 20);
       if (c1pointu)
+      {
         fil.Init(Bpiv, Bfin, Bdeb, true);
+      }
       else
+      {
         fil.Init(Bpiv, Bfin, Bfac, Bdeb, true);
+      }
 
       occ::handle<Geom_Surface> Surfcoin = fil.Surface();
       Surfcoin->VReverse(); // revert to direction face surface;
@@ -1005,13 +1037,17 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     const ChFiDS_CommonPoint& Pf2 = coin->VertexFirstOnS2();
     ChFiDS_CommonPoint&       Pl1 = coin->ChangeVertexLastOnS1();
     if (c1pointu)
+    {
       Pl1 = coin->ChangeVertexFirstOnS1();
+    }
     const ChFiDS_CommonPoint& Pl2 = coin->VertexLastOnS2();
 
     Bnd_Box  bf1, bl1, bf2, bl2;
     Bnd_Box *pbf1 = &bf1, *pbl1 = &bl1, *pbf2 = &bf2, *pbl2 = &bl2;
     if (c1pointu)
+    {
       pbl1 = pbf1;
+    }
     pbf1->Add(Pf1.Point());
     pbf2->Add(Pf2.Point());
     pbl1->Add(Pl1.Point());
@@ -1023,16 +1059,24 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     If1 = ChFi3d_IndexPointInDS(Pf1, DStr);
     If2 = ChFi3d_IndexPointInDS(Pf2, DStr);
     if (c1pointu)
+    {
       Il1 = If1;
+    }
     else
+    {
       Il1 = ChFi3d_IndexPointInDS(Pl1, DStr);
+    }
     Il2 = ChFi3d_IndexPointInDS(Pl2, DStr);
     pp1 = coin->InterferenceOnS1().PCurveOnSurf()->Value(coin->InterferenceOnS1().FirstParameter());
     pp2 = coin->InterferenceOnS2().PCurveOnSurf()->Value(coin->InterferenceOnS2().FirstParameter());
     if (c1pointu)
+    {
       coin->ChangeIndexOfS1(0);
+    }
     else
+    {
       coin->ChangeIndexOfS1(DStr.AddShape(face[pivot]));
+    }
     coin->ChangeIndexOfS2(-fdpiv->Surf());
 
     occ::handle<Geom_Curve> C3d;
@@ -1128,9 +1172,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                         rev);
     tcdeb.Tolerance(std::max(tolrdeb, tcdeb.Tolerance()));
     if (rev)
+    {
       ChFi3d_EnlargeBox(DStr, CD[deb], fddeb, *pbf2, *pbf1, isfirst);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, CD[deb], fddeb, *pbf1, *pbf2, isfirst);
+    }
 
     // then the end CornerData,
     // ------------------------
@@ -1173,9 +1221,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                         rev);
     tcfin.Tolerance(std::max(tolrfin, tcfin.Tolerance()));
     if (rev)
+    {
       ChFi3d_EnlargeBox(DStr, CD[fin], fdfin, *pbl2, *pbl1, isfirst);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, CD[fin], fdfin, *pbl1, *pbl2, isfirst);
+    }
 
     // anf finally the pivot.
     // ------------------
@@ -1215,9 +1267,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     fdpiv->ChangeInterference(isurf2).SetParameter(p[pivot][fin], isfirst);
     CD[pivot]->InDS(isfirst); // filDS already does it from the corner.
     if (rev)
+    {
       ChFi3d_EnlargeBox(DStr, CD[pivot], fdpiv, *pbl2, *pbf2, isfirst);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, CD[pivot], fdpiv, *pbf2, *pbl2, isfirst);
+    }
 
     // To end the tolerances of points are rescaled.
     ChFi3d_SetPointTolerance(DStr, *pbf1, If1);

@@ -585,7 +585,7 @@ TEST_F(NCollection_OrderedDataMapTest, ItemsStructuredBindings)
   for (auto [aKey, aValue] : aMap.Items())
   {
     aKeys.push_back(aKey);
-    aValues.push_back(aValue.ToCString());
+    aValues.emplace_back(aValue.ToCString());
   }
 
   const std::vector<int>         anExpectedKeys   = {30, 10, 20};

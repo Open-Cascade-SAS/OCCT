@@ -40,7 +40,9 @@ void RWStepAP203_RWChange::ReadStep(const occ::handle<StepData_StepReaderData>& 
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "change"))
+  {
     return;
+  }
 
   // Inherited fields of ActionAssignment
 

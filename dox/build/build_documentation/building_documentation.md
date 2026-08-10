@@ -1,19 +1,23 @@
-﻿Build Documentation {#build_upgrade__building_documentation}
+Build Documentation {#build_upgrade__building_documentation}
 =================
 
 To generate HTML documentation from sources contained in *dox* subdirectory, 
-you need to have Tcl and Doxygen 1.8.5 (or above) installed on your system.
+you need to have Doxygen 1.8.4 (or above) installed on your system.
+Tcl/Tk is required when configuring a full OCCT build with DRAW enabled.
 
-Use script **gendoc** (batch file on Windows, shell script on Linux / Mac OSX) located in `adm` directory to generate documentation.
+OCCT documentation is generated via CMake targets. Enable `-DBUILD_DOC_Overview=ON` 
+when configuring the build, then build the desired target:
 
 To generate Overview documentation:
 
-    cmd> gendoc -overview
+    cmake --build . --target Overview
 
 To generate Reference manual:
 
-    cmd> gendoc -refman
+    cmake --build . --target RefMan
 
-Run this command without arguments to get help on supported options.
+To generate all documentation:
+
+    cmake --build . --target doc
 
 See @ref occt_contribution__documentation for prerequisites and details on OCCT documentation system.

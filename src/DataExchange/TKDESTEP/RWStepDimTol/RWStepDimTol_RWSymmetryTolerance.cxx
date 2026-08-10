@@ -37,7 +37,9 @@ void RWStepDimTol_RWSymmetryTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "symmetry_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

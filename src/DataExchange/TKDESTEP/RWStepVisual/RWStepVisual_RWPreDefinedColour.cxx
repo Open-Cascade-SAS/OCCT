@@ -31,7 +31,9 @@ void RWStepVisual_RWPreDefinedColour::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "pre_defined_colour"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

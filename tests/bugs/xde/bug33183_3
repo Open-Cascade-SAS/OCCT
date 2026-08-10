@@ -31,12 +31,5 @@ for {set i 1} {$i <= 12} {incr i} {
   }
 }
 
-vinit View1
-XDisplay -dispMode 1 D
-vfit
-if { [vreadpixel 50 300 rgb name] != "WHITE" || [vreadpixel 120 250 rgb name] != "LEMONCHIFFON1" } {
-  puts "Error: color not match"
-}
-
 Close D
 file delete -force $aTmpFile

@@ -50,7 +50,9 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape&  Profile,
   TopoDS_Shape aProfile = RemLoc.GetResult();
 
   if (aProfile.ShapeType() == TopAbs_WIRE)
+  {
     wire = TopoDS::Wire(aProfile);
+  }
   else if (aProfile.ShapeType() == TopAbs_VERTEX)
   {
     ispunctual            = true;
@@ -68,7 +70,9 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape&  Profile,
     wire.Closed(true);
   }
   else
+  {
     throw Standard_Failure("BRepFill_Section: bad shape type of section");
+  }
 }
 
 void BRepFill_Section::Set(const bool IsLaw)
@@ -84,7 +88,9 @@ TopoDS_Shape BRepFill_Section::ModifiedShape(const TopoDS_Shape& theShape) const
   {
     case TopAbs_WIRE:
       if (theShape.IsSame(myOriginalShape))
+      {
         aModifiedShape = wire;
+      }
       break;
     case TopAbs_EDGE: {
       TopoDS_Iterator itor(myOriginalShape);

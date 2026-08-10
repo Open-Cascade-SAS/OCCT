@@ -37,12 +37,16 @@ int Contap_HCurve2dTool::NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
       nbs *= C->LastParameter() - C->FirstParameter();
       nbs /= U1 - U0;
       if (nbs < 2.0)
+      {
         nbs = 2.;
+      }
       break;
     default:
       break;
   }
   if (nbs > 50.)
+  {
     nbs = 50.;
+  }
   return ((int)nbs);
 }

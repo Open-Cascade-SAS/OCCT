@@ -19,9 +19,9 @@
 #include <TopExp_Explorer.hxx>
 
 // Assign a map of sub-shapes (edges/faces) of a given shape
-static bool initSubShapes(const TopoDS_Shape&                   theShape,
-                          NCollection_Vector<TopoDS_Shape>&     theSubshapesList,
-                          occ::handle<BRepExtrema_TriangleSet>& theTriangleSet)
+static bool initSubShapes(const TopoDS_Shape&                     theShape,
+                          NCollection_DynamicArray<TopoDS_Shape>& theSubshapesList,
+                          occ::handle<BRepExtrema_TriangleSet>&   theTriangleSet)
 {
   theSubshapesList.Clear();
 
@@ -36,7 +36,9 @@ static bool initSubShapes(const TopoDS_Shape&                   theShape,
   }
 
   if (theTriangleSet.IsNull())
+  {
     theTriangleSet = new BRepExtrema_TriangleSet;
+  }
   return theTriangleSet->Init(theSubshapesList);
 }
 

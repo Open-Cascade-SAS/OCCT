@@ -39,14 +39,20 @@ void IGESDefs_AttributeTable::Init(
   const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)
 {
   if (attributes->LowerCol() != 1 || attributes->LowerRow() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDefs_AttributeTable : Init");
+  }
   theAttributes = attributes;
 
   int fn = FormNumber();
   if (attributes->UpperCol() > 1)
+  {
     fn = 1;
+  }
   else if (fn < 0 || fn > 1)
+  {
     fn = 0;
+  }
   InitTypeAndForm(422, fn);
   //  FormNumber : 0 SingleRow, 1 MultipleRows (can be reduced to one ...)
 }

@@ -50,11 +50,15 @@ bool BinTObjDrivers_ModelDriver::Paste(const BinObjMgt_Persistent&       theSour
 {
   Standard_GUID aGUID;
   if (!(theSource >> aGUID))
+  {
     return false;
+  }
 
   occ::handle<TObj_Model> aCurrentModel = TObj_Assistant::GetCurrentModel();
   if (aCurrentModel.IsNull())
+  {
     return false;
+  }
 
   if (aGUID != aCurrentModel->GetGUID())
   {

@@ -61,35 +61,53 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&              
     const occ::handle<Interface_Check>& check = list.Value();
     ent                                       = check->Entity();
     if (ent.IsNull() && num > 0 && num <= nbe)
+    {
       ent = model->Value(num);
+    }
     nb                = check->NbFails();
     const char* tystr = nullptr;
     if (!ent.IsNull())
     {
       if (!thesign.IsNull())
+      {
         tystr = thesign->Text(ent, model).ToCString();
+      }
       else if (!model.IsNull())
+      {
         tystr = model->TypeName(ent);
+      }
       else
+      {
         tystr = Interface_InterfaceModel::ClassName(ent->DynamicType()->Name());
+      }
     }
     for (i = 1; i <= nb; i++)
     {
       if (ent.IsNull())
+      {
         Sprintf(mess, "F: %s", check->CFail(i, original));
+      }
       else
+      {
         Sprintf(mess, "F:%s: %s", tystr, check->CFail(i, original));
+      }
       Add(ent, mess);
     }
     nb = 0;
     if (!failsonly)
+    {
       nb = check->NbWarnings();
+    }
     for (i = 1; i <= nb; i++)
     {
       if (ent.IsNull())
+      {
         Sprintf(mess, "W: %s", check->CWarning(i, original));
+      }
       else
+      {
         Sprintf(mess, "W:%s: %s", tystr, check->CWarning(i, original));
+      }
       Add(ent, mess);
     }
   }

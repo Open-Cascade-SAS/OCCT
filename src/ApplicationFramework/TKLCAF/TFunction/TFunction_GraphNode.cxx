@@ -63,7 +63,9 @@ TFunction_GraphNode::TFunction_GraphNode()
 bool TFunction_GraphNode::AddPrevious(const int funcID)
 {
   if (myPrevious.Contains(funcID))
+  {
     return false;
+  }
 
   Backup();
 
@@ -76,7 +78,9 @@ bool TFunction_GraphNode::AddPrevious(const TDF_Label& func)
 {
   occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
+  {
     return false;
+  }
   int funcID = scope->GetFunctions().Find2(func);
   return AddPrevious(funcID);
 }
@@ -86,7 +90,9 @@ bool TFunction_GraphNode::AddPrevious(const TDF_Label& func)
 bool TFunction_GraphNode::RemovePrevious(const int funcID)
 {
   if (!myPrevious.Contains(funcID))
+  {
     return false;
+  }
 
   Backup();
 
@@ -99,7 +105,9 @@ bool TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
 {
   occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
+  {
     return false;
+  }
   int funcID = scope->GetFunctions().Find2(func);
   return RemovePrevious(funcID);
 }
@@ -116,7 +124,9 @@ const NCollection_Map<int>& TFunction_GraphNode::GetPrevious() const
 void TFunction_GraphNode::RemoveAllPrevious()
 {
   if (myPrevious.IsEmpty())
+  {
     return;
+  }
 
   Backup();
 
@@ -128,7 +138,9 @@ void TFunction_GraphNode::RemoveAllPrevious()
 bool TFunction_GraphNode::AddNext(const int funcID)
 {
   if (myNext.Contains(funcID))
+  {
     return false;
+  }
 
   Backup();
 
@@ -141,7 +153,9 @@ bool TFunction_GraphNode::AddNext(const TDF_Label& func)
 {
   occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
+  {
     return false;
+  }
   int funcID = scope->GetFunctions().Find2(func);
   return AddNext(funcID);
 }
@@ -151,7 +165,9 @@ bool TFunction_GraphNode::AddNext(const TDF_Label& func)
 bool TFunction_GraphNode::RemoveNext(const int funcID)
 {
   if (!myNext.Contains(funcID))
+  {
     return false;
+  }
 
   Backup();
 
@@ -164,7 +180,9 @@ bool TFunction_GraphNode::RemoveNext(const TDF_Label& func)
 {
   occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
+  {
     return false;
+  }
   int funcID = scope->GetFunctions().Find2(func);
   return RemoveNext(funcID);
 }
@@ -181,7 +199,9 @@ const NCollection_Map<int>& TFunction_GraphNode::GetNext() const
 void TFunction_GraphNode::RemoveAllNext()
 {
   if (myNext.IsEmpty())
+  {
     return;
+  }
 
   Backup();
 
@@ -200,7 +220,9 @@ TFunction_ExecutionStatus TFunction_GraphNode::GetStatus() const
 void TFunction_GraphNode::SetStatus(const TFunction_ExecutionStatus status)
 {
   if (myStatus == status)
+  {
     return;
+  }
 
   Backup();
 

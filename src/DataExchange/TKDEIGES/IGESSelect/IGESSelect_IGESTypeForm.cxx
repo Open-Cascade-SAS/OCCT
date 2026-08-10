@@ -49,23 +49,33 @@ const char* IGESSelect_IGESTypeForm::Value(
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return &falsetype[0];
+  }
   bool unk     = ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity));
   int  typenum = igesent->TypeNumber();
   int  formnum = igesent->FormNumber();
   if (unk)
   {
     if (theform)
+    {
       Sprintf(typeval, "%d %d (?)", typenum, formnum);
+    }
     else
+    {
       Sprintf(typeval, "%d (?)", typenum);
+    }
   }
   else
   {
     if (theform)
+    {
       Sprintf(typeval, "%d %d", typenum, formnum);
+    }
     else
+    {
       Sprintf(typeval, "%d", typenum);
+    }
   }
   return &typeval[0];
 }

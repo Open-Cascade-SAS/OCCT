@@ -64,7 +64,9 @@ int DNaming_PointDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   // perform calculations
 
@@ -100,7 +102,9 @@ int DNaming_PointDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     aPoint.SetZ(aPoint.Z() + aDZ);
   }
   else
+  {
     aPoint = gp_Pnt(aDX, aDY, aDZ);
+  }
 
   BRepBuilderAPI_MakeVertex aMakeVertex(aPoint);
 
@@ -117,7 +121,9 @@ int DNaming_PointDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(aResultLabel, aLocation, true);
+  }
 
   theLog->SetValid(aResultLabel, true);
 

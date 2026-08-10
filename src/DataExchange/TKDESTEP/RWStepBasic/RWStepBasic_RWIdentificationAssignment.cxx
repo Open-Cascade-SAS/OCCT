@@ -36,7 +36,9 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "identification_assignment"))
+  {
     return;
+  }
 
   // Own fields of IdentificationAssignment
 

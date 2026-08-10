@@ -73,7 +73,9 @@ void ShapePersistent_BRep::PointRepresentation::Import(
   thePoints.Clear();
   occ::handle<PointRepresentation> aPoint = this;
   for (; aPoint; aPoint = aPoint->myNext)
+  {
     thePoints.Prepend(aPoint->import());
+  }
 }
 
 occ::handle<BRep_PointRepresentation> ShapePersistent_BRep::PointRepresentation::import() const
@@ -107,7 +109,9 @@ occ::handle<BRep_PointRepresentation> ShapePersistent_BRep::PointOnCurve::import
 {
   occ::handle<Geom_Curve> aCurve;
   if (myCurve)
+  {
     aCurve = myCurve->Import();
+  }
 
   return new BRep_PointOnCurve(myParameter, aCurve, myLocation.Import());
 }
@@ -160,11 +164,15 @@ occ::handle<BRep_PointRepresentation> ShapePersistent_BRep::PointOnCurveOnSurfac
 {
   occ::handle<Geom2d_Curve> aPCurve;
   if (myPCurve)
+  {
     aPCurve = myPCurve->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   return new BRep_PointOnCurveOnSurface(myParameter, aPCurve, aSurface, myLocation.Import());
 }
@@ -188,7 +196,9 @@ occ::handle<BRep_PointRepresentation> ShapePersistent_BRep::PointOnSurface::impo
 {
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   return new BRep_PointOnSurface(myParameter, myParameter2, aSurface, myLocation.Import());
 }
@@ -219,7 +229,9 @@ void ShapePersistent_BRep::CurveRepresentation::Import(
   theCurves.Clear();
   occ::handle<CurveRepresentation> aCurve = this;
   for (; aCurve; aCurve = aCurve->myNext)
+  {
     theCurves.Prepend(aCurve->import());
+  }
 }
 
 occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveRepresentation::import() const
@@ -268,7 +280,9 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::Curve3D::import() co
 {
   occ::handle<Geom_Curve> aCurve3D;
   if (myCurve3D)
+  {
     aCurve3D = myCurve3D->Import();
+  }
 
   occ::handle<BRep_Curve3D> aRepresentation = new BRep_Curve3D(aCurve3D, myLocation.Import());
 
@@ -303,11 +317,15 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveOnSurface::impo
 {
   occ::handle<Geom2d_Curve> aPCurve;
   if (myPCurve)
+  {
     aPCurve = myPCurve->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   occ::handle<BRep_CurveOnSurface> aRepresentation =
     new BRep_CurveOnSurface(aPCurve, aSurface, myLocation.Import());
@@ -344,15 +362,21 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveOnClosedSurface
 {
   occ::handle<Geom2d_Curve> aPCurve;
   if (myPCurve)
+  {
     aPCurve = myPCurve->Import();
+  }
 
   occ::handle<Geom2d_Curve> aPCurve2;
   if (myPCurve2)
+  {
     aPCurve2 = myPCurve2->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   GeomAbs_Shape aContinuity = static_cast<GeomAbs_Shape>(myContinuity);
 
@@ -392,7 +416,9 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::Polygon3D::import() 
 {
   occ::handle<Poly_Polygon3D> aPolygon3D;
   if (myPolygon3D)
+  {
     aPolygon3D = myPolygon3D->Import();
+  }
 
   return new BRep_Polygon3D(aPolygon3D, myLocation.Import());
 }
@@ -424,11 +450,15 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::PolygonOnTriangulati
 {
   occ::handle<Poly_PolygonOnTriangulation> aPolygon;
   if (myPolygon)
+  {
     aPolygon = myPolygon->Import();
+  }
 
   occ::handle<Poly_Triangulation> aTriangulation;
   if (myTriangulation)
+  {
     aTriangulation = myTriangulation->Import();
+  }
 
   return new BRep_PolygonOnTriangulation(aPolygon, aTriangulation, myLocation.Import());
 }
@@ -461,15 +491,21 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::PolygonOnClosedTrian
 {
   occ::handle<Poly_PolygonOnTriangulation> aPolygon;
   if (myPolygon)
+  {
     aPolygon = myPolygon->Import();
+  }
 
   occ::handle<Poly_PolygonOnTriangulation> aPolygon2;
   if (myPolygon2)
+  {
     aPolygon2 = myPolygon2->Import();
+  }
 
   occ::handle<Poly_Triangulation> aTriangulation;
   if (myTriangulation)
+  {
     aTriangulation = myTriangulation->Import();
+  }
 
   return new BRep_PolygonOnClosedTriangulation(aPolygon,
                                                aPolygon2,
@@ -504,11 +540,15 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::PolygonOnSurface::im
 {
   occ::handle<Poly_Polygon2D> aPolygon2D;
   if (myPolygon2D)
+  {
     aPolygon2D = myPolygon2D->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   return new BRep_PolygonOnSurface(aPolygon2D, aSurface, myLocation.Import());
 }
@@ -539,15 +579,21 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::PolygonOnClosedSurfa
 {
   occ::handle<Poly_Polygon2D> aPolygon2D;
   if (myPolygon2D)
+  {
     aPolygon2D = myPolygon2D->Import();
+  }
 
   occ::handle<Poly_Polygon2D> aPolygon2;
   if (myPolygon2)
+  {
     aPolygon2 = myPolygon2->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   return new BRep_PolygonOnClosedSurface(aPolygon2D, aPolygon2, aSurface, myLocation.Import());
 }
@@ -580,11 +626,15 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveOn2Surfaces::im
 {
   occ::handle<Geom_Surface> aSurface;
   if (mySurface)
+  {
     aSurface = mySurface->Import();
+  }
 
   occ::handle<Geom_Surface> aSurface2;
   if (mySurface2)
+  {
     aSurface2 = mySurface2->Import();
+  }
 
   GeomAbs_Shape aContinuity = static_cast<GeomAbs_Shape>(myContinuity);
 
@@ -605,7 +655,9 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTVertex::createTShape() const
   aTVertex->Pnt(myPnt);
 
   if (myPoints)
+  {
     myPoints->Import(aTVertex->ChangePoints());
+  }
 
   return aTVertex;
 }
@@ -622,7 +674,9 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTEdge::createTShape() const
   aTEdge->Degenerated((myFlags & DegeneratedMask) != 0);
 
   if (myCurves)
+  {
     myCurves->Import(aTEdge->ChangeCurves());
+  }
 
   return aTEdge;
 }
@@ -638,10 +692,14 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTFace::createTShape() const
   aTFace->Location(myLocation.Import());
 
   if (mySurface)
+  {
     aTFace->Surface(mySurface->Import());
+  }
 
   if (myTriangulation)
+  {
     aTFace->Triangulation(myTriangulation->Import());
+  }
 
   return aTFace;
 }
@@ -707,11 +765,17 @@ Handle(ShapePersistent_BRep::TEdge::pTObjectT) ShapePersistent_BRep::Translate(
 
   PTE->myTolerance = TTE->Tolerance();
   if (TTE->SameParameter())
+  {
     PTE->myFlags |= ParameterMask;
+  }
   if (TTE->SameRange())
+  {
     PTE->myFlags |= RangeMask;
+  }
   if (TTE->Degenerated())
+  {
     PTE->myFlags |= DegeneratedMask;
+  }
 
   // Representations
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TTE->Curves());

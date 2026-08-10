@@ -29,7 +29,9 @@ void IGESAppli_FlowLineSpec::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties)
 {
   if (allProperties->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESAppli_FlowLineSpec : Init");
+  }
   theNameAndModifiers = allProperties;
   InitTypeAndForm(406, 14);
 }

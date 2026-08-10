@@ -37,7 +37,9 @@ MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject*     theSelO
 {
   myLastID = -1;
   if (!theDS.IsNull())
+  {
     myDataSource = theDS;
+  }
 }
 
 //=================================================================================================
@@ -67,13 +69,21 @@ void MeshVS_MeshOwner::AddSelectedEntities(const occ::handle<TColStd_HPackedMapO
                                            const occ::handle<TColStd_HPackedMapOfInteger>& Elems)
 {
   if (mySelectedNodes.IsNull())
+  {
     mySelectedNodes = Nodes;
+  }
   else if (!Nodes.IsNull())
+  {
     NCollection_PackedMapAlgo::Unite(mySelectedNodes->ChangeMap(), Nodes->Map());
+  }
   if (mySelectedElems.IsNull())
+  {
     mySelectedElems = Elems;
+  }
   else if (!Elems.IsNull())
+  {
     NCollection_PackedMapAlgo::Unite(mySelectedElems->ChangeMap(), Elems->Map());
+  }
 }
 
 //=================================================================================================
@@ -106,7 +116,9 @@ void MeshVS_MeshOwner::SetDetectedEntities(const occ::handle<TColStd_HPackedMapO
   myDetectedNodes = Nodes;
   myDetectedElems = Elems;
   if (IsSelected())
+  {
     SetSelected(false);
+  }
 }
 
 //=================================================================================================
@@ -117,7 +129,9 @@ void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationMan
 {
   occ::handle<SelectMgr_SelectableObject> aSelObj;
   if (HasSelectable())
+  {
     aSelObj = Selectable();
+  }
 
   if (thePM->IsImmediateModeOn() && aSelObj->IsKind(STANDARD_TYPE(MeshVS_Mesh)))
   {
@@ -155,7 +169,9 @@ void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& 
   occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
   if ((!aNodes.IsNull() && !aNodes->Map().Contains(myLastID))
       || (!aElems.IsNull() && !aElems->Map().Contains(myLastID)))
+  {
     return;
+  }
   // Reset last detected ID
   myLastID = -1;
 }

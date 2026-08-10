@@ -24,13 +24,17 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
   const int BasePoints) const
 {
   if (myPrismTopos.IsBound(BasePoints))
+  {
     return myPrismTopos.Find(BasePoints);
+  }
   else
   {
     occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
       CreatePrismTopology(BasePoints);
     if (!result.IsNull())
+    {
       ((MeshVS_DataSource3D*)this)->myPrismTopos.Bind(BasePoints, result);
+    }
     return result;
   }
 }
@@ -41,13 +45,17 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
   const int BasePoints) const
 {
   if (myPyramidTopos.IsBound(BasePoints))
+  {
     return myPyramidTopos.Find(BasePoints);
+  }
   else
   {
     occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
       CreatePyramidTopology(BasePoints);
     if (!result.IsNull())
+    {
       ((MeshVS_DataSource3D*)this)->myPyramidTopos.Bind(BasePoints, result);
+    }
     return result;
   }
 }

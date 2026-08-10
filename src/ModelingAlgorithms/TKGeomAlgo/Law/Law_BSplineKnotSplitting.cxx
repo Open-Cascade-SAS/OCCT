@@ -26,7 +26,9 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline
                                                    const int                       ContinuityRange)
 {
   if (ContinuityRange < 0)
+  {
     throw Standard_RangeError();
+  }
 
   int FirstIndex = BasisCurve->FirstUKnotIndex();
   int LastIndex  = BasisCurve->LastUKnotIndex();

@@ -55,7 +55,9 @@ void IGESGeom_ToolDirection::ReadOwnParams(const occ::handle<IGESGeom_Direction>
   {
     // st = PR.ReadReal(PR.Current(), "Direction", tmpReal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Direction", tmpReal))
+    {
       aDirection.SetZ(tmpReal);
+    }
   }
   else
   {
@@ -107,7 +109,9 @@ void IGESGeom_ToolDirection::OwnCheck(const occ::handle<IGESGeom_Direction>& ent
                                       occ::handle<Interface_Check>& ach) const
 {
   if (ent->Value().XYZ().SquareModulus() <= 0.0)
+  {
     ach->AddFail("Direction : The values indicate no direction");
+  }
 }
 
 void IGESGeom_ToolDirection::OwnDump(const occ::handle<IGESGeom_Direction>& ent,
@@ -118,5 +122,5 @@ void IGESGeom_ToolDirection::OwnDump(const occ::handle<IGESGeom_Direction>& ent,
   S << "IGESGeom_Direction\n\n"
     << "Value : ";
   IGESData_DumpXYZL(S, level, ent->Value(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

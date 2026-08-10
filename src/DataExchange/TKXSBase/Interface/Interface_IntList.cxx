@@ -52,11 +52,15 @@ Interface_IntList::Interface_IntList(const Interface_IntList& other, const bool 
     occ::handle<NCollection_HArray1<int>> ents = new NCollection_HArray1<int>(0, thenbe);
     ents->Init(0);
     for (i = 1; i <= thenbe; i++)
+    {
       ents->SetValue(i, theents->Value(i));
+    }
     occ::handle<NCollection_HArray1<int>> refs = new NCollection_HArray1<int>(0, thenbr);
     refs->Init(0);
     for (i = 1; i <= thenbr; i++)
+    {
       refs->SetValue(i, therefs->Value(i));
+    }
     theents = ents;
     therefs = refs;
   }
@@ -103,12 +107,16 @@ int Interface_IntList::NbEntities() const
 void Interface_IntList::SetNbEntities(const int nbe)
 {
   if (nbe <= theents->Upper())
+  {
     return;
+  }
   int                                   i;
   occ::handle<NCollection_HArray1<int>> ents = new NCollection_HArray1<int>(0, nbe);
   ents->Init(0);
   for (i = 1; i <= thenbe; i++)
+  {
     ents->SetValue(i, theents->Value(i));
+  }
   theents = ents;
   thenbe  = nbe;
 }
@@ -120,7 +128,9 @@ void Interface_IntList::SetNumber(const int number)
   if (number < 0)
   {
     if (thenum == -number || number < -thenbe)
+    {
       return;
+    }
     bool preres = true;
     thenum      = -number;
     int val     = theents->Value(thenum);
@@ -139,20 +149,28 @@ void Interface_IntList::SetNumber(const int number)
       therank  = -val;
       thecount = therefs->Value(therank);
       if (thecount <= 0)
+      {
         preres = false;
+      }
     }
     if (preres)
+    {
       return;
+    }
   }
   //  Current usage. The following in current usage or if no pre-reservation
   else if (number > 0)
   {
     if (thenum == number || number > thenbe)
+    {
       return;
+    }
     thenum = number;
   }
   else
+  {
     return;
+  }
 
   int val = theents->Value(thenum);
   if (val == 0)
@@ -170,18 +188,24 @@ void Interface_IntList::SetNumber(const int number)
     therank  = -val;
     thecount = 0;
     if (therefs->Value(therank + 1) == 0)
+    {
       thecount = -therefs->Value(therank);
+    }
     else
     {
       for (int j = 1;; j++)
       {
         val = therefs->Value(therank + j);
         if (val >= 0)
+        {
           break;
+        }
         thecount++;
       }
       if (val > 0)
+      {
         thecount++;
+      }
     }
   }
   else
@@ -206,15 +230,21 @@ Interface_IntList Interface_IntList::List(const int number, const bool copied) c
 void Interface_IntList::SetRedefined(const bool mode)
 {
   if (!NbEntities() || thenum == 0)
+  {
     return;
+  }
 
   int val = theents->Value(thenum);
   if (val < -1)
+  {
     return;
+  }
   else if (mode)
   {
     if (val == 0)
+    {
       theents->SetValue(thenum, -1);
+    }
     else if (val > 0)
     {
       Reservate(2);
@@ -226,12 +256,16 @@ void Interface_IntList::SetRedefined(const bool mode)
   else if (!mode)
   {
     if (val == -1)
+    {
       theents->SetValue(thenum, 0);
+    }
     else if (therefs->Value(therank + 1) >= 0)
     {
       theents->SetValue(thenum, therefs->Value(therank + 1));
       if (thenbr == therank + 1)
+      {
         thenbr--;
+      }
     }
   }
 }
@@ -243,7 +277,9 @@ void Interface_IntList::Reservate(const int count)
   {
     Reservate(-count - 1);
     if (thenum == 0)
+    {
       return;
+    }
     thenbr++;
     therefs->SetValue(thenbr, 0); // will contain the number ...
     therank = thenbr;
@@ -256,38 +292,54 @@ void Interface_IntList::Reservate(const int count)
   { //  i.e. not yet allocated ...
     up = thenbe / 2 + 1;
     if (up < 2)
+    {
       up = 2;
+    }
     if (up < count)
+    {
       up = count * 3 / 2;
+    }
     therefs = new NCollection_HArray1<int>(0, up);
     therefs->Init(0);
     thenbr = 2; // we start after (convenience of addressing)
   }
   oldup = therefs->Upper();
   if (thenbr + count < oldup)
+  {
     return; // OK
+  }
   up = oldup * 3 / 2 + count;
   if (up < 2)
+  {
     up = 2;
+  }
   occ::handle<NCollection_HArray1<int>> refs = new NCollection_HArray1<int>(0, up);
   refs->Init(0);
   for (int i = 1; i <= oldup; i++)
+  {
     refs->SetValue(i, therefs->Value(i));
+  }
   therefs = refs;
 }
 
 void Interface_IntList::Add(const int ref)
 {
   if (thenum == 0)
+  {
     return;
+  }
   //   ref < 0 : pre-reservation
   if (ref < 0)
   {
     Add(-ref);
     if (therank <= 0)
+    {
       return;
+    }
     if (therefs->Value(therank) >= 0)
+    {
       therefs->SetValue(therank, thecount);
+    }
     return;
   }
 
@@ -353,25 +405,39 @@ bool Interface_IntList::IsRedefined(const int num) const
 {
   int n = (num == 0 ? thenum : num);
   if (!NbEntities() || n == 0)
+  {
     return false;
+  }
   if (theents->Value(n) < 0)
+  {
     return true;
+  }
   return false;
 }
 
 int Interface_IntList::Value(const int num) const
 {
   if (thenum == 0)
+  {
     return 0;
+  }
   if (num <= 0 || num > thecount)
+  {
     return 0;
+  }
   if (thecount == 0)
+  {
     return 0;
+  }
   if (therank <= 0)
+  {
     return theents->Value(thenum);
+  }
   int val = therefs->Value(therank + num);
   if (val < 0)
+  {
     return -val;
+  }
   return val;
 }
 
@@ -383,19 +449,27 @@ bool Interface_IntList::Remove(const int)
 void Interface_IntList::Clear()
 {
   if (thenbr == 0)
+  {
     return; // already clear
+  }
   int i, low, up;
   low = theents->Lower();
   up  = theents->Upper();
   for (i = low; i <= up; i++)
+  {
     theents->SetValue(i, 0);
+  }
   thenbr = 0;
   if (therefs.IsNull())
+  {
     return;
+  }
   low = therefs->Lower();
   up  = therefs->Upper();
   for (i = low; i <= up; i++)
+  {
     therefs->SetValue(i, 0);
+  }
 }
 
 void Interface_IntList::AdjustSize(const int margin)
@@ -406,20 +480,28 @@ void Interface_IntList::AdjustSize(const int margin)
     occ::handle<NCollection_HArray1<int>> ents = new NCollection_HArray1<int>(0, thenbe);
     ents->Init(0);
     for (i = 1; i <= thenbe; i++)
+    {
       ents->SetValue(i, theents->Value(i));
+    }
     theents = ents;
   }
   if (thenbr == 0)
+  {
     Reservate(margin);
+  }
   else
   {
     up = therefs->Upper();
     if (up >= thenbr && up <= thenbr + margin)
+    {
       return;
+    }
     occ::handle<NCollection_HArray1<int>> refs = new NCollection_HArray1<int>(0, thenbr + margin);
     refs->Init(0);
     for (i = 1; i <= thenbr; i++)
+    {
       refs->SetValue(i, therefs->Value(i));
+    }
     therefs = refs;
   }
 }

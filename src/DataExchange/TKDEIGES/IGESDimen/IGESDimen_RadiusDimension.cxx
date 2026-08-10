@@ -39,9 +39,13 @@ void IGESDimen_RadiusDimension::Init(const occ::handle<IGESDimen_GeneralNote>& a
   theCenter      = arcCenter;
   theLeader2     = anotherArrow;
   if (!anotherArrow.IsNull())
+  {
     InitTypeAndForm(222, 1); // 1 also admits Null
+  }
   else
+  {
     InitTypeAndForm(222, FormNumber());
+  }
 }
 
 void IGESDimen_RadiusDimension::InitForm(const int form)
@@ -74,7 +78,9 @@ gp_Pnt IGESDimen_RadiusDimension::TransformedCenter() const
 {
   gp_XYZ tmpXYZ(theCenter.X(), theCenter.Y(), theLeaderArrow->ZDepth());
   if (HasTransf())
+  {
     Location().Transforms(tmpXYZ);
+  }
   return gp_Pnt(tmpXYZ);
 }
 

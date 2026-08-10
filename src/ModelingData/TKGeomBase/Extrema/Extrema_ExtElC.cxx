@@ -363,7 +363,9 @@ bool Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin& theLin, const gp_Circ
   const gp_Dir &aDirC = theCirc.Axis().Direction(), &aDirL = theLin.Direction();
 
   if (std::abs(aDirC.Dot(aDirL)) > Precision::Angular())
+  {
     return false;
+  }
 
   // The line is in the circle-plane completely
   //(or parallel to the circle-plane).
@@ -397,7 +399,9 @@ bool Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin& theLin, const gp_Circ
   myDone = anExt2d.IsDone() || anInters.IsDone();
 
   if (!myDone)
+  {
     return true;
+  }
 
   const int aNbExtr = anExt2d.NbExt();
   const int aNbSol  = anInters.NbPoints();
@@ -694,15 +698,25 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
   double aEps = 1.e-12;
   //
   if (fabs(A5) <= aEps)
+  {
     A5 = 0.;
+  }
   if (fabs(A1) <= aEps)
+  {
     A1 = 0.;
+  }
   if (fabs(A2) <= aEps)
+  {
     A2 = 0.;
+  }
   if (fabs(A3) <= aEps)
+  {
     A3 = 0.;
+  }
   if (fabs(A4) <= aEps)
+  {
     A4 = 0.;
+  }
   //
   ExtremaExtElC_TrigonometricRoots Sol(A1, A2, A3, A4, A5, 0., M_PI + M_PI);
   if (!Sol.IsDone())

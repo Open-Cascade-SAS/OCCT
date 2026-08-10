@@ -36,7 +36,9 @@ void RWStepVisual_RWTessellatedCurveSet::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "tessellated_curve_set"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -46,14 +48,16 @@ void RWStepVisual_RWTessellatedCurveSet::ReadStep(
   data
     ->ReadEntity(num, 2, "coord_list", ach, STANDARD_TYPE(StepVisual_CoordinatesList), aCoordList);
   //--- Initialisation of the read entity ---
-  int                                                                             nsub2;
-  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aCurves =
-    new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
+  int                                                                                   nsub2;
+  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> aCurves =
+    new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
   if (data->ReadSubList(num, 3, "curves", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
     if (!nb2)
+    {
       return;
+    }
 
     for (int i = 1; i <= nb2; i++)
     {
@@ -66,7 +70,9 @@ void RWStepVisual_RWTessellatedCurveSet::ReadStep(
         {
           int aVal = 0;
           if (data->ReadInteger(nsub3, j, "coordinates", ach, aVal))
+          {
             aCurve->Append(aVal);
+          }
         }
         aCurves->Append(aCurve);
       }
@@ -94,7 +100,9 @@ void RWStepVisual_RWTessellatedCurveSet::WriteStep(
     occ::handle<NCollection_HSequence<int>> aCurve = ent->Curves()->Value(curveIt);
     SW.OpenSub();
     for (int i = 1; i <= aCurve->Length(); i++)
+    {
       SW.Send(aCurve->Value(i));
+    }
     SW.CloseSub();
   }
   SW.CloseSub();

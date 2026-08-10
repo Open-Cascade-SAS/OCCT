@@ -157,9 +157,13 @@ void Geom_ToroidalSurface::SetMajorRadius(const double MajorRadius)
 {
 
   if (MajorRadius - minorRadius <= gp::Resolution())
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     majorRadius = MajorRadius;
+  }
 }
 
 //=================================================================================================
@@ -168,9 +172,13 @@ void Geom_ToroidalSurface::SetMinorRadius(const double MinorRadius)
 {
 
   if (MinorRadius < 0.0 || majorRadius - MinorRadius <= gp::Resolution())
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     minorRadius = MinorRadius;
+  }
 }
 
 //=================================================================================================
@@ -278,7 +286,9 @@ gp_Vec Geom_ToroidalSurface::EvalDN(const double U,
                                     const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return ElSLib::TorusDN(U, V, pos, majorRadius, minorRadius, Nu, Nv);
 }
 

@@ -106,9 +106,13 @@ void GeomFill_FunctionGuide::SetParam(const double,
     NCollection_Array1<double> Weights(1, NbPoles);
     TheLaw->D0(TheUonS, Poles, Weights);
     if (TheLaw->IsRational())
+    {
       TheCurve = new (Geom_BSplineCurve)(Poles, Weights, Knots, Mult, Deg, TheLaw->IsUPeriodic());
+    }
     else
+    {
       TheCurve = new (Geom_BSplineCurve)(Poles, Knots, Mult, Deg, TheLaw->IsUPeriodic());
+    }
   }
 
   gp_Ax1 Axe(C, Dir);
@@ -243,7 +247,7 @@ void GeomFill_FunctionGuide::DSDT(const double  U,
   gp_XYZ &Q = Pc.ChangeCoord(), DQ(0, 0, 0); // Q
   if (!isconst)
   {
-    std::cout << "Not implemented" << std::endl;
+    std::cout << "Not implemented" << '\n';
   }
 
   Q.Subtract(Centre); // CQ

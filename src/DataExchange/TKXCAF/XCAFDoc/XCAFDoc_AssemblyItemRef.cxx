@@ -104,26 +104,36 @@ XCAFDoc_AssemblyItemRef::XCAFDoc_AssemblyItemRef()
 bool XCAFDoc_AssemblyItemRef::IsOrphan() const
 {
   if (myItemId.IsNull())
+  {
     return true;
+  }
 
   TDF_Label aRoot = Label().Root();
 
   occ::handle<TDocStd_Owner> anOwner;
   if (!aRoot.FindAttribute(TDocStd_Owner::GetID(), anOwner))
+  {
     return true;
+  }
 
   occ::handle<TDocStd_Document> aDoc = anOwner->GetDocument();
   if (aDoc.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TDF_Data> aData = aDoc->GetData();
   if (aData.IsNull())
+  {
     return true;
+  }
 
   TDF_Label aLabel;
   TDF_Tool::Label(aData, myItemId.GetPath().Last(), aLabel);
   if (aLabel.IsNull())
+  {
     return true;
+  }
 
   if (HasExtraRef())
   {
@@ -131,20 +141,26 @@ bool XCAFDoc_AssemblyItemRef::IsOrphan() const
     {
       occ::handle<TDF_Attribute> anAttr;
       if (!aLabel.FindAttribute(GetGUID(), anAttr))
+      {
         return true;
+      }
     }
     else if (IsSubshapeIndex())
     {
       occ::handle<TNaming_NamedShape> aNamedShape;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape))
+      {
         return true;
+      }
 
       TopoDS_Shape                                                  aShape = aNamedShape->Get();
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
       TopExp::MapShapes(aShape, aMap);
       int aSubshapeIndex = GetSubshapeIndex();
-      if (aSubshapeIndex < 1 || aMap.Size() < aSubshapeIndex)
+      if (aSubshapeIndex < 1 || aMap.Length() < aSubshapeIndex)
+      {
         return true;
+      }
     }
   }
 
@@ -174,17 +190,25 @@ const XCAFDoc_AssemblyItemId& XCAFDoc_AssemblyItemRef::GetItem() const
 Standard_GUID XCAFDoc_AssemblyItemRef::GetGUID() const
 {
   if (IsGUID())
+  {
     return Standard_GUID(myExtraId.ToCString());
+  }
   else
+  {
     return Standard_GUID();
+  }
 }
 
 int XCAFDoc_AssemblyItemRef::GetSubshapeIndex() const
 {
   if (IsSubshapeIndex())
+  {
     return myExtraId.IntegerValue();
+  }
   else
+  {
     return 0;
+  }
 }
 
 void XCAFDoc_AssemblyItemRef::SetItem(const XCAFDoc_AssemblyItemId& theItemId)
@@ -273,9 +297,13 @@ Standard_OStream& XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
 {
   theOS << "Path: " << myItemId.ToString();
   if (IsGUID())
+  {
     theOS << "/GUID:" << myExtraId;
+  }
   else if (IsSubshapeIndex())
+  {
     theOS << "/Subshape: " << myExtraId;
+  }
   return theOS;
 }
 

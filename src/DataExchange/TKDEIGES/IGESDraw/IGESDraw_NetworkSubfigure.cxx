@@ -39,8 +39,12 @@ void IGESDraw_NetworkSubfigure::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints)
 {
   if (!allConnectPoints.IsNull())
+  {
     if (allConnectPoints->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_NetworkSubfigure : Init");
+    }
+  }
   theSubfigureDefinition = aDefinition;
   theTranslation         = aTranslation;
   theScaleFactor         = aScaleFactor;
@@ -65,7 +69,9 @@ gp_XYZ IGESDraw_NetworkSubfigure::TransformedTranslation() const
 {
   gp_XYZ TempXYZ = theTranslation;
   if (HasTransf())
+  {
     Location().Transforms(TempXYZ);
+  }
   return (TempXYZ);
 }
 

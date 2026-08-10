@@ -58,7 +58,7 @@ void StepShape_OrientedEdge::SetEdgeStart(const occ::handle<StepShape_Vertex>& /
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
-  std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
+  std::cout << "Field is redefined, SetUp Forbidden" << '\n';
 }
 
 occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
@@ -66,7 +66,9 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
+  {
     return nullptr;
+  }
   if (Orientation())
   {
     return edgeElement->EdgeStart();
@@ -81,7 +83,7 @@ void StepShape_OrientedEdge::SetEdgeEnd(const occ::handle<StepShape_Vertex>& /*a
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
-  std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
+  std::cout << "Field is redefined, SetUp Forbidden" << '\n';
 }
 
 occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
@@ -89,7 +91,9 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
+  {
     return nullptr;
+  }
   if (Orientation())
   {
     return edgeElement->EdgeEnd();

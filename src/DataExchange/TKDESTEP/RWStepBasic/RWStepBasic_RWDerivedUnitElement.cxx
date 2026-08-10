@@ -30,7 +30,9 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "derived_unit_element"))
+  {
     return;
+  }
 
   // --- own fields
 

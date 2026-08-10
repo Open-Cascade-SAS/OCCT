@@ -35,7 +35,9 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "trimmed_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -65,7 +67,9 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
       StepGeom_TrimmingSelect aTrim1Item;
       // szv#4:S4163:12Mar99 `bool stat3a =` not needed
       if (data->ReadEntity(nsub3, i3, "trim_1", ach, aTrim1Item))
+      {
         aTrim1->SetValue(i3, aTrim1Item);
+      }
     }
   }
 
@@ -83,7 +87,9 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
       StepGeom_TrimmingSelect aTrim2Item;
       // szv#4:S4163:12Mar99 `bool stat4a =` not needed
       if (data->ReadEntity(nsub4, i4, "trim_2", ach, aTrim2Item))
+      {
         aTrim2->SetValue(i4, aTrim2Item);
+      }
     }
   }
 
@@ -105,7 +111,9 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #6 (master_representation) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

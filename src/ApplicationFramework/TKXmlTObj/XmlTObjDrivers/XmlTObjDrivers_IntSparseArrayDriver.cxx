@@ -89,7 +89,9 @@ void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>
   {
     int aValue = anIt.Value();
     if (aValue == 0)
+    {
       continue;
+    }
     TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
     TCollection_AsciiString aStrIndex =
       TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);

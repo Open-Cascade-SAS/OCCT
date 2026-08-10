@@ -30,7 +30,9 @@ void RWStepShape_RWRightCircularCone::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "right_circular_cone"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

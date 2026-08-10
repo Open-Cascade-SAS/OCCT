@@ -279,9 +279,9 @@ void AppParCurves_MultiBSpCurve::D2(const int    CuIndex,
 
 void AppParCurves_MultiBSpCurve::Dump(Standard_OStream& o) const
 {
-  o << "AppParCurves_MultiBSpCurve dump:" << std::endl;
-  o << " It contains " << NbCurves() << " BSpline curves " << std::endl;
-  o << " The poles are: " << std::endl;
+  o << "AppParCurves_MultiBSpCurve dump:" << '\n';
+  o << " It contains " << NbCurves() << " BSpline curves " << '\n';
+  o << " The poles are: " << '\n';
   /*  for (int i = 1; i <= NbCurves(); i++) {
       o << " Curve No. " << i << std::endl;
       if (Dimension(i) == 3) {

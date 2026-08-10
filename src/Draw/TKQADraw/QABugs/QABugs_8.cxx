@@ -42,7 +42,9 @@ static int OCC162(Draw_Interpretor& di, int argc, const char** argv)
 
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   if (aShape.IsNull())
+  {
     return 0;
+  }
 
   double               tolValue = 0.0001;
   BRepOffsetAPI_Sewing sew(tolValue);
@@ -143,7 +145,9 @@ static int OCC1651(Draw_Interpretor& di, int argc, const char** argv)
 
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   if (aShape.IsNull())
+  {
     return 0;
+  }
 
   gp_Pnt                    aP1(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]));
   gp_Dir                    aD1(Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]));
@@ -171,6 +175,4 @@ void QABugs::Commands_8(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC1651,
                   group);
-
-  return;
 }

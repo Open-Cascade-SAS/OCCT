@@ -34,7 +34,19 @@ Poly_Polygon2D::Poly_Polygon2D(const NCollection_Array1<gp_Pnt2d>& Nodes)
 {
   int i, j = 1;
   for (i = Nodes.Lower(); i <= Nodes.Upper(); i++)
+  {
     myNodes(j++) = Nodes(i);
+  }
+}
+
+//=================================================================================================
+
+occ::handle<Poly_Polygon2D> Poly_Polygon2D::Copy() const
+{
+  occ::handle<Poly_Polygon2D> aCopy = new Poly_Polygon2D(NbNodes());
+  aCopy->ChangeNodes().CopyValues(myNodes);
+  aCopy->Deflection(myDeflection);
+  return aCopy;
 }
 
 //=================================================================================================

@@ -42,7 +42,9 @@ void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "applied_external_identification_assignment"))
+  {
     return;
+  }
 
   // Inherited fields of IdentificationAssignment
 

@@ -45,7 +45,9 @@ void IGESDraw_SegmentedViewsVisible::Init(
       || (allLineFontValues->Lower() != 1 || allLineFontValues->Length() != Len)
       || (allLineFontDefinitions->Lower() != 1 || allLineFontDefinitions->Length() != Len)
       || (allLineWeights->Lower() != 1 || allLineWeights->Length() != Len))
+  {
     throw Standard_DimensionMismatch("IGESDraw_SegmentedViewsVisible : Init");
+  }
 
   theViews                = allViews;
   theBreakpointParameters = allBreakpointParameters;

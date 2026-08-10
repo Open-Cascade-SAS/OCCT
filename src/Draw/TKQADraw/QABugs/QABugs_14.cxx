@@ -25,13 +25,6 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <Geom2d_Line.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2dGcc_QualifiedCurve.hxx>
-#include <Geom2dGcc_Circ2d2TanRad.hxx>
-#include <Geom2d_Circle.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
@@ -63,54 +56,6 @@
 #include <V3d_View.hxx>
 #include <TDF_Label.hxx>
 #include <TDataStd_Expression.hxx>
-
-static int BUC60897(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
-{
-  char abuf[16];
-
-  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(gp_Dir2d::D::NX));
-  Sprintf(abuf, "line");
-  const char* st = abuf;
-  DrawTrSurf::Set(st, aLine);
-
-  NCollection_Array1<gp_Pnt2d> aPoints(1, 3);
-  aPoints.SetValue(1, gp_Pnt2d(0, 0));
-  aPoints.SetValue(2, gp_Pnt2d(50, 50));
-  aPoints.SetValue(3, gp_Pnt2d(0, 100));
-  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoints);
-  Sprintf(abuf, "curve");
-  DrawTrSurf::Set(st, aCurve);
-
-  Geom2dAdaptor_Curve      aCLine(aLine);
-  Geom2dAdaptor_Curve      aCCurve(aCurve);
-  Geom2dGcc_QualifiedCurve aQualifCurve1(aCLine, GccEnt_outside);
-  Geom2dGcc_QualifiedCurve aQualifCurve2(aCCurve, GccEnt_outside);
-  Geom2dGcc_Circ2d2TanRad  aGccCirc2d(aQualifCurve1, aQualifCurve2, 10, 1e-7);
-  if (!aGccCirc2d.IsDone())
-  {
-    di << "Faulty: can not create a circle.\n";
-    return 1;
-  }
-  for (int i = 1; i <= aGccCirc2d.NbSolutions(); i++)
-  {
-    gp_Circ2d aCirc2d = aGccCirc2d.ThisSolution(i);
-    di << "circle : X " << aCirc2d.Location().X() << " Y " << aCirc2d.Location().Y() << " R "
-       << aCirc2d.Radius();
-    double   aTmpR1, aTmpR2;
-    gp_Pnt2d aPnt2d1, aPnt2d2;
-    aGccCirc2d.Tangency1(i, aTmpR1, aTmpR2, aPnt2d1);
-    aGccCirc2d.Tangency2(i, aTmpR1, aTmpR2, aPnt2d2);
-    di << "\ntangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
-    di << "\ntangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
-
-    Sprintf(abuf, "circle_%d", i);
-    occ::handle<Geom2d_Curve> circ_res = new Geom2d_Circle(aCirc2d);
-    DrawTrSurf::Set(st, circ_res);
-  }
-
-  di << "done\n";
-  return 0;
-}
 
 static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
 {
@@ -145,9 +90,13 @@ static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
                    Draw::Atof(argv[8]),
                    Draw::Atof(argv[9]));
     if (bnd_box.IsOut(p1, p2, d))
+    {
       di << "The band lies out of the box\n";
+    }
     else
+    {
       di << "The band intersects the box\n";
+    }
 
     return 0;
   }
@@ -156,13 +105,17 @@ static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
 static int BUC60852(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 8)
+  {
     di << "Usage : " << argv[0]
        << " name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2\n";
+  }
   else
   {
     TopoDS_Edge shape = TopoDS::Edge(DBRep::Get(argv[1]));
     if (shape.ShapeType() != TopAbs_EDGE)
+    {
       di << "shape must be an edge\n";
+    }
     else
     {
       BRepAdaptor_Curve curve(shape);
@@ -175,9 +128,13 @@ static int BUC60852(Draw_Interpretor& di, int argc, const char** argv)
                      Draw::Atof(argv[6]),
                      Draw::Atof(argv[7]));
       if (bnd_box.IsOut(lin))
+      {
         di << "Line that lies on edge does not intersect the box\n";
+      }
       else
+      {
         di << "Line that lies on edge intersects the box\n";
+      }
     }
   }
   return 0;
@@ -187,7 +144,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   int newnarg;
   if (argc < 3)
+  {
     return 1;
+  }
   TopoDS_Shape        S = DBRep::Get(argv[2]);
   BRepFeat_SplitShape Spls(S);
   bool                pick = false;
@@ -210,7 +169,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     pick = (argv[i][0] == '.');
     EF   = DBRep::Get(argv[i], TopAbs_FACE);
     if (EF.IsNull())
+    {
       return 1;
+    }
   }
   while (i < newnarg)
   {
@@ -228,7 +189,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
         if (argv[i][0] == '-')
         {
           if (argv[i][1] == '\0')
+          {
             return 1;
+          }
           pick             = (argv[i][1] == '.');
           const char* Temp = argv[i] + 1;
           W                = DBRep::Get(Temp, TopAbs_SHAPE, false);
@@ -274,7 +237,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
     }
     else
+    {
       return 1;
+    }
   }
   i++;
   while (argv[i][0] != '#')
@@ -315,74 +280,11 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     return 1;
   }
   for (; anIter.More(); anIter.Next())
+  {
     BB.Add(aShell, anIter.Value());
+  }
   aShell.Closed(BRep_Tool::IsClosed(aShell));
   DBRep::Set(argv[1], aShell);
-  return 0;
-}
-
-static int BUC60870(Draw_Interpretor& di, int argc, const char** argv)
-{
-  int i1;
-  if (argc != 5)
-  {
-    di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev\n";
-    return 1;
-  }
-  const char *               ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
-  TopoDS_Shape               S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
-  double                     dev = Draw::Atof(argv[4]);
-  BRepExtrema_DistShapeShape dst(S1, S2, dev);
-  if (dst.IsDone())
-  {
-    char named[100];
-    Sprintf(named, "%s%s", ns0, "_val");
-    char* tempd = named;
-    Draw::Set(tempd, dst.Value());
-    di << named << " ";
-    for (i1 = 1; i1 <= dst.NbSolution(); i1++)
-    {
-      gp_Pnt P1, P2;
-      P1 = (dst.PointOnShape1(i1));
-      P2 = (dst.PointOnShape2(i1));
-      if (dst.Value() <= 1.e-9)
-      {
-        TopoDS_Vertex V = BRepLib_MakeVertex(P1);
-        char          namev[100];
-        if (i1 == 1)
-        {
-          Sprintf(namev, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(namev, "%s%d", ns0, i1);
-        }
-        char* tempv = namev;
-        DBRep::Set(tempv, V);
-        di << namev << " ";
-      }
-      else
-      {
-        char        name[100];
-        TopoDS_Edge E = BRepLib_MakeEdge(P1, P2);
-        if (i1 == 1)
-        {
-          Sprintf(name, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(name, "%s%d", ns0, i1);
-        }
-        char* temp = name;
-        DBRep::Set(temp, E);
-        di << name << " ";
-      }
-    }
-  }
-  else
-  {
-    di << "Faulty : found a problem\n";
-  }
   return 0;
 }
 
@@ -398,9 +300,13 @@ static int BUC60944(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString out;
   aPath->SystemName(out);
   if (in == out)
+  {
     di << "The conversion is right.\n";
+  }
   else
+  {
     di << "Faulty : The conversion is incorrect : " << out.ToCString() << "\n";
+  }
   di << out.ToCString() << "\n";
   //  std::cout << aPath->Trek() << " !" << std::endl;
   return 0;
@@ -429,7 +335,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   aShFixWire->SetPrecision(theTolerance);
 
   for (anEdgeIter.Initialize(theListOfEdges); anEdgeIter.More(); anEdgeIter.Next())
+  {
     aWireData->Add(TopoDS::Edge(anEdgeIter.Value()));
+  }
 
   aWireOrder.KeepLoopsMode() = isKeepLoopsMode;
   aWireAnalyzer              = aShFixWire->Analyzer();
@@ -438,7 +346,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   aShFixWire->FixReorder(aWireOrder);
   isDone = !aShFixWire->StatusReorder(ShapeExtend_FAIL);
   if (!isDone)
+  {
     return false;
+  }
 
   if (isFixConnectedMode)
   {
@@ -484,7 +394,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
       aVlast = aVl;
       TopExp::Vertices(aCurWire, aVf, aVl);
       if (aVf.IsSame(aVl))
+      {
         aCurWire.Closed(true);
+      }
       theListOfWires.Append(aCurWire);
       aBuilder.MakeWire(aCurWire);
       aBuilder.Add(aCurWire, anE);
@@ -493,7 +405,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
 
   TopExp::Vertices(aCurWire, aVf, aVl);
   if (aVf.IsSame(aVl))
+  {
     aCurWire.Closed(true);
+  }
   theListOfWires.Append(aCurWire);
 
   return true;
@@ -540,7 +454,9 @@ bool BuildBoundWires(const TopoDS_Shape& theShell, NCollection_List<TopoDS_Shape
   }
 
   if (!isBound)
+  {
     return true;
+  }
 
   return BuildWires(aBoundaryEdges, theListOfWires);
 }
@@ -566,16 +482,22 @@ static int BUC60868(Draw_Interpretor& di, int argc, const char** argv)
 
   TopoDS_Shape aRes;
   if (aListOfWires.IsEmpty())
+  {
     di << "no bound\n";
+  }
   else if (aListOfWires.Extent() == 1)
+  {
     aRes = aListOfWires.First();
+  }
   else
   {
     BRep_Builder aBld;
     aBld.MakeCompound(TopoDS::Compound(aRes));
     NCollection_List<TopoDS_Shape>::Iterator aWireIter(aListOfWires);
     for (; aWireIter.More(); aWireIter.Next())
+    {
       aBld.Add(aRes, aWireIter.Value());
+    }
   }
 
   DBRep::Set(argv[1], aRes);
@@ -604,9 +526,13 @@ static int BUC60924(Draw_Interpretor& di, int argc, const char** argv)
   isPlanar      = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
 
   if (isPlanar)
+  {
     di << "The curve is planar !\n";
+  }
   else
+  {
     di << "Faulty : the curve is not planar!\n";
+  }
 
   return 0;
 }
@@ -913,14 +839,18 @@ static int OCC1919_real(Draw_Interpretor& di, int argc, const char** argv)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(argv[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, argv[2], L);
 
     // TDataStd_Real::Set(L,Draw::Atof(arg[3]));
     TCollection_AsciiString AsciiStringReal(argv[3]);
     if (!AsciiStringReal.IsRealValue())
+    {
       return 1;
+    }
     double aReal = AsciiStringReal.RealValue();
     di << "aReal = " << aReal << "\n";
 
@@ -941,7 +871,9 @@ static int OCC2932_SetIDUAttribute(Draw_Interpretor& di, int argc, const char** 
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   if (!DDF::FindLabel(DF, argv[2], label))
   {
@@ -976,7 +908,9 @@ static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   int                        Tag = Draw::Atoi(argv[3]);
@@ -996,7 +930,9 @@ static int OCC2932_SetCurrent(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TDataStd_Current::Set(L);
@@ -1012,7 +948,9 @@ static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** ar
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TCollection_ExtendedString       Expression(argv[3]);
@@ -1032,7 +970,9 @@ static int OCC2932_SetRelation(Draw_Interpretor& di, int argc, const char** argv
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TCollection_ExtendedString     Relation(argv[3]);
@@ -1045,7 +985,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
 
-  theCommands.Add("BUC60897", "BUC60897", __FILE__, BUC60897, group);
   theCommands.Add("BUC60889",
                   "BUC60889 point_1 point_2 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 "
                   "bndbox_Y2 bndbox_Z2",
@@ -1065,11 +1004,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   "edge_on_shape edge_on_wire ... ] ] [ # L/R ]",
                   __FILE__,
                   BUC60854,
-                  group);
-  theCommands.Add("BUC60870",
-                  "BUC60870 result name_of_shape_1 name_of_shape_2 dev",
-                  __FILE__,
-                  BUC60870,
                   group);
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);
@@ -1115,6 +1049,4 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC2932_SetRelation,
                   group);
-
-  return;
 }

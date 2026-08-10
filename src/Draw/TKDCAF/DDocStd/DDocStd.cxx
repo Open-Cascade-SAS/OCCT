@@ -64,7 +64,9 @@ bool DDocStd::GetDocument(const char*&                   Name,
   if (DD.IsNull())
   {
     if (Complain)
-      std::cout << Name << " is not a Document" << std::endl;
+    {
+      std::cout << Name << " is not a Document" << '\n';
+    }
     return false;
   }
   occ::handle<TDocStd_Document> STDDOC = DD->GetDocument();
@@ -74,7 +76,9 @@ bool DDocStd::GetDocument(const char*&                   Name,
     return true;
   }
   if (Complain)
-    std::cout << Name << " is not a CAF Document" << std::endl;
+  {
+    std::cout << Name << " is not a CAF Document" << '\n';
+  }
   return false;
 }
 
@@ -88,7 +92,9 @@ bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
   Label.Nullify();
   TDF_Tool::Label(D->GetData(), Entry, Label, false);
   if (Label.IsNull() && Complain)
-    std::cout << "No label for entry " << Entry << std::endl;
+  {
+    std::cout << "No label for entry " << Entry << '\n';
+  }
   return !Label.IsNull();
 }
 
@@ -104,9 +110,13 @@ bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
   if (Find(D, Entry, L, Complain))
   {
     if (L.FindAttribute(ID, A))
+    {
       return true;
+    }
     if (Complain)
-      std::cout << "attribute not found for entry : " << Entry << std::endl;
+    {
+      std::cout << "attribute not found for entry : " << Entry << '\n';
+    }
   }
   return false;
 }
@@ -127,7 +137,9 @@ void DDocStd::AllCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   // define commands

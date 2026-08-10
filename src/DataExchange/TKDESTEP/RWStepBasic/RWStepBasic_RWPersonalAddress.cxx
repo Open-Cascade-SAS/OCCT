@@ -33,7 +33,9 @@ void RWStepBasic_RWPersonalAddress::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 14, ach, "personal_address"))
+  {
     return;
+  }
 
   // --- inherited field : internalLocation ---
 
@@ -228,7 +230,9 @@ void RWStepBasic_RWPersonalAddress::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat13 =` not needed
       if (data->ReadEntity(nsub13, i13, "person", ach, STANDARD_TYPE(StepBasic_Person), anent13))
+      {
         aPeople->SetValue(i13, anent13);
+      }
     }
   }
 

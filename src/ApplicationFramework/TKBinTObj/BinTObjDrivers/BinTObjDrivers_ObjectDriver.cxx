@@ -52,7 +52,9 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
   // first try to get the type as an integer ID
   int anID;
   if (!(theSource >> anID))
+  {
     return false;
+  }
   occ::handle<TObj_Object> anObject;
   if ((unsigned)anID > 0xffff)
   {
@@ -61,7 +63,9 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
     theSource.SetPosition(aSavedPos);
     TCollection_AsciiString aName;
     if (!(theSource >> aName))
+    {
       return false;
+    }
     anObject = TObj_Persistence::CreateNewObject(aName.ToCString(), theTarget->Label());
     if (anObject.IsNull())
     {
@@ -82,7 +86,9 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
     // use anID to get the type from earlier registered ones
     occ::handle<Standard_Type> aType = TObj_Assistant::FindType(anID);
     if (!aType.IsNull())
+    {
       anObject = TObj_Persistence::CreateNewObject(aType->Name(), theTarget->Label());
+    }
     else
     {
       return false;
@@ -102,7 +108,9 @@ void BinTObjDrivers_ObjectDriver::Paste(
   occ::handle<TObj_TObject> aTObj     = occ::down_cast<TObj_TObject>(theSource);
   occ::handle<TObj_Object>  anIObject = aTObj->Get();
   if (anIObject.IsNull())
+  {
     return;
+  }
 
   occ::handle<Standard_Type> aType = anIObject->DynamicType();
 

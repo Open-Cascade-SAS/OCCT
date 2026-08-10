@@ -37,7 +37,9 @@ void RWStepDimTol_RWGeometricToleranceRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance_relationship"))
+  {
     return;
+  }
 
   // Own fields of GeometricToleranceRelationship
 

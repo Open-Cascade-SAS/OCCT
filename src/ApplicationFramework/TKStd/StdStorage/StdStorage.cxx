@@ -56,7 +56,9 @@ Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
   // Create a driver appropriate for the given file
   occ::handle<Storage_BaseDriver> aDriver;
   if (PCDM::FileDriverType(theFileName, aDriver) == PCDM_TOFD_Unknown)
+  {
     return Storage_VSWrongFileDriver;
+  }
 
   // Try to open the file
   try
@@ -80,9 +82,13 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
                                occ::handle<StdStorage_Data>&          theData)
 {
   if (theData.IsNull())
+  {
     theData = new StdStorage_Data;
+  }
   else
+  {
     theData->Clear();
+  }
 
   occ::handle<StdStorage_HeaderData> aHeaderData = theData->HeaderData();
   occ::handle<StdStorage_TypeData>   aTypeData   = theData->TypeData();
@@ -90,11 +96,15 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
 
   // Read header section
   if (!aHeaderData->Read(theDriver))
+  {
     return aHeaderData->ErrorStatus();
+  }
 
   // Read types section
   if (!aTypeData->Read(theDriver))
+  {
     return aTypeData->ErrorStatus();
+  }
 
   // Select instantiators for the used types
   NCollection_Array1<StdObjMgt_Persistent::Instantiator> anInstantiators(
@@ -104,14 +114,20 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
   {
     StdObjMgt_Persistent::Instantiator anInstantiator = aTypeData->Instantiator(i);
     if (anInstantiator)
+    {
       anInstantiators(i) = anInstantiator;
+    }
     else
+    {
       return Storage_VSUnknownType;
+    }
   }
 
   // Read root section
   if (!aRootData->Read(theDriver))
+  {
     return aRootData->ErrorStatus();
+  }
 
   Storage_Error anError;
 
@@ -120,7 +136,9 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
 
   anError = theDriver->BeginReadRefSection();
   if (anError != Storage_VSOk)
+  {
     return anError;
+  }
 
   int aNbRefs = theDriver->RefSectionSize();
   for (int i = 1; i <= aNbRefs; i++)
@@ -138,19 +156,25 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
     }
 
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
 
     aReadData.CreatePersistentObject(aRef, anInstantiators(aType));
   }
 
   anError = theDriver->EndReadRefSection();
   if (anError != Storage_VSOk)
+  {
     return anError;
+  }
 
   // Read and parse data section
   anError = theDriver->BeginReadDataSection();
   if (anError != Storage_VSOk)
+  {
     return anError;
+  }
 
   for (int i = 1; i <= aHeaderData->NumberOfObjects(); i++)
   {
@@ -174,12 +198,16 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
     }
 
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
   }
 
   anError = theDriver->EndReadDataSection();
   if (anError != Storage_VSOk)
+  {
     return anError;
+  }
 
   occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> aRoots = aRootData->Roots();
   if (!aRoots.IsNull())
@@ -277,51 +305,69 @@ Storage_Error StdStorage::Write(const occ::handle<Storage_BaseDriver>& theDriver
   {
     // Write header section
     if (!aHeaderData->Write(theDriver))
+    {
       return aHeaderData->ErrorStatus();
+    }
 
     // Write types section
     if (!aTypeData->Write(theDriver))
+    {
       return aTypeData->ErrorStatus();
+    }
 
     // Write root section
     if (!aRootData->Write(theDriver))
+    {
       return aRootData->ErrorStatus();
+    }
 
     Storage_Error anError;
 
     // Write reference section
     anError = theDriver->BeginWriteRefSection();
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
 
     theDriver->SetRefSectionSize(aPObjs.Length());
     for (StdStorage_BucketIterator anIt(&aPObjs); anIt.More(); anIt.Next())
     {
       occ::handle<StdObjMgt_Persistent> aPObj = anIt.Value();
       if (!aPObj.IsNull())
+      {
         theDriver->WriteReferenceType(aPObj->RefNum(), aPObj->TypeNum());
+      }
     }
 
     anError = theDriver->EndWriteRefSection();
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
 
     // Write data section
     anError = theDriver->BeginWriteDataSection();
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
 
     StdObjMgt_WriteData aWriteData(theDriver);
     for (StdStorage_BucketIterator anIt(&aPObjs); anIt.More(); anIt.Next())
     {
       occ::handle<StdObjMgt_Persistent> aPObj = anIt.Value();
       if (!aPObj.IsNull())
+      {
         aWriteData.WritePersistentObject(aPObj);
+      }
     }
 
     anError = theDriver->EndWriteDataSection();
     if (anError != Storage_VSOk)
+    {
       return anError;
+    }
   }
   catch (Storage_StreamWriteError const&)
   {

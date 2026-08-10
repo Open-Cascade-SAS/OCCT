@@ -49,13 +49,21 @@ void IGESAppli_ToolPWBArtworkStackup::ReadOwnParams(
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
   PR.ReadText(PR.Current(), "Artwork Stackup Identification", tempArtworkStackupIdent);
   if (!PR.ReadInteger(PR.Current(), "Number of level numbers", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempLevelNumbers = new NCollection_HArray1<int>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of level numbers: Not Positive");
+  }
   if (!tempLevelNumbers.IsNull())
+  {
     PR.ReadInts(PR.CurrentList(num), "Level Numbers", tempLevelNumbers);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNbPropertyValues, tempArtworkStackupIdent, tempLevelNumbers);
@@ -70,7 +78,9 @@ void IGESAppli_ToolPWBArtworkStackup::WriteOwnParams(
   IW.Send(ent->Identification());
   IW.Send(ent->NbLevelNumbers());
   for (num = ent->NbLevelNumbers(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->LevelNumber(i));
+  }
 }
 
 void IGESAppli_ToolPWBArtworkStackup::OwnShared(
@@ -90,7 +100,9 @@ void IGESAppli_ToolPWBArtworkStackup::OwnCopy(
     new TCollection_HAsciiString(another->Identification());
   occ::handle<NCollection_HArray1<int>> tempLevelNumbers = new NCollection_HArray1<int>(1, num);
   for (int i = 1; i <= num; i++)
+  {
     tempLevelNumbers->SetValue(i, another->LevelNumber(i));
+  }
   ent->Init(tempNbPropertyValues, tempArtworkStackupIdent, tempLevelNumbers);
 }
 
@@ -128,5 +140,5 @@ void IGESAppli_ToolPWBArtworkStackup::OwnDump(const occ::handle<IGESAppli_PWBArt
   S << "\n";
   S << "Level Numbers : ";
   IGESData_DumpVals(S, level, 1, ent->NbLevelNumbers(), ent->LevelNumber);
-  S << std::endl;
+  S << '\n';
 }

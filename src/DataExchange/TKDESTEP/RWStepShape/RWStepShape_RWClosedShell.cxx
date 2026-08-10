@@ -32,7 +32,9 @@ void RWStepShape_RWClosedShell::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "closed_shell"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -53,7 +55,9 @@ void RWStepShape_RWClosedShell::ReadStep(const occ::handle<StepData_StepReaderDa
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "face", ach, STANDARD_TYPE(StepShape_Face), anent2))
+      {
         aCfsFaces->SetValue(i2, anent2);
+      }
     }
   }
 

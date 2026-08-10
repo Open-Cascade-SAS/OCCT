@@ -55,7 +55,9 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(
     TopoDSToStep_Tool    aTool(aMap, true, aStepModel->InternalParameters.WriteSurfaceCurMode);
     TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
     if (theProgress.UserBreak())
+    {
       return;
+    }
     TopoDSToStep::AddResult(FP, aTool);
 
     if (StepB.IsDone())
@@ -118,7 +120,9 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(
                                  theLocalFactors,
                                  theProgress);
       if (theProgress.UserBreak())
+      {
         return;
+      }
       TopoDSToStep::AddResult(FP, aTool);
 
       if (StepB.IsDone())

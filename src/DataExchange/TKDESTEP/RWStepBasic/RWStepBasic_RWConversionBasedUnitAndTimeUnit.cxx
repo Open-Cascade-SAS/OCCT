@@ -35,7 +35,9 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
   // --- Instance of plex component ConversionBasedUnit ---
 
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -59,7 +61,9 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
   // --- Instance of common supertype NamedUnit ---
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
   // --- field : dimensions ---
 
   occ::handle<StepBasic_DimensionalExponents> aDimensions;
@@ -76,7 +80,9 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
   // --- Instance of plex component TimeUnit ---
 
   if (!data->CheckNbParams(num, 0, ach, "time_unit"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

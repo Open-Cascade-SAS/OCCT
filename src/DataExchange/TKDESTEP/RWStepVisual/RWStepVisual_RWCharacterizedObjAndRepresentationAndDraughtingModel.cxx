@@ -37,7 +37,9 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
   int num = 0;
   data->NamedForComplex("REPRESENTATION", "RPRSNT", num0, num, ach);
   if (!data->CheckNbParams(num, 3, ach, "shape_aspect"))
+  {
     return;
+  }
 
   // name
   occ::handle<TCollection_HAsciiString> aName;
@@ -59,7 +61,9 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anItem))
+      {
         anItems->SetValue(i, anItem);
+      }
     }
   }
 

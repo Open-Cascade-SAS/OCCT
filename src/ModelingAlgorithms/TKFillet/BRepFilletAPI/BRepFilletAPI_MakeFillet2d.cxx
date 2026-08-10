@@ -132,7 +132,9 @@ void BRepFilletAPI_MakeFillet2d::Build(const Message_ProgressRange& /*theRange*/
     myShape = myMakeChFi2d.Result();
   }
   else
+  {
     NotDone();
+  }
 }
 
 //=================================================================================================
@@ -157,9 +159,13 @@ const NCollection_List<TopoDS_Shape>& BRepFilletAPI_MakeFillet2d::NewEdges(const
 {
   myGenerated.Clear();
   if (I <= NbFillet())
+  {
     myGenerated.Append(FilletEdges()(I));
+  }
   else
+  {
     myGenerated.Append(ChamferEdges()(I - NbFillet()));
+  }
 
   return myGenerated;
 }

@@ -96,14 +96,18 @@ void IGESSelect_FloatFormat::Perform(IFSelect_ContextWrite& /*ctx*/,
   writer.FloatWriter().SetFormat(themainform.ToCString());
   writer.FloatWriter().SetZeroSuppress(thezerosup);
   if (theformrange.Length() > 0)
+  {
     writer.FloatWriter().SetFormatForRange(theformrange.ToCString(), therangemin, therangemax);
+  }
 }
 
 TCollection_AsciiString IGESSelect_FloatFormat::Label() const
 {
   TCollection_AsciiString lab("Float Format ");
   if (thezerosup)
+  {
     lab.AssignCat(" ZeroSup ");
+  }
   lab.AssignCat(themainform);
   if (theformrange.Length() > 0)
   {

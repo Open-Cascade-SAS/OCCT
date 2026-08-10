@@ -11,20 +11,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRep_Builder.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <GProp_GProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <gtest/gtest.h>
+
+#include <cmath>
 
 TEST(BRepGPropTest, LinearProperties_EdgeLength)
 {
@@ -114,4 +129,122 @@ TEST(BRepGPropTest, LinearProperties_SkipShared)
   // So total = 240
   EXPECT_NEAR(aPropsNotSkipped.Mass(), 240.0, Precision::Confusion())
     << "Total edge length with SkipShared=false should be double";
+}
+
+// Test OCC49: GProp_PrincipalProps::HasSymmetryAxis - cylinder has symmetry, cut does not.
+// Migrated from QABugs_16.cxx OCC49
+TEST(BRepGPropTest, OCC49_CylinderHasSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(aCylinder, aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_TRUE(aPrincipal.HasSymmetryAxis());
+}
+
+TEST(BRepGPropTest, OCC49_CutShapeHasNoSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+  const TopoDS_Shape aBox      = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+
+  BRepAlgoAPI_Cut aCut(aCylinder, aBox);
+  ASSERT_TRUE(aCut.IsDone());
+
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(aCut.Shape(), aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_FALSE(aPrincipal.HasSymmetryAxis());
+}
+
+// OCC8797: Verify that GCPnts_AbscissaPoint::Length and BRepGProp::LinearProperties
+// produce consistent arc-length values for a degree-3 BSpline curve with 7 poles.
+// Both methods must agree within a tight relative tolerance.
+
+TEST(BRepGPropTest, OCC8797_BSplineLengthConsistencyAbscissaVsLinearProperties)
+{
+  NCollection_Array1<gp_Pnt> aPoles(0, 6);
+  aPoles(0) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(1) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles(2) = gp_Pnt(2.0, 1.0, 0.0);
+  aPoles(3) = gp_Pnt(3.0, 0.0, 0.0);
+  aPoles(4) = gp_Pnt(4.0, 1.0, 0.0);
+  aPoles(5) = gp_Pnt(5.0, 1.0, 0.0);
+  aPoles(6) = gp_Pnt(6.0, 0.0, 0.0);
+
+  NCollection_Array1<double> aKnots(0, 2);
+  aKnots(0) = 0.0;
+  aKnots(1) = 0.5;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(0, 2);
+  aMults(0) = 4;
+  aMults(1) = 3;
+  aMults(2) = 4;
+
+  occ::handle<Geom_BSplineCurve> aSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  ASSERT_FALSE(aSpline.IsNull());
+  EXPECT_EQ(aSpline->NbPoles(), 7);
+  EXPECT_EQ(aSpline->NbKnots(), 3);
+
+  // Method 1: GCPnts_AbscissaPoint::Length
+  GeomAdaptor_Curve anAdaptor(aSpline);
+  const double      aLengthAbscissa = GCPnts_AbscissaPoint::Length(anAdaptor);
+  EXPECT_GT(aLengthAbscissa, 0.0);
+
+  // Method 2: BRepGProp::LinearProperties on the equivalent edge
+  const TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge(aSpline);
+  GProp_GProps      aEdgeProps;
+  BRepGProp::LinearProperties(aEdge, aEdgeProps);
+  const double aLengthGProp = aEdgeProps.Mass();
+  EXPECT_GT(aLengthGProp, 0.0);
+
+  // Both methods must agree within 0.1 %
+  EXPECT_NEAR(aLengthAbscissa, aLengthGProp, aLengthGProp * 1e-3);
+}
+
+// Regression: a degenerate edge whose ONLY representation is a Bezier/BSpline-type
+// curve-on-surface pcurve (no 3D curve) used to SIGSEGV inside
+// BRepGProp_EdgeTool::IntegrationOrder, which read the pole count via BAC.Curve().Curve()
+// (null when there is no 3D curve) instead of the adaptor's own NbPoles(). This is the
+// shape BRepBuilderAPI_Sewing produces reconciling near-coincident vertices between two
+// faces that do not share an edge outright.
+TEST(BRepGPropTest, LinearProperties_DegenerateEdgeWithBSplinePCurveNoCrash)
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
+  aPoles.SetValue(2, gp_Pnt2d(0.1, 0.05));
+  aPoles.SetValue(3, gp_Pnt2d(0.2, -0.05));
+  aPoles.SetValue(4, gp_Pnt2d(0.3, 0.0));
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 4);
+
+  occ::handle<Geom2d_BSplineCurve> aPCurve = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  BRep_Builder aBuilder;
+  TopoDS_Edge  anEdge;
+  aBuilder.MakeEdge(anEdge);
+  aBuilder.UpdateEdge(anEdge, aPCurve, aPlane, TopLoc_Location(), Precision::Confusion());
+  aBuilder.Range(anEdge,
+                 aPlane,
+                 TopLoc_Location(),
+                 aPCurve->FirstParameter(),
+                 aPCurve->LastParameter());
+  aBuilder.Degenerated(anEdge, true);
+
+  GProp_GProps aProps;
+  BRepGProp::LinearProperties(anEdge, aProps);
+
+  // Reaching this point at all is the regression check: IntegrationOrder used to SIGSEGV
+  // before returning.
+  EXPECT_TRUE(std::isfinite(aProps.Mass()));
+  EXPECT_GE(aProps.Mass(), 0.0);
 }

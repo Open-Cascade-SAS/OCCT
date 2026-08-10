@@ -62,17 +62,25 @@ void PrsDim_ConcentricRelation::Compute(const occ::handle<PrsMgr_PresentationMan
   {
     case TopAbs_EDGE: {
       if (type2 == TopAbs_EDGE)
+      {
         ComputeTwoEdgesConcentric(aPresentation);
+      }
       else if (type2 == TopAbs_VERTEX)
+      {
         ComputeEdgeVertexConcentric(aPresentation);
+      }
     }
     break;
 
     case TopAbs_VERTEX: {
       if (type2 == TopAbs_VERTEX)
+      {
         ComputeTwoVerticesConcentric(aPresentation);
+      }
       else if (type2 == TopAbs_EDGE)
+      {
         ComputeEdgeVertexConcentric(aPresentation);
+      }
     }
     break;
     default: {
@@ -104,7 +112,9 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
   bool                    isInfinite;
   bool                    isOnPlanEdge, isOnPlanVertex;
   if (!PrsDim::ComputeGeometry(E, C, p1, p2, extCurv, isInfinite, isOnPlanEdge, myPlane))
+  {
     return;
+  }
   gp_Pnt P;
   PrsDim::ComputeGeometry(V, P, myPlane, isOnPlanVertex);
 
@@ -116,9 +126,13 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
   myPnt = myCenter.Translated(vectrans.Multiplied(myRad));
   DsgPrs_ConcentricPresentation::Add(aPresentation, myDrawer, myCenter, myRad, myDir, myPnt);
   if (!isOnPlanEdge)
+  {
     PrsDim::ComputeProjEdgePresentation(aPresentation, myDrawer, E, CIRCLE, p1, p2);
+  }
   if (!isOnPlanVertex)
+  {
     PrsDim::ComputeProjVertexPresentation(aPresentation, myDrawer, V, P);
+  }
 }
 
 //=================================================================================================
@@ -140,9 +154,13 @@ void PrsDim_ConcentricRelation::ComputeTwoVerticesConcentric(
   myPnt = myCenter.Translated(vectrans.Multiplied(myRad));
   DsgPrs_ConcentricPresentation::Add(aPresentation, myDrawer, myCenter, myRad, myDir, myPnt);
   if (!isOnPlanVertex1)
+  {
     PrsDim::ComputeProjVertexPresentation(aPresentation, myDrawer, V1, P1);
+  }
   if (!isOnPlanVertex2)
+  {
     PrsDim::ComputeProjVertexPresentation(aPresentation, myDrawer, V2, P2);
+  }
 }
 
 //=================================================================================================
@@ -186,7 +204,9 @@ void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
   myRad        = (aRad1 > aRad2) ? aRad2 : aRad1;
   myRad /= 5;
   if (myRad > 15.)
+  {
     myRad = 15.;
+  }
 
   // Calculate a point of circle of radius myRad
   gp_Dir vec(ptat11.XYZ() - myCenter.XYZ());

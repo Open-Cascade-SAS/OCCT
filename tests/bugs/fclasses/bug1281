@@ -1,0 +1,54 @@
+puts "============"
+puts "GH1281"
+puts "============"
+puts ""
+#######################################################################
+# pload ALL should keep loading remaining plugins when one plugin library
+# from the resource list is absent.
+#######################################################################
+
+set aPluginFileName "Bug1281DrawPlugin"
+set aPluginFilePath "${imagedir}/${aPluginFileName}"
+set aScriptFilePath "${imagedir}/TKTopTest.tcl"
+set aPluginVar "CSF_${aPluginFileName}Defaults"
+set aMarker "::bug1281_plugin_after_missing"
+set anOldDefaults [dgetenv ${aPluginVar}]
+unset -nocomplain ${aMarker}
+
+set aFile [open ${aPluginFilePath} w]
+puts ${aFile} "ALL : MISSING, VALID"
+puts ${aFile} "MISSING : TKMissingDrawPluginForBug1281"
+puts ${aFile} "VALID : TKTopTest"
+close ${aFile}
+
+set aFile [open ${aScriptFilePath} w]
+puts ${aFile} "set ${aMarker} 1"
+close ${aFile}
+
+dsetenv ${aPluginVar} ${imagedir}
+
+if {[catch {pload -${aPluginFileName} ALL} aResult]} {
+  puts "Error: pload ALL aborted on a missing plugin: ${aResult}"
+}
+
+if {![info exists ${aMarker}]} {
+  puts "Error: pload ALL did not continue loading plugins after a missing plugin"
+}
+
+set aFile [open ${aPluginFilePath} w]
+puts ${aFile} "ALL : MISSING"
+puts ${aFile} "MISSING : TKMissingDrawPluginForBug1281"
+close ${aFile}
+
+if {![catch {pload -${aPluginFileName} ALL} aResult]} {
+  puts "Error: pload ALL did not report an error when every plugin was missing"
+}
+
+if {${anOldDefaults} == ""} {
+  dsetenv ${aPluginVar}
+} else {
+  dsetenv ${aPluginVar} ${anOldDefaults}
+}
+unset -nocomplain ${aMarker}
+file delete -force ${aPluginFilePath}
+file delete -force ${aScriptFilePath}

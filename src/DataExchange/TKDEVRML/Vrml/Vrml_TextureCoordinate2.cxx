@@ -52,7 +52,9 @@ Standard_OStream& Vrml_TextureCoordinate2::Print(Standard_OStream& anOStream) co
       anOStream << myPoint->Value(i).X() << " " << myPoint->Value(i).Y();
 
       if (i < myPoint->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }

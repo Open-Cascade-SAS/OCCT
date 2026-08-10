@@ -54,13 +54,17 @@ bool IFSelect_SelectSignedShared::Explore(const int                             
                                           Interface_EntityIterator&              explored) const
 {
   if (thematcher->Matches(ent, G.Model(), thesigntext, theexact))
+  {
     return true;
+  }
 
   //  otherwise, we do the sorting here
   Interface_EntityIterator list = G.Shareds(ent);
   //  If no more Shared, then it's finished
   if (list.NbEntities() == 0)
+  {
     return false;
+  }
 
   //  Otherwise, sort if we are at the level
   if (level < Level())
@@ -71,7 +75,9 @@ bool IFSelect_SelectSignedShared::Explore(const int                             
   for (list.Start(); list.More(); list.Next())
   {
     if (thematcher->Matches(list.Value(), G.Model(), thesigntext, theexact))
+    {
       explored.AddItem(list.Value());
+    }
   }
   return true;
 }
@@ -81,9 +87,13 @@ TCollection_AsciiString IFSelect_SelectSignedShared::ExploreLabel() const
   TCollection_AsciiString lab("Shared,");
   lab.AssignCat(thematcher->Name());
   if (theexact)
+  {
     lab.AssignCat(" matching ");
+  }
   else
+  {
     lab.AssignCat(" containing ");
+  }
   lab.AssignCat(thesigntext);
   return lab;
 }

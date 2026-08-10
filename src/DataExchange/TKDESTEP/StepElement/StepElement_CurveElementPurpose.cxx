@@ -37,13 +37,21 @@ int StepElement_CurveElementPurpose::CaseNum(const occ::handle<Standard_Transien
 int StepElement_CurveElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->Matches("EnumeratedCurveElementPurpose"))
+  {
     return 1;
+  }
   else if (ent->Matches("ApplicationDefinedElementPurpose"))
+  {
     return 2;
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================
@@ -61,7 +69,9 @@ void StepElement_CurveElementPurpose::SetEnumeratedCurveElementPurpose(
   occ::handle<StepElement_CurveElementPurposeMember> SelMem =
     occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_PURPOSE");
   SelMem->SetName(name->ToCString());
@@ -76,13 +86,17 @@ StepElement_EnumeratedCurveElementPurpose StepElement_CurveElementPurpose::
   occ::handle<StepElement_CurveElementPurposeMember> SelMem =
     occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return StepElement_Axial;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ENUMERATED_CURVEELEMENT_PURPOSE");
   if (name->IsDifferent(nameitem))
+  {
     return StepElement_Axial;
+  }
   int                                       numit = SelMem->Enum();
   StepElement_EnumeratedCurveElementPurpose val;
   switch (numit)
@@ -123,7 +137,9 @@ void StepElement_CurveElementPurpose::SetApplicationDefinedElementPurpose(
   occ::handle<StepElement_CurveElementPurposeMember> SelMem =
     occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("APPLICATION_DEFINED_ELEMENT_PURPOSE");
   SelMem->SetName(name->ToCString());
@@ -138,13 +154,17 @@ occ::handle<TCollection_HAsciiString> StepElement_CurveElementPurpose::
   occ::handle<StepElement_CurveElementPurposeMember> SelMem =
     occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_ELEMENT_PURPOSE");
   if (name->IsDifferent(nameitem))
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;

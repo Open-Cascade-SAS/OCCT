@@ -63,7 +63,9 @@
 #include <BRepTools.hxx>
 #include <Standard_Dump.hxx>
 
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
+#endif
 
 //=======================================================================
 // function : ConvertBndToShape
@@ -95,10 +97,14 @@ static void ConvertBndToShape(const Bnd_OBB& theBox, const char* const theName)
 static int addpcurve(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Shape E = DBRep::Get(a[1]);
   if (E.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom2d_Curve> PC  = DrawTrSurf::GetCurve2d(a[2]);
   TopoDS_Shape              F   = DBRep::Get(a[3]);
   double                    tol = 1.e-7;
@@ -119,7 +125,9 @@ static int addpcurve(Draw_Interpretor&, int n, const char** a)
 static int transform(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
 
   gp_Trsf     T;
   int         last  = n;
@@ -156,10 +164,14 @@ static int transform(Draw_Interpretor&, int n, const char** a)
     if (!strcmp(aName, "move"))
     {
       if (n < 3)
+      {
         return 1;
+      }
       TopoDS_Shape SL = DBRep::Get(a[n - 1]);
       if (SL.IsNull())
+      {
         return 0;
+      }
       T       = SL.Location().Transformation();
       last    = n - 1;
       isBasic = true;
@@ -167,14 +179,18 @@ static int transform(Draw_Interpretor&, int n, const char** a)
     else if (!strcmp(aName, "translate"))
     {
       if (n < 5)
+      {
         return 1;
+      }
       T.SetTranslation(gp_Vec(Draw::Atof(a[n - 3]), Draw::Atof(a[n - 2]), Draw::Atof(a[n - 1])));
       last = n - 3;
     }
     else if (!strcmp(aName, "rotate"))
     {
       if (n < 9)
+      {
         return 1;
+      }
       T.SetRotation(
         gp_Ax1(gp_Pnt(Draw::Atof(a[n - 7]), Draw::Atof(a[n - 6]), Draw::Atof(a[n - 5])),
                gp_Vec(Draw::Atof(a[n - 4]), Draw::Atof(a[n - 3]), Draw::Atof(a[n - 2]))),
@@ -184,7 +200,9 @@ static int transform(Draw_Interpretor&, int n, const char** a)
     else if (!strcmp(aName, "mirror"))
     {
       if (n < 8)
+      {
         return 1;
+      }
       T.SetMirror(gp_Ax2(gp_Pnt(Draw::Atof(a[n - 6]), Draw::Atof(a[n - 5]), Draw::Atof(a[n - 4])),
                          gp_Vec(Draw::Atof(a[n - 3]), Draw::Atof(a[n - 2]), Draw::Atof(a[n - 1]))));
 
@@ -193,7 +211,9 @@ static int transform(Draw_Interpretor&, int n, const char** a)
     else if (!strcmp(aName, "scale"))
     {
       if (n < 6)
+      {
         return 1;
+      }
       T.SetScale(gp_Pnt(Draw::Atof(a[n - 4]), Draw::Atof(a[n - 3]), Draw::Atof(a[n - 2])),
                  Draw::Atof(a[n - 1]));
       last = n - 4;
@@ -254,7 +274,9 @@ static int transform(Draw_Interpretor&, int n, const char** a)
       {
         trf.Perform(S, isCopy, isCopyMesh);
         if (!trf.IsDone())
+        {
           return 1;
+        }
         DBRep::Set(a[i], trf.Shape());
       }
     }
@@ -318,7 +340,9 @@ static int tcopy(Draw_Interpretor& di, int n, const char** a)
     for (int i = 1; i <= 2; i++)
     {
       if (a[i][0] != '-')
+      {
         break;
+      }
       if (a[i][1] == 'n')
       {
         copyGeom = false;
@@ -359,9 +383,13 @@ static int tcopy(Draw_Interpretor& di, int n, const char** a)
 static int nurbsconvert(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   if ((n - 1) % 2 != 0)
+  {
     return 1;
+  }
   BRepBuilderAPI_NurbsConvert nbscv;
   for (int i = 0; i < (n - 1) / 2; i++)
   {
@@ -396,13 +424,17 @@ static int mkedgecurve(Draw_Interpretor&, int n, const char** a)
 {
 
   if (n < 3)
+  {
     return 1;
+  }
   double Tolerance = Draw::Atof(a[2]);
 
   TopoDS_Shape S = DBRep::Get(a[1]);
 
   if (S.IsNull())
+  {
     return 1;
+  }
 
   BRepLib::BuildCurves3d(S, Tolerance);
   return 0;
@@ -428,11 +460,15 @@ static int sameparameter(Draw_Interpretor& di, int n, const char** a)
   double aTol1    = Draw::Atof(a[n - 1]);
   bool   IsUseTol = aTol1 > 0;
   if (IsUseTol)
+  {
     aTol = aTol1;
+  }
 
   TopoDS_Shape anInpS = DBRep::Get(IsUseTol ? a[n - 2] : a[n - 1]);
   if (anInpS.IsNull())
+  {
     return 1;
+  }
 
   if ((n == 4 && IsUseTol) || (n == 3 && !IsUseTol))
   {
@@ -468,7 +504,9 @@ static int updatetol(Draw_Interpretor& di, int n, const char** a)
 
   TopoDS_Shape anInpS = IsF ? DBRep::Get(a[n - 2]) : aSh1;
   if (anInpS.IsNull())
+  {
     return 1;
+  }
 
   if ((n == 4 && IsF) || (n == 3 && !IsF))
   {
@@ -492,13 +530,19 @@ static int updatetol(Draw_Interpretor& di, int n, const char** a)
 static int orientsolid(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 1;
+  }
   if (S.ShapeType() != TopAbs_SOLID)
+  {
     return 1;
+  }
 
   BRepLib::OrientClosedSolid(TopoDS::Solid(S));
 
@@ -511,14 +555,18 @@ static int orientsolid(Draw_Interpretor&, int n, const char** a)
 static int getcoords(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   for (int i = 1; i < n; i++)
   {
     const TopoDS_Shape aShape = DBRep::Get(a[i]);
 
     if (aShape.IsNull())
+    {
       continue;
+    }
 
     if (aShape.ShapeType() == TopAbs_VERTEX)
     {
@@ -875,7 +923,9 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
   {
     bool IsOptimal = false;
     if (n == 3 && !strcmp(a[2], "-o"))
+    {
       IsOptimal = true;
+    }
 
     double                    axmin, aymin, azmin, axmax, aymax, azmax;
     Bnd_Box                   B;
@@ -891,9 +941,13 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
       // add surf
       GeomAdaptor_Surface aGAS(S);
       if (IsOptimal)
+      {
         BndLib_AddSurface::AddOptimal(aGAS, Precision::Confusion(), B);
+      }
       else
+      {
         BndLib_AddSurface::Add(aGAS, Precision::Confusion(), B);
+      }
     }
     else
     {
@@ -903,9 +957,13 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
         // add cur
         GeomAdaptor_Curve aGAC(C);
         if (IsOptimal)
+        {
           BndLib_Add3dCurve::AddOptimal(aGAC, Precision::Confusion(), B);
+        }
         else
+        {
           BndLib_Add3dCurve::Add(aGAC, Precision::Confusion(), B);
+        }
       }
       else
       {
@@ -915,17 +973,21 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
           // add cur2d
           Is3d = false;
           if (IsOptimal)
+          {
             BndLib_Add2dCurve::AddOptimal(C2d,
                                           C2d->FirstParameter(),
                                           C2d->LastParameter(),
                                           Precision::Confusion(),
                                           B2d);
+          }
           else
+          {
             BndLib_Add2dCurve::Add(C2d,
                                    C2d->FirstParameter(),
                                    C2d->LastParameter(),
                                    Precision::Confusion(),
                                    B2d);
+          }
         }
         else
         {
@@ -965,10 +1027,14 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
 static int findplane(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 1;
+  }
   double                   tolerance = 1.0e-5;
   BRepBuilderAPI_FindPlane a_plane_finder(S, tolerance);
   if (a_plane_finder.Found())
@@ -1009,9 +1075,13 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
 {
   int details = 0;
   if (narg < 2)
+  {
     return 1;
+  }
   if (narg == 3)
+  {
     details = 1;
+  }
   const char*  id1       = a[1];
   TopoDS_Shape TheShape1 = DBRep::Get(id1);
 
@@ -1104,10 +1174,14 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
 static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
 {
   if (n < 2)
+  {
     return (1);
+  }
   TopoDS_Shape TheShape = DBRep::Get(a[1]);
   if (TheShape.IsNull())
+  {
     return (1);
+  }
 
   double T, TMF, TME, TMV, TmF, TmE, TmV;
   int    nbF, nbE, nbV;
@@ -1122,9 +1196,13 @@ static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
     TopoDS_Face Face = TopoDS::Face(ex.Current());
     T                = BRep_Tool::Tolerance(Face);
     if (T > TMF)
+    {
       TMF = T;
+    }
     if (T < TmF)
+    {
       TmF = T;
+    }
     mapS.Add(Face);
   }
 
@@ -1136,9 +1214,13 @@ static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
     TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
     T                = BRep_Tool::Tolerance(Edge);
     if (T > TME)
+    {
       TME = T;
+    }
     if (T < TmE)
+    {
       TmE = T;
+    }
     mapS.Add(Edge);
   }
 
@@ -1150,9 +1232,13 @@ static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
     TopoDS_Vertex Vertex = TopoDS::Vertex(ex.Current());
     T                    = BRep_Tool::Tolerance(Vertex);
     if (T > TMV)
+    {
       TMV = T;
+    }
     if (T < TmV)
+    {
       TmV = T;
+    }
     mapS.Add(Vertex);
   }
 
@@ -1164,14 +1250,20 @@ static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
   sss.precision(5);
   sss.setf(std::ios::scientific);
   if (TmF <= TMF)
+  {
     sss << "\n    Face   : Min " << std::setw(8) << TmF << "    Max  " << std::setw(8) << TMF
         << " \n ";
+  }
   if (TmE <= TME)
+  {
     sss << "\n    Edge   : Min " << std::setw(8) << TmE << "    Max  " << std::setw(8) << TME
         << " \n ";
+  }
   if (TmV <= TMV)
+  {
     sss << "\n    Vertex : Min " << std::setw(8) << TmV << "    Max  " << std::setw(8) << TMV
         << " \n ";
+  }
   theCommands << sss;
 
   return 0;
@@ -1203,17 +1295,29 @@ static int vecdc(Draw_Interpretor& di, int, const char**)
   P2.Transform(T);
   double xa, ya, za;
   if (std::abs(P1.X()) > std::abs(P2.X()))
+  {
     xa = P1.X();
+  }
   else
+  {
     xa = P2.X();
+  }
   if (std::abs(P1.Y()) > std::abs(P2.Y()))
+  {
     ya = P1.Y();
+  }
   else
+  {
     ya = P2.Y();
+  }
   if (std::abs(P1.Z()) > std::abs(P2.Z()))
+  {
     za = P1.Z();
+  }
   else
+  {
     za = P2.Z();
+  }
   P1.SetCoord(xa, ya, za);
   occ::handle<Draw_Marker3D> D0 =
     new Draw_Marker3D(gp_Pnt(P1.X(), P1.Y(), P1.Z()), Draw_Square, Draw_blanc, 1);
@@ -1234,17 +1338,29 @@ static int vecdc(Draw_Interpretor& di, int, const char**)
   PP2.SetCoord((double)X / z, (double)Y / z, 0.0);
   PP2.Transform(T);
   if (std::abs(PP1.X()) > std::abs(PP2.X()))
+  {
     xa = PP1.X();
+  }
   else
+  {
     xa = PP2.X();
+  }
   if (std::abs(PP1.Y()) > std::abs(PP2.Y()))
+  {
     ya = PP1.Y();
+  }
   else
+  {
     ya = PP2.Y();
+  }
   if (std::abs(PP1.Z()) > std::abs(PP2.Z()))
+  {
     za = PP1.Z();
+  }
   else
+  {
     za = PP2.Z();
+  }
   PP1.SetCoord(xa, ya, za);
   occ::handle<Draw_Segment3D> d = new Draw_Segment3D(P1, PP1, Draw_blanc);
   dout << d;
@@ -1285,7 +1401,9 @@ static int vecdc(Draw_Interpretor& di, int, const char**)
 static int nproject(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Shape                       InpShape;
   int                                arg = 2, i;
   NCollection_Sequence<TopoDS_Shape> Args;
@@ -1303,28 +1421,38 @@ static int nproject(Draw_Interpretor& di, int n, const char** a)
     arg++;
   }
   if (Args.Length() < 2)
+  {
     return 1;
+  }
 
   BRepOffsetAPI_NormalProjection OrtProj(Args.Last());
 
   for (i = 1; i < Args.Length(); i++)
+  {
     OrtProj.Add(Args(i));
+  }
 
   if (n > arg)
+  {
     if (!strcmp(a[arg], "-g"))
     {
       OrtProj.SetLimit(false);
       arg++;
     }
+  }
 
   if (n > arg)
+  {
     if (!strcmp(a[arg], "-d"))
     {
       arg++;
       if (n > arg)
+      {
         MaxDistance = Draw::Atof(a[arg++]);
+      }
       OrtProj.SetMaxDistance(MaxDistance);
     }
+  }
   if (n > arg)
   {
     Tol = std::max(Draw::Atof(a[arg++]), 1.e-10);
@@ -1333,9 +1461,13 @@ static int nproject(Draw_Interpretor& di, int n, const char** a)
   if (n > arg)
   {
     if (Draw::Atoi(a[arg]) == 0)
+    {
       Continuity = GeomAbs_C0;
+    }
     else if (Draw::Atoi(a[arg]) == 2)
+    {
       Continuity = GeomAbs_C2;
+    }
     arg++;
   }
 
@@ -1343,11 +1475,15 @@ static int nproject(Draw_Interpretor& di, int n, const char** a)
   {
     MaxDeg = Draw::Atoi(a[arg++]);
     if (MaxDeg < 1 || MaxDeg > 14)
+    {
       MaxDeg = 14;
+    }
   }
 
   if (n > arg)
+  {
     MaxSeg = Draw::Atoi(a[arg]);
+  }
 
   Tol2d = std::pow(Tol, 2. / 3);
 
@@ -1372,22 +1508,32 @@ static int wexplo(Draw_Interpretor&, int argc, const char** argv)
 {
   char name[100];
   if (argc < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape C1 = DBRep::Get(argv[1], TopAbs_WIRE);
   TopoDS_Shape C2;
 
   if (argc > 2)
+  {
     C2 = DBRep::Get(argv[2], TopAbs_FACE);
+  }
 
   if (C1.IsNull())
+  {
     return 1;
+  }
 
   BRepTools_WireExplorer we;
   if (C2.IsNull())
+  {
     we.Init(TopoDS::Wire(C1));
+  }
   else
+  {
     we.Init(TopoDS::Wire(C1), TopoDS::Face(C2));
+  }
 
   int k = 1;
   while (we.More())
@@ -1405,11 +1551,15 @@ static int wexplo(Draw_Interpretor&, int argc, const char** argv)
 static int scalexyz(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShapeBase = DBRep::Get(a[2]);
   if (aShapeBase.IsNull())
+  {
     return 1;
+  }
 
   double aFactorX = Draw::Atof(a[3]);
   double aFactorY = Draw::Atof(a[4]);
@@ -1420,7 +1570,9 @@ static int scalexyz(Draw_Interpretor& /*di*/, int n, const char** a)
   aGTrsf.SetVectorialPart(rot);
   BRepBuilderAPI_GTransform aBRepGTrsf(aShapeBase, aGTrsf, false);
   if (!aBRepGTrsf.IsDone())
+  {
     throw Standard_ConstructionError("Scaling not done");
+  }
   TopoDS_Shape Result = aBRepGTrsf.Shape();
 
   DBRep::Set(a[1], Result);
@@ -1510,7 +1662,9 @@ static int purgeloc(Draw_Interpretor& di, int /*n*/, const char** a)
 
   TopoDS_Shape aShapeBase = DBRep::Get(a[2]);
   if (aShapeBase.IsNull())
+  {
     return 1;
+  }
 
   BRepTools_PurgeLocations aRemLoc;
   bool                     isDone = aRemLoc.Perform(aShapeBase);
@@ -1535,7 +1689,9 @@ static int checkloc(Draw_Interpretor& di, int /*n*/, const char** a)
 
   TopoDS_Shape aShapeBase = DBRep::Get(a[1]);
   if (aShapeBase.IsNull())
+  {
     return 1;
+  }
 
   NCollection_List<TopoDS_Shape> aLS;
   BRepTools::CheckLocations(aShapeBase, aLS);
@@ -1562,7 +1718,9 @@ void BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

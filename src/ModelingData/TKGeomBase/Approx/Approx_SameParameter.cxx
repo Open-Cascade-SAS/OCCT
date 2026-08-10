@@ -136,7 +136,9 @@ static void ProjectPointOnCurve(const double           InitValue,
       // Avoid division by zero.
       const double Toler = 1.0e-12;
       if (std::abs(func_derivative) > Toler)
+      {
         param -= func / func_derivative;
+      }
 
       param = std::max(param, Curve.FirstParameter());
       param = std::min(param, Curve.LastParameter());
@@ -210,9 +212,13 @@ static bool Check(const NCollection_Array1<double>&   FlatKnots,
   double FirstPar = cons.FirstParameter();
   double LastPar  = cons.LastParameter();
   if (aParamFirst < FirstPar)
+  {
     aParamFirst = FirstPar;
+  }
   if (aParamLast > LastPar)
+  {
     aParamLast = LastPar;
+  }
 
   double       d2      = 0.0; // Maximum square deviation on the samples.
   const double d       = tol;
@@ -238,7 +244,9 @@ static bool Check(const NCollection_Array1<double>&   FlatKnots,
     gp_Pnt Pcons = cons.Value(tcons);
     double temp  = Pc3d.SquareDistance(Pcons);
     if (temp > d2)
+    {
       d2 = temp;
+    }
   }
   tol = sqrt(d2);
 
@@ -249,7 +257,9 @@ static bool Check(const NCollection_Array1<double>&   FlatKnots,
     const double aCurrentParam  = Poles(i);
 
     if (aPreviousParam > aCurrentParam)
+    {
       return false;
+    }
   }
 
   return (tol <= d || tol > 0.8 * oldtol);
@@ -381,7 +391,9 @@ void Approx_SameParameter::Build(const double Tolerance)
   // The loop is organized over number of poles.
   GeomAbs_Shape aContinuity = myHCurve2d->Continuity();
   if (aContinuity > GeomAbs_C1)
+  {
     aContinuity = GeomAbs_C1;
+  }
 
   double besttol2 = aData.myTol * aData.myTol, tolsov = Precision::Infinite();
   bool   interpolok = false, hasCountChanged = false;
@@ -462,7 +474,9 @@ void Approx_SameParameter::Build(const double Tolerance)
     }
 
     if (!interpolok)
+    {
       hasCountChanged = IncreaseNbPoles(Poles, FlatKnots, aData, besttol2);
+    }
   } while (!interpolok && hasCountChanged);
 
   if (!myDone)
@@ -579,9 +593,13 @@ bool Approx_SameParameter::IncreaseInitialNbSamples(Approx_SameParameter_Data& t
 
   int inter = 1;
   while (inter <= NbInt && aC1Intervals(inter) <= theData.myC3dPF + myDeltaMin)
+  {
     inter++;
+  }
   while (NbInt > 0 && aC1Intervals(NbInt) >= theData.myC3dPL - myDeltaMin)
+  {
     NbInt--;
+  }
 
   // Compute new parameters.
   NCollection_Sequence<double> aNewPar;
@@ -670,7 +688,9 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
     if (isUseParam)
     {
       if (dmax2 < dist2)
+      {
         dmax2 = dist2;
+      }
       initp = previousp = theData.myPC3d[count] = theData.myPC3d[ii];
       theData.myPC2d[count]                     = theData.myPC2d[ii];
       count++;
@@ -679,7 +699,9 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
 
     // Local search: local extrema and iterative projection algorithm.
     if (!isProjOk)
+    {
       initp = theData.myPC3d[ii];
+    }
     isProjOk = isSameParam = false;
     Projector.Perform(Pcons, initp);
     if (Projector.IsDone())
@@ -705,8 +727,10 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
 
     // Whole parameter space search using general extrema.
     Extrema_ExtPC PR(Pcons, *myC3d, theData.myC3dPF, theData.myC3dPL, theData.myTol);
-    if (!PR.IsDone() || PR.NbExt() == 0) // Lazy evaluation is used.
+    if (!PR.IsDone() || PR.NbExt() == 0)
+    { // Lazy evaluation is used.
       continue;
+    }
 
     const int aNbExt      = PR.NbExt();
     int       anIndMin    = 0;
@@ -758,9 +782,13 @@ bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCO
   myC3d->D1(aParamFirst, aPnt, aVec);
   double aMagnitude = aVecConS.Magnitude();
   if (aMagnitude > aSmallMagnitude)
+  {
     theFirstTangent = aVec.Magnitude() / aMagnitude;
+  }
   else
+  {
     return false;
+  }
 
   // Last point.
   const double aParamLast = myC3d->LastParameter();
@@ -769,9 +797,13 @@ bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCO
 
   aMagnitude = aVecConS.Magnitude();
   if (aMagnitude > aSmallMagnitude)
+  {
     theLastTangent = aVec.Magnitude() / aMagnitude;
+  }
   else
+  {
     return false;
+  }
 
   return true;
 }
@@ -846,7 +878,9 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
     newcount++;
 
     if (theData.myNbPnt - ii + newcount == myMaxArraySize)
+    {
       continue;
+    }
 
     BSplCLib::Eval(0.5 * (theData.myPC3d[ii] + theData.myPC3d[ii + 1]),
                    false,
@@ -871,7 +905,9 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
         curp          = Projector.Point().Parameter();
         double dist_2 = Projector.SquareDistance();
         if (dist_2 > theBestSqTol)
+        {
           theBestSqTol = dist_2;
+        }
         projok = true;
       }
       else
@@ -908,7 +944,9 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
     newcount++;
 
     if (theData.myNbPnt - n + newcount == myMaxArraySize)
+    {
       continue;
+    }
 
     double ucons = 0.5 * (theData.myPC2d[n] + theData.myPC2d[n + 1]);
     double uc3d  = 0.5 * (theData.myPC3d[n] + theData.myPC3d[n + 1]);
@@ -921,7 +959,9 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
       curp          = Projector.Point().Parameter();
       double dist_2 = Projector.SquareDistance();
       if (dist_2 > theBestSqTol)
+      {
         theBestSqTol = dist_2;
+      }
       projok = true;
     }
     else

@@ -448,20 +448,28 @@ static int tessellate(Draw_Interpretor& /*di*/, int nbarg, const char** argv)
     if (std::abs(aPFirst.X() - aPLast.X()) < 0.1 * (aUMax - aUMin)) // U=const
     {
       if (BRep_Tool::IsClosed(anEdge, aFace))
+      {
         B.UpdateEdge(anEdge, aUMinPoly, aUMaxPoly, aTriangulation);
+      }
       else
+      {
         B.UpdateEdge(anEdge,
                      (aPFirst.X() < 0.5 * (aUMin + aUMax) ? aUMinPoly : aUMaxPoly),
                      aTriangulation);
+      }
     }
     else // V=const
     {
       if (BRep_Tool::IsClosed(anEdge, aFace))
+      {
         B.UpdateEdge(anEdge, aVMinPoly, aVMaxPoly, aTriangulation);
+      }
       else
+      {
         B.UpdateEdge(anEdge,
                      (aPFirst.Y() < 0.5 * (aVMin + aVMax) ? aVMinPoly : aVMaxPoly),
                      aTriangulation);
+      }
     }
   }
 
@@ -743,7 +751,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
   double aMaxDeflection = 0.0, aMeshingDefl = -1.0, aMeshingAngDefl = -1.0, aMeshingMinSize = -1.0;
   int    aNbFaces = 0, aNbEmptyFaces = 0, aNbTriangles = 0, aNbNodes = 0, aNbRepresentations = 0;
   NCollection_IndexedDataMap<int, TriangulationStat> aLODsStat;
-  NCollection_Vector<int>                            aNbLODs;
+  NCollection_DynamicArray<int>                      aNbLODs;
   for (anExp.Init(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     TopoDS_Face aFace = TopoDS::Face(anExp.Current());
@@ -770,9 +778,9 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
       // Collect LODs information
       const NCollection_List<occ::handle<Poly_Triangulation>>& aLODs =
         BRep_Tool::Triangulations(aFace, aLoc);
-      if (aLODs.Size() != 0)
+      if (aLODs.Length() != 0)
       {
-        aNbLODs.Append(aLODs.Size());
+        aNbLODs.Append(aLODs.Length());
       }
       int aTriangIndex = 0;
       for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(aLODs); anIter.More();
@@ -870,15 +878,15 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
     theDI << "Meshing min size " << aMeshingMinSize << "\n";
   }
 
-  if (aNbLODs.Size() > 0)
+  if (aNbLODs.Length() > 0)
   {
     // Find all different numbers of triangulation LODs and their average value per face
-    if (aNbLODs.Size() > 1)
+    if (aNbLODs.Length() > 1)
     {
       std::sort(aNbLODs.begin(), aNbLODs.end());
     }
     NCollection_IndexedMap<int> aLODsRange;
-    for (NCollection_Vector<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
+    for (NCollection_DynamicArray<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
     {
       if (!aLODsRange.Contains(aNbIter.Value()))
       {
@@ -891,19 +899,19 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
          aRangeIter.Next(), anIndex++)
     {
       aLODsRangeStr += TCollection_AsciiString(aRangeIter.Value());
-      if (anIndex < aLODsRange.Size() - 1)
+      if (anIndex < aLODsRange.Length() - 1)
       {
         aLODsRangeStr += " ";
       }
     }
     theDI << TCollection_AsciiString("Number of triangulation LODs [") + aLODsRangeStr + "]\n";
-    if (aLODsRange.Size() > 1)
+    if (aLODsRange.Length() > 1)
     {
       // Find average number of triangulation LODs per face
-      int aMedian = aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Size() / 2);
-      if ((aNbLODs.Size() % 2) == 0)
+      int aMedian = aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Length() / 2);
+      if ((aNbLODs.Length() % 2) == 0)
       {
-        aMedian += aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Size() / 2 - 1);
+        aMedian += aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Length() / 2 - 1);
         aMedian /= 2;
       }
       theDI << TCollection_AsciiString("                             [average per face: ") + aMedian
@@ -947,7 +955,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
       {
         aLODsStatStr +=
           TCollection_AsciiString(aTypeIter.Key()->Name()) + " (" + aTypeIter.Value() + ")";
-        if (aCounter < aLodStat.TypeMap.Size() - 1)
+        if (aCounter < aLodStat.TypeMap.Length() - 1)
         {
           aLODsStatStr += TCollection_AsciiString(", ");
         }
@@ -1062,13 +1070,19 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
 static int veriftriangles(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   bool quiet = true;
   if (n == 3)
+  {
     quiet = false;
+  }
   TopoDS_Shape Sh = DBRep::Get(a[1]);
   if (Sh.IsNull())
+  {
     return 1;
+  }
   TopExp_Explorer                 ex;
   occ::handle<Poly_Triangulation> T;
   TopLoc_Location                 L;
@@ -1096,9 +1110,13 @@ static int veriftriangles(Draw_Interpretor& di, int n, const char** a)
       for (i = 1; i <= T->NbTriangles(); i++)
       {
         if (F.Orientation() == TopAbs_REVERSED)
+        {
           T->Triangle(i).Get(n1, n3, n2);
+        }
         else
+        {
           T->Triangle(i).Get(n1, n2, n3);
+        }
 
         const gp_Pnt2d xy1 = T->UVNode(n1);
         const gp_Pnt2d xy2 = T->UVNode(n2);
@@ -1204,12 +1222,16 @@ static int tri2d(Draw_Interpretor&, int n, const char** a)
 {
 
   if (n != 2)
+  {
     return 1;
+  }
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   TopoDS_Face  F           = TopoDS::Face(aLocalShape);
   //  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[1]));
   if (F.IsNull())
+  {
     return 1;
+  }
   occ::handle<Poly_Triangulation> T;
   TopLoc_Location                 L;
 
@@ -1228,8 +1250,12 @@ static int tri2d(Draw_Interpretor&, int n, const char** a)
     {
       pc.Triangles(i, t[0], t[1], t[2]);
       for (j = 0; j < 3; j++)
+      {
         if (t[j] == 0)
+        {
           nFree++;
+        }
+      }
     }
 
     // allocate the arrays
@@ -1297,11 +1323,15 @@ static int tri2d(Draw_Interpretor&, int n, const char** a)
 static int wavefront(Draw_Interpretor&, int nbarg, const char** argv)
 {
   if (nbarg < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(argv[1]);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   // creation du maillage s'il n'existe pas.
 
@@ -1337,7 +1367,9 @@ static int wavefront(Draw_Interpretor&, int nbarg, const char** argv)
     aFile += ".obj";
   }
   else
+  {
     aFile = "wave.obj";
+  }
   FILE* outfile = OSD_OpenFile(aFile.ToCString(), "w");
 
   fprintf(outfile, "%s  %s\n%s %s\n\n", "# CASCADE   ", "MATRA DATAVISION", "#", aFile.ToCString());
@@ -1384,7 +1416,9 @@ static int wavefront(Draw_Interpretor&, int nbarg, const char** argv)
             CSLib::Normal(D1U, D1V, D2U, D2V, D2UV, Precision::Angular(), OK, NStat, Nor);
           }
           if (F.Orientation() == TopAbs_REVERSED)
+          {
             Nor.Reverse();
+          }
 
           fprintf(outfile, "%s      %f  %f  %f\n", "vn", Nor.X(), Nor.Y(), Nor.Z());
         }
@@ -1400,9 +1434,13 @@ static int wavefront(Draw_Interpretor&, int nbarg, const char** argv)
       for (i = 1; i <= nbTriangles; i++)
       {
         if (F.Orientation() == TopAbs_REVERSED)
+        {
           Tr->Triangle(i).Get(n1, n3, n2);
+        }
         else
+        {
           Tr->Triangle(i).Get(n1, n2, n3);
+        }
         k1 = n1 + totalnodes;
         k2 = n2 + totalnodes;
         k3 = n3 + totalnodes;
@@ -1426,13 +1464,17 @@ static int wavefront(Draw_Interpretor&, int nbarg, const char** argv)
 static int triedgepoints(Draw_Interpretor& di, int nbarg, const char** argv)
 {
   if (nbarg < 2)
+  {
     return 1;
+  }
 
   for (int i = 1; i < nbarg; i++)
   {
     TopoDS_Shape aShape = DBRep::Get(argv[i]);
     if (aShape.IsNull())
+    {
       continue;
+    }
 
     occ::handle<Poly_PolygonOnTriangulation>                         aPoly;
     occ::handle<Poly_Triangulation>                                  aT;
@@ -1448,17 +1490,23 @@ static int triedgepoints(Draw_Interpretor& di, int nbarg, const char** argv)
     {
       TopExp_Explorer ex(aShape, TopAbs_EDGE);
       for (; ex.More(); ex.Next())
+      {
         anEdgeMap.Add(ex.Current());
+      }
     }
 
     if (anEdgeMap.Extent() == 0)
+    {
       continue;
+    }
 
     char newname[1024];
     strcpy(newname, argv[i]);
     char* p = newname;
     while (*p != '\0')
+    {
       p++;
+    }
     *p = '_';
     p++;
 
@@ -1467,7 +1515,9 @@ static int triedgepoints(Draw_Interpretor& di, int nbarg, const char** argv)
     {
       BRep_Tool::PolygonOnTriangulation(TopoDS::Edge(it.Key()), aPoly, aT, aLoc);
       if (aT.IsNull() || aPoly.IsNull())
+      {
         continue;
+      }
 
       const NCollection_Array1<int>& Indices = aPoly->Nodes();
       const int                      nbnodes = Indices.Length();
@@ -1476,12 +1526,18 @@ static int triedgepoints(Draw_Interpretor& di, int nbarg, const char** argv)
       {
         gp_Pnt P3d = aT->Node(Indices[j]);
         if (!aLoc.IsIdentity())
+        {
           P3d.Transform(aLoc.Transformation());
+        }
 
         if (anEdgeMap.Extent() > 1)
+        {
           Sprintf(p, "%d_%d", nbEdge, j);
+        }
         else
+        {
           Sprintf(p, "%d", j);
+        }
         DBRep::Set(newname, BRepBuilderAPI_MakeVertex(P3d));
         di.AppendElement(newname);
       }

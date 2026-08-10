@@ -21,11 +21,17 @@ StepVisual_LayeredItem::StepVisual_LayeredItem() = default;
 int StepVisual_LayeredItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationRepresentation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
+  {
     return 2;
+  }
   return 0;
 }
 

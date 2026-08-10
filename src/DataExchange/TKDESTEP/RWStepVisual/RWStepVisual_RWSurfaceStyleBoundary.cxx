@@ -30,7 +30,9 @@ void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "surface_style_boundary"))
+  {
     return;
+  }
 
   // --- own field : styleOfBoundary ---
 

@@ -30,7 +30,9 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "manifold_solid_brep"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

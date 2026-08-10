@@ -423,9 +423,13 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
     {
       P.SetY(t);
       if (Params.IsEmpty())
+      {
         Params.Append(P);
+      }
       else
+      {
         Params.SetValue(1, P);
+      }
     }
   }
   else if (Params.Length() == 1 && Points2.Length() == 0)
@@ -452,9 +456,13 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
     {
       P.SetY(t);
       if (Points2.IsEmpty())
+      {
         Points2.Append(P);
+      }
       else
+      {
         Points2.SetValue(1, P);
+      }
     }
   }
 
@@ -502,13 +510,19 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
       else
       {
         if (P1.X() < P2.X())
+        {
           Params.Remove(i);
+        }
         else
+        {
           Points2.Remove(i);
+        }
       }
     }
     else
+    {
       i++;
+    }
   }
 
   if (Params.Length() > Points2.Length())
@@ -539,20 +553,30 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(InitEdge1, V1, V2);
       if (V1.IsSame(End1) || V1.IsSame(End2))
+      {
         ToExtendFirstPar = false;
+      }
       if (V2.IsSame(End1) || V2.IsSame(End2))
+      {
         ToExtendLastPar = false;
+      }
     }
     BRepAdaptor_Curve IC1(InitEdge1);
     if (IC1.GetType() == GeomAbs_Circle)
     {
       double Delta = 2 * M_PI - IC1.LastParameter() + IC1.FirstParameter();
       if (ToExtendFirstPar && ToExtendLastPar)
+      {
         init_fpar = AC1.FirstParameter() + Delta / 2;
+      }
       else if (ToExtendFirstPar)
+      {
         init_fpar = AC1.FirstParameter() + Delta;
+      }
       else if (ToExtendLastPar)
+      {
         init_fpar = AC1.FirstParameter();
+      }
       init_lpar = init_fpar + IC1.LastParameter() - IC1.FirstParameter();
     }
   }
@@ -563,19 +587,25 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
     // if they are out of initial range
     int imin = 1;
     for (i = 2; i <= NbPoints; i++)
+    {
       if (Params(i).X() < Params(imin).X())
+      {
         imin = i;
+      }
+    }
 
     NCollection_Sequence<gp_Pnt> ParamsCopy  = Params;
     NCollection_Sequence<gp_Pnt> Points2Copy = Points2;
     Params.Clear();
     Points2.Clear();
     for (i = 1; i <= ParamsCopy.Length(); i++)
+    {
       if (imin == i || (ParamsCopy(i).Y() >= init_fpar && ParamsCopy(i).Y() <= init_lpar))
       {
         Params.Append(ParamsCopy(i));
         Points2.Append(Points2Copy(i));
       }
+    }
 
     /*
     gp_Pnt Pnt1 = Params(imin);
@@ -622,18 +652,26 @@ void BRepFill_TrimEdgeTool::AddOrConfuse(const bool                    Start,
   Geom2dAdaptor_Curve AC1(C1, f, l);
 
   if (Start)
+  {
     PBis = myBis.Value(myBis.FirstParameter());
+  }
   else
+  {
     PBis = myBis.Value(myBis.LastParameter());
+  }
 
   // Test if the end of the bissectrice is in the set of intersection points.
   if (!Params.IsEmpty())
   {
     gp_Pnt2d P;
     if (Start)
+    {
       P = AC1.Value(Params.First().Y());
+    }
     else
+    {
       P = AC1.Value(Params.Last().Y());
+    }
     ToProj = !PBis.IsEqual(P, Tol);
   }
 
@@ -703,9 +741,13 @@ bool BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
   double Dist = RealLast();
   //  Modified by Sergey KHROMOV - Fri Sep 27 11:43:12 2002 End
   if (isPoint1)
+  {
     Dist = P.Distance(myP1);
+  }
   else if (isPoint2)
+  {
     Dist = P.Distance(myP2);
+  }
   else
   {
     Geom2dAPI_ProjectPointOnCurve Projector(P, myC1);
@@ -727,7 +769,9 @@ bool BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
     double   aDistMin = std::min(P.Distance(PF), P.Distance(PL));
 
     if (Dist > aDistMin)
+    {
       Dist = aDistMin;
+    }
     //  Modified by Sergey KHROMOV - Fri Sep 27 11:43:44 2002 End
   }
 

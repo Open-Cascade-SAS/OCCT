@@ -27,7 +27,9 @@ void RWStepBasic_RWDate::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "date"))
+  {
     return;
+  }
 
   // --- own field : yearComponent ---
 

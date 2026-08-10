@@ -144,7 +144,7 @@ public:
   Standard_EXPORT bool Parse(const Message_ProgressRange& theProgress);
 
   //! Return face list for loading triangulation.
-  NCollection_Vector<TopoDS_Face>& FaceList() { return myFaceList; }
+  NCollection_DynamicArray<TopoDS_Face>& FaceList() { return myFaceList; }
 
   //! Set inpit stream.
   void SetStream(std::shared_ptr<std::istream>& theStream) { myStream = theStream; }
@@ -503,7 +503,7 @@ protected:
 
   NCollection_DataMap<TCollection_AsciiString, bool>                            myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_Buffer>> myDecodedBuffers;
-  NCollection_Vector<TopoDS_Face> myFaceList; //!< face list for loading triangulation
+  NCollection_DynamicArray<TopoDS_Face> myFaceList; //!< face list for loading triangulation
 
   TCollection_AsciiString myFilePath;         //!< file path
   TCollection_AsciiString myFolder;           //!< folder

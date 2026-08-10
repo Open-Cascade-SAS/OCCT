@@ -170,11 +170,19 @@ void IGESGeom_ToolRuledSurface::OwnDump(const occ::handle<IGESGeom_RuledSurface>
   S << "\n"
     << "Direction Flag : " << ent->DirectionFlag() << "  i.e.";
   if (ent->DirectionFlag() == 0)
+  {
     S << "Join First to First, Last to Last\n";
+  }
   else
+  {
     S << "Join First to Last, Last to First\n";
+  }
   if (ent->IsDevelopable())
+  {
     S << " .. Is Developable\n";
+  }
   else
+  {
     S << " .. Is possibly not developable ..\n";
+  }
 }

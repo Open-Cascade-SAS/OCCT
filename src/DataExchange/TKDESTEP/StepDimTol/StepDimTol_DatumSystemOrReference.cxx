@@ -27,11 +27,17 @@ StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference() = default
 int StepDimTol_DatumSystemOrReference::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumSystem)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumReference)))
+  {
     return 2;
+  }
   return 0;
 }
 

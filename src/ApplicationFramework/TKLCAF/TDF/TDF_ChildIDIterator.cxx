@@ -77,6 +77,8 @@ void TDF_ChildIDIterator::NextBrother()
   {
     myItr.NextBrother();
     while (myItr.More() && !myItr.Value().FindAttribute(myID, myAtt))
+    {
       myItr.NextBrother();
+    }
   }
 }

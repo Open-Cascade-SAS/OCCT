@@ -33,11 +33,17 @@ const occ::handle<Standard_Transient>& MoniTool_TransientElem::Value() const
 bool MoniTool_TransientElem::Equates(const occ::handle<MoniTool_Element>& other) const
 {
   if (other.IsNull())
+  {
     return false;
+  }
   if (GetHashCode() != other->GetHashCode())
+  {
     return false;
+  }
   if (other->DynamicType() != DynamicType())
+  {
     return false;
+  }
   occ::handle<MoniTool_TransientElem> another = occ::down_cast<MoniTool_TransientElem>(other);
   //  return (theval == another->Value());
   return theval == another->Value();

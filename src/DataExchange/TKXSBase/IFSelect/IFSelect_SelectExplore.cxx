@@ -54,27 +54,37 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
   Interface_EntityIterator input;
   input = InputResult(G);
   for (input.Start(); input.More(); input.Next())
+  {
     i = entrees.Add(input.Value());
+  }
   ilev = entrees.Extent();
 
   // Exploration
   for (i = 1; i <= nb; i++)
   {
     if (i > entrees.Extent())
+    {
       break;
+    }
     if (i > ilev)
     {
       level++;
       if (level > thelevel && thelevel > 0)
+      {
         break;
+      }
       ilev = entrees.Extent();
     }
     occ::handle<Standard_Transient> ent = entrees.FindKey(i);
     if (ent.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator exp;
     if (!Explore(level, ent, G, exp))
+    {
       continue;
+    }
 
     //  We take into account : entity to take directly ?
     //  take back input list (level not reached) or result (level reached)
@@ -86,12 +96,16 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
     else if (level == thelevel)
     {
       for (exp.Start(); exp.More(); exp.Next())
+      {
         j = result.Add(exp.Value());
+      }
     }
     else
     {
       for (exp.Start(); exp.More(); exp.Next())
+      {
         j = entrees.Add(exp.Value());
+      }
     }
   }
 
@@ -99,7 +113,9 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
   Interface_EntityIterator res;
   nb = result.Extent();
   for (j = 1; j <= nb; j++)
+  {
     res.AddItem(result.FindKey(j));
+  }
   return res;
 }
 
@@ -107,7 +123,9 @@ TCollection_AsciiString IFSelect_SelectExplore::Label() const
 {
   TCollection_AsciiString labl;
   if (thelevel == 0)
+  {
     labl.AssignCat("(Recursive)");
+  }
   else if (thelevel > 0)
   {
     char lab[30];

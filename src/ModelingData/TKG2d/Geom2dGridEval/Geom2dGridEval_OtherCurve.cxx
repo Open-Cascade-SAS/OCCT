@@ -23,7 +23,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OtherCurve::EvaluateGrid(
     return NCollection_Array1<gp_Pnt2d>();
   }
 
-  const int                    aNb = theParams.Size();
+  const int                    aNb = theParams.Length();
   NCollection_Array1<gp_Pnt2d> aResult(1, aNb);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -45,7 +45,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OtherCurve::EvaluateG
     return NCollection_Array1<Geom2dGridEval::CurveD1>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, aNb);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -67,7 +67,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OtherCurve::EvaluateG
     return NCollection_Array1<Geom2dGridEval::CurveD2>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, aNb);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -89,7 +89,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OtherCurve::EvaluateG
     return NCollection_Array1<Geom2dGridEval::CurveD3>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, aNb);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -112,7 +112,7 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OtherCurve::EvaluateGridDN(
     return NCollection_Array1<gp_Vec2d>();
   }
 
-  const int                    aNb = theParams.Size();
+  const int                    aNb = theParams.Length();
   NCollection_Array1<gp_Vec2d> aResult(1, aNb);
 
   // Reuse existing grid evaluators for orders 1-3

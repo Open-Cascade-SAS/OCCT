@@ -35,28 +35,37 @@ void IGESGeom_SplineSurface::Init(
 {
   int i, j;
   if (allUBreakPoints->Lower() != 1 || allVBreakPoints->Lower() != 1)
+  {
     throw Standard_DimensionMismatch(
       "IGESGeom_SplineSurface: Lower Indices of BreakPoints in Init");
+  }
 
   int nbUSegs = allUBreakPoints->Length() - 1;
   int nbVSegs = allVBreakPoints->Length() - 1;
 
   int len = allXCoeffs->RowLength();
   if ((len != allYCoeffs->RowLength()) || (len != allZCoeffs->RowLength()))
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Row Length of HArray2s in Init");
+  }
   if (allXCoeffs->LowerCol() != 1 || allXCoeffs->LowerRow() != 1 || allYCoeffs->LowerCol() != 1
       || allYCoeffs->LowerRow() != 1 || allZCoeffs->LowerCol() != 1 || allZCoeffs->LowerRow() != 1)
+  {
     throw Standard_DimensionMismatch(
       "IGESGeom_SplineSurface: Lower Col-Row Indices of HArray2s in Init");
+  }
 
   len = allXCoeffs->ColLength();
   if ((len != allYCoeffs->ColLength()) || (len != allZCoeffs->ColLength()))
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Column Length of HArray2s in Init");
+  }
 
   occ::handle<NCollection_HArray1<double>> temp1;
   occ::handle<NCollection_HArray1<double>> temp2;
   occ::handle<NCollection_HArray1<double>> temp3;
   for (i = 1; i <= nbUSegs; i++)
+  {
     for (j = 1; j <= nbVSegs; j++)
     {
       temp1 = allXCoeffs->Value(i, j);
@@ -64,9 +73,12 @@ void IGESGeom_SplineSurface::Init(
       temp3 = allZCoeffs->Value(i, j);
       if ((temp1.IsNull() || temp1->Length() != 16) || (temp2.IsNull() || temp2->Length() != 16)
           || (temp3.IsNull() || temp3->Length() != 16))
+      {
         throw Standard_DimensionMismatch(
           "IGESGeom_SplineSurface: Lengths of elements of HArray2s in Init");
+      }
     }
+  }
 
   theBoundaryType = aBoundaryType;
   thePatchType    = aPatchType;

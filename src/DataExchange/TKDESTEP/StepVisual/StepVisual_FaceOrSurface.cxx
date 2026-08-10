@@ -27,11 +27,17 @@ StepVisual_FaceOrSurface::StepVisual_FaceOrSurface() = default;
 int StepVisual_FaceOrSurface::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Face)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Surface)))
+  {
     return 2;
+  }
   return 0;
 }
 

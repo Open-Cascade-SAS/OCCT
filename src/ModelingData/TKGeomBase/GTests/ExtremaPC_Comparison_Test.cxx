@@ -422,7 +422,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
     double aNewMinDist = std::sqrt(aNewResult.MinSquareDistance());
     double aOldMinDist = std::sqrt(aOldMinSqDist);
     std::cout << "  [INFO] BSpline_MultiSpan: Old min dist = " << aOldMinDist
-              << ", New min dist = " << aNewMinDist << std::endl;
+              << ", New min dist = " << aNewMinDist << '\n';
   }
 }
 

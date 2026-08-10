@@ -118,39 +118,73 @@ static int DT_ShapeDivide(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape res = tool.Result();
 
   if (tool.Status(ShapeExtend_OK))
+  {
     di << "Status: OK\n";
+  }
   if (tool.Status(ShapeExtend_DONE1))
+  {
     di << "Status: DONE1\n";
+  }
   if (tool.Status(ShapeExtend_DONE2))
+  {
     di << "Status: DONE2\n";
+  }
   if (tool.Status(ShapeExtend_DONE3))
+  {
     di << "Status: DONE3\n";
+  }
   if (tool.Status(ShapeExtend_DONE4))
+  {
     di << "Status: DONE4\n";
+  }
   if (tool.Status(ShapeExtend_DONE5))
+  {
     di << "Status: DONE5\n";
+  }
   if (tool.Status(ShapeExtend_DONE6))
+  {
     di << "Status: DONE6\n";
+  }
   if (tool.Status(ShapeExtend_DONE7))
+  {
     di << "Status: DONE7\n";
+  }
   if (tool.Status(ShapeExtend_DONE8))
+  {
     di << "Status: DONE8\n";
+  }
   if (tool.Status(ShapeExtend_FAIL1))
+  {
     di << "Status: FAIL1\n";
+  }
   if (tool.Status(ShapeExtend_FAIL2))
+  {
     di << "Status: FAIL2\n";
+  }
   if (tool.Status(ShapeExtend_FAIL3))
+  {
     di << "Status: FAIL3\n";
+  }
   if (tool.Status(ShapeExtend_FAIL4))
+  {
     di << "Status: FAIL4\n";
+  }
   if (tool.Status(ShapeExtend_FAIL5))
+  {
     di << "Status: FAIL5\n";
+  }
   if (tool.Status(ShapeExtend_FAIL6))
+  {
     di << "Status: FAIL6\n";
+  }
   if (tool.Status(ShapeExtend_FAIL7))
+  {
     di << "Status: FAIL7\n";
+  }
   if (tool.Status(ShapeExtend_FAIL8))
+  {
     di << "Status: FAIL8\n";
+  }
 
   // fixes
 
@@ -189,59 +223,103 @@ static int DT_ShapeConvertRev(Draw_Interpretor& di, int n, const char** a)
     di << "No modif\n";
   }
   else
+  {
     di << "ConvertToRevolution -> Result : \n";
+  }
 
   ShapeUpgrade_ShapeConvertToBezier tool(revsh);
   tool.SetSurfaceConversion(true);
   if (c2d)
+  {
     tool.Set2dConversion(true);
+  }
   if (c3d)
   {
     tool.Set3dConversion(true);
     if (n > 5)
+    {
       tool.Set3dLineConversion(false);
+    }
     if (n > 6)
+    {
       tool.Set3dCircleConversion(false);
+    }
     if (n > 7)
+    {
       tool.Set3dConicConversion(false);
+    }
   }
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
   if (tool.Status(ShapeExtend_OK))
+  {
     di << "Status: OK\n";
+  }
   if (tool.Status(ShapeExtend_DONE1))
+  {
     di << "Status: DONE1\n";
+  }
   if (tool.Status(ShapeExtend_DONE2))
+  {
     di << "Status: DONE2\n";
+  }
   if (tool.Status(ShapeExtend_DONE3))
+  {
     di << "Status: DONE3\n";
+  }
   if (tool.Status(ShapeExtend_DONE4))
+  {
     di << "Status: DONE4\n";
+  }
   if (tool.Status(ShapeExtend_DONE5))
+  {
     di << "Status: DONE5\n";
+  }
   if (tool.Status(ShapeExtend_DONE6))
+  {
     di << "Status: DONE6\n";
+  }
   if (tool.Status(ShapeExtend_DONE7))
+  {
     di << "Status: DONE7\n";
+  }
   if (tool.Status(ShapeExtend_DONE8))
+  {
     di << "Status: DONE8\n";
+  }
   if (tool.Status(ShapeExtend_FAIL1))
+  {
     di << "Status: FAIL1\n";
+  }
   if (tool.Status(ShapeExtend_FAIL2))
+  {
     di << "Status: FAIL2\n";
+  }
   if (tool.Status(ShapeExtend_FAIL3))
+  {
     di << "Status: FAIL3\n";
+  }
   if (tool.Status(ShapeExtend_FAIL4))
+  {
     di << "Status: FAIL4\n";
+  }
   if (tool.Status(ShapeExtend_FAIL5))
+  {
     di << "Status: FAIL5\n";
+  }
   if (tool.Status(ShapeExtend_FAIL6))
+  {
     di << "Status: FAIL6\n";
+  }
   if (tool.Status(ShapeExtend_FAIL7))
+  {
     di << "Status: FAIL7\n";
+  }
   if (tool.Status(ShapeExtend_FAIL8))
+  {
     di << "Status: FAIL8\n";
+  }
 
   // fixes
 
@@ -446,46 +524,84 @@ static int DT_ShapeConvert(Draw_Interpretor& di, int n, const char** a)
   ShapeUpgrade_ShapeConvertToBezier tool(inputShape);
   tool.SetSurfaceConversion(true);
   if (c2d)
+  {
     tool.Set2dConversion(true);
+  }
   if (c3d)
+  {
     tool.Set3dConversion(true);
+  }
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
   if (tool.Status(ShapeExtend_OK))
+  {
     di << "Status: OK\n";
+  }
   if (tool.Status(ShapeExtend_DONE1))
+  {
     di << "Status: DONE1\n";
+  }
   if (tool.Status(ShapeExtend_DONE2))
+  {
     di << "Status: DONE2\n";
+  }
   if (tool.Status(ShapeExtend_DONE3))
+  {
     di << "Status: DONE3\n";
+  }
   if (tool.Status(ShapeExtend_DONE4))
+  {
     di << "Status: DONE4\n";
+  }
   if (tool.Status(ShapeExtend_DONE5))
+  {
     di << "Status: DONE5\n";
+  }
   if (tool.Status(ShapeExtend_DONE6))
+  {
     di << "Status: DONE6\n";
+  }
   if (tool.Status(ShapeExtend_DONE7))
+  {
     di << "Status: DONE7\n";
+  }
   if (tool.Status(ShapeExtend_DONE8))
+  {
     di << "Status: DONE8\n";
+  }
   if (tool.Status(ShapeExtend_FAIL1))
+  {
     di << "Status: FAIL1\n";
+  }
   if (tool.Status(ShapeExtend_FAIL2))
+  {
     di << "Status: FAIL2\n";
+  }
   if (tool.Status(ShapeExtend_FAIL3))
+  {
     di << "Status: FAIL3\n";
+  }
   if (tool.Status(ShapeExtend_FAIL4))
+  {
     di << "Status: FAIL4\n";
+  }
   if (tool.Status(ShapeExtend_FAIL5))
+  {
     di << "Status: FAIL5\n";
+  }
   if (tool.Status(ShapeExtend_FAIL6))
+  {
     di << "Status: FAIL6\n";
+  }
   if (tool.Status(ShapeExtend_FAIL7))
+  {
     di << "Status: FAIL7\n";
+  }
   if (tool.Status(ShapeExtend_FAIL8))
+  {
     di << "Status: FAIL8\n";
+  }
 
   // fixes
 
@@ -515,7 +631,9 @@ static int DT_SplitAngle(Draw_Interpretor& di, int n, const char** a)
   {
     maxangle = Draw::Atof(a[3]);
     if (maxangle < 1)
+    {
       maxangle = 1;
+    }
   }
 
   ShapeUpgrade_ShapeDivideAngle tool(maxangle * M_PI / 180, inputShape);
@@ -523,39 +641,73 @@ static int DT_SplitAngle(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape res = tool.Result();
 
   if (tool.Status(ShapeExtend_OK))
+  {
     di << "Status: OK\n";
+  }
   if (tool.Status(ShapeExtend_DONE1))
+  {
     di << "Status: DONE1\n";
+  }
   if (tool.Status(ShapeExtend_DONE2))
+  {
     di << "Status: DONE2\n";
+  }
   if (tool.Status(ShapeExtend_DONE3))
+  {
     di << "Status: DONE3\n";
+  }
   if (tool.Status(ShapeExtend_DONE4))
+  {
     di << "Status: DONE4\n";
+  }
   if (tool.Status(ShapeExtend_DONE5))
+  {
     di << "Status: DONE5\n";
+  }
   if (tool.Status(ShapeExtend_DONE6))
+  {
     di << "Status: DONE6\n";
+  }
   if (tool.Status(ShapeExtend_DONE7))
+  {
     di << "Status: DONE7\n";
+  }
   if (tool.Status(ShapeExtend_DONE8))
+  {
     di << "Status: DONE8\n";
+  }
   if (tool.Status(ShapeExtend_FAIL1))
+  {
     di << "Status: FAIL1\n";
+  }
   if (tool.Status(ShapeExtend_FAIL2))
+  {
     di << "Status: FAIL2\n";
+  }
   if (tool.Status(ShapeExtend_FAIL3))
+  {
     di << "Status: FAIL3\n";
+  }
   if (tool.Status(ShapeExtend_FAIL4))
+  {
     di << "Status: FAIL4\n";
+  }
   if (tool.Status(ShapeExtend_FAIL5))
+  {
     di << "Status: FAIL5\n";
+  }
   if (tool.Status(ShapeExtend_FAIL6))
+  {
     di << "Status: FAIL6\n";
+  }
   if (tool.Status(ShapeExtend_FAIL7))
+  {
     di << "Status: FAIL7\n";
+  }
   if (tool.Status(ShapeExtend_FAIL8))
+  {
     di << "Status: FAIL8\n";
+  }
 
   // fixes
 
@@ -722,7 +874,9 @@ static int DT_SplitCurve(Draw_Interpretor& di, int n, const char** a)
   double                  Tol = Draw::Atof(a[2]);
   occ::handle<Geom_Curve> GC  = DrawTrSurf::GetCurve(a[1]);
   if (GC.IsNull())
+  {
     return 1;
+  }
   int                                              Split = Draw::Atoi(a[3]);
   occ::handle<ShapeUpgrade_SplitCurve3dContinuity> theTool =
     new ShapeUpgrade_SplitCurve3dContinuity;
@@ -733,7 +887,9 @@ static int DT_SplitCurve(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<NCollection_HSequence<double>> spval = new NCollection_HSequence<double>;
     for (int i = 1; i <= 5; i++)
+    {
       spval->Append(i);
+    }
     theTool->SetSplitValues(spval);
   }
   theTool->Perform(true);
@@ -771,7 +927,9 @@ static int DT_SplitCurve2d(Draw_Interpretor& di, int n, const char** a)
   double                    Tol = Draw::Atof(a[2]);
   occ::handle<Geom2d_Curve> GC  = DrawTrSurf::GetCurve2d(a[1]);
   if (GC.IsNull())
+  {
     return 1;
+  }
   int                                              Split = Draw::Atoi(a[3]);
   occ::handle<ShapeUpgrade_SplitCurve2dContinuity> theTool =
     new ShapeUpgrade_SplitCurve2dContinuity;
@@ -782,7 +940,9 @@ static int DT_SplitCurve2d(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<NCollection_HSequence<double>> spval = new NCollection_HSequence<double>;
     for (int i = 1; i <= 5; i++)
+    {
       spval->Append(i);
+    }
     theTool->SetSplitValues(spval);
   }
   theTool->Perform(true);
@@ -948,7 +1108,9 @@ static int DT_SplitSurface(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<NCollection_HSequence<double>> spval = new NCollection_HSequence<double>;
     for (int i = 1; i <= 5; i++)
+    {
       spval->Append(i);
+    }
     theTool->SetUSplitValues(spval);
     theTool->SetVSplitValues(spval);
   }
@@ -964,11 +1126,15 @@ static int DT_SplitSurface(Draw_Interpretor& di, int n, const char** a)
   int                                       nbGlV   = GlobalV->Length();
   di << "nb GlobalU ; nb GlobalV=" << nbGlU << " " << nbGlV;
   for (int iu = 1; iu <= nbGlU; iu++)
+  {
     di << " " << GlobalU->Value(iu);
+  }
   //  di <<"\n";
   //  di << "nb GlobalV="<<nbGlV;
   for (int iv = 1; iv <= nbGlV; iv++)
+  {
     di << " " << GlobalV->Value(iv);
+  }
   di << "\n";
 
   di << "appel a Surfaces\n";
@@ -1007,7 +1173,9 @@ static int offset2dcurve(Draw_Interpretor& di, int argc, const char** argv)
   double                    Offset = Draw::Atof(argv[3]);
   occ::handle<Geom2d_Curve> GC     = DrawTrSurf::GetCurve2d(argv[2]);
   if (GC.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom2d_OffsetCurve> offcrv = new Geom2d_OffsetCurve(GC, Offset);
   DrawTrSurf::Set(argv[1], offcrv);
   return 0;
@@ -1028,7 +1196,9 @@ static int offsetcurve(Draw_Interpretor& di, int argc, const char** argv)
   double                  Offset = Draw::Atof(argv[3]);
   occ::handle<Geom_Curve> GC     = DrawTrSurf::GetCurve(argv[2]);
   if (GC.IsNull())
+  {
     return 1;
+  }
   gp_Pnt point;
   DrawTrSurf::GetPoint(argv[4], point);
   gp_Dir                        dir(point.XYZ());
@@ -1061,40 +1231,64 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   double Umin, Umax, Vmin, Vmax;
   S->Bounds(Umin, Umax, Vmin, Vmax);
   if (Uf < Umin && !S->IsUPeriodic())
+  {
     Uf = Umin;
+  }
   else if (Uf > Umin)
   {
     if (Precision::IsInfinite(Umin))
+    {
       Uf -= 100;
+    }
     else
+    {
       Uf = Umin;
+    }
   }
   if (Vf < Vmin && !S->IsVPeriodic())
+  {
     Vf = Vmin;
+  }
   else if (Vf > Vmin)
   {
     if (Precision::IsInfinite(Vmin))
+    {
       Vf -= 100;
+    }
     else
+    {
       Vf = Vmin;
+    }
   }
   if (Ul > Umax && !S->IsUPeriodic())
+  {
     Ul = Umax;
+  }
   else if (Ul < Umax)
   {
     if (Precision::IsInfinite(Umax))
+    {
       Ul += 100;
+    }
     else
+    {
       Ul = Umax;
+    }
   }
   if (Vl > Vmax && !S->IsVPeriodic())
+  {
     Vl = Vmax;
+  }
   else if (Vl < Vmax)
   {
     if (Precision::IsInfinite(Vmax))
+    {
       Vl += 100;
+    }
     else
+    {
       Vl = Vmax;
+    }
   }
 
   NCollection_Sequence<double> uval;
@@ -1105,9 +1299,13 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   for (i = 3; i < argc; i++)
   {
     if (argv[i][0] == 'u')
+    {
       byV = false;
+    }
     else if (argv[i][0] == 'v')
+    {
       byV = true;
+    }
     else
     {
       double                        val  = Draw::Atof(argv[i]);
@@ -1186,7 +1384,9 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<ShapeExtend_CompositeSurface> Grid = new ShapeExtend_CompositeSurface;
   if (!Grid->Init(AS))
+  {
     di << "Grid badly connected!\n";
+  }
 
   ShapeFix_ComposeShell SUCS;
   TopLoc_Location       l;
@@ -1196,39 +1396,73 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   SUCS.Perform();
 
   if (SUCS.Status(ShapeExtend_OK))
+  {
     di << "Status: OK\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE1))
+  {
     di << "Status: DONE1\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE2))
+  {
     di << "Status: DONE2\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE3))
+  {
     di << "Status: DONE3\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE4))
+  {
     di << "Status: DONE4\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE5))
+  {
     di << "Status: DONE5\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE6))
+  {
     di << "Status: DONE6\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE7))
+  {
     di << "Status: DONE7\n";
+  }
   if (SUCS.Status(ShapeExtend_DONE8))
+  {
     di << "Status: DONE8\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL1))
+  {
     di << "Status: FAIL1\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL2))
+  {
     di << "Status: FAIL2\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL3))
+  {
     di << "Status: FAIL3\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL4))
+  {
     di << "Status: FAIL4\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL5))
+  {
     di << "Status: FAIL5\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL6))
+  {
     di << "Status: FAIL6\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL7))
+  {
     di << "Status: FAIL7\n";
+  }
   if (SUCS.Status(ShapeExtend_FAIL8))
+  {
     di << "Status: FAIL8\n";
+  }
 
   TopoDS_Shape sh = SUCS.Result();
   ShapeFix::SameParameter(sh, false);
@@ -1341,7 +1575,9 @@ static int splitbynumber(Draw_Interpretor& di, int argc, const char** argv)
   int aNbParts, aNumber1 = 0, aNumber2 = 0;
   aNbParts = aNumber1 = Draw::Atoi(argv[3]);
   if (argc > 4)
+  {
     aNumber2 = Draw::Atoi(argv[4]);
+  }
 
   if (argc == 4 && aNbParts <= 0)
   {
@@ -1357,9 +1593,13 @@ static int splitbynumber(Draw_Interpretor& di, int argc, const char** argv)
   ShapeUpgrade_ShapeDivideArea tool(inputShape);
   tool.SetSplittingByNumber(true);
   if (argc == 4)
+  {
     tool.NbParts() = aNbParts;
+  }
   else
+  {
     tool.SetNumbersUVSplits(aNumber1, aNumber2);
+  }
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
@@ -1385,7 +1625,9 @@ static int removeinternalwires(Draw_Interpretor& di, int argc, const char** argv
   occ::handle<ShapeUpgrade_RemoveInternalWires> aTool;
   NCollection_Sequence<TopoDS_Shape>            aSeqShapes;
   if (inputShape.ShapeType() < TopAbs_WIRE)
+  {
     aTool = new ShapeUpgrade_RemoveInternalWires(inputShape);
+  }
   else
   {
     di << "Invalid type of first shape: should be FACE,SHELL,SOLID or COMPOUND\n";
@@ -1405,23 +1647,35 @@ static int removeinternalwires(Draw_Interpretor& di, int argc, const char** argv
       if (isShape)
       {
         if (aShape.ShapeType() == TopAbs_FACE || aShape.ShapeType() == TopAbs_WIRE)
+        {
           aSeqShapes.Append(aShape);
+        }
       }
     }
     if (!isShape)
+    {
       aModeRemoveFaces = (Draw::Atoi(argv[k]) == 1);
+    }
   }
 
   aTool->MinArea()        = aMinArea;
   aTool->RemoveFaceMode() = aModeRemoveFaces;
   if (aSeqShapes.Length())
+  {
     aTool->Perform(aSeqShapes);
+  }
   else
+  {
     aTool->Perform();
+  }
   if (aTool->Status(ShapeExtend_FAIL1))
+  {
     di << "Initial shape has invalid type\n";
+  }
   else if (aTool->Status(ShapeExtend_FAIL2))
+  {
     di << "Specified sub-shape is not belonged to whole shape\n";
+  }
   if (aTool->Status(ShapeExtend_DONE1))
   {
     const NCollection_Sequence<TopoDS_Shape>& aRemovedWires = aTool->RemovedWires();
@@ -1449,10 +1703,14 @@ static int removeloc(Draw_Interpretor& di, int argc, const char** argv)
 
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
   ShapeUpgrade_RemoveLocations aRemLoc;
   if (argc > 3)
+  {
     aRemLoc.SetRemoveLevel((TopAbs_ShapeEnum)Draw::Atoi(argv[3]));
+  }
   aRemLoc.Remove(aShape);
   TopoDS_Shape aNewShape = aRemLoc.GetResult();
 
@@ -1490,7 +1748,9 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   // default values
   bool                                                   anUFaces        = true;
@@ -1504,6 +1764,7 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfShapes;
 
   if (n > 3)
+  {
     for (int i = 3; i < n; i++)
     {
       aKeepShape = DBRep::Get(a[i]);
@@ -1514,23 +1775,37 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
       else
       {
         if (!strcmp(a[i], "-f"))
+        {
           anUFaces = false;
+        }
         else if (!strcmp(a[i], "-e"))
+        {
           anUEdges = false;
+        }
         else if (!strcmp(a[i], "-nosafe"))
+        {
           isSafeInputMode = false;
+        }
         else if (!strcmp(a[i], "+b"))
+        {
           anConBS = true;
+        }
         else if (!strcmp(a[i], "+i"))
+        {
           isAllowInternal = true;
+        }
         else if (!strcmp(a[i], "-t") || !strcmp(a[i], "-a"))
         {
           if (++i < n)
           {
             if (a[i - 1][1] == 't')
+            {
               aLinTol = Draw::Atof(a[i]);
+            }
             else
+            {
               aAngTol = Draw::Atof(a[i]) * (M_PI / 180.0);
+            }
           }
           else
           {
@@ -1540,6 +1815,7 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
         }
       }
     }
+  }
 
   Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
   Unifier().KeepShapes(aMapOfShapes);
@@ -1551,7 +1827,9 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape Result = Unifier().Shape();
 
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(Unifier().History());
+  }
 
   DBRep::Set(a[1], Result);
   return 0;
@@ -1566,7 +1844,9 @@ static int copytranslate(Draw_Interpretor& di, int argc, const char** argv)
   }
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
   double  aDx = Draw::Atof(argv[3]);
   double  aDy = Draw::Atof(argv[4]);
   double  aDz = Draw::Atof(argv[5]);
@@ -1658,23 +1938,41 @@ static int reshape(Draw_Interpretor& /*theDI*/, int theArgc, const char** theArg
       TCollection_AsciiString aLevelStr(aLevelCStr);
       aLevelStr.LowerCase();
       if (aLevelStr == "compound" || aLevelStr == "cd")
+      {
         aShapeLevel = TopAbs_COMPOUND;
+      }
       else if (aLevelStr == "compsolid" || aLevelStr == "c")
+      {
         aShapeLevel = TopAbs_COMPSOLID;
+      }
       else if (aLevelStr == "solid" || aLevelStr == "so")
+      {
         aShapeLevel = TopAbs_SOLID;
+      }
       else if (aLevelStr == "shell" || aLevelStr == "sh")
+      {
         aShapeLevel = TopAbs_SHELL;
+      }
       else if (aLevelStr == "face" || aLevelStr == "f")
+      {
         aShapeLevel = TopAbs_FACE;
+      }
       else if (aLevelStr == "wire" || aLevelStr == "w")
+      {
         aShapeLevel = TopAbs_WIRE;
+      }
       else if (aLevelStr == "edge" || aLevelStr == "e")
+      {
         aShapeLevel = TopAbs_EDGE;
+      }
       else if (aLevelStr == "vertex" || aLevelStr == "v")
+      {
         aShapeLevel = TopAbs_VERTEX;
+      }
       else if (aLevelStr == "shape" || aLevelStr == "s")
+      {
         aShapeLevel = TopAbs_SHAPE;
+      }
       else
       {
         Message::SendFail() << "Error: unknown shape type '" << theArgv[i] << "'";

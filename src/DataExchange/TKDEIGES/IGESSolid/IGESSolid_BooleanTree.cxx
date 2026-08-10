@@ -30,7 +30,9 @@ void IGESSolid_BooleanTree::Init(
 {
   if (operands->Lower() != 1 || operations->Lower() != 1
       || operands->Length() != operations->Length())
+  {
     throw Standard_DimensionError("IGESSolid_BooleanTree : Init");
+  }
 
   theOperations = operations;
   theOperands   = operands;
@@ -55,7 +57,11 @@ occ::handle<IGESData_IGESEntity> IGESSolid_BooleanTree::Operand(const int Index)
 int IGESSolid_BooleanTree::Operation(const int Index) const
 {
   if (theOperands->Value(Index).IsNull())
+  {
     return theOperations->Value(Index);
+  }
   else
+  {
     return 0; // It is not an operation. (operations can be : 1-2-3)
+  }
 }

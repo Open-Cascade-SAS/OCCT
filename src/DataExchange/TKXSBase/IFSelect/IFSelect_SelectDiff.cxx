@@ -27,7 +27,9 @@ Interface_EntityIterator IFSelect_SelectDiff::RootResult(const Interface_Graph& 
   IFGraph_Compare GC(G);
   GC.GetFromIter(MainInput()->RootResult(G), true); // first
   if (HasSecondInput())
+  {
     GC.GetFromIter(SecondInput()->RootResult(G), false); // second
+  }
   return GC.FirstOnly();
 }
 

@@ -51,7 +51,9 @@ void StepVisual_MarkerMember::SetEnumText(const int /*val*/, const char* const t
 {
   int vl = tool.Value(text);
   if (vl >= 0)
+  {
     SetInt(vl);
+  }
 }
 
 void StepVisual_MarkerMember::SetValue(const StepVisual_MarkerType val)

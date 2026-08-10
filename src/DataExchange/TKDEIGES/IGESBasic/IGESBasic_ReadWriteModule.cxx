@@ -132,7 +132,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolAssocGroupType tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -140,7 +142,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFile tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -148,7 +152,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -156,7 +162,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -164,7 +172,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -172,7 +182,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefName tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -180,7 +192,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -188,7 +202,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroup tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -196,7 +212,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -204,7 +222,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolHierarchy tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -212,7 +232,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolName tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -220,7 +242,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroup tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -228,7 +252,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -236,7 +262,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingleParent tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -244,7 +272,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -252,7 +282,9 @@ void IGESBasic_ReadWriteModule::ReadOwnParams(const int                         
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSubfigureDef tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -271,7 +303,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolAssocGroupType tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -279,7 +313,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFile tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -287,7 +323,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -295,7 +333,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -303,7 +343,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -311,7 +353,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefName tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -319,7 +363,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -327,7 +373,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroup tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -335,7 +383,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -343,7 +393,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolHierarchy tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -351,7 +403,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolName tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -359,7 +413,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroup tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -367,7 +423,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -375,7 +433,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingleParent tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -383,7 +443,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -391,7 +453,9 @@ void IGESBasic_ReadWriteModule::WriteOwnParams(const int                        
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSubfigureDef tool;
       tool.WriteOwnParams(anent, IW);
     }

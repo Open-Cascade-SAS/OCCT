@@ -88,7 +88,9 @@ static void VmsExtract(const TCollection_AsciiString& what,
       buffer.Remove(1, node.Length());
     }
     else
+    {
       node = "";
+    }
 
     username = buffer.Token("\" ");
     buffer.Remove(1, username.Length() + 2); // Removes <<"username ' ' or '"' >>
@@ -101,7 +103,9 @@ static void VmsExtract(const TCollection_AsciiString& what,
 
     // If we found a node then we must find "::"
     if (buffer.Search("::") != -1)
+    {
       buffer.Remove(1, 2); // Removes <<::>>
+    }
   }
   else // No name or password
     if (buffer.Search("::") != -1)
@@ -116,7 +120,9 @@ static void VmsExtract(const TCollection_AsciiString& what,
     buffer.Remove(1, disk.Length() + 1); // Removes <<disk:>>
   }
   else
+  {
     disk = "";
+  }
 
   // Analyse trek
 
@@ -125,9 +131,13 @@ static void VmsExtract(const TCollection_AsciiString& what,
     trek = buffer.Token("[]");
 
     if (trek.Value(1) == '.')
+    {
       trek.Remove(1, 1); // Removes first '.'
+    }
     else
+    {
       trek.Insert(1, '|'); // Add root
+    }
 
     trek.ChangeAll('.', '|'); // Translates to portable syntax
     trek.ChangeAll('-', '^');
@@ -137,13 +147,17 @@ static void VmsExtract(const TCollection_AsciiString& what,
     {
       trek.Remove(pos, 6); // on VMS [000000] is the root
       if (trek.Search("||") != -1)
+      {
         trek.Remove(1, 1); // When [000000.xxx] -> ||xxx
+      }
     }
 
     name = buffer.Token("]", 2);
   }
   else
+  {
     name = buffer;
+  }
 
   if (name.Search(".") != -1)
   {
@@ -152,7 +166,9 @@ static void VmsExtract(const TCollection_AsciiString& what,
     name.Remove(name.Search("."), ext.Length());
   }
   else
+  {
     ext = "";
+  }
 }
 
 //=================================================================================================
@@ -199,7 +215,9 @@ static void UnixExtract(const TCollection_AsciiString& what,
     buffer.Remove(1, node.Length() + 1); // Removes << node: >>
   }
   else
+  {
     node = "";
+  }
 
   username = "";
   password = "";
@@ -215,7 +233,9 @@ static void UnixExtract(const TCollection_AsciiString& what,
     p    = (Standard_PCharacter)trek.ToCString();
     name = &p[pos];
     if (name.Length())
+    {
       trek.Remove(pos + 1, name.Length());
+    }
   }
   else
   { // No '|' means no trek but a name
@@ -232,8 +252,10 @@ static void UnixExtract(const TCollection_AsciiString& what,
   }
 
   pos = name.SearchFromEnd("."); // LD : debug
-  if (pos != -1)                 // There is an extension to extract
+  if (pos != -1)
+  { // There is an extension to extract
     ext = name.Split(pos - 1);
+  }
 
   // if (name.Search(".") != -1){ // There is an extension to extract
   //   if ( name.Value(1) == '.' ) {
@@ -290,7 +312,9 @@ static void DosExtract(const TCollection_AsciiString& what,
     p    = (Standard_PCharacter)trek.ToCString();
     name = &p[pos];
     if (name.Length())
+    {
       trek.Remove(pos + 1, name.Length());
+    }
   }
   else
   { // No '|' means no trek but a name
@@ -299,8 +323,10 @@ static void DosExtract(const TCollection_AsciiString& what,
   }
 
   pos = name.SearchFromEnd(".");
-  if (pos != -1) // There is an extension to extract
+  if (pos != -1)
+  { // There is an extension to extract
     ext = name.Split(pos - 1);
+  }
 }
 
 //=================================================================================================
@@ -448,7 +474,9 @@ void OSD_Path::UpTrek()
   int length = TrekLength();
 
   if (length == 0)
+  {
     return;
+  }
 
   int                     awhere, aHowmany;
   TCollection_AsciiString tok;
@@ -460,7 +488,9 @@ void OSD_Path::UpTrek()
 
   awhere = myTrek.Search("||"); // Searches leaving "||"
   if (awhere != -1)
+  {
     myTrek.Remove(awhere);
+  }
 }
 
 void OSD_Path::DownTrek(const TCollection_AsciiString& aName)
@@ -468,15 +498,19 @@ void OSD_Path::DownTrek(const TCollection_AsciiString& aName)
   myTrek += aName;
   // Pb signale par GG : pour ne pas avoir "||" ;
   if (aName.ToCString()[aName.Length() - 1] != '|')
+  {
     myTrek += "|";
+  }
 }
 
 int OSD_Path::TrekLength() const
 {
   int cpt = 0;
 
-  while (myTrek.Token("|", cpt + 1) != "") // Counts token separated by '|'
+  while (myTrek.Token("|", cpt + 1) != "")
+  { // Counts token separated by '|'
     cpt++;
+  }
 
   return (cpt);
 }
@@ -486,7 +520,9 @@ void OSD_Path::RemoveATrek(const int thewhere)
   int length = TrekLength();
 
   if (length <= 0 || thewhere > length)
+  {
     throw Standard_NumericError("OSD_Path::RemoveATrek : where has an invalid value");
+  }
 
   int                     posit, aHowmany;
   TCollection_AsciiString tok;
@@ -498,7 +534,9 @@ void OSD_Path::RemoveATrek(const int thewhere)
 
   posit = myTrek.Search("||"); // Searches leaving "||"
   if (posit != -1)
+  {
     myTrek.Remove(posit);
+  }
 }
 
 void OSD_Path::RemoveATrek(const TCollection_AsciiString& aName)
@@ -506,7 +544,9 @@ void OSD_Path::RemoveATrek(const TCollection_AsciiString& aName)
   int length = TrekLength();
 
   if (length == 0)
+  {
     return;
+  }
 
   int awhere;
 
@@ -517,7 +557,9 @@ void OSD_Path::RemoveATrek(const TCollection_AsciiString& aName)
 
     awhere = myTrek.Search("||"); // Searches leaving "||"
     if (awhere != -1)
+    {
       myTrek.Remove(awhere);
+    }
   }
 }
 
@@ -526,7 +568,9 @@ TCollection_AsciiString OSD_Path::TrekValue(const int thewhere) const
   TCollection_AsciiString result = myTrek.Token("|", thewhere);
 
   if (result == "")
+  {
     throw Standard_NumericError("OSD_Path::TrekValue : where is invalid");
+  }
 
   return (result);
 }
@@ -536,7 +580,9 @@ void OSD_Path::InsertATrek(const TCollection_AsciiString& aName, const int thewh
   int length = TrekLength();
 
   if (thewhere <= 0 || thewhere > length)
+  {
     throw Standard_NumericError("OSD_Path::InsertATrek : where has an invalid value");
+  }
 
   TCollection_AsciiString tok    = myTrek.Token("|", thewhere);
   int                     wwhere = myTrek.Search(tok);
@@ -562,15 +608,25 @@ static void P2VMS(TCollection_AsciiString& Way)
   int length = Way.Length();
 
   if (length == 0)
+  {
     return;
+  }
 
-  if (Way.Value(1) == '|') // If begin with '|' remove '|'
+  if (Way.Value(1) == '|')
+  { // If begin with '|' remove '|'
     if (Way.Value(1) != '\0')
+    {
       Way.Remove(1, 1);
+    }
     else
+    {
       Way = "000000"; // Si uniquement la racine -> [000000]
+    }
+  }
   else if (Way.Length() != 0)
+  {
     Way.Insert(1, '|'); // Else insert '|' at beginning if not empty;
+  }
 
   Way.ChangeAll('|', '.');
   Way.ChangeAll('^', '-');
@@ -584,7 +640,8 @@ static void P2MAC(TCollection_AsciiString& Way)
   Way.ChangeAll('|', ':');
 
   l = (int)Way.Length();
-  for (i = 1; i <= l; i++) // Replace '^' by "::"
+  for (i = 1; i <= l; i++)
+  { // Replace '^' by "::"
     if (Way.Value(i) == '^')
     {
       Way.SetValue(i, ':');
@@ -592,6 +649,7 @@ static void P2MAC(TCollection_AsciiString& Way)
       i++;
       l++;
     }
+  }
 }
 
 // Convert a Trek to UNIX syntax
@@ -602,7 +660,9 @@ static void P2UNIX(TCollection_AsciiString& Way)
   int length = Way.Length();
 
   if (length == 0)
+  {
     return;
+  }
 
   // if (Way.Value(length) == '|') // If Finishes with "|" removes it
   // Way.Trunc(length-1);
@@ -610,7 +670,8 @@ static void P2UNIX(TCollection_AsciiString& Way)
   Way.ChangeAll('|', '/');
 
   l = (int)Way.Length();
-  for (i = 1; i <= l; i++) // Replace '^' by "../"
+  for (i = 1; i <= l; i++)
+  { // Replace '^' by "../"
     if (Way.Value(i) == '^')
     {
       Way.SetValue(i, '.');
@@ -619,6 +680,7 @@ static void P2UNIX(TCollection_AsciiString& Way)
       i += 1;
       l += 1;
     }
+  }
 }
 
 // Convert a Trek to DOS like syntax
@@ -629,15 +691,20 @@ static void P2DOS(TCollection_AsciiString& Way)
   int len = Way.Length();
 
   if (len == 0)
+  {
     return;
+  }
 
-  if (Way.Value(len) == '|') // If Finishes with "|" removes it
+  if (Way.Value(len) == '|')
+  { // If Finishes with "|" removes it
     Way.Trunc(len - 1);
+  }
 
   Way.ChangeAll('|', '\\');
 
   l = (int)Way.Length();
-  for (i = 1; i <= l; i++) // Replace '^' by ".."
+  for (i = 1; i <= l; i++)
+  { // Replace '^' by ".."
     if (Way.Value(i) == '^')
     {
       Way.SetValue(i, '.');
@@ -645,6 +712,7 @@ static void P2DOS(TCollection_AsciiString& Way)
       i++;
       l++;
     }
+  }
 }
 
 // Convert a path to system dependent syntax
@@ -676,7 +744,9 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
       P2VMS(Way); // Convert path
 
       if (myNode.Length() != 0)
+      {
         FullName += myNode; // Append Node
+      }
 
       if (myUserName.Length() != 0)
       { // Append User name
@@ -700,7 +770,9 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
       }
 
       if (pNode.Length() != 0)
+      {
         FullName += "::";
+      }
 
       if (myDisk.Length() != 0)
       { // Append Disk
@@ -708,8 +780,10 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
         FullName += ":";
       }
 
-      if (Way.Length() != 0) // Append VMS path
+      if (Way.Length() != 0)
+      { // Append VMS path
         FullName = FullName + "[" + Way + "]" + myName + myExtension;
+      }
 
       //   FullName.UpperCase();
       break;
@@ -721,6 +795,7 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
 
       P2DOS(Way);
       if (length != 1)
+      {
 
         if (myDisk.Length() != 0)
         {
@@ -732,7 +807,9 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
           {
             FullName += myDisk;
             if (myDisk.Value(length) != ':')
+            {
               FullName += ":";
+            }
           }
           else // This is an assigned Disk
           {
@@ -741,12 +818,17 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
             VMSDisk2Other(pDisk);
             FullName += pDisk;
             if (Way.Value(1) != '\\')
+            {
               FullName += "\\";
+            }
           }
         }
+      }
 
       if (Way.Length() != 0)
+      {
         FullName = FullName + Way + "\\";
+      }
 
       FullName += myName;
       FullName += myExtension;
@@ -776,7 +858,9 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
         FullName += myUserName; // appends user name
 
         if (myPassword.Length() != 0)
+        {
           FullName = FullName + "\"" + myPassword + "\""; // a password if not empty
+        }
 
         FullName += "@"; // and character '@'
       }
@@ -1540,12 +1624,18 @@ static int RemoveExtraSeparator(TCollection_AsciiString& aString)
     char c = aString.Value(j);
     aString.SetValue(i, c);
     if (c == '/')
+    {
       while (j < len && aString.Value(j + 1) == '/')
+      {
         j++;
+      }
+    }
   }
   len = i - 1;
   if (aString.Value(len) == '/')
+  {
     len--;
+  }
   aString.Trunc(len);
   return len;
 }
@@ -1566,16 +1656,22 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
   { // Cas WNT
     Wnt = true;
     if (FilePath.Search(":") != 2 || UpperCase(aDirPath.Value(1)) != UpperCase(FilePath.Value(1)))
+    {
       return EmptyString;
+    }
 
     FilePath.ChangeAll('\\', '/');
     if (FilePath.Search("/") != 3)
+    {
       return EmptyString;
+    }
   }
   else
   { // Cas Unix
     if (aDirPath.Value(1) != '/' || FilePath.Value(1) != '/')
+    {
       return EmptyString;
+    }
   }
 
   // Eliminer les separateurs redondants
@@ -1585,7 +1681,9 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
   if (!Wnt)
   {
     if (len < 2)
+    {
       return EmptyString;
+    }
     FilePath = FilePath.SubString(2, len);
   }
   TCollection_AsciiString DirToken, FileToken;
@@ -1595,7 +1693,9 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
   {
     DirToken = aDirPath.Token("/\\", n);
     if (DirToken.IsEmpty())
+    {
       return FilePath;
+    }
 
     if (!Sibling)
     {
@@ -1604,7 +1704,9 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
       if (i > 0)
       {
         if (i == len)
+        {
           return EmptyString;
+        }
 
         FileToken = FilePath.SubString(1, i - 1);
         if (Wnt)
@@ -1619,10 +1721,13 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
         }
       }
       else if (DirToken == FilePath)
+      {
         return EmptyString;
-
+      }
       else
+      {
         Sibling = true;
+      }
     }
     FilePath.Insert(1, "../");
   }
@@ -1635,15 +1740,21 @@ TCollection_AsciiString OSD_Path::AbsolutePath(const TCollection_AsciiString& aD
 {
   TCollection_AsciiString EmptyString = "";
   if (aRelFilePath.Search("/") == 1 || aRelFilePath.Search(":") == 2)
+  {
     return aRelFilePath;
+  }
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath;
   int                     i, len;
 
   if (DirPath.Search("/") != 1 && DirPath.Search(":") != 2)
+  {
     return EmptyString;
+  }
 
   if (DirPath.Search(":") == 2)
+  {
     DirPath.ChangeAll('\\', '/');
+  }
   RelFilePath.ChangeAll('\\', '/');
   RemoveExtraSeparator(DirPath);
   len = RemoveExtraSeparator(RelFilePath);
@@ -1651,14 +1762,20 @@ TCollection_AsciiString OSD_Path::AbsolutePath(const TCollection_AsciiString& aD
   while (RelFilePath.Search("../") == 1)
   {
     if (len == 3)
+    {
       return EmptyString;
+    }
     RelFilePath = RelFilePath.SubString(4, len);
     len -= 3;
     if (DirPath.IsEmpty())
+    {
       return EmptyString;
+    }
     i = DirPath.SearchFromEnd("/");
     if (i < 0)
+    {
       return EmptyString;
+    }
     DirPath.Trunc(i - 1);
   }
   DirPath += '/';

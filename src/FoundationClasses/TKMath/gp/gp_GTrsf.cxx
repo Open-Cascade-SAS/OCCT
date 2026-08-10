@@ -157,12 +157,18 @@ void gp_GTrsf::SetForm()
   double s = M.Determinant();
 
   if (std::abs(s) < gp::Resolution())
+  {
     throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
+  }
 
   if (s > 0)
+  {
     s = std::pow(s, 1. / 3.);
+  }
   else
+  {
     s = -std::pow(-s, 1. / 3.);
+  }
   M.Divide(s);
 
   // check if the matrix is an uniform matrix
@@ -174,15 +180,21 @@ void gp_GTrsf::SetForm()
   anIdentity.SetIdentity();
   TM.Subtract(anIdentity);
   if (shape == gp_Other)
+  {
     shape = gp_CompoundTrsf;
+  }
 
   for (int i = 1; i <= 3; i++)
+  {
     for (int j = 1; j <= 3; j++)
+    {
       if (std::abs(TM.Value(i, j)) > tol)
       {
         shape = gp_Other;
         return;
       }
+    }
+  }
 }
 
 //=================================================================================================

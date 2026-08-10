@@ -35,7 +35,9 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 7, ach, "rational_b_spline_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -67,7 +69,9 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent3))
+      {
         aControlPointsList->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -83,7 +87,9 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  }
 
   // --- inherited field : closedCurve ---
 
@@ -110,7 +116,9 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat7 =` not needed
       if (data->ReadReal(nsub7, i7, "weights_data", ach, aWeightsDataItem))
+      {
         aWeightsData->SetValue(i7, aWeightsDataItem);
+      }
     }
   }
 

@@ -348,7 +348,8 @@ inline TrigResult Trigonometric(double theA,
       return aResult;
     }
 
-    aNZer = aPoly.NbRoots;
+    // NbRoots is bounded by the fixed storage capacity; clamp defensively.
+    aNZer = std::min<size_t>(aPoly.NbRoots, aZer.size());
     for (size_t i = 0; i < aNZer; ++i)
     {
       aZer[i] = aPoly.Roots[i];

@@ -80,7 +80,9 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
   int                 aFirstInd, aLastInd;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString(
@@ -90,7 +92,9 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
   }
   XmlObjMgt_DOMString aLastIndex = anElement.getAttribute(::LastIndexString());
   if (aLastIndex == nullptr)
+  {
     aLastInd = 0;
+  }
   else if (!aLastIndex.GetInteger(aLastInd))
   {
     TCollection_ExtendedString aMessageString(
@@ -141,9 +145,13 @@ void XmlMXCAFDoc_DimTolDriver::Paste(const occ::handle<TDF_Attribute>& theSource
 
   XmlObjMgt_DOMString aNameString, aDescrString;
   if (!anAtt->GetName().IsNull())
+  {
     aNameString = anAtt->GetName()->String().ToCString();
+  }
   if (!anAtt->GetDescription().IsNull())
+  {
     aDescrString = anAtt->GetDescription()->String().ToCString();
+  }
 
   XmlObjMgt::SetStringValue(theTarget, anAtt->GetKind());
   theTarget.Element().setAttribute(::NameIndexString(), aNameString);
@@ -167,7 +175,9 @@ void XmlMXCAFDoc_DimTolDriver::Paste(const occ::handle<TDF_Attribute>& theSource
       Sprintf(aValueChar, "%.15g", aHArr->Value(i));
       aValueStr += aValueChar;
       if (i < aLastInd)
+      {
         aValueStr += ' ';
+      }
     }
     theTarget.Element().setAttribute(::ValueIndexString(), aValueStr.ToCString());
   }

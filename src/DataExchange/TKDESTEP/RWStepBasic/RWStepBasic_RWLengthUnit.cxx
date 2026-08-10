@@ -29,7 +29,9 @@ void RWStepBasic_RWLengthUnit::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "length_unit"))
+  {
     return;
+  }
 
   // --- inherited field : dimensions ---
 

@@ -20,7 +20,7 @@
 #include <Message_Messenger.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_MetricType.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <OSD_MemInfo.hxx>
 
 #include <TCollection_AsciiString.hxx>

@@ -46,6 +46,8 @@ StepAP214_AutoDesignPresentedItemSelect StepAP214_AutoDesignPresentedItem::Items
 int StepAP214_AutoDesignPresentedItem::NbItems() const
 {
   if (items.IsNull())
+  {
     return 0;
+  }
   return items->Length();
 }

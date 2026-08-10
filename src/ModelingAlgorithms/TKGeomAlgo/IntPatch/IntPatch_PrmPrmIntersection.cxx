@@ -74,7 +74,9 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
                                     occ::handle<IntPatch_WLine>& theWLline)
 {
   if (theSLin.Length() == 0)
+  {
     return;
+  }
 
   double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
 
@@ -94,7 +96,9 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
       const occ::handle<IntPatch_Line>& aSLine = theSLin.Value(iL);
       IntPatch_IType                    aType  = aSLine->ArcType();
       if (aType != IntPatch_Walking)
+      {
         continue;
+      }
       const occ::handle<IntPatch_WLine> aWLine = occ::down_cast<IntPatch_WLine>(aSLine);
       int                               tnbV   = aWLine->NbVertex();
       int                               tiV;
@@ -163,7 +167,9 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
         {
           removeNext = true;
           for (iPo = (ciV + 1); iPo <= cnbV; iPo++)
+          {
             VPold.SetValue(iPo, VPold.Value(iPo) - 1);
+          }
         }
       }
       else if (ciV == cnbV)
@@ -191,16 +197,24 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
           for (iPo = (ciV + 1); iPo <= cnbV; iPo++)
           {
             if (dParMi > 10)
+            {
               VPold.SetValue(iPo, VPold.Value(iPo) - 2);
+            }
             else
+            {
               VPold.SetValue(iPo, VPold.Value(iPo) - 1);
+            }
           }
         }
         else
         {
           if (dParMi > 10)
+          {
             for (iPo = (ciV + 1); iPo <= cnbV; iPo++)
+            {
               VPold.SetValue(iPo, VPold.Value(iPo) - 1);
+            }
+          }
         }
       }
 
@@ -215,11 +229,17 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
           newL2s->Add(newPnt);
         }
         else if (removeNext && iP == (pI + 1))
+        {
           continue;
+        }
         else if (removePrev && iP == (pI - 1))
+        {
           continue;
+        }
         else
+        {
           newL2s->Add(theWLline->Point(iP));
+        }
       }
 
       IntPatch_Point newVtx;
@@ -235,7 +255,9 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
       for (iV = 1; iV <= cnbV; iV++)
       {
         if (iV == ciV)
+        {
           NWLine->AddVertex(newVtx);
+        }
         else
         {
           IntPatch_Point theVtx = theWLline->Vertex(iV);
@@ -389,7 +411,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     int* TabL = new int[nbLigSec + 1];
     int  ls;
     for (ls = 1; ls <= nbLigSec; ls++)
+    {
       TabL[ls] = ls;
+    }
 
     bool triok;
     do
@@ -417,7 +441,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       int* TabPtDep = new int[nbp + 1];
       int  ilig;
       for (ilig = 1; ilig <= nbp; ilig++)
+      {
         TabPtDep[ilig] = 0;
+      }
 
       double UminLig1, VminLig1, UmaxLig1, VmaxLig1;
       double UminLig2, VminLig2, UmaxLig2, VmaxLig2;
@@ -440,22 +466,38 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         SectionPointToParameters(LineSec.GetPoint(ilig), Poly1, Poly2, U1, V1, U2, V2);
 
         if (U1 > UmaxLig1)
+        {
           UmaxLig1 = U1;
+        }
         if (V1 > VmaxLig1)
+        {
           VmaxLig1 = V1;
+        }
         if (U2 > UmaxLig2)
+        {
           UmaxLig2 = U2;
+        }
         if (V2 > VmaxLig2)
+        {
           VmaxLig2 = V2;
+        }
 
         if (U1 < UminLig1)
+        {
           UminLig1 = U1;
+        }
         if (V1 < VminLig1)
+        {
           VminLig1 = V1;
+        }
         if (U2 < UminLig2)
+        {
           UminLig2 = U2;
+        }
         if (V2 < VminLig2)
+        {
           VminLig2 = V2;
+        }
       }
 
       int  nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
@@ -494,7 +536,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           }
 
           if (nbp < 3)
+          {
             NombreDePointsDeDepartDuCheminement = 3;
+          }
 
           IndicePointdeDepart1 = nbps2;
         }
@@ -514,9 +558,13 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         else if (NombreDePointsDeDepartDuCheminement == 3)
         {
           if (IndicePointdeDepart1 == nbp)
+          {
             nbps2 = (IndicePointdeDepart1 + IndicePointdeDepart2) / 2;
+          }
           else
+          {
             nbps2 = nbp;
+          }
         }
         else
         {
@@ -634,10 +682,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     // the method PutVertexOnLine can reduce the number of points in <wline>
                     IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                     if (wline->NbPnts() < 2)
+                    {
                       continue;
+                    }
                     IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                     if (wline->NbPnts() < 2)
+                    {
                       continue;
+                    }
 
                     if (wline->NbVertex() == 0)
                     {
@@ -691,22 +743,38 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       SectionPointToParameters(TangentZone.GetPoint(pz), Poly1, Poly2, U1, V1, U2, V2);
 
       if (U1 > UmaxLig1)
+      {
         UmaxLig1 = U1;
+      }
       if (V1 > VmaxLig1)
+      {
         VmaxLig1 = V1;
+      }
       if (U2 > UmaxLig2)
+      {
         UmaxLig2 = U2;
+      }
       if (V2 > VmaxLig2)
+      {
         VmaxLig2 = V2;
+      }
 
       if (U1 < UminLig1)
+      {
         UminLig1 = U1;
+      }
       if (V1 < VminLig1)
+      {
         VminLig1 = V1;
+      }
       if (U2 < UminLig2)
+      {
         UminLig2 = U2;
+      }
       if (V2 < VminLig2)
+      {
         VminLig2 = V2;
+      }
     }
   }
 
@@ -821,10 +889,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 // the method PutVertexOnLine can reduce the number of points in <wline>
                 IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                 if (wline->NbPnts() < 2)
+                {
                   continue;
+                }
                 IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                 if (wline->NbPnts() < 2)
+                {
                   continue;
+                }
 
                 if (wline->NbVertex() == 0)
                 {
@@ -933,7 +1005,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           }
 
           if (nbp < 3)
+          {
             NombreDePointsDeDepartDuCheminement = 3;
+          }
 
           IndicePointdeDepart1 = nbps2;
         }
@@ -953,9 +1027,13 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         else
         {
           if (IndicePointdeDepart1 == nbp)
+          {
             nbps2 = (IndicePointdeDepart1 + IndicePointdeDepart2) / 2;
+          }
           else
+          {
             nbps2 = nbp;
+          }
         }
 
         SectionPointToParameters(LineSec.GetPoint(nbps2), Poly1, Poly1, U1, V1, U2, V2);
@@ -1007,11 +1085,15 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   Bv1 += 1.0e-7;
 
                   if ((pu1 >= Au1) && (pu1 <= Bu1) && (pv1 >= Av1) && (pv1 <= Bv1))
+                  {
                     dminiPointLigne = 0.0;
+                  }
                   else
                   {
                     if ((pu2 >= Au1) && (pu2 <= Bu1) && (pv2 >= Av1) && (pv2 <= Bv1))
+                    {
                       dminiPointLigne = 0.0;
+                    }
                   }
                 } // for( ll ...
               } // if ...
@@ -1086,7 +1168,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                              && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                     if (imin > 2)
+                    {
                       imin--;
+                    }
 
                     i = nbpw + 1;
                     do
@@ -1098,13 +1182,17 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     } while ((i > 2) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                     if (imax < nbpw)
+                    {
                       imax++;
+                    }
 
                     if (imin < imax)
                     {
                       occ::handle<IntSurf_LineOn2S> PWLine = new IntSurf_LineOn2S();
                       for (i = imin; i <= imax; i++)
+                      {
                         PWLine->Add(PW.Line()->Value(i));
+                      }
 
                       double                      TolTang = TolTangency;
                       occ::handle<IntPatch_WLine> wline =
@@ -1126,7 +1214,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                       // the method PutVertexOnLine can reduce the number of points in <wline>
                       IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf1, true, TolTang);
                       if (wline->NbPnts() < 2)
+                      {
                         continue;
+                      }
                       if (wline->NbVertex() == 0)
                       {
                         IntPatch_Point  vtx;
@@ -1211,11 +1301,15 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 Bu1 += 1.0e-7;
                 Bv1 += 1.0e-7;
                 if ((pu1 >= Au1) && (pu1 <= Bu1) && (pv1 >= Av1) && (pv1 <= Bv1))
+                {
                   dminiPointLigne = 0.0;
+                }
                 else
                 {
                   if ((pu2 >= Au1) && (pu2 <= Bu1) && (pv2 >= Av1) && (pv2 <= Bv1))
+                  {
                     dminiPointLigne = 0.0;
+                  }
                 }
               } // for( ll ...
             } // if ...
@@ -1289,7 +1383,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   } while ((i < nbp) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                   if (imin > 2)
+                  {
                     imin--;
+                  }
 
                   i = nbp + 1;
                   do
@@ -1301,13 +1397,17 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   } while ((i > 2) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                   if (imax < nbp)
+                  {
                     imax++;
+                  }
 
                   if (imin < imax)
                   {
                     occ::handle<IntSurf_LineOn2S> PWLine = new IntSurf_LineOn2S();
                     for (i = imin; i <= imax; i++)
+                    {
                       PWLine->Add(PW.Line()->Value(i));
+                    }
 
                     double                      TolTang = TolTangency;
                     occ::handle<IntPatch_WLine> wline =
@@ -1330,7 +1430,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     // the method PutVertexOnLine can reduce the number of points in <wline>
                     IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf1, true, TolTang);
                     if (wline->NbPnts() < 2)
+                    {
                       continue;
+                    }
 
                     if (wline->NbVertex() == 0)
                     {
@@ -1375,7 +1477,9 @@ occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
 {
   int NbPnts = NbPntsToInsert + High - Low;
   if (NumLine > NbLines() || NumLine < 1 || Low >= High)
+  {
     throw Standard_OutOfRange(" IntPatch_PrmPrmIntersection NewLine ");
+  }
   //------------------------------------------------------------------
   //--  Indice     :   Low       Low+1     I    I+1         High    --
   //--                                                              --
@@ -1457,10 +1561,14 @@ occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
 
       bool HasStartPoint = PW.PerformFirstPoint(StartParams, StartPOn2S);
       if (HasStartPoint)
+      {
         ResultPntOn2SLine->Add(StartPOn2S);
+      }
     }
     else
+    {
       s += dsmin;
+    }
   }
 
   ResultPntOn2SLine->Add(TheLine->Point(High));
@@ -1590,20 +1698,28 @@ void IntPatch_PrmPrmIntersection::RemplitLin(const int                          
   int xg, yg, zg;
   xg = x1 - x2;
   if (xg < 0)
+  {
     xg = -xg;
+  }
   yg = y1 - y2;
   if (yg < 0)
+  {
     yg = -yg;
+  }
   zg = z1 - z2;
   if (zg < 0)
+  {
     zg = -zg;
+  }
   if (DansGrille(x1) && DansGrille(y1) && DansGrille(z1))
   {
     int t = GrilleInteger(x1, y1, z1);
     Map.Add(t);
   }
   if (xg <= 1 && yg <= 1 && zg <= 1)
+  {
     return;
+  }
   xg = (x1 + x2) >> 1;
   yg = (y1 + y2) >> 1;
   zg = (z1 + z2) >> 1;
@@ -1662,11 +1778,17 @@ void IntPatch_PrmPrmIntersection::RemplitTri(const int                          
       Map.Add(t);
     }
     if (xg != x3 || yg != y3 || zg != z3)
+    {
       RemplitTri(x1, y1, z1, x2, y2, z2, xg, yg, zg, Map);
+    }
     if (xg != x1 || yg != y1 || zg != z1)
+    {
       RemplitTri(xg, yg, zg, x2, y2, z2, x3, y3, z3, Map);
+    }
     if (xg != x2 || yg != y2 || zg != z2)
+    {
       RemplitTri(x1, y1, z1, xg, yg, zg, x3, y3, z3, Map);
+    }
   }
 }
 
@@ -1679,11 +1801,17 @@ void IntPatch_PrmPrmIntersection::Remplit(const int                           a,
 {
   int iax, iay, iaz, ibx, iby, ibz, icx, icy, icz;
   if (a != -1)
+  {
     Map.Add(a);
+  }
   if (b != -1)
+  {
     Map.Add(b);
+  }
   if (c != -1)
+  {
     Map.Add(c);
+  }
 
   if (a != -1 && b != -1 && c != -1)
   {
@@ -1818,9 +1946,13 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         aNewPnt.Parameters(NewU1, NewV1, NewU2, NewV2);
         if (std::abs(U1 - NewU1) <= TolPar && std::abs(V1 - NewV1) <= TolPar
             && std::abs(U2 - NewU2) <= TolPar && std::abs(V2 - NewV2) <= TolPar)
+        {
           AdditionalPnts.Remove(iter2);
+        }
         else
+        {
           iter2.Next();
+        }
       }
     }
 
@@ -1832,22 +1964,38 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     IntSurf_PntOn2S Pnt = IterLOP1.Value();
     Pnt.Parameters(U1, V1, U2, V2);
     if (U1 > UmaxLig1)
+    {
       UmaxLig1 = U1;
+    }
     if (V1 > VmaxLig1)
+    {
       VmaxLig1 = V1;
+    }
     if (U2 > UmaxLig2)
+    {
       UmaxLig2 = U2;
+    }
     if (V2 > VmaxLig2)
+    {
       VmaxLig2 = V2;
+    }
 
     if (U1 < UminLig1)
+    {
       UminLig1 = U1;
+    }
     if (V1 < VminLig1)
+    {
       VminLig1 = V1;
+    }
     if (U2 < UminLig2)
+    {
       UminLig2 = U2;
+    }
     if (V2 < VminLig2)
+    {
       VminLig2 = V2;
+    }
   }
 
   double SeuildPointLigne = 15.0 * Increment * Increment;
@@ -1974,10 +2122,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               // the method PutVertexOnLine can reduce the number of points in <wline>
               IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
               if (wline->NbPnts() < 2)
+              {
                 continue;
+              }
               IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
               if (wline->NbPnts() < 2)
+              {
                 continue;
+              }
 
               if (wline->NbVertex() == 0)
               {
@@ -2017,7 +2169,6 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     } // HasStartPoint
   } // for( IterLOP ...
   done = true;
-  return;
 }
 
 //=================================================================================================
@@ -2137,10 +2288,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         // the method PutVertexOnLine can reduce the number of points in <wline>
         IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
         if (wline->NbPnts() < 2)
+        {
           return;
+        }
         IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
         if (wline->NbPnts() < 2)
+        {
           return;
+        }
 
         //---------------
         if (wline->NbVertex() == 0)
@@ -2313,9 +2468,13 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
       if (std::abs(NewParams[i] - OldParams[i]) >= 0.5 * Periods[i])
       {
         if (NewParams[i] < OldParams[i])
+        {
           NewParams[i] += Periods[i];
+        }
         else
+        {
           NewParams[i] -= Periods[i];
+        }
       }
     }
   }
@@ -2476,22 +2635,38 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           Interference.GetLinePoint(TabL[ls], ilig, _x, _y, _z, U1, V1, U2, V2, incidence);
           //
           if (U1 > UmaxLig1)
+          {
             UmaxLig1 = U1;
+          }
           if (V1 > VmaxLig1)
+          {
             VmaxLig1 = V1;
+          }
           if (U2 > UmaxLig2)
+          {
             UmaxLig2 = U2;
+          }
           if (V2 > VmaxLig2)
+          {
             VmaxLig2 = V2;
+          }
           //
           if (U1 < UminLig1)
+          {
             UminLig1 = U1;
+          }
           if (V1 < VminLig1)
+          {
             VminLig1 = V1;
+          }
           if (U2 < UminLig2)
+          {
             UminLig2 = U2;
+          }
           if (V2 < VminLig2)
+          {
             VminLig2 = V2;
+          }
         } // for( ilig = 2; ilig <= nbp; ilig++ ) {
         //
         //----------------------------------------
@@ -2509,7 +2684,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             case 1:
               nbps2 = (nbp > 1) ? nbp / 2 : 1;
               if (nbp < 3)
+              {
                 NombreDePointsDeDepartDuCheminement = NbDePointsDeDepartDuChmLimit;
+              }
 
               break;
             case 2:
@@ -2590,7 +2767,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     PW.PutToBoundary(Surf1, Surf2);
                     //
                     if (PW.NbPoints() < 3)
+                    {
                       continue;
+                    }
 
                     const int aMinNbPoints = 40;
                     if (PW.NbPoints() < aMinNbPoints)
@@ -2704,10 +2883,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                       // the method PutVertexOnLine can reduce the number of points in <wline>
                       IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                       if (wline->NbPnts() < 2)
+                      {
                         continue;
+                      }
                       IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                       if (wline->NbPnts() < 2)
+                      {
                         continue;
+                      }
                       if (wline->NbVertex() == 0)
                       {
                         IntPatch_Point  vtx;
@@ -2783,22 +2966,38 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       Interference.GetTangentZonePoint(z, pz, _x, _y, _z, U1, V1, U2, V2);
 
       if (U1 > UmaxLig1)
+      {
         UmaxLig1 = U1;
+      }
       if (V1 > VmaxLig1)
+      {
         VmaxLig1 = V1;
+      }
       if (U2 > UmaxLig2)
+      {
         UmaxLig2 = U2;
+      }
       if (V2 > VmaxLig2)
+      {
         VmaxLig2 = V2;
+      }
 
       if (U1 < UminLig1)
+      {
         UminLig1 = U1;
+      }
       if (V1 < VminLig1)
+      {
         VminLig1 = V1;
+      }
       if (U2 < UminLig2)
+      {
         UminLig2 = U2;
+      }
       if (V2 < VminLig2)
+      {
         VminLig2 = V2;
+      }
       //}
     }
 
@@ -2945,10 +3144,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 // the method PutVertexOnLine can reduce the number of points in <wline>
                 IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                 if (wline->NbPnts() < 2)
+                {
                   continue;
+                }
                 IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                 if (wline->NbPnts() < 2)
+                {
                   continue;
+                }
 
                 //---------------
                 if (wline->NbVertex() == 0)
@@ -3006,11 +3209,17 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   NCollection_Array1<double> StartParams(1, 4);
   int                        MaxOscill = NbU1;
   if (MaxOscill < NbU2)
+  {
     MaxOscill = NbU2;
+  }
   if (MaxOscill < NbV1)
+  {
     MaxOscill = NbV1;
+  }
   if (MaxOscill < NbV2)
+  {
     MaxOscill = NbV2;
+  }
 
   double nIncrement = Increment;
   // if(MaxOscill>10)
@@ -3150,10 +3359,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               // the method PutVertexOnLine can reduce the number of points in <wline>
               IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
               if (wline->NbPnts() < 2)
+              {
                 continue;
+              }
               IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
               if (wline->NbPnts() < 2)
+              {
                 continue;
+              }
 
               //---------------
               if (wline->NbVertex() == 0)

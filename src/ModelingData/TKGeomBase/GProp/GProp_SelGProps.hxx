@@ -27,11 +27,9 @@ class gp_Cone;
 class gp_Sphere;
 class gp_Torus;
 
-//! Computes the global properties of a bounded
-//! elementary surface in 3d (surface of the gp package)
-//! @deprecated This class is deprecated since OCCT 8.0.0 and will be removed in a future release.
-class Standard_DEPRECATED("Deprecated since OCCT 8.0.0, will be removed in a future release")
-  GProp_SelGProps : public GProp_GProps
+//! Computes the global properties of a bounded elementary surface in 3D
+//! (surfaces from the gp package: Cylinder, Cone, Sphere, Torus).
+class GProp_SelGProps : public GProp_GProps
 {
 public:
   DEFINE_STANDARD_ALLOC

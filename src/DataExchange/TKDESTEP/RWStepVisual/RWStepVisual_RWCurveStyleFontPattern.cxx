@@ -28,7 +28,9 @@ void RWStepVisual_RWCurveStyleFontPattern::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "curve_style_font_pattern"))
+  {
     return;
+  }
 
   // --- own field : visibleSegmentLength ---
 

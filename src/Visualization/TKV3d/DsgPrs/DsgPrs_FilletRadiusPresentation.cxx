@@ -90,7 +90,9 @@ void DsgPrs_FilletRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>&
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 0; i < NodeNumber; i++, FirstParCirc += delta)
+    {
       aPrims->AddVertex(ElCLib::Value(FirstParCirc, FilletCirc));
+    }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
     HasCircle                       = true;

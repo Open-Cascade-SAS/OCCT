@@ -68,7 +68,9 @@ void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const char* const aname)
       {
         parameter = (f + l) / 2.;
         if (f > l)
+        {
           parameter = parameter + M_PI;
+        }
         position = ElCLib::Value(parameter, occ::down_cast<Geom_Circle>(curve)->Circ());
       }
     }

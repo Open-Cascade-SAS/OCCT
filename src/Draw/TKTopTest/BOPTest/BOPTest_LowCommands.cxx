@@ -53,7 +53,9 @@ void BOPTest::LowCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -296,9 +298,13 @@ occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&               E,
       occ::handle<BRep_GCurve> GC(occ::down_cast<BRep_GCurve>(cr));
       GC->Range(First, Last);
       if (GC->IsCurveOnClosedSurface() && Eisreversed)
+      {
         return GC->PCurve2();
+      }
       else
+      {
         return GC->PCurve();
+      }
     }
     itcr.Next();
   }

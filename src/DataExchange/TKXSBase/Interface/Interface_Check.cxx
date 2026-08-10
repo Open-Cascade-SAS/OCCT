@@ -49,9 +49,13 @@ void Interface_Check::SendFail(const Message_Msg& amsg)
 void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess)
 {
   if (thefails.IsNull())
+  {
     thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (thefailo.IsNull())
+  {
     thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   thefails->Append(mess);
   thefailo->Append(mess);
 }
@@ -62,9 +66,13 @@ void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess,
                               const occ::handle<TCollection_HAsciiString>& orig)
 {
   if (thefails.IsNull())
+  {
     thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (thefailo.IsNull())
+  {
     thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   thefails->Append(mess);
   thefailo->Append(orig);
 }
@@ -74,11 +82,17 @@ void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess,
 void Interface_Check::AddFail(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
+  {
     return;
+  }
   if (!orig || orig[0] == '\0')
+  {
     AddFail(new TCollection_HAsciiString(amess));
+  }
   else
+  {
     AddFail(new TCollection_HAsciiString(amess), new TCollection_HAsciiString(orig));
+  }
 }
 
 //=================================================================================================
@@ -86,10 +100,14 @@ void Interface_Check::AddFail(const char* const amess, const char* const orig)
 void Interface_Check::AddFail(const Message_Msg& amsg)
 {
   if (amsg.IsEdited())
+  {
     AddFail(new TCollection_HAsciiString(TCollection_AsciiString(amsg.Value())),
             new TCollection_HAsciiString(TCollection_AsciiString(amsg.Original())));
+  }
   else
+  {
     AddFail(new TCollection_HAsciiString(TCollection_AsciiString(amsg.Value())));
+  }
 }
 
 //=================================================================================================
@@ -112,7 +130,9 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::Fail(const int  nu
                                                                    const bool final) const
 {
   if (thefails.IsNull())
+  {
     throw Standard_OutOfRange();
+  }
   return (final ? thefails->Value(num) : thefailo->Value(num));
 }
 
@@ -129,7 +149,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
   const bool final) const
 {
   if (thefails.IsNull())
+  {
     return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   return (final ? thefails : thefailo);
 }
 
@@ -147,9 +169,13 @@ void Interface_Check::SendWarning(const Message_Msg& amsg)
 void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& mess)
 {
   if (thewarns.IsNull())
+  {
     thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (thewarno.IsNull())
+  {
     thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   thewarns->Append(mess);
   thewarno->Append(mess);
 }
@@ -160,9 +186,13 @@ void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& me
                                  const occ::handle<TCollection_HAsciiString>& orig)
 {
   if (thewarns.IsNull())
+  {
     thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (thewarno.IsNull())
+  {
     thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   thewarns->Append(mess);
   thewarno->Append(orig);
 }
@@ -172,11 +202,17 @@ void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& me
 void Interface_Check::AddWarning(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
+  {
     return;
+  }
   if (!orig || orig[0] == '\0')
+  {
     AddWarning(new TCollection_HAsciiString(amess));
+  }
   else
+  {
     AddWarning(new TCollection_HAsciiString(amess), new TCollection_HAsciiString(orig));
+  }
 }
 
 //=================================================================================================
@@ -184,10 +220,14 @@ void Interface_Check::AddWarning(const char* const amess, const char* const orig
 void Interface_Check::AddWarning(const Message_Msg& amsg)
 {
   if (amsg.IsEdited())
+  {
     AddWarning(new TCollection_HAsciiString(TCollection_AsciiString(amsg.Value())),
                new TCollection_HAsciiString(TCollection_AsciiString(amsg.Original())));
+  }
   else
+  {
     AddWarning(new TCollection_HAsciiString(TCollection_AsciiString(amsg.Value())));
+  }
 }
 
 //=================================================================================================
@@ -210,7 +250,9 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::Warning(const int 
                                                                       const bool final) const
 {
   if (thewarns.IsNull())
+  {
     throw Standard_OutOfRange();
+  }
   return (final ? thewarns->Value(num) : thewarno->Value(num));
 }
 
@@ -227,7 +269,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
   const bool final) const
 {
   if (thewarns.IsNull())
+  {
     return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   return (final ? thewarns : thewarno);
 }
 
@@ -240,12 +284,18 @@ void Interface_Check::SendMsg(const Message_Msg& amsg)
   occ::handle<TCollection_HAsciiString> mess = new TCollection_HAsciiString(amsg.Value());
   occ::handle<TCollection_HAsciiString> orig = mess;
   if (amsg.IsEdited())
+  {
     orig = new TCollection_HAsciiString(amsg.Original());
+  }
 
   if (theinfos.IsNull())
+  {
     theinfos = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (theinfoo.IsNull())
+  {
     theinfoo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   theinfos->Append(mess);
   theinfoo->Append(mess);
 }
@@ -263,7 +313,9 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::InfoMsg(const int 
                                                                       const bool final) const
 {
   if (theinfos.IsNull())
+  {
     throw Standard_OutOfRange();
+  }
   return (final ? theinfos->Value(num) : theinfoo->Value(num));
 }
 
@@ -280,7 +332,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
   const bool final) const
 {
   if (theinfos.IsNull())
+  {
     return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   return (final ? theinfos : theinfoo);
 }
 
@@ -291,9 +345,13 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
 Interface_CheckStatus Interface_Check::Status() const
 {
   if (!thefails.IsNull())
+  {
     return Interface_CheckFail;
+  }
   if (!thewarns.IsNull())
+  {
     return Interface_CheckWarning;
+  }
   return Interface_CheckOK;
 }
 
@@ -330,7 +388,9 @@ bool Interface_Check::Complies(const occ::handle<TCollection_HAsciiString>& mess
                                const Interface_CheckStatus                  status) const
 {
   if (mess.IsNull())
+  {
     return false;
+  }
   int lng = mess->Length();
   if (status == Interface_CheckWarning || status == Interface_CheckAny)
   {
@@ -341,17 +401,23 @@ bool Interface_Check::Complies(const occ::handle<TCollection_HAsciiString>& mess
       if (incl == 0)
       {
         if (mess->IsSameString(ames))
+        {
           return true;
+        }
       }
       if (incl < 0)
       {
         if (ames->Location(mess, 1, ames->Length()) > 0)
+        {
           return true;
+        }
       }
       if (incl < 0)
       {
         if (mess->Location(mess, 1, lng) > 0)
+        {
           return true;
+        }
       }
     }
   }
@@ -364,17 +430,23 @@ bool Interface_Check::Complies(const occ::handle<TCollection_HAsciiString>& mess
       if (incl == 0)
       {
         if (mess->IsSameString(ames))
+        {
           return true;
+        }
       }
       if (incl < 0)
       {
         if (ames->Location(mess, 1, ames->Length()) > 0)
+        {
           return true;
+        }
       }
       if (incl < 0)
       {
         if (mess->Location(mess, 1, lng) > 0)
+        {
           return true;
+        }
       }
     }
   }
@@ -439,7 +511,9 @@ bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
                              const Interface_CheckStatus                  status)
 {
   if (mess.IsNull())
+  {
     return false;
+  }
   bool res = false;
   int  lng = mess->Length();
   if (status == Interface_CheckWarning || status == Interface_CheckAny)
@@ -450,11 +524,17 @@ bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
       bool                                  rem  = false;
       occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
+      {
         rem = mess->IsSameString(ames);
+      }
       if (incl < 0)
+      {
         rem = (ames->Location(mess, 1, ames->Length()) > 0);
+      }
       if (incl < 0)
+      {
         rem = (mess->Location(mess, 1, lng) > 0);
+      }
       if (rem)
       {
         thewarns->Remove(i);
@@ -471,11 +551,17 @@ bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
       bool                                  rem  = false;
       occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
+      {
         rem = mess->IsSameString(ames);
+      }
       if (incl < 0)
+      {
         rem = (ames->Location(mess, 1, ames->Length()) > 0);
+      }
       if (incl < 0)
+      {
         rem = (mess->Location(mess, 1, lng) > 0);
+      }
       if (rem)
       {
         thefails->Remove(i);
@@ -495,7 +581,9 @@ bool Interface_Check::Mend(const char* const pref, const int num)
   if (pref && pref[2] == '\0')
   {
     if (pref[0] == 'F' && pref[1] == 'M')
+    {
       return Mend("Mended", num);
+    }
     if (pref[0] == 'C' && pref[1] == 'A')
     {
       Clear();
@@ -509,7 +597,9 @@ bool Interface_Check::Mend(const char* const pref, const int num)
         return true;
       }
       if (num < 0 || num > NbWarnings())
+      {
         return false;
+      }
       thewarns->Remove(num);
       thewarno->Remove(num);
       return true;
@@ -522,7 +612,9 @@ bool Interface_Check::Mend(const char* const pref, const int num)
         return true;
       }
       if (num < 0 || num > NbFails())
+      {
         return false;
+      }
       thefails->Remove(num);
       thefailo->Remove(num);
       return true;
@@ -534,11 +626,15 @@ bool Interface_Check::Mend(const char* const pref, const int num)
     n1 = 1;
     n2 = NbFails();
     for (i = n2; i >= n1; i--)
+    {
       Mend(pref, i);
+    }
     return true;
   }
   else if (num < 0 || num > NbFails())
+  {
     return false;
+  }
   //  A message
   occ::handle<TCollection_HAsciiString> strf = thefails->Value(num);
   occ::handle<TCollection_HAsciiString> stro = thefailo->Value(num);
@@ -555,9 +651,13 @@ bool Interface_Check::Mend(const char* const pref, const int num)
   thefails->Remove(num);
   thefailo->Remove(num);
   if (stro == strf)
+  {
     AddFail(strf);
+  }
   else
+  {
     AddFail(strf, stro);
+  }
   return true;
 }
 
@@ -573,7 +673,9 @@ void Interface_Check::SetEntity(const occ::handle<Standard_Transient>& anentity)
 void Interface_Check::GetEntity(const occ::handle<Standard_Transient>& anentity)
 {
   if (theent.IsNull())
+  {
     SetEntity(anentity);
+  }
 }
 
 // .. GetMessages, takes messages by accumulating them with its own
@@ -590,35 +692,59 @@ void Interface_Check::GetMessages(const occ::handle<Interface_Check>& other)
   if ((nb = other->NbFails()) != 0)
   {
     if (thefails.IsNull())
+    {
       thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     if (thefailo.IsNull())
+    {
       thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     for (i = 1; i <= nb; i++)
+    {
       thefails->Append(other->Fail(i, true));
+    }
     for (i = 1; i <= nb; i++)
+    {
       thefailo->Append(other->Fail(i, false));
+    }
   }
   if ((nb = other->NbWarnings()) != 0)
   {
     if (thewarns.IsNull())
+    {
       thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     if (thewarno.IsNull())
+    {
       thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarns->Append(other->Warning(i, true));
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarno->Append(other->Warning(i, false));
+    }
   }
   if ((nb = other->NbInfoMsgs()) != 0)
   {
     if (theinfos.IsNull())
+    {
       theinfos = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     if (theinfoo.IsNull())
+    {
       theinfoo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     for (i = 1; i <= nb; i++)
+    {
       theinfos->Append(other->InfoMsg(i, true));
+    }
     for (i = 1; i <= nb; i++)
+    {
       theinfoo->Append(other->InfoMsg(i, false));
+    }
   }
 }
 
@@ -630,24 +756,40 @@ void Interface_Check::GetAsWarning(const occ::handle<Interface_Check>& other, co
   if ((nb = other->NbFails()) != 0)
   {
     if (thewarns.IsNull())
+    {
       thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     if (thewarno.IsNull())
+    {
       thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarns->Append(other->Fail(i, true));
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarno->Append(other->Fail(i, false));
+    }
   }
   if ((nb = other->NbWarnings()) != 0 || !failsonly)
   {
     if (thewarns.IsNull())
+    {
       thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     if (thewarno.IsNull())
+    {
       thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarns->Append(other->Warning(i, true));
+    }
     for (i = 1; i <= nb; i++)
+    {
       thewarno->Append(other->Warning(i, false));
+    }
   }
 }
 
@@ -664,9 +806,13 @@ void Interface_Check::Print(Standard_OStream& S, const int level, const int fina
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
+      {
         S << CFail(j, true) << "\n";
+      }
       else
+      {
         S << CFail(j, false) << "\n";
+      }
       //      if (final == 0)
       //	if (Fail(j,true) != Fail(j,false))
       //	  S<<"[original:"<<CFail(j,false)<<"]\n";
@@ -680,9 +826,13 @@ void Interface_Check::Print(Standard_OStream& S, const int level, const int fina
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
+      {
         S << CWarning(j, true) << "\n";
+      }
       else
+      {
         S << CWarning(j, false) << "\n";
+      }
       //      if (final == 0)
       //	if (Warning(j,true) != Warning(j,false))
       //	  S<<"[original:"<<CWarning(j,false)<<"]\n";
@@ -697,9 +847,13 @@ void Interface_Check::Print(Standard_OStream& S, const int level, const int fina
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
+      {
         S << CInfoMsg(j, true) << "\n";
+      }
       else
+      {
         S << CInfoMsg(j, false) << "\n";
+      }
       //      if (final == 0)
       //	if (InfoMsg(j,true) != InfoMsg(j,false))
       //	  S<<"[original:"<<CInfoMsg(j,false)<<"]\n";

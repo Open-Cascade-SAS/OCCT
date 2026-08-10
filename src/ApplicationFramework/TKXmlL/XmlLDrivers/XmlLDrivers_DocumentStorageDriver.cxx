@@ -72,8 +72,12 @@ void XmlLDrivers_DocumentStorageDriver::AddNamespace(const TCollection_AsciiStri
                                                      const TCollection_AsciiString& theURI)
 {
   for (int i = 1; i <= mySeqOfNS.Length(); i++)
+  {
     if (thePrefix == mySeqOfNS(i).Prefix())
+    {
       return;
+    }
+  }
   mySeqOfNS.Append(XmlLDrivers_NamespaceDef(thePrefix, theURI));
 }
 
@@ -277,7 +281,9 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   // User info with Copyright
   NCollection_Sequence<TCollection_AsciiString> aUserInfo;
   if (myCopyright.Length() > 0)
+  {
     aUserInfo.Append(TCollection_AsciiString(myCopyright, '?'));
+  }
 
   occ::handle<Storage_Data> theData = new Storage_Data;
   // PCDM_ReadWriter::WriteFileFormat( theData, theDocument );
@@ -288,7 +294,9 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
 
   const NCollection_Sequence<TCollection_AsciiString>& aRefs = theData->UserInfo();
   for (i = 1; i <= aRefs.Length(); i++)
+  {
     aUserInfo.Append(aRefs.Value(i));
+  }
 
   // Keep format version in Reloc. table
   occ::handle<Storage_HeaderData> aHeaderData = theData->HeaderData();
@@ -358,7 +366,9 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
 
   // 4. Write Shapes section
   if (WriteShapeSection(theElement, aFormatVersion, aPS.Next()))
+  {
     ::take_time(0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
+  }
   if (!aPS.More())
   {
     SetIsError(true);
@@ -390,9 +400,13 @@ int XmlLDrivers_DocumentStorageDriver::MakeDocument(const occ::handle<CDM_Docume
       aMessageDriver->ChangePrinters().Clear();
     }
     else
+    {
       aMessageDriver = anApplication->MessageDriver();
+    }
     if (myDrivers.IsNull())
+    {
       myDrivers = AttributeDrivers(aMessageDriver);
+    }
 
     //      Retrieve from DOM_Document
     XmlMDF::FromTo(aTDF, theElement, myRelocTable, myDrivers, theRange);

@@ -46,10 +46,14 @@ occ::handle<Transfer_Binder> Transfer_ActorOfFinderProcess::Transfer(
 {
   occ::handle<Transfer_TransientMapper> tm = occ::down_cast<Transfer_TransientMapper>(fnd);
   if (tm.IsNull())
+  {
     return NullResult();
+  }
   occ::handle<Standard_Transient> res = TransferTransient(tm->Value(), FP, theProgress);
   if (res.IsNull())
+  {
     return NullResult();
+  }
   return TransientResult(res);
 }
 

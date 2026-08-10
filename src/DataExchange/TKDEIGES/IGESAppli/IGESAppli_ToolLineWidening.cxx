@@ -50,9 +50,13 @@ void IGESAppli_ToolLineWidening::ReadOwnParams(const occ::handle<IGESAppli_LineW
   PR.ReadInteger(PR.Current(), "Extension Flag", tempExtensionFlag);
   PR.ReadInteger(PR.Current(), "Justification Flag", tempJustificationFlag);
   if (PR.IsParamDefined(PR.CurrentNumber()))
+  {
     PR.ReadReal(PR.Current(), "Extension value", tempExtensionValue);
+  }
   else if (tempExtensionFlag == 2)
+  {
     PR.AddFail("Extension Value not defined while Extension Flag = 2");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNbPropertyValues,
@@ -95,12 +99,14 @@ bool IGESAppli_ToolLineWidening::OwnCorrect(const occ::handle<IGESAppli_LineWide
 {
   bool res = (ent->NbPropertyValues() != 5);
   if (res)
+  {
     ent->Init(5,
               ent->WidthOfMetalization(),
               ent->CorneringCode(),
               ent->ExtensionFlag(),
               ent->JustificationFlag(),
               ent->ExtensionValue());
+  }
   if (ent->SubordinateStatus() != 0)
   {
     occ::handle<IGESData_LevelListEntity> nulevel;
@@ -127,16 +133,28 @@ void IGESAppli_ToolLineWidening::OwnCheck(const occ::handle<IGESAppli_LineWideni
                                           occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
+  {
     if (ent->DefLevel() == IGESData_DefOne || ent->DefLevel() == IGESData_DefSeveral)
+    {
       ach->AddWarning("Level type: defined while ignored");
+    }
+  }
   if (ent->NbPropertyValues() != 5)
+  {
     ach->AddFail("Number of Property Values != 5");
+  }
   if (ent->CorneringCode() != 0 && ent->CorneringCode() != 1)
+  {
     ach->AddFail("Cornering Code incorrect");
+  }
   if (ent->ExtensionFlag() < 0 || ent->ExtensionFlag() > 2)
+  {
     ach->AddFail("Extension Flag value incorrect");
+  }
   if (ent->JustificationFlag() < 0 || ent->JustificationFlag() > 2)
+  {
     ach->AddFail("Justification Flag value incorrect");
+  }
 }
 
 void IGESAppli_ToolLineWidening::OwnDump(const occ::handle<IGESAppli_LineWidening>& ent,
@@ -150,34 +168,60 @@ void IGESAppli_ToolLineWidening::OwnDump(const occ::handle<IGESAppli_LineWidenin
   S << "Width of metalization : " << ent->WidthOfMetalization() << "\n";
   S << "Cornering Code : ";
   if (ent->CorneringCode() == 0)
+  {
     S << "0 (rounded)\n";
+  }
   else if (ent->CorneringCode() == 1)
+  {
     S << "1 (squared)\n";
+  }
   else
+  {
     S << "incorrect value\n";
+  }
 
   S << "Extension Flag : ";
   if (ent->ExtensionFlag() == 0)
+  {
     S << "0 (No Extension)\n";
+  }
   else if (ent->ExtensionFlag() == 1)
+  {
     S << "1 (One-half width extension)\n";
+  }
   else if (ent->ExtensionFlag() == 2)
+  {
     S << "2 (Extension set by ExtensionValue)\n";
+  }
   else
+  {
     S << "incorrect value\n";
+  }
 
   S << "Justification Flag : ";
   if (ent->JustificationFlag() == 0)
+  {
     S << "0 (Centre justified)\n";
+  }
   else if (ent->JustificationFlag() == 1)
+  {
     S << "1 (left justified)\n";
+  }
   else if (ent->JustificationFlag() == 2)
+  {
     S << "2 (right justified)\n";
+  }
   else
+  {
     S << "incorrect value\n";
+  }
 
   if (ent->ExtensionFlag() == 2)
-    S << "Extension Value : " << ent->ExtensionValue() << std::endl;
+  {
+    S << "Extension Value : " << ent->ExtensionValue() << '\n';
+  }
   else
-    S << "No Extension Value (Extension Flag != 2)" << std::endl;
+  {
+    S << "No Extension Value (Extension Flag != 2)" << '\n';
+  }
 }

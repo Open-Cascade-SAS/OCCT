@@ -42,9 +42,13 @@ void IGESAppli_ToolPWBDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_PWB
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
+  }
   else
+  {
     tempNbPropertyValues = 3;
+  }
 
   PR.ReadReal(PR.Current(), "Drill Diameter Size", tempDrillDiameter);
   PR.ReadReal(PR.Current(), "Finish Diameter Size", tempFinishDiameter);
@@ -82,7 +86,9 @@ bool IGESAppli_ToolPWBDrilledHole::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 3);
   if (res)
+  {
     ent->Init(3, ent->DrillDiameterSize(), ent->FinishDiameterSize(), ent->FunctionCode());
+  }
   //     nbpropertyvalues=3
   return res;
 }
@@ -107,10 +113,14 @@ void IGESAppli_ToolPWBDrilledHole::OwnCheck(const occ::handle<IGESAppli_PWBDrill
                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 3)
+  {
     ach->AddFail("Number of property values != 3");
+  }
   if ((ent->FunctionCode() < 1) || ((ent->FunctionCode() > 5) && (ent->FunctionCode() < 5001))
       || (ent->FunctionCode() > 9999))
+  {
     ach->AddFail("Drilled Hole Function Code != 1-5,5001-9999");
+  }
 }
 
 void IGESAppli_ToolPWBDrilledHole::OwnDump(const occ::handle<IGESAppli_PWBDrilledHole>& ent,
@@ -122,5 +132,5 @@ void IGESAppli_ToolPWBDrilledHole::OwnDump(const occ::handle<IGESAppli_PWBDrille
     << "Number of property values : " << ent->NbPropertyValues() << "\n"
     << "Drill Diameter Size  : " << ent->DrillDiameterSize() << "\n"
     << "Finish Diameter Size : " << ent->FinishDiameterSize() << "\n"
-    << "Drilled Hole Function Code : " << ent->FunctionCode() << std::endl;
+    << "Drilled Hole Function Code : " << ent->FunctionCode() << '\n';
 }

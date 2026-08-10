@@ -91,7 +91,9 @@ bool TopOpeBRepTool::RegularizeWires(
     ESplits) // (e,esp); esp = splits of e
 {
   if (theFace.IsNull())
+  {
     return false;
+  }
   TopoDS_Shape aLocalShape = theFace.Oriented(TopAbs_FORWARD);
   TopoDS_Face  aFace       = TopoDS::Face(aLocalShape);
   //  TopoDS_Face aFace = TopoDS::Face(theFace.Oriented(TopAbs_FORWARD));
@@ -108,13 +110,19 @@ bool TopOpeBRepTool::RegularizeWires(
     REGUW.Init(W);
     bool ok = REGUW.MapS();
     if (!ok)
+    {
       return false;
+    }
     ok = REGUW.SplitEds();
     if (!ok)
+    {
       return false;
+    }
     ok = REGUW.REGU();
     if (!ok)
+    {
       return false;
+    }
   }
 
   REGUW.GetEsplits(ESplits);
@@ -675,7 +683,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
     FUN_addOwlw(owi, low, lwresu);
     NCollection_List<TopoDS_Shape>::Iterator itw(lwresu);
     for (; itw.More(); itw.Next())
+    {
       mapWlow.Bind(itw.Value(), null);
+    }
   } // itm(mapOwNw)
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapdone;
@@ -685,14 +695,18 @@ Standard_EXPORT bool FUN_tool_ClassifW(
   {
     nOw = lOws.Extent();
     if (nOw == 0)
+    {
       break;
+    }
 
     NCollection_List<TopoDS_Shape>::Iterator itOw(lOws);
     const TopoDS_Shape&                      Ow1  = itOw.Value();
     bool                                     isb1 = mapWlow.IsBound(Ow1);
     isb1                                          = isb1 || !mapdone.Contains(Ow1);
     if (!isb1)
+    {
       continue;
+    }
 
     const NCollection_List<TopoDS_Shape>& lw1 = mapOwNw.Find(Ow1);
 
@@ -714,7 +728,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
       bool isb2 = mapWlow.IsBound(Ow2);
       isb2      = isb2 || !mapdone.Contains(Ow2);
       if (!isb2)
+      {
         continue;
+      }
       int stabnd2d12 = CLASSI.ClassiBnd2d(Ow1, Ow2, toluv, true);
       sta12          = CLASSI.Classip2d(Ow1, Ow2, stabnd2d12);
       if (sta12 == DIFF)
@@ -723,7 +739,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
         continue;
       }
       else if ((sta12 == UNKNOWN) || (sta12 == SAME))
+      {
         return false;
+      }
       break;
     }
     if (OUTall)
@@ -734,7 +752,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
       FUN_addOwlw(Ow1, lw1, ldone);
       NCollection_List<TopoDS_Shape>::Iterator itw(ldone);
       for (; itw.More(); itw.Next())
+      {
         mapdone.Add(itw.Value());
+      }
 #ifdef OCCT_DEBUG
       if (trc)
         std::cout << "old wires :wi" << FUN_adds(Ow1) << " is OUT all old wires" << std::endl;
@@ -776,7 +796,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
         bool                isbsma = mapWlow.IsBound(wsma);
         isbsma                     = isbsma || !mapdone.Contains(wsma);
         if (!isbsma)
+        {
           continue;
+        }
 
         NCollection_List<TopoDS_Shape>::Iterator itgre(lgre);
         for (; itgre.More(); itgre.Next())
@@ -785,7 +807,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
           bool                isbgre = mapWlow.IsBound(wgre);
           isbgre                     = isbgre || !mapdone.Contains(wgre);
           if (!isbgre)
+          {
             continue;
+          }
 
           int stabnd2d = CLASSI.ClassiBnd2d(wsma, wgre, toluv, true);
           int sta      = CLASSI.Classip2d(wsma, wgre, stabnd2d);
@@ -799,7 +823,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
 #endif
 
           if (sta == DIFF)
+          {
             continue;
+          }
           else if (sta == oneINtwo)
           { // wsma IN wgre
             mapWlow.ChangeFind(wgre).Append(mapWlow.ChangeFind(wsma));
@@ -811,7 +837,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
             mapWlow.UnBind(wgre);
           }
           else
+          {
             return false;
+          }
         } // itgre
       } // itsma
       lOws.RemoveFirst();
@@ -848,7 +876,9 @@ bool TopOpeBRepTool::RegularizeFace(
 
   bool classifok = FUN_tool_ClassifW(aFace, mapoldWnewW, mapWlow);
   if (!classifok)
+  {
     return false;
+  }
 
   // <aListOfFaces>
   // -------------

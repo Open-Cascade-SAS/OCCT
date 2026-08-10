@@ -100,7 +100,9 @@ static bool Project(const occ::handle<Geom2d_Curve>& C, const TopoDS_Vertex& V, 
       }
     }
     else
+    {
       return false;
+    }
   }
   return true;
 }
@@ -390,9 +392,13 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& C,
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, Point(P1), Precision::Confusion());
   if (P1.Distance(P2) < Precision::Confusion())
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, Point(P2), Precision::Confusion());
+  }
   Init(C, V1, V2);
 }
 
@@ -407,14 +413,18 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& C,
   double p1, p2;
 
   if (V1.IsNull())
+  {
     p1 = C->FirstParameter();
+  }
   else if (!Project(C, V1, p1))
   {
     myError = BRepLib_PointProjectionFailed;
     return;
   }
   if (V2.IsNull())
+  {
     p2 = C->LastParameter();
+  }
   else if (!Project(C, V2, p2))
   {
     myError = BRepLib_PointProjectionFailed;
@@ -437,9 +447,13 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& C,
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, Point(P1), Precision::Confusion());
   if (P1.Distance(P2) < Precision::Confusion())
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, Point(P2), Precision::Confusion());
+  }
 
   Init(C, V1, V2, p1, p2);
 }
@@ -510,9 +524,13 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& CC,
   bool     p2inf = Precision::IsPositiveInfinite(p2);
   gp_Pnt2d P1, P2;
   if (!p1inf)
+  {
     P1 = C->Value(p1);
+  }
   if (!p2inf)
+  {
     P2 = C->Value(p2);
+  }
 
   constexpr double preci = Precision::Confusion();
   BRep_Builder     B;
@@ -520,7 +538,9 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& CC,
   // check for closed curve
   bool closed = false;
   if (!p1inf && !p2inf)
+  {
     closed = (P1.Distance(P2) <= preci);
+  }
 
   // check if the vertices are on the curve
   if (closed)
@@ -531,9 +551,13 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& CC,
       V2 = V1;
     }
     else if (V1.IsNull())
+    {
       V1 = V2;
+    }
     else if (V2.IsNull())
+    {
       V2 = V1;
+    }
     else
     {
       if (!V1.IsSame(V2))

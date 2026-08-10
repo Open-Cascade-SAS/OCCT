@@ -94,9 +94,11 @@ void Units_ShiftedUnit::Dump(const int, const int) const
   {
     string = thesymbolssequence->Value(index)->String();
     if (index != 1)
+    {
       std::cout << " or ";
+    }
     std::cout << "\"" << string.ToCString() << "\"";
   }
   std::cout << "		Name:  " << Name().ToCString() << "		(= *" << thevalue << " SI + "
-            << themove << ")" << std::endl;
+            << themove << ")" << '\n';
 }

@@ -128,7 +128,7 @@ public: //! @name API for accessing mesh links.
 
 public: //! @name API for accessing mesh elements.
   //! Returns number of links.
-  int NbElements() const { return myElements.Size(); }
+  int NbElements() const { return myElements.Length(); }
 
   //! Adds element to the mesh if it is not already in the mesh.
   //! @param theElement element to be added to the mesh.
@@ -165,10 +165,6 @@ public: //! @name API for accessing mesh elements.
   Standard_EXPORT void Dump(const char* theFileNameStr);
 
 public: //! @name Auxiliary API
-  //! Dumps information about this structure.
-  //! @param theStream stream to be used for dump.
-  Standard_EXPORT void Statistics(Standard_OStream& theStream) const;
-
   //! Returns memory allocator used by the structure.
   const occ::handle<NCollection_IncAllocator>& Allocator() const { return myAllocator; }
 

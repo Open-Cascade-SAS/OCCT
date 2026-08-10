@@ -49,7 +49,9 @@ bool HLRTest::GetProjector(const char*& Name, HLRAlgo_Projector& P)
 {
   occ::handle<HLRTest_Projector> HP = occ::down_cast<HLRTest_Projector>(Draw::Get(Name));
   if (HP.IsNull())
+  {
     return false;
+  }
   P = HP->Projector();
   return true;
 }
@@ -68,7 +70,9 @@ occ::handle<HLRTopoBRep_OutLiner> HLRTest::GetOutLiner(const char*& Name)
   occ::handle<Draw_Drawable3D>  D  = Draw::Get(Name);
   occ::handle<HLRTest_OutLiner> HS = occ::down_cast<HLRTest_OutLiner>(D);
   if (!HS.IsNull())
+  {
     return HS->OutLiner();
+  }
   occ::handle<HLRTopoBRep_OutLiner> HO;
   return HO;
 }
@@ -78,7 +82,9 @@ occ::handle<HLRTopoBRep_OutLiner> HLRTest::GetOutLiner(const char*& Name)
 static int hprj(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   //
   gp_Ax2 anAx2 = gp::XOY();
   if (n == 11)
@@ -111,7 +117,9 @@ static int hprj(Draw_Interpretor&, int n, const char** a)
 static int hout(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   const char*  name = a[2];
   TopoDS_Shape S    = DBRep::Get(name);
   if (S.IsNull())
@@ -129,9 +137,13 @@ static int hfil(Draw_Interpretor& di, int n, const char** a)
 {
   int nbIso = 0;
   if (n < 3)
+  {
     return 1;
+  }
   if (n > 3)
+  {
     nbIso = Draw::Atoi(a[3]);
+  }
   const char*                       name1 = a[1];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
   if (HS.IsNull())
@@ -156,7 +168,9 @@ static int hfil(Draw_Interpretor& di, int n, const char** a)
 static int sori(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   const char*                       name1 = a[1];
   const char*                       name2 = a[2];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
@@ -174,7 +188,9 @@ static int sori(Draw_Interpretor& di, int n, const char** a)
 static int sout(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   const char*                       name1 = a[1];
   const char*                       name2 = a[2];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
@@ -197,7 +213,9 @@ static int sout(Draw_Interpretor& di, int n, const char** a)
 static int hloa(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   const char*                       name1 = a[1];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
   if (HS.IsNull())
@@ -264,7 +282,9 @@ static int hrem(Draw_Interpretor& di, int n, const char** a)
 static int sprj(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   const char*       name = a[1];
   HLRAlgo_Projector P;
   if (!HLRTest::GetProjector(name, P))
@@ -306,9 +326,13 @@ static int hdbg(Draw_Interpretor& di, int, const char**)
 {
   hider->Debug(!hider->Debug());
   if (hider->Debug())
+  {
     di << "debug\n";
+  }
   else
+  {
     di << "no debug\n";
+  }
   return 0;
 }
 
@@ -359,25 +383,45 @@ static int hres(Draw_Interpretor&, int n, const char** a)
     HI = HS.IsoLineHCompound(S);
   }
   if (!V.IsNull())
+  {
     DBRep::Set("vl", V);
+  }
   if (!V1.IsNull())
+  {
     DBRep::Set("v1l", V1);
+  }
   if (!VN.IsNull())
+  {
     DBRep::Set("vnl", VN);
+  }
   if (!VO.IsNull())
+  {
     DBRep::Set("vol", VO);
+  }
   if (!VI.IsNull())
+  {
     DBRep::Set("vil", VI);
+  }
   if (!H.IsNull())
+  {
     DBRep::Set("hl", H);
+  }
   if (!H1.IsNull())
+  {
     DBRep::Set("h1l", H1);
+  }
   if (!HN.IsNull())
+  {
     DBRep::Set("hnl", HN);
+  }
   if (!HO.IsNull())
+  {
     DBRep::Set("hol", HO);
+  }
   if (!HI.IsNull())
+  {
     DBRep::Set("hil", HI);
+  }
   return 0;
 }
 
@@ -386,11 +430,15 @@ static int hres(Draw_Interpretor&, int n, const char** a)
 static int reflectlines(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   double anAISViewProjX = atof(a[3]);
   double anAISViewProjY = atof(a[4]);
@@ -426,11 +474,15 @@ static int reflectlines(Draw_Interpretor&, int n, const char** a)
 static int hlrin3d(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   double anAISViewProjX = atof(a[3]);
   double anAISViewProjY = atof(a[4]);
@@ -461,13 +513,19 @@ static int hlrin3d(Draw_Interpretor&, int n, const char** a)
 
   TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, true);
   if (!SharpEdges.IsNull())
+  {
     BB.Add(Result, SharpEdges);
+  }
   TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, true);
   if (!OutLines.IsNull())
+  {
     BB.Add(Result, OutLines);
+  }
   TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, true);
   if (!SmoothEdges.IsNull())
+  {
     BB.Add(Result, SmoothEdges);
+  }
 
   DBRep::Set(a[1], Result);
 
@@ -479,11 +537,15 @@ static int hlrin3d(Draw_Interpretor&, int n, const char** a)
 static int hlrin2d(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 9)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   double anAISViewProjX = atof(a[3]);
   double anAISViewProjY = atof(a[4]);
@@ -517,13 +579,19 @@ static int hlrin2d(Draw_Interpretor&, int n, const char** a)
 
   TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, false);
   if (!SharpEdges.IsNull())
+  {
     BB.Add(Result, SharpEdges);
+  }
   TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, false);
   if (!OutLines.IsNull())
+  {
     BB.Add(Result, OutLines);
+  }
   TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, false);
   if (!SmoothEdges.IsNull())
+  {
     BB.Add(Result, SmoothEdges);
+  }
 
   DBRep::Set(a[1], Result);
 

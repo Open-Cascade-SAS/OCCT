@@ -35,7 +35,9 @@ public:
   void AddHistory(const occ::handle<BRepTools_History>& theHistory)
   {
     if (myHistory.IsNull())
+    {
       myHistory = new BRepTools_History;
+    }
     myHistory->Merge(theHistory);
   }
 

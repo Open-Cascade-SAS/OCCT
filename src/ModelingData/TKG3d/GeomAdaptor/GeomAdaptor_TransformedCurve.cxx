@@ -69,9 +69,13 @@ void GeomAdaptor_TransformedCurve::Intervals(NCollection_Array1<double>& theT,
                                              const GeomAbs_Shape         theS) const
 {
   if (myConSurf.IsNull())
+  {
     myCurve.Intervals(theT, theS);
+  }
   else
+  {
     myConSurf->Intervals(theT, theS);
+  }
 }
 
 //==================================================================================================
@@ -100,9 +104,13 @@ gp_Lin GeomAdaptor_TransformedCurve::Line() const
 {
   gp_Lin aL;
   if (myConSurf.IsNull())
+  {
     aL = myCurve.Line();
+  }
   else
+  {
     aL = myConSurf->Line();
+  }
   aL.Transform(myTrsf);
   return aL;
 }
@@ -113,9 +121,13 @@ gp_Circ GeomAdaptor_TransformedCurve::Circle() const
 {
   gp_Circ aC;
   if (myConSurf.IsNull())
+  {
     aC = myCurve.Circle();
+  }
   else
+  {
     aC = myConSurf->Circle();
+  }
   aC.Transform(myTrsf);
   return aC;
 }
@@ -126,9 +138,13 @@ gp_Elips GeomAdaptor_TransformedCurve::Ellipse() const
 {
   gp_Elips aE;
   if (myConSurf.IsNull())
+  {
     aE = myCurve.Ellipse();
+  }
   else
+  {
     aE = myConSurf->Ellipse();
+  }
   aE.Transform(myTrsf);
   return aE;
 }
@@ -139,9 +155,13 @@ gp_Hypr GeomAdaptor_TransformedCurve::Hyperbola() const
 {
   gp_Hypr aH;
   if (myConSurf.IsNull())
+  {
     aH = myCurve.Hyperbola();
+  }
   else
+  {
     aH = myConSurf->Hyperbola();
+  }
   aH.Transform(myTrsf);
   return aH;
 }
@@ -152,9 +172,13 @@ gp_Parab GeomAdaptor_TransformedCurve::Parabola() const
 {
   gp_Parab aP;
   if (myConSurf.IsNull())
+  {
     aP = myCurve.Parabola();
+  }
   else
+  {
     aP = myConSurf->Parabola();
+  }
   aP.Transform(myTrsf);
   return aP;
 }
@@ -165,9 +189,13 @@ occ::handle<Geom_BezierCurve> GeomAdaptor_TransformedCurve::Bezier() const
 {
   occ::handle<Geom_BezierCurve> aBC;
   if (myConSurf.IsNull())
+  {
     aBC = myCurve.Bezier();
+  }
   else
+  {
     aBC = myConSurf->Bezier();
+  }
   return myTrsf.Form() == gp_Identity ? aBC
                                       : occ::down_cast<Geom_BezierCurve>(aBC->Transformed(myTrsf));
 }
@@ -178,9 +206,13 @@ occ::handle<Geom_BSplineCurve> GeomAdaptor_TransformedCurve::BSpline() const
 {
   occ::handle<Geom_BSplineCurve> aBS;
   if (myConSurf.IsNull())
+  {
     aBS = myCurve.BSpline();
+  }
   else
+  {
     aBS = myConSurf->BSpline();
+  }
   return myTrsf.Form() == gp_Identity ? aBS
                                       : occ::down_cast<Geom_BSplineCurve>(aBS->Transformed(myTrsf));
 }
@@ -190,7 +222,9 @@ occ::handle<Geom_BSplineCurve> GeomAdaptor_TransformedCurve::BSpline() const
 occ::handle<Geom_OffsetCurve> GeomAdaptor_TransformedCurve::OffsetCurve() const
 {
   if (!Is3DCurve() || myCurve.GetType() != GeomAbs_OffsetCurve)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedCurve::OffsetCurve");
+  }
 
   occ::handle<Geom_OffsetCurve> anOffC = myCurve.OffsetCurve();
   return myTrsf.Form() == gp_Identity
@@ -204,9 +238,13 @@ gp_Pnt GeomAdaptor_TransformedCurve::EvalD0(const double theU) const
 {
   gp_Pnt aP;
   if (myConSurf.IsNull())
+  {
     aP = myCurve.EvalD0(theU);
+  }
   else
+  {
     myConSurf->D0(theU, aP);
+  }
   aP.Transform(myTrsf);
   return aP;
 }
@@ -217,9 +255,13 @@ Geom_Curve::ResD1 GeomAdaptor_TransformedCurve::EvalD1(const double theU) const
 {
   Geom_Curve::ResD1 aRes;
   if (myConSurf.IsNull())
+  {
     aRes = myCurve.EvalD1(theU);
+  }
   else
+  {
     myConSurf->D1(theU, aRes.Point, aRes.D1);
+  }
   aRes.Point.Transform(myTrsf);
   aRes.D1.Transform(myTrsf);
   return aRes;
@@ -231,9 +273,13 @@ Geom_Curve::ResD2 GeomAdaptor_TransformedCurve::EvalD2(const double theU) const
 {
   Geom_Curve::ResD2 aRes;
   if (myConSurf.IsNull())
+  {
     aRes = myCurve.EvalD2(theU);
+  }
   else
+  {
     myConSurf->D2(theU, aRes.Point, aRes.D1, aRes.D2);
+  }
   aRes.Point.Transform(myTrsf);
   aRes.D1.Transform(myTrsf);
   aRes.D2.Transform(myTrsf);
@@ -246,9 +292,13 @@ Geom_Curve::ResD3 GeomAdaptor_TransformedCurve::EvalD3(const double theU) const
 {
   Geom_Curve::ResD3 aRes;
   if (myConSurf.IsNull())
+  {
     aRes = myCurve.EvalD3(theU);
+  }
   else
+  {
     myConSurf->D3(theU, aRes.Point, aRes.D1, aRes.D2, aRes.D3);
+  }
   aRes.Point.Transform(myTrsf);
   aRes.D1.Transform(myTrsf);
   aRes.D2.Transform(myTrsf);
@@ -262,9 +312,13 @@ gp_Vec GeomAdaptor_TransformedCurve::EvalDN(const double theU, const int theN) c
 {
   gp_Vec aV;
   if (myConSurf.IsNull())
+  {
     aV = myCurve.EvalDN(theU, theN);
+  }
   else
+  {
     aV = myConSurf->DN(theU, theN);
+  }
   aV.Transform(myTrsf);
   return aV;
 }

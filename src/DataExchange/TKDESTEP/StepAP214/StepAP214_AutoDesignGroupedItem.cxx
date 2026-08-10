@@ -30,29 +30,53 @@ StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem() = default;
 int StepAP214_AutoDesignGroupedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_CsgShapeRepresentation)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_FacetedBrepShapeRepresentation)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_GeometricallyBoundedWireframeShapeRepresentation)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ManifoldSurfaceShapeRepresentation)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 10;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_TemplateInstance)))
+  {
     return 11;
+  }
   return 0;
 }
 

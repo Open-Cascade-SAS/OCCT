@@ -90,7 +90,9 @@ void TFunction_Function::SetDriverGUID(const Standard_GUID& guid)
 {
   // OCC2932 correction
   if (myDriverGUID == guid)
+  {
     return;
+  }
 
   Backup();
   myDriverGUID = guid;
@@ -102,7 +104,9 @@ void TFunction_Function::SetFailure(const int mode)
 {
   // OCC2932 correction
   if (myFailure == mode)
+  {
     return;
+  }
 
   Backup();
   myFailure = mode;

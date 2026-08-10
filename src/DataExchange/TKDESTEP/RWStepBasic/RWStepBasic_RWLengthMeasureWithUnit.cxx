@@ -33,7 +33,9 @@ void RWStepBasic_RWLengthMeasureWithUnit::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "length_measure_with_unit"))
+  {
     return;
+  }
 
   // --- inherited field : valueComponent ---
   // --- Update 12-02-96 by FMA , 31-MARS-1997 by CKY

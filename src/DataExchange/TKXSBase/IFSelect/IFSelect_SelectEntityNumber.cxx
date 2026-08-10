@@ -38,11 +38,17 @@ Interface_EntityIterator IFSelect_SelectEntityNumber::RootResult(const Interface
   Interface_EntityIterator iter;
   int                      num = 0;
   if (!thenum.IsNull())
+  {
     num = thenum->Value();
+  }
   if (num < 1)
+  {
     return iter; // empty if num < 1 or num > NbEntities
+  }
   if (num <= G.Size())
+  {
     iter.GetOneItem(G.Entity(num));
+  }
   return iter;
 }
 
@@ -50,7 +56,9 @@ TCollection_AsciiString IFSelect_SelectEntityNumber::Label() const
 {
   int num = 0;
   if (!thenum.IsNull())
+  {
     num = thenum->Value();
+  }
   TCollection_AsciiString labl(num);
   labl.InsertBefore(1, "Entity Number ");
   return labl;

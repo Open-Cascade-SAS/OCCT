@@ -32,7 +32,9 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "global_uncertainty_assigned_context"))
+  {
     return;
+  }
 
   // --- inherited field : contextIdentifier ---
 
@@ -65,7 +67,9 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
                            ach,
                            STANDARD_TYPE(StepBasic_UncertaintyMeasureWithUnit),
                            anent3))
+      {
         aUncertainty->SetValue(i3, anent3);
+      }
     }
   }
 

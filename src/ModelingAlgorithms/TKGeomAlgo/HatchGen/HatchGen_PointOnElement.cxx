@@ -214,10 +214,10 @@ void HatchGen_PointOnElement::Dump(const int Index) const
   {
     std::cout << "------";
   }
-  std::cout << "---------------" << std::endl;
+  std::cout << "---------------" << '\n';
 
-  std::cout << "        Index of the element = " << myIndex << std::endl;
-  std::cout << "        Parameter on element = " << myParam << std::endl;
+  std::cout << "        Index of the element = " << myIndex << '\n';
+  std::cout << "        Parameter on element = " << myParam << '\n';
   std::cout << "        Position  on element = ";
   switch (myPosit)
   {
@@ -234,7 +234,7 @@ void HatchGen_PointOnElement::Dump(const int Index) const
       std::cout << "EXTERNAL (i.e. UNKNOWN)";
       break;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
   std::cout << "        Intersection Type    = ";
   switch (myType)
   {
@@ -251,7 +251,7 @@ void HatchGen_PointOnElement::Dump(const int Index) const
       std::cout << "UNDETERMINED";
       break;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
   std::cout << "        State Before         = ";
   switch (myBefore)
   {
@@ -268,7 +268,7 @@ void HatchGen_PointOnElement::Dump(const int Index) const
       std::cout << "UNKNOWN";
       break;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
   std::cout << "        State After          = ";
   switch (myAfter)
   {
@@ -285,9 +285,9 @@ void HatchGen_PointOnElement::Dump(const int Index) const
       std::cout << "UNKNOWN";
       break;
   }
-  std::cout << std::endl;
-  std::cout << "        Beginning of segment = " << (mySegBeg ? "TRUE" : "FALSE") << std::endl;
-  std::cout << "        End       of segment = " << (mySegEnd ? "TRUE" : "FALSE") << std::endl;
+  std::cout << '\n';
+  std::cout << "        Beginning of segment = " << (mySegBeg ? "TRUE" : "FALSE") << '\n';
+  std::cout << "        End       of segment = " << (mySegEnd ? "TRUE" : "FALSE") << '\n';
 
-  std::cout << "    ------------------------------------------" << std::endl;
+  std::cout << "    ------------------------------------------" << '\n';
 }

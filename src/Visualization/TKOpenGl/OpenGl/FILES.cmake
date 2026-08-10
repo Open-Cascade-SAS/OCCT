@@ -27,6 +27,8 @@ set(OCCT_OpenGl_FILES
   OpenGl_FrameStatsPrs.hxx
   OpenGl_Group.hxx
   OpenGl_Group.cxx
+  OpenGl_ShaderGrid.hxx
+  OpenGl_ShaderGrid.cxx
   OpenGl_Structure.hxx
   OpenGl_Structure.cxx
   OpenGl_StructureShadow.hxx

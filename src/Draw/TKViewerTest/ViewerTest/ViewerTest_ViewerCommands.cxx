@@ -20,6 +20,8 @@
 
 #include <ViewerTest.hxx>
 
+#include <Aspect_CircularGrid.hxx>
+#include <Aspect_GridParams.hxx>
 #include <AIS_AnimationAxisRotation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
@@ -29,6 +31,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LightSource.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_ViewCube.hxx>
@@ -269,7 +272,9 @@ TCollection_AsciiString CreateName(
   const TCollection_AsciiString&                                    theDefaultString)
 {
   if (theObjectMap.IsEmpty())
+  {
     return theDefaultString + TCollection_AsciiString(1);
+  }
 
   int  aNextKey = 1;
   bool isFound  = false;
@@ -282,7 +287,9 @@ TCollection_AsciiString CreateName(
       aNextKey++;
     }
     else
+    {
       isFound = true;
+    }
   }
 
   return theDefaultString + TCollection_AsciiString(aNextKey);
@@ -324,12 +331,16 @@ public:
     {
       // Get current configuration
       if (ViewerTest_myDrivers.IsEmpty())
+      {
         myDriverName =
           CreateName<occ::handle<Graphic3d_GraphicDriver>>(ViewerTest_myDrivers,
                                                            TCollection_AsciiString("Driver"));
+      }
       else
+      {
         myDriverName =
           ViewerTest_myDrivers.Find2(ViewerTest::GetAISContext()->CurrentViewer()->Driver());
+      }
 
       if (ViewerTest_myContexts.IsEmpty())
       {
@@ -359,7 +370,9 @@ public:
           aName.Split(aParserPos - 1);
         }
         else
+        {
           break;
+        }
       }
       if (aParserNumber == 0)
       {
@@ -387,8 +400,10 @@ public:
       {
         // Here is viewerName/viewName
         if (!ViewerTest::GetAISContext().IsNull())
+        {
           myDriverName =
             ViewerTest_myDrivers.Find2(ViewerTest::GetAISContext()->CurrentViewer()->Driver());
+        }
         else
         {
           // There is no opened contexts here, need to create name for driver
@@ -429,7 +444,9 @@ occ::handle<AIS_InteractiveContext> FindContextByView(const occ::handle<V3d_View
        anIter.Next())
   {
     if (anIter.Key2()->CurrentViewer() == theView->Viewer())
+    {
       return anIter.Key2();
+    }
   }
   return anAISContext;
 }
@@ -679,7 +696,9 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
   {
     ViewerTest_ViewerCommandsInteractiveContextMap::Iterator anIter(ViewerTest_myContexts);
     if (anIter.More())
+    {
       ViewerTest::SetAISContext(anIter.Key2());
+    }
     a3DViewer = ViewerTest::GetAISContext()->CurrentViewer();
   }
   else if (ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName()))
@@ -1478,7 +1497,9 @@ static TCollection_AsciiString FindViewIdByWindowHandle(Aspect_Drawable theWindo
   {
     Aspect_Drawable aWindowHandle = anIter.Key2()->Window()->NativeHandle();
     if (aWindowHandle == theWindowHandle)
+    {
       return anIter.Key1();
+    }
   }
   return TCollection_AsciiString("");
 }
@@ -1812,7 +1833,9 @@ static int VViewList(Draw_Interpretor& theDi, int theArgsNb, const char** theArg
     return 1;
   }
   if (ViewerTest_myContexts.Size() < 1)
+  {
     return 0;
+  }
 
   bool isTreeView = ((theArgsNb == 1) || (strcasecmp(theArgVec[1], "long") != 0));
 
@@ -1826,7 +1849,9 @@ static int VViewList(Draw_Interpretor& theDi, int theArgsNb, const char** theArg
        aDriverIter.Next())
   {
     if (isTreeView)
+    {
       theDi << aDriverIter.Key1() << ":\n";
+    }
 
     for (ViewerTest_ViewerCommandsInteractiveContextMap::Iterator aContextIter(
            ViewerTest_myContexts);
@@ -1851,9 +1876,13 @@ static int VViewList(Draw_Interpretor& theDi, int theArgsNb, const char** theArg
             if (isTreeView)
             {
               if (aViewIter.Key2() == ViewerTest::CurrentView())
+              {
                 theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)\n";
+              }
               else
+              {
                 theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "\n";
+              }
             }
             else
             {
@@ -2648,7 +2677,9 @@ static int VClear(Draw_Interpretor&, int, const char**)
 {
   occ::handle<V3d_View> V = ViewerTest::CurrentView();
   if (!V.IsNull())
+  {
     ViewerTest::Clear();
+  }
   return 0;
 }
 
@@ -2861,7 +2892,7 @@ static int VBackground(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
       if (aCubeMapSeq.Size() > 1 && aCubeMapSeq.Size() < 6)
       {
-        aCubeMapSeq.Remove(2, aCubeMapSeq.Size());
+        aCubeMapSeq.Remove(2, aCubeMapSeq.Length());
       }
     }
     else if (anArgIter + 6 < theNbArgs && anArg == "-order")
@@ -3134,7 +3165,9 @@ static int VScale(Draw_Interpretor& di, int argc, const char** argv)
 {
   occ::handle<V3d_View> V3dView = ViewerTest::CurrentView();
   if (V3dView.IsNull())
+  {
     return 1;
+  }
 
   if (argc != 4)
   {
@@ -3451,7 +3484,9 @@ static int VPan(Draw_Interpretor& di, int argc, const char** argv)
 {
   occ::handle<V3d_View> V3dView = ViewerTest::CurrentView();
   if (V3dView.IsNull())
+  {
     return 1;
+  }
 
   if (argc == 3)
   {
@@ -4952,7 +4987,9 @@ static int VLayerLine(Draw_Interpretor& di, int argc, const char** argv)
 
   // has width
   if (argc > 5)
+  {
     aWidth = Draw::Atof(argv[5]);
+  }
 
   // select appropriate line type
   Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
@@ -4967,7 +5004,9 @@ static int VLayerLine(Draw_Interpretor& di, int argc, const char** argv)
   {
     aTransparency = Draw::Atof(argv[7]);
     if (aTransparency < 0 || aTransparency > 1.0)
+    {
       aTransparency = 1.0;
+    }
   }
 
   static occ::handle<V3d_LineItem> aLine;
@@ -4999,11 +5038,21 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     return 1;
   }
 
-  Aspect_GridType          aType = aViewer->GridType();
-  Aspect_GridDrawMode      aMode = aViewer->GridDrawMode();
+  Aspect_GridType          aType = Aspect_GT_Rectangular;
+  Aspect_GridDrawMode      aMode = Aspect_GDM_Lines;
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
-  double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
-  bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
+  double                   aNewRadius = 0.0, aNewRotAngle = 0.0, aNewZOffset = 0.0;
+  double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
+  Quantity_Color           aNewColor, aNewTenthColor;
+  bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
+       hasZOffset   = false;
+  bool isShaderGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
+  bool hasGridType = false, hasGridMode = false;
+  bool hasColor = false, hasTenthColor = false;
+  // Tracks whether any shader-grid-only option was passed; used to warn when
+  // such options are ignored by the non-shader grid path.
+  bool                   hasShaderOnlyOpt = false;
+  Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5019,11 +5068,17 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       anArgNext.LowerCase();
       if (anArgNext == "r" || anArgNext == "rect" || anArgNext == "rectangular")
       {
-        aType = Aspect_GT_Rectangular;
+        aType       = Aspect_GT_Rectangular;
+        hasGridType = true;
       }
       else if (anArgNext == "c" || anArgNext == "circ" || anArgNext == "circular")
       {
-        aType = Aspect_GT_Circular;
+        aType       = Aspect_GT_Circular;
+        hasGridType = true;
+      }
+      else if (anArgNext == "gpu" || anArgNext == "shader")
+      {
+        isShaderGrid = true;
       }
       else
       {
@@ -5037,11 +5092,13 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       anArgNext.LowerCase();
       if (anArgNext == "l" || anArgNext == "line" || anArgNext == "lines")
       {
-        aMode = Aspect_GDM_Lines;
+        aMode       = Aspect_GDM_Lines;
+        hasGridMode = true;
       }
       else if (anArgNext == "p" || anArgNext == "point" || anArgNext == "points")
       {
-        aMode = Aspect_GDM_Points;
+        aMode       = Aspect_GDM_Points;
+        hasGridMode = true;
       }
       else
       {
@@ -5082,10 +5139,10 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-radius")
     {
-      hasSize = true;
+      hasRadius = true;
       ++anArgIter;
-      aNewSizeXY.SetValues(Draw::Atof(theArgVec[anArgIter]), 0.0);
-      if (aNewStepXY.x() <= 0.0)
+      aNewRadius = Draw::Atof(theArgVec[anArgIter]);
+      if (aNewRadius <= 0.0)
       {
         Message::SendFail() << "Syntax error: wrong size '" << theArgVec[anArgIter] << "'";
         return 1;
@@ -5096,7 +5153,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       hasSize = true;
       aNewSizeXY.SetValues(Draw::Atof(theArgVec[anArgIter + 1]),
                            Draw::Atof(theArgVec[anArgIter + 2]));
-      if (aNewStepXY.x() <= 0.0 || aNewStepXY.y() <= 0.0)
+      if (aNewSizeXY.x() <= 0.0 || aNewSizeXY.y() <= 0.0)
       {
         Message::SendFail() << "Syntax error: wrong size '" << theArgVec[anArgIter + 1] << " "
                             << theArgVec[anArgIter + 2] << "'";
@@ -5104,32 +5161,235 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       }
       anArgIter += 2;
     }
+    else if (anArgIter + 3 < theArgNb && (anArg == "-color"))
+    {
+      // Colors feed both implementations through different sinks: aGridParams here
+      // for the shader path, and Aspect_Grid::SetColors at the end of this function.
+      hasColor  = true;
+      aNewColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
+                                 Draw::Atof(theArgVec[anArgIter + 2]),
+                                 Draw::Atof(theArgVec[anArgIter + 3]),
+                                 Quantity_TOC_RGB);
+      aGridParams.SetColor(aNewColor);
+      anArgIter += 3;
+    }
+    else if (anArgIter + 3 < theArgNb && (anArg == "-tenthcolor" || anArg == "-accentcolor"))
+    {
+      hasTenthColor  = true;
+      aNewTenthColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
+                                      Draw::Atof(theArgVec[anArgIter + 2]),
+                                      Draw::Atof(theArgVec[anArgIter + 3]),
+                                      Quantity_TOC_RGB);
+      aGridParams.SetAccentColor(aNewTenthColor);
+      anArgIter += 3;
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-scale")
+    {
+      hasScale         = true;
+      hasShaderOnlyOpt = true;
+      aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
+    {
+      hasShaderOnlyOpt = true;
+      aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-background")
+    {
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsBackground(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
+    {
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsDrawAxis(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && (anArg == "-viewadaptive" || anArg == "-adaptive"))
+    {
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsViewAdaptive(aVal != 0);
+    }
+    else if (anArg == "-gpu" || anArg == "-shader")
+    {
+      isShaderGrid = true;
+    }
+    else if (anArgIter + 2 < theArgNb && anArg == "-arc")
+    {
+      // Angular range for circular grids (radians). Equal start/end = full circle.
+      hasArc       = true;
+      aNewArcStart = Draw::Atof(theArgVec[anArgIter + 1]);
+      aNewArcEnd   = Draw::Atof(theArgVec[anArgIter + 2]);
+      aGridParams.SetArcRange(aNewArcStart, aNewArcEnd);
+      anArgIter += 2;
+    }
     else if (anArg == "r" || anArg == "rect" || anArg == "rectangular")
     {
-      aType = Aspect_GT_Rectangular;
+      aType       = Aspect_GT_Rectangular;
+      hasGridType = true;
     }
     else if (anArg == "c" || anArg == "circ" || anArg == "circular")
     {
-      aType = Aspect_GT_Circular;
+      aType       = Aspect_GT_Circular;
+      hasGridType = true;
     }
     else if (anArg == "l" || anArg == "line" || anArg == "lines")
     {
-      aMode = Aspect_GDM_Lines;
+      aMode       = Aspect_GDM_Lines;
+      hasGridMode = true;
     }
     else if (anArg == "p" || anArg == "point" || anArg == "points")
     {
-      aMode = Aspect_GDM_Points;
+      aMode       = Aspect_GDM_Points;
+      hasGridMode = true;
     }
-    else if (anArgIter + 1 >= theArgNb && anArg == "off")
+    else if (anArg == "off")
     {
-      aViewer->DeactivateGrid();
-      return 0;
+      hasGridOff = true;
     }
     else
     {
       Message::SendFail() << "Syntax error at '" << anArg << "'";
       return 1;
     }
+  }
+
+  if (isShaderGrid && hasGridOff)
+  {
+    Message::SendFail("Syntax error: 'off' cannot be combined with shader grid display");
+    return 1;
+  }
+
+  // Shader-only options (-scale, -lineThickness, -background, -drawAxis,
+  // -viewAdaptive) are stored on Aspect_GridParams and consumed only by the
+  // shader path. Silently ignoring them on the non-shader path leaves the user
+  // wondering why nothing changed; warn explicitly.
+  if (hasShaderOnlyOpt && !isShaderGrid && !hasGridOff)
+  {
+    Message::SendWarning("vgrid: -scale / -lineThickness / -background / -drawAxis / "
+                         "-viewAdaptive are shader-grid only; pass -gpu (or -type gpu) to apply.");
+  }
+
+  if (!isShaderGrid)
+  {
+    if (!hasGridType)
+    {
+      aType = aViewer->GridType();
+    }
+    if (!hasGridMode)
+    {
+      aMode = aViewer->GridDrawMode();
+    }
+  }
+
+  if (isShaderGrid || hasGridOff)
+  {
+    if (hasGridOff)
+    {
+      aView->GridErase();
+    }
+    if (isShaderGrid)
+    {
+      const bool isShaderCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
+      NCollection_Vec2<double> anOrigXY(0.0, 0.0);
+      double                   aRotAngle = 0.0;
+
+      if (isShaderCircular)
+      {
+        double aRadiusStep    = 0.0;
+        int    aDivisionCount = 0;
+        aViewer->CircularGridValues(anOrigXY.x(),
+                                    anOrigXY.y(),
+                                    aRadiusStep,
+                                    aDivisionCount,
+                                    aRotAngle);
+        if (hasOrigin)
+        {
+          anOrigXY = aNewOriginXY;
+        }
+        if (hasRotAngle)
+        {
+          aRotAngle = aNewRotAngle;
+        }
+        if (hasStep)
+        {
+          aRadiusStep    = aNewStepXY.x();
+          aDivisionCount = int(aNewStepXY.y());
+        }
+        else if (hasScale && aGridParams.Scale() > 0.0)
+        {
+          aRadiusStep = 1.0 / aGridParams.Scale();
+        }
+        if (aRadiusStep <= 0.0)
+        {
+          aRadiusStep = 1.0;
+        }
+        if (aDivisionCount <= 0)
+        {
+          aDivisionCount = 16;
+        }
+        aGridParams.SetScale(1.0 / aRadiusStep);
+        aGridParams.SetScaleY(0.0);
+        aGridParams.SetAngularDivisions(aDivisionCount);
+      }
+      else
+      {
+        NCollection_Vec2<double> aStepXY(1.0, 1.0);
+        aViewer->RectangularGridValues(anOrigXY.x(),
+                                       anOrigXY.y(),
+                                       aStepXY.x(),
+                                       aStepXY.y(),
+                                       aRotAngle);
+        if (hasOrigin)
+        {
+          anOrigXY = aNewOriginXY;
+        }
+        if (hasRotAngle)
+        {
+          aRotAngle = aNewRotAngle;
+        }
+        if (!hasScale)
+        {
+          if (hasStep)
+          {
+            aGridParams.SetScale(1.0 / aNewStepXY.x());
+            aGridParams.SetScaleY(1.0 / aNewStepXY.y());
+          }
+          else
+          {
+            aGridParams.SetScale(aStepXY.x() > 0.0 ? 1.0 / aStepXY.x() : 1.0);
+            aGridParams.SetScaleY(aStepXY.y() > 0.0 ? 1.0 / aStepXY.y() : 1.0);
+          }
+        }
+        aGridParams.SetAngularDivisions(0);
+      }
+
+      aGridParams.SetOrigin(gp_Pnt(-anOrigXY.x(), -anOrigXY.y(), 0.0));
+      aGridParams.SetDrawMode(aMode);
+      aGridParams.SetRotationAngle(aRotAngle);
+      if (hasSize && !isShaderCircular)
+      {
+        aGridParams.SetSizeX(aNewSizeXY.x());
+        aGridParams.SetSizeY(aNewSizeXY.y());
+      }
+      if (hasRadius)
+      {
+        aGridParams.SetRadius(aNewRadius);
+      }
+      if (hasZOffset)
+      {
+        aGridParams.SetZOffset(aNewZOffset);
+      }
+      aView->GridDisplay(aGridParams);
+    }
+    if (hasGridOff && !isShaderGrid)
+    {
+      // Plain 'vgrid off' still deactivates the viewer-managed grid.
+      aViewer->DeactivateGrid();
+    }
+    return 0;
   }
 
   if (aType == Aspect_GT_Rectangular)
@@ -5205,24 +5465,55 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
                                    aRadiusStep,
                                    aDivisionNumber,
                                    aRotAngle);
-    if (hasSize || hasZOffset)
+    if (hasSize)
+    {
+      Message::SendFail("Syntax error: circular size should be specified as radius");
+      return 1;
+    }
+    if (hasRadius || hasZOffset)
     {
       double aRadius = 0.0, aZOffset = 0.0;
       aViewer->CircularGridGraphicValues(aRadius, aZOffset);
-      if (hasSize)
+      if (hasRadius)
       {
-        aRadius = aNewSizeXY.x();
-        if (aNewSizeXY.y() != 0.0)
-        {
-          Message::SendFail("Syntax error: circular size should be specified as radius");
-          return 1;
-        }
+        aRadius = aNewRadius;
       }
       if (hasZOffset)
       {
         aZOffset = aNewZOffset;
       }
       aViewer->SetCircularGridGraphicValues(aRadius, aZOffset);
+    }
+    // Angular range must hit the Aspect_CircularGrid base before ActivateGrid
+    // fires syncViews - syncViews copies AngleStart/End from the grid, so any
+    // value set earlier only on aGridParams would get overwritten.
+    if (hasArc)
+    {
+      if (occ::handle<Aspect_CircularGrid> aCircGrid =
+            occ::down_cast<Aspect_CircularGrid>(aViewer->Grid(true)))
+      {
+        aCircGrid->SetArcRange(aNewArcStart, aNewArcEnd);
+      }
+    }
+  }
+  // Apply -color / -tenthColor to the active grid so V3d syncViews picks
+  // them up on the next display. Shader-grid display drives these through
+  // aGridParams directly (set earlier in the parser loop).
+  if (hasColor || hasTenthColor)
+  {
+    if (occ::handle<Aspect_Grid> aGrid = aViewer->Grid(true))
+    {
+      Quantity_Color aMainColor, aTenthColor;
+      aGrid->Colors(aMainColor, aTenthColor);
+      if (hasColor)
+      {
+        aMainColor = aNewColor;
+      }
+      if (hasTenthColor)
+      {
+        aTenthColor = aNewTenthColor;
+      }
+      aGrid->SetColors(aMainColor, aTenthColor);
     }
   }
   aViewer->ActivateGrid(aType, aMode);
@@ -5337,13 +5628,21 @@ static int VConvert(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     TCollection_AsciiString anArg(theArgVec[anArgIdx]);
     anArg.LowerCase();
     if (anArg == "window")
+    {
       aMode = Window;
+    }
     else if (anArg == "view")
+    {
       aMode = View;
+    }
     else if (anArg == "grid")
+    {
       aMode = Grid;
+    }
     else if (anArg == "ray")
+    {
       aMode = Ray;
+    }
     else
     {
       Message::SendFail() << "Error: wrong argument " << anArg << "! See usage:";
@@ -5683,7 +5982,7 @@ static int VReadPixel(Draw_Interpretor& theDI, int theArgNb, const char** theArg
   const char* aWarnLog = theDI.Result();
   if (aWarnLog != nullptr && aWarnLog[0] != '\0')
   {
-    std::cout << aWarnLog << std::endl;
+    std::cout << aWarnLog << '\n';
   }
   theDI.Reset();
 
@@ -6303,8 +6602,7 @@ static int VMoveTo(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
         return 1;
       }
 
-      const bool toEchoGrid =
-        aContext->CurrentViewer()->IsGridActive() && aContext->CurrentViewer()->GridEcho();
+      const bool toEchoGrid = aView->IsGridActive() && aContext->CurrentViewer()->GridEcho();
       if (toEchoGrid)
       {
         aContext->CurrentViewer()->HideGridEcho(aView);
@@ -10271,7 +10569,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
   if (!aPrsList.IsEmpty())
   {
     // update light source presentations
-    std::vector<occ::handle<AIS_LightSource>> aLightPrsVec;
+    NCollection_LinearVector<occ::handle<AIS_LightSource>> aLightPrsVec;
     for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList);
          aPrsIter.More();
          aPrsIter.Next())
@@ -10279,7 +10577,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
       if (occ::handle<AIS_LightSource> aLightPrs2 =
             occ::down_cast<AIS_LightSource>(aPrsIter.Value()))
       {
-        aLightPrsVec.push_back(aLightPrs2);
+        aLightPrsVec.Append(aLightPrs2);
       }
     }
 
@@ -10287,11 +10585,8 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
     std::sort(aLightPrsVec.begin(), aLightPrsVec.end(), LightPrsSort());
 
     int aTopStack = 0;
-    for (std::vector<occ::handle<AIS_LightSource>>::iterator aPrsIter = aLightPrsVec.begin();
-         aPrsIter != aLightPrsVec.end();
-         ++aPrsIter)
+    for (const occ::handle<AIS_LightSource>& aLightPrs2 : aLightPrsVec)
     {
-      occ::handle<AIS_LightSource> aLightPrs2 = *aPrsIter;
       if (!aLightPrs2->TransformPersistence().IsNull()
           && aLightPrs2->TransformPersistence()->IsTrihedronOr2d())
       {
@@ -10304,6 +10599,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
       aCtx->SetTransformPersistence(aLightPrs2, aLightPrs2->TransformPersistence());
     }
   }
+
   return 0;
 }
 
@@ -10379,35 +10675,65 @@ static bool parsePerfStatsFlag(const TCollection_AsciiString&           theValue
   }
 
   if (aVal == "fps" || aVal == "framerate")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_FrameRate;
+  }
   else if (aVal == "cpu")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_CPU;
+  }
   else if (aVal == "layers")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Layers;
+  }
   else if (aVal == "structs" || aVal == "structures" || aVal == "objects")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Structures;
+  }
   else if (aVal == "groups")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Groups;
+  }
   else if (aVal == "arrays")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_GroupArrays;
+  }
   else if (aVal == "tris" || aVal == "triangles")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Triangles;
+  }
   else if (aVal == "pnts" || aVal == "points")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Points;
+  }
   else if (aVal == "lines")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Lines;
+  }
   else if (aVal == "mem" || aVal == "gpumem" || aVal == "estimmem")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_EstimMem;
+  }
   else if (aVal == "skipimmediate" || aVal == "noimmediate")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_SkipImmediate;
+  }
   else if (aVal == "frametime" || aVal == "frametimers" || aVal == "time")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_FrameTime;
+  }
   else if (aVal == "basic")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Basic;
+  }
   else if (aVal == "extended" || aVal == "verbose" || aVal == "extra")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_Extended;
+  }
   else if (aVal == "full" || aVal == "all")
+  {
     aFlag = Graphic3d_RenderingParams::PerfCounters_All;
+  }
   else
   {
     return false;
@@ -11806,31 +12132,53 @@ static int VStatProfiler(Draw_Interpretor& theDI, int theArgNb, const char** the
     {
       Graphic3d_RenderingParams::PerfCounters aParam = Graphic3d_RenderingParams::PerfCounters_NONE;
       if (aFlag == "fps")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_FrameRate;
+      }
       else if (aFlag == "cpu")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_CPU;
+      }
       else if (aFlag == "alllayers" || aFlag == "layers")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Layers;
+      }
       else if (aFlag == "allstructs" || aFlag == "allstructures" || aFlag == "structs"
                || aFlag == "structures")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Structures;
+      }
       else if (aFlag == "groups")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Groups;
+      }
       else if (aFlag == "allarrays" || aFlag == "fillarrays" || aFlag == "linearrays"
                || aFlag == "pointarrays" || aFlag == "textarrays")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_GroupArrays;
+      }
       else if (aFlag == "triangles")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Triangles;
+      }
       else if (aFlag == "lines")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Lines;
+      }
       else if (aFlag == "points")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_Points;
+      }
       else if (aFlag == "geommem" || aFlag == "texturemem" || aFlag == "framemem")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_EstimMem;
+      }
       else if (aFlag == "elapsedframe" || aFlag == "cpuframeaverage" || aFlag == "cpupickingaverage"
                || aFlag == "cpucullingaverage" || aFlag == "cpudynaverage" || aFlag == "cpuframemax"
                || aFlag == "cpupickingmax" || aFlag == "cpucullingmax" || aFlag == "cpudynmax")
+      {
         aParam = Graphic3d_RenderingParams::PerfCounters_FrameTime;
+      }
       else
       {
         Message::SendFail() << "Error: unknown argument '" << theArgVec[anArgIter] << "'";
@@ -13443,7 +13791,7 @@ static int VColorDiff(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 {
   if (theNbArgs != 7)
   {
-    std::cerr << "Error: command syntax is incorrect, see help" << std::endl;
+    std::cerr << "Error: command syntax is incorrect, see help" << '\n';
     return 1;
   }
 
@@ -13951,9 +14299,19 @@ vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]
 )" /* [vlayerline] */);
 
   addCmd("vgrid", VGrid, /* [vgrid] */ R"(
-vgrid [off] [-type {rect|circ}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
+vgrid [off] [-type {rect|circ|gpu|shader}] [-gpu] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
       [-step X Y] [-size DX DY]
-      [-step StepRadius NbDivisions] [-radius Radius]
+      [-step StepRadius NbDivisions] [-radius Radius] [-arc AngleStart AngleEnd]
+      [-color R G B] [-tenthColor R G B] [-scale N] [-lineThickness T]
+      [-background {0|1}] [-drawAxis {0|1}] [-viewAdaptive {0|1}]
+Two grid implementations are available:
+  - '-type rect' / '-type circ' draws the viewer grid shared by every active view.
+  - '-type gpu' / '-gpu' activates the shader grid on the active view.
+    Without '-size' or '-radius' it is unbounded; combine with '-size DX DY'
+    for a rectangle, '-radius R' for a disc, '-arc S E' for a wedge.
+'-color', '-tenthColor' apply to both implementations. '-scale',
+'-lineThickness', '-background', '-drawAxis', '-viewAdaptive {0|1}' are
+shader-grid only. 'off' deactivates the active grid in the current view/viewer.
 )" /* [vgrid] */);
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(

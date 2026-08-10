@@ -80,7 +80,9 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
       // st = PR.ReadEntity(IR, PR.Current(), Msg185, anent); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadEntity(IR, PR.Current(), "Model space curve", anent);
       if (PR.ReadEntity(IR, PR.Current(), aStatus, anent))
+      {
         tempCurves->SetValue(i, anent);
+      }
       else
       {
         Message_Msg Msg185("XSTEP_185");
@@ -110,7 +112,9 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
              STANDARD_TYPE(IGESSolid_VertexList), avert);
       */
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESSolid_VertexList), avert))
+      {
         tempStartVertexList->SetValue(i, avert);
+      }
       else
       {
         Message_Msg Msg188("XSTEP_188");
@@ -143,7 +147,9 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
       // st = PR.ReadInteger(PR.Current(), Msg186, anint); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadInteger(PR.Current(), "Start vertex index", anint);
       if (PR.ReadInteger(PR.Current(), anint))
+      {
         tempStartVertexIndex->SetValue(i, anint);
+      }
       else
       {
         Message_Msg Msg186("XSTEP_186");
@@ -158,7 +164,9 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
              STANDARD_TYPE(IGESSolid_VertexList), avert);
       */
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESSolid_VertexList), avert))
+      {
         tempEndVertexList->SetValue(i, avert);
+      }
       else
       {
         Message_Msg Msg189("XSTEP_189");
@@ -190,7 +198,9 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
       // st = PR.ReadInteger(PR.Current(), Msg187, anint); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadInteger(PR.Current(), "End vertex index", anint);
       if (PR.ReadInteger(PR.Current(), anint))
+      {
         tempEndVertexIndex->SetValue(i, anint);
+      }
       else
       {
         Message_Msg Msg187("XSTEP_187");
@@ -206,11 +216,13 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>
   }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   if (length > 0)
+  {
     ent->Init(tempCurves,
               tempStartVertexList,
               tempStartVertexIndex,
               tempEndVertexList,
               tempEndVertexIndex);
+  }
 }
 
 //=================================================================================================
@@ -371,5 +383,5 @@ void IGESSolid_ToolEdgeList::OwnDump(const occ::handle<IGESSolid_EdgeList>& ent,
     default:
       break;
   }
-  S << std::endl;
+  S << '\n';
 }

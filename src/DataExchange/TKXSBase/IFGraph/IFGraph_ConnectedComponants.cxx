@@ -39,7 +39,9 @@ void IFGraph_ConnectedComponants::Evaluate()
   {
     const occ::handle<Standard_Transient>& ent = loaded.Value();
     if (IsInPart(ent))
+    {
       continue;
+    }
     IFGraph_AllConnected connect(Model(), ent);
     AddPart();
     GetFromIter(connect);

@@ -234,7 +234,9 @@ bool BRepBlend_RstRstConstRad::IsSolution(const math_Vector& Sol, const double T
         istangent = false;
       }
       else
+      {
         istangent = true;
+      }
     }
 
     if (!istangent)
@@ -258,7 +260,9 @@ bool BRepBlend_RstRstConstRad::IsSolution(const math_Vector& Sol, const double T
     IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, NotUsed);
 
     if (!IsCenter)
+    {
       return false;
+    }
 
     gp_Vec n1(Center, ptrst1), n2(Center, ptrst2);
 
@@ -428,7 +432,9 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
   centptrst.SetXYZ(PtTmp1.XYZ() - Center.XYZ());
 
   if (centptrst.Dot(NRst1InPlane) < 0.)
+  {
     NRst1InPlane.Reverse();
+  }
 
   TgRst1 = nplan.Crossed(centptrst);
 
@@ -438,7 +444,9 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
   centptrst.SetXYZ(PtTmp2.XYZ() - Center.XYZ());
 
   if (centptrst.Dot(NRst2InPlane) < 0.)
+  {
     NRst2InPlane.Reverse();
+  }
 
   TgRst2 = nplan.Crossed(centptrst);
 
@@ -515,7 +523,9 @@ bool BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& PtRst1,
   }
 
   if (Dist < -1.E-07)
+  {
     return false;
+  }
 
   if (Dist > 1.E-07)
   {
@@ -570,7 +580,9 @@ void BRepBlend_RstRstConstRad::Section(const double Param,
     Pfin = ElCLib::Parameter(C, ptrst2);
   }
   if (Pfin < Precision::PConfusion())
+  {
     Pfin += Precision::PConfusion();
+  }
 }
 
 //=================================================================================================
@@ -782,7 +794,9 @@ bool BRepBlend_RstRstConstRad::Section(const Blend_Point&            P,
       istgt = false;
     }
     else
+    {
       istgt = true;
+    }
   }
 
   gp_Vec med;
@@ -791,7 +805,9 @@ bool BRepBlend_RstRstConstRad::Section(const Blend_Point&            P,
 
   IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, med);
   if (!IsCenter)
+  {
     return false;
+  }
 
   normmed = med.Magnitude();
   med.Normalize();

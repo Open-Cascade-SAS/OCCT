@@ -106,7 +106,9 @@ void PrsDim_SymmetricRelation::Compute(const occ::handle<PrsMgr_PresentationMana
           pl = p2;
         }
         if (isinfinite)
+        {
           aprs->SetInfiniteState(true);
+        }
         ComputeProjEdgePresentation(aprs, TopoDS::Edge(myTool), aCurve, pf, pl);
       }
     }
@@ -133,7 +135,9 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
                                isinfinite,
                                isonplane,
                                myPlane))
+  {
     return;
+  }
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
   gp_Lin                 laxis(geom_line->Lin());
@@ -153,7 +157,9 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
       gp_Vec VLa(PjAttachPnt1, PjOffSetPnt);
       double scal = VL1.Dot(VLa);
       if (scal < 0)
+      {
         VL1.Reverse();
+      }
       VL1.Multiply(h);
       gp_Pnt P1       = myFAttach.Translated(VL1);
       gp_Pnt ProjAxis = ElCLib::Value(ElCLib::Parameter(laxis, P1), laxis);
@@ -225,7 +231,9 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
       gp_Pnt  ProjCenter1     = ElCLib::Value(ElCLib::Parameter(laxis, Center1), laxis);
       gp_Vec  Vp(ProjCenter1, Center1);
       if (Vp.Magnitude() <= Precision::Confusion())
+      {
         Vp = gp_Vec(laxis.Direction()) ^ myPlane->Pln().Position().Direction();
+      }
       double Dt, R, h;
       Dt = ProjCenter1.Distance(ProjOffsetPoint);
       R  = circ1.Radius();
@@ -359,10 +367,14 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
 {
   BRepAdaptor_Curve cu1(TopoDS::Edge(myFShape));
   if (cu1.GetType() != GeomAbs_Line && cu1.GetType() != GeomAbs_Circle)
+  {
     return;
+  }
   BRepAdaptor_Curve cu2(TopoDS::Edge(mySShape));
   if (cu2.GetType() != GeomAbs_Line && cu2.GetType() != GeomAbs_Circle)
+  {
     return;
+  }
   //  gp_Pnt pint3d,ptat11,ptat12,ptat21,ptat22;
   gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
   occ::handle<Geom_Curve> geom1, geom2;
@@ -396,7 +408,9 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
                                isinfinite,
                                isonplane,
                                myPlane))
+  {
     return;
+  }
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
   gp_Lin                 laxis(geom_line->Lin());
@@ -475,14 +489,22 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
     if (!idem)
     {
       if (ProjOffset.SquareDistance(ptat11) > ProjOffset.SquareDistance(ptat12))
+      {
         myFAttach = ptat12;
+      }
       else
+      {
         myFAttach = ptat11;
+      }
 
       if (ProjOffset.SquareDistance(ptat21) > ProjOffset.SquareDistance(ptat22))
+      {
         mySAttach = ptat22;
+      }
       else
+      {
         mySAttach = ptat21;
+      }
     }
   }
   else if (isInfinite1)
@@ -499,7 +521,9 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
   }
 
   if (!myArrowSizeIsDefined)
+  {
     myArrowSize = myFAttach.Distance(mySAttach) / 50.;
+  }
   //----------------------------------------------------
 
   //----------------------------------------------------
@@ -536,13 +560,16 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
   gp_Pnt Pj1 = ElCLib::Value(ElCLib::Parameter(laxis, myFAttach), laxis);
   gp_Pnt Pj2 = ElCLib::Value(ElCLib::Parameter(laxis, mySAttach), laxis);
   if ((myFAttach.SquareDistance(Pj1) + mySAttach.SquareDistance(Pj2)) <= Precision::Confusion())
+  {
     myArrowSize = 0.;
+  }
   occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
   occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   if (cu1.GetType() == GeomAbs_Line)
+  {
     DsgPrs_SymmetricPresentation::Add(aprs,
                                       myDrawer,
                                       myFAttach,
@@ -550,8 +577,10 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
                                       myFDirAttach,
                                       laxis,
                                       myPosition);
+  }
 
   if (cu1.GetType() == GeomAbs_Circle)
+  {
     DsgPrs_SymmetricPresentation::Add(aprs,
                                       myDrawer,
                                       myFAttach,
@@ -559,6 +588,7 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
                                       circ,
                                       laxis,
                                       myPosition);
+  }
   if ((myExtShape != 0) && !extCurv.IsNull())
   {
     gp_Pnt pf, pl;
@@ -589,7 +619,9 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
   const occ::handle<Prs3d_Presentation>& aprs)
 {
   if (myFShape.ShapeType() != TopAbs_VERTEX || mySShape.ShapeType() != TopAbs_VERTEX)
+  {
     return;
+  }
   occ::handle<Geom_Curve> geom_axis, extcurve;
   gp_Pnt                  p1, p2;
   bool                    isinfinite, isonplane;
@@ -601,7 +633,9 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
                                isinfinite,
                                isonplane,
                                myPlane))
+  {
     return;
+  }
 
   bool isOnPlane1, isOnPlane2;
 
@@ -609,16 +643,26 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
   PrsDim::ComputeGeometry(TopoDS::Vertex(mySShape), mySAttach, myPlane, isOnPlane2);
 
   if (!myArrowSizeIsDefined)
+  {
     myArrowSize = myFAttach.Distance(mySAttach) / 50.;
+  }
 
   if (isOnPlane1 && isOnPlane2)
+  {
     myExtShape = 0;
+  }
   else if (isOnPlane1 && !isOnPlane2)
+  {
     myExtShape = 2;
+  }
   else if (!isOnPlane1 && isOnPlane2)
+  {
     myExtShape = 1;
+  }
   else
+  {
     return;
+  }
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
   gp_Lin                 laxis(geom_line->Lin());
@@ -637,7 +681,9 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
     myPosition    = curpos;
   }
   if (2 * (myFAttach.Distance(mySAttach)) <= Precision::Confusion())
+  {
     myArrowSize = 0.;
+  }
   occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
   occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
@@ -645,7 +691,11 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
   arr->SetLength(myArrowSize);
   DsgPrs_SymmetricPresentation::Add(aprs, myDrawer, myFAttach, mySAttach, laxis, myPosition);
   if (myExtShape == 1)
+  {
     ComputeProjVertexPresentation(aprs, TopoDS::Vertex(myFShape), myFAttach);
+  }
   else if (myExtShape == 2)
+  {
     ComputeProjVertexPresentation(aprs, TopoDS::Vertex(mySShape), mySAttach);
+  }
 }

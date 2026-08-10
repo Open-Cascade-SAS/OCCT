@@ -47,8 +47,9 @@ void IGESGraph_ToolNominalSize::ReadOwnParams(const occ::handle<IGESGraph_Nomina
   // Reading nbPropertyValues(Integer)
   // clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
-  if ( (nbPropertyValues != 2) && (nbPropertyValues != 3) )
+  if ( (nbPropertyValues != 2) && (nbPropertyValues != 3) ) {
     PR.AddFail("No. of Property values : Value is not 2/3");
+}
 
   // Reading nominalSizeValue(Real)
   PR.ReadReal (PR.Current(), "Nominal size value", nominalSizeValue); //szv#4:S4163:12Mar99 `st=` not needed
@@ -61,10 +62,12 @@ void IGESGraph_ToolNominalSize::ReadOwnParams(const occ::handle<IGESGraph_Nomina
   {
     int num = PR.CurrentNumber();
     if (PR.ParamType(num) == Interface_ParamText)
+    {
       // Reading standardName(String)
       PR.ReadText(PR.Current(),
                   "Name of relevant engg. standard",
                   standardName); // szv#4:S4163:12Mar99 `st=` not needed
+    }
   }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -79,7 +82,9 @@ void IGESGraph_ToolNominalSize::WriteOwnParams(const occ::handle<IGESGraph_Nomin
   IW.Send(ent->NominalSizeName());
 
   if (ent->HasStandardName())
+  {
     IW.Send(ent->StandardName()); // optional
+  }
 }
 
 void IGESGraph_ToolNominalSize::OwnShared(const occ::handle<IGESGraph_NominalSize>& /*ent*/,
@@ -100,7 +105,9 @@ void IGESGraph_ToolNominalSize::OwnCopy(const occ::handle<IGESGraph_NominalSize>
   nominalSizeValue = another->NominalSizeValue();
   nominalSizeName  = new TCollection_HAsciiString(another->NominalSizeName());
   if (another->HasStandardName())
+  {
     standardName = new TCollection_HAsciiString(another->StandardName());
+  }
 
   ent->Init(nbPropertyValues, nominalSizeValue, nominalSizeName, standardName);
 }
@@ -109,10 +116,14 @@ bool IGESGraph_ToolNominalSize::OwnCorrect(const occ::handle<IGESGraph_NominalSi
 {
   int nbp = 2;
   if (ent->HasStandardName())
+  {
     nbp = 3;
+  }
   bool res = (ent->NbPropertyValues() != nbp);
   if (res)
+  {
     ent->Init(nbp, ent->NominalSizeValue(), ent->NominalSizeName(), ent->StandardName());
+  }
   return res; // nbpropertyvalues=2/3 selon standard
 }
 
@@ -136,9 +147,13 @@ void IGESGraph_ToolNominalSize::OwnCheck(const occ::handle<IGESGraph_NominalSize
 {
   int nbp = 2;
   if (ent->HasStandardName())
+  {
     nbp = 3;
+  }
   if (ent->NbPropertyValues() != nbp)
+  {
     ach->AddFail("No. of Property values : Value != 2/3 according Standard Name Status");
+  }
 }
 
 void IGESGraph_ToolNominalSize::OwnDump(const occ::handle<IGESGraph_NominalSize>& ent,
@@ -154,5 +169,5 @@ void IGESGraph_ToolNominalSize::OwnDump(const occ::handle<IGESGraph_NominalSize>
   S << "\n"
     << "Name of relevant engineering standard : ";
   IGESData_DumpString(S, ent->StandardName());
-  S << std::endl;
+  S << '\n';
 }

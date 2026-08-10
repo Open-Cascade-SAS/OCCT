@@ -238,7 +238,9 @@ void Geom_OffsetSurface::SetBasisSurface(const occ::handle<Geom_Surface>& S,
 
     // Raise exception if still C0
     if (isC0)
+    {
       throw Standard_ConstructionError("Offset with no C1 Surface");
+    }
   }
 
   if (isTrimmed)
@@ -464,7 +466,9 @@ Geom_Surface::ResD3 Geom_OffsetSurface::EvalD3(const double U, const double V) c
 gp_Vec Geom_OffsetSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalDN");
+  }
 #ifdef CHECK
   if (!(basisSurf->IsCNu(Nu) && basisSurf->IsCNv(Nv)))
   {
@@ -864,7 +868,9 @@ occ::handle<Geom_Surface> Geom_OffsetSurface::Surface() const
 {
   // Returns an equivalent non-offset surface if it exists for this offset surface.
   if (offsetValue == 0.0)
+  {
     return basisSurf; // Direct case - no offset
+  }
 
   constexpr double          Tol = Precision::Confusion();
   occ::handle<Geom_Surface> Result, Base;

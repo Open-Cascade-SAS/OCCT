@@ -278,9 +278,13 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
     const double VMax = theBAS1.LastVParameter();
 
     if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
+    {
       return true;
+    }
     else
+    {
       aHigh = VMax - VMin;
+    }
   }
   else if (aType2 == GeomAbs_Cylinder)
   {
@@ -290,9 +294,13 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
     const double VMax = theBAS2.LastVParameter();
 
     if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
+    {
       return true;
+    }
     else
+    {
       aHigh = VMax - VMin;
+    }
   }
   else
   {
@@ -513,9 +521,13 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 
   const bool isGeomInt = isTreatAnalityc(aBAS1, aBAS2, myTol);
   if (aF1.IsSame(aF2))
+  {
     myIntersector.Perform(myHS1, dom1, TolArc, TolTang);
+  }
   else
+  {
     myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, myListOfPnts, isGeomInt);
+  }
 
   myIsDone = myIntersector.IsDone();
 
@@ -734,7 +746,9 @@ reapprox:;
   typl = L->ArcType();
 
   if (typl == IntPatch_Restriction)
+  {
     bAvoidLineConstructor = true;
+  }
 
   //
   // Line Constructor
@@ -811,7 +825,9 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
@@ -822,7 +838,9 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
@@ -913,9 +931,13 @@ reapprox:;
         {
           // interval that goes through 0. is divided on two intervals;
           while (fprm < aNul || fprm > aPeriod)
+          {
             fprm = fprm + aPeriod;
+          }
           while (lprm < aNul || lprm > aPeriod)
+          {
             lprm = lprm + aPeriod;
+          }
           //
           if ((aPeriod - fprm) > Tolpc)
           {
@@ -1313,7 +1335,9 @@ reapprox:;
           else
           {
             if (reApprox && !rejectSurface)
+            {
               theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, false, aParType);
+            }
             else
             {
               int iDegMax, iDegMin, iNbIter;
@@ -1728,7 +1752,9 @@ reapprox:;
       GeomInt_IntSS::TreatRLine(RL, myHS1, myHS2, aC3d, aC2d1, aC2d2, aTolReached);
 
       if (aC3d.IsNull())
+      {
         break;
+      }
 
       Bnd_Box2d aBox1, aBox2;
 
@@ -1742,7 +1768,7 @@ reapprox:;
       aBox2.Add(gp_Pnt2d(aU2f, aV2f));
       aBox2.Add(gp_Pnt2d(aU2l, aV2l));
 
-      NCollection_Vector<double> anArrayOfParameters;
+      NCollection_DynamicArray<double> anArrayOfParameters;
 
       // We consider here that the intersection line is same-parameter-line
       anArrayOfParameters.Append(aC3d->FirstParameter());
@@ -1766,7 +1792,9 @@ reapprox:;
         {
           // In order to more precise extending to the boundaries of source curves.
           if (anInd < aNbIntersSolutionsm1 - 1)
+          {
             aParL = aParF;
+          }
 
           continue;
         }
@@ -1780,10 +1808,14 @@ reapprox:;
           aC2d1->D0(aPar, aPt);
 
           if (aBox1.IsOut(aPt))
+          {
             continue;
+          }
 
           if (myApprox1)
+          {
             aCurv2d1 = new Geom2d_TrimmedCurve(aC2d1, aParF, aParL);
+          }
         }
 
         if (!aC2d2.IsNull())
@@ -1791,10 +1823,14 @@ reapprox:;
           aC2d2->D0(aPar, aPt);
 
           if (aBox2.IsOut(aPt))
+          {
             continue;
+          }
 
           if (myApprox2)
+          {
             aCurv2d2 = new Geom2d_TrimmedCurve(aC2d2, aParF, aParL);
+          }
         }
 
         occ::handle<Geom_Curve> aCurv3d = new Geom_TrimmedCurve(aC3d, aParF, aParL);
@@ -2037,16 +2073,22 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
   {
 
     if (!Precision::IsInfinite(theumin) && ((theumin - uinf) > delta))
+    {
       theumin -= delta;
+    }
     else
     {
       theumin = uinf;
     }
 
     if (!Precision::IsInfinite(theumax) && ((usup - theumax) > delta))
+    {
       theumax += delta;
+    }
     else
+    {
       theumax = usup;
+    }
   }
 
   //
@@ -2126,7 +2168,9 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
           aBox.Add(pp2);
         }
         if (!correct)
+        {
           break;
+        }
       }
     }
 
@@ -2138,7 +2182,9 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
       if (isuperiodic && correctU)
       {
         if (theumin < umin)
+        {
           theumin = umin;
+        }
         if (theumax > umax)
         {
           theumax = umax;
@@ -2147,9 +2193,13 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
       if (isvperiodic && correctV)
       {
         if (thevmin < vmin)
+        {
           thevmin = vmin;
+        }
         if (thevmax > vmax)
+        {
           thevmax = vmax;
+        }
       }
     }
   }
@@ -2195,9 +2245,13 @@ bool ParameterOutOfBoundary(const double                         theParameter,
   while (aState == TopAbs_ON)
   {
     if (bIncreasePar)
+    {
       acurpar += adelta;
+    }
     else
+    {
       acurpar -= adelta;
+    }
     gp_Pnt aPCurrent = theCurve->Value(acurpar);
     aPrj1.Perform(aPCurrent);
     double U = 0., V = 0.;
@@ -2234,12 +2288,16 @@ bool ParameterOutOfBoundary(const double                         theParameter,
     if (bIncreasePar)
     {
       if (acurpar >= theOtherParameter)
+      {
         theNewParameter = theOtherParameter;
+      }
     }
     else
     {
       if (acurpar <= theOtherParameter)
+      {
         theNewParameter = theOtherParameter;
+      }
     }
   }
   return bIsComputed;
@@ -2250,7 +2308,9 @@ bool ParameterOutOfBoundary(const double                         theParameter,
 bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve)
 {
   if (thePCurve.IsNull())
+  {
     return false;
+  }
 
   double              tolint = 1.e-10;
   Geom2dAdaptor_Curve PCA;
@@ -2270,17 +2330,23 @@ bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve)
     if (!PCA.IsPeriodic())
     {
       if (PCA.FirstParameter() > pf)
+      {
         pf = PCA.FirstParameter();
+      }
       if (PCA.LastParameter() < pl)
+      {
         pl = PCA.LastParameter();
+      }
     }
     PCD.SetValues(pntf, pf, tolint, pntl, pl, tolint);
     PCI.Perform(PCA, PCD, tolint, tolint);
     if (PCI.IsDone())
+    {
       if (PCI.NbPoints() > 0)
       {
         return false;
       }
+    }
   }
 
   return true;
@@ -2333,7 +2399,9 @@ bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
   double aDRel = std::abs(aDist - R1) / R2;
 
   if (aDRel > .2)
+  {
     return bRes;
+  }
 
   double par = ElCLib::Parameter(anCylAx, theSph.Location());
   gp_Pnt aP  = ElCLib::Value(par, anCylAx);
@@ -2342,9 +2410,13 @@ bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
   double dd = aV.Dot(theSph.Position().XDirection());
 
   if (aDist < R1 && dd > 0.)
+  {
     return false;
+  }
   if (aDist > R1 && dd < 0.)
+  {
     return false;
+  }
 
   return bRes;
 }
@@ -2405,26 +2477,36 @@ void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
   double P11, P12;
   bool   IsCrossed = ClassifyLin2d(theS1, aLin2d1, TolTang, P11, P12);
   if (!IsCrossed)
+  {
     return;
+  }
   // classify line2d2 relatively second plane
   double P21, P22;
   IsCrossed = ClassifyLin2d(theS2, aLin2d2, TolTang, P21, P22);
   if (!IsCrossed)
+  {
     return;
+  }
 
   // Analysis of parametric intervals: must have common part
 
   if (P21 >= P12)
+  {
     return;
+  }
   if (P22 <= P11)
+  {
     return;
+  }
 
   double pmin, pmax;
   pmin = std::max(P11, P21);
   pmax = std::min(P12, P22);
 
   if (pmax - pmin <= TolTang)
+  {
     return;
+  }
 
   occ::handle<Geom_Line> aGLin = new Geom_Line(aLin);
 
@@ -2536,7 +2618,9 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
       return true;
     }
     else
+    {
       return false;
+    }
   }
 
   // xmin, ymax <-> xmax, ymax
@@ -2570,7 +2654,9 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
       return true;
     }
     else
+    {
       return false;
+    }
   }
 
   // xmax, ymax <-> xmax, ymin
@@ -2602,7 +2688,9 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
       return true;
     }
     else
+    {
       return false;
+    }
   }
 
   // xmax, ymin <-> xmin, ymin
@@ -2634,7 +2722,9 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
       return true;
     }
     else
+    {
       return false;
+    }
   }
 
   return false;
@@ -2947,7 +3037,9 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
     double aPer   = aSurf->UPeriod();
     int    nshift = (int)((u - umin) / aPer);
     if (u < umin + aPer * nshift)
+    {
       nshift--;
+    }
     umin += aPer * nshift;
     umax += aPer * nshift;
   }
@@ -2956,7 +3048,9 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
     double aPer   = aSurf->VPeriod();
     int    nshift = (int)((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
+    {
       nshift--;
+    }
     vmin += aPer * nshift;
     vmax += aPer * nshift;
   }

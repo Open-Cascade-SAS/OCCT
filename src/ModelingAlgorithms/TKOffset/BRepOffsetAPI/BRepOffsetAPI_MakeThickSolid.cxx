@@ -47,11 +47,15 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(
     .Initialize(S, Offset, Tol, Mode, Intersection, SelfInter, Join, false, RemoveIntEdges);
   NCollection_List<TopoDS_Shape>::Iterator it(ClosingFaces);
   for (; it.More(); it.Next())
+  {
     myOffsetShape.AddFace(TopoDS::Face(it.Value()));
+  }
 
   myOffsetShape.MakeThickSolid(theRange);
   if (!myOffsetShape.IsDone())
+  {
     return;
+  }
 
   myShape = myOffsetShape.Shape();
   Done();
@@ -69,7 +73,9 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple(const TopoDS_Shape& th
   mySimpleOffsetShape.Perform();
 
   if (!mySimpleOffsetShape.IsDone())
+  {
     return;
+  }
 
   myShape = mySimpleOffsetShape.GetResultShape();
   Done();
@@ -95,14 +101,18 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeThickSolid::Modified(con
       // Useful only for faces without influence on others.
       NCollection_List<TopoDS_Shape>::Iterator it(myGenerated);
       for (; it.More(); it.Next())
+      {
         it.ChangeValue().Reverse();
+      }
     }
   }
   else if (myLastUsedAlgo == OffsetAlgo_SIMPLE)
   {
     TopoDS_Shape aModShape = mySimpleOffsetShape.Modified(F);
     if (!aModShape.IsNull())
+    {
       myGenerated.Append(aModShape);
+    }
   }
 
   return myGenerated;

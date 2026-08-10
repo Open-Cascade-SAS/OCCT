@@ -130,9 +130,13 @@ IntPatch_PolyArc::IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& Line,
         // if(IndexInf>i) IndexInf=i-1;
         // if(IndexSup<i) IndexSup=i;
         if (IndexInf > i)
+        {
           IndexInf = std::max(i - 2, 1);
+        }
         if (IndexSup < i)
+        {
           IndexSup = std::min(i + 1, NbSample);
+        }
       }
 
       myBox.Add(brise(i));
@@ -173,7 +177,9 @@ IntPatch_PolyArc::IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& Line,
   } while ((IndexInf > IndexSup) && nbloop <= 10);
   myError *= 1.2;
   if (myError < 0.00000001)
+  {
     myError = 0.00000001;
+  }
   myBox.Enlarge(myError);
 
   ferme = (Line->Value(aPdeb).Distance(Line->Value(aPfin)) <= 1e-7);
@@ -192,7 +198,9 @@ int IntPatch_PolyArc::NbPoints() const
 gp_Pnt2d IntPatch_PolyArc::Point(const int Index) const
 {
   if (offsetx == 0.0 && offsety == 0.0)
+  {
     return (brise(Index));
+  }
 
   const gp_Pnt2d& P = brise(Index);
   return (gp_Pnt2d(P.X() + offsetx, P.Y() + offsety));

@@ -66,9 +66,13 @@ void TopOpeBRepDS_PointExplorer::Find()
       myFound = IsPoint(myIndex);
     }
     if (myFound)
+    {
       break;
+    }
     else
+    {
       myIndex++;
+    }
   }
 }
 
@@ -115,7 +119,9 @@ bool TopOpeBRepDS_PointExplorer::IsPointKeep(const int I) const
 {
   bool b = MYDS.myPoints.IsBound(I);
   if (b)
+  {
     b = MYDS.Point(I).Keep();
+  }
   return b;
 }
 
@@ -142,7 +148,9 @@ int TopOpeBRepDS_PointExplorer::NbPoint()
   Find();
   int n = 0;
   for (; More(); Next())
+  {
     n++;
+  }
   return n;
 }
 

@@ -259,7 +259,9 @@ void BRepFeat_MakePrism::Perform(const double Length)
           }
         }
         if (found)
+        {
           break;
+        }
       }
     }
 
@@ -272,7 +274,9 @@ void BRepFeat_MakePrism::Perform(const double Length)
         NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
           sl;
         if (!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace))
+        {
           break;
+        }
       }
     }
   }
@@ -387,14 +391,18 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
         Or = ASI.Point(1, ASI.NbPoints(1)).Orientation();
       }
       if (sens == -1)
+      {
         Or = TopAbs::Reverse(Or);
+      }
       TopoDS_Face  FUntil = ASI.Point(1, 1).Face();
       TopoDS_Shape Comp;
       BRep_Builder B;
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         B.Add(Comp, S);
+      }
       BRepAlgoAPI_Cut trP(VraiPrism, Comp);
       UpdateDescendants(trP, trP.Shape(), false);
       //
@@ -448,14 +456,18 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       myJustGluer = true;
       Perform(Until);
       if (myJustGluer)
+      {
         return;
+      }
     }
     else if (Until.IsSame(mySkface))
     {
       myJustGluer = true;
       Perform(From);
       if (myJustGluer)
+      {
         return;
+      }
     }
   }
 
@@ -549,7 +561,9 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
         OrU = ASI1.Point(1, ASI1.NbPoints(1)).Orientation();
       }
       if (sens == -1)
+      {
         OrU = TopAbs::Reverse(OrU);
+      }
       FUntil = ASI1.Point(1, 1).Face();
       ParU   = ASI1.Point(1, 1).Parameter();
     }
@@ -563,7 +577,9 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     {
       OrF = ASI2.Point(1, 1).Orientation();
       if (sens == 1)
+      {
         OrF = TopAbs::Reverse(OrF);
+      }
       FFrom = ASI2.Point(1, 1).Face();
       ParF  = ASI2.Point(1, 1).Parameter();
     }
@@ -948,14 +964,18 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const dou
         Or = ASI.Point(1, ASI.NbPoints(1)).Orientation();
       }
       if (sens == -1)
+      {
         Or = TopAbs::Reverse(Or);
+      }
       TopoDS_Face  FUntil = ASI.Point(1, 1).Face();
       TopoDS_Shape Comp;
       BRep_Builder B;
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         B.Add(Comp, S);
+      }
 
       BRepAlgoAPI_Cut trP(VraiPrism, Comp);
       UpdateDescendants(trP, trP.Shape(), false);
@@ -1033,7 +1053,9 @@ static double HeightMax(const TopoDS_Shape& theSbase,
       }
     }
     if (!FacRevolInfini)
+    {
       BRepBndLib::Add(theSFrom, Box);
+    }
   }
   if (!theSUntil.IsNull())
   {
@@ -1051,7 +1073,9 @@ static double HeightMax(const TopoDS_Shape& theSbase,
       }
     }
     if (!FacRevolInfini)
+    {
       BRepBndLib::Add(theSUntil, Box);
+    }
   }
 
   double c[6];
@@ -1061,9 +1085,13 @@ static double HeightMax(const TopoDS_Shape& theSbase,
   for (int i = 0; i < 6; i++)
   {
     if (c[i] > parmax)
+    {
       parmax = c[i];
+    }
     if (c[i] < parmin)
+    {
       parmin = c[i];
+    }
   }
   // #ifndef OCCT_DEBUG
   double Height = fabs(2. * (parmax - parmin));
@@ -1211,9 +1239,13 @@ static bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 
     // apply locations
     if (!loc1.IsIdentity())
+    {
       pl1.Transform(loc1.Transformation());
+    }
     if (!loc2.IsIdentity())
+    {
       pl2.Transform(loc2.Transformation());
+    }
 
     if (pl1.Position().IsCoplanar(pl2.Position(), tollin, tolang))
     {

@@ -57,17 +57,29 @@ Interface_ParamType StepData_SelectMember::ParamType() const
 {
   int kind = Kind();
   if (kind == 0)
+  {
     return Interface_ParamVoid;
+  }
   if (kind == 1)
+  {
     return Interface_ParamInteger;
+  }
   if (kind == 2 || kind == 3)
+  {
     return Interface_ParamLogical;
+  }
   if (kind == 4)
+  {
     return Interface_ParamEnum;
+  }
   if (kind == 5)
+  {
     return Interface_ParamReal;
+  }
   if (kind == 6)
+  {
     return Interface_ParamText;
+  }
   return Interface_ParamMisc;
 }
 
@@ -104,9 +116,13 @@ StepData_Logical StepData_SelectMember::Logical() const
 {
   int ival = Int();
   if (ival == 0)
+  {
     return StepData_LFalse;
+  }
   if (ival == 1)
+  {
     return StepData_LTrue;
+  }
   return StepData_LUnknown;
 }
 
@@ -114,11 +130,17 @@ void StepData_SelectMember::SetLogical(const StepData_Logical val)
 {
   SetKind(KindLogical);
   if (val == StepData_LFalse)
+  {
     SetInt(0);
+  }
   if (val == StepData_LTrue)
+  {
     SetInt(0);
+  }
   if (val == StepData_LUnknown)
+  {
     SetInt(0);
+  }
 }
 
 double StepData_SelectMember::Real() const
@@ -150,7 +172,9 @@ void StepData_SelectMember::SetEnum(const int val, const char* const text)
   SetKind(KindEnum);
   SetInt(val);
   if (text && text[0] != '\0')
+  {
     SetEnumText(val, text);
+  }
 }
 
 void StepData_SelectMember::SetEnumText(const int /*val*/, const char* const text)

@@ -70,15 +70,21 @@ bool ShapeUpgrade_FaceDivideArea::Perform(const double)
   }
 
   if ((anArea - myMaxArea) < Precision::Confusion())
+  {
     return false;
+  }
 
   if (anbParts == 0)
+  {
     anbParts = RealToInt(ceil(anArea / myMaxArea));
+  }
 
   occ::handle<ShapeUpgrade_SplitSurfaceArea> aSurfTool =
     occ::down_cast<ShapeUpgrade_SplitSurfaceArea>(GetSplitSurfaceTool());
   if (aSurfTool.IsNull())
+  {
     return false;
+  }
   aSurfTool->NbParts() = anbParts;
   if (myIsSplittingByNumber)
   {
@@ -86,11 +92,15 @@ bool ShapeUpgrade_FaceDivideArea::Perform(const double)
     aSurfTool->SetNumbersUVSplits(myUnbSplit, myVnbSplit);
   }
   if (!ShapeUpgrade_FaceDivide::Perform(anArea))
+  {
     return false;
+  }
 
   TopoDS_Shape aResult = Result();
   if (aResult.ShapeType() == TopAbs_FACE)
+  {
     return false;
+  }
   int aStatus = myStatus;
 
   if (!myIsSplittingByNumber)
@@ -111,15 +121,21 @@ bool ShapeUpgrade_FaceDivideArea::Perform(const double)
         TopoDS_Shape    aRes = Result();
         TopExp_Explorer aExpR(aRes, TopAbs_FACE);
         for (; aExpR.More(); aExpR.Next())
+        {
           aB.Add(aCopyRes, aExpR.Current());
+        }
       }
       else
+      {
         aB.Add(aCopyRes, aFace);
+      }
     }
     if (isModified)
     {
       if (aCopyRes.ShapeType() == TopAbs_WIRE || aCopyRes.ShapeType() == TopAbs_SHELL)
+      {
         aCopyRes.Closed(BRep_Tool::IsClosed(aCopyRes));
+      }
       Context()->Replace(aResult, aCopyRes);
     }
   }

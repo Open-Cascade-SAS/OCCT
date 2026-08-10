@@ -77,11 +77,15 @@ void IGESDimen_ToolFlagNote::ReadOwnParams(const occ::handle<IGESDimen_FlagNote>
                         "Leaders",
                         STANDARD_TYPE(IGESDimen_LeaderArrow),
                         anentity))
+      {
         leaders->SetValue(i, anentity);
+      }
     }
   }
   else if (nbval < 0)
+  {
     PR.AddFail("Number of Leaders: Less than zero");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(lowerLeft, angle, note, leaders);
@@ -98,7 +102,9 @@ void IGESDimen_ToolFlagNote::WriteOwnParams(const occ::handle<IGESDimen_FlagNote
   int upper = ent->NbLeaders();
   IW.Send(upper);
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Leader(i));
+  }
 }
 
 void IGESDimen_ToolFlagNote::OwnShared(const occ::handle<IGESDimen_FlagNote>& ent,
@@ -107,7 +113,9 @@ void IGESDimen_ToolFlagNote::OwnShared(const occ::handle<IGESDimen_FlagNote>& en
   iter.GetOneItem(ent->Note());
   int upper = ent->NbLeaders();
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Leader(i));
+  }
 }
 
 void IGESDimen_ToolFlagNote::OwnCopy(const occ::handle<IGESDimen_FlagNote>& another,
@@ -167,5 +175,5 @@ void IGESDimen_ToolFlagNote::OwnDump(const occ::handle<IGESDimen_FlagNote>& ent,
   S << "\n"
     << "Number of Leaders : " << ent->NbLeaders() << "   Leaders : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbLeaders(), ent->Leader);
-  S << std::endl;
+  S << '\n';
 }

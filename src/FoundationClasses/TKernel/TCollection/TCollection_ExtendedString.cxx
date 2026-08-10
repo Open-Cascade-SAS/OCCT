@@ -495,8 +495,12 @@ TCollection_ExtendedString TCollection_ExtendedString::Cat(const char16_t theCha
 void TCollection_ExtendedString::ChangeAll(const char16_t theChar, const char16_t theNewChar)
 {
   for (int i = 0; i < myLength; i++)
+  {
     if (myString[i] == theChar)
+    {
       myString[i] = theNewChar;
+    }
+  }
 }
 
 //=================================================================================================
@@ -573,16 +577,22 @@ TCollection_ExtendedString::~TCollection_ExtendedString()
 void TCollection_ExtendedString::Insert(const int theWhere, const char16_t theWhat)
 {
   if (theWhere > myLength + 1)
+  {
     throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
                               "Parameter theWhere is too big");
+  }
   if (theWhere < 1)
+  {
     throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
                               "Parameter theWhere is out of range");
+  }
   reallocate(myLength + 1);
   if (theWhere != myLength)
   {
     for (int i = myLength - 2; i >= theWhere - 1; i--)
+    {
       myString[i + 1] = myString[i];
+    }
   }
   myString[theWhere - 1] = theWhat;
 }
@@ -778,8 +788,12 @@ bool TCollection_ExtendedString::EndsWith(const char16_t* const theEndString,
 bool TCollection_ExtendedString::IsAscii() const
 {
   for (int i = 0; i < myLength; i++)
+  {
     if (!IsAnAscii(myString[i]))
+    {
       return false;
+    }
+  }
   return true;
 }
 
@@ -816,11 +830,17 @@ void TCollection_ExtendedString::RemoveAll(const char16_t theWhat)
 
 {
   if (myLength == 0)
+  {
     return;
+  }
   int c = 0;
   for (int i = 0; i < myLength; i++)
+  {
     if (myString[i] != theWhat)
+    {
       myString[c++] = myString[i];
+    }
+  }
   myLength           = c;
   myString[myLength] = u'\0';
 }
@@ -1005,8 +1025,10 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* con
   }
   TCollection_ExtendedString res(myLength, 0);
   if (!theSeparators)
+  {
     throw Standard_NullObject("TCollection_ExtendedString::Token : "
                               "parameter 'theSeparators'");
+  }
 
   int       i, j, k, l;
   char16_t* buftmp = res.myString;
@@ -1043,7 +1065,9 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* con
         }
       }
       if (otherSepFound)
+      {
         j++;
+      }
     }
 
     while (!isSepFound && k < myLength && j < myLength)
@@ -1068,7 +1092,9 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* con
       j++;
       k++;
       if (j == myLength)
+      {
         buftmp[k] = 0;
+      }
     }
   }
 
@@ -1080,7 +1106,9 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* con
   else
   {
     for (res.myLength = 0; buftmp[res.myLength]; ++res.myLength)
+    {
       ;
+    }
     res.myString[res.myLength] = u'\0';
   }
   return res;
@@ -1098,8 +1126,10 @@ const char16_t* TCollection_ExtendedString::ToExtString() const
 void TCollection_ExtendedString::Trunc(const int theHowMany)
 {
   if (theHowMany < 0 || theHowMany > myLength)
+  {
     throw Standard_OutOfRange("TCollection_ExtendedString::Trunc : "
                               "parameter 'theHowMany'");
+  }
   myLength           = theHowMany;
   myString[myLength] = u'\0';
 }
@@ -1111,9 +1141,13 @@ char16_t TCollection_ExtendedString::Value(const int theWhere) const
   if (theWhere > 0 && theWhere <= myLength)
   {
     if (myString)
+    {
       return myString[theWhere - 1];
+    }
     else
+    {
       return 0;
+    }
   }
   throw Standard_OutOfRange("TCollection_ExtendedString::Value : "
                             "parameter theWhere");

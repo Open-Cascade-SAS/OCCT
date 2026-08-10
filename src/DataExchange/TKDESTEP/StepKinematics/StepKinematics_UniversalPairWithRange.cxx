@@ -77,7 +77,9 @@ void StepKinematics_UniversalPairWithRange::Init(
     myLowerLimitFirstRotation = theLowerLimitFirstRotation;
   }
   else
+  {
     myLowerLimitFirstRotation = 0;
+  }
 
   defUpperLimitFirstRotation = hasUpperLimitFirstRotation;
   if (defUpperLimitFirstRotation)
@@ -85,7 +87,9 @@ void StepKinematics_UniversalPairWithRange::Init(
     myUpperLimitFirstRotation = theUpperLimitFirstRotation;
   }
   else
+  {
     myUpperLimitFirstRotation = 0;
+  }
 
   defLowerLimitSecondRotation = hasLowerLimitSecondRotation;
   if (defLowerLimitSecondRotation)
@@ -93,7 +97,9 @@ void StepKinematics_UniversalPairWithRange::Init(
     myLowerLimitSecondRotation = theLowerLimitSecondRotation;
   }
   else
+  {
     myLowerLimitSecondRotation = 0;
+  }
 
   defUpperLimitSecondRotation = hasUpperLimitSecondRotation;
   if (defUpperLimitSecondRotation)
@@ -101,7 +107,9 @@ void StepKinematics_UniversalPairWithRange::Init(
     myUpperLimitSecondRotation = theUpperLimitSecondRotation;
   }
   else
+  {
     myUpperLimitSecondRotation = 0;
+  }
 }
 
 //=================================================================================================

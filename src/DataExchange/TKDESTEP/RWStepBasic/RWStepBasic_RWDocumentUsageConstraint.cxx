@@ -31,7 +31,9 @@ void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "document_usage_constraint"))
+  {
     return;
+  }
 
   // --- own field : source ---
 

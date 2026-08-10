@@ -75,9 +75,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
   gp_Dir norf  = Dpl;
   if (Ofpl == TopAbs_REVERSED)
+  {
     norf.Reverse();
+  }
   if (Or1 == TopAbs_REVERSED)
+  {
     Dpl.Reverse();
+  }
 
   // compute the origin of the conical chamfer PtPl
   gp_Pnt Or = Con.Location();
@@ -99,7 +103,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::D1(u, v, Con, PtCon, deru, derv);
   gp_Dir Dcon(deru.Crossed(derv));
   if (Or2 == TopAbs_REVERSED)
+  {
     Dcon.Reverse();
+  }
 
   bool dedans = (Dx.Dot(Dcon) <= 0.);
   bool ouvert = (Dpl.Dot(Dcon) >= 0.);
@@ -135,7 +141,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     {
       ChamfRad = Spine.Radius() - Dis;
       if (std::abs(ChamfRad) < Precision::Confusion())
+      {
         pointu = true;
+      }
       if (ChamfRad < 0)
       {
 #ifdef OCCT_DEBUG
@@ -180,7 +188,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       Dis1 = move * std::tan(SemiAngl) - Dis * std::abs(std::sin(angCon));
 
       if (!dedans)
+      {
         SemiAngl = -SemiAngl;
+      }
     }
     else
     {
@@ -197,10 +207,14 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       }
 
       if (SemiAngl > Precision::Confusion())
+      {
         isConPar = true;
+      }
 
       if (dedans)
+      {
         SemiAngl = -SemiAngl;
+      }
     }
 
     // compute the parameters of the conical chamfer
@@ -209,7 +223,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       ChamfRad = Spine.Radius() - Dis1;
 
       if (std::abs(ChamfRad) < Precision::Confusion())
+      {
         pointu = true;
+      }
       if (ChamfRad < 0)
       {
 #ifdef OCCT_DEBUG
@@ -225,9 +241,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     }
 
     if (ouvert)
+    {
       dis = Dis1 + Dis * std::abs(std::sin(angCon));
+    }
     else
+    {
       dis = Dis1 - Dis * std::abs(std::sin(angCon));
+    }
   }
 
   Or.SetCoord(Or.X() + move * Dpl.X(), Or.Y() + move * Dpl.Y(), Or.Z() + move * Dpl.Z());
@@ -264,13 +284,19 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     torevcha        = ((torevcha && !plandab) || (!torevcha && plandab));
 
     if (torevcha)
+    {
       cylaxe.Reverse();
+    }
     bool toreverse = (norf.Dot(cylaxe) < 0.);
 
     if ((toreverse && dedans) || (!toreverse && !dedans))
+    {
       Data->ChangeOrientation() = TopAbs_REVERSED;
+    }
     else
+    {
       Data->ChangeOrientation() = TopAbs_FORWARD;
+    }
 
     // we load the faceInterference with the pcurves and
     //  the 3d curves
@@ -342,9 +368,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     // intersection cone-chamfer
     double Rad;
     if (dedans)
+    {
       Rad = ChamfRad + dis;
+    }
     else
+    {
       Rad = ChamfRad - dis;
+    }
 
     CirAx2.SetLocation(Or);
     gp_Circ                  CirCon(CirAx2, Rad);
@@ -352,9 +382,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
 
     // pcurve on chamfer
     if (plandab)
+    {
       v = sqrt(dis * dis + move * move);
+    }
     else
+    {
       v = -sqrt(dis * dis + move * move);
+    }
     p2dch.SetCoord(0., v);
     ElSLib::CylinderD1(0., v, ChamfAx3, ChamfRad, Pt, deru, derv);
     lin2dch.SetLocation(p2dch);
@@ -365,20 +399,32 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     ElSLib::Parameters(Con, Pt, u, v);
     double tol = Precision::PConfusion();
     if (u >= 2 * M_PI - tol && u <= 2 * M_PI)
+    {
       u = 0.;
+    }
     if (u >= fu - tol && u < fu)
+    {
       u = fu;
+    }
     if (u <= lu + tol && u > lu)
+    {
       u = lu;
+    }
     if (u < fu || u > lu)
+    {
       u = ElCLib::InPeriod(u, fu, fu + 2 * M_PI);
+    }
     ElSLib::D1(u, v, Con, Pt, deru, derv);
     gp_Pnt2d p2dCon(u, v);
     gp_Dir2d d2dCon;
     if (deru.Dot(DSp) <= 0.)
+    {
       d2dCon = -gp::DX2d();
+    }
     else
+    {
       d2dCon = gp::DX2d();
+    }
     gp_Lin2d                 lin2dCon(p2dCon, d2dCon);
     occ::handle<Geom2d_Line> GLin2dCon = new Geom2d_Line(lin2dCon);
 
@@ -387,7 +433,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
 
     gp_Dir DirCon = (Con.Axis()).Direction();
     if (angCon > Precision::Confusion())
+    {
       DirCon.Reverse();
+    }
     bool torevcon = (norcon.Dot(DirCon) < 0.);
 
     if ((torevcon && dedans) || (!torevcon && !dedans))
@@ -444,9 +492,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     gp_Pnt P;
     u = 0.;
     if (plandab)
+    {
       v = sqrt(dis * dis + move * move);
+    }
     else
+    {
       v = -sqrt(dis * dis + move * move);
+    }
 
     ElSLib::ConeD1(u, v, ChamfAx3, ChamfRad, SemiAngl, P, deru, derv);
     gp_Dir norchamf(deru.Crossed(derv));
@@ -454,12 +506,18 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     bool toreverse = (norf.Dot(norchamf) < 0.);
 
     if (isConPar)
+    {
       toreverse = !toreverse;
+    }
 
     if (toreverse)
+    {
       Data->ChangeOrientation() = TopAbs_REVERSED;
+    }
     else
+    {
       Data->ChangeOrientation() = TopAbs_FORWARD;
+    }
 
     // we load the faceInterference with the pcurves and
     //  the 3d curves
@@ -502,11 +560,15 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     TopAbs_Orientation trans;
     gp_Dir             norpl = PosPl.XDirection().Crossed(PosPl.YDirection());
     if (!pointu)
+    {
       norchamf.SetXYZ(deru.Crossed(derv).XYZ());
+    }
     toreverse = (norchamf.Dot(norpl) <= 0.);
 
     if (isConPar)
+    {
       toreverse = !toreverse;
+    }
 
     if ((toreverse && plandab) || (!toreverse && !plandab))
     {
@@ -537,9 +599,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     // intersection cone-chamfer
     double Rad;
     if (dedans)
+    {
       Rad = ChamfRad + dis;
+    }
     else
+    {
       Rad = ChamfRad - dis;
+    }
 
     CirAx2.SetLocation(Or);
     gp_Circ                  CirCon(CirAx2, Rad);
@@ -547,9 +613,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
 
     // pcurve on chamfer
     if (plandab)
+    {
       v = sqrt(dis * dis + move * move);
+    }
     else
+    {
       v = -sqrt(dis * dis + move * move);
+    }
     p2dch.SetCoord(0., v);
     ElSLib::ConeD1(0., v, ChamfAx3, ChamfRad, SemiAngl, Pt, deru, derv);
     lin2dch.SetLocation(p2dch);
@@ -562,20 +632,32 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     ElSLib::Parameters(Con, Pt, u, v);
     double tol = Precision::PConfusion();
     if (u >= 2 * M_PI - tol && u <= 2 * M_PI)
+    {
       u = 0.;
+    }
     if (u >= fu - tol && u < fu)
+    {
       u = fu;
+    }
     if (u <= lu + tol && u > lu)
+    {
       u = lu;
+    }
     if (u < fu || u > lu)
+    {
       u = ElCLib::InPeriod(u, fu, fu + 2 * M_PI);
+    }
     ElSLib::D1(u, v, Con, Pt, deru, derv);
     gp_Pnt2d p2dCon(u, v);
     gp_Dir2d d2dCon;
     if (deru.Dot(DSp) <= 0.)
+    {
       d2dCon = -gp::DX2d();
+    }
     else
+    {
       d2dCon = gp::DX2d();
+    }
     gp_Lin2d                 lin2dCon(p2dCon, d2dCon);
     occ::handle<Geom2d_Line> GLin2dCon = new Geom2d_Line(lin2dCon);
 
@@ -585,9 +667,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     gp_Dir DirCon   = (Con.Axis()).Direction();
     gp_Dir DirChamf = (gcon->Axis()).Direction();
     if (angCon > Precision::Confusion())
+    {
       DirCon.Reverse();
+    }
     if (SemiAngl > Precision::Confusion())
+    {
       DirChamf.Reverse();
+    }
 
     bool torevcon = (norcon.Dot(DirCon) > 0.);
     bool torevcha = (norchamf.Dot(DirChamf) > 0.);

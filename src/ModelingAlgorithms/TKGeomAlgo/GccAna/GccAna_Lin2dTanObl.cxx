@@ -232,16 +232,22 @@ bool GccAna_Lin2dTanObl::IsDone() const
 int GccAna_Lin2dTanObl::NbSolutions() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   return NbrSol;
 }
 
 gp_Lin2d GccAna_Lin2dTanObl::ThisSolution(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   return linsol(Index);
 }

@@ -186,6 +186,11 @@ public:
   inline Draw_Interpretor& operator<<(const int theResult) { return Append(theResult); }
 
   //! Appends to the result
+  Standard_EXPORT Draw_Interpretor& Append(const size_t theResult);
+
+  inline Draw_Interpretor& operator<<(const size_t theResult) { return Append(theResult); }
+
+  //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const double theResult);
 
   inline Draw_Interpretor& operator<<(const double theResult) { return Append(theResult); }

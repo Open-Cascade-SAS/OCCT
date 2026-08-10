@@ -49,7 +49,9 @@ void StepData_ESDescr::SetNbFields(const int nb)
   {
     DeclareAndCast(StepData_PDescr, pde, thedescr->Value(i));
     if (!pde.IsNull())
+    {
       thenames.Bind(pde->Name(), i); // Rebuild name-to-index mapping
+    }
     li->SetValue(i, pde);
   }
   thedescr = li;
@@ -61,7 +63,9 @@ void StepData_ESDescr::SetField(const int                           num,
 {
   // Set field descriptor at specified position with given name and parameter descriptor
   if (num < 1 || num > NbFields())
+  {
     return;
+  }
   occ::handle<StepData_PDescr> pde = new StepData_PDescr;
   pde->SetFrom(descr); // Copy descriptor properties
   pde->SetName(name);  // Set field name
@@ -80,11 +84,17 @@ void StepData_ESDescr::SetSuper(const occ::handle<StepData_ESDescr>& super)
   // Set the superclass descriptor, handling inheritance hierarchy
   occ::handle<StepData_ESDescr> sup = super->Base();
   if (sup.IsNull())
+  {
     sup = super;
+  }
   if (!thebase.IsNull())
+  {
     thebase->SetSuper(sup); // Delegate to base if exists
+  }
   else
+  {
     thesuper = sup; // Otherwise set directly
+  }
 }
 
 const char* StepData_ESDescr::TypeName() const
@@ -112,16 +122,26 @@ bool StepData_ESDescr::IsSub(const occ::handle<StepData_ESDescr>& other) const
   // Check if this descriptor is a subclass of the given descriptor
   occ::handle<StepData_ESDescr> oth = other->Base();
   if (oth.IsNull())
+  {
     oth = other;
+  }
   if (!thebase.IsNull())
+  {
     return thebase->IsSub(oth); // Delegate to base if exists
+  }
   occ::handle<Standard_Transient> t1 = this;
   if (oth == t1)
+  {
     return true; // Same descriptor
+  }
   if (oth == thesuper)
+  {
     return true; // Direct superclass
+  }
   else if (thesuper.IsNull())
-    return false;              // No superclass
+  {
+    return false; // No superclass
+  }
   return thesuper->IsSub(oth); // Check recursively up the hierarchy
 }
 
@@ -134,16 +154,22 @@ int StepData_ESDescr::Rank(const char* const name) const
 {
   int rank;
   if (!thenames.Find(name, rank))
+  {
     return 0;
+  }
   return rank;
 }
 
 const char* StepData_ESDescr::Name(const int num) const
 {
   if (num < 1)
+  {
     return "";
+  }
   if (num > NbFields())
+  {
     return "";
+  }
   DeclareAndCast(StepData_PDescr, pde, thedescr->Value(num));
   return pde->Name();
 }
@@ -158,7 +184,9 @@ occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* const name
   occ::handle<StepData_PDescr> pde;
   int                          rank = Rank(name);
   if (rank > 0)
+  {
     pde = GetCasted(StepData_PDescr, thedescr->Value(rank));
+  }
   return pde;
 }
 
@@ -166,9 +194,13 @@ bool StepData_ESDescr::Matches(const char* const name) const
 {
   // Check if this descriptor matches the given type name (including inheritance)
   if (thenom.IsEqual(name))
+  {
     return true; // Direct match
+  }
   if (thesuper.IsNull())
-    return false;                 // No superclass to check
+  {
+    return false; // No superclass to check
+  }
   return thesuper->Matches(name); // Check superclass hierarchy
 }
 

@@ -96,9 +96,13 @@ static bool checkBSplineCurve(IGESToBRep_BasicCurve*                    theCurve
     for (int i = CWeights.Lower() + 1; i <= CWeights.Upper(); i++)
     {
       if (CWeights.Value(i) < aMinValue)
+      {
         aMinValue = CWeights.Value(i);
+      }
       if (CWeights.Value(i) > aMaxValue)
+      {
         aMaxValue = CWeights.Value(i);
+      }
     }
     if (aMaxValue - aMinValue > 1000)
     {
@@ -111,15 +115,19 @@ static bool checkBSplineCurve(IGESToBRep_BasicCurve*                    theCurve
 
   // check whether knots are in ascending order.
   for (int i = CKnots.Lower(); i < CKnots.Upper(); i++)
+  {
     if (CKnots.Value(i + 1) < CKnots.Value(i))
     {
       Message_Msg msg1373("IGES_1373"); // FAIL - Knots are not in ascending order
       theCurve->SendFail(theBSplineCurve, msg1373);
       aResult = false;
     }
+  }
   // Fix coincided knots
   if (aResult)
+  {
     ShapeConstruct_Curve::FixKnots(CKnots);
+  }
 
   return aResult;
 }
@@ -219,7 +227,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBasicCurve(
     // The more specific function have ever add a fail message for this entity
   }
   else
+  {
     res->Scale(gp_Pnt(0, 0, 0), GetUnitFactor());
+  }
   return res;
 }
 
@@ -368,14 +378,18 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
         t1 = ElCLib::Parameter(circ, startPoint);
         t2 = ElCLib::Parameter(circ, endPoint);
         if (t1 > t2 && (t1 - t2) > Precision::Confusion())
+        {
           t2 += 2. * M_PI;
+        }
         if (std::abs(t1 - t2) <= Precision::Confusion())
         { // t1 = t2
           Message_Msg msg1160("IGES_1160");
           SendWarning(st, msg1160);
         }
         else
+        {
           res = new Geom_TrimmedCurve(res, t1, t2);
+        }
       }
       return res;
     }
@@ -408,8 +422,10 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
       // AddWarning(st, "The trim of the parabola is not correct.");
     }
     else
+    {
       // if t1 > t2, the course of the curve is going to be reversed.
       res = new Geom_TrimmedCurve(res, t1, t2);
+    }
 
     return res;
   }
@@ -431,7 +447,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
       t1 = ElCLib::Parameter(elips, startPoint);
       t2 = ElCLib::Parameter(elips, endPoint);
       if (t2 < t1 && (t1 - t2) > Precision::Confusion())
+      {
         t2 += 2. * M_PI;
+      }
       if (std::abs(t1 - t2) <= Precision::Confusion())
       { // t1 = t2
         Message_Msg msg1160("IGES_1160");
@@ -439,7 +457,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
         // AddWarning(st, "The trim of the ellipse is not correct, the result will be a ellipse.");
       }
       else
+      {
         res = new Geom_TrimmedCurve(res, t1, t2);
+      }
     }
   }
   else
@@ -459,9 +479,13 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
+    {
       res = new Geom_TrimmedCurve(res, t2, t1); // parameter inversion.
+    }
     else
+    {
       res = new Geom_TrimmedCurve(res, t1, t2);
+    }
   }
 
   return res;
@@ -542,7 +566,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
       res = new Geom2d_Circle(frame, minorRadius);
       // #45 rln 23.11.98
       if (st->TransformedAxis().IsOpposite(st->Axis(), GetEpsilon()))
+      {
         res->Reverse();
+      }
 
       if (!st->IsClosed())
       {
@@ -554,14 +580,18 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
         t2 = ElCLib::Parameter(circ, endPoint);
 
         if (t2 < t1 && (t1 - t2) > Precision::PConfusion())
+        {
           t2 += 2. * M_PI;
+        }
         if (std::abs(t1 - t2) <= Precision::PConfusion())
         { // t1 = t2
           Message_Msg msg1160("IGES_1160");
           SendWarning(st, msg1160);
         }
         else
+        {
           res = new Geom2d_TrimmedCurve(res, t1, t2);
+        }
       }
       return res;
     }
@@ -583,7 +613,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
     res   = new Geom2d_Parabola(frame, focal);
     // #45 rln 23.11.98
     if (st->TransformedAxis().IsOpposite(st->Axis(), GetEpsilon()))
+    {
       res->Reverse();
+    }
 
     gp_Parab2d parab = occ::down_cast<Geom2d_Parabola>(res)->Parab2d(); // #45 rln (frame, focal);
 
@@ -595,9 +627,13 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
+    {
       res = new Geom2d_TrimmedCurve(res, t2, t1); // parameter inversion.
+    }
     else
+    {
       res = new Geom2d_TrimmedCurve(res, t1, t2);
+    }
     return res;
   }
 
@@ -613,7 +649,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
     res = new Geom2d_Ellipse(frame, majorRadius, minorRadius);
     // #45 rln 23.11.98
     if (st->TransformedAxis().IsOpposite(st->Axis(), GetEpsilon()))
+    {
       res->Reverse();
+    }
 
     if (!st->IsClosed())
     {
@@ -625,14 +663,18 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
       t1 = ElCLib::Parameter(elips, startPoint);
       t2 = ElCLib::Parameter(elips, endPoint);
       if (t2 < t1 && (t1 - t2) > Precision::PConfusion())
+      {
         t2 += 2. * M_PI;
+      }
       if (std::abs(t1 - t2) <= Precision::PConfusion())
       { // t1 = t2
         Message_Msg msg1160("IGES_1160");
         SendWarning(st, msg1160);
       }
       else
+      {
         res = new Geom2d_TrimmedCurve(res, t1, t2);
+      }
     }
   }
   else
@@ -641,7 +683,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
     res = new Geom2d_Hyperbola(frame, majorRadius, minorRadius);
     // #45 rln 23.11.98
     if (st->TransformedAxis().IsOpposite(st->Axis(), GetEpsilon()))
+    {
       res->Reverse();
+    }
 
     // clang-format off
     gp_Hypr2d hpr = occ::down_cast<Geom2d_Hyperbola>(res)->Hypr2d();//#45 rln (frame, majorRadius, minorRadius);
@@ -656,9 +700,13 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
+    {
       res = new Geom2d_TrimmedCurve(res, t2, t1); // parameter inversion.
+    }
     else
+    {
       res = new Geom2d_TrimmedCurve(res, t1, t2);
+    }
   }
 
   return res;
@@ -720,7 +768,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferCircularArc(
   t2 = ElCLib::Parameter(circ, endPoint);
 
   if (st->IsClosed() && t1 >= GetEpsGeom())
+  {
     t2 = t1 + 2. * M_PI;
+  }
   if (!st->IsClosed() && fabs(t1 - t2) <= Precision::PConfusion())
   {
     // micro-arc
@@ -730,7 +780,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferCircularArc(
   if (!st->IsClosed() || t1 >= GetEpsGeom())
   {
     if (t2 < t1)
+    {
       t2 += 2. * M_PI;
+    }
     res = new Geom_TrimmedCurve(res, t1, t2);
   }
 
@@ -783,7 +835,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dCircularArc(
     endPoint.SetCoord(st->TransformedEndPoint().X(), st->TransformedEndPoint().Y());
     // #45 rln 23.11.98
     if (st->TransformedAxis().IsOpposite(st->Axis(), GetEpsilon()))
+    {
       res->Reverse();
+    }
   }
   else
   {
@@ -799,7 +853,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dCircularArc(
   t2 = ElCLib::Parameter(circ, endPoint);
 
   if (st->IsClosed() && t1 >= GetEpsGeom())
+  {
     t2 = t1 + 2. * M_PI;
+  }
   if (!st->IsClosed() && fabs(t1 - t2) <= Precision::PConfusion())
   {
     // micro-arc
@@ -809,7 +865,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dCircularArc(
   if (!st->IsClosed() || t1 >= GetEpsGeom())
   {
     if (t2 < t1)
+    {
       t2 += 2. * M_PI;
+    }
     res = new Geom2d_TrimmedCurve(res, t1, t2);
   }
   return res;
@@ -892,7 +950,9 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dSplineCurve(
   occ::handle<Geom_BSplineCurve> res3d = TransferSplineCurve(st);
   SetEpsGeom(epsGeom);
   if (res3d.IsNull())
+  {
     return res; // The transfer was not over the top.
+  }
 
   // 2d
   // ==
@@ -903,7 +963,9 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dSplineCurve(
   const NCollection_Array1<int>&    multi = res3d->Multiplicities();
 
   for (int i = bspoles2d.Lower(); i <= bspoles2d.Upper(); i++)
+  {
     bspoles2d.SetValue(i, gp_Pnt2d(res3d->Pole(i).X(), res3d->Pole(i).Y()));
+  }
 
   res = new Geom2d_BSplineCurve(bspoles2d, knots, multi, res3d->Degree());
   return res;
@@ -954,11 +1016,19 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   int                        i; // szv#4:S4163:12Mar99 j unused
 
   if (!GetModeTransfer() && start->HasTransf())
+  {
     for (i = 0; i <= start->UpperIndex(); i++)
+    {
       Pole.SetValue(PoleIndex++, start->TransformedPole(i));
+    }
+  }
   else
+  {
     for (i = 0; i <= start->UpperIndex(); i++)
+    {
       Pole.SetValue(PoleIndex++, start->Pole(i));
+    }
+  }
 
   //  Filling knots & multiplicities arrays :
   //  ========================================
@@ -983,9 +1053,13 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     //    double ek    =  Epsilon(Knot1);
 
     if (std::abs(Knot1 - Knot2) <= Epsilon(Knot1))
+    {
       TempMult.SetValue(KnotIndex, TempMult.Value(KnotIndex) + 1);
+    }
     else
+    {
       TempKnot.SetValue(++KnotIndex, Knot1);
+    }
   }
 
   //  Final knots & multiplicities arrays are dimensioned so as to be fully
@@ -1031,7 +1105,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   if (newNbPoles < NbPoles)
   {
     for (i = 1; i <= NbPoles; i++)
+    {
       PoleInd.Append(i);
+    }
     int Offset = 0;
     for (int itab = 1; itab <= SeqIndex.Length(); itab++)
     {
@@ -1137,9 +1213,13 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     {
       OCC_CATCH_SIGNALS
       if (start->IsPolynomial())
+      {
         BSplineRes = new Geom_BSplineCurve(Poles, Knot, Mult, Degree);
+      }
       else
+      {
         BSplineRes = new Geom_BSplineCurve(Poles, Weight, Knot, Mult, Degree);
+      }
     }
     catch (Standard_Failure const& anException)
     {
@@ -1175,7 +1255,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     {
       OCC_CATCH_SIGNALS
       if (std::abs(Ufin - Udeb) > Precision::PConfusion())
+      {
         BSplineRes->Segment(Udeb, Ufin);
+      }
       res = BSplineRes;
     }
     catch (Standard_Failure const&)
@@ -1185,7 +1267,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     }
   }
   else
+  {
     res = BSplineRes;
+  }
 
   return res;
 }
@@ -1267,7 +1351,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
     BSplineC = new Geom2d_BSplineCurve(Pole, Bspline->WeightsArray(), Knot, Mult, Degree);
   }
   else
+  {
     BSplineC = new Geom2d_BSplineCurve(Pole, Knot, Mult, Degree);
+  }
 
   res = BSplineC;
 
@@ -1315,9 +1401,13 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferLine(const occ::handle<IG
     double                 t2    = ElCLib::Parameter(line, Pe);
     occ::handle<Geom_Line> Gline = new Geom_Line(line);
     if (Precision::IsNegativeInfinite(t1))
+    {
       t1 = -Precision::Infinite();
+    }
     if (Precision::IsPositiveInfinite(t2))
+    {
       t2 = Precision::Infinite();
+    }
     res = new Geom_TrimmedCurve(Gline, t1, t2);
   }
   else
@@ -1363,9 +1453,13 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dLine(
     double                   t2      = ElCLib::Parameter(line2d, end);
     occ::handle<Geom2d_Line> Gline2d = new Geom2d_Line(line2d);
     if (Precision::IsNegativeInfinite(t1))
+    {
       t1 = -Precision::Infinite();
+    }
     if (Precision::IsPositiveInfinite(t2))
+    {
       t2 = Precision::Infinite();
+    }
     res = new Geom2d_TrimmedCurve(Gline2d, t1, t2);
   }
   // added by rln 18/12/97 CSR# CTS18544 entity 25168 and 31273
@@ -1394,7 +1488,9 @@ occ::handle<Geom_Transformation> IGESToBRep_BasicCurve::TransferTransformation(
   gp_Trsf resultat;
   SetEpsilon(1.E-05);
   if (IGESData_ToolLocation::ConvertLocation(GetEpsilon(), start->Value(), resultat))
+  {
     res = new Geom_Transformation(resultat);
+  }
   else
   {
     Message_Msg msg1036("IGES_1036");
@@ -1455,15 +1551,21 @@ occ::handle<Geom_BSplineCurve> IGESToBRep_BasicCurve::TransferCopiousData(
   {
     gp_Pnt aPole;
     if (!GetModeTransfer() && start->HasTransf())
+    {
       aPole = start->TransformedPoint(i);
+    }
     else
+    {
       aPole = start->Point(i);
+    }
     // #2 pdn 7 May 1998 BUC50028
     //  delete GetUnitFactor()
     //   if (!aPole.IsEqual(TempPole(TempIndex-1),GetEpsGeom()))
     // S4054: some filter must be kept UKI60556 entity 7 (two equal points)
     if (!aPole.IsEqual(TempPole(TempIndex - 1), gp::Resolution()))
+    {
       TempPole.SetValue(TempIndex++, aPole);
+    }
   }
 
   NbPoints = TempIndex - TempPole.Lower();
@@ -1480,7 +1582,9 @@ occ::handle<Geom_BSplineCurve> IGESToBRep_BasicCurve::TransferCopiousData(
 
   TempIndex = TempPole.Lower();
   for (i = Pole.Lower(); i <= Pole.Upper(); i++)
+  {
     Pole.SetValue(i, TempPole.Value(TempIndex++));
+  }
 
   //  Filling array of knots :
   //  ========================
@@ -1551,10 +1655,14 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
   int                          TempIndex = TempPole.Lower();
 
   if (!GetModeTransfer() && start->HasTransf())
+  {
     TempPole.SetValue(TempIndex,
                       gp_Pnt2d(start->TransformedPoint(1).X(), start->TransformedPoint(1).Y()));
+  }
   else
+  {
     TempPole.SetValue(TempIndex, gp_Pnt2d(start->Point(1).X(), start->Point(1).Y()));
+  }
 
   TempIndex++;
   int i; // svv Jan 10 2000 : porting on DEC
@@ -1562,14 +1670,20 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
   {
     gp_Pnt2d aPole;
     if (!GetModeTransfer() && start->HasTransf())
+    {
       aPole = gp_Pnt2d(start->TransformedPoint(i).X(), start->TransformedPoint(i).Y());
+    }
     else
+    {
       aPole = gp_Pnt2d(start->Point(i).X(), start->Point(i).Y());
+    }
     //    if (!aPole.IsEqual(TempPole(TempIndex-1), GetEpsCoeff())) //modified by rln 16/12/97 CSR#
     //    PRO11641 entity 46GetEpsGeom()*GetUnitFactor()
     // S4054: some filter must be kept UKI60556 entity 7 (two equal points)
     if (!aPole.IsEqual(TempPole(TempIndex - 1), gp::Resolution()))
+    {
       TempPole.SetValue(TempIndex++, aPole);
+    }
   }
 
   NbPoints = TempIndex - TempPole.Lower();
@@ -1585,7 +1699,9 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
 
   TempIndex = TempPole.Lower();
   for (i = Pole.Lower(); i <= Pole.Upper(); i++)
+  {
     Pole.SetValue(i, TempPole.Value(TempIndex++));
+  }
 
   //  Filling array of knots :
   //  ========================

@@ -61,12 +61,16 @@ occ::handle<TDataXtd_Point> TDataXtd_Point::Set(const TDF_Label& L, const gp_Pnt
   if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())
+    {
       if (aNS->Get().ShapeType() == TopAbs_VERTEX)
       {
         gp_Pnt anOldPnt = BRep_Tool::Pnt(TopoDS::Vertex(aNS->Get()));
         if (anOldPnt.X() == P.X() && anOldPnt.Y() == P.Y() && anOldPnt.Z() == P.Z())
+        {
           return A;
+        }
       }
+    }
   }
 
   TNaming_Builder B(L);

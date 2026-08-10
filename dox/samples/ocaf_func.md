@@ -1,4 +1,4 @@
-﻿OCAF: Function Mechanism {#samples__ocaf_func}
+OCAF: Function Mechanism {#samples__ocaf_func}
 ========================
 
 Let us describe the usage of the "Function Mechanism" of Open CASCADE Application Framework on a simple example.  
@@ -162,43 +162,43 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
 
 ~~~~{.cpp}
 
-    // The scope of functions is  defined.  
-    occ::handle<TFunction_Scope> scope = TFunction_Scope::Set( anyLabel );  
-     
-    // The information on  modifications in the model is received.  
-    TFunction_Logbook&amp; log = scope-GetLogbook();  
-     
-    // The iterator is iInitialized by  the scope of functions.  
-    TFunction_Iterator iterator( anyLabel );  
-    Iterator.SetUsageOfExecutionOrder( true );  
-     
-    // The function is iterated,  its  dependency is checked on the modified data and  executed if necessary.  
-    for (; iterator.more(); iterator.Next())  
-    {  
-      // The function iterator may return a list of  current functions for execution.  
-      // It might be useful for multi-threaded execution  of functions.  
-      const  NCollection_List<TDF_Label>&amp; currentFunctions = iterator.Current();  
-       
-      //The list of current functions is iterated.  
-      NCollection_List<TDF_Label>::Iterator  currentterator( currentFunctions );
-      for (;  currentIterator.More(); currentIterator.Next())  
-      {  
-        //  An interface for the function is created.  
-        TFunction_IFunction  interface( currentIterator.Value() );  
-     
-        //  The function driver is retrieved.  
-        occ::handle<TFunction_Driver>  driver = interface.GetDriver();  
-     
-        //  The dependency of the function on the  modified data is checked.  
-        If  (driver-MustExecute( log ))  
-        {  
-          // The function is executed.  
-          int  ret = driver-Execute( log );  
-          if ( ret ) 
-            return  false;  
-        } // end if check on modification  
-      } // end of iteration of current functions  
-    } // end of iteration of  functions.
+    // The scope of functions is defined.
+    occ::handle<TFunction_Scope> aScope = TFunction_Scope::Set (anyLabel);
+
+    // The information on modifications in the model is received.
+    occ::handle<TFunction_Logbook> aLog = aScope->GetLogbook();
+
+    // The iterator is initialized by the scope of functions.
+    TFunction_Iterator anIterator (anyLabel);
+    anIterator.SetUsageOfExecutionStatus (true);
+
+    // The function is iterated, its dependency is checked on the modified data and executed if necessary.
+    for (; anIterator.More(); anIterator.Next())
+    {
+      // The function iterator may return a list of current functions for execution.
+      // It might be useful for multi-threaded execution of functions.
+      const NCollection_List<TDF_Label>& aCurrentFunctions = anIterator.Current();
+
+      // The list of current functions is iterated.
+      NCollection_List<TDF_Label>::Iterator aCurrentIterator (aCurrentFunctions);
+      for (; aCurrentIterator.More(); aCurrentIterator.Next())
+      {
+        // An interface for the function is created.
+        TFunction_IFunction anInterface (aCurrentIterator.Value());
+
+        // The function driver is retrieved.
+        occ::handle<TFunction_Driver> aDriver = anInterface.GetDriver();
+
+        // The dependency of the function on the modified data is checked.
+        if (aDriver->MustExecute (aLog))
+        {
+          // The function is executed.
+          int aRet = aDriver->Execute (aLog);
+          if (aRet)
+            return false;
+        } // end if check on modification
+      } // end of iteration of current functions
+    } // end of iteration of functions.
 
 ~~~~
 
@@ -209,78 +209,85 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
 
 ~~~~{.cpp}
 
-    // A virtual method  ::Arguments() returns a list of arguments of the function.  
-    CylinderDriver::Arguments( NCollection_List<TDF_Label>&amp; args )  
-    {  
-      // The direct arguments, located at sub-leaves of  the function, are collected (see picture 2).
-      TDF_ChildIterator  cIterator( Label(), false );  
-      for (;  cIterator.More(); cIterator.Next() )  
-      {  
-        // Direct argument.  
-        TDF_Label  sublabel = cIterator.Value();  
-        Args.Append(  sublabel );  
-
-        // The references to the external data are  checked.  
-        occ::handle<TDF_Reference>  ref;  
-        If (  sublabel.FindAttribute( TDF_Reference::GetID(), ref ) )  
-        {  
-          args.Append(  ref-Get() );  
-        }
-    }
-     
-    // A virtual method ::Results()  returns a list of result leaves.  
-    CylinderDriver::Results( NCollection_List<TDF_Label>&amp; res )  
-    {  
-      // The result is kept at the function  label.  
-      Res.Append(  Label() );  
-    }
-     
-    // Execution of the function  driver.  
-    Int CylinderDriver::Execute( TFunction_Logbook&amp; log )  
-    {  
-      // Position of the cylinder - position of the first  function (cone)   
-      //is  elevated along Z for height values of all  previous functions.  
-      gp_Ax2 axes = …. // out of the scope of this guide.  
-      // The radius value is retrieved.  
-      // It is located at second child sub-leaf (see the  picture 2).  
-      TDF_Label radiusLabel  = Label().FindChild( 2 );  
-       
-      // The multiplicator of the radius ()is retrieved.  
-      occ::handle<TDataStd_Real>  radiusValue;  
-      radiusLabel.FindAttribute(  TDataStd_Real::GetID(), radiusValue);  
-       
-      // The reference to the radius is retrieved.  
-      occ::handle<TDF_Reference>  refRadius;  
-      RadiusLabel.FindAttribute(  TDF_Reference::GetID(), refRadius );  
-       
-      // The radius value is calculated.  
-      double radius = 0.0;
-      
-      if (  refRadius.IsNull() )
+    // A virtual method ::Arguments() returns a list of arguments of the function.
+    void CylinderDriver::Arguments (NCollection_List<TDF_Label>& args) const
+    {
+      // The direct arguments, located at sub-leaves of the function, are collected (see picture 2).
+      TDF_ChildIterator aChildIterator (Label(), false);
+      for (; aChildIterator.More(); aChildIterator.Next())
       {
-        radius  = radiusValue-Get();  
+        // Direct argument.
+        TDF_Label aSubLabel = aChildIterator.Value();
+        args.Append (aSubLabel);
+
+        // The references to the external data are checked.
+        occ::handle<TDF_Reference> aRef;
+        if (aSubLabel.FindAttribute (TDF_Reference::GetID(), aRef))
+        {
+          args.Append (aRef->Get());
+        }
       }
-      else  
-      {  
-        // The referenced radius value is  retrieved.   
-        occ::handle<TDataStd_Real>  referencedRadiusValue;  
-        RefRadius-Get().FindAttribute(TDataStd_Real::GetID()  ,referencedRadiusValue );  
-        radius  = referencedRadiusValue-Get() * radiusValue-Get();  
-      }  
-       
-      // The height value is retrieved.  
-      double height = … // similar code to taking the radius value.  
-       
-      // The cylinder is created.  
-      TopoDS_Shape cylinder  = BRepPrimAPI_MakeCylinder(axes, radius, height);  
-       
-      // The result (cylinder) is set  
-      TNaming_Builder  builder( Label() );  
-      Builder.Generated(  cylinder );  
-       
-      // The modification of the result leaf is saved in  the log.  
-      log.SetImpacted(  Label() );  
-       
+    }
+
+    // A virtual method ::Results() returns a list of result leaves.
+    void CylinderDriver::Results (NCollection_List<TDF_Label>& res) const
+    {
+      // The result is kept at the function label.
+      res.Append (Label());
+    }
+
+    // Execution of the function driver.
+    int CylinderDriver::Execute (occ::handle<TFunction_Logbook>& aLog) const
+    {
+      // Position of the cylinder - position of the first function (cone)
+      // is elevated along Z for height values of all previous functions.
+      gp_Ax2 anAxes = ...; // out of the scope of this guide.
+
+      // The radius value is retrieved.
+      // It is located at second child sub-leaf (see the picture 2).
+      TDF_Label aRadiusLabel = Label().FindChild (2);
+
+      // The multiplicator of the radius is retrieved.
+      occ::handle<TDataStd_Real> aRadiusValue;
+      aRadiusLabel.FindAttribute (TDataStd_Real::GetID(), aRadiusValue);
+
+      // The reference to the radius is retrieved.
+      occ::handle<TDF_Reference> aRefRadius;
+      aRadiusLabel.FindAttribute (TDF_Reference::GetID(), aRefRadius);
+
+      // The radius value is calculated.
+      double aRadius = 0.0;
+
+      if (aRefRadius.IsNull())
+      {
+        aRadius = aRadiusValue->Get();
+      }
+      else
+      {
+        // The referenced radius value is retrieved.
+        occ::handle<TDataStd_Real> aReferencedRadiusValue;
+        aRefRadius->Get().FindAttribute (TDataStd_Real::GetID(), aReferencedRadiusValue);
+        aRadius = aReferencedRadiusValue->Get() * aRadiusValue->Get();
+      }
+
+      // The height value is retrieved.
+      double aHeight = ...; // similar code to taking the radius value.
+
+      // The cylinder is created.
+      BRepPrimAPI_MakeCylinder aMkCylinder (anAxes, aRadius, aHeight);
+      TopoDS_Shape aCylinder;
+      if (aMkCylinder.IsDone())
+      {
+        aCylinder = aMkCylinder.Shape();
+      }
+
+      // The result (cylinder) is set
+      TNaming_Builder aBuilder (Label());
+      aBuilder.Generated (aCylinder);
+
+      // The modification of the result leaf is saved in the log.
+      aLog->SetImpacted (Label());
+
       return 0;
     }
 ~~~~

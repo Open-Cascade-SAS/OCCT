@@ -15,7 +15,6 @@
 #define _BRepGraph_Compact_HeaderFile
 
 #include <BRepGraph.hxx>
-
 #include <Standard_DefineAlloc.hxx>
 
 //! @brief Graph compaction algorithm that reclaims removed node slots.
@@ -35,24 +34,33 @@ public:
   //! Configuration for compaction.
   struct Options
   {
-    bool HistoryMode = true; //!< Record index remapping in history.
+    enum class CachePolicy
+    {
+      Drop,     //!< Keep registered cache services but clear transient entries.
+      CopyFresh //!< Copy fresh, remappable transient entries into the compacted graph.
+    };
+
+    bool        HistoryMode = true;              //!< Record index remapping in history.
+    CachePolicy CacheMode   = CachePolicy::Drop; //!< Runtime cache migration policy.
   };
 
   //! Result counters for diagnostics.
   struct Result
   {
-    int NbRemovedVertices   = 0;
-    int NbRemovedEdges      = 0;
-    int NbRemovedWires      = 0;
-    int NbRemovedFaces      = 0;
-    int NbRemovedShells     = 0;
-    int NbRemovedSolids     = 0;
-    int NbRemovedCompounds  = 0;
-    int NbRemovedCompSolids = 0;
-    int NbRemovedSurfaces   = 0;
-    int NbRemovedCurves     = 0;
-    int NbNodesBefore       = 0;
-    int NbNodesAfter        = 0;
+    uint32_t NbRemovedVertices   = 0;
+    uint32_t NbRemovedEdges      = 0;
+    uint32_t NbRemovedWires      = 0;
+    uint32_t NbRemovedFaces      = 0;
+    uint32_t NbRemovedShells     = 0;
+    uint32_t NbRemovedSolids     = 0;
+    uint32_t NbRemovedCompounds  = 0;
+    uint32_t NbRemovedCompSolids = 0;
+    uint32_t NbRemovedSurfaces   = 0;
+    uint32_t NbRemovedCurves     = 0;
+    uint32_t NbNodesBefore       = 0;
+    uint32_t NbNodesAfter        = 0;
+    uint32_t NbUnmappedActiveDefs =
+      0; //!< Active defs not present in any remap (orphans + drop-outs).
   };
 
   //! Run compaction with default options.
@@ -67,7 +75,6 @@ public:
   [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
-private:
   BRepGraph_Compact() = delete;
 };
 

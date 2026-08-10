@@ -46,7 +46,9 @@
 double TopOpeBRepTool_ShapeTool::Tolerance(const TopoDS_Shape& S)
 {
   if (S.IsNull())
+  {
     return 0.;
+  }
   double tol = 0;
   switch (S.ShapeType())
   {
@@ -86,11 +88,17 @@ occ::handle<Geom_Curve> TopOpeBRepTool_ShapeTool::BASISCURVE(const occ::handle<G
 {
   occ::handle<Standard_Type> T = C->DynamicType();
   if (T == STANDARD_TYPE(Geom_OffsetCurve))
+  {
     return BASISCURVE(occ::down_cast<Geom_OffsetCurve>(C)->BasisCurve());
+  }
   else if (T == STANDARD_TYPE(Geom_TrimmedCurve))
+  {
     return BASISCURVE(occ::down_cast<Geom_TrimmedCurve>(C)->BasisCurve());
+  }
   else
+  {
     return C;
+  }
 }
 
 occ::handle<Geom_Curve> TopOpeBRepTool_ShapeTool::BASISCURVE(const TopoDS_Edge& E)
@@ -98,7 +106,9 @@ occ::handle<Geom_Curve> TopOpeBRepTool_ShapeTool::BASISCURVE(const TopoDS_Edge& 
   double                  f, l;
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, f, l);
   if (C.IsNull())
+  {
     return C;
+  }
   return BASISCURVE(C);
 }
 
@@ -113,11 +123,17 @@ occ::handle<Geom_Surface> TopOpeBRepTool_ShapeTool::BASISSURFACE(const occ::hand
 {
   occ::handle<Standard_Type> T = S->DynamicType();
   if (T == STANDARD_TYPE(Geom_OffsetSurface))
+  {
     return BASISSURFACE(occ::down_cast<Geom_OffsetSurface>(S)->BasisSurface());
+  }
   else if (T == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+  {
     return BASISSURFACE(occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface());
+  }
   else
+  {
     return S;
+  }
 }
 
 occ::handle<Geom_Surface> TopOpeBRepTool_ShapeTool::BASISSURFACE(const TopoDS_Face& F)
@@ -201,7 +217,9 @@ void TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(const TopoDS_Shape& F, double& u
 
   // exit if surface supporting F is not periodic on U or V
   if (!isUperio && !isVperio)
+  {
     return;
+  }
 
   double UFfirst, UFlast, VFfirst, VFlast;
   BRepTools::UVBounds(FF, UFfirst, UFlast, VFfirst, VFlast);
@@ -216,7 +234,9 @@ void TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(const TopoDS_Shape& F, double& u
 
     //    ElCLib::AdjustPeriodic(UFfirst,UFfirst + Uperiod,tol,ubid,u);
     if (std::abs(u - UFfirst - Uperiod) > tol)
+    {
       u = ElCLib::InPeriod(u, UFfirst, UFfirst + Uperiod);
+    }
   }
   if (isVperio)
   {
@@ -226,7 +246,9 @@ void TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(const TopoDS_Shape& F, double& u
 
     //    ElCLib::AdjustPeriodic(VFfirst,VFfirst + Vperiod,tol,vbid,v);
     if (std::abs(v - VFfirst - Vperiod) > tol)
+    {
       v = ElCLib::InPeriod(v, VFfirst, VFfirst + Vperiod);
+    }
   }
 }
 
@@ -241,8 +263,12 @@ bool TopOpeBRepTool_ShapeTool::Closed(const TopoDS_Shape& S1, const TopoDS_Shape
   {
     int n = 0;
     for (TopExp_Explorer x(F, TopAbs_EDGE); x.More(); x.Next())
+    {
       if (x.Current().IsSame(E))
+      {
         n++;
+      }
+    }
     return n >= 2;
   }
   return false;
@@ -292,7 +318,9 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
 {
   double periopar = par;
   if (!TopOpeBRepTool_ShapeTool::Closed(EE, FF))
+  {
     return periopar;
+  }
 
   TopoDS_Edge E = TopoDS::Edge(EE);
   TopoDS_Face F = TopoDS::Face(FF);
@@ -302,7 +330,9 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
   bool                            isUperio = Surf->IsUPeriodic();
   bool                            isVperio = Surf->IsVPeriodic();
   if (!isUperio && !isVperio)
+  {
     return periopar;
+  }
 
   double Ufirst, Ulast, Vfirst, Vlast;
   Surf->Bounds(Ufirst, Ulast, Vfirst, Vlast);
@@ -310,7 +340,9 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
   double                          first, last, tolpc;
   const occ::handle<Geom2d_Curve> PC = FC2D_CurveOnSurface(E, F, first, last, tolpc);
   if (PC.IsNull())
+  {
     throw Standard_ProgramError("ShapeTool::PeriodizeParameter : no 2d curve");
+  }
 
   occ::handle<Standard_Type> TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line))
@@ -322,9 +354,13 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
     double tol  = Precision::Angular();
     bool   isoU = false, isoV = false;
     if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::Y), tol))
+    {
       isoU = true;
+    }
     else if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::X), tol))
+    {
       isoV = true;
+    }
     if (isoU)
     {
       periopar = ADJUST(par, Ufirst, Ulast, tol);
@@ -391,9 +427,13 @@ bool TopOpeBRepTool_ShapeTool::ShapesSameOriented(const TopoDS_Shape& S1, const 
     TopAbs_Orientation o2 = S2.Orientation();
     if (o1 == TopAbs_EXTERNAL || o1 == TopAbs_INTERNAL || o2 == TopAbs_EXTERNAL
         || o2 == TopAbs_INTERNAL)
+    {
       so = true;
+    }
     else
+    {
       so = (o1 == o2);
+    }
   }
 
   return so;
@@ -447,7 +487,9 @@ bool TopOpeBRepTool_ShapeTool::SurfacesSameOriented(const BRepAdaptor_Surface& S
     double                          dp2;
     bool                            ok = FUN_tool_projPonS(p1, HS2, p22d, dp2);
     if (!ok)
+    {
       return so; // NYI : raise
+    }
 
     double u2 = p22d.X();
     double v2 = p22d.Y();
@@ -496,7 +538,9 @@ bool TopOpeBRepTool_ShapeTool::FacesSameOriented(const TopoDS_Shape& S1, const T
   bool                so = F1.IsSame(F2) || SurfacesSameOriented(BAS1, BAS2);
   bool                b  = so;
   if (o1 != o2)
+  {
     b = !so;
+  }
   return b;
 }
 
@@ -558,7 +602,9 @@ bool TopOpeBRepTool_ShapeTool::EdgesSameOriented(const TopoDS_Shape& S1, const T
   bool              so = CurvesSameOriented(BAC1, BAC2);
   bool              b  = so;
   if (o1 != o2)
+  {
     b = !so;
+  }
   return b;
 }
 
@@ -583,7 +629,9 @@ double TopOpeBRepTool_ShapeTool::EdgeData(const BRepAdaptor_Curve& BAC,
   double           tolm = std::max(tol, std::max(tol1, tol2));
 
   if (std::abs(C) > tolm)
+  {
     BL.Normal(N);
+  }
   return tol;
 }
 

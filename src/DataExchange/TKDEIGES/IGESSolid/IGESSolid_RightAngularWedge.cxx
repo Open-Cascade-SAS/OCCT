@@ -73,7 +73,9 @@ gp_Pnt IGESSolid_RightAngularWedge::Corner() const
 gp_Pnt IGESSolid_RightAngularWedge::TransformedCorner() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theCorner);
+  }
   else
   {
     gp_XYZ tmp = theCorner;
@@ -90,7 +92,9 @@ gp_Dir IGESSolid_RightAngularWedge::XAxis() const
 gp_Dir IGESSolid_RightAngularWedge::TransformedXAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis);
+  }
   else
   {
     gp_XYZ   tmp = theXAxis;
@@ -109,7 +113,9 @@ gp_Dir IGESSolid_RightAngularWedge::YAxis() const
 gp_Dir IGESSolid_RightAngularWedge::TransformedYAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis ^ theZAxis);
+  }
   else
   {
     gp_XYZ   tmp = theXAxis ^ theZAxis;
@@ -128,7 +134,9 @@ gp_Dir IGESSolid_RightAngularWedge::ZAxis() const
 gp_Dir IGESSolid_RightAngularWedge::TransformedZAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theZAxis);
+  }
   else
   {
     gp_XYZ   tmp = theZAxis;

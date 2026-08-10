@@ -111,7 +111,9 @@ void ShapeUpgrade_WireDivide::Load(const TopoDS_Edge& E)
 {
   BRepLib_MakeWire MakeWire(E);
   if (MakeWire.IsDone())
+  {
     Load(MakeWire.Wire());
+  }
 }
 
 //=================================================================================================
@@ -161,8 +163,12 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
     double par   = new2d->Value(i);
     int    index = 0;
     for (int j = 1; j <= len2d && !index; j++)
+    {
       if (std::abs(par - orig2d->Value(j)) < preci)
+      {
         index = j;
+      }
+    }
     if (index && !fixNew3d(index))
     {
       double newPar = orig2d->Value(index);
@@ -179,8 +185,12 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
     double par   = new3d->Value(i);
     int    index = 0;
     for (int j = 1; j <= len3d && !index; j++)
+    {
       if (std::abs(par - orig3d->Value(j)) < preci)
+      {
         index = j;
+      }
+    }
     if (index && !fixNew2d(index))
     {
       double newPar = orig3d->Value(index);
@@ -208,14 +218,18 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
         fixNew2d(i + 1) = false;
       }
       else
+      {
         new2d->SetValue(i + 1, new2d->Value(i) + dpreci);
+      }
     }
   }
   if (new2d->Value(len3d) > Last3d)
   {
     int ind; // svv #1
     for (ind = len3d; ind > 1 && !fixNew2d(ind); ind--)
+    {
       ;
+    }
     double lastFix = new2d->Value(ind);
     for (i = len3d; i >= ind; i--)
     {
@@ -239,14 +253,18 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
         fixNew3d(i + 1) = false;
       }
       else
+      {
         new3d->SetValue(i + 1, new3d->Value(i) + dpreci);
+      }
     }
   }
   if (new3d->Value(len2d) > Last2d)
   {
     int ind; // svv #1
     for (ind = len2d; ind > 1 && !fixNew3d(ind); ind--)
+    {
       ;
+    }
     double lastFix = new3d->Value(ind);
     for (i = len2d; i >= ind; i--)
     {
@@ -271,25 +289,33 @@ void ShapeUpgrade_WireDivide::Perform()
   TopLoc_Location           Loc;
   occ::handle<Geom_Surface> Surf;
   if (!myFace.IsNull())
+  {
     Surf = BRep_Tool::Surface(myFace, Loc);
+  }
 
   bool isSplit3d = true;
   switch (myEdgeMode)
   {
     case 0:
       if (!myFace.IsNull())
+      {
         isSplit3d = false;
+      }
       break;
     case 1:
       if (myFace.IsNull())
+      {
         isSplit3d = false;
+      }
       break;
     default:
       break;
   }
   myEdgeDivide->SetFace(myFace);
   if (isSplit3d)
+  {
     myEdgeDivide->SetSplitCurve3dTool(GetSplitCurve3dTool());
+  }
   myEdgeDivide->SetSplitCurve2dTool(GetSplitCurve2dTool());
   for (TopoDS_Iterator ItW(myWire, false); ItW.More(); ItW.Next())
   {
@@ -360,16 +386,24 @@ void ShapeUpgrade_WireDivide::Perform()
       }
       // get 2d and 3d split values which should be the same
       if (myEdgeDivide->HasCurve2d())
+      {
         theKnots2d = theSplit2dTool->SplitValues();
+      }
       if (myEdgeDivide->HasCurve3d())
+      {
         theKnots3d = theSplit3dTool->SplitValues();
+      }
 
       bool isSeam = false;
       if (!myFace.IsNull())
+      {
         isSeam = BRep_Tool::IsClosed(E, myFace);
+      }
       occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2d;
       if (myEdgeDivide->HasCurve2d())
+      {
         theSegments2d = theSplit2dTool->GetCurves();
+      }
       occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2dR;
       if (isSeam)
       {
@@ -382,7 +416,9 @@ void ShapeUpgrade_WireDivide::Perform()
         {
           theSplit2dTool->Init(c2, f2, l2);
           if (!theKnots2d.IsNull())
+          {
             theSplit2dTool->SetSplitValues(theKnots2d);
+          }
           theSplit2dTool->Perform(true);
           occ::handle<NCollection_HSequence<double>> revKnots2d = theSplit2dTool->SplitValues();
           if (revKnots2d->Length() != theKnots2d->Length())
@@ -395,10 +431,14 @@ void ShapeUpgrade_WireDivide::Perform()
 #endif
           }
           else
+          {
             theSegments2dR = theSplit2dTool->GetCurves();
+          }
         }
         else
+        {
           isSeam = false;
+        }
       }
 
       // Exploring theEdge
@@ -434,7 +474,9 @@ void ShapeUpgrade_WireDivide::Perform()
       occ::handle<Geom_Curve>  c3d;
       Adaptor3d_CurveOnSurface AdCS;
       if (myEdgeDivide->HasCurve3d())
+      {
         sae.Curve3d(E, c3d, af, al, false);
+      }
       else if (myEdgeDivide->HasCurve2d() && !Surf.IsNull())
       {
         occ::handle<Geom2d_Curve> c2d;
@@ -459,9 +501,13 @@ void ShapeUpgrade_WireDivide::Perform()
           double ppar;
           gp_Pnt pproj;
           if (!c3d.IsNull())
+          {
             sac.Project(c3d, aP, Precision(), pproj, ppar, af, al, false);
+          }
           else
+          {
             sac.Project(AdCS, aP, Precision(), pproj, ppar);
+          }
           aSeqParNM.Append(ppar);
         }
       }
@@ -469,7 +515,9 @@ void ShapeUpgrade_WireDivide::Perform()
       // creating new edge(s)
       occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> theSegments3d;
       if (myEdgeDivide->HasCurve3d())
+      {
         theSegments3d = theSplit3dTool->GetCurves();
+      }
 
       int nbc = 0;
       if (!theSegments3d.IsNull())
@@ -488,8 +536,10 @@ void ShapeUpgrade_WireDivide::Perform()
           }
         }
       }
-      else if (!theSegments2d.IsNull()) // if theSegments have different length ???
+      else if (!theSegments2d.IsNull())
+      { // if theSegments have different length ???
         nbc = theSegments2d->Length();
+      }
 
       if (nbc <= 1 && !theSplit3dTool->Status(ShapeExtend_DONE)
           && !theSplit2dTool->Status(ShapeExtend_DONE))
@@ -525,14 +575,20 @@ void ShapeUpgrade_WireDivide::Perform()
 
         occ::handle<Geom_Curve> theNewCurve3d;
         if (!theSegments3d.IsNull())
+        {
           theNewCurve3d = theSegments3d->Value(icurv);
+        }
 
         occ::handle<Geom2d_Curve> theNewPCurve1;
         if (!theSegments2d.IsNull())
+        {
           theNewPCurve1 = theSegments2d->Value(icurv);
+        }
         occ::handle<Geom2d_Curve> revPCurve;
         if (isSeam)
+        {
           revPCurve = theSegments2dR->Value(icurv);
+        }
         // construction of the intermediate Vertex
         TopoDS_Vertex V;
         if (icurv <= nbc && nbc != 1 && !isDeg)
@@ -561,7 +617,9 @@ void ShapeUpgrade_WireDivide::Perform()
           else
           {
             if (Surf.IsNull())
+            {
               Surf = BRep_Tool::Surface(myFace, Loc);
+            }
             if (theNewPCurve1->IsKind(STANDARD_TYPE(Geom2d_BoundedCurve)))
             {
               par  = theNewPCurve1->LastParameter();
@@ -641,7 +699,9 @@ void ShapeUpgrade_WireDivide::Perform()
             pntV1 = P;
           }
           else
+          {
             V = V2;
+          }
           // else  V2;
           // }
           //	  if (ShapeUpgrade::Debug()) std::cout <<"... New intermediate Vertex ("
@@ -666,9 +726,13 @@ void ShapeUpgrade_WireDivide::Perform()
         }
         sbe.CopyPCurves(newEdge, E);
         if (!theNewCurve3d.IsNull())
+        {
           B.UpdateEdge(newEdge, theNewCurve3d, 0.);
+        }
         else if (isDeg)
+        {
           B.Degenerated(newEdge, true);
+        }
         // if(isSeam) {
         //  occ::handle<Geom2d_Curve> revPCurve = theSegments2dR->Value(icurv);
         // if(newEdge.Orientation()==TopAbs_FORWARD)
@@ -681,7 +745,9 @@ void ShapeUpgrade_WireDivide::Perform()
 
         double f3d = 0., l3d = 0.;
         if (!Savnum)
+        {
           Savnum = icurv;
+        }
         bool srNew;
         if (!theNewCurve3d.IsNull())
         {
@@ -699,7 +765,9 @@ void ShapeUpgrade_WireDivide::Perform()
           }
         }
         else
+        {
           srNew = true;
+        }
 
         double f2d = 0, l2d = 0;
         if (!theNewPCurve1.IsNull())
@@ -718,15 +786,19 @@ void ShapeUpgrade_WireDivide::Perform()
         }
         // if(!Savnum) Savnum = icurv;
         if (!theNewCurve3d.IsNull())
+        {
           theTransferParamTool->TransferRange(newEdge,
                                               theKnots3d->Value(Savnum),
                                               theKnots3d->Value(icurv + 1),
                                               false);
+        }
         else
+        {
           theTransferParamTool->TransferRange(newEdge,
                                               theKnots2d->Value(Savnum),
                                               theKnots2d->Value(icurv + 1),
                                               true);
+        }
         /*
         double alpha = (theKnots3d->Value (icurv) - f)/(l - f);
         double beta  = (theKnots3d->Value (icurv + 1) - f)/(l - f);
@@ -735,15 +807,21 @@ void ShapeUpgrade_WireDivide::Perform()
         occ::handle<Geom2d_Curve> c2dTmp;
         double                    setF, setL;
         if (!myFace.IsNull() && sae.PCurve(newEdge, myFace, c2dTmp, setF, setL, false))
+        {
           srNew &= ((setF == f2d) && (setL == l2d));
+        }
 
         if (isSeam)
         {
           // Handle(Geom2d_Curve  revPCurve = theSegments2dR->Value(icurv);
           if (newEdge.Orientation() == TopAbs_FORWARD)
+          {
             B.UpdateEdge(newEdge, theNewPCurve1, revPCurve, myFace, 0.);
+          }
           else
+          {
             B.UpdateEdge(newEdge, revPCurve, theNewPCurve1, myFace, 0.);
+          }
         }
         else if (!myFace.IsNull())
         {
@@ -751,7 +829,9 @@ void ShapeUpgrade_WireDivide::Perform()
         }
 
         if (!theNewCurve3d.IsNull())
+        {
           sbe.SetRange3d(newEdge, f3d, l3d);
+        }
         if (!theNewPCurve1.IsNull())
         {
           B.Range(newEdge, myFace, f2d, l2d);
@@ -808,7 +888,9 @@ void ShapeUpgrade_WireDivide::Perform()
         Context()->Replace(E, resWire);
       }
       else
+      {
         Context()->Remove(E);
+      }
     }
   }
   if (Status(ShapeExtend_DONE))

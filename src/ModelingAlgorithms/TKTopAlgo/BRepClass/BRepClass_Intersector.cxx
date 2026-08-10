@@ -459,12 +459,18 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
     C = Prop.Curvature();
   }
   else
+  {
     GetTangentAsChord(aPCurve, Tang, U, fpar, lpar);
+  }
 
   if (C > Precision::PConfusion() && !Precision::IsInfinite(C))
+  {
     Prop.Normal(Norm);
+  }
   else
+  {
     Norm.SetCoord(Tang.Y(), -Tang.X());
+  }
 }
 
 //=================================================================================================
@@ -519,19 +525,27 @@ void GetTangentAsChord(const occ::handle<Geom2d_Curve>& thePCurve,
 {
   double Offset = 0.1 * (theLast - theFirst);
 
-  if (theLast - theParam < Precision::PConfusion()) // theParam == theLast
+  if (theLast - theParam < Precision::PConfusion())
+  { // theParam == theLast
     Offset *= -1;
-  else if (theParam + Offset > theLast) //<theParam> is close to <theLast>
+  }
+  else if (theParam + Offset > theLast)
+  { //<theParam> is close to <theLast>
     Offset = 0.5 * (theLast - theParam);
+  }
 
   gp_Pnt2d aPnt2d      = thePCurve->Value(theParam);
   gp_Pnt2d OffsetPnt2d = thePCurve->Value(theParam + Offset);
 
   gp_Vec2d aChord(aPnt2d, OffsetPnt2d);
   if (Offset < 0.)
+  {
     aChord.Reverse();
+  }
 
   double SqLength = aChord.SquareMagnitude();
   if (SqLength > Precision::SquarePConfusion())
+  {
     theTangent = aChord;
+  }
 }

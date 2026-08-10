@@ -115,7 +115,9 @@ void Interface_STAT::Phase(const int    num,
     name   = voidname;
   }
   else if (num < 1 || num > thephdeb->Length())
+  {
     return;
+  }
   else
   {
     //  Phase
@@ -131,9 +133,13 @@ void Interface_STAT::Phase(const int    num,
 double Interface_STAT::Step(const int num) const
 {
   if (thestw.IsNull())
+  {
     return 1.;
+  }
   if (num < 1 || num > thestw->Length())
+  {
     return 1.;
+  }
   return thestw->Value(num);
 }
 
@@ -206,7 +212,9 @@ void Interface_STAT::NextPhase(const int items, const int cycles)
   //   if a single cycle, we start it; otherwise, wait NextCycle
   TheStat.nbitc = 0;
   if (cycles == 1)
+  {
     NextCycle(items);
+  }
 }
 
 void Interface_STAT::SetPhase(const int items, const int cycles)
@@ -231,7 +239,9 @@ void Interface_STAT::NextCycle(const int items)
 void Interface_STAT::NextStep()
 {
   if (TheStat.numst >= TheStat.n1)
+  {
     return;
+  }
   TheStat.numst++;
   TheStat.oldst += TheStat.stw;
   TheStat.numitem = 0;
@@ -260,7 +270,9 @@ const char* Interface_STAT::Where(const bool phase)
 int Interface_STAT::Percent(const bool phase)
 {
   if (TheStat.numitem > TheStat.nbitc)
+  {
     TheStat.numitem = TheStat.nbitc;
+  }
   //  we count the items already passed
   double enphase = TheStat.olditp * TheStat.otph + // complete cycles passed
                    TheStat.nbitc * TheStat.oldst + // current cycle, complete steps passed
@@ -269,7 +281,9 @@ int Interface_STAT::Percent(const bool phase)
   double prophase = enphase / (TheStat.nbitp * TheStat.otph);
   int    res      = int(prophase * 100.);
   if (phase)
+  {
     return res;
+  }
 
   //  that's it for this phase
   //  counting in the phases

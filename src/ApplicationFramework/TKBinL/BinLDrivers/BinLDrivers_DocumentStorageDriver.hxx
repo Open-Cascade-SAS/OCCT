@@ -24,7 +24,7 @@
 #include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <Standard_OStream.hxx>
@@ -125,7 +125,7 @@ private:
   NCollection_List<TDF_Label>                             myEmptyLabels;
   NCollection_Map<occ::handle<Standard_Transient>>        myMapUnsupported;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> myTypesMap;
-  NCollection_Vector<BinLDrivers_DocumentSection>         mySections;
+  NCollection_DynamicArray<BinLDrivers_DocumentSection>   mySections;
   TCollection_ExtendedString                              myFileName;
   //! Sizes of labels and some attributes that will be stored in the second pass
   NCollection_List<occ::handle<BinObjMgt_Position>> mySizesToWrite;

@@ -47,7 +47,9 @@ bool BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&       theSo
   Standard_GUID                    aGUID;
   bool                             ok = theSource >> aGUID;
   if (ok)
+  {
     anUAttr->SetID(aGUID);
+  }
   return ok;
 }
 

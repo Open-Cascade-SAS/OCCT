@@ -83,7 +83,9 @@ int Extrema_FuncPSNorm::NbEquations() const
 bool Extrema_FuncPSNorm::Value(const math_Vector& UV, math_Vector& F)
 {
   if (!myPinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs;
@@ -110,7 +112,9 @@ bool Extrema_FuncPSNorm::Derivatives(const math_Vector& UV, math_Matrix& Df)
 bool Extrema_FuncPSNorm::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
 {
   if (!myPinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs, Duus, Dvvs, Duvs;
@@ -135,7 +139,9 @@ bool Extrema_FuncPSNorm::Values(const math_Vector& UV, math_Vector& F, math_Matr
 int Extrema_FuncPSNorm::GetStateNumber()
 {
   if (!myPinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   // comparison of solution with previous solutions
   int              i = 1, nbSol = mySqDist.Length();
   constexpr double tol2d = Precision::PConfusion() * Precision::PConfusion();
@@ -145,10 +151,14 @@ int Extrema_FuncPSNorm::GetStateNumber()
     double aU, aV;
     myPoint(i).Parameter(aU, aV);
     if (((myU - aU) * (myU - aU) + (myV - aV) * (myV - aV)) <= tol2d)
+    {
       break;
+    }
   }
   if (i <= nbSol)
+  {
     return 0;
+  }
   mySqDist.Append(myPs.SquareDistance(myP));
   myPoint.Append(Extrema_POnSurf(myU, myV, myPs));
   return 0;
@@ -166,7 +176,9 @@ int Extrema_FuncPSNorm::NbExt() const
 double Extrema_FuncPSNorm::SquareDistance(const int N) const
 {
   if (!myPinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   return mySqDist.Value(N);
 }
 
@@ -175,6 +187,8 @@ double Extrema_FuncPSNorm::SquareDistance(const int N) const
 const Extrema_POnSurf& Extrema_FuncPSNorm::Point(const int N) const
 {
   if (!myPinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   return myPoint.Value(N);
 }

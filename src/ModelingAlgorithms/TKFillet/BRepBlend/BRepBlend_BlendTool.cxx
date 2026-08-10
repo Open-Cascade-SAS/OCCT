@@ -59,7 +59,9 @@ bool BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
   const double         Tol  = 1.e-5;
   Extrema_EPCOfExtPC2d extrema(P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone())
+  {
     return true;
+  }
 
   const int Nbext  = extrema.NbExt();
   double    aDist2 = Dist * Dist;
@@ -91,7 +93,9 @@ bool BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
   const gp_Vec2d v(P1, P2);
   const double   mag = v.Magnitude();
   if (mag < Tol)
+  {
     return false;
+  }
 
   gp_Dir2d                 d(v);
   occ::handle<Geom2d_Line> bid = new Geom2d_Line(P1, d);
@@ -99,11 +103,15 @@ bool BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
 
   Geom2dInt_GInter inter(seg, *C, Tol, Tol);
   if (!inter.IsDone())
+  {
     return false;
+  }
 
   const int Nbint = inter.NbPoints();
   if (Nbint == 0)
+  {
     return false;
+  }
 
   IntRes2d_IntersectionPoint ip = inter.Point(1);
   Param                         = ip.ParamOnSecond();

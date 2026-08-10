@@ -311,7 +311,9 @@ bool TDocStd_Document::CommitTransaction()
               myFromRedo.Nullify();
             }
             else
+            {
               myFromUndo = myUndos.First();
+            }
           }
 #endif
         }
@@ -330,7 +332,9 @@ bool TDocStd_Document::CommitTransaction()
     const occ::handle<TDocStd_Application> anAppli =
       occ::down_cast<TDocStd_Application>(Application());
     if (!anAppli.IsNull())
+    {
       anAppli->OnCommitTransaction(this);
+    }
   }
   return isDone;
 }
@@ -342,16 +346,24 @@ void TDocStd_Document::AbortTransaction()
   myData->AllowModification(true);
 
   if (myUndoTransaction.IsOpen())
+  {
     if (myUndoLimit != 0)
+    {
       myUndoTransaction.Abort();
+    }
+  }
 
   if (myIsNestedTransactionMode && myUndoFILO.Extent())
   {
     if (!myUndoFILO.First()->IsEmpty())
+    {
       myData->Undo(myUndoFILO.First(), true);
+    }
     myUndoFILO.RemoveFirst();
     if (myUndoFILO.Extent())
+    {
       myUndoTransaction.Open();
+    }
   }
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
@@ -364,7 +376,9 @@ void TDocStd_Document::AbortTransaction()
     const occ::handle<TDocStd_Application> anAppli =
       occ::down_cast<TDocStd_Application>(Application());
     if (!anAppli.IsNull())
+    {
       anAppli->OnAbortTransaction(this);
+    }
   }
 }
 
@@ -387,14 +401,18 @@ void TDocStd_Document::OpenTransaction()
     }
     int aLastTime = myData->Time();
     if (myUndoFILO.Extent())
+    {
       aLastTime = myUndoFILO.First()->EndTime();
+    }
     occ::handle<TDocStd_CompoundDelta> aCompoundDelta = new TDocStd_CompoundDelta;
     aCompoundDelta->Validity(aLastTime, aLastTime);
     myUndoFILO.Prepend(aCompoundDelta);
   }
 
   if (myUndoLimit != 0)
+  {
     myUndoTransaction.Open();
+  }
 
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
@@ -407,7 +425,9 @@ void TDocStd_Document::OpenTransaction()
     const occ::handle<TDocStd_Application> anAppli =
       occ::down_cast<TDocStd_Application>(Application());
     if (!anAppli.IsNull())
+    {
       anAppli->OnOpenTransaction(this);
+    }
   }
 }
 
@@ -490,7 +510,9 @@ bool TDocStd_Document::Undo()
 
     // only for nested transaction mode
     while (myIsNestedTransactionMode && myUndoFILO.Extent())
+    {
       AbortTransaction();
+    }
 
     // allow modifications
     myData->AllowModification(true);
@@ -515,7 +537,9 @@ bool TDocStd_Document::Undo()
   }
 
   if (isOpened && undoDone)
+  {
     OpenTransaction();
+  }
 
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
@@ -548,7 +572,9 @@ bool TDocStd_Document::Redo()
 
     // only for nested transaction mode
     while (myIsNestedTransactionMode && myUndoFILO.Extent())
+    {
       AbortTransaction();
+    }
 
     // allow modifications
     myData->AllowModification(true);
@@ -572,7 +598,9 @@ bool TDocStd_Document::Redo()
   }
 
   if (isOpened && undoDone)
+  {
     OpenTransaction();
+  }
 
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
@@ -636,7 +664,9 @@ bool TDocStd_Document::InitDeltaCompaction()
 
   myFromUndo = myUndos.Last();
   if (myRedos.Extent() > 0)
+  {
     myFromRedo = myRedos.First();
+  }
 #endif
   return true;
 }
@@ -647,7 +677,9 @@ bool TDocStd_Document::PerformDeltaCompaction()
 {
 #ifdef SRN_DELTA_COMPACT
   if (myFromUndo.IsNull())
+  {
     return false; // Redo can be Null for this operation
+  }
 
   NCollection_List<occ::handle<TDF_Delta>>           aList;
   occ::handle<TDocStd_CompoundDelta>                 aCompoundDelta = new TDocStd_CompoundDelta;
@@ -663,7 +695,9 @@ bool TDocStd_Document::PerformDeltaCompaction()
     if (!isFound)
     {
       if (myFromUndo == anIterator.Value())
+      {
         isFound = true;
+      }
       aList.Append(anIterator.Value()); // Fill the list of deltas that precede compound delta
       continue;
     }
@@ -683,11 +717,10 @@ bool TDocStd_Document::PerformDeltaCompaction()
         aMap.Bind(aDeltasIterator.Value()->Label(), *pIDMap);
         delete pIDMap;
       }
-      if (aMap(aDeltasIterator.Value()->Label())
-            .Add(aDeltasIterator.Value()->ID()))                    // The attribute is not
-                                                                    // clang-format off
-	aCompoundDelta->AddAttributeDelta(aDeltasIterator.Value());                 //already in the delta
-                                                                    // clang-format on
+      if (aMap(aDeltasIterator.Value()->Label()).Add(aDeltasIterator.Value()->ID()))
+      { // The attribute is not already in the delta
+        aCompoundDelta->AddAttributeDelta(aDeltasIterator.Value());
+      }
     }
   }
 
@@ -709,7 +742,9 @@ bool TDocStd_Document::PerformDeltaCompaction()
   {
     aList.Append(anIterator.Value());
     if (anIterator.Value() == myFromRedo)
+    {
       break;
+    }
   }
 
   myRedos.Clear();
@@ -742,7 +777,9 @@ void TDocStd_Document::ChangeStorageFormat(const TCollection_ExtendedString& new
 void TDocStd_Document::Recompute()
 {
   if (IsValid())
+  {
     return;
+  }
   // find the top function and execute it
   //  occ::handle<TDesign_Function> F;
   //  if (Main().FindAttribute(TDesign_Function::GetID(),F)) {
@@ -758,7 +795,9 @@ void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundD
                                              const occ::handle<TDF_Delta>&             theDelta2)
 {
   if (theDelta2->IsEmpty())
+  {
     return;
+  }
   NCollection_DataMap<TDF_Label, NCollection_Map<Standard_GUID>> aMap;
 
   NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator1(
@@ -787,7 +826,9 @@ void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundD
     {
       const NCollection_Map<Standard_GUID>& anIDMap = aMap.Find(aLabel);
       if (anIDMap.Contains(anID))
+      {
         continue;
+      }
     }
     theDelta1->AddAttributeDelta(aDeltasIterator2.Value());
   }
@@ -798,7 +839,9 @@ void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundD
 void TDocStd_Document::RemoveFirstUndo()
 {
   if (myUndos.IsEmpty())
+  {
     return;
+  }
   myUndos.RemoveFirst();
 }
 
@@ -809,7 +852,9 @@ void TDocStd_Document::BeforeClose()
   SetModificationMode(false);
   AbortTransaction();
   if (myIsNestedTransactionMode)
+  {
     myUndoFILO.Clear();
+  }
   ClearUndos();
 }
 

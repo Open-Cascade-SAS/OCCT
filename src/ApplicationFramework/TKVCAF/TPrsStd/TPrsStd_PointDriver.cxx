@@ -51,12 +51,16 @@ bool TPrsStd_PointDriver::Update(const TDF_Label&                    aLabel,
   //  Update de l'AIS
   occ::handle<AIS_Point> aistrihed;
   if (anAISObject.IsNull())
+  {
     aistrihed = new AIS_Point(apt);
+  }
   else
   {
     aistrihed = occ::down_cast<AIS_Point>(anAISObject);
     if (aistrihed.IsNull())
+    {
       aistrihed = new AIS_Point(apt);
+    }
     else
     {
       aistrihed->SetComponent(apt);

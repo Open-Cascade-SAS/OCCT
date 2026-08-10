@@ -50,7 +50,9 @@ void math_SVD::Solve(const math_Vector& B, math_Vector& X, const double Eps)
   for (int I = 1; I <= Diag.Upper(); I++)
   {
     if (Diag(I) < wmin)
+    {
       Diag(I) = 0.0;
+    }
   }
 
   // Handle custom bounds in X vector - SVD_Solve expects 1-based indexing
@@ -75,7 +77,9 @@ void math_SVD::PseudoInverse(math_Matrix& Result, const double Eps)
   for (i = 1; i <= Diag.Upper(); i++)
   {
     if (Diag(i) < wmin)
+    {
       Diag(i) = 0.0;
+    }
   }
 
   int         ColA = Diag.Length();
@@ -85,11 +89,15 @@ void math_SVD::PseudoInverse(math_Matrix& Result, const double Eps)
   for (j = 1; j <= RowA; j++)
   {
     for (i = 1; i <= VNorme.Upper(); i++)
+    {
       VNorme(i) = 0.0;
+    }
     VNorme(j) = 1.0;
     SVD_Solve(U, Diag, V, VNorme, Column);
     for (i = 1; i <= ColA; i++)
+    {
       Result(i, j) = Column(i);
+    }
   }
 }
 

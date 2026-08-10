@@ -32,7 +32,9 @@ void IGESBasic_ExternalRefFileIndex::Init(
 {
   if (aNameArray->Lower() != 1 || allEntities->Lower() != 1
       || aNameArray->Length() != allEntities->Length())
+  {
     throw Standard_DimensionMismatch("IGESBasic_ExternalRefFileIndex: Init");
+  }
 
   theNames    = aNameArray;
   theEntities = allEntities;

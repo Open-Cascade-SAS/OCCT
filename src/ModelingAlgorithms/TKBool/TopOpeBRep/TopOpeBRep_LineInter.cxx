@@ -134,7 +134,9 @@ void TopOpeBRep_LineInter::SetLine(const occ::handle<IntPatch_Line>& L,
     FUN_ALINETOWLINE(myILA, new BRepAdaptor_Surface(S1), new BRepAdaptor_Surface(S2), aSLin);
 
     if (aSLin.Length() > 0)
+    {
       myILW = occ::down_cast<IntPatch_WLine>(aSLin.Value(1));
+    }
 
     myTypeLineCurve = TopOpeBRep_WALKING;
   }
@@ -342,9 +344,13 @@ void TopOpeBRep_LineInter::SetVPBounds()
       n++;
       const int i = VPI.CurrentVPIndex();
       if (i < f)
+      {
         f = i;
+      }
       if (i > l)
+      {
         l = i;
+      }
     }
   }
 
@@ -430,7 +436,9 @@ bool TopOpeBRep_LineInter::HasVInternal()
   for (; VPI.More(); VPI.Next())
   {
     if (VPI.CurrentVP().IsInternal())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -539,7 +547,9 @@ const TopoDS_Shape& TopOpeBRep_LineInter::Arc() const
     }
   }
   else
+  {
     return myNullShape;
+  }
 }
 
 //=================================================================================================
@@ -559,7 +569,9 @@ bool TopOpeBRep_LineInter::ArcIsEdge(const int Index) const
 bool TopOpeBRep_LineInter::HasFirstPoint() const
 {
   if (myILG.IsNull())
+  {
     throw Standard_ProgramError("TopOpeBRep_LineInter::HasFirstPoint sur line != GLine");
+  }
   return myILG->HasFirstPoint();
 }
 
@@ -568,7 +580,9 @@ bool TopOpeBRep_LineInter::HasFirstPoint() const
 bool TopOpeBRep_LineInter::HasLastPoint() const
 {
   if (myILG.IsNull())
+  {
     throw Standard_ProgramError("TopOpeBRep_LineInter::HasLastPoint sur line != GLine");
+  }
   return myILG->HasLastPoint();
 }
 
@@ -587,9 +601,13 @@ void TopOpeBRep_LineInter::ComputeFaceFaceTransition()
 const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition(const int I) const
 {
   if (I == 1)
+  {
     return myLineTonF1;
+  }
   if (I == 2)
+  {
     return myLineTonF2;
+  }
   throw Standard_ProgramError("TopOpeBRep_LineInter::FaceFaceTransition");
 }
 

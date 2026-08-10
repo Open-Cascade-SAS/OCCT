@@ -37,7 +37,9 @@ void RWStepRepr_RWConstructiveGeometryRepresentation::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "constructive_geometry_representation"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -59,7 +61,9 @@ void RWStepRepr_RWConstructiveGeometryRepresentation::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anEnt))
+      {
         aItems->SetValue(i, anEnt);
+      }
     }
   }
 

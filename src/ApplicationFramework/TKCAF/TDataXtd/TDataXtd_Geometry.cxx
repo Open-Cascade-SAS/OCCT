@@ -81,7 +81,9 @@ bool TDataXtd_Geometry::Point(const occ::handle<TNaming_NamedShape>& NS, gp_Pnt&
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_VERTEX)
   {
     const TopoDS_Vertex& vertex = TopoDS::Vertex(shape);
@@ -134,7 +136,9 @@ bool TDataXtd_Geometry::Line(const occ::handle<TNaming_NamedShape>& NS, gp_Lin& 
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Edge& edge = TopoDS::Edge(shape);
@@ -144,7 +148,9 @@ bool TDataXtd_Geometry::Line(const occ::handle<TNaming_NamedShape>& NS, gp_Lin& 
     if (!curve.IsNull())
     {
       if (curve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+      {
         curve = (occ::down_cast<Geom_TrimmedCurve>(curve))->BasisCurve();
+      }
       occ::handle<Geom_Line> C = occ::down_cast<Geom_Line>(curve);
       if (!C.IsNull())
       {
@@ -174,7 +180,9 @@ bool TDataXtd_Geometry::Circle(const occ::handle<TNaming_NamedShape>& NS, gp_Cir
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Edge& edge = TopoDS::Edge(shape);
@@ -184,7 +192,9 @@ bool TDataXtd_Geometry::Circle(const occ::handle<TNaming_NamedShape>& NS, gp_Cir
     if (!curve.IsNull())
     {
       if (curve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+      {
         curve = (occ::down_cast<Geom_TrimmedCurve>(curve))->BasisCurve();
+      }
       occ::handle<Geom_Circle> C = occ::down_cast<Geom_Circle>(curve);
       if (!C.IsNull())
       {
@@ -214,7 +224,9 @@ bool TDataXtd_Geometry::Ellipse(const occ::handle<TNaming_NamedShape>& NS, gp_El
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Edge&      edge = TopoDS::Edge(shape);
@@ -223,7 +235,9 @@ bool TDataXtd_Geometry::Ellipse(const occ::handle<TNaming_NamedShape>& NS, gp_El
     if (!curve.IsNull())
     {
       if (curve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+      {
         curve = (occ::down_cast<Geom_TrimmedCurve>(curve))->BasisCurve();
+      }
       occ::handle<Geom_Ellipse> C = occ::down_cast<Geom_Ellipse>(curve);
       if (!C.IsNull())
       {
@@ -253,7 +267,9 @@ bool TDataXtd_Geometry::Plane(const occ::handle<TNaming_NamedShape>& NS, gp_Pln&
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_FACE)
   {
     const TopoDS_Face&        face    = TopoDS::Face(shape);
@@ -261,7 +277,9 @@ bool TDataXtd_Geometry::Plane(const occ::handle<TNaming_NamedShape>& NS, gp_Pln&
     if (!surface.IsNull())
     {
       if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+      {
         surface = occ::down_cast<Geom_RectangularTrimmedSurface>(surface)->BasisSurface();
+      }
       occ::handle<Geom_Plane> S = occ::down_cast<Geom_Plane>(surface);
       if (!S.IsNull())
       {
@@ -291,7 +309,9 @@ bool TDataXtd_Geometry::Cylinder(const occ::handle<TNaming_NamedShape>& NS, gp_C
 {
   const TopoDS_Shape& shape = TNaming_Tool::GetShape(NS);
   if (shape.IsNull())
+  {
     return false;
+  }
   if (shape.ShapeType() == TopAbs_FACE)
   {
     const TopoDS_Face&        face    = TopoDS::Face(shape);
@@ -299,7 +319,9 @@ bool TDataXtd_Geometry::Cylinder(const occ::handle<TNaming_NamedShape>& NS, gp_C
     if (!surface.IsNull())
     {
       if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+      {
         surface = occ::down_cast<Geom_RectangularTrimmedSurface>(surface)->BasisSurface();
+      }
       occ::handle<Geom_CylindricalSurface> S = occ::down_cast<Geom_CylindricalSurface>(surface);
       if (!S.IsNull())
       {
@@ -419,7 +441,9 @@ void TDataXtd_Geometry::SetType(const TDataXtd_GeometryEnum G)
 {
   // OCC2932 correction
   if (myType == G)
+  {
     return;
+  }
 
   Backup();
   myType = G;

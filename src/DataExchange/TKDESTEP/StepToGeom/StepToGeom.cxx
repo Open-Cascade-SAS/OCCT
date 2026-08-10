@@ -153,7 +153,9 @@ occ::handle<Geom_Axis1Placement> StepToGeom::MakeAxis1Placement(
     {
       occ::handle<Geom_Direction> D1 = MakeDirection(SA->Axis());
       if (!D1.IsNull())
+      {
         D = D1->Dir();
+      }
     }
     return new Geom_Axis1Placement(P->Pnt(), D);
   }
@@ -180,7 +182,9 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
     {
       occ::handle<Geom_Direction> D = MakeDirection(SA->Axis());
       if (!D.IsNull())
+      {
         Ngp = D->Dir();
+      }
     }
 
     gp_Ax2 gpAx2;
@@ -199,7 +203,9 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
       }
     }
     if (isDefaultDirectionUsed)
+    {
       gpAx2 = gp_Ax2(Pgp, Ngp);
+    }
 
     return new Geom_Axis2Placement(gpAx2);
   }
@@ -251,7 +257,9 @@ occ::handle<Geom2d_AxisPlacement> StepToGeom::MakeAxisPlacement(
     {
       occ::handle<Geom2d_Direction> Vx = MakeDirection2d(SA->RefDirection());
       if (!Vx.IsNull())
+      {
         Vxgp = Vx->Dir2d();
+      }
     }
 
     return new Geom2d_AxisPlacement(P->Pnt2d(), Vxgp);
@@ -289,7 +297,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     const occ::handle<StepGeom_BezierCurve> BzC     = occ::down_cast<StepGeom_BezierCurve>(SC);
     int                                     aDegree = BzC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
+    {
       return nullptr;
+    }
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(BzC->ControlPointsList());
@@ -314,7 +324,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     const occ::handle<StepGeom_UniformCurve> UC      = occ::down_cast<StepGeom_UniformCurve>(SC);
     int                                      aDegree = UC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
+    {
       return nullptr;
+    }
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(UC->ControlPointsList());
@@ -343,7 +355,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_QuasiUniformCurve>(SC);
     int aDegree = QUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
+    {
       return nullptr;
+    }
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(QUC->ControlPointsList());
@@ -374,7 +388,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_UniformCurveAndRationalBSplineCurve>(SC);
     int aDegree = RUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
+    {
       return nullptr;
+    }
     const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> RBSPL =
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
@@ -409,7 +425,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_QuasiUniformCurveAndRationalBSplineCurve>(SC);
     int aDegree = RQUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
+    {
       return nullptr;
+    }
     const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> RBSPL =
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
@@ -750,8 +768,10 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
     aBSplineCurveWithKnots = aBSplineCurveWithKnotsAndRationalBSplineCurve->BSplineCurveWithKnots();
   }
   else
+  {
     aBSplineCurveWithKnots =
       occ::down_cast<StepGeom_BSplineCurveWithKnots>(theStepGeom_BSplineCurve);
+  }
 
   const int aDegree = aBSplineCurveWithKnots->Degree();
   const int NbPoles = aBSplineCurveWithKnots->NbControlPointsList();
@@ -808,9 +828,13 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
     if (aCurrentVal > aDegree + 1)
     {
       if (i == 1)
+      {
         aFirstMuultypisityDifference = aCurrentVal - aDegree - 1;
+      }
       if (i == NbUniqueKnots)
+      {
         aLastMuultypisityDifference = aCurrentVal - aDegree - 1;
+      }
 #ifdef OCCT_DEBUG
       std::cout << "\nWrong multiplicity " << aCurrentVal << " on " << i << " knot!"
                 << "\nChanged to " << aDegree + 1 << std::endl;
@@ -877,7 +901,9 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
       aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
     NCollection_Array1<double> aUniqueWeights(1, NbPoles - aSummaryMuultypisityDifference);
     for (int i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+    {
       aUniqueWeights.SetValue(i - aFirstMuultypisityDifference, aWeights->Value(i));
+    }
     aBSplineCurve = new TBSplineCurve(Poles,
                                       aUniqueWeights,
                                       aUniqueKnots,
@@ -955,7 +981,9 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
     BS  = BSR->BSplineSurfaceWithKnots();
   }
   else
+  {
     BS = occ::down_cast<StepGeom_BSplineSurfaceWithKnots>(SS);
+  }
 
   const int UDeg    = BS->UDegree();
   const int VDeg    = BS->VDegree();
@@ -971,9 +999,13 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
       occ::handle<Geom_CartesianPoint> P =
         MakeCartesianPoint(aControlPointsList->Value(i, j), theLocalFactors);
       if (!P.IsNull())
+      {
         Poles.SetValue(i, j, P->Pnt());
+      }
       else
+      {
         return nullptr;
+      }
     }
   }
   const int                                       NUKnots          = BS->NbUMultiplicities();
@@ -1120,6 +1152,7 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
                                  shouldBeVPeriodic);
   }
   else
+  {
     CS = new Geom_BSplineSurface(Poles,
                                  KUn,
                                  KVn,
@@ -1129,6 +1162,7 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
                                  VDeg,
                                  shouldBeUPeriodic,
                                  shouldBeVPeriodic);
+  }
   return CS;
 }
 
@@ -1623,7 +1657,9 @@ occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC
     if (!D.IsNull())
     {
       if (D->Vec().SquareMagnitude() < Precision::Confusion() * Precision::Confusion())
+      {
         return nullptr;
+      }
       const gp_Dir V(D->Vec());
       return new Geom_Line(P->Pnt(), V);
     }
@@ -1716,7 +1752,9 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
                                                         const StepData_Factors& theLocalFactors)
 {
   if (SPL.IsNull())
+  {
     return occ::handle<Geom_BSplineCurve>();
+  }
 
   const int nbp = SPL->NbPoints();
   if (nbp > 1)
@@ -1729,9 +1767,13 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
     {
       occ::handle<Geom_CartesianPoint> P = MakeCartesianPoint(SPL->PointsValue(i), theLocalFactors);
       if (!P.IsNull())
+      {
         Poles.SetValue(i, P->Pnt());
+      }
       else
+      {
         return nullptr;
+      }
       Knots.SetValue(i, double(i - 1));
       Mults.SetValue(i, 1);
     }
@@ -1750,7 +1792,9 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
   const StepData_Factors&               theLocalFactors)
 {
   if (SPL.IsNull())
+  {
     return occ::handle<Geom2d_BSplineCurve>();
+  }
 
   const int nbp = SPL->NbPoints();
   if (nbp > 1)
@@ -1764,9 +1808,13 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
       occ::handle<Geom2d_CartesianPoint> P =
         MakeCartesianPoint2d(SPL->PointsValue(i), theLocalFactors);
       if (!P.IsNull())
+      {
         Poles.SetValue(i, P->Pnt2d());
+      }
       else
+      {
         return nullptr;
+      }
       Knots.SetValue(i, double(i - 1));
       Mults.SetValue(i, 1);
     }
@@ -1878,7 +1926,9 @@ occ::handle<Geom_Surface> StepToGeom::MakeSurface(const occ::handle<StepGeom_Sur
       const occ::handle<StepGeom_ElementarySurface> S1 =
         occ::down_cast<StepGeom_ElementarySurface>(SS);
       if (S1->Position().IsNull())
+      {
         return occ::handle<Geom_Surface>();
+      }
 
       return MakeElementarySurface(S1, theLocalFactors);
     }
@@ -1970,7 +2020,9 @@ occ::handle<Geom_SurfaceOfLinearExtrusion> StepToGeom::MakeSurfaceOfLinearExtrus
       const gp_Dir           D(V->Vec());
       occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(C);
       if (!aLine.IsNull() && aLine->Lin().Direction().IsParallel(D, Precision::Angular()))
+      {
         return occ::handle<Geom_SurfaceOfLinearExtrusion>();
+      }
       return new Geom_SurfaceOfLinearExtrusion(C, D);
     }
   }
@@ -2084,7 +2136,9 @@ bool StepToGeom::MakeTransformation2d(
     {
       occ::handle<Geom2d_Direction> D = MakeDirection2d(A);
       if (!D.IsNull())
+      {
         D1 = D->Dir2d();
+      }
     }
     const gp_Ax2d result(CP->Pnt2d(), D1);
     CT.SetTransformation(result);
@@ -2114,7 +2168,9 @@ bool StepToGeom::MakeTransformation3d(
     {
       occ::handle<Geom_Direction> D = MakeDirection(A1);
       if (!D.IsNull())
+      {
         D1 = D->Dir();
+      }
     }
 
     gp_Dir                                D2(gp_Dir::D::Y);
@@ -2123,7 +2179,9 @@ bool StepToGeom::MakeTransformation3d(
     {
       occ::handle<Geom_Direction> D = MakeDirection(A2);
       if (!D.IsNull())
+      {
         D2 = D->Dir();
+      }
     }
 
     bool                                  isDefaultDirectionUsed = true;
@@ -2139,7 +2197,9 @@ bool StepToGeom::MakeTransformation3d(
       }
     }
     if (isDefaultDirectionUsed)
+    {
       D3 = D1.Crossed(D2);
+    }
 
     const gp_Ax3 result(Pgp, D3, D1);
     CT.SetTransformation(result);
@@ -2267,7 +2327,9 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
   const occ::handle<StepGeom_Curve> theSTEPCurve = SC->BasisCurve();
   occ::handle<Geom_Curve>           theCurve     = MakeCurve(theSTEPCurve, theLocalFactors);
   if (theCurve.IsNull())
+  {
     return occ::handle<Geom_TrimmedCurve>();
+  }
 
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel1 = SC->Trim1();
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel2 = SC->Trim2();
@@ -2325,7 +2387,9 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
     //: p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
     const occ::handle<StepGeom_Ellipse> ellipse = occ::down_cast<StepGeom_Ellipse>(theSTEPCurve);
     if (!ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0.)
+    {
       shift = 0.5 * M_PI;
+    }
 
     // skl 04.02.2002 for OCC133: we can not make TrimmedCurve if
     // there is no X-direction in StepGeom_Axis2Placement3d
@@ -2342,13 +2406,19 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
           ////gka 18.02.04 analysis for case when MasterRep = .Unspecified
           // and parameters are specified as CARTESIAN_POINT
           if (isPoint /*&& !MasterRep*/)
+          {
             MasterRep = 1;
+          }
           else
           {
             if (SC->SenseAgreement())
+            {
               return new Geom_TrimmedCurve(theCurve, 0., 2. * M_PI, true);
+            }
             else
+            {
               return new Geom_TrimmedCurve(theCurve, 2. * M_PI, 0., false);
+            }
           }
         }
       }
@@ -2371,13 +2441,21 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
     if (!theCurve->IsPeriodic())
     {
       if (trim1 < cf)
+      {
         trim1 = cf;
+      }
       else if (trim1 > cl)
+      {
         trim1 = cl;
+      }
       if (trim2 < cf)
+      {
         trim2 = cf;
+      }
       else if (trim2 > cl)
+      {
         trim2 = cl;
+      }
     }
     if (std::abs(trim1 - trim2) < Precision::PConfusion())
     {
@@ -2406,9 +2484,13 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
     //: o6    trim1 = trim1 * fact;
     //: o6    trim2 = trim2 * fact;
     if (SC->SenseAgreement())
+    {
       return new Geom_TrimmedCurve(theCurve, trim1, trim2, true);
-    else //: abv 29.09.00 PRO20362: reverse parameters in case of reversed curve
+    }
+    else
+    { //: abv 29.09.00 PRO20362: reverse parameters in case of reversed curve
       return new Geom_TrimmedCurve(theCurve, trim2, trim1, false);
+    }
   }
   return nullptr;
 }
@@ -2425,7 +2507,9 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
   const occ::handle<StepGeom_Curve> BasisCurve   = SC->BasisCurve();
   occ::handle<Geom2d_Curve>         theGeomBasis = MakeCurve2d(BasisCurve, theLocalFactors);
   if (theGeomBasis.IsNull())
+  {
     return occ::handle<Geom2d_BSplineCurve>();
+  }
 
   if (theGeomBasis->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
@@ -2456,7 +2540,9 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
       //: p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
       const occ::handle<StepGeom_Ellipse> ellipse = occ::down_cast<StepGeom_Ellipse>(BasisCurve);
       if (!ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0.)
+      {
         shift = 0.5 * M_PI;
+      }
     }
     else if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Parabola))
              || BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Hyperbola)))
@@ -2633,16 +2719,24 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
     if (std::abs(dx) >= Precision::Confusion())
     {
       if (dx > 0.)
+      {
         anYPRRotation->SetValue(3, aYaw);
+      }
       else
+      {
         anYPRRotation->SetValue(3, aRoll);
+      }
     }
     else
     {
       if (dz > 0.)
+      {
         anYPRRotation->SetValue(1, aYaw);
+      }
       else
+      {
         anYPRRotation->SetValue(1, aRoll);
+      }
     }
     return anYPRRotation;
   }
@@ -2686,9 +2780,13 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
   {
     // |aPitch| = PI/2
     if (std::abs(aRotMat[0][2] - 1.) < Precision::Confusion())
+    {
       aPitch = M_PI_2;
+    }
     else
+    {
       aPitch = -M_PI_2;
+    }
     // In this case, only the sum or difference of roll and yaw angles
     // is relevant and can be evaluated from the matrix.
     // According to IP `rectangular pitch angle' for ypr_rotation,
@@ -2701,9 +2799,13 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
     if (aRotMat[1][1] < 0.)
     {
       if (aYaw <= 0.)
+      {
         aYaw = aYaw + M_PI;
+      }
       else
+      {
         aYaw = aYaw - M_PI;
+      }
     }
   }
   else
@@ -2714,9 +2816,13 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
     if (aRotMat[0][0] < 0.)
     {
       if (aYaw < 0. || std::abs(aYaw) < Precision::Angular())
+      {
         aYaw = aYaw + M_PI;
+      }
       else
+      {
         aYaw = aYaw - M_PI;
+      }
     }
     double aSY = std::sin(aYaw);
     double aCY = std::cos(aYaw);
@@ -2731,11 +2837,17 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
     else
     {
       if (std::abs(aCY) > std::abs(aSR) && std::abs(aCY) > std::abs(aCR))
+      {
         aCm1 = aRotMat[0][0] / aCY;
+      }
       else if (std::abs(aSR) > std::abs(aCR))
+      {
         aCm1 = -aRotMat[1][2] / aSR;
+      }
       else
+      {
         aCm1 = aRotMat[2][2] / aCR;
+      }
     }
     aPitch = std::atan2(aRotMat[0][2], aCm1);
   }

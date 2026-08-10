@@ -235,9 +235,13 @@ static void Solve(math_FunctionWithDerivative&  F,
     else
     {
       if (xm >= 0)
+      {
         b += std::abs(tol1);
+      }
       else
+      {
         b += -std::abs(tol1);
+      }
     }
     F.Value(b, fb);
     fb -= K;
@@ -316,10 +320,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     for (i = 0; i <= N; i++, X += dx)
     {
       if (X > XN)
+      {
         X = XN;
+      }
       Ok = F.Value(X, aux);
       if (Ok)
+      {
         ptrval(++Nvalid) = aux - K;
+      }
       //      ptrval(i)-=K;
     }
     //-- Toute la fonction est nulle ?
@@ -355,7 +363,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       {
         X2 = X + dx;
         if (X2 > XN)
+        {
           X2 = XN;
+        }
         if (ptrval(i) < 0.0)
         {
           if (ptrval(ip1) > 0.0)
@@ -388,19 +398,29 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           //	  double Val,Deriv;
           X = X0 + i * dx;
           if (X > XN)
+          {
             X = XN;
+          }
           double u0, u1;
           u0 = dx * 0.5;
           u1 = X + u0;
           u0 += X;
           if (u0 < X0)
+          {
             u0 = X0;
+          }
           if (u0 > XN)
+          {
             u0 = XN;
+          }
           if (u1 < X0)
+          {
             u1 = X0;
+          }
           if (u1 > XN)
+          {
             u1 = XN;
+          }
 
           double y0, y1;
           F.Value(u0, y0);
@@ -448,7 +468,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       {
         Rediscr = false;
         if (xm > XN)
+        {
           xm = XN;
+        }
         if (ptrval(i) > 0.0)
         {
           if ((ptrval(im1) > ptrval(i)) && (ptrval(ip1) > ptrval(i)))
@@ -457,7 +479,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             //-- -------------- Estimation a partir de Xim1
             xm1 = xm - dx;
             if (xm1 < X0)
+            {
               xm1 = X0;
+            }
             F.Values(xm1, ym, dym);
             ym -= K;
             if (dym < -1e-10 || dym > 1e-10)
@@ -473,7 +497,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             {
               xp1 = xm + dx;
               if (xp1 > XN)
+              {
                 xp1 = XN;
+              }
               F.Values(xp1, ym, dym);
               ym -= K;
               if (dym < -1e-10 || dym > 1e-10)
@@ -495,7 +521,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             //-- -------------- Estimation a partir de Xim1
             xm1 = xm - dx;
             if (xm1 < X0)
+            {
               xm1 = X0;
+            }
             F.Values(xm1, ym, dym);
             ym -= K;
             if (dym > 1e-10 || dym < -1e-10)
@@ -511,7 +539,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             {
               xm1 = xm - dx;
               if (xm1 < X0)
+              {
                 xm1 = X0;
+              }
               F.Values(xm1, ym, dym);
               ym -= K;
               if (dym > 1e-10 || dym < -1e-10)
@@ -530,9 +560,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           double x0 = xm - dx;
           double x3 = xm + dx;
           if (x0 < X0)
+          {
             x0 = X0;
+          }
           if (x3 > XN)
+          {
             x3 = XN;
+          }
           double aSolX1 = 0., aSolX2 = 0.;
           double aVal1 = 0., aVal2 = 0.;
           double aDer1 = 0., aDer2 = 0.;
@@ -674,24 +708,36 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           if (isSol1 && isSol2)
           {
             if (aVal2 - aVal1 > EpsF)
+            {
               AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+            }
             else if (aVal1 - aVal2 > EpsF)
+            {
               AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+            }
             else
             {
               aDer1 = std::abs(aDer1);
               F.Derivative(aSolX2, aDer2);
               aDer2 = std::abs(aDer2);
               if (aDer1 < aDer2)
+              {
                 AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+              }
               else
+              {
                 AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+              }
             }
           }
           else if (isSol1)
+          {
             AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+          }
           else if (isSol2)
+          {
             AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+          }
         } //-- Recherche d un extrema
       } //-- for
     }
@@ -1345,10 +1391,10 @@ void math_FunctionRoots::Dump(Standard_OStream& o) const
   if (Done)
   {
     o << " Status = Done \n";
-    o << " Number of solutions = " << Sol.Length() << std::endl;
+    o << " Number of solutions = " << Sol.Length() << '\n';
     for (int i = 1; i <= Sol.Length(); i++)
     {
-      o << " Solution Number " << i << "= " << Sol.Value(i) << std::endl;
+      o << " Solution Number " << i << "= " << Sol.Value(i) << '\n';
     }
   }
   else

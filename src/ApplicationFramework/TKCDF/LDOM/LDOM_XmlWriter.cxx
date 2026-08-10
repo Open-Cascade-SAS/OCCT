@@ -152,7 +152,9 @@ static char* getEncodingName(const char* theEncodingName)
 
   int aLen = 0;
   while (anEncoding[aLen++] != chNull)
+  {
     ;
+  }
 
   char* aResult = new char[aLen];
   memcpy(aResult, anEncoding, aLen * sizeof(char));
@@ -315,7 +317,7 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
     }
     default:
 #ifndef _MSC_VER
-      std::cerr << "Unrecognized node type = " << (long)theNode.getNodeType() << std::endl
+      std::cerr << "Unrecognized node type = " << (long)theNode.getNodeType() << '\n'
 #endif
         ;
   }

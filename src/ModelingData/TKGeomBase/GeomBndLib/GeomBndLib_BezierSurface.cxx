@@ -154,9 +154,13 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
       for (int aK = 0; aK < 3; ++aK)
       {
         if (aCoordMin[aK] > aP.Coord(aK + 1))
+        {
           aCoordMin[aK] = aP.Coord(aK + 1);
+        }
         if (aCoordMax[aK] < aP.Coord(aK + 1))
+        {
           aCoordMax[aK] = aP.Coord(aK + 1);
+        }
       }
 
       // U-midpoint deflection.
@@ -168,12 +172,18 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
         for (int aK = 0; aK < 3; ++aK)
         {
           if (aCoordMin[aK] > aPM.Coord(aK + 1))
+          {
             aCoordMin[aK] = aPM.Coord(aK + 1);
+          }
           if (aCoordMax[aK] < aPM.Coord(aK + 1))
+          {
             aCoordMax[aK] = aPM.Coord(aK + 1);
+          }
           const double aDiff = std::abs(aD.Coord(aK + 1));
           if (aDeflMax[aK] < aDiff)
+          {
             aDeflMax[aK] = aDiff;
+          }
         }
       }
       // V-midpoint deflection.
@@ -185,12 +195,18 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
         for (int aK = 0; aK < 3; ++aK)
         {
           if (aCoordMin[aK] > aPM.Coord(aK + 1))
+          {
             aCoordMin[aK] = aPM.Coord(aK + 1);
+          }
           if (aCoordMax[aK] < aPM.Coord(aK + 1))
+          {
             aCoordMax[aK] = aPM.Coord(aK + 1);
+          }
           const double aDiff = std::abs(aD.Coord(aK + 1));
           if (aDeflMax[aK] < aDiff)
+          {
             aDeflMax[aK] = aDiff;
+          }
         }
       }
     }
@@ -202,7 +218,9 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
   {
     const double aDiff = aDeflMax[aK];
     if (aDiff <= anEps)
+    {
       continue;
+    }
 
     double aCMin = aCoordMin[aK];
     double aCMax = aCoordMax[aK];
@@ -226,7 +244,9 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
                                                                                 anEps,
                                                                                 true);
           if (aLocMin < aCMin)
+          {
             aCMin = aLocMin;
+          }
         }
         else if (aCMax - aPnts(anI, aJ).Coord(aK + 1) < aDiff)
         {
@@ -244,7 +264,9 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
                                                                                 anEps,
                                                                                 false);
           if (aLocMax > aCMax)
+          {
             aCMax = aLocMax;
+          }
         }
       }
     }

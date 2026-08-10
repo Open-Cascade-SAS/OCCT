@@ -76,7 +76,9 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
   newT2d.Set(O2);
   bool ok2 = (IB2 == IA2) && (SB2 == TopAbs_FACE) && (GT2 == TopOpeBRepDS_VERTEX);
   if (!ok2)
+  {
     return false;
+  }
 
   const TopoDS_Edge& SE = TopoDS::Edge(BDS.Shape(ISE));
   // clang-format off
@@ -94,19 +96,27 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
       double parE;
       bool   ok = FUN_tool_parE(SE, parSE, E, parE, tolE);
       if (!ok)
+      {
         return false;
+      }
       gp_Pnt2d uv;
       ok = FUN_tool_paronEF(E, parE, F, uv, tolF);
       if (!ok)
+      {
         return false;
+      }
 
       TopOpeBRepTool_makeTransition MKT;
       TopAbs_State                  stb1 = TopAbs_UNKNOWN, sta1 = TopAbs_UNKNOWN;
       ok = MKT.Initialize(SE, pbef, paft, parSE, F, uv, factor);
       if (ok)
+      {
         ok = MKT.SetRest(E, parE);
+      }
       if (ok)
+      {
         ok = MKT.MkTonE(stb1, sta1);
+      }
       if (ok)
       {
         newT2d.Before(stb1);
@@ -129,28 +139,42 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
     int                                           G1, S1;
     FDS_Idata(I1d, SB1, IB1, SA1, IA1, GT1, G1, ST1, S1);
     if (IB1 != IA1)
+    {
       continue;
+    }
     TopAbs_Orientation O1 = I1d->Transition().Orientation(TopAbs_IN);
 
     const TopoDS_Edge& Esd     = TopoDS::Edge(BDS.Shape(IB1));
     bool               isedgeF = FUN_tool_inS(Esd, F);
     if (!isedgeF)
+    {
       continue;
+    }
 
     bool bIN = M_INTERNAL(O1) || M_REVERSED(O1);
     bool aIN = M_INTERNAL(O1) || M_FORWARD(O1);
     if (bIN && aIN)
+    {
       return false; // NYIRAISE I1d INTERNAL -> NO I2d!!
+    }
     if (bIN)
+    {
       beforeIN1d = true;
+    }
     if (aIN)
+    {
       afterIN1d = true;
+    }
   } // it1
 
   if (beforeIN1d)
+  {
     newT2d.Before(TopAbs_IN);
+  }
   if (afterIN1d)
+  {
     newT2d.After(TopAbs_IN);
+  }
   return true;
 } // redu2d1d
 

@@ -37,7 +37,9 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
   int num = 0; // num0;
   data->NamedForComplex("CONVERSION_BASED_UNIT", "CNBSUN", num0, num, ach);
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
   occ::handle<Standard_Transient> aConversionFactor;
@@ -52,7 +54,9 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
   // num = 0; //gka TRJ9 c2-id-214.stp
   data->NamedForComplex("NAMED_UNIT", "NMDUNT", num0, num, ach);
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
   occ::handle<StepBasic_DimensionalExponents> aDimensions;
   data->ReadEntity(num,
                    1,
@@ -65,7 +69,9 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
   // num = 0; //gka
   data->NamedForComplex("PLANE_ANGLE_UNIT", "PLANUN", num0, num, ach);
   if (!data->CheckNbParams(num, 0, ach, "plane_angle_unit"))
+  {
     return;
+  }
 
   ent->Init(aDimensions, aName, aConversionFactor);
 }

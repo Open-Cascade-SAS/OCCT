@@ -1,5 +1,5 @@
 set viewname "vright"
-set length 829.419
+set length 829.408
 
 testreadstep [locate_data_file bug27341_KMM_Adapter_CAD.stp] a
 COMPUTE_HLR $viewname $algotype

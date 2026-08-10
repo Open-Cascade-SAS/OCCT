@@ -36,7 +36,9 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "applied_organization_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedOrganization ---
 
@@ -66,7 +68,9 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
+      {
         aItems->SetValue(i3, aItemsItem);
+      }
     }
   }
 

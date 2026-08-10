@@ -39,7 +39,9 @@ void RWStepFEA_RWFeaParametricPoint::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_parametric_point"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

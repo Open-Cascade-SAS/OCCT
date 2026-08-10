@@ -29,7 +29,7 @@
 #include <Message_ProgressRange.hxx>
 #include <Draw_Segment3D.hxx>
 #include <GProp_GProps.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <OSD_FileSystem.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
@@ -61,7 +61,7 @@ Standard_EXPORT void DBRep_WriteColorOrientation()
   std::cout << "\nrouge  FORWARD";
   std::cout << "\nbleu   REVERSED";
   std::cout << "\nrose   EXTERNAL";
-  std::cout << "\norange INTERNAL" << std::endl;
+  std::cout << "\norange INTERNAL" << '\n';
 }
 
 Standard_EXPORT Draw_Color DBRep_ColorOrientation(const TopAbs_Orientation Or)
@@ -114,7 +114,9 @@ static int isos(Draw_Interpretor& di, int NbArg, const char** Arg)
   int  aNbIsos = 0;
   bool Change  = false;
   if (!Characters(NbArg) && Float(NbArg))
+  {
     return 1;
+  }
   if (!Characters(NbArg))
   {
     aNbIsos = Draw::Atoi(Arg[NbArg]);
@@ -149,7 +151,9 @@ static int isos(Draw_Interpretor& di, int NbArg, const char** Arg)
       }
     }
     if (Change)
+    {
       dout.RepaintAll();
+    }
   }
 
   return 0;
@@ -177,7 +181,9 @@ static int hlr(Draw_Interpretor& di, int n, const char** a)
       }
     }
     else
+    {
       di << " wireframe";
+    }
     di << "\n";
     return 0;
   }
@@ -228,7 +234,9 @@ static int hlr(Draw_Interpretor& di, int n, const char** a)
       di << aParams.HLRAngle * 180 / M_PI << " degrees\n";
     }
     else
+    {
       return 1;
+    }
   }
 
   int nFirst = 2;
@@ -443,9 +451,13 @@ static int tclean(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (toRemoveGeometry)
+  {
     BRepTools::CleanGeometry(aCompound);
+  }
   else
+  {
     BRepTools::Clean(aCompound, isForceClean);
+  }
   return 0;
 }
 
@@ -486,7 +498,9 @@ static int polygons(Draw_Interpretor&, int n, const char** a)
 static int compound(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   BRep_Builder    B;
   TopoDS_Compound C;
   B.MakeCompound(C);
@@ -494,7 +508,9 @@ static int compound(Draw_Interpretor&, int n, const char** a)
   {
     TopoDS_Shape S2 = DBRep::Get(a[i]);
     if (!S2.IsNull())
+    {
       B.Add(C, S2);
+    }
   }
   DBRep::Set(a[n - 1], C);
   return 0;
@@ -507,10 +523,14 @@ static int compound(Draw_Interpretor&, int n, const char** a)
 static int emptycopy(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[(n == 2) ? 1 : 2]);
   if (S.IsNull())
+  {
     return 1;
+  }
   S.EmptyCopy();
   DBRep::Set(a[1], S);
   return 0;
@@ -523,14 +543,20 @@ static int emptycopy(Draw_Interpretor&, int n, const char** a)
 static int add(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   BRep_Builder B;
   TopoDS_Shape S1 = DBRep::Get(a[1]);
   if (S1.IsNull())
+  {
     return 1;
+  }
   TopoDS_Shape S2 = DBRep::Get(a[2]);
   if (S2.IsNull())
+  {
     return 1;
+  }
   B.Add(S2, S1);
   DBRep::Set(a[2], S2);
   return 0;
@@ -543,15 +569,21 @@ static int add(Draw_Interpretor&, int n, const char** a)
 static int explode(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
   char newname[1024];
   strcpy(newname, a[1]);
   char* p = newname;
   while (*p != '\0')
+  {
     p++;
+  }
   *p = '_';
   p++;
   int i = 0;
@@ -577,19 +609,29 @@ static int explode(Draw_Interpretor& di, int n, const char** a)
       case 'C':
       case 'c':
         if ((a[2][1] == 'd') || (a[2][1] == 'D'))
+        {
           typ = TopAbs_COMPOUND;
+        }
         else
+        {
           typ = TopAbs_COMPSOLID;
+        }
         break;
 
       case 'S':
       case 's':
         if ((a[2][1] == 'O') || (a[2][1] == 'o'))
+        {
           typ = TopAbs_SOLID;
+        }
         else if ((a[2][1] == 'H') || (a[2][1] == 'h'))
+        {
           typ = TopAbs_SHELL;
+        }
         else
+        {
           return 1;
+        }
         break;
 
       case 'F':
@@ -642,15 +684,21 @@ static int explode(Draw_Interpretor& di, int n, const char** a)
 static int nexplode(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 2)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
   char newname[1024];
   strcpy(newname, a[1]);
   char* p = newname;
   while (*p != '\0')
+  {
     p++;
+  }
   *p = '_';
   p++;
   TopAbs_ShapeEnum typ;
@@ -738,7 +786,9 @@ static int nexplode(Draw_Interpretor& di, int n, const char** a)
   for (Index = 1; Index < MaxShapes; Index++)
   {
     if (MidXYZ(OrderInd(Index + 1)) == MidXYZ(OrderInd(Index)))
+    {
       di << "Warning! For this shape the results may be incorrect.\n";
+    }
   }
 
   for (Index = 1; Index <= MaxShapes; Index++)
@@ -758,17 +808,25 @@ static int nexplode(Draw_Interpretor& di, int n, const char** a)
 static int exwire(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
   if (S.ShapeType() != TopAbs_WIRE)
+  {
     return 0;
+  }
   char newname[1024];
   strcpy(newname, a[1]);
   char* p = newname;
   while (*p != '\0')
+  {
     p++;
+  }
   *p = '_';
   p++;
   int                    i = 0;
@@ -790,10 +848,14 @@ static int exwire(Draw_Interpretor&, int n, const char** a)
 static int invert(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
 
   BRep_Builder B;
   TopoDS_Shape NS = S.EmptyCopied();
@@ -817,14 +879,18 @@ static int invert(Draw_Interpretor&, int n, const char** a)
 static int orientation(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   int                cas  = 0;
   TopAbs_Orientation ori  = TopAbs_FORWARD;
   int                last = n;
   if (!strcasecmp(a[0], "orientation"))
   {
     if (n <= 2)
+    {
       return 1;
+    }
     last--;
     switch (*a[n - 1])
     {
@@ -863,11 +929,17 @@ static int orientation(Draw_Interpretor&, int n, const char** a)
     if (!S.IsNull())
     {
       if (cas == -2)
+      {
         S.Complement();
+      }
       else if (cas == -1)
+      {
         S.Reverse();
+      }
       else
+      {
         S.Orientation(ori);
+      }
       DBRep::Set(a[i], S);
     }
   }
@@ -883,7 +955,9 @@ static int orientation(Draw_Interpretor&, int n, const char** a)
 static int numshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   int             i;
   TopExp_Explorer ex;
@@ -946,7 +1020,9 @@ static void DumpExtent(const TopoDS_Shape& aS, TCollection_AsciiString& aStr)
 static int nbshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   int             i;
   bool            aTotal;
@@ -985,7 +1061,9 @@ static int nbshapes(Draw_Interpretor& di, int n, const char** a)
 static int countshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   int             i;
   TopExp_Explorer ex;
@@ -1207,13 +1285,17 @@ void setProp(TopoDS_Shape Sh, const char** a, int n)
 static int setFlags(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopExp_Explorer ex;
   TopoDS_Shape    Sh = DBRep::Get(a[1]);
 
   if (Sh.IsNull())
+  {
     return 1;
+  }
 
   setProp(Sh, a, n);
   for (ex.Init(Sh, TopAbs_VERTEX); ex.More(); ex.Next())
@@ -1255,7 +1337,9 @@ static int purgemmgt(Draw_Interpretor&, int, const char**)
 static int check(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   int             i;
   TopExp_Explorer ex;
@@ -1264,7 +1348,9 @@ static int check(Draw_Interpretor&, int n, const char** a)
     TopoDS_Shape S = DBRep::Get(a[i]);
     TopoDS_Shape C;
     if (S.IsNull())
+    {
       continue;
+    }
     for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next())
     {
       C = ex.Current();
@@ -1370,7 +1456,7 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 
   DBRep_WriteColorOrientation();
 
-  NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>> aNormals;
+  NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>> aNormals;
   if (toUseMesh)
   {
     DBRep_DrawableShape::addMeshNormals(aNormals, aShape, aLength);
@@ -1380,7 +1466,8 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
     DBRep_DrawableShape::addSurfaceNormals(aNormals, aShape, aLength, aNbAlongU, aNbAlongV);
   }
 
-  for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
+  for (NCollection_DataMap<TopoDS_Face,
+                           NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
          aFaceIt(aNormals);
        aFaceIt.More();
        aFaceIt.Next())
@@ -1389,9 +1476,11 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
     TopAbs_Orientation aFaceOri = aFaceIt.Key().Orientation();
     const Draw_Color   aColor   = DBRep_ColorOrientation(aFaceOri);
     if (aFaceOri == TopAbs_REVERSED)
+    {
       bReverse = true;
+    }
 
-    for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aNormalsIt(aFaceIt.Value());
+    for (NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>::Iterator aNormalsIt(aFaceIt.Value());
          aNormalsIt.More();
          aNormalsIt.Next())
     {
@@ -1403,7 +1492,9 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
         // Make the normal vector from the points
         gp_Vec aV(aVec.first, aVec.second);
         if (bReverse)
+        {
           aV.Reverse();
+        }
 
         // Print values of the vector avoiding printing "-0" values
         theDI << "(" << (aV.X() == 0 ? 0 : aV.X()) << ", " << (aV.Y() == 0 ? 0 : aV.Y()) << ", "
@@ -1465,7 +1556,7 @@ TopoDS_Shape DBRep::getShape(const char*& theName, TopAbs_ShapeEnum theType, boo
       TopAbs::Print(theType, std::cout);
       std::cout << " but a ";
       TopAbs::Print(aShape.ShapeType(), std::cout);
-      std::cout << std::endl;
+      std::cout << '\n';
     }
     return TopoDS_Shape();
   }
@@ -1478,23 +1569,35 @@ static int XProgress(Draw_Interpretor& di, int argc, const char** argv)
   {
     bool turn = true;
     if (argv[i][0] == '-')
+    {
       turn = false;
+    }
     else if (argv[i][0] != '+')
+    {
       continue;
+    }
 
     TCollection_AsciiString anArgCase(argv[i]);
     anArgCase.LowerCase();
     if (argv[i][1] == 't')
+    {
       Draw_ProgressIndicator::DefaultTclMode() = turn;
+    }
     else if (argv[i][1] == 'c')
+    {
       Draw_ProgressIndicator::DefaultConsoleMode() = turn;
+    }
     else if (argv[i][1] == 'g')
+    {
       Draw_ProgressIndicator::DefaultGraphMode() = turn;
+    }
     else if (!strcmp(argv[i], "-stop") && i + 1 < argc)
     {
       void* aPtr = nullptr;
       if (sscanf(argv[++i], "%p", &aPtr) == 1)
+      {
         Draw_ProgressIndicator::StopIndicator() = aPtr;
+      }
       return 0;
     }
   }
@@ -1754,7 +1857,9 @@ static bool done = false;
 void DBRep::BasicCommands(Draw_Interpretor& theCommands)
 {
   if (done)
+  {
     return;
+  }
   done = true;
   Draw::Commands(theCommands);
 

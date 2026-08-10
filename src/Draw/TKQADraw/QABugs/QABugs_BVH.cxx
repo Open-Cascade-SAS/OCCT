@@ -162,7 +162,7 @@ static int QABVH_ShapeSelect(Draw_Interpretor& theDI, int theArgc, const char** 
   TopoDS_Shape aShape = DBRep::Get(theArgv[2]);
   if (aShape.IsNull())
   {
-    std::cout << theArgv[2] << " does not exist" << std::endl;
+    std::cout << theArgv[2] << " does not exist" << '\n';
     return 1;
   }
 
@@ -170,14 +170,16 @@ static int QABVH_ShapeSelect(Draw_Interpretor& theDI, int theArgc, const char** 
   TopoDS_Shape aBShape = DBRep::Get(theArgv[3]);
   if (aBShape.IsNull())
   {
-    std::cout << theArgv[3] << " does not exist" << std::endl;
+    std::cout << theArgv[3] << " does not exist" << '\n';
     return 1;
   }
 
   // Which selector to use
   bool useVoidSelector = false;
   if (theArgc > 4)
+  {
     useVoidSelector = !strcmp(theArgv[4], "-void");
+  }
 
   // Define BVH Builder
   opencascade::handle<BVH_LinearBuilder<double, 3>> aLBuilder = new BVH_LinearBuilder<double, 3>();
@@ -237,7 +239,9 @@ static int QABVH_ShapeSelect(Draw_Interpretor& theDI, int theArgc, const char** 
   BRep_Builder().MakeCompound(aResult);
 
   for (NCollection_List<TopoDS_Shape>::Iterator it(aSelectedShapes); it.More(); it.Next())
+  {
     BRep_Builder().Add(aResult, it.Value());
+  }
 
   DBRep::Set(theArgv[1], aResult);
   return 0;
@@ -359,7 +363,7 @@ static int QABVH_PairSelect(Draw_Interpretor& theDI, int theArgc, const char** t
   aShape[0] = DBRep::Get(theArgv[2]);
   if (aShape[0].IsNull())
   {
-    std::cout << theArgv[2] << " does not exist" << std::endl;
+    std::cout << theArgv[2] << " does not exist" << '\n';
     return 1;
   }
 
@@ -367,14 +371,16 @@ static int QABVH_PairSelect(Draw_Interpretor& theDI, int theArgc, const char** t
   aShape[1] = DBRep::Get(theArgv[3]);
   if (aShape[1].IsNull())
   {
-    std::cout << theArgv[3] << " does not exist" << std::endl;
+    std::cout << theArgv[3] << " does not exist" << '\n';
     return 1;
   }
 
   // Which selector to use
   bool useVoidSelector = false;
   if (theArgc > 4)
+  {
     useVoidSelector = !strcmp(theArgv[4], "-void");
+  }
 
   // Define BVH Builder
   opencascade::handle<BVH_LinearBuilder<double, 3>> aLBuilder = new BVH_LinearBuilder<double, 3>();
@@ -493,7 +499,9 @@ static double TriangleTriangleSqDistance(const BVH_Vec3d& theNode11,
       {
         aMinDist = aDist;
         if (aMinDist == 0)
+        {
           return aMinDist;
+        }
       }
     }
 
@@ -509,7 +517,9 @@ static double TriangleTriangleSqDistance(const BVH_Vec3d& theNode11,
       BVH_Vec3d        anEdge  = (aPLast - aPFirst);
       double           aLength = anEdge.Modulus();
       if (aLength < Precision::Confusion())
+      {
         continue;
+      }
       anEdge /= aLength;
 
       double aDelta = aLength / aNbSeg;
@@ -525,7 +535,9 @@ static double TriangleTriangleSqDistance(const BVH_Vec3d& theNode11,
         {
           aMinDist = aDist;
           if (aMinDist == 0)
+          {
             return aMinDist;
+          }
         }
       }
     }
@@ -582,7 +594,7 @@ static int QABVH_PairDistance(Draw_Interpretor& theDI, int theArgc, const char**
   aShape[0] = DBRep::Get(theArgv[1]);
   if (aShape[0].IsNull())
   {
-    std::cout << theArgv[1] << " does not exist" << std::endl;
+    std::cout << theArgv[1] << " does not exist" << '\n';
     return 1;
   }
 
@@ -590,7 +602,7 @@ static int QABVH_PairDistance(Draw_Interpretor& theDI, int theArgc, const char**
   aShape[1] = DBRep::Get(theArgv[2]);
   if (aShape[1].IsNull())
   {
-    std::cout << theArgv[2] << " does not exist" << std::endl;
+    std::cout << theArgv[2] << " does not exist" << '\n';
     return 1;
   }
 
@@ -647,9 +659,13 @@ static int QABVH_PairDistance(Draw_Interpretor& theDI, int theArgc, const char**
   aDistTool.SetBVHSets(aTriangleBoxSet[0].get(), aTriangleBoxSet[1].get());
   double aSqDist = aDistTool.ComputeDistance();
   if (!aDistTool.IsDone())
-    std::cout << "Not Done" << std::endl;
+  {
+    std::cout << "Not Done" << '\n';
+  }
   else
+  {
     theDI << "Distance " << sqrt(aSqDist) << "\n";
+  }
 
   return 0;
 }
@@ -688,12 +704,12 @@ public:
       BVH_Vec3d aBVHP2(aP2.X(), aP2.Y(), aP2.Z());
       BVH_Vec3d aBVHP3(aP3.X(), aP3.Y(), aP3.Z());
 
-      int id = static_cast<int>(Vertices.size()) - 1;
-      Vertices.push_back(aBVHP1);
-      Vertices.push_back(aBVHP2);
-      Vertices.push_back(aBVHP3);
+      int id = static_cast<int>(Vertices.Size()) - 1;
+      Vertices.Append(aBVHP1);
+      Vertices.Append(aBVHP2);
+      Vertices.Append(aBVHP3);
 
-      Elements.push_back(BVH_Vec4i(id + 1, id + 2, id + 3, iT));
+      Elements.Append(BVH_Vec4i(id + 1, id + 2, id + 3, iT));
     }
 
     MarkDirty();
@@ -747,7 +763,7 @@ static int QABVH_DistanceField(Draw_Interpretor& theDI, int theArgc, const char*
   aShape = DBRep::Get(theArgv[1]);
   if (aShape.IsNull())
   {
-    std::cout << theArgv[1] << " does not exist" << std::endl;
+    std::cout << theArgv[1] << " does not exist" << '\n';
     return 1;
   }
 
@@ -770,7 +786,7 @@ static int QABVH_DistanceField(Draw_Interpretor& theDI, int theArgc, const char*
       for (int iZ = 0; iZ < aDField.DimensionZ(); ++iZ)
       {
         double aDist = aDField.Voxel(iX, iY, iZ);
-        std::cout << "(" << iX << ", " << iY << ", " << iZ << "): " << aDist << std::endl;
+        std::cout << "(" << iX << ", " << iY << ", " << iZ << "): " << aDist << '\n';
       }
     }
   }

@@ -63,7 +63,9 @@ Geom_Parabola::Geom_Parabola(const Ax2& A2, const double Focal)
 {
 
   if (Focal < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = A2;
 }
 
@@ -139,7 +141,9 @@ void Geom_Parabola::SetFocal(const double Focal)
 {
 
   if (Focal < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   focalLength = Focal;
 }
 
@@ -201,7 +205,9 @@ Geom_Curve::ResD3 Geom_Parabola::EvalD3(const double U) const
 gp_Vec Geom_Parabola::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return ElCLib::ParabolaDN(U, pos, focalLength, N);
 }
 
@@ -238,7 +244,9 @@ void Geom_Parabola::Transform(const Trsf& T)
 double Geom_Parabola::TransformedParameter(const double U, const gp_Trsf& T) const
 {
   if (Precision::IsInfinite(U))
+  {
     return U;
+  }
   return U * std::abs(T.ScaleFactor());
 }
 

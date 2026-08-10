@@ -34,7 +34,9 @@ void RWStepAP214_RWAppliedApprovalAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "applied_approval_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedApproval ---
 
@@ -59,7 +61,9 @@ void RWStepAP214_RWAppliedApprovalAssignment::ReadStep(
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, aItemsItem);
       if (stat2)
+      {
         aItems->SetValue(i2, aItemsItem);
+      }
     }
   }
 

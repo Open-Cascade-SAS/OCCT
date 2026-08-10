@@ -80,7 +80,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
 
   // Cannot reconstruct anything from null or empty mesh.
   if (myMesh.IsNull() || myMesh->NbNodes() == 0 || myMesh->NbTriangles() == 0)
+  {
     return;
+  }
 
   const int aNbNodes     = myMesh->NbNodes();
   const int aNbTriangles = myMesh->NbTriangles();
@@ -98,7 +100,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   {
     aPS.Next();
     if (aPS.UserBreak())
+    {
       return;
+    }
 
     const gp_Pnt        aP = myMesh->Node(i);
     const TopoDS_Vertex aV = BRepBuilderAPI_MakeVertex(aP);
@@ -111,7 +115,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   {
     aPS.Next();
     if (aPS.UserBreak())
+    {
       return;
+    }
 
     int                  anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
@@ -119,7 +125,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
 
     // Skip degenerated triangles.
     if (anIdx[0] == anIdx[1] || anIdx[0] == anIdx[2] || anIdx[1] == anIdx[2])
+    {
       continue;
+    }
 
     const gp_Pnt aP1 = myMesh->Node(anIdx[0]);
     const gp_Pnt aP2 = myMesh->Node(anIdx[1]);
@@ -149,15 +157,21 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
 
     TopoDS_Edge aTE1 = aMaker1.Edge();
     if (anIdx[1] < anIdx[0])
+    {
       aTE1.Reverse();
+    }
 
     TopoDS_Edge aTE2 = aMaker2.Edge();
     if (anIdx[2] < anIdx[1])
+    {
       aTE2.Reverse();
+    }
 
     TopoDS_Edge aTE3 = aMaker3.Edge();
     if (anIdx[0] < anIdx[2])
+    {
       aTE3.Reverse();
+    }
 
     anEdgeToTEgeMap.Add(aMeshEdge1, aTE1);
     anEdgeToTEgeMap.Add(aMeshEdge2, aTE2);
@@ -172,7 +186,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   {
     aPS.Next();
     if (aPS.UserBreak())
+    {
       return;
+    }
 
     int                  anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
@@ -191,17 +207,25 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
                               && anEdgeToTEgeMap.Contains(aMeshEdge2)
                               && anEdgeToTEgeMap.Contains(aMeshEdge3);
     if (!aHasAllEdges)
+    {
       continue;
+    }
 
     TopoDS_Edge aTEdge1 = anEdgeToTEgeMap.FindFromKey(aMeshEdge1);
     if (isReversed1)
+    {
       aTEdge1.Reverse();
+    }
     TopoDS_Edge aTEdge2 = anEdgeToTEgeMap.FindFromKey(aMeshEdge2);
     if (isReversed2)
+    {
       aTEdge2.Reverse();
+    }
     TopoDS_Edge aTEdge3 = anEdgeToTEgeMap.FindFromKey(aMeshEdge3);
     if (isReversed3)
+    {
       aTEdge3.Reverse();
+    }
 
     BRepBuilderAPI_MakeWire aWireMaker;
     aWireMaker.Add(aTEdge1);
@@ -217,11 +241,17 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     const gp_Dir      aD2 = aC2.Line().Direction();
     gp_XYZ            aN  = aD1.XYZ().Crossed(aD2.XYZ());
     if (aN.SquareModulus() < Precision::SquareConfusion())
+    {
       continue;
+    }
     if (aTEdge1.Orientation() == TopAbs_REVERSED)
+    {
       aN.Reverse();
+    }
     if (aTEdge2.Orientation() == TopAbs_REVERSED)
+    {
       aN.Reverse();
+    }
     const gp_Dir aNorm(aN);
     gp_Pln       aPln(myMesh->Node(anIdx[0]), aNorm);
 

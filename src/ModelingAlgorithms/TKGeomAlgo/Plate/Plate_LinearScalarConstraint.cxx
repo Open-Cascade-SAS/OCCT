@@ -37,7 +37,9 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
   const NCollection_Array1<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.Length() != thePPC.Length())
+  {
     throw Standard_DimensionMismatch();
+  }
   myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
   myCoef = new NCollection_HArray2<gp_XYZ>(1, 1, 1, theCoeff.Length());
 
@@ -53,7 +55,9 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
   const NCollection_Array2<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.RowLength() != thePPC.Length())
+  {
     throw Standard_DimensionMismatch();
+  }
   myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
   myCoef = new NCollection_HArray2<gp_XYZ>(1, theCoeff.ColLength(), 1, theCoeff.RowLength());
 

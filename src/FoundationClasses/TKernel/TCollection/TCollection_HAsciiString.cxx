@@ -113,7 +113,9 @@ occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Cat(
 void TCollection_HAsciiString::Center(const int Width, const char Filler)
 {
   if (Width < 0)
+  {
     throw Standard_NegativeValue();
+  }
   myString.Center(Width, Filler);
 }
 
@@ -140,9 +142,13 @@ int TCollection_HAsciiString::FirstLocationInSet(const occ::handle<TCollection_H
                                                  const int ToIndex) const
 {
   if (Length() == 0 || Set->Length() == 0)
+  {
     return 0;
+  }
   if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex)
+  {
     throw Standard_OutOfRange();
+  }
   return (myString.FirstLocationInSet(Set->String(), FromIndex, ToIndex));
 }
 
@@ -154,9 +160,13 @@ int TCollection_HAsciiString::FirstLocationNotInSet(
   const int                                    ToIndex) const
 {
   if (Length() == 0 || Set->Length() == 0)
+  {
     return 0;
+  }
   if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex)
+  {
     throw Standard_OutOfRange();
+  }
   return (myString.FirstLocationNotInSet(Set->String(), FromIndex, ToIndex));
 }
 
@@ -190,7 +200,9 @@ void TCollection_HAsciiString::InsertAfter(const int                            
   int size1 = Length();
 #ifndef NOBOUNDCHECK
   if (Index < 0 || Index > size1)
+  {
     throw Standard_OutOfRange();
+  }
 #endif
   myString.InsertAfter(Index, S->String());
 }
@@ -203,7 +215,9 @@ void TCollection_HAsciiString::InsertBefore(const int                           
   int size1 = Length();
 #ifndef NOBOUNDCHECK
   if (Index < 1 || Index > size1)
+  {
     throw Standard_OutOfRange();
+  }
 #endif
   myString.InsertBefore(Index, S->String());
 }
@@ -262,9 +276,13 @@ bool TCollection_HAsciiString::IsAscii() const
 bool TCollection_HAsciiString::IsDifferent(const occ::handle<TCollection_HAsciiString>& S) const
 {
   if (S.IsNull())
+  {
     throw Standard_NullObject("TCollection_HAsciiString::IsDifferent");
+  }
   if (S->Length() != myString.Length())
+  {
     return true;
+  }
   return (strncmp(myString.ToCString(), S->ToCString(), myString.Length()) != 0);
 }
 
@@ -273,11 +291,17 @@ bool TCollection_HAsciiString::IsDifferent(const occ::handle<TCollection_HAsciiS
 bool TCollection_HAsciiString::IsSameString(const occ::handle<TCollection_HAsciiString>& S) const
 {
   if (S.IsNull())
+  {
     throw Standard_NullObject("TCollection_HAsciiString::IsSameString");
+  }
   if (myString.Length() == S->Length())
+  {
     return (strncmp(myString.ToCString(), S->ToCString(), myString.Length()) == 0);
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -286,7 +310,9 @@ bool TCollection_HAsciiString::IsSameString(const occ::handle<TCollection_HAscii
                                             const bool CaseSensitive) const
 {
   if (S.IsNull())
+  {
     throw Standard_NullObject("TCollection_HAsciiString::IsSameString");
+  }
   return TCollection_AsciiString::IsSameString(myString, S->myString, CaseSensitive);
 }
 
@@ -302,7 +328,9 @@ void TCollection_HAsciiString::LeftAdjust()
 void TCollection_HAsciiString::LeftJustify(const int Width, const char Filler)
 {
   if (Width < 0)
+  {
     throw Standard_NegativeValue();
+  }
   myString.LeftJustify(Width, Filler);
 }
 
@@ -314,7 +342,9 @@ int TCollection_HAsciiString::Location(const int  N,
                                        const int  ToIndex) const
 {
   if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex)
+  {
     throw Standard_OutOfRange();
+  }
   return myString.Location(N, C, FromIndex, ToIndex);
 }
 
@@ -325,9 +355,13 @@ int TCollection_HAsciiString::Location(const occ::handle<TCollection_HAsciiStrin
                                        const int                                    ToIndex) const
 {
   if (Length() == 0 || S->Length() == 0)
+  {
     return 0;
+  }
   if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex)
+  {
     throw Standard_OutOfRange();
+  }
   return myString.Location(S->String(), FromIndex, ToIndex);
 }
 
@@ -393,7 +427,9 @@ void TCollection_HAsciiString::RightAdjust()
 void TCollection_HAsciiString::RightJustify(const int Width, const char Filler)
 {
   if (Width < 0)
+  {
     throw Standard_NegativeValue();
+  }
   myString.RightJustify(Width, Filler);
 }
 
@@ -503,7 +539,11 @@ char TCollection_HAsciiString::Value(const int where) const
 bool TCollection_HAsciiString::IsSameState(const occ::handle<TCollection_HAsciiString>& other) const
 {
   if (myString.Length() == other->Length())
+  {
     return (strncmp(myString.ToCString(), other->ToCString(), myString.Length()) == 0);
+  }
   else
+  {
     return false;
+  }
 }

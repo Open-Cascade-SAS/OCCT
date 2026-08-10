@@ -71,8 +71,12 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
   {
     occ::handle<TNaming_NamedShape> aShape = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     if (!aShape.IsNull() && !G1.IsNull())
+    {
       if (aShape->Get() == G1->Get())
+      {
         return;
+      }
+    }
   }
 
   Backup();
@@ -92,8 +96,12 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull())
+    {
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get())
+      {
         return;
+      }
+    }
   }
 
   Backup();
@@ -117,8 +125,12 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
     if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull() && !aShape3.IsNull()
         && !G3.IsNull())
+    {
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get())
+      {
         return;
+      }
+    }
   }
 
   Backup();
@@ -145,9 +157,13 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape4 = occ::down_cast<TNaming_NamedShape>(myGeometries[3]);
     if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull() && !aShape3.IsNull()
         && !G3.IsNull() && !aShape4.IsNull() && !G4.IsNull())
+    {
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get()
           && aShape3->Get() == G4->Get())
+      {
         return;
+      }
+    }
   }
 
   Backup();
@@ -164,7 +180,9 @@ void TDataXtd_Constraint::SetPlane(const occ::handle<TNaming_NamedShape>& plane)
 {
   // OCC2932 correction
   if (!myPlane.IsNull() && !plane.IsNull() && myPlane->Get() == plane->Get())
+  {
     return;
+  }
 
   Backup();
   myPlane = plane;
@@ -183,7 +201,9 @@ void TDataXtd_Constraint::SetType(const TDataXtd_ConstraintEnum CTR)
 {
   // OCC2932 correction
   if (myType == CTR)
+  {
     return;
+  }
 
   Backup();
   myType = CTR;
@@ -203,7 +223,9 @@ void TDataXtd_Constraint::ClearGeometries()
   // OCC2932 correction
   if (myGeometries[0].IsNull() && myGeometries[1].IsNull() && myGeometries[2].IsNull()
       && myGeometries[3].IsNull())
+  {
     return;
+  }
 
   Backup();
   (myGeometries[0]).Nullify();
@@ -220,8 +242,12 @@ void TDataXtd_Constraint::SetGeometry(const int Index, const occ::handle<TNaming
   occ::handle<TNaming_NamedShape> aGeom =
     occ::down_cast<TNaming_NamedShape>(myGeometries[Index - 1]);
   if (!aGeom.IsNull() && !G.IsNull())
+  {
     if (aGeom->Get() == G->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myGeometries[Index - 1] = G;
@@ -266,8 +292,12 @@ void TDataXtd_Constraint::SetValue(const occ::handle<TDataStd_Real>& V)
 {
   // OCC2932 correction
   if (!myValue.IsNull() && !V.IsNull())
+  {
     if (myValue->Get() == V->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myValue = V;
@@ -349,20 +379,30 @@ void TDataXtd_Constraint::References(const occ::handle<TDF_DataSet>& DS) const
   //  l attribut placement devrait oriente vers les contraintes de placement en dehors
   int Lim;
   if (myType >= TDataXtd_MATE && myType <= TDataXtd_FACES_ANGLE)
+  {
     Lim = 1;
+  }
   else
+  {
     Lim = 3;
+  }
 
   for (int i = 0; i <= Lim; i++)
   {
     if (!myGeometries[i].IsNull())
+    {
       DS->AddAttribute(myGeometries[i]);
+    }
   }
 
   if (!myValue.IsNull())
+  {
     DS->AddAttribute(myValue);
+  }
   if (!myPlane.IsNull())
+  {
     DS->AddAttribute(myPlane);
+  }
 }
 
 //=================================================================================================
@@ -371,7 +411,9 @@ void TDataXtd_Constraint::Verified(const bool status)
 {
   // OCC2932 correction
   if (myIsVerified == status)
+  {
     return;
+  }
 
   Backup();
   myIsVerified = status;
@@ -390,7 +432,9 @@ void TDataXtd_Constraint::Reversed(const bool status)
 {
   // OCC2932 correction
   if (myIsReversed == status)
+  {
     return;
+  }
 
   Backup();
   myIsReversed = status;
@@ -409,7 +453,9 @@ void TDataXtd_Constraint::Inverted(const bool status)
 {
   // OCC2932 correction
   if (myIsInverted == status)
+  {
     return;
+  }
 
   Backup();
   myIsInverted = status;

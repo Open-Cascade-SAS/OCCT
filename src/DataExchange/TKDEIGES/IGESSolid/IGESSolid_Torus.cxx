@@ -56,7 +56,9 @@ gp_Pnt IGESSolid_Torus::AxisPoint() const
 gp_Pnt IGESSolid_Torus::TransformedAxisPoint() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(thePoint);
+  }
   else
   {
     gp_XYZ pnt = thePoint;
@@ -73,7 +75,9 @@ gp_Dir IGESSolid_Torus::Axis() const
 gp_Dir IGESSolid_Torus::TransformedAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theAxis);
+  }
   else
   {
     gp_XYZ   pnt = theAxis;

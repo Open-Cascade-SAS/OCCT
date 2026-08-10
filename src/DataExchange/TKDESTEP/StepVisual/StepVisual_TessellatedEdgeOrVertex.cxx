@@ -27,11 +27,17 @@ StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() = defau
 int StepVisual_TessellatedEdgeOrVertex::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedEdge)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedVertex)))
+  {
     return 2;
+  }
   return 0;
 }
 

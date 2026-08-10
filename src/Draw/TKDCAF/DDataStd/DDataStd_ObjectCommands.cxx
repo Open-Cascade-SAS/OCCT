@@ -43,7 +43,9 @@ static int DDataStd_NewDirectory(Draw_Interpretor& di, int nb, const char** arg)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
   TDataStd_Directory::New(label);
@@ -62,7 +64,9 @@ static int DDataStd_AddDirectory(Draw_Interpretor& di, int nb, const char** arg)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   if (!DDF::FindLabel(DF, arg[2], label))
   {
@@ -94,7 +98,9 @@ static int DDataStd_MakeObjectLabel(Draw_Interpretor& di, int nb, const char** a
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   if (!DDF::FindLabel(DF, arg[2], label))
   {
@@ -124,7 +130,9 @@ static int DDataStd_NewNoteBook(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
     TDataStd_NoteBook::New(L);
@@ -147,7 +155,9 @@ static int DDataStd_NewShape(Draw_Interpretor& di, int nb, const char** arg)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
   if (nb == 4)
@@ -161,7 +171,9 @@ static int DDataStd_NewShape(Draw_Interpretor& di, int nb, const char** arg)
     TDataXtd_Shape::Set(label, shape);
   }
   else
+  {
     TDataXtd_Shape::New(label);
+  }
   return 0;
 }
 
@@ -177,7 +189,9 @@ static int DDataStd_GetShape2(Draw_Interpretor& di, int nb, const char** arg)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   if (!DDF::FindLabel(DF, arg[2], label))
   {
@@ -196,7 +210,9 @@ void DDataStd::ObjectCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DData : Standard Attribute Commands";
 

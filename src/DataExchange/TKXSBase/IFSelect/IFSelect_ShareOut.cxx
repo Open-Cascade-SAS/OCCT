@@ -33,7 +33,9 @@ void IFSelect_ShareOut::Clear(const bool onlydisp)
   thedisps.Clear();
   ClearResult(!onlydisp);
   if (onlydisp)
+  {
     return;
+  }
   themodelmodifiers.Clear();
   thefilemodifiers.Clear();
 }
@@ -60,7 +62,9 @@ void IFSelect_ShareOut::ClearResult(const bool alsoname)
 {
   thelastrun = 0;
   if (alsoname)
+  {
     thenbdefs = 0;
+  }
 }
 
 int IFSelect_ShareOut::LastRun() const
@@ -84,10 +88,16 @@ int IFSelect_ShareOut::NbDispatches() const
 int IFSelect_ShareOut::DispatchRank(const occ::handle<IFSelect_Dispatch>& disp) const
 {
   if (disp.IsNull())
+  {
     return 0;
+  }
   for (int i = thedisps.Length(); i >= 1; i--)
+  {
     if (disp == thedisps.Value(i))
+    {
       return i;
+    }
+  }
   return 0;
 }
 
@@ -99,14 +109,18 @@ const occ::handle<IFSelect_Dispatch>& IFSelect_ShareOut::Dispatch(const int num)
 void IFSelect_ShareOut::AddDispatch(const occ::handle<IFSelect_Dispatch>& disp)
 {
   if (disp.IsNull())
+  {
     return;
+  }
   thedisps.Append(disp);
 }
 
 bool IFSelect_ShareOut::RemoveDispatch(const int rank)
 {
   if (rank <= thelastrun || rank > thedisps.Length())
+  {
     return false;
+  }
   thedisps.Remove(rank);
   return true;
 }
@@ -119,7 +133,9 @@ void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>&
 {
   bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
   if (ModifierRank(modifier) == 0)
+  {
     AddModif(modifier, formodel, atnum);
+  }
   occ::handle<IFSelect_Dispatch> nuldisp;
   modifier->SetDispatch(nuldisp);
 }
@@ -130,7 +146,9 @@ void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>&
 {
   bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
   if (ModifierRank(modifier) == 0)
+  {
     AddModif(modifier, formodel, atnum);
+  }
   occ::handle<IFSelect_Dispatch> disp = Dispatch(dispnum);
   modifier->SetDispatch(disp);
 }
@@ -142,34 +160,50 @@ void IFSelect_ShareOut::AddModif(const occ::handle<IFSelect_GeneralModifier>& mo
   if (formodel)
   {
     if (atnum > 0 && atnum <= themodelmodifiers.Length())
+    {
       themodelmodifiers.InsertBefore(atnum, modifier);
+    }
     else
+    {
       themodelmodifiers.Append(modifier);
+    }
   }
   else
   {
     if (atnum > 0 && atnum <= thefilemodifiers.Length())
+    {
       thefilemodifiers.InsertBefore(atnum, modifier);
+    }
     else
+    {
       thefilemodifiers.Append(modifier);
+    }
   }
 }
 
 int IFSelect_ShareOut::NbModifiers(const bool formodel) const
 {
   if (formodel)
+  {
     return themodelmodifiers.Length();
+  }
   else
+  {
     return thefilemodifiers.Length();
+  }
 }
 
 occ::handle<IFSelect_GeneralModifier> IFSelect_ShareOut::GeneralModifier(const bool formodel,
                                                                          const int  atnum) const
 {
   if (formodel)
+  {
     return themodelmodifiers.Value(atnum);
+  }
   else
+  {
     return thefilemodifiers.Value(atnum);
+  }
 }
 
 occ::handle<IFSelect_Modifier> IFSelect_ShareOut::ModelModifier(const int num) const
@@ -184,14 +218,22 @@ int IFSelect_ShareOut::ModifierRank(const occ::handle<IFSelect_GeneralModifier>&
   if (formodel)
   {
     for (i = themodelmodifiers.Length(); i >= 1; i--)
+    {
       if (modifier == themodelmodifiers.Value(i))
+      {
         return i;
+      }
+    }
   }
   else
   {
     for (i = thefilemodifiers.Length(); i >= 1; i--)
+    {
       if (modifier == thefilemodifiers.Value(i))
+      {
         return i;
+      }
+    }
   }
   return 0;
 }
@@ -199,17 +241,23 @@ int IFSelect_ShareOut::ModifierRank(const occ::handle<IFSelect_GeneralModifier>&
 bool IFSelect_ShareOut::RemoveModifier(const bool formodel, const int atnum)
 {
   if (atnum <= 0)
+  {
     return false;
+  }
   if (formodel)
   {
     if (atnum > themodelmodifiers.Length())
+    {
       return false;
+    }
     themodelmodifiers.Remove(atnum);
   }
   else
   {
     if (atnum > thefilemodifiers.Length())
+    {
       return false;
+    }
     thefilemodifiers.Remove(atnum);
   }
   return true;
@@ -221,32 +269,48 @@ bool IFSelect_ShareOut::ChangeModifierRank(const bool formodel, const int before
 {
   int nb;
   if (before <= 0 || after <= 0)
+  {
     return false;
+  }
   if (before == after)
+  {
     return true;
+  }
   if (formodel)
   {
     nb = themodelmodifiers.Length();
     if (before > nb || after > nb)
+    {
       return false;
+    }
     occ::handle<IFSelect_GeneralModifier> bef = themodelmodifiers.Value(before);
     themodelmodifiers.Remove(before);
     if (after == nb)
+    {
       themodelmodifiers.Append(bef);
+    }
     else
+    {
       themodelmodifiers.InsertBefore(after, bef);
+    }
   }
   else
   {
     nb = thefilemodifiers.Length();
     if (before > nb || after > nb)
+    {
       return false;
+    }
     occ::handle<IFSelect_GeneralModifier> bef = thefilemodifiers.Value(before);
     thefilemodifiers.Remove(before);
     if (after == nb)
+    {
       thefilemodifiers.Append(bef);
+    }
     else
+    {
       thefilemodifiers.InsertBefore(after, bef);
+    }
   }
   return true;
 }
@@ -259,9 +323,13 @@ bool IFSelect_ShareOut::SetRootName(const int                                   
                                     const occ::handle<TCollection_HAsciiString>& name)
 {
   if (num < 1 || num > thedisps.Length())
+  {
     return false;
+  }
   if (RootNumber(name) != 0)
+  {
     return false;
+  }
   Dispatch(num)->SetRootName(name);
   return true;
 }
@@ -269,7 +337,9 @@ bool IFSelect_ShareOut::SetRootName(const int                                   
 bool IFSelect_ShareOut::HasRootName(const int num) const
 {
   if (num < 1 || num > thedisps.Length())
+  {
     return false;
+  }
   return Dispatch(num)->HasRootName();
 }
 
@@ -277,26 +347,36 @@ occ::handle<TCollection_HAsciiString> IFSelect_ShareOut::RootName(const int num)
 {
   occ::handle<TCollection_HAsciiString> nulname;
   if (num < 1 || num > thedisps.Length())
+  {
     return nulname;
+  }
   return Dispatch(num)->RootName();
 }
 
 int IFSelect_ShareOut::RootNumber(const occ::handle<TCollection_HAsciiString>& name) const
 {
   if (name.IsNull())
+  {
     return 0;
+  }
   if (!thedefrt.IsNull())
   {
     if (thedefrt->IsSameString(name))
+    {
       return -1;
+    }
   }
   for (int i = 1; i <= thedisps.Length(); i++)
   {
     occ::handle<TCollection_HAsciiString> root = thedisps.Value(i)->RootName();
     if (root.IsNull())
+    {
       continue;
+    }
     if (root->IsSameString(name))
+    {
       return i;
+    }
   }
   return 0;
 }
@@ -310,9 +390,13 @@ void IFSelect_ShareOut::SetPrefix(const occ::handle<TCollection_HAsciiString>& p
 bool IFSelect_ShareOut::SetDefaultRootName(const occ::handle<TCollection_HAsciiString>& defrt)
 {
   if (RootNumber(defrt) != 0)
+  {
     return false;
+  }
   if (thedefrt.IsNull() || !thedefrt->IsSameString(defrt))
+  {
     thenbdefs = 0;
+  }
   thedefrt = defrt;
   return true;
 }
@@ -326,21 +410,27 @@ void IFSelect_ShareOut::SetExtension(const occ::handle<TCollection_HAsciiString>
 occ::handle<TCollection_HAsciiString> IFSelect_ShareOut::Prefix() const
 {
   if (thepref.IsNull())
+  {
     return new TCollection_HAsciiString("");
+  }
   return thepref;
 }
 
 occ::handle<TCollection_HAsciiString> IFSelect_ShareOut::DefaultRootName() const
 {
   if (thedefrt.IsNull())
+  {
     return new TCollection_HAsciiString("");
+  }
   return thedefrt;
 }
 
 occ::handle<TCollection_HAsciiString> IFSelect_ShareOut::Extension() const
 {
   if (theext.IsNull())
+  {
     return new TCollection_HAsciiString("");
+  }
   return theext;
 }
 
@@ -363,9 +453,13 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const int dnum,
 
   TCollection_AsciiString res;
   if (!thepref.IsNull())
+  {
     res.AssignCat(thepref->ToCString());
+  }
   if (!rot.IsNull())
+  {
     res.AssignCat(rot->ToCString());
+  }
 
   //  Suffixe numerique
   if (sufnum)
@@ -406,6 +500,8 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const int dnum,
   }
 
   if (!theext.IsNull())
+  {
     res.AssignCat(theext->ToCString());
+  }
   return res;
 }

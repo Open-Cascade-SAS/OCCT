@@ -57,7 +57,9 @@ int StepSelect_WorkLibrary::ReadFile(const char* const                      name
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
+  {
     return 1;
+  }
   int aStatus = StepFile_Read(name, nullptr, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
 }
@@ -69,7 +71,9 @@ int StepSelect_WorkLibrary::ReadStream(const char* const                      th
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
+  {
     return 1;
+  }
   int aStatus =
     StepFile_Read(theName, &theIStream, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
@@ -82,7 +86,9 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   DeclareAndCast(StepData_StepModel, stepmodel, ctx.Model());
   DeclareAndCast(StepData_Protocol, stepro, ctx.Protocol());
   if (stepmodel.IsNull() || stepro.IsNull())
+  {
     return false;
+  }
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
@@ -91,7 +97,7 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   if (aStream.get() == nullptr)
   {
     ctx.CCheck(0)->AddFail("Step File could not be created");
-    sout << " Step File could not be created : " << ctx.FileName() << std::endl;
+    sout << " Step File could not be created : " << ctx.FileName() << '\n';
     return false;
   }
   sout << " Step File Name : " << ctx.FileName();
@@ -105,13 +111,19 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
     ctx.SetModifier(numod);
     DeclareAndCast(StepSelect_FileModifier, filemod, ctx.FileModifier());
     if (!filemod.IsNull())
+    {
       filemod->Perform(ctx, SW);
+    }
     //   (impressions de mise au point)
     sout << " .. FileMod." << numod << filemod->Label();
     if (ctx.IsForAll())
+    {
       sout << " (all model)";
+    }
     else
+    {
       sout << " (" << ctx.NbEntities() << " entities)";
+    }
     //    sout << std::flush;
   }
 
@@ -119,17 +131,21 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   SW.SendModel(stepro);
   Interface_CheckIterator chl = SW.CheckList();
   for (chl.Start(); chl.More(); chl.Next())
+  {
     ctx.CCheck(chl.Number())->GetMessages(chl.Value());
+  }
   sout << " Write ";
   bool isGood = SW.Print(*aStream);
-  sout << " Done" << std::endl;
+  sout << " Done" << '\n';
 
   errno = 0;
   aStream->flush();
   isGood = aStream->good() && isGood && !errno;
   aStream.reset();
   if (errno)
-    sout << strerror(errno) << std::endl;
+  {
+    sout << strerror(errno) << '\n';
+  }
   return isGood;
 }
 
@@ -139,7 +155,9 @@ bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceMode
                                        Interface_CopyTool&                          TC) const
 {
   if (thecopymode)
+  {
     return IFSelect_WorkLibrary::CopyModel(original, newmodel, list, TC);
+  }
   return thecopymode;
 }
 
@@ -151,26 +169,34 @@ void StepSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
 {
   int nument = model->Number(entity);
   if (nument <= 0 || nument > model->NbEntities())
+  {
     return;
+  }
   bool                            iserr = model->IsRedefinedContent(nument);
   occ::handle<Standard_Transient> ent, con;
   ent = entity;
   S << " --- (STEP) Entity ";
   model->Print(entity, S);
   if (iserr)
+  {
     con = model->ReportEntity(nument)->Content();
+  }
   if (entity.IsNull())
   {
-    S << " Null" << std::endl;
+    S << " Null" << '\n';
     return;
   }
 
   //  On attaque le dump : d abord cas de l Erreur
-  S << " Type cdl : " << entity->DynamicType()->Name() << std::endl;
+  S << " Type cdl : " << entity->DynamicType()->Name() << '\n';
   if (iserr)
-    S << " ***  NOT WELL LOADED : CONTENT FROM FILE  ***" << std::endl;
+  {
+    S << " ***  NOT WELL LOADED : CONTENT FROM FILE  ***" << '\n';
+  }
   else if (model->IsUnknownEntity(nument))
-    S << " ***  UNKNOWN TYPE  ***" << std::endl;
+  {
+    S << " ***  UNKNOWN TYPE  ***" << '\n';
+  }
 
   StepData_StepDumper dump(GetCasted(StepData_StepModel, model),
                            GetCasted(StepData_Protocol, protocol),

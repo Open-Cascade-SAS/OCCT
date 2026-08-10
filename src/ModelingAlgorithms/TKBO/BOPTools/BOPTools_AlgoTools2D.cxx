@@ -67,7 +67,6 @@ void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(const TopoDS_Edge&          
   aTolFact = std::max(aTolEdge, aTolPC);
 
   aBB.UpdateEdge(aE, aC2D, aF, aTolFact);
-  return;
 }
 
 //=================================================================================================
@@ -120,7 +119,6 @@ void BOPTools_AlgoTools2D::PointOnSurface(const TopoDS_Edge&                   a
   aC2D->D0(aParameter, aP2D);
   U = aP2D.X();
   V = aP2D.Y();
-  return;
 }
 
 //=================================================================================================
@@ -135,7 +133,6 @@ void BOPTools_AlgoTools2D::CurveOnSurface(const TopoDS_Edge&                   a
   //
   BOPTools_AlgoTools2D::CurveOnSurface(aE, aF, aC2D, aFirst, aLast, aToler, theContext);
   //
-  return;
 }
 
 //=================================================================================================
@@ -160,7 +157,6 @@ void BOPTools_AlgoTools2D::CurveOnSurface(const TopoDS_Edge&                   a
 
   BOPTools_AlgoTools2D::Make2D(aE, aF, C2D, aFirst, aLast, aToler, theContext);
   aC2D = C2D;
-  return;
 }
 
 //=================================================================================================
@@ -423,7 +419,9 @@ double BOPTools_AlgoTools2D::IntermediatePoint(const TopoDS_Edge& aE)
 
   occ::handle<Geom_Curve> aC1 = BRep_Tool::Curve(aE, aT1, aT2);
   if (aC1.IsNull())
+  {
     BRep_Tool::Range(aE, aT1, aT2);
+  }
 
   aT = BOPTools_AlgoTools2D::IntermediatePoint(aT1, aT2);
   return aT;
@@ -621,9 +619,13 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&                  
   if ((aTCFirst - aT1) > Precision::PConfusion() || (aT2 - aTCLast) > Precision::PConfusion())
   {
     if (aTCFirst < aT1)
+    {
       aTCFirst = aT1;
+    }
     if (aTCLast > aT2)
+    {
       aTCLast = aT2;
+    }
 
     GeomLib::SameRange(Precision::PConfusion(), aC2D, aTCFirst, aTCLast, aT1, aT2, aC2D);
   }
@@ -680,7 +682,9 @@ void BOPTools_AlgoTools2D::IsEdgeIsoline(const TopoDS_Edge& theE,
 
   const double aSqMagn = aT.SquareMagnitude();
   if (aSqMagn <= gp::Resolution())
+  {
     return;
+  }
 
   // Normalize aT
   aT /= sqrt(aSqMagn);

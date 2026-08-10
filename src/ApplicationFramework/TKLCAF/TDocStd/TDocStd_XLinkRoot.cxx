@@ -81,7 +81,9 @@ void TDocStd_XLinkRoot::Remove(const TDocStd_XLinkPtr& anXLinkPtr)
     else
     {
       while (previous != nullptr && previous->Next() != anXLinkPtr)
+      {
         previous = previous->Next();
+      }
       if (previous != nullptr)
       {
         previous->Next(anXLinkPtr->Next());

@@ -179,7 +179,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
     occ::handle<Geom_RectangularTrimmedSurface> aRTS =
       occ::down_cast<Geom_RectangularTrimmedSurface>(Su);
     if (!aRTS.IsNull())
+    {
       Su = aRTS->BasisSurface();
+    }
 
     // Surfaces with indirect Axes are already reversed
     aTool.SetSurfaceReversed(false);
@@ -205,9 +207,13 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
       {
         occ::handle<Geom_ToroidalSurface> TS;
         if (aSurfaceIsOffset)
+        {
           TS = occ::down_cast<Geom_ToroidalSurface>(anOffsetSu->BasisSurface());
+        }
         else
+        {
           TS = occ::down_cast<Geom_ToroidalSurface>(Su);
+        }
         double R = TS->MajorRadius();
         double r = TS->MinorRadius();
         if (R < r) // if torus is degenerate or base surface is degenerate, make revolution instead
@@ -224,6 +230,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
           // convert basis curve to bspline in order to avoid self-intersecting
           // surface of revolution (necessary e.g. for CATIA)
           if (VL - VF - 2 * M_PI < -Precision::PConfusion())
+          {
             BasisCurve =
               ShapeAlgo::AlgoContainer()->ConvertCurveToBSpline(BasisCurve,
                                                                 VF,
@@ -232,11 +239,14 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
                                                                 GeomAbs_C1,
                                                                 100,
                                                                 9);
+          }
 
           // create surface of revolution
           gp_Ax1 Axis = Ax3.Axis();
           if (!Ax3.Direct())
+          {
             Axis.Reverse();
+          }
           occ::handle<Geom_SurfaceOfRevolution> Rev =
             new Geom_SurfaceOfRevolution(BasisCurve, Axis);
 
@@ -274,7 +284,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
       {
         MkWire.Init(CurrentWire, aTool, FP, theLocalFactors);
         if (MkWire.IsDone())
+        {
           Loop = occ::down_cast<StepShape_Loop>(MkWire.Value());
+        }
         else
         {
           FP->AddWarning(errShape, " a Wire not mapped");
@@ -304,9 +316,13 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
       // aupres des autres editeurs de CFAO de la Round Table.
 
       if (!aTool.Faceted() && aFace.Orientation() == TopAbs_REVERSED)
+      {
         FaceBound->Init(aName, Loop, (CurrentWire.Orientation() == TopAbs_REVERSED));
+      }
       else
+      {
         FaceBound->Init(aName, Loop, (CurrentWire.Orientation() == TopAbs_FORWARD));
+      }
 
       mySeq.Append(FaceBound);
     }
@@ -339,11 +355,15 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
 
         // for writing VERTEX_LOOP
         if (!aTool.IsBound(E))
+        {
           continue;
+        }
         occ::handle<StepGeom_Curve> Cpms =
           occ::down_cast<StepShape_EdgeCurve>(aTool.Find(E))->EdgeGeometry();
         if (Cpms.IsNull())
+        {
           continue;
+        }
 
         if (aTool.IsBound(E))
         {
@@ -416,7 +436,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         
           occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aGeom =
             C1pms->AssociatedGeometry();
           if (aGeom.IsNull())
+          {
             aGeom = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, 2);
+          }
           StepGeom_PcurveOrSurface PcOrSur;
           PcOrSur.SetValue(Pc);
           if ((aGeom->Value(1)).IsNull())

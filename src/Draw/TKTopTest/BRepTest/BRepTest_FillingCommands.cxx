@@ -105,7 +105,9 @@ int    MaxSegments = defMaxSegments;
 static int plate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 8)
+  {
     return 1;
+  }
   int                                                            NbCurFront = Draw::Atoi(a[3]);
   occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts =
     new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
@@ -122,12 +124,16 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
     TopoDS_Edge  E = TopoDS::Edge(aLocalEdge);
     //    TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[3*i+1],TopAbs_EDGE));
     if (E.IsNull())
+    {
       return 1;
+    }
     TopoDS_Shape aLocalFace(DBRep::Get(a[3 * i + 2], TopAbs_FACE));
     TopoDS_Face  F = TopoDS::Face(aLocalFace);
     //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if (F.IsNull())
+    {
       return 1;
+    }
     int T = Draw::Atoi(a[3 * i + 3]);
     Tang->SetValue(i, T);
     NbPtsCur->SetValue(i, Draw::Atoi(a[2]));
@@ -190,7 +196,9 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Wire W;
   W = MW.Wire();
   if (!(W.Closed()))
+  {
     throw Standard_Failure("Wire is not closed");
+  }
   BRepBuilderAPI_MakeFace MF(Henri.Surface(), W, true);
   DBRep::Set(a[1], MF.Face());
   return 0;
@@ -203,7 +211,9 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
 static int gplate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
   int NbCurFront = Draw::Atoi(a[2]), NbPointConstraint = Draw::Atoi(a[3]);
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
@@ -216,7 +226,9 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Face  SI = TopoDS::Face(aLocalFace);
   //  TopoDS_Face SI = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
   if (SI.IsNull())
+  {
     Indice--;
+  }
   else
   {
     occ::handle<BRepAdaptor_Surface> HSI = new BRepAdaptor_Surface();
@@ -229,7 +241,9 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
     TopoDS_Edge  E = TopoDS::Edge(aLocalShape);
     //    TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[Indice++],TopAbs_EDGE));
     if (E.IsNull())
+    {
       return 1;
+    }
     Conti = Draw::Atoi(a[Indice++]);
     if ((Conti == 0) || (Conti == -1))
     {
@@ -245,7 +259,9 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
       TopoDS_Face F = TopoDS::Face(aLocalFace);
       //	TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
       if (F.IsNull())
+      {
         return 1;
+      }
       occ::handle<BRepAdaptor_Surface> S = new BRepAdaptor_Surface();
       S->Initialize(F);
       occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
@@ -279,7 +295,9 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
       TopoDS_Face F = TopoDS::Face(aLocalFace);
       //	  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
       if (F.IsNull())
+      {
         return 1;
+      }
       occ::handle<BRepAdaptor_Surface> HF = new BRepAdaptor_Surface();
       HF->Initialize(F);
       occ::handle<GeomPlate_PointConstraint> PCont =
@@ -333,7 +351,9 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
 static int approxplate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 9)
+  {
     return 1;
+  }
   int                                                            NbMedium   = Draw::Atoi(a[2]);
   int                                                            NbCurFront = Draw::Atoi(a[3]);
   occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts =
@@ -350,12 +370,16 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
     TopoDS_Edge  E = TopoDS::Edge(aLocalShape);
     //    TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[3*i+1],TopAbs_EDGE));
     if (E.IsNull())
+    {
       return 1;
+    }
     TopoDS_Shape aLocalFace(DBRep::Get(a[3 * i + 2], TopAbs_FACE));
     TopoDS_Face  F = TopoDS::Face(aLocalFace);
     //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if (F.IsNull())
+    {
       return 1;
+    }
     int T = Draw::Atoi(a[3 * i + 3]);
     Tang->SetValue(i, T);
     NbPtsCur->SetValue(i, NbMedium);
@@ -456,7 +480,9 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Wire W;
   W = MW.Wire();
   if (!(W.Closed()))
+  {
     throw Standard_Failure("Wire is not closed");
+  }
   BRepBuilderAPI_MakeFace MF(support, W, true);
   DBRep::Set(a[1], MF.Face());
 
@@ -494,7 +520,9 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
                                         MaxSegments);
   TopoDS_Face               InitFace = TopoDS::Face(DBRep::Get(a[5], TopAbs_FACE));
   if (!InitFace.IsNull())
+  {
     MakeFilling.LoadInitSurface(InitFace);
+  }
 
   int                            i = (InitFace.IsNull()) ? 5 : 6, k;
   TopoDS_Edge                    E;
@@ -508,15 +536,21 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
     F.Nullify();
     E = TopoDS::Edge(DBRep::Get(a[i], TopAbs_EDGE));
     if (!E.IsNull())
+    {
       i++;
+    }
     F = TopoDS::Face(DBRep::Get(a[i], TopAbs_FACE));
     if (!F.IsNull())
+    {
       i++;
+    }
 
     Order = Draw::Atoi(a[i++]);
 
     if (!E.IsNull() && !F.IsNull())
+    {
       MakeFilling.Add(E, F, (GeomAbs_Shape)Order);
+    }
     else if (E.IsNull())
     {
       if (F.IsNull())
@@ -525,14 +559,20 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
         return 1;
       }
       else
+      {
         MakeFilling.Add(F, (GeomAbs_Shape)Order);
+      }
     }
     else
+    {
       MakeFilling.Add(E, (GeomAbs_Shape)Order);
+    }
 
     // History
     if (!E.IsNull())
+    {
       ListForHistory.Append(E);
+    }
   }
   for (k = 1; k <= NbConstraints; k++)
   {
@@ -546,14 +586,20 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
     }
     F = TopoDS::Face(DBRep::Get(a[i], TopAbs_FACE));
     if (!F.IsNull())
+    {
       i++;
+    }
 
     Order = Draw::Atoi(a[i++]);
 
     if (F.IsNull())
+    {
       MakeFilling.Add(E, (GeomAbs_Shape)Order, false);
+    }
     else
+    {
       MakeFilling.Add(E, F, (GeomAbs_Shape)Order, false);
+    }
   }
   for (k = 1; k <= NbPoints; k++)
   {
@@ -602,7 +648,9 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
 
   // History
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(ListForHistory, MakeFilling);
+  }
 
   return 0;
 }
@@ -707,7 +755,9 @@ void BRepTest::FillingCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

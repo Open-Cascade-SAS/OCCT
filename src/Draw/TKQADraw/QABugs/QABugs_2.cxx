@@ -85,7 +85,9 @@ static int OCC527(Draw_Interpretor& di, int argc, const char** argv)
       {
         // If plane of the section does not intersect BndBox of the face do nothing
         if (zcur < Z1 || zcur > Z2)
+        {
           continue;
+        }
 
         // Build current section
         gp_Pln pl(0, 0, 1, -zcur);
@@ -110,13 +112,19 @@ static int OCC527(Draw_Interpretor& di, int argc, const char** argv)
               double        toler = BRep_Tool::Tolerance(aV);
               double        dist  = pl.Distance(BRep_Tool::Pnt(aV));
               if (dist > lmaxdist)
+              {
                 lmaxdist = dist;
+              }
               // If section was built check distance between vertexes and plane of the one
               str[0] = 0;
               if (dist > toler)
+              {
                 Sprintf(str, "Dist=%f, Toler=%f, Param=%f FAULTY\n", dist, toler, gzmax);
+              }
               else
+              {
                 Sprintf(str, "Dist=%f, Toler=%f, Param=%f\n", dist, toler, gzmax);
+              }
               di << str;
             }
             if (lmaxdist > gmaxdist)
@@ -143,5 +151,4 @@ void QABugs::Commands_2(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("OCC527", "OCC527 shape", __FILE__, OCC527, group);
-  return;
 }

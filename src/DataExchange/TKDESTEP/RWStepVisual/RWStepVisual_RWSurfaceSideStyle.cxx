@@ -31,7 +31,9 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "surface_side_style"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -52,7 +54,9 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "styles", ach, aStylesItem))
+      {
         aStyles->SetValue(i2, aStylesItem);
+      }
     }
   }
 

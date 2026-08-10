@@ -707,7 +707,9 @@ void GeomInt_LineConstructor::TreatCircle(const occ::handle<IntPatch_Line>& theL
     const double aT2 = aVtxArr(i + 1).Getvertex().ParameterOnLine();
 
     if (aT2 == RealLast())
+    {
       break;
+    }
 
     const double aTmid = (aT1 + aT2) * 0.5;
     GLinePoint(aType, aGLine, aTmid, aPmid);
@@ -936,7 +938,9 @@ void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
     const double          aPrmi = aVi.ParameterOnLine();
 
     if (aPrmi == RealLast())
+    {
       continue;
+    }
 
     for (int j = i + 1; j <= theVtxArr.Upper() - 1; j++)
     {
@@ -963,7 +967,9 @@ void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
     const double          aPrmi = aVi.ParameterOnLine();
 
     if (aPrmi == RealLast())
+    {
       continue;
+    }
 
     if ((aMaxPrm - aPrmi) < aTolPC)
     {

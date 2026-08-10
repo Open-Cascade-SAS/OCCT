@@ -61,9 +61,13 @@ static void FDS_sortGb(const occ::handle<TopOpeBRepDS_HDataStructure>&          
     }
 
     if (gb1)
+    {
       LIGb1.Append(I);
+    }
     else
+    {
       LIGb0.Append(I);
+    }
   } // it(LI)
 }
 
@@ -85,10 +89,14 @@ int TopOpeBRepDS_TOOL::EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
   {
     bool hsd = HDS->HasSameDomain(E);
     if (!hsd)
+    {
       return 0;
+    }
     NCollection_List<TopoDS_Shape>::Iterator itsd(HDS->SameDomain(E));
     for (; itsd.More(); itsd.Next())
+    {
       lEsd.Append(itsd.Value());
+    }
     return lEsd.Extent();
   }
 
@@ -99,18 +107,24 @@ int TopOpeBRepDS_TOOL::EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> L1d;
   int n1d = FUN_selectTRASHAinterference(LII, TopAbs_EDGE, L1d);
   if (n1d == 0)
+  {
     return 0;
+  }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>   mapesd;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1gb0, l1gb1, l1gbsd;
   FDS_sortGb(HDS, L1d, l1gb0, l1gb1, l1gbsd);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it0(l1gb0);
   for (; it0.More(); it0.Next())
+  {
     mapesd.Add(BDS.Shape(it0.Value()->Support()));
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(l1gb1);
   for (; it1.More(); it1.Next())
+  {
     mapesd.Add(BDS.Shape(it1.Value()->Support()));
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itsd(l1gbsd);
   for (; itsd.More(); itsd.Next())
@@ -119,14 +133,18 @@ int TopOpeBRepDS_TOOL::EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
     const TopoDS_Edge&                            Esd = TopoDS::Edge(BDS.Shape(I->Support()));
     bool                                          isb = mapesd.Contains(Esd);
     if (isb)
+    {
       continue;
+    }
 
     int                  G  = I->Geometry();
     const TopoDS_Vertex& vG = TopoDS::Vertex(BDS.Shape(G));
     TopoDS_Vertex        vsd;
     bool                 ok = FUN_ds_getoov(vG, BDS, vsd);
     if (!ok)
+    {
       continue;
+    }
     bool          Gb1  = occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(I)->GBound();
     TopoDS_Vertex vE   = Gb1 ? vG : vsd;
     TopoDS_Vertex vEsd = Gb1 ? vsd : vG;
@@ -135,12 +153,16 @@ int TopOpeBRepDS_TOOL::EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
     gp_Vec tgE;
     ok = TopOpeBRepTool_TOOL::TgINSIDE(vE, E, tgE, ovE);
     if (!ok)
+    {
       continue;
+    }
     int    ovEsd;
     gp_Vec tgEsd;
     ok = TopOpeBRepTool_TOOL::TgINSIDE(vEsd, Esd, tgEsd, ovEsd);
     if (!ok)
+    {
       continue;
+    }
     bool inE   = (ovE == CLOSING) || (ovE == INTERNAL);
     bool inEsd = (ovEsd == CLOSING) || (ovEsd == INTERNAL);
     if (inE || inEsd)
@@ -150,11 +172,15 @@ int TopOpeBRepDS_TOOL::EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
     }
     double dot = gp_Dir(tgE).Dot(gp_Dir(tgEsd));
     if (dot > 0.)
+    {
       mapesd.Add(Esd);
+    }
   }
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(mapesd);
   for (; itm.More(); itm.Next())
+  {
     lEsd.Append(itm.Key());
+  }
   return (lEsd.Extent());
 }
 
@@ -169,13 +195,17 @@ bool TopOpeBRepDS_TOOL::ShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& H
 
   bool hsd1 = HDS->HasSameDomain(s1);
   if (!hsd1)
+  {
     return false;
+  }
   NCollection_List<TopoDS_Shape>::Iterator it1(HDS->SameDomain(s1));
   for (; it1.More(); it1.Next())
   {
     bool same = it1.Value().IsSame(s2);
     if (!same)
+    {
       continue;
+    }
     return true;
   }
   return false;
@@ -198,10 +228,14 @@ bool TopOpeBRepDS_TOOL::GetEsd(const occ::handle<TopOpeBRepDS_HDataStructure>& H
     const TopoDS_Shape& e  = ex.Current();
     bool                hs = HDS->HasShape(e);
     if (!hs)
+    {
       continue;
+    }
     bool hsd = HDS->HasSameDomain(e);
     if (!hsd)
+    {
       continue;
+    }
     mesdS.Add(e);
     //    NCollection_List<TopoDS_Shape>::Iterator itt(HDS->SameDomain(e));
     //    for (; itt.More(); itt.Next()) mesdS.Add(itt.Value());
@@ -213,7 +247,9 @@ bool TopOpeBRepDS_TOOL::GetEsd(const occ::handle<TopOpeBRepDS_HDataStructure>& H
     const TopoDS_Shape& esd = it.Value();
     bool                isb = mesdS.Contains(esd);
     if (!isb)
+    {
       continue;
+    }
     iesd = HDS->Shape(esd);
     return true;
   }
@@ -233,7 +269,9 @@ bool TopOpeBRepDS_TOOL::ShareSplitON(const occ::handle<TopOpeBRepDS_HDataStructu
   spON.Nullify();
   bool shareg = TopOpeBRepDS_TOOL::ShareG(HDS, i1, i2);
   if (!shareg)
+  {
     return false;
+  }
 
   const TopoDS_Shape& s1 = HDS->Shape(i1);
   const TopoDS_Shape& s2 = HDS->Shape(i2);
@@ -241,24 +279,34 @@ bool TopOpeBRepDS_TOOL::ShareSplitON(const occ::handle<TopOpeBRepDS_HDataStructu
   const TopOpeBRepDS_ListOfShapeOn1State& los1 = MEspON.Find(s1);
   bool                                    issp = los1.IsSplit();
   if (!issp)
+  {
     return false;
+  }
   const NCollection_List<TopoDS_Shape>& lsp1 = los1.ListOnState();
   int                                   nsp1 = lsp1.Extent();
   if (nsp1 == 0)
+  {
     return false;
+  }
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mesp1; // map of splits on of <s1>
   NCollection_List<TopoDS_Shape>::Iterator               it(lsp1);
   for (; it.More(); it.Next())
+  {
     mesp1.Add(it.Value());
+  }
 
   const TopOpeBRepDS_ListOfShapeOn1State& los2  = MEspON.Find(s2);
   bool                                    issp2 = los2.IsSplit();
   if (!issp2)
+  {
     return false;
+  }
   const NCollection_List<TopoDS_Shape>& lsp2 = los2.ListOnState();
   int                                   nsp2 = lsp2.Extent();
   if (nsp2 == 0)
+  {
     return false;
+  }
 
   it.Initialize(lsp2);
   for (; it.More(); it.Next())
@@ -266,7 +314,9 @@ bool TopOpeBRepDS_TOOL::ShareSplitON(const occ::handle<TopOpeBRepDS_HDataStructu
     const TopoDS_Shape& esp = it.Value();
     bool                isb = mesp1.Contains(esp);
     if (!isb)
+    {
       continue;
+    }
     spON = esp;
     return true;
   }
@@ -291,7 +341,9 @@ bool TopOpeBRepDS_TOOL::GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>
   config      = 0;
   bool shareg = TopOpeBRepDS_TOOL::ShareG(HDS, ie, iesd);
   if (!shareg)
+  {
     return false;
+  }
 
   const TopoDS_Edge&  e      = TopoDS::Edge(HDS->Shape(ie));
   TopAbs_Orientation  oe     = e.Orientation();
@@ -305,9 +357,13 @@ bool TopOpeBRepDS_TOOL::GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>
   {
     bool sameori = (conf == confsd);
     if (M_REVERSED(oe))
+    {
       sameori = !sameori;
+    }
     if (M_REVERSED(oesd))
+    {
       sameori = !sameori;
+    }
     config = sameori ? SAMEORIENTED : DIFFORIENTED;
     return true;
   }
@@ -315,7 +371,9 @@ bool TopOpeBRepDS_TOOL::GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>
   TopoDS_Shape eON;
   shareg = TopOpeBRepDS_TOOL::ShareSplitON(HDS, MEspON, ie, iesd, eON);
   if (!shareg)
+  {
     return false;
+  }
 
   double f, l;
   FUN_tool_bounds(TopoDS::Edge(eON), f, l);
@@ -325,16 +383,22 @@ bool TopOpeBRepDS_TOOL::GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>
   double pare;
   bool   ok = FUN_tool_parE(TopoDS::Edge(eON), parON, e, pare, tole);
   if (!ok)
+  {
     return false;
+  }
   double tolesd = BRep_Tool::Tolerance(TopoDS::Edge(esd));
   double paresd;
   ok = FUN_tool_parE(TopoDS::Edge(eON), parON, esd, paresd, tolesd);
   if (!ok)
+  {
     return false;
+  }
   bool so;
   ok = FUN_tool_curvesSO(e, pare, esd, paresd, so);
   if (!ok)
+  {
     return false;
+  }
   config = (so) ? SAMEORIENTED : DIFFORIENTED;
   return true;
 }

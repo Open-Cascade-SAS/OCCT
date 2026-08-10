@@ -49,7 +49,9 @@ bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&       theSour
 {
   int aIndex, aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_RealList> anAtt = occ::down_cast<TDataStd_RealList>(theTarget);
   if (aLastInd > 0)
@@ -60,7 +62,9 @@ bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&       theSour
       NCollection_Array1<double> aTargetArray(aFirstInd, aLastInd);
       theSource.GetRealArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)
+      {
         anAtt->Append(aTargetArray.Value(aIndex));
+      }
     }
   }
 
@@ -84,10 +88,14 @@ void BinMDataStd_RealListDriver::Paste(
   const int                            aLastInd(anAtt->Extent());
   const int                            aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
+  {
     return;
+  }
   theTarget << aFirstInd << aLastInd;
   if (aLastInd == 0)
+  {
     return;
+  }
   NCollection_Array1<double> aSourceArray(aFirstInd, aLastInd);
   if (aLastInd >= 1)
   {
@@ -102,5 +110,7 @@ void BinMDataStd_RealListDriver::Paste(
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_RealList::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

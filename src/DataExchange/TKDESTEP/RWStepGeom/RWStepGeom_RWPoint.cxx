@@ -27,7 +27,9 @@ void RWStepGeom_RWPoint::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "point"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

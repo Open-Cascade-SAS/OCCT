@@ -53,7 +53,9 @@ void BOPTest::MkConnectedCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
@@ -147,7 +149,9 @@ int MakeConnected(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
   if (getMakeConnectedTool().HasErrors())
+  {
     return 0;
+  }
 
   // Draw the result shape
   const TopoDS_Shape& aResult = getMakeConnectedTool().Shape();
@@ -178,11 +182,17 @@ int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   {
     int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
+    {
       aDirID = 0;
+    }
     else if (!strcasecmp(theArgv[i], "-y"))
+    {
       aDirID = 1;
+    }
     else if (!strcasecmp(theArgv[i], "-z"))
+    {
       aDirID = 2;
+    }
     else
     {
       theDI << theArgv[i] << " - Invalid key\n";
@@ -194,7 +204,9 @@ int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
     double aPeriod = 0;
     if (theArgc > i + 1)
+    {
       aPeriod = Draw::Atof(theArgv[++i]);
+    }
 
     if (aPeriod <= Precision::Confusion())
     {
@@ -234,7 +246,9 @@ int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
   if (getMakeConnectedTool().HasErrors())
+  {
     return 0;
+  }
 
   // Draw the result shape
   const TopoDS_Shape& aResult = getMakeConnectedTool().PeriodicShape();
@@ -263,11 +277,17 @@ int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   {
     int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
+    {
       aDirID = 0;
+    }
     else if (!strcasecmp(theArgv[i], "-y"))
+    {
       aDirID = 1;
+    }
     else if (!strcasecmp(theArgv[i], "-z"))
+    {
       aDirID = 2;
+    }
     else
     {
       theDI << theArgv[i] << " - Invalid key\n";
@@ -279,7 +299,9 @@ int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
     int aTimes = 0;
     if (theArgc > i + 1)
+    {
       aTimes = Draw::Atoi(theArgv[++i]);
+    }
 
     if (aTimes == 0)
     {
@@ -297,7 +319,9 @@ int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
   if (getMakeConnectedTool().HasErrors())
+  {
     return 0;
+  }
 
   // Draw the result shape
   const TopoDS_Shape& aResult = getMakeConnectedTool().PeriodicShape();
@@ -328,9 +352,13 @@ int MaterialsOn(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   bool bPositive;
 
   if (!strcmp("+", theArgv[2]))
+  {
     bPositive = true;
+  }
   else if (!strcmp("-", theArgv[2]))
+  {
     bPositive = false;
+  }
   else
   {
     theDI << theArgv[2] << " - invalid key.\n";
@@ -343,14 +371,20 @@ int MaterialsOn(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   TopoDS_Shape aResult;
   if (aLS.IsEmpty())
+  {
     theDI << "No materials on this side.\n";
+  }
   else if (aLS.Extent() == 1)
+  {
     aResult = aLS.First();
+  }
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aResult));
     for (NCollection_List<TopoDS_Shape>::Iterator it(aLS); it.More(); it.Next())
+    {
       BRep_Builder().Add(aResult, it.Value());
+    }
   }
 
   DBRep::Set(theArgv[1], aResult);
@@ -381,14 +415,20 @@ int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
+  {
     theDI << "No twins for the shape.\n";
+  }
   else if (aTwins.Extent() == 1)
+  {
     aCTwins = aTwins.First();
+  }
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aCTwins));
     for (NCollection_List<TopoDS_Shape>::Iterator it(aTwins); it.More(); it.Next())
+    {
       BRep_Builder().Add(aCTwins, it.Value());
+    }
   }
 
   DBRep::Set(theArgv[1], aCTwins);

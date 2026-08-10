@@ -39,7 +39,9 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve_element_interval_linearly_varying"))
+  {
     return;
+  }
 
   // Inherited fields of CurveElementInterval
 

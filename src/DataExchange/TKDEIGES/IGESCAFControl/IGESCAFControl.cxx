@@ -48,17 +48,29 @@ int IGESCAFControl::EncodeColor(const Quantity_Color& col)
 {
   int code = 0;
   if (std::abs(col.Red() - 1.) <= Quantity_Color::Epsilon())
+  {
     code |= 0x001;
+  }
   else if (std::abs(col.Red()) > Quantity_Color::Epsilon())
+  {
     return 0;
+  }
   if (std::abs(col.Green() - 1.) <= Quantity_Color::Epsilon())
+  {
     code |= 0x010;
+  }
   else if (std::abs(col.Green()) > Quantity_Color::Epsilon())
+  {
     return 0;
+  }
   if (std::abs(col.Blue() - 1.) <= Quantity_Color::Epsilon())
+  {
     code |= 0x100;
+  }
   else if (std::abs(col.Blue()) > Quantity_Color::Epsilon())
+  {
     return 0;
+  }
 
   switch (code)
   {

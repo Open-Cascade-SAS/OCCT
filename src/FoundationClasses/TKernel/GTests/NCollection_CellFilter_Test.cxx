@@ -58,7 +58,9 @@ public:
   NCollection_CellFilter_Action Inspect(const Target& theTarget)
   {
     if (theTarget == myPurgeValue)
+    {
       return CellFilter_Purge;
+    }
     myFound.push_back(theTarget);
     return CellFilter_Keep;
   }

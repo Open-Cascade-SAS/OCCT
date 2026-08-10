@@ -72,12 +72,12 @@ static int ViewId(const char* const a)
   int id = Draw::Atoi(a);
   if ((id < 0) || (id >= MAXVIEW))
   {
-    std::cout << "Incorrect view-id, must be in 0.." << MAXVIEW - 1 << std::endl;
+    std::cout << "Incorrect view-id, must be in 0.." << MAXVIEW - 1 << '\n';
     return -1;
   }
   if (!dout.HasView(id))
   {
-    std::cout << "View " << id << " does not exist." << std::endl;
+    std::cout << "View " << id << " does not exist." << '\n';
     return -1;
   }
   return id;
@@ -121,7 +121,9 @@ static int zoom(Draw_Interpretor&, int n, const char** a)
   {
     int id = ViewId(a[1]);
     if (id < 0)
+    {
       return 1;
+    }
     double z = Draw::Atof(a[2]);
     dout.SetZoom(id, z);
     dout.RepaintView(id);
@@ -129,7 +131,9 @@ static int zoom(Draw_Interpretor&, int n, const char** a)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 //=================================================================================================
@@ -163,9 +167,13 @@ static int wzoom(Draw_Interpretor& di, int argc, const char** argv)
     dY1 /= z;
 
     if (b != 1)
+    {
       return 0;
+    }
     if (id < 0)
+    {
       return 0;
+    }
     Draw_Display d = dout.MakeDisplay(id);
     d.SetColor(Draw_blanc);
     d.SetMode(10);
@@ -207,7 +215,9 @@ static int wzoom(Draw_Interpretor& di, int argc, const char** argv)
     d.Draw(gp_Pnt2d(dOX2, dY1), gp_Pnt2d(dX1, dY1));
     d.Flush();
     if (b != 1)
+    {
       return 0;
+    }
     d.SetMode(0);
   }
   else
@@ -232,16 +242,24 @@ static int wzoom(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   if ((X1 == X2) || (Y1 == Y2))
+  {
     return 0;
+  }
   zx = (double)std::abs(X2 - X1) / (double)W;
   zy = (double)std::abs(Y2 - Y1) / (double)H;
   if (zy > zx)
+  {
     zx = zy;
+  }
   zx = 1 / zx;
   if (X2 < X1)
+  {
     X1 = X2;
+  }
   if (Y2 > Y1)
+  {
     Y1 = Y2;
+  }
   X1 = (int)(X1 * zx);
   Y1 = (int)(Y1 * zx);
   dout.SetZoom(id, zx * dout.Zoom(id));
@@ -267,7 +285,9 @@ static int wclick(Draw_Interpretor& di, int, const char**)
 static int view(Draw_Interpretor& di, int n, const char** a)
 {
   if (Draw_Batch)
+  {
     return 1;
+  }
 
   if ((n >= 3) && (n != 4))
   {
@@ -283,15 +303,25 @@ static int view(Draw_Interpretor& di, int n, const char** a)
     int H = 500;
     // if view exist, get old values
     if (dout.HasView(id))
+    {
       dout.GetPosSize(id, X, Y, W, H);
+    }
     if (n >= 4)
+    {
       X = Draw::Atoi(a[3]);
+    }
     if (n >= 5)
+    {
       Y = Draw::Atoi(a[4]);
+    }
     if (n >= 6)
+    {
       W = Draw::Atoi(a[5]);
+    }
     if (n >= 7)
+    {
       H = Draw::Atoi(a[6]);
+    }
     dout.MakeView(id, a[2], X, Y, W, H);
     if (!dout.HasView(id))
     {
@@ -322,7 +352,9 @@ static int view(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 //=================================================================================================
@@ -332,19 +364,25 @@ static int delview(Draw_Interpretor&, int n, const char** a)
   if (n == 1)
   {
     for (int id = 0; id < MAXVIEW; id++)
+    {
       dout.DeleteView(id);
+    }
     return 0;
   }
   else if (n >= 2)
   {
     int id = ViewId(a[1]);
     if (id < 0)
+    {
       return 1;
+    }
     dout.DeleteView(id);
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 //=================================================================================================
@@ -365,7 +403,9 @@ static int fit(Draw_Interpretor&, int n, const char** a)
           //	  dout.FitView(id,frame);
           dout.FitView(id, (int)frame);
           if (dout.Zoom(id) < zoom)
+          {
             zoom = dout.Zoom(id);
+          }
         }
       }
     }
@@ -387,7 +427,9 @@ static int fit(Draw_Interpretor&, int n, const char** a)
   {
     int id = ViewId(a[1]);
     if (id < 0)
+    {
       return 1;
+    }
     //    dout.FitView(id,frame);
     dout.FitView(id, (int)frame);
     dout.RepaintView(id);
@@ -395,7 +437,9 @@ static int fit(Draw_Interpretor&, int n, const char** a)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 //=================================================================================================
@@ -408,14 +452,20 @@ static int focal(Draw_Interpretor&, int n, const char** a)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
   }
   double df = 1.;
   if (!strcasecmp(a[0], "fu"))
+  {
     df = stepfocal;
+  }
   if (!strcasecmp(a[0], "fd"))
+  {
     df = 1. / stepfocal;
+  }
 
   for (int id = start; id <= end; id++)
   {
@@ -437,7 +487,9 @@ static int setfocal(Draw_Interpretor& di, int n, const char** a)
     for (int id = 0; id < MAXVIEW; id++)
     {
       if (!strcasecmp(dout.GetType(id), "PERS"))
+      {
         di << "Focal view " << id << " is " << dout.Focal(id) << "\n";
+      }
     }
   }
   else
@@ -446,7 +498,9 @@ static int setfocal(Draw_Interpretor& di, int n, const char** a)
     for (int id = 0; id < MAXVIEW; id++)
     {
       if (!strcasecmp(dout.GetType(id), "PERS"))
+      {
         dout.SetFocal(id, f);
+      }
     }
     dout.RepaintAll();
   }
@@ -464,18 +518,26 @@ static int magnify(Draw_Interpretor&, int n, const char** a)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
   }
   bool        v2d = (a[0][0] == '2'); // 2dmu, 2dmd
   const char* com = a[0];
   if (v2d)
+  {
     com += 2;
+  }
   double dz = 1.;
-  if (!strcasecmp(com, "mu")) // mu, 2dmu
+  if (!strcasecmp(com, "mu"))
+  { // mu, 2dmu
     dz = stepmagnify;
-  else // md, 2dmd
+  }
+  else
+  { // md, 2dmd
     dz = 1 / stepmagnify;
+  }
 
   for (int id = start; id <= end; id++)
   {
@@ -507,7 +569,9 @@ static int rotate(Draw_Interpretor&, int n, const char** a)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
   }
 
@@ -555,7 +619,9 @@ static int panning(Draw_Interpretor&, int n, const char** a)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
   }
   int DX = 0;
@@ -565,16 +631,26 @@ static int panning(Draw_Interpretor&, int n, const char** a)
   bool        v2d = (a[0][0] == '2'); // pu2d, pd2d, pr2d, pl2d
   const char* com = a[0];
   if (v2d)
+  {
     com += 2;
+  }
 
-  if (!strcasecmp(com, "pu")) // pu , 2dpu
+  if (!strcasecmp(com, "pu"))
+  { // pu , 2dpu
     DY = 1;
-  if (!strcasecmp(com, "pd")) // pd , 2dpd
+  }
+  if (!strcasecmp(com, "pd"))
+  { // pd , 2dpd
     DY = -1;
-  if (!strcasecmp(com, "pl")) // pl , 2dpl
+  }
+  if (!strcasecmp(com, "pl"))
+  { // pl , 2dpl
     DX = -1;
-  if (!strcasecmp(com, "pr")) // pr , 2dpr
+  }
+  if (!strcasecmp(com, "pr"))
+  { // pr , 2dpr
     DX = 1;
+  }
 
   for (int id = start; id <= end; id++)
   {
@@ -600,12 +676,16 @@ static int ptv(Draw_Interpretor&, int n, const char** a)
   int    start = 0;
   int    end   = MAXVIEW - 1;
   if (n < 4)
+  {
     return 1;
+  }
   if (n >= 5)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
     X           = Draw::Atof(a[2]);
     Y           = Draw::Atof(a[3]);
@@ -641,12 +721,16 @@ static int dptv(Draw_Interpretor&, int n, const char** a)
   int    start = 0;
   int    end   = MAXVIEW - 1;
   if (n < 4)
+  {
     return 1;
+  }
   if (n >= 5)
   {
     int anid = ViewId(a[1]);
     if (anid < 0)
+    {
       return 1;
+    }
     start = end = anid;
     DX          = Draw::Atof(a[2]);
     DY          = Draw::Atof(a[3]);
@@ -721,7 +805,9 @@ static int hardcopy(Draw_Interpretor&, int n, const char** a)
     {
       iview = ViewId(a[2]);
       if (iview < 0)
+      {
         return 1;
+      }
       if (n >= 4)
       {
         if (!strcmp(a[3], "a7"))
@@ -884,7 +970,9 @@ extern void Draw_RepaintNowIfNecessary();
 static int xwd(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   // enforce repaint if necessary
   Draw_RepaintNowIfNecessary();
@@ -897,7 +985,9 @@ static int xwd(Draw_Interpretor&, int n, const char** a)
     file = a[2];
   }
   if (!dout.SaveView(id, file))
+  {
     return 1;
+  }
 
   return 0;
 }
@@ -971,7 +1061,9 @@ static int dtext(Draw_Interpretor& di, int n, const char** a)
     di << "Pick position with button 1, other button escape\n";
     dout.Select(id, X, Y, b);
     if (b != 1)
+    {
       return 0;
+    }
     double z = dout.Zoom(id);
     P.SetCoord((double)X / z, (double)Y / z, 0);
     gp_Trsf T;
@@ -986,7 +1078,9 @@ static int dtext(Draw_Interpretor& di, int n, const char** a)
     P.SetCoord(Draw::Atof(a[1]), Draw::Atof(a[2]), is3d ? Draw::Atof(a[3]) : 0);
   }
   else
+  {
     return 0;
+  }
 
   if (is3d)
   {
@@ -1005,7 +1099,9 @@ void Draw::GraphicCommands(Draw_Interpretor& theCommands)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   const char* g = "DRAW Graphic Commands";

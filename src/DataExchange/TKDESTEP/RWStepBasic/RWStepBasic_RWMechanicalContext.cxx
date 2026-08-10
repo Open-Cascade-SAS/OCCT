@@ -33,7 +33,9 @@ void RWStepBasic_RWMechanicalContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "mechanical_context"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

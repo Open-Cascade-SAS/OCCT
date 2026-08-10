@@ -19,7 +19,6 @@
 #include <MathUtils_Core.hxx>
 
 #include <cmath>
-#include <vector>
 
 namespace MathInteg
 {

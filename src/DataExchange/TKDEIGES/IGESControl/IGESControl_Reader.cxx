@@ -82,12 +82,16 @@ occ::handle<IGESData_IGESModel> IGESControl_Reader::IGESModel() const
 int IGESControl_Reader::NbRootsForTransfer()
 {
   if (therootsta)
+  {
     return theroots.Length();
+  }
   therootsta = true;
 
   occ::handle<IGESData_IGESModel> model = IGESModel();
   if (model.IsNull())
+  {
     return 0;
+  }
 
   occ::handle<XSControl_WorkSession>            session    = WS();
   occ::handle<Interface_Protocol>               protocol   = session->Protocol();
@@ -104,7 +108,9 @@ int IGESControl_Reader::NbRootsForTransfer()
   {
     occ::handle<IGESData_IGESEntity> ent = model->Entity(i);
     if (SH.IsShared(ent) || !actor->Recognize(ent))
+    {
       continue;
+    }
     // add processing to take only visible entities
     if (!theReadOnlyVisible || ent->BlankStatus() == 0)
     {
@@ -144,9 +150,13 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         Sprintf(mess, "\t%s", aBinder->ResultTypeName());
         if (aMapCountResult.IsBound(mess))
+        {
           aMapCountResult.ChangeFind(mess)++;
+        }
         else
+        {
           aMapCountResult.Bind(mess, 1);
+        }
       }
       // Init for dicoCountMapping for IFSelect_Mapping
       else if (mode == IFSelect_Mapping)
@@ -163,9 +173,13 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                 aBinder->ResultTypeName());
         // std::cout << mess << std::endl;
         if (aMapCountMapping.IsBound(mess))
+        {
           aMapCountMapping.ChangeFind(mess)++;
+        }
         else
+        {
           aMapCountMapping.Bind(mess, 1);
+        }
       }
     }
 
@@ -185,13 +199,19 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       {
         Sprintf(mess, "\t W\t%d\t%d\t%s", type, form, aCheck->CWarning(i));
         if (aMapCount.IsBound(mess))
+        {
           aMapCount.ChangeFind(mess)++;
+        }
         else
+        {
           aMapCount.Bind(mess, 1);
+        }
 
         occ::handle<NCollection_HSequence<int>> alist;
         if (aMapList.IsBound(mess))
+        {
           alist = aMapList.ChangeFind(mess);
+        }
         else
         {
           alist = new NCollection_HSequence<int>();
@@ -204,12 +224,18 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         Sprintf(mess, "\t F\t%d\t%d\t%s", type, form, aCheck->CFail(i));
         // TF << mess << std::endl;
         if (aMapCount.IsBound(mess))
+        {
           aMapCount.ChangeFind(mess)++;
+        }
         else
+        {
           aMapCount.Bind(mess, 1);
+        }
         occ::handle<NCollection_HSequence<int>> alist;
         if (aMapList.IsBound(mess))
+        {
           alist = aMapList.ChangeFind(mess);
+        }
         else
         {
           alist = new NCollection_HSequence<int>();
@@ -257,7 +283,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
              aMapCountIter.Next(), aMapListIter.Next())
         {
           Message_Messenger::StreamBuffer aSender = TF->SendInfo();
-          aSender << aMapCountIter.Value() << aMapCountIter.Key() << std::endl;
+          aSender << aMapCountIter.Value() << aMapCountIter.Key() << '\n';
           if (mode == IFSelect_ListByItem)
           {
             const occ::handle<NCollection_HSequence<int>>& entityList = aMapListIter.Value();
@@ -280,7 +306,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                 aSender << line;
               }
             }
-            aSender << std::endl;
+            aSender << '\n';
           }
         }
         break;
@@ -300,7 +326,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapIter(aMapCountResult);
         for (; aMapIter.More(); aMapIter.Next())
         {
-          TF->SendInfo() << aMapIter.Key() << aMapIter.Value() << std::endl;
+          TF->SendInfo() << aMapIter.Key() << aMapIter.Value() << '\n';
         }
         break;
       }
@@ -333,9 +359,13 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                       "Failed");
               // std::cout << mess << std::endl;
               if (aMapCountMapping.IsBound(mess))
+              {
                 aMapCountMapping.ChangeFind(mess)++;
+              }
               else
+              {
                 aMapCountMapping.Bind(mess, 1);
+              }
             }
           }
         }
@@ -345,8 +375,8 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
           char mess[80];
           Sprintf(mess, aMapCountIter.Key().ToCString(), aMapCountIter.Value());
           // clang-format off
-        TF->SendInfo() << mess << std::endl; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
-                                     // clang-format on
+        TF->SendInfo() << mess << '\n'; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
+                                      // clang-format on
         }
         break;
       }

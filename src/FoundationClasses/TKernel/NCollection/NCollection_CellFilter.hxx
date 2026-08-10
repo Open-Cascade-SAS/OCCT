@@ -250,10 +250,10 @@ protected:
   public:
     //! Constructor; computes cell indices
     Cell(const Point& thePnt, const NCollection_Array1<double>& theCellSize)
-        : index(theCellSize.Size()),
+        : index(theCellSize.Length()),
           Objects(nullptr)
     {
-      for (int i = 0; i < theCellSize.Size(); i++)
+      for (int i = 0; i < theCellSize.Length(); i++)
       {
         double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than

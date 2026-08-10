@@ -38,7 +38,9 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve_element_interval_constant"))
+  {
     return;
+  }
 
   // Inherited fields of CurveElementInterval
 

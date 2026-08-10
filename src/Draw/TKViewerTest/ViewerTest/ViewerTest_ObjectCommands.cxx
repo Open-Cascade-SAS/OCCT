@@ -29,6 +29,7 @@
 #include <Font_BRepTextBuilder.hxx>
 #include <Font_FontMgr.hxx>
 #include <Message.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 
 #include <OSD_Chronometer.hxx>
@@ -165,10 +166,11 @@ static bool convertToColor(
   const occ::handle<NCollection_HSequence<TCollection_AsciiString>>& theColorValues,
   Quantity_Color&                                                    theColor)
 {
-  const char* anArgs[3] = {theColorValues->Size() >= 1 ? theColorValues->Value(1).ToCString() : "",
-                           theColorValues->Size() >= 2 ? theColorValues->Value(2).ToCString() : "",
-                           theColorValues->Size() >= 3 ? theColorValues->Value(3).ToCString() : ""};
-  return Draw::ParseColor(theColorValues->Size(), anArgs, theColor) != 0;
+  const char* anArgs[3] = {
+    theColorValues->Length() >= 1 ? theColorValues->Value(1).ToCString() : "",
+    theColorValues->Length() >= 2 ? theColorValues->Value(2).ToCString() : "",
+    theColorValues->Length() >= 3 ? theColorValues->Value(3).ToCString() : ""};
+  return Draw::ParseColor(theColorValues->Length(), anArgs, theColor) != 0;
 }
 
 static bool convertToDatumPart(const TCollection_AsciiString& theValue,
@@ -177,27 +179,49 @@ static bool convertToDatumPart(const TCollection_AsciiString& theValue,
   TCollection_AsciiString aValue = theValue;
   aValue.LowerCase();
   if (aValue == "origin")
+  {
     theDatumPart = Prs3d_DatumParts_Origin;
+  }
   else if (aValue == "xaxis")
+  {
     theDatumPart = Prs3d_DatumParts_XAxis;
+  }
   else if (aValue == "yaxis")
+  {
     theDatumPart = Prs3d_DatumParts_YAxis;
+  }
   else if (aValue == "zaxis")
+  {
     theDatumPart = Prs3d_DatumParts_ZAxis;
+  }
   else if (aValue == "xarrow")
+  {
     theDatumPart = Prs3d_DatumParts_XArrow;
+  }
   else if (aValue == "yarrow")
+  {
     theDatumPart = Prs3d_DatumParts_YArrow;
+  }
   else if (aValue == "zarrow")
+  {
     theDatumPart = Prs3d_DatumParts_ZArrow;
+  }
   else if (aValue == "xoyaxis")
+  {
     theDatumPart = Prs3d_DatumParts_XOYAxis;
+  }
   else if (aValue == "yozaxis")
+  {
     theDatumPart = Prs3d_DatumParts_YOZAxis;
+  }
   else if (aValue == "xozaxis")
+  {
     theDatumPart = Prs3d_DatumParts_XOZAxis;
+  }
   else if (aValue == "whole")
+  {
     theDatumPart = Prs3d_DatumParts_None;
+  }
   else
   {
     return false;
@@ -232,23 +256,41 @@ static bool convertToDatumAttribute(const TCollection_AsciiString& theValue,
   TCollection_AsciiString aValue = theValue;
   aValue.LowerCase();
   if (aValue == "xaxislength")
+  {
     theAttribute = Prs3d_DatumAttribute_XAxisLength;
+  }
   else if (aValue == "yaxislength")
+  {
     theAttribute = Prs3d_DatumAttribute_YAxisLength;
+  }
   else if (aValue == "zaxislength")
+  {
     theAttribute = Prs3d_DatumAttribute_ZAxisLength;
+  }
   else if (aValue == "tuberadiuspercent")
+  {
     theAttribute = Prs3d_DatumAttribute_ShadingTubeRadiusPercent;
+  }
   else if (aValue == "coneradiuspercent")
+  {
     theAttribute = Prs3d_DatumAttribute_ShadingConeRadiusPercent;
+  }
   else if (aValue == "conelengthpercent")
+  {
     theAttribute = Prs3d_DatumAttribute_ShadingConeLengthPercent;
+  }
   else if (aValue == "originradiuspercent")
+  {
     theAttribute = Prs3d_DatumAttribute_ShadingOriginRadiusPercent;
+  }
   else if (aValue == "shadingnumberoffacettes")
+  {
     theAttribute = Prs3d_DatumAttribute_ShadingNumberOfFacettes;
+  }
   else
+  {
     return false;
+  }
   return true;
 }
 
@@ -279,19 +321,33 @@ static bool convertToDatumAxes(const TCollection_AsciiString& theValue,
   TCollection_AsciiString aValue = theValue;
   aValue.LowerCase();
   if (aValue == "x")
+  {
     theDatumAxes = Prs3d_DatumAxes_XAxis;
+  }
   else if (aValue == "y")
+  {
     theDatumAxes = Prs3d_DatumAxes_YAxis;
+  }
   else if (aValue == "z")
+  {
     theDatumAxes = Prs3d_DatumAxes_ZAxis;
+  }
   else if (aValue == "xy")
+  {
     theDatumAxes = Prs3d_DatumAxes_XYAxes;
+  }
   else if (aValue == "zy")
+  {
     theDatumAxes = Prs3d_DatumAxes_YZAxes;
+  }
   else if (aValue == "xz")
+  {
     theDatumAxes = Prs3d_DatumAxes_XZAxes;
+  }
   else if (aValue == "xyz")
+  {
     theDatumAxes = Prs3d_DatumAxes_XYZAxes;
+  }
   else
   {
     return false;
@@ -370,7 +426,9 @@ static bool setTrihedronParams(int                               theArgsNb,
     TCollection_AsciiString aValue(aValues->Value(1));
     bool                    isWireframe = true;
     if (aValue.IsEqual("sh") || aValue.IsEqual("shading"))
+    {
       isWireframe = false;
+    }
     theTrihedron->SetDatumDisplayMode(isWireframe ? Prs3d_DM_WireFrame : Prs3d_DM_Shaded);
   }
 
@@ -512,7 +570,9 @@ static bool setTrihedronParams(int                               theArgsNb,
 
     convertToDatumAttributes(aValues->Value(1), anAttributes);
     if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+    {
       theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
+    }
     for (NCollection_List<Prs3d_DatumAttribute>::Iterator anIterator(anAttributes);
          anIterator.More();
          anIterator.Next())
@@ -558,7 +618,9 @@ static bool setTrihedronParams(int                               theArgsNb,
       return false;
     }
     if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+    {
       theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
+    }
     theTrihedron->Attributes()->DatumAspect()->SetDrawDatumAxes(aDatumAxes);
   }
   return true;
@@ -2036,9 +2098,13 @@ void FilledCircle::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   TopoDS_Face aFace = ComputeFace();
 
   if (aFace.IsNull())
+  {
     return;
+  }
   if (theMode != 0)
+  {
     return;
+  }
 
   StdPrs_ShadedShape::Add(thePrs, aFace, myDrawer);
 }
@@ -2948,15 +3014,21 @@ occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
       gp_XYZ vv  = v1 ^ v2;
       double mod = vv.Modulus();
       if (mod < Tol)
+      {
         continue;
+      }
       eqPlan += vv / mod;
     }
 
     double modmax = eqPlan.Modulus();
     if (modmax > Tol)
+    {
       Nor = gp_Dir(eqPlan);
+    }
     else
+    {
       Nor = gp_Dir(gp_Dir::D::Z);
+    }
 
     polyTriangulation->SetNormal(i, Nor.XYZ());
   }
@@ -2997,7 +3069,9 @@ static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
   VDisplayAISObject(aShapeName, occ::handle<AIS_InteractiveObject>());
 
   if (toPrintInfo)
+  {
     std::cout << "Compute Triangulation...\n";
+  }
   occ::handle<AIS_Triangulation> aShape =
     new AIS_Triangulation(CalculationOfSphere(aCenterX, aCenterY, aCenterZ, aResolution, aRadius));
   const int aNumberPoints    = aShape->GetTriangulation()->NbNodes();
@@ -3455,7 +3529,9 @@ bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
     }
     // unknown command
     else
+    {
       anArgIndex++;
+    }
   }
 
   if (myPArray.IsNull())
@@ -3566,13 +3642,16 @@ bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
       int aVertCount = theDesc->Value(anArgIndex - 1).IntegerValue();
 
       if (CheckInputCommand("c", theDesc, anArgIndex, 3, anArgsCount))
+      {
         myPArray->AddBound(aVertCount,
                            theDesc->Value(anArgIndex - 3).RealValue(),
                            theDesc->Value(anArgIndex - 2).RealValue(),
                            theDesc->Value(anArgIndex - 1).RealValue());
-
+      }
       else
+      {
         myPArray->AddBound(aVertCount);
+      }
     }
     // edge command
     else if (CheckInputCommand("e", theDesc, anArgIndex, 1, anArgsCount))
@@ -3671,12 +3750,16 @@ bool MyPArrayObject::CheckInputCommand(
 {
   // check if there is more elements than expected
   if (theArgIndex >= theMaxArgs)
+  {
     return false;
+  }
 
   TCollection_AsciiString aStrCommand = theArgsArray->Value(theArgIndex);
   aStrCommand.LowerCase();
   if (aStrCommand.Search(theCommand) != 1 || theArgIndex + (theArgCount - 1) >= theMaxArgs)
+  {
     return false;
+  }
 
   // go to the first data element
   theArgIndex++;
@@ -3686,7 +3769,9 @@ bool MyPArrayObject::CheckInputCommand(
   {
     aStrCommand = theArgsArray->Value(theArgIndex);
     if (!aStrCommand.IsRealValue(true))
+    {
       return false;
+    }
   }
 
   return true;
@@ -4525,7 +4610,7 @@ static int VDisconnect(Draw_Interpretor& di, int argc, const char** argv)
   if (!aMap.Find2(anObject, anIObj))
   {
     // try to interpret second argument as child number
-    if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Size())
+    if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Length())
     {
       int aCounter = 1;
       for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(
@@ -4671,7 +4756,7 @@ static int VListConnected(Draw_Interpretor& /*di*/, int argc, const char** argv)
     {
       std::cout << " connected to " << aMap.Find1(aConnected->ConnectedTo());
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 
     ++aCounter;
   }
@@ -4755,16 +4840,24 @@ static int VChild(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
       if (toAdd == 1)
       {
         if (toInheritTrsf == 0)
+        {
           aParent->AddChildWithCurrentTransformation(aChild);
+        }
         else
+        {
           aParent->AddChild(aChild);
+        }
       }
       else
       {
         if (toInheritTrsf == 0)
+        {
           aParent->RemoveChildWithRestoreTransformation(aChild);
+        }
         else
+        {
           aParent->RemoveChild(aChild);
+        }
       }
     }
   }
@@ -4807,7 +4900,9 @@ static int VParent(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
     if (anArg == "-ignorevisu")
+    {
       aParent->SetPropagateVisualState(false);
+    }
   }
   return 0;
 }
@@ -5319,7 +5414,9 @@ static int VObjZLayer(Draw_Interpretor& di, int argc, const char** argv)
   // get operation
   TCollection_AsciiString aOperation;
   if (argc >= 2)
+  {
     aOperation = TCollection_AsciiString(argv[1]);
+  }
 
   // check for correct arguments
   if ((argc != 4 || !aOperation.IsEqual("set")) && (argc != 3 || !aOperation.IsEqual("get")))
@@ -5408,23 +5505,23 @@ static int VPolygonOffset(Draw_Interpretor& /*di*/, int argc, const char** argv)
     if (anInterObj->HasPolygonOffsets())
     {
       anInterObj->PolygonOffsets(aMode, aFactor, aUnits);
-      std::cout << "Current polygon offset parameters for " << argv[1] << ":" << std::endl;
-      std::cout << "\tMode: " << aMode << std::endl;
-      std::cout << "\tFactor: " << aFactor << std::endl;
-      std::cout << "\tUnits: " << aUnits << std::endl;
+      std::cout << "Current polygon offset parameters for " << argv[1] << ":" << '\n';
+      std::cout << "\tMode: " << aMode << '\n';
+      std::cout << "\tFactor: " << aFactor << '\n';
+      std::cout << "\tUnits: " << aUnits << '\n';
       return 0;
     }
     else
     {
-      std::cout << "Specific polygon offset parameters are not set for " << argv[1] << std::endl;
+      std::cout << "Specific polygon offset parameters are not set for " << argv[1] << '\n';
     }
   }
 
-  std::cout << "Default polygon offset parameters:" << std::endl;
+  std::cout << "Default polygon offset parameters:" << '\n';
   aContext->DefaultDrawer()->ShadingAspect()->Aspect()->PolygonOffsets(aMode, aFactor, aUnits);
-  std::cout << "\tMode: " << aMode << std::endl;
-  std::cout << "\tFactor: " << aFactor << std::endl;
-  std::cout << "\tUnits: " << aUnits << std::endl;
+  std::cout << "\tMode: " << aMode << '\n';
+  std::cout << "\tFactor: " << aFactor << '\n';
+  std::cout << "\tUnits: " << aUnits << '\n';
 
   return 0;
 }
@@ -5878,21 +5975,18 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       TCollection_AsciiString aResult;
       if (toFindAll || aFontName.Search("*") != -1)
       {
-        const NCollection_List<occ::handle<Font_SystemFont>> aFonts = aMgr->GetAvailableFonts();
-        std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
-        aFontsSorted.reserve(aFonts.Size());
+        const NCollection_List<occ::handle<Font_SystemFont>>   aFonts = aMgr->GetAvailableFonts();
+        NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
+        aFontsSorted.Reserve(aFonts.Size());
         for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
              aFontIter.More();
              aFontIter.Next())
         {
-          aFontsSorted.push_back(aFontIter.Value());
+          aFontsSorted.Append(aFontIter.Value());
         }
         std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-        for (std::vector<occ::handle<Font_SystemFont>>::iterator aFontIter = aFontsSorted.begin();
-             aFontIter != aFontsSorted.end();
-             ++aFontIter)
+        for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
         {
-          const occ::handle<Font_SystemFont>& aFont = *aFontIter;
           const TCollection_AsciiString aCheck = TCollection_AsciiString("string match -nocase \"")
                                                  + aFontName + "\" \"" + aFont->FontName() + "\"";
           if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
@@ -6071,23 +6165,19 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   if (toPrintList)
   {
     // just print the list of available fonts
-    bool                                                 isFirst = true;
-    const NCollection_List<occ::handle<Font_SystemFont>> aFonts  = aMgr->GetAvailableFonts();
-    std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
-    aFontsSorted.reserve(aFonts.Size());
+    bool                                                   isFirst = true;
+    const NCollection_List<occ::handle<Font_SystemFont>>   aFonts  = aMgr->GetAvailableFonts();
+    NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
+    aFontsSorted.Reserve(aFonts.Size());
     for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
          aFontIter.More();
          aFontIter.Next())
     {
-      aFontsSorted.push_back(aFontIter.Value());
+      aFontsSorted.Append(aFontIter.Value());
     }
     std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-    for (std::vector<occ::handle<Font_SystemFont>>::iterator aFontIter = aFontsSorted.begin();
-         aFontIter != aFontsSorted.end();
-         ++aFontIter)
+    for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
     {
-      const occ::handle<Font_SystemFont>& aFont = *aFontIter;
-
       if (toPrintNames)
       {
         if (!isFirst)
@@ -6106,7 +6196,6 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       }
       isFirst = false;
     }
-    return 0;
   }
 
   return 0;
@@ -6187,7 +6276,9 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
     }
 
     if (aRedrawNeeded)
+    {
       ViewerTest::CurrentView()->Redraw();
+    }
 
     return 0;
   }
@@ -6552,7 +6643,8 @@ protected:
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 
-    NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>> aNormalMap;
+    NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>
+      aNormalMap;
     if (ToUseMesh)
     {
       DBRep_DrawableShape::addMeshNormals(aNormalMap, myshape, NormalLength);
@@ -6567,15 +6659,16 @@ protected:
 
     const double aArrowAngle  = myDrawer->ArrowAspect()->Angle();
     const double aArrowLength = myDrawer->ArrowAspect()->Length();
-    for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
+    for (NCollection_DataMap<TopoDS_Face,
+                             NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
            aFaceIt(aNormalMap);
          aFaceIt.More();
          aFaceIt.Next())
     {
       const bool toReverse = ToOrient && aFaceIt.Key().Orientation() == TopAbs_REVERSED;
       occ::handle<Graphic3d_ArrayOfSegments> aSegments =
-        new Graphic3d_ArrayOfSegments(2 * aFaceIt.Value().Size());
-      for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aPntIt(aFaceIt.Value());
+        new Graphic3d_ArrayOfSegments(2 * aFaceIt.Value().Length());
+      for (NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>::Iterator aPntIt(aFaceIt.Value());
            aPntIt.More();
            aPntIt.Next())
       {

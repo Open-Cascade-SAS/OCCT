@@ -94,14 +94,20 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   gp_Pln plane = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(myPlane))->Pln();
   // if (plane.IsNull()) return;
   if (!(myLine1.ShapeType() == TopAbs_EDGE))
+  {
     return;
+  }
   if (!(myLine2.ShapeType() == TopAbs_EDGE))
+  {
     return;
+  }
   double                  s1, e1, s2, e2;
   occ::handle<Geom_Curve> curve1 = BRep_Tool::Curve(TopoDS::Edge(myLine1), s1, e1);
   occ::handle<Geom_Curve> curve2 = BRep_Tool::Curve(TopoDS::Edge(myLine2), s2, e2);
   if (!curve1->IsKind(STANDARD_TYPE(Geom_Line)) || !curve2->IsKind(STANDARD_TYPE(Geom_Line)))
+  {
     return;
+  }
   occ::handle<Geom2d_Geometry> L1 = GeomAPI::To2d(curve1, plane);
   if (L1->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
@@ -118,7 +124,9 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   IntAna2d_AnaIntersection inter;
   inter.Perform(l1, l2);
   if (!inter.IsDone() || !inter.NbPoints())
+  {
     return;
+  }
   gp_Pnt2d pinter = inter.Point(1).Value();
   //
   double angle;

@@ -39,7 +39,9 @@ void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "edge_based_wireframe_shape_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

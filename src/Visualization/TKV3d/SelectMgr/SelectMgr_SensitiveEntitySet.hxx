@@ -81,6 +81,9 @@ public:
   //! Returns map of entities.
   bool HasEntityWithPersistence() const { return myNbEntityWithPersistence > 0; }
 
+  //! Returns true if this set contains sensitive entities with flipping options.
+  bool HasEntityWithFlipping() const { return myNbEntityWithFlipping > 0; }
+
 protected:
   //! Adds entity owner to the map of owners (or increases its counter if it is already there).
   Standard_EXPORT void addOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner);
@@ -93,6 +96,7 @@ private:
   NCollection_IndexedMap<occ::handle<SelectMgr_SensitiveEntity>> mySensitives;              //!< Map of entities and its corresponding index in BVH
   NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>, int>            myOwnersMap;               //!< Map of entity owners and its corresponding number of sensitives
   int                 myNbEntityWithPersistence; //!< number of sensitive entities that have own transform persistence
+  int                 myNbEntityWithFlipping;    //!< number of sensitive entities that have flipping options
   // clang-format on
 };
 

@@ -81,7 +81,7 @@ public:
   bool IsEmpty() const { return myItems.IsEmpty(); }
 
   //! Return the number of items in sequence.
-  int Size() const { return myItems.Size(); }
+  int Size() const { return myItems.Length(); }
 
   //! Append a plane.
   //! @return TRUE if new item has been added (FALSE if item already existed)

@@ -73,7 +73,9 @@ void StepKinematics_CylindricalPairWithRange::Init(
     myLowerLimitActualTranslation = theLowerLimitActualTranslation;
   }
   else
+  {
     myLowerLimitActualTranslation = 0;
+  }
 
   defUpperLimitActualTranslation = hasUpperLimitActualTranslation;
   if (defUpperLimitActualTranslation)
@@ -81,7 +83,9 @@ void StepKinematics_CylindricalPairWithRange::Init(
     myUpperLimitActualTranslation = theUpperLimitActualTranslation;
   }
   else
+  {
     myUpperLimitActualTranslation = 0;
+  }
 
   defLowerLimitActualRotation = hasLowerLimitActualRotation;
   if (defLowerLimitActualRotation)
@@ -89,7 +93,9 @@ void StepKinematics_CylindricalPairWithRange::Init(
     myLowerLimitActualRotation = theLowerLimitActualRotation;
   }
   else
+  {
     myLowerLimitActualRotation = 0;
+  }
 
   defUpperLimitActualRotation = hasUpperLimitActualRotation;
   if (defUpperLimitActualRotation)
@@ -97,7 +103,9 @@ void StepKinematics_CylindricalPairWithRange::Init(
     myUpperLimitActualRotation = theUpperLimitActualRotation;
   }
   else
+  {
     myUpperLimitActualRotation = 0;
+  }
 }
 
 //=================================================================================================

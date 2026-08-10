@@ -30,7 +30,9 @@ void RWStepGeom_RWElementarySurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "elementary_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

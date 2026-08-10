@@ -36,7 +36,9 @@ void BOPTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   //
   BOPTest::BOPCommands(theCommands);
@@ -61,7 +63,9 @@ void BOPTest::Factory(Draw_Interpretor& theCommands)
 {
   static bool FactoryDone = false;
   if (FactoryDone)
+  {
     return;
+  }
 
   FactoryDone = true;
 
@@ -95,7 +99,9 @@ void BOPTest::ReportAlerts(const occ::handle<Message_Report>& theReport)
       // check that this type of warnings has not yet been processed
       const occ::handle<Standard_Type>& aType = aIt.Value()->DynamicType();
       if (!aPassedTypes.Add(aType))
+      {
         continue;
+      }
 
       // get alert message
       Message_Msg                aMsg(aIt.Value()->GetMessageKey());

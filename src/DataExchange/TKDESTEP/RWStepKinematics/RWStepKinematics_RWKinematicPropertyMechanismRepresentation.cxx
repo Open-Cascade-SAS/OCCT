@@ -39,7 +39,9 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_property_mechanism_representation"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinitionRepresentation
 

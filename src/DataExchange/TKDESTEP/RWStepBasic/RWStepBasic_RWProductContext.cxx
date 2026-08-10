@@ -29,7 +29,9 @@ void RWStepBasic_RWProductContext::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "product_context"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

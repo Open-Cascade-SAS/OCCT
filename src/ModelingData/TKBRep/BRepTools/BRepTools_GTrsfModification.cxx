@@ -97,6 +97,7 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
   {
     occ::handle<Geom_BSplineSurface> S2 = occ::down_cast<Geom_BSplineSurface>(S);
     for (int i = 1; i <= S2->NbUPoles(); i++)
+    {
       for (int j = 1; j <= S2->NbVPoles(); j++)
       {
         gp_XYZ coor(S2->Pole(i, j).Coord());
@@ -104,11 +105,13 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
         gp_Pnt P(coor);
         S2->SetPole(i, j, P);
       }
+    }
   }
   else if (TheTypeS == STANDARD_TYPE(Geom_BezierSurface))
   {
     occ::handle<Geom_BezierSurface> S2 = occ::down_cast<Geom_BezierSurface>(S);
     for (int i = 1; i <= S2->NbUPoles(); i++)
+    {
       for (int j = 1; j <= S2->NbVPoles(); j++)
       {
         gp_XYZ coor(S2->Pole(i, j).Coord());
@@ -116,6 +119,7 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
         gp_Pnt P(coor);
         S2->SetPole(i, j, P);
       }
+    }
   }
   else
   {
@@ -342,6 +346,8 @@ bool BRepTools_GTrsfModification::NewPolygonOnTriangulation(
 
   thePoly = BRep_Tool::PolygonOnTriangulation(theEdge, aT, aLoc);
   if (!thePoly.IsNull())
+  {
     thePoly = thePoly->Copy();
+  }
   return true;
 }

@@ -34,7 +34,9 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "auto_deesign_document_reference"))
+  {
     return;
+  }
 
   // --- inherited field : assigned_document
 
@@ -59,7 +61,9 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "item", ach, anItem);
       if (stat3)
+      {
         aItems->SetValue(i3, anItem);
+      }
     }
   }
 
@@ -97,5 +101,7 @@ void RWStepAP214_RWAutoDesignDocumentReference::Share(
 {
   iter.AddItem(ent->AssignedDocument());
   for (int i3 = 1; i3 <= ent->NbItems(); i3++)
+  {
     iter.AddItem(ent->ItemsValue(i3).Value());
+  }
 }

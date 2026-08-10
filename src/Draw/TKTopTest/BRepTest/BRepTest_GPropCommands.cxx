@@ -76,7 +76,9 @@ int props(Draw_Interpretor& di, int n, const char** a)
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
 
   GProp_GProps G;
 
@@ -84,7 +86,9 @@ int props(Draw_Interpretor& di, int n, const char** a)
   double eps        = 1.0;
   bool   witheps    = false;
   if ((n > 2 && *a[2] == 'c') || (n > 3 && *a[3] == 'c'))
+  {
     onlyClosed = true;
+  }
   if (n > 2 && *a[2] != 'c' && n != 5)
   {
     eps     = Draw::Atof(a[2]);
@@ -94,22 +98,36 @@ int props(Draw_Interpretor& di, int n, const char** a)
   if (witheps)
   {
     if (std::abs(eps) < Precision::Angular())
+    {
       return 2;
+    }
     if (*a[0] == 'l')
+    {
       BRepGProp::LinearProperties(S, G, SkipShared);
+    }
     else if (*a[0] == 's')
+    {
       eps = BRepGProp::SurfaceProperties(S, G, eps, SkipShared);
+    }
     else
+    {
       eps = BRepGProp::VolumeProperties(S, G, eps, onlyClosed, SkipShared);
+    }
   }
   else
   {
     if (*a[0] == 'l')
+    {
       BRepGProp::LinearProperties(S, G, SkipShared, UseTriangulation);
+    }
     else if (*a[0] == 's')
+    {
       BRepGProp::SurfaceProperties(S, G, SkipShared, UseTriangulation);
+    }
     else
+    {
       BRepGProp::VolumeProperties(S, G, onlyClosed, SkipShared, UseTriangulation);
+    }
   }
 
   gp_Pnt P = G.CentreOfMass();
@@ -133,7 +151,9 @@ int props(Draw_Interpretor& di, int n, const char** a)
     aSStream1 << "\n\n";
     aSStream1 << "Mass : " << std::setw(15) << G.Mass() << "\n\n";
     if (witheps && *a[0] != 'l')
+    {
       aSStream1 << "Relative error of mass computation : " << std::setw(15) << eps << "\n\n";
+    }
 
     aSStream1 << "Center of gravity : \n";
     aSStream1 << "X = " << std::setw(15) << P.X() << "\n";
@@ -223,7 +243,9 @@ int vpropsgk(Draw_Interpretor& di, int n, const char** a)
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
 
   GProp_GProps G;
   bool         SkipShared = false;
@@ -244,16 +266,24 @@ int vpropsgk(Draw_Interpretor& di, int n, const char** a)
   eps  = Draw::Atof(a[2]);
   mode = Draw::Atoi(a[3]);
   if (mode > 0)
+  {
     onlyClosed = true;
+  }
   mode = Draw::Atoi(a[4]);
   if (mode > 0)
+  {
     isUseSpan = true;
+  }
 
   mode = Draw::Atoi(a[5]);
   if (mode == 1 || mode == 3)
+  {
     CGFlag = true;
+  }
   if (mode == 2 || mode == 3)
+  {
     IFlag = true;
+  }
 
   // OSD_Chronometer aChrono;
 
@@ -351,7 +381,9 @@ void BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

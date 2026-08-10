@@ -92,21 +92,37 @@ static bool GeometryTypeEnum(const XmlObjMgt_DOMString& theString, TDataXtd_Geom
   if (!theString.equals(::GeomAnyString()))
   {
     if (theString.equals(::GeomPointString()))
+    {
       aResult = TDataXtd_POINT;
+    }
     else if (theString.equals(::GeomLineString()))
+    {
       aResult = TDataXtd_LINE;
+    }
     else if (theString.equals(::GeomCircleString()))
+    {
       aResult = TDataXtd_CIRCLE;
+    }
     else if (theString.equals(::GeomEllipseString()))
+    {
       aResult = TDataXtd_ELLIPSE;
+    }
     else if (theString.equals(::GeomSplineString()))
+    {
       aResult = TDataXtd_SPLINE;
+    }
     else if (theString.equals(::GeomPlaneString()))
+    {
       aResult = TDataXtd_PLANE;
+    }
     else if (theString.equals(::GeomCylinderString()))
+    {
       aResult = TDataXtd_CYLINDER;
+    }
     else
+    {
       return false;
+    }
   }
   theResult = aResult;
   return true;

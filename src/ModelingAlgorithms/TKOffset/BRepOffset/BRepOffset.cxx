@@ -66,9 +66,13 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
     double                               Radius = C->Radius();
     gp_Ax3                               Axis   = C->Position();
     if (Axis.Direct())
+    {
       Radius += Offset;
+    }
     else
+    {
       Radius -= Offset;
+    }
     if (Radius >= Tol)
     {
       Result = new Geom_CylindricalSurface(Axis, Radius);
@@ -113,9 +117,13 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
     double                             Radius = S->Radius();
     gp_Ax3                             Axis   = S->Position();
     if (Axis.Direct())
+    {
       Radius += Offset;
+    }
     else
+    {
       Radius -= Offset;
+    }
     if (Radius >= Tol)
     {
       Result = new Geom_SphericalSurface(Axis, Radius);
@@ -141,9 +149,13 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
     if (MinorRadius < MajorRadius)
     { // A FINIR
       if (Axis.Direct())
+      {
         MinorRadius += Offset;
+      }
       else
+      {
         MinorRadius -= Offset;
+      }
       if (MinorRadius >= Tol)
       {
         Result = new Geom_ToroidalSurface(Axis, MajorRadius, MinorRadius);
@@ -262,7 +274,9 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(
       NCollection_LocalArray<bool,4> isDegenerated (aDegenPnt.Extent()); // degenerated vertex
                                                                        // clang-format on
       for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen)
+      {
         isDegenerated[iDegen] = true;
+      }
       for (int iPole = 0; iPole < NbSteps[iSide]; iPole++)
       {
         const gp_Pnt& aPole = aPoles(RowStart[iSide] + iPole * RowStep[iSide],
@@ -271,9 +285,13 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(
         // distance from CG
         double aDistCG = aCenter.Distance(aPole);
         if (aDistCG > gp::Resolution())
+        {
           isCollapsed = false;
+        }
         if (aDistCG > thePrecision)
+        {
           isSingular = false;
+        }
 
         // distances from degenerated points
         NCollection_List<gp_Pnt>::Iterator aDegPntIt(aDegenPnt);
@@ -338,7 +356,9 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(
     }
 
     if (!aCopy.IsNull())
+    {
       return aCopy;
+    }
   }
 
   return theSurface;

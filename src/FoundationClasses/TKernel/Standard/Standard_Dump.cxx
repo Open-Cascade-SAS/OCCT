@@ -76,7 +76,9 @@ void Standard_Dump::DumpCharacterValues(Standard_OStream& theOStream, int theCou
   for (int i = 0; i < theCount; ++i)
   {
     if (i > 0)
+    {
       theOStream << ", ";
+    }
     theOStream << "\"" << va_arg(vl, char*) << "\"";
   }
   va_end(vl);
@@ -91,7 +93,9 @@ void Standard_Dump::DumpRealValues(Standard_OStream& theOStream, int theCount, .
   for (int i = 0; i < theCount; ++i)
   {
     if (i > 0)
+    {
       theOStream << ", ";
+    }
     theOStream << va_arg(vl, double);
   }
   va_end(vl);
@@ -104,10 +108,14 @@ bool Standard_Dump::ProcessStreamName(const TCollection_AsciiString& theStreamSt
                                       int&                           theStreamPos)
 {
   if (theStreamStr.IsEmpty())
+  {
     return false;
+  }
 
   if (theStreamStr.Length() < theStreamPos)
+  {
     return false;
+  }
 
   TCollection_AsciiString aSubText = theStreamStr.SubString(theStreamPos, theStreamStr.Length());
   if (aSubText.StartsWith(JsonKeyToString(Standard_JsonKey_SeparatorValueToValue)))
@@ -121,7 +129,9 @@ bool Standard_Dump::ProcessStreamName(const TCollection_AsciiString& theStreamSt
     + JsonKeyToString(Standard_JsonKey_SeparatorKeyToValue);
   bool aResult = aSubText.StartsWith(aKeyName);
   if (aResult)
+  {
     theStreamPos += aKeyName.Length();
+  }
 
   return aResult;
 }
@@ -133,7 +143,9 @@ bool Standard_Dump::ProcessFieldName(const TCollection_AsciiString& theStreamStr
                                      int&                           theStreamPos)
 {
   if (theStreamStr.IsEmpty())
+  {
     return false;
+  }
 
   TCollection_AsciiString aSubText = theStreamStr.SubString(theStreamPos, theStreamStr.Length());
   if (aSubText.StartsWith(JsonKeyToString(Standard_JsonKey_SeparatorValueToValue)))
@@ -150,7 +162,9 @@ bool Standard_Dump::ProcessFieldName(const TCollection_AsciiString& theStreamStr
 
   bool aResult = aSubText.StartsWith(aKeyName);
   if (aResult)
+  {
     theStreamPos += aKeyName.Length();
+  }
 
   return aResult;
 }
@@ -241,7 +255,9 @@ TCollection_AsciiString Standard_Dump::GetPointerInfo(
   const bool                             isShortInfo)
 {
   if (thePointer.IsNull())
+  {
     return TCollection_AsciiString();
+  }
 
   return GetPointerInfo(thePointer.get(), isShortInfo);
 }
@@ -252,12 +268,16 @@ TCollection_AsciiString Standard_Dump::GetPointerInfo(const void* thePointer,
                                                       const bool  isShortInfo)
 {
   if (!thePointer)
+  {
     return TCollection_AsciiString();
+  }
 
   std::ostringstream aPtrStr;
   aPtrStr << thePointer;
   if (!isShortInfo)
+  {
     return aPtrStr.str().c_str();
+  }
 
   TCollection_AsciiString anInfoPtr(aPtrStr.str().c_str());
   for (int aSymbolId = 1; aSymbolId < anInfoPtr.Length(); aSymbolId++)
@@ -290,7 +310,9 @@ TCollection_AsciiString Standard_Dump::DumpFieldToName(const TCollection_AsciiSt
       aName.Remove(1, 2);
     }
     else
+    {
       aName.Remove(1, 1);
+    }
   }
   else if (aName.Length() > 2 && ::LowerCase(aName.Value(1)) == 'm' && aName.Value(2) == 'y')
   {
@@ -325,7 +347,9 @@ TCollection_AsciiString Standard_Dump::FormatJson(const Standard_SStream& theStr
   TCollection_AsciiString aStreamStr = Text(theStream);
   TCollection_AsciiString anIndentStr;
   for (int anIndentId = 0; anIndentId < theIndent; anIndentId++)
+  {
     anIndentStr.AssignCat(' ');
+  }
 
   TCollection_AsciiString aText;
 
@@ -358,7 +382,9 @@ TCollection_AsciiString Standard_Dump::FormatJson(const Standard_SStream& theStr
 
       aText += '\n';
       for (int anIndent = 0; anIndent < anIndentCount; anIndent++)
+      {
         aText += anIndentStr;
+      }
       aText += aSymbol;
     }
     else if (aSymbol == '[')
@@ -378,19 +404,27 @@ TCollection_AsciiString Standard_Dump::FormatJson(const Standard_SStream& theStr
         aText += aSymbol;
         aText += '\n';
         for (int anIndent = 0; anIndent < anIndentCount; anIndent++)
+        {
           aText += anIndentStr;
+        }
         if (anIndex + 1 < aStreamStr.Length() && aStreamStr.Value(anIndex + 1) == ' ')
+        {
           anIndex++; // skip empty value after comma
+        }
       }
       else
+      {
         aText += aSymbol;
+      }
     }
     else if (aSymbol == '\n')
     {
       aText += ""; // json does not support multi-lined values, skip this symbol
     }
     else
+    {
       aText += aSymbol;
+    }
 
     if (anIndex == aStreamStr.Length() && aSymbol != '}')
     {
@@ -400,7 +434,9 @@ TCollection_AsciiString Standard_Dump::FormatJson(const Standard_SStream& theStr
       anIndentCount--;
       aText += '\n';
       for (int anIndent = 0; anIndent < anIndentCount; anIndent++)
+      {
         aText += anIndentStr;
+      }
       aText += aSymbol;
     }
   }
@@ -419,7 +455,9 @@ bool Standard_Dump::SplitJson(
   {
     Standard_JsonKey aKey = Standard_JsonKey_None;
     if (!jsonKey(theStreamStr, aNextIndex, aNextIndex, aKey))
+    {
       return false;
+    }
 
     bool aProcessed = false;
     switch (aKey)
@@ -435,12 +473,16 @@ bool Standard_Dump::SplitJson(
                                           Standard_JsonKey_OpenChild,
                                           Standard_JsonKey_CloseChild);
         if (aClosePos == 0)
+        {
           return false;
+        }
 
         TCollection_AsciiString aSubStreamStr =
           theStreamStr.SubString(aStartIndex + JsonKeyLength(aKey), aNextIndex - 2);
         if (!SplitJson(aSubStreamStr, theKeyToValues))
+        {
           return false;
+        }
 
         aNextIndex = aClosePos + int(JsonKeyLength(Standard_JsonKey_CloseChild));
         break;
@@ -452,7 +494,9 @@ bool Standard_Dump::SplitJson(
         break;
     }
     if (!aProcessed)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -468,7 +512,9 @@ NCollection_List<int> Standard_Dump::HierarchicalValueIndices(
   for (int anIndex = 1; anIndex <= theValues.Extent(); anIndex++)
   {
     if (HasChildKey(theValues.FindFromIndex(anIndex)))
+    {
       anIndices.Append(anIndex);
+    }
   }
   return anIndices;
 }
@@ -487,7 +533,9 @@ bool Standard_Dump::splitKeyToValue(
   int aCloseIndex =
     nextClosePosition(theStreamStr, aStartIndex + 1, Standard_JsonKey_None, Standard_JsonKey_Quote);
   if (aCloseIndex == 0)
+  {
     return false;
+  }
 
   TCollection_AsciiString aSplitKey = theStreamStr.SubString(aStartIndex, aCloseIndex - 1);
 
@@ -495,7 +543,9 @@ bool Standard_Dump::splitKeyToValue(
   aStartIndex           = aCloseIndex + 1;
   Standard_JsonKey aKey = Standard_JsonKey_None;
   if (!jsonKey(theStreamStr, aStartIndex, aCloseIndex, aKey))
+  {
     return false;
+  }
 
   // find value
   aStartIndex = aCloseIndex;
@@ -513,7 +563,9 @@ bool Standard_Dump::splitKeyToValue(
                                       Standard_JsonKey_OpenChild,
                                       Standard_JsonKey_CloseChild);
       if (aCloseIndex > aStartIndex)
+      {
         aSplitValue = theStreamStr.SubString(aStartIndex, aCloseIndex);
+      }
       theNextIndex = aCloseIndex + 1;
       break;
     }
@@ -523,7 +575,9 @@ bool Standard_Dump::splitKeyToValue(
                                       Standard_JsonKey_OpenContainer,
                                       Standard_JsonKey_CloseContainer);
       if (aCloseIndex > aStartIndex)
+      {
         aSplitValue = theStreamStr.SubString(aStartIndex, aCloseIndex - 1);
+      }
       theNextIndex = aCloseIndex + 1;
       break;
     }
@@ -613,7 +667,9 @@ bool Standard_Dump::jsonKey(const TCollection_AsciiString& theStreamStr,
     Standard_JsonKey aKey      = (Standard_JsonKey)aKeyId;
     const char*      aKeyToStr = JsonKeyToString(aKey);
     if (!aSubStreamStr.StartsWith(aKeyToStr))
+    {
       continue;
+    }
 
     theNextIndex = theStartIndex + int(JsonKeyLength(aKey));
     theKey       = aKey;
@@ -685,7 +741,9 @@ int Standard_Dump::nextClosePosition(const TCollection_AsciiString& theSourceVal
     int anOpenKeyPos = theSourceValue.Location(anOpenKey, aStartPos, theSourceValue.Length());
     int aCloseKeyPos = theSourceValue.Location(aCloseKeyStr, aStartPos, theSourceValue.Length());
     if (aCloseKeyPos == 0)
+    {
       break;
+    }
 
     if (anOpenKeyPos != 0 && anOpenKeyPos <= aCloseKeyPos)
     {
@@ -695,7 +753,9 @@ int Standard_Dump::nextClosePosition(const TCollection_AsciiString& theSourceVal
     else
     {
       if (aDepthKey == 0)
+      {
         return aCloseKeyPos;
+      }
       else
       {
         aDepthKey--;

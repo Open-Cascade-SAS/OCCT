@@ -110,7 +110,9 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const doub
 
     double AbsFx = Fx;
     if (AbsFx < 0)
+    {
       AbsFx = -AbsFx;
+    }
     if (AbsFx < BestFx)
     {
       BestFx = AbsFx;
@@ -130,9 +132,13 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const doub
         X -= Dx;
         // Limitation des variations de X:
         if (X <= AA)
+        {
           X = AA;
+        }
         if (X >= BB)
+        {
           X = BB;
+        }
         It++;
       }
     }

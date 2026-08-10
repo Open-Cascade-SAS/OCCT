@@ -123,7 +123,9 @@ gp_Ax1 BRepSweep_Revol::Axe(const gp_Ax1& Ax, const double D) const
 {
   gp_Ax1 A = Ax;
   if (D < 0.)
+  {
     A.Reverse();
+  }
   return A;
 }
 

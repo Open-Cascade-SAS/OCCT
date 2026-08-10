@@ -38,7 +38,9 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "analysis_item_within_representation"))
+  {
     return;
+  }
 
   // Own fields of AnalysisItemWithinRepresentation
 

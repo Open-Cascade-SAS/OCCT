@@ -35,7 +35,9 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "geometric_item_specific_usage"))
+  {
     return;
+  }
 
   // Inherited fields of ItemIdentifiedRepresentationUsage
 
@@ -90,7 +92,9 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anEnt))
+      {
         anItems->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -114,7 +118,9 @@ void RWStepAP242_RWGeometricItemSpecificUsage::WriteStep(
   SW.Send(ent->UsedRepresentation());
 
   if (ent->NbIdentifiedItem() == 1)
+  {
     SW.Send(ent->IdentifiedItemValue(1));
+  }
   else
   {
     SW.OpenSub();
@@ -135,5 +141,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::Share(
   iter.AddItem(ent->Definition().Value());
   int i, nb = ent->NbIdentifiedItem();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->IdentifiedItemValue(i));
+  }
 }

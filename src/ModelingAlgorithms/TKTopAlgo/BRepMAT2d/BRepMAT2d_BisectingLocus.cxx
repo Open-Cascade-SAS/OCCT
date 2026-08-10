@@ -109,13 +109,19 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
   // Initialisation et execution de l algorithme.
   // --------------------------------------------
   if (IsOpenResult)
+  {
     TheMAT.CreateMatOpen(theTool);
+  }
   else
+  {
     TheMAT.CreateMat(theTool);
+  }
 
   isDone = TheMAT.IsDone();
   if (!isDone)
+  {
     return;
+  }
 
   // ----------------------------------------------------------------
   // Recuperation du resultat de l algorithme et creation du graphe.
@@ -284,7 +290,9 @@ Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const occ::handle<MAT_Arc>& anA
     gp_Pnt2d PL    = Bis->Value(Bis->LastParameter());
     gp_Pnt2d PNode = GeomElt(anArc->FirstNode());
     if (PNode.SquareDistance(PF) > PNode.SquareDistance(PL))
+    {
       Reverse = true;
+    }
   }
   return theTool.GeomBis(anArc->GeomIndex());
 }

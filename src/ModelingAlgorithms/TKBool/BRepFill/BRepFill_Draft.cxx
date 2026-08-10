@@ -225,7 +225,9 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const d
         {
           nbf = edgemap(iedge).Extent();
           if (nbf == 1)
+          {
             List.Append(theEdge);
+          }
         }
       }
 
@@ -265,7 +267,9 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const d
     TopoDS_Vertex Vf, Vl;
     TopExp::Vertices(myWire, Vf, Vl);
     if (Vf.IsSame(Vl))
+    {
       myWire.Closed(true);
+    }
   }
 
   myAngle = std::abs(Angle);
@@ -439,7 +443,9 @@ void BRepFill_Draft::Init(const occ::handle<Geom_Surface>&, const double Length,
 
   double ang = myDir.Angle(BN);
   if (ang > M_PI / 2)
+  {
     D.Reverse();
+  }
   occ::handle<Geom_Line> L = new (Geom_Line)(P, D);
 
   occ::handle<Geom_Curve> TC = new (Geom_TrimmedCurve)(L, 0, Length);
@@ -494,7 +500,9 @@ void BRepFill_Draft::BuildShell(const occ::handle<Geom_Surface>& Surf, const boo
     SF.D1(u, v, P, V1, V2);
     V = V1.Crossed(V2);
     if (F.Orientation() == TopAbs_REVERSED)
+    {
       V.Reverse();
+    }
     if (V.Magnitude() > 1.e-10)
     {
       out = myDir.Angle(V) > M_PI / 2;
@@ -584,15 +592,19 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
   aPF.SetArguments(anArgs);
   aPF.Perform();
   if (aPF.HasErrors())
+  {
     return false;
+  }
 
   BRepAlgoAPI_Section aSec(Sol1, Sol2, aPF);
   const TopoDS_Shape& aSection = aSec.Shape();
 
   TopExp_Explorer exp(aSection, TopAbs_EDGE);
   if (!exp.More())
+  {
     // No section edges produced
     return false;
+  }
 
   if (StopShape.ShapeType() != TopAbs_SOLID)
   {
@@ -617,7 +629,9 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
           Dmin   = D;
           aSEMin = TopoDS::Edge(aSE);
           if (Dmin < Precision::Confusion())
+          {
             break;
+          }
         }
       }
     }
@@ -650,9 +664,13 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
       {
         // Subtract State1
         if (myDir.Angle(SP.Normal()) < M_PI / 2)
+        {
           State1 = TopAbs_IN;
+        }
         else
+        {
           State1 = TopAbs_OUT;
+        }
       }
     }
   }
@@ -660,9 +678,13 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
   if (!KeepOutSide)
   { // Invert State2;
     if (State2 == TopAbs_IN)
+    {
       State2 = TopAbs_OUT;
+    }
     else
+    {
       State2 = TopAbs_IN;
+    }
   }
 
   // Perform Boolean operation
@@ -671,7 +693,9 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
   aBuilder.AddArgument(Sol2);
   aBuilder.PerformWithFiller(aPF);
   if (aBuilder.HasErrors())
+  {
     return false;
+  }
 
   TopoDS_Shape                   result;
   occ::handle<BRepTools_History> aHistory = new BRepTools_History;
@@ -754,20 +778,26 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
 
     aBuilder.BuildBOP(aLO, State1, aLT, State2, Message_ProgressRange());
     if (aBuilder.HasErrors())
+    {
       return false;
+    }
 
     aHistory->Merge(aBuilder.History());
     result = aBuilder.Shape();
   }
 
   if (issolid)
+  {
     myShape = result;
+  }
   else
   {
     TopExp_Explorer Exp;
     Exp.Init(result, TopAbs_SHELL);
     if (Exp.More())
+    {
       myShape = Exp.Current();
+    }
   }
 
   // Update the History
@@ -776,13 +806,17 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
   {
     const NCollection_List<TopoDS_Shape>& L = aHistory->Modified(myFaces->Value(1, ii));
     if (L.Extent() > 0)
+    {
       myFaces->SetValue(1, ii, L.First());
+    }
   }
   for (ii = 1; ii <= myLoc->NbLaw() + 1; ii++)
   {
     const NCollection_List<TopoDS_Shape>& L = aHistory->Modified(mySections->Value(1, ii));
     if (L.Extent() > 0)
+    {
       mySections->SetValue(1, ii, L.First());
+    }
   }
 
   return true;
@@ -799,7 +833,9 @@ bool BRepFill_Draft::Sewing()
   ToAss   = (myTop.ShapeType() != TopAbs_WIRE);
 
   if ((!ToAss) || (!myDone))
+  {
     return false;
+  }
 
   // Assembly make a shell from the faces of the shape + the input shape
   occ::handle<BRepBuilderAPI_Sewing> Ass = new BRepBuilderAPI_Sewing(5 * myTol, true, true, false);
@@ -842,12 +878,16 @@ bool BRepFill_Draft::Sewing()
     for (ii = 1; ii <= myLoc->NbLaw(); ii++)
     {
       if (Ass->IsModified(myFaces->Value(1, ii)))
+      {
         myFaces->SetValue(1, ii, Ass->Modified(myFaces->Value(1, ii)));
+      }
     }
     for (ii = 1; ii <= myLoc->NbLaw() + 1; ii++)
     {
       if (Ass->IsModified(mySections->Value(1, ii)))
+      {
         mySections->SetValue(1, ii, Ass->Modified(mySections->Value(1, ii)));
+      }
     }
 
     if (myShape.Closed())
@@ -888,20 +928,24 @@ const NCollection_List<TopoDS_Shape>& BRepFill_Draft::Generated(const TopoDS_Sha
   if (E.IsNull())
   {
     for (ii = 0; ii <= myLoc->NbLaw(); ii++)
+    {
       if (E.IsSame(myLoc->Vertex(ii)))
       {
         myGenerated.Append(mySections->Value(1, ii + 1));
         break;
       }
+    }
   }
   else
   {
     for (ii = 1; ii <= myLoc->NbLaw(); ii++)
+    {
       if (E.IsSame(myLoc->Edge(ii)))
       {
         myGenerated.Append(myFaces->Value(1, ii));
         break;
       }
+    }
   }
 
   return myGenerated;

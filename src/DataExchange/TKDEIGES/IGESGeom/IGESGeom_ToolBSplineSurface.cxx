@@ -174,13 +174,17 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(
     }
 
     for (J = 0; J <= anIndexV; J++)
+    {
       for (I = 0; I <= anIndexU; I++)
       {
         // st = PR.ReadXYZ (PR.CurrentList(1, 3), Msg105, tempXYZ); //szv#4:S4163:12Mar99 moved down
         // st = PR.ReadXYZ (PR.CurrentList(1, 3), "Control Points", tempXYZ);
         if (PR.ReadXYZ(PR.CurrentList(1, 3), Msg105, tempXYZ))
+        {
           allPoles->SetValue(I, J, tempXYZ);
+        }
       }
+    }
   }
 
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -221,16 +225,24 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(
         PR.SendFail(Msg159);
       } // szv#4:S4163:12Mar99 `st=` not needed
       if (pbfin == 0)
+      {
         pbfin = 1;
+      }
     }
     else if (pt == Interface_ParamInteger || pt == Interface_ParamVoid)
+    {
       break;
+    }
     else
+    {
       pbfin = -1;
+    }
     icur++;
   }
   if (pbfin > 0)
+  {
     PR.SendWarning(Msg159);
+  }
   if (pbfin < 0)
   {
     Message_Msg Msg158("XSTEP_158");
@@ -277,16 +289,25 @@ void IGESGeom_ToolBSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_BSpl
   IW.SendBoolean(ent->IsPeriodicV());
 
   for (I = -degU; I <= indU + 1; I++)
+  {
     IW.Send(ent->KnotU(I));
+  }
 
   for (I = -degV; I <= indV + 1; I++)
+  {
     IW.Send(ent->KnotV(I));
+  }
 
   for (J = 0; J <= indV; J++)
+  {
     for (I = 0; I <= indU; I++)
+    {
       IW.Send(ent->Weight(I, J));
+    }
+  }
 
   for (J = 0; J <= indV; J++)
+  {
     for (I = 0; I <= indU; I++)
     {
       gp_XYZ tempXYZ = ent->Pole(I, J).XYZ();
@@ -294,6 +315,7 @@ void IGESGeom_ToolBSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_BSpl
       IW.Send(tempXYZ.Y());
       IW.Send(tempXYZ.Z());
     }
+  }
   IW.Send(ent->UMin());
   IW.Send(ent->UMax());
   IW.Send(ent->VMin());
@@ -335,10 +357,14 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurf
     new NCollection_HArray1<double>(-aDegV, anIndexV + 1);
 
   for (I = -aDegU; I <= anIndexU + 1; I++)
+  {
     allKnotsU->SetValue(I, another->KnotU(I));
+  }
 
   for (I = -aDegV; I <= anIndexV + 1; I++)
+  {
     allKnotsV->SetValue(I, another->KnotV(I));
+  }
 
   occ::handle<NCollection_HArray2<double>> allWeights =
     new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
@@ -346,12 +372,20 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurf
     new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
 
   for (J = 0; J <= anIndexV; J++)
+  {
     for (I = 0; I <= anIndexU; I++)
+    {
       allWeights->SetValue(I, J, another->Weight(I, J));
+    }
+  }
 
   for (J = 0; J <= anIndexV; J++)
+  {
     for (I = 0; I <= anIndexU; I++)
+    {
       allPoles->SetValue(I, J, another->Pole(I, J).XYZ());
+    }
+  }
 
   aUmin = another->UMin();
   aUmax = another->UMax();
@@ -461,8 +495,12 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSur
   }
 
   for (J = 0; ((J < indV) && (Flag)); J++)
+  {
     for (I = 0; ((I < indU) && (Flag)); I++)
+    {
       Flag &= (ent->Weight(I, J) > 0);
+    }
+  }
 
   if (!Flag)
   {
@@ -474,8 +512,12 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSur
   double tempVal = ent->Weight(0, 0);
 
   for (J = 0; ((J < indV) && (Flag)); J++)
+  {
     for (I = 0; ((I < indU) && (Flag)); I++)
+    {
       Flag &= (ent->Weight(I, J) == tempVal);
+    }
+  }
 
   //  bool Flap = ent->IsPolynomial(true);
   //  if (Flag && !Flap)
@@ -524,17 +566,21 @@ void IGESGeom_ToolBSplineSurface::OwnDump(const occ::handle<IGESGeom_BSplineSurf
   // IGESData_DumpRectXYZL(S,level,1, ent->NbPoles(),ent->Pole, ent->Location());
   if (level < 5)
   {
-    S << " [ content : ask level > 4 ]" << std::endl;
+    S << " [ content : ask level > 4 ]" << '\n';
     return;
   }
   gp_GTrsf loca = ent->Location();
   for (int JP = 0; JP <= indV; JP++)
+  {
     for (int IP = 0; IP <= indU; IP++)
     {
       if (IP == 0)
+      {
         S << "\n";
+      }
       S << "  -  [" << IP << "," << JP << "]: ";
       IGESData_DumpXYZL(S, level, ent->Pole(IP, JP), loca);
     }
-  S << std::endl;
+  }
+  S << '\n';
 }

@@ -65,15 +65,21 @@ bool Interface_UndefinedContent::ParamData(const int                            
                                            occ::handle<TCollection_HAsciiString>& val) const
 {
   if (num < 1 || num > thenbparams)
+  {
     throw Standard_OutOfRange("Interface UndefinedContent : ParamData");
+  }
   int desc  = theparams->Value(num);
   int local = ((desc >> Content_LocalShift) & Content_LocalField);
   ptype     = Interface_ParamType(desc & Content_TypeField);
   int adr   = desc >> Content_NumberShift;
   if (local == Content_LocalRef)
+  {
     ent = theentities.Value(adr);
+  }
   else
+  {
     val = thevalues->Value(adr);
+  }
   return (local == Content_LocalRef);
 }
 
@@ -91,7 +97,9 @@ occ::handle<Standard_Transient> Interface_UndefinedContent::ParamEntity(const in
 {
   int desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != Content_LocalRef)
+  {
     throw Interface_InterfaceError("UndefinedContent : Param is not Entity type");
+  }
   return theentities.Value(desc >> Content_NumberShift);
 }
 
@@ -99,7 +107,9 @@ occ::handle<TCollection_HAsciiString> Interface_UndefinedContent::ParamValue(con
 {
   int desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != 0)
+  {
     throw Interface_InterfaceError("UndefinedContent : Param is not literal");
+  }
   return thevalues->Value(desc >> Content_NumberShift);
 }
 
@@ -111,15 +121,21 @@ void Interface_UndefinedContent::Reservate(const int nb, const int nblit)
   if (nb > thenbparams)
   { // Total reservation
     if (theparams.IsNull())
+    {
       theparams = new NCollection_HArray1<int>(1, nb);
+    }
     else if (nb > theparams->Length())
     {
       int nbnew = 2 * thenbparams; // reserve a bit more
       if (nbnew < nb)
+      {
         nbnew = nb;
+      }
       occ::handle<NCollection_HArray1<int>> newparams = new NCollection_HArray1<int>(1, nbnew);
       for (int i = 1; i <= thenbparams; i++)
+      {
         newparams->SetValue(i, theparams->Value(i));
+      }
       theparams = newparams;
     }
   }
@@ -127,16 +143,22 @@ void Interface_UndefinedContent::Reservate(const int nb, const int nblit)
   if (nblit > thenbstr)
   { // Literal reservation
     if (thevalues.IsNull())
+    {
       thevalues = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nblit);
+    }
     else if (nblit > thevalues->Length())
     {
       int nbnew = 2 * thenbstr; // reserve a bit more
       if (nbnew < nblit)
+      {
         nbnew = nblit;
+      }
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> newvalues =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbnew);
       for (int i = 1; i <= thenbstr; i++)
+      {
         newvalues->SetValue(i, thevalues->Value(i));
+      }
       thevalues = newvalues;
     }
   }
@@ -177,12 +199,16 @@ void Interface_UndefinedContent::RemoveParam(const int num)
   bool c1ent = (local == Content_LocalRef);
   //    Remove an Entity
   if (c1ent)
+  {
     theentities.Remove(rang);
-  //    Remove a Literal
+    //    Remove a Literal
+  }
   else
   { // thevalues->Remove(rang)  but it is an array
     for (int i = rang + 1; i <= thenbstr; i++)
+    {
       thevalues->SetValue(i - 1, thevalues->Value(i));
+    }
     occ::handle<TCollection_HAsciiString> nulstr;
     thevalues->SetValue(thenbstr, nulstr);
     thenbstr--;
@@ -190,7 +216,9 @@ void Interface_UndefinedContent::RemoveParam(const int num)
   //    Remove this parameter from the list (which is an array)
   int np; // svv Jan11 2000 : porting on DEC
   for (np = num + 1; np <= thenbparams; np++)
+  {
     theparams->SetValue(np - 1, theparams->Value(np));
+  }
   theparams->SetValue(thenbparams, 0);
   thenbparams--;
   //    Renumber, Entity or Literal, depending
@@ -199,7 +227,9 @@ void Interface_UndefinedContent::RemoveParam(const int num)
     desc = theparams->Value(np);
     if (((desc >> Content_LocalShift) & Content_LocalField) == local
         && (desc >> Content_NumberShift) > rang)
+    {
       theparams->SetValue(np, desc - (1 << Content_NumberShift));
+    }
   }
 }
 
@@ -222,7 +252,9 @@ void Interface_UndefinedContent::SetLiteral(const int                           
       desc = theparams->Value(i);
       if (((desc >> Content_LocalShift) & Content_LocalField) == Content_LocalRef
           && (desc >> Content_NumberShift) > rang)
+      {
         theparams->SetValue(i, desc - (1 << Content_NumberShift));
+      }
     }
     //  And prepare arrival of an additional Literal
     Reservate(thenbparams, thenbstr + 1);
@@ -251,7 +283,9 @@ void Interface_UndefinedContent::SetEntity(const int                            
     //  (Remove Literal but in an array)
     int i; // svv Jan11 2000 : porting on DEC
     for (i = rang + 1; i <= thenbstr; i++)
+    {
       thevalues->SetValue(i - 1, thevalues->Value(i));
+    }
     occ::handle<TCollection_HAsciiString> nulstr;
     thevalues->SetValue(thenbstr, nulstr);
 
@@ -260,7 +294,9 @@ void Interface_UndefinedContent::SetEntity(const int                            
       desc = theparams->Value(i);
       if (((desc >> Content_LocalShift) & Content_LocalField) == 0
           && (desc >> Content_NumberShift) > rang)
+      {
         theparams->SetValue(i, desc - (1 << Content_NumberShift));
+      }
     }
     //  And prepare arrival of an additional Entity
     thenbstr--;
@@ -269,7 +305,9 @@ void Interface_UndefinedContent::SetEntity(const int                            
     theentities.Append(ent);
   }
   else
+  {
     theentities.SetValue(rang, ent);
+  }
 
   desc = int(ptype) + (Content_LocalRef << Content_LocalShift) + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
@@ -285,7 +323,9 @@ void Interface_UndefinedContent::SetEntity(const int                            
   int  local = ((desc >> Content_LocalShift) & Content_LocalField);
   bool c1ent = (local == Content_LocalRef);
   if (!c1ent)
+  {
     throw Interface_InterfaceError("UndefinedContent : SetEntity");
+  }
   theentities.SetValue(rang, ent);
 }
 
@@ -316,6 +356,8 @@ void Interface_UndefinedContent::GetFromAnother(
       AddEntity(ptype, ent);
     }
     else
+    {
       AddLiteral(ptype, val);
+    }
   }
 }

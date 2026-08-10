@@ -56,7 +56,9 @@ void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anEnt))
+      {
         aStyles->SetValue(i, anEnt);
+      }
     }
   }
 

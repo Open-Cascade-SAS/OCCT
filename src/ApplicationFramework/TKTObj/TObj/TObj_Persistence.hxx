@@ -117,7 +117,7 @@ private:
   name::Persistence_       name::myPersistence_;                                                   \
   occ::handle<TObj_Object> name::Persistence_::New(const TDF_Label& aLabel) const                  \
   {                                                                                                \
-    return new name((const TObj_Persistence*)0, aLabel);                                           \
+    return new name(static_cast<const TObj_Persistence*>(nullptr), aLabel);                        \
   }
 
 #endif

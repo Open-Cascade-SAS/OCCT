@@ -35,7 +35,9 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
   // --- Instance of plex component ConversionBasedUnit ---
 
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -59,7 +61,9 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
   // --- Instance of common supertype NamedUnit ---
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- field : dimensions ---
 
@@ -77,7 +81,9 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
   // --- Instance of plex component RatioUnit ---
 
   if (!data->CheckNbParams(num, 0, ach, "ratio_unit"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

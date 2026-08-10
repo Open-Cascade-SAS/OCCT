@@ -28,7 +28,9 @@ void RWStepVisual_RWPreDefinedCurveFont::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "pre_defined_curve_font"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

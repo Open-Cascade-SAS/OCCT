@@ -81,42 +81,78 @@ const char* StepBasic_MeasureValueMember::Name() const
 bool StepBasic_MeasureValueMember::SetName(const char* const name)
 {
   if (!name || name[0] == '\0')
+  {
     thecase = 0;
-  //  prefiltrage par une lettre caracteristique (ne pas se tromper)
+    //  prefiltrage par une lettre caracteristique (ne pas se tromper)
+  }
   else if (name[0] == 'L' && !strcmp(name, "LENGTH_MEASURE"))
+  {
     thecase = 1;
+  }
   else if (name[1] == 'I' && !strcmp(name, "TIME_MEASURE"))
+  {
     thecase = 2;
+  }
   else if (name[1] == 'L' && !strcmp(name, "PLANE_ANGLE_MEASURE"))
+  {
     thecase = 3;
+  }
   else if (name[0] == 'S' && !strcmp(name, "SOLID_ANGLE_MEASURE"))
+  {
     thecase = 4;
+  }
   else if (name[2] == 'T' && !strcmp(name, "RATIO_MEASURE"))
+  {
     thecase = 5;
+  }
   else if (name[2] == 'R' && !strcmp(name, "PARAMETER_VALUE"))
+  {
     thecase = 6;
+  }
   else if (name[3] == 'T' && !strcmp(name, "CONTEXT_DEPENDANT_MEASURE"))
+  {
     thecase = 7;
+  }
   else if (name[9] == 'L' && !strcmp(name, "POSITIVE_LENGTH_MEASURE"))
+  {
     thecase = 8;
+  }
   else if (name[9] == 'P' && !strcmp(name, "POSITIVE_PLANE_ANGLE_MEASURE"))
+  {
     thecase = 9;
+  }
   else if (name[9] == 'R' && !strcmp(name, "POSITIVE_RATIO_MEASURE"))
+  {
     thecase = 10;
+  }
   else if (name[0] == 'A' && !strcmp(name, "AREA_MEASURE"))
+  {
     thecase = 11;
+  }
   else if (name[0] == 'V' && !strcmp(name, "VOLUME_MEASURE"))
+  {
     thecase = 12;
+  }
   else if (name[0] == 'M' && !strcmp(name, "MASS_MEASURE"))
+  {
     thecase = 13;
+  }
   else if (name[1] == 'H' && !strcmp(name, "THERMODYNAMIC_TEMPERATURE_MEASURE"))
+  {
     thecase = 14;
+  }
   else if (name[2] == 'U' && !strcmp(name, "COUNT_MEASURE"))
+  {
     thecase = 15;
+  }
   else if (name[0] == 'N' && !strcmp(name, "NUMERIC_MEASURE"))
+  {
     thecase = 16;
+  }
   else
+  {
     return false;
+  }
 
   return true;
 }

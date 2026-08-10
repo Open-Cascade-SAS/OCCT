@@ -62,13 +62,21 @@ static int CompareNames(const char* const name)
 {
   int thecase = 0;
   if (!name || name[0] == '\0')
+  {
     thecase = 0;
+  }
   else if (!strcmp(name, IST))
+  {
     thecase = 1;
+  }
   else if (!strcmp(name, OST))
+  {
     thecase = 2;
+  }
   else if (!strcmp(name, AST))
+  {
     thecase = 3;
+  }
   return thecase;
 }
 

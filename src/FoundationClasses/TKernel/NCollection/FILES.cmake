@@ -16,12 +16,11 @@ set(OCCT_NCollection_FILES
   NCollection_BaseList.hxx
   NCollection_BaseMap.cxx
   NCollection_BaseMap.hxx
-  NCollection_BasePointerVector.cxx
-  NCollection_BasePointerVector.hxx
   NCollection_BaseSequence.cxx
   NCollection_BaseSequence.hxx
   NCollection_Buffer.hxx
   NCollection_CellFilter.hxx
+  NCollection_LinearVector.hxx
   NCollection_DataMap.hxx
   NCollection_DefaultHasher.hxx
   NCollection_DefineAlloc.hxx

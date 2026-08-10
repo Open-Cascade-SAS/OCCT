@@ -40,9 +40,13 @@ int IFSelect_DispPerFiles::CountValue() const
 {
   int pcount = 0;
   if (!thecount.IsNull())
+  {
     pcount = thecount->Value();
+  }
   if (pcount <= 0)
+  {
     pcount = 1; // default option taken
+  }
   return pcount;
 }
 
@@ -74,16 +78,22 @@ void IFSelect_DispPerFiles::Packets(const Interface_Graph& G, IFGraph_SubPartsIt
   roots.Start(); // Start performs specific Evaluate
   int nb = roots.NbParts();
   if (pcount > 0)
+  {
     pcount = (nb - 1) / pcount + 1; // per packet
+  }
 
   int i = 0;
   for (; roots.More(); roots.Next())
   { // Start already done
     if (i == 0)
+    {
       packs.AddPart();
+    }
     i++;
     if (i >= pcount)
+    {
       i = 0; // regroupement selon "count"
+    }
     packs.GetFromIter(roots.Entities());
   }
 }

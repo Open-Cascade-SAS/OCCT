@@ -187,7 +187,9 @@ static int restore(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 static int display(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   else
   {
     for (int i = 1; i < n; i++)
@@ -238,7 +240,9 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
         if (D.IsNull())
         {
           if ((a[i][0] == '.') && (a[i][1] == '\0'))
-            std::cout << "Missed !!!" << std::endl;
+          {
+            std::cout << "Missed !!!" << '\n';
+          }
           return 0;
         }
       }
@@ -263,17 +267,27 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
     // effacement de toutes les variables
     int erasemode = 1;
     if (a[0][0] == '2')
+    {
       erasemode = 2;
+    }
     if (a[0][0] == 'c')
+    {
       erasemode = 3;
+    }
 
     // effacement des graphiques non variables
     if (erasemode == 2)
+    {
       dout.Clear2D();
+    }
     else if (erasemode == 3)
+    {
       dout.Clear3D();
+    }
     else
+    {
       dout.Clear();
+    }
 
     // affichage pour donly
     if (donly)
@@ -287,7 +301,9 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
           {
             dout << D;
             if (!draw_erase_mute)
+            {
               di << a[i] << " ";
+            }
           }
         }
       }
@@ -295,7 +311,9 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
 
     // afficahge des proteges
     for (i = 1; i <= prot.Length(); i++)
+    {
       dout << prot(i);
+    }
   }
   else
   {
@@ -308,7 +326,9 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
         {
           dout.RemoveDrawable(D);
           if (!draw_erase_mute)
+          {
             di << D->Name() << " ";
+          }
         }
       }
     }
@@ -329,7 +349,9 @@ static int erase(Draw_Interpretor& di, int n, const char** a)
 static int draw(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   int id = Draw::Atoi(a[1]);
   if (!dout.HasView(id))
   {
@@ -344,7 +366,9 @@ static int draw(Draw_Interpretor&, int n, const char** a)
   {
     occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
     if (!D.IsNull())
+    {
       D->DrawOn(d);
+    }
   }
   d.Flush();
   return 0;
@@ -357,7 +381,9 @@ static int draw(Draw_Interpretor&, int n, const char** a)
 static int protect(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   bool prot = *a[0] != 'u';
   for (int i = 1; i < n; i++)
   {
@@ -378,14 +404,22 @@ static int protect(Draw_Interpretor& di, int n, const char** a)
 static int autodisplay(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     autodisp = !autodisp;
+  }
   else
+  {
     autodisp = !(!strcasecmp(a[1], "0"));
+  }
 
   if (autodisp)
+  {
     di << "1";
+  }
   else
+  {
     di << "0";
+  }
 
   return 0;
 }
@@ -397,7 +431,9 @@ static int autodisplay(Draw_Interpretor& di, int n, const char** a)
 static int whatis(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
   for (int i = 1; i < n; i++)
   {
     occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
@@ -416,7 +452,9 @@ static int whatis(Draw_Interpretor& di, int n, const char** a)
 static int value(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
   di << Draw::Atof(a[1]);
 
   return 0;
@@ -457,7 +495,9 @@ static int dname(Draw_Interpretor& di, int n, const char** a)
 static int dump(Draw_Interpretor& DI, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   int i;
   for (i = 1; i < n; i++)
   {
@@ -481,22 +521,30 @@ static int dump(Draw_Interpretor& DI, int n, const char** a)
 static int copy(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   bool cop = !strcasecmp(a[0], "copy");
 
   occ::handle<Draw_Drawable3D> D;
   for (int i = 1; i < n; i += 2)
   {
     if (i + 1 >= n)
+    {
       return 0;
+    }
     D = Draw::Get(a[i]);
     if (!D.IsNull())
     {
       if (cop)
+      {
         D = D->Copy();
+      }
       else
+      {
         // clear old name
         Draw::Set(a[i], occ::handle<Draw_Drawable3D>());
+      }
 
       Draw::Set(a[i + 1], D);
     }
@@ -509,10 +557,14 @@ static int copy(Draw_Interpretor&, int n, const char** a)
 static int repaintall(Draw_Interpretor&, int, const char**)
 {
   if (repaint2d)
+  {
     dout.Repaint2D();
+  }
   repaint2d = false;
   if (repaint3d)
+  {
     dout.Repaint3D();
+  }
   repaint3d = false;
   dout.Flush();
   return 0;
@@ -523,14 +575,18 @@ static int repaintall(Draw_Interpretor&, int, const char**)
 static int set(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   int    i   = 1;
   double val = 0;
   for (i = 1; i < n; i += 2)
   {
     val = 0;
     if (i + 1 < n)
+    {
       val = Draw::Atof(a[i + 1]);
+    }
     Draw::Set(a[i], val);
   }
   di << val;
@@ -554,7 +610,9 @@ static int dsetenv(Draw_Interpretor& /*di*/, int argc, const char** argv)
     env.Build();
   }
   else
+  {
     env.Remove();
+  }
   return env.Failed();
 }
 
@@ -578,12 +636,18 @@ static int dgetenv(Draw_Interpretor& di, int argc, const char** argv)
 static int isdraw(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
   occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   if (D.IsNull())
+  {
     di << "0";
+  }
   else
+  {
     di << "1";
+  }
   return 0;
 }
 
@@ -592,16 +656,24 @@ static int isdraw(Draw_Interpretor& di, int n, const char** a)
 int isprot(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
   occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   if (D.IsNull())
+  {
     di << "0";
+  }
   else
   {
     if (D->Protected())
+    {
       di << "1";
+    }
     else
+    {
       di << "0";
+    }
   }
   return 0;
 }
@@ -611,12 +683,16 @@ int isprot(Draw_Interpretor& di, int n, const char** a)
 static int pick(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
   int  id;
   int  X, Y, b;
   bool wait = (n == 6);
   if (!wait)
+  {
     id = Draw::Atoi(a[1]);
+  }
   dout.Select(id, X, Y, b, wait);
   double  z = dout.Zoom(id);
   gp_Pnt  P((double)X / z, (double)Y / z, 0);
@@ -637,7 +713,9 @@ static int pick(Draw_Interpretor&, int n, const char** a)
 static int lastrep(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   Draw::Set(a[1], p_id);
   if (n == 5)
@@ -703,9 +781,13 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
     {
       dout.RemoveDrawable(D);
       if (D->Is3D())
+      {
         repaint3d = true;
+      }
       else
+      {
         repaint2d = true;
+      }
     }
     Tcl_UntraceVar(aCommands.Interp(), name, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, CD);
     Draw_changeDrawables().Remove(D);
@@ -725,7 +807,9 @@ void Draw::Set(const char* const name, const occ::handle<Draw_Drawable3D>& D, co
     {
       dout.RemoveDrawable(D);
       if (displ)
+      {
         dout << D;
+      }
     }
   }
   else
@@ -741,7 +825,7 @@ void Draw::Set(const char* const name, const occ::handle<Draw_Drawable3D>& D, co
     {
       if (Draw::Drawables().Contains(anOldD) && anOldD->Protected())
       {
-        std::cout << "variable is protected" << std::endl;
+        std::cout << "variable is protected" << '\n';
         return;
       }
       anOldD.Nullify();
@@ -763,10 +847,14 @@ void Draw::Set(const char* const name, const occ::handle<Draw_Drawable3D>& D, co
       if (displ)
       {
         if (!D->Visible())
+        {
           dout << D;
+        }
       }
       else if (D->Visible())
+      {
         dout.RemoveDrawable(D);
+      }
     }
   }
 }
@@ -806,7 +894,7 @@ occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToA
     return occ::handle<Draw_Drawable3D>();
   }
 
-  std::cout << "Pick an object" << std::endl;
+  std::cout << "Pick an object" << '\n';
   occ::handle<Draw_Drawable3D> aDrawable;
   dout.Select(p_id, p_X, p_Y, p_b);
   dout.Pick(p_id, p_X, p_Y, 5, aDrawable, 0);
@@ -856,19 +944,33 @@ static int trigo(Draw_Interpretor& di, int, const char** a)
   double x = Draw::Atof(a[1]);
 
   if (!strcasecmp(a[0], "cos"))
+  {
     di << std::cos(x);
+  }
   else if (!strcasecmp(a[0], "sin"))
+  {
     di << std::sin(x);
+  }
   else if (!strcasecmp(a[0], "tan"))
+  {
     di << std::tan(x);
+  }
   else if (!strcasecmp(a[0], "sqrt"))
+  {
     di << std::sqrt(x);
+  }
   else if (!strcasecmp(a[0], "acos"))
+  {
     di << std::acos(x);
+  }
   else if (!strcasecmp(a[0], "asin"))
+  {
     di << std::asin(x);
+  }
   else if (!strcasecmp(a[0], "atan2"))
+  {
     di << std::atan2(x, Draw::Atof(a[2]));
+  }
 
   return 0;
 }
@@ -906,7 +1008,7 @@ static double ParseValue(char*& theName)
       x = Parse(theName);
       if (*theName != ')')
       {
-        std::cout << "Mismatched parenthesis" << std::endl;
+        std::cout << "Mismatched parenthesis" << '\n';
       }
       ++theName;
       break;
@@ -981,7 +1083,7 @@ static double ParseValue(char*& theName)
           }
           if (pc > 0)
           {
-            std::cout << "Unclosed parenthesis" << std::endl;
+            std::cout << "Unclosed parenthesis" << '\n';
             x = 0;
           }
           else
@@ -1030,7 +1132,7 @@ static double ParseValue(char*& theName)
               }
               if (aCommands.Eval(theName) != 0)
               {
-                std::cout << "Call of function " << theName << " failed" << std::endl;
+                std::cout << "Call of function " << theName << " failed" << '\n';
                 x = 0;
               }
               else
@@ -1071,7 +1173,9 @@ static double ParseFactor(char*& name)
   {
     char c = *name;
     if (c == '\0')
+    {
       return x;
+    }
     name++;
     switch (c)
     {
@@ -1099,7 +1203,9 @@ static double Parse(char*& name)
   {
     char c = *name;
     if (c == '\0')
+    {
       return x;
+    }
     name++;
     switch (c)
     {
@@ -1130,9 +1236,13 @@ double Draw::Atof(const char* const theName)
   Draw_ParseFailed = false;
   double x         = Parse(n);
   while ((*n == ' ') || (*n == '\t'))
+  {
     n++;
+  }
   if (*n)
+  {
     Draw_ParseFailed = true;
+  }
   return x;
 }
 
@@ -1208,9 +1318,13 @@ static void before()
 void Draw_RepaintNowIfNecessary()
 {
   if (repaint2d)
+  {
     dout.Repaint2D();
+  }
   if (repaint3d)
+  {
     dout.Repaint3D();
+  }
   repaint2d = false;
   repaint3d = false;
 }
@@ -1229,7 +1343,9 @@ void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   // set up start and stop command

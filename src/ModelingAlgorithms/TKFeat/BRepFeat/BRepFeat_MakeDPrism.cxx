@@ -370,7 +370,9 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
       bB.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         bB.Add(Comp, S);
+      }
 
       BRepAlgoAPI_Cut trP(VraiDPrism, Comp);
       UpdateDescendants(trP, trP.Shape(), false);
@@ -432,14 +434,18 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
       myJustGluer = true;
       Perform(Until);
       if (myJustGluer)
+      {
         return;
+      }
     }
     else if (Until.IsSame(mySkface))
     {
       myJustGluer = true;
       Perform(From);
       if (myJustGluer)
+      {
         return;
+      }
     }
   }
   //  myPbase.Orientation(TopAbs_FORWARD);
@@ -563,7 +569,9 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, OrU);
     if (!S.IsNull())
+    {
       B.Add(Comp, S);
+    }
     else
     {
       NotDone();
@@ -572,7 +580,9 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
     }
     TopoDS_Solid SS = BRepFeat::Tool(mySFrom, FFrom, OrF);
     if (!SS.IsNull())
+    {
       B.Add(Comp, SS);
+    }
     else
     {
       NotDone();
@@ -722,7 +732,9 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
       OrU        = ASI1.Point(1, 1).Orientation();
       double prm = ASI1.Point(1, 1).Parameter();
       if (prm < 0)
+      {
         OrU = TopAbs::Reverse(OrU);
+      }
       FUntil = ASI1.Point(1, 1).Face();
     }
 
@@ -759,7 +771,9 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid Sol = BRepFeat::Tool(mySUntil, FUntil, OrU);
     if (!Sol.IsNull())
+    {
       B.Add(Comp, Sol);
+    }
     else
     {
       NotDone();
@@ -769,7 +783,9 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 
     TopoDS_Solid Sol1 = BRepFeat::Tool(mySFrom, FFrom, OrF);
     if (!Sol1.IsNull())
+    {
       B.Add(Comp, Sol1);
+    }
     else
     {
       NotDone();
@@ -953,7 +969,9 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until, const do
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         B.Add(Comp, S);
+      }
       BRepAlgoAPI_Cut trP(VraiDPrism, Comp);
       if (myFuse == 1)
       {
@@ -1100,7 +1118,9 @@ void BRepFeat_MakeDPrism::BossEdges(const int signature)
       for (itMap.Initialize(MapE); itMap.More(); itMap.Next())
       {
         if (!BRep_Tool::Degenerated(TopoDS::Edge(itMap.Key())))
+        {
           myLatEdges.Append(itMap.Key());
+        }
       }
     }
   }

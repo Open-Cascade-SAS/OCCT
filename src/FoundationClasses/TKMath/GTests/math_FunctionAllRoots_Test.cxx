@@ -75,20 +75,30 @@ public:
   bool Value(const double X, double& F) override
   {
     if (X >= 2.0 && X <= 4.0)
+    {
       F = 0.0;
+    }
     else if (X < 2.0)
+    {
       F = X - 2.0;
+    }
     else
+    {
       F = X - 4.0;
+    }
     return true;
   }
 
   bool Derivative(const double X, double& D) override
   {
     if (X >= 2.0 && X <= 4.0)
+    {
       D = 0.0;
+    }
     else
+    {
       D = 1.0;
+    }
     return true;
   }
 

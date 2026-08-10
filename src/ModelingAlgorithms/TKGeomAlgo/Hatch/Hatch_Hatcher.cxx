@@ -96,23 +96,31 @@ void Hatch_Hatcher::Trim(const gp_Lin2d& L, const double Start, const double End
         Pinter         = Inters.Point(1);
         double linePar = Pinter.ParamOnSecond();
         if (linePar - Start < -myToler)
+        {
           continue;
+        }
         if (linePar - End > myToler)
+        {
           continue;
+        }
         double norm = L.Direction() ^ myLines(iLine).myLin.Direction();
         if (linePar - Start < myToler)
         {
           // on the limit of the trimming segment
           // accept if the other extremity is on the left
           if (norm < 0)
+          {
             continue;
+          }
         }
         if (linePar - End > -myToler)
         {
           // on the limit of the trimming segment
           // accept if the other extremity is on the left
           if (norm > 0)
+          {
             continue;
+          }
         }
         // insert the parameter
         myLines(iLine).AddIntersection(Pinter.ParamOnFirst(),
@@ -131,9 +139,13 @@ void Hatch_Hatcher::Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const int Index
 {
   gp_Vec2d V(P1, P2);
   if (std::abs(V.X()) > .9 * RealLast())
+  {
     V.Multiply(1 / V.X());
+  }
   else if (std::abs(V.Y()) > .9 * RealLast())
+  {
     V.Multiply(1 / V.Y());
+  }
   if (V.Magnitude() > myToler)
   {
     gp_Dir2d D(V);
@@ -148,7 +160,9 @@ int Hatch_Hatcher::NbIntervals() const
 {
   int i, nb = 0;
   for (i = 1; i <= myLines.Length(); i++)
+  {
     nb += NbIntervals(i);
+  }
   return nb;
 }
 
@@ -199,13 +213,19 @@ int Hatch_Hatcher::NbIntervals(const int I) const
 {
   int l = myLines(I).myInters.Length();
   if (l == 0)
+  {
     l = myOrient ? 1 : 0;
+  }
   else
   {
     l = l / 2;
     if (myOrient)
+    {
       if (!myLines(I).myInters(1).myStart)
+      {
         l++;
+      }
+    }
   }
   return l;
 }
@@ -217,16 +237,22 @@ double Hatch_Hatcher::Start(const int I, const int J) const
   if (myLines(I).myInters.IsEmpty())
   {
     if (J != 1 || !myOrient)
+    {
       throw Standard_OutOfRange();
+    }
     return RealFirst();
   }
   else
   {
     int jj = 2 * J - 1;
     if (!myLines(I).myInters(1).myStart && myOrient)
+    {
       jj--;
+    }
     if (jj == 0)
+    {
       return RealFirst();
+    }
     return myLines(I).myInters(jj).myPar1;
   }
 }
@@ -238,7 +264,9 @@ void Hatch_Hatcher::StartIndex(const int I, const int J, int& Index, double& Par
   if (myLines(I).myInters.IsEmpty())
   {
     if (J != 1)
+    {
       throw Standard_OutOfRange();
+    }
     Index = 0;
     Par2  = 0;
   }
@@ -246,7 +274,9 @@ void Hatch_Hatcher::StartIndex(const int I, const int J, int& Index, double& Par
   {
     int jj = 2 * J - 1;
     if (!myLines(I).myInters(1).myStart && myOrient)
+    {
       jj--;
+    }
     if (jj == 0)
     {
       Index = 0;
@@ -267,16 +297,22 @@ double Hatch_Hatcher::End(const int I, const int J) const
   if (myLines(I).myInters.IsEmpty())
   {
     if (J != 1 || !myOrient)
+    {
       throw Standard_OutOfRange();
+    }
     return RealLast();
   }
   else
   {
     int jj = 2 * J;
     if (!myLines(I).myInters(1).myStart && myOrient)
+    {
       jj--;
+    }
     if (jj > myLines(I).myInters.Length())
+    {
       return RealLast();
+    }
     return myLines(I).myInters(jj).myPar1;
   }
 }
@@ -288,7 +324,9 @@ void Hatch_Hatcher::EndIndex(const int I, const int J, int& Index, double& Par2)
   if (myLines(I).myInters.IsEmpty())
   {
     if (J != 1)
+    {
       throw Standard_OutOfRange();
+    }
     Index = 0;
     Par2  = 0;
   }
@@ -296,7 +334,9 @@ void Hatch_Hatcher::EndIndex(const int I, const int J, int& Index, double& Par2)
   {
     int jj = 2 * J;
     if (!myLines(I).myInters(1).myStart && myOrient)
+    {
       jj--;
+    }
     if (jj > myLines(I).myInters.Length())
     {
       Index = 0;

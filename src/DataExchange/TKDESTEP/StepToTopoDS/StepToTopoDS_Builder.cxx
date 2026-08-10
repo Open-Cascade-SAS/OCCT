@@ -159,16 +159,16 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ManifoldSolidBrep>& 
   // Get Statistics :
   if (theTP->TraceLevel() > 2)
   {
-    sout << "Geometric Statistics : " << std::endl;
-    sout << "   Surface Continuity : - C0 : " << aTool.C0Surf() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Surf() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Surf() << std::endl;
-    sout << "   Curve Continuity :   - C0 : " << aTool.C0Cur3() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Cur3() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Cur3() << std::endl;
-    sout << "   PCurve Continuity :  - C0 : " << aTool.C0Cur2() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Cur2() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Cur2() << std::endl;
+    sout << "Geometric Statistics : " << '\n';
+    sout << "   Surface Continuity : - C0 : " << aTool.C0Surf() << '\n';
+    sout << "                        - C1 : " << aTool.C1Surf() << '\n';
+    sout << "                        - C2 : " << aTool.C2Surf() << '\n';
+    sout << "   Curve Continuity :   - C0 : " << aTool.C0Cur3() << '\n';
+    sout << "                        - C1 : " << aTool.C1Cur3() << '\n';
+    sout << "                        - C2 : " << aTool.C2Cur3() << '\n';
+    sout << "   PCurve Continuity :  - C0 : " << aTool.C0Cur2() << '\n';
+    sout << "                        - C1 : " << aTool.C1Cur2() << '\n';
+    sout << "                        - C2 : " << aTool.C2Cur2() << '\n';
   }
 
   ResetPreci(aStepModel, aSolid, MaxTol());
@@ -236,7 +236,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   th
 
       //: e0 abv 25 Mar 98: void should be an OrientedShell
       if (!anOCShell.IsNull() && !anOCShell->Orientation())
+      {
         aShape.Reverse();
+      }
 
       aBuilder.Add(aSolid, aShape);
     }
@@ -250,16 +252,16 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   th
   // Get Statistics :
   if (theTP->TraceLevel() > 2)
   {
-    sout << "Geometric Statistics : " << std::endl;
-    sout << "   Surface Continuity : - C0 : " << aTool.C0Surf() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Surf() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Surf() << std::endl;
-    sout << "   Curve Continuity :   - C0 : " << aTool.C0Cur3() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Cur3() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Cur3() << std::endl;
-    sout << "   PCurve Continuity :  - C0 : " << aTool.C0Cur2() << std::endl;
-    sout << "                        - C1 : " << aTool.C1Cur2() << std::endl;
-    sout << "                        - C2 : " << aTool.C2Cur2() << std::endl;
+    sout << "Geometric Statistics : " << '\n';
+    sout << "   Surface Continuity : - C0 : " << aTool.C0Surf() << '\n';
+    sout << "                        - C1 : " << aTool.C1Surf() << '\n';
+    sout << "                        - C2 : " << aTool.C2Surf() << '\n';
+    sout << "   Curve Continuity :   - C0 : " << aTool.C0Cur3() << '\n';
+    sout << "                        - C1 : " << aTool.C1Cur3() << '\n';
+    sout << "                        - C2 : " << aTool.C2Cur3() << '\n';
+    sout << "   PCurve Continuity :  - C0 : " << aTool.C0Cur2() << '\n';
+    sout << "                        - C1 : " << aTool.C1Cur2() << '\n';
+    sout << "                        - C2 : " << aTool.C2Cur2() << '\n';
   }
 
   //: S4136  ShapeFix::SameParameter (S,false);
@@ -448,9 +450,13 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ShellBasedSurfaceMod
     }
   }
   if (Nb > 1)
+  {
     myResult = S;
+  }
   else
+  {
     myResult = Shl;
+  }
   myError = StepToTopoDS_BuilderDone;
   done    = true;
 
@@ -458,16 +464,16 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ShellBasedSurfaceMod
 
   if (TP->TraceLevel() > 2)
   {
-    sout << "Geometric Statistics : " << std::endl;
-    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
-    sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
-    sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
-    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << std::endl;
-    sout << "                        - C1 : " << myTool.C1Cur3() << std::endl;
-    sout << "                        - C2 : " << myTool.C2Cur3() << std::endl;
-    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << std::endl;
-    sout << "                        - C1 : " << myTool.C1Cur2() << std::endl;
-    sout << "                        - C2 : " << myTool.C2Cur2() << std::endl;
+    sout << "Geometric Statistics : " << '\n';
+    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << '\n';
+    sout << "                        - C1 : " << myTool.C1Surf() << '\n';
+    sout << "                        - C2 : " << myTool.C2Surf() << '\n';
+    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << '\n';
+    sout << "                        - C1 : " << myTool.C1Cur3() << '\n';
+    sout << "                        - C2 : " << myTool.C2Cur3() << '\n';
+    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << '\n';
+    sout << "                        - C1 : " << myTool.C1Cur2() << '\n';
+    sout << "                        - C2 : " << myTool.C2Cur2() << '\n';
   }
 
   //: S4136  ShapeFix::SameParameter (S,false);
@@ -513,7 +519,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_EdgeBasedWireframeMo
   {
     occ::handle<StepShape_ConnectedEdgeSet> ces = boundary->Value(i);
     if (ces.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>> edges = ces->CesEdges();
     if (edges.IsNull() || edges->Length() < 1)
     {
@@ -525,22 +533,34 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_EdgeBasedWireframeMo
     {
       myTranEdge.Init(edges->Value(j), myTool, dummyNMTool, theLocalFactors);
       if (!myTranEdge.IsDone())
+      {
         continue;
+      }
       TopoDS_Edge E = TopoDS::Edge(myTranEdge.Value());
       if (E.IsNull())
+      {
         continue; // NULL, on saute
+      }
       if (W.IsNull())
+      {
         B.MakeWire(W);
+      }
       B.Add(W, E);
     }
     if (W.IsNull())
+    {
       continue;
+    }
     W.Closed(BRep_Tool::IsClosed(W));
     B.Add(C, W);
     if (myResult.IsNull())
+    {
       myResult = W;
+    }
     else
+    {
       myResult = C;
+    }
   }
 
   myError = (myResult.IsNull() ? StepToTopoDS_BuilderDone : StepToTopoDS_BuilderOther);
@@ -588,7 +608,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceMode
   {
     occ::handle<StepShape_ConnectedFaceSet> cfs = boundary->Value(i);
     if (cfs.IsNull())
+    {
       continue;
+    }
     occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> faces = cfs->CfsFaces();
     if (faces.IsNull() || faces->Length() < 1)
     {
@@ -602,22 +624,34 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceMode
         occ::down_cast<StepShape_FaceSurface>(faces->Value(j));
       myTranFace.Init(fs, myTool, dummyNMTool, theLocalFactors);
       if (!myTranFace.IsDone())
+      {
         continue;
+      }
       TopoDS_Face F = TopoDS::Face(myTranFace.Value());
       if (F.IsNull())
+      {
         continue; // NULL, on saute
+      }
       if (S.IsNull())
+      {
         B.MakeShell(S);
+      }
       B.Add(S, F);
     }
     if (S.IsNull())
+    {
       continue;
+    }
     S.Closed(BRep_Tool::IsClosed(S));
     B.Add(C, S);
     if (myResult.IsNull())
+    {
       myResult = S;
+    }
     else
+    {
       myResult = C;
+    }
   }
 
   myError = (myResult.IsNull() ? StepToTopoDS_BuilderDone : StepToTopoDS_BuilderOther);
@@ -642,7 +676,9 @@ static TopoDS_Face TranslateBoundedSurf(const occ::handle<StepGeom_Surface>& sur
   occ::handle<Geom_Surface> theSurf = StepToGeom::MakeSurface(surf, theLocalFactors);
   if (theSurf.IsNull() || //: i6: protection
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
+  {
     return res;
+  }
 
   BRepBuilderAPI_MakeFace                     myMkFace;
   occ::handle<Geom_RectangularTrimmedSurface> RS =
@@ -722,11 +758,15 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
             aB.MakeCompound(aComp);
             TopExp_Explorer anExp;
             for (anExp.Init(TrCC.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+            {
               aB.Add(aComp, anExp.Current());
+            }
             res = aComp;
           }
           else
+          {
             res = TrCC.Value();
+          }
         }
       }
       else
@@ -741,7 +781,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
         {
           Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
           sout << "StepToTopoDS, GeometricSet, elem " << i << " of " << nbElem << ": exception ";
-          sout << anException.what() << std::endl;
+          sout << anException.what() << '\n';
         }
         if (!aGeomCrv.IsNull())
         {
@@ -749,7 +789,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
                                          aGeomCrv->FirstParameter(),
                                          aGeomCrv->LastParameter());
           if (anEdge.IsDone())
+          {
             res = anEdge.Edge();
+          }
         }
       }
     }
@@ -763,7 +805,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
       {
         BRepBuilderAPI_MakeVertex myMkVtx(thePnt->Pnt());
         if (myMkVtx.IsDone())
+        {
           res = myMkVtx.Vertex();
+        }
       }
     }
     // Element should finally be a Surface
@@ -782,7 +826,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
 
         TrCBS.Init(CBS, TP, theLocalFactors);
         if (TrCBS.IsDone())
+        {
           res = TrCBS.Value();
+        }
       }
       // try RectangularCompositeSurface
       else if (ent->IsKind(STANDARD_TYPE(StepGeom_RectangularCompositeSurface)))
@@ -794,18 +840,24 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
         TopoDS_Compound C;
         B.MakeCompound(C);
         for (int ii = 1; ii <= nbi; ii++)
+        {
           for (int j = 1; j <= nbj; j++)
           {
             occ::handle<StepGeom_SurfacePatch> patch = RCS->SegmentsValue(ii, j);
             TopoDS_Face f = TranslateBoundedSurf(patch->ParentSurface(), preci, theLocalFactors);
             if (!f.IsNull())
+            {
               B.Add(C, f);
+            }
           }
+        }
         res = C;
       }
       // try other surfs
       else
+      {
         res = TranslateBoundedSurf(aSurf, preci, theLocalFactors);
+      }
     }
     else if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
     {
@@ -816,7 +868,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
         occ::handle<STEPControl_ActorRead> anActor = occ::down_cast<STEPControl_ActorRead>(RA);
         occ::handle<Transfer_Binder>       binder;
         if (!anActor.IsNull())
+        {
           binder = anActor->TransferShape(GRI, TP, theLocalFactors, isManifold, false, aRange);
+        }
         if (!binder.IsNull())
         {
           res = TransferBRep::ShapeResult(binder);
@@ -824,14 +878,18 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
       }
     }
     else
+    {
       TP->AddWarning(ent, " Entity is not a Curve, Point, Surface or GeometricRepresentationItem");
+    }
     if (!res.IsNull())
     {
       B.Add(S, res);
       TransferBRep::SetShapeResult(TP, ent, res);
     }
     else
+    {
       TP->AddWarning(ent, " Entity not mapped to TopoDS");
+    }
   }
   myResult = S;
   myError  = StepToTopoDS_BuilderDone;

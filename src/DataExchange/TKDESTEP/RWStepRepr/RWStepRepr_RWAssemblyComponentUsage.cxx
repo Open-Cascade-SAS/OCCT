@@ -37,7 +37,9 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "assembly_component_usage"))
+  {
     return;
+  }
 
   // Inherited fields of ProductDefinitionRelationship
 
@@ -156,7 +158,9 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
     SW.Send(ent->StepBasic_ProductDefinitionRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
@@ -169,7 +173,9 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
     SW.Send(ent->ReferenceDesignator());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

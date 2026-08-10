@@ -48,7 +48,9 @@ bool BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&       theSource,
   int                        aValue;
   bool                       ok = theSource >> aValue;
   if (ok)
+  {
     aTag->Set(aValue);
+  }
   return ok;
 }
 

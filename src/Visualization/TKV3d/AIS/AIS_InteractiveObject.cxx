@@ -43,7 +43,9 @@ AIS_InteractiveObject::AIS_InteractiveObject(
 void AIS_InteractiveObject::Redisplay(const bool AllModes)
 {
   if (myCTXPtr == nullptr)
+  {
     return;
+  }
 
   myCTXPtr->Redisplay(this, false, AllModes);
 }

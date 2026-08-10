@@ -66,10 +66,14 @@ void TObj_TIntSparseArray::SetValue(const size_t theId, const int theValue)
 {
   // check that modification is allowed
   if (!Label().Data()->IsModificationAllowed())
+  {
     throw Standard_ImmutableObject("Attribute TObj_TIntSparseArray is changed outside transaction");
+  }
 
   if (theId < 1 || theValue < 1)
+  {
     throw Standard_OutOfRange("TObj_TIntSparseArray::SetValue");
+  }
 
   int  anOld = AbsentValue;
   bool isOld = myVector.HasValue(theId);
@@ -77,8 +81,10 @@ void TObj_TIntSparseArray::SetValue(const size_t theId, const int theValue)
   {
     int& aData = myVector(theId);
     if (aData == theValue)
+    {
       // no actual modification
       return;
+    }
     anOld = aData;
     // set new value
     aData = theValue;
@@ -97,7 +103,9 @@ void TObj_TIntSparseArray::SetValue(const size_t theId, const int theValue)
     int                   aMyTransaction      = Transaction();
 
     if (myDoBackup && aMyTransaction < aCurrentTransaction)
+    {
       backupValue(theId, anOld, theValue);
+    }
   }
 }
 
@@ -107,10 +115,14 @@ void TObj_TIntSparseArray::UnsetValue(const size_t theId)
 {
   // check that modification is allowed
   if (!Label().Data()->IsModificationAllowed())
+  {
     throw Standard_ImmutableObject("Attribute TObj_TIntSparseArray is changed outside transaction");
+  }
 
   if (theId < 1)
+  {
     throw Standard_OutOfRange("TObj_TIntSparseArray::UnsetValue");
+  }
 
   int  anOld = AbsentValue;
   bool isOld = myVector.HasValue(theId);
@@ -121,8 +133,10 @@ void TObj_TIntSparseArray::UnsetValue(const size_t theId)
     myVector.UnsetValue(theId);
   }
   else
+  {
     // no actual modification
     return;
+  }
 
   TDF_Label aLabel = Label();
   if (!aLabel.IsNull())
@@ -132,7 +146,9 @@ void TObj_TIntSparseArray::UnsetValue(const size_t theId)
     int                   aMyTransaction      = Transaction();
 
     if (myDoBackup && aMyTransaction < aCurrentTransaction)
+    {
       backupValue(theId, anOld, AbsentValue);
+    }
   }
 }
 
@@ -170,13 +186,17 @@ void TObj_TIntSparseArray::backupValue(const size_t theId,
 {
   // save the current value if it has not been saved in previous time
   if (!myOldMap.IsBound(theId))
+  {
     myOldMap.Bind(theId, theCurrValue);
+  }
   else
   {
     // if value in Undo is the same as the new one, the item in Undo map may be cleared
     int aUData = myOldMap.Value(theId);
     if (aUData == theNewValue)
+    {
       myOldMap.UnBind(theId);
+    }
   }
 }
 
@@ -198,7 +218,9 @@ occ::handle<TDF_Attribute> TObj_TIntSparseArray::BackupCopy() const
 
   // save delta data in a copy
   if (!myOldMap.IsEmpty())
+  {
     aCopy->myOldMap.Exchange((NCollection_SparseArray<int>&)myOldMap);
+  }
 
   return aCopy;
 }
@@ -212,7 +234,9 @@ void TObj_TIntSparseArray::Restore(const occ::handle<TDF_Attribute>& theDelta)
 {
   occ::handle<TObj_TIntSparseArray> aDelta = occ::down_cast<TObj_TIntSparseArray>(theDelta);
   if (aDelta.IsNull())
+  {
     return;
+  }
 
   // restore the values from aDelta->myOldMap
   if (!aDelta->myOldMap.IsEmpty())
@@ -223,9 +247,13 @@ void TObj_TIntSparseArray::Restore(const occ::handle<TDF_Attribute>& theDelta)
       size_t anId  = anIt.Key();
       int    anOld = anIt.Value();
       if (anOld == AbsentValue)
+      {
         UnsetValue(anId);
+      }
       else
+      {
         SetValue(anId, anOld);
+      }
     }
   }
 }
@@ -237,7 +265,9 @@ void TObj_TIntSparseArray::Paste(const occ::handle<TDF_Attribute>& theInto,
 {
   occ::handle<TObj_TIntSparseArray> aInto = occ::down_cast<TObj_TIntSparseArray>(theInto);
   if (aInto.IsNull())
+  {
     return;
+  }
 
   aInto->myVector.Assign(myVector);
 }

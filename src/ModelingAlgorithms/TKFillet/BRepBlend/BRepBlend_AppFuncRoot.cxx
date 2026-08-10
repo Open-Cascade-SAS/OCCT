@@ -100,7 +100,9 @@ bool BRepBlend_AppFuncRoot::D0(const double Param,
   Ok                      = SearchPoint(*Func, Param, myPnt);
 
   if (Ok)
+  {
     (*Func).Section(myPnt, Poles, Poles2d, Weigths);
+  }
   return Ok;
 }
 
@@ -242,7 +244,9 @@ void BRepBlend_AppFuncRoot::GetTolerance(const double                BoundTol,
 
   Func->GetTolerance(BoundTol, SurfTol, AngleTol, V3d, V1d);
   for (ii = 1; ii <= Tol3d.Length(); ii++)
+  {
     Tol3d(ii) = V3d(ii);
+  }
 }
 
 void BRepBlend_AppFuncRoot::SetTolerance(const double Tol3d, const double Tol2d)

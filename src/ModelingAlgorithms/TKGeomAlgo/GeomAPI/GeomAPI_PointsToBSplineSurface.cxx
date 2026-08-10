@@ -187,7 +187,9 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&           theLine,
 
     math_Vector P2(firstp, lastpt);
     for (i = firstp; i <= lastpt; i++)
+    {
       P2(i) = thePars(i);
+    }
     SQ2.Perform(P2);
 
     const AppParCurves_MultiCurve& C2 = SQ2.BezierValue();
@@ -348,7 +350,9 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<gp_Pnt>& Poin
   int  nbit       = 2;
   bool UseSquares = false;
   if (Tol3D <= 1.e-3)
+  {
     UseSquares = true;
+  }
 
   AppDef_BSplineCompute TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
 
@@ -495,7 +499,9 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<gp_Pnt>& Poin
 
   int nbit = 2;
   if (Tol3D <= 1.e-3)
+  {
     nbit = 0;
+  }
 
   // first approximate the U isos:
   int NbPointJ = Jmax - Jmin + 1;

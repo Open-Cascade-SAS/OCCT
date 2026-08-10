@@ -55,9 +55,13 @@ bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSour
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::TreeIdString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_TreeNode::GetDefaultTreeID();
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString()));
+  }
   aT->SetTreeID(aGUID);
 
   // children
@@ -69,7 +73,9 @@ bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSour
     const char* aChildren = static_cast<const char*>(aChildrenStr.GetString());
     int         aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
+    {
       return false;
+    }
 
     while (aNb > 0)
     {
@@ -78,7 +84,9 @@ bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSour
       {
         aTChild = occ::down_cast<TDataStd_TreeNode>(theRelocTable.Find(aNb));
         if (aTChild.IsNull())
+        {
           return false;
+        }
       }
       else
       {
@@ -92,7 +100,9 @@ bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSour
 
       // Get next child ID
       if (!XmlObjMgt::GetInteger(aChildren, aNb))
+      {
         aNb = 0;
+      }
     }
   }
   return true;
@@ -125,7 +135,9 @@ void XmlMDataStd_TreeNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSour
   int                          iChar = 0;
   NCollection_LocalArray<char> str;
   if (nbChildren)
+  {
     str.Allocate(11 * nbChildren + 1);
+  }
 
   // form the string of numbers for the list of children
   occ::handle<TDataStd_TreeNode> aF = aS->First();

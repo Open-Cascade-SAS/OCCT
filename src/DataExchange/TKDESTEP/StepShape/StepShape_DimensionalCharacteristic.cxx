@@ -29,11 +29,17 @@ StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic() = def
 int StepShape_DimensionalCharacteristic::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+  {
     return 2;
+  }
   return 0;
 }
 

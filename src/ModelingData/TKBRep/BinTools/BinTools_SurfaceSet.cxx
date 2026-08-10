@@ -272,7 +272,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
     {
       OS << S->Pole(i, j); // Pnt
       if (urational || vrational)
+      {
         OS << S->Weight(i, j); // Real
+      }
     }
   }
 
@@ -379,8 +381,8 @@ void BinTools_SurfaceSet::WriteSurface(const occ::handle<Geom_Surface>& S, BinTo
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }
@@ -433,7 +435,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Ax3& A3)
   IS >> P >> A >> AX >> AY;
   gp_Ax3 ax3(P, A, AX);
   if (AY.DotCross(A, AX) < 0)
+  {
     ax3.YReverse();
+  }
   A3 = ax3;
   return IS;
 }
@@ -555,14 +559,20 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
       //      std::cout <<"Pole X = " <<poles(i,j).X()<< " Y = " <<poles(i,j).Y()<< " Z = " <<
       //      poles(i,j).Z()<<std::endl;
       if (urational || vrational)
+      {
         BinTools::GetReal(IS, weights(i, j));
+      }
     }
   }
 
   if (urational || vrational)
+  {
     S = new Geom_BezierSurface(poles, weights);
+  }
   else
+  {
     S = new Geom_BezierSurface(poles);
+  }
   return IS;
 }
 
@@ -597,7 +607,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
     {
       IS >> poles(i, j); // Pnt
       if (urational || vrational)
+      {
         BinTools::GetReal(IS, weights(i, j));
+      }
     }
   }
 
@@ -618,6 +630,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   }
 
   if (urational || vrational)
+  {
     S = new Geom_BSplineSurface(poles,
                                 weights,
                                 uknots,
@@ -628,7 +641,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
                                 vdegree,
                                 uperiodic,
                                 vperiodic);
+  }
   else
+  {
     S = new Geom_BSplineSurface(poles,
                                 uknots,
                                 vknots,
@@ -638,6 +653,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
                                 vdegree,
                                 uperiodic,
                                 vperiodic);
+  }
   return IS;
 }
 
@@ -769,8 +785,8 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
   {
     S = nullptr;
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
@@ -785,7 +801,7 @@ void BinTools_SurfaceSet::Read(Standard_IStream& IS, const Message_ProgressRange
   if (IS.fail() || strcmp(buffer, "Surfaces"))
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_SurfaceSet::Read:  Not a surface table" << std::endl;
+    aMsg << "BinTools_SurfaceSet::Read:  Not a surface table" << '\n';
 #ifdef OCCT_DEBUG
     std::cout << "SurfaceSet buffer: " << buffer << std::endl;
 #endif

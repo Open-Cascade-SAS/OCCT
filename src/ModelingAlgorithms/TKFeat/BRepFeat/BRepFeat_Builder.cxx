@@ -207,7 +207,9 @@ void BRepFeat_Builder::PerformResult(const Message_ProgressRange& theRange)
   NCollection_Array1<double> aSteps(0, aSize - 1);
   {
     for (int i = 0; i < aSize; ++i)
+    {
       aSteps(i) = 0.;
+    }
 
     NbShapes aNbShapes       = getNbShapes();
     double   aTreatFaces     = 5 * aNbShapes.NbFaces();
@@ -814,9 +816,13 @@ void BRepFeat_Builder::FillIn3DParts(
     for (; itL.More();)
     {
       if (myRemoved.Contains(itL.Value()))
+      {
         aList.Remove(itL);
+      }
       else
+      {
         itL.Next();
+      }
     }
   }
 }

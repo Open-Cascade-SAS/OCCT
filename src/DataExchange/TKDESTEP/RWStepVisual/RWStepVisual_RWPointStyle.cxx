@@ -29,7 +29,9 @@ void RWStepVisual_RWPointStyle::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "point_style"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -84,6 +86,8 @@ void RWStepVisual_RWPointStyle::Share(const occ::handle<StepVisual_PointStyle>& 
 {
 
   if (ent->Marker().CaseNumber() > 0)
+  {
     iter.GetOneItem(ent->Marker().Value());
+  }
   iter.GetOneItem(ent->MarkerColour());
 }

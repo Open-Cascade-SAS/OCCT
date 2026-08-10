@@ -88,7 +88,7 @@ uint64_t BinTools_IStream::ReadReference()
   if (aDelta == 0)
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_IStream::ReadReference: invalid reference " << (char)myLastType << std::endl;
+    aMsg << "BinTools_IStream::ReadReference: invalid reference " << (char)myLastType << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
   return aCurrentPos - aDelta - 1; // add a type-byte
@@ -132,7 +132,9 @@ BinTools_IStream::operator bool() const
 BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 {
   if (!myStream->read((char*)&theValue, sizeof(double)))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
   myPosition += sizeof(double);
 #if DO_INVERSE
   theValue = InverseReal(theValue);
@@ -145,7 +147,9 @@ BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 BinTools_IStream& BinTools_IStream::operator>>(int& theValue)
 {
   if (!myStream->read((char*)&theValue, sizeof(int)))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
   myPosition += sizeof(int);
 #if DO_INVERSE
   theValue = InverseInt(theValue);
@@ -161,7 +165,9 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
   for (int aCoord = 1; aCoord <= 3; aCoord++)
   {
     if (!myStream->read((char*)&aValue, sizeof(double)))
+    {
       throw Storage_StreamTypeMismatchError();
+    }
 #if DO_INVERSE
     aValue = InverseReal(aValue);
 #endif

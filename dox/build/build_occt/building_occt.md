@@ -8,30 +8,47 @@ The list of required libraries depends on what OCCT modules will be used, and yo
 The typical minimum is **FreeType** (necessary for Visualization) and **Tcl/Tk** (for DRAW).
 See @ref intro_req "requirements on 3rdparty libraries" for a full list.
 
-The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to your target configuration,
-from [Development Portal](https://dev.opencascade.org/resources/download/3rd-party-components).
-You can also build third-party libraries from their sources, see @ref build_upgrade_building_3rdparty for instructions.
+The easiest way to obtain third-party libraries is to enable vcpkg integration with `-DBUILD_USE_VCPKG=ON` -- OCCT will then download and build only the components required by the enabled `USE_*` options (e.g. `USE_TBB`, `USE_VTK`, `USE_FREEIMAGE`, `USE_RAPIDJSON`, `USE_DRACO`).
 
-On Linux and macOS we recommend using libraries maintained by distributive developers when possible.
+Pre-built third-party archives matching official releases are also attached to [OCCT GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases). On Linux and macOS prefer the libraries provided by your distribution's package manager. Manual builds from sources are still supported -- follow each project's upstream build documentation.
 
 @section build_requirements System Requirements
 
-* **CMake** version 3.10 or later (3.16+ recommended for precompiled headers support)
-* C++11 compliant compiler (required)
+* **CMake** 3.10 or later (3.16+ recommended; required when `BUILD_USE_PCH=ON` for precompiled headers)
+* C++17 compliant compiler (required)
 * Supported platforms and compilers:
   * Windows:
-    - Visual Studio 2015 or later
+    - Visual Studio 2019 or later (2022 preferred — used by official CI)
     - MinGW-w64 7.3 or later
   * Linux:
-    - GCC 5.0 or later
-    - Clang 3.8 or later
+    - GCC 8.0 or later
+    - Clang 7.0 or later
   * macOS:
-    - Apple Clang 9.0 or later
-    - Xcode 9.0 or later
+    - Apple Clang 11.0 or later
+    - Xcode 11.0 or later
+  * Android:
+    - NDK r19+, Clang
+  * Web:
+    - Emscripten SDK 3.0 or newer (Clang)
 
 @section build_occt_cmake Building with CMake
 
 This chapter describes the [CMake](https://cmake.org/download/)-based build process, which is the standard way to produce OCCT binaries from sources.
+
+@subsection build_occt_vcpkg_quickstart Quick start with vcpkg
+
+The fastest path to a working OCCT build, used by the official CI (`.github/workflows/`), is to let CMake provision third-party dependencies via [vcpkg](https://vcpkg.io). OCCT ships a `vcpkg.json` manifest under `adm/vcpkg/ports/opencascade/` (referenced automatically via `VCPKG_MANIFEST_DIR`) and pulls only the packages needed by the OCCT `USE_*` options you enable -- you do not need to manage vcpkg manifest features manually.
+
+~~~~
+cmake -S . -B build \
+      -DBUILD_USE_VCPKG=ON \
+      -DUSE_TBB=ON -DUSE_VTK=ON -DUSE_FREEIMAGE=ON \
+      -DUSE_RAPIDJSON=ON -DUSE_DRACO=ON \
+      -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release --parallel
+~~~~
+
+Toggle additional third-party features through the corresponding `USE_*` cache variables (e.g. `USE_FFMPEG`, `USE_OPENVR`, `USE_EIGEN`); enabling a `USE_*` flag automatically triggers vcpkg installation of the corresponding package. The `CMAKE_TOOLCHAIN_FILE` for vcpkg is detected automatically from `VCPKG_ROOT` -- pass it explicitly only if vcpkg is not on `PATH`. Manual third-party setup is still supported via standard upstream build instructions, but no longer the recommended path.
 
 CMake is a tool that generates project files for the selected target build system (e.g. Unix makefiles) or IDE (e.g. Visual Studio).
 Here we describe the build procedure using Windows platform with Visual Studio as an example.
@@ -48,7 +65,7 @@ Different configurations should be built in different build directories to avoid
 For example:
 
     d:/occt/                   - the source directory
-    d:/tmp/occt-build-vc14-x64 - the build directory with the generated
+    d:/tmp/occt-build-vc143-x64 - the build directory with the generated
                                  solution and other intermediate files created during a CMake tool working
     d:/occt-install            - the installation directory that can
                                  contain several OCCT configurations
@@ -60,7 +77,7 @@ A command-line alternative, *ccmake* can also be used.
 
 If the command-line tool is used, run it from the build directory with a single argument indicating the source directory:
 
-    cd d:/tmp/occt-build-vc14-x64
+    cd d:/tmp/occt-build-vc143-x64
     ccmake d:/occt
 
 Then press *c* to configure.
@@ -72,17 +89,14 @@ If the GUI tool is used, run this tool without additional arguments and specify 
 @figure{/build/build_occt/images/cmake_image001.png}
 
 @note Each configuration of the project should be built in its own directory.
-When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win32-vc14</i>).
+When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win64-vc143</i>).
 
 Once the source and build directories are selected, "Configure" button should be pressed in order to start manual configuration process.
-It begins with selection of a target configurator. It is "Visual Studio 14 2015 Win64" in our example.
+It begins with selection of a target configurator. It is "Visual Studio 17 2022" in our example.
 
 @figure{/build/build_occt/images/cmake_image002.png}
 
-@note To build OCCT for **Universal Windows Platform (UWP)** specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
-Alternatively, if you are using CMake from the command line add options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
-Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015".
-File `CASROOT/samples/xaml/ReadMe.md` describes the building procedure of XAML (UWP) sample.
+@note When configuring OCCT for **Universal Windows Platform (UWP)**, use CMake from the command line with options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
 
 Once "Finish" button is pressed, the first pass of the configuration process is executed.
 At the end of the process, CMake outputs the list of environment variables, which have to be properly specified for successful configuration.
@@ -108,6 +122,9 @@ The following table gives the full list of environment variables used at the con
 | USE_OPENVR    | Boolean | Indicates whether OpenVR product should be used in OCCT visualization module for VR support |
 | USE_OPENGL    | Boolean | Indicates whether TKOpenGl graphic driver using OpenGL library (desktop) should be built |
 | USE_GLES2     | Boolean | Indicates whether TKOpenGles graphic driver using OpenGL ES library should be built |
+| USE_XLIB      | Boolean | Indicates whether X11 library should be used on Linux |
+| USE_D3D       | Boolean | Indicates whether Direct3D graphic driver should be built (Windows only) |
+| USE_EIGEN     | Boolean | Indicates whether Eigen linear algebra library should be used |
 | USE_RAPIDJSON | Boolean | Indicates whether RapidJSON product should be used for JSON format support |
 | USE_DRACO     | Boolean | Indicates whether Draco mesh compression library should be used |
 | USE_TK        | Boolean | Indicates whether Tcl/Tk product should be used in Draw Harness for user interface |
@@ -115,6 +132,7 @@ The following table gives the full list of environment variables used at the con
 | USE_VTK       | Boolean | Indicates whether VTK bridge should be built |
 | BUILD_USE_PCH | Boolean | Enable/disable use of precompiled headers. Requires CMake 3.16 or later |
 | BUILD_USE_VCPKG | Boolean | Use vcpkg for managing third-party dependencies |
+| VCPKG_ROOT    | Path | Path to vcpkg root directory |
 | BUILD_INCLUDE_SYMLINK | Boolean | Use symbolic links instead of copies for header files in build directory |
 | BUILD_MODULE_<MODULE>| Boolean | Indicates whether the corresponding OCCT module should be built |
 | BUILD_LIBRARY_TYPE | String | Specifies library type ("Shared" or "Static") |
@@ -125,33 +143,57 @@ The following table gives the full list of environment variables used at the con
 | 3RDPARTY_FREEIMAGE* | Path | Path to FreeImage binaries |
 | 3RDPARTY_TBB*  | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
-| BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODUE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
+| 3RDPARTY_\<PRODUCT\>_* | Path | Additional products (RAPIDJSON, DRACO, FFMPEG, OPENVR, EIGEN, EGL, GLES2, JEMALLOC, GTEST) follow the same search variable pattern: `3RDPARTY_<PRODUCT>_DIR`, `_LIBRARY_DIR`, `_INCLUDE_DIR`, `_DLL_DIR` |
+| 3RDPARTY_QT_DIR | Path | Path to the Qt root directory; Qt detection is special-cased and does not use the generic `_LIBRARY_DIR`/`_INCLUDE_DIR`/`_DLL_DIR` variables |
+| 3RDPARTY_DOXYGEN_EXECUTABLE | Path | Path to Doxygen executable |
+| 3RDPARTY_DOT_EXECUTABLE | Path | Path to Graphviz dot executable |
+| BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODULE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
 | BUILD_YACCLEX | Boolean | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
-| BUILD_SAMPLES_MFC | Boolean | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
-| BUILD_SAMPLES_QT  | Boolean | Indicates whether QT samples should be built together with OCCT. |
-| BUILD_Inspector | Boolean | Indicates whether Inspector should be built together with OCCT. |
+| BUILD_GTEST | Boolean | Enable building of the GoogleTest-based C++ unit tests located under `src/<Module>/<Toolkit>/GTests/`. Produces the `OpenCascadeGTest` executable in the build/install `bin/` directory |
+| GTEST_USE_EXTERNAL | Boolean | Use an externally-provided Google Test installation instead of building from source |
+| GTEST_USE_FETCHCONTENT | Boolean | Use CMake FetchContent to download and build Google Test (default: ON) |
 | BUILD_DOC_Overview | Boolean | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this option leads to automatic search of Doxygen binaries. Its building calls Doxygen command to generate the documentation in HTML format |
-| BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
+| BUILD_DOC_RefMan | Boolean | Build OCCT reference manual documentation using Doxygen |
 | BUILD_WITH_DEBUG | Boolean | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
 | BUILD_ENABLE_FPE_SIGNAL_HANDLER | Boolean | Enable/Disable the floating point exceptions (FPE) during DRAW execution only. Corresponding environment variable (CSF_FPE) can be changed manually in custom.bat/sh scripts without regeneration by CMake. |
+| BUILD_FORCE_RelWithDebInfo | Boolean | Generate PDB files within normal Release build (MSVC only) |
+| BUILD_OPT_PROFILE | String | Select profile for compiler and linker (Default or Production) |
+| BUILD_RELEASE_DISABLE_EXCEPTIONS | Boolean | Disables exceptions like Standard_OutOfRange in Release builds. Defines No_Exception macros for Release builds when enabled (default). These exceptions are always enabled in Debug builds, but disabled in Release for better performance |
+| BUILD_RESOURCES | Boolean | Enables regeneration of OCCT resource files |
+| BUILD_SHARED_LIBRARY_NAME_POSTFIX | String | Appends the postfix to names of output libraries |
+| BUILD_SOVERSION_NUMBERS | String | Version numbers to put into SONAME: 0 for empty, 1 for major, 2 for major.minor, 3 for major.minor.maintenance |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
+| USE_MMGR_TYPE | String | Select memory manager (NATIVE, FLEXIBLE, TBB, or JEMALLOC) |
+| USE_GIT_HASH | Boolean | Include the git hash in the OCCT version string |
 | INSTALL_DIR          | Path | Points to the installation directory. *INSTALL_DIR* is a synonym of *CMAKE_INSTALL_PREFIX*. The user can specify both *INSTALL_DIR* or *CMAKE_INSTALL_PREFIX* |
 | INSTALL_DIR_BIN      | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
 | INSTALL_DIR_SCRIPT   | Path | Relative path to the scripts installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
 | INSTALL_DIR_LIB      | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
 | INSTALL_DIR_INCLUDE  | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
 | INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
-| INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
+| INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Three variants are predefined: Windows, Unix (standard Linux layout), and Vcpkg (vcpkg-compliant layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
 | INSTALL_DIR_DATA     | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
 | INSTALL_DIR_TESTS    | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
 | INSTALL_DIR_DOC      | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
+| INSTALL_DIR_CMAKE    | Path | Relative path to the CMake config installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_CMAKE}) |
+| INSTALL_DIR_WITH_VERSION | Boolean | Append OCCT version to install directory names |
 | INSTALL_FREETYPE     | Boolean | Indicates whether FreeType binaries should be installed into the installation directory |
 | INSTALL_FREEIMAGE    | Boolean | Indicates whether FreeImage binaries should be installed into the installation directory |
 | INSTALL_TBB          | Boolean | Indicates whether TBB binaries should be installed into the installation directory |
 | INSTALL_VTK          | Boolean | Indicates whether VTK binaries should be installed into the installation directory |
 | INSTALL_TCL          | Boolean | Indicates whether TCL binaries should be installed into the installation directory |
+| INSTALL_TK           | Boolean | Indicates whether Tk binaries should be installed into the installation directory |
+| INSTALL_FFMPEG       | Boolean | Indicates whether FFmpeg binaries should be installed into the installation directory |
+| INSTALL_OPENVR       | Boolean | Indicates whether OpenVR binaries should be installed into the installation directory |
+| INSTALL_EIGEN        | Boolean | Indicates whether Eigen headers should be installed into the installation directory |
+| INSTALL_EGL          | Boolean | Indicates whether EGL binaries should be installed into the installation directory |
+| INSTALL_GLES2        | Boolean | Indicates whether OpenGL ES 2.0 binaries should be installed into the installation directory |
+| INSTALL_RAPIDJSON    | Boolean | Indicates whether RapidJSON headers should be installed into the installation directory |
+| INSTALL_JEMALLOC     | Boolean | Indicates whether JEMALLOC binaries should be installed into the installation directory |
+| INSTALL_GTEST        | Boolean | Indicates whether Google Test binaries should be installed into the installation directory |
 | INSTALL_TEST_CASES   | Boolean | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
 | INSTALL_DOC_Overview | Boolean | Indicates whether OCCT overview documentation should be installed into the installation directory |
+| INSTALL_DOC_RefMan | Boolean | Install OCCT reference manual documentation |
 
 @note Only the forward slashes ("/") are acceptable in the CMake options defining paths.
 
@@ -186,11 +228,11 @@ clear (if they are not empty) `3RDPARTY_<PRODUCT>_DLL_DIR`, `3RDPARTY_<PRODUCT>_
 At this time the search will be performed in the newly identified directory and the result will be recorded to corresponding variables (replace old value if it is necessary).
 For example, `3RDPARTY_FREETYPE_DIR` variable
 
-    d:/3rdparty/freetype-2.4.10
+    d:/3rdparty/freetype-<version>
 
 can be changed to
 
-    d:/3rdparty/freetype-2.5.3
+    d:/3rdparty/freetype-<version>
 
 During the configuration process the related variables (`3RDPARTY_FREETYPE_DLL_DIR`, `3RDPARTY_FREETYPE_INCLUDE_DIR` and `3RDPARTY_FREETYPE_LIBRARY_DIR`) will be filled with new found values.
 
@@ -222,15 +264,15 @@ Installation is a process of extracting redistributable resources (binaries, inc
 The installation directory will be free of project files, intermediate object files and any other information related to the build routines.
 
 Normally you use the installation directory of OCCT to link against your specific application.
+This example shows the Windows layout; the Unix and Vcpkg layouts differ.
 The directory structure is as follows:
 
     data            - data files for OCCT (brep, iges, stp)
     doc             - OCCT overview documentation in HTML format
     inc             - header files
-    samples         - samples
-    src             - all required source files for OCCT
+    resources       - DrawResources, Shaders, XSTEPResource, textures, and other runtime data
     tests           - OCCT test suite
-    win32\vc14\bind - binary files (installed 3rdparties and occt)
+    win64\vc143\bind - binary files (installed 3rdparties and occt)
               \libd - libraries (installed 3rdparties and occt)
 
 @note The above example is given for debug configuration.
@@ -238,7 +280,7 @@ However, it is generally safe to use the same installation directory for the rel
 In the latter case the contents of install directory will be enriched with subdirectories and files related to the release configuration.
 In particular, the binaries directory win64 will be expanded as follows:
 
-    \win32\vc14\bind
+    \win64\vc143\bind
                \libd
                \bin
                \lib
@@ -246,22 +288,22 @@ In particular, the binaries directory win64 will be expanded as follows:
 If CMake installation flags are enabled for the 3rd party products (e.g. `INSTALL_FREETYPE`), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT.
 Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories).
 
-The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if they were installed) and overview.html (short-cut for installed OCCT overview documentation).
+The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*) and overview.html (short-cut for installed OCCT overview documentation).
 
 @subsection build_occt_crossplatform_cmake Cross-compiling (Android)
 
 This section describes the steps to build OCCT libraries for Android from a complete source package with GNU make (makefiles).
-The steps on Windows 7 and Ubuntu 15.10 are similar. There is the only one difference: makefiles are built with mingw32-make on Windows and native GNU make on Ubuntu.
+The steps on Windows and Linux are similar. There is the only one difference: makefiles are built with mingw32-make on Windows and native GNU make on Ubuntu.
 
 Required tools (download and install if it is required):
-  - CMake 3.10+ (3.16+ recommended)
+  - CMake 3.16+
   - Android NDK r19+
   - Android SDK API level 21+
-  - For Windows: MinGW-w64 7.3+ or Visual Studio 2015+
+  - For Windows: MinGW-w64 7.3+ or Visual Studio 2019+
   - For Linux/macOS: GNU Make 4.0+
 
 Run GUI tool provided by CMake and:
-  - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakelists.txt* file) by clicking **Browse Source**.
+  - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakeLists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for CMake generated project files by clicking **Browse Build**.
 
 @figure{/build/build_occt/images/android_image001.png}

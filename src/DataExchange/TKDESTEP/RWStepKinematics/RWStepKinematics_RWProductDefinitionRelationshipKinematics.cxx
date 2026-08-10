@@ -38,7 +38,9 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "product_definition_relationship_kinematics"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinition
 
@@ -91,7 +93,9 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::WriteStep(
     theSW.Send(theEnt->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->Definition().Value());
 }

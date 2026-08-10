@@ -21,7 +21,7 @@
 #include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -85,7 +85,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
+typedef NCollection_DynamicArray<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
 
 //=================================================================================================
 
@@ -238,7 +238,9 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     {
       aLFConnected.Append(aF);
       if (!aBoundaryFaces.Add(aF))
+      {
         aBoundaryFaces.Remove(aF);
+      }
     }
   }
   //

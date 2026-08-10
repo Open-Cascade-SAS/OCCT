@@ -64,7 +64,9 @@ void FEmTool_Curve::SetElement(const int IndexOfElement, const NCollection_Array
 {
   int i, j, degBase, deg;
   if (IndexOfElement > myNbElements || IndexOfElement < 1)
+  {
     throw Standard_OutOfRange();
+  }
   degBase   = myBase.WorkDegree();
   deg       = myDegree(IndexOfElement);
   int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension, i1 = iBase - myDimension,
@@ -74,7 +76,9 @@ void FEmTool_Curve::SetElement(const int IndexOfElement, const NCollection_Array
     i1 += myDimension;
     i2++;
     for (j = 1; j <= myDimension; j++)
+    {
       myCoeff(i1 + j) = Coeffs(i2, j1 + j);
+    }
   }
 
   double stenor = (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)) / 2., mfact;
@@ -103,7 +107,9 @@ void FEmTool_Curve::GetElement(const int IndexOfElement, NCollection_Array2<doub
 {
   int i, j, degBase, deg;
   if (IndexOfElement > myNbElements || IndexOfElement < 1)
+  {
     throw Standard_OutOfRange();
+  }
   degBase   = myBase.WorkDegree();
   deg       = myDegree(IndexOfElement);
   int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension, i1 = iBase - myDimension,
@@ -113,7 +119,9 @@ void FEmTool_Curve::GetElement(const int IndexOfElement, NCollection_Array2<doub
     i1 += myDimension;
     i2++;
     for (j = 1; j <= myDimension; j++)
+    {
       Coeffs(i2, j1 + j) = myCoeff.Value(i1 + j);
+    }
   }
 
   double stenor = 2. / (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)), mfact;
@@ -140,11 +148,17 @@ void FEmTool_Curve::GetPolynom(NCollection_Array1<double>& Coeffs)
   int IndexOfElement, i, di = Coeffs.Lower() - myPoly.Lower();
 
   for (IndexOfElement = 1; IndexOfElement <= myNbElements; IndexOfElement++)
+  {
     if (!HasPoly.Value(IndexOfElement))
+    {
       Update(IndexOfElement, 0);
+    }
+  }
 
   for (i = myPoly.Lower(); i <= myPoly.Upper(); i++)
+  {
     Coeffs(di + i) = myPoly(i);
+  }
 }
 
 //=================================================================================================
@@ -159,14 +173,22 @@ void FEmTool_Curve::D0(const double U, NCollection_Array1<double>& Pnt)
   {
     // Search the span
     if (U <= myKnots->Value(2))
+    {
       myIndex = 1;
+    }
     else
     {
       for (myIndex = 2; myIndex <= myNbElements; myIndex++)
+      {
         if (U >= myKnots->Value(myIndex) && U <= myKnots->Value(myIndex + 1))
+        {
           break;
+        }
+      }
       if (myIndex > myNbElements)
+      {
         myIndex = myNbElements;
+      }
     }
     Uf    = myKnots->Value(myIndex);
     Ul    = myKnots->Value(myIndex + 1);
@@ -177,7 +199,9 @@ void FEmTool_Curve::D0(const double U, NCollection_Array1<double>& Pnt)
 
   deg = myDegree(myIndex);
   if (!HasPoly.Value(myIndex))
+  {
     Update(myIndex, 0);
+  }
 
   // Parameter normalization: S [-1, 1]
   S = (2 * U - USum) * Denom;
@@ -201,14 +225,22 @@ void FEmTool_Curve::D1(const double U, NCollection_Array1<double>& Vec)
   {
     // Search the span
     if (U <= myKnots->Value(2))
+    {
       myIndex = 1;
+    }
     else
     {
       for (myIndex = 2; myIndex <= myNbElements; myIndex++)
+      {
         if (U >= myKnots->Value(myIndex) && U <= myKnots->Value(myIndex + 1))
+        {
           break;
+        }
+      }
       if (myIndex > myNbElements)
+      {
         myIndex = myNbElements;
+      }
     }
     Uf    = myKnots->Value(myIndex);
     Ul    = myKnots->Value(myIndex + 1);
@@ -219,7 +251,9 @@ void FEmTool_Curve::D1(const double U, NCollection_Array1<double>& Vec)
 
   deg = myDegree(myIndex);
   if (!HasDeri.Value(myIndex))
+  {
     Update(myIndex, 1);
+  }
 
   // Parameter normalization: S [-1, 1]
   S = (2 * U - USum) * Denom;
@@ -232,7 +266,9 @@ void FEmTool_Curve::D1(const double U, NCollection_Array1<double>& Vec)
 
   S = 2 * Denom;
   for (i = Vec.Lower(); i <= Vec.Upper(); i++)
+  {
     Vec(i) *= S;
+  }
 }
 
 //=================================================================================================
@@ -247,14 +283,22 @@ void FEmTool_Curve::D2(const double U, NCollection_Array1<double>& Vec)
   {
     // Search the span
     if (U <= myKnots->Value(2))
+    {
       myIndex = 1;
+    }
     else
     {
       for (myIndex = 2; myIndex <= myNbElements; myIndex++)
+      {
         if (U >= myKnots->Value(myIndex) && U <= myKnots->Value(myIndex + 1))
+        {
           break;
+        }
+      }
       if (myIndex > myNbElements)
+      {
         myIndex = myNbElements;
+      }
     }
     Uf    = myKnots->Value(myIndex);
     Ul    = myKnots->Value(myIndex + 1);
@@ -265,7 +309,9 @@ void FEmTool_Curve::D2(const double U, NCollection_Array1<double>& Vec)
 
   deg = myDegree(myIndex);
   if (!HasSecn.Value(myIndex))
+  {
     Update(myIndex, 2);
+  }
 
   // Parameter normalization: S [-1, 1]
   S = (2 * U - USum) * Denom;
@@ -279,7 +325,9 @@ void FEmTool_Curve::D2(const double U, NCollection_Array1<double>& Vec)
 
   S = 4 * Denom * Denom;
   for (i = Vec.Lower(); i <= Vec.Upper(); i++)
+  {
     Vec(i) *= S;
+  }
 }
 
 //=================================================================================================
@@ -288,25 +336,47 @@ void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Leng
 {
   int Low, High, deg, degBase, i, Ptr;
   if (FirstU > LastU)
+  {
     throw Standard_OutOfRange("FEmTool_Curve::Length");
+  }
 
   if (myKnots->Value(1) > FirstU)
+  {
     Low = 1;
+  }
   else
+  {
     for (Low = 1; Low <= myNbElements; Low++)
+    {
       if (FirstU >= myKnots->Value(Low) && FirstU <= myKnots->Value(Low + 1))
+      {
         break;
+      }
+    }
+  }
   if (Low > myNbElements)
+  {
     Low = myNbElements;
+  }
 
   if (myKnots->Value(1) > LastU)
+  {
     High = 1;
+  }
   else
+  {
     for (High = Low; High <= myNbElements; High++)
+    {
       if (LastU >= myKnots->Value(High) && LastU <= myKnots->Value(High + 1))
+      {
         break;
+      }
+    }
+  }
   if (myKnots->Value(myNbElements + 1) < LastU)
+  {
     High = myNbElements;
+  }
 
   double Li;
   degBase = myBase.WorkDegree();
@@ -325,7 +395,9 @@ void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Leng
     deg = myDegree(Low);
 
     if (!HasPoly(Low))
+    {
       Update(Low, 0);
+    }
     PLib::EvalLength(deg, myDimension, myPoly(Ptr), FirstS, LastS, Length);
     return;
   }
@@ -334,7 +406,9 @@ void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Leng
   Ptr = (Low - 1) * (degBase + 1) * myDimension + 1;
 
   if (!HasPoly(Low))
+  {
     Update(Low, 0);
+  }
   if (FirstS < -1.)
   {
     PLib::EvalLength(deg, myDimension, myPoly(Ptr), FirstS, -1., Li);
@@ -356,7 +430,9 @@ void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Leng
   Ptr = (High - 1) * (degBase + 1) * myDimension + 1;
 
   if (!HasPoly(High))
+  {
     Update(High, 0);
+  }
   if (LastS > 1.)
   {
     PLib::EvalLength(deg, myDimension, myPoly(Ptr), 1., LastS, Li);
@@ -381,7 +457,9 @@ void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Leng
       Ptr = (i - 1) * (degBase + 1) * myDimension + 1;
       deg = myDegree(i);
       if (!HasPoly(i))
+      {
         Update(i, 0);
+      }
       PLib::EvalLength(deg, myDimension, myPoly(Ptr), -1., 1., Li);
       myLength(i) = Li;
     }
@@ -420,7 +498,9 @@ void FEmTool_Curve::SetDegree(const int IndexOfElement, const int Degree)
     myLength(IndexOfElement)                                                    = -1;
   }
   else if (Degree > myBase.WorkDegree())
+  {
     throw Standard_OutOfRange("FEmTool_Curve::SetDegree");
+  }
 }
 
 //=================================================================================================
@@ -475,7 +555,9 @@ void FEmTool_Curve::Update(const int Index, const int Order)
         i1 += myDimension;
         i2 += myDimension;
         for (j = 1; j <= myDimension; j++)
+        {
           myDeri(i1 + j) = i * myPoly.Value(i2 + j);
+        }
       }
       HasDeri(Index) = 1;
     }
@@ -488,7 +570,9 @@ void FEmTool_Curve::Update(const int Index, const int Order)
         i1 += myDimension;
         i2 += myDimension;
         for (j = 1; j <= myDimension; j++)
+        {
           myDsecn(i1 + j) = i * myDeri.Value(i2 + j);
+        }
       }
       HasSecn(Index) = 1;
     }

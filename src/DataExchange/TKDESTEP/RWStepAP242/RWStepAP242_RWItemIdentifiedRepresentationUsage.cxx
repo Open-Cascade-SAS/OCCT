@@ -34,7 +34,9 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "item_identified_representation_usage"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -96,7 +98,9 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anEnt))
+      {
         anItems->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -129,7 +133,9 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::WriteStep(
   // --- own field : identified_item ---
 
   if (ent->NbIdentifiedItem() == 1)
+  {
     SW.Send(ent->IdentifiedItemValue(1));
+  }
   else
   {
     SW.OpenSub();
@@ -148,5 +154,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::Share(
   iter.AddItem(ent->Definition().Value());
   int i, nb = ent->NbIdentifiedItem();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->IdentifiedItemValue(i));
+  }
 }

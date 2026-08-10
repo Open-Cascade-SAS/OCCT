@@ -48,7 +48,9 @@ void IGESGraph_ToolColor::ReadOwnParams(const occ::handle<IGESGraph_Color>& ent,
 
   if ((PR.CurrentNumber() <= PR.NbParams())
       && (PR.ParamType(PR.CurrentNumber()) == Interface_ParamText))
+  {
     PR.ReadText(PR.Current(), "Color Name", tempColorName);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempRed, tempGreen, tempBlue, tempColorName);
@@ -64,9 +66,13 @@ void IGESGraph_ToolColor::WriteOwnParams(const occ::handle<IGESGraph_Color>& ent
   IW.Send(Blue);
   //  WARNING  place to reserve (Null) if there are additional pointers
   if (ent->HasColorName())
+  {
     IW.Send(ent->ColorName());
+  }
   else
+  {
     IW.SendVoid(); // placekeeper to be reserved for additional pointers
+  }
 }
 
 void IGESGraph_ToolColor::OwnShared(const occ::handle<IGESGraph_Color>& /*ent*/,
@@ -82,7 +88,9 @@ void IGESGraph_ToolColor::OwnCopy(const occ::handle<IGESGraph_Color>& another,
   occ::handle<TCollection_HAsciiString> tempColorName;
   another->RGBIntensity(tempRed, tempGreen, tempBlue);
   if (another->HasColorName())
+  {
     tempColorName = new TCollection_HAsciiString(another->ColorName());
+  }
 
   ent->Init(tempRed, tempGreen, tempBlue, tempColorName);
 }
@@ -127,5 +135,5 @@ void IGESGraph_ToolColor::OwnDump(const occ::handle<IGESGraph_Color>& ent,
     << "Blue  (in % Of Full Intensity) : " << Blue << "\n"
     << "Color Name : ";
   IGESData_DumpString(S, ent->ColorName());
-  S << std::endl;
+  S << '\n';
 }

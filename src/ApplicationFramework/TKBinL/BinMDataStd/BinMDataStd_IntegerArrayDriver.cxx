@@ -50,25 +50,35 @@ bool BinMDataStd_IntegerArrayDriver::Paste(const BinObjMgt_Persistent&       the
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
   const int aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_IntegerArray> anAtt = occ::down_cast<TDataStd_IntegerArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   NCollection_Array1<int>& aTargetArray = anAtt->Array()->ChangeArray1();
   if (!theSource.GetIntArray(&aTargetArray(aFirstInd), aLength))
+  {
     return false;
+  }
   bool aDelta(false);
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
     uint8_t aDeltaValue;
     if (!(theSource >> aDeltaValue))
+    {
       return false;
+    }
     else
+    {
       aDelta = (aDeltaValue != 0);
+    }
   }
 #ifdef OCCT_DEBUG
   // std::cout << "Current Document Format Version = " <<
@@ -104,5 +114,7 @@ void BinMDataStd_IntegerArrayDriver::Paste(
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_IntegerArray::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

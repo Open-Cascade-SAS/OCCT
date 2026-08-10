@@ -30,7 +30,9 @@ void RWStepBasic_RWProductDefinitionContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "product_definition_context"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

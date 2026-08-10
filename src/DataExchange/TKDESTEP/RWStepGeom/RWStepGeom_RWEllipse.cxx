@@ -29,7 +29,9 @@ void RWStepGeom_RWEllipse::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "ellipse"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -93,5 +95,7 @@ void RWStepGeom_RWEllipse::Check(const occ::handle<StepGeom_Ellipse>& ent,
                                  occ::handle<Interface_Check>& ach) const
 {
   if (ent->SemiAxis1() < ent->SemiAxis2())
+  {
     ach->AddWarning("ERROR: Ellipse: SemiMajor smaller than SemiMinor");
+  }
 }

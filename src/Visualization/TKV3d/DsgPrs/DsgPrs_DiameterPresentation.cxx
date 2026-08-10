@@ -74,13 +74,17 @@ void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   // value
   TCollection_ExtendedString Text = aText;
   if (IsDiamSymbol)
+  {
     Text = TCollection_ExtendedString("\330  ") + aText; // VRO (2007-05-17) inserted a blank.
+  }
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), Text, AttachmentPoint);
 
   // arrows
   gp_Dir arrdir(vecrap);
   if (inside)
+  {
     arrdir.Reverse();
+  }
 
   gp_Vec vecrap2   = vecrap;
   gp_Pnt ptoncirc2 = ptoncirc;
@@ -98,7 +102,9 @@ static bool DsgPrs_InDomain(const double fpar, const double lpar, const double p
   if (fpar >= 0.)
   {
     if (lpar > fpar)
+    {
       return ((para >= fpar) && (para <= lpar));
+    }
     else
     { // fpar > lpar
       double delta = 2. * M_PI - fpar;
@@ -106,17 +112,25 @@ static bool DsgPrs_InDomain(const double fpar, const double lpar, const double p
       lp  = lpar + delta;
       par = para + delta;
       while (lp > 2 * M_PI)
+      {
         lp -= 2 * M_PI;
+      }
       while (par > 2 * M_PI)
+      {
         par -= 2 * M_PI;
+      }
       fp = 0.;
       return ((par >= fp) && (par <= lp));
     }
   }
   if (para >= (fpar + 2 * M_PI))
+  {
     return true;
+  }
   if (para <= lpar)
+  {
     return true;
+  }
   return false;
 }
 
@@ -154,7 +168,9 @@ void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   {
     double otherpar = parEndOfArrow + M_PI; // not in domain
     if (otherpar > 2 * M_PI)
+    {
       otherpar -= 2 * M_PI;
+    }
     if (DsgPrs_InDomain(fpara, lpara, otherpar))
     {
       parEndOfArrow = otherpar; // parameter on circle
@@ -192,7 +208,9 @@ void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   // text
   TCollection_ExtendedString Text = aText;
   if (IsDiamSymbol)
+  {
     Text = TCollection_ExtendedString("\330 ") + Text; //  => \330 | \370?
+  }
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), Text, DrawPosition);
 
   // Add presentation of arrow

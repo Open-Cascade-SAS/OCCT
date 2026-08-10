@@ -36,7 +36,9 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "context_dependent_shape_representation"))
+  {
     return;
+  }
 
   // --- own field : representation_relation ---
 

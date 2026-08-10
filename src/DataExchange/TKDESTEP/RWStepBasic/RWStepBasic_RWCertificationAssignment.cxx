@@ -37,7 +37,9 @@ void RWStepBasic_RWCertificationAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "certification_assignment"))
+  {
     return;
+  }
 
   // Own fields of CertificationAssignment
 

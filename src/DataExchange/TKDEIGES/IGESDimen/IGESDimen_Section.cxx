@@ -33,7 +33,9 @@ void IGESDimen_Section::Init(const int                                      data
                              const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints)
 {
   if (dataPoints->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_Section : Init");
+  }
   theDatatype      = dataType;
   theZDisplacement = aDisp;
   theDataPoints    = dataPoints;
@@ -44,7 +46,9 @@ void IGESDimen_Section::Init(const int                                      data
 void IGESDimen_Section::SetFormNumber(const int form)
 {
   if (form < 31 || form > 38)
+  {
     throw Standard_OutOfRange("IGESDimen_Section : SetFormNumber");
+  }
   InitTypeAndForm(106, form);
 }
 
@@ -75,6 +79,8 @@ gp_Pnt IGESDimen_Section::TransformedPoint(const int Index) const
   gp_XY  point2d = theDataPoints->Value(Index);
   gp_XYZ point(point2d.X(), point2d.Y(), theZDisplacement);
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }

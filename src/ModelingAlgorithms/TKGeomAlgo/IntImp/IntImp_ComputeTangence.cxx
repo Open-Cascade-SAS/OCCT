@@ -121,7 +121,9 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
   {
     double t = N1.Dot(N2);
     if (t < 0.0)
+    {
       t = -t;
+    }
     if (t > 0.999999999)
     {
       tangent = true;

@@ -52,7 +52,9 @@ void Poly_MakeLoops::Reset(const Helper*                                 theHelp
 void Poly_MakeLoops::AddLink(const Link& theLink)
 {
   if (theLink.node1 == theLink.node2)
+  {
     return;
+  }
   int   aInd  = myMapLink.Add(theLink);
   Link& aLink = const_cast<Link&>(myMapLink(aInd));
   aLink.flags |= theLink.flags;
@@ -66,7 +68,9 @@ void Poly_MakeLoops::AddLink(const Link& theLink)
 void Poly_MakeLoops::ReplaceLink(const Link& theLink, const Link& theNewLink)
 {
   if (theNewLink.node1 == theNewLink.node2)
+  {
     return;
+  }
   int aInd = myMapLink.Add(theLink);
   if (aInd > 0)
   {
@@ -108,7 +112,9 @@ Poly_MakeLoops::Link Poly_MakeLoops::FindLink(const Link& theLink) const
   int                  aInd = myMapLink.FindIndex(theLink);
   Poly_MakeLoops::Link aLink;
   if (aInd > 0)
+  {
     aLink = myMapLink(aInd);
+  }
   return aLink;
 }
 
@@ -123,9 +129,13 @@ int Poly_MakeLoops::Perform()
   {
     const Link& aLink = myMapLink(i);
     if (aLink.flags & LF_Fwd)
+    {
       myStartIndices.Add(i);
+    }
     if (aLink.flags & LF_Rev)
+    {
       myStartIndices.Add(-i);
+    }
   }
 
 #ifdef OCCT_DEBUG
@@ -180,8 +190,10 @@ int Poly_MakeLoops::Perform()
         // it is required to mark hanging edges
         int aNode;
         if (aStartNumber <= aContour.Extent())
+        {
           // mark hanging edges starting from the first one till a bifurcation
           aNode = getFirstNode(aIndexS);
+        }
         else
         {
           // open contour - mark from the end back till a bifurcation
@@ -197,7 +209,9 @@ int Poly_MakeLoops::Perform()
       // move hanging links to start indices to make the second pass
       TColStd_PackedMapOfInteger::Iterator it(myHangIndices);
       for (; it.More(); it.Next())
+      {
         myStartIndices.Add(it.Key());
+      }
     }
   }
 #ifdef OCCT_DEBUG
@@ -207,9 +221,13 @@ int Poly_MakeLoops::Perform()
 #endif
 
   if (!myLoops.IsEmpty())
+  {
     aResult |= RC_LoopsDone;
+  }
   if (!myHangIndices.IsEmpty())
+  {
     aResult |= RC_HangingLinks;
+  }
   return aResult;
 }
 
@@ -249,15 +267,21 @@ int Poly_MakeLoops::findContour(int                                           th
     {
       int aInd = myMapLink.FindIndex(itLinks.Value());
       if (aInd == 0 || aInd == aIndex)
+      {
         continue;
+      }
       // determine the orientation in which the link is to be taken
       int aIndS  = aInd;
       int aNode1 = getFirstNode(aInd);
       if (aNode1 != aLastNode)
+      {
         aIndS = -aIndS;
+      }
 
       if (canLinkBeTaken(aIndS))
+      {
         aLstIndS.Append(aIndS);
+      }
     }
 
     if (aLstIndS.IsEmpty())
@@ -269,11 +293,15 @@ int Poly_MakeLoops::findContour(int                                           th
 
     int aIndexSNext = 0;
     if (aLstIndS.First() == aLstIndS.Last())
+    {
       // only one possible way
       aIndexSNext = aLstIndS.First();
+    }
     else
+    {
       // find the most left way
       aIndexSNext = chooseLeftWay(aLastNode, aIndexS, aLstIndS);
+    }
 
     aIndexS = aIndexSNext;
 
@@ -335,7 +363,9 @@ void Poly_MakeLoops::acceptContour(const NCollection_IndexedMap<int>& theContour
     const Link& aLink         = myMapLink(aIndex);
     Link        aOrientedLink = aLink;
     if (aIndexS < 0)
+    {
       aOrientedLink.Reverse();
+    }
     aLoop.Append(aOrientedLink);
     // remove from start set
     myStartIndices.Remove(aIndexS);
@@ -353,7 +383,9 @@ int Poly_MakeLoops::getFirstNode(int theIndexS) const
   int         aIndex = std::abs(theIndexS);
   const Link& aLink  = myMapLink(aIndex);
   if (theIndexS > 0)
+  {
     return aLink.node1;
+  }
   return aLink.node2;
 }
 
@@ -368,7 +400,9 @@ int Poly_MakeLoops::getLastNode(int theIndexS) const
   int         aIndex = std::abs(theIndexS);
   const Link& aLink  = myMapLink(aIndex);
   if (theIndexS > 0)
+  {
     return aLink.node2;
+  }
   return aLink.node1;
 }
 
@@ -398,15 +432,23 @@ void Poly_MakeLoops::markHangChain(int theNode, int theIndexS)
       const Link& aL   = itLinks.Value();
       int         aInd = myMapLink.FindIndex(aL);
       if (aInd == 0 || aInd == aIndex)
+      {
         continue;
+      }
       if ((isOut && aNode1 == aL.node1) || (!isOut && aNode1 == aL.node2))
+      {
         aInd = -aInd;
+      }
       if (canLinkBeTaken(aInd))
+      {
         nEdges++;
+      }
     }
     if (nEdges > 0)
+    {
       // leave this chain
       break;
+    }
 
     // mark the current link as hanging
     myStartIndices.Remove(aIndexS);
@@ -414,9 +456,13 @@ void Poly_MakeLoops::markHangChain(int theNode, int theIndexS)
 
     // get other node of the link and the next link
     if (isOut)
+    {
       aNode1 = getLastNode(aIndexS);
+    }
     else
+    {
       aNode1 = getFirstNode(aIndexS);
+    }
     const ListOfLink& aNextLinks  = myHelper->GetAdjacentLinks(aNode1);
     int               aNextIndexS = 0;
     for (itLinks.Init(aNextLinks); itLinks.More(); itLinks.Next())
@@ -424,13 +470,19 @@ void Poly_MakeLoops::markHangChain(int theNode, int theIndexS)
       const Link& aL   = itLinks.Value();
       int         aInd = myMapLink.FindIndex(aL);
       if (aInd == 0 || aInd == aIndex)
+      {
         continue;
+      }
       if ((isOut && aNode1 == aL.node2) || (!isOut && aNode1 == aL.node1))
+      {
         aInd = -aInd;
+      }
       if (canLinkBeTaken(aInd))
       {
         if (aNextIndexS == 0)
+        {
           aNextIndexS = aInd;
+        }
         else
         {
           // more than 1 ways, stop the chain
@@ -440,7 +492,9 @@ void Poly_MakeLoops::markHangChain(int theNode, int theIndexS)
       }
     }
     if (aNextIndexS == 0)
+    {
       break;
+    }
     aIndexS = aNextIndexS;
     aIndex  = std::abs(aIndexS);
   }
@@ -540,7 +594,9 @@ void Poly_MakeLoops::GetHangingLinks(ListOfLink& theLinks) const
     int  aIndexS = it.Key();
     Link aLink   = myMapLink(std::abs(aIndexS));
     if (aIndexS < 0)
+    {
       aLink.Reverse();
+    }
     theLinks.Append(aLink);
   }
 }
@@ -563,19 +619,25 @@ int Poly_MakeLoops3D::chooseLeftWay(const int                    theNode,
   gp_Dir        aNormal;
   const Helper* aHelper = getHelper();
   if (!aHelper->GetNormal(theNode, aNormal))
+  {
     return theLstIndS.First();
+  }
 
   Link   aLink = getLink(theSegIndex);
   gp_Dir aTgtRef;
   if (!aHelper->GetLastTangent(aLink, aTgtRef))
+  {
     return theLstIndS.First();
+  }
 
   // project tangent vector to the plane orthogonal to normal
   // to get the reference direction
   gp_XYZ aTgtRefXYZ = aNormal.XYZ().CrossCrossed(aTgtRef.XYZ(), aNormal.XYZ());
   if (aTgtRefXYZ.SquareModulus() < 1e-14)
+  {
     // a problem with defining reference direction, take first way
     return theLstIndS.First();
+  }
   aTgtRef = aTgtRefXYZ;
 
   // find the way with minimal angle to the reference direction
@@ -589,17 +651,23 @@ int Poly_MakeLoops3D::chooseLeftWay(const int                    theNode,
     aLink = getLink(aIndS);
     gp_Dir aTgt;
     if (!aHelper->GetFirstTangent(aLink, aTgt))
+    {
       continue;
+    }
 
     gp_XYZ aTgtXYZ = aNormal.XYZ().CrossCrossed(aTgt.XYZ(), aNormal.XYZ());
     if (aTgtXYZ.SquareModulus() < 1e-14)
+    {
       // skip a problem way
       continue;
+    }
     aTgt = aTgtXYZ;
 
     double aAngle = aTgt.AngleWithRef(aTgtRef, aNormal);
     if (aAngle < 1e-4 - M_PI)
+    {
       aAngle = M_PI;
+    }
     if (aAngle < aAngleMin)
     {
       aAngleMin = aAngle;
@@ -630,8 +698,10 @@ int Poly_MakeLoops2D::chooseLeftWay(const int /*theNode*/,
   Link          aLink     = getLink(theSegIndex);
   gp_Dir2d      aTgtRef;
   if (!aHelper->GetLastTangent(aLink, aTgtRef))
+  {
     // a problem with defining reference direction, take first way
     return theLstIndS.First();
+  }
 
   // find the way with minimal angle to the reference direction
   // (the angle is in range ]-PI;PI])
@@ -644,14 +714,20 @@ int Poly_MakeLoops2D::chooseLeftWay(const int /*theNode*/,
     aLink = getLink(aIndS);
     gp_Dir2d aTgt;
     if (!aHelper->GetFirstTangent(aLink, aTgt))
+    {
       // skip a problem way
       continue;
+    }
 
     double aAngle = aTgt.Angle(aTgtRef);
     if (myRightWay)
+    {
       aAngle = -aAngle;
+    }
     if (aAngle < 1e-4 - M_PI)
+    {
       aAngle = M_PI;
+    }
     if (aAngle < aAngleMin)
     {
       aAngleMin = aAngle;

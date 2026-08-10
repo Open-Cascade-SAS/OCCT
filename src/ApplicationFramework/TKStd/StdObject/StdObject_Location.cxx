@@ -22,7 +22,9 @@ StdObject_Location StdObject_Location::Translate(
 {
   StdObject_Location aLoc;
   if (!theLoc.IsIdentity())
+  {
     aLoc.myData = StdPersistent_TopLoc::Translate(theLoc, theMap);
+  }
   return aLoc;
 }
 

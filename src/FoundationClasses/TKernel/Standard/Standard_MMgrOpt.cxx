@@ -188,13 +188,17 @@ void Standard_MMgrOpt::Initialize()
 {
   // check number of pages in small blocks pools
   if (myNbPages < 100)
+  {
     myNbPages = 1000;
+  }
 
   // get system-dependent page size
 #ifndef _WIN32
   myPageSize = getpagesize();
   if (!myPageSize)
+  {
     myMMap = 0;
+  }
 #else
   SYSTEM_INFO SystemInfo;
   GetSystemInfo(&SystemInfo);
@@ -255,7 +259,9 @@ void Standard_MMgrOpt::Initialize()
       }
     }
     if (!myMMap)
+    {
       perror("ERR_MMAP_FAIL");
+    }
 #else
     myMMap = -1;
 #endif
@@ -287,7 +293,9 @@ inline void callBack(const bool   isAlloc,
                      const size_t aSize)
 {
   if (MyPCallBackFunc)
+  {
     (*MyPCallBackFunc)(isAlloc, aStorage, aRoundSize, aSize);
+  }
 }
 
 //=================================================================================================
@@ -333,7 +341,9 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
 
       // clear block if requested
       if (myClear)
+      {
         memset(aStorage, 0, RoundSize);
+      }
     }
     // else if block size is small allocate it in pools
     else if (RoundSize <= myCellSize)
@@ -401,10 +411,14 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       if (!aBlock)
       {
         if (Purge(false))
+        {
           aBlock = (size_t*)calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t));
+        }
         // if still not succeeded, raise exception
         if (!aBlock)
+        {
           throw Standard_OutOfMemory("Standard_MMgrOpt::Allocate(): malloc failed");
+        }
       }
 
       // initialize new block header by its size
@@ -442,7 +456,9 @@ void Standard_MMgrOpt::Free(void* theStorage)
 {
   // safely return if attempt to free null pointer
   if (!theStorage)
+  {
     return;
+  }
 
   // get the pointer to the memory block header
   size_t* aBlock = GET_BLOCK(theStorage);
@@ -471,7 +487,9 @@ void Standard_MMgrOpt::Free(void* theStorage)
   }
   // otherwise, we have block of big size which shall be simply released
   else
+  {
     FreeMemory(aBlock, RoundSize);
+  }
 }
 
 //=======================================================================
@@ -571,7 +589,9 @@ int Standard_MMgrOpt::Purge(bool)
     {
       aFreeSize[iPool] = ROUNDUP_CELL(aFreeSize[iPool]);
       if (aFreeSize[iPool] == RPoolSize)
+      {
         aFreePools[++iLastFree] = iPool;
+      }
     }
     if (iLastFree == -1)
     {
@@ -593,16 +613,22 @@ int Standard_MMgrOpt::Purge(bool)
         {
           iPool = aFreePools[j];
           if (aFree >= aPools[iPool] && aFree < aPools[iPool] + PoolSizeN)
+          {
             break;
+          }
         }
         if (j <= iLastFree)
         {
           // remove
           aFree = *(size_t**)aFree;
           if (aPrevFree)
+          {
             *(size_t**)aPrevFree = aFree; // link to previous
+          }
           else
+          {
             myFreeList[i] = aFree;
+          }
           nbFreed++;
         }
         else
@@ -624,7 +650,9 @@ int Standard_MMgrOpt::Purge(bool)
       {
         // update the pointer to the previous non-free pool
         if (iPool - aFreePools[j - 1] > 1)
+        {
           aPrev = aPools[iPool - 1];
+        }
       }
       if (j == iLastFree || aFreePools[j + 1] - iPool > 1)
       {
@@ -633,9 +661,13 @@ int Standard_MMgrOpt::Purge(bool)
         // and connect it to the list of pools that have been processed
         // and remain non-free
         if (aPrev)
+        {
           *(size_t**)aPrev = aNext;
+        }
         else
+        {
           myAllocList = aNext;
+        }
       }
       FreeMemory(aPools[iPool], PoolSize);
     }
@@ -700,7 +732,9 @@ void* Standard_MMgrOpt::Reallocate(void* theStorage, const size_t theNewSize)
     Free(theStorage);
     // clear newly added part of the block
     if (myClear)
+    {
       memset(((char*)newStorage) + OldSize, 0, theNewSize - OldSize);
+    }
   }
   return newStorage;
 }
@@ -735,7 +769,9 @@ retry:
       int errcode = errno;
       // as a last resort, try freeing some memory by calling Purge()
       if (Purge(false))
+      {
         goto retry;
+      }
       // if nothing helps, raise exception
       throw Standard_OutOfMemory(strerror(errcode));
     }
@@ -804,14 +840,18 @@ retry:
     {
       // as a last resort, try freeing some memory by calling Purge()
       if (Purge(false))
+      {
         goto retry;
+      }
       // if nothing helps, raise exception
       throw Standard_OutOfMemory("Standard_MMgrOpt::Allocate(): malloc failed");
     }
   }
   // clear whole block if clearing option is set
   if (myClear)
+  {
     memset(aBlock, 0, Size);
+  }
   return aBlock;
 }
 
@@ -840,5 +880,7 @@ void Standard_MMgrOpt::FreeMemory(void* aBlock,
 #endif
   }
   else
+  {
     free(aBlock);
+  }
 }

@@ -13,6 +13,19 @@
 
 #include "BOPTest_Utilities.pxx"
 
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepGProp.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomConvert.hxx>
+#include <GProp_GProps.hxx>
+#include <NCollection_Array2.hxx>
+#include <Precision.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
 #endif
@@ -24,6 +37,16 @@
 class BCutSimpleTest : public BRepAlgoAPI_TestBase
 {
 };
+
+static int countSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
+{
+  int aCount = 0;
+  for (TopExp_Explorer anExp(theShape, theType); anExp.More(); anExp.Next())
+  {
+    ++aCount;
+  }
+  return aCount;
+}
 
 // Test bcut_simple/A1: psphere s 1; box b 1 1 1; bcut result s b; checkprops result -s 13.3518
 TEST_F(BCutSimpleTest, SphereMinusBox_A1)
@@ -889,14 +912,14 @@ TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H1)
   // Create custom polygon from H1 test vertices: v1(0,0,0) v2(1,0,0) v3(1,3,0) v4(2,3,0) v5(2,0,0)
   // v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+  aPoints.emplace_back(0, 0, 0); // v1
+  aPoints.emplace_back(1, 0, 0); // v2
+  aPoints.emplace_back(1, 3, 0); // v3
+  aPoints.emplace_back(2, 3, 0); // v4
+  aPoints.emplace_back(2, 0, 0); // v5
+  aPoints.emplace_back(3, 0, 0); // v6
+  aPoints.emplace_back(3, 5, 0); // v7
+  aPoints.emplace_back(0, 5, 0); // v8
 
   // Create wire and extrude to solid (prism sol p 0 0 2)
   TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
@@ -918,14 +941,14 @@ TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H2)
   // Create custom polygon from H2 test vertices (same as H1): v1(0,0,0) v2(1,0,0) v3(1,3,0)
   // v4(2,3,0) v5(2,0,0) v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+  aPoints.emplace_back(0, 0, 0); // v1
+  aPoints.emplace_back(1, 0, 0); // v2
+  aPoints.emplace_back(1, 3, 0); // v3
+  aPoints.emplace_back(2, 3, 0); // v4
+  aPoints.emplace_back(2, 0, 0); // v5
+  aPoints.emplace_back(3, 0, 0); // v6
+  aPoints.emplace_back(3, 5, 0); // v7
+  aPoints.emplace_back(0, 5, 0); // v8
 
   // Create wire and extrude to solid (prism sol p 0 0 2)
   TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
@@ -1769,4 +1792,60 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation2_I9)
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
+}
+
+//=================================================================================================
+// OCC825 Bug Tests
+//=================================================================================================
+
+// OCC825: BRepAlgoAPI_Cut of two spheres with a BSpline-defined half-space produces valid shapes.
+// Bug: BRepAlgoAPI_Cut failed on sphere and b-spline face.
+// Verifies both cut results are valid and have expected surface area (~5890.42).
+TEST(BRepAlgoAPI_CutTest, Bug825_SphereHalfSpaceCut)
+{
+  constexpr double           aSize = 50.0;
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  aPoles(1, 1).SetCoord(-aSize, 0, -aSize);
+  aPoles(1, 2).SetCoord(-aSize, 0, aSize);
+  aPoles(2, 1).SetCoord(aSize, 0, -aSize);
+  aPoles(2, 2).SetCoord(aSize, 0, aSize);
+
+  const occ::handle<Geom_BezierSurface>  aBezSurf = new Geom_BezierSurface(aPoles);
+  const occ::handle<Geom_BSplineSurface> aBSpSurf = GeomConvert::SurfaceToBSplineSurface(aBezSurf);
+  BRepBuilderAPI_MakeFace                aFaceMaker(aBSpSurf, Precision::Confusion());
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  const TopoDS_Face& aFace = aFaceMaker.Face();
+
+  BRepPrimAPI_MakeHalfSpace aHSpaceMaker(aFace, gp_Pnt(0, aSize, 0));
+  ASSERT_TRUE(aHSpaceMaker.IsDone());
+  const TopoDS_Shape aHsp = aHSpaceMaker.Solid();
+
+  const TopoDS_Shape aSph1 = BRepPrimAPI_MakeSphere(gp_Pnt(0.0, 0.0, 0.0), 25.0).Shape();
+  const TopoDS_Shape aSph2 = BRepPrimAPI_MakeSphere(gp_Pnt(0.0, 0.00001, 0.0), 25.0).Shape();
+
+  BRepAlgoAPI_Cut aCut1(aSph1, aHsp);
+  ASSERT_TRUE(aCut1.IsDone()) << "BRepAlgoAPI_Cut failed for first sphere";
+  const TopoDS_Shape aResult1 = aCut1.Shape();
+  ASSERT_FALSE(aResult1.IsNull());
+
+  BRepAlgoAPI_Cut aCut2(aSph2, aHsp);
+  ASSERT_TRUE(aCut2.IsDone()) << "BRepAlgoAPI_Cut failed for second sphere";
+  const TopoDS_Shape aResult2 = aCut2.Shape();
+  ASSERT_FALSE(aResult2.IsNull());
+
+  GProp_GProps aProps1;
+  BRepGProp::SurfaceProperties(aResult1, aProps1);
+  EXPECT_NEAR(aProps1.Mass(), 5890.42, 5.89042);
+  EXPECT_EQ(countSubShapes(aResult1, TopAbs_FACE), 2);
+  EXPECT_EQ(countSubShapes(aResult1, TopAbs_SHELL), 1);
+  EXPECT_EQ(countSubShapes(aResult1, TopAbs_SOLID), 1);
+  EXPECT_EQ(aResult1.ShapeType(), TopAbs_COMPOUND);
+
+  GProp_GProps aProps2;
+  BRepGProp::SurfaceProperties(aResult2, aProps2);
+  EXPECT_NEAR(aProps2.Mass(), 5890.42, 5.89042);
+  EXPECT_EQ(countSubShapes(aResult2, TopAbs_FACE), 2);
+  EXPECT_EQ(countSubShapes(aResult2, TopAbs_SHELL), 1);
+  EXPECT_EQ(countSubShapes(aResult2, TopAbs_SOLID), 1);
+  EXPECT_EQ(aResult2.ShapeType(), TopAbs_COMPOUND);
 }

@@ -113,12 +113,16 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   UROOT  = (double*)&HUROOT->ChangeArray1()(HUROOT->Lower());
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
+  {
     NBPNTU -= 2;
+  }
   double* VROOT;
   VROOT  = (double*)&HVROOT->ChangeArray1()(HVROOT->Lower());
   NBPNTV = (Conditions.VRoots())->Length();
   if (myOrdInV > -1)
+  {
     NBPNTV -= 2;
+  }
 
   // data stored in the Framework Constraints cad Nodes and Isos
   // C1, C2, C3 and C4 are dimensionnes in FORTRAN with (NDIMEN,IORDRU+2,IORDRV+2)
@@ -771,10 +775,14 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   NDIMSE = 3;
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
+  {
     NBPNTU -= 2;
+  }
   NBPNTV = (Conditions.VRoots())->Length();
   if (myOrdInV > -1)
+  {
     NBPNTV -= 2;
+  }
   NCFLMU = Conditions.ULimit();
   NCFLMV = Conditions.VLimit();
   NDegU  = NCFLMU - 1;
@@ -978,7 +986,9 @@ void AdvApp2Var_Patch::ResetApprox()
 void AdvApp2Var_Patch::OverwriteApprox()
 {
   if (myHasResult)
+  {
     myApprIsDone = true;
+  }
 }
 
 //=================================================================================================
@@ -1071,9 +1081,13 @@ int AdvApp2Var_Patch::NbCoeffInV() const
 void AdvApp2Var_Patch::ChangeNbCoeff(const int NbCoeffU, const int NbCoeffV)
 {
   if (myNbCoeffInU < NbCoeffU)
+  {
     myNbCoeffInU = NbCoeffU;
+  }
   if (myNbCoeffInV < NbCoeffV)
+  {
     myNbCoeffInV = NbCoeffV;
+  }
 }
 
 //=================================================================================================
@@ -1112,19 +1126,18 @@ occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(
   {
     throw Standard_ConstructionError("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
   }
-  occ::handle<NCollection_HArray1<double>> Intervalle = new (NCollection_HArray1<double>)(1, 2);
-  Intervalle->SetValue(1, -1);
-  Intervalle->SetValue(2, 1);
+  NCollection_Array1<double> Intervalle(1, 2);
+  Intervalle.SetValue(1, -1);
+  Intervalle.SetValue(2, 1);
 
-  occ::handle<NCollection_HArray1<int>> NbCoeff = new (NCollection_HArray1<int>)(1, 2);
-  NbCoeff->SetValue(1, myNbCoeffInU);
-  NbCoeff->SetValue(2, myNbCoeffInV);
+  NCollection_Array1<int> NbCoeff(1, 2);
+  NbCoeff.SetValue(1, myNbCoeffInU);
+  NbCoeff.SetValue(2, myNbCoeffInV);
 
-  // Conversion
   Convert_GridPolynomialToPoles Conv(Cond.ULimit() - 1,
                                      Cond.VLimit() - 1,
                                      NbCoeff,
-                                     SousEquation,
+                                     SousEquation->Array1(),
                                      Intervalle,
                                      Intervalle);
 

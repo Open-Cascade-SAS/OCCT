@@ -40,13 +40,19 @@ void IGESGraph_ToolHighLight::ReadOwnParams(const occ::handle<IGESGraph_HighLigh
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
   if (nbPropertyValues != 1)
+  {
     PR.AddFail("No. of Property values : Value is not 1");
+  }
 
   if (PR.DefinedElseSkip())
+  {
     // Reading highLightStatus(Integer)
     PR.ReadInteger(PR.Current(), "Highlight flag", highLightStatus);
+  }
   else
+  {
     highLightStatus = 0; // Default Value
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(nbPropertyValues, highLightStatus);
@@ -75,7 +81,9 @@ bool IGESGraph_ToolHighLight::OwnCorrect(const occ::handle<IGESGraph_HighLight>&
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->HighLightStatus()); // nbpropertyvalues=1
+  }
   return res;
 }
 
@@ -98,7 +106,9 @@ void IGESGraph_ToolHighLight::OwnCheck(const occ::handle<IGESGraph_HighLight>& e
                                        occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("No. of Property values : Value != 1");
+  }
 }
 
 void IGESGraph_ToolHighLight::OwnDump(const occ::handle<IGESGraph_HighLight>& ent,
@@ -109,5 +119,5 @@ void IGESGraph_ToolHighLight::OwnDump(const occ::handle<IGESGraph_HighLight>& en
   S << "IGESGraph_HighLight\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
     << "Highlight Status : " << ent->HighLightStatus() << "\n"
-    << std::endl;
+    << '\n';
 }

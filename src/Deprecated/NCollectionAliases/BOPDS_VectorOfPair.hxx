@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfPair.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_Pair> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_Pair> directly instead.
 
 #ifndef _BOPDS_VectorOfPair_hxx
 #define _BOPDS_VectorOfPair_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Pair.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfPair.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_Pair> directly.")
+                           "NCollection_DynamicArray<BOPDS_Pair> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfPair is deprecated, use NCollection_Vector<BOPDS_Pair> directly")
-typedef NCollection_Vector<BOPDS_Pair> BOPDS_VectorOfPair;
+    "BOPDS_VectorOfPair is deprecated, use NCollection_DynamicArray<BOPDS_Pair> directly")
+typedef NCollection_DynamicArray<BOPDS_Pair> BOPDS_VectorOfPair;
 
 #endif // _BOPDS_VectorOfPair_hxx

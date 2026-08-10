@@ -29,7 +29,9 @@ void RWStepShape_RWSweptFaceSolid::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "swept_face_solid"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

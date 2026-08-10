@@ -37,7 +37,9 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "fea_axis2_placement3d"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -95,16 +97,26 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(
   {
     const char* text = data->ParamCValue(num, 5);
     if (strcmp(text, ".CARTESIAN.") == 0)
+    {
       aSystemType = StepFEA_Cartesian;
+    }
     else if (strcmp(text, ".CYLINDRICAL.") == 0)
+    {
       aSystemType = StepFEA_Cylindrical;
+    }
     else if (strcmp(text, ".SPHERICAL.") == 0)
+    {
       aSystemType = StepFEA_Spherical;
+    }
     else
+    {
       ach->AddFail("Parameter #5 (system_type) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #5 (system_type) is not enumeration");
+  }
 
   occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 6, "description", ach, aDescription);
@@ -142,14 +154,18 @@ void RWStepFEA_RWFeaAxis2Placement3d::WriteStep(
     SW.Send(ent->StepGeom_Axis2Placement3d::Axis());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   if (ent->StepGeom_Axis2Placement3d::HasRefDirection())
   {
     SW.Send(ent->StepGeom_Axis2Placement3d::RefDirection());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Own fields of FeaAxis2Placement3d
 

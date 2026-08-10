@@ -16,19 +16,26 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
+#include <math_TrigonometricFunctionRoots.hxx>
 #include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+
+#include <algorithm>
 
 typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
 
@@ -78,7 +85,9 @@ public:
     {
       OCC_CATCH_SIGNALS
       if (!CheckParameter(theX))
+      {
         return false;
+      }
 
       const gp_Pnt aP1(myCurve1.Value(theX)), aP2(myCurve2.Value(theX));
 
@@ -185,6 +194,132 @@ public:
 
   //
   double LastParameter() const { return myLast; }
+
+  // Computes the exact maximum for elementary compositions supported by the adaptors.
+  bool ElementaryMaximum(double& theBestValue, double& theBestParameter) const
+  {
+    const GeomAbs_CurveType aType1 = myCurve1.GetType();
+    const GeomAbs_CurveType aType2 = myCurve2.GetType();
+    if (aType1 == GeomAbs_Line && aType2 == GeomAbs_Line)
+    {
+      double aFirstValue = RealLast(), aLastValue = RealLast();
+      if (!Value(myFirst, aFirstValue) || !Value(myLast, aLastValue))
+      {
+        return false;
+      }
+
+      if (aFirstValue <= aLastValue)
+      {
+        theBestValue     = aFirstValue;
+        theBestParameter = myFirst;
+      }
+      else
+      {
+        theBestValue     = aLastValue;
+        theBestParameter = myLast;
+      }
+      return true;
+    }
+
+    const bool isTrigType1 = aType1 == GeomAbs_Circle || aType1 == GeomAbs_Ellipse;
+    const bool isTrigType2 = aType2 == GeomAbs_Circle || aType2 == GeomAbs_Ellipse;
+    if (!isTrigType1 || !isTrigType2)
+    {
+      return false;
+    }
+
+    struct Coefficients
+    {
+      gp_XYZ Origin;
+      gp_XYZ Cos;
+      gp_XYZ Sin;
+    };
+
+    const auto getCoefficients = [](const Adaptor3d_Curve&  theCurve,
+                                    const GeomAbs_CurveType theType) -> Coefficients {
+      if (theType == GeomAbs_Circle)
+      {
+        const gp_Circ aCircle = theCurve.Circle();
+        return {aCircle.Location().XYZ(),
+                aCircle.XAxis().Direction().XYZ() * aCircle.Radius(),
+                aCircle.YAxis().Direction().XYZ() * aCircle.Radius()};
+      }
+
+      const gp_Elips anEllipse = theCurve.Ellipse();
+      return {anEllipse.Location().XYZ(),
+              anEllipse.XAxis().Direction().XYZ() * anEllipse.MajorRadius(),
+              anEllipse.YAxis().Direction().XYZ() * anEllipse.MinorRadius()};
+    };
+
+    const auto [anOrigin1, aCosCoeff1, aSinCoeff1] = getCoefficients(myCurve1, aType1);
+    const auto [anOrigin2, aCosCoeff2, aSinCoeff2] = getCoefficients(myCurve2, aType2);
+
+    const gp_XYZ anOffset  = anOrigin1 - anOrigin2;
+    const gp_XYZ aCosCoeff = aCosCoeff1 - aCosCoeff2;
+    const gp_XYZ aSinCoeff = aSinCoeff1 - aSinCoeff2;
+
+    // Coefficients of the derivative of the squared distance in trigonometric form.
+    const double aCosCos   = 2.0 * aCosCoeff.Dot(aSinCoeff);
+    const double aCosSin   = 0.5 * (aSinCoeff.SquareModulus() - aCosCoeff.SquareModulus());
+    const double aCos      = anOffset.Dot(aSinCoeff);
+    const double aSin      = -anOffset.Dot(aCosCoeff);
+    const double aConstant = -aCosCoeff.Dot(aSinCoeff);
+
+    // Exact zero is required here: a tolerance could classify a varying distance as constant.
+    if (aCosCos == 0.0 && aCosSin == 0.0 && aCos == 0.0 && aSin == 0.0 && aConstant == 0.0)
+    {
+      theBestParameter = myFirst;
+      return Value(myFirst, theBestValue);
+    }
+
+    const double aPeriod = 2.0 * M_PI;
+    const double aFirst  = ElCLib::InPeriod(myFirst, 0.0, aPeriod);
+    const double aShift  = aFirst - myFirst;
+    const double aLast   = aFirst + std::min(myLast - myFirst, aPeriod);
+    const double aScale  = std::max(
+      {std::abs(aCosCos), std::abs(aCosSin), std::abs(aCos), std::abs(aSin), std::abs(aConstant)});
+    math_TrigonometricFunctionRoots aRoots(aCosCos / aScale,
+                                           aCosSin / aScale,
+                                           aCos / aScale,
+                                           aSin / aScale,
+                                           aConstant / aScale,
+                                           aFirst,
+                                           aLast);
+    if (!aRoots.IsDone() || aRoots.InfiniteRoots()
+        || (myLast - myFirst >= aPeriod && aRoots.NbSolutions() == 0))
+    {
+      return false;
+    }
+
+    theBestValue          = RealLast();
+    theBestParameter      = myFirst;
+    const auto updateBest = [&](const double theParameter) {
+      double aValue = RealLast();
+      if (!Value(theParameter, aValue))
+      {
+        return false;
+      }
+      if (aValue < theBestValue)
+      {
+        theBestValue     = aValue;
+        theBestParameter = theParameter;
+      }
+      return true;
+    };
+
+    if (!updateBest(myFirst) || !updateBest(myLast))
+    {
+      return false;
+    }
+    for (int anIndex = 1; anIndex <= aRoots.NbSolutions(); ++anIndex)
+    {
+      if (!updateBest(aRoots.Value(anIndex) - aShift))
+      {
+        return false;
+      }
+    }
+    return true;
+  }
 
 private:
   GeomLib_CheckCurveOnSurface_TargetFunc operator=(GeomLib_CheckCurveOnSurface_TargetFunc&) =
@@ -383,7 +518,7 @@ void GeomLib_CheckCurveOnSurface::Perform(
 
     const int aNbThreads =
       myIsParallel
-        ? std::min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
+        ? std::min(anIntervals.Length(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
         : 1;
     Array1OfHCurve aCurveArray(0, aNbThreads - 1);
     Array1OfHCurve aCurveOnSurfaceArray(0, aNbThreads - 1);
@@ -564,7 +699,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
     int anIndex3D = anArrKnots3D->Lower(), anIndex2D = anArrKnots2D->Lower();
 
     if (theSubIntervals)
+    {
       theSubIntervals->ChangeValue(aNbSubIntervals) = theFirst;
+    }
 
     while ((anIndex3D <= anIndMax3D) && (anIndex2D <= anIndMax2D))
     {
@@ -578,7 +715,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
           aNbSubIntervals++;
 
           if (theSubIntervals)
+          {
             theSubIntervals->ChangeValue(aNbSubIntervals) = aVal3D;
+          }
         }
 
         anIndex3D++;
@@ -595,7 +734,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
           aNbSubIntervals++;
 
           if (theSubIntervals)
+          {
             theSubIntervals->ChangeValue(aNbSubIntervals) = aVal2D;
+          }
         }
 
         anIndex2D++;
@@ -603,7 +744,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
     }
 
     if (theSubIntervals)
+    {
       theSubIntervals->ChangeValue(aNbSubIntervals + 1) = theLast;
+    }
 
     if (!aBS3DCurv.IsNull())
     {
@@ -641,7 +784,9 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
 {
   const double aDeltaParam = theParSup(1) - theParInf(1);
   if (aDeltaParam < Precision::PConfusion())
+  {
     return false;
+  }
 
   math_Vector aStepPar(1, 1);
   aStepPar(1) = theEpsilon * aDeltaParam;
@@ -658,12 +803,16 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
   {
     double aVal = RealLast();
     if (!theFunction.Value(aPrm, aVal))
+    {
       continue;
+    }
 
     PSO_Particle* aParticle = aParticles.GetWorstParticle();
 
     if (aVal > aParticle->BestDistance)
+    {
       continue;
+    }
 
     aParticle->Position[0]     = aPrm;
     aParticle->BestPosition[0] = aPrm;
@@ -695,6 +844,11 @@ bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
     aParSup(1)       = theFunction.LastParameter();
     theBestParameter = aParInf(1);
     theBestValue     = RealLast();
+
+    if (theFunction.ElementaryMaximum(theBestValue, theBestParameter))
+    {
+      return true;
+    }
 
     if (!PSO_Perform(theFunction,
                      aParInf,

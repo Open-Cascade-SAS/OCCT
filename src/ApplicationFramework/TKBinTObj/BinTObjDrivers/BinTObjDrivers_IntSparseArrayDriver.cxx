@@ -50,12 +50,16 @@ bool BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&     
   // get pairs (ID, value) while ID != 0
   int anId;
   if (!(theSource >> anId) || anId < 0)
+  {
     return false;
+  }
   while (anId)
   {
     int aValue;
     if (!(theSource >> aValue) || aValue <= 0)
+    {
       return false;
+    }
 
     // store the value in the target array
     aTarget->SetDoBackup(false);
@@ -64,7 +68,9 @@ bool BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&     
 
     // get next ID
     if (!(theSource >> anId) || anId < 0)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -85,7 +91,9 @@ void BinTObjDrivers_IntSparseArrayDriver::Paste(
   {
     int aValue = anIt.Value();
     if (aValue == 0)
+    {
       continue;
+    }
 
     // store ID and value
     theTarget << (int)anIt.Index() << aValue;

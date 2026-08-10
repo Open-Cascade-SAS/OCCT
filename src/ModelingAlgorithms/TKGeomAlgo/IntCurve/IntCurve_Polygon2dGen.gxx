@@ -337,7 +337,7 @@ void IntCurve_Polygon2dGen::Dump(void) const
   }
 }
 #else
-void IntCurve_Polygon2dGen::Dump(void) const
+void IntCurve_Polygon2dGen::Dump() const
 {
   static int debug = 0;
   if (debug)

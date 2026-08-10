@@ -56,9 +56,13 @@ void TopOpeBRep_GeomTool::MakeCurves(const double                min,
       PC1 = MakeBSpline1fromWALKING2d(L, 1);
       PC2 = MakeBSpline1fromWALKING2d(L, 2);
       if (!PC1.IsNull())
+      {
         C.Curve1(PC1);
+      }
       if (!PC2.IsNull())
+      {
         C.Curve2(PC2);
+      }
       IsWalk = true;
       break;
     }
@@ -112,13 +116,21 @@ void TopOpeBRep_GeomTool::MakeCurve(const double                min,
     case TopOpeBRep_HYPERBOLA:
 
       if (typeline == TopOpeBRep_CIRCLE)
+      {
         C3D = L.Curve();
+      }
       else if (typeline == TopOpeBRep_ELLIPSE)
+      {
         C3D = L.Curve();
+      }
       else if (typeline == TopOpeBRep_PARABOLA)
+      {
         C3D = L.Curve(min, max); // Trimmed
+      }
       else if (typeline == TopOpeBRep_HYPERBOLA)
+      {
         C3D = L.Curve(min, max); // Trimmed
+      }
 
       break;
 
@@ -163,9 +175,13 @@ occ::handle<Geom2d_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(
   for (ip = 1, itW.Init(); itW.More(); ip++, itW.Next())
   {
     if (SI == 1)
+    {
       points2d.SetValue(ip, itW.CurrentWP().ValueOnS1());
+    }
     else if (SI == 2)
+    {
       points2d.SetValue(ip, itW.CurrentWP().ValueOnS2());
+    }
   }
   occ::handle<Geom2d_Curve> C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(points2d);
   return C;

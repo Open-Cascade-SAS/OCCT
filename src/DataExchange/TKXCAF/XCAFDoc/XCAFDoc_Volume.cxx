@@ -77,7 +77,9 @@ bool XCAFDoc_Volume::Get(const TDF_Label& label, double& vol)
 {
   occ::handle<XCAFDoc_Volume> aVolume;
   if (!label.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
+  {
     return false;
+  }
 
   vol = aVolume->Get();
   return true;

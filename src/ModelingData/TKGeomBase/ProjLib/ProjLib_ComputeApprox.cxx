@@ -165,10 +165,14 @@ static gp_Pnt2d Function_Value(const double                          U,
         S = M_PI + S;
       }
       if (S > U1 || S < U2)
+      {
         S = ElCLib::InPeriod(S, U1, U2);
+      }
     }
     if (T < V1 || T > V2)
+    {
       T = ElCLib::InPeriod(T, V1, V2);
+    }
   }
 
   return gp_Pnt2d(S, T);
@@ -213,7 +217,9 @@ static bool Function_D1(const double                          U,
       double Nv = D1V.SquareMagnitude();
 
       if (Nu < Epsilon(1.) || Nv < Epsilon(1.))
+      {
         return false;
+      }
 
       dU /= Nu;
       dV /= Nv;
@@ -350,7 +356,9 @@ static void Function_SetUVBounds(double&                               myU1,
           for (double par = W1 + Step; par <= W2; par += Step)
           {
             if (!isclandper)
+            {
               par += Step;
+            }
             P = myCurve->Value(par);
             ElSLib::Parameters(Cone, P, U, V);
             U += Delta;
@@ -360,16 +368,24 @@ static void Function_SetUVBounds(double&                               myU1,
               if (((IsEqual(U, (2 * M_PI), 1.e-10) && (U1 >= 0. && U1 <= M_PI))
                    && (IsEqual(U, Ul, 1.e-10) && !IsEqual(Uf, 0., 1.e-10)))
                   && isclandper)
+              {
                 U = 0.0;
+              }
               else
               {
                 // Protection against first-last point on seam.
                 if (isFirst)
+                {
                   U1 = 2 * M_PI;
+                }
                 else if (par + Step >= W2)
+                {
                   U = 0.0;
+                }
                 else
+                {
                   Delta -= 2 * M_PI;
+                }
               }
               U += Delta;
               d = U - U1;
@@ -379,16 +395,24 @@ static void Function_SetUVBounds(double&                               myU1,
               if (((IsEqual(U, 0., 1.e-10) && (U1 >= M_PI && U1 <= (2 * M_PI)))
                    && (IsEqual(U, Ul, 1.e-10) && !IsEqual(Uf, (2 * M_PI), 1.e-10)))
                   && isclandper)
+              {
                 U = 2 * M_PI;
+              }
               else
               {
                 // Protection against first-last point on seam.
                 if (isFirst)
+                {
                   U1 = 0.0;
+                }
                 else if (par + Step >= W2)
+                {
                   U = 2 * M_PI;
+                }
                 else
+                {
                   Delta += 2 * M_PI;
+                }
               }
               U += Delta;
               d = U - U1;
@@ -410,13 +434,19 @@ static void Function_SetUVBounds(double&                               myU1,
 
           if (std::abs(pmin - W1) > Precision::PConfusion()
               && std::abs(pmin - W2) > Precision::PConfusion())
+          {
             myU1 -= dmax * .5;
+          }
           if (std::abs(pmax - W1) > Precision::PConfusion()
               && std::abs(pmax - W2) > Precision::PConfusion())
+          {
             myU2 += dmax * .5;
+          }
 
           if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
+          {
             UCouture = false;
+          }
           else
           {
             U        = (myU1 + myU2) / 2.;
@@ -536,10 +566,14 @@ static void Function_SetUVBounds(double&                               myU1,
 
         if (std::abs(pmin - W1) > Precision::PConfusion()
             && std::abs(pmin - W2) > Precision::PConfusion())
+        {
           myU1 -= dmax * .5;
+        }
         if (std::abs(pmax - W1) > Precision::PConfusion()
             && std::abs(pmax - W2) > Precision::PConfusion())
+        {
           myU2 += dmax * .5;
+        }
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
         {
@@ -597,11 +631,17 @@ static void Function_SetUVBounds(double&                               myU1,
             if ((D / A) < 0.)
             {
               if ((R - std::abs(D / A)) > Tol)
+              {
                 NbSolutions = 2;
+              }
               else if (std::abs(R - std::abs(D / A)) < Tol)
+              {
                 NbSolutions = 1;
+              }
               else
+              {
                 NbSolutions = 0;
+              }
             }
           }
         }
@@ -612,7 +652,9 @@ static void Function_SetUVBounds(double&                               myU1,
           if (std::abs(delta) < Tol * Tol)
           {
             if (A * D > 0.)
+            {
               NbSolutions = 1;
+            }
           }
           else if (delta > 0)
           {
@@ -621,11 +663,15 @@ static void Function_SetUVBounds(double&                               myU1,
             xx    = -A * D + delta;
             //
             if (xx > Tol)
+            {
               NbSolutions++;
+            }
             xx = -A * D - delta;
             //
             if (xx > Tol)
+            {
               NbSolutions++;
+            }
           }
         }
         //
@@ -813,10 +859,14 @@ static void Function_SetUVBounds(double&                               myU1,
 
         if (std::abs(pmin - W1) > Precision::PConfusion()
             && std::abs(pmin - W2) > Precision::PConfusion())
+        {
           myU1 -= dmax * .5;
+        }
         if (std::abs(pmax - W1) > Precision::PConfusion()
             && std::abs(pmax - W2) > Precision::PConfusion())
+        {
           myU2 += dmax * .5;
+        }
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
         {
@@ -914,16 +964,24 @@ static void Function_SetUVBounds(double&                               myU1,
 
       if (std::abs(pminU - W1) > Precision::PConfusion()
           && std::abs(pminU - W2) > Precision::PConfusion())
+      {
         myU1 -= dmaxU * .5;
+      }
       if (std::abs(pmaxU - W1) > Precision::PConfusion()
           && std::abs(pmaxU - W2) > Precision::PConfusion())
+      {
         myU2 += dmaxU * .5;
+      }
       if (std::abs(pminV - W1) > Precision::PConfusion()
           && std::abs(pminV - W2) > Precision::PConfusion())
+      {
         myV1 -= dmaxV * .5;
+      }
       if (std::abs(pmaxV - W1) > Precision::PConfusion()
           && std::abs(pmaxV - W2) > Precision::PConfusion())
+      {
         myV2 += dmaxV * .5;
+      }
 
       if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
       {
@@ -993,14 +1051,22 @@ public:
     myIsPeriodic[1] = mySurface->IsVPeriodic();
 
     if (myIsPeriodic[0])
+    {
       myPeriod[0] = mySurface->UPeriod();
+    }
     else
+    {
       myPeriod[0] = 0.0;
+    }
 
     if (myIsPeriodic[1])
+    {
       myPeriod[1] = mySurface->VPeriod();
+    }
     else
+    {
       myPeriod[1] = 0.0;
+    }
   }
 
   void PeriodInformation(const int theDimIdx, bool& IsPeriodic, double& thePeriod) const override
@@ -1288,9 +1354,13 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
       NbKnots = Conv.NbKnots();
 
       if (NbPoles <= 0 || NbPoles > 100000)
+      {
         return;
+      }
       if (NbKnots <= 0 || NbKnots > 100000)
+      {
         return;
+      }
 
       NCollection_Array1<gp_Pnt2d> NewPoles(1, NbPoles);
       NCollection_Array1<double>   NewKnots(1, NbKnots);
@@ -1409,7 +1479,9 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     if (!myBSpline.IsNull())
     {
       if (du != 0. || dv != 0.)
+      {
         myBSpline->Translate(gp_Vec2d(du, dv));
+      }
       if (ToMirror)
       {
         gp_Ax2d Axe(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X));

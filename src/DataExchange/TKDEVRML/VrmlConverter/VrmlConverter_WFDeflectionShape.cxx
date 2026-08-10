@@ -173,13 +173,17 @@ else {
             BRepAdaptor_Curve C(Tool.GetCurve());
             BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
             if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream,
                                                  C,
                                                  aPT->Parameters(),
                                                  aPT->NbNodes(),
                                                  aDrawer);
+            }
             else
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+            }
           }
         }
       }
@@ -208,13 +212,17 @@ else {
             BRepAdaptor_Curve C(Tool.GetCurve());
             BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
             if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream,
                                                  C,
                                                  aPT->Parameters(),
                                                  aPT->NbNodes(),
                                                  aDrawer);
+            }
             else
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+            }
           }
         }
       }
@@ -243,13 +251,17 @@ else {
             BRepAdaptor_Curve C(Tool.GetCurve());
             BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
             if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream,
                                                  C,
                                                  aPT->Parameters(),
                                                  aPT->NbNodes(),
                                                  aDrawer);
+            }
             else
+            {
               VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+            }
           }
         }
       }

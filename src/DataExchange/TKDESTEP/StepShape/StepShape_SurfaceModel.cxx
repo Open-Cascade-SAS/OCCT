@@ -22,9 +22,13 @@ StepShape_SurfaceModel::StepShape_SurfaceModel() = default;
 int StepShape_SurfaceModel::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel)))
+  {
     return 1;
+  }
   //	if (ent->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel))) return 2;
   return 0;
 }

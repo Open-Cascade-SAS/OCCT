@@ -49,7 +49,9 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
     tangent           = gp_Vec(myCurve->Pole(1), myCurve->Pole(2));
     tangent_magnitude = tangent.Magnitude();
     if (tangent_magnitude > myTolerance)
+    {
       tangent_normalized = tangent / tangent_magnitude;
+    }
 
     for (ii = 3; ii <= num_poles; ii++)
     {
@@ -63,7 +65,9 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
         gp_Vec CrossProd         = tangent_normalized ^ avector_normalized;
         double CrossProdSqLength = CrossProd.SquareMagnitude();
         if (CrossProdSqLength > CrossProdSqTol)
+        {
           break;
+        }
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)
@@ -79,7 +83,9 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
     tangent           = gp_Vec(myCurve->Pole(num_poles), myCurve->Pole(num_poles - 1));
     tangent_magnitude = tangent.Magnitude();
     if (tangent_magnitude > myTolerance)
+    {
       tangent_normalized = tangent / tangent_magnitude;
+    }
 
     for (ii = num_poles - 2; ii >= 1; ii--)
     {
@@ -93,7 +99,9 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
         gp_Vec CrossProd         = tangent_normalized ^ avector_normalized;
         double CrossProdSqLength = CrossProd.SquareMagnitude();
         if (CrossProdSqLength > CrossProdSqTol)
+        {
           break;
+        }
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)

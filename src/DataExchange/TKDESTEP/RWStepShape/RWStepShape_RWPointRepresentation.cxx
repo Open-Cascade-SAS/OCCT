@@ -38,7 +38,9 @@ void RWStepShape_RWPointRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "point_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

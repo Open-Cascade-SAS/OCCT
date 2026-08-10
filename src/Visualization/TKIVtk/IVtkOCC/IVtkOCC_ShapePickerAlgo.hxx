@@ -40,6 +40,14 @@ public:
   //! Get number of picked entities.
   Standard_EXPORT int NbPicked() override;
 
+  //! Sets the pixel-space selection tolerance used by every subsequent
+  //! Pick call.
+  //! Forwards to SelectMgr_ViewerSelector::SetPixelTolerance.
+  Standard_EXPORT void SetPixelTolerance(const int theTolerance);
+
+  //! Returns the current pixel-space selection tolerance.
+  Standard_EXPORT int PixelTolerance() const;
+
   //! Get activated selection modes for a shape.
   //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes

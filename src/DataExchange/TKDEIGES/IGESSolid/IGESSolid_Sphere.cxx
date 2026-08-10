@@ -46,7 +46,9 @@ gp_Pnt IGESSolid_Sphere::Center() const
 gp_Pnt IGESSolid_Sphere::TransformedCenter() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theCenter);
+  }
   else
   {
     gp_XYZ tmp = theCenter;

@@ -56,7 +56,9 @@ bool BinMDataStd_GenericExtStringDriver::Paste(const BinObjMgt_Persistent&      
   TCollection_ExtendedString aStr;
   bool                       ok = Source >> aStr;
   if (ok)
+  {
     aStrAttr->Set(aStr);
+  }
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid

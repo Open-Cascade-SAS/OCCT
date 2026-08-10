@@ -127,9 +127,13 @@ static bool IsConvertCurve3d(const occ::handle<Geom_Curve>&                     
                              const occ::handle<ShapeCustom_RestrictionParameters>& aParameters)
 {
   if (aCurve.IsNull())
+  {
     return false;
+  }
   if (aParameters->ConvertCurve3d())
+  {
     return true;
+  }
   if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> tmp      = occ::down_cast<Geom_TrimmedCurve>(aCurve);
@@ -140,7 +144,9 @@ static bool IsConvertCurve3d(const occ::handle<Geom_Curve>&                     
   if (aCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
     if (aParameters->ConvertOffsetCurv3d())
+    {
       return true;
+    }
     occ::handle<Geom_OffsetCurve> tmp      = occ::down_cast<Geom_OffsetCurve>(aCurve);
     occ::handle<Geom_Curve>       BasCurve = tmp->BasisCurve();
     return IsConvertCurve3d(BasCurve, Degree, NbSeg, myRational, aParameters);
@@ -149,13 +155,17 @@ static bool IsConvertCurve3d(const occ::handle<Geom_Curve>&                     
   {
     occ::handle<Geom_BSplineCurve> BsC = occ::down_cast<Geom_BSplineCurve>(aCurve);
     if (BsC->Degree() > Degree || ((BsC->NbKnots() - 1) >= NbSeg))
+    {
       return true;
+    }
     return myRational && BsC->IsRational();
   }
   if (aCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve))
       && (occ::down_cast<Geom_BezierCurve>(aCurve)->Degree() > Degree
           || (myRational && occ::down_cast<Geom_BezierCurve>(aCurve)->IsRational())))
+  {
     return true;
+  }
   // else return false;
   return false;
 }
@@ -167,19 +177,29 @@ static bool IsConvertSurface(const occ::handle<Geom_Surface>&                   
                              const occ::handle<ShapeCustom_RestrictionParameters>& aParameters)
 {
   if (aSurface.IsNull())
+  {
     return false;
+  }
   if (aSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
     return aParameters->ConvertPlane();
   }
   else if (aSurface->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
+  {
     return aParameters->ConvertConicalSurf();
+  }
   else if (aSurface->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
+  {
     return aParameters->ConvertSphericalSurf();
+  }
   else if (aSurface->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
+  {
     return aParameters->ConvertCylindricalSurf();
+  }
   else if (aSurface->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
+  {
     return aParameters->ConvertToroidalSurf();
+  }
 
   // else if(aSurface->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))    {
   //   return aParameters->ConvertElementarySurf();
@@ -188,10 +208,14 @@ static bool IsConvertSurface(const occ::handle<Geom_Surface>&                   
   {
     if (aSurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))
         && aParameters->ConvertRevolutionSurf())
+    {
       return true;
+    }
     if (aSurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
         && aParameters->ConvertExtrusionSurf())
+    {
       return true;
+    }
     occ::handle<Geom_SweptSurface> aSurf    = occ::down_cast<Geom_SweptSurface>(aSurface);
     occ::handle<Geom_Curve>        BasCurve = aSurf->BasisCurve();
     return IsConvertCurve3d(BasCurve, Degree, NbSeg, myRational, aParameters);
@@ -206,7 +230,9 @@ static bool IsConvertSurface(const occ::handle<Geom_Surface>&                   
   if (aSurface->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     if (aParameters->ConvertOffsetSurf())
+    {
       return true;
+    }
     occ::handle<Geom_OffsetSurface> aSurf   = occ::down_cast<Geom_OffsetSurface>(aSurface);
     occ::handle<Geom_Surface>       theSurf = aSurf->BasisSurface();
     return IsConvertSurface(theSurf, Degree, NbSeg, myRational, aParameters);
@@ -216,23 +242,35 @@ static bool IsConvertSurface(const occ::handle<Geom_Surface>&                   
 
     occ::handle<Geom_BSplineSurface> theSurf = occ::down_cast<Geom_BSplineSurface>(aSurface);
     if (theSurf->UDegree() > Degree || theSurf->VDegree() > Degree)
+    {
       return true;
+    }
     if ((theSurf->NbUKnots() - 1) * (theSurf->NbVKnots() - 1) > NbSeg)
+    {
       return true;
+    }
     if (myRational && (theSurf->IsURational() || theSurf->IsVRational()))
+    {
       return true;
+    }
     return false;
   }
 
   if (aSurface->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
     if (aParameters->ConvertBezierSurf())
+    {
       return true;
+    }
     occ::handle<Geom_BezierSurface> theSurf = occ::down_cast<Geom_BezierSurface>(aSurface);
     if (theSurf->UDegree() > Degree || theSurf->VDegree() > Degree)
+    {
       return true;
+    }
     if (myRational && (theSurf->IsURational() || theSurf->IsVRational()))
+    {
       return true;
+    }
     return false;
   }
   return false;
@@ -245,9 +283,13 @@ static bool IsConvertCurve2d(const occ::handle<Geom2d_Curve>&                   
                              const occ::handle<ShapeCustom_RestrictionParameters>& aParameters)
 {
   if (aCurve.IsNull())
+  {
     return false;
+  }
   if (aParameters->ConvertCurve2d())
+  {
     return true;
+  }
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
     occ::handle<Geom2d_TrimmedCurve> tmp      = occ::down_cast<Geom2d_TrimmedCurve>(aCurve);
@@ -257,7 +299,9 @@ static bool IsConvertCurve2d(const occ::handle<Geom2d_Curve>&                   
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
   {
     if (aParameters->ConvertOffsetCurv2d())
+    {
       return true;
+    }
     occ::handle<Geom2d_OffsetCurve> tmp      = occ::down_cast<Geom2d_OffsetCurve>(aCurve);
     occ::handle<Geom2d_Curve>       BasCurve = tmp->BasisCurve();
     return IsConvertCurve2d(BasCurve, Degree, NbSeg, myRational, aParameters);
@@ -266,11 +310,15 @@ static bool IsConvertCurve2d(const occ::handle<Geom2d_Curve>&                   
       && ((occ::down_cast<Geom2d_BSplineCurve>(aCurve)->Degree() > Degree
            || ((occ::down_cast<Geom2d_BSplineCurve>(aCurve)->NbKnots() - 1) > NbSeg))
           || (myRational && occ::down_cast<Geom2d_BSplineCurve>(aCurve)->IsRational())))
+  {
     return true;
+  }
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve))
       && ((occ::down_cast<Geom2d_BezierCurve>(aCurve)->Degree() > Degree)
           || (myRational && occ::down_cast<Geom2d_BezierCurve>(aCurve)->IsRational())))
+  {
     return true;
+  }
   // else return false;
   return false;
 }
@@ -372,16 +420,22 @@ bool ShapeCustom_BSplineRestriction::NewSurface(const TopoDS_Face&         F,
                                                 bool&                      RevFace)
 {
   if (!myApproxSurfaceFlag)
+  {
     return false;
+  }
   RevWires                           = false;
   RevFace                            = false;
   myConvert                          = false;
   occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(F, L);
   if (aSurface.IsNull())
+  {
     return false;
+  }
   bool IsOf = true;
   if (myParameters->ConvertOffsetSurf())
+  {
     IsOf = false;
+  }
   double UF, UL, VF, VL;
   aSurface->Bounds(UF, UL, VF, VL);
   double Umin, Umax, Vmin, Vmax;
@@ -416,12 +470,18 @@ bool ShapeCustom_BSplineRestriction::NewSurface(const TopoDS_Face&         F,
     occ::handle<Geom_RectangularTrimmedSurface> rts =
       occ::down_cast<Geom_RectangularTrimmedSurface>(aSurface);
     if (!rts.IsNull())
+    {
       wasBSpline = rts->BasisSurface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
+    }
 
     if (wasBSpline)
+    {
       SendMsg(F, Message_Msg("BSplineRestriction.NewSurface.MSG1"));
+    }
     else
+    {
       SendMsg(F, Message_Msg("BSplineRestriction.NewSurface.MSG0"));
+    }
   }
 
   return IsConv;
@@ -480,7 +540,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
                                                     const bool                       IsOf)
 {
   if (!IsConvertSurface(aSurface, myMaxDegree, myNbMaxSeg, myRational, myParameters))
+  {
     return false;
+  }
 
   occ::handle<Geom_Surface> aSurf = aSurface;
   if (aSurf->IsKind(STANDARD_TYPE(Geom_Plane)) && myParameters->ConvertPlane())
@@ -547,7 +609,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
         return true;
       }
       else
+      {
         return false;
+      }
     }
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
@@ -591,7 +655,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
         return true;
       }
       else
+      {
         return false;
+      }
     }
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
@@ -609,7 +675,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
       return true;
     }
     else
+    {
       return false;
+    }
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)) && IsOf)
   {
@@ -624,12 +692,18 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
         return true;
       }
       else if (ConvertSurface(aSurf, S, UF, UL, VF, VL, false))
+      {
         return true;
+      }
       else
+      {
         return false;
+      }
     }
     else
+    {
       return false;
+    }
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)) && myParameters->ConvertBezierSurf())
   {
@@ -650,7 +724,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
       new Geom_BSplineSurface(aPoles, aWeights, uKnots, vKnots, uMults, vMults, uDegree, vDegree);
 
     if (!ConvertSurface(bspline, S, UF, UL, VF, VL, IsOf))
+    {
       S = bspline;
+    }
     return true;
   }
 
@@ -673,7 +749,9 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
     VRat                                 = BsS->IsVRational();
     bool IsR                             = (myRational && (URat || VRat));
     if (UDeg <= myMaxDegree && VDeg <= myMaxDegree && NbSeg <= myNbMaxSeg && !IsR)
+    {
       return false;
+    }
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
@@ -685,11 +763,15 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
     VRat                                = BsZ->IsVRational();
     bool IsR                            = (myRational && (URat || VRat));
     if (UDeg <= myMaxDegree && VDeg <= myMaxDegree && NbSeg <= myNbMaxSeg && !IsR)
+    {
       return false;
+    }
   }
   GeomAbs_Shape Cont = myContinuity3d;
   if (aSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  {
     Cont = GeomAbs_C0;
+  }
   /*    bool IsR = (myRational && (URat || VRat));
   if( UDeg <= myMaxDegree &&  VDeg <= myMaxDegree && NbSeg <=  myNbMaxSeg && !IsR ) {
   return false;
@@ -745,9 +827,13 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
   int aCU = std::min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
   int aCV = std::min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
   if (!aCU)
+  {
     aCU = ContToInteger(Cont);
+  }
   if (!aCV)
+  {
     aCV = ContToInteger(Cont);
+  }
 
   for (;;)
   {
@@ -783,9 +869,13 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
             S                                    = anApprox.Surface();
             occ::handle<Geom_BSplineSurface> Bsc = occ::down_cast<Geom_BSplineSurface>(S);
             if (aSurface->IsUPeriodic())
+            {
               Bsc->SetUPeriodic();
+            }
             if (aSurface->IsVPeriodic())
+            {
               Bsc->SetVPeriodic();
+            }
             // int DegU = Bsc->UDegree(); // DegU not used (skl)
             // int DegV = Bsc->VDegree(); // DegV not used (skl)
             // int nbVK = Bsc->NbVKnots(); // nbVK not used (skl)
@@ -797,14 +887,18 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
             {
               NCollection_Array1<double> uknots(Bsc->UKnots());
               for (int j = 1; j <= uknots.Length(); j++)
+              {
                 uknots(j) += ShiftU;
+              }
               Bsc->SetUKnots(uknots);
             }
             if (std::abs(ShiftV) > Precision::PConfusion())
             {
               NCollection_Array1<double> vknots(Bsc->VKnots());
               for (int j = 1; j <= vknots.Length(); j++)
+              {
                 vknots(j) += ShiftV;
+              }
               Bsc->SetVKnots(vknots);
             }
 
@@ -826,17 +920,27 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
           (void)anException;
           // szv: protection against loop
           if (aCU == 0 && aCV == 0)
+          {
             break;
+          }
           if (aCU > 0)
+          {
             aCU--;
+          }
           if (aCV > 0)
+          {
             aCV--;
+          }
         }
       }
       if (prevTol <= newTol)
+      {
         break;
+      }
       else
+      {
         prevTol = newTol;
+      }
     }
     // int GMaxDegree = 15;//Geom_BSplineSurface::MaxDegree();
 
@@ -847,16 +951,26 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
         if (aCV != 0 || aCU != 0)
         {
           if (aCV > 0)
+          {
             aCV--;
+          }
           if (aCU > 0)
+          {
             aCU--;
+          }
         }
         else
+        {
           MaxSeg = 2 * MaxSeg; // myGMaxSeg;
+        }
         if (MaxSeg > myParameters->GMaxSeg())
+        {
           MaxSeg = myParameters->GMaxSeg();
+        }
         else
+        {
           continue;
+        }
       }
       else
       {
@@ -896,7 +1010,9 @@ bool ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge&       E,
                                               double&                  Tol)
 {
   if (!myApproxCurve3dFlag)
+  {
     return false;
+  }
   double                  First, Last;
   occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(E, L, First, Last);
   double                  TolCur = BRep_Tool::Tolerance(E);
@@ -909,7 +1025,9 @@ bool ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge&       E,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
+    {
       continue;
+    }
     occ::handle<Geom_Surface> aSurface = GC->Surface();
     occ::handle<Geom2d_Curve> aCurve2d = GC->PCurve();
     if ((myApproxSurfaceFlag
@@ -930,11 +1048,15 @@ bool ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge&       E,
       return true;
     }
     else
+    {
       return false;
+    }
   }
   bool IsOf = true;
   if (myParameters->ConvertOffsetCurv3d())
+  {
     IsOf = false;
+  }
   bool IsConv = ConvertCurve(aCurve, C, IsConvert, First, Last, TolCur, IsOf);
   Tol         = BRep_Tool::Tolerance(E); // TolCur;
 
@@ -943,12 +1065,18 @@ bool ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge&       E,
     bool                           wasBSpline = aCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve));
     occ::handle<Geom_TrimmedCurve> tc         = occ::down_cast<Geom_TrimmedCurve>(aCurve);
     if (!tc.IsNull())
+    {
       wasBSpline = tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom_BSplineCurve));
+    }
 
     if (wasBSpline)
+    {
       SendMsg(E, Message_Msg("BSplineRestriction.NewCurve.MSG1"));
+    }
     else
+    {
       SendMsg(E, Message_Msg("BSplineRestriction.NewCurve.MSG0"));
+    }
   }
   return IsConv;
 }
@@ -1022,16 +1150,22 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve(const occ::handle<Geom_Curve>&
                                    myNbMaxSeg,
                                    6);
     if (approx.HasResult())
+    {
       aBSpline = approx.Curve();
+    }
     else
+    {
       aBSpline = GeomConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
+    }
 
     double Shift = First - aBSpline->FirstParameter();
     if (std::abs(Shift) > Precision::PConfusion())
     {
       NCollection_Array1<double> newKnots(aBSpline->Knots());
       for (int i = 1; i <= newKnots.Length(); i++)
+      {
         newKnots(i) += Shift;
+      }
       aBSpline->SetKnots(newKnots);
     }
     occ::handle<Geom_Curve> ResCurve;
@@ -1079,7 +1213,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve(const occ::handle<Geom_Curve>&
         return true;
       }
       else if (ConvertCurve(aCurve, C, IsConvert, First, Last, TolCur, false))
+      {
         return true;
+      }
       else
       {
         if (IsConvert)
@@ -1122,7 +1258,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve(const occ::handle<Geom_Curve>&
           return true;
         }
         else
+        {
           return false;
+        }
       }
     }
     if (aCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
@@ -1139,27 +1277,39 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve(const occ::handle<Geom_Curve>&
           return true;
         }
         else
+        {
           return false;
+        }
       }
     }
     occ::handle<Geom_Curve> aCurve1;
     double                  pf = aCurve->FirstParameter(), pl = aCurve->LastParameter();
     // 15.11.2002 PTV OCC966
     if (ShapeAnalysis_Curve::IsPeriodic(aCurve) && (First != Last))
+    {
       aCurve1 = new Geom_TrimmedCurve(aCurve, First, Last);
+    }
     else if (pf < (First - Precision::PConfusion()) || pl > (Last + Precision::PConfusion()))
     {
       double F = std::max(First, pf), L = std::min(Last, pl);
       if (F != L)
+      {
         aCurve1 = new Geom_TrimmedCurve(aCurve, F, L);
+      }
       else
+      {
         aCurve1 = aCurve;
+      }
     }
     else
+    {
       aCurve1 = aCurve;
+    }
     int aC = std::min(ContToInteger(myContinuity3d), ContToInteger(aCurve->Continuity()));
     if (!aC)
+    {
       aC = ContToInteger(myContinuity3d);
+    }
     // aC = std::min(aC,(Deg -1));
     int MaxSeg = myNbMaxSeg;
     int MaxDeg = myMaxDegree;
@@ -1266,7 +1416,9 @@ bool ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E,
                                                 double&                    Tol)
 {
   if (!myApproxCurve2dFlag && !myApproxSurfaceFlag)
+  {
     return false;
+  }
   double                    First, Last, F1, L1;
   TopLoc_Location           L, Loc1;
   occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(F, L);
@@ -1275,7 +1427,9 @@ bool ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E,
     std::min(AdS.UResolution(BRep_Tool::Tolerance(E)), AdS.VResolution(BRep_Tool::Tolerance(E)));
   occ::handle<Geom2d_Curve> aCurve = BRep_Tool::CurveOnSurface(E, F, First, Last);
   if (aCurve.IsNull())
+  {
     return false;
+  }
   occ::handle<Geom_Curve> aCur3d = BRep_Tool::Curve(E, Loc1, F1, L1);
   //  bool IsConvert = (IsConvertSurface(aSurface,myMaxDegree,myNbMaxSeg) ||
   //  !E.IsSame(NewE));
@@ -1295,7 +1449,9 @@ bool ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E,
     {
       occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
       if (GC.IsNull() || !GC->IsCurveOnSurface())
+      {
         continue;
+      }
       occ::handle<Geom_Surface> aSurf  = GC->Surface();
       occ::handle<Geom2d_Curve> aCur2d = GC->PCurve();
       if ((myApproxSurfaceFlag
@@ -1316,17 +1472,23 @@ bool ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E,
       return true;
     }
     else
+    {
       return false;
+    }
   }
   bool IsOf = true;
   if (myParameters->ConvertOffsetCurv2d())
+  {
     IsOf = false;
+  }
   bool IsConv = ConvertCurve2d(aCurve, C, IsConvert, First, Last, TolCur, IsOf);
 
   Tol = BRep_Tool::Tolerance(E); // TolCur;
   BRep_Builder B;
   if (!IsConv && !NewE.IsSame(E))
+  {
     B.Range(NewE, First, Last);
+  }
   return IsConv;
 }
 
@@ -1366,7 +1528,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
         return true;
       }
       else
+      {
         return false;
+      }
     }
   }
 
@@ -1394,16 +1558,22 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
     // clang-format on
     Geom2dConvert_ApproxCurve approx(tcurve, myTol2d, myContinuity2d, myNbMaxSeg, 6);
     if (approx.HasResult())
+    {
       aBSpline2d = approx.Curve();
+    }
     else
+    {
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
+    }
 
     double Shift = First - aBSpline2d->FirstParameter();
     if (std::abs(Shift) > Precision::PConfusion())
     {
       NCollection_Array1<double> newKnots(aBSpline2d->Knots());
       for (int i = 1; i <= newKnots.Length(); i++)
+      {
         newKnots(i) += Shift;
+      }
       aBSpline2d->SetKnots(newKnots);
     }
     occ::handle<Geom2d_Curve> ResCurve;
@@ -1451,7 +1621,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
         return true;
       }
       else if (ConvertCurve2d(aCurve, ResCurve, IsConvert, First, Last, TolCur, false))
+      {
         return true;
+      }
       else
       {
         if (IsConvert)
@@ -1461,7 +1633,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
           return true;
         }
         else
+        {
           return false;
+        }
       }
     }
     else
@@ -1473,7 +1647,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
         return true;
       }
       else
+      {
         return false;
+      }
     }
   }
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))
@@ -1496,7 +1672,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
           return true;
         }
         else
+        {
           return false;
+        }
       }
     }
     if (aCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
@@ -1513,28 +1691,40 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
           return true;
         }
         else
+        {
           return false;
+        }
       }
     }
     occ::handle<Geom2d_Curve> aCurve1;
     double                    pf = aCurve->FirstParameter(), pl = aCurve->LastParameter();
     // 15.11.2002 PTV OCC966
     if (ShapeAnalysis_Curve::IsPeriodic(aCurve) && (First != Last))
+    {
       aCurve1 = new Geom2d_TrimmedCurve(aCurve, First, Last);
+    }
     else if (aCurve->FirstParameter() < (First - Precision::PConfusion())
              || aCurve->LastParameter() > (Last + Precision::PConfusion()))
     {
       double F = std::max(First, pf), L = std::min(Last, pl);
       if (F != L)
+      {
         aCurve1 = new Geom2d_TrimmedCurve(aCurve, F, L);
+      }
       else
+      {
         aCurve1 = aCurve;
+      }
     }
     else
+    {
       aCurve1 = aCurve;
+    }
     int aC = std::min(ContToInteger(myContinuity2d), ContToInteger(aCurve->Continuity()));
     if (!aC)
+    {
       aC = ContToInteger(myContinuity2d);
+    }
     // aC = std::min(aC,(Deg -1));
     int aC1 = aC;
     // GeomAbs_Shape aCont =IntegerToGeomAbsShape(aC);
@@ -1629,7 +1819,9 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
       return true;
     }
     else
+    {
       return false;
+    }
   }
 }
 
@@ -1645,7 +1837,9 @@ bool ShapeCustom_BSplineRestriction::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================

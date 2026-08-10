@@ -70,7 +70,9 @@ void TDataStd_Comment::Set(const TCollection_ExtendedString& S)
 {
   // OCC2932 correction
   if (myString == S)
+  {
     return;
+  }
 
   Backup();
   myString = S;
@@ -81,7 +83,9 @@ void TDataStd_Comment::Set(const TCollection_ExtendedString& S)
 void TDataStd_Comment::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;

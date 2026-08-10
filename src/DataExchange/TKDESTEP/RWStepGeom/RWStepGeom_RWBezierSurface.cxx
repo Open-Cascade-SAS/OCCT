@@ -35,7 +35,9 @@ void RWStepGeom_RWBezierSurface::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 8, ach, "bezier_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -80,7 +82,9 @@ void RWStepGeom_RWBezierSurface::ReadStep(const occ::handle<StepData_StepReaderD
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent4))
+          {
             aControlPointsList->SetValue(i4, j4, anent4);
+          }
         }
       }
     }
@@ -99,7 +103,9 @@ void RWStepGeom_RWBezierSurface::ReadStep(const occ::handle<StepData_StepReaderD
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
+  }
 
   // --- inherited field : uClosed ---
 

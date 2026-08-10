@@ -54,13 +54,17 @@ bool BRepGProp_UFunction::Value(const double X, double& F)
   // Center of mass computation
   if (myValueType == GProp_CenterMassX || myValueType == GProp_CenterMassY
       || myValueType == GProp_CenterMassZ)
+  {
     return CenterMassValue(X, F);
+  }
 
   // Inertia computation
   if (myValueType == GProp_InertiaXX || myValueType == GProp_InertiaYY
       || myValueType == GProp_InertiaZZ || myValueType == GProp_InertiaXY
       || myValueType == GProp_InertiaXZ || myValueType == GProp_InertiaYZ)
+  {
     return InertiaValue(X, F);
+  }
 
   return false;
 }
@@ -84,7 +88,9 @@ double BRepGProp_UFunction::VolumeValue(const double X,
 
   // Volume computation for ByPoint mode.
   if (myIsByPoint)
+  {
     return thePMP0.Dot(aNorm.XYZ());
+  }
 
   // Volume and additional coefficients computation for ByPlane mode.
   const double* aCoeff = myCoeffs;
@@ -189,9 +195,13 @@ bool BRepGProp_UFunction::InertiaValue(const double X, double& F)
 
     if (myValueType == GProp_InertiaXX || myValueType == GProp_InertiaYY
         || myValueType == GProp_InertiaZZ)
+    {
       F *= aParam1 * aParam1 + aParam2 * aParam2;
+    }
     else
+    {
       F *= -aParam1 * aParam2;
+    }
 
     return true;
   }

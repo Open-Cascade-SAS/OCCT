@@ -171,13 +171,21 @@ void TopOpeBRepBuild_GTopo::ChangeValue(const TopAbs_State s1, const TopAbs_Stat
 int TopOpeBRepBuild_GTopo::GIndex(const TopAbs_State s) const
 {
   if (s == TopAbs_IN)
+  {
     return 0;
+  }
   else if (s == TopAbs_ON)
+  {
     return 1;
+  }
   else if (s == TopAbs_OUT)
+  {
     return 2;
+  }
   else
+  {
     throw Standard_ProgramError("GIndex : bad input");
+  }
 }
 
 //=================================================================================================
@@ -185,13 +193,21 @@ int TopOpeBRepBuild_GTopo::GIndex(const TopAbs_State s) const
 TopAbs_State TopOpeBRepBuild_GTopo::GState(const int i) const
 {
   if (i == 0)
+  {
     return TopAbs_IN;
+  }
   else if (i == 1)
+  {
     return TopAbs_ON;
+  }
   else if (i == 2)
+  {
     return TopAbs_OUT;
+  }
   else
+  {
     throw Standard_ProgramError("GState : bad input");
+  }
 }
 
 //=================================================================================================
@@ -281,45 +297,55 @@ void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS, void* const a) const
   TopOpeBRepDS::Print(myConfig1, OS);
   OS << " ";
   TopOpeBRepDS::Print(myConfig2, OS);
-  OS << std::endl;
+  OS << '\n';
 
   if (myReverseForce)
-    OS << "reverse value : " << myReverseValue << std::endl;
+  {
+    OS << "reverse value : " << myReverseValue << '\n';
+  }
 
   if (s)
+  {
     OS << s;
+  }
   OS << "\\ I N O";
-  OS << std::endl;
+  OS << '\n';
 
   if (s)
+  {
     OS << s;
+  }
   OS << "I ";
   DumpVal(OS, TopAbs_IN, TopAbs_IN);
   OS << " ";
   DumpVal(OS, TopAbs_IN, TopAbs_ON);
   OS << " ";
   DumpVal(OS, TopAbs_IN, TopAbs_OUT);
-  OS << std::endl;
+  OS << '\n';
 
   if (s)
+  {
     OS << s;
+  }
   OS << "N ";
   DumpVal(OS, TopAbs_ON, TopAbs_IN);
   OS << " ";
   DumpVal(OS, TopAbs_ON, TopAbs_ON);
   OS << " ";
   DumpVal(OS, TopAbs_ON, TopAbs_OUT);
-  OS << std::endl;
+  OS << '\n';
 
   if (s)
+  {
     OS << s;
+  }
   OS << "O ";
   DumpVal(OS, TopAbs_OUT, TopAbs_IN);
   OS << " ";
   DumpVal(OS, TopAbs_OUT, TopAbs_ON);
   OS << " ";
   DumpVal(OS, TopAbs_OUT, TopAbs_OUT);
-  OS << std::endl;
+  OS << '\n';
 }
 
 //=================================================================================================
@@ -328,15 +354,23 @@ void TopOpeBRepBuild_GTopo::StatesON(TopAbs_State& s1, TopAbs_State& s2) const
 {
   s1 = TopAbs_UNKNOWN;
   if (Value(TopAbs_ON, TopAbs_IN))
+  {
     s1 = TopAbs_IN;
+  }
   else if (Value(TopAbs_ON, TopAbs_OUT))
+  {
     s1 = TopAbs_OUT;
+  }
 
   s2 = TopAbs_UNKNOWN;
   if (Value(TopAbs_IN, TopAbs_ON))
+  {
     s2 = TopAbs_IN;
+  }
   else if (Value(TopAbs_OUT, TopAbs_ON))
+  {
     s2 = TopAbs_OUT;
+  }
 
   if (s1 == TopAbs_UNKNOWN || s2 == TopAbs_UNKNOWN)
   {
@@ -358,9 +392,13 @@ bool TopOpeBRepBuild_GTopo::IsToReverse1() const
     StatesON(s1, s2);
     bool IsToRev;
     if (s1 == TopAbs_IN && s2 == TopAbs_IN)
+    {
       IsToRev = false;
+    }
     else
+    {
       IsToRev = (s1 == TopAbs_IN);
+    }
     return IsToRev;
   }
   //  throw Standard_ProgramError("GTopo::IsToReverse1");
@@ -381,9 +419,13 @@ bool TopOpeBRepBuild_GTopo::IsToReverse2() const
     StatesON(s1, s2);
     bool IsToRev;
     if (s1 == TopAbs_IN && s2 == TopAbs_IN)
+    {
       IsToRev = false;
+    }
     else
+    {
       IsToRev = (s2 == TopAbs_IN);
+    }
     return IsToRev;
   }
 }
@@ -401,7 +443,9 @@ void TopOpeBRepBuild_GTopo::SetReverse(const bool rev)
 bool TopOpeBRepBuild_GTopo::Reverse() const
 {
   if (myReverseForce)
+  {
     return myReverseValue;
+  }
   throw Standard_ProgramError("GTopo::ReverseValue undefined");
 }
 
@@ -415,10 +459,16 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTopo::CopyPermuted() const
   g.ChangeConfig(myConfig2, myConfig1);
   int i, j;
   for (i = 0; i < 3; i++)
+  {
     for (j = 0; j < 3; j++)
+    {
       g.ChangeValue(j, i, Value(i, j));
+    }
+  }
   if (myReverseForce)
+  {
     g.SetReverse(myReverseValue);
+  }
 
   return g;
 }

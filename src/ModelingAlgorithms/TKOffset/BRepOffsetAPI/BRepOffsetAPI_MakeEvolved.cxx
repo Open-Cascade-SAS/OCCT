@@ -72,7 +72,9 @@ BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spin
       bool POS;
       BRepFill::Axe(Spine, Profil, Axis, POS, std::max(Tol, Precision::Confusion()));
       if (ProfOnSpine && !POS)
+      {
         return;
+      }
     }
     if (Spine.ShapeType() == TopAbs_WIRE)
     {
@@ -139,7 +141,9 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeEvolved::GeneratedShapes
   const TopoDS_Shape& ProfShape) const
 {
   if (!myEvolved.IsDone())
+  {
     return anEmptyList;
+  }
 
   return myEvolved.GeneratedShapes(SpineShape, ProfShape);
 }

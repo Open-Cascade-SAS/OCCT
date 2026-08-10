@@ -94,7 +94,9 @@ TDataStd_TreeNode::TDataStd_TreeNode()
 bool TDataStd_TreeNode::Append(const occ::handle<TDataStd_TreeNode>& TN)
 {
   if (!(TN->ID() == myTreeID))
+  {
     throw Standard_DomainError("TDataStd_TreeNode::Append : uncompatible GUID");
+  }
 
   occ::handle<TDataStd_TreeNode> bid;
   TN->SetNext(bid); // Deconnects from next.
@@ -122,7 +124,9 @@ bool TDataStd_TreeNode::Append(const occ::handle<TDataStd_TreeNode>& TN)
 bool TDataStd_TreeNode::Prepend(const occ::handle<TDataStd_TreeNode>& TN)
 {
   if (!(TN->ID() == myTreeID))
+  {
     throw Standard_DomainError("TDataStd_TreeNode::Prepend : uncompatible GUID");
+  }
 
   occ::handle<TDataStd_TreeNode> bid;
   TN->SetPrevious(bid);
@@ -146,16 +150,22 @@ bool TDataStd_TreeNode::Prepend(const occ::handle<TDataStd_TreeNode>& TN)
 bool TDataStd_TreeNode::InsertBefore(const occ::handle<TDataStd_TreeNode>& TN)
 {
   if (!(TN->ID() == myTreeID))
+  {
     throw Standard_DomainError("TDataStd_TreeNode::InsertBefore : uncompatible GUID");
+  }
 
   TN->SetFather(Father());
   TN->SetPrevious(Previous());
   TN->SetNext(this);
 
   if (!HasPrevious())
+  {
     Father()->SetFirst(TN);
+  }
   else
+  {
     Previous()->SetNext(TN);
+  }
 
   SetPrevious(TN);
   return !TN.IsNull();
@@ -166,17 +176,23 @@ bool TDataStd_TreeNode::InsertBefore(const occ::handle<TDataStd_TreeNode>& TN)
 bool TDataStd_TreeNode::InsertAfter(const occ::handle<TDataStd_TreeNode>& TN)
 {
   if (!(TN->ID() == myTreeID))
+  {
     throw Standard_DomainError("TDataStd_TreeNode::InsertAfter : uncompatible GUID");
+  }
 
   if (HasFather() && !HasNext())
+  {
     Father()->SetLast(TN);
+  }
 
   TN->SetFather(Father());
   TN->SetPrevious(this);
   TN->SetNext(Next());
 
   if (HasNext())
+  {
     Next()->SetPrevious(TN);
+  }
 
   SetNext(TN);
   return !TN.IsNull();
@@ -187,25 +203,37 @@ bool TDataStd_TreeNode::InsertAfter(const occ::handle<TDataStd_TreeNode>& TN)
 bool TDataStd_TreeNode::Remove()
 {
   if (IsRoot())
+  {
     return true;
+  }
 
   occ::handle<TDataStd_TreeNode> bid;
   if (!HasPrevious())
+  {
     Father()->SetFirst(Next());
+  }
   else
+  {
     Previous()->SetNext(Next());
+  }
 
   if (HasNext())
   {
     if (HasPrevious())
+    {
       Next()->SetPrevious(Previous());
+    }
     else
+    {
       Next()->SetPrevious(bid);
+    }
   }
   else
   {
     if (HasPrevious())
+    {
       Previous()->SetNext(bid);
+    }
   }
 
   if (Father()->HasFirst())
@@ -217,7 +245,9 @@ bool TDataStd_TreeNode::Remove()
         Father()->SetFirst(Next());
       }
       else
+      {
         Father()->SetFirst(bid);
+      }
     }
   }
 
@@ -288,7 +318,9 @@ bool TDataStd_TreeNode::IsDescendant(const occ::handle<TDataStd_TreeNode>& ofTN)
   while (O->myFather != nullptr)
   {
     if (O->myFather == ofTN)
+    {
       return true;
+    }
     O = O->myFather;
   }
   return false;
@@ -364,10 +396,14 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::First() const
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Last()
 {
   if (myLast && !myLast->IsChild(this))
+  {
     myLast = nullptr;
+  }
 
   if (myLast == nullptr)
+  {
     return FindLast();
+  }
 
   return myLast;
 }
@@ -377,7 +413,9 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Last()
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::FindLast()
 {
   if (myFirst == nullptr)
+  {
     return myFirst;
+  }
   TDataStd_TreeNode* L = myFirst;
   while (L->myNext != nullptr)
   {
@@ -392,9 +430,13 @@ void TDataStd_TreeNode::SetFather(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
+  {
     myFather = nullptr;
+  }
   else
+  {
     myFather = F.operator->();
+  }
   myLast = nullptr;
 }
 
@@ -404,9 +446,13 @@ void TDataStd_TreeNode::SetNext(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
+  {
     myNext = nullptr;
+  }
   else
+  {
     myNext = F.operator->();
+  }
   myLast = nullptr;
 }
 
@@ -416,9 +462,13 @@ void TDataStd_TreeNode::SetPrevious(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
+  {
     myPrevious = nullptr;
+  }
   else
+  {
     myPrevious = F.operator->();
+  }
   myLast = nullptr;
 }
 
@@ -428,9 +478,13 @@ void TDataStd_TreeNode::SetFirst(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
+  {
     myFirst = nullptr;
+  }
   else
+  {
     myFirst = F.operator->();
+  }
   myLast = nullptr;
 }
 
@@ -440,9 +494,13 @@ void TDataStd_TreeNode::SetLast(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
+  {
     myLast = nullptr;
+  }
   else
+  {
     myLast = F.operator->();
+  }
 }
 
 //=================================================================================================
@@ -452,11 +510,17 @@ void TDataStd_TreeNode::AfterAddition()
   if (!IsBackuped())
   {
     if (myPrevious)
+    {
       myPrevious->SetNext(this);
+    }
     else if (myFather)
+    {
       myFather->SetFirst(this);
+    }
     if (myNext)
+    {
       myNext->SetPrevious(this);
+    }
   }
 }
 
@@ -468,7 +532,9 @@ void TDataStd_TreeNode::BeforeForget()
   {
     Remove();
     while (HasFirst())
+    {
       First()->Remove();
+    }
   }
 }
 
@@ -485,7 +551,9 @@ bool TDataStd_TreeNode::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttD
                                    const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
+  {
     BeforeForget(); // Disconnect.
+  }
   return true;
 }
 
@@ -495,7 +563,9 @@ bool TDataStd_TreeNode::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDe
                                   const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
+  {
     AfterAddition(); // Reconnect.
+  }
   return true;
 }
 
@@ -573,33 +643,43 @@ Standard_OStream& TDataStd_TreeNode::Dump(Standard_OStream& anOS) const
   {
     anOS << "  Father=";
     if (!myFather->Label().IsNull())
+    {
       myFather->Label().EntryDump(anOS);
+    }
   }
   if (myPrevious)
   {
     anOS << "  Previous=";
     if (!myPrevious->Label().IsNull())
+    {
       myPrevious->Label().EntryDump(anOS);
+    }
   }
   if (myNext)
   {
     anOS << "  Next=";
     if (!myNext->Label().IsNull())
+    {
       myNext->Label().EntryDump(anOS);
+    }
   }
   if (myFirst)
   {
     anOS << "  First=";
     if (!myFirst->Label().IsNull())
+    {
       myFirst->Label().EntryDump(anOS);
+    }
   }
   if (myLast)
   {
     anOS << "  Last=";
     if (!myLast->Label().IsNull())
+    {
       myLast->Label().EntryDump(anOS);
+    }
   }
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }
 

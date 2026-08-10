@@ -33,7 +33,9 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "surface_style_reflectance_ambient_diffuse"))
+  {
     return;
+  }
 
   // Inherited fields of SurfaceStyleReflectanceAmbient
   double aAmbientReflectance;

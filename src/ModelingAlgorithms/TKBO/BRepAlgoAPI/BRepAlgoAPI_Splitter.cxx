@@ -54,12 +54,16 @@ void BRepAlgoAPI_Splitter::Build(const Message_ProgressRange& theRange)
     // Combine Arguments and Tools for intersection into a single list
     NCollection_List<TopoDS_Shape> aLArgs = myArguments;
     for (NCollection_List<TopoDS_Shape>::Iterator it(myTools); it.More(); it.Next())
+    {
       aLArgs.Append(it.Value());
+    }
 
     // Perform intersection
     IntersectShapes(aLArgs, aPS.Next(70));
     if (HasErrors())
+    {
       return;
+    }
   }
 
   // Initialization of the building tool

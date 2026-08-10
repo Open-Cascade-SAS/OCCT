@@ -148,9 +148,13 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
           bool otherRef   = (rankVsameG != 0 && rankV != 1);
 
           if (otherRef)
+          {
             BDS.FillShapesSameDomain(VsameG, V);
+          }
           else
+          {
             BDS.FillShapesSameDomain(V, VsameG);
+          }
 
           hsdm = myDataStructure->HasSameDomain(V);
         }
@@ -180,7 +184,9 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
     const TopoDS_Face& FA   = TopoDS::Face(FF);
     bool               puok = TopOpeBRepTool::PurgeClosingEdges(FA, LOF, MWisOld, MshNOK);
     if (!puok)
+    {
       throw Standard_Failure("TopOpeBRepBuild::GWESMakeFaces");
+    }
     topurge = !MshNOK.IsEmpty();
 
 #ifdef OCCT_DEBUG
@@ -194,7 +200,9 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
     NCollection_List<TopoDS_Shape> LOFF;
     bool puok = TopOpeBRepTool::MakeFaces(TopoDS::Face(FF), LOF, MshNOK, LOFF);
     if (!puok)
+    {
       throw Standard_Failure("TopOpeBRepBuild::GWESMakeFaces");
+    }
     LOF.Clear();
     LOF.Assign(LOFF);
   }
@@ -242,7 +250,9 @@ static bool FUN_purgeFon1nonoriE(const TopoDS_Shape& newFace)
   TopExp_Explorer ex(newFace, TopAbs_EDGE);
   int             nE = 0;
   for (; ex.More(); ex.Next())
+  {
     nE++;
+  }
   if (nE == 1)
   {
     ex.Init(newFace, TopAbs_EDGE);
@@ -250,11 +260,15 @@ static bool FUN_purgeFon1nonoriE(const TopoDS_Shape& newFace)
     TopAbs_Orientation  ori    = ed.Orientation();
     bool                hasori = (ori == TopAbs_FORWARD) || (ori == TopAbs_REVERSED);
     if (!hasori)
+    {
       return true;
+    }
     //// modified by jgv, 6.06.02 for OCC424 ////
     TopoDS_Edge theEdge = TopoDS::Edge(ed);
     if (BRep_Tool::Degenerated(theEdge))
+    {
       return true;
+    }
     /////////////////////////////////////////////
   }
   return false;
@@ -280,24 +294,40 @@ static TopAbs_Orientation FUN_ReOrientIntExtEdge(const TopoDS_Edge& FRE,
   if (OFRE == TopAbs_FORWARD)
   {
     if (Vl1.IsSame(Vf2))
+    {
       result = TopAbs_FORWARD;
+    }
     if (Vl1.IsSame(Vl2))
+    {
       result = TopAbs_REVERSED;
+    }
     if (Vf1.IsSame(Vf2))
+    {
       result = TopAbs_REVERSED;
+    }
     if (Vf1.IsSame(Vl2))
+    {
       result = TopAbs_FORWARD;
+    }
   }
   if (OFRE == TopAbs_REVERSED)
   {
     if (Vl1.IsSame(Vf2))
+    {
       result = TopAbs_REVERSED;
+    }
     if (Vl1.IsSame(Vl2))
+    {
       result = TopAbs_FORWARD;
+    }
     if (Vf1.IsSame(Vf2))
+    {
       result = TopAbs_FORWARD;
+    }
     if (Vf1.IsSame(Vl2))
+    {
       result = TopAbs_REVERSED;
+    }
   }
   return result;
 }
@@ -309,15 +339,23 @@ static int FUN_CheckORI(TopAbs_Orientation O1, TopAbs_Orientation O2)
   int result;
   if ((O1 == TopAbs_INTERNAL || O1 == TopAbs_EXTERNAL)
       && (O2 == TopAbs_INTERNAL || O2 == TopAbs_EXTERNAL))
+  {
     result = 0;
+  }
   else if ((O1 == TopAbs_INTERNAL || O1 == TopAbs_EXTERNAL)
            && (O2 == TopAbs_FORWARD || O2 == TopAbs_REVERSED))
+  {
     result = 1;
+  }
   else if ((O1 == TopAbs_FORWARD || O1 == TopAbs_REVERSED)
            && (O2 == TopAbs_INTERNAL || O2 == TopAbs_EXTERNAL))
+  {
     result = 2;
+  }
   else
+  {
     result = 4;
+  }
   return result;
 }
 
@@ -415,9 +453,13 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
 
           TopAbs_Orientation oE = newEdge.Orientation();
           if (oE == TopAbs_INTERNAL)
+          {
             neINTERNAL++;
+          }
           else if (oE == TopAbs_EXTERNAL)
+          {
             neEXTERNAL++;
+          }
 
           // clang-format off
 		  bool hasPC = FC2D_HasCurveOnSurface(newEdge,newFace);                                     // jyl980402+
@@ -427,7 +469,8 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
 		      double f2,l2,tolpc; occ::handle<Geom2d_Curve> C2D;                                              // jyl980402+
 		      //C2D = FC2D_CurveOnSurface(newEdge,newFace,f2,l2,tolpc);                                         // jyl980402+
 		      C2D = FC2D_CurveOnSurface(newEdge,newFace,f2,l2,tolpc, true);                            // xpu051198 (CTS21701)
-		      if(C2D.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_Builder::GFABUMakeFaces null PC"); // jyl980402+
+		      if(C2D.IsNull()) { throw Standard_ProgramError("TopOpeBRepBuild_Builder::GFABUMakeFaces null PC"); // jyl980402+
+}
 		      double tol = std::max(tolE,tolpc);                                                              // jyl980402+
 		      BRep_Builder BB_PC; BB_PC.UpdateEdge(newEdge,C2D,newFace,tol);                                    // jyl980402+
 		    }                                                                                                   // jyl980402+
@@ -445,7 +488,9 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
             EdgeEx.Next();
             TopoDS_Edge nEdge2 = TopoDS::Edge(EdgeEx.Current());
             if (nEdge1.IsSame(nEdge2))
+            {
               return;
+            }
           }
           for (EdgeEx.Init(CmpOfEdges, TopAbs_EDGE); EdgeEx.More(); EdgeEx.Next())
           {
@@ -541,9 +586,13 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
                   if (ori == TopAbs_REVERSED || ori == TopAbs_FORWARD)
                   {
                     if (O1 == TopAbs_INTERNAL)
+                    {
                       neINTERNAL--;
+                    }
                     else
+                    {
                       neEXTERNAL--;
+                    }
                   }
                 }
                 if (chkORI == 2)
@@ -560,9 +609,13 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
                   if (ori == TopAbs_REVERSED || ori == TopAbs_FORWARD)
                   {
                     if (O2 == TopAbs_INTERNAL)
+                    {
                       neINTERNAL--;
+                    }
                     else
+                    {
                       neEXTERNAL--;
+                    }
                   }
                 }
 
@@ -570,17 +623,25 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
                 {
                   FABU.AddEdgeWire(E1, newWire);
                   if (!IsSameE1)
+                  {
                     LofAddE.Append(E1);
+                  }
                   else
+                  {
                     naddsame++;
+                  }
                 }
                 if (AddE2)
                 {
                   FABU.AddEdgeWire(E2, newWire);
                   if (!IsSameE2)
+                  {
                     LofAddE.Append(E2);
+                  }
                   else
+                  {
                     naddsame++;
+                  }
                 }
               } // for StepMap
             } // while ne >
@@ -605,11 +666,17 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
       if (!isold)
       {
         if (ne == 0)
+        {
           continue;
+        }
         else if (nbw == 1 && (ne == neINTERNAL + neEXTERNAL))
+        {
           continue;
+        }
         else
+        {
           nbnewWwithe++;
+        }
       }
 
       // caractere Closed() du nouveau wire newWire
@@ -648,13 +715,21 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(
       double umin, umax, vmin, vmax;
       BRepTools::UVBounds(newFace, umin, umax, vmin, vmax);
       if (umin < oumin)
+      {
         oumin = umin;
+      }
       if (umax > oumax)
+      {
         oumax = umax;
+      }
       if (vmin < ovmin)
+      {
         ovmin = vmin;
+      }
       if (vmax > ovmax)
+      {
         ovmax = vmax;
+      }
       hrts->SetTrim(oumin, oumax, ovmin, ovmax, true, true);
     }
     lnewFace.Append(newFace);

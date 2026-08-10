@@ -28,7 +28,9 @@ void RWStepVisual_RWPreDefinedItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "pre_defined_item"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

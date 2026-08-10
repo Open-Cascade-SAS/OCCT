@@ -45,7 +45,9 @@ void RWStepFEA_RWCurve3dElementRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "curve3d_element_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

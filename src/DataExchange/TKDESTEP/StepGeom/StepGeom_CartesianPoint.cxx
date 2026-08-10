@@ -57,11 +57,17 @@ void StepGeom_CartesianPoint::SetCoordinates(
 {
   myNbCoord = aCoordinates->Length();
   if (myNbCoord > 0)
+  {
     myCoords[0] = aCoordinates->Value(1);
+  }
   if (myNbCoord > 1)
+  {
     myCoords[1] = aCoordinates->Value(2);
+  }
   if (myNbCoord > 2)
+  {
     myCoords[2] = aCoordinates->Value(3);
+  }
 }
 
 void StepGeom_CartesianPoint::SetCoordinates(const std::array<double, 3>& theCoordinates)

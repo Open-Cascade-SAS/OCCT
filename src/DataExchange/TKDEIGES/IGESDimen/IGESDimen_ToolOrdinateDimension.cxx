@@ -63,7 +63,9 @@ void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
       isLine  = false;
     }
     else
+    {
       PR.AddFail("Line or Leader : Type is incorrect");
+    }
   }
   else
   {
@@ -83,9 +85,13 @@ void IGESDimen_ToolOrdinateDimension::WriteOwnParams(
   if (ent->FormNumber() == 0) // either WitnessLine or  LeaderArrow
   {
     if (ent->IsLine())
+    {
       IW.Send(ent->WitnessLine());
+    }
     else
+    {
       IW.Send(ent->Leader());
+    }
   }
   else // both   WitnessLine and LeaderArrow
   {
@@ -134,16 +140,22 @@ void IGESDimen_ToolOrdinateDimension::OwnCheck(const occ::handle<IGESDimen_Ordin
   bool nowitnes = ent->WitnessLine().IsNull();
   bool noleader = ent->Leader().IsNull();
   if (nowitnes && noleader)
+  {
     ach->AddFail("Neither WitnessLine nor LeaderArrow is defined");
+  }
   else if (ent->FormNumber() == 0)
   {
     if (!nowitnes && !noleader)
+    {
       ach->AddFail("Form 0 cannot afford both WitnessLine and LeaderArrow");
+    }
   }
   else
   {
     if (nowitnes || noleader)
+    {
       ach->AddFail("Form 1 requires both WtnessLine and LeaderArrow");
+    }
   }
 }
 

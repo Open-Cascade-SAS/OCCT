@@ -67,7 +67,9 @@ void ChFiDS_ChamfSpine::SetDist(const double Dis)
 void ChFiDS_ChamfSpine::Dists(double& Dis1, double& Dis2) const
 {
   if (mChamf != ChFiDS_TwoDist)
+  {
     throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
+  }
   Dis1 = d1;
   Dis2 = d2;
 }
@@ -88,7 +90,9 @@ void ChFiDS_ChamfSpine::GetDistAngle(double& Dis, double& Angle) const
 // bool& DisOnF1)const
 {
   if (mChamf != ChFiDS_DistAngle)
+  {
     throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
+  }
   Dis   = d1;
   Angle = angle;
   // DisOnF1 = dison1;

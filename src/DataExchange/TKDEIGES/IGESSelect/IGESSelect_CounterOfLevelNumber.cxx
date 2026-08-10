@@ -42,15 +42,21 @@ void IGESSelect_CounterOfLevelNumber::AddSign(
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return;
+  }
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
   int level = igesent->Level();
   if (levelist.IsNull() && level < 0)
+  {
     return;
+  }
 
   //  Enregistrer ce/ces niveau(x)
   if (levelist.IsNull())
+  {
     AddLevel(ent, level);
+  }
   else
   {
     int nb = levelist->NbPropertyValues();
@@ -83,12 +89,16 @@ void IGESSelect_CounterOfLevelNumber::AddLevel(const occ::handle<Standard_Transi
     occ::handle<NCollection_HArray1<int>> levels = new NCollection_HArray1<int>(0, level + 100);
     levels->Init(0);
     for (int i = 1; i <= upper; i++)
+    {
       levels->SetValue(i, thelevels->Value(i));
+    }
     thelevels = levels;
   }
   thelevels->SetValue(level, thelevels->Value(level) + 1);
   if (level > thehigh)
+  {
     thehigh = level;
+  }
 
   //  if (level == 0) Add(ent," NO LEVEL");
   //  else {
@@ -106,9 +116,13 @@ int IGESSelect_CounterOfLevelNumber::HighestLevel() const
 int IGESSelect_CounterOfLevelNumber::NbTimesLevel(const int level) const
 {
   if (level < 0)
+  {
     return thenblists;
+  }
   if (level > thehigh)
+  {
     return 0;
+  }
   return thelevels->Value(level);
 }
 
@@ -118,7 +132,9 @@ occ::handle<NCollection_HSequence<int>> IGESSelect_CounterOfLevelNumber::Levels(
   for (int i = 1; i <= thehigh; i++)
   {
     if (thelevels->Value(i) > 0)
+    {
       list->Append(i);
+    }
   }
   return list;
 }
@@ -131,15 +147,21 @@ occ::handle<TCollection_HAsciiString> IGESSelect_CounterOfLevelNumber::Sign(
   //  reprend les termes de AddSign pour la preparation (lecture du level) ...
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return res;
+  }
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
   int level = igesent->Level();
   if (levelist.IsNull() && level < 0)
+  {
     return res;
+  }
 
   //  puis ceux de AddLevel pour calculer la signature
   if (level < 0)
+  {
     return new TCollection_HAsciiString("LEVEL LIST");
+  }
   char signature[30];
   Sprintf(signature, "%7d", level);
   return new TCollection_HAsciiString(signature);
@@ -148,8 +170,10 @@ occ::handle<TCollection_HAsciiString> IGESSelect_CounterOfLevelNumber::Sign(
 void IGESSelect_CounterOfLevelNumber::PrintCount(Standard_OStream& S) const
 {
   IFSelect_SignatureList::PrintCount(S);
-  S << " Highest value : " << thehigh << std::endl;
+  S << " Highest value : " << thehigh << '\n';
   if (thenblists > 0)
+  {
     S << "REMARK for LEVEL LIST : Entities are counted in"
-      << " <LEVEL LIST>\n, and in each Level value of their list" << std::endl;
+      << " <LEVEL LIST>\n, and in each Level value of their list" << '\n';
+  }
 }

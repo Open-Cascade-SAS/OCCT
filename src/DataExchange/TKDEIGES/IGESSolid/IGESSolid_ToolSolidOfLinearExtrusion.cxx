@@ -57,36 +57,50 @@ void IGESSolid_ToolSolidOfLinearExtrusion::ReadOwnParams(
     // st = PR.ReadReal(PR.Current(), "Extrusion direction (I)", tempreal); //szv#4:S4163:12Mar99
     // moved in if
     if (PR.ReadReal(PR.Current(), "Extrusion direction (I)", tempreal))
+    {
       tempDirection.SetX(tempreal);
+    }
   }
   else
+  {
     tempDirection.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Extrusion direction (J)", tempreal); //szv#4:S4163:12Mar99
     // moved in if
     if (PR.ReadReal(PR.Current(), "Extrusion direction (J)", tempreal))
+    {
       tempDirection.SetY(tempreal);
+    }
   }
   else
+  {
     tempDirection.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Extrusion direction (K)", tempreal); //szv#4:S4163:12Mar99
     // moved in if
     if (PR.ReadReal(PR.Current(), "Extrusion direction (K)", tempreal))
+    {
       tempDirection.SetZ(tempreal);
+    }
   }
   else
+  {
     tempDirection.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempEntity, tempLength, tempDirection);
   double eps = 1.E-05;
   if (!tempDirection.IsEqual(ent->ExtrusionDirection().XYZ(), eps))
+  {
     PR.AddWarning("Extrusion Direction poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolSolidOfLinearExtrusion::WriteOwnParams(
@@ -138,7 +152,9 @@ void IGESSolid_ToolSolidOfLinearExtrusion::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->ExtrusionLength() <= 0.0)
+  {
     ach->AddFail("Length of extrusion : Not Positive");
+  }
 }
 
 void IGESSolid_ToolSolidOfLinearExtrusion::OwnDump(
@@ -154,5 +170,5 @@ void IGESSolid_ToolSolidOfLinearExtrusion::OwnDump(
     << "Extrusion length    : " << ent->ExtrusionLength() << "\n"
     << "Extrusion direction : ";
   IGESData_DumpXYZL(S, level, ent->ExtrusionDirection(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

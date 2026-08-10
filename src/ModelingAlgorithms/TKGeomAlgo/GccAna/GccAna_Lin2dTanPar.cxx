@@ -136,7 +136,9 @@ bool GccAna_Lin2dTanPar::IsDone() const
 int GccAna_Lin2dTanPar::NbSolutions() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   return NbrSol;
 }
 

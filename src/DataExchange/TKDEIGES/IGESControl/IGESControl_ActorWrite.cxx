@@ -45,7 +45,9 @@ bool IGESControl_ActorWrite::Recognize(const occ::handle<Transfer_Finder>& start
 {
   DeclareAndCast(TransferBRep_ShapeMapper, shmap, start);
   if (!shmap.IsNull())
+  {
     return true;
+  }
   DeclareAndCast(Transfer_TransientMapper, gemap, start);
   if (!gemap.IsNull())
   {
@@ -53,7 +55,9 @@ bool IGESControl_ActorWrite::Recognize(const occ::handle<Transfer_Finder>& start
     DeclareAndCast(Geom_Curve, Curve, geom);
     DeclareAndCast(Geom_Surface, Surf, geom);
     if (!Curve.IsNull() || !Surf.IsNull())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -69,9 +73,13 @@ occ::handle<Transfer_Binder> IGESControl_ActorWrite::Transfer(
 
   DeclareAndCast(IGESData_IGESModel, modl, FP->Model());
   if (modl.IsNull())
+  {
     return NullResult();
+  }
   if (themodetrans < 0 || themodetrans > 1)
+  {
     return NullResult();
+  }
   occ::handle<Standard_Transient> ent;
 
   DeclareAndCast(TransferBRep_ShapeMapper, shmap, start);
@@ -94,12 +102,18 @@ occ::handle<Transfer_Binder> IGESControl_ActorWrite::Transfer(
     BR1.SetTransferProcess(FP);
 
     if (themodetrans == 0)
+    {
       ent = BR0.TransferShape(shape, theProgress);
+    }
     if (themodetrans == 1)
+    {
       ent = BR1.TransferShape(shape, theProgress);
+    }
     aShapeProcessor.MergeTransferInfo(FP);
     if (!ent.IsNull())
+    {
       return TransientResult(ent);
+    }
   }
   DeclareAndCast(Transfer_TransientMapper, gemap, start);
   if (!gemap.IsNull())
@@ -117,7 +131,9 @@ occ::handle<Transfer_Binder> IGESControl_ActorWrite::Transfer(
     GeomToIGES_GeomSurface GS;
     GS.SetModel(modl);
     if (!Curve.IsNull())
+    {
       ent = GC.TransferCurve(Curve, Curve->FirstParameter(), Curve->LastParameter());
+    }
     else if (!Surf.IsNull())
     {
       double U1, U2, V1, V2;
@@ -125,7 +141,9 @@ occ::handle<Transfer_Binder> IGESControl_ActorWrite::Transfer(
       ent = GS.TransferSurface(Surf, U1, U2, V1, V2);
     }
     if (!ent.IsNull())
+    {
       return TransientResult(ent);
+    }
   }
 
   return NullResult();

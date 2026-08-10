@@ -70,7 +70,7 @@ protected:
   int addNode(const gp_Pnt& thePnt) override
   {
     myNodes.Append(thePnt);
-    return myNodes.Size();
+    return myNodes.Length();
   }
 
   //! Ignore normal.
@@ -102,12 +102,13 @@ protected:
                                    const bool          theToExpandCompound);
 
 protected:
-  NCollection_Vector<gp_Pnt> myNodes; //!< nodes   of currently filled triangulation
-  NCollection_Vector<NCollection_Vec3<float>>
+  NCollection_DynamicArray<gp_Pnt> myNodes; //!< nodes   of currently filled triangulation
+  NCollection_DynamicArray<NCollection_Vec3<float>>
     myNormals; //!< normals of currently filled triangulation
-  NCollection_Vector<NCollection_Vec2<float>>
-                                    myNodesUV;   //!< UVs     of currently filled triangulation
-  NCollection_Vector<Poly_Triangle> myTriangles; //!< indexes of currently filled triangulation
+  NCollection_DynamicArray<NCollection_Vec2<float>>
+    myNodesUV; //!< UVs     of currently filled triangulation
+  NCollection_DynamicArray<Poly_Triangle>
+    myTriangles; //!< indexes of currently filled triangulation
 
   RWObj_IShapeReceiver* myShapeReceiver;      //!< optional shape receiver
   TopoDS_Compound       myResultShape;        //!< result shape as Compound of objects

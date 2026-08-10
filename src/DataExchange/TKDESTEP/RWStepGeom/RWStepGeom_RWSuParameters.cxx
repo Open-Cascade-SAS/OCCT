@@ -36,7 +36,9 @@ void RWStepGeom_RWSuParameters::ReadStep(const occ::handle<StepData_StepReaderDa
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theAch, "su_parameters"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

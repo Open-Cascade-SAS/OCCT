@@ -46,7 +46,9 @@ void HLRTest_Projector::Dump(Standard_OStream& S) const
 {
   S << "Projector : \n";
   if (myProjector.Perspective())
+  {
     S << "perspective, focal = " << myProjector.Focus() << "\n";
+  }
 
   for (int i = 1; i <= 3; i++)
   {
@@ -57,7 +59,7 @@ void HLRTest_Projector::Dump(Standard_OStream& S) const
     }
     S << "\n";
   }
-  S << std::endl;
+  S << '\n';
 }
 
 //=================================================================================================

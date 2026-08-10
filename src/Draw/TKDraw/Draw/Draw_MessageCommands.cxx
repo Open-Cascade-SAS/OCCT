@@ -107,7 +107,7 @@ static int PrintMessenger(Draw_Interpretor& theDI, int, const char**)
   Standard_SStream aSStream;
   aMessenger->DumpJson(aSStream);
   theDI << aSStream;
-  std::cout << aSStream.str() << std::endl;
+  std::cout << aSStream.str() << '\n';
 
   return 0;
 }
@@ -321,7 +321,9 @@ void Draw::MessageCommands(Draw_Interpretor& theCommands)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   const char* group = "DRAW Message Commands";

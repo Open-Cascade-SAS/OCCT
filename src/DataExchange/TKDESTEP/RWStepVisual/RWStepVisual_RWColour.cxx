@@ -26,7 +26,9 @@ void RWStepVisual_RWColour::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 0, ach, "colour"))
+  {
     return;
+  }
 
   //--- Initialisation of the read entity ---
 }

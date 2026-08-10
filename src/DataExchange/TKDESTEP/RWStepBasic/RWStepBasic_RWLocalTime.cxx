@@ -29,7 +29,9 @@ void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "local_time"))
+  {
     return;
+  }
 
   // --- own field : hourComponent ---
 

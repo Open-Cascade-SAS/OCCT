@@ -93,5 +93,5 @@ void IGESSolid_ToolSolidInstance::OwnDump(const occ::handle<IGESSolid_SolidInsta
   S << "IGESSolid_SolidInstance\n"
     << "Solid entity : ";
   dumper.Dump(ent->Entity(), S, (level <= 4) ? 0 : 1);
-  S << std::endl;
+  S << '\n';
 }

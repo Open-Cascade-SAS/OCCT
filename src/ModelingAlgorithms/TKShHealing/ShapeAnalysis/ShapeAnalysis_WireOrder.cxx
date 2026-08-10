@@ -708,7 +708,9 @@ int ShapeAnalysis_WireOrder::Status() const
 int ShapeAnalysis_WireOrder::Ordered(const int theIdx) const
 {
   if (myOrd.IsNull() || myOrd->Upper() < theIdx)
+  {
     return theIdx;
+  }
   int anOldIdx = myOrd->Value(theIdx);
   return (anOldIdx == 0 ? theIdx : anOldIdx);
 }
@@ -744,7 +746,9 @@ void ShapeAnalysis_WireOrder::XY(const int theIdx, gp_XY& theStart2D, gp_XY& the
 double ShapeAnalysis_WireOrder::Gap(const int num) const
 {
   if (num == 0)
+  {
     return myGap;
+  }
   int n1 = Ordered(num);
   int n0 = Ordered(num == 1 ? NbEdges() : num - 1);
   //  Distance entre fin (n0) et debut (n1)
@@ -759,7 +763,9 @@ void ShapeAnalysis_WireOrder::SetChains(const double gap)
 {
   int n0, n1, n2, nb = NbEdges(); // szv#4:S4163:12Mar99 o0,o1,o2 not needed
   if (nb == 0)
+  {
     return;
+  }
   NCollection_Sequence<int> chain;
   n0 = 0;
   chain.Append(1);             // On demarre la partie
@@ -785,10 +791,14 @@ void ShapeAnalysis_WireOrder::SetChains(const double gap)
   }
   nb = chain.Length();
   if (nb == 0)
+  {
     return;
+  }
   myChains = new NCollection_HArray1<int>(1, nb);
   for (n1 = 1; n1 <= nb; n1++)
+  {
     myChains->SetValue(n1, chain.Value(n1));
+  }
 }
 
 //=================================================================================================
@@ -804,15 +814,23 @@ void ShapeAnalysis_WireOrder::Chain(const int num, int& n1, int& n2) const
 {
   n1 = n2 = 0;
   if (myChains.IsNull())
+  {
     return;
+  }
   int nb = myChains->Upper();
   if (num == 0 || num > nb)
+  {
     return;
+  }
   n1 = myChains->Value(num);
   if (num == nb)
+  {
     n2 = NbEdges();
+  }
   else
+  {
     n2 = myChains->Value(num + 1) - 1;
+  }
 }
 
 //=================================================================================================
@@ -837,10 +855,14 @@ void ShapeAnalysis_WireOrder::Couple(const int num, int& n1, int& n2) const
 {
   n1 = n2 = 0;
   if (myCouples.IsNull())
+  {
     return;
+  }
   int nb = myCouples->Upper();
   if (num == 0 || num * 2 > nb)
+  {
     return;
+  }
   n1 = myCouples->Value(2 * num - 1);
   n2 = myCouples->Value(2 * num);
 }

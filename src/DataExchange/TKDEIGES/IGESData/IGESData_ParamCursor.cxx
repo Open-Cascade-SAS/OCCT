@@ -41,10 +41,14 @@ void IGESData_ParamCursor::SetTerm(const int size, const bool autoadv)
   theoffst += thetsize;
   thetsize = size;
   if (autoadv)
+  {
     theadv = (theoffst + thetsize == theisize);
+  }
   if (theoffst + thetsize > theisize)
+  {
     throw Interface_InterfaceError(
       "IGESDAta ParamCursor : required Term size overpass whole Item size");
+  }
 }
 
 void IGESData_ParamCursor::SetOne(const bool autoadv)

@@ -1,5 +1,3 @@
-puts "TODO OCC111111 ALL: Error :  is WRONG because number of "
-
 puts "=============================================================="
 puts "0027913: Sharing between edges was lost after offset operation"
 puts "=============================================================="

@@ -189,12 +189,16 @@ static int DrawDim_CENTER(Draw_Interpretor& di, int nb, const char** arg)
 static int DrawDim_VARIABLES(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
   TopoDS_Shape aLocalShape = DBRep::Get(a[1], TopAbs_FACE);
   TopoDS_Face  F           = TopoDS::Face(aLocalShape);
   //  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[1],TopAbs_FACE));
   if (F.IsNull())
+  {
     return 0;
+  }
 
   int                                                    i = 0;
   TopoDS_Vertex                                          vf, vl;

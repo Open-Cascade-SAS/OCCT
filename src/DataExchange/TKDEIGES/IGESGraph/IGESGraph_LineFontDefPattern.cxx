@@ -32,7 +32,9 @@ void IGESGraph_LineFontDefPattern::Init(
   const occ::handle<TCollection_HAsciiString>&    aPattern)
 {
   if (allSegLength->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGraph_LineFontDefPattern : Init");
+  }
   theSegmentLengths = allSegLength;
   theDisplayPattern = aPattern;
   InitTypeAndForm(304, 2);
@@ -58,7 +60,9 @@ bool IGESGraph_LineFontDefPattern::IsVisible(const int Index) const
 {
   int nbSegs = theSegmentLengths->Length();
   if (Index <= 0 || Index > nbSegs)
+  {
     return false;
+  }
 
   // Get the Character out of String, which contains the required BIT
   char tempStr[2];

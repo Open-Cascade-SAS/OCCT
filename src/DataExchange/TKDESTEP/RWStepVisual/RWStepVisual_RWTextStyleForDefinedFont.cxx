@@ -30,7 +30,9 @@ void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "text_style_for_defined_font has not 1 parameter(s)"))
+  {
     return;
+  }
 
   // --- own field : textColour ---
 

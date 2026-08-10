@@ -79,12 +79,16 @@ bool AIS_C0RegularityFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) 
 {
   occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
+  {
     return false;
+  }
 
   const TopoDS_Shape& aShape = aBO->Shape();
 
   if (aShape.ShapeType() != TopAbs_EDGE)
+  {
     return false;
+  }
 
   return (myMapOfEdges.Contains(aShape));
 }

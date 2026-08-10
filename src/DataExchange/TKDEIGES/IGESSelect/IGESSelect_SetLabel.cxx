@@ -39,7 +39,9 @@ void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&                 ctx,
   {
     DeclareAndCast(IGESData_IGESEntity, iges, ctx.ValueResult());
     if (iges.IsNull())
+    {
       continue;
+    }
     if (themode == 0)
     {
       iges->SetLabel(lab);
@@ -49,13 +51,17 @@ void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&                 ctx,
     // mode = 1 : mettre DEnnn , nnn est le DE Number
     lab = iges->ShortLabel();
     if (theforce)
+    {
       lab.Nullify();
+    }
     if (!lab.IsNull())
     {
       if (lab->Length() > 2)
       {
         if (lab->Value(1) == 'D' && lab->Value(2) == 'E' && atoi(&(lab->ToCString())[2]) > 0)
+        {
           lab.Nullify();
+        }
       }
     }
     //    Si lab nul : le recalculer
@@ -72,10 +78,16 @@ TCollection_AsciiString IGESSelect_SetLabel::Label() const
 {
   TCollection_AsciiString lab;
   if (themode == 0)
+  {
     lab.AssignCat("Clear Short Label");
+  }
   if (themode == 1)
+  {
     lab.AssignCat("Set Short Label to DE Number");
+  }
   if (theforce)
+  {
     lab.AssignCat(" (enforced)");
+  }
   return lab;
 }

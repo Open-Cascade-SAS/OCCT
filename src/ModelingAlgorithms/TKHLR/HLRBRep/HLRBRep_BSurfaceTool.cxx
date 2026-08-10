@@ -37,7 +37,9 @@ int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
       nbs = S.NbUKnots();
       nbs *= S.UDegree();
       if (nbs < 2)
+      {
         nbs = 2;
+      }
     }
     break;
     case GeomAbs_Torus: {
@@ -81,7 +83,9 @@ int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
       nbs = S.NbVKnots();
       nbs *= S.VDegree();
       if (nbs < 2)
+      {
         nbs = 2;
+      }
     }
     break;
     case GeomAbs_Cylinder:
@@ -114,9 +118,13 @@ int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S, const double 
     double ul = LastUParameter(S);
     n *= (int)((u2 - u1) / (uf - ul));
     if (n > nbs)
+    {
       n = nbs;
+    }
     if (n < 5)
+    {
       n = 5;
+    }
   }
   return (n);
 }
@@ -133,9 +141,13 @@ int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S, const double 
     double vl = LastVParameter(S);
     n *= (int)((v2 - v1) / (vf - vl));
     if (n > nbs)
+    {
       n = nbs;
+    }
     if (n < 5)
+    {
       n = 5;
+    }
   }
   return (n);
 }

@@ -126,7 +126,9 @@ TopoDS_Edge BOPTools_AlgoTools::CopyEdge(const TopoDS_Edge& theEdge)
   TopoDS_Edge aNewEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
   aNewEdge.EmptyCopy();
   for (TopoDS_Iterator it(theEdge, false); it.More(); it.Next())
+  {
     BRep_Builder().Add(aNewEdge, it.Value());
+  }
   aNewEdge.Orientation(theEdge.Orientation());
   return aNewEdge;
 }
@@ -466,7 +468,9 @@ void BOPTools_AlgoTools::Dimensions(const TopoDS_Shape& theS, int& theDMin, int&
 {
   theDMin = theDMax = dimension(theS);
   if (theDMax >= 0)
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>                         aLS;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
@@ -484,9 +488,13 @@ void BOPTools_AlgoTools::Dimensions(const TopoDS_Shape& theS, int& theDMin, int&
   {
     int aDim = dimension(it.Value());
     if (aDim < theDMin)
+    {
       theDMin = aDim;
+    }
     if (aDim > theDMax)
+    {
       theDMax = aDim;
+    }
   }
 }
 

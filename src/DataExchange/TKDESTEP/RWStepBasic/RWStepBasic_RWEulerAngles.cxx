@@ -38,7 +38,9 @@ void RWStepBasic_RWEulerAngles::ReadStep(const occ::handle<StepData_StepReaderDa
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "euler_angles"))
+  {
     return;
+  }
 
   // Own fields of EulerAngles
 

@@ -20,7 +20,9 @@
 #include <Standard_MemoryUtils.hxx>
 
 #include <utility>
-#include <mutex>
+#include <atomic>
+#include <memory>
+#include <shared_mutex>
 
 /**
  *  Class NCollection_IncAllocator - incremental memory  allocator. This class
@@ -61,6 +63,9 @@ public:
   Standard_EXPORT NCollection_IncAllocator(const size_t theBlockSize = THE_DEFAULT_BLOCK_SIZE);
 
   //! Setup mutex for thread-safe allocations.
+  //! @warning Must not be called concurrently with Allocate/AllocateOptimal/Reset/clean
+  //!          on the same allocator instance; toggling the mutex while another thread
+  //!          holds a shared_lock on the fast path is undefined behaviour.
   Standard_EXPORT void SetThreadSafe(const bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
@@ -99,10 +104,10 @@ public:
   {
     IBlock(void* thePointer, const size_t theSize);
 
-    char*   CurPointer;
-    size_t  AvailableSize;
-    IBlock* NextBlock        = nullptr; //! Pointer to next sorted block
-    IBlock* NextOrderedBlock = nullptr; //! Pointer to next ordered block
+    std::atomic<char*>  CurPointer;    //!< Atomic for lock-free bump under shared lock
+    std::atomic<size_t> AvailableSize; //!< Atomic for CAS-based space reservation under shared lock
+    IBlock*             NextBlock        = nullptr; //!< Pointer to next sorted block
+    IBlock*             NextOrderedBlock = nullptr; //!< Pointer to next ordered block
   };
 
   //! Description ability to next growing size each 5-th new block
@@ -116,6 +121,11 @@ public:
   };
 
 protected:
+  //! Slow-path allocation: allocates a new block if needed, performs
+  //! bump allocation, and reorders the block list. Must be called
+  //! under mutex (when thread-safe) or without lock (when non-thread-safe).
+  void* allocateSlow(const size_t theSize);
+
   //! Increases size according current block size level
   void increaseBlockSize();
 
@@ -132,11 +142,11 @@ public:
   static constexpr size_t THE_MINIMUM_BLOCK_SIZE = 1024 * 2;
 
 private:
-  unsigned int                myBlockSize;                //!< Block size to incremental allocations
-  unsigned int                myBlockCount     = 0;       //!< Count of created blocks
-  std::unique_ptr<std::mutex> myMutex          = nullptr; //!< Thread-safety mutex
-  IBlock*                     myAllocationHeap = nullptr; //!< Sorted list for allocations
-  IBlock*                     myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
+  unsigned int                       myBlockSize;      //!< Block size to incremental allocations
+  unsigned int                       myBlockCount = 0; //!< Count of created blocks
+  std::unique_ptr<std::shared_mutex> myMutex;          //!< Thread-safety shared mutex (owned, RAII)
+  IBlock*                            myAllocationHeap = nullptr; //!< Sorted list for allocations
+  IBlock*                            myUsedHeap = nullptr; //!< Sorted list for store empty blocks
   IBlock* myOrderedBlocks = nullptr; //!< Ordered list for store growing size blocks
 
 public:

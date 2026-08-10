@@ -41,7 +41,9 @@ void RWStepKinematics_RWCylindricalPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 16, theArch, "cylindrical_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -253,7 +255,9 @@ void RWStepKinematics_RWCylindricalPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -284,28 +288,36 @@ void RWStepKinematics_RWCylindricalPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitActualTranslation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualTranslation())
   {
     theSW.Send(theEnt->UpperLimitActualTranslation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualRotation())
   {
     theSW.Send(theEnt->LowerLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotation())
   {
     theSW.Send(theEnt->UpperLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

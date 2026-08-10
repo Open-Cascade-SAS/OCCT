@@ -45,11 +45,17 @@ void IGESDraw_ViewsVisibleWithAttr::Init(
         || (allLineWeights->Lower() != 1 || allLineWeights->Length() != Exp)
         || (allLineDefinitions->Lower() != 1 || allLineDefinitions->Length() != Exp)
         || (allColorDefinitions->Lower() != 1 || allColorDefinitions->Length() != Exp))
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : Init");
+    }
   }
   if (!allDisplayEntities.IsNull())
+  {
     if (allDisplayEntities->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : Init");
+    }
+  }
 
   theViewEntities     = allViewEntities;
   theLineFonts        = allLineFonts;
@@ -65,8 +71,12 @@ void IGESDraw_ViewsVisibleWithAttr::InitImplied(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
+  {
     if (allDisplayEntity->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : InitImplied");
+    }
+  }
   theDisplayEntities = allDisplayEntity;
 }
 

@@ -32,7 +32,9 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "mechanical_design_geometric_presentation_area"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -58,7 +60,9 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

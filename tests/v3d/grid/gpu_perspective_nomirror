@@ -1,0 +1,22 @@
+puts "=================================================================="
+puts "GPU shader grid keeps foreground plane semantics in perspective view"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+box b 10 10 10
+vdisplay b -dispMode 1
+vfit
+
+vgrid -type gpu -size 100 100 -drawAxis 0
+vcamera -persp
+vdump $imagedir/${casename}_persp.png
+
+vrotate 0 0 0.5
+vdump $imagedir/${casename}_rotated.png
+
+vgrid off

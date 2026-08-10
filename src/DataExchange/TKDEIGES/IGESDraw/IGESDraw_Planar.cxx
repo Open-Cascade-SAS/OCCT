@@ -31,8 +31,12 @@ void IGESDraw_Planar::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
 {
   if (!allEntities.IsNull())
+  {
     if (allEntities->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_Planar : Init");
+    }
+  }
   theNbMatrices           = nbMats;
   theTransformationMatrix = aTransformationMatrix;
   theEntities             = allEntities;

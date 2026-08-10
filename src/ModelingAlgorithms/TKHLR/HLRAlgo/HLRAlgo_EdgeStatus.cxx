@@ -67,11 +67,17 @@ void HLRAlgo_EdgeStatus::Initialize(const double Start,
 int HLRAlgo_EdgeStatus::NbVisiblePart() const
 {
   if (AllHidden())
+  {
     return 0;
+  }
   else if (AllVisible())
+  {
     return 1;
+  }
   else
+  {
     return myVisibles.NbIntervals();
+  }
 }
 
 //=================================================================================================
@@ -83,9 +89,13 @@ void HLRAlgo_EdgeStatus::VisiblePart(const int Index,
                                      float&    TolEnd) const
 {
   if (AllVisible())
+  {
     Bounds(Start, TolStart, End, TolEnd);
+  }
   else
+  {
     myVisibles.Value(Index).Bounds(Start, TolStart, End, TolEnd);
+  }
 }
 
 //=================================================================================================
@@ -106,6 +116,8 @@ void HLRAlgo_EdgeStatus::Hide(const double Start,
     }
     myVisibles.Subtract(Intrv_Interval(Start, TolStart, End, TolEnd));
     if (!AllHidden())
+    {
       AllHidden(myVisibles.NbIntervals() == 0);
+    }
   }
 }

@@ -47,19 +47,22 @@ void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
   int    tempPrecision;
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(), "Number of properties", tempNbProps); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempNbProps = 8;
+}
 
   PR.ReadInteger(PR.Current(), "Secondary Tolerance Flag",
 		 tempSecondTolFlag); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Tolerance Type", tempTolTyp); //szv#4:S4163:12Mar99 `st=` not needed
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadInteger(PR.Current(), "Tolerance Placement Flag",
 		   tempTolPlaceFlag); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempTolPlaceFlag = 2;
+}
 
   PR.ReadReal(PR.Current(), "Upper Tolerance", tempUpperTol); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadReal(PR.Current(), "Lower Tolerance", tempLowerTol); //szv#4:S4163:12Mar99 `st=` not needed
@@ -123,6 +126,7 @@ bool IGESDimen_ToolDimensionTolerance::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 8);
   if (res)
+  {
     ent->Init(8,
               ent->SecondaryToleranceFlag(),
               ent->ToleranceType(),
@@ -132,6 +136,7 @@ bool IGESDimen_ToolDimensionTolerance::OwnCorrect(
               (ent->SignSuppressionFlag() ? 1 : 0),
               ent->FractionFlag(),
               ent->Precision()); // nbpropertyvalues=8
+  }
   return res;
 }
 
@@ -157,15 +162,25 @@ void IGESDimen_ToolDimensionTolerance::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 8)
+  {
     ach->AddFail("Number of properties != 8");
+  }
   if ((ent->SecondaryToleranceFlag() < 0) || (ent->SecondaryToleranceFlag() > 2))
+  {
     ach->AddFail("Secondary Tolerance Flag != 0-2");
+  }
   if ((ent->ToleranceType() < 1) || (ent->ToleranceType() > 10))
+  {
     ach->AddFail("Tolerance Type != 1-10");
+  }
   if ((ent->TolerancePlacementFlag() < 1) || (ent->TolerancePlacementFlag() > 4))
+  {
     ach->AddFail("Tolerance Placement Flag != 1-4");
+  }
   if ((ent->FractionFlag() < 0) || (ent->FractionFlag() > 2))
+  {
     ach->AddFail("Fraction Flag != 0-2");
+  }
 }
 
 void IGESDimen_ToolDimensionTolerance::OwnDump(const occ::handle<IGESDimen_DimensionTolerance>& ent,
@@ -182,5 +197,5 @@ void IGESDimen_ToolDimensionTolerance::OwnDump(const occ::handle<IGESDimen_Dimen
     << "Lower Tolerance          : " << ent->LowerTolerance() << "\n"
     << "Sign Suppression Flag    : " << (ent->SignSuppressionFlag() ? "True" : "False") << "\n"
     << "Fraction Flag            : " << ent->FractionFlag() << "\n"
-    << "Precision                : " << ent->Precision() << std::endl;
+    << "Precision                : " << ent->Precision() << '\n';
 }

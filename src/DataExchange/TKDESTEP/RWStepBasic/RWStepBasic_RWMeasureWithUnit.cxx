@@ -33,7 +33,9 @@ void RWStepBasic_RWMeasureWithUnit::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "measure_with_unit"))
+  {
     return;
+  }
 
   // --- own field : valueComponent ---
   occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;

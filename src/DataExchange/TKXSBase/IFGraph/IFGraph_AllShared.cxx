@@ -27,7 +27,9 @@ IFGraph_AllShared::IFGraph_AllShared(const Interface_Graph&                 agra
     : thegraph(agraph)
 {
   if (!agraph.Model()->Contains(ent))
+  {
     return;
+  }
   GetFromEntity(ent);
 }
 
@@ -39,7 +41,9 @@ void IFGraph_AllShared::GetFromEntity(const occ::handle<Standard_Transient>& ent
 void IFGraph_AllShared::GetFromIter(const Interface_EntityIterator& iter)
 {
   for (iter.Start(); iter.More(); iter.Next())
+  {
     thegraph.GetFromEntity(iter.Value(), true);
+  }
 }
 
 void IFGraph_AllShared::ResetData()

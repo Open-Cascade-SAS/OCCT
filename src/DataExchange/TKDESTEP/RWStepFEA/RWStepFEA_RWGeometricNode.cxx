@@ -40,7 +40,9 @@ void RWStepFEA_RWGeometricNode::ReadStep(const occ::handle<StepData_StepReaderDa
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_node"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

@@ -138,7 +138,9 @@ void TopoDSToStep_Tool::SetCurrentFace(const TopoDS_Face& F)
 #endif
   double FaceTol = BRep_Tool::Tolerance(F);
   if (FaceTol > myLowestTol)
+  {
     myLowestTol = FaceTol;
+  }
   myCurrentFace = F;
 }
 
@@ -203,7 +205,9 @@ void TopoDSToStep_Tool::SetCurrentEdge(const TopoDS_Edge& E)
 #endif
   double EdgeTol = BRep_Tool::Tolerance(E);
   if (EdgeTol > myLowestTol)
+  {
     myLowestTol = EdgeTol;
+  }
   myCurrentEdge = E;
 }
 
@@ -220,7 +224,9 @@ void TopoDSToStep_Tool::SetCurrentVertex(const TopoDS_Vertex& V)
 {
   double VertexTol = BRep_Tool::Tolerance(V);
   if (VertexTol > myLowestTol)
+  {
     myLowestTol = VertexTol;
+  }
   myCurrentVertex = V;
 }
 

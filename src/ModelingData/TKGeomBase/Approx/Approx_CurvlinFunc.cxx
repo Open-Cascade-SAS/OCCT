@@ -72,12 +72,18 @@ static void findfourpoints(const double,
   int i, j;
   int NbInt = Si->Length() - 1;
   if (NbInt < 3)
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::GetUParameter");
+  }
 
   if (NInterval < 1)
+  {
     NInterval = 1;
+  }
   else if (NInterval > NbInt - 2)
+  {
     NInterval = NbInt - 2;
+  }
 
   for (i = 0; i < 4; i++)
   {
@@ -247,7 +253,9 @@ void Approx_CurvlinFunc::Init(Adaptor3d_Curve&                          C,
 
   double Len = Si->Value(Si->Upper());
   for (i = Si->Lower(); i <= Si->Upper(); i++)
+  {
     Si->ChangeValue(i) /= Len;
+  }
 
   // TODO - fields should be mutable
   const_cast<Approx_CurvlinFunc*>(this)->myPrevS = myFirstS;
@@ -335,19 +343,27 @@ void Approx_CurvlinFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_
       GeomLib::FuseIntervals(T1, T2, Fusion);
 
       for (i = 1; i <= Fusion.Length(); i++)
+      {
         T.ChangeValue(i) = Fusion.Value(i);
+      }
   }
 
   for (i = 1; i <= T.Length(); i++)
+  {
     T.ChangeValue(i) = GetSParameter(T.Value(i));
+  }
 }
 
 void Approx_CurvlinFunc::Trim(const double First, const double Last, const double Tol)
 {
   if (First < 0 || Last > 1)
+  {
     throw Standard_OutOfRange("Approx_CurvlinFunc::Trim");
+  }
   if ((Last - First) < Tol)
+  {
     return;
+  }
 
   double                                FirstU, LastU;
   Adaptor3d_CurveOnSurface              CurOnSur;
@@ -483,16 +499,22 @@ double Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   InitChron(chr_uparam);
 #endif
   if (S < 0 || S > 1)
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::GetUParameter");
+  }
 
   if (NumberOfCurve == 1)
   {
     InitUArray = myUi_1;
     InitSArray = mySi_1;
     if (myCase == 3)
+    {
       Length = myLength1;
+    }
     else
+    {
       Length = myLength;
+    }
   }
   else
   {
@@ -504,13 +526,17 @@ double Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   NbInt = InitUArray->Length() - 1;
 
   if (S == 1)
+  {
     NInterval = NbInt - 1;
+  }
   else
   {
     for (i = 0; i < NbInt; i++)
     {
       if ((InitSArray->Value(i) <= S && S < InitSArray->Value(i + 1)))
+      {
         break;
+      }
     }
     NInterval = i;
   }
@@ -559,7 +585,9 @@ bool Approx_CurvlinFunc::EvalCase1(const double                S,
                                    NCollection_Array1<double>& Result) const
 {
   if (myCase != 1)
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase1");
+  }
 
   gp_Pnt C;
   gp_Vec dC_dU, dC_dS, d2C_dU2, d2C_dS2;
@@ -613,7 +641,9 @@ bool Approx_CurvlinFunc::EvalCase2(const double                S,
                                    NCollection_Array1<double>& Result) const
 {
   if (myCase != 2)
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase2");
+  }
 
   bool Done;
 
@@ -627,7 +657,9 @@ bool Approx_CurvlinFunc::EvalCase3(const double                S,
                                    NCollection_Array1<double>& Result)
 {
   if (myCase != 3)
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase3");
+  }
 
   NCollection_Array1<double> tmpRes1(0, 4), tmpRes2(0, 4);
   bool                       Done;
@@ -663,9 +695,13 @@ bool Approx_CurvlinFunc::EvalCurOnSur(const double                S,
     Adaptor3d_CurveOnSurface CurOnSur(myC2D1, mySurf1);
     U = GetUParameter(CurOnSur, S, 1);
     if (myCase == 3)
+    {
       Length = myLength1;
+    }
     else
+    {
       Length = myLength;
+    }
   }
   else if (NumberOfCurve == 2)
   {
@@ -676,7 +712,9 @@ bool Approx_CurvlinFunc::EvalCurOnSur(const double                S,
     Length = myLength2;
   }
   else
+  {
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCurOnSur");
+  }
 
   double   Mag, dU_dS, d2U_dS2, dV_dU, dW_dU, dV_dS, dW_dS, d2V_dS2, d2W_dS2, d2V_dU2, d2W_dU2;
   gp_Pnt2d C2D;

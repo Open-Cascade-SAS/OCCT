@@ -40,13 +40,19 @@ void Bnd_Range::Common(const Bnd_Range& theOther)
 bool Bnd_Range::Union(const Bnd_Range& theOther)
 {
   if (IsVoid() || theOther.IsVoid())
+  {
     return false;
+  }
 
   if (myLast < theOther.myFirst)
+  {
     return false;
+  }
 
   if (myFirst > theOther.myLast)
+  {
     return false;
+  }
 
   myFirst = std::min(myFirst, theOther.myFirst);
   myLast  = std::max(myLast, theOther.myLast);
@@ -60,7 +66,9 @@ Bnd_Range::IntersectStatus Bnd_Range::IsIntersected(const double theVal,
                                                     const double thePeriod) const
 {
   if (IsVoid())
+  {
     return IntersectStatus_Out;
+  }
 
   const double aPeriod = std::abs(thePeriod);
   const double aDF = myFirst - theVal, aDL = myLast - theVal;
@@ -69,10 +77,14 @@ Bnd_Range::IntersectStatus Bnd_Range::IsIntersected(const double theVal,
   {
     const double aDelta = aDF * aDL;
     if (IsEqual(aDelta, 0.0))
+    {
       return IntersectStatus_Boundary;
+    }
 
     if (aDelta > 0.0)
+    {
       return IntersectStatus_Out;
+    }
 
     return IntersectStatus_In;
   }

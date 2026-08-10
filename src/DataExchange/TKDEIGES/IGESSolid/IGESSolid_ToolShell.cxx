@@ -74,7 +74,9 @@ void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&     
       // //szv#4:S4163:12Mar99 moved in if st = PR.ReadEntity(IR, PR.Current(), "Faces",
       // STANDARD_TYPE(IGESSolid_Face), aface);
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESSolid_Face), aface))
+      {
         tempFaces->SetValue(i, aface);
+      }
       else
       {
         Message_Msg Msg201("XSTEP_201");
@@ -105,7 +107,9 @@ void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&     
       // st = PR.ReadBoolean(PR.Current(), Msg180, abool); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadBoolean(PR.Current(), "Orientation flags", abool);
       if (PR.ReadBoolean(PR.Current(), Msg180, abool))
+      {
         tempOrientation->SetValue(i, (abool ? 1 : 0));
+      }
     }
   }
   else
@@ -140,7 +144,9 @@ void IGESSolid_ToolShell::OwnShared(const occ::handle<IGESSolid_Shell>& ent,
 {
   int nbfaces = ent->NbFaces();
   for (int i = 1; i <= nbfaces; i++)
+  {
     iter.GetOneItem(ent->Face(i));
+  }
 }
 
 //=================================================================================================
@@ -222,10 +228,14 @@ void IGESSolid_ToolShell::OwnDump(const occ::handle<IGESSolid_Shell>& ent,
       dumper.Dump(ent->Face(i), S, sublevel);
       S << "  - Orientation flag : ";
       if (ent->Orientation(i))
+      {
         S << "True\n";
+      }
       else
+      {
         S << "False\n";
+      }
     }
   }
-  S << std::endl;
+  S << '\n';
 }

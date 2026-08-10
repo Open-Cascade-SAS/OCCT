@@ -265,15 +265,6 @@ function(OCCT_DOC_LOAD_FILE_LISTS)
   else()
     set(OCCT_DOC_HTML_FILES "" PARENT_SCOPE)
   endif()
-
-  # Load list of PDF documentation files
-  set(FILES_PDF_PATH "${OCCT_ROOT_DIR}/dox/FILES_PDF.txt")
-  if(EXISTS ${FILES_PDF_PATH})
-    file(STRINGS ${FILES_PDF_PATH} PDF_FILES REGEX "^[^#]+")
-    set(OCCT_DOC_PDF_FILES ${PDF_FILES} PARENT_SCOPE)
-  else()
-    set(OCCT_DOC_PDF_FILES "" PARENT_SCOPE)
-  endif()
 endfunction()
 
 # Function to collect image directories from input files
@@ -363,6 +354,26 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     file(APPEND ${DOXYGEN_CONFIG_FILE} "ENABLED_SECTIONS = OVERVIEW_SECTION\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "GENERATE_TAGFILE = ${OUTPUT_DIR}/occt.tag\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "GENERATE_TREEVIEW = YES\n")
+
+    set(EXAMPLE_DIRS "")
+    foreach(MODULE ${OCCT_MODULES})
+      foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
+        foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
+          EXTRACT_PACKAGE_FILES("src" ${PACKAGE} _ PACKAGE_DIR)
+          if(PACKAGE_DIR)
+            list(APPEND EXAMPLE_DIRS "${PACKAGE_DIR}")
+          endif()
+        endforeach()
+      endforeach()
+    endforeach()
+    list(REMOVE_DUPLICATES EXAMPLE_DIRS)
+
+    set(EXAMPLE_PATHS "")
+    foreach(EXAMPLE_DIR ${EXAMPLE_DIRS})
+      string(APPEND EXAMPLE_PATHS " \"${EXAMPLE_DIR}\"")
+    endforeach()
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATH =${EXAMPLE_PATHS}\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATTERNS = *.cxx\n")
     
     # Setup tag file for cross-referencing with Reference Manual
     if(BUILD_DOC_RefMan)
@@ -479,25 +490,6 @@ function(OCCT_DOC_CHECK_TOOLS)
     set(MATHJAX_PATH "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5")
   endif()
 
-  # Find tools for PDF generation if needed
-  if(BUILD_DOC_PDF)
-    # Find pdflatex
-    find_program(PDFLATEX_EXECUTABLE NAMES pdflatex)
-    if(NOT PDFLATEX_EXECUTABLE)
-      message(WARNING "pdflatex not found. PDF documentation will not be generated.")
-      set(BUILD_DOC_PDF FALSE PARENT_SCOPE)
-    endif()
-
-    # Find Inkscape (for SVG to PNG conversion for PDFs)
-    find_program(INKSCAPE_EXECUTABLE NAMES inkscape)
-    if(NOT INKSCAPE_EXECUTABLE)
-      message(WARNING "Inkscape not found. SVG images will not be properly converted in PDF documentation.")
-    endif()
-
-    set(PDFLATEX_EXECUTABLE ${PDFLATEX_EXECUTABLE} PARENT_SCOPE)
-    set(INKSCAPE_EXECUTABLE ${INKSCAPE_EXECUTABLE} PARENT_SCOPE)
-  endif()
-
   # Find tools for CHM generation if needed
   if(BUILD_DOC_CHM AND WIN32)
     # Find HTML Help Compiler
@@ -513,59 +505,6 @@ function(OCCT_DOC_CHECK_TOOLS)
   set(GRAPHVIZ_DOT_EXECUTABLE ${GRAPHVIZ_DOT_EXECUTABLE} PARENT_SCOPE)
   set(MATHJAX_PATH ${MATHJAX_PATH} PARENT_SCOPE)
   set(OCCT_DOC_TOOLS_AVAILABLE TRUE PARENT_SCOPE)
-endfunction()
-
-# Function to process LaTeX files for PDF generation
-function(OCCT_DOC_PROCESS_LATEX OUTPUT_DIR)
-  # Skip if PDF generation is not enabled or pdflatex not found
-  if(NOT BUILD_DOC_PDF OR NOT PDFLATEX_EXECUTABLE)
-    return()
-  endif()
-
-  message(STATUS "Processing LaTeX files for PDF generation...")
-
-  # Process SVG images if Inkscape is available
-  if(INKSCAPE_EXECUTABLE)
-    file(GLOB SVG_FILES "${OUTPUT_DIR}/latex/*.svg")
-    foreach(SVG_FILE ${SVG_FILES})
-      get_filename_component(FILE_NAME ${SVG_FILE} NAME_WE)
-      set(PNG_FILE "${OUTPUT_DIR}/latex/${FILE_NAME}.png")
-
-      execute_process(
-        COMMAND ${INKSCAPE_EXECUTABLE} -z -e ${PNG_FILE} ${SVG_FILE}
-        RESULT_VARIABLE INKSCAPE_RESULT
-      )
-
-      if(NOT INKSCAPE_RESULT EQUAL 0)
-        message(WARNING "Failed to convert ${SVG_FILE} to PNG")
-      endif()
-    endforeach()
-  endif()
-
-  # Generate PDF from LaTeX
-  execute_process(
-    COMMAND ${PDFLATEX_EXECUTABLE} -interaction=nonstopmode refman.tex
-    WORKING_DIRECTORY "${OUTPUT_DIR}/latex"
-    RESULT_VARIABLE LATEX_RESULT
-    OUTPUT_VARIABLE LATEX_OUTPUT
-    ERROR_VARIABLE LATEX_ERROR
-  )
-
-  if(NOT LATEX_RESULT EQUAL 0)
-    message(WARNING "Error generating PDF: ${LATEX_ERROR}")
-  else()
-    # Run pdflatex again for references
-    execute_process(
-      COMMAND ${PDFLATEX_EXECUTABLE} -interaction=nonstopmode refman.tex
-      WORKING_DIRECTORY "${OUTPUT_DIR}/latex"
-    )
-
-    message(STATUS "PDF documentation generated at ${OUTPUT_DIR}/latex/refman.pdf")
-
-    # Copy the PDF to a more accessible location
-    file(COPY "${OUTPUT_DIR}/latex/refman.pdf" DESTINATION "${OUTPUT_DIR}")
-    file(RENAME "${OUTPUT_DIR}/refman.pdf" "${OUTPUT_DIR}/${DOC_OUTPUT_NAME}.pdf")
-  endif()
 endfunction()
 
 # Main function to set up documentation targets

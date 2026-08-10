@@ -54,7 +54,9 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -83,14 +85,20 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_IntegerList::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
 
   anIntList->SetID(aGUID);
 
   if (aLastInd == 0)
+  {
     aFirstInd = 0;
+  }
   if (aFirstInd == aLastInd && aLastInd > 0)
   {
     if (!XmlObjMgt::GetStringValue(anElement).GetInteger(aValue))
@@ -138,7 +146,9 @@ void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theS
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   NCollection_LocalArray<char> str(12 * anU + 1);
   if (anU == 0)
+  {
     str[0] = 0;
+  }
   else if (anU >= 1)
   {
     // Allocation of 12 chars for each integer including the space.

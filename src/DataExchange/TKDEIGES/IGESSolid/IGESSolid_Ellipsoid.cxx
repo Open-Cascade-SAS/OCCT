@@ -66,7 +66,9 @@ gp_Pnt IGESSolid_Ellipsoid::Center() const
 gp_Pnt IGESSolid_Ellipsoid::TransformedCenter() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theCenter);
+  }
   else
   {
     gp_XYZ tmp = theCenter;
@@ -83,7 +85,9 @@ gp_Dir IGESSolid_Ellipsoid::XAxis() const
 gp_Dir IGESSolid_Ellipsoid::TransformedXAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis);
+  }
   else
   {
     gp_XYZ   tmp = theXAxis;
@@ -102,7 +106,9 @@ gp_Dir IGESSolid_Ellipsoid::YAxis() const
 gp_Dir IGESSolid_Ellipsoid::TransformedYAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis ^ theZAxis);
+  }
   else
   {
     gp_XYZ   tmp = theXAxis ^ theZAxis;
@@ -121,7 +127,9 @@ gp_Dir IGESSolid_Ellipsoid::ZAxis() const
 gp_Dir IGESSolid_Ellipsoid::TransformedZAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theZAxis);
+  }
   else
   {
     gp_XYZ   tmp = theZAxis;

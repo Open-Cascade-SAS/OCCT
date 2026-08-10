@@ -135,12 +135,18 @@ static double AdjustOnPeriodic3d(const occ::handle<Geom_Curve>& c,
     double T     = c->Period();
     double shift = -std::trunc(first / T) * T;
     if (first < 0.)
+    {
       shift += T;
+    }
     double sfirst = first + shift, slast = last + shift;
     if (takefirst && (param > slast) && (param > sfirst))
+    {
       return param - T - shift;
+    }
     if (!takefirst && (param < slast) && (param < sfirst))
+    {
       return param + T - shift;
+    }
   }
   return param;
 }
@@ -155,7 +161,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
   //=============
 
   if (Context().IsNull())
+  {
     SetContext(new ShapeBuild_ReShape);
+  }
 
   double preci = Precision();
 
@@ -181,7 +189,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
   gp_Pnt cpnt1 = C1->Value(clast1), cpnt2 = C2->Value(cfirst2);
   double gap = cpnt1.Distance(cpnt2);
   if (!convert && gap <= preci)
+  {
     return false;
+  }
 
   //=============
   // Second phase: collecting data necessary for further analysis
@@ -238,7 +248,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       offset1 = true;
     }
     else
+    {
       basic = true;
+    }
   }
   basic           = false;
   bool   trimmed2 = false, offset2 = false;
@@ -258,13 +270,19 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       offset2 = true;
     }
     else
+    {
       basic = true;
+    }
   }
   // Restore offset curves
   if (offset1)
+  {
     c1 = new Geom_OffsetCurve(c1, offval1.Modulus(), gp_Dir(offval1));
+  }
   if (offset2)
+  {
     c2 = new Geom_OffsetCurve(c2, offval2.Modulus(), gp_Dir(offval2));
+  }
 
   bool done1 = false, done2 = false;
 
@@ -272,7 +290,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
   {
     // Check that gap satisfies the precision - in this case no conversion produced
     if (cpnt1.Distance(vpnt) < preci && cpnt2.Distance(vpnt) < preci)
+    {
       return false;
+    }
 
     occ::handle<Geom_BSplineCurve> bsp1, bsp2;
     occ::handle<Geom_Curve>        c;
@@ -290,10 +310,14 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
           if (n1 == n2)
           {
             if (cpnt2.Distance(vpnt) < preci)
+            {
               continue;
+            }
           }
           else
+          {
             continue;
+          }
         }
         c     = c1;
         first = first1;
@@ -302,7 +326,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       else
       {
         if (cpnt2.Distance(vpnt) < preci)
+        {
           continue;
+        }
         c     = c2;
         first = first2;
         last  = last2; /*trim = trimmed2;*/ // skl
@@ -328,7 +354,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
           segment = true;
         }
         if (segment)
+        {
           bsp = GeomConvert::SplitBSplineCurve(bsp, fbsp, lbsp, ::Precision::Confusion());
+        }
       }
       else if (c->IsKind(STANDARD_TYPE(Geom_Conic)))
       {
@@ -338,7 +366,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
                             9,
                             1000);
         if (Conv.IsDone() || Conv.HasResult())
+        {
           bsp = Conv.Curve();
+        }
       }
       else
       {
@@ -349,11 +379,15 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
           OCC_CATCH_SIGNALS
           // 15.11.2002 PTV OCC966
           if (!ShapeAnalysis_Curve::IsPeriodic(c))
+          {
             tc = new Geom_TrimmedCurve(c,
                                        std::max(first, c->FirstParameter()),
                                        std::min(last, c->LastParameter()));
+          }
           else
+          {
             tc = new Geom_TrimmedCurve(c, first, last);
+          }
           bsp = GeomConvert::CurveToBSplineCurve(tc);
         }
         catch (Standard_Failure const& anException)
@@ -369,21 +403,31 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       }
 
       if (j == 1)
+      {
         bsp1 = bsp;
+      }
       else
+      {
         bsp2 = bsp;
+      }
     }
 
     // Take curves ends if could not convert
     if (bsp1.IsNull())
+    {
       vpnt = cpnt1;
+    }
     else if (bsp2.IsNull())
+    {
       vpnt = cpnt2;
+    }
 
     if (!bsp1.IsNull())
     {
       if (bsp1->Degree() == 1)
+      {
         bsp1->IncreaseDegree(2); // gka
+      }
       if (n1 == n2)
       {
         bsp1->SetPole(1, vpnt);
@@ -392,9 +436,13 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       else
       {
         if (reversed1)
+        {
           bsp1->SetPole(1, vpnt);
+        }
         else
+        {
           bsp1->SetPole(bsp1->NbPoles(), vpnt);
+        }
       }
       first1 = bsp1->FirstParameter();
       last1  = bsp1->LastParameter();
@@ -404,11 +452,17 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
     if (!bsp2.IsNull())
     {
       if (bsp2->Degree() == 1)
+      {
         bsp2->IncreaseDegree(2); // gka
+      }
       if (reversed2)
+      {
         bsp2->SetPole(bsp2->NbPoles(), vpnt);
+      }
       else
+      {
         bsp2->SetPole(1, vpnt);
+      }
       first2 = bsp2->FirstParameter();
       last2  = bsp2->LastParameter();
       c2     = bsp2;
@@ -444,9 +498,13 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       {
         double diff = domlast1 - domfirst1;
         if (reversed1)
+        {
           domfirst1 -= 10. * diff;
+        }
         else
+        {
           domlast1 += 10. * diff;
+        }
       }
       else if (c1->IsKind(STANDARD_TYPE(Geom_Circle)) || c1->IsKind(STANDARD_TYPE(Geom_Ellipse)))
       {
@@ -465,9 +523,13 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
       {
         double diff = domlast2 - domfirst2;
         if (reversed2)
+        {
           domlast2 += 10. * diff;
+        }
         else
+        {
           domfirst2 -= 10. * diff;
+        }
       }
       else if (c2->IsKind(STANDARD_TYPE(Geom_Circle)) || c2->IsKind(STANDARD_TYPE(Geom_Ellipse)))
       {
@@ -598,12 +660,16 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
                 Extr.Parameters(index2, uu1, uu2);
                 pp2 = gp_Pnt((c1->Value(uu1).XYZ() + c2->Value(uu2).XYZ()) * 0.5);
                 if (pp2.Distance(vpnt) < pp1.Distance(vpnt))
+                {
                   index1 = index2;
+                }
               }
               Extr.Parameters(index1, uu1, uu2);
             }
             else
+            {
               Extr.LowerDistanceParameters(uu1, uu2);
+            }
             // Adjust parameters on periodic curves
             uu1 = AdjustOnPeriodic3d(c1, reversed1, first1, last1, uu1);
             uu2 = AdjustOnPeriodic3d(c2, !reversed2, first2, last2, uu2);
@@ -631,14 +697,20 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
         if (done1)
         {
           if (ipar1 == clast1)
+          {
             done1 = false;
+          }
           else
           {
             // Set up new bounds for curve
             if (reversed1)
+            {
               first1 = ipar1;
+            }
             else
+            {
               last1 = ipar1;
+            }
             // Set new trim for old curve
             if (trimmed1)
             {
@@ -651,14 +723,20 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
         if (done2)
         {
           if (ipar2 == cfirst2)
+          {
             done2 = false;
+          }
           else
           {
             // Set up new bounds for curve
             if (reversed2)
+            {
               last2 = ipar2;
+            }
             else
+            {
               first2 = ipar2;
+            }
             // Set new trim for old curve
             if (trimmed2)
             {
@@ -775,7 +853,9 @@ bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   }
   else if (convert)
+  {
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
 
   return (done1 || done2);
 }
@@ -794,12 +874,18 @@ static double AdjustOnPeriodic2d(const occ::handle<Geom2d_Curve>& pc,
     double T     = pc->Period();
     double shift = -std::trunc(first / T) * T;
     if (first < 0.)
+    {
       shift += T;
+    }
     double sfirst = first + shift, slast = last + shift;
     if (takefirst && (param > slast) && (param > sfirst))
+    {
       return param - T - shift;
+    }
     if (!takefirst && (param < slast) && (param < sfirst))
+    {
       return param + T - shift;
+    }
   }
   return param;
 }
@@ -808,14 +894,18 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
 {
   myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (!IsReady())
+  {
     return false;
+  }
 
   //=============
   // First phase: analysis whether the problem (gap) exists
   //=============
 
   if (Context().IsNull())
+  {
     SetContext(new ShapeBuild_ReShape);
+  }
 
   constexpr double preci = ::Precision::PConfusion();
   // double preci = Precision();
@@ -845,7 +935,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
   gp_Pnt2d cpnt1 = PC1->Value(clast1), cpnt2 = PC2->Value(cfirst2);
   double   gap = cpnt1.Distance(cpnt2);
   if (gap <= preci)
+  {
     return false;
+  }
 
   //=============
   // Second phase: collecting data necessary for further analysis
@@ -897,7 +989,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       offset1 = true;
     }
     else
+    {
       basic = true;
+    }
   }
   basic           = false;
   bool   trimmed2 = false, offset2 = false;
@@ -917,13 +1011,19 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       offset2 = true;
     }
     else
+    {
       basic = true;
+    }
   }
   // Restore offset curves
   if (offset1)
+  {
     pc1 = new Geom2d_OffsetCurve(pc1, offval1);
+  }
   if (offset2)
+  {
     pc2 = new Geom2d_OffsetCurve(pc2, offval2);
+  }
 
   bool done1 = false, done2 = false;
 
@@ -973,7 +1073,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
           segment = true;
         }
         if (segment)
+        {
           bsp = Geom2dConvert::SplitBSplineCurve(bsp, fbsp, lbsp, ::Precision::PConfusion());
+        }
       }
       else if (pc->IsKind(STANDARD_TYPE(Geom2d_Conic)))
       {
@@ -989,7 +1091,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
                             9,
                             1000);
         if (Conv.IsDone() || Conv.HasResult())
+        {
           bsp = Conv.Curve();
+        }
       }
       else
       {
@@ -1000,11 +1104,15 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
           occ::handle<Geom2d_Curve> c;
           // 15.11.2002 PTV OCC966
           if (!ShapeAnalysis_Curve::IsPeriodic(pc))
+          {
             c = new Geom2d_TrimmedCurve(pc,
                                         std::max(first, pc->FirstParameter()),
                                         std::min(last, pc->LastParameter()));
+          }
           else
+          {
             c = new Geom2d_TrimmedCurve(pc, first, last);
+          }
           bsp = Geom2dConvert::CurveToBSplineCurve(c);
         }
         catch (Standard_Failure const& anException)
@@ -1020,22 +1128,32 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       }
 
       if (j == 1)
+      {
         bsp1 = bsp;
+      }
       else
+      {
         bsp2 = bsp;
+      }
     }
 
     // Take curves ends if could not convert
     gp_Pnt2d mpnt((cpnt1.XY() + cpnt2.XY()) * 0.5);
     if (bsp1.IsNull())
+    {
       mpnt = cpnt1;
+    }
     else if (bsp2.IsNull())
+    {
       mpnt = cpnt2;
+    }
 
     if (!bsp1.IsNull())
     {
       if (bsp1->Degree() == 1)
+      {
         bsp1->IncreaseDegree(2);
+      }
       if (n1 == n2)
       {
         bsp1->SetPole(1, mpnt);
@@ -1044,9 +1162,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       else
       {
         if (reversed1)
+        {
           bsp1->SetPole(1, mpnt);
+        }
         else
+        {
           bsp1->SetPole(bsp1->NbPoles(), mpnt);
+        }
       }
       first1 = bsp1->FirstParameter();
       last1  = bsp1->LastParameter();
@@ -1056,11 +1178,17 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
     if (!bsp2.IsNull())
     {
       if (bsp2->Degree() == 1)
+      {
         bsp2->IncreaseDegree(2);
+      }
       if (reversed2)
+      {
         bsp2->SetPole(bsp2->NbPoles(), mpnt);
+      }
       else
+      {
         bsp2->SetPole(1, mpnt);
+      }
       first2 = bsp2->FirstParameter();
       last2  = bsp2->LastParameter();
       pc2    = bsp2;
@@ -1097,9 +1225,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       {
         double diff = domlast1 - domfirst1;
         if (reversed1)
+        {
           domfirst1 -= 10. * diff;
+        }
         else
+        {
           domlast1 += 10. * diff;
+        }
       }
       else if (pc1->IsKind(STANDARD_TYPE(Geom2d_Circle))
                || pc1->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
@@ -1120,9 +1252,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
       {
         double diff = domlast2 - domfirst2;
         if (reversed2)
+        {
           domlast2 += 10. * diff;
+        }
         else
+        {
           domfirst2 -= 10. * diff;
+        }
       }
       else if (pc2->IsKind(STANDARD_TYPE(Geom2d_Circle))
                || pc2->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
@@ -1190,9 +1326,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
               if ((j == 1 && IS.HasFirstPoint()) || (j == 2 && IS.HasLastPoint()))
               {
                 if (j == 1)
+                {
                   IP = IS.FirstPoint();
+                }
                 else
+                {
                   IP = IS.LastPoint();
+                }
                 // Adjust parameters on periodic curves
                 double u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
                 double u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
@@ -1218,24 +1358,36 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
             // take intersection closer to mean point
             gp_Pnt2d pt1, pt2;
             if (flag1 == 0)
+            {
               pt1 = Inter.Point(index1).Value();
+            }
             else
             {
               IS = Inter.Segment(index1);
               if (flag1 == 1)
+              {
                 pt1 = IS.FirstPoint().Value();
+              }
               else
+              {
                 pt1 = IS.LastPoint().Value();
+              }
             }
             if (flag2 == 0)
+            {
               pt2 = Inter.Point(index2).Value();
+            }
             else
             {
               IS = Inter.Segment(index2);
               if (flag2 == 1)
+              {
                 pt2 = IS.FirstPoint().Value();
+              }
               else
+              {
                 pt2 = IS.LastPoint().Value();
+              }
             }
             gp_Pnt2d mpnt((cpnt1.XY() + cpnt2.XY()) * 0.5);
             if (pt2.Distance(mpnt) < pt1.Distance(mpnt))
@@ -1245,14 +1397,20 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
             }
           }
           if (flag1 == 0)
+          {
             IP = Inter.Point(index1);
+          }
           else
           {
             IS = Inter.Segment(index1);
             if (flag1 == 1)
+            {
               IP = IS.FirstPoint();
+            }
             else
+            {
               IP = IS.LastPoint();
+            }
           }
           // Adjust parameters on periodic curves
           double u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
@@ -1388,9 +1546,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
         else
         {
           if (cpnt1.Distance(ipnt2) < cpnt2.Distance(ipnt1))
+          {
             u1 = ipar1;
+          }
           else
+          {
             u2 = ipar2;
+          }
         }
         // Adjust parameters on periodic curves
         u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, u1);
@@ -1423,13 +1585,21 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
             double fumin, fumax, fvmin, fvmax;
             BRepTools::UVBounds(face, fumin, fumax, fvmin, fvmax);
             if (::Precision::IsInfinite(umin))
+            {
               umin = fumin - preci;
+            }
             if (::Precision::IsInfinite(umax))
+            {
               umax = fumax + preci;
+            }
             if (::Precision::IsInfinite(vmin))
+            {
               vmin = fvmin - preci;
+            }
             if (::Precision::IsInfinite(vmax))
+            {
               vmax = fvmax + preci;
+            }
           }
 
           gp_Pnt2d ipnt, P1, P2;
@@ -1442,13 +1612,17 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
             if (j == 1)
             {
               if (ipar1 >= first1 && ipar1 <= last1)
+              {
                 continue;
+              }
               ipnt = pc1->Value(ipar1);
             }
             else
             {
               if (ipar2 >= first2 && ipar2 <= last2)
+              {
                 continue;
+              }
               ipnt = pc2->Value(ipar2);
             }
 
@@ -1473,7 +1647,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
                   P2 = gp_Pnt2d(umax, vmax);
                 }
                 else
+                {
                   out = false;
+                }
               }
               else
               {
@@ -1488,7 +1664,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
                   P2 = gp_Pnt2d(umax, vmax);
                 }
                 else
+                {
                   out = false;
+                }
               }
 
               if (out)
@@ -1563,9 +1741,13 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
                         if ((jj == 1 && IS.HasFirstPoint()) || (jj == 2 && IS.HasLastPoint()))
                         {
                           if (jj == 1)
+                          {
                             IP = IS.FirstPoint();
+                          }
                           else
+                          {
                             IP = IS.LastPoint();
+                          }
                           // Adjust parameters on periodic curve
                           uu   = AdjustOnPeriodic2d(pc,
                                                   (jj == 1 ? reversed1 : !reversed2),
@@ -1583,14 +1765,20 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
                       }
                     }
                     if (flag == 0)
+                    {
                       IP = Inter.Point(index);
+                    }
                     else
                     {
                       IS = Inter.Segment(index);
                       if (flag == 1)
+                      {
                         IP = IS.FirstPoint();
+                      }
                       else
+                      {
                         IP = IS.LastPoint();
+                      }
                     }
                     // Adjust parameters on periodic curve
                     uu = AdjustOnPeriodic2d(pc,
@@ -1619,12 +1807,16 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
               if (reversed1)
               {
                 if (ipar1 > first1)
+                {
                   ipar1 = first1;
+                }
               }
               else
               {
                 if (ipar1 < last1)
+                {
                   ipar1 = last1;
+                }
               }
             }
             else
@@ -1632,12 +1824,16 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
               if (reversed2)
               {
                 if (ipar2 < last2)
+                {
                   ipar2 = last2;
+                }
               }
               else
               {
                 if (ipar2 > first2)
+                {
                   ipar2 = first2;
+                }
               }
             }
           }
@@ -1649,33 +1845,49 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
         if (done1)
         {
           if (ipar1 == clast1)
+          {
             done1 = false;
+          }
           else
           {
             // Set up new bounds for pcurve
             if (reversed1)
+            {
               first1 = ipar1;
+            }
             else
+            {
               last1 = ipar1;
+            }
             // Set new trim for old pcurve
             if (trimmed1)
+            {
               pc1 = new Geom2d_TrimmedCurve(pc1, first1, last1);
+            }
           }
         }
         if (done2)
         {
           if (ipar2 == cfirst2)
+          {
             done2 = false;
+          }
           else
           {
             // Set up new bounds for pcurve
             if (reversed2)
+            {
               last2 = ipar2;
+            }
             else
+            {
               first2 = ipar2;
+            }
             // Set new trim for old pcurve
             if (trimmed2)
+            {
               pc2 = new Geom2d_TrimmedCurve(pc2, first2, last2);
+            }
           }
         }
       }
@@ -1785,7 +1997,9 @@ bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   }
   else if (convert)
+  {
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
 
   return (done1 || done2);
 }

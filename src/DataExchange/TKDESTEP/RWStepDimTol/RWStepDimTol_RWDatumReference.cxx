@@ -36,7 +36,9 @@ void RWStepDimTol_RWDatumReference::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "datum_reference"))
+  {
     return;
+  }
 
   // Own fields of DatumReference
 

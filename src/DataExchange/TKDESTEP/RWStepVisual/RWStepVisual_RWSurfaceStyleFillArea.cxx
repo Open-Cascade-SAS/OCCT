@@ -30,7 +30,9 @@ void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "surface_style_fill_area"))
+  {
     return;
+  }
 
   // --- own field : fillArea ---
 

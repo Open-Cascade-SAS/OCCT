@@ -36,7 +36,9 @@ TNaming_DeltaOnModification::TNaming_DeltaOnModification(const occ::handle<TNami
   }
 
   if (NbShapes == 0)
+  {
     return;
+  }
 
   TNaming_Evolution Evol = NS->Evolution();
   int               i    = 1;
@@ -122,7 +124,9 @@ void TNaming_DeltaOnModification::Apply()
   }
 
   if (myOld.IsNull() && myNew.IsNull())
+  {
     return;
+  }
   else if (myOld.IsNull())
   {
     // TNaming_Builder B(Ins);

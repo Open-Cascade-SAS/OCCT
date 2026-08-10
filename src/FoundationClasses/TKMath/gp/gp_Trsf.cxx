@@ -252,12 +252,16 @@ void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 
     case gp_Identity:
       if (!locnull)
+      {
         shape = gp_Translation;
+      }
       break;
 
     case gp_Translation:
       if (locnull)
+      {
         shape = gp_Identity;
+      }
       break;
 
     case gp_Rotation:
@@ -289,27 +293,41 @@ void gp_Trsf::SetScaleFactor(const double S)
     case gp_Identity:
     case gp_Translation:
       if (!unit)
+      {
         shape = gp_Scale;
+      }
       if (munit)
+      {
         shape = gp_PntMirror;
+      }
       break;
     case gp_Rotation:
       if (!unit)
+      {
         shape = gp_CompoundTrsf;
+      }
       break;
     case gp_PntMirror:
     case gp_Ax1Mirror:
     case gp_Ax2Mirror:
       if (!munit)
+      {
         shape = gp_Scale;
+      }
       if (unit)
+      {
         shape = gp_Identity;
+      }
       break;
     case gp_Scale:
       if (unit)
+      {
         shape = gp_Identity;
+      }
       if (munit)
+      {
         shape = gp_PntMirror;
+      }
       break;
     case gp_CompoundTrsf:
       break;
@@ -348,9 +366,13 @@ void gp_Trsf::SetValues(const double a11,
   Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
   if (s > 0)
+  {
     s = std::pow(s, 1. / 3.);
+  }
   else
+  {
     s = -std::pow(-s, 1. / 3.);
+  }
   M.Divide(s);
 
   scale = s;
@@ -382,7 +404,9 @@ void gp_Trsf::Invert()
   {
   }
   else if (shape == gp_Translation || shape == gp_PntMirror)
+  {
     loc.Reverse();
+  }
   else if (shape == gp_Scale)
   {
     Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
@@ -571,9 +595,13 @@ void gp_Trsf::Power(const int N)
         for (;;)
         {
           if (IsOdd(Npower))
+          {
             loc.Add(Temploc);
+          }
           if (Npower == 1)
+          {
             break;
+          }
           Temploc.Add(Temploc);
           Npower = Npower / 2;
         }
@@ -591,7 +619,9 @@ void gp_Trsf::Power(const int N)
             scale = scale * Tempscale;
           }
           if (Npower == 1)
+          {
             break;
+          }
           Temploc.Add(Temploc.Multiplied(Tempscale));
           Tempscale = Tempscale * Tempscale;
           Npower    = Npower / 2;
@@ -606,9 +636,13 @@ void gp_Trsf::Power(const int N)
           for (;;)
           {
             if (IsOdd(Npower))
+            {
               matrix.Multiply(Tempmatrix);
+            }
             if (Npower == 1)
+            {
               break;
+            }
             Tempmatrix.Multiply(Tempmatrix);
             Npower = Npower / 2;
           }
@@ -624,7 +658,9 @@ void gp_Trsf::Power(const int N)
               matrix.Multiply(Tempmatrix);
             }
             if (Npower == 1)
+            {
               break;
+            }
             Temploc.Add(Temploc.Multiplied(Tempmatrix));
             Tempmatrix.Multiply(Tempmatrix);
             Npower = Npower / 2;
@@ -659,7 +695,9 @@ void gp_Trsf::Power(const int N)
             matrix.Multiply(Tempmatrix);
           }
           if (Npower == 1)
+          {
             break;
+          }
           Tempscale = Tempscale * Tempscale;
           Temploc.Add((Temploc.Multiplied(Tempmatrix)).Multiplied(Tempscale));
           Tempmatrix.Multiply(Tempmatrix);
@@ -731,7 +769,9 @@ void gp_Trsf::PreMultiply(const gp_Trsf& T)
     shape  = gp_CompoundTrsf;
     matrix = T.matrix;
     if (T.scale == 1.0)
+    {
       loc.Multiply(T.matrix);
+    }
     else
     {
       scale = T.scale;
@@ -771,7 +811,9 @@ void gp_Trsf::PreMultiply(const gp_Trsf& T)
     shape  = gp_CompoundTrsf;
     matrix = T.matrix;
     if (T.scale == 1.0)
+    {
       loc.Multiply(T.matrix);
+    }
     else
     {
       loc.Multiply(matrix);

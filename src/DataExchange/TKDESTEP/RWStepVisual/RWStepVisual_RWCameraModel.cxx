@@ -27,7 +27,9 @@ void RWStepVisual_RWCameraModel::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "camera_model has not 1 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

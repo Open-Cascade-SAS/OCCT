@@ -27,13 +27,17 @@ IFSelect_SignCategory::IFSelect_SignCategory()
   Interface_Category::Init(); // if not already done
   int i, nb = Interface_Category::NbCategories();
   for (i = 1; i <= nb; i++)
+  {
     AddCase(Interface_Category::Name(i));
+  }
 }
 
 const char* IFSelect_SignCategory::Value(const occ::handle<Standard_Transient>&       ent,
                                          const occ::handle<Interface_InterfaceModel>& model) const
 {
   if (ent.IsNull() || model.IsNull())
+  {
     return nulsign;
+  }
   return Interface_Category::Name(model->CategoryNumber(model->Number(ent)));
 }

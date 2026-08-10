@@ -104,7 +104,11 @@ public:
   //
   bool IsEmpty() const noexcept { return (mySize == 0); }
 
-  int Length() const noexcept { return mySize; }
+  //! Number of items (legacy int-returning API).
+  int Length() const noexcept { return static_cast<int>(mySize); }
+
+  //! Size - number of items.
+  size_t Size() const noexcept { return mySize; }
 
   //! Returns attached allocator
   const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
@@ -132,15 +136,15 @@ protected:
   Standard_EXPORT void PPrepend(NCollection_SeqNode*);
   Standard_EXPORT void PPrepend(NCollection_BaseSequence& S);
   Standard_EXPORT void PInsertAfter(Iterator& thePosition, NCollection_SeqNode*);
-  Standard_EXPORT void PInsertAfter(const int Index, NCollection_SeqNode*);
-  Standard_EXPORT void PInsertAfter(const int Index, NCollection_BaseSequence& S);
-  Standard_EXPORT void PSplit(const int Index, NCollection_BaseSequence& Sub);
+  Standard_EXPORT void PInsertAfter(const size_t Index, NCollection_SeqNode*);
+  Standard_EXPORT void PInsertAfter(const size_t Index, NCollection_BaseSequence& S);
+  Standard_EXPORT void PSplit(const size_t Index, NCollection_BaseSequence& Sub);
   Standard_EXPORT void RemoveSeq(Iterator& thePosition, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void RemoveSeq(const int Index, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void RemoveSeq(const int From, const int To, NCollection_DelSeqNode fDel);
+  Standard_EXPORT void RemoveSeq(const size_t Index, NCollection_DelSeqNode fDel);
+  Standard_EXPORT void RemoveSeq(const size_t From, const size_t To, NCollection_DelSeqNode fDel);
   Standard_EXPORT void PReverse() noexcept;
-  Standard_EXPORT void PExchange(const int I, const int J);
-  Standard_EXPORT NCollection_SeqNode* Find(const int) const noexcept;
+  Standard_EXPORT void PExchange(const size_t I, const size_t J);
+  Standard_EXPORT NCollection_SeqNode* Find(const size_t) const noexcept;
 
 protected:
   // Fields PROTECTED
@@ -149,8 +153,8 @@ protected:
   NCollection_SeqNode*                   myFirstItem;
   NCollection_SeqNode*                   myLastItem;
   NCollection_SeqNode*                   myCurrentItem;
-  int                                    myCurrentIndex;
-  int                                    mySize;
+  size_t                                 myCurrentIndex;
+  size_t                                 mySize;
 
 private:
   // Methods PRIVATE

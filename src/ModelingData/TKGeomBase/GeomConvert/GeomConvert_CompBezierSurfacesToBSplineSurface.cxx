@@ -88,7 +88,9 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
   V1 = vec.Magnitude();
   // if the parameterization is too strange we keep the pseudo-length
   if ((V1 > 1000 * L1) || (V1 < L1 * 1.e-3))
+  {
     V1 = L1;
+  }
 
   for (ii = 2; ii < myUKnots->Length(); ii++)
   {
@@ -103,9 +105,13 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
 
     // Compute the ratio, avoiding degenerate cases...
     if ((V2 > 1000 * L2) || (V2 < L2 * 1.e-3))
+    {
       V2 = L2;
+    }
     if ((V3 > 1000 * L2) || (V3 < L2 * 1.e-3))
+    {
       V3 = L2;
+    }
 
     Ratio = 1;
     if ((V1 > Precision::Confusion()) && (V2 > Precision::Confusion()))
@@ -141,7 +147,9 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
   V1 = vec.Magnitude();
   // if the parameterization is too strange we keep the pseudo-length
   if ((V1 > 1000 * L1) || (V1 < L1 * 1.e-3))
+  {
     V1 = L1;
+  }
 
   for (jj = 2; jj < myVKnots->Length(); jj++)
   {
@@ -156,9 +164,13 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
 
     // Compute the ratio, avoiding degenerate cases...
     if ((V2 > 1000 * L2) || (V2 < L2 * 1.e-3))
+    {
       V2 = L2;
+    }
     if ((V3 > 1000 * L2) || (V3 < L2 * 1.e-3))
+    {
       V3 = L2;
+    }
 
     Ratio = 1;
     if ((V1 > Precision::Confusion()) && (V2 > Precision::Confusion()))
@@ -193,9 +205,13 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
                                                                        myVDegree);
 
   if (RemoveKnots)
+  {
     minus = 0;
+  }
   else
+  {
     minus = 1;
+  }
 
   for (ii = myUKnots->Length() - 1; ii > 1; ii--)
   {

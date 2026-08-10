@@ -49,7 +49,9 @@ bool BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&       theSource,
 
   TDF_Label tLab; // Null label.
   if (!theSource.GetLabel(aRef->Label().Data(), tLab))
+  {
     return false;
+  }
 
   // set referenced label
   aRef->Set(tLab);

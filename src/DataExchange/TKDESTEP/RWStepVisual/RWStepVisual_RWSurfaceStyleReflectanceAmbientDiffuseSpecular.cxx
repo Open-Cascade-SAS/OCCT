@@ -37,7 +37,9 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::ReadStep(
                               5,
                               theAch,
                               "surface_style_reflectance_ambient_diffuse_specular"))
+  {
     return;
+  }
 
   // Inherited fields of SurfaceStyleReflectanceAmbient
   double aAmbientReflectance;

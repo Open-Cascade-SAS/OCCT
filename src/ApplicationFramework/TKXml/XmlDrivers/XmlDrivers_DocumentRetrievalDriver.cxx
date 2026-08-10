@@ -46,7 +46,9 @@ occ::handle<XmlMDF_ADriver> XmlDrivers_DocumentRetrievalDriver::ReadShapeSection
   const Message_ProgressRange&          theRange)
 {
   if (myDrivers.IsNull())
+  {
     myDrivers = AttributeDrivers(theMsgDriver);
+  }
   occ::handle<XmlMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
@@ -67,5 +69,7 @@ void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(
   occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
     occ::down_cast<XmlMNaming_NamedShapeDriver>(theDriver);
   if (!aNamedShapeDriver.IsNull())
+  {
     aNamedShapeDriver->Clear();
+  }
 }

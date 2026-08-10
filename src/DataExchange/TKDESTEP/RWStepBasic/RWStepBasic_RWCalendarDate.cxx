@@ -27,7 +27,9 @@ void RWStepBasic_RWCalendarDate::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "calendar_date"))
+  {
     return;
+  }
 
   // --- inherited field : yearComponent ---
 

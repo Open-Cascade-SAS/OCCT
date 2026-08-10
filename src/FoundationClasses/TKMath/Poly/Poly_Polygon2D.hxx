@@ -36,6 +36,9 @@ public:
   //! Constructs a 2D polygon defined by the table of points, <Nodes>.
   Standard_EXPORT Poly_Polygon2D(const NCollection_Array1<gp_Pnt2d>& Nodes);
 
+  //! Creates a copy of current polygon.
+  Standard_EXPORT virtual occ::handle<Poly_Polygon2D> Copy() const;
+
   //! Returns the deflection of this polygon.
   //! Deflection is used in cases where the polygon is an
   //! approximate representation of a curve. Deflection

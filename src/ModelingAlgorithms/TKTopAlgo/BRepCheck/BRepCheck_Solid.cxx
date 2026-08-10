@@ -22,7 +22,7 @@
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
@@ -152,7 +152,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BRepCheck_ToolSolid> BRepCheck_VectorOfToolSolid;
+typedef NCollection_DynamicArray<BRepCheck_ToolSolid> BRepCheck_VectorOfToolSolid;
 
 //
 
@@ -281,7 +281,7 @@ void BRepCheck_Solid::Minimum()
     BRepCheck::Add(aLST, BRepCheck_BadOrientationOfSubshape);
   }
   //
-  aNbVTS = aVTS.Size();
+  aNbVTS = aVTS.Length();
   if (aNbVTS < 2)
   {
     return;

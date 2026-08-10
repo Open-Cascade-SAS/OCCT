@@ -32,7 +32,9 @@ void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "surface_style_parameter_line"))
+  {
     return;
+  }
 
   // --- own field : styleOfParameterLines ---
 

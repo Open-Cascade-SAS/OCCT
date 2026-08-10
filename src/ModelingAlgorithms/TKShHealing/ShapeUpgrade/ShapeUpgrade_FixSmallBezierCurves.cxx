@@ -58,13 +58,19 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
   if (sae.Curve3d(myEdge, c3d, f, l, false))
   {
     if (First < f)
+    {
       First = f;
+    }
     if (Last > l)
+    {
       Last = l;
+    }
     occ::handle<Geom_Curve> trc   = new Geom_TrimmedCurve(c3d, First, Last);
     GeomAbs_Shape           aCont = (GeomAbs_Shape)trc->Continuity();
     if (aCont == GeomAbs_C3 || aCont == GeomAbs_CN)
+    {
       aCont = GeomAbs_C2;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -79,7 +85,9 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
           occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> theSegments3d;
           theSegments3d = mySplitCurve3dTool->GetCurves();
           if (theSegments3d->Length() > 1)
+          {
             return false;
+          }
           Curve3d = theSegments3d->Value(1);
         }
       }
@@ -97,7 +105,9 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     }
   }
   if (myFace.IsNull())
+  {
     return true;
+  }
   occ::handle<Geom2d_Curve> c2d;
   TopLoc_Location           L;
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(myFace, L);
@@ -106,9 +116,13 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
   if (sae.PCurve(myEdge, myFace, c2d, f, l, false))
   {
     if (First < f)
+    {
       First = f;
+    }
     if (Last > l)
+    {
       Last = l;
+    }
     occ::handle<Geom2d_Curve> trc2d = new Geom2d_TrimmedCurve(c2d, First, Last);
     GeomAbs_Shape             aCont = (GeomAbs_Shape)trc2d->Continuity();
     try
@@ -121,11 +135,15 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
         mySplitCurve2dTool->Init(AproxCurve2d.Curve(), First, Last);
         mySplitCurve2dTool->Perform(true);
         if (mySplitCurve2dTool->Status(ShapeExtend_FAIL))
+        {
           return false;
+        }
         occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2d;
         theSegments2d = mySplitCurve2dTool->GetCurves();
         if (theSegments2d->Length() > 1)
+        {
           return false; // ShapeAnalysis_Surface
+        }
         Curve2d = theSegments2d->Value(1);
       }
     }
@@ -152,9 +170,13 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     if (sae.PCurve(erev, myFace, c2, f2, l2, false))
     {
       if (First > f)
+      {
         First = f;
+      }
       if (Last > l)
+      {
         Last = l;
+      }
       occ::handle<Geom2d_Curve> trc2d = new Geom2d_TrimmedCurve(c2, First, Last);
       GeomAbs_Shape             aCont = trc2d->Continuity();
       Geom2dConvert_ApproxCurve AproxCurve2d(trc2d, prec, aCont, 1, 9);
@@ -167,11 +189,15 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
           mySplitCurve2dTool->Init(AproxCurve2d.Curve(), First, Last);
           mySplitCurve2dTool->Perform(true);
           if (!mySplitCurve2dTool->Status(ShapeExtend_DONE))
+          {
             return false;
+          }
           occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2d;
           theSegments2d = mySplitCurve2dTool->GetCurves();
           if (theSegments2d->Length() > 1)
+          {
             return false; // ShapeAnalysis_Surface
+          }
           Curve2dR = theSegments2d->Value(1);
         }
       }

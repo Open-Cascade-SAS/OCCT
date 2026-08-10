@@ -74,17 +74,29 @@ void BRepPrim_FaceBuilder::Init(const BRep_Builder&              B,
   S->Bounds(USMin, USMax, VSMin, VSMax);
 
   if (UMin >= UMax)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
   if (VMin >= VMax)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
   if (UMin < USMin)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
   if (UMax > USMax)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
   if (VMin < VSMin)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
   if (VMax > VSMax)
+  {
     throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  }
 
   // Make the vertices
   B.MakeVertex(myVertex[0], S->Value(UMin, VMin), Precision::Confusion());
@@ -152,7 +164,9 @@ void BRepPrim_FaceBuilder::Init(const BRep_Builder&              B,
 
   // set the natural restriction flag
   if (UMin == USMin && UMax == USMax && VMin == VSMin && VMax == VSMax)
+  {
     B.NaturalRestriction(myFace, true);
+  }
 }
 
 //=================================================================================================

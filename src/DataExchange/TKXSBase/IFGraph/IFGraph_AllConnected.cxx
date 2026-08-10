@@ -35,14 +35,20 @@ IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph&               
 void IFGraph_AllConnected::GetFromEntity(const occ::handle<Standard_Transient>& ent)
 {
   if (!thegraph.IsPresent(thegraph.EntityNumber(ent)))
+  {
     return;
+  }
   thegraph.GetFromEntity(ent, false);
 
   for (Interface_EntityIterator shareds = thegraph.Shareds(ent); shareds.More(); shareds.Next())
+  {
     GetFromEntity(shareds.Value());
+  }
 
   for (Interface_EntityIterator sharings = thegraph.Sharings(ent); sharings.More(); sharings.Next())
+  {
     GetFromEntity(sharings.Value());
+  }
 }
 
 void IFGraph_AllConnected::ResetData()

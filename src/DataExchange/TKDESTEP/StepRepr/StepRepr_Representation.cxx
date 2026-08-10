@@ -61,7 +61,9 @@ occ::handle<StepRepr_RepresentationItem> StepRepr_Representation::ItemsValue(con
 int StepRepr_Representation::NbItems() const
 {
   if (items.IsNull())
+  {
     return 0;
+  }
   return items->Length();
 }
 

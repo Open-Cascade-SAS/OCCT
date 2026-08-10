@@ -33,7 +33,9 @@ void RWStepShape_RWValueFormatTypeQualifier::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "value_format_type_qualifier"))
+  {
     return;
+  }
 
   // Own fields of ValueFormatTypeQualifier
 

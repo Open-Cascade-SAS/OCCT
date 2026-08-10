@@ -37,7 +37,9 @@ static int ApplySequence(Draw_Interpretor& di, int argc, const char** argv)
   const char* arg3 = argv[3];
   const char* arg4 = "";
   if (argc > 4)
+  {
     arg4 = argv[4];
+  }
   TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull())
   {

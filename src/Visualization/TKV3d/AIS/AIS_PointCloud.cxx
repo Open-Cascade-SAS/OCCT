@@ -79,7 +79,7 @@ void AIS_PointCloudOwner::HilightWithColor(const occ::handle<PrsMgr_Presentation
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())

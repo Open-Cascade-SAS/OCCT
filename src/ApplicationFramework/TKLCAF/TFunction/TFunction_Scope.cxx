@@ -61,7 +61,9 @@ TFunction_Scope::TFunction_Scope()
 bool TFunction_Scope::AddFunction(const TDF_Label& L)
 {
   if (myFunctions.IsBound2(L))
+  {
     return false;
+  }
 
   Backup();
 
@@ -74,7 +76,9 @@ bool TFunction_Scope::AddFunction(const TDF_Label& L)
 bool TFunction_Scope::RemoveFunction(const TDF_Label& L)
 {
   if (!myFunctions.IsBound2(L))
+  {
     return false;
+  }
 
   Backup();
 
@@ -86,7 +90,9 @@ bool TFunction_Scope::RemoveFunction(const TDF_Label& L)
 bool TFunction_Scope::RemoveFunction(const int ID)
 {
   if (!myFunctions.IsBound1(ID))
+  {
     return false;
+  }
 
   Backup();
 
@@ -98,7 +104,9 @@ bool TFunction_Scope::RemoveFunction(const int ID)
 void TFunction_Scope::RemoveAllFunctions()
 {
   if (myFunctions.IsEmpty())
+  {
     return;
+  }
 
   Backup();
 
@@ -195,7 +203,9 @@ NCollection_DoubleMap<int, TDF_Label>& TFunction_Scope::ChangeFunctions()
 void TFunction_Scope::SetFreeID(const int ID)
 {
   if (myFreeID == ID)
+  {
     return;
+  }
 
   Backup();
 

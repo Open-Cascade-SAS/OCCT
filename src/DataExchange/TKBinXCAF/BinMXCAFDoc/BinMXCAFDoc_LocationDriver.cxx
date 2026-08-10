@@ -128,7 +128,9 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
         aDatum = occ::down_cast<TopLoc_Datum3D>(theMap.Find(aDatumID));
       }
       else
+      {
         return false;
+      }
     }
     else
     {
@@ -146,12 +148,14 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
       int     R, C;
       gp_Mat& aMat = (gp_Mat&)aTrsf.HVectorialPart();
       for (R = 1; R <= 3; R++)
+      {
         for (C = 1; C <= 3; C++)
         {
           double aVal;
           theSource >> aVal;
           aMat.SetValue(R, C, aVal);
         }
+      }
 
       double x, y, z;
       theSource >> x >> y >> z;

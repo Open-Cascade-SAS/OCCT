@@ -103,9 +103,13 @@ static void DecodeMakeEdgeError(
     case (BRepLib_DifferentsPointAndParameter):
       if (!ShapeConstruct_Curve()
              .AdjustCurve(myCurve, BRep_Tool::Pnt(V1), BRep_Tool::Pnt(V2), true, true))
+      {
         TP->AddFail(orig, " Different Points and Parameters");
+      }
       else
+      {
         TP->AddWarning(orig, "Different Points and Parameters, adjusted");
+      }
       break;
     case (BRepLib_LineThroughIdenticPoints):
       TP->AddFail(orig, " Line through identic Points");
@@ -139,10 +143,14 @@ static occ::handle<Geom_Curve> MakeCurve(const occ::handle<StepGeom_Curve>&     
 {
   occ::handle<Geom_Curve> C2 = occ::down_cast<Geom_Curve>(TP->FindTransient(C1));
   if (!C2.IsNull())
+  {
     return C2;
+  }
   C2 = StepToGeom::MakeCurve(C1, theLocalFactors);
   if (!C2.IsNull())
+  {
     TP->BindTransient(C1, C2);
+  }
   return C2;
 }
 
@@ -203,7 +211,9 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
   occ::handle<StepShape_OrientedEdge> OE    = occ::down_cast<StepShape_OrientedEdge>(aEdge);
   occ::handle<StepShape_Edge>         wEdge = aEdge;
   if (!OE.IsNull())
+  {
     wEdge = OE->EdgeElement();
+  }
   occ::handle<StepShape_EdgeCurve> EC = occ::down_cast<StepShape_EdgeCurve>(wEdge);
 
   if (aTool.IsBound(EC))
@@ -229,7 +239,9 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
     TopoDS_Shape existingShape = NMTool.Find(EC);
     // Reverse shape's orientation if needed
     if (!OE->Orientation())
+    {
       existingShape.Reverse();
+    }
     myResult = existingShape;
     myError  = StepToTopoDS_TranslateEdgeDone;
     done     = true;
@@ -245,7 +257,9 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
     TopoDS_Shape existingShape = NMTool.Find(anECName->String());
     // Reverse shape's orientation if needed
     if (!OE->Orientation())
+    {
       existingShape.Reverse();
+    }
     // Register Edge for final processing (I-DEAS case)
     NMTool.RegisterNMEdge(existingShape);
     myResult = existingShape;
@@ -349,7 +363,9 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
     {
       NMTool.Bind(EC, E);
       if (NMTool.IsIDEASCase() && !anECName.IsNull() && !anECName->IsEmpty())
+      {
         NMTool.Bind(anECName->String(), E);
+      }
     }
 
     myResult = E;
@@ -375,7 +391,9 @@ static void GetCartesianPoints(const occ::handle<StepShape_EdgeCurve>& EC,
       ((i == 1) == EC->SameSense() ? EC->EdgeStart() : EC->EdgeEnd());
     const occ::handle<StepShape_VertexPoint> VP = occ::down_cast<StepShape_VertexPoint>(V);
     if (VP.IsNull())
+    {
       continue;
+    }
     const occ::handle<StepGeom_CartesianPoint> P =
       occ::down_cast<StepGeom_CartesianPoint>(VP->VertexGeometry());
     occ::handle<Geom_CartesianPoint> CP = StepToGeom::MakeCartesianPoint(P, theLocalFactors);
@@ -418,13 +436,17 @@ void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const occ::handle<StepGeom_Curv
   //: e6 abv
   gp_Pnt pnt1 = pv1, pnt2 = pv2;
   if (V1.IsSame(V2))
+  {
     GetCartesianPoints(EC, pnt1, pnt2, theLocalFactors);
+  }
   ShapeAnalysis_Curve sac;
   temp1 = sac.Project(C1, pnt1, preci, pproj, U1, false);
   temp2 = sac.Project(C1, pnt2, preci, pproj, U2, false);
 
   if (!StepToTopoDS_GeometricTool::UpdateParam3d(C1, U1, U2, preci))
+  {
     TP->AddWarning(C3D, "Update of 3D-Parameters has failed");
+  }
 
   //: d5: instead of AdjustCurve above which is incorrect if U1 and U2 are not ends
   GeomAdaptor_Curve aCA(C1);
@@ -540,7 +562,9 @@ occ::handle<Geom2d_Curve> StepToTopoDS_TranslateEdge::MakePCurve(
   occ::handle<Geom2d_Curve>                              C2d;
   const occ::handle<StepRepr_DefinitionalRepresentation> DRI = PCU->ReferenceToCurve();
   if (DRI.IsNull())
+  {
     return C2d;
+  }
   const occ::handle<StepGeom_Curve> StepCurve = occ::down_cast<StepGeom_Curve>(DRI->ItemsValue(1));
   try
   {

@@ -55,7 +55,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   // --- Instance of common supertype BSplineCurve ---
 
   if (!data->CheckNbParams(num, 5, ach, "b_spline_curve"))
+  {
     return;
+  }
   // --- field : degree ---
 
   int aDegree;
@@ -79,7 +81,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent2))
+      {
         aControlPointsList->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -95,7 +99,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (curve_form) is not an enumeration");
+  }
   // --- field : closedCurve ---
 
   StepData_Logical aClosedCurve;
@@ -115,7 +121,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component BSplineCurveWithKnots ---
 
   if (!data->CheckNbParams(num, 3, ach, "b_spline_curve_with_knots"))
+  {
     return;
+  }
 
   // --- field : knotMultiplicities ---
 
@@ -130,7 +138,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat6 =` not needed
       if (data->ReadInteger(nsub6, i6, "knot_multiplicities", ach, aKnotMultiplicitiesItem))
+      {
         aKnotMultiplicities->SetValue(i6, aKnotMultiplicitiesItem);
+      }
     }
   }
 
@@ -147,7 +157,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat7 =` not needed
       if (data->ReadReal(nsub7, i7, "knots", ach, aKnotsItem))
+      {
         aKnots->SetValue(i7, aKnotsItem);
+      }
     }
   }
 
@@ -163,7 +175,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (knot_spec) is not an enumeration");
+  }
 
   //	num = data->NextForComplex(num);
   // sln 04.10.2001. BUC61003. Correction of looking for items of complex entity
@@ -183,7 +197,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component RationalBSplineCurve ---
 
   if (!data->CheckNbParams(num, 1, ach, "rational_b_spline_curve"))
+  {
     return;
+  }
 
   // --- field : weightsData ---
 
@@ -198,7 +214,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat9 =` not needed
       if (data->ReadReal(nsub9, i9, "weights_data", ach, aWeightsDataItem))
+      {
         aWeightsData->SetValue(i9, aWeightsDataItem);
+      }
     }
   }
 
@@ -210,7 +228,9 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component RepresentationItem ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- field : name ---
 

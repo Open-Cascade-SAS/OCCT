@@ -99,7 +99,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Wire& W)
   {
     Add(TopoDS::Edge(it.Value()));
     if (myError != BRepLib_WireDone)
+    {
       break;
+    }
   }
 }
 
@@ -141,7 +143,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
 
     // add the vertices
     for (it.Initialize(myEdge); it.More(); it.Next())
+    {
       myVertices.Add(it.Value());
+    }
   }
 
   else
@@ -159,7 +163,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
     if (myError != BRepLib_NonManifoldWire)
     {
       if (VF.IsNull() || VL.IsNull())
+      {
         myError = BRepLib_NonManifoldWire;
+      }
     }
 
     for (it.Initialize(EE); it.More(); it.Next())
@@ -179,26 +185,38 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
           {
             // Orientation indetermined (in 3d) : Preserve the initial
             if (!VF.IsSame(VE))
+            {
               myError = BRepLib_NonManifoldWire;
+            }
           }
           else
           {
             if (VF.IsSame(VE))
             {
               if (VE.Orientation() == TopAbs_FORWARD)
+              {
                 reverse = true;
+              }
               else
+              {
                 forward = true;
+              }
             }
             else if (VL.IsSame(VE))
             {
               if (VE.Orientation() == TopAbs_REVERSED)
+              {
                 reverse = true;
+              }
               else
+              {
                 forward = true;
+              }
             }
             else
+            {
               myError = BRepLib_NonManifoldWire;
+            }
           }
         }
       }
@@ -223,26 +241,38 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
               {
                 // Orientation indetermined (in 3d) : Preserve the initial
                 if (!VF.IsSame(VW))
+                {
                   myError = BRepLib_NonManifoldWire;
+                }
               }
               else
               {
                 if (VF.IsSame(VW))
                 {
                   if (VE.Orientation() == TopAbs_FORWARD)
+                  {
                     reverse = true;
+                  }
                   else
+                  {
                     forward = true;
+                  }
                 }
                 else if (VL.IsSame(VW))
                 {
                   if (VE.Orientation() == TopAbs_REVERSED)
+                  {
                     reverse = true;
+                  }
                   else
+                  {
                     forward = true;
+                  }
                 }
                 else
+                {
                   myError = BRepLib_NonManifoldWire;
+                }
               }
             }
             break;
@@ -267,7 +297,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
       {
         myEdge = EE;
         for (it.Initialize(EE); it.More(); it.Next())
+        {
           myVertices.Add(it.Value());
+        }
       }
       else
       {
@@ -342,7 +374,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
     //       closed wire, internal vertex ...
     // reverse and forward are true : closed or degenerated edge
     if (((forward == reverse) && (E.Orientation() == TopAbs_REVERSED)) || (reverse && !forward))
+    {
       myEdge.Reverse();
+    }
   }
 
   // add myEdge to myShape
@@ -351,7 +385,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
 
   // Initialize VF, VL
   if (init)
+  {
     TopExp::Vertices(TopoDS::Wire(myShape), VF, VL);
+  }
   else
   {
     if (myError == BRepLib_WireDone)
@@ -359,9 +395,13 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
       TopoDS_Vertex V1, V2, VRef;
       TopExp::Vertices(myEdge, V1, V2);
       if (V1.IsSame(myVertex))
+      {
         VRef = V2;
+      }
       else if (V2.IsSame(myVertex))
+      {
         VRef = V1;
+      }
       else
       {
 #ifdef OCCT_DEBUG
@@ -381,9 +421,13 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
       else
       { // General case
         if (VF.IsSame(myVertex))
+        {
           VF = VRef;
+        }
         else if (VL.IsSame(myVertex))
+        {
           VL = VRef;
+        }
         else
         {
 #ifdef OCCT_DEBUG
@@ -400,7 +444,9 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
   }
   // Test myShape is closed
   if (!VF.IsNull() && !VL.IsNull() && VF.IsSame(VL))
+  {
     myShape.Closed(true);
+  }
 
   myError = BRepLib_WireDone;
   Done();

@@ -222,7 +222,9 @@ gp_Pnt2d Geom2d_OffsetCurve::EvalD0(const double theU) const
   const Geom2d_Curve::ResD1 aBasisD1 = basisCurve->EvalD1(theU);
   gp_Pnt2d                  aValue   = aBasisD1.Point;
   if (!Geom2d_OffsetCurveUtils::CalculateD0(aValue, aBasisD1.D1, offsetValue))
+  {
     throw Geom2d_UndefinedValue("Geom2d_OffsetCurve::EvalD0");
+  }
   return aValue;
 }
 
@@ -240,7 +242,9 @@ Geom2d_Curve::ResD1 Geom2d_OffsetCurve::EvalD1(const double theU) const
   gp_Pnt2d                  aValue   = aBasisD2.Point;
   gp_Vec2d                  aD1      = aBasisD2.D1;
   if (!Geom2d_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2.D2, offsetValue))
+  {
     throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD1");
+  }
   return Geom2d_Curve::ResD1{aValue, aD1};
 }
 
@@ -269,10 +273,14 @@ Geom2d_Curve::ResD2 Geom2d_OffsetCurve::EvalD2(const double theU) const
                                                    aD3,
                                                    aDummyD4,
                                                    isDirectionChange))
+    {
       throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD2");
+    }
   }
   if (!Geom2d_OffsetCurveUtils::CalculateD2(aValue, aD1, aD2, aD3, isDirectionChange, offsetValue))
+  {
     throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD2");
+  }
   return Geom2d_Curve::ResD2{aValue, aD1, aD2};
 }
 
@@ -302,7 +310,9 @@ Geom2d_Curve::ResD3 Geom2d_OffsetCurve::EvalD3(const double theU) const
                                                    aD3,
                                                    aD4,
                                                    isDirectionChange))
+    {
       throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD3");
+    }
   }
   if (!Geom2d_OffsetCurveUtils::CalculateD3(aValue,
                                             aD1,
@@ -311,7 +321,9 @@ Geom2d_Curve::ResD3 Geom2d_OffsetCurve::EvalD3(const double theU) const
                                             aD4,
                                             isDirectionChange,
                                             offsetValue))
+  {
     throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD3");
+  }
   return Geom2d_Curve::ResD3{aValue, aD1, aD2, aD3};
 }
 
@@ -320,7 +332,9 @@ Geom2d_Curve::ResD3 Geom2d_OffsetCurve::EvalD3(const double theU) const
 gp_Vec2d Geom2d_OffsetCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalDN");
+  }
   gp_Vec2d aEvalRepResult;
   if (Geom2dEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {

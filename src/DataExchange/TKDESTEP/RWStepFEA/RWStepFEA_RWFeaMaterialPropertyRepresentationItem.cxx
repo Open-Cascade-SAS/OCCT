@@ -36,7 +36,9 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "fea_material_property_representation_item"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

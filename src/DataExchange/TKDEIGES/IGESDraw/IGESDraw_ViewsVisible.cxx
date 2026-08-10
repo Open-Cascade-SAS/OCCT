@@ -31,11 +31,19 @@ void IGESDraw_ViewsVisible::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
+  {
     if (allDisplayEntity->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : Init");
+    }
+  }
   if (!allViewEntities.IsNull())
+  {
     if (allViewEntities->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : Init");
+    }
+  }
   theViewEntities  = allViewEntities;
   theDisplayEntity = allDisplayEntity;
   InitTypeAndForm(402, 3);
@@ -45,8 +53,12 @@ void IGESDraw_ViewsVisible::InitImplied(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
+  {
     if (allDisplayEntity->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : InitImplied");
+    }
+  }
   theDisplayEntity = allDisplayEntity;
 }
 

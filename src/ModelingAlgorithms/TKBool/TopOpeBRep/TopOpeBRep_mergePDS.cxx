@@ -63,7 +63,9 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   TopOpeBRepDS_CurveExplorer  cex(BDS);
   if (!cex.More())
+  {
     return;
+  }
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher> Mvp1;
   NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher> Mvp2;
@@ -76,7 +78,9 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI;
     itI.Initialize(BDS.ChangeCurveInterferences(ic));
     if (!itI.More())
+    {
       continue;
+    }
 
     const TopoDS_Face& f1 = TopoDS::Face(c.Shape1());
 #ifdef OCCT_DEBUG
@@ -100,14 +104,20 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       occ::handle<TopOpeBRepDS_CurvePointInterference> CPI =
         occ::down_cast<TopOpeBRepDS_CurvePointInterference>(ITF);
       if (CPI.IsNull())
+      {
         continue;
+      }
       TopOpeBRepDS_Kind GK = CPI->GeometryType();
       if (GK != TopOpeBRepDS_POINT)
+      {
         continue;
+      }
       int GI = CPI->Geometry();
       //**!
       if (GI > BDS.NbPoints())
+      {
         continue;
+      }
       //**!
       const TopOpeBRepDS_Point& PDS = BDS.Point(GI);
 
@@ -138,7 +148,9 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       }
 
       if (ivp1 && ivp2)
+      {
         BDS.FillShapesSameDomain(v1, v2);
+      }
 
       bool editITF = (ivp1 || ivp2);
       if (editITF)

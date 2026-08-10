@@ -96,7 +96,9 @@ bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
         return true;
       }
       else
+      {
         return false;
+      }
     }
 
     if (myHasCurve2d)
@@ -129,11 +131,15 @@ bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
         return true;
       }
       else
+      {
         return false;
+      }
     }
 
     return false;
   }
   else
+  {
     return false;
+  }
 }

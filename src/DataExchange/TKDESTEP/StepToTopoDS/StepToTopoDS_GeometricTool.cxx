@@ -59,7 +59,9 @@ int StepToTopoDS_GeometricTool::PCurve(const occ::handle<StepGeom_SurfaceCurve>&
     if (!thePCurve.IsNull())
     {
       if (thePCurve->BasisSurface() == BasisSurf)
+      {
         return i;
+      }
     }
   }
   thePCurve.Nullify();
@@ -78,10 +80,14 @@ bool StepToTopoDS_GeometricTool::IsSeamCurve(const occ::handle<StepGeom_SurfaceC
                                              const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->IsKind(STANDARD_TYPE(StepGeom_SeamCurve)))
+  {
     return true;
+  }
 
   if (SurfCurve->NbAssociatedGeometry() != 2)
+  {
     return false;
+  }
 
   occ::handle<StepGeom_Pcurve> StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
   occ::handle<StepGeom_Pcurve> StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
@@ -101,11 +107,15 @@ bool StepToTopoDS_GeometricTool::IsSeamCurve(const occ::handle<StepGeom_SurfaceC
     {
       OrEdge = EdgeLoop->EdgeListValue(i);
       if (StepEdge == OrEdge->EdgeElement())
+      {
         nbOE++;
+      }
     }
     // two oriented edges of the same wire share the same edge
     if (nbOE == 2)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -124,7 +134,9 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
                                             const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->NbAssociatedGeometry() != 2)
+  {
     return false;
+  }
 
   occ::handle<StepGeom_Pcurve> StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
   occ::handle<StepGeom_Pcurve> StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
@@ -144,7 +156,9 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
     {
       OrEdge = EdgeLoop->EdgeListValue(i);
       if (StepEdge == OrEdge->EdgeElement())
+      {
         nbOE++;
+      }
     }
     // the two oriented edges are not in the same wire
     if (nbOE == 1)
@@ -173,9 +187,13 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
         // clang-format on
 
         if ((DeltaX < preci2d) || (DeltaY < preci2d))
+        {
           return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
+        }
         else
+        {
           return false;
+        }
 
         // Warning : la manipulation de tolerances dans ce contexte est un
         //           peu trop dangeureux.
@@ -191,7 +209,9 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
         //  Ce travail reste evidement A FAIRE !!! ...
       }
       else
+      {
         return false;
+      }
     }
     return false;
   }
@@ -248,7 +268,9 @@ bool StepToTopoDS_GeometricTool::UpdateParam3d(const occ::handle<Geom_Curve>& th
   }
 
   if (w1 < w2)
+  {
     return true;
+  }
 
   if (theCurve->IsPeriodic())
   {

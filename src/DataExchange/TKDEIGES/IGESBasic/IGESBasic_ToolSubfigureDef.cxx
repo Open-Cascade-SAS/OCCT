@@ -88,7 +88,9 @@ void IGESBasic_ToolSubfigureDef::WriteOwnParams(const occ::handle<IGESBasic_Subf
   IW.Send(ent->Name());
   IW.Send(nb);
   for (int i = 1; i <= nb; i++)
+  {
     IW.Send(ent->AssociatedEntity(i));
+  }
 }
 
 void IGESBasic_ToolSubfigureDef::OwnShared(const occ::handle<IGESBasic_SubfigureDef>& ent,
@@ -96,7 +98,9 @@ void IGESBasic_ToolSubfigureDef::OwnShared(const occ::handle<IGESBasic_Subfigure
 {
   int nb = ent->NbEntities();
   for (int i = 1; i <= nb; i++)
+  {
     iter.GetOneItem(ent->AssociatedEntity(i));
+  }
 }
 
 void IGESBasic_ToolSubfigureDef::OwnCopy(const occ::handle<IGESBasic_SubfigureDef>& another,
@@ -125,8 +129,10 @@ IGESData_DirChecker IGESBasic_ToolSubfigureDef::DirChecker(
   IGESData_DirChecker DC(308, 0); // TypeNo. 308, Form no. 0
   DC.Structure(IGESData_DefVoid);
   if (ent->HierarchyStatus() == 1)
+  {
     DC.GraphicsIgnored(01);
-  // GraphicsIgnored if hierarchy status = 01
+    // GraphicsIgnored if hierarchy status = 01
+  }
   else
   {
     DC.BlankStatusIgnored();
@@ -153,5 +159,5 @@ void IGESBasic_ToolSubfigureDef::OwnDump(const occ::handle<IGESBasic_SubfigureDe
   S << "\n"
     << "The Associated Entities : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbEntities(), ent->AssociatedEntity);
-  S << std::endl;
+  S << '\n';
 }

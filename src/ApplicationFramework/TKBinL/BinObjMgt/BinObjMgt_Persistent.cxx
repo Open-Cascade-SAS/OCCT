@@ -92,7 +92,9 @@ Standard_OStream& BinObjMgt_Persistent::Write(Standard_OStream& theOS, const boo
   // update data length
   aData[2] = mySize - BP_HEADSIZE;
   if (theDirectStream)
+  {
     aData[1] = -aData[1];
+  }
 #if DO_INVERSE
   aData[0] = InverseInt(aData[0]);
   aData[1] = InverseInt(aData[1]);
@@ -145,7 +147,9 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
 #endif
     myDirectWritingIsEnabled = aData[1] < 0;
     if (myDirectWritingIsEnabled)
+    {
       aData[1] = -aData[1];
+    }
     if (theIS && aData[2] > 0)
     {
       mySize += aData[2];
@@ -166,14 +170,18 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
           // 1st piece: reduce the number of bytes by header size
           ptr += BP_HEADSIZE;
           if (nbToRead == BP_PIECESIZE)
+          {
             nbToRead -= BP_HEADSIZE;
+          }
         }
         theIS.read(ptr, nbToRead);
         nbRead += nbToRead;
       }
     }
     else
+    {
       aData[2] = 0;
+    }
   }
   return theIS;
 }
@@ -547,7 +555,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharacter(char& theValue) c
 {
   alignOffset(1);
   if (noMoreData(1))
+  {
     return *this;
+  }
   char* aData = (char*)myData(myIndex) + myOffset;
   theValue    = *aData;
   ((BinObjMgt_Persistent*)this)->myOffset++;
@@ -560,7 +570,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByte(uint8_t& theValue) con
 {
   alignOffset(1);
   if (noMoreData(1))
+  {
     return *this;
+  }
   uint8_t* aData = (uint8_t*)myData(myIndex) + myOffset;
   theValue       = *aData;
   ((BinObjMgt_Persistent*)this)->myOffset++;
@@ -573,7 +585,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharacter(char16_t& theV
 {
   alignOffset(BP_EXTCHARSIZE);
   if (noMoreData(BP_EXTCHARSIZE))
+  {
     return *this;
+  }
   char16_t* aData = (char16_t*)((char*)myData(myIndex) + myOffset);
 #ifdef DO_INVERSE
   theValue = InverseExtChar(*aData);
@@ -590,7 +604,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetInteger(int& theValue) cons
 {
   alignOffset(BP_INTSIZE);
   if (noMoreData(BP_INTSIZE))
+  {
     return *this;
+  }
   int* aData = (int*)((char*)myData(myIndex) + myOffset);
 #ifdef DO_INVERSE
   theValue = InverseInt(*aData);
@@ -607,7 +623,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetReal(double& theValue) cons
 {
   alignOffset(BP_INTSIZE);
   if (noMoreData(BP_REALSIZE))
+  {
     return *this;
+  }
   int nbPieces = (myOffset + BP_REALSIZE - 1) / BP_PIECESIZE;
   if (nbPieces > 0)
   {
@@ -633,7 +651,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortReal(float& theValue) 
 {
   alignOffset(BP_INTSIZE);
   if (noMoreData(BP_SHORTREALSIZE))
+  {
     return *this;
+  }
   float* aData = (float*)((char*)myData(myIndex) + myOffset);
 #ifdef DO_INVERSE
   theValue = InverseShortReal(*aData);
@@ -755,7 +775,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel(const occ::handle<TDF
   theValue.Nullify();
   alignOffset(BP_INTSIZE);
   if (noMoreData(BP_INTSIZE))
+  {
     return *this;
+  }
   BinObjMgt_Persistent* me = (BinObjMgt_Persistent*)this;
   // retrieve nb of tags
   int* aData = (int*)((char*)myData(myIndex) + myOffset);
@@ -765,7 +787,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel(const occ::handle<TDF
 #endif
   me->myOffset += BP_INTSIZE;
   if (noMoreData(aLen * BP_INTSIZE))
+  {
     return *this;
+  }
 
   if (aLen > 0)
   {
@@ -799,7 +823,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetGUID(Standard_GUID& theValu
 {
   alignOffset(BP_INTSIZE);
   if (noMoreData(BP_UUIDSIZE))
+  {
     return *this;
+  }
   BinObjMgt_UUID anUUID;
   getArray(&anUUID, BP_UUIDSIZE);
 #ifdef DO_INVERSE
@@ -832,7 +858,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(const BinObjMgt_P
 {
   alignOffset(1);
   if (noMoreData(theLength))
+  {
     return *this;
+  }
   getArray(theArray, theLength);
   return *this;
 }
@@ -849,7 +877,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(const BinObjMgt_P
 {
   alignOffset(1);
   if (noMoreData(theLength))
+  {
     return *this;
+  }
   getArray(theArray, theLength);
   return *this;
 }
@@ -867,7 +897,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(const BinObjMg
   alignOffset(BP_EXTCHARSIZE, true);
   int aSize = theLength * BP_EXTCHARSIZE;
   if (noMoreData(aSize))
+  {
     return *this;
+  }
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -889,7 +921,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(const BinObjMgt_PI
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_INTSIZE;
   if (noMoreData(aSize))
+  {
     return *this;
+  }
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -911,7 +945,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(const BinObjMgt_P
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_REALSIZE;
   if (noMoreData(aSize))
+  {
     return *this;
+  }
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -934,7 +970,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray(
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_SHORTREALSIZE;
   if (noMoreData(aSize))
+  {
     return *this;
+  }
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -1011,7 +1049,9 @@ void BinObjMgt_Persistent::inverseExtCharData(const int theIndex,
     int       aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     char16_t* aData       = (char16_t*)((char*)myData(anIndex) + anOffset);
     for (int i = 0; i < aLenInPiece / BP_EXTCHARSIZE; i++)
+    {
       aData[i] = FSD_BinaryFile::InverseExtChar(aData[i]);
+    }
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE)
@@ -1039,7 +1079,9 @@ void BinObjMgt_Persistent::inverseIntData(const int theIndex,
     int  aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     int* aData       = (int*)((char*)myData(anIndex) + anOffset);
     for (int i = 0; i < aLenInPiece / BP_INTSIZE; i++)
+    {
       aData[i] = FSD_BinaryFile::InverseInt(aData[i]);
+    }
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE)
@@ -1085,9 +1127,13 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
       aPrevPtr = nullptr;
     }
     for (int i = 0; i < aLenInPiece / BP_REALSIZE; i++)
+    {
       aWrapUnion.aRealData[i] = FSD_BinaryFile::InverseReal(aWrapUnion.aRealData[i]);
+    }
     if (aLenInPiece % BP_REALSIZE)
+    {
       aPrevPtr = &aWrapUnion.aRealData[aLenInPiece / BP_REALSIZE];
+    }
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE)
@@ -1115,7 +1161,9 @@ void BinObjMgt_Persistent::inverseShortRealData(const int theIndex,
     int    aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     float* aData       = (float*)((char*)myData(anIndex) + anOffset);
     for (int i = 0; i < aLenInPiece / BP_INTSIZE; i++)
+    {
       aData[i] = FSD_BinaryFile::InverseShortReal(aData[i]);
+    }
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE)

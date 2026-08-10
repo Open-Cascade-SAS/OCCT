@@ -156,7 +156,9 @@ Approx_Curve2d::Approx_Curve2d(const occ::handle<Adaptor2d_Curve2d>& C2D,
     NCollection_Array1<double> Poles1dV(1, aNbPoles);
     aApprox.Poles1d(2, Poles1dV);
     for (int i = 1; i <= aNbPoles; i++)
+    {
       Poles2d.SetValue(i, gp_Pnt2d(Poles1dU.Value(i), Poles1dV.Value(i)));
+    }
 
     occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
     occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();

@@ -57,16 +57,19 @@ bool PCDM_ReaderFilter::IsPassedAttr(const TCollection_AsciiString& theAttribute
 bool PCDM_ReaderFilter::IsPassed(const TCollection_AsciiString& theEntry) const
 {
   if (mySubTrees.IsEmpty())
+  {
     return true;
+  }
   for (NCollection_List<TCollection_AsciiString>::Iterator anEntry(mySubTrees); anEntry.More();
        anEntry.Next())
   {
     if (theEntry.StartsWith(anEntry.Value()))
     {
       if (theEntry.Length() > anEntry.Value().Length()
-          && theEntry.Value(anEntry.Value().Length() + 1)
-               != ':') // case when theEntry="0:10" should not match "0:1"
+          && theEntry.Value(anEntry.Value().Length() + 1) != ':')
+      { // case when theEntry="0:10" should not match "0:1"
         continue;
+      }
       return true;
     }
   }
@@ -75,8 +78,10 @@ bool PCDM_ReaderFilter::IsPassed(const TCollection_AsciiString& theEntry) const
 
 bool PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& theEntry) const
 {
-  if (mySubTrees.IsEmpty() || theEntry.Length() == 2) // root is always passed if any sub is defined
+  if (mySubTrees.IsEmpty() || theEntry.Length() == 2)
+  { // root is always passed if any sub is defined
     return true;
+  }
   for (NCollection_List<TCollection_AsciiString>::Iterator anEntry(mySubTrees); anEntry.More();
        anEntry.Next())
   {
@@ -84,7 +89,9 @@ bool PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& theEntry) con
         && anEntry.Value().Value(theEntry.Length() + 1) == ':'
         && // case when theEntry="0:1" should not match "0:10"
         anEntry.Value().StartsWith(theEntry))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -101,7 +108,9 @@ void PCDM_ReaderFilter::StartIteration()
   ClearTree();
   myTree.Bind(-1, nullptr);
   if (mySubTrees.IsEmpty())
+  {
     return;
+  }
   // create an iteration-tree by the mySubTrees entries
   for (NCollection_List<TCollection_AsciiString>::Iterator aTreeIter(mySubTrees); aTreeIter.More();
        aTreeIter.Next())
@@ -112,7 +121,9 @@ void PCDM_ReaderFilter::StartIteration()
     {
       aTagStr = anEntry.Token(":", aTagIndex);
       if (aTagStr.IsEmpty())
+      {
         break;
+      }
       int aTag = aTagStr.IntegerValue();
       if (aMap->IsBound(aTag))
       {
@@ -133,9 +144,13 @@ void PCDM_ReaderFilter::StartIteration()
 void PCDM_ReaderFilter::Up()
 {
   if (myCurrentDepth == 0)
+  {
     myCurrent = (TagTree*)myCurrent->Find(-1);
+  }
   else
+  {
     myCurrentDepth--;
+  }
 }
 
 void PCDM_ReaderFilter::Down(const int& theTag)
@@ -143,12 +158,18 @@ void PCDM_ReaderFilter::Down(const int& theTag)
   if (myCurrentDepth == 0)
   {
     if (myCurrent->IsBound(theTag))
+    {
       myCurrent = (TagTree*)myCurrent->Find(theTag);
+    }
     else
+    {
       ++myCurrentDepth;
+    }
   }
   else
+  {
     ++myCurrentDepth;
+  }
 }
 
 bool PCDM_ReaderFilter::IsPassed() const
@@ -167,8 +188,12 @@ void PCDM_ReaderFilter::ClearSubTree(void* const theMap)
   {
     TagTree* aMap = (TagTree*)theMap;
     for (TagTree::Iterator aTagIter(*aMap); aTagIter.More(); aTagIter.Next())
+    {
       if (aTagIter.Key() != -1)
+      {
         ClearSubTree(aTagIter.Value());
+      }
+    }
     delete aMap;
   }
 }
@@ -176,7 +201,11 @@ void PCDM_ReaderFilter::ClearSubTree(void* const theMap)
 void PCDM_ReaderFilter::ClearTree()
 {
   for (TagTree::Iterator aTagIter(myTree); aTagIter.More(); aTagIter.Next())
+  {
     if (aTagIter.Key() != -1)
+    {
       ClearSubTree(aTagIter.Value());
+    }
+  }
   myTree.Clear();
 }

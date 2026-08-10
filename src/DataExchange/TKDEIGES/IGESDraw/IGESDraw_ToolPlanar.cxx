@@ -48,14 +48,20 @@ void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&     
   // Reading nbMatrices(Integer)
   st = PR.ReadInteger(PR.Current(), "No. of Transformation matrices", nbMatrices);
   if (nbMatrices != 1)
+  {
     PR.AddFail("No. of Transformation matrices != 1");
+  }
 
   // Reading nbval(Integer)
   st = PR.ReadInteger(PR.Current(), "No. of Entities in this plane", nbval);
   if (!st)
+  {
     nbval = 0; // szv#4:S4163:12Mar99 was bug: `nbval == 0`
+  }
   if (nbval <= 0)
+  {
     PR.AddFail("No. of Entities in this plane : Not Positive");
+  }
 
   // Reading transformationMatrix(Instance of TransformationMatrix or Null)
   st = PR.ReadEntity(IR,
@@ -66,7 +72,9 @@ void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&     
                      true);
 
   if (nbval > 0)
+  {
     st = PR.ReadEnts(IR, PR.CurrentList(nbval), "Planar Entities", entities);
+  }
   /*
       {
         entities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
@@ -94,7 +102,9 @@ void IGESDraw_ToolPlanar::WriteOwnParams(const occ::handle<IGESDraw_Planar>& ent
   IW.Send(ent->TransformMatrix());
 
   for (int i = 1; i <= Up; i++)
+  {
     IW.Send(ent->Entity(i));
+  }
 }
 
 void IGESDraw_ToolPlanar::OwnShared(const occ::handle<IGESDraw_Planar>& ent,
@@ -103,7 +113,9 @@ void IGESDraw_ToolPlanar::OwnShared(const occ::handle<IGESDraw_Planar>& ent,
   int Up = ent->NbEntities();
   iter.GetOneItem(ent->TransformMatrix());
   for (int i = 1; i <= Up; i++)
+  {
     iter.GetOneItem(ent->Entity(i));
+  }
 }
 
 void IGESDraw_ToolPlanar::OwnCopy(const occ::handle<IGESDraw_Planar>& another,
@@ -133,13 +145,17 @@ void IGESDraw_ToolPlanar::OwnCopy(const occ::handle<IGESDraw_Planar>& another,
 bool IGESDraw_ToolPlanar::OwnCorrect(const occ::handle<IGESDraw_Planar>& ent) const
 {
   if (ent->NbMatrices() == 1)
+  {
     return false;
+  }
   //  Forcer NbMNatrices a 1 -> Reconstruire
   int                                                                nb = ent->NbEntities();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ents =
     new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (int i = 1; i <= nb; i++)
+  {
     ents->SetValue(i, ent->Entity(i));
+  }
   ent->Init(1, ent->TransformMatrix(), ents);
   return true;
 }
@@ -163,7 +179,9 @@ void IGESDraw_ToolPlanar::OwnCheck(const occ::handle<IGESDraw_Planar>& ent,
                                    occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbMatrices() != 1)
+  {
     ach->AddFail("No. of Transformation matrices : Value != 1");
+  }
 }
 
 void IGESDraw_ToolPlanar::OwnDump(const occ::handle<IGESDraw_Planar>& ent,
@@ -177,11 +195,15 @@ void IGESDraw_ToolPlanar::OwnDump(const occ::handle<IGESDraw_Planar>& ent,
     << "No. of Transformation Matrices : " << ent->NbMatrices() << "  "
     << "i.e. : ";
   if (ent->TransformMatrix().IsNull())
+  {
     S << "Null Handle";
+  }
   else
+  {
     dumper.OwnDump(ent->TransformMatrix(), S, sublevel);
+  }
   S << "\n"
     << "Array of Entities on the specified plane : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbEntities(), ent->Entity);
-  S << std::endl;
+  S << '\n';
 }

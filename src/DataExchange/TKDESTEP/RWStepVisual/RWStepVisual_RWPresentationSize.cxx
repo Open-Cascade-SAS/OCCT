@@ -31,7 +31,9 @@ void RWStepVisual_RWPresentationSize::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "presentation_size"))
+  {
     return;
+  }
 
   // --- own field : unit ---
 

@@ -42,7 +42,9 @@ void RWHeaderSection_GeneralModule::FillSharedCase(const int                    
                                                    Interface_EntityIterator& iter) const
 {
   if (CN != 4)
+  {
     return;
+  }
 
   DeclareAndCast(StepData_UndefinedEntity, undf, ent);
   undf->FillShared(iter);
@@ -74,12 +76,16 @@ void RWHeaderSection_GeneralModule::CopyCase(const int                          
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> auth =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nba);
       for (i = 1; i <= nba; i++)
+      {
         auth->SetValue(i, new TCollection_HAsciiString(enfr->AuthorValue(i)));
+      }
       int nbo = enfr->NbOrganization();
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> orga =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbo);
       for (i = 1; i <= nbo; i++)
+      {
         orga->SetValue(i, new TCollection_HAsciiString(enfr->OrganizationValue(i)));
+      }
       occ::handle<TCollection_HAsciiString> prep =
         new TCollection_HAsciiString(enfr->PreprocessorVersion());
       occ::handle<TCollection_HAsciiString> orig =
@@ -98,7 +104,9 @@ void RWHeaderSection_GeneralModule::CopyCase(const int                          
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> desc =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbd);
       for (i = 1; i <= nbd; i++)
+      {
         desc->SetValue(i, new TCollection_HAsciiString(enfr->DescriptionValue(i)));
+      }
       occ::handle<TCollection_HAsciiString> impl =
         new TCollection_HAsciiString(enfr->ImplementationLevel());
       ento->Init(desc, impl);
@@ -113,7 +121,9 @@ void RWHeaderSection_GeneralModule::CopyCase(const int                          
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> sche =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbs);
       for (i = 1; i <= nbs; i++)
+      {
         sche->SetValue(i, new TCollection_HAsciiString(enfr->SchemaIdentifiersValue(i)));
+      }
       ento->Init(sche);
     }
     break;
@@ -136,7 +146,9 @@ bool RWHeaderSection_GeneralModule::NewVoid(const int                        CN,
                                             occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
+  {
     return false;
+  }
   switch (CN)
   {
     case 1:

@@ -66,6 +66,15 @@ public:
   Standard_EXPORT double Transparency(
     const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_FRONT_SIDE) const;
 
+  //! Return true if per-vertex color should be applied to back-facing fragments.
+  bool ToUseVertexColorForBackFaces() const { return myAspect->ToUseVertexColorForBackFaces(); }
+
+  //! Set whether per-vertex color should be applied to back-facing fragments.
+  void SetUseVertexColorForBackFaces(bool theToUse)
+  {
+    myAspect->SetUseVertexColorForBackFaces(theToUse);
+  }
+
   //! Returns the polygons aspect properties.
   const occ::handle<Graphic3d_AspectFillArea3d>& Aspect() const { return myAspect; }
 

@@ -32,7 +32,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const Plate_GtoCConstraint& ref)
   pnt2d            = ref.pnt2d;
   nb_PPConstraints = ref.nb_PPConstraints;
   for (int i = 0; i < nb_PPConstraints; i++)
+  {
     myPPC[i] = ref.myPPC[i];
+  }
 }
 
 Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
@@ -46,7 +48,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   // alr le 12/11/96
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
@@ -54,11 +58,15 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   // alr le 12/11/96
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
   double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
@@ -81,24 +89,32 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
 
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
 
   gp_XYZ nSP = normaleS - nP * (nP * normaleS);
   if (nSP.Modulus() < NORMIN)
+  {
     return;
+  }
   nSP.Normalize();
 
   double cos_normales = normale * nSP;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = nSP * -(normale * D1S.Du) * invcos;
@@ -124,19 +140,25 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   // alr le 12/11/96
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   // alr le 12/11/96
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
 
   double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
@@ -157,7 +179,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   mat(1, 1) = Sv * D1T.Dv;
   math_Gauss gauss(mat);
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;
@@ -204,24 +228,32 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   // alr le 12/11/96
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   // alr le 12/11/96
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
 
   gp_XYZ nSP = normaleS - nP * (nP * normaleS);
   if (nSP.Modulus() < NORMIN)
+  {
     return;
+  }
   nSP.Normalize();
 
   double cos_normales = normale * nSP;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = nSP * -(normale * D1S.Du) * invcos;
@@ -242,7 +274,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   mat(1, 1) = Sv * D1T.Dv;
   math_Gauss gauss(mat);
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;
@@ -288,18 +322,24 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
 
   double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
@@ -320,7 +360,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   mat(1, 1) = Sv * D1T.Dv;
   math_Gauss gauss(mat);
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;
@@ -425,18 +467,24 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
   gp_XYZ normaleS = D1S.Du ^ D1S.Dv;
   if (normaleS.Modulus() < NORMIN)
+  {
     return;
+  }
   normaleS.Normalize();
 
   double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
+  {
     return;
+  }
   double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
@@ -458,7 +506,9 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
   math_Gauss gauss(mat);
 
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;

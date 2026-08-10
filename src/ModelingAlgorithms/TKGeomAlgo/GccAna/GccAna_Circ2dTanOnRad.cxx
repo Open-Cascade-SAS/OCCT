@@ -277,7 +277,9 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
             }
             Center = gp_Pnt2d(xc, yc);
             if (OnLine.Distance(Center) > Tol)
+            {
               continue;
+            }
             NbrSol++;
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
             //           =======================================================
@@ -395,13 +397,19 @@ void GccAna_Circ2dTanOnRad::CenterOn3(const int Index, double& ParArg, gp_Pnt2d&
 bool GccAna_Circ2dTanOnRad::IsTheSame1(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame1(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }

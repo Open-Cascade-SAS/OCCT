@@ -63,30 +63,37 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
   PR.ReadInteger(PR.Current(), "Dimension Type", tempDimType);
   PR.ReadInteger(PR.Current(), "Label Position", tempLabelPos);
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(),"Character Set", tempCharSet); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempCharSet = 1;
+}
 
   //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadText(PR.Current(),"L String", tempLString);
   PR.ReadInteger(PR.Current(),"Decimal Symbol",tempDeciSymb);
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(),"Witness Line Angle",tempWitLineAng); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempWitLineAng = M_PI / 2;
+}
 
   PR.ReadInteger(PR.Current(),"Text Alignment",tempTextAlign); //szv#4:S4163:12Mar99 `st=` not needed
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadInteger(PR.Current(),"Text Level",tempTextLevel); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempTextLevel = 0;
+}
 
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadInteger(PR.Current(),"Text Place",tempTextPlace); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempTextPlace = 0;
+  }
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "ArrowHeadOrientation", tempArrHeadOrient);
@@ -104,13 +111,19 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
       // st = PR.ReadInteger(PR.Current(), "Supplementary Notes", anote); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "Supplementary Notes", anote))
+      {
         tempSuppleNotes->SetValue(i, anote);
+      }
       // st = PR.ReadInteger(PR.Current(),"Start Index", astart); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Start Index", astart))
+      {
         tempStartInd->SetValue(i, astart);
+      }
       // st = PR.ReadInteger(PR.Current(),"End Index",anend); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "End Index", anend))
+      {
         tempEndInd->SetValue(i, anend);
+      }
     }
   }
 
@@ -222,7 +235,9 @@ bool IGESDimen_ToolDimensionDisplayData::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 14);
   if (!res)
+  {
     return res;
+  }
   occ::handle<NCollection_HArray1<int>> EndList;
   occ::handle<NCollection_HArray1<int>> StartList;
   occ::handle<NCollection_HArray1<int>> NotesList;
@@ -277,28 +292,48 @@ void IGESDimen_ToolDimensionDisplayData::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 14)
+  {
     ach->AddFail("The No. of property values != 14 ");
+  }
   if (ent->DimensionType() < 0 || ent->DimensionType() > 2)
+  {
     ach->AddFail("Incorrect Dimension Type");
+  }
   if (ent->LabelPosition() < 0 || ent->LabelPosition() > 4)
+  {
     ach->AddFail("Incorrect Preferred Label Position");
+  }
   if (ent->CharacterSet() != 1 && ent->CharacterSet() != 1001 && ent->CharacterSet() != 1002
       && ent->CharacterSet() != 1003)
+  {
     ach->AddFail("Incorrect Character Set");
+  }
   if (ent->DecimalSymbol() != 0 && ent->DecimalSymbol() != 1)
+  {
     ach->AddFail("Incorrect Decimal Symbol");
+  }
   if (ent->TextAlignment() != 0 && ent->TextAlignment() != 1)
+  {
     ach->AddFail("Incorrect Text Alignment");
+  }
   if (ent->TextLevel() < 0 || ent->TextLevel() > 2)
+  {
     ach->AddFail("Incorrect Text Level");
+  }
   if (ent->TextPlacement() < 0 || ent->TextPlacement() > 2)
+  {
     ach->AddFail("Incorrect Text Placement");
+  }
   if (ent->ArrowHeadOrientation() != 0 && ent->ArrowHeadOrientation() != 1)
+  {
     ach->AddFail("Incorrect ArrowHead Orientation");
+  }
   for (int upper = ent->NbSupplementaryNotes(), i = 1; i <= upper; i++)
   {
     if (ent->SupplementaryNote(i) < 1 || ent->SupplementaryNote(i) > 4)
+    {
       ach->AddFail("Incorrect First supplement note");
+    }
   }
 }
 
@@ -375,18 +410,28 @@ void IGESDimen_ToolDimensionDisplayData::OwnDump(
   S << "\n"
     << "Decimal Symbol : ";
   if (ent->DecimalSymbol() == 0)
+  {
     S << "0 (.)\n";
+  }
   else
+  {
     S << "1 (,)\n";
+  }
 
   S << "Witness Line Angle : " << ent->WitnessLineAngle() << "\n"
     << "Text Alignment : ";
   if (ent->TextAlignment() == 0)
+  {
     S << "0 (Horizontal)\n";
+  }
   else if (ent->TextAlignment() == 1)
+  {
     S << "1 (Parallel)\n";
+  }
   else
+  {
     S << ent->TextAlignment() << " (Incorrect Value)\n";
+  }
 
   S << "Text Level : " << ent->TextLevel();
   switch (ent->TextLevel())
@@ -424,11 +469,17 @@ void IGESDimen_ToolDimensionDisplayData::OwnDump(
 
   S << "Arrow Head Orientation : " << ent->ArrowHeadOrientation();
   if (ent->ArrowHeadOrientation() == 0)
+  {
     S << " (In, pointing out)\n";
+  }
   else if (ent->ArrowHeadOrientation() == 1)
+  {
     S << " (Out, pointing in)\n";
+  }
   else
+  {
     S << " (Incorrect Value)\n";
+  }
 
   int nbnotes = ent->NbSupplementaryNotes();
   S << " Primary Dimension Value : " << ent->InitialValue() << "\n"
@@ -439,11 +490,13 @@ void IGESDimen_ToolDimensionDisplayData::OwnDump(
   IGESData_DumpVals(S, -level, 1, nbnotes, ent->EndIndex);
   S << "\n";
   if (level > 4)
+  {
     for (int i = 1; i <= nbnotes; i++)
     {
       S << "[" << i << "]:\n"
         << "Supplementary Note : " << ent->SupplementaryNote(i)
         << ", Start Index : " << ent->StartIndex(i) << ", End Index : " << ent->EndIndex(i) << "\n";
     }
-  S << std::endl;
+  }
+  S << '\n';
 }

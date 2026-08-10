@@ -71,7 +71,9 @@ bool GeomFill_QuasiAngularConvertor::Initialized() const
 void GeomFill_QuasiAngularConvertor::Init()
 {
   if (myinit)
+  {
     return;
+  }
 
   // B is the monomial-to-BSpline conversion matrix on [-1,1], degree 6.
   // It is a mathematical constant computed once.
@@ -85,7 +87,9 @@ void GeomFill_QuasiAngularConvertor::Init()
     aTrueInter.SetValue(2, 1);
     aCoeffs.Init(0);
     for (int ii = 1; ii <= anOrdre; ii++)
+    {
       aCoeffs.SetValue(ii + (ii - 1) * anOrdre, 1);
+    }
 
     Convert_CompPolynomialToPoles     aConverter(anOrdre,
                                              anOrdre - 1,
@@ -96,15 +100,21 @@ void GeomFill_QuasiAngularConvertor::Init()
     const NCollection_Array2<double>& aPoles = aConverter.Poles();
     math_Matrix                       aResult(1, anOrdre, 1, anOrdre);
     for (int jj = 1; jj <= anOrdre; jj++)
+    {
       for (int ii = 1; ii <= anOrdre; ii++)
       {
         double aTerm = aPoles.Value(ii, jj);
         if (std::abs(aTerm - 1) < 1.e-9)
+        {
           aTerm = 1;
+        }
         if (std::abs(aTerm + 1) < 1.e-9)
+        {
           aTerm = -1;
+        }
         aResult(ii, jj) = aTerm;
       }
+    }
     return aResult;
   }();
 
@@ -165,7 +175,9 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
     }
   }
   else
+  {
     b = ((double)-1) / beta2;
+  }
   c  = ((double)1) / 3 + b;
   b2 = b * b;
   c2 = c * c;

@@ -44,7 +44,7 @@ public:
   //! Remark : it is set to record lists of entities, not only counts
   Standard_EXPORT void SetSignCounter(const occ::handle<IFSelect_SignCounter>& sign);
 
-  //! Returns the name of the SignCounter, which caracterises the
+  //! Returns the name of the SignCounter, which characterises the
   //! sorting criterium for this Dispatch
   Standard_EXPORT const char* SignName() const;
 

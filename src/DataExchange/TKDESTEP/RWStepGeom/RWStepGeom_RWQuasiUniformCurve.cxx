@@ -32,7 +32,9 @@ void RWStepGeom_RWQuasiUniformCurve::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "quasi_uniform_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -64,7 +66,9 @@ void RWStepGeom_RWQuasiUniformCurve::ReadStep(
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent3))
+      {
         aControlPointsList->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -80,7 +84,9 @@ void RWStepGeom_RWQuasiUniformCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  }
 
   // --- inherited field : closedCurve ---
 

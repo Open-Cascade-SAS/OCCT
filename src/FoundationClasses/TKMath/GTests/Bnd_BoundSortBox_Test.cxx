@@ -95,9 +95,13 @@ TEST_F(Bnd_BoundSortBoxTest, InitializeWithBoxes)
   for (NCollection_List<int>::Iterator it(result); it.More(); it.Next())
   {
     if (it.Value() == 1)
+    {
       foundSmall = true;
+    }
     if (it.Value() == 2)
+    {
       foundLarge = true;
+    }
   }
   EXPECT_TRUE(foundSmall) << "Small box (index 1) should be in the result";
   EXPECT_TRUE(foundLarge) << "Large box (index 2) should be in the result";
@@ -122,9 +126,13 @@ TEST_F(Bnd_BoundSortBoxTest, InitializeWithEnclosingBox)
   for (NCollection_List<int>::Iterator it(result); it.More(); it.Next())
   {
     if (it.Value() == 2)
+    {
       foundLarge = true;
+    }
     if (it.Value() == 3)
+    {
       foundOffset = true;
+    }
   }
   EXPECT_TRUE(foundLarge) << "Large box (index 2) should be in the result";
   EXPECT_TRUE(foundOffset) << "Offset box (index 3) should be in the result";

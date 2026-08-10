@@ -34,7 +34,9 @@ void RWStepRepr_RWApex::ReadStep(const occ::handle<StepData_StepReaderData>& dat
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "apex"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

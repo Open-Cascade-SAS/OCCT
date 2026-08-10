@@ -4329,11 +4329,17 @@ int RWStepAP214_ReadWriteModule::CaseStep(const TCollection_AsciiString& key) co
   //                     frequents dans le fichier cad geometry/topology
   int num;
   if (key.IsEqual(Reco_CartesianPoint))
+  {
     return 59; // car tres courant
+  }
   if (THE_TYPENUMS.Find(static_cast<std::string_view>(key), num))
+  {
     return num;
+  }
   if (THE_TYPESHOR.Find(static_cast<std::string_view>(key), num))
+  {
     return num; // AJOUT DES TYPES COURTS
+  }
   return 0;
 }
 
@@ -4375,9 +4381,13 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       for (i = 1; i <= NbComp; i++)
       {
         if (THE_TYPESHOR.Find(static_cast<std::string_view>(theTypes(i)), num))
+        {
           longs.Append(TCollection_AsciiString(StepType(num)));
+        }
         else
+        {
           longs.Append(theTypes(i));
+        }
       }
       return CaseStep(longs);
     }
@@ -4386,7 +4396,9 @@ int RWStepAP214_ReadWriteModule::CaseStep(
     // sorting)
     NCollection_Sequence<TCollection_AsciiString> types;
     for (i = 1; i <= theTypes.Length(); i++)
+    {
       types.Append(theTypes(i));
+    }
     // do ascending sorting
     bool                    isOK = false;
     TCollection_AsciiString tmpStr;
@@ -4395,6 +4407,7 @@ int RWStepAP214_ReadWriteModule::CaseStep(
     {
       isOK = true;
       for (i = 1; i <= aLen; i++)
+      {
         if (types(i) > types(i + 1))
         {
           tmpStr       = types(i);
@@ -4402,6 +4415,7 @@ int RWStepAP214_ReadWriteModule::CaseStep(
           types(i + 1) = tmpStr;
           isOK         = false;
         }
+      }
     }
 
     if (NbComp == 8)
@@ -11345,7 +11359,6 @@ void RWStepAP214_ReadWriteModule::ReadStep(const int                            
     default:
       ach->AddFail("Type Mismatch when reading - Entity");
   }
-  return;
 }
 
 //=================================================================================================
@@ -11355,7 +11368,9 @@ void RWStepAP214_ReadWriteModule::WriteStep(const int                           
                                             const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
+  {
     return;
+  }
   switch (CN)
   {
     case 1: {

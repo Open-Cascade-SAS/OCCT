@@ -553,7 +553,7 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_WithSeeds)
   math_Vector aSeedPos(1, 2);
   aSeedPos(1) = 1.5;
   aSeedPos(2) = 2.5;
-  NCollection_Vector<MathOpt::PSOSeedParticle> aSeeds;
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
 
   MathOpt::PSOStats aStats;

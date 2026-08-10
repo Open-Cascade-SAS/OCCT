@@ -82,7 +82,9 @@ void TopExp_Explorer::Init(const TopoDS_Shape&    S,
   }
 
   if (toFind == TopAbs_SHAPE)
+  {
     hasMore = false;
+  }
   else
   {
     TopAbs_ShapeEnum ty = S.ShapeType();
@@ -127,7 +129,9 @@ void TopExp_Explorer::Next()
     }
   }
   else
+  {
     myStack[myStackTop].Next();
+  }
 
   for (;;)
   {
@@ -157,7 +161,9 @@ void TopExp_Explorer::Next()
     {
       popIterator();
       if (myStackTop < 0)
+      {
         break;
+      }
       myStack[myStackTop].Next();
     }
   }
@@ -182,9 +188,12 @@ int TopExp_Explorer::Depth() const noexcept
 
 void TopExp_Explorer::Clear()
 {
-  // Shrink to 0 - NCollection_LocalArray destroys all live elements.
-  if (myStack.Size() > 0)
-    myStack.Reallocate(0);
+  // Reset live iterators to release shape references immediately,
+  // but keep the array allocation to avoid Reallocate(0)/Reallocate(N) cycles.
+  for (int i = myStackTop; i >= 0; --i)
+  {
+    myStack[i] = TopoDS_Iterator();
+  }
   myStackTop = -1;
   hasMore    = false;
 }

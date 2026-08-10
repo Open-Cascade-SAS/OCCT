@@ -30,9 +30,13 @@ ChFiDS_FaceInterference::ChFiDS_FaceInterference()
 void ChFiDS_FaceInterference::SetParameter(const double U1, const bool IsFirst)
 {
   if (IsFirst)
+  {
     SetFirstParameter(U1);
+  }
   else
+  {
     SetLastParameter(U1);
+  }
 }
 
 void ChFiDS_FaceInterference::SetTransition(const TopAbs_Orientation Trans)
@@ -43,7 +47,11 @@ void ChFiDS_FaceInterference::SetTransition(const TopAbs_Orientation Trans)
 double ChFiDS_FaceInterference::Parameter(const bool IsFirst) const
 {
   if (IsFirst)
+  {
     return FirstParameter();
+  }
   else
+  {
     return LastParameter();
+  }
 }

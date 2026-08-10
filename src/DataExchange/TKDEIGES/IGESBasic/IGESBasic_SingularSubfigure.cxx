@@ -62,6 +62,8 @@ gp_XYZ IGESBasic_SingularSubfigure::TransformedTranslation() const
 {
   gp_XYZ tmp = theTranslation;
   if (HasTransf())
+  {
     Location().Transforms(tmp);
+  }
   return tmp;
 }

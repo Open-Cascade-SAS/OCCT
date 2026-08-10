@@ -31,7 +31,9 @@ void RWStepRepr_RWRepresentationMap::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "representation_map"))
+  {
     return;
+  }
 
   // --- own field : mappingOrigin ---
 

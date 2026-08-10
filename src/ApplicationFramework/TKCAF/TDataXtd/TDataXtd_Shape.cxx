@@ -34,14 +34,20 @@ bool TDataXtd_Shape::Find(const TDF_Label& current, occ::handle<TDataXtd_Shape>&
   TDF_Label                   L = current;
   occ::handle<TDataXtd_Shape> SA;
   if (L.IsNull())
+  {
     return false;
+  }
   for (;;)
   {
     if (L.FindAttribute(TDataXtd_Shape::GetID(), SA))
+    {
       break;
+    }
     L = L.Father();
     if (L.IsNull())
+    {
       break;
+    }
   }
 
   if (!SA.IsNull())
@@ -79,8 +85,12 @@ occ::handle<TDataXtd_Shape> TDataXtd_Shape::Set(const TDF_Label& label, const To
   if (label.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())
+    {
       if (aNS->Get() == shape)
+      {
         return A;
+      }
+    }
   }
 
   TNaming_Builder B(label);

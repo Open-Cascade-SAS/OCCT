@@ -61,14 +61,18 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
     for (exface.Init(exshell.Current(), TopAbs_FACE); exface.More(); exface.Next())
     {
       if (!FM.Contains(exface.Current()))
+      {
         FM.Add(exface.Current());
+      }
     }
   }
 
   for (exface.Init(S->OutLinedShape(), TopAbs_FACE, TopAbs_SHELL); exface.More(); exface.Next())
   { // faces not in a shell
     if (!FM.Contains(exface.Current()))
+    {
       FM.Add(exface.Current());
+    }
   }
 
   TopExp::MapShapes(S->OutLinedShape(), TopAbs_EDGE, EM);
@@ -76,8 +80,10 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
   int i;
   int nbEdge = EM.Extent();
 
-  for (i = 1; i <= nbEdge; i++) // vertices back to edges
+  for (i = 1; i <= nbEdge; i++)
+  { // vertices back to edges
     TopExp::MapShapesAndAncestors(EM(i), TopAbs_VERTEX, TopAbs_EDGE, VerticesToEdges);
+  }
 
   int nbVert = VerticesToEdges.Extent();
   int nbFace = FM.Extent();
@@ -94,7 +100,9 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
   occ::handle<HLRBRep_Data> DS = new HLRBRep_Data(nbVert, nbEdge, nbFace);
   HLRBRep_EdgeData*         ed = nullptr;
   if (nbEdge != 0)
+  {
     ed = &(DS->EDataArray().ChangeValue(1));
+  }
   //  ed++;
 
   for (i = 1; i <= nbFace; i++)
@@ -187,7 +195,9 @@ void HLRBRep_ShapeToHLR::ExploreFace(
   int nw = 0;
 
   for (Ex1.Init(theFace, TopAbs_WIRE); Ex1.More(); Ex1.Next())
+  {
     nw++;
+  }
 
   fd.Set(theFace, orient, closed, nw);
   nw = 0;
@@ -201,7 +211,9 @@ void HLRBRep_ShapeToHLR::ExploreFace(
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(Ex2.Current());
       if (!BRep_Tool::Degenerated(anEdge))
+      {
         ne++;
+      }
     }
 
     fd.SetWire(nw, ne);
@@ -211,7 +223,9 @@ void HLRBRep_ShapeToHLR::ExploreFace(
     {
       const TopoDS_Edge& E = TopoDS::Edge(Ex2.Current());
       if (BRep_Tool::Degenerated(E))
+      {
         continue;
+      }
       ne++;
       int                ie        = EM.FindIndex(E);
       TopAbs_Orientation anOrientE = E.Orientation();
@@ -249,7 +263,9 @@ void HLRBRep_ShapeToHLR::ExploreShape(
       int* flag   = new int[nbEdge + 1];
 
       for (ie = 1; ie <= nbEdge; ie++)
+      {
         flag[ie] = 0;
+      }
 
       for (exedge.Init(exshell.Current(), TopAbs_EDGE); exedge.More(); exedge.Next())
       {
@@ -259,15 +275,21 @@ void HLRBRep_ShapeToHLR::ExploreShape(
         if (!BRep_Tool::Degenerated(E))
         {
           if (orient == TopAbs_FORWARD)
+          {
             flag[ie] += 1;
+          }
           else if (orient == TopAbs_REVERSED)
+          {
             flag[ie] -= 1;
+          }
         }
       }
       closed = true;
 
       for (ie = 1; ie <= nbEdge && closed; ie++)
+      {
         closed = (flag[ie] == 0);
+      }
       delete[] flag;
       flag = nullptr;
     }

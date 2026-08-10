@@ -54,7 +54,9 @@ bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&       Sour
   TCollection_AsciiString           aString;
   bool                              ok = Source >> aString;
   if (ok)
+  {
     aStrAtt->Set(aString);
+  }
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
@@ -73,7 +75,9 @@ bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&       Sour
     }
   }
   else
+  {
     aStrAtt->SetID(TDataStd_AsciiString::GetID());
+  }
   return ok;
 }
 
@@ -91,5 +95,7 @@ void BinMDataStd_AsciiStringDriver::Paste(
   Target << anAtt->Get();
   // process user defined guid
   if (anAtt->ID() != TDataStd_AsciiString::GetID())
+  {
     Target << anAtt->ID();
+  }
 }

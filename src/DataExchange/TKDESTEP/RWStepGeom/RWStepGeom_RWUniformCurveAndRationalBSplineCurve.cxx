@@ -39,14 +39,18 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component BoundedCurve ---
 
   if (!data->CheckNbParams(num, 0, ach, "bounded_curve"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype BSplineCurve ---
 
   if (!data->CheckNbParams(num, 5, ach, "b_spline_curve"))
+  {
     return;
+  }
   // --- field : degree ---
 
   int aDegree;
@@ -70,7 +74,9 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent2))
+      {
         aControlPointsList->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -86,7 +92,9 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (curve_form) is not an enumeration");
+  }
   // --- field : closedCurve ---
 
   StepData_Logical aClosedCurve;
@@ -103,21 +111,27 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component Curve ---
 
   if (!data->CheckNbParams(num, 0, ach, "curve"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component GeometricRepresentationItem ---
 
   if (!data->CheckNbParams(num, 0, ach, "geometric_representation_item"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component RationalBSplineCurve ---
 
   if (!data->CheckNbParams(num, 1, ach, "rational_b_spline_curve"))
+  {
     return;
+  }
 
   // --- field : weightsData ---
 
@@ -132,7 +146,9 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat6 =` not needed
       if (data->ReadReal(nsub6, i6, "weights_data", ach, aWeightsDataItem))
+      {
         aWeightsData->SetValue(i6, aWeightsDataItem);
+      }
     }
   }
 
@@ -141,7 +157,9 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component RepresentationItem ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -154,7 +172,9 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
   // --- Instance of plex component UniformCurve ---
 
   if (!data->CheckNbParams(num, 0, ach, "uniform_curve"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

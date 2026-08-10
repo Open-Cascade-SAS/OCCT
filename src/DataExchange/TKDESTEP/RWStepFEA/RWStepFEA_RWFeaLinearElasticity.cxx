@@ -35,7 +35,9 @@ void RWStepFEA_RWFeaLinearElasticity::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_linear_elasticity"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

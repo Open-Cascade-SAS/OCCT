@@ -64,9 +64,13 @@ void HatchGen_PointOnHatching::AddPoint(const HatchGen_PointOnElement& Point,
   // for (int IPnt = 1 ;
   int IPnt;
   for (IPnt = 1; IPnt <= NbPnt && myPoints(IPnt).IsDifferent(Point, Confusion); IPnt++)
+  {
     ;
+  }
   if (IPnt > NbPnt)
+  {
     myPoints.Append(Point);
+  }
 }
 
 //=======================================================================
@@ -156,10 +160,10 @@ void HatchGen_PointOnHatching::Dump(const int Index) const
   {
     std::cout << "------";
   }
-  std::cout << "------------------" << std::endl;
+  std::cout << "------------------" << '\n';
 
-  std::cout << "    Index of the hatching = " << myIndex << std::endl;
-  std::cout << "    Parameter on hatching = " << myParam << std::endl;
+  std::cout << "    Index of the hatching = " << myIndex << '\n';
+  std::cout << "    Parameter on hatching = " << myParam << '\n';
   std::cout << "    Position  on hatching = ";
   switch (myPosit)
   {
@@ -176,7 +180,7 @@ void HatchGen_PointOnHatching::Dump(const int Index) const
       std::cout << "EXTERNAL (i.e. UNKNOWN)";
       break;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
   std::cout << "    State Before          = ";
   switch (myBefore)
   {
@@ -193,7 +197,7 @@ void HatchGen_PointOnHatching::Dump(const int Index) const
       std::cout << "UNKNOWN";
       break;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
   std::cout << "    State After           = ";
   switch (myAfter)
   {
@@ -210,18 +214,18 @@ void HatchGen_PointOnHatching::Dump(const int Index) const
       std::cout << "UNKNOWN";
       break;
   }
-  std::cout << std::endl;
-  std::cout << "    Beginning of segment  = " << (mySegBeg ? "TRUE" : "FALSE") << std::endl;
-  std::cout << "    End       of segment  = " << (mySegEnd ? "TRUE" : "FALSE") << std::endl;
+  std::cout << '\n';
+  std::cout << "    Beginning of segment  = " << (mySegBeg ? "TRUE" : "FALSE") << '\n';
+  std::cout << "    End       of segment  = " << (mySegEnd ? "TRUE" : "FALSE") << '\n';
 
   int NbPnt = myPoints.Length();
   if (NbPnt == 0)
   {
-    std::cout << "    No points on element" << std::endl;
+    std::cout << "    No points on element" << '\n';
   }
   else
   {
-    std::cout << "    Contains " << NbPnt << " points on element" << std::endl;
+    std::cout << "    Contains " << NbPnt << " points on element" << '\n';
     for (int IPnt = 1; IPnt <= NbPnt; IPnt++)
     {
       const HatchGen_PointOnElement& Point = myPoints.Value(IPnt);
@@ -229,5 +233,5 @@ void HatchGen_PointOnHatching::Dump(const int Index) const
     }
   }
 
-  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << '\n';
 }

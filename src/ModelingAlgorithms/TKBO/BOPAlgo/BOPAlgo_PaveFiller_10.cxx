@@ -69,14 +69,18 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance(const int nE, const double theTol)
   if (myNonDestructive)
   {
     if (!myDS->IsNewShape(nE))
+    {
       return;
+    }
 
     NCollection_List<int>::Iterator itLI(aLI);
     for (; itLI.More(); itLI.Next())
     {
       int nV = itLI.Value(), nVSD;
       if (!myDS->IsNewShape(nV) && !myDS->HasShapeSD(nV, nVSD))
+      {
         return;
+      }
     }
   }
 
@@ -150,7 +154,9 @@ int BOPAlgo_PaveFiller::UpdateVertex(const int nV, const double aTolNew)
   myVertsToAvoidExtension.Add(nVNew);
 
   if (aTolV < aTolNew)
+  {
     myIncreasedSS.Add(nV);
+  }
 
   return nVNew;
 }
@@ -173,7 +179,7 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
   }
   int aNbPBP;
   //
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   aNbPBP = aPBP.Length();
   if (!aNbPBP)
@@ -219,7 +225,7 @@ namespace
 //=================================================================================================
 
 template <class InterfType>
-void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& theInterfs)
+void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_DynamicArray<InterfType>& theInterfs)
 {
   for (int i = 0; i < theInterfs.Length(); i++)
   {

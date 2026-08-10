@@ -29,7 +29,9 @@ void RWStepGeom_RWOffsetCurve3d::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "offset_curve_3d"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

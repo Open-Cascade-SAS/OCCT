@@ -125,9 +125,13 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
       for (int k = 0; k < 3; ++k)
       {
         if (CoordMin[k] > P.Coord(k + 1))
+        {
           CoordMin[k] = P.Coord(k + 1);
+        }
         if (CoordMax[k] < P.Coord(k + 1))
+        {
           CoordMax[k] = P.Coord(k + 1);
+        }
       }
 
       // U-midpoint deflection.
@@ -139,12 +143,18 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
         for (int k = 0; k < 3; ++k)
         {
           if (CoordMin[k] > PM.Coord(k + 1))
+          {
             CoordMin[k] = PM.Coord(k + 1);
+          }
           if (CoordMax[k] < PM.Coord(k + 1))
+          {
             CoordMax[k] = PM.Coord(k + 1);
+          }
           const double d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
+          {
             DeflMax[k] = d;
+          }
         }
       }
       // V-midpoint deflection.
@@ -156,12 +166,18 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
         for (int k = 0; k < 3; ++k)
         {
           if (CoordMin[k] > PM.Coord(k + 1))
+          {
             CoordMin[k] = PM.Coord(k + 1);
+          }
           if (CoordMax[k] < PM.Coord(k + 1))
+          {
             CoordMax[k] = PM.Coord(k + 1);
+          }
           const double d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
+          {
             DeflMax[k] = d;
+          }
         }
       }
     }
@@ -173,7 +189,9 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
   {
     double d = DeflMax[k];
     if (d <= eps)
+    {
       continue;
+    }
 
     double CMin = CoordMin[k];
     double CMax = CoordMax[k];
@@ -197,7 +215,9 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
                                                                        eps,
                                                                        true);
           if (cmin < CMin)
+          {
             CMin = cmin;
+          }
         }
         else if (CMax - aPnts(i, j).Coord(k + 1) < d)
         {
@@ -215,7 +235,9 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
                                                                        eps,
                                                                        false);
           if (cmax > CMax)
+          {
             CMax = cmax;
+          }
         }
       }
     }

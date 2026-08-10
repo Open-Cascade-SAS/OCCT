@@ -30,9 +30,13 @@ void IGESData_GlobalNodeOfSpecificLib::Add(const occ::handle<IGESData_SpecificMo
                                            const occ::handle<IGESData_Protocol>&       aprotocol)
 {
   if (themod == amodule)
+  {
     return;
+  }
   if (theprot == aprotocol)
+  {
     themod = amodule;
+  }
   else if (thenext.IsNull())
   {
     if (themod.IsNull())
@@ -47,7 +51,9 @@ void IGESData_GlobalNodeOfSpecificLib::Add(const occ::handle<IGESData_SpecificMo
     }
   }
   else
+  {
     thenext->Add(amodule, aprotocol);
+  }
 }
 
 const occ::handle<IGESData_SpecificModule>& IGESData_GlobalNodeOfSpecificLib::Module() const

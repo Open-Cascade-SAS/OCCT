@@ -26,7 +26,9 @@ static int BuildNamedShape(Draw_Interpretor& di, int nb, const char** arg)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
+    {
       return 1;
+    }
     char anEvolution = arg[3][0];
     int  a, anInc = (anEvolution == 'P' || anEvolution == 'D') ? 1 : 2;
     //     if (anEvolution == 'G')
@@ -91,7 +93,9 @@ void QADNaming::BuilderCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "Naming builder commands";

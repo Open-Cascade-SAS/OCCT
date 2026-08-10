@@ -78,11 +78,17 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
       double _dy = y1 - y0;
       double _dz = z1 - z0;
       if (_dx > dx)
+      {
         dx = _dx;
+      }
       if (_dy > dy)
+      {
         dy = _dy;
+      }
       if (_dz > dz)
+      {
         dz = _dz;
+      }
     }
   }
   else
@@ -100,11 +106,17 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
     }
   }
   if (dx < dy)
+  {
     dx = dy;
+  }
   if (dx < dz)
+  {
     dx = dz;
+  }
   if (dx > 1000000.0)
+  {
     dx = 1000000.0; //-- if(dx>10000.0) dx=10000.0;
+  }
 
   TopExp_Explorer ex;
   double          tolef1 = Precision::Confusion();
@@ -112,18 +124,24 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
   {
     double tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (tole > tolef1)
+    {
       tolef1 = tole;
+    }
   }
   double tolef2 = Precision::Confusion();
   for (ex.Init(myFace2, TopAbs_EDGE); ex.More(); ex.Next())
   {
     double tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (tole > tolef2)
+    {
       tolef2 = tole;
+    }
   }
   double tolef = tolef1;
   if (tolef2 > tolef)
+  {
     tolef = tolef2;
+  }
   // jmb le 30 juillet 99. on ne multiplie pas la tolerance par la dimension de la piece
 
   Deflection = 0.01;
@@ -141,9 +159,13 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
   DP1 = MU1 - MU0;
   DP2 = MV1 - MV0;
   if (DP2 < DP1)
+  {
     DP = DP2;
+  }
   else
+  {
     DP = DP1; //-- DP + petit
+  }
 
   MU0 = mySurface2.FirstUParameter();
   MU1 = mySurface2.LastUParameter();
@@ -152,9 +174,13 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
   DP1 = MU1 - MU0;
   DP2 = MV1 - MV0;
   if (DP2 > DP1)
+  {
     DP1 = DP2; //-- DP1 + petit
+  }
   if (DP1 < DP)
+  {
     DP = DP1; //-- DP + petit
+  }
 
   DP *= 0.01;
   // jmb le 30 juillet 99
@@ -167,14 +193,22 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
 #endif
 
   if (MMAXUV < 1e-3)
+  {
     MMAXUV = 1e-3;
+  }
   if (MDEFLECTION < 1e-3)
+  {
     MDEFLECTION = 1e-3;
+  }
 
   if (MMAXUV > 0.01)
+  {
     MMAXUV = 0.01;
+  }
   if (MDEFLECTION > 0.1)
+  {
     MDEFLECTION = 0.1;
+  }
 
 #ifdef OCCT_DEBUG
 //  printf("TOL1 = %5.5eg TOL2=%5.5eg DEFL=%5.5eg MAXUV=%5.5eg\n",MTOL1,MTOL2,MDEFLECTION,MMAXUV);

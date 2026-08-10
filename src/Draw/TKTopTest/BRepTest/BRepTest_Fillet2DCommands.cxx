@@ -211,7 +211,9 @@ static occ::handle<Geom_Plane> findPlane(const TopoDS_Shape& S)
   occ::handle<Geom_Plane>  plane;
   BRepBuilderAPI_FindPlane planeFinder(S);
   if (planeFinder.Found())
+  {
     plane = planeFinder.Plane();
+  }
   return plane;
 }
 
@@ -247,13 +249,21 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
   const double d1221 = p12.SquareDistance(p21);
   const double d1222 = p12.SquareDistance(p22);
   if (d1121 < d1122 && d1121 < d1221 && d1121 < d1222)
+  {
     common = p11;
+  }
   else if (d1122 < d1121 && d1122 < d1221 && d1122 < d1222)
+  {
     common = p11;
+  }
   else if (d1221 < d1121 && d1221 < d1122 && d1221 < d1222)
+  {
     common = p12;
+  }
   else if (d1222 < d1121 && d1222 < d1122 && d1222 < d1221)
+  {
     common = p12;
+  }
 
   return common;
 }
@@ -366,9 +376,13 @@ static int fillet2d(Draw_Interpretor& di, int n, const char** a)
   {
     BRepBuilderAPI_MakeWire mkWire(M1, fillet, M2);
     if (mkWire.IsDone())
+    {
       DBRep::Set(a[1], mkWire.Wire());
+    }
     else
+    {
       DBRep::Set(a[1], fillet);
+    }
   }
   return 0;
 }
@@ -443,9 +457,13 @@ static int chamfer2d(Draw_Interpretor& di, int n, const char** a)
   {
     BRepBuilderAPI_MakeWire mkWire(M1, chamfer, M2);
     if (mkWire.IsDone())
+    {
       DBRep::Set(a[1], mkWire.Wire());
+    }
     else
+    {
       DBRep::Set(a[1], chamfer);
+    }
   }
 
   return 0;
@@ -457,7 +475,9 @@ void BRepTest::Fillet2DCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

@@ -68,9 +68,13 @@ PrsDim_OffsetDimension::PrsDim_OffsetDimension(const TopoDS_Shape&              
   // myArrowSize = fabs (myVal/5.);
   myArrowSize = fabs(myVal / 10.0);
   if (myArrowSize > 30.)
+  {
     myArrowSize = 30.;
+  }
   if (myArrowSize < 15.)
+  {
     myArrowSize = 15.;
+  }
   // std::cout<<"PrsDim_OffsetDimension::PrsDim_OffsetDimension " <<  myArrowSize << "
   // myArrowSize"<<std::endl;
 }
@@ -85,9 +89,13 @@ void PrsDim_OffsetDimension::Compute(const occ::handle<PrsMgr_PresentationManage
   // myArrowSize = fabs (myVal/5.);
   myArrowSize = fabs(myVal / 10.0);
   if (myArrowSize > 30.)
+  {
     myArrowSize = 30.;
+  }
   if (myArrowSize < 15.)
+  {
     myArrowSize = 15.;
+  }
   // std::cout<<"PrsDim_OffsetDimension::PrsDim_OffsetDimension " <<  myArrowSize << "
   // myArrowSize"<<std::endl;
 
@@ -140,9 +148,13 @@ void PrsDim_OffsetDimension::ComputeSelection(const occ::handle<SelectMgr_Select
   // myArrowSize = fabs (myVal/5.);
   myArrowSize = fabs(myVal / 10.0);
   if (myArrowSize > 30.)
+  {
     myArrowSize = 30.;
+  }
   if (myArrowSize < 15.)
+  {
     myArrowSize = 15.;
+  }
   // std::cout<<"PrsDim_OffsetDimension::PrsDim_OffsetDimension " <<  myArrowSize << "
   // myArrowSize"<<std::endl;
   gp_Pnt myTFAttach    = myFAttach.Transformed(myRelativePos);
@@ -301,16 +313,24 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presen
   gp_Pnt P1FirstProj = ElCLib::Value(ElCLib::Parameter(aProjLine, P1First), aProjLine);
   gp_Pnt P1LastProj  = ElCLib::Value(ElCLib::Parameter(aProjLine, P1Last), aProjLine);
   if (P1FirstProj.Distance(curpos) > P1LastProj.Distance(curpos))
+  {
     myFAttach = P1FirstProj;
+  }
   else
+  {
     myFAttach = P1LastProj;
+  }
 
   gp_Pnt P2FirstProj = ElCLib::Value(ElCLib::Parameter(aProjLine, P2First), aProjLine);
   gp_Pnt P2LastProj  = ElCLib::Value(ElCLib::Parameter(aProjLine, P2Last), aProjLine);
   if (P2FirstProj.Distance(curpos) > P2LastProj.Distance(curpos))
+  {
     mySAttach = P2FirstProj;
+  }
   else
+  {
     mySAttach = P2LastProj;
+  }
 
   occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
   occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
@@ -327,7 +347,9 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presen
   gp_Pnt Tcurpos       = curpos.Transformed(aTrsf);
 
   if (myIsSetBndBox)
+  {
     Tcurpos = PrsDim::TranslatePointToBound(Tcurpos, myDirAttach, myBndBox);
+  }
 
   DsgPrs_OffsetPresentation::AddAxes(aprs,
                                      myDrawer,

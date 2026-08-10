@@ -376,7 +376,9 @@ bool Draft_Modification::InternalAdd(const TopoDS_Face& F,
 
         occ::handle<Geom_TrimmedCurve> T = occ::down_cast<Geom_TrimmedCurve>(NewC);
         if (!T.IsNull())
+        {
           NewC = T->BasisCurve();
+        }
         EInf.ChangeGeometry() = NewC;
 
         EInf.RootFace(curFace);
@@ -423,7 +425,9 @@ bool Draft_Modification::Propagate()
 {
 
   if (!badShape.IsNull())
+  {
     return false;
+  }
 
   // Set all edges and vertices of modified faces
   TopoDS_Face     F;
@@ -704,7 +708,9 @@ bool Draft_Modification::Propagate()
 void Draft_Modification::Perform()
 {
   if (!badShape.IsNull())
+  {
     throw Standard_ConstructionError();
+  }
 
   if (!myComp)
   {
@@ -786,7 +792,9 @@ void Draft_Modification::Perform()
         }
 
         if (extrdir.Dot(DirRef) < 0.)
+        {
           extrdir.Reverse();
+        }
 
         // it is possible to accelerate speed by storing the info during
         // InternalAdd --> modification of FaceInfo to preserve the circle
@@ -917,7 +925,9 @@ void Draft_Modification::Perform()
           { // very temporary on circles !!!
             aCirc = occ::down_cast<Geom_Circle>(TheNewCurve);
             if (aCirc.IsNull())
+            {
               KPart = false;
+            }
             else
             {
               gp_Dir AxofCirc = aCirc->Position().Direction();
@@ -940,9 +950,13 @@ void Draft_Modification::Perform()
               new Geom2d_Line(gp_Pnt2d(0., aLocalReal / Cos), gp::DX2d());
 
             if (PC1)
+            {
               Einf.ChangeFirstPC() = L2d;
+            }
             else
+            {
               Einf.ChangeSecondPC() = L2d;
+            }
           }
           else
           {
@@ -1015,13 +1029,17 @@ void Draft_Modification::Perform()
                       if (detrompeur == 1)
                       {
                         if (S1->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+                        {
                           S1 = occ::down_cast<Geom_RectangularTrimmedSurface>(S1)->BasisSurface();
+                        }
                         theSurf = S1;
                       }
                       else if (detrompeur == 2)
                       {
                         if (S2->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+                        {
                           S2 = occ::down_cast<Geom_RectangularTrimmedSurface>(S2)->BasisSurface();
+                        }
                         theSurf = S2;
                       }
                       if (detrompeur != 0 && detrompeur != 4)
@@ -1046,7 +1064,9 @@ void Draft_Modification::Perform()
                           ElSLib::Parameters(cy, pfvprim, ufprim, vfprim);
                         }
                         else
+                        {
                           detrompeur = 4;
+                        }
 
                         if (detrompeur == 1 || detrompeur == 2)
                         {
@@ -1114,20 +1134,26 @@ void Draft_Modification::Perform()
               bool YaRev = d1fv.Dot(newd1) < 0.;
 
               if (YaRev)
+              {
                 newC->Reverse();
+              }
 
               if (i2s.HasLineOnS1(imin))
               {
                 Einf.ChangeFirstPC() = i2s.LineOnS1(imin);
                 if (YaRev)
+                {
                   Einf.ChangeFirstPC()->Reverse();
+                }
               }
 
               if (i2s.HasLineOnS2(imin))
               {
                 Einf.ChangeSecondPC() = i2s.LineOnS2(imin);
                 if (YaRev)
+                {
                   Einf.ChangeSecondPC()->Reverse();
+                }
               }
             } // if (i2s.Line(1)->DynamicType() != STANDARD_TYPE(Geom_BSplineCurve))
             else // i2s.Line(1) is BSplineCurve
@@ -1146,7 +1172,9 @@ void Draft_Modification::Perform()
                   projector.LowerDistanceParameters(U, V);
                   if (std::abs(U) <= Precision::Confusion()
                       || std::abs(U - 2. * M_PI) <= Precision::Confusion())
+                  {
                     Candidates.Append(aCurve);
+                  }
                   else
                   {
                     Pnt = aCurve->Value(aCurve->LastParameter());
@@ -1167,13 +1195,17 @@ void Draft_Modification::Perform()
                   // badShape = TopoDS::Edge(ite.Key());
                   // return;
                   for (i = 1; i <= i2s.NbLines(); i++)
+                  {
                     Candidates.Append(i2s.Line(i));
+                  }
                 }
               }
               else
               {
                 for (i = 1; i <= i2s.NbLines(); i++)
+                {
                   Candidates.Append(i2s.Line(i));
+                }
               }
 
               occ::handle<Geom_Curve> FirstCurve;
@@ -1193,13 +1225,19 @@ void Draft_Modification::Perform()
                 }
               }
               else
+              {
                 FirstCurve = Candidates(1);
+              }
 
               // Glueing
               NCollection_Sequence<occ::handle<Geom_Curve>> Curves;
               for (i = 1; i <= i2s.NbLines(); i++)
+              {
                 if (FirstCurve != i2s.Line(i))
+                {
                   Curves.Append(i2s.Line(i));
+                }
+              }
 
               NCollection_Sequence<occ::handle<Geom_Curve>> ToGlue;
               gp_Pnt EndPoint = FirstCurve->Value(FirstCurve->LastParameter());
@@ -1243,9 +1281,11 @@ void Draft_Modification::Perform()
               GeomConvert_CompCurveToBSplineCurve Concat(
                 occ::down_cast<Geom_BSplineCurve>(FirstCurve));
               for (i = 1; i <= ToGlue.Length(); i++)
+              {
                 Concat.Add(occ::down_cast<Geom_BSplineCurve>(ToGlue(i)),
                            Precision::Confusion(),
                            true);
+              }
 
               newC = Concat.BSplineCurve();
 
@@ -1268,7 +1308,9 @@ void Draft_Modification::Perform()
               bool YaRev = d1fv.Dot(newd1) < 0.;
 
               if (YaRev)
+              {
                 newC->Reverse();
+              }
               /*
               if (i2s.HasLineOnS1(imin)) {
               Einf.ChangeFirstPC() = i2s.LineOnS1(imin);
@@ -1383,7 +1425,9 @@ void Draft_Modification::Perform()
 
         occ::handle<Geom_TrimmedCurve> T = occ::down_cast<Geom_TrimmedCurve>(newC);
         if (!T.IsNull())
+        {
           newC = T->BasisCurve();
+        }
         Einf.ChangeGeometry() = newC;
       }
       else if (!Einf.NewGeometry())
@@ -1391,7 +1435,9 @@ void Draft_Modification::Perform()
         // set existing curve 3D
         occ::handle<Geom_TrimmedCurve> T = occ::down_cast<Geom_TrimmedCurve>(C);
         if (!T.IsNull())
+        {
           C = T->BasisCurve();
+        }
         Einf.ChangeGeometry() = C;
       }
     }
@@ -1469,7 +1515,9 @@ void Draft_Modification::Perform()
                 SmartParameter(Einf2, BRep_Tool::Tolerance(Edg2), pvt, done, S1, S2);
             }
             else
+            {
               Vinf.ChangeParameter(Edg2) = param;
+            }
           }
 
           Vinf.ChangeGeometry() = pvt;
@@ -1484,7 +1532,9 @@ void Draft_Modification::Perform()
               SmartParameter(Einf1, BRep_Tool::Tolerance(Edg1), pvt, done, S1, S2);
           }
           else
+          {
             Vinf.ChangeParameter(Edg1) = param;
+          }
           continue;
         }
 
@@ -1627,19 +1677,27 @@ void Draft_Modification::Perform()
         double aSqMagn = aDirNF.SquareMagnitude();
 
         if (aSqMagn > Precision::SquareConfusion())
+        {
           aDirNF.Divide(sqrt(aSqMagn));
+        }
 
         aSqMagn = aDirNL.SquareMagnitude();
         if (aSqMagn > Precision::SquareConfusion())
+        {
           aDirNL.Divide(sqrt(aSqMagn));
+        }
 
         aSqMagn = aDirOF.SquareMagnitude();
         if (aSqMagn > Precision::SquareConfusion())
+        {
           aDirOF.Divide(sqrt(aSqMagn));
+        }
 
         aSqMagn = aDirOL.SquareMagnitude();
         if (aSqMagn > Precision::SquareConfusion())
+        {
           aDirOL.Divide(sqrt(aSqMagn));
+        }
 
         const double aCosF = aDirNF.Dot(aDirOF), aCosL = aDirNL.Dot(aDirOL);
         const double aCosMax = std::abs(aCosF) > std::abs(aCosL) ? aCosF : aCosL;
@@ -1686,9 +1744,13 @@ void Draft_Modification::Perform()
         double           FirstPar = theCurve->FirstParameter(), LastPar = theCurve->LastParameter();
         constexpr double pconf = Precision::PConfusion();
         if (std::abs(pf - LastPar) <= pconf)
+        {
           pf = FirstPar;
+        }
         else if (std::abs(pl - FirstPar) <= pconf)
+        {
           pl = LastPar;
+        }
 
         if (pl <= pf)
         {
@@ -1703,9 +1765,13 @@ void Draft_Modification::Perform()
       }
     }
     if (myVMap.Contains(Vf))
+    {
       myVMap.ChangeFromKey(Vf).ChangeParameter(edg) = pf;
+    }
     if (myVMap.Contains(Vl))
+    {
       myVMap.ChangeFromKey(Vl).ChangeParameter(edg) = pl;
+    }
   }
 }
 
@@ -2034,7 +2100,9 @@ static bool Choose(
     prm = SmartParameter(Einf, BRep_Tool::Tolerance(Eref), BRep_Tool::Pnt(Vtx), done, S1, S2);
   }
   else
+  {
     prm = param;
+  }
   C->D1(prm, ptbid, tgref);
 
   Vinf.InitEdgeIterator();
@@ -2062,7 +2130,9 @@ static bool Choose(
             SmartParameter(Einfo, BRep_Tool::Tolerance(Edg), BRep_Tool::Pnt(Vtx), anewdone, S1, S2);
         }
         else
+        {
           prm = anewparam;
+        }
         gp_Vec tg;
         C->D1(prm, ptbid, tg);
         if (tg.CrossMagnitude(tgref) > Precision::Confusion())
@@ -2242,7 +2312,9 @@ static double SmartParameter(Draft_EdgeInfo&                  Einf,
 
   NewC2d = Einf.FirstPC();
   if (NewC2d->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  {
     NewC2d = (occ::down_cast<Geom2d_TrimmedCurve>(NewC2d))->BasisCurve();
+  }
 
   gp_Pnt2d                      P2d(U, V);
   Geom2dAPI_ProjectPointOnCurve Projector2d(P2d, NewC2d);
@@ -2250,9 +2322,13 @@ static double SmartParameter(Draft_EdgeInfo&                  Einf,
   {
     occ::handle<Geom2d_BSplineCurve> BCurve;
     if (NewC2d->DynamicType() != STANDARD_TYPE(Geom2d_BSplineCurve))
+    {
       BCurve = Geom2dConvert::CurveToBSplineCurve(NewC2d);
+    }
     else
+    {
       BCurve = occ::down_cast<Geom2d_BSplineCurve>(NewC2d);
+    }
     if (sign == -1)
     {
       NCollection_Array1<gp_Pnt2d> PntArray(1, 2);
@@ -2293,9 +2369,13 @@ static double SmartParameter(Draft_EdgeInfo&                  Einf,
   Einf.SetNewGeometry(true);
 
   if (sign == -1)
+  {
     return Einf.Geometry()->FirstParameter();
+  }
   else
+  {
     return Einf.Geometry()->LastParameter();
+  }
 }
 
 //=================================================================================================

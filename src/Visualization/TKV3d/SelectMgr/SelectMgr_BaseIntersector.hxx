@@ -18,7 +18,7 @@
 #include <NCollection_Mat4.hxx>
 #include <Standard_TypeDef.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_SelectionType.hxx>
@@ -125,7 +125,8 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector.
   //! This method only clears input vector for the base class.
-  virtual void GetPlanes(NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  virtual void GetPlanes(
+    NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
   {
     thePlaneEquations.Clear();
   }

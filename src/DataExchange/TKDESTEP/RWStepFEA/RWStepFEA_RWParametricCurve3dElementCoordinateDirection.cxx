@@ -37,7 +37,9 @@ void RWStepFEA_RWParametricCurve3dElementCoordinateDirection::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "parametric_curve3d_element_coordinate_direction"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

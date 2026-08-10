@@ -35,7 +35,9 @@ void RWStepRepr_RWCompositeGroupShapeAspect::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "composite_group_shape_aspect"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

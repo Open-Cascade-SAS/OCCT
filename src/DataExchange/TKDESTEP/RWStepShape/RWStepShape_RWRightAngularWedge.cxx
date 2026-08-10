@@ -30,7 +30,9 @@ void RWStepShape_RWRightAngularWedge::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "right_angular_wedge"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

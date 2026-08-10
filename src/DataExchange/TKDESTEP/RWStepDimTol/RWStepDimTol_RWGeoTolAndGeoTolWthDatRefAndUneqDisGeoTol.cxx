@@ -41,7 +41,9 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep(
   int num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
+  {
     return;
+  }
   // Own fields of GeometricTolerance
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
@@ -93,37 +95,69 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep(
   const char*                       aLast  = aTypes.Value(3).ToCString();
   StepDimTol_GeometricToleranceType aType  = StepDimTol_GTTPositionTolerance;
   if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTAngularityTolerance;
+  }
   else if (strcmp(aFirst, "CIRCULAR_RUNOUT_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTCircularRunoutTolerance;
+  }
   else if (strcmp(aFirst, "COAXIALITY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTCoaxialityTolerance;
+  }
   else if (strcmp(aFirst, "CONCENTRICITY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTConcentricityTolerance;
+  }
   else if (strcmp(aFirst, "CYLINDRICITY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTCylindricityTolerance;
+  }
   else if (strcmp(aFirst, "FLATNESS_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTFlatnessTolerance;
+  }
   else if (strcmp(aLast, "LINE_PROFILE_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTLineProfileTolerance;
+  }
   else if (strcmp(aLast, "PARALLELISM_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTParallelismTolerance;
+  }
   else if (strcmp(aLast, "PERPENDICULARITY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTPerpendicularityTolerance;
+  }
   else if (strcmp(aLast, "POSITION_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTPositionTolerance;
+  }
   else if (strcmp(aLast, "ROUNDNESS_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTRoundnessTolerance;
+  }
   else if (strcmp(aLast, "STRAIGHTNESS_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTStraightnessTolerance;
+  }
   else if (strcmp(aLast, "SURFACE_PROFILE_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTSurfaceProfileTolerance;
+  }
   else if (strcmp(aLast, "SYMMETRY_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTSymmetryTolerance;
+  }
   else if (strcmp(aLast, "TOTAL_RUNOUT_TOLERANCE") == 0)
+  {
     aType = StepDimTol_GTTTotalRunoutTolerance;
+  }
   else
+  {
     ach->AddFail("The type of geometric tolerance is not supported");
+  }
 
   // Initialize entity
   ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aGTWDR, aType, anUDGT);
@@ -137,17 +171,29 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep(
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
+  {
     SW.StartEntity("ANGULARITY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTCircularRunoutTolerance)
+  {
     SW.StartEntity("CIRCULAR_RUNOUT_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTCoaxialityTolerance)
+  {
     SW.StartEntity("COAXIALITY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTConcentricityTolerance)
+  {
     SW.StartEntity("CONCENTRICITY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTCylindricityTolerance)
+  {
     SW.StartEntity("CYLINDRICITY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTFlatnessTolerance)
+  {
     SW.StartEntity("FLATNESS_TOLERANCE");
+  }
 
   SW.StartEntity("GEOMETRIC_TOLERANCE");
   SW.Send(ent->Name());
@@ -167,23 +213,41 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep(
   SW.CloseSub();
 
   if (aType == StepDimTol_GTTLineProfileTolerance)
+  {
     SW.StartEntity("LINE_PROFILE_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTParallelismTolerance)
+  {
     SW.StartEntity("PARALLELISM_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTPerpendicularityTolerance)
+  {
     SW.StartEntity("PERPENDICULARITY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTPositionTolerance)
+  {
     SW.StartEntity("POSITION_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTRoundnessTolerance)
+  {
     SW.StartEntity("ROUNDNESS_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTStraightnessTolerance)
+  {
     SW.StartEntity("STRAIGHTNESS_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTSurfaceProfileTolerance)
+  {
     SW.StartEntity("SURFACE_PROFILE_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTSymmetryTolerance)
+  {
     SW.StartEntity("SYMMETRY_TOLERANCE");
+  }
   else if (aType == StepDimTol_GTTTotalRunoutTolerance)
+  {
     SW.StartEntity("TOTAL_RUNOUT_TOLERANCE");
+  }
 
   SW.StartEntity("UNEQUALLY_DISPOSED_GEOMETRIC_TOLRANCE");
   SW.Send(ent->GetUnequallyDisposedGeometricTolerance()->Displacement());

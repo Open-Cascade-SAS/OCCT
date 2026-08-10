@@ -92,9 +92,13 @@ void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&                  P,
 int Geom2dAPI_ProjectPointOnCurve::NbPoints() const
 {
   if (myIsDone)
+  {
     return myExtPC.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

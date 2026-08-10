@@ -78,7 +78,9 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
     texts          = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
   }
   else
+  {
     PR.AddFail("Number of Text Strings: Not Positive");
+  }
 
   if (!nbChars.IsNull())
   {
@@ -99,15 +101,21 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
       // st = PR.ReadInteger(PR.Current(), "Number of Characters", nbChar); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "Number of Characters", nbChar))
+      {
         nbChars->SetValue(i, nbChar);
+      }
 
       // st = PR.ReadReal(PR.Current(), "Box Width", boxWidth); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadReal(PR.Current(), "Box Width", boxWidth))
+      {
         boxWidths->SetValue(i, boxWidth);
+      }
 
       // st = PR.ReadReal(PR.Current(), "Box Height", boxHeight); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadReal(PR.Current(), "Box Height", boxHeight))
+      {
         boxHeights->SetValue(i, boxHeight);
+      }
 
       int curnum = PR.CurrentNumber();
       if (PR.DefinedElseSkip())
@@ -121,12 +129,16 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
         {
           fontEntity = GetCasted(IGESGraph_TextFontDef, PR.ParamEntity(IR, curnum));
           if (fontEntity.IsNull())
+          {
             PR.AddFail("Font Entity : incorrect reference");
+          }
           fontEntities->SetValue(i, fontEntity);
           fontCodes->SetValue(i, -1);
         }
         else
+        {
           fontCodes->SetValue(i, fontCode);
+        }
       }
       else
       {
@@ -138,34 +150,48 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
         // st = PR.ReadReal(PR.Current(), "Slant Angle", slantAngle); //szv#4:S4163:12Mar99 moved in
         // if
         if (PR.ReadReal(PR.Current(), "Slant Angle", slantAngle))
+        {
           slantAngles->SetValue(i, slantAngle);
+        }
       }
       else
+      {
         slantAngles->SetValue(i, M_PI / 2);
+      }
 
       // st = PR.ReadReal(PR.Current(), "Rotation Angle", rotationAngle); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadReal(PR.Current(), "Rotation Angle", rotationAngle))
+      {
         rotationAngles->SetValue(i, rotationAngle);
+      }
 
       // st = PR.ReadInteger(PR.Current(), "Mirror Flag", mirrorFlag); //szv#4:S4163:12Mar99 moved
       // in if
       if (PR.ReadInteger(PR.Current(), "Mirror Flag", mirrorFlag))
+      {
         mirrorFlags->SetValue(i, mirrorFlag);
+      }
 
       // st = PR.ReadInteger(PR.Current(), "Rotate Flag", rotateFlag); //szv#4:S4163:12Mar99 moved
       // in if
       if (PR.ReadInteger(PR.Current(), "Rotate Flag", rotateFlag))
+      {
         rotateFlags->SetValue(i, rotateFlag);
+      }
 
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Start Point", startPoint); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadXYZ(PR.CurrentList(1, 3), "Start Point", startPoint))
+      {
         startPoints->SetValue(i, startPoint);
+      }
 
       // st = PR.ReadText(PR.Current(), "Text String", text); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadText(PR.Current(), "Text String", text))
+      {
         texts->SetValue(i, text);
+      }
     }
   }
   // sln 28.09.2001, BUC61004, If the condition is false function ent->Init is not called in order
@@ -201,9 +227,13 @@ void IGESDimen_ToolGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_Gener
     IW.Send(ent->BoxWidth(i));
     IW.Send(ent->BoxHeight(i));
     if (ent->IsFontEntity(i))
+    {
       IW.Send(ent->FontEntity(i), true); // negative
+    }
     else
+    {
       IW.Send(ent->FontCode(i));
+    }
     IW.Send(ent->SlantAngle(i));
     IW.Send(ent->RotationAngle(i));
     IW.Send(ent->MirrorFlag(i));
@@ -222,7 +252,9 @@ void IGESDimen_ToolGeneralNote::OwnShared(const occ::handle<IGESDimen_GeneralNot
   for (int i = 1; i <= nbval; i++)
   {
     if (ent->IsFontEntity(i))
+    {
       iter.GetOneItem(ent->FontEntity(i));
+    }
   }
 }
 
@@ -325,7 +357,9 @@ void IGESDimen_ToolGeneralNote::OwnCheck(const occ::handle<IGESDimen_GeneralNote
 {
   if (((ent->FormNumber() < 0) || (ent->FormNumber() > 8))
       && ((ent->FormNumber() < 100) || (ent->FormNumber() > 102)) && (ent->FormNumber() != 105))
+  {
     ach->AddFail("Form Number: Not Valid");
+  }
 
   int upper = ent->NbStrings();
   for (int i = 1; i <= upper; i++)
@@ -392,17 +426,19 @@ void IGESDimen_ToolGeneralNote::OwnDump(const occ::handle<IGESDimen_GeneralNote>
         S << "\n";
       }
       else
+      {
         S << "Font Code : " << ent->FontCode(i) << "\n"
           << "Slant Angle : " << ent->SlantAngle(i) << "  "
           << "Rotation Angle : " << ent->RotationAngle(i) << "  "
           << "Mirror Flag : " << ent->MirrorFlag(i) << "  "
           << "Rotate Flag : " << ent->RotateFlag(i) << "\n"
           << "Start Point : ";
+      }
       IGESData_DumpXYZL(S, level, ent->StartPoint(i), ent->Location());
       S << "\nText : ";
       IGESData_DumpString(S, ent->Text(i));
       S << "\n";
     }
   }
-  S << std::endl;
+  S << '\n';
 }

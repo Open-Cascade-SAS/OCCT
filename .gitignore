@@ -18,10 +18,11 @@
 !/cmake/
 !/data/
 !/dox/
+!/resources/
 !/src/
 !/tests/
-!/tools/
 !/.github/
+!/samples/
 
 # data/ level: Ignore everything except tracked subdirectories
 /data/*
@@ -43,6 +44,22 @@
 !/src/ModelingData/
 !/src/Visualization/
 !/src/Deprecated/
+
+# resources/ level: Ignore everything except tracked items
+/resources/*
+!/resources/BOPAlgo/
+!/resources/DrawResources/
+!/resources/samples
+!/resources/Shaders/
+!/resources/SHMessage/
+!/resources/StdResource/
+!/resources/Textures/
+!/resources/TObj/
+!/resources/UnitsAPI/
+!/resources/XmlOcafResource/
+!/resources/XRResources/
+!/resources/XSMessage/
+!/resources/XSTEPResource/
 
 # ============================================================================
 # DEEPER LEVEL RULES (applied recursively within allowed directories above)
@@ -106,6 +123,9 @@ win64
 /build*
 /install*
 /tools/build*
+CMakeFiles/
+MakeFile
+cmake_install.cmake
 
 # Coding agents instructions (keep .github/copilot-instructions.md)
 /.CLAUDE.md

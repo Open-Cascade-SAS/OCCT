@@ -55,7 +55,9 @@ occ::handle<XCAFDoc_Note> XCAFDoc_Note::Get(const TDF_Label& theLabel)
   {
     aNote = occ::down_cast<XCAFDoc_Note>(anIt.Value());
     if (!aNote.IsNull())
+    {
       break;
+    }
   }
   return aNote;
 }

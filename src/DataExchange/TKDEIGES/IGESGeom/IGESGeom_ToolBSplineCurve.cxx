@@ -143,7 +143,9 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), Msg105, tempPole); //szv#4:S4163:12Mar99 moved down
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Control Points", tempPole);
       if (PR.ReadXYZ(PR.CurrentList(1, 3), Msg105, tempPole))
+      {
         allPoles->SetValue(I, tempPole);
+      }
     }
   }
 
@@ -173,7 +175,9 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
   }
   // st = PR.ReadReal(PR.Current(), "Unit Normal X", normX);
   else
+  {
     normX = 0.;
+  }
   if (PR.DefinedElseSkip())
   {
     st = PR.ReadReal(PR.Current(), normY);
@@ -185,7 +189,9 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
   }
   // st = PR.ReadReal(PR.Current(), "Unit Normal Y", normY);
   else
+  {
     normY = 0.;
+  }
   if (PR.DefinedElseSkip())
   {
     st = PR.ReadReal(PR.Current(), normZ);
@@ -197,9 +203,13 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
   }
   // st = PR.ReadReal(PR.Current(), "Unit Normal Z", normZ);
   else
+  {
     normZ = 0.;
+  }
   if (st)
+  {
     aNorm.SetCoord(normX, normY, normZ);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(anIndex,
@@ -235,12 +245,16 @@ void IGESGeom_ToolBSplineCurve::WriteOwnParams(const occ::handle<IGESGeom_BSplin
   low = -degree;
   up  = index + 1;
   for (I = low; I <= up; I++)
+  {
     IW.Send(ent->Knot(I));
+  }
 
   low = 0;
   up  = index;
   for (I = low; I <= up; I++)
+  {
     IW.Send(ent->Weight(I));
+  }
 
   for (I = low; I <= up; I++)
   {
@@ -289,19 +303,25 @@ void IGESGeom_ToolBSplineCurve::OwnCopy(const occ::handle<IGESGeom_BSplineCurve>
   low = -aDegree;
   up  = anIndex + 1;
   for (I = low; I <= up; I++)
+  {
     allKnots->SetValue(I, another->Knot(I));
+  }
 
   allWeights = new NCollection_HArray1<double>(0, anIndex);
 
   low = 0;
   up  = anIndex;
   for (I = low; I <= up; I++)
+  {
     allWeights->SetValue(I, another->Weight(I));
+  }
 
   allPoles = new NCollection_HArray1<gp_XYZ>(0, anIndex);
 
   for (I = low; I <= up; I++)
+  {
     allPoles->SetValue(I, (another->Pole(I)).XYZ());
+  }
 
   aUmin = another->UMin();
   aUmax = another->UMax();
@@ -372,7 +392,9 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
 
   int I; // svv Jan 11 2000 : porting on DEC
   for (I = 0; ((I < upper) && (Flag)); I++)
+  {
     Flag &= (ent->Weight(I) > 0);
+  }
 
   if (!Flag)
   {
@@ -384,7 +406,9 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
   double tempVal = ent->Weight(lower);
 
   for (I = lower; ((I < upper) && (Flag)); I++)
+  {
     Flag &= (ent->Weight(I) == tempVal);
+  }
   /*
     if (Flag && !ent->IsPolynomial(true))
       ach.AddWarning("All weights equal & PROP3 != 1 (Curve Not Polynomial)");
@@ -428,5 +452,5 @@ void IGESGeom_ToolBSplineCurve::OwnDump(const occ::handle<IGESGeom_BSplineCurve>
     << "  Ending Parameter Value : " << ent->UMax() << "\n"
     << "Unit Normal : ";
   IGESData_DumpXYZL(S, level, ent->Normal(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

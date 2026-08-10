@@ -59,7 +59,9 @@ static void MapShapes(const TopoDS_Shape& SCible,
   while (icible.More())
   {
     if (!M.IsBound(icible.Value()))
+    {
       MapShapes(icible.Value(), isource.Value(), M);
+    }
     icible.Next();
     isource.Next();
   }
@@ -78,12 +80,16 @@ static void MapShapes(const TDF_Label& LCible,
     if (!icible.OldShape().IsNull())
     {
       if (!M.IsBound(icible.OldShape()))
+      {
         MapShapes(icible.OldShape(), isource.OldShape(), M);
+      }
     }
     if (!icible.NewShape().IsNull())
     {
       if (!M.IsBound(icible.NewShape()))
+      {
         MapShapes(icible.NewShape(), isource.NewShape(), M);
+      }
     }
     icible.Next();
     isource.Next();
@@ -108,7 +114,7 @@ static void SubstituteShape(
 {
   if (oldShape.IsSame(newShape))
   {
-    std::cout << "import_tool::Substitute : oldShape IsSame newShape" << std::endl;
+    std::cout << "import_tool::Substitute : oldShape IsSame newShape" << '\n';
   }
 
   if (!amap.IsBound(oldShape))
@@ -177,11 +183,15 @@ bool TNaming::SubstituteSShape(const TDF_Label& Lab, const TopoDS_Shape& From, T
   Lab.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
   NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap = US->Map();
   if (!amap.IsBound(To))
+  {
     return false;
+  }
   TNaming_RefShape* pos;
   pos = amap.ChangeFind(To);
   if (!amap.UnBind(To))
+  {
     return false;
+  }
   // update shape
   To.Orientation(From.Orientation());
   pos->Shape(To);
@@ -195,7 +205,9 @@ static bool Rebuild(const TopoDS_Shape&                                         
 {
   bool IsModified = false;
   if (M.IsBound(S))
+  {
     return IsModified;
+  }
 
   BRep_Builder    B;
   TopoDS_Iterator iteS(S.Oriented(TopAbs_FORWARD));
@@ -205,7 +217,9 @@ static bool Rebuild(const TopoDS_Shape&                                         
   {
     const TopoDS_Shape& SS = iteS.Value();
     if (Rebuild(SS, M))
+    {
       IsModified = true;
+    }
   }
   if (!IsModified)
   {
@@ -252,14 +266,18 @@ void TNaming::Update(const TDF_Label&                                           
     {
       const TopoDS_Shape& S = it.OldShape();
       if (!M.IsBound(S))
+      {
         Rebuild(S, M);
+      }
       SubstituteShape(S, M(S), amap);
     }
     if (!it.NewShape().IsNull())
     {
       const TopoDS_Shape& S = it.NewShape();
       if (!M.IsBound(S))
+      {
         Rebuild(S, M);
+      }
       SubstituteShape(S, M(S), amap);
     }
   }
@@ -386,9 +404,13 @@ void TNaming::Displace(const TDF_Label& L, const TopLoc_Location& Loc, const boo
       const TopoDS_Shape& SN = itNews.Value();
       OS                     = SO;
       if (WithOld && !SO.IsNull())
+      {
         OS = SO.Moved(Loc);
+      }
       if (!SN.IsNull())
+      {
         NS = SN.Moved(Loc);
+      }
 
       LoadNamedShape(B, Evol, OS, NS);
     }
@@ -410,7 +432,9 @@ static void Replace(
   TNaming_Iterator  it(L);
 
   if (!it.More())
+  {
     return;
+  }
   Evol = it.Evolution();
 
   TNaming_Builder B(L);
@@ -423,13 +447,17 @@ static void Replace(
     {
       OS = it.OldShape();
       if (M.IsBound(OS))
+      {
         OS = M(OS);
+      }
     }
     if (!it.NewShape().IsNull())
     {
       NS = it.NewShape();
       if (M.IsBound(NS))
+      {
         NS = M(NS);
+      }
     }
     LoadNamedShape(B, Evol, OS, NS);
   }
@@ -509,7 +537,9 @@ void TNaming::Replicate(const TopoDS_Shape& SH, const gp_Trsf& T, const TDF_Labe
   // sub shape
   TopAbs_ShapeEnum SST = TopAbs_FACE;
   if (SH.ShapeType() == TopAbs_FACE || SH.ShapeType() == TopAbs_WIRE)
+  {
     SST = TopAbs_EDGE;
+  }
 
   TNaming_Builder Builder2(L.FindChild(1, true));
   for (TopExp_Explorer exp(SH, SST); exp.More(); exp.Next())
@@ -527,9 +557,13 @@ static TopoDS_Shape ShapeCopy(
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
   if (S.IsNull())
+  {
     return S;
+  }
   if (M.IsBound(S))
+  {
     return M(S);
+  }
   //----------------------------
   // construction de la copie.
   // 1- copie des sous shapes.
@@ -731,9 +765,13 @@ static void BuildMapIn(const TopoDS_Shape&                              Context,
   TopAbs_ShapeEnum aType;
   if ((Context.ShapeType() == TopAbs_SOLID || Context.ShapeType() == TopAbs_FACE)
       && (StopType - Context.ShapeType()) != 1)
+  {
     aType = (TopAbs_ShapeEnum)(Context.ShapeType() + 2);
+  }
   else
+  {
     aType = (TopAbs_ShapeEnum)(Context.ShapeType() + 1);
+  }
   for (TopExp_Explorer exp(Context, aType); exp.More(); exp.Next())
   {
 #ifdef OCCT_DEBUG
@@ -791,7 +829,9 @@ static void BuildMapC0(const TopoDS_Shape&                              Context,
         BuildMapC0(aKey, Context, StopType, Map);
       }
       else
+      {
         BuildMapIn(aKey, StopType, Map);
+      }
     }
     anIt.Next();
   }
@@ -818,9 +858,13 @@ static void BuildMap(const TopoDS_Shape&                              Context,
     if (aKey.ShapeType() < StopType)
     {
       if (aKey.ShapeType() < TopAbs_SOLID)
+      {
         BuildMapC0(aKey, Context, StopType, Map);
+      }
       else
+      {
         BuildMapIn(aKey, StopType, Map);
+      }
     }
     anIt.Next();
   }
@@ -845,7 +889,9 @@ TopoDS_Shape TNaming::FindUniqueContext(const TopoDS_Shape& Selection, const Top
   }
 #endif
   if (aMap.IsBound(Selection))
+  {
     return aMap.Find(Selection);
+  }
   return TopoDS_Shape();
 }
 
@@ -868,16 +914,24 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection,
     {
       const TopoDS_Shape& aS = anIter.Value();
       if (aS.ShapeType() > aStopType)
+      {
         aStopType = aS.ShapeType();
+      }
       Up++;
     }
     if (Up > 0)
+    {
       Arr = new NCollection_HArray1<TopoDS_Shape>(1, Up);
+    }
     if (aStopType == TopAbs_SHAPE)
+    {
       aStopType = Selection.ShapeType();
+    }
     BuildMap(Context, aStopType, aMap);
     if (aMap.IsBound(Selection))
+    {
       return aMap.Find(Selection);
+    }
     else if (Selection.ShapeType() == TopAbs_COMPOUND)
     {
       int             num1(0), num2(0);
@@ -895,14 +949,20 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection,
             B.Add(CompShape, aMap.Find(it.Value()));
           }
           if (!Arr.IsNull())
+          {
             Arr->SetValue(num1 + 1, aMap.Find(it.Value()));
+          }
 
           if (aMap.Find(it.Value()) == Context)
+          {
             num2++;
+          }
         }
       }
       if (num1 == num2 && num2)
+      {
         return Context;
+      }
       else
       {
         TopoDS_Iterator anIt(CompShape);
@@ -949,7 +1009,9 @@ bool TNaming::OuterWire(const TopoDS_Face& theFace, TopoDS_Wire& theWire)
     aFC.Init(aFx, aTol);
     bFlag = aFC.IsHole();
     if (!bFlag)
+    {
       break;
+    }
   }
   theWire = aWx;
   return !bFlag; // if bFlag == True -  not found
@@ -991,9 +1053,13 @@ bool TNaming::OuterShell(const TopoDS_Solid& theSolid, TopoDS_Shell& theShell)
     const TopoDS_Shape& aSx = aIt.Value();
 
     if (aSx.ShapeType() != TopAbs_SHELL)
+    {
       continue;
+    }
     if (IsInternal(aSx))
+    {
       continue;
+    }
     //
     aSHx = *((TopoDS_Shell*)&aSx);
     //

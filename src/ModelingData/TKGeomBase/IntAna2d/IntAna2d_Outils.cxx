@@ -70,7 +70,9 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       nbsol++;
     }
     if (nbp & 1)
+    {
       PbPossible = true;
+    }
   }
   else
   {
@@ -196,7 +198,9 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
     //-- At least as many as the complete polynomial
     //--
     for (nbsol = 0; nbsol < NbsolPolyComplet || std::abs(val[nbsol]) < Epsilon(10000.0); nbsol++)
+    {
       ;
+    }
     //-- std::cout<<" IntAna2d : nbsol:"<<nbsol<<std::endl;
   }
   if (nbsol == 0)

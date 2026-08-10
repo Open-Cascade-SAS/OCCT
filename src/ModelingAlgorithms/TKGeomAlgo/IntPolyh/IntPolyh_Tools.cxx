@@ -104,7 +104,9 @@ void IntPolyh_Tools::MakeSampling(const occ::handle<Adaptor3d_Surface>& theSurf,
 
   // Enlarge surface intersection zone if necessary
   if (theEnlargeZone)
+  {
     EnlargeZone(theSurf, u0, u1, v0, v1);
+  }
 
   int aNbSamplesU1 = theNbSU - 1;
   int aNbSamplesV1 = theNbSV - 1;

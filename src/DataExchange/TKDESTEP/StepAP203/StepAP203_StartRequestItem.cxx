@@ -29,9 +29,13 @@ StepAP203_StartRequestItem::StepAP203_StartRequestItem() = default;
 int StepAP203_StartRequestItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 1;
+  }
   return 0;
 }
 

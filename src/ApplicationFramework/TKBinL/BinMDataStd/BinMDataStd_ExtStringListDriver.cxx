@@ -51,7 +51,9 @@ bool BinMDataStd_ExtStringListDriver::Paste(const BinObjMgt_Persistent&       th
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_ExtStringList> anAtt =
     occ::down_cast<TDataStd_ExtStringList>(theTarget);
@@ -59,7 +61,9 @@ bool BinMDataStd_ExtStringListDriver::Paste(const BinObjMgt_Persistent&       th
   {
     const int aLength = aLastInd - aFirstInd + 1;
     if (aLength <= 0)
+    {
       return false;
+    }
     for (int i = aFirstInd; i <= aLastInd; i++)
     {
       TCollection_ExtendedString aStr;
@@ -99,5 +103,7 @@ void BinMDataStd_ExtStringListDriver::Paste(
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_ExtStringList::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

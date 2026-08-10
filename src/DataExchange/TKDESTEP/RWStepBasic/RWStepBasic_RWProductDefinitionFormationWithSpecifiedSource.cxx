@@ -35,7 +35,9 @@ void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "product_definition_formation_with_specified_source"))
+  {
     return;
+  }
 
   // --- inherited field : id ---
 
@@ -67,7 +69,9 @@ void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (make_or_buy) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

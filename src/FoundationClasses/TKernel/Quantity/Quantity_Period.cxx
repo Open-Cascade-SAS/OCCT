@@ -128,7 +128,9 @@ void Quantity_Period::SetValues(const int ss, const int mics)
 {
 
   if (!Quantity_Period::IsValid(ss, mics))
+  {
     throw Quantity_PeriodDefinitionError("Quantity_Period::SetValues invalid parameters");
+  }
 
   mySec  = ss;
   myUSec = mics;

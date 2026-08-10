@@ -70,11 +70,15 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
   int                            MaxDeg = MaxDegree;
   occ::handle<Geom_BSplineCurve> aBSpline;
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+  {
     aBSpline = occ::down_cast<Geom_BSplineCurve>(C3D);
+  }
   else
   {
     if (C3D->IsKind(STANDARD_TYPE(Geom_Conic)))
+    {
       MaxDeg = std::min(MaxDeg, 6);
+    }
 
     // clang-format off
     occ::handle<Geom_Curve> tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection against parabols ets
@@ -84,9 +88,13 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
       OCC_CATCH_SIGNALS
       GeomConvert_ApproxCurve approx(tcurve, Tol3d, Continuity, MaxSegments, MaxDeg);
       if (approx.HasResult())
+      {
         aBSpline = approx.Curve();
+      }
       else
+      {
         aBSpline = GeomConvert::CurveToBSplineCurve(C3D, Convert_QuasiAngular);
+      }
     }
     catch (Standard_Failure const& anException)
     {
@@ -121,16 +129,22 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
     // clang-format on
     Geom2dConvert_ApproxCurve approx(tcurve, Tol2d, Continuity, MaxSegments, MaxDegree);
     if (approx.HasResult())
+    {
       aBSpline2d = approx.Curve();
+    }
     else
+    {
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
+    }
   }
   else if (!C2D->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
     aBSpline2d = Geom2dConvert::CurveToBSplineCurve(C2D, Convert_QuasiAngular);
   }
   else
+  {
     aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(C2D);
+  }
 
   return aBSpline2d;
 }
@@ -266,7 +280,9 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
       else
       {
         if (anApprox.HasResult())
+        {
           errSpl = anApprox.Surface();
+        }
 #ifdef OCCT_DEBUG
         std::cout << "\terror = " << anApprox.MaxError() << std::endl;
 #endif
@@ -283,7 +299,9 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
 #endif
       (void)anException;
       if (cnt > 0)
+      {
         cnt--;
+      }
       continue;
     }
   }
@@ -311,7 +329,9 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
       aGeomSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aGeomSurf)->BasisSurface();
     }
     if (aGeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
+    {
       return true;
+    }
 
     bool                      IsEdgeSeam = false;
     occ::handle<Geom2d_Curve> aCrvRes1, aCrvRes2;
@@ -323,17 +343,25 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
     {
       TopoDS_Edge Edge = TopoDS::Edge(edges->Value(i));
       if (i == 1)
+      {
         IsEdgeSeam = sae.IsSeam(Edge, theFace);
+      }
       else if (IsEdgeSeam && (!sae.IsSeam(Edge, theFace)))
+      {
         break; // different cases
+      }
       else if (!IsEdgeSeam && (sae.IsSeam(Edge, theFace)))
+      {
         break; // different cases
+      }
 
       resOrient = TopAbs_FORWARD;
       occ::handle<Geom2d_Curve> c2d, c2d2;
       double                    first, last, first2, last2;
       if (!sae.PCurve(Edge, theFace, c2d, first, last, false))
+      {
         break;
+      }
 
       if (IsEdgeSeam)
       {
@@ -367,7 +395,9 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
                         newCrv,
                         isRev1,
                         isRev2))
+        {
           break;
+        }
 
         if (IsEdgeSeam)
         {
@@ -385,7 +415,9 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
                           newCrv2,
                           isRev1,
                           isRev2))
+          {
             break;
+          }
           aCrvRes2 = newCrv2;
         }
         aCrvRes1    = newCrv;
@@ -393,15 +425,23 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
         double lp2d = newCrv->LastParameter();
         newl += (last - first);
         if (fp2d > newf)
+        {
           newf = fp2d;
+        }
         if (lp2d < newl)
+        {
           newl = lp2d;
+        }
       }
     }
     if (IsEdgeSeam)
+    {
       B.UpdateEdge(theEdge, aCrvRes1, aCrvRes2, theFace, 0);
+    }
     else
+    {
       B.UpdateEdge(theEdge, aCrvRes1, theFace, 0);
+    }
     B.Range(theEdge, theFace, newf, newl);
     B.SameRange(theEdge, false);
     B.SameParameter(theEdge, false);
@@ -445,10 +485,14 @@ static inline void SegmentCurve(HCurve& curve, const double first, const double 
       || curve->LastParameter() > last + Precision::PConfusion())
   {
     if (curve->IsPeriodic())
+    {
       curve->Segment(first, last);
+    }
     else
+    {
       curve->Segment(std::max(curve->FirstParameter(), first),
                      std::min(curve->LastParameter(), last));
+    }
   }
 }
 
@@ -511,7 +555,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom_Curve>& ac3d1,
   //  newl = last1 + last2 - first2;
 
   if (bsplc1.IsNull() || bsplc2.IsNull())
+  {
     return false;
+  }
 
   SegmentCurve(bsplc1, first1, last1);
   SegmentCurve(bsplc2, first2, last2);
@@ -530,14 +576,18 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom_Curve>& ac3d1,
     bsplc1->Reverse();
   }
   if (isRev2)
+  {
     bsplc2->Reverse();
+  }
 
   gp_Pnt pmid = 0.5 * (bsplc1->Pole(bsplc1->NbPoles()).XYZ() + bsplc2->Pole(1).XYZ());
   bsplc1->SetPole(bsplc1->NbPoles(), pmid);
   bsplc2->SetPole(1, pmid);
   GeomConvert_CompCurveToBSplineCurve connect3d(bsplc1);
   if (!connect3d.Add(bsplc2, Precision::Confusion(), After, false))
+  {
     return false;
+  }
   c3dOut = connect3d.BSplineCurve();
   return true;
 }
@@ -569,7 +619,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
     scc.ConvertToBSpline(c2d2, first2, last2, Precision::Confusion());
 
   if (bsplc12d.IsNull() || bsplc22d.IsNull())
+  {
     return false;
+  }
 
   SegmentCurve(bsplc12d, first1, last1);
   SegmentCurve(bsplc22d, first2, last2);
@@ -590,7 +642,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
     bsplc12d->Reverse();
   }
   if (isRev2)
+  {
     bsplc22d->Reverse();
+  }
 
   //---------------------------------------------------------
   // protection against invalid topology Housing(sam1296.brep(face 707) - bugmergeedges4.brep)
@@ -603,7 +657,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
     double leng     = pp1.Distance(pp2);
     bool   isCircle = (leng < pp1.Distance(pp3) + Precision::PConfusion());
     if ((pp1.Distance(bsplc22d->Pole(1)) < leng) && !isCircle)
+    {
       return false;
+    }
   }
   //-------------------------------------------------------
   gp_Pnt2d pmid1 = 0.5 * (bsplc12d->Pole(bsplc12d->NbPoles()).XY() + bsplc22d->Pole(1).XY());
@@ -623,7 +679,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
     occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(bsplc22d, vPln));
   GeomConvert_CompCurveToBSplineCurve connect2d(bspl1);
   if (!connect2d.Add(bspl2, Precision::PConfusion(), After, false))
+  {
     return false;
+  }
   C2dOut = GeomAPI::To2d(connect2d.BSplineCurve(), vPln);
 
   return true;

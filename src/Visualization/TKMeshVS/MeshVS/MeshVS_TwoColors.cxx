@@ -41,15 +41,19 @@ Quantity_Color ExtractColor(MeshVS_TwoColors& theTwoColors, const int Index)
   double         max = 255.0;
 
   if (Index == 1)
+  {
     aRes.SetValues(double(theTwoColors.r1) / max,
                    double(theTwoColors.g1) / max,
                    double(theTwoColors.b1) / max,
                    Quantity_TOC_sRGB);
+  }
   else if (Index == 2)
+  {
     aRes.SetValues(double(theTwoColors.r2) / max,
                    double(theTwoColors.g2) / max,
                    double(theTwoColors.b2) / max,
                    Quantity_TOC_sRGB);
+  }
 
   return aRes;
 }

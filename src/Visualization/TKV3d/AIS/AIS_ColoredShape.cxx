@@ -490,7 +490,7 @@ void AIS_ColoredShape::ComputeSelection(const occ::handle<SelectMgr_Selection>& 
                            aDeviationAngle);
 
   occ::handle<SelectMgr_SelectableObject> aThis(this);
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

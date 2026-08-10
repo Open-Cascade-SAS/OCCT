@@ -59,7 +59,9 @@ void TDataStd_UAttribute::SetID(const Standard_GUID& guid)
 {
   // OCC2932 correction
   if (myID == guid)
+  {
     return;
+  }
 
   Backup();
   myID = guid;

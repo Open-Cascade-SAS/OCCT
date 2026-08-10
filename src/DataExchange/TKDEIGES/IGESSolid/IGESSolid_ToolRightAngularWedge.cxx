@@ -57,98 +57,138 @@ void IGESSolid_ToolRightAngularWedge::ReadOwnParams(
     // st = PR.ReadReal(PR.Current(), "Corner Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (X)", tempreal))
+    {
       tempCorner.SetX(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Corner Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (Y)", tempreal))
+    {
       tempCorner.SetY(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Corner Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (Z)", tempreal))
+    {
       tempCorner.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal))
+    {
       tempXAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetX(1.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal))
+    {
       tempXAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal))
+    {
       tempXAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal))
+    {
       tempZAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal))
+    {
       tempZAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal))
+    {
       tempZAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, lowX, tempCorner, tempXAxis, tempZAxis);
   double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
+  {
     PR.AddWarning("XAxis poorly unitary, normalized");
+  }
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
+  {
     PR.AddWarning("ZAxis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolRightAngularWedge::WriteOwnParams(
@@ -208,13 +248,21 @@ void IGESSolid_ToolRightAngularWedge::OwnCheck(const occ::handle<IGESSolid_Right
   double eps    = 1.E-04;
   double prosca = ent->XAxis() * ent->ZAxis();
   if (prosca < -eps || prosca > eps)
+  {
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
+  }
   if (ent->Size().X() <= 0. || ent->Size().Y() <= 0. || ent->Size().Z() <= 0.)
+  {
     ach->AddFail("Size : Values are not positive");
+  }
   if (ent->XSmallLength() <= 0.0)
+  {
     ach->AddFail("Small X Length : Not Positive");
+  }
   if (ent->XSmallLength() >= ent->Size().X())
+  {
     ach->AddFail("Small X Length : Value not < LX");
+  }
 }
 
 void IGESSolid_ToolRightAngularWedge::OwnDump(const occ::handle<IGESSolid_RightAngularWedge>& ent,
@@ -233,5 +281,5 @@ void IGESSolid_ToolRightAngularWedge::OwnDump(const occ::handle<IGESSolid_RightA
   IGESData_DumpXYZL(S, level, ent->XAxis(), ent->VectorLocation());
   S << "\nZAxis : ";
   IGESData_DumpXYZL(S, level, ent->ZAxis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

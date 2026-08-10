@@ -42,8 +42,12 @@ GeomEval_TBezierSurface createSpherePatch()
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   // All poles default to origin (0,0,0)
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(0.0, 0.0, 0.0));
+    }
+  }
   // P(1,2) = (0,0,1) corresponds to 1*sin(v) -> Z component
   aPoles.SetValue(1, 2, gp_Pnt(0.0, 0.0, 1.0));
   // P(2,3) = (0,1,0) corresponds to sin(u)*cos(v) -> Y component
@@ -88,8 +92,12 @@ TEST(GeomEval_TBezierSurfaceTest, Construction_InvalidParams_Throws)
   // Even number of poles in U (not odd)
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 3);
   for (int i = 1; i <= 2; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(double(i), double(j), 0.0));
+    }
+  }
   EXPECT_THROW(GeomEval_TBezierSurface(aPoles, 1.0, 1.0), Standard_ConstructionError);
 }
 

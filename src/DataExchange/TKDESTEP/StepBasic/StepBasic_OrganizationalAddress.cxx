@@ -97,7 +97,9 @@ occ::handle<StepBasic_Organization> StepBasic_OrganizationalAddress::Organizatio
 int StepBasic_OrganizationalAddress::NbOrganizations() const
 {
   if (organizations.IsNull())
+  {
     return 0;
+  }
   return organizations->Length();
 }
 

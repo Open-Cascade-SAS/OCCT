@@ -28,11 +28,17 @@ StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() = default;
 int StepKinematics_SpatialRotation::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_RotationAboutDirection)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(NCollection_HArray1<double>)))
+  {
     return 2;
+  }
   return 0;
 }
 

@@ -36,7 +36,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <XCAFDimTolObjects_AngularQualifier.hxx>
 class XCAFDimTolObjects_DimensionObject;
 
@@ -377,8 +377,8 @@ private:
   TopoDS_Shape                                           myPresentation;
   occ::handle<TCollection_HAsciiString>                  mySemanticName;
   occ::handle<TCollection_HAsciiString>                  myPresentationName;
-  NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptions;
-  NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptionNames;
+  NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> myDescriptions;
+  NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> myDescriptionNames;
 };
 
 #endif // _XCAFDimTolObjects_DimensionObject_HeaderFile

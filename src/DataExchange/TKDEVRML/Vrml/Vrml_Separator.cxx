@@ -43,9 +43,13 @@ Standard_OStream& Vrml_Separator::Print(Standard_OStream& anOStream)
     if (myRenderCulling != Vrml_AUTO)
     {
       if (myRenderCulling == Vrml_ON)
+      {
         anOStream << "    renderCulling\tON\n";
+      }
       else
+      {
         anOStream << "    renderCulling\tOFF\n";
+      }
     }
     myFlagPrint = true;
   } // End of if

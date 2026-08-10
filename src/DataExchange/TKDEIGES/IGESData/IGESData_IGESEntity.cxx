@@ -111,19 +111,33 @@ occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::DirFieldEntity(const int n
 {
   occ::handle<IGESData_IGESEntity> ent;
   if (num == 3)
+  {
     ent = theStructure;
+  }
   if (num == 4)
+  {
     ent = theLineFont;
+  }
   if (num == 5)
+  {
     ent = theLevelList;
+  }
   if (num == 6)
+  {
     ent = theView;
+  }
   if (num == 7)
+  {
     ent = theTransf;
+  }
   if (num == 8)
+  {
     ent = theLabDisplay;
+  }
   if (num == 13)
+  {
     ent = theColor;
+  }
   return ent;
 }
 
@@ -155,9 +169,13 @@ occ::handle<IGESData_LineFontEntity> IGESData_IGESEntity::LineFont() const
 IGESData_DefList IGESData_IGESEntity::DefLevel() const
 {
   if (theDefLevel > 0)
+  {
     return IGESData_DefOne;
+  }
   if (theDefLevel < 0)
+  {
     return IGESData_DefSeveral;
+  }
   return IGESData_DefNone;
 }
 
@@ -174,11 +192,17 @@ occ::handle<IGESData_LevelListEntity> IGESData_IGESEntity::LevelList() const
 IGESData_DefList IGESData_IGESEntity::DefView() const
 {
   if (View().IsNull())
+  {
     return IGESData_DefNone;
+  }
   if (View()->IsSingle())
+  {
     return IGESData_DefOne;
+  }
   else
+  {
     return IGESData_DefSeveral;
+  }
 }
 
 occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::View() const
@@ -190,7 +214,9 @@ occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::SingleView() const
 {
   occ::handle<IGESData_ViewKindEntity> nulvue;
   if (DefView() != IGESData_DefOne)
+  {
     return nulvue;
+  }
   return View();
 }
 
@@ -198,7 +224,9 @@ occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::ViewList() const
 {
   occ::handle<IGESData_ViewKindEntity> nulvue;
   if (DefView() != IGESData_DefSeveral)
+  {
     return nulvue;
+  }
   return View();
 }
 
@@ -308,7 +336,9 @@ bool IGESData_IGESEntity::HasSubScriptNumber() const
 int IGESData_IGESEntity::SubScriptNumber() const
 {
   if (theSubScriptN < 0)
+  {
     return 0;
+  }
   return theSubScriptN;
 }
 
@@ -324,19 +354,33 @@ void IGESData_IGESEntity::InitDirFieldEntity(const int                          
                                              const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (num == 3)
+  {
     theStructure = ent;
+  }
   if (num == 4)
+  {
     theLineFont = ent;
+  }
   if (num == 5)
+  {
     theLevelList = ent;
+  }
   if (num == 6)
+  {
     theView = ent;
+  }
   if (num == 7)
+  {
     theTransf = ent;
+  }
   if (num == 8)
+  {
     theLabDisplay = ent;
+  }
   if (num == 13)
+  {
     theColor = ent;
+  }
 }
 
 void IGESData_IGESEntity::InitTransf(const occ::handle<IGESData_TransfEntity>& ent)
@@ -393,9 +437,13 @@ void IGESData_IGESEntity::InitMisc(const occ::handle<IGESData_IGESEntity>&      
   theStructure  = str;
   theLabDisplay = lab;
   if (theLWeightNum != 0)
+  {
     theLWeightVal *= (weightnum / theLWeightNum);
+  }
   else if (weightnum == 0)
+  {
     theLWeightVal = 0;
+  }
   theLWeightNum = weightnum;
 }
 
@@ -412,7 +460,9 @@ bool IGESData_IGESEntity::HasOneParent() const
 occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::UniqueParent() const
 {
   if (NbTypedProperties(STANDARD_TYPE(IGESData_SingleParentEntity)) != 1)
+  {
     throw Interface_InterfaceError("IGESEntity : UniqueParent");
+  }
   else
   {
     DeclareAndCast(IGESData_SingleParentEntity,
@@ -428,7 +478,9 @@ gp_GTrsf IGESData_IGESEntity::Location() const
   // if (!HasTransf()) return gp_GTrsf();    // Identite
   // else return Transf()->Value();          // c-a-d Compoound
   if (!HasTransf())
+  {
     return gp_GTrsf(); // Identite
+  }
   occ::handle<IGESData_TransfEntity> trsf = Transf();
   return (trsf.IsNull()) ? gp_GTrsf() : trsf->Value();
 }
@@ -436,8 +488,10 @@ gp_GTrsf IGESData_IGESEntity::Location() const
 gp_GTrsf IGESData_IGESEntity::VectorLocation() const
 {
   if (!HasTransf())
-    return gp_GTrsf();               // Identite
-                                     //    Take Location and cancel TranslationPart
+  {
+    return gp_GTrsf(); // Identite
+  }
+  //    Take Location and cancel TranslationPart
   gp_GTrsf loca = Transf()->Value(); // c-a-d Compoound
   loca.SetTranslationPart(gp_XYZ(0., 0., 0.));
   return loca;
@@ -447,7 +501,9 @@ gp_GTrsf IGESData_IGESEntity::CompoundLocation() const
 {
   gp_GTrsf loca = Location();
   if (!HasOneParent())
+  {
     return loca;
+  }
   gp_GTrsf locp = UniqueParent()->CompoundLocation();
   loca.PreMultiply(locp);
   return loca;
@@ -456,7 +512,9 @@ gp_GTrsf IGESData_IGESEntity::CompoundLocation() const
 bool IGESData_IGESEntity::HasName() const
 {
   if (HasShortLabel())
+  {
     return true;
+  }
   return (NbTypedProperties(STANDARD_TYPE(IGESData_NameEntity)) == 1);
 }
 
@@ -468,9 +526,13 @@ occ::handle<TCollection_HAsciiString> IGESData_IGESEntity::NameValue() const
   if (nbname == 0)
   {
     if (!HasShortLabel())
+    {
       return nom;
+    }
     if (theSubScriptN < 0)
+    {
       return theShortLabel;
+    }
     char lenom[50];
     Sprintf(lenom, "%s(%d)", theShortLabel->ToCString(), theSubScriptN);
     nom = new TCollection_HAsciiString(lenom);
@@ -489,14 +551,18 @@ occ::handle<TCollection_HAsciiString> IGESData_IGESEntity::NameValue() const
 bool IGESData_IGESEntity::ArePresentAssociativities() const
 {
   if (!theAssocs.IsEmpty())
+  {
     return true;
+  }
   return (theStatusNum & IGESFlagAssocs) != 0;
 }
 
 int IGESData_IGESEntity::NbAssociativities() const
 {
   if (theAssocs.IsEmpty())
+  {
     return 0;
+  }
   return theAssocs.NbEntities();
 }
 
@@ -542,26 +608,34 @@ void IGESData_IGESEntity::ClearAssociativities()
 void IGESData_IGESEntity::Associate(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   if (!ent.IsNull())
+  {
     ent->AddAssociativity(ThisEntity);
+  }
 }
 
 void IGESData_IGESEntity::Dissociate(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   if (!ent.IsNull())
+  {
     ent->RemoveAssociativity(ThisEntity);
+  }
 }
 
 bool IGESData_IGESEntity::ArePresentProperties() const
 {
   if (!theProps.IsEmpty())
+  {
     return true;
+  }
   return (theStatusNum & IGESFlagProps) != 0;
 }
 
 int IGESData_IGESEntity::NbProperties() const
 {
   if (theProps.IsEmpty())
+  {
     return 0;
+  }
   return theProps.NbEntities();
 }
 
@@ -610,9 +684,15 @@ void IGESData_IGESEntity::ClearProperties()
 void IGESData_IGESEntity::SetLineWeight(const double defw, const double maxw, const int gradw)
 {
   if (theLWeightNum == 0)
+  {
     theLWeightVal = defw;
+  }
   else if (gradw == 1)
+  {
     theLWeightVal = maxw * theLWeightNum;
+  }
   else
+  {
     theLWeightVal = (maxw * theLWeightNum) / gradw;
+  }
 }

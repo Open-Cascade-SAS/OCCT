@@ -68,7 +68,9 @@ static void AddSpecialPoints(const IntAna_Quadric& theQuad,
   const NCollection_List<gp_Pnt>& aLSP    = theQuad.SpecialPoints();
 
   if (aLSP.IsEmpty())
+  {
     return;
+  }
 
   double aU = 0.0, aV = 0.0;
   double aMaxDelta = 0.0;
@@ -1609,7 +1611,7 @@ void IntAna_IntQuadQuad::Parameters(const int, // i,
                                     double&,
                                     double&) const
 {
-  std::cout << "IntAna_IntQuadQuad::Parameters(...) is not yet implemented" << std::endl;
+  std::cout << "IntAna_IntQuadQuad::Parameters(...) is not yet implemented" << '\n';
 }
 
 /*********************************************************************************

@@ -59,17 +59,23 @@ void TFunction_Iterator::Init(const TDF_Label& Access)
 
     // Check whether the function is a root function
     if (!graphNode->GetPrevious().IsEmpty())
+    {
       continue;
+    }
 
     // In execution mode we consider only "not executed" functions.
     if (myUsageOfExecutionStatus && status != TFunction_ES_NotExecuted)
+    {
       continue;
+    }
 
     myCurrent.Append(L);
 
     // Register already passed functions
     if (!myUsageOfExecutionStatus)
+    {
       myPassedFunctions.Add(L);
+    }
   }
 }
 
@@ -107,7 +113,9 @@ int TFunction_Iterator::GetMaxNbThreads() const
   {
     const NCollection_List<TDF_Label>& current = fIterator.Current();
     if (nb_threads < current.Extent())
+    {
       nb_threads = current.Extent();
+    }
     fIterator.Next();
   }
 
@@ -132,7 +140,9 @@ bool TFunction_Iterator::More() const
     {
       const TDF_Label& L = itrm.Key2();
       if (GetStatus(L) == TFunction_ES_NotExecuted)
+      {
         return true;
+      }
     }
     return false;
   }
@@ -216,13 +226,17 @@ void TFunction_Iterator::Next()
 
       // Ignore already passed functions (for the mode of ignoring the execution status).
       if (!myUsageOfExecutionStatus && myPassedFunctions.Contains(Lnext))
+      {
         continue;
+      }
 
       next_current.Add(Lnext);
 
       // Register already passed functions
       if (!myUsageOfExecutionStatus)
+      {
         myPassedFunctions.Add(Lnext);
+      }
     }
   }
 
@@ -255,10 +269,12 @@ void TFunction_Iterator::SetStatus(const TDF_Label&                func,
 
 Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
 {
-  anOS << "Functions:" << std::endl;
+  anOS << "Functions:" << '\n';
 
   if (myCurrent.IsEmpty())
+  {
     return anOS;
+  }
 
   // Memorize the status of each function
   // in order to recover it after iteration.
@@ -306,7 +322,7 @@ Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
 
     fIterator.Next();
 
-    anOS << std::endl;
+    anOS << '\n';
   }
 
   // Recover the status of functions

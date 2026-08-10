@@ -37,7 +37,9 @@ int BRepSweep_Tool::NbShapes() const
 int BRepSweep_Tool::Index(const TopoDS_Shape& aShape) const
 {
   if (!myMap.Contains(aShape))
+  {
     return 0;
+  }
   return myMap.FindIndex(aShape);
 }
 

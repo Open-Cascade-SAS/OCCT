@@ -35,9 +35,13 @@ XmlObjMgt_Array1::XmlObjMgt_Array1(const XmlObjMgt_Element&   theParent,
   if (myElement != nullptr)
   {
     if (!myElement.getAttribute(::LowerString()).GetInteger(myFirst))
+    {
       myFirst = 1;
+    }
     if (!myElement.getAttribute(::UpperString()).GetInteger(myLast))
+    {
       myLast = 1;
+    }
   }
 }
 
@@ -65,7 +69,9 @@ void XmlObjMgt_Array1::CreateArrayElement(XmlObjMgt_Element&         theParent,
     {
       myElement.setAttribute(::UpperString(), myLast);
       if (myFirst != 1)
+      {
         myElement.setAttribute(::LowerString(), myFirst);
+      }
     }
   }
 }
@@ -94,8 +100,12 @@ XmlObjMgt_Element XmlObjMgt_Array1::Value(const int theIndex) const
       {
         anElem = (XmlObjMgt_Element&)aNode;
         if (anElem.getAttribute(::IndString()).GetInteger(ind))
+        {
           if (ind == theIndex)
+          {
             break;
+          }
+        }
       }
       aNode = aNode.getNextSibling();
     }

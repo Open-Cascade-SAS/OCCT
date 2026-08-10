@@ -66,12 +66,16 @@ static void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
 static int topoload(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape C1 = DBRep::Get(argv[1], TopAbs_FACE);
 
   if (C1.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Face aFace = TopoDS::Face(C1);
 
@@ -112,11 +116,15 @@ static int mat(Draw_Interpretor&, int n, const char** a)
 {
   GeomAbs_JoinType theJoinType = GeomAbs_Arc;
   if (n >= 2 && strcmp(a[1], "i") == 0)
+  {
     theJoinType = GeomAbs_Intersection;
+  }
 
   bool IsOpenResult = false;
   if (n == 3 && strcmp(a[2], "o") == 0)
+  {
     IsOpenResult = true;
+  }
 
   MapBiLo.Compute(anExplo, 1, SideOfMat, theJoinType, IsOpenResult);
   LinkComputed = false;
@@ -132,7 +140,9 @@ static int mat(Draw_Interpretor&, int n, const char** a)
 static int zone(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(argv[1], TopAbs_EDGE);
   if (S.IsNull())
@@ -170,9 +180,13 @@ static int zone(Draw_Interpretor&, int argc, const char** argv)
 static int side(Draw_Interpretor&, int, const char** argv)
 {
   if (!strcmp(argv[1], "right"))
+  {
     SideOfMat = MAT_Right;
+  }
   else
+  {
     SideOfMat = MAT_Left;
+  }
 
   return 0;
 }
@@ -250,11 +264,15 @@ void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
         delta        = (Val1 <= Val2 ? Val1 : Val2);
       }
       if (aCurve->FirstParameter() == -Precision::Infinite())
+      {
         CurveDraw = new Geom2d_TrimmedCurve(aCurve, -delta, delta);
+      }
       else
+      {
         CurveDraw = new Geom2d_TrimmedCurve(aCurve,
                                             aCurve->FirstParameter(),
                                             aCurve->FirstParameter() + delta);
+      }
     }
     else
     {
@@ -268,22 +286,36 @@ void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
   }
 
   if (Indice == 1)
+  {
     Couleur = Draw_jaune;
+  }
   else if (Indice == 2)
+  {
     Couleur = Draw_bleu;
+  }
   else if (Indice == 3)
+  {
     Couleur = Draw_rouge;
+  }
   else if (Indice == 4)
+  {
     Couleur = Draw_vert;
+  }
 
   int Discret = 50;
 
   if (type == STANDARD_TYPE(Geom2d_Circle))
+  {
     dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 30, false);
+  }
   else if (type == STANDARD_TYPE(Geom2d_Line))
+  {
     dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 2, false);
+  }
   else
+  {
     dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, Discret, false);
+  }
 
   dout << dr;
   dout.Flush();

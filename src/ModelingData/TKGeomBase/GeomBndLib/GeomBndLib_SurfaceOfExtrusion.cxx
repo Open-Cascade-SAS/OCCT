@@ -49,23 +49,41 @@ Bnd_Box buildExtrusionBox(const Bnd_Box& theCurveBox,
   {
     // Propagate curve openness through the extrusion rather than returning whole space.
     if (theCurveBox.IsOpenXmin())
+    {
       aBox.OpenXmin();
+    }
     if (theCurveBox.IsOpenXmax())
+    {
       aBox.OpenXmax();
+    }
     if (theCurveBox.IsOpenYmin())
+    {
       aBox.OpenYmin();
+    }
     if (theCurveBox.IsOpenYmax())
+    {
       aBox.OpenYmax();
+    }
     if (theCurveBox.IsOpenZmin())
+    {
       aBox.OpenZmin();
+    }
     if (theCurveBox.IsOpenZmax())
+    {
       aBox.OpenZmax();
+    }
     if (isVMinInf && isVMaxInf)
+    {
       GeomBndLib_InfiniteHelpers::OpenMinMax(theDir, aBox);
+    }
     else if (isVMinInf)
+    {
       GeomBndLib_InfiniteHelpers::OpenMin(theDir, aBox);
+    }
     else if (isVMaxInf)
+    {
       GeomBndLib_InfiniteHelpers::OpenMax(theDir, aBox);
+    }
     if (theCurveBox.HasFinitePart())
     {
       const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.FinitePart().Get();
@@ -158,13 +176,21 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theUMin,
       const double aFirst = aBasisCurve->FirstParameter();
       const double aLast  = aBasisCurve->LastParameter();
       if (aCurveU1 < aFirst)
+      {
         aCurveU1 = aFirst;
+      }
       else if (aCurveU1 > aLast)
+      {
         aCurveU1 = aLast;
+      }
       if (aCurveU2 < aFirst)
+      {
         aCurveU2 = aFirst;
+      }
       else if (aCurveU2 > aLast)
+      {
         aCurveU2 = aLast;
+      }
       if (aCurveU1 > aCurveU2)
       {
         const double aTmp = aCurveU1;
@@ -214,13 +240,21 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double theUMin,
       const double aFirst = aBasisCurve->FirstParameter();
       const double aLast  = aBasisCurve->LastParameter();
       if (aCurveU1 < aFirst)
+      {
         aCurveU1 = aFirst;
+      }
       else if (aCurveU1 > aLast)
+      {
         aCurveU1 = aLast;
+      }
       if (aCurveU2 < aFirst)
+      {
         aCurveU2 = aFirst;
+      }
       else if (aCurveU2 > aLast)
+      {
         aCurveU2 = aLast;
+      }
       if (aCurveU1 > aCurveU2)
       {
         const double aTmp = aCurveU1;

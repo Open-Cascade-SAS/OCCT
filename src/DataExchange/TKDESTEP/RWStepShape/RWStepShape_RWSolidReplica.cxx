@@ -29,7 +29,9 @@ void RWStepShape_RWSolidReplica::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "solid_replica"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

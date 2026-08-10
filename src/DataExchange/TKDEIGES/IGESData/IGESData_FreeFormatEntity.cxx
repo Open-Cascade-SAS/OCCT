@@ -68,11 +68,17 @@ occ::handle<IGESData_IGESEntity> IGESData_FreeFormatEntity::ParamEntity(const in
 bool IGESData_FreeFormatEntity::IsNegativePointer(const int num) const
 {
   if (thenegptrs.IsNull())
+  {
     return false;
+  }
   int nb = thenegptrs->Length();
   for (int i = 1; i <= nb; i++)
+  {
     if (thenegptrs->Value(i) == num)
+    {
       return true;
+    }
+  }
   return false;
 }
 
@@ -103,9 +109,13 @@ void IGESData_FreeFormatEntity::AddEntity(const Interface_ParamType             
 {
   UndefinedContent()->AddEntity(ptype, ent);
   if (!negative)
+  {
     return;
+  }
   if (thenegptrs.IsNull())
+  {
     thenegptrs = new NCollection_HSequence<int>();
+  }
   thenegptrs->Append(NbParams());
 }
 
@@ -129,7 +139,9 @@ void IGESData_FreeFormatEntity::AddNegativePointers(
   const occ::handle<NCollection_HSequence<int>>& list)
 {
   if (thenegptrs.IsNull())
+  {
     thenegptrs = new NCollection_HSequence<int>();
+  }
   thenegptrs->Append(list);
 }
 
@@ -144,18 +156,22 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
   int neg  = 0;
   int fneg = 0;
   if (!thenegptrs.IsNull())
+  {
     if (!thenegptrs->IsEmpty())
     {
       neg  = thenegptrs->Value(1);
       fneg = 1;
     }
+  }
 
   int nb = UndefinedContent()->NbParams();
   for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType ptyp = UndefinedContent()->ParamType(i);
     if (ptyp == Interface_ParamVoid)
+    {
       IW.SendVoid();
+    }
     else if (UndefinedContent()->IsParamEntity(i))
     {
       DeclareAndCast(IGESData_IGESEntity, anent, UndefinedContent()->ParamEntity(i));
@@ -164,7 +180,9 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
       {
         IW.Send(anent, true);
         if (fneg >= thenegptrs->Length())
+        {
           neg = 0;
+        }
         else
         {
           fneg++;
@@ -172,9 +190,13 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
         }
       }
       else
+      {
         IW.Send(anent, false);
+      }
     }
     else
+    {
       IW.SendString(UndefinedContent()->ParamValue(i));
+    }
   }
 }

@@ -37,7 +37,9 @@ void RWStepBasic_RWContractAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "contract_assignment"))
+  {
     return;
+  }
 
   // Own fields of ContractAssignment
 

@@ -63,7 +63,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
 {
   occ::handle<ShapeUpgrade_SplitSurface> SplitSurf = GetSplitSurfaceTool();
   if (SplitSurf.IsNull())
+  {
     return false;
+  }
 
   if (myResult.IsNull() || myResult.ShapeType() != TopAbs_FACE)
   {
@@ -77,7 +79,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
   // 01.10.99 pdn Porting on DEC
   if (::Precision::IsInfinite(Uf) || ::Precision::IsInfinite(Ul) || ::Precision::IsInfinite(Vf)
       || ::Precision::IsInfinite(Vl))
+  {
     return false;
+  }
 
   TopLoc_Location           L;
   occ::handle<Geom_Surface> surf;
@@ -90,10 +94,13 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
   for (TopoDS_Iterator iter(face); iter.More() && !doSplit; iter.Next())
   {
     if (iter.Value().ShapeType() != TopAbs_WIRE)
+    {
       continue;
+    }
     TopoDS_Wire                       wire = TopoDS::Wire(iter.Value());
     occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
     for (int i = 1; i <= sewd->NbEdges() && !doSplit; i++)
+    {
       if (sewd->IsSeam(i))
       {
         doSplit                        = true;
@@ -102,13 +109,19 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
         occ::handle<Geom2d_Curve> c1, c2;
         double                    f1, f2, l1, l2;
         if (!sae.PCurve(edge, face, c1, f1, l1, false))
+        {
           continue;
+        }
         // smh#8
         TopoDS_Shape tmpE = edge.Reversed();
         if (!sae.PCurve(TopoDS::Edge(tmpE), face, c2, f2, l2, false))
+        {
           continue;
+        }
         if (c2 == c1)
+        {
           continue;
+        }
         // splitting
         ShapeAnalysis_Curve sac;
         Bnd_Box2d           B1, B2;
@@ -147,7 +160,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
           double step = dU / (myNbSplit + 1);
           double val  = xf + step;
           for (int j = 1; j <= myNbSplit; j++, val += step)
+          {
             split->Append(val);
+          }
           isUSplit = true;
         }
         else
@@ -155,10 +170,13 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
           double step = dV / (myNbSplit + 1);
           double val  = yf + step;
           for (int j = 1; j <= myNbSplit; j++, val += step)
+          {
             split->Append(val);
+          }
           isUSplit = false;
         }
       }
+    }
   }
 
   if (!doSplit)
@@ -184,7 +202,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
           double step = (Ul - Uf) / (myNbSplit + 1);
           double val  = Uf + step;
           for (int i = 1; i <= myNbSplit; i++, val += step)
+          {
             split->Append(val);
+          }
           isUSplit = true;
         }
 #ifdef OCCT_DEBUG
@@ -209,7 +229,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
           double step = (Vl - Vf) / (myNbSplit + 1);
           double val  = Vf + step;
           for (int i = 1; i <= myNbSplit; i++, val += step)
+          {
             split->Append(val);
+          }
           isUSplit = false;
         }
 #ifdef OCCT_DEBUG
@@ -221,17 +243,25 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
   }
 
   if (!doSplit)
+  {
     return false;
+  }
 
   SplitSurf->Init(surf, Uf, Ul, Vf, Vl);
   if (isUSplit)
+  {
     SplitSurf->SetUSplitValues(split);
+  }
   else
+  {
     SplitSurf->SetVSplitValues(split);
+  }
 
   SplitSurf->Perform(mySegmentMode);
   if (!SplitSurf->Status(ShapeExtend_DONE))
+  {
     return false;
+  }
   occ::handle<ShapeExtend_CompositeSurface> Grid = SplitSurf->ResSurfaces();
 
   ShapeFix_ComposeShell CompShell;
@@ -240,7 +270,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
   CompShell.SetContext(Context());
   CompShell.Perform();
   if (CompShell.Status(ShapeExtend_FAIL) || !CompShell.Status(ShapeExtend_DONE))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
 
   TopoDS_Shape res = CompShell.Result();
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
@@ -251,7 +283,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
     TopoDS_Face  f     = TopoDS::Face(tempf);
     myResult           = f;
     if (SplitSurface())
+    {
       Context()->Replace(f, myResult);
+    }
   }
   myResult = Context()->Apply(res);
   return true;
@@ -262,7 +296,9 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
 void ShapeUpgrade_ClosedFaceDivide::SetNbSplitPoints(const int num)
 {
   if (num > 0)
+  {
     myNbSplit = num;
+  }
 }
 
 //=================================================================================================

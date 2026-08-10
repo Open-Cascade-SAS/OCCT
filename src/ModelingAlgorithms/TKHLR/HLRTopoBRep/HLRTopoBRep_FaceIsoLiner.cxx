@@ -84,9 +84,13 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
     UMax = Infinite;
   }
   else if (InfiniteUMin)
+  {
     UMin = UMax - Infinite;
+  }
   else if (InfiniteUMax)
+  {
     UMax = UMin + Infinite;
+  }
 
   if (InfiniteVMin && InfiniteVMax)
   {
@@ -94,21 +98,29 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
     VMax = Infinite;
   }
   else if (InfiniteVMin)
+  {
     VMin = VMax - Infinite;
+  }
   else if (InfiniteVMax)
+  {
     VMax = VMin + Infinite;
+  }
 
   for (ExpEdges.Init(TF, TopAbs_EDGE); // Edges of the face TF
        ExpEdges.More();
        ExpEdges.Next())
+  {
     ne++;
+  }
 
   if (DS.FaceHasIntL(TF))
   { // OutLines built on face TF.
 
     NCollection_List<TopoDS_Shape>::Iterator itE;
     for (itE.Initialize(DS.FaceIntL(TF)); itE.More(); itE.Next())
+    {
       ne++;
+    }
   }
 
   NCollection_Array1<TopoDS_Shape> SH(1, ne);
@@ -132,9 +144,13 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
     }
     SH(IndE) = newE;
     if (DS.IsOutLFaceEdge(TF, newE))
+    {
       IL(IndE) = true;
+    }
     else
+    {
       IL(IndE) = false;
+    }
   }
 
   if (DS.FaceHasIntL(TF))
@@ -193,7 +209,9 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
       int                 IndH = Hatcher.AddHatching(aGAC);
       Hatcher.Trim(IndH);
       if (Hatcher.TrimDone(IndH) && !Hatcher.TrimFailed(IndH))
+      {
         Hatcher.ComputeDomains(IndH);
+      }
       if (!Hatcher.IsDone(IndH))
       {
 #ifdef OCCT_DEBUG
@@ -248,7 +266,9 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
                                                          Tolerance,
                                                          DS);
               if (IL(PntE.Index()))
+              {
                 DS.AddOutV(V1U);
+              }
             }
           }
           if (Dom.HasSecondPoint())
@@ -264,11 +284,15 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
                                                          Tolerance,
                                                          DS);
               if (IL(PntE.Index()))
+              {
                 DS.AddOutV(V2U);
+              }
             }
           }
           if (!V1U.IsNull() && !V2U.IsNull())
+          {
             HLRTopoBRep_FaceIsoLiner::MakeIsoLine(F, IsoLine, V1U, V2U, U11, U21, Tolerance, DS);
+          }
         }
       }
 
@@ -296,7 +320,9 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
       int                 IndH = Hatcher.AddHatching(aGAC);
       Hatcher.Trim(IndH);
       if (Hatcher.TrimDone(IndH) && !Hatcher.TrimFailed(IndH))
+      {
         Hatcher.ComputeDomains(IndH);
+      }
       if (!Hatcher.IsDone(IndH))
       {
 #ifdef OCCT_DEBUG
@@ -352,7 +378,9 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
                                                          DS);
 
               if (IL(PntE.Index()))
+              {
                 DS.AddOutV(V1V);
+              }
             }
           }
           if (Dom.HasSecondPoint())
@@ -368,11 +396,15 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
                                                          Tolerance,
                                                          DS);
               if (IL(PntE.Index()))
+              {
                 DS.AddOutV(V2V);
+              }
             }
           }
           if (!V1V.IsNull() && !V2V.IsNull())
+          {
             HLRTopoBRep_FaceIsoLiner::MakeIsoLine(F, IsoLine, V1V, V2V, U12, U22, Tolerance, DS);
+          }
         }
       }
 
@@ -394,9 +426,13 @@ TopoDS_Vertex HLRTopoBRep_FaceIsoLiner::MakeVertex(const TopoDS_Edge& E,
   BRep_Builder  B;
   TopExp::Vertices(E, VF, VL);
   if (P.IsEqual(BRep_Tool::Pnt(VF), BRep_Tool::Tolerance(VF)))
+  {
     return VF;
+  }
   if (P.IsEqual(BRep_Tool::Pnt(VL), BRep_Tool::Tolerance(VL)))
+  {
     return VL;
+  }
 
   for (DS.InitVertex(E); DS.MoreVertex(); DS.NextVertex())
   {

@@ -71,6 +71,8 @@ gp_Pnt2d IGESDimen_DiameterDimension::TransformedCenter() const
 {
   gp_XYZ center(theCenter.X(), theCenter.Y(), 0);
   if (HasTransf())
+  {
     Location().Transforms(center);
+  }
   return gp_Pnt2d(center.X(), center.Y());
 }

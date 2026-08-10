@@ -49,6 +49,8 @@ occ::handle<StepShape_OrientedEdge> StepShape_EdgeLoop::EdgeListValue(const int 
 int StepShape_EdgeLoop::NbEdgeList() const
 {
   if (edgeList.IsNull())
+  {
     return 0;
+  }
   return edgeList->Length();
 }

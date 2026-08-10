@@ -35,7 +35,9 @@ void RWStepElement_RWElementDescriptor::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "element_descriptor"))
+  {
     return;
+  }
 
   // Own fields of ElementDescriptor
 
@@ -44,16 +46,26 @@ void RWStepElement_RWElementDescriptor::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".LINEAR.") == 0)
+    {
       aTopologyOrder = StepElement_Linear;
+    }
     else if (strcmp(text, ".QUADRATIC.") == 0)
+    {
       aTopologyOrder = StepElement_Quadratic;
+    }
     else if (strcmp(text, ".CUBIC.") == 0)
+    {
       aTopologyOrder = StepElement_Cubic;
+    }
     else
+    {
       ach->AddFail("Parameter #1 (topology_order) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #1 (topology_order) is not enumeration");
+  }
 
   occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);

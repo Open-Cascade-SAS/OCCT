@@ -31,7 +31,9 @@ void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "rectangular_composite_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -63,7 +65,9 @@ void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_SurfacePatch),
                                anent2))
+          {
             aSegments->SetValue(i2, j2, anent2);
+          }
         }
       }
     }

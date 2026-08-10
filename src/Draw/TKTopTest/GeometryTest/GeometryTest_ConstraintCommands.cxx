@@ -329,7 +329,9 @@ static int Cirtang(Draw_Interpretor& theDI, int theNArgs, const char** theArgVal
 static int lintang(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> C1 = DrawTrSurf::GetCurve2d(a[2]);
   occ::handle<Geom2d_Curve> C2 = DrawTrSurf::GetCurve2d(a[3]);
@@ -337,7 +339,9 @@ static int lintang(Draw_Interpretor& di, int n, const char** a)
   char solname[200];
 
   if (C1.IsNull() || C2.IsNull())
+  {
     return 1;
+  }
 
   Draw_Color col = DrawTrSurf_CurveColor(Draw_Color(Draw_vert));
 
@@ -367,7 +371,9 @@ static int lintang(Draw_Interpretor& di, int n, const char** a)
       }
     }
     else
+    {
       di << "Lin2dTanObl Not done\n";
+    }
   }
   else
   {
@@ -388,7 +394,9 @@ static int lintang(Draw_Interpretor& di, int n, const char** a)
       }
     }
     else
+    {
       di << "Lin2d2Tan Not done\n";
+    }
   }
 
   DrawTrSurf_CurveColor(col);
@@ -412,9 +420,13 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
     dout.Select(id, XX, YY, b);
     double zoom = dout.Zoom(id);
     if (b != 1)
+    {
       return 0;
+    }
     if (id < 0)
+    {
       return 0;
+    }
     gp_Pnt   P;
     gp_Pnt2d P2d;
     bool     newcurve;
@@ -466,7 +478,9 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
           {
             ThePoints = new NCollection_HArray1<gp_Pnt>(1, i + 1);
             for (j = 1; j <= i; j++)
+            {
               ThePoints->SetValue(j, Points->Value(j));
+            }
           }
         }
       }
@@ -529,7 +543,9 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
           {
             ThePoints = new NCollection_HArray1<gp_Pnt2d>(1, i + 1);
             for (j = 1; j <= i; j++)
+            {
               ThePoints->SetValue(j, Points->Value(j));
+            }
           }
         }
       }
@@ -551,7 +567,9 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
     const char*   nomfic = a[2];
     std::ifstream iFile(nomfic, std::ios::in);
     if (!iFile)
+    {
       return 1;
+    }
     int    nbp, i;
     double x, y, z;
     iFile >> nbp;
@@ -600,7 +618,9 @@ static int tanginterpol(Draw_Interpretor& di, int n, const char** a)
 {
 
   if (n < 4)
+  {
     return 1;
+  }
 
   int ii, jj,
     //    num_knots,
@@ -755,7 +775,9 @@ void GeometryTest::ConstraintCommands(Draw_Interpretor& theCommands)
 
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

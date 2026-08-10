@@ -61,7 +61,9 @@ Geom_SphericalSurface::Geom_SphericalSurface(const Ax3& A, const double R)
 {
 
   if (R < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = A;
 }
 
@@ -271,7 +273,9 @@ gp_Vec Geom_SphericalSurface::EvalDN(const double U,
                                      const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return ElSLib::SphereDN(U, V, pos, radius, Nu, Nv);
 }
 

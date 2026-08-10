@@ -62,7 +62,9 @@ static int BRepPrim_Wedge_NumDir2(const BRepPrim_Direction d1, const BRepPrim_Di
   int i1 = BRepPrim_Wedge_NumDir1(d1);
   int i2 = BRepPrim_Wedge_NumDir1(d2);
   if (i1 / 2 == i2 / 2)
+  {
     throw Standard_DomainError();
+  }
   return tab[i1][i2];
 }
 
@@ -79,7 +81,9 @@ static int BRepPrim_Wedge_NumDir3(const BRepPrim_Direction d1,
   int i2 = BRepPrim_Wedge_NumDir1(d2);
   int i3 = BRepPrim_Wedge_NumDir1(d3);
   if ((i1 / 2 == i2 / 2) || (i2 / 2 == i3 / 2) || (i3 / 2 == i1 / 2))
+  {
     throw Standard_DomainError();
+  }
   return val[i1] + val[i2] + val[i3];
 }
 
@@ -92,17 +96,33 @@ static void BRepPrim_Wedge_Check(const bool V[], const bool E[], const bool W[],
 {
   int i;
   for (i = 0; i < NBVERTICES; i++)
+  {
     if (V[i])
+    {
       throw Standard_DomainError();
+    }
+  }
   for (i = 0; i < NBEDGES; i++)
+  {
     if (E[i])
+    {
       throw Standard_DomainError();
+    }
+  }
   for (i = 0; i < NBWIRES; i++)
+  {
     if (W[i])
+    {
       throw Standard_DomainError();
+    }
+  }
   for (i = 0; i < NBFACES; i++)
+  {
     if (F[i])
+    {
       throw Standard_DomainError();
+    }
+  }
 }
 
 //=================================================================================================
@@ -112,13 +132,21 @@ static void BRepPrim_Wedge_Init(bool& S, bool V[], bool E[], bool W[], bool F[])
   int i;
   S = false;
   for (i = 0; i < NBVERTICES; i++)
+  {
     V[i] = false;
+  }
   for (i = 0; i < NBEDGES; i++)
+  {
     E[i] = false;
+  }
   for (i = 0; i < NBWIRES; i++)
+  {
     W[i] = false;
+  }
   for (i = 0; i < NBFACES; i++)
+  {
     F[i] = false;
+  }
 }
 
 BRepPrim_GWedge::BRepPrim_GWedge()
@@ -329,24 +357,38 @@ bool BRepPrim_GWedge::IsInfinite(const BRepPrim_Direction d1) const
 const TopoDS_Shell& BRepPrim_GWedge::Shell()
 {
   if (IsDegeneratedShape())
+  {
     throw Standard_DomainError();
+  }
 
   if (!ShellBuilt)
   {
     myBuilder.MakeShell(myShell);
 
     if (HasFace(BRepPrim_XMin))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_XMin));
+    }
     if (HasFace(BRepPrim_XMax))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_XMax));
+    }
     if (HasFace(BRepPrim_YMin))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_YMin));
+    }
     if (HasFace(BRepPrim_YMax))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_YMax));
+    }
     if (HasFace(BRepPrim_ZMin))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_ZMin));
+    }
     if (HasFace(BRepPrim_ZMax))
+    {
       myBuilder.AddShellFace(myShell, Face(BRepPrim_ZMax));
+    }
 
     myShell.Closed(BRep_Tool::IsClosed(myShell));
     myBuilder.CompleteShell(myShell);
@@ -364,7 +406,9 @@ bool BRepPrim_GWedge::HasFace(const BRepPrim_Direction d1) const
 {
   bool state = !myInfinite[BRepPrim_Wedge_NumDir1(d1)];
   if (d1 == BRepPrim_YMax)
+  {
     state = state && (Z2Max != Z2Min) && (X2Max != X2Min);
+  }
   return state;
 }
 
@@ -406,7 +450,9 @@ gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
       Y = YMin;
       Z = ZMin;
       if (X2Min != XMin)
+      {
         D = gp_Dir((YMax - YMin) * VX + (XMin - X2Min) * VY);
+      }
       break;
 
     case 1:
@@ -415,7 +461,9 @@ gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
       Y = YMin;
       Z = ZMin;
       if (X2Max != XMax)
+      {
         D = gp_Dir((YMax - YMin) * VX + (XMax - X2Max) * VY);
+      }
       break;
 
     case 2:
@@ -438,7 +486,9 @@ gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
       Y = YMin;
       Z = ZMin;
       if (Z2Min != ZMin)
+      {
         D = gp_Dir((YMax - YMin) * VZ + (ZMin - Z2Min) * VY);
+      }
       break;
 
     case 5:
@@ -447,7 +497,9 @@ gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
       Y = YMin;
       Z = ZMax;
       if (Z2Max != ZMax)
+      {
         D = gp_Dir((YMax - YMin) * VZ + (ZMax - Z2Max) * VY);
+      }
       break;
   };
 
@@ -471,9 +523,13 @@ const TopoDS_Face& BRepPrim_GWedge::Face(const BRepPrim_Direction d1)
     gp_Pln P = Plane(d1);
     myBuilder.MakeFace(myFaces[i], P);
     if (HasWire(d1))
+    {
       myBuilder.AddFaceWire(myFaces[i], Wire(d1));
+    }
     if (i % 2 == 0)
+    {
       myBuilder.ReverseFace(myFaces[i]);
+    }
 
     // pcurves
 
@@ -569,7 +625,9 @@ bool BRepPrim_GWedge::HasWire(const BRepPrim_Direction d1) const
   int i = BRepPrim_Wedge_NumDir1(d1);
 
   if (myInfinite[i])
+  {
     return false;
+  }
   BRepPrim_Direction dd1 = BRepPrim_XMin, dd2 = BRepPrim_YMax, dd3 = BRepPrim_XMax,
                      dd4 = BRepPrim_ZMin;
 
@@ -653,13 +711,21 @@ const TopoDS_Wire& BRepPrim_GWedge::Wire(const BRepPrim_Direction d1)
     myBuilder.MakeWire(myWires[i]);
 
     if (HasEdge(d1, dd4))
+    {
       myBuilder.AddWireEdge(myWires[i], Edge(d1, dd4), false);
+    }
     if (HasEdge(d1, dd3))
+    {
       myBuilder.AddWireEdge(myWires[i], Edge(d1, dd3), false);
+    }
     if (HasEdge(d1, dd2))
+    {
       myBuilder.AddWireEdge(myWires[i], Edge(d1, dd2), true);
+    }
     if (HasEdge(d1, dd1))
+    {
       myBuilder.AddWireEdge(myWires[i], Edge(d1, dd1), true);
+    }
 
     myBuilder.CompleteWire(myWires[i]);
     WiresBuilt[i] = true;
@@ -675,9 +741,13 @@ bool BRepPrim_GWedge::HasEdge(const BRepPrim_Direction d1, const BRepPrim_Direct
   bool state = !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] || myInfinite[BRepPrim_Wedge_NumDir1(d2)]);
   int  i     = BRepPrim_Wedge_NumDir2(d1, d2);
   if (i == 6 || i == 7)
+  {
     state = state && (X2Max != X2Min);
+  }
   else if (i == 1 || i == 3)
+  {
     state = state && (Z2Max != Z2Min);
+  }
   return state;
 }
 
@@ -686,7 +756,9 @@ bool BRepPrim_GWedge::HasEdge(const BRepPrim_Direction d1, const BRepPrim_Direct
 gp_Lin BRepPrim_GWedge::Line(const BRepPrim_Direction d1, const BRepPrim_Direction d2)
 {
   if (!HasEdge(d1, d2))
+  {
     throw Standard_DomainError();
+  }
 
   int i = BRepPrim_Wedge_NumDir2(d1, d2);
 
@@ -829,7 +901,9 @@ gp_Lin BRepPrim_GWedge::Line(const BRepPrim_Direction d1, const BRepPrim_Directi
 const TopoDS_Edge& BRepPrim_GWedge::Edge(const BRepPrim_Direction d1, const BRepPrim_Direction d2)
 {
   if (!HasEdge(d1, d2))
+  {
     throw Standard_DomainError();
+  }
 
   int i = BRepPrim_Wedge_NumDir2(d1, d2);
 
@@ -929,7 +1003,9 @@ gp_Pnt BRepPrim_GWedge::Point(const BRepPrim_Direction d1,
                               const BRepPrim_Direction d3)
 {
   if (!HasVertex(d1, d2, d3))
+  {
     throw Standard_DomainError();
+  }
 
   int i = BRepPrim_Wedge_NumDir3(d1, d2, d3);
 
@@ -1001,7 +1077,9 @@ const TopoDS_Vertex& BRepPrim_GWedge::Vertex(const BRepPrim_Direction d1,
                                              const BRepPrim_Direction d3)
 {
   if (!HasVertex(d1, d2, d3))
+  {
     throw Standard_DomainError();
+  }
 
   int i = BRepPrim_Wedge_NumDir3(d1, d2, d3);
 

@@ -98,7 +98,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualRotationX = theLowerLimitActualRotationX;
   }
   else
+  {
     myLowerLimitActualRotationX = 0;
+  }
 
   defUpperLimitActualRotationX = hasUpperLimitActualRotationX;
   if (defUpperLimitActualRotationX)
@@ -106,7 +108,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualRotationX = theUpperLimitActualRotationX;
   }
   else
+  {
     myUpperLimitActualRotationX = 0;
+  }
 
   defLowerLimitActualRotationY = hasLowerLimitActualRotationY;
   if (defLowerLimitActualRotationY)
@@ -114,7 +118,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualRotationY = theLowerLimitActualRotationY;
   }
   else
+  {
     myLowerLimitActualRotationY = 0;
+  }
 
   defUpperLimitActualRotationY = hasUpperLimitActualRotationY;
   if (defUpperLimitActualRotationY)
@@ -122,7 +128,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualRotationY = theUpperLimitActualRotationY;
   }
   else
+  {
     myUpperLimitActualRotationY = 0;
+  }
 
   defLowerLimitActualRotationZ = hasLowerLimitActualRotationZ;
   if (defLowerLimitActualRotationZ)
@@ -130,7 +138,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualRotationZ = theLowerLimitActualRotationZ;
   }
   else
+  {
     myLowerLimitActualRotationZ = 0;
+  }
 
   defUpperLimitActualRotationZ = hasUpperLimitActualRotationZ;
   if (defUpperLimitActualRotationZ)
@@ -138,7 +148,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualRotationZ = theUpperLimitActualRotationZ;
   }
   else
+  {
     myUpperLimitActualRotationZ = 0;
+  }
 
   defLowerLimitActualTranslationX = hasLowerLimitActualTranslationX;
   if (defLowerLimitActualTranslationX)
@@ -146,7 +158,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualTranslationX = theLowerLimitActualTranslationX;
   }
   else
+  {
     myLowerLimitActualTranslationX = 0;
+  }
 
   defUpperLimitActualTranslationX = hasUpperLimitActualTranslationX;
   if (defUpperLimitActualTranslationX)
@@ -154,7 +168,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualTranslationX = theUpperLimitActualTranslationX;
   }
   else
+  {
     myUpperLimitActualTranslationX = 0;
+  }
 
   defLowerLimitActualTranslationY = hasLowerLimitActualTranslationY;
   if (defLowerLimitActualTranslationY)
@@ -162,7 +178,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualTranslationY = theLowerLimitActualTranslationY;
   }
   else
+  {
     myLowerLimitActualTranslationY = 0;
+  }
 
   defUpperLimitActualTranslationY = hasUpperLimitActualTranslationY;
   if (defUpperLimitActualTranslationY)
@@ -170,7 +188,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualTranslationY = theUpperLimitActualTranslationY;
   }
   else
+  {
     myUpperLimitActualTranslationY = 0;
+  }
 
   defLowerLimitActualTranslationZ = hasLowerLimitActualTranslationZ;
   if (defLowerLimitActualTranslationZ)
@@ -178,7 +198,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myLowerLimitActualTranslationZ = theLowerLimitActualTranslationZ;
   }
   else
+  {
     myLowerLimitActualTranslationZ = 0;
+  }
 
   defUpperLimitActualTranslationZ = hasUpperLimitActualTranslationZ;
   if (defUpperLimitActualTranslationZ)
@@ -186,7 +208,9 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
     myUpperLimitActualTranslationZ = theUpperLimitActualTranslationZ;
   }
   else
+  {
     myUpperLimitActualTranslationZ = 0;
+  }
 }
 
 //=================================================================================================

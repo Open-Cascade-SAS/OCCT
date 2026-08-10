@@ -85,7 +85,9 @@ bool TDataStd_NamedData::HasIntegers() const
 bool TDataStd_NamedData::HasInteger(const TCollection_ExtendedString& theName) const
 {
   if (!HasIntegers())
+  {
     return false;
+  }
   return myIntegers->Map().IsBound(theName);
 }
 
@@ -161,7 +163,9 @@ void TDataStd_NamedData::ChangeIntegers(
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   };
   if (&myIntegers->Map() == &theIntegers)
+  {
     return;
+  }
   Backup();
   myIntegers->ChangeMap().Assign(theIntegers);
 }
@@ -181,7 +185,9 @@ bool TDataStd_NamedData::HasReals() const
 bool TDataStd_NamedData::HasReal(const TCollection_ExtendedString& theName) const
 {
   if (!HasReals())
+  {
     return false;
+  }
   return myReals->Map().IsBound(theName);
 }
 
@@ -256,7 +262,9 @@ void TDataStd_NamedData::ChangeReals(
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
   if (&myReals->Map() == &theReals)
+  {
     return;
+  }
   Backup();
   myReals->ChangeMap().Assign(theReals);
 }
@@ -276,7 +284,9 @@ bool TDataStd_NamedData::HasStrings() const
 bool TDataStd_NamedData::HasString(const TCollection_ExtendedString& theName) const
 {
   if (!HasStrings())
+  {
     return false;
+  }
   return myStrings->Map().IsBound(theName);
 }
 
@@ -357,7 +367,9 @@ void TDataStd_NamedData::ChangeStrings(
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
   if (&myStrings->Map() == &theStrings)
+  {
     return;
+  }
   Backup();
   myStrings->ChangeMap().Assign(theStrings);
 }
@@ -377,7 +389,9 @@ bool TDataStd_NamedData::HasBytes() const
 bool TDataStd_NamedData::HasByte(const TCollection_ExtendedString& theName) const
 {
   if (!HasBytes())
+  {
     return false;
+  }
   return myBytes->Map().IsBound(theName);
 }
 
@@ -454,7 +468,9 @@ void TDataStd_NamedData::ChangeBytes(
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
   if (&myBytes->Map() == &theBytes)
+  {
     return;
+  }
   Backup();
   myBytes->ChangeMap().Assign(theBytes);
 }
@@ -474,7 +490,9 @@ bool TDataStd_NamedData::HasArraysOfIntegers() const
 bool TDataStd_NamedData::HasArrayOfIntegers(const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfIntegers())
+  {
     return false;
+  }
   return myArraysOfIntegers->Map().IsBound(theName);
 }
 
@@ -542,7 +560,9 @@ void TDataStd_NamedData::ChangeArraysOfIntegers(
     myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
   }
   if (&myArraysOfIntegers->Map() == &theIntegers)
+  {
     return;
+  }
   Backup();
   myArraysOfIntegers->ChangeMap().Assign(theIntegers);
 }
@@ -562,7 +582,9 @@ bool TDataStd_NamedData::HasArraysOfReals() const
 bool TDataStd_NamedData::HasArrayOfReals(const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfReals())
+  {
     return false;
+  }
   return myArraysOfReals->Map().IsBound(theName);
 }
 
@@ -630,7 +652,9 @@ void TDataStd_NamedData::ChangeArraysOfReals(
     myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
   }
   if (&myArraysOfReals->Map() == &theReals)
+  {
     return;
+  }
   Backup();
   myArraysOfReals->ChangeMap().Assign(theReals);
 }
@@ -656,7 +680,9 @@ void TDataStd_NamedData::Restore(const occ::handle<TDF_Attribute>& With)
 
   occ::handle<TDataStd_NamedData> ND = occ::down_cast<TDataStd_NamedData>(With);
   if (ND.IsNull())
+  {
     return;
+  }
   // Integers
   if (!ND->GetIntegersContainer().IsEmpty())
   {
@@ -767,7 +793,9 @@ void TDataStd_NamedData::Paste(const occ::handle<TDF_Attribute>& Into,
 {
   occ::handle<TDataStd_NamedData> ND = occ::down_cast<TDataStd_NamedData>(Into);
   if (ND.IsNull())
+  {
     return;
+  }
 
   // Integers
   if (HasIntegers() && !myIntegers->Map().IsEmpty())

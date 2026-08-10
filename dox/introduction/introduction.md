@@ -1,4 +1,4 @@
-﻿Introduction {#mainpage}
+Introduction {#mainpage}
 ========
 
 @tableofcontents
@@ -46,13 +46,13 @@ This modular structure is illustrated in the diagram below.
 * @ref intro_overview_de        "Data Exchange" module inter-operates with popular data formats and relies on @ref intro_overview_heal "Shape Healing" to improve compatibility between CAD software of different vendors;
 * @ref intro_overview_ocaf      "Application Framework" module offers ready-to-use solutions for handling application-specific data (user attributes) and commonly used functionality (save/restore, undo/redo, copy/paste, tracking CAD modifications, etc). 
 
-In addition, @ref intro_overview_draw "Open CASCADE Test Harness", also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
+In addition, @ref intro_overview_draw "Open CASCADE DRAW Test Harness", also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
 
 @subsection intro_overview_fclasses Foundation Classes
 
 **Foundation Classes** module contains data structures and services used by higher-level Open CASCADE Technology classes:
 
-  * Primitive types, such as Boolean, Character, Integer or Real;
+  * Standard C++ primitive types (`int`, `double`, `float`, `bool`, `char`);
   * String classes that handle Unicode strings;
   * Collection classes that handle statically or dynamically sized aggregates of data, such as arrays, lists, queues, sets and hash tables (data maps).
   * Classes providing commonly used numerical algorithms and basic linear algebra calculations (addition, multiplication, transposition of vectors and matrices, solving linear systems etc).
@@ -125,7 +125,7 @@ Low-level *topological tools* provide the algorithms, which:
  * Check correct definition of shapes;
  * Determine the local and global properties of shapes (derivatives, mass-inertia properties, etc);
  * Perform affine transformations;
- * Find planes in which edges are located;
+ * Find planes on which edges are located;
  * Convert shapes to NURBS geometry;
  * Sew connected topologies (shells and wires) from separate topological elements (faces and edges).
 
@@ -143,7 +143,7 @@ Top-level API provides the following functionality:
    * Pipes -- general-form sweeps;
    * Lofting.
 
-@figure{/introduction/images/0001.png "Shapes containing pipes with variable radius produced by sweeping"}
+@figure{/introduction/images/0001.png,"Shapes containing pipes with variable radius produced by sweeping"}
 
  * Boolean Operations, which allow creating new shapes from the combinations of source shapes. For two shapes *S1* and *S2*:
    * *Common* contains all points that are in *S1* and *S2*;
@@ -171,7 +171,7 @@ See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms Us
 - data structures and algorithms to build triangular surface mesh from *BRep* objects (shapes);
 - tools for displaying meshes with associated pre- and post-processor data (scalars or vectors).
 
-Open CASCADE SAS also offers Advanced Mesh Products:
+Open CASCADE SAS also offers Advanced Mesh Products (commercial product pages, URLs may change):
 - <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
 - <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
 
@@ -212,8 +212,8 @@ Here are a few examples of OCCT Visualization features:
   * View frustum culling, which skips the presentation outside camera at the rendering stage;
   * Back face culling, which reduces the rendered number of triangles and eliminates artifacts at shape boundaries.
 * Real-time ray tracing technique using recursive Whitted's algorithm and Bounded Volume Hierarchy effective optimization structure.
-@figure{introduction/images/0002.png, "Real time visualization by ray tracing method"}
-@figure{introduction/images/0012.png, "Simulation of a glass cover"}
+@figure{/introduction/images/0002.png, "Real time visualization by ray tracing method"}
+@figure{/introduction/images/0012.png, "Simulation of a glass cover"}
 
 For more details, see @ref occt_user_guides__visualization "Visualization User's Guide".
 
@@ -239,13 +239,13 @@ This module handles various problems of interoperability between CAD systems, ca
   * **STL** converter translates Open CASCADE shapes to STL files.
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
 * @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
-* <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a>
-  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats:
-	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
-	* <a href="https://www.opencascade.com/content/parasolid-import">Parasolid</a>
-	* <a href="https://www.opencascade.com/content/dxf-import-export">DXF</a>
-	* <a href="https://www.opencascade.com/content/ifc-import">IFC</a>
-	* <a href="https://www.opencascade.com/content/jt-import-export">JT</a>
+* <a href="https://occt3d.com/components/">Advanced Data Exchange Components</a>
+  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats (commercial product pages, URLs may change):
+	* <a href="https://occt3d.com/components/acis-import-export-component/">ACIS SAT</a>
+	* <a href="https://occt3d.com/components/parasolid-import-component/">Parasolid</a>
+	* <a href="https://occt3d.com/components/dxf-import-export-component/">DXF</a>
+	* <a href="https://occt3d.com/components/ifc-import-component/">IFC</a>
+	* <a href="https://occt3d.com/components/jt-import-export-component/">JT</a>
 
 These components are based on the same architecture as interfaces with STEP and IGES.
 
@@ -268,7 +268,7 @@ Shape Healing algorithms include, but are not limited to, the following operatio
  * Upgrade and change shape characteristics:
    - reduce curve and surface degree;
    - split shapes to obtain C1 continuity;
-   - convert any types of curves or surfaces to Bezier or B-Spline curves or surfaces and back;
+   - convert any type of curve or surface to Bezier or B-Spline form and back;
    - split closed surfaces and revolution surfaces.
 
 Each sub-domain of Shape Healing has its own scope of functionality:
@@ -306,9 +306,9 @@ OCAF organizes and embeds these attributes in a document. OCAF documents, in the
 
 For more details, see @ref occt_user_guides__ocaf "OCAF User's Guide". 
 
-@subsection intro_overview_draw Draw Test Harness
+@subsection intro_overview_draw DRAW Test Harness
 
-**Test Harness** or **Draw** is a convenient testing tool for OCCT libraries.
+**DRAW Test Harness** (or **Draw**) is a convenient testing tool for OCCT libraries.
 It can be used to test and prototype various algorithms before building an entire application.
 It includes:
 - A command interpreter based on the TCL language;
@@ -324,7 +324,7 @@ The basic commands provide general-purpose services such as:
 - Managing views;
 - Displaying objects.
 
-In addition, **Test Harness** provides commands to create and manipulate curves and surfaces (geometry) and shapes, access visualization services, work with OCAF documents, perform data exchange, etc.
+In addition, **DRAW Test Harness** provides commands to create and manipulate curves and surfaces (geometry) and shapes, access visualization services, work with OCAF documents, perform data exchange, etc.
 
 You can add custom commands to test or demonstrate any new functionalities, which you develop.
 
@@ -333,7 +333,7 @@ For more details, see @ref occt_user_guides__test_harness "Draw Test Harness Man
 @section intro_req Requirements
 
 Open CASCADE Technology is designed to be highly portable and is known to work on wide range of platforms.
-Current version is officially certified on Windows (x86-64), Linux (x86-64), OS X / macOS (x86-64, arm64), Android (arm64), and iOS (arm64) platforms.
+Current version is officially certified on Windows (x86-64), Linux (x86-64), macOS (x86-64, arm64), Android (arm64), and iOS (arm64) platforms.
 
 The tables below describe the recommended software configurations for which OCCT is certified to work.
 
@@ -341,38 +341,36 @@ The tables below describe the recommended software configurations for which OCCT
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2015 Update 3, 2017 <sup>1</sup>, 2019, 2022 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
-| Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
-| OS X / macOS | XCode 6 or newer |
-| Android   | NDK r12, GNU gcc 4.9 or newer |
-| Web       | Emscripten SDK 1.39 or newer (CLang) |
+| Windows   | Microsoft Visual Studio 2019 or 2022 (2022 preferred) <br> LLVM (ClangCL), GCC 7.3+ (MinGW-w64), Intel C++ 17.1.1+ |
+| Linux     | GCC 8.0+ <br> Clang 7.0+ <br> Intel C++ 17.1.1+ |
+| macOS | Xcode 11.0 or newer (Apple Clang 11.0+) |
+| Android   | NDK r19+, Clang |
+| Web       | Emscripten SDK 3.0 or newer (Clang) |
 
-1) VC++ 141 64-bit is used for regular testing and for building binary package of official release of OCCT on Windows.
+1) Visual Studio 2022 (MSVC v143) 64-bit is used by the official CI for regular testing and for building binary packages on Windows.
 
 @subsection intro_req_libs Third-party libraries and tools
 
 The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
-They are not needed if relevant component is not needed - it is possible building core OCCT modules without additional dependencies.
+They are not needed if relevant component is not needed - it is possible to build core OCCT modules without additional dependencies.
 
-Note that pre-built packages of many of the listed libraries are available at
-https://dev.opencascade.org/resources/download/3rd-party-components
+Pre-built third-party archives are attached to the OCCT GitHub release pages at https://github.com/Open-Cascade-SAS/OCCT/releases. Alternatively, configure the build with `-DBUILD_USE_VCPKG=ON` and OCCT will pull and build the required packages via [vcpkg](https://vcpkg.io) automatically based on the enabled `USE_*` options.
 
 | Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
-| CMake 3.1+ | https://cmake.org/ | Configuration | Build from sources |
-| Intel oneTBB 2021.5.0 | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
+| CMake 3.10+ (3.16+ recommended) | https://cmake.org/ | Configuration | Build from sources |
+| Intel oneTBB 2021+ | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
-| FreeType 2.4+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
+| FreeType 2.10+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
 | FreeImage 3.17+ | https://sourceforge.net/projects/freeimage/files | Visualization | Reading/writing image files |
 | FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Video recording |
 | VTK 6.1+ | https://www.vtk.org/download/ | IVtk | VTK integration module |
 | Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Updating STEP and ExprIntrp parsers |
-| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading glTF files |
+| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading/writing glTF files |
 | Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Reading compressed glTF files |
 | Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpreter in Draw module |
-| Qt 5.3.2+ | https://www.qt.io/download/ | Inspector and Samples | Inspector Qt samples and  |
-| Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
+| Doxygen 1.8.4+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
 | Graphviz 2.38+ | https://graphviz.org/ | Documentation | Generating dependency graphs |
 
 @subsection intro_req_hw Hardware
@@ -380,7 +378,7 @@ https://dev.opencascade.org/resources/download/3rd-party-components
 | Component | Requirement |
 | --------- | ----------- |
 | Minimum memory    | 512 MB, 1 GB recommended |
-| Free disk space (complete installation) | 1,5 GB approx. |
+| Free disk space (complete installation) | 2 GB approx. |
 
 On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
 Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.
@@ -407,47 +405,25 @@ The following subsections describe how OCCT can be installed from ready-to-use p
 
 @subsection intro_install_windows Windows
 
-On Windows Open CASCADE Technology with binaries precompiled by Visual C++ 2017 
-can be installed using installation procedure available on official download page.
+On Windows, OCCT can be built from sources using CMake.
+Pre-built binary packages for Visual Studio are available from the
+[GitHub releases page](https://github.com/Open-Cascade-SAS/OCCT/releases).
+Third-party dependencies can be automatically resolved via vcpkg by configuring CMake with `-DBUILD_USE_VCPKG=ON`.
 
-**Recommendation:**
+The source tree obtained from a Git clone contains the following top-level directories:
 
-If you have a previous version of OCCT installed on your station, 
-and you do not plan to use it along with the new version, you might want to uninstall 
-the previous version (using Control Panel, Add/Remove Programs) before 
-the installation of this new version, to avoid possible problems 
-(conflict of system variables, paths, etc).
-
-Full OCCT installation with reference documentation requires 1.8 Gb on disk.
-
-When the installation is complete, you will find the directories for 3rd party products 
-(some might be absent in case of custom installation) and the main **OCCT** directory:
-
-@figure{/introduction/images/overview_3rdparty.png}
-
-The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROOT) are as follows:
-
-@figure{/introduction/images/overview_installation.png, "The directory tree"}
-
-  * **adm**   This folder contains administration files, which allow rebuilding OCCT;
-  * **adm/cmake**  This folder contains files of CMake building procedure;
-  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++ 2013, 2015, 2017, 2019 and 2022 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
-  * **adm/scripts** This folder contains auxiliary scripts for semi-automated building and packaging of OCCT for different platforms;
-  * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
-  * **doc**  This folder contains OCCT documentation in HTML and PDF format;
-  * **dox**  This folder contains sources of OCCT documentation in plain text (MarkDown) format;
-  * **inc**  This folder contains copies of all OCCT header files;
-  * **samples**  This folder contains sample applications.
-  * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
-  * **tests**  This folder contains scripts for OCCT testing.
-  * **tools**  This folder contains sources of Inspector tool.
-  * **win64/vc14**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++ 2015;
+  * **adm**   Administration files for building and packaging OCCT;
+  * **data**  CAD files in various formats for testing OCCT functionality;
+  * **dox**   Documentation sources in Markdown format;
+  * **samples**  Sample applications;
+  * **src**   OCCT source files, organized by module/toolkit/package;
+  * **tests**  Draw Harness test scripts;
 
 @subsection intro_install_linux Linux
 
 OCCT is available as package "opencascade" in official repositories of many Linux distributions.
 
-See https://repology.org/project/opencascade/versions for overview of available repositories.
+See https://repology.org/project/opencascade-occt/versions for overview of available repositories.
 
 @subsection intro_install_mac macOS
 
@@ -458,52 +434,26 @@ and MacPorts (https://ports.macports.org/port/opencascade/summary) repositories.
 
 To run any Open CASCADE Technology application you need to set the environment variables.
 
-### On Windows
+### On any platform
 
-You can define the environment variables with env.bat script located in the 
-$CASROOT folder. This script accepts two arguments to be used: 
-the version of Visual Studio (vc12 -- vc143) and the architecture (win32 or win64).
+The environment script `env.sh` (or `env.bat` on Windows) is generated by CMake
+in the build directory. Source it to set up the environment for running OCCT applications:
 
-The additional environment settings necessary for compiling OCCT libraries and samples 
-by Microsoft Visual Studio can be set using script custom.bat located in the same folder. 
-You might need to edit this script to correct the paths to third-party libraries 
-if they are installed on your system in a non-default location.
+    source <build_dir>/env.sh
 
-Script msvc.bat can be used with the same arguments for immediate launch of Visual Studio for (re)compiling OCCT.
-
-### On Unix
-
-
-  If OCCT was built by Code::Blocks, you can define the environment variables with env_cbp.sh or custom_cbp.sh script.
-
-  If OCCT was built by Automake, you can define the environment variables with env_amk.sh or custom_amk.sh script.
-
-The scripts are located in the OCCT root folder.
+The script defines environment variables such as `PATH`, `LD_LIBRARY_PATH` (on Linux),
+`DYLD_LIBRARY_PATH` (on macOS), and `CSF_*` configuration variables.
  
 ### Description of system variables:
 
   * **CASROOT** is used to define the root directory of Open CASCADE Technology;
   * **PATH** is required to define the path to OCCT binaries and 3rdparty folder;
   * **LD_LIBRARY_PATH** is required to define the path to OCCT libraries (on UNIX platforms only; **DYLD_LIBRARY_PATH** variable in case of macOS);
-  * **MMGT_OPT** (optional) if set to 1, the memory manager performs optimizations as described below; if set to 2, 
-    Intel (R) TBB optimized memory manager is used; if 0 (default), every memory block is allocated 
-    in C memory heap directly (via malloc() and free() functions). 
-    In the latter case, all other options starting with *MMGT*, except MMGT_CLEAR, are ignored;
-  * **MMGT_CLEAR** (optional) if set to 1 (default), every allocated memory block is cleared by zeros; 
-    if set to 0, memory block is returned as it is;
-  * **MMGT_CELLSIZE** (optional) defines the maximal size of blocks allocated in large pools of memory. Default is 200;
-  * **MMGT_NBPAGES** (optional) defines the size of memory chunks allocated for small blocks in pages 
-    (operating-system dependent). Default is 10000;
-  * **MMGT_THRESHOLD** (optional) defines the maximal size of blocks that are recycled internally 
-    instead of being returned to the heap. Default is 40000;
-  * **MMGT_MMAP** (optional) when set to 1 (default), large memory blocks are allocated using 
-    memory mapping functions of the operating system; if set to 0, 
-    they will be allocated in the C heap by malloc();
   * **CSF_LANGUAGE** (optional) defines default language of messages;
-  * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
   * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occurred in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
   * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
+  * **CSF_ShadersDirectoryDump** (optional, development only): if defined then the GLSL source generated from OCCT shader programs will be written to this directory for debugging and inspection;
   * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;
   * **CSF_XSMessage** (optional) defines the path to the messages file for **STEP** and **IGES** translators;
   * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults**, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
@@ -511,10 +461,12 @@ The scripts are located in the OCCT root folder.
   * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.
   * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
 
+@note Variables following the pattern **CSF_\<name\>Defaults** (e.g. *CSF_PluginDefaults*, *CSF_IGESDefaults*, *CSF_STEPDefaults*, *CSF_DrawPluginDefaults*) are consumed through OCCT resource managers and plugin loaders via a dynamic composition pattern. They point to directories containing resource files (like *Plugin*, *IGES*, *STEP*); the application resolves these at runtime through the `Resource_Manager` and `TCollection_AsciiString` mechanisms rather than through direct string lookups. This design allows custom or third-party resource directories to be added without modifying OCCT source code.
+
 @section intro_license License
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2020 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2026 by OPEN CASCADE S.A.S. All rights reserved.
 
 Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
 @ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
@@ -548,11 +500,6 @@ authors and such software may not be freely available and/or be free of charge f
 of use or purpose. We strongly recommend that you carefully read the license of these products 
 and, in case you need any further information, directly contact their authors.
 
-**Qt** is a cross-platform application framework that is widely used for developing application software 
-with graphical user interface (GUI). Qt is free and open source software distributed under 
-the terms of the GNU Lesser General Public License. In OCCT Qt is used for programming samples. 
-If you need further information on Qt, refer to Qt Homepage (https://www.qt.io/)
-
 **Tcl** is a high-level programming language. Tk is a graphical user interface (GUI) toolkit, 
 with buttons, menus, listboxes, scrollbars, and so on. Taken together Tcl and Tk provide a solution 
 to develop cross-platform graphical user interfaces with a native look and feel. Tcl/Tk is under copyright by 
@@ -572,7 +519,7 @@ FreeType 2 is released under two open-source licenses: BSD-like FreeType License
 It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
 Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
 abstracts platform details and threading mechanisms for scalability and performance. 
-Intel oneTBB 2021.5.0 is available under Apache 2.0 license (https://www.threadingbuildingblocks.org).
+Intel oneTBB 2021+ is available under Apache 2.0 license (https://github.com/oneapi-src/oneTBB/).
 
 **OpenGL** is an industry standard API for 3D graphics used by OCCT for 
 implementation of 3D viewer. OpenGL specification is developed by the
@@ -601,12 +548,12 @@ basis under The Eclipse Public License (EPL) (https://www.graphviz.org/license/)
 
 **Inno Setup** is a free script-driven installation system created in CodeGear Delphi by Jordan Russell. 
 In OCCT Inno Setup is used to create Installation Wizard on Windows. 
-It is licensed under Inno Setup License (http://www.jrsoftware.org/files/is/license.txt).
+It is licensed under Inno Setup License (https://jrsoftware.org/files/is/license.txt).
 
 **FreeImage** is an Open Source library supporting popular graphics image formats, such as PNG, BMP, JPEG, TIFF, 
 and others used by multimedia applications. This library is developed by Hervé Drolon and Floris van den Berg. 
 FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit or 64-bit versions of Windows, 
-and cross-platform (works both with Linux and Mac OS X). FreeImage is optionally used by OCCT to work
+and cross-platform (works both with Linux and macOS). FreeImage is optionally used by OCCT to work
 with images, on conditions of the FreeImage Public License (FIPL) (https://freeimage.sourceforge.net/freeimage-license.txt).
 
 **FFmpeg** is an Open Source framework supporting various image, video and audio codecs.
@@ -629,15 +576,13 @@ CMake is used to control the software compilation process using simple platform 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
 See more at https://cmake.org/
 
-**MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
-for generation of User and Developer Guides in PDF format. See https://miktex.org for information
-on this tool.
+**LaTeX** distribution (e.g. TeX Live, MikTeX, MacTeX) is used for generation of User and Developer Guides in PDF format.
 
 **RapidJSON** is an Open Source JSON parser and generator for C++.
 RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.org/).
 
-**Draco** is an Open Source JSON parser and generator for C++.
-Draco is optionally used by OCCT for reading glTF files using KHR_draco_mesh_compression extension (https://github.com/google/draco).
+**Draco** is an Open Source library for compressing and decompressing 3D geometric meshes and point clouds.
+Draco is optionally used by OCCT to decode glTF files that use the KHR_draco_mesh_compression extension (https://github.com/google/draco).
 Draco is available under Apache 2.0 license.
 
 **DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).

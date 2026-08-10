@@ -42,11 +42,17 @@ void IGESDraw_Drawing::Init(
     int  Len  = allViews->Length();
     bool Flag = (allViewOrigins->Length() == Len);
     if (!Flag || allViews->Lower() != 1 || allViewOrigins->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_Drawing : Init");
+    }
   }
   if (!allAnnotations.IsNull())
+  {
     if (allAnnotations->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_Drawing : Init");
+    }
+  }
 
   theViews       = allViews;
   theViewOrigins = allViewOrigins;
@@ -112,10 +118,14 @@ bool IGESDraw_Drawing::DrawingUnit(double& val) const
   val                                = 0.;
   occ::handle<Standard_Type> typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
   if (NbTypedProperties(typunit) != 1)
+  {
     return false;
+  }
   DeclareAndCast(IGESGraph_DrawingUnits, units, TypedProperty(typunit));
   if (units.IsNull())
+  {
     return false;
+  }
   val = units->UnitValue();
   return true;
 }
@@ -125,10 +135,14 @@ bool IGESDraw_Drawing::DrawingSize(double& X, double& Y) const
   X = Y                              = 0.;
   occ::handle<Standard_Type> typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
   if (NbTypedProperties(typsize) != 1)
+  {
     return false;
+  }
   DeclareAndCast(IGESGraph_DrawingSize, size, TypedProperty(typsize));
   if (size.IsNull())
+  {
     return false;
+  }
   X = size->XSize();
   Y = size->YSize();
   return true;

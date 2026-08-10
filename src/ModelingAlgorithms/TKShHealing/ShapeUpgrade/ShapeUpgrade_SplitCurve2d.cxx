@@ -59,16 +59,22 @@ void ShapeUpgrade_SplitCurve2d::Init(const occ::handle<Geom2d_Curve>& C,
   double                    lastPar   = Last;
   occ::handle<Geom2d_Curve> aCurve    = myCurve;
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+  {
     aCurve = occ::down_cast<Geom2d_TrimmedCurve>(aCurve)->BasisCurve();
+  }
   // 15.11.2002 PTV OCC966
   if (!ShapeAnalysis_Curve::IsPeriodic(C))
   {
     double fP = aCurve->FirstParameter();
     double lP = aCurve->LastParameter();
     if (std::abs(firstPar - fP) < precision)
+    {
       firstPar = fP;
+    }
     if (std::abs(lastPar - lP) < precision)
+    {
       lastPar = lP;
+    }
     if (firstPar < fP)
     {
 #ifdef OCCT_DEBUG
@@ -84,7 +90,9 @@ void ShapeUpgrade_SplitCurve2d::Init(const occ::handle<Geom2d_Curve>& C,
       lastPar = lP;
     }
     if ((lastPar - firstPar) < precision)
+    {
       lastPar = firstPar + 2 * precision;
+    }
   }
 
   ShapeUpgrade_SplitCurve::Init(firstPar, lastPar);
@@ -104,7 +112,9 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
   double Last  = mySplitValues->Value(mySplitValues->Length());
   // PrepareKnots();
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
     occ::handle<Geom2d_TrimmedCurve> tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
@@ -123,7 +133,9 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
       myResultingCurves->SetValue(1, NewTrimCurve);
     }
     else
+    {
       myResultingCurves = spc.GetCurves();
+    }
     myStatus |= spc.myStatus;
     return;
   }
@@ -155,8 +167,9 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
     bool filled = true;
     if (std::abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
         && std::abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
+    {
       myResultingCurves->SetValue(1, myCurve);
-
+    }
     else if (!Segment
              || (!myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))
                  && !myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
@@ -170,9 +183,13 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
         {
           OCC_CATCH_SIGNALS
           if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
+          {
             occ::down_cast<Geom2d_BSplineCurve>(theNewCurve)->Segment(First, Last);
+          }
           else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
+          {
             occ::down_cast<Geom2d_BezierCurve>(theNewCurve)->Segment(First, Last);
+          }
         }
         catch (Standard_Failure const& anException)
         {
@@ -195,9 +212,13 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
       }
     }
     else
+    {
       filled = false;
+    }
     if (filled)
+    {
       return;
+    }
   }
 
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
@@ -211,13 +232,19 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
       for (; j <= LastInd; j++)
       {
         if (spval > BsCurve->Knot(j) + Precision::PConfusion())
+        {
           continue;
+        }
         if (spval < BsCurve->Knot(j) - Precision::PConfusion())
+        {
           break;
+        }
         mySplitValues->SetValue(ii, BsCurve->Knot(j));
       }
       if (j == LastInd)
+      {
         break;
+      }
     }
   }
   for (int i = 1; i <= myNbCurves; i++)
@@ -236,9 +263,13 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
         {
           OCC_CATCH_SIGNALS
           if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
+          {
             occ::down_cast<Geom2d_BSplineCurve>(theNewCurve)->Segment(Firstt, Lastt);
+          }
           else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
+          {
             occ::down_cast<Geom2d_BezierCurve>(theNewCurve)->Segment(Firstt, Lastt);
+          }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
         }
         catch (Standard_Failure const& anException)
@@ -254,8 +285,10 @@ void ShapeUpgrade_SplitCurve2d::Build(const bool Segment)
         }
       }
       else
+      {
         theNewCurve =
           new Geom2d_TrimmedCurve(occ::down_cast<Geom2d_Curve>(myCurve->Copy()), Firstt, Lastt);
+      }
     }
     myResultingCurves->SetValue(i, theNewCurve);
   }

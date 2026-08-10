@@ -33,15 +33,21 @@ bool TDataStd_Directory::Find(const TDF_Label& current, occ::handle<TDataStd_Dir
   TDF_Label                       L = current;
   occ::handle<TDataStd_Directory> dir;
   if (L.IsNull())
+  {
     return false;
+  }
 
   for (;;)
   {
     if (L.FindAttribute(TDataStd_Directory::GetID(), dir))
+    {
       break;
+    }
     L = L.Father();
     if (L.IsNull())
+    {
       break;
+    }
   }
 
   if (!dir.IsNull())

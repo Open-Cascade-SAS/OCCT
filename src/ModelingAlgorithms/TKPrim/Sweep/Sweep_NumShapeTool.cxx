@@ -100,7 +100,9 @@ TopAbs_Orientation Sweep_NumShapeTool::Orientation(const Sweep_NumShape& aShape)
 bool Sweep_NumShapeTool::HasFirstVertex() const
 {
   if (myNumShape.Type() == TopAbs_EDGE)
+  {
     return !myNumShape.BegInfinite();
+  }
   return true;
 }
 
@@ -109,7 +111,9 @@ bool Sweep_NumShapeTool::HasFirstVertex() const
 bool Sweep_NumShapeTool::HasLastVertex() const
 {
   if (myNumShape.Type() == TopAbs_EDGE)
+  {
     return !myNumShape.EndInfinite();
+  }
   return true;
 }
 
@@ -124,7 +128,9 @@ Sweep_NumShape Sweep_NumShapeTool::FirstVertex() const
       return Sweep_NumShape(1, TopAbs_VERTEX, myNumShape.Closed(), false, false);
     }
     else
+    {
       throw Standard_ConstructionError("infinite Shape");
+    }
   }
   return myNumShape;
 }
@@ -140,7 +146,9 @@ Sweep_NumShape Sweep_NumShapeTool::LastVertex() const
       return Sweep_NumShape(NbShapes() - 1, TopAbs_VERTEX, myNumShape.Closed(), false, false);
     }
     else
+    {
       throw Standard_ConstructionError("infinite Shape");
+    }
   }
   return myNumShape;
 }

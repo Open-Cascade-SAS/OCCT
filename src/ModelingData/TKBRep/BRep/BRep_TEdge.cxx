@@ -49,9 +49,13 @@ bool BRep_TEdge::SameParameter() const
 void BRep_TEdge::SameParameter(const bool S)
 {
   if (S)
+  {
     myFlags |= ParameterMask;
+  }
   else
+  {
     myFlags &= ~ParameterMask;
+  }
 }
 
 //=================================================================================================
@@ -66,9 +70,13 @@ bool BRep_TEdge::SameRange() const
 void BRep_TEdge::SameRange(const bool S)
 {
   if (S)
+  {
     myFlags |= RangeMask;
+  }
   else
+  {
     myFlags &= ~RangeMask;
+  }
 }
 
 //=================================================================================================
@@ -83,9 +91,13 @@ bool BRep_TEdge::Degenerated() const
 void BRep_TEdge::Degenerated(const bool S)
 {
   if (S)
+  {
     myFlags |= DegeneratedMask;
+  }
   else
+  {
     myFlags &= ~DegeneratedMask;
+  }
 }
 
 //=================================================================================================

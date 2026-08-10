@@ -36,7 +36,9 @@ void RWStepFEA_RWFeaModelDefinition::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "fea_model_definition"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

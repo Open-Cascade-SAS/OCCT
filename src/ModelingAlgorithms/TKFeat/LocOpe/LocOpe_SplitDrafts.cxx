@@ -147,7 +147,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
   if (!FinS)
   {
-    std::cout << "LocOpe_SplitDrafts:!Fins throw Standard_ConstructionError()" << std::endl;
+    std::cout << "LocOpe_SplitDrafts:!Fins throw Standard_ConstructionError()" << '\n';
     throw Standard_ConstructionError();
   }
 
@@ -188,7 +188,9 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
     thePipe.Init(theLinePipe, i2s.Line(1));
     thePipe.Perform(true);
     if (!thePipe.IsDone())
+    {
       throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
+    }
 
     occ::handle<Geom_Surface> Spl = thePipe.Surface();
     HAS->Load(Spl);
@@ -432,7 +434,9 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
         thePipe.Init(theLinePipe, C);
         thePipe.Perform(true);
         if (!thePipe.IsDone())
+        {
           throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
+        }
 
         occ::handle<Geom_Surface> thePS = thePipe.Surface();
         if (thePS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
@@ -710,7 +714,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
         }
         if (!itl.More())
         {
-          std::cout << "LocOpe_SplitDrafts: betite probleme " << std::endl;
+          std::cout << "LocOpe_SplitDrafts: betite probleme " << '\n';
           return;
         }
       }
@@ -1529,7 +1533,7 @@ static bool NewPlane(const TopoDS_Face& F,
       }
     }
   }
-  std::cout << "fin newplane return standard_false" << std::endl;
+  std::cout << "fin newplane return standard_false" << '\n';
   return false;
 }
 
@@ -1602,7 +1606,7 @@ static void MakeFace(TopoDS_Face& F, NCollection_List<TopoDS_Shape>& ledg)
       }
       if (C2d.IsNull())
       {
-        std::cout << "Ca merde violemment" << std::endl;
+        std::cout << "Ca merde violemment" << '\n';
       }
     }
   }
@@ -1703,7 +1707,7 @@ static void MakeFace(TopoDS_Face& F, NCollection_List<TopoDS_Shape>& ledg)
   }
   else
   {
-    std::cout << "Not yet implemented : nbwire >= 2" << std::endl;
+    std::cout << "Not yet implemented : nbwire >= 2" << '\n';
   }
 }
 

@@ -27,7 +27,9 @@ void RWStepVisual_RWColourRgb::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "colour_rgb"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

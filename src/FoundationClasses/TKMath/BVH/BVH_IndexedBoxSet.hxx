@@ -52,7 +52,7 @@ public: //! @name Setting expected size of the BVH
   //! Sets the expected size of BVH tree
   void SetSize(const size_t theSize) override
   {
-    myIndices.reserve(theSize);
+    myIndices.Reserve(theSize);
     BVH_BoxSet<NumType, Dimension, DataType>::SetSize(theSize);
   }
 
@@ -60,7 +60,7 @@ public: //! @name Adding elements in BVH
   //! Adds the element into BVH
   void Add(const DataType& theElement, const BVH_Box<NumType, Dimension>& theBox) override
   {
-    myIndices.push_back(static_cast<int>(myIndices.size()));
+    myIndices.Append(static_cast<int>(myIndices.Size()));
     BVH_BoxSet<NumType, Dimension, DataType>::Add(theElement, theBox);
   }
 
@@ -68,7 +68,7 @@ public: //! @name Clearing the elements and boxes
   //! Clears the vectors of elements and boxes
   void Clear() override
   {
-    myIndices.clear();
+    myIndices.Clear();
     BVH_BoxSet<NumType, Dimension, DataType>::Clear();
   }
 
@@ -95,7 +95,7 @@ public: //! @name Necessary overrides for BVH construction
   }
 
 protected: //! @name Fields
-  std::vector<int> myIndices;
+  NCollection_LinearVector<int> myIndices;
 };
 
 #endif // _BVH_IndexedBoxSet_Header

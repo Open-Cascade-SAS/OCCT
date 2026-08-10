@@ -28,7 +28,9 @@ void RWStepGeom_RWHyperbola::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "hyperbola"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

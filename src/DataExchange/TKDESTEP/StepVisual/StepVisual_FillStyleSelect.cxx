@@ -21,9 +21,13 @@ StepVisual_FillStyleSelect::StepVisual_FillStyleSelect() = default;
 int StepVisual_FillStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_FillAreaStyleColour)))
+  {
     return 1;
+  }
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_ExternallyDefinedTileStyle))) return 2;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_FillAreaStyleTiles))) return 3;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_ExternallyDefinedHatchStyle))) return 4;

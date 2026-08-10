@@ -40,7 +40,9 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "homokinetic_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -198,7 +200,9 @@ void RWStepKinematics_RWHomokineticPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -229,7 +233,9 @@ void RWStepKinematics_RWHomokineticPair::WriteStep(
     theSW.Send(theEnt->InputSkewAngle());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

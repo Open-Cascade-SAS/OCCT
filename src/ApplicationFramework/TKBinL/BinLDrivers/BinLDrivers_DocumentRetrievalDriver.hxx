@@ -22,7 +22,7 @@
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <Standard_IStream.hxx>
@@ -117,10 +117,10 @@ protected:
   occ::handle<Message_Messenger>   myMsgDriver;
 
 private:
-  BinObjMgt_Persistent                            myPAtt;
-  NCollection_Map<int>                            myMapUnsupported;
-  NCollection_Vector<BinLDrivers_DocumentSection> mySections;
-  NCollection_Map<int>                            myUnresolvedLinks;
+  BinObjMgt_Persistent                                  myPAtt;
+  NCollection_Map<int>                                  myMapUnsupported;
+  NCollection_DynamicArray<BinLDrivers_DocumentSection> mySections;
+  NCollection_Map<int>                                  myUnresolvedLinks;
 };
 
 #endif // _BinLDrivers_DocumentRetrievalDriver_HeaderFile

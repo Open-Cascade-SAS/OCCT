@@ -59,7 +59,9 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -88,9 +90,13 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_IntegerArray::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
   anIntArray->SetID(aGUID);
 
   if (aFirstInd == aLastInd)
@@ -141,7 +147,9 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
       return false;
     }
     else
+    {
       aDelta = aDeltaValue != 0;
+    }
   }
 
   anIntArray->SetDelta(aDelta);
@@ -161,7 +169,9 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
   int                                          aL = intArray.Lower(), anU = intArray.Upper();
 
   if (aL != 1)
+  {
     theTarget.Element().setAttribute(::FirstIndexString(), aL);
+  }
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   theTarget.Element().setAttribute(::IsDeltaOn(), anIntArray->GetDelta() ? 1 : 0);
 
@@ -170,14 +180,18 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
   int                          iChar = 0;
   NCollection_LocalArray<char> str;
   if (intArray.Length())
+  {
     str.Allocate(12 * intArray.Length() + 1);
+  }
 
   int i = aL;
   for (;;)
   {
     iChar += Sprintf(&(str[iChar]), "%d ", intArray.Value(i));
     if (i >= anU)
+    {
       break;
+    }
     ++i;
   }
 

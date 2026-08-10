@@ -38,7 +38,9 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "externally_defined_general_property"))
+  {
     return;
+  }
 
   // Inherited fields of GeneralProperty
 
@@ -99,7 +101,9 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::WriteStep(
     SW.Send(ent->StepBasic_GeneralProperty::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Inherited fields of ExternallyDefinedItem
 

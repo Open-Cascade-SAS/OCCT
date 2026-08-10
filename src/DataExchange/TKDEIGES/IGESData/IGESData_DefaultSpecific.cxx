@@ -37,11 +37,15 @@ void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
 {
   DeclareAndCast(IGESData_UndefinedEntity, lent, ent);
   if (lent.IsNull())
+  {
     return;
+  }
 
   int dstat = lent->DirStatus();
   if (dstat != 0)
+  {
     S << " --  Directory Entry Error Status = " << dstat << "  --\n";
+  }
   occ::handle<Interface_UndefinedContent> cont = lent->UndefinedContent();
   int                                     nb   = cont->NbParams();
   S << " UNDEFINED ENTITY ...\n"
@@ -50,7 +54,9 @@ void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
   {
     Interface_ParamType ptyp = cont->ParamType(i);
     if (ptyp == Interface_ParamVoid)
+    {
       S << "	[" << i << ":Void]";
+    }
     else if (cont->IsParamEntity(i))
     {
       DeclareAndCast(IGESData_IGESEntity, anent, cont->ParamEntity(i));
@@ -62,7 +68,9 @@ void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
       S << "	[" << i << "]=" << cont->ParamValue(i)->String();
     }
     if (i == (i % 5) * 5)
+    {
       S << "\n";
+    }
   }
-  S << std::endl;
+  S << '\n';
 }

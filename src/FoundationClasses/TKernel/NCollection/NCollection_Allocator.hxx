@@ -75,7 +75,12 @@ public:
   }
 
   //! Returns an object address.
-  pointer address(reference theItem) const noexcept { return &theItem; }
+  template <typename Type = value_type>
+  typename std::enable_if<!std::is_const<Type>::value, pointer>::type address(
+    reference theItem) const noexcept
+  {
+    return &theItem;
+  }
 
   //! Returns an object address.
   const_pointer address(const_reference theItem) const noexcept { return &theItem; }
@@ -89,7 +94,8 @@ public:
   //! Frees previously allocated memory.
   void deallocate(pointer thePnt, const size_type) const
   {
-    Standard::Free(static_cast<void*>(thePnt));
+    typedef typename std::remove_const<value_type>::type non_const_value_type;
+    Standard::Free(static_cast<void*>(const_cast<non_const_value_type*>(thePnt)));
   }
 
   //! Reallocates memory for theSize objects.

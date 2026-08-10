@@ -95,7 +95,9 @@ void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
   math_FunctionSetRoot SR(F, Tol);
   SR.Perform(F, Start, BInf, BSup);
   if (!SR.IsDone())
+  {
     return;
+  }
 
   mySqDist = F.SquareDistance(1);
   myPoint1 = F.PointOnS1(1);

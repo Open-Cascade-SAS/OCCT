@@ -56,12 +56,16 @@ Standard_EXPORT void FUN_tool_tori(const TopAbs_Orientation Or)
 Standard_EXPORT void FUN_tool_trace(const int Index)
 {
   if (Index == 1)
+  {
     std::cout << "FORWARD ";
+  }
   if (Index == 2)
+  {
     std::cout << "REVERSED ";
+  }
 }
 
 Standard_EXPORT void FUN_tool_trace(const gp_Pnt2d p2d)
 {
-  std::cout << " = (" << p2d.X() << " " << p2d.Y() << ")" << std::endl;
+  std::cout << " = (" << p2d.X() << " " << p2d.Y() << ")" << '\n';
 }

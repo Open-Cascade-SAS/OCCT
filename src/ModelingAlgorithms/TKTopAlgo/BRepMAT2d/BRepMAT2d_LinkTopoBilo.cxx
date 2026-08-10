@@ -87,9 +87,13 @@ void BRepMAT2d_LinkTopoBilo::Init(const TopoDS_Shape& S)
   isEmpty = false;
   current = 1;
   if (myMap.IsBound(S))
+  {
     myKey = S;
+  }
   else
+  {
     isEmpty = true;
+  }
 }
 
 //=================================================================================================
@@ -97,7 +101,9 @@ void BRepMAT2d_LinkTopoBilo::Init(const TopoDS_Shape& S)
 bool BRepMAT2d_LinkTopoBilo::More()
 {
   if (isEmpty)
+  {
     return false;
+  }
   return (current <= myMap(myKey).Length());
 }
 
@@ -178,9 +184,13 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
         TopExp::Vertices(TopoDS::Edge(S), VF, VL);
       }
       if (KC > 0)
+      {
         S = VL;
+      }
       else
+      {
         S = VF;
+      }
     }
     if (!myMap.IsBound(S))
     {
@@ -189,9 +199,13 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
     myMap(S).Append(BE);
 
     if (KC < 0)
+    {
       myBEShape.Bind(BE, S.Oriented(TopAbs::Reverse(S.Orientation())));
+    }
     else
+    {
       myBEShape.Bind(BE, S);
+    }
   }
 }
 
@@ -291,7 +305,9 @@ void LinkToContour(const BRepMAT2d_Explorer&       Explo,
         {
           IndOnCont--;
           if (IndOnCont != 0)
+          {
             NbSect = BiLo.NumberOfSections(IndC, IndOnCont);
+          }
           LastPoint = false;
         }
         else

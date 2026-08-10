@@ -56,7 +56,9 @@ void IGESGraph_ToolDefinitionLevel::ReadOwnParams(
     // clang-format on
   }
   else
+  {
     PR.AddFail("No. of Property Values : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(levelNumbers);
@@ -69,7 +71,9 @@ void IGESGraph_ToolDefinitionLevel::WriteOwnParams(
   int Up = ent->NbPropertyValues();
   IW.Send(Up);
   for (int i = 1; i <= Up; i++)
+  {
     IW.Send(ent->LevelNumber(i));
+  }
 }
 
 void IGESGraph_ToolDefinitionLevel::OwnShared(const occ::handle<IGESGraph_DefinitionLevel>& /*ent*/,
@@ -88,7 +92,9 @@ void IGESGraph_ToolDefinitionLevel::OwnCopy(const occ::handle<IGESGraph_Definiti
 
   levelNumbers = new NCollection_HArray1<int>(1, nbval);
   for (int i = 1; i <= nbval; i++)
+  {
     levelNumbers->SetValue(i, another->LevelNumber(i));
+  }
 
   ent->Init(levelNumbers);
 }
@@ -121,5 +127,5 @@ void IGESGraph_ToolDefinitionLevel::OwnDump(const occ::handle<IGESGraph_Definiti
   S << "IGESGraph_DefinitionLevel\n"
     << "Level Numbers : ";
   IGESData_DumpVals(S, level, 1, ent->NbPropertyValues(), ent->LevelNumber);
-  S << std::endl;
+  S << '\n';
 }

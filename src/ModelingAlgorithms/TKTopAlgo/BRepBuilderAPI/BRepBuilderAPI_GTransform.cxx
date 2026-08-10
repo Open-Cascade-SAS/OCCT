@@ -69,7 +69,9 @@ const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_GTransform::Modified(const 
     NCollection_List<TopoDS_Shape>           Li;
     NCollection_List<TopoDS_Shape>::Iterator itL(M(F));
     for (; itL.More(); itL.Next())
+    {
       Li.Assign(BRepBuilderAPI_ModifyShape::Modified(itL.Value()));
+    }
   }
   return myGenerated;
 }
@@ -88,7 +90,9 @@ TopoDS_Shape BRepBuilderAPI_GTransform::ModifiedShape(const TopoDS_Shape& S) con
     int                                   aNbShapes     = aListModShape.Extent();
 
     if (aNbShapes > 0)
+    {
       aShape = aListModShape.First();
+    }
   }
 
   return BRepBuilderAPI_ModifyShape::ModifiedShape(aShape);

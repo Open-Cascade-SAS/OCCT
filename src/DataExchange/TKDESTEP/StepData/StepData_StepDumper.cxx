@@ -38,7 +38,9 @@ StepData_StepDumper::StepData_StepDumper(const occ::handle<StepData_StepModel>& 
 {
   themodel = amodel;
   if (mode > 0)
+  {
     thewriter.LabelMode() = 2;
+  }
 }
 
 StepData_StepWriter& StepData_StepDumper::StepWriter()
@@ -67,33 +69,47 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
     occ::handle<StepData_ReadWriteModule> module;
     int                                   CN;
     if (num > 0)
+    {
       S << "#" << num << " = ";
+    }
     else
+    {
       S << "#??? = "; // Unknown entity number
+    }
     if (thewlib.Select(ent, module, CN))
     {
       if (module->IsComplex(CN))
       {
         NCollection_Sequence<TCollection_AsciiString> listypes;
         if (!module->ComplexType(CN, listypes))
+        {
           S << "(Complex Type : ask level > 0) cdl = " << ent->DynamicType()->Name() << " (...);"
-            << std::endl;
+            << '\n';
+        }
         else
         {
           int n = listypes.Length();
           for (i = 1; i <= n; i++)
+          {
             S << listypes.Value(i) << " (...)";
-          S << std::endl;
+          }
+          S << '\n';
         }
       }
       else
-        S << module->StepType(CN) << " (...);" << std::endl;
+      {
+        S << module->StepType(CN) << " (...);" << '\n';
+      }
     }
     else
+    {
       S << "(Unrecognized Type for protocol) cdl = " << ent->DynamicType()->Name() << " (...);"
-        << std::endl;
+        << '\n';
+    }
     if (nlab > 0)
-      S << "/*   Ident in file for " << num << " : #" << nlab << "   */" << std::endl;
+    {
+      S << "/*   Ident in file for " << num << " : #" << nlab << "   */" << '\n';
+    }
   }
 
   else if (level == 1)
@@ -142,7 +158,9 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
     {
       // Process entity identifiers list
       if (tab.Value(i) == 0)
+      {
         continue;
+      }
       anent = themodel->Value(i);
       thewriter.SendEntity(i, thewlib);
       if (theslib.Select(anent, module, CN))
@@ -169,14 +187,22 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
   {
     nlab = ids.Value(i);
     if (nlab == 0)
+    {
       continue; // Skip entities without identifiers
-    nbe++;      // Count entities with identifiers
+    }
+    nbe++; // Count entities with identifiers
     if (nlab < 0)
+    {
       nbu = 0; // Entities without proper identifier
+    }
     else if (nlab == i)
+    {
       nbq = 0; // Entities where identifier matches entity number
+    }
     else if (nlab > 0)
+    {
       nbi++; // Entities with distinct proper identifiers
+    }
   }
   if (nbe > 0)
   {
@@ -187,10 +213,12 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
       for (i = 1; i <= nb; i++)
       {
         if (ids.Value(i) >= 0)
+        {
           continue;
+        }
         S << " #" << i;
       }
-      S << std::endl;
+      S << '\n';
     }
     if (nbq > 0)
     {
@@ -198,20 +226,24 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
       for (i = 1; i <= nb; i++)
       {
         if (ids.Value(i) == i)
+        {
           S << " #" << i;
+        }
       }
-      S << std::endl;
+      S << '\n';
     }
     if (nbi < 0)
     { // Display help format instead of individual num:#id entries
       int  nbl = 0, nbr = 0, nbr0 = 0, nbc = 0;
       char unid[30];
       // Alternative format: "#num	     #ident"
-      S << " (proper ident):  num:#ident  num:#ident  ..." << std::endl;
+      S << " (proper ident):  num:#ident  num:#ident  ..." << '\n';
       for (i = 1; i <= nb; i++)
       {
         if (ids.Value(i) <= 0 || ids.Value(i) == i)
+        {
           continue;
+        }
         Sprintf(unid, "%d:#%d", i, ids.Value(i));
         nbc = (int)strlen(unid);
         nbr = ((80 - nbc) % 4) + 2;
@@ -219,13 +251,15 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
         if (nbl + nbr0 > 79)
         {
           nbl = nbc;
-          S << std::endl;
+          S << '\n';
         }
         else
         {
           nbl += nbr0;
           for (; nbr0 > 0; nbr0--)
+          {
             S << " ";
+          }
         }
         S << unid;
         nbr0 = nbr;
@@ -236,10 +270,14 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
         // - Tabular format with entity ranks and STEP identifiers
       }
       if (nbl > 0)
-        S << std::endl;
+      {
+        S << '\n';
+      }
     }
     if (nbi > 0)
-      S << "In dump, iii:#jjj means : entity rank iii has step ident #jjj" << std::endl;
+    {
+      S << "In dump, iii:#jjj means : entity rank iii has step ident #jjj" << '\n';
+    }
     // Debug output: entity dumping information with level details
   }
   if (level > 0)
@@ -252,7 +290,9 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
 bool StepData_StepDumper::Dump(Standard_OStream& S, const int num, const int level)
 {
   if (num <= 0 || num > themodel->NbEntities())
+  {
     return false;
+  }
   occ::handle<Standard_Transient> ent = themodel->Value(num);
   return Dump(S, ent, level);
 }

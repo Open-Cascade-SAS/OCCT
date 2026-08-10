@@ -80,9 +80,10 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFo
                   // clang-format off
 		     STANDARD_TYPE(IGESGraph_TextFontDef), supersededEntity); //szv#4:S4163:12Mar99 `st=` not needed
     }
-  else
+  else {
     // Reading supersededFont(Integer)
     PR.ReadInteger(PR.Current(), "No. of superseded font", supersededFont); //szv#4:S4163:12Mar99 `st=` not needed
+}
 
   // Reading scale(Integer)
   PR.ReadInteger(PR.Current(), "Grid units eqvt to one text height", scale); //szv#4:S4163:12Mar99 `st=` not needed
@@ -103,20 +104,20 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFo
     for (int i = 1; i <= nbval; i++)
     {
       // Reading aSCIICodes(HArray1OfInteger)
-      if (PR.ReadInteger(PR.Current(),
-                         "array aSCIICodes",
-                         tempCode)) // szv#4:S4163:12Mar99 `st=` not needed
+      if (PR.ReadInteger(PR.Current(), "array aSCIICodes", tempCode))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         aSCIICodes->SetValue(i, tempCode);
+      }
 
       // Reading nextChars(HArray1OfInteger*2)
-      if (PR.ReadInteger(PR.Current(),
-                         "array nextChar X",
-                         tempNextX)) // szv#4:S4163:12Mar99 `st=` not needed
+      if (PR.ReadInteger(PR.Current(), "array nextChar X", tempNextX))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         nextCharX->SetValue(i, tempNextX);
-      if (PR.ReadInteger(PR.Current(),
-                         "array nextChar Y",
-                         tempNextY)) // szv#4:S4163:12Mar99 `st=` not needed
+      }
+      if (PR.ReadInteger(PR.Current(), "array nextChar Y", tempNextY))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         nextCharY->SetValue(i, tempNextY);
+      }
 
       // Reading penMotions(HArray1OfInteger)
       if (PR.ReadInteger(PR.Current(), "array penMotions", tempMotion))
@@ -135,35 +136,41 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFo
             if (PR.DefinedElseSkip())
             {
               // Reading penFlags(HArray1OfHArray1OfInteger)
-              if (PR.ReadInteger(PR.Current(),
-                                 "array penFlags",
-                                 tempFlag)) // szv#4:S4163:12Mar99 `st=` not needed
+              if (PR.ReadInteger(PR.Current(), "array penFlags", tempFlag))
+              { // szv#4:S4163:12Mar99 `st=` not needed
                 intarray->SetValue(j, tempFlag);
+              }
             }
             else
+            {
               intarray->SetValue(j, 0); // Default Value
+            }
 
             // Reading movePenTo(HArray1OfHArray1OfInteger*2)
-            if (PR.ReadInteger(PR.Current(),
-                               "array movePenTo X",
-                               tempMoveX)) // szv#4:S4163:12Mar99 `st=` not needed
+            if (PR.ReadInteger(PR.Current(), "array movePenTo X", tempMoveX))
+            { // szv#4:S4163:12Mar99 `st=` not needed
               xarray->SetValue(j, tempMoveX);
-            if (PR.ReadInteger(PR.Current(),
-                               "array movePenTo Y",
-                               tempMoveY)) // szv#4:S4163:12Mar99 `st=` not needed
+            }
+            if (PR.ReadInteger(PR.Current(), "array movePenTo Y", tempMoveY))
+            { // szv#4:S4163:12Mar99 `st=` not needed
               yarray->SetValue(j, tempMoveY);
+            }
           }
           penFlags->SetValue(i, intarray);
           movePenX->SetValue(i, xarray);
           movePenY->SetValue(i, yarray);
         }
         else
+        {
           PR.AddFail("Count of Pen motions : Not Positive");
+        }
       }
     }
   }
   else
+  {
     PR.AddFail("Count of characters in this defn : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(fontCode,
@@ -188,9 +195,13 @@ void IGESGraph_ToolTextFontDef::WriteOwnParams(const occ::handle<IGESGraph_TextF
   IW.Send(ent->FontName());
 
   if (ent->IsSupersededFontEntity())
+  {
     IW.Send(ent->SupersededFontEntity(), true); // negative
+  }
   else
+  {
     IW.Send(ent->SupersededFontCode());
+  }
 
   IW.Send(ent->Scale());
 
@@ -217,7 +228,9 @@ void IGESGraph_ToolTextFontDef::OwnShared(const occ::handle<IGESGraph_TextFontDe
                                           Interface_EntityIterator&                 iter) const
 {
   if (ent->IsSupersededFontEntity())
+  {
     iter.GetOneItem(ent->SupersededFontEntity());
+  }
 }
 
 void IGESGraph_ToolTextFontDef::OwnCopy(const occ::handle<IGESGraph_TextFontDef>& another,
@@ -250,10 +263,14 @@ void IGESGraph_ToolTextFontDef::OwnCopy(const occ::handle<IGESGraph_TextFontDef>
   fontName = new TCollection_HAsciiString(another->FontName());
 
   if (another->IsSupersededFontEntity())
+  {
     supersededEntity =
       occ::down_cast<IGESGraph_TextFontDef>(TC.Transferred(another->SupersededFontEntity()));
+  }
   else
+  {
     supersededFont = another->SupersededFontCode();
+  }
 
   scale = another->Scale();
 
@@ -276,9 +293,13 @@ void IGESGraph_ToolTextFontDef::OwnCopy(const occ::handle<IGESGraph_TextFontDef>
     for (j = 1; j <= tempMotion; j++)
     {
       if (another->IsPenUp(i, j))
+      {
         intarray->SetValue(j, 1);
+      }
       else
+      {
         intarray->SetValue(j, 0);
+      }
 
       another->NextPenPosition(i, j, IX, IY);
       xarray->SetValue(j, IX);
@@ -343,7 +364,9 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
     dumper.Dump(ent->SupersededFontEntity(), S, sublevel);
   }
   else
+  {
     S << "Superseding Font Number : " << ent->SupersededFontCode();
+  }
   S << "\n"
     << "No. of Grid Units eqvt to 1 Text Height : " << ent->Scale() << "\n"
     << "ASCII Codes                              :\n"
@@ -369,7 +392,9 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
       nbmotions = ent->NbPenMotions(I);
       S << "  No. of Pen Motions : " << nbmotions;
       if (level <= 5)
+      {
         S << " [ ask level > 5 for Details ]\n";
+      }
       else
       {
         S << "\n";
@@ -382,5 +407,5 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
       }
     }
   }
-  S << std::endl;
+  S << '\n';
 }

@@ -65,17 +65,23 @@ bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&       Source,
 
   aStr = CoordX.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
+  {
     return false;
+  }
   aXYZ.SetX(aCoord);
 
   aStr = CoordY.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
+  {
     return false;
+  }
   aXYZ.SetY(aCoord);
 
   aStr = CoordZ.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
+  {
     return false;
+  }
   aXYZ.SetZ(aCoord);
 
   // setting gp_XYZ
@@ -94,7 +100,9 @@ void XmlTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& Source,
   occ::handle<TObj_TXYZ> aSource = occ::down_cast<TObj_TXYZ>(Source);
 
   if (aSource.IsNull())
+  {
     return;
+  }
 
   gp_XYZ aXYZ = aSource->Get();
 

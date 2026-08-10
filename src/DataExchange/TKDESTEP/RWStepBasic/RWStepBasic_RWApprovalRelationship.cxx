@@ -32,7 +32,9 @@ void RWStepBasic_RWApprovalRelationship::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "approval_relationship"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

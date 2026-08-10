@@ -106,7 +106,9 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_Mani
              STANDARD_TYPE(IGESSolid_Shell), ashell);
       */
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESSolid_Shell), ashell))
+      {
         voidShells->SetValue(i, ashell);
+      }
       else
       {
         Message_Msg Msg179("XSTEP_179");
@@ -137,7 +139,9 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_Mani
 
       PR.ReadBoolean(PR.Current(), Msg180, abool); // szv#4:S4163:12Mar99 `st=` not needed
       if (abool)
+      {
         voidShellFlags->SetValue(i, 1);
+      }
     }
   }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -168,7 +172,9 @@ void IGESSolid_ToolManifoldSolid::OwnShared(const occ::handle<IGESSolid_Manifold
 
   iter.GetOneItem(ent->Shell());
   for (i = 1; i <= nbshells; i++)
+  {
     iter.GetOneItem(ent->VoidShell(i));
+  }
 }
 
 void IGESSolid_ToolManifoldSolid::OwnCopy(const occ::handle<IGESSolid_ManifoldSolid>& another,
@@ -226,12 +232,16 @@ void IGESSolid_ToolManifoldSolid::OwnDump(const occ::handle<IGESSolid_ManifoldSo
   dumper.Dump(ent->Shell(), S, sublevel);
   S << "\n";
   if (ent->OrientationFlag())
+  {
     S << "Orientation agrees with the underlying surface\n";
+  }
   else
+  {
     S << "Orientation does not agrees with the underlying surface\n";
+  }
   S << "Void shells :\nOrientation flags : ";
   IGESData_DumpEntities(S, dumper, -level, 1, ent->NbVoidShells(), ent->VoidShell);
-  S << std::endl;
+  S << '\n';
   if (level > 4)
   {
     S << "[\n";
@@ -245,12 +255,16 @@ void IGESSolid_ToolManifoldSolid::OwnDump(const occ::handle<IGESSolid_ManifoldSo
         dumper.Dump(ent->VoidShell(i), S, sublevel);
         S << "  - Orientation flag : ";
         if (ent->VoidOrientationFlag(i))
+        {
           S << "True\n";
+        }
         else
+        {
           S << "False\n";
+        }
       }
     }
     S << " ]\n";
   }
-  S << std::endl;
+  S << '\n';
 }

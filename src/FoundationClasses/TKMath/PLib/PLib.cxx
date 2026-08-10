@@ -327,7 +327,9 @@ void PLib::RationalDerivative(const int  Degree,
     int DeRequest1 = DerivativeRequest + 1;
     int MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree)
+    {
       MinDegRequ = Degree;
+    }
     binomial_array.Allocate(DeRequest1);
 
     for (ii = 0; ii < DeRequest1; ii++)
@@ -442,7 +444,9 @@ void PLib::RationalDerivative(const int  Degree,
     int DeRequest1 = DerivativeRequest + 1;
     int MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree)
+    {
       MinDegRequ = Degree;
+    }
     binomial_array.Allocate(DeRequest1);
 
     for (ii = 0; ii < DeRequest1; ii++)
@@ -1412,15 +1416,23 @@ bool PLib::HermiteCoefficients(const double FirstParameter,
   // Test de validites
 
   if ((FirstOrder < 0) || (LastOrder < 0))
+  {
     return false;
+  }
   double D1 = fabs(FirstParameter), D2 = fabs(LastParameter);
   if (D1 > 100 || D2 > 100)
+  {
     return false;
+  }
   D2 += D1;
   if (D2 < 0.01)
+  {
     return false;
+  }
   if (fabs(LastParameter - FirstParameter) / D2 < 0.01)
+  {
     return false;
+  }
 
   // Calcul de la matrice a inverser (MAT)
 
@@ -1451,7 +1463,9 @@ bool PLib::HermiteCoefficients(const double FirstParameter,
   // resolution du systemes
   math_Gauss ResolCoeff(MAT, 1.0e-10);
   if (!ResolCoeff.IsDone())
+  {
     return false;
+  }
 
   for (ii = 1; ii <= NbCoeff; ii++)
   {
@@ -1547,7 +1561,9 @@ void PLib::CoefficientsPoles(const int                         dim,
   {
     Cnp = PLib::Bin(reflen - 1, i - 1);
     if (rat)
+    {
       (*Weights)(lowp + i - 1) = (*WCoefs)(lowc + i - 1) / Cnp;
+    }
 
     for (j = 0; j < dim; j++)
     {
@@ -1561,7 +1577,9 @@ void PLib::CoefficientsPoles(const int                         dim,
     for (j = reflen - 1; j >= i; j--)
     {
       if (rat)
+      {
         (*Weights)(lowp + j) += (*Weights)(lowp + j - 1);
+      }
 
       for (k = 0; k < dim; k++)
       {
@@ -1642,7 +1660,9 @@ void PLib::Trimming(const double                U1,
   if (rat)
   {
     if (len != WCoefs->Length())
+    {
       throw Standard_Failure("PLib::Trimming : nbcoefs/dim != nbweights !!!");
+    }
     upw = WCoefs->Upper();
   }
   len--;
@@ -1652,7 +1672,9 @@ void PLib::Trimming(const double                U1,
     int j;
     indc = upc - dim * (i - 1);
     if (rat)
+    {
       indw = upw - i + 1;
+    }
     // calcul du coefficient de degre le plus faible a l'iteration i
 
     for (j = 0; j < dim; j++)
@@ -1660,7 +1682,9 @@ void PLib::Trimming(const double                U1,
       Coefs(indc - dim + j) += U1 * Coefs(indc + j);
     }
     if (rat)
+    {
       (*WCoefs)(indw - 1) += U1 * (*WCoefs)(indw);
+    }
 
     // calcul des coefficients intermediaires :
 
@@ -1686,7 +1710,9 @@ void PLib::Trimming(const double                U1,
       Coefs(upc + j) *= lsp;
     }
     if (rat)
+    {
       (*WCoefs)(upw) *= lsp;
+    }
   }
 }
 
@@ -1755,7 +1781,9 @@ void PLib::CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
         Temp.SetLinearForm(Poles(NPoleu, I2).XYZ(), Poles(NPoleu, I2 - 1).XYZ());
         Poles(NPoleu, I2).SetXYZ(Temp);
         if (rat)
+        {
           (*Weights)(NPoleu, I2) += (*Weights)(NPoleu, I2 - 1);
+        }
       }
     }
   }
@@ -1770,7 +1798,9 @@ void PLib::CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
       Temp.Divide(Cnp);
       Poles(Row, NPolev).SetXYZ(Temp);
       if (rat)
+      {
         (*Weights)(Row, NPolev) /= Cnp;
+      }
     }
 
     for (I1 = 1; I1 <= ColLength - 1; I1++)
@@ -1781,7 +1811,9 @@ void PLib::CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
         Temp.SetLinearForm(Poles(I2, NPolev).XYZ(), Poles(I2 - 1, NPolev).XYZ());
         Poles(I2, NPolev).SetXYZ(Temp);
         if (rat)
+        {
           (*Weights)(I2, NPolev) += (*Weights)(I2 - 1, NPolev);
+        }
       }
     }
   }
@@ -1824,18 +1856,26 @@ void PLib::UTrimming(const double                U1,
     {
       Temp(irow) = Coeffs(irow, icol);
       if (rat)
+      {
         Temw(irow) = (*WCoeffs)(irow, icol);
+      }
     }
     if (rat)
+    {
       PLib::Trimming(U1, U2, Temp, &Temw);
+    }
     else
+    {
       PLib::Trimming(U1, U2, Temp, PLib::NoWeights());
+    }
 
     for (irow = lr; irow <= ur; irow++)
     {
       Coeffs(irow, icol) = Temp(irow);
       if (rat)
+      {
         (*WCoeffs)(irow, icol) = Temw(irow);
+      }
     }
   }
 }
@@ -1862,18 +1902,26 @@ void PLib::VTrimming(const double                V1,
     {
       Temp(icol) = Coeffs(irow, icol);
       if (rat)
+      {
         Temw(icol) = (*WCoeffs)(irow, icol);
+      }
     }
     if (rat)
+    {
       PLib::Trimming(V1, V2, Temp, &Temw);
+    }
     else
+    {
       PLib::Trimming(V1, V2, Temp, PLib::NoWeights());
+    }
 
     for (icol = lc; icol <= uc; icol++)
     {
       Coeffs(irow, icol) = Temp(icol);
       if (rat)
+      {
         (*WCoeffs)(irow, icol) = Temw(icol);
+      }
     }
   }
 }
@@ -1923,7 +1971,9 @@ bool PLib::HermiteInterpolate(const int                         Dimension,
     {
       A(irow, icol) = Pattern[irow][icol] * FirstVal;
       if (irow <= icol)
+      {
         FirstVal *= FirstParameter;
+      }
     }
   }
 
@@ -1935,7 +1985,9 @@ bool PLib::HermiteInterpolate(const int                         Dimension,
     {
       A(irow + FirstOrder + 1, icol) = Pattern[irow][icol] * LastVal;
       if (irow <= icol)
+      {
         LastVal *= LastParameter;
+      }
     }
   }
   //
@@ -1963,10 +2015,14 @@ bool PLib::HermiteInterpolate(const int                         Dimension,
     math_Vector B(0, FirstOrder + LastOrder + 1);
     int         icol;
     for (icol = 0; icol <= FirstOrder; icol++)
+    {
       B(icol) = FirstConstr(idim, icol);
+    }
 
     for (icol = 0; icol <= LastOrder; icol++)
+    {
       B(FirstOrder + 1 + icol) = LastConstr(idim, icol);
+    }
     //  std::cout << "B=" << B << std::endl;
 
     //  The solving of equations system A * X = B. Then B = X
@@ -1974,12 +2030,16 @@ bool PLib::HermiteInterpolate(const int                         Dimension,
     //  std::cout << "After Solving" << std::endl << "B=" << B << std::endl;
 
     if (!Equations.IsDone())
+    {
       return false;
+    }
 
     //  the filling of the Coefficients
 
     for (icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
+    {
       Coefficients(Dimension * icol + idim - 1) = B(icol);
+    }
   }
   return true;
 }
@@ -2033,35 +2093,61 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
       throw Standard_ConstructionError("Invalid ConstraintOrder");
   }
   if (MaxDegree < 2 * NivConstr + 1)
+  {
     throw Standard_ConstructionError("Invalid MaxDegree");
+  }
 
   if (Code >= 1)
+  {
     WorkDegree = MaxDegree + 9;
+  }
   else
+  {
     WorkDegree = MaxDegree + 6;
+  }
 
   //---> Nbre mini de points necessaires.
   int IPMIN = 0;
   if (WorkDegree < NDEG8)
+  {
     IPMIN = NDEG8;
+  }
   else if (WorkDegree < NDEG10)
+  {
     IPMIN = NDEG10;
+  }
   else if (WorkDegree < NDEG15)
+  {
     IPMIN = NDEG15;
+  }
   else if (WorkDegree < NDEG20)
+  {
     IPMIN = NDEG20;
+  }
   else if (WorkDegree < NDEG25)
+  {
     IPMIN = NDEG25;
+  }
   else if (WorkDegree < NDEG30)
+  {
     IPMIN = NDEG30;
+  }
   else if (WorkDegree < NDEG40)
+  {
     IPMIN = NDEG40;
+  }
   else if (WorkDegree < NDEG50)
+  {
     IPMIN = NDEG50;
+  }
   else if (WorkDegree < NDEG61)
+  {
     IPMIN = NDEG61;
+  }
   else
+  {
     throw Standard_ConstructionError("Invalid MaxDegree");
+  }
   // ---> Nbre de points voulus.
   int IWANT = 0;
   switch (Code)

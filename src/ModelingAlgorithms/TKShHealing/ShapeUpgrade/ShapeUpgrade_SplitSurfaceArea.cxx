@@ -34,7 +34,9 @@ ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea()
 void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
 {
   if (myNbParts <= 1)
+  {
     return;
+  }
 
   GeomAdaptor_Surface ads(mySurface,
                           myUSplitValues->Value(1),
@@ -44,9 +46,13 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
   double              aKoefU = ads.UResolution(1.);
   double              aKoefV = ads.VResolution(1.);
   if (aKoefU == 0)
+  {
     aKoefU = 1.;
+  }
   if (aKoefV == 0)
+  {
     aKoefV = 1.;
+  }
   double aUSize = fabs(myUSplitValues->Value(2) - myUSplitValues->Value(1)) / aKoefU;
   double aVSize = fabs(myVSplitValues->Value(2) - myVSplitValues->Value(1)) / aKoefV;
   double aNbUV  = aUSize / aVSize;
@@ -56,7 +62,9 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
     (aNbUV < 1. ? myUSplitValues : myVSplitValues);
   bool anIsUFirst = (aNbUV > 1.);
   if (aNbUV < 1)
+  {
     aNbUV = 1. / aNbUV;
+  }
 
   bool anIsFixedUVnbSplits = (myUnbSplit > 0 && myVnbSplit > 0);
   int  nbSplitF, nbSplitS;
@@ -68,9 +76,13 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
       myUnbSplit         = (int)(myUsize / aSquareSize);
       myVnbSplit         = (int)(myVsize / aSquareSize);
       if (myUnbSplit == 0)
+      {
         myUnbSplit = 1;
+      }
       if (myVnbSplit == 0)
+      {
         myVnbSplit = 1;
+      }
     }
 
     if (anIsUFirst)
@@ -90,9 +102,13 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
     nbSplitS = (aNbUV >= myNbParts ? 0 : RealToInt(ceil((double)myNbParts / (double)nbSplitF)));
   }
   if (nbSplitS == 1 && !anIsFixedUVnbSplits)
+  {
     nbSplitS++;
+  }
   if (!nbSplitF)
+  {
     return;
+  }
   double aStep    = (aFirstSplit->Value(2) - aFirstSplit->Value(1)) / nbSplitF;
   double aPrevPar = aFirstSplit->Value(1);
   int    i        = 1;

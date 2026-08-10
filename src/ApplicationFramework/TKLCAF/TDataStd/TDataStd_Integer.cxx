@@ -82,7 +82,9 @@ void TDataStd_Integer::Set(const int v)
 {
   // OCC2932 correction
   if (myValue == v)
+  {
     return;
+  }
 
   Backup();
   myValue = v;
@@ -115,7 +117,9 @@ const Standard_GUID& TDataStd_Integer::ID() const
 void TDataStd_Integer::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;

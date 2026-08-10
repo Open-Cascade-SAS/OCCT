@@ -30,7 +30,9 @@ void RWStepShape_RWRightCircularCylinder::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "right_circular_cylinder"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

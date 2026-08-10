@@ -77,7 +77,9 @@ Quantity_Date OSD_Process::SystemDate()
 
   status = gettimeofday(&tval, &tzone);
   if (status == -1)
+  {
     myError.SetValue(errno, Iam, "GetSystem");
+  }
   else
   {
     memcpy(&transfert, localtime((time_t*)&tval.tv_sec), sizeof(struct tm));
@@ -121,7 +123,9 @@ OSD_Path OSD_Process::CurrentDirectory()
   TCollection_AsciiString Name;
 
   if (!getcwd(cwd, MAXPATHLEN + 1))
+  {
     myError.SetValue(errno, Iam, "Where");
+  }
   else
   {
     Name = cwd;
@@ -164,7 +168,9 @@ void OSD_Process::SetCurrentDirectory(const OSD_Path& where)
 
   status = chdir(Name.ToCString());
   if (status == -1)
+  {
     myError.SetValue(errno, Iam, "Move to directory");
+  }
 }
 
 void OSD_Process::Reset()

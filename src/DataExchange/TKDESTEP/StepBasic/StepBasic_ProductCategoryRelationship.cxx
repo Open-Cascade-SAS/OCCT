@@ -47,7 +47,9 @@ void StepBasic_ProductCategoryRelationship::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theCategory = aCategory;
 

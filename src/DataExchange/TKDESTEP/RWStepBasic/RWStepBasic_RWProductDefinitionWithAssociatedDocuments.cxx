@@ -33,7 +33,9 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "product_definition"))
+  {
     return;
+  }
 
   // --- inherited field : id ---
 
@@ -78,7 +80,9 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   {
     int nb5 = data->NbParams(nsub5);
     if (nb5 > 0)
+    {
       aDocIds = new NCollection_HArray1<occ::handle<StepBasic_Document>>(1, nb5);
+    }
     for (int i5 = 1; i5 <= nb5; i5++)
     {
       // szv#4:S4163:12Mar `99Standard_Boolean stat5 =` not needed
@@ -88,7 +92,9 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
                            ach,
                            STANDARD_TYPE(StepBasic_Document),
                            anent5))
+      {
         aDocIds->SetValue(i5, anent5);
+      }
     }
   }
 
@@ -123,7 +129,9 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::WriteStep(
   SW.OpenSub();
   int i, nb = ent->NbDocIds();
   for (i = 1; i <= nb; i++)
+  {
     SW.Send(ent->DocIdsValue(i));
+  }
   SW.CloseSub();
 }
 
@@ -138,5 +146,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::Share(
 
   int i, nb = ent->NbDocIds();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->DocIdsValue(i));
+  }
 }

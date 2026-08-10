@@ -130,7 +130,9 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           double prm1  = ElCLib::Parameter(cit, p1);
           double Tol2d = Precision::PConfusion();
           if (std::abs(prm1 - ft) <= Tol2d)
+          {
             prm1 = ft;
+          }
           prm1 = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
           ElCLib::D1(prm1, cit, p1, tgt);
 

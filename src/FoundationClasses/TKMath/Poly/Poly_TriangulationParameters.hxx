@@ -40,6 +40,9 @@ public:
   //! Destructor.
   ~Poly_TriangulationParameters() override = default;
 
+  //! Creates a copy of current triangulation parameters.
+  Standard_EXPORT occ::handle<Poly_TriangulationParameters> Copy() const;
+
   //! Returns true if linear deflection is defined.
   bool HasDeflection() const { return !(myDeflection < 0.); }
 

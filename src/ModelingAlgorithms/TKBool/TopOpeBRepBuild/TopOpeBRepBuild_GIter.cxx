@@ -38,7 +38,9 @@ void TopOpeBRepBuild_GIter::Find()
   {
     bool b = MYGTOPO.Value(myII);
     if (b)
+    {
       break;
+    }
     myII++;
   }
 }
@@ -63,7 +65,9 @@ bool TopOpeBRepBuild_GIter::More() const
     return b;
   }
   else
+  {
     return false;
+  }
 }
 
 void TopOpeBRepBuild_GIter::Next()
@@ -88,10 +92,12 @@ void TopOpeBRepBuild_GIter::Current(TopAbs_State& s1, TopAbs_State& s2) const
 void TopOpeBRepBuild_GIter::Dump(Standard_OStream& OS) const
 {
   if (!More())
+  {
     return;
+  }
   TopAbs_State s1, s2;
   Current(s1, s2);
   bool b = MYGTOPO.Value(s1, s2);
   TopOpeBRepBuild_GTopo::DumpSSB(OS, s1, s2, b);
-  OS << std::endl;
+  OS << '\n';
 }

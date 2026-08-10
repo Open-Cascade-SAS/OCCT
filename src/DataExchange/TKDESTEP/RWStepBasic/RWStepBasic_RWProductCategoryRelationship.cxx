@@ -37,7 +37,9 @@ void RWStepBasic_RWProductCategoryRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "product_category_relationship"))
+  {
     return;
+  }
 
   // Own fields of ProductCategoryRelationship
 
@@ -86,7 +88,9 @@ void RWStepBasic_RWProductCategoryRelationship::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->Category());
 

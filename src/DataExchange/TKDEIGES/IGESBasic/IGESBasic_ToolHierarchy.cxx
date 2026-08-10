@@ -96,6 +96,7 @@ bool IGESBasic_ToolHierarchy::OwnCorrect(const occ::handle<IGESBasic_Hierarchy>&
 {
   bool res = (ent->NbPropertyValues() != 6);
   if (res)
+  {
     ent->Init(6,
               ent->NewLineFont(),
               ent->NewView(),
@@ -103,6 +104,7 @@ bool IGESBasic_ToolHierarchy::OwnCorrect(const occ::handle<IGESBasic_Hierarchy>&
               ent->NewBlankStatus(),
               ent->NewLineWeight(),
               ent->NewColorNum());
+  }
   return res; // nbpropertyvalues=6
 }
 
@@ -123,18 +125,32 @@ void IGESBasic_ToolHierarchy::OwnCheck(const occ::handle<IGESBasic_Hierarchy>& e
                                        occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 6)
+  {
     ach->AddFail("Number of Property Values != 6");
+  }
   if (ent->NewLineFont() != 0 && ent->NewLineFont() != 1)
+  {
     ach->AddFail("InCorrect LineFont");
+  }
   if (ent->NewView() != 0 && ent->NewView() != 1)
+  {
     ach->AddFail("InCorrect View");
+  }
   if (ent->NewEntityLevel() != 0 && ent->NewEntityLevel() != 1)
+  {
     ach->AddFail("InCorrect EntityLevel");
+  }
   if (ent->NewBlankStatus() != 0 && ent->NewBlankStatus() != 1)
+  {
     if (ent->NewLineWeight() != 0 && ent->NewLineWeight() != 1)
+    {
       ach->AddFail("InCorrect LineWeight");
+    }
+  }
   if (ent->NewColorNum() != 0 && ent->NewColorNum() != 1)
+  {
     ach->AddFail("InCorrect ColorNum");
+  }
 }
 
 void IGESBasic_ToolHierarchy::OwnDump(const occ::handle<IGESBasic_Hierarchy>& ent,
@@ -149,5 +165,5 @@ void IGESBasic_ToolHierarchy::OwnDump(const occ::handle<IGESBasic_Hierarchy>& en
     << "Entity level : " << ent->NewEntityLevel() << "\n"
     << "Blank status : " << ent->NewBlankStatus() << "\n"
     << "Line weight  : " << ent->NewLineWeight() << "\n"
-    << "Color number : " << ent->NewColorNum() << std::endl;
+    << "Color number : " << ent->NewColorNum() << '\n';
 }

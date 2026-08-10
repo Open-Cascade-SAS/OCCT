@@ -32,7 +32,9 @@ void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "text_literal has not 6 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -70,7 +72,9 @@ void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderD
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (path) is not an enumeration");
+  }
 
   // --- own field : font ---
 

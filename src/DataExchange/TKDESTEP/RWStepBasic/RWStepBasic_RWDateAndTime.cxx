@@ -30,7 +30,9 @@ void RWStepBasic_RWDateAndTime::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "date_and_time"))
+  {
     return;
+  }
 
   // --- own field : dateComponent ---
 

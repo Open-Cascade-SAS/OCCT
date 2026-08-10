@@ -30,7 +30,10 @@ Aspect_RectangularGrid::Aspect_RectangularGrid(const double aXStep,
       myXStep(aXStep),
       myYStep(aYStep),
       myFirstAngle(aFirstAngle),
-      mySecondAngle(aSecondAngle)
+      mySecondAngle(aSecondAngle),
+      mySizeX(0.0),
+      mySizeY(0.0),
+      myZOffset(0.0)
 
 {
   Standard_NumericError_Raise_if(!CheckAngle(aFirstAngle, mySecondAngle), "networks are parallel");
@@ -66,6 +69,35 @@ void Aspect_RectangularGrid::SetAngle(const double anAngle1, const double anAngl
   mySecondAngle = anAngle2;
   Init();
   UpdateDisplay();
+}
+
+void Aspect_RectangularGrid::SetSizeX(const double theSize)
+{
+  Standard_NegativeValue_Raise_if(theSize < 0.0, "invalid grid size X");
+  if (mySizeX != theSize)
+  {
+    mySizeX = theSize;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_RectangularGrid::SetSizeY(const double theSize)
+{
+  Standard_NegativeValue_Raise_if(theSize < 0.0, "invalid grid size Y");
+  if (mySizeY != theSize)
+  {
+    mySizeY = theSize;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_RectangularGrid::SetZOffset(const double theOffset)
+{
+  if (myZOffset != theOffset)
+  {
+    myZOffset = theOffset;
+    UpdateDisplay();
+  }
 }
 
 void Aspect_RectangularGrid::SetGridValues(const double theXOrigin,
@@ -186,6 +218,9 @@ void Aspect_RectangularGrid::DumpJson(Standard_OStream& theOStream, int theDepth
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myYStep)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFirstAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySecondAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySizeX)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySizeY)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZOffset)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, a1)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, b1)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, c1)

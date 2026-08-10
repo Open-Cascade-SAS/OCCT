@@ -44,14 +44,18 @@ void CDF_StoreList::Add(const occ::handle<CDM_Document>& aDocument)
 {
 
   if (!myItems.Contains(aDocument) && aDocument != myMainDocument)
+  {
     myItems.Add(aDocument);
+  }
   myStack.Prepend(aDocument);
 
   CDM_ReferenceIterator it(aDocument);
   for (; it.More(); it.Next())
   {
     if (it.Document()->IsModified())
+    {
       Add(it.Document());
+    }
   }
 }
 
@@ -144,10 +148,12 @@ PCDM_StoreStatus CDF_StoreList::Store(occ::handle<CDM_MetaData>&   aMetaData,
 
               CDM_ReferenceIterator it(theDocument);
               for (; it.More(); it.Next())
+              {
                 theMetaDataDriver->CreateReference(aMetaData,
                                                    it.Document()->MetaData(),
                                                    it.ReferenceIdentifier(),
                                                    it.DocumentVersion());
+              }
             }
           }
         }

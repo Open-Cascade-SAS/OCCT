@@ -40,6 +40,44 @@ TEST(NCollection_Array1Test, ConstructorWithBounds)
   EXPECT_EQ(5, anArray.Upper());
 }
 
+TEST(NCollection_Array1Test, ConstructorWithSizeTUpperUsesBounds)
+{
+  const size_t            anUpper = 3;
+  NCollection_Array1<int> anArray(1, anUpper);
+
+  EXPECT_TRUE(anArray.IsDeletable());
+  EXPECT_EQ(3u, anArray.Size());
+  EXPECT_EQ(1, anArray.Lower());
+  EXPECT_EQ(3, anArray.Upper());
+
+  anArray.ChangeValue(1) = 10;
+  anArray.ChangeValue(2) = 20;
+  anArray.ChangeValue(3) = 30;
+
+  EXPECT_EQ(10, anArray.Value(1));
+  EXPECT_EQ(20, anArray.Value(2));
+  EXPECT_EQ(30, anArray.Value(3));
+}
+
+TEST(NCollection_Array1Test, ReferenceSizeConstructorRequiresExplicitBufferPolicy)
+{
+  int aBuffer[3] = {1, 2, 3};
+
+  NCollection_Array1<int> aView(aBuffer[0], size_t(3), true);
+  EXPECT_FALSE(aView.IsDeletable());
+  EXPECT_EQ(0, aView.Lower());
+  EXPECT_EQ(2, aView.Upper());
+  EXPECT_EQ(aBuffer, &aView.ChangeFirst());
+  aView.ChangeAt(1) = 20;
+  EXPECT_EQ(20, aBuffer[1]);
+
+  NCollection_Array1<int> anOwned(aBuffer[0], size_t(3), false);
+  EXPECT_TRUE(anOwned.IsDeletable());
+  EXPECT_EQ(0, anOwned.Lower());
+  EXPECT_EQ(2, anOwned.Upper());
+  EXPECT_NE(aBuffer, &anOwned.ChangeFirst());
+}
+
 TEST(NCollection_Array1Test, ConstructorWithNegativeBounds)
 {
   // Test constructor with negative bounds
@@ -160,7 +198,6 @@ TEST(NCollection_Array1Test, AssignmentOperator)
   // Test assignment
   NCollection_Array1<int> anArray2(11, 15);
   anArray2 = anArray1;
-  anArray2.Resize(1, 5, true); // Resize to match anArray1
 
   // Verify assignment result
   EXPECT_EQ(anArray1.Length(), anArray2.Length());
@@ -171,6 +208,135 @@ TEST(NCollection_Array1Test, AssignmentOperator)
   {
     EXPECT_EQ(anArray1(i), anArray2(i));
   }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorDifferentSize)
+{
+  NCollection_Array1<int> anArray1(5, 8);
+  for (int anIndex = anArray1.Lower(); anIndex <= anArray1.Upper(); ++anIndex)
+  {
+    anArray1(anIndex) = anIndex * 10;
+  }
+
+  NCollection_Array1<int> anArray2(1, 2);
+  anArray2 = anArray1;
+
+  EXPECT_EQ(4, anArray2.Length());
+  EXPECT_EQ(5, anArray2.Lower());
+  EXPECT_EQ(8, anArray2.Upper());
+  for (int anIndex = anArray1.Lower(); anIndex <= anArray1.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(anArray1(anIndex), anArray2(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorReusesSameSizeOwnedStorage)
+{
+  NCollection_Array1<int> anArray(1, 6);
+  int*                    anInitialPointer = &anArray.ChangeFirst();
+
+  NCollection_Array1<int> aSource(20, 25);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_EQ(anInitialPointer, &anArray.ChangeFirst());
+  EXPECT_EQ(20, anArray.Lower());
+  EXPECT_EQ(25, anArray.Upper());
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(anIndex), anArray(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorReusesSameSizeExternalBuffer)
+{
+  int aBuffer[3] = {0, 0, 0};
+
+  NCollection_Array1<int> anArray(aBuffer, 3);
+  NCollection_Array1<int> aSource(7, 9);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(7, anArray.Lower());
+  EXPECT_EQ(9, anArray.Upper());
+  EXPECT_EQ(70, aBuffer[0]);
+  EXPECT_EQ(80, aBuffer[1]);
+  EXPECT_EQ(90, aBuffer[2]);
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorDetachesDifferentSizeExternalBuffer)
+{
+  int aBuffer[3] = {1, 2, 3};
+
+  NCollection_Array1<int> anArray(aBuffer, 3);
+  NCollection_Array1<int> aSource(7, 10);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_TRUE(anArray.IsDeletable());
+  EXPECT_NE(aBuffer, &anArray.ChangeFirst());
+  EXPECT_EQ(7, anArray.Lower());
+  EXPECT_EQ(10, anArray.Upper());
+  EXPECT_EQ(1, aBuffer[0]);
+  EXPECT_EQ(2, aBuffer[1]);
+  EXPECT_EQ(3, aBuffer[2]);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(anIndex), anArray(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorEmptySource)
+{
+  NCollection_Array1<int> anArray(1, 5);
+  NCollection_Array1<int> anEmpty;
+
+  anArray = anEmpty;
+
+  EXPECT_EQ(0, anArray.Length());
+  EXPECT_EQ(1, anArray.Lower());
+  EXPECT_TRUE(anArray.IsEmpty());
+}
+
+TEST(NCollection_Array1Test, CopyValuesPreservesBounds)
+{
+  NCollection_Array1<int> aSource(1, 5);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  NCollection_Array1<int> anArray(11, 15);
+  anArray.CopyValues(aSource);
+
+  EXPECT_EQ(11, anArray.Lower());
+  EXPECT_EQ(15, anArray.Upper());
+  for (int anIndex = 0; anIndex < anArray.Length(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(aSource.Lower() + anIndex), anArray(anArray.Lower() + anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, CopyValuesDifferentSize)
+{
+  [[maybe_unused]] NCollection_Array1<int> anArray(1, 5);
+  [[maybe_unused]] NCollection_Array1<int> aSource(1, 4);
+#ifndef No_Exception
+  EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
+#endif
 }
 
 TEST(NCollection_Array1Test, Move)
@@ -186,7 +352,6 @@ TEST(NCollection_Array1Test, Move)
   // Test Move method
   NCollection_Array1<int> anArray2(11, 15);
   anArray2.Move(anArray1);
-  anArray2.Resize(1, 5, true); // Resize to match anArray1
 
   // Verify move result
   EXPECT_EQ(5, anArray2.Length());
@@ -474,4 +639,187 @@ TEST(NCollection_Array1Test, EmplaceValue_ReplacesExisting)
   EXPECT_EQ(10, anArray(1).myA);
   EXPECT_EQ(200, anArray(2).myA);
   EXPECT_EQ(30, anArray(3).myA);
+}
+
+// ============================================================================
+// Zero-based (size_t) construction mode tests
+// ============================================================================
+
+TEST(NCollection_Array1Test, SizeConstructor_AllocatesCorrectly)
+{
+  const size_t            aSize = 10;
+  NCollection_Array1<int> anArray(aSize);
+
+  EXPECT_EQ(aSize, anArray.Size());
+  EXPECT_EQ(0, anArray.Lower());
+  EXPECT_EQ(static_cast<int>(aSize) - 1, anArray.Upper());
+  EXPECT_FALSE(anArray.IsEmpty());
+  EXPECT_TRUE(anArray.IsDeletable());
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_ZeroSize)
+{
+  NCollection_Array1<int> anArray(static_cast<size_t>(0));
+
+  EXPECT_EQ(0u, anArray.Size());
+  EXPECT_TRUE(anArray.IsEmpty());
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_AtAccess)
+{
+  const size_t            aSize = 5;
+  NCollection_Array1<int> anArray(aSize);
+
+  for (size_t i = 0; i < aSize; ++i)
+  {
+    anArray.ChangeAt(i) = static_cast<int>(i * 10);
+  }
+
+  for (size_t i = 0; i < aSize; ++i)
+  {
+    EXPECT_EQ(static_cast<int>(i * 10), anArray.At(i));
+  }
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_IteratorAccess)
+{
+  const size_t            aSize = 6;
+  NCollection_Array1<int> anArray(aSize);
+
+  int aFill = 0;
+  for (auto& aVal : anArray)
+  {
+    aVal = aFill++;
+  }
+
+  int aCheck = 0;
+  for (const auto& aVal : anArray)
+  {
+    EXPECT_EQ(aCheck++, aVal);
+  }
+  EXPECT_EQ(static_cast<int>(aSize), aCheck);
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_LegacyValueOperator)
+{
+  // When lower==0, operator[](i) should also work 0-based
+  const size_t            aSize = 4;
+  NCollection_Array1<int> anArray(aSize);
+  for (size_t i = 0; i < aSize; ++i)
+  {
+    anArray[static_cast<int>(i)] = static_cast<int>(i + 100);
+  }
+  for (size_t i = 0; i < aSize; ++i)
+  {
+    EXPECT_EQ(static_cast<int>(i + 100), anArray[static_cast<int>(i)]);
+  }
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_BufferReuse_NotOwner)
+{
+  int                     aBuf[8] = {10, 20, 30, 40, 50, 60, 70, 80};
+  NCollection_Array1<int> anArray(aBuf, 8);
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(8u, anArray.Size());
+  EXPECT_EQ(0, anArray.Lower());
+  EXPECT_EQ(7, anArray.Upper());
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_BufferReuse_DataPreserved)
+{
+  int                     aBuf[5] = {1, 2, 3, 4, 5};
+  NCollection_Array1<int> anArray(aBuf, 5);
+
+  for (size_t i = 0; i < 5; ++i)
+  {
+    EXPECT_EQ(static_cast<int>(i + 1), anArray.At(i));
+  }
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_BufferReuse_WritesGoToBuffer)
+{
+  int aBuf[4] = {0, 0, 0, 0};
+  {
+    NCollection_Array1<int> anArray(aBuf, 4);
+    for (size_t i = 0; i < 4; ++i)
+    {
+      anArray.ChangeAt(i) = static_cast<int>(i + 7);
+    }
+  }
+  // After array goes out of scope, buffer should still hold written values
+  for (int i = 0; i < 4; ++i)
+  {
+    EXPECT_EQ(i + 7, aBuf[i]);
+  }
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_StdVectorBufferReuse)
+{
+  std::vector<int>        aVector = {1, 2, 3, 4};
+  NCollection_Array1<int> anArray(aVector.data(), aVector.size());
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(aVector.size(), anArray.Size());
+  anArray.ChangeAt(2) = 30;
+  EXPECT_EQ(30, aVector[2]);
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_Resize_Grow)
+{
+  NCollection_Array1<int> anArray(static_cast<size_t>(3));
+  anArray.ChangeAt(0) = 10;
+  anArray.ChangeAt(1) = 20;
+  anArray.ChangeAt(2) = 30;
+
+  anArray.Resize(static_cast<size_t>(5), true);
+
+  EXPECT_EQ(5u, anArray.Size());
+  EXPECT_EQ(10, anArray.At(0));
+  EXPECT_EQ(20, anArray.At(1));
+  EXPECT_EQ(30, anArray.At(2));
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_Resize_Shrink)
+{
+  NCollection_Array1<int> anArray(static_cast<size_t>(5));
+  for (size_t i = 0; i < 5; ++i)
+  {
+    anArray.ChangeAt(i) = static_cast<int>(i);
+  }
+
+  anArray.Resize(static_cast<size_t>(3), true);
+
+  EXPECT_EQ(3u, anArray.Size());
+  EXPECT_EQ(0, anArray.At(0));
+  EXPECT_EQ(1, anArray.At(1));
+  EXPECT_EQ(2, anArray.At(2));
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_Resize_NoData)
+{
+  NCollection_Array1<int> anArray(static_cast<size_t>(4));
+  anArray.ChangeAt(0) = 99;
+
+  anArray.Resize(static_cast<size_t>(6), false);
+
+  EXPECT_EQ(6u, anArray.Size());
+  EXPECT_TRUE(anArray.IsDeletable());
+}
+
+TEST(NCollection_Array1Test, SizeConstructor_MoveSemantics)
+{
+  NCollection_Array1<int> anSrc(static_cast<size_t>(3));
+  anSrc.ChangeAt(0) = 1;
+  anSrc.ChangeAt(1) = 2;
+  anSrc.ChangeAt(2) = 3;
+
+  NCollection_Array1<int> anDst(std::move(anSrc));
+
+  EXPECT_EQ(3u, anDst.Size());
+  EXPECT_EQ(1, anDst.At(0));
+  EXPECT_EQ(2, anDst.At(1));
+  EXPECT_EQ(3, anDst.At(2));
+  EXPECT_EQ(0u, anSrc.Size());
+  EXPECT_TRUE(anSrc.IsEmpty());
 }

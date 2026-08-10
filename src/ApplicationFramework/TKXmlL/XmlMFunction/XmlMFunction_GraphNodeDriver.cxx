@@ -138,7 +138,9 @@ bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSo
       return false;
     }
     if (ind < aFirstIndNext)
+    {
       continue;
+    }
     G->AddNext(aValue);
   }
 

@@ -27,7 +27,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -73,7 +73,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -124,7 +124,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -181,7 +181,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -236,7 +236,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Parab& aParab = myGeom->Parab();

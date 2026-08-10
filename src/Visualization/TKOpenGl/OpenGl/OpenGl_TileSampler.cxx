@@ -122,8 +122,8 @@ void OpenGl_TileSampler::dumpMap(std::ostream&                     theStream,
 NCollection_Vec2<int> OpenGl_TileSampler::nextTileToSample()
 {
   NCollection_Vec2<int> aTile(0, 0);
-  const float           aKsiX = mySampler.sample(0, myLastSample) * myMarginalMap.back();
-  for (; (size_t)aTile.x() < myMarginalMap.size() - 1; ++aTile.x())
+  const float           aKsiX = mySampler.sample(0, myLastSample) * myMarginalMap.Last();
+  for (; (size_t)aTile.x() < myMarginalMap.Size() - 1; ++aTile.x())
   {
     if (aKsiX <= myMarginalMap[aTile.x()])
     {
@@ -189,8 +189,7 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
     myOffsets.Init(myTiles.Allocator(), myTiles.SizeX, myTiles.SizeY);
     myOffsets.Init(NCollection_Vec2<int>(-1, -1));
 
-    myMarginalMap.resize(myTiles.SizeX);
-    myMarginalMap.assign(myMarginalMap.size(), 0.0f);
+    myMarginalMap.Resize(myTiles.SizeX, 0.0f);
   }
 
   // calculate a size of compact offsets texture optimal for rendering reduced number of tiles

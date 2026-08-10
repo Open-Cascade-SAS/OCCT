@@ -29,7 +29,9 @@ void RWStepShape_RWTorus::ReadStep(const occ::handle<StepData_StepReaderData>& d
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "torus"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -32,7 +32,9 @@
 const IntRes2d_IntersectionSegment& TopOpeBRep_EdgesIntersector::Segment1() const
 {
   if (!IsPointOfSegment1())
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector : Not a segment point");
+  }
   int iseg = 1 + (myPointIndex - myNbPoints - 1) / 2;
   return mylseg.Value(iseg);
 }
@@ -81,9 +83,13 @@ const IntRes2d_IntersectionPoint& TopOpeBRep_EdgesIntersector::Point1() const
   { // point is a point of segment
     int i = myPointIndex - myNbPoints - 1;
     if (i % 2 == 0)
+    {
       return Segment1().FirstPoint();
+    }
     else
+    {
       return Segment1().LastPoint();
+    }
   }
 }
 
@@ -99,9 +105,13 @@ TopOpeBRep_P2Dstatus TopOpeBRep_EdgesIntersector::Status1() const
   { // point is a point of segment
     int i = myPointIndex - myNbPoints - 1;
     if (i % 2 == 0)
+    {
       return TopOpeBRep_P2DSGF;
+    }
     else
+    {
       return TopOpeBRep_P2DSGL;
+    }
   }
 }
 
@@ -222,8 +232,10 @@ TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(
                 staB = staINON;
                 staA = staINON;
               }
-              else // Middle/Middle is impossible
+              else
+              { // Middle/Middle is impossible
                 throw Standard_Failure("TopOpeBRep_EdgesIntersector : Situation Unknown MM");
+              }
             }
             else
             { // posother = Head or End
@@ -335,9 +347,13 @@ TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(
 double TopOpeBRep_EdgesIntersector::Parameter1(const int Index) const
 {
   if (Index == 1)
+  {
     return Point1().ParamOnFirst();
+  }
   else
+  {
     return Point1().ParamOnSecond();
+  }
 }
 
 //=================================================================================================
@@ -347,15 +363,21 @@ bool TopOpeBRep_EdgesIntersector::IsVertex1(const int Index)
   // check if last IsVertex1() call has been performed
   // on current point and with same <Index>.
   if (myIsVertexPointIndex == myPointIndex && myIsVertexIndex == Index)
+  {
     return myIsVertexValue;
+  }
 
   // search if current point is a vertex of edge <Index>
   myIsVertexValue = false;
   IntRes2d_Position pos;
   if (Index == 1)
+  {
     pos = Point1().TransitionOfFirst().PositionOnCurve();
+  }
   else
+  {
     pos = Point1().TransitionOfSecond().PositionOnCurve();
+  }
 
   if (pos == IntRes2d_Middle)
   {
@@ -386,9 +408,13 @@ bool TopOpeBRep_EdgesIntersector::IsVertex1(const int Index)
   { // pos = head or end
     TopoDS_Vertex V1, V2;
     if (Index == 1)
+    {
       TopExp::Vertices(myEdge1, V1, V2);
+    }
     else
+    {
       TopExp::Vertices(myEdge2, V1, V2);
+    }
     if (pos == IntRes2d_Head && !V1.IsNull())
     {
       myIsVertexValue  = true;
@@ -416,7 +442,9 @@ bool TopOpeBRep_EdgesIntersector::IsVertex1(const int Index)
 const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Vertex1(const int Index)
 {
   if (!IsVertex1(Index))
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector : Vertex1");
+  }
   return myIsVertexVertex;
 }
 

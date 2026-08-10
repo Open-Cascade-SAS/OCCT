@@ -22,7 +22,7 @@
 #include <Font_Rect.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class Font_FTFont;
@@ -114,8 +114,8 @@ protected:
   RectI                    myLastTilePx;
   int                      myTextureFormat; //!< texture format
 
-  NCollection_Vector<occ::handle<OpenGl_Texture>> myTextures; //!< array of textures
-  NCollection_Vector<Tile>                        myTiles;    //!< array of loaded tiles
+  NCollection_DynamicArray<occ::handle<OpenGl_Texture>> myTextures; //!< array of textures
+  NCollection_DynamicArray<Tile>                        myTiles;    //!< array of loaded tiles
 
   NCollection_DataMap<char32_t, int> myGlyphMap;
 

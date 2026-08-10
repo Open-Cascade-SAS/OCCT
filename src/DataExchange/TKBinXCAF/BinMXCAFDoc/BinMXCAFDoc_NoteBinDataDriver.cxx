@@ -45,17 +45,23 @@ bool BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent&       theS
                                           BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
+  {
     return false;
+  }
 
   occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theTarget);
   if (aNote.IsNull())
+  {
     return false;
+  }
 
   TCollection_ExtendedString aTitle;
   TCollection_AsciiString    aMIMEtype;
   int                        nbSize;
   if (!(theSource >> aTitle >> aMIMEtype >> nbSize))
+  {
     return false;
+  }
 
   occ::handle<NCollection_HArray1<uint8_t>> aData;
   if (nbSize > 0)
@@ -83,6 +89,8 @@ void BinMXCAFDoc_NoteBinDataDriver::Paste(
   {
     theTarget << aNote->Title() << aNote->MIMEtype() << aNote->Size();
     if (aNote->Size() > 0)
+    {
       theTarget.PutByteArray(&aNote->Data()->ChangeFirst(), aNote->Size());
+    }
   }
 }

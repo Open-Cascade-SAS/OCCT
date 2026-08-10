@@ -29,7 +29,9 @@ void RWStepGeom_RWPointOnCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "point_on_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -29,15 +29,25 @@ StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() = default;
 int StepDimTol_ToleranceZoneTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeneralDatumReference)))
+  {
     return 4;
+  }
   return 0;
 }
 

@@ -103,7 +103,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
       if (myEOF)
       {
         if (aBytesRest <= 0)
+        {
           break; // END of processing
+        }
       }
       else if (myTagPerStep && aHasRead)
       {
@@ -116,7 +118,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         if (aStartData /* && aState != STATE_WAITING */)
         {
           if (myPtr > aStartData)
+          {
             theData.rdbuf()->sputn(aStartData, myPtr - aStartData);
+          }
           aStartData = &myBuffer[0];
         }
         // Copy the rest of file data to the beginning of buffer
@@ -206,9 +210,13 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           {
             myBOM = LDOM_OSStream::BOM_UTF7;
             if (myPtr[3] == 56 && myPtr[4] == 45)
+            {
               myPtr += 5;
+            }
             else
+            {
               myPtr += 4;
+            }
           }
           break;
         case 0xF7:
@@ -249,7 +257,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           break;
       }
       if (myBOM != LDOM_OSStream::BOM_UNDEFINED)
+      {
         continue;
+      }
     }
 
     //  Check the character data
@@ -291,7 +301,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                 {
                   char ch = myPtr[9];
                   if (ch != ' ' && ch != '\t' && ch != '\n' && ch != '\r')
+                  {
                     break;
+                  }
                   aState = STATE_DOCTYPE;
                   myPtr += 10;
                 }
@@ -301,7 +313,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   myPtr += 9;
                 }
                 else
+                {
                   break; // ERROR
+                }
                 aStartData = myPtr;
                 continue;
               default:
@@ -318,7 +332,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                     aStartData  = nullptr;
                   }
                   else
+                  {
                     aState = STATE_ELEMENT;
+                  }
                   continue;
                 } // otherwise ERROR
             } // end of switch
@@ -327,7 +343,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             return XML_UNKNOWN;
           case '\0':
             if (myEOF)
+            {
               continue;
+            }
             [[fallthrough]];
           default:
             //      Limitation: we do not treat '&' as special character
@@ -419,9 +437,13 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         {
           aPtr = (const char*)memchr(aPtr, '-', (myEndPtr - 2) - aPtr);
           if (aPtr == nullptr)
+          {
             break;
+          }
           if (aPtr[1] != '-')
+          {
             ++aPtr;
+          }
           else
           {
             if (aPtr[2] != '>')
@@ -461,7 +483,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         {
           aPtr = (const char*)memchr(aPtr, ']', (myEndPtr - 1) - aStartData);
           if (aPtr == nullptr)
+          {
             break;
+          }
           if (aPtr[1] != ']')
           { // ERROR
             myError = "Characters \']]\' are expected in the end of CDATA";
@@ -479,11 +503,13 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_ELEMENT:
         if (!::isName(myPtr, myEndPtr, aNameEnd))
+        {
           if (theData.Length() == 0 || aNameEnd != myPtr)
           {
             myError = "Invalid tag name";
             return XML_UNKNOWN;
           }
+        }
         {
           theData.rdbuf()->sputn(aStartData, aNameEnd - aStartData);
           char* aDataString = (char*)theData.str();
@@ -506,14 +532,20 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           case '\n':
           case '\r':
             if (aStartData)
+            {
               goto attr_name;
+            }
             ++myPtr;
             continue;
           case '/':
             if (aStartData)
+            {
               myError = "Inexpected end of attribute";
+            }
             else if (myPtr[1] != '>')
+            {
               myError = "Improper element tag termination";
+            }
             else
             {
               myPtr += 2;
@@ -538,17 +570,23 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             return XML_START_ELEMENT;
           default:
             if (!::isName(myPtr, myEndPtr, aNameEnd))
+            {
               if (theData.Length() == 0 || aNameEnd != myPtr)
               {
                 myError = "Invalid attribute name";
                 return XML_UNKNOWN;
               }
+            }
             if (aNameEnd >= myEndPtr)
+            {
               aStartData = myPtr;
+            }
             else
             {
               if (theData.Length() == 0)
+              {
                 anAttrName = LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
+              }
               else
               {
                 theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
@@ -629,10 +667,14 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
               if (IsDigit(aDataString[0]))
               {
                 if (getInteger(anAttrValue, aDataString, ePtr))
+                {
                   anAttrValue = LDOMBasicString(aDataString, aDataLen, myDocument);
+                }
               }
               else
+              {
                 anAttrValue = LDOMBasicString(aDataString, aDataLen, myDocument);
+              }
 
               if (theData.Length() > 0)
               {

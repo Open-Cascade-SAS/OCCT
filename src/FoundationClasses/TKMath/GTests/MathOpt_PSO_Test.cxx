@@ -473,7 +473,7 @@ TEST(MathOpt_PSOTest, SeededInit_Sphere2D_ImprovesEvalCount)
   math_Vector aSeedPos(1, 2, 0.0);
   aSeedPos(1) = 0.1;
   aSeedPos(2) = -0.1;
-  NCollection_Vector<MathOpt::PSOSeedParticle> aSeeds;
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
 
   MathOpt::PSOStats aStatsSeeded;
@@ -501,8 +501,8 @@ TEST(MathOpt_PSOTest, SeededInit_Rastrigin2D_StableQuality)
   aConfig.InitMode      = MathOpt::PSOInitMode::SeededPlusRandom;
 
   // Seed near global minimum
-  math_Vector                                  aSeedPos(1, 2, 0.0);
-  NCollection_Vector<MathOpt::PSOSeedParticle> aSeeds;
+  math_Vector                                        aSeedPos(1, 2, 0.0);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos, 0.0));
 
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, &aSeeds);
@@ -741,8 +741,8 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
   aSeedPos(2) = -10.0; // out of bounds (will be clamped to -5.0)
 
   // Provide a stale value of 0.0 which is wrong for (5, -5)
-  NCollection_Vector<MathOpt::PSOSeedParticle> aSeeds;
-  MathOpt::PSOSeedParticle                     aSeed(aSeedPos, 0.0);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  MathOpt::PSOSeedParticle                           aSeed(aSeedPos, 0.0);
   aSeeds.Append(aSeed);
 
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, &aSeeds);

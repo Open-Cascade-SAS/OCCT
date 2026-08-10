@@ -46,17 +46,23 @@ bool StepToTopoDS_MakeTransformed::Compute(const occ::handle<StepGeom_Axis2Place
 {
   theTrsf = gp_Trsf(); // reinit
   if (Origin.IsNull() || Target.IsNull())
+  {
     return false;
+  }
 
   // sln 23.10.2001 : If the directions have not been created do nothing.
   occ::handle<Geom_Axis2Placement> theOrig =
     StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
   if (theOrig.IsNull())
+  {
     return false;
+  }
   occ::handle<Geom_Axis2Placement> theTarg =
     StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
   if (theTarg.IsNull())
+  {
     return false;
+  }
 
   const gp_Ax3 ax3Orig(theOrig->Ax2());
   const gp_Ax3 ax3Targ(theTarg->Ax2());
@@ -87,7 +93,9 @@ const gp_Trsf& StepToTopoDS_MakeTransformed::Transformation() const
 bool StepToTopoDS_MakeTransformed::Transform(TopoDS_Shape& shape) const
 {
   if (theTrsf.Form() == gp_Identity)
+  {
     return false;
+  }
   TopLoc_Location theLoc(theTrsf);
   shape.Move(theLoc);
   return true;
@@ -117,21 +125,31 @@ TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
 
   bool ok = false;
   if (!Origin.IsNull() && !Target.IsNull())
+  {
     ok = Compute(Origin, Target, theLocalFactors);
+  }
   else if (!CartOp.IsNull())
+  {
     ok = Compute(CartOp, theLocalFactors);
+  }
 
   if (!ok)
+  {
     TP->AddWarning(mapit, "Mapped Item, case not recognized, location ignored");
+  }
 
   //  La Shape, et la mise en position
   occ::handle<StepRepr_Representation> maprep = mapit->MappingSource()->MappedRepresentation();
   occ::handle<Transfer_Binder>         binder = TP->Find(maprep);
   if (binder.IsNull())
+  {
     binder = TP->Transferring(maprep, theProgress);
+  }
   occ::handle<TransferBRep_ShapeBinder> shbinder = occ::down_cast<TransferBRep_ShapeBinder>(binder);
   if (shbinder.IsNull())
+  {
     TP->AddWarning(mapit, "No Shape Produced");
+  }
   else
   {
     theResult = shbinder->Result();

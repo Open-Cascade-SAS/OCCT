@@ -53,11 +53,17 @@ RWHeaderSection_ReadWriteModule::RWHeaderSection_ReadWriteModule()
 int RWHeaderSection_ReadWriteModule::CaseStep(const TCollection_AsciiString& key) const
 {
   if (key.IsEqual(Reco_FileName))
+  {
     return 1;
+  }
   if (key.IsEqual(Reco_FileDescription))
+  {
     return 2;
+  }
   if (key.IsEqual(Reco_FileSchema))
+  {
     return 3;
+  }
   return 0;
 }
 
@@ -112,16 +118,22 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const int                        
                                                const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
+  {
     return;
+  }
   switch (CN)
   {
     case 1: {
       DeclareAndCast(HeaderSection_FileName, anent, ent);
       RWHeaderSection_RWFileName tool;
       if (anent.IsNull())
+      {
         ach->AddFail("Type Mismatch on FileName");
+      }
       else
+      {
         tool.ReadStep(data, num, ach, anent);
+      }
     }
 
     break;
@@ -129,9 +141,13 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const int                        
       DeclareAndCast(HeaderSection_FileDescription, anent, ent);
       RWHeaderSection_RWFileDescription tool;
       if (anent.IsNull())
+      {
         ach->AddFail("Type Mismatch on FileDescription");
+      }
       else
+      {
         tool.ReadStep(data, num, ach, anent);
+      }
     }
 
     break;
@@ -139,26 +155,32 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const int                        
       DeclareAndCast(HeaderSection_FileSchema, anent, ent);
       RWHeaderSection_RWFileSchema tool;
       if (anent.IsNull())
+      {
         ach->AddFail("Type Mismatch on FileSchema");
+      }
       else
+      {
         tool.ReadStep(data, num, ach, anent);
+      }
     }
 
     break;
     case 4: {
       DeclareAndCast(StepData_UndefinedEntity, und, ent);
       if (und.IsNull())
+      {
         ach->AddFail("# Entity neither Recognized nor set as UndefinedEntity from StepData #");
+      }
       else
+      {
         und->ReadRecord(data, num, ach);
+      }
     }
 
     break;
     default:
       ach->AddFail("Type Mismatch when reading - Entity");
   }
-
-  return;
 }
 
 // -- Writing of a file --
@@ -168,16 +190,22 @@ void RWHeaderSection_ReadWriteModule::WriteStep(const int                       
                                                 const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
+  {
     return;
+  }
   switch (CN)
   {
     case 1: {
       DeclareAndCast(HeaderSection_FileName, anent, ent);
       RWHeaderSection_RWFileName tool;
       if (anent.IsNull())
+      {
         return;
+      }
       else
+      {
         tool.WriteStep(SW, anent);
+      }
     }
 
     break;
@@ -185,9 +213,13 @@ void RWHeaderSection_ReadWriteModule::WriteStep(const int                       
       DeclareAndCast(HeaderSection_FileDescription, anent, ent);
       RWHeaderSection_RWFileDescription tool;
       if (anent.IsNull())
+      {
         return;
+      }
       else
+      {
         tool.WriteStep(SW, anent);
+      }
     }
 
     break;
@@ -195,24 +227,34 @@ void RWHeaderSection_ReadWriteModule::WriteStep(const int                       
       DeclareAndCast(HeaderSection_FileSchema, anent, ent);
       RWHeaderSection_RWFileSchema tool;
       if (anent.IsNull())
+      {
         return;
+      }
       else
+      {
         tool.WriteStep(SW, anent);
+      }
     }
 
     break;
     case 4: {
       DeclareAndCast(StepData_UndefinedEntity, und, ent);
       if (und.IsNull())
+      {
         break;
+      }
       //  Parentheses gerees par StepWriter lui-meme
       //   car en recevant le type PasReco, StepWriter ne l'affiche pas,
       //   mais il gere les parentheses comme si de rien n etait
       if (und->IsComplex())
+      {
         SW.StartComplex();
+      }
       und->WriteParams(SW);
       if (und->IsComplex())
+      {
         SW.EndComplex();
+      }
     }
 
     break;

@@ -46,7 +46,9 @@ void TopOpeBRepBuild_Tools2d::Path(const TopoDS_Wire&              aWire,
 
   TopExp_Explorer ex(aWire, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
+  {
     aNbEdges++;
+  }
 
   myResList.Clear();
 
@@ -80,7 +82,9 @@ void BuildPath(
   TopoDS_Vertex myVertex;
 
   if (aBreakFlag == 1)
+  {
     return;
+  }
 
   TopOpeBRepBuild_VertexInfo& aVInfo = M.ChangeFromKey(myInputVertex);
   //
@@ -88,7 +92,9 @@ void BuildPath(
   aVInfo.Prepare(myResList);
   aNbCases = aVInfo.NbCases();
   if (!aNbCases)
+  {
     aBreakFlag = 2;
+  }
 
   for (j = 1; j <= aNbCases; j++)
   {
@@ -168,15 +174,21 @@ void TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(
       const TopoDS_Vertex& aVertex = TopoDS::Vertex(exs.Current());
       int                  index   = M.FindIndex(aVertex);
       if (!index)
+      {
         index = M.Add(aVertex, empty);
+      }
 
       TopOpeBRepBuild_VertexInfo& aVInfo = M(index);
       aVInfo.SetVertex(aVertex);
       TopAbs_Orientation anOr = aVertex.Orientation();
       if (anOr == TopAbs_FORWARD)
+      {
         aVInfo.AddOut(anEdge);
+      }
       else if (anOr == TopAbs_REVERSED)
+      {
         aVInfo.AddIn(anEdge);
+      }
     }
   }
 

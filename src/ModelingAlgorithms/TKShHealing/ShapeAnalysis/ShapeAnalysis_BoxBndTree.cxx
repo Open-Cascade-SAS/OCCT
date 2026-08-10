@@ -38,11 +38,15 @@ bool ShapeAnalysis_BoxBndTreeSelector::Reject(const Bnd_Box& theBnd) const
 bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
 {
   if (theObj < 1 || theObj > mySeq->Length())
+  {
     throw Standard_NoSuchObject(
       "ShapeAnalysis_BoxBndTreeSelector::Accept : no such object for current index");
+  }
   bool IsAccept = false;
   if (myList.Contains(theObj))
+  {
     return false;
+  }
 
   enum
   {
@@ -86,7 +90,9 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
             myArrIndices(First) = theObj;
           }
           else
+          {
             myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+          }
         }
       }
     }
@@ -95,11 +101,15 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
     {
       SetNb(theObj);
       if (myArrIndices(Last))
+      {
         myStop = true;
+      }
       return true;
     }
     else
+    {
       myStop = false;
+    }
   }
 
   else
@@ -128,13 +138,17 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
     double min3d;
     min3d = std::min(dm1, dm2);
     if (min3d > myMin3d)
+    {
       return false;
+    }
 
     int minInd           = (dm1 > dm2 ? First : Last);
     int maxInd           = (dm1 > dm2 ? Last : First);
     myArrIndices(minInd) = theObj;
     if ((min3d - myMin3d) > RealSmall())
+    {
       myArrIndices(maxInd) = 0;
+    }
 
     myMin3d = min3d;
     if (min3d > myTol)
@@ -147,7 +161,9 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
     SetNb(anObj);
 
     if (min3d == 0 && minInd == Last)
+    {
       myStop = true;
+    }
 
     if (dm1 > dm2)
     {

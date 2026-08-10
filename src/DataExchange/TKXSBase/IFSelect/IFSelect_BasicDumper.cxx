@@ -55,9 +55,13 @@ bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
 {
   occ::handle<Standard_Type> type = item->DynamicType();
   if (type == STANDARD_TYPE(IFSelect_SelectModelRoots))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectModelEntities))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectEntityNumber))
   {
     DeclareAndCast(IFSelect_SelectEntityNumber, sen, item);
@@ -65,23 +69,41 @@ bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
     return true;
   }
   if (type == STANDARD_TYPE(IFSelect_SelectPointed))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectUnion))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectIntersection))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectDiff))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectUnknownEntities))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectErrorEntities))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectIncorrectEntities))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectRoots))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectRootComps))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectRange))
   {
     DeclareAndCast(IFSelect_SelectRange, sra, item);
@@ -90,14 +112,22 @@ bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
     return true;
   }
   if (type == STANDARD_TYPE(IFSelect_SelectShared))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_SelectSharing))
+  {
     return true;
+  }
 
   if (type == STANDARD_TYPE(IFSelect_DispPerOne))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_DispGlobal))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IFSelect_DispPerCount))
   {
     DeclareAndCast(IFSelect_DispPerCount, dpc, item);
@@ -109,12 +139,18 @@ bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
   {
     DeclareAndCast(IFSelect_TransformStandard, trs, item);
     if (trs->CopyOption())
+    {
       file.SendText("copy");
+    }
     else
+    {
       file.SendText("onthespot");
+    }
     int nbm = trs->NbModifiers();
     for (int i = 1; i <= nbm; i++)
+    {
       file.SendItem(trs->Modifier(i));
+    }
   }
 
   return false;
@@ -198,7 +234,9 @@ bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&            file,
   {
     const TCollection_AsciiString& exname = file.ParamValue(1);
     if (exname.Length() < FIRSTCHAR)
+    {
       return false;
+    }
     if (exname.Value(FIRSTCHAR) == 'e')
     {
     }
@@ -206,7 +244,9 @@ bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&            file,
     {
     }
     else
+    {
       return false;
+    }
     //    item = new IFSelect_SelectTextType (file.TextValue(2).ToCString(),exact);
     //    return true;
   }
@@ -244,13 +284,21 @@ bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&            file,
     bool                           copyoption;
     const TCollection_AsciiString& copyname = file.ParamValue(1);
     if (copyname.Length() < FIRSTCHAR)
+    {
       return false;
+    }
     if (copyname.Value(FIRSTCHAR) == 'c')
+    {
       copyoption = true;
+    }
     else if (copyname.Value(FIRSTCHAR) == 'o')
+    {
       copyoption = false;
+    }
     else
+    {
       return false;
+    }
     occ::handle<IFSelect_TransformStandard> trs = new IFSelect_TransformStandard;
     trs->SetCopyOption(copyoption);
     int nbp = file.NbParams();
@@ -258,7 +306,9 @@ bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&            file,
     {
       DeclareAndCast(IFSelect_Modifier, modif, file.ItemValue(i));
       if (!modif.IsNull())
+      {
         trs->AddModifier(modif);
+      }
     }
     item = trs;
     return true;

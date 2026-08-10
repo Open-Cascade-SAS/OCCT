@@ -185,7 +185,9 @@ bool BRepTools_History::IsRemoved(const TopoDS_Shape& theInitial) const
 void BRepTools_History::Merge(const occ::handle<BRepTools_History>& theHistory23)
 {
   if (!theHistory23.IsNull())
+  {
     Merge(*theHistory23.get());
+  }
 }
 
 //=================================================================================================
@@ -193,8 +195,10 @@ void BRepTools_History::Merge(const occ::handle<BRepTools_History>& theHistory23
 void BRepTools_History::Merge(const BRepTools_History& theHistory23)
 {
   if (!(theHistory23.HasModified() || theHistory23.HasGenerated() || theHistory23.HasRemoved()))
+  {
     // nothing to merge
     return;
+  }
 
   // Propagate R23 directly and M23 and G23 fully to M12 and G12.
   // Remember the propagated shapes.

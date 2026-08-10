@@ -85,19 +85,25 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
                         "Instance of views",
                         STANDARD_TYPE(IGESData_ViewKindEntity),
                         tempView))
+      {
         views->SetValue(i, tempView);
+      }
 
       // Reading breakpointParameters(HArray1OfReal)
       // st = PR.ReadReal(PR.Current(), "array breakpointParameters", tempBreak );
       // //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadReal(PR.Current(), "array breakpointParameters", tempBreak))
+      {
         breakpointParameters->SetValue(i, tempBreak);
+      }
 
       // Reading displayFlags(HArray1OfInteger)
       // st = PR.ReadInteger( PR.Current(), "array displayFlags", tempDisplay );
       // //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "array displayFlags", tempDisplay))
+      {
         displayFlags->SetValue(i, tempDisplay);
+      }
 
       int curnum = PR.CurrentNumber();
 
@@ -110,12 +116,18 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
         colorValues->SetValue(i, -1);
         tempColorDef = GetCasted(IGESGraph_Color, PR.ParamEntity(IR, curnum));
         if (tempColorDef.IsNull())
+        {
           PR.AddFail("A Color Definition Entity is incorrect");
+        }
         else
+        {
           colorDefinitions->SetValue(i, tempColorDef);
+        }
       }
       else
+      {
         colorValues->SetValue(i, tempColorValue);
+      }
 
       curnum = PR.CurrentNumber();
       //  Reading Line Font : Value (>0) or Definition (<0 = D.E. Pointer)
@@ -127,21 +139,29 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
         lineFontValues->SetValue(i, -1);
         tempLineFontDef = GetCasted(IGESData_LineFontEntity, PR.ParamEntity(IR, curnum));
         if (tempLineFontDef.IsNull())
+        {
           PR.AddFail("A Line Font Definition Entity is incorrect");
+        }
         lineFontDefinitions->SetValue(i, tempLineFontDef);
       }
       else
+      {
         lineFontValues->SetValue(i, tempLineFontValue);
+      }
 
       // Reading lineWeights(HArray1OfInteger)
       // st = PR.ReadInteger( PR.Current(), "array lineWeights", tempLine ); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "array lineWeights", tempLine))
+      {
         lineWeights->SetValue(i, tempLine);
+      }
     }
   }
   else
+  {
     PR.AddFail("No. of View/segment blocks : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(views,
@@ -167,14 +187,22 @@ void IGESDraw_ToolSegmentedViewsVisible::WriteOwnParams(
     IW.Send(ent->DisplayFlag(i));
 
     if (ent->IsColorDefinition(i))
+    {
       IW.Send(ent->ColorDefinition(i), true); // negative
+    }
     else
+    {
       IW.Send(ent->ColorValue(i));
+    }
 
     if (ent->IsFontDefinition(i))
+    {
       IW.Send(ent->LineFontDefinition(i), true); // negative
+    }
     else
+    {
       IW.Send(ent->LineFontValue(i));
+    }
 
     IW.Send(ent->LineWeightItem(i));
   }
@@ -189,9 +217,13 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnShared(
   {
     iter.GetOneItem(ent->ViewItem(i));
     if (ent->IsColorDefinition(i))
+    {
       iter.GetOneItem(ent->ColorDefinition(i));
+    }
     if (!ent->IsFontDefinition(i))
+    {
       iter.GetOneItem(ent->LineFontDefinition(i));
+    }
   }
 }
 
@@ -353,5 +385,5 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump(
     }
     break;
   }
-  S << std::endl;
+  S << '\n';
 }

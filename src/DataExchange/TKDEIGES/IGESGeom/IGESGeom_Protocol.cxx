@@ -57,50 +57,96 @@ occ::handle<Interface_Protocol> IGESGeom_Protocol::Resource(const int /*num*/) c
 int IGESGeom_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESGeom_BSplineCurve))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_BSplineSurface))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Boundary))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_BoundedSurface))
+  {
     return 4;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_CircularArc))
+  {
     return 5;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_CompositeCurve))
+  {
     return 6;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_ConicArc))
+  {
     return 7;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_CopiousData))
+  {
     return 8;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_CurveOnSurface))
+  {
     return 9;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Direction))
+  {
     return 10;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Flash))
+  {
     return 11;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Line))
+  {
     return 12;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_OffsetCurve))
+  {
     return 13;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_OffsetSurface))
+  {
     return 14;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Plane))
+  {
     return 15;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_Point))
+  {
     return 16;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_RuledSurface))
+  {
     return 17;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_SplineCurve))
+  {
     return 18;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_SplineSurface))
+  {
     return 19;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_SurfaceOfRevolution))
+  {
     return 20;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_TabulatedCylinder))
+  {
     return 21;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_TransformationMatrix))
+  {
     return 22;
+  }
   else if (atype == STANDARD_TYPE(IGESGeom_TrimmedSurface))
+  {
     return 23;
+  }
   return 0;
 }

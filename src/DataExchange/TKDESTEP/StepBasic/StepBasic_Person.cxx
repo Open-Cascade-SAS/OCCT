@@ -131,7 +131,9 @@ occ::handle<TCollection_HAsciiString> StepBasic_Person::MiddleNamesValue(const i
 int StepBasic_Person::NbMiddleNames() const
 {
   if (middleNames.IsNull())
+  {
     return 0;
+  }
   return middleNames->Length();
 }
 
@@ -167,7 +169,9 @@ occ::handle<TCollection_HAsciiString> StepBasic_Person::PrefixTitlesValue(const 
 int StepBasic_Person::NbPrefixTitles() const
 {
   if (prefixTitles.IsNull())
+  {
     return 0;
+  }
   return prefixTitles->Length();
 }
 
@@ -203,6 +207,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_Person::SuffixTitlesValue(const 
 int StepBasic_Person::NbSuffixTitles() const
 {
   if (suffixTitles.IsNull())
+  {
     return 0;
+  }
   return suffixTitles->Length();
 }

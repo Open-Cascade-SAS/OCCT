@@ -54,15 +54,21 @@ void IGESAppli_ElementResults::Init(
       || allDataLayerFlags->Upper() != num || allnbResDataLocs->Lower() != 1
       || allnbResDataLocs->Upper() != num || allResDataLocs->Lower() != 1
       || allResDataLocs->Upper() != num || allResults->Lower() != 1 || allResults->Upper() != num)
+  {
     throw Standard_DimensionMismatch("IGESAppli_ElementsResults : Init");
+  }
   for (int i = 1; i <= num; i++)
   {
     int nl  = nbLayers->Value(i);
     int nrl = allnbResDataLocs->Value(i);
     if (allResDataLocs->Value(i)->Lower() != 1 || allResDataLocs->Value(i)->Upper() != nrl)
+    {
       throw Standard_DimensionMismatch("IGESAppli_ElementsResults : DataLoc");
+    }
     if (allResults->Value(i)->Lower() != 1 || allResults->Value(i)->Upper() != nl * nrl * nbResults)
+    {
       throw Standard_DimensionMismatch("IGESAppli_ElementsResults : Results");
+    }
   }
 
   theNote                 = aNote;
@@ -85,7 +91,9 @@ void IGESAppli_ElementResults::Init(
 void IGESAppli_ElementResults::SetFormNumber(const int form)
 {
   if (form < 0 || form > 34)
+  {
     throw Standard_OutOfRange("IGESAppli_ElementResults : SetFormNumber");
+  }
   InitTypeAndForm(148, form);
 }
 

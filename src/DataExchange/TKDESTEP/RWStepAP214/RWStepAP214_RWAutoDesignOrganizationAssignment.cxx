@@ -36,7 +36,9 @@ void RWStepAP214_RWAutoDesignOrganizationAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "auto_design_organization_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedOrganization ---
 
@@ -66,7 +68,9 @@ void RWStepAP214_RWAutoDesignOrganizationAssignment::ReadStep(
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
+      {
         aItems->SetValue(i3, aItemsItem);
+      }
     }
   }
 

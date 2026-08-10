@@ -38,9 +38,13 @@ void NLPlate_HPG0G1Constraint::SetOrientation(const int Orient)
 int NLPlate_HPG0G1Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 1)
+  {
     return myActiveOrder;
+  }
   else
+  {
     return 1;
+  }
 }
 
 int NLPlate_HPG0G1Constraint::Orientation()

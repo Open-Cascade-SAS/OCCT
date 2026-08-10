@@ -46,7 +46,9 @@ void IGESGeom_Flash::Init(const gp_XY&                            aPoint,
 void IGESGeom_Flash::SetFormNumber(const int form)
 {
   if (form < 0 || form > 4)
+  {
     throw Standard_OutOfRange("IGESGeom_Flash : SetFormNumber");
+  }
   InitTypeAndForm(125, form);
 }
 
@@ -59,7 +61,9 @@ gp_Pnt IGESGeom_Flash::TransformedReferencePoint() const
 {
   gp_XYZ Point(thePoint.X(), thePoint.Y(), 0.0);
   if (HasTransf())
+  {
     Location().Transforms(Point);
+  }
   return gp_Pnt(Point);
 }
 

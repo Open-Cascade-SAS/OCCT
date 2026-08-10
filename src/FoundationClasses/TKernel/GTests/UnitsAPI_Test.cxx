@@ -27,3 +27,13 @@ TEST(UnitsAPI_Test, BUC60727_AnyToLS_Conversion)
   double aResult = UnitsAPI::AnyToLS(3.0, "mm");
   EXPECT_DOUBLE_EQ(3.0, aResult);
 }
+
+// Test of fix for bug 33176: UnitsAPI::AnyToAny must not crash when one of the units is unknown.
+TEST(UnitsAPI_Test, AnyToAny_UnknownUnit)
+{
+  // Attempt to convert using an unknown unit, should not crash and return the input value.
+  const double aResult1 = UnitsAPI::AnyToAny(1.0, "unknown_unit", "mm");
+  const double aResult2 = UnitsAPI::AnyToAny(1.0, "mm", "unknown_unit");
+  EXPECT_DOUBLE_EQ(1.0, aResult1);
+  EXPECT_DOUBLE_EQ(1.0, aResult2);
+}

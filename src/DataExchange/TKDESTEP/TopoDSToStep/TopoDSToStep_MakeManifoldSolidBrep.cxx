@@ -53,7 +53,9 @@ static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisua
 
   TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
+  {
     return std::make_pair(theManifoldSolidBrep, aTessItem);
+  }
 
   TopoDSToStep::AddResult(FP, aTool);
 
@@ -67,7 +69,9 @@ static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisua
     {
       occ::handle<StepShape_OpenShell> aOShell = occ::down_cast<StepShape_OpenShell>(StepB.Value());
       if (aOShell.IsNull())
+      {
         return std::make_pair(theManifoldSolidBrep, aTessItem);
+      }
       else
       {
         aCShell = new StepShape_ClosedShell;

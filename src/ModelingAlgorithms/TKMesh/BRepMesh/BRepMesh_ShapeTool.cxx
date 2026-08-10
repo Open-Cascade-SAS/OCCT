@@ -57,7 +57,9 @@ double MaxTolerance(const TopoDS_Face& theFace)
   {
     double aTolerance = ToleranceExtractor::Get(aExplorer.Current());
     if (aTolerance > aMaxTolerance)
+    {
       aMaxTolerance = aTolerance;
+    }
   }
 
   return aMaxTolerance;
@@ -81,7 +83,9 @@ double BRepMesh_ShapeTool::MaxFaceTolerance(const TopoDS_Face& theFace)
 void BRepMesh_ShapeTool::BoxMaxDimension(const Bnd_Box& theBox, double& theMaxDimension)
 {
   if (theBox.IsVoid())
+  {
     return;
+  }
 
   double aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
   theBox.Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);

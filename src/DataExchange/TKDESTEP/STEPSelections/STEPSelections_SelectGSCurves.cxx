@@ -44,7 +44,9 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
                                             Interface_EntityIterator&              explored) const
 {
   if (start.IsNull())
+  {
     return false;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepGeom_Curve)))
   {
@@ -53,6 +55,7 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
       Interface_EntityIterator subs        = G.Sharings(start);
       bool                     isInGeomSet = false;
       for (subs.Start(); subs.More() && !isInGeomSet; subs.Next())
+      {
         if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
         {
           if (flag)
@@ -62,17 +65,22 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
           }
           isInGeomSet = true;
         }
+      }
       if (isInGeomSet)
       {
         Interface_EntityIterator aSubsShareds = G.Shareds(start);
         aSubsShareds.Start();
         bool isSome = aSubsShareds.More();
         for (; aSubsShareds.More(); aSubsShareds.Next())
+        {
           explored.AddItem(aSubsShareds.Value());
+        }
         return isSome;
       }
       else
+      {
         return false;
+      }
     }
     else
     {
@@ -81,7 +89,9 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
       {
         if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet))
             || subs.Value()->IsKind(STANDARD_TYPE(StepGeom_CompositeCurveSegment)))
+        {
           return true;
+        }
       }
     }
   }
@@ -90,7 +100,9 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
   subs.Start();
   bool isSome = subs.More();
   for (; subs.More(); subs.Next())
+  {
     explored.AddItem(subs.Value());
+  }
 
   return isSome;
 }

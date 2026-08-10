@@ -80,7 +80,9 @@ static occ::handle<Transfer_SimpleBinderOfTransient> TransientResult(
 {
   occ::handle<Transfer_SimpleBinderOfTransient> binder;
   if (res.IsNull())
+  {
     return binder;
+  }
   binder = new Transfer_SimpleBinderOfTransient;
   binder->SetResult(res);
   return binder;
@@ -169,7 +171,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
           occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
             occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs1.Value());
           if (SDR.IsNull())
+          {
             continue;
+          }
           PDS =
             occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().PropertyDefinition());
         }
@@ -181,12 +185,18 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
             occ::handle<StepRepr_RepresentationRelationship> RR =
               occ::down_cast<StepRepr_RepresentationRelationship>(subs1.Value());
             if (RR.IsNull())
+            {
               continue;
+            }
             occ::handle<StepShape_ShapeRepresentation> SR1;
             if (RR->Rep1() == SR)
+            {
               SR1 = occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep2());
+            }
             else
+            {
               SR1 = occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep1());
+            }
             if (!SR1.IsNull())
             {
               Interface_EntityIterator subs2 = Graph().Sharings(SR1);
@@ -195,7 +205,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
                 occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
                   occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs2.Value());
                 if (SDR.IsNull())
+                {
                   continue;
+                }
                 PDS = occ::down_cast<StepRepr_ProductDefinitionShape>(
                   SDR->Definition().PropertyDefinition());
               }
@@ -232,7 +244,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
 //	std::cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << std::endl;
 #endif
         if (!subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+        {
           continue;
+        }
         occ::handle<StepShape_ShapeRepresentation> sr =
           occ::down_cast<StepShape_ShapeRepresentation>(subs.Value());
         Context                       = sr->ContextOfItems();
@@ -240,7 +254,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
         for (sub2.Start(); sub2.More(); sub2.Next())
         {
           if (!sub2.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+          {
             continue;
+          }
           occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
             occ::down_cast<StepShape_ShapeDefinitionRepresentation>(sub2.Value());
           PDS =
@@ -322,7 +338,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
           for (asubs.Start(); Context.IsNull() && asubs.More(); asubs.Next())
           {
             if (!asubs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+            {
               continue;
+            }
             occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
               occ::down_cast<StepShape_ShapeDefinitionRepresentation>(asubs.Value());
             Context = sdr->UsedRepresentation()->ContextOfItems();
@@ -330,7 +348,9 @@ bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&              
         }
 
         if (!aspect.IsNull())
+        {
           target.SetValue(aspect);
+        }
       }
 #ifdef OCCT_DEBUG
       else
@@ -403,7 +423,9 @@ bool STEPConstruct_ValidationProps::AddProp(const TopoDS_Shape&                 
   StepRepr_CharacterizedDefinition            target;
   occ::handle<StepRepr_RepresentationContext> Context;
   if (!FindTarget(Shape, target, Context, instance))
+  {
     return false;
+  }
   return AddProp(target, Context, Prop, Descr);
 }
 
@@ -503,7 +525,9 @@ bool STEPConstruct_ValidationProps::LoadProps(
   {
     occ::handle<Standard_Transient> enti = Model()->Value(i);
     if (!enti->IsKind(tPDR))
+    {
       continue;
+    }
 
     occ::handle<StepRepr_PropertyDefinitionRepresentation> PDR =
       occ::down_cast<StepRepr_PropertyDefinitionRepresentation>(enti);
@@ -521,7 +545,9 @@ bool STEPConstruct_ValidationProps::LoadProps(
       aName.ChangeAll('_', ' ', false);
       aName.LowerCase();
       if (aName != "geometric validation property")
+      {
         continue;
+      }
     }
 
     seq.Append(PDR);
@@ -557,7 +583,9 @@ occ::handle<StepBasic_ProductDefinition> STEPConstruct_ValidationProps::GetPropP
     {
       PDS = occ::down_cast<StepRepr_PropertyDefinition>(subs.Value());
       if (PDS.IsNull())
+      {
         return ProdDef;
+      }
       Interface_EntityIterator subs1 = Graph().Shareds(PDS);
       for (subs1.Start(); ProdDef.IsNull() && subs1.More(); subs1.Next())
       {
@@ -596,7 +624,9 @@ occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPConstruct_ValidationProps:
   occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO;
   occ::handle<StepRepr_PropertyDefinition>          PDS = CD.ProductDefinitionShape();
   if (PDS.IsNull())
+  {
     return NAUO; // not found
+  }
   Interface_EntityIterator subs = Graph().Shareds(PDS);
   for (subs.Start(); NAUO.IsNull() && subs.More(); subs.Next())
   {
@@ -646,7 +676,9 @@ TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape(
   occ::handle<StepBasic_ProductDefinition> ProdDef = GetPropPD(PD);
   TopoDS_Shape                             S;
   if (!ProdDef.IsNull())
+  {
     S = GetPropShape(ProdDef);
+  }
   return S;
 }
 
@@ -660,7 +692,9 @@ bool STEPConstruct_ValidationProps::GetPropReal(
 {
   // decode volume & area
   if (!item->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)))
+  {
     return false;
+  }
 
   occ::handle<StepRepr_MeasureRepresentationItem> mri =
     occ::down_cast<StepRepr_MeasureRepresentationItem>(item);
@@ -695,18 +729,26 @@ bool STEPConstruct_ValidationProps::GetPropReal(
       STEPConstruct_UnitContext unit;
       unit.ComputeFactors(NU, theLocalFactors);
       if (unit.AreaDone())
+      {
         scale = unit.AreaFactor();
+      }
       if (unit.VolumeDone())
+      {
         scale = unit.VolumeFactor();
+      }
     }
   }
 
   Val = M->ValueComponent() * scale;
 
   if (Name == "AREA_MEASURE")
+  {
     isArea = true;
+  }
   else if (Name == "VOLUME_MEASURE")
+  {
     isArea = false;
+  }
   else
   {
 #ifdef OCCT_DEBUG
@@ -728,7 +770,9 @@ bool STEPConstruct_ValidationProps::GetPropPnt(
 {
   // centroid
   if (!item->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)))
+  {
     return false;
+  }
 
   occ::handle<StepGeom_CartesianPoint> P = occ::down_cast<StepGeom_CartesianPoint>(item);
   if (P.IsNull() || P->NbCoordinates() != 3)

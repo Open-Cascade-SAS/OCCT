@@ -36,13 +36,13 @@ constexpr std::array<int, 24> THE_PRIME_VECTOR = {
   17915905, 35831809, 71663617, 150994945, 301989889, 573308929, 1019215873, 2038431745};
 } // namespace
 
-int NCollection_Primes::NextPrimeForMap(const int theN) noexcept
+size_t NCollection_Primes::NextPrimeForMap(const size_t theN) noexcept
 {
   auto aResult = std::lower_bound(THE_PRIME_VECTOR.begin(), THE_PRIME_VECTOR.end(), theN + 1);
   if (aResult == THE_PRIME_VECTOR.end())
   {
-    // Return theN + 1 if requested size exceeds the largest available prime
+    // Return theN + 1 if requested size exceeds the largest available prime.
     return theN + 1;
   }
-  return *aResult;
+  return static_cast<size_t>(*aResult);
 }

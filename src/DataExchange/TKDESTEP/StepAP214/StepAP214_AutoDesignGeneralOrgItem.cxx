@@ -27,23 +27,41 @@ StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem() = defau
 int StepAP214_AutoDesignGeneralOrgItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Product)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ExternallyDefinedRepresentation)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP214_AutoDesignDocumentReference)))
+  {
     return 8;
+  }
   return 0;
 }
 

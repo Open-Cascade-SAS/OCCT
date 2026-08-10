@@ -64,8 +64,10 @@ void Transfer_TransferOutput::Transfer(const occ::handle<Standard_Transient>& ob
                                        const Message_ProgressRange&           theProgress)
 {
   if (themodel->Number(obj) == 0)
+  {
     throw Transfer_TransferFailure(
       "TransferOutput : Transfer, entities do not come from same initial model");
+  }
   //  int scope = 0;
   //  if (thescope) scope = theproc->NewScope (obj);
 
@@ -107,7 +109,9 @@ void Transfer_TransferOutput::TransferRoots(const occ::handle<Interface_Protocol
     //    int scope = 0;
     //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer(ent, aPS.Next()))
+    {
       theproc->SetRoot(ent);
+    }
     //    if (scope > 0) theproc->EndScope (scope);
   }
 }
@@ -126,7 +130,9 @@ void Transfer_TransferOutput::TransferRoots(const Interface_Graph&       G,
     //    int scope = 0;
     //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer(ent, aPS.Next()))
+    {
       theproc->SetRoot(ent);
+    }
     //    if (scope > 0) theproc->EndScope (scope);
   }
 }
@@ -141,11 +147,15 @@ Interface_EntityIterator Transfer_TransferOutput::ListForStatus(const bool norma
     const occ::handle<Transfer_Binder>& binder =
       (roots ? theproc->RootItem(i) : theproc->MapItem(i));
     if (binder.IsNull())
+    {
       continue;
+    }
     Transfer_StatusExec statex = binder->StatusExec();
     bool                ok = (statex == Transfer_StatusInitial || statex == Transfer_StatusDone);
     if (ok == normal)
+    {
       list.AddItem((roots ? theproc->Root(i) : theproc->Mapped(i)));
+    }
   }
   return list;
 }
@@ -157,10 +167,14 @@ occ::handle<Interface_InterfaceModel> Transfer_TransferOutput::ModelForStatus(
 {
   occ::handle<Interface_InterfaceModel> newmod;
   if (themodel.IsNull())
+  {
     return newmod;
+  }
   newmod                        = themodel->NewEmptyModel();
   Interface_EntityIterator list = ListForStatus(normal, roots);
   for (list.Start(); list.More(); list.Next())
+  {
     newmod->AddWithRefs(list.Value(), protocol);
+  }
   return newmod;
 }

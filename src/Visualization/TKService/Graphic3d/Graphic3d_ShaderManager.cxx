@@ -875,7 +875,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
   TCollection_AsciiString              aSrcVert, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha,
     aSrcVertEndMain;
   TCollection_AsciiString aSrcFrag, aSrcFragExtraMain;
-  TCollection_AsciiString aSrcFragGetColor     = EOL "vec4 getColor(void) { return occColor; }";
+  TCollection_AsciiString aSrcFragGetBaseColor = EOL "vec4 getBaseColor(void) { return occColor; }";
+  TCollection_AsciiString aSrcFragGetBackColor =
+    EOL "vec4 getBackColor(void) { return occBackColor; }";
+  TCollection_AsciiString aSrcFragGetColor = EOL "vec4 getColor(void) { return getBaseColor(); }";
   TCollection_AsciiString aSrcFragMainGetColor = EOL "  occSetFragColor (getFinalColor());";
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
 
@@ -892,9 +895,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
                                                               Graphic3d_TOS_FRAGMENT));
       if ((theBits & Graphic3d_ShaderFlags_PointSpriteA) != Graphic3d_ShaderFlags_PointSpriteA)
       {
-        aSrcFragGetColor = EOL
-          "vec4 getColor(void) { return occTexture2D(occSamplerPointSprite, " THE_VEC2_glPointCoord
-          "); }";
+        aSrcFragGetBaseColor =
+          EOL "vec4 getBaseColor(void) { return "
+              "occTexture2D(occSamplerPointSprite, " THE_VEC2_glPointCoord "); }";
       }
       else if ((theBits & Graphic3d_ShaderFlags_TextureRGB) != 0
                && (theBits & Graphic3d_ShaderFlags_VertColor) == 0)
@@ -907,7 +910,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
                                                  Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
         aSrcVertExtraMain +=
           EOL "  VertColor = occTexture2D (occSamplerBaseColor, occTexCoord.xy);";
-        aSrcFragGetColor = EOL "vec4 getColor(void) { return VertColor; }";
+        aSrcFragGetBaseColor = EOL "vec4 getBaseColor(void) { return VertColor; }";
       }
 
       aSrcGetAlpha = pointSpriteAlphaSrc(theBits);
@@ -928,7 +931,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
                                                  Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
         aSrcVertExtraMain +=
           EOL "  VertColor = occTexture2D (occSamplerBaseColor, occTexCoord.xy);";
-        aSrcFragGetColor = EOL "vec4 getColor(void) { return VertColor; }";
+        aSrcFragGetBaseColor = EOL "vec4 getBaseColor(void) { return VertColor; }";
       }
 
       aSrcFragMainGetColor =
@@ -957,16 +960,19 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
               "  aReflect.z += 1.0;" EOL "  TexCoord = vec4(aReflect.xy * inversesqrt (dot "
               "(aReflect, aReflect)) * 0.5 + vec2 (0.5), 0.0, 1.0);";
 
-        aSrcFragGetColor =
-          EOL "vec4 getColor(void) { return occTexture2D (occSamplerBaseColor, TexCoord.st); }";
+        aSrcFragGetBaseColor =
+          EOL "vec4 getBaseColor(void) { return occTexture2D (occSamplerBaseColor, TexCoord.st); }";
+        aSrcFragGetBackColor = EOL "vec4 getBackColor(void) { return getBaseColor(); }";
       }
       else
       {
         aProgramSrc->SetTextureSetBits(Graphic3d_TextureSetBits_BaseColor);
         aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
-        aSrcFragGetColor = EOL "vec4 getColor(void) { return occTexture2D(occSamplerBaseColor, "
-                               "TexCoord.st / TexCoord.w); }";
+        aSrcFragGetBaseColor =
+          EOL "vec4 getBaseColor(void) { return occTexture2D(occSamplerBaseColor, TexCoord.st / "
+              "TexCoord.w); }";
+        aSrcFragGetBackColor = EOL "vec4 getBackColor(void) { return getBaseColor(); }";
       }
     }
   }
@@ -976,7 +982,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
       Graphic3d_ShaderObject::ShaderVariable("vec4 VertColor",
                                              Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain += EOL "  VertColor = occVertColor;";
-    aSrcFragGetColor = EOL "vec4 getColor(void) { return VertColor; }";
+    aSrcFragGetColor = (theBits & Graphic3d_ShaderFlags_VertColorFrontOnly) != 0
+                         ? EOL "vec4 getColor(void) { return gl_FrontFacing ? VertColor : "
+                               "getBackColor(); }"
+                         : EOL "vec4 getColor(void) { return VertColor; }";
   }
 
   int aNbClipPlanes = 0;
@@ -1076,9 +1085,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
              + THE_VERT_gl_Position + aSrcVertEndMain + EOL "}";
 
   TCollection_AsciiString aSrcGeom = prepareGeomMainSrc(aUniforms, aStageInOuts, theBits);
-  aSrcFragGetColor += (theBits & Graphic3d_ShaderFlags_MeshEdges) != 0 ? THE_FRAG_WIREFRAME_COLOR
-                                                                       : EOL
-                        "#define getFinalColor getColor";
+  aSrcFragGetColor =
+    aSrcFragGetBaseColor + aSrcFragGetBackColor + aSrcFragGetColor
+    + ((theBits & Graphic3d_ShaderFlags_MeshEdges) != 0 ? THE_FRAG_WIREFRAME_COLOR
+                                                        : EOL "#define getFinalColor getColor");
 
   aSrcFrag = aSrcFragGetColor + aSrcGetAlpha
              + EOL "void main()" EOL "{" EOL "  if (occFragEarlyReturn()) { return; }"
@@ -1283,7 +1293,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
                  "  vec3 aMatSpecular = occMaterial_Specular(theIsFront);" EOL
                  "  vec4 aColor = vec4(Ambient * aMatAmbient + Diffuse * aMatDiffuse.rgb + "
                  "Specular * aMatSpecular, aMatDiffuse.a);"
-           + (theHasVertColor ? EOL "  aColor *= getVertColor();" : "")
+           + (theHasVertColor ? EOL "  aColor *= getVertColor(theIsFront);" : "")
            + (theHasTexColor ? EOL
                 "#if defined(THE_HAS_TEXTURE_COLOR) && defined(FRAGMENT_SHADER)" EOL
                 "  aColor *= occTexture2D(occSamplerBaseColor, TexCoord.st / TexCoord.w);" EOL
@@ -1305,7 +1315,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
            "                      in bool theIsFront)" EOL "{" EOL
            "  DirectLighting = vec3(0.0);" EOL
            "  BaseColor           = occMaterialBaseColor(theIsFront, TexCoord.st / TexCoord.w)"
-           + (theHasVertColor ? " * getVertColor()" : "") + ";"
+           + (theHasVertColor ? " * getVertColor(theIsFront)" : "") + ";"
            + EOL
            "  Emission            = occMaterialEmission(theIsFront, TexCoord.st / TexCoord.w);" EOL
            "  Metallic            = occMaterialMetallic(theIsFront, TexCoord.st / TexCoord.w);" EOL
@@ -1367,8 +1377,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
       aProgramSrc->SetTextureSetBits(Graphic3d_TextureSetBits_BaseColor);
       aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("sampler2D occSamplerBaseColor",
                                                               Graphic3d_TOS_VERTEX));
-      aSrcVertColor = EOL
-        "vec4 getVertColor(void) { return occTexture2D (occSamplerBaseColor, occTexCoord.xy); }";
+      aSrcVertColor = EOL "vec4 getVertColor(in bool theIsFront) { return occTexture2D "
+                          "(occSamplerBaseColor, occTexCoord.xy); }";
     }
   }
   else
@@ -1393,7 +1403,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
 
   if ((theBits & Graphic3d_ShaderFlags_VertColor) != 0)
   {
-    aSrcVertColor = EOL "vec4 getVertColor(void) { return occVertColor; }";
+    aSrcVertColor = (theBits & Graphic3d_ShaderFlags_VertColorFrontOnly) != 0
+                      ? EOL "vec4 getVertColor(in bool theIsFront) { return theIsFront ? "
+                            "occVertColor : vec4(1.0); }"
+                      : EOL "vec4 getVertColor(in bool theIsFront) { return occVertColor; }";
   }
 
   int aNbClipPlanes = 0;
@@ -1559,7 +1572,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramPhong
                                                Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
 
       aSrcVertExtraMain += EOL "  VertColor = occTexture2D (occSamplerBaseColor, occTexCoord.xy);";
-      aSrcFragGetVertColor = EOL "vec4 getVertColor(void) { return VertColor; }";
+      aSrcFragGetVertColor = EOL "vec4 getVertColor(in bool theIsFront) { return VertColor; }";
     }
   }
   else
@@ -1603,7 +1616,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramPhong
       Graphic3d_ShaderObject::ShaderVariable("vec4 VertColor",
                                              Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain += EOL "  VertColor = occVertColor;";
-    aSrcFragGetVertColor = EOL "vec4 getVertColor(void) { return VertColor; }";
+    aSrcFragGetVertColor = (theBits & Graphic3d_ShaderFlags_VertColorFrontOnly) != 0
+                             ? EOL "vec4 getVertColor(in bool theIsFront) { return theIsFront ? "
+                                   "VertColor : vec4(1.0); }"
+                             : EOL "vec4 getVertColor(in bool theIsFront) { return VertColor; }";
   }
 
   int aNbClipPlanes = 0;
@@ -2137,6 +2153,254 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getColoredQuadProg
           "  occSetFragColor (vec4 (mix (uColor2, c1, TexCoord.y), 1.0));" EOL "}";
 
   defaultGlslVersion(aProgSrc, "colored_quad", 0);
+  aProgSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcVert,
+                                                                  Graphic3d_TOS_VERTEX,
+                                                                  aUniforms,
+                                                                  aStageInOuts));
+  aProgSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcFrag,
+                                                                  Graphic3d_TOS_FRAGMENT,
+                                                                  aUniforms,
+                                                                  aStageInOuts));
+
+  return aProgSrc;
+}
+
+//=================================================================================================
+
+occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() const
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgSrc = new Graphic3d_ShaderProgram();
+
+  Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  // Pass only NDC.xy to the fragment; each fragment reconstructs its view-space
+  // ray and intersects it with the grid plane.
+  aStageInOuts.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 vNdc",
+                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uScaleX", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uScaleY", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uThickness", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uColor", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uAccentColor", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uAccentScaleX", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uAccentScaleY", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uAccentAngularScale", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsDrawAxis", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneOriginView", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneRefView", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneXView", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneYView", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneNView", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uGridType", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uAngularScale", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uDrawMode", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsPerspective", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsZeroToOneDepth", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsBackground", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uParallelTolerance", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uLocalOriginShift", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uAccentLocalOriginShift", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uRadialOriginShift", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uAccentRadialOriginShift",
+                                                          Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uBounds", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsBoundFade", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uArcRange", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uArcBounded", Graphic3d_TOS_FRAGMENT));
+
+  TCollection_AsciiString aSrcVert =
+    TCollection_AsciiString()
+    + EOL "const vec2 gridPlane[3] = vec2[] (" EOL
+          "  vec2(-1.0, -1.0), vec2(3.0, -1.0), vec2(-1.0, 3.0));"
+
+    EOL "void main()" EOL "{" EOL "  vec2 aVertex = gridPlane[gl_VertexID];" EOL
+          "  vNdc        = aVertex;" EOL "  gl_Position = vec4 (aVertex, 0.0, 1.0);" EOL "}";
+
+  TCollection_AsciiString aSrcFrag =
+    TCollection_AsciiString()
+    + EOL
+    "float gridLine1d (float theCoord, float theShift, float theScale, float theThickness)" EOL
+    "{" EOL "  float aCoord = (theCoord - theShift) * theScale;" EOL
+    "  float aPixelWidth = fwidth (aCoord);" EOL "  if (!(aPixelWidth >= 0.0)) { return 0.0; }" EOL
+    "  float aDist  = abs (fract (aCoord + 0.5) - 0.5);" EOL
+    "  float aWidth = max (aPixelWidth, theThickness);" EOL
+    "  if (aWidth == 0.0) { return 0.0; }" EOL "  return 1.0 - min (aDist / aWidth, 1.0);" EOL "}"
+
+    EOL "float axisLine1d (float theCoord, float theThickness)" EOL "{" EOL
+    "  float aWidth = max (fwidth (theCoord), theThickness);" EOL
+    "  if (aWidth == 0.0) { return 0.0; }" EOL
+    "  return 1.0 - min (abs (theCoord) / aWidth, 1.0);" EOL "}"
+
+    EOL "vec4 gridLines2d (vec2 theUV, vec2 theAxisUV, vec3 theColor, vec2 theScale," EOL
+    "                  vec2 theShift, bool theIsDrawAxis, float theThickness)" EOL "{" EOL
+    "  float aAlphaX = gridLine1d (theUV.x, theShift.x, theScale.x, theThickness);" EOL
+    "  float aAlphaY = gridLine1d (theUV.y, theShift.y, theScale.y, theThickness);" EOL
+    "  float aAlpha  = uDrawMode == 1 ? aAlphaX * aAlphaY : max (aAlphaX, aAlphaY);" EOL
+    "  vec4  aColor  = vec4 (theColor, aAlpha);" EOL
+    "  if (uIsDrawAxis != 0 && theIsDrawAxis && uDrawMode != 1)" EOL "  {" EOL
+    "    float anAxisX = axisLine1d (theAxisUV.y, theThickness);" EOL
+    "    float anAxisY = axisLine1d (theAxisUV.x, theThickness);" EOL
+    "    if      (anAxisX > 0.0 && anAxisY > 0.0) { aColor = vec4 (0.0, 0.0, 1.0, max "
+    "(aColor.a, max (anAxisX, anAxisY))); }" EOL
+    "    else if (anAxisX > 0.0)                  { aColor = vec4 (1.0, 0.0, 0.0, max "
+    "(aColor.a, anAxisX)); }" EOL
+    "    else if (anAxisY > 0.0)                  { aColor = vec4 (0.0, 1.0, 0.0, max "
+    "(aColor.a, anAxisY)); }" EOL "  }" EOL "  return aColor;" EOL "}"
+
+    EOL "vec4 gridLines1d (float theCoord, float theShift, float theScale, vec3 theColor, float "
+    "theThickness)" EOL "{" EOL
+    "  return vec4 (theColor, gridLine1d (theCoord, theShift, theScale, theThickness));" EOL "}"
+
+    EOL "vec4 overlayGrid (vec4 theBase, vec4 theAccent)" EOL "{" EOL
+    "  return theAccent.a >= theBase.a ? theAccent : theBase;" EOL "}"
+
+    EOL "vec3 unprojectView (float theX, float theY, float theZ)" EOL "{" EOL
+    "  vec4 aView = occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
+    "  return aView.xyz / aView.w;" EOL "}"
+
+    EOL "float gridNdcNear()" EOL "{" EOL "  return uIsZeroToOneDepth != 0 ? 0.0 : -1.0;" EOL "}"
+
+    EOL "float gridDepthFromNdc (float theNdcZ)" EOL "{" EOL
+    "  return uIsZeroToOneDepth != 0 ? theNdcZ : (theNdcZ * 0.5 + 0.5);" EOL "}"
+
+    EOL "float fragmentDepthFromView (vec3 theViewPnt)" EOL "{" EOL
+    "  vec4 aClip = occProjectionMatrix * vec4 (theViewPnt, 1.0);" EOL
+    "  float aNdcZ = aClip.z / aClip.w;" EOL "  return gridDepthFromNdc (aNdcZ);" EOL "}"
+
+    EOL "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
+    "  vec3 aRayOrigin = uIsPerspective != 0 ? vec3 (0.0) : theNearPoint;" EOL
+    "  vec3 aRayTarget = theFarPoint;" EOL "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
+    "  float aDirLen = length (aDir);" EOL "  if (aDirLen == 0.0) { return false; }" EOL
+    "  float aDenomN = dot (uPlaneNView, aDir / aDirLen);" EOL
+    "  if (abs (aDenomN) <= uParallelTolerance) { return false; }" EOL
+    "  float aDenom = dot (uPlaneNView, aDir);" EOL
+    "  float aT = dot (uPlaneNView, uPlaneOriginView - aRayOrigin) / aDenom;" EOL
+    "  if (uIsBackground == 0 && uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL
+    "    theHit = theNearPoint;" EOL "    return false;" EOL "  }" EOL
+    "  theHit = aRayOrigin + aT * aDir;" EOL "  return true;" EOL "}" EOL
+
+    EOL "const float GRID_TWO_PI = 6.28318530718;"
+
+    EOL "float gridNormalizeAngle (float theAngle)" EOL "{" EOL
+    "  float anAngle = mod (theAngle, GRID_TWO_PI);" EOL
+    "  if (anAngle < 0.0) { anAngle += GRID_TWO_PI; }" EOL "  return anAngle;" EOL "}"
+
+    EOL "float gridPositiveAngleSpan (float theStart, float theEnd)" EOL "{" EOL
+    "  float aSpan = mod (theEnd - theStart, GRID_TWO_PI);" EOL
+    "  if (aSpan < 0.0) { aSpan += GRID_TWO_PI; }" EOL
+    "  if (abs (aSpan) <= uParallelTolerance && abs (theEnd - theStart) >= GRID_TWO_PI - "
+    "uParallelTolerance)" EOL "  {" EOL "    return GRID_TWO_PI;" EOL "  }" EOL
+    "  return aSpan;" EOL "}"
+
+    EOL "bool gridAngleInArc (float theAngle)" EOL "{" EOL
+    "  float aSpan = gridPositiveAngleSpan (uArcRange.x, uArcRange.y);" EOL
+    "  if (aSpan >= GRID_TWO_PI - uParallelTolerance) { return true; }" EOL
+    "  float aDelta = gridNormalizeAngle (theAngle) - gridNormalizeAngle (uArcRange.x);" EOL
+    "  if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL
+    "  return aDelta <= aSpan + uParallelTolerance;" EOL "}"
+
+    EOL "void main()" EOL "{"
+    // Intersect in view space: the camera is the numerical origin, so zoom and
+    // world-coordinate magnitude do not destabilize the line phase.
+    EOL "  vec3 aNearPoint = unprojectView (vNdc.x, vNdc.y, gridNdcNear());" EOL
+    "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL "  vec3 aHit;" EOL
+    "  if (!intersectPlaneView (aNearPoint, aFarPoint, aHit)) { discard; }" EOL
+    "  float aFragDepth = fragmentDepthFromView (aHit);" EOL "  if (uIsBackground == 0)" EOL
+    "  {" EOL "    if (aFragDepth < 0.0) { discard; }" EOL
+    "    gl_FragDepth = min (aFragDepth, 1.0);" EOL "  }" EOL "  else" EOL "  {" EOL
+    "    gl_FragDepth = 1.0;" EOL "  }" EOL "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
+    "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));" EOL
+    "  vec3 aLocalGrid3 = aHit - uPlaneRefView;" EOL
+    "  vec2 aLocalGrid  = vec2 (dot (aLocalGrid3, uPlaneXView), dot (aLocalGrid3, "
+    "uPlaneYView));"
+
+    // Bounded work area. Rectangular, radial and angular clipping can be mixed.
+    EOL "  float aR = length (aLocal);" EOL "  float aA = atan (aLocal.y, aLocal.x);" EOL
+    "  float aBoundFade = 1.0;" EOL "  if (uBounds.z > 0.0)" EOL "  {" EOL
+    "    float aFwBR = fwidth (aR);" EOL "    if (aR > uBounds.z) { discard; }" EOL
+    "    if (uIsBoundFade != 0)" EOL "    {" EOL
+    "      aBoundFade *= 1.0 - smoothstep (uBounds.z - aFwBR, uBounds.z, aR);" EOL "    }" EOL
+    "  }" EOL "  if (uArcBounded != 0 && !gridAngleInArc (aA)) { discard; }" EOL
+    "  if (uBounds.x > 0.0)" EOL "  {" EOL
+    // Keep the bounded area geometrically strict; fwidth is used only for the
+    // optional fade inside the boundary, never to expand the valid area.
+    "    float aFwBX = fwidth (abs (aLocal.x));" EOL
+    "    if (abs (aLocal.x) > uBounds.x) { discard; }" EOL "    if (uIsBoundFade != 0)" EOL
+    "    {" EOL "      aBoundFade *= 1.0 - smoothstep (uBounds.x - aFwBX, uBounds.x, abs "
+    "(aLocal.x));" EOL "    }" EOL "  }" EOL "  if (uBounds.y > 0.0)" EOL "  {" EOL
+    "    float aFwBY = fwidth (abs (aLocal.y));" EOL
+    "    if (abs (aLocal.y) > uBounds.y) { discard; }" EOL "    if (uIsBoundFade != 0)" EOL
+    "    {" EOL "      aBoundFade *= 1.0 - smoothstep (uBounds.y - aFwBY, uBounds.y, abs "
+    "(aLocal.y));" EOL "    }" EOL "  }"
+
+    // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
+    EOL "  vec2 aGridUv;" EOL "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL
+    "  {" EOL "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
+    "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aLocalGrid;" EOL
+    "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
+    "  vec2 aGridShift = uGridType == 1 ? vec2 (uRadialOriginShift, 0.0) : vec2 (0.0);" EOL
+    "  vec4 aColor = gridLines2d (aGridUv, aAxisUv, uColor, aScale, aGridShift, "
+    "uGridType == 0, uThickness);" EOL "  if (uDrawMode != 1)" EOL "  {" EOL
+    "    if (uGridType == 0)" EOL "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aLocal.x, uAccentLocalOriginShift.x, "
+    "uAccentScaleX, uAccentColor, uThickness));" EOL "      }" EOL
+    "      if (uAccentScaleY > 0.0)" EOL "      {" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aLocal.y, uAccentLocalOriginShift.y, "
+    "uAccentScaleY, uAccentColor, uThickness));" EOL "      }" EOL "    }" EOL "    else" EOL
+    "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aR, uAccentRadialOriginShift, "
+    "uAccentScaleX, uAccentColor, uThickness));" EOL "      }" EOL
+    "      if (uAccentAngularScale > 0.0)" EOL "      {" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aA, 0.0, uAccentAngularScale, "
+    "uAccentColor, uThickness));" EOL "      }" EOL "    }" EOL
+    // For circular grid, paint X/Y axis lines explicitly using plane-local coords.
+    "    if (uIsDrawAxis != 0 && uGridType == 1)" EOL "    {" EOL
+    "      float anAxisX = axisLine1d (aAxisUv.y, uThickness);" EOL
+    "      float anAxisY = axisLine1d (aAxisUv.x, uThickness);" EOL
+    "      if (anAxisX > 0.0 && anAxisY > 0.0)" EOL "      {" EOL
+    "        aColor = vec4 (0.0, 0.0, 1.0, 1.0);" EOL "      }" EOL
+    "      else if (anAxisX > 0.0)" EOL "      {" EOL
+    "        aColor = vec4 (1.0, 0.0, 0.0, max (aColor.a, anAxisX));" EOL "      }" EOL
+    "      else if (anAxisY > 0.0)" EOL "      {" EOL
+    "        aColor = vec4 (0.0, 1.0, 0.0, max (aColor.a, anAxisY));" EOL "      }" EOL "    }" EOL
+    "  }"
+
+    EOL "  if (aColor.a == 0.0) { discard; }" EOL "  aColor.a *= aBoundFade;" EOL
+    "  occFragColor = aColor;" EOL "}";
+
+  // Requires gl_VertexID (GL 3.0/ES 3.0+) and fwidth.
+  if (myGapi == Aspect_GraphicsLibrary_OpenGL)
+  {
+    aProgSrc->SetHeader(IsGapiGreaterEqual(3, 2) ? "#version 150" : "#version 130");
+  }
+  else if (myGapi == Aspect_GraphicsLibrary_OpenGLES && IsGapiGreaterEqual(3, 0))
+  {
+    aProgSrc->SetHeader("#version 300 es");
+  }
+
   aProgSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcVert,
                                                                   Graphic3d_TOS_VERTEX,
                                                                   aUniforms,

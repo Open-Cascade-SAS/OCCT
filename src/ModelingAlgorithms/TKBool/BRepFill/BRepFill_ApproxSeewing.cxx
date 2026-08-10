@@ -100,7 +100,9 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   for (i = 2; i < NbPoints; i++)
   {
     while (LP(Index).X() < Corde)
+    {
       Index++;
+    }
     Alpha = (Corde - LP(Index - 1).X()) / (LP(Index).X() - LP(Index - 1).X());
     U     = LP(Index - 1).Y() + Alpha * (LP(Index).Y() - LP(Index - 1).Y());
     AppDef_MultiPointConstraint MPC(1, 2);

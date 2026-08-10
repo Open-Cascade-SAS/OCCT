@@ -33,7 +33,9 @@ void RWStepVisual_RWCurveStyleFont::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "curve_style_font"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -59,7 +61,9 @@ void RWStepVisual_RWCurveStyleFont::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_CurveStyleFontPattern),
                            anent2))
+      {
         aPatternList->SetValue(i2, anent2);
+      }
     }
   }
 

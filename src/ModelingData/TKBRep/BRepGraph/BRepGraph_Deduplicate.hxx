@@ -15,9 +15,8 @@
 #define _BRepGraph_Deduplicate_HeaderFile
 
 #include <BRepGraph.hxx>
-
 #include <BRepGraph_NodeId.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -46,23 +45,26 @@ public:
   //! Result counters for diagnostics and tests.
   struct Result
   {
-    int  NbCanonicalSurfaces  = 0;
-    int  NbCanonicalCurves    = 0;
-    int  NbSurfaceRewrites    = 0;
-    int  NbCurveRewrites      = 0;
-    int  NbNullifiedSurfaces  = 0;
-    int  NbNullifiedCurves    = 0;
-    int  NbHistoryRecords     = 0;
-    bool IsEntityMergeApplied = false;
+    uint32_t NbCanonicalSurfaces  = 0;
+    uint32_t NbCanonicalCurves    = 0;
+    uint32_t NbSurfaceRewrites    = 0;
+    uint32_t NbCurveRewrites      = 0;
+    uint32_t NbNullifiedSurfaces  = 0;
+    uint32_t NbNullifiedCurves    = 0;
+    uint32_t NbHistoryRecords     = 0;
+    bool     IsEntityMergeApplied = false;
 
     //! Topology definition merge counters (active when MergeEntitiesWhenSafe = true).
-    int NbMergedVertices = 0;
-    int NbMergedEdges    = 0;
-    int NbMergedWires    = 0;
-    int NbMergedFaces    = 0;
+    uint32_t NbMergedVertices        = 0;
+    uint32_t NbMergedEdges           = 0;
+    uint32_t NbMergedWires           = 0;
+    uint32_t NbMergedFaces           = 0;
+    uint32_t NbReorderedWires        = 0;
+    uint32_t NbToleranceOrderedWires = 0;
+    uint32_t NbPartialOrderedWires   = 0;
 
-    NCollection_Vector<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
-    NCollection_Vector<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
+    NCollection_LinearVector<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
+    NCollection_LinearVector<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
   };
 
   //! Run deduplication on a built graph.
@@ -77,8 +79,10 @@ public:
   [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
-private:
   BRepGraph_Deduplicate() = delete;
+
+private:
+  static void CanonicalizeWireOrders(BRepGraph& theGraph, Result& theResult);
 };
 
 #endif // _BRepGraph_Deduplicate_HeaderFile

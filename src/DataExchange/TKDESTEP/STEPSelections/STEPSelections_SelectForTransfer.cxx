@@ -45,6 +45,8 @@ Interface_EntityIterator STEPSelections_SelectForTransfer::RootResult(
     Reader()->TransientProcess()->RootsForTransfer();
   int nb = roots->Length();
   for (int i = 1; i <= nb; i++)
+  {
     iter.GetOneItem(roots->Value(i));
+  }
   return iter;
 }

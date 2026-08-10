@@ -430,7 +430,9 @@ void PrsMgr_PresentableObject::RemoveClipPlane(const occ::handle<Graphic3d_ClipP
   {
     const occ::handle<Graphic3d_ClipPlane>& aPlane = aPlaneIt.Value();
     if (aPlane != thePlane)
+    {
       continue;
+    }
 
     myClipPlanes->Remove(aPlaneIt);
     UpdateClipping();

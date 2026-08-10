@@ -18,7 +18,7 @@
 #define _BSplCLib_MultDistribution_HeaderFile
 
 //! This enumeration describes the form of the
-//! sequence of mutiplicities. MultDistribution is:
+//! sequence of multiplicities. MultDistribution is:
 //!
 //! Constant if all the multiplicities have the same
 //! value.

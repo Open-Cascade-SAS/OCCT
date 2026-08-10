@@ -34,7 +34,9 @@ void RWStepRepr_RWPerpendicularTo::ReadStep(const occ::handle<StepData_StepReade
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "perpendicular_to"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

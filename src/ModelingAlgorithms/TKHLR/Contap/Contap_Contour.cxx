@@ -320,10 +320,14 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
           {
             double aSqDist = L.Point(j).Value().SquareDistance(L.Point(j - 1).Value());
             if (aSqDist > gp::Resolution())
+            {
               LineOn2S->Add(L.Point(j));
+            }
           }
           if (LineOn2S->NbPoints() < 2)
+          {
             continue;
+          }
           Contap_Line Line;
           Line.SetLineOn2S(LineOn2S);
           Contap_Point pvtx = L.Vertex(i);
@@ -394,7 +398,9 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
     //-- std::cout<<" Circ -> "<<nbvtx<<" vtx"<<std::endl;
     bool novtx = true;
     if (nbvtx)
+    {
       novtx = false;
+    }
     for (int i = 1; i < nbvtx || novtx; i++)
     {
       double firstp = 0, lastp = M_PI + M_PI;
@@ -1393,7 +1399,7 @@ void ComputeInternalPoints(Contap_Line&         Line,
 
           if (!rsnld.IsDone())
           {
-            std::cout << "Echec recherche internal points" << std::endl;
+            std::cout << "Echec recherche internal points" << '\n';
             solution = true;
             ok       = false;
           }
@@ -1437,7 +1443,7 @@ void ComputeInternalPoints(Contap_Line&         Line,
             }
             else
             { // on n est pas sur une solution
-              std::cout << "Echec recherche internal points" << std::endl;
+              std::cout << "Echec recherche internal points" << '\n';
               solution = true;
               ok       = false;
             }
@@ -1604,11 +1610,17 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
     dx = dy = dz = 1.0;
   }
   if (dx < dy)
+  {
     dx = dy;
+  }
   if (dx < dz)
+  {
     dx = dz;
+  }
   if (dx > 10000.0)
+  {
     dx = 10000.0;
+  }
   Fleche *= dx;
   TolArc *= dx;
   //-- ********************************************************************************
@@ -2055,7 +2067,9 @@ static void PutPointsOnLine(const Contap_TheSearch&               solrst,
           {
             tgtrst = d1v.Crossed(normale);
             if (d2d.X() < 0.0)
+            {
               tgtrst.Reverse();
+            }
           }
           else
           {

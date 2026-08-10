@@ -34,7 +34,9 @@ void RWStepGeom_RWOrientedSurface::ReadStep(const occ::handle<StepData_StepReade
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "oriented_surface"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

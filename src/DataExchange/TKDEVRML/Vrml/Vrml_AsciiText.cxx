@@ -95,7 +95,9 @@ Standard_OStream& Vrml_AsciiText::Print(Standard_OStream& anOStream) const
     {
       anOStream << '"' << myString->Value(i) << '"';
       if (i < myString->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }

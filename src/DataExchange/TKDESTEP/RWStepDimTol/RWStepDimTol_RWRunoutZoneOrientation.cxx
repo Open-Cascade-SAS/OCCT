@@ -33,7 +33,9 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "runout_zone_orientation"))
+  {
     return;
+  }
 
   // Own fields of RunoutZoneOrientation
 

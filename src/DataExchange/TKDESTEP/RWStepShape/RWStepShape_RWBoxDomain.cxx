@@ -29,7 +29,9 @@ void RWStepShape_RWBoxDomain::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "box_domain"))
+  {
     return;
+  }
 
   // --- own field : corner ---
 

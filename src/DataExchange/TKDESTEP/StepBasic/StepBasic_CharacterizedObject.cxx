@@ -41,7 +41,9 @@ void StepBasic_CharacterizedObject::Init(const occ::handle<TCollection_HAsciiStr
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 }
 
 //=================================================================================================

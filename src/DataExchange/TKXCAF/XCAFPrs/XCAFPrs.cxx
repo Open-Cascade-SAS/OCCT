@@ -60,6 +60,7 @@ static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& theaPrevLoc
   NCollection_Sequence<TDF_Label> aLabSeq;
   theSTool->GetSHUONextUsage(theSHUOlab, aLabSeq);
   if (aLabSeq.Length() >= 1)
+  {
     for (int i = 1; i <= aLabSeq.Length(); i++)
     {
       TDF_Label       aSubCompL = aLabSeq.Value(i);
@@ -67,23 +68,30 @@ static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& theaPrevLoc
       // create new map of laocation (to not merge locations from different shapes)
       NCollection_IndexedMap<TopLoc_Location> aNewPrevLocMap;
       for (int m = 1; m <= theaPrevLocMap.Extent(); m++)
+      {
         aNewPrevLocMap.Add(theaPrevLocMap.FindKey(m));
+      }
       aNewPrevLocMap.Add(compLoc);
       // got for the new sublocations and corresponding shape
       getShapesOfSHUO(aNewPrevLocMap, theSTool, aSubCompL, theSHUOShapeSeq);
     }
+  }
   else
   {
     TopoDS_Shape aSHUO_NUSh = theSTool->GetShape(theSHUOlab.Father());
     if (aSHUO_NUSh.IsNull())
+    {
       return false;
+    }
     // cause got shape with location already.
     TopLoc_Location nullLoc;
     aSHUO_NUSh.Location(nullLoc);
     // multiply the locations
     int intMapLenght = theaPrevLocMap.Extent();
     if (intMapLenght < 1)
+    {
       return false; // should not be, but to avoid exception...?
+    }
     TopLoc_Location SupcompLoc;
     SupcompLoc = theaPrevLocMap.FindKey(intMapLenght);
     if (intMapLenght > 1)
@@ -125,7 +133,9 @@ void XCAFPrs::CollectStyleSettings(
         occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(theLabel);
         Quantity_ColorRGBA             aColor;
         if (aColorTool->GetColor(aLayer, XCAFDoc_ColorGen, aColor))
+        {
           aLayerColor = aColor;
+        }
       }
       TopLoc_Location aLocSub = theLoc.Multiplied(XCAFDoc_ShapeTool::GetLocation(theLabel));
       CollectStyleSettings(aLabelRef, aLocSub, theSettings, aLayerColor);
@@ -283,11 +293,14 @@ void XCAFPrs::CollectStyleSettings(
           const TopoDS_Shape& aShuoShape = aShuoShapeIter.Value();
           XCAFPrs_Style*      aMapStyle  = theSettings.ChangeSeek(aShuoShape);
           if (aMapStyle == nullptr)
+          {
             theSettings.Add(aShuoShape, aShuoStyle);
+          }
           else
+          {
             *aMapStyle = aShuoStyle;
+          }
         }
-        continue;
       }
     }
 
@@ -307,9 +320,13 @@ void XCAFPrs::CollectStyleSettings(
     aSubshape.Move(theLoc, false);
     XCAFPrs_Style* aMapStyle = theSettings.ChangeSeek(aSubshape);
     if (aMapStyle == nullptr)
+    {
       theSettings.Add(aSubshape, aStyle);
+    }
     else
+    {
       *aMapStyle = aStyle;
+    }
   }
 }
 

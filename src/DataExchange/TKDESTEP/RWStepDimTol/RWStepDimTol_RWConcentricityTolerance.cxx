@@ -41,7 +41,9 @@ void RWStepDimTol_RWConcentricityTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "concentricity_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

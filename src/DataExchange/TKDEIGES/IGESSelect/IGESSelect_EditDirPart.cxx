@@ -201,34 +201,50 @@ bool IGESSelect_EditDirPart::Load(const occ::handle<IFSelect_EditForm>&        f
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
   occ::handle<IGESData_IGESEntity> iges = occ::down_cast<IGESData_IGESEntity>(ent);
   if (iges.IsNull())
+  {
     return false;
+  }
 
   form->LoadValue(1, new TCollection_HAsciiString(iges->TypeNumber()));
   form->LoadValue(2, new TCollection_HAsciiString(iges->FormNumber()));
   if (iges->HasStructure())
+  {
     form->LoadValue(3, modl->StringLabel(iges->Structure()));
+  }
 
   form->LoadValue(4, DefTypeName(iges->DefLineFont()));
   form->LoadValue(5, new TCollection_HAsciiString(iges->RankLineFont()));
   if (iges->DefLineFont() == IGESData_DefReference)
+  {
     form->LoadValue(6, modl->StringLabel(iges->LineFont()));
+  }
 
   form->LoadValue(7, DefListName(iges->DefLevel()));
   form->LoadValue(8, new TCollection_HAsciiString(iges->Level()));
   if (iges->DefLevel() == IGESData_DefSeveral)
+  {
     form->LoadValue(9, modl->StringLabel(iges->LevelList()));
+  }
 
   form->LoadValue(10, DefListName(iges->DefView()));
   if (iges->DefView() != IGESData_DefNone)
+  {
     form->LoadValue(11, modl->StringLabel(iges->View()));
+  }
 
   if (iges->HasTransf())
+  {
     form->LoadValue(12, modl->StringLabel(iges->Transf()));
+  }
   if (iges->HasLabelDisplay())
+  {
     form->LoadValue(13, modl->StringLabel(iges->LabelDisplay()));
+  }
 
   form->LoadValue(14, new TCollection_HAsciiString(iges->BlankStatus()));
   form->LoadValue(15, new TCollection_HAsciiString(iges->SubordinateStatus()));
@@ -240,11 +256,15 @@ bool IGESSelect_EditDirPart::Load(const occ::handle<IFSelect_EditForm>&        f
   form->LoadValue(19, DefTypeName(iges->DefColor()));
   form->LoadValue(20, new TCollection_HAsciiString(iges->RankColor()));
   if (iges->DefColor() == IGESData_DefReference)
+  {
     form->LoadValue(21, modl->StringLabel(iges->Color()));
+  }
 
   form->LoadValue(22, iges->ShortLabel());
   if (iges->HasSubScriptNumber())
+  {
     form->LoadValue(23, new TCollection_HAsciiString(iges->SubScriptNumber()));
+  }
 
   return true;
 }
@@ -261,57 +281,85 @@ bool IGESSelect_EditDirPart::Update(const occ::handle<IFSelect_EditForm>&       
   if (num == 5)
   {
     if (val.IsNull())
+    {
       form->Touch(4, DefTypeName(IGESData_DefVoid));
+    }
     else
+    {
       form->Touch(4, DefTypeName(IGESData_DefValue));
+    }
   }
   if (num == 6)
   {
     if (val.IsNull())
+    {
       form->Touch(4, DefTypeName(IGESData_DefVoid));
+    }
     else
+    {
       form->Touch(4, DefTypeName(IGESData_DefReference));
+    }
   }
 
   //    Level
   if (num == 8)
   {
     if (val.IsNull())
+    {
       form->Touch(7, DefListName(IGESData_DefNone));
+    }
     else
+    {
       form->Touch(7, DefListName(IGESData_DefOne));
+    }
   }
   if (num == 9)
   {
     if (val.IsNull())
+    {
       form->Touch(7, DefListName(IGESData_DefNone));
+    }
     else
+    {
       form->Touch(7, DefListName(IGESData_DefSeveral));
+    }
   }
 
   //    View
   if (num == 11)
   {
     if (val.IsNull())
+    {
       form->Touch(10, DefListName(IGESData_DefNone));
+    }
     else
+    {
       form->Touch(10, DefListName(IGESData_DefOne));
+    }
   }
 
   //    Color
   if (num == 20)
   {
     if (val.IsNull())
+    {
       form->Touch(19, DefTypeName(IGESData_DefVoid));
+    }
     else
+    {
       form->Touch(19, DefTypeName(IGESData_DefValue));
+    }
   }
   if (num == 21)
   {
     if (val.IsNull())
+    {
       form->Touch(19, DefTypeName(IGESData_DefVoid));
+    }
     else
+    {
       form->Touch(19, DefTypeName(IGESData_DefReference));
+    }
   }
 
   return true;
@@ -323,10 +371,14 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
   occ::handle<IGESData_IGESEntity> iges = occ::down_cast<IGESData_IGESEntity>(ent);
   if (iges.IsNull())
+  {
     return false;
+  }
   occ::handle<IGESData_IGESEntity>         sub;
   occ::handle<IGESData_LineFontEntity>     lfent;
   occ::handle<IGESData_LevelListEntity>    levlist;
@@ -344,13 +396,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     sub.Nullify();
     num = 0;
     if (!str.IsNull())
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     else
+    {
       num = -1;
+    }
     if (num > 0)
+    {
       sub = modl->Entity(num);
+    }
     if (num != 0)
+    {
       iges->InitDirFieldEntity(3, sub);
+    }
   }
 
   if (form->IsModified(5))
@@ -358,9 +418,13 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     str = form->EditedValue(5);
     lfent.Nullify();
     if (str.IsNull())
+    {
       num = 0;
+    }
     else
+    {
       num = str->IntegerValue();
+    }
     iges->InitLineFont(lfent, num);
   }
   if (form->IsModified(6))
@@ -369,13 +433,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     lfent.Nullify();
     num = 0;
     if (str.IsNull())
+    {
       num = -1;
+    }
     else
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     if (num > 0)
+    {
       lfent = GetCasted(IGESData_LineFontEntity, modl->Entity(num));
+    }
     if (num < 0 || !lfent.IsNull())
+    {
       iges->InitLineFont(lfent, 0);
+    }
   }
 
   if (form->IsModified(8))
@@ -383,9 +455,13 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     str = form->EditedValue(8);
     levlist.Nullify();
     if (str.IsNull())
+    {
       num = 0;
+    }
     else
+    {
       num = str->IntegerValue();
+    }
     iges->InitLevel(levlist, num);
   }
   if (form->IsModified(9))
@@ -394,13 +470,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     levlist.Nullify();
     num = 0;
     if (str.IsNull())
+    {
       num = -1;
+    }
     else
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     if (num > 0)
+    {
       levlist = GetCasted(IGESData_LevelListEntity, modl->Entity(num));
+    }
     if (num < 0 || !levlist.IsNull())
+    {
       iges->InitLevel(levlist, 0);
+    }
   }
 
   if (form->IsModified(11))
@@ -409,13 +493,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     view.Nullify();
     num = 0;
     if (!str.IsNull())
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     else
+    {
       num = -1;
+    }
     if (num > 0)
+    {
       view = GetCasted(IGESData_ViewKindEntity, modl->Entity(num));
+    }
     if (num != 0 || !view.IsNull())
+    {
       iges->InitView(view);
+    }
   }
 
   if (form->IsModified(12))
@@ -424,13 +516,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     transf.Nullify();
     num = 0;
     if (!str.IsNull())
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     else
+    {
       num = -1;
+    }
     if (num > 0)
+    {
       transf = GetCasted(IGESData_TransfEntity, modl->Entity(num));
+    }
     if (num != 0 || !transf.IsNull())
+    {
       iges->InitTransf(transf);
+    }
   }
 
   if (form->IsModified(13))
@@ -439,13 +539,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     labdisp.Nullify();
     num = 0;
     if (!str.IsNull())
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     else
+    {
       num = -1;
+    }
     if (num > 0)
+    {
       labdisp = GetCasted(IGESData_LabelDisplayEntity, modl->Entity(num));
+    }
     if (num != 0 || !labdisp.IsNull())
+    {
       iges->InitDirFieldEntity(8, labdisp);
+    }
   }
 
   if (form->IsModified(14) || form->IsModified(15) || form->IsModified(16) || form->IsModified(17))
@@ -456,13 +564,21 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     n3 = iges->UseFlag();
     n4 = iges->HierarchyStatus();
     if (form->IsModified(14))
+    {
       n1 = form->EditedValue(14)->IntegerValue();
+    }
     if (form->IsModified(15))
+    {
       n2 = form->EditedValue(15)->IntegerValue();
+    }
     if (form->IsModified(16))
+    {
       n3 = form->EditedValue(16)->IntegerValue();
+    }
     if (form->IsModified(17))
+    {
       n4 = form->EditedValue(17)->IntegerValue();
+    }
     iges->InitStatus(n1, n2, n3, n4);
   }
 
@@ -471,7 +587,9 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     str = form->EditedValue(18);
     num = 0;
     if (!str.IsNull())
+    {
       num = str->IntegerValue();
+    }
     iges->InitMisc(iges->Structure(), iges->LabelDisplay(), num);
   }
 
@@ -480,9 +598,13 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     str = form->EditedValue(20);
     color.Nullify();
     if (str.IsNull())
+    {
       num = 0;
+    }
     else
+    {
       num = str->IntegerValue();
+    }
     iges->InitColor(color, num);
   }
   if (form->IsModified(21))
@@ -491,31 +613,47 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
     color.Nullify();
     num = 0;
     if (str.IsNull())
+    {
       num = -1;
+    }
     else
+    {
       num = modl->NextNumberForLabel(str->ToCString());
+    }
     if (num > 0)
+    {
       color = GetCasted(IGESData_ColorEntity, modl->Entity(num));
+    }
     if (num < 0 || !color.IsNull())
+    {
       iges->InitColor(color, 0);
+    }
   }
 
   if (form->IsModified(22) || form->IsModified(23))
   {
     num = -1;
     if (iges->HasSubScriptNumber())
+    {
       num = iges->SubScriptNumber();
+    }
     if (form->IsModified(23))
     {
       str = form->EditedValue(23);
       if (str.IsNull())
+      {
         num = -1;
+      }
       else
+      {
         num = str->IntegerValue();
+      }
     }
     str = iges->ShortLabel();
     if (form->IsModified(22))
+    {
       str = form->EditedValue(22);
+    }
     iges->SetLabel(str, num);
   }
 

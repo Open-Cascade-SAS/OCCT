@@ -150,7 +150,9 @@ int Geom2dGcc_Circ2dTanCenGeo::NbSolutions() const
 gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::ThisSolution(const int Index) const
 {
   if (Index > NbrSol || Index <= 0)
+  {
     throw Standard_OutOfRange();
+  }
 
   return cirsol(Index);
 }

@@ -36,7 +36,9 @@ void RWStepElement_RWSurfaceElementProperty::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "surface_element_property"))
+  {
     return;
+  }
 
   // Own fields of SurfaceElementProperty
 

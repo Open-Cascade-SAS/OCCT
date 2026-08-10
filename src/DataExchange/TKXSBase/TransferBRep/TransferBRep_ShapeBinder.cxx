@@ -35,7 +35,9 @@ TransferBRep_ShapeBinder::TransferBRep_ShapeBinder(const TopoDS_Shape& shape)
 TopAbs_ShapeEnum TransferBRep_ShapeBinder::ShapeType() const
 {
   if (!HasResult())
+  {
     return TopAbs_SHAPE;
+  }
   return Result().ShapeType();
 }
 

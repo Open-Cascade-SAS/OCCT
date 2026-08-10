@@ -41,7 +41,9 @@ void RWStepFEA_RWCurve3dElementProperty::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "curve3d_element_property"))
+  {
     return;
+  }
 
   // Own fields of Curve3dElementProperty
 

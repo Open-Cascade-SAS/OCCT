@@ -23,13 +23,21 @@ StepVisual_InvisibilityContext::StepVisual_InvisibilityContext() = default;
 int StepVisual_InvisibilityContext::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationRepresentation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationSet)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_DraughtingModel)))
+  {
     return 3;
+  }
   return 0;
 }
 

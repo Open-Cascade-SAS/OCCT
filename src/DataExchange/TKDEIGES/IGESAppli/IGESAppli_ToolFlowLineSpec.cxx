@@ -42,14 +42,22 @@ void IGESAppli_ToolFlowLineSpec::ReadOwnParams(const occ::handle<IGESAppli_FlowL
   int                                                                     num;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNameAndModifiers;
   if (!PR.ReadInteger(PR.Current(), "Number of property values", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempNameAndModifiers = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of property values: Not Positive");
+  }
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!tempNameAndModifiers.IsNull())
+  {
     PR.ReadTexts(PR.CurrentList(num), "Name and Modifiers", tempNameAndModifiers);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNameAndModifiers);
@@ -61,7 +69,9 @@ void IGESAppli_ToolFlowLineSpec::WriteOwnParams(const occ::handle<IGESAppli_Flow
   int i, num;
   IW.Send(ent->NbPropertyValues());
   for (num = ent->NbPropertyValues(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->Modifier(i));
+  }
 }
 
 void IGESAppli_ToolFlowLineSpec::OwnShared(const occ::handle<IGESAppli_FlowLineSpec>& /* ent */,
@@ -77,7 +87,9 @@ void IGESAppli_ToolFlowLineSpec::OwnCopy(const occ::handle<IGESAppli_FlowLineSpe
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNameAndModifiers =
     new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (int i = 1; i <= num; i++)
+  {
     tempNameAndModifiers->SetValue(i, new TCollection_HAsciiString(another->Modifier(i)));
+  }
   ent->Init(tempNameAndModifiers);
 }
 

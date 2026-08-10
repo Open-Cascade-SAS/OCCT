@@ -75,14 +75,20 @@ occ::handle<IGESData_IGESModel> IGESData_BasicEditor::Model() const
 bool IGESData_BasicEditor::SetUnitFlag(const int flag)
 {
   if (themodel.IsNull())
+  {
     return false;
+  }
   if (flag < 1 || flag > 11)
+  {
     return false;
+  }
   IGESData_GlobalSection                GS   = themodel->GlobalSection();
   occ::handle<TCollection_HAsciiString> name = GS.UnitName();
   const char*                           nam  = IGESData_BasicEditor::UnitFlagName(flag);
   if (nam[0] != '\0')
+  {
     name = new TCollection_HAsciiString(nam);
+  }
   GS.SetUnitFlag(flag);
   GS.SetUnitName(name);
   themodel->SetGlobalSection(GS);
@@ -93,7 +99,9 @@ bool IGESData_BasicEditor::SetUnitFlag(const int flag)
 bool IGESData_BasicEditor::SetUnitValue(const double val)
 {
   if (val <= 0.)
+  {
     return false;
+  }
   double vmm = val * themodel->GlobalSection().CascadeUnit();
   // #73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
   // if (Interface_Static::IVal("read.scale.unit") == 1) vmm = vmm * 1000.;
@@ -107,25 +115,45 @@ bool IGESData_BasicEditor::SetUnitValue(const double val)
 int IGESData_BasicEditor::GetFlagByValue(const double theValue)
 {
   if (theValue >= 25. && theValue <= 26.)
+  {
     return 1;
+  }
   if (theValue >= 0.9 && theValue <= 1.1)
+  {
     return 2;
+  }
   if (theValue >= 300. && theValue <= 310.)
+  {
     return 4;
+  }
   if (theValue >= 1600000. && theValue <= 1620000.)
+  {
     return 5;
+  }
   if (theValue >= 990. && theValue <= 1010.)
+  {
     return 6;
+  }
   if (theValue >= 990000. && theValue <= 1010000.)
+  {
     return 7;
+  }
   if (theValue >= 0.025 && theValue <= 0.026)
+  {
     return 8;
+  }
   if (theValue >= 0.0009 && theValue <= 0.0011)
+  {
     return 9;
+  }
   if (theValue >= 9. && theValue <= 11.)
+  {
     return 10;
+  }
   if (theValue >= 0.000025 && theValue <= 0.000026)
+  {
     return 11;
+  }
   return 0;
 }
 
@@ -134,33 +162,45 @@ int IGESData_BasicEditor::GetFlagByValue(const double theValue)
 bool IGESData_BasicEditor::SetUnitName(const char* const name)
 {
   if (themodel.IsNull())
+  {
     return false;
+  }
   int                    flag = IGESData_BasicEditor::UnitNameFlag(name);
   IGESData_GlobalSection GS   = themodel->GlobalSection();
   if (GS.UnitFlag() == 3)
   {
     char* nam = (char*)name;
     if (name[1] == 'H')
+    {
       nam = (char*)&name[2];
+    }
     GS.SetUnitName(new TCollection_HAsciiString(nam));
     themodel->SetGlobalSection(GS);
     return true;
   }
   if (flag > 0)
+  {
     return SetUnitFlag(flag);
+  }
   return (flag > 0);
 }
 
 void IGESData_BasicEditor::ApplyUnit(const bool enforce)
 {
   if (themodel.IsNull())
+  {
     return;
+  }
   if (!enforce && !theunit)
+  {
     return;
+  }
   IGESData_GlobalSection GS   = themodel->GlobalSection();
   double                 unit = GS.UnitValue();
   if (unit <= 0.)
+  {
     return;
+  }
   if (unit != 1.)
   {
     GS.SetMaxLineWeight(GS.MaxLineWeight() / unit);
@@ -176,10 +216,14 @@ void IGESData_BasicEditor::ApplyUnit(const bool enforce)
 void IGESData_BasicEditor::ComputeStatus()
 {
   if (themodel.IsNull())
+  {
     return;
+  }
   int nb = themodel->NbEntities();
   if (nb == 0)
+  {
     return;
+  }
   NCollection_Array1<int> subs(0, nb);
   subs.Init(0);                         // gere Subordinate Status
   Interface_Graph G(themodel, theglib); // gere & memorise UseFlag
@@ -225,9 +269,13 @@ void IGESData_BasicEditor::ComputeStatus()
       {
         int nums = themodel->Number(sh.Value());
         if (igt == 402 || igt == 404)
+        {
           subs.SetValue(nums, subs.Value(nums) | 2);
+        }
         else
+        {
           subs.SetValue(nums, subs.Value(nums) | 1);
+        }
         ////	std::cout<<"ComputeStatus : nums = "<<nums<<" ->"<<subs.Value(nums)<<std::endl;
       }
     }
@@ -241,7 +289,9 @@ void IGESData_BasicEditor::ComputeStatus()
     {
       Interface_EntityIterator sh = G.Sharings(ent); // Maillage ...
       if (sh.NbEntities() > 0)
+      {
         G.GetFromEntity(ent, true, 4);
+      }
       //  UV : see AutoCorrect of concerned classes (Boundary and CurveOnSurface)
       /*
           } else if (ent->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))) {
@@ -268,7 +318,9 @@ void IGESData_BasicEditor::ComputeStatus()
     int                              bl  = ent->BlankStatus();
     int                              uf  = ent->UseFlag();
     if (uf == 0)
+    {
       uf = G.Status(i);
+    }
     int hy = ent->HierarchyStatus();
     ////    std::cout<<" Ent.n0."<<i<<" Subord="<<subs.Value(i)<<" Use="<<uf<<std::endl;
     ent->InitStatus(bl, subs.Value(i), uf, hy);
@@ -278,7 +330,9 @@ void IGESData_BasicEditor::ComputeStatus()
 bool IGESData_BasicEditor::AutoCorrect(const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (themodel.IsNull())
+  {
     return false;
+  }
   occ::handle<IGESData_IGESEntity>         bof, subent;
   occ::handle<IGESData_LineFontEntity>     linefont;
   occ::handle<IGESData_LevelListEntity>    levelist;
@@ -289,7 +343,9 @@ bool IGESData_BasicEditor::AutoCorrect(const occ::handle<IGESData_IGESEntity>& e
 
   bool done = false;
   if (ent.IsNull())
+  {
     return done;
+  }
   //    Corrections in the header (present entities)
   //    We don't check "Shared" items, present anyway
   //    Header : handled by DirChecker for standard cases
@@ -356,7 +412,9 @@ bool IGESData_BasicEditor::AutoCorrect(const occ::handle<IGESData_IGESEntity>& e
 
   occ::handle<IGESData_SpecificModule> smod;
   if (theslib.Select(ent, smod, CN))
+  {
     done |= smod->OwnCorrect(CN, ent);
+  }
 
   return done;
 }
@@ -368,7 +426,9 @@ int IGESData_BasicEditor::AutoCorrectModel()
   for (int i = 1; i <= nb; i++)
   {
     if (AutoCorrect(themodel->Entity(i)))
+    {
       res++;
+    }
   }
   return res;
 }
@@ -383,27 +443,49 @@ int IGESData_BasicEditor::UnitNameFlag(const char* const name)
     nam = (char*)&name[2];
   }
   if (!strcmp(nam, "INCH"))
+  {
     return 1;
+  }
   if (!strcmp(nam, "IN"))
+  {
     return 1;
+  }
   if (!strcmp(nam, "MM"))
+  {
     return 2;
+  }
   if (!strcmp(nam, "FT"))
+  {
     return 4;
+  }
   if (!strcmp(nam, "MI"))
+  {
     return 5;
+  }
   if (!strcmp(nam, "M"))
+  {
     return 6;
+  }
   if (!strcmp(nam, "KM"))
+  {
     return 7;
+  }
   if (!strcmp(nam, "MIL"))
+  {
     return 8;
+  }
   if (!strcmp(nam, "UM"))
+  {
     return 9;
+  }
   if (!strcmp(nam, "CM"))
+  {
     return 10;
+  }
   if (!strcmp(nam, "UIN"))
+  {
     return 11;
+  }
   return 0;
 }
 

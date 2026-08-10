@@ -49,7 +49,9 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const gp_Pnt& P1,
   Add(P2);
   Add(P3);
   if (Cl)
+  {
     Close();
+  }
 }
 
 //=================================================================================================
@@ -65,7 +67,9 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const gp_Pnt& P1,
   Add(P3);
   Add(P4);
   if (Cl)
+  {
     Close();
+  }
 }
 
 //=================================================================================================
@@ -87,7 +91,9 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const TopoDS_Vertex& V1,
   Add(V2);
   Add(V3);
   if (Cl)
+  {
     Close();
+  }
 }
 
 //=================================================================================================
@@ -103,7 +109,9 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const TopoDS_Vertex& V1,
   Add(V3);
   Add(V4);
   if (Cl)
+  {
     Close();
+  }
 }
 
 //=================================================================================================
@@ -148,7 +156,9 @@ void BRepLib_MakePolygon::Add(const TopoDS_Vertex& V)
         myShape.Closed(true);
       }
       else
+      {
         myLastVertex = V;
+      }
     }
 
     BRepLib_MakeEdge ME(last, myLastVertex);
@@ -162,9 +172,13 @@ void BRepLib_MakePolygon::Add(const TopoDS_Vertex& V)
     {
       // restore the previous last vertex
       if (second)
+      {
         myLastVertex.Nullify();
+      }
       else
+      {
         myLastVertex = last;
+      }
     }
   }
 }
@@ -181,11 +195,15 @@ bool BRepLib_MakePolygon::Added() const
 void BRepLib_MakePolygon::Close()
 {
   if (myFirstVertex.IsNull() || myLastVertex.IsNull())
+  {
     return;
+  }
 
   // check not already closed
   if (myShape.Closed())
+  {
     return;
+  }
 
   // build the last edge
   BRep_Builder B;

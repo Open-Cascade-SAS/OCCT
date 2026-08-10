@@ -88,9 +88,13 @@ void PrsDim_MaxRadiusDimension::Compute(const occ::handle<PrsMgr_PresentationMan
     myApexN = myEllipse.Location().Translated(-v1);
   }
   if (myIsAnArc)
+  {
     ComputeArcOfEllipse(aPresentation);
+  }
   else
+  {
     ComputeEllipse(aPresentation);
+  }
 }
 
 //=================================================================================================
@@ -118,8 +122,10 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const occ::handle<Prs3d_Presentat
     myAutomaticPosition = true;
 
     if (myIsSetBndBox)
+    {
       myPosition =
         PrsDim::TranslatePointToBound(myPosition, gp_Dir(gp_Vec(Center, myPosition)), myBndBox);
+    }
     curPos = myPosition;
   }
   else //! AutomaticPosition
@@ -129,9 +135,13 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const occ::handle<Prs3d_Presentat
     U      = ElCLib::Parameter(L1, curPos);
     curPos = ElCLib::Value(U, L1);
     if (curPos.Distance(myApexP) < curPos.Distance(myApexN))
+    {
       myEndOfArrow = myApexP;
+    }
     else
+    {
       myEndOfArrow = myApexN;
+    }
   }
 
   // Presenatation
@@ -173,8 +183,10 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
     myPosition          = Center;
     myAutomaticPosition = true;
     if (myIsSetBndBox)
+    {
       myPosition =
         PrsDim::TranslatePointToBound(myPosition, gp_Dir(gp_Vec(Center, myPosition)), myBndBox);
+    }
     curPos = myPosition;
   }
   else //! AutomaticPosition
@@ -186,9 +198,13 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
     par    = ElCLib::Parameter(L1, curPos);
     curPos = ElCLib::Value(par, L1);
     if (curPos.Distance(myApexP) < curPos.Distance(myApexN))
+    {
       myEndOfArrow = myApexP;
+    }
     else
+    {
       myEndOfArrow = myApexN;
+    }
     par        = ElCLib::Parameter(myEllipse, myEndOfArrow);
     IsInDomain = PrsDim::InDomain(myFirstPar, myLastPar, par);
     myPosition = curPos;
@@ -200,11 +216,16 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
   {
     if (PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myFirstPar)
         < PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myLastPar))
+    {
       parStart = myFirstPar;
+    }
     else
+    {
       parStart = myLastPar;
+    }
   }
   if (!myIsOffset)
+  {
     DsgPrs_EllipseRadiusPresentation::Add(aPresentation,
                                           myDrawer,
                                           myVal,
@@ -217,7 +238,9 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
                                           IsInDomain,
                                           true,
                                           mySymbolPrs);
+  }
   else
+  {
     DsgPrs_EllipseRadiusPresentation::Add(aPresentation,
                                           myDrawer,
                                           myVal,
@@ -230,6 +253,7 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
                                           IsInDomain,
                                           true,
                                           mySymbolPrs);
+  }
 }
 
 //=================================================================================================
@@ -245,9 +269,13 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
   // double inside  = false;
   gp_Pnt pt1;
   if (dist > aRadius)
+  {
     pt1 = AttachmentPoint;
+  }
   else
+  {
     pt1 = myEndOfArrow;
+  }
   occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
   occ::handle<Select3D_SensitiveSegment> seg = new Select3D_SensitiveSegment(own, center, pt1);
   aSelection->Add(seg);
@@ -273,9 +301,13 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
       double parStart, par;
       if (PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myFirstPar)
           < PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myLastPar))
+      {
         par = myFirstPar;
+      }
       else
+      {
         par = myLastPar;
+      }
       gp_Vec Vapex(center, ElCLib::Value(parEnd, myEllipse));
       gp_Vec Vpnt(center, ElCLib::Value(par, myEllipse));
       gp_Dir dir(Vpnt ^ Vapex);
@@ -285,7 +317,9 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
         parEnd   = par;
       }
       else
+      {
         parStart = par;
+      }
 
       occ::handle<Geom_Curve> TrimCurve;
       if (myIsOffset)

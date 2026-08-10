@@ -34,7 +34,9 @@ void RWStepGeom_RWIntersectionCurve::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "intersection_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -61,7 +63,9 @@ void RWStepGeom_RWIntersectionCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
+      {
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
+      }
     }
   }
 
@@ -78,7 +82,9 @@ void RWStepGeom_RWIntersectionCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (master_representation) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

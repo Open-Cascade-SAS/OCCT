@@ -101,9 +101,13 @@ void Extrema_ExtPExtS::MakePreciser(double&       U,
     D2e = P.SquareDistance(Pe), D2next = P.SquareDistance(Pnext), D2prev = P.SquareDistance(Pprev);
     bool notFound;
     if (isMin)
+    {
       notFound = (D2e > D2prev || D2e > D2next);
+    }
     else
+    {
       notFound = (D2e < D2prev || D2e < D2next);
+    }
 
     if (notFound && (D2e < D2next && isMin))
     {
@@ -129,9 +133,13 @@ void Extrema_ExtPExtS::MakePreciser(double&       U,
       Pnext  = ProjectPnt(OrtogSection, myDirection, GetValue(U + step, myC));
       D2next = P.SquareDistance(Pnext);
       if (isMin)
+      {
         notFound = D2e > D2next;
+      }
       else
+      {
         notFound = D2e < D2next;
+      }
     }
   }
 }
@@ -279,7 +287,9 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
   Extrema_ExtPElC anExt;
   PerformExtPElC(anExt, Pp, myC, mytolu);
   if (!anExt.IsDone())
+  {
     return;
+  }
 
   gp_Ax2 anOrtogSection(P, myDirection);
   double U, V;
@@ -425,7 +435,6 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
     }
   }
   myDone = true;
-  return;
 }
 
 //=============================================================================
@@ -444,9 +453,13 @@ int Extrema_ExtPExtS::NbExt() const
     throw StdFail_NotDone();
   }
   if (myIsAnalyticallyComputable)
+  {
     return myNbExt;
+  }
   else
+  {
     return myExtPS.NbExt();
+  }
 }
 
 //=============================================================================
@@ -458,12 +471,16 @@ double Extrema_ExtPExtS::SquareDistance(const int N) const
     throw Standard_OutOfRange();
   }
   if (myIsAnalyticallyComputable)
+  {
     // modified by NIZHNY-MKK  Thu Sep 18 14:48:39 2003.BEGIN
     //     return myValue[N];
     return mySqDist[N - 1];
-  // modified by NIZHNY-MKK  Thu Sep 18 14:48:42 2003.END
+    // modified by NIZHNY-MKK  Thu Sep 18 14:48:42 2003.END
+  }
   else
+  {
     return myExtPS.SquareDistance(N);
+  }
 }
 
 //=============================================================================
@@ -482,7 +499,9 @@ const Extrema_POnSurf& Extrema_ExtPExtS::Point(const int N) const
   }
   // modified by NIZHNY-MKK  Thu Sep 18 14:47:43 2003.END
   else
+  {
     return myExtPS.Point(N);
+  }
 }
 
 //=============================================================================

@@ -27,7 +27,9 @@ void RWStepGeom_RWBoundedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "bounded_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

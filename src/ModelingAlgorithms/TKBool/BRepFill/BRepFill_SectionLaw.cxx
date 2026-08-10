@@ -104,6 +104,8 @@ TopoDS_Edge BRepFill_SectionLaw::CurrentEdge()
   }
 
   if (myIterator.More())
+  {
     myIterator.Next();
+  }
   return E;
 }

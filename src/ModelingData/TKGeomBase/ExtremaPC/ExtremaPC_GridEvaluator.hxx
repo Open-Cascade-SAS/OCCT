@@ -22,7 +22,7 @@
 #include <MathRoot_Newton.hxx>
 #include <MathUtils_Config.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -87,7 +87,7 @@ public:
     const int aNbParams = theParams.Length();
 
     // Resize grid if needed
-    if (myGrid.Size() != aNbParams)
+    if (myGrid.Length() != aNbParams)
     {
       myGrid = NCollection_Array1<GridPoint>(0, aNbParams - 1);
     }
@@ -154,7 +154,7 @@ private:
   void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
   {
     myCandidates.Clear();
-    const int aNbGrid = myGrid.Size();
+    const int aNbGrid = myGrid.Length();
 
     if (aNbGrid < 2)
     {
@@ -162,7 +162,7 @@ private:
     }
 
     // Resize processed array if needed
-    if (myProcessed.Size() != aNbGrid)
+    if (myProcessed.Length() != aNbGrid)
     {
       myProcessed = NCollection_Array1<bool>(0, aNbGrid - 1);
     }
@@ -496,11 +496,12 @@ private:
   NCollection_Array1<GridPoint> myGrid; //!< Cached grid
 
   // Mutable cached temporaries (reused via Clear())
-  mutable ExtremaPC::Result                          myResult;        //!< Reusable result
-  mutable NCollection_Vector<Candidate>              myCandidates;    //!< Candidates from grid scan
-  mutable NCollection_Vector<double>                 myFoundRoots;    //!< Found roots for dedup
-  mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
-  mutable NCollection_Array1<bool>                   myProcessed; //!< Processed flags for grid scan
+  mutable ExtremaPC::Result                   myResult;     //!< Reusable result
+  mutable NCollection_DynamicArray<Candidate> myCandidates; //!< Candidates from grid scan
+  mutable NCollection_DynamicArray<double>    myFoundRoots; //!< Found roots for dedup
+  mutable NCollection_DynamicArray<std::pair<int, double>>
+                                   mySortedIndices; //!< Sorted candidate indices
+  mutable NCollection_Array1<bool> myProcessed;     //!< Processed flags for grid scan
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

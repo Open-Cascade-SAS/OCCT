@@ -65,7 +65,9 @@ void TDF_RelocationTable::SetRelocation(const TDF_Label& aSourceLabel,
                                         const TDF_Label& aTargetLabel)
 {
   if (!myLabelTable.IsBound(aSourceLabel))
+  {
     myLabelTable.Bind(aSourceLabel, aTargetLabel);
+  }
 }
 
 //=================================================================================================
@@ -93,7 +95,9 @@ void TDF_RelocationTable::SetRelocation(const occ::handle<TDF_Attribute>& aSourc
                                         const occ::handle<TDF_Attribute>& aTargetAttribute)
 {
   if (!myAttributeTable.IsBound(aSourceAttribute))
+  {
     myAttributeTable.Bind(aSourceAttribute, aTargetAttribute);
+  }
 }
 
 //=================================================================================================
@@ -122,7 +126,9 @@ void TDF_RelocationTable::SetTransientRelocation(
   const occ::handle<Standard_Transient>& aTargetTransient)
 {
   if (!myTransientTable.Contains(aSourceTransient))
+  {
     myTransientTable.Add(aSourceTransient, aTargetTransient);
+  }
 }
 
 //=================================================================================================
@@ -160,7 +166,9 @@ void TDF_RelocationTable::TargetLabelMap(NCollection_Map<TDF_Label>& aLabelMap) 
 {
   for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More();
        itr.Next())
+  {
     aLabelMap.Add(itr.Value());
+  }
 }
 
 //=================================================================================================
@@ -172,7 +180,9 @@ void TDF_RelocationTable::TargetAttributeMap(
          myAttributeTable);
        itr.More();
        itr.Next())
+  {
     anAttributeMap.Add(itr.Value());
+  }
 }
 
 //=================================================================================================
@@ -207,23 +217,31 @@ Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
 {
   anOS << "Relocation Table  ";
   if (mySelfRelocate)
+  {
     anOS << "IS";
+  }
   else
+  {
     anOS << "NOT";
+  }
   anOS << " self relocate ";
   if (myAfterRelocate)
+  {
     anOS << "WITH";
+  }
   else
+  {
     anOS << "WITHOUT";
-  anOS << " after relocate" << std::endl;
+  }
+  anOS << " after relocate" << '\n';
   anOS << "Nb labels=" << myLabelTable.Extent();
   anOS << "  Nb attributes=" << myAttributeTable.Extent();
-  anOS << "  Nb transients=" << myTransientTable.Extent() << std::endl;
+  anOS << "  Nb transients=" << myTransientTable.Extent() << '\n';
 
   int nb = 0;
   if (dumpLabels)
   {
-    anOS << "Label Table:" << std::endl;
+    anOS << "Label Table:" << '\n';
     for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More();
          itr.Next())
     {
@@ -234,13 +252,13 @@ Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
       itr.Value().EntryDump(anOS);
       anOS << "| ";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 
   nb = 0;
   if (dumpAttributes)
   {
-    anOS << "Attribute Table:" << std::endl;
+    anOS << "Attribute Table:" << '\n';
     for (NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator itr(
            myAttributeTable);
          itr.More();
@@ -252,14 +270,13 @@ Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
       anOS << "<=>";
       itr.Value()->Dump(anOS);
       anOS << "| ";
-      anOS << std::endl;
+      anOS << '\n';
     }
   }
 
   if (dumpTransients)
   {
-    anOS << "Transient Table:" << myTransientTable.Extent() << " transient(s) in table."
-         << std::endl;
+    anOS << "Transient Table:" << myTransientTable.Extent() << " transient(s) in table." << '\n';
   }
 
   return anOS;

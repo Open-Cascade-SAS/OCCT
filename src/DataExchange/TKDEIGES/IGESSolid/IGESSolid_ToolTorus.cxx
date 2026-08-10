@@ -53,66 +53,92 @@ void IGESSolid_ToolTorus::ReadOwnParams(const occ::handle<IGESSolid_Torus>& ent,
     // st = PR.ReadReal(PR.Current(), "Center Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (X)", tempreal))
+    {
       tempPoint.SetX(tempreal);
+    }
   }
   else
+  {
     tempPoint.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (Y)", tempreal))
+    {
       tempPoint.SetY(tempreal);
+    }
   }
   else
+  {
     tempPoint.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (Z)", tempreal))
+    {
       tempPoint.SetZ(tempreal);
+    }
   }
   else
+  {
     tempPoint.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
+    {
       tempAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
+    {
       tempAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
+    {
       tempAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(r1, r2, tempPoint, tempAxis);
   double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
+  {
     PR.AddWarning("Axis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolTorus::WriteOwnParams(const occ::handle<IGESSolid_Torus>& ent,
@@ -162,11 +188,17 @@ void IGESSolid_ToolTorus::OwnCheck(const occ::handle<IGESSolid_Torus>& ent,
                                    occ::handle<Interface_Check>& ach) const
 {
   if (ent->MajorRadius() <= 0.0)
+  {
     ach->AddFail("Radius of revolution : Not Positive");
+  }
   if (ent->DiscRadius() <= 0.0)
+  {
     ach->AddFail("Radius of disc : Not Positive");
+  }
   if (ent->DiscRadius() >= ent->MajorRadius())
+  {
     ach->AddFail("Radius of disc : is not Less than Radius of revolution");
+  }
 }
 
 void IGESSolid_ToolTorus::OwnDump(const occ::handle<IGESSolid_Torus>& ent,
@@ -181,5 +213,5 @@ void IGESSolid_ToolTorus::OwnDump(const occ::handle<IGESSolid_Torus>& ent,
   IGESData_DumpXYZL(S, level, ent->AxisPoint(), ent->Location());
   S << "\nAxis direction : ";
   IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

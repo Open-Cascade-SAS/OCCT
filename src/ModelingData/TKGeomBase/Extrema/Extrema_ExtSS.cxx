@@ -143,13 +143,21 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
               PS1.Parameter(U1, V1);
               PS2.Parameter(U2, V2);
               if (S1.IsUPeriodic())
+              {
                 U1 = ElCLib::InPeriod(U1, myuinf1, myuinf1 + S1.UPeriod());
+              }
               if (S1.IsVPeriodic())
+              {
                 V1 = ElCLib::InPeriod(V1, myvinf1, myvinf1 + S1.VPeriod());
+              }
               if (myS2->IsUPeriodic())
+              {
                 U2 = ElCLib::InPeriod(U2, myuinf2, myuinf2 + myS2->UPeriod());
+              }
               if (myS2->IsVPeriodic())
+              {
                 V2 = ElCLib::InPeriod(V2, myvinf2, myvinf2 + myS2->VPeriod());
+              }
 
               if ((myuinf1 - U1) <= mytolS1 && (U1 - myusup1) <= mytolS1
                   && (myvinf1 - V1) <= mytolS1 && (V1 - myvsup1) <= mytolS1
@@ -184,13 +192,21 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
           PS1.Parameter(U1, V1);
           PS2.Parameter(U2, V2);
           if (S1.IsUPeriodic())
+          {
             U1 = ElCLib::InPeriod(U1, myuinf1, myuinf1 + S1.UPeriod());
+          }
           if (S1.IsVPeriodic())
+          {
             V1 = ElCLib::InPeriod(V1, myvinf1, myvinf1 + S1.VPeriod());
+          }
           if (myS2->IsUPeriodic())
+          {
             U2 = ElCLib::InPeriod(U2, myuinf2, myuinf2 + myS2->UPeriod());
+          }
           if (myS2->IsVPeriodic())
+          {
             V2 = ElCLib::InPeriod(V2, myvinf2, myvinf2 + myS2->VPeriod());
+          }
 
           if ((myuinf1 - U1) <= mytolS1 && (U1 - myusup1) <= mytolS1 && (myvinf1 - V1) <= mytolS1
               && (V1 - myvsup1) <= mytolS1 && (myuinf2 - U2) <= mytolS2 && (U2 - myusup2) <= mytolS2
@@ -247,7 +263,9 @@ bool Extrema_ExtSS::IsDone() const
 bool Extrema_ExtSS::IsParallel() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myIsPar;
 }
 
@@ -264,7 +282,9 @@ double Extrema_ExtSS::SquareDistance(const int N) const
 int Extrema_ExtSS::NbExt() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return mySqDist.Length();
 }
 

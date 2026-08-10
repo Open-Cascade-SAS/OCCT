@@ -419,7 +419,7 @@ void BRepCheck_Analyzer::Put(const TopoDS_Shape& theShape, const bool B)
 
 void BRepCheck_Analyzer::Perform()
 {
-  const int                          aMapSize     = myMap.Size();
+  const int                          aMapSize     = myMap.Length();
   const int                          aMinTaskSize = 10;
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
@@ -450,7 +450,7 @@ void BRepCheck_Analyzer::Perform()
   }
 
   BRepCheck_ParallelAnalyzer aParallelAnalyzer(aArrayOfArray, myMap);
-  OSD_Parallel::For(0, aArrayOfArray.Size(), aParallelAnalyzer, !myIsParallel);
+  OSD_Parallel::For(0, aArrayOfArray.Length(), aParallelAnalyzer, !myIsParallel);
 }
 
 //=================================================================================================
@@ -523,7 +523,9 @@ bool BRepCheck_Analyzer::ValidSub(const TopoDS_Shape& S, const TopAbs_ShapeEnum 
     }
 
     if (!RV->MoreShapeInContext())
+    {
       break;
+    }
 
     for (itl.Initialize(RV->StatusOnShape()); itl.More(); itl.Next())
     {

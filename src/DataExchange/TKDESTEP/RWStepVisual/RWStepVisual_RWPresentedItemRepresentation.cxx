@@ -30,7 +30,9 @@ void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "presented_item_representation"))
+  {
     return;
+  }
 
   // --- own fields
 

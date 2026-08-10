@@ -56,9 +56,13 @@ void TopOpeBRep_VPointInterIterator::Init()
     {
       const TopOpeBRep_VPointInter& VP = CurrentVP();
       if (VP.Keep())
+      {
         break;
+      }
       else
+      {
         myVPointIndex++;
+      }
     }
   }
 }
@@ -81,9 +85,13 @@ void TopOpeBRep_VPointInterIterator::Next()
     {
       const TopOpeBRep_VPointInter& VP = CurrentVP();
       if (VP.Keep())
+      {
         break;
+      }
       else
+      {
         myVPointIndex++;
+      }
     }
   }
 }
@@ -93,7 +101,9 @@ void TopOpeBRep_VPointInterIterator::Next()
 const TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::CurrentVP()
 {
   if (!More())
+  {
     throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::CurrentVP");
+  }
   const TopOpeBRep_VPointInter& VP = myLineInter->VPoint(myVPointIndex);
   return VP;
 }
@@ -103,7 +113,9 @@ const TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::CurrentVP()
 TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::ChangeCurrentVP()
 {
   if (!More())
+  {
     throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::ChangeCurrentVP");
+  }
   TopOpeBRep_VPointInter& VP = myLineInter->ChangeVPoint(myVPointIndex);
   return VP;
 }
@@ -113,7 +125,9 @@ TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::ChangeCurrentVP()
 int TopOpeBRep_VPointInterIterator::CurrentVPIndex() const
 {
   if (!More())
+  {
     throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::CurrentVPIndex");
+  }
   return myVPointIndex;
 }
 

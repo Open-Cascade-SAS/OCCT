@@ -108,7 +108,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
 
       int nbshapes = 0;
       for (anExp.Init(myShell, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
         nbshapes++;
+      }
       Message_ProgressScope aPS1(aPS.Next(), nullptr, nbshapes);
       for (anExp.Init(myShell, TopAbs_FACE); anExp.More() && aPS1.More(); anExp.Next(), aPS1.Next())
       {
@@ -132,7 +134,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
         }
       }
       if (!aPS1.More())
+      {
         return;
+      }
 
       int nbFaces = mySeq.Length();
       if (nbFaces >= 1)
@@ -145,9 +149,13 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
         }
         occ::handle<StepShape_ConnectedFaceSet> CFSpms;
         if (myShell.Closed())
+        {
           CFSpms = new StepShape_ClosedShell();
+        }
         else
+        {
           CFSpms = new StepShape_OpenShell();
+        }
         occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
         CFSpms->Init(aName, aSet);
 

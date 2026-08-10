@@ -53,7 +53,9 @@ occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char* const the
   {
     TObj_Persistence* tool = (TObj_Persistence*)getMapOfTypes().Find(theType);
     if (tool)
+    {
       return tool->New(theLabel);
+    }
   }
   return nullptr;
 }
@@ -65,6 +67,6 @@ void TObj_Persistence::DumpTypes(Standard_OStream& theOs)
   NCollection_DataMap<TCollection_AsciiString, void*>::Iterator it(getMapOfTypes());
   for (; it.More(); it.Next())
   {
-    theOs << it.Key() << std::endl;
+    theOs << it.Key() << '\n';
   }
 }

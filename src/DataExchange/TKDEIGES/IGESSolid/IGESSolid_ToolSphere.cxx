@@ -49,28 +49,40 @@ void IGESSolid_ToolSphere::ReadOwnParams(const occ::handle<IGESSolid_Sphere>& en
   {
     // st = PR.ReadReal(PR.Current(), "Center (X)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Center (X)", tempreal))
+    {
       tempCenter.SetX(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center (Y)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Center (Y)", tempreal))
+    {
       tempCenter.SetY(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center (Z)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Center (Z)", tempreal))
+    {
       tempCenter.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetZ(0.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempRadius, tempCenter);
@@ -116,7 +128,9 @@ void IGESSolid_ToolSphere::OwnCheck(const occ::handle<IGESSolid_Sphere>& ent,
                                     occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() <= 0.0)
+  {
     ach->AddFail("Radius : Not Positive");
+  }
 }
 
 void IGESSolid_ToolSphere::OwnDump(const occ::handle<IGESSolid_Sphere>& ent,
@@ -128,5 +142,5 @@ void IGESSolid_ToolSphere::OwnDump(const occ::handle<IGESSolid_Sphere>& ent,
     << "Radius : " << ent->Radius() << "\n"
     << "Center : ";
   IGESData_DumpXYZL(S, level, ent->Center(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

@@ -22,11 +22,17 @@ StepGeom_VectorOrDirection::StepGeom_VectorOrDirection() = default;
 int StepGeom_VectorOrDirection::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Vector)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Direction)))
+  {
     return 2;
+  }
   return 0;
 }
 

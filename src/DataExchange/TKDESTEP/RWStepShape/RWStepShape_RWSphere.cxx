@@ -29,7 +29,9 @@ void RWStepShape_RWSphere::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "sphere"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

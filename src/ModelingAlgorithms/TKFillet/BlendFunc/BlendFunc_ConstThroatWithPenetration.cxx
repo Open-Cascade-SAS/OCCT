@@ -138,7 +138,9 @@ bool BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Vector& X, mat
 const gp_Vec& BlendFunc_ConstThroatWithPenetration::TangentOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroatWithPenetration::TangentOnS1");
+  }
   return tg1;
 }
 
@@ -147,7 +149,9 @@ const gp_Vec& BlendFunc_ConstThroatWithPenetration::TangentOnS1() const
 const gp_Vec& BlendFunc_ConstThroatWithPenetration::TangentOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroatWithPenetration::TangentOnS2");
+  }
   return tg2;
 }
 
@@ -156,7 +160,9 @@ const gp_Vec& BlendFunc_ConstThroatWithPenetration::TangentOnS2() const
 const gp_Vec2d& BlendFunc_ConstThroatWithPenetration::Tangent2dOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroatWithPenetration::Tangent2dOnS1");
+  }
   return tg12d;
 }
 
@@ -165,7 +171,9 @@ const gp_Vec2d& BlendFunc_ConstThroatWithPenetration::Tangent2dOnS1() const
 const gp_Vec2d& BlendFunc_ConstThroatWithPenetration::Tangent2dOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroatWithPenetration::Tangent2dOnS2");
+  }
   return tg22d;
 }
 

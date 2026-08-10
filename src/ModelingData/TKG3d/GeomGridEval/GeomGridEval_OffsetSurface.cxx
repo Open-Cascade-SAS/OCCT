@@ -41,8 +41,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
     }
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
@@ -108,8 +108,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
     }
   }
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D2 (offset D1 requires basis D2)
@@ -175,8 +175,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
     }
   }
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D3 (offset D2 requires basis D3)
@@ -249,8 +249,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
     }
   }
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   GeomAdaptor_Surface       aBasisAdaptor(myBasis);
@@ -311,8 +311,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
     }
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 

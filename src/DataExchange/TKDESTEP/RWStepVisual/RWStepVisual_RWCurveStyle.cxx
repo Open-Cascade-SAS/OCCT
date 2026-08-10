@@ -34,7 +34,9 @@ void RWStepVisual_RWCurveStyle::ReadStep(const occ::handle<StepData_StepReaderDa
 
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 4, ach, "curve_style"))
+  {
     return;
+  }
 
   // --- own field : name ---
   occ::handle<TCollection_HAsciiString> aName;

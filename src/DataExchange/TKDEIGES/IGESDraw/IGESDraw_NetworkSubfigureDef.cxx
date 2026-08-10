@@ -36,8 +36,12 @@ void IGESDraw_NetworkSubfigureDef::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allPointEntities)
 {
   if (!allPointEntities.IsNull())
+  {
     if (allPointEntities->Lower() != 1 || allEntities->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_NetworkSubfigureDef : Init");
+    }
+  }
   theDepth              = aDepth;
   theName               = aName;
   theEntities           = allEntities;
@@ -97,7 +101,9 @@ int IGESDraw_NetworkSubfigureDef::NbPointEntities() const
 bool IGESDraw_NetworkSubfigureDef::HasPointEntity(const int Index) const
 {
   if (thePointEntities.IsNull())
+  {
     return false;
+  }
   return (!thePointEntities->Value(Index).IsNull());
   // if Index is out of bound HArray1 will raise OutOfRange exception
 }

@@ -32,7 +32,9 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "presentation_style_assignment"))
+  {
     return;
+  }
 
   // --- own field : styles ---
 
@@ -89,7 +91,9 @@ void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
       SW.CloseSub();
     }
     else
+    {
       SW.Send(aStyle.Value());
+    }
   }
   SW.CloseSub();
 }

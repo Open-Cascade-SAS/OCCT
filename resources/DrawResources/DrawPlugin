@@ -50,10 +50,8 @@ D3DHOST            : TKD3DHostTest
 XSDRAW             : TKXSDRAW
 XDEDRAW            : TKXDEDRAW
 TOBJ               : TKTObjDRAW
-DFBROWSER          : TKDFBrowser
 QAcommands         : TKQADraw
 VIS                : TKIVtkDraw
-INSPECTOR          : TKToolsDraw
 DE                 : TKXSDRAWDE
 STEP               : TKXSDRAWSTEP
 IGES               : TKXSDRAWIGES

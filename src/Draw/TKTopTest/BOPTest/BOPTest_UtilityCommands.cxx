@@ -37,7 +37,9 @@ void BOPTest::UtilityCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
@@ -236,7 +238,9 @@ static int BuildPcurvesOnPlane(Draw_Interpretor& theDI, int theNArg, const char*
       NCollection_List<TopoDS_Shape> aLE;
       TopExp_Explorer                exp1(aF, TopAbs_EDGE);
       for (; exp1.More(); exp1.Next())
+      {
         aLE.Append(exp1.Current());
+      }
       BRepLib::BuildPCurveForEdgesOnPlane(aLE, aF);
     }
   }

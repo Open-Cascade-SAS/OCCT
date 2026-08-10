@@ -41,7 +41,9 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "geometric_tolerance_with_datum_reference"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

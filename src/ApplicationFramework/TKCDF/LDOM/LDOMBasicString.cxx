@@ -127,7 +127,9 @@ LDOMBasicString::~LDOMBasicString()
 LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
 {
   if (myType == LDOM_AsciiFree)
+  {
     delete[] (char*)myVal.ptr;
+  }
   myType    = LDOM_NULL;
   myVal.ptr = nullptr;
   return *this;
@@ -142,7 +144,9 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
     return *this;
   }
   if (myType == LDOM_AsciiFree)
+  {
     delete[] (char*)myVal.ptr;
+  }
   myType = anOther.Type();
   switch (myType)
   {
@@ -254,13 +258,17 @@ LDOMBasicString::operator TCollection_ExtendedString() const
       errno                      = 0;
       // Check if ptr is ascii string
       if (ptr[0] != '#' || ptr[1] != '#')
+      {
         return TCollection_ExtendedString(ptr);
+      }
       buf[0] = ptr[2];
       buf[1] = ptr[3];
       buf[2] = ptr[4];
       buf[3] = ptr[5];
       if (strtol(&buf[0], nullptr, 16) != aUnicodeHeader)
+      {
         return TCollection_ExtendedString(ptr);
+      }
 
       // convert Unicode to Extended String
       ptr += 2;
@@ -308,7 +316,9 @@ bool LDOMBasicString::GetInteger(int& aResult) const
       errno       = 0;
       long aValue = strtol((const char*)myVal.ptr, &ptr, 10);
       if (ptr == myVal.ptr || errno == ERANGE || errno == EINVAL)
+      {
         return false;
+      }
       aResult = int(aValue);
       break;
     }

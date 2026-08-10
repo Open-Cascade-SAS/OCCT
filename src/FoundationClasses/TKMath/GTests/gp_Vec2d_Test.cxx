@@ -163,3 +163,18 @@ TEST(gp_Vec2dTest, SetLinearForm)
   EXPECT_NEAR(aResult.X(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aResult.Y(), 3.0, Precision::Confusion());
 }
+
+TEST(gp_Vec2dTest, OCC26750_IsNormal_NegativeAngle)
+{
+  // OCC26750: gp_Vec2d::IsNormal() returned FALSE when the angle is -PI/2 (not only +PI/2).
+  const gp_Vec2d aVec1(1.0, 0.0);
+  const gp_Vec2d aVec2(0.0, -1.0); // -90 degrees
+  EXPECT_TRUE(aVec1.IsNormal(aVec2, Precision::Angular()))
+    << "Vectors at -90 degrees should be recognized as normal";
+
+  // Verify gp_Dir2d as well
+  const gp_Dir2d aD1(gp_Dir2d::D::X);
+  const gp_Dir2d aD2(gp_Dir2d::D::NY);
+  EXPECT_TRUE(aD1.IsNormal(aD2, Precision::Angular()))
+    << "Direction X and direction -Y should be recognized as normal";
+}

@@ -62,9 +62,13 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
       Degree(9)
 {
   if (P1.IsEqual(P2, Precision::Confusion()))
+  {
     throw Standard_NullValue("FairCurve : P1 and P2 are confused");
+  }
   if (Height <= 0)
+  {
     throw Standard_NegativeValue("FairCurve : Height is not positive");
+  }
   //
   //   Initialize by a straight line (2 poles)
   //
@@ -137,7 +141,9 @@ void FairCurve_Batten::SetP1(const gp_Pnt2d& P1)
 // ==================================================================
 {
   if (P1.IsEqual(NewP2, Precision::Confusion()))
+  {
     throw Standard_NullValue("FairCurve : P1 and P2 are confused");
+  }
   Angles(P1, NewP2);
   NewP1 = P1;
 }
@@ -147,7 +153,9 @@ void FairCurve_Batten::SetP2(const gp_Pnt2d& P2)
 // ==================================================================
 {
   if (NewP1.IsEqual(P2, Precision::Confusion()))
+  {
     throw Standard_NullValue("FairCurve : P1 and P2 are confused");
+  }
   Angles(NewP1, P2);
   NewP2 = P2;
 }
@@ -177,21 +185,27 @@ bool FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
       Fraction =
         std::abs(DAngle1) / (AngleMax * std::exp(-std::abs(OldAngle1) / AngleMax) + AngleMin);
       if (Fraction > 1)
+      {
         Ratio = 1 / Fraction;
+      }
     }
     if (NewConstraintOrder2 > 0)
     {
       Fraction =
         std::abs(DAngle2) / (AngleMax * std::exp(-std::abs(OldAngle2) / AngleMax) + AngleMin);
       if (Fraction > 1)
+      {
         Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+      }
     }
 
     OldDist  = OldP1.Distance(OldP2);
     NewDist  = NewP1.Distance(NewP2);
     Fraction = std::abs(OldDist - NewDist) / (OldDist / 3);
     if (Fraction > 1)
+    {
       Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+    }
 
     gp_Vec2d DeltaP1(OldP1, NewP1), DeltaP2(OldP2, NewP2);
     if (Ratio == 1)
@@ -211,13 +225,21 @@ bool FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
     Ok = Compute(DeltaP1, DeltaP2, DAngle1, DAngle2, ACode, NbIterations, Toler);
 
     if (ACode != FairCurve_OK)
+    {
       End = true;
+    }
     if (NewFreeSliding)
+    {
       NewSlidingFactor = OldSlidingFactor;
+    }
     if (NewConstraintOrder1 == 0)
+    {
       NewAngle1 = OldAngle1;
+    }
     if (NewConstraintOrder2 == 0)
+    {
       NewAngle2 = OldAngle2;
+    }
   }
   myCode = ACode;
   return Ok;
@@ -250,7 +272,9 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
   math_Matrix HermiteCoef(1, L, 1, L);
   Ok = PLib::HermiteCoefficients(0, 1, NewConstraintOrder1, NewConstraintOrder2, HermiteCoef);
   if (!Ok)
+  {
     return false;
+  }
 
   // Definition of constraints of interpolation
   NCollection_Array1<gp_XY> ADelta(1, L);
@@ -264,7 +288,9 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     gp_Vec2d OldDerive(Poles->Value(Poles->Lower()), Poles->Value(Poles->Lower() + 1));
     double   aKnotGap1 = Knots->Value(2) - Knots->Value(1);
     if (std::abs(aKnotGap1) > Precision::Computational())
+    {
       OldDerive *= Degree / aKnotGap1;
+    }
     ADelta(kk) = (OldDerive.Rotated(DeltaAngle1 - DAngleRef) - OldDerive).XY();
     kk += 1;
   }
@@ -275,7 +301,9 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     gp_Vec2d OldDerive(Poles->Value(Poles->Upper() - 1), Poles->Value(Poles->Upper()));
     double   aKnotGap2 = Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1);
     if (std::abs(aKnotGap2) > Precision::Computational())
+    {
       OldDerive *= Degree / aKnotGap2;
+    }
     ADelta(kk) = (OldDerive.Rotated(DAngleRef - DeltaAngle2) - OldDerive).XY();
   }
 
@@ -443,7 +471,9 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
 
   // Prevention of infinite sliding
   if (NewFreeSliding && VInit(VInit.Upper()) > 2 * LReference)
+  {
     ACode = FairCurve_InfiniteSliding;
+  }
 
   // Eventual insertion of Nodes
   bool   NewKnots = false;
@@ -506,17 +536,27 @@ double FairCurve_Batten::SlidingOfReference(const double Dist,
 
   // case of angle without constraints
   if ((NewConstraintOrder1 == 0) && (NewConstraintOrder2 == 0))
+  {
     return Dist;
+  }
 
   if (NewConstraintOrder1 == 0)
+  {
     a1 = std::abs(std::abs(NewAngle2) < M_PI ? Angle2 / 2 : M_PI / 2);
+  }
   else
+  {
     a1 = std::abs(Angle1);
+  }
 
   if (NewConstraintOrder2 == 0)
+  {
     a2 = std::abs(std::abs(NewAngle1) < M_PI ? Angle1 / 2 : M_PI / 2);
+  }
   else
+  {
     a2 = std::abs(Angle2);
+  }
 
   // case of angle of the same sign
   if (Angle1 * Angle2 >= 0)
@@ -529,11 +569,15 @@ double FairCurve_Batten::SlidingOfReference(const double Dist,
   {
     double aSum = a1 + a2;
     if (std::abs(aSum) < Precision::Angular())
+    {
       return Compute(Dist, a1, M_PI / 2);
+    }
     double Ratio       = a1 / aSum;
     double AngleMilieu = pow(1 - Ratio, 2) * a1 + pow(Ratio, 2) * a2;
     if (AngleMilieu > M_PI / 2)
+    {
       AngleMilieu = M_PI / 2;
+    }
 
     return Ratio * Compute(Dist, a1, AngleMilieu) + (1 - Ratio) * Compute(Dist, a2, AngleMilieu);
   }
@@ -592,56 +636,56 @@ void FairCurve_Batten::Dump(Standard_OStream& o) const
 
   o << "  Batten       |";
   o.width(7);
-  o << "Old  |   New" << std::endl;
+  o << "Old  |   New" << '\n';
   o << "  P1    X      |";
   o.width(7);
-  o << OldP1.X() << " | " << NewP1.X() << std::endl;
+  o << OldP1.X() << " | " << NewP1.X() << '\n';
   o << "        Y      |";
   o.width(7);
-  o << OldP1.Y() << " | " << NewP1.Y() << std::endl;
+  o << OldP1.Y() << " | " << NewP1.Y() << '\n';
   o << "  P2    X      |";
   o.width(7);
-  o << OldP2.X() << " | " << NewP2.X() << std::endl;
+  o << OldP2.X() << " | " << NewP2.X() << '\n';
   o << "        Y      |";
   o.width(7);
-  o << OldP2.Y() << " | " << NewP2.Y() << std::endl;
+  o << OldP2.Y() << " | " << NewP2.Y() << '\n';
   o << "      Angle1   |";
   o.width(7);
-  o << OldAngle1 << " | " << NewAngle1 << std::endl;
+  o << OldAngle1 << " | " << NewAngle1 << '\n';
   o << "      Angle2   |";
   o.width(7);
-  o << OldAngle2 << " | " << NewAngle2 << std::endl;
+  o << OldAngle2 << " | " << NewAngle2 << '\n';
   o << "      Height   |";
   o.width(7);
-  o << OldHeight << " | " << NewHeight << std::endl;
+  o << OldHeight << " | " << NewHeight << '\n';
   o << "      Slope    |";
   o.width(7);
-  o << OldSlope << " | " << NewSlope << std::endl;
+  o << OldSlope << " | " << NewSlope << '\n';
   o << " SlidingFactor |";
   o.width(7);
-  o << OldSlidingFactor << " | " << NewSlidingFactor << std::endl;
+  o << OldSlidingFactor << " | " << NewSlidingFactor << '\n';
   o << " FreeSliding   |";
   o.width(7);
-  o << OldFreeSliding << " | " << NewFreeSliding << std::endl;
+  o << OldFreeSliding << " | " << NewFreeSliding << '\n';
   o << " ConstrOrder1  |";
   o.width(7);
-  o << OldConstraintOrder1 << " | " << NewConstraintOrder1 << std::endl;
+  o << OldConstraintOrder1 << " | " << NewConstraintOrder1 << '\n';
   o << " ConstrOrder2  |";
   o.width(7);
-  o << OldConstraintOrder2 << " | " << NewConstraintOrder2 << std::endl;
+  o << OldConstraintOrder2 << " | " << NewConstraintOrder2 << '\n';
   switch (myCode)
   {
     case FairCurve_OK:
-      o << "AnalysisCode : Ok" << std::endl;
+      o << "AnalysisCode : Ok" << '\n';
       break;
     case FairCurve_NotConverged:
-      o << "AnalysisCode : NotConverged" << std::endl;
+      o << "AnalysisCode : NotConverged" << '\n';
       break;
     case FairCurve_InfiniteSliding:
-      o << "AnalysisCode : InfiniteSliding" << std::endl;
+      o << "AnalysisCode : InfiniteSliding" << '\n';
       break;
     case FairCurve_NullHeight:
-      o << "AnalysisCode : NullHeight" << std::endl;
+      o << "AnalysisCode : NullHeight" << '\n';
       break;
   }
 }

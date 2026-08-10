@@ -55,11 +55,16 @@ void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_Gener
 
   bool st = PR.ReadInteger(PR.Current(), "Number of Leaders", nbval);
   if (st && nbval > 0)
+  {
     leaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
+  }
   else
+  {
     PR.AddFail("Number of Leaders: Not Positive");
+  }
 
   if (!leaders.IsNull())
+  {
     for (int i = 1; i <= nbval; i++)
     {
       occ::handle<IGESDimen_LeaderArrow> anentity;
@@ -70,8 +75,11 @@ void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_Gener
                         "Leaders",
                         STANDARD_TYPE(IGESDimen_LeaderArrow),
                         anentity))
+      {
         leaders->SetValue(i, anentity);
+      }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(note, leaders);
@@ -84,7 +92,9 @@ void IGESDimen_ToolGeneralLabel::WriteOwnParams(const occ::handle<IGESDimen_Gene
   IW.Send(ent->Note());
   IW.Send(upper);
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Leader(i));
+  }
 }
 
 void IGESDimen_ToolGeneralLabel::OwnShared(const occ::handle<IGESDimen_GeneralLabel>& ent,
@@ -93,7 +103,9 @@ void IGESDimen_ToolGeneralLabel::OwnShared(const occ::handle<IGESDimen_GeneralLa
   int upper = ent->NbLeaders();
   iter.GetOneItem(ent->Note());
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Leader(i));
+  }
 }
 
 void IGESDimen_ToolGeneralLabel::OwnCopy(const occ::handle<IGESDimen_GeneralLabel>& another,
@@ -145,5 +157,5 @@ void IGESDimen_ToolGeneralLabel::OwnDump(const occ::handle<IGESDimen_GeneralLabe
     << "Number of Leaders : " << ent->NbLeaders() << "\n"
     << "Leaders : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbLeaders(), ent->Leader);
-  S << std::endl;
+  S << '\n';
 }

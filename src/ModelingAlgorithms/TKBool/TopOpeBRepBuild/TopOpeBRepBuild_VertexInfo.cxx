@@ -162,7 +162,9 @@ void TopOpeBRepBuild_VertexInfo::Prepare(const NCollection_List<TopoDS_Shape>& a
   {
     const TopoDS_Shape& aE = myEdgesOut(i);
     if (!tmpMap.Contains(aE))
+    {
       myLocalEdgesOut.Add(aE);
+    }
   }
 
   tmpMap.Clear();

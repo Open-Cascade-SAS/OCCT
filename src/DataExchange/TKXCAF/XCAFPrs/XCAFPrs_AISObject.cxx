@@ -160,9 +160,13 @@ void XCAFPrs_AISObject::DispatchStyles(const bool theToSyncStyles)
     aBuilder.Add(aComp, aStyledShapeIter.Key());
     TopoDS_Compound* aMapShape = aStyleGroups.ChangeSeek(aStyledShapeIter.Value());
     if (aMapShape == nullptr)
+    {
       aStyleGroups.Add(aStyledShapeIter.Value(), aComp);
+    }
     else
+    {
       *aMapShape = aComp;
+    }
   }
   aSettings.Clear();
 

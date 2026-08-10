@@ -43,7 +43,9 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                         Path
   BRepTools_WireExplorer wexp;
   int                    NbEdge = 0;
   for (wexp.Init(myPath); wexp.More(); wexp.Next())
+  {
     NbEdge++;
+  }
 
   // tab to memorize ACR for each edge
   OrigParam = new (NCollection_HArray1<double>)(0, NbEdge);
@@ -62,7 +64,9 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                         Path
   // return ACR of edges of the trajectory
   OrigParam->SetValue(0, 0);
   for (ipath = 1; ipath <= NbEdge; ipath++)
+  {
     OrigParam->SetValue(ipath, Orig(ipath));
+  }
 
   // process each edge of the trajectory
   for (ipath = 0, wexp.Init(myPath); wexp.More(); wexp.Next())

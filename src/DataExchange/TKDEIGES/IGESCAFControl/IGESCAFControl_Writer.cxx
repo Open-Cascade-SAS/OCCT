@@ -89,9 +89,13 @@ void CollectShapeNames(const TDF_Label&                  theLabel,
     {
       TopoDS_Shape aShape;
       if (!XCAFDoc_ShapeTool::GetShape(aSeq.Value(anIter), aShape))
+      {
         continue;
+      }
       if (!aSeq.Value(anIter).FindAttribute(TDataStd_Name::GetID(), aName))
+      {
         continue;
+      }
       theMapOfShapeNames.Bind(aShape, aName->Get());
     }
   }
@@ -100,7 +104,9 @@ void CollectShapeNames(const TDF_Label&                  theLabel,
   {
     TopoDS_Shape aShape;
     if (!XCAFDoc_ShapeTool::GetShape(theLabel, aShape))
+    {
       return;
+    }
     aShape.Move(theLocation, false);
     theMapOfShapeNames.Bind(aShape, thePrevName->Get());
   }
@@ -153,7 +159,9 @@ bool IGESCAFControl_Writer::Transfer(const occ::handle<TDocStd_Document>& doc,
   // translate free top-level shapes of the DECAF document
   occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
   if (STool.IsNull())
+  {
     return false;
+  }
 
   NCollection_Sequence<TDF_Label> labels;
   STool->GetFreeShapes(labels);
@@ -176,28 +184,38 @@ bool IGESCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& labe
                                      const Message_ProgressRange&           theProgress)
 {
   if (labels.Length() <= 0)
+  {
     return false;
+  }
   prepareUnit(labels.First()); // set local length unit to the model
   Message_ProgressScope aPS(theProgress, "Labels", labels.Length());
   for (int i = 1; i <= labels.Length() && aPS.More(); i++)
   {
     TopoDS_Shape shape = XCAFDoc_ShapeTool::GetShape(labels.Value(i));
     if (!shape.IsNull())
+    {
       AddShape(shape, aPS.Next());
+    }
     //      IGESControl_Writer::Transfer ( shape );
   }
 
   // write colors
   if (GetColorMode())
+  {
     WriteAttributes(labels);
+  }
 
   // write layers
   if (GetLayerMode())
+  {
     WriteLayers(labels);
+  }
 
   // write names
   if (GetNameMode())
+  {
     WriteNames(labels);
+  }
 
   // refresh graph
   //  WS()->ComputeGraph ( true );
@@ -213,7 +231,9 @@ bool IGESCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& doc,
                                     const Message_ProgressRange&         theProgress)
 {
   if (!Transfer(doc, theProgress))
+  {
     return false;
+  }
   return Write(filename) == IFSelect_RetDone;
 }
 
@@ -224,7 +244,9 @@ bool IGESCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& doc,
                                     const Message_ProgressRange&         theProgress)
 {
   if (!Transfer(doc, theProgress))
+  {
     return false;
+  }
   return Write(filename.ToCString()) == IFSelect_RetDone;
 }
 
@@ -234,7 +256,9 @@ bool IGESCAFControl_Writer::WriteAttributes(const NCollection_Sequence<TDF_Label
 {
   // Iterate on labels
   if (labels.Length() <= 0)
+  {
     return false;
+  }
   for (int i = 1; i <= labels.Length(); i++)
   {
     TDF_Label L = labels.Value(i);
@@ -244,13 +268,17 @@ bool IGESCAFControl_Writer::WriteAttributes(const NCollection_Sequence<TDF_Label
     TopLoc_Location                                                                  loc;
     XCAFPrs::CollectStyleSettings(L, loc, settings);
     if (settings.Extent() <= 0)
+    {
       continue;
+    }
 
     // get a target shape and try to find corresponding context
     // (all the colors set under that label will be put into that context)
     TopoDS_Shape S;
     if (!XCAFDoc_ShapeTool::GetShape(L, S))
+    {
       continue;
+    }
 
     // iterate on subshapes and create IGES styles
     NCollection_DataMap<XCAFPrs_Style, occ::handle<Standard_Transient>> colors;
@@ -273,7 +301,9 @@ void IGESCAFControl_Writer::MakeColors(
 {
   // skip already processed shapes
   if (!Map.Add(S))
+  {
     return;
+  }
 
   // check if shape has its own style (or inherits from ancestor)
   XCAFPrs_Style style = inherit;
@@ -281,9 +311,13 @@ void IGESCAFControl_Writer::MakeColors(
   {
     const XCAFPrs_Style& own = settings.FindFromKey(S);
     if (own.IsSetColorCurv())
+    {
       style.SetColorCurv(own.GetColorCurv());
+    }
     if (own.IsSetColorSurf())
+    {
       style.SetColorSurf(own.GetColorSurf());
+    }
     style.SetMaterial(own.Material());
   }
 
@@ -350,7 +384,9 @@ void IGESCAFControl_Writer::MakeColors(
       if (!ent_f.IsNull())
       {
         if (!ent_f->Surface().IsNull())
+        {
           ent_f->Surface()->InitColor(colent, rank);
+        }
       }
     }
     else
@@ -377,7 +413,9 @@ void IGESCAFControl_Writer::MakeColors(
               if (!ent_f.IsNull())
               {
                 if (!ent_f->Surface().IsNull())
+                {
                   ent_f->Surface()->InitColor(colent, rank);
+                }
               }
             }
           }
@@ -397,7 +435,9 @@ void IGESCAFControl_Writer::MakeColors(
 
   // iterate on subshapes (except vertices :)
   if (S.ShapeType() == TopAbs_EDGE)
+  {
     return;
+  }
   for (TopoDS_Iterator it(S); it.More(); it.Next())
   {
     MakeColors(it.Value(), settings, colors, Map, style);
@@ -420,7 +460,9 @@ static void AttachLayer(const occ::handle<Transfer_FinderProcess>& FP,
       occ::handle<NCollection_HSequence<TCollection_ExtendedString>> shLayers =
         new NCollection_HSequence<TCollection_ExtendedString>;
       if (!LTool->GetLayers(newSh, shLayers) || newSh.ShapeType() == TopAbs_COMPOUND)
+      {
         AttachLayer(FP, LTool, newSh, localIntName);
+      }
     }
     return;
   }
@@ -464,7 +506,9 @@ static void MakeLayers(const occ::handle<Transfer_FinderProcess>& FP,
     TDF_Label    aShapeLabel = aShapeLabels.Value(j);
     TopoDS_Shape aSh;
     if (!STool->GetShape(aShapeLabel, aSh))
+    {
       continue;
+    }
     AttachLayer(FP, LTool, aSh, localIntName);
   }
 }
@@ -474,13 +518,19 @@ static void MakeLayers(const occ::handle<Transfer_FinderProcess>& FP,
 bool IGESCAFControl_Writer::WriteLayers(const NCollection_Sequence<TDF_Label>& labels)
 {
   if (labels.Length() <= 0)
+  {
     return false;
+  }
   occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(labels(1));
   if (STool.IsNull())
+  {
     return false;
+  }
   occ::handle<XCAFDoc_LayerTool> LTool = XCAFDoc_DocumentTool::LayerTool(labels(1));
   if (LTool.IsNull())
+  {
     return false;
+  }
 
   int                             globalIntName = 0;
   NCollection_Sequence<TDF_Label> aLayerLabels;
@@ -491,7 +541,9 @@ bool IGESCAFControl_Writer::WriteLayers(const NCollection_Sequence<TDF_Label>& l
   {
     TDF_Label aOneLayerL = aLayerLabels.Value(i);
     if (aOneLayerL.IsNull())
+    {
       continue;
+    }
     TCollection_ExtendedString localName;
     LTool->GetLayer(aOneLayerL, localName);
     int                     localIntName = 0;
@@ -500,12 +552,16 @@ bool IGESCAFControl_Writer::WriteLayers(const NCollection_Sequence<TDF_Label>& l
     {
       localIntName = asciiName.IntegerValue();
       if (globalIntName < localIntName)
+      {
         globalIntName = localIntName;
+      }
 
       NCollection_Sequence<TDF_Label> aShapeLabels;
       LTool->GetShapesOfLayer(aOneLayerL, aShapeLabels);
       if (aShapeLabels.Length() <= 0)
+      {
         continue;
+      }
       MakeLayers(FP, STool, LTool, aShapeLabels, localIntName);
     }
   }
@@ -514,17 +570,23 @@ bool IGESCAFControl_Writer::WriteLayers(const NCollection_Sequence<TDF_Label>& l
   {
     TDF_Label aOneLayerL = aLayerLabels.Value(i1);
     if (aOneLayerL.IsNull())
+    {
       continue;
+    }
     TCollection_ExtendedString localName;
     LTool->GetLayer(aOneLayerL, localName);
     int                     localIntName = 0;
     TCollection_AsciiString asciiName(localName, '?');
     if (asciiName.IsIntegerValue())
+    {
       continue;
+    }
     NCollection_Sequence<TDF_Label> aShapeLabels;
     LTool->GetShapesOfLayer(aOneLayerL, aShapeLabels);
     if (aShapeLabels.Length() <= 0)
+    {
       continue;
+    }
     localIntName = ++globalIntName;
     MakeLayers(FP, STool, LTool, aShapeLabels, localIntName);
   }
@@ -537,7 +599,9 @@ bool IGESCAFControl_Writer::WriteLayers(const NCollection_Sequence<TDF_Label>& l
 bool IGESCAFControl_Writer::WriteNames(const NCollection_Sequence<TDF_Label>& theLabels)
 {
   if (theLabels.Length() <= 0)
+  {
     return false;
+  }
 
   DataMapOfShapeNames aMapOfShapeNames;
 
@@ -548,9 +612,13 @@ bool IGESCAFControl_Writer::WriteNames(const NCollection_Sequence<TDF_Label>& th
     TopoDS_Shape               aShape;
     occ::handle<TDataStd_Name> aName;
     if (!XCAFDoc_ShapeTool::GetShape(aLabel, aShape))
+    {
       continue;
+    }
     if (!aLabel.FindAttribute(TDataStd_Name::GetID(), aName))
+    {
       continue;
+    }
 
     aMapOfShapeNames.Bind(aShape, aName->Get());
 
@@ -576,7 +644,9 @@ bool IGESCAFControl_Writer::WriteNames(const NCollection_Sequence<TDF_Label>& th
       occ::handle<TCollection_HAsciiString> anAsciiName = new TCollection_HAsciiString("        ");
       int                                   aNameLength = 8 - aName.Length();
       if (aNameLength < 0)
+      {
         aNameLength = 0;
+      }
       for (int aCharPos = 1; aNameLength < 8; aCharPos++, aNameLength++)
       {
         anAsciiName->SetValue(aNameLength + 1,

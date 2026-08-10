@@ -868,7 +868,9 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MinMode)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone())
+    {
       continue;
+    }
 
     ASSERT_TRUE(aNewResult.IsDone()) << "Iteration " << i;
 
@@ -899,7 +901,9 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MaxMode)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone())
+    {
       continue;
+    }
 
     ASSERT_TRUE(aNewResult.IsDone()) << "Iteration " << i;
 
@@ -930,7 +934,9 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_RandomPoints_MinMode)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone())
+    {
       continue;
+    }
 
     ASSERT_TRUE(aNewResult.IsDone()) << "Iteration " << i;
 
@@ -977,10 +983,14 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_RandomPoints_MinMode)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone() || anOldExtPC.NbExt() == 0)
+    {
       continue;
+    }
 
     if (!aNewResult.IsDone() || aNewResult.NbExt() == 0)
+    {
       continue;
+    }
 
     ++aTestCount;
 

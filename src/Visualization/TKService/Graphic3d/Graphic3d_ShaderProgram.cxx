@@ -65,7 +65,7 @@ const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
     if (!aDir.Exists() || !aProgramFile.Exists())
     {
       std::cerr << "Standard GLSL programs are not found in: " << THE_SHADERS_FOLDER.ToCString()
-                << std::endl;
+                << '\n';
       throw Standard_Failure("CSF_ShadersDirectory or CASROOT is set incorrectly");
     }
   }
@@ -113,7 +113,9 @@ bool Graphic3d_ShaderProgram::IsDone() const
        anIt.Next())
   {
     if (!anIt.Value()->IsDone())
+    {
       return false;
+    }
   }
 
   return true;
@@ -135,7 +137,9 @@ bool Graphic3d_ShaderProgram::AttachShader(const occ::handle<Graphic3d_ShaderObj
        anIt.Next())
   {
     if (anIt.Value() == theShader)
+    {
       return false;
+    }
   }
 
   myShaderObjects.Append(theShader);

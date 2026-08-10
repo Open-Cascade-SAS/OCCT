@@ -23,13 +23,21 @@ StepRepr_ShapeDefinition::StepRepr_ShapeDefinition() = default;
 int StepRepr_ShapeDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)))
+  {
     return 3;
+  }
   return 0;
 }
 

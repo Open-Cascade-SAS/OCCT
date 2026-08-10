@@ -38,7 +38,9 @@ void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "structural_response_property_definition_representation"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinitionRepresentation
 

@@ -143,9 +143,13 @@ static double EvalPhase(const TopoDS_Edge&         Edge,
   gp_Pnt P = GAS.Value(0., V);
 
   if (gp_Vec(Axis.Location(), P).Dot(Axis.XDirection()) < 0.)
+  {
     return M_PI;
+  }
   else
+  {
     return 0.;
+  }
 }
 
 //=================================================================================================
@@ -304,10 +308,14 @@ static void EvalParameters(const TopoDS_Edge&               Edge,
       //  modified by NIZHNY-EAP Wed Jan 12 11:41:40 2000 ___END___
       UBis = Bis->LastParameter();
       if (UBis >= Precision::Infinite())
+      {
         return;
+      }
       PBis = Bis->Value(UBis);
       if (PBis.Distance(P2d) > Tol)
+      {
         return;
+      }
     }
 
     // evaluate parameter intersection.
@@ -360,7 +368,9 @@ static void EvalParameters(const TopoDS_Edge&               Edge,
     double U = Axis.XDirection().AngleWithRef(D1, Axis.XDirection() ^ Axis.YDirection());
     U += Phase;
     if (U < 0.)
+    {
       U += 2 * M_PI;
+    }
 
     P = gp_Pnt(Bis->FirstParameter(), U, 0.);
     Seq.Append(P);
@@ -406,7 +416,9 @@ bool BRepFill_TrimSurfaceTool::IsOnFace(const gp_Pnt2d& Point) const
   //  modified by NIZHNY-EAP Fri Jan 21 09:49:09 2000 ___BEGIN___
   Inter.Init(myFace1, Line, 1e-6); // Precision::PConfusion());
   if (Inter.More())
+  {
     return true;
+  }
 
   // eval if is on face 2
   Inter.Init(myFace2, Line, 1e-6); // Precision::PConfusion());

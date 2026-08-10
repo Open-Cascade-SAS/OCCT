@@ -51,7 +51,9 @@ void IFGraph_ExternalSources::Evaluate()
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == 0)
+    {
       thegraph.GetFromIter(thegraph.Sharings(thegraph.Entity(i)), 1);
+    }
   }
   GetFromGraph(thegraph, 1);
 }
@@ -63,7 +65,9 @@ bool IFGraph_ExternalSources::IsEmpty()
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) || thegraph.Status(i) == 1)
+    {
       return false;
+    }
   }
   return true;
 }

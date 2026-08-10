@@ -415,7 +415,9 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   BRepLib::SameParameter(Face);
 
   if (SameLoc)
+  {
     Face.Move(L);
+  }
   return Face;
 }
 
@@ -492,7 +494,9 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
       C1->Reverse();
     }
     else
+    {
       TopExp::Vertices(Edge1, V1f, V1l);
+    }
 
     if (std::abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
         || std::abs(l2 - C2->LastParameter()) > Precision::PConfusion())
@@ -513,7 +517,9 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
       C2->Reverse();
     }
     else
+    {
       TopExp::Vertices(Edge2, V2f, V2l);
+    }
 
     GeomFill_Generator Generator;
     Generator.AddCurve(C1);
@@ -599,7 +605,9 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
     B.Add(Face, W);
 
     if (SameLoc)
+    {
       Face.Move(L);
+    }
 
     B.Add(Shell, Face);
 
@@ -701,10 +709,14 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
   }
 
   if (S.IsNull())
+  {
     throw Standard_DomainError("BRepFill_Evolved::Axe");
+  }
 
   if (!L.IsIdentity())
+  {
     S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+  }
 
   Normal = occ::down_cast<Geom_Plane>(S)->Pln().Axis().Direction();
 
@@ -735,11 +747,15 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
       double DistP1P2 = P1.SquareDistance(P2);
       IsOnVertex      = (DistP1P2 <= Tol2);
       if (IsOnVertex)
+      {
         break;
+      }
     }
     // otherwise SE.Next() is done and VonF is wrong
     if (IsOnVertex)
+    {
       break;
+    }
     //  modified by NIZHNY-EAP Wed Jan 26 09:08:36 2000 ___END___
   }
 
@@ -768,7 +784,9 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
       Loc1.Transform(L.Transformation());
     }
     if (E1.Orientation() == TopAbs_REVERSED)
+    {
       Tang1.Reverse();
+    }
 
     occ::handle<Geom_Curve> CE2  = BRep_Tool::Curve(E2, L, f, l);
     double                  Par2 = BRep_Tool::Parameter(VonF, E2, aFace);
@@ -779,7 +797,9 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
       Loc2.Transform(L.Transformation());
     }
     if (E2.Orientation() == TopAbs_REVERSED)
+    {
       Tang2.Reverse();
+    }
 
     //  modified by NIZHNY-EAP Wed Feb  2 15:38:41 2000 ___BEGIN___
     Tang1.Normalize();
@@ -843,7 +863,9 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
           BRepAdaptor_Curve BAC(E);
           BAC.D1(Par, Loc, Tang);
           if (E.Orientation() == TopAbs_REVERSED)
+          {
             Tang.Reverse();
+          }
         }
       }
     }
@@ -863,7 +885,9 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
 void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, const double Tol)
 {
   if (!W.Closed())
+  {
     throw Standard_NoSuchObject("BRepFill::SearchOrigin : the wire must be closed");
+  }
 
   bool          NewVertex = false;
   double        theparam  = 1.e101, angle;
@@ -883,11 +907,13 @@ void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, 
     int    isol = 1;
     double dss  = P.Distance(DSS.PointOnShape2(isol));
     for (int iss = 2; iss <= DSS.NbSolution(); iss++)
+    {
       if (dss > P.Distance(DSS.PointOnShape2(iss)))
       {
         dss  = P.Distance(DSS.PointOnShape2(iss));
         isol = iss;
       }
+    }
     TopoDS_Shape supp = DSS.SupportOnShape2(isol);
     if (DSS.SupportTypeShape2(isol) == BRepExtrema_IsVertex)
     {
@@ -932,7 +958,9 @@ void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, 
 
   // Calculate the number of edges
   for (exp.Init(W); exp.More(); exp.Next())
+  {
     NbEdges++;
+  }
   if (NewVertex)
   {
     NbEdges++;
@@ -963,7 +991,9 @@ void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, 
     }
   }
   if (rangdeb == 0)
+  {
     rangdeb = NbEdges;
+  }
 
   // Calculate the direction of parsing
   E = TopoDS::Edge(Edges(rangdeb));
@@ -982,7 +1012,9 @@ void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, 
   }
   angle = Ve.Angle(Dir);
   if (angle > M_PI)
+  {
     angle = 2 * M_PI - angle;
+  }
   forward = (angle <= M_PI / 2);
 
   // Reconstruction
@@ -1093,12 +1125,16 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire&                wire,
       if (E.Orientation() == TopAbs_FORWARD)
       {
         for (j = 1; j <= ndec; j++)
+        {
           SR.Append(paradec(j));
+        }
       }
       else
       {
         for (j = 1; j <= ndec; j++)
+        {
           SR.Append(t0 + t1 - paradec(ndec + 1 - j));
+        }
       }
       TrimEdge(E, SR, t0, t1, SO, SE);
       for (j = 1; j <= SE.Length(); j++)

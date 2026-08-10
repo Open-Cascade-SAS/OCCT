@@ -199,9 +199,13 @@ public:
   bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
   {
     if (!Value(theX, theF))
+    {
       return false;
+    }
     if (!Gradient(theX, theG))
+    {
       return false;
+    }
     theH(1, 1) = 2.0;
     theH(1, 2) = 0.0;
     theH(2, 1) = 0.0;
@@ -244,9 +248,13 @@ public:
   bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
   {
     if (!Value(theX, theF))
+    {
       return false;
+    }
     if (!Gradient(theX, theG))
+    {
       return false;
+    }
     theH(1, 1) = 10.0;
     theH(1, 2) = 8.0;
     theH(2, 1) = 8.0;

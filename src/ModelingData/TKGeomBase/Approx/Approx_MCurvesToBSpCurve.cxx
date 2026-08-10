@@ -181,27 +181,39 @@ void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_M
     int mydegre, k;
     int first, last, Inc, thefirst;
     if (nb3d != 0)
+    {
       thefirst = 1;
+    }
     else
+    {
       thefirst = 2;
+    }
 
     for (i = 1; i <= nbcu; i++)
     {
       CU      = TheSeq.Value(i);
       mydegre = CU.Degree();
       if (TheMults(i + 1) == deg)
+      {
         last = deg + 1; // Continuite C0
+      }
       else
+      {
         last = deg; // Continuite C1
+      }
       if (i == nbcu)
       {
         last = deg + 1;
       }
       first = 1;
       if (i == 1)
+      {
         first = 1;
+      }
       else if ((TheMults(i) == deg - 1) || (TheMults(i) == deg))
+      {
         first = 2;
+      }
 
       for (j = 2; j <= nb3d; j++)
       {

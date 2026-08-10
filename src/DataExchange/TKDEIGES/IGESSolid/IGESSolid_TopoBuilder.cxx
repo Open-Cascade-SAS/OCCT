@@ -84,7 +84,9 @@ void IGESSolid_TopoBuilder::AddEdge(const occ::handle<IGESData_IGESEntity>& curv
 {
   if (curve.IsNull() || vstart <= 0 || vend <= 0 || vstart > thepoint->Length()
       || vend > thepoint->Length())
+  {
     throw Standard_DomainError("IGESSolid_TopoBuilder : AddEdge");
+  }
   thecur3d->Append(curve);
   thevstar->Append(vstart);
   thevend->Append(vend);
@@ -101,7 +103,9 @@ void IGESSolid_TopoBuilder::Edge(const int                         num,
                                  int&                              vend) const
 {
   if (num <= 0 || num > thecur3d->Length())
+  {
     return;
+  }
   curve  = GetCasted(IGESData_IGESEntity, thecur3d->Value(num));
   vstart = thevstar->Value(num);
   vend   = thevend->Value(num);
@@ -125,7 +129,9 @@ void IGESSolid_TopoBuilder::EndLists()
   {
     vert = new NCollection_HArray1<gp_XYZ>(1, nb);
     for (i = 1; i <= nb; i++)
+    {
       vert->SetValue(i, thepoint->Value(i));
+    }
   }
   thevertl->Init(vert);
 
@@ -164,7 +170,9 @@ void IGESSolid_TopoBuilder::MakeLoop()
 void IGESSolid_TopoBuilder::MakeEdge(const int edgetype, const int edge3d, const int orientation)
 {
   if (edge3d <= 0 || edge3d > thecur3d->Length())
+  {
     throw Standard_DomainError("IGESSolid_TopoBuilder : MakeEdge");
+  }
   theetype->Append(edgetype);
   thee3d->Append(edge3d);
   theeflag->Append(orientation);
@@ -175,7 +183,9 @@ void IGESSolid_TopoBuilder::MakeEdge(const int edgetype, const int edge3d, const
 void IGESSolid_TopoBuilder::AddCurveUV(const occ::handle<IGESData_IGESEntity>& curve, const int iso)
 {
   if (curve.IsNull() || thee3d->IsEmpty())
+  {
     throw Standard_DomainError("IGESSolid_TopoBuilder : AddCurveUV");
+  }
   thecuruv->Append(curve);
   theisol->Append(iso);
 }
@@ -241,7 +251,9 @@ void IGESSolid_TopoBuilder::EndLoop()
 void IGESSolid_TopoBuilder::MakeFace(const occ::handle<IGESData_IGESEntity>& surface)
 {
   if (surface.IsNull())
+  {
     throw Standard_DomainError("IGESSolid_TopoBuilder : MakeFace");
+  }
   thesurf  = surface;
   theouter = false;
   theinner->Clear();
@@ -271,7 +283,9 @@ void IGESSolid_TopoBuilder::EndFace(const int orientation)
   {
     loops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nb);
     for (i = 1; i <= nb; i++)
+    {
       loops->SetValue(i, GetCasted(IGESSolid_Loop, theinner->Value(i)));
+    }
   }
   theface->Init(thesurf, theouter, loops);
   thefaces->Append(theface);

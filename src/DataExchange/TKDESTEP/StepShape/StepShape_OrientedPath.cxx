@@ -58,7 +58,7 @@ void StepShape_OrientedPath::SetEdgeList(
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
-  std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
+  std::cout << "Field is redefined, SetUp Forbidden" << '\n';
 }
 
 occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_OrientedPath::
@@ -67,7 +67,9 @@ occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (orientation)
+  {
     return pathElement->EdgeList();
+  }
   else
   {
     // on devrait creer un nouveau tableau d'oriented edge classe dans
@@ -81,7 +83,9 @@ occ::handle<StepShape_OrientedEdge> StepShape_OrientedPath::EdgeListValue(const 
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (orientation)
+  {
     return pathElement->EdgeListValue(num);
+  }
   else
   {
     int nbEdges = pathElement->NbEdgeList();

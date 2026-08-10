@@ -29,7 +29,9 @@ void RWStepShape_RWVertexPoint::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "vertex_point"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

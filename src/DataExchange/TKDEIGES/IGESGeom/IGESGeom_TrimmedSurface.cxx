@@ -31,8 +31,12 @@ void IGESGeom_TrimmedSurface::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& anInner)
 {
   if (!anInner.IsNull())
+  {
     if (anInner->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESGeom_TrimmedSurface : Init");
+    }
+  }
 
   theSurface     = aSurface;
   theFlag        = aFlag;

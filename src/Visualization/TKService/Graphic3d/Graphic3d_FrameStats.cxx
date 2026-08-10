@@ -687,7 +687,7 @@ void Graphic3d_FrameStats::FrameStart(const occ::handle<Graphic3d_CView>& theVie
 
   const int aNbFrames =
     std::max(!theView.IsNull() ? theView->RenderingParams().StatsNbFrames : 1, 1);
-  if (myCounters.Size() != aNbFrames)
+  if (myCounters.Length() != aNbFrames)
   {
     myCounters.Resize(0, aNbFrames - 1, false);
     myCounters.Init(Graphic3d_FrameStatsData());

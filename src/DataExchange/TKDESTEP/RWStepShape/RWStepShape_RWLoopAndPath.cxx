@@ -32,14 +32,18 @@ void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Instance of plex component Loop ---
 
   if (!data->CheckNbParams(num, 0, ach, "loop"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component Path ---
 
   if (!data->CheckNbParams(num, 1, ach, "path"))
+  {
     return;
+  }
 
   // --- field : edgeList ---
 
@@ -59,7 +63,9 @@ void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderDa
                            ach,
                            STANDARD_TYPE(StepShape_OrientedEdge),
                            anent1))
+      {
         aEdgeList->SetValue(i1, anent1);
+      }
     }
   }
 
@@ -68,7 +74,9 @@ void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Instance of plex component RepresentationItem ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -81,7 +89,9 @@ void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Instance of common supertype TopologicalRepresentationItem ---
 
   if (!data->CheckNbParams(num, 0, ach, "topological_representation_item"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

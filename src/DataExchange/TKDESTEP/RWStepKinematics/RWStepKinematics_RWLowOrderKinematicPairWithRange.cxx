@@ -41,7 +41,9 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 24, theArch, "low_order_kinematic_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -397,7 +399,9 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -428,84 +432,108 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitActualRotationX());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotationX())
   {
     theSW.Send(theEnt->UpperLimitActualRotationX());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualRotationY())
   {
     theSW.Send(theEnt->LowerLimitActualRotationY());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotationY())
   {
     theSW.Send(theEnt->UpperLimitActualRotationY());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualRotationZ())
   {
     theSW.Send(theEnt->LowerLimitActualRotationZ());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotationZ())
   {
     theSW.Send(theEnt->UpperLimitActualRotationZ());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualTranslationX())
   {
     theSW.Send(theEnt->LowerLimitActualTranslationX());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualTranslationX())
   {
     theSW.Send(theEnt->UpperLimitActualTranslationX());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualTranslationY())
   {
     theSW.Send(theEnt->LowerLimitActualTranslationY());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualTranslationY())
   {
     theSW.Send(theEnt->UpperLimitActualTranslationY());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitActualTranslationZ())
   {
     theSW.Send(theEnt->LowerLimitActualTranslationZ());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualTranslationZ())
   {
     theSW.Send(theEnt->UpperLimitActualTranslationZ());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

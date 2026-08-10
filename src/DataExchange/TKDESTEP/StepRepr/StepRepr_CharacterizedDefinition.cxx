@@ -34,21 +34,37 @@ StepRepr_CharacterizedDefinition::StepRepr_CharacterizedDefinition() = default;
 int StepRepr_CharacterizedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_CharacterizedObject)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DocumentFile)))
+  {
     return 7;
+  }
   return 0;
 }
 

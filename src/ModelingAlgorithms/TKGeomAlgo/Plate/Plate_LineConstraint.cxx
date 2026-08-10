@@ -35,7 +35,9 @@ Plate_LineConstraint::Plate_LineConstraint(const gp_XY&  point2d,
   gp_XYZ d1 = dX ^ dir;
   gp_XYZ d2 = dY ^ dir;
   if (d2.SquareModulus() > d1.SquareModulus())
+  {
     d1 = d2;
+  }
   d1.Normalize();
   d2 = dir ^ d1;
   d2.Normalize();

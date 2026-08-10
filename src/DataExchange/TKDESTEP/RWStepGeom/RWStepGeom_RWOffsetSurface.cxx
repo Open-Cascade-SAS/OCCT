@@ -29,7 +29,9 @@ void RWStepGeom_RWOffsetSurface::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "offset_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

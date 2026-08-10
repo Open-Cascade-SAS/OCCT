@@ -110,7 +110,9 @@ bool XCAFDimTolObjects_Tool::GetRefDimensions(
       {
         occ::handle<XCAFDoc_Dimension> aDimension;
         if (aSeq.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
+        {
           theDimensionObjectSequence.Append(aDimension->GetObject());
+        }
       }
       return true;
     }

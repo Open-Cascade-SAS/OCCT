@@ -123,9 +123,13 @@ occ::handle<BRep_CurveRepresentation> BRep_CurveOnClosedSurface::Copy() const
 void BRep_CurveOnClosedSurface::Update()
 {
   if (!Precision::IsNegativeInfinite(First()))
+  {
     myPCurve2->D0(First(), myUV21);
+  }
   if (!Precision::IsPositiveInfinite(Last()))
+  {
     myPCurve2->D0(Last(), myUV22);
+  }
   BRep_CurveOnSurface::Update();
 }
 

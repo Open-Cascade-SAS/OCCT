@@ -65,7 +65,9 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
     const TopoDS_Edge&                    aEdge  = TopoDS::Edge(aMapEF.FindKey(ie));
     const NCollection_List<TopoDS_Shape>& aFaces = aMapEF(ie);
     if (aFaces.Extent() < 2)
+    {
       continue;
+    }
 
     // get polygon on first face
     const TopoDS_Face&                       aFace1 = TopoDS::Face(aFaces.First());
@@ -158,11 +160,15 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
       occ::handle<Poly_PolygonOnTriangulation> aPoly =
         BRep_Tool::PolygonOnTriangulation(aEdge, aT, aLoc);
       if (aPoly.IsNull())
+      {
         continue;
+      }
       const NCollection_Array1<int>& aNodes = aPoly->Nodes();
       int                            i;
       for (i = aNodes.Lower(); i <= aNodes.Upper(); i++)
+      {
         aMapBndNodes.Add(aNodes(i));
+      }
     }
 
     TColStd_PackedMapOfInteger aUsedNodes;
@@ -210,7 +216,9 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
           int n2 = n[k];
           // skip if it is on boundary
           if (aMapBndNodes.Contains(n1) && aMapBndNodes.Contains(n2))
+          {
             continue;
+          }
           if (!myMapFaceLinks.Contains(iF))
           {
             occ::handle<NCollection_HSequence<int>> tmpSeq = new NCollection_HSequence<int>;
@@ -226,11 +234,13 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
     // check of free nodes
     int aNbNodes = aT->NbNodes();
     for (int k = 1; k <= aNbNodes; k++)
+    {
       if (!aUsedNodes.Contains(k))
       {
         myFreeNodeFaces.Append(iF);
         myFreeNodeNums.Append(k);
       }
+    }
   }
 }
 

@@ -33,10 +33,16 @@ LDOM_BasicNode& LDOM_BasicNode::operator=(const LDOM_BasicNode& anOther)
 const LDOM_BasicNode* LDOM_BasicNode::GetSibling() const
 {
   while (mySibling)
+  {
     if (mySibling->isNull())
+    {
       (const LDOM_BasicNode*&)mySibling = mySibling->mySibling;
+    }
     else
+    {
       break;
+    }
+  }
   return mySibling;
 }
 

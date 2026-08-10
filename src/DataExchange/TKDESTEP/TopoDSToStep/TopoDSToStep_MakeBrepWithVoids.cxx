@@ -91,18 +91,23 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
 
   int nbshapes = 0;
   for (It.Initialize(aSolid); It.More(); It.Next())
+  {
     if (It.Value().ShapeType() == TopAbs_SHELL)
+    {
       nbshapes++;
+    }
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
   {
     if (It.Value().ShapeType() == TopAbs_SHELL)
     {
       TopoDS_Shell CurrentShell = TopoDS::Shell(It.Value());
-      if (!aOutShell.IsNull()
-          && !aOutShell.IsEqual(CurrentShell)) //: e0 abv 25 Mar 98: voids should be reversed
-                                               //: according to EXPRESS for ABSR
+      if (!aOutShell.IsNull() && !aOutShell.IsEqual(CurrentShell))
+      { //: e0 abv 25 Mar 98: voids should be reversed
+        //: according to EXPRESS for ABSR
         CurrentShell.Reverse();
+      }
       //: d7 abv 16 Mar 98: try to treat 'open' shells as closed since flag
       // IsClosed() is often incorrect (taken from MakeManifoldSolid(Solid))
       aTool.Init(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
@@ -134,9 +139,13 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
         if (!aOutShell.IsNull() && !aCShell.IsNull())
         {
           if (aOutShell.IsEqual(It.Value()))
+          {
             aOuter = aCShell;
+          }
           else
+          {
             S.Append(aCShell);
+          }
         }
 #ifdef OCCT_DEBUG
         else
@@ -174,7 +183,9 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
     }
   }
   if (!aPS.More())
+  {
     return;
+  }
 
   int N = S.Length();
   if (N >= 1)

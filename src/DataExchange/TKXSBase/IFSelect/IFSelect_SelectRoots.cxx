@@ -44,7 +44,9 @@ Interface_EntityIterator IFSelect_SelectRoots::RootResult(const Interface_Graph&
   {
     const occ::handle<Standard_Transient>& ent = input.Value();
     if ((GC.NbTimes(ent) <= 1) == IsDirect())
+    {
       iter.GetOneItem(ent);
+    }
   }
   return iter;
 }

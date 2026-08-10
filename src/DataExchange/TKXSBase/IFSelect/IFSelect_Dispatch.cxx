@@ -80,7 +80,9 @@ Interface_EntityIterator IFSelect_Dispatch::Packeted(const Interface_Graph& G) c
   Interface_EntityIterator total  = GetEntities(G);
   Interface_EntityIterator remain = Remainder(G);
   if (remain.NbEntities() == 0)
+  {
     return total;
+  }
   //  otherwise, make the difference!
   IFGraph_Compare GC(G);
   GC.GetFromIter(total, true);

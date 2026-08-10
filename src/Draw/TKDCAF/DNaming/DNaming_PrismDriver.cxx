@@ -90,7 +90,9 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   // Save location
   occ::handle<TNaming_NamedShape> aPrevPrism = DNaming::GetFunctionResult(aFunction);
@@ -118,11 +120,15 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     {
       BRepBuilderAPI_MakeFace aMaker(TopoDS::Wire(aBasis), true); // Makes planar face
       if (aMaker.IsDone())
+      {
         aBASIS = aMaker.Face(); // aMaker.Face();
+      }
     }
   }
   else if (aBasis.ShapeType() == TopAbs_FACE)
+  {
     aBASIS = aBasis;
+  }
   if (aBASIS.IsNull())
   {
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -157,7 +163,9 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   // Reverse
   int aRev = DNaming::GetInteger(aFunction, PRISM_DIR)->Get();
   if (aRev)
+  {
     anAxis.Reverse();
+  }
 
   // Calculate Vec - direction of extrusion
   gp_Vec aVEC(anAxis.Direction());
@@ -185,12 +193,16 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   bool aVol = false;
 
   if (aResult.ShapeType() == TopAbs_SOLID)
+  {
     aVol = true;
+  }
   else if (aResult.ShapeType() == TopAbs_SHELL)
   {
     occ::handle<BRepCheck_Shell> aCheck = new BRepCheck_Shell(TopoDS::Shell(aResult));
     if (aCheck->Closed() == BRepCheck_NoError)
+    {
       aVol = true;
+    }
   }
 
   if (aVol)
@@ -206,13 +218,19 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 
   // Naming
   if (anIsAttachment)
+  {
     LoadNamingDS(RESPOSITION(aFunction), aMakePrism, aBASIS, aContextOfBasis->Get());
+  }
   else
+  {
     LoadNamingDS(RESPOSITION(aFunction), aMakePrism, aBASIS, aBASIS);
+  }
 
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
+  }
 
   theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
@@ -235,14 +253,20 @@ void DNaming_PrismDriver::LoadNamingDS(const TDF_Label&       theResultLabel,
 
   occ::handle<TDF_TagSource> Tagger = TDF_TagSource::Set(theResultLabel);
   if (Tagger.IsNull())
+  {
     return;
+  }
   Tagger->Set(0);
 
   TNaming_Builder Builder(theResultLabel);
   if (Basis.IsEqual(Context))
+  {
     Builder.Generated(MS.Shape());
+  }
   else
+  {
     Builder.Generated(Context, MS.Shape());
+  }
 
   // Insert lateral face : Face from Edge
   TNaming_Builder LateralFaceBuilder(theResultLabel.NewChild());
@@ -253,7 +277,9 @@ void DNaming_PrismDriver::LoadNamingDS(const TDF_Label&       theResultLabel,
   {
     TopoDS_Iterator itr(Basis);
     if (itr.More() && itr.Value().ShapeType() == TopAbs_WIRE)
+    {
       makeTopBottom = false;
+    }
   }
   else if (Basis.ShapeType() == TopAbs_WIRE)
   {

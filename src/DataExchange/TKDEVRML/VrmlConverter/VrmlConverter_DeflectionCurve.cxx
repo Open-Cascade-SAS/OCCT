@@ -311,9 +311,13 @@ void VrmlConverter_DeflectionCurve::Add(Standard_OStream&                       
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   double theRequestedDeflection = GetDeflection(aCurve, V1, V2, aDrawer);
   DrawCurve(aCurve, theRequestedDeflection, V1, V2, aDrawer, anOStream);

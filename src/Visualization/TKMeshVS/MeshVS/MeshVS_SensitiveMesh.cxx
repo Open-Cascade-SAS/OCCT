@@ -69,10 +69,14 @@ int MeshVS_SensitiveMesh::NbSubElements() const
 {
   occ::handle<MeshVS_MeshOwner> anOwner = occ::down_cast<MeshVS_MeshOwner>(OwnerId());
   if (anOwner.IsNull())
+  {
     return -1;
+  }
   occ::handle<MeshVS_DataSource> aDataSource = anOwner->GetDataSource();
   if (aDataSource.IsNull())
+  {
     return -1;
+  }
   return aDataSource->GetAllNodes().Extent();
 }
 
@@ -88,7 +92,9 @@ Select3D_BndBox3d MeshVS_SensitiveMesh::BoundingBox()
 gp_Pnt MeshVS_SensitiveMesh::CenterOfGeometry() const
 {
   if (!myBndBox.IsValid())
+  {
     return gp_Pnt(0.0, 0.0, 0.0);
+  }
 
   NCollection_Vec3<double> aCenter = (myBndBox.CornerMax() + myBndBox.CornerMin()) * 0.5;
   return gp_Pnt(aCenter.x(), aCenter.y(), aCenter.z());

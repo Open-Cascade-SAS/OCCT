@@ -76,9 +76,13 @@ void ChFiDS_SurfData::Copy(const occ::handle<ChFiDS_SurfData>& Other)
 int ChFiDS_SurfData::Index(const int OfS) const
 {
   if (OfS == 1)
+  {
     return indexOfS1;
+  }
   else
+  {
     return indexOfS2;
+  }
 }
 
 //=================================================================================================
@@ -86,9 +90,13 @@ int ChFiDS_SurfData::Index(const int OfS) const
 const ChFiDS_FaceInterference& ChFiDS_SurfData::Interference(const int OnS) const
 {
   if (OnS == 1)
+  {
     return intf1;
+  }
   else
+  {
     return intf2;
+  }
 }
 
 //=================================================================================================
@@ -96,9 +104,13 @@ const ChFiDS_FaceInterference& ChFiDS_SurfData::Interference(const int OnS) cons
 ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const int OnS)
 {
   if (OnS == 1)
+  {
     return intf1;
+  }
   else
+  {
     return intf2;
+  }
 }
 
 //=================================================================================================
@@ -106,13 +118,21 @@ ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const int OnS)
 const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First, const int OnS) const
 {
   if (First && OnS == 1)
+  {
     return pfirstOnS1;
+  }
   else if (First && OnS == 2)
+  {
     return pfirstOnS2;
+  }
   else if (!First && OnS == 1)
+  {
     return plastOnS1;
+  }
   else
+  {
     return plastOnS2;
+  }
 }
 
 //=================================================================================================
@@ -120,13 +140,21 @@ const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First, const int On
 ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const bool First, const int OnS)
 {
   if (First && OnS == 1)
+  {
     return pfirstOnS1;
+  }
   else if (First && OnS == 2)
+  {
     return pfirstOnS2;
+  }
   else if (!First && OnS == 1)
+  {
     return plastOnS1;
+  }
   else
+  {
     return plastOnS2;
+  }
 }
 
 //=================================================================================================
@@ -225,11 +253,17 @@ gp_Pnt2d ChFiDS_SurfData::Get2dPoints(const bool First, const int OnS) const
 
 {
   if (First && OnS == 1)
+  {
     return p2df1;
+  }
   else if (!First && OnS == 1)
+  {
     return p2dl1;
+  }
   else if (First && OnS == 2)
+  {
     return p2df2;
+  }
   return p2dl2;
 }
 

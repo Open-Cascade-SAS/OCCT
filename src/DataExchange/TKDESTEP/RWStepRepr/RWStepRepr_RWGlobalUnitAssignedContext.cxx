@@ -31,7 +31,9 @@ void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "global_unit_assigned_context"))
+  {
     return;
+  }
 
   // --- inherited field : contextIdentifier ---
 
@@ -58,7 +60,9 @@ void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "unit", ach, STANDARD_TYPE(StepBasic_NamedUnit), anent3))
+      {
         aUnits->SetValue(i3, anent3);
+      }
     }
   }
 

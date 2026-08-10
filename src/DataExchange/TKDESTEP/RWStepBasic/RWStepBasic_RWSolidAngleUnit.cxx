@@ -29,7 +29,9 @@ void RWStepBasic_RWSolidAngleUnit::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "solid_angle_unit"))
+  {
     return;
+  }
 
   // --- inherited field : dimensions ---
 

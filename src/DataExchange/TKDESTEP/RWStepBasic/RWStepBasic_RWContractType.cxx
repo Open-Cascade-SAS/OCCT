@@ -35,7 +35,9 @@ void RWStepBasic_RWContractType::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "contract_type"))
+  {
     return;
+  }
 
   // Own fields of ContractType
 

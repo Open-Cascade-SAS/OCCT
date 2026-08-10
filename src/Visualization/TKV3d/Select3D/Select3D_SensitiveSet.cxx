@@ -224,7 +224,9 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
         else
         {
           if (aHead < 0)
+          {
             break;
+          }
 
           aNode = aStack[aHead--];
         }
@@ -243,7 +245,9 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
         }
 
         if (aHead < 0)
+        {
           break;
+        }
 
         aNode = aStack[aHead--];
       }

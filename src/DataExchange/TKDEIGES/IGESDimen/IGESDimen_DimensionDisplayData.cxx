@@ -42,9 +42,13 @@ void IGESDimen_DimensionDisplayData::Init(const int                             
                                           const occ::handle<NCollection_HArray1<int>>& endInd)
 {
   if (!notes.IsNull())
+  {
     if (notes->Lower() != 1 || (startInd->Lower() != 1 || notes->Length() != startInd->Length())
         || (endInd->Lower() != 1 || notes->Length() != endInd->Length()))
+    {
       throw Standard_DimensionMismatch("IGESDimen_DimensionDisplayData : Init");
+    }
+  }
 
   theNbPropertyValues     = numProps;
   theDimensionType        = aDimType;

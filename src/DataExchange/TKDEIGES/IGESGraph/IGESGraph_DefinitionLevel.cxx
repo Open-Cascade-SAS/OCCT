@@ -27,7 +27,9 @@ IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel() = default;
 void IGESGraph_DefinitionLevel::Init(const occ::handle<NCollection_HArray1<int>>& allLevelNumbers)
 {
   if (allLevelNumbers->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGraph_DefinitionLevel : Init");
+  }
   theLevelNumbers = allLevelNumbers;
   InitTypeAndForm(406, 1);
 }

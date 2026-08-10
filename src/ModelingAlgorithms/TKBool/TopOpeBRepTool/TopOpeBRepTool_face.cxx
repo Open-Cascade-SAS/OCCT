@@ -66,9 +66,13 @@ bool TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Face& Fref)
 
   // <myFfinite> :
   if (myfinite)
+  {
     myFfinite = fres;
+  }
   else
+  {
     FUN_reverse(fres, myFfinite);
+  }
   return true;
 }
 
@@ -84,7 +88,9 @@ bool TopOpeBRepTool_face::IsDone() const
 bool TopOpeBRepTool_face::Finite() const
 {
   if (!IsDone())
+  {
     throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
+  }
   return myfinite;
 }
 
@@ -93,7 +99,9 @@ bool TopOpeBRepTool_face::Finite() const
 const TopoDS_Face& TopOpeBRepTool_face::Ffinite() const
 {
   if (!IsDone())
+  {
     throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
+  }
   return myFfinite;
 }
 
@@ -112,7 +120,9 @@ const TopoDS_Wire& TopOpeBRepTool_face::W() const
 TopoDS_Face TopOpeBRepTool_face::RealF() const
 {
   if (myfinite)
+  {
     return myFfinite;
+  }
   TopoDS_Face realf;
   FUN_reverse(myFfinite, realf);
   return realf;

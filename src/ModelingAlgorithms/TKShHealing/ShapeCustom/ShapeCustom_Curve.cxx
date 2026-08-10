@@ -43,13 +43,17 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool   substi
   occ::handle<Geom_Curve>        newCurve;
   occ::handle<Geom_BSplineCurve> BSpl = occ::down_cast<Geom_BSplineCurve>(myCurve);
   if (BSpl.IsNull())
+  {
     return newCurve;
+  }
 
   // PTV 13.02.02: check if curve closed with tolerance
   bool closed = ShapeAnalysis_Curve::IsClosed(myCurve, preci);
 
   if (!closed)
+  {
     return newCurve;
+  }
 
   bool converted = false; //: p6
 
@@ -90,7 +94,9 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool   substi
     }
     else if (BSpl->Multiplicity(1) > BSpl->Degree()
              || BSpl->Multiplicity(BSpl->NbKnots()) > BSpl->Degree() + 1)
+    {
       set = false;
+    }
     if (set)
     {
       BSpl->SetPeriodic(); // make periodic
@@ -102,9 +108,13 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool   substi
             << std::endl;
 #endif
   if (!converted)
+  {
     return newCurve;
+  }
   newCurve = BSpl;
   if (substitute)
+  {
     myCurve = newCurve;
+  }
   return newCurve;
 }

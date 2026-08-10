@@ -35,7 +35,9 @@ inline bool compareStrings(char* const str, const char* theString, const int the
   //          memcmp (str, theString, theLength) == 0);
   // ** This is a more stable (less performant) solution
   if (memcmp(str, theString, theLength))
+  {
     return false;
+  }
   return (str[theLength] == '\0');
 }
 
@@ -77,10 +79,14 @@ void* LDOM_MemManager::MemBlock::AllocateAndCheck(
   if (aRoom < MINIMAL_ROOM)
   {
     if (aFirstWithoutRoom == nullptr)
+    {
       aFirstWithoutRoom = this;
+    }
   }
   else
+  {
     aFirstWithoutRoom = nullptr;
+  }
   return aResult;
 }
 
@@ -188,7 +194,9 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
 {
   const char* aResult = nullptr;
   if (theString == nullptr)
+  {
     return nullptr;
+  }
   int        aHashIndex = Hash(theString, theLen);
   TableItem* aNode      = &myTable[aHashIndex];
   if (aNode->str == nullptr)
@@ -204,8 +212,11 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
   else
   {
     if (compareStrings(aNode->str, theString, theLen))
+    {
       aResult = aNode->str;
+    }
     else
+    {
       while (aNode->next)
       {
         aNode = aNode->next;
@@ -215,6 +226,7 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
           break;
         }
       }
+    }
     if (aResult == nullptr)
     {
       // Attention!!! We can make this allocation in a separate pool
@@ -276,14 +288,18 @@ void* LDOM_MemManager::Allocate(const int theSize)
     }
     aResult = aBlock->Allocate(aSize);
     if (aResult)
+    {
       return aResult;
+    }
     aBlock                            = aBlock->Next();
     const MemBlock* aFirstWithoutRoom = nullptr;
     while (aBlock != myFirstWithoutRoom)
     {
       aResult = aBlock->AllocateAndCheck(aSize, aFirstWithoutRoom);
       if (aResult)
+      {
         break;
+      }
       aBlock = aBlock->Next();
     }
     myFirstWithoutRoom = (MemBlock*&)aFirstWithoutRoom;
@@ -305,7 +321,9 @@ void* LDOM_MemManager::Allocate(const int theSize)
 const char* LDOM_MemManager::HashedAllocate(const char* theString, const int theLen, int& theHash)
 {
   if (myHashTable == nullptr)
+  {
     myHashTable = new HashTable(*this);
+  }
   return myHashTable->AddString(theString, theLen, theHash);
 }
 
@@ -323,7 +341,9 @@ void LDOM_MemManager::HashedAllocate(const char*      aString,
   int         aDummy;
   const char* aHashedString = HashedAllocate(aString, theLen, aDummy);
   if (aHashedString != nullptr)
+  {
     theResult.myVal.ptr = (void*)aHashedString;
+  }
 }
 
 //=================================================================================================
@@ -333,7 +353,11 @@ bool LDOM_MemManager::CompareStrings(const char* theString,
                                      const char* theHashedStr)
 {
   if (((LDOM_HashValue*)theHashedStr)[-1] == LDOM_HashValue(theHashValue))
+  {
     if (!strcmp(theString, theHashedStr))
+    {
       return true;
+    }
+  }
   return false;
 }

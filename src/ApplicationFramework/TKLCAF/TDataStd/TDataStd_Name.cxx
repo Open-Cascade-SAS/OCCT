@@ -73,7 +73,9 @@ TDataStd_Name::TDataStd_Name()
 void TDataStd_Name::Set(const TCollection_ExtendedString& S)
 {
   if (myString == S)
+  {
     return;
+  }
 
   Backup();
   myString = S;
@@ -84,7 +86,9 @@ void TDataStd_Name::Set(const TCollection_ExtendedString& S)
 void TDataStd_Name::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;
@@ -107,6 +111,6 @@ Standard_OStream& TDataStd_Name::Dump(Standard_OStream& anOS) const
   anOS << " Name=|" << myString << "|";
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
-  anOS << sguid << std::endl;
+  anOS << sguid << '\n';
   return anOS;
 }

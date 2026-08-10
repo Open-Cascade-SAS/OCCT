@@ -45,10 +45,14 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SDumpRefOri(const TopOpeBRepDS_Kind
   bool                              fk = false;
   const TopOpeBRepDS_DataStructure& DS = myHDS->DS();
   if (!TopOpeBRepDS::IsTopology(K))
+  {
     return SS;
+  }
   TopAbs_ShapeEnum t = TopOpeBRepDS::KindToShape(K);
   if (DS.Shape(I, fk).ShapeType() != t)
+  {
     return SS;
+  }
   const TopoDS_Shape& S = myHDS->Shape(I, fk);
   int                 r = myHDS->SameDomainReference(S);
   TopOpeBRepDS_Config o = myHDS->SameDomainOrientation(S);
@@ -75,7 +79,9 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShape(const int IS) const
   TCollection_AsciiString           SS;
   const TopOpeBRepDS_DataStructure& BDS = myHDS->DS();
   if (IS < 1 || IS > BDS.NbShapes())
+  {
     return SS;
+  }
   SS = SPrintShape(BDS.Shape(IS));
   return SS;
 }
@@ -124,14 +130,18 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShapeRefOri(
   TCollection_AsciiString                  SS;
   NCollection_List<TopoDS_Shape>::Iterator it(L);
   if (!it.More())
+  {
     return SS;
+  }
   SS = SS + astr;
   TCollection_AsciiString bst(astr.Length(), ' ');
   for (int il = 0; it.More(); it.Next(), il++)
   {
     TCollection_AsciiString ss = SPrintShapeRefOri(it.Value());
     if (il)
+    {
       ss = bst + ss;
+    }
     SS = SS + ss + "\n";
   }
   return SS;

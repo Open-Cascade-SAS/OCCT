@@ -67,7 +67,9 @@ void ShapeAnalysis_FreeBoundData::Clear()
 void ShapeAnalysis_FreeBoundData::AddNotch(const TopoDS_Wire& notch, const double width)
 {
   if (myNotchesParams.IsBound(notch))
+  {
     return;
+  }
   myNotches->Append(notch);
   myNotchesParams.Bind(notch, width);
 }

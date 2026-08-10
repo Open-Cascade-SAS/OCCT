@@ -133,10 +133,14 @@ bool MyDirFunction::Value(const double x, double& fval)
     for (int i = FV->Lower(); i <= FV->Upper(); i++)
     {
       aVal = FV->Value(i);
-      if (aVal <= -1.e+100) // Precision::HalfInfinite() later
+      if (aVal <= -1.e+100)
+      { // Precision::HalfInfinite() later
         return false;
-      else if (aVal >= 1.e+100) // Precision::HalfInfinite() later
+      }
+      else if (aVal >= 1.e+100)
+      { // Precision::HalfInfinite() later
         return false;
+      }
     }
 
     fval = 0.5 * (FV->Norm2());
@@ -163,11 +167,15 @@ bool MyDirFunction::Value(const math_Vector& Sol,
       aVal = FF.Value(i);
       if (aVal < 0.)
       {
-        if (aVal <= -1.e+100) // Precision::HalfInfinite() later
+        if (aVal <= -1.e+100)
+        { // Precision::HalfInfinite() later
           return false;
+        }
       }
-      else if (aVal >= 1.e+100) // Precision::HalfInfinite() later
+      else if (aVal >= 1.e+100)
+      { // Precision::HalfInfinite() later
         return false;
+      }
       // modified by NIZHNY-MKK  Mon Oct  3 17:57:05 2005.END
     }
 
@@ -206,10 +214,14 @@ static bool MinimizeDirection(const math_Vector& P0,
   {
     invnorme = std::abs(Delta(ii));
     if (invnorme > Eps)
+    {
       tol1d = std::min(tol1d, Tol(ii) / invnorme);
+    }
   }
   if (tol1d > 1.9)
+  {
     return false; // Pas la peine de se fatiguer
+  }
   tol1d /= 3;
 
   // JR/Hp :
@@ -219,7 +231,9 @@ static bool MinimizeDirection(const math_Vector& P0,
   //  Delta = P1 - P0;
   invnorme = Delta.Norm();
   if (invnorme <= Eps)
+  {
     return false;
+  }
   invnorme = ((double)1) / invnorme;
 
   F.Initialize(P1, Delta);
@@ -230,7 +244,9 @@ static bool MinimizeDirection(const math_Vector& P0,
   bx = 0;
   cx = (P2 - P1).Norm() * invnorme;
   if (cx < 1.e-2)
+  {
     return false;
+  }
 
   math_BrentMinimum Sol(tol1d, 100, tol1d);
   Sol.Perform(F, ax, bx, cx);
@@ -273,10 +289,14 @@ static bool MinimizeDirection(const math_Vector& P,
   {
     absdir = std::abs(Dir(ii));
     if (absdir > Eps)
+    {
       tol1d = std::min(tol1d, Tol(ii) / absdir);
+    }
   }
   if (tol1d > 0.9)
+  {
     return false;
+  }
 
   // (1) On realise une premiere interpolation quadratique
   double ax, bx, cx, df1, df2, Delta, tsol, fsol, tsolbis;
@@ -298,9 +318,13 @@ static bool MinimizeDirection(const math_Vector& P,
     if (std::abs(ax) <= Eps)
     { // cas lineaire
       if (std::abs(bx) >= Eps)
+      {
         tsol = -cx / bx;
+      }
       else
+      {
         tsol = 0;
+      }
     }
     else
     { // cas quadratique
@@ -312,7 +336,9 @@ static bool MinimizeDirection(const math_Vector& P,
         tsol    = -(bx + Delta);
         tsolbis = (Delta - bx);
         if (std::abs(tsolbis) < std::abs(tsol))
+        {
           tsol = tsolbis;
+        }
         tsol /= 2 * ax;
       }
       else
@@ -324,7 +350,9 @@ static bool MinimizeDirection(const math_Vector& P,
   }
 
   if (std::abs(tsol) >= 1)
+  {
     return false; // resultat sans interet
+  }
 
   F.Initialize(P, Dir);
   F.Value(tsol, fsol);
@@ -429,32 +457,46 @@ static void SearchDirection(const math_Matrix& DF,
       }
       math_Gauss Solut(DF, 1.e-9);
       if (Solut.IsDone())
+      {
         Solut.Solve(Direction);
+      }
       else
       { // we have to "forget" singular directions.
         FSR_DEBUG(" Matrice singuliere : On prend SVD");
         math_SVD SolvebySVD(DF);
         if (SolvebySVD.IsDone())
+        {
           SolvebySVD.Solve(-1 * FF, Direction);
+        }
         else
+        {
           ChangeDirection = true;
+        }
       }
     }
     else if (Ninc > Neq)
     {
       math_SVD Solut(DF);
       if (Solut.IsDone())
+      {
         Solut.Solve(-1 * FF, Direction);
+      }
       else
+      {
         ChangeDirection = true;
+      }
     }
     else if (Ninc < Neq)
     { // Calcul par GaussLeastSquare
       math_GaussLeastSquare Solut(DF);
       if (Solut.IsDone())
+      {
         Solut.Solve(-1 * FF, Direction);
+      }
       else
+      {
         ChangeDirection = true;
+      }
     }
   }
   // Il vaut mieux interdire des directions trops longue
@@ -511,7 +553,9 @@ static void SearchDirection(const math_Matrix&        DF,
   for (i = 1; i <= Ninc; i++)
   {
     if (Constraints(i) != 0)
+    {
       Cons++;
+    }
     // sinon le systeme a resoudre ne change pas.
   }
 
@@ -562,7 +606,9 @@ static void SearchDirection(const math_Matrix&        DF,
           Direction(i) = MyDirection(k);
         }
         else
+        {
           Direction(i) = -GH(i);
+        }
         k++;
       }
       else
@@ -611,8 +657,10 @@ bool Bounds(const math_Vector&  InfBound,
       Constraints(i) = 1;
       Out            = true;
       // Delta(i) is negative
-      if (-Delta(i) > Tol(i)) // Afin d'eviter des ratio nulles pour rien
+      if (-Delta(i) > Tol(i))
+      { // Afin d'eviter des ratio nulles pour rien
         monratio = std::min(monratio, (InfBound(i) - SolSave(i)) / Delta(i));
+      }
     }
     else if (Sol(i) > SupBound(i))
     {
@@ -620,7 +668,9 @@ bool Bounds(const math_Vector&  InfBound,
       Out            = true;
       // Delta(i) is positive
       if (Delta(i) > Tol(i))
+      {
         monratio = std::min(monratio, (SupBound(i) - SolSave(i)) / Delta(i));
+      }
     }
   }
 
@@ -727,7 +777,9 @@ math_FunctionSetRoot::~math_FunctionSetRoot() = default;
 void math_FunctionSetRoot::SetTolerance(const math_Vector& theTolerance)
 {
   for (int i = 1; i <= Tol.Length(); ++i)
+  {
     Tol(i) = theTolerance(i);
+  }
 }
 
 //=================================================================================================
@@ -794,9 +846,13 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   for (i = 1; i <= Ninc; i++)
   {
     if (Sol(i) <= theInfBound(i))
+    {
       Sol(i) = theInfBound(i);
+    }
     else if (Sol(i) > theSupBound(i))
+    {
       Sol(i) = theSupBound(i);
+    }
   }
 
   // Calcul de la premiere valeur de F et de son gradient
@@ -854,7 +910,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     {
       Ambda = Ambda2 / std::sqrt(std::abs(Dy));
       if (Ambda > 1.0)
+      {
         Ambda = 1.0;
+      }
     }
     else
     {
@@ -1021,7 +1079,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           if (std::abs(Dy) <= Eps)
           {
             if (F2 > OldF)
+            {
               Sol = SolSave;
+            }
             Done = false;
             if (!theStopOnDivergent || !myIsDivergent)
             {
@@ -1063,7 +1123,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             {
               Ambda = Ambda2 / std::sqrt(-Dy);
               if (Ambda > 1.0)
+              {
                 Ambda = 1.0;
+              }
             }
             else
             {
@@ -1209,18 +1271,24 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     Save(Kount) = F2;
     // Est ce la solution ?
     if (ChangeDirection)
+    {
       Verif = true;
-    // Gradient : Il faut eviter de boucler
+      // Gradient : Il faut eviter de boucler
+    }
     else
     {
       Verif = false;
       if (Kount > 1)
       { // Pour accelerer les cas quasi-quadratique
         if (Save(Kount - 1) < 1.e-4 * Save(Kount - 2))
+        {
           Verif = true;
+        }
       }
       else
+      {
         Verif = (F2 < 1.e-6 * Save(0)); // Pour les cas dejas solutions
+      }
     }
     if (Verif)
     {
@@ -1259,7 +1327,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
         if (F2 >= 0.95 * Save(Kount - 5))
         {
           if (!ChangeDirection)
+          {
             ChangeDirection = true;
+          }
           else
           {
             Done = false;
@@ -1272,10 +1342,14 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           }
         }
         else
+        {
           ChangeDirection = false; // If yes we restart
+        }
       }
       else
+      {
         ChangeDirection = false; // No history, we continue
+      }
       // If the gradient does not decrease sufficiently with Newton, we try
       // the gradient method unless f decreases (as strange as it may seem,
       // with NEWTON the gradient of f can increase while f

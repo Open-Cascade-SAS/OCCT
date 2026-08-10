@@ -118,7 +118,9 @@ void XCAFDoc_Datum::Set(const occ::handle<TCollection_HAsciiString>& theName,
 occ::handle<TCollection_HAsciiString> XCAFDoc_Datum::GetName() const
 {
   if (myName.IsNull())
+  {
     return new TCollection_HAsciiString();
+  }
   return myName;
 }
 
@@ -153,8 +155,10 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
     Label().FindChild(aChild).ForgetAllAttributes();
   }
   if (!theObject->GetName().IsNull() && !theObject->GetName()->IsEmpty())
+  {
     occ::handle<TDataStd_AsciiString> anAttName =
       TDataStd_AsciiString::Set(Label().FindChild(ChildLab_Name), theObject->GetName()->String());
+  }
 
   occ::handle<TDataStd_Integer> aPosition =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_Position), theObject->GetPosition());
@@ -164,13 +168,17 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
     occ::handle<NCollection_HArray1<int>> anArr =
       new NCollection_HArray1<int>(1, theObject->GetModifiers().Length());
     for (int i = 1; i <= theObject->GetModifiers().Length(); i++)
+    {
       anArr->SetValue(i, theObject->GetModifiers().Value(i));
+    }
     occ::handle<TDataStd_IntegerArray> aModifiers =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers),
                                  1,
                                  theObject->GetModifiers().Length());
     if (!aModifiers.IsNull())
+    {
       aModifiers->ChangeArray(anArr);
+    }
   }
 
   XCAFDimTolObjects_DatumModifWithValue aM;
@@ -207,27 +215,39 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
       gp_Ax2                                   anAx    = theObject->GetDatumTargetAxis();
       occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
       for (int i = 1; i <= 3; i++)
+      {
         aLocArr->SetValue(i, anAx.Location().Coord(i));
+      }
       occ::handle<TDataStd_RealArray> aLoc =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisLoc), 1, 3);
       if (!aLoc.IsNull())
+      {
         aLoc->ChangeArray(aLocArr);
+      }
 
       occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
       for (int i = 1; i <= 3; i++)
+      {
         aNArr->SetValue(i, anAx.Direction().Coord(i));
+      }
       occ::handle<TDataStd_RealArray> aN =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisN), 1, 3);
       if (!aN.IsNull())
+      {
         aN->ChangeArray(aNArr);
+      }
 
       occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
       for (int i = 1; i <= 3; i++)
+      {
         aRArr->SetValue(i, anAx.XDirection().Coord(i));
+      }
       occ::handle<TDataStd_RealArray> aR =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisRef), 1, 3);
       if (!aR.IsNull())
+      {
         aR->ChangeArray(aRArr);
+      }
 
       if (theObject->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
       {
@@ -235,9 +255,11 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
           TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
                              theObject->GetDatumTargetLength());
         if (theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
+        {
           occ::handle<TDataStd_Real> aWidth =
             TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetWidth),
                                theObject->GetDatumTargetWidth());
+        }
       }
     }
     occ::handle<TDataStd_Integer> aNum =
@@ -251,27 +273,39 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, anAx.Location().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneLoc), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aNArr->SetValue(i, anAx.Direction().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aN =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneN), 1, 3);
     if (!aN.IsNull())
+    {
       aN->ChangeArray(aNArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aR =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneRef), 1, 3);
     if (!aR.IsNull())
+    {
       aR->ChangeArray(aRArr);
+    }
   }
 
   if (theObject->HasPoint())
@@ -280,11 +314,15 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, aPnt.Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
   }
 
   if (theObject->HasPointText())
@@ -293,11 +331,15 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, aPntText.Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PntText), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
   }
 
   TopoDS_Shape aPresentation = theObject->GetPresentation();
@@ -327,7 +369,9 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
   {
     const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
     if (!aName.IsEmpty())
+    {
       aSemanticName = new TCollection_HAsciiString(aName);
+    }
   }
   anObj->SetSemanticName(aSemanticName);
 
@@ -344,7 +388,9 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
   {
     NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aModifiers;
     for (int i = 1; i <= anArr->Length(); i++)
+    {
       aModifiers.Append((XCAFDimTolObjects_DatumSingleModif)anArr->Value(i));
+    }
     anObj->SetModifiers(aModifiers);
   }
 
@@ -500,7 +546,9 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
         const TCollection_ExtendedString& aName = aNameAtrr->Get();
 
         if (!aName.IsEmpty())
+        {
           aPresentName = new TCollection_HAsciiString(aName);
+        }
       }
 
       anObj->SetPresentation(aPresentation, aPresentName);

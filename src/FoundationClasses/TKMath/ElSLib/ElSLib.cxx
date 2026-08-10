@@ -146,13 +146,19 @@ gp_Pnt ElSLib::TorusValue(const double  U,
   double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
 
   if (std::abs(A1) <= eps)
+  {
     A1 = 0.;
+  }
 
   if (std::abs(A2) <= eps)
+  {
     A2 = 0.;
+  }
 
   if (std::abs(A3) <= eps)
+  {
     A3 = 0.;
+  }
 
   //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X(),
@@ -191,14 +197,18 @@ gp_Vec ElSLib::ConeDN(const double  U,
   {
     Xdir.Multiply(Radius + V * sin(SAngle));
     if (Nu == 0)
+    {
       Xdir.Add(Pos.Location().XYZ());
+    }
     return gp_Vec(Xdir);
   }
   else if (Nv == 1)
   {
     Xdir.Multiply(sin(SAngle));
     if (Nu == 0)
+    {
       Xdir.Add(Pos.Direction().XYZ() * cos(SAngle));
+    }
     return gp_Vec(Xdir);
   }
   return gp_Vec(0.0, 0.0, 0.0);
@@ -333,9 +343,13 @@ gp_Vec ElSLib::SphereDN(const double  U,
       A2 = -SinU;
     }
     if (IsOdd(Nv))
+    {
       A3 = -RSinV;
+    }
     else
+    {
       A3 = -RCosV;
+    }
     X = (A1 * XDir.X() + A2 * YDir.X()) * A3;
     Y = (A1 * XDir.Y() + A2 * YDir.Y()) * A3;
     Z = (A1 * XDir.Z() + A2 * YDir.Z()) * A3;
@@ -386,10 +400,14 @@ gp_Vec ElSLib::TorusDN(const double  U,
     }
     //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
     if (std::abs(A1) <= eps)
+    {
       A1 = 0.;
+    }
 
     if (std::abs(A2) <= eps)
+    {
       A2 = 0.;
+    }
     //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
     X = A1 * XDir.X() + A2 * YDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -419,13 +437,19 @@ gp_Vec ElSLib::TorusDN(const double  U,
     }
     //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
     if (std::abs(A1) <= eps)
+    {
       A1 = 0.;
+    }
 
     if (std::abs(A2) <= eps)
+    {
       A2 = 0.;
+    }
 
     if (std::abs(A3) <= eps)
+    {
       A3 = 0.;
+    }
     //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
     X = A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y();
@@ -446,10 +470,14 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A2           = -RSinV * CosU;
       //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
       if (std::abs(A1) <= eps)
+      {
         A1 = 0.;
+      }
 
       if (std::abs(A2) <= eps)
+      {
         A2 = 0.;
+      }
       //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -462,10 +490,14 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A2           = RCosV * SinU;
       //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
       if (std::abs(A1) <= eps)
+      {
         A1 = 0.;
+      }
 
       if (std::abs(A2) <= eps)
+      {
         A2 = 0.;
+      }
       //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -478,10 +510,14 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A2           = -RCosV * CosU;
       //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
       if (std::abs(A1) <= eps)
+      {
         A1 = 0.;
+      }
 
       if (std::abs(A2) <= eps)
+      {
         A2 = 0.;
+      }
       //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -500,10 +536,14 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A2           = RSinV * SinU;
       //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
       if (std::abs(A1) <= eps)
+      {
         A1 = 0.;
+      }
 
       if (std::abs(A2) <= eps)
+      {
         A2 = 0.;
+      }
       //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -604,13 +644,19 @@ void ElSLib::TorusD0(const double  U,
   double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
 
   if (std::abs(A1) <= eps)
+  {
     A1 = 0.;
+  }
 
   if (std::abs(A2) <= eps)
+  {
     A2 = 0.;
+  }
 
   if (std::abs(A3) <= eps)
+  {
     A3 = 0.;
+  }
   //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   P.SetX(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X());
   P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y() + PLoc.Y());
@@ -788,16 +834,24 @@ void ElSLib::TorusD1(const double  U,
   double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
 
   if (std::abs(A1) <= eps)
+  {
     A1 = 0.;
+  }
 
   if (std::abs(A2) <= eps)
+  {
     A2 = 0.;
+  }
 
   if (std::abs(A3) <= eps)
+  {
     A3 = 0.;
+  }
 
   if (std::abs(A4) <= eps)
+  {
     A4 = 0.;
+  }
   //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   P.SetX(A1 * XDir.X() + A2 * YDir.X() + R2 * ZDir.X() + PLoc.X());
   P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + R2 * ZDir.Y() + PLoc.Y());
@@ -1035,22 +1089,34 @@ void ElSLib::TorusD2(const double  U,
   double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
 
   if (std::abs(A1) <= eps)
+  {
     A1 = 0.;
+  }
 
   if (std::abs(A2) <= eps)
+  {
     A2 = 0.;
+  }
 
   if (std::abs(A3) <= eps)
+  {
     A3 = 0.;
+  }
 
   if (std::abs(A4) <= eps)
+  {
     A4 = 0.;
+  }
 
   if (std::abs(A5) <= eps)
+  {
     A5 = 0.;
+  }
 
   if (std::abs(A6) <= eps)
+  {
     A6 = 0.;
+  }
   //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   double Som1X = A1 * XDir.X() + A2 * YDir.X();
   double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -1400,22 +1466,34 @@ void ElSLib::TorusD3(const double  U,
   double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
 
   if (std::abs(A1) <= eps)
+  {
     A1 = 0.;
+  }
 
   if (std::abs(A2) <= eps)
+  {
     A2 = 0.;
+  }
 
   if (std::abs(A3) <= eps)
+  {
     A3 = 0.;
+  }
 
   if (std::abs(A4) <= eps)
+  {
     A4 = 0.;
+  }
 
   if (std::abs(A5) <= eps)
+  {
     A5 = 0.;
+  }
 
   if (std::abs(A6) <= eps)
+  {
     A6 = 0.;
+  }
   //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   double Som1X = A1 * XDir.X() + A2 * YDir.X();
   double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
@@ -1549,9 +1627,13 @@ void ElSLib::SphereParameters(const gp_Ax3& Pos,
   if (l < gp::Resolution())
   { // point on axis Z of the sphere
     if (z > 0.)
+    {
       V = M_PI_2; // PI * 0.5
+    }
     else
+    {
       V = -M_PI_2; // PI * 0.5
+    }
     U = 0.;
   }
   else
@@ -1596,7 +1678,9 @@ void ElSLib::TorusParameters(const gp_Ax3& Pos,
     const double AD1   = std::abs(D1);
     const double AD2   = std::abs(D2);
     if (AD2 < AD1)
+    {
       U += M_PI;
+    }
   }
   normalizeAngle(U);
   const double cosu = cos(U);

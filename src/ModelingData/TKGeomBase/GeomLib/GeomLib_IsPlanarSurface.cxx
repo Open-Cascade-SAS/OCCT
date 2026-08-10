@@ -57,9 +57,13 @@ static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
       double Angle1 = du.Angle(DX);
       double Angle2 = du.Angle(DY);
       if (Angle1 > M_PI / 2)
+      {
         Angle1 = M_PI - Angle1;
+      }
       if (Angle2 > M_PI / 2)
+      {
         Angle2 = M_PI - Angle2;
+      }
       if (Angle2 < Angle1)
       {
         du = DY;
@@ -67,9 +71,13 @@ static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
         DX = du;
       }
       if (DX.Angle(DU) > M_PI / 2)
+      {
         DX.Reverse();
+      }
       if (DY.Angle(DV) > M_PI / 2)
+      {
         DY.Reverse();
+      }
 
       gp_Ax3 axe(Bary, DX ^ DY, DX);
       Plan.SetPosition(axe);
@@ -193,7 +201,9 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>
         IsPlan = Controle(C, myPlan, Tol);
       }
       else
+      {
         IsPlan = false;
+      }
 
       break;
     }
@@ -231,7 +241,9 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>
         IsPlan = Controle(C, myPlan, Tol);
       }
       else
+      {
         IsPlan = false;
+      }
       break;
     }
 
@@ -267,6 +279,8 @@ bool GeomLib_IsPlanarSurface::IsPlanar() const
 const gp_Pln& GeomLib_IsPlanarSurface::Plan() const
 {
   if (!IsPlan)
+  {
     throw StdFail_NotDone(" GeomLib_IsPlanarSurface");
+  }
   return myPlan;
 }

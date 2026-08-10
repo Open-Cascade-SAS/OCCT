@@ -97,7 +97,9 @@ void TDF_TagSource::Set(const int T)
 {
   // OCC2932 correction
   if (myTag == T)
+  {
     return;
+  }
 
   Backup(); // FID 02/07/98
   myTag = T;

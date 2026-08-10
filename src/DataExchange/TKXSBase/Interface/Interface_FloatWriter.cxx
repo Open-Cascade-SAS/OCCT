@@ -26,7 +26,9 @@ void Interface_FloatWriter::SetFormat(const char* const form, const bool reset)
 {
   strcpy(themainform, form);
   if (!reset)
+  {
     return;
+  }
   therange1 = therange2 = 0.; // second form : inhibee
   thezerosup            = false;
 }
@@ -109,14 +111,20 @@ int Interface_FloatWriter::Convert(const double      val,
   int       i0 = 0, j0 = 0;
 
   for (int i = 0; i < anMasSize; ++i)
+  {
     lxp[i] = '\0';
+  }
 
   pText = (char*)text;
   //
   if ((val >= R1 && val < R2) || (val <= -R1 && val > -R2))
+  {
     Sprintf(pText, rangeform, val);
+  }
   else
+  {
     Sprintf(pText, mainform, val);
+  }
 
   if (zsup)
   {
@@ -132,12 +140,16 @@ int Interface_FloatWriter::Convert(const double      val,
         lxp[4] = text[i + 4];
 
         if (lxp[1] == '+' && lxp[2] == '0' && lxp[3] == '0' && lxp[4] == '\0')
+        {
           lxp[0] = '\0';
+        }
 
         pText[i] = '\0';
       }
       if (text[i] == '\0')
+      {
         break;
+      }
     }
     // #52 rln 23.12.98 converting 1e-07 throws exception
     for (int j = i0 - 1; j >= 0; j--)
@@ -145,7 +157,9 @@ int Interface_FloatWriter::Convert(const double      val,
       j0 = j;
 
       if (text[j] != '0')
+      {
         break;
+      }
 
       pText[j] = '\0';
     }

@@ -92,7 +92,9 @@ bool Contains(const TopoDS_Shape& F, const TopoDS_Shape& E)
   {
     //  for (TopExp_Explorer exp(F,E.ShapeType()); exp.More(); exp.Next()){
     if (exp.Current().IsSame(E))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -108,7 +110,9 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(
   for (; itSI.More(); itSI.Next())
   {
     if (myAsso->HasAssociation(itSI.Value()))
+    {
       return;
+    }
   }
 
   //------------------------------------------------------------------------
@@ -176,13 +180,17 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(
   // LI = LI && point dans la meme face Support2
   //--------------------------------------------
   if (!LI.IsEmpty())
+  {
     FilterByFace(F2, LI);
+  }
 
   //-------------------------------
   // Controle et Selection metrique
   //-------------------------------
   if (!LI.IsEmpty())
+  {
     FilterByIncidentDistance(F2, I, LI);
+  }
 
   if (!LI.IsEmpty())
   {
@@ -261,9 +269,13 @@ bool TopOpeBRepDS_GapFiller::IsOnFace(const occ::handle<TopOpeBRepDS_Interferenc
     TopoDS_Shape S1, S2;
     C.GetShapes(S1, S2);
     if (S1.IsSame(F))
+    {
       return true;
+    }
     if (S2.IsSame(F))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -305,7 +317,9 @@ bool TopOpeBRepDS_GapFiller::IsOnEdge(const occ::handle<TopOpeBRepDS_Interferenc
     {
       const TopoDS_Shape& S1 = myHDS->Shape(IC->Support());
       if (S1.IsSame(E))
+      {
         return true;
+      }
     }
   }
   return false;
@@ -349,13 +363,17 @@ static bool Normal(const occ::handle<TopOpeBRepDS_GapTool>&        A,
       if (F.IsSame(S1))
       {
         if (C.Curve1().IsNull())
+        {
           return false;
+        }
         P2d = C.Curve1()->Value(P);
       }
       else
       {
         if (C.Curve2().IsNull())
+        {
           return false;
+        }
         P2d = C.Curve2()->Value(P);
       }
 
@@ -403,7 +421,9 @@ void TopOpeBRepDS_GapFiller::FilterByIncidentDistance(
     const occ::handle<TopOpeBRepDS_Interference>& CI = it.Value();
 
     if (CI->HasSameGeometry(I))
+    {
       continue;
+    }
 
     bool                      Ok2  = Normal(myGapTool, myHDS, CI, F, N2);
     const TopOpeBRepDS_Point& P    = myHDS->Point((CI->Geometry()));
@@ -447,7 +467,9 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const occ::handle<TopOpeBRepDS_Interfer
                                          NCollection_Map<int>&                         View)
 {
   if (!myAsso->HasAssociation(I))
+  {
     return;
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&          LI = myAsso->Associated(I);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
@@ -508,7 +530,9 @@ void TopOpeBRepDS_GapFiller::BuildNewGeometries()
       occ::handle<TopOpeBRepDS_Interference> I  = it.Value();
       int                                    IP = I->Geometry();
       if (View.Add(IP) && IP <= NbPoints)
+      {
         ReBuildGeom(I, View);
+      }
     }
   }
 }

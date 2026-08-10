@@ -40,7 +40,9 @@ occ::handle<Interface_Protocol> IGESData_Protocol::Resource(const int /*num*/) c
 int IGESData_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype->SubType(STANDARD_TYPE(IGESData_UndefinedEntity)))
+  {
     return 1;
+  }
   return 0;
 }
 

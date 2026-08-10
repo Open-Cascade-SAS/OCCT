@@ -34,7 +34,9 @@ void RWStepDimTol_RWDatumSystem::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "datum_system"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 
@@ -80,7 +82,9 @@ void RWStepDimTol_RWDatumSystem::ReadStep(const occ::handle<StepData_StepReaderD
                            ach,
                            STANDARD_TYPE(StepDimTol_DatumReferenceCompartment),
                            anEnt))
+      {
         aConstituents->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -112,7 +116,9 @@ void RWStepDimTol_RWDatumSystem::WriteStep(StepData_StepWriter&                 
   int i, nb = ent->NbConstituents();
   SW.OpenSub();
   for (i = 1; i <= nb; i++)
+  {
     SW.Send(ent->ConstituentsValue(i));
+  }
   SW.CloseSub();
 }
 
@@ -129,5 +135,7 @@ void RWStepDimTol_RWDatumSystem::Share(const occ::handle<StepDimTol_DatumSystem>
   // Own fields of DatumSystem
   int i, nb = ent->NbConstituents();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->ConstituentsValue(i));
+  }
 }

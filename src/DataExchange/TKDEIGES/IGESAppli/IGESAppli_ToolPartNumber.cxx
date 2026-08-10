@@ -45,9 +45,13 @@ void IGESAppli_ToolPartNumber::ReadOwnParams(const occ::handle<IGESAppli_PartNum
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
+  }
   else
+  {
     tempNbPropertyValues = 4;
+  }
 
   PR.ReadText(PR.Current(), "Generic Number or Name", tempGenericNumber);
   PR.ReadText(PR.Current(), "Military Number or Name", tempMilitaryNumber);
@@ -100,11 +104,13 @@ bool IGESAppli_ToolPartNumber::OwnCorrect(const occ::handle<IGESAppli_PartNumber
 {
   bool res = (ent->NbPropertyValues() != 4);
   if (res)
+  {
     ent->Init(4,
               ent->GenericNumber(),
               ent->MilitaryNumber(),
               ent->VendorNumber(),
               ent->InternalNumber()); // nbpropertyvalues= 4
+  }
   return res;
 }
 
@@ -128,7 +134,9 @@ void IGESAppli_ToolPartNumber::OwnCheck(const occ::handle<IGESAppli_PartNumber>&
                                         occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 4)
+  {
     ach->AddFail("Number of property values != 4");
+  }
 }
 
 void IGESAppli_ToolPartNumber::OwnDump(const occ::handle<IGESAppli_PartNumber>& ent,
@@ -150,5 +158,5 @@ void IGESAppli_ToolPartNumber::OwnDump(const occ::handle<IGESAppli_PartNumber>& 
   S << "\n";
   S << "Internal Number or Name : ";
   IGESData_DumpString(S, ent->InternalNumber());
-  S << std::endl;
+  S << '\n';
 }

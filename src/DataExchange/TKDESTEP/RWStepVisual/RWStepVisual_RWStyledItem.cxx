@@ -29,7 +29,9 @@ void RWStepVisual_RWStyledItem::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "styled_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -55,7 +57,9 @@ void RWStepVisual_RWStyledItem::ReadStep(const occ::handle<StepData_StepReaderDa
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anent2))
+      {
         aStyles->SetValue(i2, anent2);
+      }
     }
   }
 

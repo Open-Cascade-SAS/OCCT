@@ -49,18 +49,24 @@ bool BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&       theSour
   double                         aValue;
   bool                           ok = theSource >> aValue;
   if (!ok)
+  {
     return ok;
+  }
   gp_Pnt aPosition(0., 0., 0.);
   aPosition.SetX(aValue);
 
   ok = theSource >> aValue;
   if (!ok)
+  {
     return ok;
+  }
   aPosition.SetY(aValue);
 
   ok = theSource >> aValue;
   if (!ok)
+  {
     return ok;
+  }
   aPosition.SetZ(aValue);
 
   anAtt->SetPosition(aPosition);

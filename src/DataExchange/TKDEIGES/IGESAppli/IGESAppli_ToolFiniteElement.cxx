@@ -60,7 +60,9 @@ void IGESAppli_ToolFiniteElement::ReadOwnParams(const occ::handle<IGESAppli_Fini
                       "Node defining element",
                       STANDARD_TYPE(IGESAppli_Node),
                       tempNode))
+    {
       tempData->SetValue(i, tempNode);
+    }
   }
   PR.ReadText(PR.Current(), "Element type name", tempName); // szv#4:S4163:12Mar99 `st=` not needed
 
@@ -75,7 +77,9 @@ void IGESAppli_ToolFiniteElement::WriteOwnParams(const occ::handle<IGESAppli_Fin
   IW.Send(ent->Topology());
   IW.Send(upper);
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Node(i));
+  }
   IW.Send(ent->Name());
 }
 
@@ -84,7 +88,9 @@ void IGESAppli_ToolFiniteElement::OwnShared(const occ::handle<IGESAppli_FiniteEl
 {
   int upper = ent->NbNodes();
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Node(i));
+  }
 }
 
 void IGESAppli_ToolFiniteElement::OwnCopy(const occ::handle<IGESAppli_FiniteElement>& another,
@@ -136,5 +142,5 @@ void IGESAppli_ToolFiniteElement::OwnDump(const occ::handle<IGESAppli_FiniteElem
   S << "Nodes : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbNodes(), ent->Node);
   S << "\nElement Name : " << ent->Name()->String();
-  S << std::endl;
+  S << '\n';
 }

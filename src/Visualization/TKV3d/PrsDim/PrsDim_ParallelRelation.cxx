@@ -223,7 +223,9 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
     l1 = geom_lin1->Lin();
   }
   else
+  {
     return;
+  }
 
   if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
   {
@@ -243,7 +245,9 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
     l2 = geom_lin2->Lin();
   }
   else
+  {
     return;
+  }
 
   const occ::handle<Geom_Line>& geom_lin1 = new Geom_Line(l1);
   const occ::handle<Geom_Line>& geom_lin2 = new Geom_Line(l2);
@@ -254,9 +258,13 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
   {
     double arrSize1(myArrowSize), arrSize2(myArrowSize);
     if (!isInfinite1)
+    {
       arrSize1 = ptat11.Distance(ptat12) / 50.;
+    }
     if (!isInfinite2)
+    {
       arrSize2 = ptat21.Distance(ptat22) / 50.;
+    }
     myArrowSize = std::max(myArrowSize, std::max(arrSize1, arrSize2));
     //  myArrowSize = std::min(myArrowSize,Min(arrSize1,arrSize2));
   }
@@ -291,16 +299,24 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
     if (isEl1)
     {
       if (myPosition.Distance(ptat11) < myPosition.Distance(ptat12))
+      {
         myFAttach = ptat12;
+      }
       else
+      {
         myFAttach = ptat11;
+      }
     }
     else
     {
       if (myPosition.Distance(ptat11) > myPosition.Distance(ptat12))
+      {
         myFAttach = ptat12;
+      }
       else
+      {
         myFAttach = ptat11;
+      }
     }
   }
   else
@@ -313,16 +329,24 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
     if (isEl2)
     {
       if (myPosition.Distance(ptat21) < myPosition.Distance(ptat22))
+      {
         mySAttach = ptat22;
+      }
       else
+      {
         mySAttach = ptat21;
+      }
     }
     else
     {
       if (myPosition.Distance(ptat21) > myPosition.Distance(ptat22))
+      {
         mySAttach = ptat22;
+      }
       else
+      {
         mySAttach = ptat21;
+      }
     }
   }
   else
@@ -341,9 +365,13 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
   arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   if (myExtShape == 1)
+  {
     mySymbolPrs = DsgPrs_AS_FIRSTPT_LASTAR;
+  }
   else if (myExtShape == 2)
+  {
     mySymbolPrs = DsgPrs_AS_FIRSTAR_LASTPT;
+  }
 
   DsgPrs_LengthPresentation::Add(aPresentation,
                                  myDrawer,

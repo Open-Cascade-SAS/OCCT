@@ -61,8 +61,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   // Check for V-isoline case (Nx1) - use 1D curve evaluation
   // For U-isoline (1xN), cache-based surface evaluation is efficient since U span is fixed.
@@ -134,8 +134,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGri
   // Build cache (Bezier is single span, cache is built once)
   occ::handle<BSplSLib_Cache> aCache = buildBezierCache(myGeom);
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   // Single span - use cache for all points
@@ -168,8 +168,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
   // Build cache (Bezier is single span, cache is built once)
   occ::handle<BSplSLib_Cache> aCache = buildBezierCache(myGeom);
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   // Single span - use cache for all points
@@ -200,8 +200,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const int                                aNbU = theUParams.Size();
-  const int                                aNbV = theVParams.Size();
+  const int                                aNbU = theUParams.Length();
+  const int                                aNbV = theVParams.Length();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   // Get degrees, flat knots, poles, and weights from geometry
@@ -273,8 +273,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 

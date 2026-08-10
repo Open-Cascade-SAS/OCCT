@@ -91,6 +91,7 @@ static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
   double MaxDist = 0.;
   gp_Pnt thePoint;
   for (int i = 1; i <= Vertices.Extent(); i++)
+  {
     for (int j = 1; j <= Vertices.Extent(); j++)
     {
       const TopoDS_Vertex& V1    = TopoDS::Vertex(Vertices(i));
@@ -104,6 +105,7 @@ static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
         thePoint = P1;
       }
     }
+  }
 
   return thePoint;
 }
@@ -162,13 +164,21 @@ static void UpdateEdge(const TopoDS_Edge&               E,
   occ::handle<Geom2d_TrimmedCurve> BC1 = occ::down_cast<Geom2d_TrimmedCurve>(C1);
   occ::handle<Geom2d_TrimmedCurve> BC2 = occ::down_cast<Geom2d_TrimmedCurve>(C2);
   if (!BC1.IsNull())
+  {
     NC1 = BC1->BasisCurve();
+  }
   else
+  {
     NC1 = C1;
+  }
   if (!BC2.IsNull())
+  {
     NC2 = BC2->BasisCurve();
+  }
   else
+  {
     NC2 = C2;
+  }
   B.UpdateEdge(E, NC1, NC2, F, Tol);
 }
 
@@ -219,7 +229,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
             Ci.Rotate(AxeRev, P.X());
             occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
             if (D.IsOpposite(gp::DX2d(), Precision::Angular()))
+            {
               Circle->Reverse();
+            }
             UpdateEdge(Edge, Circle, Loc, Tol);
           }
           IsComputed = true;
@@ -235,7 +247,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           Ci.Rotate(AxeRev, P.X());
           occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
           if (D.IsOpposite(gp::DX2d(), Precision::Angular()))
+          {
             Circle->Reverse();
+          }
           UpdateEdge(Edge, Circle, Loc, Tol);
           IsComputed = true;
         }
@@ -250,7 +264,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           Ci.Rotate(AxeRev, P.X());
           occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
           if (D.IsOpposite(gp::DX2d(), Precision::Angular()))
+          {
             Circle->Reverse();
+          }
           UpdateEdge(Edge, Circle, Loc, Tol);
           IsComputed = true;
         }
@@ -265,7 +281,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           Ci.Rotate(AxeRev, P.X());
           occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
           if (D.IsOpposite(gp::DX2d(), Precision::Angular()))
+          {
             Circle->Reverse();
+          }
           UpdateEdge(Edge, Circle, Loc, Tol);
           IsComputed = true;
         }
@@ -292,7 +310,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
 
           if (D.IsOpposite(gp::DY2d(), Precision::Angular()))
+          {
             Circle->Reverse();
+          }
           UpdateEdge(Edge, Circle, Loc, Tol);
           IsComputed = true;
         }
@@ -306,7 +326,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           L.Translate(Tr);
           occ::handle<Geom_Line> Line = new Geom_Line(L);
           if (D.IsOpposite(gp::DY2d(), Precision::Angular()))
+          {
             Line->Reverse();
+          }
           UpdateEdge(Edge, Line, Loc, Tol);
           IsComputed = true;
         }
@@ -320,7 +342,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           L.Translate(Tr);
           occ::handle<Geom_Line> Line = new Geom_Line(L);
           if (D.IsOpposite(gp::DY2d(), Precision::Angular()))
+          {
             Line->Reverse();
+          }
           UpdateEdge(Edge, Line, Loc, Tol);
           IsComputed = true;
         }
@@ -334,7 +358,9 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
           occ::handle<Geom_Circle> Circle = new Geom_Circle(Ci);
 
           if (D.IsOpposite(gp::DY2d(), Precision::Angular()))
+          {
             Circle->Reverse();
+          }
           UpdateEdge(Edge, Circle, Loc, Tol);
           IsComputed = true;
         }
@@ -447,7 +473,9 @@ void BRepOffset_Offset::Init(
   myShape         = Face;
   double myOffset = Offset;
   if (Face.Orientation() == TopAbs_REVERSED)
+  {
     myOffset *= -1.;
+  }
 
   TopLoc_Location           L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(Face, L);
@@ -455,7 +483,9 @@ void BRepOffset_Offset::Init(
   occ::handle<Geom_RectangularTrimmedSurface> RT =
     occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!RT.IsNull())
+  {
     S = RT->BasisSurface();
+  }
   bool IsTransformed = false;
   if ((S->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
        || S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
@@ -478,11 +508,17 @@ void BRepOffset_Offset::Init(
     double UU1, UU2, VV1, VV2;
     BRepTools::UVBounds(Face, UU1, UU2, VV1, VV2);
     if (VV2 < Vc && Co->SemiAngle() > 0)
+    {
       myOffset *= -1;
+    }
     else if (VV1 > Vc && Co->SemiAngle() < 0)
+    {
       myOffset *= -1;
+    }
     if (!Co->Position().Direct())
+    {
       myOffset *= -1;
+    }
   }
 
   occ::handle<Geom_Surface> TheSurf = BRepOffset::Surface(S, myOffset, myStatus);
@@ -535,7 +571,9 @@ void BRepOffset_Offset::Init(
       gp_Pnt2d                  fp2d   = aCurve->Value(fpar);
       gp_Pnt2d                  lp2d   = aCurve->Value(lpar);
       if (std::abs(fp2d.X() - lp2d.X()) <= Precision::PConfusion())
+      {
         UisoDegen = true;
+      }
 
       if (DegEdges.Length() == 2)
       {
@@ -555,16 +593,24 @@ void BRepOffset_Offset::Init(
         if (UisoDegen)
         {
           if (std::abs(fp2d.X() - uf1) <= Precision::Confusion())
+          {
             UminDegen = true;
+          }
           else
+          {
             UmaxDegen = true;
+          }
         }
         else
         {
           if (std::abs(fp2d.Y() - vf1) <= Precision::Confusion())
+          {
             VminDegen = true;
+          }
           else
+          {
             VmaxDegen = true;
+          }
         }
       }
       if (TheSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
@@ -765,9 +811,13 @@ void BRepOffset_Offset::Init(
   BRep_Builder myBuilder;
   myBuilder.MakeFace(myFace);
   if (!IsTransformed)
+  {
     myBuilder.UpdateFace(myFace, TheSurf, L, BRep_Tool::Tolerance(Face));
+  }
   else
+  {
     myBuilder.UpdateFace(myFace, TheSurf, TopLoc_Location(), BRep_Tool::Tolerance(Face));
+  }
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapSS;
 
@@ -787,25 +837,35 @@ void BRepOffset_Offset::Init(
     TopoDS_Vertex      V1, V2, OV1, OV2;
     TopExp::Vertices(E, V1, V2);
     if (HasSingularity && BRep_Tool::Degenerated(E))
+    {
       VonDegen.Add(V1);
+    }
     if (Created.IsBound(E))
     {
       const TopoDS_Edge& OE = TopoDS::Edge(Created(E));
       TopExp::Vertices(OE, OV1, OV2);
       if (!MapSS.IsBound(V1))
+      {
         MapSS.Bind(V1, OV1);
+      }
       if (!MapSS.IsBound(V2))
+      {
         MapSS.Bind(V2, OV2);
+      }
     }
     if (Created.IsBound(V1))
     {
       if (!MapSS.IsBound(V1))
+      {
         MapSS.Bind(V1, Created(V1));
+      }
     }
     if (Created.IsBound(V2))
     {
       if (!MapSS.IsBound(V2))
+      {
         MapSS.Bind(V2, Created(V2));
+      }
     }
   }
 
@@ -836,9 +896,13 @@ void BRepOffset_Offset::Init(
         //	occ::handle<Geom2d_Curve> C2d_1 =
         //	  BRep_Tool::CurveOnSurface(TopoDS::Edge(E.Reversed()),CurFace,f,l);
         if (E.Orientation() == TopAbs_FORWARD)
+        {
           UpdateEdge(OE, C2d, C2d_1, myFace, BRep_Tool::Tolerance(E));
+        }
         else
+        {
           UpdateEdge(OE, C2d_1, C2d, myFace, BRep_Tool::Tolerance(E));
+        }
         myBuilder.Range(OE, f, l);
       }
       else
@@ -864,7 +928,9 @@ void BRepOffset_Offset::Init(
         {
           TheSurf->D0(P2d1.X(), P2d1.Y(), P1);
           if (!L.IsIdentity() && !IsTransformed)
+          {
             P1.Transform(L.Transformation());
+          }
           vstart = P2d1.Y();
         }
         if (VonDegen.Contains(V2))
@@ -884,7 +950,9 @@ void BRepOffset_Offset::Init(
         {
           TheSurf->D0(P2d2.X(), P2d2.Y(), P2);
           if (!L.IsIdentity() && !IsTransformed)
+          {
             P2.Transform(L.Transformation());
+          }
           vend = P2d2.Y();
         }
         // E a-t-il ume image dans la Map des Created ?
@@ -892,8 +960,10 @@ void BRepOffset_Offset::Init(
         {
           OE = TopoDS::Edge(Created(E));
         }
-        else if (MapSS.IsBound(E)) // seam edge
+        else if (MapSS.IsBound(E))
+        { // seam edge
           OE = TopoDS::Edge(MapSS(E));
+        }
         else
         {
           myBuilder.MakeEdge(OE);
@@ -940,9 +1010,13 @@ void BRepOffset_Offset::Init(
         if (VonDegen.Contains(V1) || VonDegen.Contains(V2))
         {
           if (VonDegen.Contains(V1))
+          {
             P2d1.SetY(vstart);
+          }
           if (VonDegen.Contains(V2))
+          {
             P2d2.SetY(vend);
+          }
           C2d = new Geom2d_Line(P2d1, gp_Vec2d(P2d1, P2d2));
           f   = 0.;
           l   = P2d1.Distance(P2d2);
@@ -950,12 +1024,18 @@ void BRepOffset_Offset::Init(
           {
             occ::handle<Geom2d_Curve> C2d_1 = BRep_Tool::CurveOnSurface(OE, myFace, f, l);
             if (E.Orientation() == TopAbs_FORWARD)
+            {
               UpdateEdge(OE, C2d, C2d_1, myFace, BRep_Tool::Tolerance(E));
+            }
             else
+            {
               UpdateEdge(OE, C2d_1, C2d, myFace, BRep_Tool::Tolerance(E));
+            }
           }
           else
+          {
             UpdateEdge(OE, C2d, myFace, BRep_Tool::Tolerance(E));
+          }
           // myBuilder.Range(OE,f,l);
           myBuilder.Range(OE, myFace, f, l);
           if (!BRep_Tool::Degenerated(E) && TheSurf->IsUClosed())
@@ -966,14 +1046,22 @@ void BRepOffset_Offset::Init(
             P2d1 = C2d_1->Value(BRep_Tool::Parameter(V1, E, CurFace));
             P2d2 = C2d_1->Value(BRep_Tool::Parameter(V2, E, CurFace));
             if (VonDegen.Contains(V1))
+            {
               P2d1.SetY(vstart);
+            }
             if (VonDegen.Contains(V2))
+            {
               P2d2.SetY(vend);
+            }
             C2d_1 = new Geom2d_Line(P2d1, gp_Vec2d(P2d1, P2d2));
             if (E.Orientation() == TopAbs_FORWARD)
+            {
               UpdateEdge(OE, C2d, C2d_1, myFace, BRep_Tool::Tolerance(E));
+            }
             else
+            {
               UpdateEdge(OE, C2d_1, C2d, myFace, BRep_Tool::Tolerance(E));
+            }
           }
           /*
           if (!BRep_Tool::Degenerated(E))
@@ -990,7 +1078,9 @@ void BRepOffset_Offset::Init(
           // ComputeCurve3d(OE,C2d,TheSurf,L,BRep_Tool::Tolerance(E));
         }
         if (!BRep_Tool::Degenerated(OE))
+        {
           ComputeCurve3d(OE, C2d, TheSurf, L, BRep_Tool::Tolerance(E));
+        }
         MapSS.Bind(E, OE);
       }
       myBuilder.Add(OW, OE.Oriented(E.Orientation()));
@@ -1104,7 +1194,9 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
   GeomFill_Pipe Pipe(HCP, HEdge1, HEdge2, std::abs(Offset));
   Pipe.Perform(Tol, Polynomial, Conti);
   if (!Pipe.IsDone())
+  {
     throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
+  }
   double ErrorPipe = Pipe.ErrorOnSurf();
 
   occ::handle<Geom_Surface> S      = Pipe.Surface();
@@ -1129,7 +1221,9 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     U1 = f1;
     U2 = l1;
     if (!C1is3D)
+    {
       C1 = S->VIso(f2);
+    }
   }
   else
   {
@@ -1137,12 +1231,16 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     U1 = f2;
     U2 = l2;
     if (!C1is3D)
+    {
       C1 = S->UIso(f1);
+    }
   }
 
   occ::handle<Geom_Curve> Dummy;
   if (!C1is3D)
+  {
     UpdateEdge(Edge1, C1, Id, BRep_Tool::Tolerance(Edge1));
+  }
   else if (C1Denerated)
   {
     UpdateEdge(Edge1, Dummy, Id, BRep_Tool::Tolerance(Edge1));
@@ -1176,7 +1274,9 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     U1 = f1;
     U2 = l1;
     if (!C2is3D)
+    {
       C2 = S->VIso(l2);
+    }
   }
   else
   {
@@ -1184,11 +1284,15 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     U1 = f2;
     U2 = l2;
     if (!C2is3D)
+    {
       C2 = S->UIso(l1);
+    }
   }
 
   if (!C2is3D)
+  {
     UpdateEdge(Edge2, C2, Id, BRep_Tool::Tolerance(Edge2));
+  }
   else if (C2Denerated)
   {
     UpdateEdge(Edge2, Dummy, Id, BRep_Tool::Tolerance(Edge2));
@@ -1201,7 +1305,9 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
   // mise a same range de la nouvelle pcurve.
   myBuilder.SameRange(Edge2, false);
   if (!C2is3D && !C2Denerated)
+  {
     myBuilder.Range(Edge2, U1, U2, true);
+  }
   myBuilder.Range(Edge2, myFace, U1, U2);
   BRepLib::SameRange(Edge2);
 
@@ -1264,7 +1370,9 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
   }
 
   if (IsClosed)
+  {
     Edge4 = Edge3;
+  }
 
   constexpr double TolApp = Precision::Approximation();
 
@@ -1298,9 +1406,13 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     UpdateEdge(Edge3, L1, L2, myFace, PathTol);
     myBuilder.Range(Edge3, myFace, U1, U2);
     if (StartDegenerated)
+    {
       myBuilder.Degenerated(Edge3, true);
-    else if (FirstEdge.IsNull()) // then the 3d curve has not been yet computed
+    }
+    else if (FirstEdge.IsNull())
+    { // then the 3d curve has not been yet computed
       ComputeCurve3d(Edge3, L1, S, Id, TolApp);
+    }
   }
   else
   {
@@ -1360,9 +1472,13 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     UpdateEdge(Edge3, L1, myFace, PathTol);
     myBuilder.Range(Edge3, myFace, U1, U2);
     if (StartDegenerated)
+    {
       myBuilder.Degenerated(Edge3, true);
-    else if (FirstEdge.IsNull()) // then the 3d curve has not been yet computed
+    }
+    else if (FirstEdge.IsNull())
+    { // then the 3d curve has not been yet computed
       ComputeCurve3d(Edge3, L1, S, Id, TolApp);
+    }
 
     if (ExchUV)
     {
@@ -1386,9 +1502,13 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     UpdateEdge(Edge4, L2, myFace, PathTol);
     myBuilder.Range(Edge4, myFace, U1, U2);
     if (EndDegenerated)
+    {
       myBuilder.Degenerated(Edge4, true);
-    else if (LastEdge.IsNull()) // then the 3d curve has not been yet computed
+    }
+    else if (LastEdge.IsNull())
+    { // then the 3d curve has not been yet computed
       ComputeCurve3d(Edge4, L2, S, Id, TolApp);
+    }
   }
 
   // SameParameter ??
@@ -1422,12 +1542,16 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
 
   myBuilder.Add(myFace, W);
   if (ExchUV)
+  {
     myFace.Reverse();
+  }
 
   BRepTools::Update(myFace);
 
   if (Edge1.Orientation() == TopAbs_REVERSED)
+  {
     myFace.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -1546,7 +1670,9 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
       // set the u firstpoint in [0,2*pi]
       gp_Vec2d Tr(M_PI, 0.);
       if (P2d.X() > M_PI)
+      {
         Tr.Reverse();
+      }
       PCurve->Translate(Tr);
     }
 
@@ -1584,13 +1710,17 @@ void BRepOffset_Offset::Init(const TopoDS_Edge& Edge, const double Offset)
   GeomFill_Pipe Pipe(CP, myOffset);
   Pipe.Perform();
   if (!Pipe.IsDone())
+  {
     throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
+  }
 
   BRepLib_MakeFace MF(Pipe.Surface(), Precision::Confusion());
   myFace = MF.Face();
 
   if (Offset < 0.)
+  {
     myFace.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -1616,9 +1746,13 @@ TopoDS_Shape BRepOffset_Offset::Generated(const TopoDS_Shape& Shape) const
         if (Shape.IsSame(exp.Current()))
         {
           if (myShape.Orientation() == TopAbs_REVERSED)
+          {
             aShape = expo.Current().Reversed();
+          }
           else
+          {
             aShape = expo.Current();
+          }
           break;
         }
       }
@@ -1639,20 +1773,30 @@ TopoDS_Shape BRepOffset_Offset::Generated(const TopoDS_Shape& Shape) const
         if (V2.IsSame(Shape))
         {
           if (expf.Current().Orientation() == TopAbs_REVERSED)
+          {
             aShape = expo.Current().Reversed();
+          }
           else
+          {
             aShape = expo.Current();
+          }
         }
         else
         {
           expo.Next();
           if (expf.Current().Orientation() == TopAbs_REVERSED)
+          {
             aShape = expo.Current().Reversed();
+          }
           else
+          {
             aShape = expo.Current();
+          }
         }
         if (myFace.Orientation() == TopAbs_REVERSED)
+        {
           aShape.Reverse();
+        }
       }
       break;
     default:

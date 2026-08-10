@@ -137,9 +137,13 @@ void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1,
 int GeomAPI_ExtremaCurveCurve::NbExtrema() const
 {
   if (myIsDone)
+  {
     return myExtCC.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================
@@ -232,7 +236,9 @@ bool GeomAPI_ExtremaCurveCurve::TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2)
   }
 
   if (myIsInfinite)
+  {
     return false;
+  }
 
   P1 = myTotalPoints[0];
   P2 = myTotalPoints[1];
@@ -250,7 +256,9 @@ bool GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(double& U1, double&
   }
 
   if (myIsInfinite)
+  {
     return false;
+  }
 
   U1 = myTotalPars[0];
   U2 = myTotalPars[1];
@@ -310,7 +318,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     myTotalDist = sqrt(myExtCC.SquareDistance(myIndex));
 
     if (myTotalDist <= Precision::Confusion())
+    {
       return;
+    }
   }
 
   gp_Pnt P11, P12, P21, P22;
@@ -327,7 +337,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     myTotalPars[1]   = u21;
 
     if (myTotalDist <= Precision::Confusion())
+    {
       return;
+    }
   }
 
   if (aTotalDist2 > d12)
@@ -339,7 +351,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     myTotalPars[1]   = u22;
 
     if (myTotalDist <= Precision::Confusion())
+    {
       return;
+    }
   }
 
   if (aTotalDist2 > d21)
@@ -351,7 +365,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     myTotalPars[1]   = u21;
 
     if (myTotalDist <= Precision::Confusion())
+    {
       return;
+    }
   }
 
   if (aTotalDist2 > d22)
@@ -363,7 +379,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     myTotalPars[1]   = u22;
 
     if (myTotalDist <= Precision::Confusion())
+    {
       return;
+    }
   }
 
   // calculate distances between extremities one curve and other curve
@@ -385,7 +403,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
         myTotalPars[1]   = proj.LowerDistanceParameter();
 
         if (myTotalDist <= Precision::Confusion())
+        {
           return;
+        }
       }
     }
   }
@@ -407,7 +427,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
         myTotalPars[1]   = proj.LowerDistanceParameter();
 
         if (myTotalDist <= Precision::Confusion())
+        {
           return;
+        }
       }
     }
   }
@@ -429,7 +451,9 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
         myTotalPars[1]   = u21;
 
         if (myTotalDist <= Precision::Confusion())
+        {
           return;
+        }
       }
     }
   }

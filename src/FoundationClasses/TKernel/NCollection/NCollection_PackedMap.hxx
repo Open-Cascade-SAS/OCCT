@@ -181,8 +181,8 @@ public:
     Iterator()
         : myBuckets(nullptr),
           myNode(nullptr),
-          myNbBuckets(-1),
-          myBucket(-1),
+          myNbBuckets(0),
+          myBucket(0),
           myIntMask(~BlockType(0)),
           myKey(0)
     {
@@ -192,11 +192,11 @@ public:
     Iterator(const NCollection_PackedMap& theMap)
         : myBuckets(theMap.myData1),
           myNode(nullptr),
-          myNbBuckets(theMap.myData1 != nullptr ? theMap.myNbBuckets : -1),
-          myBucket(-1),
+          myNbBuckets(theMap.myData1 != nullptr ? theMap.myNbBuckets : 0),
+          myBucket(0),
           myIntMask(~BlockType(0))
     {
-      next();
+      findFirst();
       myKey = myNode != nullptr ? NCollection_PackedMap::findNext(myNode, myIntMask) : 0;
     }
 
@@ -204,10 +204,10 @@ public:
     void Initialize(const NCollection_PackedMap& theMap)
     {
       myBuckets   = theMap.myData1;
-      myBucket    = -1;
+      myBucket    = 0;
       myNode      = nullptr;
-      myNbBuckets = theMap.myData1 != nullptr ? theMap.myNbBuckets : -1;
-      next();
+      myNbBuckets = theMap.myData1 != nullptr ? theMap.myNbBuckets : 0;
+      findFirst();
 
       myIntMask = ~BlockType(0);
       myKey     = myNode != nullptr ? findNext(myNode, myIntMask) : 0;
@@ -216,9 +216,9 @@ public:
     //! Restart the iteration
     void Reset()
     {
-      myBucket = -1;
+      myBucket = 0;
       myNode   = nullptr;
-      next();
+      findFirst();
 
       myIntMask = ~BlockType(0);
       myKey     = myNode != nullptr ? findNext(myNode, myIntMask) : 0;
@@ -249,35 +249,55 @@ public:
     }
 
   private:
-    //! Go to the next bucket in the map.
+    //! Find the first non-empty bucket starting from myBucket.
+    void findFirst()
+    {
+      if (myBuckets == nullptr)
+      {
+        return;
+      }
+      for (; myBucket <= myNbBuckets; ++myBucket)
+      {
+        myNode = myBuckets[myBucket];
+        if (myNode != nullptr)
+        {
+          return;
+        }
+      }
+    }
+
+    //! Advance to the next node (may cross bucket boundaries).
     void next()
     {
       if (myBuckets == nullptr)
       {
         return;
       }
-
       if (myNode != nullptr)
       {
         myNode = myNode->Next();
-      }
-
-      while (myNode == nullptr)
-      {
-        ++myBucket;
-        if (myBucket > myNbBuckets)
+        if (myNode != nullptr)
         {
           return;
         }
+      }
+      ++myBucket;
+      while (myBucket <= myNbBuckets)
+      {
         myNode = myBuckets[myBucket];
+        if (myNode != nullptr)
+        {
+          return;
+        }
+        ++myBucket;
       }
     }
 
   private:
     PackedMapNode** myBuckets;
     PackedMapNode*  myNode;
-    int             myNbBuckets;
-    int             myBucket;
+    size_t          myNbBuckets;
+    size_t          myBucket;
 
     BlockType myIntMask; //!< all bits set above the iterated position
     IntType   myKey;     //!< Currently iterated key
@@ -285,9 +305,18 @@ public:
 
 public:
   //! Constructor
-  NCollection_PackedMap(const int theNbBuckets = 1)
+  NCollection_PackedMap(const size_t theNbBuckets = 1)
       : myData1(nullptr),
         myNbBuckets(theNbBuckets),
+        myNbPackedMapNodes(0),
+        myExtent(0)
+  {
+  }
+
+  //! Constructor (legacy int-taking).
+  NCollection_PackedMap(const int theNbBuckets)
+      : myData1(nullptr),
+        myNbBuckets(theNbBuckets < 1 ? 1 : static_cast<size_t>(theNbBuckets)),
         myNbPackedMapNodes(0),
         myExtent(0)
   {
@@ -348,9 +377,9 @@ public:
       if (!theOther.IsEmpty())
       {
         ReSize(theOther.myNbPackedMapNodes);
-        const int nBucketsSrc = theOther.myNbBuckets;
-        const int nBuckets    = myNbBuckets;
-        for (int i = 0; i <= nBucketsSrc; i++)
+        const size_t nBucketsSrc = theOther.myNbBuckets;
+        const size_t nBuckets    = myNbBuckets;
+        for (size_t i = 0; i <= nBucketsSrc; ++i)
         {
           for (const PackedMapNode* p = theOther.myData1[i]; p != nullptr;)
           {
@@ -367,9 +396,9 @@ public:
   }
 
   //! Resize the map
-  void ReSize(const int theNbBuckets)
+  void ReSize(const size_t theNbBuckets)
   {
-    int aNewBuck = NCollection_Primes::NextPrimeForMap(theNbBuckets);
+    size_t aNewBuck = NCollection_Primes::NextPrimeForMap(theNbBuckets);
     if (aNewBuck <= myNbBuckets)
     {
       if (!IsEmpty())
@@ -385,7 +414,7 @@ public:
     if (myData1 != nullptr)
     {
       PackedMapNode** anOldData = myData1;
-      for (int i = 0; i <= myNbBuckets; ++i)
+      for (size_t i = 0; i <= myNbBuckets; ++i)
       {
         for (PackedMapNode* p = anOldData[i]; p != nullptr;)
         {
@@ -403,12 +432,18 @@ public:
     myData1     = aNewData;
   }
 
+  //! Resize the map (legacy int-taking).
+  void ReSize(const int theNbBuckets)
+  {
+    ReSize(static_cast<size_t>(theNbBuckets < 0 ? 0 : theNbBuckets));
+  }
+
   //! Clear the map
   void Clear()
   {
     if (!IsEmpty())
     {
-      for (int aBucketIter = 0; aBucketIter <= myNbBuckets; ++aBucketIter)
+      for (size_t aBucketIter = 0; aBucketIter <= myNbBuckets; ++aBucketIter)
       {
         if (myData1[aBucketIter])
         {
@@ -529,10 +564,16 @@ public:
   }
 
   //! Returns the number of map buckets.
-  int NbBuckets() const { return myNbBuckets; }
+  size_t NbBuckets() const { return myNbBuckets; }
+
+  //! Returns map extent (legacy int-returning API).
+  int Extent() const { return static_cast<int>(myExtent); }
+
+  //! Returns map extent (legacy int-returning API, synonym of Extent()).
+  int Length() const { return static_cast<int>(myExtent); }
 
   //! Returns map extent.
-  int Extent() const { return static_cast<int>(myExtent); }
+  size_t Size() const { return myExtent; }
 
   //! Returns TRUE if map is empty.
   bool IsEmpty() const { return myNbPackedMapNodes == 0; }
@@ -547,7 +588,7 @@ public:
 
     IntType              aResult    = std::numeric_limits<IntType>::max();
     const PackedMapNode* pFoundNode = nullptr;
-    for (int i = 0; i <= myNbBuckets; i++)
+    for (size_t i = 0; i <= myNbBuckets; ++i)
     {
       for (const PackedMapNode* p = myData1[i]; p != nullptr; p = p->Next())
       {
@@ -577,7 +618,7 @@ public:
 
     IntType              aResult    = std::numeric_limits<IntType>::lowest();
     const PackedMapNode* pFoundNode = nullptr;
-    for (int i = 0; i <= myNbBuckets; i++)
+    for (size_t i = 0; i <= myNbBuckets; ++i)
     {
       for (const PackedMapNode* p = myData1[i]; p != nullptr; p = p->Next())
       {
@@ -671,7 +712,7 @@ protected:
   }
 
   //! Compute hash code for a key index.
-  static size_t hashCode(IndexType theKeyIndex, int theNbBuckets)
+  static size_t hashCode(IndexType theKeyIndex, size_t theNbBuckets)
   {
     return static_cast<size_t>(theKeyIndex) % theNbBuckets + 1;
   }
@@ -820,8 +861,8 @@ protected:
 
 private:
   PackedMapNode** myData1;            //!< data array
-  int             myNbBuckets;        //!< number of buckets (size of data array)
-  int             myNbPackedMapNodes; //!< amount of packed map nodes
+  size_t          myNbBuckets;        //!< number of buckets (size of data array)
+  size_t          myNbPackedMapNodes; //!< amount of packed map nodes
   size_t          myExtent;           //!< extent of this map (number of unpacked integer keys)
 };
 

@@ -37,7 +37,9 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   // --- Instance of plex component BrepWithVoids ---
 
   if (!data->CheckNbParams(num, 1, ach, "brep_with_voids"))
+  {
     return;
+  }
 
   // --- field : voids ---
 
@@ -57,7 +59,9 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
                            ach,
                            STANDARD_TYPE(StepShape_OrientedClosedShell),
                            anent))
+      {
         aVoids->SetValue(i1, anent);
+      }
     }
   }
 
@@ -66,21 +70,27 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   // --- Instance of plex component FacetedBrep ---
 
   if (!data->CheckNbParams(num, 0, ach, "faceted_brep"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component GeometricRepresentationItem ---
 
   if (!data->CheckNbParams(num, 0, ach, "geometric_representation_item"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype ManifoldSolidBrep ---
 
   if (!data->CheckNbParams(num, 1, ach, "manifold_solid_brep"))
+  {
     return;
+  }
   // --- field : outer ---
 
   occ::handle<StepShape_ClosedShell> aOuter;
@@ -92,7 +102,9 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   // --- Instance of plex component RepresentationItem ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -105,7 +117,9 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   // --- Instance of plex component SolidModel ---
 
   if (!data->CheckNbParams(num, 0, ach, "solid_model"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

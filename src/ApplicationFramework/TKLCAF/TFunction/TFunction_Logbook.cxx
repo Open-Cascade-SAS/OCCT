@@ -84,9 +84,13 @@ bool TFunction_Logbook::IsEmpty() const
 bool TFunction_Logbook::IsModified(const TDF_Label& L, const bool WithChildren) const
 {
   if (myTouched.Contains(L))
+  {
     return true;
+  }
   if (myImpacted.Contains(L))
+  {
     return true;
+  }
   if (WithChildren)
   {
     TDF_ChildIterator itr(L);
@@ -204,9 +208,13 @@ void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
     {
       TDF_Label relocL;
       if (RT->HasRelocation(L, relocL))
+      {
         logbook->myTouched.Add(relocL);
+      }
       else
+      {
         logbook->myTouched.Add(L);
+      }
     }
   }
 
@@ -220,9 +228,13 @@ void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
     {
       TDF_Label relocL;
       if (RT->HasRelocation(L, relocL))
+      {
         logbook->myImpacted.Add(relocL);
+      }
       else
+      {
         logbook->myImpacted.Add(L);
+      }
     }
   }
 
@@ -236,9 +248,13 @@ void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
     {
       TDF_Label relocL;
       if (RT->HasRelocation(L, relocL))
+      {
         logbook->myValid.Add(relocL);
+      }
       else
+      {
         logbook->myValid.Add(L);
+      }
     }
   }
 }
@@ -257,24 +273,24 @@ Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
   NCollection_Map<TDF_Label>::Iterator itr;
   TCollection_AsciiString              as;
 
-  stream << "Done = " << isDone << std::endl;
-  stream << "Touched labels: " << std::endl;
+  stream << "Done = " << isDone << '\n';
+  stream << "Touched labels: " << '\n';
   for (itr.Initialize(myTouched); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream << as << std::endl;
+    stream << as << '\n';
   }
-  stream << "Impacted labels: " << std::endl;
+  stream << "Impacted labels: " << '\n';
   for (itr.Initialize(myImpacted); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream << as << std::endl;
+    stream << as << '\n';
   }
-  stream << "Valid labels: " << std::endl;
+  stream << "Valid labels: " << '\n';
   for (itr.Initialize(myValid); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream << as << std::endl;
+    stream << as << '\n';
   }
 
   return stream;

@@ -144,7 +144,9 @@ void ShapeFix_EdgeConnect::Add(const TopoDS_Shape& aShape)
       }
       // Connect first and last edges if wire is closed
       if (theWire.Closed())
+      {
         Add(theEdge, theFirst);
+      }
     }
   }
 }
@@ -194,7 +196,9 @@ void ShapeFix_EdgeConnect::Build()
       {
         occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(theCIterator.Value());
         if (GC.IsNull())
+        {
           continue;
+        }
         // Calculate vertex position for this curve
         double theFParam, theLParam;
         GC->Range(theFParam, theLParam);
@@ -229,25 +233,41 @@ void ShapeFix_EdgeConnect::Build()
     {
       thePosition = thePositions.Value(i);
       if (i == 1)
+      {
         theLBound = theRBound = thePosition;
+      }
       double val = thePosition.X();
       if (val < theLBound.X())
+      {
         theLBound.SetX(val);
+      }
       else if (val > theRBound.X())
+      {
         theRBound.SetX(val);
+      }
       val = thePosition.Y();
       if (val < theLBound.Y())
+      {
         theLBound.SetY(val);
+      }
       else if (val > theRBound.Y())
+      {
         theRBound.SetY(val);
+      }
       val = thePosition.Z();
       if (val < theLBound.Z())
+      {
         theLBound.SetZ(val);
+      }
       else if (val > theRBound.Z())
+      {
         theRBound.SetZ(val);
+      }
     }
     if (theNbPos > 1)
+    {
       thePosition = (theLBound + theRBound) / 2.;
+    }
 #endif
 
     // Calculate maximal deviation
@@ -257,11 +277,15 @@ void ShapeFix_EdgeConnect::Build()
     {
       double theDeviation = (thePosition - thePositions.Value(i)).Modulus();
       if (theDeviation > theMaxDev)
+      {
         theMaxDev = theDeviation;
+      }
     }
     theMaxDev *= 1.0001; // To avoid numerical roundings
     if (theMaxDev < Precision::Confusion())
+    {
       theMaxDev = Precision::Confusion();
+    }
 
     // Update shared vertex
     theBuilder.UpdateVertex(theSharedVertex, gp_Pnt(thePosition), theMaxDev);
@@ -283,9 +307,13 @@ void ShapeFix_EdgeConnect::Build()
       // Prepare vertex to remove
       TopoDS_Vertex theOldVertex;
       if (use_start)
+      {
         theOldVertex = theStart; // start is preferred for closed edges
+      }
       else
+      {
         theOldVertex = theEnd;
+      }
 
       // Prepare vertex to add
       TopoDS_Vertex theNewVertex;

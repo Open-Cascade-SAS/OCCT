@@ -67,7 +67,9 @@ gp_Pnt IGESSolid_SolidOfRevolution::AxisPoint() const
 gp_Pnt IGESSolid_SolidOfRevolution::TransformedAxisPoint() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theAxisPoint);
+  }
   else
   {
     gp_XYZ tmp = theAxisPoint;
@@ -84,7 +86,9 @@ gp_Dir IGESSolid_SolidOfRevolution::Axis() const
 gp_Dir IGESSolid_SolidOfRevolution::TransformedAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theAxis);
+  }
   else
   {
     gp_XYZ   tmp = theAxis;

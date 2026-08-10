@@ -89,7 +89,7 @@ protected:
   Standard_EXPORT double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr) override;
 
 protected:
-  NCollection_Vector<occ::handle<Select3D_SensitivePoly>>
+  NCollection_DynamicArray<occ::handle<Select3D_SensitivePoly>>
                                         myPlanarPolygons; //!< Vector of planar polygons
   occ::handle<NCollection_HArray1<int>> myPolygonsIdxs;   //!< Indexes array for BVH calculation
   gp_Pnt                                myCOG;            //!< Center of the point set

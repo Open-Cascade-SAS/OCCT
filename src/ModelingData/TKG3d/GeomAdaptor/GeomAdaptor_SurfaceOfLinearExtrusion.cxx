@@ -91,7 +91,9 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const occ::handle<Adaptor3d_Curv
 {
   myBasisCurve = C;
   if (myHaveDir)
+  {
     Load(myDirection);
+  }
 }
 
 //=================================================================================================
@@ -272,37 +274,49 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfLinearExtrusion::GetType() const
     case GeomAbs_Line: {
       gp_Dir D = myBasisCurve->Line().Direction();
       if (!myDirection.IsParallel(D, Precision::Angular()))
+      {
         return GeomAbs_Plane;
+      }
       break;
     }
 
     case GeomAbs_Circle: {
       gp_Dir D = (myBasisCurve->Circle()).Axis().Direction();
       if (myDirection.IsParallel(D, Precision::Angular()))
+      {
         return GeomAbs_Cylinder;
+      }
       else if (myDirection.IsNormal(D, Precision::Angular()))
+      {
         return GeomAbs_Plane;
+      }
       break;
     }
 
     case GeomAbs_Ellipse: {
       gp_Dir D = (myBasisCurve->Ellipse()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular()))
+      {
         return GeomAbs_Plane;
+      }
       break;
     }
 
     case GeomAbs_Parabola: {
       gp_Dir D = (myBasisCurve->Parabola()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular()))
+      {
         return GeomAbs_Plane;
+      }
       break;
     }
 
     case GeomAbs_Hyperbola: {
       gp_Dir D = (myBasisCurve->Hyperbola()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular()))
+      {
         return GeomAbs_Plane;
+      }
       break;
     }
 
@@ -344,7 +358,9 @@ gp_Pln GeomAdaptor_SurfaceOfLinearExtrusion::Plane() const
     myBasisCurve->D1(prm, P, D1u);
     newZ = D1u.Normalized().Crossed(myDirection);
     if (newZ.Magnitude() > 1.e-12)
+    {
       break;
+    }
   }
   gp_Ax3 Ax3(P, gp_Dir(newZ), gp_Dir(D1u));
   if (myDirection.Dot(Ax3.YDirection()) < 0.)

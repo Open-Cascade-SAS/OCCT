@@ -33,7 +33,9 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
   // --- Instance of plex component GeometricRepresentationContext ---
 
   if (!data->CheckNbParams(num, 1, ach, "geometric_representation_context"))
+  {
     return;
+  }
 
   // --- field : coordinateSpaceDimension ---
 
@@ -46,14 +48,18 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
   // --- Instance of plex component ParametricRepresentationContext ---
 
   if (!data->CheckNbParams(num, 0, ach, "parametric_representation_context"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype RepresentationContext ---
 
   if (!data->CheckNbParams(num, 2, ach, "representation_context"))
+  {
     return;
+  }
 
   // --- field : contextIdentifier ---
 

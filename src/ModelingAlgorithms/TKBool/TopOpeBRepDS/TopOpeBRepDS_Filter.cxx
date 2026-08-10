@@ -45,7 +45,9 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences()
   {
     const TopoDS_Shape& S = BDS.Shape(i);
     if (S.IsNull())
+    {
       continue;
+    }
     if (S.ShapeType() == TopAbs_EDGE)
     {
       ProcessEdgeInterferences(i);
@@ -67,7 +69,9 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences(
   {
     const TopoDS_Shape& S = BDS.Shape(i);
     if (S.IsNull())
+    {
       continue;
+    }
     if (S.ShapeType() == TopAbs_FACE)
     {
       ProcessFaceInterferences(i, MEsp);

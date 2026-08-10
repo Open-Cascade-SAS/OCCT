@@ -68,7 +68,9 @@ bool ShapeAlgo_AlgoContainer::ConnectNextWire(const occ::handle<ShapeAnalysis_Wi
   distmin = 0;
   revsewd = revnextsewd = false;
   if (nextsewd->NbEdges() == 0)
+  {
     return true;
+  }
 
   occ::handle<ShapeExtend_WireData> sewd = saw->WireData();
   // add edges into empty WireData
@@ -104,7 +106,9 @@ bool ShapeAlgo_AlgoContainer::ConnectNextWire(const occ::handle<ShapeAnalysis_Wi
   }
   bool OK = !saw->LastCheckStatus(ShapeExtend_FAIL);
   if (OK)
+  {
     sewd->Add(nextsewd);
+  }
   return OK;
 }
 
@@ -510,9 +514,13 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
   bool IsToReverse1 = false;
   bool IsToReverse2 = false;
   if (edge1.Orientation() == TopAbs_REVERSED)
+  {
     IsToReverse1 = true;
+  }
   if (edge2.Orientation() == TopAbs_REVERSED)
+  {
     IsToReverse2 = true;
+  }
   crv1   = BRep_Tool::Curve(edge1, loc1, first1, last1);
   crv2   = BRep_Tool::Curve(edge2, loc2, first2, last2);
   delta1 = last1 - first1;
@@ -579,9 +587,13 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     edge1.Move(loc1);
     edge2.Move(loc2);
     if (IsToReverse1)
+    {
       edge1.Reverse();
+    }
     if (IsToReverse2)
+    {
       edge2.Reverse();
+    }
     makeWire1.Add(edge1);
     makeWire2.Add(edge2);
 
@@ -589,7 +601,9 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     {
       TopoDS_Iterator Copernic = Cook;
       if (Copernic.More())
+      {
         Copernic.Next();
+      }
       if (!Copernic.More())
       {
         wireOut1 = makeWire1.Wire();

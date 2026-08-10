@@ -242,9 +242,13 @@ const NCollection_IndexedDataMap<TopoDS_Shape,
         //----------------------------
         TopAbs_ShapeEnum TA = TopAbs_FACE;
         if (TS == TopAbs_EDGE)
+        {
           TA = TopAbs_FACE;
+        }
         if (TS == TopAbs_VERTEX)
+        {
           TA = TopAbs_EDGE;
+        }
         if (TA >= In.ShapeType())
         {
           TopExp::MapShapesAndAncestors(In, TS, TA, Anc);
@@ -270,11 +274,17 @@ const NCollection_IndexedDataMap<TopoDS_Shape,
   TopAbs_ShapeEnum TA = TopAbs_COMPOUND;
 
   if (TS == TopAbs_VERTEX)
+  {
     TA = TopAbs_EDGE;
+  }
   else if (TS == TopAbs_EDGE)
+  {
     TA = TopAbs_FACE;
+  }
   else if (TS == TopAbs_FACE)
+  {
     TA = TopAbs_SOLID;
+  }
   if ((TS == TopAbs_EDGE || TS == TopAbs_VERTEX || TS == TopAbs_FACE) && TA >= In.ShapeType())
   {
     TopExp::MapShapesAndAncestors(In, TS, TA, myAncestors.First());
@@ -330,7 +340,9 @@ void TNaming_Localizer::GoBack(const TopoDS_Shape&                              
     const TDF_Label& Father = Lab.Father();
     TNaming_Iterator itLab(Father);
     if (itLab.More())
+    {
       Sol = itLab.OldShape();
+    }
     //-------------------------------------------
     // Recherche des ancetres dans des features.
     //-------------------------------------------
@@ -559,16 +571,24 @@ void TNaming_Localizer::FindNeighbourg(
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Neighbourg)
 {
   if (Sol.IsNull() || S.IsNull())
+  {
     return;
+  }
   TopAbs_ShapeEnum TA = S.ShapeType();
   TopAbs_ShapeEnum TS = TopAbs_COMPOUND;
 
   if (TA == TopAbs_FACE)
+  {
     TS = TopAbs_EDGE;
+  }
   if (TA == TopAbs_EDGE)
+  {
     TS = TopAbs_VERTEX;
+  }
   if (TA == TopAbs_VERTEX)
+  {
     TS = TopAbs_VERTEX; // szy 30.03.10
+  }
   const NCollection_IndexedDataMap<TopoDS_Shape,
                                    NCollection_List<TopoDS_Shape>,
                                    TopTools_ShapeMapHasher>& Anc = Ancestors(Sol, TS);
@@ -664,7 +684,9 @@ void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& 
     LWrite(SC, "FSC_OldShape.brep");
 #endif
     if (SC.IsNull())
+    {
       continue;
+    }
     else
     {
       if (SC.ShapeType() < S.ShapeType())
@@ -682,7 +704,9 @@ void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& 
           }
         }
         if (found)
+        {
           break;
+        }
       }
     }
   }
@@ -707,10 +731,14 @@ void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& 
         {
           aShape = anIter.NewShape();
           if (!aShape.IsNull())
+          {
             break;
+          }
         }
         if (!aShape.IsNull())
+        {
           SC = aShape;
+        }
       }
     }
   }

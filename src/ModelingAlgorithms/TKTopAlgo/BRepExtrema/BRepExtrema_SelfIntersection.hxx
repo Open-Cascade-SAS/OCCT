@@ -111,7 +111,7 @@ private:
   bool myIsInit;
 
   //! List of triangulated faces of the shape.
-  NCollection_Vector<TopoDS_Shape> myFaceList;
+  NCollection_DynamicArray<TopoDS_Shape> myFaceList;
 
   //! Set of all the face triangles of the shape.
   occ::handle<BRepExtrema_TriangleSet> myElementSet;

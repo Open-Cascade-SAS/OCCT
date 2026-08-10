@@ -29,8 +29,12 @@ void StdLPersistent_HArray2::base::Read(StdObjMgt_ReadData& theReadData)
   theReadData >> aSize;
 
   for (int aRow = aLowerRow; aRow <= anUpperRow; aRow++)
+  {
     for (int aCol = aLowerCol; aCol <= anUpperCol; aCol++)
+    {
       readValue(theReadData, aRow, aCol);
+    }
+  }
 }
 
 //=======================================================================
@@ -50,6 +54,10 @@ void StdLPersistent_HArray2::base::Write(StdObjMgt_WriteData& theWriteData) cons
   theWriteData << aSize;
 
   for (int aRow = aLowerRow; aRow <= anUpperRow; aRow++)
+  {
     for (int aCol = aLowerCol; aCol <= anUpperCol; aCol++)
+    {
       writeValue(theWriteData, aRow, aCol);
+    }
+  }
 }

@@ -36,7 +36,9 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "brep_with_voids"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -68,7 +70,9 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReader
                            ach,
                            STANDARD_TYPE(StepShape_OrientedClosedShell),
                            anent3))
+      {
         aVoids->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -118,9 +122,11 @@ void RWStepShape_RWBrepWithVoids::Check(const occ::handle<StepShape_BrepWithVoid
                                         occ::handle<Interface_Check>& ach) const
 {
   for (int i = 1; i <= ent->NbVoids(); i++)
+  {
     if (ent->VoidsValue(i)->Orientation())
     {
       ach->AddWarning("Void has orientation .T. while .F. is required by API 214");
       break;
     }
+  }
 }

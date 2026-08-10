@@ -374,11 +374,17 @@ TEST(NCollection_DoubleMapTest, Iterator)
     const Key2Type& key2 = it.Key2();
 
     if (key1 == 10 && key2 == 1.0)
+    {
       found10 = true;
+    }
     else if (key1 == 20 && key2 == 2.0)
+    {
       found20 = true;
+    }
     else if (key1 == 30 && key2 == 3.0)
+    {
       found30 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);

@@ -68,7 +68,9 @@ static void Replace(NCollection_List<TopoDS_Shape>&       L,
       break;
     }
     if (it.More())
+    {
       it.Next();
+    }
   }
   //---------------------------
   // Ajout de New a L.
@@ -131,7 +133,9 @@ static void Update(
   {
     const TopoDS_Shape& S = exp.Current();
     if (!DejaVu.Add(S))
+    {
       continue;
+    }
 
     //---------------------------------------
     // Recuperation de l image de S par MKS.
@@ -279,7 +283,9 @@ static void FilterByShape(
   bool                                                   YaEdge   = false;
   bool                                                   YaVertex = false;
   for (exp.Init(SF, TopAbs_FACE); exp.More(); exp.Next())
+  {
     MSF.Add(exp.Current());
+  }
 
   //-------------------------------------------------------------
   // Suppression de toutes les images qui ne sont pas dans MSF.
@@ -324,7 +330,9 @@ static void FilterByShape(
         LNS.Remove(itl);
       }
       else if (itl.More())
+      {
         itl.Next();
+      }
     }
   }
 #ifdef OCCT_DEBUG

@@ -26,6 +26,8 @@
 #include "../RWStepAP214/RWStepAP214.pxx"
 #include <Standard_Type.hxx>
 #include <Standard_Version.hxx>
+#include <DESTEP_Parameters.hxx>
+#include <ShapeProcess.hxx>
 #include <STEPControl_ActorRead.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
@@ -343,6 +345,13 @@ STEPControl_Controller::STEPControl_Controller()
   occ::handle<STEPControl_ActorWrite> ActWrite = new STEPControl_ActorWrite;
   myAdaptorWrite                               = ActWrite;
 
+  ActWrite->SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters(),
+                                  XSAlgo_ShapeProcessor::ParameterMap{});
+  ShapeProcess::OperationsFlags aDefaultProcFlags;
+  aDefaultProcFlags.set(ShapeProcess::Operation::SplitCommonVertex);
+  aDefaultProcFlags.set(ShapeProcess::Operation::DirectFaces);
+  ActWrite->SetShapeProcessFlags(aDefaultProcFlags);
+
   occ::handle<StepSelect_WorkLibrary> swl = new StepSelect_WorkLibrary;
   swl->SetDumpLabel(1);
   myAdaptorLibrary  = swl;
@@ -448,13 +457,17 @@ IFSelect_ReturnStatus STEPControl_Controller::TransferWriteShape(
   const Message_ProgressRange&                 theProgress) const
 {
   if (modeshape < 0 || modeshape > 4)
+  {
     return IFSelect_RetError;
+  }
   occ::handle<STEPControl_ActorWrite> ActWrite =
     occ::down_cast<STEPControl_ActorWrite>(myAdaptorWrite);
   //    A PRESENT ON PASSE PAR LE PROFILE
   occ::handle<StepData_StepModel> aModel = occ::down_cast<StepData_StepModel>(model);
   if (!ActWrite.IsNull())
+  {
     ActWrite->SetGroupMode(aModel->InternalParameters.WriteAssembly);
+  }
   TopoDS_Shape                                                             aShape = shape;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aModifedMap;
   if (aModel->InternalParameters.WriteNonmanifold)
@@ -495,7 +508,9 @@ void STEPControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   occ::handle<IFSelect_SelectModelRoots> slr;
   occ::handle<Standard_Transient>        slr1 = WS->NamedItem("xst-model-roots");
   if (!slr1.IsNull())
+  {
     slr = occ::down_cast<IFSelect_SelectModelRoots>(slr1);
+  }
   else
   {
     slr = new IFSelect_SelectModelRoots;

@@ -56,10 +56,14 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
                                    const occ::handle<Standard_Transient>& start)
 {
   if (start.IsNull())
+  {
     return;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepBasic_ProductRelatedProductCategory)))
+  {
     return;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
   {
@@ -70,7 +74,9 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     {
       DeclareAndCast(StepShape_ContextDependentShapeRepresentation, anitem, subs.Value());
       if (anitem.IsNull())
+      {
         continue;
+      }
       Count(graph, anitem);
     }
     return;
@@ -105,7 +111,9 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     AddShell(brwv->Outer());
     int nbvoids = brwv->NbVoids();
     for (int i = 1; i <= nbvoids; i++)
+    {
       AddShell(brwv->VoidsValue(i));
+    }
     return;
   }
 
@@ -126,10 +134,14 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     {
       occ::handle<StepShape_OpenShell> osh = sbsm->SbsmBoundaryValue(i).OpenShell();
       if (!osh.IsNull())
+      {
         AddShell(osh);
+      }
       occ::handle<StepShape_ClosedShell> csh = sbsm->SbsmBoundaryValue(i).ClosedShell();
       if (!csh.IsNull())
+      {
         AddShell(csh);
+      }
     }
     return;
   }
@@ -142,7 +154,9 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     AddShell(fbwv->Outer());
     int nbvoids = fbwv->NbVoids();
     for (int i = 1; i <= nbvoids; i++)
+    {
       AddShell(fbwv->VoidsValue(i));
+    }
     return;
   }
 
@@ -180,7 +194,9 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     Count(graph, mi->MappingTarget());
     occ::handle<StepRepr_RepresentationMap> map = mi->MappingSource();
     if (map.IsNull())
+    {
       return;
+    }
     Count(graph, map->MappedRepresentation());
     return;
   }
@@ -197,22 +213,30 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation, CDSR, start);
     occ::handle<StepRepr_RepresentationRelationship> SRR = CDSR->RepresentationRelation();
     if (SRR.IsNull())
+    {
       return;
+    }
 
     occ::handle<StepRepr_Representation> rep;
     bool SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
     if (SRRReversed)
+    {
       rep = SRR->Rep2();
+    }
     else
+    {
       rep = SRR->Rep1();
+    }
 
     Interface_EntityIterator subs = graph.Sharings(rep);
     for (subs.Start(); subs.More(); subs.Next())
+    {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
       {
         DeclareAndCast(StepShape_ShapeDefinitionRepresentation, SDR, subs.Value());
         Count(graph, SDR);
       }
+    }
     //???
     return;
   }
@@ -224,9 +248,13 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     {
       occ::handle<Standard_Transient> anitem;
       if (i == 1)
+      {
         anitem = und->Rep1();
+      }
       if (i == 2)
+      {
         anitem = und->Rep2();
+      }
       Count(graph, anitem);
     }
     return;
@@ -253,9 +281,10 @@ void STEPSelections_Counter::AddShell(const occ::handle<StepShape_ConnectedFaceS
   myNbShells++;
   int nbf = cfs->NbCfsFaces();
   for (int i = 1; i <= nbf; i++)
+  {
     myMapOfFaces.Add(cfs->CfsFacesValue(i));
+  }
   myNbFaces += nbf;
-  return;
 }
 
 void STEPSelections_Counter::AddCompositeCurve(const occ::handle<StepGeom_CompositeCurve>& ccurve)
@@ -268,7 +297,9 @@ void STEPSelections_Counter::AddCompositeCurve(const occ::handle<StepGeom_Compos
     occ::handle<StepGeom_Curve>                 crv = ccs->ParentCurve();
 
     if (crv->IsKind(STANDARD_TYPE(StepGeom_CompositeCurve)))
+    {
       AddCompositeCurve(occ::down_cast<StepGeom_CompositeCurve>(crv));
+    }
     else
     {
       myNbEdges++;

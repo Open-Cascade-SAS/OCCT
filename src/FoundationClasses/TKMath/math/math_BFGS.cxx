@@ -119,13 +119,17 @@ static bool ComputeInitScale(const double       theF0,
 {
   const double dy1 = theGr * theDir;
   if (std::abs(dy1) < RealSmall())
+  {
     return false;
+  }
 
   const double aHnr1 = theDir.Norm2();
   const double alfa  = 0.7 * (-theF0) / dy1;
   theScale           = 0.015 / std::sqrt(aHnr1);
   if (theScale > alfa)
+  {
     theScale = alfa;
+  }
 
   return true;
 }
@@ -173,8 +177,10 @@ static bool ComputeMinMaxScale(const math_Vector& thePoint,
         theMinScale = std::max(theMinScale, std::min(aLScale, aRScale));
       }
       else
+      {
         // point is out of bounds
         return false;
+      }
     }
     else
     {
@@ -206,7 +212,9 @@ static bool MinimizeDirection(math_Vector&       P,
 {
   double lambda;
   if (!ComputeInitScale(F0, Dir, Gr, lambda))
+  {
     return false;
+  }
 
   // by default the scaling range is unlimited
   double aMinLambda = -Precision::Infinite();
@@ -215,7 +223,9 @@ static bool MinimizeDirection(math_Vector&       P,
   {
     // limit the scaling range taking into account the bounds
     if (!ComputeMinMaxScale(P, Dir, theLeft, theRight, aMinLambda, aMaxLambda))
+    {
       return false;
+    }
 
     if (aMinLambda > -Precision::PConfusion() && aMaxLambda < Precision::PConfusion())
     {
@@ -232,9 +242,13 @@ static bool MinimizeDirection(math_Vector&       P,
 
       // re-compute scale values with new direction
       if (!ComputeInitScale(F0, Dir, Gr, lambda))
+      {
         return false;
+      }
       if (!ComputeMinMaxScale(P, Dir, theLeft, theRight, aMinLambda, aMaxLambda))
+      {
         return false;
+      }
     }
     lambda = std::min(lambda, aMaxLambda);
     lambda = std::max(lambda, aMinLambda);
@@ -243,11 +257,15 @@ static bool MinimizeDirection(math_Vector&       P,
   F.Initialize(P, Dir);
   double F1;
   if (!F.Value(lambda, F1))
+  {
     return false;
+  }
 
   math_BracketMinimum Bracket(0.0, lambda);
   if (isBounds)
+  {
     Bracket.SetLimits(aMinLambda, aMaxLambda);
+  }
   Bracket.SetFA(F0);
   Bracket.SetFB(F1);
   Bracket.Perform(F);
@@ -277,9 +295,13 @@ static bool MinimizeDirection(math_Vector&       P,
     // set current point to intersection with bounds
     double aFMin, aFMax;
     if (!F.Value(aMinLambda, aFMin))
+    {
       return false;
+    }
     if (!F.Value(aMaxLambda, aFMax))
+    {
       return false;
+    }
     double aBestLambda;
     if (aFMin < aFMax)
     {
@@ -372,13 +394,17 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
     }
 
     for (i = 1; i <= n; i++)
+    {
       dg(i) = TheGradient(i) - dg(i);
+    }
 
     for (i = 1; i <= n; i++)
     {
       hdg(i) = 0.0;
       for (j = 1; j <= n; j++)
+      {
         hdg(i) += hessin(i, j) * dg(j);
+      }
     }
 
     fac = fae = 0.0;
@@ -391,24 +417,29 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
     fad = 1.0 / fae;
 
     for (i = 1; i <= n; i++)
+    {
       dg(i) = fac * xi(i) - fad * hdg(i);
+    }
 
     for (i = 1; i <= n; i++)
     {
       for (j = 1; j <= n; j++)
+      {
         hessin(i, j) += fac * xi(i) * xi(j) - fad * hdg(i) * hdg(j) + fae * dg(i) * dg(j);
+      }
     }
 
     for (i = 1; i <= n; i++)
     {
       xi(i) = 0.0;
       for (j = 1; j <= n; j++)
+      {
         xi(i) -= hessin(i, j) * TheGradient(j);
+      }
     }
   }
   Done      = false;
   TheStatus = math_TooManyIterations;
-  return;
 }
 
 //=============================================================================
@@ -462,7 +493,9 @@ void math_BFGS::Dump(Standard_OStream& o) const
     o << " Number of iterations = " << NbIterations() << "\n";
   }
   else
+  {
     o << " Status = not Done because " << (int)TheStatus << "\n";
+  }
 }
 
 //=============================================================================

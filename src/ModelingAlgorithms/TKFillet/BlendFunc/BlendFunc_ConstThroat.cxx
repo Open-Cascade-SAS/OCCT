@@ -184,7 +184,9 @@ bool BlendFunc_ConstThroat::IsTangencyPoint() const
 const gp_Vec& BlendFunc_ConstThroat::TangentOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroat::TangentOnS1");
+  }
   return tg1;
 }
 
@@ -193,7 +195,9 @@ const gp_Vec& BlendFunc_ConstThroat::TangentOnS1() const
 const gp_Vec& BlendFunc_ConstThroat::TangentOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroat::TangentOnS2");
+  }
   return tg2;
 }
 
@@ -202,7 +206,9 @@ const gp_Vec& BlendFunc_ConstThroat::TangentOnS2() const
 const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroat::Tangent2dOnS1");
+  }
   return tg12d;
 }
 
@@ -211,7 +217,9 @@ const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS1() const
 const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_ConstThroat::Tangent2dOnS2");
+  }
   return tg22d;
 }
 
@@ -246,14 +254,22 @@ void BlendFunc_ConstThroat::Tangent(const double U1,
     revL = true;
   }
   if ((choix == 4) || (choix == 7))
+  {
     revL = true;
+  }
   if ((choix == 3) || (choix == 8))
+  {
     revF = true;
+  }
 
   if (revF)
+  {
     TgF.Reverse();
+  }
   if (revL)
+  {
     TgL.Reverse();
+  }
 }
 
 //=================================================================================================

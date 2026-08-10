@@ -67,7 +67,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolAssocGroupType tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -75,7 +77,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFile tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -83,7 +87,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -91,7 +97,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -99,7 +107,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -107,7 +117,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefName tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -115,7 +127,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -123,7 +137,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroup tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -131,7 +147,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -139,7 +157,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolHierarchy tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -147,7 +167,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolName tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -155,7 +177,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroup tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -163,7 +187,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -171,7 +197,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingleParent tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -179,7 +207,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -187,7 +217,9 @@ void IGESBasic_SpecificModule::OwnDump(const int                               C
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSubfigureDef tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -206,56 +238,72 @@ bool IGESBasic_SpecificModule::OwnCorrect(const int                             
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolAssocGroupType tool;
       return tool.OwnCorrect(anent);
     }
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolGroup tool;
       return tool.OwnCorrect(anent);
     }
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       return tool.OwnCorrect(anent);
     }
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolHierarchy tool;
       return tool.OwnCorrect(anent);
     }
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolName tool;
       return tool.OwnCorrect(anent);
     }
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolOrderedGroup tool;
       return tool.OwnCorrect(anent);
     }
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       return tool.OwnCorrect(anent);
     }
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolSingleParent tool;
       return tool.OwnCorrect(anent);
     }

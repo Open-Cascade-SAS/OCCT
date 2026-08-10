@@ -33,7 +33,9 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "surface_style_usage"))
+  {
     return;
+  }
 
   // --- own field : side ---
 
@@ -47,7 +49,9 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #1 (side) is not an enumeration");
+  }
 
   // --- own field : style ---
 

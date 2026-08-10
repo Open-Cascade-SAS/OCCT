@@ -93,7 +93,9 @@ static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1
     C1->D0(u, Tab(iP));
     u += h;
     if ((u - f) * (u - l) > 0.0)
+    {
       u = l;
+    }
   }
   gp_Ax2 AxeRef, Axe;
   gp_Pnt Pos;
@@ -102,7 +104,9 @@ static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1
 
   // si la section est une droite, ca ne marche pas
   if (sing)
+  {
     no_sing = false;
+  }
 
   Pos = AxeRef.Location();
   double alpha1, alpha2, alpha3;
@@ -134,13 +138,17 @@ static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1
       C2->D0(u, Tab(iP));
       u += h;
       if ((u - f) * (u - l) > 0.0)
+      {
         u = l;
+      }
     }
     GeomLib::AxeOfInertia(Tab, Axe, sing);
 
     // si la section est une droite, ca ne marche pas
     if (sing)
+    {
       no_sing = false;
+    }
 
     Pos = Axe.Location();
     double beta1, beta2, beta3;
@@ -169,22 +177,38 @@ static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1
     if (pasnul1 && pasnul2 && pasnul3)
     {
       if (alpha1 * beta1 > 0.0)
+      {
         ok = (alpha2 * beta2 > 0.0) || (alpha3 * beta3 > 0.0);
+      }
       else
+      {
         ok = (alpha2 * beta2 > 0.0) && (alpha3 * beta3 > 0.0);
+      }
     }
     else if (pasnul1 && pasnul2 && !pasnul3)
+    {
       ok = (alpha1 * beta1 > 0.0) || (alpha2 * beta2 > 0.0);
+    }
     else if (pasnul1 && !pasnul2 && pasnul3)
+    {
       ok = (alpha1 * beta1 > 0.0) || (alpha3 * beta3 > 0.0);
+    }
     else if (!pasnul1 && pasnul2 && pasnul3)
+    {
       ok = (alpha2 * beta2 > 0.0) || (alpha3 * beta3 > 0.0);
+    }
     else if (pasnul1)
+    {
       ok = (alpha1 * beta1 > 0.0);
+    }
     else if (pasnul2)
+    {
       ok = (alpha2 * beta2 > 0.0);
+    }
     else if (pasnul3)
+    {
       ok = (alpha3 * beta3 > 0.0);
+    }
 
     if (no_sing && !ok)
     {
@@ -379,7 +403,9 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&      Path,
                                         myAdpPath->LastParameter());
 
   if (rotat)
+  {
     TheLoc->Set(mySec, rotat, myAdpPath->FirstParameter(), myAdpPath->LastParameter(), 0., angle);
+  }
   myLoc = TheLoc;
 }
 
@@ -609,7 +635,9 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&                       Pa
     // verification des orientations
     NCollection_Sequence<occ::handle<Geom_Curve>> NewSeq;
     if (CheckSense(SeqC, NewSeq))
+    {
       SeqC = NewSeq;
+    }
 
     // verification des parametres
     bool play_again = true;
@@ -688,7 +716,9 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
     // orientation verification
     NCollection_Sequence<occ::handle<Geom_Curve>> NewSeq;
     if (CheckSense(SeqC, NewSeq))
+    {
       SeqC = NewSeq;
+    }
 
     // creation of the NSections
     double deb, fin;
@@ -732,7 +762,9 @@ void GeomFill_Pipe::Perform(const bool WithParameters, const bool Polynomial)
     return;
   }
   if (!KPartT4())
+  {
     ApproxSurf(WithParameters);
+  }
 }
 
 //=================================================================================================
@@ -873,7 +905,9 @@ bool GeomFill_Pipe::KPartT4()
     gp_Dir V2(gp_Vec(P0, P2));
     if (std::abs(V1.Dot(D0)) > Precision::Confusion()
         || std::abs(V2.Dot(D0)) > Precision::Confusion())
+    {
       return Ok;
+    }
 
     // the result is a cylindrical surface.
     gp_Dir X(V1), Y(V2), ZRef;
@@ -881,7 +915,9 @@ bool GeomFill_Pipe::KPartT4()
 
     gp_Ax3 Axis(A0.Location(), D0, X);
     if (ZRef.Dot(D0) < 0.)
+    {
       Axis.YReverse();
+    }
 
     // rotate the surface to set the iso U = 0 not in the result.
     Axis.Rotate(gp_Ax1(P0, ZRef), -M_PI / 2.);
@@ -908,7 +944,9 @@ bool GeomFill_Pipe::KPartT4()
 
     if (std::abs(Alp0 - Alp1) > Precision::Angular()
         || std::abs(Alp0 - Alp2) > Precision::Angular())
+    {
       return Ok;
+    }
 
     gp_Ax2 A0 = myAdpPath->Circle().Position();
     gp_Ax2 A1 = myAdpFirstSect->Circle().Position();
@@ -922,13 +960,17 @@ bool GeomFill_Pipe::KPartT4()
 
     // les 3 directions doivent etre egales.
     if (!D0.IsEqual(D1, Precision::Angular()) || !D1.IsEqual(D2, Precision::Angular()))
+    {
       return Ok;
+    }
 
     // les 3 ax1 doivent etre confondus.
     gp_Lin L(A0.Axis());
     if (!L.Contains(A1.Location(), Precision::Confusion())
         || !L.Contains(A2.Location(), Precision::Confusion()))
+    {
       return Ok;
+    }
 
     // les 3 premiers points doivent etre dans la meme section.
     gp_Dir  V1(gp_Vec(P0, P1));
@@ -937,7 +979,9 @@ bool GeomFill_Pipe::KPartT4()
     gp_Vec  YRef = ElCLib::CircleDN(myAdpPath->FirstParameter(), A0, Ci.Radius(), 1);
     if (std::abs(V1.Dot(YRef)) > Precision::Confusion()
         || std::abs(V2.Dot(YRef)) > Precision::Confusion())
+    {
       return Ok;
+    }
 
     // OK it`s a Toroidal Surface !!  OUF !!
     gp_Torus T(A0, Ci.Radius(), myRadius);
@@ -975,7 +1019,9 @@ void GeomFill_Pipe::ApproxSurf(const bool WithParameters)
   // and approximate this sequence.
 
   if (myType != 4)
+  {
     throw Standard_ConstructionError("GeomFill_Pipe");
+  }
   GeomFill_SweepSectionGenerator Section(myAdpPath, myAdpFirstSect, myAdpLastSect, myRadius);
 
   Section.Perform(myPolynomial);

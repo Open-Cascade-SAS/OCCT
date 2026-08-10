@@ -112,7 +112,9 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
     }
   }
   else
+  {
     res = ShapeUpgrade_ShapeDivide::Perform(newContext);
+  }
   // pdn Hereafter the fix on GeomLib:SameParameter.
   // In order to fix this bug all edges that are based on
   // bezier curves (2d or 3d) and have range not equal to [0,1]
@@ -166,22 +168,32 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
                 gp_Pnt p1v = BRep_Tool::Pnt(V1);
                 gp_Pnt p2v = BRep_Tool::Pnt(V2);
                 if (p1.Distance(p1v) > Precision::Confusion())
+                {
                   bezier->SetPole(1, p1v);
+                }
                 if (p2.Distance(p2v) > Precision::Confusion())
+                {
                   bezier->SetPole(bezier->NbPoles(), p2v);
+                }
                 B.UpdateEdge(edge, bezier, 0.);
               }
             }
             else if (my2dMode)
+            {
               B.SameRange(edge, true);
+            }
           }
           occ::handle<Geom2d_Curve>       c2d, c2drev;
           occ::handle<Geom2d_BezierCurve> bezier, bezierR;
           bool                            isSeam = BRep_Tool::IsClosed(edge, face);
           if (!sae.PCurve(edge, face, c2d, first, last, false))
+          {
             continue;
+          }
           if (!c2d->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
+          {
             continue;
+          }
           occ::handle<Geom2d_Curve> newRevCurve, newCurve;
           bezier = occ::down_cast<Geom2d_BezierCurve>(c2d);
           if (isSeam)
@@ -207,7 +219,9 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
                 newCurve = bezier;
               }
               else
+              {
                 GeomLib::SameRange(preci, c2d, first, last, 0, 1, newCurve);
+              }
               if (isSeam)
               {
                 if (!bezierR.IsNull())
@@ -216,11 +230,17 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
                   newRevCurve = bezierR;
                 }
                 else if (!c2drev.IsNull())
+                {
                   GeomLib::SameRange(preci, c2drev, first, last, 0, 1, newRevCurve);
+                }
                 if (edge.Orientation() == TopAbs_FORWARD)
+                {
                   B.UpdateEdge(edge, newCurve, newRevCurve, face, 0.);
+                }
                 else
+                {
                   B.UpdateEdge(edge, newRevCurve, newCurve, face, 0.);
+                }
               }
             }
             B.Range(edge, face, 0, 1);
@@ -231,9 +251,13 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
           double                          first2, last2;
           occ::handle<Geom2d_BezierCurve> beziernext, bezierRnext;
           if (!sae.PCurve(edgenext, face, c2dnext, first2, last2, false))
+          {
             continue;
+          }
           if (!c2dnext->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
+          {
             continue;
+          }
           beziernext = occ::down_cast<Geom2d_BezierCurve>(c2dnext);
           // occ::handle<Geom2d_Curve> newRevCurve;
           if (isSeam)
@@ -259,7 +283,9 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
                 newnextCurve = beziernext;
               }
               else
+              {
                 GeomLib::SameRange(preci, c2dnext, first2, last2, 0, 1, newnextCurve);
+              }
               if (isSeam)
               {
                 if (!bezierRnext.IsNull())
@@ -268,18 +294,25 @@ bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
                   newRevCurve = bezierRnext;
                 }
                 else if (!c2drevnext.IsNull())
+                {
                   GeomLib::SameRange(preci, c2drevnext, first2, last2, 0, 1, newRevCurve);
+                }
                 if (edge.Orientation() == TopAbs_FORWARD)
+                {
                   B.UpdateEdge(edgenext, newnextCurve, newRevCurve, face, 0.);
+                }
                 else
+                {
                   B.UpdateEdge(edgenext, newRevCurve, newnextCurve, face, 0.);
+                }
               }
             }
             B.Range(edgenext, face, 0, 1);
           }
 
           // clang-format off
-	  if(bezier.IsNull()  || beziernext.IsNull() ) continue; //gka fix against small edges ; merging ends of pcurves
+	  if(bezier.IsNull()  || beziernext.IsNull() ) { continue; //gka fix against small edges ; merging ends of pcurves
+}
           // clang-format on
           double f1, l1, f2, l2;
           f1                = bezier->FirstParameter();
@@ -361,7 +394,9 @@ occ::handle<ShapeUpgrade_FaceDivide> ShapeUpgrade_ShapeConvertToBezier::GetSplit
     wtool->SetSplitCurve3dTool(curve3dConverter);
   }
   if (my2dMode)
+  {
     wtool->SetSplitCurve2dTool(new ShapeUpgrade_ConvertCurve2dToBezier);
+  }
   wtool->SetEdgeMode(myEdgeMode);
   occ::handle<ShapeUpgrade_FixSmallBezierCurves> FixSmallBezierCurvesTool =
     new ShapeUpgrade_FixSmallBezierCurves;

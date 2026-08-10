@@ -58,59 +58,104 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "Number of Context Flags", tempNbContextFlags);
+  }
   else
+  {
     tempNbContextFlags = 1;
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Flow Associativities", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempFlowAssocs = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Flow Associativities: Not Positive");
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Connect Points", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempConnectPoints = new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Connect Points: Not Positive");
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Joins", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempJoins = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Joins: Not Positive");
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Flow Names", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempFlowNames = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Flow Names: Not Positive");
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Text Displays", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempTextDisplayTemplates =
       new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Text Displays: Not Positive");
+  }
 
   if (!PR.ReadInteger(PR.Current(), "Number of Continuation Flows", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempContFlowAssocs = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of Continuation Flows: Not Positive");
+  }
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "Type of Flow", tempTypeOfFlow);
+  }
   else
+  {
     tempTypeOfFlow = 0;
+  }
 
   if (!tempFlowAssocs.IsNull())
+  {
     for (num = tempFlowAssocs->Length(), i = 1; i <= num; i++)
     {
       occ::handle<IGESData_IGESEntity> tempEntity;
@@ -120,10 +165,14 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
                         "Flow Associativity",
                         STANDARD_TYPE(IGESData_IGESEntity),
                         tempEntity))
+      {
         tempFlowAssocs->SetValue(i, tempEntity);
+      }
     }
+  }
 
   if (!tempConnectPoints.IsNull())
+  {
     for (num = tempConnectPoints->Length(), i = 1; i <= num; i++)
     {
       occ::handle<IGESDraw_ConnectPoint> tempEntity;
@@ -132,26 +181,38 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
                         "Connect Point",
                         STANDARD_TYPE(IGESDraw_ConnectPoint),
                         tempEntity))
+      {
         tempConnectPoints->SetValue(i, tempEntity);
+      }
     }
+  }
 
   if (!tempJoins.IsNull())
+  {
     for (num = tempJoins->Length(), i = 1; i <= num; i++)
     {
       occ::handle<IGESData_IGESEntity> tempEntity;
       if (PR.ReadEntity(IR, PR.Current(), "Join", tempEntity))
+      {
         tempJoins->SetValue(i, tempEntity);
+      }
     }
+  }
 
   if (!tempFlowNames.IsNull())
+  {
     for (num = tempFlowNames->Length(), i = 1; i <= num; i++)
     {
       occ::handle<TCollection_HAsciiString> tempString;
       if (PR.ReadText(PR.Current(), "Flow Name", tempString))
+      {
         tempFlowNames->SetValue(i, tempString);
+      }
     }
+  }
 
   if (!tempTextDisplayTemplates.IsNull())
+  {
     for (num = tempTextDisplayTemplates->Length(), i = 1; i <= num; i++)
     {
       occ::handle<IGESGraph_TextDisplayTemplate> tempEntity;
@@ -160,16 +221,23 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
                         "Text Display Template",
                         STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
                         tempEntity))
+      {
         tempTextDisplayTemplates->SetValue(i, tempEntity);
+      }
     }
+  }
 
   if (!tempContFlowAssocs.IsNull())
+  {
     for (num = tempContFlowAssocs->Length(), i = 1; i <= num; i++)
     {
       occ::handle<IGESData_IGESEntity> tempEntity;
       if (PR.ReadEntity(IR, PR.Current(), "Continuation Flow Assocs", tempEntity))
+      {
         tempContFlowAssocs->SetValue(i, tempEntity);
+      }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNbContextFlags,
@@ -195,17 +263,29 @@ void IGESAppli_ToolPipingFlow::WriteOwnParams(const occ::handle<IGESAppli_Piping
   IW.Send(ent->NbContFlowAssociativities());
   IW.Send(ent->TypeOfFlow());
   for (num = ent->NbFlowAssociativities(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->FlowAssociativity(i));
+  }
   for (num = ent->NbConnectPoints(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->ConnectPoint(i));
+  }
   for (num = ent->NbJoins(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->Join(i));
+  }
   for (num = ent->NbFlowNames(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->FlowName(i));
+  }
   for (num = ent->NbTextDisplayTemplates(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->TextDisplayTemplate(i));
+  }
   for (num = ent->NbContFlowAssociativities(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->ContFlowAssociativity(i));
+  }
 }
 
 void IGESAppli_ToolPipingFlow::OwnShared(const occ::handle<IGESAppli_PipingFlow>& ent,
@@ -213,15 +293,25 @@ void IGESAppli_ToolPipingFlow::OwnShared(const occ::handle<IGESAppli_PipingFlow>
 {
   int i, num;
   for (num = ent->NbFlowAssociativities(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->FlowAssociativity(i));
+  }
   for (num = ent->NbConnectPoints(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->ConnectPoint(i));
+  }
   for (num = ent->NbJoins(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->Join(i));
+  }
   for (num = ent->NbTextDisplayTemplates(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->TextDisplayTemplate(i));
+  }
   for (num = ent->NbContFlowAssociativities(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->ContFlowAssociativity(i));
+  }
 }
 
 void IGESAppli_ToolPipingFlow::OwnCopy(const occ::handle<IGESAppli_PipingFlow>& another,
@@ -259,7 +349,9 @@ void IGESAppli_ToolPipingFlow::OwnCopy(const occ::handle<IGESAppli_PipingFlow>& 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempFlowNames =
     new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (i = 1; i <= num; i++)
+  {
     tempFlowNames->SetValue(i, new TCollection_HAsciiString(another->FlowName(i)));
+  }
   num = another->NbTextDisplayTemplates();
   occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
     tempTextDisplayTemplates =
@@ -316,9 +408,13 @@ void IGESAppli_ToolPipingFlow::OwnCheck(const occ::handle<IGESAppli_PipingFlow>&
                                         occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbContextFlags() != 1)
+  {
     ach->AddFail("Number of Context Flags != 1");
+  }
   if ((ent->TypeOfFlow() < 0) || (ent->TypeOfFlow() > 2))
+  {
     ach->AddFail("Type of Flow != 0,1,2");
+  }
 }
 
 void IGESAppli_ToolPipingFlow::OwnDump(const occ::handle<IGESAppli_PipingFlow>& ent,
@@ -351,5 +447,5 @@ void IGESAppli_ToolPipingFlow::OwnDump(const occ::handle<IGESAppli_PipingFlow>& 
                         1,
                         ent->NbContFlowAssociativities(),
                         ent->ContFlowAssociativity);
-  S << std::endl;
+  S << '\n';
 }

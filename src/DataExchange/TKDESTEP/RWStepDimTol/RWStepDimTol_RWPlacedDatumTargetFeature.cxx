@@ -36,7 +36,9 @@ void RWStepDimTol_RWPlacedDatumTargetFeature::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "placed_datum_target_feature"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

@@ -61,8 +61,12 @@ static bool FUN_INlos(const TopoDS_Shape& S, const NCollection_List<TopoDS_Shape
 {
   NCollection_List<TopoDS_Shape>::Iterator it(loS);
   for (; it.More(); it.Next())
+  {
     if (it.Value().IsSame(S))
+    {
       return true;
+    }
+  }
   return false;
 }
 
@@ -85,7 +89,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
   bool on2edges     = (vpsind == 3);
   bool isvalid      = on2edges || (vpsind == ShapeIndex);
   if (!isvalid)
+  {
     throw Standard_Failure("TopOpeBRep_FacesFiller::GetEdgeTrans");
+  }
 
   const TopoDS_Edge& edge    = TopoDS::Edge(VP.Edge(ShapeIndex));
   double             paredge = VP.EdgeParameter(ShapeIndex);
@@ -99,14 +105,22 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
   if (hasOOedge)
   {
     if (on2edges)
+    {
       OOparedge = VP.EdgeParameter(OOShapeIndex);
+    }
     else
+    {
       OOparedge = VP.EdgeONParameter(OOShapeIndex);
+    }
     TopoDS_Shape OOe;
     if (on2edges)
+    {
       OOe = VP.Edge(OOShapeIndex);
+    }
     else
+    {
       OOe = VP.EdgeON(OOShapeIndex);
+    }
     OOedge = TopoDS::Edge(OOe);
   }
   gp_Pnt2d OOuv = VP.SurfaceParameters(OOShapeIndex);
@@ -128,7 +142,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
                   isonboundper);
   }
   else
+  {
     FUN_tool_bounds(edge, par1, par2);
+  }
 
   TopOpeBRepDS_Transition T;
   // xpu : 16-01-98
@@ -145,18 +161,26 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
   TopOpeBRepTool_makeTransition MKT;
   bool                          ok = MKT.Initialize(edge, par1, par2, paredge, F, OOuv, factor);
   if (!ok)
+  {
     return T;
+  }
   bool isT2d = MKT.IsT2d();
   interf2d   = interf2d && isT2d;
   if (interf2d)
+  {
     ok = MKT.SetRest(OOedge, OOparedge);
+  }
   if (!ok)
+  {
     return T;
+  }
 
   TopAbs_State stb, sta;
   ok = MKT.MkTonE(stb, sta);
   if (!ok)
+  {
     return T;
+  }
   T.Before(stb);
   T.After(sta);
   return T;
@@ -191,12 +215,16 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(
   TopoDS_Face OOFace  = (*this).Face(OOShapeIndex);
   int         iOOFace = myDS->Shape(OOFace);
   if (iOOFace == 0)
+  {
     iOOFace = myDS->AddShape(OOFace, OOShapeIndex);
+  }
 
   // current VPoint is on <edge>
   const TopoDS_Edge& edge = TopoDS::Edge(VP.Edge(ShapeIndex));
   if (!myDS->HasShape(edge))
+  {
     myDS->AddShape(edge, ShapeIndex);
+  }
 
   double paredge = VP.EdgeParameter(ShapeIndex);
 
@@ -207,14 +235,22 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(
   {
     TopoDS_Shape OOe;
     if (on2edges)
+    {
       OOe = VP.Edge(OOShapeIndex);
+    }
     else
+    {
       OOe = VP.EdgeON(OOShapeIndex);
+    }
     OOedge = TopoDS::Edge(OOe);
     if (myDS->HasShape(OOedge))
+    {
       OOedgeIndex = myDS->Shape(OOedge);
+    }
     else
+    {
       OOedgeIndex = myDS->AddShape(OOedge, OOShapeIndex);
+    }
   }
 
   // ===================================================================
@@ -230,9 +266,13 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(
   TopOpeBRepDS_Transition transAdd;
   bool                    newtransEdge = Tunk;
   if (newtransEdge)
+  {
     transAdd = GetEdgeTrans(VP, PVKind, PVIndex, ShapeIndex, OOFace);
+  }
   else
+  {
     transAdd = transEdge;
+  }
 
   // !!! if the compute of <transAdd> fails, we add transEdge.
   // hasOOedge  : <VP> is ON edge <edge> and ON <OOFace>

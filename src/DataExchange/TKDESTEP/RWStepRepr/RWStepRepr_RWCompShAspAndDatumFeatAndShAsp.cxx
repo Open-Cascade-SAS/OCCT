@@ -35,7 +35,9 @@ void RWStepRepr_RWCompShAspAndDatumFeatAndShAsp::ReadStep(
   int num = 0;
   data->NamedForComplex("SHAPE_ASPECT", "SHPASP", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect"))
+  {
     return;
+  }
 
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);

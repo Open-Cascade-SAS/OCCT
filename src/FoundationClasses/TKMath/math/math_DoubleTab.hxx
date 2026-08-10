@@ -100,7 +100,7 @@ public:
   }
 
   //! Copy data to theOther
-  void Copy(math_DoubleTab& theOther) const { theOther.myArray.Assign(myArray); }
+  void Copy(math_DoubleTab& theOther) const { theOther.myArray.CopyValues(myArray); }
 
   //! Returns true if the internal array is deletable (heap-allocated)
   bool IsDeletable() const { return myArray.IsDeletable(); }

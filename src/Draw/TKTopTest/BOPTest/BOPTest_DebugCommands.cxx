@@ -47,13 +47,14 @@ static void GetTypeByName(const char* theName, TopAbs_ShapeEnum& theType);
 static void GetNameByType(const TopAbs_ShapeEnum& theType, char* theName);
 
 template <class InterfType>
-static void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di);
+static void DumpInterfs(const NCollection_DynamicArray<InterfType>& theVInterf,
+                        Draw_Interpretor&                           di);
 
 template <class InterfType>
-static void SearchNewIndex(const char*                           theCType,
-                           const int                             theInd,
-                           const NCollection_Vector<InterfType>& theVInterf,
-                           Draw_Interpretor&                     di);
+static void SearchNewIndex(const char*                                 theCType,
+                           const int                                   theInd,
+                           const NCollection_DynamicArray<InterfType>& theVInterf,
+                           Draw_Interpretor&                           di);
 static int  bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz);
 
 // commands
@@ -96,7 +97,9 @@ void BOPTest::DebugCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -453,11 +456,11 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   // search among interfs
-  NCollection_Vector<BOPDS_InterfVV>& aVVs = pDS->InterfVV();
-  NCollection_Vector<BOPDS_InterfVE>& aVEs = pDS->InterfVE();
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = pDS->InterfEE();
-  NCollection_Vector<BOPDS_InterfVF>& aVFs = pDS->InterfVF();
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = pDS->InterfVV();
+  NCollection_DynamicArray<BOPDS_InterfVE>& aVEs = pDS->InterfVE();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = pDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = pDS->InterfVF();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
   //
   SearchNewIndex<BOPDS_InterfVV>("V/V: ", ind, aVVs, di);
   SearchNewIndex<BOPDS_InterfVE>("V/E: ", ind, aVEs, di);
@@ -471,16 +474,16 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
   int                                                      i, n1, n2, k, aNb, aNbC, aNbP, nV1, nV2;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  bFound                                   = false;
-  NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
-  aNb                                      = aFFs.Length();
+  bFound                                         = false;
+  NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
+  aNb                                            = aFFs.Length();
   for (i = 0; i < aNb; ++i)
   {
     const BOPDS_InterfFF& anInt = aFFs(i);
     anInt.Indices(n1, n2);
     //
-    const NCollection_Vector<BOPDS_Curve>& aVNC = anInt.Curves();
-    aNbC                                        = aVNC.Length();
+    const NCollection_DynamicArray<BOPDS_Curve>& aVNC = anInt.Curves();
+    aNbC                                              = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
       const BOPDS_Curve&                                    aNC  = aVNC(k);
@@ -508,9 +511,9 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
       di << "\n";
     }
     //
-    bFound                                      = false;
-    const NCollection_Vector<BOPDS_Point>& aVNP = anInt.Points();
-    aNbP                                        = aVNP.Length();
+    bFound                                            = false;
+    const NCollection_DynamicArray<BOPDS_Point>& aVNP = anInt.Points();
+    aNbP                                              = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -714,11 +717,15 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
   //
   nSF1 = nSF2 = -1;
   if (n > 1)
+  {
     nSF1 = Draw::Atoi(a[1]);
+  }
   if (n > 2)
+  {
     nSF2 = Draw::Atoi(a[2]);
+  }
 
-  NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
+  NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   iCnt  = 0;
   iPriz = 0;
@@ -737,14 +744,16 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
     else if (n == 2)
     {
       if (!aFF.Contains(nSF1))
+      {
         continue;
+      }
     }
     //
     aFF.Indices(nF1, nF2);
     //
-    iX                                          = 0;
-    const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
-    aNbC                                        = aVNC.Length();
+    iX                                                = 0;
+    const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
+    aNbC                                              = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
       const BOPDS_Curve&                                    aNC  = aVNC(k);
@@ -780,9 +789,9 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
       di << "\n";
     }
     //
-    iX                                          = 0;
-    const NCollection_Vector<BOPDS_Point>& aVNP = aFF.Points();
-    aNbP                                        = aVNP.Length();
+    iX                                                = 0;
+    const NCollection_DynamicArray<BOPDS_Point>& aVNP = aFF.Points();
+    aNbP                                              = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -1631,7 +1640,7 @@ void GetNameByType(const TopAbs_ShapeEnum& theType, char* theName)
 //=================================================================================================
 
 template <class InterfType>
-void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di)
+void DumpInterfs(const NCollection_DynamicArray<InterfType>& theVInterf, Draw_Interpretor& di)
 {
   int  i, aNb, n1, n2, nNew;
   char buf[64];
@@ -1664,10 +1673,10 @@ void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpre
 //=================================================================================================
 
 template <class InterfType>
-void SearchNewIndex(const char*                           theCType,
-                    const int                             theInd,
-                    const NCollection_Vector<InterfType>& theVInterf,
-                    Draw_Interpretor&                     di)
+void SearchNewIndex(const char*                                 theCType,
+                    const int                                   theInd,
+                    const NCollection_DynamicArray<InterfType>& theVInterf,
+                    Draw_Interpretor&                           di)
 {
   char buf[64];
   bool bFound;

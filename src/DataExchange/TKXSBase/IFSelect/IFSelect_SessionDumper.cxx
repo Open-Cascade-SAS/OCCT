@@ -33,7 +33,9 @@ IFSelect_SessionDumper::IFSelect_SessionDumper()
     occ::handle<IFSelect_BasicDumper> bid = new IFSelect_BasicDumper;
   }
   else
+  {
     thenext = thefirst;
+  }
   thefirst = this; // as Handle
 }
 

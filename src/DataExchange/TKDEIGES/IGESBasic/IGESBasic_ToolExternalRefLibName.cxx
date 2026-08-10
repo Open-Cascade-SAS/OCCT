@@ -109,5 +109,5 @@ void IGESBasic_ToolExternalRefLibName::OwnDump(const occ::handle<IGESBasic_Exter
   S << "\n"
     << "External Reference Symbolic Name : ";
   IGESData_DumpString(S, ent->ReferenceName());
-  S << std::endl;
+  S << '\n';
 }

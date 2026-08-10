@@ -69,6 +69,8 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_DataStructureManager.hxx
   Graphic3d_DiagnosticInfo.hxx
   Graphic3d_DisplayPriority.hxx
+  Graphic3d_Flipper.cxx
+  Graphic3d_Flipper.hxx
   Graphic3d_FrameStats.cxx
   Graphic3d_FrameStats.hxx
   Graphic3d_FrameStatsCounter.hxx

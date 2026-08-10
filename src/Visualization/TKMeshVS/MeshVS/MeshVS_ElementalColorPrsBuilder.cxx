@@ -66,11 +66,15 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
 
   if (aSource.IsNull() || aDrawer.IsNull())
+  {
     return;
+  }
 
   int aMaxFaceNodes;
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) && aMaxFaceNodes <= 0)
+  {
     return;
+  }
 
   NCollection_DataMap<int, Quantity_Color>* anElemColorMap =
     (NCollection_DataMap<int, Quantity_Color>*)&myElemColorMap1;
@@ -87,14 +91,18 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   if (!(DisplayMode & GetFlags()) || !IsElement
       || (myElemColorMap1.IsEmpty() && myElemColorMap2.IsEmpty()))
+  {
     return;
+  }
 
   // subtract the hidden elements and ids to exclude (to minimise allocated memory)
   TColStd_PackedMapOfInteger anIDs;
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
+  {
     NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  }
   NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   // STEP 0: We looking for two colored elements, who has equal two colors and move it
@@ -116,7 +124,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   }
 
   for (NCollection_List<int>::Iterator aLIter(aColorOne); aLIter.More(); aLIter.Next())
+  {
     anElemTwoColorsMap->UnBind(aLIter.Value());
+  }
 
   // The map is to resort itself by colors.
   // STEP 1: We start sorting elements with one assigned color
@@ -130,12 +140,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
            aColorsOfElements);
          anIterC.More() && !IsExist;
          anIterC.Next())
+    {
       if (anIterC.Key() == anIterM.Value())
       {
         NCollection_Map<int>& aChangeValue = (NCollection_Map<int>&)anIterC.Value();
         aChangeValue.Add(aMKey);
         IsExist = true;
       }
+    }
 
     if (!IsExist)
     {
@@ -157,12 +169,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
            aTwoColorsOfElements);
          anIterC2.More() && !IsExist;
          anIterC2.Next())
+    {
       if (anIterC2.Key() == anIterM2.Value())
       {
         NCollection_Map<int>& aChangeValue = (NCollection_Map<int>&)anIterC2.Value();
         aChangeValue.Add(aMKey);
         IsExist = true;
       }
+    }
 
     if (!IsExist)
     {
@@ -193,11 +207,15 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   int anEdgeInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_EdgeType, anEdgeInt))
+  {
     anEdgeType = (Aspect_TypeOfLine)anEdgeInt;
+  }
 
   int aLineInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_BeamType, aLineInt))
+  {
     aLineType = (Aspect_TypeOfLine)aLineInt;
+  }
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
   int                                  PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
@@ -206,12 +224,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   {
     int aKey = it.Key();
     if (aSource->Get3DGeom(aKey, NbNodes, aTopo))
+    {
       MeshVS_MeshPrsBuilder::HowManyPrimitives(aTopo,
                                                true,
                                                false,
                                                NbNodes,
                                                PolygonVerticesFor3D,
                                                PolygonBoundsFor3D);
+    }
   }
 
   Graphic3d_MaterialAspect aMaterial[2] = {Graphic3d_NameOfMaterial_Plastified,
@@ -257,7 +277,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
                                      aMaterial[0],
                                      aMaterial[1]);
     if (!IsReflect)
+    {
       aGroupFillAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+    }
 
     aGGroup = Prs->NewGroup();
     aLGroup = Prs->NewGroup();
@@ -295,10 +317,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       int aNbNodes = 0;
 
       if (!aColIter.Value().Contains(it.Key()))
+      {
         continue;
+      }
 
       if (!aSource->GetGeom(it.Key(), true, aCoords, aNbNodes, aType))
+      {
         continue;
+      }
 
       if (aType == MeshVS_ET_Volume)
       {
@@ -368,7 +394,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aFillAspect->SetInteriorColor(aColIter.Key());
     aFillAspect->SetEdgeOff();
     if (!IsReflect)
+    {
       aFillAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+    }
 
     for (it.Reset(); it.More(); it.Next())
     {
@@ -377,7 +405,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       if (aColIter.Value().Contains(aKey))
       {
         if (!aSource->GetGeom(aKey, true, aCoords, NbNodes, aType))
+        {
           continue;
+        }
 
         if (aType != MeshVS_ET_Face && aType != MeshVS_ET_Link && aType != MeshVS_ET_Volume)
         {
@@ -386,7 +416,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
         }
 
         if (IsExcludingOn())
+        {
           IDsToExclude.Add(aKey);
+        }
 
         if (aType == MeshVS_ET_Volume)
         {
@@ -509,7 +541,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     }
 
     if (!aCustomElements.IsEmpty())
+    {
       CustomBuild(Prs, aCustomElements, IDsToExclude, DisplayMode);
+    }
   }
 
   Graphic3d_MaterialAspect aMaterial2[2] = {Graphic3d_NameOfMaterial_Plastified,
@@ -576,10 +610,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       int aNbNodes = 0;
 
       if (!aColIter2.Value().Contains(it.Key()))
+      {
         continue;
+      }
 
       if (!aSource->GetGeom(it.Key(), true, aCoords, aNbNodes, aType))
+      {
         continue;
+      }
 
       if (aType == MeshVS_ET_Face && aNbNodes > 0)
       {
@@ -626,10 +664,14 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       if (aColIter2.Value().Contains(aKey))
       {
         if (!aSource->GetGeom(aKey, true, aCoords, NbNodes, aType))
+        {
           continue;
+        }
 
         if (IsExcludingOn())
+        {
           IDsToExclude.Add(aKey);
+        }
 
         if (aType == MeshVS_ET_Face && NbNodes > 0)
         {
@@ -718,7 +760,9 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor1(const int ID, Quantity_Color& th
 {
   bool aRes = myElemColorMap1.IsBound(ID);
   if (aRes)
+  {
     theColor = myElemColorMap1.Find(ID);
+  }
 
   return aRes;
 }
@@ -729,9 +773,13 @@ void MeshVS_ElementalColorPrsBuilder::SetColor1(const int theID, const Quantity_
 {
   bool aRes = myElemColorMap1.IsBound(theID);
   if (aRes)
+  {
     myElemColorMap1.ChangeFind(theID) = theCol;
+  }
   else
+  {
     myElemColorMap1.Bind(theID, theCol);
+  }
 }
 
 //=================================================================================================
@@ -763,7 +811,9 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int ID, MeshVS_TwoColors& 
 {
   bool aRes = myElemColorMap2.IsBound(ID);
   if (aRes)
+  {
     theColor = myElemColorMap2.Find(ID);
+  }
 
   return aRes;
 }
@@ -777,7 +827,9 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int       ID,
   MeshVS_TwoColors aTC;
   bool             aRes = GetColor2(ID, aTC);
   if (aRes)
+  {
     ExtractColors(aTC, theColor1, theColor2);
+  }
   return aRes;
 }
 
@@ -796,7 +848,11 @@ void MeshVS_ElementalColorPrsBuilder::SetColor2(const int theID, const MeshVS_Tw
 {
   bool aRes = myElemColorMap2.IsBound(theID);
   if (aRes)
+  {
     myElemColorMap2.ChangeFind(theID) = theCol;
+  }
   else
+  {
     myElemColorMap2.Bind(theID, theCol);
+  }
 }

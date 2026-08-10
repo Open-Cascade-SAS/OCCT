@@ -32,6 +32,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
@@ -50,7 +51,7 @@ public:
   StdPrs_WFShape_IsoFunctor(
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylinesU,
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylinesV,
-    const std::vector<TopoDS_Face>&                               theFaces,
+    const NCollection_LinearVector<TopoDS_Face>&                  theFaces,
     const occ::handle<Prs3d_Drawer>&                              theDrawer,
     double                                                        theShapeDeflection)
       : myPolylinesU(thePolylinesU),
@@ -80,7 +81,7 @@ private:
 private:
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& myPolylinesU;
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& myPolylinesV;
-  const std::vector<TopoDS_Face>&                               myFaces;
+  const NCollection_LinearVector<TopoDS_Face>&                  myFaces;
   const occ::handle<Prs3d_Drawer>&                              myDrawer;
   mutable std::mutex                                            myMutex;
   const double                                                  myShapeDeflection;
@@ -149,7 +150,8 @@ void StdPrs_WFShape::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
       if (aNbFaces > 1)
       {
         isParallelIso = true;
-        std::vector<TopoDS_Face> aFaces(aNbFaces);
+        NCollection_LinearVector<TopoDS_Face> aFaces;
+        aFaces.Resize(aNbFaces);
         aNbFaces = 0;
         for (TopExp_Explorer aFaceExplorer(theShape, TopAbs_FACE); aFaceExplorer.More();
              aFaceExplorer.Next())
@@ -406,12 +408,12 @@ occ::handle<Graphic3d_ArrayOfPrimitives> StdPrs_WFShape::AddEdgesOnTriangulation
 {
   NCollection_Sequence<gp_Pnt> aSeqPnts;
   AddEdgesOnTriangulation(aSeqPnts, theShape, theToExcludeGeometric);
-  if (aSeqPnts.Size() < 2)
+  if (aSeqPnts.Length() < 2)
   {
     return occ::handle<Graphic3d_ArrayOfSegments>();
   }
 
-  int                                    aNbVertices = aSeqPnts.Size();
+  int                                    aNbVertices = aSeqPnts.Length();
   occ::handle<Graphic3d_ArrayOfSegments> aSurfArray  = new Graphic3d_ArrayOfSegments(aNbVertices);
   for (int anI = 1; anI <= aNbVertices; anI += 2)
   {

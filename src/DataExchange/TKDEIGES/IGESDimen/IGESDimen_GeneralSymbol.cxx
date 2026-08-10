@@ -33,10 +33,16 @@ void IGESDimen_GeneralSymbol::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders)
 {
   if (!allGeoms.IsNull() && allGeoms->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_GeneralSymbol : Init");
+  }
   if (!allLeaders.IsNull())
+  {
     if (allLeaders->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("$");
+    }
+  }
   theNote    = aNote;
   theGeoms   = allGeoms;
   theLeaders = allLeaders;
@@ -47,7 +53,9 @@ void IGESDimen_GeneralSymbol::Init(
 void IGESDimen_GeneralSymbol::SetFormNumber(const int form)
 {
   if ((form < 0 || form > 3) && form < 5000)
+  {
     throw Standard_OutOfRange("IGESDimen_GeneralSymbol : SetFormNumber");
+  }
   InitTypeAndForm(228, form);
 }
 

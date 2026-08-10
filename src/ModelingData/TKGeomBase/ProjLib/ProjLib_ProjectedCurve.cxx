@@ -103,7 +103,9 @@ static bool IsoIsDeg(const Adaptor3d_Surface& S,
     }
 
     if (D1NormMax > TolMax || D1NormMax < TolMin)
+    {
       Along = false;
+    }
   }
   else
   {
@@ -116,7 +118,9 @@ static bool IsoIsDeg(const Adaptor3d_Surface& S,
     }
 
     if (D1NormMax > TolMax || D1NormMax < TolMin)
+    {
       Along = false;
+    }
   }
   return Along;
 }
@@ -573,7 +577,9 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
             }
           }
           else
+          {
             Vsingular[0] = ElCLib::Parameter(L, P);
+          }
           // SingularCase[0] = 3;
         }
 
@@ -598,7 +604,9 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
             }
           }
           else
+          {
             Vsingular[1] = ElCLib::Parameter(L, P);
+          }
           // SingularCase[1] = 4;
         }
       }
@@ -716,7 +724,9 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
     Comp.SetBndPnt(myBndPnt);
     Comp.Perform(myCurve, mySurface);
     if (Comp.Bezier().IsNull() && Comp.BSpline().IsNull())
+    {
       return; // advanced projector has been failed too
+    }
     myResult.Done();
     occ::handle<Geom2d_BSplineCurve> aRes;
     if (Comp.BSpline().IsNull())
@@ -784,14 +794,20 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
     const double aSurfFirstPar[2] = {mySurface->FirstUParameter(), mySurface->FirstVParameter()};
     double       aSurfPeriod[2]   = {0.0, 0.0};
     if (isPeriodic[0])
+    {
       aSurfPeriod[0] = mySurface->UPeriod();
+    }
     if (isPeriodic[1])
+    {
       aSurfPeriod[1] = mySurface->VPeriod();
+    }
 
     for (int anIdx = 1; anIdx <= 2; anIdx++)
     {
       if (!isPeriodic[anIdx - 1])
+      {
         continue;
+      }
 
       if (myResult.GetType() == GeomAbs_BSplineCurve)
       {
@@ -815,12 +831,18 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
               int((aPnt2d.Coord(anIdx) - aSurfFirstPar[anIdx - 1]) / aSurfPeriod[anIdx - 1]);
 
             if (aPnt2d.Coord(anIdx) - aSurfFirstPar[anIdx - 1] < 0.0)
+            {
               aMapKey--;
+            }
 
             if (aMap.IsBound(aMapKey))
+            {
               aMap.ChangeFind(aMapKey)++;
+            }
             else
+            {
               aMap.Bind(aMapKey, 1);
+            }
           }
         }
 

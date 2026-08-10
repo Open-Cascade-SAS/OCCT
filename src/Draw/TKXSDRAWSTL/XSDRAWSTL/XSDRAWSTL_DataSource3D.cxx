@@ -167,13 +167,17 @@ bool XSDRAWSTL_DataSource3D::GetGeom(const int                   theID,
       {
         int anIdxNode = myElemNodes->Value(theID, aNodeI);
         for (int aCoordI = 1; aCoordI <= 3; aCoordI++, aGlobCoordI++)
+        {
           theCoords(aGlobCoordI) = myNodeCoords->Value(anIdxNode, aCoordI);
+        }
       }
 
       return true;
     }
     else
+    {
       return false;
+    }
   }
   else if (theID >= 1 && theID <= myNodes.Extent())
   {
@@ -186,7 +190,9 @@ bool XSDRAWSTL_DataSource3D::GetGeom(const int                   theID,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================

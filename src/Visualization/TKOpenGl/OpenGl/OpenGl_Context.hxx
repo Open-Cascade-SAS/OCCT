@@ -278,7 +278,7 @@ public:
   bool Init(EAGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
-                (Aspect_Display)0,
+                (Aspect_Display) nullptr,
                 (Aspect_RenderingContext)theGContext,
                 theIsCoreProfile);
   }
@@ -288,7 +288,7 @@ public:
   bool Init(NSOpenGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
-                (Aspect_Display)0,
+                (Aspect_Display) nullptr,
                 (Aspect_RenderingContext)theGContext,
                 theIsCoreProfile);
   }
@@ -886,6 +886,10 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv(const NCollection_Vec4<float>& theColor);
+
+  //! Setup current front and back colors.
+  Standard_EXPORT void SetColor4fv(const NCollection_Vec4<float>& theFrontColor,
+                                   const NCollection_Vec4<float>& theBackColor);
 
   //! Setup type of line.
   Standard_EXPORT void SetTypeOfLine(const Aspect_TypeOfLine theType, const float theFactor = 1.0f);

@@ -36,8 +36,8 @@
 #include <ShapeExtend_Explorer.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -49,7 +49,6 @@
 #include <TopoDS_Wire.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
 
 // ied_modif_for_compil_Nov-19-1998
 //=================================================================================================
@@ -69,7 +68,9 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
 {
   BRepBuilderAPI_Sewing Sew(toler, false, false);
   for (TopoDS_Iterator S(shape); S.More(); S.Next())
+  {
     Sew.Add(S.Value());
+  }
   Sew.Perform();
   //
   // Extract free edges.
@@ -81,7 +82,9 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
   {
     anEdge = TopoDS::Edge(Sew.FreeEdge(iedge));
     if (!BRep_Tool::Degenerated(anEdge))
+    {
       edges->Append(anEdge);
+    }
   }
   //
   // Chainage.
@@ -89,8 +92,6 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
   occ::handle<NCollection_HSequence<TopoDS_Shape>> wires = ConnectEdgesToWires(edges, toler, false);
   DispatchWires(wires, myWires, myEdges);
   SplitWires();
-
-  return;
 }
 
 //=================================================================================================
@@ -108,7 +109,9 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
   BRep_Builder aB;
   aB.MakeShell(aTmpShell);
   for (TopExp_Explorer aExpFace(shape, TopAbs_FACE); aExpFace.More(); aExpFace.Next())
+  {
     aB.Add(aTmpShell, aExpFace.Current());
+  }
 
   ShapeAnalysis_Shell sas;
   sas.CheckOrientedShells(aTmpShell, true, checkinternaledges);
@@ -134,23 +137,35 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::Conne
   const bool                                              shared)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> iwires = new NCollection_HSequence<TopoDS_Shape>;
+  NCollection_LinearVector<int>                    anEdgeIndices;
   BRep_Builder                                     B;
 
   int i; // svv #1
   for (i = 1; i <= edges->Length(); i++)
   {
+    const TopAbs_Orientation anOrientation = edges->Value(i).Orientation();
+    if (anOrientation == TopAbs_INTERNAL || anOrientation == TopAbs_EXTERNAL)
+    {
+      continue;
+    }
+
     TopoDS_Wire wire;
     B.MakeWire(wire);
     B.Add(wire, edges->Value(i));
     iwires->Append(wire);
+    anEdgeIndices.Append(i);
   }
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> wires =
     ConnectWiresToWires(iwires, toler, shared);
 
-  for (i = 1; i <= edges->Length(); i++)
+  for (i = 1; i <= iwires->Length(); i++)
+  {
     if (iwires->Value(i).Orientation() == TopAbs_REVERSED)
-      edges->ChangeValue(i).Reverse();
+    {
+      edges->ChangeValue(anEdgeIndices[i - 1]).Reverse();
+    }
+  }
 
   return wires;
 }
@@ -198,24 +213,47 @@ static void connectWiresToWiresImpl(
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& vertices)
 {
   if (iwires.IsNull() || !iwires->Length())
+  {
+    owires = new NCollection_HSequence<TopoDS_Shape>; // was left null, later crashed Append
     return;
+  }
   occ::handle<NCollection_HArray1<TopoDS_Shape>> arrwires =
     new NCollection_HArray1<TopoDS_Shape>(1, iwires->Length());
   int i;
   for (i = 1; i <= arrwires->Length(); i++)
+  {
     arrwires->SetValue(i, iwires->Value(i));
+  }
   owires           = new NCollection_HSequence<TopoDS_Shape>;
   double tolerance = std::max(toler, Precision::Confusion());
 
-  occ::handle<ShapeExtend_WireData> sewd =
-    new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(1)));
-
-  bool isUsedManifoldMode = true;
-
-  if ((sewd->NbEdges() < 1) && (sewd->NbNonManifoldEdges() > 0))
+  ShapeAnalysis_BoxBndTreeSelector  aSel(arrwires, shared);
+  occ::handle<ShapeExtend_WireData> sewd;
+  for (i = 1; i <= arrwires->Length(); i++)
   {
-    isUsedManifoldMode = false;
-    sewd = new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(1)), true, isUsedManifoldMode);
+    occ::handle<ShapeExtend_WireData> aWireData =
+      new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(i)));
+    if (aWireData->NbEdges() > 0)
+    {
+      if (sewd.IsNull())
+      {
+        sewd = aWireData;
+        aSel.LoadList(i);
+      }
+    }
+    else
+    {
+      if (aWireData->NbNonManifoldEdges() > 0)
+      {
+        owires->Append(aWireData->Wire());
+      }
+      aSel.LoadList(i);
+    }
+  }
+
+  if (sewd.IsNull())
+  {
+    return;
   }
 
   occ::handle<ShapeAnalysis_Wire> saw = new ShapeAnalysis_Wire;
@@ -224,11 +262,13 @@ static void connectWiresToWiresImpl(
 
   NCollection_UBTree<int, Bnd_Box>       aBBTree;
   NCollection_UBTreeFiller<int, Bnd_Box> aTreeFiller(aBBTree);
-  ShapeAnalysis_BoxBndTreeSelector       aSel(arrwires, shared);
-  aSel.LoadList(1);
 
-  for (int inbW = 2; inbW <= arrwires->Length(); inbW++)
+  for (int inbW = 1; inbW <= arrwires->Length(); inbW++)
   {
+    if (aSel.ContWire(inbW))
+    {
+      continue;
+    }
     TopoDS_Wire   trW = TopoDS::Wire(arrwires->Value(inbW));
     Bnd_Box       aBox;
     TopoDS_Vertex trV1, trV2;
@@ -268,7 +308,9 @@ static void connectWiresToWiresImpl(
     aSel.DefineBoxes(FVBox, LVBox);
 
     if (shared)
+    {
       aSel.DefineVertexes(Vf, Vl);
+    }
     else
     {
       aSel.DefinePnt(pf, pl);
@@ -289,12 +331,16 @@ static void connectWiresToWiresImpl(
     if (found)
     {
       if (!direct)
+      {
         arrwires->ChangeValue(lwire).Reverse();
+      }
 
       occ::handle<ShapeExtend_WireData> acurwd =
-        new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(lwire)), true, isUsedManifoldMode);
+        new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(lwire)), true, true);
       if (!acurwd->NbEdges())
+      {
         continue;
+      }
       sewd->Add(acurwd, (tail ? 0 : 1));
     }
     else
@@ -313,7 +359,9 @@ static void connectWiresToWiresImpl(
           Vfol  = sae.FirstVertex(E2);
 
           if (saw->LastCheckStatus(ShapeExtend_DONE1))
+          {
             V = Vprev;
+          }
           else
           {
             ShapeBuild_Vertex sbv;
@@ -324,68 +372,50 @@ static void connectWiresToWiresImpl(
 
           ShapeBuild_Edge sbe;
           if (saw->NbEdges() < 2)
+          {
             sewd->Set(sbe.CopyReplaceVertices(E2, V, V), n2);
+          }
           else
           {
             sewd->Set(sbe.CopyReplaceVertices(E2, V, TopoDS_Vertex()), n2);
             if (!saw->LastCheckStatus(ShapeExtend_DONE1))
+            {
               sewd->Set(sbe.CopyReplaceVertices(E1, TopoDS_Vertex(), V), n1);
+            }
           }
         }
       }
 
       TopoDS_Wire wire = sewd->Wire();
-      if (isUsedManifoldMode)
+      if (!saw->CheckConnected(1) && saw->LastCheckStatus(ShapeExtend_OK))
       {
-        if (!saw->CheckConnected(1) && saw->LastCheckStatus(ShapeExtend_OK))
-          wire.Closed(true);
-      }
-      else
-      {
-        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vmap;
-        TopoDS_Iterator                                        it(wire);
-
-        for (; it.More(); it.Next())
-        {
-          const TopoDS_Shape& E = it.Value();
-          TopoDS_Iterator     ite(E, false, true);
-          for (; ite.More(); ite.Next())
-          {
-            const TopoDS_Shape& V = ite.Value();
-            if (V.Orientation() == TopAbs_FORWARD || V.Orientation() == TopAbs_REVERSED)
-            {
-              if (!vmap.Add(V))
-                vmap.Remove(V);
-            }
-          }
-        }
-        if (vmap.IsEmpty())
-        {
-          wire.Closed(true);
-        }
+        wire.Closed(true);
       }
 
       owires->Append(wire);
       sewd->Clear();
-      sewd->ManifoldMode() = isUsedManifoldMode;
 
       lwire = -1;
       for (i = 1; i <= arrwires->Length(); i++)
       {
         if (!aSel.ContWire(i))
         {
-          lwire = i;
-          sewd->Add(TopoDS::Wire(arrwires->Value(lwire)));
-          aSel.LoadList(lwire);
+          sewd->Add(TopoDS::Wire(arrwires->Value(i)));
+          aSel.LoadList(i);
 
           if (sewd->NbEdges() > 0)
+          {
+            lwire = i;
             break;
+          }
           sewd->Clear();
         }
       }
 
       if (lwire == -1)
+      {
         done = true;
+      }
     }
   }
 
@@ -447,6 +477,7 @@ static void SplitWire(const TopoDS_Wire&                                wire,
   // building closed wires
   int i; // svv #1
   for (i = 1; i <= nbedges; i++)
+  {
     if (statuses.Value(i) == 0)
     {
       ces.Append(i);
@@ -474,7 +505,9 @@ static void SplitWire(const TopoDS_Wire&                                wire,
             TopoDS_Vertex fv = sae.FirstVertex(sewd->Edge(ces.Value(j)));
             gp_Pnt        fp = BRep_Tool::Pnt(fv);
             if ((shared && lvertex.IsSame(fv)) || (!shared && lpoint.IsEqual(fp, tolerance)))
+            {
               found = true;
+            }
           }
 
           if (found)
@@ -492,7 +525,9 @@ static void SplitWire(const TopoDS_Wire&                                wire,
             closed->Append(wire1);
             ces.Remove(j, ces.Length());
             if (ces.IsEmpty())
+            {
               break;
+            }
           }
         }
 
@@ -503,13 +538,17 @@ static void SplitWire(const TopoDS_Wire&                                wire,
         lpoint  = BRep_Tool::Pnt(lvertex);
         int j; // svv #1
         for (j = 1; (j <= nbedges) && !found; j++)
+        {
           if (statuses.Value(j) == 0)
           {
             TopoDS_Vertex fv = sae.FirstVertex(sewd->Edge(j));
             gp_Pnt        fp = BRep_Tool::Pnt(fv);
             if ((shared && lvertex.IsSame(fv)) || (!shared && lpoint.IsEqual(fp, tolerance)))
+            {
               found = true;
+            }
           }
+        }
 
         if (found)
         {
@@ -524,15 +563,22 @@ static void SplitWire(const TopoDS_Wire&                                wire,
         statuses.SetValue(ces.Last(), 3);
         ces.Remove(ces.Length());
         if (ces.IsEmpty())
+        {
           break;
+        }
       }
     }
+  }
 
   // building open wires
   occ::handle<NCollection_HSequence<TopoDS_Shape>> edges = new NCollection_HSequence<TopoDS_Shape>;
   for (i = 1; i <= nbedges; i++)
+  {
     if (statuses.Value(i) != 2)
+    {
       edges->Append(sewd->Edge(i));
+    }
+  }
 
   open = ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges, toler, shared);
 }
@@ -565,17 +611,29 @@ void ShapeAnalysis_FreeBounds::DispatchWires(
 {
   BRep_Builder B;
   if (closed.IsNull())
+  {
     B.MakeCompound(closed);
+  }
   if (open.IsNull())
+  {
     B.MakeCompound(open);
+  }
   if (wires.IsNull())
+  {
     return;
+  }
 
   for (int iw = 1; iw <= wires->Length(); iw++)
+  {
     if (wires->Value(iw).Closed())
+    {
       B.Add(closed, wires->Value(iw));
+    }
     else
+    {
       B.Add(open, wires->Value(iw));
+    }
+  }
 }
 
 //=======================================================================
@@ -588,7 +646,9 @@ void ShapeAnalysis_FreeBounds::DispatchWires(
 void ShapeAnalysis_FreeBounds::SplitWires()
 {
   if (!mySplitClosed && !mySplitOpen)
+  {
     return; // nothing to do
+  }
 
   ShapeExtend_Explorer                             see;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> closedwires, cw1, cw2, openwires, ow1, ow2;
@@ -596,7 +656,9 @@ void ShapeAnalysis_FreeBounds::SplitWires()
   openwires   = see.SeqFromCompound(myEdges, false);
 
   if (mySplitClosed)
+  {
     SplitWires(closedwires, myTolerance, myShared, cw1, ow1);
+  }
   else
   {
     cw1 = closedwires;
@@ -604,7 +666,9 @@ void ShapeAnalysis_FreeBounds::SplitWires()
   }
 
   if (mySplitOpen)
+  {
     SplitWires(openwires, myTolerance, myShared, cw2, ow2);
+  }
   else
   {
     cw2 = new NCollection_HSequence<TopoDS_Shape>;

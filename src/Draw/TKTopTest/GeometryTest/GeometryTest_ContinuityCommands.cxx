@@ -74,17 +74,23 @@ static int surfaceCcontinuity(Draw_Interpretor& di, int n, const char** a)
   bool          b1, b2, b3, b4;
   double        epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
   if (n < 8)
+  {
     return 1;
+  }
 
   InitEpsSurf(epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
 
   occ::handle<Geom_Surface> surf1 = DrawTrSurf::GetSurface(a[2]);
   if (surf1.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull())
+  {
     return 1;
+  }
 
   U1 = Draw::Atof(a[3]);
   U2 = Draw::Atof(a[6]);
@@ -102,7 +108,9 @@ static int surfaceCcontinuity(Draw_Interpretor& di, int n, const char** a)
   b4 = ((((V2 >= v1) && (V2 <= v2)) || ((V2 <= v1) && (V2 >= v2))));
 
   if (!((b1 && b2) && (b3 && b4)))
+  {
     return 1;
+  }
 
   switch (ord)
   {
@@ -200,16 +208,22 @@ static int surfaceGcontinuity(Draw_Interpretor& di, int n, const char** a)
   double        epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
 
   if (n < 8)
+  {
     return 1;
+  }
   InitEpsSurf(epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
 
   occ::handle<Geom_Surface> surf1 = DrawTrSurf::GetSurface(a[2]);
   if (surf1.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull())
+  {
     return 1;
+  }
 
   U1 = Draw::Atof(a[3]);
   U2 = Draw::Atof(a[6]);
@@ -227,7 +241,9 @@ static int surfaceGcontinuity(Draw_Interpretor& di, int n, const char** a)
   b4 = ((((V2 >= v1) && (V2 <= v2)) || ((V2 <= v1) && (V2 >= v2))));
 
   if (!((b1 && b2) && (b3 && b4)))
+  {
     return 1;
+  }
 
   switch (ord)
   {
@@ -307,14 +323,20 @@ static int curveGcontinuity(Draw_Interpretor& di, int n, const char** a)
   bool          b1, b2;
   double        epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
   if (n < 6)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> curv1 = DrawTrSurf::GetCurve(a[2]);
   if (curv1.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Curve> curv2 = DrawTrSurf::GetCurve(a[4]);
   if (curv2.IsNull())
+  {
     return 1;
+  }
 
   U1 = Draw::Atof(a[3]);
   U2 = Draw::Atof(a[5]);
@@ -330,7 +352,9 @@ static int curveGcontinuity(Draw_Interpretor& di, int n, const char** a)
   b2 = ((((U2 >= u1) && (U2 <= u2)) || ((U2 <= u1) && (U2 >= u2))));
 
   if (!(b1 && b2))
+  {
     return 1;
+  }
 
   InitEpsCurv(epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
   switch (ord)
@@ -414,14 +438,20 @@ static int curveCcontinuity(Draw_Interpretor& di, int n, const char** a)
   bool          b1, b2;
   double        epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
   if (n < 6)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> curv1 = DrawTrSurf::GetCurve(a[2]);
   if (curv1.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Curve> curv2 = DrawTrSurf::GetCurve(a[4]);
   if (curv2.IsNull())
+  {
     return 1;
+  }
 
   U1 = Draw::Atof(a[3]);
   U2 = Draw::Atof(a[5]);
@@ -437,7 +467,9 @@ static int curveCcontinuity(Draw_Interpretor& di, int n, const char** a)
   b2 = ((((U2 >= u1) && (U2 <= u2)) || ((U2 <= u1) && (U2 >= u2))));
 
   if (!(b1 && b2))
+  {
     return 1;
+  }
 
   InitEpsCurv(epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
   switch (ord)
@@ -530,7 +562,9 @@ void GeometryTest::ContinuityCommands(Draw_Interpretor& theCommands)
 {
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

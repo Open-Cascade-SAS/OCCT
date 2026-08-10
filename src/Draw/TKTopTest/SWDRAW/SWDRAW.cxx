@@ -72,7 +72,9 @@ static int LocSet(Draw_Interpretor& di, int argc, const char** argv)
       L = b.Location().Multiplied(c.Location().Inverted());
     }
     else
+    {
       L = b.Location();
+    }
   }
   a.Location(L);
   DBRep::Set(argv[1], a);

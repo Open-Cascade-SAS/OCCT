@@ -37,7 +37,9 @@ void RWStepBasic_RWProductConceptContext::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "product_concept_context"))
+  {
     return;
+  }
 
   // Inherited fields of ApplicationContextElement
 

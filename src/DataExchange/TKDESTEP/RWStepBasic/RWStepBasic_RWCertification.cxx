@@ -36,7 +36,9 @@ void RWStepBasic_RWCertification::ReadStep(const occ::handle<StepData_StepReader
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "certification"))
+  {
     return;
+  }
 
   // Own fields of Certification
 

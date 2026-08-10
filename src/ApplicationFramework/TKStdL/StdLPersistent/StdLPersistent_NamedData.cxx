@@ -22,7 +22,9 @@
 static const TCollection_ExtendedString& String(const occ::handle<StdObjMgt_Persistent>& theValue)
 {
   if (theValue)
+  {
     return theValue->ExtString()->String();
+  }
 
   return TCollection_ExtendedString::EmptyString();
 }
@@ -41,13 +43,17 @@ static typename HArray::ArrayHandle Array(const occ::handle<StdObjMgt_Persistent
 void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& theAttribute) const
 {
   if (myDimensions.IsNull())
+  {
     return;
+  }
 
   if (myInts)
   {
     NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     for (int i = lower(0); i <= upper(0); i++)
+    {
       aMap.Bind(myInts.Key(i), myInts.Value(i));
+    }
 
     theAttribute->ChangeIntegers(aMap);
   }
@@ -56,7 +62,9 @@ void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& the
   {
     NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     for (int i = lower(1); i <= upper(1); i++)
+    {
       aMap.Bind(myReals.Key(i), myReals.Value(i));
+    }
 
     theAttribute->ChangeReals(aMap);
   }
@@ -65,7 +73,9 @@ void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& the
   {
     NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     for (int i = lower(2); i <= upper(2); i++)
+    {
       aMap.Bind(myStrings.Key(i), String(myStrings.Value(i)));
+    }
 
     theAttribute->ChangeStrings(aMap);
   }
@@ -74,7 +84,9 @@ void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& the
   {
     NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     for (int i = lower(3); i <= upper(3); i++)
+    {
       aMap.Bind(myBytes.Key(i), myBytes.Value(i));
+    }
 
     theAttribute->ChangeBytes(aMap);
   }
@@ -83,7 +95,9 @@ void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& the
   {
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
     for (int i = lower(4); i <= upper(4); i++)
+    {
       aMap.Bind(myIntArrays.Key(i), Array<StdLPersistent_HArray1::Integer>(myIntArrays.Value(i)));
+    }
 
     theAttribute->ChangeArraysOfIntegers(aMap);
   }
@@ -92,7 +106,9 @@ void StdLPersistent_NamedData::Import(const occ::handle<TDataStd_NamedData>& the
   {
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
     for (int i = lower(5); i <= upper(5); i++)
+    {
       aMap.Bind(myRealArrays.Key(i), Array<StdLPersistent_HArray1::Real>(myRealArrays.Value(i)));
+    }
 
     theAttribute->ChangeArraysOfReals(aMap);
   }

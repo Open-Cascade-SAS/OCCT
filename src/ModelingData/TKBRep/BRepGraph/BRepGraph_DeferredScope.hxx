@@ -15,7 +15,7 @@
 #define _BRepGraph_DeferredScope_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 
 //! @brief RAII guard for batch mutation scopes with deferred invalidation.
 //!
@@ -23,8 +23,8 @@
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
 //! when this guard owns deferred mode, it is always closed and boundary checks
 //! are executed at scope exit. EndDeferredInvalidation() batch-propagates
-//! SubtreeGen upward, then CommitMutation() validates reverse-index consistency
-//! and active-entity counts.
+//! SubtreeGen upward, then CommitMutation() validates relation consistency and
+//! active-entity counts.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op. Only the outermost guard flushes and commits,
@@ -52,19 +52,21 @@ public:
   //! Begin deferred invalidation if not already active.
   explicit BRepGraph_DeferredScope(BRepGraph& theGraph)
       : myGraph(theGraph),
-        myOwnsScope(!theGraph.Builder().IsDeferredMode())
+        myOwnsScope(!theGraph.Editor().IsDeferredMode())
   {
     if (myOwnsScope)
-      myGraph.Builder().BeginDeferredInvalidation();
+    {
+      myGraph.Editor().BeginDeferredInvalidation();
+    }
   }
 
-  //! End deferred invalidation and validate reverse index + active counts.
+  //! End deferred invalidation and validate relations + active counts.
   ~BRepGraph_DeferredScope()
   {
     if (myOwnsScope)
     {
-      myGraph.Builder().EndDeferredInvalidation();
-      myGraph.Builder().CommitMutation();
+      myGraph.Editor().EndDeferredInvalidation();
+      myGraph.Editor().CommitMutation();
     }
   }
 

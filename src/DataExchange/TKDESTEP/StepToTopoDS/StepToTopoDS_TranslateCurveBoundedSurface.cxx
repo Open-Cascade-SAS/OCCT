@@ -60,7 +60,9 @@ bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
 {
   myFace.Nullify();
   if (CBS.IsNull())
+  {
     return false;
+  }
 
   // translate basis surface
   occ::handle<StepGeom_Surface> S    = CBS->BasisSurface();
@@ -97,7 +99,9 @@ bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
       myFace = mf.Face();
     }
     else
+    {
       TP->AddWarning(CBS, "Cannot make natural bounds on infinite surface");
+    }
   }
 
   // translate boundaries
@@ -107,7 +111,9 @@ bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
   {
     occ::handle<StepGeom_CompositeCurve> cc = bnd->Value(i).BoundaryCurve();
     if (cc.IsNull())
+    {
       continue;
+    }
     StepToTopoDS_TranslateCompositeCurve TrCC(cc, TP, S, Surf, theLocalFactors);
     if (!TrCC.IsDone())
     {

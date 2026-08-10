@@ -424,7 +424,9 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
     if (!(PARAMEQUAL(PParamOnFirst, FirstParam1) || PARAMEQUAL(PParamOnFirst, LastParam1)))
     {
       if ((PParamOnFirst > FirstParam1) && (PParamOnFirst < LastParam1))
+      {
         T1.SetPosition(IntRes2d_Middle);
+      }
     }
   }
   if (T2.PositionOnCurve() != IntRes2d_Middle)
@@ -432,7 +434,9 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
     if (!(PARAMEQUAL(PParamOnSecond, FirstParam2) || PARAMEQUAL(PParamOnSecond, LastParam2)))
     {
       if ((PParamOnSecond > FirstParam2) && (PParamOnSecond < LastParam2))
+      {
         T2.SetPosition(IntRes2d_Middle);
+      }
     }
   }
 }

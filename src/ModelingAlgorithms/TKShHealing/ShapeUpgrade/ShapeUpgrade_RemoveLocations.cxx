@@ -106,7 +106,9 @@ static bool RebuildShape(const TopoDS_Edge& theEdge,
     }
     theNewEdge.Orientation(theEdge.Orientation());
     if (BRep_Tool::Degenerated(theEdge))
+    {
       aB.Degenerated(theNewEdge, true);
+    }
     isRebuild = true;
   }
   if (!theFace.IsNull())
@@ -127,19 +129,29 @@ static bool RebuildShape(const TopoDS_Edge& theEdge,
           TopAbs_Orientation OrEdge = theNewEdge.Orientation();
 
           if (theFace.Orientation() == TopAbs_REVERSED)
+          {
             OrEdge = (OrEdge == TopAbs_FORWARD ? TopAbs_REVERSED : TopAbs_FORWARD);
+          }
 
           if (OrEdge == TopAbs_FORWARD)
+          {
             aB.UpdateEdge(theNewEdge, c2d, c2d1, theNewFace, 0);
+          }
           else
+          {
             aB.UpdateEdge(theNewEdge, c2d1, c2d, theNewFace, 0);
+          }
         }
       }
       else
+      {
         aB.UpdateEdge(theNewEdge, c2d, theNewFace, 0);
+      }
 
       if (!c2d.IsNull() || !c2d1.IsNull())
+      {
         aB.Range(theNewEdge, theNewFace, First2d, Last2d);
+      }
     }
   }
   return isRebuild;
@@ -201,7 +213,9 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
   bool         aRebuild   = false;
   TopoDS_Shape anAncShape = theAncShape;
   if (shtype == TopAbs_FACE)
+  {
     anAncShape = aShape;
+  }
   if (isRemoveLoc
       && (!aShape.Location().IsIdentity() || shtype == TopAbs_EDGE || shtype == TopAbs_FACE))
   {
@@ -229,10 +243,14 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
         F       = TopoDS::Face(anAncShape);
         newFace = F;
         if (myMapNewShapes.IsBound(F))
+        {
           newFace = TopoDS::Face(myMapNewShapes.Find(F));
+        }
       }
       if (isBound)
+      {
         anewEdge = TopoDS::Edge(aNewShape);
+      }
       aRebuild  = RebuildShape(oldEdge, anewEdge, F, newFace, isBound);
       aNewShape = anewEdge;
     }
@@ -242,7 +260,9 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
       TopoDS_Vertex aV = TopoDS::Vertex(aShape);
       aRebuild         = RebuildShape(aV, aVnew);
       if (aRebuild)
+      {
         aNewShape = aVnew;
+      }
     }
   }
   isDone = aRebuild;
@@ -260,7 +280,9 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
     TopLoc_Location oldLoc, nullloc;
     oldLoc = theShape.Location();
     if (!oldLoc.IsIdentity())
+    {
       aNewShape.Location(nullloc);
+    }
     TopAbs_Orientation orient = theShape.Orientation();
     aNewShape.Orientation(TopAbs_FORWARD);
     TopoDS_Iterator aIt(aShape, false, isRemoveLoc);
@@ -273,12 +295,18 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
       aB.Add(aNewShape, anewsubshape);
     }
     if (isDone)
+    {
       aNewShape.Orientation(orient);
+    }
     else
+    {
       aNewShape = aShape;
+    }
     myMapNewShapes.Bind(aShape, aNewShape);
     if (!theRemoveLoc && !oldLoc.IsIdentity())
+    {
       aNewShape.Location(oldLoc);
+    }
   }
   theNewShape = aNewShape;
 

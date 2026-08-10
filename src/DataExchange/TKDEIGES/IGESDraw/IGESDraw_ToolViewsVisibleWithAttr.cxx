@@ -63,7 +63,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempNbBlocks <= 0)
+    {
       PR.AddFail("Number Of Blocks : Not Positive");
+    }
     else
     {
       tempViewEntities =
@@ -78,9 +80,11 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
   }
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(),
                    "Number of Entities Displayed",
                    tempNbEntity); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
   {
     tempNbEntity = 0;
@@ -88,7 +92,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
   }
   // Initialise HArray1 only if there is no error reading its Length
   if (tempNbEntity < 0)
+  {
     PR.AddFail("Number Of Entities Displayed : Less than Zero");
+  }
 
   // Read the HArray1 only if its Length was read without any Error
   if (!(tempViewEntities.IsNull()))
@@ -112,12 +118,16 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
                         "View Entity",
                         STANDARD_TYPE(IGESData_ViewKindEntity),
                         tempView))
+      {
         tempViewEntities->SetValue(I, tempView);
+      }
 
       // st = PR.ReadInteger(PR.Current(), "Line Font Value", tempLineFont); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "Line Font Value", tempLineFont))
+      {
         tempLineFonts->SetValue(I, tempLineFont);
+      }
 
       // st = PR.ReadEntity(IR, PR.Current(), "Line Font Definition",
       // STANDARD_TYPE(IGESData_LineFontEntity),
@@ -129,14 +139,18 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
                            STANDARD_TYPE(IGESData_LineFontEntity),
                            tempEntity1,
                            true))
+      {
         tempLineDefinitions->SetValue(I, tempEntity1);
+      }
 
       int curnum = PR.CurrentNumber();
       //  Reading Color : Value (>0) or Definition (<0 = D.E. Pointer)
       if (PR.DefinedElseSkip())
+      {
         // clang-format off
 	PR.ReadInteger( PR.Current(), "Color Value", tempColorValue); //szv#4:S4163:12Mar99 `st=` not needed
-      // clang-format on
+                                        // clang-format on
+      }
       else
       {
         tempColorValue = 0;
@@ -147,17 +161,25 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
         tempColorValues->SetValue(I, -1);
         tempColorDef = GetCasted(IGESGraph_Color, PR.ParamEntity(IR, curnum));
         if (tempColorDef.IsNull())
+        {
           PR.AddFail("A Color Definition Entity is incorrect");
+        }
         else
+        {
           tempColorDefinitions->SetValue(I, tempColorDef);
+        }
       }
       else
+      {
         tempColorValues->SetValue(I, tempColorValue);
+      }
 
       // st = PR.ReadInteger(PR.Current(), "Line Weight Value",
       // tempLineWeightValue); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Line Weight Value", tempLineWeightValue))
+      {
         tempLineWeights->SetValue(I, tempLineWeightValue);
+      }
     }
   }
 
@@ -202,14 +224,20 @@ void IGESDraw_ToolViewsVisibleWithAttr::WriteOwnParams(
     IW.Send(ent->LineFontValue(I));
     IW.Send(ent->FontDefinition(I)); // controlled by LineFontValue, both sent
     if (ent->IsColorDefinition(I))
+    {
       IW.Send(ent->ColorDefinition(I), true); // negative
+    }
     else
+    {
       IW.Send(ent->ColorValue(I));
+    }
     IW.Send(ent->LineWeightItem(I));
   }
   up = ent->NbDisplayedEntities();
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->DisplayedEntity(I));
+  }
 }
 
 void IGESDraw_ToolViewsVisibleWithAttr::OwnShared(
@@ -224,7 +252,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnShared(
     iter.GetOneItem(ent->ViewItem(I));
     iter.GetOneItem(ent->FontDefinition(I));
     if (ent->IsColorDefinition(I))
+    {
       iter.GetOneItem(ent->ColorDefinition(I));
+    }
   }
   //  Displayed -> Implied
 }
@@ -236,7 +266,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnImplied(
   int I, up;
   up = ent->NbDisplayedEntities();
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->DisplayedEntity(I));
+  }
 }
 
 void IGESDraw_ToolViewsVisibleWithAttr::OwnCopy(
@@ -302,19 +334,25 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnRenew(
   int                      I, up;
   up = another->NbDisplayedEntities();
   if (up == 0)
+  {
     return;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempDisplayEntities;
   occ::handle<Standard_Transient>                                    anew;
   for (I = 1; I <= up; I++)
   {
     if (TC.Search(another->DisplayedEntity(I), anew))
+    {
       newdisp.GetOneItem(anew);
+    }
   }
 
   up = newdisp.NbEntities();
   I  = 0;
   if (up > 0)
+  {
     tempDisplayEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, up);
+  }
   for (newdisp.Start(); newdisp.More(); newdisp.Next())
   {
     I++;
@@ -350,7 +388,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(
   for (i = 1; i <= nb; i++)
   {
     if (ent->LineFontValue(i) != 0 && ent->IsFontDefinition(i))
+    {
       ach->AddFail("At least one Line Font Definition Mismatch (both Value and Entity");
+    }
   }
   const occ::handle<IGESData_ViewKindEntity>& entcomp = ent;
   int                                         res     = 0;
@@ -359,10 +399,14 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(
   {
     occ::handle<IGESData_IGESEntity> displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View())
+    {
       res++;
+    }
   }
   if (!res)
+  {
     return;
+  }
   char mess[80];
   Sprintf(mess, "Mismatch for %d Entities displayed", res);
   ach->AddFail(mess, "Mismatch for %d Entities displayed");
@@ -408,23 +452,27 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnDump(
         S << "\n";
       }
       else
+      {
         S << "Line Font Value       : " << ent->LineFontValue(I) << "\n";
+      }
 
       if (ent->IsColorDefinition(I))
       {
         S << "Color Definition : ";
         dumper.Dump(ent->ColorDefinition(I), S, tempSubLevel);
-        S << std::endl;
+        S << '\n';
       }
       else
+      {
         S << "Color Value      : " << ent->ColorValue(I) << "\n";
+      }
 
       S << "Line Weight      : " << ent->LineWeightItem(I) << "\n";
     }
   }
   S << "Displayed Entities : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbDisplayedEntities(), ent->DisplayedEntity);
-  S << std::endl;
+  S << '\n';
 }
 
 bool IGESDraw_ToolViewsVisibleWithAttr::OwnCorrect(
@@ -438,10 +486,14 @@ bool IGESDraw_ToolViewsVisibleWithAttr::OwnCorrect(
   {
     occ::handle<IGESData_IGESEntity> displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View())
+    {
       res = true;
+    }
   }
   if (!res)
+  {
     return res;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> nulDisplayEntities;
   ent->InitImplied(nulDisplayEntities);
   return res;

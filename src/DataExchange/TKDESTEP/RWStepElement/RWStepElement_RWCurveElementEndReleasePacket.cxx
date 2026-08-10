@@ -36,7 +36,9 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_end_release_packet"))
+  {
     return;
+  }
 
   // Own fields of CurveElementEndReleasePacket
 

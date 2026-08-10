@@ -128,7 +128,9 @@ private:
   //! Main procedure to draw array
   void drawArray(const occ::handle<OpenGl_Workspace>& theWorkspace,
                  const NCollection_Vec4<float>*       theFaceColors,
-                 const bool                           theHasVertColor) const;
+                 const NCollection_Vec4<float>&       theBackColor,
+                 const bool                           theHasVertColor,
+                 const bool                           theToUseVertexColorForBackFaces) const;
 
   //! Auxiliary procedures
   void drawEdges(const occ::handle<OpenGl_Workspace>& theWorkspace) const;

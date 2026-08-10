@@ -95,7 +95,9 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
                                   const Message_ProgressRange& theProgress)
 {
   if (theShape.IsNull())
+  {
     return false;
+  }
 
   XSAlgo_ShapeProcessor::PrepareForTransfer();
 
@@ -107,7 +109,9 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
   TopoDS_Shape Shape = aShapeProcessor.ProcessShape(theShape, myShapeProcFlags.first, aPS.Next());
 
   if (!aPS.More())
+  {
     return false;
+  }
 
   BRepToIGES_BREntity B0;
   B0.SetTransferProcess(myTP);
@@ -118,10 +122,14 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
   occ::handle<IGESData_IGESEntity> ent =
     myWriteMode ? B1.TransferShape(Shape, aPS.Next()) : B0.TransferShape(Shape, aPS.Next());
   if (!aPS.More())
+  {
     return false;
+  }
 
   if (ent.IsNull())
+  {
     return false;
+  }
   aShapeProcessor.MergeTransferInfo(myTP);
 
   // 22.10.98 gka BUC60080
@@ -134,7 +142,9 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
 
   int tolmod = Interface_Static::IVal("write.precision.mode");
   if (tolmod == 2)
+  {
     newtol = Interface_Static::RVal("write.precision.val");
+  }
   else
   {
     ShapeAnalysis_ShapeTolerance stu;
@@ -150,13 +160,17 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
     { // Least
       newtol = std::min(Tolv, Tole);
       if (oldnb > 0)
+      {
         newtol = std::min(oldtol, newtol);
+      }
     }
     else
     { // Greatest
       newtol = std::max(Tolv, Tole);
       if (oldnb > 0)
+      {
         newtol = std::max(oldtol, newtol);
+      }
     }
   }
 
@@ -183,7 +197,9 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
 bool IGESControl_Writer::AddGeom(const occ::handle<Standard_Transient>& geom)
 {
   if (geom.IsNull() || !geom->IsKind(STANDARD_TYPE(Geom_Geometry)))
+  {
     return false;
+  }
   DeclareAndCast(Geom_Curve, Curve, geom);
   DeclareAndCast(Geom_Surface, Surf, geom);
   occ::handle<IGESData_IGESEntity> ent;
@@ -227,7 +243,9 @@ bool IGESControl_Writer::AddGeom(const occ::handle<Standard_Transient>& geom)
 bool IGESControl_Writer::AddEntity(const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (ent.IsNull())
+  {
     return false;
+  }
   myModel->AddWithRefs(ent, IGESSelect_WorkLibrary::DefineProtocol());
   myIsComputed = false;
   return true;
@@ -250,16 +268,22 @@ void IGESControl_Writer::ComputeModel()
 bool IGESControl_Writer::Write(Standard_OStream& S, const bool fnes)
 {
   if (!S)
+  {
     return false;
+  }
   ComputeModel();
   int nbEnt = myModel->NbEntities();
   if (!nbEnt)
+  {
     return false;
+  }
   IGESData_IGESWriter IW(myModel);
   //  do not forget the fnes mode ... to transmit to IW
   IW.SendModel(IGESSelect_WorkLibrary::DefineProtocol());
   if (fnes)
+  {
     IW.WriteMode() = 10;
+  }
   bool status = IW.Print(S);
   return status;
 }

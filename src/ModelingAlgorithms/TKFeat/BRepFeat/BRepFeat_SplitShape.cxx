@@ -63,7 +63,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Right() const
     {
       const TopoDS_Shape& aFace = anExplorer.Current();
       if (!aMapOfLeft.Contains(aFace))
+      {
         myRight.Append(aFace);
+      }
     }
   }
   return myRight;

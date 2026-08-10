@@ -7,7 +7,13 @@
 
 This document provides OCCT developers and contributors with an overview and practical guidelines for work with OCCT automatic testing system.
 
-Reading the Introduction should be sufficient for developers to use the test system to control non-regression of the modifications they implement in OCCT. Other sections provide a more in-depth description of the test system, required for modifying the tests and adding new test cases. 
+Reading the Introduction should be sufficient for developers to use the test system to control non-regression of the modifications they implement in OCCT. Other sections provide a more in-depth description of the test system, required for modifying the tests and adding new test cases.
+
+Tests are also run automatically on every Pull Request via GitHub Actions CI/CD. The results are visible in the CI/CD checks of the PR. See @ref occt_contribution__contribution_workflow "Contribution Workflow" for details.
+
+OCCT ships two complementary test runners:
+- **DRAW Test Harness** (Tcl scripts under `tests/`) — the primary regression suite, described in this document.
+- **OpenCascadeGTest** — a GoogleTest-based C++ unit test runner. Sources live under `src/<Module>/<Toolkit>/GTests/`. Enable it at configure time with `-DBUILD_GTEST=ON`; the resulting executable is `OpenCascadeGTest` and is run directly (e.g. `./bin/OpenCascadeGTest --gtest_filter="*MyClass*"`). Use it for unit-level tests of C++ APIs that are awkward to drive from DRAW.
 
 @subsection testmanual_intro_basic Basic Information
 
@@ -51,12 +57,12 @@ For this it is recommended to add a file *DrawAppliInit* in the directory which 
 
 Example (Windows)
 
-~~~~{.php}
+~~~~
 set env(CSF_TestDataPath) $env(CSF_TestDataPath)\;d:/occt/test-data
 ~~~~
 
 Note that variable *CSF_TestDataPath* is set to default value at DRAW start, pointing at the folder <i>$CASROOT/data</i>. 
-In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ":" should be used as path separator instead of semicolon ";".
+In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and macOS except that on non-Windows platforms colon ":" should be used as path separator instead of semicolon ";".
 
 All tests are run from DRAW command prompt (run *draw.bat* or *draw.sh* to start it).
 
@@ -66,7 +72,7 @@ To run all tests, type command *testgrid*
 
 Example:
 
-~~~~{.php}
+~~~~
 Draw[]> testgrid
 ~~~~
 
@@ -75,7 +81,7 @@ Each argument is a list of file masks separated with commas or spaces; by defaul
 
 Example:
 
-~~~~{.php}
+~~~~
 Draw[]> testgrid bugs caf,moddata*,xde
 ~~~~
 
@@ -86,7 +92,7 @@ including the list of detected regressions and improvements, if any.
 
 Example:
 
-~~~~{.php}
+~~~~
     Tests summary
 
     CASE 3rdparty export A1: OK 
@@ -105,22 +111,22 @@ The results and detailed logs of the tests are saved by default to a new subdire
 If necessary, a non-default output directory can be specified using option <i> -outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>-overwrite</i> to allow writing results in the existing non-empty directory. 
 
 Example:
-~~~~{.php}
+~~~~
 Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~
-In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
+In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in GitHub Actions or other continuous integration systems.
 
 To re-run the test cases, which were detected as regressions on the previous run, option <i>-regress dirname</i> should be used.
 <i>dirname</i> is a path to the directory containing the results of the previous run. Only the test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
 
 Example:
-~~~~{.php}
+~~~~
 Draw[]> testgrid -regress d:/occt/last_results
 ~~~~
 
 Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
 
-~~~~{.php}
+~~~~
 Draw[3]> help testgrid
 testgrid: Run all tests, or specified group, or one grid
     Use: testgrid [groupmask [gridmask [casemask]]] [options...]
@@ -143,7 +149,7 @@ To run a single test, type command *test* followed by names of group, grid, and 
 
 Example:
 
-~~~~{.php}
+~~~~
     Draw[1]> test blend simple A1
     CASE blend simple A1: OK
     Draw[2]>
@@ -156,7 +162,7 @@ To see intermediate commands and their output during the test execution, add one
 
 Type <i>help test</i> in DRAW prompt to get help on options supported by *test* command:
 
-~~~~{.php}
+~~~~
 Draw[3]> help test
 test: Run specified test case
  Use: test group grid casename [options...]
@@ -180,7 +186,7 @@ test: Run specified test case
 
 The detailed rules of creation of new tests are given in @ref testmanual_3 "Creation and modification of tests" chapter. The following short description covers the most typical situations:
 
-Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script, data files, and DRAW commands specific for this test case.
+Use prefix <i>bug</i> followed by the issue ID and, if necessary, additional suffixes, for naming the test script, data files, and DRAW commands specific for this test case.
 
 1.  If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. 
 2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See @ref testmanual_5_2 "the correspondence map".
@@ -195,15 +201,15 @@ Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional 
 4.  To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
     If the data file is already present, use it for a new test instead of adding a duplicate.
     If the data file(s) are not yet present in the test database, put them to a folder and add it to the environment variable *CSF_TestDataPath* to be found by the test system.
-    The location of the data files, which need to be accessed by OCC team and put to the official database, should be provided in the comment to Mantis issue, clearly indicating how the names of the files used by the test script match the actual names of the files.
-    The simplest way is to attach the data files to the Mantis issue, with the same names as used by the test script.
+    The location of the data files, which need to be accessed by OCC team and put to the official database, should be provided in the comment to the GitHub issue, clearly indicating how the names of the files used by the test script match the actual names of the files.
+    The simplest way is to attach the data files to the GitHub issue, with the same names as used by the test script.
 5.  Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
 
 Example:
 
 * Added files:
 
-~~~~{.php}
+~~~~
 git status -short
 A tests/bugs/heal/data/bug210_a.brep
 A tests/bugs/heal/data/bug210_b.brep
@@ -213,7 +219,7 @@ A tests/bugs/heal/bug210_2
 
 * Test script
 
-~~~~{.php}
+~~~~
 puts "OCC210 (case 1): Improve FixShape for touching wires"
 
 restore [locate_data_file bug210_a.brep] a 
@@ -225,7 +231,7 @@ checkshape result
 DRAW command *testfile* should be used to check the data files used by the test for possible duplication of content or names.
 The command accepts the list of paths to files to be checked (as a single argument) and gives a conclusion on each of the files, for instance:
 
-~~~~{.php}
+~~~~
 Draw[1]> testfile [glob /my/data/path/bug12345*]
 Collecting info on test data files repository...
 Checking new file(s)...
@@ -318,7 +324,7 @@ additional Tcl functions used in test scripts.
 
 Example:
 
-~~~~{.php}
+~~~~
     pload TOPTEST ;# load topological command
     set cpulimit 300 ;# set maximum time allowed for script execution
 ~~~~
@@ -332,7 +338,7 @@ Note: *TEST COMPLETED* string should be present in the output to indicate that t
 See @ref testmanual_3 "Creation and modification of tests" chapter for more information.
 
 Example:
-~~~~{.php}
+~~~~
     if { [isdraw result] } {
         checkshape result
     } else {
@@ -347,7 +353,7 @@ The test group may contain *parse.rules* file. This file defines patterns used f
 
 Each line in the file should specify a status (single word), followed by a regular expression delimited by slashes (*/*) that will be matched against lines in the test output log to check if it corresponds to this status.
 
-The regular expressions should follow <a href="https://www.tcl.tk/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\b" is considered as word limit (Perl-style), in addition to "\y" used in Tcl.
+The regular expressions should follow <a href="https://www.tcl-lang.org/man/tcl8.6/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\\b" is considered as word limit (Perl-style), in addition to "\\y" used in Tcl.
 
 The rest of the line can contain a comment message, which will be added to the test report when this status is detected.
 
@@ -403,7 +409,7 @@ Usually it sets variables specific for the current grid.
 
 Example:
 
-~~~~{.php}
+~~~~
     set command bopfuse ;# command tested in this grid
 ~~~~
 
@@ -415,7 +421,7 @@ Usually it executes a specific sequence of commands common for all tests in the 
 
 Example:
 
-~~~~{.php}
+~~~~
     vdump $imagedir/${casename}.png ;# makes a snap-shot of AIS viewer
 ~~~~
 
@@ -450,7 +456,7 @@ and produces meaningful messages that can be used to check the validity of the r
 
 Example:
 
-~~~~{.php}
+~~~~
     pcylinder c1 10 20 ;# create first cylinder
     pcylinder c2 5 20 ;# create second cylinder
     ttranslate c2 5 0 10 ;# translate second cylinder to x,y,z
@@ -479,12 +485,12 @@ This section describes how to add new tests and update existing ones.
 
 @subsection testmanual_3_1 Choosing Group, Grid, and Test Case Name
 
-The new tests are usually added in the frame of processing issues in OCCT Mantis tracker. 
+The new tests are usually added in the frame of processing issues in the OCCT issue tracker. 
 Such tests in general should be added to group bugs, in the grid 
 corresponding to the affected OCCT functionality. See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs".
 
 New grids can be added as necessary to contain tests for the functionality not yet covered by existing test grids. 
-The test case name in the bugs group should be prefixed by the ID of the corresponding issue in Mantis (without leading zeroes) with prefix *bug*. It is recommended to add a suffix providing a hint on the tested situation. If more than one test is added for a bug, they should be distinguished by suffixes; either meaningful or just ordinal numbers.
+The test case name in the bugs group should be prefixed by the ID of the corresponding issue (without leading zeroes) with prefix *bug*. It is recommended to add a suffix providing a hint on the tested situation. If more than one test is added for a bug, they should be distinguished by suffixes; either meaningful or just ordinal numbers.
 
 Example:
 
@@ -512,9 +518,9 @@ When you prepare a test script, try to minimize the size of involved data model.
 @subsection testmanual_3_3 Adding new DRAW commands
 
 If the test cannot be implemented using available DRAW commands, consider the following possibilities:
-* If the existing DRAW command can be extended to enable possibility required for a test in a natural way (e.g. by adding an option to activate a specific mode of the algorithm), this way is recommended. This change should be appropriately documented in a relevant Mantis issue.
-* If the new command is needed to access OCCT functionality not exposed to DRAW previously, and this command can be potentially reused (for other tests), it should be added to the package where similar commands are implemented (use *getsource* DRAW command to get the package name). The name and arguments of the new command should be chosen to keep similarity with the existing commands. This change should be documented in a relevant Mantis issue.
-* Otherwise the new command implementing the actions needed for this particular test should be added in *QABugs* package. The command name should be formed by the Mantis issue ID prefixed by *bug*, e.g. *bug12345*.
+* If the existing DRAW command can be extended to enable possibility required for a test in a natural way (e.g. by adding an option to activate a specific mode of the algorithm), this way is recommended. This change should be appropriately documented in a relevant GitHub issue.
+* If the new command is needed to access OCCT functionality not exposed to DRAW previously, and this command can be potentially reused (for other tests), it should be added to the package where similar commands are implemented (use *getsource* DRAW command to get the package name). The name and arguments of the new command should be chosen to keep similarity with the existing commands. This change should be documented in a relevant GitHub issue.
+* Otherwise the new command implementing the actions needed for this particular test should be added in *QABugs* package. The command name should be formed by the issue ID prefixed by *bug*, e.g. *bug12345*.
 
 Note that a DRAW command is expected to return 0 in case of a normal completion, and 1 (Tcl exception) if it is incorrectly used (e.g. a wrong number of input arguments). Thus if the new command needs to report a test error, this should be done by outputting an appropriate error message rather than by returning a non-zero value.
 File names must be encoded in the script rather than in the DRAW command and passed to the DRAW command as an argument.
@@ -526,7 +532,7 @@ The test should run commands necessary to perform the tested operations, in gene
 Usually the script represents a set of commands that a person would run interactively to perform the operation and see its results, with additional comments to explain what happens.
 
 Example:
-~~~~{.php}
+~~~~
 # Simple test of fusing box and sphere
 box b 10 10 10 
 sphere s 5
@@ -546,7 +552,7 @@ For the messages generated in the script it is recommended to use the word 'Erro
 
 Example:
 
-~~~~{.php}
+~~~~
 set expected_length 11
 if { [expr $actual_length - $expected_length] > 0.001 } {
     puts "Error: The length of the edge should be $expected_length"
@@ -561,7 +567,7 @@ During execution of a test, the following Tcl variables are defined on global le
 |-----------|-------|
 | dirname   | Path to the root directory of the current set of test scripts |
 | groupname | Name of the test group (subfolder of $dirname) |
-| gridname  | Name of the test grid (subfolder of $dirname/$gridname) |
+| gridname  | Name of the test grid (subfolder of $dirname/$groupname/$gridname) |
 | casename  | Name of the test |
 | imagedir  | Path to folder where test log and other artifacts are saved |
 
@@ -571,7 +577,7 @@ During execution of the test, location of such data file can be constructed usin
 
 Example:
 
-~~~~{.php}
+~~~~
 checkresult $result $::dirname/$::groupname/$::gridname/data/${::casename}.txt
 ~~~~
 
@@ -583,7 +589,7 @@ If the file is not found, *locate_data_file* will raise exception, and the test 
 
 Example:
 
-~~~~{.php}
+~~~~
 stepread [locate_data_file CAROSKI_COUPELLE.step] a *
 ~~~~
 
@@ -601,7 +607,7 @@ The test system can recognize an image file (snapshot) and include it in HTML lo
 The image format (defined by extension) should be *png*.
 
 Example:
-~~~~{.php}
+~~~~
 xwd $::imagedir/${::casename}.png
 vdisplay result; vfit
 vdump $::imagedir/${::casename}-axo.png
@@ -641,10 +647,10 @@ The new test created for an unsolved problem should return BAD. The new test cre
 
 @subsection testmanual_3_6 Marking BAD cases
 
-If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at https://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
+If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker on GitHub (https://github.com/Open-Cascade-SAS/OCCT/issues), and the problem should be marked as TODO in the test script.
 
 The following statement should be added to such a test script:
-~~~~{.php}
+~~~~
 puts "TODO BugNumber ListOfPlatforms: RegularExpression"
 ~~~~
 
@@ -653,7 +659,7 @@ Here:
 * *ListOfPlatforms* is a list of platforms, at which the bug is reproduced (Linux, Windows, MacOS, or All). Note that the platform name is custom for the OCCT test system; Use procedure *checkplatform* to get the platform name.
 
 Example:
-~~~~{.php}
+~~~~
 Draw[2]> checkplatform
 Windows
 ~~~~
@@ -661,7 +667,7 @@ Windows
 * RegularExpression is a regular expression, which should be matched against the line indicating the problem in the script output. 
 
 Example:
-~~~~{.php}
+~~~~
 puts "TODO #22622 Mandriva2008: Abort .* an exception was raised"
 ~~~~
 
@@ -673,7 +679,7 @@ To mark the test as BAD for an incomplete case (when the final *TEST COMPLETE* m
 
 Example:
 
-~~~~{.php}
+~~~~
 puts "TODO OCC22817 All: exception.+There are no suitable edges"
 puts "TODO OCC22817 All: \\*\\* Exception \\*\\*"
 puts "TODO OCC22817 All: TEST INCOMPLETE"
@@ -684,7 +690,7 @@ puts "TODO OCC22817 All: TEST INCOMPLETE"
 To check the obtained test output matches the expected results considered correct, add REQUIRED statement for each specific message.
 For that, the following statement should be added to the corresponding test script:
 
-~~~~{.php}
+~~~~
 puts "REQUIRED ListOfPlatforms: RegularExpression"
 ~~~~
 
@@ -693,7 +699,7 @@ Here *ListOfPlatforms* and *RegularExpression* have the same meaning as in TODO 
 The REQUIRED statement can also be used to mask the message that would normally be interpreted as error (according to the rules defined in *parse.rules*) but should not be considered as such within the current test.
 
 Example:
-~~~~{.php}
+~~~~
 puts "REQUIRED Linux: Faulty shapes in variables faulty_1 to faulty_5"
 ~~~~
 
@@ -705,16 +711,16 @@ If output does not contain required statement, test case will be marked as FAILE
 
 @subsection testmanual_4_1 Running Tests on Older Versions of OCCT
 
-Sometimes it might be necessary to run tests on the previous versions of OCCT (<= 6.5.4) that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
+Sometimes it might be necessary to run tests on older OCCT versions that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
 
-Note: in OCCT 6.5.3, file *DrawAppliInit* already exists in <i>$CASROOT/src/DrawResources</i>, new commands should be added to this file instead of a new one in the current directory.
+Note: in some older OCCT versions, file *DrawAppliInit* already exists in <i>$CASROOT/resources/DrawResources</i>, new commands should be added to this file instead of a new one in the current directory.
 
 For example, let us assume that *d:/occt* contains an up-to-date version of OCCT sources with tests, and the test data archive is unpacked to *d:/test-data*):
 
-~~~~{.php}
+~~~~
 set env(CASROOT) d:/occt
 set env(CSF_TestScriptsPath) $env(CASROOT)/tests
-source $env(CASROOT)/src/DrawResources/TestCommands.tcl
+source $env(CASROOT)/resources/DrawResources/TestCommands.tcl
 set env(CSF_TestDataPath) $env(CASROOT)/data;d:/test-data
 return
 ~~~~
@@ -728,7 +734,7 @@ You can extend the test system by adding your own tests. For that it is necessar
 Use Tcl command <i>_path_separator</i> to insert a platform-dependent separator to the path list.
 
 For example:
-~~~~{.php}
+~~~~
 set env(CSF_TestScriptsPath) \
   $env(TestScriptsPath)[_path_separator]d:/MyOCCTProject/tests
 set env(CSF_TestDataPath) \
@@ -749,7 +755,7 @@ Some test results are very dependent on the characteristics of the workstation, 
 
 OCCT test system provides a dedicated command *testdiff* for comparing CPU time of execution, memory usage, and images produced by the tests.
 
-~~~~{.php}
+~~~~
 testdiff dir1 dir2 [groupname [gridname]] [options...]
 ~~~~
 Here *dir1* and *dir2* are directories containing logs of two test runs.
@@ -771,7 +777,7 @@ Possible options are:
 
 Example:
 
-~~~~{.php}
+~~~~
 Draw[]> testdiff results/CR12345-2012-10-10T08:00 results/master-2012-10-09T21:20 
 ~~~~
 
@@ -780,25 +786,13 @@ For that, for each parameter to be controlled, the test should produce the line 
 
 Example of test code:
 
-~~~~{.php}
+~~~~
 puts "COUNTER Memory heap usage at step 5: [meminfo h]"
 ~~~~
 
 @section testmanual_5 APPENDIX
 
 @subsection testmanual_5_1 Test groups
-
-@subsubsection testmanual_5_1_1 3rdparty
-
-This group allows testing the interaction of OCCT and 3rdparty products.
-
-DRAW module: VISUALIZATION.
-
-| Grid  | Commands  | Functionality |
-| :---- | :----- | :------- | 
-| export  | vexport | export of images to different formats |
-| fonts  | vtrihedron, vcolorscale, vdrawtext | display of fonts |
-
 
 @subsubsection testmanual_5_1_2 blend
 
@@ -856,9 +850,9 @@ Grids names are based on name of the command used, with suffixes:
 
 @subsubsection testmanual_5_1_4 bugs
 
-This group allows testing cases coming from Mantis issues.
+This group allows testing cases coming from the issue tracker.
 
-The grids are organized following OCCT module and category set for the issue in the Mantis tracker. 
+The grids are organized following OCCT module and category set for the issue. 
 See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs" chapter for details.
 
 @subsubsection testmanual_5_1_5 caf
@@ -948,7 +942,7 @@ DRAW module: MODELING (package *BRepTest*).
 
 This group allows testing the functionality provided by *ShapeHealing* toolkit.
 
-DRAW module: XSDRAW
+DRAW module: TKXSDRAWSTEP
 
 | Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
@@ -1083,20 +1077,20 @@ This group allows  testing extended data exchange packages.
 
 @subsection testmanual_5_2 Mapping of OCCT functionality to grid names in group *bugs*
 
-| OCCT Module / Mantis category | Toolkits  | Test grid in group bugs |
+| OCCT Module / Category | Toolkits  | Test grid in group bugs |
 | :---------- | :--------- | :---------- | 
-| Application Framework | PTKernel, TKPShape, TKCDF, TKLCAF, TKCAF, TKBinL, TKXmlL, TKShapeSchema, TKPLCAF, TKBin, TKXml, TKPCAF, FWOSPlugin, TKStdLSchema, TKStdSchema, TKTObj, TKBinTObj, TKXmlTObj | caf |
+| Application Framework | TKCDF, TKLCAF, TKCAF, TKBinL, TKXmlL, TKBin, TKXml, TKTObj, TKBinTObj, TKXmlTObj | caf |
 | Draw  | TKDraw, TKTopTest, TKViewerTest, TKXSDRAW, TKDCAF, TKXDEDRAW, TKTObjDRAW, TKQADraw, DRAWEXE, Problems of testing system | draw | 
 | Shape Healing | TKShHealing | heal |
 | Mesh  | TKMesh, TKXMesh | mesh |
 | Data Exchange | TKDEIGES  | iges |
 | Data Exchange | TKDESTEP | step |
 | Data Exchange | TKDESTL, TKDEVRML   | stlvrml |
-| Data Exchange | TKXSBase, TKXCAF, TKXCAFSchema, TKXmlXCAF, TKBinXCAF | xde |
+| Data Exchange | TKXSBase, TKXCAF, TKXmlXCAF, TKBinXCAF | xde |
 | Foundation Classes |  TKernel, TKMath | fclasses |
-| Modeling_algorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
+| ModelingAlgorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
 | Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep  | moddata |
-| Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS  | vis |
+| Visualization | TKService, TKV3d, TKOpenGl, TKMeshVS  | vis |
 
 
 @subsection testmanual_5_3 Recommended approaches to checking test results
@@ -1106,7 +1100,7 @@ This group allows  testing extended data exchange packages.
 Run command *checkshape* on the result (or intermediate) shape and make sure that *parse.rules* of the test grid or group reports bad shapes (usually recognized by word "Faulty") as error.
 
 Example
-~~~~{.php}
+~~~~
 checkshape result
 ~~~~
 
@@ -1115,27 +1109,27 @@ To check the number of faults in the shape command *checkfaults* can be used.
 Use: checkfaults shape source_shape [ref_value=0]
 
 The default syntax of *checkfaults* command:
-~~~~{.php}
+~~~~
 checkfaults results a_1
 ~~~~
 
 The command will check the number of faults in the source shape (*a_1*) and compare it
 with number of faults in the resulting shape (*result*). If shape *result* contains
 more faults, you will get an error:
-~~~~{.php}
+~~~~
 checkfaults results a_1
 Error : Number of faults is 5
 ~~~~
 It is possible to set the reference value for comparison (reference value is 4):
 
-~~~~{.php}
+~~~~
 checkfaults results a_1 4
 ~~~~
 
 If number of faults in the resulting shape is unstable, reference value should be set to "-1".
 As a result command *checkfaults* will return the following error:
 
-~~~~{.php}
+~~~~
 checkfaults results a_1 -1
 Error : Number of faults is UNSTABLE
 ~~~~
@@ -1144,10 +1138,10 @@ Error : Number of faults is UNSTABLE
 
 The maximal tolerance of sub-shapes of each kind of the resulting shape can be extracted from output of tolerance command as follows:
 
-~~~~{.php}
+~~~~
 set tolerance [tolerance result]
 regexp { *FACE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_face
-regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edgee
+regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edge
 regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_vertex
 ~~~~
 
@@ -1162,7 +1156,7 @@ Allowed options are:
  *   <i>-multi_tol</i> -- tolerance multiplier.
 
 The default syntax of *checkmaxtol* command for comparison with the reference value:
-~~~~{.php}
+~~~~
 checkmaxtol result -ref 0.00001
 ~~~~
 
@@ -1171,7 +1165,7 @@ In the following example command *checkmaxtol* gets max tolerance among objects 
 Then it chooses the maximum value between founded tolerance and value -min_tol (0.000001)
 and multiply it on the coefficient -multi_tol (i.e. 2):
 
-~~~~{.php}
+~~~~
 checkmaxtol result -source {a_1 a_2} -min_tol 0.000001 -multi_tol 2
 ~~~~
 
@@ -1179,7 +1173,7 @@ If the value of maximum tolerance more than founded tolerance for comparison, th
 
 Also, command *checkmaxtol* can be used to get max tolerance of the shape:
 
-~~~~{.php}
+~~~~
 set maxtol [checkmaxtol result]
 ~~~~
 
@@ -1188,7 +1182,7 @@ set maxtol [checkmaxtol result]
 Use command *vprops, sprops,* or *lprops* to correspondingly measure volume, area, or length of the shape produced by the test. The value can be extracted from the result of the command by *regexp*.
 
 Example:
-~~~~{.php}
+~~~~
 # check area of shape result with 1% tolerance
 regexp {Mass +: +([-0-9.+eE]+)} [sprops result] dummy area
 if { abs($area - $expected) > 0.1 + 0.01 * abs ($area) } {
@@ -1204,7 +1198,7 @@ To check memory leak on a particular operation, run it in a cycle, measure the m
 The command *checktrend* (defined in *tests/bugs/begin*) can be used to analyze a sequence of memory measurements and to get a statistically based evaluation of the leak presence.
 
 Example: 
-~~~~{.php}
+~~~~
 set listmem {}
 for {set i 1} {$i < 100} {incr i} {
     # run suspect operation 
@@ -1222,7 +1216,7 @@ for {set i 1} {$i < 100} {incr i} {
 
 The following command sequence allows you to take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
 
-~~~~{.php}
+~~~~
 vinit
 vclear
 vdisplay result
@@ -1256,13 +1250,13 @@ Allowed options are:
 Note that is required to use either option <i> -2d </i> or option <i> -3d</i>.
 
 Examples:
-~~~~{.php}
+~~~~
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkview -display result -3d -path ${imagedir}/${test_image}.png
 checkview -display result_2d -2d v2d -path ${imagedir}/${test_image}.png
 ~~~~
 
-~~~~{.php}
+~~~~
 box a 10 10 10
 box b 5 5 5 10 10 10
 bcut result b a
@@ -1270,7 +1264,7 @@ set result_vertices [explode result v]
 checkview -display result -2d -with ${result_vertices} -otherwise { a b } -l -path ${imagedir}/${test_image}.png
 ~~~~
 
-~~~~{.php}
+~~~~
 box a 10 10 10
 box b 5 5 5 10 10 10
 bcut result b a
@@ -1290,7 +1284,7 @@ Allowed options are:
  * <i>-tol N</i> -- used tolerance (default -0.01);
  * <i>-type N</i> -- used type, possible values are "closed" and "opened" (default "closed").
 
-~~~~{.php}
+~~~~
 checkfreebounds result 13
 ~~~~
 
@@ -1301,7 +1295,7 @@ Option <i>-type N</i> is used to select the type of counted free edges: closed o
 If the number of free edges in the resulting shape is unstable, the reference value should be set to "-1".
 As a result command *checkfreebounds* will return the following error:
 
-~~~~{.php}
+~~~~
 checkfreebounds result -1
 Error : Number of free edges is UNSTABLE
 ~~~~
@@ -1312,7 +1306,7 @@ Procedure *checkreal* checks the equality of two reals with a tolerance (relativ
 
 Use: checkreal name value expected tol_abs tol_rel
 
-~~~~{.php}
+~~~~
 checkreal "Some important value" $value 5 0.0001 0.01
 ~~~~
 
@@ -1336,7 +1330,7 @@ Allowed options are:
       the same sub-shapes with different location as different sub-shapes.
  * <i>-m msg</i> -- prints "msg" in case of error
 
-~~~~{.php}
+~~~~
 checknbshapes result -vertex 8 -edge 4
 ~~~~
 
@@ -1354,7 +1348,7 @@ This procedure checks color with tolerance (5x5 area).
 
 Next example will compare color of point with coordinates x=100 y=100 with RGB color R=1 G=0 B=0.
 If colors are not equal, procedure will check the nearest ones points (5x5 area)
-~~~~{.php}
+~~~~
 checkcolor 100 100 1 0 0
 ~~~~
 
@@ -1375,7 +1369,7 @@ Allowed options are:
 
 Options <i> -l, -s </i> and <i> -v</i> are independent and can be used in any order. Tolerance *epsilon* is the same for all options.
 
-~~~~{.php}
+~~~~
 checkprops result -s 6265.68 
 checkprops result -s -equal FaceBrep
 ~~~~
@@ -1391,7 +1385,7 @@ Allowed options are:
  * <i>-ref VALUE</i> -- list of reference values for each parameter in *NAME*; 
  * <i>-eps EPSILON</i> -- the epsilon defines relative precision of computation.
 
-~~~~{.php}
+~~~~
 checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1 -0} {0 -1} {20 10}} -eps 0.01
 ~~~~
 
@@ -1407,7 +1401,7 @@ Allowed options are:
  * <i>-equal CURVE</i> -- compares the length of input curves. Puts error if they are not equal;
  * <i>-notequal CURVE</i> -- compares the length of input curves. Puts error if they are equal.
 
-~~~~{.php}
+~~~~
 checklength cp1 -l 7.278
 checklength res -l -equal ext_1
 ~~~~
@@ -1438,33 +1432,33 @@ Note that options <i> -tri, -nod </i> and <i> -defl </i> do not work together wi
 Examples:
 
 Comparison with some reference values:
-~~~~{.php}
+~~~~
 checktrinfo result -tri 129 -nod 131 -defl 0.01
 ~~~~
 
 Comparison with another mesh:
-~~~~{.php}
+~~~~
 checktrinfo result -ref [tringo a]
 ~~~~
 
 Comparison of deflection with the max possible value:
-~~~~{.php}
+~~~~
 checktrinfo result -max_defl 1
 ~~~~
 
 Check that the current values are not equal to zero:
-~~~~{.php}
+~~~~
 checktrinfo result -tri -nod -defl
 ~~~~
 
 Check that the number of triangles and the number of nodes are not equal to some specific values:
-~~~~{.php}
+~~~~
 checktrinfo result -tri !10 -nod !8
 ~~~~
 
 It is possible to compare current values with reference values with some tolerances.
 Use options <i>-tol_\* </i> for that.
-~~~~{.php}
+~~~~
 checktrinfo result -defl 1 -tol_abs_defl 0.001
 ~~~~
 

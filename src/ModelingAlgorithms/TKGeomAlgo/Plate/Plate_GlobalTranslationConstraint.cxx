@@ -32,9 +32,13 @@ Plate_GlobalTranslationConstraint::Plate_GlobalTranslationConstraint(
     for (int j = 2; j <= SOfXY.Length(); j++)
     {
       if (j == (i + 1))
+      {
         myLXYZC.SetCoeff(i, j, 1.);
+      }
       else
+      {
         myLXYZC.SetCoeff(i, j, 0.);
+      }
     }
   }
 }

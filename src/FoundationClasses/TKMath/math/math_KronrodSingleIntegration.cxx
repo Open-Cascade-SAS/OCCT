@@ -126,7 +126,9 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
                     myErrorReached);
 
   if (!myIsDone)
+  {
     return;
+  }
 
   // double anAbsVal = std::abs(myValue);
 
@@ -184,20 +186,28 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
                     myErrorReached);
 
   if (!myIsDone)
+  {
     return;
+  }
 
   double anAbsVal = std::abs(myValue);
 
   myAbsolutError = myErrorReached;
   if (anAbsVal > aMinVol)
+  {
     myErrorReached /= anAbsVal;
+  }
 
   myNbIterReached++;
 
   if (myErrorReached <= theTolerance)
+  {
     return;
+  }
   if (myNbIterReached >= theMaxNbIter)
+  {
     return;
+  }
 
   NCollection_Sequence<double> anIntervals;
   NCollection_Sequence<double> anErrors;
@@ -238,32 +248,46 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
     myIsDone = GKRule(theFunction, a, c, aGaussP, aGaussW, aKronrodP, aKronrodW, v1, e1);
 
     if (!myIsDone)
+    {
       return;
+    }
 
     myIsDone = GKRule(theFunction, c, b, aGaussP, aGaussW, aKronrodP, aKronrodW, v2, e2);
 
     if (!myIsDone)
+    {
       return;
+    }
 
     myNbIterReached++;
 
     double deltav = v1 + v2 - aValues(nint);
     myValue += deltav;
     if (std::abs(deltav) <= Epsilon(std::abs(myValue)))
+    {
       ++count;
+    }
 
     double deltae = e1 + e2 - anErrors(nint);
     myAbsolutError += deltae;
     if (myAbsolutError <= Epsilon(std::abs(myValue)))
+    {
       ++count;
+    }
 
     if (std::abs(myValue) > aMinVol)
+    {
       myErrorReached = myAbsolutError / std::abs(myValue);
+    }
     else
+    {
       myErrorReached = myAbsolutError;
+    }
 
     if (count > 50)
+    {
       return;
+    }
 
     // Inserting new interval
 
@@ -336,7 +360,9 @@ bool math_KronrodSingleIntegration::GKRule(math_Function& theFunction,
   theValue += aVal1 * theKronrodW.Value(aNPnt2);
 
   if (i == aNPnt2)
+  {
     aGaussVal += aVal1 * theGaussW.Value(aNPnt2 / 2);
+  }
 
   // Compute Kronrod quadrature
   for (i = 1; i < aNPnt2; i += 2)
@@ -372,9 +398,13 @@ bool math_KronrodSingleIntegration::GKRule(math_Function& theFunction,
 
   double scale = 1.;
   if (asc != 0. && theError != 0.)
+  {
     scale = std::pow((200. * theError / asc), 1.5);
+  }
   if (scale < 1.)
+  {
     theError = std::min(theError, asc * scale);
+  }
 
   // theFunction.GetStateNumber();
 

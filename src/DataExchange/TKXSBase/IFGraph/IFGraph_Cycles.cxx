@@ -35,7 +35,9 @@ void IFGraph_Cycles::Evaluate()
   for (complist.Start(); complist.More(); complist.Next())
   {
     if (complist.IsSingle())
+    {
       continue;
+    }
     AddPart();
     GetFromIter(complist.Entities());
   }

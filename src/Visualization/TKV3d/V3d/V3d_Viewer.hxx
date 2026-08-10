@@ -350,108 +350,134 @@ public: //! @name privileged plane management
 
   Standard_EXPORT void DisplayPrivilegedPlane(const bool theOnOff, const double theSize = 1);
 
-public: //! @name grid management
-  //! Activates the grid in all views of <me>.
+public: //! @name grid management (CPU rendering, deprecated)
+  //! GPU shader grid lives on V3d_View::GridDisplay (mutually exclusive with this path).
+  //! Arc range on circular grids is unsupported here: warning + ignored.
+
+  //! Activates the grid in all views of <me>. Lazily creates the V3d_RectangularGrid
+  //! / V3d_CircularGrid on first use and displays it.
+  //! @param[in] aGridType     rectangular or circular
+  //! @param[in] aGridDrawMode lines, points or none
   Standard_EXPORT void ActivateGrid(const Aspect_GridType     aGridType,
                                     const Aspect_GridDrawMode aGridDrawMode);
 
   //! Deactivates the grid in all views of <me>.
   Standard_EXPORT void DeactivateGrid();
 
-  //! Show/Don't show grid echo to the hit point.
-  //! If TRUE,the grid echo will be shown at ConvertToGrid() time.
-  Standard_EXPORT void SetGridEcho(const bool showGrid = true);
-
-  //! Show grid echo <aMarker> to the hit point.
-  //! Warning: When the grid echo marker is not set,
-  //! a default marker is build with the attributes:
-  //! marker type : Aspect_TOM_STAR
-  //! marker color : Quantity_NOC_GRAY90
-  //! marker size : 3.0
-  Standard_EXPORT void SetGridEcho(const occ::handle<Graphic3d_AspectMarker3d>& aMarker);
-
-  //! Returns TRUE when grid echo must be displayed at hit point.
-  bool GridEcho() const { return myGridEcho; }
-
-  //! Returns true if a grid is activated in <me>.
+  //! Returns true if a grid is currently active in <me>.
   Standard_EXPORT bool IsGridActive();
 
-  //! Returns the defined grid in <me>.
+  //! Returns the currently selected grid (rectangular / circular per GridType()).
+  //! @param[in] theToCreate when false, returns null instead of allocating
   occ::handle<Aspect_Grid> Grid(bool theToCreate = true) { return Grid(myGridType, theToCreate); }
 
-  //! Returns the defined grid in <me>.
+  //! Returns the grid of the requested type.
+  //! @param[in] theGridType rectangular or circular
+  //! @param[in] theToCreate when false, returns null instead of allocating
   Standard_EXPORT occ::handle<Aspect_Grid> Grid(Aspect_GridType theGridType,
                                                 bool            theToCreate = true);
 
-  //! Returns the current grid type defined in <me>.
+  //! Returns the currently selected grid type (rectangular / circular).
   Aspect_GridType GridType() const { return myGridType; }
 
-  //! Returns the current grid draw mode defined in <me>.
+  //! Returns the draw mode (lines / points / none) of the active grid.
   Standard_EXPORT Aspect_GridDrawMode GridDrawMode();
 
-  //! Returns the definition of the rectangular grid.
+  //! Returns the rectangular grid definition.
+  //! @param[out] theXOrigin       grid origin X (snap reference)
+  //! @param[out] theYOrigin       grid origin Y
+  //! @param[out] theXStep         interval between two vertical lines
+  //! @param[out] theYStep         interval between two horizontal lines
+  //! @param[out] theRotationAngle in-plane rotation angle, radians
   Standard_EXPORT void RectangularGridValues(double& theXOrigin,
                                              double& theYOrigin,
                                              double& theXStep,
                                              double& theYStep,
                                              double& theRotationAngle);
 
-  //! Sets the definition of the rectangular grid.
-  //! <XOrigin>, <YOrigin> defines the origin of the grid.
-  //! <XStep> defines the interval between 2 vertical lines.
-  //! <YStep> defines the interval between 2 horizontal lines.
-  //! <RotationAngle> defines the rotation angle of the grid.
+  //! Sets the rectangular grid definition.
+  //! @param[in] XOrigin       grid origin X
+  //! @param[in] YOrigin       grid origin Y
+  //! @param[in] XStep         interval between two vertical lines
+  //! @param[in] YStep         interval between two horizontal lines
+  //! @param[in] RotationAngle in-plane rotation angle, radians
   Standard_EXPORT void SetRectangularGridValues(const double XOrigin,
                                                 const double YOrigin,
                                                 const double XStep,
                                                 const double YStep,
                                                 const double RotationAngle);
 
-  //! Returns the definition of the circular grid.
+  //! Returns the rectangular grid extent.
+  //! @param[out] theXSize  width  along grid X
+  //! @param[out] theYSize  height along grid Y
+  //! @param[out] theOffSet plane-normal displacement of the rendered grid
+  Standard_EXPORT void RectangularGridGraphicValues(double& theXSize,
+                                                    double& theYSize,
+                                                    double& theOffSet);
+
+  //! Sets the rectangular grid extent.
+  //! @param[in] XSize  width  along grid X
+  //! @param[in] YSize  height along grid Y
+  //! @param[in] OffSet plane-normal displacement
+  Standard_EXPORT void SetRectangularGridGraphicValues(const double XSize,
+                                                       const double YSize,
+                                                       const double OffSet);
+
+  //! Returns the circular grid definition.
+  //! @param[out] theXOrigin        grid origin X (snap reference)
+  //! @param[out] theYOrigin        grid origin Y
+  //! @param[out] theRadiusStep     radial interval between two concentric circles
+  //! @param[out] theDivisionNumber number of sectors per half-circle
+  //! @param[out] theRotationAngle  in-plane rotation angle, radians
   Standard_EXPORT void CircularGridValues(double& theXOrigin,
                                           double& theYOrigin,
                                           double& theRadiusStep,
                                           int&    theDivisionNumber,
                                           double& theRotationAngle);
 
-  //! Sets the definition of the circular grid.
-  //! <XOrigin>, <YOrigin> defines the origin of the grid.
-  //! <RadiusStep> defines the interval between 2 circles.
-  //! <DivisionNumber> defines the section number of one half circle.
-  //! <RotationAngle> defines the rotation angle of the grid.
+  //! Sets the circular grid definition.
+  //! @param[in] XOrigin        grid origin X
+  //! @param[in] YOrigin        grid origin Y
+  //! @param[in] RadiusStep     radial interval between two concentric circles
+  //! @param[in] DivisionNumber number of sectors per half-circle (>= 1)
+  //! @param[in] RotationAngle  in-plane rotation angle, radians
   Standard_EXPORT void SetCircularGridValues(const double XOrigin,
                                              const double YOrigin,
                                              const double RadiusStep,
                                              const int    DivisionNumber,
                                              const double RotationAngle);
 
-  //! Returns the location and the size of the grid.
+  //! Returns the circular grid extent.
+  //! @param[out] theRadius outermost ring radius
+  //! @param[out] theOffSet plane-normal displacement of the rendered grid
   Standard_EXPORT void CircularGridGraphicValues(double& theRadius, double& theOffSet);
 
-  //! Sets the location and the size of the grid.
-  //! <XSize> defines the width of the grid.
-  //! <YSize> defines the height of the grid.
-  //! <OffSet> defines the displacement along the plane normal.
+  //! Sets the circular grid extent.
+  //! @param[in] Radius outermost ring radius
+  //! @param[in] OffSet plane-normal displacement
   Standard_EXPORT void SetCircularGridGraphicValues(const double Radius, const double OffSet);
 
-  //! Returns the location and the size of the grid.
-  Standard_EXPORT void RectangularGridGraphicValues(double& theXSize,
-                                                    double& theYSize,
-                                                    double& theOffSet);
+  //! Toggle the snap-hit echo marker drawn by ConvertToGrid() at the snapped point.
+  //! @param[in] showGrid when TRUE, the marker is shown on every snap hit
+  Standard_EXPORT void SetGridEcho(const bool showGrid = true);
 
-  //! Sets the location and the size of the grid.
-  //! <XSize> defines the width of the grid.
-  //! <YSize> defines the height of the grid.
-  //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetRectangularGridGraphicValues(const double XSize,
-                                                       const double YSize,
-                                                       const double OffSet);
+  //! Replaces the default echo marker.
+  //! Default attributes when this overload is not called:
+  //! Aspect_TOM_STAR, Quantity_NOC_GRAY90, size 3.0.
+  //! @param[in] aMarker custom marker aspect to use for echo display
+  Standard_EXPORT void SetGridEcho(const occ::handle<Graphic3d_AspectMarker3d>& aMarker);
 
-  //! Display grid echo at requested point in the view.
+  //! Returns TRUE when the snap-hit echo marker is enabled.
+  bool GridEcho() const { return myGridEcho; }
+
+  //! Displays the echo marker in a single view.
+  //! @param[in] theView view in which to draw the echo
+  //! @param[in] thePoint world-space snapped point
   Standard_EXPORT void ShowGridEcho(const occ::handle<V3d_View>& theView,
                                     const Graphic3d_Vertex&      thePoint);
 
-  //! Temporarily hide grid echo.
+  //! Temporarily hides the echo marker in a single view (e.g. while not snapping).
+  //! @param[in] theView view in which to hide the echo
   Standard_EXPORT void HideGridEcho(const occ::handle<V3d_View>& theView);
 
 public: //! @name deprecated methods

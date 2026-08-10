@@ -37,7 +37,7 @@ BRepMeshData_Wire::~BRepMeshData_Wire() = default;
 
 int BRepMeshData_Wire::EdgesNb() const
 {
-  return myDEdges.Size();
+  return myDEdges.Length();
 }
 
 //=================================================================================================

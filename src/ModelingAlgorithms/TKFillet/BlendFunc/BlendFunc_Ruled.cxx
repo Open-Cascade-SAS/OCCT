@@ -433,28 +433,36 @@ bool BlendFunc_Ruled::IsTangencyPoint() const
 const gp_Vec& BlendFunc_Ruled::TangentOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Ruled::TangentOnS1");
+  }
   return tg1;
 }
 
 const gp_Vec& BlendFunc_Ruled::TangentOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Ruled::TangentOnS2");
+  }
   return tg2;
 }
 
 const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS1() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Ruled::Tangent2dOnS1");
+  }
   return tg12d;
 }
 
 const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS2() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Ruled::Tangent2dOnS2");
+  }
   return tg22d;
 }
 

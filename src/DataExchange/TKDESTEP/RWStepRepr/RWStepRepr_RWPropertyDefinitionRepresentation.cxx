@@ -37,7 +37,9 @@ void RWStepRepr_RWPropertyDefinitionRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "property_definition_representation"))
+  {
     return;
+  }
 
   // Own fields of PropertyDefinitionRepresentation
 

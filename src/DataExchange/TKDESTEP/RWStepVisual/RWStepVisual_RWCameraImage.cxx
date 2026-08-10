@@ -29,7 +29,9 @@ void RWStepVisual_RWCameraImage::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "camera_image"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

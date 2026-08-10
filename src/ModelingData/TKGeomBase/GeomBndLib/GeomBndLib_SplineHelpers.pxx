@@ -165,7 +165,9 @@ inline void ComputePoleIndexRange(const NCollection_Array1<double>& theKnots,
   theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
   theOutMaxIdx += theDegree - aMultiplier;
   if (!theIsPeriodic)
+  {
     theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
+  }
 }
 
 //! Reduce box using a selected range of poles [theMinIdx, theMaxIdx].
@@ -183,7 +185,9 @@ void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
   {
     int anI = anIdx;
     if (anI > thePoles.Upper())
+    {
       anI -= aNbPoles;
+    }
     aPolesBox.Add(thePoles.Value(anI));
   }
 
@@ -241,7 +245,9 @@ TBox BezierCurveBox(const occ::handle<TBezier>& theGeom,
     aBz->Segment(theU1, theU2);
     TBox aBox;
     for (int anI = 1; anI <= aBz->NbPoles(); ++anI)
+    {
       aBox.Add(aBz->Pole(anI));
+    }
     aBox.Enlarge(theTol);
     return aBox;
   }
@@ -288,7 +294,9 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
     double       aSegmentTol       = 2. * Precision::PConfusion();
     const double aMinDiff = std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
     if (aMinDiff < aSegmentTol)
+    {
       aSegmentTol = aMinDiff * 0.01;
+    }
     aBs->Segment(aU1, aU2, aSegmentTol);
 
     const int                         aK1    = aBs->FirstUKnotIndex();
@@ -335,7 +343,9 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
     aBs->Segment(aU1, aU2, 2.0 * Precision::PConfusion());
     TBox aBox;
     for (int anI = 1; anI <= aBs->NbPoles(); ++anI)
+    {
       aBox.Add(aBs->Pole(anI));
+    }
     aBox.Enlarge(theTol);
     return aBox;
   }
@@ -360,10 +370,14 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
   {
     const double aLast = (aK < aKMax) ? std::min(aU2, aKnots(aK)) : aU2;
     if (aLast > aFirst + Precision::PConfusion())
+    {
       aTol = std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
+    }
     aFirst = aLast;
     if (aFirst >= aU2 - Precision::PConfusion())
+    {
       break;
+    }
   }
   TBox aBox;
   if (!aB1.IsVoid())
@@ -412,15 +426,23 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
     const double aU = theU1 + aJ * aDU;
     const TPoint aP = theAdaptor.EvalD0(aU);
     if constexpr (std::is_same_v<TPoint, gp_Pnt>)
+    {
       aPnts(anI) = aP.XYZ();
+    }
     else
+    {
       aPnts(anI) = aP.XY();
+    }
     for (int aK = 0; aK < NDim; ++aK)
     {
       if (aCoordMin[aK] > aP.Coord(aK + 1))
+      {
         aCoordMin[aK] = aP.Coord(aK + 1);
+      }
       if (aCoordMax[aK] < aP.Coord(aK + 1))
+      {
         aCoordMax[aK] = aP.Coord(aK + 1);
+      }
     }
     if (anI > 1)
     {
@@ -428,18 +450,28 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
       const TPoint aPMid = theAdaptor.EvalD0(aU - aDU2);
       TCoord       aD;
       if constexpr (std::is_same_v<TPoint, gp_Pnt>)
+      {
         aD = aPMid.XYZ() - aPm;
+      }
       else
+      {
         aD = aPMid.XY() - aPm;
+      }
       for (int aK = 0; aK < NDim; ++aK)
       {
         if (aCoordMin[aK] > aPMid.Coord(aK + 1))
+        {
           aCoordMin[aK] = aPMid.Coord(aK + 1);
+        }
         if (aCoordMax[aK] < aPMid.Coord(aK + 1))
+        {
           aCoordMax[aK] = aPMid.Coord(aK + 1);
+        }
         const double aDiff = std::abs(aD.Coord(aK + 1));
         if (aDeflMax[aK] < aDiff)
+        {
           aDeflMax[aK] = aDiff;
+        }
       }
     }
   }
@@ -449,7 +481,9 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
   {
     const double aDiff = aDeflMax[aK];
     if (aDiff <= anEps)
+    {
       continue;
+    }
     double aCMin = aCoordMin[aK];
     double aCMax = aCoordMax[aK];
     for (int anI = 1; anI <= aNbSamples; ++anI)
@@ -466,7 +500,9 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
                                                                            anEps,
                                                                            true);
         if (aLocMin < aCMin)
+        {
           aCMin = aLocMin;
+        }
       }
       else if (aCMax - aPnts(anI).Coord(aK + 1) < aDiff)
       {
@@ -480,7 +516,9 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
                                                                            anEps,
                                                                            false);
         if (aLocMax > aCMax)
+        {
           aCMax = aLocMax;
+        }
       }
     }
     aCoordMin[aK] = aCMin;

@@ -119,7 +119,9 @@ static const char* Translate(const char* theStr, gp_Mat& M)
       M.SetRow(2, aC);
       theStr = Translate(theStr, aC);
       if (theStr)
+      {
         M.SetRow(3, aC);
+      }
     }
   }
   return theStr;
@@ -150,13 +152,19 @@ static const char* Translate(const char* theStr, gp_XYZ& P)
           theStr = ptr;
         }
         else
+        {
           theStr = nullptr;
+        }
       }
       else
+      {
         theStr = nullptr;
+      }
     }
     else
+    {
       theStr = nullptr;
+    }
   }
   return theStr;
 }

@@ -83,9 +83,13 @@ void IntPatch_RLine::ParamOnS1(double& a, double& b) const
     {
       double p = svtx(i).ParameterOnLine();
       if (p < a)
+      {
         a = p;
+      }
       if (p > b)
+      {
         b = p;
+      }
     }
   }
   else
@@ -104,9 +108,13 @@ void IntPatch_RLine::ParamOnS2(double& a, double& b) const
     {
       double p = svtx(i).ParameterOnLine();
       if (p < a)
+      {
         a = p;
+      }
       if (p > b)
+      {
         b = p;
+      }
     }
   }
   else
@@ -171,12 +179,16 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
                     if (lapt)
                     {
                       if (indl >= j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf >= j)
+                      {
                         indf--;
+                      }
                     }
                     APointDeleted = true;
                   }
@@ -215,12 +227,16 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
                     if (lapt)
                     {
                       if (indl >= j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf >= j)
+                      {
                         indf--;
+                      }
                     }
                     APointDeleted = true;
                   }
@@ -419,7 +435,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
 
 void IntPatch_RLine::Dump(const int theMode) const
 {
-  std::cout << " ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------" << std::endl;
+  std::cout << " ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------" << '\n';
   const int aNbPoints = NbPnts();
   const int aNbVertex = NbVertex();
 
@@ -452,7 +468,7 @@ void IntPatch_RLine::Dump(const int theMode) const
         {
           std::cout << "----> IntSurf_PntOn2S : " << polr << ", Pnt (" << Vertex(pol).Value().X()
                     << "," << Vertex(pol).Value().Y() << "," << Vertex(pol).Value().Z() << ")"
-                    << std::endl;
+                    << '\n';
         }
       }
 
@@ -489,5 +505,5 @@ void IntPatch_RLine::Dump(const int theMode) const
 
       break;
   }
-  std::cout << "\n--------------------------------------------------- (end) -------" << std::endl;
+  std::cout << "\n--------------------------------------------------- (end) -------" << '\n';
 }

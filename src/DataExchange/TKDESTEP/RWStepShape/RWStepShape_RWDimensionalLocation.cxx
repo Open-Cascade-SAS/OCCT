@@ -36,7 +36,9 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "dimensional_location"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspectRelationship
 
@@ -98,7 +100,9 @@ void RWStepShape_RWDimensionalLocation::WriteStep(
     SW.Send(ent->StepRepr_ShapeAspectRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepRepr_ShapeAspectRelationship::RelatingShapeAspect());
 

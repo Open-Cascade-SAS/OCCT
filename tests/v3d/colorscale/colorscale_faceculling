@@ -1,0 +1,17 @@
+puts "============"
+puts "AIS_ColorScale face-culling regression"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+vclear
+vinit View1 -width 490 -height 409
+vcolorscale cs -demo
+vaspects cs -faceCulling BACK
+
+if { [vreadpixel 20 25 -rgb -name] != "RED" } {
+  puts "Error: front face culled"
+}
+
+vdump ${imagedir}/${casename}.png

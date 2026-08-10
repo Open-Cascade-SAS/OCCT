@@ -82,17 +82,21 @@ void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationMa
                            isSecondOnPlane);
 
   if (!isFirstOnPlane)
+  {
     ComputeProjEdgePresentation(aPresentation,
                                 TopoDS::Edge(myFShape),
                                 FirstProjCurve,
                                 FirstPoint1,
                                 LastPoint1);
+  }
   if (!isSecondOnPlane)
+  {
     ComputeProjEdgePresentation(aPresentation,
                                 TopoDS::Edge(mySShape),
                                 SecondProjCurve,
                                 FirstPoint2,
                                 LastPoint2);
+  }
 
   gp_Circ FirstCirc  = (occ::down_cast<Geom_Circle>(FirstProjCurve))->Circ();
   gp_Circ SecondCirc = (occ::down_cast<Geom_Circle>(SecondProjCurve))->Circ();
@@ -110,11 +114,15 @@ void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationMa
   {
     double aPar = ElCLib::Parameter(FirstCirc, myFirstPoint);
     if (std::trunc(0.5 * LastPar1 / M_PI) != 0 && aPar < FirstPar1)
+    {
       aPar += 2 * M_PI * std::trunc(0.5 * LastPar1 / M_PI);
+    }
     double aRadius = FirstCirc.Radius();
 
     if (std::abs(myFirstPoint.Distance(myFirstCenter) - aRadius) >= Precision::Confusion())
+    {
       myFirstPoint = ElCLib::Value(aPar, FirstCirc);
+    }
     if (FirstPoint1.Distance(LastPoint1) > Precision::Confusion())
     {
       // check where is myFirstPoint
@@ -122,34 +130,48 @@ void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationMa
       {
         // myFirstPoint is out of Arc of FirstCircle
         if (FirstPoint1.Distance(myFirstPoint) < LastPoint1.Distance(myFirstPoint))
+        {
           myFirstPoint = FirstPoint1;
+        }
         else
+        {
           myFirstPoint = LastPoint1;
+        }
       }
     }
 
     aPar = ElCLib::Parameter(SecondCirc, mySecondPoint);
     if (std::trunc(0.5 * LastPar2 / M_PI) != 0 && aPar < FirstPar2)
+    {
       aPar += 2 * M_PI * std::trunc(0.5 * LastPar2 / M_PI);
+    }
 
     aRadius = SecondCirc.Radius();
     if (std::abs(mySecondPoint.Distance(mySecondCenter) - aRadius) >= Precision::Confusion())
+    {
       mySecondPoint = ElCLib::Value(aPar, SecondCirc);
+    }
     if (FirstPoint2.Distance(LastPoint2) > Precision::Confusion())
     {
       if (aPar > LastPar2 || aPar < FirstPar2)
       { // mySecondPoint is out of Arc of mySecondCircle
         if (FirstPoint2.Distance(mySecondPoint) < LastPoint2.Distance(mySecondPoint))
+        {
           mySecondPoint = FirstPoint2;
+        }
         else
+        {
           mySecondPoint = LastPoint2;
+        }
       }
     }
   }
   if (!myArrowSizeIsDefined)
+  {
     myArrowSize =
       (std::min(myFirstCenter.Distance(myFirstPoint), mySecondCenter.Distance(mySecondPoint)))
       * 0.05;
+  }
 
   occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
   occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
@@ -179,7 +201,9 @@ void PrsDim_EqualRadiusRelation::ComputeSelection(
   aSelection->Add(seg);
 
   if (!myAutomaticPosition)
+  {
     ComputeRadiusPosition();
+  }
 
   seg = new Select3D_SensitiveSegment(own, mySecondCenter, mySecondPoint);
   aSelection->Add(seg);
@@ -208,7 +232,9 @@ void PrsDim_EqualRadiusRelation::ComputeRadiusPosition()
 {
   if (myAutomaticPosition || myFirstCenter.Distance(myPosition) < Precision::Confusion()
       || mySecondCenter.Distance(myPosition) < Precision::Confusion())
+  {
     return;
+  }
 
   gp_Pnt aPosition;
 

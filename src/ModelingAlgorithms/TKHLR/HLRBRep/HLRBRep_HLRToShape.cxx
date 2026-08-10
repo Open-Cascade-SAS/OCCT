@@ -60,9 +60,13 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
       int v1, v2;
       int index = myAlgo->Index(S);
       if (index == 0)
+      {
         explor = true;
+      }
       else
+      {
         myAlgo->ShapeBounds(index).Bounds(v1, v2, e1, e2, f1, f2);
+      }
     }
     BRep_Builder B;
     B.MakeCompound(TopoDS::Compound(Result));
@@ -77,7 +81,9 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
         ed->HideCount(0);
       }
       else
+      {
         ed->Used(true);
+      }
     }
     if (explor)
     {
@@ -89,7 +95,9 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
       {
         int iface = Faces.FindIndex(Exp.Current());
         if (iface != 0)
+        {
           DrawFace(visible, typ, iface, DS, Result, added, In3d);
+        }
       }
       if (typ >= 3)
       {
@@ -113,7 +121,9 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
     {
 
       for (int iface = f1; iface <= f2; iface++)
+      {
         DrawFace(visible, typ, iface, DS, Result, added, In3d);
+      }
 
       if (typ >= 3)
       {
@@ -133,7 +143,9 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
     DS->Projector().Scaled(false);
   }
   if (!added)
+  {
     Result = TopoDS_Shape();
+  }
   return Result;
 }
 
@@ -157,20 +169,32 @@ void HLRBRep_HLRToShape::DrawFace(const bool                 visible,
     {
       bool todraw;
       if (typ == 1)
+      {
         todraw = Itf.IsoLine();
+      }
       else if (typ == 2) // outlines
       {
         if (In3d)
+        {
           todraw = Itf.Internal() || Itf.OutLine();
+        }
         else
+        {
           todraw = Itf.Internal();
+        }
       }
       else if (typ == 3)
+      {
         todraw = edf.Rg1Line() && !edf.RgNLine() && !Itf.OutLine();
+      }
       else if (typ == 4)
+      {
         todraw = edf.RgNLine() && !Itf.OutLine();
+      }
       else
+      {
         todraw = !Itf.IsoLine() && !Itf.Internal() && (!edf.Rg1Line() || Itf.OutLine());
+      }
 
       if (todraw)
       {
@@ -214,13 +238,21 @@ void HLRBRep_HLRToShape::DrawEdge(const bool        visible,
 {
   bool todraw = false;
   if (inFace)
+  {
     todraw = true;
+  }
   else if (typ == 3)
+  {
     todraw = ed.Rg1Line() && !ed.RgNLine();
+  }
   else if (typ == 4)
+  {
     todraw = ed.RgNLine();
+  }
   else
+  {
     todraw = !ed.Rg1Line();
+  }
 
   if (todraw)
   {
@@ -235,9 +267,13 @@ void HLRBRep_HLRToShape::DrawEdge(const bool        visible,
       {
         It.Visible(sta, tolsta, end, tolend);
         if (!In3d)
+        {
           E = HLRBRep::MakeEdge(ed.Geometry(), sta, end);
+        }
         else
+        {
           E = HLRBRep::MakeEdge3d(ed.Geometry(), sta, end);
+        }
         if (!E.IsNull())
         {
           B.Add(Result, E);
@@ -251,9 +287,13 @@ void HLRBRep_HLRToShape::DrawEdge(const bool        visible,
       {
         It.Hidden(sta, tolsta, end, tolend);
         if (!In3d)
+        {
           E = HLRBRep::MakeEdge(ed.Geometry(), sta, end);
+        }
         else
+        {
           E = HLRBRep::MakeEdge3d(ed.Geometry(), sta, end);
+        }
         if (!E.IsNull())
         {
           B.Add(Result, E);

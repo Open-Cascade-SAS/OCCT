@@ -62,7 +62,9 @@ Geom_Circle::Geom_Circle(const Ax2& A2, const double R)
 {
 
   if (R < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = A2;
 }
 
@@ -130,7 +132,9 @@ void Geom_Circle::SetRadius(const double R)
 {
 
   if (R < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   radius = R;
 }
 
@@ -180,7 +184,9 @@ Geom_Curve::ResD3 Geom_Circle::EvalD3(const double U) const
 gp_Vec Geom_Circle::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return ElCLib::CircleDN(U, pos, radius, N);
 }
 

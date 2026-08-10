@@ -45,7 +45,9 @@ occ::handle<SequenceClass> ShapePersistent_HSequence::instance<SequenceClass>::I
   occ::handle<SequenceClass> aSequence = new SequenceClass;
 
   for (occ::handle<Node> aNode = myFirst; aNode; aNode = aNode->Next())
+  {
     aSequence->Append(aNode->Item());
+  }
 
   return aSequence;
 }

@@ -154,8 +154,10 @@ void IGESGeom_ToolCircularArc::OwnDump(const occ::handle<IGESGeom_CircularArc>& 
   IGESData_DumpXYLZ(S, level, ent->EndPoint(), ent->Location(), ent->ZPlane());
   S << "\n";
   if (level <= 5)
+  {
     return;
+  }
   S << "  Normal Axis : ";
   IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

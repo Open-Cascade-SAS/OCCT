@@ -181,7 +181,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   {
     OS << B->Pole(i); // Pnt2d
     if (aRational)
+    {
       OS << B->Weight(i); // Real
+    }
   }
   return OS;
 }
@@ -210,7 +212,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   {
     OS << B->Pole(i); // Pnt2d
     if (aRational)
+    {
       OS << B->Weight(i);
+    }
   }
 
   for (i = 1; i <= aNbKnots; i++)
@@ -301,8 +305,8 @@ void BinTools_Curve2dSet::WriteCurve2d(const occ::handle<Geom2d_Curve>& C, BinTo
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_Curve2dSet::WriteCurve2d(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_Curve2dSet::WriteCurve2d(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }
@@ -429,13 +433,19 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Bez
   {
     IS >> poles(i); // Pnt2d
     if (rational)
+    {
       BinTools::GetReal(IS, weights(i));
+    }
   }
 
   if (rational)
+  {
     B = new Geom2d_BezierCurve(poles, weights);
+  }
   else
+  {
     B = new Geom2d_BezierCurve(poles);
+  }
 
   return IS;
 }
@@ -466,7 +476,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   {
     IS >> poles(i); // Pnt2d
     if (rational)
+    {
       BinTools::GetReal(IS, weights(i));
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -479,9 +491,13 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   }
 
   if (rational)
+  {
     B = new Geom2d_BSplineCurve(poles, weights, knots, mults, degree, periodic);
+  }
   else
+  {
     B = new Geom2d_BSplineCurve(poles, knots, mults, degree, periodic);
+  }
 
   return IS;
 }
@@ -597,8 +613,8 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream&          IS
   {
     C = nullptr;
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_Curve2dSet::ReadCurve2d(...)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_Curve2dSet::ReadCurve2d(...)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
@@ -614,7 +630,7 @@ void BinTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRange
   if (IS.fail() || strcmp(buffer, "Curve2ds"))
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table" << std::endl;
+    aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table" << '\n';
 #ifdef OCCT_DEBUG
     std::cout << "Curve2dSet buffer: " << buffer << std::endl;
 #endif

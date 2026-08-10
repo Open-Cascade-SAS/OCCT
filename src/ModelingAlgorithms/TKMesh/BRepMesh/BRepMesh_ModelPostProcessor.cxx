@@ -43,7 +43,9 @@ public:
   {
     const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(theEdgeIndex);
     if (aDEdge->GetCurve()->ParametersNb() == 0)
+    {
       return;
+    }
 
     if (aDEdge->IsFree())
     {

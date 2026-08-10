@@ -78,7 +78,9 @@ void BinTools_ShapeSet::Clear()
 int BinTools_ShapeSet::Add(const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
+  {
     return 0;
+  }
   myLocations.Add(theShape.Location());
   TopoDS_Shape aS2 = theShape;
   aS2.Location(TopLoc_Location());
@@ -87,7 +89,9 @@ int BinTools_ShapeSet::Add(const TopoDS_Shape& theShape)
   {
     AddShape(aS2);
     for (TopoDS_Iterator its(aS2, false, false); its.More(); its.Next())
+    {
       Add(its.Value());
+    }
     anIndex = myShapes.Add(aS2);
   }
   return anIndex;
@@ -181,7 +185,9 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
         myCurves2d.Add(CR->PCurve());
         ChangeLocations().Add(CR->Location());
         if (CR->IsCurveOnClosedSurface())
+        {
           myCurves2d.Add(CR->PCurve2());
+        }
       }
       else if (CR->IsRegularity())
       {
@@ -212,7 +218,9 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
           myNodes.Add(CR->PolygonOnTriangulation());
           ChangeLocations().Add(CR->Location());
           if (CR->IsPolygonOnClosedTriangulation())
+          {
             myNodes.Add(CR->PolygonOnTriangulation2());
+          }
         }
         else if (CR->IsPolygonOnSurface())
         {
@@ -220,7 +228,9 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
           myPolygons2D.Add(CR->Polygon());
           ChangeLocations().Add(CR->Location());
           if (CR->IsPolygonOnClosedSurface())
+          {
             myPolygons2D.Add(CR->Polygon2());
+          }
         }
       }
       itrc.Next();
@@ -245,7 +255,9 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
     {
       occ::handle<Poly_Triangulation> Tr = TF->Triangulation();
       if (!Tr.IsNull())
+      {
         myTriangulations.Add(Tr, needNormals);
+      }
     }
 
     ChangeLocations().Add(TF->Location());
@@ -260,19 +272,29 @@ void BinTools_ShapeSet::WriteGeometry(Standard_OStream&            OS,
   Message_ProgressScope aPS(theRange, "Writing geometry", 6);
   myCurves2d.Write(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
   myCurves.Write(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
   WritePolygon3D(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
   WritePolygonOnTriangulation(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
   mySurfaces.Write(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
   WriteTriangulation(OS, aPS.Next());
 }
 
@@ -297,7 +319,9 @@ void BinTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
 
   WriteGeometry(OS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   //-----------------------------------------
   // write the shapes
@@ -358,7 +382,9 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
     if (lv > 0)
     {
       for (lv--; lv > 0 && (vers[lv] == '\r' || vers[lv] == '\n'); lv--)
+      {
         vers[lv] = '\0';
+      }
     }
 
     for (int i = BinTools_FormatVersion_LOWER; i <= BinTools_FormatVersion_UPPER; ++i)
@@ -378,7 +404,7 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   if (IS.fail())
   {
     std::cout << "BinTools_ShapeSet::Read: File was not written with this version of the topology"
-              << std::endl;
+              << '\n';
     return;
   }
 
@@ -392,7 +418,9 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   Message_ProgressScope aPSouter(theRange, "Reading", 2);
   ReadGeometry(IS, aPSouter.Next());
   if (!aPSouter.More())
+  {
     return;
+  }
   //-----------------------------------------
   // read the shapes
   //-----------------------------------------
@@ -402,7 +430,7 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   if (IS.fail() || strcmp(buffer, "TShapes"))
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_ShapeSet::Read: Not a TShape table" << std::endl;
+    aMsg << "BinTools_ShapeSet::Read: Not a TShape table" << '\n';
     throw Standard_Failure(aMsg.str().c_str());
     return;
   }
@@ -425,8 +453,10 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
 void BinTools_ShapeSet::Write(const TopoDS_Shape& S, Standard_OStream& OS)
 {
   if (S.IsNull())
+  {
 
     OS << '*';
+  }
   else
   {
     // {TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL}
@@ -460,7 +490,9 @@ void BinTools_ShapeSet::ReadFlagsAndSubs(TopoDS_Shape&          S,
   {
     ReadSubs(SS, IS, nbShapes);
     if (!SS.IsNull())
+    {
       AddShapes(S, SS);
+    }
   } while (!SS.IsNull());
 
   S.Free(aFree);
@@ -477,11 +509,13 @@ void BinTools_ShapeSet::ReadFlagsAndSubs(TopoDS_Shape&          S,
   // check
 
   if (FormatNb() == BinTools_FormatVersion_VERSION_1)
+  {
     if (T == TopAbs_FACE)
     {
       const TopoDS_Face& F = TopoDS::Face(S);
       BRepTools::Update(F);
     }
+  }
 }
 
 //=================================================================================================
@@ -491,7 +525,9 @@ void BinTools_ShapeSet::ReadSubs(TopoDS_Shape& S, Standard_IStream& IS, const in
   char aChar = '\0';
   IS >> aChar;
   if (aChar == '*')
+  {
     S = TopoDS_Shape();
+  }
   else
   {
     TopAbs_Orientation anOrient;
@@ -515,23 +551,33 @@ void BinTools_ShapeSet::ReadGeometry(Standard_IStream& IS, const Message_Progres
   Message_ProgressScope aPS(theRange, "Reading geometry", 6);
   myCurves2d.Read(IS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   myCurves.Read(IS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   ReadPolygon3D(IS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   ReadPolygonOnTriangulation(IS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   mySurfaces.Read(IS, aPS.Next());
   if (!aPS.More())
+  {
     return;
+  }
 
   ReadTriangulation(IS, aPS.Next());
 }
@@ -639,11 +685,15 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
           occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itrc.Value());
           GC->Range(first, last);
           if (!CR->IsCurveOnClosedSurface())
+          {
             // -2- Curve on surf
             OS << (uint8_t)2;
+          }
           else
+          {
             // -3- Curve on closed surf
             OS << (uint8_t)3;
+          }
           BinTools::PutInteger(OS, myCurves2d.Index(CR->PCurve()));
           if (CR->IsCurveOnClosedSurface())
           { //+ int|char
@@ -706,11 +756,15 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
             occ::handle<BRep_PolygonOnTriangulation> PT =
               occ::down_cast<BRep_PolygonOnTriangulation>(itrc.Value());
             if (!CR->IsPolygonOnClosedTriangulation())
+            {
               // -6- Polygon on triangulation
               OS << (uint8_t)6;
+            }
             else
+            {
               // -7- Polygon on closed triangulation
               OS << (uint8_t)7;
+            }
             BinTools::PutInteger(OS, myNodes.FindIndex(PT->PolygonOnTriangulation()));
 
             if (CR->IsPolygonOnClosedTriangulation())
@@ -751,17 +805,21 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
           BinTools::PutInteger(OS, myTriangulations.FindIndex(TF->Triangulation()));
         }
         else
+        {
           OS << (uint8_t)1;
+        }
       }
       else
+      {
         OS << (uint8_t)0; // without triangulation
+      }
     }
   }
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_ShapeSet::WriteGeometry(S,OS)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_ShapeSet::WriteGeometry(S,OS)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }
@@ -808,7 +866,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
           {
             val = (int)IS.get(); // case {0|1|2|3}
             if (val > 0 && val <= 3)
+            {
               BinTools::GetReal(IS, p1);
+            }
           }
           else
           {
@@ -823,7 +883,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
               IS.seekg(aPos);
               val = (int)IS.get();
               if (val > 0 && val <= 3)
+              {
                 BinTools::GetReal(IS, p1);
+              }
             }
           }
           occ::handle<BRep_PointRepresentation> PR;
@@ -835,7 +897,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
             case 1: {
               BinTools::GetInteger(IS, c);
               if (myCurves.Curve(c).IsNull())
+              {
                 break;
+              }
               occ::handle<BRep_PointOnCurve> POC = new BRep_PointOnCurve(p1, myCurves.Curve(c), L);
               PR                                 = POC;
             }
@@ -845,7 +909,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
               BinTools::GetInteger(IS, pc);
               BinTools::GetInteger(IS, s);
               if (myCurves2d.Curve2d(pc).IsNull() || mySurfaces.Surface(s).IsNull())
+              {
                 break;
+              }
 
               occ::handle<BRep_PointOnCurveOnSurface> POC =
                 new BRep_PointOnCurveOnSurface(p1,
@@ -860,7 +926,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
               BinTools::GetReal(IS, p2);
               BinTools::GetInteger(IS, s);
               if (mySurfaces.Surface(s).IsNull())
+              {
                 break;
+              }
 
               occ::handle<BRep_PointOnSurface> POC =
                 new BRep_PointOnSurface(p1, p2, mySurfaces.Surface(s), L);
@@ -871,7 +939,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
             default: {
               Standard_SStream aMsg;
               aMsg << "BinTools_SurfaceSet::ReadGeometry: UnExpected BRep_PointRepresentation = "
-                   << val << std::endl;
+                   << val << '\n';
               throw Standard_Failure(aMsg.str().c_str());
             }
           }
@@ -978,7 +1046,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
 
                 if (myCurves2d.Curve2d(pc).IsNull() || (closed && myCurves2d.Curve2d(pc2).IsNull())
                     || mySurfaces.Surface(s).IsNull())
+                {
                   break;
+                }
 
                 if (closed)
                 {
@@ -1043,7 +1113,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
                 BinTools::GetInteger(IS, s2);
                 BinTools::GetInteger(IS, l2);
                 if (mySurfaces.Surface(s).IsNull() || mySurfaces.Surface(s2).IsNull())
+                {
                   break;
+                }
                 myBuilder.Continuity(E,
                                      mySurfaces.Surface(s),
                                      mySurfaces.Surface(s2),
@@ -1064,7 +1136,9 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
                 closed = (val == 7);
                 BinTools::GetInteger(IS, pt);
                 if (closed)
+                {
                   BinTools::GetInteger(IS, pt2);
+                }
 
                 BinTools::GetInteger(IS, t);
                 BinTools::GetInteger(IS, l);
@@ -1087,7 +1161,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
                 break;
               default: {
                 Standard_SStream aMsg;
-                aMsg << "Unexpected Curve Representation =" << val << std::endl;
+                aMsg << "Unexpected Curve Representation =" << val << '\n';
                 throw Standard_Failure(aMsg.str().c_str());
               }
             }
@@ -1165,7 +1239,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
 
       default: {
         Standard_SStream aMsg;
-        aMsg << "Unexpected topology type = " << T << std::endl;
+        aMsg << "Unexpected topology type = " << T << '\n';
         throw Standard_Failure(aMsg.str().c_str());
         break;
       }
@@ -1174,8 +1248,8 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_ShapeSet::ReadGeometry(S,OS)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_ShapeSet::ReadGeometry(S,OS)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }

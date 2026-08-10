@@ -200,9 +200,13 @@ void math_GlobOptMin::Perform(const bool isFindSingleSolution)
   {
     double currentLength = myB(i) - myA(i);
     if (currentLength < minLength)
+    {
       minLength = currentLength;
+    }
     if (currentLength > maxLength)
+    {
       maxLength = currentLength;
+    }
 
     myV(i) = 0.0;
   }
@@ -234,9 +238,13 @@ void math_GlobOptMin::Perform(const bool isFindSingleSolution)
   else
   {
     if (myC > 1.0)
+    {
       myE3 = -maxLength * myTol / 4.0;
+    }
     else
+    {
       myE3 = -maxLength * myTol * myC / 4.0;
+    }
   }
 
   // Search single solution and current solution in its neighborhood.
@@ -276,7 +284,9 @@ bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
       theVal = newtonMinimum.Minimum();
 
       if (isInside(theOutPnt))
+      {
         return true;
+      }
     }
   }
 
@@ -295,7 +305,9 @@ bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
       theVal = bfgs.Minimum();
 
       if (isInside(theOutPnt))
+      {
         return true;
+      }
     }
   }
 
@@ -304,7 +316,9 @@ bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
   {
     math_Matrix m(1, myN, 1, myN, 0.0);
     for (i = 1; i <= myN; i++)
+    {
       m(i, i) = 1.0;
+    }
 
     math_Powell powell(*myFunc, 1e-10);
     powell.Perform(*myFunc, thePnt, m);
@@ -315,7 +329,9 @@ bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
       theVal = powell.Minimum();
 
       if (isInside(theOutPnt))
+      {
         return true;
+      }
     }
   }
 
@@ -362,9 +378,13 @@ void math_GlobOptMin::computeInitialValues()
   myC = myInitC;
   aLipConst *= std::sqrt(myN) / aStep;
   if (aLipConst < myC * aMinEps)
+  {
     myC = std::max(aLipConst * aMinEps, aMinLC);
+  }
   else if (aLipConst > myC * aMaxEps)
+  {
     myC = std::min(myC * aMaxEps, aMaxLC);
+  }
 }
 
 //=================================================================================================
@@ -389,7 +409,9 @@ void math_GlobOptMin::computeGlobalExtremum(int j)
     }
 
     if (CheckFunctionalStopCriteria())
+    {
       return; // Best possible value is obtained.
+    }
 
     if (j == 1)
     {
@@ -408,7 +430,9 @@ void math_GlobOptMin::computeGlobalExtremum(int j)
         // Piyavsky midpoint estimation.
         double aParam = (2 * myX(1) - myV(1)) * 0.5 + (aPrevVal - d) * 0.5 / myC;
         if (Precision::IsInfinite(aPrevVal))
+        {
           aParam = myX(1) - myV(1) * 0.5; // Protection from upper dimension step.
+        }
 
         myX(1)      = aParam;
         double aVal = 0;
@@ -429,7 +453,9 @@ void math_GlobOptMin::computeGlobalExtremum(int j)
       checkAddCandidate(aStepBestPoint, aStepBestValue);
 
       if (CheckFunctionalStopCriteria())
+      {
         return; // Best possible value is obtained.
+      }
 
       myV(1)     = std::min(myE2 + std::abs(myF - d) / myC, myMaxV(1));
       myLastStep = myV(1);
@@ -441,17 +467,23 @@ void math_GlobOptMin::computeGlobalExtremum(int j)
 
       // Nullify steps on lower dimensions.
       for (i = 1; i < j; i++)
+      {
         myV(i) = 0.0;
+      }
     }
     if (j < myN)
     {
       double aUpperDimStep = std::max(myV(j), myE2);
       if (myV(j + 1) > aUpperDimStep)
       {
-        if (aUpperDimStep > myMaxV(j + 1)) // Case of too big step.
+        if (aUpperDimStep > myMaxV(j + 1))
+        { // Case of too big step.
           myV(j + 1) = myMaxV(j + 1);
+        }
         else
+        {
           myV(j + 1) = aUpperDimStep;
+        }
       }
     }
   }
@@ -466,7 +498,9 @@ bool math_GlobOptMin::isInside(const math_Vector& thePnt)
   for (i = 1; i <= myN; i++)
   {
     if (thePnt(i) < myGlobA(i) || thePnt(i) > myGlobB(i))
+    {
       return false;
+    }
   }
 
   return true;
@@ -496,7 +530,9 @@ bool math_GlobOptMin::isStored(const math_Vector& thePnt)
         }
       }
       if (isSame)
+      {
         return true;
+      }
     }
   }
   else
@@ -511,7 +547,9 @@ bool math_GlobOptMin::isStored(const math_Vector& thePnt)
       {
         math_Vector aVec(1, myN);
         for (int aSolDim = 1; aSolDim <= myN; aSolDim++)
+        {
           aVec(aSolDim) = myY(aSolIdx * myN + aSolDim);
+        }
 
         myFilter.Add(aVec, aVec);
       }
@@ -541,7 +579,9 @@ void math_GlobOptMin::Points(const int theIndex, math_Vector& theSol)
   int j;
 
   for (j = 1; j <= myN; j++)
+  {
     theSol(j) = myY((theIndex - 1) * myN + j);
+  }
 }
 
 //=================================================================================================
@@ -583,7 +623,9 @@ void math_GlobOptMin::ComputeInitSol()
     aPnt = myA + (myB - myA) * (i - 1) / 2.0;
 
     if (computeLocalExtremum(aPnt, aVal, aPnt))
+    {
       checkAddCandidate(aPnt, aVal);
+    }
   }
 }
 
@@ -597,9 +639,13 @@ void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const double 
     if (!isStored(thePnt))
     {
       if ((theValue - myF) * myZ > 0.0)
+      {
         myF = theValue;
+      }
       for (int j = 1; j <= myN; j++)
+      {
         myY.Append(thePnt(j));
+      }
       mySolCount++;
     }
   }
@@ -613,7 +659,9 @@ void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const double 
     myF = theValue;
     myY.Clear();
     for (int j = 1; j <= myN; j++)
+    {
       myY.Append(thePnt(j));
+    }
     mySolCount = 1;
 
     isFirstCellFilterInvoke = true;

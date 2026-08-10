@@ -319,13 +319,19 @@ int IntPatch_Polyhedron::TriConnex(const int Triang,
     colE = (Pedge - 1) - (ligE * nbdeltaVp1);
     // Horizontal
     if (ligP == ligE)
+    {
       typE = 1;
-    // Vertical
+      // Vertical
+    }
     else if (colP == colE)
+    {
       typE = 2;
-    // Oblique
+      // Oblique
+    }
     else
+    {
       typE = 3;
+    }
   }
   else
   {
@@ -421,9 +427,13 @@ int IntPatch_Polyhedron::TriConnex(const int Triang,
       linT = (1 > ligP) ? 1 : ligP;                   //--linT=Max(1, ligP);
       colT = (1 > (colP + colP)) ? 1 : (colP + colP); //--colT=Max(1, colP+colP);
       if (ligP == 0)
+      {
         linO = ligP + 1;
+      }
       else
+      {
         linO = ligP - 1;
+      }
       colO = colP;
     }
     else

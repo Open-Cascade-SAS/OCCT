@@ -161,12 +161,18 @@ void DsgPrs::ComputePlanarFacesLengthPresentation(const double  FirstArrowLength
     gp_Dir LengthDir(gp_Vec(EndOfArrow1, EndOfArrow2));
     if ((FirstArrowLength + SecondArrowLength) * (FirstArrowLength + SecondArrowLength)
         < EndOfArrow1.SquareDistance(EndOfArrow2))
+    {
       DirOfArrow1 = -LengthDir;
+    }
     else
+    {
       DirOfArrow1 = LengthDir;
+    }
   }
-  else // null length
+  else
+  { // null length
     DirOfArrow1 = PlaneOfFaces.Axis().Direction();
+  }
 }
 
 //=================================================================================================
@@ -204,9 +210,13 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const double FirstArrowLe
 
     SecondSurf->D1(LocalU, LocalV, EndOfArrow2, D1U, D1V);
     if (D1U.SquareMagnitude() <= SquareTolerance || D1V.SquareMagnitude() <= SquareTolerance)
+    {
       LocalDir = gp_Dir(gp_Vec(AttachmentPoint1, ProjectorOnSurface.Point(i)));
+    }
     else
+    {
       LocalDir = gp_Dir(D1U ^ D1V);
+    }
     if (DirAttach.IsParallel(LocalDir, Precision::Angular())
         && ProjectorOnSurface.Distance(i) < MinDist)
     {
@@ -219,9 +229,13 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const double FirstArrowLe
 
   if ((FirstArrowLength + SecondArrowLength) * (FirstArrowLength + SecondArrowLength)
       < AttachmentPoint1.SquareDistance(EndOfArrow2))
+  {
     DirOfArrow1 = -DirAttach;
+  }
   else
+  {
     DirOfArrow1 = DirAttach;
+  }
 
   if (EndOfArrow2.SquareDistance(AttachmentPoint2) > Precision::SquareConfusion())
   {
@@ -341,7 +355,9 @@ void DsgPrs::ComputeFacesAnglePresentation(const double  ArrowLength,
     EndOfArrow2 = ElCLib::Value(Par2, AngleCirc);
     double beta = 0.;
     if (AngleCirc.Radius() > Precision::Confusion())
+    {
       beta = ArrowLength / AngleCirc.Radius();
+    }
     gp_Pnt OriginOfArrow1 = ElCLib::Value(Par1 + beta, AngleCirc);
     gp_Pnt OriginOfArrow2 = ElCLib::Value(Par2 - beta, AngleCirc);
     DirOfArrow1           = gp_Dir(gp_Vec(OriginOfArrow1, EndOfArrow1));
@@ -366,11 +382,15 @@ void DsgPrs::ComputeFacesAnglePresentation(const double  ArrowLength,
   // Line or arc from AttachmentPoint2 to its "projection"
   gp_Lin SecondLin(CenterPoint, dir2);
   if (SecondLin.Contains(AttachmentPoint2, Precision::Confusion()))
+  {
     ProjAttachPoint2 = AttachmentPoint2;
+  }
   else
   {
     if (isPlane)
+    {
       ProjAttachPoint2 = ElCLib::Value(ElCLib::Parameter(SecondLin, AttachmentPoint2), SecondLin);
+    }
     else
     {
       gp_Lin LineOfAxis(AxisOfSurf);
@@ -435,9 +455,13 @@ void DsgPrs::ComputeFilletRadiusPresentation(const double /*ArrowLength*/,
     vec2 *= FilletCirc.Radius();
     gp_Vec PosVec;
     if (!Center.IsEqual(Position, Precision::Confusion()))
+    {
       PosVec.SetXYZ(gp_Vec(Center, Position).XYZ());
+    }
     else
+    {
       PosVec.SetXYZ((vec1.Added(vec2)).XYZ());
+    }
     gp_Vec NormalOfPlane = vec1 ^ vec2;
     gp_Vec Normal1       = NormalOfPlane ^ vec1;
     gp_Vec Normal2       = NormalOfPlane ^ vec2;
@@ -451,9 +475,13 @@ void DsgPrs::ComputeFilletRadiusPresentation(const double /*ArrowLength*/,
       gp_Dir direction(PosVec);
       double angle = dir1.Angle(direction);
       if ((dir1 ^ direction) * NormalDir < 0.0e0)
+      {
         angle = -angle;
+      }
       if (Sign1 == -1)
+      {
         angle += M_PI;
+      }
       EndOfArrow = ElCLib::Value(angle, FilletCirc); //***
     }
     else
@@ -536,36 +564,52 @@ double DsgPrs::DistanceFromApex(const gp_Elips& elips, const gp_Pnt& Apex, const
   double dist;
   double parApex = ElCLib::Parameter(elips, Apex);
   if (parApex == 0.0 || parApex == M_PI)
-  {                     // Major case
-    if (parApex == 0.0) // pos Apex
+  { // Major case
+    if (parApex == 0.0)
+    { // pos Apex
       dist = (par < M_PI) ? par : (2 * M_PI - par);
-    else // neg Apex
+    }
+    else
+    { // neg Apex
       dist = (par < M_PI) ? (M_PI - par) : (par - M_PI);
+    }
   }
   else
   {                          // Minor case
     if (parApex == M_PI / 2) // pos Apex
     {
       if (par <= parApex + M_PI && par > parApex)
+      {
         dist = par - parApex;
+      }
       else
       {
         if (par > parApex + M_PI)
+        {
           dist = 2 * M_PI - par + parApex;
+        }
         else
+        {
           dist = parApex - par; // 0 < par < M_PI/2
+        }
       }
     }
     else // neg Apex == 3/2 PI
     {
       if (par <= parApex && par >= M_PI / 2)
+      {
         dist = parApex - par;
+      }
       else
       {
         if (par > parApex)
+        {
           dist = par - parApex;
+        }
         else
+        {
           dist = par + M_PI / 2; // 0 < par < PI/2
+        }
       }
     }
   }

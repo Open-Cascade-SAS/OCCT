@@ -49,9 +49,13 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
   { // szv#4:S4163:12Mar99 `st=` not needed
     // Initialise HArray1 only if there is no error reading its Length
     if (tempNbSeg <= 0)
+    {
       PR.AddFail("Number of Visible-Blank Segments : Not Positive");
+    }
     else
+    {
       tempSegmentLengths = new NCollection_HArray1<double>(1, tempNbSeg);
+    }
   }
 
   // Read the HArray1 only if its Length was read without any Error
@@ -61,10 +65,10 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
     for (I = 1; I <= tempNbSeg; I++)
     {
       double tempReal;
-      if (PR.ReadReal(PR.Current(),
-                      "Length of Segment",
-                      tempReal)) // szv#4:S4163:12Mar99 `st=` not needed
+      if (PR.ReadReal(PR.Current(), "Length of Segment", tempReal))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         tempSegmentLengths->SetValue(I, tempReal);
+      }
     }
   }
 
@@ -84,7 +88,9 @@ void IGESGraph_ToolLineFontDefPattern::WriteOwnParams(
   IW.Send(up);
   int I;
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->Length(I));
+  }
   IW.Send(ent->DisplayPattern());
 }
 
@@ -104,7 +110,9 @@ void IGESGraph_ToolLineFontDefPattern::OwnCopy(
   int I;
   int up = another->NbSegments();
   for (I = 1; I <= up; I++)
+  {
     tempSegmentLengths->SetValue(I, another->Length(I));
+  }
   occ::handle<TCollection_HAsciiString> tempDisplayPattern =
     new TCollection_HAsciiString(another->DisplayPattern());
 
@@ -133,9 +141,13 @@ void IGESGraph_ToolLineFontDefPattern::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() == 0)
+  {
     ach->AddWarning("Line Font Rank is zero");
+  }
   else if (ent->RankLineFont() < 1 || ent->RankLineFont() > 5)
+  {
     ach->AddWarning("Invalid Value As Line Font Rank(Valid Range 1 to 5)");
+  }
 }
 
 void IGESGraph_ToolLineFontDefPattern::OwnDump(const occ::handle<IGESGraph_LineFontDefPattern>& ent,
@@ -156,8 +168,10 @@ void IGESGraph_ToolLineFontDefPattern::OwnDump(const occ::handle<IGESGraph_LineF
     for (int I = 1; I <= nb; I++)
     {
       if (ent->IsVisible(I))
+      {
         S << "  " << I;
+      }
     }
-    S << std::endl;
+    S << '\n';
   }
 }

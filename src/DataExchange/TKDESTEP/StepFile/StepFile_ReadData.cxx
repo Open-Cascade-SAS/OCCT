@@ -231,7 +231,9 @@ void StepFile_ReadData::RecordListStart()
       default: {
         char aBufSub[10];
         if (myNumSub > 9)
+        {
           Sprintf(aBufSub, "$%d", myNumSub);
+        }
         else
         {
           aBufSub[0] = '$';
@@ -260,12 +262,18 @@ void StepFile_ReadData::CreateNewArg()
   myNbPar++;
   aNewArg->myType = myTypeArg;
   if (myTypeArg == Interface_ParamSub)
+  {
     aNewArg->myValue = mySubArg;
+  }
   else
+  {
     GetResultText(&aNewArg->myValue);
+  }
 
   if (myTypeArg == Interface_ParamMisc)
+  {
     myErrorArg = true;
+  }
 
   if (myCurRec->myFirst == nullptr)
   {
@@ -329,7 +337,9 @@ void StepFile_ReadData::FinalOfScope()
   Scope*  anOldScope;
   Record* aRecord;
   if (myCurScope == nullptr)
+  {
     return;
+  }
 
   aRecord          = CreateNewRecord();
   aRecord->myIdent = TextValue::Scope;
@@ -384,7 +394,9 @@ void StepFile_ReadData::ClearRecorder(const int theMode)
 bool StepFile_ReadData::GetArgDescription(Interface_ParamType* theType, char** theValue)
 {
   if (myCurrArg == nullptr)
+  {
     return false;
+  }
   *theType  = myCurrArg->myType;
   *theValue = myCurrArg->myValue;
   myCurrArg = myCurrArg->myNext;
@@ -406,7 +418,9 @@ void StepFile_ReadData::GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage
 bool StepFile_ReadData::GetRecordDescription(char** theIdent, char** theType, int* theNbArg)
 {
   if (myCurRec == nullptr)
+  {
     return false;
+  }
   *theIdent = myCurRec->myIdent;
   *theType  = myCurRec->myType;
   *theNbArg = (myCurRec->myFirst != nullptr);
@@ -544,9 +558,13 @@ void StepFile_ReadData::AddNewRecord(Record* theNewRecord)
 {
   myNbRec++;
   if (myFirstRec == nullptr)
+  {
     myFirstRec = theNewRecord;
+  }
   if (myLastRec != nullptr)
+  {
     myLastRec->myNext = theNewRecord;
+  }
   myLastRec = theNewRecord;
 }
 
@@ -574,7 +592,9 @@ void StepFile_ReadData::PrintRecord(Record* theRecord)
          theRecord->myType,
          (theRecord->myFirst ? theRecord->myFirst->myValue : ""));
   if (myModePrint < 2)
+  {
     return;
+  }
   myCurrArg = theRecord->myFirst;
   while (myCurrArg != nullptr)
   {
@@ -594,5 +614,7 @@ void StepFile_ReadData::PrintRecord(Record* theRecord)
     myCurrArg = myCurrArg->myNext;
   }
   if (anArgLen > 0)
+  {
     Printf("\n");
+  }
 }

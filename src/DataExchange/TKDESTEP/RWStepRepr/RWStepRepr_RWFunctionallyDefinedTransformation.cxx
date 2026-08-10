@@ -31,7 +31,9 @@ void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "functionally_defined_transformation"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

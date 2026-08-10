@@ -36,7 +36,9 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "surface_style_reflectance_ambient"))
+  {
     return;
+  }
 
   // Own fields of SurfaceStyleReflectanceAmbient
 

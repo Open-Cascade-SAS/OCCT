@@ -42,10 +42,12 @@ void IGESBasic_ToolAssocGroupType::ReadOwnParams(
   int                                   tempType;
   occ::handle<TCollection_HAsciiString> tempName;
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(), "Number of data fields", tempNbData); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempNbData = 2;
+}
   PR.ReadInteger(PR.Current(), "Type of attached associativity",tempType); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadText(PR.Current(), "Name of attached associativity", tempName); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
@@ -81,7 +83,9 @@ bool IGESBasic_ToolAssocGroupType::OwnCorrect(
 {
   bool res = (ent->NbData() != 2);
   if (res)
+  {
     ent->Init(2, ent->AssocType(), ent->Name());
+  }
   return res; // nbdata=2
 }
 
@@ -105,7 +109,9 @@ void IGESBasic_ToolAssocGroupType::OwnCheck(const occ::handle<IGESBasic_AssocGro
                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbData() != 2)
+  {
     ach->AddFail("Number of data fields != 2");
+  }
 }
 
 void IGESBasic_ToolAssocGroupType::OwnDump(const occ::handle<IGESBasic_AssocGroupType>& ent,
@@ -118,5 +124,5 @@ void IGESBasic_ToolAssocGroupType::OwnDump(const occ::handle<IGESBasic_AssocGrou
     << "Type of attached associativity : " << ent->AssocType() << "\n"
     << "Name of attached associativity : ";
   IGESData_DumpString(S, ent->Name());
-  S << std::endl;
+  S << '\n';
 }

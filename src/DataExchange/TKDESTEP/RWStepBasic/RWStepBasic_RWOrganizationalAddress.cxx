@@ -33,7 +33,9 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 14, ach, "organizational_address"))
+  {
     return;
+  }
 
   // --- inherited field : internalLocation ---
 
@@ -233,7 +235,9 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
                            ach,
                            STANDARD_TYPE(StepBasic_Organization),
                            anent13))
+      {
         aOrganizations->SetValue(i13, anent13);
+      }
     }
   }
 

@@ -15,11 +15,11 @@
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
-#include <BRepGraphInc_Representation.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraphInc_RepId.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -37,6 +37,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+
+#include <tuple>
 
 #include <gtest/gtest.h>
 
@@ -84,8 +86,9 @@ TEST(BRepGraph_ReconstructTest, Box_Area_Preserved)
   const double        anOrigArea = computeArea(aBox);
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -101,8 +104,9 @@ TEST(BRepGraph_ReconstructTest, Box_Volume_Preserved)
   const double        anOrigVol = computeVolume(aBox);
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -118,8 +122,9 @@ TEST(BRepGraph_ReconstructTest, Sphere_Area_Preserved)
   const double           anOrigArea = computeArea(aSphere);
 
   BRepGraph aGraph;
-  aGraph.Build(aSphere);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes3 = aGraph.Shapes().Add(aSphere);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -135,8 +140,9 @@ TEST(BRepGraph_ReconstructTest, Sphere_Volume_Preserved)
   const double           anOrigVol = computeVolume(aSphere);
 
   BRepGraph aGraph;
-  aGraph.Build(aSphere);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes4 = aGraph.Shapes().Add(aSphere);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -152,8 +158,9 @@ TEST(BRepGraph_ReconstructTest, Cylinder_Area_Preserved)
   const double             anOrigArea = computeArea(aCyl);
 
   BRepGraph aGraph;
-  aGraph.Build(aCyl);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 = aGraph.Shapes().Add(aCyl);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -169,8 +176,9 @@ TEST(BRepGraph_ReconstructTest, Cylinder_Volume_Preserved)
   const double             anOrigVol = computeVolume(aCyl);
 
   BRepGraph aGraph;
-  aGraph.Build(aCyl);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 = aGraph.Shapes().Add(aCyl);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
@@ -190,8 +198,9 @@ TEST(BRepGraph_ReconstructTest, Shell_FaceCount_MatchesOriginal)
   const int           anOrigFaceCount = countSubShapes(aBox, TopAbs_FACE);
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   TopoDS_Shape aReconShell =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, 0));
@@ -206,8 +215,9 @@ TEST(BRepGraph_ReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   // Each wire of a box face should have exactly 4 edges.
   for (BRepGraph_WireIterator aWireIt(aGraph); aWireIt.More(); aWireIt.Next())
@@ -225,13 +235,16 @@ TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location         aLoc;
@@ -249,13 +262,16 @@ TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location aLoc;
@@ -277,8 +293,9 @@ TEST(BRepGraph_ReconstructTest, Vertex_Point_MatchesDefPoint)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
   {
@@ -302,8 +319,9 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
@@ -316,7 +334,9 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
       if (BRep_Tool::Degenerated(anEdge))
+      {
         continue;
+      }
 
       double                    aFirst  = 0.0;
       double                    aLast   = 0.0;
@@ -333,25 +353,26 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes13 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   // Verify that reconstructed faces have valid orientations matching ref entries.
   ASSERT_EQ(aGraph.Topo().Shells().Nb(), 1);
-  const NCollection_Vector<BRepGraph_FaceRefId> aFaceRefs =
-    BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
+  const NCollection_LinearVector<BRepGraph_FaceRefId>& aFaceRefs =
+    BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId::Start());
   for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefs)
   {
     const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Faces().Entry(aFaceRefId);
     const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceRef.FaceDefId);
+    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceRef.ChildFaceId);
     ASSERT_FALSE(aReconFace.IsNull())
-      << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
+      << "ReconstructFace returned null for face " << aFaceRef.ChildFaceId.Index;
 
     // The reconstructed face from the def should be valid.
     EXPECT_EQ(aReconFace.ShapeType(), TopAbs_FACE);
-    (void)anExpectedOri; // Orientation is now stored in the incidence ref, not usage.
+    std::ignore = anExpectedOri; // Orientation is now stored in the incidence ref, not usage.
   }
 }
 
@@ -359,21 +380,23 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
 // Shape() vs ReconstructShape() consistency
 // ============================================================
 
-TEST(BRepGraph_ReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
+TEST(BRepGraph_ReconstructTest, Shape_UnmodifiedGraph_SameAsOriginal)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes14 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
-  // For an unmodified graph, Shape(id) should be the same TShape as OriginalOf(id).
+  // For an unmodified graph, Shape(id) should be the same TShape as Original(id).
   BRepGraph_SolidId aSolidId(0);
   ASSERT_TRUE(aGraph.Shapes().HasOriginal(aSolidId));
 
-  TopoDS_Shape        aShapeResult = aGraph.Shapes().Shape(aSolidId);
-  const TopoDS_Shape& anOriginal   = aGraph.Shapes().OriginalOf(aSolidId);
+  TopoDS_Shape       aShapeResult = aGraph.Shapes().Shape(aSolidId);
+  const TopoDS_Shape anOriginal   = aGraph.Shapes().Original(aSolidId);
+  ASSERT_FALSE(anOriginal.IsNull());
   EXPECT_TRUE(aShapeResult.IsSame(anOriginal));
 }
 
@@ -383,13 +406,14 @@ TEST(BRepGraph_ReconstructTest, HasOriginal_BuildFace_ReturnsTrue)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes15 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
-  EXPECT_TRUE(aGraph.Shapes().HasOriginal(BRepGraph_FaceId(0)));
+  EXPECT_TRUE(aGraph.Shapes().HasOriginal(BRepGraph_FaceId::Start()));
 }
 
-TEST(BRepGraph_ReconstructTest, OriginalOf_Face_IsSameAsBuildInputFace)
+TEST(BRepGraph_ReconstructTest, Original_Face_IsSameAsBuildInputFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -399,10 +423,13 @@ TEST(BRepGraph_ReconstructTest, OriginalOf_Face_IsSameAsBuildInputFace)
   const TopoDS_Shape aFirstFace = anExp.Current();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes16 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
-  EXPECT_TRUE(aGraph.Shapes().OriginalOf(BRepGraph_FaceId(0)).IsSame(aFirstFace));
+  const TopoDS_Shape anOriginal = aGraph.Shapes().Original(BRepGraph_FaceId::Start());
+  ASSERT_FALSE(anOriginal.IsNull());
+  EXPECT_TRUE(anOriginal.IsSame(aFirstFace));
 }
 
 TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
@@ -411,10 +438,12 @@ TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes17 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_VertexId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(42.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aVertexId =
+    aGraph.Editor().Vertices().Add(gp_Pnt(42.0, 0.0, 0.0), 0.001);
   ASSERT_TRUE(aVertexId.IsValid());
 
   EXPECT_FALSE(aGraph.Shapes().HasOriginal(aVertexId));
@@ -426,11 +455,13 @@ TEST(BRepGraph_ReconstructTest, FindNode_OriginalFace_RoundTrip)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes18 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_NodeId aFaceId        = BRepGraph_FaceId(0);
-  const TopoDS_Shape&    anOriginalFace = aGraph.Shapes().OriginalOf(aFaceId);
+  const BRepGraph_NodeId aFaceId        = BRepGraph_FaceId::Start();
+  const TopoDS_Shape     anOriginalFace = aGraph.Shapes().Original(aFaceId);
+  ASSERT_FALSE(anOriginalFace.IsNull());
   EXPECT_EQ(aGraph.Shapes().FindNode(anOriginalFace), aFaceId);
 }
 
@@ -440,11 +471,12 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes19 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_FaceId(0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_FaceId::Start());
   EXPECT_FALSE(aRecon.IsNull());
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }
@@ -455,15 +487,18 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes20 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   // Find a non-degenerate edge.
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     EXPECT_FALSE(aRecon.IsNull());
@@ -479,11 +514,12 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Vertex_CorrectPoint)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes21 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
-  const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(0));
+  const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId::Start());
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
@@ -504,32 +540,33 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes22 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   // Find a vertex belonging to face 0 and move it significantly.
   const BRepGraph_WireId anOuterWire =
-    BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId(0));
+    BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId::Start());
   ASSERT_TRUE(anOuterWire.IsValid());
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
-    BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
-  ASSERT_GT(aCoEdgeRefs.Length(), 0);
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    BRepGraph_TestTools::CoEdgesOfWire(aGraph, anOuterWire);
+  ASSERT_GT(aCoEdges.Size(), 0);
 
-  const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdges().Entry(aCoEdgeRefs.First());
   const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
-    aGraph.Topo().CoEdges().Definition(aFirstCR.CoEdgeDefId);
-  const int aVertIdx =
-    BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))
-      .VertexDefId.Index;
-  ASSERT_GE(aVertIdx, 0);
+    aGraph.Topo().CoEdges().Definition(aCoEdges.First());
+  const BRepGraph_VertexRefId aVertRefId =
+    BRepGraph_Tool::Edge::StartVertexId(aGraph, BRepGraph_EdgeId(aFirstCoEdge.ChildEdgeId));
+  ASSERT_TRUE(aVertRefId.IsValid());
+  const uint32_t aVertIdx = aGraph.Refs().Vertices().Entry(aVertRefId).ChildVertexId.Index;
 
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMutVtx =
-      aGraph.Builder().MutVertex(BRepGraph_VertexId(aVertIdx));
-    aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
+      aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(aVertIdx));
+    aGraph.Editor().Vertices().SetPoint(aMutVtx,
+                                        gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0));
   }
 
   // Verify the OwnGen is incremented on the vertex def (directly mutated).
@@ -548,8 +585,9 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes23 = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_EdgeId anEdgeId(0);
   TopoDS_Shape     aShapeBefore = aGraph.Shapes().Shape(anEdgeId);
@@ -557,8 +595,8 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
   // Mutate tolerance.
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge =
-      aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
+      aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aGraph.Editor().Edges().SetTolerance(aMutEdge, aMutEdge->Tolerance + 1.0);
   }
 
   // After mutation, Shape() should return a reconstructed shape with a different TShape.
@@ -582,8 +620,9 @@ TEST(BRepGraph_ReconstructTest, CompoundRoot_TwoSolids_Preserved)
   aBuilder.Add(aCompound, aBox2);
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
-  ASSERT_TRUE(aGraph.IsDone());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes24 = aGraph.Shapes().Add(aCompound);
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 2);
 
   // Reconstruct each solid and verify volumes match originals.

@@ -176,7 +176,9 @@ bool BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const double Tol)
 bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, const int DegL)
 {
   if (DegF > DegL)
+  {
     return false;
+  }
 
   gp_Vec   nplan, dnplan, d1gui, d2gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2;
   gp_Vec   Nsurf1, tsurf1;
@@ -192,7 +194,9 @@ bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, co
     nplan = d1gui.Normalized();
 
     if (choix % 2 != 0)
+    {
       nplan.Reverse();
+    }
     pt2d = csurf->Value(X(1));
 
     if (first)

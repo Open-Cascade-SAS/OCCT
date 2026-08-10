@@ -73,7 +73,9 @@ Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
 {
   bool isdgE = BRep_Tool::Degenerated(E);
   if (isdgE)
+  {
     return false;
+  }
   T.Set(TopAbs_UNKNOWN, TopAbs_UNKNOWN);
 
   double tola = 1.e-6; // nyitol
@@ -95,33 +97,47 @@ Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
   gp_Pnt2d uvF;
   ok = FUN_tool_parF(E, pmil, F, uvF);
   if (!ok)
+  {
     return false;
+  }
 
   gp_Pnt2d uvFS;
   ok = FUN_tool_parF(E, pmil, FS, uvFS);
   if (!ok)
+  {
     return false;
+  }
 
   gp_Dir ngF = FUN_tool_nggeomF(uvF, F);
   double xx  = std::abs(ngF.Dot(tgE));
   bool   tgt = (std::abs(1 - xx) < tola);
   if (tgt)
+  {
     return false;
+  }
 
   gp_Dir ntFS;
   ok = TopOpeBRepTool_TOOL::Nt(uvFS, FS, ntFS);
   if (!ok)
+  {
     return false;
+  }
   gp_Dir beafter = ngF ^ tgE;
   double yy      = beafter.Dot(ntFS);
   bool   unk     = (std::abs(yy) < tola);
   if (unk)
+  {
     return false;
+  }
 
   if (yy < 0.)
+  {
     T.Set(TopAbs_FORWARD);
+  }
   else
+  {
     T.Set(TopAbs_REVERSED);
+  }
   return true;
 }
 
@@ -134,12 +150,14 @@ Standard_EXPORT bool FUN_edgeofface
   bool            isv = false;
   TopExp_Explorer ex;
   for (ex.Init(F, TopAbs_EDGE); ex.More(); ex.Next())
+  {
     //  for (TopExp_Explorer ex(F,TopAbs_EDGE); ex.More(); ex.Next())
     if (ex.Current().IsSame(E))
     {
       isv = true;
       break;
     }
+  }
   return isv;
 }
 
@@ -241,7 +259,9 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
         LI.Remove(it2);
       }
       else
+      {
         it2.Next();
+      }
     } // it2.More()
 
     if (cond1)
@@ -249,7 +269,9 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
       LI.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   } // it1.More()
 
 } // FUN_unkeepFdoubleGBoundinterferences
@@ -279,7 +301,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     const TopOpeBRepDS_Transition&          T1    = I1->Transition();
     bool                                    isunk = T1.IsUnknown();
     if (!isunk)
+    {
       continue;
+    }
 
     TopOpeBRepDS_Kind GT1, ST1;
     int               G1, S1;
@@ -291,7 +315,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     bool idi  = (isb1 == S1 && isa1 == S1);
     bool etgf = idt && idi; // face tangent a une face en 1 edge
     if (!etgf)
+    {
       continue;
+    }
 
     const TopoDS_Edge& EE = TopoDS::Edge(BDS.Shape(G1));
     double             fE, lE;
@@ -299,7 +325,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
 
     occ::handle<TopOpeBRepDS_FaceEdgeInterference> fei = MAKEFEI(I1);
     if (fei.IsNull())
+    {
       continue;
+    }
 
     const TopoDS_Face& FS = TopoDS::Face(BDS.Shape(S1));
 
@@ -326,7 +354,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
         {
           EEsp = TopoDS::Edge(los.First());
           if (!EEsp.IsSame(EE))
+          {
             isEEGB = false;
+          }
           if (n > 1)
           {
             // MSV: treat the case of multiple splits:
@@ -352,8 +382,12 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     }
     bool isSO = true;
     if (!EEsp.IsSame(EE))
+    {
       if (!FUN_tool_curvesSO(EEsp, EE, isSO))
+      {
         continue;
+      }
+    }
 
     TopAbs_State            stateb, statea;
     TopOpeBRepDS_Transition T;
@@ -383,7 +417,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
       FUN_UNKFstasta(FF, FS, EEsp, isEEGB, stateb, statea, pClass);
     }
     if (stateb == TopAbs_UNKNOWN || statea == TopAbs_UNKNOWN)
+    {
       continue;
+    }
 
     TopOpeBRepDS_Transition& newT1 = I1->ChangeTransition();
     if (!isSO)

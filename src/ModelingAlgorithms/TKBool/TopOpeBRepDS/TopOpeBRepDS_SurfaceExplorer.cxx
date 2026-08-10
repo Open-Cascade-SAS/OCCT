@@ -65,9 +65,13 @@ void TopOpeBRepDS_SurfaceExplorer::Find()
       myFound = IsSurface(myIndex);
     }
     if (myFound)
+    {
       break;
+    }
     else
+    {
       myIndex++;
+    }
   }
 }
 
@@ -114,7 +118,9 @@ bool TopOpeBRepDS_SurfaceExplorer::IsSurfaceKeep(const int I) const
 {
   bool b = MYDS.mySurfaces.IsBound(I);
   if (b)
+  {
     b = MYDS.Surface(I).Keep();
+  }
   return b;
 }
 
@@ -141,7 +147,9 @@ int TopOpeBRepDS_SurfaceExplorer::NbSurface()
   Find();
   int n = 0;
   for (; More(); Next())
+  {
     n++;
+  }
   return n;
 }
 

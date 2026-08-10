@@ -73,9 +73,13 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
   bool isin          = M_IN(stf);
   isin               = isin || M_IN(stl);
   if (isout)
+  {
     return TopAbs_OUT;
+  }
   if (isin)
+  {
     return TopAbs_IN;
+  }
 
   bool               isperiodic;
   const TopoDS_Edge& EArc = TopoDS::Edge(Lrest.Arc());
@@ -101,9 +105,13 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
 
     int IArc = 0;
     if (Lrest.ArcIsEdge(1))
+    {
       IArc = 1;
+    }
     if (Lrest.ArcIsEdge(2))
+    {
       IArc = 2;
+    }
     if (IArc == 0)
     {
 #ifdef OCCT_DEBUG
@@ -134,9 +142,13 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
 
   TopoDS_Shape F;
   if (isonedge1)
+  {
     F = myF2;
+  }
   else
+  {
     F = myF1;
+  }
   double uf = TopOpeBRep_FacesFiller::VPParamOnER(vpff, Lrest);
   double ul = TopOpeBRep_FacesFiller::VPParamOnER(vpll, Lrest);
 
@@ -152,9 +164,13 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
     if (isperiodic)
     {
       if (uf == l)
+      {
         uf = f;
+      }
       if (ul == f)
+      {
         ul = l;
+      }
     }
   }
 
@@ -176,19 +192,29 @@ TopAbs_State TopOpeBRep_FacesFiller::StateVPonFace(const TopOpeBRep_VPointInter&
 {
   int iVP = VP.ShapeIndex();
   if (iVP == 3)
+  {
     return TopAbs_ON;
+  }
 
   int          iother = (iVP == 1) ? 2 : 1;
   TopoDS_Shape F;
   if (iother == 1)
+  {
     F = myF1;
+  }
   else
+  {
     F = myF2;
+  }
   double u, v;
   if (iother == 1)
+  {
     VP.ParametersOnS1(u, v);
+  }
   else
+  {
     VP.ParametersOnS2(u, v);
+  }
 
   myPShapeClassifier->SetReference(TopoDS::Face(F));
   myPShapeClassifier->StateP2DReference(gp_Pnt2d(u, v));
@@ -238,7 +264,9 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
 {
   bool isone = false;
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
+  {
     return isone;
+  }
 
   double f, l;
   TopOpeBRep_FacesFiller::Lminmax(L, f, l);
@@ -247,12 +275,16 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
   {
     bool idINL = (L.INL() && (d == 0)); // null length line, made of VPoints only
     if (idINL)
+    {
       return false;
+    }
   } // INL
 
   bool id = (d <= Precision::PConfusion());
   if (id)
+  {
     return false;
+  }
 
   occ::handle<Geom_Curve> CL;
   TopOpeBRep_GeomTool::MakeCurve(f, l, L, CL);
@@ -295,7 +327,9 @@ bool TopOpeBRep_FacesFiller::IsVPtransLok(const TopOpeBRep_LineInter& L,
   bool                          VPonEd = (is1 && VP.IsOnDomS1());
   VPonEd                               = VPonEd || (!is1 && VP.IsOnDomS2());
   if (!VPonEd)
+  {
     return false;
+  }
 
   const TopoDS_Edge& E = TopoDS::Edge(VP.Edge(SI12));
   TopAbs_Orientation O = E.Orientation();
@@ -319,9 +353,13 @@ bool TopOpeBRep_FacesFiller::TransvpOK(const TopOpeBRep_LineInter& L,
     TopAbs_State stb = T.Before();
     TopAbs_State sta = T.After();
     if (isINOUT)
+    {
       ok = M_INOUT(stb, sta);
+    }
     else
+    {
       ok = M_OUTIN(stb, sta);
+    }
   }
   return ok;
 }
@@ -350,9 +388,13 @@ double TopOpeBRep_FacesFiller::VPParamOnER(const TopOpeBRep_VPointInter& vp,
   }
   // vp is an intersection point,and we get it's parameter.
   if (isedge1 && vp.IsOnDomS1())
+  {
     return vp.ParameterOnArc1();
+  }
   if (isedge2 && vp.IsOnDomS2())
+  {
     return vp.ParameterOnArc2();
+  }
 
   // Else,we have to project the point on the edge restriction
   double tolee = BRep_Tool::Tolerance(E);

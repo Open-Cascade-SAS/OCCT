@@ -39,14 +39,18 @@ bool IFSelect_SelectDeduct::HasInput() const
 bool IFSelect_SelectDeduct::HasAlternate() const
 {
   if (!thealt.IsNull())
+  {
     return thealt->IsSet();
+  }
   return false;
 }
 
 occ::handle<IFSelect_SelectPointed>& IFSelect_SelectDeduct::Alternate()
 {
   if (thealt.IsNull())
+  {
     thealt = new IFSelect_SelectPointed;
+  }
   return thealt;
 }
 
@@ -63,7 +67,9 @@ Interface_EntityIterator IFSelect_SelectDeduct::InputResult(const Interface_Grap
     }
   }
   if (thesel.IsNull())
+  {
     return res;
+  }
   return thesel->UniqueResult(G);
 }
 

@@ -51,13 +51,17 @@ bool MeshVS_DeformedDataSource::GetGeom(const int                   ID,
 {
   if (myNonDeformedDataSource.IsNull()
       || !myNonDeformedDataSource->GetGeom(ID, IsElement, Coords, NbNodes, Type))
+  {
     return false;
+  }
 
   if (Type == MeshVS_ET_Node)
   {
     gp_Vec Vect;
     if (!GetVector(ID, Vect))
+    {
       return false;
+    }
     shiftCoord(Coords, 1, myMagnify * Vect);
   }
   else
@@ -65,12 +69,16 @@ bool MeshVS_DeformedDataSource::GetGeom(const int                   ID,
     MeshVS_Buffer           aNodesBuf(NbNodes * sizeof(int));
     NCollection_Array1<int> aNodes(aNodesBuf, 1, NbNodes);
     if (!myNonDeformedDataSource->GetNodesByElement(ID, aNodes, NbNodes))
+    {
       return false;
+    }
     for (int i = 1; i <= NbNodes; i++)
     {
       gp_Vec Vect;
       if (!GetVector(aNodes(i), Vect))
+      {
         return false;
+      }
       shiftCoord(Coords, i, myMagnify * Vect);
     }
   }
@@ -84,9 +92,13 @@ bool MeshVS_DeformedDataSource::GetGeomType(const int          ID,
                                             MeshVS_EntityType& Type) const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return false;
+  }
   else
+  {
     return myNonDeformedDataSource->GetGeomType(ID, IsElement, Type);
+  }
 }
 
 //=================================================================================================
@@ -97,9 +109,13 @@ bool MeshVS_DeformedDataSource::Get3DGeom(
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Data) const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return false;
+  }
   else
+  {
     return myNonDeformedDataSource->Get3DGeom(ID, NbNodes, Data);
+  }
 }
 
 //=================================================================================================
@@ -107,9 +123,13 @@ bool MeshVS_DeformedDataSource::Get3DGeom(
 void* MeshVS_DeformedDataSource::GetAddr(const int ID, const bool IsElement) const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return nullptr;
+  }
   else
+  {
     return myNonDeformedDataSource->GetAddr(ID, IsElement);
+  }
 }
 
 //=================================================================================================
@@ -119,9 +139,13 @@ bool MeshVS_DeformedDataSource::GetNodesByElement(const int                ID,
                                                   int&                     NbNodes) const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return false;
+  }
   else
+  {
     return myNonDeformedDataSource->GetNodesByElement(ID, NodeIDs, NbNodes);
+  }
 }
 
 //=================================================================================================
@@ -129,9 +153,13 @@ bool MeshVS_DeformedDataSource::GetNodesByElement(const int                ID,
 const TColStd_PackedMapOfInteger& MeshVS_DeformedDataSource::GetAllNodes() const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return myEmptyMap;
+  }
   else
+  {
     return myNonDeformedDataSource->GetAllNodes();
+  }
 }
 
 //=================================================================================================
@@ -139,9 +167,13 @@ const TColStd_PackedMapOfInteger& MeshVS_DeformedDataSource::GetAllNodes() const
 const TColStd_PackedMapOfInteger& MeshVS_DeformedDataSource::GetAllElements() const
 {
   if (myNonDeformedDataSource.IsNull())
+  {
     return myEmptyMap;
+  }
   else
+  {
     return myNonDeformedDataSource->GetAllElements();
+  }
 }
 
 //=================================================================================================
@@ -164,7 +196,9 @@ bool MeshVS_DeformedDataSource::GetVector(const int ID, gp_Vec& Vect) const
 {
   bool aRes = myVectors.IsBound(ID);
   if (aRes)
+  {
     Vect = myVectors.Find(ID);
+  }
   return aRes;
 }
 
@@ -174,9 +208,13 @@ void MeshVS_DeformedDataSource::SetVector(const int ID, const gp_Vec& Vect)
 {
   bool aRes = myVectors.IsBound(ID);
   if (aRes)
+  {
     myVectors.ChangeFind(ID) = Vect;
+  }
   else
+  {
     myVectors.Bind(ID, Vect);
+  }
 }
 
 //=================================================================================================
@@ -199,9 +237,13 @@ occ::handle<MeshVS_DataSource> MeshVS_DeformedDataSource::GetNonDeformedDataSour
 void MeshVS_DeformedDataSource::SetMagnify(const double theMagnify)
 {
   if (theMagnify <= 0)
+  {
     myMagnify = 1.0;
+  }
   else
+  {
     myMagnify = theMagnify;
+  }
 }
 
 //=================================================================================================

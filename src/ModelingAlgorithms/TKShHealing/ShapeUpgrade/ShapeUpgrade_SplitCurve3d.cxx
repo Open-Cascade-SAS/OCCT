@@ -58,16 +58,22 @@ void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C,
   double                  lastPar   = Last;
   occ::handle<Geom_Curve> aCurve    = myCurve;
   if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
     aCurve = occ::down_cast<Geom_TrimmedCurve>(aCurve)->BasisCurve();
+  }
   // 15.11.2002 PTV OCC966
   if (!ShapeAnalysis_Curve::IsPeriodic(C))
   {
     double fP = aCurve->FirstParameter();
     double lP = aCurve->LastParameter();
     if (std::abs(firstPar - fP) < precision)
+    {
       firstPar = fP;
+    }
     if (std::abs(lastPar - lP) < precision)
+    {
       lastPar = lP;
+    }
     if (firstPar < fP)
     {
 #ifdef OCCT_DEBUG
@@ -83,7 +89,9 @@ void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C,
       lastPar = lP;
     }
     if ((lastPar - firstPar) < precision)
+    {
       lastPar = firstPar + 2 * precision;
+    }
   }
 
   ShapeUpgrade_SplitCurve::Init(firstPar, lastPar);
@@ -103,7 +111,9 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
   double Last  = mySplitValues->Value(mySplitValues->Length());
 
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (myCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
@@ -121,7 +131,9 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
       myResultingCurves->SetValue(1, NewTrimCurve);
     }
     else
+    {
       myResultingCurves = spc.GetCurves();
+    }
     myStatus |= spc.myStatus;
     return;
   }
@@ -156,9 +168,13 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
     double           firstPar  = myCurve->FirstParameter();
     double           lastPar   = myCurve->LastParameter();
     if (std::abs(First - firstPar) < precision)
+    {
       First = firstPar;
+    }
     if (std::abs(Last - lastPar) < precision)
+    {
       Last = lastPar;
+    }
     if (First < firstPar)
     {
 #ifdef OCCT_DEBUG
@@ -184,8 +200,9 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
     bool filled = true;
     if (std::abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
         && std::abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
+    {
       myResultingCurves->SetValue(1, myCurve);
-
+    }
     else if (!Segment
              || (!myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve))
                  && !myCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
@@ -218,9 +235,13 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
       // }
     }
     else
+    {
       filled = false;
+    }
     if (filled)
+    {
       return;
+    }
   }
   if (myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
@@ -233,13 +254,19 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
       for (; j <= LastInd; j++)
       {
         if (spval > BsCurve->Knot(j) + Precision::PConfusion())
+        {
           continue;
+        }
         if (spval < BsCurve->Knot(j) - Precision::PConfusion())
+        {
           break;
+        }
         mySplitValues->SetValue(ii, BsCurve->Knot(j));
       }
       if (j == LastInd)
+      {
         break;
+      }
     }
   }
 
@@ -258,9 +285,13 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
         {
           OCC_CATCH_SIGNALS
           if (myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+          {
             occ::down_cast<Geom_BSplineCurve>(theNewCurve)->Segment(Firstt, Lastt);
+          }
           else if (myCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
+          {
             occ::down_cast<Geom_BezierCurve>(theNewCurve)->Segment(Firstt, Lastt);
+          }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
         }
         catch (Standard_Failure const& anException)
@@ -276,8 +307,10 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
         }
       }
       else
+      {
         theNewCurve =
           new Geom_TrimmedCurve(occ::down_cast<Geom_Curve>(myCurve->Copy()), Firstt, Lastt);
+      }
     }
     myResultingCurves->SetValue(i, theNewCurve);
   }

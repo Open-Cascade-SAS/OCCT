@@ -115,7 +115,9 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_Solid& So)
   B.MakeSolid(TopoDS::Solid(myShape));
   TopExp_Explorer ex;
   for (ex.Init(So, TopAbs_SHELL); ex.More(); ex.Next())
+  {
     B.Add(myShape, ex.Current());
+  }
   Done();
 }
 
@@ -127,7 +129,9 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_Solid& So, const TopoDS_Shell&
   B.MakeSolid(TopoDS::Solid(myShape));
   TopExp_Explorer ex;
   for (ex.Init(So, TopAbs_SHELL); ex.More(); ex.Next())
+  {
     B.Add(myShape, ex.Current());
+  }
   B.Add(myShape, S);
   Done();
 }

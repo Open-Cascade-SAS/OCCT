@@ -153,9 +153,13 @@ void TopoDSToStep::AddResult(const occ::handle<Transfer_FinderProcess>& FP,
   occ::handle<Transfer_Binder>          binder = FP->Find(mapper);
 
   if (binder.IsNull())
+  {
     FP->Bind(mapper, result);
+  }
   else
+  {
     binder->AddResult(result);
+  }
 }
 
 //=================================================================================================
@@ -168,5 +172,7 @@ void TopoDSToStep::AddResult(const occ::handle<Transfer_FinderProcess>& FP,
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>::
     Iterator it(Map);
   for (; it.More(); it.Next())
+  {
     TopoDSToStep::AddResult(FP, it.Key(), it.Value());
+  }
 }

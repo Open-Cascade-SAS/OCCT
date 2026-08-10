@@ -158,13 +158,17 @@ Standard_EXPORT bool FUN_tool_projPonC2D(const gp_Pnt&              P,
   const TopoDS_Face& F = BAC2D.Face();
   ok                   = FUN_tool_projPonF(P, F, P2D, dist);
   if (!ok)
+  {
     return false;
+  }
 
   Extrema_ExtPC2d ponc2d(P2D, BAC2D, pmin, pmax);
   ok        = ponc2d.IsDone();
   int nbext = ponc2d.NbExt();
   if (ok)
+  {
     ok = (nbext > 0);
+  }
   if (!ok)
   {
     for (int i = 1; i <= 2; i++)
@@ -236,9 +240,13 @@ Standard_EXPORT bool FUN_tool_projPonS(const gp_Pnt&                    P,
   PonS.Perform(P);
   //
   if (!PonS.Extrema().IsDone())
+  {
     return false;
+  }
   if (PonS.NbPoints() == 0)
+  {
     return false;
+  }
   dist = PonS.LowerDistance();
   double U, V;
   PonS.LowerDistanceParameters(U, V);
@@ -261,17 +269,23 @@ Standard_EXPORT bool FUN_tool_projPonE(const gp_Pnt&      P,
   double            last  = BAC.LastParameter();
   bool              ok    = FUN_tool_projPonC(P, tole, BAC, first, last, param, dist);
   if (!ok)
+  {
     return false;
+  }
 
   double f, l;
   FUN_tool_bounds(E, f, l);
   double tolp = Precision::Parametric(Precision::Confusion());
   bool   onf  = std::abs(f - param) < tolp;
   if (onf)
+  {
     param = f;
+  }
   bool onl = std::abs(l - param) < tolp;
   if (onl)
+  {
     param = l;
+  }
   return true;
 }
 
@@ -299,10 +313,14 @@ Standard_EXPORT bool FUN_tool_projPonboundedF(const gp_Pnt&      P,
   TopoDS_Vertex      V = mv.Vertex();
   BRepExtrema_ExtPF  PonF(V, F);
   if (!PonF.IsDone())
+  {
     return false;
+  }
   int npt = PonF.NbExt();
   if (npt == 0)
+  {
     return false;
+  }
 
   // tri
   double dmin2 = 1.e14;
@@ -317,7 +335,9 @@ Standard_EXPORT bool FUN_tool_projPonboundedF(const gp_Pnt&      P,
     }
   }
   if (imin == 0)
+  {
     return false;
+  }
 
   double u, v;
   PonF.Parameter(imin, u, v);

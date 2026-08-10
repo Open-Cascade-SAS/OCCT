@@ -33,7 +33,9 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "surface_patch"))
+  {
     return;
+  }
 
   // --- own field : parentSurface ---
 
@@ -58,7 +60,9 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #2 (u_transition) is not an enumeration");
+  }
 
   // --- own field : vTransition ---
 
@@ -72,7 +76,9 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (v_transition) is not an enumeration");
+  }
 
   // --- own field : uSense ---
 

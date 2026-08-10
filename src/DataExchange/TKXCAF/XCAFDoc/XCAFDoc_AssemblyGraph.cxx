@@ -62,7 +62,9 @@ XCAFDoc_AssemblyGraph::XCAFDoc_AssemblyGraph(const TDF_Label& theLabel)
 bool XCAFDoc_AssemblyGraph::IsDirectLink(const int theNode1, const int theNode2) const
 {
   if (!HasChildren(theNode1))
+  {
     return false;
+  }
 
   return GetChildren(theNode1).Contains(theNode2);
 }
@@ -73,7 +75,9 @@ XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(const int the
 {
   const NodeType* typePtr = myNodeTypes.Seek(theNode);
   if (typePtr == nullptr)
+  {
     return NodeType_UNDEFINED;
+  }
 
   return (*typePtr);
 }
@@ -99,7 +103,9 @@ int XCAFDoc_AssemblyGraph::NbOccurrences(const int theNode) const
 {
   const int* aUsageOQPtr = myUsages.Seek(theNode);
   if (aUsageOQPtr == nullptr)
+  {
     return 0;
+  }
 
   return (*aUsageOQPtr);
 }
@@ -114,9 +120,13 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
   // We start from those shapes which are "free" in terms of XDE.
   NCollection_Sequence<TDF_Label> aRoots;
   if (theLabel.IsNull() || (myShapeTool->Label() == theLabel))
+  {
     myShapeTool->GetFreeShapes(aRoots);
+  }
   else
+  {
     aRoots.Append(theLabel);
+  }
 
   for (NCollection_Sequence<TDF_Label>::Iterator it(aRoots); it.More(); it.Next())
   {
@@ -134,18 +144,24 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
     {
       aRootId = addNode(aLabel, 0);
       if (aRootId == 0)
+      {
         continue;
+      }
       anIdToProceed = addNode(anOriginal, aRootId);
     }
 
     if (aRootId == 0 || anIdToProceed == 0)
+    {
       continue;
+    }
 
     myRoots.Add(aRootId);
 
     // Add components (the objects nested into the current one).
     if (myShapeTool->IsAssembly(anOriginal))
+    {
       addComponents(anOriginal, anIdToProceed);
+    }
   }
 }
 
@@ -172,25 +188,35 @@ void XCAFDoc_AssemblyGraph::addComponents(const TDF_Label& theParent, const int 
     // Add component
     const int aComponentId = addNode(aComponent, theParentId);
     if (aComponentId == 0)
+    {
       continue;
+    }
 
     // Protection against deleted empty labels (after expand compounds, for example).
     occ::handle<TDataStd_TreeNode> aJumpNode;
     if (!aComponent.FindAttribute(XCAFDoc::ShapeRefGUID(), aJumpNode))
+    {
       continue;
+    }
 
     // Jump to the referred object (the original).
     TDF_Label aChildOriginal;
     if (!aJumpNode.IsNull() && aJumpNode->HasFather())
+    {
       aChildOriginal = aJumpNode->Father()->Label(); // Declaration-level origin.
+    }
 
     if (aChildOriginal.IsNull())
+    {
       continue;
+    }
 
     // Add child
     const int aChildId = addNode(aChildOriginal, aComponentId);
     if (aChildId == 0)
+    {
       continue;
+    }
 
     // Process children: add components recursively.
     addComponents(aChildOriginal, aChildId);
@@ -205,9 +231,13 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
   if (myShapeTool->IsAssembly(theLabel))
   {
     if (myShapeTool->IsFree(theLabel))
+    {
       aNodeType = NodeType_AssemblyRoot;
+    }
     else
+    {
       aNodeType = NodeType_Subassembly;
+    }
   }
   else if (myShapeTool->IsReference(theLabel))
   {
@@ -223,7 +253,9 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
   }
 
   if (aNodeType == NodeType_UNDEFINED)
+  {
     return 0;
+  }
 
   // Get ID of the insertion-level node in the abstract assembly graph.
   const int aChildId = myNodes.Add(theLabel);
@@ -234,9 +266,13 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
     // Bind usage occurrences.
     int* aUsageOQPtr = myUsages.ChangeSeek(aChildId);
     if (aUsageOQPtr == nullptr)
+    {
       aUsageOQPtr = myUsages.Bound(aChildId, 1);
+    }
     else
+    {
       ++(*aUsageOQPtr);
+    }
   }
 
   if (theParentId > 0)
@@ -244,7 +280,9 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
     // Add link
     TColStd_PackedMapOfInteger* aMapPtr = myAdjacencyMap.ChangeSeek(theParentId);
     if (aMapPtr == nullptr)
+    {
       aMapPtr = myAdjacencyMap.Bound(theParentId, TColStd_PackedMapOfInteger());
+    }
 
     (*aMapPtr).Add(aChildId);
   }

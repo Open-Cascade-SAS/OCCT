@@ -26,7 +26,9 @@ void StdPersistent_Naming::NamedShape::Import(
   theAttribute->SetVersion(myVersion);
 
   if (myOldShapes.IsNull() || myNewShapes.IsNull())
+  {
     return;
+  }
 
   TNaming_Builder aBuilder(theAttribute->Label());
 
@@ -128,7 +130,9 @@ void StdPersistent_Naming::Name_1::Import(TNaming_Name&                theName,
 {
   Name::Import(theName, theDF);
   if (myContextLabel)
+  {
     theName.ContextLabel(myContextLabel->Label(theDF));
+  }
 }
 
 //=================================================================================================

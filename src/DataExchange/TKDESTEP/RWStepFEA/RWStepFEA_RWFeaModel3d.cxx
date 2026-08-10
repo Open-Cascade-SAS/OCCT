@@ -41,7 +41,9 @@ void RWStepFEA_RWFeaModel3d::ReadStep(const occ::handle<StepData_StepReaderData>
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "fea_model3d"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

@@ -155,7 +155,9 @@ int StdStorage_TypeData::AddType(const occ::handle<StdObjMgt_Persistent>& aPObj)
 {
   TCollection_AsciiString aTypeName = aPObj->PName();
   if (IsType(aTypeName))
+  {
     return Type(aTypeName);
+  }
 
   if (!myMapOfPInst.IsBound(aTypeName))
   {
@@ -175,7 +177,9 @@ TCollection_AsciiString StdStorage_TypeData::Type(const int aTypeNum) const
   TCollection_AsciiString r;
 
   if (aTypeNum <= myPt.Extent() && aTypeNum > 0)
+  {
     r = myPt.FindKey(aTypeNum);
+  }
   else
   {
     Standard_SStream aSS;
@@ -191,7 +195,9 @@ int StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
   int r = 0;
 
   if (myPt.Contains(aTypeName))
+  {
     r = myPt.FindFromKey(aTypeName);
+  }
   else
   {
     Standard_SStream aSS;
@@ -207,7 +213,9 @@ StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(const int a
   TCollection_AsciiString            aTypeName      = Type(aTypeNum);
   StdObjMgt_Persistent::Instantiator anInstantiator = nullptr;
   if (!myMapOfPInst.Find(aTypeName, anInstantiator))
+  {
     return nullptr;
+  }
   return anInstantiator;
 }
 

@@ -82,7 +82,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferShell(
   occ::handle<IGESData_IGESEntity> res;
 
   if (start.IsNull())
+  {
     return res;
+  }
 
   if (start.ShapeType() == TopAbs_FACE)
   {
@@ -184,8 +186,10 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
       TopoDS_Edge aCopyEdge  = TopoDS::Edge(aCopy.ModifiedShape(anOrigEdge));
       aCopyEdge              = TopoDS::Edge(aCopyEdge.Oriented(anOrigEdge.Orientation()));
       if (!aMap.Add(aCopyEdge))
+      {
         // seam edge has been already updated
         continue;
+      }
       double                    f, l;
       occ::handle<Geom2d_Curve> aCurve1, aCurve2;
       aCurve1 =
@@ -275,11 +279,17 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
     occ::handle<IGESData_IGESEntity> ICurve3d =
       BW.TransferWire(Outer, aFace, aShapeShapeMap, ICurve2d, Length);
     if ((!ICurve3d.IsNull()) && (!ICurve2d.IsNull()))
+    {
       Iprefer = 3;
+    }
     if ((!ICurve3d.IsNull()) && (ICurve2d.IsNull()))
+    {
       Iprefer = 2;
+    }
     if ((ICurve3d.IsNull()) && (!ICurve2d.IsNull()))
+    {
       Iprefer = 1;
+    }
     IOuter->Init(Imode, ISurf, ICurve2d, ICurve3d, Iprefer);
   }
 
@@ -301,14 +311,22 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
       occ::handle<IGESData_IGESEntity> ICurve3d =
         BW.TransferWire(W, aFace, aShapeShapeMap, ICurve2d, Length);
       if ((!ICurve3d.IsNull()) && (!ICurve2d.IsNull()))
+      {
         Iprefer = 3;
+      }
       if ((!ICurve3d.IsNull()) && (ICurve2d.IsNull()))
+      {
         Iprefer = 2;
+      }
       if ((ICurve3d.IsNull()) && (!ICurve2d.IsNull()))
+      {
         Iprefer = 1;
+      }
       Curve->Init(Imode, ISurf, ICurve2d, ICurve3d, Iprefer);
       if (!Curve.IsNull())
+      {
         Seq->Append(Curve);
+      }
     }
   }
 
@@ -327,14 +345,22 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
       occ::handle<IGESData_IGESEntity> newICurve2d =
         BW.TransferEdge(E, aFace, aShapeShapeMap, Length, false);
       if ((!ICurve3d.IsNull()) && (!newICurve2d.IsNull()))
+      {
         Iprefer = 3;
+      }
       if ((!ICurve3d.IsNull()) && (newICurve2d.IsNull()))
+      {
         Iprefer = 2;
+      }
       if ((ICurve3d.IsNull()) && (!newICurve2d.IsNull()))
+      {
         Iprefer = 1;
+      }
       Curve->Init(Imode, ISurf, newICurve2d, ICurve3d, Iprefer);
       if (!Curve.IsNull())
+      {
         Seq->Append(Curve);
+      }
     }
   }
 
@@ -357,7 +383,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
        || Surf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))
        || Surf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
       && !IOuter.IsNull())
+  {
     isWholeSurface = false;
+  }
   // returns the TrimmedSurface
   // --------------------------
   occ::handle<IGESGeom_TrimmedSurface> TrimmedSurf = new IGESGeom_TrimmedSurface;
@@ -367,7 +395,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
     TrimmedSurf->Init(ISurf, false, nullptr, Tab);
   }
   else
+  {
     TrimmedSurf->Init(ISurf, true, IOuter, Tab);
+  }
 
   res = TrimmedSurf;
   SetShapeResult(start, res);
@@ -384,7 +414,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
+  {
     return res;
+  }
 
   TopExp_Explorer                                                     Ex;
   occ::handle<IGESBasic_Group>                                        IGroup = new IGESBasic_Group;
@@ -394,7 +426,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_FACE); Ex.More() && aPS.More(); Ex.Next())
   {
@@ -408,7 +442,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
     {
       IFace = TransferFace(F, aRange);
       if (!IFace.IsNull())
+      {
         Seq->Append(IFace);
+      }
     }
   }
 

@@ -39,7 +39,9 @@ public:
   bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 2)
+    {
       return false;
+    }
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
     theF      = dx * dx + dy * dy;
@@ -49,7 +51,9 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 2 || theG.Length() != 2)
+    {
       return false;
+    }
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
     return true;
@@ -72,7 +76,9 @@ public:
   bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 2)
+    {
       return false;
+    }
     double x  = theX(1);
     double y  = theX(2);
     double t1 = y - x * x;
@@ -84,7 +90,9 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 2 || theG.Length() != 2)
+    {
       return false;
+    }
     double x = theX(1);
     double y = theX(2);
     theG(1)  = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
@@ -109,7 +117,9 @@ public:
   bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 3)
+    {
       return false;
+    }
     theF = theX(1) * theX(1) + 2.0 * theX(2) * theX(2) + 3.0 * theX(3) * theX(3);
     return true;
   }
@@ -117,7 +127,9 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 3 || theG.Length() != 3)
+    {
       return false;
+    }
     theG(1) = 2.0 * theX(1);
     theG(2) = 4.0 * theX(2);
     theG(3) = 6.0 * theX(3);
@@ -488,7 +500,9 @@ public:
   bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 1)
+    {
       return false;
+    }
     const double x = theX(1);
     theF           = x * x;
     return true;
@@ -497,7 +511,9 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 1 || theG.Length() != 1)
+    {
       return false;
+    }
     const double x = theX(1);
     theG(1)        = 2.0 * x;
     return true;

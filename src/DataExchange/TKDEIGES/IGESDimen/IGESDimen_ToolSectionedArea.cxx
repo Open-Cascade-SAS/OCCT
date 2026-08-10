@@ -54,14 +54,17 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams(const occ::handle<IGESDimen_Sect
   PR.ReadReal(PR.Current(), "Distance between lines", tempDistance);
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadReal(PR.Current(), "Angle between line and X axis", tempAngle); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempAngle = M_PI / 4.0;
+}
 
   bool st = PR.ReadInteger(PR.Current(), "Number of island curves", nbislands);
-  if (st && nbislands > 0)
+  if (st && nbislands > 0) {
     PR.ReadEnts (IR,PR.CurrentList(nbislands),"Island curves",tempIslands); //szv#4:S4163:12Mar99 `st=` not needed
+}
   // clang-format on
   /*
       {
@@ -91,7 +94,9 @@ void IGESDimen_ToolSectionedArea::WriteOwnParams(const occ::handle<IGESDimen_Sec
   IW.Send(ent->Angle());
   IW.Send(length);
   for (i = 1; i <= length; i++)
+  {
     IW.Send(ent->IslandCurve(i));
+  }
 }
 
 void IGESDimen_ToolSectionedArea::OwnShared(const occ::handle<IGESDimen_SectionedArea>& ent,
@@ -100,7 +105,9 @@ void IGESDimen_ToolSectionedArea::OwnShared(const occ::handle<IGESDimen_Sectione
   int i, length = ent->NbIslands();
   iter.GetOneItem(ent->ExteriorCurve());
   for (i = 1; i <= length; i++)
+  {
     iter.GetOneItem(ent->IslandCurve(i));
+  }
 }
 
 void IGESDimen_ToolSectionedArea::OwnCopy(const occ::handle<IGESDimen_SectionedArea>& another,

@@ -72,8 +72,10 @@ XmlMNaming_Shape1::XmlMNaming_Shape1(const XmlObjMgt_Element& theEl)
     }
     const char* anIntPtr = (const char*)&aPtr[1];
     if (!XmlObjMgt::GetInteger(anIntPtr, myTShapeID))
+    {
       throw Standard_DomainError(
         "XmlMNaming_Shape1; tshape value cannot be initialised by integer");
+    }
   }
 }
 
@@ -144,7 +146,9 @@ void XmlMNaming_Shape1::SetShape(const int                theID,
   Sprintf(aBuffer, "%c%i", anOr, theID);
   Element().setAttribute(::TShapeString(), aBuffer);
   if (theLocID > 0)
+  {
     Element().setAttribute(::LocationString(), theLocID);
+  }
 }
 
 //=================================================================================================

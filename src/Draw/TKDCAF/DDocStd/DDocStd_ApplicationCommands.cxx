@@ -61,7 +61,9 @@ static int DDocStd_ListDocuments(Draw_Interpretor& di, int nb, const char** /*a*
         di << " path : " << D->GetPath();
       }
       else
+      {
         di << " not saved";
+      }
       di << "\n";
     }
     return 0;
@@ -87,7 +89,9 @@ static int DDocStd_NewDocument(Draw_Interpretor& di, int nb, const char** a)
       DDocStd::ReturnLabel(di, D->Main());
     }
     else
+    {
       di << a[1] << " is already a document\n";
+    }
     return 0;
   }
   if (nb == 3)
@@ -103,7 +107,9 @@ static int DDocStd_NewDocument(Draw_Interpretor& di, int nb, const char** a)
       DDocStd::ReturnLabel(di, D->Main());
     }
     else
+    {
       di << a[1] << " is already a document\n";
+    }
     return 0;
   }
   di << "DDocStd_NewDocument : Error\n";
@@ -236,7 +242,9 @@ static int DDocStd_Save(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     if (!D->IsSaved())
     {
@@ -260,7 +268,9 @@ static int DDocStd_SaveAs(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     TCollection_ExtendedString       path(a[2], true);
     occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     PCDM_StoreStatus                 theStatus;
@@ -489,7 +499,9 @@ static int DDocStd_AddComment(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     TCollection_ExtendedString comment(a[2], true);
     //    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     //    A->AddComment(D,comment);
@@ -508,7 +520,9 @@ static int DDocStd_PrintComments(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
 
     NCollection_Sequence<TCollection_ExtendedString> comments;
     D->Comments(comments);
@@ -569,7 +583,9 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DDocStd application commands";

@@ -79,7 +79,9 @@ TDF_Label XCAFDoc_DimTolTool::BaseLabel() const
 const occ::handle<XCAFDoc_ShapeTool>& XCAFDoc_DimTolTool::ShapeTool()
 {
   if (myShapeTool.IsNull())
+  {
     myShapeTool = XCAFDoc_DocumentTool::ShapeTool(Label());
+  }
   return myShapeTool;
 }
 
@@ -117,7 +119,9 @@ void XCAFDoc_DimTolTool::GetDimTolLabels(NCollection_Sequence<TDF_Label>& theLab
   {
     TDF_Label aL = aChildIterator.Value();
     if (IsDimTol(aL))
+    {
       theLabels.Append(aL);
+    }
   }
 }
 
@@ -131,7 +135,9 @@ void XCAFDoc_DimTolTool::GetDimensionLabels(NCollection_Sequence<TDF_Label>& the
   {
     TDF_Label aL = aChildIterator.Value();
     if (IsDimension(aL))
+    {
       theLabels.Append(aL);
+    }
   }
 }
 
@@ -145,7 +151,9 @@ void XCAFDoc_DimTolTool::GetGeomToleranceLabels(NCollection_Sequence<TDF_Label>&
   {
     TDF_Label aL = aChildIterator.Value();
     if (IsGeomTolerance(aL))
+    {
       theLabels.Append(aL);
+    }
   }
 }
 
@@ -163,30 +171,42 @@ bool XCAFDoc_DimTolTool::FindDimTol(const int                                   
     TDF_Label                   DimTolL = it.Value()->Label();
     occ::handle<XCAFDoc_DimTol> DimTolAttr;
     if (!DimTolL.FindAttribute(XCAFDoc_DimTol::GetID(), DimTolAttr))
+    {
       continue;
+    }
     int                                      kind1         = DimTolAttr->GetKind();
     occ::handle<NCollection_HArray1<double>> aVal1         = DimTolAttr->GetVal();
     occ::handle<TCollection_HAsciiString>    aName1        = DimTolAttr->GetName();
     occ::handle<TCollection_HAsciiString>    aDescription1 = DimTolAttr->GetDescription();
     bool                                     IsEqual       = true;
     if (!(kind1 == kind))
+    {
       continue;
+    }
     if (!(aName == aName1))
+    {
       continue;
+    }
     if (!(aDescription == aDescription1))
+    {
       continue;
+    }
     if (kind < 20)
     { // dimension
       for (int i = 1; i <= aVal->Length(); i++)
       {
         if (std::abs(aVal->Value(i) - aVal1->Value(i)) > Precision::Confusion())
+        {
           IsEqual = false;
+        }
       }
     }
     else if (kind < 50)
     { // tolerance
       if (std::abs(aVal->Value(1) - aVal1->Value(1)) > Precision::Confusion())
+      {
         IsEqual = false;
+      }
     }
     if (IsEqual)
     {
@@ -224,9 +244,13 @@ TDF_Label XCAFDoc_DimTolTool::AddDimTol(
   XCAFDoc_DimTol::Set(DimTolL, kind, aVal, aName, aDescription);
   TCollection_AsciiString str = "DGT:";
   if (kind < 20)
+  {
     str.AssignCat("Dimension");
+  }
   else
+  {
     str.AssignCat("Tolerance");
+  }
   TDataStd_Name::Set(DimTolL, str);
   return DimTolL;
 }
@@ -273,9 +297,13 @@ void XCAFDoc_DimTolTool::SetDimension(const TDF_Label& theFirstL,
 {
   NCollection_Sequence<TDF_Label> aFirstLS, aSecondLS;
   if (!theFirstL.IsNull())
+  {
     aFirstLS.Append(theFirstL);
+  }
   if (!theSecondL.IsNull())
+  {
     aSecondLS.Append(theSecondL);
+  }
   SetDimension(aFirstLS, aSecondLS, theDimTolL);
 }
 
@@ -301,7 +329,9 @@ void XCAFDoc_DimTolTool::SetDimension(const NCollection_Sequence<TDF_Label>& the
       aFGNode = aChGNode->GetFather(1);
       aFGNode->UnSetChild(aChGNode);
       if (aFGNode->NbChildren() == 0)
+      {
         aFGNode->ForgetAttribute(XCAFDoc::DimensionRefFirstGUID());
+      }
     }
     theDimTolL.ForgetAttribute(XCAFDoc::DimensionRefFirstGUID());
   }
@@ -312,7 +342,9 @@ void XCAFDoc_DimTolTool::SetDimension(const NCollection_Sequence<TDF_Label>& the
       aFGNode = aChGNode->GetFather(1);
       aFGNode->UnSetChild(aChGNode);
       if (aFGNode->NbChildren() == 0)
+      {
         aFGNode->ForgetAttribute(XCAFDoc::DimensionRefSecondGUID());
+      }
     }
     theDimTolL.ForgetAttribute(XCAFDoc::DimensionRefSecondGUID());
   }
@@ -391,7 +423,9 @@ void XCAFDoc_DimTolTool::SetGeomTolerance(const NCollection_Sequence<TDF_Label>&
       aFGNode = aChGNode->GetFather(1);
       aFGNode->UnSetChild(aChGNode);
       if (aFGNode->NbChildren() == 0)
+      {
         aFGNode->ForgetAttribute(XCAFDoc::GeomToleranceRefGUID());
+      }
     }
     theGeomTolL.ForgetAttribute(XCAFDoc::GeomToleranceRefGUID());
   }
@@ -601,7 +635,9 @@ void XCAFDoc_DimTolTool::GetDatumLabels(NCollection_Sequence<TDF_Label>& theLabe
   {
     TDF_Label L = aChildIterator.Value();
     if (IsDatum(L))
+    {
       theLabels.Append(L);
+    }
   }
 }
 
@@ -618,13 +654,21 @@ bool XCAFDoc_DimTolTool::FindDatum(const occ::handle<TCollection_HAsciiString>& 
     occ::handle<TCollection_HAsciiString> aName1, aDescription1, anIdentification1;
     TDF_Label                             aLabel = it.Value()->Label();
     if (!GetDatum(aLabel, aName1, aDescription1, anIdentification1))
+    {
       continue;
+    }
     if (!(aName == aName1))
+    {
       continue;
+    }
     if (!(aDescription == aDescription1))
+    {
       continue;
+    }
     if (!(anIdentification == anIdentification1))
+    {
       continue;
+    }
     lab = aLabel;
     return true;
   }
@@ -678,7 +722,9 @@ void XCAFDoc_DimTolTool::SetDatum(const NCollection_Sequence<TDF_Label>& theL,
       aFGNode = aChGNode->GetFather(1);
       aFGNode->UnSetChild(aChGNode);
       if (aFGNode->NbChildren() == 0)
+      {
         aFGNode->ForgetAttribute(XCAFDoc::DatumRefGUID());
+      }
     }
     theDatumL.ForgetAttribute(XCAFDoc::DatumRefGUID());
   }
@@ -713,7 +759,9 @@ void XCAFDoc_DimTolTool::SetDatum(
 {
   TDF_Label DatumL;
   if (!FindDatum(aName, aDescription, anIdentification, DatumL))
+  {
     DatumL = AddDatum(aName, aDescription, anIdentification);
+  }
   NCollection_Sequence<TDF_Label> aLabels;
   aLabels.Append(L);
   SetDatum(aLabels, DatumL);
@@ -769,7 +817,9 @@ bool XCAFDoc_DimTolTool::GetDatum(const TDF_Label&                       theDatu
 {
   occ::handle<XCAFDoc_Datum> aDatumAttr;
   if (theDatumL.IsNull() || !theDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
+  {
     return false;
+  }
 
   theName           = aDatumAttr->GetName();
   theDescription    = aDatumAttr->GetDescription();
@@ -784,7 +834,9 @@ bool XCAFDoc_DimTolTool::GetDatumOfTolerLabels(const TDF_Label&                 
 {
   occ::handle<XCAFDoc_GraphNode> aNode;
   if (!theDimTolL.FindAttribute(XCAFDoc::DatumTolRefGUID(), aNode))
+  {
     return false;
+  }
 
   for (int i = 1; i <= aNode->NbChildren(); i++)
   {
@@ -801,7 +853,9 @@ bool XCAFDoc_DimTolTool::GetDatumWithObjectOfTolerLabels(const TDF_Label& theDim
 {
   occ::handle<XCAFDoc_GraphNode> aNode;
   if (!theDimTolL.FindAttribute(XCAFDoc::DatumTolRefGUID(), aNode))
+  {
     return false;
+  }
 
   NCollection_Map<TCollection_AsciiString> aDatumNameMap;
   for (int i = 1; i <= aNode->NbChildren(); i++)
@@ -810,10 +864,14 @@ bool XCAFDoc_DimTolTool::GetDatumWithObjectOfTolerLabels(const TDF_Label& theDim
     TDF_Label                      aDatumL    = aDatumNode->Label();
     occ::handle<XCAFDoc_Datum>     aDatumAttr;
     if (!aDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_DatumObject> aDatumObj = aDatumAttr->GetObject();
     if (aDatumObj.IsNull())
+    {
       continue;
+    }
     occ::handle<TCollection_HAsciiString> aName = aDatumObj->GetName();
     if (!aDatumNameMap.Add(aName->String()))
     {
@@ -832,7 +890,9 @@ bool XCAFDoc_DimTolTool::GetTolerOfDatumLabels(const TDF_Label&                 
 {
   occ::handle<XCAFDoc_GraphNode> aNode;
   if (!theDatumL.FindAttribute(XCAFDoc::DatumTolRefGUID(), aNode))
+  {
     return false;
+  }
   for (int i = 1; i <= aNode->NbFathers(); i++)
   {
     occ::handle<XCAFDoc_GraphNode> aDatumNode = aNode->GetFather(i);
@@ -882,13 +942,19 @@ void XCAFDoc_DimTolTool::GetGDTPresentations(
     occ::handle<XCAFDoc_Dimension> aDimAttr;
     const TDF_Label&               aCL = aGDTs.Value(i);
     if (!aCL.FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimAttr->GetObject();
     if (anObject.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape aShape = anObject->GetPresentation();
     if (!aShape.IsNull())
+    {
       theGDTLabelToShape.Add(aCL, aShape);
+    }
   }
 
   aGDTs.Clear();
@@ -898,13 +964,19 @@ void XCAFDoc_DimTolTool::GetGDTPresentations(
     occ::handle<XCAFDoc_GeomTolerance> aGTAttr;
     const TDF_Label&                   aCL = aGDTs.Value(i);
     if (!aCL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = aGTAttr->GetObject();
     if (anObject.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape aShape = anObject->GetPresentation();
     if (!aShape.IsNull())
+    {
       theGDTLabelToShape.Add(aCL, aShape);
+    }
   }
 
   aGDTs.Clear();
@@ -914,13 +986,19 @@ void XCAFDoc_DimTolTool::GetGDTPresentations(
     occ::handle<XCAFDoc_Datum> aGTAttr;
     const TDF_Label&           aCL = aGDTs.Value(i);
     if (!aCL.FindAttribute(XCAFDoc_Datum::GetID(), aGTAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_DatumObject> anObject = aGTAttr->GetObject();
     if (anObject.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape aShape = anObject->GetPresentation();
     if (!aShape.IsNull())
+    {
       theGDTLabelToShape.Add(aCL, aShape);
+    }
   }
 }
 
@@ -937,7 +1015,9 @@ void XCAFDoc_DimTolTool::SetGDTPresentations(
     {
       occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimAttrDim->GetObject();
       if (anObject.IsNull())
+      {
         continue;
+      }
       const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
       anObject->SetPresentation(aPrs, anObject->GetPresentationName());
       aDimAttrDim->SetObject(anObject);
@@ -948,7 +1028,9 @@ void XCAFDoc_DimTolTool::SetGDTPresentations(
     {
       occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = aDimAttrG->GetObject();
       if (anObject.IsNull())
+      {
         continue;
+      }
       const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
       anObject->SetPresentation(aPrs, anObject->GetPresentationName());
       aDimAttrG->SetObject(anObject);
@@ -959,7 +1041,9 @@ void XCAFDoc_DimTolTool::SetGDTPresentations(
     {
       occ::handle<XCAFDimTolObjects_DatumObject> anObject = aDimAttrD->GetObject();
       if (anObject.IsNull())
+      {
         continue;
+      }
       const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
       anObject->SetPresentation(aPrs, anObject->GetPresentationName());
       aDimAttrD->SetObject(anObject);

@@ -44,23 +44,31 @@ bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&       
 {
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theTarget);
   if (aThis.IsNull())
+  {
     return false;
+  }
 
   TCollection_AsciiString aPathStr;
   if (!(theSource >> aPathStr))
+  {
     return false;
+  }
 
   aThis->SetItem(aPathStr);
 
   int anExtraRef = 0;
   if (!(theSource >> anExtraRef))
+  {
     return false;
+  }
 
   if (anExtraRef == 1)
   {
     Standard_GUID aGUID;
     if (!(theSource >> aGUID))
+    {
       return false;
+    }
 
     aThis->SetGUID(aGUID);
   }
@@ -68,7 +76,9 @@ bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&       
   {
     int aSubshapeIndex;
     if (!(theSource >> aSubshapeIndex))
+    {
       return false;
+    }
 
     aThis->SetSubshapeIndex(aSubshapeIndex);
   }
@@ -98,6 +108,8 @@ void BinMXCAFDoc_AssemblyItemRefDriver::Paste(
       theTarget << aThis->GetSubshapeIndex();
     }
     else
+    {
       theTarget << int(0);
+    }
   }
 }

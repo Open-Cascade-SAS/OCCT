@@ -39,7 +39,9 @@ void RWStepFEA_RWCurveElementEndOffset::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_end_offset"))
+  {
     return;
+  }
 
   // Own fields of CurveElementEndOffset
 

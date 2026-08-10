@@ -14,14 +14,17 @@
 #ifndef _Graphic3d_CView_HeaderFile
 #define _Graphic3d_CView_HeaderFile
 
+#include <Aspect_GridParams.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_SkydomeBackground.hxx>
 #include <Aspect_Window.hxx>
+#include <gp_Ax3.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_CubeMap.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
+#include <Graphic3d_Vertex.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Shared.hxx>
@@ -171,6 +174,13 @@ public:
   //! trihedron transformation persistence)
   //! @return computed bounding box
   Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary = false) const;
+
+  //! Return primary and graphical bounding boxes used by camera Z fitting.
+  virtual void ZFitAllBounds(Bnd_Box& thePrimaryBox, Bnd_Box& theGraphicBox) const
+  {
+    thePrimaryBox = MinMaxValues(false);
+    theGraphicBox = MinMaxValues(true);
+  }
 
   //! Returns the coordinates of the boundary box of all structures in the set <theSet>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
@@ -437,6 +447,57 @@ public:
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
   virtual void SetImageBasedLighting(bool theToEnableIBL) = 0;
+
+  //! Display a shader-rendered grid on the given plane.
+  //! The default implementation is a no-op; drivers with shader support override it.
+  //! @param[in] theParams appearance parameters
+  //! @param[in] thePlane  grid plane in world coordinates (origin + X/Y directions)
+  virtual void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+  {
+    (void)theParams;
+    (void)thePlane;
+  }
+
+  //! Erase the shader-rendered grid.
+  //! The default implementation is a no-op; drivers with shader support override it.
+  virtual void GridErase() {}
+
+  //! Return snapped point for the shader-rendered grid under the window pixel.
+  //! The default implementation is a no-op; drivers with shader grid support override it.
+  virtual bool ShaderGridEcho(const int theX, const int theY, Graphic3d_Vertex& thePoint) const
+  {
+    (void)theX;
+    (void)theY;
+    (void)thePoint;
+    return false;
+  }
+
+  //! Return snapped point and display point for the shader-rendered grid under the window pixel.
+  //! The snapped point is the geometric grid point in world coordinates.
+  //! The display point is a clip-safe proxy projected to the same window position for echo marker
+  //! presentation; it should not be used as the geometric snap result.
+  virtual bool ShaderGridEcho(const int         theX,
+                              const int         theY,
+                              Graphic3d_Vertex& thePoint,
+                              Graphic3d_Vertex& theDisplayPoint) const
+  {
+    if (!ShaderGridEcho(theX, theY, thePoint))
+    {
+      return false;
+    }
+    theDisplayPoint = thePoint;
+    return true;
+  }
+
+  //! Return snapped point for the shader-rendered grid from an arbitrary world point.
+  //! The default implementation is a no-op; drivers with shader grid support override it.
+  virtual bool ShaderGridSnapPoint(const Graphic3d_Vertex& thePoint,
+                                   Graphic3d_Vertex&       theGridPoint) const
+  {
+    (void)thePoint;
+    (void)theGridPoint;
+    return false;
+  }
 
   //! Returns environment texture set for the view.
   const occ::handle<Graphic3d_TextureEnv>& TextureEnv() const { return myTextureEnvData; }

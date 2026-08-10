@@ -34,7 +34,9 @@ void RWStepBasic_RWNameAssignment::ReadStep(const occ::handle<StepData_StepReade
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "name_assignment"))
+  {
     return;
+  }
 
   // Own fields of NameAssignment
 

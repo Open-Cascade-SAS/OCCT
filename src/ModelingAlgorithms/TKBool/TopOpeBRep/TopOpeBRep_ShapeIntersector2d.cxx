@@ -72,16 +72,24 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::CurrentGeomShape(const int In
     if (myFFDone)
     {
       if (Index == 1)
+      {
         return myFaceScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myFaceExplorer.Current();
+      }
     }
     else if (myEEFFDone)
     {
       if (Index == 1)
+      {
         return myEdgeScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myEdgeExplorer.Current();
+      }
     }
   }
 
@@ -347,9 +355,13 @@ void TopOpeBRep_ShapeIntersector2d::FindEEFFIntersection()
 
     myEEFFDone = !(myEEIntersector.IsEmpty());
     if (myEEFFDone)
+    {
       break;
+    }
     else
+    {
       NextEEFFCouple();
+    }
   }
   SetIntersectionDone();
 }
@@ -380,9 +392,13 @@ void TopOpeBRep_ShapeIntersector2d::NextEEFFCouple()
 const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::Shape(const int Index) const
 {
   if (Index == 1)
+  {
     return myShape1;
+  }
   else if (Index == 2)
+  {
     return myShape2;
+  }
 
   throw Standard_ProgramError("ShapeIntersector : no shape");
 }

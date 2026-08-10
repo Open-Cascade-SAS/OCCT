@@ -32,7 +32,9 @@ void RWStepRepr_RWRepresentationRelationshipWithTransformation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "representation_relationship_with_transformation"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

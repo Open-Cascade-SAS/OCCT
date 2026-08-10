@@ -38,14 +38,22 @@ void Intf_TangentZone::Append(const Intf_SectionPoint& Pi)
 {
   Result.Append(Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
+  {
     ParamOnFirstMin = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMin > Pi.ParamOnSecond())
+  {
     ParamOnSecondMin = Pi.ParamOnSecond();
+  }
 
   if (ParamOnFirstMax < Pi.ParamOnFirst())
+  {
     ParamOnFirstMax = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMax < Pi.ParamOnSecond())
+  {
     ParamOnSecondMax = Pi.ParamOnSecond();
+  }
 }
 
 //=======================================================================
@@ -168,14 +176,22 @@ void Intf_TangentZone::InsertAfter(const int Index, const Intf_SectionPoint& Pi)
 {
   Result.InsertAfter(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
+  {
     ParamOnFirstMin = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMin > Pi.ParamOnSecond())
+  {
     ParamOnSecondMin = Pi.ParamOnSecond();
+  }
 
   if (ParamOnFirstMax < Pi.ParamOnFirst())
+  {
     ParamOnFirstMax = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMax < Pi.ParamOnSecond())
+  {
     ParamOnSecondMax = Pi.ParamOnSecond();
+  }
 }
 
 //=================================================================================================
@@ -184,14 +200,22 @@ void Intf_TangentZone::InsertBefore(const int Index, const Intf_SectionPoint& Pi
 {
   Result.InsertBefore(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
+  {
     ParamOnFirstMin = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMin > Pi.ParamOnSecond())
+  {
     ParamOnSecondMin = Pi.ParamOnSecond();
+  }
 
   if (ParamOnFirstMax < Pi.ParamOnFirst())
+  {
     ParamOnFirstMax = Pi.ParamOnFirst();
+  }
   if (ParamOnSecondMax < Pi.ParamOnSecond())
+  {
     ParamOnSecondMax = Pi.ParamOnSecond();
+  }
 }
 
 //=======================================================================
@@ -209,12 +233,16 @@ const Intf_SectionPoint& Intf_TangentZone::GetPoint(const int Index) const
 bool Intf_TangentZone::IsEqual(const Intf_TangentZone& Other) const
 {
   if (Result.Length() != Other.Result.Length())
+  {
     return false;
+  }
   int i;
   for (i = 1; i <= Result.Length(); i++)
   {
     if (!Result(i).IsEqual(Other.Result(i)))
+    {
       return false;
+    }
   }
   return true;
 }
@@ -225,8 +253,12 @@ bool Intf_TangentZone::Contains(const Intf_SectionPoint& ThePI) const
 {
   int i;
   for (i = 1; i <= Result.Length(); i++)
+  {
     if (ThePI.IsEqual(Result(i)))
+    {
       return true;
+    }
+  }
   return false;
 }
 

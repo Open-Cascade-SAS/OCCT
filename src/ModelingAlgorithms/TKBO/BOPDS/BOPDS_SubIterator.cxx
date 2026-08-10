@@ -103,7 +103,9 @@ void BOPDS_SubIterator::Prepare()
 void BOPDS_SubIterator::Intersect()
 {
   if (!mySubSet1->Extent() || !mySubSet2->Extent())
+  {
     return;
+  }
 
   // Construct BVH tree for each sub-set
   BOPTools_BoxTree aBBTree[2];
@@ -128,8 +130,8 @@ void BOPDS_SubIterator::Intersect()
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const int aNbPairs = static_cast<int>(aPairs.Size());
 
   // Fence map
   NCollection_Map<BOPDS_Pair> aMPKFence;
@@ -138,11 +140,15 @@ void BOPDS_SubIterator::Intersect()
   {
     const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
     if (aPair.ID1 == aPair.ID2)
+    {
       continue;
+    }
 
     BOPDS_Pair aDSPair(std::min(aPair.ID1, aPair.ID2), std::max(aPair.ID1, aPair.ID2));
     if (!aMPKFence.Add(aDSPair))
+    {
       continue;
+    }
 
     const BOPDS_ShapeInfo& aSI1 = myDS->ShapeInfo(aPair.ID1);
     const BOPDS_ShapeInfo& aSI2 = myDS->ShapeInfo(aPair.ID2);
@@ -156,7 +162,9 @@ void BOPDS_SubIterator::Intersect()
     // avoid interfering of the shape with its sub-shapes
     if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
         || ((iType1 > iType2) && aSI2.HasSubShape(aPair.ID1)))
+    {
       continue;
+    }
 
     myList.Append(aDSPair);
   }

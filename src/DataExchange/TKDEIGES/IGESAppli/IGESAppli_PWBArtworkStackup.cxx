@@ -30,7 +30,9 @@ void IGESAppli_PWBArtworkStackup::Init(const int                                
                                        const occ::handle<NCollection_HArray1<int>>& allLevelNums)
 {
   if (allLevelNums->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESAppli_PWBArtworkStackup : Init");
+  }
   theNbPropertyValues    = nbPropVal;
   theArtworkStackupIdent = anArtIdent;
   theLevelNumbers        = allLevelNums;

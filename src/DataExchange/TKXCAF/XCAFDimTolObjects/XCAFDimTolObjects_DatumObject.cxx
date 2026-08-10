@@ -75,7 +75,9 @@ void XCAFDimTolObjects_DatumObject::SetSemanticName(
 occ::handle<TCollection_HAsciiString> XCAFDimTolObjects_DatumObject::GetName() const
 {
   if (myName.IsNull())
+  {
     return new TCollection_HAsciiString();
+  }
   return myName;
 }
 

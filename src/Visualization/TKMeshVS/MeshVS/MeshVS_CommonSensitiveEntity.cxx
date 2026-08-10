@@ -115,14 +115,14 @@ MeshVS_CommonSensitiveEntity::~MeshVS_CommonSensitiveEntity()
 
 int MeshVS_CommonSensitiveEntity::NbSubElements() const
 {
-  return myItemIndexes.Size();
+  return myItemIndexes.Length();
 }
 
 //=================================================================================================
 
 int MeshVS_CommonSensitiveEntity::Size() const
 {
-  return myItemIndexes.Size();
+  return myItemIndexes.Length();
 }
 
 //=================================================================================================

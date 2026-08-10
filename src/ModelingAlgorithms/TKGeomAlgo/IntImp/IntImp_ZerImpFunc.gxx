@@ -25,8 +25,8 @@
 #define FUNC (*((TheISurface*)(func)))
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc()
-    : surf(NULL),
-      func(NULL),
+    : surf(nullptr),
+      func(nullptr),
       u(0.0),
       v(0.0),
       tol(0.0),
@@ -55,7 +55,7 @@ IntImp_ZerImpFunc::IntImp_ZerImpFunc(const ThePSurface& PS, const TheISurface& I
 }
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc(const TheISurface& IS)
-    : surf(NULL),
+    : surf(nullptr),
       u(0.0),
       v(0.0),
       tol(0.0),

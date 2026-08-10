@@ -830,7 +830,9 @@ void AIS_Manipulator::RecomputeTransformation(const occ::handle<Graphic3d_Camera
     const bool isReversed = anAxisDir.Dot(aCameraDir) > 0;
     double     anAngle    = aNormal.AngleWithRef(aCameraProj, anAxisDir);
     if (aRefAxis.Direction().X() > 0)
+    {
       anAngle -= M_PI_2;
+    }
 
     if (anAxis.HasTranslation())
     {
@@ -1142,7 +1144,9 @@ void AIS_Manipulator::DeactivateCurrentMode()
     anAspect->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
     anAspect->SetMaterial(myDrawer->ShadingAspect()->Material());
     if (myCurrentMode == AIS_MM_TranslationPlane)
+    {
       anAspect->SetTransparency(1.0);
+    }
     else
     {
       anAspect->SetTransparency(myDrawer->ShadingAspect()->Transparency());
@@ -1323,7 +1327,9 @@ void AIS_Manipulator::HilightSelected(
     aGroup->SetGroupPrimitivesAspect(myDraggerHighlight->Aspect());
   }
   else
+  {
     aGroup->SetGroupPrimitivesAspect(myHighlightAspect->Aspect());
+  }
 
   myCurrentIndex = anOwner->Index();
   myCurrentMode  = anOwner->Mode();
@@ -1627,11 +1633,17 @@ void AIS_Manipulator::Cube::Init(const gp_Ax1&         thePosition,
   {
     gp_Dir aXDirection;
     if (thePosition.Direction().X() > 0)
+    {
       aXDirection = gp::DY();
+    }
     else if (thePosition.Direction().Y() > 0)
+    {
       aXDirection = gp::DZ();
+    }
     else
+    {
       aXDirection = gp::DX();
+    }
 
     gp_Pnt aLocation =
       thePosition.Location().Translated(gp_Vec(thePosition.Direction().XYZ() * theSize));
@@ -1948,11 +1960,17 @@ void AIS_Manipulator::Axis::Compute(const occ::handle<PrsMgr_PresentationManager
   {
     gp_Dir aXDirection;
     if (myReferenceAxis.Direction().X() > 0)
+    {
       aXDirection = gp::DY();
+    }
     else if (myReferenceAxis.Direction().Y() > 0)
+    {
       aXDirection = gp::DZ();
+    }
     else
+    {
       aXDirection = gp::DX();
+    }
 
     gp_Pnt aPosition = theSkinMode == ManipulatorSkin_Flat
                          ? gp_Pnt(myReferenceAxis.Direction().Reversed().XYZ() * (myAxisRadius))

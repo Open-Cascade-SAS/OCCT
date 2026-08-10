@@ -79,15 +79,21 @@ TopoDS_Edge ShapeBuild_Edge::CopyReplaceVertices(const TopoDS_Edge&   edge,
       if (V.Orientation() == TopAbs_FORWARD)
       {
         if (newV1.IsNull())
+        {
           newV1 = V;
+        }
       }
       else if (V.Orientation() == TopAbs_REVERSED)
       {
         if (newV2.IsNull())
+        {
           newV2 = V;
+        }
       }
       else if (V1.IsNull() && V2.IsNull())
+      {
         aNMVertices.Append(V);
+      }
     }
   }
   newV1.Orientation(TopAbs_FORWARD);
@@ -99,14 +105,20 @@ TopoDS_Edge ShapeBuild_Edge::CopyReplaceVertices(const TopoDS_Edge&   edge,
 
   BRep_Builder B;
   if (!newV1.IsNull())
+  {
     B.Add(E, newV1);
+  }
   if (!newV2.IsNull())
+  {
     B.Add(E, newV2);
+  }
 
   // addition of the internal or external vertices to edge
   int i = 1;
   for (; i <= aNMVertices.Length(); i++)
+  {
     B.Add(E, TopoDS::Vertex(aNMVertices.Value(i)));
+  }
 
   // S4054, rln 17.11.98 annie_surf.igs entity D77, 3D and pcurve have different
   // ranges, after B.Range all the ranges become as 3D
@@ -139,9 +151,13 @@ static double AdjustByPeriod(const double Val, const double ToVal, const double 
   double D    = std::abs(diff);
   double P    = std::abs(Period);
   if (D <= 0.5 * P)
+  {
     return 0.;
+  }
   if (P < 1e-100)
+  {
     return diff;
+  }
   return (diff > 0 ? -P : P) * (int)(D / P + 0.5);
 }
 
@@ -155,9 +171,13 @@ static bool IsPeriodic(const occ::handle<Geom_Curve>& theCurve)
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom_OffsetCurve>(aTmpCurve)->BasisCurve();
+    }
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom_TrimmedCurve>(aTmpCurve)->BasisCurve();
+    }
   }
   return aTmpCurve->IsPeriodic();
 }
@@ -172,9 +192,13 @@ bool IsPeriodic(const occ::handle<Geom2d_Curve>& theCurve)
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom2d_OffsetCurve>(aTmpCurve)->BasisCurve();
+    }
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom2d_TrimmedCurve>(aTmpCurve)->BasisCurve();
+    }
   }
   return aTmpCurve->IsPeriodic();
 }
@@ -204,21 +228,28 @@ void ShapeBuild_Edge::CopyRanges(const TopoDS_Edge& toedge,
   {
     occ::handle<BRep_GCurve> fromGC = occ::down_cast<BRep_GCurve>(fromitcr.Value());
     if (fromGC.IsNull())
+    {
       continue;
+    }
     bool isC3d = fromGC->IsCurve3D();
     if (isC3d)
     {
       if (fromGC->Curve3D().IsNull())
+      {
         continue;
+      }
     }
     else
     {
       if (fromGC->PCurve().IsNull())
+      {
         continue;
+      }
     }
 
     // clang-format off
-      if ( ! isC3d && ! fromGC->IsCurveOnSurface()) continue; // only 3d curves and pcurves are treated
+      if ( ! isC3d && ! fromGC->IsCurveOnSurface()) { continue; // only 3d curves and pcurves are treated
+}
     // clang-format on
 
     occ::handle<Geom_Surface> surface;
@@ -238,14 +269,20 @@ void ShapeBuild_Edge::CopyRanges(const TopoDS_Edge& toedge,
     {
       toGC = occ::down_cast<BRep_GCurve>(toitcr.Value());
       if (toGC.IsNull())
+      {
         continue;
+      }
       if (isC3d)
       {
         if (!toGC->IsCurve3D())
+        {
           continue;
+        }
       }
       else if (!toGC->IsCurveOnSurface() || surface != toGC->Surface() || L != toGC->Location())
+      {
         continue;
+      }
       double first = fromGC->First();
       double last  = fromGC->Last();
       double len   = last - first;
@@ -310,7 +347,9 @@ void ShapeBuild_Edge::SetRange3d(const TopoDS_Edge& edge,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurve3D())
+    {
       continue;
+    }
     GC->SetRange(first, last);
     break;
   }
@@ -329,7 +368,9 @@ void ShapeBuild_Edge::CopyPCurves(const TopoDS_Edge& toedge, const TopoDS_Edge& 
   {
     occ::handle<BRep_GCurve> fromGC = occ::down_cast<BRep_GCurve>(fromitcr.Value());
     if (fromGC.IsNull())
+    {
       continue;
+    }
     if (fromGC->IsCurveOnSurface())
     {
       occ::handle<Geom_Surface>                                surface = fromGC->Surface();
@@ -345,7 +386,9 @@ void ShapeBuild_Edge::CopyPCurves(const TopoDS_Edge& toedge, const TopoDS_Edge& 
         toGC = occ::down_cast<BRep_GCurve>(toitcr.Value());
         if (toGC.IsNull() || !toGC->IsCurveOnSurface() || surface != toGC->Surface()
             || L != toGC->Location())
+        {
           continue;
+        }
         found = true;
         break;
       }
@@ -376,7 +419,9 @@ TopoDS_Edge ShapeBuild_Edge::Copy(const TopoDS_Edge& edge, const bool sharepcurv
   TopoDS_Vertex dummy1, dummy2;
   TopoDS_Edge   newedge = CopyReplaceVertices(edge, dummy1, dummy2);
   if (!sharepcurves)
+  {
     CopyPCurves(newedge, edge);
+  }
   return newedge;
 }
 
@@ -388,9 +433,13 @@ void ShapeBuild_Edge::RemovePCurve(const TopoDS_Edge& edge, const TopoDS_Face& f
   occ::handle<Geom2d_Curve> c2dNull;
   //: S4136  double tol = BRep_Tool::Tolerance ( edge );
   if (BRep_Tool::IsClosed(edge, face))
+  {
     B.UpdateEdge(edge, c2dNull, c2dNull, face, 0.); //: S4136: tol
+  }
   else
+  {
     B.UpdateEdge(edge, c2dNull, face, 0.); //: S4136: tol
+  }
 }
 
 //=================================================================================================
@@ -411,9 +460,13 @@ void ShapeBuild_Edge::RemovePCurve(const TopoDS_Edge&               edge,
   occ::handle<Geom2d_Curve> c2dNull;
   //: S4136  double tol = BRep_Tool::Tolerance ( edge );
   if (BRep_Tool::IsClosed(edge, surf, loc))
+  {
     B.UpdateEdge(edge, c2dNull, c2dNull, surf, loc, 0.); //: S4136: tol
+  }
   else
+  {
     B.UpdateEdge(edge, c2dNull, surf, loc, 0.); //: S4136: tol
+  }
 }
 
 //=================================================================================================
@@ -438,9 +491,13 @@ void ShapeBuild_Edge::ReplacePCurve(const TopoDS_Edge&               edge,
   else
   { // seam
     if (edge.Orientation() == TopAbs_FORWARD)
+    {
       B.UpdateEdge(edge, pcurve, c2d, face, 0);
+    }
     else
+    {
       B.UpdateEdge(edge, c2d, pcurve, face, 0);
+    }
   }
   B.Range(edge, face, f, l);
 }
@@ -463,7 +520,9 @@ static int CountPCurves(const TopoDS_Edge& edge, const TopoDS_Face& face)
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (!GC.IsNull() && GC->IsCurveOnSurface(S, l))
+    {
       return (GC->IsCurveOnClosedSurface() ? 2 : 1);
+    }
   }
   return 0;
 }
@@ -479,9 +538,13 @@ bool ShapeBuild_Edge::ReassignPCurve(const TopoDS_Edge& edge,
   occ::handle<Geom2d_Curve> pc;
   pc = BRep_Tool::CurveOnSurface(edge, old, f, l);
   if (pc.IsNull())
+  {
     return false;
+  }
   else if (npcurves == 0)
+  {
     npcurves = 1; // gka
+  }
 
   BRep_Builder B;
 
@@ -496,12 +559,16 @@ bool ShapeBuild_Edge::ReassignPCurve(const TopoDS_Edge& edge,
     B.Range(edge, old, f, l);
   }
   else
+  {
     RemovePCurve(edge, old);
+  }
 
   // if edge does not have yet pcurves on sub, just add; else add as first
   int npcs = CountPCurves(edge, sub);
   if (npcs < 1)
+  {
     B.UpdateEdge(edge, pc, sub, 0.);
+  }
   else
   {
     // smh#8 Porting AIX
@@ -509,11 +576,14 @@ bool ShapeBuild_Edge::ReassignPCurve(const TopoDS_Edge& edge,
     TopoDS_Edge               erev     = TopoDS::Edge(tmpshape);
     double                    cf, cl;
     occ::handle<Geom2d_Curve> pcs = BRep_Tool::CurveOnSurface(erev, sub, cf, cl);
-    if (edge.Orientation()
-        == TopAbs_REVERSED) // because B.UpdateEdge does not check edge orientation
+    if (edge.Orientation() == TopAbs_REVERSED)
+    { // because B.UpdateEdge does not check edge orientation
       B.UpdateEdge(edge, pcs, pc, sub, 0.);
+    }
     else
+    {
       B.UpdateEdge(edge, pc, pcs, sub, 0.);
+    }
   }
 
   B.Range(edge, sub, f, l);
@@ -537,7 +607,9 @@ occ::handle<Geom2d_Curve> ShapeBuild_Edge::TransformPCurve(const occ::handle<Geo
     aLast  = result->TransformedParameter(aLast, trans);
   }
   if (uFact == 1.)
+  {
     return result;
+  }
 
   if (result->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
@@ -594,9 +666,13 @@ occ::handle<Geom2d_Curve> ShapeBuild_Edge::TransformPCurve(const occ::handle<Geo
       // clang-format on
       Geom2dConvert_ApproxCurve approx(tcurve, Precision::Approximation(), GeomAbs_C1, 100, 6);
       if (approx.HasResult())
+      {
         aBSpline2d = approx.Curve();
+      }
       else
+      {
         aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
+      }
       aFirst = aBSpline2d->FirstParameter();
       aLast  = aBSpline2d->LastParameter();
     }
@@ -605,7 +681,9 @@ occ::handle<Geom2d_Curve> ShapeBuild_Edge::TransformPCurve(const occ::handle<Geo
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(result, Convert_QuasiAngular);
     }
     else
+    {
       aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(result);
+    }
 
     // transform the Poles of the BSplineCurve
     int      nbPol = aBSpline2d->NbPoles();
@@ -656,7 +734,9 @@ bool ShapeBuild_Edge::BuildCurve3d(const TopoDS_Edge& edge) const
       double                  f, l;
       c3d = BRep_Tool::Curve(edge, f, l);
       if (c3d.IsNull())
+      {
         return false;
+      }
       // 15.11.2002 PTV OCC966
       if (!IsPeriodic(c3d))
       {
@@ -732,7 +812,6 @@ void ShapeBuild_Edge::MakeEdge(TopoDS_Edge&                   edge,
     B.UpdateVertex(V2, P2.Transformed(L.Transformation()), 0.);
   }
   edge = E;
-  return;
 }
 
 //=================================================================================================
@@ -799,5 +878,4 @@ void ShapeBuild_Edge::MakeEdge(TopoDS_Edge&                     edge,
     B.UpdateVertex(V2, P2.Transformed(L.Transformation()), 0.);
   }
   edge = E;
-  return;
 }

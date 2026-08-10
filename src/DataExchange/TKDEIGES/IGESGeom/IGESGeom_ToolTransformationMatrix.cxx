@@ -57,7 +57,9 @@ void IGESGeom_ToolTransformationMatrix::ReadOwnParams(
       // st = PR.ReadReal(PR.Current(), Msg215, temp); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadReal(PR.Current(), "Matrix Elements", temp);
       if (PR.ReadReal(PR.Current(), temp))
+      {
         aMatrix->SetValue(I, J, temp);
+      }
       else
       {
         Message_Msg Msg215("XSTEP_215");
@@ -119,10 +121,14 @@ bool IGESGeom_ToolTransformationMatrix::OwnCorrect(
   const occ::handle<IGESGeom_TransformationMatrix>& ent) const
 {
   if (ent->FormNumber() > 1)
+  {
     return false;
+  }
   int cfn = (ent->Value().IsNegative() ? 1 : 0);
   if (cfn == ent->FormNumber())
+  {
     return false;
+  }
   ent->SetFormNumber(cfn);
   return true;
 }
@@ -203,22 +209,22 @@ void IGESGeom_ToolTransformationMatrix::OwnDump(
   switch (ent->FormNumber())
   {
     case 0:
-      S << "-- Direct Orthogonal Matrix" << std::endl;
+      S << "-- Direct Orthogonal Matrix" << '\n';
       break;
     case 1:
-      S << "-- Reverse Orthogonal Matrix" << std::endl;
+      S << "-- Reverse Orthogonal Matrix" << '\n';
       break;
     case 10:
-      S << "-- Cartesien Coordinate System" << std::endl;
+      S << "-- Cartesien Coordinate System" << '\n';
       break;
     case 11:
-      S << "-- Cylindrical Coordinate System" << std::endl;
+      S << "-- Cylindrical Coordinate System" << '\n';
       break;
     case 12:
-      S << "-- Spherical Coordinate System" << std::endl;
+      S << "-- Spherical Coordinate System" << '\n';
       break;
     default:
-      S << "--  (Incorrect Form Number)" << std::endl;
+      S << "--  (Incorrect Form Number)" << '\n';
       break;
   }
 }

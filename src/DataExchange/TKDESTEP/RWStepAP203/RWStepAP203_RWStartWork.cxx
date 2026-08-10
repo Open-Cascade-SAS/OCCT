@@ -38,7 +38,9 @@ void RWStepAP203_RWStartWork::ReadStep(const occ::handle<StepData_StepReaderData
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "start_work"))
+  {
     return;
+  }
 
   // Inherited fields of ActionAssignment
 

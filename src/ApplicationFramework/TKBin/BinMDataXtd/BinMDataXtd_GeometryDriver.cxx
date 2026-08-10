@@ -50,7 +50,9 @@ bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSour
   int  aType;
   bool ok = theSource >> aType;
   if (ok)
+  {
     aT->SetType((TDataXtd_GeometryEnum)aType);
+  }
 
   return ok;
 }

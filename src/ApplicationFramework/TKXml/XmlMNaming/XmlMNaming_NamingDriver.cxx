@@ -113,7 +113,9 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
     while (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
+      {
         NS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         NS = new TNaming_NamedShape;
@@ -123,7 +125,9 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 
       // next argument
       if (!XmlObjMgt::GetInteger(aGs, aNb))
+      {
         aNb = 0;
+      }
     }
   }
 
@@ -142,7 +146,9 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
+      {
         NS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         NS = new TNaming_NamedShape;
@@ -210,7 +216,9 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
         {
           const TopoDS_Shape& S = itL.NewShape();
           if (S.IsNull())
+          {
             continue;
+          }
           if (aNS->Evolution() == TNaming_SELECTED)
           {
             if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX
@@ -284,7 +292,9 @@ void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
         anArgsStr += TCollection_AsciiString(aNb) + " ";
       }
       else
+      {
         anArgsStr += "0 ";
+      }
     }
     anElem.setAttribute(::ArgumentsString(), anArgsStr.ToCString());
   }
@@ -307,7 +317,9 @@ void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   // context label
   TCollection_AsciiString anEntry;
   if (!aNgName.ContextLabel().IsNull())
+  {
     TDF_Tool::Entry(aNgName.ContextLabel(), anEntry);
+  }
   XmlObjMgt_DOMString aDOMString;
   XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
   anElem.setAttribute(::ContextLabelString(), aDOMString);
@@ -398,23 +410,41 @@ static TopAbs_ShapeEnum ShapeEnumFromString(const XmlObjMgt_DOMString& theString
   if (!theString.equals(::ShShapeString()))
   {
     if (theString.equals(::ShCompoundString()))
+    {
       aResult = TopAbs_COMPOUND;
+    }
     else if (theString.equals(::ShCompsolidString()))
+    {
       aResult = TopAbs_COMPSOLID;
+    }
     else if (theString.equals(::ShSolidString()))
+    {
       aResult = TopAbs_SOLID;
+    }
     else if (theString.equals(::ShShellString()))
+    {
       aResult = TopAbs_SHELL;
+    }
     else if (theString.equals(::ShFaceString()))
+    {
       aResult = TopAbs_FACE;
+    }
     else if (theString.equals(::ShWireString()))
+    {
       aResult = TopAbs_WIRE;
+    }
     else if (theString.equals(::ShEdgeString()))
+    {
       aResult = TopAbs_EDGE;
+    }
     else if (theString.equals(::ShVertexString()))
+    {
       aResult = TopAbs_VERTEX;
+    }
     else
+    {
       throw Standard_DomainError("TopAbs_ShapeEnum; string value without enum term equivalence");
+    }
   }
   return aResult;
 }
@@ -427,29 +457,53 @@ static TNaming_NameType NameTypeFromString(const XmlObjMgt_DOMString& theString)
   if (!theString.equals(::NTUnknownString()))
   {
     if (theString.equals(::NTIdentityString()))
+    {
       aResult = TNaming_IDENTITY;
+    }
     else if (theString.equals(::NTModifUntilString()))
+    {
       aResult = TNaming_MODIFUNTIL;
+    }
     else if (theString.equals(::NTGenerationString()))
+    {
       aResult = TNaming_GENERATION;
+    }
     else if (theString.equals(::NTIntersectionString()))
+    {
       aResult = TNaming_INTERSECTION;
+    }
     else if (theString.equals(::NTUnionString()))
+    {
       aResult = TNaming_UNION;
+    }
     else if (theString.equals(::NTSubtractionString()))
+    {
       aResult = TNaming_SUBSTRACTION;
+    }
     else if (theString.equals(::NTConstShapeString()))
+    {
       aResult = TNaming_CONSTSHAPE;
+    }
     else if (theString.equals(::NTFilterByNeighString()))
+    {
       aResult = TNaming_FILTERBYNEIGHBOURGS;
+    }
     else if (theString.equals(::NTOrientationString()))
+    {
       aResult = TNaming_ORIENTATION;
+    }
     else if (theString.equals(::NTWireInString()))
+    {
       aResult = TNaming_WIREIN;
+    }
     else if (theString.equals(::NTShellInString()))
+    {
       aResult = TNaming_SHELLIN;
+    }
     else
+    {
       throw Standard_DomainError("TNaming_NameType; string value without enum term equivalence");
+    }
   }
   return aResult;
 }

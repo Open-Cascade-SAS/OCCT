@@ -12,12 +12,14 @@
 // commercial license or contractual agreement.
 
 #include <IntAna_IntQuadQuad.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
 #include <IntAna_Quadric.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
 
 #include <gtest/gtest.h>
 
@@ -203,4 +205,69 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());
     }
   }
+}
+
+// Regression test for near-tangent parallel cylinders.
+// Very small chord between two theoretical lines must collapse to one line.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNearTangent_CollapsesToSingleLine)
+{
+  gp_Pnt aCenter1(0.0, 0.0, 0.0);
+  gp_Pnt aCenter2(2.0 - 1.0e-9, 0.0, 0.0);
+  gp_Dir aZDir(gp_Dir::D::Z);
+  gp_Dir anXDir(gp_Dir::D::X);
+  gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
+  gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
+
+  gp_Cylinder aCyl1(anAxis1, 1.0);
+  gp_Cylinder aCyl2(anAxis2, 1.0);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-4);
+
+  EXPECT_TRUE(anInter.IsDone());
+  EXPECT_EQ(anInter.TypeInter(), IntAna_Line);
+  EXPECT_EQ(anInter.NbSolutions(), 1);
+}
+
+// Clear non-tangent case must keep two-line solution.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNonTangent_HasTwoLines)
+{
+  gp_Pnt aCenter1(0.0, 0.0, 0.0);
+  gp_Pnt aCenter2(1.8, 0.0, 0.0);
+  gp_Dir aZDir(gp_Dir::D::Z);
+  gp_Dir anXDir(gp_Dir::D::X);
+  gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
+  gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
+
+  gp_Cylinder aCyl1(anAxis1, 1.0);
+  gp_Cylinder aCyl2(anAxis2, 1.0);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
+
+  EXPECT_TRUE(anInter.IsDone());
+  EXPECT_EQ(anInter.TypeInter(), IntAna_Line);
+  EXPECT_EQ(anInter.NbSolutions(), 2);
+}
+
+// Sanity regression for the pre-existing skew external-tangent branch.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
+{
+  const double aR1   = 3.0;
+  const double aR2   = 2.0;
+  const double aDist = aR1 + aR2;
+
+  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
+  gp_Ax3 anAxis2(gp_Pnt(0.0, aDist, 0.0), gp_Dir::D::X, gp_Dir::D::Y);
+
+  gp_Cylinder aCyl1(anAxis1, aR1);
+  gp_Cylinder aCyl2(anAxis2, aR2);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  ASSERT_EQ(anInter.TypeInter(), IntAna_Point);
+  ASSERT_EQ(anInter.NbSolutions(), 1);
+
+  const gp_Pnt aP = anInter.Point(1);
+  EXPECT_NEAR(gp_Lin(aCyl1.Axis()).Distance(aP), aR1, 1.0e-7);
+  EXPECT_NEAR(gp_Lin(aCyl2.Axis()).Distance(aP), aR2, 1.0e-7);
 }

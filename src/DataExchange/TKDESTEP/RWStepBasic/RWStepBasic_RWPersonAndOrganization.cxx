@@ -31,7 +31,9 @@ void RWStepBasic_RWPersonAndOrganization::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "person_and_organization"))
+  {
     return;
+  }
 
   // --- own field : thePerson ---
 

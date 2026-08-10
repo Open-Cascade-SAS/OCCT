@@ -64,7 +64,9 @@ void TDataStd_ChildNodeIterator::Next()
   else
   {
     if (myNode->myFirst != nullptr)
+    {
       myNode = myNode->myFirst;
+    }
     else
       ChildNodeIterator_UpToBrother;
   }
@@ -75,7 +77,9 @@ void TDataStd_ChildNodeIterator::Next()
 void TDataStd_ChildNodeIterator::NextBrother()
 {
   if (myNode->myNext != nullptr)
+  {
     myNode = myNode->myNext;
+  }
   else
     ChildNodeIterator_UpToBrother;
 }

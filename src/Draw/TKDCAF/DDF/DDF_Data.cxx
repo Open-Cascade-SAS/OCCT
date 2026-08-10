@@ -42,7 +42,7 @@ DDF_Data::DDF_Data(const occ::handle<TDF_Data>& aDF)
 void DDF_Data::DrawOn(Draw_Display& /*dis*/) const
 
 {
-  std::cout << "DDF_Data" << std::endl;
+  std::cout << "DDF_Data" << '\n';
 }
 
 //=================================================================================================

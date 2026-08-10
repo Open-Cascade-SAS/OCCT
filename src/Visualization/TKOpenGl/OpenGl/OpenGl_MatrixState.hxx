@@ -17,7 +17,7 @@
 #define _OpenGl_MatrixState_H__
 
 #include <OpenGl_Vec.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Dump.hxx>
 
 //! Software implementation for OpenGL matrix stack.
@@ -36,7 +36,7 @@ public:
   //! Pushes current matrix into stack.
   void Push()
   {
-    if (++myStackHead >= myStack.Size())
+    if (++myStackHead >= myStack.Length())
     {
       myStack.Append(myCurrent);
     }
@@ -101,13 +101,13 @@ public:
                                      myCurrent.GetValue(3, 2),
                                      myCurrent.GetValue(3, 3))
 
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStack.Size())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStack.Length())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStackHead)
   }
 
 private:
   // clang-format off
-  NCollection_Vector<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
+  NCollection_DynamicArray<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
   // clang-format on
   typename OpenGl::MatrixType<T>::Mat4 myCurrent;   //!< Current matrix
   int                                  myStackHead; //!< Index of stack head

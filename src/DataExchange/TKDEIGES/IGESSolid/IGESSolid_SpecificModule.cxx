@@ -80,7 +80,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 1: {
       DeclareAndCast(IGESSolid_Block, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBlock tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -88,7 +90,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 2: {
       DeclareAndCast(IGESSolid_BooleanTree, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBooleanTree tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -96,7 +100,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 3: {
       DeclareAndCast(IGESSolid_ConeFrustum, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConeFrustum tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -104,7 +110,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 4: {
       DeclareAndCast(IGESSolid_ConicalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConicalSurface tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -112,7 +120,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 5: {
       DeclareAndCast(IGESSolid_Cylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylinder tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -120,7 +130,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 6: {
       DeclareAndCast(IGESSolid_CylindricalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylindricalSurface tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -128,7 +140,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 7: {
       DeclareAndCast(IGESSolid_EdgeList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEdgeList tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -136,7 +150,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 8: {
       DeclareAndCast(IGESSolid_Ellipsoid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEllipsoid tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -144,7 +160,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 9: {
       DeclareAndCast(IGESSolid_Face, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolFace tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -152,7 +170,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 10: {
       DeclareAndCast(IGESSolid_Loop, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolLoop tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -160,7 +180,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 11: {
       DeclareAndCast(IGESSolid_ManifoldSolid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolManifoldSolid tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -168,7 +190,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 12: {
       DeclareAndCast(IGESSolid_PlaneSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolPlaneSurface tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -176,7 +200,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 13: {
       DeclareAndCast(IGESSolid_RightAngularWedge, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolRightAngularWedge tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -184,7 +210,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 14: {
       DeclareAndCast(IGESSolid_SelectedComponent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSelectedComponent tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -192,7 +220,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 15: {
       DeclareAndCast(IGESSolid_Shell, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolShell tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -200,7 +230,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 16: {
       DeclareAndCast(IGESSolid_SolidAssembly, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidAssembly tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -208,7 +240,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 17: {
       DeclareAndCast(IGESSolid_SolidInstance, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidInstance tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -216,7 +250,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 18: {
       DeclareAndCast(IGESSolid_SolidOfLinearExtrusion, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfLinearExtrusion tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -224,7 +260,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 19: {
       DeclareAndCast(IGESSolid_SolidOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfRevolution tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -232,7 +270,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 20: {
       DeclareAndCast(IGESSolid_Sphere, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphere tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -240,7 +280,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 21: {
       DeclareAndCast(IGESSolid_SphericalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphericalSurface tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -248,7 +290,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 22: {
       DeclareAndCast(IGESSolid_ToroidalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolToroidalSurface tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -256,7 +300,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 23: {
       DeclareAndCast(IGESSolid_Torus, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolTorus tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -264,7 +310,9 @@ void IGESSolid_SpecificModule::OwnDump(const int                               C
     case 24: {
       DeclareAndCast(IGESSolid_VertexList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolVertexList tool;
       tool.OwnDump(anent, dumper, S, own);
     }

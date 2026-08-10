@@ -194,7 +194,9 @@ bool Extrema_GlobOptFuncCQuadric::Value(const math_Vector& X, double& F)
 {
   double ct;
   if (!checkInputData(X, ct))
+  {
     return false;
+  }
 
   value(ct, F);
   return !Precision::IsInfinite(F);

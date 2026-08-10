@@ -53,7 +53,9 @@ bool IFSelect_Signature::IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int&
   hasmin = hasmax = false;
   valmin = valmax = 0;
   if (!thecasi[0])
+  {
     return false;
+  }
   if (thecasi[0] & 2)
   {
     hasmin = true;
@@ -70,7 +72,9 @@ bool IFSelect_Signature::IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int&
 void IFSelect_Signature::AddCase(const char* const acase)
 {
   if (thecasl.IsNull())
+  {
     thecasl = new NCollection_HSequence<TCollection_AsciiString>();
+  }
   TCollection_AsciiString scase(acase);
   thecasl->Append(scase);
 }
@@ -106,7 +110,9 @@ bool IFSelect_Signature::MatchValue(const char* const              val,
                                     const bool                     exact)
 {
   if (exact)
+  {
     return text.IsEqual(val);
+  }
   // NB: no regexp
   char cardeb = text.Value(1);
   int  ln, lnt, i, j;
@@ -127,7 +133,9 @@ bool IFSelect_Signature::MatchValue(const char* const              val,
         }
       }
       if (res)
+      {
         return res;
+      }
     }
   }
   return false;

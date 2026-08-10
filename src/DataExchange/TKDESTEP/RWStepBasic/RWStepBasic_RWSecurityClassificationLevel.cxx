@@ -28,7 +28,9 @@ void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "security_classification_level"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

@@ -88,7 +88,9 @@ ChFi2d_Builder::ChFi2d_Builder(const TopoDS_Face& F)
     status = ChFi2d_Ready;
   }
   else
+  {
     status = ChFi2d_NotPlanar;
+  }
 } // ChFi2d_Builder
 
 //=================================================================================================
@@ -114,7 +116,9 @@ void ChFi2d_Builder::Init(const TopoDS_Face& F)
     status = ChFi2d_Ready;
   }
   else
+  {
     status = ChFi2d_NotPlanar;
+  }
 } // Init
 
 //=================================================================================================
@@ -155,7 +159,9 @@ void ChFi2d_Builder::Init(const TopoDS_Face& RefFace, const TopoDS_Face& ModFace
   {
     const TopoDS_Edge& currentEdge = TopoDS::Edge(ex.Current());
     if (!refEdgesMap.Contains(currentEdge))
+    {
       newEdges.Append(currentEdge);
+    }
     ex.Next();
   } // while (ex ...
 
@@ -167,7 +173,9 @@ void ChFi2d_Builder::Init(const TopoDS_Face& RefFace, const TopoDS_Face& ModFace
   {
     const TopoDS_Edge& currentEdge = TopoDS::Edge(newEdges.Value(i));
     if (IsIssuedFrom(currentEdge, refEdgesMap, basisEdge))
+    {
       history.Bind(basisEdge, currentEdge);
+    }
     else
     {
       // this edge is a chamfer or a fillet
@@ -238,7 +246,9 @@ TopoDS_Edge ChFi2d_Builder::AddFillet(const TopoDS_Vertex& V, const double Radiu
   TopoDS_Edge adjEdge1Mod, adjEdge2Mod, fillet;
   status = ChFi2d::FindConnectedEdges(newFace, V, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return fillet;
+  }
 
   if (IsAFillet(adjEdge1) || IsAChamfer(adjEdge1) || IsAFillet(adjEdge2) || IsAChamfer(adjEdge2))
   {
@@ -294,7 +304,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
     i++;
   }
   if (!IsFind)
+  {
     return commonVertex;
+  }
 
   TopoDS_Vertex firstVertex, lastVertex;
   TopExp::Vertices(Fillet, firstVertex, lastVertex);
@@ -302,23 +314,35 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
   TopoDS_Edge adjEdge1, adjEdge2;
   status = ChFi2d::FindConnectedEdges(newFace, firstVertex, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return commonVertex;
+  }
 
   TopoDS_Edge basisEdge1, basisEdge2, E1, E2;
   // E1 and E2 are the adjacent edges to Fillet
 
   if (adjEdge1.IsSame(Fillet))
+  {
     E1 = adjEdge2;
+  }
   else
+  {
     E1 = adjEdge1;
+  }
   basisEdge1 = BasisEdge(E1);
   status     = ChFi2d::FindConnectedEdges(newFace, lastVertex, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return commonVertex;
+  }
   if (adjEdge1.IsSame(Fillet))
+  {
     E2 = adjEdge2;
+  }
   else
+  {
     E2 = adjEdge1;
+  }
   basisEdge2 = BasisEdge(E2);
   TopoDS_Vertex connectionE1Fillet, connectionE2Fillet;
   bool          hasConnection = ChFi2d::CommonVertex(basisEdge1, basisEdge2, commonVertex);
@@ -350,14 +374,20 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
   TopExp::Vertices(E1, firstVertex, lastVertex);
   TopExp::Vertices(basisEdge1, v1, v2);
   if (v1.IsSame(commonVertex))
+  {
     v = v2;
+  }
   else
+  {
     v = v1;
+  }
 
   if (firstVertex.IsSame(v) || lastVertex.IsSame(v))
+  {
     // It means the edge support only one fillet. In this case
     // the new edge must be the basis edge.
     newEdge1 = basisEdge1;
+  }
   else
   {
     // It means the edge support one fillet on each end.
@@ -387,15 +417,21 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
 
   TopExp::Vertices(basisEdge2, v1, v2);
   if (v1.IsSame(commonVertex))
+  {
     v = v2;
+  }
   else
+  {
     v = v1;
+  }
 
   TopExp::Vertices(E2, firstVertex, lastVertex);
   if (firstVertex.IsSame(v) || lastVertex.IsSame(v))
+  {
     // It means the edge support only one fillet. In this case
     // the new edge must be the basis edge.
     newEdge2 = basisEdge2;
+  }
   else
   {
     // It means the edge support one fillet on each end.
@@ -434,13 +470,19 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
   {
     const TopoDS_Edge& theEdge = TopoDS::Edge(Ex.Current());
     if (!theEdge.IsSame(E1) && !theEdge.IsSame(E2) && !theEdge.IsSame(Fillet))
+    {
       B.Add(newWire, theEdge);
+    }
     else
     {
       if (theEdge == E1)
+      {
         B.Add(newWire, newEdge1);
+      }
       else if (theEdge == E2)
+      {
         B.Add(newWire, newEdge2);
+      }
     } // else
     Ex.Next();
   } // while ...
@@ -468,15 +510,23 @@ void ChFi2d_Builder::ComputeFillet(const TopoDS_Vertex& V,
   bool          Degen1, Degen2;
   Fillet = BuildFilletEdge(V, E1, E2, Radius, newExtr1, newExtr2);
   if (status != ChFi2d_IsDone)
+  {
     return;
+  }
   TrimE1 = BuildNewEdge(E1, V, newExtr1, Degen1);
   TrimE2 = BuildNewEdge(E2, V, newExtr2, Degen2);
   if (Degen1 && Degen2)
+  {
     status = ChFi2d_BothEdgesDegenerated;
+  }
   if (Degen1 && !Degen2)
+  {
     status = ChFi2d_FirstEdgeDegenerated;
+  }
   if (!Degen1 && Degen2)
+  {
     status = ChFi2d_LastEdgeDegenerated;
+  }
 } // ComputeFillet
 
 //=================================================================================================
@@ -565,9 +615,13 @@ TopoDS_Edge ChFi2d_Builder::BuildNewEdge(const TopoDS_Edge&   E1,
   //	BRep_Tool::Curve(E1, first, last);
   occ::handle<Geom_Curve> curve = BRep_Tool::Curve(E1, first, last);
   if (firstVertex.IsSame(OldExtr))
+  {
     makeEdge.Init(curve, NewExtr, lastVertex);
+  }
   else
+  {
     makeEdge.Init(curve, firstVertex, NewExtr);
+  }
   TopoDS_Edge anEdge = makeEdge;
   anEdge.Orientation(E1.Orientation());
   //  anEdge.Location(E1.Location());
@@ -670,13 +724,21 @@ void ChFi2d_Builder::UpDateHistory(const TopoDS_Edge& E1,
 {
 
   if (history.IsBound(E1))
+  {
     history.UnBind(E1);
+  }
   if (!E1.IsSame(TrimE1))
+  {
     history.Bind(E1, TrimE1);
+  }
   if (history.IsBound(E2))
+  {
     history.UnBind(E2);
+  }
   if (!E2.IsSame(TrimE2))
+  {
     history.Bind(E2, TrimE2);
+  }
 } // UpDateHistory
 
 //=================================================================================================
@@ -782,14 +844,22 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   occ::handle<Geom2d_Curve>        basisC1, basisC2;
   occ::handle<Geom2d_TrimmedCurve> T1 = occ::down_cast<Geom2d_TrimmedCurve>(C1);
   if (!T1.IsNull())
+  {
     basisC1 = T1->BasisCurve();
+  }
   else
+  {
     basisC1 = C1;
+  }
   occ::handle<Geom2d_TrimmedCurve> T2 = occ::down_cast<Geom2d_TrimmedCurve>(C2);
   if (!T2.IsNull())
+  {
     basisC2 = T2->BasisCurve();
+  }
   else
+  {
     basisC2 = C2;
+  }
 
   if (basisC1->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
   {
@@ -873,16 +943,24 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     if (param1 > param2)
     {
       if (Sens2)
+      {
         Qual2 = GccEnt_outside;
+      }
       else
+      {
         Qual2 = GccEnt_enclosed;
+      }
     }
     else
     {
       if (Sens2)
+      {
         Qual2 = GccEnt_enclosed;
+      }
       else
+      {
         Qual2 = GccEnt_outside;
+      }
     }
   } // if (cross < 0 ...
   else
@@ -890,30 +968,46 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     if (param3 > param4)
     {
       if (Sens1)
+      {
         Qual1 = GccEnt_outside;
+      }
       else
+      {
         Qual1 = GccEnt_enclosed;
+      }
     }
     else
     {
       if (Sens1)
+      {
         Qual1 = GccEnt_enclosed;
+      }
       else
+      {
         Qual1 = GccEnt_outside;
+      }
     }
     if (param1 > param2)
     {
       if (Sens2)
+      {
         Qual2 = GccEnt_enclosed;
+      }
       else
+      {
         Qual2 = GccEnt_outside;
+      }
     }
     else
     {
       if (Sens2)
+      {
         Qual2 = GccEnt_outside;
+      }
       else
+      {
         Qual2 = GccEnt_enclosed;
+      }
     }
   } // else ...
 
@@ -1144,7 +1238,9 @@ bool ChFi2d_Builder::IsAFillet(const TopoDS_Edge& E) const
   {
     const TopoDS_Edge& currentEdge = TopoDS::Edge(fillets.Value(i));
     if (currentEdge.IsSame(E))
+    {
       return true;
+    }
     i++;
   }
   return false;
@@ -1159,7 +1255,9 @@ bool ChFi2d_Builder::IsAChamfer(const TopoDS_Edge& E) const
   {
     const TopoDS_Edge& currentEdge = TopoDS::Edge(chamfers.Value(i));
     if (currentEdge.IsSame(E))
+    {
       return true;
+    }
     i++;
   }
   return false;
@@ -1178,9 +1276,13 @@ bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
   occ::handle<Geom2d_Curve>        basisC;
   occ::handle<Geom2d_TrimmedCurve> TC = occ::down_cast<Geom2d_TrimmedCurve>(C);
   if (!TC.IsNull())
+  {
     basisC = TC->BasisCurve();
+  }
   else
+  {
     basisC = C;
+  }
 
   return basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
          || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line); // else ...

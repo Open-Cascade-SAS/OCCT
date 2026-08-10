@@ -66,7 +66,9 @@ bool HLRBRep_EdgeInterferenceTool::SameInterferences(const HLRAlgo_Interference&
   int ind1 = I1.Intersection().Index();
   int ind2 = I2.Intersection().Index();
   if (ind1 != 0 && ind2 != 0)
+  {
     return ind1 == ind2;
+  }
   return false;
 }
 
@@ -75,7 +77,9 @@ bool HLRBRep_EdgeInterferenceTool::SameInterferences(const HLRAlgo_Interference&
 bool HLRBRep_EdgeInterferenceTool::SameVertexAndInterference(const HLRAlgo_Interference& I) const
 {
   if (I.Intersection().Index() == inter[cur].Index())
+  {
     return true;
+  }
   return I.Intersection().Orientation() == ((cur == 0) ? TopAbs_FORWARD : TopAbs_REVERSED);
 }
 

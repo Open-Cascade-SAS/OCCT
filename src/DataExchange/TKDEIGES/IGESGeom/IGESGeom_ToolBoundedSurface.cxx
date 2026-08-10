@@ -111,7 +111,9 @@ void IGESGeom_ToolBoundedSurface::ReadOwnParams(const occ::handle<IGESGeom_Bound
       // st = PR.ReadEntity(IR, PR.Current(), Msg168, tempEnt); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadEntity(IR, PR.Current(), "Boundary Entities", tempEnt);
       if (PR.ReadEntity(IR, PR.Current(), aStatus, tempEnt))
+      {
         tempBounds->SetValue(i, occ::down_cast<IGESGeom_Boundary>(tempEnt));
+      }
       else
       {
         Message_Msg Msg168("XTSEP_168");
@@ -154,7 +156,9 @@ void IGESGeom_ToolBoundedSurface::WriteOwnParams(const occ::handle<IGESGeom_Boun
   IW.Send(ent->Surface());
   IW.Send(ent->NbBoundaries());
   for (num = ent->NbBoundaries(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->Boundary(i));
+  }
 }
 
 //=================================================================================================
@@ -165,7 +169,9 @@ void IGESGeom_ToolBoundedSurface::OwnShared(const occ::handle<IGESGeom_BoundedSu
   int i, num;
   iter.GetOneItem(ent->Surface());
   for (num = ent->NbBoundaries(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->Boundary(i));
+  }
 }
 
 //=================================================================================================
@@ -181,7 +187,9 @@ void IGESGeom_ToolBoundedSurface::OwnCopy(const occ::handle<IGESGeom_BoundedSurf
   num = another->NbBoundaries();
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>> tempBounds;
   if (num > 0)
+  {
     tempBounds = new NCollection_HArray1<occ::handle<IGESGeom_Boundary>>(1, num);
+  }
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESGeom_Boundary, tempBoundary, TC.Transferred(another->Boundary(i)));
@@ -240,5 +248,5 @@ void IGESGeom_ToolBoundedSurface::OwnDump(const occ::handle<IGESGeom_BoundedSurf
   S << "\n"
     << "Boundary Entities     : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbBoundaries(), ent->Boundary);
-  S << std::endl;
+  S << '\n';
 }

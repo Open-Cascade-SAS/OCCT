@@ -32,7 +32,9 @@ void IGESDefs_MacroDef::Init(
   const occ::handle<TCollection_HAsciiString>&                                   endMacro)
 {
   if (langStatements->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDefs_MacroDef : Init");
+  }
   theMACRO          = macro;
   theEntityTypeID   = entityTypeID;
   theLangStatements = langStatements;

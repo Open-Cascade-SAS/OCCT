@@ -47,13 +47,17 @@ void IGESGeom_BSplineSurface::Init(const int                                    
 {
   if (allWeights->RowLength() != allPoles->RowLength()
       || allWeights->ColLength() != allPoles->ColLength())
+  {
     throw Standard_DimensionMismatch("IGESGeom_BSplineSurface : Init");
+  }
   if (allKnotsU->Lower() != -aDegU || allKnotsV->Lower() != -aDegV
       || allKnotsU->Upper() != anIndexU + 1 || allKnotsV->Upper() != anIndexV + 1
       || allWeights->LowerRow() != 0 || allWeights->LowerCol() != 0 || allPoles->LowerRow() != 0
       || allPoles->LowerCol() != 0 || allPoles->UpperRow() != anIndexU
       || allPoles->UpperCol() != anIndexV)
+  {
     throw Standard_DimensionMismatch("IGESGeom_BSplineSurface : Init");
+  }
 
   theIndexU    = anIndexU;
   theIndexV    = anIndexV;
@@ -79,7 +83,9 @@ void IGESGeom_BSplineSurface::Init(const int                                    
 void IGESGeom_BSplineSurface::SetFormNumber(const int form)
 {
   if (form < 0 || form > 9)
+  {
     throw Standard_OutOfRange("IGESGeom_BSplineSurface : SetFormNumber");
+  }
   InitTypeAndForm(128, form);
 }
 
@@ -116,7 +122,9 @@ bool IGESGeom_BSplineSurface::IsClosedV() const
 bool IGESGeom_BSplineSurface::IsPolynomial(const bool flag) const
 {
   if (flag)
+  {
     return isPolynomial;
+  }
   int    i, j;
   double w0 = theWeights->Value(0, 0);
   /*CR23377
@@ -125,9 +133,15 @@ bool IGESGeom_BSplineSurface::IsPolynomial(const bool flag) const
    *                                    theIndexU--> theIndexU+1 (=NbPolesU())
    */
   for (j = 0; j < (theIndexV + 1); j++)
+  {
     for (i = 0; i < (theIndexU + 1); i++)
+    {
       if (std::abs(theWeights->Value(i, j) - w0) > 1.e-10)
+      {
         return false;
+      }
+    }
+  }
   return true;
 }
 
@@ -191,7 +205,9 @@ gp_Pnt IGESGeom_BSplineSurface::TransformedPole(const int anIndex1, const int an
   // Reversal of the order of indices since the poles are
   // stored in the array like that. See ReadOwnParams()
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   gp_Pnt Pole(tempXYZ);
   return Pole;
 }

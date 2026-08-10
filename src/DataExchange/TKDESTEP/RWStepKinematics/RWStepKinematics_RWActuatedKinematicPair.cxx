@@ -40,7 +40,9 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "actuated_kinematic_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -108,18 +110,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 7);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTX = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTX = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTX = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTX = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #7 (t_x) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #7 (t_x) is not enumeration");
+    }
   }
   else
   {
@@ -134,18 +148,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 8);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTY = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTY = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTY = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTY = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #8 (t_y) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #8 (t_y) is not enumeration");
+    }
   }
   else
   {
@@ -160,18 +186,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 9);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTZ = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTZ = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTZ = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTZ = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #9 (t_z) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #9 (t_z) is not enumeration");
+    }
   }
   else
   {
@@ -186,18 +224,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 10);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRX = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRX = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRX = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRX = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #10 (r_x) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #10 (r_x) is not enumeration");
+    }
   }
   else
   {
@@ -212,18 +262,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 11);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRY = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRY = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRY = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRY = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #11 (r_y) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #11 (r_y) is not enumeration");
+    }
   }
   else
   {
@@ -238,18 +300,30 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 12);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRZ = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRZ = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRZ = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRZ = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #12 (r_z) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #12 (r_z) is not enumeration");
+    }
   }
   else
   {
@@ -298,7 +372,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -329,7 +405,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasTY())
   {
@@ -350,7 +428,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasTZ())
   {
@@ -371,7 +451,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasRX())
   {
@@ -392,7 +474,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasRY())
   {
@@ -413,7 +497,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasRZ())
   {
@@ -434,7 +520,9 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

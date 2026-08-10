@@ -115,9 +115,13 @@ void IGESGraph_ToolLineFontDefTemplate::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() == 0)
+  {
     ach->AddWarning("Line Font Rank is zero");
+  }
   else if ((ent->RankLineFont() < 1) || (ent->RankLineFont() > 5))
+  {
     ach->AddWarning("Invalid Value As Line Font Rank");
+  }
 }
 
 void IGESGraph_ToolLineFontDefTemplate::OwnDump(
@@ -135,5 +139,5 @@ void IGESGraph_ToolLineFontDefTemplate::OwnDump(
   S << "\n"
     << "Length Between Successive Template Figure : " << ent->Distance() << "\n"
     << "Scale Factor for Subfigure : " << ent->Scale() << "\n"
-    << std::endl;
+    << '\n';
 }

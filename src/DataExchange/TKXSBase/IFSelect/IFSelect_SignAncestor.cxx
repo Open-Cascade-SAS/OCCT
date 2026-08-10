@@ -34,9 +34,13 @@ bool IFSelect_SignAncestor::Matches(const occ::handle<Standard_Transient>& ent,
                                     const bool /*exact*/) const
 {
   if (ent.IsNull())
+  {
     return false;
+  }
   DeclareAndCast(Standard_Type, atype, ent);
   if (atype.IsNull())
+  {
     atype = ent->DynamicType();
+  }
   return atype->SubType(text.ToCString());
 }

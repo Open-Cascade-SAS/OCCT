@@ -27,17 +27,15 @@
 //! High-level Gordon surface construction from arbitrary curve networks.
 //!
 //! A Gordon surface (transfinite interpolation) constructs a smooth B-spline
-//! surface from a network of intersecting profile (V) and guide (U) curves
-//! using the Boolean sum formula:
-//!   S = S_profiles + S_guides - S_tensor
+//! surface from a network of intersecting profile (V) and guide (U) curves.
 //!
 //! This generalizes the existing GeomFill_Coons (4-boundary patch) to N x M
 //! curve networks.
 //!
 //! This class accepts arbitrary Geom_Curve inputs, handles conversion to BSpline,
-//! intersection detection, network sorting, curve reparametrization for
-//! compatibility, then delegates to GeomFill_GordonBuilder for the core
-//! mathematical construction.
+//! expands periodic B-splines into explicit non-periodic form, finds intersections,
+//! sorts the network, reparametrizes curves for compatibility, then evaluates a
+//! transfinite interpolation surface over the compatible network.
 //!
 //! Usage:
 //! @code
@@ -51,11 +49,76 @@
 //! @endcode
 //!
 //! Limitations:
-//! - Non-rational curves only
+//! - Every profile must intersect every guide. Multiple contacts are accepted
+//!   only when they contain a single monotone branch over the ordered network.
+//! - Rational networks are combined by exact common-denominator multiplication.
+//!   Construction can fail if the resulting product degree exceeds OCCT's
+//!   B-spline degree limit.
+//! - ApproximationMode::AllowApproximateFallback may build a sampled surface
+//!   when exact construction fails, or rebuild rational curves approximately
+//!   when exact reparametrization is required. Such a surface is marked by
+//!   IsApproximate() and does not guarantee exact interpolation of the input curves.
 class GeomFill_Gordon
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Result state of the last Perform() call.
+  enum class ResultStatus
+  {
+    NotStarted,                      //!< Perform() has not been called since initialization.
+    Done,                            //!< Surface has been constructed.
+    InvalidInput,                    //!< Input network has too few profile or guide curves.
+    ConversionFailed,                //!< Curves could not be converted/reparametrized to B-splines.
+    IntersectionFailed,              //!< Full profile/guide intersection table could not be built.
+    OrderingFailed,                  //!< Network curves could not be ordered consistently.
+    ReparametrizationFailed,         //!< Intersections could not be equalized in parameter space.
+    CompatibilityFailed,             //!< Prepared network failed geometric compatibility checks.
+    CurveCompatibilityFailed,        //!< Prepared curve families are not B-spline compatible.
+    RationalReparametrizationFailed, //!< Rational curves require unsupported exact
+                                     //!< reparametrization.
+    SkinningFailed,                  //!< Intermediate profile/guide skinning has failed.
+    ReferenceSurfaceFailed,          //!< Intersection-grid reference surface could not be built.
+    KnotAlignmentFailed,             //!< Intermediate surfaces could not be aligned.
+    RationalDegreeOverflow,     //!< Exact rational product degree exceeds OCCT's B-spline limit.
+    RationalConstructionFailed, //!< Exact rational numerator/denominator construction has failed.
+    PeriodicityFailed,          //!< Closed seam could not be converted to periodic form.
+    ApproximationFailed,        //!< Optional approximate fallback has failed.
+    ConstructionFailed          //!< Final B-spline surface construction has failed.
+  };
+
+  //! Controls behavior when exact pole-based construction fails.
+  enum class ApproximationMode
+  {
+    ExactOnly,               //!< Report exact construction failure (default).
+    AllowApproximateFallback //!< Try a sampled B-spline fallback without exact interpolation.
+  };
+
+  //! Construction stage reached by the last Perform() call.
+  enum class BuildStage
+  {
+    NotStarted,        //!< Perform() has not started.
+    InputConversion,   //!< Input curves are being converted to working B-splines.
+    ContactDiscovery,  //!< Profile/guide contacts are being collected.
+    NetworkOrdering,   //!< Contacts and curves are being ordered into a monotone network.
+    Reparametrization, //!< Curves are being rebuilt to shared network parameters.
+    ExactConstruction, //!< Exact B-spline network surface is being constructed.
+    Validation,        //!< Result is being checked against prepared curves.
+    Approximation      //!< Optional sampled fallback is being built.
+  };
+
+  //! Diagnostics for the last Perform() call.
+  struct BuildReport
+  {
+    ResultStatus Status                        = ResultStatus::NotStarted;
+    BuildStage   FailedStage                   = BuildStage::NotStarted;
+    bool         IsApproximate                 = false;
+    double       MaxContactGap                 = 0.0;
+    double       MaxReparametrizationDeviation = 0.0;
+    double       MaxProfileDeviation           = 0.0;
+    double       MaxGuideDeviation             = 0.0;
+    double       MaxApproximationDeviation     = 0.0;
+  };
 
   //! Creates an empty Gordon surface algorithm.
   Standard_EXPORT GeomFill_Gordon();
@@ -75,64 +138,46 @@ public:
   //! By default, single-thread mode is used.
   void SetParallelMode(bool theToUseParallel) { myToUseParallel = theToUseParallel; }
 
+  //! Sets optional fallback behavior for failures in exact B-spline construction.
+  //! Approximate fallback results should be checked by IsApproximate().
+  void SetApproximationMode(ApproximationMode theMode) { myApproximationMode = theMode; }
+
+  //! Returns current fallback behavior.
+  [[nodiscard]] ApproximationMode GetApproximationMode() const { return myApproximationMode; }
+
   //! Returns true if internal parallel processing is enabled.
   [[nodiscard]] bool IsParallelMode() const { return myToUseParallel; }
 
   //! Returns true if the surface was successfully constructed.
-  [[nodiscard]] bool IsDone() const { return myIsDone; }
+  [[nodiscard]] bool IsDone() const { return myReport.Status == ResultStatus::Done; }
+
+  //! Returns true if the resulting surface was produced by approximate fallback.
+  //! Approximate results do not have the exact Gordon interpolation guarantee.
+  [[nodiscard]] bool IsApproximate() const { return myReport.IsApproximate; }
+
+  //! Returns the result state of the last Perform() call.
+  [[nodiscard]] ResultStatus Status() const { return myReport.Status; }
+
+  //! Returns diagnostics for the last Perform() call.
+  [[nodiscard]] const BuildReport& Report() const { return myReport; }
 
   //! Returns the resulting Gordon B-spline surface.
   [[nodiscard]] Standard_EXPORT const occ::handle<Geom_BSplineSurface>& Surface() const;
 
 private:
-  //! Converts all input curves to BSpline and reparametrizes to [0,1].
-  bool convertToBSpline();
-
-  //! Computes all profile x guide intersections using GeomAPI_ExtremaCurveCurve.
-  //! Fills myProfileParams and myGuideParams.
-  //! @return true if all N x M intersections were found
-  bool computeIntersections();
-
-  //! Sorts the network so profiles are ordered left-to-right
-  //! and guides bottom-to-top, based on intersection parameters.
-  bool sortNetwork();
-
-  //! Snaps intersection parameters that are near curve start/end boundaries
-  //! to the exact boundary values, eliminating numerical inaccuracies.
-  //! Based on occ_gordon's EliminateInaccuraciesNetworkIntersections.
-  void eliminateInaccuracies();
-
-  //! Validates that profiles and guides actually intersect at their claimed
-  //! parameters within tolerance after reparametrization.
-  //! Based on occ_gordon's CheckCurveNetworkCompatibility.
-  //! @return true if all intersection points are within tolerance
-  bool checkNetworkCompatibility() const;
-
-  //! Averages intersection parameters and reparametrizes curves
-  //! so intersections occur at averaged target parameters.
-  //! Uses approximation-based approach with kink detection and
-  //! intelligent sample distribution for robustness.
-  bool reparametrize();
-
-  //! Computes the geometric scale factor from all curve endpoints.
-  //! Used for scale-relative tolerance computations.
-  void computeScale();
-
-  //! Detects whether the curve network is closed in U or V direction.
-  //! Sets myIsUClosed and myIsVClosed flags.
-  void detectClosedness();
-
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> myInputProfiles;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> myInputGuides;
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myProfiles;
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myGuides;
   NCollection_Array2<double>                         myProfileParams;
   NCollection_Array2<double>                         myGuideParams;
   occ::handle<Geom_BSplineSurface>                   mySurface;
   double                                             myTolerance     = 0.0;
-  double                                             myScale         = 1.0;
   bool                                               myIsUClosed     = false;
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
-  bool                                               myIsDone        = false;
+  ApproximationMode myApproximationMode                              = ApproximationMode::ExactOnly;
+  BuildReport       myReport;
 };
 
 #endif // _GeomFill_Gordon_HeaderFile

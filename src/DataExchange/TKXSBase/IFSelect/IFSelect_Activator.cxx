@@ -69,7 +69,9 @@ bool IFSelect_Activator::Select(const char* const                command,
 {
   int num;
   if (!thedico.Find(command, num))
+  {
     return false;
+  }
   number = thenums(num);
   actor  = occ::down_cast<IFSelect_Activator>(theacts(num));
   return true;
@@ -79,7 +81,9 @@ int IFSelect_Activator::Mode(const char* const command)
 {
   int num;
   if (!thedico.Find(command, num))
+  {
     return -1;
+  }
   return themodes(num);
 }
 
@@ -94,20 +98,28 @@ occ::handle<NCollection_HSequence<TCollection_AsciiString>> IFSelect_Activator::
   for (; iter.More(); iter.Next())
   {
     if (!iter.Key().StartsWith(command))
+    {
       continue;
+    }
     if (mode < 0)
     {
       DeclareAndCast(IFSelect_Activator, acti, theacts(iter.Value()));
       if (acti.IsNull())
+      {
         continue;
+      }
       if (command[0] == '\0' || !strcmp(command, acti->Group()))
+      {
         list->Append(iter.Key());
+      }
     }
     else
     {
       num = iter.Value();
       if (themodes(num) == mode)
+      {
         list->Append(iter.Key());
+      }
     }
   }
   return list;

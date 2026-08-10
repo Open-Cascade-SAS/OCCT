@@ -30,7 +30,9 @@ void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "surface_style_silhouette"))
+  {
     return;
+  }
 
   // --- own field : styleOfSilhouette ---
 

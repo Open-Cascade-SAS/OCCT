@@ -28,6 +28,8 @@ occ::handle<XSControl_Vars> XSControl::Vars(const occ::handle<IFSelect_SessionPi
   occ::handle<XSControl_Vars>        avars;
   occ::handle<XSControl_WorkSession> WS = XSControl::Session(pilot);
   if (!WS.IsNull())
+  {
     avars = WS->Vars();
+  }
   return avars;
 }

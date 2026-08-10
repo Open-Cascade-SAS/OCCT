@@ -30,7 +30,9 @@ void RWStepVisual_RWTemplateInstance::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "template_instance"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -86,41 +86,59 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
 
     for (int aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
     {
-      const IMeshData::IEdgeHandle    aDEdge         = aDWire->GetEdge(aEdgeIt);
-      const IMeshData::ICurveHandle&  aCurve         = aDEdge->GetCurve();
-      const IMeshData::ListOfInteger& aListOfPCurves = aDEdge->GetPCurves(myDFace.get());
+      const IMeshData::IEdgeHandle   aDEdge = aDWire->GetEdge(aEdgeIt);
+      const IMeshData::ICurveHandle& aCurve = aDEdge->GetCurve();
+      // A wire defines one topological occurrence of an edge. Registering every
+      // pcurve attached to its face would create duplicate constraints at a periodic seam.
+      const IMeshData::IPCurveHandle& aPCurve =
+        aDEdge->GetPCurve(myDFace.get(), aDWire->GetEdgeOrientation(aEdgeIt));
+      const TopAbs_Orientation aOri = fixSeamEdgeOrientation(aDEdge, aPCurve);
 
+      int       aPrevNodeIndex = -1;
+      const int aLastPoint     = aPCurve->ParametersNb() - 1;
+      for (int aPointIndex = 0; aPointIndex <= aLastPoint; ++aPointIndex)
+      {
+        const int aNodeIndex = registerNode(aCurve->GetPoint(aPointIndex),
+                                            aPCurve->GetPoint(aPointIndex),
+                                            BRepMesh_Frontier,
+                                            false);
+
+        aPCurve->GetIndex(aPointIndex) = aNodeIndex;
+
+        if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
+        {
+          const int aLinksNb   = myStructure->NbLinks();
+          const int aLinkIndex = addLinkToMesh(aPrevNodeIndex, aNodeIndex, aOri);
+          if (aWireIt != 0 && aLinkIndex <= aLinksNb)
+          {
+            // Prevent holes around wire of zero area.
+            BRepMesh_Edge& aLink = const_cast<BRepMesh_Edge&>(myStructure->GetLink(aLinkIndex));
+            aLink.SetMovability(BRepMesh_Fixed);
+          }
+        }
+
+        aPrevNodeIndex = aNodeIndex;
+      }
+
+      // Every pcurve needs node indices for Poly_PolygonOnTriangulation, but only
+      // the pcurve belonging to this wire occurrence defines a mesh constraint.
+      const IMeshData::ListOfInteger& aListOfPCurves = aDEdge->GetPCurves(myDFace.get());
       for (IMeshData::ListOfInteger::Iterator aPCurveIt(aListOfPCurves); aPCurveIt.More();
            aPCurveIt.Next())
       {
-        const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(aPCurveIt.Value());
-        const TopAbs_Orientation        aOri    = fixSeamEdgeOrientation(aDEdge, aPCurve);
-
-        int       aPrevNodeIndex = -1;
-        const int aLastPoint     = aPCurve->ParametersNb() - 1;
-        for (int aPointIndex = 0; aPointIndex <= aLastPoint; ++aPointIndex)
+        const IMeshData::IPCurveHandle& anOtherPCurve = aDEdge->GetPCurve(aPCurveIt.Value());
+        if (anOtherPCurve == aPCurve)
         {
-          const int aNodeIndex = registerNode(aCurve->GetPoint(aPointIndex),
-                                              aPCurve->GetPoint(aPointIndex),
-                                              BRepMesh_Frontier,
-                                              false);
+          continue;
+        }
 
-          aPCurve->GetIndex(aPointIndex) = aNodeIndex;
-          myUsedNodes->Bind(aNodeIndex, aNodeIndex);
-
-          if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
-          {
-            const int aLinksNb   = myStructure->NbLinks();
-            const int aLinkIndex = addLinkToMesh(aPrevNodeIndex, aNodeIndex, aOri);
-            if (aWireIt != 0 && aLinkIndex <= aLinksNb)
-            {
-              // Prevent holes around wire of zero area.
-              BRepMesh_Edge& aLink = const_cast<BRepMesh_Edge&>(myStructure->GetLink(aLinkIndex));
-              aLink.SetMovability(BRepMesh_Fixed);
-            }
-          }
-
-          aPrevNodeIndex = aNodeIndex;
+        const int anOtherLastPoint = anOtherPCurve->ParametersNb() - 1;
+        for (int aPointIndex = 0; aPointIndex <= anOtherLastPoint; ++aPointIndex)
+        {
+          anOtherPCurve->GetIndex(aPointIndex) = registerNode(aCurve->GetPoint(aPointIndex),
+                                                              anOtherPCurve->GetPoint(aPointIndex),
+                                                              BRepMesh_Frontier,
+                                                              false);
         }
       }
     }
@@ -137,11 +155,21 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
                                         const bool                     isForceAdd)
 {
   const int aNodeIndex =
-    addNodeToStructure(thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
+    addNodeToStructure(thePoint2d, myNodesMap->Length(), theMovability, isForceAdd);
 
-  if (aNodeIndex > myNodesMap->Size())
+  if (aNodeIndex > myNodesMap->Length())
   {
     myNodesMap->Append(thePoint);
+    // Pre-bind frontier and fixed nodes with identity mapping so that
+    // pcurve indices (set in initDataStructure as raw structure indices)
+    // remain valid as compact Poly_Triangulation indices. Free (internal)
+    // nodes are NOT pre-bound: they enter myUsedNodes only via
+    // collectTriangles() when actually referenced by a triangle, which
+    // prevents unreferenced internal nodes from appearing as free nodes.
+    if (theMovability != BRepMesh_Free)
+    {
+      myUsedNodes->Bind(aNodeIndex, aNodeIndex);
+    }
   }
 
   return aNodeIndex;
@@ -166,13 +194,19 @@ int BRepMesh_BaseMeshAlgo::addLinkToMesh(const int                theFirstNodeId
 {
   int aLinkIndex;
   if (theOrientation == TopAbs_REVERSED)
+  {
     aLinkIndex =
       myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
+  }
   else if (theOrientation == TopAbs_INTERNAL)
+  {
     aLinkIndex = myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
+  }
   else
+  {
     aLinkIndex =
       myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
+  }
 
   return std::abs(aLinkIndex);
 }
@@ -249,7 +283,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
     {
       if (!myUsedNodes->IsBound(aNode[i]))
       {
-        myUsedNodes->Bind(aNode[i], myUsedNodes->Size() + 1);
+        myUsedNodes->Bind(aNode[i], myUsedNodes->Length() + 1);
       }
 
       aNode[i] = myUsedNodes->Find(aNode[i]);
@@ -266,7 +300,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
 
 void BRepMesh_BaseMeshAlgo::collectNodes(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
-  for (int i = 1; i <= myNodesMap->Size(); ++i)
+  for (int i = 1; i <= myNodesMap->Length(); ++i)
   {
     if (myUsedNodes->IsBound(i))
     {

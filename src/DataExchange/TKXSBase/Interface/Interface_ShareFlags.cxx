@@ -63,7 +63,9 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
   themodel = agraph.Model();
   int nb   = themodel->NbEntities();
   if (nb == 0)
+  {
     return;
+  }
   theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   for (int i = 1; i <= nb; i++)
   {
@@ -73,9 +75,13 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
       agraph.GetSharings(ent);
 
     if (!list.IsNull() && list->Length() > 0)
+    {
       theflags.SetTrue(i);
+    }
     else
+    {
       theroots->Append(ent);
+    }
   }
 }
 
@@ -85,7 +91,9 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
   bool patool = gtool.IsNull();
   int  nb     = themodel->NbEntities();
   if (nb == 0)
+  {
     return;
+  }
   theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
@@ -95,7 +103,9 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
     //    equivalent "Content"
     occ::handle<Standard_Transient> ent = themodel->Value(i);
     if (themodel->IsRedefinedContent(i))
+    {
       ent = themodel->ReportEntity(i)->Content();
+    }
 
     //    Result obtained via GeneralLib
     Interface_EntityIterator             iter;
@@ -104,12 +114,16 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
     if (patool)
     {
       if (lib.Select(ent, module, CN))
+      {
         module->FillShared(themodel, CN, ent, iter);
+      }
     }
     else
     {
       if (gtool->Select(ent, module, CN))
+      {
         module->FillShared(themodel, CN, ent, iter);
+      }
     }
 
     //    Entities shared by <ent>: need to mark each one as "Shared"
@@ -122,7 +136,9 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
   for (i = 1; i <= nb; i++)
   {
     if (!theflags.Value(i))
+    {
       theroots->Append(themodel->Value(i));
+    }
   }
 }
 
@@ -135,7 +151,9 @@ bool Interface_ShareFlags::IsShared(const occ::handle<Standard_Transient>& ent) 
 {
   int num = themodel->Number(ent);
   if (num == 0 || num > themodel->NbEntities())
+  {
     throw Standard_DomainError("Interface ShareFlags : IsShared");
+  }
   return theflags.Value(num);
 }
 

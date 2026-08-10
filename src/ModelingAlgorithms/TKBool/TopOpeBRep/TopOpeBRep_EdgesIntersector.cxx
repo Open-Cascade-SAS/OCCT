@@ -239,7 +239,9 @@ static bool IsTangentSegment(const IntRes2d_IntersectionPoint& P1,
       double aResol2   = aC2.Resolution(aTolConf);
 
       if (aParDist1 * aParDist1 <= aResol1 && aParDist2 * aParDist2 <= aResol2)
+      {
         return true;
+      }
     }
   }
 
@@ -279,7 +281,9 @@ bool EdgesIntersector_checkT1D(const TopoDS_Edge&       E1,
   TopOpeBRepDS_Config C   = TopOpeBRepDS_SAMEORIENTED;
   bool                sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(E1, E2);
   if (!sso)
+  {
     C = TopOpeBRepDS_DIFFORIENTED;
+  }
 
   bool               SO = (C == TopOpeBRepDS_SAMEORIENTED);
   bool               DO = (C == TopOpeBRepDS_DIFFORIENTED);
@@ -293,9 +297,13 @@ bool EdgesIntersector_checkT1D(const TopoDS_Edge&       E1,
   bool reversed = (SO && first) || (DO && last);
   bool forward  = (SO && last) || (DO && first);
   if (reversed)
+  {
     newT.Set(TopAbs_REVERSED);
+  }
   if (forward)
+  {
     newT.Set(TopAbs_FORWARD);
+  }
   return (reversed || forward);
 } // EdgesIntersector_checkT1D
 
@@ -335,7 +343,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   // modified by NIZNHY-PKV Thu Nov  4 15:44:13 1999 to
 
   if (PC1.IsNull())
+  {
     throw Standard_Failure("EdgesIntersector::Perform : no 2d curve");
+  }
 
   myCurve1.Load(PC1);
   BRep_Tool::UVPoints(myEdge1, myFace1, pfirst, plast);
@@ -359,7 +369,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   const occ::handle<Geom_Surface> S1 = BRep_Tool::Surface(myFace1, L1);
   const occ::handle<Geom_Surface> S2 = BRep_Tool::Surface(myFace2, L2);
   if (S1 == S2 && L1 == L2)
+  {
     memesupport = true;
+  }
 
   if (mySurfaceType1 == GeomAbs_Plane || memesfaces || memesupport)
   {
@@ -395,7 +407,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
       double               d;
       bool                 ok = FUN_tool_projPonF(pt2, myFace1, uv2, d);
       if (!ok)
+      {
         return; // nyiRaise
+      }
 
       occ::handle<Geom_Surface> aSurf1 = BRep_Tool::Surface(myFace1);
       bool                      apex   = FUN_tool_onapex(uv2, aSurf1);
@@ -422,7 +436,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
           const TopoDS_Edge& ee   = TopoDS::Edge(it.Value());
           bool               dgee = BRep_Tool::Degenerated(ee);
           if (!dgee)
+          {
             continue;
+          }
           //	  double f,l;
           PC2on1 = BRep_Tool::CurveOnSurface(ee, myFace1, first, last);
         }
@@ -474,7 +490,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
 #endif
     }
     else
+    {
       return;
+    }
   }
 
   // compute the intersection
@@ -517,9 +535,13 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   //  for (int p=1; p<=nbp; p++) mylpnt.Append(myIntersector.Point(p));
   int p;
   for (p = 1; p <= nbp; p++)
+  {
     mylpnt.Append(myIntersector.Point(p));
+  }
   for (int s = 1; s <= nbs; s++)
+  {
     mylseg.Append(myIntersector.Segment(s));
+  }
 
   bool filter = true;
 #ifdef OCCT_DEBUG
@@ -558,9 +580,13 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
 
           fin = false;
           if (aTrans.TransitionType() == IntRes2d_Touch)
+          {
             mylpnt.Remove(p);
+          }
           else
+          {
             mylpnt.Remove(p + 1);
+          }
           nbp--;
         }
         //  Modified by Sergey KHROMOV - Fri Jan 11 10:31:39 2002 End
@@ -584,7 +610,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
 
   MakePoints2d();
   if (ReduceSegment)
+  {
     ReduceSegments();
+  }
 
   // xpu010998 : cto900J1, e5 sdm e13, IntPatch (Touch,Inside) ->
   //             faulty INTERNAL transition at G=v9 :
@@ -614,7 +642,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
         TopOpeBRepDS_Transition newT;
         bool                    computed = ::EdgesIntersector_checkT1D(myEdge1, myEdge2, V2, newT);
         if (computed)
+        {
           T1.Set(newT.Orientation(TopAbs_IN));
+        }
       }
 
       bool T2INT   = (T2.Orientation(TopAbs_IN) == TopAbs_INTERNAL);
@@ -626,7 +656,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
         TopOpeBRepDS_Transition newT;
         bool                    computed = ::EdgesIntersector_checkT1D(myEdge2, myEdge1, V1, newT);
         if (computed)
+        {
           T2.Set(newT.Orientation(TopAbs_IN));
+        }
       }
 
       // xpu121098 : cto900I7 (e12on,vG14)
@@ -634,12 +666,16 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
       bool          clE2 = TopOpeBRepTool_TOOL::ClosedE(myEdge2, vcl2);
       bool          nT1  = (!T1INT && clE2 && isvertex22 && vcl2.IsSame(P2D.Vertex(2)));
       if (nT1)
+      {
         T1.Set(TopAbs_INTERNAL);
+      }
       TopoDS_Vertex vcl1;
       bool          clE1 = TopOpeBRepTool_TOOL::ClosedE(myEdge1, vcl1);
       bool          nT2  = (!T2INT && clE1 && isvertex11 && vcl1.IsSame(P2D.Vertex(1)));
       if (nT2)
+      {
         T2.Set(TopAbs_INTERNAL);
+      }
 
     } // (isvertex && esd)
   } // MorePoint
@@ -677,14 +713,20 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   GeomAbs_CurveType          t2 = C2.GetType();
 
   if (!myHasSegment)
+  {
     return SetSameDomain(false);
+  }
 
   bool tt = (t1 == t2);
   if (!tt)
+  {
     return SetSameDomain(false);
+  }
 
   if (t1 == GeomAbs_Line)
+  {
     return SetSameDomain(true);
+  }
 
   if (t1 != GeomAbs_Circle)
   {
@@ -702,7 +744,8 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   //  bool rr = (r1 == r2);
   // clang-format off
   bool rr = (std::abs(r1-r2) < Precision::Confusion()); //xpu281098 (cto019D2) tolerance a revoir
-  if (!rr) return SetSameDomain(false);
+  if (!rr) { return SetSameDomain(false);
+}
 
   const gp_Pnt2d& p1 = c1.Location();
   const gp_Pnt2d& p2 = c2.Location();
@@ -717,7 +760,9 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   double tol  = tol1 + tol2;
   bool   esd  = (dpp <= tol);
   if (esd)
+  {
     return SetSameDomain(true);
+  }
 
   return SetSameDomain(false);
 } // ComputeSameDomain
@@ -749,11 +794,15 @@ void TopOpeBRep_EdgesIntersector::MakePoints2d()
     bool isv1 = IsVertex1(1);
     p2d.SetIsVertex(1, isv1);
     if (isv1)
+    {
       p2d.SetVertex(1, TopoDS::Vertex(Vertex1(1)));
+    }
     bool isv2 = IsVertex1(2);
     p2d.SetIsVertex(2, isv2);
     if (isv2)
+    {
       p2d.SetVertex(2, TopoDS::Vertex(Vertex1(2)));
+    }
     p2d.SetIsPointOfSegment(IsPointOfSegment1());
     p2d.SetSegmentAncestors(0, 0);
     p2d.SetStatus(Status1());
@@ -841,16 +890,24 @@ bool TopOpeBRep_EdgesIntersector::ReduceSegment(TopOpeBRep_Point2d& psa,
 
     bool isvpsa1 = psa.IsVertex(1);
     if (isvpsa1)
+    {
       Pn.SetVertex(1, psa.Vertex(1));
+    }
     bool isvpsa2 = psa.IsVertex(2);
     if (isvpsa2)
+    {
       Pn.SetVertex(2, psa.Vertex(2));
+    }
     bool isvpsb1 = psb.IsVertex(1);
     if (isvpsb1)
+    {
       Pn.SetVertex(1, psb.Vertex(1));
+    }
     bool isvpsb2 = psb.IsVertex(2);
     if (isvpsb2)
+    {
       Pn.SetVertex(2, psb.Vertex(2));
+    }
   }
 
   return reduced;
@@ -862,7 +919,9 @@ void TopOpeBRep_EdgesIntersector::ReduceSegments()
 {
   bool condredu = (myHasSegment && !mySameDomain);
   if (!condredu)
+  {
     return;
+  }
 
   int ip = 1;
   int np = mynp2d;
@@ -913,11 +972,17 @@ bool TopOpeBRep_EdgesIntersector::SameDomain() const
 const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Edge(const int Index) const
 {
   if (Index == 1)
+  {
     return myEdge1;
+  }
   else if (Index == 2)
+  {
     return myEdge2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector::Edge");
+  }
 }
 
 //=================================================================================================
@@ -925,11 +990,17 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Edge(const int Index) const
 const Geom2dAdaptor_Curve& TopOpeBRep_EdgesIntersector::Curve(const int Index) const
 {
   if (Index == 1)
+  {
     return myCurve1;
+  }
   else if (Index == 2)
+  {
     return myCurve2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector::Curve");
+  }
 }
 
 //=================================================================================================
@@ -937,11 +1008,17 @@ const Geom2dAdaptor_Curve& TopOpeBRep_EdgesIntersector::Curve(const int Index) c
 const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Face(const int Index) const
 {
   if (Index == 1)
+  {
     return myFace1;
+  }
   else if (Index == 2)
+  {
     return myFace2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector::Face");
+  }
 }
 
 //=================================================================================================
@@ -949,11 +1026,17 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Face(const int Index) const
 const BRepAdaptor_Surface& TopOpeBRep_EdgesIntersector::Surface(const int Index) const
 {
   if (Index == 1)
+  {
     return *mySurface1;
+  }
   else if (Index == 2)
+  {
     return *mySurface2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector::Surface");
+  }
 }
 
 //=================================================================================================
@@ -1006,9 +1089,13 @@ void TopOpeBRep_EdgesIntersector::Find()
     {
       bool kf = mysp2d(myip2d).Keep();
       if (kf)
+      {
         break;
+      }
       else
+      {
         myip2d++;
+      }
     }
     else
     {
@@ -1036,7 +1123,9 @@ const TopOpeBRep_Point2d& TopOpeBRep_EdgesIntersector::Point() const
 const TopOpeBRep_Point2d& TopOpeBRep_EdgesIntersector::Point(const int I) const
 {
   if (I < 1 || I > mysp2d.Length())
+  {
     throw Standard_Failure("TopOpeBRep_EdgesIntersector::Point(I)");
+  }
   return mysp2d(I);
 }
 

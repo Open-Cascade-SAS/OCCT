@@ -42,7 +42,9 @@ void RWStepAP203_RWCcDesignSpecificationReference::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_specification_reference"))
+  {
     return;
+  }
 
   // Inherited fields of DocumentReference
 

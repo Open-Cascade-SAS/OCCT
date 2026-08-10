@@ -20,8 +20,7 @@
 #include <OpenGl_HaltonSampler.hxx>
 
 #include <Image_PixMapTypedData.hxx>
-
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 class Graphic3d_RenderingParams;
 
@@ -153,7 +152,7 @@ protected:
   Image_PixMapTypedData<int>             myVarianceRaw;   //!< Estimation of visual error per tile (raw data)
   Image_PixMapTypedData<NCollection_Vec2<int>> myOffsets;       //!< 2D array of tiles redirecting to another tile
   Image_PixMapTypedData<NCollection_Vec2<int>> myOffsetsShrunk; //!< 2D array of tiles redirecting to another tile (shrunk)
-  std::vector<float>                     myMarginalMap;   //!< Marginal distribution of 2D error map
+  NCollection_LinearVector<float>                myMarginalMap;   //!< Marginal distribution of 2D error map
   OpenGl_HaltonSampler                   mySampler;       //!< Halton sequence generator
   unsigned int                           myLastSample;    //!< Index of generated sample
   float                                  myScaleFactor;   //!< scale factor for quantization of visual error (float) into signed integer

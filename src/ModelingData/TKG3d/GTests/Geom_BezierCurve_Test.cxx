@@ -21,6 +21,7 @@
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 
 class Geom_BezierCurve_Test : public ::testing::Test
 {
@@ -523,4 +524,34 @@ TEST_F(Geom_BezierCurve_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(3), 1.0);
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+// Test OCC2569: Geom_BezierCurve degree equals NbPoles - 1.
+// Migrated from QABugs_17.cxx OCC2569
+TEST(Geom_BezierCurveTest, OCC2569_DegreeEqualsNbPolesMinusOne)
+{
+  const int                  aNbPoles = 26;
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
+  for (int i = 1; i <= aNbPoles; ++i)
+  {
+    aPoles.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
+  }
+
+  Handle(Geom_BezierCurve) aCurve = new Geom_BezierCurve(aPoles);
+  ASSERT_FALSE(aCurve.IsNull());
+  EXPECT_EQ(aCurve->Degree(), aNbPoles - 1);
+}
+
+// Test OCC2569: Geom_BezierCurve throws when NbPoles exceeds maximum allowed.
+// Migrated from QABugs_17.cxx OCC2569 (bug2569_2)
+TEST(Geom_BezierCurveTest, OCC2569_ThrowsForTooManyPoles)
+{
+  const int                  aNbPoles = 29;
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
+  for (int i = 1; i <= aNbPoles; ++i)
+  {
+    aPoles.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
+  }
+
+  EXPECT_THROW(new Geom_BezierCurve(aPoles), Standard_Failure);
 }

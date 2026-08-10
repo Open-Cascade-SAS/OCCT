@@ -49,77 +49,107 @@ void IGESSolid_ToolConeFrustum::ReadOwnParams(const occ::handle<IGESSolid_ConeFr
   PR.ReadReal(PR.Current(), "Larger face radius", tempR1); // szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadReal(PR.Current(), "Smaller face radius", tempR2); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempR2 = 0.0;
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Face center (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (X)", tempreal))
+    {
       tempCenter.SetX(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Face center (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (Y)", tempreal))
+    {
       tempCenter.SetY(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Face center (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (Z)", tempreal))
+    {
       tempCenter.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
+    {
       tempAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
+    {
       tempAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
+    {
       tempAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempHeight, tempR1, tempR2, tempCenter, tempAxis);
   double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
+  {
     PR.AddWarning("Axis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolConeFrustum::WriteOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
@@ -171,13 +201,21 @@ void IGESSolid_ToolConeFrustum::OwnCheck(const occ::handle<IGESSolid_ConeFrustum
                                          occ::handle<Interface_Check>& ach) const
 {
   if (ent->Height() <= 0.0)
+  {
     ach->AddFail("Height : Value Not Positive");
+  }
   if (ent->LargerRadius() <= 0.0)
+  {
     ach->AddFail("Larger face radius : Value Not Positive");
+  }
   if (ent->SmallerRadius() < 0.0)
+  {
     ach->AddFail("Smaller face radius : Value Not Positive");
+  }
   if (ent->SmallerRadius() > ent->LargerRadius())
+  {
     ach->AddFail("Smaller face radius : is greater than Larger face radius");
+  }
 }
 
 void IGESSolid_ToolConeFrustum::OwnDump(const occ::handle<IGESSolid_ConeFrustum>& ent,
@@ -193,5 +231,5 @@ void IGESSolid_ToolConeFrustum::OwnDump(const occ::handle<IGESSolid_ConeFrustum>
   IGESData_DumpXYZL(S, level, ent->FaceCenter(), ent->Location());
   S << "\nAxis : ";
   IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

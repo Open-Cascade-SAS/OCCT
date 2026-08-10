@@ -82,12 +82,11 @@ void GeomFill_CoonsAlgPatch::Func(occ::handle<Law_Function>& f1,
 
 //=================================================================================================
 
-// gp_Pnt GeomFill_CoonsAlgPatch::Value(const double U,
-gp_Pnt GeomFill_CoonsAlgPatch::Value(const double, const double V) const
+gp_Pnt GeomFill_CoonsAlgPatch::Value(const double U, const double V) const
 {
   double a0, a1, a2, a3;
   a0 = a[0]->Value(V);
-  a1 = a[1]->Value(V);
+  a1 = a[1]->Value(U);
   a2 = 1. - a0;
   a3 = 1. - a1;
   gp_XYZ cor, cortemp;

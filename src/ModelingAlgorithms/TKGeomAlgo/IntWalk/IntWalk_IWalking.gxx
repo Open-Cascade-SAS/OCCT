@@ -31,6 +31,15 @@
 OSD_Chronometer Chronrsnld;
 #endif
 
+namespace
+{
+static const double CosRef3D = 0.98;    // rule by tests in U4
+                                        // correspond to  11.478 d
+static const double CosRef2D    = 0.88; // correspond to 25 d
+static const int    MaxDivision = 60;   // max number of step division
+                                        // because the angle is too great in 2d (U4)
+} // namespace
+
 //==================================================================================
 // function : IsTangentExtCheck
 // purpose  : Additional check if the point (theU, theV) in parametric surface
@@ -88,9 +97,9 @@ IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
       tolerance(1, 2),
       epsilon(Epsilon * Epsilon),
       reversed(false),
-      wd1(IntWalk_VectorOfWalkingData::allocator_type(new NCollection_IncAllocator)),
-      wd2(wd1.get_allocator()),
-      nbMultiplicities(wd1.get_allocator()),
+      wd1(),
+      wd2(),
+      nbMultiplicities(),
       Um(0.0),
       UM(0.0),
       Vm(0.0),
@@ -101,7 +110,7 @@ IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
 
 //=======================================================================
 // function : Reset
-// purpose  : Clears NCollection_Vector-based containers and adds
+// purpose  : Clears NCollection_DynamicArray-based containers and adds
 //           dummy data to maintain start index of 1 and consistent with
 //           previous TCollection_Sequence-based implementation and other
 //           used TCollection-based containers
@@ -109,15 +118,15 @@ IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
 
 void IntWalk_IWalking::Clear()
 {
-  wd1.clear();
-  wd2.clear();
+  wd1.Clear();
+  wd2.Clear();
   IntWalk_WalkingData aDummy;
   aDummy.etat   = -10;
   aDummy.ustart = aDummy.vstart = 0.;
-  wd1.push_back(aDummy);
-  wd2.push_back(aDummy);
-  nbMultiplicities.clear();
-  nbMultiplicities.push_back(-1);
+  wd1.Append(aDummy);
+  wd2.Append(aDummy);
+  nbMultiplicities.Clear();
+  nbMultiplicities.Append(-1);
 
   done = false;
   seqAjout.Clear();
@@ -183,8 +192,8 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   NCollection_Sequence<double> Vmult;
 
   int decal = 0;
-  wd1.reserve(nbPnts1 + decal);
-  nbMultiplicities.reserve(nbPnts1 + decal);
+  wd1.Reserve(nbPnts1 + decal);
+  nbMultiplicities.Reserve(nbPnts1 + decal);
   for (I = 1; I <= nbPnts1 + decal; I++)
   {
     const ThePointOfPath& PathPnt = Pnts1.Value(I - decal);
@@ -204,9 +213,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     mySRangeU.Add(aWD1.ustart);
     mySRangeV.Add(aWD1.vstart);
 
-    wd1.push_back(aWD1);
+    wd1.Append(aWD1);
     int aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
-    nbMultiplicities.push_back(aNbMult);
+    nbMultiplicities.Append(aNbMult);
 
     for (int J = 1; J <= aNbMult; J++)
     {
@@ -216,7 +225,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     }
   }
 
-  wd2.reserve(nbPnts2);
+  wd2.Reserve(nbPnts2);
   for (I = 1; I <= nbPnts2; I++)
   {
     IntWalk_WalkingData aWD2;
@@ -229,7 +238,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     if (!IsTangentExtCheck(Func, aWD2.ustart, aWD2.vstart, aStepU, aStepV, Um, UM, Vm, VM))
       aWD2.etat = 13;
 
-    wd2.push_back(aWD2);
+    wd2.Append(aWD2);
   }
 
   tolerance(1) = ThePSurfaceTool::UResolution(Caro, Precision::Confusion());
@@ -274,20 +283,20 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
       NCollection_Sequence<IntSurf_InteriorPoint> PntsInHoles;
       NCollection_Sequence<int>                   CopySeqAlone = seqAlone;
       FillPntsInHoles(Func, CopySeqAlone, PntsInHoles);
-      wd2.clear();
+      wd2.Clear();
       IntWalk_WalkingData aDummy;
       aDummy.etat   = -10;
       aDummy.ustart = aDummy.vstart = 0.;
-      wd2.push_back(aDummy);
+      wd2.Append(aDummy);
       int nbHoles = PntsInHoles.Length();
-      wd2.reserve(nbHoles);
+      wd2.Reserve(nbHoles);
       for (I = 1; I <= nbHoles; I++)
       {
         IntWalk_WalkingData aWD2;
         aWD2.etat                         = 13;
         const IntSurf_InteriorPoint& anIP = PntsInHoles.Value(I);
         ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
-        wd2.push_back(aWD2);
+        wd2.Append(aWD2);
       }
       ComputeCloseLine(Umult, Vmult, Pnts1, PntsInHoles, Func, Rajout);
     }
@@ -323,7 +332,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   NCollection_Sequence<double> Umult;
   NCollection_Sequence<double> Vmult;
 
-  wd1.reserve(nbPnts1);
+  wd1.Reserve(nbPnts1);
   for (I = 1; I <= nbPnts1; I++)
   {
     const ThePointOfPath& PathPnt = Pnts1.Value(I);
@@ -334,9 +343,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     if (!ThePointOfPathTool::IsTangent(PathPnt))
       ++aWD1.etat;
     ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
-    wd1.push_back(aWD1);
+    wd1.Append(aWD1);
     int aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
-    nbMultiplicities.push_back(aNbMult);
+    nbMultiplicities.Append(aNbMult);
 
     for (int J = 1; J <= aNbMult; J++)
     {
@@ -620,7 +629,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
     previousPoint.ParametersOnS1(Up, Vp);
   }
 
-  for (size_t i = 1; i < wd2.size(); i++)
+  for (size_t i = 1; i < wd2.Size(); i++)
   {
     if (wd2[i].etat > 0)
     {
@@ -684,7 +693,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   {
     bool isToCheck;
 
-    for (size_t i = 1; i < wd1.size(); i++)
+    for (size_t i = 1; i < wd1.Size(); i++)
     {
       if (l == 1)
         isToCheck = (wd1[i].etat > 0);
@@ -747,7 +756,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
           }
         }
       }
-    } // end of for (i = 1; i < wd1.size(); i++)
+    } // end of for (i = 1; i < wd1.Size(); i++)
     if (!i_candidates.IsEmpty())
     {
       double MinSqDist = RealLast();
@@ -830,7 +839,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   double tolv2 = tolv + tolv;
 
   double dPreviousCurrent = (Up - UV1) * (Up - UV1) + (Vp - UV2) * (Vp - UV2);
-  for (k = 1; k < (int)wd2.size(); k++)
+  for (k = 1; k < (int)wd2.Size(); k++)
   {
     if (wd2[k].etat > 0)
     {
@@ -919,7 +928,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   // crossing test on crossing points.
 
   Irang = 0;
-  for (i = 1; i < (int)wd1.size(); i++)
+  for (i = 1; i < (int)wd1.Size(); i++)
   {
     if (wd1[i].etat > 0 && wd1[i].etat < 11)
     { // test of crossing points
@@ -1191,7 +1200,7 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umul
   bool   Found = false;
 
   Irang = 0;
-  for (int i = 1; i < (int)wd1.size(); i++)
+  for (int i = 1; i < (int)wd1.Size(); i++)
   {
     if (wd1[i].etat < 0)
     {
@@ -1557,8 +1566,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
       // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
       int IndexOfPathPointDoNotCheck = 0;
       int aNbIter                    = 10;
+      int aNbBadRootIter             = 0; // consecutive iterations where Root > Tolerance
       while (!Arrive)
-      { //    as one of stop tests is not checked
+      {
         Cadre = Cadrage(BornInf, BornSup, UVap, PasC, StepSign);
         //  Border?
 
@@ -1586,8 +1596,11 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
             PasC  = PasC / 2.0;
             PasCu = std::abs(PasC * previousd2d.X());
             PasCv = std::abs(PasC * previousd2d.Y());
-            if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+            ++aNbBadRootIter;
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
             {
+              // Step collapsed below tolerance, or Cadrage keeps resetting
+              // the step (preventing convergence) after too many attempts.
               if (CurrentLine->NbPoints() == 1)
                 break;
               Arrive = true;
@@ -1600,6 +1613,7 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
           }
           else
           { // test stop
+            aNbBadRootIter = 0;
             Rsnld.Root(UVap);
             Arrive = TestArretPassage(Umult, Vmult, Func, UVap, N);
             if (Arrive)
@@ -1930,7 +1944,7 @@ static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingDat
   double tolu = tolerance(1);
   double tolv = tolerance(2);
   int    i, j, k, N;
-  for (i = 1; i < (int)wd.size(); i++)
+  for (i = 1; i < (int)wd.Size(); i++)
   {
     if (wd[i].etat < -11)
     {
@@ -2143,11 +2157,12 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 
       PasSav = PasC;
 
-      Arrive          = false;
-      ArretAjout      = false;
-      NbDivision      = 0;
-      StatusPrecedent = IntWalk_OK;
-      int aNbIter     = 10;
+      Arrive             = false;
+      ArretAjout         = false;
+      NbDivision         = 0;
+      StatusPrecedent    = IntWalk_OK;
+      int aNbIter        = 10;
+      int aNbBadRootIter = 0; // consecutive iterations where Root > Tolerance
       while (!Arrive)
       {                                                          // as no test of stop is passed
         Cadre = Cadrage(BornInf, BornSup, Uvap, PasC, StepSign); // border?
@@ -2176,8 +2191,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
             PasC  = PasC / 2.;
             PasCu = std::abs(PasC * previousd2d.X());
             PasCv = std::abs(PasC * previousd2d.Y());
+            ++aNbBadRootIter;
 
-            if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
             {
               if (CurrentLine->NbPoints() == 1)
               {
@@ -2193,6 +2209,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
                 Rajout          = true;
                 seqAlone.Append(-lines.Length() - 1);
                 seqAjout.Append(-lines.Length() - 1);
@@ -2219,6 +2236,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
           }
           else
           { // there is a solution
+            aNbBadRootIter = 0;
             Rsnld.Root(Uvap);
 
             // Avoid uninitialized memory access.
@@ -2458,6 +2476,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
                 Rajout          = true;
                 seqAlone.Append(-lines.Length() - 1);
                 seqAjout.Append(-lines.Length() - 1);
@@ -2503,6 +2522,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
               }
               else
               {
@@ -2562,6 +2582,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
               StatusPrecedent = IntWalk_OK;
               Arrive          = false;
               PasC            = PasSav;
+              aNbBadRootIter  = 0;
               Rajout          = true;
               seqAlone.Append(-lines.Length() - 1);
               seqAjout.Append(-lines.Length() - 1);
@@ -2603,15 +2624,6 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 }
 
 //-- IntWalk_IWalking_5.gxx
-
-namespace
-{
-static const double CosRef3D = 0.98;    // rule by tests in U4
-                                        // correspond to  11.478 d
-static const double CosRef2D    = 0.88; // correspond to 25 d
-static const int    MaxDivision = 60;   // max number of step division
-                                        // because the angle is too great in 2d (U4)
-} // namespace
 
 IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   TheIWFunction&                 sp,

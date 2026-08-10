@@ -47,5 +47,7 @@ void IFSelect_SelectControl::FillIterator(IFSelect_SelectionIterator& iter) cons
 {
   iter.AddItem(themain);
   if (!thesecond.IsNull())
+  {
     iter.AddItem(thesecond);
+  }
 }

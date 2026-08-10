@@ -67,14 +67,22 @@ static void showProjSolution(Draw_Interpretor& di,
   {
     DrawTrSurf::Set(temp, P1);
     if (isSurface)
+    {
       di << " Point on surface ";
+    }
     else
+    {
       di << " Point on curve ";
+    }
   }
   if (isSurface)
+  {
     di << " Parameters: " << U << " " << V << "\n";
+  }
   else
+  {
     di << " parameter " << i << " = " << U << "\n";
+  }
 }
 
 //=================================================================================================
@@ -94,14 +102,18 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
   Extrema_ExtAlgo           aProjAlgo = Extrema_ExtAlgo_Grad;
 
   if (n == 6 && a[5][0] == 't')
+  {
     aProjAlgo = Extrema_ExtAlgo_Tree;
+  }
 
   if (GC.IsNull())
   {
     GS = DrawTrSurf::GetSurface(a[1]);
 
     if (GS.IsNull())
+    {
       return 1;
+    }
 
     if (n <= 6)
     {
@@ -147,7 +159,7 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
 
     if (proj.NbPoints() == 0)
     {
-      std::cout << "No project point was found." << std::endl;
+      std::cout << "No project point was found." << '\n';
       return 0;
     }
 
@@ -167,7 +179,9 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
 static int appro(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> GC;
   int                     Nb = Draw::Atoi(a[2]);
@@ -180,7 +194,9 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
   {
     GC = DrawTrSurf::GetCurve(a[3]);
     if (GC.IsNull())
+    {
       return 1;
+    }
 
     double U, U1, U2;
     U1           = GC->FirstParameter();
@@ -234,7 +250,9 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
 static int grilapp(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 12)
+  {
     return 1;
+  }
 
   int                        i, j;
   int                        Nu = Draw::Atoi(a[2]);
@@ -252,7 +270,9 @@ static int grilapp(Draw_Interpretor& di, int n, const char** a)
     for (i = 1; i <= Nu; i++)
     {
       if (Count > n)
+      {
         return 1;
+      }
       ZPoints(i, j) = Draw::Atof(a[Count]);
       Count++;
     }
@@ -271,7 +291,9 @@ static int grilapp(Draw_Interpretor& di, int n, const char** a)
 static int surfapp(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   int                        i, j;
   int                        Nu = Draw::Atoi(a[2]);
@@ -284,7 +306,9 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<Geom_Surface> Surf = DrawTrSurf::GetSurface(a[4]);
     if (Surf.IsNull())
+    {
       return 1;
+    }
 
     double U, V, U1, V1, U2, V2;
     Surf->Bounds(U1, U2, V1, V2);
@@ -301,7 +325,9 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
     {
       int ip = Draw::Atoi(a[5]);
       if (ip > 0)
+      {
         IsPeriodic = true;
+      }
     }
     if (IsPeriodic)
     {
@@ -324,7 +350,9 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
       for (i = 1; i <= Nu; i++)
       {
         if (Count > n)
+        {
           return 1;
+        }
         Points(i, j) =
           gp_Pnt(Draw::Atof(a[Count]), Draw::Atof(a[Count + 1]), Draw::Atof(a[Count + 2]));
         Count += 3;
@@ -376,11 +404,15 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
 static int surfint(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> Surf = DrawTrSurf::GetSurface(a[2]);
   if (Surf.IsNull())
+  {
     return 1;
+  }
   int                        i, j;
   int                        Nu = Draw::Atoi(a[3]);
   int                        Nv = Draw::Atoi(a[4]);
@@ -415,7 +447,9 @@ static int surfint(Draw_Interpretor& di, int n, const char** a)
   {
     int ip = Draw::Atoi(a[5]);
     if (ip > 0)
+    {
       IsPeriodic = true;
+    }
   }
   bool RemoveLast = false;
   if (IsPeriodic)
@@ -484,7 +518,9 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   {
     GS1 = DrawTrSurf::GetSurface(a[1]);
     if (GS1.IsNull())
+    {
       return 1;
+    }
 
     GS1->Bounds(U1f, U1l, V1f, V1l);
   }
@@ -499,7 +535,9 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   {
     GS2 = DrawTrSurf::GetSurface(a[2]);
     if (GS2.IsNull())
+    {
       return 1;
+    }
     GS2->Bounds(U2f, U2l, V2f, V2l);
   }
   else
@@ -508,8 +546,8 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     U2l = GC2->LastParameter();
   }
 
-  NCollection_Vector<gp_Pnt> aPnts1, aPnts2;
-  NCollection_Vector<double> aPrms[4];
+  NCollection_DynamicArray<gp_Pnt> aPnts1, aPnts2;
+  NCollection_DynamicArray<double> aPrms[4];
   if (!GC1.IsNull() && !GC2.IsNull())
   {
     GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
@@ -620,15 +658,19 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   char* aName2 = aName; // portage WNT
 
   // Output points.
-  const int aPntCount = aPnts1.Size();
+  const int aPntCount = aPnts1.Length();
   if (aPntCount == 0 || isInfinitySolutions)
   {
     // Infinity solutions flag may be set with 0 number of
     // solutions in analytic extrema Curve/Curve.
     if (isInfinitySolutions)
+    {
       di << "Infinite number of extremas, distance = " << aMinDist << "\n";
+    }
     else
+    {
       di << "No solutions!\n";
+    }
   }
   for (int aJ = 1; aJ <= aPntCount; aJ++)
   {
@@ -665,7 +707,7 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     // Output parameters.
     for (int aJ = 0; aJ < 4; ++aJ)
     {
-      for (int aPrmCount = aPrms[aJ].Size(), aK = 0; aK < aPrmCount; ++aK)
+      for (int aPrmCount = aPrms[aJ].Length(), aK = 0; aK < aPrmCount; ++aK)
       {
         double aP = aPrms[aJ](aK);
         Sprintf(aName, "%s%d%s%d", "prm_", aJ + 1, "_", aK + 1);
@@ -683,7 +725,9 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
 static int totalextcc(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> GC1, GC2;
 
@@ -750,7 +794,9 @@ void GeometryTest::APICommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
 
   done = true;
 

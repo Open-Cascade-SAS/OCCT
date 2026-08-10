@@ -54,24 +54,40 @@ void IntWalk_PWalking::ComputePasInit(const double theDeltaU1,
   //--  theDeltaU1 : On box of Inter
   //-- aDeltaU1 : On parametric space
   if (!Precision::IsInfinite(aDeltaU1))
+  {
     pasuv[0] = std::max(Increment * std::max(theDeltaU1, aRangePart * aDeltaU1), pasuv[0]);
+  }
   else
+  {
     pasuv[0] = std::max(Increment * theDeltaU1, pasuv[0]);
+  }
 
   if (!Precision::IsInfinite(aDeltaV1))
+  {
     pasuv[1] = std::max(Increment * std::max(theDeltaV1, aRangePart * aDeltaV1), pasuv[1]);
+  }
   else
+  {
     pasuv[1] = std::max(Increment * theDeltaV1, pasuv[1]);
+  }
 
   if (!Precision::IsInfinite(aDeltaU2))
+  {
     pasuv[2] = std::max(Increment * std::max(theDeltaU2, aRangePart * aDeltaU2), pasuv[2]);
+  }
   else
+  {
     pasuv[2] = std::max(Increment * theDeltaU2, pasuv[2]);
+  }
 
   if (!Precision::IsInfinite(aDeltaV2))
+  {
     pasuv[3] = std::max(Increment * std::max(theDeltaV2, aRangePart * aDeltaV2), pasuv[3]);
+  }
   else
+  {
     pasuv[3] = std::max(Increment * theDeltaV2, pasuv[3]);
+  }
 
   const double ResoU1tol = Adaptor3d_HSurfaceTool::UResolution(Caro1, tolconf);
   const double ResoV1tol = Adaptor3d_HSurfaceTool::VResolution(Caro1, tolconf);
@@ -130,25 +146,39 @@ static void IsParallel(const occ::handle<IntSurf_LineOn2S>& theLine,
   {
     // Fix possible "out of parameter" case.
     if (aNPoint > aNbLinePnts)
+    {
       aNPoint = aNbLinePnts;
+    }
 
     double u, v;
     if (theCheckSurf1)
+    {
       theLine->Value(RealToInt(aNPoint)).ParametersOnS1(u, v);
+    }
     else
+    {
       theLine->Value(RealToInt(aNPoint)).ParametersOnS2(u, v);
+    }
 
     if (u < aUmin)
+    {
       aUmin = u;
+    }
 
     if (u > aUmax)
+    {
       aUmax = u;
+    }
 
     if (v < aVmin)
+    {
       aVmin = v;
+    }
 
     if (v > aVmax)
+    {
       aVmax = v;
+    }
   }
 
   theIsVparallel = ((aUmax - aUmin) < theToler);
@@ -235,7 +265,9 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   MAXVAL  = std::abs(Um1);
   MAXVAL2 = std::abs(UM1);
   if (MAXVAL2 > MAXVAL)
+  {
     MAXVAL = MAXVAL2;
+  }
   NEWRESO = ResoU1 * MAXVAL;
   if (NEWRESO > ResoU1 && NEWRESO < 10)
   {
@@ -245,7 +277,9 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   MAXVAL  = std::abs(Um2);
   MAXVAL2 = std::abs(UM2);
   if (MAXVAL2 > MAXVAL)
+  {
     MAXVAL = MAXVAL2;
+  }
   NEWRESO = ResoU2 * MAXVAL;
   if (NEWRESO > ResoU2 && NEWRESO < 10)
   {
@@ -255,7 +289,9 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   MAXVAL  = std::abs(Vm1);
   MAXVAL2 = std::abs(VM1);
   if (MAXVAL2 > MAXVAL)
+  {
     MAXVAL = MAXVAL2;
+  }
   NEWRESO = ResoV1 * MAXVAL;
   if (NEWRESO > ResoV1 && NEWRESO < 10)
   {
@@ -265,7 +301,9 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   MAXVAL  = std::abs(Vm2);
   MAXVAL2 = std::abs(VM2);
   if (MAXVAL2 > MAXVAL)
+  {
     MAXVAL = MAXVAL2;
+  }
   NEWRESO = ResoV2 * MAXVAL;
   if (NEWRESO > ResoV2 && NEWRESO < 10)
   {
@@ -278,13 +316,21 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   pasuv[3] = pasMax * std::abs(VM2 - Vm2);
 
   if (ResoU1 > 0.0001 * pasuv[0])
+  {
     ResoU1 = 0.00001 * pasuv[0];
+  }
   if (ResoV1 > 0.0001 * pasuv[1])
+  {
     ResoV1 = 0.00001 * pasuv[1];
+  }
   if (ResoU2 > 0.0001 * pasuv[2])
+  {
     ResoU2 = 0.00001 * pasuv[2];
+  }
   if (ResoV2 > 0.0001 * pasuv[3])
+  {
     ResoV2 = 0.00001 * pasuv[3];
+  }
 
   if (!Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1))
   {
@@ -360,7 +406,9 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   for (int i = 0; i <= 3; i++)
   {
     if (pasuv[i] > 10)
+    {
       pasuv[i] = 10;
+    }
     pasInit[i] = pasSav[i] = pasuv[i];
   }
 }
@@ -539,13 +587,21 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   }
 
   if (ResoU1 > 0.0001 * pasuv[0])
+  {
     ResoU1 = 0.00001 * pasuv[0];
+  }
   if (ResoV1 > 0.0001 * pasuv[1])
+  {
     ResoV1 = 0.00001 * pasuv[1];
+  }
   if (ResoU2 > 0.0001 * pasuv[2])
+  {
     ResoU2 = 0.00001 * pasuv[2];
+  }
   if (ResoV2 > 0.0001 * pasuv[3])
+  {
     ResoV2 = 0.00001 * pasuv[3];
+  }
 
   myStepMin[0] = 100.0 * ResoU1;
   myStepMin[1] = 100.0 * ResoV1;
@@ -615,7 +671,9 @@ static double SQDistPointSurface(const gp_Pnt&            thePnt,
   aExtPS.Perform(thePnt, theU0, theV0);
 
   if (!aExtPS.IsDone())
+  {
     return RealLast();
+  }
 
   return aExtPS.SquareDistance();
 }
@@ -645,7 +703,9 @@ static bool IsTangentExtCheck(const occ::handle<Adaptor3d_Surface>& theSurf1,
     const double aDP = aN1.Dot(aN2), aSQ1 = aN1.SquareMagnitude(), aSQ2 = aN2.SquareMagnitude();
 
     if ((aSQ1 < RealSmall()) || (aSQ2 < RealSmall()))
+    {
       return true; // Tangent
+    }
 
     if (aDP * aDP < 0.9998 * aSQ1 * aSQ2)
     {               // cos(ang N1<->N2) < 0.9999
@@ -666,7 +726,9 @@ static bool IsTangentExtCheck(const occ::handle<Adaptor3d_Surface>& theSurf1,
     gp_Pnt       aP(theSurf1->Value(aParUS1[i], aParVS1[i]));
     const double aSqDist = SQDistPointSurface(aP, *theSurf2, theU20, theV20);
     if (aSqDist > aSQToler)
+    {
       return false;
+    }
   }
 
   for (int i = 0; i < aNbItems; i++)
@@ -674,7 +736,9 @@ static bool IsTangentExtCheck(const occ::handle<Adaptor3d_Surface>& theSurf1,
     gp_Pnt       aP(theSurf2->Value(aParUS2[i], aParVS2[i]));
     const double aSqDist = SQDistPointSurface(aP, *theSurf1, theU10, theV10);
     if (aSqDist > aSQToler)
+    {
       return false;
+    }
   }
 
   return true;
@@ -792,7 +856,9 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
   previousPoint.Parameters(Param(1), Param(2), Param(3), Param(4));
 
   if (IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), myTolTang, pasuv))
+  {
     return;
+  }
 
   AddAPoint(previousPoint);
   //
@@ -920,9 +986,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
         for (int i = 0; i < 4; i++)
         {
           if (std::abs(aNewPnt[i] - aParMin[i]) < aTol[i])
+          {
             aNewPnt[i] = aParMin[i];
+          }
           else if (std::abs(aNewPnt[i] - aParMax[i]) < aTol[i])
+          {
             aNewPnt[i] = aParMax[i];
+          }
         }
 
         if (aNewPnt[0] < Um1 || aNewPnt[0] > UM1 || aNewPnt[1] < Vm1 || aNewPnt[1] > VM1
@@ -1123,7 +1193,9 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
           }
         } // aStatus==IntWalk_OK
         else
+        {
           NbPasOKConseq = 0;
+        }
 
         //
         switch (aStatus) // 007
@@ -1144,7 +1216,9 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
               for (int i = 0; i < 4; i++)
               {
                 if (pasSav[i] > pasInit[i])
+                {
                   continue;
+                }
 
                 const double aDelta = (pasInit[i] - pasSav[i]) * 0.25;
 
@@ -1310,14 +1384,30 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                       {
                         IncKey++;
                         if (IncKey == 5000)
+                        {
                           return;
+                        }
                         else
+                        {
                           continue;
+                        }
                       }
                       else
                       {
                         bTestFirstPoint = false;
                       }
+                    }
+                    // Check for 3D cycling: if the walker has moved away from the starting point
+                    // (bTestFirstPoint is false) and later returns near it, the intersection
+                    // curve is closed in 3D. This catches cases where the UV-based closure
+                    // check in TestArret fails (e.g., near-tangent surfaces with shared edges).
+                    else if (pf.SquareDistance(pl) < aSQDistMax)
+                    {
+                      close  = true;
+                      Arrive = true;
+                      AddAPoint(line->Value(1));
+                      LevelOfIterWithoutAppend = 0;
+                      break;
                     }
                     //
                     AddAPoint(previousPoint);
@@ -1406,9 +1496,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                         {
                           IncKey++;
                           if (IncKey == 5000)
+                          {
                             return;
+                          }
                           else
+                          {
                             continue;
+                          }
                         }
                         else
                         {
@@ -1524,9 +1618,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                             IncKey++;
 
                             if (IncKey == 5000)
+                            {
                               return;
+                            }
                             else
+                            {
                               continue;
+                            }
                           }
                           else
                           {
@@ -1825,7 +1923,9 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     }
 
     if (f < 0.1)
+    {
       f = 0.1;
+    }
 
     previousPoint.Parameters(Param(1), Param(2), Param(3), Param(4));
 
@@ -1835,13 +1935,21 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     double dP4 = sensCheminement * pasuv[3] * previousd2.Y() / f;
 
     if (theChoixIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < 1.e-7)
+    {
       dP1 *= (5. * (double)dIncKey);
+    }
     if (theChoixIso == IntImp_VIsoparametricOnCaro1 && std::abs(dP2) < 1.e-7)
+    {
       dP2 *= (5. * (double)dIncKey);
+    }
     if (theChoixIso == IntImp_UIsoparametricOnCaro2 && std::abs(dP3) < 1.e-7)
+    {
       dP3 *= (5. * (double)dIncKey);
+    }
     if (theChoixIso == IntImp_VIsoparametricOnCaro2 && std::abs(dP4) < 1.e-7)
+    {
       dP4 *= (5. * (double)dIncKey);
+    }
 
     Param(1) += dP1;
     Param(2) += dP2;
@@ -1906,7 +2014,9 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
           }
 
           if (bDecrease)
+          {
             nbIterWithoutAppend--;
+          }
           break;
         }
         case IntWalk_PointConfondu: {
@@ -1956,7 +2066,9 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
 
             if (u1 <= UM1 && u2 <= UM2 && v1 <= VM1 && v2 <= VM2 && u1 >= Um1 && u2 >= Um2
                 && v1 >= Vm1 && v2 >= Vm2)
+            {
               pointisvalid = true;
+            }
 
             if (pointisvalid)
             {
@@ -1980,9 +2092,13 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
                 {
                   dIncKey++;
                   if (dIncKey == 5000)
+                  {
                     return bOutOfTangentZone;
+                  }
                   else
+                  {
                     bAddPoint = false;
+                  }
                 }
               }
 
@@ -2007,16 +2123,24 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
               // otherwise the same calculations will be
               // repeated several times
               if ((u1 > UM1) || (u1 < Um1))
+              {
                 pasuv[0] *= 0.5;
+              }
 
               if ((v1 > VM1) || (v1 < Vm1))
+              {
                 pasuv[1] *= 0.5;
+              }
 
               if ((u2 > UM2) || (u2 < Um2))
+              {
                 pasuv[2] *= 0.5;
+              }
 
               if ((v2 > VM2) || (v2 < Vm2))
+              {
                 pasuv[3] *= 0.5;
+              }
             }
           } // end if(!bStop)
           else
@@ -2050,7 +2174,9 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
 
                 if (u1 <= UM1 && u2 <= UM2 && v1 <= VM1 && v2 <= VM2 && u1 >= Um1 && u2 >= Um2
                     && v1 >= Vm1 && v2 >= Vm2)
+                {
                   pointisvalid = true;
+                }
 
                 if (pointisvalid)
                 {
@@ -2064,9 +2190,13 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
                     {
                       dIncKey++;
                       if (dIncKey == 5000)
+                      {
                         return bOutOfTangentZone;
+                      }
                       else
+                      {
                         bAddPoint = false;
+                      }
                     }
                   }
 
@@ -2095,19 +2225,27 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
   for (pit = 0; !bExtendLine && (pit < 2); pit++)
   {
     if (pit == 0)
+    {
       previousPoint.Parameters(u1, v1, u2, v2);
+    }
     else
     {
       if (aSeqOfNewPoint.Length() > 0)
+      {
         aSeqOfNewPoint.Value(aSeqOfNewPoint.Length()).Parameters(u1, v1, u2, v2);
+      }
       else
+      {
         break;
+      }
     }
 
     if (((u1 - Um1) < ResoU1) || ((UM1 - u1) < ResoU1) || ((u2 - Um2) < ResoU2)
         || ((UM2 - u2) < ResoU2) || ((v1 - Vm1) < ResoV1) || ((VM1 - v1) < ResoV1)
         || ((v2 - Vm2) < ResoV2) || ((VM2 - v2) < ResoV2))
+    {
       bExtendLine = true;
+    }
   }
 
   if (!bExtendLine)
@@ -2137,13 +2275,21 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
         int indexofiso = 0;
 
         if (theChoixIso == IntImp_UIsoparametricOnCaro1)
+        {
           indexofiso = 0;
+        }
         if (theChoixIso == IntImp_VIsoparametricOnCaro1)
+        {
           indexofiso = 1;
+        }
         if (theChoixIso == IntImp_UIsoparametricOnCaro2)
+        {
           indexofiso = 2;
+        }
         if (theChoixIso == IntImp_VIsoparametricOnCaro2)
+        {
           indexofiso = 3;
+        }
 
         int      afirstindex = (indexofiso < 2) ? 0 : 2;
         gp_Vec2d aTangentZoneDir(
@@ -2153,7 +2299,9 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
         gp_Dir2d anIsoDir(gp_Dir2d::D::Y);
 
         if ((indexofiso == 1) || (indexofiso == 3))
+        {
           anIsoDir = gp_Dir2d(gp_Dir2d::D::X);
+        }
 
         if (aTangentZoneDir.SquareMagnitude() > gp::Resolution())
         {
@@ -2264,10 +2412,14 @@ bool IntWalk_PWalking::DistanceMinimizeByGradient(const occ::handle<Adaptor3d_Su
 
   if (theASurf1->GetType() != GeomAbs_BezierSurface
       && theASurf1->GetType() != GeomAbs_BSplineSurface)
+  {
     return true;
+  }
   if (theASurf2->GetType() != GeomAbs_BezierSurface
       && theASurf2->GetType() != GeomAbs_BSplineSurface)
+  {
     return true;
+  }
 
   bool aStatus = false;
 
@@ -2401,7 +2553,9 @@ bool IntWalk_PWalking::DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Sur
     double aSQDist = aVec.SquareMagnitude();
 
     if (aSQDist >= aSQDistPrev)
+    {
       break;
+    }
 
     aSQDistPrev = aSQDist;
     theU0       = aU;
@@ -2409,7 +2563,9 @@ bool IntWalk_PWalking::DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Sur
     aNbIter--;
 
     if (aSQDistPrev < aTol)
+    {
       break;
+    }
 
     // Functions
     const double aF1 = aD1Su.Dot(aVec), aF2 = aD1Sv.Dot(aVec);
@@ -2460,10 +2616,14 @@ bool IntWalk_PWalking::HandleSingleSingularPoint(const occ::handle<Adaptor3d_Sur
       anInt.Perform(thePnt, aRsnld, aLockedDir[i - 1]);
 
       if (!anInt.IsDone())
+      {
         continue;
+      }
 
       if (anInt.IsEmpty())
+      {
         continue;
+      }
 
       double aPars[4];
       anInt.Point().Parameters(aPars[0], aPars[1], aPars[2], aPars[3]);
@@ -2488,13 +2648,17 @@ bool IntWalk_PWalking::HandleSingleSingularPoint(const occ::handle<Adaptor3d_Sur
           {
             aP = aSurfs[k]->Value(aLowBorder[iu], aPars[iv]);
             if (aPInt.SquareDistance(aP) < aTol2)
+            {
               aPars[iu] = aLowBorder[iu];
+            }
           }
           else if (std::abs(aUppBorder[iu] - aPars[iu]) < aTolU)
           {
             aP = aSurfs[k]->Value(aUppBorder[iu], aPars[iv]);
             if (aPInt.SquareDistance(aP) < aTol2)
+            {
               aPars[iu] = aUppBorder[iu];
+            }
           }
         }
         aMod = aDV.Magnitude();
@@ -2505,13 +2669,17 @@ bool IntWalk_PWalking::HandleSingleSingularPoint(const occ::handle<Adaptor3d_Sur
           {
             aP = aSurfs[k]->Value(aPars[iu], aLowBorder[iv]);
             if (aPInt.SquareDistance(aP) < aTol2)
+            {
               aPars[iv] = aLowBorder[iv];
+            }
           }
           else if (std::abs(aUppBorder[iv] - aPars[iv]) < aTolV)
           {
             aP = aSurfs[k]->Value(aPars[iu], aUppBorder[iv]);
             if (aPInt.SquareDistance(aP) < aTol2)
+            {
               aPars[iv] = aUppBorder[iv];
+            }
           }
         }
       }
@@ -2534,7 +2702,9 @@ bool IntWalk_PWalking::HandleSingleSingularPoint(const occ::handle<Adaptor3d_Sur
       }
 
       if (isInDomain)
+      {
         return true;
+      }
     }
   }
 
@@ -2586,23 +2756,31 @@ bool IntWalk_PWalking::SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>&
     aNbIter--;
     aStatus = DistanceMinimizeByGradient(theASurf1, theASurf2, aPnt);
     if (aStatus && !AdjustToDomain(4, &aPnt(1), &aLowBorder[0], &aUppBorder[0]))
+    {
       break;
+    }
 
     aStatus =
       DistanceMinimizeByExtrema(theASurf1, theASurf2->Value(aPnt(3), aPnt(4)), aPnt(1), aPnt(2));
     if (aStatus && !AdjustToDomain(2, &aPnt(1), &aLowBorder[0], &aUppBorder[0]))
+    {
       break;
+    }
 
     aStatus =
       DistanceMinimizeByExtrema(theASurf2, theASurf1->Value(aPnt(1), aPnt(2)), aPnt(3), aPnt(4));
     if (aStatus && !AdjustToDomain(2, &aPnt(3), &aLowBorder[2], &aUppBorder[2]))
+    {
       break;
+    }
   } while (!aStatus && (aNbIter > 0));
 
   // Handle singular points.
   bool aSingularStatus = HandleSingleSingularPoint(theASurf1, theASurf2, aTol, aSingularPnt);
   if (aSingularStatus)
+  {
     aPnt = aSingularPnt;
+  }
 
   if (!aStatus && !aSingularStatus)
   {
@@ -2675,7 +2853,9 @@ bool IntWalk_PWalking::SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>&
       {
         aP2.SetXYZ(line->Value(aPInd).Value().XYZ());
         if (aP1.SquareDistance(aP2) > Precision::SquareConfusion())
+        {
           break;
+        }
       }
 
       if (aPInd > aNbPnts)
@@ -2731,7 +2911,9 @@ bool IntWalk_PWalking::SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>&
       {
         aPPrev.SetXYZ(line->Value(aPInd).Value().XYZ());
         if (aPCurr.SquareDistance(aPPrev) > Precision::SquareConfusion())
+        {
           break;
+        }
       }
 
       if (aPInd < 1)
@@ -2789,7 +2971,9 @@ bool IntWalk_PWalking::PutToBoundary(const occ::handle<Adaptor3d_Surface>& theAS
   aTol        = std::min(aTol, aV2bLast - aV2bFirst) * 1.0e-3;
 
   if (aTol <= 2.0 * aTolMin)
+  {
     return hasBeenAdded;
+  }
 
   bool isNeedAdding = false;
   bool isU1parallel = false, isV1parallel = false;
@@ -2979,7 +3163,9 @@ bool IntWalk_PWalking::SeekAdditionalPoints(const occ::handle<Adaptor3d_Surface>
   const double aTol      = 1.0e-14;
   int          aNbPoints = line->NbPoints();
   if (aNbPoints > theMinNbPoints)
+  {
     return true;
+  }
 
   const double aU1bFirst = theASurf1->FirstUParameter();
   const double aU1bLast  = theASurf1->LastUParameter();
@@ -3010,27 +3196,43 @@ bool IntWalk_PWalking::SeekAdditionalPoints(const occ::handle<Adaptor3d_Surface>
 
       aPnt(1) = 0.5 * (U1f + U1l);
       if (aPnt(1) < aU1bFirst)
+      {
         aPnt(1) = aU1bFirst;
+      }
       if (aPnt(1) > aU1bLast)
+      {
         aPnt(1) = aU1bLast;
+      }
 
       aPnt(2) = 0.5 * (V1f + V1l);
       if (aPnt(2) < aV1bFirst)
+      {
         aPnt(2) = aV1bFirst;
+      }
       if (aPnt(2) > aV1bLast)
+      {
         aPnt(2) = aV1bLast;
+      }
 
       aPnt(3) = 0.5 * (U2f + U2l);
       if (aPnt(3) < aU2bFirst)
+      {
         aPnt(3) = aU2bFirst;
+      }
       if (aPnt(3) > aU2bLast)
+      {
         aPnt(3) = aU2bLast;
+      }
 
       aPnt(4) = 0.5 * (V2f + V2l);
       if (aPnt(4) < aV2bFirst)
+      {
         aPnt(4) = aV2bFirst;
+      }
       if (aPnt(4) > aV2bLast)
+      {
         aPnt(4) = aV2bLast;
+      }
 
       bool aStatus = false;
       int  aNbIter = 5;
@@ -3077,7 +3279,9 @@ bool IntWalk_PWalking::SeekAdditionalPoints(const occ::handle<Adaptor3d_Surface>
           isPrecise = true;
 
           if (++aNbPoints >= theMinNbPoints)
+          {
             break;
+          }
         }
         else
         {
@@ -3178,7 +3382,9 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
         }
       }
       else
+      {
         Arrive = true;
+      }
     }
     else
     {
@@ -3258,9 +3464,13 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     pasuv[3] *= 0.5;
     STATIC_PRECEDENT_INFLEXION += 3;
     if (pasuv[0] < ResoU1 && pasuv[1] < ResoV1 && pasuv[2] < ResoU2 && pasuv[3] < ResoV2)
+    {
       return IntWalk_ArretSurPointPrecedent;
+    }
     else
+    {
       return IntWalk_PasTropGrand;
+    }
   }
   else
   {
@@ -3293,9 +3503,13 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     {
       double CurU, CurV;
       if (choixIso == IntImp_UIsoparametricOnCaro1 || choixIso == IntImp_VIsoparametricOnCaro1)
+      {
         previousPoint.ParametersOnS1(CurU, CurV);
+      }
       else
+      {
         previousPoint.ParametersOnS2(CurU, CurV);
+      }
       gp_Pnt CurPnt =
         (choixIso == IntImp_UIsoparametricOnCaro1 || choixIso == IntImp_VIsoparametricOnCaro1)
           ? Adaptor3d_HSurfaceTool::Value(Caro1, CurU, CurV)
@@ -3321,9 +3535,13 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
       double RefDist    = CurPnt.Distance(OffsetPnt);
       double LocalResol = 0.;
       if (RefDist > gp::Resolution())
+      {
         LocalResol = pasuv[choixIso] * tolconf / RefDist;
+      }
       if (pasuv[choixIso] < 2 * LocalResol)
+      {
         pasuv[choixIso] = pasInit[choixIso] = 2 * LocalResol;
+      }
     }
     ////////////////////////////////////////
     aStatus = IntWalk_PointConfondu;
@@ -3361,7 +3579,9 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
   double tolArea = 100.0;
   if (ResoU1 < Precision::PConfusion() || ResoV1 < Precision::PConfusion()
       || ResoU2 < Precision::PConfusion() || ResoV2 < Precision::PConfusion())
+  {
     tolArea = tolArea * 2.0;
+  }
 
   double Cosi1, CosRef1, Ang1, AngRef1, ResoUV1, Duv1, d1, tolCoeff1;
   double Cosi2, CosRef2, Ang2, AngRef2, ResoUV2, Duv2, d2, tolCoeff2;
@@ -3443,9 +3663,13 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
       pasuv[2] *= 0.5;
       pasuv[3] *= 0.5;
       if (pasuv[0] < ResoU1 && pasuv[1] < ResoV1 && pasuv[2] < ResoU2 && pasuv[3] < ResoV2)
+      {
         return (IntWalk_ArretSurPoint);
+      }
       else
+      {
         return (IntWalk_PasTropGrand);
+      }
     }
   }
   //<-OCC431(apo)
@@ -3481,35 +3705,59 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     //-- Epsilon << DeltaU.
 
     if (pasuv[0] < AbsDu1)
+    {
       pasuv[0] = AbsDu1;
+    }
     if (pasuv[1] < AbsDv1)
+    {
       pasuv[1] = AbsDv1;
+    }
     if (pasuv[2] < AbsDu2)
+    {
       pasuv[2] = AbsDu2;
+    }
     if (pasuv[3] < AbsDv2)
+    {
       pasuv[3] = AbsDv2;
+    }
 
     if (pasuv[0] < ResoU1)
+    {
       pasuv[0] = ResoU1;
+    }
     if (pasuv[1] < ResoV1)
+    {
       pasuv[1] = ResoV1;
+    }
     if (pasuv[2] < ResoU2)
+    {
       pasuv[2] = ResoU2;
+    }
     if (pasuv[3] < ResoV2)
+    {
       pasuv[3] = ResoV2;
+    }
     //-- if(Ratio>10.0 ) { Ratio=10.0; }
     double R1, R = pasInit[0] / pasuv[0];
     R1 = pasInit[1] / pasuv[1];
     if (R1 < R)
+    {
       R = R1;
+    }
     R1 = pasInit[2] / pasuv[2];
     if (R1 < R)
+    {
       R = R1;
+    }
     R1 = pasInit[3] / pasuv[3];
     if (R1 < R)
+    {
       R = R1;
+    }
     if (Ratio > R)
+    {
       Ratio = R;
+    }
     pasuv[0] = std::min(Ratio * pasuv[0], pasInit[0]);
     pasuv[1] = std::min(Ratio * pasuv[1], pasInit[1]);
     pasuv[2] = std::min(Ratio * pasuv[2], pasInit[2]);
@@ -3661,7 +3909,9 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
   pasuv[3] = std::max(myStepMin[3], std::min(std::min(Ratio * AbsDv2, pasuv[3]), pasInit[3]));
 
   if (aStatus == IntWalk_OK)
+  {
     STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+  }
   return aStatus;
 }
 
@@ -3839,6 +4089,8 @@ bool IntWalk_PWalking::TestArret(const bool                  DejaReparti,
       return close;
     }
     else
+    {
       return false;
+    }
   }
 }

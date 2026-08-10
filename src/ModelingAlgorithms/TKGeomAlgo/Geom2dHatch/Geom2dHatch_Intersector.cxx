@@ -41,9 +41,13 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
   // double pfbid,plbid;
   IntRes2d_Domain DL;
   if (P != RealLast())
+  {
     DL.SetValues(L.Location(), 0., Tol, ElCLib::Value(P, L), P, Tol);
+  }
   else
+  {
     DL.SetValues(L.Location(), 0., Tol, true);
+  }
 
   IntRes2d_Domain DE(C.Value(C.FirstParameter()),
                      C.FirstParameter(),
@@ -87,7 +91,11 @@ void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
   }
 
   if (C > Precision::PConfusion() && C < RealLast())
+  {
     Prop.Normal(Norm);
+  }
   else
+  {
     Norm.SetCoord(Tang.Y(), -Tang.X());
+  }
 }

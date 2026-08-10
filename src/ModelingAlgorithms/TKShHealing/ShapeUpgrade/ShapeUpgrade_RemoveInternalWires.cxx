@@ -82,7 +82,9 @@ bool ShapeUpgrade_RemoveInternalWires::Perform()
     removeSmallWire(aF, TopoDS_Wire());
   }
   if (myRemoveFacesMode)
+  {
     removeSmallFaces();
+  }
 
   myResult = Context()->Apply(myShape);
   return Status(ShapeExtend_DONE);
@@ -106,22 +108,30 @@ bool ShapeUpgrade_RemoveInternalWires::Perform(
   {
     const TopoDS_Shape& aS = theSeqShapes.Value(i);
     if (aS.ShapeType() == TopAbs_FACE)
+    {
       removeSmallWire(aS, TopoDS_Wire());
+    }
     else if (aS.ShapeType() == TopAbs_WIRE)
     {
       if (!aWireFaces.Extent())
+      {
         TopExp::MapShapesAndAncestors(myShape, TopAbs_WIRE, TopAbs_FACE, aWireFaces);
+      }
       if (aWireFaces.Contains(aS))
       {
         const NCollection_List<TopoDS_Shape>&    alfaces = aWireFaces.FindFromKey(aS);
         NCollection_List<TopoDS_Shape>::Iterator liter(alfaces);
         for (; liter.More(); liter.Next())
+        {
           removeSmallWire(liter.Value(), aS);
+        }
       }
     }
   }
   if (myRemoveFacesMode)
+  {
     removeSmallFaces();
+  }
   myResult = Context()->Apply(myShape);
   return Status(ShapeExtend_DONE);
 }
@@ -137,11 +147,15 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallWire(const TopoDS_Shape& theFa
   for (; aIt.More(); aIt.Next())
   {
     if (aIt.Value().ShapeType() != TopAbs_WIRE || aIt.Value().IsSame(anOutW))
+    {
       continue;
+    }
     // occ::handle<ShapeExtend_WireData> asewd = new  ShapeExtend_WireData();
     TopoDS_Wire aW = TopoDS::Wire(aIt.Value());
     if (!theWire.IsNull() && !theWire.IsSame(aW))
+    {
       continue;
+    }
     double anArea = ShapeAnalysis::ContourArea(aW);
     if (anArea < myMinArea - Precision::Confusion())
     {
@@ -149,14 +163,18 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallWire(const TopoDS_Shape& theFa
       myRemoveWires.Append(aW);
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
       if (!myRemoveFacesMode)
+      {
         continue;
+      }
 
       TopoDS_Iterator aIte(aW, false);
       for (; aIte.More(); aIte.Next())
       {
         const TopoDS_Shape& aE = aIte.Value();
         if (myRemoveEdges.IsBound(aE))
+        {
           myRemoveEdges.ChangeFind(aE).Append(aF);
+        }
         else
         {
           NCollection_List<TopoDS_Shape> alfaces;
@@ -197,7 +215,9 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
       {
         TopoDS_Shape aF = Context()->Apply(aliter.Value());
         if (aF.IsNull())
+        {
           continue;
+        }
         bool isFind = false;
         for (; aliter2.More() && !isFind; aliter2.Next())
         {
@@ -211,9 +231,13 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
           bool            isOuter = false;
           TopoDS_Iterator aIter(aWout, false);
           for (; aIter.More() && !isOuter; aIter.Next())
+          {
             isOuter = aEdge.IsSame(aIter.Value());
+          }
           if (isOuter)
+          {
             aFaceCandidates.Add(aF);
+          }
         }
       }
     }
@@ -234,7 +258,9 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
       for (; n <= nbE; n++)
       {
         if (asewd->IsSeam(n))
+        {
           continue;
+        }
         TopoDS_Edge aE = asewd->Edge(n);
         if (!myRemoveEdges.IsBound(aE))
         {
@@ -244,9 +270,13 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
           {
             TopoDS_Shape aF2 = Context()->Apply(aliter3.Value());
             if (aF2.IsNull())
+            {
               continue;
+            }
             if (!aF.IsSame(aF2) && !aFaceCandidates.Contains(aF2))
+            {
               nbNotRemoved++;
+            }
           }
         }
       }
@@ -260,7 +290,9 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
   }
 
   if (myRemovedFaces.Length())
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
 }
 
 //=================================================================================================

@@ -93,9 +93,13 @@ static double TetraVol(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
   gp_Vec Rad(RefPoint, Som1);
 
   if ((Rad * N) > 0)
+  {
     return (curVolume);
+  }
   else
+  {
     return (-curVolume);
+  }
 }
 
 //=================================================================================================
@@ -127,6 +131,7 @@ static double CalculVolume(const TopoDS_Shape& So,
     TopoDS_Face     F = TopoDS::Face(ex.Current());
     TopLoc_Location L;
     if (!haveVertex)
+    {
       for (TopExp_Explorer Vex(F, TopAbs_VERTEX); Vex.More(); Vex.Next())
       {
         TopoDS_Vertex v = TopoDS::Vertex(Vex.Current());
@@ -137,6 +142,7 @@ static double CalculVolume(const TopoDS_Shape& So,
           break;
         }
       }
+    }
 
     occ::handle<Poly_Triangulation> facing = BRep_Tool::Triangulation(F, L);
     if (facing.IsNull() || withForce)
@@ -152,9 +158,13 @@ static double CalculVolume(const TopoDS_Shape& So,
       Poly_Triangle trian = facing->Triangle(i);
       int           index1, index2, index3; // M,N;
       if (F.Orientation() == TopAbs_REVERSED)
+      {
         trian.Get(index1, index3, index2);
+      }
       else
+      {
         trian.Get(index1, index2, index3);
+      }
       curVolume =
         TetraVol(aRefPoint, facing->Node(index1), facing->Node(index2), facing->Node(index3));
       myVolume += curVolume;
@@ -221,29 +231,39 @@ static int SetProps(Draw_Interpretor& di, int argc, const char** argv)
     // retrieve epsilon
     double anEps;
     if (argc > 3)
+    {
       anEps = Draw::Atof(argv[3]);
+    }
     else
+    {
       anEps = 0.001;
+    }
 
     GProp_GProps G;
     BRepGProp::VolumeProperties(aShape, G, anEps, true);
     Vres                                = G.Mass();
     occ::handle<XCAFDoc_Volume> aVolume = new XCAFDoc_Volume;
     if (!aLabel.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
+    {
       aLabel.AddAttribute(aVolume);
+    }
     aVolume->Set(Vres);
 
     gp_Pnt                        aPoint    = G.CentreOfMass();
     occ::handle<XCAFDoc_Centroid> aCentroid = new XCAFDoc_Centroid;
     if (!aLabel.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
+    {
       aLabel.AddAttribute(aCentroid);
+    }
     aCentroid->Set(aPoint);
 
     BRepGProp::SurfaceProperties(aShape, G, anEps);
     Ares                            = G.Mass();
     occ::handle<XCAFDoc_Area> aArea = new XCAFDoc_Area;
     if (!aLabel.FindAttribute(XCAFDoc_Area::GetID(), aArea))
+    {
       aLabel.AddAttribute(aArea);
+    }
     aArea->Set(Ares);
 
     di << argv[2] << ": Volume = " << Vres << ", Area = " << Ares << ", Centroid is (" << aPoint.X()
@@ -287,7 +307,9 @@ static int SetVolume(Draw_Interpretor& di, int argc, const char** argv)
     res                                 = Draw::Atof(argv[3]);
     occ::handle<XCAFDoc_Volume> aVolume = new XCAFDoc_Volume;
     if (!aLabel.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
+    {
       aLabel.AddAttribute(aVolume);
+    }
     aVolume->Set(res);
   }
 
@@ -330,7 +352,9 @@ static int SetArea(Draw_Interpretor& di, int argc, const char** argv)
     res                             = Draw::Atof(argv[3]);
     occ::handle<XCAFDoc_Area> aArea = new XCAFDoc_Area;
     if (!aLabel.FindAttribute(XCAFDoc_Area::GetID(), aArea))
+    {
       aLabel.AddAttribute(aArea);
+    }
     aArea->Set(res);
   }
   di << res;
@@ -374,7 +398,9 @@ static int SetCentroid(Draw_Interpretor& di, int argc, const char** argv)
     aPoint.SetZ(Draw::Atof(argv[5]));
     occ::handle<XCAFDoc_Centroid> aCentroid = new XCAFDoc_Centroid;
     if (!aLabel.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
+    {
       aLabel.AddAttribute(aCentroid);
+    }
     aCentroid->Set(aPoint);
     di << Draw::Atof(argv[3]) << " " << Draw::Atof(argv[4]) << " " << Draw::Atof(argv[5]);
   }
@@ -416,7 +442,9 @@ static int GetVolume(Draw_Interpretor& di, int argc, const char** argv)
     // another case
     double aVol;
     if (XCAFDoc_Volume::Get(aLabel, aVol))
+    {
       di << aVol;
+    }
   }
   return 0;
 }
@@ -456,7 +484,9 @@ static int GetArea(Draw_Interpretor& di, int argc, const char** argv)
     // another case
     double anA;
     if (XCAFDoc_Area::Get(aLabel, anA))
+    {
       di << anA;
+    }
   }
   return 0;
 }
@@ -500,7 +530,9 @@ static int GetCentroid(Draw_Interpretor& di, int argc, const char** argv)
       //       di << aPoint.X()<<" "<<aPoint.Y()<<" "<<aPoint.Z();
       // another case
       if (XCAFDoc_Centroid::Get(aLabel, aPoint))
+      {
         di << aPoint.X() << " " << aPoint.Y() << " " << aPoint.Z();
+      }
     }
   }
   return 0;
@@ -529,7 +561,9 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool withVolFix = false;
   if (argc > 2 && Draw::Atof(argv[2]) != 0)
+  {
     withVolFix = true;
+  }
   bool                            wholeDoc = (argc < 4);
   NCollection_Sequence<TDF_Label> seq;
   if (!wholeDoc)
@@ -547,7 +581,9 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
       }
     }
     if (aLabel.IsNull())
+    {
       return 1;
+    }
     seq.Append(aLabel);
   }
   else
@@ -578,7 +614,9 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
         if (!lab.FindAttribute(XCAFDoc_Volume::GetID(), aVolume)
             && !lab.FindAttribute(XCAFDoc_Area::GetID(), aArea)
             && !lab.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
+        {
           continue;
+        }
         seq.InsertAfter(m++, lab);
       }
     }
@@ -596,7 +634,9 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
       di << " \"" << N->Get() << "\"";
     }
     if (!wholeDoc)
+    {
       di << "\n";
+    }
 
     occ::handle<XCAFDoc_Volume>   aVolume;
     occ::handle<XCAFDoc_Area>     aArea;
@@ -775,7 +815,9 @@ static int ShapeVolume(Draw_Interpretor& di, int argc, const char** argv)
   }
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
   gp_Pnt aPoint(0, 0, 0);
   double localVolume;
   double tol       = Draw::Atof(argv[2]);
@@ -821,7 +863,9 @@ static bool GetMassProps(const TDF_Label& aLabel,
       // S = TNaming_Tool::GetShape(NS);
       TopoDS_Shape aSh = NS->Get();
       if (aSh.ShapeType() == TopAbs_SOLID)
+      {
         return false;
+      }
     }
 
     // TopoDS_Shape aSh = XCAFDoc_ShapeTool::GetShape(aLabel);
@@ -842,7 +886,9 @@ static bool GetMassProps(const TDF_Label& aLabel,
         return true;
       }
       else
+      {
         return false;
+      }
     }
     else
     {
@@ -850,7 +896,9 @@ static bool GetMassProps(const TDF_Label& aLabel,
       NCollection_Sequence<TDF_Label> comp;
       XCAFDoc_ShapeTool::GetComponents(aLabel, comp);
       if (!comp.Length())
+      {
         return false;
+      }
 
       NCollection_Array1<gp_XYZ> anArrCentres(1, comp.Length());
       NCollection_Array1<double> anArrMass(1, comp.Length());
@@ -906,7 +954,9 @@ static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
   DDocStd::GetDocument(argv[1], Doc);
   double atol = Precision::Confusion();
   if (argc > 2)
+  {
     atol = Draw::Atof(argv[2]);
+  }
   if (Doc.IsNull())
   {
     di << argv[1] << " is not a document\n";
@@ -929,7 +979,9 @@ static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
       }
     }
     if (aLabel.IsNull())
+    {
       return 1;
+    }
     seq.Append(aLabel);
   }
   else
@@ -1016,7 +1068,9 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_ShapeTool>  STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   NCollection_Sequence<TDF_Label> aLabels;
   if (argc == 2)
+  {
     STool->GetShapes(aLabels);
+  }
   else
   {
     TDF_Label    aLabel;
@@ -1030,7 +1084,9 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
       aLabel = STool->FindShape(aShape);
     }
     if (!aLabel.IsNull())
+    {
       aLabels.Append(aLabel);
+    }
   }
 
   enum
@@ -1043,7 +1099,9 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
   int nbProps[3];
   int j = 0;
   for (; j <= Centroid; j++)
+  {
     nbProps[j] = 0;
+  }
   int i = 1;
   for (; i <= aLabels.Length(); i++)
   {
@@ -1060,7 +1118,9 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
 
     occ::handle<XCAFDoc_Centroid> aCentroid = new (XCAFDoc_Centroid);
     if (aLabel.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
+    {
       XCAFDoc_Centroid::Get(aLabel, aP);
+    }
 
     if (aProp[Vol] > 0 || aProp[Area] > 0 || !Precision::IsInfinite(aP.X()))
     {
@@ -1088,7 +1148,9 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
   di << "=========================================================" << "\n";
   di << "Number of the validation properties : ";
   for (i = Vol; i <= Centroid; i++)
+  {
     di << (i == Vol ? "Volume" : (i == Area ? "Area" : "Centroid")) << " : " << nbProps[i] << " ; ";
+  }
 
   di << "\n";
   return 0;

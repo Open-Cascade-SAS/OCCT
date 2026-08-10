@@ -44,7 +44,9 @@ void XmlObjMgt::SetStringValue(XmlObjMgt_Element&         theElement,
   XmlObjMgt_Document aDocument = theElement.getOwnerDocument();
   LDOM_Text          aText     = aDocument.createTextNode(theData);
   if (isClearText)
+  {
     aText.SetValueClear();
+  }
   theElement.appendChild(aText);
 }
 
@@ -80,9 +82,13 @@ void SprintfExtStr(char* out, const TCollection_ExtendedString& theString)
       unsigned short v = *(p + i) & mask[j]; // x000
       v                = (unsigned short)(v >> (4 * k));
       if (v < 10)
+      {
         v |= 0x30;
+      }
       else
+      {
         v += 87;
+      }
       out[4 * i + j] = (char)v;
     }
     i++;
@@ -146,7 +152,9 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
   const size_t aPrefixSize = sizeof(aRefPrefix) - 1;
   const char*  aSource     = theSource.GetString();
   if (strncmp(aSource, aRefPrefix, aPrefixSize))
+  {
     return false;
+  }
 
   //    Begin aTagEntry string
   char* aTagEntry    = (char*)Standard::Allocate(strlen(aSource) / 2); // quite enough to hold it
@@ -161,11 +169,15 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
   {
     //  Check the first part of individual tag: "/label[@tag="
     if (strncmp(aSource, aRefElem1, anElem1Size))
+    {
       return false;
+    }
     aSource += anElem1Size;
     const char aQuote = aSource[0];
     if (aQuote != '\'' && aQuote != '\"')
+    {
       return false;
+    }
 
     //  Check the integer value of the tag
     errno = 0;
@@ -173,14 +185,18 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
     long  aTagValue = strtol(&aSource[1], &aPtr, 10);
     int   aLen      = (int)(aPtr - &aSource[1]);
     if (aTagValue < 0 || aLen == 0 || aPtr[0] != aQuote || errno == ERANGE || errno == EINVAL)
+    {
       return false;
+    }
     aTagEntryPtr[0] = ':';
     memcpy(&aTagEntryPtr[1], &aSource[1], aLen);
     aTagEntryPtr += (aLen + 1);
 
     //  Check the final part of individual tag : "]"
     if (strncmp(aPtr + 1, aRefElem2, anElem2Size))
+    {
       return false;
+    }
     aSource = aPtr + 1 + anElem2Size;
   }
   aTagEntryPtr[0] = '\0';
@@ -197,14 +213,20 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
   //    Begin parsing theTagEntry
   const char* aTagEntry = (const char*)theTagEntry.ToCString() + 1;
   if (aTagEntry[-1] != '0')
+  {
     return;
+  }
 
   //    Count the number of tags in the label entry string
   const char* aPtr      = aTagEntry;
   int         aTagCount = 0;
   while (*aPtr)
+  {
     if (*aPtr++ == ':')
+    {
       aTagCount++;
+    }
+  }
 
   //    Create a buffer to accumulate the XPath reference
   const size_t anElem1Size = sizeof(aRefElem1) - 1;
@@ -219,7 +241,9 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
     //  Check for the end-of-string; find the delimiter ':'
     aPtr = strchr(aTagEntry, ':');
     if (aPtr == nullptr)
+    {
       break;
+    }
     aTagEntry = aPtr + 1;
 
     //  Find the range of characters for an integer number
@@ -228,7 +252,9 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
     long  aTagValue = strtol(aTagEntry, &ptr, 10);
     int   aTagSize  = (int)(ptr - aTagEntry);
     if (aTagValue < 0 || aTagSize == 0 || errno == ERANGE || errno == EINVAL)
+    {
       return; // error
+    }
 
     //  Add one XPath level to the expression in aTarget
     memcpy(&aTargetPtr[0], aRefElem1, anElem1Size);
@@ -255,8 +281,12 @@ XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource
     {
       LDOM_Element anElem = (LDOM_Element&)aNode;
       if (anElem.getAttribute(IdString()).GetInteger(anId))
+      {
         if (anId == theId)
+        {
           return anElem;
+        }
+      }
     }
     aNode = aNode.getNextSibling();
   }
@@ -274,7 +304,9 @@ XmlObjMgt_Element XmlObjMgt::FindChildByRef(const XmlObjMgt_Element&   theSource
 {
   int anID;
   if (theSource.getAttribute(theRefName).GetInteger(anID))
+  {
     return FindChildElement(theSource, anID);
+  }
   return LDOM_Element();
 }
 
@@ -294,7 +326,9 @@ bool XmlObjMgt::GetInteger(const char*& theString, int& theValue)
   errno       = 0;
   long aValue = strtol(theString, &ptr, 10);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
+  {
     return false;
+  }
   theValue  = int(aValue);
   theString = ptr;
   return true;
@@ -308,7 +342,9 @@ bool XmlObjMgt::GetReal(const char*& theString, double& theValue)
   errno    = 0;
   theValue = Strtod(theString, &ptr);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
+  {
     return false;
+  }
 
   theString = ptr;
 
@@ -330,7 +366,9 @@ bool XmlObjMgt::GetReal(const char*& theString, double& theValue)
       return true;
     }
     else
+    {
       return false;
+    }
   }
   else if (*ptr && !IsSpace(*ptr))
   {

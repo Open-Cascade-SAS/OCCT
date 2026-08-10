@@ -92,12 +92,14 @@ bool IGESAppli_ToolDrilledHole::OwnCorrect(const occ::handle<IGESAppli_DrilledHo
 {
   bool res = (ent->NbPropertyValues() != 5);
   if (res)
+  {
     ent->Init(5,
               ent->DrillDiaSize(),
               ent->FinishDiaSize(),
               (ent->IsPlating() ? 1 : 0),
               ent->NbLowerLayer(),
               ent->NbHigherLayer());
+  }
   if (ent->SubordinateStatus() != 0)
   {
     occ::handle<IGESData_LevelListEntity> nulevel;
@@ -124,10 +126,16 @@ void IGESAppli_ToolDrilledHole::OwnCheck(const occ::handle<IGESAppli_DrilledHole
                                          occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
+  {
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
+    {
       ach->AddFail("Level type : Not value/reference");
+    }
+  }
   if (ent->NbPropertyValues() != 5)
+  {
     ach->AddFail("Number of Property Values != 5");
+  }
 }
 
 void IGESAppli_ToolDrilledHole::OwnDump(const occ::handle<IGESAppli_DrilledHole>& ent,
@@ -135,16 +143,20 @@ void IGESAppli_ToolDrilledHole::OwnDump(const occ::handle<IGESAppli_DrilledHole>
                                         Standard_OStream& S,
                                         const int /*level*/) const
 {
-  S << "IGESAppli_DrilledHole" << std::endl;
+  S << "IGESAppli_DrilledHole" << '\n';
 
-  S << "Number of property values : " << ent->NbPropertyValues() << std::endl;
+  S << "Number of property values : " << ent->NbPropertyValues() << '\n';
   S << "Drill  diameter size :" << ent->DrillDiaSize() << "  ";
-  S << "Finish diameter size : " << ent->FinishDiaSize() << std::endl;
+  S << "Finish diameter size : " << ent->FinishDiaSize() << '\n';
   S << "Plating indication flag : ";
   if (!ent->IsPlating())
+  {
     S << "NO" << "  -  ";
+  }
   else
+  {
     S << "YES  -  ";
+  }
   S << "Lower Numbered Layer  : " << ent->NbLowerLayer() << "  ";
-  S << "Higher Numbered Layer : " << ent->NbHigherLayer() << std::endl;
+  S << "Higher Numbered Layer : " << ent->NbHigherLayer() << '\n';
 }

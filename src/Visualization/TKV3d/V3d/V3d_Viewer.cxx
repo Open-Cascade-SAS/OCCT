@@ -208,7 +208,9 @@ void V3d_Viewer::UnHighlight() const
 void V3d_Viewer::SetDefaultViewSize(const double theSize)
 {
   if (theSize <= 0.0)
+  {
     throw V3d_BadValue("V3d_Viewer::SetDefaultViewSize, bad size");
+  }
   myViewSize = theSize;
 }
 
@@ -216,7 +218,7 @@ void V3d_Viewer::SetDefaultViewSize(const double theSize)
 
 bool V3d_Viewer::IfMoreViews() const
 {
-  return myDefinedViews.Size() < myStructureManager->MaxNumOfViews();
+  return myDefinedViews.Length() < myStructureManager->MaxNumOfViews();
 }
 
 //=================================================================================================
@@ -795,8 +797,8 @@ void V3d_Viewer::ShowGridEcho(const occ::handle<V3d_View>& theView,
     myGridEchoGroup->SetPrimitivesAspect(myGridEchoAspect);
   }
 
-  if (theVertex.X() == myGridEchoLastVert.X() && theVertex.Y() == myGridEchoLastVert.Y()
-      && theVertex.Z() == myGridEchoLastVert.Z())
+  if (!theView->IsShaderGridActive() && theVertex.X() == myGridEchoLastVert.X()
+      && theVertex.Y() == myGridEchoLastVert.Y() && theVertex.Z() == myGridEchoLastVert.Z())
   {
     return;
   }

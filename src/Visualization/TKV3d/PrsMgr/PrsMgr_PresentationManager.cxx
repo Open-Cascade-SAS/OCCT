@@ -382,7 +382,9 @@ void PrsMgr_PresentationManager::displayImmediate(const occ::handle<V3d_Viewer>&
     {
       const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
       if (aPrs.IsNull())
+      {
         continue;
+      }
 
       occ::handle<Graphic3d_Structure>      aViewDepPrs;
       occ::handle<Prs3d_PresentationShadow> aShadowPrs =
@@ -444,7 +446,9 @@ void PrsMgr_PresentationManager::EndImmediateDraw(const occ::handle<V3d_Viewer>&
 void PrsMgr_PresentationManager::RedrawImmediate(const occ::handle<V3d_Viewer>& theViewer)
 {
   if (myImmediateList.IsEmpty())
+  {
     return;
+  }
 
   // Clear previously displayed structures
   for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList);
@@ -494,7 +498,9 @@ bool PrsMgr_PresentationManager::HasPresentation(
   const int                                    theMode) const
 {
   if (!thePrsObj->HasOwnPresentations())
+  {
     return false;
+  }
 
   const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList =
     thePrsObj->Presentations();
@@ -692,12 +698,16 @@ static void updatePrsTransformation(
   {
     const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
     if (aPrs.IsNull())
+    {
       continue;
+    }
 
     occ::handle<Prs3d_PresentationShadow> aShadowPrs =
       occ::down_cast<Prs3d_PresentationShadow>(aPrs);
     if (aShadowPrs.IsNull() || aShadowPrs->ParentId() != theRefId)
+    {
       continue;
+    }
 
     aShadowPrs->CStructure()->SetTransformation(theTrsf);
   }
@@ -713,7 +723,9 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf(
   const occ::handle<PrsMgr_PresentableObject>& theSelObj)
 {
   if (theObj.IsNull())
+  {
     return;
+  }
 
   occ::handle<PrsMgr_Presentation> aPrs =
     Presentation(!theSelObj.IsNull() ? theSelObj : theObj, theMode, false);

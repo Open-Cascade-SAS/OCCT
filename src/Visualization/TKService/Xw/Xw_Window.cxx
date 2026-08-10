@@ -75,18 +75,19 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
   aWinAttr.border_pixel      = 0;
   aWinAttr.override_redirect = False;
 
-  myXWindow = (Window)XCreateWindow(aDisp,
-                                    aParent,
-                                    myXLeft,
-                                    myYTop,
-                                    thePxWidth,
-                                    thePxHeight,
-                                    0,
-                                    aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
-                                    InputOutput,
-                                    aVisInfo != nullptr ? aVisInfo->visual : CopyFromParent,
-                                    CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
-                                    &aWinAttr);
+  myXWindow =
+    (Window)XCreateWindow(aDisp,
+                          aParent,
+                          myXLeft,
+                          myYTop,
+                          thePxWidth,
+                          thePxHeight,
+                          0,
+                          aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
+                          InputOutput,
+                          aVisInfo != nullptr ? aVisInfo->visual : static_cast<Visual*>(nullptr),
+                          CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
+                          &aWinAttr);
   if (myXWindow == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Unable to create window");
@@ -262,13 +263,21 @@ Aspect_TypeOfResize Xw_Window::DoResize()
   Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
 
   if (std::abs(aWinAttr.x - myXLeft) > 2)
+  {
     aMask |= 1;
+  }
   if (std::abs((aWinAttr.x + aWinAttr.width) - myXRight) > 2)
+  {
     aMask |= 2;
+  }
   if (std::abs(aWinAttr.y - myYTop) > 2)
+  {
     aMask |= 4;
+  }
   if (std::abs((aWinAttr.y + aWinAttr.height) - myYBottom) > 2)
+  {
     aMask |= 8;
+  }
   switch (aMask)
   {
     case 0:

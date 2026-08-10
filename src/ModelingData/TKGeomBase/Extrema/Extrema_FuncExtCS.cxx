@@ -95,7 +95,9 @@ int Extrema_FuncExtCS::NbEquations() const
 bool Extrema_FuncExtCS::Value(const math_Vector& UV, math_Vector& F)
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
 
   myt = UV(1);
   myU = UV(2);
@@ -130,7 +132,9 @@ bool Extrema_FuncExtCS::Derivatives(const math_Vector& UV, math_Matrix& DF)
 bool Extrema_FuncExtCS::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
 
   myt = UV(1);
   myU = UV(2);
@@ -167,7 +171,9 @@ bool Extrema_FuncExtCS::Values(const math_Vector& UV, math_Vector& F, math_Matri
 int Extrema_FuncExtCS::GetStateNumber()
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   // comparison of solution with previous solutions
   constexpr double tol2d = Precision::SquarePConfusion();
   int              i = 1, nbSol = mySqDist.Length();
@@ -177,10 +183,14 @@ int Extrema_FuncExtCS::GetStateNumber()
     aT -= myt;
     aT *= aT;
     if (aT <= tol2d)
+    {
       break;
+    }
   }
   if (i <= nbSol)
+  {
     return 0;
+  }
   mySqDist.Append(myP1.SquareDistance(myP2));
   myPoint1.Append(Extrema_POnCurv(myt, myP1));
   myPoint2.Append(Extrema_POnSurf(myU, myV, myP2));
@@ -199,7 +209,9 @@ int Extrema_FuncExtCS::NbExt() const
 double Extrema_FuncExtCS::SquareDistance(const int N) const
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   return mySqDist.Value(N);
 }
 
@@ -208,7 +220,9 @@ double Extrema_FuncExtCS::SquareDistance(const int N) const
 const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const int N) const
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   return myPoint1.Value(N);
 }
 
@@ -217,6 +231,8 @@ const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const int N) const
 const Extrema_POnSurf& Extrema_FuncExtCS::PointOnSurface(const int N) const
 {
   if (!myCinit || !mySinit)
+  {
     throw Standard_TypeMismatch();
+  }
   return myPoint2.Value(N);
 }

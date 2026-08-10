@@ -90,10 +90,14 @@ void BinTools_LocationSet::Clear()
 int BinTools_LocationSet::Add(const TopLoc_Location& L)
 {
   if (L.IsIdentity())
+  {
     return 0;
+  }
   int n = myMap.FindIndex(L);
   if (n > 0)
+  {
     return n;
+  }
   TopLoc_Location N = L;
   do
   {
@@ -109,9 +113,13 @@ const TopLoc_Location& BinTools_LocationSet::Location(const int I) const
 {
   static TopLoc_Location identity;
   if (I == 0)
+  {
     return identity;
+  }
   else
+  {
     return myMap(I);
+  }
 }
 
 //=================================================================================================
@@ -119,7 +127,9 @@ const TopLoc_Location& BinTools_LocationSet::Location(const int I) const
 int BinTools_LocationSet::Index(const TopLoc_Location& L) const
 {
   if (L.IsIdentity())
+  {
     return 0;
+  }
   return myMap.FindIndex(L);
 }
 
@@ -176,8 +186,8 @@ void BinTools_LocationSet::Write(Standard_OStream& OS) const
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_LocatioSet::Write(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_LocatioSet::Write(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }
@@ -195,7 +205,7 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
   if (IS.fail() || (strcmp(buffer, "Locations")))
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_LocationSet::Read: Not a location table" << std::endl;
+    aMsg << "BinTools_LocationSet::Read: Not a location table" << '\n';
     throw Standard_Failure(aMsg.str().c_str());
     return;
   }
@@ -234,18 +244,20 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
       else
       {
         Standard_SStream aMsg;
-        aMsg << "Unexpected location's type = " << aTypLoc << std::endl;
+        aMsg << "Unexpected location's type = " << aTypLoc << '\n';
         throw Standard_Failure(aMsg.str().c_str());
       }
       if (!L.IsIdentity())
+      {
         myMap.Add(L);
+      }
     }
   }
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_LocationSet::Read(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_LocationSet::Read(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }

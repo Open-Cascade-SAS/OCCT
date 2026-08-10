@@ -9,6 +9,8 @@ BRep Format {#specification__brep_format}
   of vertices, edges, wires, faces, shells, solids,  compsolids, compounds, edge triangulations, 
   face triangulations, polylines on  triangulations, space location and orientation. 
   Any set of such models may be  stored as a single model which is a compound of the models.  
+
+  @note This document describes the **ASCII** BREP format produced by `BRepTools` (`Write` / `Read`), whose header line is `CASCADE Topology V1/V2/V3`. OCCT also ships a **binary** BREP format, produced by the `BinTools` package (`BinTools::Write` / `BinTools::Read`), with its own independent header sequence (`Open CASCADE Topology V1`..`V4`). The two formats share most of the geometric content but differ in framing and tokenization, and are not interchangeable.
    
   The format is described in an order which is convenient for understanding 
   rather than in the order the format parts follow each other. 
@@ -52,7 +54,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   * \<_\\n\>: = " "*\<\\n\>;
   * \<_\>: = " "+; It is a not empty sequence of space characters  with ASCII code 21h;
   * \<flag\>: = "0" | "1";
-  * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  denary system;  
+  * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  decimal system;
   * \<real\>: It is a real from -1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> to 1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<short real\>: It is a real from -3.402823 @f$\cdot@f$ 10<sup>38</sup> to 3.402823 @f$\cdot@f$ 10<sup>38</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<2D point\>: = \<real\>\<_\>\<real\>;  
@@ -72,7 +74,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   \<content type\> = "DBRep_DrawableShape" \<_\\n\>\<_\\n\>;  
   \<content type\> have other values [1].  
  
-  \<version\> = ("CASCADE Topology V1, (c)  Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision" | "CASCADE Topology V3, (c) Open Cascade")\<_\\n\>;
+  \<version\> = ("CASCADE Topology V1, (c) Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision" | "CASCADE Topology V3, (c) Open Cascade")\<_\\n\>;
   The difference of the versions is described in the  document.  
  
   Sections \<locations\>, \<geometry\> and \<shapes\> are described below in separate chapters of the document.  
@@ -1124,7 +1126,7 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
  
 **Description**  
  
-\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* @f$ \leq @f$ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
+\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* @f$ \geq @f$ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
  
 @f[ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj}+r_{min} \cdot sin(u) \cdot D_{min},\; u \in [0,\; 2 \cdot \pi) . @f]  
  
@@ -1191,9 +1193,9 @@ The example record is interpreted as a parabola in plane which passes through a 
  
 \<2D curve record 5\> describes a hyperbola. The  hyperbola data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and non-negative reals *k<sub>x</sub>* and *k<sub>y</sub>*. The hyperbola coordinate system has origin *P* and axis directions *D<sub>x</sub>* and *D<sub>y</sub>*. The hyperbola is defined by  the following parametric equation:  
  
-@f[ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
+@f[ C(u)=P+k_{x} \cdot cosh(u) \cdot D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
  
-The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
+The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=3 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
  
  
 @subsubsection specification__brep_format_5_3_6 Bezier Curve - \<2D curve record 6\>
@@ -1707,7 +1709,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 	<curve parameter minimal and maximal values> = <real> <_> <real>;
 
 	<curve values for parameter minimal and maximal values> =
-	real> <_> <real> <_> <real> <_> <real>;
+	<real> <_> <real> <_> <real> <_> <real>;
 @endverbatim
  
 **Description**  
@@ -1786,7 +1788,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 **BNF-like Definition**
 
 ~~~~{.cpp}
-	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
+	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> <edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
 
 	<edge data tolerance> = <real>;
 
@@ -1814,7 +1816,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 	<location number> <_> <curve parameter minimal and maximal values>
 	[<_\n> <curve values for parameter minimal and maximal values>];
 
-	<edge data representation data 3> = (<2D curve number> <_>) ^ 2 <continuity order> <_> <surface number> <_> <location number> <_> <curve parameter minimal and maximal values> <\n> <curve values for parameter minimal and maximal values>];
+	<edge data representation data 3> = (<2D curve number> <_>) ^ 2 <continuity order> <_> <surface number> <_> <location number> <_> <curve parameter minimal and maximal values> <\n> <curve values for parameter minimal and maximal values>;
 
 	<continuity order> = "C0" | "C1" | "C2" | "C3" | "CN" | "G1" | "G2".
 
@@ -1881,7 +1883,7 @@ Flag \<face data natural restriction flag\> is  used in a special way [1].
 @verbatim
     DBRep_DrawableShape  
      
-    CASCADE Topology V1, (c)  Matra-Datavision  
+    CASCADE Topology V1, (c) Matra-Datavision  
     Locations 3  
     1  
                   0                0               1               0   

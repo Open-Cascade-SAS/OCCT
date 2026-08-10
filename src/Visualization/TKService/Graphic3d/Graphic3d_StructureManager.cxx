@@ -149,9 +149,13 @@ occ::handle<Graphic3d_Structure> Graphic3d_StructureManager::Identification(cons
   }
 
   if (notfound)
+  {
     return (StructNull);
+  }
   else
+  {
     return (SGfound);
+  }
 }
 
 const occ::handle<Graphic3d_GraphicDriver>& Graphic3d_StructureManager::GraphicDriver() const
@@ -244,7 +248,7 @@ void Graphic3d_StructureManager::UnIdentification(Graphic3d_CView* theView)
 {
   if (myDefinedViews.Contains(theView))
   {
-    myDefinedViews.Swap(myDefinedViews.FindIndex(theView), myDefinedViews.Size());
+    myDefinedViews.Swap(myDefinedViews.FindIndex(theView), myDefinedViews.Length());
     myDefinedViews.RemoveLast();
     myViewGenId.Free(theView->Identification());
   }

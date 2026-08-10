@@ -90,7 +90,9 @@ void TDataXtd_Position::SetPosition(const gp_Pnt& aPos)
 {
   // OCC2932 correction
   if (myPosition.X() == aPos.X() && myPosition.Y() == aPos.Y() && myPosition.Z() == aPos.Z())
+  {
     return;
+  }
 
   Backup();
   myPosition = aPos;

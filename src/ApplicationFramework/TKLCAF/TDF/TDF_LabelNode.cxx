@@ -171,5 +171,7 @@ void TDF_LabelNode::AllMayBeModified()
 {
   MayBeModified(true);
   if (myFather && !myFather->MayBeModified())
+  {
     myFather->AllMayBeModified();
+  }
 }

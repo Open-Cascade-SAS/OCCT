@@ -221,15 +221,15 @@ private:
   StepVisual_ShadingSurfaceMethod myRenderingMethod; //!< Rendering method used for shading
   bool myIsDefined; //!< Flag indicating if rendering properties are defined
 
-  //! Ambient reflectance value, applyed on the surface color
+  //! Ambient reflectance value, applied on the surface color
   std::pair<double, bool> myAmbientReflectance;
-  //! Diffuse reflectance value, applyed on the surface color
+  //! Diffuse reflectance value, applied on the surface color
   std::pair<double, bool> myDiffuseReflectance;
-  //! Specular reflectance value, applyed on the surface color
+  //! Specular reflectance value, applied on the surface color
   std::pair<double, bool> mySpecularReflectance;
-  //! Specular exponent value, applyed on the surface color
+  //! Specular exponent value, applied on the surface color
   std::pair<double, bool> mySpecularExponent;
-  //! Specular color, applyed on the surface color
+  //! Specular color, applied on the surface color
   std::pair<Quantity_Color, bool> mySpecularColour;
 };
 

@@ -38,7 +38,9 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "camera_model_d3_multi_clipping_intersection"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -58,7 +60,9 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "shape_clipping", ach, anEnt))
+      {
         aShapeClipping->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -93,5 +97,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::Share(
   // Own field: shape_clipping
   int i, nb = ent->ShapeClipping()->Length();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->ShapeClipping()->Value(i).Value());
+  }
 }

@@ -50,7 +50,9 @@ void Intf_Interference::SelfInterference(const bool Self)
 bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
 {
   if (myTZones.Length() <= 0)
+  {
     return false;
+  }
   int  lzin     = 0;                       // Index in the list of the zone of interest.
   int  lunp     = 0;                       // Index of the 1st stop point in this zone.
   int  lotp     = 0;                       // Index of the 2nd stop point in this zone.
@@ -72,7 +74,9 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
     {
       Ipz0 = Ipz1 - 1;
       if (Ipz0 <= 0)
+      {
         Ipz0 = npcz;
+      }
       Ipz2 = (Ipz1 % npcz) + 1;
 
       // Loop on edges of the new TangentZone and search of the
@@ -113,10 +117,14 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
         }
       }
       if (lotp != 0)
+      {
         break;
+      }
     }
     if (lotp != 0)
+    {
       break;
+    }
   }
 
   int Ilc;
@@ -126,7 +134,9 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
     {
       myTZones(lzin).InsertBefore(lotp, LaZone.GetPoint(((Ilc - 1) % nplz) + 1));
       if (!same)
+      {
         lotp++;
+      }
     }
   }
 
@@ -138,7 +148,9 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
       myTZones(lzin).InsertBefore(lunp, LaZone.GetPoint((((Ilc - 1) % nplz) + 1)));
       lunp++;
       if (loop && (((Ilc - 1) % nplz) + 1) == lunl)
+      {
         break;
+      }
       loop = true;
     }
   }
@@ -153,7 +165,9 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
     Intf_TangentZone theNew = myTZones(lzin);
     myTZones.Remove(lzin);
     if (!Insert(theNew))
+    {
       myTZones.Append(theNew);
+    }
   }
   return Inserted;
 }
@@ -176,7 +190,9 @@ void Intf_Interference::Insert(const Intf_SectionPoint& pdeb, const Intf_Section
     if (nd == 1)
     {
       if (nf > 1)
+      {
         SL.Close();
+      }
       Inserted = true;
       TheLS    = ils;
       Begin    = true;
@@ -185,7 +201,9 @@ void Intf_Interference::Insert(const Intf_SectionPoint& pdeb, const Intf_Section
     else if (nd > 1)
     {
       if (nf == 1)
+      {
         SL.Close();
+      }
       Inserted = true;
       TheLS    = ils;
       Begin    = false;
@@ -251,9 +269,13 @@ void Intf_Interference::Insert(const Intf_SectionPoint& pdeb, const Intf_Section
     else
     {
       if (Begin)
+      {
         mySLines(TheLS).Prepend(TheBout);
+      }
       else
+      {
         mySLines(TheLS).Append(TheBout);
+      }
     }
   }
 }
@@ -267,13 +289,17 @@ bool Intf_Interference::Contains(const Intf_SectionPoint& LePnt) const
   for (int l = 1; l <= mySLines.Length(); l++)
   {
     if (mySLines(l).Contains(LePnt))
+    {
       return true;
+    }
   }
   for (int t = 1; t <= myTZones.Length(); t++)
   {
     //-- myTZones(t).Dump(2);
     if (myTZones(t).Contains(LePnt))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -283,17 +309,17 @@ bool Intf_Interference::Contains(const Intf_SectionPoint& LePnt) const
 //----------------------------------------------------
 void Intf_Interference::Dump() const
 {
-  std::cout << "Mes SectionPoint :" << std::endl;
+  std::cout << "Mes SectionPoint :" << '\n';
   for (int p = 1; p <= mySPoins.Length(); p++)
   {
     mySPoins(p).Dump(2);
   }
-  std::cout << "Mes SectionLine :" << std::endl;
+  std::cout << "Mes SectionLine :" << '\n';
   for (int l = 1; l <= mySLines.Length(); l++)
   {
     mySLines(l).Dump(2);
   }
-  std::cout << "Mes TangentZone :" << std::endl;
+  std::cout << "Mes TangentZone :" << '\n';
   for (int t = 1; t <= myTZones.Length(); t++)
   {
     myTZones(t).Dump(2);

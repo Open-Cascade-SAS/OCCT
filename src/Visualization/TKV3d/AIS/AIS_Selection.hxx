@@ -78,7 +78,7 @@ public:
   const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& Objects() const { return myresult; }
 
   //! Return the number of selected objects.
-  int Extent() const { return myresult.Size(); }
+  int Extent() const { return myresult.Length(); }
 
   //! Return true if list of selected objects is empty.
   bool IsEmpty() const { return myresult.IsEmpty(); }

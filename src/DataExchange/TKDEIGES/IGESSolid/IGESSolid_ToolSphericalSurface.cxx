@@ -132,15 +132,25 @@ void IGESSolid_ToolSphericalSurface::OwnCheck(const occ::handle<IGESSolid_Spheri
                                               occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() <= 0.0)
+  {
     ach->AddFail("Radius : Not Positive");
+  }
   int fn = 0;
   if (ent->IsParametrised())
+  {
     fn = 1;
+  }
   if (fn != ent->FormNumber())
+  {
     ach->AddFail("Parametrised Status Mismatches with Form Number");
+  }
   if (ent->Axis().IsNull())
+  {
     if (ent->IsParametrised())
+    {
       ach->AddFail("Parametrised Spherical Surface : no Axis is defined");
+    }
+  }
 }
 
 void IGESSolid_ToolSphericalSurface::OwnDump(const occ::handle<IGESSolid_SphericalSurface>& ent,
@@ -163,8 +173,10 @@ void IGESSolid_ToolSphericalSurface::OwnDump(const occ::handle<IGESSolid_Spheric
     S << "\n"
       << "Reference direction : ";
     dumper.Dump(ent->ReferenceDir(), S, sublevel);
-    S << std::endl;
+    S << '\n';
   }
   else
-    S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is UnParametrised" << '\n';
+  }
 }

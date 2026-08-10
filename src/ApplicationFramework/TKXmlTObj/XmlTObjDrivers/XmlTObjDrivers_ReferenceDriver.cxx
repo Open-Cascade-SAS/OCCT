@@ -68,7 +68,9 @@ bool XmlTObjDrivers_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       Sou
   TDF_Tool::Label(Target->Label().Data(), MasterEntry, aMasterLabel);
   // referred label
   if (InHolderEntry.IsEmpty())
+  {
     TDF_Tool::Label(Target->Label().Data(), RefEntry, aLabel, true);
+  }
   else
   {
     occ::handle<TObj_Model> aModel = TObj_Assistant::FindModel(InHolderEntry.ToCString());
@@ -90,7 +92,9 @@ void XmlTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& Sou
 
   occ::handle<TObj_Object> aLObject = aSource->Get();
   if (aLObject.IsNull())
+  {
     return;
+  }
 
   // referred entry
   TCollection_AsciiString entry;
@@ -106,7 +110,9 @@ void XmlTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& Sou
 
   // is reference to other document
   if (aLabel.Root() == aMasterLabel.Root())
+  {
     return;
+  }
 
   occ::handle<TObj_Model> aModel = aLObject->GetModel();
   TCollection_AsciiString aModelName(aModel->GetModelName()->String());

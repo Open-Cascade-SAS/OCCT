@@ -33,7 +33,9 @@ void IGESDefs_UnitsData::Init(
   int length = unitTypes->Length();
   if (unitTypes->Lower() != 1 || (unitValues->Lower() != 1 || unitValues->Length() != length)
       || (unitScales->Lower() != 1 || unitScales->Length() != length))
+  {
     throw Standard_DimensionMismatch("IGESDefs_UnitsData : Init");
+  }
   theUnitTypes  = unitTypes;
   theUnitValues = unitValues;
   theUnitScales = unitScales;

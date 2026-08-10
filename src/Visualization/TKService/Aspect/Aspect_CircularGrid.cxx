@@ -26,7 +26,14 @@ Aspect_CircularGrid::Aspect_CircularGrid(const double aRadiusStep,
                                          const double aRotationAngle)
     : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
       myRadiusStep(aRadiusStep),
-      myDivisionNumber(aDivisionNumber)
+      myDivisionNumber(aDivisionNumber),
+      myAlpha(0.0),
+      myA1(0.0),
+      myB1(0.0),
+      myRadius(0.0),
+      myZOffset(0.0),
+      myAngleStart(0.0),
+      myAngleEnd(0.0)
 {
 }
 
@@ -82,7 +89,9 @@ void Aspect_CircularGrid::Compute(const double X,
   double a       = std::acos(cosinus);
   double ra      = RotationAngle();
   if (Y < yo)
+  {
     a = 2 * M_PI - a;
+  }
   n = (int)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
   double cs = 0, sn = 0;
@@ -170,6 +179,36 @@ void Aspect_CircularGrid::Init()
   myB1    = std::sin(myAlpha);
 }
 
+void Aspect_CircularGrid::SetRadius(const double theRadius)
+{
+  Standard_NegativeValue_Raise_if(theRadius < 0.0, "invalid grid radius");
+  if (myRadius != theRadius)
+  {
+    myRadius = theRadius;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_CircularGrid::SetZOffset(const double theOffset)
+{
+  if (myZOffset != theOffset)
+  {
+    myZOffset = theOffset;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_CircularGrid::SetArcRange(const double theStart, const double theEnd)
+{
+  if (myAngleStart == theStart && myAngleEnd == theEnd)
+  {
+    return;
+  }
+  myAngleStart = theStart;
+  myAngleEnd   = theEnd;
+  UpdateDisplay();
+}
+
 //=================================================================================================
 
 void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) const
@@ -183,4 +222,8 @@ void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAlpha)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myA1)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myB1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRadius)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZOffset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAngleStart)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAngleEnd)
 }

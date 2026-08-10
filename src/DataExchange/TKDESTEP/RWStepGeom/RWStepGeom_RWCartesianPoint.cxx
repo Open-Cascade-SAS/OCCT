@@ -30,7 +30,9 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "cartesian_point"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -71,9 +73,13 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReader
 
   //	ent->Init(aName, aCoordinates);
   if (nbcoord == 3)
+  {
     ent->Init3D(aName, XYZ[0], XYZ[1], XYZ[2]);
+  }
   else
+  {
     ent->Init2D(aName, XYZ[0], XYZ[1]);
+  }
 }
 
 void RWStepGeom_RWCartesianPoint::WriteStep(StepData_StepWriter&                        SW,

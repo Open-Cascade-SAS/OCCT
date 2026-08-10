@@ -41,7 +41,9 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theArch, "pair_representation_relationship"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -122,9 +124,13 @@ void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
   theSW.Send(theEnt->Name());
 
   if (theEnt->RepresentationRelationshipWithTransformation()->HasDescription())
+  {
     theSW.Send(theEnt->RepresentationRelationshipWithTransformation()->Description());
+  }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->RepresentationRelationshipWithTransformation()->Rep1());
 

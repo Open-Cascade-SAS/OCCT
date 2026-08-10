@@ -208,12 +208,18 @@ void DrawTrSurf_Drawable::DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
   {
     GeomAdaptor_Curve GC;
     if (C.GetType() == GeomAbs_BezierCurve)
+    {
       GC.Load(C.Bezier(), F, L);
+    }
     else
+    {
       GC.Load(C.BSpline(), F, L);
+    }
 
     DrawCurveOn(GC, dis);
   }
   else
+  {
     DrawCurveOn(C, dis);
+  }
 }

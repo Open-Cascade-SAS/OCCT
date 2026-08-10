@@ -253,7 +253,9 @@ const Standard_GUID& TDataStd_ReferenceList::ID() const
 void TDataStd_ReferenceList::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
   Backup();
   myID = theGuid;
 }
@@ -301,7 +303,9 @@ void TDataStd_ReferenceList::Paste(const occ::handle<TDF_Attribute>&       Into,
     if (!L.IsNull())
     {
       if (!RT->HasRelocation(L, rL))
+      {
         rL = L;
+      }
       aList->Append(rL);
     }
   }
@@ -330,7 +334,7 @@ Standard_OStream& TDataStd_ReferenceList::Dump(Standard_OStream& anOS) const
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }
 

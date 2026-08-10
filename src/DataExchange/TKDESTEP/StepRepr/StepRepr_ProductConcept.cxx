@@ -49,7 +49,9 @@ void StepRepr_ProductConcept::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theMarketContext = aMarketContext;
 }

@@ -29,9 +29,13 @@ void TDocStd_PathParser::Parse()
   TCollection_ExtendedString temp          = myPath;
   int                        PointPosition = myPath.SearchFromEnd(TCollection_ExtendedString("."));
   if (PointPosition > 0)
+  {
     myExtension = temp.Split(PointPosition);
+  }
   else
+  {
     return;
+  }
   temp.Trunc(PointPosition - 1);
   bool isFileName = (temp.Length()) != 0;
   bool isTrek     = true;
@@ -54,7 +58,9 @@ void TDocStd_PathParser::Parse()
 #else
   PointPosition = temp.SearchFromEnd(TCollection_ExtendedString("/"));
   if (PointPosition > 0)
+  {
     myName = temp.Split(PointPosition);
+  }
   else
   {
     if (isFileName)
@@ -63,7 +69,9 @@ void TDocStd_PathParser::Parse()
       isTrek = false;
     }
     else
+    {
       return;
+    }
   }
 #endif //_WIN32
   if (isTrek)
@@ -72,10 +80,13 @@ void TDocStd_PathParser::Parse()
     myTrek = temp;
   }
   else
+  {
 #ifdef _WIN32
     myTrek = ".\\";
+  }
 #else
     myTrek = "./";
+  }
 #endif
 }
 

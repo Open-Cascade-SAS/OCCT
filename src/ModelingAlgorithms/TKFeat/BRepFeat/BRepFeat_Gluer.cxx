@@ -52,7 +52,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Gluer::Modified(const TopoDS_Shap
     if (!LS.IsEmpty())
     {
       if (!LS.First().IsSame(F))
+      {
         return myGluer.DescendantFaces(TopoDS::Face(F));
+      }
     }
   }
   static NCollection_List<TopoDS_Shape> LIM;

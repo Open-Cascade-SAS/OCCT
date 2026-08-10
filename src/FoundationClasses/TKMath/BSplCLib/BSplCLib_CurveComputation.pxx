@@ -315,19 +315,25 @@ bool BSplCLib_RemoveKnot(const int                         Index,
                          NCollection_Array1<int>&          NewMults,
                          const double                      Tolerance)
 {
-  bool rational = Weights != NULL;
+  bool rational = Weights != nullptr;
   int  dim;
   dim = Dimension;
   if (rational)
+  {
     dim++;
+  }
 
   NCollection_Array1<double> poles(1, dim * Poles.Length());
   NCollection_Array1<double> newpoles(1, dim * NewPoles.Length());
 
   if (rational)
+  {
     PLib::SetPoles(Poles, *Weights, poles);
+  }
   else
+  {
     PLib::SetPoles(Poles, poles);
+  }
 
   if (!BSplCLib::RemoveKnot(Index,
                             Mult,
@@ -341,12 +347,18 @@ bool BSplCLib_RemoveKnot(const int                         Index,
                             NewKnots,
                             NewMults,
                             Tolerance))
+  {
     return false;
+  }
 
   if (rational)
+  {
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
+  }
   else
+  {
     PLib::GetPoles(newpoles, NewPoles);
+  }
   return true;
 }
 
@@ -381,19 +393,25 @@ void BSplCLib_InsertKnots(const int                         Degree,
                           const double                      Epsilon,
                           const bool                        Add)
 {
-  bool rational = Weights != NULL;
+  bool rational = Weights != nullptr;
   int  dim;
   dim = Dimension;
   if (rational)
+  {
     dim++;
+  }
 
   NCollection_Array1<double> poles(1, dim * Poles.Length());
   NCollection_Array1<double> newpoles(1, dim * NewPoles.Length());
 
   if (rational)
+  {
     PLib::SetPoles(Poles, *Weights, poles);
+  }
   else
+  {
     PLib::SetPoles(Poles, poles);
+  }
 
   BSplCLib::InsertKnots(Degree,
                         Periodic,
@@ -410,9 +428,13 @@ void BSplCLib_InsertKnots(const int                         Degree,
                         Add);
 
   if (rational)
+  {
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
+  }
   else
+  {
     PLib::GetPoles(newpoles, NewPoles);
+  }
 }
 
 // Inserts a single knot into the B-spline curve
@@ -525,19 +547,25 @@ void BSplCLib_IncreaseDegree(const int                         Degree,
                              NCollection_Array1<double>&       NewKnots,
                              NCollection_Array1<int>&          NewMults)
 {
-  bool rational = Weights != NULL;
+  bool rational = Weights != nullptr;
   int  dim;
   dim = Dimension;
   if (rational)
+  {
     dim++;
+  }
 
   NCollection_Array1<double> poles(1, dim * Poles.Length());
   NCollection_Array1<double> newpoles(1, dim * NewPoles.Length());
 
   if (rational)
+  {
     PLib::SetPoles(Poles, *Weights, poles);
+  }
   else
+  {
     PLib::SetPoles(Poles, poles);
+  }
 
   BSplCLib::IncreaseDegree(Degree,
                            NewDegree,
@@ -551,9 +579,13 @@ void BSplCLib_IncreaseDegree(const int                         Degree,
                            NewMults);
 
   if (rational)
+  {
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
+  }
   else
+  {
     PLib::GetPoles(newpoles, NewPoles);
+  }
 }
 
 // Converts a periodic B-spline curve to non-periodic
@@ -577,26 +609,36 @@ void BSplCLib_Unperiodize(const int                         Degree,
                           Array1OfPoints&                   NewPoles,
                           NCollection_Array1<double>*       NewWeights)
 {
-  bool rational = Weights != NULL;
+  bool rational = Weights != nullptr;
   int  dim;
   dim = Dimension;
   if (rational)
+  {
     dim++;
+  }
 
   NCollection_Array1<double> poles(1, dim * Poles.Length());
   NCollection_Array1<double> newpoles(1, dim * NewPoles.Length());
 
   if (rational)
+  {
     PLib::SetPoles(Poles, *Weights, poles);
+  }
   else
+  {
     PLib::SetPoles(Poles, poles);
+  }
 
   BSplCLib::Unperiodize(Degree, dim, Mults, Knots, poles, NewMults, NewKnots, newpoles);
 
   if (rational)
+  {
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
+  }
   else
+  {
     PLib::GetPoles(newpoles, NewPoles);
+  }
 }
 
 // Trims the B-spline curve to a parameter range
@@ -626,19 +668,25 @@ void BSplCLib_Trimming(const int                         Degree,
                        Array1OfPoints&                   NewPoles,
                        NCollection_Array1<double>*       NewWeights)
 {
-  bool rational = Weights != NULL;
+  bool rational = Weights != nullptr;
   int  dim;
   dim = Dimension;
   if (rational)
+  {
     dim++;
+  }
 
   NCollection_Array1<double> poles(1, dim * Poles.Length());
   NCollection_Array1<double> newpoles(1, dim * NewPoles.Length());
 
   if (rational)
+  {
     PLib::SetPoles(Poles, *Weights, poles);
+  }
   else
+  {
     PLib::SetPoles(Poles, poles);
+  }
 
   BSplCLib::Trimming(Degree,
                      Periodic,
@@ -653,9 +701,13 @@ void BSplCLib_Trimming(const int                         Degree,
                      newpoles);
 
   if (rational)
+  {
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
+  }
   else
+  {
     PLib::GetPoles(newpoles, NewPoles);
+  }
 }
 
 // Builds the local array for B-spline evaluation
@@ -678,13 +730,15 @@ void BSplCLib_BuildEval(const int                         Degree,
   int    PUpper = Poles.Upper();
   int    i;
   int    ip = PLower + Index - 1;
-  if (Weights == NULL)
+  if (Weights == nullptr)
   {
     for (i = 0; i <= Degree; i++)
     {
       ip++;
       if (ip > PUpper)
+      {
         ip = PLower;
+      }
       const Point& P = Poles(ip);
       Traits::PointToCoords(pole, P, 0);
       pole += Dimension;
@@ -696,7 +750,9 @@ void BSplCLib_BuildEval(const int                         Degree,
     {
       ip++;
       if (ip > PUpper)
+      {
         ip = PLower;
+      }
       const Point& P  = Poles(ip);
       pole[Dimension] = w = (*Weights)(ip);
       Traits::PointToCoordsScaled(pole, P, w);
@@ -735,13 +791,17 @@ static void PrepareEval_T(double&                              u,
 
   // make the knots
   BSplCLib::BuildKnots(Degree, index, Periodic, Knots, Mults, *dc.knots);
-  if (Mults == NULL)
+  if (Mults == nullptr)
+  {
     index -= Knots.Lower() + Degree;
+  }
   else
+  {
     index = BSplCLib::PoleIndex(Degree, index, Periodic, *Mults);
+  }
 
   // check truly rational
-  rational = (Weights != NULL);
+  rational = (Weights != nullptr);
   if (rational)
   {
     int WLower = Weights->Lower() + index;
@@ -816,7 +876,9 @@ void BSplCLib_D0(const double                      U,
     Traits::CoordsToPointScaled(P, dc.poles, w);
   }
   else
+  {
     Traits::CoordsToPointDirect(P, dc.poles);
+  }
 }
 
 // Evaluates the point and first derivative on the B-spline curve at parameter U
@@ -926,9 +988,13 @@ void BSplCLib_D2(const double                      U,
   Traits::CoordsToPointDirect(P, result);
   Traits::CoordsToVectorDirect(V1, result + Dimension);
   if (!rational && (Degree < 2))
+  {
     Traits::NullifyVector(V2);
+  }
   else
+  {
     Traits::CoordsToVectorDirect(V2, result + 2 * Dimension);
+  }
 }
 
 // Evaluates the point and first three derivatives on the B-spline curve at parameter U
@@ -987,13 +1053,21 @@ void BSplCLib_D3(const double                      U,
   Traits::CoordsToPointDirect(P, result);
   Traits::CoordsToVectorDirect(V1, result + Dimension);
   if (!rational && (Degree < 2))
+  {
     Traits::NullifyVector(V2);
+  }
   else
+  {
     Traits::CoordsToVectorDirect(V2, result + 2 * Dimension);
+  }
   if (!rational && (Degree < 3))
+  {
     Traits::NullifyVector(V3);
+  }
   else
+  {
     Traits::CoordsToVectorDirect(V3, result + 3 * Dimension);
+  }
 }
 
 // Evaluates the Nth derivative on the B-spline curve at parameter U
@@ -1048,7 +1122,9 @@ void BSplCLib_DN(const double                      U,
   else
   {
     if (N > Degree)
+    {
       Traits::NullifyVector(VN);
+    }
     else
     {
       double* DN = dc.poles + N * Dimension;
@@ -1173,7 +1249,9 @@ void BSplCLib_Eval(const double                      Parameter,
   }
 
   for (kk = 0; kk < Dimension; kk++)
+  {
     aPoint.SetCoord(kk + 1, P[kk]);
+  }
 }
 
 // Evaluates the point on cached B-spline curve at parameter
@@ -1205,7 +1283,7 @@ void BSplCLib_CacheD0(const double                      Parameter,
                                    Degree * Dimension,
                                    PArray[0],
                                    myPoint[0]);
-  if (WeightsArray != NULL)
+  if (WeightsArray != nullptr)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
     double*                           WArray     = (double*)&refWeights(refWeights.Lower());
@@ -1248,7 +1326,7 @@ void BSplCLib_CacheD1(const double                      Parameter,
 
   Traits::ModifyCoordsDivide(LocalPDerivatives + Dimension, SpanLenght);
 
-  if (WeightsArray != NULL)
+  if (WeightsArray != nullptr)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
     double*                           WArray     = (double*)&refWeights(refWeights.Lower());
@@ -1318,7 +1396,7 @@ void BSplCLib_CacheD2(const double                      Parameter,
     Index += Dimension;
   }
 
-  if (WeightsArray != NULL)
+  if (WeightsArray != nullptr)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
     double*                           WArray     = (double*)&refWeights(refWeights.Lower());
@@ -1403,7 +1481,7 @@ void BSplCLib_CacheD3(const double                      Parameter,
     Index += Dimension;
   }
 
-  if (WeightsArray != NULL)
+  if (WeightsArray != nullptr)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
     double*                           WArray     = (double*)&refWeights(refWeights.Lower());
@@ -1510,10 +1588,12 @@ void BSplCLib_BuildCache(const double                      U,
       LocalValue *= SpanDomain / (double)ii;
     }
 
-    if (Weights != NULL)
+    if (Weights != nullptr)
     {
       for (ii = 1; ii <= Degree + 1; ii++)
+      {
         (*CacheWeights)(ii) = 0.0e0;
+      }
       (*CacheWeights)(1) = 1.0e0;
     }
   }
@@ -1559,7 +1639,7 @@ void BSplCLib_BuildCache(const double                      theParameter,
                                                           (BSplCLib::NoMults()),
                                                           dc);
 
-  int aCacheShift = (theWeights != NULL && !isRational) ? aDimension + 1 : aDimension;
+  int aCacheShift = (theWeights != nullptr && !isRational) ? aDimension + 1 : aDimension;
 
   BSplCLib::Bohm(aParam, theDegree, theDegree, *dc.knots, aDimension, *dc.poles);
 
@@ -1570,7 +1650,9 @@ void BSplCLib_BuildCache(const double                      theParameter,
   for (int i = 0; i <= theDegree; i++)
   {
     for (int j = 0; j < aDimension; j++)
+    {
       aCache[j] = aPolyCoeffs[j] * aCoeff;
+    }
     aCoeff *= theSpanDomain / (i + 1);
     aPolyCoeffs += aDimension;
     aCache += aDimension;
@@ -1582,9 +1664,11 @@ void BSplCLib_BuildCache(const double                      theParameter,
   }
 
   if (aCacheShift > aDimension)
+  {
     theCacheArray.SetValue(theCacheArray.LowerRow(),
                            theCacheArray.LowerCol() + aCacheShift - 1,
                            1.0);
+  }
 }
 
 // Interpolates points to create a B-spline curve
@@ -1692,9 +1776,13 @@ void BSplCLib_MovePoint(const double                      U,
   FirstIndex = FirstNonZeroBsplineIndex;
   LastIndex  = FirstNonZeroBsplineIndex + Degree;
   if (FirstIndex < Index1)
+  {
     FirstIndex = Index1;
+  }
   if (LastIndex > Index2)
+  {
     LastIndex = Index2;
+  }
 
   double maxValue = 0.0;
   int    i, kk1 = 0, kk2, ii;
@@ -1728,7 +1816,7 @@ void BSplCLib_MovePoint(const double                      U,
   for (i = 1; i <= Degree + 1; i++)
   {
     ii = i + FirstNonZeroBsplineIndex - 1;
-    if (Weights != NULL)
+    if (Weights != nullptr)
     {
       hN = Weights->Value(ii) * BSplineBasis(1, i);
       D2 += hN;
@@ -1755,7 +1843,7 @@ void BSplCLib_MovePoint(const double                      U,
     }
   }
 
-  if (Weights != NULL)
+  if (Weights != nullptr)
   {
     Coef = D2 / D1;
   }

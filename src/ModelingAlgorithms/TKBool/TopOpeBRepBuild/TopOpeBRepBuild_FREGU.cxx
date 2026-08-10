@@ -60,7 +60,9 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&               
 
   int nr = myMemoSplit.Extent();
   if (nr == 0)
+  {
     return;
+  }
 
   // lfsdFF = faces SameDomain de FF
   NCollection_List<TopoDS_Shape> lfsdFF, lfsdFF1, lfsdFF2;
@@ -91,11 +93,15 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&               
 
         TopAbs_State stae = staeope;
         if (iiista == 2)
+        {
           stae = TopAbs_ON;
+        }
 
         bool issplite = IsSplit(e, stae);
         if (!issplite)
+        {
           continue;
+        }
 
         NCollection_List<TopoDS_Shape>& lspe = ChangeSplit(e, stae);
 #ifdef OCCT_DEBUG
@@ -107,7 +113,9 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&               
           const TopoDS_Shape& esp     = itl1.Value();
           bool                espmemo = myMemoSplit.Contains(esp);
           if (!espmemo)
+          {
             newlspe.Append(esp);
+          }
           else
           {
             const NCollection_List<TopoDS_Shape>& lspesp = Splits(esp, stae);
@@ -248,7 +256,9 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
   // LOF = nouvelles faces regularisees de newFace
   NCollection_List<TopoDS_Shape>::Iterator itlnf(newfaces);
   for (; itlnf.More(); itlnf.Next())
+  {
     LOF.Append(TopoDS::Face(itlnf.Value()));
+  }
 
   // mise a jour des aretes decoupees
   // Edge(FF) = {E}, E-->Split(E) = {E'}, E'-->myESplits(E') = {E''}
@@ -310,7 +320,9 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
       {
         TopAbs_State stafsdFFe = stafsdFF;
         if (iiista == 2)
+        {
           stafsdFFe = TopAbs_ON;
+        }
 
         NCollection_List<TopoDS_Shape>& lspfsdFFe = ChangeSplit(fsdFFe, stafsdFFe);
 #ifdef OCCT_DEBUG
@@ -326,7 +338,9 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
           const TopoDS_Shape& espfsdFFe = it.Value();
           bool                inmenf    = menf.Contains(espfsdFFe);
           if (!inmenf)
+          {
             continue;
+          }
 
           // fsdFFe (Cf supra E) a ete splittee, espfdsFFe = arete splittee de fsdFFe
           // espfsdFFe est une arete de Split(fsdFFe) ET figure dans newFace (Cf supra E')

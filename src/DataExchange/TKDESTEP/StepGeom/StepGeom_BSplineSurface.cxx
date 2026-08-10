@@ -83,14 +83,18 @@ occ::handle<StepGeom_CartesianPoint> StepGeom_BSplineSurface::ControlPointsListV
 int StepGeom_BSplineSurface::NbControlPointsListI() const
 {
   if (controlPointsList.IsNull())
+  {
     return 0;
+  }
   return controlPointsList->UpperRow() - controlPointsList->LowerRow() + 1;
 }
 
 int StepGeom_BSplineSurface::NbControlPointsListJ() const
 {
   if (controlPointsList.IsNull())
+  {
     return 0;
+  }
   return controlPointsList->UpperCol() - controlPointsList->LowerCol() + 1;
 }
 

@@ -76,13 +76,19 @@ bool Geom2d_BSplineCurve::IsG1(const double theTf, const double theTl, const dou
     const double aTpar = Knot(aNKnot);
 
     if (aTpar < theTf)
+    {
       continue;
+    }
     if (aTpar > theTl)
+    {
       break;
+    }
 
     int mult = Multiplicity(aNKnot);
     if (mult < aDeg)
+    {
       continue;
+    }
 
     gp_Pnt2d aP1, aP2;
     gp_Vec2d aV1, aV2;
@@ -95,11 +101,15 @@ bool Geom2d_BSplineCurve::IsG1(const double theTf, const double theTl, const dou
     }
 
     if (std::abs(aV1.Angle(aV2)) > theAngTol)
+    {
       return false;
+    }
   }
 
   if (!IsPeriodic())
+  {
     return true;
+  }
 
   const double aFirstParam = FirstParameter(), aLastParam = LastParameter();
 
@@ -125,7 +135,9 @@ bool Geom2d_BSplineCurve::IsG1(const double theTf, const double theTl, const dou
   }
 
   if (std::abs(aV1.Angle(aV2)) > theAngTol)
+  {
     return false;
+  }
 
   return true;
 }
@@ -174,7 +186,9 @@ gp_Pnt2d Geom2d_BSplineCurve::EvalD0(const double U) const
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots.Value(aSpanIndex))
+  {
     aSpanIndex--;
+  }
 
   BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P);
   return P;
@@ -196,7 +210,9 @@ Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots.Value(aSpanIndex))
+  {
     aSpanIndex--;
+  }
 
   BSplCLib::D1(aNewU,
                aSpanIndex,
@@ -227,7 +243,9 @@ Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots.Value(aSpanIndex))
+  {
     aSpanIndex--;
+  }
 
   BSplCLib::D2(aNewU,
                aSpanIndex,
@@ -259,7 +277,9 @@ Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots.Value(aSpanIndex))
+  {
     aSpanIndex--;
+  }
 
   BSplCLib::D3(aNewU,
                aSpanIndex,
@@ -281,7 +301,9 @@ Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
 gp_Vec2d Geom2d_BSplineCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative();
+  }
 
   gp_Vec2d aEvalRepResult;
   if (Geom2dEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
@@ -299,9 +321,13 @@ gp_Vec2d Geom2d_BSplineCurve::EvalDN(const double U, const int N) const
 gp_Pnt2d Geom2d_BSplineCurve::EndPoint() const
 {
   if (myMults.Value(myKnots.Upper()) == myDeg + 1)
+  {
     return myPoles.Value(myPoles.Upper());
+  }
   else
+  {
     return Value(LastParameter());
+  }
 }
 
 //=================================================================================================
@@ -309,9 +335,13 @@ gp_Pnt2d Geom2d_BSplineCurve::EndPoint() const
 int Geom2d_BSplineCurve::FirstUKnotIndex() const
 {
   if (myPeriodic)
+  {
     return 1;
+  }
   else
+  {
     return BSplCLib::FirstUKnotIndex(myDeg, myMults);
+  }
 }
 
 //=================================================================================================
@@ -343,7 +373,9 @@ void Geom2d_BSplineCurve::Knots(NCollection_Array1<double>& K) const
   Standard_DomainError_Raise_if(K.Lower() < myKnots.Lower() || K.Upper() > myKnots.Upper(),
                                 "Geom2d_BSplineCurve::Knots");
   for (int anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
+  {
     K(anIdx) = myKnots.Value(anIdx);
+  }
 }
 
 const NCollection_Array1<double>& Geom2d_BSplineCurve::Knots() const
@@ -358,7 +390,9 @@ void Geom2d_BSplineCurve::KnotSequence(NCollection_Array1<double>& K) const
   Standard_DomainError_Raise_if(K.Lower() < myFlatKnots.Lower() || K.Upper() > myFlatKnots.Upper(),
                                 "Geom2d_BSplineCurve::KnotSequence");
   for (int anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
+  {
     K(anIdx) = myFlatKnots.Value(anIdx);
+  }
 }
 
 const NCollection_Array1<double>& Geom2d_BSplineCurve::KnotSequence() const
@@ -371,9 +405,13 @@ const NCollection_Array1<double>& Geom2d_BSplineCurve::KnotSequence() const
 int Geom2d_BSplineCurve::LastUKnotIndex() const
 {
   if (myPeriodic)
+  {
     return myKnots.Length();
+  }
   else
+  {
     return BSplCLib::LastUKnotIndex(myDeg, myMults);
+  }
 }
 
 //=================================================================================================
@@ -595,9 +633,13 @@ const NCollection_Array1<gp_Pnt2d>& Geom2d_BSplineCurve::Poles() const
 gp_Pnt2d Geom2d_BSplineCurve::StartPoint() const
 {
   if (myMults.Value(1) == myDeg + 1)
+  {
     return myPoles.Value(1);
+  }
   else
+  {
     return Value(FirstParameter());
+  }
 }
 
 //=================================================================================================
@@ -607,9 +649,13 @@ double Geom2d_BSplineCurve::Weight(const int Index) const
   Standard_OutOfRange_Raise_if(Index < 1 || Index > myPoles.Length(),
                                "Geom2d_BSplineCurve::Weight");
   if (IsRational())
+  {
     return myWeights.Value(Index);
+  }
   else
+  {
     return 1.;
+  }
 }
 
 //=================================================================================================
@@ -618,19 +664,25 @@ void Geom2d_BSplineCurve::Weights(NCollection_Array1<double>& W) const
 {
   Standard_DimensionError_Raise_if(W.Length() != myPoles.Length(), "Geom2d_BSplineCurve::Weights");
   if (IsRational())
+  {
     W = myWeights;
+  }
   else
   {
     int i;
     for (i = W.Lower(); i <= W.Upper(); i++)
+    {
       W(i) = 1.;
+    }
   }
 }
 
 const NCollection_Array1<double>* Geom2d_BSplineCurve::Weights() const
 {
   if (IsRational())
+  {
     return &myWeights;
+  }
   return BSplCLib::NoWeights();
 }
 
@@ -646,7 +698,9 @@ bool Geom2d_BSplineCurve::IsRational() const
 void Geom2d_BSplineCurve::Transform(const gp_Trsf2d& T)
 {
   for (int I = 1; I <= myPoles.Length(); I++)
+  {
     myPoles(I).Transform(T);
+  }
 
   myMaxDerivInvOk = false;
 }

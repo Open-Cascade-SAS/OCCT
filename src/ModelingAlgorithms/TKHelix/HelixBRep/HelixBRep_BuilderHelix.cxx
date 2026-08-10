@@ -184,7 +184,9 @@ void HelixBRep_BuilderHelix::Perform()
 {
 
   if (myErrorStatus != 0)
+  {
     return;
+  }
 
   int i;
 
@@ -225,7 +227,9 @@ void HelixBRep_BuilderHelix::Perform()
 
     BuildPart(anAxis, aPStart, aHeight, aPitch, aTaperAngle, bIsClockwise, aPart);
     if (myErrorStatus != 0)
+    {
       return;
+    }
 
     TopoDS_Vertex V1, V2;
 
@@ -264,7 +268,9 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1& theAxis,
 {
 
   if (myErrorStatus != 0)
+  {
     return;
+  }
 
   myErrorStatus   = 0;
   myWarningStatus = 0;
@@ -415,7 +421,9 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1& theAxis,
   }
   //
   if (myTolReached > myTolerance)
+  {
     myWarningStatus = 1;
+  }
 }
 
 //=================================================================================================
@@ -423,7 +431,9 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1& theAxis,
 void HelixBRep_BuilderHelix::Smoothing(NCollection_List<TopoDS_Shape>& theParts)
 {
   if (theParts.Extent() == 1)
+  {
     return;
+  }
 
   BRepTools_WireExplorer anExpl;
 
@@ -476,7 +486,9 @@ void HelixBRep_BuilderHelix::SmoothingEdges(TopoDS_Edge& thePrev, TopoDS_Edge& t
   aCNext->D1(f2, P2, V2);
 
   if (V1.Angle(V2) < EpsAng)
+  {
     return;
+  }
 
   V1 = 0.5 * (V1 + V2);
   V2 = V1;

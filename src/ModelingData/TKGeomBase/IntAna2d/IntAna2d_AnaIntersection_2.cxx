@@ -180,7 +180,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     nbp  = 1;
     gp_Vec2d ax(C1.Location(), C2.Location());
     if (C1.Radius() < C2.Radius())
+    {
       ax.Reverse();
+    }
 
     gp_Vec2d Ox1(C1.XAxis().Direction());
     gp_Vec2d Ox2(C2.XAxis().Direction());

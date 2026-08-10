@@ -231,7 +231,9 @@ TEST(BVH_BuildQueueTest, ConcurrentFetch)
       {
         int aItem = aQueue.Fetch(wasBusy);
         if (aItem == -1)
+        {
           break;
+        }
         aFetchedCounts[t]++;
       }
     });

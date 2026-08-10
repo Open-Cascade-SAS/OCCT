@@ -49,7 +49,9 @@ void StepBasic_ProductDefinitionRelationship::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theRelatingProductDefinition.SetValue(aRelatingProductDefinition);
 
@@ -75,7 +77,9 @@ void StepBasic_ProductDefinitionRelationship::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
   theRelatingProductDefinition = aRelatingProductDefinition;
   theRelatedProductDefinition  = aRelatedProductDefinition;
 }

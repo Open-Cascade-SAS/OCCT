@@ -128,7 +128,9 @@ IGESToBRep_Reader::IGESToBRep_Reader()
 int IGESToBRep_Reader::LoadFile(const char* const filename)
 {
   if (theProc.IsNull())
+  {
     theProc = new Transfer_TransientProcess;
+  }
   occ::handle<Message_Messenger> TF = theProc->Messenger();
 
   // Message for Diagnostic file.
@@ -221,11 +223,17 @@ int IGESToBRep_Reader::LoadFile(const char* const filename)
   int    minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
+  {
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
+  }
   else if (minute > 0)
+  {
     Sprintf(t, "%dm:%.2fs", minute, second);
+  }
   else
+  {
     Sprintf(t, "%.2fs", second);
+  }
   // Sending of message : End of Loading
   Msg8.Arg(t);
   TF->Send(Msg8, Message_Info);
@@ -242,9 +250,13 @@ void IGESToBRep_Reader::SetModel(const occ::handle<IGESData_IGESModel>& model)
   theDone  = false;
   theShapes.Clear();
   if (theProc.IsNull())
+  {
     theProc = new Transfer_TransientProcess(theModel->NbEntities());
+  }
   else
+  {
     theProc->Clear();
+  }
 }
 
 //=============================================================================
@@ -310,7 +322,9 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
                                       const Message_ProgressRange& theProgress)
 {
   if (theModel.IsNull() || theProc.IsNull())
+  {
     return;
+  }
 
   occ::handle<Message_Messenger> TF = theProc->Messenger();
   // Declaration of messages.
@@ -365,7 +379,9 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
     Message_ProgressRange            aRange = PS.Next();
     occ::handle<IGESData_IGESEntity> ent    = theModel->Entity(i);
     if (SH.IsShared(ent) || !theActor->Recognize(ent))
+    {
       continue;
+    }
     if (level > 0)
     {
       Message_Msg msg2070("IGES_2070");
@@ -416,11 +432,17 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
   int    minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
+  {
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
+  }
   else if (minute > 0)
+  {
     Sprintf(t, "%dm:%.2fs", minute, second);
+  }
   else
+  {
     Sprintf(t, "%.2fs", second);
+  }
   // Sending of message : End of Loading
   msg2065.Arg(t);
   TF->Send(msg2065, Message_Info);
@@ -466,7 +488,9 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
   msg2035.Arg(Ival);
   TF->Send(msg2035, Message_Info);
   if (Ival == 0)
+  {
     eps = theModel->GlobalSection().Resolution();
+  }
   else
   {
     // mjm : modif du 19/12/97 pour prise en compte effective du parametre
@@ -489,7 +513,9 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
   CAS.SetSurfaceCurve(Ival);
 
   if (eps > 1.E-08)
+  {
     CAS.SetEpsGeom(eps);
+  }
   CAS.SetTransferProcess(theProc);
 
   bool         exceptionRaised = false;
@@ -501,7 +527,9 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
       OCC_CATCH_SIGNALS
       shape = CAS.TransferGeometry(ent, aPS.Next());
       if (aPS.UserBreak())
+      {
         return false;
+      }
     }
     catch (Standard_Failure const&)
     {
@@ -558,11 +586,17 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
   int    minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
+  {
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
+  }
   else if (minute > 0)
+  {
     Sprintf(t, "%dm:%.2fs", minute, second);
+  }
   else
+  {
     Sprintf(t, "%.2fs", second);
+  }
   // Sending of message : End of Loading
   msg2065.Arg(t);
   TF->Send(msg2065, Message_Info);
@@ -589,7 +623,9 @@ TopoDS_Shape IGESToBRep_Reader::Shape(const int num) const
 {
   TopoDS_Shape res;
   if (num > 0 && num <= theShapes.Length())
+  {
     res = theShapes.Value(num);
+  }
   return res;
 }
 
@@ -600,16 +636,22 @@ TopoDS_Shape IGESToBRep_Reader::OneShape() const
   TopoDS_Shape res;
   int          nb = theShapes.Length();
   if (nb == 0)
+  {
     return res;
+  }
   else if (nb == 1)
+  {
     return theShapes.Value(1);
+  }
   else
   {
     TopoDS_Compound C;
     BRep_Builder    B;
     B.MakeCompound(C);
     for (int i = 1; i <= nb; i++)
+    {
       B.Add(C, theShapes.Value(i));
+    }
     return C;
   }
 }

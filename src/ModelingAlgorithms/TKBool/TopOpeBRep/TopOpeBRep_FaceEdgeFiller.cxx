@@ -48,7 +48,9 @@ void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                      
   // exit if no point.
   FEINT.InitPoint();
   if (!FEINT.MorePoint())
+  {
     return;
+  }
 
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 
@@ -97,7 +99,9 @@ void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                      
       NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itEIL1(EIL1);
       EPIfound = GetGeometry(itEIL1, FEINT, DSPindex, BDS);
       if (!EPIfound)
+      {
         DSPindex = MakeGeometry(FEINT, BDS);
+      }
 
       // sur FF
       // NYI : FacePointInterference : on ajoute un point INTERNAL a F
@@ -190,7 +194,9 @@ bool TopOpeBRep_FaceEdgeFiller::ScanInterfList(
     int                       DSPG     = IT.Value()->Geometry();
     const TopOpeBRepDS_Point& otherDSP = BDS.Point(DSPG);
     if (TopOpeBRep_PointGeomTool::IsEqual(DSP, otherDSP))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -206,7 +212,9 @@ bool TopOpeBRep_FaceEdgeFiller::GetGeometry(
   TopOpeBRepDS_Point DSP   = TopOpeBRep_PointGeomTool::MakePoint(FEINT);
   bool               found = ScanInterfList(IT, DSP, BDS);
   if (found)
+  {
     G = IT.Value()->Geometry();
+  }
   return found;
 }
 
@@ -221,9 +229,13 @@ bool TopOpeBRep_FaceEdgeFiller::GetGeometry(
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI(L);
   bool Ifound = ScanInterfList(itI, DSP, BDS);
   if (Ifound)
+  {
     G = itI.Value()->Geometry();
+  }
   else
+  {
     G = BDS.AddPoint(DSP);
+  }
   return Ifound; // interference found or not
 }
 
@@ -288,11 +300,17 @@ int TopOpeBRep_FaceEdgeFiller::MakeGeometry(TopOpeBRep_FaceEdgeIntersector& FEIN
   if (isvertex)
   {
     if (isvertexF)
+    {
       G = BDS.AddShape(V1, 1);
+    }
     else if (isvertexE)
+    {
       G = BDS.AddShape(V2, 2);
+    }
   }
   else
+  {
     G = BDS.AddPoint(TopOpeBRep_PointGeomTool::MakePoint(FEINT));
+  }
   return G;
 }

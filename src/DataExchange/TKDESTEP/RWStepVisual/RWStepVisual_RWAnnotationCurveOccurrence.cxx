@@ -35,7 +35,9 @@ void RWStepVisual_RWAnnotationCurveOccurrence::ReadStep(
 
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "styled_item"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -57,7 +59,9 @@ void RWStepVisual_RWAnnotationCurveOccurrence::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anent2))
+      {
         aStyles->SetValue(i2, anent2);
+      }
     }
   }
 

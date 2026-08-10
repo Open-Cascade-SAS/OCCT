@@ -85,9 +85,13 @@ void AIS_Circle::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelec
 {
 
   if (myCircleIsArc)
+  {
     ComputeArcSelection(aSelection);
+  }
   else
+  {
     ComputeCircleSelection(aSelection);
+  }
 }
 
 //=================================================================================================
@@ -144,9 +148,13 @@ void AIS_Circle::SetWidth(const double aValue)
   {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if (HasColor())
+    {
       CC = myDrawer->Color();
+    }
     else if (myDrawer->HasLink())
+    {
       AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);
+    }
     replaceWithNewLineAspect(new Prs3d_LineAspect(CC, Aspect_TOL_SOLID, aValue));
   }
   else
@@ -170,9 +178,13 @@ void AIS_Circle::UnsetColor()
   {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if (HasColor())
+    {
       CC = myDrawer->Color();
+    }
     else if (myDrawer->HasLink())
+    {
       AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);
+    }
     myDrawer->LineAspect()->SetColor(CC);
     myDrawer->SetColor(CC);
     SynchronizeAspects();

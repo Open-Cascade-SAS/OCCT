@@ -15,6 +15,7 @@
 
 #include <BRepMesh_DelabellaBaseMeshAlgo.hxx>
 
+#include <NCollection_LinearVector.hxx>
 #include <BRepMesh_MeshTool.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <Message.hxx>
@@ -71,9 +72,10 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 {
   const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
 
-  Bnd_B2d             aBox;
-  const int           aNodesNb = aStructure->NbNodes();
-  std::vector<double> aPoints(2 * (aNodesNb + 4));
+  Bnd_B2d                          aBox;
+  const int                        aNodesNb = aStructure->NbNodes();
+  NCollection_LinearVector<double> aPoints;
+  aPoints.Resize(2 * (aNodesNb + 4));
   for (int aNodeIt = 0; aNodeIt < aNodesNb; ++aNodeIt)
   {
     const BRepMesh_Vertex& aVertex = aStructure->GetNode(aNodeIt + 1);
@@ -111,7 +113,7 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 
   const double aDiffX = (aMax.X() - aMin.X());
   const double aDiffY = (aMax.Y() - aMin.Y());
-  for (size_t i = 0; i < aPoints.size(); i += 2)
+  for (size_t i = 0; i < aPoints.Size(); i += 2)
   {
     aPoints[i + 0] = (aPoints[i + 0] - aMin.X()) / aDiffX - 0.5;
     aPoints[i + 1] = (aPoints[i + 1] - aMin.Y()) / aDiffY - 0.5;
@@ -127,7 +129,7 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
   aTriangulator->SetErrLog(logDelabella2Occ, nullptr);
   try
   {
-    const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.size() / 2),
+    const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.Size() / 2),
                                                        &aPoints[0],
                                                        &aPoints[1],
                                                        2 * sizeof(double));

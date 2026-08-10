@@ -75,7 +75,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myLowerLimitYaw = theLowerLimitYaw;
   }
   else
+  {
     myLowerLimitYaw = 0;
+  }
 
   defUpperLimitYaw = hasUpperLimitYaw;
   if (defUpperLimitYaw)
@@ -83,7 +85,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myUpperLimitYaw = theUpperLimitYaw;
   }
   else
+  {
     myUpperLimitYaw = 0;
+  }
 
   defLowerLimitPitch = hasLowerLimitPitch;
   if (defLowerLimitPitch)
@@ -91,7 +95,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myLowerLimitPitch = theLowerLimitPitch;
   }
   else
+  {
     myLowerLimitPitch = 0;
+  }
 
   defUpperLimitPitch = hasUpperLimitPitch;
   if (defUpperLimitPitch)
@@ -99,7 +105,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myUpperLimitPitch = theUpperLimitPitch;
   }
   else
+  {
     myUpperLimitPitch = 0;
+  }
 
   defLowerLimitRoll = hasLowerLimitRoll;
   if (defLowerLimitRoll)
@@ -107,7 +115,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myLowerLimitRoll = theLowerLimitRoll;
   }
   else
+  {
     myLowerLimitRoll = 0;
+  }
 
   defUpperLimitRoll = hasUpperLimitRoll;
   if (defUpperLimitRoll)
@@ -115,7 +125,9 @@ void StepKinematics_PointOnPlanarCurvePairWithRange::Init(
     myUpperLimitRoll = theUpperLimitRoll;
   }
   else
+  {
     myUpperLimitRoll = 0;
+  }
 }
 
 //=================================================================================================

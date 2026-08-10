@@ -78,13 +78,17 @@ void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDi
                         "Instance of views",
                         STANDARD_TYPE(IGESData_ViewKindEntity),
                         tempView))
+      {
         views->SetValue(i, tempView);
+      }
 
       // Reading textLocations(HArray1OfXYZ)
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), "array textLocations", tempXYZ);
       // //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadXYZ(PR.CurrentList(1, 3), "array textLocations", tempXYZ))
+      {
         textLocations->SetValue(i, tempXYZ);
+      }
 
       // Reading leaderEntities(HArray1OfLeaderArrow)
       // st = PR.ReadEntity (IR, PR.Current(), "Instance of LeaderArrow",
@@ -94,23 +98,31 @@ void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDi
                         "Instance of LeaderArrow",
                         STANDARD_TYPE(IGESDimen_LeaderArrow),
                         tempLeaderArrow))
+      {
         leaderEntities->SetValue(i, tempLeaderArrow);
+      }
 
       // Reading labelLevels(HArray1OfInteger)
       // st = PR.ReadInteger(PR.Current(), "array labelLevels", tempLabel); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "array labelLevels", tempLabel))
+      {
         labelLevels->SetValue(i, tempLabel);
+      }
 
       // Reading displayedEntities(HArray1OfIGESEntity)
       // st = PR.ReadEntity (IR, PR.Current(), "displayedEntities entity",
       // tempDisplayedEntity); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadEntity(IR, PR.Current(), "displayedEntities entity", tempDisplayedEntity))
+      {
         displayedEntities->SetValue(i, tempDisplayedEntity);
+      }
     }
   }
   else
+  {
     PR.AddFail("No. of Label placements : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(views, textLocations, leaderEntities, labelLevels, displayedEntities);
@@ -233,5 +245,5 @@ void IGESDraw_ToolLabelDisplay::OwnDump(const occ::handle<IGESDraw_LabelDisplay>
       S << "\n";
     }
   }
-  S << std::endl;
+  S << '\n';
 }

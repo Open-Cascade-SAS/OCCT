@@ -425,17 +425,25 @@ void GCPnts_TangentialDeflection::initialize(const TheCurve& theC,
     case GeomAbs_BSplineCurve: {
       Handle(typename GCPnts_TCurveTypes<TheCurve>::BSplineCurve) aBS = theC.BSpline();
       if (aBS->NbPoles() == 2)
+      {
         PerformLinear(theC);
+      }
       else
+      {
         PerformCurve(theC);
+      }
       break;
     }
     case GeomAbs_BezierCurve: {
       Handle(typename GCPnts_TCurveTypes<TheCurve>::BezierCurve) aBZ = theC.Bezier();
       if (aBZ->NbPoles() == 2)
+      {
         PerformLinear(theC);
+      }
       else
+      {
         PerformCurve(theC);
+      }
       break;
     }
     default: {
@@ -500,7 +508,9 @@ double GCPnts_TangentialDeflection::ArcAngularStep(const double theRadius,
 
     // It is not suitable to consider min size greater than 1/4 arc len.
     if (theMinLength > aPrecision)
+    {
       aMinSizeAng = std::min(theMinLength / theRadius, M_PI_2);
+    }
   }
   Du = 2.0 * std::acos(Du);
   Du = std::max(std::min(Du, theAngularDeflection), aMinSizeAng);
@@ -640,9 +650,13 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
   }
 
   if (Du > Dusave)
+  {
     Du = Dusave;
+  }
   else
+  {
     Dusave = Du;
+  }
 
   if (Du < myUTol)
   {
@@ -821,9 +835,13 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
           {
             Du += (Du - Dusave) * (Du / Dusave);
             if (Du > 1.5 * Dusave)
+            {
               Du = 1.5 * Dusave;
+            }
             if (Du < 0.75 * Dusave)
+            {
               Du = 0.75 * Dusave;
+            }
           }
         }
         else
@@ -831,9 +849,13 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
           // Angle is the splitting criterion
           Du += (Du - Dusave) * (Du / Dusave);
           if (Du > 1.5 * Dusave)
+          {
             Du = 1.5 * Dusave;
+          }
           if (Du < 0.75 * Dusave)
+          {
             Du = 0.75 * Dusave;
+          }
         }
       }
 

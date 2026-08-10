@@ -82,7 +82,9 @@ bool MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
     for (int aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
     {
       if (!theMgr.OverlapsPoint(myVertices[aPntIdx]))
+      {
         return false;
+      }
     }
 
     return true;

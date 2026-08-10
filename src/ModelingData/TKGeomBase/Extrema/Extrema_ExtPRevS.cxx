@@ -53,7 +53,9 @@ static gp_Ax2 GetPosition(
         {
           OO = gp_Vec(L.Location(), ElCLib::Value(100, L));
           if (N.IsParallel(OO, Precision::Angular()))
+          {
             return gp_Ax2(); // Line and axe of revolution coincide
+          }
         }
         N ^= OO;
       }
@@ -90,7 +92,9 @@ static bool HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S)
   P = C->Value(C->FirstParameter());
 
   if (L.SquareDistance(P) < Precision::SquareConfusion())
+  {
     return true;
+  }
 
   P = C->Value(C->LastParameter());
 
@@ -187,13 +191,17 @@ static bool IsExtremum(const double             U,
   E     = S->Value(U, V);
   Dist2 = P.SquareDistance(E);
   if (IsMin)
+  {
     return (Dist2 < P.SquareDistance(S->Value(U + 1, V))
             && Dist2 < P.SquareDistance(S->Value(U - 1, V))
             && Dist2 < P.SquareDistance(S->Value(U, IsVSup ? V - 1 : V + 1)));
+  }
   else
+  {
     return (Dist2 > P.SquareDistance(S->Value(U + 1, V))
             && Dist2 > P.SquareDistance(S->Value(U - 1, V))
             && Dist2 > P.SquareDistance(S->Value(U, IsVSup ? V - 1 : V + 1)));
+  }
 }
 
 //=================================================================================================
@@ -311,8 +319,10 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 
   double OPdir = gp_Vec(O, P).Dot(Dir);
   gp_Pnt Pp    = P.Translated(Dir.Multiplied(-OPdir));
-  if (O.IsEqual(Pp, Precision::Confusion())) // P is on the AxeOfRevolution
+  if (O.IsEqual(Pp, Precision::Confusion()))
+  { // P is on the AxeOfRevolution
     return;
+  }
 
   double U, V;
   gp_Pnt P1, Ppp;
@@ -326,7 +336,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   {
     Ppp = Pp.Translated(Z.Multiplied(-OPpz));
     if (O.IsEqual(Ppp, Precision::Confusion()))
+    {
       U = M_PI / 2;
+    }
     else
     {
       U = gp_Vec(O, Ppp).AngleWithRef(gp_Vec(O, Pp), Dir);
@@ -337,9 +349,13 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   if (U != M_PI / 2)
   {
     if (std::abs(OPq.Magnitude()) <= gp::Resolution())
+    {
       OPq = gp_Vec(O, myS->Value(M_PI / 2, anACurve->LastParameter() / 10));
+    }
     if (OPpp.AngleWithRef(OPq, Dir) < 0)
+    {
       U += M_PI;
+    }
   }
 
   gp_Trsf T;
@@ -419,7 +435,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
         V = newV;
 
         if (!IsExtremum(U, V, P, myS.get(), E, Dist2, false, anExt.IsMin(i)))
+        {
           continue;
+        }
       }
       else
       {
@@ -476,7 +494,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
         V = newV;
 
         if (!IsExtremum(U, V, P, myS.get(), E, Dist2, true, anExt.IsMin(i)))
+        {
           continue;
+        }
       }
       else if (V < myvinf)
       {
@@ -505,7 +525,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
         V = newV;
 
         if (!IsExtremum(U, V, P, myS.get(), E, Dist2, false, anExt.IsMin(i)))
+        {
           continue;
+        }
       }
       else
       {
@@ -549,9 +571,13 @@ double Extrema_ExtPRevS::SquareDistance(const int N) const
     throw Standard_OutOfRange();
   }
   if (myIsAnalyticallyComputable)
+  {
     return mySqDist[N - 1];
+  }
   else
+  {
     return myExtPS.SquareDistance(N);
+  }
 }
 
 //=================================================================================================
@@ -563,7 +589,11 @@ const Extrema_POnSurf& Extrema_ExtPRevS::Point(const int N) const
     throw Standard_OutOfRange();
   }
   if (myIsAnalyticallyComputable)
+  {
     return myPoint[N - 1];
+  }
   else
+  {
     return myExtPS.Point(N);
+  }
 }

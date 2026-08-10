@@ -39,7 +39,9 @@ void RWStepShape_RWConnectedEdgeSet::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "connected_edge_set"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

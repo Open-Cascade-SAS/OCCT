@@ -242,7 +242,9 @@ Geom_Surface::ResD3 Geom_Plane::EvalD3(const double U, const double V) const
 gp_Vec Geom_Plane::EvalDN(const double, const double, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   if (Nu == 0 && Nv == 1)
   {
     return Vec(pos.YDirection());
@@ -275,9 +277,13 @@ occ::handle<Geom_Curve> Geom_Plane::VIso(const double V) const
 void Geom_Plane::TransformParameters(double& U, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(U))
+  {
     U *= std::abs(T.ScaleFactor());
+  }
   if (!Precision::IsInfinite(V))
+  {
     V *= std::abs(T.ScaleFactor());
+  }
 }
 
 //=================================================================================================

@@ -143,7 +143,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   {
     const double& tol = BRep_Tool::Tolerance(TopoDS::Vertex(exx.Current()));
     if (tol > myTol)
+    {
       myTol = tol;
+    }
   }
 
   exx.Init(Sbase, TopAbs_VERTEX);
@@ -151,7 +153,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   {
     const double& tol = BRep_Tool::Tolerance(TopoDS::Vertex(exx.Current()));
     if (tol > myTol)
+    {
       myTol = tol;
+    }
   }
 
   // ---Control of directions
@@ -468,7 +472,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
         ee1                      = TopoDS::Edge(aLocalShape);
         //	ee1 = TopoDS::Edge(ee1.Oriented(E.Orientation()));
         if (counter == 1)
+        {
           theFV = TopExp::FirstVertex(ee1, true);
+        }
         myLFMap(E).Append(ee1);
         BB.Add(w, ee1);
         thePreviousEdge = ee1;
@@ -515,7 +521,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
           myLFMap(E).Append(E11);
           BB.Add(w, E11);
           if (counter == 1)
+          {
             theFV = TopExp::FirstVertex(E11, true);
+          }
           counter++;
         }
         else
@@ -542,7 +550,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
           BB.Add(w, ee);
           myLFMap(E).Append(ee);
           if (counter == 1)
+          {
             theFV = TopExp::FirstVertex(ee, true);
+          }
           thePreviousEdge = ee;
           counter++;
           break;
@@ -568,7 +578,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
       occ::handle<Geom_Curve>        ccc = BRep_Tool::Curve(edg, f, l);
       occ::handle<Geom_TrimmedCurve> cc  = new Geom_TrimmedCurve(ccc, f, l);
       if (edg.Orientation() == TopAbs_REVERSED)
+      {
         cc->Reverse();
+      }
 
       fp          = cc->Value(cc->FirstParameter());
       lp          = cc->Value(cc->LastParameter());
@@ -641,13 +653,17 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
         thePreviousEdge = eeee;
         BB.Add(w, eeee);
         if (counter == 1)
+        {
           theFV = TopExp::FirstVertex(eeee, true);
+        }
         counter1++;
         NewListOfEdges.Append(edg);
         theEdge = eeee;
 
         if (dist <= myTol)
+        {
           theFEdge = edg;
+        }
         theLastPnt = BRep_Tool::Pnt(TopExp::LastVertex(theEdge, true));
       }
 
@@ -667,7 +683,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
         LastOK = false;
       }
       else if (it.More())
+      {
         it.Next();
+      }
       else
       {
         Sliding = false;
@@ -909,9 +927,13 @@ void BRepFeat_MakeLinearForm::Perform()
   myGluedF.Clear();
 
   if (!mySUntil.IsNull())
+  {
     myPerfSelection = BRepFeat_SelectionU;
+  }
   else
+  {
     myPerfSelection = BRepFeat_NoSelection;
+  }
 
   gp_Dir dir(myDir);
   gp_Vec V = Length * dir;
@@ -919,9 +941,13 @@ void BRepFeat_MakeLinearForm::Perform()
   LocOpe_LinearForm theForm;
 
   if (myDir1.IsEqual(nulldir, Precision::Confusion(), Precision::Confusion()))
+  {
     theForm.Perform(myPbase, V, myFirstPnt, myLastPnt);
+  }
   else
+  {
     theForm.Perform(myPbase, V, myDir1, myFirstPnt, myLastPnt);
+  }
 
   TopoDS_Shape VraiForm = theForm.Shape(); // primitive of the rib
 
@@ -1057,13 +1083,21 @@ bool BRepFeat_MakeLinearForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
     {
       eb = ec;
       if (c1f || c1l)
+      {
         v1OK = true;
+      }
       if (c2f || c2l)
+      {
         v2OK = true;
+      }
       if (c1f || c2f)
+      {
         FirstOK = true;
+      }
       if (c1l || c2l)
+      {
         LastOK = true;
+      }
       break;
     }
   }
@@ -1150,7 +1184,9 @@ bool BRepFeat_MakeLinearForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
                 {
                   gp_Pnt pe2 = perp.Point(1);
                   if (pe1.Distance(pe2) <= BRep_Tool::Tolerance(rfe))
+                  {
                     result = true;
+                  }
                 }
               }
             }
@@ -1190,7 +1226,9 @@ bool BRepFeat_MakeLinearForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
       v1OK = p1.Distance(ptprev) <= t1;
       v2OK = p2.Distance(ptprev) <= t2;
       if (v1OK || v2OK)
+      {
         break;
+      }
     }
 
     if (v1OK)

@@ -28,7 +28,9 @@ void RWStepGeom_RWConic::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "conic"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

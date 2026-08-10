@@ -46,9 +46,11 @@ static IFSelect_ReturnStatus XSControl_xinit(const occ::handle<IFSelect_SessionP
   const char* const arg1 = pilot->Arg(1);
   //        ****    xinit        ****
   if (argc > 1)
+  {
     return (XSControl::Session(pilot)->SelectNorm(arg1) ? IFSelect_RetDone : IFSelect_RetFail);
+  }
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  sout << "Selected Norm:" << XSControl::Session(pilot)->SelectedNorm() << std::endl;
+  sout << "Selected Norm:" << XSControl::Session(pilot)->SelectedNorm() << '\n';
   return IFSelect_RetVoid;
 }
 
@@ -64,26 +66,36 @@ static IFSelect_ReturnStatus XSControl_xnorm(const occ::handle<IFSelect_SessionP
   occ::handle<XSControl_Controller>  control = WS->NormAdaptor();
   Message_Messenger::StreamBuffer    sout    = Message::SendInfo();
   if (argc == 1)
-    sout << "Current Norm. xnorm newnorm to change" << std::endl;
+  {
+    sout << "Current Norm. xnorm newnorm to change" << '\n';
+  }
   else
-    sout << "Current Norm :" << std::endl;
+  {
+    sout << "Current Norm :" << '\n';
+  }
   if (control.IsNull())
-    sout << "no norm currently defined" << std::endl;
+  {
+    sout << "no norm currently defined" << '\n';
+  }
   else
-    sout << "  Long  Name (complete) : " << control->Name(false) << std::endl
-         << "  Short name (resource) : " << control->Name(true) << std::endl;
+  {
+    sout << "  Long  Name (complete) : " << control->Name(false) << '\n'
+         << "  Short name (resource) : " << control->Name(true) << '\n';
+  }
   if (argc == 1)
+  {
     return IFSelect_RetVoid;
+  }
 
   control = XSControl_Controller::Recorded(arg1);
   if (control.IsNull())
   {
-    sout << " No norm named : " << arg1 << std::endl;
+    sout << " No norm named : " << arg1 << '\n';
     return IFSelect_RetError;
   }
 
   WS->SetController(control);
-  sout << "new norm : " << control->Name() << std::endl;
+  sout << "new norm : " << control->Name() << '\n';
   return IFSelect_RetDone;
 }
 
@@ -94,9 +106,11 @@ static IFSelect_ReturnStatus XSControl_newmodel(const occ::handle<IFSelect_Sessi
 {
   //        ****    newmodel        ****
   if (!XSControl::Session(pilot)->NewModel().IsNull())
+  {
     return IFSelect_RetDone;
+  }
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  sout << "No new Model produced" << std::endl;
+  sout << "No new Model produced" << '\n';
   return IFSelect_RetDone;
 }
 
@@ -115,16 +129,24 @@ static IFSelect_ReturnStatus XSControl_tpclear(const occ::handle<IFSelect_Sessio
   if (modew)
   {
     if (!FP.IsNull())
+    {
       FP->Clear();
+    }
     else
-      sout << "No Transfer Write" << std::endl;
+    {
+      sout << "No Transfer Write" << '\n';
+    }
   }
   else
   {
     if (!TP.IsNull())
+    {
       TP->Clear();
+    }
     else
-      sout << "No Transfer Read" << std::endl;
+    {
+      sout << "No Transfer Read" << '\n';
+    }
   }
   return IFSelect_RetDone;
 }
@@ -142,7 +164,7 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (TP.IsNull())
   {
-    sout << "No Transfer Read" << std::endl;
+    sout << "No Transfer Read" << '\n';
     return IFSelect_RetError;
   }
   //        ****    tpstat        ****
@@ -160,7 +182,9 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
   {
     char a2 = arg1[1];
     if (a2 == '\0')
+    {
       a2 = '!';
+    }
     switch (arg1[0])
     {
       case 'g':
@@ -191,12 +215,16 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
       default:
         mod1 = 1;
         if (argc > 2)
+        {
           mod1 = 2;
+        }
         a2 = arg1[0];
         break;
     }
     if (mod1 < 1 || mod1 > 3)
+    {
       a2 = '!';
+    }
     switch (a2)
     {
       case 'n':
@@ -232,7 +260,9 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
   }
   //  A present help eventuel
   if (mod1 < -1)
-    sout << "Unknown Mode" << std::endl;
+  {
+    sout << "Unknown Mode" << '\n';
+  }
   if (mod1 < 0)
   {
     sout << "Modes available :\n"
@@ -246,9 +276,11 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
          << "  L : list  per couple  type entity/result\n"
          << "  *n  *s  *b  *t  *r  *l  *L : idem on ALL recorded items\n"
          << "  ?n  ?s  ?b  ?t ... : idem on abnormal items\n"
-         << "  n select : n applied on a selection   idem for  s b t r l" << std::endl;
+         << "  n select : n applied on a selection   idem for  s b t r l" << '\n';
     if (mod1 < -1)
+    {
       return IFSelect_RetError;
+    }
     return IFSelect_RetVoid;
   }
 
@@ -256,14 +288,18 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
   {
     sout << "TransferRead :";
     if (TP->Model() != pilot->Session()->Model())
+    {
       sout << "Model differs from the session";
+    }
     occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
       IFSelect_Functions::GiveList(pilot->Session(), pilot->CommandPart(2));
     XSControl_TransferReader::PrintStatsOnList(TP, list, mod1, mod2);
     //    TP->PrintStats (1,sout);
   }
   else
-    sout << "TransferRead : not defined" << std::endl;
+  {
+    sout << "TransferRead : not defined" << '\n';
+  }
   return IFSelect_RetVoid;
 }
 
@@ -280,30 +316,36 @@ static IFSelect_ReturnStatus XSControl_tpent(const occ::handle<IFSelect_SessionP
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (TP.IsNull())
   {
-    sout << "No Transfer Read" << std::endl;
+    sout << "No Transfer Read" << '\n';
     return IFSelect_RetError;
   }
   occ::handle<Interface_InterfaceModel> model = TP->Model();
   if (model.IsNull())
+  {
     return IFSelect_RetFail;
+  }
 
   if (argc < 2)
   {
-    sout << "Give ENTITY NUMBER (IN MODEL TransferProcess)" << std::endl;
+    sout << "Give ENTITY NUMBER (IN MODEL TransferProcess)" << '\n';
     return IFSelect_RetError;
   }
   int num = atoi(arg1);
   if (num <= 0 || num > model->NbEntities())
   {
-    sout << "Number not in [1 - " << model->NbEntities() << "]" << std::endl;
+    sout << "Number not in [1 - " << model->NbEntities() << "]" << '\n';
     return IFSelect_RetError;
   }
   occ::handle<Standard_Transient> ent   = model->Value(num);
   int                             index = TP->MapIndex(ent);
   if (index == 0)
-    sout << "Entity " << num << "  not recorded in transfer" << std::endl;
+  {
+    sout << "Entity " << num << "  not recorded in transfer" << '\n';
+  }
   else
+  {
     XSControl::Session(pilot)->PrintTransferStatus(index, false, sout);
+  }
   return IFSelect_RetVoid;
 }
 
@@ -318,21 +360,25 @@ static IFSelect_ReturnStatus XSControl_tpitem(const occ::handle<IFSelect_Session
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Give ITEM NUMBER (in TransferProcess)" << std::endl;
+    sout << "Give ITEM NUMBER (in TransferProcess)" << '\n';
     return IFSelect_RetError;
   }
   int num = atoi(arg1);
   if (pilot->Word(0).Value(3) == 'r')
+  {
     num = -num;
+  }
   bool modew = false;
   if (pilot->Word(0).Value(2) == 'w')
+  {
     modew = true;
+  }
   occ::handle<Transfer_Binder>    binder;
   occ::handle<Transfer_Finder>    finder;
   occ::handle<Standard_Transient> ent;
   if (!XSControl::Session(pilot)->PrintTransferStatus(num, modew, sout))
   {
-    sout << " - Num=" << num << " incorrect" << std::endl;
+    sout << " - Num=" << num << " incorrect" << '\n';
   }
   return IFSelect_RetVoid;
 }
@@ -355,33 +401,45 @@ static IFSelect_ReturnStatus XSControl_trecord(const occ::handle<IFSelect_Sessio
   Message_Messenger::StreamBuffer              sout = Message::SendInfo();
   if (mdl.IsNull() || TR.IsNull() || TP.IsNull())
   {
-    sout << " init not done" << std::endl;
+    sout << " init not done" << '\n';
     return IFSelect_RetError;
   }
   if (!all)
+  {
     num = atoi(arg1);
+  }
   //    Record the roots
   if (all)
   {
     int nb = TP->NbRoots();
-    sout << " Recording " << nb << " Roots" << std::endl;
+    sout << " Recording " << nb << " Roots" << '\n';
     for (int i = 1; i <= nb; i++)
     {
       ent = TP->Root(i);
       if (TR->RecordResult(ent))
-        sout << " Root n0." << i << std::endl;
+      {
+        sout << " Root n0." << i << '\n';
+      }
       else
-        sout << " Root n0." << i << " not recorded" << std::endl;
+      {
+        sout << " Root n0." << i << " not recorded" << '\n';
+      }
     }
   }
   else
   {
     if (num < 1 || num > mdl->NbEntities())
-      sout << "incorrect number:" << num << std::endl;
+    {
+      sout << "incorrect number:" << num << '\n';
+    }
     else if (TR->RecordResult(mdl->Value(num)))
-      sout << " Entity n0." << num << std::endl;
+    {
+      sout << " Entity n0." << num << '\n';
+    }
     else
-      sout << " Entity n0." << num << " not recorded" << std::endl;
+    {
+      sout << " Entity n0." << num << " not recorded" << '\n';
+    }
   }
   return IFSelect_RetDone;
 }
@@ -398,16 +456,16 @@ static IFSelect_ReturnStatus XSControl_trstat(const occ::handle<IFSelect_Session
   const occ::handle<XSControl_TransferReader>& TR = XSControl::Session(pilot)->TransferReader();
   if (TR.IsNull())
   {
-    sout << " init not done" << std::endl;
+    sout << " init not done" << '\n';
     return IFSelect_RetError;
   }
   occ::handle<Interface_InterfaceModel> mdl = TR->Model();
   if (mdl.IsNull())
   {
-    sout << " No model" << std::endl;
+    sout << " No model" << '\n';
     return IFSelect_RetError;
   }
-  sout << " Statistics : FileName : " << TR->FileName() << std::endl;
+  sout << " Statistics : FileName : " << TR->FileName() << '\n';
   if (argc == 1)
   {
     // stats generales
@@ -419,29 +477,31 @@ static IFSelect_ReturnStatus XSControl_trstat(const occ::handle<IFSelect_Session
     int num = atoi(arg1);
     if (num < 1 || num > mdl->NbEntities())
     {
-      sout << " incorrect number:" << arg1 << std::endl;
+      sout << " incorrect number:" << arg1 << '\n';
       return IFSelect_RetError;
     }
     occ::handle<Standard_Transient> ent = mdl->Value(num);
     if (!TR->IsRecorded(ent))
     {
-      sout << " Entity " << num << " not recorded" << std::endl;
+      sout << " Entity " << num << " not recorded" << '\n';
       return IFSelect_RetError;
     }
     occ::handle<Transfer_ResultFromModel>                               RM   = TR->FinalResult(ent);
     occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = TR->CheckedList(ent);
     int                                                                 i, nb = list->Length();
     if (nb > 0)
+    {
       sout << " Entities implied by Check/Result :" << nb << " i.e.:";
+    }
     for (i = 1; i <= nb; i++)
     {
       sout << "  ";
       mdl->Print(list->Value(i), sout);
     }
-    sout << std::endl;
+    sout << '\n';
     if (RM.IsNull())
     {
-      sout << " no other info" << std::endl;
+      sout << " no other info" << '\n';
       return IFSelect_RetVoid;
     }
     Interface_CheckIterator chl = RM->CheckList(false);
@@ -461,7 +521,9 @@ static IFSelect_ReturnStatus XSControl_trbegin(const occ::handle<IFSelect_Sessio
   if (pilot->NbWords() > 1)
   {
     if (pilot->Arg(1)[0] == 'i')
+    {
       init = true;
+    }
   }
   if (init)
   {
@@ -470,7 +532,7 @@ static IFSelect_ReturnStatus XSControl_trbegin(const occ::handle<IFSelect_Sessio
     if (TR.IsNull())
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
-      sout << " init not done or failed" << std::endl;
+      sout << " init not done or failed" << '\n';
       return IFSelect_RetError;
     }
   }
@@ -490,13 +552,13 @@ static IFSelect_ReturnStatus XSControl_tread(const occ::handle<IFSelect_SessionP
   const occ::handle<XSControl_TransferReader>& TR   = XSControl::Session(pilot)->TransferReader();
   if (TR.IsNull())
   {
-    sout << " init not done" << std::endl;
+    sout << " init not done" << '\n';
     return IFSelect_RetError;
   }
   const occ::handle<Interface_InterfaceModel>& mdl = TR->Model();
   if (mdl.IsNull())
   {
-    sout << " No model" << std::endl;
+    sout << " No model" << '\n';
     return IFSelect_RetError;
   }
   if (argc < 2)
@@ -505,20 +567,20 @@ static IFSelect_ReturnStatus XSControl_tread(const occ::handle<IFSelect_SessionP
     occ::handle<Standard_Transient> sel = pilot->Session()->NamedItem("xst-model-roots");
     if (sel.IsNull())
     {
-      sout << "Select Roots absent" << std::endl;
+      sout << "Select Roots absent" << '\n';
       return IFSelect_RetError;
     }
     occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
       pilot->Session()->GiveList(sel);
-    sout << " Transferring all roots i.e. : " << TR->TransferList(list) << std::endl;
+    sout << " Transferring all roots i.e. : " << TR->TransferList(list) << '\n';
   }
   else
   {
     occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
       IFSelect_Functions::GiveList(pilot->Session(), pilot->CommandPart(1));
-    sout << " Transfer of " << list->Length() << " entities" << std::endl;
+    sout << " Transfer of " << list->Length() << " entities" << '\n';
     int nb = TR->TransferList(list);
-    sout << " Gives " << nb << " results" << std::endl;
+    sout << " Gives " << nb << " results" << '\n';
   }
   return IFSelect_RetDone;
 }
@@ -532,9 +594,13 @@ static IFSelect_ReturnStatus XSControl_trtp(const occ::handle<IFSelect_SessionPi
   const occ::handle<XSControl_TransferReader>& TR   = XSControl::Session(pilot)->TransferReader();
   Message_Messenger::StreamBuffer              sout = Message::SendInfo();
   if (TR.IsNull())
-    sout << " No TransferReader" << std::endl;
+  {
+    sout << " No TransferReader" << '\n';
+  }
   else if (TR->TransientProcess().IsNull())
-    sout << " Transfer Reader without Process" << std::endl;
+  {
+    sout << " Transfer Reader without Process" << '\n';
+  }
   return IFSelect_RetVoid;
 }
 
@@ -562,20 +628,24 @@ static IFSelect_ReturnStatus XSControl_twmode(const occ::handle<IFSelect_Session
   Message_Messenger::StreamBuffer       sout = Message::SendInfo();
   if (control->ModeWriteBounds(modemin, modemax))
   {
-    sout << "Write Mode : allowed values  " << modemin << " to " << modemax << std::endl;
+    sout << "Write Mode : allowed values  " << modemin << " to " << modemax << '\n';
     for (int modd = modemin; modd <= modemax; modd++)
     {
-      sout << modd << "	: " << control->ModeWriteHelp(modd) << std::endl;
+      sout << modd << "	: " << control->ModeWriteHelp(modd) << '\n';
     }
   }
-  sout << "Write Mode : actual = " << TW->TransferMode() << std::endl;
+  sout << "Write Mode : actual = " << TW->TransferMode() << '\n';
   if (argc <= 1)
+  {
     return IFSelect_RetVoid;
+  }
   int mod = atoi(arg1);
-  sout << "New value -> " << arg1 << std::endl;
+  sout << "New value -> " << arg1 << '\n';
   TW->SetTransferMode(mod);
   if (!control->IsModeWrite(mod))
-    sout << "Warning : this new value is not supported" << std::endl;
+  {
+    sout << "Warning : this new value is not supported" << '\n';
+  }
   return IFSelect_RetDone;
 }
 
@@ -599,7 +669,9 @@ static IFSelect_ReturnStatus XSControl_twstat(const occ::handle<IFSelect_Session
     FP->PrintStats(1, sout);
   }
   else
-    sout << "TransferWrite: not defined" << std::endl;
+  {
+    sout << "TransferWrite: not defined" << '\n';
+  }
   return IFSelect_RetVoid;
 }
 

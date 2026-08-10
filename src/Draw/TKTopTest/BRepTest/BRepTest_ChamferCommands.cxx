@@ -38,11 +38,15 @@
 static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg < 7)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Edge E;
   TopoDS_Face F;
@@ -67,7 +71,9 @@ static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const c
       throat = Draw::Atof(a[i + 3]);
 
       if (offset > Precision::Confusion() && throat > offset)
+      {
         aMCh.Add(offset, throat, E, F);
+      }
     }
     i += NbArg;
   }
@@ -80,7 +86,9 @@ static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const c
     return 1;
   }
   else
+  {
     aMCh.Build();
+  }
 
   if (aMCh.IsDone())
   {
@@ -105,11 +113,15 @@ static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const c
 static int chamf_throat(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg < 5)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Edge E;
   double      throat;
@@ -127,7 +139,9 @@ static int chamf_throat(Draw_Interpretor& di, int narg, const char** a)
       throat = Draw::Atof(a[i + 1]);
 
       if (throat > Precision::Confusion())
+      {
         aMCh.Add(throat, E);
+      }
     }
     i += 2;
   }
@@ -140,7 +154,9 @@ static int chamf_throat(Draw_Interpretor& di, int narg, const char** a)
     return 1;
   }
   else
+  {
     aMCh.Build();
+  }
 
   if (aMCh.IsDone())
   {
@@ -178,11 +194,15 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
   else
   {
     if (narg < 5)
+    {
       return 1;
+    }
 
     TopoDS_Shape S = DBRep::Get(a[2]);
     if (S.IsNull())
+    {
       return 1;
+    }
 
     TopoDS_Edge E;
     TopoDS_Face F;
@@ -195,7 +215,9 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
     {
       TopoDS_Shape aLocalEdge(DBRep::Get(a[i], TopAbs_EDGE));
       if (aLocalEdge.IsNull())
+      {
         return 1;
+      }
       E = TopoDS::Edge(aLocalEdge);
       TopoDS_Shape aLocalFace(DBRep::Get(a[i + 1], TopAbs_FACE));
       if (aLocalFace.IsNull())
@@ -203,7 +225,9 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
         // symmetric chamfer (one distance)
         d1 = atof(a[i + 1]);
         if (aMCh.Contour(E) == 0 && d1 > Precision::Confusion())
+        {
           aMCh.Add(d1, E);
+        }
         i += 2;
       }
       else
@@ -220,7 +244,9 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
             angle *= M_PI / 180.;
             if (aMCh.Contour(E) == 0 && d1 > Precision::Confusion()
                 && angle > Precision::Confusion() && M_PI / 2 - angle > Precision::Confusion())
+            {
               aMCh.AddDA(d1, angle, E, F);
+            }
             i += 5;
           }
           else
@@ -229,7 +255,9 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
             d1 = Draw::Atof(a[i + 2]);
             d2 = Draw::Atof(a[i + 3]);
             if (aMCh.Contour(E) == 0 && d1 > Precision::Confusion() && d2 > Precision::Confusion())
+            {
               aMCh.Add(d1, d2, E, F);
+            }
             i += 4;
           }
         }
@@ -244,7 +272,9 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
       return 1;
     }
     else
+    {
       aMCh.Build();
+    }
 
     if (aMCh.IsDone())
     {
@@ -268,7 +298,9 @@ void BRepTest::ChamferCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

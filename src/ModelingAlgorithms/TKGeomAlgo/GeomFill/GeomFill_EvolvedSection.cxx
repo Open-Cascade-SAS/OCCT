@@ -304,7 +304,9 @@ double GeomFill_EvolvedSection::MaximalSection() const
   {
     val = myLaw->Value(U);
     if (val > max)
+    {
       max = val;
+    }
   }
   return L * max;
 }
@@ -326,7 +328,9 @@ occ::handle<Geom_Curve> GeomFill_EvolvedSection::ConstantSection() const
 {
   double Err, scale;
   if (!IsConstant(Err))
+  {
     throw StdFail_NotDone("The Law is not Constant!");
+  }
   gp_Trsf T;
   gp_Pnt  P(0, 0, 0);
   scale = myLaw->Value(First) + myLaw->Value((First + Last) / 2) + myLaw->Value(Last);

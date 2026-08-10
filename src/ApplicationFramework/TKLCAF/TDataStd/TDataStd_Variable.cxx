@@ -191,7 +191,9 @@ void TDataStd_Variable::Constant(const bool status)
 {
   // OCC2932 correction
   if (isConstant == status)
+  {
     return;
+  }
 
   Backup();
   isConstant = status;
@@ -203,7 +205,9 @@ void TDataStd_Variable::Unit(const TCollection_AsciiString& unit)
 {
   // OCC2932 correction
   if (myUnit == unit)
+  {
     return;
+  }
 
   Backup();
   myUnit = unit;

@@ -36,7 +36,9 @@ void RWStepKinematics_RWKinematicLink::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 1, theArch, "kinematic_link"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

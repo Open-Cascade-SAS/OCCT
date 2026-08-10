@@ -38,27 +38,49 @@ StepAP203_PersonOrganizationItem::StepAP203_PersonOrganizationItem() = default;
 int StepAP203_PersonOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_Change)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartWork)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_ChangeRequest)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartRequest)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ConfigurationItem)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Product)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Contract)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassification)))
+  {
     return 10;
+  }
   return 0;
 }
 

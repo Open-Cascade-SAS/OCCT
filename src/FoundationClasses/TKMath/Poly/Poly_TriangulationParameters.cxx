@@ -16,3 +16,10 @@
 #include <Poly_TriangulationParameters.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Poly_TriangulationParameters, Standard_Transient)
+
+//=================================================================================================
+
+occ::handle<Poly_TriangulationParameters> Poly_TriangulationParameters::Copy() const
+{
+  return new Poly_TriangulationParameters(myDeflection, myAngle, myMinSize);
+}

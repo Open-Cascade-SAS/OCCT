@@ -35,7 +35,9 @@ void RWStepBasic_RWMassUnit::ReadStep(const occ::handle<StepData_StepReaderData>
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "mass_unit"))
+  {
     return;
+  }
 
   // Inherited fields of NamedUnit
 

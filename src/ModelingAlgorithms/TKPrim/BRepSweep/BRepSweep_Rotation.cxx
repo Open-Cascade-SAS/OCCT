@@ -74,7 +74,9 @@ static double ComputeTolerance(TopoDS_Edge&                     E,
 
 {
   if (BRep_Tool::Degenerated(E))
+  {
     return BRep_Tool::Tolerance(E);
+  }
 
   double first, last;
 
@@ -99,11 +101,15 @@ static double ComputeTolerance(TopoDS_Edge&                     E,
     }
     double temp = Pc3d.SquareDistance(Pcons);
     if (temp > d2)
+    {
       d2 = temp;
+    }
   }
   d2 = 1.5 * sqrt(d2);
   if (d2 < 1.e-7)
+  {
     d2 = 1.e-7;
+  }
   return d2;
 }
 
@@ -119,15 +125,23 @@ static void SetThePCurve(const BRep_Builder&              B,
   TopLoc_Location           SL;
   occ::handle<Geom_Plane>   GP = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(F, SL));
   if (GP.IsNull())
+  {
     OC = BRep_Tool::CurveOnSurface(E, F, f, l);
+  }
   if (OC.IsNull())
+  {
     B.UpdateEdge(E, C, F, ComputeTolerance(E, F, C));
+  }
   else
   {
     if (O == TopAbs_REVERSED)
+    {
       B.UpdateEdge(E, OC, C, F, ComputeTolerance(E, F, C));
+    }
     else
+    {
       B.UpdateEdge(E, C, OC, F, ComputeTolerance(E, F, C));
+    }
   }
 }
 
@@ -158,7 +172,9 @@ TopoDS_Shape BRepSweep_Rotation::MakeEmptyVertex(const TopoDS_Shape&   aGenV,
   gp_Pnt        P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
   TopoDS_Vertex V;
   if (aDirV.Index() == 2)
+  {
     P.Transform(myLocation.Transformation());
+  }
   ////// modified by jgv, 1.10.01, for buc61005 //////
   // myBuilder.Builder().MakeVertex(V,P,Precision::Confusion());
   myBuilder.Builder().MakeVertex(V, P, BRep_Tool::Tolerance(TopoDS::Vertex(aGenV)));
@@ -226,7 +242,9 @@ TopoDS_Shape BRepSweep_Rotation::MakeEmptyGeneratingEdge(const TopoDS_Shape&   a
     {
       C->Transform(Loc.Transformation());
       if (aDirV.Index() == 2)
+      {
         C->Transform(myLocation.Transformation());
+      }
     }
     myBuilder.Builder().MakeEdge(E, C, BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
   }
@@ -358,7 +376,9 @@ TopoDS_Shape BRepSweep_Rotation::MakeEmptyFace(const TopoDS_Shape&   aGenS,
     S          = occ::down_cast<Geom_Surface>(S->Copy());
     S->Transform(Tr);
     if (aDirS.Index() == 2)
+    {
       S->Transform(myLocation.Transformation());
+    }
   }
   myBuilder.Builder().MakeFace(F, S, toler);
   return F;
@@ -447,7 +467,9 @@ void BRepSweep_Rotation::SetGeneratingPCurve(const TopoDS_Shape& aNewFace,
     //    u = 0.;
     v = ElCLib::InPeriod(v, 0., 2 * M_PI);
     if ((2 * M_PI - v) <= Precision::PConfusion())
+    {
       v -= 2 * M_PI;
+    }
     if (aDirV.Index() == 2)
     {
       double uLeft = u - myAng;
@@ -472,7 +494,9 @@ void BRepSweep_Rotation::SetGeneratingPCurve(const TopoDS_Shape& aNewFace,
     ElSLib::SphereParameters(sph.Position(), sph.Radius(), point, u, v);
     u = 0.;
     if (aDirV.Index() == 2)
+    {
       u = myAng;
+    }
     pnt2d.SetCoord(u, v - U);
     L.SetLocation(pnt2d);
     L.SetDirection(gp::DY2d());
@@ -481,7 +505,9 @@ void BRepSweep_Rotation::SetGeneratingPCurve(const TopoDS_Shape& aNewFace,
   {
     double anAngleTemp = 0;
     if (aDirV.Index() == 2)
+    {
       anAngleTemp = myAng;
+    }
     L.SetLocation(gp_Pnt2d(anAngleTemp, 0));
     L.SetDirection(gp::DY2d());
   }
@@ -785,16 +811,22 @@ bool BRepSweep_Rotation::HasShape(const TopoDS_Shape& aGenS, const Sweep_NumShap
     const TopoDS_Edge& anEdge = TopoDS::Edge(aGenS);
     //
     if (BRep_Tool::Degenerated(anEdge))
+    {
       return false;
+    }
 
     double                  aPFirst, aPLast;
     TopLoc_Location         aLoc;
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aLoc, aPFirst, aPLast);
     if (aCurve.IsNull())
+    {
       return false;
+    }
 
     if (IsInvariant(aGenS))
+    {
       return false;
+    }
 
     // Check seem edge
     TopExp_Explorer FaceExp(myGenShape, TopAbs_FACE);
@@ -802,7 +834,9 @@ bool BRepSweep_Rotation::HasShape(const TopoDS_Shape& aGenS, const Sweep_NumShap
     {
       TopoDS_Face F = TopoDS::Face(FaceExp.Current());
       if (BRepTools::IsReallyClosed(anEdge, F))
+      {
         return false;
+      }
     }
 
     return true;
@@ -828,7 +862,9 @@ bool BRepSweep_Rotation::IsInvariant(const TopoDS_Shape& aGenS) const
       if (IsInvariant(V1) && IsInvariant(V2))
       {
         if (aC.GetType() == GeomAbs_Line)
+        {
           return true;
+        }
 
         double aTol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
         gp_Lin Lin(myAxe.Location(), myAxe.Direction());
@@ -838,7 +874,9 @@ bool BRepSweep_Rotation::IsInvariant(const TopoDS_Shape& aGenS) const
         for (int i = aPoles.Lower(); i <= aPoles.Upper(); i++)
         {
           if (Lin.Distance(aPoles(i)) > aTol)
+          {
             return false;
+          }
         }
         return true;
       }

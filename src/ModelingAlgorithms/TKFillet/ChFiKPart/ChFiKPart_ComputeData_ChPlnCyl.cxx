@@ -82,7 +82,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
 
   double Dis1 = theDis1, Dis2 = theDis2;
   if (theMode == ChFiDS_ConstThroatChamfer)
+  {
     Dis1 = Dis2 = theDis1 * sqrt(2.);
+  }
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
     double aDis2 = std::min(theDis1, theDis2);
@@ -96,9 +98,13 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
   gp_Dir norf  = Dpl;
   if (Ofpl == TopAbs_REVERSED)
+  {
     norf.Reverse();
+  }
   if (Or1 == TopAbs_REVERSED)
+  {
     Dpl.Reverse();
+  }
 
   // compute the origin Or of the cone
   gp_Pnt Or = Cyl.Location();
@@ -120,7 +126,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::D1(u, v, Cyl, PtCyl, Vu, Vv);
   gp_Dir Dcyl(Vu.Crossed(Vv)); // normal to the cylinder in PtSp
   if (Or2 == TopAbs_REVERSED)
+  {
     Dcyl.Reverse();
+  }
   bool dedans = (Dcyl.Dot(Dx) <= 0.);
 
   bool   pointu = false;
@@ -139,7 +147,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   {
     Rad = Cyl.Radius() - Dis1;
     if (std::abs(Rad) <= Precision::Confusion())
+    {
       pointu = true;
+    }
     if (Rad < 0)
     {
 #ifdef OCCT_DEBUG
@@ -229,9 +239,13 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   // pcurve on the chamfer
   gp_Pnt2d p2dch;
   if (plandab)
+  {
     v = -sqrt(Dis1 * Dis1 + Dis2 * Dis2);
+  }
   else
+  {
     v = sqrt(Dis1 * Dis1 + Dis2 * Dis2);
+  }
   p2dch.SetCoord(0., v);
   ElSLib::ConeD1(0., v, ConAx3, ConRad, SemiAngl, Pt, deru, derv);
   gp_Lin2d                 lin2dch(p2dch, gp::DX2d());
@@ -286,13 +300,21 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   double tol           = Precision::PConfusion();
   bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
+  {
     careaboutsens = true;
+  }
   if (u >= fu - tol && u < fu)
+  {
     u = fu;
+  }
   if (u <= lu + tol && u > lu)
+  {
     u = lu;
+  }
   if (u < fu || u > lu)
+  {
     u = ChFiKPart_InPeriod(u, fu, fu + 2 * M_PI, tol);
+  }
 
   ElSLib::D1(u, v, Cyl, Pt, deru, derv);
   gp_Dir   norcyl = deru.Crossed(derv);
@@ -301,10 +323,14 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   {
     d2dCyl.Reverse();
     if (careaboutsens && std::abs(fu - u) < tol)
+    {
       u = lu;
+    }
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
+  {
     u = fu;
+  }
   gp_Pnt2d                 p2dCyl(u, v);
   gp_Lin2d                 lin2dCyl(p2dCyl, d2dCyl);
   occ::handle<Geom2d_Line> GLin2dCyl = new Geom2d_Line(lin2dCyl);
@@ -366,7 +392,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   //         |4          to determine the side of the material
 
   if (theMode != ChFiDS_ClassicChamfer)
+  {
     return false;
+  }
 
   gp_Pnt OrSpine = ElCLib::Value(First, Spine);
   gp_Pnt POnCyl, POnPln, OrCyl;
@@ -475,7 +503,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   bool   PosChamfPln = DirPlnCyl.Dot(DirSPln) > 0;
 
   if (PosChamfPln)
+  {
     toreverse = !toreverse;
+  }
   // It is checked if the orientation of the Chamfer is the same as of the plane
   if (toreverse)
   {
@@ -537,7 +567,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   bool   PosChamfCyl = DirPlnCyl.Dot(DirSCyl) < 0;
 
   if (PosChamfCyl)
+  {
     toreverse = !toreverse;
+  }
 
   trans = TopAbs_REVERSED;
   if ((!plandab && toreverse) || (plandab && !toreverse))
@@ -546,14 +578,18 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   }
 
   if (plandab)
+  {
     Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   else
+  {
     Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   return true;
 }

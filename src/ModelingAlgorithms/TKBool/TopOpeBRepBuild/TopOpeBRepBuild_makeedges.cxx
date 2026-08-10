@@ -52,7 +52,9 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&             EF,
   TopOpeBRepBuild_PaveClassifier VCL(EF);
   bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
+  {
     VCL.SetFirstParameter(PVS.EqualParameters());
+  }
 
   PVS.InitLoop();
   bool novertex = (!PVS.MoreLoop());
@@ -61,7 +63,9 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&             EF,
     std::cout << "#--- GPVSMakeEdges : no vertex from edge " << iE << std::endl;
 #endif
   if (novertex)
+  {
     return;
+  }
 
   TopOpeBRepBuild_EdgeBuilder EDBU;
   bool                        ForceClass = false;
@@ -102,10 +106,14 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
     int  nloop   = 0;
     bool tosplit = false;
     for (EDBU.InitVertex(); EDBU.MoreVertex(); EDBU.NextVertex())
+    {
       nloop++;
+    }
     // 0 ou 1 vertex sur edge courante => suppression edge
     if (nloop <= 1)
+    {
       continue;
+    }
 
     myBuildTool.CopyEdge(EF, newEdge);
 
@@ -130,7 +138,9 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
 
       TopAbs_Orientation oriV = V.Orientation();
       if (oriV == TopAbs_EXTERNAL)
+      {
         continue;
+      }
 
       bool            equafound = false;
       TopExp_Explorer exE(newEdge, TopAbs_VERTEX);
@@ -169,16 +179,22 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
         {
           nVF++;
           if (nVF == 1)
+          {
             VF = V;
+          }
         }
         if (Vori == TopAbs_REVERSED)
         {
           nVR++;
           if (nVR == 1)
+          {
             VR = V;
+          }
         }
         if (oriV == TopAbs_INTERNAL)
+        {
           tosplit = true;
+        }
         double parV = EDBU.Parameter();
         myBuildTool.AddEdgeVertex(newEdge, V);
         myBuildTool.Parameter(newEdge, V, parV);
@@ -194,12 +210,18 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
         NCollection_List<TopoDS_Shape> loe;
         bool                           ok = TopOpeBRepTool_TOOL::SplitE(TopoDS::Edge(newEdge), loe);
         if (!ok)
+        {
           tosplit = false;
+        }
         else
+        {
           LOE.Append(loe);
+        }
       }
       if (!tosplit)
+      {
         LOE.Append(newEdge);
+      }
     }
   } // EDBU.InitEdge : loop on EDBU edges
 

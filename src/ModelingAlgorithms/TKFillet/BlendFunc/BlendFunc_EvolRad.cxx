@@ -196,13 +196,12 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
                                       const bool         byParam,
                                       const double       Param)
 {
-  // static declaration to avoid systematic realloc
-
-  static gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
-  static gp_Vec d1gui, d2gui, d3gui;
-  static gp_Pnt ptgui;
-  static double invnormtg, dinvnormtg;
-  double        T = Param, aux;
+  // Per-thread scratch, reused across calls via the t_OK / myX_OK guards below.
+  static thread_local gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
+  static thread_local gp_Vec d1gui, d2gui, d3gui;
+  static thread_local gp_Pnt ptgui;
+  static thread_local double invnormtg, dinvnormtg;
+  double                     T = Param, aux;
 
   // Case of implicit parameter
   if (!byParam)
@@ -318,18 +317,26 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
       //     gp_Vec normal;
       gp_Pnt2d P(X(1), X(2));
       if (Order == 0)
+      {
         BlendFunc::ComputeNormal(surf1, P, nsurf1);
+      }
       else
+      {
         BlendFunc::ComputeDNormal(surf1, P, nsurf1, dns1u1, dns1v1);
+      }
     }
     if (nsurf2.Magnitude() < Eps)
     {
       //     gp_Vec normal;
       gp_Pnt2d P(X(3), X(4));
       if (Order == 0)
+      {
         BlendFunc::ComputeNormal(surf2, P, nsurf2);
+      }
       else
+      {
         BlendFunc::ComputeDNormal(surf2, P, nsurf2, dns1u2, dns1v2);
+      }
     }
   }
 
@@ -352,7 +359,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
   invnorm2  = ncrossns2.Magnitude();
 
   if (invnorm1 > Eps)
+  {
     invnorm1 = ((double)1) / invnorm1;
+  }
   else
   {
     invnorm1 = 1; // Unsatisfactory, but it is not necessary to stop
@@ -361,7 +370,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
 #endif
   }
   if (invnorm2 > Eps)
+  {
     invnorm2 = ((double)1) / invnorm2;
+  }
   else
   {
     invnorm2 = 1; // Unsatisfactory, but it is not necessary to stop
@@ -972,9 +983,13 @@ bool BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const double Tol)
     if (Sina < 0.)
     {
       if (Cosa > 0.)
+      {
         Angle = -Angle;
+      }
       else
+      {
         Angle = 2. * M_PI - Angle;
+      }
     }
 
     if (std::abs(Angle) > maxang)
@@ -1072,9 +1087,13 @@ void BlendFunc_EvolRad::Tangent(const double U1,
 
   invnorm1 = nplan.Crossed(ns1).Magnitude();
   if (invnorm1 < Eps)
+  {
     invnorm1 = 1;
+  }
   else
+  {
     invnorm1 = 1. / invnorm1;
+  }
   ns1.SetLinearForm(nplan.Dot(ns1) * invnorm1, nplan, -invnorm1, ns1);
 
   Center.SetXYZ(pts1.XYZ() + sg1 * ray * ns1.XYZ());
@@ -1167,7 +1186,9 @@ void BlendFunc_EvolRad::Section(const double Param,
     Pfin = ElCLib::Parameter(C, pts2);
   }
   if (Pfin < Precision::PConfusion())
+  {
     Pfin += Precision::PConfusion();
+  }
 }
 
 //=================================================================================================

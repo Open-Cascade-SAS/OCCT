@@ -99,17 +99,25 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             if (aSegIndices->LstSg1 == n1)
             {
               if (aSegIndices->LstSg2 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg1;
+              }
               icsv = 1;
             }
             else
             {
               if (aSegIndices->LstSg1 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg2;
+              }
               icsv = 2;
             }
           }
@@ -118,12 +126,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             newSeg = true;
             myNbPISeg++;
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             aSegIndices->Conex2 = i;
+          }
         }
         else
         {
@@ -152,12 +166,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               }
             }
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             A2.NdSg = myNbPISeg;
+          }
         }
       }
       if (newSeg)
@@ -196,17 +216,25 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             if (aSegIndices->LstSg1 == n1)
             {
               if (aSegIndices->LstSg2 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg1;
+              }
               icsv = 1;
             }
             else
             {
               if (aSegIndices->LstSg1 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg2;
+              }
               icsv = 2;
             }
           }
@@ -215,12 +243,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             newSeg = true;
             myNbPISeg++;
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             aSegIndices->Conex2 = i;
+          }
         }
         else
         {
@@ -249,12 +283,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               }
             }
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             A3.NdSg = myNbPISeg;
+          }
         }
       }
       if (newSeg)
@@ -293,17 +333,25 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             if (aSegIndices->LstSg1 == n1)
             {
               if (aSegIndices->LstSg2 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg1;
+              }
               icsv = 1;
             }
             else
             {
               if (aSegIndices->LstSg1 == n2)
+              {
                 find = iiii;
+              }
               else
+              {
                 iiii = aSegIndices->NxtSg2;
+              }
               icsv = 2;
             }
           }
@@ -312,12 +360,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
             newSeg = true;
             myNbPISeg++;
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             aSegIndices->Conex2 = i;
+          }
         }
         else
         {
@@ -346,12 +400,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               }
             }
             if (icsv == 1)
+            {
               aSegIndices->NxtSg1 = myNbPISeg;
+            }
             else
+            {
               aSegIndices->NxtSg2 = myNbPISeg;
+            }
           }
           else
+          {
             A1.NdSg = myNbPISeg;
+          }
         }
       }
       if (newSeg)
@@ -457,11 +517,17 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
         iip2                 = aSegIndices2->NxtSg1;
         aSegIndices2->NxtSg1 = myNbPISeg;
         if (iisv == 0)
+        {
           aNodIndices2.NdSg = myNbPISeg;
+        }
         else if (icsv == 1)
+        {
           aSegIndices->NxtSg1 = myNbPISeg;
+        }
         else
+        {
           aSegIndices->NxtSg2 = myNbPISeg;
+        }
       }
       else
       {
@@ -481,11 +547,17 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
         iip2                 = aSegIndices2->NxtSg2;
         aSegIndices2->NxtSg2 = myNbPISeg;
         if (iisv == 0)
+        {
           aNodIndices2.NdSg = myNbPISeg;
+        }
         else if (icsv == 1)
+        {
           aSegIndices->NxtSg1 = myNbPISeg;
+        }
         else
+        {
           aSegIndices->NxtSg2 = myNbPISeg;
+        }
       }
       else
       {
@@ -630,9 +702,13 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
     {
       iNew = New[iTr];
       if (iTr < 2)
+      {
         skip = iTr;
+      }
       else
+      {
         skip = iTr - 2;
+      }
       iOld = New[skip];
       ip4  = itpk[skip];
       if (iNew != 0)
@@ -657,12 +733,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg1;
+              }
             }
             else
             {
@@ -670,12 +752,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg2;
+              }
             }
           }
         }
@@ -695,12 +783,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg1;
+              }
             }
             else
             {
@@ -708,12 +802,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg2;
+              }
             }
           }
         }
@@ -733,12 +833,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg1;
+              }
             }
             else
             {
@@ -746,12 +852,18 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
               {
                 found = true;
                 if (aSegIndices2->Conex1 == iOld)
+                {
                   aSegIndices2->Conex1 = iNew;
+                }
                 else if (aSegIndices2->Conex2 == iOld)
+                {
                   aSegIndices2->Conex2 = iNew;
+                }
               }
               else
+              {
                 iiii = aSegIndices2->NxtSg2;
+              }
             }
           }
         }
@@ -779,7 +891,7 @@ void HLRAlgo_PolyInternalData::Dump() const
     std::cout << std::setw(20) << Nod1RValues.Point.X();
     std::cout << std::setw(20) << Nod1RValues.Point.Y();
     std::cout << std::setw(20) << Nod1RValues.Point.Z();
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 
   for (i = 1; i <= myNbPISeg; i++)
@@ -792,7 +904,7 @@ void HLRAlgo_PolyInternalData::Dump() const
     std::cout << std::setw(6) << aSegIndices->NxtSg2;
     std::cout << std::setw(6) << aSegIndices->Conex1;
     std::cout << std::setw(6) << aSegIndices->Conex2;
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 
   for (i = 1; i <= myNbTData; i++)
@@ -802,7 +914,7 @@ void HLRAlgo_PolyInternalData::Dump() const
     std::cout << std::setw(6) << aTriangle.Node1;
     std::cout << std::setw(6) << aTriangle.Node2;
     std::cout << std::setw(6) << aTriangle.Node3;
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 }
 

@@ -60,7 +60,9 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
     const XmlObjMgt_Element& anElement = theSource;
     XmlObjMgt_DOMString      aSizeDStr = anElement.getAttribute(::IntPackedMapSize());
     if (aSizeDStr == nullptr)
+    {
       aSize = 0;
+    }
     else if (!aSizeDStr.GetInteger(aSize))
     {
       TCollection_ExtendedString aMessageString =
@@ -101,7 +103,9 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
         return false;
       }
       if (aPackedMap->ChangeMap(aHMap))
+      {
         Ok = true;
+      }
     }
     if (Ok)
     {
@@ -121,7 +125,9 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
           return false;
         }
         else
+        {
           aDelta = aDeltaValue != 0;
+        }
       }
       aPackedMap->SetDelta(aDelta);
       return true;

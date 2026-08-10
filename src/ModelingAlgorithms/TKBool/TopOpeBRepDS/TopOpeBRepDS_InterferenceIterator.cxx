@@ -92,7 +92,9 @@ void TopOpeBRepDS_InterferenceIterator::Match()
       myIterator.Next();
     }
     else
+    {
       break;
+    }
   }
 }
 

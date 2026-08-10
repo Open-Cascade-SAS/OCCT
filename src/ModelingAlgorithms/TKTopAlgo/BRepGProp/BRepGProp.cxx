@@ -87,7 +87,9 @@ static gp_Pnt roughBaryCenter(const TopoDS_Shape& S)
   TopExp_Explorer ex;
   gp_XYZ          xyz(0, 0, 0);
   for (ex.Init(S, TopAbs_VERTEX), i = 0; ex.More(); ex.Next(), i++)
+  {
     xyz += BRep_Tool::Pnt(TopoDS::Vertex(ex.Current())).XYZ();
+  }
   if (i > 0)
   {
     xyz /= i;
@@ -223,7 +225,9 @@ static double surfaceProperties(const TopoDS_Shape& S,
       BF.Load(F);
       bool IsNatRestr = (F.NbChildren() == 0);
       if (!IsNatRestr)
+      {
         BD.Init(F);
+      }
       if (Eps < 1.0)
       {
         G.Perform(BF, BD, Eps);
@@ -239,9 +243,13 @@ static double surfaceProperties(const TopoDS_Shape& S,
       else
       {
         if (IsNatRestr)
+        {
           G.Perform(BF);
+        }
         else
+        {
           G.Perform(BF, BD);
+        }
       }
       Props.Add(G);
 #ifdef OCCT_DEBUG
@@ -359,7 +367,9 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
         BF.Load(F);
         bool IsNatRestr = (F.NbChildren() == 0);
         if (!IsNatRestr)
+        {
           BD.Init(F);
+        }
         if (Eps < 1.0)
         {
           G.Perform(BF, BD, Eps);
@@ -375,9 +385,13 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
         else
         {
           if (IsNatRestr)
+          {
             G.Perform(BF);
+          }
           else
+          {
             G.Perform(BF, BD);
+          }
         }
         Props.Add(G);
 #ifdef OCCT_DEBUG
@@ -560,11 +574,15 @@ void BRepGProp::VolumeProperties(const TopoDS_Shape& S,
         continue;
       }
       if (BRep_Tool::IsClosed(Sh))
+      {
         volumeProperties(Sh, Props, 1.0, SkipShared, UseTriangulation);
+      }
     }
   }
   else
+  {
     volumeProperties(S, Props, 1.0, SkipShared, UseTriangulation);
+  }
 }
 
 //=================================================================================================
@@ -609,7 +627,9 @@ double BRepGProp::VolumeProperties(const TopoDS_Shape& S,
     }
   }
   else
+  {
     ErrorMax = volumeProperties(S, Props, Eps, SkipShared, false);
+  }
 #ifdef OCCT_DEBUG
   if (AffichEps)
     std::cout << "\n\n===================" << iErrorMax << ":\tMaxEpsVolume = " << ErrorMax << "\n";
@@ -680,7 +700,9 @@ static double volumePropertiesGK(const TopoDS_Shape& theShape,
 
       bool IsNatRestr = (aFace.NbChildren() == 0);
       if (IsNatRestr)
+      {
         aLocalError = aVProps.Perform(aPropFace, aTol, CGFlag, IFlag);
+      }
       else
       {
         aPropDomain.Init(aFace);
@@ -688,7 +710,9 @@ static double volumePropertiesGK(const TopoDS_Shape& theShape,
       }
 
       if (aLocalError < 0.)
+      {
         return aLocalError;
+      }
 
       anError += aLocalError;
       theProps.Add(aVProps);
@@ -736,11 +760,15 @@ double BRepGProp::VolumePropertiesGK(const TopoDS_Shape& S,
       BRepCheck_Status aStatus = aChecker.Closed(false);
 
       if (aStatus == BRepCheck_NoError)
+      {
         aClosedShells.Append(aShell);
+      }
     }
 
     if (aClosedShells.IsEmpty())
+    {
       return -1.;
+    }
 
     // Compute the properties for each closed shell.
     double                                   aTol = Eps;
@@ -754,17 +782,23 @@ double BRepGProp::VolumePropertiesGK(const TopoDS_Shape& S,
       aLocalError = volumePropertiesGK(aShell, Props, aTol, IsUseSpan, CGFlag, IFlag, SkipShared);
 
       if (aLocalError < 0)
+      {
         return aLocalError;
+      }
 
       anError += aLocalError;
     }
   }
   else
+  {
     anError = volumePropertiesGK(S, Props, Eps, IsUseSpan, CGFlag, IFlag, SkipShared);
+  }
 
   double vol = Props.Mass();
   if (vol > Epsilon(1.))
+  {
     anError /= vol;
+  }
   return anError;
 }
 
@@ -829,7 +863,9 @@ static double volumePropertiesGK(const TopoDS_Shape& theShape,
 
       bool IsNatRestr = (aFace.NbChildren() == 0);
       if (IsNatRestr)
+      {
         aLocalError = aVProps.Perform(aPropFace, thePln, aTol, CGFlag, IFlag);
+      }
       else
       {
         aPropDomain.Init(aFace);
@@ -837,7 +873,9 @@ static double volumePropertiesGK(const TopoDS_Shape& theShape,
       }
 
       if (aLocalError < 0.)
+      {
         return aLocalError;
+      }
 
       anError += aLocalError;
       theProps.Add(aVProps);
@@ -886,11 +924,15 @@ double BRepGProp::VolumePropertiesGK(const TopoDS_Shape& S,
       BRepCheck_Status aStatus = aChecker.Closed(false);
 
       if (aStatus == BRepCheck_NoError)
+      {
         aClosedShells.Append(aShell);
+      }
     }
 
     if (aClosedShells.IsEmpty())
+    {
       return -1.;
+    }
 
     // Compute the properties for each closed shell.
     double                                   aTol = Eps;
@@ -905,17 +947,23 @@ double BRepGProp::VolumePropertiesGK(const TopoDS_Shape& S,
         volumePropertiesGK(aShell, Props, thePln, aTol, IsUseSpan, CGFlag, IFlag, SkipShared);
 
       if (aLocalError < 0)
+      {
         return aLocalError;
+      }
 
       anError += aLocalError;
     }
   }
   else
+  {
     anError = volumePropertiesGK(S, Props, thePln, Eps, IsUseSpan, CGFlag, IFlag, SkipShared);
+  }
 
   double vol = Props.Mass();
   if (vol > Epsilon(1.))
+  {
     anError /= vol;
+  }
 
   return anError;
 }

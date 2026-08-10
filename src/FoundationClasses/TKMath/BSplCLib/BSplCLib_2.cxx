@@ -64,7 +64,9 @@ void BSplCLib::BuildEval(const int                         Degree,
     {
       ip++;
       if (ip > PUpper)
+      {
         ip = PLower;
+      }
       pole[0] = Poles(ip);
       pole += 1;
     }
@@ -76,7 +78,9 @@ void BSplCLib::BuildEval(const int                         Degree,
     {
       ip++;
       if (ip > PUpper)
+      {
         ip = PLower;
+      }
       pole[1] = w = (*Weights)(ip);
       pole[0]     = Poles(ip) * w;
       pole += 2;
@@ -104,9 +108,13 @@ static void PrepareEval(double&                           u,
   // make the knots
   BSplCLib::BuildKnots(Degree, index, Periodic, Knots, Mults, *dc.knots);
   if (Mults == nullptr)
+  {
     index -= Knots.Lower() + Degree;
+  }
   else
+  {
     index = BSplCLib::PoleIndex(Degree, index, Periodic, *Mults);
+  }
 
   // check truly rational
   rational = (Weights != nullptr);
@@ -149,9 +157,13 @@ void BSplCLib::D0(const double                      U,
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Eval(u, Degree, *dc.knots, dim, *dc.poles);
   if (rational)
+  {
     P = dc.poles[0] / dc.poles[1];
+  }
   else
+  {
     P = dc.poles[0];
+  }
 }
 
 //=================================================================================================
@@ -214,9 +226,13 @@ void BSplCLib::D2(const double                      U,
   P  = result[0];
   V1 = result[1];
   if (!rational && (Degree < 2))
+  {
     V2 = 0.;
+  }
   else
+  {
     V2 = result[2];
+  }
 }
 
 //=================================================================================================
@@ -250,13 +266,21 @@ void BSplCLib::D3(const double                      U,
   P  = result[0];
   V1 = result[1];
   if (!rational && (Degree < 2))
+  {
     V2 = 0.;
+  }
   else
+  {
     V2 = result[2];
+  }
   if (!rational && (Degree < 3))
+  {
     V3 = 0.;
+  }
   else
+  {
     V3 = result[3];
+  }
 }
 
 //=================================================================================================
@@ -288,9 +312,13 @@ void BSplCLib::DN(const double                      U,
   else
   {
     if (N > Degree)
+    {
       VN = 0.;
+    }
     else
+    {
       VN = dc.poles[N];
+    }
   }
 }
 

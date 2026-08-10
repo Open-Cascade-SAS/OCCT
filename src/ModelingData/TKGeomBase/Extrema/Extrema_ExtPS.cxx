@@ -62,7 +62,9 @@ static bool IsoIsDeg(const Adaptor3d_Surface& S,
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)
+      {
         Along = false;
+      }
     }
   }
   else
@@ -82,7 +84,9 @@ static bool IsoIsDeg(const Adaptor3d_Surface& S,
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)
+      {
         Along = false;
+      }
     }
   }
   return Along;
@@ -100,9 +104,13 @@ void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const double Val)
 
     // Handle trimmed surfaces.
     if (U > myusup + mytolu)
+    {
       U -= myS->UPeriod();
+    }
     if (U < myuinf - mytolu)
+    {
       U += myS->UPeriod();
+    }
   }
   if (myS->IsVPeriodic())
   {
@@ -110,9 +118,13 @@ void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const double Val)
 
     // Handle trimmed surfaces.
     if (V > myvsup + mytolv)
+    {
       V -= myS->VPeriod();
+    }
     if (V < myvinf - mytolv)
+    {
       V += myS->VPeriod();
+    }
   }
   if ((myuinf - U) <= mytolu && (U - myusup) <= mytolu && (myvinf - V) <= mytolv
       && (V - myvsup) <= mytolv)
@@ -202,13 +214,21 @@ void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
   myvsup = theVsup;
 
   if (Precision::IsNegativeInfinite(myuinf))
+  {
     myuinf = -1e10;
+  }
   if (Precision::IsPositiveInfinite(myusup))
+  {
     myusup = 1e10;
+  }
   if (Precision::IsNegativeInfinite(myvinf))
+  {
     myvinf = -1e10;
+  }
   if (Precision::IsPositiveInfinite(myvsup))
+  {
     myvsup = 1e10;
+  }
 
   mytolu = theTolU;
   mytolv = theTolV;
@@ -230,9 +250,13 @@ void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
   }
 
   if (bUIsoIsDeg)
+  {
     nbU = 300;
+  }
   if (bVIsoIsDeg)
+  {
     nbV = 300;
+  }
 
   myExtPS.Initialize(*myS, nbU, nbV, myuinf, myusup, myvinf, myvsup, mytolu, mytolv);
 
@@ -350,21 +374,27 @@ bool Extrema_ExtPS::IsDone() const
 double Extrema_ExtPS::SquareDistance(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
+  {
     throw Standard_OutOfRange();
+  }
   return mySqDist.Value(N);
 }
 
 int Extrema_ExtPS::NbExt() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return mySqDist.Length();
 }
 
 const Extrema_POnSurf& Extrema_ExtPS::Point(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
+  {
     throw Standard_OutOfRange();
+  }
   return myPoints.Value(N);
 }
 

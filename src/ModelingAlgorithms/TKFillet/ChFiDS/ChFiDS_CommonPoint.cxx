@@ -55,7 +55,9 @@ void ChFiDS_CommonPoint::SetArc(const double             Tol,
 {
   isonarc = true;
   if (Tol > tol)
+  {
     tol = Tol;
+  }
   arc    = A;
   prmarc = Param;
   traarc = TArc;

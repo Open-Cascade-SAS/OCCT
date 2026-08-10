@@ -62,10 +62,14 @@ bool GeomFill_SweepFunction::D0(const double Param,
 
   Ok = myLoc->D0(Param, M, V, Poles2d);
   if (!Ok)
+  {
     return Ok;
+  }
   Ok = mySec->D0(T, Poles, Weigths);
   if (!Ok)
+  {
     return Ok;
+  }
 
   for (ii = 1; ii <= L; ii++)
   {
@@ -96,10 +100,14 @@ bool GeomFill_SweepFunction::D1(const double Param,
 
   Ok = myLoc->D1(Param, M, V, DM, DV, Poles2d, DPoles2d);
   if (!Ok)
+  {
     return Ok;
+  }
   Ok = mySec->D1(T, Poles, DPoles, Weigths, DWeigths);
   if (!Ok)
+  {
     return Ok;
+  }
 
   for (ii = 1; ii <= L; ii++)
   {
@@ -141,10 +149,14 @@ bool GeomFill_SweepFunction::D2(const double Param,
 
   Ok = myLoc->D2(Param, M, V, DM, DV, D2M, D2V, Poles2d, DPoles2d, D2Poles2d);
   if (!Ok)
+  {
     return Ok;
+  }
   Ok = mySec->D2(T, Poles, DPoles, D2Poles, Weigths, DWeigths, D2Weigths);
   if (!Ok)
+  {
     return Ok;
+  }
 
   for (ii = 1; ii <= L; ii++)
   {
@@ -282,7 +294,9 @@ void GeomFill_SweepFunction::Intervals(NCollection_Array1<double>& T, const Geom
 
   GeomLib::FuseIntervals(IntS, IntL, Inter, Precision::PConfusion() * 0.99);
   for (ii = 1; ii <= Inter.Length(); ii++)
+  {
     T(ii) = Inter(ii);
+  }
 }
 
 //=================================================================================================

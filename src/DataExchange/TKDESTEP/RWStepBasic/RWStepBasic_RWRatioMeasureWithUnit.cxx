@@ -33,7 +33,9 @@ void RWStepBasic_RWRatioMeasureWithUnit::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "ratio_measure_with_unit"))
+  {
     return;
+  }
 
   // --- inherited field : valueComponent ---
   occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;

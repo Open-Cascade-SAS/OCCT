@@ -204,7 +204,9 @@ void BRepGProp_Face::Normal(const double U, const double V, gp_Pnt& P, gp_Vec& V
   mySurface.D1(U, V, P, D1U, D1V);
   VNor = D1U.Crossed(D1V);
   if (mySReverse)
+  {
     VNor.Reverse();
+  }
 }
 
 //  APO 17.04.2002 (OCC104)
@@ -359,7 +361,9 @@ void BRepGProp_Face::UKnots(NCollection_Array1<double>& Knots) const
       const NCollection_Array1<double>& aSrcKnots =
         (*((occ::handle<Geom_BSplineSurface>*)&((mySurface.GeomSurfaceOriginal()))))->UKnots();
       for (int i = Knots.Lower(); i <= Knots.Upper(); i++)
+      {
         Knots(i) = aSrcKnots(i);
+      }
     }
     break;
     default:
@@ -396,7 +400,9 @@ void BRepGProp_Face::VKnots(NCollection_Array1<double>& Knots) const
       const NCollection_Array1<double>& aSrcKnots =
         (*((occ::handle<Geom_BSplineSurface>*)&((mySurface.GeomSurfaceOriginal()))))->VKnots();
       for (int i = Knots.Lower(); i <= Knots.Upper(); i++)
+      {
         Knots(i) = aSrcKnots(i);
+      }
     }
     break;
     default:
@@ -515,7 +521,9 @@ void BRepGProp_Face::LKnots(NCollection_Array1<double>& Knots) const
       const NCollection_Array1<double>& aSrcKnots =
         (*((occ::handle<Geom2d_BSplineCurve>*)&(myCurve.Curve())))->Knots();
       for (int i = Knots.Lower(); i <= Knots.Upper(); i++)
+      {
         Knots(i) = aSrcKnots(i);
+      }
     }
     break;
     default:
@@ -570,7 +578,9 @@ void BRepGProp_Face::Load(const bool IsFirstParam, const GeomAbs_IsoType theIsoT
     }
   }
   else
+  {
     return;
+  }
 
   occ::handle<Geom2d_Curve> aLin = new Geom2d_Line(aLoc, aDir);
 
@@ -593,17 +603,25 @@ static void GetRealKnots(const double                                    theMin,
   while (++i < iU)
   {
     if (aStartI == 0 && theKnots->Value(i) > theMin + aTol)
+    {
       aStartI = i;
+    }
 
     if (aEndI == 0 && theKnots->Value(i + 1) > theMax - aTol)
+    {
       aEndI = i;
+    }
 
     if (aStartI != 0 && aEndI != 0)
+    {
       break;
+    }
   }
 
   if (aStartI == 0)
+  {
     aStartI = iU;
+  }
 
   int aNbNode = std::max(0, aEndI - aStartI + 1) + 2;
   int j;
@@ -613,7 +631,9 @@ static void GetRealKnots(const double                                    theMin,
   theRealKnots->SetValue(aNbNode, theMax);
 
   for (i = 2, j = aStartI; j <= aEndI; i++, j++)
+  {
     theRealKnots->SetValue(i, theKnots->Value(j));
+  }
 }
 
 //=================================================================================================

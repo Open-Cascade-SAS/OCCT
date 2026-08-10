@@ -54,7 +54,9 @@ void IGESDimen_GeneralNote::Init(
       || (rotFlags->Lower() != 1 || rotFlags->Length() != num)
       || (start->Lower() != 1 || start->Length() != num)
       || (texts->Lower() != 1 || texts->Length() != num))
+  {
     throw Standard_DimensionMismatch("IGESDimen_GeneralNote : Init");
+  }
 
   theNbChars        = nbChars;
   theBoxWidths      = widths;
@@ -74,7 +76,9 @@ void IGESDimen_GeneralNote::Init(
 void IGESDimen_GeneralNote::SetFormNumber(const int form)
 {
   if ((form < 0 || form > 8) && (form < 100 || form > 102) && form != 105)
+  {
     throw Standard_OutOfRange("IGESDimen_GeneralNote : SetFormNumber");
+  }
   InitTypeAndForm(212, form);
 }
 
@@ -143,7 +147,9 @@ gp_Pnt IGESDimen_GeneralNote::TransformedStartPoint(const int Index) const
 {
   gp_XYZ point = (theStartPoints->Value(Index));
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }
 

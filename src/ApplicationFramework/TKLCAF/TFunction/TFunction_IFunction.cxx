@@ -48,7 +48,9 @@ bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
   // Delete Function
   occ::handle<TFunction_Function> func;
   if (L.FindAttribute(TFunction_Function::GetID(), func))
+  {
     L.ForgetAttribute(func);
+  }
 
   // Take the scope of functions
   occ::handle<TFunction_Scope> scope  = TFunction_Scope::Set(L);
@@ -144,7 +146,9 @@ bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
     NCollection_Map<TDF_Label>            argsMap;
     NCollection_List<TDF_Label>::Iterator itrl(args);
     for (; itrl.More(); itrl.Next())
+    {
       argsMap.Add(itrl.Value());
+    }
 
     // ID of the function
     const int funcID = itrm.Key1();
@@ -154,7 +158,9 @@ bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
     {
       const TDF_Label& anotherL = itrd.Key();
       if (L == anotherL)
+      {
         continue;
+      }
       const NCollection_List<TDF_Label>& anotherRes = itrd.Value();
 
       for (itrl.Initialize(anotherRes); itrl.More(); itrl.Next())
@@ -227,7 +233,9 @@ bool TFunction_IFunction::UpdateDependencies() const
   {
     const TDF_Label& L = itrm.Key2();
     if (L == myLabel)
+    {
       continue;
+    }
     TFunction_IFunction iFunc(L);
     D = iFunc.GetDriver();
 
@@ -356,11 +364,15 @@ occ::handle<TFunction_Driver> TFunction_IFunction::GetDriver(const int thread) c
   occ::handle<TFunction_Driver>   driver;
   occ::handle<TFunction_Function> func;
   if (!myLabel.FindAttribute(TFunction_Function::GetID(), func))
+  {
     throw Standard_NoSuchObject(
       "TFunction_IFunction::GetDriver(): A Function is not found attached to this label");
+  }
   if (!TFunction_DriverTable::Get()->FindDriver(func->GetDriverGUID(), driver, thread))
+  {
     throw Standard_NoSuchObject(
       "TFunction_IFunction::GetDriver(): A driver is not found for this ID");
+  }
   driver->Init(myLabel);
   return driver;
 }
@@ -371,7 +383,9 @@ occ::handle<TFunction_GraphNode> TFunction_IFunction::GetGraphNode() const
 {
   occ::handle<TFunction_GraphNode> graphNode;
   if (!myLabel.FindAttribute(TFunction_GraphNode::GetID(), graphNode))
+  {
     throw Standard_NoSuchObject(
       "TFunction_IFunction::GetStatus(): A graph node is not found attached to this label");
+  }
   return graphNode;
 }

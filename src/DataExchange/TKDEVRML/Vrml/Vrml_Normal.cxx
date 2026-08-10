@@ -63,7 +63,9 @@ Standard_OStream& Vrml_Normal::Print(Standard_OStream& anOStream) const
       anOStream << myVector->Value(i).X() << " " << myVector->Value(i).Y() << " "
                 << myVector->Value(i).Z();
       if (i < myVector->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }

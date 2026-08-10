@@ -42,7 +42,11 @@ void StepDimTol_GeometricToleranceWithDefinedAreaUnit::Init(
                                                      theUnitSize);
   myAreaType = theUnitType;
   if (theHasSecondUnitSize)
+  {
     mySecondUnitSize = theSecondUnitSize;
+  }
   else
+  {
     mySecondUnitSize.Nullify();
+  }
 }

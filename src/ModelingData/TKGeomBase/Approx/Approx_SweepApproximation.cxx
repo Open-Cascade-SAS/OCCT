@@ -101,8 +101,12 @@ void Approx_SweepApproximation::Perform(const double        First,
   myFunc->GetTolerance(BoundTol, Tol3d, TolAngular, ThreeDTol->ChangeArray1());
 
   for (ii = 1; ii <= Num3DSS; ii++)
+  {
     if (ThreeDTol->Value(ii) < Tol3dMin)
+    {
       Tol3dMin = ThreeDTol->Value(ii);
+    }
+  }
 
   if (myFunc->IsRational())
   {
@@ -198,7 +202,9 @@ void Approx_SweepApproximation::Perform(const double        First,
                    myDWeigths->ChangeArray1(),
                    myD2Weigths->ChangeArray1());
     if (!B)
+    {
       continuity = GeomAbs_C1;
+    }
   }
   // Checks if myFunc->D1 is implemented
   if (continuity == GeomAbs_C1)
@@ -214,7 +220,9 @@ void Approx_SweepApproximation::Perform(const double        First,
                    myWeigths->ChangeArray1(),
                    myDWeigths->ChangeArray1());
     if (!B)
+    {
       continuity = GeomAbs_C0;
+    }
   }
 
   // So that F was at least 20 times more exact than its approx
@@ -725,7 +733,9 @@ double Approx_SweepApproximation::MaxErrorOnSurf() const
     {
       err = (Size * MError1d->Value(ii) + MError3d->Value(ii)) / Wmin(ii);
       if (err > MaxError)
+      {
         MaxError = err;
+      }
     }
   }
   else
@@ -734,7 +744,9 @@ double Approx_SweepApproximation::MaxErrorOnSurf() const
     {
       err = MError3d->Value(ii);
       if (err > MaxError)
+      {
         MaxError = err;
+      }
     }
   }
   return MaxError;
@@ -833,10 +845,10 @@ double Approx_SweepApproximation::TolCurveOnSurf(const int Index) const
 
 void Approx_SweepApproximation::Dump(Standard_OStream& o) const
 {
-  o << "Dump of SweepApproximation" << std::endl;
+  o << "Dump of SweepApproximation" << '\n';
   if (done)
   {
-    o << "Error 3d = " << MaxErrorOnSurf() << std::endl;
+    o << "Error 3d = " << MaxErrorOnSurf() << '\n';
 
     if (Num2DSS > 0)
     {
@@ -845,12 +857,16 @@ void Approx_SweepApproximation::Dump(Standard_OStream& o) const
       {
         o << Max2dError(ii);
         if (ii < Num2DSS)
-          o << " , " << std::endl;
+        {
+          o << " , " << '\n';
+        }
       }
-      std::cout << std::endl;
+      std::cout << '\n';
     }
-    o << tabVKnots->Length() - 1 << " Segment(s) of degree " << vdeg << std::endl;
+    o << tabVKnots->Length() - 1 << " Segment(s) of degree " << vdeg << '\n';
   }
   else
-    std::cout << " Not Done " << std::endl;
+  {
+    std::cout << " Not Done " << '\n';
+  }
 }

@@ -21,7 +21,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 
@@ -222,7 +222,7 @@ IntegResult Kronrod(Function&            theFunc,
     return anInitResult;
   }
 
-  NCollection_Vector<Interval> aHeap;
+  NCollection_DynamicArray<Interval> aHeap;
   aHeap.Append({theLower, theUpper, *anInitResult.Value, *anInitResult.AbsoluteError});
 
   double aTotalValue  = *anInitResult.Value;

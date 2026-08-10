@@ -83,7 +83,9 @@ bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSo
     {
       occ::handle<TDF_Attribute> aV;
       if (theRelocTable.IsBound(aNb))
+      {
         aV = occ::down_cast<TDataStd_Variable>(theRelocTable.Find(aNb));
+      }
       else
       {
         aV = new TDataStd_Variable;
@@ -93,7 +95,9 @@ bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSo
 
       // next variable
       if (!XmlObjMgt::GetInteger(aVs, aNb))
+      {
         aNb = 0;
+      }
     }
   }
 
@@ -134,7 +138,9 @@ void XmlMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSo
         aGsStr += TCollection_AsciiString(aNb) + " ";
       }
       else
+      {
         aGsStr += "0 ";
+      }
     }
     anElem.setAttribute(::VariablesString(), aGsStr.ToCString());
   }

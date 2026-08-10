@@ -124,22 +124,30 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
     case Draw_Circle: {
       int I = (int)R;
       if (!I)
+      {
         return;
+      }
       DrawMarker(pt, S, I);
       break;
     }
     case Draw_CircleZoom:
       if (R == 0.0)
+      {
         return;
+      }
       gp_Circ2d C;
       C.SetRadius(R);
       C.SetLocation(pt);
       // if the circus is too small, a "plus" is drawn to mark the point
       bool b = (R * Zoom()) > 2;
       if (b)
+      {
         Draw(C, 0, 2 * M_PI);
+      }
       else
+      {
         DrawMarker(pt, Draw_Plus);
+      }
   }
   Draw_Bounds = true;
   MoveTo(pt);
@@ -157,7 +165,9 @@ void Draw_Display::Draw(const gp_Circ& C,
 {
   double A2 = A3;
   while (A2 < A1)
+  {
     A2 += 2 * M_PI;
+  }
 
   double angle = DEFLECTION / (C.Radius() * Zoom());
   int    n     = (int)((A2 - A1) / angle);
@@ -210,7 +220,9 @@ void Draw_Display::Draw(const gp_Circ2d& C,
 {
   double A2 = A3;
   while (A2 < A1)
+  {
     A2 += 2 * M_PI;
+  }
 
   double angle = DEFLECTION / (C.Radius() * Zoom());
   int    n     = (int)((A2 - A1) / angle);

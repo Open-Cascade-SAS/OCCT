@@ -76,13 +76,21 @@ int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
       case GeomAbs_C3:
       case GeomAbs_CN: {
         if (S == GeomAbs_C1)
+        {
           Cont = 1;
+        }
         else if (S == GeomAbs_C2)
+        {
           Cont = 2;
+        }
         else if (S == GeomAbs_C3)
+        {
           Cont = 3;
+        }
         else
+        {
           Cont = curv->Degree();
+        }
         Law_BSplineKnotSplitting Convector(curv, Cont);
         int                      NbInt = Convector.NbSplits() - 1;
         NCollection_Array1<int>  Inter(1, NbInt + 1);
@@ -115,14 +123,22 @@ int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
                                   Index2,
                                   newLast);
         if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+        {
           Index1++;
+        }
         if (newLast - TK(Index2) > Precision::PConfusion())
+        {
           Index2++;
+        }
 
         myNbIntervals = 1;
         for (int i = 1; i <= NbInt; i++)
+        {
           if (Inter(i) > Index1 && Inter(i) < Index2)
+          {
             myNbIntervals++;
+          }
+        }
       }
       break;
     }
@@ -153,13 +169,21 @@ void Law_BSpFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S
       case GeomAbs_C3:
       case GeomAbs_CN: {
         if (S == GeomAbs_C1)
+        {
           Cont = 1;
+        }
         else if (S == GeomAbs_C2)
+        {
           Cont = 2;
+        }
         else if (S == GeomAbs_C3)
+        {
           Cont = 3;
+        }
         else
+        {
           Cont = curv->Degree();
+        }
         Law_BSplineKnotSplitting Convector(curv, Cont);
         int                      NbInt = Convector.NbSplits() - 1;
         NCollection_Array1<int>  Inter(1, NbInt + 1);
@@ -192,9 +216,13 @@ void Law_BSpFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S
                                   Index2,
                                   newLast);
         if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+        {
           Index1++;
+        }
         if (newLast - TK(Index2) > Precision::PConfusion())
+        {
           Index2++;
+        }
 
         Inter(1)      = Index1;
         myNbIntervals = 1;
@@ -231,17 +259,25 @@ double Law_BSpFunc::Value(const double X)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb < 1)
+      {
         Ideb = 1;
+      }
       if (Ideb >= Ifin)
+      {
         Ifin = Ideb + 1;
+      }
     }
     if (X == last)
     {
       curv->LocateU(last, PosTol, Ideb, Ifin);
       if (Ifin > curv->NbKnots())
+      {
         Ifin = curv->NbKnots();
+      }
       if (Ideb >= Ifin)
+      {
         Ideb = Ifin - 1;
+      }
     }
     return curv->LocalValue(X, Ideb, Ifin);
   }
@@ -262,17 +298,25 @@ void Law_BSpFunc::D1(const double X, double& F, double& D)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb < 1)
+      {
         Ideb = 1;
+      }
       if (Ideb >= Ifin)
+      {
         Ifin = Ideb + 1;
+      }
     }
     if (X == last)
     {
       curv->LocateU(last, PosTol, Ideb, Ifin);
       if (Ifin > curv->NbKnots())
+      {
         Ifin = curv->NbKnots();
+      }
       if (Ideb >= Ifin)
+      {
         Ideb = Ifin - 1;
+      }
     }
     curv->LocalD1(X, Ideb, Ifin, F, D);
   }
@@ -293,17 +337,25 @@ void Law_BSpFunc::D2(const double X, double& F, double& D, double& D2)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb < 1)
+      {
         Ideb = 1;
+      }
       if (Ideb >= Ifin)
+      {
         Ifin = Ideb + 1;
+      }
     }
     if (X == last)
     {
       curv->LocateU(last, PosTol, Ideb, Ifin);
       if (Ifin > curv->NbKnots())
+      {
         Ifin = curv->NbKnots();
+      }
       if (Ideb >= Ifin)
+      {
         Ideb = Ifin - 1;
+      }
     }
     curv->LocalD2(X, Ideb, Ifin, F, D, D2);
   }

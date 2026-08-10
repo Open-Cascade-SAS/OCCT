@@ -40,9 +40,13 @@ int Transfer_FinderProcess::NextMappedWithAttribute(const char* const name, cons
   {
     occ::handle<Transfer_Finder> fnd = Mapped(num);
     if (fnd.IsNull())
+    {
       continue;
+    }
     if (!fnd->Attribute(name).IsNull())
+    {
       return num;
+    }
   }
   return 0;
 }
@@ -53,7 +57,9 @@ occ::handle<Transfer_TransientMapper> Transfer_FinderProcess::TransientMapper(
   occ::handle<Transfer_TransientMapper> mapper = new Transfer_TransientMapper(obj);
   int                                   index  = MapIndex(mapper);
   if (index == 0)
+  {
     return mapper;
+  }
   return occ::down_cast<Transfer_TransientMapper>(Mapped(index));
 }
 
@@ -61,7 +67,9 @@ void Transfer_FinderProcess::PrintTrace(const occ::handle<Transfer_Finder>& star
                                         Standard_OStream&                   S) const
 {
   if (!start.IsNull())
+  {
     S << " Type:" << start->ValueTypeName();
+  }
 }
 
 void Transfer_FinderProcess::PrintStats(const int mode, Standard_OStream& S) const
@@ -69,38 +77,52 @@ void Transfer_FinderProcess::PrintStats(const int mode, Standard_OStream& S) con
   S << "\n*******************************************************************\n";
   if (mode == 1)
   { //  Basic statistics
-    S << "********                 Basic Statistics                  ********" << std::endl;
+    S << "********                 Basic Statistics                  ********" << '\n';
 
     int nbr = 0, nbe = 0, nbw = 0;
     int i, max = NbMapped(), nbroots = NbRoots();
-    S << "****        Nb Final Results    : " << nbroots << std::endl;
+    S << "****        Nb Final Results    : " << nbroots << '\n';
 
     for (i = 1; i <= max; i++)
     {
       const occ::handle<Transfer_Binder>& binder = MapItem(i);
       if (binder.IsNull())
+      {
         continue;
+      }
       const occ::handle<Interface_Check> ach  = binder->Check();
       Transfer_StatusExec                stat = binder->StatusExec();
       if (stat != Transfer_StatusInitial && stat != Transfer_StatusDone)
+      {
         nbe++;
+      }
       else
       {
         if (ach->NbWarnings() > 0)
+        {
           nbw++;
+        }
         if (binder->HasResult())
+        {
           nbr++;
+        }
       }
     }
     if (nbr > nbroots)
+    {
       S << "****      ( Itermediate Results : " << nbr - nbroots << " )\n";
+    }
     if (nbe > 0)
+    {
       S << "****                  Errors on :" << Interface_MSG::Blanks(nbe, 4) << nbe
         << " Entities\n";
+    }
     if (nbw > 0)
+    {
       S << "****                Warnings on : " << Interface_MSG::Blanks(nbw, 4) << nbw
         << " Entities\n";
+    }
     S << "*******************************************************************";
   }
-  S << std::endl;
+  S << '\n';
 }

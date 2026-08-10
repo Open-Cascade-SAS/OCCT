@@ -66,7 +66,9 @@ bool TPrsStd_NamedShapeDriver::Update(const TDF_Label&                    aLabel
 
   occ::handle<AIS_Shape> AISShape;
   if (AIS.IsNull())
+  {
     AISShape = new AIS_Shape(S);
+  }
   else
   {
     AISShape = occ::down_cast<AIS_Shape>(AIS);

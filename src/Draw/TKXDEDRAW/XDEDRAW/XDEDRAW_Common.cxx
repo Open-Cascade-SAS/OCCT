@@ -110,7 +110,9 @@ static int FromShape(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   Sprintf(command, "fromshape %.200s -1", theArgVec[1]);
   const XSControl_WorkSessionMap& DictWS = XSDRAW::WorkSessionList();
   if (DictWS.IsEmpty())
+  {
     return theDI.Eval(command);
+  }
 
   occ::handle<XSControl_WorkSession> aWS = XSDRAW::Session();
   for (XSControl_WorkSessionMap::Iterator DicIt(DictWS); DicIt.More(); DicIt.Next())
@@ -149,7 +151,9 @@ static int Expand(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   bool                           recurs     = false;
   if (atoi(theArgVec[2]) != 0)
+  {
     recurs = true;
+  }
 
   if (theNbArgs == 3)
   {

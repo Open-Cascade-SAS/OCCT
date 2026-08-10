@@ -15,12 +15,17 @@
 
 #include <OpenGl_View.hxx>
 
+#include <cmath>
+#include <NCollection_LinearVector.hxx>
+#include <Standard_OutOfMemory.hxx>
+
 #include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_XRSession.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_BackgroundArray.hxx>
@@ -28,6 +33,7 @@
 #include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GlCore32.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_RenderFilter.hxx>
@@ -37,6 +43,7 @@
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OSD_Parallel.hxx>
+#include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
 
 #include "../Textures/Textures_EnvLUT.pxx"
@@ -74,7 +81,7 @@ static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToChe
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
-                                        NCollection_Vector<int>&           theFormats)
+                                        NCollection_DynamicArray<int>&     theFormats)
 {
   theFormats.Clear();
   switch (theConfigIndex)
@@ -134,6 +141,7 @@ OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
       myTextureParams(new OpenGl_Aspects()),
       myCubeMapParams(new OpenGl_Aspects()),
       myColoredQuadParams(new OpenGl_Aspects()),
+      myGridVao(0),
       myPBREnvState(OpenGl_PBREnvState_NONEXISTENT),
       myPBREnvRequest(false),
       // ray-tracing fields initialization
@@ -275,6 +283,13 @@ void OpenGl_View::ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
   {
     myPBREnvironment->Release(theCtx.get());
   }
+
+  if (myGridVao != 0 && !theCtx.IsNull() && theCtx->core30 != nullptr)
+  {
+    theCtx->core30->glDeleteVertexArrays(1, &myGridVao);
+  }
+  myGridVao = 0;
+
   ReleaseXR();
 }
 
@@ -448,7 +463,9 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
 {
   OpenGl_View* aView = dynamic_cast<OpenGl_View*>(theView);
   if (aView == nullptr)
+  {
     return;
+  }
 
   Bnd_Box aBox = theView->MinMaxValues();
   if (!aBox.IsVoid())
@@ -521,12 +538,12 @@ bool OpenGl_View::BufferDump(Image_PixMap& theImage, const Graphic3d_BufferType&
     return false;
   }
 
-  std::vector<GLfloat> aValues;
+  NCollection_LinearVector<GLfloat> aValues;
   try
   {
-    aValues.resize(aW * aH);
+    aValues.Resize(aW * aH);
   }
-  catch (const std::bad_alloc&)
+  catch (const Standard_OutOfMemory&)
   {
     return false;
   }
@@ -563,7 +580,7 @@ bool OpenGl_View::ShadowMapDump(Image_PixMap& theImage, const TCollection_AsciiS
   }
 
   const occ::handle<OpenGl_Context>& aGlCtx = myWorkspace->GetGlContext();
-  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
   {
     occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
     if (!aShadow.IsNull() && aShadow->LightSource()->Name() == theLightName)
@@ -884,6 +901,15 @@ Bnd_Box OpenGl_View::MinMaxValues(const bool theToIncludeAuxiliary) const
     aBox.Add(aStatsBox);
   }
   return aBox;
+}
+
+//=================================================================================================
+
+void OpenGl_View::ZFitAllBounds(Bnd_Box& thePrimaryBox, Bnd_Box& theGraphicBox) const
+{
+  thePrimaryBox = base_type::MinMaxValues(false);
+  theGraphicBox = MinMaxValues(true);
+  myShaderGrid.AddZFitBounds(theGraphicBox, Camera());
 }
 
 //=================================================================================================
@@ -1508,7 +1534,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       {
         for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
         {
-          NCollection_Vector<int> aColorFormats;
+          NCollection_DynamicArray<int> aColorFormats;
           aColorFormats.Append(GL_RG32F);
           aColorFormats.Append(GL_RGBA16F);
           aColorFormats.Append(GL_RGBA16F);
@@ -1649,14 +1675,14 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                         && myRenderParams.Method != Graphic3d_RM_RAYTRACING;
   if (toUseShadowMap)
   {
-    if (myShadowMaps->Size() != myLights->NbCastShadows())
+    if (myShadowMaps->Length() != myLights->NbCastShadows())
     {
       myShadowMaps->Release(aCtx.get());
       myShadowMaps->Resize(0, myLights->NbCastShadows() - 1, true);
     }
 
     const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
-    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
     {
       occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
       if (aShadow.IsNull())
@@ -1670,7 +1696,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() != myRenderParams.ShadowMapResolution && toUseShadowMap)
       {
-        NCollection_Vector<int> aDummy;
+        NCollection_DynamicArray<int> aDummy;
         if (!aShadowFbo->Init(aCtx,
                               NCollection_Vec2<int>(myRenderParams.ShadowMapResolution),
                               aDummy,
@@ -2007,7 +2033,9 @@ void OpenGl_View::Redraw()
 void OpenGl_View::RedrawImmediate()
 {
   if (!myWorkspace->Activate())
+  {
     return;
+  }
 
   // no special handling of HMD display, since it will force full Redraw() due to no frame caching
   // (myBackBufferRestored)
@@ -2579,6 +2607,12 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   }
 
   myWorkspace->SetEnvironmentTexture(occ::handle<OpenGl_TextureSet>());
+
+  // Render shader-based grid on top of opaque scene, before trihedron.
+  if (!theToDrawImmediate)
+  {
+    renderGrid();
+  }
 
   // ===============================
   //      Step 4: Trihedron
@@ -3544,4 +3578,191 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
   }
   aGlTextureSet.Nullify();
   OpenGl_Element::Destroy(theCtx.get(), aTmpGlAspects);
+}
+
+//=================================================================================================
+
+void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+{
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
+  if (!aCtx.IsNull() && aCtx->core30 == nullptr)
+  {
+    myShaderGrid.Erase();
+    Invalidate();
+    return;
+  }
+
+  myShaderGrid.Display(theParams, thePlane, Camera(), aCtx);
+  Invalidate();
+}
+
+//=================================================================================================
+
+void OpenGl_View::GridErase()
+{
+  myShaderGrid.Erase();
+  Invalidate();
+}
+
+//=================================================================================================
+
+bool OpenGl_View::ShaderGridEcho(const int theX, const int theY, Graphic3d_Vertex& thePoint) const
+{
+  Graphic3d_Vertex aDisplayPoint;
+  return ShaderGridEcho(theX, theY, thePoint, aDisplayPoint);
+}
+
+//=================================================================================================
+
+bool OpenGl_View::ShaderGridEcho(const int         theX,
+                                 const int         theY,
+                                 Graphic3d_Vertex& thePoint,
+                                 Graphic3d_Vertex& theDisplayPoint) const
+{
+  if (Window().IsNull())
+  {
+    return false;
+  }
+
+  int aWidth  = 0;
+  int aHeight = 0;
+  Window()->Size(aWidth, aHeight);
+  return myShaderGrid.Echo(Camera(), aWidth, aHeight, theX, theY, thePoint, theDisplayPoint);
+}
+
+//=================================================================================================
+
+bool OpenGl_View::ShaderGridSnapPoint(const Graphic3d_Vertex& thePoint,
+                                      Graphic3d_Vertex&       theGridPoint) const
+{
+  return myShaderGrid.SnapPoint(Camera(), thePoint, theGridPoint);
+}
+
+//=================================================================================================
+
+void OpenGl_View::renderGrid()
+{
+  if (!myShaderGrid.IsShown() || myShaderGrid.Params().DrawMode() == Aspect_GDM_None)
+  {
+    return;
+  }
+
+  const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
+  if (aContext.IsNull())
+  {
+    return;
+  }
+  if (aContext->core30 == nullptr)
+  {
+    // The shader grid requires GL 3.0+ / GLES 3.0+ (VAO + gl_VertexID).
+    // Warn once per process so the caller knows why the grid isn't drawn; snap
+    // math still works. The process scope avoids per-view state bloat - a stray
+    // missed warning on a second view is less costly than a data member.
+    static bool THE_GRID_GL30_WARNED = false;
+    if (!THE_GRID_GL30_WARNED)
+    {
+      THE_GRID_GL30_WARNED = true;
+      aContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                            GL_DEBUG_TYPE_OTHER,
+                            0,
+                            GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: shader-based grid requires GL 3.0 / GLES 3.0 or later; "
+                            "grid will not be rendered on this driver. Snap selection remains "
+                            "functional.");
+    }
+    return;
+  }
+
+  const occ::handle<Graphic3d_Camera>& aCamera = aContext->Camera();
+  if (aCamera.IsNull())
+  {
+    return;
+  }
+
+  if (myGridVao == 0)
+  {
+    aContext->core30->glGenVertexArrays(1, &myGridVao);
+    if (myGridVao == 0)
+    {
+      myShaderGrid.Erase();
+      return;
+    }
+  }
+
+  GLint aPrevVao = 0;
+  aContext->core11fwd->glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &aPrevVao);
+
+  GLboolean wasDepthTest  = aContext->core11fwd->glIsEnabled(GL_DEPTH_TEST);
+  GLboolean wasBlend      = aContext->core11fwd->glIsEnabled(GL_BLEND);
+  GLboolean wasCullFace   = aContext->core11fwd->glIsEnabled(GL_CULL_FACE);
+  GLboolean wasDepthWrite = GL_TRUE;
+  aContext->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &wasDepthWrite);
+  GLint aPrevDepthFunc = GL_LESS;
+  aContext->core11fwd->glGetIntegerv(GL_DEPTH_FUNC, &aPrevDepthFunc);
+  GLint aPrevBlendSrcRgb = GL_ONE, aPrevBlendDstRgb = GL_ZERO;
+  GLint aPrevBlendSrcA = GL_ONE, aPrevBlendDstA = GL_ZERO;
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_SRC_RGB, &aPrevBlendSrcRgb);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_RGB, &aPrevBlendDstRgb);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_SRC_ALPHA, &aPrevBlendSrcA);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_ALPHA, &aPrevBlendDstA);
+  const occ::handle<OpenGl_ShaderProgram> aPrevProgram = aContext->ActiveProgram();
+
+  aContext->ProjectionState.Push();
+  aContext->ProjectionState.SetCurrent(aCamera->ProjectionMatrixF());
+  aContext->ApplyProjectionMatrix();
+
+  const NCollection_Mat4<float> aWorldViewCurrent = aContext->WorldViewState.Current();
+  aContext->WorldViewState.Push();
+  aContext->WorldViewState.SetCurrent(myShaderGrid.DrawWorldView(aWorldViewCurrent));
+  aContext->ApplyWorldViewMatrix();
+
+  aContext->core11fwd->glEnable(GL_DEPTH_TEST);
+  aContext->core11fwd->glDepthFunc(GL_LEQUAL);
+  aContext->core11fwd->glDepthMask(GL_FALSE);
+  aContext->core11fwd->glEnable(GL_BLEND);
+  aContext->core11fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // The clip-space full-screen quad winds CW; if back-face culling is on
+  // (leftover from prior scene render with solid interiors), every triangle
+  // is culled and the grid silently vanishes. Disable culling for the draw
+  // call and restore at the end.
+  aContext->core11fwd->glDisable(GL_CULL_FACE);
+  aContext->core30->glBindVertexArray(myGridVao);
+
+  if (aContext->ShaderManager()->BindGridProgram())
+  {
+    const occ::handle<OpenGl_ShaderProgram>& aProg = aContext->ActiveProgram();
+    myShaderGrid.SetUniforms(aContext, aProg, aCamera, aContext->WorldViewState.Current());
+    aContext->core11fwd->glDrawArrays(GL_TRIANGLES, 0, 3);
+  }
+
+  aContext->BindProgram(aPrevProgram);
+  aContext->core30->glBindVertexArray((GLuint)aPrevVao);
+
+  aContext->WorldViewState.Pop();
+  aContext->ProjectionState.Pop();
+  aContext->ApplyWorldViewMatrix();
+  aContext->ApplyProjectionMatrix();
+
+  if (wasDepthTest == GL_TRUE)
+  {
+    aContext->core11fwd->glEnable(GL_DEPTH_TEST);
+  }
+  else
+  {
+    aContext->core11fwd->glDisable(GL_DEPTH_TEST);
+  }
+  aContext->core11fwd->glDepthFunc(aPrevDepthFunc);
+  aContext->core11fwd->glDepthMask(wasDepthWrite);
+  if (wasBlend == GL_FALSE)
+  {
+    aContext->core11fwd->glDisable(GL_BLEND);
+  }
+  aContext->core15fwd->glBlendFuncSeparate(aPrevBlendSrcRgb,
+                                           aPrevBlendDstRgb,
+                                           aPrevBlendSrcA,
+                                           aPrevBlendDstA);
+  if (wasCullFace == GL_TRUE)
+  {
+    aContext->core11fwd->glEnable(GL_CULL_FACE);
+  }
 }

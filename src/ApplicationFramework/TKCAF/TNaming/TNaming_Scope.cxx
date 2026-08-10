@@ -78,10 +78,14 @@ void TNaming_Scope::ValidChildren(const TDF_Label& L, const bool withroot)
   {
     TDF_ChildIterator itc(L, true);
     for (; itc.More(); itc.Next())
+    {
       myValid.Add(itc.Value());
+    }
   }
   if (withroot)
+  {
     myValid.Add(L);
+  }
 }
 
 //=================================================================================================
@@ -99,10 +103,14 @@ void TNaming_Scope::UnvalidChildren(const TDF_Label& L, const bool withroot)
   {
     TDF_ChildIterator itc(L, true);
     for (; itc.More(); itc.Next())
+    {
       myValid.Remove(itc.Value());
+    }
   }
   if (withroot)
+  {
     myValid.Remove(L);
+  }
 }
 
 //=================================================================================================
@@ -110,7 +118,9 @@ void TNaming_Scope::UnvalidChildren(const TDF_Label& L, const bool withroot)
 bool TNaming_Scope::IsValid(const TDF_Label& L) const
 {
   if (myWithValid)
+  {
     return myValid.Contains(L);
+  }
   return true;
 }
 
@@ -133,6 +143,8 @@ NCollection_Map<TDF_Label>& TNaming_Scope::ChangeValid()
 TopoDS_Shape TNaming_Scope::CurrentShape(const occ::handle<TNaming_NamedShape>& NS) const
 {
   if (myWithValid)
+  {
     return TNaming_Tool::CurrentShape(NS, myValid);
+  }
   return TNaming_Tool::CurrentShape(NS);
 }

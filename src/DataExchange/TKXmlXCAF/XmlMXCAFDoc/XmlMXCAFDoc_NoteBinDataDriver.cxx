@@ -55,15 +55,21 @@ bool XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&       theS
   XmlObjMgt_DOMString aMIMEtype = anElement.getAttribute(::MIMEtype());
   XmlObjMgt_DOMString aSize     = anElement.getAttribute(::Size());
   if (aTitle == nullptr || aMIMEtype == nullptr || aSize == nullptr)
+  {
     return false;
+  }
 
   occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theTarget);
   if (aNote.IsNull())
+  {
     return false;
+  }
 
   int nbSize = 0;
   if (!aSize.GetInteger(nbSize))
+  {
     return false;
+  }
 
   XmlObjMgt_DOMString aDataStr = XmlObjMgt::GetStringValue(theSource);
   Standard_SStream    anSS(aDataStr.GetString());

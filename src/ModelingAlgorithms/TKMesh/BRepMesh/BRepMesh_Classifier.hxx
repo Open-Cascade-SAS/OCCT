@@ -56,8 +56,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
 
 private:
-  NCollection_Vector<NCollection_Handle<CSLib_Class2d>> myTabClass;
-  IMeshData::VectorOfBoolean                            myTabOrient;
+  NCollection_DynamicArray<NCollection_Handle<CSLib_Class2d>> myTabClass;
+  IMeshData::VectorOfBoolean                                  myTabOrient;
 };
 
 #endif

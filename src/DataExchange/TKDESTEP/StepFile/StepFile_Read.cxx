@@ -59,10 +59,12 @@ static std::mutex& GetGlobalReadMutex()
 void StepFile_Interrupt(const char* theErrorMessage, const bool theIsFail)
 {
   if (theErrorMessage == nullptr)
+  {
     return;
+  }
 
   Message_Messenger::StreamBuffer sout = theIsFail ? Message::SendFail() : Message::SendTrace();
-  sout << "**** ERR StepFile : " << theErrorMessage << "    ****" << std::endl;
+  sout << "**** ERR StepFile : " << theErrorMessage << "    ****" << '\n';
 }
 
 static int StepFile_Read(const char*                                 theName,
@@ -186,7 +188,9 @@ static int StepFile_Read(const char*                                 theName,
 
   readtool.LoadModel(theStepModel);
   if (theStepModel->Protocol().IsNull())
+  {
     theStepModel->SetProtocol(theProtocol);
+  }
   aFileDataModel.ClearRecorder(2);
   anFailsCount = undirec->GlobalCheck()->NbFails() - anFailsCount;
   if (anFailsCount > 0)

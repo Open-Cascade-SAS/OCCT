@@ -60,48 +60,68 @@ void IGESData_IGESModel::ClearHeader()
 void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const int) const
 {
   int ns = thestart->Length();
-  S << "****    Dump of IGES Model , Start and Global Sections   ****" << std::endl;
+  S << "****    Dump of IGES Model , Start and Global Sections   ****" << '\n';
   if (ns > 0)
   {
     S << "****    Start Section : " << ns << " Line(s)   ****\n";
     for (int i = 1; i <= ns; i++)
-      S << "[" << (i < 10 ? " " : "") << i << "]:" << thestart->Value(i)->ToCString() << std::endl;
+    {
+      S << "[" << (i < 10 ? " " : "") << i << "]:" << thestart->Value(i)->ToCString() << '\n';
+    }
   }
   S << "\n****    Global Section    ****\n";
   char sep = theheader.Separator();
   if (sep == ',')
+  {
     S << "[ 1]      Default Separator : " << sep;
+  }
   else
+  {
     S << "[ 1]  Non Default Separator : " << sep;
+  }
   char emk = theheader.EndMark();
   if (emk == ';')
+  {
     S << "        [ 2]      Default End Mark  : " << emk;
+  }
   else
+  {
     S << "        [ 2]  Non Default End Mark  : " << emk;
+  }
   S << "\n";
   occ::handle<TCollection_HAsciiString> str;
   str = theheader.SendName();
   if (!str.IsNull())
-    S << "[ 3]  Sender                : " << str->ToCString() << std::endl;
+  {
+    S << "[ 3]  Sender                : " << str->ToCString() << '\n';
+  }
   str = theheader.FileName();
   if (!str.IsNull())
-    S << "[ 4]  (recorded) File Name  : " << str->ToCString() << std::endl;
+  {
+    S << "[ 4]  (recorded) File Name  : " << str->ToCString() << '\n';
+  }
   str = theheader.SystemId();
   if (!str.IsNull())
-    S << "[ 5]  System Identification : " << str->ToCString() << std::endl;
+  {
+    S << "[ 5]  System Identification : " << str->ToCString() << '\n';
+  }
   str = theheader.InterfaceVersion();
   if (!str.IsNull())
-    S << "[ 6]  Interface Version     : " << str->ToCString() << std::endl;
-  S << std::endl;
+  {
+    S << "[ 6]  Interface Version     : " << str->ToCString() << '\n';
+  }
+  S << '\n';
   S << "[ 7]  Integer Bits          : " << theheader.IntegerBits()
-    << "          Features for Reals : " << std::endl;
+    << "          Features for Reals : " << '\n';
   S << "[ 8]  Single Max.Power(10)  : " << theheader.MaxPower10Single();
   S << "         [ 9]  Digits   : " << theheader.MaxDigitsSingle() << "\n";
   S << "[10]  Double Max.Power(10)  : " << theheader.MaxPower10Double();
   S << "         [11]  Digits   : " << theheader.MaxDigitsDouble() << "\n\n";
   str = theheader.ReceiveName();
   if (!str.IsNull())
+  {
     S << "[12]  Receiver              : " << str->ToCString() << "\n";
+  }
   S << "[13]  Scale                 : " << theheader.Scale() << "\n";
   S << "[14]  Unit  Flag            : " << theheader.UnitFlag();
   //  if (Interface_Static::IVal("read.scale.unit") == 1)
@@ -113,26 +133,38 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const int) const
 
   str = theheader.UnitName();
   if (!str.IsNull())
+  {
     S << "[15]  Unit  Name            : " << str->ToCString() << "\n\n";
+  }
   S << "[16]  Line Weight  Gradient : " << theheader.LineWeightGrad() << "\n";
   S << "[17]  Line Weight  Max Value: " << theheader.MaxLineWeight() << "\n";
 
   str = theheader.Date();
   if (!str.IsNull())
+  {
     S << "[18]  (Creation) Date       : " << str->ToCString() << "  i.e. "
       << IGESData_GlobalSection::NewDateString(str, 1)->ToCString() << "\n";
+  }
   S << "[19]  Resolution            : " << theheader.Resolution() << "\n";
   if (theheader.HasMaxCoord())
+  {
     S << "[20]  Maximum Coord         : " << theheader.MaxCoord() << "\n\n";
+  }
   else
+  {
     S << "[20]  Maximum Coord           not defined\n\n";
+  }
 
   str = theheader.AuthorName();
   if (!str.IsNull())
+  {
     S << "[21]  Author                : " << str->ToCString() << "\n";
+  }
   str = theheader.CompanyName();
   if (!str.IsNull())
+  {
     S << "[22]  Company               : " << str->ToCString() << "\n";
+  }
   int num = theheader.IGESVersion();
   S << "[23]  IGES Version Number   : " << num
     << "   -> Name : " << IGESData_BasicEditor::IGESVersionName(num);
@@ -140,25 +172,29 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const int) const
   num = theheader.DraftingStandard();
   S << "\n[24]  Drafting Standard     : " << num;
   if (num > 0)
+  {
     S << "   -> Name : " << IGESData_BasicEditor::DraftingName(num);
-  S << std::endl;
+  }
+  S << '\n';
 
   if (theheader.HasLastChangeDate())
   {
     str = theheader.LastChangeDate();
     S << "[25]  Last Change Date      : " << str->ToCString() << "  i.e. "
-      << IGESData_GlobalSection::NewDateString(str, 1)->ToCString() << std::endl;
+      << IGESData_GlobalSection::NewDateString(str, 1)->ToCString() << '\n';
   }
   else
-    S << "[25]  Last Change Date        not defined (version IGES < 5.1)" << std::endl;
+  {
+    S << "[25]  Last Change Date        not defined (version IGES < 5.1)" << '\n';
+  }
 
   if (theheader.HasApplicationProtocol())
   {
     str = theheader.ApplicationProtocol();
-    S << "[26]  Application Protocol  : " << str->ToCString() << std::endl;
+    S << "[26]  Application Protocol  : " << str->ToCString() << '\n';
   }
 
-  S << " ****     End of Dump      ****" << std::endl;
+  S << " ****     End of Dump      ****" << '\n';
 }
 
 //=================================================================================================
@@ -181,7 +217,9 @@ int IGESData_IGESModel::NbStartLines() const
 const char* IGESData_IGESModel::StartLine(const int num) const
 {
   if (num > 0 && num <= thestart->Length())
+  {
     return thestart->Value(num)->ToCString();
+  }
   return voidline;
 }
 
@@ -200,15 +238,23 @@ void IGESData_IGESModel::SetStartSection(
   {
     thestart = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (list.IsNull())
+    {
       return;
+    }
     int i, nb = list->Length();
     for (i = 1; i <= nb; i++)
+    {
       thestart->Append(new TCollection_HAsciiString(list->Value(i)->ToCString()));
+    }
   }
   else if (list.IsNull())
+  {
     thestart = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   else
+  {
     thestart = list;
+  }
 }
 
 //=================================================================================================
@@ -216,9 +262,13 @@ void IGESData_IGESModel::SetStartSection(
 void IGESData_IGESModel::AddStartLine(const char* const line, const int atnum)
 {
   if (atnum <= 0 || atnum > thestart->Length())
+  {
     thestart->Append(new TCollection_HAsciiString(line));
+  }
   else
+  {
     thestart->InsertBefore(atnum, new TCollection_HAsciiString(line));
+  }
 }
 
 //=================================================================================================
@@ -246,21 +296,27 @@ bool IGESData_IGESModel::ApplyStatic(const char* const param)
   {
     val = Interface_Static::CVal("write.iges.header.receiver");
     if (!val || val[0] == '\0')
+    {
       return false;
+    }
     theheader.SetReceiveName(new TCollection_HAsciiString(val));
   }
   if (param[0] == 'a')
   {
     val = Interface_Static::CVal("write.iges.header.author");
     if (!val || val[0] == '\0')
+    {
       return false;
+    }
     theheader.SetAuthorName(new TCollection_HAsciiString(val));
   }
   if (param[0] == 'c')
   {
     val = Interface_Static::CVal("write.iges.header.company");
     if (!val || val[0] == '\0')
+    {
       return false;
+    }
     theheader.SetCompanyName(new TCollection_HAsciiString(val));
   }
   return true;
@@ -279,9 +335,13 @@ int IGESData_IGESModel::DNum(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   int num = Number(ent);
   if (num == 0)
+  {
     return 0;
+  }
   else
+  {
     return 2 * num - 1;
+  }
 }
 
 //=================================================================================================
@@ -495,7 +555,9 @@ void IGESData_IGESModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
       ach->SendWarning(Msg55);
     }
     else
+    {
       IGESData_VerifyDate(theheader.LastChangeDate(), ach, "Last Change Date");
+    }
   }
 }
 
@@ -517,38 +579,59 @@ void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
 
   const occ::handle<TCollection_HAsciiString>& stdvar = str;
   if (strcmp(mess, "Last Change Date") == 0)
+  {
     Msg57.Arg(25);
+  }
   else
+  {
     Msg57.Arg(18);
+  }
   if (((stdvar->Length() != 13) && (stdvar->Length() != 15)) || !stdvar->IsRealValue())
+  {
     ach->SendFail(Msg57);
-  // smh#13 For short year date
+    // smh#13 For short year date
+  }
   else if ((stdvar->Value(3) > '1' || (stdvar->Value(3) == '1' && stdvar->Value(4) > '2'))
            && (stdvar->Length() == 13))
+  {
     ach->SendFail(Msg57);
-
+  }
   else if ((stdvar->Value(5) > '3' || (stdvar->Value(5) == '3' && stdvar->Value(6) > '1'))
            && (stdvar->Length() == 13))
+  {
     ach->SendFail(Msg57);
+  }
   else if ((stdvar->Value(7) != '.' || stdvar->Value(10) > '5' || stdvar->Value(12) > '5')
            && (stdvar->Length() == 13))
+  {
     ach->SendFail(Msg57);
+  }
   else if ((stdvar->Value(8) > '2' || (stdvar->Value(8) == '2' && stdvar->Value(9) > '3'))
            && (stdvar->Length() == 13))
+  {
     ach->SendFail(Msg57);
-  // smh#13 For long year date
+    // smh#13 For long year date
+  }
   else if ((stdvar->Value(5) > '1' || (stdvar->Value(5) == '1' && stdvar->Value(6) > '2'))
            && (stdvar->Length() == 15))
+  {
     ach->SendFail(Msg57);
+  }
   else if ((stdvar->Value(7) > '3' || (stdvar->Value(7) == '3' && stdvar->Value(8) > '1'))
            && (stdvar->Length() == 15))
+  {
     ach->SendFail(Msg57);
+  }
   else if ((stdvar->Value(9) != '.' || stdvar->Value(12) > '5' || stdvar->Value(14) > '5')
            && (stdvar->Length() == 15))
+  {
     ach->SendFail(Msg57);
+  }
   else if ((stdvar->Value(10) > '2' || (stdvar->Value(10) == '2' && stdvar->Value(11) > '3'))
            && (stdvar->Length() == 15))
+  {
     ach->SendFail(Msg57);
+  }
 }
 
 //=================================================================================================
@@ -564,7 +647,9 @@ void IGESData_IGESModel::SetLineWeights(const double defw)
     lwg  = 1;
   }
   for (int i = 1; i <= nb; i++)
+  {
     Entity(i)->SetLineWeight(defw, maxw, lwg);
+  }
 }
 
 //=================================================================================================
@@ -578,14 +663,20 @@ void IGESData_IGESModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     S << "Null";
+  }
   else
   {
     int num = Number(ent);
     if (num == 0)
+    {
       S << "??";
+    }
     else
+    {
       S << "D" << (2 * num - 1);
+    }
   }
 }
 
@@ -599,7 +690,9 @@ void IGESData_IGESModel::PrintToLog(const occ::handle<Standard_Transient>& ent,
   {
     int num = Number(ent);
     if (num == 0)
+    {
       S << "??";
+    }
     else
     {
       S << " DE : " << (2 * num - 1) << " type : " << igesent->TypeNumber();
@@ -615,12 +708,16 @@ void IGESData_IGESModel::PrintInfo(const occ::handle<Standard_Transient>& ent,
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     S << "(NOT IGES)";
+  }
   else
   {
     int num = Number(ent);
     if (num == 0)
+    {
       S << "??";
+    }
     else
     {
       S << (2 * num - 1) << "type " << Type(ent)->Name();
@@ -636,15 +733,21 @@ occ::handle<TCollection_HAsciiString> IGESData_IGESModel::StringLabel(
   occ::handle<TCollection_HAsciiString> label;
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return new TCollection_HAsciiString("(NOT IGES)");
+  }
   else
   {
     char text[20];
     int  num = Number(ent);
     if (num > 0)
+    {
       Sprintf(text, "D%d", 2 * num - 1);
+    }
     else
+    {
       Sprintf(text, "D0...");
+    }
     label = new TCollection_HAsciiString(text);
   }
   return label;

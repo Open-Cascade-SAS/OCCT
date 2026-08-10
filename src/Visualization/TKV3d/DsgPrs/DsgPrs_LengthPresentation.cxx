@@ -55,9 +55,13 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -82,11 +86,15 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   aPrims->AddVertex(PointMax);
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
 
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
 
   // arrow 1 : 2nd group
   Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
@@ -229,9 +237,13 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -257,11 +269,15 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   aPrims->AddVertex(PointMax);
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
 
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
 
   // processing of call  1
   aPrims->AddVertex(AttachmentPoint1);
@@ -362,7 +378,9 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
     delta      = deltaU / (double)(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 1; i <= NodeNumber; i++, FirstU += delta)
+    {
       aPrims->AddVertex(VCurve->Value(FirstU));
+    }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   Alpha = std::abs(deltaV);
@@ -372,7 +390,9 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
     delta      = deltaV / (double)(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 1; i <= NodeNumber; i++, FirstV += delta)
+    {
       aPrims->AddVertex(UCurve->Value(FirstV));
+    }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 }

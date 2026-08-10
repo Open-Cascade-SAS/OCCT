@@ -78,9 +78,13 @@ inline bool SameUV(const gp_Pnt2d&            P1,
 {
   bool isSame = true;
   if (theBAS.IsUPeriodic())
+  {
     isSame = (fabs(P1.X() - P2.X()) < theBAS.UPeriod() * 0.5);
+  }
   if (theBAS.IsVPeriodic())
+  {
     isSame = (isSame && (fabs(P1.Y() - P2.Y()) < theBAS.VPeriod() * 0.5));
+  }
   return isSame;
   // return P1.SquareDistance(P2) < tol * tol; //IFV
 }
@@ -284,7 +288,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
       }
     }
     if (aLInside.Extent())
+    {
       break;
+    }
   }
   if (!aLInside.Extent() || !itl.More())
   {
@@ -299,7 +305,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
 
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> SectionsTimes;
   for (itl.Initialize(aLInside); itl.More(); itl.Next())
+  {
     SectionsTimes.Bind(itl.Value(), 2);
+  }
 
   NCollection_List<TopoDS_Shape> BreakVertices;
   NCollection_List<TopoDS_Shape> BreakOnWires;
@@ -315,7 +323,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
     for (i = 0; i < 2; i++)
     {
       if (VerWireMap.IsBound(Ver[i]))
+      {
         continue;
+      }
       for (ExploF.Init(FaceRef, TopAbs_WIRE); ExploF.More(); ExploF.Next())
       {
         const TopoDS_Shape& aWire = ExploF.Current();
@@ -324,7 +334,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
         {
           aVer = ExploW.Current();
           if (aVer.IsSame(Ver[i]))
+          {
             break;
+          }
         }
         if (aVer.IsSame(Ver[i]))
         {
@@ -344,10 +356,14 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
     TopExp::Vertices(aWire, V1, V2);
     NCollection_List<TopoDS_Shape> LW1, LW2;
     if (!VerSecMap.IsBound(V1))
+    {
       VerSecMap.Bind(V1, LW1);
+    }
     VerSecMap(V1).Append(aWire);
     if (!VerSecMap.IsBound(V2))
+    {
       VerSecMap.Bind(V2, LW2);
+    }
     VerSecMap(V2).Append(aWire);
   }
 
@@ -369,11 +385,15 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
     TopoDS_Vertex aBreakVertex;
     wexp.Next();
     if (!wexp.More())
+    {
       wexp.Init(CurWire, FaceRef);
+    }
     for (;;)
     {
       if (MW->Wire().Closed())
+      {
         break;
+      }
       CurVertex = wexp.CurrentVertex();
       if (VerSecMap.IsBound(CurVertex))
       {
@@ -387,7 +407,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
       LastEdge = CurEdge;
       wexp.Next();
       if (!wexp.More())
+      {
         wexp.Init(CurWire, FaceRef);
+      }
     }
     if (MW->Wire().Closed())
     {
@@ -398,7 +420,9 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
       BreakOnWires.RemoveFirst();
       wexp.Init(CurWire, FaceRef);
       while (!wexp.CurrentVertex().IsSame(theStartVertex))
+      {
         wexp.Next();
+      }
       MW = new BRepLib_MakeWire();
       continue;
     }
@@ -410,19 +434,25 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
       MW->Add(aSectionWire);
       (SectionsTimes(aSectionWire))--;
       if (SectionsTimes(aSectionWire) == 0)
+      {
         SectionsTimes.UnBind(aSectionWire);
+      }
       if (MW->Wire().Closed())
       {
         NewWires.Append(MW->Wire());
         if (SectionsTimes.IsEmpty())
+        {
           break;
+        }
         theStartVertex = TopoDS::Vertex(BreakVertices.First());
         BreakVertices.RemoveFirst();
         CurWire = TopoDS::Wire(BreakOnWires.First());
         BreakOnWires.RemoveFirst();
         wexp.Init(CurWire, FaceRef);
         while (!wexp.CurrentVertex().IsSame(theStartVertex))
+        {
           wexp.Next();
+        }
         MW = new BRepLib_MakeWire();
         break;
       }
@@ -435,11 +465,15 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
 
         wexp.Init(CurWire, FaceRef);
         while (!wexp.CurrentVertex().IsSame(aStartVertex))
+        {
           wexp.Next();
+        }
 
         const NCollection_List<TopoDS_Shape>& Lsections = VerSecMap(aStartVertex);
         if (Lsections.Extent() == 1)
+        {
           break;
+        }
 
         // else: choose the way
         TopoDS_Wire NextSectionWire = TopoDS::Wire(
@@ -449,8 +483,12 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
         NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itVW(
           VerWireMap);
         for (; itVW.More(); itVW.Next())
+        {
           if (itVW.Value().IsSame(CurWire))
+          {
             Times++;
+          }
+        }
         if (Times == 1) // it is inner touching wire
         {
           // InnerTouchingWiresOnVertex.Bind(aWire, aStartVertex);
@@ -464,14 +502,18 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
           Ldirs.Append(NextSectionWire);
           TopoDS_Shape theDirection = ChooseDirection(aSectionWire, aStartVertex, FaceRef, Ldirs);
           if (theDirection.IsSame(aStartEdge))
+          {
             break;
+          }
         }
         aSectionWire = NextSectionWire;
         aBreakVertex = aStartVertex;
       } // end of else (MW is not closed)
     } // end of for (;;) (loop on section wires)
     if (SectionsTimes.IsEmpty())
+    {
       break;
+    }
   } // end of global for (;;)
 
   NCollection_List<TopoDS_Shape> NewFaces;
@@ -505,10 +547,14 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
         }
       }
       if (found)
+      {
         break;
+      }
     }
     if (!found)
+    {
       Holes.Append(aWire);
+    }
   }
   NCollection_List<TopoDS_Shape>::Iterator itlNewF;
   for (itl.Initialize(Holes); itl.More(); itl.Next())
@@ -538,6 +584,7 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
 
   // JAG 10.11.95 Codage des regularites
   for (itl.Initialize(aLInside); itl.More(); itl.Next())
+  {
     for (ExploW.Init(itl.Value(), TopAbs_EDGE); ExploW.More(); ExploW.Next())
     {
       const TopoDS_Edge& edg = TopoDS::Edge(ExploW.Current());
@@ -546,6 +593,7 @@ bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const 
         BB.Continuity(edg, F, F, GeomAbs_CN);
       }
     }
+  }
   return true;
 }
 
@@ -571,12 +619,16 @@ bool LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face& F)
     if (!LocOpe::Closed(W, F))
     {
       if (!AddOpenWire(W, F))
+      {
         return false;
+      }
     }
     else
     {
       if (!AddClosedWire(W, F))
+      {
         return false;
+      }
     }
   }
   catch (Standard_Failure const&)
@@ -708,14 +760,18 @@ static bool checkOverlapping(const TopoDS_Edge& theEdge1,
     proj.Init(aP2d, aCrv1, aF1, aL1);
     // check intermediate points
     if (!proj.NbPoints() || proj.LowerDistance() > aMaxTol2d)
+    {
       return false;
+    }
     double   par1 = proj.LowerDistanceParameter();
     gp_Pnt2d aP2d1;
     gp_Vec2d aV1;
     aCrv1->D1(par1, aP2d1, aV1);
 
     if (!aV1.IsParallel(aV2, aTolAng))
+    {
       return false;
+    }
   }
   return true;
 }
@@ -878,7 +934,9 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
     {
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
       if (nbE > 1 && edg.IsSame(LastEdge))
+      {
         continue;
+      }
       for (exp2.Init(edg, TopAbs_VERTEX); exp2.More(); exp2.Next())
       {
         if (exp2.Current().IsSame(Vlast))
@@ -923,7 +981,9 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
 
         if ((orient == TopAbs_FORWARD && Vlast.IsSame(vdeb))
             || (orient == TopAbs_REVERSED && Vlast.IsSame(vfin)))
+        {
           PossE.Add(edg);
+        }
       }
       nbPoss = PossE.Extent();
       if (nbPoss == 0)
@@ -944,7 +1004,9 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
         TopoDS_Shape aLocalFaceTemp = FaceRef.Oriented(wfirst.Orientation());
 
         if (!ChoixUV(LastEdge, TopoDS::Face(aLocalFaceTemp), PossE, aNextEdge, plast, dlast))
+        {
           return false;
+        }
       }
 
       if (nbPoss >= 1)
@@ -956,7 +1018,9 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
         }
 
         if (MapE.Contains(aNextEdge))
+        {
           break;
+        }
         B.Add(newW1, aNextEdge);
         MapE.Add(aNextEdge);
         LastEdge = aNextEdge;
@@ -976,7 +1040,7 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
       // MODIFICATION PIERRE SMEYERS : si pas de possibilite, on sort avec erreur
       else
       {
-        std::cout << "erreur Spliter : pas de chainage du wire" << std::endl;
+        std::cout << "erreur Spliter : pas de chainage du wire" << '\n';
         return false;
       }
       // fin MODIF.
@@ -996,18 +1060,26 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
         MapE.Add(edg);
         nbAddBound++;
         if (anE1.IsNull())
+        {
           anE1 = edg;
+        }
         else
+        {
           anE2 = edg;
+        }
       }
     }
     // check overlapping edges for second face
     if (nbAddBound < 2)
+    {
       return false;
+    }
     if (nbAddBound == 2 && !anE1.IsNull() && !anE2.IsNull())
     {
       if (checkOverlapping(TopoDS::Edge(anE1), TopoDS::Edge(anE2), FaceRef))
+      {
         return false;
+      }
     }
 
     nbAddBound = 0;
@@ -1017,20 +1089,30 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
     for (; anItE.More(); anItE.Next())
     {
       if (anItE.Value().ShapeType() != TopAbs_EDGE)
+      {
         continue;
+      }
       nbAddBound++;
       if (anE11.IsNull())
+      {
         anE11 = anItE.Value();
+      }
       else
+      {
         anE12 = anItE.Value();
+      }
     }
     // check overlapping edges for first face
     if (nbAddBound < 2)
+    {
       return false;
+    }
     if (nbAddBound == 2 && !anE11.IsNull() && !anE12.IsNull())
     {
       if (checkOverlapping(TopoDS::Edge(anE11), TopoDS::Edge(anE12), FaceRef))
+      {
         return false;
+      }
     }
 
     TopoDS_Face newF1, newF2;
@@ -1063,7 +1145,7 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
           // Ce wire est ni dans newF2 ni dans newF1
           // Peut etre faut il construire une troisieme face
           std::cout << "WARNING: LocOpe_SPlitShape : Ce wire est ni dans newF2 ni dans newF1"
-                    << std::endl;
+                    << '\n';
         }
       }
     }
@@ -1299,10 +1381,14 @@ static void updateToleraces(
   for (; aExpE.More(); aExpE.Next())
   {
     if (!theMap.IsBound(aExpE.Current()))
+    {
       continue;
+    }
     const NCollection_List<TopoDS_Shape>& lEdges = theMap(aExpE.Current());
     if (lEdges.Extent() <= 1)
+    {
       continue;
+    }
 
     NCollection_List<TopoDS_Shape>::Iterator itrE(lEdges);
     ShapeAnalysis_Edge                       aSae;
@@ -1326,7 +1412,9 @@ bool LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
 
 {
   if (S.ShapeType() == TopAbs_FACE)
+  {
     updateToleraces(TopoDS::Face(S), myMap);
+  }
   NCollection_List<TopoDS_Shape>::Iterator itr(myMap(S));
   if (itr.More())
   {
@@ -1354,7 +1442,9 @@ bool LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
     }
     // Assign "Closed" flag for Wires and Shells only
     if (result.ShapeType() == TopAbs_WIRE || result.ShapeType() == TopAbs_SHELL)
+    {
       result.Closed(BRep_Tool::IsClosed(result));
+    }
     myMap(S).Append(result);
   }
   else
@@ -1462,7 +1552,9 @@ static bool IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
     TopAbs_State            stat = classif.Perform(pt2d);
     //  return (classif.Perform(pt2d) != TopAbs_OUT);
     if (stat == TopAbs_OUT)
+    {
       return false;
+    }
 
     if (stat == TopAbs_ON)
     {
@@ -1477,14 +1569,22 @@ static bool IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
         pt2d = C2d->Value(prm);
         stat = classif.Perform(pt2d);
         if (stat == TopAbs_OUT)
+        {
           nbOut++;
+        }
         else if (stat == TopAbs_IN)
+        {
           nbIn++;
+        }
         else
+        {
           nbOn++;
+        }
       }
       if (nbOut > nbIn + nbOn)
+      {
         return false;
+      }
     }
   }
   return true;
@@ -1521,7 +1621,9 @@ static void GetDirection(const TopoDS_Edge& theEdge,
     theDir            = gp_Vec2d(aPrevPnt, thePnt);
   }
   if (anOr == TopAbs_REVERSED)
+  {
     theDir.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -1553,7 +1655,9 @@ bool ChoixUV(const TopoDS_Edge&                                                 
 
     GetDirection(anEdge, F, p2d, v2d, true);
     if (!SameUV(plst, p2d, surf))
+    {
       continue;
+    }
 
     surf.D0(p2d.X(), p2d.Y(), aPCur);
 
@@ -1619,7 +1723,9 @@ static TopoDS_Shape ChooseDirection(const TopoDS_Shape&                   RefDir
   double RefPar = (anOr == TopAbs_FORWARD) ? RefLast : RefFirst;
   RefCurve->D1(RefPar, RefPnt, RefVec);
   if (anOr == TopAbs_FORWARD)
+  {
     RefVec.Reverse();
+  }
 
   occ::handle<Geom2d_Curve>                aCurve;
   double                                   aFirst, aLast, aPar;
@@ -1650,10 +1756,14 @@ static TopoDS_Shape ChooseDirection(const TopoDS_Shape&                   RefDir
     aPar   = (anOr == TopAbs_FORWARD) ? aFirst : aLast;
     aCurve->D1(aPar, RefPnt, aVec);
     if (anOr == TopAbs_REVERSED)
+    {
       aVec.Reverse();
+    }
     anAngle = aVec.Angle(RefVec);
     if (anAngle < 0.)
+    {
       anAngle += 2. * M_PI;
+    }
 
     if (anAngle < MinAngle)
     {

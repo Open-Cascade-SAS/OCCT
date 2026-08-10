@@ -61,7 +61,9 @@ void TopOpeBRepBuild_Builder::BuildEdges(const int                              
   TopOpeBRepBuild_PaveClassifier VCL(anEdge);
   bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
+  {
     VCL.SetFirstParameter(PVS.EqualParameters());
+  }
   bool closvert = PVS.ClosedVertices();
   VCL.ClosedVertices(closvert);
   PVS.InitLoop();
@@ -79,7 +81,9 @@ void TopOpeBRepBuild_Builder::BuildEdges(const int                              
     TopoDS_Edge& newEdge = TopoDS::Edge(It.ChangeValue());
     myBuildTool.RecomputeCurves(curC, TopoDS::Edge(anEdge), newEdge, inewC, HDS);
     if (inewC != -1)
+    {
       ChangeNewEdges(inewC).Append(newEdge);
+    }
   }
   if (inewC != -1)
   {
@@ -131,7 +135,9 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
     int ic = cex.Index();
     int im = cex.Curve(ic).Mother();
     if (im != 0)
+    {
       continue;
+    }
     BuildEdges(ic, HDS);
   }
 
@@ -152,13 +158,17 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
         int               ig = I->Geometry();
         TopOpeBRepDS_Kind kg = I->GeometryType();
         if (kg == TopOpeBRepDS_POINT && ig <= np)
+        {
           tp.ChangeValue(ig) = tp.Value(ig) + 1;
+        }
       }
       {
         int               is = I->Support();
         TopOpeBRepDS_Kind ks = I->SupportType();
         if (ks == TopOpeBRepDS_POINT)
+        {
           tp.ChangeValue(is) = tp.Value(is) + 1;
+        }
       }
     }
   }
@@ -167,10 +177,14 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
   {
     const TopoDS_Shape& S = BDS.Shape(is);
     if (S.IsNull())
+    {
       continue;
+    }
     bool test = (S.ShapeType() == TopAbs_EDGE);
     if (!test)
+    {
       continue;
+    }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(
       BDS.ShapeInterferences(is));
     for (; it.More(); it.Next())
@@ -180,17 +194,25 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
         int               ig = I->Geometry();
         TopOpeBRepDS_Kind kg = I->GeometryType();
         if (kg == TopOpeBRepDS_POINT)
+        {
           tp.ChangeValue(ig) = tp.Value(ig) + 1;
+        }
       }
       {
         int               is1 = I->Support();
         TopOpeBRepDS_Kind ks  = I->SupportType();
         if (ks == TopOpeBRepDS_POINT)
+        {
           tp.ChangeValue(is1) = tp.Value(is1) + 1;
+        }
       }
     }
   }
   for (ip = 1; ip <= np; ip++)
+  {
     if (tp.Value(ip) == 0)
+    {
       BDS.RemovePoint(ip);
+    }
+  }
 }

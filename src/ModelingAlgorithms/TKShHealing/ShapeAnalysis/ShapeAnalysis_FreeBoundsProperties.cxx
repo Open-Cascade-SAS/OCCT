@@ -56,7 +56,9 @@ static void ContourProperties(const TopoDS_Wire& wire, double& countourArea, dou
     occ::handle<Geom_Curve> c3d;
     ShapeAnalysis_Edge      sae;
     if (!sae.Curve3d(Edge, c3d, First, Last))
+    {
       continue;
+    }
 
     int ibeg = 0;
     if (nbe == 1)
@@ -185,7 +187,9 @@ bool ShapeAnalysis_FreeBoundsProperties::Perform()
 bool ShapeAnalysis_FreeBoundsProperties::DispatchBounds()
 {
   if (!IsLoaded())
+  {
     return false;
+  }
 
   TopoDS_Compound tmpClosedBounds, tmpOpenBounds;
   if (myTolerance > 0.)
@@ -253,13 +257,17 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(
 {
   ShapeExtend_WireData swd(fbData->FreeBound());
   if (swd.NbEdges() > 1)
+  {
     for (int j = 1; j <= swd.NbEdges(); j++)
     {
       TopoDS_Wire notch;
       double      dMax;
       if (CheckNotches(fbData->FreeBound(), j, notch, dMax, prec))
+      {
         fbData->AddNotch(notch, dMax);
+      }
     }
+  }
 
   return true;
 }
@@ -298,7 +306,9 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire& wire,
   B.MakeWire(notch);
 
   if ((num <= 0) || (num > wdt->NbEdges()))
+  {
     return false;
+  }
 
   int n1 = (num > 0 ? num : wdt->NbEdges());
   int n2 = (n1 < wdt->NbEdges() ? n1 + 1 : 1);
@@ -323,16 +333,22 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire& wire,
   ShapeAnalysis_Edge      sae;
   // szv#4:S4163:12Mar99 optimized
   if (!sae.Curve3d(E1, c3d1, First1, Last1) || !sae.Curve3d(E2, c3d2, First2, Last2))
+  {
     return false;
+  }
 
   gp_Pnt pnt;
   gp_Vec vec1, vec2;
   c3d1->D1(Last1, pnt, vec1);
   c3d2->D1(First2, pnt, vec2);
   if (E1.Orientation() == TopAbs_REVERSED)
+  {
     vec1.Reverse();
+  }
   if (E2.Orientation() == TopAbs_REVERSED)
+  {
     vec2.Reverse();
+  }
 
   double angl = std::abs(vec1.Angle(vec2));
   if (angl > 0.95 * M_PI)
@@ -359,7 +375,9 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire& wire,
       GeomAPI_ProjectPointOnCurve ppc(pntCurr, c3d2, p1, p2);
       double                      newDist = (ppc.NbPoints() ? ppc.LowerDistance() : 0);
       if (newDist > distMax)
+      {
         distMax = newDist;
+      }
     }
 
     return true;

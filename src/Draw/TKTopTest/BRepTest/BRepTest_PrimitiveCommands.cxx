@@ -237,7 +237,9 @@ static int wedge(Draw_Interpretor&, int n, const char** a)
                               Draw::Atof(a[8]));
   }
   else
+  {
     return 1;
+  }
 
   DBRep::Set(a[1], S);
   return 0;
@@ -250,7 +252,9 @@ static int wedge(Draw_Interpretor&, int n, const char** a)
 static int cylinder(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Solid            S;
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
@@ -261,24 +265,34 @@ static int cylinder(Draw_Interpretor&, int n, const char** a)
   else if (n == 5)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeCylinder(Draw::Atof(a[2]),
                                    Draw::Atof(a[3]),
                                    Draw::Atof(a[4]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), Draw::Atof(a[3]), Draw::Atof(a[4]));
+    }
   }
   else if (n == 6)
   {
     if (P.IsNull())
+    {
       return 1;
+    }
     else
+    {
       S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(),
                                    Draw::Atof(a[3]),
                                    Draw::Atof(a[4]),
                                    Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
   }
   else
+  {
     return 1;
+  }
 
   DBRep::Set(a[1], S);
   return 0;
@@ -291,7 +305,9 @@ static int cylinder(Draw_Interpretor&, int n, const char** a)
 static int cone(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Solid S;
 
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
@@ -303,15 +319,19 @@ static int cone(Draw_Interpretor&, int n, const char** a)
   else if (n == 6)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeCone(Draw::Atof(a[2]),
                                Draw::Atof(a[3]),
                                Draw::Atof(a[4]),
                                Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeCone(P->Pln().Position().Ax2(),
                                Draw::Atof(a[3]),
                                Draw::Atof(a[4]),
                                Draw::Atof(a[5]));
+    }
   }
   else if (n == 7)
   {
@@ -322,7 +342,9 @@ static int cone(Draw_Interpretor&, int n, const char** a)
                              Draw::Atof(a[6]) * (M_PI / 180.0));
   }
   else
+  {
     return 1;
+  }
 
   DBRep::Set(a[1], S);
   return 0;
@@ -335,7 +357,9 @@ static int cone(Draw_Interpretor&, int n, const char** a)
 static int sphere(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Solid S;
 
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
@@ -347,33 +371,45 @@ static int sphere(Draw_Interpretor&, int n, const char** a)
   else if (n == 4)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeSphere(Draw::Atof(a[2]), Draw::Atof(a[3]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(), Draw::Atof(a[3]));
+    }
   }
   else if (n == 5)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeSphere(Draw::Atof(a[2]),
                                  Draw::Atof(a[3]) * (M_PI / 180.0),
                                  Draw::Atof(a[4]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),
                                  Draw::Atof(a[3]),
                                  Draw::Atof(a[4]) * (M_PI / 180.0));
+    }
   }
   else if (n == 6)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeSphere(Draw::Atof(a[2]),
                                  Draw::Atof(a[3]) * (M_PI / 180.0),
                                  Draw::Atof(a[4]) * (M_PI / 180.0),
                                  Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),
                                  Draw::Atof(a[3]),
                                  Draw::Atof(a[4]) * (M_PI / 180.0),
                                  Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
   }
   else if (n == 7)
   {
@@ -384,7 +420,9 @@ static int sphere(Draw_Interpretor&, int n, const char** a)
                                Draw::Atof(a[6]) * (M_PI / 180.0));
   }
   else
+  {
     return 1;
+  }
 
   DBRep::Set(a[1], S);
   return 0;
@@ -397,7 +435,9 @@ static int sphere(Draw_Interpretor&, int n, const char** a)
 static int torus(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Solid S;
 
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
@@ -409,39 +449,51 @@ static int torus(Draw_Interpretor&, int n, const char** a)
   else if (n == 5)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeTorus(Draw::Atof(a[2]),
                                 Draw::Atof(a[3]),
                                 Draw::Atof(a[4]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(), Draw::Atof(a[3]), Draw::Atof(a[4]));
+    }
   }
   else if (n == 6)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeTorus(Draw::Atof(a[2]),
                                 Draw::Atof(a[3]),
                                 Draw::Atof(a[4]) * (M_PI / 180.0),
                                 Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),
                                 Draw::Atof(a[3]),
                                 Draw::Atof(a[4]),
                                 Draw::Atof(a[5]) * (M_PI / 180.0));
+    }
   }
   else if (n == 7)
   {
     if (P.IsNull())
+    {
       S = BRepPrimAPI_MakeTorus(Draw::Atof(a[2]),
                                 Draw::Atof(a[3]),
                                 Draw::Atof(a[4]) * (M_PI / 180.0),
                                 Draw::Atof(a[5]) * (M_PI / 180.0),
                                 Draw::Atof(a[6]) * (M_PI / 180.0));
+    }
     else
+    {
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),
                                 Draw::Atof(a[3]),
                                 Draw::Atof(a[4]),
                                 Draw::Atof(a[5]) * (M_PI / 180.0),
                                 Draw::Atof(a[6]) * (M_PI / 180.0));
+    }
   }
   else if (n == 8)
   {
@@ -453,7 +505,9 @@ static int torus(Draw_Interpretor&, int n, const char** a)
                               Draw::Atof(a[7]) * (M_PI / 180.0));
   }
   else
+  {
     return 1;
+  }
 
   DBRep::Set(a[1], S);
   return 0;
@@ -465,7 +519,9 @@ void BRepTest::PrimitiveCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

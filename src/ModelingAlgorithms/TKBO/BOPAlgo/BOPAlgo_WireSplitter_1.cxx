@@ -82,8 +82,6 @@ static void Path(const BRepAdaptor_Surface&                           aGAS,
                                             NCollection_List<BOPAlgo_EdgeInfo>,
                                             TopTools_ShapeMapHasher>& mySmartMap);
 
-static double Angle(const gp_Dir2d& aDir2D);
-
 static double Tolerance2D(const TopoDS_Vertex& aV, const BRepAdaptor_Surface& aGAS);
 
 static double UTolerance2D(const TopoDS_Vertex& aV, const BRepAdaptor_Surface& aGAS);
@@ -148,7 +146,9 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&                   myFac
     bIsClosed = BRep_Tool::Degenerated(aE) || BRep_Tool::IsClosed(aE, myFace);
 
     if (!aMS.Add(aE) && !bIsClosed)
+    {
       aMS.Remove(aE);
+    }
 
     //
     aItS.Initialize(aE);
@@ -848,7 +848,9 @@ double Angle(const gp_Dir2d& aDir2D)
 
   anAngle = aRefDir.Angle(aDir2D);
   if (anAngle < 0.)
+  {
     anAngle += M_PI + M_PI;
+  }
   return anAngle;
 }
 

@@ -59,7 +59,7 @@ extern "C++"
   class FlexLexer
   {
   public:
-    virtual ~FlexLexer() {}
+    virtual ~FlexLexer() = default;
 
     const char* YYText() const { return yytext; }
 
@@ -81,7 +81,7 @@ extern "C++"
       return yylex();
     }
 
-    int yylex(std::istream* new_in, std::ostream* new_out = 0)
+    int yylex(std::istream* new_in, std::ostream* new_out = nullptr)
     {
       switch_streams(new_in, new_out);
       return yylex();
@@ -122,7 +122,7 @@ extern "C++"
     // arg_yyin and arg_yyout default to the cin and cout, but we
     // only make that assignment when initializing in yylex().
     yyFlexLexer(std::istream& arg_yyin, std::ostream& arg_yyout);
-    yyFlexLexer(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+    yyFlexLexer(std::istream* arg_yyin = nullptr, std::ostream* arg_yyout = nullptr);
 
   private:
     void ctor_common();
@@ -142,7 +142,7 @@ extern "C++"
 
     virtual int  yylex();
     virtual void switch_streams(std::istream& new_in, std::ostream& new_out);
-    virtual void switch_streams(std::istream* new_in = 0, std::ostream* new_out = 0);
+    virtual void switch_streams(std::istream* new_in = nullptr, std::ostream* new_out = nullptr);
     virtual int  yywrap();
 
   protected:
@@ -191,7 +191,7 @@ extern "C++"
     size_t            yy_buffer_stack_top; /**< index of top of stack. */
     size_t            yy_buffer_stack_max; /**< capacity of stack. */
     yy_buffer_state** yy_buffer_stack;     /**< Stack as an array. */
-    void              yyensure_buffer_stack(void);
+    void              yyensure_buffer_stack();
 
     // The following are not always needed, but may be depending
     // on use of certain flex features (like REJECT or yymore()).

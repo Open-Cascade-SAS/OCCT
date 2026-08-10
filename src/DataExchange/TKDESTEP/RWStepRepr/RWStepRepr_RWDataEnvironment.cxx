@@ -38,7 +38,9 @@ void RWStepRepr_RWDataEnvironment::ReadStep(const occ::handle<StepData_StepReade
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "data_environment"))
+  {
     return;
+  }
 
   // Own fields of DataEnvironment
 

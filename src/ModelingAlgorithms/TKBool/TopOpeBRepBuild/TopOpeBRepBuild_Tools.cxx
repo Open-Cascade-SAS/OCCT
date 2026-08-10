@@ -114,8 +114,12 @@ void TopOpeBRepBuild_Tools::PropagateState(
     TopExp::MapShapes(aShape, aSubshEnum, aSubshapes);
     nSub = aSubshapes.Extent();
     for (j = 1; j <= nSub; j++)
-      if (!anAvoidSubshMap.Contains(aSubshapes(j))) // MSV: enforce subshapes avoidance
+    {
+      if (!anAvoidSubshMap.Contains(aSubshapes(j)))
+      { // MSV: enforce subshapes avoidance
         aMapSS.Bind(aSubshapes(j), aState);
+      }
+    }
   }
 
   aMapSS1 = aMapSS;
@@ -125,7 +129,9 @@ void TopOpeBRepBuild_Tools::PropagateState(
     aMapSubshAnc;
   nRest = aShapesToRestMap.Extent();
   for (j = 1; j <= nRest; j++)
+  {
     TopExp::MapShapesAndAncestors(aShapesToRestMap(j), aSubshEnum, aShapeEnum, aMapSubshAnc);
+  }
 
   // 2. Make Map Of all subshapes  aMapSS
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aProcessedSubshapes;
@@ -181,7 +187,9 @@ void TopOpeBRepBuild_Tools::PropagateState(
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aMapIt;
     aMapIt.Initialize(aNonPassedShapes);
     for (; aMapIt.More(); aMapIt.Next())
+    {
       TopExp::MapShapesAndAncestors(aMapIt.Key(), aSubshEnum, aShapeEnum, aMapSubshAnc);
+    }
 
     aMapSS.Clear();
     aMapIt.Initialize(aNonPassedShapes);
@@ -203,18 +211,28 @@ void TopOpeBRepBuild_Tools::PropagateState(
         TopExp::MapShapes(aNonPassedShape, aSubshEnum, aTmpMap);
         TopoDS_Shape aFirstSubsh;
         for (j = 1; j <= aTmpMap.Extent() && aFirstSubsh.IsNull(); j++)
+        {
           if (!anAvoidSubshMap.Contains(aTmpMap(j)))
+          {
             aFirstSubsh = aTmpMap(j);
+          }
+        }
         if (aFirstSubsh.IsNull())
+        {
           continue;
+        }
         aMapSS.Bind(aFirstSubsh, aState);
 
         // Propagation of aState for subshapes
         NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapProcessedSubsh;
         if (aSubshEnum == TopAbs_EDGE)
+        {
           FindState1(aFirstSubsh, aState, aMapSubshAnc, aMapProcessedSubsh, aMapSS);
-        else // if (aSubshEnum==TopAbs_VERTEX)
+        }
+        else
+        { // if (aSubshEnum==TopAbs_VERTEX)
           FindState2(aFirstSubsh, aState, aMapSubshAnc, aMapProcessedSubsh, aMapSS);
+        }
       }
     }
 
@@ -226,7 +244,9 @@ void TopOpeBRepBuild_Tools::PropagateState(
     {
       aShapeWithState.SetState(anII.Value());
       if (anII.Key().ShapeType() != TopAbs_VERTEX)
+      {
         aMapOfShapeWithState.Add(anII.Key(), aShapeWithState);
+      }
     }
   }
 }
@@ -292,7 +312,9 @@ void TopOpeBRepBuild_Tools::FindState1(
     TopExp::MapShapes(aShape, TopAbs_WIRE, aWireMap);
     nW = aWireMap.Extent();
     for (j = 1; j <= nW; j++)
+    {
       aMapSS.Bind(aWireMap(j), aState);
+    }
     // Edge
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSubshMap;
     TopExp::MapShapes(aShape, TopAbs_EDGE, aSubshMap);
@@ -325,16 +347,24 @@ TopAbs_State TopOpeBRepBuild_Tools::FindStateThroughVertex(
   TopoDS_Shape aSubsh;
   int          i;
   for (i = 1; i <= aSubshMap.Extent() && aSubsh.IsNull(); i++)
+  {
     if (!anAvoidSubshMap.Contains(aSubshMap(i)))
+    {
       aSubsh = aSubshMap(i);
+    }
+  }
   if (aSubsh.IsNull())
   {
     // try an edge
     aSubshMap.Clear();
     TopExp::MapShapes(aShape, TopAbs_EDGE, aSubshMap);
     for (i = 1; i <= aSubshMap.Extent() && aSubsh.IsNull(); i++)
+    {
       if (!anAvoidSubshMap.Contains(aSubshMap(i)))
+      {
         aSubsh = aSubshMap(i);
+      }
+    }
     if (aSubsh.IsNull())
     {
 #ifdef OCCT_DEBUG
@@ -564,7 +594,9 @@ bool TopOpeBRepBuild_Tools::GetTangentToEdgeEdge(const TopoDS_Face&, // aFObj,
   // printf(" aNP  ={%lf, %lf, %lf}\n", aNP.X(), aNP.Y(), aNP.Z());
   // printf(" aPOri={%lf, %lf, %lf}\n", aPOri.X(), aPOri.Y(), aPOri.Z());
   if (aEd.Orientation() == TopAbs_REVERSED)
+  {
     aTangent.Reverse();
+  }
 
   if (aTgOri * aTgPiece < 0.)
   {
@@ -712,7 +744,9 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
                                                aN2);
 
   if (aN1 * aN2 < 0)
+  {
     DiffOriented = true;
+  }
 
   double tolE = BRep_Tool::Tolerance(newE);
   double f2 = 0., l2 = 0., tolpc = 0., tol = 0.;
@@ -742,9 +776,13 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   oldC2DRev->D0(fr, aUVr);
 
   if (!DiffOriented)
+  {
     aTrV = gp_Vec2d(aUVf, aUVr);
+  }
   else
+  {
     aTrV = gp_Vec2d(aUVr, aUVf);
+  }
 
   gp_Vec2d aux(gp_Pnt2d(0., 0.), gp_Pnt2d(1., 1.));
   double   scalar = aux * aTrV;
@@ -766,7 +804,9 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
     firstOrder = scalar >= 0.;
   }
   else
+  {
     firstOrder = scalar <= 0.;
+  }
 
   occ::handle<Geom2d_Curve> aTrC = occ::down_cast<Geom2d_Curve>(C2D->Copy());
   aTrC->Translate(aTrV);
@@ -774,16 +814,24 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   if (dir)
   {
     if (firstOrder)
+    {
       BB.UpdateEdge(aEdgeToUpdate, C2D, aTrC, toFace, tol);
+    }
     else
+    {
       BB.UpdateEdge(aEdgeToUpdate, aTrC, C2D, toFace, tol);
+    }
   }
   else
   {
     if (!firstOrder)
+    {
       BB.UpdateEdge(aEdgeToUpdate, C2D, aTrC, toFace, tol);
+    }
     else
+    {
       BB.UpdateEdge(aEdgeToUpdate, aTrC, C2D, toFace, tol);
+    }
   }
 }
 
@@ -796,7 +844,9 @@ bool TopOpeBRepBuild_Tools::IsDegEdgesTheSame(const TopoDS_Shape& anE1, const To
   TopExp::MapShapes(anE2, TopAbs_VERTEX, aVMap2);
 
   if (!aVMap1.Extent() || !aVMap2.Extent())
+  {
     return false;
+  }
 
   return aVMap1(1).IsSame(aVMap2(1));
 }
@@ -835,7 +885,9 @@ void TopOpeBRepBuild_Tools::NormalizeFace(const TopoDS_Shape& oldFace, TopoDS_Sh
       TopoDS_Shape anEdge = aWExp.Current();
 
       if (anEdge.Orientation() == TopAbs_EXTERNAL || anEdge.Orientation() == TopAbs_INTERNAL)
+      {
         continue;
+      }
 
       BB.Add(aNewWire, TopoDS::Edge(anEdge));
       NbGoodEdges++;
@@ -843,8 +895,10 @@ void TopOpeBRepBuild_Tools::NormalizeFace(const TopoDS_Shape& oldFace, TopoDS_Sh
     // keep wire  orientation
     aNewWire.Orientation(aFExp.Current().Orientation()); // aWire.Orientation());
 
-    if (NbGoodEdges) // we add new wire only if it contains at least one edge
+    if (NbGoodEdges)
+    { // we add new wire only if it contains at least one edge
       BB.Add(aNewFace, aNewWire);
+    }
   }
   // keep face  orientation
   aNewFace.Orientation(oldFace.Orientation());

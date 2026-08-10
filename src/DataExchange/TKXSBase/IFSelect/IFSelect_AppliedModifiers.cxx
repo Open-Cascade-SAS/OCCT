@@ -27,7 +27,9 @@ IFSelect_AppliedModifiers::IFSelect_AppliedModifiers(const int nbmax, const int 
 bool IFSelect_AppliedModifiers::AddModif(const occ::handle<IFSelect_GeneralModifier>& modif)
 {
   if (themodifs.Length() >= thelists.NbEntities())
+  {
     return false;
+  }
   themodifs.Append(modif);
   thelists.SetNumber(themodifs.Length());
   return true;
@@ -49,7 +51,9 @@ bool IFSelect_AppliedModifiers::Item(const int                              num,
                                      int&                                   entcount)
 {
   if (num < 1 || num > themodifs.Length())
+  {
     return false;
+  }
   modif = themodifs.Value(num);
   thelists.SetNumber(num);
   theentcnt = thelists.Length();
@@ -67,7 +71,9 @@ occ::handle<NCollection_HSequence<int>> IFSelect_AppliedModifiers::ItemList() co
   occ::handle<NCollection_HSequence<int>> list = new NCollection_HSequence<int>();
   int                                     i, nb = (theentcnt > 0 ? theentcnt : thenbent);
   for (i = 1; i <= nb; i++)
+  {
     list->Append(ItemNum(i));
+  }
   return list;
 }
 

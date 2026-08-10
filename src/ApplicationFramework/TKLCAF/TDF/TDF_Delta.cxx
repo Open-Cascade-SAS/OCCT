@@ -56,7 +56,9 @@ void TDF_Delta::Validity(const int aBeginTime, const int anEndTime)
 void TDF_Delta::AddAttributeDelta(const occ::handle<TDF_AttributeDelta>& anAttributeDelta)
 {
   if (!anAttributeDelta.IsNull())
+  {
     myAttDeltaList.Append(anAttributeDelta);
+  }
 }
 
 //=================================================================================================
@@ -67,7 +69,9 @@ void TDF_Delta::BeforeOrAfterApply(const bool before) const
   //  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   for (; itr.More(); itr.Next())
+  {
     ADlist.Append(itr.Value());
+  }
 
   occ::handle<TDF_AttributeDelta> attDelta;
   occ::handle<TDF_Attribute>      att;
@@ -84,14 +88,22 @@ void TDF_Delta::BeforeOrAfterApply(const bool before) const
       attDelta = itr.Value();
       att      = attDelta->Attribute();
       if (before)
+      {
         next = !att->BeforeUndo(attDelta);
+      }
       else
+      {
         next = !att->AfterUndo(attDelta);
+      }
 
       if (next)
+      {
         itr.Next();
+      }
       else
+      {
         ADlist.Remove(itr);
+      }
     }
     noDeadLock = (nbAD > ADlist.Extent());
     nbAD       = ADlist.Extent();
@@ -121,9 +133,13 @@ void TDF_Delta::BeforeOrAfterApply(const bool before) const
       attDelta = itr.Value();
       att      = attDelta->Attribute();
       if (before)
+      {
         att->BeforeUndo(attDelta, true);
+      }
       else
+      {
         att->AfterUndo(attDelta, true);
+      }
     }
   }
 }
@@ -201,19 +217,21 @@ void TDF_Delta::Labels(NCollection_List<TDF_Label>& aLabelList) const
 
 void TDF_Delta::Dump(Standard_OStream& OS) const
 {
-  OS << "DELTA available from time \t#" << myBeginTime << " to time \t#" << myEndTime << std::endl;
+  OS << "DELTA available from time \t#" << myBeginTime << " to time \t#" << myEndTime << '\n';
   int n = 0;
   //  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   for (; itr.More(); itr.Next())
+  {
     ++n;
-  OS << "Nb Attribute Delta(s): " << n << std::endl;
+  }
+  OS << "Nb Attribute Delta(s): " << n << '\n';
   for (itr.Initialize(myAttDeltaList); itr.More(); itr.Next())
   {
     const occ::handle<TDF_AttributeDelta>& attDelta = itr.Value();
     OS << "| ";
     attDelta->Dump(OS);
-    OS << std::endl;
+    OS << '\n';
   }
 }
 

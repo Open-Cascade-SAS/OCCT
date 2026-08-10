@@ -79,7 +79,9 @@ void DrawTrSurf_BezierCurve2d::FindPole(const double        X,
     P2d = bz->Pole(Index);
     P.SetCoord(P2d.X(), P2d.Y(), 0.0);
     if (D.Project(P).Distance(p1) <= Prec)
+    {
       return;
+    }
     Index++;
   }
   Index = 0;

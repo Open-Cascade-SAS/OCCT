@@ -245,40 +245,60 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   if (!PeriodU)
   {
     if (Umin < U0)
+    {
       Umin = U0;
+    }
     if (U1 < Umax)
+    {
       Umax = U1;
+    }
   }
   else
   {
     if (std::abs(Umin - U0) < Precision::PConfusion())
+    {
       Umin = U0;
+    }
     if (std::abs(Umax - U1) < Precision::PConfusion())
+    {
       Umax = U1;
+    }
     uShift = ShapeAnalysis::AdjustToPeriod(Umin, U0, U1);
     Umin += uShift;
     Umax += uShift;
     if (Umax - Umin > U1 - U0)
+    {
       Umax = Umin + (U1 - U0);
+    }
   }
   if (!PeriodV)
   {
     if (Vmin < V0)
+    {
       Vmin = V0;
+    }
     if (V1 < Vmax)
+    {
       Vmax = V1;
+    }
   }
   else
   {
     if (std::abs(Vmin - V0) < Precision::PConfusion())
+    {
       Vmin = V0;
+    }
     if (std::abs(Vmax - V1) < Precision::PConfusion())
+    {
       Vmax = V1;
+    }
     vShift = ShapeAnalysis::AdjustToPeriod(Vmin, V0, V1);
     Vmin += vShift;
     Vmax += vShift;
     if (Vmax - Vmin > V1 - V0)
+    {
       Vmax = Vmin + (V1 - V0);
+    }
   }
   // unperiodize surface to get necessary for IGES standard number of knots and mults
   if (mysurface->IsUPeriodic())
@@ -376,7 +396,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     for (iw = 1; iw <= IndexU + 1; iw++)
     {
       for (jw = 1; jw <= IndexV + 1; jw++)
+      {
         Weights->SetValue(WeightRow, WeightCol++, mysurface->Weight(iw, jw));
+      }
       WeightRow++;
       WeightCol = Weights->LowerCol();
     }
@@ -386,7 +408,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     for (iw = 1; iw <= IndexU + 1; iw++)
     {
       for (jw = 1; jw <= IndexV + 1; jw++)
+      {
         Weights->SetValue(WeightRow, WeightCol++, 1.0);
+      }
       WeightRow++;
       WeightCol = Weights->LowerCol();
     }
@@ -517,41 +541,61 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   {
     DeclareAndCast(Geom_Plane, Plane, start);
     if (myBRepMode)
+    {
       res = TransferPlaneSurface(Plane, Udeb, Ufin, Vdeb, Vfin);
+    }
     else
+    {
       res = TransferSurface(Plane, Udeb, Ufin, Vdeb, Vfin);
+    }
   }
   else if (start->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
   {
     DeclareAndCast(Geom_CylindricalSurface, Cylindrical, start);
     if (myBRepMode && myAnalytic)
+    {
       res = TransferCylindricalSurface(Cylindrical, Udeb, Ufin, Vdeb, Vfin);
+    }
     else
+    {
       res = TransferSurface(Cylindrical, Udeb, Ufin, Vdeb, Vfin);
+    }
   }
   else if (start->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     DeclareAndCast(Geom_ConicalSurface, Conical, start);
     if (myBRepMode && myAnalytic)
+    {
       res = TransferConicalSurface(Conical, Udeb, Ufin, Vdeb, Vfin);
+    }
     else
+    {
       res = TransferSurface(Conical, Udeb, Ufin, Vdeb, Vfin);
+    }
   }
   else if (start->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
     DeclareAndCast(Geom_SphericalSurface, Spherical, start);
     if (myBRepMode && myAnalytic)
+    {
       res = TransferSphericalSurface(Spherical, Udeb, Ufin, Vdeb, Vfin);
+    }
     else
+    {
       res = TransferSurface(Spherical, Udeb, Ufin, Vdeb, Vfin);
+    }
   }
   else if (start->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
   {
     DeclareAndCast(Geom_ToroidalSurface, Toroidal, start);
     if (myBRepMode && myAnalytic)
+    {
       res = TransferToroidalSurface(Toroidal, Udeb, Ufin, Vdeb, Vfin);
+    }
     else
+    {
       res = TransferSurface(Toroidal, Udeb, Ufin, Vdeb, Vfin);
+    }
   }
 
   return res;
@@ -679,9 +723,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   double                                    V1   = Vdeb;
   double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
+  {
     V1 = -Precision::Infinite();
+  }
   if (Precision::IsPositiveInfinite(Vfin))
+  {
     V2 = Precision::Infinite();
+  }
 
   // creation of the generatrix : Generatrix
   occ::handle<Geom_Line> Ligne =
@@ -756,9 +804,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   double                                    V1   = Vdeb;
   double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
+  {
     V1 = -Precision::Infinite();
+  }
   if (Precision::IsPositiveInfinite(Vfin))
+  {
     V2 = Precision::Infinite();
+  }
 
   // creation of the generatrix : Generatrix
   occ::handle<Geom_Line> Ligne =
@@ -1004,9 +1056,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   double                                  V1   = Vdeb;
   double                                  V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
+  {
     V1 = -Precision::Infinite();
+  }
   if (Precision::IsPositiveInfinite(Vfin))
+  {
     V2 = Precision::Infinite();
+  }
 
   // added by skl 18.07.2005 for OCC9490
   double UF, UL, VF, VL;
@@ -1085,9 +1141,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   double                                    V1   = Vdeb;
   double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
+  {
     V1 = -Precision::Infinite();
+  }
   if (Precision::IsPositiveInfinite(Vfin))
+  {
     V2 = Precision::Infinite();
+  }
 
   // creation of the generatrix : Generatrix
   occ::handle<Geom_Curve>          Curve = start->BasisCurve();

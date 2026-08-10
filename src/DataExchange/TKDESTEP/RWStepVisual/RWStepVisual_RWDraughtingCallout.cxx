@@ -33,7 +33,9 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
   const occ::handle<StepVisual_DraughtingCallout>& ent) const
 {
   if (!data->CheckNbParams(num, 2, ach, "draughting_callout"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -50,7 +52,9 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "content", ach, anEnt))
+      {
         aContents->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -84,5 +88,7 @@ void RWStepVisual_RWDraughtingCallout::Share(const occ::handle<StepVisual_Draugh
   // Own field: contents
   int i, nb = ent->NbContents();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->ContentsValue(i).Value());
+  }
 }

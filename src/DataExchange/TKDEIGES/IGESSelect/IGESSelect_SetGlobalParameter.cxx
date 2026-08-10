@@ -70,15 +70,21 @@ void IGESSelect_SetGlobalParameter::Performing(IFSelect_ContextModif&           
   GS.Init(oldset, check);
   ctx.AddCheck(check);
   if (!check->HasFailed())
+  {
     target->SetGlobalSection(GS);
+  }
 }
 
 TCollection_AsciiString IGESSelect_SetGlobalParameter::Label() const
 {
   char mess[80];
   if (theval.IsNull())
+  {
     Sprintf(mess, "Set IGES Global Parameter (undefined)");
+  }
   else
+  {
     Sprintf(mess, "Set IGES Global Parameter Number %d to %s", thenum, theval->ToCString());
+  }
   return TCollection_AsciiString(mess);
 }

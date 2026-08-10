@@ -34,36 +34,66 @@ StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem() = def
 int StepAP214_AutoDesignReferencingItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
 
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Approval)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DocumentRelationship)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ExternallyDefinedRepresentation)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_MaterialDesignation)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationArea)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationView)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductCategory)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 10;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
+  {
     return 11;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 12;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+  {
     return 13;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 14;
+  }
   return 0;
 }
 

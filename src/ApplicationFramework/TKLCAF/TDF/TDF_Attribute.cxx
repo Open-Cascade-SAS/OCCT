@@ -107,7 +107,9 @@ void TDF_Attribute::Forget(const int aTransaction)
   myFlags            = (myFlags | TDF_AttributeForgottenMsk);
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
   if (myLabelNode)
+  {
     myLabelNode->AttributesModified(true);
+  }
 #endif
   Validate(false);
 }
@@ -127,11 +129,17 @@ void TDF_Attribute::Resume()
 int TDF_Attribute::UntilTransaction() const
 {
   if (IsForgotten())
+  {
     return myTransaction;
+  }
   else if (IsBackuped())
+  {
     return myNext->myTransaction - 1;
+  }
   else if (IsValid())
+  {
     return myLabelNode->Data()->Transaction();
+  }
   throw Standard_DomainError("The attribute structure is wrong.");
 }
 
@@ -238,7 +246,9 @@ void TDF_Attribute::RemoveBackup()
   myBackup->myNext.Nullify();      // Absolutely necessary!
   myBackup = myBackup->myBackup;
   if (!myBackup.IsNull())
+  {
     myBackup->myNext = this; // New back reference.
+  }
 }
 
 //=================================================================================================
@@ -295,17 +305,23 @@ Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
 {
   anOS << "\t" << DynamicType()->Name() << "\tTrans. " << myTransaction << ";";
   if (IsValid())
+  {
     anOS << " Valid";
+  }
   if (IsBackuped())
+  {
     anOS << " Backuped";
+  }
   if (IsForgotten())
+  {
     anOS << " Forgotten";
+  }
   char                toto[45];
   Standard_PCharacter pStr;
   //
   pStr = toto;
   ID().ToCString(pStr);
-  anOS << ";\tID = " << toto << std::endl;
+  anOS << ";\tID = " << toto << '\n';
   return anOS;
 }
 

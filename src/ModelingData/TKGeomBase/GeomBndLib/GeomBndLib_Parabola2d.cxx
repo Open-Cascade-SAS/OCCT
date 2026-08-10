@@ -79,7 +79,9 @@ Bnd_Box2d GeomBndLib_Parabola2d::Box(const gp_Parab2d& theParab,
     {
       aBox.Add(ElCLib::Value(theU2, theParab));
       if (theU1 * theU2 < 0)
+      {
         aBox.Add(ElCLib::Value(0., theParab));
+      }
     }
   }
   aBox.Enlarge(theTol);

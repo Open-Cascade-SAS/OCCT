@@ -69,7 +69,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
     int         aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
+    {
       return false;
+    }
 
     while (aNb > 0)
     {
@@ -78,7 +80,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
       {
         aTChild = occ::down_cast<XCAFDoc_GraphNode>(theRelocTable.Find(aNb));
         if (aTChild.IsNull())
+        {
           return false;
+        }
       }
       else
       {
@@ -92,7 +96,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
       // Get next child ID
       if (!XmlObjMgt::GetInteger(aChildren, aNb))
+      {
         aNb = 0;
+      }
     }
   }
 
@@ -103,7 +109,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
     int         aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
+    {
       return false;
+    }
 
     while (aNb > 0)
     {
@@ -112,7 +120,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
       {
         aTChild = occ::down_cast<XCAFDoc_GraphNode>(theRelocTable.Find(aNb));
         if (aTChild.IsNull())
+        {
           return false;
+        }
       }
       else
       {
@@ -126,7 +136,9 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
       // Get next child ID
       if (!XmlObjMgt::GetInteger(aChildren, aNb))
+      {
         aNb = 0;
+      }
     }
   }
 
@@ -143,7 +155,9 @@ void XmlMXCAFDoc_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
 {
   occ::handle<XCAFDoc_GraphNode> aS = occ::down_cast<XCAFDoc_GraphNode>(theSource);
   if (aS.IsNull())
+  {
     return;
+  }
 
   // graph id
   char                aGuidStr[40];
@@ -174,7 +188,9 @@ void XmlMXCAFDoc_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
     }
   }
   if (aStr.Length() > 0)
+  {
     theTarget.Element().setAttribute(::FathersString(), aStr.ToCString());
+  }
 
   // children
   aStr.Clear();
@@ -193,5 +209,7 @@ void XmlMXCAFDoc_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
     }
   }
   if (aStr.Length() > 0)
+  {
     theTarget.Element().setAttribute(::ChildrenString(), aStr.ToCString());
+  }
 }

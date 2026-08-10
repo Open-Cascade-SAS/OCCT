@@ -23,7 +23,9 @@ occ::handle<Standard_Type> TransferBRep_ShapeInfo::Type(const TopoDS_Shape& /*en
 const char* TransferBRep_ShapeInfo::TypeName(const TopoDS_Shape& ent)
 {
   if (ent.IsNull())
+  {
     return "TopoDS_Shape";
+  }
   switch (ent.ShapeType())
   {
     case TopAbs_VERTEX:

@@ -31,12 +31,18 @@ TCollection_AsciiString MoniTool_SignShape::Text(
   const occ::handle<Standard_Transient>& /*context*/) const
 {
   if (ent.IsNull())
+  {
     return "";
+  }
   occ::handle<TopoDS_HShape> HS = occ::down_cast<TopoDS_HShape>(ent);
   if (HS.IsNull())
+  {
     return ent->DynamicType()->Name();
+  }
   TopoDS_Shape sh = HS->Shape();
   if (sh.IsNull())
+  {
     return "SHAPE";
+  }
   return TopAbs::ShapeTypeToString(sh.ShapeType());
 }

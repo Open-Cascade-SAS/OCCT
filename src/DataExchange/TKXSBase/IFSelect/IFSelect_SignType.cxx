@@ -31,17 +31,25 @@ const char* IFSelect_SignType::Value(const occ::handle<Standard_Transient>& ent,
                                      const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   if (ent.IsNull())
+  {
     return nulsign;
+  }
   DeclareAndCast(Standard_Type, atype, ent);
   if (atype.IsNull())
+  {
     atype = ent->DynamicType();
+  }
   const char* tn = atype->Name();
   if (!thenopk)
+  {
     return tn;
+  }
   for (int i = 0; tn[i] != '\0'; i++)
   {
     if (tn[i] == '_')
+    {
       return &tn[i + 1];
+    }
   }
   return tn;
 }

@@ -86,13 +86,21 @@ IntPatch_Intersection::IntPatch_Intersection(const occ::handle<Adaptor3d_Surface
       myV2Start(0.0)
 {
   if (myTolArc < 1e-8)
+  {
     myTolArc = 1e-8;
+  }
   if (myTolTang < 1e-8)
+  {
     myTolTang = 1e-8;
+  }
   if (myTolArc > 0.5)
+  {
     myTolArc = 0.5;
+  }
   if (myTolTang > 0.5)
+  {
     myTolTang = 0.5;
+  }
   Perform(S1, D1, S2, D2, TolArc, TolTang);
 }
 
@@ -133,20 +141,34 @@ void IntPatch_Intersection::SetTolerances(const double TolArc,
   myUVMaxStep = UVMaxStep;
   myFleche    = Fleche;
   if (myTolArc < 1e-8)
+  {
     myTolArc = 1e-8;
+  }
   if (myTolTang < 1e-8)
+  {
     myTolTang = 1e-8;
+  }
   if (myTolArc > 0.5)
+  {
     myTolArc = 0.5;
+  }
   if (myTolTang > 0.5)
+  {
     myTolTang = 0.5;
+  }
   if (myFleche < 1.0e-3)
+  {
     myFleche = 1e-3;
+  }
   // if(myUVMaxStep<1.0e-3) myUVMaxStep=1e-3;
   if (myFleche > 10)
+  {
     myFleche = 10;
+  }
   if (myUVMaxStep > 0.5)
+  {
     myUVMaxStep = 0.5;
+  }
 }
 
 //======================================================================
@@ -160,9 +182,13 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
   myTolArc  = TolArc;
   myTolTang = TolTang;
   if (myFleche == 0.0)
+  {
     myFleche = 0.01;
+  }
   if (myUVMaxStep == 0.0)
+  {
     myUVMaxStep = 0.01;
+  }
 
   done = true;
   spnt.Clear();
@@ -213,7 +239,9 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
         empt           = interpp.IsEmpty();
         const int nblm = interpp.NbLines();
         for (int i = 1; i <= nblm; i++)
+        {
           slin.Append(interpp.Line(i));
+        }
       }
     }
     break;
@@ -306,13 +334,21 @@ static void FUN_TrimInfSurf(const gp_Pnt&                         Pmin,
       const Extrema_POnSurf& pons = anExtPS.Point(i);
       pons.Parameter(cU, cV);
       if (cU > Umax)
+      {
         Umax = cU;
+      }
       if (cU < Umin)
+      {
         Umin = cU;
+      }
       if (cV > Vmax)
+      {
         Vmax = cV;
+      }
       if (cV < Vmin)
+      {
         Vmin = cV;
+      }
     }
   }
 
@@ -326,13 +362,21 @@ static void FUN_TrimInfSurf(const gp_Pnt&                         Pmin,
       const Extrema_POnSurf& pons = anExtPS.Point(i);
       pons.Parameter(cU, cV);
       if (cU > Umax)
+      {
         Umax = cU;
+      }
       if (cU < Umin)
+      {
         Umin = cU;
+      }
       if (cV > Vmax)
+      {
         Vmax = cV;
+      }
       if (cV < Vmin)
+      {
         Vmin = cV;
+      }
     }
   }
 
@@ -374,20 +418,32 @@ static void FUN_TrimInfSurf(const gp_Pnt&                         Pmin,
     {
       TmpSS = TrimS;
       if (Uinf && Usup)
+      {
         TrimS = TmpSS->UTrim(-tp, tp, 1.0e-7);
+      }
       if (Uinf && !Usup)
+      {
         TrimS = TmpSS->UTrim(-tp, InfSurf->LastUParameter(), 1.0e-7);
+      }
       if (!Uinf && Usup)
+      {
         TrimS = TmpSS->UTrim(InfSurf->FirstUParameter(), tp, 1.0e-7);
+      }
     }
     else
     {
       if (Uinf && Usup)
+      {
         TrimS = InfSurf->UTrim(-tp, tp, 1.0e-7);
+      }
       if (Uinf && !Usup)
+      {
         TrimS = InfSurf->UTrim(-tp, InfSurf->LastUParameter(), 1.0e-7);
+      }
       if (!Uinf && Usup)
+      {
         TrimS = InfSurf->UTrim(InfSurf->FirstUParameter(), tp, 1.0e-7);
+      }
     }
   }
 }
@@ -408,7 +464,9 @@ static void FUN_GetUiso(const occ::handle<Geom_Surface>& GS,
   {
     occ::handle<Geom_Curve> gc = GS->UIso(U);
     if (IsVP && (FirstV == 0.0 && LastV == (2. * M_PI)))
+    {
       I = gc;
+    }
     else
     {
       occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
@@ -428,7 +486,9 @@ static void FUN_GetUiso(const occ::handle<Geom_Surface>& GS,
     {
       occ::handle<Geom_Curve> gc = gos->UIso(U);
       if (IsVP && (FirstV == 0.0 && LastV == (2 * M_PI)))
+      {
         I = gc;
+      }
       else
       {
         occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
@@ -462,14 +522,18 @@ static void FUN_GetUiso(const occ::handle<Geom_Surface>& GS,
         if (FirstV >= 0. && LastV >= 0.)
         {
           if (FirstV > 4.)
+          {
             return;
+          }
           VmTr = FirstV;
           VMTr = (LastV > 4.) ? 4. : LastV;
         }
         else if (FirstV < 0. && LastV < 0.)
         {
           if (LastV < -4.)
+          {
             return;
+          }
           VMTr = LastV;
           VmTr = (FirstV < -4.) ? -4. : FirstV;
         }
@@ -503,7 +567,9 @@ static void FUN_GetViso(const occ::handle<Geom_Surface>& GS,
   {
     occ::handle<Geom_Curve> gc = GS->VIso(V);
     if (IsUP && (FirstU == 0.0 && LastU == (2 * M_PI)))
+    {
       I = gc;
+    }
     else
     {
       occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
@@ -523,7 +589,9 @@ static void FUN_GetViso(const occ::handle<Geom_Surface>& GS,
     {
       occ::handle<Geom_Curve> gc = gos->VIso(V);
       if (IsUP && (FirstU == 0.0 && LastU == (2 * M_PI)))
+      {
         I = gc;
+      }
       else
       {
         occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
@@ -557,14 +625,18 @@ static void FUN_GetViso(const occ::handle<Geom_Surface>& GS,
         if (FirstU >= 0. && LastU >= 0.)
         {
           if (FirstU > 4.)
+          {
             return;
+          }
           UmTr = FirstU;
           UMTr = (LastU > 4.) ? 4. : LastU;
         }
         else if (FirstU < 0. && LastU < 0.)
         {
           if (LastU < -4.)
+          {
             return;
+          }
           UMTr = LastU;
           UmTr = (FirstU < -4.) ? -4. : FirstU;
         }
@@ -609,11 +681,15 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
   MS2[0] = 0.5 * (S2->LastUParameter() + S2->FirstUParameter());
   MS2[1] = 0.5 * (S2->LastVParameter() + S2->FirstVParameter());
   if (T1 == GeomAbs_SurfaceOfExtrusion)
+  {
     isoS1isLine[0] = true;
+  }
   else if (!S1->IsVPeriodic() && !S1->IsVClosed())
   {
     if (T1 != GeomAbs_OffsetSurface)
+    {
       C1 = gs1->UIso(MS1[0]);
+    }
     else
     {
       const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs1);
@@ -622,12 +698,16 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
     }
     GeomAdaptor_Curve gac(C1);
     if (gac.GetType() == GeomAbs_Line)
+    {
       isoS1isLine[0] = true;
+    }
   }
   if (!S1->IsUPeriodic() && !S1->IsUClosed())
   {
     if (T1 != GeomAbs_OffsetSurface)
+    {
       C1 = gs1->VIso(MS1[1]);
+    }
     else
     {
       const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs1);
@@ -636,14 +716,20 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
     }
     GeomAdaptor_Curve gac(C1);
     if (gac.GetType() == GeomAbs_Line)
+    {
       isoS1isLine[1] = true;
+    }
   }
   if (T2 == GeomAbs_SurfaceOfExtrusion)
+  {
     isoS2isLine[0] = true;
+  }
   else if (!S2->IsVPeriodic() && !S2->IsVClosed())
   {
     if (T2 != GeomAbs_OffsetSurface)
+    {
       C2 = gs2->UIso(MS2[0]);
+    }
     else
     {
       const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs2);
@@ -652,12 +738,16 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
     }
     GeomAdaptor_Curve gac(C2);
     if (gac.GetType() == GeomAbs_Line)
+    {
       isoS2isLine[0] = true;
+    }
   }
   if (!S2->IsUPeriodic() && !S2->IsUClosed())
   {
     if (T2 != GeomAbs_OffsetSurface)
+    {
       C2 = gs2->VIso(MS2[1]);
+    }
     else
     {
       const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs2);
@@ -666,7 +756,9 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
     }
     GeomAdaptor_Curve gac(C2);
     if (gac.GetType() == GeomAbs_Line)
+    {
       isoS2isLine[1] = true;
+    }
   }
   bool IsBothLines = ((isoS1isLine[0] || isoS1isLine[1]) && (isoS2isLine[0] || isoS2isLine[1]));
   if (!IsBothLines)
@@ -769,13 +861,17 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
   IsOk = true;
   // 3. Make intersections of V(U)isos
   if (C1.IsNull() || C2.IsNull())
+  {
     return;
+  }
   DV                            = derS1[iso];
   occ::handle<Geom_Plane> GPln  = new Geom_Plane(gp_Pln(puvS1, gp_Dir(DV)));
   occ::handle<Geom_Curve> C1Prj = GeomProjLib::ProjectOnPlane(C1, GPln, gp_Dir(DV), true);
   occ::handle<Geom_Curve> C2Prj = GeomProjLib::ProjectOnPlane(C2, GPln, gp_Dir(DV), true);
   if (C1Prj.IsNull() || C2Prj.IsNull())
+  {
     return;
+  }
   occ::handle<Geom2d_Curve> C1Prj2d = GeomProjLib::Curve2d(C1Prj, GPln);
   occ::handle<Geom2d_Curve> C2Prj2d = GeomProjLib::Curve2d(C2Prj, GPln);
   Geom2dAPI_InterCurveCurve ICC(C1Prj2d, C2Prj2d, 1.0e-7);
@@ -835,14 +931,18 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
         if (Fst >= 0. && Lst >= 0.)
         {
           if (Fst > 4.)
+          {
             return;
+          }
           NewFst = Fst;
           NewLst = (Lst > 4.) ? 4. : Lst;
         }
         if (Fst < 0. && Lst < 0.)
         {
           if (Lst < -4.)
+          {
             return;
+          }
           NewLst = Lst;
           NewFst = (Fst < -4.) ? -4. : Fst;
         }
@@ -928,9 +1028,13 @@ static void FUN_TrimBothSurf(const occ::handle<Adaptor3d_Surface>& S1,
   FUN_NewFirstLast(GA_U2, S2->FirstVParameter(), S2->LastVParameter(), TV, V1S2, V2S2, TrmV2);
   FUN_NewFirstLast(GA_V2, S2->FirstUParameter(), S2->LastUParameter(), TV, U1S2, U2S2, TrmU2);
   if (TrmV1)
+  {
     NS1 = S1->VTrim(V1S1, V2S1, 1.0e-7);
+  }
   if (TrmV2)
+  {
     NS2 = S2->VTrim(V1S2, V2S2, 1.0e-7);
+  }
   if (TrmU1)
   {
     if (TrmV1)
@@ -939,7 +1043,9 @@ static void FUN_TrimBothSurf(const occ::handle<Adaptor3d_Surface>& S1,
       NS1                               = TS->UTrim(U1S1, U2S1, 1.0e-7);
     }
     else
+    {
       NS1 = S1->UTrim(U1S1, U2S1, 1.0e-7);
+    }
   }
   if (TrmU2)
   {
@@ -949,7 +1055,9 @@ static void FUN_TrimBothSurf(const occ::handle<Adaptor3d_Surface>& S1,
       NS2                               = TS->UTrim(U1S2, U2S2, 1.0e-7);
     }
     else
+    {
       NS2 = S2->UTrim(U1S2, U2S2, 1.0e-7);
+    }
   }
 }
 
@@ -968,9 +1076,13 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   myTolArc  = TolArc;
   myTolTang = TolTang;
   if (myFleche <= Precision::PConfusion())
+  {
     myFleche = 0.01;
+  }
   if (myUVMaxStep <= Precision::PConfusion())
+  {
     myUVMaxStep = 0.01;
+  }
 
   done = false;
   spnt.Clear();
@@ -1132,9 +1244,13 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (TreatAsBiParametric)
   {
     if (typs1 == GeomAbs_Cone && typs2 == GeomAbs_Plane)
+    {
       typs1 = GeomAbs_BezierSurface; // Using Imp-Prm Intersector
+    }
     else if (typs1 == GeomAbs_Plane && typs2 == GeomAbs_Cone)
+    {
       typs2 = GeomAbs_BezierSurface; // Using Imp-Prm Intersector
+    }
     else
     {
       // Using Prm-Prm Intersector
@@ -1223,7 +1339,9 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   }
 
   if (!theIsReqToPostWLProc)
+  {
     return;
+  }
 
   for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
        i++)
@@ -1231,16 +1349,22 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
+    {
       continue;
+    }
 
     if (!aWL->IsPurgingAllowed())
+    {
       continue;
+    }
 
     occ::handle<IntPatch_WLine> aRW =
       IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
 
     if (aRW.IsNull())
+    {
       continue;
+    }
 
     slin.InsertAfter(i, aRW);
     slin.Remove(i);
@@ -1263,9 +1387,13 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   myTolArc  = TolArc;
   myTolTang = TolTang;
   if (myFleche <= Precision::PConfusion())
+  {
     myFleche = 0.01;
+  }
   if (myUVMaxStep <= Precision::PConfusion())
+  {
     myUVMaxStep = 0.01;
+  }
   done = false;
   spnt.Clear();
   slin.Clear();
@@ -1494,7 +1622,9 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   }
 
   if (!theIsReqToPostWLProc)
+  {
     return;
+  }
 
   for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
        i++)
@@ -1502,16 +1632,22 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
+    {
       continue;
+    }
 
     if (!aWL->IsPurgingAllowed())
+    {
       continue;
+    }
 
     occ::handle<IntPatch_WLine> aRW =
       IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
 
     if (aRW.IsNull())
+    {
       continue;
+    }
 
     slin.InsertAfter(i, aRW);
     slin.Remove(i);
@@ -1598,7 +1734,9 @@ void IntPatch_Intersection::ParamParamPerfom(const occ::handle<Adaptor3d_Surface
         done = true;
       }
       else
+      {
         done = false;
+      }
 
       return;
     } // 'COLLINEAR LINES'
@@ -1620,13 +1758,17 @@ void IntPatch_Intersection::ParamParamPerfom(const occ::handle<Adaptor3d_Surface
     for (int i = 1; i <= interpp.NbLines(); i++)
     {
       if (interpp.Line(i)->ArcType() != IntPatch_Walking)
+      {
         slin.Append(interpp.Line(i));
+      }
     }
 
     for (int i = 1; i <= interpp.NbLines(); i++)
     {
       if (interpp.Line(i)->ArcType() == IntPatch_Walking)
+      {
         slin.Append(interpp.Line(i));
+      }
     }
   }
 }
@@ -1666,7 +1808,9 @@ void IntPatch_Intersection::GeomGeomPerfom(const occ::handle<Adaptor3d_Surface>&
 
   tgte = interii.TangentFaces();
   if (tgte)
+  {
     oppo = interii.OppositeFaces();
+  }
 
   bool                  isWLExist = false;
   IntPatch_ALineToWLine AToW(theS1, theS2, aNbPointsInALine);
@@ -1687,7 +1831,9 @@ void IntPatch_Intersection::GeomGeomPerfom(const occ::handle<Adaptor3d_Surface>&
       }
 
       if ((line->ArcType() != IntPatch_Restriction) || theIsReqToKeepRLine)
+      {
         slin.Append(line);
+      }
     }
   }
 
@@ -1772,9 +1918,13 @@ void IntPatch_Intersection::GeomParamPerfom(const occ::handle<Adaptor3d_Surface>
   if (myIsStartPnt)
   {
     if (isNotAnalitical /*ts1 == 0*/)
+    {
       interip.SetStartPoint(myU1Start, myV1Start);
+    }
     else
+    {
       interip.SetStartPoint(myU2Start, myV2Start);
+    }
   }
 
   if (theD1->DomainIsInfinite() && theD2->DomainIsInfinite())
@@ -1798,7 +1948,9 @@ void IntPatch_Intersection::GeomParamPerfom(const occ::handle<Adaptor3d_Surface>
         done = true;
       }
       else
+      {
         done = false;
+      }
 
       return;
     }
@@ -1811,7 +1963,9 @@ void IntPatch_Intersection::GeomParamPerfom(const occ::handle<Adaptor3d_Surface>
     }
   }
   else
+  {
     interip.Perform(theS1, theD1, theS2, theD2, myTolArc, myTolTang, myFleche, myUVMaxStep);
+  }
 
   if (interip.IsDone())
   {
@@ -1824,17 +1978,23 @@ void IntPatch_Intersection::GeomParamPerfom(const occ::handle<Adaptor3d_Surface>
       for (int i = 1; i <= aNbLines; i++)
       {
         if (interip.Line(i)->ArcType() != IntPatch_Walking)
+        {
           slin.Append(interip.Line(i));
+        }
       }
 
       for (int i = 1; i <= aNbLines; i++)
       {
         if (interip.Line(i)->ArcType() == IntPatch_Walking)
+        {
           slin.Append(interip.Line(i));
+        }
       }
 
       for (int i = 1; i <= interip.NbPnts(); i++)
+      {
         spnt.Append(interip.Point(i));
+      }
     }
   }
 }
@@ -1904,7 +2064,9 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
       const int nblm = interpp.NbLines();
       int       i    = 1;
       for (; i <= nblm; i++)
+      {
         slin.Append(interpp.Line(i));
+      }
     }
   }
 
@@ -1914,15 +2076,21 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
+    {
       continue;
+    }
 
     if (!aWL->IsPurgingAllowed())
+    {
       continue;
+    }
 
     occ::handle<IntPatch_WLine> aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, S1, S2, D1, D2);
 
     if (aRW.IsNull())
+    {
       continue;
+    }
 
     slin.InsertAfter(i, aRW);
     slin.Remove(i);
@@ -2155,15 +2323,21 @@ bool IntPatch_Intersection::CheckSingularPoints(const occ::handle<Adaptor3d_Surf
       aP1 = aBnd->Value(t);
       theS1->D1(aP1.X(), aP1.Y(), aPP1, aDU, aDV);
       if (isU)
+      {
         aD1NormMax = std::max(aD1NormMax, aDU.Magnitude());
+      }
       else
+      {
         aD1NormMax = std::max(aD1NormMax, aDV.Magnitude());
+      }
 
       aPmid += aPP1.XYZ();
       aNb++;
 
       if (aD1NormMax > aTol)
+      {
         break;
+      }
     }
 
     if (aD1NormMax <= aTol)
@@ -2235,10 +2409,10 @@ double IntPatch_Intersection::DefineUVMaxStep(const occ::handle<Adaptor3d_Surfac
 
 //=================================================================================================
 
-static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
-                      const occ::handle<Adaptor3d_TopolTool>&             theD,
-                      const double                                        theTol,
-                      NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS)
+static void splitCone(const occ::handle<Adaptor3d_Surface>&                     theS,
+                      const occ::handle<Adaptor3d_TopolTool>&                   theD,
+                      const double                                              theTol,
+                      NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS)
 {
   if (theS->GetType() != GeomAbs_Cone)
   {
@@ -2273,13 +2447,13 @@ static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
 // purpose  : Prepares surfaces for intersection
 //=======================================================================
 void IntPatch_Intersection::PrepareSurfaces(
-  const occ::handle<Adaptor3d_Surface>&               theS1,
-  const occ::handle<Adaptor3d_TopolTool>&             theD1,
-  const occ::handle<Adaptor3d_Surface>&               theS2,
-  const occ::handle<Adaptor3d_TopolTool>&             theD2,
-  const double                                        theTol,
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS1,
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS2)
+  const occ::handle<Adaptor3d_Surface>&                     theS1,
+  const occ::handle<Adaptor3d_TopolTool>&                   theD1,
+  const occ::handle<Adaptor3d_Surface>&                     theS2,
+  const occ::handle<Adaptor3d_TopolTool>&                   theD2,
+  const double                                              theTol,
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS1,
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS2)
 {
   if ((theS1->GetType() == GeomAbs_Cone)
       && (std::abs(M_PI / 2. - std::abs(theS1->Cone().SemiAngle())) < theTol))

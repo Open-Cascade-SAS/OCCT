@@ -137,9 +137,9 @@ private:
   bool myIsInitS2;
 
   //! List of subshapes of the 1st shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList1;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList1;
   //! List of subshapes of the 2nd shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList2;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList2;
 
   //! Set of all the face triangles of the 1st shape.
   occ::handle<BRepExtrema_TriangleSet> myElementSet1;

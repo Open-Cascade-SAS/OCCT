@@ -50,16 +50,13 @@ public:
   void Next() { ++myCurrent; }
 
   //! Return the current layer handle.
-  [[nodiscard]] const occ::handle<BRepGraph_Layer>& Value() const
-  {
-    return myRegistry->Layer(myCurrent);
-  }
+  [[nodiscard]] occ::handle<BRepGraph_Layer> Value() const { return myRegistry->Layer(myCurrent); }
 
   //! Return the current slot index in the registry.
-  [[nodiscard]] int Slot() const { return myCurrent; }
+  [[nodiscard]] uint32_t Slot() const { return myCurrent; }
 
   //! Number of layers in the registry.
-  [[nodiscard]] int NbLayers() const { return myCount; }
+  [[nodiscard]] uint32_t NbLayers() const { return myCount; }
 
   //! STL range-for support.
   NCollection_ForwardRangeIterator<BRepGraph_LayerIterator> begin()
@@ -72,8 +69,8 @@ public:
 
 private:
   const BRepGraph_LayerRegistry* myRegistry;
-  int                            myCount;
-  int                            myCurrent;
+  uint32_t                       myCount;
+  uint32_t                       myCurrent;
 };
 
 #endif // _BRepGraph_LayerIterator_HeaderFile

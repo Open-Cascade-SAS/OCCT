@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BRepApprox_TheComputeLineOfApprox.hxx>
 #include <BRepApprox_TheComputeLineBezierOfApprox.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
@@ -171,7 +171,7 @@ private:
   double                                  myTolReached3d;
   double                                  myTolReached2d;
   Approx_Data                             myData;
-  NCollection_Vector<int>                 myKnots;
+  NCollection_DynamicArray<int>           myKnots;
 };
 
 #endif // _BRepApprox_Approx_HeaderFile

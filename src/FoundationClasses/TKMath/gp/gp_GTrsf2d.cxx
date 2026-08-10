@@ -170,20 +170,28 @@ gp_Trsf2d gp_GTrsf2d::Trsf2d() const
   const double aTolerance2 = 2.0 * aTolerance;
 
   if (Form() == gp_Other)
+  {
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(0)");
+  }
 
   double value =
     (matrix.Value(1, 1) * matrix.Value(1, 1) + matrix.Value(2, 1) * matrix.Value(2, 1));
   if (std::abs(value - 1.) > aTolerance2)
+  {
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");
+  }
 
   value = (matrix.Value(1, 2) * matrix.Value(1, 2) + matrix.Value(2, 2) * matrix.Value(2, 2));
   if (std::abs(value - 1.) > aTolerance2)
+  {
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(2)");
+  }
 
   value = (matrix.Value(1, 1) * matrix.Value(1, 2) + matrix.Value(2, 1) * matrix.Value(2, 2));
   if (std::abs(value) > aTolerance)
+  {
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(3)");
+  }
 
   gp_Trsf2d aTransformation;
   aTransformation.matrix = matrix;

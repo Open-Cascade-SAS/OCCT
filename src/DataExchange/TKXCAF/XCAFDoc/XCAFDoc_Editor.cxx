@@ -72,7 +72,9 @@ bool XCAFDoc_Editor::Expand(const TDF_Label& theDoc,
 
   TDF_Label aCompoundPartL = theShape;
   if (aShapeTool->IsReference(theShape))
+  {
     aShapeTool->GetReferredShape(aCompoundPartL, aCompoundPartL);
+  }
 
   TopoDS_Shape aS = aShapeTool->GetShape(aCompoundPartL);
   if (aShapeTool->Expand(aCompoundPartL))
@@ -131,7 +133,9 @@ bool XCAFDoc_Editor::Expand(const TDF_Label& theDoc,
         {
           TopoDS_Shape aPartShape = aShapeTool->GetShape(aPart);
           if (!aPartShape.IsNull() && aPartShape.ShapeType() == TopAbs_COMPOUND)
+          {
             Expand(theDoc, aPart, theRecursively);
+          }
         }
       }
     }
@@ -667,7 +671,7 @@ bool XCAFDoc_Editor::FilterShapeTree(const occ::handle<XCAFDoc_ShapeTool>& theSh
     return false;
   }
   occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  NCollection_Map<TDF_Label>             aLabelsToKeep(theLabelsToKeep.Size(), anAllocator);
+  NCollection_Map<TDF_Label>             aLabelsToKeep(theLabelsToKeep.Length(), anAllocator);
   for (NCollection_Map<TDF_Label>::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More();
        aLabelIter.Next())
   {
@@ -974,7 +978,9 @@ bool XCAFDoc_Editor::RescaleGeometry(const TDF_Label& theLabel,
           if (aRescaleOtherValues)
           {
             for (int i = anArray.Lower() + 1; i <= anArray.Upper(); ++i)
+            {
               anArray.ChangeValue(i) *= theScaleFactor;
+            }
 
             occ::handle<TCollection_HAsciiString> aName = aDimObj->GetSemanticName();
             if (!aName.IsNull())

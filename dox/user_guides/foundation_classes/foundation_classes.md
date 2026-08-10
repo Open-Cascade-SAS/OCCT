@@ -37,7 +37,7 @@ Collections are implemented in the *TCollection* and *NCollection* packages.
 
 ### Collections of Standard Objects
 
-The *TColStd* package provides frequently used instantiations of generic classes from the *TCollection* package with objects from the *Standard* package or strings from the *TCollection* package.
+The legacy *TColStd* package provides frequently used instantiations of generic classes from the *TCollection* package with objects from the *Standard* package or strings from the *TCollection* package. New code should prefer the explicit `NCollection_*<T>` form -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 ### Vectors and Matrices
 
@@ -194,65 +194,33 @@ providing reference counting mechanism and automatic destruction of the object w
 
 The primitive types are predefined in the language and they are **manipulated by value**.
 
-* **Standard_Boolean** is used to represent logical data.
-  It may have only two values: *Standard_True* and *Standard_False*.
-* **Standard_Character** designates any ASCII character.
-* **Standard_ExtCharacter** is an extended character.
-* **Standard_Integer** is a whole number.
-* **Standard_Real** denotes a real number (i.e. one with whole and a fractional part, either of which may be null).
-* **Standard_ShortReal** is a real with a smaller choice of values and memory size.
-* **Standard_CString** is used for literal constants.
-* **Standard_ExtString** is an extended string.
-* **Standard_Address** represents a byte address of undetermined size.
+In new code, always use standard C++ primitive types directly:
 
-The services offered by each of these types are described in the **Standard** Package.
-The table below presents the equivalence existing between C++ fundamental types and OCCT primitive types.
+| C++ Type  | Description |
+| :-------- | :---------- |
+| int       | 32-bit signed integer, negative, positive or null values |
+| double    | Double-precision real number with finite precision and size |
+| float     | Single-precision real number with a smaller choice of values and memory size |
+| bool      | Logical data: *true* and *false* |
+| char      | Single 8-bit character; ordering per ASCII chart |
+| char16_t  | 16-bit character; ordering per UNICODE chart |
+| char\*    | C string literal (a sequence of UTF-8 code points enclosed in double quotes) |
+| void\*    | Generic byte address pointer |
+| char16_t\* | Extended string (sequence of Unicode 16-bit characters) |
 
-**Table 1: Equivalence between C++ Types and OCCT Primitive Types**
-
-| C++ Types	| OCCT Types |
-| :--------- | :----------- |
-| int	| Standard_Integer |
-| double 	| Standard_Real |
-| float	| Standard_ShortReal |
-| bool	| Standard_Boolean |
-| char	| Standard_Character |
-| char16_t	| Standard_Utf16Char |
-| char\*	| Standard_CString |
-| void\*	| Standard_Address |
-| char16_t\*	| Standard_ExtString |
-
-\* The types with asterisk are pointers.
-
-**Reminder of the classes listed above:**
-
-* **Standard_Integer**: fundamental type representing 32-bit integers yielding negative, positive or null values.
-  *Integer* is implemented as a *typedef* of the C++ *int* fundamental type.
-  As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it.
-* **Standard_Real**: fundamental type representing real numbers with finite precision and finite size.
-  **Real** is implemented as a *typedef* of the C++ *double* (double precision) fundamental type.
-  As such, the algebraic operations +, -, *, /, unary- and the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on reals.
-* **Standard_ShortReal**: fundamental type representing real numbers with finite precision and finite size.
-  *ShortReal* is implemented as a *typedef* of the C++ *float* (single precision) fundamental type.
-  As such, the algebraic operations +, -, *, /, unary- and the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on reals.
-* **Standard_Boolean**: fundamental type representing logical expressions.
-  It has two values: *false* and *true*.
-  *Boolean* is implemented as a *typedef* of the C++ *bool* fundamental type.
-  As such, the algebraic operations *and, or, xor* and *not* as well as equivalence relations == and != are defined on Booleans.
-* **Standard_Character**: fundamental type representing the UTF-8 character set.
-  *Character* is implemented as a *typedef* of the C++ *char* fundamental type.
-  As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on characters using the order of the ASCII chart (ex: A B).
-* **Standard_ExtCharacter**: fundamental type representing the UTF-16 character set.
-  It is a 16-bit character type.
-  *ExtCharacter* is implemented as a *typedef* of the C++ *char16_t* fundamental type.
-  As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on extended characters using the order of the UNICODE chart (ex: A B).
-* **Standard_CString**: fundamental type representing string literals.
-  A string literal is a sequence of UTF-8 (8 bits) code points enclosed in double quotes.
-  *CString* is implemented as a *typedef* of the C++ *char* fundamental type.
-* **Standard_Address**: fundamental type representing a generic pointer.
-  *Address* is implemented as a *typedef* of the C++ *void* fundamental type.
-* **Standard_ExtString**: fundamental type representing string literals as sequences of Unicode (16 bits) characters.
-  *ExtString* is implemented as a *typedef* of the C++ *char16_t* fundamental type.
+> **Backward compatibility only:** The legacy OCCT typedefs (*Standard_Integer*, *Standard_Real*, *Standard_Boolean*, etc.) are retained for compatibility with existing code but should not be used in new code. They are defined in the **Standard** Package and map to C++ fundamental types:
+>
+> | Legacy OCCT Type        | Maps to C++ Type |
+> | :---------------------- | :--------------- |
+> | Standard_Integer        | int              |
+> | Standard_Real           | double           |
+> | Standard_ShortReal      | float            |
+> | Standard_Boolean        | bool             |
+> | Standard_Character      | char             |
+> | Standard_Utf16Char      | char16_t         |
+> | Standard_CString        | char\*           |
+> | Standard_Address        | void\* (deprecated) |
+> | Standard_ExtString      | char16_t\*       |
 
 @subsubsection occt_fcug_2_1_2 Types manipulated by value
 There are three categories of types which are manipulated by value:
@@ -306,10 +274,10 @@ Open CASCADE Technology provides preprocessor macro *Handle()* that is historica
 occ::handle<Geom_Line> aLine; // "occ::handle<Geom_Line>" is expanded to "opencascade::handle<Geom_Line>"
 ~~~~
 
-In addition, for most OCCT classes additional *typedef* is defined for a handle, as the name of a class prefixed by *Handle_*.
+In addition, for most OCCT classes a legacy *typedef* is defined for a handle, as the name of a class prefixed by *Handle_* (deprecated but retained for backward compatibility).
 For instance, the above example can be also coded as:
 ~~~~{.cpp}
-Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handle<Geom_Line>"
+Handle_Geom_Line aLine; // DEPRECATED: "Handle_Geom_Line" is a legacy typedef to "opencascade::handle<Geom_Line>". Use occ::handle<Geom_Line> instead.
 ~~~~
 
 #### Using a Handle
@@ -344,7 +312,7 @@ class Appli_ExtSurface : public Geom_Surface
 {
 . . .
 public:
-  DEFINE_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTI_INLINE(Appli_ExtSurface,Geom_Surface)
 };
 ~~~~
 
@@ -376,7 +344,7 @@ To get the type descriptor for a given class type, use macro *STANDARD_TYPE()* w
 
 Example of usage:
 ~~~~{.cpp}
-if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (dynamic_cast<Geom_Line>(aCurve.get()) != 0)"
+if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (!occ::down_cast<Geom_Line>(aCurve).IsNull())"
 {
 ...
 }
@@ -426,7 +394,7 @@ void MyFunction (const occ::handle<A> & a)
 {
   occ::handle<B> b =  occ::down_cast<B>(a);
   if (! b.IsNull()) {
-    // we can use “b” if class B inherits from A
+    // we can use "b" if class B inherits from A
   }
   else {
     // the types are incompatible
@@ -435,7 +403,7 @@ void MyFunction (const occ::handle<A> & a)
 ~~~~
 Downcasting is used particularly with collections of objects of different types; however, these objects should inherit from the same root class.
 
-For example, with a sequence of transient objects *TColStd_SequenceOfTransient* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
+For example, with a sequence of transient objects *NCollection_Sequence\<occ::handle\<Standard_Transient\>\>* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
 
 ~~~~{.cpp}
 occ::handle<A> a;
@@ -450,7 +418,7 @@ t = aSeq.Value (1);
 // here, you cannot write:
 // a = t; // ERROR !
 // so you downcast:
-a = occ::down_cast<A>(t)
+a = occ::down_cast<A>(t);
 if (!a.IsNull())
 {
   // types are compatible, you can use a
@@ -485,7 +453,7 @@ occ::handle<Geom_CartesianPoint> aCentre;
 double x, y, z;
 if (aCentre.IsNull())
 {
-  aCentre = new PGeom_CartesianPoint (0, 0, 0);
+  aCentre = new Geom_CartesianPoint (0, 0, 0);
 }
 aCentre->Coord (x, y, z);
 ~~~~
@@ -606,68 +574,6 @@ Since operators *new()* and *delete()* are inherited, this is also true for any 
 If that is done, the method *Delete()* should be also redefined to apply operator *delete* to this pointer.
 This will ensure that appropriate *delete()* function will be called, even if the object is manipulated by a handle to a base class.
 
-@subsubsection occt_fcug_2_3_2 How to configure the Memory Manager
-
-The OCCT memory manager may be configured to apply different optimization techniques to different memory blocks (depending on their size),
-or even to avoid any optimization and use C functions *malloc()* and *free()* directly.
-The configuration is defined by numeric values of the  following environment variables:
-  * *MMGT_OPT*:
-    - if set to 0 (default) every memory block is allocated in C memory heap directly (via *malloc()* and *free()* functions).
-      In this case, all other options except for *MMGT_CLEAR* are ignored;
-    - if set to 1 the memory manager performs optimizations as described below;
-    - if set to 2, Intel ® TBB optimized memory manager is used.
-  * *MMGT_CLEAR*: if set to 1 (default), every allocated memory block is cleared by zeros; if set to 0, memory block is returned as it is.
-  * *MMGT_CELLSIZE*: defines the maximal size of blocks allocated in large pools of memory. Default is 200.
-  * *MMGT_NBPAGES*: defines the size of memory chunks allocated for small blocks in pages (operating-system dependent). Default is 1000.
-  * *MMGT_THRESHOLD*: defines the maximal size of blocks that are recycled internally instead of being returned to the heap. Default is 40000.
-  * *MMGT_MMAP*: when set to 1 (default), large memory blocks are allocated using memory mapping functions of the operating system; if set to 0, they will be allocated in the C heap by *malloc()*.
-
-@subsubsection occt_fcug_2_3_3 Optimization Techniques
-
-When *MMGT_OPT* is set to 1, the following optimization techniques are used:
-  * Small blocks with a size less than *MMGT_CELLSIZE*, are not allocated separately.
-    Instead, a large pools of memory are allocated (the size of each pool is *MMGT_NBPAGES* pages).
-    Every new memory block is arranged in a spare place of the current pool.
-    When the current memory pool is completely occupied, the next one is allocated, and so on.
-
-In the current version memory pools are never returned to the system (until the process finishes).
-However, memory blocks that are released by the method *Standard::Free()* are remembered in the free lists and later reused when the next block of the same size is allocated (recycling).
-
-  * Medium-sized blocks, with a size greater than *MMGT_CELLSIZE* but less than *MMGT_THRESHOLD*, are allocated directly in the C heap (using *malloc()* and *free()*).
-    When such blocks are released by the method *Standard::Free()* they are recycled just like small blocks.
-
-However, unlike small blocks, the recycled medium blocks contained in the free lists (i.e. released by the program but held by the memory manager) can be returned to the heap by method *Standard::Purge()*.
-
-  * Large blocks with a size greater than *MMGT_THRESHOLD*, including memory pools used for small blocks, are allocated depending on the value of *MMGT_MMAP*:
-    if it is 0, these blocks are allocated in the C heap; otherwise they are allocated using operating-system specific functions managing memory mapped files.
-    Large blocks are returned to the system immediately when *Standard::Free()* is called.
-
-@subsubsection occt_fcug_2_3_4 Benefits and drawbacks
-
-The major benefit of the OCCT memory manager is explained by its recycling of small and medium blocks that makes an application work much faster
-when it constantly allocates and frees multiple memory blocks of similar sizes.
-In practical situations, the real gain on the application performance may be up to 50%.
-
-The associated drawback is that recycled memory is not returned to the operating system during program execution.
-This may lead to considerable memory consumption and even be misinterpreted as a memory leak.
-To minimize this effect it is necessary to call the method *Standard::Purge* after the completion of memory-intensive operations.
-
-The overhead expenses induced by the OCCT memory manager are:
-  * size of every allocated memory block is rounded up to 8 bytes
-    (when *MMGT_OPT* is 0 (default), the rounding is defined by the CRT; the typical value for 32-bit platforms is 4 bytes)
-  * additional 4 bytes (or 8 on 64-bit platforms) are allocated in the beginning of every memory block to hold its size
-    (or address of the next free memory block when recycled in free list) only when *MMGT_OPT* is 1.
-
-Note that these overheads may be greater or less than overheads induced by the C heap memory manager,
-so overall memory consumption may be greater in either optimized or standard modes, depending on circumstances.
-
-As a general rule, it is advisable to allocate memory through significant blocks.
-In this way, you can work with blocks of contiguous data, and processing is facilitated for the memory page manager.
-
-OCCT memory manager uses mutex to lock access to free lists, therefore it may have less performance than non-optimized mode in situations
-when different threads often make simultaneous calls to the memory manager.
-The reason is that modern implementations of *malloc()* and *free()* employ several allocation arenas and thus avoid delays waiting mutex release, which are possible in such situations.
-
 @subsection occt_fcug_2_4 Exceptions
 
 @subsubsection occt_fcug_2_4_1 Introduction
@@ -727,7 +633,7 @@ Thus,
   * No exception should be raised during normal execution of an application.
   * A method which may raise an exception should be protected by other methods allowing the caller to check on the validity of the call.
 
-For example, if you consider the *TCollection_Array1* class used with:
+For example, if you consider the *NCollection_Array1* class used with:
   * *Value* function to extract an element;
   * *Lower* function to extract the lower bound of the array;
   * *Upper* function to extract the upper bound of the array.
@@ -735,12 +641,12 @@ For example, if you consider the *TCollection_Array1* class used with:
 then, the *Value* function may be implemented as follows:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (int theIndex) const
+Item NCollection_Array1::Value (int theIndex) const
 {
   // where myR1 and myR2 are the lower and upper bounds of the array
   if (theIndex < myR1 || theIndex > myR2)
   {
-    throw Standard_OutOfRange ("Index out of range in TCollection_Array1::Value");
+    throw Standard_OutOfRange ("Index out of range in NCollection_Array1::Value");
   }
   return myContents[theIndex];
 }
@@ -766,9 +672,9 @@ The entire call may be removed by defining one of the preprocessor symbols *No_E
 Using this syntax, the *Value* function becomes:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (int theIndex) const
+Item NCollection_Array1::Value (int theIndex) const
 {
-  Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in TCollection_Array1::Value");
+  Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in NCollection_Array1::Value");
   return myContents[theIndex];
 }
 ~~~~
@@ -789,7 +695,7 @@ The recommended location for it is first statement after opening brace of <i>try
 As an example, consider the exceptions of type *Standard_NumericError, Standard_Overflow, Standard_Underflow* and *Standard_DivideByZero*, where *Standard_NumericError* is the parent type of the three others.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   try
   {
@@ -814,7 +720,7 @@ The handlers are checked in order of appearance, from the nearest to the try blo
 For a try block, it would be a mistake to place a handler for a base exception type ahead of a handler for its derived type since that would ensure that the handler for the derived exception would never be invoked.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   int i = 0;
   {
@@ -925,15 +831,20 @@ That method reads the information regarding available plug-ins and their locatio
 $CSF_PluginDefaults/Plugin
 ~~~~
 
-The *Load* method looks for the library name in the resource file or registry through its GUID, for example, on UNIX:
-~~~~
-! METADATADRIVER whose value must be OS or DM.
+The *Load* method looks up the toolkit name by GUID in the resource file. Each line maps a *Standard_GUID* to a toolkit name (without the platform-specific `lib`/`.dll`/`.so` decoration) -- the platform's dynamic loader resolves the actual library at runtime. For example, the *Plugin* file shipped with OCCT contains entries such as:
 
-! FW
-a148e300-5740-11d1-a904-080036aaa103.Location: libFWOSPlugin.so
+~~~~
+! Standard attribute drivers plugin
+ad696001-5b34-11d1-b5ba-00a0c9064368.Location: TKStd
+
+! BinOcaf Document Plugin
+03a56835-8269-11d5-aab2-0050044b1af1.Location: TKBin
+
+! XmlOcaf Document Plugin
+03a56820-8269-11d5-aab2-0050044b1af1.Location: TKXml
 ~~~~
 
-Then the *Load* method loads the library according to the rules of the operating system of the host machine (for example, by using environment variables such as *LD_LIBRARY_PATH* with Unix and *PATH* with Windows).
+Then the *Load* method loads the library according to the rules of the operating system of the host machine (for example, by using environment variables such as *LD_LIBRARY_PATH* on Linux, *DYLD_LIBRARY_PATH* on macOS and *PATH* on Windows).
 After that it invokes the *PLUGINFACTORY* method to return the object, which supports the required service.
 The client may then call the functions supported by this object.
 
@@ -942,7 +853,7 @@ The client may then call the functions supported by this object.
 To invoke one of the services provided by the plug-in, you may call the *Plugin::Load()* global function with the *Standard_GUID* of the requested service as follows:
 
 ~~~~{.cpp}
-occ::down_cast<FADriver_PartStorer>(PlugIn::Load (yourStandardGUID));
+occ::down_cast<FADriver_PartStorer>(Plugin::Load (yourStandardGUID));
 ~~~~
 
 Let us take *FAFactory.hxx* and *FAFactory.cxx* as an example:
@@ -1025,7 +936,7 @@ Collections classes are *generic* (C++ templates), that is, they define a struct
 
 Note that:
   * Each collection directly used as an argument in OCCT public syntax is instantiated in an OCCT component.
-  * The *TColStd* package (**Collections of Standard Objects** component) provides numerous instantiations of these generic collections with objects from the **Standard** package or from the **Strings** component.
+  * The legacy *TColStd* package (**Collections of Standard Objects** component) provides numerous instantiations of these generic collections with objects from the **Standard** package or from the **Strings** component. New code should prefer the explicit `NCollection_*<T>` form -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 The **Collections** component provides a wide range of generic collections:
   * **Arrays** are generally used for a quick access to the item, however an array is a fixed sized aggregate.
@@ -1048,16 +959,18 @@ Let see an example of NCollection template class instantiation for a sequence of
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 ~~~~
 
-For the case, when sequence itself should be managed by handle, auxiliary macros *DEFINE_HSEQUENCE* can be used:
+For the case when a sequence needs to be managed by handle, use `NCollection_HSequence<T>` (which inherits from both `NCollection_Sequence<T>` and `Standard_Transient`):
+
 ~~~~{.cpp}
-#include <NCollection_Sequence.hxx>
-#include <NCollection_DefineHSequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <gp_Pnt.hxx>
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
-DEFINE_HSEQUENCE(MyPackage_HSequenceOfPnt, MyPackage_SequenceOfPnt)
+typedef NCollection_HSequence<gp_Pnt> MyPackage_HSequenceOfPnt;
 ...
 occ::handle<MyPackage_HSequenceOfPnt> aSeq = new MyPackage_HSequenceOfPnt();
 ~~~~
+
+The legacy `DEFINE_HSEQUENCE` macro is removed in OCCT 8.0.0. Existing code using it should be migrated to `NCollection_HSequence<T>` (the `migrate_hcollections.py` script in `adm/` automates this conversion).
 
 See more details about available collections in following sections.
 
@@ -1303,12 +1216,12 @@ The common methods of Iterator are:
 Usage sample:
 
 ~~~~{.cpp}
-typedef Ncollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
+typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 void Perform (const MyPackage_SequenceOfPnt& theSequence)
 {
   for (MyPackage_SequenceOfPnt::Iterator anIter (theSequence); anIter.More(); anIter.Next())
   {
-    const gp_Pnt aPnt& = anIter.Value();
+    const gp_Pnt& aPnt = anIter.Value();
     ...
   }
 }
@@ -1436,14 +1349,15 @@ while search with NCollection_UBTree provides logarithmic law access time.
 
 @subsection occt_fcug_3_2 Collections of Standard Objects
 
-Packages *TShort*, *TColGeom*, *TColGeom2d*, *TColStd*, *TColgp* provide template instantiations (typedefs) of *NCollection* templates to standard OCCT types.
-Classes with *H* prefix in name are handle-based variants and inherit Standard_Transient.
+Use the *NCollection* templates directly with the desired element type, for example:
+
 ~~~~{.cpp}
-typedef NCollection_Array1<gp_Vec>                  NCollection_Array1<gp_Vec>;
-typedef NCollection_Array1<TCollection_AsciiString> NCollection_Array1<TCollection_AsciiString>;
+NCollection_Array1<gp_Vec>                  aVecs(1, 10);
+NCollection_Array1<TCollection_AsciiString> aNames(1, 10);
+NCollection_Map<int>                        anIds;
 ~~~~
 
-Packages like *TopTools* also include definitions of collections and hash functions for complex types like shapes -- *TopTools_ShapeMapHasher*, *TopTools_MapOfShape*.
+Legacy package-level typedefs (such as those previously provided by *TColgp*, *TColStd*, *TColGeom*) are no longer recommended in new code -- prefer the explicit `NCollection_*<T>` form. Hash functions for complex element types like shapes are provided in dedicated packages, e.g. *TopTools_ShapeMapHasher* together with *TopTools_MapOfShape*.
 
 Apart from that class *TColStd_PackedMapOfInteger* provides an alternative implementation of map of integer numbers,
 optimized for both performance and memory usage (it uses bit flags to encode integers, which results in spending only 24 bytes per 32 integers stored in optimal case).
@@ -1512,6 +1426,8 @@ Math primitives and algorithms available in Open CASCADE Technology include:
 @subsection occt_occt_fcug_4_2 Vectors and Matrices
 
 The Vectors and Matrices component provides a C++ implementation of the fundamental types *math_Vector* and *math_Matrix*, which are regularly used to define more complex data structures.
+
+@note **Modern alternative.** New code should prefer the *MathLin* solvers under `src/FoundationClasses/TKMath/MathLin/` (`MathLin_Gauss`, `MathLin_LU`, `MathLin_QR`, `MathLin_SVD`, …) and the dynamic vector type `NCollection_LinearVector`. The convenience entry point `MathLin::Solve(A, b)` returns a `MathUtils::LinearResult` with an optional `Solution` and a `Status` enum. The *math_** classes documented below remain fully supported and are still used internally by many algorithms.
 
 The <i>math_Vector</i> and <i>math_Matrix</i> classes provide commonly used mathematical algorithms which include:
 
@@ -1615,16 +1531,15 @@ Note: the <i>gp</i> entities cannot be shared when they are inside more complex 
 @subsection occt_occt_fcug_4_4 Collections of Primitive Geometric Types
 
 Before creating a geometric object, you must decide whether you are in a 2d or in a 3d context and how you want to handle the object.
-If you do not need a single instance of a geometric primitive but a set of them then the package which deals with collections of this sort of object, *TColgp*, will provide the necessary functionality.
-In particular, this package provides standard and frequently used instantiations of generic classes with geometric objects, i.e. *gp_XY*, *gp_XYZ*, *gp_Pnt*, *gp_Pnt2d*, *gp_Vec*, *gp_Vec2d*, *gp_Lin*, *gp_Lin2d*, *gp_Circ*, *gp_Circ2d*.
+If you do not need a single instance of a geometric primitive but a set of them, use the explicit `NCollection_*<T>` form -- e.g. `NCollection_Array1<gp_Pnt>` or `NCollection_Vector<gp_Vec>`. The legacy *TColgp* package still provides frequently used instantiations with geometric objects (*gp_XY*, *gp_XYZ*, *gp_Pnt*, *gp_Pnt2d*, *gp_Vec*, *gp_Vec2d*, *gp_Lin*, *gp_Lin2d*, *gp_Circ*, *gp_Circ2d*) but is deprecated in OCCT 8.0.0 -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 @subsection occt_occt_fcug_4_5 Basic Geometric Libraries
 There are various library packages available which offer a range of basic computations on curves and surfaces.
 If you are dealing with objects created from the *gp* package, the useful algorithms are in the elementary curves and surfaces libraries -- the *ElCLib* and *ElSLib* packages.
-* *EICLib* provides methods for analytic curves.
+* *ElCLib* provides methods for analytic curves.
   This is a library of simple computations on curves from the *gp* package (Lines, Circles and Conics).
   It is possible to compute points with a given parameter or to compute the parameter for a point.
-* *EISLib* provides methods for analytic surfaces.
+* *ElSLib* provides methods for analytic surfaces.
   This is a library of simple computations on surfaces from the package *gp* (Planes, Cylinders, Spheres, Cones, Tori).
   It is possible to compute points with a given pair of parameters or to compute the parameter for a point.
   There is a library for calculating normals on curves and surfaces.
@@ -1664,9 +1579,9 @@ Now the main program uses the math_Gauss class to solve the equations _a*x1=b1_ 
 ~~~~{.cpp}
 #include <math_Vector.hxx> 
 #include <math_Matrix.hxx>
-main()
+int main()
 {
-  math_Vector a(1, 3, 1, 3);
+  math_Matrix a(1, 3, 1, 3);
   math_Vector b1(1, 3), b2(1, 3);
   math_Vector x1(1, 3), x2(1, 3);
   // a, b1 and b2 are set here to the appropriate values
@@ -1695,12 +1610,13 @@ The definition is an extract from the header file of the class *math_BissecNewto
 class math_BissecNewton
 {
 public:
-  math_BissecNewton (math_FunctionWithDerivative& f,
-                     const double bound1,
-                     const double bound2,
-                     const double tolx);
+  math_BissecNewton (const double tolx);
+  void Perform (math_FunctionWithDerivative& f,
+                const double bound1,
+                const double bound2,
+                const int nbIterations = 100);
   bool IsDone() const;
-  double Root();
+  double Root() const;
 }; 
 ~~~~
 
@@ -1729,29 +1645,33 @@ class myFunction : public math_FunctionWithDerivative
 
 public:
   myFunction (const double theA, const double theB, const double theC)
-  : myCoefA(a), myCoefB(b), myCoefC(c) {}
+  : myCoefA(theA), myCoefB(theB), myCoefC(theC) {}
 
   virtual bool Value (const double x, double& f) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
+    return true;
   }
 
   virtual bool Derivative (const double x, double& d) override
   {
     d = myCoefA * x * 2.0 + myCoefB;
+    return true;
   }
 
   virtual bool Values (const double x, double& f, double& d) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
     d = myCoefA * x *  2.0 + myCoefB;
+    return true;
   }
 };
 
-main()
+int main()
 {
-  myFunction aFunc (1.0, 0.0, 4.0);
-  math_BissecNewton aSol (aFunc, 1.5, 2.5, 0.000001);
+  myFunction aFunc (1.0, 0.0, -4.0); // f(x) = x^2 - 4, root at x=2
+  math_BissecNewton aSol (0.000001);
+  aSol.Perform (aFunc, 1.5, 2.5);
   if (aSol.IsDone()) // is it OK ?
   {
     double x = aSol.Root(); // yes
@@ -1867,7 +1787,7 @@ bool areEqualPoints (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 {
   return thePnt1.IsEqual (thePnt2, Precision::Confusion());
 }
-~~~
+~~~~
 
 It is also possible to find a vector of null length:
 ~~~~{.cpp}

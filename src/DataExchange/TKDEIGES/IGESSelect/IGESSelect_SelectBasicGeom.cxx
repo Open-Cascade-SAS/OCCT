@@ -46,7 +46,9 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
 
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   int igt = igesent->TypeNumber();
 
   //   CompositeCurve : a decomposer ?
@@ -55,23 +57,31 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     DeclareAndCast(IGESGeom_CompositeCurve, cmc, ent);
     int i, nb = cmc->NbCurves();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(cmc->Curve(i));
+    }
     return true;
   }
 
   //   Lignes en general. Attention CopiousData, aux variantes "habillage"
   if (igt == 106)
+  {
     return (igesent->FormNumber() < 20);
+  }
   if ((igt >= 100 && igt <= 106) || igt == 110 || igt == 112 || igt == 116 || igt == 126
       || igt == 130)
+  {
     return (thegeom >= 0);
+  }
 
   //   Surfaces LIBRES, car il n y a pas d autre moyen de les reperer
   //   (l ideal serait de prendre les bords naturels)
   //   Ou surfaces debarassees de leurs contours
   if (igt == 114 || igt == 118 || igt == 120 || igt == 122 || igt == 128 || igt == 140
       || igt == 190)
+  {
     return (thegeom <= 0);
+  }
 
   //   Plan 108
   //   mode surface : on retourne tout le Plane sinon c est inexploitable
@@ -79,12 +89,16 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESGeom_Plane, pln, ent);
     if (thegeom >= 0)
+    {
       explored.AddItem(pln->BoundingCurve());
+    }
     return pln->HasBoundingCurve();
   }
 
   if (igt == 116)
+  {
     return (thegeom >= 0); // on point, ca va bien ...
+  }
 
   //   TrimmedSurface 144
   if (igt == 144)
@@ -95,10 +109,14 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
       explored.AddItem(trs->OuterContour());
       int i, nb = trs->NbInnerContours();
       for (i = 1; i <= nb; i++)
+      {
         explored.AddItem(trs->InnerContour(i));
+      }
     }
     else
+    {
       explored.AddItem(trs->Surface());
+    }
     return true;
   }
 
@@ -116,7 +134,9 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     DeclareAndCast(IGESGeom_Boundary, bnd, ent);
     int i, nb = bnd->NbModelSpaceCurves();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(bnd->ModelSpaceCurve(i));
+    }
     return (nb > 0);
   }
 
@@ -129,11 +149,15 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     {
       nb = bns->NbBoundaries();
       for (i = 1; i <= nb; i++)
+      {
         explored.AddItem(bns->Boundary(i));
+      }
       return (nb != 0);
     }
     else
+    {
       explored.AddItem(bns->Surface());
+    }
     return true;
   }
 
@@ -142,11 +166,15 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESBasic_SingleParent, sp, ent);
     if (sp.IsNull())
+    {
       return false;
+    }
     explored.AddItem(sp->SingleParent());
     int i, nb = sp->NbChildren();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(sp->Child(i));
+    }
     return true;
   }
 
@@ -155,10 +183,14 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESBasic_Group, gr, ent);
     if (gr.IsNull())
+    {
       return false;
+    }
     int i, nb = gr->NbEntities();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(gr->Entity(i));
+    }
     return true;
   }
 
@@ -169,7 +201,9 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     explored.AddItem(msb->Shell());
     int i, nb = msb->NbVoidShells();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(msb->VoidShell(i));
+    }
     return true;
   }
 
@@ -179,7 +213,9 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     DeclareAndCast(IGESSolid_Shell, sh, ent);
     int i, nb = sh->NbFaces();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(sh->Face(i));
+    }
     return true;
   }
 
@@ -191,10 +227,14 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
     {
       int i, nb = fc->NbLoops();
       for (i = 1; i <= nb; i++)
+      {
         explored.AddItem(fc->Loop(i));
+      }
     }
     else
+    {
       explored.AddItem(fc->Surface());
+    }
     return true;
   }
 
@@ -208,7 +248,9 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
       DeclareAndCast(IGESSolid_EdgeList, edl, lp->Edge(i));
       int ind = lp->ListIndex(i);
       if (edl.IsNull())
+      {
         continue;
+      }
       explored.AddItem(edl->Curve(ind));
     }
     return true;
@@ -221,20 +263,30 @@ bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
 TCollection_AsciiString IGESSelect_SelectBasicGeom::ExploreLabel() const
 {
   if (thegeom == 2)
+  {
     return TCollection_AsciiString("Basic Curves 3d");
+  }
   else if (thegeom > 0)
+  {
     return TCollection_AsciiString("Curves 3d");
+  }
   else if (thegeom < 0)
+  {
     return TCollection_AsciiString("Surfaces");
+  }
   else
+  {
     return TCollection_AsciiString("Basic Geometry");
+  }
 }
 
 bool IGESSelect_SelectBasicGeom::SubCurves(const occ::handle<IGESData_IGESEntity>& ent,
                                            Interface_EntityIterator&               explored)
 {
   if (ent.IsNull())
+  {
     return false;
+  }
   int igt = ent->TypeNumber();
 
   //   CompositeCurve : a decomposer ?
@@ -243,16 +295,22 @@ bool IGESSelect_SelectBasicGeom::SubCurves(const occ::handle<IGESData_IGESEntity
     DeclareAndCast(IGESGeom_CompositeCurve, cmc, ent);
     int i, nb = cmc->NbCurves();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(cmc->Curve(i));
+    }
     return true;
   }
 
   //   Lignes en general. Attention CopiousData, aux variantes "habillage"
   if (igt == 106)
+  {
     return (ent->FormNumber() < 20);
+  }
   if ((igt >= 100 && igt <= 106) || igt == 110 || igt == 112 || igt == 116 || igt == 126
       || igt == 130)
+  {
     return true;
+  }
 
   //  Sinon
   return false;

@@ -35,7 +35,9 @@ TCollection_ExtendedString UTL::xgetenv(const char* const aCString)
   OSD_Environment            theEnv(aCString);
   TCollection_AsciiString    theValue = theEnv.Value();
   if (!theValue.IsEmpty())
+  {
     x = TCollection_ExtendedString(theValue);
+  }
   return x;
 }
 
@@ -45,7 +47,9 @@ TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFil
   OSD_Path                p            = OSD_Path(aFileNameU);
   TCollection_AsciiString theExtension = p.Extension();
   if (theExtension.Value(1) == '.')
+  {
     theExtension.Remove(1, 1);
+  }
   return TCollection_ExtendedString(theExtension);
 }
 

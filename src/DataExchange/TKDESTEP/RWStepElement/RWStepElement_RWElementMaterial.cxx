@@ -39,7 +39,9 @@ void RWStepElement_RWElementMaterial::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "element_material"))
+  {
     return;
+  }
 
   // Own fields of ElementMaterial
 

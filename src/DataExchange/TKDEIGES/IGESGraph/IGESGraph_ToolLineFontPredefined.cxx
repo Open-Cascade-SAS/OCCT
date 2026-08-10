@@ -43,8 +43,9 @@ void IGESGraph_ToolLineFontPredefined::ReadOwnParams(
   // Reading nbPropertyValues(Integer)
   // clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
-  if (nbPropertyValues != 1)
+  if (nbPropertyValues != 1) {
     PR.AddFail("No. of Property values : Value is not 1");
+}
 
   // Reading lineFontPatternCode(Integer)
   PR.ReadInteger(PR.Current(), "Line Font Pattern Code", lineFontPatternCode); //szv#4:S4163:12Mar99 `st=` not needed
@@ -81,7 +82,9 @@ bool IGESGraph_ToolLineFontPredefined::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->LineFontPatternCode()); // nbpropertyvalues=1
+  }
   return res;
 }
 
@@ -105,7 +108,9 @@ void IGESGraph_ToolLineFontPredefined::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("No. of Property values : Value != 1");
+  }
 }
 
 void IGESGraph_ToolLineFontPredefined::OwnDump(const occ::handle<IGESGraph_LineFontPredefined>& ent,
@@ -116,5 +121,5 @@ void IGESGraph_ToolLineFontPredefined::OwnDump(const occ::handle<IGESGraph_LineF
   S << "IGESGraph_LineFontPredefined\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
     << "Line font pattern code : " << ent->LineFontPatternCode() << "\n"
-    << std::endl;
+    << '\n';
 }

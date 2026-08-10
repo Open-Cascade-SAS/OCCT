@@ -28,7 +28,9 @@ void ShapePersistent_Poly::pPolygon2D::PChildren(
 occ::handle<Poly_Polygon2D> ShapePersistent_Poly::pPolygon2D::Import() const
 {
   if (myNodes.IsNull())
+  {
     return nullptr;
+  }
 
   occ::handle<Poly_Polygon2D> aPolygon = new Poly_Polygon2D(*myNodes->Array());
   aPolygon->Deflection(myDeflection);
@@ -45,7 +47,9 @@ void ShapePersistent_Poly::pPolygon3D::PChildren(
 occ::handle<Poly_Polygon3D> ShapePersistent_Poly::pPolygon3D::Import() const
 {
   if (myNodes.IsNull() || myParameters.IsNull())
+  {
     return nullptr;
+  }
 
   occ::handle<Poly_Polygon3D> aPolygon =
     new Poly_Polygon3D(*myNodes->Array(), *myParameters->Array());
@@ -68,9 +72,13 @@ occ::handle<Poly_PolygonOnTriangulation> ShapePersistent_Poly::pPolygonOnTriangu
   if (myNodes)
   {
     if (myParameters)
+    {
       aPolygon = new Poly_PolygonOnTriangulation(*myNodes->Array(), *myParameters->Array());
+    }
     else
+    {
       aPolygon = new Poly_PolygonOnTriangulation(*myNodes->Array());
+    }
 
     aPolygon->Deflection(myDeflection);
   }
@@ -94,10 +102,14 @@ occ::handle<Poly_Triangulation> ShapePersistent_Poly::pTriangulation::Import() c
   if (myNodes && myTriangles)
   {
     if (myUVNodes)
+    {
       aTriangulation =
         new Poly_Triangulation(*myNodes->Array(), *myUVNodes->Array(), *myTriangles->Array());
+    }
     else
+    {
       aTriangulation = new Poly_Triangulation(*myNodes->Array(), *myTriangles->Array());
+    }
 
     aTriangulation->Deflection(myDeflection);
   }
@@ -113,7 +125,9 @@ Handle(ShapePersistent_Poly::Polygon2D) ShapePersistent_Poly::Translate(
   if (!thePoly.IsNull())
   {
     if (theMap.IsBound(thePoly))
+    {
       aPP = occ::down_cast<Polygon2D>(theMap.Find(thePoly));
+    }
     else
     {
       aPP                             = new Polygon2D;
@@ -136,7 +150,9 @@ Handle(ShapePersistent_Poly::Polygon3D) ShapePersistent_Poly::Translate(
   if (!thePoly.IsNull())
   {
     if (theMap.IsBound(thePoly))
+    {
       aPP = occ::down_cast<Polygon3D>(theMap.Find(thePoly));
+    }
     else
     {
       aPP                             = new Polygon3D;
@@ -164,7 +180,9 @@ Handle(ShapePersistent_Poly::PolygonOnTriangulation) ShapePersistent_Poly::Trans
   if (!thePolyOnTriang.IsNull())
   {
     if (theMap.IsBound(thePolyOnTriang))
+    {
       aPPonT = occ::down_cast<PolygonOnTriangulation>(theMap.Find(thePolyOnTriang));
+    }
     else
     {
       aPPonT                             = new PolygonOnTriangulation;
@@ -192,7 +210,9 @@ Handle(ShapePersistent_Poly::Triangulation) ShapePersistent_Poly::Translate(
   if (!thePolyTriang.IsNull())
   {
     if (theMap.IsBound(thePolyTriang))
+    {
       aPT = occ::down_cast<Triangulation>(theMap.Find(thePolyTriang));
+    }
     else
     {
       aPT               = new Triangulation;

@@ -48,8 +48,12 @@ bool SelectMgr_CompositionFilter::IsIn(const occ::handle<SelectMgr_Filter>& afil
 {
   NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator It(myFilters);
   for (; It.More(); It.Next())
+  {
     if (afilter == It.Value())
+    {
       return true;
+    }
+  }
   return false;
 }
 
@@ -64,7 +68,9 @@ bool SelectMgr_CompositionFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) c
   for (; It.More(); It.Next())
   {
     if (It.Value()->ActsOn(aStandardMode))
+    {
       return true;
+    }
   }
 
   return false;

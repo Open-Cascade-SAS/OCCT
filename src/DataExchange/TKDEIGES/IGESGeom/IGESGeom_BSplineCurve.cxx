@@ -76,7 +76,9 @@ void IGESGeom_BSplineCurve::Init(const int                                      
 void IGESGeom_BSplineCurve::SetFormNumber(const int form)
 {
   if (form < 0 || form > 5)
+  {
     throw Standard_OutOfRange("IGESGeom_BSplineCurve : SetFormNumber");
+  }
   InitTypeAndForm(126, form);
 }
 
@@ -103,12 +105,18 @@ bool IGESGeom_BSplineCurve::IsClosed() const
 bool IGESGeom_BSplineCurve::IsPolynomial(const bool flag) const
 {
   if (flag || theWeights.IsNull())
+  {
     return isPolynomial;
+  }
   int    i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
   double w0 = theWeights->Value(i1);
   for (i = i1 + 1; i <= i2; i++)
+  {
     if (std::abs(theWeights->Value(i) - w0) > 1.e-10)
+    {
       return false;
+    }
+  }
   return true;
 }
 
@@ -148,7 +156,9 @@ gp_Pnt IGESGeom_BSplineCurve::TransformedPole(const int anIndex) const
 {
   gp_XYZ tempXYZ = thePoles->Value(anIndex);
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   gp_Pnt Pole(tempXYZ);
   return Pole;
 }

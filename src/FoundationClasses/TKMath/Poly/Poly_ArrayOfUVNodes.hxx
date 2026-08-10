@@ -101,9 +101,11 @@ public:
 public:
   //! A generalized accessor to point.
   inline gp_Pnt2d Value(int theIndex) const;
+  inline gp_Pnt2d Value(const size_t theIndex) const;
 
   //! A generalized setter for point.
   inline void SetValue(int theIndex, const gp_Pnt2d& theValue);
+  inline void SetValue(const size_t theIndex, const gp_Pnt2d& theValue);
 
   //! operator[] - alias to Value
   gp_Pnt2d operator[](int theIndex) const { return Value(theIndex); }
@@ -127,6 +129,15 @@ inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(int theIndex) const
 
 //=================================================================================================
 
+inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(const size_t theIndex) const
+{
+  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
+                               "Poly_ArrayOfUVNodes::Value(), out of range index");
+  return Value(static_cast<int>(theIndex));
+}
+
+//=================================================================================================
+
 inline void Poly_ArrayOfUVNodes::SetValue(int theIndex, const gp_Pnt2d& theValue)
 {
   if (myStride == (int)sizeof(gp_Pnt2d))
@@ -139,6 +150,15 @@ inline void Poly_ArrayOfUVNodes::SetValue(int theIndex, const gp_Pnt2d& theValue
       NCollection_AliasedArray::ChangeValue<NCollection_Vec2<float>>(theIndex);
     aVec2.SetValues((float)theValue.X(), (float)theValue.Y());
   }
+}
+
+//=================================================================================================
+
+inline void Poly_ArrayOfUVNodes::SetValue(const size_t theIndex, const gp_Pnt2d& theValue)
+{
+  Standard_OutOfRange_Raise_if(theIndex >= static_cast<size_t>(mySize),
+                               "Poly_ArrayOfUVNodes::SetValue(), out of range index");
+  SetValue(static_cast<int>(theIndex), theValue);
 }
 
 #endif // _Poly_ArrayOfUVNodes_HeaderFile

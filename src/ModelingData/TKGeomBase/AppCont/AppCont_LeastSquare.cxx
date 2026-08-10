@@ -69,13 +69,17 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
 
       // from the third iteration
       if (anIter > 2 && aCurrDist / aPrevDist > 10.0)
+      {
         break;
+      }
     }
     aPrevP    = aTabP;
     aPrevP2d  = aTabP2d;
     aPrevDist = aCurrDist;
     if (aPrevDist <= eps)
+    {
       break;
+    }
   }
   theFix2d = aPrevP2d;
   theFix   = aPrevP;
@@ -128,14 +132,18 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   {
     Ok = SSP.D1(U0, aTabV2d, aTabV);
     if (!Ok)
+    {
       myFirstC = AppParCurves_PassPoint;
+    }
   }
 
   if (myLastC == AppParCurves_TangencyPoint)
   {
     Ok = SSP.D1(U1, aTabV2d, aTabV);
     if (!Ok)
+    {
       myLastC = AppParCurves_PassPoint;
+    }
   }
 
   // Compute control points params on which approximation will be built.
@@ -270,17 +278,25 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       for (k = 1; k <= myNbP; k++)
       {
         if (aFixP(k).Distance(aTabP(k)) > 0.1)
+        {
           (aFixP(k)).Coord(myPoles(1, i2), myPoles(1, i2 + 1), myPoles(1, i2 + 2));
+        }
         else
+        {
           (aTabP(k)).Coord(myPoles(1, i2), myPoles(1, i2 + 1), myPoles(1, i2 + 2));
+        }
         i2 += 3;
       }
       for (k = 1; k <= myNbP2d; k++)
       {
         if (aFixP2d(k).Distance(aTabP2d(k)) > 0.1)
+        {
           (aFixP2d(k)).Coord(myPoles(1, i2), myPoles(1, i2 + 1));
+        }
         else
+        {
           (aTabP2d(k)).Coord(myPoles(1, i2), myPoles(1, i2 + 1));
+        }
         i2 += 2;
       }
 
@@ -305,17 +321,25 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       for (k = 1; k <= myNbP; k++)
       {
         if (aFixP(k).Distance(aTabP(k)) > 0.1)
+        {
           (aFixP(k)).Coord(myPoles(classe, i2), myPoles(classe, i2 + 1), myPoles(classe, i2 + 2));
+        }
         else
+        {
           (aTabP(k)).Coord(myPoles(classe, i2), myPoles(classe, i2 + 1), myPoles(classe, i2 + 2));
+        }
         i2 += 3;
       }
       for (k = 1; k <= myNbP2d; k++)
       {
         if (aFixP2d(k).Distance(aTabP2d(k)) > 0.1)
+        {
           (aFixP2d(k)).Coord(myPoles(classe, i2), myPoles(classe, i2 + 1));
+        }
         else
+        {
           (aTabP2d(k)).Coord(myPoles(classe, i2), myPoles(classe, i2 + 1));
+        }
         i2 += 2;
       }
 

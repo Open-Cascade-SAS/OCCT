@@ -62,11 +62,15 @@ void* NCollection_AccAllocator::Allocate(const size_t theSize)
          aBlock = aBlock->prevBlock)
     {
       if (aSize <= aBlock->FreeSize())
+      {
         break;
+      }
     }
     if (aBlock == nullptr || !aBlocksRest)
+    {
       // There is no available block with enough free space, create a new one
       aBlock = allocateNewBlock(myBlockSize);
+    }
   }
 
   void* anAddress = aBlock->Allocate(aSize);

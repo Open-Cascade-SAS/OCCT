@@ -38,7 +38,9 @@ void RWStepKinematics_RWRevolutePairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "revolute_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

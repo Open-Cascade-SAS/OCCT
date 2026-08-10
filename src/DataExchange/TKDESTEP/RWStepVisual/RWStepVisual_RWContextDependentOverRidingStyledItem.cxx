@@ -36,7 +36,9 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "context_dependent_over_riding_styled_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -62,7 +64,9 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anent2))
+      {
         aStyles->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -95,7 +99,9 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat5 =` not needed
       if (data->ReadEntity(nsub5, i5, "style_context", ach, aStyleContextItem))
+      {
         aStyleContext->SetValue(i5, aStyleContextItem);
+      }
     }
   }
   else

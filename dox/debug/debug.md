@@ -11,21 +11,15 @@ This manual describes facilities included in OCCT to support debugging, and prov
 
 Many OCCT algorithms can produce extended debug messages, usually printed to cout.
 These include messages on internal errors and special cases encountered, timing etc.
-In OCCT versions prior to 6.8.0 most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
-Since version 6.8.0 this is disabled by default but can be enabled by defining compiler macro *OCCT_DEBUG*.
+In older OCCT versions most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
+This is now disabled by default but can be enabled by defining compiler macro *OCCT_DEBUG*.
 
-To enable this macro on Windows when building with Visual Studio projects, edit file custom.bat and add the line:
-
-    set CSF_DEFINES=OCCT_DEBUG
+To enable this macro, configure the build with the CMake option `-DBUILD_WITH_DEBUG=ON`.
 
 Some algorithms use specific macros for yet more verbose messages, usually started with OCCT_DEBUG_.
 These messages can be enabled in the same way, by defining corresponding macro.
 
 Note that some header files are modified when *OCCT_DEBUG* is enabled, hence binaries built with it enabled are not compatible with client code built without this option; this is not intended for production use.
-
-@section occt_debug_exceptions Calling JIT debugger on exception
-
-On Windows platform when using Visual Studio compiler there is a possibility to start the debugger automatically if an exception is caught in a program running OCCT. For this, set environment variable *CSF_DEBUG* to any value. Note that this feature works only if you enable OCCT exception handler in your application by calling *OSD::SetSignal()*.
 
 @section occt_debug_bop Self-diagnostics in Boolean operations algorithm
 
@@ -35,7 +29,7 @@ This feature can be activated by defining environment variable *CSF_DEBUG_BOP*, 
 
 The diagnostic code checks validity of the input arguments and the result of each Boolean operation. When an invalid situation is detected, the report consisting of argument shapes and a DRAW script to reproduce the problematic operation is saved to the directory pointed by *CSF_DEBUG_BOP*.
 
-Note that this feature does not applicable for UWP build.
+Note that this feature is not applicable for UWP builds.
 
 @section occt_debug_call Functions for calling from debugger
 
@@ -45,18 +39,18 @@ Note that all these functions accept pointer to variable as <i>void*</i> to allo
 
 @subsection occt_debug_call_draw Interacting with DRAW
 
-Open CASCADE Test Harness or @ref occt_user_guides__test_harness "DRAW" provides an extensive set of tools for inspection and analysis of OCCT shapes and geometric objects and is mostly used as environment for prototyping and debugging OCCT-based algorithms.
+Open CASCADE DRAW Test Harness or @ref occt_user_guides__test_harness "DRAW" provides an extensive set of tools for inspection and analysis of OCCT shapes and geometric objects and is mostly used as environment for prototyping and debugging OCCT-based algorithms.
 
 In some cases the objects to be inspected are available in DRAW as results of DRAW commands. In other cases, however, it is necessary to inspect intermediate objects created by the debugged algorithm. To support this, DRAW provides a set of commands allowing the developer to store intermediate objects directly from the debugger stopped at some point during the program execution (usually at a breakpoint).
 
-~~~~{.php}
+~~~~{.cpp}
 const char* Draw_Eval (const char *theCommandStr)
 ~~~~
 
 Evaluates a DRAW command or script.
 A command is passed as a string parameter.
 
-~~~~{.php}
+~~~~{.cpp}
 const char* DBRep_Set (const char* theNameStr, void* theShapePtr)
 ~~~~
 
@@ -64,7 +58,7 @@ Sets the specified shape as a value of DRAW interpreter variable with the given 
 - *theNameStr* -- the DRAW interpreter variable name to set.
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
-~~~~{.php}
+~~~~{.cpp}
 const char* DBRep_SetComp (const char* theNameStr, void* theListPtr)
 ~~~~
 
@@ -72,7 +66,7 @@ Makes a compound from the specified list of shapes and sets it as a value of DRA
 - *theNameStr* -- the DRAW interpreter variable name to set.
 - *theListPtr* -- a pointer to *TopTools_ListOfShape* variable.
 
-~~~~{.php}
+~~~~{.cpp}
 const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
 const char* DrawTrSurf_SetPnt (const char* theNameStr, void* thePntPtr)
 const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
@@ -90,7 +84,7 @@ All these functions are defined in *TKDraw* toolkit and return a string indicati
 
 The following functions are provided by *TKBRep* toolkit and can be used from debugger prompt:
 
-~~~~{.php}
+~~~~{.cpp}
 const char* BRepTools_Write (const char* theFileNameStr, void* theShapePtr)
 ~~~~
 
@@ -98,7 +92,7 @@ Saves the specified shape to a file with the given name.
 - *theFileNameStr* -- the name of the file where the shape is saved.
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
-~~~~{.php}
+~~~~{.cpp}
 const char* BRepTools_Dump (void* theShapePtr)
 const char* BRepTools_DumpLoc (void* theShapePtr)
 ~~~~
@@ -108,28 +102,28 @@ Dumps shape or its location to cout.
 
 The following function is provided by *TKMesh* toolkit:
 
-~~~~{.php}
+~~~~{.cpp}
 const char* BRepMesh_Dump (void* theMeshHandlePtr, const char* theFileNameStr)
 ~~~~
 
 Stores mesh produced in parametric space to BREP file.
-- *theMeshHandlePtr* -- a pointer to *occ::handle\<BRepMesh_DataStructureOfDelaun\>* variable.
+- *theMeshHandlePtr* -- a pointer to *BRepMesh_DataStructureOfDelaun* variable.
 - *theFileNameStr* -- the name of the file where the mesh is stored.
 
 The following functions are provided by *TKTopTest* toolkit:
 
-~~~~{.php}
-const char* MeshTest_DrawLinks(const char* theNameStr, void* theFaceAttr)
-const char* MeshTest_DrawTriangles(const char* theNameStr, void* theFaceAttr)
+~~~~{.cpp}
+const char* MeshTest_DrawLinks(const char* theNameStr, void* theDataStruct)
+const char* MeshTest_DrawTriangles(const char* theNameStr, void* theDataStruct)
 ~~~~
 
-Sets the edges or triangles from mesh data structure of type *occ::handle\<BRepMesh_FaceAttribute\>* as DRAW interpreter variables, assigning a unique name in the form "<theNameStr>_<index>" to each object.
+Sets the edges or triangles from mesh data structure as DRAW interpreter variables, assigning a unique name in the form "<theNameStr>_<index>" to each object.
 - *theNameStr* -- the prefix to use in names of objects.
-- *theFaceAttr* -- a pointer to *occ::handle\<BRepMesh_FaceAttribute\>* variable.
+- *theDataStruct* -- a pointer to the mesh data structure variable.
 
 The following additional function is provided by *TKGeomBase* toolkit:
 
-~~~~{.php}
+~~~~{.cpp}
 const char* GeomTools_Dump (void* theHandlePtr)
 ~~~~
 
@@ -174,24 +168,24 @@ It is implemented in 'vaspect' and 'boundingbox' commands.
 
 Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
 
-~~~~{.java}
+~~~~{.json}
 "Bnd_OBB": {
    "Center": {
       "gp_XYZ": [1, 2, 3]
    },
    "Axes[0]": {
-       "gp_XYZ:" [1, 0, 0]
+       "gp_XYZ": [1, 0, 0]
    },
    "Axes[1]": {
-       "gp_XYZ:" [0, 1, 0]
+       "gp_XYZ": [0, 1, 0]
    },
    "Axes[2]": {
-       "gp_XYZ:" [0, 0, 1]
+       "gp_XYZ": [0, 0, 1]
    },
    "HDims[0]": 0,
    "HDims[1]": 0,
    "HDims[2]": 0,
-   "IsAABox": 1,
+   "IsAABox": 1
 }
 ~~~~
 
@@ -199,14 +193,14 @@ Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
 
 @subsection occt_debug_vstudio_command Command window 
 
-Visual Studio debugger provides the Command Window (can be activated from menu <b>View / Other Windows / Command Window</b>), which can be used to evaluate variables and expressions interactively in a debug session (see https://msdn.microsoft.com/en-us/library/c785s0kz.aspx). Note that the Immediate Window can also be used but it has some limitations, e.g. does not support aliases.
+Visual Studio debugger provides the Command Window (can be activated from menu <b>View / Other Windows / Command Window</b>), which can be used to evaluate variables and expressions interactively in a debug session (see https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-window). Note that the Immediate Window can also be used but it has some limitations, e.g. does not support aliases.
 
 When the execution is interrupted by a breakpoint, you can use this window to call the above described functions in context of the currently debugged function. Note that in most cases you will need to specify explicitly context of the function by indicating the name of the DLL where it is defined.
 
 For example, assume that you are debugging a function, where local variable *TopoDS_Edge* *anEdge1* is of interest.
 The following set of commands in the Command window will save this edge to file *edge1.brep*, then put it to DRAW variable *e1* and show it maximized in the axonometric DRAW view:
 
-~~~~{.php}
+~~~~
 >? ({,,TKBRep.dll}BRepTools_Write)("d:/edge1.brep",(void*)&anEdge1)
 0x04a2f234 "d:/edge1.brep"
 >? ({,,TKDraw.dll}DBRep_Set)("e1",(void*)&anEdge1)
@@ -217,7 +211,7 @@ The following set of commands in the Command window will save this edge to file 
 
 For convenience it is possible to define aliases to commands in this window, for instance (here ">" is prompt provided by the command window; in the Immediate window this symbol should be entered manually):
 
-~~~~{.php}
+~~~~
 >alias deval      ? ({,,TKDraw}Draw_Eval)
 >alias dsetshape  ? ({,,TKDraw}DBRep_Set)
 >alias dsetcomp   ? ({,,TKDraw}DBRep_SetComp)
@@ -233,7 +227,7 @@ For convenience it is possible to define aliases to commands in this window, for
 
 Note that aliases are stored in the Visual Studio user's preferences and it is sufficient to define them once on a workstation. With these aliases, the above example can be reproduced easier (note the space symbol after alias name!):
 
-~~~~{.php}
+~~~~
 >saveshape ("d:/edge1.brep",(void*)&anEdge1)
 0x04a2f234 "d:/edge1.brep"
 >dsetshape ("e1",(void*)&anEdge1)
@@ -248,7 +242,7 @@ Note that there is no guarantee that the call will succeed and will not affect t
 
 Visual Studio provides a way to customize display of variables of different types in debugger windows (Watch, Autos, Locals, etc.).
 
-In Visual Studio 2005-2010 the rules for this display are defined in file *autoexp.dat* located in  subfolder *Common7\\Packages\\Debugger* of the Visual Studio installation folder (hint: the path to that folder is given in the corresponding environment variable, e.g. *VS100COMNTOOLS* for vc10). This file contains two sections: *AutoExpand* and *Visualizer*. The following rules can be added to these sections to provide more convenient display of some OCCT data types. 
+Customization rules are defined in XML-based *.natvis* files. OCCT provides a natvis file (*occt.natvis*) in the distribution for this purpose; Visual Studio loads it automatically when the project is opened. The following rules illustrate the display customization for OCCT data types.
 
 ### \[AutoExpand\] section 
 
@@ -344,7 +338,7 @@ Handle_TCollection_HAsciiString {
 }
 ~~~~
 
-In Visual Studio 2012 and later, visualizers can be put in a separate file in subdirectory *Visualizers*. See file *occt.natvis* for example.
+In Visual Studio, visualizers can be put in a separate file in subdirectory *Visualizers*. See file *occt.natvis* for example.
 
 @section occt_debug_perf Performance measurement tools
 
@@ -401,10 +395,10 @@ Example of configuration steps for Ubuntu:
 6. When using UBSan, set environment variable UBSAN_OPTIONS to get stack traces:
 > export UBSAN_OPTIONS=print_stacktrace=1
 
-7. Run DRAW and perform tests as usual, keeping in mind that running with sanitizer is much heavier than normal build:
-> ./draw.sh relwithdeb  <br>
+7. Source the build environment script and run DRAW; running under a sanitizer is much heavier than a normal build:
+> source <build_dir>/env.sh && DRAWEXE
 
-~~~~{.php}
+~~~~{.tcl}
 Draw[]> testgrid -parallel 0
 ~~~~
 
@@ -415,4 +409,4 @@ Known problems (as of CLang 6.0) are:
 
 @subsection occt_debug_sanitizers_windows Windows
 
-Though CLang toolset is available in Visual Studio 2015 and newer, sanitizer do not seem to be available out of the box (last tested with VS 2019 16.2.3).
+Clang toolset is available in Visual Studio 2019 and newer. Sanitizers may require manual installation via the Visual Studio Installer.

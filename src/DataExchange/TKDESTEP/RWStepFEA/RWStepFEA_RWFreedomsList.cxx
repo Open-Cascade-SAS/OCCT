@@ -38,7 +38,9 @@ void RWStepFEA_RWFreedomsList::ReadStep(const occ::handle<StepData_StepReaderDat
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "freedoms_list"))
+  {
     return;
+  }
 
   // Own fields of FreedomsList
 

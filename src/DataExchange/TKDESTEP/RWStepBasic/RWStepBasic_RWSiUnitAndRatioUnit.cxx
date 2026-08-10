@@ -35,7 +35,9 @@ void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep(
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- field : dimensions ---
   // --- this field is redefined ---
@@ -45,12 +47,16 @@ void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep(
   // --- Instance of plex component RatioUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 0, ach, "ratio_unit"))
+  {
     return;
+  }
 
   // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 2, ach, "si_unit"))
+  {
     return;
+  }
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
@@ -115,9 +121,13 @@ void RWStepBasic_RWSiUnitAndRatioUnit::WriteStep(
   // --- field : prefix ---
   bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
+  {
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // --- field : name ---
   SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));

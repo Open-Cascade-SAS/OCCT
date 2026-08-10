@@ -22,10 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_HArray2.hxx>
+#include <gp_Pnt.hxx>
 
 //! Convert a grid of Polynomial Surfaces
 //! that are have continuity CM to an
@@ -45,12 +45,23 @@ public:
   //! The <Coefficients> have to be formatted than an "C array"
   //! [MaxUDegree+1] [MaxVDegree+1] [3]
   Standard_EXPORT Convert_GridPolynomialToPoles(
-    const int                                       MaxUDegree,
-    const int                                       MaxVDegree,
-    const occ::handle<NCollection_HArray1<int>>&    NumCoeff,
-    const occ::handle<NCollection_HArray1<double>>& Coefficients,
-    const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-    const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals);
+    const int                         theMaxUDegree,
+    const int                         theMaxVDegree,
+    const NCollection_Array1<int>&    theNumCoeff,
+    const NCollection_Array1<double>& theCoefficients,
+    const NCollection_Array1<double>& thePolynomialUIntervals,
+    const NCollection_Array1<double>& thePolynomialVIntervals);
+
+  //! Handle-based overload (delegates to the array-based constructor).
+  //! Provided for backward compatibility; new code should prefer the
+  //! @c NCollection_Array1 form which avoids unnecessary heap allocation.
+  Standard_EXPORT Convert_GridPolynomialToPoles(
+    const int                                       theMaxUDegree,
+    const int                                       theMaxVDegree,
+    const occ::handle<NCollection_HArray1<int>>&    theNumCoeff,
+    const occ::handle<NCollection_HArray1<double>>& theCoefficients,
+    const occ::handle<NCollection_HArray1<double>>& thePolynomialUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& thePolynomialVIntervals);
 
   //! To one grid of polynomial Surface.
   //! Warning!
@@ -67,18 +78,33 @@ public:
   //! [1, NbVSurfaces*NbUSurfaces, 1,2] array.
   //! if <Coefficients> is not a
   Standard_EXPORT Convert_GridPolynomialToPoles(
-    const int                                       NbUSurfaces,
-    const int                                       NBVSurfaces,
-    const int                                       UContinuity,
-    const int                                       VContinuity,
-    const int                                       MaxUDegree,
-    const int                                       MaxVDegree,
-    const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
-    const occ::handle<NCollection_HArray1<double>>& Coefficients,
-    const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-    const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
-    const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
-    const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
+    const int                         theNbUSurfaces,
+    const int                         theNbVSurfaces,
+    const int                         theUContinuity,
+    const int                         theVContinuity,
+    const int                         theMaxUDegree,
+    const int                         theMaxVDegree,
+    const NCollection_Array2<int>&    theNumCoeffPerSurface,
+    const NCollection_Array1<double>& theCoefficients,
+    const NCollection_Array1<double>& thePolynomialUIntervals,
+    const NCollection_Array1<double>& thePolynomialVIntervals,
+    const NCollection_Array1<double>& theTrueUIntervals,
+    const NCollection_Array1<double>& theTrueVIntervals);
+
+  //! Handle-based overload (delegates to the array-based constructor).
+  Standard_EXPORT Convert_GridPolynomialToPoles(
+    const int                                       theNbUSurfaces,
+    const int                                       theNbVSurfaces,
+    const int                                       theUContinuity,
+    const int                                       theVContinuity,
+    const int                                       theMaxUDegree,
+    const int                                       theMaxVDegree,
+    const occ::handle<NCollection_HArray2<int>>&    theNumCoeffPerSurface,
+    const occ::handle<NCollection_HArray1<double>>& theCoefficients,
+    const occ::handle<NCollection_HArray1<double>>& thePolynomialUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& thePolynomialVIntervals,
+    const occ::handle<NCollection_HArray1<double>>& theTrueUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& theTrueVIntervals);
 
   //! Returns the number of poles in the U parametric direction.
   [[nodiscard]] Standard_EXPORT int NbUPoles() const;
@@ -117,16 +143,16 @@ public:
   [[nodiscard]] Standard_EXPORT bool IsDone() const;
 
 private:
-  Standard_EXPORT void Perform(const int                                       UContinuity,
-                               const int                                       VContinuity,
-                               const int                                       MaxUDegree,
-                               const int                                       MaxVDegree,
-                               const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
-                               const occ::handle<NCollection_HArray1<double>>& Coefficients,
-                               const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-                               const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
-                               const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
-                               const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
+  Standard_EXPORT void Perform(const int                         theUContinuity,
+                               const int                         theVContinuity,
+                               const int                         theMaxUDegree,
+                               const int                         theMaxVDegree,
+                               const NCollection_Array2<int>&    theNumCoeffPerSurface,
+                               const NCollection_Array1<double>& theCoefficients,
+                               const NCollection_Array1<double>& thePolynomialUIntervals,
+                               const NCollection_Array1<double>& thePolynomialVIntervals,
+                               const NCollection_Array1<double>& theTrueUIntervals,
+                               const NCollection_Array1<double>& theTrueVIntervals);
 
   Standard_EXPORT void BuildArray(const int                         Degree,
                                   const NCollection_Array1<double>& Knots,

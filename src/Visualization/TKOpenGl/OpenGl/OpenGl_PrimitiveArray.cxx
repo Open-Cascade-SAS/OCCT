@@ -447,7 +447,9 @@ void OpenGl_PrimitiveArray::updateVBO(const occ::handle<OpenGl_Context>& theCtx)
 
 void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWorkspace,
                                       const NCollection_Vec4<float>*       theFaceColors,
-                                      const bool                           theHasVertColor) const
+                                      const NCollection_Vec4<float>&       theBackColor,
+                                      const bool                           theHasVertColor,
+                                      const bool theToUseVertexColorForBackFaces) const
 {
   const occ::handle<OpenGl_Context>& aGlContext = theWorkspace->GetGlContext();
   if (myVboAttribs.IsNull())
@@ -466,6 +468,12 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
       ? GL_PATCHES
       : myDrawMode;
   myVboAttribs->BindAllAttributes(aGlContext);
+  if (theHasVertColor && !toHilight && myIsFillType && !theToUseVertexColorForBackFaces
+      && aGlContext->ActiveProgram().IsNull() && aGlContext->core11ffp != nullptr)
+  {
+    // This affects FFP lighting. Unlit FFP uses primary color directly for both sides.
+    aGlContext->core11ffp->glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  }
   if (theHasVertColor && toHilight)
   {
     // disable per-vertex color
@@ -485,7 +493,9 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
         if (theFaceColors != nullptr)
-          aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
+        {
+          aGlContext->SetColor4fv(theFaceColors[aGroupIter], theBackColor);
+        }
         aGlContext->core11fwd->glDrawElements(aDrawMode,
                                               aNbElemsInGroup,
                                               myVboIndices->GetDataType(),
@@ -510,7 +520,9 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
       if (theFaceColors != nullptr)
-        aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
+      {
+        aGlContext->SetColor4fv(theFaceColors[aGroupIter], theBackColor);
+      }
       aGlContext->core11fwd->glDrawArrays(aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
@@ -994,6 +1006,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
                                                                   : Graphic3d_AlphaMode_Opaque,
           toDrawInteriorEdges == 1 ? anAspectFace->Aspect()->InteriorStyle() : Aspect_IS_SOLID,
           hasVertColor,
+          anAspectFace->Aspect()->ToUseVertexColorForBackFaces(),
           toEnableEnvMap,
           toDrawInteriorEdges == 1,
           anAspectFace->ShaderProgramRes(aCtx));
@@ -1033,8 +1046,9 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
           && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
         ? myBounds->Colors
         : nullptr;
-    const NCollection_Vec4<float>& anInteriorColor = theWorkspace->InteriorColor();
-    aCtx->SetColor4fv(anInteriorColor);
+    const NCollection_Vec4<float>& anInteriorColor    = theWorkspace->InteriorColor();
+    const NCollection_Vec4<float>& aBackInteriorColor = theWorkspace->BackInteriorColor();
+    aCtx->SetColor4fv(anInteriorColor, aBackInteriorColor);
     if (!myIsFillType)
     {
       if (myDrawMode == GL_LINES || myDrawMode == GL_LINE_STRIP)
@@ -1044,7 +1058,11 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
         aCtx->SetLineWidth(anAspectFace->Aspect()->LineWidth());
       }
 
-      drawArray(theWorkspace, aFaceColors, hasColorAttrib);
+      drawArray(theWorkspace,
+                aFaceColors,
+                aBackInteriorColor,
+                hasColorAttrib,
+                anAspectFace->Aspect()->ToUseVertexColorForBackFaces());
       if (isForcedBlend)
       {
         aCtx->core11fwd->glDisable(GL_BLEND);
@@ -1052,7 +1070,11 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
       return;
     }
 
-    drawArray(theWorkspace, aFaceColors, hasColorAttrib);
+    drawArray(theWorkspace,
+              aFaceColors,
+              aBackInteriorColor,
+              hasColorAttrib,
+              anAspectFace->Aspect()->ToUseVertexColorForBackFaces());
 
     // draw outline - only closed triangulation with defined vertex normals can be drawn in this way
     if (anAspectFace->Aspect()->ToDrawSilhouette() && aCtx->ToCullBackFaces()
@@ -1076,7 +1098,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
       aCtx->SetColor4fv(anAspectFace->Aspect()->EdgeColorRGBA());
 
       aCtx->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_FrontCulled);
-      drawArray(theWorkspace, nullptr, false);
+      drawArray(theWorkspace, nullptr, aBackInteriorColor, false, true);
       aCtx->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_BackCulled);
     }
 

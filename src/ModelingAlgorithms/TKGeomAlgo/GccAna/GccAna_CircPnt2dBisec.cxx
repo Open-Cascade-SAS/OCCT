@@ -48,7 +48,9 @@ GccAna_CircPnt2dBisec::GccAna_CircPnt2dBisec(const gp_Circ2d& Circle,
   point       = Point;
   myTolerance = 1.e-10;
   if (myTolerance < Tolerance)
+  {
     myTolerance = Tolerance;
+  }
 
   DefineSolutions();
 }
@@ -92,10 +94,14 @@ occ::handle<GccInt_Bisec> GccAna_CircPnt2dBisec::ThisSolution(const int Index) c
 {
 
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if ((Index <= 0) || (Index > NbrSol))
+  {
     throw Standard_OutOfRange();
+  }
 
   occ::handle<GccInt_Bisec> bissol;
   double                    xpoint  = point.X();
@@ -137,9 +143,13 @@ occ::handle<GccInt_Bisec> GccAna_CircPnt2dBisec::ThisSolution(const int Index) c
     {
       gp_Dir2d dirsol;
       if (circle.IsDirect())
+      {
         dirsol = gp_Dir2d(xcencir - xpoint, ycencir - ypoint);
+      }
       else
+      {
         dirsol = gp_Dir2d(xpoint - xcencir, ypoint - ycencir);
+      }
       gp_Lin2d biscirpnt(point, dirsol);
       bissol = new GccInt_BLine(biscirpnt);
       //         =========================================================

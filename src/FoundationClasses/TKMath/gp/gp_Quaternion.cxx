@@ -27,7 +27,9 @@
 bool gp_Quaternion::IsEqual(const gp_Quaternion& theOther) const
 {
   if (this == &theOther)
+  {
     return true;
+  }
   return std::abs(x - theOther.x) <= gp::Resolution()
          && std::abs(y - theOther.y) <= gp::Resolution()
          && std::abs(z - theOther.z) <= gp::Resolution()
@@ -45,9 +47,13 @@ void gp_Quaternion::SetRotation(const gp_Vec& theVecFrom, const gp_Vec& theVecTo
   if (w <= gp::Resolution()) // angle close to PI
   {
     if ((theVecFrom.Z() * theVecFrom.Z()) > (theVecFrom.X() * theVecFrom.X()))
+    {
       Set(0.0, theVecFrom.Z(), -theVecFrom.Y(), w); // theVecFrom * gp_Vec(1,0,0)
+    }
     else
+    {
       Set(theVecFrom.Y(), -theVecFrom.X(), 0.0, w); // theVecFrom * gp_Vec(0,0,1)
+    }
   }
   Normalize();
 }
@@ -307,7 +313,9 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
     c = theAlpha;
   }
   if (o.isOdd)
+  {
     b = -b;
+  }
 
   double ti = 0.5 * a;
   double tj = 0.5 * b;
@@ -339,7 +347,9 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
     values[0]   = cj * cc + sj * ss;
   }
   if (o.isOdd)
+  {
     values[o.j] = -values[o.j];
+  }
 
   x = values[1];
   y = values[2];

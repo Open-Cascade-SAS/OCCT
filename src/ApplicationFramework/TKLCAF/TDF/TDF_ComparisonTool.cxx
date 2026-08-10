@@ -36,7 +36,9 @@ void TDF_ComparisonTool::Compare(const occ::handle<TDF_DataSet>&         aSource
                                  const occ::handle<TDF_RelocationTable>& aRelocationTable)
 {
   if (aSourceDataSet->IsEmpty() || aTargetDataSet->IsEmpty())
+  {
     return;
+  }
 
   const NCollection_List<TDF_Label>&    srcRoots = aSourceDataSet->Roots();
   NCollection_List<TDF_Label>::Iterator srcRootItr(srcRoots);
@@ -97,7 +99,9 @@ void TDF_ComparisonTool::Compare(const TDF_Label&                        aSrcLab
       if (aTrgLabel.FindAttribute(sAtt->ID(), tAtt))
       {
         if (aTargetDataSet->ContainsAttribute(tAtt))
+        {
           the2AttMap.Bind(sAtt, tAtt);
+        }
       }
     }
   }
@@ -140,9 +144,13 @@ bool TDF_ComparisonTool::SourceUnbound(const occ::handle<TDF_DataSet>&         a
                                        const int                               anOption)
 {
   if (aRefDataSet->IsEmpty())
+  {
     return false;
+  }
   else
+  {
     return Unbound(aRefDataSet, aRelocationTable, aFilter, aDiffDataSet, anOption, true);
+  }
 }
 
 //=================================================================================================
@@ -154,9 +162,13 @@ bool TDF_ComparisonTool::TargetUnbound(const occ::handle<TDF_DataSet>&         a
                                        const int                               anOption)
 {
   if (aRefDataSet->IsEmpty())
+  {
     return false;
+  }
   else
+  {
     return Unbound(aRefDataSet, aRelocationTable, aFilter, aDiffDataSet, anOption, false);
+  }
 }
 
 //=================================================================================================
@@ -178,13 +190,17 @@ bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDat
     const NCollection_DataMap<TDF_Label, TDF_Label>& the2LabMap = aRelocationTable->LabelTable();
     NCollection_Map<TDF_Label>                       theTLabMap;
     if (!theSource)
+    {
       aRelocationTable->TargetLabelMap(theTLabMap);
+    }
     for (NCollection_Map<TDF_Label>::Iterator refLabMItr(refLabs); refLabMItr.More();
          refLabMItr.Next())
     {
       const TDF_Label& refLab = refLabMItr.Key();
       if (!(theSource ? the2LabMap.IsBound(refLab) : theTLabMap.Contains(refLab)))
+      {
         diffLabs.Add(refLab);
+      }
     }
     hasDiff = (diffLabs.Extent() > 0);
   }
@@ -198,7 +214,9 @@ bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDat
       aRelocationTable->AttributeTable();
     NCollection_Map<occ::handle<TDF_Attribute>> theTAttMap;
     if (!theSource)
+    {
       aRelocationTable->TargetAttributeMap(theTAttMap);
+    }
     for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator refAttMItr(refAtts);
          refAttMItr.More();
          refAttMItr.Next())
@@ -207,7 +225,9 @@ bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDat
       if (aFilter.IsKept(refAtt))
       {
         if (!(theSource ? the2AttMap.IsBound(refAtt) : theTAttMap.Contains(refAtt)))
+        {
           diffAtts.Add(refAtt);
+        }
       }
     }
     hasDiff = (hasDiff || diffAtts.Extent() > 0);
@@ -221,7 +241,9 @@ bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDat
 void TDF_ComparisonTool::Cut(const occ::handle<TDF_DataSet>& aDataSet)
 {
   if (aDataSet->IsEmpty())
+  {
     return;
+  }
 
   const NCollection_Map<occ::handle<TDF_Attribute>>& refAtts = aDataSet->Attributes();
 
@@ -246,7 +268,9 @@ bool TDF_ComparisonTool::IsSelfContained(const TDF_Label&                aLabel,
          refLabMItr.Next())
     {
       if (!refLabMItr.Key().IsDescendant(aLabel))
+      {
         return false;
+      }
     }
   }
   return true;

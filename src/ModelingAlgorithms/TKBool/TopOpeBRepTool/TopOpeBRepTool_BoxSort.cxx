@@ -103,7 +103,9 @@ void TopOpeBRepTool_BoxSort::AddBoxes(const TopoDS_Shape&    S,
                                       const TopAbs_ShapeEnum TA)
 {
   if (myHBT.IsNull())
+  {
     myHBT = new TopOpeBRepTool_HBoxTool();
+  }
   myHBT->AddBoxes(S, TS, TA);
 }
 
@@ -120,7 +122,9 @@ void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape&    S,
   int             n = 0;
   TopExp_Explorer ex;
   for (ex.Init(S, TS, TA); ex.More(); ex.Next())
+  {
     n++;
+  }
 
   myHAB                           = new NCollection_HArray1<Bnd_Box>(0, n);
   NCollection_Array1<Bnd_Box>& AB = myHAB->ChangeArray1();
@@ -134,7 +138,9 @@ void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape&    S,
     const TopoDS_Shape& ss = ex.Current();
     bool                hb = myHBT->HasBox(ss);
     if (!hb)
+    {
       myHBT->AddBox(ss);
+    }
     int            im = myHBT->Index(ss);
     const Bnd_Box& B  = myHBT->Box(ss);
     AI.ChangeValue(i) = im;
@@ -222,14 +228,18 @@ void TopOpeBRepTool_BoxSort::AddBoxesMakeCOB(const TopoDS_Shape&    S,
 const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
 {
   if (myHBT.IsNull())
+  {
     myHBT = new TopOpeBRepTool_HBoxTool();
+  }
 
   gp_Pln           P;
   bool             isPlane = false;
   TopAbs_ShapeEnum t       = S.ShapeType();
   bool             hasb    = myHBT->HasBox(S);
   if (!hasb)
+  {
     myHBT->AddBox(S);
+  }
 
   myLastCompareShape = S;
   myLastCompareShapeBox.SetVoid();
@@ -245,7 +255,9 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
       GeomAbs_SurfaceType       suty = GAS.GetType();
       isPlane                        = (suty == GeomAbs_Plane);
       if (isPlane)
+      {
         P = GAS.Plane();
+      }
       else
       {
         myLastCompareShapeBox = myHBT->Box(F);
@@ -274,9 +286,13 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
 
   const NCollection_List<int>* L;
   if (isPlane)
+  {
     L = &myBSB.Compare(P);
+  }
   else
+  {
     L = &myBSB.Compare(myLastCompareShapeBox);
+  }
   myIterator.Initialize(*L);
 
 #ifdef OCCT_DEBUG

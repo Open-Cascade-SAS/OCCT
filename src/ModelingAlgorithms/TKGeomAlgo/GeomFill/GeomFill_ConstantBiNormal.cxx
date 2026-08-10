@@ -63,7 +63,9 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_ConstantBiNormal::Copy() const
 {
   occ::handle<GeomFill_TrihedronLaw> copy = new GeomFill_ConstantBiNormal(gp_Dir(BN));
   if (!myCurve.IsNull())
+  {
     copy->SetCurve(myCurve);
+  }
   return copy;
 }
 

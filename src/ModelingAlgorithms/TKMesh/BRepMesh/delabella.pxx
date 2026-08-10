@@ -68,11 +68,11 @@ struct IDelaBella
   // it is treated as 2*sizeof coordinate type
   virtual int Triangulate(int          points,
                           const float* x,
-                          const float* y             = 0,
+                          const float* y             = nullptr,
                           int          advance_bytes = 0) = 0;
   virtual int Triangulate(int           points,
                           const double* x,
-                          const double* y             = 0,
+                          const double* y             = nullptr,
                           int           advance_bytes = 0) = 0;
 
   // num of points passed to last call to Triangulate()

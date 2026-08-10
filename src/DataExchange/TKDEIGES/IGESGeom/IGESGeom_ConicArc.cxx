@@ -51,7 +51,9 @@ void IGESGeom_ConicArc::Init(const double A,
 
   int fn = FormNumber();
   if (fn == 0)
+  {
     fn = ComputedFormNumber();
+  }
   InitTypeAndForm(104, fn);
 }
 
@@ -59,7 +61,9 @@ bool IGESGeom_ConicArc::OwnCorrect()
 {
   int cfn = ComputedFormNumber();
   if (FormNumber() == cfn)
+  {
     return false;
+  }
   InitTypeAndForm(104, cfn);
   return true;
 }
@@ -90,7 +94,9 @@ gp_Pnt IGESGeom_ConicArc::TransformedStartPoint() const
 {
   gp_XYZ start(theStart.X(), theStart.Y(), theZT);
   if (HasTransf())
+  {
     Location().Transforms(start);
+  }
   gp_Pnt transStart(start);
   return transStart;
 }
@@ -105,7 +111,9 @@ gp_Pnt IGESGeom_ConicArc::TransformedEndPoint() const
 {
   gp_XYZ end(theEnd.X(), theEnd.Y(), theZT);
   if (HasTransf())
+  {
     Location().Transforms(end);
+  }
   gp_Pnt transEnd(end);
   return transEnd;
 }
@@ -127,11 +135,17 @@ int IGESGeom_ConicArc::ComputedFormNumber() const
   // each Qi has its own dimension:
   //[Q1] = L^-4, [Q2]=L^-4, [Q3]=L^-2
   if (Q2 > eps4 && Q1 * Q3 < 0)
+  {
     return 1; // Ellipse
+  }
   if (Q2 < -eps4 && std::abs(Q1) > eps4)
+  {
     return 2; // Hyperbola
+  }
   if (std::abs(Q2) <= eps4 && std::abs(Q1) > eps4)
+  {
     return 3; // Parabola
+  }
   return 0;
 }
 
@@ -139,7 +153,9 @@ bool IGESGeom_ConicArc::IsFromParabola() const
 {
   int fn = FormNumber();
   if (fn == 0)
+  {
     fn = ComputedFormNumber();
+  }
   return (fn == 3);
 }
 
@@ -147,7 +163,9 @@ bool IGESGeom_ConicArc::IsFromEllipse() const
 {
   int fn = FormNumber();
   if (fn == 0)
+  {
     fn = ComputedFormNumber();
+  }
   return (fn == 1);
 }
 
@@ -155,7 +173,9 @@ bool IGESGeom_ConicArc::IsFromHyperbola() const
 {
   int fn = FormNumber();
   if (fn == 0)
+  {
     fn = ComputedFormNumber();
+  }
   return (fn == 2);
 }
 
@@ -176,7 +196,9 @@ gp_Dir IGESGeom_ConicArc::TransformedAxis() const
 {
   gp_XYZ axis(0.0, 0.0, 1.0);
   if (!HasTransf())
+  {
     return gp_Dir(axis);
+  }
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));
   loc.Transforms(axis);
@@ -258,9 +280,13 @@ void IGESGeom_ConicArc::ComputedDefinition(double& Xcen,
 
       double teta = M_PI / 2.;
       if (std::abs(b) > eps)
+      {
         teta = std::atan(-a / b);
+      }
       if (fc < 0)
+      {
         teta += M_PI;
+      }
       Xax = std::cos(teta);
       Yax = std::sin(teta);
 

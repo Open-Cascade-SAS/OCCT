@@ -691,7 +691,9 @@ static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
 
     double aSQDist = aVuv.SquareMagnitude();
     if (IsEqual(aSQDist, 0.0))
+    {
       break;
+    }
 
     if ((aNbIter == 1) || (aSQDist < aSQDistPrev))
     {

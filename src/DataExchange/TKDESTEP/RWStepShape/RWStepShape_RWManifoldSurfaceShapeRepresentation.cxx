@@ -33,7 +33,9 @@ void RWStepShape_RWManifoldSurfaceShapeRepresentation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "manifold_surface_shape_representation"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -59,7 +61,9 @@ void RWStepShape_RWManifoldSurfaceShapeRepresentation::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

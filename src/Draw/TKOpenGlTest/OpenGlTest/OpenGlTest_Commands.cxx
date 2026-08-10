@@ -97,7 +97,9 @@ public:
     void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override
     {
       if (!myIObj.IsNull())
+      {
         myIObj->Render(theWorkspace);
+      }
     }
 
     void Release(OpenGl_Context*) override

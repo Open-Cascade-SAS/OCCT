@@ -39,7 +39,9 @@ void IGESSelect_DispPerDrawing::Packets(const Interface_Graph&    G,
                                         IFGraph_SubPartsIterator& packs) const
 {
   if (FinalSelection().IsNull())
+  {
     return;
+  }
   Interface_EntityIterator list = FinalSelection()->UniqueResult(G);
   thesorter->SetModel(GetCasted(IGESData_IGESModel, G.Model()));
   thesorter->Clear();
@@ -67,7 +69,9 @@ Interface_EntityIterator IGESSelect_DispPerDrawing::Remainder(const Interface_Gr
   {
     Interface_EntityIterator list;
     if (FinalSelection().IsNull())
+    {
       return list;
+    }
     list = FinalSelection()->UniqueResult(G);
     thesorter->Clear();
     thesorter->AddList(list.Content());

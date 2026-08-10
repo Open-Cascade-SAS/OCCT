@@ -32,7 +32,9 @@ double computeHypotenuseLength(const double theX, const double theY)
 void shiftSubdiagonalElements(NCollection_Array1<double>& theSubdiagWork, const int theSize)
 {
   for (int anIdx = 2; anIdx <= theSize; anIdx++)
+  {
     theSubdiagWork(anIdx - 1) = theSubdiagWork(anIdx);
+  }
   theSubdiagWork(theSize) = 0.0;
 }
 
@@ -56,7 +58,9 @@ int findSubmatrixEnd(const NCollection_Array1<double>& theDiagWork,
     // When this condition is true in floating-point arithmetic, the subdiagonal
     // element can be treated as zero for convergence purposes.
     if (std::abs(theSubdiagWork(aSubmatrixEnd)) + aDiagSum == aDiagSum)
+    {
       break;
+    }
   }
   return aSubmatrixEnd;
 }
@@ -72,11 +76,15 @@ double computeWilkinsonShift(const NCollection_Array1<double>& theDiagWork,
   const double aRadius = computeHypotenuseLength(1.0, aShift);
 
   if (aShift < 0.0)
+  {
     aShift =
       theDiagWork(theEnd) - theDiagWork(theStart) + theSubdiagWork(theStart) / (aShift - aRadius);
+  }
   else
+  {
     aShift =
       theDiagWork(theEnd) - theDiagWork(theStart) + theSubdiagWork(theStart) / (aShift + aRadius);
+  }
 
   return aShift;
 }
@@ -133,7 +141,9 @@ bool performQLStep(NCollection_Array1<double>& theDiagWork,
 
   // Handle special case and update final elements
   if (aRadius == 0.0 && aRowIdx >= 1)
+  {
     return true;
+  }
 
   theDiagWork(theStart) -= aPrevDiag;
   theSubdiagWork(theStart) = aShift;
@@ -160,7 +170,9 @@ bool performQLAlgorithm(NCollection_Array1<double>& theDiagWork,
       if (aSubmatrixEnd != aSubmatrixStart)
       {
         if (aIterCount++ == MAX_ITERATIONS)
+        {
           return false;
+        }
 
         const double aShift =
           computeWilkinsonShift(theDiagWork, theSubdiagWork, aSubmatrixStart, aSubmatrixEnd);
@@ -172,7 +184,9 @@ bool performQLAlgorithm(NCollection_Array1<double>& theDiagWork,
                            aSubmatrixEnd,
                            aShift,
                            theSize))
+        {
           return false;
+        }
       }
     } while (aSubmatrixEnd != aSubmatrixStart);
   }
@@ -207,8 +221,12 @@ math_EigenValuesSearcher::math_EigenValuesSearcher(const NCollection_Array1<doub
 
   // Initialize eigenvector matrix as identity matrix
   for (int aRowIdx = 1; aRowIdx <= myN; aRowIdx++)
+  {
     for (int aColIdx = 1; aColIdx <= myN; aColIdx++)
+    {
       myEigenVectors(aRowIdx, aColIdx) = (aRowIdx == aColIdx) ? 1.0 : 0.0;
+    }
+  }
 
   bool isConverged = true;
 
@@ -221,7 +239,9 @@ math_EigenValuesSearcher::math_EigenValuesSearcher(const NCollection_Array1<doub
   if (isConverged)
   {
     for (int anIdx = 1; anIdx <= myN; anIdx++)
+    {
       myEigenValues(anIdx) = myDiagonal(anIdx);
+    }
   }
 
   myIsDone = isConverged;
@@ -255,7 +275,9 @@ math_Vector math_EigenValuesSearcher::EigenVector(const int theIndex) const
   math_Vector aVector(1, myN);
 
   for (int anIdx = 1; anIdx <= myN; anIdx++)
+  {
     aVector(anIdx) = myEigenVectors(anIdx, theIndex);
+  }
 
   return aVector;
 }

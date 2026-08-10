@@ -31,7 +31,9 @@ void RWStepRepr_RWRepresentation::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "representation"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -57,7 +59,9 @@ void RWStepRepr_RWRepresentation::ReadStep(const occ::handle<StepData_StepReader
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

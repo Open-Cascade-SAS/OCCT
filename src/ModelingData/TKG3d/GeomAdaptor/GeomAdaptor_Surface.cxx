@@ -123,12 +123,18 @@ GeomAbs_Shape LocalContinuity(int                         Degree,
   BSplCLib::LocateParameter(Degree, TK, TM, PLast, IsPeriodic, 1, Nb, Index2, newLast);
   constexpr double EpsKnot = Precision::PConfusion();
   if (std::abs(newFirst - TK(Index1 + 1)) < EpsKnot)
+  {
     Index1++;
+  }
   if (std::abs(newLast - TK(Index2)) < EpsKnot)
+  {
     Index2--;
+  }
   // Handle periodic curves.
   if ((IsPeriodic) && (Index1 == Nb))
+  {
     Index1 = 1;
+  }
 
   if (Index2 != Index1)
   {
@@ -136,11 +142,15 @@ GeomAbs_Shape LocalContinuity(int                         Degree,
     for (i = Index1 + 1; i <= Index2; i++)
     {
       if (TM(i) > Multmax)
+      {
         Multmax = TM(i);
+      }
     }
     Multmax = Degree - Multmax;
     if (Multmax <= 0)
+    {
       return GeomAbs_C0;
+    }
     switch (Multmax)
     {
       case 1:
@@ -514,7 +524,9 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
       mySurfaceData = std::move(anOffsetData);
     }
     else
+    {
       mySurfaceType = GeomAbs_OtherSurface;
+    }
   }
 }
 
@@ -644,7 +656,9 @@ int GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
         occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface);
       GeomAdaptor_Curve myBasisCurve(myExtSurf->BasisCurve(), myUFirst, myULast);
       if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
+      {
         return myBasisCurve.NbIntervals(S);
+      }
       break;
     }
     case GeomAbs_OffsetSurface: {
@@ -700,7 +714,9 @@ int GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
         occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
       GeomAdaptor_Curve myBasisCurve(myRevSurf->BasisCurve(), myVFirst, myVLast);
       if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
+      {
         return myBasisCurve.NbIntervals(S);
+      }
       break;
     }
     case GeomAbs_OffsetSurface: {
@@ -890,12 +906,16 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::VTrim(const double First,
 bool GeomAdaptor_Surface::IsUClosed() const
 {
   if (!mySurface->IsUClosed())
+  {
     return false;
+  }
 
   double U1, U2, V1, V2;
   mySurface->Bounds(U1, U2, V1, V2);
   if (mySurface->IsUPeriodic())
+  {
     return (std::abs(std::abs(U1 - U2) - std::abs(myUFirst - myULast)) < Precision::PConfusion());
+  }
 
   return (std::abs(U1 - myUFirst) < Precision::PConfusion()
           && std::abs(U2 - myULast) < Precision::PConfusion());
@@ -906,12 +926,16 @@ bool GeomAdaptor_Surface::IsUClosed() const
 bool GeomAdaptor_Surface::IsVClosed() const
 {
   if (!mySurface->IsVClosed())
+  {
     return false;
+  }
 
   double U1, U2, V1, V2;
   mySurface->Bounds(U1, U2, V1, V2);
   if (mySurface->IsVPeriodic())
+  {
     return (std::abs(std::abs(V1 - V2) - std::abs(myVFirst - myVLast)) < Precision::PConfusion());
+  }
 
   return (std::abs(V1 - myVFirst) < Precision::PConfusion()
           && std::abs(V2 - myVLast) < Precision::PConfusion());
@@ -961,6 +985,7 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
     NCollection_Array1<double> aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
     NCollection_Array1<double> aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
     if (aBezData.Cache.IsNull())
+    {
       aBezData.Cache = new BSplSLib_Cache(aDegU,
                                           aBezier->IsUPeriodic(),
                                           aFlatKnotsU,
@@ -968,6 +993,7 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                           aBezier->IsVPeriodic(),
                                           aFlatKnotsV,
                                           aBezier->Weights());
+    }
     aBezData.Cache
       ->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
   }
@@ -977,6 +1003,7 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
     auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
     const auto& aBSpl     = aBSplData.Surface;
     if (aBSplData.Cache.IsNull())
+    {
       aBSplData.Cache = new BSplSLib_Cache(aBSpl->UDegree(),
                                            aBSpl->IsUPeriodic(),
                                            aBSpl->UKnotSequence(),
@@ -984,6 +1011,7 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                            aBSpl->IsVPeriodic(),
                                            aBSpl->VKnotSequence(),
                                            aBSpl->Weights());
+    }
     aBSplData.Cache->BuildCache(theU,
                                 theV,
                                 aBSpl->UKnotSequence(),
@@ -1025,7 +1053,9 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
       }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U, V);
+      }
       aCache->D0(U, V, P);
       return P;
     }
@@ -1036,7 +1066,9 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
       }
       auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
+      {
         RebuildCache(U, V);
+      }
       aCache->D0(U, V, P);
       return P;
     }
@@ -1048,7 +1080,9 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
       }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       if (!Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P))
+      {
         throw Geom_UndefinedValue("GeomAdaptor_Surface::EvalD0: evaluation failed");
+      }
       return P;
     }
 
@@ -1059,7 +1093,9 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
       }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       if (!Geom_RevolutionUtils::D0(U, V, *aRevData.BasisCurve, aRevData.Axis, P))
+      {
         throw Geom_UndefinedValue("GeomAdaptor_Surface::EvalD0: evaluation failed");
+      }
       return P;
     }
 
@@ -1070,7 +1106,9 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
       }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD0(U, V, anOffData, P))
+      {
         throw Geom_UndefinedValue("GeomAdaptor_Surface::EvalD0: evaluation failed");
+      }
       return P;
     }
 
@@ -1139,7 +1177,9 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
       }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U, V);
+      }
       aCache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
       return aResult;
     }
@@ -1151,11 +1191,15 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      {
         aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, aResult.Point, aResult.D1U, aResult.D1V);
+      }
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
+        {
           RebuildCache(U, V);
+        }
         aBSplData.Cache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
       }
       return aResult;
@@ -1174,7 +1218,9 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
                                    aResult.Point,
                                    aResult.D1U,
                                    aResult.D1V))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD1: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1191,7 +1237,9 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
                                     aResult.Point,
                                     aResult.D1U,
                                     aResult.D1V))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD1: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1202,7 +1250,9 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
       }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD1(u, v, anOffData, aResult.Point, aResult.D1U, aResult.D1V))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD1: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1301,7 +1351,9 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
       }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U, V);
+      }
       aCache
         ->D2(U, V, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
       return aResult;
@@ -1314,6 +1366,7 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      {
         aBSpl->LocalD2(u,
                        v,
                        Ideb,
@@ -1326,10 +1379,13 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
                        aResult.D2U,
                        aResult.D2V,
                        aResult.D2UV);
+      }
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
+        {
           RebuildCache(U, V);
+        }
         aBSplData.Cache->D2(U,
                             V,
                             aResult.Point,
@@ -1358,7 +1414,9 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
                                    aResult.D2U,
                                    aResult.D2V,
                                    aResult.D2UV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD2: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1378,7 +1436,9 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
                                     aResult.D2U,
                                     aResult.D2V,
                                     aResult.D2UV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD2: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1397,7 +1457,9 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
                     aResult.D2U,
                     aResult.D2V,
                     aResult.D2UV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD2: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1522,6 +1584,7 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
       else
       {
         if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        {
           aBSpl->LocalD3(u,
                          v,
                          Ideb,
@@ -1538,6 +1601,7 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
                          aResult.D3V,
                          aResult.D3UUV,
                          aResult.D3UVV);
+        }
         else
         {
           return aBSpl->EvalD3(u, v);
@@ -1566,7 +1630,9 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
                                    aResult.D3V,
                                    aResult.D3UUV,
                                    aResult.D3UVV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD3: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1590,7 +1656,9 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
                                     aResult.D3V,
                                     aResult.D3UUV,
                                     aResult.D3UVV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD3: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1613,7 +1681,9 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
                     aResult.D3V,
                     aResult.D3UUV,
                     aResult.D3UVV))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalD3: evaluation failed");
+      }
       return aResult;
     }
 
@@ -1665,13 +1735,19 @@ gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
       }
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
+      {
         return aBSpl->EvalDN(u, v, Nu, Nv);
+      }
       else
       {
         if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        {
           return aBSpl->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
+        }
         else
+        {
           return aBSpl->EvalDN(u, v, Nu, Nv);
+        }
       }
     }
 
@@ -1683,7 +1759,9 @@ gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       gp_Vec      aDN;
       if (!Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv, aDN))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalDN: evaluation failed");
+      }
       return aDN;
     }
 
@@ -1695,7 +1773,9 @@ gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       gp_Vec      aDN;
       if (!Geom_RevolutionUtils::DN(u, v, *aRevData.BasisCurve, aRevData.Axis, Nu, Nv, aDN))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalDN: evaluation failed");
+      }
       return aDN;
     }
 
@@ -1707,7 +1787,9 @@ gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       gp_Vec      aDN;
       if (!offsetDN(u, v, anOffData, Nu, Nv, aDN))
+      {
         throw Geom_UndefinedDerivative("GeomAdaptor_Surface::EvalDN: evaluation failed");
+      }
       return aDN;
     }
 
@@ -1747,21 +1829,27 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
       const double                      R = S->MajorRadius() + S->MinorRadius();
       if (R > Precision::Confusion())
+      {
         Res = R3d / (2. * R);
+      }
       break;
     }
     case GeomAbs_Sphere: {
       occ::handle<Geom_SphericalSurface> S(occ::down_cast<Geom_SphericalSurface>(mySurface));
       const double                       R = S->Radius();
       if (R > Precision::Confusion())
+      {
         Res = R3d / (2. * R);
+      }
       break;
     }
     case GeomAbs_Cylinder: {
       occ::handle<Geom_CylindricalSurface> S(occ::down_cast<Geom_CylindricalSurface>(mySurface));
       const double                         R = S->Radius();
       if (R > Precision::Confusion())
+      {
         Res = R3d / (2. * R);
+      }
       break;
     }
     case GeomAbs_Cone: {
@@ -1800,7 +1888,9 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
   }
 
   if (Res <= 1.)
+  {
     return 2. * std::asin(Res);
+  }
 
   return 2. * M_PI;
 }
@@ -1821,14 +1911,18 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
       const double                      R = S->MinorRadius();
       if (R > Precision::Confusion())
+      {
         Res = R3d / (2. * R);
+      }
       break;
     }
     case GeomAbs_Sphere: {
       occ::handle<Geom_SphericalSurface> S(occ::down_cast<Geom_SphericalSurface>(mySurface));
       const double                       R = S->Radius();
       if (R > Precision::Confusion())
+      {
         Res = R3d / (2. * R);
+      }
       break;
     }
     case GeomAbs_SurfaceOfExtrusion:
@@ -1856,7 +1950,9 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
   }
 
   if (Res <= 1.)
+  {
     return 2. * std::asin(Res);
+  }
 
   return 2. * M_PI;
 }
@@ -1866,7 +1962,9 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
 gp_Pln GeomAdaptor_Surface::Plane() const
 {
   if (mySurfaceType != GeomAbs_Plane)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Plane");
+  }
   return std::get<gp_Pln>(mySurfaceData);
 }
 
@@ -1875,7 +1973,9 @@ gp_Pln GeomAdaptor_Surface::Plane() const
 gp_Cylinder GeomAdaptor_Surface::Cylinder() const
 {
   if (mySurfaceType != GeomAbs_Cylinder)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Cylinder");
+  }
   return std::get<gp_Cylinder>(mySurfaceData);
 }
 
@@ -1884,7 +1984,9 @@ gp_Cylinder GeomAdaptor_Surface::Cylinder() const
 gp_Cone GeomAdaptor_Surface::Cone() const
 {
   if (mySurfaceType != GeomAbs_Cone)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Cone");
+  }
   return std::get<gp_Cone>(mySurfaceData);
 }
 
@@ -1893,7 +1995,9 @@ gp_Cone GeomAdaptor_Surface::Cone() const
 gp_Sphere GeomAdaptor_Surface::Sphere() const
 {
   if (mySurfaceType != GeomAbs_Sphere)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Sphere");
+  }
   return std::get<gp_Sphere>(mySurfaceData);
 }
 
@@ -1902,7 +2006,9 @@ gp_Sphere GeomAdaptor_Surface::Sphere() const
 gp_Torus GeomAdaptor_Surface::Torus() const
 {
   if (mySurfaceType != GeomAbs_Torus)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Torus");
+  }
   return std::get<gp_Torus>(mySurfaceData);
 }
 
@@ -1911,9 +2017,13 @@ gp_Torus GeomAdaptor_Surface::Torus() const
 int GeomAdaptor_Surface::UDegree() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->UDegree();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->UDegree();
+  }
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
     return std::get<ExtrusionData>(mySurfaceData).BasisCurve->Degree();
@@ -1926,9 +2036,13 @@ int GeomAdaptor_Surface::UDegree() const
 int GeomAdaptor_Surface::NbUPoles() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->NbUPoles();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->NbUPoles();
+  }
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
     return std::get<ExtrusionData>(mySurfaceData).BasisCurve->NbPoles();
@@ -1941,9 +2055,13 @@ int GeomAdaptor_Surface::NbUPoles() const
 int GeomAdaptor_Surface::VDegree() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->VDegree();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->VDegree();
+  }
   if (mySurfaceType == GeomAbs_SurfaceOfRevolution)
   {
     return std::get<RevolutionData>(mySurfaceData).BasisCurve->Degree();
@@ -1956,9 +2074,13 @@ int GeomAdaptor_Surface::VDegree() const
 int GeomAdaptor_Surface::NbVPoles() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->NbVPoles();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->NbVPoles();
+  }
   if (mySurfaceType == GeomAbs_SurfaceOfRevolution)
   {
     return std::get<RevolutionData>(mySurfaceData).BasisCurve->NbPoles();
@@ -1971,7 +2093,9 @@ int GeomAdaptor_Surface::NbVPoles() const
 int GeomAdaptor_Surface::NbUKnots() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->NbUKnots();
+  }
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
     return std::get<ExtrusionData>(mySurfaceData).BasisCurve->NbKnots();
@@ -1984,7 +2108,9 @@ int GeomAdaptor_Surface::NbUKnots() const
 int GeomAdaptor_Surface::NbVKnots() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->NbVKnots();
+  }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::NbVKnots");
 }
 
@@ -1993,9 +2119,13 @@ int GeomAdaptor_Surface::NbVKnots() const
 bool GeomAdaptor_Surface::IsURational() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->IsURational();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->IsURational();
+  }
   return false;
 }
 
@@ -2004,9 +2134,13 @@ bool GeomAdaptor_Surface::IsURational() const
 bool GeomAdaptor_Surface::IsVRational() const
 {
   if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
     return std::get<BSplineData>(mySurfaceData).Surface->IsVRational();
+  }
   if (mySurfaceType == GeomAbs_BezierSurface)
+  {
     return occ::down_cast<Geom_BezierSurface>(mySurface)->IsVRational();
+  }
   return false;
 }
 
@@ -2015,7 +2149,9 @@ bool GeomAdaptor_Surface::IsVRational() const
 occ::handle<Geom_BezierSurface> GeomAdaptor_Surface::Bezier() const
 {
   if (mySurfaceType != GeomAbs_BezierSurface)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Bezier");
+  }
   return occ::down_cast<Geom_BezierSurface>(mySurface);
 }
 
@@ -2024,7 +2160,9 @@ occ::handle<Geom_BezierSurface> GeomAdaptor_Surface::Bezier() const
 occ::handle<Geom_BSplineSurface> GeomAdaptor_Surface::BSpline() const
 {
   if (mySurfaceType != GeomAbs_BSplineSurface)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BSpline");
+  }
   return std::get<BSplineData>(mySurfaceData).Surface;
 }
 
@@ -2033,7 +2171,9 @@ occ::handle<Geom_BSplineSurface> GeomAdaptor_Surface::BSpline() const
 gp_Ax1 GeomAdaptor_Surface::AxeOfRevolution() const
 {
   if (mySurfaceType != GeomAbs_SurfaceOfRevolution)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::AxeOfRevolution");
+  }
   return occ::down_cast<Geom_SurfaceOfRevolution>(mySurface)->Axis();
 }
 
@@ -2042,7 +2182,9 @@ gp_Ax1 GeomAdaptor_Surface::AxeOfRevolution() const
 gp_Dir GeomAdaptor_Surface::Direction() const
 {
   if (mySurfaceType != GeomAbs_SurfaceOfExtrusion)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Direction");
+  }
   return occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->Direction();
 }
 
@@ -2052,11 +2194,17 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Surface::BasisCurve() const
 {
   occ::handle<Geom_Curve> C;
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
+  {
     C = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->BasisCurve();
+  }
   else if (mySurfaceType == GeomAbs_SurfaceOfRevolution)
+  {
     C = occ::down_cast<Geom_SurfaceOfRevolution>(mySurface)->BasisCurve();
+  }
   else
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisCurve");
+  }
   return occ::handle<GeomAdaptor_Curve>(new GeomAdaptor_Curve(C));
 }
 
@@ -2065,7 +2213,9 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Surface::BasisCurve() const
 occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::BasisSurface() const
 {
   if (mySurfaceType != GeomAbs_OffsetSurface)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisSurface");
+  }
   return new GeomAdaptor_Surface(occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface(),
                                  myUFirst,
                                  myULast,
@@ -2078,7 +2228,9 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::BasisSurface() const
 double GeomAdaptor_Surface::OffsetValue() const
 {
   if (mySurfaceType != GeomAbs_OffsetSurface)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisSurface");
+  }
   return occ::down_cast<Geom_OffsetSurface>(mySurface)->Offset();
 }
 
@@ -2108,7 +2260,9 @@ bool GeomAdaptor_Surface::IfUVBound(const double U,
   int IVdeb, IVfin;
   aBSpl->LocateV(V, PosTol, IVdeb, IVfin, false);
   if (IVdeb == IVfin)
+  {
     Local = true;
+  }
   Span(VSide, IVdeb, IVfin, IVdeb, IVfin, aVFKIndx, aVLKIndx);
 
   IOutDeb  = Ideb;

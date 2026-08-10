@@ -34,7 +34,9 @@ void StepSelect_StepType::SetProtocol(const occ::handle<Interface_Protocol>& pro
 {
   DeclareAndCast(StepData_Protocol, newproto, proto);
   if (newproto.IsNull())
+  {
     throw Interface_InterfaceError("StepSelect_StepType");
+  }
   theproto = newproto;
   thelib.Clear();
   thelib.AddProtocol(theproto);
@@ -62,7 +64,9 @@ const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&   
 
   // Handle simple (non-complex) type - return direct reference from module
   if (!aModule->IsComplex(aCN))
+  {
     return aModule->StepType(aCN).data();
+  }
 
   // Handle complex type from module
   NCollection_Sequence<TCollection_AsciiString> aList;
@@ -79,7 +83,9 @@ const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&   
       for (int i = 1; i <= aNb; i++)
       {
         if (i > 1)
+        {
           theLastValue += ",";
+        }
         theLastValue += aList.Value(i);
       }
       theLastValue += ")";
@@ -96,7 +102,9 @@ const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&   
   }
 
   if (!anUnd->IsComplex())
+  {
     return anUnd->StepType(); // Direct return from entity's internal storage
+  }
 
   // Build complex type from undefined entity
   theLastValue = "(";
@@ -104,7 +112,9 @@ const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&   
   while (!anUnd.IsNull())
   {
     if (!isFirst)
+    {
       theLastValue += ",";
+    }
     theLastValue += anUnd->StepType();
     anUnd   = anUnd->Next();
     isFirst = false;

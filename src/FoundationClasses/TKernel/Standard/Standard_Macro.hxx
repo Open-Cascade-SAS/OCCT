@@ -141,6 +141,21 @@
   #endif
 #endif
 
+//! @def Standard_DEPRECATED_STD("message")
+//! Marks a declaration as deprecated using the standard C++ [[deprecated]] attribute.
+//! Use this instead of Standard_DEPRECATED in contexts where only standard C++ attributes
+//! are grammatically valid, such as using-alias declarations:
+//!   using OldName Standard_DEPRECATED_STD("msg") = NewName;
+//! MSVC rejects __declspec(deprecated) and GCC/Clang reject __attribute__((deprecated))
+//! when placed between the alias name and the = token, so Standard_DEPRECATED cannot be
+//! used there.
+//! If macro OCCT_NO_DEPRECATED is defined, Standard_DEPRECATED_STD is defined empty.
+#ifdef OCCT_NO_DEPRECATED
+  #define Standard_DEPRECATED_STD(theMsg)
+#else
+  #define Standard_DEPRECATED_STD(theMsg) [[deprecated(theMsg)]]
+#endif
+
 //! @def Standard_DISABLE_DEPRECATION_WARNINGS
 //! Disables warnings on use of deprecated features (see Standard_DEPRECATED),
 //! from the current point till appearance of Standard_ENABLE_DEPRECATION_WARNINGS macro.

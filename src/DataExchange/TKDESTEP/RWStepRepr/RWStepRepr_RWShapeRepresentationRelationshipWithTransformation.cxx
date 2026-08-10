@@ -41,7 +41,9 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "representation_relationship"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -73,7 +75,9 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
   data->NamedForComplex("REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION", "RRWT", num0, num, ach);
   if (!data->CheckNbParams(num, 1, ach, "representation_relationship_with_transformation"))
+  {
     return;
+  }
 
   // --- own field : transformation_operator
 
@@ -85,7 +89,9 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
   data->NamedForComplex("SHAPE_REPRESENTATION_RELATIONSHIP", "SHRPRL", num0, num, ach);
   if (!data->CheckNbParams(num, 0, ach, "shape_representation_relationship"))
+  {
     return;
+  }
 
   //--- Initialisation of the read entity ---
 

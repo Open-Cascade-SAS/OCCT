@@ -28,7 +28,9 @@ void RWStepBasic_RWDimensionalExponents::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 7, ach, "dimensional_exponents"))
+  {
     return;
+  }
 
   // --- own field : lengthExponent ---
 

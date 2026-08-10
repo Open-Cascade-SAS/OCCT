@@ -238,9 +238,13 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&                   aCurve,
   double V2       = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   //     std::cout << "V1 = "<< V1 << std::endl;
   //     std::cout << "V2 = "<< V2 << std::endl;
@@ -265,9 +269,13 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve& aCurve,
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   //     std::cout << "V1 = "<< V1 << std::endl;
   //     std::cout << "V2 = "<< V2 << std::endl;

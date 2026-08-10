@@ -37,7 +37,9 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedUnit::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "geometric_tolerance_with_defined_unit"))
+  {
     return;
+  }
 
   // inherited fields from GeometricTolerance
 

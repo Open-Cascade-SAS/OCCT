@@ -486,9 +486,13 @@ gp_Vec IntSurf_Quadric::Normale(const double U, const double V) const
   {
     case GeomAbs_Plane:
       if (ax3direc)
+      {
         return ax3.Direction();
+      }
       else
+      {
         return ax3.Direction().Reversed();
+      }
     case GeomAbs_Cylinder:
       return Normale(Value(U, V));
     case GeomAbs_Sphere:
@@ -523,9 +527,13 @@ gp_Vec IntSurf_Quadric::Normale(const gp_Pnt& P) const
   {
     case GeomAbs_Plane:
       if (ax3direc)
+      {
         return ax3.Direction();
+      }
       else
+      {
         return ax3.Direction().Reversed();
+      }
     case GeomAbs_Cylinder: {
       if (ax3direc)
       {

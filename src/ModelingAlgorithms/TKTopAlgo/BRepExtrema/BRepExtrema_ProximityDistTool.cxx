@@ -42,13 +42,13 @@ BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool()
 // purpose  : Creates new tool for the given element sets
 //=======================================================================
 BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool(
-  const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-  const int                                   theNbSamples1,
-  const BVH_Array3d&                          theAddVertices1,
-  const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-  const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList2)
+  const occ::handle<BRepExtrema_TriangleSet>&     theSet1,
+  const int                                       theNbSamples1,
+  const BVH_Array3d&                              theAddVertices1,
+  const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1,
+  const occ::handle<BRepExtrema_TriangleSet>&     theSet2,
+  const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList1,
+  const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList2)
     : myMinDistance(std::numeric_limits<double>::max()),
       myProxDist(-1.),
       myPntStatus1(ProxPnt_Status_UNKNOWN),
@@ -78,8 +78,8 @@ void BRepExtrema_ProximityDistTool::LoadTriangleSets(
 // purpose  : Loads the given list of subshapes into the proximity tool
 //=======================================================================
 void BRepExtrema_ProximityDistTool::LoadShapeLists(
-  const NCollection_Vector<TopoDS_Shape>& theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>& theShapeList2)
+  const NCollection_DynamicArray<TopoDS_Shape>& theShapeList1,
+  const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2)
 {
   myShapeList1 = theShapeList1;
   myShapeList2 = theShapeList2;
@@ -90,8 +90,8 @@ void BRepExtrema_ProximityDistTool::LoadShapeLists(
 // purpose  : Loads given additional vertices and their statuses
 //=======================================================================
 void BRepExtrema_ProximityDistTool::LoadAdditionalPointsFirstSet(
-  const BVH_Array3d&                        theAddVertices1,
-  const NCollection_Vector<ProxPnt_Status>& theAddStatus1)
+  const BVH_Array3d&                              theAddVertices1,
+  const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1)
 {
   myAddVertices1 = theAddVertices1;
   myAddStatus1   = theAddStatus1;
@@ -104,7 +104,7 @@ void BRepExtrema_ProximityDistTool::LoadAdditionalPointsFirstSet(
 void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d& theVertices1,
                                                    const bool         theIsAdditionalSet)
 {
-  int aVtxSize = (int)theVertices1.size();
+  int aVtxSize = (int)theVertices1.Size();
   int aVtxStep = std::max(myNbSamples1 <= 0 ? 1 : aVtxSize / myNbSamples1, 1);
   for (int aVtxIdx = 0; aVtxIdx < aVtxSize; aVtxIdx += aVtxStep)
   {
@@ -116,7 +116,9 @@ void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d& theVertice
     ComputeDistance();
 
     if (!IsDone() && myProxDist < 0.)
+    {
       return;
+    }
 
     if (IsDone() && myDistance > myProxDist)
     {
@@ -373,7 +375,7 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt1()
   if (myShapeList1(aFaceID1).ShapeType() == TopAbs_EDGE)
   {
     const BVH_Array3d& aVertices1 = mySet1->GetVertices();
-    int                aVtxSize   = (int)aVertices1.size();
+    int                aVtxSize   = (int)aVertices1.Size();
     int                aLastIdx   = aVtxSize - 1;
 
     if ((aVertices1[0] - aVertices1[aLastIdx]).Modulus() < Precision::Confusion()) // if closed
@@ -428,7 +430,7 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt2()
     else
     {
       const BVH_Array3d& aVertices2 = mySet2->GetVertices();
-      int                aVtxSize   = (int)aVertices2.size();
+      int                aVtxSize   = (int)aVertices2.Size();
       int                aLastIdx   = aVtxSize - 1;
 
       if ((aVertices2[0] - aVertices2[aLastIdx]).Modulus() < Precision::Confusion()) // if closed

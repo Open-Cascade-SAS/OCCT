@@ -48,15 +48,25 @@ void IGESDefs_AttributeDef::Init(
   if (attrTypes->Lower() != 1 || attrValueDataTypes->Lower() != 1
       || attrValueDataTypes->Length() != nb || attrValueCounts->Lower() != 1
       || attrValueCounts->Length() != nb)
+  {
     throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
+  }
 
   if (FormNumber() >= 1)
+  {
     if (attrValues->Lower() != 1 || attrValues->Length() != nb)
+    {
       throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
+    }
+  }
 
   if (FormNumber() == 2)
+  {
     if (attrValuePointers->Lower() != 1 || attrValuePointers->Length() != nb)
+    {
       throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
+    }
+  }
   // Form 1 : attrValues defined  Form = 2 : attrValuePointers defined
 
   theName               = aName;
@@ -67,11 +77,17 @@ void IGESDefs_AttributeDef::Init(
   theAttrValues         = attrValues;
   theAttrValuePointers  = attrValuePointers;
   if (attrValues.IsNull())
+  {
     InitTypeAndForm(322, 0);
+  }
   else if (attrValuePointers.IsNull())
+  {
     InitTypeAndForm(322, 1);
+  }
   else
+  {
     InitTypeAndForm(322, 2);
+  }
 }
 
 bool IGESDefs_AttributeDef::HasTableName() const
@@ -125,7 +141,9 @@ occ::handle<IGESGraph_TextDisplayTemplate> IGESDefs_AttributeDef::AttributeTextD
 {
   occ::handle<IGESGraph_TextDisplayTemplate> res;
   if (HasTextDisplay())
+  {
     res = theAttrValuePointers->Value(AttrNum)->Value(PointerNum);
+  }
   return res;
 }
 
@@ -133,7 +151,9 @@ occ::handle<Standard_Transient> IGESDefs_AttributeDef::AttributeList(const int A
 {
   occ::handle<Standard_Transient> nulres;
   if (!HasValues())
+  {
     return nulres;
+  }
   return theAttrValues->Value(AttrNum);
 }
 

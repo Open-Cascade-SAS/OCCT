@@ -30,7 +30,9 @@ void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "surface_style_control_grid"))
+  {
     return;
+  }
 
   // --- own field : styleOfControlGrid ---
 

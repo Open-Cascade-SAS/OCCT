@@ -70,7 +70,9 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                        anO
     T = BRep_Tool::Triangulation(F, theLocation);
     // number of triangles:
     if (T.IsNull())
+    {
       continue; // smh
+    }
     nnn = T->NbTriangles();
 
     // Taking the nodes of the triangle, taking into account the orientation
@@ -78,9 +80,13 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                        anO
     for (nt = 1; nt <= nnn; nt++)
     {
       if (F.Orientation() == TopAbs_REVERSED)
+      {
         T->Triangle(nt).Get(n1, n3, n2);
+      }
       else
+      {
         T->Triangle(nt).Get(n1, n2, n3);
+      }
 
       const gp_Pnt P1 = T->Node(n1);
       const gp_Pnt P2 = T->Node(n2);
@@ -186,9 +192,13 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                        anO
         {
           pc.Triangles(i, t[0], t[1], t[2]);
           if (F.Orientation() == TopAbs_REVERSED)
+          {
             T->Triangle(i).Get(n[0], n[2], n[1]);
+          }
           else
+          {
             T->Triangle(i).Get(n[0], n[1], n[2]);
+          }
           const gp_Pnt P1 = T->Node(n[0]);
           const gp_Pnt P2 = T->Node(n[1]);
           const gp_Pnt P3 = T->Node(n[2]);
@@ -404,7 +414,9 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face&          aFace,
         CSLib::Normal(D1U, D1V, D2U, D2V, D2UV, Precision::Angular(), OK, NStat, Nor(i));
       }
       if (aFace.Orientation() == TopAbs_REVERSED)
+      {
         (Nor(i)).Reverse();
+      }
     }
   }
   else
@@ -423,7 +435,9 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face&          aFace,
       }
       Nor(i) = gp_Dir(eqPlan);
       if (aFace.Orientation() == TopAbs_REVERSED)
+      {
         (Nor(i)).Reverse();
+      }
     }
   }
 }

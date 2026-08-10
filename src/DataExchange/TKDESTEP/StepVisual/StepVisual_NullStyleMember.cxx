@@ -38,7 +38,9 @@ void StepVisual_NullStyleMember::SetEnumText(const int /*theValue*/, const char*
 {
   int aVal = tool.Value(theText);
   if (aVal >= 0)
+  {
     SetInt(aVal);
+  }
 }
 
 //=================================================================================================

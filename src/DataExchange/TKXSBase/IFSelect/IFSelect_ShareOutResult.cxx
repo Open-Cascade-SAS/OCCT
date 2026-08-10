@@ -81,7 +81,9 @@ void IFSelect_ShareOutResult::Reset()
 void IFSelect_ShareOutResult::Evaluate()
 {
   if (theeval)
+  {
     return; // already done. if not OK, do Reset before
+  }
   Prepare();
   theeval = true;
 }
@@ -95,9 +97,13 @@ occ::handle<IFSelect_PacketList> IFSelect_ShareOutResult::Packets(const bool com
   {
     list->AddPacket();
     if (complete)
+    {
       list->AddList(PacketContent().Content());
+    }
     else
+    {
       list->AddList(PacketRoot().Content());
+    }
   }
   return list;
 }
@@ -125,16 +131,22 @@ void IFSelect_ShareOutResult::Prepare()
   for (i = first; i <= nb; i++)
   {
     if (!theshareout.IsNull())
+    {
       disp = theshareout->Dispatch(i);
+    }
     if (disp->FinalSelection().IsNull())
+    {
       continue; // Dispatch neutralise
+    }
     IFGraph_SubPartsIterator packs(thegraph, false);
     disp->Packets(thegraph, packs);
     for (packs.Start(); packs.More(); packs.Next())
     {
       Interface_EntityIterator iter = packs.Entities();
       if (iter.NbEntities() == 0)
+      {
         continue;
+      }
       thedispres.AddPart();
       thedispres.GetFromIter(iter); // we register this packet
       A.ResetData();
@@ -148,7 +160,9 @@ void IFSelect_ShareOutResult::Prepare()
   for (i = thepacknum; i <= thedisplist.Length(); i++)
   {
     if (thedisplist.Value(i) != thedispnum)
+    {
       break;
+    }
     thenbindisp++;
   }
 }
@@ -164,7 +178,9 @@ void IFSelect_ShareOutResult::Next()
   thepacknum++;
   int dispnum;
   if (thepacknum <= thedisplist.Length())
+  {
     dispnum = thedisplist.Value(thepacknum);
+  }
   else
   {
     thenbindisp = 0;
@@ -174,7 +190,9 @@ void IFSelect_ShareOutResult::Next()
     return;
   }
   if (thedispnum == dispnum)
+  {
     thepackdisp++;
+  }
   else
   {
     thedispnum  = dispnum;
@@ -183,11 +201,15 @@ void IFSelect_ShareOutResult::Next()
     for (int i = thepacknum; i <= thedisplist.Length(); i++)
     {
       if (thedisplist.Value(i) != thedispnum)
+      {
         break;
+      }
       thenbindisp++;
     }
     if (!theshareout.IsNull())
+    {
       thedispatch = theshareout->Dispatch(thedispnum);
+    }
   }
 }
 
@@ -205,11 +227,15 @@ void IFSelect_ShareOutResult::NextDispatch()
       for (int i = thepacknum; i <= thedisplist.Length(); i++)
       {
         if (thedisplist.Value(i) != thedispnum)
+        {
           break;
+        }
         thenbindisp++;
       }
       if (!theshareout.IsNull())
+      {
         thedispatch = theshareout->Dispatch(thedispnum);
+      }
       return;
     }
   }
@@ -245,7 +271,9 @@ Interface_EntityIterator IFSelect_ShareOutResult::PacketContent()
   Interface_Graph          G(thegraph);
   //  G.GetFromIter(thedispres.Entities(),0);
   for (iter.Start(); iter.More(); iter.Next())
+  {
     G.GetFromEntity(iter.Value(), true);
+  }
   Interface_GraphContent GC(G);
   return GC.Result();
 }

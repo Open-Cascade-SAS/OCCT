@@ -110,7 +110,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
       if (Odefined)
       {
         if (EdgeOrientation == TopAbs_REVERSED)
+        {
           O = TopAbs::Complement(O);
+        }
         TT.Set(O);
       }
       else
@@ -145,11 +147,17 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
 
   double par = P.ParameterOnLine();
   if (par == par1)
+  {
     result = TopAbs_FORWARD;
+  }
   else if (par == parn)
+  {
     result = TopAbs_REVERSED;
+  }
   else
+  {
     result = TopAbs_INTERNAL;
+  }
 
   TT.Set(result);
   return TT;
@@ -177,16 +185,22 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeTransition(
   {
     IntSurf_Transition T;
     if (Index == 1)
+    {
       T = P.TransitionOnS1();
+    }
     else if (Index == 2)
+    {
       T = P.TransitionOnS2();
+    }
 
     TopAbs_Orientation O;
     bool               defined = ::TransitionToOrientation(T, O);
     if (defined)
     {
       if (FaceTransition == TopAbs_REVERSED)
+      {
         O = TopAbs::Complement(O);
+      }
       TT.Set(O);
     }
     else
@@ -269,7 +283,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition(
     if (Odefined)
     {
       if (FaceOrientation == TopAbs_REVERSED)
+      {
         O = TopAbs::Complement(O);
+      }
       TT.Set(O);
     }
     else
@@ -389,9 +405,13 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeONTransition(
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F);
   double                           U = 0., V = 0.;
   if (ShapeIndex == 1)
+  {
     VP.ParametersOnS1(U, V);
+  }
   else if (ShapeIndex == 2)
+  {
     VP.ParametersOnS2(U, V);
+  }
 
   double                         fE, lE;
   const occ::handle<Geom_Curve>& CE = BRep_Tool::Curve(E, fE, lE);
@@ -406,7 +426,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeONTransition(
   {
     // Trans : transition sur R en croisant l'arete E orientee dans la face F
     if (oriE == TopAbs_REVERSED)
+    {
       Trans = Trans.Complement();
+    }
   }
 
   return Trans;

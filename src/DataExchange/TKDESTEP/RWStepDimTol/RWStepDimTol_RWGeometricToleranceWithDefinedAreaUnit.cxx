@@ -37,7 +37,9 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "geometric_tolerance_with_defined_area_unit"))
+  {
     return;
+  }
 
   // inherited fields from GeometricTolerance
 
@@ -78,26 +80,38 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
   {
     const char* text = data->ParamCValue(num, 6);
     if (strcmp(text, ".CIRCULAR.") == 0)
+    {
       aType = StepDimTol_Circular;
+    }
     else if (strcmp(text, ".RECTANGULAR.") == 0)
+    {
       aType = StepDimTol_Rectangular;
+    }
     else if (strcmp(text, ".SQUARE.") == 0)
+    {
       aType = StepDimTol_Square;
+    }
     else
+    {
       ach->AddFail("Parameter #6 (area_type) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #6 (area_type) is not enumerations");
+  }
 
   occ::handle<StepBasic_LengthMeasureWithUnit> aSecondUnitSize;
   bool                                         hasSecondUnitSize = data->IsParamDefined(num, 7);
   if (hasSecondUnitSize)
+  {
     data->ReadEntity(num,
                      7,
                      "second_unit_size",
                      ach,
                      STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
                      aSecondUnitSize);
+  }
 
   // Initialize entity
   ent->Init(aName,
@@ -147,9 +161,13 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
   }
 
   if (ent->HasSecondUnitSize())
+  {
     SW.Send(ent->SecondUnitSize());
+  }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

@@ -30,7 +30,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  RWStepVisual_RWRepositionedTessellatedItem() {};
+  RWStepVisual_RWRepositionedTessellatedItem() = default;
 
   //! Reads RepositionedTessellatedItem
   Standard_HIDDEN void ReadStep(

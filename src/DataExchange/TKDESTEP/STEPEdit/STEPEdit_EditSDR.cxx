@@ -110,7 +110,9 @@ bool STEPEdit_EditSDR::Load(const occ::handle<IFSelect_EditForm>&        form,
     occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (sdr.IsNull() || modl.IsNull())
+  {
     return false;
+  }
 
   STEPConstruct_Part ctx;
   ctx.ReadSDR(sdr);
@@ -142,37 +144,61 @@ bool STEPEdit_EditSDR::Apply(const occ::handle<IFSelect_EditForm>&        form,
     occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (sdr.IsNull() || modl.IsNull())
+  {
     return false;
+  }
 
   STEPConstruct_Part ctx;
   ctx.ReadSDR(sdr);
 
   if (form->IsModified(1))
+  {
     ctx.SetPDCname(form->EditedValue(1));
+  }
   if (form->IsModified(2))
+  {
     ctx.SetPDCstage(form->EditedValue(2));
+  }
   if (form->IsModified(3))
+  {
     ctx.SetPDdescription(form->EditedValue(3));
+  }
 
   if (form->IsModified(4))
+  {
     ctx.SetPDFid(form->EditedValue(4));
+  }
   if (form->IsModified(5))
+  {
     ctx.SetPDFdescription(form->EditedValue(5));
+  }
 
   if (form->IsModified(6))
+  {
     ctx.SetPid(form->EditedValue(6));
+  }
   if (form->IsModified(7))
+  {
     ctx.SetPname(form->EditedValue(7));
+  }
   if (form->IsModified(8))
+  {
     ctx.SetPdescription(form->EditedValue(8));
+  }
 
   if (form->IsModified(9))
+  {
     ctx.SetPCname(form->EditedValue(9));
+  }
   if (form->IsModified(10))
+  {
     ctx.SetPCdisciplineType(form->EditedValue(10));
+  }
 
   if (form->IsModified(11))
+  {
     ctx.SetACapplication(form->EditedValue(11));
+  }
 
   return true;
 }

@@ -87,7 +87,9 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
   int LastU  = S->LastUKnotIndex();
   int LastV  = S->LastVKnotIndex();
   if (FromUK1 == ToUK2 || FromVK1 == ToVK2)
+  {
     throw Standard_DomainError();
+  }
   int FirstUK = std::min(FromUK1, ToUK2);
   int LastUK  = std::max(FromUK1, ToUK2);
   int FirstVK = std::min(FromVK1, ToVK2);
@@ -104,22 +106,30 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
   if (S->IsUPeriodic())
   {
     if (!SameUOrientation)
+    {
       S1->UReverse();
+    }
   }
   else
   {
     if (FromUK1 > ToUK2)
+    {
       S1->UReverse();
+    }
   }
   if (S->IsVPeriodic())
   {
     if (!SameVOrientation)
+    {
       S1->VReverse();
+    }
   }
   else
   {
     if (FromVK1 > ToVK2)
+    {
       S1->VReverse();
+    }
   }
   return S1;
 }
@@ -134,7 +144,9 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
   const bool                              SameOrientation)
 {
   if (FromK1 == ToK2)
+  {
     throw Standard_DomainError();
+  }
 
   occ::handle<Geom_BSplineSurface> S1 = occ::down_cast<Geom_BSplineSurface>(S->Copy());
 
@@ -146,7 +158,9 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     int FirstUK = std::min(FromK1, ToK2);
     int LastUK  = std::max(FromK1, ToK2);
     if (FirstUK < FirstU || LastUK > LastU)
+    {
       throw Standard_DomainError();
+    }
 
     S1->Segment(S1->UKnot(FirstUK),
                 S1->UKnot(LastUK),
@@ -156,12 +170,16 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     if (S->IsUPeriodic())
     {
       if (!SameOrientation)
+      {
         S1->UReverse();
+      }
     }
     else
     {
       if (FromK1 > ToK2)
+      {
         S1->UReverse();
+      }
     }
   }
   else
@@ -172,7 +190,9 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     int FirstVK = std::min(FromK1, ToK2);
     int LastVK  = std::max(FromK1, ToK2);
     if (FirstVK < FirstV || LastVK > LastV)
+    {
       throw Standard_DomainError();
+    }
 
     S1->Segment(S1->UKnot(S1->FirstUKnotIndex()),
                 S1->UKnot(S1->LastUKnotIndex()),
@@ -182,12 +202,16 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     if (S->IsVPeriodic())
     {
       if (!SameOrientation)
+      {
         S1->VReverse();
+      }
     }
     else
     {
       if (FromK1 > ToK2)
+      {
         S1->VReverse();
+      }
     }
   }
   return S1;
@@ -218,22 +242,30 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
   if (S->IsUPeriodic())
   {
     if (!SameUOrientation)
+    {
       NewSurface->UReverse();
+    }
   }
   else
   {
     if (FromU1 > ToU2)
+    {
       NewSurface->UReverse();
+    }
   }
   if (S->IsVPeriodic())
   {
     if (!SameVOrientation)
+    {
       NewSurface->VReverse();
+    }
   }
   else
   {
     if (FromV1 > ToV2)
+    {
       NewSurface->VReverse();
+    }
   }
   return NewSurface;
 }
@@ -266,12 +298,16 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     if (S->IsUPeriodic())
     {
       if (!SameOrientation)
+      {
         NewSurface->UReverse();
+      }
     }
     else
     {
       if (FromParam1 > ToParam2)
+      {
         NewSurface->UReverse();
+      }
     }
   }
   else
@@ -286,12 +322,16 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SplitBSplineSurface(
     if (S->IsUPeriodic())
     {
       if (!SameOrientation)
+      {
         NewSurface->UReverse();
+      }
     }
     else
     {
       if (FromParam1 > ToParam2)
+      {
         NewSurface->UReverse();
+      }
     }
   }
   return NewSurface;
@@ -351,7 +391,9 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
         Surf = S;
       }
       else
+      {
         S = Surf;
+      }
     }
 
     if (Surf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
@@ -695,22 +737,34 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       if (!BS->IsUPeriodic())
       {
         if (U1 < umin)
+        {
           U1 = umin;
+        }
         if (U2 > umax)
+        {
           U2 = umax;
+        }
       }
 
       if (!BS->IsVPeriodic())
       {
         if (V1 < vmin)
+        {
           V1 = vmin;
+        }
         if (V2 > vmax)
+        {
           V2 = vmax;
+        }
       }
       if (BS->IsUPeriodic() || BS->IsVPeriodic())
+      {
         BS->CheckAndSegment(U1, U2, V1, V2);
+      }
       else
+      {
         BS->Segment(U1, U2, V1, V2);
+      }
       TheSurface = BS;
     }
 
@@ -721,9 +775,13 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       GeomAbs_Shape       cont;
       GeomAdaptor_Surface AS(Sr);
       if (AS.NbUIntervals(GeomAbs_C2) > 1 || AS.NbVIntervals(GeomAbs_C2) > 1)
+      {
         cont = GeomAbs_C1;
+      }
       else
+      {
         cont = GeomAbs_C2;
+      }
       MaxSeg = 4 * (AS.NbUIntervals(GeomAbs_CN) + 1) * (AS.NbVIntervals(GeomAbs_CN) + 1);
       GeomConvert_ApproxSurface BSpS(Sr, Tol3d, cont, cont, MaxDegree, MaxDegree, MaxSeg, 1);
       TheSurface = BSpS.Surface();

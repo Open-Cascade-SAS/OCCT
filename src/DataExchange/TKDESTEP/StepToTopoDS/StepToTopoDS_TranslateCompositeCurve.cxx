@@ -92,7 +92,9 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
   myWire.Nullify();
   myInfiniteSegment = false;
   if (CC.IsNull())
+  {
     return false;
+  }
 
   bool SurfMode = (!S.IsNull() && !Surf.IsNull());
   bool isClosed = false;
@@ -103,7 +105,9 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
   {
     int modepcurve = aStepModel->InternalParameters.ReadSurfaceCurveMode;
     if (modepcurve == -3)
+    {
       SurfMode = false;
+    }
   }
 
   occ::handle<ShapeExtend_WireData> sbwd = new ShapeExtend_WireData;
@@ -134,13 +138,17 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
       }
       occ::handle<StepGeom_CompositeCurve> cc = occ::down_cast<StepGeom_CompositeCurve>(crv);
       if (!Init(cc, TP, S, Surf, theLocalFactors) || myWire.IsNull())
+      {
         continue;
+      }
       int nb = sbwd->NbEdges() + 1;
       for (TopoDS_Iterator it(myWire); it.More(); it.Next())
       {
         TopoDS_Edge edge = TopoDS::Edge(it.Value());
         if (ccs->SameSense())
+        {
           sbwd->Add(edge);
+        }
         else
         {
           edge.Reverse();
@@ -168,10 +176,14 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
             StepGeom_PcurveOrSurface     PCorS = sc->AssociatedGeometryValue(j);
             occ::handle<StepGeom_Pcurve> pc    = PCorS.Pcurve();
             if (pc.IsNull() || pc->BasisSurface() != S)
+            {
               continue;
+            }
             pcurve = pc;
             if (ccs->SameSense())
+            {
               break;
+            }
           }
         }
       }
@@ -179,7 +191,9 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
     else
     {
       if (!SurfMode || pcurve->BasisSurface() != S)
+      {
         pcurve.Nullify();
+      }
       crv.Nullify();
     }
 
@@ -272,7 +286,9 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
     }
 
     if (!ccs->SameSense())
+    {
       edge.Reverse();
+    }
     sbwd->Add(edge);
   }
   if (sbwd->NbEdges() <= 0)

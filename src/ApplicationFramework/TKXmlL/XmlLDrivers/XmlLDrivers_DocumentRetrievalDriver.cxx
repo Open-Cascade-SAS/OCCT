@@ -76,12 +76,18 @@ static int RemoveExtraSeparator(TCollection_AsciiString& aString)
     char c = aString.Value(j);
     aString.SetValue(i, c);
     if (c == '/')
+    {
       while (j < len && aString.Value(j + 1) == '/')
+      {
         j++;
+      }
+    }
   }
   len = i - 1;
   if (aString.Value(len) == '/')
+  {
     len--;
+  }
   aString.Trunc(len);
   return len;
 }
@@ -97,7 +103,9 @@ static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& 
     i = theCFile.SearchFromEnd("\\");
 #endif
   if (i != -1)
+  {
     theDirectory = theCFile.SubString(1, i);
+  }
   return theDirectory;
 }
 
@@ -108,20 +116,25 @@ static TCollection_AsciiString AbsolutePath(const TCollection_AsciiString& aDirP
 #ifdef _WIN32
   if (aRelFilePath.Search(":") == 2
       || (aRelFilePath.Search("\\") == 1 && aRelFilePath.Value(2) == '\\'))
+  {
 #else
   if (aRelFilePath.Search("/") == 1)
+  {
 #endif
     return aRelFilePath;
-
+  }
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath;
   int                     i, len;
 
 #ifdef _WIN32
   if (DirPath.Search(":") != 2 && (DirPath.Search("\\") != 1 || DirPath.Value(2) != '\\'))
+  {
 #else
   if (DirPath.Search("/") != 1)
+  {
 #endif
     return EmptyString;
+  }
 
 #ifdef _WIN32
   DirPath.ChangeAll('\\', '/');
@@ -134,14 +147,20 @@ static TCollection_AsciiString AbsolutePath(const TCollection_AsciiString& aDirP
   while (RelFilePath.Search("../") == 1)
   {
     if (len == 3)
+    {
       return EmptyString;
+    }
     RelFilePath = RelFilePath.SubString(4, len);
     len -= 3;
     if (DirPath.IsEmpty())
+    {
       return EmptyString;
+    }
     i = DirPath.SearchFromEnd("/");
     if (i < 0)
+    {
       return EmptyString;
+    }
     DirPath.Trunc(i - 1);
   }
   TCollection_AsciiString retx;
@@ -210,7 +229,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& theIStream,
   if (aParser.parse(theIStream, false, aWithoutRoot))
   {
     TCollection_AsciiString aData;
-    std::cout << aParser.GetError(aData) << ": " << aData << std::endl;
+    std::cout << aParser.GetError(aData) << ": " << aData << '\n';
     myReaderStatus = PCDM_RS_FormatFailure;
     return;
   }
@@ -271,7 +290,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
                                         + TDocStd_Document::CurrentStorageFormatVersion();
       myReaderStatus = PCDM_RS_NoVersion;
       if (!aMsgDriver.IsNull())
+      {
         aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
+      }
       return;
     }
 
@@ -301,7 +322,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
               TCollection_ExtendedString aMsg("Warning: ");
               aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
               if (!aMsgDriver.IsNull())
+              {
                 aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
+              }
             }
           }
           else if (anInfo.Search(MODIFICATION_COUNTER) != -1)
@@ -318,12 +341,16 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
             {
               TCollection_ExtendedString aMsg("Warning: could not read the modification counter\0");
               if (!aMsgDriver.IsNull())
+              {
                 aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
+              }
             }
           }
 
           if (anInfo == END_REF)
+          {
             isRef = false;
+          }
           if (isRef)
           { // Process References
 
@@ -349,7 +376,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
               {
                 anAbsolutePath = AbsolutePath(anAbsoluteDirectory, aPath);
                 if (!anAbsolutePath.IsEmpty())
+                {
                   aPath = anAbsolutePath;
+                }
               }
               if (!aMsgDriver.IsNull())
               {
@@ -428,7 +457,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
             }
           }
           if (anInfo == START_REF)
+          {
             isRef = true;
+          }
         }
       }
     }
@@ -454,11 +485,15 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
   Message_ProgressScope aPS(theRange, "Reading document", 2);
   // 2. Read Shapes section
   if (myDrivers.IsNull())
+  {
     myDrivers = AttributeDrivers(aMsgDriver);
+  }
   const occ::handle<XmlMDF_ADriver> aNSDriver =
     ReadShapeSection(theElement, aMsgDriver, aPS.Next());
   if (!aNSDriver.IsNull())
+  {
     ::take_time(0, " +++++ Fin reading Shapes :    ", aMsgDriver);
+  }
 
   if (!aPS.More())
   {
@@ -481,9 +516,13 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
     aMsgDriver->Send(aMessage.ToExtString(), Message_Trace);
 #endif
     if (!MakeDocument(theElement, theNewDocument, aPS.Next()))
+    {
       myReaderStatus = PCDM_RS_MakeFailure;
+    }
     else
+    {
       myReaderStatus = PCDM_RS_OK;
+    }
   }
   catch (Standard_Failure const& anException)
   {

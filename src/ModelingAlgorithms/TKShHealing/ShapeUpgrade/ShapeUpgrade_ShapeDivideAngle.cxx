@@ -59,7 +59,9 @@ double ShapeUpgrade_ShapeDivideAngle::MaxAngle() const
 {
   occ::handle<ShapeUpgrade_FaceDivide> faceTool = GetSplitFaceTool();
   if (faceTool.IsNull())
+  {
     return 0.;
+  }
   occ::handle<ShapeUpgrade_SplitSurfaceAngle> tool =
     occ::down_cast<ShapeUpgrade_SplitSurfaceAngle>(faceTool->GetSplitSurfaceTool());
   return (tool.IsNull() ? 0. : tool->MaxAngle());

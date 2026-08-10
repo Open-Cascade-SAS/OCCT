@@ -52,7 +52,9 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   // REPRESENTATION_ITEM: read name
   num1 = data->NextForComplex(num1);
   if (!data->CheckNbParams(num1, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num1, 1, "name", ach, aName);
@@ -60,7 +62,9 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   // SURFACE_CURVE: read data
   num1 = data->NextForComplex(num1);
   if (!data->CheckNbParams(num1, 3, ach, "surface_curve"))
+  {
     return;
+  }
 
   // --- own field : curve3d ---
   occ::handle<StepGeom_Curve> aCurve3d;
@@ -78,7 +82,9 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
+      {
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
+      }
     }
   }
 
@@ -94,7 +100,9 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (master_representation) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

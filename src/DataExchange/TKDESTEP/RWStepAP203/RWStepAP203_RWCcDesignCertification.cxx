@@ -41,7 +41,9 @@ void RWStepAP203_RWCcDesignCertification::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_certification"))
+  {
     return;
+  }
 
   // Inherited fields of CertificationAssignment
 

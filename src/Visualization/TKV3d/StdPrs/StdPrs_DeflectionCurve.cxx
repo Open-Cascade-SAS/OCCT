@@ -51,11 +51,17 @@ static double GetDeflection(const Adaptor3d_Curve&           aCurve,
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     double m = RealLast();
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
+    {
       m = std::abs(aXmax - aXmin);
+    }
     if (!(Total.IsOpenYmin() || Total.IsOpenYmax()))
+    {
       m = std::max(m, std::abs(aYmax - aYmin));
+    }
     if (!(Total.IsOpenZmin() || Total.IsOpenZmax()))
+    {
       m = std::max(m, std::abs(aZmax - aZmin));
+    }
 
     m = std::min(m, aDrawer->MaximalParameterValue());
     m = std::max(m, Precision::Confusion());
@@ -63,7 +69,9 @@ static double GetDeflection(const Adaptor3d_Curve&           aCurve,
     TheDeflection = m * aDrawer->DeviationCoefficient();
   }
   else
+  {
     TheDeflection = aDrawer->MaximalChordialDeviation();
+  }
 
   return TheDeflection;
 }
@@ -90,7 +98,9 @@ static bool FindLimits(const Adaptor3d_Curve& aCurve,
       do
       {
         if (count++ == 100000)
+        {
           return false;
+        }
         delta *= 2;
         First = -delta;
         Last  = delta;
@@ -104,7 +114,9 @@ static bool FindLimits(const Adaptor3d_Curve& aCurve,
       do
       {
         if (count++ == 100000)
+        {
           return false;
+        }
         delta *= 2;
         First = Last - delta;
         aCurve.D0(First, P1);
@@ -116,7 +128,9 @@ static bool FindLimits(const Adaptor3d_Curve& aCurve,
       do
       {
         if (count++ == 100000)
+        {
           return false;
+        }
         delta *= 2;
         Last = First + delta;
         aCurve.D0(Last, P2);
@@ -176,14 +190,18 @@ static void drawCurve(Adaptor3d_Curve&                    aCurve,
           if (NumberOfPoints > 0)
           {
             for (i = 1; i <= NumberOfPoints; i++)
+            {
               SeqP.Append(Algo.Value(i));
+            }
           }
         }
       }
 
       occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
       if (!aGroup.IsNull())
+      {
         aPrims = new Graphic3d_ArrayOfPolylines(SeqP.Length());
+      }
 
       for (i = 1; i <= SeqP.Length(); i++)
       {
@@ -220,10 +238,14 @@ static bool MatchCurve(const double           X,
     case GeomAbs_Line: {
       gp_Pnt p1 = aCurve.Value(U1);
       if (std::abs(X - p1.X()) + std::abs(Y - p1.Y()) + std::abs(Z - p1.Z()) <= aDistance)
+      {
         return true;
+      }
       gp_Pnt p2 = aCurve.Value(U2);
       if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+      {
         return true;
+      }
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
     case GeomAbs_Circle: {
@@ -240,12 +262,16 @@ static bool MatchCurve(const double           X,
           {
             p2 = aCurve.Value(U1 + (Index - 1) * DU);
             if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+            {
               return true;
+            }
 
             if (Index > 1)
             {
               if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
+              {
                 return true;
+              }
             }
             p1 = p2;
           }
@@ -263,11 +289,15 @@ static bool MatchCurve(const double           X,
         {
           p2 = Algo.Value(i);
           if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+          {
             return true;
+          }
           if (i > 1)
           {
             if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
+            {
               return true;
+            }
           }
           p1 = p2;
         }
@@ -337,9 +367,13 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   NCollection_Sequence<gp_Pnt> Points;
   drawCurve(aCurve,
@@ -471,9 +505,13 @@ bool StdPrs_DeflectionCurve::Match(const double                     X,
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   return MatchCurve(X,
                     Y,

@@ -39,6 +39,7 @@ static int MinIndex(
   Imin = T->Value(nvarl);
 
   for (dim = diml; dim <= dimu; dim++)
+  {
     for (el = ell; el <= elu; el++)
     {
       T     = Table->Value(dim, el);
@@ -49,6 +50,7 @@ static int MinIndex(
         Imin = std::min(Imin, T->Value(nvar));
       }
     }
+  }
   return Imin;
 }
 
@@ -68,6 +70,7 @@ static int MaxIndex(
   Imax = T->Value(nvarl);
 
   for (dim = diml; dim <= dimu; dim++)
+  {
     for (el = ell; el <= elu; el++)
     {
       T     = Table->Value(dim, el);
@@ -78,6 +81,7 @@ static int MaxIndex(
         Imax = std::max(Imax, T->Value(nvar));
       }
     }
+  }
   return Imax;
 }
 
@@ -104,6 +108,7 @@ FEmTool_Assembly::FEmTool_Assembly(
 
   occ::handle<NCollection_HArray1<int>> T;
   for (dim = diml; dim <= dimu; dim++)
+  {
     for (el = ell; el <= elu; el++)
     {
 
@@ -113,7 +118,9 @@ FEmTool_Assembly::FEmTool_Assembly(
       Imin  = T->Value(nvarl) + I0;
 
       for (nvar = nvarl; nvar <= nvaru; nvar++)
+      {
         Imin = std::min(Imin, T->Value(nvar) + I0);
+      }
 
       for (nvar = nvarl; nvar <= nvaru; nvar++)
       {
@@ -121,6 +128,7 @@ FEmTool_Assembly::FEmTool_Assembly(
         FirstIndexes(i) = std::min(FirstIndexes(i), Imin);
       }
     }
+  }
 
   H = new FEmTool_ProfileMatrix(FirstIndexes);
 
@@ -143,7 +151,9 @@ void FEmTool_Assembly::AddMatrix(const int          Element,
 {
 
   if (myDepTable(Dimension1, Dimension2) == 0)
+  {
     throw Standard_DomainError("FEmTool_Assembly::AddMatrix");
+  }
 
   const NCollection_Array1<int>& T1 = myRefTable->Value(Dimension1, Element)->Array1();
   const NCollection_Array1<int>& T2 = myRefTable->Value(Dimension2, Element)->Array1();
@@ -187,7 +197,9 @@ void FEmTool_Assembly::AddVector(const int Element, const int Dimension, const m
   int i;
 
   for (i = nvarl; i <= nvaru; i++)
+  {
     B(T(i)) += Vec(i0 + i);
+  }
 }
 
 //=================================================================================================
@@ -257,7 +269,9 @@ bool FEmTool_Assembly::Solve()
             BlockBeg = BlockEnd + 1;
           }
           else
+          {
             i = j;
+          }
         }
       }
 
@@ -287,13 +301,19 @@ bool FEmTool_Assembly::Solve()
                   }
                 }
                 if (!Zero)
+                {
                   break;
+                }
               }
               if (!Zero)
+              {
                 break;
+              }
             }
             if (!Zero)
+            {
               break;
+            }
           }
           if (!Zero)
           {
@@ -325,7 +345,9 @@ bool FEmTool_Assembly::Solve()
         const occ::handle<NCollection_HArray1<double>>& a = Iter.Value();
 
         for (j = a->Lower(); j <= a->Upper(); j++)
+        {
           gi(j) = a->Value(j); // gi - full line of G
+        }
       }
       //                                     -1 t
       H->Solve(gi, qi); // solving H*qi = gi, qi is column of H  G
@@ -347,8 +369,10 @@ bool FEmTool_Assembly::Solve()
 
             const occ::handle<NCollection_HArray1<double>>& a = Iter.Value();
             for (j = a->Lower(); j <= a->Upper(); j++)
+            {
               m += qi(j) * a->Value(j); // scalar product of
-                                        // k-th line of G and i-th column of H-1 Gt
+            }
+            // k-th line of G and i-th column of H-1 Gt
           }
 
           GHGt->ChangeValue(k, i) = m;
@@ -375,10 +399,14 @@ bool FEmTool_Assembly::Solve()
 void FEmTool_Assembly::Solution(math_Vector& Solution) const
 {
   if (!IsSolved)
+  {
     throw StdFail_NotDone("FEmTool_Assembly::Solution");
+  }
 
   if (G.IsEmpty())
+  {
     H->Solve(B, Solution);
+  }
   else
   {
 
@@ -400,8 +428,10 @@ void FEmTool_Assembly::Solution(math_Vector& Solution) const
 
         const occ::handle<NCollection_HArray1<double>>& a = Iter.Value();
         for (j = a->Lower(); j <= a->Upper(); j++)
+        {
           m += v1(j) * a->Value(j); // scalar product
-                                    // G v1
+        }
+        // G v1
       }
 
       v2(i) = m - C.Value(i);
@@ -423,7 +453,9 @@ void FEmTool_Assembly::Solution(math_Vector& Solution) const
 
         const occ::handle<NCollection_HArray1<double>>& a = Iter.Value();
         for (j = a->Lower(); j <= a->Upper(); j++)
+        {
           v1(j) -= l(i) * a->Value(j);
+        }
       }
     }
 
@@ -460,7 +492,9 @@ void FEmTool_Assembly::NullifyConstraint()
     C.SetValue(i, 0.);
 
     for (Iter.Initialize(G.Value(i)); Iter.More(); Iter.Next())
+    {
       Iter.Value()->Init(0.);
+    }
   }
 }
 
@@ -541,9 +575,13 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
           // merge new and first segment
           Coeff = new NCollection_HArray1<double>(Imin, Aux2->Upper());
           for (i = Imin; i <= Aux2->Lower() - 1; i++)
+          {
             Coeff->SetValue(i, 0.);
+          }
           for (i = Aux2->Lower(); i <= Aux2->Upper(); i++)
+          {
             Coeff->SetValue(i, Aux2->Value(i));
+          }
           L.First() = Coeff;
         }
       }
@@ -561,9 +599,13 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
           // merge new and last segment
           Coeff = new NCollection_HArray1<double>(Aux1->Lower(), Imax);
           for (i = Aux1->Lower(); i <= Aux1->Upper(); i++)
+          {
             Coeff->SetValue(i, Aux1->Value(i));
+          }
           for (i = Aux1->Upper() + 1; i <= Imax; i++)
+          {
             Coeff->SetValue(i, 0.);
+          }
           L.Last() = Coeff;
         }
       }
@@ -572,12 +614,18 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
         // merge s1 and new
         Coeff = new NCollection_HArray1<double>(Aux1->Lower(), Imax);
         for (i = Aux1->Lower(); i <= Aux1->Upper(); i++)
+        {
           Coeff->SetValue(i, Aux1->Value(i));
+        }
         for (i = Aux1->Upper() + 1; i <= Imax; i++)
+        {
           Coeff->SetValue(i, 0.);
+        }
         Iter.Initialize(L);
         for (i = 1; i < s1; Iter.Next(), i++)
+        {
           ;
+        }
         Iter.ChangeValue() = Coeff;
       }
       else if (Imin > Aux1->Upper() && Imax >= Aux2->Lower())
@@ -585,12 +633,18 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
         // merge new and first segment
         Coeff = new NCollection_HArray1<double>(Imin, Aux2->Upper());
         for (i = Imin; i <= Aux2->Lower() - 1; i++)
+        {
           Coeff->SetValue(i, 0.);
+        }
         for (i = Aux2->Lower(); i <= Aux2->Upper(); i++)
+        {
           Coeff->SetValue(i, Aux2->Value(i));
+        }
         Iter.Initialize(L);
         for (i = 1; i < s2; Iter.Next(), i++)
+        {
           ;
+        }
         Iter.ChangeValue() = Coeff;
       }
       else if (Imin > Aux1->Upper() && Imax < Aux2->Lower())
@@ -600,7 +654,9 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
         Coeff->Init(0.);
         Iter.Initialize(L);
         for (i = 1; i < s1; Iter.Next(), i++)
+        {
           ;
+        }
         L.InsertAfter(Coeff, Iter);
       }
       else
@@ -608,14 +664,22 @@ void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
         // merge s1, new, s2 and remove s2
         Coeff = new NCollection_HArray1<double>(Aux1->Lower(), Aux2->Upper());
         for (i = Aux1->Lower(); i <= Aux1->Upper(); i++)
+        {
           Coeff->SetValue(i, Aux1->Value(i));
+        }
         for (i = Aux1->Upper() + 1; i <= Aux2->Lower() - 1; i++)
+        {
           Coeff->SetValue(i, 0.);
+        }
         for (i = Aux2->Lower(); i <= Aux2->Upper(); i++)
+        {
           Coeff->SetValue(i, Aux2->Value(i));
+        }
         Iter.Initialize(L);
         for (i = 1; i < s1; Iter.Next(), i++)
+        {
           ;
+        }
         Iter.ChangeValue() = Coeff;
         Iter.Next();
         L.Remove(Iter);

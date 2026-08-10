@@ -30,7 +30,9 @@ void RWStepGeom_RWRectangularTrimmedSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 8, ach, "rectangular_trimmed_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

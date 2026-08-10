@@ -58,12 +58,16 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
   {
     occ::handle<IGESData_IGESEntity> ent = original->Entity(i);
     if (ent->TypeNumber() != 402)
+    {
       continue;
+    }
     int                             casenum = 0;
     occ::handle<Standard_Transient> newent;
     Interface_EntityIterator        newlist;
     if (TC.Search(ent, newent))
+    {
       continue; // deja passe
+    }
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_Group)))
     {
       DeclareAndCast(IGESBasic_Group, g, ent);
@@ -72,7 +76,9 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
       for (int ig = 1; ig <= nbg; ig++)
       {
         if (TC.Search(g->Value(i), newent))
+        {
           newlist.GetOneItem(newent);
+        }
       }
     }
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_GroupWithoutBackP)))
@@ -83,7 +89,9 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
       for (int ig = 1; ig <= nbg; ig++)
       {
         if (TC.Search(g->Value(i), newent))
+        {
           newlist.GetOneItem(newent);
+        }
       }
     }
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_OrderedGroup)))
@@ -94,7 +102,9 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
       for (int ig = 1; ig <= nbg; ig++)
       {
         if (TC.Search(g->Value(i), newent))
+        {
           newlist.GetOneItem(newent);
+        }
       }
     }
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_OrderedGroupWithoutBackP)))
@@ -105,12 +115,16 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
       for (int ig = 1; ig <= nbg; ig++)
       {
         if (TC.Search(g->Value(i), newent))
+        {
           newlist.GetOneItem(newent);
+        }
       }
     }
     //  A present, reconstruire sil le faut
     if (newlist.NbEntities() <= 1)
+    {
       continue; // 0 ou 1 : rien a refaire
+    }
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab =
       new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, newlist.NbEntities());
     int ng = 0;

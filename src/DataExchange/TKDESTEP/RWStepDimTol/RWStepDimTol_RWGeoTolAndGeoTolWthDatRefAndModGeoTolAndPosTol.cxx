@@ -40,7 +40,9 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::ReadStep(
   int num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
+  {
     return;
+  }
   // Own fields of GeometricTolerance
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
@@ -79,16 +81,26 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".MAXIMUM_MATERIAL_CONDITION.") == 0)
+    {
       aModifier = StepDimTol_MaximumMaterialCondition;
+    }
     else if (strcmp(text, ".LEAST_MATERIAL_CONDITION.") == 0)
+    {
       aModifier = StepDimTol_LeastMaterialCondition;
+    }
     else if (strcmp(text, ".REGARDLESS_OF_FEATURE_SIZE.") == 0)
+    {
       aModifier = StepDimTol_RegardlessOfFeatureSize;
+    }
     else
+    {
       ach->AddFail("Parameter in MODIFIED_GEOMETRIC_TOLERANCE has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter in MODIFIED_GEOMETRIC_TOLERANCE is not enumeration");
+  }
   occ::handle<StepDimTol_ModifiedGeometricTolerance> MGT =
     new StepDimTol_ModifiedGeometricTolerance;
   MGT->SetModifier(aModifier);

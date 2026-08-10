@@ -32,13 +32,19 @@ occ::handle<StepData_SelectMember> StepVisual_MarkerSelect::NewMember() const
 int StepVisual_MarkerSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   Interface_ParamType type = ent->ParamType();
   //  Void : on admet "non defini" (en principe, on ne devrait pas)
   if (type != Interface_ParamVoid && type != Interface_ParamEnum)
+  {
     return 0;
+  }
   if (ent->Matches("MARKER_TYPE"))
+  {
     return 1;
+  }
   return 0;
 }
 

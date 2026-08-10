@@ -48,8 +48,12 @@ DrawTrSurf_Triangulation2D::DrawTrSurf_Triangulation2D(const occ::handle<Poly_Tr
   {
     pc.Triangles(i, t[0], t[1], t[2]);
     for (j = 0; j < 3; j++)
+    {
       if (t[j] == 0)
+      {
         nFree++;
+      }
+    }
   }
 
   // allocate the arrays

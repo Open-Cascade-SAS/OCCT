@@ -45,7 +45,9 @@ bool MeshVS_DataSource::GetNormal(const int Id,
                                   double&   nz) const
 {
   if (Max <= 0)
+  {
     return false;
+  }
 
   MeshVS_Buffer              aCoordsBuf(3 * Max * sizeof(double));
   NCollection_Array1<double> Coords(aCoordsBuf, 1, 3 * Max);
@@ -55,7 +57,9 @@ bool MeshVS_DataSource::GetNormal(const int Id,
   bool res = false;
 
   if (!GetGeom(Id, true, Coords, nbNodes, Type))
+  {
     return res;
+  }
 
   if (Type == MeshVS_ET_Face && nbNodes >= 3)
   {
@@ -111,10 +115,14 @@ bool MeshVS_DataSource::GetNormalsByElement(const int                           
 
   bool res = false;
   if (MaxNodes <= 0)
+  {
     return res;
+  }
 
   if (!GetGeom(Id, true, Coords, NbNodes, Type))
+  {
     return res;
+  }
 
   int aNbNormals = NbNodes;
 
@@ -122,7 +130,9 @@ bool MeshVS_DataSource::GetNormalsByElement(const int                           
   if (Type == MeshVS_ET_Volume)
   {
     if (!Get3DGeom(Id, NbNodes, aTopo))
+    {
       return res;
+    }
     // calculate number of normals for faces of volume
     aNbNormals = aTopo->Upper() - aTopo->Lower() + 1;
   }
@@ -133,11 +143,13 @@ bool MeshVS_DataSource::GetNormalsByElement(const int                           
   bool allNormals = (Type == MeshVS_ET_Face && IsNodal);
   // Try returning nodal normals if possible
   for (int k = 1; k <= NbNodes && allNormals; k++)
+  {
     allNormals = GetNodeNormal(k,
                                Id,
                                aNormals->ChangeValue(3 * k - 2),
                                aNormals->ChangeValue(3 * k - 1),
                                aNormals->ChangeValue(3 * k));
+  }
 
   // Nodal normals not available or not needed
   if (!allNormals)
@@ -199,7 +211,9 @@ bool MeshVS_DataSource::GetNormalsByElement(const int                           
   } // if ( !allNormals )
 
   if (res || allNormals)
+  {
     Normals = aNormals;
+  }
 
   return (res || allNormals);
 }
@@ -298,7 +312,9 @@ Bnd_Box MeshVS_DataSource::GetBoundingBox() const
     {
       int aKey = anIter.Key();
       if (!GetGeom(aKey, false, aCoords, nbNodes, aType))
+      {
         continue;
+      }
       aBox.Add(gp_Pnt(aCoordsBuf[0], aCoordsBuf[1], aCoordsBuf[2]));
     }
   }

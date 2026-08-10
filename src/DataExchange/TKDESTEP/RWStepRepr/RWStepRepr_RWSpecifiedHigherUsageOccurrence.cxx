@@ -37,7 +37,9 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "specified_higher_usage_occurrence"))
+  {
     return;
+  }
 
   // Inherited fields of ProductDefinitionRelationship
 
@@ -150,7 +152,9 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
     SW.Send(ent->StepBasic_ProductDefinitionRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
@@ -163,7 +167,9 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
     SW.Send(ent->StepRepr_AssemblyComponentUsage::ReferenceDesignator());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Own fields of SpecifiedHigherUsageOccurrence
 

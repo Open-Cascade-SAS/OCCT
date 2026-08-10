@@ -212,14 +212,20 @@ static int triarea(Draw_Interpretor& di, int n, const char** a)
 {
 
   if (n < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
+  {
     return 1;
+  }
   double anEps = -1.;
   if (n > 2)
+  {
     anEps = Draw::Atof(a[2]);
+  }
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapF;
   TopExp::MapShapes(shape, TopAbs_FACE, aMapF);
@@ -250,7 +256,7 @@ static int triarea(Draw_Interpretor& di, int n, const char** a)
       occ::handle<Poly_Triangulation> aPoly = BRep_Tool::Triangulation(aFace, aLoc);
       if (aPoly.IsNull())
       {
-        std::cout << "face " << i << " has no triangulation" << std::endl;
+        std::cout << "face " << i << " has no triangulation" << '\n';
         continue;
       }
       for (int j = 1; j <= aPoly->NbTriangles(); j++)
@@ -273,9 +279,13 @@ static int triarea(Draw_Interpretor& di, int n, const char** a)
   // compute area by geometry
   GProp_GProps props;
   if (anEps <= 0.)
+  {
     BRepGProp::SurfaceProperties(shape, props);
+  }
   else
+  {
     BRepGProp::SurfaceProperties(shape, props, anEps);
+  }
   double aGeomArea = props.Mass();
 
   di << aTriArea << " " << aGeomArea << "\n";
@@ -291,11 +301,15 @@ bool IsEqual(const BRepMesh_Edge& theFirst, const BRepMesh_Edge& theSecond)
 static int tricheck(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
+  {
     return 1;
+  }
 
   const bool isToFindSmallTriangles = (n >= 3) ? (strcmp(a[2], "-small") == 0) : false;
 

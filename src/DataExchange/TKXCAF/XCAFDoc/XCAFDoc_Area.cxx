@@ -77,7 +77,9 @@ bool XCAFDoc_Area::Get(const TDF_Label& label, double& area)
 {
   occ::handle<XCAFDoc_Area> anArea;
   if (!label.FindAttribute(XCAFDoc_Area::GetID(), anArea))
+  {
     return false;
+  }
 
   area = anArea->Get();
   return true;

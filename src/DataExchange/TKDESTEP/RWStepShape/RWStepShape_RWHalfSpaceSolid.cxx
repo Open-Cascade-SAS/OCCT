@@ -29,7 +29,9 @@ void RWStepShape_RWHalfSpaceSolid::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "half_space_solid"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

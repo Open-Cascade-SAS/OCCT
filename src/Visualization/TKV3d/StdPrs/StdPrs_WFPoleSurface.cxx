@@ -38,7 +38,9 @@ static void AddPoles(const occ::handle<Prs3d_Presentation>& aPresentation,
   {
     aPrims->AddBound(m);
     for (j = 1; j <= m; j++)
+    {
       aPrims->AddVertex(A(i, j));
+    }
   }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -48,7 +50,9 @@ static void AddPoles(const occ::handle<Prs3d_Presentation>& aPresentation,
   {
     aPrims->AddBound(n);
     for (i = 1; i <= n; i++)
+    {
       aPrims->AddVertex(A(i, j));
+    }
   }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }

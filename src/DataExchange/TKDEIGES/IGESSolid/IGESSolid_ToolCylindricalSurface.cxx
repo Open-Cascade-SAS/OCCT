@@ -58,12 +58,14 @@ void IGESSolid_ToolCylindricalSurface::ReadOwnParams(
 
   PR.ReadReal(PR.Current(), "Radius", tempRadius); // szv#4:S4163:12Mar99 `st=` not needed
 
-  if (ent->FormNumber() == 1) // Parametrised surface
+  if (ent->FormNumber() == 1)
+  { // Parametrised surface
     PR.ReadEntity(IR,
                   PR.Current(),
                   "Reference direction",
                   STANDARD_TYPE(IGESGeom_Direction),
                   tempRefdir); // szv#4:S4163:12Mar99 `st=` not needed
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempLocation, tempAxis, tempRadius, tempRefdir);
@@ -77,7 +79,9 @@ void IGESSolid_ToolCylindricalSurface::WriteOwnParams(
   IW.Send(ent->Axis());
   IW.Send(ent->Radius());
   if (ent->IsParametrised())
+  {
     IW.Send(ent->ReferenceDir());
+  }
 }
 
 void IGESSolid_ToolCylindricalSurface::OwnShared(
@@ -132,12 +136,18 @@ void IGESSolid_ToolCylindricalSurface::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() <= 0.0)
+  {
     ach->AddFail("Radius : Value <= 0.0");
+  }
   int fn = 0;
   if (ent->IsParametrised())
+  {
     fn = 1;
+  }
   if (fn != ent->FormNumber())
+  {
     ach->AddFail("Parametrised Status Mismatches with Form Number");
+  }
 }
 
 void IGESSolid_ToolCylindricalSurface::OwnDump(const occ::handle<IGESSolid_CylindricalSurface>& ent,
@@ -159,8 +169,10 @@ void IGESSolid_ToolCylindricalSurface::OwnDump(const occ::handle<IGESSolid_Cylin
   {
     S << "Surface is Parametrised  -  Reference direction : ";
     dumper.Dump(ent->ReferenceDir(), S, sublevel);
-    S << std::endl;
+    S << '\n';
   }
   else
-    S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is UnParametrised" << '\n';
+  }
 }

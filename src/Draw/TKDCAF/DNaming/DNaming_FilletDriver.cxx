@@ -67,11 +67,15 @@ int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   occ::handle<TFunction_Function> aPrevFun = DNaming::GetPrevFunction(aFunction);
   if (aPrevFun.IsNull())
+  {
     return -1;
+  }
   const TDF_Label&                aLab = RESPOSITION(aPrevFun);
   occ::handle<TNaming_NamedShape> aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
@@ -136,9 +140,13 @@ int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(expl.Current());
       if (!View.Add(anEdge))
+      {
         continue;
+      }
       else
+      {
         aMkFillet.Add(aRadius, anEdge); // Edge
+      }
     }
   }
   else
@@ -185,13 +193,19 @@ void DNaming_FilletDriver::LoadNamingDS(const TDF_Label&          theResultLabel
     {
       TopoDS_Iterator itr(aResult);
       if (itr.More())
+      {
         aResult = itr.Value();
+      }
     }
   }
   if (aResult.IsNull())
+  {
     aBuilder.Generated(aResult);
+  }
   else
+  {
     aBuilder.Modify(theContext, aResult);
+  }
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> SubShapes;
   for (TopExp_Explorer Exp(aResult, TopAbs_FACE); Exp.More(); Exp.Next())

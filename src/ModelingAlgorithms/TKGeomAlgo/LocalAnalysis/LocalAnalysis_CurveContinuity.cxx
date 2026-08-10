@@ -50,9 +50,13 @@ void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_C
     }
     ang = V1.Angle(V2);
     if (ang > M_PI / 2)
+    {
       myContC1 = M_PI - ang;
+    }
     else
+    {
       myContC1 = ang;
+    }
   }
   else
   {
@@ -94,9 +98,13 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
       }
       ang = V12.Angle(V22);
       if (ang > M_PI / 2)
+      {
         myContC2 = M_PI - ang;
+      }
       else
+      {
         myContC2 = ang;
+      }
     }
 
     else
@@ -125,9 +133,13 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_C
     Curv2.Tangent(Tang2);
     ang = Tang1.Angle(Tang2);
     if (ang > M_PI / 2)
+    {
       myContG1 = M_PI - ang;
+    }
     else
+    {
       myContG1 = ang;
+    }
   }
   else
   {
@@ -157,9 +169,13 @@ void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_C
       Curv2.Normal(D2);
       ang = D1.Angle(D2);
       if (ang > M_PI / 2)
+      {
         myContG2 = M_PI - ang;
+      }
       else
+      {
         myContG2 = ang;
+      }
       myCourbC1     = Curv1.Curvature();
       myCourbC2     = Curv2.Curvature();
       myG2Variation = std::abs(myCourbC1 - myCourbC2) / sqrt(myCourbC1 * myCourbC2);
@@ -299,10 +315,14 @@ bool LocalAnalysis_CurveContinuity::IsC2() const
       epsil1 = 0.5 * myepsC1 * myepsC1 * myLambda1;
       epsil2 = 0.5 * myepsC2 * myepsC2 * myLambda2;
       if ((std::abs(myLambda1 * myLambda1 - myLambda2)) <= (epsil1 * epsil1 + epsil2))
+      {
         return true;
+      }
     }
     else
+    {
       return false;
+    }
   }
   return false;
 }
@@ -338,17 +358,29 @@ bool LocalAnalysis_CurveContinuity::IsG2() const
     CRBNUL = 8 * myepsC0 / (myMaxLon * myMaxLon);
 
     if (myCourbC1 > CRBINF)
+    {
       IETA1 = 2;
+    }
     else if (myCourbC1 < CRBNUL)
+    {
       IETA1 = 0;
+    }
     else
+    {
       IETA1 = 1;
+    }
     if (myCourbC2 > CRBINF)
+    {
       IETA2 = 2;
+    }
     else if (myCourbC2 < CRBNUL)
+    {
       IETA2 = 0;
+    }
     else
+    {
       IETA2 = 1;
+    }
     if (IETA1 == IETA2)
     {
       if (IETA1 == 1)
@@ -359,16 +391,24 @@ bool LocalAnalysis_CurveContinuity::IsG2() const
           return myG2Variation < myperce;
         }
         else
+        {
           return false;
+        }
       }
       else
+      {
         return true;
+      }
     }
     else
+    {
       return false;
+    }
   }
   else
+  {
     return false;
+  }
 }
 
 /*********************************************************************************/

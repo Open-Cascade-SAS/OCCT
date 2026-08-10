@@ -16,6 +16,7 @@
 #define _NCollection_LocalArray_HeaderFile
 
 #include <Standard.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_TypeDef.hxx>
 
 #include <cstring>
@@ -57,7 +58,9 @@ public:
     if constexpr (!IS_TRIVIAL)
     {
       for (size_t i = 0; i < mySize; ++i)
+      {
         myPtr[i].~theItem();
+      }
     }
     Deallocate();
   }
@@ -75,7 +78,9 @@ public:
       if constexpr (!IS_TRIVIAL)
       {
         for (size_t i = theNewSize; i < mySize; ++i)
+        {
           myPtr[i].~theItem();
+        }
       }
       mySize = theNewSize;
       return;
@@ -104,11 +109,17 @@ public:
           const size_t aCopy     = theToCopy ? std::min(anOldSize, theNewSize) : 0;
           myPtr                  = inlinePtr();
           for (size_t i = 0; i < aCopy; ++i)
+          {
             new (myPtr + i) theItem(std::move(anOldPtr[i]));
+          }
           for (size_t i = aCopy; i < theNewSize; ++i)
+          {
             new (myPtr + i) theItem();
+          }
           for (size_t i = 0; i < anOldSize; ++i)
+          {
             anOldPtr[i].~theItem();
+          }
           Standard::Free(anOldPtr);
         }
         myPtr = inlinePtr();
@@ -119,7 +130,9 @@ public:
         if constexpr (!IS_TRIVIAL)
         {
           for (size_t i = mySize; i < theNewSize; ++i)
+          {
             new (myPtr + i) theItem();
+          }
         }
       }
       mySize = theNewSize;
@@ -158,13 +171,21 @@ public:
       theItem*     aNewPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
       const size_t aCopy   = theToCopy ? std::min(mySize, theNewSize) : 0;
       for (size_t i = 0; i < aCopy; ++i)
+      {
         new (aNewPtr + i) theItem(std::move(myPtr[i]));
+      }
       for (size_t i = aCopy; i < theNewSize; ++i)
+      {
         new (aNewPtr + i) theItem();
+      }
       for (size_t i = 0; i < mySize; ++i)
+      {
         myPtr[i].~theItem();
+      }
       if (!aWasInline)
+      {
         Standard::Free(myPtr);
+      }
       myPtr = aNewPtr;
     }
     mySize = theNewSize;
@@ -180,16 +201,22 @@ public:
   {
     if (theOther.isInline())
     {
+      // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+      const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
       if constexpr (IS_TRIVIAL)
       {
-        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), aNb * sizeof(theItem));
       }
       else
       {
-        for (size_t i = 0; i < mySize; ++i)
+        for (size_t i = 0; i < aNb; ++i)
+        {
           new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
-        for (size_t i = 0; i < mySize; ++i)
+        }
+        for (size_t i = 0; i < aNb; ++i)
+        {
           theOther.inlinePtr()[i].~theItem();
+        }
       }
     }
     else
@@ -203,7 +230,9 @@ public:
   NCollection_LocalArray& operator=(NCollection_LocalArray&& theOther) noexcept
   {
     if (this == &theOther)
+    {
       return *this;
+    }
 
     if constexpr (IS_TRIVIAL)
     {
@@ -212,7 +241,9 @@ public:
       {
         Deallocate();
         myPtr = inlinePtr();
-        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
+        // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+        const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), aNb * sizeof(theItem));
       }
       else if (!isInline())
       {
@@ -232,24 +263,36 @@ public:
     {
       // Destroy our current elements.
       for (size_t i = 0; i < mySize; ++i)
+      {
         myPtr[i].~theItem();
+      }
 
       if (theOther.isInline())
       {
         if (!isInline())
+        {
           Standard::Free(myPtr);
+        }
         myPtr  = inlinePtr();
         mySize = theOther.mySize;
-        for (size_t i = 0; i < mySize; ++i)
+        // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+        const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+        for (size_t i = 0; i < aNb; ++i)
+        {
           new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
-        for (size_t i = 0; i < mySize; ++i)
+        }
+        for (size_t i = 0; i < aNb; ++i)
+        {
           theOther.inlinePtr()[i].~theItem();
+        }
       }
       else
       {
         // Take ownership of theOther's heap allocation directly.
         if (!isInline())
+        {
           Standard::Free(myPtr);
+        }
         myPtr          = theOther.myPtr;
         mySize         = theOther.mySize;
         theOther.myPtr = theOther.inlinePtr();
@@ -259,6 +302,14 @@ public:
     return *this;
   }
 
+  //! Returns a span as Array1 with shared memory.
+  //! Modifying the local array or the array view may invalidate the shared buffer.
+  //! @return array view of the local array data
+  NCollection_Array1<theItem> ToArray1() const
+  {
+    return NCollection_Array1<theItem>(myPtr, mySize);
+  }
+
   NCollection_LocalArray(const NCollection_LocalArray&)            = delete;
   NCollection_LocalArray& operator=(const NCollection_LocalArray&) = delete;
 
@@ -266,7 +317,9 @@ protected:
   void Deallocate()
   {
     if (!isInline())
+    {
       Standard::Free(myPtr);
+    }
   }
 
   //! Pointer to inline buffer storage.

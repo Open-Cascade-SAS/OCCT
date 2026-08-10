@@ -912,7 +912,7 @@ void OpenGl_Text::DumpJson(Standard_OStream& theOStream, int theDepth) const
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTextures.Size())
 
-  for (NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>::Iterator aCrdsIt(myTCrdsVbo);
+  for (NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>::Iterator aCrdsIt(myTCrdsVbo);
        aCrdsIt.More();
        aCrdsIt.Next())
   {

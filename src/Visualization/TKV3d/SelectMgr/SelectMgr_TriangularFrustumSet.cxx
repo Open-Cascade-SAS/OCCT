@@ -75,8 +75,8 @@ void SelectMgr_TriangularFrustumSet::Build()
     new BRepMesh_DataStructureOfDelaun(anAllocator);
   int                        aPtsLower = mySelPolyline.Points->Lower();
   int                        aPtsUpper = mySelPolyline.Points->Upper();
-  IMeshData::VectorOfInteger anIndexes(mySelPolyline.Points->Size(), anAllocator);
-  myBoundaryPoints.Resize(aPtsLower, aPtsLower + 2 * (mySelPolyline.Points->Size()) - 1, false);
+  IMeshData::VectorOfInteger anIndexes(mySelPolyline.Points->Length(), anAllocator);
+  myBoundaryPoints.Resize(aPtsLower, aPtsLower + 2 * (mySelPolyline.Points->Length()) - 1, false);
 
   for (int aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
@@ -87,7 +87,7 @@ void SelectMgr_TriangularFrustumSet::Build()
     const gp_Pnt aFarPnt =
       myBuilder->ProjectPntOnViewPlane(aVertex.Coord().X(), aVertex.Coord().Y(), 1.0);
     myBoundaryPoints.SetValue(aPtIdx, aNearPnt);
-    myBoundaryPoints.SetValue(aPtIdx + mySelPolyline.Points->Size(), aFarPnt);
+    myBoundaryPoints.SetValue(aPtIdx + mySelPolyline.Points->Length(), aFarPnt);
   }
 
   double aPtSum = 0;
@@ -112,7 +112,9 @@ void SelectMgr_TriangularFrustumSet::Build()
   BRepMesh_Delaun                aTriangulation(aMeshStructure, anIndexes);
   const IMeshData::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
   if (aTriangles.Extent() < 1)
+  {
     return;
+  }
 
   IMeshData::IteratorOfMapOfInteger aTriangleIt(aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
@@ -121,7 +123,9 @@ void SelectMgr_TriangularFrustumSet::Build()
     const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
+    {
       continue;
+    }
 
     int aTriangleVerts[3];
     aMeshStructure->ElementNodes(aCurrentTriangle, aTriangleVerts);
@@ -254,47 +258,44 @@ bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>&
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
+  bool isAnyFrustumOverlap = false;
   for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
        anIter.More();
        anIter.Next())
   {
-    if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
+    if (anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
     {
-      continue;
+      isAnyFrustumOverlap = true;
+      break;
     }
+  }
+  if (!isAnyFrustumOverlap)
+  {
+    return false;
+  }
 
-    if (myToAllowOverlap || theInside == nullptr)
-    {
-      return true;
-    }
-
-    gp_Pnt aMinMaxPnts[2] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
-                             gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
-
-    gp_Pnt anOffset[3] = {gp_Pnt(aMinMaxPnts[1].X() - aMinMaxPnts[0].X(), 0.0, 0.0),
-                          gp_Pnt(0.0, aMinMaxPnts[1].Y() - aMinMaxPnts[0].Y(), 0.0),
-                          gp_Pnt(0.0, 0.0, aMinMaxPnts[1].Z() - aMinMaxPnts[0].Z())};
-
-    int aSign = 1;
-    for (int aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
-    {
-      for (int aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
-      {
-        gp_Pnt anOffsetPnt = aMinMaxPnts[aPntsIdx].XYZ() + aSign * anOffset[aCoordIdx].XYZ();
-        if (isIntersectBoundary(aMinMaxPnts[aPntsIdx], anOffsetPnt)
-            || isIntersectBoundary(anOffsetPnt,
-                                   anOffsetPnt.XYZ() + aSign * anOffset[(aCoordIdx + 1) % 3].XYZ()))
-        {
-          *theInside &= false;
-          return true;
-        }
-      }
-      aSign = -aSign;
-    }
+  if (myToAllowOverlap || theInside == nullptr)
+  {
     return true;
   }
 
-  return false;
+  const gp_Pnt aCorners[8] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
+  for (const gp_Pnt& aCorner : aCorners)
+  {
+    if (!isPointInsideAnyFrustum(aCorner))
+    {
+      *theInside &= false;
+      break;
+    }
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -317,6 +318,32 @@ bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt&                
     }
   }
 
+  return false;
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt& thePnt) const
+{
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+                        "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
+                        "selection frustum initialization");
+  return isPointInsideAnyFrustum(thePnt);
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::isPointInsideAnyFrustum(const gp_Pnt& thePnt) const
+{
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
+       anIter.More();
+       anIter.Next())
+  {
+    if (anIter.Value()->hasPointOverlap(thePnt))
+    {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -457,7 +484,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsSphere(const gp_Pnt& theCenter,
       int    anIdx2 = myBoundaryPoints.Lower();
       int    anIdx3 = myBoundaryPoints.Lower();
       for (int anIdx = myBoundaryPoints.Lower();
-           anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower();
+           anIdx < myBoundaryPoints.Length() / 2 + myBoundaryPoints.Lower();
            anIdx++)
       {
         if (myBoundaryPoints[anIdx1].Distance(myBoundaryPoints[anIdx]) < Precision::Confusion())
@@ -493,11 +520,11 @@ bool SelectMgr_TriangularFrustumSet::OverlapsSphere(const gp_Pnt& theCenter,
       // equal 2*M_PI
       double                     anAngleSum = 0.0;
       NCollection_Array1<gp_Pnt> aBoundaries(myBoundaryPoints.Lower(),
-                                             myBoundaryPoints.Size() / 2
+                                             myBoundaryPoints.Length() / 2
                                                + myBoundaryPoints.Lower());
 
       for (int anIdx = myBoundaryPoints.Lower();
-           anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower();
+           anIdx < myBoundaryPoints.Length() / 2 + myBoundaryPoints.Lower();
            anIdx++)
       {
         aBoundaries.SetValue(anIdx, myBoundaryPoints[anIdx]);
@@ -793,7 +820,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCircle(const double   theRadius,
 //=================================================================================================
 
 void SelectMgr_TriangularFrustumSet::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   thePlaneEquations.Clear();
 
@@ -861,7 +888,7 @@ bool SelectMgr_TriangularFrustumSet::isIntersectBoundary(const double   theRadiu
                                                          const gp_Trsf& theTrsf,
                                                          const bool     theIsFilled) const
 {
-  int aFacesNb = myBoundaryPoints.Size() / 2;
+  int aFacesNb = myBoundaryPoints.Length() / 2;
 
   const gp_Pnt& aCircCenter = theTrsf.TranslationPart();
   gp_Ax2        anAxis;
@@ -928,7 +955,7 @@ bool SelectMgr_TriangularFrustumSet::isIntersectBoundary(const double   theRadiu
 bool SelectMgr_TriangularFrustumSet::isIntersectBoundary(const gp_Pnt& thePnt1,
                                                          const gp_Pnt& thePnt2) const
 {
-  int    aFacesNb = myBoundaryPoints.Size() / 2;
+  int    aFacesNb = myBoundaryPoints.Length() / 2;
   gp_Vec aDir     = thePnt2.XYZ() - thePnt1.XYZ();
   gp_Pnt anOrig   = thePnt1;
 

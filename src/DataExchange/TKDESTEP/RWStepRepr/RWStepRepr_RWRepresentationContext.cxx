@@ -28,7 +28,9 @@ void RWStepRepr_RWRepresentationContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "representation_context"))
+  {
     return;
+  }
 
   // --- own field : contextIdentifier ---
 

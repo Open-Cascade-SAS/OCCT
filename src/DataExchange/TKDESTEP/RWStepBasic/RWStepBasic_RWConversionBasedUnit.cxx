@@ -31,7 +31,9 @@ void RWStepBasic_RWConversionBasedUnit::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "conversion_based_unit"))
+  {
     return;
+  }
 
   // --- inherited field : dimensions ---
 

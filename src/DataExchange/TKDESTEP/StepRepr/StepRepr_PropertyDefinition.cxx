@@ -43,7 +43,9 @@ void StepRepr_PropertyDefinition::Init(const occ::handle<TCollection_HAsciiStrin
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theDefinition = aDefinition;
 }

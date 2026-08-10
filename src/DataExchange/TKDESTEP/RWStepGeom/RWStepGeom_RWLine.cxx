@@ -30,7 +30,9 @@ void RWStepGeom_RWLine::ReadStep(const occ::handle<StepData_StepReaderData>& dat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "line"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

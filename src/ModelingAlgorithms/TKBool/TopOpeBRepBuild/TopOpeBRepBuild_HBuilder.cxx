@@ -215,7 +215,9 @@ void TopOpeBRepBuild_HBuilder::InitExtendedSectionDS(const int k)
     myMakeCurveAncestorIsDone = false;
   }
   else
+  {
     return;
+  }
 }
 
 //=================================================================================================
@@ -223,20 +225,32 @@ void TopOpeBRepBuild_HBuilder::InitExtendedSectionDS(const int k)
 void TopOpeBRepBuild_HBuilder::InitSection(const int k)
 {
   if (PLE == nullptr)
+  {
     PLE = new NCollection_List<TopoDS_Shape>();
+  }
   if (PITLE == nullptr)
+  {
     PITLE = new NCollection_List<TopoDS_Shape>::Iterator();
+  }
   PLE->Clear();
   PITLE->Initialize(*PLE);
   InitExtendedSectionDS(k);
   if (k == 1)
+  {
     myBuilder.SectionCurves(*PLE);
+  }
   else if (k == 2)
+  {
     myBuilder.SectionEdges(*PLE);
+  }
   else if (k == 3)
+  {
     myBuilder.Section(*PLE);
+  }
   else
+  {
     return;
+  }
   PITLE->Initialize(*PLE);
 }
 
@@ -245,7 +259,9 @@ void TopOpeBRepBuild_HBuilder::InitSection(const int k)
 bool TopOpeBRepBuild_HBuilder::MoreSection() const
 {
   if (PITLE == nullptr)
+  {
     return false;
+  }
   bool b = PITLE->More();
   return b;
 }
@@ -255,9 +271,13 @@ bool TopOpeBRepBuild_HBuilder::MoreSection() const
 void TopOpeBRepBuild_HBuilder::NextSection()
 {
   if (PITLE == nullptr)
+  {
     return;
+  }
   if (PITLE->More())
+  {
     PITLE->Next();
+  }
 }
 
 //=================================================================================================
@@ -265,9 +285,13 @@ void TopOpeBRepBuild_HBuilder::NextSection()
 const TopoDS_Shape& TopOpeBRepBuild_HBuilder::CurrentSection() const
 {
   if (PITLE == nullptr)
+  {
     throw Standard_ProgramError("no more CurrentSection");
+  }
   if (!PITLE->More())
+  {
     throw Standard_ProgramError("no more CurrentSection");
+  }
   return PITLE->Value();
 }
 
@@ -276,7 +300,9 @@ const TopoDS_Shape& TopOpeBRepBuild_HBuilder::CurrentSection() const
 void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
 {
   if (myMakeEdgeAncestorIsDone)
+  {
     return;
+  }
   mySectEdgeDSEdges1.Clear();
   mySectEdgeDSEdges2.Clear();
   myDSEdgesDSFaces1.Clear();
@@ -300,24 +326,34 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
     ei                         = DS.Shape(ShaSpl);
     re                         = DS.AncestorRank(ShaSpl);
     if (!re)
+    {
       continue;
+    }
     TopOpeBRepDS_ListOfShapeOn1State& losos1s = (*(TopOpeBRepDS_ListOfShapeOn1State*)&it.Value());
     NCollection_List<TopoDS_Shape>&   los     = losos1s.ChangeListOnState();
     its.Initialize(los);
     if (re == 1)
+    {
       for (; its.More(); its.Next())
       {
         const TopoDS_Shape& SecEdg = its.Value();
         if (!mySectEdgeDSEdges1.IsBound(SecEdg))
+        {
           mySectEdgeDSEdges1.Bind(SecEdg, ei);
+        }
       }
+    }
     else if (re == 2)
+    {
       for (; its.More(); its.Next())
       {
         const TopoDS_Shape& SecEdg = its.Value();
         if (!mySectEdgeDSEdges2.IsBound(SecEdg))
+        {
           mySectEdgeDSEdges2.Bind(SecEdg, ei);
+        }
       }
+    }
   }
 
   //  bool gb;
@@ -326,9 +362,13 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
   {
     const TopoDS_Shape& fds = DS.Shape(fi);
     if (fds.IsNull())
+    {
       continue;
+    }
     if (fds.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(
       DS.ShapeInterferences(fds));
     for (; it1.More(); it1.Next())
@@ -336,14 +376,20 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
       occ::handle<TopOpeBRepDS_ShapeShapeInterference> SSI =
         occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(it1.Value());
       if (SSI.IsNull())
+      {
         continue;
+      }
       gk = SSI->GeometryType();
       gi = SSI->Geometry();
       if (gk != TopOpeBRepDS_EDGE)
+      {
         continue;
+      }
       rf = DS.AncestorRank(fds);
       if (!rf)
+      {
         continue;
+      }
       //      if (!MF.Contains(fds) ) {
       //	MF.Add(fds);
       if (rf == 1)
@@ -374,20 +420,26 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
 int TopOpeBRepBuild_HBuilder::GetDSEdgeFromSectEdge(const TopoDS_Shape& E, const int rank)
 {
   if (!myMakeEdgeAncestorIsDone)
+  {
     MakeEdgeAncestorMap();
+  }
 
   int i = 0;
 
   if (rank == 1)
   {
     if (mySectEdgeDSEdges1.IsBound(E))
+    {
       i = mySectEdgeDSEdges1.Find(E);
+    }
   }
 
   if (rank == 2)
   {
     if (mySectEdgeDSEdges2.IsBound(E))
+    {
       i = mySectEdgeDSEdges2.Find(E);
+    }
   }
   return i;
 }
@@ -398,7 +450,9 @@ NCollection_List<int>& TopOpeBRepBuild_HBuilder::GetDSFaceFromDSEdge(const int i
                                                                      const int rank)
 {
   if (!myMakeEdgeAncestorIsDone)
+  {
     MakeEdgeAncestorMap();
+  }
 
   if (rank == 1)
   {
@@ -426,7 +480,9 @@ NCollection_List<int>& TopOpeBRepBuild_HBuilder::GetDSFaceFromDSEdge(const int i
 void TopOpeBRepBuild_HBuilder::MakeCurveAncestorMap()
 {
   if (myMakeCurveAncestorIsDone)
+  {
     return;
+  }
   mySectEdgeDSCurve.Clear();
   myMakeCurveAncestorIsDone                   = true;
   const TopOpeBRepDS_DataStructure&        DS = DataStructure()->DS();
@@ -453,7 +509,9 @@ int TopOpeBRepBuild_HBuilder::GetDSCurveFromSectEdge(const TopoDS_Shape& SectEdg
 {
   int i = 0;
   if (!myMakeCurveAncestorIsDone)
+  {
     MakeCurveAncestorMap();
+  }
 
   if (mySectEdgeDSCurve.IsBound(SectEdge))
   {
@@ -468,7 +526,9 @@ int TopOpeBRepBuild_HBuilder::GetDSFaceFromDSCurve(const int indexCur, const int
 {
   int i = 0;
   if (!myMakeCurveAncestorIsDone)
+  {
     MakeCurveAncestorMap();
+  }
 
   const TopOpeBRepDS_DataStructure& DS = DataStructure()->DS();
   if (rank == 1)
@@ -501,13 +561,17 @@ int TopOpeBRepBuild_HBuilder::GetDSPointFromNewVertex(const TopoDS_Shape& NewVer
     {
       const TopoDS_Shape& Vertex = NewVertex(i);
       if (!Vertex.IsNull())
+      {
         myNewVertexDSPoint.Bind(Vertex, i);
+      }
     }
   }
 
   int iPnt = 0;
   if (myNewVertexDSPoint.IsBound(NewVert))
+  {
     iPnt = myNewVertexDSPoint.Find(NewVert);
+  }
   return iPnt;
 }
 
@@ -528,7 +592,9 @@ bool TopOpeBRepBuild_HBuilder::EdgeCurveAncestors(const TopoDS_Shape& E,
   //  NCollection_List<TopoDS_Shape>::Iterator itloe;
   IC = GetDSCurveFromSectEdge(E);
   if (!IC)
+  {
     return false;
+  }
 
   int iF1, iF2;
   iF1 = GetDSFaceFromDSCurve(IC, 1);
@@ -548,7 +614,9 @@ bool TopOpeBRepBuild_HBuilder::EdgeSectionAncestors(const TopoDS_Shape&         
                                                     NCollection_List<TopoDS_Shape>& LE2)
 {
   if (E.ShapeType() != TopAbs_EDGE)
+  {
     return false;
+  }
 
   LF1.Clear();
   LF2.Clear();
@@ -619,9 +687,13 @@ bool TopOpeBRepBuild_HBuilder::EdgeSectionAncestors(const TopoDS_Shape&         
   const TopOpeBRepDS_DataStructure& DS = myBuilder.DataStructure()->DS();
 
   if (ie1)
+  {
     LE1.Append(DS.Shape(ie1));
+  }
   if (ie2)
+  {
     LE2.Append(DS.Shape(ie2));
+  }
 
   for (it.Initialize(f1); it.More(); it.Next())
   {
@@ -653,7 +725,9 @@ void TopOpeBRepBuild_HBuilder::MergeKPart(const TopAbs_State TB1, const TopAbs_S
 {
   int kp = IsKPart();
   if (kp)
+  {
     myBuilder.MergeKPart(TB1, TB2);
+  }
 }
 
 //=================================================================================================

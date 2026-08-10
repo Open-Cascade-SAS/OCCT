@@ -682,7 +682,7 @@ void ViewerTest::Clear()
 
   TheAISContext()->RebuildSelectionStructs();
   TheAISContext()->UpdateCurrentViewer();
-  if (aListRemoved.Size() == GetMapOfAIS().Extent())
+  if (aListRemoved.Length() == GetMapOfAIS().Extent())
   {
     GetMapOfAIS().Clear();
   }
@@ -1440,7 +1440,9 @@ static int VDispMode(Draw_Interpretor&, int argc, const char** argv)
 static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 1)
+  {
     return 1;
+  }
   int                                        On  = Draw::Atoi(argv[1]);
   const occ::handle<AIS_InteractiveContext>& Ctx = ViewerTest::GetAISContext();
   if (Ctx.IsNull())
@@ -1474,12 +1476,18 @@ static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
     if (GetMapOfAIS().Find2(name, IO) && !IO.IsNull())
     {
       if (On == 1)
+      {
         Ctx->SubIntensityOn(IO, true);
+      }
       else
+      {
         Ctx->SubIntensityOff(IO, true);
+      }
     }
     else
+    {
       return 1;
+    }
   }
   return 0;
 }
@@ -1494,7 +1502,9 @@ public:
   {
     NCollection_Sequence<TCollection_AsciiString> aNames;
     if (!theName.IsEmpty())
+    {
       aNames.Append(theName);
+    }
     Init(aNames);
   }
 
@@ -1720,6 +1730,9 @@ struct ViewerTest_AspectsChangeSet
   int                             ToSetFaceCulling;
   Graphic3d_TypeOfBackfacingModel FaceCulling;
 
+  int  ToSetUseVertexColorForBackFaces;
+  bool UseVertexColorForBackFaces;
+
   int                      ToSetMaterial;
   Graphic3d_NameOfMaterial Material;
   TCollection_AsciiString  MatName;
@@ -1803,6 +1816,8 @@ struct ViewerTest_AspectsChangeSet
         AlphaCutoff(0.5f),
         ToSetFaceCulling(0),
         FaceCulling(Graphic3d_TypeOfBackfacingModel_Auto),
+        ToSetUseVertexColorForBackFaces(0),
+        UseVertexColorForBackFaces(true),
         ToSetMaterial(0),
         Material(Graphic3d_NameOfMaterial_DEFAULT),
         ToSetShowFreeBoundary(0),
@@ -1849,15 +1864,15 @@ struct ViewerTest_AspectsChangeSet
   {
     return ToSetVisibility == 0 && ToSetLineWidth == 0 && ToSetTransparency == 0
            && ToSetAlphaMode == 0 && ToSetFaceCulling == 0 && ToSetColor == 0
-           && ToSetBackFaceColor == 0 && ToSetMaterial == 0 && ToSetShowFreeBoundary == 0
-           && ToSetFreeBoundaryColor == 0 && ToSetFreeBoundaryWidth == 0
-           && ToEnableIsoOnTriangulation == 0 && ToSetFaceBoundaryDraw == 0
-           && ToSetFaceBoundaryUpperContinuity == 0 && ToSetFaceBoundaryColor == 0
-           && ToSetFaceBoundaryWidth == 0 && ToSetTypeOfFaceBoundaryLine == 0
-           && ToSetMaxParamValue == 0 && ToSetSensitivity == 0 && ToSetHatch == 0
-           && ToSetShadingModel == 0 && ToSetInterior == 0 && ToSetDrawSilhouette == 0
-           && ToSetDrawEdges == 0 && ToSetQuadEdges == 0 && ToSetEdgeColor == 0
-           && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
+           && ToSetUseVertexColorForBackFaces == 0 && ToSetBackFaceColor == 0 && ToSetMaterial == 0
+           && ToSetShowFreeBoundary == 0 && ToSetFreeBoundaryColor == 0
+           && ToSetFreeBoundaryWidth == 0 && ToEnableIsoOnTriangulation == 0
+           && ToSetFaceBoundaryDraw == 0 && ToSetFaceBoundaryUpperContinuity == 0
+           && ToSetFaceBoundaryColor == 0 && ToSetFaceBoundaryWidth == 0
+           && ToSetTypeOfFaceBoundaryLine == 0 && ToSetMaxParamValue == 0 && ToSetSensitivity == 0
+           && ToSetHatch == 0 && ToSetShadingModel == 0 && ToSetInterior == 0
+           && ToSetDrawSilhouette == 0 && ToSetDrawEdges == 0 && ToSetQuadEdges == 0
+           && ToSetEdgeColor == 0 && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
   }
 
   //! @return true if properties are valid
@@ -2090,6 +2105,14 @@ struct ViewerTest_AspectsChangeSet
       {
         toRecompute = theDrawer->SetupOwnShadingAspect(aDefDrawer) || toRecompute;
         theDrawer->ShadingAspect()->Aspect()->SetFaceCulling(FaceCulling);
+      }
+    }
+    if (ToSetUseVertexColorForBackFaces != 0)
+    {
+      if (ToSetUseVertexColorForBackFaces != -1 || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect(aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->SetUseVertexColorForBackFaces(UseVertexColorForBackFaces);
       }
     }
     if (ToSetHatch != 0)
@@ -2581,6 +2604,37 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
           return 1;
         }
       }
+    }
+    else if (anArg == "-usevertexcolorforbackfaces" || anArg == "-usebackvertexcolor"
+             || anArg == "-usebackfacevertexcolor")
+    {
+      bool toUse = true;
+      if (!Draw::ParseOnOff(anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toUse))
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      ++anArgIter;
+      aChangeSet->ToSetUseVertexColorForBackFaces = 1;
+      aChangeSet->UseVertexColorForBackFaces      = toUse;
+    }
+    else if (anArg == "-frontonlyvertexcolor" || anArg == "-frontonlyvertexcolorforbackfaces")
+    {
+      bool toUseFrontOnly = true;
+      if (!Draw::ParseOnOff(anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "",
+                            toUseFrontOnly))
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      ++anArgIter;
+      aChangeSet->ToSetUseVertexColorForBackFaces = 1;
+      aChangeSet->UseVertexColorForBackFaces      = !toUseFrontOnly;
+    }
+    else if (anArg == "-unsetusevertexcolorforbackfaces" || anArg == "-unsetbackvertexcolor")
+    {
+      aChangeSet->ToSetUseVertexColorForBackFaces = -1;
+      aChangeSet->UseVertexColorForBackFaces      = true;
     }
     else if (anArg == "-setvis" || anArg == "-setvisibility" || anArg == "-visibility")
     {
@@ -3115,26 +3169,28 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     }
     else if (anArg == "-unset")
     {
-      aChangeSet->ToSetVisibility    = 1;
-      aChangeSet->Visibility         = 1;
-      aChangeSet->ToSetLineWidth     = -1;
-      aChangeSet->LineWidth          = 1.0;
-      aChangeSet->ToSetTypeOfLine    = -1;
-      aChangeSet->StippleLinePattern = 0xFFFF;
-      aChangeSet->StippleLineFactor  = 1;
-      aChangeSet->ToSetTypeOfMarker  = -1;
-      aChangeSet->TypeOfMarker       = Aspect_TOM_PLUS;
-      aChangeSet->ToSetMarkerSize    = -1;
-      aChangeSet->MarkerSize         = 1.0;
-      aChangeSet->ToSetTransparency  = -1;
-      aChangeSet->Transparency       = 0.0;
-      aChangeSet->ToSetAlphaMode     = -1;
-      aChangeSet->AlphaMode          = Graphic3d_AlphaMode_BlendAuto;
-      aChangeSet->AlphaCutoff        = 0.5f;
-      aChangeSet->ToSetFaceCulling   = -1;
-      aChangeSet->FaceCulling        = Graphic3d_TypeOfBackfacingModel_Auto;
-      aChangeSet->ToSetColor         = -1;
-      aChangeSet->Color              = DEFAULT_COLOR;
+      aChangeSet->ToSetVisibility                 = 1;
+      aChangeSet->Visibility                      = 1;
+      aChangeSet->ToSetLineWidth                  = -1;
+      aChangeSet->LineWidth                       = 1.0;
+      aChangeSet->ToSetTypeOfLine                 = -1;
+      aChangeSet->StippleLinePattern              = 0xFFFF;
+      aChangeSet->StippleLineFactor               = 1;
+      aChangeSet->ToSetTypeOfMarker               = -1;
+      aChangeSet->TypeOfMarker                    = Aspect_TOM_PLUS;
+      aChangeSet->ToSetMarkerSize                 = -1;
+      aChangeSet->MarkerSize                      = 1.0;
+      aChangeSet->ToSetTransparency               = -1;
+      aChangeSet->Transparency                    = 0.0;
+      aChangeSet->ToSetAlphaMode                  = -1;
+      aChangeSet->AlphaMode                       = Graphic3d_AlphaMode_BlendAuto;
+      aChangeSet->AlphaCutoff                     = 0.5f;
+      aChangeSet->ToSetFaceCulling                = -1;
+      aChangeSet->FaceCulling                     = Graphic3d_TypeOfBackfacingModel_Auto;
+      aChangeSet->ToSetUseVertexColorForBackFaces = -1;
+      aChangeSet->UseVertexColorForBackFaces      = true;
+      aChangeSet->ToSetColor                      = -1;
+      aChangeSet->Color                           = DEFAULT_COLOR;
       // aChangeSet->ToSetBackFaceColor = -1; // should be reset by ToSetColor
       // aChangeSet->BackFaceColor = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial              = -1;
@@ -3181,7 +3237,9 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     {
       toCompactDump = false;
       if (++anArgIter >= theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toCompactDump))
+      {
         ++anArgIter;
+      }
     }
     else if (anArg == "-dumpdepth")
     {
@@ -3259,9 +3317,13 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       aDrawer->DumpJson(aStream, aDumpDepth);
 
       if (toCompactDump)
+      {
         theDI << Standard_Dump::Text(aStream);
+      }
       else
+      {
         theDI << Standard_Dump::FormatJson(aStream);
+      }
     }
     return 0;
   }
@@ -3640,7 +3702,6 @@ int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       }
 
       anIONameList.Append(anIter.Key2());
-      continue;
     }
   }
 
@@ -3938,7 +3999,9 @@ inline void bndPresentation(Draw_Interpretor&                              theDI
            aPrsIter.Next())
       {
         if (aPrsIter.Value()->Mode() != theDispMode)
+        {
           continue;
+        }
 
         aBox = aPrsIter.Value()->MinMaxValues();
       }
@@ -4096,10 +4159,10 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
   Graphic3d_TypeOfTextureFilter      aFilter       = Graphic3d_TOTF_NEAREST;
   Graphic3d_LevelOfTextureAnisotropy anAnisoFilter = Graphic3d_LOTA_OFF;
 
-  occ::handle<AIS_InteractiveObject>                    aTexturedIO;
-  occ::handle<AIS_Shape>                                aTexturedShape;
-  occ::handle<Graphic3d_TextureSet>                     aTextureSetOld;
-  NCollection_Vector<occ::handle<Graphic3d_TextureMap>> aTextureVecNew;
+  occ::handle<AIS_InteractiveObject>                          aTexturedIO;
+  occ::handle<AIS_Shape>                                      aTexturedShape;
+  occ::handle<Graphic3d_TextureSet>                           aTextureSetOld;
+  NCollection_DynamicArray<occ::handle<Graphic3d_TextureMap>> aTextureVecNew;
   bool toSetGenRepeat = false, toSetGenScale = false, toSetGenOrigin = false, toSetImage = false,
        toComputeUV = false;
 
@@ -4370,13 +4433,13 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
         aSlicesSeq.Append(aSlicePath);
       }
 
-      if (aSlicesSeq.Size() < 2)
+      if (aSlicesSeq.Length() < 2)
       {
         Message::SendFail() << "Syntax error at '" << aNameCase << "'";
         return 1;
       }
       NCollection_Array1<TCollection_AsciiString> aSlices;
-      aSlices.Resize(0, aSlicesSeq.Size() - 1, false);
+      aSlices.Resize(0, aSlicesSeq.Length() - 1, false);
       int aSliceIndex = 0;
       for (const TCollection_AsciiString& aSliceIter : aSlicesSeq)
       {
@@ -4480,8 +4543,8 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
     occ::handle<Graphic3d_TextureSet> aTextureSetNew;
     if (!aTextureVecNew.IsEmpty())
     {
-      aNbChanged     = aTextureVecNew.Size();
-      aTextureSetNew = new Graphic3d_TextureSet(aTextureVecNew.Size());
+      aNbChanged     = aTextureVecNew.Length();
+      aTextureSetNew = new Graphic3d_TextureSet(aTextureVecNew.Length());
       for (int aTexIter = 0; aTexIter < aTextureSetNew->Size(); ++aTexIter)
       {
         occ::handle<Graphic3d_TextureMap>& aTextureNew = aTextureVecNew.ChangeValue(aTexIter);
@@ -5323,9 +5386,13 @@ static int VShading(Draw_Interpretor&, int argc, const char** argv)
   }
 
   if (HaveToSet)
+  {
     TheAISContext()->SetDeviationCoefficient(TheAisIO, myDevCoef, true);
+  }
   else
+  {
     TheAISContext()->SetDeviationCoefficient(TheAisIO, 0.0008, true);
+  }
 
   TheAISContext()->Redisplay(TheAisIO, true);
   return 0;
@@ -5431,11 +5498,15 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
       occ::down_cast<AIS_Shape>(theContext->SelectedInteractive());
     const occ::handle<SelectMgr_EntityOwner> anOwner = theContext->SelectedOwner();
     if (aShapeIO.IsNull() || anOwner.IsNull())
+    {
       continue;
+    }
     if (isGlobalCtx)
     {
       if (anOwner == aShapeIO->GlobalSelOwner())
+      {
         continue;
+      }
     }
     const TopoDS_Shape aSubShape = theContext->SelectedShape();
     if (aSubShape.IsNull() || aShapeIO.IsNull() || !GetMapOfAIS().IsBound1(aShapeIO))
@@ -5819,19 +5890,33 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
     aShapeArg.LowerCase();
     aShapeType = TopAbs_COMPOUND;
     if (aShapeArg == "v" || aShapeArg == "vertex")
+    {
       aShapeType = TopAbs_VERTEX;
+    }
     else if (aShapeArg == "e" || aShapeArg == "edge")
+    {
       aShapeType = TopAbs_EDGE;
+    }
     else if (aShapeArg == "w" || aShapeArg == "wire")
+    {
       aShapeType = TopAbs_WIRE;
+    }
     else if (aShapeArg == "f" || aShapeArg == "face")
+    {
       aShapeType = TopAbs_FACE;
+    }
     else if (aShapeArg == "shape")
+    {
       aShapeType = TopAbs_SHAPE;
+    }
     else if (aShapeArg == "shell")
+    {
       aShapeType = TopAbs_SHELL;
+    }
     else if (aShapeArg == "solid")
+    {
       aShapeType = TopAbs_SOLID;
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << argv[1] << "'";
@@ -6054,9 +6139,13 @@ static int VIOTypes(Draw_Interpretor& di, int, const char**)
   di << "/n" << BlankLine.ToCString() << "\n";
 
   for (i = 0; i <= 2; i++)
+  {
     Colum[i].Center(20, ' ');
+  }
   for (i = 0; i <= 2; i++)
+  {
     di << "|" << Colum[i].ToCString();
+  }
   di << "|\n";
 
   di << BlankLine.ToCString() << "\n";
@@ -6153,7 +6242,9 @@ static int VIOTypes(Draw_Interpretor& di, int, const char**)
 static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 2)
+  {
     return 1;
+  }
 
   AIS_KindOfInteractive TheType;
   int                   TheSign(-1);
@@ -6177,13 +6268,17 @@ static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
     curio = it.Value();
 
     if (dimension_status == -1)
+    {
       TheAISContext()->Erase(curio, false);
+    }
     else
     {
       PrsDim_KindOfDimension KOD = occ::down_cast<PrsDim_Relation>(curio)->KindOfDimension();
       if ((dimension_status == 0 && KOD == PrsDim_KOD_NONE)
           || (dimension_status == 1 && KOD != PrsDim_KOD_NONE))
+      {
         TheAISContext()->Erase(curio, false);
+      }
     }
   }
   TheAISContext()->UpdateCurrentViewer();
@@ -6193,7 +6288,9 @@ static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
 static int VDisplayType(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 2)
+  {
     return 1;
+  }
 
   AIS_KindOfInteractive TheType;
   int                   TheSign(-1);
@@ -6215,13 +6312,17 @@ static int VDisplayType(Draw_Interpretor&, int argc, const char** argv)
   {
     curio = it.Value();
     if (dimension_status == -1)
+    {
       TheAISContext()->Display(curio, false);
+    }
     else
     {
       PrsDim_KindOfDimension KOD = occ::down_cast<PrsDim_Relation>(curio)->KindOfDimension();
       if ((dimension_status == 0 && KOD == PrsDim_KOD_NONE)
           || (dimension_status == 1 && KOD != PrsDim_KOD_NONE))
+      {
         TheAISContext()->Display(curio, false);
+      }
     }
   }
 
@@ -6740,6 +6841,7 @@ vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subna
          [-visibility {0|1}]
          [-color {ColorName | R G B}] [-unsetColor]
          [-backfaceColor Color] [-faceCulling {auto|back|front|doublesided}]
+         [-useVertexColorForBackFaces {0|1}] [-unsetUseVertexColorForBackFaces]
          [-material MatName] [-unsetMaterial]
          [-transparency Transp] [-unsetTransparency]
          [-width LineWidth] [-unsetWidth]

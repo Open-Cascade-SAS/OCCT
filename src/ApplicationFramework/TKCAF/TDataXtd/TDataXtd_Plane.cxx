@@ -62,6 +62,7 @@ occ::handle<TDataXtd_Plane> TDataXtd_Plane::Set(const TDF_Label& L, const gp_Pln
   if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())
+    {
       if (aNS->Get().ShapeType() == TopAbs_FACE)
       {
         TopoDS_Face               aFace    = TopoDS::Face(aNS->Get());
@@ -78,9 +79,12 @@ occ::handle<TDataXtd_Plane> TDataXtd_Plane::Set(const TDF_Label& L, const gp_Pln
               && aPlane.Axis().Direction().X() == P.Axis().Direction().X()
               && aPlane.Axis().Direction().Y() == P.Axis().Direction().Y()
               && aPlane.Axis().Direction().Z() == P.Axis().Direction().Z())
+          {
             return A;
+          }
         }
       }
+    }
   }
 
   TNaming_Builder B(L);

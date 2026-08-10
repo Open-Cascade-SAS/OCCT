@@ -32,7 +32,9 @@ bool BOPAlgo_InitMessages = false;
 void BOPAlgo_LoadMessages()
 {
   if (BOPAlgo_InitMessages)
+  {
     return;
+  }
   BOPAlgo_InitMessages = true;
 
   if (!Message_MsgFile::HasMsg("BOPAlgo_LOAD_CHECKER"))

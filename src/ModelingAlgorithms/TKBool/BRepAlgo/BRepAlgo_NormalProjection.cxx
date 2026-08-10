@@ -310,10 +310,14 @@ void BRepAlgo_NormalProjection::Build()
             Only3d = true;
           }
           else
+          {
             HPCur = HProjector;
+          }
 
           if ((!myWith3d || Elementary) && (HProjector->MaxDistance(k) <= myTol3d))
+          {
             Only2d = true;
+          }
 
           if (Only2d && Only3d)
           {
@@ -332,7 +336,9 @@ void BRepAlgo_NormalProjection::Build()
             appr.Perform(myMaxSeg, myMaxDegree, myContinuity, Only3d, Only2d);
 
             if (appr.MaxError3d() > 1.e3 * myTol3d)
+            {
               continue;
+            }
 
 #ifdef OCCT_DEBUG_CHRONO
             ResultChron(chr_approx, t_approx);
@@ -349,7 +355,9 @@ void BRepAlgo_NormalProjection::Build()
 #endif
 
             if (!Only3d)
+            {
               PCur2d = appr.Curve2d();
+            }
             if (Only2d)
             {
               BRepLib_MakeEdge MKed(GeomAdaptor::MakeCurve(*hcur), Udeb, Ufin);
@@ -534,7 +542,9 @@ void BRepAlgo_NormalProjection::Build()
   //       relations of map myAncestorMap, myCorresp will be lost.
 
   if (YaVertexRes)
+  {
     BB.Add(myRes, VertexRes);
+  }
 
   myIsDone = true;
 
@@ -653,7 +663,9 @@ bool BRepAlgo_NormalProjection::BuildWire(NCollection_List<TopoDS_Shape>& ListOf
       TopExp_Explorer exp2(Wire, TopAbs_EDGE);
       int             NbEdges = 0;
       for (; exp2.More(); exp2.Next())
+      {
         NbEdges++;
+      }
       if (NbEdges == List.Extent())
       {
         ListOfWire.Append(Wire);

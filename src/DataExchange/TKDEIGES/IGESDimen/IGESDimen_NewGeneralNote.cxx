@@ -76,7 +76,9 @@ void IGESDimen_NewGeneralNote::Init(
       || (rotateFlags->Lower() != 1 || rotateFlags->Length() != num)
       || (startPoints->Lower() != 1 || startPoints->Length() != num)
       || (texts->Lower() != 1 || texts->Length() != num))
+  {
     throw Standard_DimensionMismatch("IGESDimen_GeneralNote : Init");
+  }
 
   theWidth                = width;
   theHeight               = height;
@@ -132,7 +134,9 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedAreaLocation() const
 {
   gp_XYZ tempXYZ = theAreaLoc;
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   return gp_Pnt(tempXYZ);
 }
 
@@ -156,7 +160,9 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedBaseLinePosition() const
 {
   gp_XYZ tempXYZ = theBaseLinePos;
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   return gp_Pnt(tempXYZ);
 }
 
@@ -285,7 +291,9 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedStartPoint(const int Index) const
 {
   gp_XYZ tempXYZ = theStartPoints->Value(Index);
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   return gp_Pnt(tempXYZ);
 }
 

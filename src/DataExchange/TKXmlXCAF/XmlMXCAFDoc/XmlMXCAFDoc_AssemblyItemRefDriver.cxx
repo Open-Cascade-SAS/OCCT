@@ -49,11 +49,15 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
 
   XmlObjMgt_DOMString aPath = anElement.getAttribute(::Path());
   if (aPath == nullptr)
+  {
     return false;
+  }
 
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theTarget);
   if (aThis.IsNull())
+  {
     return false;
+  }
 
   aThis->SetItem(aPath.GetString());
 
@@ -70,7 +74,9 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
   {
     int anIndex;
     if (!aSubshapeIndex.GetInteger(anIndex))
+    {
       return false;
+    }
 
     aThis->SetSubshapeIndex(anIndex);
     return true;

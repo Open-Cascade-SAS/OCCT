@@ -70,7 +70,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolAssocGroupType tool;
       tool.OwnShared(anent, iter);
     }
@@ -78,7 +80,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFile tool;
       tool.OwnShared(anent, iter);
     }
@@ -86,7 +90,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       tool.OwnShared(anent, iter);
     }
@@ -94,7 +100,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       tool.OwnShared(anent, iter);
     }
@@ -102,7 +110,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       tool.OwnShared(anent, iter);
     }
@@ -110,7 +120,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefName tool;
       tool.OwnShared(anent, iter);
     }
@@ -118,7 +130,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       tool.OwnShared(anent, iter);
     }
@@ -126,7 +140,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroup tool;
       tool.OwnShared(anent, iter);
     }
@@ -134,7 +150,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       tool.OwnShared(anent, iter);
     }
@@ -142,7 +160,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolHierarchy tool;
       tool.OwnShared(anent, iter);
     }
@@ -150,7 +170,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolName tool;
       tool.OwnShared(anent, iter);
     }
@@ -158,7 +180,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroup tool;
       tool.OwnShared(anent, iter);
     }
@@ -166,7 +190,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       tool.OwnShared(anent, iter);
     }
@@ -174,7 +200,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingleParent tool;
       tool.OwnShared(anent, iter);
     }
@@ -182,7 +210,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       tool.OwnShared(anent, iter);
     }
@@ -190,7 +220,9 @@ void IGESBasic_GeneralModule::OwnSharedCase(const int                           
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSubfigureDef tool;
       tool.OwnShared(anent, iter);
     }
@@ -209,112 +241,144 @@ IGESData_DirChecker IGESBasic_GeneralModule::DirChecker(
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolAssocGroupType tool;
       return tool.DirChecker(anent);
     }
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalRefFile tool;
       return tool.DirChecker(anent);
     }
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       return tool.DirChecker(anent);
     }
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       return tool.DirChecker(anent);
     }
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       return tool.DirChecker(anent);
     }
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalRefName tool;
       return tool.DirChecker(anent);
     }
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       return tool.DirChecker(anent);
     }
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolGroup tool;
       return tool.DirChecker(anent);
     }
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       return tool.DirChecker(anent);
     }
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolHierarchy tool;
       return tool.DirChecker(anent);
     }
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolName tool;
       return tool.DirChecker(anent);
     }
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolOrderedGroup tool;
       return tool.DirChecker(anent);
     }
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       return tool.DirChecker(anent);
     }
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolSingleParent tool;
       return tool.DirChecker(anent);
     }
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       return tool.DirChecker(anent);
     }
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESBasic_ToolSubfigureDef tool;
       return tool.DirChecker(anent);
     }
@@ -334,7 +398,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 1: {
       DeclareAndCast(IGESBasic_AssocGroupType, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolAssocGroupType tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -342,7 +408,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 2: {
       DeclareAndCast(IGESBasic_ExternalRefFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFile tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -350,7 +418,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 3: {
       DeclareAndCast(IGESBasic_ExternalRefFileIndex, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileIndex tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -358,7 +428,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 4: {
       DeclareAndCast(IGESBasic_ExternalRefFileName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefFileName tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -366,7 +438,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 5: {
       DeclareAndCast(IGESBasic_ExternalRefLibName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefLibName tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -374,7 +448,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 6: {
       DeclareAndCast(IGESBasic_ExternalRefName, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalRefName tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -382,7 +458,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 7: {
       DeclareAndCast(IGESBasic_ExternalReferenceFile, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolExternalReferenceFile tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -390,7 +468,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 8: {
       DeclareAndCast(IGESBasic_Group, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroup tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -398,7 +478,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 9: {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolGroupWithoutBackP tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -406,7 +488,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 10: {
       DeclareAndCast(IGESBasic_Hierarchy, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolHierarchy tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -414,7 +498,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 11: {
       DeclareAndCast(IGESBasic_Name, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolName tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -422,7 +508,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 12: {
       DeclareAndCast(IGESBasic_OrderedGroup, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroup tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -430,7 +518,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 13: {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolOrderedGroupWithoutBackP tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -438,7 +528,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 14: {
       DeclareAndCast(IGESBasic_SingleParent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingleParent tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -446,7 +538,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 15: {
       DeclareAndCast(IGESBasic_SingularSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSingularSubfigure tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -454,7 +548,9 @@ void IGESBasic_GeneralModule::OwnCheckCase(const int                            
     case 16: {
       DeclareAndCast(IGESBasic_SubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESBasic_ToolSubfigureDef tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -651,8 +747,12 @@ int IGESBasic_GeneralModule::CategoryNumber(const int CN,
                                             const Interface_ShareTool&) const
 {
   if (CN == 10 || CN == 11)
+  {
     return Interface_Category::Number("Auxiliary");
+  }
   if (CN >= 2 && CN <= 6)
+  {
     return Interface_Category::Number("Description");
+  }
   return Interface_Category::Number("Structure");
 }

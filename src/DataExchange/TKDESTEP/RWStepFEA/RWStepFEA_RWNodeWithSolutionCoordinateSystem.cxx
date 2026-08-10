@@ -42,7 +42,9 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_with_solution_coordinate_system"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

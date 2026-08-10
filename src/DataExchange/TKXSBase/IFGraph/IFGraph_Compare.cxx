@@ -36,7 +36,9 @@ void IFGraph_Compare::GetFromIter(const Interface_EntityIterator& iter, const bo
 {
   int stat = 2;
   if (first)
+  {
     stat = 1;
+  }
   thegraph.GetFromIter(iter, stat, 3, false);
 }
 

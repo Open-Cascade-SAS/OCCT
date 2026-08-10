@@ -50,7 +50,7 @@ This documentation describes:
 
 This document is a reference manual. It contains a full description of each command. All descriptions have the format illustrated below for the exit command. 
 
-~~~~{.php}
+~~~~{.tcl}
 exit
 ~~~~
 
@@ -58,7 +58,7 @@ Terminates the Draw, TCL session. If the commands are read from a file using the
 
 **Example:** 
 
-~~~~{.php}
+~~~~{.tcl}
 # this is a very short example 
 exit 
 ~~~~
@@ -66,7 +66,7 @@ exit
 
 @subsection occt_draw_1_3 Getting started
 
-Install Draw and launch Emacs. Get a command line in Emacs using *Esc x* and key in *woksh*. 
+Launch `DRAWEXE` from the CMake build directory after sourcing `env.sh`. 
 
 All DRAW Test Harness can be activated in the common executable called **DRAWEXE**. They are grouped in toolkits and can be loaded at run-time thereby implementing dynamically loaded plug-ins. Thus, it is possible to work only with the required commands adding them dynamically without leaving the Test Harness session. 
 
@@ -74,12 +74,12 @@ Declaration of available plug-ins is done through the special resource file(s). 
 
 @subsubsection occt_draw_1_3_1 Launching DRAW Test Harness
 
-Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin</i> directory (where \<platform\> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly setup (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
+The Test Harness executable *DRAWEXE* is produced by the OCCT build and installed under the build / install `bin/` directory (per platform: e.g. `<install>/win64/vc143/bin/`, `<install>/lin64/gcc/bin/`, `<install>/mac64/clang/bin/`). Prior to launching it, source the environment script generated next to it -- `env.sh` on Linux/macOS or `env.bat` on Windows -- so that `PATH`, `LD_LIBRARY_PATH` / `DYLD_LIBRARY_PATH` and the `CSF_*` resource variables are set correctly.
 
 
 @subsubsection occt_draw_1_3_2 Plug-in resource file
 
-Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CASROOT/src/DrawResources</i> directory. 
+Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
 
 The format of the file is compliant with standard Open CASCADE Technology resource files (see the *Resource_Manager.hxx* file for details). 
 
@@ -99,7 +99,7 @@ AISV               : TKViewerTest
 
 To load a plug-in declared in the resource file and to activate the commands the following command must be used in Test Harness: 
 
-~~~~{.php}
+~~~~{.tcl}
 pload [-PluginFileName] [[Key1] [Key2]...]
 ~~~~
 
@@ -108,14 +108,14 @@ Where:
 * <i>-PluginFileName</i> -- defines the name of a plug-in resource file (prefix "-" is mandatory) described above. If this parameter is omitted then the default name *DrawPlugin* is used. 
 * *Key* -- defines the key(s) enumerating plug-ins to be loaded. If no keys are specified then the key named *DEFAULT* is used (if there is no such key in the file then no plug-ins are loaded). 
 
-According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_PluginFileNameDefaults* (and optionally *CSF_PluginFileNameUserDefaults*) must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CASROOT/src/DrawResources</i> directory. 
+According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_DrawPluginDefaults* must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw[]        pload -DrawPlugin OCAF 
 ~~~~
-This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* (and *CSF_DrawPluginUserDefaults*) and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CASROOT/src/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
+This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw[]        pload (equivalent to pload -DrawPlugin DEFAULT). 
 ~~~~
 This command will find the default DrawPlugin file and the DEFAULT key. The latter finally maps to the TKTopTest toolkit which implements basic modeling commands. 
@@ -140,7 +140,7 @@ TCL is an interpreted command language, not a structured language like C, Pascal
 
 The basic program for TCL is a script. A script consists of one or more commands. Commands are separated by new lines or semicolons. 
 
-~~~~{.php}
+~~~~{.tcl}
 set a 24 
 set b 15 
 set a 25; set b 15 
@@ -157,7 +157,7 @@ The following substitutions are performed by TCL:
 Variable substitution is triggered by the $ character (as with csh), the content of the variable is substituted; { } may be used as in csh to enclose the name of the variable.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # set a variable value 
 set file documentation 
 puts $file #to display file contents on the screen 
@@ -179,7 +179,7 @@ Command substitution is triggered by the [ ] characters. The brackets must enclo
 Compare command construction in csh. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set degree 30 
 set pi 3.14159265 
 # expr is a command evaluating a numeric expression 
@@ -193,7 +193,7 @@ TCL uses two forms of *quoting* to prevent substitution and word breaking.
 Double quote *quoting* enables the definition of a string with space and tabs as a single word. Substitutions are still performed inside the inverted commas " ". 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # set msg to ;the price is 12.00; 
 set price 12.00 
 set msg ;the price is $price; 
@@ -202,7 +202,7 @@ set msg ;the price is $price;
 Braces *quoting* prevents all substitutions. Braces are also nested. The main use of braces is to defer evaluation when defining procedures and control structures. Braces are used for a clearer presentation of TCL scripts on several lines. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set x 0 
 # this will loop for ever 
 # because while argument is ;0 < 3; 
@@ -225,7 +225,7 @@ set x [expr $x+1]
 Comments start with a \# character as the first non-blank character in a command. To add a comment at the end of the line, the comment must be preceded by a semi-colon to end the preceding command. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # This is a comment 
 set a 1 # this is not a comment 
 set b 1; # this is a comment 
@@ -235,7 +235,7 @@ The number of words is never changed by substitution when parsing in TCL. For ex
 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # I want to delete two files 
 
 set files ;foo bar; 
@@ -261,7 +261,7 @@ There are many kinds of Draw variables, and new ones may be added with C++. Geom
 Draw numeric variables can be used within an expression anywhere a Draw command requires a numeric value. The *expr* command is useless in this case as the variables are stored not as strings but as floating point values. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # dset is used for numeric variables 
 # pi is a predefined Draw variable 
 dset angle pi/3 radius 10 
@@ -273,7 +273,7 @@ It is recommended that you use TCL variables only for strings and Draw for numer
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 set varname [value] 
 unset varname [varname varname ...] 
 ~~~~
@@ -285,7 +285,7 @@ Without a value, *set* returns the content of the variable.
 *unset* deletes variables. It is also used to delete Draw variables.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set a "Hello world"
 set b "Goodbye" 
 set a 
@@ -301,7 +301,7 @@ set a
 
 Syntax
 
-~~~~{.php}
+~~~~{.tcl}
 dset var1 value1 vr2 value2 ... 
 dval name 
 ~~~~
@@ -312,7 +312,7 @@ dval name
 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # z is set to 0 
 dset x 10 y 15 z 
 == 0 
@@ -330,7 +330,7 @@ puts ;x = [dval x], cos(x/pi) = [dval cos(x/pi)];
 @subsubsection occt_draw_2_3_3 del, dall
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 del varname_pattern [varname_pattern ...] 
 dall
 ~~~~
@@ -346,7 +346,7 @@ TCL uses lists. A list is a string containing elements separated by spaces or ta
 This allows you to insert lists within lists. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a list of 3 strings 
 ;a b c; 
 
@@ -368,7 +368,7 @@ TCL allows looping using control structures. The control structures are implemen
 
 Syntax       
 
-~~~~{.php}
+~~~~{.tcl}
 if condition script [elseif script .... else script] 
 ~~~~
 
@@ -377,7 +377,7 @@ if condition script [elseif script .... else script]
 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 if {$x > 0} { 
 puts ;positive; 
 } elseif {$x == 0} { 
@@ -392,7 +392,7 @@ puts ;negative;
 Syntax:
 
 
-~~~~{.php}
+~~~~{.tcl}
 while condition script 
 for init condition reinit script 
 foreach varname list script 
@@ -401,7 +401,7 @@ foreach varname list script
 The three loop structures are similar to their C or csh equivalent. It is important to use braces to delay evaluation. **foreach** will assign the elements of the list to the variable before evaluating the script. \
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # while example 
 dset x 1.1 
 while {[dval x] < 100} { 
@@ -422,7 +422,7 @@ foreach object {crapo tomson lucas} {display $object}
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 break 
 continue 
 ~~~~
@@ -432,7 +432,7 @@ Within loops, the **break** and **continue** commands have the same effect as in
 **break** interrupts the innermost loop and **continue** jumps to the next iteration. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # search the index for which t$i has value ;secret; 
 for {set i 1} {$i <= 100} {incr i} { 
   if {[set t$i] == ;secret;} break; 
@@ -454,7 +454,7 @@ As TCL is not a strongly typed language it is very difficult to detect programmi
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 proc argumentlist script 
 ~~~~
 
@@ -463,7 +463,7 @@ proc argumentlist script
 **return** gives a return value to the procedure. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # simple procedure 
 proc hello {} { 
   puts ;hello world; 
@@ -485,7 +485,7 @@ proc fact n {
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 global varname [varname ...] 
 upvar varname localname [varname localname ...] 
 ~~~~
@@ -498,7 +498,7 @@ upvar varname localname [varname localname ...]
 **Note** that in the following examples the \$ character is always necessarily used to access the arguments.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # convert degree to radian 
 # pi is a global variable 
 proc deg2rad (degree} { 
@@ -538,7 +538,7 @@ This section describes several useful commands:
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 help [command [helpstring group]] 
 ~~~~
 
@@ -549,7 +549,7 @@ Provides help or modifies the help information.
 Specifying the command returns its syntax and in some cases, information on the command, The joker \* is automatically added at the end so that all completing commands are returned as well. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Gives help on all commands starting with *a* 
 ~~~~
 
@@ -558,7 +558,7 @@ Specifying the command returns its syntax and in some cases, information on the 
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 source filename 
 ~~~~
 Executes a file. 
@@ -569,7 +569,7 @@ The **exit** command will terminate the file.
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 spy [filename] 
 ~~~~
 
@@ -580,7 +580,7 @@ If a command returns an error it is saved with a comment mark.
 The file created by **spy** can be executed with the **source** command. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # all commands will be saved in the file ;session; 
 spy session 
 # the file ;session; is closed and commands are not saved 
@@ -593,14 +593,14 @@ spy
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 cpulimit [nbseconds] 
 ~~~~
 
 **cpulimit**limits a process after the number of seconds specified in nbseconds. It is used in tests to avoid infinite loops. **cpulimit** without arguments removes all existing limits. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 #limit cpu to one hour 
 cpulimit 3600 
 ~~~~
@@ -608,12 +608,12 @@ cpulimit 3600
 @subsubsection occt_draw_3_1_5 wait
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 wait [nbseconds] 
 ~~~~
 Suspends execution for the number of seconds specified in *nbseconds*. The default value is ten (10) seconds. This is a useful command for a slide show. 
 
-~~~~{.php}
+~~~~{.tcl}
 # You have ten seconds ... 
 wait 
 ~~~~
@@ -622,7 +622,7 @@ wait
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 chrono [ name start/stop/reset/show/restart/[counter text]]
 ~~~~
 
@@ -637,7 +637,7 @@ With arguments, **chrono** is used to manage activated chronometers. You can per
   * display the current time with specified text (output example - *COUNTER text: N*), command <i>testdiff</i> will compare such outputs between two test runs (counter).
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 chrono 
 ==Chronometers activated. 
 ptorus t 20 5 
@@ -651,7 +651,7 @@ ptorus t 20 5
 @subsubsection occt_draw_3_2_1 isdraw, directory
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 isdraw varname 
 directory [pattern] 
 ~~~~
@@ -661,7 +661,7 @@ directory [pattern]
 Use **directory** to return a list of all Draw global variables matching a pattern. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set a 1 
 isdraw a 
 === 0 
@@ -683,7 +683,7 @@ foreach var [directory *curve*] {unset $var}
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 whatis varname [varname ...] 
 dump varname [varname ...] 
 ~~~~
@@ -693,7 +693,7 @@ dump varname [varname ...]
 **dump** returns a brief type description, the coordinates, and if need be, the parameters of a Draw variable. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 circle c 0 0 1 0 5 
 whatis c 
 c is a 2d curve 
@@ -714,7 +714,7 @@ Radius :5
 @subsubsection occt_draw_3_2_3 renamevar, copy
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 renamevar varname tovarname [varname tovarname ...] 
 copy varname tovarname [varname tovarname ...] 
 ~~~~
@@ -723,7 +723,7 @@ copy varname tovarname [varname tovarname ...]
   * **copy** creates a new variable with a copy of the content of an existing variable. The exact behavior of **copy** is type dependent; in the case of certain topological variables, the content may still be shared. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 circle c1 0 0 1 0 5 
 renamevar c1 c2 
 
@@ -734,7 +734,7 @@ copy c2 c3
 @subsubsection occt_draw_3_2_4 datadir, save, restore
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 datadir [directory] 
 save variable [filename] 
 restore filename [variablename] 
@@ -751,7 +751,7 @@ If the path starts with a dot (.) only the last directory name will be changed i
 The exact content of the file is type-dependent. They are usually ASCII files and so, architecture independent. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # note how TCL accesses shell environment variables 
 # using $env() 
 datadir 
@@ -782,56 +782,56 @@ restore theBox
 
 #### In DrawTrSurf package:
 
-~~~~{.php}
-void Set(const char*& Name,const gp_Pnt& G) ; 
-void Set(const char*& Name,const gp_Pnt2d& G) ; 
-void Set(const char*& Name, 
+~~~~{.cpp}
+void Set(const char* Name,const gp_Pnt& G) ; 
+void Set(const char* Name,const gp_Pnt2d& G) ; 
+void Set(const char* Name, 
 const occ::handle<Geom_Geometry>& G) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Geom2d_Curve>& C) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Triangulation>& T) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Polygon3D>& P) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Polygon2D>& P) ; 
 ~~~~
 
 #### In DBRep package:
 
-~~~~{.php}
+~~~~{.cpp}
 void Set(const char* Name, 
 const TopoDS_Shape& S) ; 
 ~~~~
 
 Example of *DrawTrSurf*
 
-~~~~{.php}
+~~~~{.cpp}
 occ::handle<Geom2d_Circle> C1 = new Geom2d_Circle 
-(gce_MakeCirc2d (gp_Pnt2d(50,0,) 25)); 
-DrawTrSurf::Set(char*, C1); 
+(gce_MakeCirc2d (gp_Pnt2d(50,0), 25)); 
+DrawTrSurf::Set("C1", C1); 
 ~~~~
 
 Example of *DBRep* 
 
-~~~~{.php}
-TopoDS_Solid B; 
-B = BRepPrimAPI_MakeBox (10,10,10); 
-DBRep::Set(char*,B); 
+~~~~{.cpp}
+TopoDS_Solid aB; 
+aB = BRepPrimAPI_MakeBox (10,10,10); 
+DBRep::Set("B", aB); 
 ~~~~
 
 @subsubsection occt_draw_3_3_2 get
 
 #### In DrawTrSurf package:
  
-~~~~{.php}
-occ::handle<Geom_Geometry> Get(const char*& Name) ; 
+~~~~{.cpp}
+occ::handle<Geom_Geometry> Get(const char* Name) ; 
 ~~~~
 
 #### In DBRep package:
 
-~~~~{.php}
-TopoDS_Shape Get(const char*& Name, 
+~~~~{.cpp}
+TopoDS_Shape Get(const char* Name, 
 const TopAbs_ShapeEnum Typ = TopAbs_SHAPE, 
 const bool Complain 
 = true) ; 
@@ -839,27 +839,27 @@ const bool Complain
 
 Example of *DrawTrSurf*
 
-~~~~{.php}
+~~~~{.cpp}
 int MyCommand 
 (Draw_Interpretor& theCommands, 
 int argc, char** argv) 
 {...... 
 // Creation of a Geom_Geometry from a Draw geometric 
 // name 
-Handle (Geom_Geometry) aGeom= DrawTrSurf::Get(argv[1]); 
+occ::handle<Geom_Geometry> aGeom = DrawTrSurf::Get(argv[1]); 
 } 
 ~~~~
 
 Example of *DBRep*
 
-~~~~{.php}
+~~~~{.cpp}
 int MyCommand 
 (Draw_Interpretor& theCommands, 
 int argc, char** argv) 
 {...... 
 // Creation of a TopoDS_Shape from a Draw topological 
 // name 
-TopoDS_Solid B = DBRep::Get(argv[1]); 
+TopoDS_Shape aShape = DBRep::Get(argv[1]); 
 } 
 ~~~~
 
@@ -872,7 +872,7 @@ Graphic commands are used to manage the Draw graphic system. Draw provides a 2d 
 @subsubsection occt_draw_4_1_1 view, delete
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 view index type [X Y W H] 
 delete [index] 
 ~~~~
@@ -893,7 +893,7 @@ Type selects from the following range:
 The index, the type, the current zoom are displayed in the window title . 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # this is the content of the mu4 procedure 
 proc mu4 {} { 
 delete 
@@ -910,7 +910,7 @@ See also: **axo, pers, top, bottom, left, right, front, back, mu4, v2d, av2d, sm
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 axo 
 pers 
 ... 
@@ -933,7 +933,7 @@ See also: **view**, **delete**
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
     mu [index] value 
     2dmu [index] value 
     zoom [index] value 
@@ -947,7 +947,7 @@ perform the same on one or all 2d views.
 * **wzoom** (window zoom) allows you to select the area you want to zoom in on with the mouse. You will be prompted to give two of the corners of the area that you want to magnify and the rectangle so defined will occupy the window of the view. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
     # set a zoom of 2.5 
     zoom 2.5 
 
@@ -963,13 +963,13 @@ See also: **fit**, **2dfit**
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 pu [index] 
 pd [index] 
 ~~~~
 
 The <i>p_</i> commands are used to pan. **pu** and **pd** pan up and down respectively; **pl** and **pr** pan to the left and to the right respectively. Each time the view is displaced by 40 pixels. When no index is given, all views will pan in the direction specified. 
-~~~~{.php}
+~~~~{.tcl}
 # you have selected one anonometric view
 pu
 # or
@@ -985,7 +985,7 @@ See also: **fit**, **2dfit**
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 fit [index] 
 2dfit [index] 
 ~~~~
@@ -995,7 +995,7 @@ fit [index]
 When fitting all views a unique zoom is computed for all the views. All views are on the same scale. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # fit only view 1 
 fit 1 
 # fit all 2d views 
@@ -1008,7 +1008,7 @@ See also: **zoom**, **mu**, **pu**
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 u [index] 
 d [index] 
 l [index] 
@@ -1018,7 +1018,7 @@ r [index]
 **u**, **d**, **l**, **r** Rotate the object in view around its axis by five degrees up, down, left or right respectively. This command is restricted to axonometric and perspective views. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # rotate the view up 
 u 
 ~~~~
@@ -1026,7 +1026,7 @@ u
 @subsubsection occt_draw_4_1_7 focal, fu, fd
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 focal [f] 
 fu [index] 
 fd [index] 
@@ -1036,7 +1036,7 @@ fd [index]
 * **fu** and **fd** increase or decrease the focal value by 10%. **fd** makes the eye closer to the object. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 pers 
 repeat 10 fd 
 ~~~~
@@ -1049,16 +1049,16 @@ See also: **pers**
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 color index name 
 ~~~~
 
 **color** sets the color to a value. The index of the *color* is a value between 0 and 15. The name is an X window color name. The list of these can be found in the file *rgb.txt* in the X library directory. 
 
-The default values are: 0 White, 1 Red, 2 Green, 3 Blue, 4 Cyan, 5 Gold, 6 Magenta, 7 Marron, 8 Orange, 9 Pink, 10 Salmon, 11 Violet, 12 Yellow, 13 Khaki, 14 Coral. 
+The default values are: 0 White, 1 Red, 2 Green, 3 Blue, 4 Cyan, 5 Gold, 6 Magenta, 7 Maroon, 8 Orange, 9 Pink, 10 Salmon, 11 Violet, 12 Yellow, 13 Khaki, 14 Coral. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # change the value of blue 
 color 3 "navy blue" 
 ~~~~
@@ -1069,7 +1069,7 @@ color 3 "navy blue"
 @subsubsection occt_draw_4_1_9 dtext
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 dtext [x y [z]] string 
 ~~~~
 
@@ -1078,7 +1078,7 @@ dtext [x y [z]] string
 The coordinates are real space coordinates. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # mark the origins 
 dtext 0 0 bebop 
 dtext 0 0 0 bebop 
@@ -1087,7 +1087,7 @@ dtext 0 0 0 bebop
 @subsubsection occt_draw_4_1_10 hardcopy, hcolor, xwd
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 hardcopy [index] 
 hcolor index width gray 
 xwd [index] filename 
@@ -1098,7 +1098,7 @@ xwd [index] filename
 * **xwd** creates an X window xwd file from an active view. By default, the index is set to1. To visualize an xwd file, use the unix command **xwud**. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # all blue lines (color 3) 
 # will be half-width and gray 
 hcolor 3 0.5 
@@ -1122,7 +1122,7 @@ See also: **color**
 @subsubsection occt_draw_4_1_11 wclick, pick
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 wclick 
 pick index X Y Z b [nowait] 
 ~~~~
@@ -1141,7 +1141,7 @@ This option is useful for tracking the pointer.
 **Note** that the results are stored in Draw numeric variables.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make a circle at mouse location 
 pick index x y z b 
 circle c x y z 0 0 1 1 0 0 0 30 
@@ -1171,7 +1171,7 @@ The variable name "." (dot) has a special status in Draw. Any Draw command expec
   * If you do not see what you expected while executing loops or sourcing files, use the **repaint** and **dflush** commands.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # OK use dot to dump an object on the screen 
 dump . 
 
@@ -1201,7 +1201,7 @@ renamevar . x
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 autodisplay [0/1] 
 ~~~~
 
@@ -1210,7 +1210,7 @@ By default, Draw automatically displays any graphic object as soon as it is crea
 When **autodisplay** is off, using the dot return argument is ineffective. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # c is displayed 
 circle c 0 0 1 0 5 
 
@@ -1226,7 +1226,7 @@ display c
 @subsubsection occt_draw_4_1_13 display, donly
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 display varname [varname ...] 
 donly varname [varname ...] 
 ~~~~
@@ -1235,7 +1235,7 @@ donly varname [varname ...]
 * **donly** *display only* makes objects visible and erases all other objects. It is very useful to extract one object from a messy screen. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 \# to see all objects 
 foreach var [directory] {display $var} 
 
@@ -1248,7 +1248,7 @@ donly . .
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 erase [varname varname ...] 
 clear 
 2dclear 
@@ -1260,7 +1260,7 @@ clear
 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # erase everything with a name starting with c_ 
 foreach var [directory c_*] {erase $var} 
 
@@ -1272,7 +1272,7 @@ foreach var [directory c_*] {erase $var}
 
 These commands have the same meaning as correspondingly display, donly and erase, but with the difference that they evaluate the arguments using glob pattern rules.
 For example, to display all objects with names d_1, d_2, d_3, etc. it is enough to run the command:
-~~~~{.php}
+~~~~{.tcl}
 disp d_*
 ~~~~
 
@@ -1281,7 +1281,7 @@ disp d_*
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 repaint 
 dflush 
 ~~~~
@@ -1315,7 +1315,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vtop
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1329,7 +1329,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vaxo
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1408,7 +1408,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vcamera
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1422,7 +1422,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vstereo
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1441,7 +1441,7 @@ Syntax:
 @snippet ViewerTest.cxx vdisplay
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 40 40 40 10 10 10
 psphere s 20
@@ -1455,7 +1455,7 @@ Syntax:
 @snippet ViewerTest.cxx vdonly
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 40 40 40 10 10 10
 psphere s 20
@@ -1469,7 +1469,7 @@ Syntax:
 @snippet ViewerTest.cxx vdisplayall
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 40 40 40 10 10 10
 psphere s 20
@@ -1483,7 +1483,7 @@ Syntax:
 @snippet ViewerTest.cxx verase
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b1  40  40  40 10 10 10
 box b2 -40 -40 -40 10 10 10
@@ -1502,7 +1502,7 @@ Syntax:
 @snippet ViewerTest.cxx veraseall
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b1  40  40  40 10 10 10
 box b2 -40 -40 -40 10 10 10
@@ -1512,7 +1512,7 @@ vfit
 # erase only first box
 verase b1
 # erase second box and sphere
-verseall
+veraseall
 ~~~~
 
 @subsubsection occt_draw_4_3_6 vsetdispmode
@@ -1521,7 +1521,7 @@ Syntax:
 @snippet ViewerTest.cxx vsetdispmode
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1550,7 +1550,7 @@ Syntax:
 @snippet ViewerTest.cxx vaspects
 
 Aliases:
-~~~~{.php}
+~~~~{.tcl}
 vsetcolor [-noupdate|-update] [name] ColorName
 ~~~~
 
@@ -1591,7 +1591,7 @@ Manages presentation properties (color, material, transparency) of all objects, 
 *STEELBLUE*, *STEELBLUE1*, *STEELBLUE2*, *STEELBLUE3*, *STEELBLUE4*, *TAN*, *TAN1*, *TAN2*, *TAN3*, *TAN4*, *THISTLE*, *THISTLE1*, *THISTLE2*, *THISTLE3*, *THISTLE4*, *TOMATO*, *TOMATO1*, *TOMATO2*, *TOMATO3*, *TOMATO4*,
 *TURQUOISE*, *TURQUOISE1*, *TURQUOISE2*, *TURQUOISE3*, *TURQUOISE4*, *VIOLET*, *VIOLETRED*, *VIOLETRED1*, *VIOLETRED2*, *VIOLETRED3*, *VIOLETRED4*, *WHEAT*, *WHEAT1*, *WHEAT2*, *WHEAT3*, *WHEAT4*, *WHITE*, *WHITESMOKE*,
 *YELLOW*, *YELLOW1*, *YELLOW2*, *YELLOW3*, *YELLOW4* and *YELLOWGREEN*.
-~~~~{.php}
+~~~~{.tcl}
 vaspects    [name] [-setColor ColorName] [-setColor R G B] [-unsetColor]
 vsetcolor   [name] ColorName
 vunsetcolor [name]
@@ -1599,7 +1599,7 @@ vunsetcolor [name]
 
 **Transparency** may be between 0.0 (opaque) and 1.0 (fully transparent).
 **Warning**: at 1.0 the shape becomes invisible.
-~~~~{.php}
+~~~~{.tcl}
 vaspects           [name] [-setTransparency Value] [-unsetTransparency]
 vsettransparency   [name] Value
 vunsettransparency [name]
@@ -1607,21 +1607,21 @@ vunsettransparency [name]
 
 **Material** name can be *BRASS*, *BRONZE*, *COPPER*, *GOLD*, *PEWTER*, *PLASTER*, *PLASTIC*, *SILVER*, *STEEL*, *STONE*, *SHINY_PLASTIC*, *SATIN*,
 *METALIZED*, *NEON_GNC*, *CHROME*, *ALUMINIUM*, *OBSIDIAN*, *NEON_PHC*, *JADE*, *WATER*, *GLASS*, *DIAMOND* or *CHARCOAL*.
-~~~~{.php}
+~~~~{.tcl}
 vaspects       [name] [-setMaterial MaterialName] [-unsetMaterial]
 vsetmaterial   [name] MaterialName
 vunsetmaterial [name]
 ~~~~
 
 **Line width** specifies width of the edges. The width value may be between 0.0 and 10.0.
-~~~~{.php}
+~~~~{.tcl}
 vaspects    [name] [-setWidth LineWidth] [-unsetWidth]
 vsetwidth   [name] LineWidth
 vunsetwidth [name]
 ~~~~
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1638,7 +1638,7 @@ Syntax:
 @snippet ViewerTest.cxx vsetshading
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit 
 psphere s 20 
 vdisplay s 
@@ -1668,7 +1668,7 @@ Syntax:
 @snippet ViewerTest.cxx vsub
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit 
 box b 10 10 10 
 psphere s 20 
@@ -1704,7 +1704,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vrenderparams
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 box b 10 10 10
 vdisplay b
@@ -1725,7 +1725,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vtrihedron
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit 
 vtrihedron tr1
 
@@ -1746,7 +1746,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vsize
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit 
 vtrihedron tr1 
 vtrihedron tr2 0 0 0 1 0 0 1 0 0 
@@ -1759,7 +1759,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vaxis
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit 
 vtrihedron tr 
 vaxis axe1 0 0 0 1 0 0 
@@ -1781,7 +1781,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vpoint
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p 0 0 0
 ~~~~
@@ -1792,7 +1792,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vplane
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 50 0
 vaxis axe1 0 0 0 0 0 1
@@ -1816,7 +1816,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vline
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vtrihedron tr
 vpoint p1 0 50 0
@@ -1831,7 +1831,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vcircle
  
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vtrihedron tr
 vpoint p1 0 50 0
@@ -1851,7 +1851,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vselmode
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 0 0
@@ -1865,7 +1865,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vconnect
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 0 0
@@ -1881,7 +1881,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vtriangle
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 0 0
@@ -1895,7 +1895,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vsegment
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 0 0
@@ -1908,7 +1908,7 @@ Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vpointcloud
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpointcloud pc 0 0 0 100 100000 surface -randColor
 vfit
@@ -1920,7 +1920,7 @@ Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vclipplane
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vclipplane pln1 -equation 1 0 0 -0.1 -set Driver1/Viewer1/View1
 box b 100 100 100
@@ -1939,7 +1939,7 @@ Syntax:
 **Attention:** length dimension can't be built without working plane.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
@@ -1959,7 +1959,7 @@ Syntax:
 @snippet ViewerTest_RelationCommands.cxx vdimparam
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
@@ -1976,7 +1976,7 @@ Syntax:
 @snippet ViewerTest_RelationCommands.cxx vangleparam
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 10 0 0
@@ -1992,7 +1992,7 @@ Syntax:
 @snippet ViewerTest_RelationCommands.cxx vlengthparam
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 20 20 0
 vpoint p2 80 80 0
@@ -2009,7 +2009,7 @@ Syntax:
 @snippet ViewerTest_RelationCommands.cxx vmovedim
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
@@ -2033,21 +2033,21 @@ You can control the number of occurrences of the texture on a face, the position
 @subsubsection occt_draw_4_5_1 meshfromstl
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshfromstl meshname file
 ~~~~
 
 Creates a *MeshVS_Mesh* object based on STL file data. The object will be displayed immediately.
  
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 meshfromstl mesh myfile.stl
 ~~~~
 
 @subsubsection occt_draw_4_5_2 vsetdispmode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vsetdispmode meshname displaymode
 ~~~~
 
@@ -2057,7 +2057,7 @@ Changes the display mode of object **meshname**. The **displaymode** is integer 
 * *3* for *shrink* mode.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 vsetdispmode mesh 2
@@ -2066,7 +2066,7 @@ vsetdispmode mesh 2
 @subsubsection occt_draw_4_5_3 vselmode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vselmode meshname selectionmode {on|off}
 ~~~~
 
@@ -2081,7 +2081,7 @@ The *selectionmode* is integer OR-combination of mode flags (`MeshVS_SelectionMo
 * *256* -- groups (not supported in STL).
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 vselmode mesh 1
@@ -2090,39 +2090,39 @@ vselmode mesh 1
 @subsubsection occt_draw_4_5_4 meshshadcolor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshshadcolor meshname red green blue
 ~~~~
 
 Changes the face interior color of object **meshname**. The *red*, *green* and *blue* are real values between *0* and *1*.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
-meshshadcolormode mesh 0.5 0.5 0.5
+meshshadcolor mesh 0.5 0.5 0.5
 ~~~~
 
 @subsubsection occt_draw_4_5_5 meshlinkcolor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshlinkcolor meshname red green blue
 ~~~~
 
 Changes the color of face borders for object **meshname**. The *red*, *green* and *blue* are real values between *0* and *1*.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
-meshlinkcolormode mesh 0.5 0.5 0.5
+meshlinkcolor mesh 0.5 0.5 0.5
 ~~~~
 
 @subsubsection occt_draw_4_5_6 meshmat
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshmat meshname material [transparency]
 ~~~~
 
@@ -2150,7 +2150,7 @@ Changes the material of object **meshname**.
 * *18 -- JADE*.
  
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 meshmat mesh 18
@@ -2159,7 +2159,7 @@ meshmat mesh 18
 @subsubsection occt_draw_4_5_7 meshshrcoef
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshshrcoef meshname shrinkcoefficient
 ~~~~
 
@@ -2168,7 +2168,7 @@ In the shrink mode the face is shown as a congruent part of a usual face, so tha
 The *shrinkcoefficient* is a positive real number.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 meshshrcoef mesh 0.05
@@ -2177,7 +2177,7 @@ meshshrcoef mesh 0.05
 @subsubsection occt_draw_4_5_8 meshshow
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshshow meshname
 ~~~~
 
@@ -2185,7 +2185,7 @@ Displays **meshname** in the viewer (if it is erased).
 The same as calling `vdisplay`.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 meshshow mesh
@@ -2194,7 +2194,7 @@ meshshow mesh
 @subsubsection occt_draw_4_5_9 meshhide
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshhide meshname
 ~~~~
 
@@ -2202,7 +2202,7 @@ Hides **meshname** in the viewer.
 The same as calling `verase`.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 meshhide mesh
@@ -2211,7 +2211,7 @@ meshhide mesh
 @subsubsection occt_draw_4_5_10 meshhidesel
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshhidesel meshname
 ~~~~
 
@@ -2220,7 +2220,7 @@ Hides only selected entities. The other part of **meshname** remains visible.
 @subsubsection occt_draw_4_5_11 meshshowsel
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshshowsel meshname
 ~~~~
 
@@ -2229,7 +2229,7 @@ Shows only selected entities. The other part of **meshname** becomes invisible.
 @subsubsection occt_draw_4_5_12 meshshowall
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 meshshowall meshname
 ~~~~
 
@@ -2238,14 +2238,14 @@ Changes the state of all entities to visible for **meshname**.
 @subsubsection occt_draw_4_5_13 vremove
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vremove meshname
 ~~~~
 
 Deletes MeshVS_Mesh object **meshname**.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 vinit
 meshfromstl mesh myfile.stl
 vremove mesh
@@ -2255,14 +2255,14 @@ vremove mesh
 
 A specific plugin with alias *VIS* should be loaded to have access to VIS functionality in DRAW Test Harness:
 
-~~~~{.php}
+~~~~{.tcl}
 \> pload VIS
 ~~~~
 
 @subsubsection occt_draw_4_6_1	ivtkinit
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 ~~~~
 
@@ -2273,14 +2273,14 @@ Creates a window for VTK viewer.
 @subsubsection occt_draw_4_6_2	ivtkdisplay
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkdisplay name1 [name2] …[name n]
 ~~~~
 
 Displays named objects.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 # create cone
 pcone c 5 0 10
@@ -2293,14 +2293,14 @@ ivtkdisplay c
 @subsubsection occt_draw_4_6_3	ivtkerase
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkerase [name1] [name2] … [name n]
 ~~~~
 
 Erases named objects. If no arguments are passed, erases all displayed objects.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 # create a sphere
 psphere s 10
@@ -2319,16 +2319,16 @@ ivtkerase s c
 @subsubsection occt_draw_4_6_4	 ivtkfit
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkfit
 ~~~~
 
 Automatic zoom/panning.
 
-@subsubsection occt_draw_4_6_5	ivtkdispmode
+@subsubsection occt_draw_4_6_5	ivtksetdispmode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtksetdispmode [name] {0|1}
 ~~~~
 
@@ -2336,7 +2336,7 @@ Sets display mode for a named object. If no arguments are passed, sets the given
 The possible modes are: 0 (WireFrame) and 1 (Shading).
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 # create a cone
 pcone c 5 0 10
@@ -2351,14 +2351,14 @@ ivtksetdispmode c 1
 @subsubsection occt_draw_4_6_6	ivtksetselmode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtksetselmode [name] mode {0|1}
 ~~~~
 
 Sets selection mode for a named object. If no arguments are passed, sets the given selection mode for all the displayed objects.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 # load a shape from file
 restore CrankArm.brep a
@@ -2373,14 +2373,14 @@ ivtksetselmode a 4 1
 @subsubsection occt_draw_4_6_7	ivtkmoveto
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkmoveto x y
 ~~~~
 
 Imitates mouse cursor moving to point with the given display coordinates **x**,**y**.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 pcone c 5 0 10
 ivtkdisplay c
@@ -2390,14 +2390,14 @@ ivtkmoveto 40 50
 @subsubsection occt_draw_4_6_8	ivtkselect
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkselect x y
 ~~~~
 
 Imitates mouse cursor moving to point with the given display coordinates and performs selection at this point.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 pcone c 5 0 10
 ivtkdisplay c
@@ -2407,7 +2407,7 @@ ivtkselect 40 50
 @subsubsection occt_draw_4_6_9	ivtkdump
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkdump *filename* [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]
 ~~~~
 
@@ -2418,7 +2418,7 @@ Dumps the contents of VTK viewer to image. It supports:
 * dumping of stereo projections (left or right).
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 pcone c 5 0 10
 ivtkdisplay c
@@ -2429,21 +2429,21 @@ ivtkdump D:/ConeSnapshot.png rgb 768 768
 
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ivtkbgcolor r g b [r2 g2 b2]
 ~~~~
 
 Sets uniform background color or gradient background if second triple of parameters is set. Color parameters r,g,b have to be chosen in the interval  [0..255].
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ivtkinit
 ivtkbgcolor 200 220 250
 ~~~~
  
 @figure{/user_guides/draw_test_harness/images/draw_image005.png,"",196}
 
-~~~~{.php}
+~~~~{.tcl}
 ivtkbgcolor 10 30 80 255 255 255
 ~~~~
 
@@ -2460,14 +2460,14 @@ This chapter contains a set of commands for Open CASCADE Technology Application 
 @subsubsection occt_draw_5_1_1 NewDocument
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 NewDocument docname [format]
 ~~~~
 
 Creates a new **docname** document with MDTV-Standard or described format. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Create new document with default (MDTV-Standard) format 
 NewDocument D 
 
@@ -2478,21 +2478,21 @@ NewDocument D2 BinOcaf
 @subsubsection occt_draw_5_1_2 IsInSession
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 IsInSession path
 ~~~~
 
-Returns *0*, if **path** document is managed by the application session, *1* -- otherwise. 
+Returns *1* if the document at **path** is currently managed by the application session, *0* otherwise. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 IsInSession /myPath/myFile.std 
 ~~~~
 
 @subsubsection occt_draw_5_1_3 ListDocuments
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ListDocuments
 ~~~~
 
@@ -2502,7 +2502,7 @@ Makes a list of documents handled during the session of the application.
 @subsubsection occt_draw_5_1_4 Open
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Open path docname [-stream]
 ~~~~
 
@@ -2511,42 +2511,42 @@ Retrieves the document of file **docname** in the path **path**. Overwrites the 
 option <i>-stream</i> activates usage of alternative interface of OCAF persistence working with C++ streams instead of file names.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Open /myPath/myFile.std D
 ~~~~
 
 @subsubsection occt_draw_5_1_5 Close
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Close docname
 ~~~~
 
 Closes **docname** document. The document is no longer handled by the applicative session. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Close D 
 ~~~~
 
 @subsubsection occt_draw_5_1_6 Save
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Save docname
 ~~~~
 
 Saves **docname** active document. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Save D 
 ~~~~
 
 @subsubsection occt_draw_5_1_7 SaveAs
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SaveAs docname path [-stream]
 ~~~~
 
@@ -2555,7 +2555,7 @@ Saves the active document in the file **docname** in the path **path**. Overwrit
 option <i>-stream</i> activates usage of alternative interface of OCAF persistence working with C++ streams instead of file names.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SaveAs D /myPath/myFile.std
 ~~~~
 
@@ -2565,14 +2565,14 @@ SaveAs D /myPath/myFile.std
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 Label docname entry
 ~~~~
 
 Creates the label expressed by <i>\<entry\></i> if it does not exist.
 
 Example
-~~~~{.php}
+~~~~{.tcl}
 Label D 0:2
 ~~~~
 
@@ -2580,13 +2580,13 @@ Label D 0:2
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 NewChild docname [taggerlabel = Root label]
 ~~~~
 Finds (or creates) a *TagSource* attribute located at father label of <i>\<taggerlabel\></i> and makes a new child label.
 
 Example
-~~~~{.php}
+~~~~{.tcl}
 # Create new child of root label
 NewChild D
 
@@ -2598,26 +2598,26 @@ NewChild D 0:2
 @subsubsection occt_draw_5_2_3 Children
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Children docname label
 ~~~~
-Returns the list of attributes of label.
+Returns the list of child labels of the label.
 
 Example
-~~~~{.php}
+~~~~{.tcl}
 Children D 0:2
 ~~~~
 
 @subsubsection occt_draw_5_2_4 ForgetAll
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ForgetAll docname label
 ~~~~
 Forgets all attributes of the label.
 
 Example
-~~~~{.php}
+~~~~{.tcl}
 ForgetAll D 0:2
 ~~~~
 
@@ -2627,21 +2627,21 @@ ForgetAll D 0:2
 @subsubsection occt_draw_5_3_1  Main
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Main docname
 ~~~~
 
 Returns the main label of the framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Main D 
 ~~~~
 
 @subsubsection occt_draw_5_3_2  UndoLimit
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 UndoLimit docname [value=0]
 ~~~~
 
@@ -2649,126 +2649,126 @@ UndoLimit docname [value=0]
 Sets the limit on the number of Undo Delta stored. **0** will disable Undo on the document. A negative *value* means that there is no limit. Note that by default Undo is disabled. Enabling it will take effect with the next call to *NewCommand*. Of course, this limit is the same for Redo 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 UndoLimit D 100 
 ~~~~
 
 @subsubsection occt_draw_5_3_3  Undo
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Undo docname [value=1]
 ~~~~
 
 Undoes **value** steps. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Undo D 
 ~~~~
 
 @subsubsection occt_draw_5_3_4  Redo
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Redo docname [value=1]
 ~~~~
 
 Redoes **value** steps.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Redo D 
 ~~~~
 
 @subsubsection occt_draw_5_3_5  OpenCommand
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 OpenCommand docname
 ~~~~
 
 Opens a new command transaction. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 OpenCommand D
 ~~~~
 
 @subsubsection occt_draw_5_3_6  CommitCommand
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 CommitCommand docname
 ~~~~
 
 Commits the Command transaction. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 CommitCommand D
 ~~~~
 
 @subsubsection occt_draw_5_3_7  NewCommand
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 NewCommand docname
 ~~~~
 
 This is a shortcut for Commit and Open transaction. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 NewCommand D 
 ~~~~
 
 @subsubsection occt_draw_5_3_8  AbortCommand
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AbortCommand docname
 ~~~~
 
 Aborts the Command transaction. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AbortCommand D 
 ~~~~
 
 @subsubsection occt_draw_5_3_9  Copy
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Copy docname entry Xdocname Xentry
 ~~~~
 
 Copies the contents of *entry* to *Xentry*. No links are registered. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Copy D1 0:2 D2 0:4 
 ~~~~
 
 @subsubsection occt_draw_5_3_10  UpdateLink
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 UpdateLink docname [entry] 
 ~~~~
 
 Updates external reference set at *entry*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 UpdateLink D 
 ~~~~
 
 @subsubsection occt_draw_5_3_11  CopyWithLink
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 CopyWithLink docname entry Xdocname Xentry
 ~~~~
 
@@ -2776,35 +2776,35 @@ Aborts the Command transaction.
 Copies the content of *entry* to *Xentry*. The link is registered with an *Xlink* attribute at *Xentry*  label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 CopyWithLink D1 0:2 D2 0:4
 ~~~~
 
 @subsubsection occt_draw_5_3_12  UpdateXLinks
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 UpdateXLinks docname entry
 ~~~~
 
 Sets modifications on labels impacted by external references to the *entry*. The *document* becomes invalid and must be recomputed 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 UpdateXLinks D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_3_13  DumpDocument
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DumpDocument docname
 ~~~~
 
 Displays parameters of *docname* document. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 DumpDocument D 
 ~~~~
 
@@ -2815,84 +2815,84 @@ DumpDocument D
 @subsubsection occt_draw_5_4_1  MakeDF
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 MakeDF dfname
 ~~~~
 
 Creates a new data framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 MakeDF D 
 ~~~~
 
 @subsubsection occt_draw_5_4_2  ClearDF
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ClearDF dfname
 ~~~~
 
 Clears a data framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 ClearDF D 
 ~~~~
 
 @subsubsection occt_draw_5_4_3  CopyDF
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 CopyDF dfname1 entry1 [dfname2] entry2
 ~~~~
 
 Copies a data framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 CopyDF D 0:2 0:4 
 ~~~~
 
 @subsubsection occt_draw_5_4_4  CopyLabel
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 CopyLabel dfname fromlabel tolablel
 ~~~~
 
 Copies a label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 CopyLabel D1 0:2 0:4 
 ~~~~
 
 @subsubsection occt_draw_5_4_5  MiniDumpDF
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 MiniDumpDF dfname
 ~~~~
 
 Makes a mini-dump of a data framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 MiniDumpDF D 
 ~~~~
 
 @subsubsection occt_draw_5_4_6  XDumpDF
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XDumpDF dfname
 ~~~~
 
 Makes an extended dump of a data framework. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 XDumpDF D
 ~~~~
 
@@ -2902,238 +2902,238 @@ XDumpDF D
 @subsubsection occt_draw_5_5_1  SetInteger
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetInteger dfname entry value
 ~~~~
 
 Finds or creates an Integer attribute at *entry* label and sets *value*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetInteger D 0:2 100 
 ~~~~
 
 @subsubsection occt_draw_5_5_2  GetInteger
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetInteger dfname entry [drawname]
 ~~~~
 
 Gets a value of an Integer attribute at *entry* label and sets it to *drawname* variable, if it is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetInteger D 0:2 Int1 
 ~~~~
 
 @subsubsection occt_draw_5_5_3  SetReal
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetReal dfname entry value
 ~~~~
 
 Finds or creates a Real attribute at *entry* label and sets *value*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetReal D 0:2 100. 
 ~~~~
 
 @subsubsection occt_draw_5_5_4  GetReal
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetReal dfname entry [drawname]
 ~~~~
 
 Gets a value of a Real attribute at *entry* label and sets it to *drawname* variable, if it is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetReal D 0:2 Real1 
 ~~~~
 
 @subsubsection occt_draw_5_5_5  SetIntArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetIntArray dfname entry lower upper value1 value2 … 
 ~~~~
 
-Finds or creates an IntegerArray attribute at *entry* label with lower and upper bounds and sets **value1*, *value2*... 
+Finds or creates an IntegerArray attribute at *entry* label with lower and upper bounds and sets *value1*, *value2*... 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetIntArray D 0:2 1 4 100 200 300 400
 ~~~~
 
 @subsubsection occt_draw_5_5_6  GetIntArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetIntArray dfname entry
 ~~~~
 
 Gets a value of an *IntegerArray* attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetIntArray D 0:2
 ~~~~
 
 @subsubsection occt_draw_5_5_7  SetRealArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetRealArray dfname entry lower upper value1 value2 …
 ~~~~
 
 Finds or creates a RealArray attribute at *entry* label with lower and upper bounds and sets *value1*, *value2*… 
 
 **Example:** 
-~~~~{.php}
-GetRealArray D 0:2 1 4 100. 200. 300. 400. 
+~~~~{.tcl}
+SetRealArray D 0:2 1 4 100. 200. 300. 400. 
 ~~~~
 
 @subsubsection occt_draw_5_5_8  GetRealArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetRealArray dfname entry
 ~~~~
 
 Gets a value of a RealArray attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetRealArray D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_5_9  SetComment
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetComment dfname entry value
 ~~~~
 
 Finds or creates a Comment attribute at *entry* label and sets *value*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetComment D 0:2 "My comment"
 ~~~~
 
 @subsubsection occt_draw_5_5_10  GetComment
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetComment dfname entry
 ~~~~
 
 Gets a value of a Comment attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetComment D 0:2
 ~~~~
 
 @subsubsection occt_draw_5_5_11  SetExtStringArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetExtStringArray dfname entry lower upper value1 value2 …
 ~~~~
 
 Finds or creates an *ExtStringArray* attribute at *entry* label with lower and upper bounds and sets *value1*, *value2*… 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetExtStringArray D 0:2 1 3 *string1* *string2* *string3*
 ~~~~
 
 @subsubsection occt_draw_5_5_12  GetExtStringArray
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetExtStringArray dfname entry
 ~~~~
 
 Gets a value of an ExtStringArray attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetExtStringArray D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_5_13  SetName
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetName dfname entry value 
 ~~~~
 
 Finds or creates a Name attribute at *entry* label and sets *value*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetName D 0:2 *My name* 
 ~~~~
 
 @subsubsection occt_draw_5_5_14  GetName
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetName dfname entry 
 ~~~~
 
 Gets a value of a Name attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetName D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_5_15  SetReference
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetReference dfname entry reference 
 ~~~~
 
 Creates a Reference attribute at *entry* label and sets *reference*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetReference D 0:2 0:4 
 ~~~~
 
 @subsubsection occt_draw_5_5_16  GetReference
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetReference dfname entry 
 ~~~~
 
 Gets a value of a Reference attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetReference D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_5_17  SetUAttribute
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetUAttribute dfname entry localGUID 
 ~~~~
 
 Creates a UAttribute attribute at *entry* label with *localGUID*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set localGUID "c73bd076-22ee-11d2-acde-080009dc4422" 
 SetUAttribute D 0:2 ${localGUID} 
 ~~~~
@@ -3141,14 +3141,14 @@ SetUAttribute D 0:2 ${localGUID}
 @subsubsection occt_draw_5_5_18  GetUAttribute
 
 Syntax:
-~~~~{.php}
-GetUAttribute dfname entry loacalGUID 
+~~~~{.tcl}
+GetUAttribute dfname entry localGUID 
 ~~~~
 
 Finds a *UAttribute* at *entry* label with *localGUID*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set localGUID "c73bd076-22ee-11d2-acde-080009dc4422" 
 GetUAttribute D 0:2 ${localGUID} 
 ~~~~
@@ -3156,14 +3156,14 @@ GetUAttribute D 0:2 ${localGUID}
 @subsubsection occt_draw_5_5_19  SetFunction
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetFunction dfname entry ID failure 
 ~~~~
 
 Finds or creates a *Function* attribute at *entry* label with driver ID and *failure* index. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 set ID "c73bd076-22ee-11d2-acde-080009dc4422" 
 SetFunction D 0:2 ${ID} 1 
 ~~~~
@@ -3171,28 +3171,28 @@ SetFunction D 0:2 ${ID} 1
 @subsubsection occt_draw_5_5_20  GetFunction
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetFunction dfname entry ID failure 
 ~~~~
 
 Finds a Function attribute at *entry* label and sets driver ID to *ID* variable and failure index to *failure* variable. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetFunction D 0:2 ID failure 
 ~~~~
 
 @subsubsection occt_draw_5_5_21  NewShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 NewShape dfname entry [shape] 
 ~~~~
 
 Finds or creates a Shape attribute at *entry* label. Creates or updates the associated *NamedShape* attribute by *shape* if *shape* is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 box b 10 10 10 
 NewShape D 0:2 b 
 ~~~~
@@ -3200,29 +3200,29 @@ NewShape D 0:2 b
 @subsubsection occt_draw_5_5_22  SetShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetShape dfname entry shape 
 ~~~~
 
 Creates or updates a *NamedShape* attribute at *entry* label by *shape*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 box b 10 10 10 
 SetShape D 0:2 b 
 ~~~~
 
-@subsubsection occt_draw_5_5_23  GetShape
+@subsubsection occt_draw_5_5_23  GetShape2
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetShape2 dfname entry shape 
 ~~~~
 
 Sets a shape from NamedShape attribute associated with *entry* label to *shape* draw variable. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetShape2 D 0:2 b 
 ~~~~
 
@@ -3232,14 +3232,14 @@ GetShape2 D 0:2 b
 @subsubsection occt_draw_5_6_1  SetPoint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetPoint dfname entry point
 ~~~~
 
 Finds or creates a Point attribute at *entry* label and sets *point* as generated in the associated *NamedShape* attribute. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 point p 10 10 10 
 SetPoint D 0:2 p 
 ~~~~
@@ -3247,28 +3247,28 @@ SetPoint D 0:2 p
 @subsubsection occt_draw_5_6_2  GetPoint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetPoint dfname entry [drawname] 
 ~~~~
 
 Gets a vertex from *NamedShape* attribute at *entry* label and sets it to *drawname* variable, if it is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetPoint D 0:2 p 
 ~~~~
 
 @subsubsection occt_draw_5_6_3  SetAxis
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetAxis dfname entry axis 
 ~~~~
 
 Finds or creates an Axis attribute at *entry* label and sets *axis* as generated in the associated *NamedShape* attribute. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 line l 10 20 30 100 200 300 
 SetAxis D 0:2 l 
 ~~~~
@@ -3276,28 +3276,28 @@ SetAxis D 0:2 l
 @subsubsection occt_draw_5_6_4  GetAxis
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetAxis dfname entry [drawname] 
 ~~~~
 
 Gets a line from *NamedShape* attribute at *entry* label and sets it to *drawname* variable, if it is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetAxis D 0:2 l 
 ~~~~
 
 @subsubsection occt_draw_5_6_5  SetPlane
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetPlane dfname entry plane 
 ~~~~
 
 Finds or creates a Plane attribute at *entry* label and sets *plane* as generated in the associated *NamedShape* attribute. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 plane pl 10 20 30 -1 0 0 
 SetPlane D 0:2 pl 
 ~~~~
@@ -3305,28 +3305,28 @@ SetPlane D 0:2 pl
 @subsubsection occt_draw_5_6_6  GetPlane
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetPlane dfname entry [drawname] 
 ~~~~
 
 Gets a plane from *NamedShape* attribute at *entry* label and sets it to *drawname* variable, if it is defined. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetPlane D 0:2 pl 
 ~~~~
 
 @subsubsection occt_draw_5_6_7  SetGeometry
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetGeometry dfname entry [type] [shape] 
 ~~~~
 
 Creates a Geometry attribute at *entry* label and sets *type* and *shape* as generated in the associated *NamedShape* attribute if they are defined. *type* must be one of the following: *any, pnt, lin, cir, ell, spl, pln, cyl*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 point p 10 10 10 
 SetGeometry D 0:2 pnt p 
 ~~~~
@@ -3334,21 +3334,21 @@ SetGeometry D 0:2 pnt p
 @subsubsection occt_draw_5_6_8  GetGeometryType
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetGeometryType dfname entry
 ~~~~
 
 Gets a geometry type from Geometry attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetGeometryType D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_6_9  SetConstraint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetConstraint dfname entry keyword geometrie [geometrie …] 
 SetConstraint dfname entry "plane" geometrie 
 SetConstraint dfname entry "value" value
@@ -3361,49 +3361,49 @@ SetConstraint dfname entry "value" value
 3. Sets value for the existing constraint. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetConstraint D 0:2 "value" 5 
 ~~~~
 
 @subsubsection occt_draw_5_6_10  GetConstraint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetConstraint dfname entry
 ~~~~
 
 Dumps a Constraint attribute at *entry* label 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetConstraint D 0:2 
 ~~~~
 
 @subsubsection occt_draw_5_6_11  SetVariable
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetVariable dfname entry isconstant(0/1) units 
 ~~~~
 
 Creates a Variable attribute at *entry* label and sets *isconstant* flag and *units* as a string. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 SetVariable D 0:2 1 "mm" 
 ~~~~
 
 @subsubsection occt_draw_5_6_12  GetVariable
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 GetVariable dfname entry isconstant units 
 ~~~~
 
 Gets an *isconstant* flag and units of a Variable attribute at *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 GetVariable D 0:2 isconstant units 
 puts "IsConstant=${isconstant}" 
 puts "Units=${units}" 
@@ -3415,7 +3415,7 @@ puts "Units=${units}"
 @subsubsection occt_draw_5_7_1  RootNode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 RootNode dfname treenodeentry [ID]
 ~~~~
 
@@ -3425,7 +3425,7 @@ Returns the ultimate father of *TreeNode* attribute identified by its *treenodee
 @subsubsection occt_draw_5_7_2  SetNode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 SetNode dfname treenodeentry [ID]
 ~~~~
 
@@ -3435,7 +3435,7 @@ Creates a *TreeNode* attribute on the *treenodeentry* label with its tree *ID* (
 @subsubsection occt_draw_5_7_3  AppendNode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AppendNode dfname fatherentry childentry [fatherID]
 ~~~~
 
@@ -3448,7 +3448,7 @@ Inserts a *TreeNode* attribute with its tree *fatherID* (or default ID, if *fath
 @subsubsection occt_draw_5_7_4  PrependNode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 PrependNode dfname fatherentry childentry [fatherID]
 ~~~~
 
@@ -3459,7 +3459,7 @@ Inserts a *TreeNode* attribute with its tree *fatherID* (or default ID, if *fath
 @subsubsection occt_draw_5_7_5  InsertNodeBefore
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 InsertNodeBefore dfname treenodeentry beforetreenode [ID]
 ~~~~
 
@@ -3469,7 +3469,7 @@ Inserts a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not def
 @subsubsection occt_draw_5_7_6  InsertNodeAfter
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 InsertNodeAfter dfname treenodeentry aftertreenode [ID]
 ~~~~
 
@@ -3479,7 +3479,7 @@ Inserts a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not def
 @subsubsection occt_draw_5_7_7  DetachNode
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DetachNode dfname treenodeentry [ID]
 ~~~~
 
@@ -3489,7 +3489,7 @@ Removes a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not def
 @subsubsection occt_draw_5_7_8  ChildNodeIterate
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ChildNodeIterate dfname treenodeentry alllevels(0/1) [ID]
 ~~~~
 
@@ -3497,7 +3497,7 @@ ChildNodeIterate dfname treenodeentry alllevels(0/1) [ID]
 Iterates on the tree of *TreeNode* attributes with tree *ID* (or default ID, if *ID* is not defined). If *alllevels* is set to *1* it explores not only the first, but all the sub Step levels.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Label D 0:2 
 Label D 0:3 
 Label D 0:4 
@@ -3545,7 +3545,7 @@ ChildNodeIterate D 0:2 1
 @subsubsection occt_draw_5_7_9  InitChildNodeIterator
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 InitChildNodeIterator dfname treenodeentry alllevels(0/1) [ID]
 ~~~~
 
@@ -3553,7 +3553,7 @@ InitChildNodeIterator dfname treenodeentry alllevels(0/1) [ID]
 Initializes the iteration on the tree of *TreeNode* attributes with tree *ID* (or default ID, if *ID* is not defined). If *alllevels* is set to *1* it explores not only the first, but also all sub Step levels. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 InitChildNodeIterate D 0:5 1 
 set aChildNumber 0 
 for {set i 1} {$i < 100} {incr i} { 
@@ -3569,7 +3569,7 @@ puts "aChildNumber=$aChildNumber"
 @subsubsection occt_draw_5_7_10  ChildNodeMore
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ChildNodeMore
 ~~~~
 
@@ -3579,7 +3579,7 @@ Returns TRUE if there is a current item in the iteration.
 @subsubsection occt_draw_5_7_11  ChildNodeNext
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ChildNodeNext
 ~~~~
 
@@ -3589,7 +3589,7 @@ Moves to the next Item.
 @subsubsection occt_draw_5_7_12  ChildNodeValue
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ChildNodeValue
 ~~~~
 
@@ -3599,7 +3599,7 @@ Returns the current treenode of *ChildNodeIterator*.
 @subsubsection occt_draw_5_7_13  ChildNodeNextBrother
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ChildNodeNextBrother
 ~~~~
 
@@ -3612,112 +3612,112 @@ Moves to the next *Brother*. If there is none, goes up. This method is interesti
 @subsubsection occt_draw_5_8_1  AISInitViewer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISInitViewer docname
 ~~~~
 
 Creates and sets *AISViewer* attribute at root label, creates AIS viewer window. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISInitViewer D 
 ~~~~
 
 @subsubsection occt_draw_5_8_2  AISRepaint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISRepaint docname 
 ~~~~
 
 Updates the AIS viewer window. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISRepaint D 
 ~~~~
 
 @subsubsection occt_draw_5_8_3  AISDisplay
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISDisplay docname entry [not_update] 
 ~~~~
 
-Displays a presantation of *AISobject* from *entry* label in AIS viewer. If *not_update* is not defined then *AISobject* is recomputed and all visualization settings are applied. 
+Displays a presentation of *AISobject* from *entry* label in AIS viewer. If *not_update* is not defined then *AISobject* is recomputed and all visualization settings are applied. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISDisplay D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_4  AISUpdate
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISUpdate docname entry 
 ~~~~
 
 Recomputes a presentation of *AISobject* from *entry* label and applies the visualization setting in AIS viewer. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISUpdate D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_5  AISErase
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISErase docname entry 
 ~~~~
 
 Erases *AISobject* of *entry* label in AIS viewer. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISErase D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_6  AISRemove
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISRemove docname entry 
 ~~~~
 
 Erases *AISobject* of *entry* label in AIS viewer, then *AISobject* is removed from *AIS_InteractiveContext*. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISRemove D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_7  AISSet
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISSet docname entry ID 
 ~~~~
 
 Creates *AISPresentation* attribute at *entry* label and sets as driver ID. ID must be one of the following: *A* (*axis*), *C* (*constraint*), *NS* (*namedshape*), *G* (*geometry*), *PL* (*plane*), *PT* (*point*). 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISSet D 0:5 NS 
 ~~~~
 
 @subsubsection occt_draw_5_8_8  AISDriver
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISDriver docname entry [ID] 
 ~~~~
 
 Returns DriverGUID stored in *AISPresentation* attribute of an *entry* label or sets a new one. ID must be one of the following: *A* (*axis*), *C* (*constraint*), *NS* (*namedshape*), *G* (*geometry*), *PL* (*plane*), *PT* (*point*). 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Get Driver GUID 
 AISDriver D 0:5 
 ~~~~
@@ -3725,98 +3725,98 @@ AISDriver D 0:5
 @subsubsection occt_draw_5_8_9  AISUnset
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISUnset docname entry 
 ~~~~
 
 Deletes *AISPresentation* attribute (if it exists) of an *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISUnset D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_10  AISTransparency
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISTransparency docname entry [transparency] 
 ~~~~
 
 Sets (if *transparency* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISTransparency D 0:5 0.5 
 ~~~~
 
 @subsubsection occt_draw_5_8_11  AISHasOwnTransparency
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnTransparency docname entry 
 ~~~~
 
 Tests *AISPresentation* attribute of an *entry* label by own transparency. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnTransparency D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_12  AISMaterial
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISMaterial docname entry [material] 
 ~~~~
 
-Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
+Sets (if *material* is defined) or gets the value of material for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISMaterial D 0:5 5 
 ~~~~
 
 @subsubsection occt_draw_5_8_13  AISHasOwnMaterial
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnMaterial docname entry 
 ~~~~
 
 Tests *AISPresentation* attribute of an *entry* label by own material. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnMaterial D 0:5 
 ~~~~
 
 @subsubsection occt_draw_5_8_14  AISColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISColor docname entry [color] 
 ~~~~
 
 Sets (if *color* is defined) or gets value of color for *AISPresentation* attribute of an *entry* label. *color* is integer from 0 to 516 (see color names in *vsetcolor*). 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISColor D 0:5 25 
 ~~~~
 
 @subsubsection occt_draw_5_8_15  AISHasOwnColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnColor docname entry 
 ~~~~
 
 Tests *AISPresentation* attribute of an *entry* label by own color. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 AISHasOwnColor D 0:5 
 ~~~~
 
@@ -3824,7 +3824,7 @@ AISHasOwnColor D 0:5
 
 @subsection occt_draw_6_1 Overview
 
-Draw provides a set of commands to test geometry libraries. These commands are found in the TGEOMETRY executable, or in any Draw executable which includes *GeometryTest* commands. 
+Draw provides a set of commands to test geometry libraries. These commands are available in *DRAWEXE* once the corresponding *GeometryTest* plug-in is loaded with `pload MODELING` (or `pload ALL`). 
 
 In the context of Geometry, Draw includes the following types of variable: 
 
@@ -3867,14 +3867,14 @@ Curves are displayed with an arrow showing the last parameter.
 @subsubsection occt_draw_6_2_1 point
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 point name x y [z] 
 ~~~~
   
 Creates a 2d or 3d point, depending on the number of arguments. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # 2d point 
 point p1 1 2 
 
@@ -3885,7 +3885,7 @@ point p2 10 20 -5
 @subsubsection occt_draw_6_2_2  line
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 line name x y [z] dx dy [dz]
 ~~~~
 
@@ -3895,7 +3895,7 @@ Creates a 2d or 3d line. *x y z* are the coordinates of the line’s point of or
 A 2d line will be represented as *x y dx dy*, and a 3d line as *x y z dx dy dz* . A line is parameterized along its length starting from the point of origin along the direction vector. The direction vector is normalized and must not be null. Lines are infinite, even though their representation is not. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a 2d line at 45 degrees of the X axis 
 line l 2 0 1 1 
 
@@ -3906,7 +3906,7 @@ line l 10 0 0 0 0 1
 @subsubsection occt_draw_6_2_3  circle
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 circle name x y [z [dx dy dz]] [ux uy [uz]] radius
 ~~~~
 
@@ -3919,7 +3919,7 @@ In 3d, *x, y, z* are the coordinates of the center; *dx, dy, dz* give the vector
 The circle is parameterized by the angle in [0,2*pi] starting from the origin and. Note that the specification of origin direction and plane is the same for all analytical curves and surfaces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # A 2d circle of radius 5 centered at 10,-2 
 circle c1 10 -2 5 
 
@@ -3941,13 +3941,13 @@ circle c5 10 20 -5 1 0 0 0 0 1 17
 @subsubsection occt_draw_6_2_4  ellipse
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ellipse name x y [z [dx dy dz]] [ux uy [uz]] firstradius secondradius 
 ~~~~
 
 Creates a 2d or 3d ellipse. In a 2d ellipse, the first two arguments define the center; in a 3d ellipse, the first three. The axis system is given by *firstradius*, the major radius, and *secondradius*, the minor radius. The parameter range of the ellipse is [0,2.*pi] starting from the X axis and going towards the Y axis. The Draw ellipse is parameterized by an angle: 
 
-~~~~{.php}
+~~~~{.tcl}
 P(u) = O + firstradius*cos(u)*Xdir + secondradius*sin(u)*Ydir 
 ~~~~
 Where: 
@@ -3956,7 +3956,7 @@ Where:
   * *O, Xdir* and *Ydir* are respectively the origin, *X Direction* and *Y Direction* of its local coordinate system.
  
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # default 2d ellipse 
 ellipse e1 10 5 20 10 
 
@@ -3973,14 +3973,14 @@ ellipse e4 0 0 0 0 1 0 1 0 1 25 5
 @subsubsection occt_draw_6_2_5  hyperbola
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 hyperbola name x y [z [dx dy dz]] [ux uy [uz]] firstradius secondradius
 ~~~~
 
 Creates a 2d or 3d conic. The first arguments define the center. The axis system is given by *firstradius*, the major radius, and *secondradius*, the minor radius. Note that the hyperbola has only one branch, that in the X direction. 
 
 The Draw hyperbola is parameterized as follows: 
-~~~~{.php}
+~~~~{.tcl}
 P(U) = O + firstradius*Cosh(U)*XDir + secondradius*Sinh(U)*YDir 
 ~~~~
 Where: 
@@ -3989,7 +3989,7 @@ Where:
   * *O, XDir* and *YDir* are respectively the origin, *X Direction* and *YDirection* of its local coordinate system. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # default 2d hyperbola, with asymptotes 1,1 -1,1 
 hyperbola h1 0 0 30 30 
 
@@ -4003,7 +4003,7 @@ hyperbola h3 0 0 0 50 50
 @subsubsection occt_draw_6_2_6  parabola
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 parabola name x y [z [dx dy dz]] [ux uy [uz]] FocalLength 
 ~~~~
 
@@ -4011,7 +4011,7 @@ Creates a 2d or 3d parabola. in the axis system defined by the first arguments. 
 
 The *Geom_Parabola* is parameterized as follows: 
 
-~~~~{.php}
+~~~~{.tcl}
 P(u) = O + u*u/(4.*F)*XDir + u*YDir 
 ~~~~
 
@@ -4021,7 +4021,7 @@ Where:
   * *F* is the focal length of the parabola.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # 2d parabola 
 parabola p1 0 0 50 
 
@@ -4035,7 +4035,7 @@ parabola p3 0 0 0 1 0 0 0 0 1 50
 @subsubsection occt_draw_6_2_7  beziercurve, 2dbeziercurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 beziercurve name nbpole pole, [weight] 
 2dbeziercurve name nbpole pole, [weight]
 ~~~~
@@ -4043,7 +4043,7 @@ beziercurve name nbpole pole, [weight]
 Creates a 3d rational or non-rational Bezier curve. Give the number of poles (control points,) and the coordinates of the poles *(x1 y1 z1 [w1] x2 y2 z2 [w2])*. The degree will be *nbpoles-1*. To create a rational curve, give weights with the poles. You must give weights for all poles or for none. If the weights of all the poles are equal, the curve is polynomial, and therefore non-rational. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a rational 2d bezier curve (arc of circle) 
 2dbeziercurve ci 3 0 0 1 10 0 sqrt(2.)/2. 10 10 1 
 
@@ -4054,7 +4054,7 @@ beziercurve cc 4 0 0 0 10 0 0 10 0 10 10 10 10
 @subsubsection occt_draw_6_2_8  bsplinecurve, 2dbsplinecurve, pbsplinecurve, 2dpbsplinecurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bsplinecurve   name degree nbknots knot, umult pole, weight
 2dbsplinecurve name degree nbknots knot, umult pole, weight
 
@@ -4075,7 +4075,7 @@ The poles must be given with their weights, use weights of 1 for a non rational 
   * For a periodic curve: Sum of multiplicities - last multiplicity
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a bspline curve with 4 poles and 3 knots 
 bsplinecurve bc 2 3 0 3 1 1 2 3 \ 
 10 0 7 1 7 0 7 1 3 0 8 1 0 0 7 1 
@@ -4098,7 +4098,7 @@ dset h sqrt(3)/2
 @subsubsection occt_draw_6_2_9  uiso, viso
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 uiso name surface u 
 viso name surface u 
 ~~~~
@@ -4106,7 +4106,7 @@ viso name surface u
 Creates a U or V isoparametric curve from a surface. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create a cylinder and extract iso curves 
 
 cylinder c 10 
@@ -4120,7 +4120,7 @@ viso c2 c
 @subsubsection occt_draw_6_2_10  to3d, to2d
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 to3d name curve2d [plane] 
 to2d name curve3d [plane] 
 ~~~~
@@ -4128,7 +4128,7 @@ to2d name curve3d [plane]
 Create respectively a 3d curve from a 2d curve and a 2d curve from a 3d curve. The transformation uses a planar surface to define the XY plane in 3d (by default this plane is the default OXYplane). **to3d** always gives a correct result, but as **to2d** is not a projection, it may surprise you. It is always correct if the curve is planar and parallel to the plane of projection. The points defining the curve are projected on the plane. A circle, however, will remain a circle and will not be changed to an ellipse. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # the following commands 
 circle c 0 0 5 
 plane p -2 1 0 1 2 3 
@@ -4144,7 +4144,7 @@ See also: **project**
 @subsubsection occt_draw_6_2_11  project
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 project name curve3d surface 
 ~~~~
 
@@ -4152,7 +4152,7 @@ Computes a 2d curve in the parametric space of a surface corresponding to a 3d c
 
 If we, for example, intersect a cylinder and a plane and project the resulting ellipse on the cylinder, this will create a 2d sinusoid-like bspline. 
 
-~~~~{.php}
+~~~~{.tcl}
 cylinder c 5 
 plane p 0 0 0 0 1 1 
 intersect i c p 
@@ -4173,7 +4173,7 @@ Surfaces are displayed with isoparametric lines. To show the parameterization, a
 @subsubsection occt_draw_6_3_1  plane
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 plane name [x y z [dx dy dz [ux uy uz]]]
 ~~~~
 
@@ -4188,26 +4188,26 @@ There are default values for the coordinate system. If no arguments are given, t
 Note that this definition will be used for all analytical surfaces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a plane through the point 10,0,0 perpendicular to X 
 # with U direction on Y 
 plane p1 10 0 0 1 0 0 0 1 0 
 
-# an horixontal plane with origin 10, -20, -5 
+# an horizontal plane with origin 10, -20, -5 
 plane p2 10 -20 -5 
 ~~~~
 
 @subsubsection occt_draw_6_3_2  cylinder
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cylinder name [x y z [dx dy dz [ux uy uz]]] radius 
 ~~~~
 
 A cylinder is defined by a coordinate system, and a radius. The surface generated is an infinite cylinder with the Z axis as the axis. The U parameter is the angle starting from X going in the Y direction. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a cylinder on the default Z axis, radius 10 
 cylinder c1 10 
 
@@ -4225,13 +4225,13 @@ sin(la) 10
 @subsubsection occt_draw_6_3_3  cone
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cone name [x y z [dx dy dz [ux uy uz]]] semi-angle radius 
 ~~~~
 Creates a cone in the infinite coordinate system along the Z-axis. The radius is that of the circle at the intersection of the cone and the XY plane. The semi-angle is the angle formed by the cone relative to the axis; it should be between -90 and 90. If the radius is 0, the vertex is the origin. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a cone at 45 degrees at the origin on Z 
 cone c1 45 0 
 
@@ -4242,7 +4242,7 @@ cone c2 0 0 z1 180.*atan2(r2-r1,z2-z1)/pi r1
 @subsubsection occt_draw_6_3_4  sphere
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 sphere name [x y z [dx dy dz [ux uy uz]]] radius 
 ~~~~
 
@@ -4251,7 +4251,7 @@ Creates a sphere in the local coordinate system defined in the **plane** command
 To parameterize the sphere, *u* is the angle from X to Y, between 0 and 2*pi. *v* is the angle in the half-circle at angle *u* in the plane containing the Z axis. *v* is between -pi/2 and pi/2. The poles are the points Z = +/- radius; their parameters are u,+/-pi/2 for any u in 0,2*pi. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # a sphere at the origin 
 sphere s1 10 
 # a sphere at 10 10 10, with poles on the axis 1,1,1 
@@ -4261,7 +4261,7 @@ sphere s2 10 10 10 1 1 1 10
 @subsubsection occt_draw_6_3_5  torus
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 torus name [x y z [dx dy dz [ux uy uz]]] major minor
 ~~~~
 
@@ -4270,7 +4270,7 @@ Creates a torus in the local coordinate system with the given major and minor ra
 To parameterize a torus, *u* is the angle from X to Y; *v* is the angle in the plane at angle *u* from the XY plane to Z. *u* and *v* are in 0,2*pi. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a torus at the origin 
 torus t1 20 5 
 
@@ -4282,7 +4282,7 @@ torus t2 10 5 -2 2 1 0 20 5
 @subsubsection occt_draw_6_3_6  beziersurf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 beziersurf name nbupoles nbvolpes pole, [weight] 
 ~~~~
 
@@ -4293,7 +4293,7 @@ Then give the poles in the following order: *pole(1, 1), pole(nbupoles, 1), pole
 Weights may be omitted, but if you give one weight you must give all of them. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a non-rational degree 2,3 surface 
 beziersurf s 3 4 \ 
 0 0 0 10 0 5 20 0 0 \ 
@@ -4305,7 +4305,7 @@ beziersurf s 3 4 \
 @subsubsection occt_draw_6_3_7   bsplinesurf, upbsplinesurf, vpbsplinesurf, uvpbsplinesurf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bsplinesurf name udegree nbuknots uknot umult ... nbvknot vknot 
 vmult ... x y z w ... 
 upbsplinesurf ... 
@@ -4323,7 +4323,7 @@ The syntax is similar to the *bsplinecurve* command. First give the degree in u 
 See *bsplinecurve* to compute the number of poles, the poles are first given in U as in the *beziersurf* command. You must give weights if the surface is rational. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create a bspline surface of degree 1 2 
 # with two knots in U and three in V 
 bsplinesurf s \ 
@@ -4339,7 +4339,7 @@ bsplinesurf s \
 @subsubsection occt_draw_6_3_8  trim, trimu, trimv
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 trim newname name [u1 u2 [v1 v2] [usense vsense]]
 trimu newname name u1 u2 [usense]
 trimv newname name v1 v2 [vsense]
@@ -4355,7 +4355,7 @@ After an initial trim, a second execution with no parameters given recreates the
 **Note** that a trimmed curve or surface contains a copy of the basis geometry: modifying that will not modify the trimmed geometry. Trimming trimmed geometry will not create multiple levels of trimming. The basis geometry will be used. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create a 3d circle 
 circle c 0 0 0 10 
 
@@ -4385,7 +4385,7 @@ trimv cy cy 0 50
 @subsubsection occt_draw_6_3_9  offset
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 offset name basename distance [dx dy dz]
 ~~~~
 
@@ -4396,7 +4396,7 @@ The curve can be a 2d or a 3d curve. To compute the offsets for a 3d curve, you 
 The offset curve or surface copies the basic geometry, which can be modified later. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # graphic demonstration that the outline of a torus 
 # is the offset of an ellipse 
 smallview +X+Y 
@@ -4411,7 +4411,7 @@ offset l1 e 20 0 0 1
 @subsubsection occt_draw_6_3_10  revsurf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 revsurf name curvename x y z dx dy dz
 ~~~~
 
@@ -4422,7 +4422,7 @@ A surface of revolution or revolved surface is obtained by rotating a curve (cal
 To parameterize a surface of revolution: u is the angle of rotation around the axis. Its origin is given by the position of the meridian on the surface. v is the parameter of the meridian. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # another way of creating a torus like surface 
 circle c 50 0 0 20 
 revsurf s c 0 0 0 0 1 0 
@@ -4431,7 +4431,7 @@ revsurf s c 0 0 0 0 1 0
 @subsubsection occt_draw_6_3_11  extsurf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 extsurf newname curvename dx dy dz 
 ~~~~
 
@@ -4442,7 +4442,7 @@ In the syntax, *dx,dy,dz* gives the direction of extrusion.
 To parameterize a surface of extrusion: *u* is the parameter along the extruded curve; the *v* parameter is along the direction of extrusion. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # an elliptic cylinder 
 ellipse e 0 0 0 10 5 
 extsurf s e 0 0 1 
@@ -4453,14 +4453,14 @@ trimv s s 0 10
 @subsubsection occt_draw_6_3_12  convert
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 convert newname name 
 ~~~~
 
 Creates a 2d or 3d NURBS curve or a NURBS surface from any 2d curve, 3d curve or surface. In other words, conics, beziers and bsplines are turned into NURBS. Offsets are not processed.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # turn a 2d arc of a circle into a 2d NURBS 
 circle c 0 0 5 
 trim c c 0 pi/3 
@@ -4504,7 +4504,7 @@ Modifications for bspline:
 
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 reverse curvename 
 ureverse surfacename 
 vreverse surfacename 
@@ -4517,7 +4517,7 @@ The **reverse** command reverses the parameterization and inverses the orientati
 Reversing a parameter on an analytical surface may create an indirect coordinate system. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # reverse a trimmed 2d circle 
 circle c 0 0 5 
 trim c c pi/4 pi/2 
@@ -4530,14 +4530,14 @@ reverse c
 @subsubsection occt_draw_6_4_2  exchuv
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 exchuv surfacename 
 ~~~~
 
 For a bezier or bspline surface this command exchanges the u and v parameters. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # exchanging u and v on a spline (made from a cylinder) 
 cylinder c 5 
 trimv c c 0 10 
@@ -4548,7 +4548,7 @@ exchuv c1
 @subsubsection occt_draw_6_4_3  segment, segsur
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 segment curve Ufirst Ulast 
 segsur surface Ufirst Ulast Vfirst Vlast 
 ~~~~
@@ -4560,7 +4560,7 @@ These commands modify the curve to restrict it between the new parameters: *Ufir
 This command must not be confused with **trim** which creates a new geometry. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # segment a bezier curve in half 
 beziercurve c 3 0 0 0 10 0 0 10 10 0 
 segment c ufirst ulast 
@@ -4569,7 +4569,7 @@ segment c ufirst ulast
 @subsubsection occt_draw_6_4_4  iincudeg, incvdeg
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 incudeg surfacename newdegree 
 incvdeg surfacename newdegree 
 ~~~~
@@ -4577,7 +4577,7 @@ incvdeg surfacename newdegree
 **incudeg** and **incvdeg** increase the degree in the U or V parameter of a bezier or bspline surface.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make a planar bspline and increase the degree to 2 3 
 plane p 
 trim p p -1 1 -1 1 
@@ -4592,7 +4592,7 @@ incvdeg p1 3
 @subsubsection occt_draw_6_4_5  cmovep, movep, movecolp, moverowp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cmovep curve index dx dy [dz] 
 movep surface uindex vindex dx dy dz 
 movecolp surface uindex dx dy dz 
@@ -4604,7 +4604,7 @@ moverowp surface vindex dx dy dz
 * **movecolp** and **moverowp** translate a whole column (expressed by the *uindex*) or row (expressed by the *vindex*) of poles. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # start with a plane 
 # transform to bspline, raise degree and add relief 
 plane p 
@@ -4620,7 +4620,7 @@ movep p1 2 2 0 0 5
 @subsubsection occt_draw_6_4_6  insertpole, rempole, remcolpole, remrowpole
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 insertpole curvename index x y [z] [weight] 
 rempole curvename index 
 remcolpole surfacename index 
@@ -4634,7 +4634,7 @@ remrowpole surfacename index
 **remcolpole** and **remrowpole** remove a column or a row of poles from a bezier surface. A column is in the v direction and a row in the u direction The resulting degree must be at least 1; i.e there will be two rows and two columns left. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # start with a segment, insert a pole at end 
 # then remove the central pole 
 beziercurve c 2 0 0 0 10 0 0 
@@ -4645,7 +4645,7 @@ rempole c 2
 @subsubsection occt_draw_6_4_7  insertknot, insertuknot, insertvknot
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 insertknot name knot [mult = 1] [knot mult ...] 
 insertuknot surfacename knot mult 
 insertvknot surfacename knot mult 
@@ -4656,7 +4656,7 @@ insertvknot surfacename knot mult
 **insertuknot** and **insertvknot** insert knots in a surface. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create a cylindrical surface and insert a knot 
 cylinder c 10 
 trim c c 0 pi/2 0 10 
@@ -4667,7 +4667,7 @@ insertuknot c1 pi/4 1
 @subsubsection occt_draw_6_4_8  remknot, remuknot, remvknot
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 remknot index [mult] [tol] 
 remuknot index [mult] [tol] 
 remvknot index [mult] [tol] 
@@ -4678,7 +4678,7 @@ remvknot index [mult] [tol]
 By default, if no tolerance is given, the knot will always be removed. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # bspline circle, remove a knot 
 circle c 0 0 5 
 convert c1 c 
@@ -4692,7 +4692,7 @@ remknot c1 2
 @subsubsection occt_draw_6_4_9  setperiodic, setnotperiodic, setuperiodic, setunotperiodic, setvperiodic, setvnotperiodic
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 setperiodic curve 
 setnotperiodic curve 
 setuperiodic surface 
@@ -4706,7 +4706,7 @@ setvnotperiodic surface
 **setuperiodic** and **setvperiodic** make the u or the v parameter of bspline surfaces periodic; **setunotperiodic**, and **setvnotperiodic** remove periodicity from the u or the v parameter of bspline surfaces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a circle deperiodicized 
 circle c 0 0 5 
 convert c1 c 
@@ -4716,7 +4716,7 @@ setnotperiodic c1
 @subsubsection occt_draw_6_4_10  setorigin, setuorigin, setvorigin
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 setorigin curvename index 
 setuorigin surfacename index 
 setuorigin surfacename index 
@@ -4725,7 +4725,7 @@ setuorigin surfacename index
 These commands change the origin of the parameters on periodic curves or surfaces. The new origin must be an existing knot. To set an origin other than an existing knot, you must first insert one with the *insertknot* command. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a torus with new U and V origins 
 torus t 20 5 
 convert t1 t 
@@ -4741,7 +4741,7 @@ Draw provides commands to apply linear transformations to geometric objects: the
 @subsubsection occt_draw_6_5_1  translate, dtranslate
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 translate name [names ...] dx dy dz 
 2dtranslate name [names ...] dx dy 
 ~~~~
@@ -4751,7 +4751,7 @@ The **Translate** command translates 3d points, curves and surfaces along a vect
 For 2d points or curves, use the **2dtranslate** command. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # 3d translation 
 point p 10 20 30 
 circle c 10 20 30 5 
@@ -4765,7 +4765,7 @@ translate p c t 0 0 15
 @subsubsection occt_draw_6_5_2  rotate, 2drotate
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 rotate name [name ...] x y z dx dy dz angle 
 2drotate name [name ...] x y angle
 ~~~~
@@ -4775,7 +4775,7 @@ The **rotate** command rotates a 3d point curve or surface. You must give an axi
 For a 2d rotation, you need only give the center point and the angle. In 2d or 3d, the angle can be negative. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make a helix of circles. create a script file with 
 this code and execute it using **source**. 
 circle c0 10 0 0 3 
@@ -4789,7 +4789,7 @@ rotate c$i 0 0 0 0 0 1 36
 @subsubsection occt_draw_6_5_3  pmirror, lmirror, smirror, dpmirror, dlmirror
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pmirror name [names ...] x y z 
 lmirror name [names ...] x y z dx dy dz 
 smirror name [names ...] x y z dx dy dz 
@@ -4806,7 +4806,7 @@ The mirror commands perform a mirror transformation of 2d or 3d geometry.
 * **2dlmirror** is the axis symmetry mirror in 2D.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # build 3 images of a torus 
 torus t 10 10 10 1 2 3 5 1 
 copy t t1 
@@ -4820,7 +4820,7 @@ smirror t3 0 0 0 1 0 0
 @subsubsection occt_draw_6_5_4  pscale, dpscale
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pscale name [name ...] x y z s 
 2dpscale name [name ...] x y s 
 ~~~~
@@ -4829,7 +4829,7 @@ The **pscale** and **2dpscale** commands transform an object by point scaling. Y
 
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # double the size of a sphere 
 sphere s 0 0 0 10 
 pscale s 0 0 0 2 
@@ -4842,7 +4842,7 @@ pscale s 0 0 0 2
   * **coord** to find the coordinates of a point.
   * **cvalue** and **2dcvalue** to compute points and derivatives on curves.
   * **svalue** to compute points and derivatives on a surface.
-  * **localprop** and **minmaxcurandif** to compute the curvature on a curve.
+  * **localprop** and **minmaxcurandinf** to compute the curvature on a curve.
   * **parameters** to compute (u,v) values for a point on a surface.
   * **proj** and **2dproj** to project a point on a curve or a surface.
   * **surface_radius** to compute the curvature on a surface.
@@ -4850,14 +4850,14 @@ pscale s 0 0 0 2
 @subsubsection occt_draw_6_6_1  coord
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 coord P x y [z] 
 ~~~~
 
 Sets the x, y (and optionally z) coordinates of the point P. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # translate a point 
 point p 10 5 5 
 translate p 5 0 0 
@@ -4869,7 +4869,7 @@ coord p x y z
 @subsubsection occt_draw_6_6_2   cvalue, 2dcvalue
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cvalue curve U x y z [d1x d1y d1z [d2x d2y d2z]] 
 2dcvalue curve U x y [d1x d1y [d2x d2y]] 
 ~~~~
@@ -4880,7 +4880,7 @@ For a curve at a given parameter, and depending on the number of arguments, **cv
 
 Let on a bezier curve at parameter 0 the point is the first pole; the first derivative is the vector to the second pole multiplied by the degree; the second derivative is the difference first to the second pole, second to the third pole multiplied by *degree-1* : 
 
-~~~~{.php}
+~~~~{.tcl}
 2dbeziercurve c 4 0 0 1 1 2 1 3 0 
 2dcvalue c 0 x y d1x d1y d2x d2y 
 
@@ -4891,14 +4891,14 @@ Let on a bezier curve at parameter 0 the point is the first pole; the first deri
 @subsubsection occt_draw_6_6_3  svalue
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 svalue surfname U v x y z [dux duy duz dvx dvy dvz [d2ux d2uy d2uz d2vx d2vy d2vz d2uvx d2uvy d2uvz]] 
 ~~~~
 
 Computes points and derivatives on a surface for a pair of parameter values. The result depends on the number of arguments. You can compute the first and the second derivatives. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # display points on a sphere 
 sphere s 10 
 for {dset t 0} {[dval t] <= 1} {dset t t+0.01} { 
@@ -4910,7 +4910,7 @@ point . x y z
 @subsubsection occt_draw_6_6_4  localprop, minmaxcurandinf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 localprop curvename U 
 minmaxcurandinf curve
 ~~~~
@@ -4919,7 +4919,7 @@ minmaxcurandinf curve
 **minmaxcurandinf** computes and prints the parameters of the points where the curvature is minimum and maximum on a 2d curve. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # show curvature at the center of a bezier curve 
 beziercurve c 3 0 0 0 10 2 0 20 0 0 
 localprop c 0.5 
@@ -4929,14 +4929,14 @@ localprop c 0.5
 @subsubsection occt_draw_6_6_5  parameters
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 parameters surf/curve x y z U [V] 
 ~~~~
 
 Returns the parameters on the surface of the 3d point *x,y,z* in variables *u* and *v*. This command may only be used on analytical surfaces: plane, cylinder, cone, sphere and torus. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Compute parameters on a plane 
 plane p 0 0 10 1 1 0 
 parameters p 5 5 5 u v 
@@ -4946,7 +4946,7 @@ parameters p 5 5 5 u v
 @subsubsection occt_draw_6_6_6  proj, 2dproj
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 proj name x y z 
 2dproj name xy 
 ~~~~
@@ -4959,7 +4959,7 @@ The command will compute and display all points in the projection. The lines joi
 
 Let us project a point on a torus 
 
-~~~~{.php}
+~~~~{.tcl}
 torus t 20 5 
 proj t 30 10 7 
 == ext_1 ext_2 ext_3 ext_4 
@@ -4968,7 +4968,7 @@ proj t 30 10 7
 @subsubsection occt_draw_6_6_7  surface_radius
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 surface_radius surface u v [c1 c2] 
 ~~~~
 
@@ -4978,11 +4978,11 @@ Computes the main curvatures of a surface at parameters *(u,v)*. If there are ex
 
 Let us compute curvatures of a cylinder:
 
-~~~~{.php}
+~~~~{.tcl}
 cylinder c 5 
 surface_radius c pi 3 c1 c2 
 == Min Radius of Curvature : -5 
-== Min Radius of Curvature : infinite 
+== Max Radius of Curvature : infinite 
 ~~~~
 
 
@@ -4995,14 +4995,14 @@ surface_radius c pi 3 c1 c2
 @subsubsection occt_draw_6_7_1  intersect
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 intersect name surface1 surface2
 ~~~~
 
 Intersects two surfaces; if there is one intersection curve it will be named *name*, if there are more than one they will be named *name_1*, *name_2*, ... 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create an ellipse 
 cone c 45 0 
 plane p 0 0 40 0 1 5 
@@ -5012,7 +5012,7 @@ intersect e c p
 @subsubsection occt_draw_6_7_2  2dintersect
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dintersect curve1 [curve2] [-tol tol] [-state]
 ~~~~
 
@@ -5022,7 +5022,7 @@ Options:
  -state - allows printing the intersection state for each point.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # intersect two 2d ellipses 
 ellipse e1 0 0 5 2 
 ellipse e2 0 0 0 1 5 2 
@@ -5032,7 +5032,7 @@ ellipse e2 0 0 0 1 5 2
 @subsubsection occt_draw_6_7_3 intconcon
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 intconcon curve1 curve2 
 ~~~~
 
@@ -5041,7 +5041,7 @@ Curves must be only conic sections: 2d lines, circles, ellipses,
 hyperbolas, parabolas. The algorithm from *IntAna2d_AnaIntersection* is used.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # intersect two 2d ellipses 
 ellipse e1 0 0 5 2 
 ellipse e2 0 0 0 1 5 2 
@@ -5061,7 +5061,7 @@ Draw provides command to create curves and surfaces by approximation.
 @subsubsection occt_draw_6_8_1   appro, dapprox
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 appro result nbpoint [curve] 
 2dapprox result nbpoint [curve / x1 y1 x2 y2]
 ~~~~
@@ -5072,7 +5072,7 @@ These commands fit a curve through a set of points. First give the number of poi
 
 Let us pick points and they will be fitted 
 
-~~~~{.php}
+~~~~{.tcl}
 2dapprox c 10 
 ~~~~
 
@@ -5080,7 +5080,7 @@ Let us pick points and they will be fitted
 
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 surfapp name nbupoints nbvpoints x y z .... 
 or
 surfapp name nbupoints nbvpoints surf [periodic_flag = 0]
@@ -5100,7 +5100,7 @@ U direction of result surface corresponds columns of initial array of points.
 If **periodic_flag** = 1, algorithm uses first row of array as last row and builds periodical surface.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a surface using the same data as in the beziersurf 
 example sect 4.4 
 surfapp s 3 4 \ 
@@ -5121,7 +5121,7 @@ Draw provides commands to project points/curves on curves/surfaces.
 @subsubsection  occt_draw_6_9_1 projponf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 projponf face pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]
 ~~~~
 
@@ -5136,7 +5136,7 @@ You can change the Extrema options:
  -minmax - to look for MinMax solutions.
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 plane p 0 0 0 0 0 1
 mkface f p
 point pnt 5 5 10
@@ -5156,7 +5156,7 @@ projponf f pnt
 @subsubsection occt_draw_6_10_1  cirtang
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cirtang result [-t <Tolerance>] -c <curve> -p <point> -r <Radius>...
 ~~~~
 
@@ -5168,7 +5168,7 @@ Builds all circles satisfying the condition:
 Only following set of input data is supported: Curve-Curve-Curve, Curve-Curve-Point, Curve-Curve-Radius, Curve-Point-Point, Curve-Point-Radius, Point-Point-Point, Point-Point-Radius. The solutions will be stored in variables *result_1*, *result_2*, etc.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a point, a line and a radius. 2 solutions of type Curve-Point-Radius (C-P-R)
 point p 0 0 
 line l 10 0 -1 1 
@@ -5179,7 +5179,7 @@ cirtang c -p p -c l -r 4
 Additionally it is possible to create a circle(s) with given center and tangent to the given curve (Curve-Point type).
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 point pp 1 1
 2dbsplinecurve cc 1 2 0 2 1 2 -10 -5 1 10 -5 1
 cirtang r -p pp -c cc 
@@ -5189,14 +5189,14 @@ cirtang r -p pp -c cc
 @subsubsection occt_draw_6_10_2  lintan
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 lintan name curve curve [angle] 
 ~~~~
 
 Builds all 2d lines tangent to two curves. If the third angle argument is given the second curve must be a line and **lintan** will build all lines tangent to the first curve and forming the given angle with the line. The angle is given in degrees. The solutions are named *name_1*, *name_2*, etc. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # lines tangent to 2 circles, 4 solutions 
 circle c1 -10 0 10 
 circle c2 10 0 5 
@@ -5225,7 +5225,7 @@ On bspline curves and surfaces you can toggle the display of the knots with the 
 @subsubsection occt_draw_6_11_1  dmod, discr, defle
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 dmode name [name ...] u/d 
 discr name [name ...] nbintervals 
 defle name [name ...] deflection 
@@ -5240,7 +5240,7 @@ In *d*, or discretization mode, a fixed number of points is computed. This numbe
 If the curve or the isolines seem to present too many angles, you can either increase the discretization or lower the deflection, depending on the mode. This will increase the number of points. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # increment the number of points on a big circle 
 circle c 0 0 50 50 
 discr 100 
@@ -5252,7 +5252,7 @@ dmode c u
 @subsubsection occt_draw_6_11_2   nbiso
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 nbiso name [names...] nuiso nviso 
 ~~~~
 
@@ -5261,7 +5261,7 @@ Changes the number of isoparametric curves displayed on a surface in the U and V
 **Example:** 
 
 Let us  display 35 meridians and 15 parallels on a sphere:
-~~~~{.php}
+~~~~{.tcl}
 sphere s 20 
 nbiso s 35 15 
 ~~~~
@@ -5269,7 +5269,7 @@ nbiso s 35 15
 @subsubsection occt_draw_6_11_3  clpoles, shpoles
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 clpoles name 
 shpoles name 
 ~~~~
@@ -5280,7 +5280,7 @@ On bezier and bspline curves and surfaces, the control polygon is displayed by d
 
 Let us make a bezier curve and erase the poles 
 
-~~~~{.php}
+~~~~{.tcl}
 beziercurve c 3 0 0 0 10 0 0 10 10 0 
 clpoles c 
 ~~~~
@@ -5288,7 +5288,7 @@ clpoles c
 @subsubsection occt_draw_6_11_4  clknots, shknots
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 clknots name 
 shknots name 
 ~~~~
@@ -5296,7 +5296,7 @@ shknots name
 By default, knots on a bspline curve or surface are displayed with markers at the points with parametric value equal to the knots. *clknots* removes them and *shknots* restores them. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # hide the knots on a bspline curve 
 bsplinecurve bc 2 3 0 3 1 1 2 3 \ 
 10 0 7 1 7 0 7 1 3 0 8 1 0 0 7 1 
@@ -5357,7 +5357,7 @@ In Draw, shapes are displayed using isoparametric curves. There is color coding 
 @subsubsection occt_draw_7_1_1  isos, discretisation
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 isos [name ...][nbisos] 
 discretisation nbpoints
 ~~~~
@@ -5369,7 +5369,7 @@ The same number is used for the u and v directions. With no arguments, *isos* pr
 *discretisation* changes the default number of points used to display the curves. The default value is 30. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Display only the edges (the wireframe) 
 isos 0 
 ~~~~
@@ -5380,7 +5380,7 @@ isos 0
 @subsubsection occt_draw_7_1_2  orientation, complement, invert, normals, range
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 orientation name [name ...] F/R/E/I 
 complement name [name ...] 
 invert name 
@@ -5391,11 +5391,11 @@ range name value value
 * **orientation** -- assigns the orientation of simple and complex shapes to one of the following four values: *FORWARD, REVERSED, INTERNAL, EXTERNAL*. 
 * **complement** -- changes the current orientation of shapes to its complement: *FORWARD* to *REVERSED* and  *INTERNAL* to *EXTERNAL*. 
 * **invert** -- creates a copy of the original shape with a reversed orientation of all subshapes. For example, it may be useful to reverse the normals of a solid. 
-* *normals** -- returns the assignment of colors to orientation values. 
+* **normals** -- returns the assignment of colors to orientation values. 
 * **range** -- defines the length of a selected edge by defining the values of a starting point and an end point.
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to invert normals of a box 
 box b 10 20 30 
 normals b 5 
@@ -5417,7 +5417,7 @@ range e 0 1
 @subsubsection occt_draw_7_1_3  explode, exwire, nbshapes
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 explode name [C/So/Sh/F/W/E/V] 
 exwire name 
 nbshapes name 
@@ -5432,7 +5432,7 @@ With name only, **explode** will extract the first sublevel of shapes: the shell
 **nbshapes** counts the number of shapes of each type in an entity. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # on a box 
 box b 10 20 30 
 
@@ -5468,7 +5468,7 @@ SHAPE : 34
 @subsubsection occt_draw_7_1_4  emptycopy, add, compound
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 emptycopy [newname] name 
 add name toname 
 compound [name ...] compoundname 
@@ -5479,9 +5479,9 @@ compound [name ...] compoundname
 **add** inserts shape *C* into shape *S*. Verify that *C* and *S* reference compatible types of objects: 
   * Any *Shape* can be added to a *Compound*.
   * Only a *Solid* can be added to a *CompSolid*.
-  * Only a *Shell* can *Edge* or a *Vertex* can be added into a *Solid*.
+  * Only a *Shell* can be added to a *Solid*.
   * Only a *Face* can be added to a *Shell*.
-  * Only a *Wire* and *Vertex* can be added in a *Solid*.
+  * Only a *Wire* can be added to a *Face*.
   * Only an *Edge* can be added to a *Wire*.
   * Only a *Vertex* can be added to an *Edge*.
   * Nothing can be added to a *Vertex*.
@@ -5491,7 +5491,7 @@ compound [name ...] compoundname
 On the other hand, **compound** is a safe way to achieve a similar result. It creates a compound from shapes. If no shapes are given, the compound is empty. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a compound with three boxes 
 box b1 0 0 0 1 1 1 
 box b2 3 0 0 1 1 1 
@@ -5503,14 +5503,14 @@ compound b1 b2 b3 c
 @subsubsection occt_draw_7_1_5  compare
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 compare shape1 shape2
 ~~~~
 
 **compare** compares the two shapes *shape1* and *shape2* using the methods *TopoDS_Shape::IsSame()* and *TopoDS_Shape::IsEqual()*.
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b1 1 1 1
 copy b1 b2
 compare b1 b2
@@ -5529,14 +5529,14 @@ compare b1 b2
 @subsubsection occt_draw_7_1_6  issubshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 issubshape subshape shape
 ~~~~
 
 **issubshape** checks if the shape *subshape* is sub-shape of the shape *shape* and gets its index in the shape.
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b 1 1 1
 explode b f
 issubshape b_2 b
@@ -5559,35 +5559,35 @@ This group of commands is used to create topology from shapes and to extract sha
 @subsubsection occt_draw_7_2_1  vertex
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vertex name [x y z / p edge] 
 ~~~~
 
 Creates a vertex at either a 3d location x,y,z or the point at parameter p on an edge. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vertex v1 10 20 30 
 ~~~~
 
 @subsubsection occt_draw_7_2_1a  mkpoint
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mkpoint name vertex
 ~~~~
 
 Creates a point from the coordinates of a given vertex.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 mkpoint p v1
 ~~~~
 
 @subsubsection occt_draw_7_2_2  edge, mkedge, uisoedge, visoedge
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 edge name vertex1 vertex2 
 mkedge edge curve [surface] [pfirst plast] [vfirst [pfirst] vlast [plast]] 
 uisoedge edge face u v1 v2 
@@ -5595,10 +5595,10 @@ visoedge edge face v u1 u2
 ~~~~
 
 * **edge** creates a straight line edge between two vertices. 
-* **mkedge** generates edges from curves<.Two parameters can be given for the vertices: the first and last parameters of the curve are given by default. Vertices can also be given with their parameters, this option allows blocking the creation of new vertices. If the parameters of the vertices are not given, they are computed by projection on the curve. Instead of a 3d curve, a 2d curve and a surface can be given. 
+* **mkedge** generates edges from curves. Two parameters can be given for the vertices: the first and last parameters of the curve are given by default. Vertices can also be given with their parameters, this option allows blocking the creation of new vertices. If the parameters of the vertices are not given, they are computed by projection on the curve. Instead of a 3d curve, a 2d curve and a surface can be given. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # straight line edge 
 vertex v1 10 0 0 
 vertex v2 10 10 0 
@@ -5617,7 +5617,7 @@ mkedge e2 c
 * **visoedge** and **uisoedge** are commands that generate a *uiso* parameter edge or a *viso* parameter edge. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create an edge between v1 and v2 at point u 
 # to create the example plane 
 plane p 
@@ -5636,7 +5636,7 @@ uisoedge e p 0.5 0.20 0.8
 @subsubsection occt_draw_7_2_3  wire, polyline, polyvertex
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 wire wirename e1/w1 [e2/w2 ...] 
 polyline name x1 y1 z1 x2 y2 z2 ... 
 polyvertex name v1 v2 ... 
@@ -5649,7 +5649,7 @@ polyvertex name v1 v2 ...
 **polyvertex** creates a polygonal wire from vertices. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create two polygonal wires 
 # glue them and define as a single wire 
 polyline w1 0 0 0 10 0 0 10 10 0 
@@ -5660,7 +5660,7 @@ wire w w1 w2
 @subsubsection occt_draw_7_2_4  profile
 
 Syntax       
-~~~~{.php}
+~~~~{.tcl}
 profile name [code values] [code values] ... 
 ~~~~
 
@@ -5703,14 +5703,14 @@ The profile shape definition is the suffix; no suffix produces a face, *w* is a 
 Code letters are not case-sensitive. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create a triangular plane using a vertex at the
 origin, in the xy plane 
 profile p O 0 0 0 X 1 Y 0 x 1 y 1 
 ~~~~
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create a contour using the different code 
 possibilities 
 
@@ -5741,7 +5741,7 @@ profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290
 # wire continues at a tangent to the intersection x = 0 
 profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 ww 
 
-# continue the wire at an angle of 90 degrees until it intersects the y axis at y= -o.3 
+# continue the wire at an angle of 90 degrees until it intersects the y axis at y= -0.3 
 profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 r 90 ix -0.3 ww 
 
 #close the wire 
@@ -5754,7 +5754,7 @@ profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 r 90 ix -
 @subsubsection occt_draw_7_2_5   bsplineprof
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bsplineprof name [S face] [W WW] 
 ~~~~
 
@@ -5768,7 +5768,7 @@ Builds a profile in the XY plane from digitizes. By default the profile is close
 The profile shape definition is the suffix; no suffix produces a face, **w** is a closed wire, **ww** is an open wire. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 #to view the xy plane 
 top 
 #to create a 2d curve with the mouse 
@@ -5789,7 +5789,7 @@ bsplineprof res
 The offset distance defines the spacing and the positioning of the occurrences. 
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mkoffset result shape nboffset stepoffset [jointype(a/i) [alt]]
 ~~~~
 Where:
@@ -5802,7 +5802,7 @@ Where:
 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # Create a box and select a face 
 box b 1 2 3 
 explode b f 
@@ -5821,7 +5821,7 @@ mkoffset r b_1 1 -0.4
 **Note** that on a concave input contour for an interior step *mkoffset* command may produce several wires which will be contained in a single compound.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create the example contour 
 profile p F 0 0 x 2 y 4 tt 1 1 tt 0 4 w 
 # creates an incoherent interior offset 
@@ -5835,7 +5835,7 @@ mkoffset r p 1 -0.55
 @subsubsection occt_draw_7_2_7  mkplane, mkface
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mkplane name wire 
 mkface name surface [ufirst ulast vfirst vlast] 
 ~~~~
@@ -5845,7 +5845,7 @@ mkface name surface [ufirst ulast vfirst vlast]
 **mkface** generates a face from a surface. Parameter values can be given to trim a rectangular area. The default boundaries are those of the surface. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make a polygonal face 
 polyline f 0 0 0 20 0 0 20 10 0 10 10 0 10 20 0 0 20 0 0 0 0 
 mkplane f f 
@@ -5859,7 +5859,7 @@ mkface g g
 @subsubsection occt_draw_7_2_8  mkcurve, mksurface
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mkcurve curve edge 
 mksurface name face 
 ~~~~
@@ -5869,7 +5869,7 @@ mksurface name face
 **mksurface** creates a surface from a face. The surface will not be trimmed. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make a line 
 vertex v1 0 0 0 
 vertex v2 10 0 0 
@@ -5880,14 +5880,14 @@ edge e v1 v2
 
 Syntax:
 
-~~~~{.php}
+~~~~{.tcl}
 pcurve [name edgename] facename 
 ~~~~
 
 Extracts the 2d curve of an edge on a face. If only the face is specified, the command extracts all the curves and colors them according to their orientation. This is useful in checking to see if the edges in a face are correctly oriented, i.e. they turn counter-clockwise. To make curves visible, use a fitted 2d view. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # view the pcurves of a face 
 plane p 
 trim p p -1 1 -1 1 
@@ -5900,7 +5900,7 @@ pcurve p
 @subsubsection occt_draw_7_2_10  chfi2d
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 chfi2d result face [edge1 edge2 (F radius/CDD d1 d2/CDA d ang) .... 
 ~~~~
 
@@ -5918,7 +5918,7 @@ The distance is the length value from the edge between the two selected faces in
 
 Let us create a 2d fillet: 
 
-~~~~{.php}
+~~~~{.tcl}
 top 
 profile p x 2 y 2 x -2 
 chfi2d cfr p . . F 0.3 
@@ -5930,7 +5930,7 @@ chfi2d cfr p . . F 0.3
 
 Let us create a 2d chamfer using two distances:
  
-~~~~{.php}
+~~~~{.tcl}
 profile p x 2 y 2 x -2 
 chfi2d cfr p . . CDD 0.3 0.6 
 ==Pick an object 
@@ -5941,7 +5941,7 @@ chfi2d cfr p . . CDD 0.3 0.6
 
 Let us create a 2d chamfer using a defined distance and angle 
 
-~~~~{.php}
+~~~~{.tcl}
 top 
 profile p x 2 y 2 x -2 
 chfi2d cfr p . . CDA 0.3 75 
@@ -5954,7 +5954,7 @@ chfi2d cfr p . . CDA 0.3 75
 @subsubsection occt_draw_7_2_11  nproject
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 nproject pj e1 e2 e3 ... surf -g -d [dmax] [Tol 
 [continuity [maxdeg [maxseg]]] 
 ~~~~
@@ -5962,7 +5962,7 @@ nproject pj e1 e2 e3 ... surf -g -d [dmax] [Tol
 Creates a shape projection which is normal to the target surface. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # create a curved surface 
 line l 0 0 0 1 0 0 
 trim l l 0 2 
@@ -6002,9 +6002,9 @@ Primitive commands make it possible to create simple shapes. They include:
 @subsubsection occt_draw_7_3_1  box, wedge
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 box name [x y z] dx dy dz 
-wedge name dx dy dz ltx / xmin zmin xmax xmax 
+wedge name dx dy dz ltx / xmin zmin xmax zmax 
 ~~~~
 
 **box** creates a box parallel to the axes with dimensions *dx,dy,dz*. *x,y,z* is the corner of the box. It is the default origin. 
@@ -6014,7 +6014,7 @@ wedge name dx dy dz ltx / xmin zmin xmax xmax
 The other faces are defined between these faces. The face in the *y=yd* plane may be degenerated into a line if *ltx = 0*, or a point if *xmin = xmax* and *ymin = ymax*. In these cases, the line and the point both have 5 faces each. To position the wedge use the *ttranslate* and *trotate* commands. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a box at the origin 
 box b1 10 20 30 
 
@@ -6034,9 +6034,8 @@ wedge w3 20 20 20 10 10 10 10
 @subsubsection occt_draw_7_3_2  pcylinder, pcone, psphere, ptorus
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pcylinder name [plane] radius height [angle] 
-pcone name [plane] radius1 radius2 height [angle] 
 pcone name [plane] radius1 radius2 height [angle] 
 psphere name [plane] radius1 [angle1 angle2] [angle] 
 ptorus name [plane] radius1 radius2 [angle1 angle2] [angle] 
@@ -6053,7 +6052,7 @@ All these commands create solid blocks in the default coordinate system, using t
 **ptorus** creates a solid torus with the given radii, centered on the origin, which is a point along the z axis. If two angles increasing in degree in the range 0 -- 360 are given, the solid will be bounded by two planar surfaces at those positions on the circle. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # a can shape 
 pcylinder cy 5 10 
 
@@ -6070,14 +6069,14 @@ ptorus to 20 5 0 90
 @subsubsection occt_draw_7_3_3  halfspace
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 halfspace result face/shell x y z 
 ~~~~
 
 **halfspace** creates an infinite solid volume based on a face in a defined direction. This volume can be used to perform the boolean operation of cutting a solid by a face or plane. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 box b 0 0 0 1 2 3 
 explode b f 
 ==b_1 b_2 b_3 b_4 b_5 b_6 
@@ -6099,7 +6098,7 @@ Sweeping creates shapes by sweeping out a shape along a defined path:
 @subsubsection occt_draw_7_4_1  prism
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 prism result base dx dy dz [Copy | Inf | SemiInf] 
 ~~~~
 
@@ -6108,7 +6107,7 @@ Creates a new shape by sweeping a shape in a direction. Any shape can be swept: 
 The shape is swept along the vector *dx dy dz*. The original shape will be shared in the result unless *Copy* is specified. If *Inf* is specified the prism is infinite in both directions. If *SemiInf* is specified the prism is infinite in the *dx,dy,dz* direction, and the length of the vector has no importance. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # sweep a planar face to make a solid 
 polyline f 0 0 0 10 0 0 10 5 0 5 5 0 5 15 0 0 15 0 0 0 0 
 mkplane f f 
@@ -6117,14 +6116,14 @@ mkplane f f
 @subsubsection occt_draw_7_4_2  revol
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 revol result base x y z dx dy dz angle [Copy] 
 ~~~~
 
 Creates a new shape by sweeping a base shape through an angle along the axis *x,y,z dx,dy,dz*. As with the prism command, the shape can be of any type and is not shared if *Copy* is specified. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # shell by wire rotation 
 polyline w 0 0 0 10 0 0 10 5 0 5 5 0 5 15 0 0 15 0 
 revol s w 20 0 0 0 1 0 90 
@@ -6134,14 +6133,14 @@ revol s w 20 0 0 0 1 0 90
 @subsubsection occt_draw_7_4_3  pipe
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pipe name wire_spine Profile 
 ~~~~
 
 Creates a new shape by sweeping a shape known as the profile along a wire known as the spine. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # sweep a circle along a bezier curve to make a solid 
 pipe 
 
@@ -6158,7 +6157,7 @@ pipe p spine profile
 @subsubsection occt_draw_7_4_4  mksweep, addsweep, setsweep, deletesweep, buildsweep, simulsweep
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mksweep wire 
 addsweep wire[vertex][-M][-C] [auxiilaryshape]
 deletesweep wire 
@@ -6186,7 +6185,7 @@ At least one other wire is used to define the sweep profile.
 * **buildsweep** -- creates the sweep using the arguments defined by all the commands. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 #create a sweep based on a semi-circular wire using the 
 Frenet algorithm 
 #create a circular figure 
@@ -6210,7 +6209,7 @@ simulsweep w 3
 @subsubsection occt_draw_7_4_5  thrusections
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 thrusections [-N] result issolid isruled wire1 wire2 [..wire..] 
 ~~~~
 
@@ -6218,7 +6217,7 @@ thrusections [-N] result issolid isruled wire1 wire2 [..wire..]
 A bezier curve is generated between the vertices of each wire. The option *[-N]* means that no check is made on wires for direction. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 #create three wires in three planes 
 polyline w1 0 0 0 5 0 0 5 5 0 2 3 0 
 polyline w2 0 1 3 4 1 3 4 4 3 1 3 3 
@@ -6226,7 +6225,7 @@ polyline w3 0 0 5 5 0 5 5 5 5 2 3 5
 # create the shape 
 thrusections th issolid isruled w1 w2 w3 
 ==thrusections th issolid isruled w1 w2 w3 
-Tolerances obtenues   -- 3d : 0 
+Tolerances obtained  -- 3d : 0 
 -- 2d : 0 
 ~~~~
 
@@ -6243,14 +6242,14 @@ Transformations are applications of matrices. When the transformation is nondefo
 @subsubsection occt_draw_7_5_1   tcopy
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tcopy name toname [name toname ...] 
 ~~~~
 
 Copies the structure of one shape, including the geometry, into another, newer shape. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create an edge from a curve and copy it 
 beziercurve c 3 0 0 0 10 0 0 20 10 0 
 mkedge e1 c 
@@ -6263,7 +6262,7 @@ ttranslate e2 0 5 0
 @subsubsection occt_draw_7_5_2   tmove, treset
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tmove name [name ...] shape 
 reset name [name ...] 
 ~~~~
@@ -6273,7 +6272,7 @@ reset name [name ...]
 **tmove** applies the location of a given shape to other shapes. **reset** restores one or several shapes it to its or their original coordinate system(s). 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create two boxes 
 box b1 10 10 10 
 box b2 20 0 0 10 10 10 
@@ -6288,7 +6287,7 @@ reset b1 b2
 @subsubsection occt_draw_7_5_3   ttranslate, trotate
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ttranslate [name ...] dx dy dz 
 trotate [name ...] x y z dx dy dz angle 
 ~~~~
@@ -6299,7 +6298,7 @@ When creating multiple shapes, the same location is used for all the shapes. (Se
 Locations are very economic in the data structure because multiple occurrences of an object share the topological description.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # make rotated copies of a sphere in between two cylinders 
 # create a file source toto.tcl 
 # toto.tcl code: 
@@ -6324,7 +6323,7 @@ source toto.tcl
 @subsubsection occt_draw_7_5_4   tmirror, tscale
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tmirror name x y z dx dy dz 
 tscale name x y z scale 
 ~~~~
@@ -6334,7 +6333,7 @@ tscale name x y z scale
 * **Tscale** applies a central homotopic mapping to a shape. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # mirror a portion of cylinder about the YZ plane 
 pcylinder c1 10 10 270 
 copy c1 c2 
@@ -6348,14 +6347,14 @@ tscale c1 0 0 0 0.5
 
 **sewing** joins two or more shapes.
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 sewing result [tolerance] shape1 shape2 ... 
 ~~~~
 
 **Sewing** joins shapes by connecting their adjacent or near adjacent edges. Adjacency can be redefined by modifying the tolerance value. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # create two adjacent boxes 
 box b 0 0 0 1 2 3 
 box b2 0 2 0 1 2 3 
@@ -6391,8 +6390,8 @@ Blending is the creation of a new shape by rounding edges to create a fillet.
 @subsubsection occt_draw_7_8_1  depouille
 
 Syntax:
-~~~~{.php}
-dep result shape dirx diry dirz face angle x y x dx dy dz [face angle...] 
+~~~~{.tcl}
+dep result shape dirx diry dirz face angle x y z dx dy dz [face angle...] 
 ~~~~
 
 Creates a new shape by drafting one or more faces of a shape. 
@@ -6400,7 +6399,7 @@ Creates a new shape by drafting one or more faces of a shape.
 Identify the shape(s) to be drafted, the drafting direction, and the face(s) with an angle and an axis of rotation for each face. You can use dot syntax to identify the faces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # draft a face of a box 
 box b 10 10 10 
 explode b f 
@@ -6412,7 +6411,7 @@ dep a b 0 0 1 b_2 10 0 10 0 1 0 5
 @subsubsection occt_draw_7_8_2  chamf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 chamf newname shape edge face S dist 
 chamf newname shape edge face dist1 dist2 
 chamf newname shape edge face A dist angle 
@@ -6429,7 +6428,7 @@ Use the dot syntax to select the faces and edges.
 **Examples:**
 
 Let us create a chamfer based on equal distances from the edge (45 degree angle):
-~~~~{.php}
+~~~~{.tcl}
 # create a box 
 box b 1 2 3 
 chamf ch b . . S 0.5 
@@ -6440,7 +6439,7 @@ chamf ch b . . S 0.5
 ~~~~
 
 Let us create a chamfer based on different distances from the selected edge:
-~~~~{.php}
+~~~~{.tcl}
 box b 1 2 3 
 chamf ch b . . 0.3 0.4 
 ==Pick an object 
@@ -6451,7 +6450,7 @@ chamf ch b . . 0.3 0.4
  
 Let us create a chamfer based on a distance from the edge and an angle:
  
-~~~~{.php}
+~~~~{.tcl}
 box b 1 2 3 
 chamf ch b . . A 0.4 30 
 ==Pick an object 
@@ -6463,14 +6462,14 @@ chamf ch b . . A 0.4 30
 @subsubsection occt_draw_7_8_3  blend
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 blend result object rad1 ed1 rad2 ed2 ... [R/Q/P] 
 ~~~~
 
 Creates a new shape by filleting the edges of an existing shape. The edge must be inside the shape. You may use the dot syntax. Note that the blend is propagated to the edges of tangential planar, cylindrical or conical faces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # blend a box, click on an edge 
 box b 20 20 20 
 blend b b 2 . 
@@ -6494,7 +6493,7 @@ blend b b 2 .
 @subsubsection occt_draw_7_8_4  bfuseblend
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bfuseblend name shape1 shape2 radius [-d]
 ~~~~
  
@@ -6502,7 +6501,7 @@ Creates a boolean fusion of two shapes and then blends (fillets) the intersectio
 Option [-d] enables the Debugging mode in which the error messages, if any, will be printed.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # fuse-blend two boxes
 box b1 20 20 5
 copy b1 b2
@@ -6513,7 +6512,7 @@ bfuseblend a b1 b2 1
 @subsubsection occt_draw_7_8_4a  bcutblend
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bcutblend name shape1 shape2 radius [-d]
 ~~~~
 
@@ -6521,7 +6520,7 @@ Creates a boolean cut of two shapes and then blends (fillets) the intersection e
 Option [-d] enables the Debugging mode in which the error messages, if any, will be printed.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # cut-blend two boxes
 box b1 20 20 5
 copy b1 b2
@@ -6532,7 +6531,7 @@ bcutblend a b1 b2 1
 @subsubsection occt_draw_7_8_5  mkevol, updatevol, buildevol
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mkevol result object (then use updatevol) [R/Q/P] 
 updatevol edge u1 radius1 [u2 radius2 ...] 
 buildevol 
@@ -6545,7 +6544,7 @@ These three commands work together to create fillets with evolving radii.
 * **buildevol** produces the result described previously in **mkevol** and **updatevol**. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # makes an evolved radius on a box 
 box b 10 10 10 
 mkevol b b 
@@ -6581,7 +6580,7 @@ buildevol
 Draw command **removefeatures** is intended for performing @ref occt_modalg_defeaturing "3D Model Defeaturing", i.e. it performs the removal of the requested features from the shape.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 removefeatures result shape f1 f2 ... [-nohist] [-parallel]
 ~~~~
 Where:
@@ -6609,7 +6608,7 @@ The command makes the shape periodic in the required directions with the require
 If trimming is given it trims the shape to fit the requested period.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 makeperiodic result shape [-x/y/z period [-trim first]]
 ~~~~
 Where:
@@ -6626,7 +6625,7 @@ The result contains the all the repeated shapes glued together.
 The command should be called after **makeperiodic** command.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 repeatshape result -x/y/z times
 ~~~~
 
@@ -6641,7 +6640,7 @@ All periodic twins should have the same geometry.
 The command should be called after **makeperiodic** command.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 periodictwins twins shape
 ~~~~
 Where:
@@ -6670,7 +6669,7 @@ Draw module for @ref occt_modalg_makeconnected "making the touching same-dimensi
 The command makes the input touching shapes connected.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 makeconnected result shape1 shape2 ...
 ~~~~
 
@@ -6684,7 +6683,7 @@ The command returns the materials located on the requested side of the shape.
 The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cmaterialson result +/- shape
 ~~~~
 Where:
@@ -6699,7 +6698,7 @@ The command makes the connected shape periodic in the required directions with t
 The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cmakeperiodic result [-x/y/z period [-trim first]]
 ~~~~ 
 Where:
@@ -6715,7 +6714,7 @@ The command repeats the connected periodic shape in the required periodic direct
 The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 crepeatshape result -x/y/z times
 ~~~~
 Where:
@@ -6729,7 +6728,7 @@ The command returns all periodic twins for the shape.
 The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cperiodictwins twins shape
 ~~~~
 
@@ -6744,7 +6743,7 @@ The command should be called after the shapes have been made connected, periodic
 Otherwise the command will have no effect.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cclearrepetitions [result]
 ~~~~
 
@@ -6766,7 +6765,7 @@ Analysis of shapes includes commands to compute length, area, volumes and inerti
 @subsubsection occt_draw_7_9_1  lprops, sprops, vprops
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 lprops shape  [x y z] [-skip] [-full] [-tri]
 sprops shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]
 vprops shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri] 
@@ -6790,7 +6789,7 @@ If epsilon is given, exact geometry (curves, surfaces) are used for calculations
 All three commands print the mass, the coordinates of the center of gravity, the matrix of inertia and the moments. Mass is either the length, the area or the volume. The center and the main axis of inertia are displayed. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # volume of a cylinder 
 pcylinder c 10 20 
 vprops c 
@@ -6819,7 +6818,7 @@ I.Z = 314159.265357595
 @subsubsection occt_draw_7_9_2   bounding
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bounding {-s shape | -c xmin ymin zmin xmax ymax zmax} [-obb] [-shape name] [-dump] [-notriangulation] [-perfmeter name NbIters] [-save xmin ymin zmin xmax ymax zmax] [-nodraw] [-optimal] [-exttoler]
 ~~~~
 
@@ -6831,7 +6830,7 @@ Generally, bounding boxes can be divided into two main types:
 Detailed information about this command is available in DRAW help-system (enter "help bounding" in DRAW application).
   
 **Example 1: Creation of AABB with given corners** 
-~~~~{.php}
+~~~~{.tcl}
 bounding -c 50 100 30 180 200 100 -shape result
 # look at the box
 vdisplay result
@@ -6840,7 +6839,7 @@ vsetdispmode 1
 ~~~~
 
 **Example 2: Compare AABB and OBB** 
-~~~~{.php}
+~~~~{.tcl}
 # Create a torus and rotate it
 ptorus t 20 5 
 trotate t 5 10 15 1 1 1 28
@@ -6883,7 +6882,7 @@ dval (x2-x1)*(y2-y1)*(z2-z1)
 
 The same result is obtained.
 
-~~~~{.php}
+~~~~{.tcl}
 # Create OBB from the torus
 bounding -s t -shape ro -dump -obb
 ==Oriented bounding box
@@ -6905,14 +6904,14 @@ As we can see, the volume of OBB is significantly less than the volume of AABB.
 @subsubsection occt_draw_7_9_2a   isbbinterf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 isbbinterf shape1 shape2 [-o]
 ~~~~
 
 Checks whether the bounding boxes created from the given shapes are interfered. If "-o"-option is switched on then the oriented boxes will be checked. Otherwise, axis-aligned boxes will be checked.
 
 **Example 1: Not interfered AABB** 
-~~~~{.php}
+~~~~{.tcl}
 box b1 100 60 140 20 10 80
 box b2 210 200 80 120 60 90
 isbbinterf b1 b2
@@ -6920,7 +6919,7 @@ isbbinterf b1 b2
 ~~~~
 
 **Example 2: Interfered AABB** 
-~~~~{.php}
+~~~~{.tcl}
 box b1 300 300 300
 box b2 100 100 100 50 50 50
 isbbinterf b1 b2
@@ -6928,7 +6927,7 @@ isbbinterf b1 b2
 ~~~~
 
 **Example 3: Not interfered OBB** 
-~~~~{.php}
+~~~~{.tcl}
 box b1 100 150 200
 copy b1 b2
 trotate b1 -150 -150 -150 1 2 3 -40
@@ -6940,7 +6939,7 @@ isbbinterf b1 b2 -o
 ~~~~
 
 **Example 4: Interfered OBB** 
-~~~~{.php}
+~~~~{.tcl}
 box b1 100 150 200
 copy b1 b2
 trotate b1 -50 -50 -50 1 1 1 -40
@@ -6954,14 +6953,14 @@ isbbinterf b1 b2 -o
 @subsubsection occt_draw_7_9_3  distmini
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 distmini name Shape1 Shape2 
 ~~~~
 
 Calculates the minimum distance between two shapes. The calculation returns the number of solutions, if more than one solution exists. The options are displayed in the viewer in red and the results are listed in the shell window. The *distmini* lines are considered as shapes which have a value v. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 box b 0 0 0 10 20 30 
 box b2 30 30 0 10 20 30 
 distmini d1 b b2 
@@ -6992,7 +6991,7 @@ are:
 @subsubsection occt_draw_7_9_4 xdistef, xdistcs, xdistcc, xdistc2dc2dss, xdistcc2ds 
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 xdistef edge face
 xdistcs curve surface firstParam lastParam [NumberOfSamplePoints]
 xdistcc curve1 curve2 startParam finishParam [NumberOfSamplePoints]
@@ -7010,7 +7009,7 @@ Commands with prefix *xdist* allow checking the distance between two objects on 
   * **xdistc2dc2dss** -- distance between two 2d curves on surface.
   
 **Examples**
-~~~~{.php}
+~~~~{.tcl}
 bopcurves b1 b2 -2d 
 mksurf s1 b1
 mksurf s2 b2
@@ -7022,7 +7021,7 @@ xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
 @subsubsection occt_draw_7_9_5  checkshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 checkshape [-top] shape [result] [-short] [-parallel] [-exact]
 ~~~~
 
@@ -7037,7 +7036,7 @@ Where:
 **checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # checkshape returns a comment valid or invalid 
 box b1 0 0 0 1 1 1 
 checkshape b1 
@@ -7048,7 +7047,7 @@ this shape seems to be valid
 @subsubsection occt_draw_7_9_6  tolsphere
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tolsphere shape
 ~~~~
 
@@ -7058,7 +7057,7 @@ Where:
 **tolsphere** shows vertex tolerances by drawing spheres around each vertex in the shape. Each sphere is assigned a name of the shape with suffix "_vXXX", where XXX is the number of the vertex in the shape.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # tolsphere returns all names of created spheres.
 box b1 0 0 0 1 1 1 
 settolerance b1 0.05
@@ -7070,7 +7069,7 @@ b1_v1 b1_v2 b1_v3 b1_v4 b1_v5 b1_v6 b1_v7 b1_v8
 @subsubsection occt_draw_7_9_7  validrange
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 validrange edge [(out) u1 u2]
 ~~~~
 
@@ -7081,7 +7080,7 @@ Where:
 **validrange** computes valid range of the edge. If *u1* and *u2* are not given, it returns the first and the last parameters. Otherwise, it sets variables *u1* and *u2*.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 circle c 0 0 0 10
 mkedge e c
 mkedge e c 0 pi
@@ -7105,14 +7104,14 @@ Surface creation commands include surfaces created from boundaries and from spac
 @subsubsection occt_draw_7_10_1   gplate,
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 gplate result nbrcurfront nbrpntconst [SurfInit] [edge 0] [edge tang (1:G1;2:G2) surf]...[point] [u v tang (1:G1;2:G2) surf] ... 
 ~~~~
 
 Creates a surface from a defined boundary. The boundary can be defined using edges, points, or other surfaces. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 plane p 
 trim p p -1 3 -1 3 
 mkface p p 
@@ -7161,7 +7160,7 @@ gplate r2 4 1 p e1 0 e2 0 e3 0 e4 0 pp
 ======== Results =========== 
 DistMax=3.65622157610934e-06 
 * GEOMPLATE END* 
-Calculculation time: 0.27 
+Calculation time: 0.27 
 Loop number: 1 
 Approximation results 
 Approximation error : 0.000422195884750181 
@@ -7171,7 +7170,7 @@ Criterium error : 3.43709808053967e-05
 @subsubsection occt_draw_7_10_2   filling, fillingparam
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 filling result nbB nbC nbP [SurfInit] [edge][face]order... 
 edge[face]order... point/u v face order... 
 ~~~~
@@ -7196,7 +7195,7 @@ The options are:
  * <i>-a maxdeg maxseg </i> : Approximation option 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create four curved survaces and a point 
 plane p 
 trim p p -1 3 -1 3 
@@ -7250,7 +7249,7 @@ Complex topology is the group of commands that modify the topology of shapes. Th
 @subsubsection occt_draw_7_11_1  offsetshape, offsetcompshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 offsetshape r shape offset [tol] [face ...] 
 offsetcompshape r shape offset [face ...] 
 ~~~~
@@ -7264,7 +7263,7 @@ In case of complex shapes, where intersections can occur from non-adjacent edges
 The opening between the object interior and exterior is defined by the argument face or faces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 20 30 
 explode b1 f 
 == b1_1 b1_2 b1_3 b1_4 b1_5 b1_6 
@@ -7274,7 +7273,7 @@ offsetcompshape r b1 -1 b1_3
 @subsubsection occt_draw_7_11_2  featprism, featdprism, featrevol, featlf, featrf
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 featprism shape element skface Dirx Diry Dirz Fuse(0/1/2) Modify(0/1) 
 featdprism shape face skface angle Fuse(0/1/2) Modify(0/1) 
 featrevol shape element skface Ox Oy Oz Dx Dy Dz Fuse(0/1/2) Modify(0/1) 
@@ -7304,7 +7303,7 @@ All the features are created from a set of arguments which are defined when you 
 
 Let us create a feature prism with a draft angle and a normal direction :
 
-~~~~{.php}
+~~~~{.tcl}
 # create a box with a wire contour on the upper face 
 box b 1 1 1 
 profil f O 0 0 1 F 0.25 0.25 x 0.5 y 0.5 x -0.5 
@@ -7322,7 +7321,7 @@ BRepFeat_Form::GlobalPerform ()
 
 Let us  create a feature prism with circular direction :
 
-~~~~{.php}
+~~~~{.tcl}
 # create a box with a wire contour on the upper face 
 box b 1 1 1 
 profil f O 0 0 1 F 0.25 0.25 x 0.5 y 0.5 x -0.5 
@@ -7340,7 +7339,7 @@ BRepFeat_Form::GlobalPerform ()
 
 Let us create a slot using the linear feature :
 
-~~~~{.php}
+~~~~{.tcl}
 #create the base model using the multi viewer 
 mu4 
 profile p x 5 y 1 x -3 y -0.5 x -1.5 y 0.5 x 0.5 y 4 x -1 y -5 
@@ -7365,7 +7364,7 @@ featperform lf result
 
 Let us create a rib using the revolution feature :
 
-~~~~{.php}
+~~~~{.tcl}
 #create the base model using the multi viewer 
 mu4 
 pcylinder c1 3 5 
@@ -7383,7 +7382,7 @@ featperform rf result
 @subsubsection occt_draw_7_11_3  draft
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 draft result shape dirx diry dirz angle shape/surf/length [-IN/-OUT] [Ri/Ro] [-Internal] 
 ~~~~
 
@@ -7400,7 +7399,7 @@ Computes a draft angle surface from a wire. The surface is determined by the dra
 **Note** that the original aim of adding a draft angle to a shape is to produce a shape which can be removed easily from a mould. The Examples below use larger angles than are used normally and the calculation results returned are not indicated.
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # to create a simple profile 
 profile p F 0 0 x 2 y 4 tt 0 4 w 
 # creates a draft with rounded angles 
@@ -7414,14 +7413,14 @@ draft res p 0 0 1 3 1 -Ro
 @subsubsection occt_draw_7_11_4  deform
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 deform newname name CoeffX CoeffY CoeffZ
 ~~~~
 
 Modifies the shape using the x, y, and z coefficients. You can reduce or magnify the shape in the x,y, and z directions. 
  
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 pcylinder c 20 20 
 deform a c 1 3 5 
 # the conversion to bspline is followed by the 
@@ -7433,7 +7432,7 @@ deformation
 
 Syntax:
  
-~~~~{.php}
+~~~~{.tcl}
 nurbsconvert result name [result name] 
 ~~~~
 
@@ -7447,7 +7446,7 @@ The conversion can be necessary when transferring shape data to other applicatio
 **edgestofaces** - The command allows building planar faces from the planar edges randomly located in 3D space.
 
 It has the following syntax:
-~~~~{.php}
+~~~~{.tcl}
 edgestofaces r_faces edges [-a AngTol -s Shared(0/1)]
 ~~~~
 Options:
@@ -7470,7 +7469,7 @@ Draw module for @ref occt_modalg_hist "History Information support" includes the
 By default it is TRUE, i.e. the history is filled and saved.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 setfillhistory  : Controls the history collection by the algorithms and its saving into the session after algorithm is done.
                 Usage: setfillhistory [flag]
                 w/o arguments prints the current state of the option;
@@ -7479,7 +7478,7 @@ setfillhistory  : Controls the history collection by the algorithms and its savi
 ~~~~
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 10 10 10
 setfillhistory 0
@@ -7502,7 +7501,7 @@ dump h
 *savehistory* command saves the history from the session into a drawable object with the given name.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 savehistory     : savehistory name
 ~~~~
 
@@ -7510,7 +7509,7 @@ If the history of shape modifications performed during an operation is needed, t
 If another operation supporting history will be performed before the history of the first operation is saved it will be overwritten with the new history.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 5 0 0 10 10 15
 bfuse r b1 b2
@@ -7538,12 +7537,12 @@ dump usd_hist
 *isdeleted* command checks if the given shape has been deleted in the given history.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 isdeleted       : isdeleted history shape
 ~~~~
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 box b1 4 4 4 2 2 2
 box b2 10 10 10
 bcommon r b1 b2
@@ -7561,12 +7560,12 @@ foreach s [join [list [explode b2 v] [explode b2 e] [explode b2 f] ] ] {
 *modified* command returns the shapes Modified from the given shape in the given history. All modified shapes are put into a compound. If the shape has not been modified, the resulting compound will be empty. Note that if the shape has been modified into a single shape only, it will be returned without enclosure into the compound.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 modified        : modified modified_shapes history shape
 ~~~~
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 box b 10 10 10
 explode b e
 fillet r b 2 b_1
@@ -7581,15 +7580,15 @@ modified m5 fillet_hist b_5
 
 @subsubsection occt_draw_hist_gen generated
 
-*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that; if the shape has generated a single shape only, it will be returned without enclosure into the compound.
+*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that, if the shape has generated a single shape only, it will be returned without enclosure into the compound.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 generated       : generated generated_shapes history shape
 ~~~~
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 polyline w1 0 0 0 10 0 0 10 10 0
 polyline w2 5 1 10 9 1 10 9 5 10
 
@@ -7617,12 +7616,12 @@ compare g12 g22
 Draw History mechanism allows fast and easy enabling of the Draw history support for the OCCT algorithms supporting standard history methods.
 To enable History commands for the algorithm it is necessary to save the history of the algorithm into the session.
 For that, it is necessary to put the following code into the command implementation just after the command is done:
-~~~~{.php}
+~~~~{.tcl}
 BRepTest_Objects::SetHistory(ListOfArguments, Algorithm);
 ~~~~
 
 Here is the example of how it is done in the command performing Split operation (see implementation of the *bapisplit* command):
-~~~~{.php}
+~~~~{.tcl}
 BRepAlgoAPI_Splitter aSplitter;
 // setting arguments
 aSplitter.SetArguments(BOPTest_Objects::Shapes());
@@ -7675,7 +7674,7 @@ These commands allow intersecting the shapes only once for building all types of
 It may be very useful as the intersection part is usually most time-consuming part of the operation.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bop shape1 shape2 
 bopcommon result 
 bopfuse result 
@@ -7686,7 +7685,7 @@ boptuc result
 **Example:** 
 
 Let's produce all four boolean operations on a box and a cylinder performing intersection only once:
-~~~~{.php}
+~~~~{.tcl}
 box b 0 -10 5 20 20 10 
 pcylinder c 5 20 
 
@@ -7716,15 +7715,15 @@ These commands also perform Boolean operations on two shapes. These are the shor
 Each of these commands performs both intersection and building the result and may be useful if you need only the result of a single boolean operation.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bcommon result shape1 shape2 
 bfuse result shape1 shape2 
 bcut result shape1 shape2 
 btuc result shape1 shape2 
 ~~~~
 
-**bection** command has some additional options for faces intersection:
-~~~~{.php}
+**bsection** command has some additional options for faces intersection:
+~~~~{.tcl}
 bsection result shape1 shape2 [-n2d/-n2d1/-n2d2] [-na]
 ~~~~
 
@@ -7772,7 +7771,7 @@ The command **bfillds** performs intersection of the arguments (**Objects** and 
 The command **bbop** is used for building the result of Boolean Operation. It has to be used after **bfillds** command.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bbop result iOp
 ~~~~
 
@@ -7787,7 +7786,7 @@ iOp - type of Boolean Operation. It could have the following values:
 
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 5 5 5 10 10 10
 box b3 -5 -5 -5 10 10 10
@@ -7815,11 +7814,11 @@ The command **bbuild** is used for building the result of General Fuse Operation
 General Fuse operation does not make the difference between Objects and Tools considering both as objects.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bbuild result
 ~~~~
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 5 5 5 10 10 10
 box b3 -5 -5 -5 10 10 10
@@ -7843,7 +7842,7 @@ Split operation splits the **Objects** by the **Tools**.
 The command **bsplit** is used for building the result of Split operation. It has to be used after **bfillds** command.
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 5 5 5 10 10 10
 box b3 -5 -5 -5 10 10 10
@@ -7870,7 +7869,7 @@ The command has the following features:
 * History information for solids will be lost.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 buildbop result -o s1 [s2 ...] -t s3 [s4 ...] -op operation (common/fuse/cut/tuc)
 ~~~~
 Where:
@@ -7880,7 +7879,7 @@ operation   - type of boolean operation
 
 
 **Example**
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 5 5 5 10 10 10
 box b3 -5 -5 -5 10 10 10
@@ -7930,7 +7929,7 @@ The following commands are used to perform the operation using API implementatio
 * **bapibop** -- to perform API Boolean operation.
 * **bapisplit** -- to perform API Split operation.
 
-These commands have the same syntax as the analogical commands described above.
+These commands have the same syntax as the analogous commands described above.
 
 
 @subsection occt_draw_bop_options Setting options for the operation
@@ -7938,7 +7937,7 @@ These commands have the same syntax as the analogical commands described above.
 The algorithms in Boolean component have a wide range of options.
 To see the current state of all option the command **boptions** should be used.
 It has the following syntax:
-~~~~{.php}
+~~~~{.tcl}
 boptions [-default]
 
 -default - allows to set all options to default state.
@@ -7951,7 +7950,7 @@ To have an effect the options should be set before the operation (before *bfilld
 **brunparallel** command enables/disables the parallel processing mode of the operation.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 brunparallel flag
 ~~~~
 Where:
@@ -7967,7 +7966,7 @@ The command is applicable for all commands in the component.
 **bnondestructive** command enables/disables the safe processing mode in which the input arguments are protected from modification.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bnondestructive flag
 ~~~~
 Where:
@@ -7983,7 +7982,7 @@ The command is applicable for all commands in the component.
 **bfuzzyvalue** command sets the additional tolerance for operations.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bfuzzyvalue value
 ~~~~
 
@@ -7994,7 +7993,7 @@ The command is applicable for all commands in the component.
 **bglue** command sets the gluing mode for the BOP algorithms.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bglue 0/1/2
 ~~~~
 Where:
@@ -8010,7 +8009,7 @@ The command is applicable for all commands in the component.
 **bcheckinverted** command enables/disables the check of the input solids on inverted status in BOP algorithms.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bcheckinverted 0 (off) / 1 (on)
 ~~~~
 
@@ -8021,7 +8020,7 @@ The command is applicable for all commands in the component.
 **buseobb** command enables/disables the usage of OBB in BOP algorithms.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 buseobb 0 (off) / 1 (on)
 ~~~~
 
@@ -8032,7 +8031,7 @@ The command is applicable for all commands in the component.
 **bsimplify** command enables/disables the result simplification after BOP. The command is applicable only to the API variants of GF, BOP and Split operations.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bsimplify [-e 0/1] [-f 0/1] [-a tol]
 ~~~~
 Where:
@@ -8046,7 +8045,7 @@ Where:
 **bdrawwarnshapes** command enables/disables drawing of warning shapes of BOP algorithms.
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bdrawwarnshapes 0 (do not draw) / 1 (draw warning shapes)
 ~~~~
 
@@ -8060,7 +8059,7 @@ The following commands are analyzing the given shape on the validity of Boolean 
 @subsubsection occt_draw_bop_check_1 bopcheck
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopcheck shape [level of check: 0 - 9]
 ~~~~
 
@@ -8077,7 +8076,7 @@ It checks the given shape for self-interference. The optional level of check all
 * 9 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S, F/S and S/S - all interferences (Default value)
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 box b1 10 10 10
 box b2 3 3 3 4 4 4
 compound b1 b2 c
@@ -8085,13 +8084,13 @@ bopcheck c
 ~~~~
 
 In this example one box is completely included into other box. So the output shows that all sub-shapes of b2 interfering with the solid b1.
-**bopcheck** command does not modifies the input shape, thus can be safely used.
+**bopcheck** command does not modify the input shape, thus can be safely used.
 
 
 @subsubsection occt_draw_bop_check_2 bopargcheck
 
 **bopargcheck** syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopargcheck Shape1 [[Shape2] [-F/O/C/T/S/U] [/R|F|T|V|E|I|P|C|S]] [#BF]
 
  -<Boolean Operation>
@@ -8128,7 +8127,7 @@ As you can see *bopargcheck* performs more extended check of the given shapes th
 
 **Example:**
 Let's make an edge with big vertices:
-~~~~{.php}
+~~~~{.tcl}
 vertex v1 0 0 0
 settolerance v1 0.5
 vertex v2 1 0 0
@@ -8140,12 +8139,12 @@ tolsphere e
 bopargcheck e
 ~~~~
 Here is the output of this command:
-~~~~{.php}
+~~~~{.tcl}
 Made faulty shape: s1si_1
 Made faulty shape: s1se_1
 Faulties for FIRST  shape found : 2
 ---------------------------------
-Shapes are not suppotrted by BOP: NO
+Shapes are not supported by BOP: NO
 Self-Intersections              : YES  Cases(1)  Total shapes(2)
 Check for SI has been aborted   : NO
 Too small edges                 : YES  Cases(1)  Total shapes(1)
@@ -8173,7 +8172,7 @@ All commands listed below  are available when the Intersection Part of the algor
 **bopds**
 	
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopds -v [e, f]	
 ~~~~
 
@@ -8188,7 +8187,7 @@ Displays:
 Prints contents of the DS. 
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[28]> bopdsdump
  *** DS ***
  Ranges:2			number of ranges
@@ -8215,7 +8214,7 @@ Example:
 **bopindex**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopindex S
 ~~~~
 Prints DS index of shape *S*.
@@ -8224,7 +8223,7 @@ Prints DS index of shape *S*.
 **bopiterator**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopiterator [t1 t2]
 ~~~~
 
@@ -8236,7 +8235,7 @@ Prints pairs of DS indices of source shapes that are intersected in terms of bou
 * *4* -- face.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[104]> bopiterator 6 4
  EF: ( z58 z12 )
  EF: ( z17 z56 )
@@ -8253,7 +8252,7 @@ Example:
 **bopinterf**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopinterf t
 ~~~~
 
@@ -8265,7 +8264,7 @@ Prints contents of *myInterfTB* for the type of interference *t*:
 * *t=4* : edge/face.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[108]> bopinterf 4
  EF: (58, 12, 68), (17, 56, 69), (19, 64, 70), (45, 26, 71), (29, 36, 72), (38, 32, 73), 6 EF found.
 ~~~~
@@ -8281,7 +8280,7 @@ Here, record <i>(58, 12, 68)</i> means:
 Displays split edges. 
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[33]> bopsp
  edge 58 : z58_74 z58_75
  edge 17 : z17_76 z17_77
@@ -8297,7 +8296,7 @@ Example:
 **bopcb**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopcb [nE]
 ~~~~
 
@@ -8306,7 +8305,7 @@ Prints Common Blocks for:
 * the source edge with the specified index *nE*.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[43]> bopcb 17
  -- CB:
  PB:{ E:71 orE:17 Pave1: { 68 3.000 } Pave2: { 18 10.000 } }
@@ -8326,13 +8325,13 @@ This command dumps common blocks for the source edge with index 17.
 **bopfin**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopfin nF	
 ~~~~
 Prints Face Info about IN-parts for the face with DS index *nF*.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[47]> bopfin 36
  pave blocks In:
  PB:{ E:71 orE:17 Pave1: { 68 3.000 } Pave2: { 18 10.000 } }
@@ -8348,13 +8347,13 @@ Example:
 **bopfon**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopfon nF
 ~~~~
 Print Face Info about ON-parts for the face with DS index *nF*.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[58]> bopfon 36
  pave blocks On:
  PB:{ E:72 orE:38 Pave1: { 69 0.000 } Pave2: { 68 10.000 } }
@@ -8371,14 +8370,14 @@ Example:
 **bopwho**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopwho nS
 ~~~~
 
 Prints the information about the shape with DS index *nF*.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[116]> bopwho 5
  rank: 0
 ~~~~
@@ -8386,7 +8385,7 @@ Example:
 * *rank: 0* -- means that shape 5 results from the Argument with index 0.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
  Draw[118]> bopwho 68
  the shape is new
  EF: (58, 12),
@@ -8402,7 +8401,7 @@ This means that shape 68 is a result of the following interferences:
 **bopnews**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopnews -v [-e]
 ~~~~
 
@@ -8416,7 +8415,7 @@ The commands listed below are available when the Building Part of the algorithm 
 **bopim**
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 bopim S
 ~~~~
 Shows the compound of shapes that are images of shape *S* from the argument.
@@ -8428,7 +8427,7 @@ This chapter presents some general information about Data Exchange (DE) operatio
 
 DE commands are intended for translation files of various formats (IGES,STEP) into OCCT shapes with their attributes (colors, layers etc.) 
 
-This files include a number of entities. Each entity has its own number in the file which we call label and denote as # for a STEP file and D for an IGES file. Each file has entities called roots (one or more). A full description of such entities is contained in the Users' Guides 
+These files include a number of entities. Each entity has its own number in the file which we call label and denote as # for a STEP file and D for an IGES file. Each file has entities called roots (one or more). A full description of such entities is contained in the Users' Guides 
 * for <a href="user_guides__step.html#occt_step_1">STEP format</a> and
 * for <a href="user_guides__iges.html#occt_iges_1">IGES format</a>. 
 
@@ -8446,7 +8445,7 @@ The model and the map are used for working with most of DE commands.
 @subsubsection occt_draw_8_1_1  igesread
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 igesread <file_name> <result_shape_name> [<selection>]
 ~~~~
 
@@ -8471,7 +8470,7 @@ The second parameter of this command defines the name of the loaded shape. If se
 See also the detailed description of <a href="user_guides__iges.html#occt_iges_2_3_4">Selecting IGES entities</a>.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # translation all roots from file 
 igesread /disk01/files/model.igs a  * 
 ~~~~
@@ -8479,7 +8478,7 @@ igesread /disk01/files/model.igs a  *
 @subsubsection occt_draw_8_1_2   tplosttrim
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tplosttrim [<IGES_type>] 
 ~~~~
 
@@ -8488,21 +8487,21 @@ It outputs the rank and numbers of faces that lost their trims and their numbers
 Optional parameter <i>\<IGES_type\></i> can be *0TrimmedSurface, BoundedSurface* or *Face* to specify the only type of IGES faces. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 tplosttrim TrimmedSurface 
 ~~~~
 
 @subsubsection occt_draw_8_1_3  brepiges
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 brepiges <shape_name> <filename.igs>
 ~~~~
 
 Writes an OCCT shape to an IGES file. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # write shape with name aa to IGES file 
 brepiges aa /disk1/tmp/aaa.igs 
 == unit (write) : MM 
@@ -8522,7 +8521,7 @@ These commands are used during the translation of STEP models.
 @subsubsection occt_draw_8_2_1  stepread
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 stepread file_name result_shape_name [selection] 
 ~~~~
 
@@ -8544,7 +8543,7 @@ The second parameter of this command defines the name of the loaded shape. If se
 See also the detailed description of <a href="user_guides__step.html#occt_step_2_3_6">Selecting STEP entities</a>.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # translation all roots from file 
 stepread /disk01/files/model.stp a  * 
 ~~~~
@@ -8552,7 +8551,7 @@ stepread /disk01/files/model.stp a  *
 @subsubsection occt_draw_8_2_2   stepwrite
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 stepwrite mode shape_name file_name 
 ~~~~
 
@@ -8571,8 +8570,8 @@ For further information see <a href="#user_guides__step.html#occt_step_6_5">Writ
 
 Let us write shape *a* to a STEP file in mode *0*. 
 
-~~~~{.php}
-stepwrite 0 a /disk1/tmp/aaa.igs 
+~~~~{.tcl}
+stepwrite 0 a /disk1/tmp/aaa.stp 
 ~~~~
 
 
@@ -8583,7 +8582,7 @@ These are auxiliary commands used for the analysis of result of translation of I
 @subsubsection occt_draw_8_3_1  count
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 count <counter> [<selection>] 
 ~~~~
 
@@ -8594,17 +8593,17 @@ The optional selection argument, if specified, defines a subset of entities, whi
 | Counter | Operation |
 | :-------- | :-------- | 
 | xst-types | Calculates how many entities of each OCCT type exist | 
-| step214-types | Calculates how many entities of each STEP type exist |
+| step-types | Calculates how many entities of each STEP type exist |
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 count xst-types 
 ~~~~
 
 @subsubsection occt_draw_8_3_2 data
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 data <symbol>
 ~~~~
 
@@ -8612,7 +8611,7 @@ Obtains general statistics on the loaded data.
 The information printed by this command depends on the symbol specified. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # print full information about warnings and fails 
 data c 
 ~~~~
@@ -8631,21 +8630,21 @@ data c
 @subsubsection occt_draw_8_3_3  elabel
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 elabel <num>
 ~~~~
 
 Entities in the IGES and STEP files are numbered in the succeeding order. An entity can be identified either by its number or by its label. Label is the letter ‘#'(for STEP, for IGES use ‘D’) followed by the rank. This command gives us a label for an entity with a known number. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 elabel 84 
 ~~~~
 
 @subsubsection occt_draw_8_3_4  entity
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 entity <#(D)>_or_<num> <level_of_information>
 ~~~~
 
@@ -8654,7 +8653,7 @@ Entity can be determined by its number or label.
 <i>\<level_of_information\></i> has range [0-6]. You can get more information about this level using this command without parameters. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # full information for STEP entity with label 84 
 entity #84 6 
 ~~~~
@@ -8662,14 +8661,14 @@ entity #84 6
 @subsubsection occt_draw_8_3_5  enum
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 enum <#(D)> 
 ~~~~
 
 Prints a number for the entity with a given label. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # give a number for IGES entity with label 21 
 enum D21 
 ~~~~
@@ -8677,51 +8676,51 @@ enum D21
 @subsubsection occt_draw_8_3_6  estatus
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 estatus <#(D)>_or_<num>
 ~~~~
 
 The list of entities referenced by a given entity and the list of entities referencing to it can be obtained by this command. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 estatus #315 
 ~~~~
 
 @subsubsection occt_draw_8_3_7  fromshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 fromshape <shape_name>
 ~~~~
 
 Gives the number of an IGES or STEP entity corresponding to an OCCT shape. If no corresponding entity can be found and if OCCT shape is a compound the command explodes it to subshapes and try to find corresponding entities for them. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 fromshape a_1_23 
 ~~~~
 
 @subsubsection occt_draw_8_3_8  givecount
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 givecount <selection_name> [<selection_name>]
 ~~~~
 
 
 Prints a number of loaded entities defined by the selection argument.
-Possible values of \<selection_name\> you can find in the “IGES FORMAT Users’s Guide”.
+Possible values of \<selection_name\> you can find in the "IGES FORMAT User's Guide".
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 givecount xst-model-roots 
 ~~~~
 
 @subsubsection occt_draw_8_3_9  givelist
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 givelist <selection_name>
 ~~~~
 
@@ -8736,14 +8735,14 @@ Prints a list of a subset of loaded entities defined by the selection argument:
 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # give a list of all entities of the model 
 givelist xst-model-all 
 ~~~~
 
 @subsubsection occt_draw_8_3_10  listcount
 
-Syntax:listcount \<counter\> [\<selection\> ...]
+Syntax: listcount \<counter\> [\<selection\> ...]
 
 Prints a list of entities per each type matching the criteria defined by arguments. 
 Optional <i>\<selection\></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i>\<counter\></i>  should be one of the currently defined counters: 
@@ -8755,14 +8754,14 @@ Optional <i>\<selection\></i> argument, if specified, defines a subset of entiti
 | iges-levels | Calculates how many entities lie in different IGES levels |
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 listcount xst-types 
 ~~~~
 
 @subsubsection occt_draw_8_3_11  listitems
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 listitems 
 ~~~~
 
@@ -8772,7 +8771,7 @@ This command prints a list of objects (counters, selections etc.) defined in the
 @subsubsection occt_draw_8_3_12  listtypes
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 listtypes [<selection_name> ...]
 ~~~~
 
@@ -8782,7 +8781,7 @@ Gives a list of entity types which were encountered in the last loaded file (wit
 @subsubsection occt_draw_8_3_13  newmodel
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 newmodel 
 ~~~~
 
@@ -8792,7 +8791,7 @@ Clears the current model.
 @subsubsection occt_draw_8_3_14  param
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 param [<parameter>] [<value>]
 ~~~~
 
@@ -8804,28 +8803,28 @@ Command with <i>\<parameter\></i> (without <i><value></i>) gives us the current 
 
 Let us get the information about possible schemes for writing STEP file :
 
-~~~~{.php}
+~~~~{.tcl}
 param write.step.schema 
 ~~~~
 
 @subsubsection occt_draw_8_3_15  sumcount
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 sumcount <counter> [<selection> ...]
 ~~~~
 
 Prints only a number of entities per each type matching the criteria defined by arguments. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 sumcount xst-types 
 ~~~~
 
 @subsubsection occt_draw_8_3_16  tpclear
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tpclear  
 ~~~~
 
@@ -8836,33 +8835,33 @@ Clears the map of correspondences between IGES or STEP entities and OCCT shapes.
 @subsubsection occt_draw_8_3_17  tpdraw
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tpdraw <#(D)>_or_<num>
 ~~~~
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 tpdraw 57 
 ~~~~
 
 @subsubsection occt_draw_8_3_18  tpent
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tpent <#(D)>_or_<num>
 ~~~~
 
 Get information about the result of translation of the given IGES or STEP entity.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 tpent \#23 
 ~~~~
 
 @subsubsection occt_draw_8_3_19  tpstat
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tpstat [*|?]<symbol> [<selection>]
 ~~~~
 
@@ -8890,7 +8889,7 @@ Optional argument \<selection\> can limit the action of the command to the selec
 To get help, run this command without arguments. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # translation ratio on IGES faces 
 tpstat *l iges-faces 
 ~~~~
@@ -8898,14 +8897,14 @@ tpstat *l iges-faces
 @subsubsection occt_draw_8_3_20  xload
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 xload <file_name>
 ~~~~
 
 This command loads an IGES or STEP file into memory (i.e. to fill the model with data from the file) without creation of an OCCT shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 xload /disk1/tmp/aaa.stp 
 ~~~~
 
@@ -8920,19 +8919,19 @@ These commands are used for translation of IGES and STEP files into an XCAF docu
   * XDE layer’s commands
   * XDE property’s commands
 
-Reminding: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
+Reminder: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
 
 @subsubsection occt_draw_8_4_1  ReadIges
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ReadIges document file_name 
 ~~~~
 
 Reads information from an IGES file to an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ReadIges D /disk1/tmp/aaa.igs 
 ==> Document saved with name D 
 ~~~~
@@ -8940,14 +8939,14 @@ ReadIges D /disk1/tmp/aaa.igs
 @subsubsection occt_draw_8_4_2  ReadStep
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 ReadStep <document> <file_name>
 ~~~~
 
 Reads information from a STEP file to an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 ReadStep D /disk1/tmp/aaa.stp 
 == Document saved with name D 
 ~~~~
@@ -8955,40 +8954,40 @@ ReadStep D /disk1/tmp/aaa.stp
 @subsubsection occt_draw_8_4_3  WriteIges
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 WriteIges <document> <file_name>
 ~~~~
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 WriteIges D /disk1/tmp/aaa.igs 
 ~~~~
 
 @subsubsection occt_draw_8_4_4  WriteStep
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 WriteStep <document> <file_name>
 ~~~~
 
 Writes information from an XCAF document to a STEP file. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 WriteStep D /disk1/tmp/aaa.stp 
 ~~~~
 
 @subsubsection occt_draw_8_4_5  XFileCur
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFileCur  
 ~~~~
 
 Returns the name of file which is set as the current one in the Draw session. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFileCur 
 == *as1-ct-203.stp* 
 ~~~~
@@ -8996,17 +8995,17 @@ XFileCur
 @subsubsection occt_draw_8_4_6  XFileList
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFileList  
 ~~~~
 
-Returns a list all files that were transferred by the last transfer. This command is  meant (assigned) for the assemble step file. 
+Returns a list all files that were transferred by the last transfer. This command is  meant (assigned) for the assembly STEP file. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFileList 
 ==> *as1-ct-Bolt.stp* 
-==> *as1-ct-L-Bracktet.stp* 
+==> *as1-ct-L-Bracket.stp* 
 ==> *as1-ct-LBA.stp* 
 ==> *as1-ct-NBA.stp* 
 ==> … 
@@ -9015,28 +9014,28 @@ XFileList
 @subsubsection occt_draw_8_4_7  XFileSet
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFileSet <filename> 
 ~~~~
 
-Sets the current file taking it from the components list of the assemble file. 
+Sets the current file taking it from the components list of the assembly file. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFileSet as1-ct-NBA.stp 
 ~~~~
 
 @subsubsection occt_draw_8_4_8  XFromShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFromShape <shape>
 ~~~~
 
 This command is similar to the command @ref occt_draw_8_3_7 "fromshape", but gives additional information about the file name. It is useful if a shape was translated from several files. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFromShape a 
 ==> Shape a: imported from entity 217:#26 in file as1-ct-Nut.stp 
 ~~~~
@@ -9046,28 +9045,28 @@ XFromShape a
 @subsubsection occt_draw_8_5_1  XNewDoc
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XNewDoc <document>
 ~~~~
 
 Creates a new XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XNewDoc D 
 ~~~~
 
 @subsubsection occt_draw_8_5_2  XShow
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XShow <document> [ <label1> … ]
 ~~~~
 
 Shows a shape from a given label in the 3D viewer. If the label is not given -- shows all shapes from the document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # show shape from label 0:1:1:4 from document D 
 XShow D 0:1:1:4 
 ~~~~
@@ -9075,14 +9074,14 @@ XShow D 0:1:1:4
 @subsubsection occt_draw_8_5_3  XStat
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XStat <document>
 ~~~~
 
 Prints common information from an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XStat D 
 ==>Statistis of shapes in the document: 
 ==>level N 0 : 9 
@@ -9104,7 +9103,7 @@ XStat D
 @subsubsection occt_draw_8_5_4  XWdump
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XWdump <document> <filename>
 ~~~~
 
@@ -9112,21 +9111,21 @@ Saves the contents of the viewer window as an image (XWD, png or BMP file).
 <i>\<filename\></i> must have a corresponding extension. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XWdump D /disk1/tmp/image.png 
 ~~~~
 
 @subsubsection occt_draw_8_5_5  Xdump
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 Xdump <document> [int deep {0|1}]
 ~~~~
 
 Prints information about the tree structure of the document. If parameter 1 is given, then the tree is printed with a link to shapes. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 Xdump D 1 
 ==> ASSEMBLY 0:1:1:1 L-BRACKET(0xe8180448) 
 ==> ASSEMBLY 0:1:1:2 NUT(0xe82151e8) 
@@ -9147,7 +9146,7 @@ etc.
 @subsubsection occt_draw_8_6_1  XAddComponent
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XAddComponent <document> <label> <shape> 
 ~~~~
 
@@ -9157,21 +9156,21 @@ Adds a component shape to assembly.
 
 Let us add shape b as component shape to assembly shape from label *0:1:1:1* 
 
-~~~~{.php}
+~~~~{.tcl}
 XAddComponent D 0:1:1:1 b 
 ~~~~
 
 @subsubsection occt_draw_8_6_2  XAddShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XAddShape <document> <shape> [makeassembly=1]
 ~~~~
 
 Adds a shape (or an assembly) to a document. If this shape already exists in the document, then prints the label which points to it. By default, a new shape is added as an assembly (i.e. last parameter 1), otherwise it is necessary to pass 0 as the last parameter. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # add shape b to document D 
 XAddShape D b 0 
 == 0:1:1:10 
@@ -9183,35 +9182,35 @@ XAddShape D b 0
 @subsubsection occt_draw_8_6_3  XFindComponent
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFindComponent <document> <shape>
 ~~~~
 
 Prints a sequence of labels of the assembly path. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFindComponent D b 
 ~~~~
 
 @subsubsection occt_draw_8_6_4  XFindShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFindShape <document> <shape>
 ~~~~
 
 Finds and prints a label with an indicated top-level shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFindShape D a 
 ~~~~
 
 @subsubsection occt_draw_8_6_5  XGetFreeShapes
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetFreeShapes <document> [shape_prefix]
 ~~~~
 
@@ -9222,7 +9221,7 @@ If *shape_prefix* is absent -- prints labels, else -- creates DRAW shapes with n
 **Note**: a free shape is a shape to which no other shape refers to. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetFreeShapes D 
 == 0:1:1:6 0:1:1:10 0:1:1:12 0:1:1:13 
 
@@ -9233,56 +9232,56 @@ XGetFreeShapes D sh
 @subsubsection occt_draw_8_6_6  XGetOneShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetOneShape <shape> <document>
 ~~~~
 
 Creates one DRAW shape for all free shapes from a document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetOneShape a D 
 ~~~~
 
 @subsubsection occt_draw_8_6_7  XGetReferredShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetReferredShape <document> <label>
 ~~~~
 
 Prints a label that contains a top-level shape that corresponds to a shape at a given label. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetReferredShape D 0:1:1:1:1 
 ~~~~
 
 @subsubsection occt_draw_8_6_8  XGetShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetShape <result> <document> <label>
 ~~~~
 
 Puts a shape from the indicated label in document to result. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetShape b D 0:1:1:3 
 ~~~~
 
 @subsubsection occt_draw_8_6_9  XGetTopLevelShapes
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetTopLevelShapes <document>
 ~~~~
 
 Prints labels that contain top-level shapes. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetTopLevelShapes D 
 == 0:1:1:1 0:1:1:2 0:1:1:3 0:1:1:4 0:1:1:5 0:1:1:6 0:1:1:7 
 0:1:1:8 0:1:1:9 
@@ -9291,14 +9290,14 @@ XGetTopLevelShapes D
 @subsubsection occt_draw_8_6_10  XLabelInfo
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XLabelInfo <document> <label>
 ~~~~
 
 Prints information about a shape, stored at an indicated label. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 XLabelInfo D 0:1:1:6 
 ==> There are TopLevel shapes. There is an Assembly. This Shape is not used. 
 ~~~~
@@ -9306,70 +9305,70 @@ XLabelInfo D 0:1:1:6
 @subsubsection occt_draw_8_6_11  XNewShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XNewShape <document>
 ~~~~
 
 Creates a new empty top-level shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XNewShape D 
 ~~~~
 
 @subsubsection occt_draw_8_6_12  XRemoveComponent
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XRemoveComponent <document> <label>
 ~~~~
 
 Removes a component from the components label. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XRemoveComponent D 0:1:1:1:1 
 ~~~~
 
 @subsubsection occt_draw_8_6_13  XRemoveShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XRemoveShape <document> <label>
 ~~~~
 
-Removes a shape from a document (by it’s label). 
+Removes a shape from a document (by its label). 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XRemoveShape D 0:1:1:2 
 ~~~~
 
 @subsubsection occt_draw_8_6_14  XSetShape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetShape <document> <label> <shape>
 ~~~~
 
 Sets a shape at the indicated label. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetShape D 0:1:1:3 b 
 ~~~~
 
 @subsubsection occt_draw_8_6_15  XUpdateAssemblies
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XUpdateAssemblies <document>
 ~~~~
 
 Updates all assembly compounds in the XDE document.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XUpdateAssemblies D
 ~~~~
 
@@ -9378,28 +9377,28 @@ XUpdateAssemblies D
 @subsubsection occt_draw_8_7_1  XAddColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XAddColor <document> <R> <G> <B>
 ~~~~
 
 Adds color in document to the color table. Parameters R,G,B are real. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XAddColor D 0.5 0.25 0.25 
 ~~~~
 
 @subsubsection occt_draw_8_7_2  XFindColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFindColor <document> <R> <G> <B>
 ~~~~
 
 Finds a label where the indicated color is situated. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFindColor D 0.25 0.25 0.5 
 ==> 0:1:2:2 
 ~~~~
@@ -9407,14 +9406,14 @@ XFindColor D 0.25 0.25 0.5
 @subsubsection occt_draw_8_7_3  XGetAllColors
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetAllColors <document> 
 ~~~~
 
 Prints all colors that are defined in the document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetAllColors D 
 ==> RED DARKORANGE BLUE1 GREEN YELLOW3 
 ~~~~
@@ -9422,14 +9421,14 @@ XGetAllColors D
 @subsubsection occt_draw_8_7_4  XGetColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetColor <document> <label>
 ~~~~
 
 Returns a color defined at the indicated label from the color table. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetColor D 0:1:2:3 
 == BLUE1 
 ~~~~
@@ -9437,70 +9436,70 @@ XGetColor D 0:1:2:3
 @subsubsection occt_draw_8_7_5  XGetObjVisibility
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetObjVisibility <document> {<label>|<shape>}
 ~~~~
 
 Returns the visibility of a shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetObjVisibility D 0:1:1:4 
 ~~~~
 
 @subsubsection occt_draw_8_7_6  XGetShapeColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetShapeColor <document> <label> <colortype(s|c)>
 ~~~~
 
 Returns the color defined by label. If <i>colortype</i>=’s’ -- returns surface color, else -- returns curve color. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetShapeColor D 0:1:1:4 c 
 ~~~~
 
 @subsubsection occt_draw_8_7_7  XRemoveColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XRemoveColor <document> <label>
 ~~~~
 
 Removes a color from the color table in a document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XRemoveColor D 0:1:2:1 
 ~~~~
 
 @subsubsection occt_draw_8_7_8  XSetColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetColor <document> {<label>|<shape>} <R> <G> <B>
 ~~~~
 
 Sets an RGB color to a shape given by label. 
 
 **Example:**
-~~~~{.php}
-XsetColor D 0:1:1:4 0.5 0.5 0. 
+~~~~{.tcl}
+XSetColor D 0:1:1:4 0.5 0.5 0. 
 ~~~~
 
 @subsubsection occt_draw_8_7_9  XSetObjVisibility
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetObjVisibility <document> {<label>|<shape>} {0|1}
 ~~~~
 
 Sets the visibility of a shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # set shape from label 0:1:1:4 as invisible 
 XSetObjVisibility D 0:1:1:4 0 
 ~~~~
@@ -9508,14 +9507,14 @@ XSetObjVisibility D 0:1:1:4 0
 @subsubsection occt_draw_8_7_10  XUnsetColor
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XUnsetColor <document> {<label>|<shape>} <colortype>
 ~~~~
 
 Unset a color given type (‘s’ or ‘c’) for the indicated shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XUnsetColor D 0:1:1:4 s 
 ~~~~
 
@@ -9525,28 +9524,28 @@ XUnsetColor D 0:1:1:4 s
 @subsubsection occt_draw_8_8_1  XAddLayer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XAddLayer <document> <layer>
 ~~~~
 
 Adds a new layer in an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XAddLayer D layer2 
 ~~~~
 
 @subsubsection occt_draw_8_8_2  XFindLayer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XFindLayer <document> <layer>
 ~~~~
 
 Prints a label where a layer is situated. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XFindLayer D Bolt 
 == 0:1:3:2 
 ~~~~
@@ -9554,14 +9553,14 @@ XFindLayer D Bolt
 @subsubsection occt_draw_8_8_3  XGetAllLayers
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetAllLayers <document> 
 ~~~~
 
 Prints all layers in an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetAllLayers D 
 == *0:1:1:3* *Bolt* *0:1:1:9* 
 ~~~~
@@ -9569,14 +9568,14 @@ XGetAllLayers D
 @subsubsection occt_draw_8_8_4  XGetLayers
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetLayers <document> {<shape>|<label>}
 ~~~~
 
 Returns names of layers, which are pointed to by links of an indicated shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetLayers D 0:1:1:3 
 == *bolt* *123* 
 ~~~~
@@ -9584,64 +9583,64 @@ XGetLayers D 0:1:1:3
 @subsubsection occt_draw_8_8_5  XGetOneLayer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetOneLayer <document> <label>
 ~~~~
 
 Prints the name of a layer at a given label. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetOneLayer D 0:1:3:2 
 ~~~~
 
 @subsubsection occt_draw_8_8_6  XIsVisible
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XIsVisible <document> {<label>|<layer>}
 ~~~~
 
 Returns 1 if the indicated layer is visible, else returns 0. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XIsVisible D 0:1:3:1 
 ~~~~
 
 @subsubsection occt_draw_8_8_7  XRemoveAllLayers
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XRemoveAllLayers <document> 
 ~~~~
 
 Removes all layers from an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XRemoveAllLayers D 
 ~~~~
 
 @subsubsection occt_draw_8_8_8  XRemoveLayer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XRemoveLayer <document> {<label>|<layer>}
 ~~~~
 
 Removes the indicated layer from an XCAF document. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XRemoveLayer D layer2 
 ~~~~
 
 @subsubsection occt_draw_8_8_9  XSetLayer
 
 Syntax:
-~~~~{.php}
-XSetLayer XSetLayer <document> {<shape>|<label>} <layer> [shape_in_one_layer {0|1}]
+~~~~{.tcl}
+XSetLayer <document> {<shape>|<label>} <layer> [shape_in_one_layer {0|1}]
 
 ~~~~
  
@@ -9649,21 +9648,21 @@ Sets a reference between a shape and a layer (adds a layer if it is necessary).
 Parameter <i>\<shape_in_one_layer\></i> shows whether a shape could be in a number of layers or only in one (0 by default). 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetLayer D 0:1:1:2 layer2 
 ~~~~
 
 @subsubsection occt_draw_8_8_10  XSetVisibility
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetVisibility <document> {<label>|<layer>} <isvisible {0|1}>
 ~~~~
 
 Sets the visibility of a layer. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # set layer at label 0:1:3:2 as invisible 
 XSetVisibility D 0:1:3:2 0 
 ~~~~
@@ -9671,28 +9670,28 @@ XSetVisibility D 0:1:3:2 0
 @subsubsection occt_draw_8_8_11  XUnSetAllLayers
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XUnSetAllLayers <document> {<label>|<shape>}
 ~~~~
 
 Unsets a shape from all layers. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XUnSetAllLayers D 0:1:1:2 
 ~~~~
 
 @subsubsection occt_draw_8_8_12  XUnSetLayer
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XUnSetLayer <document> {<label>|<shape>} <layer>
 ~~~~
 
 Unsets a shape from the indicated layer. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XUnSetLayer D 0:1:1:2 layer1 
 ~~~~
 
@@ -9701,14 +9700,14 @@ XUnSetLayer D 0:1:1:2 layer1
 @subsubsection occt_draw_8_9_1  XCheckProps
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XCheckProps <document> [ {0|deflection} [<shape>|<label>] ]
 ~~~~
 
 Gets properties for a given shape (*volume*, *area* and <i>centroid</i>) and compares them with the results after internal calculations. If the second parameter is 0, the standard OCCT tool is used for the computation of properties. If the second parameter is not 0, it is processed as a deflection. If the deflection is positive the computation is done by triangulations, if it is negative -- meshing is forced. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # check properties for shapes at label 0:1:1:1 from 
 # document using standard Open CASCADE Technology tools 
 XCheckProps D 0 0:1:1:1 
@@ -9721,14 +9720,14 @@ XCheckProps D 0 0:1:1:1
 @subsubsection occt_draw_8_9_2  XGetArea
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetArea <document> {<shape>|<label>}
 ~~~~
 
 Returns the area of a given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetArea D 0:1:1:1 
 == 24628.31815094999 
 ~~~~
@@ -9736,98 +9735,98 @@ XGetArea D 0:1:1:1
 @subsubsection occt_draw_8_9_3  XGetCentroid
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetCentroid <document> {<shape>|<label>}
 ~~~~
 
 Returns the center of gravity coordinates of a given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetCentroid D 0:1:1:1 
 ~~~~
 
 @subsubsection occt_draw_8_9_4  XGetVolume
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XGetVolume <document> {<shape>|<label>}
 ~~~~
 
 Returns the volume of a given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XGetVolume D 0:1:1:1 
 ~~~~
 
 @subsubsection occt_draw_8_9_5  XSetArea
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetArea <document> {<shape>|<label>} <area>
 ~~~~
 
 Sets new area to attribute list ??? given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetArea D 0:1:1:1 2233.99 
 ~~~~
 
 @subsubsection occt_draw_8_9_6  XSetCentroid
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetCentroid <document> {<shape>|<label>} <x> <y> <z>
 ~~~~
 
 Sets new center of gravity  to the attribute list given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetCentroid D 0:1:1:1 0. 0. 100. 
 ~~~~
 
 @subsubsection occt_draw_8_9_7  XSetMaterial
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetMaterial <document> {<shape>|<label>} <name> <density(g/cu sm)>
 ~~~~
 
 Adds a new label with material into the material table in a document, and adds a link to this material to the attribute list of a given shape or a given label. The last parameter sets the density of a pointed material. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetMaterial D 0:1:1:1 Titanium 8899.77 
 ~~~~
 
 @subsubsection occt_draw_8_9_8  XSetVolume
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XSetVolume <document> {<shape>|<label>} <volume>
 ~~~~
 
 Sets new volume to the attribute list ??? given shape. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XSetVolume D 0:1:1:1 444555.33 
 ~~~~
 
 @subsubsection occt_draw_8_9_9  XShapeMassProps
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XShapeMassProps <document> [ <deflection> [{<shape>|<label>}] ]
 ~~~~
 
 Computes and returns real mass and real center of gravity for a given shape or for all shapes in a document. The second parameter is used for calculation of the volume and CG(center of gravity). If it is 0, then the standard CASCADE tool (geometry) is used for computation, otherwise -- by triangulations with a given deflection. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XShapeMassProps D 
 == Shape from label : 0:1:1:1 
 == Mass = 193.71681469282299 
@@ -9840,14 +9839,14 @@ etc.
 @subsubsection occt_draw_8_9_10  XShapeVolume
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 XShapeVolume <shape> <deflection>
 ~~~~
 
 Calculates the real volume of a pointed shape with a given deflection. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 XShapeVolume a 0 
 ~~~~
 
@@ -9860,8 +9859,8 @@ XShapeVolume a 0
 @subsubsection occt_draw_9_1_1 bsplres
 
 Syntax:
-~~~~{.php}
-bsplres <result> <shape> <tol3d> <tol2d< <reqdegree> <reqnbsegments> <continuity3d> <continuity2d> <PriorDeg> <RationalConvert>
+~~~~{.tcl}
+bsplres <result> <shape> <tol3d> <tol2d> <reqdegree> <reqnbsegments> <continuity3d> <continuity2d> <PriorDeg> <RationalConvert>
 ~~~~
 
 Performs approximations of a given shape (BSpline curves and surfaces or other surfaces) to BSpline with given required parameters. The specified continuity can be reduced if the approximation with a specified continuity was not done successfully. Results are put into the shape, which is given as a parameter result. For a more detailed description see the ShapeHealing User’s Guide (operator: **BSplineRestriction**). 
@@ -9869,14 +9868,14 @@ Performs approximations of a given shape (BSpline curves and surfaces or other s
 @subsubsection occt_draw_9_1_2 checkfclass2d
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 checkfclass2d <face> <ucoord> <vcoord>
 ~~~~
 
 Shows where a point which is given by coordinates is located in relation to a given face -- outbound, inside or at the bounds. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 checkfclass2d f 10.5 1.1 
 == Point is OUT 
 ~~~~
@@ -9884,28 +9883,28 @@ checkfclass2d f 10.5 1.1
 @subsubsection occt_draw_9_1_3 checkoverlapedges
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 checkoverlapedges <edge1> <edge2> [<toler> <domaindist>]
 ~~~~
 
 Checks the overlapping of two given edges. If the distance between two edges is less than the given value of tolerance then edges are overlapped. Parameter \<domaindist\> sets length of part of edges on which edges are overlapped. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 checkoverlapedges e1 e2 
 ~~~~
 
-@subsubsection occt_draw_9_1_4 comtol
+@subsubsection occt_draw_9_1_4 comptol
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 comptol <shape> [nbpoints] [prefix]
 ~~~~
 
 Compares the real value of tolerance on curves with the value calculated by standard (using 23 points). The maximal value of deviation of 3d curve from pcurve at given simple points is taken as a real value (371 is by default). Command returns the maximal, minimal and average value of tolerance for all edges and difference between real values and set values. Edges with the maximal value of tolerance and relation will be saved if the ‘prefix’ parameter is given. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 comptol h 871 t 
 
 ==> Edges tolerance computed by 871 points: 
@@ -9919,7 +9918,7 @@ comptol h 871 t
 @subsubsection occt_draw_9_1_5 convtorevol
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 convtorevol <result> <shape>
 ~~~~
 
@@ -9927,35 +9926,35 @@ Converts all elementary surfaces of a given shape into surfaces of revolution.
 Results are put into the shape, which is given as the <i>\<result\></i> parameter. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 convtorevol r a 
 ~~~~
 
 @subsubsection occt_draw_9_1_6 directfaces
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 directfaces <result> <shape>
 ~~~~
 
 Converts indirect surfaces and returns the results into the shape, which is given as the result parameter. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 directfaces r a 
 ~~~~
 
 @subsubsection occt_draw_9_1_7 expshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 expshape <shape> <maxdegree> <maxseg>
 ~~~~
 
 Gives statistics for a given shape. This test command is working with Bezier and BSpline entities. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 expshape a 10 10 
 ==> Number of Rational Bspline curves 128 
 ==> Number of Rational Bspline pcurves 48 
@@ -9964,35 +9963,35 @@ expshape a 10 10
 @subsubsection occt_draw_9_1_8 fixsmall
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 fixsmall <result> <shape> [<toler>=1.]
 ~~~~
 
-Fixes small edges in given shape by merging adjacent edges with agiven tolerance. Results are put into the shape, which is given as the result parameter. 
+Fixes small edges in given shape by merging adjacent edges with a given tolerance. Results are put into the shape, which is given as the result parameter. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 fixsmall r a 0.1 
 ~~~~
 
 @subsubsection occt_draw_9_1_9 fixsmalledges
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 fixsmalledges <result> <shape> [<toler> <mode> <maxangle>]
 ~~~~
 
 Searches at least one small edge at a given shape. If such edges have been found, then small edges are merged with a given tolerance. If parameter <i>\<mode\></i> is equal to *true* (can be given any values, except 2), then  small edges, which can not be merged, are removed, otherwise they are to be kept (*false* is used by default). Parameter <i>\<maxangle\></i> sets a maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1). Results are put into the shape, which is given as parameter result. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 fixsmalledges r a 0.1 1 
 ~~~~
 
 @subsubsection occt_draw_9_1_10 fixshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 fixshape <result> <shape> [<preci> [<maxpreci>]] [{switches}]
 ~~~~
 
@@ -10015,28 +10014,28 @@ The following syntax is used:
 For enhanced message output, use switch '+?' 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 fixshape r a 0.001 
 ~~~~
 
 @subsubsection occt_draw_9_1_11 fixwgaps
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 fixwgaps <result> <shape> [<toler>=0]
 ~~~~
 
 Fixes gaps between ends of curves of adjacent edges (both 3d and pcurves) in wires in a given shape with a given tolerance. Results are put into the shape, which is given as parameter result. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 fixwgaps r a 
 ~~~~
 
 @subsubsection occt_draw_9_1_12 offsetcurve, offset2dcurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 offsetcurve <result> <curve> <offset> <direction(as point)>
 offset2dcurve <result> <curve> <offset>
 ~~~~
@@ -10046,7 +10045,7 @@ offset2dcurve <result> <curve> <offset>
 Both commands are intended to create a new offset curve by copying the given curve to distance, given by parameter <i>\<offset\></i>. Parameter <i>\<direction\></i> defines direction of the offset curve. It is created as a point. For correct work of these commands the direction of normal of the offset curve must be perpendicular to the plane, the basis curve is located there. Results are put into the curve, which is given as parameter <i>\<result\></i>.  
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 point pp 10 10 10 
 offsetcurve r c 20 pp 
 ~~~~
@@ -10054,14 +10053,14 @@ offsetcurve r c 20 pp
 @subsubsection occt_draw_9_1_13 projcurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 projcurve <edge>|<curve3d>|<curve3d first last>  <X> <Y> <Z>
 ~~~~
 
 **projcurve** returns the projection of a given point on a given curve. The curve may be defined by three ways: by giving the edge name, giving the 3D curve and by giving the unlimited curve and limiting it by pointing its start and finish values. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 projcurve k_1 0 1 5 
 ==Edge k_1 Params from 0 to 1.3 
 ==Precision (BRepBuilderAPI) : 9.9999999999999995e-008  ==Projection : 0  1  5 
@@ -10072,7 +10071,7 @@ projcurve k_1 0 1 5
 @subsubsection occt_draw_9_1_14 projpcurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 projpcurve <edge> <face>  <Tol> <X> <Y> <Z> [<start_param>]
 ~~~~
 
@@ -10084,7 +10083,7 @@ If this parameter is not set, algorithm uses whole parametric interval of pcurve
 
 **Example:** 
 
-~~~~{.php}
+~~~~{.tcl}
 # Using global searching   
 projpcurve f_1 f 1.e-7 0.877 0 0.479
 ==Point: 0.87762772831890712 0 0.47934285275342808
@@ -10092,7 +10091,7 @@ projpcurve f_1 f 1.e-7 0.877 0 0.479
 ==Dist: 0.0007152557954264938
 ~~~~
 
-~~~~{.php}
+~~~~{.tcl}
 # Using starting parameter on edge
 projpcurve f_1 f 1.e-7 0.877 0 0.479 .6
 ==Point: 0.87762772831890712 0 0.47934285275342808
@@ -10103,14 +10102,14 @@ projpcurve f_1 f 1.e-7 0.877 0 0.479 .6
 @subsubsection occt_draw_9_1_15 projface
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 projface <face> <X> <Y> [<Z>]
 ~~~~
 
 Returns the projection of a given point to a given face in 2d or 3d space. If two coordinates (2d space) are given then returns coordinates projection of this point in 3d space and vice versa. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 projface a_1 10.0 0.0 
 ==  Point UV  U = 10  V = 0 
 ==   =   proj  X = -116  Y = -45  Z = 0 
@@ -10119,21 +10118,21 @@ projface a_1 10.0 0.0
 @subsubsection occt_draw_9_1_16 scaleshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 scaleshape <result> <shape> <scale>
 ~~~~
 
 Returns a new shape, which is the result of scaling of a given shape with a coefficient equal to the parameter <i>\<scale\></i>. Tolerance is calculated for the  new shape as well.
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 scaleshape r a_1 0.8 
 ~~~~
 
 @subsubsection occt_draw_9_1_17 settolerance
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 settolerance <shape> [<mode>=v-e-w-f-a] <val>(fix value) or
                    <tolmin> <tolmax>
 ~~~~
@@ -10141,14 +10140,14 @@ settolerance <shape> [<mode>=v-e-w-f-a] <val>(fix value) or
 Sets new values of tolerance for a given shape. If the second parameter <i>mode</i> is given, then the tolerance value is set only for these sub shapes. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 settolerance a 0.001 
 ~~~~
 
 @subsubsection occt_draw_9_1_18 splitface
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 splitface <result> <face> [u usplit1 usplit2...] [v vsplit1 vsplit2 ...]
 ~~~~
 
@@ -10156,7 +10155,7 @@ Splits a given face in parametric space and puts the result into the given param
 Returns the status of split face. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 # split face f by parameter u = 5 
 splitface r f u 5 
 ==> Splitting by   U:   ,5 
@@ -10166,7 +10165,7 @@ splitface r f u 5
 @subsubsection occt_draw_9_1_19 statshape
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 statshape <shape> [particul]
 ~~~~
 
@@ -10174,7 +10173,7 @@ Returns the number of sub-shapes, which compose the given shape. For example, th
 surfaces. The last parameter becomes out of date. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 statshape a 
 ==> Count     Item 
 ==> -----     ---- 
@@ -10192,14 +10191,14 @@ statshape a
 @subsubsection occt_draw_9_1_20 tolerance
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 tolerance <shape> [<mode>:D v e f c] [<tolmin> <tolmax>:real]
 ~~~~
 
 Returns tolerance (maximal, avg and minimal values)  of all given shapes and tolerance of their *Faces*, *Edges* and *Vertices*. If parameter <i>\<tolmin\></i> or <i>\<tolmax\></i> or both of them are given, then sub-shapes are returned as a result of analys of this shape, which satisfy the given tolerances. If a particular value of entity ((**D**)all shapes  (**v**) *vertices* (**e**) *edges* (**f**) *faces* (**c**) *combined* (*faces*)) is given as the second parameter then only this group will be analyzed for tolerance. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 tolerance a 
 ==> Tolerance MAX=0.31512672416608001 AVG=0.14901359484722074 MIN=9.9999999999999995e-08 
 ==> FACE    : MAX=9.9999999999999995e-08 AVG=9.9999999999999995e-08 MIN=9.9999999999999995e-08 
@@ -10216,22 +10215,22 @@ tolerance a v 0.1 0.001
 @subsubsection occt_draw_9_2_1 DT_ClosedSplit
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_ClosedSplit <result> <shape>
 ~~~~
 
 Divides all closed faces in the shape (for example cone) and returns result of given shape into shape, which is given as parameter result. Number of faces in resulting shapes will be increased. 
-Note: A closed face is a face with one or more seam. 
+Note: A closed face is a face with one or more seams. 
 
 **Example:**
-~~~~{.php}
-DT_ClosetSplit r a 
+~~~~{.tcl}
+DT_ClosedSplit r a 
 ~~~~
 
 @subsubsection occt_draw_9_2_2 DT_ShapeConvert, DT_ShapeConvertRev
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_ShapeConvert <result> <shape> <convert2d> <convert3d>
 DT_ShapeConvertRev <result> <shape> <convert2d> <convert3d>
 ~~~~
@@ -10239,7 +10238,7 @@ DT_ShapeConvertRev <result> <shape> <convert2d> <convert3d>
 Both commands are intended for the conversion of 3D, 2D curves to Bezier curves and surfaces to Bezier based surfaces. Parameters convert2d and convert3d take on a value 0 or 1. If the given value is 1, then the conversion will be performed, otherwise it will not be performed. The results are put into the shape, which is given as parameter Result. Command *DT_ShapeConvertRev* differs from *DT_ShapeConvert* by converting all elementary surfaces into surfaces of revolution first. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 DT_ShapeConvert r a 1 1 
 == Status: DONE1 
 ~~~~
@@ -10247,7 +10246,7 @@ DT_ShapeConvert r a 1 1
 @subsubsection occt_draw_9_2_3 DT_ShapeDivide
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_ShapeDivide <result> <shape> <tol>
 ~~~~
 
@@ -10258,7 +10257,7 @@ Divides the shape with C1 criterion and returns the result of geometry conversio
  * Fail1    : Some errors occurred 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 DT_ShapeDivide r a 0.001 
 == Status: OK 
 ~~~~
@@ -10266,7 +10265,7 @@ DT_ShapeDivide r a 0.001
 @subsubsection occt_draw_9_2_4 DT_SplitAngle
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitAngle <result> <shape> [MaxAngle=95]
 ~~~~
 
@@ -10274,7 +10273,7 @@ Works with all revolved surfaces, like cylinders, surfaces of revolution, etc. T
 This command illustrates how class *ShapeUpgrade_ShapeDivideAngle* works. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitAngle r a 
 == Status: DONE2 
 ~~~~
@@ -10282,42 +10281,42 @@ DT_SplitAngle r a
 @subsubsection occt_draw_9_2_5 DT_SplitCurve
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitCurve <curve> <tol> <split(0|1)>
 ~~~~
 
 Divides the 3d curve with C1 criterion and returns the result of splitting of the given curve into a new curve. If the curve had been divided by segments, then each segment is put to an individual result.  This command can correct a given curve at a knot with the given tolerance, if it is impossible, then the given surface is split at that knot. If the last parameter is 1, then 5 knots are added at the given curve, and its surface is split by segments, but this will be performed not for all parametric spaces. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitCurve r c 
 ~~~~
 
 @subsubsection occt_draw_9_2_6 DT_SplitCurve2d
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitCurve2d Curve Tol Split(0/1) 
 ~~~~
 
 Works just as **DT_SplitCurve** (see above), only with 2d curve. 
 
 **Example:**
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitCurve2d r c 
 ~~~~
 
 @subsubsection occt_draw_9_2_7 DT_SplitSurface
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_SplitSurface <result> <Surface|GridSurf> <tol> <split(0|1)>
 ~~~~
 
 Divides surface with C1 criterion and returns the result of splitting of a given surface into surface, which is given as parameter result. If the surface has been divided into segments, then each segment is put to an individual result.  This command can correct a given C0 surface at a knot with a given tolerance, if it is impossible, then the given surface is split at that knot. If the last parameter is 1, then 5 knots are added to the given surface, and its surface is split by segments, but this will be performed not for all parametric spaces. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 # split surface with name "su"
 DT_SplitSurface res su 0.1 1 
 ==> single surf 
@@ -10333,14 +10332,14 @@ DT_SplitSurface res su 0.1 1
 @subsubsection occt_draw_9_2_8 DT_ToBspl
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 DT_ToBspl <result> <shape>
 ~~~~
 
 Converts a surface of linear extrusion, revolution and offset surfaces into BSpline surfaces. Returns the result into the shape, which is given as parameter result. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 DT_ToBspl res sh
 == error = 5.20375663162094e-08   spans = 10
 ==  Surface is approximated with continuity 2
@@ -10352,7 +10351,7 @@ DT_ToBspl res sh
 @subsection occt_draw_10_1 VDrawSphere
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0] 
 ~~~~
 
@@ -10361,7 +10360,7 @@ Calculates and displays in a given number of steps a sphere with given coordinat
 This command can be used for visualization performance evaluation instead of the outdated Visualization Performance Meter. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 vdrawsphere s 200 1 1 1 500 1 
 == Compute Triangulation... 
 == NumberOfPoints: 39602 
@@ -10384,7 +10383,7 @@ This section contains description of auxiliary commands that can be useful for s
 @subsection occt_draw_12_1 Vector algebra commands
 
 This section describes commands providing simple calculations with 2D and 3D vectors. The vector is represented by a TCL list of double values (coordinates). The commands get input vector coordinates from the command line as distinct values. So, if you have a vector stored in a variable you need to use *eval* command as a prefix, for example, to compute the magnitude of cross products of two vectors given by 3 points the following commands can be used:
-~~~~{.php}
+~~~~{.tcl}
 Draw[10]> set vec1 [vec 12 28 99 12 58 99]
 0 30 0
 Draw[13]> set vec2 [vec 12 28 99 16 21 89]
@@ -10398,350 +10397,350 @@ Draw[15]> eval module $cross
 @subsubsection occt_draw_12_1_1 vec
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 vec <x1> <y1> <z1> <x2> <y2> <z2>
 ~~~~
 
 Returns coordinates of vector between two 3D points.
 
 Example:
-~~~~{.php}
+~~~~{.tcl}
 vec 1 2 3 6 5 4
 ~~~~
 
 @subsubsection occt_draw_12_1_2 2dvec
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dvec <x1> <y1> <x2> <y2>
 ~~~~
 
 Returns coordinates of vector between two 2D points.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dvec 1 2 4 3
 ~~~~
 
 @subsubsection occt_draw_12_1_3 pln
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pln <x1> <y1> <z1> <x2> <y2> <z2> <x3> <y3> <z3>
 ~~~~
 
-Returns plane built on three points. A plane is represented by 6 double values: coordinates of the origin point and the normal directoin.
+Returns plane built on three points. A plane is represented by 6 double values: coordinates of the origin point and the normal direction.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 pln 1 2 3 6 5 4 9 8 7
 ~~~~
 
 @subsubsection occt_draw_12_1_4 module
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 module <x> <y> <z>
 ~~~~
 
 Returns module of a vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 module 1 2 3
 ~~~~
 
 @subsubsection occt_draw_12_1_5 2dmodule
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dmodule <x> <y>
 ~~~~
 
 Returns module of a 2D vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dmodule 1 2
 ~~~~
 
 @subsubsection occt_draw_12_1_6 norm
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 norm <x> <y> <z>
 ~~~~
 
 Returns unified vector from a given 3D vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 norm 1 2 3
 ~~~~
 
 @subsubsection occt_draw_12_1_7 2dnorm
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dnorm <x> <y>
 ~~~~
 
 Returns unified vector from a given 2D vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dnorm 1 2
 ~~~~
 
 @subsubsection occt_draw_12_1_8 inverse
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 inverse <x> <y> <z>
 ~~~~
 
-Returns inversed 3D vector.
+Returns inverted 3D vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 inverse 1 2 3
 ~~~~
 
 @subsubsection occt_draw_12_1_9 2dinverse
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dinverse <x> <y>
 ~~~~
 
-Returns inversed 2D vector.
+Returns inverted 2D vector.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dinverse 1 2
 ~~~~
 
 @subsubsection occt_draw_12_1_10 2dort
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dort <x> <y>
 ~~~~
 
 Returns 2D vector rotated on 90 degrees.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dort 1 2
 ~~~~
 
 @subsubsection occt_draw_12_1_11 distpp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 distpp <x1> <y1> <z1> <x2> <y2> <z2>
 ~~~~
 
 Returns distance between two 3D points.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 distpp 1 2 3 4 5 6
 ~~~~
 
 @subsubsection occt_draw_12_1_12 2ddistpp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2ddistpp <x1> <y1> <x2> <y2>
 ~~~~
 
 Returns distance between two 2D points.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2ddistpp 1 2 3 4
 ~~~~
 
 @subsubsection occt_draw_12_1_13 distplp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 distplp <x0> <y0> <z0> <nx> <ny> <nz> <xp> <yp> <zp>
 ~~~~
 
 Returns distance between plane defined by point and normal direction and another point.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 distplp 0 0 0 0 0 1 5 6 7
 ~~~~
 
 @subsubsection occt_draw_12_1_14 distlp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 distlp <x0> <y0> <z0> <dx> <dy> <dz> <xp> <yp> <zp>
 ~~~~
 
 Returns distance between 3D line defined by point and direction and another point.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 distlp 0 0 0 1 0 0 5 6 7
 ~~~~
 
 @subsubsection occt_draw_12_1_15 2ddistlp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2ddistlp <x0> <y0> <dx> <dy> <xp> <yp>
 ~~~~
 
 Returns distance between 2D line defined by point and direction and another point.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2ddistlp 0 0 1 0 5 6
 ~~~~
 
 @subsubsection occt_draw_12_1_16 distppp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 distppp <x1> <y1> <z1> <x2> <y2> <z2> <x3> <y3> <z3>
 ~~~~
 
 Returns deviation of point (x2,y2,z2) from segment defined by points (x1,y1,z1) and (x3,y3,z3).
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 distppp 0 0 0 1 1 0 2 0 0
 ~~~~
 
 @subsubsection occt_draw_12_1_17 2ddistppp
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2ddistppp <x1> <y1> <x2> <y2> <x3> <y3>
 ~~~~
 
 Returns deviation of point (x2,y2) from segment defined by points (x1,y1) and (x3,y3). The result is a signed value. It is positive if the point (x2,y2) is on the left side of the segment, and negative otherwise.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2ddistppp 0 0 1 -1 2 0
 ~~~~
 
 @subsubsection occt_draw_12_1_18 barycen
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 barycen <x1> <y1> <z1> <x2> <y2> <z2> <par>
 ~~~~
 
 Returns point of a given parameter between two 3D points.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 barycen 0 0 0 1 1 1 0.3
 ~~~~
 
 @subsubsection occt_draw_12_1_19 2dbarycen
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dbarycen <x1> <y1> <x2> <y2> <par>
 ~~~~
 
 Returns point of a given parameter between two 2D points.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dbarycen 0 0 1 1 0.3
 ~~~~
 
 @subsubsection occt_draw_12_1_20 cross
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 cross <x1> <y1> <z1> <x2> <y2> <z2>
 ~~~~
 
 Returns cross product of two 3D vectors.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 cross 1 0 0 0 1 0
 ~~~~
 
 @subsubsection occt_draw_12_1_21 2dcross
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dcross <x1> <y1> <x2> <y2>
 ~~~~
 
 Returns cross product of two 2D vectors.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dcross 1 0 0 1
 ~~~~
 
 @subsubsection occt_draw_12_1_22 dot
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 dot <x1> <y1> <z1> <x2> <y2> <z2>
 ~~~~
 
 Returns scalar product of two 3D vectors.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 dot 1 0 0 0 1 0
 ~~~~
 
 @subsubsection occt_draw_12_1_23 2ddot
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2ddot <x1> <y1> <x2> <y2>
 ~~~~
 
 Returns scalar product of two 2D vectors.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2ddot 1 0 0 1
 ~~~~
 
 @subsubsection occt_draw_12_1_24 scale
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 scale <x> <y> <z> <factor>
 ~~~~
 
 Returns 3D vector multiplied by scalar.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 scale 1 0 0 5
 ~~~~
 
 @subsubsection occt_draw_12_1_25 2dscale
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dscale <x> <y> <factor>
 ~~~~
 
 Returns 2D vector multiplied by scalar.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2dscale 1 0 5
 ~~~~
 
@@ -10752,14 +10751,14 @@ This section describes commands that make possible to provide measurements on a 
 @subsubsection occt_draw_12_2_1 pnt
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pnt <object>
 ~~~~
 
 Returns coordinates of point in the given Draw variable. Object can be of type point or vertex. Actually this command is built up from the commands @ref occt_draw_7_2_1a "mkpoint" and @ref occt_draw_6_6_1 "coord".
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 vertex v 0 1 0
 pnt v
 ~~~~
@@ -10767,14 +10766,14 @@ pnt v
 @subsubsection occt_draw_12_2_2 pntc
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pntc <curv> <par>
 ~~~~
 
 Returns coordinates of point on 3D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "cvalue".
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 circle c 0 0 0 10
 pntc c [dval pi/2]
 ~~~~
@@ -10782,14 +10781,14 @@ pntc c [dval pi/2]
 @subsubsection occt_draw_12_2_3 2dpntc
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2dpntc <curv2d> <par>
 ~~~~
 
 Returns coordinates of point on 2D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "2dcvalue".
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 circle c 0 0 10
 2dpntc c [dval pi/2]
 ~~~~
@@ -10797,14 +10796,14 @@ circle c 0 0 10
 @subsubsection occt_draw_12_2_4 pntsu
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pntsu <surf> <u> <v>
 ~~~~
 
 Returns coordinates of point on surface with given parameters. Actually this command is based on the command @ref occt_draw_6_6_3 "svalue".
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 cylinder s 10
 pntsu s [dval pi/2] 5
 ~~~~
@@ -10812,14 +10811,14 @@ pntsu s [dval pi/2] 5
 @subsubsection occt_draw_12_2_5 pntcons
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 pntcons <curv2d> <surf> <par>
 ~~~~
 
 Returns coordinates of point on surface defined by point on 2D curve with given parameter. Actually this command is based on the commands @ref occt_draw_6_6_2 "2dcvalue" and @ref occt_draw_6_6_3 "svalue".
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 line c 0 0 1 0
 cylinder s 10
 pntcons c s [dval pi/2]
@@ -10828,140 +10827,62 @@ pntcons c s [dval pi/2]
 @subsubsection occt_draw_12_2_6 drseg
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 drseg <name> <x1> <y1> <z1> <x2> <y2> <z2>
 ~~~~
 
 Creates a linear segment between two 3D points. The new object is given the *name*. The object is drawn in the axonometric view.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 drseg s 0 0 0 1 0 0
 ~~~~
 
 @subsubsection occt_draw_12_2_7 2ddrseg
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 2ddrseg <name> <x1> <y1> <x2> <y2>
 ~~~~
 
 Creates a linear segment between two 2D points. The new object is given the *name*. The object is drawn in the 2D view.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 2ddrseg s 0 0 1 0
 ~~~~
 
 @subsubsection occt_draw_12_2_8 mpick
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mpick
 ~~~~
 
 Prints in the console the coordinates of a point clicked by mouse in a view (axonometric or 2D). This command will wait for mouse click event in a view.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 mpick
 ~~~~
 
 @subsubsection occt_draw_12_2_9 mdist
 
 Syntax:
-~~~~{.php}
+~~~~{.tcl}
 mdist
 ~~~~
 
 Prints in the console the distance between two points clicked by mouse in a view (axonometric or 2D). This command will wait for two mouse click events in a view.
 
 Example: 
-~~~~{.php}
+~~~~{.tcl}
 mdist
 ~~~~
 
 @section occt_draw_13 Inspector commands
 
-
-This section describes commands that make possible to use Inspector.
-Inspector available in https://github.com/Open-Cascade-SAS/Inspector repository.
-
-@subsection occt_draw_13_1 tinspector
-
-Syntax:
-~~~~{.php}
-tinspector [-plugins {name1 ... [nameN] | all}]
-           [-activate name]
-           [-shape object [name1] ... [nameN]]
-           [-open file_name [name1] ... [nameN]]
-           [-update]
-           [-select {object | name1 ... [nameN]}]
-           [-show {0|1} = 1]
-~~~~
-Starts inspection tool.
-Options:
-* *plugins* enters plugins that should be added in the inspector.
-Available names are: *dfbrowser*, *vinspector* and *shapeview*.
-Plugins order will be the same as defined in the arguments.
-'all' adds all available plugins in the order:
-DFBrowser, VInspector and ShapeView.
-If at the first call this option is not used, 'all' option is applied;
-* *activate* activates the plugin in the tool view.
-If at the first call this option is not used, the first plugin is activated;
-* *shape* initializes plugin(s) by the shape object. If 'name' is empty, initializes all plugins;
-* *open* gives the file to the plugin(s). If the plugin is active after open, the content will be updated;
-* *update* updates content of the active plugin;
-* *select* sets the parameter that should be selected in an active tool view.
-Depending on the active tool the parameter is:
-ShapeView: 'object' is an instance of *TopoDS_Shape TShape*,
-DFBrowser: 'name' is an entry of *TDF_Label* and 'name2' (optionally) for *TDF_Attribute* type name,
-VInspector: 'object' is an instance of *AIS_InteractiveObject*;
-* *show* sets Inspector view visible or hidden. The first call of this command will show it.
-
-**Example:** 
-~~~~{.php}
-pload DCAF INSPECTOR
-
-NewDocument Doc BinOcaf
-
-set aSetAttr1 100
-set aLabel 0:2
-SetInteger Doc ${aLabel} ${aSetAttr1}
-
-tinspector -plugins dfbrowser -select 0:2 TDataStd_Integer
-~~~~
-
-**Example:** 
-~~~~{.php}
-pload ALL INSPECTOR
-
-box b1 200 100 120
-box b2 100 200 220 100 120 100
-
-tinspector -plugins shapeview -shape b1 -shape b2 -select b1
-~~~~
-
-**Example:** 
-~~~~{.php}
-pload ALL INSPECTOR
-
-tinspector -plugins vinspector
-
-vinit
-box box_1 100 100 100
-vdisplay box_1
-
-box box_2 180 120 200 150 150 150
-vdisplay box_2
-
-vfit
-vselmode box_1 1 1
-vselmode box_1 3 1
-
-tinspector -update -select box_1
-~~~~
-
+The Inspector tool (DFBrowser, VInspector, ShapeView) and its `tinspector` DRAW command no longer ship with OCCT itself. The tool has been moved to a dedicated repository at https://github.com/Open-Cascade-SAS/Inspector. Build it against your OCCT installation, then load its `INSPECTOR` plug-in from your DRAW session as documented in that repository.
 
 @section occt_draw_11 Extending Test Harness with custom commands
 
@@ -11033,7 +10954,7 @@ Thus, the resource file must contain a line mapping this name (key) to the libra
 For several plug-ins one resource file can be created. In such case, keys denoting plug-ins can be combined into groups, these groups -- into their groups and so on (thereby creating some hierarchy). Any new parent key must have its value as a sequence of child keys separated by spaces, tabs or commas. Keys should form a tree without cyclic dependencies. 
 
 **Examples** (file MyDrawPlugin): 
-~~~~{.php}
+~~~~{.tcl}
 ! Hierarchy of plug-ins 
 ALL                : ADVMODELING, MESHING 
 DEFAULT            : MESHING 
@@ -11045,7 +10966,7 @@ ADVCURV            : TKMyAdvCurv
 MESHING            : TKMyMesh 
 ~~~~
 
-For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
+For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CSF_OCCTResourcePath/DrawResources/DrawPlugin</i> file shipped with Open CASCADE Technology. 
 
 
 @subsection occt_draw_11_5 Dynamic loading and activation
@@ -11055,7 +10976,7 @@ Loading a plug-in and activating its commands is described in the @ref occt_draw
 The procedure consists in defining the system variables and using the *pload* commands in the Test Harness session. 
 
 **Example:** 
-~~~~{.php}
+~~~~{.tcl}
 Draw[]> set env(CSF_MyDrawPluginDefaults) /users/test
 Draw[]> pload -MyDrawPlugin ALL
 ~~~~

@@ -127,7 +127,9 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
       // clang-format on
       GeomConvert_ApproxCurve approx(tcurve, Precision::Approximation(), GeomAbs_C1, 100, 6);
       if (approx.HasResult())
+      {
         aBSpline = approx.Curve();
+      }
       else
       {
         occ::handle<Geom_TrimmedCurve> t3d = new Geom_TrimmedCurve(myCurve, First, Last);
@@ -142,14 +144,20 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
       aBSpline = GeomConvert::CurveToBSplineCurve(myCurve, Convert_QuasiAngular);
     }
     else
+    {
       aBSpline = occ::down_cast<Geom_BSplineCurve>(myCurve);
+    }
 
     double bf = aBSpline->FirstParameter();
     double bl = aBSpline->LastParameter();
     if (std::abs(First - bf) < precision)
+    {
       First = bf;
+    }
     if (std::abs(Last - bl) < precision)
+    {
       Last = bl;
+    }
     if (First < bf)
     {
 #ifdef OCCT_DEBUG
@@ -191,9 +199,13 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
       {
         double valknot = knots(i) + Shift;
         if (valknot <= First + precision)
+        {
           continue;
+        }
         if (valknot >= Last - precision)
+        {
           break;
+        }
         mySplitValues->InsertBefore(j++, valknot);
       }
       First = Last;
@@ -216,10 +228,16 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Build(const bool /*Segment*/)
   {
     double par = mySplitValues->Value(i);
     for (; j <= mySplitParams->Length(); j++)
+    {
       if (mySplitParams->Value(j) + prec > par)
+      {
         break;
+      }
       else
+      {
         prevPar = 0.;
+      }
+    }
 
     occ::handle<Geom_Curve> crv = occ::down_cast<Geom_Curve>(mySegments->Value(j - 1)->Copy());
     if (crv->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
@@ -233,7 +251,9 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Build(const bool /*Segment*/)
       myResultingCurves->SetValue(i - 1, bes);
     }
     else
+    {
       myResultingCurves->SetValue(i - 1, crv);
+    }
   }
 }
 

@@ -113,6 +113,8 @@ gp_Pnt IGESGraph_TextDisplayTemplate::TransformedStartingCorner() const
 {
   gp_XYZ TempXYZ = theCorner;
   if (HasTransf())
+  {
     Location().Transforms(TempXYZ);
+  }
   return (gp_Pnt(TempXYZ));
 }

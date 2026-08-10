@@ -126,9 +126,6 @@ public:
     return mySelector.GetListOfDelPoints();
   }
 
-  //! Prints statistics.
-  Standard_EXPORT void Statistics(Standard_OStream& theStream) const;
-
   DEFINE_STANDARD_RTTIEXT(BRepMesh_VertexTool, Standard_Transient)
 
 private:

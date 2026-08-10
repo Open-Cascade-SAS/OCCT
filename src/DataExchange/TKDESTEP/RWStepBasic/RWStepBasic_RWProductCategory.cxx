@@ -28,7 +28,9 @@ void RWStepBasic_RWProductCategory::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "product_category"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

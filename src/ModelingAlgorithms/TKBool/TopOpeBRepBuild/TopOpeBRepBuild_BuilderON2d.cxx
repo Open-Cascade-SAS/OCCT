@@ -77,7 +77,9 @@ void TopOpeBRepBuild_BuilderON::Perform2d(const TopOpeBRepBuild_PBuilder&     PB
 
   const TopOpeBRepDS_DataStructure& BDS = myPB->DataStructure()->DS();
   if (GLOBAL_DS2d == nullptr)
+  {
     GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
+  }
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFEI =
     GLOBAL_DS2d->ShapeInterferences(FOR);
 
@@ -229,17 +231,25 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
 #endif
     bool rk1 = (rankEG == 1);
     if (!rk1)
+    {
       return;
+    }
 
     TopAbs_Orientation oegFOR;
     bool               shareG = false;
     bool               ok     = false;
     if (EGBoundFCX)
+    {
       ok = FUN_ds_shareG(myPB->DataStructure(), iFOR, iFCX, GI, TopoDS::Edge(EspON), shareG);
+    }
     else if (EGBoundFOR)
+    {
       ok = FUN_ds_shareG(myPB->DataStructure(), iFCX, iFOR, GI, TopoDS::Edge(EspON), shareG);
+    }
     if (!ok)
+    {
       return; // nyiFUNRAISE
+    }
 #ifdef OCCT_DEBUG
     if (tFOR)
       std::cout << " shareG=" << shareG << std::endl;
@@ -249,14 +259,22 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
     {
       // FOR and FCX share geometric domain.
       if (opeFus)
+      {
         b = shareG;
+      }
       else if (opeCut)
+      {
         b = (!shareG) && M_OUT(TBEG);
+      }
       else if (opeCom)
+      {
         b = shareG;
+      }
     }
     if (!b)
+    {
       return;
+    }
 
     if (!EGBoundFOR)
     {
@@ -277,14 +295,20 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
     bool ESO;
     ok = FUN_tool_curvesSO(TopoDS::Edge(EspON), parON, EG, ESO);
     if (!ok)
+    {
       return; // xpu120698
+    }
     if (!ESO)
+    {
       neworiE = TopAbs::Complement(neworiE);
+    }
 
     TopAbs_Orientation oFOR = BDS.Shape(iFOR).Orientation();
     TopAbs_Orientation oFCX = BDS.Shape(iFCX).Orientation();
     if (oFOR != oFCX)
+    {
       neworiE = TopAbs::Complement(neworiE);
+    }
 
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);

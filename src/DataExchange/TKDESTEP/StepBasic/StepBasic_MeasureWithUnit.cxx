@@ -38,7 +38,9 @@ void StepBasic_MeasureWithUnit::Init(
 void StepBasic_MeasureWithUnit::SetValueComponent(const double aValueComponent)
 {
   if (valueComponent.IsNull())
+  {
     valueComponent = new StepBasic_MeasureValueMember;
+  }
   valueComponent->SetReal(aValueComponent);
 }
 

@@ -56,7 +56,9 @@ bool TFunction_Driver::MustExecute(const occ::handle<TFunction_Logbook>& log) co
   for (; itr.More(); itr.Next())
   {
     if (log->IsModified(itr.Value()))
+    {
       return true;
+    }
   }
   return false;
 }

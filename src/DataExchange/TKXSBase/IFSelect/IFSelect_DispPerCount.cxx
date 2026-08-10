@@ -40,9 +40,13 @@ int IFSelect_DispPerCount::CountValue() const
 {
   int pcount = 0;
   if (!thecount.IsNull())
+  {
     pcount = thecount->Value();
+  }
   if (pcount <= 0)
+  {
     pcount = 1; // option prise par defaut
+  }
   return pcount;
 }
 
@@ -76,10 +80,14 @@ void IFSelect_DispPerCount::Packets(const Interface_Graph& G, IFGraph_SubPartsIt
   for (roots.Start(); roots.More(); roots.Next())
   {
     if (i == 0)
+    {
       packs.AddPart();
+    }
     i++;
     if (i >= pcount)
+    {
       i = 0; // regroupement selon "count"
+    }
     packs.GetFromIter(roots.Entities());
   }
 }

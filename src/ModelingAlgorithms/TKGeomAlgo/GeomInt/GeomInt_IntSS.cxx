@@ -30,9 +30,13 @@ void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
 {
   myHS1 = new GeomAdaptor_Surface(S1);
   if (S1 == S2)
+  {
     myHS2 = myHS1;
+  }
   else
+  {
     myHS2 = new GeomAdaptor_Surface(S2);
+  }
   InternalPerform(Tol, Approx, ApproxS1, ApproxS2, false, 0., 0., 0., 0.);
 }
 
@@ -53,9 +57,13 @@ void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
 {
   myHS1 = new GeomAdaptor_Surface(S1);
   if (S1 == S2)
+  {
     myHS2 = myHS1;
+  }
   else
+  {
     myHS2 = new GeomAdaptor_Surface(S2);
+  }
   InternalPerform(Tol, Approx, ApproxS1, ApproxS2, true, U1, V1, U2, V2);
 }
 
@@ -86,8 +94,8 @@ void GeomInt_IntSS::InternalPerform(const double Tol,
   occ::handle<Adaptor3d_TopolTool> dom1 = new Adaptor3d_TopolTool(myHS1);
   occ::handle<Adaptor3d_TopolTool> dom2 = new Adaptor3d_TopolTool(myHS2);
 
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>> aVecHS1;
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>> aVecHS2;
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>> aVecHS1;
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>> aVecHS2;
 
   if (myHS1 == myHS2)
   {
@@ -176,9 +184,13 @@ gp_Pnt2d GeomInt_IntSS::Pnt2d(const int Index, const bool OnFirst) const
   const IntPatch_Point& thept = myIntersector.Point(Index);
   double                U, V;
   if (OnFirst)
+  {
     thept.ParametersOnS1(U, V);
+  }
   else
+  {
     thept.ParametersOnS2(U, V);
+  }
   return gp_Pnt2d(U, V);
 }
 

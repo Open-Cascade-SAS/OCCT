@@ -35,13 +35,17 @@ Select3D_SensitiveWire::Select3D_SensitiveWire(const occ::handle<SelectMgr_Entit
 void Select3D_SensitiveWire::Add(const occ::handle<Select3D_SensitiveEntity>& theSensitive)
 {
   if (!theSensitive.IsNull())
+  {
     myEntities.Append(theSensitive);
+  }
 
   Select3D_BndBox3d aBndBox = theSensitive->BoundingBox();
   myBndBox.Combine(aBndBox);
   myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
   if (myEntities.Length() != 1)
+  {
     myCenter.ChangeCoord().Divide(2.0);
+  }
   myEntityIndexes.Append(myEntities.Length() - 1);
 }
 
@@ -141,7 +145,9 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveWire::GetConnected()
 {
   occ::handle<Select3D_SensitiveWire> aNewEntity = new Select3D_SensitiveWire(myOwnerId);
   for (int anEntityIdx = 0; anEntityIdx < myEntities.Length(); anEntityIdx++)
+  {
     aNewEntity->Add(myEntities(anEntityIdx)->GetConnected());
+  }
 
   return aNewEntity;
 }
@@ -150,7 +156,8 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveWire::GetConnected()
 // function : GetEdges
 // purpose  : returns the sensitive edges stored in this wire
 //=======================================================================
-const NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>& Select3D_SensitiveWire::GetEdges()
+const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& Select3D_SensitiveWire::
+  GetEdges()
 {
   return myEntities;
 }
@@ -191,7 +198,9 @@ void Select3D_SensitiveWire::Set(const occ::handle<SelectMgr_EntityOwner>& theOw
 Select3D_BndBox3d Select3D_SensitiveWire::BoundingBox()
 {
   if (myBndBox.IsValid())
+  {
     return myBndBox;
+  }
 
   for (int aSensitiveIdx = 0; aSensitiveIdx < myEntities.Length(); ++aSensitiveIdx)
   {
@@ -218,7 +227,8 @@ void Select3D_SensitiveWire::DumpJson(Standard_OStream& theOStream, int theDepth
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)
 
-  for (NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(
+         myEntities);
        anIterator.More();
        anIterator.Next())
   {

@@ -46,12 +46,18 @@ void IGESAppli_ToolLevelFunction::ReadOwnParams(
   PR.ReadInteger(PR.Current(), "No. of Property values", tempNbPropertyValues);
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "Function description code", tempFuncDescripCode);
+  }
   else
+  {
     tempFuncDescripCode = 0;
+  }
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadText(PR.Current(), "Function description", tempFuncDescrip);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNbPropertyValues, tempFuncDescripCode, tempFuncDescrip);
@@ -63,9 +69,13 @@ void IGESAppli_ToolLevelFunction::WriteOwnParams(const occ::handle<IGESAppli_Lev
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->FuncDescriptionCode());
   if (ent->FuncDescription().IsNull())
+  {
     IW.SendVoid();
+  }
   else
+  {
     IW.Send(ent->FuncDescription());
+  }
 }
 
 void IGESAppli_ToolLevelFunction::OwnShared(const occ::handle<IGESAppli_LevelFunction>& /* ent */,
@@ -80,7 +90,9 @@ void IGESAppli_ToolLevelFunction::OwnCopy(const occ::handle<IGESAppli_LevelFunct
   int                                   aNbPropertyValues, code;
   occ::handle<TCollection_HAsciiString> descrip;
   if (!another->FuncDescription().IsNull())
+  {
     descrip = new TCollection_HAsciiString(another->FuncDescription());
+  }
   code              = another->FuncDescriptionCode();
   aNbPropertyValues = another->NbPropertyValues();
 
@@ -91,7 +103,9 @@ bool IGESAppli_ToolLevelFunction::OwnCorrect(const occ::handle<IGESAppli_LevelFu
 {
   bool res = (ent->NbPropertyValues() != 2);
   if (res)
+  {
     ent->Init(2, ent->FuncDescriptionCode(), ent->FuncDescription());
+  }
   return res; // nbpropertyvalues = 2
 }
 
@@ -113,7 +127,9 @@ void IGESAppli_ToolLevelFunction::OwnCheck(const occ::handle<IGESAppli_LevelFunc
                                            occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 2)
+  {
     ach->AddFail("Number of Property Values != 2");
+  }
 }
 
 void IGESAppli_ToolLevelFunction::OwnDump(const occ::handle<IGESAppli_LevelFunction>& ent,

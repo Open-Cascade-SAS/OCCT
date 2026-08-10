@@ -129,7 +129,9 @@ Standard_EXPORT int FUN_selectTRASHAinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -144,7 +146,9 @@ Standard_EXPORT int FUN_selectITRASHAinterference
    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L2)
 {
   if (Index == 0)
+  {
     return 0;
+  }
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(L1);
   while (it1.More())
   {
@@ -157,7 +161,9 @@ Standard_EXPORT int FUN_selectITRASHAinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -182,7 +188,9 @@ Standard_EXPORT int FUN_selectTRAUNKinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -209,7 +217,9 @@ Standard_EXPORT int FUN_selectTRAORIinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -232,7 +242,9 @@ Standard_EXPORT int FUN_selectGKinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -256,7 +268,9 @@ Standard_EXPORT int FUN_selectSKinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -271,7 +285,9 @@ Standard_EXPORT int FUN_selectGIinterference
    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L2)
 {
   if (GI == 0)
+  {
     return 0;
+  }
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(L1);
   while (it1.More())
   {
@@ -282,7 +298,9 @@ Standard_EXPORT int FUN_selectGIinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -297,7 +315,9 @@ Standard_EXPORT int FUN_selectSIinterference
    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L2)
 {
   if (SI == 0)
+  {
     return 0;
+  }
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(L1);
   while (it1.More())
   {
@@ -308,7 +328,9 @@ Standard_EXPORT int FUN_selectSIinterference
       L1.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   }
   int n2 = L2.Extent();
   return n2;
@@ -435,10 +457,14 @@ Standard_EXPORT void FUN_reducedoublons
             {
               onvclo = vG.IsSame(vG);
               if (hasOO && !onvclo)
+              {
                 onvclo = vG.IsSame(OOv);
+              }
             }
             if (onvclo)
+            {
               idT = true;
+            }
             else
             {
               // xpu100697 : if interf are EVI compare parameters
@@ -458,10 +484,14 @@ Standard_EXPORT void FUN_reducedoublons
           LI.Remove(it2);
         }
         else
+        {
           it2.Next();
+        }
       }
       else
+      {
         it2.Next();
+      }
     }
     it1.Next();
   } // it1.More()
@@ -491,7 +521,9 @@ Standard_EXPORT void FUN_unkeepUNKNOWN
       LI.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   } // it1.More()
 } // unkeepUNKNOWN
 
@@ -508,7 +540,9 @@ static int FUN_select3dI(const int                                              
   int n3d = 0;
   int nFE = lFE.Extent();
   if (nFE <= 1)
+  {
     return n3d;
+  }
 
   const TopoDS_Edge& E     = TopoDS::Edge(BDS.Shape(SIX));
   int                rankE = BDS.AncestorRank(E);
@@ -538,9 +572,13 @@ static int FUN_select3dI(const int                                              
 
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(it1);
     if (it2.More())
+    {
       it2.Next();
+    }
     else
+    {
       break;
+    }
 
     // <Gsta>, <OOv>
     if (vertex1)
@@ -556,7 +594,9 @@ static int FUN_select3dI(const int                                              
       else // vG on E
       {
         if (G1hsd)
+        {
           OOv = BDS.Shape(OOG);
+        }
         Gsta = G1hsd ? 3 : 1;
       }
     }
@@ -573,7 +613,9 @@ static int FUN_select3dI(const int                                              
 
       bool sameG = (GT2 == GT1);
       if (!sameG)
+      {
         break;
+      }
       sameG = (G2 == G1) || (G2 == OOG);
 
       const TopoDS_Face& F1 = TopoDS::Face(BDS.Shape(IB1));
@@ -635,7 +677,9 @@ static int FUN_select3dI(const int                                              
         complex3d = true;
       }
       else
+      {
         it2.Next();
+      }
     } // it2(it1);
 
     if (complex3d)
@@ -644,7 +688,9 @@ static int FUN_select3dI(const int                                              
       lFE.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   } // it1(lFE);
 
   // xpu170898 : cto009H1 (I1(T1(F),G,S1),I1'(T2(F),G,S2), I2)
@@ -652,7 +698,9 @@ static int FUN_select3dI(const int                                              
   n3d       = l3dFE.Extent();
   int nresi = lFEresi.Extent();
   if (nresi == 0)
+  {
     return n3d;
+  }
 
   if (n3d != 0)
   {
@@ -666,13 +714,19 @@ static int FUN_select3dI(const int                                              
       NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lfound;
       int nfound = FUN_selectITRASHAinterference(lcopy, TRA, lfound);
       if (nfound == 0)
+      {
         lFE.Remove(it);
+      }
       else
+      {
         it.Next();
+      }
     }
   }
   else
+  {
     lFE.Append(lFEresi);
+  }
   return n3d;
 }
 
@@ -704,9 +758,13 @@ static bool FUN_find3dISEsameISF(
     bool sameT = (SB1 == SB2) && (IB1 == IB2) && (O1 == O2);
     bool sameG = (GT1 == GT2) && (G1 == G2);
     if (sameT && sameG)
+    {
       return true;
+    }
     else
+    {
       it2.Next();
+    }
   } // it2
   return false;
 }
@@ -772,9 +830,13 @@ static int FUN_select3dISEsameISF(
       found = FUN_find3dISEsameISF(I1, it3);
 
       if (found)
+      {
         l3dFEresi.Append(I1);
+      }
       else
+      {
         lFE.Append(I1);
+      }
       l3dFE.Remove(it1);
     }
   } // it1
@@ -796,7 +858,9 @@ Standard_EXPORT int FUN_select2dI(const int                                     
   int n2d = 0;
   int nFE = lI.Extent();
   if (nFE <= 1)
+  {
     return n2d;
+  }
 
   bool TonFace = (TRASHAk == TopAbs_FACE);
 
@@ -808,7 +872,9 @@ Standard_EXPORT int FUN_select2dI(const int                                     
   FUN_selectSKinterference(lIE, TopOpeBRepDS_FACE, l3dF);
   for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itt(l3dF); itt.More();
        itt.Next())
+  {
     mapftra.Add(itt.Value()->Support());
+  }
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>           lII;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(lI);
   while (it1.More())
@@ -846,9 +912,13 @@ Standard_EXPORT int FUN_select2dI(const int                                     
     bool                                                               complex2d = false;
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(it1);
     if (it2.More())
+    {
       it2.Next();
+    }
     else
+    {
       break;
+    }
     while (it2.More())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
@@ -888,7 +958,9 @@ Standard_EXPORT int FUN_select2dI(const int                                     
         lII.Remove(it2);
       }
       else
+      {
         it2.Next();
+      }
     } // it2
     if (complex2d)
     {
@@ -896,7 +968,9 @@ Standard_EXPORT int FUN_select2dI(const int                                     
       lII.Remove(it1);
     }
     else
+    {
       it1.Next();
+    }
   } // it1
   lI.Append(lII);
   n2d = l2dI.Extent();
@@ -964,7 +1038,9 @@ Standard_EXPORT int FUN_select1dI(const int                                     
   int n1d = 0;
   int nFE = LI.Extent();
   if (nFE <= 1)
+  {
     return n1d;
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
   const TopoDS_Shape&                                      EIX = BDS.Shape(SIX);
@@ -1016,9 +1092,13 @@ Standard_EXPORT int FUN_select1dI(const int                                     
       bool                                                               complex1d = false;
       NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(it1);
       if (it2.More())
+      {
         it2.Next();
+      }
       else
+      {
         break;
+      }
       while (it2.More())
       {
         const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
@@ -1053,7 +1133,9 @@ Standard_EXPORT int FUN_select1dI(const int                                     
         it1.Next();
       }
       else
+      {
         it1.Next();
+      }
     } // it1
   } // tki
   LI.Clear();
@@ -1078,7 +1160,9 @@ Standard_EXPORT void FUN_select3dinterference(
   const TopoDS_Edge& E    = TopoDS::Edge(BDS.Shape(SIX));
   bool               isdg = BRep_Tool::Degenerated(E);
   if (isdg)
+  {
     return;
+  }
 
   l3dF.Clear();
   l3dFE.Clear();

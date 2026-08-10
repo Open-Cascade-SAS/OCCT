@@ -28,7 +28,9 @@ void RWStepGeom_RWParabola::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "parabola"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

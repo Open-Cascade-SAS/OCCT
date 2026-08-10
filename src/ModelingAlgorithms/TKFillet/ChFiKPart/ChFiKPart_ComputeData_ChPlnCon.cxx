@@ -69,7 +69,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   double Alpha        = M_PI / 2 - angcon;
   double CosHalfAlpha = std::cos(Alpha / 2);
   if (theMode == ChFiDS_ConstThroatChamfer)
+  {
     Dis1 = Dis2 = theDis1 / CosHalfAlpha;
+  }
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
     double aDis1    = std::min(theDis1, theDis2);
@@ -91,7 +93,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   gp_Ax3 PosPl = Pln.Position();
   gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
   if (Or1 == TopAbs_REVERSED)
+  {
     Dpl.Reverse();
+  }
 
   // compute the origin of the conical chamfer PtPl
   gp_Pnt Or = Con.Location();
@@ -115,7 +119,9 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::D1(u, v, Con, PtCon, deru, derv);
   gp_Dir Dcon(deru.Crossed(derv));
   if (Or2 == TopAbs_REVERSED)
+  {
     Dcon.Reverse();
+  }
 
   bool ouvert = (Dpl.Dot(Dcon) >= 0.);
 

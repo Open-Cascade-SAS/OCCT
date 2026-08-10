@@ -66,7 +66,9 @@ void ProjectOnC2AndIntersectWithC2Domain(const gp_Circ2d&  Circle1,
 {
 
   if (C1DomainAndRes.IsNull())
+  {
     return;
+  }
   //-------------------------------------------------------------------------
   //--  On cherche l intervalle correspondant sur C2
   //--  Puis on intersecte l intervalle avec le domaine de C2
@@ -84,12 +86,16 @@ void ProjectOnC2AndIntersectWithC2Domain(const gp_Circ2d&  Circle1,
   if (!IdentCircles)
   {
     if (C2Inter.Length() > M_PI)
+    {
       C2Inter.Complement();
+    }
   }
   else
   {
     if (C2sup <= C2inf)
+    {
       C2sup += PIpPI;
+    }
     if (C2inf >= PIpPI)
     {
       C2sup -= PIpPI;
@@ -121,7 +127,9 @@ void ProjectOnC2AndIntersectWithC2Domain(const gp_Circ2d&  Circle1,
       if (!IdentCircles)
       {
         if (SolutionC1[NbSolTotal].Length() > M_PI)
+        {
           SolutionC1[NbSolTotal].Complement();
+        }
       }
       else
       {
@@ -256,13 +264,21 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
             || ((C1_bsup1 <= C1_bsup2) && (C1_bsup1 >= C1_binf2)))
         {
           if (C1_binf1 > C1_binf2)
+          {
             C1_binf1 = C1_binf2;
+          }
           if (C1_binf1 > C1_bsup2)
+          {
             C1_binf1 = C1_bsup2;
+          }
           if (C1_bsup1 < C1_binf2)
+          {
             C1_bsup1 = C1_binf2;
+          }
           if (C1_bsup1 < C1_bsup2)
+          {
             C1_bsup1 = C1_bsup2;
+          }
           nbsol = 1;
         }
       }
@@ -298,9 +314,13 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
 
   double dAngle1;
   if (AxeO1O2.Magnitude() <= gp::Resolution())
+  {
     dAngle1 = Axe1.Angle(C2.XAxis().Direction());
+  }
   else
+  {
     dAngle1 = Axe1.Angle(AxeO1O2);
+  }
 
   if (!C1.IsDirect())
   {
@@ -315,7 +335,9 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
 
   C1_Res1.SetValues(C1_binf1, C1_bsup1);
   if (C1_Res1.Length() > M_PI)
+  {
     C1_Res1.Complement();
+  }
 
   if (nbsol == 2)
   {
@@ -323,7 +345,9 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
     C1_bsup2 += dAngle1;
     C1_Res2.SetValues(C1_binf2, C1_bsup2);
     if (C1_Res2.Length() > M_PI)
+    {
       C1_Res2.Complement();
+    }
   }
   else
   {
@@ -347,7 +371,9 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d&       Circle,
 {
 
   if (CDomainAndRes.IsNull())
+  {
     return;
+  }
   //-------------------------------------------------------------------------
   //--  On cherche l intervalle correspondant sur C2
   //--  Puis on intersecte l intervalle avec le domaine de C2
@@ -406,7 +432,9 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d&       Circle,
     }
     CircleSolution[NbSolTotal] = PeriodicInterval(Cinf, Csup);
     if (CircleSolution[NbSolTotal].Length() > M_PI)
+    {
       CircleSolution[NbSolTotal].Complement();
+    }
 
     LineSolution[NbSolTotal] = LInterAndDomain;
     NbSolTotal++;
@@ -526,14 +554,22 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
   d = a * Circle.Location().X() + b * Circle.Location().Y() + c;
 
   if (d > 0.0)
+  {
     dAngle1 += PIsur2;
+  }
   else
+  {
     dAngle1 -= PIsur2;
+  }
 
   if (dAngle1 < 0.0)
+  {
     dAngle1 += PIpPI;
+  }
   else if (dAngle1 > PIpPI)
+  {
     dAngle1 -= PIpPI;
+  }
 
   binf1 += dAngle1;
   bsup1 += dAngle1;
@@ -552,7 +588,9 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
 
   CInt1.SetValues(binf1, bsup1);
   if (CInt1.Length() > M_PI)
+  {
     CInt1.Complement();
+  }
 
   if (nbsol == 2)
   {
@@ -570,7 +608,9 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
 
     CInt2.SetValues(binf2, bsup2);
     if (CInt2.Length() > M_PI)
+    {
       CInt2.Complement();
+    }
   }
   //  Modified by Sergey KHROMOV - Thu Oct 26 17:51:05 2000 Begin
   else
@@ -583,10 +623,14 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
       binf1 = 0.;
       CInt1.SetValues(binf1, CInt1.Bsup - PIpPI);
       if (CInt1.Length() > M_PI)
+      {
         CInt1.Complement();
+      }
       CInt2.SetValues(binf2, bsup2);
       if (CInt2.Length() > M_PI)
+      {
         CInt2.Complement();
+      }
     }
   }
   //  Modified by Sergey KHROMOV - Thu Oct 26 17:51:13 2000 End
@@ -717,9 +761,13 @@ void LineLineGeometricIntersection(const gp_Lin2d& L1,
     //------------------- Calcul du Sin du demi angle  entre L1 et L2
     //----
     if (D < 0.0)
+    {
       D = -D;
+    }
     if (D > 1.0)
+    {
       D = 1.0; //-- Deja vu !
+    }
     SinDemiAngle = std::sin(0.5 * std::asin(D));
     nbsol        = 1;
   }
@@ -804,9 +852,13 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   }
 
   while (C1Domain.Binf >= PIpPI)
+  {
     C1Domain.Binf -= PIpPI;
+  }
   while (C1Domain.Binf < 0.0)
+  {
     C1Domain.Binf += PIpPI;
+  }
 
   C1Domain.Bsup = C1Domain.Binf + deltat;
 
@@ -818,9 +870,13 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   }
 
   while (C2Domain.Binf >= PIpPI)
+  {
     C2Domain.Binf -= PIpPI;
+  }
   while (C2Domain.Binf < 0.0)
+  {
     C2Domain.Binf += PIpPI;
+  }
 
   C2Domain.Bsup = C2Domain.Binf + deltat;
 
@@ -922,7 +978,9 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
                            // des segments
   int i;
   if (Tol < (1e-10))
+  {
     Tol2 = 1e-10;
+  }
 
   for (i = 0; i < NbSolTotal; i++)
   {
@@ -1045,7 +1103,9 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
         //-- On traite un intervalle non reduit a un point
         double C1sup = NormalizeOnCircleDomain(SolutionC1[i].Bsup, DomainCirc1);
         if (C1sup < C1inf)
+        {
           C1sup += PIpPI;
+        }
         C2sup = NormalizeOnCircleDomain(C2sup, DomainCirc2);
 
         ElCLib::CircleD2(C1sup, Axis2C1, R1, P1b, Tan1, Norm1);
@@ -1063,7 +1123,9 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
           if (nbsol != 3)
           {
             if (C2inf < C2sup)
+            {
               C2inf += PIpPI;
+            }
           }
         }
         else
@@ -1071,7 +1133,9 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
           if (nbsol != 3)
           {
             if (C2sup < C2inf)
+            {
               C2sup += PIpPI;
+            }
           }
         }
 
@@ -1100,7 +1164,9 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
         //-- On traite un intervalle non reduit a un point
         double C1sup = NormalizeOnCircleDomain(SolutionC1[i].Bsup, DomainCirc1);
         if (C1sup < C1inf)
+        {
           C1sup += PIpPI;
+        }
         C2sup = NormalizeOnCircleDomain(C2sup, DomainCirc2);
 
         ElCLib::CircleD2(C1sup, Axis2C1, R1, P1b, Tan1, Norm1);
@@ -1115,12 +1181,16 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
         if (isOpposite)
         {
           if (C2inf < C2sup)
+          {
             C2inf += PIpPI;
+          }
         }
         else
         {
           if (C2sup < C2inf)
+          {
             C2sup += PIpPI;
+          }
         }
 
         IntRes2d_IntersectionPoint   NewPoint2(P1b, C1sup, C2sup, T1b, T2b, false);
@@ -1195,7 +1265,9 @@ static bool computeIntPoint(const IntRes2d_Domain&      theCurDomain,
                             IntRes2d_IntersectionPoint& theNewPoint)
 {
   if (fabs(theResSup - theParCur) > fabs(theResInf - theParCur))
+  {
     theResSup = theResInf;
+  }
 
   double aRes2 = theParOther + (theResSup - theParCur) * theCosT1T2;
 
@@ -1273,9 +1345,13 @@ static bool computeIntPoint(const IntRes2d_Domain&      theCurDomain,
   gp_Pnt2d aPres((ElCLib::Value(aResU1, theCurLin).XY() + ElCLib::Value(aResU2, theOtherLin).XY())
                  * 0.5);
   if (theNum == 1)
+  {
     theNewPoint.SetValues(aPres, aResU1, aResU2, aT1, aT2, false);
+  }
   else
+  {
     theNewPoint.SetValues(aPres, aResU2, aResU1, aT2, aT1, false);
+  }
   return true;
 }
 
@@ -1293,7 +1369,9 @@ static bool CheckLLCoincidence(const gp_Lin2d&        L1,
   bool isFirst1 = (Domain1.HasFirstPoint() && L2.Distance(Domain1.FirstPoint()) < theTol);
   bool isLast1  = (Domain1.HasLastPoint() && L2.Distance(Domain1.LastPoint()) < theTol);
   if (isFirst1 && isLast1)
+  {
     return true;
+  }
   bool isFirst2 = (Domain2.HasFirstPoint() && L1.Distance(Domain2.FirstPoint()) < theTol);
   bool isLast2  = (Domain2.HasLastPoint() && L1.Distance(Domain2.LastPoint()) < theTol);
   return isFirst2 && isLast2;
@@ -1319,7 +1397,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
   double                     aHalfSinL1L2;
   double                     Tol = TolR;
   if (Tol < Precision::PConfusion())
+  {
     Tol = Precision::PConfusion();
+  }
 
   LineLineGeometricIntersection(L1, L2, Tol, U1, U2, aHalfSinL1L2, nbsol);
 
@@ -1332,7 +1412,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
   done = true;
 
   if (nbsol == 1 && CheckLLCoincidence(L1, L2, Domain1, Domain2, Tol))
+  {
     nbsol = 2;
+  }
 
   if (nbsol == 1)
   {
@@ -1456,7 +1538,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
                             1,
                             aCurTrans,
                             NewPoint1))
+        {
           Append(NewPoint1);
+        }
 
         //------------------------------------------------------
 
@@ -1720,9 +1804,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
           else
           { //-- Pos1a == Pos2a == Middle
             if (Pos1b == IntRes2d_Middle)
+            {
               Pos1b = Pos1a;
+            }
             if (Pos2b == IntRes2d_Middle)
+            {
               Pos2b = Pos2a;
+            }
             if (ResultIsAPoint)
             {
               //-- Middle sur le segment A
@@ -1880,7 +1968,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
                               2,
                               aCurTrans,
                               NewPoint1))
+          {
             Append(NewPoint1);
+          }
         }
       }
     }
@@ -1931,22 +2021,34 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
       //== 2 :       L2 borne
       //== 1 : L1 borne
       if (Domain1.HasFirstPoint())
+      {
         ResHasFirstPoint = 1;
+      }
       if (Domain1.HasLastPoint())
+      {
         ResHasLastPoint = 1;
+      }
       if (isOpposite)
       {
         if (Domain2.HasLastPoint())
+        {
           ResHasFirstPoint += 2;
+        }
         if (Domain2.HasFirstPoint())
+        {
           ResHasLastPoint += 2;
+        }
       }
       else
       {
         if (Domain2.HasLastPoint())
+        {
           ResHasLastPoint += 2;
+        }
         if (Domain2.HasFirstPoint())
+        {
           ResHasFirstPoint += 2;
+        }
       }
       if (ResHasFirstPoint == 0 && ResHasLastPoint == 0)
       {
@@ -2172,16 +2274,22 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
       CInt1.SetValues(CInt2.Binf, CInt2.Bsup);
     }
     else if (CInt2.Bsup == PIpPI && LastBound + LastTol < CInt2.Binf)
+    {
       nbsol = 1;
+    }
   }
   //  Modified by Sergey KHROMOV - Mon Dec 18 11:13:20 2000 End
 
   PeriodicInterval CDomain(CIRC_Domain);
   double           deltat = CDomain.Bsup - CDomain.Binf;
   while (CDomain.Binf >= PIpPI)
+  {
     CDomain.Binf -= PIpPI;
+  }
   while (CDomain.Binf < 0.0)
+  {
     CDomain.Binf += PIpPI;
+  }
   CDomain.Bsup = CDomain.Binf + deltat;
 
   //------------------------------------------------------------
@@ -2206,9 +2314,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
   }
   deltat = CDomain.Bsup - CDomain.Binf;
   while (CDomain.Binf >= PIpPI)
+  {
     CDomain.Binf -= PIpPI;
+  }
   while (CDomain.Binf < 0.0)
+  {
     CDomain.Binf += PIpPI;
+  }
   CDomain.Bsup = CDomain.Binf + deltat;
   //-- ------------------------------------------------------------
 
@@ -2293,9 +2405,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
   int    i;
   double MaxTol = TolConf;
   if (MaxTol < Tol)
+  {
     MaxTol = Tol;
+  }
   if (MaxTol < 1.0e-10)
+  {
     MaxTol = 1.0e-10;
+  }
 
   for (i = 0; i < NbSolTotal; i++)
   {
@@ -2673,7 +2789,9 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Elips2d&      Ellipse,
 {
 
   if (EDomainAndRes.IsNull())
+  {
     return;
+  }
   //-------------------------------------------------------------------------
   //--  On cherche l intervalle correspondant sur C2
   //--  Puis on intersecte l intervalle avec le domaine de C2
@@ -2729,7 +2847,9 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Elips2d&      Ellipse,
     }
     EllipseSolution[NbSolTotal] = PeriodicInterval(Einf, Esup);
     if (EllipseSolution[NbSolTotal].Length() > M_PI)
+    {
       EllipseSolution[NbSolTotal].Complement();
+    }
 
     LineSolution[NbSolTotal] = LInterAndDomain;
     NbSolTotal++;
@@ -2779,9 +2899,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   PeriodicInterval EDomain(DE);
   double           deltat = EDomain.Bsup - EDomain.Binf;
   while (EDomain.Binf >= PIpPI)
+  {
     EDomain.Binf -= PIpPI;
+  }
   while (EDomain.Binf < 0.0)
+  {
     EDomain.Binf += PIpPI;
+  }
   EDomain.Bsup = EDomain.Binf + deltat;
   //
   double BinfModif = EDomain.Binf;
@@ -2803,9 +2927,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
   deltat = EDomain.Bsup - EDomain.Binf;
   while (EDomain.Binf >= PIpPI)
+  {
     EDomain.Binf -= PIpPI;
+  }
   while (EDomain.Binf < 0.0)
+  {
     EDomain.Binf += PIpPI;
+  }
   EDomain.Bsup = EDomain.Binf + deltat;
   //
   Interval LDomain(DL);
@@ -2878,9 +3006,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   int    i;
   double MaxTol = TolConf;
   if (MaxTol < Tol)
+  {
     MaxTol = Tol;
+  }
   if (MaxTol < 1.0e-10)
+  {
     MaxTol = 1.0e-10;
+  }
 
   for (i = 0; i < NbSolTotal; i++)
   {

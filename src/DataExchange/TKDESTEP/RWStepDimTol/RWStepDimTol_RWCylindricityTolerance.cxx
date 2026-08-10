@@ -37,7 +37,9 @@ void RWStepDimTol_RWCylindricityTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "cylindricity_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

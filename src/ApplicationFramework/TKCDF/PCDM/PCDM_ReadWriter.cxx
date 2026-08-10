@@ -103,7 +103,9 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(const TCollection_Extende
   // conversion to UTF-8 is done inside
   TCollection_AsciiString theFileName(aFileName);
   if (PCDM::FileDriverType(theFileName, theFileDriver) == PCDM_TOFD_Unknown)
+  {
     return ::TryXmlDriverType(theFileName);
+  }
 
   bool theFileIsOpen(false);
   try
@@ -194,7 +196,9 @@ static TCollection_ExtendedString TryXmlDriverType(const TCollection_AsciiString
   {
     const LDOM_Element& anElement = aParser.GetElement();
     if (anElement.getTagName().equals(LDOMString(aDocumentElementName)))
+    {
       theFormat = anElement.getAttribute("format");
+    }
   }
   return theFormat;
 }
@@ -219,7 +223,9 @@ static TCollection_ExtendedString TryXmlDriverType(Standard_IStream& theIStream)
     {
       const LDOM_Element& anElement = aParser.GetElement();
       if (anElement.getTagName().equals(LDOMString(aDocumentElementName)))
+      {
         theFormat = anElement.getAttribute("format");
+      }
     }
   }
 

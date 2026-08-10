@@ -47,11 +47,17 @@ BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<IntSurf_LineOn2S>
 int BRepApprox_ApproxLine::NbPnts() const
 {
   if (!myCurveXYZ.IsNull())
+  {
     return (myCurveXYZ->NbPoles());
+  }
   if (!myCurveUV1.IsNull())
+  {
     return (myCurveUV1->NbPoles());
+  }
   if (!myCurveUV2.IsNull())
+  {
     return (myCurveUV2->NbPoles());
+  }
   return (myLineOn2S->NbPoints());
 }
 
@@ -69,11 +75,17 @@ IntSurf_PntOn2S BRepApprox_ApproxLine::Point(const int Index)
   gp_Pnt2d P1, P2;
   gp_Pnt   P;
   if (!myCurveXYZ.IsNull())
+  {
     P = myCurveXYZ->Pole(Index);
+  }
   if (!myCurveUV1.IsNull())
+  {
     P1 = myCurveUV1->Pole(Index);
+  }
   if (!myCurveUV2.IsNull())
+  {
     P2 = myCurveUV2->Pole(Index);
+  }
 
   IntSurf_PntOn2S aPntOn2S;
   aPntOn2S.SetValue(P, P1.X(), P1.Y(), P2.X(), P2.Y());

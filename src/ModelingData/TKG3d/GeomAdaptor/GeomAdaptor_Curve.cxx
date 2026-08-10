@@ -171,14 +171,20 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const double U1, const double U
   if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
   {
     if (Index1 < Nb)
+    {
       Index1++;
+    }
   }
   if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
+  {
     Index2--;
+  }
   int MultMax;
   // Handle periodic curves.
   if ((aBSpl->IsPeriodic()) && (Index1 == Nb))
+  {
     Index1 = 1;
+  }
 
   if ((Index2 - Index1 <= 0) && (!aBSpl->IsPeriodic()))
   {
@@ -190,7 +196,9 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const double U1, const double U
     for (int i = Index1 + 1; i <= Index2; i++)
     {
       if (TM(i) > MultMax)
+      {
         MultMax = TM(i);
+      }
     }
     MultMax = aBSpl->Degree() - MultMax;
   }
@@ -325,7 +333,9 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
 GeomAbs_Shape GeomAdaptor_Curve::Continuity() const
 {
   if (myTypeCurve == GeomAbs_BSplineCurve)
+  {
     return LocalContinuity(myFirst, myLast);
+  }
 
   if (myTypeCurve == GeomAbs_OffsetCurve)
   {
@@ -434,8 +444,12 @@ int GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
       NCollection_Array1<double> rdfInter(1, 1 + iNbBasisInt);
       C.Intervals(rdfInter, BaseS);
       for (iInt = 1; iInt <= iNbBasisInt; iInt++)
+      {
         if (rdfInter(iInt) > myFirst && rdfInter(iInt) < myLast)
+        {
           myNbIntervals++;
+        }
+      }
     }
     // akm 05/04/02 ^^^
     return myNbIntervals;
@@ -527,8 +541,12 @@ void GeomAdaptor_Curve::Intervals(NCollection_Array1<double>& T, const GeomAbs_S
       NCollection_Array1<double> rdfInter(1, 1 + iNbBasisInt);
       C.Intervals(rdfInter, BaseS);
       for (iInt = 1; iInt <= iNbBasisInt; iInt++)
+      {
         if (rdfInter(iInt) > myFirst && rdfInter(iInt) < myLast)
+        {
           T(++myNbIntervals) = rdfInter(iInt);
+        }
+      }
     }
     // old - myNbIntervals = C.NbIntervals(BaseS);
     // old - C.Intervals(T, BaseS);
@@ -592,11 +610,13 @@ void GeomAdaptor_Curve::RebuildCache(const double theParameter) const
     int                           aDeg    = aBezier->Degree();
     NCollection_Array1<double>    aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
     if (aCache.IsNull())
+    {
       aCache = new BSplCLib_Cache(aDeg,
                                   aBezier->IsPeriodic(),
                                   aFlatKnots,
                                   aBezier->Poles(),
                                   aBezier->Weights());
+    }
     aCache->BuildCache(theParameter, aFlatKnots, aBezier->Poles(), aBezier->Weights());
   }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
@@ -606,11 +626,13 @@ void GeomAdaptor_Curve::RebuildCache(const double theParameter) const
     const auto& aBSpl     = aBSplData.Curve;
     auto&       aCache    = aBSplData.Cache;
     if (aCache.IsNull())
+    {
       aCache = new BSplCLib_Cache(aBSpl->Degree(),
                                   aBSpl->IsPeriodic(),
                                   aBSpl->KnotSequence(),
                                   aBSpl->Poles(),
                                   aBSpl->Weights());
+    }
     aCache->BuildCache(theParameter, aBSpl->KnotSequence(), aBSpl->Poles(), aBSpl->Weights());
   }
 }
@@ -627,17 +649,25 @@ bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& th
     {
       aBSpl->LocateU(myFirst, PosTol, theSpanStart, theSpanFinish);
       if (theSpanStart < 1)
+      {
         theSpanStart = 1;
+      }
       if (theSpanStart >= theSpanFinish)
+      {
         theSpanFinish = theSpanStart + 1;
+      }
     }
     else if (theU == myLast)
     {
       aBSpl->LocateU(myLast, PosTol, theSpanStart, theSpanFinish);
       if (theSpanFinish > aBSpl->NbKnots())
+      {
         theSpanFinish = aBSpl->NbKnots();
+      }
       if (theSpanStart >= theSpanFinish)
+      {
         theSpanStart = theSpanFinish - 1;
+      }
     }
     return true;
   }
@@ -679,7 +709,9 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(const double theU) const
       }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U);
+      }
       aCache->D0(U, P);
       return P;
     }
@@ -698,7 +730,9 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(const double theU) const
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplData.Cache->D0(U, P);
       }
       return P;
@@ -761,7 +795,9 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(const double theU) const
       }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U);
+      }
       aCache->D1(U, aResult.Point, aResult.D1);
       return aResult;
     }
@@ -780,7 +816,9 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(const double theU) const
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplData.Cache->D1(U, aResult.Point, aResult.D1);
       }
       return aResult;
@@ -845,7 +883,9 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(const double theU) const
       }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U);
+      }
       aCache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       return aResult;
     }
@@ -864,7 +904,9 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(const double theU) const
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       }
       return aResult;
@@ -947,7 +989,9 @@ Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(const double theU) const
       }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
+      {
         RebuildCache(U);
+      }
       aCache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       return aResult;
     }
@@ -967,7 +1011,9 @@ Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(const double theU) const
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
       return aResult;
@@ -1035,7 +1081,9 @@ gp_Vec GeomAdaptor_Curve::EvalDN(const double theU, const int theN) const
         return std::get<BSplineData>(myCurveData).Curve->LocalDN(U, aStart, aFinish, N);
       }
       else
+      {
         return myCurve->EvalDN(U, N);
+      }
     }
 
     case GeomAbs_OffsetCurve: {
@@ -1074,9 +1122,13 @@ double GeomAdaptor_Curve::Resolution(const double R3D) const
     case GeomAbs_Circle: {
       double R = std::get<gp_Circ>(myCurveData).Radius();
       if (R > R3D / 2.)
+      {
         return 2 * std::asin(R3D / (2 * R));
+      }
       else
+      {
         return 2 * M_PI;
+      }
     }
     case GeomAbs_Ellipse: {
       return R3D / std::get<gp_Elips>(myCurveData).MajorRadius();
@@ -1151,11 +1203,17 @@ gp_Parab GeomAdaptor_Curve::Parabola() const
 int GeomAdaptor_Curve::Degree() const
 {
   if (myTypeCurve == GeomAbs_BezierCurve)
+  {
     return occ::down_cast<Geom_BezierCurve>(myCurve)->Degree();
+  }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
+  {
     return std::get<BSplineData>(myCurveData).Curve->Degree();
+  }
   else
+  {
     throw Standard_NoSuchObject();
+  }
 }
 
 //=================================================================================================
@@ -1178,11 +1236,17 @@ bool GeomAdaptor_Curve::IsRational() const
 int GeomAdaptor_Curve::NbPoles() const
 {
   if (myTypeCurve == GeomAbs_BezierCurve)
+  {
     return occ::down_cast<Geom_BezierCurve>(myCurve)->NbPoles();
+  }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
+  {
     return std::get<BSplineData>(myCurveData).Curve->NbPoles();
+  }
   else
+  {
     throw Standard_NoSuchObject();
+  }
 }
 
 //=================================================================================================
@@ -1190,7 +1254,9 @@ int GeomAdaptor_Curve::NbPoles() const
 int GeomAdaptor_Curve::NbKnots() const
 {
   if (myTypeCurve != GeomAbs_BSplineCurve)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Curve::NbKnots");
+  }
   return std::get<BSplineData>(myCurveData).Curve->NbKnots();
 }
 
@@ -1199,7 +1265,9 @@ int GeomAdaptor_Curve::NbKnots() const
 occ::handle<Geom_BezierCurve> GeomAdaptor_Curve::Bezier() const
 {
   if (myTypeCurve != GeomAbs_BezierCurve)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Curve::Bezier");
+  }
   return occ::down_cast<Geom_BezierCurve>(myCurve);
 }
 
@@ -1208,7 +1276,9 @@ occ::handle<Geom_BezierCurve> GeomAdaptor_Curve::Bezier() const
 occ::handle<Geom_BSplineCurve> GeomAdaptor_Curve::BSpline() const
 {
   if (myTypeCurve != GeomAbs_BSplineCurve)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Curve::BSpline");
+  }
 
   return std::get<BSplineData>(myCurveData).Curve;
 }
@@ -1218,6 +1288,8 @@ occ::handle<Geom_BSplineCurve> GeomAdaptor_Curve::BSpline() const
 occ::handle<Geom_OffsetCurve> GeomAdaptor_Curve::OffsetCurve() const
 {
   if (myTypeCurve != GeomAbs_OffsetCurve)
+  {
     throw Standard_NoSuchObject("GeomAdaptor_Curve::OffsetCurve");
+  }
   return occ::down_cast<Geom_OffsetCurve>(myCurve);
 }

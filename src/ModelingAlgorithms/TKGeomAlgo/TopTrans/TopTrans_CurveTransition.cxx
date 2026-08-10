@@ -82,9 +82,13 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
   if (S == TopAbs_INTERNAL)
   {
     if (T * myTgt < 0)
+    {
       S = TopAbs::Reverse(O);
+    }
     else
+    {
       S = O;
+    }
   }
 
   // It is the first comparison for this complex transition
@@ -110,9 +114,13 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
         // Interference en milieu d'arete il faut inverser en fonction de la
         // position de la tangente de reference
         if (myTgt * T > 0)
+        {
           TgtFirst.Reverse();
+        }
         else
+        {
           TgtLast.Reverse();
+        }
         break;
       case TopAbs_FORWARD:
       case TopAbs_EXTERNAL:
@@ -132,7 +140,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
         break;
       case TopAbs_INTERNAL:
         if (cosAngWithT > 0)
+        {
           cosAngWithT = -cosAngWithT;
+        }
         break;
       case TopAbs_FORWARD:
       case TopAbs_EXTERNAL:
@@ -154,7 +164,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
             break;
           case TopAbs_INTERNAL:
             if (myTgt * T > 0)
+            {
               TgtFirst.Reverse();
+            }
             break;
           case TopAbs_FORWARD:
           case TopAbs_EXTERNAL:
@@ -178,7 +190,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
               break;
             case TopAbs_INTERNAL:
               if (myTgt * T > 0)
+              {
                 TgtFirst.Reverse();
+              }
               break;
             case TopAbs_FORWARD:
             case TopAbs_EXTERNAL:
@@ -198,7 +212,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
     {
       // Dans les cas de tangence le premier peut etre aussi le dernier
       if (O == TopAbs_INTERNAL)
+      {
         cosAngWithT = -cosAngWithT;
+      }
       double cosAngWith2 = myTgt * TgtLast;
 
       switch (Compare(cosAngWithT, cosAngWith2, Tole))
@@ -214,7 +230,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
               break;
             case TopAbs_INTERNAL:
               if (myTgt * T < 0)
+              {
                 TgtLast.Reverse();
+              }
               break;
             case TopAbs_FORWARD:
             case TopAbs_EXTERNAL:
@@ -237,7 +255,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
                 break;
               case TopAbs_INTERNAL:
                 if (myTgt * T < 0)
+                {
                   TgtLast.Reverse();
+                }
                 break;
               case TopAbs_FORWARD:
               case TopAbs_EXTERNAL:
@@ -260,7 +280,9 @@ void TopTrans_CurveTransition::Compare(const double             Tole,
 TopAbs_State TopTrans_CurveTransition::StateBefore() const
 {
   if (Init)
+  {
     return TopAbs_UNKNOWN;
+  }
   switch (TranFirst)
   {
     case TopAbs_FORWARD:
@@ -281,7 +303,9 @@ TopAbs_State TopTrans_CurveTransition::StateBefore() const
 TopAbs_State TopTrans_CurveTransition::StateAfter() const
 {
   if (Init)
+  {
     return TopAbs_UNKNOWN;
+  }
   switch (TranLast)
   {
     case TopAbs_FORWARD:
@@ -320,10 +344,14 @@ bool TopTrans_CurveTransition::IsBefore(const double  Tole,
       // The reference is straight
       // The first is the interference which have the lowest curvature.
       if (C1 < C2)
+      {
         OneBefore = true;
+      }
       //  Modified by Sergey KHROMOV - Wed Dec 27 17:08:49 2000 Begin
       if (CosAngl > 0)
+      {
         OneBefore = !OneBefore;
+      }
       //  Modified by Sergey KHROMOV - Wed Dec 27 17:08:50 2000 End
     }
     else
@@ -349,9 +377,13 @@ bool TopTrans_CurveTransition::IsBefore(const double  Tole,
         deltaC2 = (C2 - myCurv) * (N2 * myNorm);
       }
       if (deltaC1 < deltaC2)
+      {
         OneBefore = true;
+      }
       if (CosAngl > 0)
+      {
         OneBefore = !OneBefore;
+      }
     }
   }
   else if (TN1 < 0)
@@ -397,9 +429,13 @@ int TopTrans_CurveTransition::Compare(const double Ang1, const double Ang2, cons
 {
   int res = SAME;
   if (Ang1 - Ang2 > Tole)
+  {
     res = GREATER;
+  }
   else if (Ang2 - Ang1 > Tole)
+  {
     res = LOWER;
+  }
 
   return res;
 }

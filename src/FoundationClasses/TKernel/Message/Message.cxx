@@ -52,11 +52,17 @@ TCollection_AsciiString Message::FillTime(const int hour, const int minute, cons
 {
   char t[30];
   if (hour > 0)
+  {
     Sprintf(t, "%02dh:%02dm:%.2fs", hour, minute, second);
+  }
   else if (minute > 0)
+  {
     Sprintf(t, "%02dm:%.2fs", minute, second);
+  }
   else
+  {
     Sprintf(t, "%.2fs", second);
+  }
   return TCollection_AsciiString(t);
 }
 

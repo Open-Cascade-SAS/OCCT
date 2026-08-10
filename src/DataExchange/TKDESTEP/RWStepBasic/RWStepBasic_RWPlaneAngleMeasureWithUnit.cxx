@@ -33,7 +33,9 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "plane_angle_measure_with_unit"))
+  {
     return;
+  }
 
   // --- inherited field : valueComponent ---
   // UPDATE 21-02-96 ,  31-MARS-1997 by CKY

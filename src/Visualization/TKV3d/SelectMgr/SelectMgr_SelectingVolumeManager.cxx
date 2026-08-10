@@ -629,7 +629,7 @@ gp_Pnt2d SelectMgr_SelectingVolumeManager::GetMousePosition() const
 //=================================================================================================
 
 void SelectMgr_SelectingVolumeManager::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   if (myActiveSelectingVolume.IsNull())
   {

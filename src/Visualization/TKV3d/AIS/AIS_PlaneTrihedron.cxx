@@ -194,7 +194,9 @@ void AIS_PlaneTrihedron::ComputeSelection(const occ::handle<SelectMgr_Selection>
 
       eown = new SelectMgr_EntityOwner(this, Prior);
       for (int i = 1; i <= 2; i++)
+      {
         aSelection->Add(new Select3D_SensitiveSegment(eown, PP(1), PP(i + 1)));
+      }
 
       break;
     }

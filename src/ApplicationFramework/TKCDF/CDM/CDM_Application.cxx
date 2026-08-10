@@ -80,9 +80,13 @@ void CDM_Application::EndOfUpdate(const occ::handle<CDM_Document>& /*aDocument*/
 {
   TCollection_ExtendedString message;
   if (theStatus)
+  {
     message = "Updated: ";
+  }
   else
+  {
     message = "Error during updating: ";
+  }
 
   message += "Document";
   Write(message.ToExtString());

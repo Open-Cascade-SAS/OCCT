@@ -50,7 +50,9 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
     tangent           = gp_Vec2d(myCurve->Pole(1), myCurve->Pole(2));
     tangent_magnitude = tangent.Magnitude();
     if (tangent_magnitude > myTolerance)
+    {
       tangent_normalized = tangent / tangent_magnitude;
+    }
 
     for (ii = 3; ii <= num_poles; ii++)
     {
@@ -63,7 +65,9 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
 
         double CrossProd = tangent_normalized ^ avector_normalized;
         if (std::abs(CrossProd) > CrossProdTol)
+        {
           break;
+        }
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)
@@ -79,7 +83,9 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
     tangent           = gp_Vec2d(myCurve->Pole(num_poles), myCurve->Pole(num_poles - 1));
     tangent_magnitude = tangent.Magnitude();
     if (tangent_magnitude > myTolerance)
+    {
       tangent_normalized = tangent / tangent_magnitude;
+    }
 
     for (ii = num_poles - 2; ii >= 1; ii--)
     {
@@ -92,7 +98,9 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
 
         double CrossProd = tangent_normalized ^ avector_normalized;
         if (std::abs(CrossProd) > CrossProdTol)
+        {
           break;
+        }
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)

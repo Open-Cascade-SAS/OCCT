@@ -42,23 +42,33 @@ bool IGESSelect_SelectLevelNumber::Sort(
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   int numlev = 0;
   if (!thelevnum.IsNull())
+  {
     numlev = thelevnum->Value();
+  }
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
   int level = igesent->Level();
   if (levelist.IsNull())
+  {
     return (level == numlev);
+  }
   //  Cas d une liste
   if (numlev == 0)
+  {
     return false;
+  }
   int nb = levelist->NbPropertyValues();
   for (int i = 1; i <= nb; i++)
   {
     level = levelist->LevelNumber(i);
     if (level == numlev)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -68,9 +78,13 @@ TCollection_AsciiString IGESSelect_SelectLevelNumber::ExtractLabel() const
   char labl[50];
   int  numlev = 0;
   if (!thelevnum.IsNull())
+  {
     numlev = thelevnum->Value();
+  }
   if (numlev == 0)
+  {
     return TCollection_AsciiString("IGES Entity attached to no Level");
+  }
 
   Sprintf(labl, "IGES Entity, Level Number admitting %d", numlev);
   return TCollection_AsciiString(labl);

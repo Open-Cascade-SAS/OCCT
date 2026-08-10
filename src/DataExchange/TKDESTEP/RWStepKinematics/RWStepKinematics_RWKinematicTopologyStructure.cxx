@@ -41,7 +41,9 @@ void RWStepKinematics_RWKinematicTopologyStructure::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_topology_structure"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

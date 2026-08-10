@@ -131,7 +131,9 @@ const TCollection_AsciiString& LDOMParser::GetError(TCollection_AsciiString& aDa
 LDOM_OSStream::BOMType LDOMParser::GetBOM() const
 {
   if (myReader)
+  {
     return myReader->GetBOM();
+  }
   return LDOM_OSStream::BOM_UNDEFINED;
 }
 
@@ -256,7 +258,9 @@ bool LDOMParser::ParseDocument(std::istream& theIStream, const bool theWithoutRo
           }
           isError = ParseElement(theIStream, aDocStart);
           if (isError)
+          {
             break;
+          }
           continue;
         }
         isError = true;
@@ -358,10 +362,14 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
           if (IsDigit(aTextStr[0]))
           {
             if (LDOM_XmlReader::getInteger(aTextValue, aTextStr, aTextStr + aTextLen))
+            {
               aTextValue = LDOMBasicString(aTextStr, aTextLen, myDocument);
+            }
           }
           else
+          {
             aTextValue = LDOMBasicString(aTextStr, aTextLen, myDocument);
+          }
         }
         goto create_text_node;
       case LDOM_XmlReader::XML_COMMENT:
@@ -389,7 +397,9 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
       default:;
     }
     if (isError)
+    {
       break;
+    }
   }
   return isError;
 }

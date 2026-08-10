@@ -159,7 +159,9 @@ void VrmlAPI_Writer::SetDeflection(const double aDef)
     myDrawer->SetTypeOfDeflection(Aspect_TOD_ABSOLUTE);
   }
   else
+  {
     myDrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
+  }
 }
 
 void VrmlAPI_Writer::SetRepresentation(const VrmlAPI_RepresentationOfShape aRep)
@@ -303,9 +305,13 @@ bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,
                            const int           aVersion) const
 {
   if (aVersion == 1)
+  {
     return write_v1(aShape, theOStream);
+  }
   else if (aVersion == 2)
+  {
     return write_v2(aShape, theOStream);
+  }
 
   return false;
 }
@@ -401,15 +407,21 @@ bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape, Standard_OStream& theO
 
   Vrml::VrmlHeaderWriter(theOStream);
   if (myRepresentation == VrmlAPI_BothRepresentation)
+  {
     Vrml::CommentWriter(
       " This file contents both Shaded and Wire Frame representation of selected Shape ",
       theOStream);
+  }
   if (myRepresentation == VrmlAPI_ShadedRepresentation)
+  {
     Vrml::CommentWriter(" This file contents only Shaded representation of selected Shape ",
                         theOStream);
+  }
   if (myRepresentation == VrmlAPI_WireFrameRepresentation)
+  {
     Vrml::CommentWriter(" This file contents only Wire Frame representation of selected Shape ",
                         theOStream);
+  }
 
   Vrml_Separator S1;
   S1.Print(theOStream);
@@ -456,12 +468,16 @@ bool VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape, Standard_OStream& theO
   bool anExtFace = false;
   if (myRepresentation == VrmlAPI_ShadedRepresentation
       || myRepresentation == VrmlAPI_BothRepresentation)
+  {
     anExtFace = true;
+  }
 
   bool anExtEdge = false;
   if (myRepresentation == VrmlAPI_WireFrameRepresentation
       || myRepresentation == VrmlAPI_BothRepresentation)
+  {
     anExtEdge = true;
+  }
 
   VrmlData_Scene        aScene;
   VrmlData_ShapeConvert aConv(aScene);

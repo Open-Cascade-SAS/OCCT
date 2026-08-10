@@ -1,92 +1,61 @@
-﻿Draw: Demo Scripts {#samples__draw_scripts}
+Draw: Demo Scripts {#samples__draw_scripts}
 ================
 
-All demo scripts are provided with OCCT sources and locate in <i>CASROOT/resources/samples/tcl</i>. To play around them please
-follow the steps below:
+All demo scripts are shipped with OCCT sources under the <i>resources/samples/tcl</i> directory. To run them:
 
-1. Start DRAWEXE
-2. Type *cd ../..* to return to the root directory
-3. Type *cd resources/samples/tcl* to reach the demo scripts directory
-4. Type *source \<demo_file\>* to run the demonstration file provided with Open CASCADE. The following demonstration 
-files are available:
-  * <b>DataExchangeDemo.tcl</b>: demonstrates sample sequence of operations with writing and reading IGES file
-  * <b>ModelingDemo.tcl</b>: demonstrates creation of simple shape and displaying it in HLR mode
-  * <b>VisualizationDemo.tcl</b>: demonstrates use of 3d viewer
-  * <b>cad.tcl</b>: creates solid shape looking like abbreviation "CAD"
-  * <b>bottle.tcl</b>: creates bottle as in OCCT Tutorial
-  * <b>drill.tcl</b>: creates twist drill bit shape
-  * <b>cutter.tcl</b>: creates milling cutter shape
-  * <b>xde.tcl</b>: demonstrates creation of simple assembly in XDE
-  * <b>materials.tcl</b>: demonstrates visual properties of materials supported by 3d viewer
-  * <b>raytrace.tcl</b>: demonstrates use of ray tracing display in 3d viewer
-  * <b>dimensions.tcl</b>: demonstrates use of dimensions, clipping, and capping in 3d viewer
-  * ...
+1. Source the build environment script `env.sh` (Linux/macOS) or `env.bat` (Windows) generated next to *DRAWEXE* in the build / install `bin/` directory.
+2. Launch *DRAWEXE*.
+3. From the DRAW prompt, source any demo script by absolute or `$CASROOT`-relative path, for example:
+
+       source $env(CASROOT)/resources/samples/tcl/bottle.tcl
+
+A few representative demos:
+
+  * <b>DataExchangeDemo.tcl</b>: writes and reads an IGES file
+  * <b>ModelingDemo.tcl</b>: creates a simple shape and displays it in HLR mode
+  * <b>VisualizationDemo.tcl</b>: exercises the 3D viewer
+  * <b>bottle.tcl</b>: builds the bottle from the OCCT Tutorial
+  * <b>cad.tcl</b>, <b>drill.tcl</b>, <b>cutter.tcl</b>: solid modeling examples
+  * <b>xde.tcl</b>: creates a simple assembly in XDE
+  * <b>materials.tcl</b>, <b>raytrace.tcl</b>, <b>vis_pbr_spheres.tcl</b>, <b>pathtrace_*.tcl</b>: visualization, materials, ray-tracing and PBR demos
+  * <b>dimensions.tcl</b>: dimensions, clipping and capping in the 3D viewer
+
+For the full up-to-date list, see the contents of the `resources/samples/tcl/` directory.
 
 Draw is a command interpreter based on TCL and a graphical system used for testing and demonstrating OCCT modeling libraries.
+It can be used interactively to create, display, and modify objects such as curves, surfaces, and topological shapes.
+Draw also provides a scriptable environment for OCCT tests and demonstrations.
 
-Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes.
+Draw includes:
 
-@figure{/introduction/images/overview_draw.png}
+  * a TCL command interpreter;
+  * 2D and 3D viewers with zoom, pan, rotation, and fit operations;
+  * geometric and topological commands for OCCT modeling algorithms;
+  * graphic commands for view and display operations;
+  * OCAF, data exchange, and shape healing commands loaded by plug-ins.
 
-Scripts can be written to customize Draw and perform tests. 
-New types of objects and new commands can be added using C++ programming language.
-
-Draw contains:
-
-  * A command interpreter based on TCL command language.
-  * A 2D an 3D graphic viewer with support of operations such as zoom, pan, rotation and full-screen views.
-  * An optional set of geometric commands to create and modify curves and surfaces and to use OCCT geometry algorithms.
-  * A set of topological commands to create and modify BRep shapes and to use OCCT topology algorithms.
-  * A set of graphic commands for view and display operations including Mesh Visualization Service.
-  * A set of Application framework commands for handling of files and attributes.
-  * A set of Data Exchange commands for translation of files from various formats (IGES,STEP) into OCCT shapes.
-  * A set of Shape Healing commands: check of overlapping edges, approximation of a shape to BSpline, etc.  
-
-You can add new custom test harness commands to Draw in order to test 
-or demonstrate a new functionality, which you are developing.
-
-Currently DRAW Test Harness is a single executable called *DRAWEXE*.
-
-Commands grouped in toolkits can be loaded at run-time thereby implementing dynamically loaded plug-ins. 
-Thus you can work only with the commands that suit your needs adding 
-the commands dynamically without leaving the Test Harness session.
-
-Declaration of available plug-ins is done through special resource file(s). 
-The *pload* command loads the plug-in in accordance with 
-the specified resource file and activates the commands implemented in the plug-in.
-
-The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.
-
-Draw Test Harness provides an environment for OCCT automated testing system. 
-Check its @ref occt_contribution__tests "Automated Testing System" for details.
-
-Remarks:
-
-* The DRAWEXE executable is delivered with the installation procedure on Windows platform only.
-* To start it, launch DRAWEXE executable from Open CASCADE Technology/Draw Test Harness item of the Start\\Programs menu.
+Commands grouped in toolkits can be loaded at run time with *pload*.
+The plug-in mechanism and instructions for extending Draw are described in @ref occt_user_guides__test_harness.
+Draw Test Harness is also used by the OCCT automated testing system; see @ref occt_contribution__tests "Automated Test System" for details.
 
 Experimenting with Draw Test Harness
 ------------------------------------
 
- Running Draw
+Running Draw
 ------------
 
 **On Linux:**
 
-* If OCCT was built by Code::Blocks  use <i>$CASROOT/draw.sh</i> file to launch *DRAWEXE* executable.
-
-Draw[1]> prompt appears in the command window
+* Launch *DRAWEXE* executable. The Draw[1]> prompt appears in the command window.
 
 Type *pload ALL*
 
 **On Windows:**
 
-Launch Draw executable from Open CASCADE Technology\\Test Harness\\Draw Test Harness 
-item of the Start\\Programs menu or Use <i>$CASROOT\\draw.bat</i> file to launch *DRAWEXE* executable.
+Launch Draw executable from Open CASCADE Technology\\DRAW Test Harness 
+item of the Start\\Programs menu. The Draw[1]> prompt appears in the command window.
 
-Draw[1]> prompt appears in the command window
-
-Type pload ALL
+Type *pload ALL*
 
 **Creating your first geometric objects**
 
@@ -104,20 +73,7 @@ Type pload ALL
 
 **Running demonstration files**
 
-1. Type *cd ../..* to return to the root directory
-2. Type *cd resources/samples/tcl* to reach the demo scripts directory
-3. Type *source \<demo_file\>* to run the demonstration file provided with Open CASCADE. The following demonstration files are available:
-  * DataExchangeDemo.tcl: demonstrates sample sequence of operations with writing and reading IGES file
-  * ModelingDemo.tcl: demonstrates creation of simple shape and displaying it in HLR mode
-  * VisualizationDemo.tcl: demonstrates use of 3d viewer
-  * cad.tcl: creates solid shape looking like abbreviation "CAD"
-  * bottle.tcl: creates bottle as in OCCT Tutorial
-  * drill.tcl: creates twist drill bit shape
-  * cutter.tcl: creates milling cutter shape
-  * xde.tcl: demonstrates creation of simple assembly in XDE
-  * materials.tcl: demonstrates visual properties of materials supported by 3d viewer
-  * raytrace.tcl: demonstrates use of ray tracing display in 3d viewer
-  * dimensions.tcl: demonstrates use of dimensions, clipping, and capping in 3d viewer
+Use `source $env(CASROOT)/resources/samples/tcl/<demo_file>` from the DRAW prompt, replacing `<demo_file>` with the name of the demonstration script.
 
 **Getting Help**
 

@@ -34,7 +34,9 @@ void RWStepGeom_RWReparametrisedCompositeCurveSegment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "reparametrised_composite_curve_segment"))
+  {
     return;
+  }
 
   // --- inherited field : transition ---
 
@@ -48,7 +50,9 @@ void RWStepGeom_RWReparametrisedCompositeCurveSegment::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #1 (transition) is not an enumeration");
+  }
 
   // --- inherited field : sameSense ---
 

@@ -24,7 +24,7 @@ This guide principally deals with the following OCCT classes:
 
 | CAD format | Extensions | RW support | Thread Safety | Presentation | Package |
 | :--------- | :--------- | :--------- | :----------- | :----------- | :------ |
-| STEP | .stp, .step .stepz | RW | No | BRep, Mesh | DESTEP |
+| STEP | .step, .stp, .stepz | RW | Yes (per-reader) | BRep, Mesh | DESTEP |
 | XCAF | .xbf | RW | Yes | BRep, Mesh | DEXCAF |
 | BREP | .brep | RW | Yes | BRep, Mesh | DEBREP |
 | IGES | .igs, .iges | RW | No | BRep | DEIGES |
@@ -37,6 +37,7 @@ This guide principally deals with the following OCCT classes:
 **Note** :
   * The format names in the first column match the FormatName values used for configuration nodes.
   * The VendorName for all listed CAD formats is "OCC".
+  * For STEP, thread safety requires that each concurrent call uses its own *DESTEP_Parameters* instance rather than relying on the process-wide *Interface_Static* settings. See the @ref occt_user_guides__step "STEP user guide" for details.
 
 @section occt_de_wrapper_3 DE Session Configuration
 
@@ -153,10 +154,11 @@ Dump to resource string. If the vendors list is empty, saves all vendors. If the
   occ::handle<DE_Wrapper> aSession = DE_Wrapper::GlobalWrapper();
   NCollection_List<TCollection_AsciiString> aFormats;
   NCollection_List<TCollection_AsciiString> aVendors;
-  aFormats.Appends("STEP");
-  aVendors.Appends("OCC");
+  aFormats.Append("STEP");
+  aVendors.Append("OCC");
   bool aIsRecursive = true;
-  TCollection_AsciiString aConf = aSession->aConf->Save(aIsRecursive, aFormats, aVendors);
+  TCollection_AsciiString aConfDump =
+    aSession->Save(aIsRecursive, aFormats, aVendors);
 ~~~~
 Configure using a resource file. If the vendors list is empty, saves all vendors. If the providers list is empty, saves all providers of valid vendors.
 ~~~~{.cpp}
@@ -164,8 +166,8 @@ Configure using a resource file. If the vendors list is empty, saves all vendors
   TCollection_AsciiString aPathToFile = "";
   NCollection_List<TCollection_AsciiString> aFormats;
   NCollection_List<TCollection_AsciiString> aVendors;
-  aFormats.Appends("STEP");
-  aVendors.Appends("OCC");
+  aFormats.Append("STEP");
+  aVendors.Append("OCC");
   bool aIsRecursive = true;
   if (!aSession->Save(aPathToFile, aIsRecursive, aFormats,aVendors))
   {
@@ -249,8 +251,8 @@ If the high priority vendor's provider is not supported, a transfer operation is
   occ::handle<DE_Wrapper> aSession = DE_Wrapper::GlobalWrapper();
   TCollection_AsciiString aFormat = "STEP";
   NCollection_List<TCollection_AsciiString> aVendors;
-  aVendors.Appends("OCC"); // high priority
-  aVendors.Appends("DTK");
+  aVendors.Append("OCC"); // high priority
+  aVendors.Append("DTK");
   // Flag to disable not chosen vendors, in this case configuration is possible
   // otherwise, lower their priority and continue to check ability to transfer
   bool aToDisable = true;
@@ -291,7 +293,7 @@ Writing Shape to STEP file.
   occ::handle<DE_Wrapper> aSession = DE_Wrapper::GlobalWrapper();
   TCollection_AsciiString aPathToFile = "example.stp";
   TopoDS_Shape aShFrom = ...;
-  if (!aSession->Write(aPathToFile, aShRes))
+  if (!aSession->Write(aPathToFile, aShFrom))
   {
     Message::SendFail() << "Error: Can't write file";
   }
@@ -379,7 +381,8 @@ Code sample to configure via transfer.
     "global.priority.STEP :   OCC DTK\n"
     "global.general.length.unit : 1\n"
     "provider.STEP.OCC.read.precision.val : 0.\n";
-  if (!aSession->Load(aString, aIsRecursive))
+  bool isRecursive = true;
+  if (!aSession->Load(aString, isRecursive))
   {
     Message::SendFail() << "Error: configuration is incorrect";
   }

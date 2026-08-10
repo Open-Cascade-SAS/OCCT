@@ -56,7 +56,9 @@ gp_Pnt IGESSolid_Cylinder::FaceCenter() const
 gp_Pnt IGESSolid_Cylinder::TransformedFaceCenter() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theFaceCenter);
+  }
   else
   {
     gp_XYZ tmp = theFaceCenter;
@@ -73,7 +75,9 @@ gp_Dir IGESSolid_Cylinder::Axis() const
 gp_Dir IGESSolid_Cylinder::TransformedAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theAxis);
+  }
   else
   {
     gp_XYZ   tmp = theAxis;

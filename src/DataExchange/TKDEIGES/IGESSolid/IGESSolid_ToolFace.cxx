@@ -93,9 +93,13 @@ void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&       
     st = PR.ReadInteger(PR.Current(), "Number of loops", nbloops);
   */
   if (st && nbloops > 0)
+  {
     tempLoops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbloops);
+  }
   else
+  {
     PR.SendFail(Msg197);
+  }
 
   PR.ReadBoolean(PR.Current(), Msg198, outerLoopFlag); // szv#4:S4163:12Mar99 `st=` not needed
   // st = PR.ReadBoolean(PR.Current(), "Outer loop flag", outerLoopFlag);
@@ -108,7 +112,9 @@ void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&       
       // //szv#4:S4163:12Mar99 moved in if st = PR.ReadEntity(IR, PR.Current(), "Loops",
       // STANDARD_TYPE(IGESSolid_Loop), aloop);
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESSolid_Loop), aloop))
+      {
         tempLoops->SetValue(i, aloop);
+      }
       else
       {
         Message_Msg Msg199("XSTEP_199");
@@ -152,7 +158,9 @@ void IGESSolid_ToolFace::WriteOwnParams(const occ::handle<IGESSolid_Face>& ent,
   IW.Send(upper);
   IW.SendBoolean(ent->HasOuterLoop());
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Loop(i));
+  }
 }
 
 //=================================================================================================
@@ -163,7 +171,9 @@ void IGESSolid_ToolFace::OwnShared(const occ::handle<IGESSolid_Face>& ent,
   int upper = ent->NbLoops();
   iter.GetOneItem(ent->Surface());
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Loop(i));
+  }
 }
 
 //=================================================================================================
@@ -236,10 +246,14 @@ void IGESSolid_ToolFace::OwnDump(const occ::handle<IGESSolid_Face>& ent,
   dumper.Dump(ent->Surface(), S, sublevel);
   S << "\n";
   if (ent->HasOuterLoop())
+  {
     S << "Outer loop is present (First one)\n";
+  }
   else
+  {
     S << "Outer loop is not present\n";
+  }
   S << "Loops : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbLoops(), ent->Loop);
-  S << std::endl;
+  S << '\n';
 }

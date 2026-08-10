@@ -38,7 +38,9 @@ void RWStepKinematics_RWScrewPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "screw_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

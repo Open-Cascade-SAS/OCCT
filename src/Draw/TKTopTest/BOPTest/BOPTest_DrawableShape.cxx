@@ -111,7 +111,9 @@ gp_Pnt BOPTest_DrawableShape::Pnt() const
       u1 = CU.FirstParameter();
       u2 = CU.LastParameter();
       if (facpar == 0.)
+      {
         facpar = 0.20;
+      }
       p = u1 + (u2 - u1) * facpar;
       P = CU.Value(p);
     }
@@ -125,7 +127,9 @@ gp_Pnt BOPTest_DrawableShape::Pnt() const
       u1 = CU.FirstParameter();
       u2 = CU.LastParameter();
       if (facpar == 0.)
+      {
         facpar = 0.40;
+      }
       p = u1 + (u2 - u1) * facpar;
       P = CU.Value(p);
     }

@@ -36,7 +36,9 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect_relationship"))
+  {
     return;
+  }
 
   // Own fields of ShapeAspectRelationship
 
@@ -90,7 +92,9 @@ void RWStepRepr_RWShapeAspectRelationship::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->RelatingShapeAspect());
 

@@ -52,14 +52,18 @@ bool FUN_isPonF(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& 
     TopAbs_Orientation oEinF;
     bool               edonfa = FUN_tool_orientEinFFORWARD(E, F, oEinF);
     if (edonfa)
+    {
       Pok = true;
+    }
     else
     {
       // P est NOK pour une face de LIF : arret
       double u, v;
       Pok = FUN_Parameters(P, F, u, v);
       if (!Pok)
+      {
         break;
+      }
     }
   }
   return Pok;
@@ -116,9 +120,13 @@ bool FUN_findPonF(const TopoDS_Edge&                                            
       {
         pardef = false;
         if (GT1 == TopOpeBRepDS_POINT)
+        {
           P = BDS.Point(G1).Point();
+        }
         else if (GT1 == TopOpeBRepDS_VERTEX)
+        {
           P = BRep_Tool::Pnt(TopoDS::Vertex(BDS.Shape(G1)));
+        }
         if (pardef)
         {
           double dist;
@@ -177,16 +185,22 @@ void FUN_reduceEDGEgeometry1(NCollection_List<occ::handle<TopOpeBRepDS_Interfere
   bool                                                               TRCF = false;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator ili(LI);
   if (!ili.More())
+  {
     return;
+  }
 
   // choix de l'arete Ecpx, lieu de resolution de la transition complexe
   const TopoDS_Face& FI     = TopoDS::Face(BDS.Shape(iFI));
   bool               isEGsp = (!EGsp.IsNull());
   TopoDS_Edge        Ecpx;
   if (isEGsp)
+  {
     Ecpx = TopoDS::Edge(EGsp);
+  }
   else
+  {
     Ecpx = TopoDS::Edge(BDS.Shape(iEG));
+  }
 
   TopOpeBRepDS_PDataStructure       pbds = (TopOpeBRepDS_PDataStructure)(void*)&BDS;
   TopOpeBRepDS_FaceInterferenceTool FITool(pbds);
@@ -196,9 +210,13 @@ void FUN_reduceEDGEgeometry1(NCollection_List<occ::handle<TopOpeBRepDS_Interfere
   if (LI.Extent() >= 2)
   {
     if (isEGsp)
+    {
       isPok = FUN_tool_findPinE(Ecpx, Pok, parPok);
+    }
     else
+    {
       isPok = FUN_findPonF(Ecpx, BDS, LI, Pok, parPok); // NYI pas necessaire
+    }
     if (!isPok)
     {
       LI.Clear();
@@ -311,11 +329,15 @@ void FUN_GmapS(
     occ::handle<TopOpeBRepDS_Interference>& I1 = it1.ChangeValue();
     FDS_data(I1, GT1, G1, ST1, S1);
     if (GT1 != MDSke || ST1 != MDSkf)
+    {
       continue;
+    }
     const TopoDS_Shape&    SG1 = BDS.Shape(G1);
     TopOpeBRepDS_ShapeData thedata;
     if (!mosd.Contains(SG1))
+    {
       mosd.Add(SG1, thedata);
+    }
     mosd.ChangeFromKey(SG1).ChangeInterferences().Append(I1);
   }
 }
@@ -352,7 +374,9 @@ void FUN_reduceEDGEgeometry(NCollection_List<occ::handle<TopOpeBRepDS_Interferen
                                                       TopTools_ShapeMapHasher>&       MEsp)
 {
   if (!LI.Extent())
+  {
     return;
+  }
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher> mosd;
   FUN_GmapS(LI, BDS, mosd);
@@ -459,12 +483,16 @@ void FUN_reduceEDGEgeometry(NCollection_List<occ::handle<TopOpeBRepDS_Interferen
               // modified by NIZNHY-PKV Thu Mar 16 10:41:01 2000 t
             }
             else
+            {
               FUN_reduceEDGEgeometry1(LISFIN, BDS, iFI, iEG, EGsp, MEsp);
+            }
           }
 
           nLISFIN = LISFIN.Extent();
           if (nLISFIN)
+          {
             LIout.Append(LISFIN);
+          }
         }
       } // isEGsp
       else
@@ -504,7 +532,9 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences(
   {
     const TopoDS_Shape& S = BDS.Shape(i);
     if (S.IsNull())
+    {
       continue;
+    }
     if (S.ShapeType() == TopAbs_FACE)
     {
       ProcessFaceInterferences(i, M);

@@ -260,15 +260,25 @@ void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
   S << "IGESGeom_ConicArc\n";
   int cf = ent->FormNumber();
   if (cf == 0)
+  {
     cf = ent->ComputedFormNumber();
+  }
   if (cf == 1)
+  {
     S << " --     Ellipse     --\n";
+  }
   else if (cf == 2)
+  {
     S << " --    Hyperbola    --\n";
+  }
   else if (cf == 3)
+  {
     S << " --    Parabola    --\n";
+  }
   else
+  {
     S << " --    (Undetermined type of Conic)    --\n";
+  }
 
   S << "Conic Coefficient A : " << A << "\n"
     << "Conic Coefficient B : " << B << "\n"
@@ -284,7 +294,9 @@ void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
   IGESData_DumpXYLZ(S, level, ent->EndPoint(), ent->Location(), ent->ZPlane());
   S << "\n";
   if (level <= 4)
-    S << " -- Computed Definition : ask level > 4" << std::endl;
+  {
+    S << " -- Computed Definition : ask level > 4" << '\n';
+  }
   else
   {
     gp_Pnt Cen;
@@ -303,14 +315,20 @@ void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
     IGESData_DumpXYZL(S, level, Ax, ent->VectorLocation());
     S << "\n";
     if (cf == 3)
+    {
       S << " Focal : " << Rmin << "\n";
+    }
     else if (Rmin == Rmax)
+    {
       S << " Radius (Major = Minor) : " << Rmin << "\n";
+    }
     else
+    {
       S << " Major Radius : " << Rmax << "  Minor Radius : " << Rmin << "\n";
+    }
 
     S << "  Normal Axis : ";
     IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-    S << std::endl;
+    S << '\n';
   }
 }

@@ -81,8 +81,11 @@ Units_Token::Units_Token(const char* const                    aword,
   themean  = amean;
   thevalue = avalue;
   if (adimensions.IsNull())
+  {
     thedimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   else
+  {
     thedimensions = new Units_Dimensions(adimensions->Mass(),
                                          adimensions->Length(),
                                          adimensions->Time(),
@@ -92,6 +95,7 @@ Units_Token::Units_Token(const char* const                    aword,
                                          adimensions->LuminousIntensity(),
                                          adimensions->PlaneAngle(),
                                          adimensions->SolidAngle());
+  }
 }
 
 //=================================================================================================
@@ -115,8 +119,11 @@ int Units_Token::Length() const
 void Units_Token::Dimensions(const occ::handle<Units_Dimensions>& adimensions)
 {
   if (adimensions.IsNull())
+  {
     thedimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   else
+  {
     thedimensions = new Units_Dimensions(adimensions->Mass(),
                                          adimensions->Length(),
                                          adimensions->Time(),
@@ -126,6 +133,7 @@ void Units_Token::Dimensions(const occ::handle<Units_Dimensions>& adimensions)
                                          adimensions->LuminousIntensity(),
                                          adimensions->PlaneAngle(),
                                          adimensions->SolidAngle());
+  }
 }
 
 //=================================================================================================
@@ -144,8 +152,9 @@ void Units_Token::Update(const char* const amean)
 {
   TCollection_AsciiString string = Mean();
   if (string.Search(amean) != -1)
-    std::cout << Word() << " encountered twice with the same signification : " << amean
-              << std::endl;
+  {
+    std::cout << Word() << " encountered twice with the same signification : " << amean << '\n';
+  }
   string  = string + amean;
   themean = string;
 }
@@ -166,9 +175,13 @@ occ::handle<Units_Token> Units_Token::Add(const occ::handle<Units_Token>& atoken
 {
   TCollection_AsciiString word = Word();
   if (thedimensions->IsEqual(atoken->Dimensions()))
+  {
     return new Units_Token(word.ToCString(), " ", thevalue + atoken->Value(), thedimensions);
+  }
   else
+  {
     return new Units_Token(" ");
+  }
 }
 
 //=================================================================================================
@@ -177,9 +190,13 @@ occ::handle<Units_Token> Units_Token::Subtract(const occ::handle<Units_Token>& a
 {
   TCollection_AsciiString word = Word();
   if (thedimensions->IsEqual(atoken->Dimensions()))
+  {
     return new Units_Token(word.ToCString(), " ", thevalue - atoken->Value(), thedimensions);
+  }
   else
+  {
     return new Units_Token(" ");
+  }
 }
 
 //=================================================================================================
@@ -275,9 +292,13 @@ bool Units_Token::IsEqual(const char* const astring) const
   unsigned int length = string.Length();
 #endif
   if (strlen(astring) == length)
+  {
     return strncmp(string.ToCString(), astring, unsigned(length)) == 0;
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -288,9 +309,13 @@ bool Units_Token::IsEqual(const occ::handle<Units_Token>& atoken) const
   TCollection_AsciiString string2 = atoken->Word();
   int                     length  = string1.Length();
   if (length == atoken->Length())
+  {
     return strcmp(string1.ToCString(), string2.ToCString()) == 0;
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -302,19 +327,29 @@ void Units_Token::Dump(const int ashift, const int alevel) const
   TCollection_AsciiString mean = Mean();
 
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "Units_Token::Dump of " << this << std::endl;
+  }
+  std::cout << "Units_Token::Dump of " << this << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << word.ToCString() << std::endl;
+  }
+  std::cout << word.ToCString() << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "  value : " << thevalue << std::endl;
+  }
+  std::cout << "  value : " << thevalue << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "  mean  : " << mean.ToCString() << std::endl;
+  }
+  std::cout << "  mean  : " << mean.ToCString() << '\n';
   if (alevel)
+  {
     thedimensions->Dump(ashift);
+  }
 }
 
 //=======================================================================

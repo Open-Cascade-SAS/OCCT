@@ -37,7 +37,7 @@ public:
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! returns the sensitive edges stored in this wire
-  Standard_EXPORT const NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>& GetEdges();
+  Standard_EXPORT const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& GetEdges();
 
   //! Sets the owner for all entities in wire
   Standard_EXPORT void Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId) override;
@@ -88,8 +88,8 @@ protected:
 
 private:
   // clang-format off
-  NCollection_Vector<occ::handle<Select3D_SensitiveEntity>> myEntities;          //!< Vector of sub-entities
-  NCollection_Vector<int>                 myEntityIndexes;     //!< Indexes of entities for BVH build
+  NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>> myEntities;          //!< Vector of sub-entities
+  NCollection_DynamicArray<int>                 myEntityIndexes;     //!< Indexes of entities for BVH build
   gp_Pnt                                               myCenter;            //!< Center of the whole wire
   mutable Select3D_BndBox3d                            myBndBox;            //!< Bounding box of the whole wire
   // clang-format on

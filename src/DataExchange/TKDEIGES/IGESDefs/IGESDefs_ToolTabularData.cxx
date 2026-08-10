@@ -62,7 +62,9 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
 
   bool st = PR.ReadInteger(PR.Current(), "No. of dependent variables", nbDeps);
   if (st && nbDeps > 0)
+  {
     valuesDep = new IGESBasic_HArray1OfHArray1OfReal(1, nbDeps);
+  }
 
   st = PR.ReadInteger(PR.Current(), "No. of Independent variables", nbIndeps);
   if (st && nbIndeps > 0)
@@ -109,12 +111,16 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
   for (i = curnum; i <= nbpars; i++)
   {
     if (PR.ParamType(i) != Interface_ParamReal)
+    {
       break;
+    }
     nbd = i - curnum + 1;
   }
   occ::handle<NCollection_HArray1<double>> somedeps;
   if (nbd > 0)
+  {
     somedeps = new NCollection_HArray1<double>(1, nbd);
+  }
   for (i = 1; i <= nbd; i++)
   {
     double treal;
@@ -124,9 +130,13 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
     somedeps->SetValue(i, treal);
   }
   if (nbDeps > 0)
+  {
     valuesDep->SetValue(1, somedeps);
+  }
   else
+  {
     PR.AddWarning("Some Real remain while no dependent value is defined");
+  }
 
   nbProps = PR.CurrentNumber() - 2;
   /*  for (;;) {
@@ -151,18 +161,30 @@ void IGESDefs_ToolTabularData::WriteOwnParams(const occ::handle<IGESDefs_Tabular
   IW.Send(nbDeps);
   IW.Send(nbIndeps);
   for (i = 1; i <= nbIndeps; i++)
+  {
     IW.Send(ent->TypeOfIndependents(i));
+  }
   for (i = 1; i <= nbIndeps; i++)
+  {
     IW.Send(ent->NbValues(i));
+  }
   for (i = 1; i <= nbIndeps; i++)
+  {
     for (j = 1; j <= ent->NbValues(i); j++)
+    {
       IW.Send(ent->IndependentValue(i, j));
+    }
+  }
   // UNFINISHED
   if (nbDeps == 0)
+  {
     return;
+  }
   occ::handle<NCollection_HArray1<double>> deps = ent->DependentValues(1);
   for (i = 1; i <= deps->Length(); i++)
+  {
     IW.Send(deps->Value(i));
+  }
   /*
     for (i=1; i<=nbDeps; i++)
     for (j=1; j<= .. ->Value(i); j++)
@@ -198,7 +220,9 @@ void IGESDefs_ToolTabularData::OwnCopy(const occ::handle<IGESDefs_TabularData>& 
     nbValuesInd->SetValue(i, nval);
     occ::handle<NCollection_HArray1<double>> tmparr = new NCollection_HArray1<double>(1, nval);
     for (j = 1; j <= nval; j++)
+    {
       tmparr->SetValue(j, another->IndependentValue(i, j));
+    }
     valuesInd->SetValue(i, tmparr);
   }
   // UNFINISHED
@@ -249,21 +273,25 @@ void IGESDefs_ToolTabularData::OwnDump(const occ::handle<IGESDefs_TabularData>& 
   S << "\nNumber of values of independent variables : ";
   IGESData_DumpVals(S, level, 1, nbIndeps, ent->NbValues);
   // ?? JAGGED ??
-  S << std::endl << "Values of the independent variable : ";
+  S << '\n' << "Values of the independent variable : ";
   if (level < 5)
+  {
     S << " [ask level > 4]";
+  }
   else
   {
     for (int ind = 1; ind <= nbIndeps; ind++)
     {
-      S << std::endl << "[" << ind << "]:";
+      S << '\n' << "[" << ind << "]:";
       int nbi = ent->NbValues(ind);
       for (int iv = 1; iv <= nbi; iv++)
+      {
         S << " " << ent->IndependentValue(ind, iv);
+      }
     }
   }
   //  IGESData_DumpVals(aSender,level,1, nbIndeps,ent->IndependentValue);
-  S << std::endl << "Values of the dependent variable : ";
+  S << '\n' << "Values of the dependent variable : ";
   //  IGESData_DumpVals(aSender,level,1, nbDeps,ent->DependentValue);
-  S << "  TO BE DONE" << std::endl;
+  S << "  TO BE DONE" << '\n';
 }

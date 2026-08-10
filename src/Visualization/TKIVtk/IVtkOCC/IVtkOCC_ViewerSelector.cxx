@@ -24,11 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 //=================================================================================================
 
-IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
-    : myPixTol(2),
-      myToUpdateTol(true)
-{
-}
+IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector() = default;
 
 //=================================================================================================
 
@@ -86,16 +82,7 @@ void IVtkOCC_ViewerSelector::Pick(const int                 theXPix,
   gp_Pnt2d aMousePos(static_cast<double>(theXPix), static_cast<double>(theYPix));
   mySelectingVolumeMgr.InitPointSelectingVolume(aMousePos);
 
-  if (myToUpdateTol)
-  {
-    // Compute and set a sensitivity tolerance according to the renderer (viewport).
-    // TODO: Think if this works well in perspective view...'cause result depends
-    // on position on the screen, but we always use the point close to the
-    // screen's origin...
-    mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
-
-    myToUpdateTol = false;
-  }
+  mySelectingVolumeMgr.SetPixelTolerance(myTolerances.Tolerance());
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 
@@ -124,16 +111,7 @@ void IVtkOCC_ViewerSelector::Pick(const int                 theXMin,
   gp_Pnt2d aMaxMousePos(static_cast<double>(theXMax), static_cast<double>(theYMax));
   mySelectingVolumeMgr.InitBoxSelectingVolume(aMinMousePos, aMaxMousePos);
 
-  if (myToUpdateTol)
-  {
-    // Compute and set a sensitivity tolerance according to the renderer (viewport).
-    // TODO: Think if this works well in perspective view...'cause result depends
-    // on position on the screen, but we always use the point close to the
-    // screen's origin...
-    mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
-
-    myToUpdateTol = false;
-  }
+  mySelectingVolumeMgr.SetPixelTolerance(myTolerances.Tolerance());
 
   int    aWidth = 0, aHeight = 0;
   double aX = RealLast(), aY = RealLast();
@@ -169,16 +147,7 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
   }
   mySelectingVolumeMgr.InitPolylineSelectingVolume(aPolyline);
 
-  if (myToUpdateTol)
-  {
-    // Compute and set a sensitivity tolerance according to the renderer (viewport).
-    // TODO: Think if this works well in perspective view...'cause result depends
-    // on position on the screen, but we always use the point close to the
-    // screen's origin...
-    mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
-
-    myToUpdateTol = false;
-  }
+  mySelectingVolumeMgr.SetPixelTolerance(myTolerances.Tolerance());
 
   int    aWidth = 0, aHeight = 0;
   double aX = RealLast(), aY = RealLast();
@@ -201,7 +170,7 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
 
 void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -222,7 +191,7 @@ void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& th
 //============================================================================
 void IVtkOCC_ViewerSelector::Deactivate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

@@ -60,7 +60,7 @@ public:
       return NCollection_Array1<gp_Pnt>();
     }
 
-    NCollection_Array1<gp_Pnt> aResult(1, theParams.Size());
+    NCollection_Array1<gp_Pnt> aResult(1, theParams.Length());
 
     // Extract line data
     const gp_Lin& aLin = myGeom->Lin();
@@ -97,7 +97,7 @@ public:
       return NCollection_Array1<GeomGridEval::CurveD1>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD1> aResult(1, theParams.Size());
+    NCollection_Array1<GeomGridEval::CurveD1> aResult(1, theParams.Length());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -136,7 +136,7 @@ public:
       return NCollection_Array1<GeomGridEval::CurveD2>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD2> aResult(1, theParams.Size());
+    NCollection_Array1<GeomGridEval::CurveD2> aResult(1, theParams.Length());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -175,7 +175,7 @@ public:
       return NCollection_Array1<GeomGridEval::CurveD3>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD3> aResult(1, theParams.Size());
+    NCollection_Array1<GeomGridEval::CurveD3> aResult(1, theParams.Length());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -215,14 +215,14 @@ public:
       return NCollection_Array1<gp_Vec>();
     }
 
-    NCollection_Array1<gp_Vec> aResult(1, theParams.Size());
+    NCollection_Array1<gp_Vec> aResult(1, theParams.Length());
 
     if (theN == 1)
     {
       // D1 is constant for a line (the direction)
       const gp_Dir aDir = myGeom->Lin().Direction();
       const gp_Vec aD1(aDir.X(), aDir.Y(), aDir.Z());
-      for (int i = 1; i <= theParams.Size(); ++i)
+      for (int i = 1; i <= theParams.Length(); ++i)
       {
         aResult.SetValue(i, aD1);
       }
@@ -231,7 +231,7 @@ public:
     {
       // All higher derivatives are zero for a line
       const gp_Vec aZero(0, 0, 0);
-      for (int i = 1; i <= theParams.Size(); ++i)
+      for (int i = 1; i <= theParams.Length(); ++i)
       {
         aResult.SetValue(i, aZero);
       }

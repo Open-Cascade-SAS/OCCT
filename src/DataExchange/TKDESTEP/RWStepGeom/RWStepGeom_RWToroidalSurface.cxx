@@ -30,7 +30,9 @@ void RWStepGeom_RWToroidalSurface::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "toroidal_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -95,9 +97,15 @@ void RWStepGeom_RWToroidalSurface::Check(const occ::handle<StepGeom_ToroidalSurf
 {
   //  std::cout << "------ calling CheckToroidalSurface ------" << std::endl;
   if (ent->MajorRadius() < 0.0)
+  {
     ach->AddFail("ERROR: ToroidalSurface: MajorRadius < 0.0");
+  }
   if (ent->MinorRadius() < 0.0)
+  {
     ach->AddFail("ERROR: ToroidalSurface: MinorRadius < 0.0");
+  }
   if (ent->MajorRadius() < ent->MinorRadius())
+  {
     ach->AddWarning("ToroidalSurface: MajorRadius smaller than MinorRadius");
+  }
 }

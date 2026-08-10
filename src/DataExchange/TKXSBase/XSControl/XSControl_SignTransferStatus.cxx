@@ -72,18 +72,28 @@ static int BinderStatus(const occ::handle<Transfer_Binder>& binder)
 {
   int stat = 0;
   if (binder.IsNull())
+  {
     return 0;
+  }
   Interface_CheckStatus cst = binder->Check()->Status();
   Transfer_StatusExec   est = binder->StatusExec();
   bool                  res = binder->HasResult();
   if (est == Transfer_StatusRun || est == Transfer_StatusLoop)
+  {
     return 20;
+  }
   if (cst == Interface_CheckOK)
+  {
     stat = (res ? 11 : 1);
+  }
   else if (cst == Interface_CheckWarning)
+  {
     stat = (res ? 12 : 2);
+  }
   else if (cst == Interface_CheckFail)
+  {
     stat = (res ? 13 : 3);
+  }
 
   return stat;
 }
@@ -93,25 +103,39 @@ const char* XSControl_SignTransferStatus::Value(
   const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   if (ent.IsNull())
+  {
     return "";
+  }
   occ::handle<Transfer_TransientProcess> TP = theTP;
   if (TP.IsNull() && !theTR.IsNull())
+  {
     TP = theTR->TransientProcess();
+  }
   if (TP.IsNull())
+  {
     return "";
+  }
 
   occ::handle<Transfer_Binder> binder = TP->Find(ent);
 
   int stat = BinderStatus(binder);
 
   if (stat <= 1)
+  {
     return "";
+  }
   if (stat == 2)
+  {
     return "Warning";
+  }
   if (stat == 3)
+  {
     return "Fail";
+  }
   if (stat == 20)
+  {
     return "Fail on run";
+  }
 
   themes().Clear();
   if (stat > 10)
@@ -124,9 +148,13 @@ const char* XSControl_SignTransferStatus::Value(
       if (bnd->Status() != Transfer_StatusVoid)
       {
         if (!hasres)
+        {
           themes().AssignCat("Result:");
+        }
         else
+        {
           themes().AssignCat(",");
+        }
         themes().AssignCat(bnd->ResultTypeName());
         hasres = true;
       }
@@ -134,9 +162,13 @@ const char* XSControl_SignTransferStatus::Value(
     }
     //    if (stat == 11) Sprintf(themes,"Result:%s",binder->ResultTypeName());
     if (stat == 12)
+    {
       themes().AssignCat("/Warning");
+    }
     if (stat == 13)
+    {
       themes().AssignCat("/Fail");
+    }
   }
   return themes().ToCString();
 }

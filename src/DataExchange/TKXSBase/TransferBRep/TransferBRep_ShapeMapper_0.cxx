@@ -43,11 +43,17 @@ const TopoDS_Shape& TransferBRep_ShapeMapper::Value() const
 bool TransferBRep_ShapeMapper::Equates(const occ::handle<Transfer_Finder>& other) const
 {
   if (other.IsNull())
+  {
     return false;
+  }
   if (GetHashCode() != other->GetHashCode())
+  {
     return false;
+  }
   if (other->DynamicType() != DynamicType())
+  {
     return false;
+  }
   occ::handle<TransferBRep_ShapeMapper> another = occ::down_cast<TransferBRep_ShapeMapper>(other);
   return TopTools_ShapeMapHasher{}(theval, another->Value());
 }

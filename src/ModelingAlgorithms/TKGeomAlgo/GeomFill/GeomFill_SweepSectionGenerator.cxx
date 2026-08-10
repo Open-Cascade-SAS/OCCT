@@ -100,7 +100,9 @@ void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path, c
     myType         = 4;
   }
   else
+  {
     myType = 1;
+  }
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     myPath = occ::down_cast<Geom_BSplineCurve>(Path->Copy());
@@ -127,7 +129,9 @@ void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
   }
 
   else
+  {
     myType = 2;
+  }
 
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
@@ -147,7 +151,9 @@ void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
     myFirstSect = GeomConvert::CurveToBSplineCurve(FirstSect, Convert_QuasiAngular);
   }
   if (myFirstSect->IsPeriodic())
+  {
     myFirstSect->SetNotPeriodic();
+  }
 }
 
 //=================================================================================================
@@ -167,7 +173,9 @@ void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
     myType         = 6;
   }
   else
+  {
     myType = 3;
+  }
 
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
@@ -197,9 +205,13 @@ void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
   }
 
   if (myFirstSect->IsPeriodic())
+  {
     myFirstSect->SetNotPeriodic();
+  }
   if (myLastSect->IsPeriodic())
+  {
     myLastSect->SetNotPeriodic();
+  }
 
   // JAG
 
@@ -313,7 +325,9 @@ void GeomFill_SweepSectionGenerator::Perform(const bool Polynomial)
 
       U = Parameters(i) + U1;
       if (i == myNbSections)
+      {
         U = U2;
+      }
 
       myPath->D1(U, P, D1);
 
@@ -327,12 +341,14 @@ void GeomFill_SweepSectionGenerator::Perform(const bool Polynomial)
         Rot.SetRotation(gp_Ax1(P, gp_Dir(D1Ref ^ D1)), D1Ref.AngleWithRef(D1, D1Ref ^ D1));
       }
       else if (D1Ref.IsOpposite(D1, Precision::Angular()))
+      {
 #ifdef OCCT_DEBUG
         std::cout << "Que fais-je ???? " << std::endl;
 #endif
 
-      // TR is the transformation between (i-1) section and the i-th.
-      TR = Rot * Trans;
+        // TR is the transformation between (i-1) section and the i-th.
+        TR = Rot * Trans;
+      }
       // cumulTR is the transformation between <myFirstSec> and
       // the i-th section.
       cumulTR = TR * cumulTR;
@@ -445,7 +461,9 @@ bool GeomFill_SweepSectionGenerator::Section(const int                     P,
 
   // pour les tuyaux sur aretes pour l'instant on ne calcule pas les derivees
   if (myType == 0)
+  {
     return false; // a voir pour mieux.
+  }
 
   // calcul des derivees sur la surface
   // on calcule les derivees en approximant le path au voisinage du point
@@ -463,7 +481,9 @@ bool GeomFill_SweepSectionGenerator::Section(const int                     P,
     U = myPath->LastParameter();
   }
   else
+  {
     return false;
+  }
 
   gp_Vec D1, D2;
   gp_Pnt Pt;
@@ -472,7 +492,9 @@ bool GeomFill_SweepSectionGenerator::Section(const int                     P,
   double l = D1.Magnitude();
 
   if (l < Epsilon(1.))
+  {
     return false;
+  }
 
   gp_Dir T = D1;
   double m = D2.Dot(T);
@@ -548,7 +570,9 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       }
 
       for (int i = 1; i <= Poles.Length(); i++)
+      {
         Poles(i).Transform(cumulTR);
+      }
     }
   }
   else
@@ -626,9 +650,13 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       occ::handle<Geom_TrimmedCurve> CT   = new Geom_TrimmedCurve(Circ, 0., Angle);
       occ::handle<Geom_BSplineCurve> BS;
       if (myPolynomial)
+      {
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_Polynomial);
+      }
       else
+      {
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_QuasiAngular);
+      }
 
       Poles   = BS->Poles();
       Weigths = BS->WeightsArray();
@@ -641,7 +669,9 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
 const gp_Trsf& GeomFill_SweepSectionGenerator::Transformation(const int Index) const
 {
   if (Index > myTrsfs.Length())
+  {
     throw Standard_RangeError("GeomFill_SweepSectionGenerator::Transformation");
+  }
 
   return myTrsfs(Index);
 }

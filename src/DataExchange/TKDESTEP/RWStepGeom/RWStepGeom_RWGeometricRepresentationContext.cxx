@@ -29,7 +29,9 @@ void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "geometric_representation_context"))
+  {
     return;
+  }
 
   // --- inherited field : contextIdentifier ---
 

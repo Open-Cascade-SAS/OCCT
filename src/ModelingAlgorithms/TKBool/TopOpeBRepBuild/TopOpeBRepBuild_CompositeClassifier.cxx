@@ -78,7 +78,9 @@ TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare(
       if (state == TopAbs_UNKNOWN)
       {
         if (Bit1.More())
+        {
           Bit1.Next();
+        }
         yena1 = Bit1.More();
       }
     }
@@ -92,7 +94,9 @@ TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare(
     {
       const TopoDS_Shape& s2 = MYBB->Element(Bit2);
       if (!CompareElement(s2))
+      {
         break;
+      }
     }
     state = State();
   }
@@ -116,7 +120,9 @@ TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare(
       if (state == TopAbs_UNKNOWN)
       {
         if (Bit1.More())
+        {
           Bit1.Next();
+        }
         yena1 = Bit1.More();
       }
     }

@@ -43,7 +43,9 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_person_and_organization_assignment"))
+  {
     return;
+  }
 
   // Inherited fields of PersonAndOrganizationAssignment
 

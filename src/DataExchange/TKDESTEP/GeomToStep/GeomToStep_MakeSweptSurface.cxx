@@ -49,7 +49,9 @@ GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface(const occ::handle<Geom_
     theSweptSurface = MkRevol.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================

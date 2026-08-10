@@ -72,6 +72,28 @@ public:
   //! returns the y Angle of the grid, relatively to the vertical.
   Standard_EXPORT double SecondAngle() const;
 
+  //! Set full extent of the bounded grid along the plane X direction (plane-local units).
+  //! 0.0 (default) means unbounded - the shader draws the grid to the horizon.
+  Standard_EXPORT void SetSizeX(const double theSize);
+
+  //! Return the bounded-region extent along plane X. 0.0 means unbounded.
+  double SizeX() const { return mySizeX; }
+
+  //! Set full extent of the bounded grid along the plane Y direction (plane-local units).
+  //! 0.0 (default) means unbounded.
+  Standard_EXPORT void SetSizeY(const double theSize);
+
+  //! Return the bounded-region extent along plane Y. 0.0 means unbounded.
+  double SizeY() const { return mySizeY; }
+
+  //! Set signed offset (plane-local units) applied along the plane normal for
+  //! display only - snap math stays on the plane. Use a small negative value
+  //! to push the grid slightly below coplanar geometry and avoid z-fighting.
+  Standard_EXPORT void SetZOffset(const double theOffset);
+
+  //! Return the display-time Z-offset along the plane normal.
+  double ZOffset() const { return myZOffset; }
+
   Standard_EXPORT void Init() override;
 
   //! Dumps the content of me into the stream
@@ -85,6 +107,9 @@ private:
   double myYStep;
   double myFirstAngle;
   double mySecondAngle;
+  double mySizeX;
+  double mySizeY;
+  double myZOffset;
   double a1;
   double b1;
   double c1;

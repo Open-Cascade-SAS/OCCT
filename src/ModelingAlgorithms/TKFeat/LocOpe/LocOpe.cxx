@@ -166,18 +166,26 @@ bool LocOpe::TgtFaces(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_
     HS1->D1(p.X(), p.Y(), pp1, du, dv);
     d1 = (du.Crossed(dv)).Normalized();
     if (rev1)
+    {
       d1.Reverse();
+    }
     HC2d2->D0(u, p);
     p.Coord(uu, vv);
     HS2->D1(uu, vv, pp1, du, dv);
     d2 = (du.Crossed(dv)).Normalized();
     if (rev2)
+    {
       d2.Reverse();
+    }
     ang = d1.Angle(d2);
     if (ang <= angmin)
+    {
       angmin = ang;
+    }
     if (ang >= angmax)
+    {
       angmax = ang;
+    }
   }
   return (angmax <= ta);
 }

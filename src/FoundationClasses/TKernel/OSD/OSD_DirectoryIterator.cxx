@@ -54,7 +54,9 @@ void OSD_DirectoryIterator::Initialize(const OSD_Path& where, const TCollection_
   myFlag = false;
   where.SystemName(myPlace);
   if (myPlace.Length() == 0)
+  {
     myPlace = ".";
+  }
   myMask = Mask;
   if (myDescr)
   {
@@ -90,17 +92,31 @@ static int strcmp_joker(const char* Mask, const char* Name)
   const char *p, *s;
 
   for (p = Mask, s = Name; *p && *p != '*'; p++, s++)
+  {
     if (*p != *s)
+    {
       return 0;
+    }
+  }
   if (!*p)
+  {
     return !(*s);
+  }
   while (*p == '*')
+  {
     p++;
+  }
   if (!*p)
+  {
     return 1;
+  }
   for (; *s; s++)
+  {
     if (strcmp_joker(p, s))
+    {
       return 1;
+    }
+  }
   return 0;
 }
 
@@ -132,13 +148,15 @@ void OSD_DirectoryIterator::Next()
       // Is it a directory ?
       const TCollection_AsciiString aFullName = myPlace + "/" + ((struct dirent*)myEntry)->d_name;
       stat(aFullName.ToCString(), &stat_buf);
-      if (S_ISDIR(stat_buf.st_mode)) // Ensure me it's not a file
+      if (S_ISDIR(stat_buf.st_mode))
+      { // Ensure me it's not a file
         if (strcmp_joker(myMask.ToCString(), ((struct dirent*)myEntry)->d_name))
         {
           // Does it follow mask ?
           myFlag = true;
           again  = 0;
         }
+      }
     }
 
   } while (again);
@@ -154,7 +172,9 @@ OSD_Directory OSD_DirectoryIterator::Values()
   int                     position;
 
   if (myEntry)
+  {
     Name = ((struct dirent*)myEntry)->d_name;
+  }
 
   position = Name.Search(".");
 

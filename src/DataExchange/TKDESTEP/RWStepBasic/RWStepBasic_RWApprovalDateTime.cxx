@@ -31,7 +31,9 @@ void RWStepBasic_RWApprovalDateTime::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "approval_date_time"))
+  {
     return;
+  }
 
   // --- own fields
 

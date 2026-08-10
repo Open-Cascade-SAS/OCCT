@@ -43,9 +43,13 @@ struct TestBnd1D
   void Add(const TestBnd1D& theOther)
   {
     if (theOther.Min < Min)
+    {
       Min = theOther.Min;
+    }
     if (theOther.Max > Max)
+    {
       Max = theOther.Max;
+    }
   }
 
   bool IsOut(const TestBnd1D& theOther) const { return theOther.Min > Max || theOther.Max < Min; }
@@ -99,7 +103,9 @@ public:
     myResults.push_back(theObj);
     myAccepted++;
     if (myAccepted >= myMaxAccept)
+    {
       myStop = true;
+    }
     return true;
   }
 

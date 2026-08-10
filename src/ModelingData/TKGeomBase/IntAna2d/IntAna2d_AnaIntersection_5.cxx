@@ -56,7 +56,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_C
 
   if (!Sol.IsDone())
   {
-    std::cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n" << std::endl;
+    std::cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n" << '\n';
     done = false;
     return;
   }
@@ -76,7 +76,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_C
       ty = radius * std::sin(S);
       Coord_Ancien_Repere(tx, ty, Axe_rep);
       if (!CIsDirect)
+      {
         S = M_PI + M_PI - S;
+      }
       lpnt[i - 1].SetValue(tx, ty, S);
     }
     Traitement_Points_Confondus(nbp, lpnt);

@@ -26,7 +26,9 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
 {
   // Box-point collision.
   if (theObj > myMapOfShape.Extent())
+  {
     return false;
+  }
   const TopoDS_Shape& shp = myMapOfShape(theObj);
   TopAbs_ShapeEnum    sht = shp.ShapeType();
   if (sht == TopAbs_EDGE)
@@ -43,11 +45,13 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
     if (ExtPC.IsDone() && ExtPC.NbExt() > 0)
     {
       for (int i = 1; i <= ExtPC.NbExt(); i++)
+      {
         if (ExtPC.SquareDistance(i) < EdgeTSq)
         {
           myStop = true; // exit from selector
           return true;
         }
+      }
     }
   }
   else if (sht == TopAbs_VERTEX)
@@ -72,7 +76,9 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
 {
   // box-line collision
   if (theObj > myMapOfShape.Extent())
+  {
     return false;
+  }
   const TopoDS_Shape& shp = myMapOfShape(theObj);
   TopAbs_ShapeEnum    sht = shp.ShapeType();
   if (sht == TopAbs_EDGE)
@@ -113,7 +119,9 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
           }
         }
         if (IsInside)
+        {
           return true;
+        }
       }
     }
   }
@@ -129,6 +137,7 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
                           -Precision::Infinite(),
                           Precision::Infinite());
     if (ExtPL.IsDone() && ExtPL.NbExt() > 0)
+    {
       if (ExtPL.SquareDistance(1) < VertTSq)
       {
         Extrema_POnCurv PP;
@@ -141,6 +150,7 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
         myVP.Append(VP);
         return true;
       }
+    }
   }
   return false;
 }

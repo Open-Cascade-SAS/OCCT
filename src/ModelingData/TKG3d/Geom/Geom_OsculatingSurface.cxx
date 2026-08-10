@@ -167,7 +167,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
 #endif
 
       if (IsAlongU() && IsAlongV())
+      {
         clearOsculFlags();
+      }
 
       if ((IsAlongU() && InitSurf->VDegree() > 1) || (IsAlongV() && InitSurf->UDegree() > 1))
       {
@@ -189,7 +191,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
               {
                 OsculSurf = buildOsculatingSurface(V1, UKnot, VKnot, S, L);
                 if (!OsculSurf)
+                {
                   break;
+                }
                 k++;
 #ifdef OCCT_DEBUG
                 std::cout << "1.k = " << k << std::endl;
@@ -200,9 +204,13 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 S       = L;
               }
               if (OsculSurf)
+              {
                 myOsculSurf1.Append(L);
+              }
               else
+              {
                 clearOsculFlags();
+              }
               if (myAlong[1] && OsculSurf)
               {
                 S       = InitSurf;
@@ -215,7 +223,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 {
                   OsculSurf = buildOsculatingSurface(V2, UKnot, VKnot, S, L);
                   if (!OsculSurf)
+                  {
                     break;
+                  }
                   k++;
 #ifdef OCCT_DEBUG
                   std::cout << "2.k = " << k << std::endl;
@@ -243,7 +253,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
               {
                 OsculSurf = buildOsculatingSurface(V2, UKnot, VKnot, S, L);
                 if (!OsculSurf)
+                {
                   break;
+                }
                 k++;
 #ifdef OCCT_DEBUG
                 std::cout << "2.k = " << k << std::endl;
@@ -259,7 +271,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 myKdeg.Append(k);
               }
               else
+              {
                 clearOsculFlags();
+              }
             }
           }
         }
@@ -278,7 +292,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
               {
                 OsculSurf = buildOsculatingSurface(U1, UKnot, VKnot, S, L);
                 if (!OsculSurf)
+                {
                   break;
+                }
                 k++;
 #ifdef OCCT_DEBUG
                 std::cout << "1.k = " << k << std::endl;
@@ -289,9 +305,13 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 S       = L;
               }
               if (OsculSurf)
+              {
                 myOsculSurf1.Append(L);
+              }
               else
+              {
                 clearOsculFlags();
+              }
               if (myAlong[3] && OsculSurf)
               {
                 S       = InitSurf;
@@ -303,7 +323,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 {
                   OsculSurf = buildOsculatingSurface(U2, UKnot, VKnot, S, L);
                   if (!OsculSurf)
+                  {
                     break;
+                  }
                   k++;
 #ifdef OCCT_DEBUG
                   std::cout << "2.k = " << k << std::endl;
@@ -331,7 +353,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
               {
                 OsculSurf = buildOsculatingSurface(U2, UKnot, VKnot, S, L);
                 if (!OsculSurf)
+                {
                   break;
+                }
                 k++;
 #ifdef OCCT_DEBUG
                 std::cout << "2.k = " << k << std::endl;
@@ -347,7 +371,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
                 myKdeg.Append(k);
               }
               else
+              {
                 clearOsculFlags();
+              }
             }
           }
         }
@@ -359,7 +385,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
     }
   }
   else
+  {
     clearOsculFlags();
+  }
 }
 
 //=================================================================================================
@@ -388,13 +416,21 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                          
       BSplCLib::Hunt(UKnots, theU, NU);
       BSplCLib::Hunt(VKnots, theV, NV);
       if (NU < 1)
+      {
         NU = 1;
+      }
       if (NU >= NbUK)
+      {
         NU = NbUK - 1;
+      }
       if (NbVK == 2 && NV == 1)
+      {
         // Need to find the closest end
         if (VKnots(NbVK) - theV > theV - VKnots(1))
+        {
           isToSkipSecond = true;
+        }
+      }
     }
     else
     {
@@ -414,7 +450,9 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                          
       // to the original. This happens when (v-t)^k is negative, i.e.
       // difference between degrees (k) is odd and t is the last parameter
       if (myKdeg.Value(NU) % 2)
+      {
         theT = true;
+      }
       theL  = myOsculSurf2.Value(NU);
       along = true;
     }
@@ -448,13 +486,21 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                          
       BSplCLib::Hunt(UKnots, theU, NU);
       BSplCLib::Hunt(VKnots, theV, NV);
       if (NV < 1)
+      {
         NV = 1;
+      }
       if (NV >= NbVK)
+      {
         NV = NbVK - 1;
+      }
       if (NbUK == 2 && NU == 1)
+      {
         // Need to find the closest end
         if (UKnots(NbUK) - theU > theU - UKnots(1))
+        {
           isToSkipSecond = true;
+        }
+      }
     }
     else
     {
@@ -471,7 +517,9 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                          
     if (myAlong[3] && (NU == NbUK - 1) && !isToSkipSecond)
     {
       if (myKdeg.Value(NV) % 2)
+      {
         theT = true;
+      }
       theL  = myOsculSurf2.Value(NV);
       along = true;
     }
@@ -587,9 +635,13 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
     bool IsUNegative = theParam > ucacheparameter + uspanlength / 2;
 
     if (IsAlongU() && (theParam > vcacheparameter + vspanlength / 2))
+    {
       vcacheparameter = vcacheparameter + vspanlength;
+    }
     if (IsAlongV() && (theParam > ucacheparameter + uspanlength / 2))
+    {
       ucacheparameter = ucacheparameter + uspanlength;
+    }
 
     BSplSLib::BuildCache(ucacheparameter,
                          vcacheparameter,
@@ -615,26 +667,38 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
       if (udeg > vdeg)
       {
         for (n = 1; n <= (int)udeg + 1; n++)
+        {
           for (m = 1; m <= (int)vdeg; m++)
+          {
             OscCoeff(n, m) = cachepoles(n, m + 1);
+          }
+        }
       }
       else
       {
         for (n = 1; n <= (int)udeg + 1; n++)
+        {
           for (m = 1; m <= (int)vdeg; m++)
+          {
             OscCoeff(n, m) = cachepoles(m + 1, n);
+          }
+        }
       }
       if (IsVNegative)
+      {
         PLib::VTrimming(-1, 0, OscCoeff, PLib::NoWeights2());
+      }
 
       index = 1;
       for (n = 1; n <= (int)udeg + 1; n++)
+      {
         for (m = 1; m <= (int)vdeg; m++)
         {
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).X();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Y();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Z();
         }
+      }
     }
 
     if (IsAlongV())
@@ -642,31 +706,47 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
       if (udeg > vdeg)
       {
         for (n = 1; n <= (int)udeg; n++)
+        {
           for (m = 1; m <= (int)vdeg + 1; m++)
+          {
             OscCoeff(n, m) = cachepoles(n + 1, m);
+          }
+        }
       }
       else
       {
         for (n = 1; n <= (int)udeg; n++)
+        {
           for (m = 1; m <= (int)vdeg + 1; m++)
+          {
             OscCoeff(n, m) = cachepoles(m, n + 1);
+          }
+        }
       }
       if (IsUNegative)
+      {
         PLib::UTrimming(-1, 0, OscCoeff, PLib::NoWeights2());
+      }
       index = 1;
       for (n = 1; n <= (int)udeg; n++)
+      {
         for (m = 1; m <= (int)vdeg + 1; m++)
         {
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).X();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Y();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Z();
         }
+      }
     }
 
     if (IsAlongU())
+    {
       MaxVDegree--;
+    }
     if (IsAlongV())
+    {
       MaxUDegree--;
+    }
     UContinuity = -1;
     VContinuity = -1;
 
@@ -727,7 +807,9 @@ bool Geom_OsculatingSurface::isQPunctual(const occ::handle<Geom_Surface>& theS,
     std::cout << " D1NormMax = " << D1NormMax << std::endl;
 #endif
     if (D1NormMax > theTolMax || D1NormMax < theTolMin)
+    {
       Along = false;
+    }
   }
   else
   {
@@ -742,7 +824,9 @@ bool Geom_OsculatingSurface::isQPunctual(const occ::handle<Geom_Surface>& theS,
     std::cout << " D1NormMax = " << D1NormMax << std::endl;
 #endif
     if (D1NormMax > theTolMax || D1NormMax < theTolMin)
+    {
       Along = false;
+    }
   }
   return Along;
 }

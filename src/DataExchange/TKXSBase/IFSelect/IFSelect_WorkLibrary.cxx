@@ -35,7 +35,9 @@ bool IFSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>
                                      Interface_CopyTool&                          TC) const
 {
   for (list.Start(); list.More(); list.Next())
+  {
     TC.TransferEntity(list.Value());
+  }
 
   TC.FillModel(newmodel);
 
@@ -48,9 +50,13 @@ void IFSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel
                                       Standard_OStream&                            S) const
 {
   if (thelevhlp.IsNull())
+  {
     DumpEntity(model, protocol, entity, S, 0);
+  }
   else
+  {
     DumpEntity(model, protocol, entity, S, thelevdef);
+  }
 }
 
 void IFSelect_WorkLibrary::SetDumpLevels(const int def, const int max)
@@ -58,7 +64,9 @@ void IFSelect_WorkLibrary::SetDumpLevels(const int def, const int max)
   thelevdef = def;
   thelevhlp.Nullify();
   if (max >= 0)
+  {
     thelevhlp = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(0, max);
+  }
 }
 
 void IFSelect_WorkLibrary::DumpLevels(int& def, int& max) const
@@ -70,15 +78,21 @@ void IFSelect_WorkLibrary::DumpLevels(int& def, int& max) const
     max = -1;
   }
   else
+  {
     max = thelevhlp->Upper();
+  }
 }
 
 void IFSelect_WorkLibrary::SetDumpHelp(const int level, const char* const help)
 {
   if (thelevhlp.IsNull())
+  {
     return;
+  }
   if (level < 0 || level > thelevhlp->Upper())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(help);
   thelevhlp->SetValue(level, str);
 }
@@ -86,12 +100,18 @@ void IFSelect_WorkLibrary::SetDumpHelp(const int level, const char* const help)
 const char* IFSelect_WorkLibrary::DumpHelp(const int level) const
 {
   if (thelevhlp.IsNull())
+  {
     return "";
+  }
   if (level < 0 || level > thelevhlp->Upper())
+  {
     return "";
+  }
   occ::handle<TCollection_HAsciiString> str = thelevhlp->Value(level);
   if (str.IsNull())
+  {
     return "";
+  }
   return str->ToCString();
 }
 

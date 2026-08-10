@@ -30,7 +30,9 @@ void RWStepVisual_RWCameraUsage::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "camera_usage"))
+  {
     return;
+  }
 
   // --- inherited field : mappingOrigin ---
 

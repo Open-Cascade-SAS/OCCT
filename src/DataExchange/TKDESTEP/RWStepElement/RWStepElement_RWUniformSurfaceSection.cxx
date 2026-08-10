@@ -35,7 +35,9 @@ void RWStepElement_RWUniformSurfaceSection::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "uniform_surface_section"))
+  {
     return;
+  }
 
   // Inherited fields of SurfaceSection
 

@@ -41,7 +41,9 @@ void RWStepKinematics_RWMechanismRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "mechanism_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

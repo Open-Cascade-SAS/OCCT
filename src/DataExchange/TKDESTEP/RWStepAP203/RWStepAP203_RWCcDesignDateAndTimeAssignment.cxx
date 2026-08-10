@@ -43,7 +43,9 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_date_and_time_assignment"))
+  {
     return;
+  }
 
   // Inherited fields of DateAndTimeAssignment
 

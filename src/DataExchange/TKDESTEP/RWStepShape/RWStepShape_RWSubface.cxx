@@ -38,7 +38,9 @@ void RWStepShape_RWSubface::ReadStep(const occ::handle<StepData_StepReaderData>&
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "subface"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

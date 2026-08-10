@@ -17,10 +17,9 @@
 #define _BVH_QuickSorter_Header
 
 #include <BVH_Sorter.hxx>
-#include <NCollection_Allocator.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <algorithm>
-#include <vector>
 
 //! Performs centroid-based sorting of abstract set along
 //! the given axis (X - 0, Y - 1, Z - 2) using std::sort.
@@ -47,8 +46,9 @@ public:
       return;
     }
 
-    // Create index array for sorting with OCCT allocator
-    std::vector<int, NCollection_Allocator<int>> anIndices(aSize);
+    // Create index array for sorting
+    NCollection_LinearVector<int> anIndices;
+    anIndices.Resize(aSize);
     for (int i = 0; i < aSize; ++i)
     {
       anIndices[i] = i;
@@ -61,7 +61,8 @@ public:
     });
 
     // Compute inverse permutation: invPerm[i] = where element i should go
-    std::vector<int, NCollection_Allocator<int>> anInvPerm(aSize);
+    NCollection_LinearVector<int> anInvPerm;
+    anInvPerm.Resize(aSize);
     for (int i = 0; i < aSize; ++i)
     {
       anInvPerm[anIndices[i]] = i;

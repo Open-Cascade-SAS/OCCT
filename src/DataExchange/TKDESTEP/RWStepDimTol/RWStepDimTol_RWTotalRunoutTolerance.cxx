@@ -37,7 +37,9 @@ void RWStepDimTol_RWTotalRunoutTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "total_runout_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

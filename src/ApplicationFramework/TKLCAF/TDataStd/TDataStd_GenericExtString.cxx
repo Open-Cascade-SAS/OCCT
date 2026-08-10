@@ -21,7 +21,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_GenericExtString, TDF_Attribute)
 void TDataStd_GenericExtString::Set(const TCollection_ExtendedString& S)
 {
   if (myString == S)
+  {
     return;
+  }
 
   Backup();
   myString = S;
@@ -39,7 +41,9 @@ const TCollection_ExtendedString& TDataStd_GenericExtString::Get() const
 void TDataStd_GenericExtString::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;

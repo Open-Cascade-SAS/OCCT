@@ -33,7 +33,9 @@ void RWStepAP214_RWAppliedPresentedItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "applied_presented_item"))
+  {
     return;
+  }
 
   // --- own field : items ---
 
@@ -48,7 +50,9 @@ void RWStepAP214_RWAppliedPresentedItem::ReadStep(
     {
       bool stat1 = data->ReadEntity(nsub1, i1, "items", ach, anent1);
       if (stat1)
+      {
         aItems->SetValue(i1, anent1);
+      }
     }
   }
 

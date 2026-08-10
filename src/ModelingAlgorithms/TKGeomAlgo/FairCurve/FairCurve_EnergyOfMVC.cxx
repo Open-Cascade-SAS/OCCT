@@ -134,12 +134,16 @@ bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder, math_Vector& Resu
       math_GaussSetIntegration SumTension(MyTension, Debut, Fin, MyOrder);
       Ok = SumTension.IsDone();
       if (!Ok)
+      {
         return Ok;
+      }
 
       math_GaussSetIntegration SumJerk(MyJerk, Debut, Fin, MyOrder);
       Ok = SumJerk.IsDone();
       if (!Ok)
+      {
         return Ok;
+      }
 
       Result += SumJerk.Value() + SumTension.Value(); // Cas purement non physique
     }
@@ -155,17 +159,23 @@ bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder, math_Vector& Resu
       math_GaussSetIntegration SumTension(MyTension, Debut, Fin, MyOrder);
       Ok = SumTension.IsDone();
       if (!Ok)
+      {
         return Ok;
+      }
 
       math_GaussSetIntegration SumSagging(MySagging, Debut, Fin, MyOrder);
       Ok = SumSagging.IsDone();
       if (!Ok)
+      {
         return Ok;
+      }
 
       math_GaussSetIntegration SumJerk(MyJerk, Debut, Fin, MyOrder);
       Ok = SumJerk.IsDone();
       if (!Ok)
+      {
         return Ok;
+      }
 
       Result += SumJerk.Value() * (1 - MyPhysicalRatio) + SumSagging.Value() * MyPhysicalRatio
                 + SumTension.Value();

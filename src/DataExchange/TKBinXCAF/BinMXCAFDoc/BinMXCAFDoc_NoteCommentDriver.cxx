@@ -43,15 +43,21 @@ bool BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent&       theS
                                           BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
+  {
     return false;
+  }
 
   occ::handle<XCAFDoc_NoteComment> aNote = occ::down_cast<XCAFDoc_NoteComment>(theTarget);
   if (aNote.IsNull())
+  {
     return false;
+  }
 
   TCollection_ExtendedString aComment;
   if (!(theSource >> aComment))
+  {
     return false;
+  }
 
   aNote->Set(aComment);
 
@@ -69,7 +75,9 @@ void BinMXCAFDoc_NoteCommentDriver::Paste(
 
   occ::handle<XCAFDoc_NoteComment> aNote = occ::down_cast<XCAFDoc_NoteComment>(theSource);
   if (!aNote.IsNull())
+  {
     theTarget << aNote->Comment();
+  }
 }
 
 //=================================================================================================

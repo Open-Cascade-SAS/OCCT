@@ -25,18 +25,28 @@ StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect() = d
 int StepVisual_SurfaceStyleElementSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleFillArea)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleBoundary)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleParameterLine)))
+  {
     return 3;
+  }
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleSilhouette))) return 4;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleSegmentationCurve))) return 5;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleControlGrid))) return 6;
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleRendering)))
+  {
     return 7;
+  }
   return 0;
 }
 

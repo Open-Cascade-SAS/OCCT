@@ -50,7 +50,9 @@ bool BinMDataStd_BooleanListDriver::Paste(const BinObjMgt_Persistent&       theS
 {
   int aIndex, aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_BooleanList> anAtt = occ::down_cast<TDataStd_BooleanList>(theTarget);
   if (aLastInd > 0)
@@ -88,10 +90,14 @@ void BinMDataStd_BooleanListDriver::Paste(
   const int                               aLastInd(anAtt->Extent());
   const int                               aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
+  {
     return;
+  }
   theTarget << aFirstInd << aLastInd;
   if (aLastInd == 0)
+  {
     return;
+  }
   NCollection_Array1<uint8_t>         aSourceArray(aFirstInd, aLastInd);
   NCollection_List<uint8_t>::Iterator itr(anAtt->List());
   for (int i = 1; itr.More(); itr.Next(), i++)
@@ -103,5 +109,7 @@ void BinMDataStd_BooleanListDriver::Paste(
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_BooleanList::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

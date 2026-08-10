@@ -32,7 +32,7 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
   {
     const int aNbNodes = myMesh->NbNodes();
     myNodeCoords       = new NCollection_HArray2<double>(1, aNbNodes, 1, 3);
-    std::cout << "Nodes : " << aNbNodes << std::endl;
+    std::cout << "Nodes : " << aNbNodes << '\n';
 
     for (int i = 1; i <= aNbNodes; i++)
     {
@@ -48,7 +48,7 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
     myElemNormals     = new NCollection_HArray2<double>(1, aNbTris, 1, 3);
     myElemNodes       = new NCollection_HArray2<int>(1, aNbTris, 1, 3);
 
-    std::cout << "Elements : " << aNbTris << std::endl;
+    std::cout << "Elements : " << aNbTris << '\n';
 
     for (int i = 1; i <= aNbTris; i++)
     {
@@ -68,9 +68,13 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
 
       gp_Vec aN = aV1.Crossed(aV2);
       if (aN.SquareMagnitude() > Precision::SquareConfusion())
+      {
         aN.Normalize();
+      }
       else
+      {
         aN.SetCoord(0.0, 0.0, 0.0);
+      }
 
       for (int j = 0; j < 3; j++)
       {
@@ -82,7 +86,7 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
       myElemNormals->SetValue(i, 3, aN.Z());
     }
   }
-  std::cout << "Construction is finished" << std::endl;
+  std::cout << "Construction is finished" << '\n';
 }
 
 //=================================================================================================
@@ -94,7 +98,9 @@ bool XSDRAWSTL_DataSource::GetGeom(const int                   ID,
                                    MeshVS_EntityType&          Type) const
 {
   if (myMesh.IsNull())
+  {
     return false;
+  }
 
   if (IsElement)
   {
@@ -107,13 +113,17 @@ bool XSDRAWSTL_DataSource::GetGeom(const int                   ID,
       {
         int IdxNode = myElemNodes->Value(ID, i);
         for (int j = 1; j <= 3; j++, k++)
+        {
           Coords(k) = myNodeCoords->Value(IdxNode, j);
+        }
       }
 
       return true;
     }
     else
+    {
       return false;
+    }
   }
   else if (ID >= 1 && ID <= myNodes.Extent())
   {
@@ -126,7 +136,9 @@ bool XSDRAWSTL_DataSource::GetGeom(const int                   ID,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -161,7 +173,9 @@ bool XSDRAWSTL_DataSource::GetNodesByElement(const int                ID,
                                              int& /*theNbNodes*/) const
 {
   if (myMesh.IsNull())
+  {
     return false;
+  }
 
   if (ID >= 1 && ID <= myElements.Extent() && theNodeIDs.Length() >= 3)
   {
@@ -197,7 +211,9 @@ bool XSDRAWSTL_DataSource::GetNormal(const int Id,
                                      double&   nz) const
 {
   if (myMesh.IsNull())
+  {
     return false;
+  }
 
   if (Id >= 1 && Id <= myElements.Extent() && Max >= 3)
   {
@@ -207,5 +223,7 @@ bool XSDRAWSTL_DataSource::GetNormal(const int Id,
     return true;
   }
   else
+  {
     return false;
+  }
 }

@@ -125,23 +125,35 @@ TopAbs_State TopOpeBRepBuild_PaveClassifier::CompareOnNonPeriodic()
     if (myP1 == myP2)
     {
       if (myO1 == myO2)
+      {
         state = TopAbs_IN;
+      }
       else
+      {
         state = TopAbs_OUT;
+      }
     }
     else if (myP1 < myP2)
     {
       if (lower)
+      {
         state = TopAbs_IN;
+      }
       else
+      {
         state = TopAbs_OUT;
+      }
     }
     else
     {
       if (lower)
+      {
         state = TopAbs_OUT;
+      }
       else
+      {
         state = TopAbs_IN;
+      }
     }
   }
 
@@ -209,7 +221,9 @@ double TopOpeBRepBuild_PaveClassifier::AdjustCase(const double             p1,
 void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
 {
   if (!ToAdjustOnPeriodic())
+  {
     return;
+  }
 
 #ifdef OCCT_DEBUG
   double p1 = myP1, p2 = myP2;
@@ -225,9 +239,13 @@ void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
   else if (myO1 != myO2)
   {
     if (myO1 == TopAbs_FORWARD)
+    {
       myP2 = AdjustCase(myP2, myO2, myP1, myPeriod, tol, myCas2);
+    }
     if (myO2 == TopAbs_FORWARD)
+    {
       myP1 = AdjustCase(myP1, myO1, myP2, myPeriod, tol, myCas1);
+    }
   }
 
 #ifdef OCCT_DEBUG
@@ -323,9 +341,13 @@ TopAbs_State TopOpeBRepBuild_PaveClassifier::Compare(const occ::handle<TopOpeBRe
 
   TopAbs_State state;
   if (myEdgePeriodic)
+  {
     state = CompareOnPeriodic();
+  }
   else
+  {
     state = CompareOnNonPeriodic();
+  }
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC())

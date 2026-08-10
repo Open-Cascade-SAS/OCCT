@@ -79,7 +79,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myLowerLimitActualRotation = theLowerLimitActualRotation;
   }
   else
+  {
     myLowerLimitActualRotation = 0;
+  }
 
   defUpperLimitActualRotation = hasUpperLimitActualRotation;
   if (defUpperLimitActualRotation)
@@ -87,7 +89,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myUpperLimitActualRotation = theUpperLimitActualRotation;
   }
   else
+  {
     myUpperLimitActualRotation = 0;
+  }
 
   defLowerLimitActualTranslationX = hasLowerLimitActualTranslationX;
   if (defLowerLimitActualTranslationX)
@@ -95,7 +99,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myLowerLimitActualTranslationX = theLowerLimitActualTranslationX;
   }
   else
+  {
     myLowerLimitActualTranslationX = 0;
+  }
 
   defUpperLimitActualTranslationX = hasUpperLimitActualTranslationX;
   if (defUpperLimitActualTranslationX)
@@ -103,7 +109,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myUpperLimitActualTranslationX = theUpperLimitActualTranslationX;
   }
   else
+  {
     myUpperLimitActualTranslationX = 0;
+  }
 
   defLowerLimitActualTranslationY = hasLowerLimitActualTranslationY;
   if (defLowerLimitActualTranslationY)
@@ -111,7 +119,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myLowerLimitActualTranslationY = theLowerLimitActualTranslationY;
   }
   else
+  {
     myLowerLimitActualTranslationY = 0;
+  }
 
   defUpperLimitActualTranslationY = hasUpperLimitActualTranslationY;
   if (defUpperLimitActualTranslationY)
@@ -119,7 +129,9 @@ void StepKinematics_PlanarPairWithRange::Init(
     myUpperLimitActualTranslationY = theUpperLimitActualTranslationY;
   }
   else
+  {
     myUpperLimitActualTranslationY = 0;
+  }
 }
 
 //=================================================================================================

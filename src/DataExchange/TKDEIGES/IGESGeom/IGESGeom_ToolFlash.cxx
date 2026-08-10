@@ -54,27 +54,31 @@ void IGESGeom_ToolFlash::ReadOwnParams(const occ::handle<IGESGeom_Flash>&       
   PR.ReadXY(PR.CurrentList(1, 2), "Reference of Flash", aPoint); //szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading first flash sizing parameter
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "First Flash sizing parameter", aDim1); //szv#4:S4163:12Mar99 `st=` not needed
-  else if (fn > 0) PR.AddFail("Fist Flash sizing parameter : undefined");
+  } else if (fn > 0) { PR.AddFail("Fist Flash sizing parameter : undefined");
+}
 
   // Reading second flash sizing parameter
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "Second Flash sizing parameter", aDim2); //szv#4:S4163:12Mar99 `st=` not needed
-  else {
-    if (fn > 1) PR.AddFail("Second Flash sizing parameter : not defined");
+  } else {
+    if (fn > 1) { PR.AddFail("Second Flash sizing parameter : not defined");
+}
   }
 
   // Reading rotation of flash about reference point
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "Rotation about ref. point", aRotation); //szv#4:S4163:12Mar99 `st=` not needed
-  else {
-    if (fn == 2 || fn == 4) PR.AddFail("Rotation about ref. point : not defined");
+  } else {
+    if (fn == 2 || fn == 4) { PR.AddFail("Rotation about ref. point : not defined");
+}
   }
 
-  if ( PR.IsParamEntity(PR.CurrentNumber()) )
+  if ( PR.IsParamEntity(PR.CurrentNumber()) ) {
     // Reading the referenced entity
     PR.ReadEntity(IR, PR.Current(), "Referenced entity", aReference); //szv#4:S4163:12Mar99 `st=` not needed
+}
   // "else" not necessary as this is the last field
   // clang-format on
 
@@ -148,7 +152,9 @@ bool IGESGeom_ToolFlash::OwnCorrect(const occ::handle<IGESGeom_Flash>& ent) cons
     res1 = true;
   }
   if (res1)
+  {
     ent->Init(ent->ReferencePoint().XY(), d1, d2, rt, ref);
+  }
   return (res0 || res1);
 }
 
@@ -170,18 +176,28 @@ void IGESGeom_ToolFlash::OwnCheck(const occ::handle<IGESGeom_Flash>& ent,
 {
   int fn = ent->FormNumber();
   if (ent->RankLineFont() != 1)
+  {
     ach->AddFail("LineFontPattern : Value != 1");
+  }
   if (ent->ReferenceEntity().IsNull())
   {
     if (fn == 0)
+    {
       ach->AddFail("Flash defined by a Reference Entity, which is absent");
+    }
   }
   else if (fn != 0)
+  {
     ach->AddWarning("Reference Entity present though useless");
+  }
   if (fn == 1 && ent->Dimension2() != 0.)
+  {
     ach->AddWarning("Dimension 2 present though useless");
+  }
   if ((fn == 1 || fn == 3) && ent->Rotation() != 0.)
+  {
     ach->AddWarning("Rotation present though useless");
+  }
 }
 
 void IGESGeom_ToolFlash::OwnDump(const occ::handle<IGESGeom_Flash>& ent,
@@ -221,5 +237,5 @@ void IGESGeom_ToolFlash::OwnDump(const occ::handle<IGESGeom_Flash>& ent,
     << " Rotation about reference entity : " << ent->Rotation() << "\n"
     << "Reference Entity         : ";
   dumper.Dump(ent->ReferenceEntity(), S, sublevel);
-  S << std::endl;
+  S << '\n';
 }

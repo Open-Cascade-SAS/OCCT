@@ -28,7 +28,9 @@ void RWStepGeom_RWCircle::ReadStep(const occ::handle<StepData_StepReaderData>& d
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "circle"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

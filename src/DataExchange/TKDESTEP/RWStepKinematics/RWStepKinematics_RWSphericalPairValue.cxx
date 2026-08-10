@@ -38,7 +38,9 @@ void RWStepKinematics_RWSphericalPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "spherical_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -76,7 +78,9 @@ void RWStepKinematics_RWSphericalPairValue::ReadStep(
     aInputOrientation.SetValue(aItems);
   }
   else
+  {
     theData->ReadEntity(theNum, 3, "input_orientation", theArch, aInputOrientation);
+  }
 
   // Initialize entity
   theEnt->Init(aRepresentationItem_Name, aPairValue_AppliesToPair, aInputOrientation);
@@ -110,7 +114,9 @@ void RWStepKinematics_RWSphericalPairValue::WriteStep(
     theSW.CloseSub();
   }
   else
+  {
     theSW.Send(theEnt->InputOrientation().Value());
+  }
 }
 
 //=================================================================================================
@@ -129,5 +135,7 @@ void RWStepKinematics_RWSphericalPairValue::Share(
   // Own fields of SphericalPairValue
 
   if (!theEnt->InputOrientation().RotationAboutDirection().IsNull())
+  {
     iter.AddItem(theEnt->InputOrientation().Value());
+  }
 }

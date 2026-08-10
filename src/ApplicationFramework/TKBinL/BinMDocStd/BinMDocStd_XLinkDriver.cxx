@@ -58,7 +58,9 @@ bool BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&       theSource,
     aStr.Clear();
     ok = theSource >> aStr;
     if (ok)
+    {
       anAtt->LabelEntry(aStr);
+    }
   }
   return ok;
 }

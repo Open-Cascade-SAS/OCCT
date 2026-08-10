@@ -20,7 +20,7 @@
 #include <MathUtils_LineSearch.hxx>
 #include <MathUtils_Random.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 #include <optional>
@@ -224,12 +224,12 @@ void PolishCoordinateWise(Function&          theFunc,
 //! @param theStats optional output statistics
 //! @return result containing best solution found
 template <typename Function>
-VectorResult PSO(Function&                                  theFunc,
-                 const math_Vector&                         theLowerBounds,
-                 const math_Vector&                         theUpperBounds,
-                 const PSOConfig&                           theConfig,
-                 const NCollection_Vector<PSOSeedParticle>* theSeeds,
-                 PSOStats*                                  theStats = nullptr)
+VectorResult PSO(Function&                                        theFunc,
+                 const math_Vector&                               theLowerBounds,
+                 const math_Vector&                               theUpperBounds,
+                 const PSOConfig&                                 theConfig,
+                 const NCollection_DynamicArray<PSOSeedParticle>* theSeeds,
+                 PSOStats*                                        theStats = nullptr)
 {
   VectorResult aResult;
 
@@ -283,7 +283,7 @@ VectorResult PSO(Function&                                  theFunc,
     }
   };
 
-  NCollection_Vector<Particle> aSwarm;
+  NCollection_DynamicArray<Particle> aSwarm;
   for (int aPartIdx = 0; aPartIdx < aNbParticles; ++aPartIdx)
   {
     aSwarm.Append(Particle(aLower, aUpper));
@@ -619,7 +619,7 @@ VectorResult PSO(Function&                                  theFunc,
 
             // Sort by fitness descending (simple selection of worst)
             // Reinitialize aNbRestart worst particles
-            NCollection_Vector<int> aWorstIndices;
+            NCollection_DynamicArray<int> aWorstIndices;
             for (int aCollIdx = 0; aCollIdx < aNbParticles; ++aCollIdx)
             {
               if (aCollIdx != aBestIdx)

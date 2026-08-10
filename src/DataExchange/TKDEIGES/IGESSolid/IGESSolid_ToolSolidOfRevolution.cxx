@@ -52,73 +52,102 @@ void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(
   // clang-format off
   PR.ReadEntity(IR, PR.Current(), "Curve Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "Fraction of rotation", tempFraction); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempFraction = 1.0;
+  }
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal))
+    {
       tempAxisPoint.SetX(tempreal);
+    }
   }
   else
+  {
     tempAxisPoint.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal))
+    {
       tempAxisPoint.SetY(tempreal);
+    }
   }
   else
+  {
     tempAxisPoint.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in if
     if (PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal))
+    {
       tempAxisPoint.SetZ(tempreal);
+    }
   }
   else
+  {
     tempAxisPoint.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
+    {
       tempAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
+    {
       tempAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
+    {
       tempAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
   double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
+  {
     PR.AddWarning("Axis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(
@@ -172,7 +201,9 @@ void IGESSolid_ToolSolidOfRevolution::OwnCheck(const occ::handle<IGESSolid_Solid
                                                occ::handle<Interface_Check>& ach) const
 {
   if (ent->Fraction() <= 0 || ent->Fraction() > 1.0)
+  {
     ach->AddFail("Fraction of rotation : Incorrect value");
+  }
 }
 
 void IGESSolid_ToolSolidOfRevolution::OwnDump(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
@@ -189,5 +220,5 @@ void IGESSolid_ToolSolidOfRevolution::OwnDump(const occ::handle<IGESSolid_SolidO
   IGESData_DumpXYZL(S, level, ent->AxisPoint(), ent->Location());
   S << "\nAxis direction : ";
   IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

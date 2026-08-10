@@ -39,7 +39,9 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- field : dimensions ---
   // --- This field is redefined ---
@@ -49,7 +51,9 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
   // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 2, ach, "si_unit"))
+  {
     return;
+  }
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
@@ -93,7 +97,9 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
   // --- Instance of plex component SolidAngleUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 0, ach, "thermodynamic_temperature_unit"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
   ent->Init(hasAprefix, aPrefix, aName);
@@ -118,9 +124,13 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::WriteStep(
   // --- field : prefix ---
   bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
+  {
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // --- field : name ---
   SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));

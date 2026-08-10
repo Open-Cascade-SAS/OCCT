@@ -784,7 +784,9 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
       {
         occ::handle<Geom_Curve> aResultCurve = GeomCirclePtr;
         if (aResultCurve.IsNull())
+        {
           aResultCurve = GeomEllipsePtr;
+        }
         // start and end parameters of the projected curve
         double aParFirst = myCurve->FirstParameter();
         double aParLast  = myCurve->LastParameter();
@@ -793,7 +795,9 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
         GeomLib_Tool::Parameter(aResultCurve, aPntFirst, Precision::Confusion(), myFirstPar);
         GeomLib_Tool::Parameter(aResultCurve, aPntLast, Precision::Confusion(), myLastPar);
         while (myLastPar <= myFirstPar)
+        {
           myLastPar += myResult->Period();
+        }
       }
     }
     break;
@@ -996,9 +1000,13 @@ const occ::handle<GeomAdaptor_Curve>& ProjLib_ProjectOnPlane::GetResult() const
 double ProjLib_ProjectOnPlane::FirstParameter() const
 {
   if (myKeepParam || myIsApprox)
+  {
     return myCurve->FirstParameter();
+  }
   else
+  {
     return myFirstPar;
+  }
 }
 
 //=================================================================================================
@@ -1006,9 +1014,13 @@ double ProjLib_ProjectOnPlane::FirstParameter() const
 double ProjLib_ProjectOnPlane::LastParameter() const
 {
   if (myKeepParam || myIsApprox)
+  {
     return myCurve->LastParameter();
+  }
   else
+  {
     return myLastPar;
+  }
 }
 
 //=================================================================================================
@@ -1060,9 +1072,13 @@ bool ProjLib_ProjectOnPlane::IsClosed() const
 bool ProjLib_ProjectOnPlane::IsPeriodic() const
 {
   if (myIsApprox)
+  {
     return false;
+  }
   else
+  {
     return myCurve->IsPeriodic();
+  }
 }
 
 //=================================================================================================
@@ -1075,9 +1091,13 @@ double ProjLib_ProjectOnPlane::Period() const
   }
 
   if (myIsApprox)
+  {
     return false;
+  }
   else
+  {
     return myCurve->Period();
+  }
 }
 
 //=================================================================================================
@@ -1185,7 +1205,9 @@ GeomAbs_CurveType ProjLib_ProjectOnPlane::GetType() const
 gp_Lin ProjLib_ProjectOnPlane::Line() const
 {
   if (myType != GeomAbs_Line)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Line");
+  }
 
   return myResult->Line();
 }
@@ -1195,7 +1217,9 @@ gp_Lin ProjLib_ProjectOnPlane::Line() const
 gp_Circ ProjLib_ProjectOnPlane::Circle() const
 {
   if (myType != GeomAbs_Circle)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Circle");
+  }
 
   return myResult->Circle();
 }
@@ -1205,7 +1229,9 @@ gp_Circ ProjLib_ProjectOnPlane::Circle() const
 gp_Elips ProjLib_ProjectOnPlane::Ellipse() const
 {
   if (myType != GeomAbs_Ellipse)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Ellipse");
+  }
 
   return myResult->Ellipse();
 }
@@ -1215,7 +1241,9 @@ gp_Elips ProjLib_ProjectOnPlane::Ellipse() const
 gp_Hypr ProjLib_ProjectOnPlane::Hyperbola() const
 {
   if (myType != GeomAbs_Hyperbola)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Hyperbola");
+  }
 
   return myResult->Hyperbola();
 }
@@ -1225,7 +1253,9 @@ gp_Hypr ProjLib_ProjectOnPlane::Hyperbola() const
 gp_Parab ProjLib_ProjectOnPlane::Parabola() const
 {
   if (myType != GeomAbs_Parabola)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Parabola");
+  }
 
   return myResult->Parabola();
 }
@@ -1235,12 +1265,18 @@ gp_Parab ProjLib_ProjectOnPlane::Parabola() const
 int ProjLib_ProjectOnPlane::Degree() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) && (GetType() != GeomAbs_BezierCurve))
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Degree");
+  }
 
   if (myIsApprox)
+  {
     return myResult->Degree();
+  }
   else
+  {
     return myCurve->Degree();
+  }
 }
 
 //=================================================================================================
@@ -1248,12 +1284,18 @@ int ProjLib_ProjectOnPlane::Degree() const
 bool ProjLib_ProjectOnPlane::IsRational() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) && (GetType() != GeomAbs_BezierCurve))
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:IsRational");
+  }
 
   if (myIsApprox)
+  {
     return myResult->IsRational();
+  }
   else
+  {
     return myCurve->IsRational();
+  }
 }
 
 //=================================================================================================
@@ -1261,12 +1303,18 @@ bool ProjLib_ProjectOnPlane::IsRational() const
 int ProjLib_ProjectOnPlane::NbPoles() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) && (GetType() != GeomAbs_BezierCurve))
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:NbPoles");
+  }
 
   if (myIsApprox)
+  {
     return myResult->NbPoles();
+  }
   else
+  {
     return myCurve->NbPoles();
+  }
 }
 
 //=================================================================================================
@@ -1274,12 +1322,18 @@ int ProjLib_ProjectOnPlane::NbPoles() const
 int ProjLib_ProjectOnPlane::NbKnots() const
 {
   if (GetType() != GeomAbs_BSplineCurve)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:NbKnots");
+  }
 
   if (myIsApprox)
+  {
     return myResult->NbKnots();
+  }
   else
+  {
     return myCurve->NbKnots();
+  }
 }
 
 //=================================================================================================
@@ -1287,7 +1341,9 @@ int ProjLib_ProjectOnPlane::NbKnots() const
 occ::handle<Geom_BezierCurve> ProjLib_ProjectOnPlane::Bezier() const
 {
   if (myType != GeomAbs_BezierCurve)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Bezier");
+  }
 
   return myResult->Bezier();
 }
@@ -1297,7 +1353,9 @@ occ::handle<Geom_BezierCurve> ProjLib_ProjectOnPlane::Bezier() const
 occ::handle<Geom_BSplineCurve> ProjLib_ProjectOnPlane::BSpline() const
 {
   if (myType != GeomAbs_BSplineCurve)
+  {
     throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:BSpline");
+  }
 
   return myResult->BSpline();
 }

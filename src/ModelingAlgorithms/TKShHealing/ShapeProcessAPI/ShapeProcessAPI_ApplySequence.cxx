@@ -55,7 +55,9 @@ TopoDS_Shape ShapeProcessAPI_ApplySequence::PrepareShape(const TopoDS_Shape& sha
                                                          const Message_ProgressRange& theProgress)
 {
   if (shape.IsNull())
+  {
     return shape;
+  }
   occ::handle<Resource_Manager> rsc = myContext->ResourceManager();
   myContext->Init(shape);
 
@@ -98,18 +100,28 @@ void ShapeProcessAPI_ApplySequence::PrintPreparationResult() const
     if (keyshape.ShapeType() == TopAbs_SHELL)
     {
       if (valueshape.IsNull())
+      {
         SN++;
+      }
       else
+      {
         SS++;
+      }
     }
     else if (keyshape.ShapeType() == TopAbs_FACE)
     {
       if (valueshape.IsNull())
+      {
         FN++;
+      }
       else if (valueshape.ShapeType() == TopAbs_SHELL)
+      {
         FS++;
+      }
       else
+      {
         FF++;
+      }
     }
   }
 
@@ -146,9 +158,13 @@ void ShapeProcessAPI_ApplySequence::PrintPreparationResult() const
   int    STotalR = SS, FTotalR = FF + FS;
   int    NbS = STotalR + SN, NbF = FTotalR + FN;
   if (NbS > 0)
+  {
     SPR = 1. * (NbS - SN) / NbS;
+  }
   if (NbF > 0)
+  {
     FPR = 1. * (NbF - FN) / NbF;
+  }
   Message_Msg PMSG200("PrResult.Print.MSG200"); // Preparation ratio:
   aMessenger->Send(PMSG200, Message_Info);
   Message_Msg PMSG205("PrResult.Print.MSG205"); //  Shells: %d per cent

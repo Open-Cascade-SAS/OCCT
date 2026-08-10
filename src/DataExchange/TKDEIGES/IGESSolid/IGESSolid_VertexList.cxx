@@ -28,7 +28,9 @@ IGESSolid_VertexList::IGESSolid_VertexList() = default;
 void IGESSolid_VertexList::Init(const occ::handle<NCollection_HArray1<gp_XYZ>>& Vertices)
 {
   if (Vertices.IsNull() || Vertices->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESSolid_VertexList : Init");
+  }
   theVertices = Vertices;
   InitTypeAndForm(502, 1);
 }

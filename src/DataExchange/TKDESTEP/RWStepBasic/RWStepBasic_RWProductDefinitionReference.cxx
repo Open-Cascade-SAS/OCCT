@@ -36,7 +36,9 @@ void RWStepBasic_RWProductDefinitionReference::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference"))
+  {
     return;
+  }
 
   // Own field source
   occ::handle<StepBasic_ExternalSource> aSource;
@@ -90,9 +92,13 @@ void RWStepBasic_RWProductDefinitionReference::WriteStep(
 
   // Own field : id_owning_organization_name
   if (ent->HasIdOwningOrganizationName())
+  {
     SW.Send(ent->IdOwningOrganizationName());
+  }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

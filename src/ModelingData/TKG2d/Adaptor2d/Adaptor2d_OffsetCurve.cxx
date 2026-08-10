@@ -152,14 +152,20 @@ int Adaptor2d_OffsetCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape Sh;
   if (S >= GeomAbs_C2)
+  {
     Sh = GeomAbs_CN;
+  }
   else
+  {
     Sh = (GeomAbs_Shape)((int)S + 2);
+  }
 
   int nbInter = myCurve->NbIntervals(Sh);
 
   if (nbInter == 1)
+  {
     return nbInter;
+  }
 
   NCollection_Array1<double> T(1, nbInter + 1);
 
@@ -167,10 +173,14 @@ int Adaptor2d_OffsetCurve::NbIntervals(const GeomAbs_Shape S) const
 
   int first = 1;
   while (T(first) <= myFirst)
+  {
     first++;
+  }
   int last = nbInter + 1;
   while (T(last) >= myLast)
+  {
     last--;
+  }
   return (last - first + 2);
 }
 
@@ -180,9 +190,13 @@ void Adaptor2d_OffsetCurve::Intervals(NCollection_Array1<double>& TI, const Geom
 {
   GeomAbs_Shape Sh;
   if (S >= GeomAbs_C2)
+  {
     Sh = GeomAbs_CN;
+  }
   else
+  {
     Sh = (GeomAbs_Shape)((int)S + 2);
+  }
 
   int nbInter = myCurve->NbIntervals(Sh);
 
@@ -198,10 +212,14 @@ void Adaptor2d_OffsetCurve::Intervals(NCollection_Array1<double>& TI, const Geom
 
   int first = 1;
   while (T(first) <= myFirst)
+  {
     first++;
+  }
   int last = nbInter + 1;
   while (T(last) >= myLast)
+  {
     last--;
+  }
 
   int i = TI.Lower(), j;
   for (j = first - 1; j <= last + 1; j++)
@@ -236,7 +254,9 @@ bool Adaptor2d_OffsetCurve::IsClosed() const
   else
   {
     if (myCurve->Continuity() == GeomAbs_C0)
+    {
       return false;
+    }
     else
     {
       if (myCurve->IsClosed())
@@ -249,7 +269,9 @@ bool Adaptor2d_OffsetCurve::IsClosed() const
                && !(Dummy[0].IsOpposite(Dummy[1], Precision::Angular()));
       }
       else
+      {
         return false;
+      }
     }
   }
 }
@@ -575,7 +597,9 @@ static int nbPoints(const occ::handle<Adaptor2d_Curve2d>& theCurve)
   }
 
   if (nbs > 300)
+  {
     nbs = 300;
+  }
   return nbs;
 }
 

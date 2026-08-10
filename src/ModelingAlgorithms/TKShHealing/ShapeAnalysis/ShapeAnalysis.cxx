@@ -51,9 +51,13 @@ double ShapeAnalysis::AdjustByPeriod(const double Val, const double ToVal, const
   double D    = std::abs(diff);
   double P    = std::abs(Period);
   if (D <= 0.5 * P)
+  {
     return 0.;
+  }
   if (P < 1e-100)
+  {
     return diff;
+  }
   return (diff > 0 ? -P : P) * floor(D / P + 0.5);
 }
 
@@ -92,7 +96,9 @@ void ShapeAnalysis::FindBounds(const TopoDS_Shape& shape, TopoDS_Vertex& V1, Top
     V2 = EA.LastVertex(TopoDS::Edge(shape));
   }
   else if (shape.ShapeType() == TopAbs_VERTEX)
+  {
     V1 = V2 = TopoDS::Vertex(shape);
+  }
 }
 
 //=================================================================================================
@@ -122,7 +128,9 @@ double ShapeAnalysis::TotCross2D(const occ::handle<ShapeExtend_WireData>& sewd,
       NCollection_Sequence<gp_Pnt2d> SeqPnt;
       ShapeAnalysis_Curve::GetSamplePoints(c2d, f2d, l2d, SeqPnt);
       if (edge.Orientation() == 1)
+      {
         ReverseSeq(SeqPnt);
+      }
       if (nbc == 1)
       {
         fuv = SeqPnt.Value(1);
@@ -163,10 +171,14 @@ double ShapeAnalysis::ContourArea(const TopoDS_Wire& theWire)
 
       NCollection_Sequence<gp_Pnt> aSeqPnt;
       if (!ShapeAnalysis_Curve::GetSamplePoints(c3d, first, last, aSeqPnt))
+      {
         continue;
+      }
       nbc++;
       if (edge.Orientation() == TopAbs_REVERSED)
+      {
         ReverseSeq(aSeqPnt);
+      }
       if (nbc == 1)
       {
         fuv = aSeqPnt.Value(1);
@@ -236,13 +248,17 @@ TopoDS_Wire ShapeAnalysis::OuterWire(const TopoDS_Face& theFace)
 
     // if current wire is the last one, return it without analysis
     if (!anIt.More())
+    {
       return aWire;
+    }
 
     // Check if the wire has positive area
     occ::handle<ShapeExtend_WireData> aSEWD    = new ShapeExtend_WireData(aWire);
     double                            anArea2d = ShapeAnalysis::TotCross2D(aSEWD, aF);
     if (anArea2d >= 0.)
+    {
       return aWire;
+    }
   }
   return TopoDS_Wire();
 }
@@ -274,7 +290,9 @@ void ShapeAnalysis::GetFaceUVBounds(const TopoDS_Face& F,
     occ::handle<Geom2d_Curve> c2d;
     double                    f, l;
     if (!sae.PCurve(edge, F, c2d, f, l, false))
+    {
       continue;
+    }
     sac.FillBndBox(c2d, f, l, 20, true, B);
   }
   B.Get(UMin, VMin, UMax, VMax);

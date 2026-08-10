@@ -76,7 +76,9 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -102,7 +104,9 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   TCollection_ExtendedString separator;
   XmlObjMgt_DOMString        aSeparator = anElement.getAttribute(::Separator());
   if (aSeparator.Type() != XmlObjMgt_DOMString::LDOM_NULL)
+  {
     separator = aSeparator.GetString();
+  }
 
   occ::handle<TDataStd_ExtStringArray> aExtStringArray =
     occ::down_cast<TDataStd_ExtStringArray>(theTarget);
@@ -112,9 +116,13 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_ExtStringArray::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
 
   aExtStringArray->SetID(aGUID);
 
@@ -201,7 +209,9 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
       return false;
     }
     else
+    {
       aDelta = aDeltaValue != 0;
+    }
   }
 
   aExtStringArray->SetDelta(aDelta);
@@ -223,7 +233,9 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
   XmlObjMgt_Element& anElement = theTarget;
 
   if (aL != 1)
+  {
     anElement.setAttribute(::FirstIndexString(), aL);
+  }
   anElement.setAttribute(::LastIndexString(), anU);
   anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta() ? 1 : 0);
 
@@ -299,7 +311,9 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
       len++; // for separator or ending \0 symbol
     }
     if (!len)
+    {
       len++; // for end of line \0 symbol
+    }
 
     // Merge all strings of the array into one extended string separated by the "separator".
     int                        isym(1);
@@ -314,7 +328,9 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
       xstr.SetValue(isym++, c);
     }
     if (xstr.SearchFromEnd(c) == isym - 1)
+    {
       isym--; // replace the last separator by '\0'
+    }
     xstr.SetValue(isym, u'\0');
 #ifdef _DEBUG
     TCollection_AsciiString cstr(xstr, '?'); // deb

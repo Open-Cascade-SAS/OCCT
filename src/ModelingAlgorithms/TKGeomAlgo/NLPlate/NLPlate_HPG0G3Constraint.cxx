@@ -36,9 +36,13 @@ NLPlate_HPG0G3Constraint::NLPlate_HPG0G3Constraint(const gp_XY&    UV,
 int NLPlate_HPG0G3Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 3)
+  {
     return myActiveOrder;
+  }
   else
+  {
     return 3;
+  }
 }
 
 const Plate_D3& NLPlate_HPG0G3Constraint::G3Target() const

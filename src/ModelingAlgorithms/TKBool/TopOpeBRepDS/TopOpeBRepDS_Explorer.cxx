@@ -57,7 +57,9 @@ void TopOpeBRepDS_Explorer::Init(const occ::handle<TopOpeBRepDS_HDataStructure>&
   myT   = T;
   myHDS = HDS;
   if (myHDS.IsNull())
+  {
     return;
+  }
   myN  = myHDS->NbShapes();
   myFK = FK;
   Find();
@@ -84,12 +86,18 @@ void TopOpeBRepDS_Explorer::Find()
       const TopoDS_Shape& s = BDS.Shape(myI, false);
       TopAbs_ShapeEnum    t = s.ShapeType();
       if (t == myT || myT == TopAbs_SHAPE)
+      {
         found = true;
+      }
       else
+      {
         myI++;
+      }
     }
     else
+    {
       myI++;
+    }
   }
   myB = found;
 }

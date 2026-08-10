@@ -33,7 +33,9 @@ void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "advanced_face"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -61,7 +63,9 @@ void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderD
                              ach,
                              STANDARD_TYPE(StepShape_FaceBound),
                              anent2))
+        {
           aBounds->SetValue(i2, anent2);
+        }
       }
     }
   }

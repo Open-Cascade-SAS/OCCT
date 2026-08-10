@@ -42,7 +42,9 @@ void StepBasic_Group::Init(const occ::handle<TCollection_HAsciiString>& aName,
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 }
 
 //=================================================================================================

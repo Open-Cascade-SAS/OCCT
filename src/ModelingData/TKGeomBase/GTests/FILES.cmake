@@ -2,7 +2,6 @@
 set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomBase_GTests_FILES
-  Approx_BSplineApproxInterp_Test.cxx
   AdvApp2Var_Context_Test.cxx
   AdvApp2Var_Framework_Test.cxx
   AdvApp2Var_Iso_Test.cxx
@@ -35,10 +34,15 @@ set(OCCT_TKGeomBase_GTests_FILES
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
   GC_MakePlane_Test.cxx
+  GC_MakeParabola2d_Test.cxx
   GC_MakeSegment2d_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
+  Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx
+  GeomLib_CheckCurveOnSurface_Test.cxx
+  GProp_PEquation_Test.cxx
+  GProp_PGProps_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx

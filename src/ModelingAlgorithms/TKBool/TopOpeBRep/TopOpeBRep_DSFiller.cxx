@@ -145,10 +145,7 @@ TopOpeBRep_DSFiller::TopOpeBRep_DSFiller()
 
 TopOpeBRep_DSFiller::~TopOpeBRep_DSFiller()
 {
-  if (myPShapeClassifier)
-  {
-    delete myPShapeClassifier;
-  }
+  delete myPShapeClassifier;
 }
 
 // modified by NIZNHY-PKV Mon Dec 16 11:12:41 2002 t
@@ -183,28 +180,38 @@ void BREP_correctgbound(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
     const TopoDS_Shape& s       = BDS.Shape(i);
     TopAbs_ShapeEnum    t       = s.ShapeType();
     if (t != TopAbs_EDGE)
+    {
       continue;
+    }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it;
     it.Initialize(BDS.ChangeShapeInterferences(s));
     if (!it.More())
+    {
       continue;
+    }
     for (; it.More(); it.Next())
     {
       const occ::handle<TopOpeBRepDS_Interference>&    I = it.Value();
       occ::handle<TopOpeBRepDS_ShapeShapeInterference> SSI =
         occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(I);
       if (SSI.IsNull())
+      {
         continue;
+      }
       TopOpeBRepDS_Kind GK = SSI->GeometryType();
       if (GK != TopOpeBRepDS_VERTEX)
+      {
         continue;
+      }
 
       ehassiv = true;
       break;
     } // it.More
 
     if (!ehassiv)
+    {
       continue;
+    }
 
     // l'arete s a au moins une shapeshapeinterference de geometrie VERTEX.
     // on verifie l'information GBound de toutes ses shapeshapeinterferences.
@@ -218,11 +225,15 @@ void BREP_correctgbound(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       occ::handle<TopOpeBRepDS_ShapeShapeInterference> SSI =
         occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(I);
       if (SSI.IsNull())
+      {
         continue;
+      }
       int               GI = SSI->Geometry();
       TopOpeBRepDS_Kind GK = SSI->GeometryType();
       if (GK != TopOpeBRepDS_VERTEX)
+      {
         continue;
+      }
 
       const TopoDS_Shape& v    = BDS.Shape(GI);
       bool                vofe = imev.Contains(v);
@@ -237,18 +248,26 @@ void BREP_correctgbound(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       occ::handle<TopOpeBRepDS_ShapeShapeInterference> SSI =
         occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(I);
       if (SSI.IsNull())
+      {
         continue;
+      }
       int               GI = SSI->Geometry();
       TopOpeBRepDS_Kind GK = SSI->GeometryType();
       if (GK != TopOpeBRepDS_VERTEX)
+      {
         continue;
+      }
       const TopoDS_Shape& v      = BDS.Shape(GI);
       bool                vhassd = HDS->HasSameDomain(v);
       if (!vhassd)
+      {
         continue;
+      }
       int ivref = BDS.SameDomainRef(v);
       if (ivref == GI)
+      {
         continue;
+      }
 
       const TopoDS_Shape& vref    = BDS.Shape(ivref);
       bool                vrefofe = imev.Contains(vref);
@@ -256,7 +275,6 @@ void BREP_correctgbound(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       SSI->SetGBound(vrefofe);
     } // it.More
   } // i
-  return;
 } // correctGBound
 
 //=================================================================================================
@@ -304,10 +322,14 @@ static bool FUN_shareNOG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
     int                                           G  = I1->Geometry();
     TopOpeBRepDS_Kind                             GT = I1->GeometryType();
     if (GT != TopOpeBRepDS_EDGE)
+    {
       continue;
+    }
     const TopoDS_Shape& EG = BDS.Shape(G);
     if (map2.Contains(EG))
+    {
       return false;
+    }
   }
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lIF2 = BDS.ShapeInterferences(F2);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(lIF2);
@@ -317,10 +339,14 @@ static bool FUN_shareNOG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
     int                                           G  = I2->Geometry();
     TopOpeBRepDS_Kind                             GT = I2->GeometryType();
     if (GT != TopOpeBRepDS_EDGE)
+    {
       continue;
+    }
     const TopoDS_Shape& EG = BDS.Shape(G);
     if (map1.Contains(EG))
+    {
       return false;
+    }
   }
 
   TopExp_Explorer ex1(F1, TopAbs_EDGE);
@@ -335,7 +361,9 @@ static bool FUN_shareNOG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
       {
         const TopoDS_Shape& e2 = itsd1.Value();
         if (map2.Contains(e2))
+        {
           return false;
+        }
       }
     }
 
@@ -348,10 +376,14 @@ static bool FUN_shareNOG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
       int                                           S1  = I1->Support();
       TopOpeBRepDS_Kind                             ST1 = I1->SupportType();
       if (ST1 != TopOpeBRepDS_EDGE)
+      {
         continue;
+      }
       const TopoDS_Edge& e2 = TopoDS::Edge(BDS.Shape(S1));
       if (!map2.Contains(e2))
+      {
         continue;
+      }
 
       TopOpeBRepDS_Kind GT1 = I1->GeometryType();
       if (GT1 == TopOpeBRepDS_POINT)
@@ -373,13 +405,17 @@ static bool FUN_shareNOG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
         double dot  = gp_Dir(tge1).Dot(gp_Dir(tge2));
         double x    = std::abs(1 - std::abs(dot));
         if (x > tola)
+        {
           return false; // e1,e2 not tangent
+        }
 
         gp_Vec xxF1 = FUN_tool_getgeomxx(F1, e1, par1);
         gp_Vec xxF2 = FUN_tool_getgeomxx(F2, e2, par2);
         dot         = gp_Dir(xxF1).Dot(gp_Dir(xxF2));
         if (dot > 0)
+        {
           return false; // F1,F2 share geometric domain near G1
+        }
       }
     } // it1.More()
   } // ex1(F1,EDGE)
@@ -413,7 +449,9 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
   FC2D_Prepare(aS1, aS2);
 
   if (myPShapeClassifier == nullptr)
+  {
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+  }
   myFacesFiller.SetPShapeClassifier(myPShapeClassifier);
 
 #ifdef OCCT_DEBUG
@@ -495,12 +533,16 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
 
   TopExp::MapShapes(S2, TopAbs_SOLID, aMapOfSolids);
   if (!aMapOfSolids.IsEmpty())
+  {
     myShapeIntersector.RejectedFaces(S1, S2, aListObj);
+  }
 
   aMapOfSolids.Clear();
   TopExp::MapShapes(S1, TopAbs_SOLID, aMapOfSolids);
   if (!aMapOfSolids.IsEmpty())
+  {
     myShapeIntersector.RejectedFaces(S2, S1, aListTool);
+  }
   // modified by NIZHNY-MKK  Fri Apr 14 09:37:32 2000.END
 
   // 2.Insert all rejected faces, wires, edges of Object in DS:
@@ -550,7 +592,9 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
     if (unfill)
     {
       if (myPShapeClassifier == nullptr)
+      {
         myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+      }
       unfill = BREP_UnfillSameDomain(lFF1, lFF2, HDS, *myPShapeClassifier);
     }
 
@@ -629,18 +673,26 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
   // FFsamdom = true : rien que des faces tangentes
   // codage des aretes de section des aretes samedomain
   if (FFsamdom)
+  {
     FUN_ds_FillSDMFaces(HDS); // xpu060598
-  // xpu280199 : On stocke les edges sdm comme edges de section aussi ! - CTS21801 -
+    // xpu280199 : On stocke les edges sdm comme edges de section aussi ! - CTS21801 -
+  }
   else
+  {
     FUN_ds_addSEsdm1d(HDS);
+  }
 
   if (FFsamdom)
+  {
     HDS->ChangeDS().Isfafa(true); // xpu120598
+  }
 
   if (islFFsamdom && !isEE)
   {
     if (myPShapeClassifier == nullptr)
+    {
       myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+    }
     unfill = BREP_UnfillSameDomain(lFF1, lFF2, HDS, *myPShapeClassifier);
   }
 
@@ -707,7 +759,9 @@ void TopOpeBRep_DSFiller::CompleteDS(const occ::handle<TopOpeBRepDS_HDataStructu
   const TopoDS_Shape& S1 = myShapeIntersector.Shape(1);
   const TopoDS_Shape& S2 = myShapeIntersector.Shape(2);
   if (S1.IsNull() || S2.IsNull())
+  {
     return;
+  }
   //  HDS->AddAncestors(S1); -xpu100798 (is done before FDSCNX_Prepare)
   //  HDS->AddAncestors(S2); -xpu100798
 
@@ -769,7 +823,9 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(
     processNOG = false;
 #endif
   if (!processNOG)
+  {
     return;
+  }
 
   // xpu290998 : PRO15369 (f5,f20 only share geometric point (vertex))
   // end processing for all information on shapes is given.
@@ -779,13 +835,19 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(
   {
     TopoDS_Shape S = BDS.Shape(i);
     if (S.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
     bool hsd = HDS->HasSameDomain(S);
     if (!hsd)
+    {
       continue;
+    }
     int rkS = BDS.AncestorRank(S);
     if (rkS != 1)
+    {
       continue;
+    }
     const NCollection_List<TopoDS_Shape>&    lSsd = BDS.ShapeSameDomain(S);
     NCollection_List<TopoDS_Shape>::Iterator itsd(lSsd);
     for (; itsd.More(); itsd.Next())
@@ -793,14 +855,18 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(
       TopoDS_Shape Ssd   = itsd.Value(); // xpuxpu
       int          rkSsd = BDS.AncestorRank(Ssd);
       if (rkSsd == 1)
+      {
         continue;
+      }
 
       bool unfill = ::FUN_shareNOG(HDS, S, Ssd);
       unfill      = unfill && FUN_ds_sdm(BDS, S, Ssd) && FUN_ds_sdm(BDS, Ssd, S);
       if (unfill)
       {
         if (myPShapeClassifier == nullptr)
+        {
           myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+        }
         unfill = BREP_UnfillSameDomain(S, Ssd, HDS, *myPShapeClassifier);
       }
     }
@@ -848,7 +914,9 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
   myFacesFiller.SetPShapeClassifier(myPShapeClassifier);
 
   if (!ClearShapeSameDomain(aS1, aS2, HDS))
+  {
     return;
+  }
 
   const TopoDS_Shape&         S1   = aS1;
   const TopoDS_Shape&         S2   = aS2;
@@ -877,7 +945,9 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
     if (unfill)
     {
       if (myPShapeClassifier == nullptr)
+      {
         myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+      }
       // NYI : mettre en champs un ShapeClassifier commun a tous
       // NYI : les fillers
       TopAbs_State st1 = TopAbs_UNKNOWN, st2 = TopAbs_UNKNOWN;
@@ -890,7 +960,9 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
       {
         TopOpeBRepDS_DataStructure& BDS2 = HDS->ChangeDS();
         if (!lFF1.IsNull() && !lFF2.IsNull())
+        {
           BDS2.UnfillShapesSameDomain(lFF1, lFF2);
+        }
       }
     }
 
@@ -931,7 +1003,9 @@ void TopOpeBRep_DSFiller::CompleteDS2d(const occ::handle<TopOpeBRepDS_HDataStruc
   const TopoDS_Shape& S1 = myShapeIntersector2d.Shape(1);
   const TopoDS_Shape& S2 = myShapeIntersector2d.Shape(2);
   if (S1.IsNull() || S2.IsNull())
+  {
     return;
+  }
   HDS->AddAncestors(S1);
   HDS->AddAncestors(S2);
 
@@ -1014,16 +1088,22 @@ void TopOpeBRep_DSFiller::Insert1d(const TopoDS_Shape&                          
                                    const bool                                      orientFORWARD)
 {
   if (!CheckInsert(aS1, aS2))
+  {
     return;
+  }
 
   TopoDS_Shape S1 = aS1;
   TopoDS_Shape S2 = aS2;
   if (orientFORWARD)
   {
     if (S1.Orientation() == TopAbs_REVERSED)
+    {
       S1.Orientation(TopAbs_FORWARD);
+    }
     if (S2.Orientation() == TopAbs_REVERSED)
+    {
       S2.Orientation(TopAbs_FORWARD);
+    }
   }
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 
@@ -1067,27 +1147,33 @@ bool TopOpeBRep_DSFiller::ClearShapeSameDomain(const TopoDS_Shape&              
   TopOpeBRepDS_DataStructure& DS = HDS->ChangeDS();
   const bool                  b  = false;
   if (!CheckInsert(aS1, aS2))
+  {
     return b;
+  }
   TopExp_Explorer exp1(aS1, TopAbs_FACE), exp2(aS2, TopAbs_FACE);
   for (; exp1.More(); exp1.Next())
   {
     const TopoDS_Shape& Shape1 = exp1.Current();
     if (!HDS->HasShape(Shape1))
+    {
       if (HDS->HasSameDomain(Shape1))
       {
         NCollection_List<TopoDS_Shape>& los = DS.ChangeShapeSameDomain(Shape1);
         los.Clear();
       }
+    }
   }
   for (; exp2.More(); exp2.Next())
   {
     const TopoDS_Shape& Shape2 = exp2.Current();
     if (HDS->HasShape(Shape2))
+    {
       if (HDS->HasSameDomain(Shape2))
       {
         NCollection_List<TopoDS_Shape>& los = DS.ChangeShapeSameDomain(Shape2);
         los.Clear();
       }
+    }
   }
   return true;
 }

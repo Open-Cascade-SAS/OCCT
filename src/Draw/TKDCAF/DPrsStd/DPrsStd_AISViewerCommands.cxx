@@ -71,7 +71,9 @@ static int DPrsStd_AISRepaint(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label acces = D->GetData()->Root();
     TPrsStd_AISViewer::Update(acces);
     return 0;
@@ -87,7 +89,9 @@ void DPrsStd::AISViewerCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DPrsStd : standard presentation commands";
 

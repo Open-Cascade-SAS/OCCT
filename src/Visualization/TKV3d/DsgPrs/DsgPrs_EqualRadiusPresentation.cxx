@@ -78,7 +78,9 @@ void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& 
   {
     SmallDist = Dist * 0.05; // take 1/20 part of length;
     if (SmallDist <= Precision::Confusion())
+    {
       SmallDist = Dist;
+    }
     gp_Dir LineDir = gce_MakeDir(FirstCenter, SecondCenter);
     gp_Dir OrtDir  = Plane->Pln().Axis().Direction() ^ LineDir;
 
@@ -93,7 +95,9 @@ void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& 
 
     SmallDist = Rad * 0.05; // take 1/20 part of length;
     if (SmallDist <= Precision::Confusion())
+    {
       SmallDist = Rad;
+    }
 
     gp_Vec aVec(SmallDist, SmallDist, SmallDist);
 

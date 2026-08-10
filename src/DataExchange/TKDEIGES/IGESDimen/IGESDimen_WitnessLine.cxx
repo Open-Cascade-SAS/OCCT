@@ -32,7 +32,9 @@ void IGESDimen_WitnessLine::Init(const int                                      
                                  const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints)
 {
   if (dataPoints->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_WitnessLine : Init");
+  }
   theDatatype      = dataType;
   theZDisplacement = aDisp;
   theDataPoints    = dataPoints;
@@ -66,6 +68,8 @@ gp_Pnt IGESDimen_WitnessLine::TransformedPoint(const int Index) const
   gp_XY  point2d = theDataPoints->Value(Index);
   gp_XYZ point(point2d.X(), point2d.Y(), theZDisplacement);
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }

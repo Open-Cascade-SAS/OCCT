@@ -270,7 +270,9 @@ double EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2)
 
   gce_MakePln aMkPln(aPA1, aPA2, aP3);
   if (!aMkPln.IsDone())
+  {
     return Precision::Infinite();
+  }
 
   const gp_Pln& aPln = aMkPln.Value();
 
@@ -628,7 +630,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
         dir1 = dd1;
       }
       else
+      {
         dir1 = axec.Direction();
+      }
     }
     else if (std::abs(dist) < radius)
     {
@@ -1006,7 +1010,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& P, const gp_Sphere& S)
     pt1.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);
     dir1 = P.Axis().Direction();
     if (!P.Direct())
+    {
       dir1.Reverse();
+    }
     dir2   = P.Position().XDirection();
     param1 = std::sqrt(radius * radius - dist * dist);
   }
@@ -1198,7 +1204,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1, const gp_Cylinder& Cyl
         double R1_RmR = R1 / RmR;
 
         if (R1 < R2)
+        {
           R1_RmR = -R1_RmR;
+        }
 
         pt1.SetCoord(P1.X() + R1_RmR * (P2.X() - P1.X()),
                      P1.Y() + R1_RmR * (P2.Y() - P1.Y()),
@@ -2074,9 +2082,13 @@ void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph1, const gp_Sphere& Sph2, c
       nbint   = 1;
       double t2;
       if (R1 == Rmax)
+      {
         t2 = (R1 + (R2 + dO1O2)) * 0.5;
+      }
       else
+      {
         t2 = (-R1 + (dO1O2 - R2)) * 0.5;
+      }
 
       pt1.SetCoord(O1.X() + t2 * Dir.X(), O1.Y() + t2 * Dir.Y(), O1.Z() + t2 * Dir.Z());
     }
@@ -2672,13 +2684,17 @@ gp_Pnt IntAna_QuadQuadGeo::Point(const int n) const
       throw Standard_DomainError();
     }
     if (param1 == 0.0)
+    {
       return (pt1);
+    }
     return (pt2);
   }
   else if (typeres == IntAna_Point)
   {
     if (n == 1)
+    {
       return (pt1);
+    }
     return (pt2);
   }
 
@@ -2723,7 +2739,9 @@ gp_Circ IntAna_QuadQuadGeo::Circle(const int n) const
       throw Standard_DomainError();
     }
     if (param2 == 0.0)
+    {
       return (gp_Circ(DirToAx2(pt1, dir1), param1));
+    }
     return (gp_Circ(DirToAx2(pt2, dir2), param2));
   }
   else if ((n > nbint) || (n < 1) || (typeres != IntAna_Circle))

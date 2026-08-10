@@ -48,6 +48,8 @@ occ::handle<StepGeom_CartesianPoint> StepGeom_Polyline::PointsValue(const int nu
 int StepGeom_Polyline::NbPoints() const
 {
   if (points.IsNull())
+  {
     return 0;
+  }
   return points->Length();
 }

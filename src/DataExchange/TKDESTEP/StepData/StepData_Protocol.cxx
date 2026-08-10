@@ -47,20 +47,28 @@ occ::handle<Interface_Protocol> StepData_Protocol::Resource(const int /*num*/) c
 int StepData_Protocol::CaseNumber(const occ::handle<Standard_Transient>& obj) const
 {
   if (obj.IsNull())
+  {
     return 0;
+  }
   int num = TypeNumber(obj->DynamicType());
   if (num > 0)
+  {
     return num;
+  }
   occ::handle<StepData_Described> dc = occ::down_cast<StepData_Described>(obj);
   if (dc.IsNull())
+  {
     return 0;
+  }
   return DescrNumber(dc->Description());
 }
 
 int StepData_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(StepData_UndefinedEntity))
+  {
     return 1;
+  }
   return 0;
 }
 
@@ -87,7 +95,9 @@ occ::handle<Standard_Transient> StepData_Protocol::UnknownEntity() const
 bool StepData_Protocol::IsUnknownEntity(const occ::handle<Standard_Transient>& ent) const
 {
   if (!ent.IsNull())
+  {
     return ent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity));
+  }
   return false;
 }
 
@@ -96,7 +106,9 @@ bool StepData_Protocol::IsUnknownEntity(const occ::handle<Standard_Transient>& e
 int StepData_Protocol::DescrNumber(const occ::handle<StepData_EDescr>& adescr) const
 {
   if (thedscnum.IsBound(adescr))
+  {
     return thedscnum.Find(adescr);
+  }
   return 0;
 }
 
@@ -109,7 +121,9 @@ void StepData_Protocol::AddDescr(const occ::handle<StepData_EDescr>& adescr, con
   //  Otherwise what to do? Store according to the passed number in alpha-numeric form...
   //  (temporary solution)
   if (!sd.IsNull())
+  {
     thedscnam.Bind(sd->TypeName(), sd);
+  }
   char fonom[10];
   Sprintf(fonom, "%d", CN);
   thedscnam.Bind(fonom, adescr);
@@ -124,14 +138,20 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const int num) const
 {
   occ::handle<StepData_EDescr> dsc;
   if (thedscnam.IsEmpty())
+  {
     return dsc;
+  }
   char fonom[10];
   Sprintf(fonom, "%d", num);
   occ::handle<Standard_Transient> aTDsc;
   if (thedscnam.Find(fonom, aTDsc))
+  {
     dsc = occ::down_cast<StepData_EDescr>(aTDsc);
+  }
   else
+  {
     dsc.Nullify();
+  }
   return dsc;
 }
 
@@ -143,20 +163,28 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* const name,
   {
     occ::handle<Standard_Transient> aTSd;
     if (thedscnam.Find(name, aTSd))
+    {
       return occ::down_cast<StepData_EDescr>(aTSd);
+    }
   }
   if (!anylevel)
+  {
     return sd;
+  }
 
   int i, nb = NbResources();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<StepData_Protocol> sp = occ::down_cast<StepData_Protocol>(Resource(i));
     if (sp.IsNull())
+    {
       continue;
+    }
     sd = sp->Descr(name, anylevel);
     if (!sd.IsNull())
+    {
       return sd;
+    }
   }
   return sd;
 }
@@ -178,9 +206,13 @@ occ::handle<StepData_ECDescr> StepData_Protocol::ECDescr(
   {
     cd = occ::down_cast<StepData_ECDescr>(iter.Key());
     if (cd.IsNull())
+    {
       continue;
+    }
     if (cd->NbMembers() != nb)
+    {
       continue;
+    }
     bool ok = true;
     for (i = 1; i <= nb; i++)
     {
@@ -191,21 +223,29 @@ occ::handle<StepData_ECDescr> StepData_Protocol::ECDescr(
       }
     }
     if (ok)
+    {
       return cd;
+    }
   }
   cd.Nullify();
   if (!anylevel)
+  {
     return cd;
+  }
 
   nb = NbResources();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<StepData_Protocol> sp = occ::down_cast<StepData_Protocol>(Resource(i));
     if (sp.IsNull())
+    {
       continue;
+    }
     cd = sp->ECDescr(names, anylevel);
     if (!cd.IsNull())
+    {
       return cd;
+    }
   }
   return cd;
 }
@@ -223,20 +263,28 @@ occ::handle<StepData_PDescr> StepData_Protocol::PDescr(const char* const name,
   {
     occ::handle<Standard_Transient> aTSd;
     if (thepdescr.Find(name, aTSd))
+    {
       return occ::down_cast<StepData_PDescr>(aTSd);
+    }
   }
   if (!anylevel)
+  {
     return sd;
+  }
 
   int i, nb = NbResources();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<StepData_Protocol> sp = occ::down_cast<StepData_Protocol>(Resource(i));
     if (sp.IsNull())
+    {
       continue;
+    }
     sd = sp->PDescr(name, anylevel);
     if (!sd.IsNull())
+    {
       return sd;
+    }
   }
   return sd;
 }
@@ -254,20 +302,28 @@ occ::handle<StepData_EDescr> StepData_Protocol::BasicDescr(const char* const nam
   {
     occ::handle<Standard_Transient> aTSd;
     if (thedscbas.Find(name, aTSd))
+    {
       return occ::down_cast<StepData_EDescr>(aTSd);
+    }
   }
   if (!anylevel)
+  {
     return sd;
+  }
 
   int i, nb = NbResources();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<StepData_Protocol> sp = occ::down_cast<StepData_Protocol>(Resource(i));
     if (sp.IsNull())
+    {
       continue;
+    }
     sd = sp->BasicDescr(name, anylevel);
     if (!sd.IsNull())
+    {
       return sd;
+    }
   }
   return sd;
 }

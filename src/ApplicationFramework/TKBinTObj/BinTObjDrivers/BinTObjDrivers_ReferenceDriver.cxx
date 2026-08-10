@@ -50,19 +50,25 @@ bool BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&       the
   TDF_Label             aMasterLabel;
   occ::handle<TDF_Data> aDS = theTarget->Label().Data();
   if (!theSource.GetLabel(aDS, aMasterLabel))
+  {
     return false;
+  }
 
   // isSameDoc flag
   bool isSameDoc = false;
   if (!(theSource >> isSameDoc))
+  {
     return false;
+  }
 
   // DS for referred label
   if (!isSameDoc)
   {
     TCollection_AsciiString aName;
     if (!(theSource >> aName))
+    {
       return false;
+    }
     occ::handle<TObj_Model> aModel = TObj_Assistant::FindModel(aName.ToCString());
     if (aModel.IsNull())
     {
@@ -78,7 +84,9 @@ bool BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&       the
   // referred label
   TDF_Label aLabel;
   if (!theSource.GetLabel(aDS, aLabel))
+  {
     return false;
+  }
 
   // set reference attribute fields
   occ::handle<TObj_TReference> aTarget = occ::down_cast<TObj_TReference>(theTarget);
@@ -98,7 +106,9 @@ void BinTObjDrivers_ReferenceDriver::Paste(
 
   occ::handle<TObj_Object> aLObject = aSource->Get();
   if (aLObject.IsNull())
+  {
     return;
+  }
 
   // labels
   TDF_Label aLabel       = aLObject->GetLabel();

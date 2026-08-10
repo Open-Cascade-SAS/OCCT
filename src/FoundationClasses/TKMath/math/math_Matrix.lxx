@@ -695,10 +695,6 @@ inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& 
 
 inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
 {
-  Standard_DimensionError_Raise_if(
-    (RowNumber() != Other.RowNumber()) || (ColNumber() != Other.ColNumber()),
-    "math_Matrix::Initialized() - input matrix has different dimensions");
-
   (Other.Array).Copy(Array);
   return *this;
 }

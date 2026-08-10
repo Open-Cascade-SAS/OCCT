@@ -53,98 +53,138 @@ void IGESSolid_ToolBlock::ReadOwnParams(const occ::handle<IGESSolid_Block>& ent,
     // st = PR.ReadReal(PR.Current(), "Corner Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (X)", tempreal))
+    {
       tempCorner.SetX(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Corner Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (Y)", tempreal))
+    {
       tempCorner.SetY(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Corner Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Corner Point (Z)", tempreal))
+    {
       tempCorner.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCorner.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal))
+    {
       tempXAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetX(1.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal))
+    {
       tempXAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal))
+    {
       tempXAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal))
+    {
       tempZAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal))
+    {
       tempZAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal))
+    {
       tempZAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, tempCorner, tempXAxis, tempZAxis);
   double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
+  {
     PR.AddWarning("XAxis poorly unitary, normalized");
+  }
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
+  {
     PR.AddWarning("ZAxis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolBlock::WriteOwnParams(const occ::handle<IGESSolid_Block>& ent,
@@ -198,9 +238,13 @@ void IGESSolid_ToolBlock::OwnCheck(const occ::handle<IGESSolid_Block>& ent,
   double eps    = 1.E-04;
   double prosca = ent->XAxis() * ent->ZAxis();
   if (prosca < -eps || prosca > eps)
+  {
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
+  }
   if (ent->Size().X() <= 0. || ent->Size().Y() <= 0. || ent->Size().Z() <= 0.)
+  {
     ach->AddFail("Size : Not positive lengths");
+  }
 }
 
 void IGESSolid_ToolBlock::OwnDump(const occ::handle<IGESSolid_Block>& ent,
@@ -217,5 +261,5 @@ void IGESSolid_ToolBlock::OwnDump(const occ::handle<IGESSolid_Block>& ent,
   IGESData_DumpXYZL(S, level, ent->XAxis(), ent->VectorLocation());
   S << "\nZAxis  : ";
   IGESData_DumpXYZL(S, level, ent->ZAxis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

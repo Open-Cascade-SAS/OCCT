@@ -33,7 +33,9 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association"))
+  {
     return;
+  }
 
   occ::handle<TCollection_HAsciiString> aName;
   theData->ReadString(theNum, 1, "name", theAch, aName);

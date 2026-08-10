@@ -36,7 +36,9 @@ void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "externally_defined_curve_font"))
+  {
     return;
+  }
 
   // Inherited fields of ExternallyDefinedItem
 

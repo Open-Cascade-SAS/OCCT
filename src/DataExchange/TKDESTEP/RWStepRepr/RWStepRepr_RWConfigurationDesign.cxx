@@ -37,7 +37,9 @@ void RWStepRepr_RWConfigurationDesign::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "configuration_design"))
+  {
     return;
+  }
 
   // Own fields of ConfigurationDesign
 

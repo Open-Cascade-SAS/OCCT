@@ -210,9 +210,13 @@ void OSD_Chronometer::Stop()
   {
     double Curr_user, Curr_sys;
     if (myIsThreadOnly)
+    {
       GetThreadCPU(Curr_user, Curr_sys);
+    }
     else
+    {
       GetProcessCPU(Curr_user, Curr_sys);
+    }
 
     myCumulCpuUser += Curr_user - myStartCpuUser;
     myCumulCpuSys += Curr_sys - myStartCpuSys;
@@ -228,9 +232,13 @@ void OSD_Chronometer::Start()
   if (myIsStopped)
   {
     if (myIsThreadOnly)
+    {
       GetThreadCPU(myStartCpuUser, myStartCpuSys);
+    }
     else
+    {
       GetProcessCPU(myStartCpuUser, myStartCpuSys);
+    }
 
     myIsStopped = false;
   }
@@ -268,9 +276,13 @@ void OSD_Chronometer::Show(double& theUserSec, double& theSystemSec) const
 
   double aCurrUser, aCurrSys;
   if (myIsThreadOnly)
+  {
     GetThreadCPU(aCurrUser, aCurrSys);
+  }
   else
+  {
     GetProcessCPU(aCurrUser, aCurrSys);
+  }
 
   theUserSec += aCurrUser - myStartCpuUser;
   theSystemSec += aCurrSys - myStartCpuSys;

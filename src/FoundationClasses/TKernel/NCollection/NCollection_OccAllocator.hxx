@@ -136,7 +136,9 @@ public:
   //! Frees previously allocated memory.
   void deallocate(pointer thePnt, size_type)
   {
-    myAllocator.IsNull() ? Standard::Free(thePnt) : myAllocator->Free(thePnt);
+    typedef typename std::remove_const<value_type>::type non_const_value_type;
+    non_const_value_type* aPnt = const_cast<non_const_value_type*>(thePnt);
+    myAllocator.IsNull() ? Standard::Free(aPnt) : myAllocator->Free(aPnt);
   }
 
   //! Constructs an object.
@@ -148,7 +150,12 @@ public:
   }
 
   //! Returns an object address.
-  pointer address(reference theItem) const noexcept { return &theItem; }
+  template <typename Type = value_type>
+  typename std::enable_if<!std::is_const<Type>::value, pointer>::type address(
+    reference theItem) const noexcept
+  {
+    return &theItem;
+  }
 
   //! Returns an object address.
   const_pointer address(const_reference theItem) const noexcept { return &theItem; }

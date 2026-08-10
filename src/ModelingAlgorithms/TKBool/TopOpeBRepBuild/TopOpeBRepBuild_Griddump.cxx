@@ -320,7 +320,7 @@ void TopOpeBRepBuild_Builder::GdumpSAMDOM(const NCollection_List<TopoDS_Shape>& 
                                           void* const                           astr) const
 {
   TopOpeBRepDS_Dumper Dumper(myDataStructure);
-  std::cout << Dumper.SPrintShapeRefOri(L, (char*)astr) << std::endl;
+  std::cout << Dumper.SPrintShapeRefOri(L, (char*)astr) << '\n';
   std::cout.flush();
 }
 

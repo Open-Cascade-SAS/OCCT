@@ -162,7 +162,9 @@ bool XmlMDF::FromTo(const XmlObjMgt_Element&                theElement,
       int subcount = ReadSubTree(anElem, aRootLab, theRelocTable, aDriverMap, theRange);
       // check for error
       if (subcount < 0)
+      {
         return false;
+      }
 
       (void)count; // unused but set for debug
       count += subcount;
@@ -214,7 +216,9 @@ int XmlMDF::ReadSubTree(
         int subcount = ReadSubTree(anElem, aLab, theRelocTable, theDriverMap, aPS.Next());
         // check for error
         if (subcount == -1)
+        {
           return -1;
+        }
         count += subcount;
       }
       else
@@ -252,9 +256,13 @@ int XmlMDF::ReadSubTree(
           occ::handle<TDF_Attribute> tAtt;
           bool                       isBound = theRelocTable.IsBound(anID);
           if (isBound)
+          {
             tAtt = occ::down_cast<TDF_Attribute>(theRelocTable.Find(anID));
+          }
           else
+          {
             tAtt = driver->NewEmpty();
+          }
 
           if (tAtt->Label().IsNull())
           {
@@ -274,10 +282,12 @@ int XmlMDF::ReadSubTree(
             }
           }
           else
+          {
             driver->myMessageDriver->Send(TCollection_ExtendedString("XmlDriver warning: ")
                                             + "attempt to attach attribute " + aName
                                             + " to a second label",
                                           Message_Warning);
+          }
 
           if (!driver->Paste(pAtt, tAtt, theRelocTable))
           {
@@ -287,7 +297,9 @@ int XmlMDF::ReadSubTree(
                                           Message_Warning);
           }
           else if (!isBound)
+          {
             theRelocTable.Bind(anID, tAtt);
+          }
         }
 #ifdef OCCT_DEBUG
         else
@@ -304,7 +316,9 @@ int XmlMDF::ReadSubTree(
     anElem             = (const XmlObjMgt_Element&)theNode1;
 
     if (!aPS.More())
+    {
       return -1;
+    }
   }
 
   // AfterRetrieval

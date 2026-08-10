@@ -23,27 +23,37 @@
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBezier::Import() const
 {
   if (myPoles.IsNull())
+  {
     return nullptr;
+  }
 
   if (myRational)
   {
     if (myWeights.IsNull())
+    {
       return nullptr;
+    }
     return new Geom2d_BezierCurve(*myPoles->Array(), *myWeights->Array());
   }
   else
+  {
     return new Geom2d_BezierCurve(*myPoles->Array());
+  }
 }
 
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBSpline::Import() const
 {
   if (myPoles.IsNull() || myKnots.IsNull() || myMultiplicities.IsNull())
+  {
     return nullptr;
+  }
 
   if (myRational)
   {
     if (myWeights.IsNull())
+    {
       return nullptr;
+    }
 
     return new Geom2d_BSplineCurve(*myPoles->Array(),
                                    *myWeights->Array(),
@@ -53,17 +63,21 @@ occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBSpline::Import() const
                                    myPeriodic);
   }
   else
+  {
     return new Geom2d_BSplineCurve(*myPoles->Array(),
                                    *myKnots->Array(),
                                    *myMultiplicities->Array(),
                                    mySpineDegree,
                                    myPeriodic);
+  }
 }
 
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pTrimmed::Import() const
 {
   if (myBasisCurve.IsNull())
+  {
     return nullptr;
+  }
 
   return new Geom2d_TrimmedCurve(myBasisCurve->Import(), myFirstU, myLastU);
 }
@@ -71,7 +85,9 @@ occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pTrimmed::Import() const
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pOffset::Import() const
 {
   if (myBasisCurve.IsNull())
+  {
     return nullptr;
+  }
 
   return new Geom2d_OffsetCurve(myBasisCurve->Import(), myOffsetValue);
 }
@@ -102,7 +118,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Line> aPT = new Line;
@@ -150,7 +168,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Circle> aPT = new Circle;
@@ -188,7 +208,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Ellipse> aPT = new Ellipse;
@@ -226,7 +248,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Hyperbola> aPT = new Hyperbola;
@@ -264,7 +288,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Parabola> aPT = new Parabola;
@@ -286,7 +312,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Bezier> aPBC  = new Bezier;
@@ -318,7 +346,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<BSpline> aPBSC  = new BSpline;
@@ -356,7 +386,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Trimmed> aPTC  = new Trimmed;
@@ -382,7 +414,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Offset> aPOC  = new Offset;

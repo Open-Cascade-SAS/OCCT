@@ -38,7 +38,9 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep(
 
   // --- Instance of plex component ConversionBasedUnit ---
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
   // --- field : name ---
   occ::handle<TCollection_HAsciiString> aName;
   // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -57,13 +59,17 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep(
 
   // --- Instance of plex component MassUnit ---
   if (!data->CheckNbParams(num, 0, ach, "Mass_unit"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
   // --- field : dimensions ---
   occ::handle<StepBasic_DimensionalExponents> aDimensions;
   // szv#4:S4163:12Mar99 `bool stat3 =` not needed

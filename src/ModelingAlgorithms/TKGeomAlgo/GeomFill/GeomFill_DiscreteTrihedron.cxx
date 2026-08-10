@@ -47,7 +47,9 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_DiscreteTrihedron::Copy() const
 {
   occ::handle<GeomFill_DiscreteTrihedron> copy = new (GeomFill_DiscreteTrihedron)();
   if (!myCurve.IsNull())
+  {
     copy->SetCurve(myCurve);
+  }
   return copy;
 }
 
@@ -119,7 +121,9 @@ void GeomFill_DiscreteTrihedron::Init()
     {
       double subdelta = (myKnots->Value(i + 1) - myKnots->Value(i)) / NbSamples;
       if (subdelta < Precision::PConfusion())
+      {
         subdelta = myKnots->Value(i + 1) - myKnots->Value(i);
+      }
       SubPnt = myTrimmed->Value(Param + subdelta);
       Tangent.SetXYZ(SubPnt.XYZ() - Pnt.XYZ());
     }
@@ -139,14 +143,18 @@ void GeomFill_DiscreteTrihedron::Init()
       if (AxisOfRotation.Magnitude() <= gp::Resolution()) // tangents are equal or opposite
       {
         double ScalarProduct = LastTangent * Tangent;
-        if (ScalarProduct > 0.) // tangents are equal
+        if (ScalarProduct > 0.)
+        { // tangents are equal
           myTrihedrons->Append(LastAxis);
+        }
         else // tangents are opposite
         {
           double NewParam = (myKnots->Value(i - 1) + myKnots->Value(i)) / 2.;
           if (NewParam - myKnots->Value(i - 1) < gp::Resolution())
+          {
             throw Standard_ConstructionError(
               "GeomFill_DiscreteTrihedron : impassable singularities on path curve");
+          }
           myKnots->InsertBefore(i, NewParam);
           i--;
         }
@@ -194,21 +202,31 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
     {
       i = (I1 + I2) / 2;
       if (Param <= myKnots->Value(i))
+      {
         I2 = i;
+      }
       else
+      {
         I1 = i;
+      }
       if (I2 - I1 <= 1)
+      {
         break;
+      }
     }
     Index = I1;
     if (std::abs(Param - myKnots->Value(I2)) < TolPar)
+    {
       Index = I2;
+    }
 
     double PrevParam = myKnots->Value(Index);
     gp_Ax2 PrevAxis  = myTrihedrons->Value(Index);
     gp_Ax2 theAxis;
     if (std::abs(Param - PrevParam) < TolPar)
+    {
       theAxis = PrevAxis;
+    }
     else //<Param> is between knots
     {
       myTrimmed->D1(Param, myPoint, Tangent);
@@ -217,7 +235,9 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
       {
         double subdelta = (myKnots->Value(Index + 1) - Param) / NbSamples;
         if (subdelta < Precision::PConfusion())
+        {
           subdelta = myKnots->Value(Index + 1) - Param;
+        }
         gp_Pnt SubPnt = myTrimmed->Value(Param + subdelta);
         Tangent.SetXYZ(SubPnt.XYZ() - myPoint.XYZ());
       }
@@ -339,7 +359,9 @@ void GeomFill_DiscreteTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
+    {
       Param = myTrimmed->LastParameter();
+    }
     D0(Param, T, N, BN);
     ATangent += T;
     ANormal += N;

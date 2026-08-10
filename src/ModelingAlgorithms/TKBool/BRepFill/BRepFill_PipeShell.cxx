@@ -112,7 +112,9 @@ static bool ComputeSection(const TopoDS_Wire& W1,
   CW.SetPercent(0.1);
   CW.Perform();
   if (!CW.IsDone())
+  {
     throw StdFail_NotDone("Uncompatible wires");
+  }
   NCollection_Sequence<gp_Trsf>   EmptyTrsfs;
   occ::handle<BRepFill_NSections> SL = new (BRepFill_NSections)(CW.Shape(), EmptyTrsfs, SR, 0., 1.);
   double                          US = p1 / (p1 + p2);
@@ -133,9 +135,13 @@ static void PerformTransition(const BRepFill_TransitionStyle     Mode,
   {
     Loc->DeleteTransform();
     if (Mode == BRepFill_Modified)
+    {
       Loc->TransformInG0Law();
+    }
     else
+    {
       Loc->TransformInCompatibleLaw(angmin);
+    }
   }
 }
 
@@ -152,7 +158,9 @@ static bool PerformPlan(TopoDS_Shape& S)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(explo.Current());
     if (!BRep_Tool::Degenerated(anEdge))
+    {
       isDegen = false;
+    }
   }
   if (isDegen)
   {
@@ -174,32 +182,41 @@ static bool PerformPlan(TopoDS_Shape& S)
   return Ok;
 }
 
-//=============================================================================
-// function :  IsSameOriented
-// purpose  : Checks whether aFace is oriented to the same side as aShell or not
-//=============================================================================
+//=================================================================================================
 
-static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell)
+static bool IsSameOriented(const TopoDS_Shape& theFace, const TopoDS_Shape& theShell)
 {
-  TopExp_Explorer    Explo(aFace, TopAbs_EDGE);
-  TopoDS_Shape       anEdge = Explo.Current();
-  TopAbs_Orientation Or1    = anEdge.Orientation();
-
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    EFmap;
-  TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, EFmap);
+    anEdgeFaceMap;
+  TopExp::MapShapesAndAncestors(theShell, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
 
-  const TopoDS_Shape& AdjacentFace = EFmap.FindFromKey(anEdge).First();
-  TopoDS_Shape        theEdge;
-  for (Explo.Init(AdjacentFace, TopAbs_EDGE); Explo.More(); Explo.Next())
+  for (TopExp_Explorer aFaceExplorer(theFace, TopAbs_EDGE); aFaceExplorer.More();
+       aFaceExplorer.Next())
   {
-    theEdge = Explo.Current();
-    if (theEdge.IsSame(anEdge))
-      break;
+    const TopoDS_Shape& aCurrentEdge = aFaceExplorer.Current();
+    if (!anEdgeFaceMap.Contains(aCurrentEdge))
+    {
+      continue;
+    }
+
+    const TopAbs_Orientation aCurrentEdgeOrientation = aCurrentEdge.Orientation();
+    const TopoDS_Shape&      anAdjFace = anEdgeFaceMap.FindFromKey(aCurrentEdge).First();
+    for (TopExp_Explorer anAdjFaceExplorer(anAdjFace, TopAbs_EDGE); anAdjFaceExplorer.More();
+         anAdjFaceExplorer.Next())
+    {
+      // IsSame compares TShape and Location only; orientation may differ.
+      const TopoDS_Shape& anAdjEdge = anAdjFaceExplorer.Current();
+      if (anAdjEdge.IsSame(aCurrentEdge))
+      {
+        return aCurrentEdgeOrientation != anAdjEdge.Orientation();
+      }
+    }
   }
 
-  TopAbs_Orientation Or2 = theEdge.Orientation();
-  return Or1 != Or2;
+  // No shared edge found. Orientation cannot be determined reliably and this
+  // should not happen for valid input. Preserve the current face orientation
+  // instead of reporting an opposite orientation and forcing a reversal.
+  return true;
 }
 
 //=================================================================================================
@@ -227,7 +244,9 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
     TopoDS_Vertex Vf, Vl;
     TopExp::Vertices(mySpine, Vf, Vl);
     if (Vf.IsSame(Vl))
+    {
       mySpine.Closed(true);
+    }
   }
 }
 
@@ -331,7 +350,9 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
   bool SpClose = mySpine.Closed(), GuideClose = AuxiliarySpine.Closed();
 
   if (KeepContact == BRepFill_ContactOnBorder)
+  {
     myIsAutomaticLaw = true;
+  }
 
   if (!SpClose && !GuideClose)
   {
@@ -344,7 +365,9 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
     CW.SetPercent(0.1);
     CW.Perform();
     if (!CW.IsDone())
+    {
       throw StdFail_NotDone("Uncompatible wires");
+    }
     TheGuide = TopoDS::Wire(CW.Shape().Value(2));
   }
   else if (GuideClose)
@@ -378,9 +401,13 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
   if (CurvilinearEquivalence)
   { // trihedron by curvilinear reduced abscissa
     if (KeepContact == BRepFill_Contact || KeepContact == BRepFill_ContactOnBorder)
+    {
       myTrihedron = GeomFill_IsGuideACWithContact; // with rotation
+    }
     else
+    {
       myTrihedron = GeomFill_IsGuideAC; // without rotation
+    }
 
     occ::handle<GeomFill_GuideTrihedronAC> TLaw = new (GeomFill_GuideTrihedronAC)(Guide);
     occ::handle<GeomFill_LocationGuide>    Loc  = new (GeomFill_LocationGuide)(TLaw);
@@ -389,9 +416,13 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
   else
   { // trihedron by plane
     if (KeepContact == BRepFill_Contact || KeepContact == BRepFill_ContactOnBorder)
+    {
       myTrihedron = GeomFill_IsGuidePlanWithContact; // with rotation
+    }
     else
+    {
       myTrihedron = GeomFill_IsGuidePlan; // without rotation
+    }
 
     occ::handle<GeomFill_GuideTrihedronPlan> TLaw = new (GeomFill_GuideTrihedronPlan)(Guide);
     occ::handle<GeomFill_LocationGuide>      Loc  = new (GeomFill_LocationGuide)(TLaw);
@@ -567,7 +598,9 @@ void BRepFill_PipeShell::DeleteProfile(const TopoDS_Shape& Profile)
   }
 
   if (Trouve)
+  {
     mySection.Nullify();
+  }
   ResetLoc();
 }
 
@@ -605,7 +638,9 @@ void BRepFill_PipeShell::SetTransition(const BRepFill_TransitionStyle Mode,
                                        const double                   Angmax)
 {
   if (myTransition != Mode)
+  {
     mySection.Nullify(); // It is required to relocalize the sections.
+  }
   myTransition = Mode;
   angmin       = Angmin;
   angmax       = Angmax;
@@ -630,7 +665,9 @@ void BRepFill_PipeShell::Simulate(const int N, NCollection_List<TopoDS_Shape>& L
   myLocation->CurvilinearBounds(NbL, First, Length);
   Delta = Length;
   if (N > 1)
+  {
     Delta /= (N - 1);
+  }
 
   myLocation->CurvilinearBounds(1, First, Last); // Initiation of Last
   for (U = 0.0, ii = 1; !Finis; U += Delta)
@@ -643,11 +680,17 @@ void BRepFill_PipeShell::Simulate(const int N, NCollection_List<TopoDS_Shape>& L
     else
     {
       if (ii < NbL)
+      {
         myLocation->CurvilinearBounds(NbL, First, Last);
+      }
       if (U > Last)
+      {
         U = (Last + First) / 2; // The edge is not skipped
+      }
       if (U > First)
+      {
         ii++;
+      }
     }
     US = FirstS + (U / Length) * DeltaS;
     // Calcul d'une section
@@ -684,7 +727,9 @@ bool BRepFill_PipeShell::Build()
   if (mySection->IsVClosed() && myLocation->IsClosed())
   {
     if (myLocation->IsG1(0) >= 0)
+    {
       myLast = myFirst;
+    }
     else
     {
       myFirst.Nullify();
@@ -703,7 +748,9 @@ bool BRepFill_PipeShell::Build()
     {
       BRepBuilderAPI_Copy copy(myLast);
       if (copy.IsDone())
+      {
         myLast = copy.Shape();
+      }
     }
     // eap 5 Jun 2002 occ332, end modif
   }
@@ -717,7 +764,9 @@ bool BRepFill_PipeShell::Build()
 
   GeomAbs_Shape theContinuity = GeomAbs_C2;
   if (myTrihedron == GeomFill_IsDiscreteTrihedron)
+  {
     theContinuity = GeomAbs_C0;
+  }
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Dummy;
   NCollection_DataMap<TopoDS_Shape,
                       occ::handle<NCollection_HArray2<TopoDS_Shape>>,
@@ -771,7 +820,9 @@ bool BRepFill_PipeShell::Build()
       }
 
       if (DegenFirst && DegenLast)
+      {
         myShape.Closed(true);
+      }
     }
 
     if (myIsBuildHistory)
@@ -786,7 +837,9 @@ bool BRepFill_PipeShell::Build()
     B.MakeShell(Sh);
     myShape = Sh; // Nullify
     if (myStatus == GeomFill_PipeOk)
+    {
       myStatus = GeomFill_PipeNotOk;
+    }
   }
   return Ok;
 }
@@ -796,7 +849,9 @@ bool BRepFill_PipeShell::Build()
 bool BRepFill_PipeShell::MakeSolid()
 {
   if (myShape.IsNull())
+  {
     throw StdFail_NotDone("PipeShell is not built");
+  }
   bool         B = myShape.Closed();
   BRep_Builder BS;
 
@@ -816,14 +871,22 @@ bool BRepFill_PipeShell::MakeSolid()
         if (B)
         {
           if (!myFirst.IsNull() && !IsSameOriented(myFirst, myShape))
+          {
             myFirst.Reverse();
+          }
           if (!myLast.IsNull() && !IsSameOriented(myLast, myShape))
+          {
             myLast.Reverse();
+          }
 
           if (!myFirst.IsNull())
+          {
             BS.Add(myShape, TopoDS::Face(myFirst));
+          }
           if (!myLast.IsNull())
+          {
             BS.Add(myShape, TopoDS::Face(myLast));
+          }
 
           myShape.Closed(true);
         }
@@ -905,9 +968,13 @@ void BRepFill_PipeShell::Prepare()
 
   TopoDS_Wire theSect;
   if (!IsReady())
+  {
     throw StdFail_NotDone("PipeShell");
+  }
   if (!myLocation.IsNull() && !mySection.IsNull())
+  {
     return; // It is ready
+  }
 
   // Check set of section for right configuration of punctual sections
   int             i;
@@ -921,19 +988,25 @@ void BRepFill_PipeShell::Prepare()
       wdeg                      = wdeg && (BRep_Tool::Degenerated(anEdge));
     }
     if (wdeg)
+    {
       throw Standard_Failure("Wrong usage of punctual sections");
+    }
   }
   if (mySeq.Length() <= 2)
   {
     bool wdeg = true;
     for (i = 1; i <= mySeq.Length(); i++)
+    {
       for (iter.Initialize(mySeq(i).Wire()); iter.More(); iter.Next())
       {
         const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
         wdeg                      = wdeg && (BRep_Tool::Degenerated(anEdge));
       }
+    }
     if (wdeg)
+    {
       throw Standard_Failure("Wrong usage of punctual sections");
+    }
   }
 
   // Construction of the law of location
@@ -964,10 +1037,14 @@ void BRepFill_PipeShell::Prepare()
     Place(mySeq(1), theSect, aTrsf, p1);
     TopoDS_Wire aLocalShape = theSect;
     if (mySeq(1).IsLaw())
+    {
       mySection = new BRepFill_ShapeLaw(aLocalShape, myLaw);
-    //      mySection = new (BRepFill_ShapeLaw) (TopoDS_Wire(theSect), myLaw);
+      //      mySection = new (BRepFill_ShapeLaw) (TopoDS_Wire(theSect), myLaw);
+    }
     else
+    {
       mySection = new BRepFill_ShapeLaw(aLocalShape);
+    }
     // mySection = new (BRepFill_ShapeLaw) (TopoDS::Wire(theSect));
 
     WSeq.Append(theSect);
@@ -1003,9 +1080,13 @@ void BRepFill_PipeShell::Prepare()
       WSeq.Append(theSect);
       Transformations.Append(aTrsf);
       if (param == V1)
+      {
         ideb = iseq;
+      }
       if (param == V2)
+      {
         ifin = iseq;
+      }
     }
 
     // looping sections ?
@@ -1079,12 +1160,16 @@ void BRepFill_PipeShell::Prepare()
     }
     // Fill the array of real indices of sections
     for (int ii = 1; ii <= mySeq.Length(); ii++)
+    {
       for (int jj = 1; jj <= IndSec.Length(); jj++)
+      {
         if (IndSec(jj) == ii)
         {
           myIndOfSec.Append(jj);
           break;
         }
+      }
+    }
 
     //  Calculate work sections
     NCollection_Sequence<TopoDS_Shape> WorkingSections;
@@ -1143,7 +1228,9 @@ void BRepFill_PipeShell::Prepare()
 
   myStatus = myLocation->GetStatus();
   if (!mySection->IsDone())
+  {
     myStatus = GeomFill_PipeNotOk;
+  }
 }
 
 //=======================================================================
@@ -1215,13 +1302,19 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       NCollection_List<TopoDS_Shape>* Elist =
         myGenMap.Bound(Section, NCollection_List<TopoDS_Shape>());
       for (int i = 1; i <= anUEdges->UpperRow(); i++)
+      {
         for (int j = 1; j <= anUEdges->UpperCol(); j++)
+        {
           Elist->Append(anUEdges->Value(i, j));
+        }
+      }
 
       continue;
     }
     else
+    {
       aSection = TopoDS::Wire(Section);
+    }
     // Take the real index of section on the path
     int                    IndOfW  = myIndOfSec(indw);
     const TopoDS_Wire&     theWire = TopoDS::Wire(WSeq(IndOfW));
@@ -1231,7 +1324,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       const TopoDS_Edge& anOriginalEdge = TopoDS::Edge(wexp_sec.Current());
       TopoDS_Edge        anEdge         = TopoDS::Edge(mySeq(indw).ModifiedShape(anOriginalEdge));
       if (BRep_Tool::Degenerated(anEdge))
+      {
         continue;
+      }
 
       TopoDS_Shell aShell;
       BB.MakeShell(aShell);
@@ -1247,9 +1342,13 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       {
         theEdge = TopoDS::Edge(wexp.Current());
         if (BRep_Tool::Degenerated(anEdge))
+        {
           continue;
+        }
         if (i == inde)
+        {
           break;
+        }
         i++;
       }
 
@@ -1270,7 +1369,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         TopoDS_Shape    aTape = theSweep.Tape(anIndE);
         TopoDS_Iterator itsh(aTape);
         for (; itsh.More(); itsh.Next())
+        {
           BB.Add(aShell, itsh.Value());
+        }
       }
 
       // Processing of vertices of <anEdge>
@@ -1288,9 +1389,13 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       if (mySection->IsUClosed())
       {
         if (UIndex[0] > mySection->NbLaw())
+        {
           UIndex[0] = 1;
+        }
         if (UIndex[1] > mySection->NbLaw())
+        {
           UIndex[1] = 1;
+        }
       }
       // if (SignOfAnEdge * SignOfANewEdge == -1)
       if (SignOfAnEdge == -1 || SignOfANewEdge == -1)
@@ -1308,14 +1413,18 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       for (int kk = 0; kk < 2; kk++)
       {
         if (myGenMap.IsBound(aVertex[kk]))
+        {
           continue;
+        }
         if (IndWireMap.IsBound(UIndex[kk]))
         {
           NCollection_List<TopoDS_Shape>* Elist =
             myGenMap.Bound(aVertex[kk], NCollection_List<TopoDS_Shape>());
 
           for (itw.Initialize(IndWireMap(UIndex[kk])); itw.More(); itw.Next())
+          {
             Elist->Append(itw.Value());
+          }
 
           continue;
         }
@@ -1324,7 +1433,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         NCollection_Sequence<TopoDS_Shape> SeqEdges;
         int                                jj;
         for (jj = 1; jj <= anUEdges->UpperCol(); jj++)
+        {
           SeqEdges.Append(anUEdges->Value(UIndex[kk], jj));
+        }
 
         // Assemble the wire ("rail" along the path)
         // checking for possible holes
@@ -1335,7 +1446,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         BB.MakeWire(aWire);
         const TopoDS_Edge& FirstEdge = TopoDS::Edge(SeqEdges(1));
         if (FirstEdge.IsNull())
+        {
           continue;
+        }
         BB.Add(aWire, FirstEdge);
         TopoDS_Vertex FirstVertex, CurVertex;
         TopExp::Vertices(FirstEdge, FirstVertex, CurVertex);
@@ -1346,7 +1459,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
           TopoDS_Vertex Vfirst, Vlast;
           TopExp::Vertices(CurEdge, Vfirst, Vlast);
           if (CurVertex.IsSame(Vfirst))
+          {
             CurVertex = Vlast;
+          }
           else // a hole
           {
             const NCollection_List<TopoDS_Shape>&    Elist = VEmap.FindFromKey(Vfirst);
@@ -1355,7 +1470,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
             {
               const TopoDS_Edge& Candidate = TopoDS::Edge(itl.Value());
               if (Candidate.IsSame(CurEdge))
+              {
                 continue;
+              }
               TopoDS_Vertex V1, V2;
               TopExp::Vertices(Candidate, V1, V2);
               if (V1.IsSame(CurVertex) || V2.IsSame(CurVertex))
@@ -1377,7 +1494,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
           {
             const TopoDS_Edge& Candidate = TopoDS::Edge(itl.Value());
             if (Candidate.IsSame(CurEdge))
+            {
               continue;
+            }
             TopoDS_Vertex V1, V2;
             TopExp::Vertices(Candidate, V1, V2);
             if (V1.IsSame(FirstVertex) || V2.IsSame(FirstVertex))
@@ -1392,7 +1511,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
           myGenMap.Bound(aVertex[kk], NCollection_List<TopoDS_Shape>());
 
         for (itw.Initialize(aWire); itw.More(); itw.Next())
+        {
           Elist->Append(itw.Value());
+        }
 
         // Save already built wire with its index
         IndWireMap.Bind(UIndex[kk], aWire);
@@ -1403,7 +1524,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         myGenMap.Bound(anOriginalEdge, NCollection_List<TopoDS_Shape>());
       TopoDS_Iterator itsh(aShell);
       for (; itsh.More(); itsh.Next())
+      {
         Flist->Append(itsh.Value());
+      }
       ////////////////////////
 
       inde++;
@@ -1420,7 +1543,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
   for (;;)
   {
     if (!wexp.More())
+    {
       ToExit = true;
+    }
 
     inde++;
 
@@ -1435,7 +1560,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       {
         const TopoDS_Shape& aFace = aFaces->Value(i, inde);
         if (aFace.ShapeType() == TopAbs_FACE)
+        {
           Flist->Append(aFace);
+        }
       }
     }
 
@@ -1450,7 +1577,9 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         continue;
       }
       if (aVshape.ShapeType() == TopAbs_EDGE || aVshape.ShapeType() == TopAbs_FACE)
+      {
         ListVshapes->Append(aVshape);
+      }
       else
       {
         TopoDS_Iterator itvshape(aVshape);
@@ -1458,22 +1587,30 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         {
           const TopoDS_Shape& aSubshape = itvshape.Value();
           if (aSubshape.ShapeType() == TopAbs_EDGE || aSubshape.ShapeType() == TopAbs_FACE)
+          {
             ListVshapes->Append(aSubshape);
+          }
           else
           {
             // it is wire
             for (itw.Initialize(aSubshape); itw.More(); itw.Next())
+            {
               ListVshapes->Append(itw.Value());
+            }
           }
         }
       }
     }
 
     if (ToExit)
+    {
       break;
+    }
 
     if (wexp.More())
+    {
       wexp.Next();
+    }
   }
 }
 
@@ -1514,7 +1651,9 @@ bool BuildBoundaries(const BRepFill_Sweep&                   theSweep,
     }
 
     if (!aBottomEdge.IsNull() && !aTopEdge.IsNull() && !aBottomEdge.IsSame(aTopEdge))
+    {
       bAllSame = false;
+    }
   }
 
   if (theSection->IsUClosed())
@@ -1534,7 +1673,9 @@ bool BuildBoundaries(const BRepFill_Sweep&                   theSweep,
   }
 
   if (bAllSame && bfoundbottom && bfoundtop)
+  {
     theTop = theBottom;
+  }
 
   return bfoundbottom || bfoundtop;
 }

@@ -41,5 +41,7 @@ void ShapeCustom_Modification::SendMsg(const TopoDS_Shape&   shape,
                                        const Message_Gravity gravity) const
 {
   if (!myMsgReg.IsNull())
+  {
     myMsgReg->Send(shape, message, gravity);
+  }
 }

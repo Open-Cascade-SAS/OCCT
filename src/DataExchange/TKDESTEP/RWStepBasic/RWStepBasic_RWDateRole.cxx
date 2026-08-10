@@ -27,7 +27,9 @@ void RWStepBasic_RWDateRole::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "date_role"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

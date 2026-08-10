@@ -370,13 +370,21 @@ bool ShouldReduceDegreeQuartic(const double theA,
     bool         aWithA        = false;
 
     if (std::abs(theB) > ZERO_THRESHOLD && std::abs(theB) <= aMaxCoeff1000)
+    {
       aWithA = true;
+    }
     if (std::abs(theC) > ZERO_THRESHOLD && std::abs(theC) <= aMaxCoeff1000)
+    {
       aWithA = true;
+    }
     if (std::abs(theD) > ZERO_THRESHOLD && std::abs(theD) <= aMaxCoeff1000)
+    {
       aWithA = true;
+    }
     if (std::abs(theE) > ZERO_THRESHOLD && std::abs(theE) <= aMaxCoeff1000)
+    {
       aWithA = true;
+    }
 
     return !aWithA;
   }
@@ -477,13 +485,21 @@ QuarticFactorization FactorQuarticViaFerrari(const double theA,
   const double anEps = 100.0 * MACHINE_EPSILON;
 
   if (std::abs(aFactors.P1) <= anEps)
+  {
     aFactors.P1 = 0.0;
+  }
   if (std::abs(aFactors.P2) <= anEps)
+  {
     aFactors.P2 = 0.0;
+  }
   if (std::abs(aFactors.Q1) <= anEps)
+  {
     aFactors.Q1 = 0.0;
+  }
   if (std::abs(aFactors.Q2) <= anEps)
+  {
     aFactors.Q2 = 0.0;
+  }
 
   return aFactors;
 }
@@ -637,7 +653,9 @@ void math_DirectPolynomialRoots::Solve(const double theA,
   double       aP  = aP1 + aP2;
   const double aEp = 5.0 * MACHINE_EPSILON * (std::abs(aP1) + std::abs(aP2));
   if (std::abs(aP) <= aEp)
+  {
     aP = 0.0;
+  }
 
   const double aQ1 = aScaled.C;
   const double aQ2 = -aScaled.A * aScaled.B / 3.0;
@@ -645,7 +663,9 @@ void math_DirectPolynomialRoots::Solve(const double theA,
   double       aQ  = aQ1 + aQ2 + aQ3;
   const double aEq = 10.0 * MACHINE_EPSILON * (std::abs(aQ1) + std::abs(aQ2) + std::abs(aQ3));
   if (std::abs(aQ) <= aEq)
+  {
     aQ = 0.0;
+  }
 
   // Check for overflow
   if (std::abs(aP) > OVERFLOW_LIMIT)

@@ -29,12 +29,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditHeader, IFSelect_Editor)
 static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
 {
   if (val.IsNull())
+  {
     return false;
+  }
   //  La date peut etre sur 13 ou 15 caracteres (15 : bonjour l an 2000!)
   //  forme [YY]YYMMDD.HHMMSS
   int lng = val->Length();
   if (lng != 13 && lng != 15)
+  {
     return false;
+  }
   lng -= 13; // devient 0 ou 2 (offset siecle)
 
   //  Cas du siecle present :
@@ -42,10 +46,14 @@ static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
   {
     char uncar = val->Value(1);
     if (uncar != '1' && uncar != '2')
+    {
       return false;
+    }
     uncar = val->Value(2);
     if (uncar < '0' || uncar > '9')
+    {
       return false;
+    }
   }
 
   //  On y va
@@ -60,58 +68,87 @@ static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
       case 1:
       case 2:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       case 3:
         if (uncar != '0' && uncar != '1')
+        {
           return false;
+        }
         break;
       case 4:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         if (dizmois == '1' && (uncar < '0' || uncar > '2'))
+        {
           return false;
+        }
         break;
       case 5:
         if (uncar < '0' || uncar > '3')
+        {
           return false;
+        }
         break;
       case 6:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         if (dizjour == '3' && (uncar != '0' && uncar != '1'))
+        {
           return false;
+        }
         break;
       case 7:
         if (uncar != '.')
+        {
           return false;
+        }
         break;
       case 8:
         if (uncar < '0' || uncar > '2')
+        {
           return false;
+        }
         break;
       case 9:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         // clang-format off
-      if (dizheur == '2' && (uncar < '0' || uncar > '3')) return false; //szv#4:S4163:12Mar99 extra break
+      if (dizheur == '2' && (uncar < '0' || uncar > '3')) { return false; //szv#4:S4163:12Mar99 extra break
+}
         // clang-format on
         break;
       case 10:
         if (uncar < '0' || uncar > '5')
+        {
           return false;
+        }
         break;
       case 11:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       case 12:
         if (uncar < '0' || uncar > '5')
+        {
           return false;
+        }
         break;
       case 13:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       default:
         break;
@@ -182,7 +219,9 @@ IGESSelect_EditHeader::IGESSelect_EditHeader()
     new Interface_TypedValue("Units Name", Interface_ParamEnum);
   unitname->StartEnum(1);
   for (i = 1; i <= 11; i++)
+  {
     unitname->AddEnumValue(IGESData_BasicEditor::UnitFlagName(i), i);
+  }
   //  similaire a Interface_Static::Static("XSTEP.iges.unit");
   SetValue(16, unitname, "G15:UnitName", IFSelect_Optional);
   occ::handle<Interface_TypedValue> unitval =
@@ -222,7 +261,9 @@ IGESSelect_EditHeader::IGESSelect_EditHeader()
     new Interface_TypedValue("IGES Version Name", Interface_ParamEnum);
   versname->StartEnum(0);
   for (i = 0; i <= IGESData_BasicEditor::IGESVersionMax(); i++)
+  {
     versname->AddEnumValue(IGESData_BasicEditor::IGESVersionName(i), i);
+  }
   SetValue(26, versname, "V23:VersionName");
 
   occ::handle<Interface_TypedValue> draft =
@@ -235,7 +276,9 @@ IGESSelect_EditHeader::IGESSelect_EditHeader()
     new Interface_TypedValue("Drafting Standard Name", Interface_ParamEnum);
   draftname->StartEnum(0);
   for (i = 0; i <= nb; i++)
+  {
     draftname->AddEnumValue(IGESData_BasicEditor::DraftingName(i), i);
+  }
   SetValue(28, draftname, "V24:DraftingName");
 
   occ::handle<Interface_TypedValue> changedate =
@@ -272,7 +315,9 @@ bool IGESSelect_EditHeader::Load(const occ::handle<IFSelect_EditForm>& form,
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   IGESData_GlobalSection GS = modl->GlobalSection();
 
@@ -302,7 +347,9 @@ bool IGESSelect_EditHeader::Load(const occ::handle<IFSelect_EditForm>& form,
   form->LoadValue(20, GS.Date());
   form->LoadValue(21, new TCollection_HAsciiString(GS.Resolution()));
   if (GS.HasMaxCoord())
+  {
     form->LoadValue(22, new TCollection_HAsciiString(GS.MaxCoord()));
+  }
 
   form->LoadValue(23, GS.AuthorName());
   form->LoadValue(24, GS.CompanyName());
@@ -328,23 +375,31 @@ bool IGESSelect_EditHeader::Update(const occ::handle<IFSelect_EditForm>&        
   if (num == 15)
   {
     if (!enforce)
+    {
       return false; // quand meme ...
-                    //    Unit Flag : mettre a jour UnitName et UnitValue
+    }
+    //    Unit Flag : mettre a jour UnitName et UnitValue
     int         unitflag = val->IntegerValue();
     const char* unitname = IGESData_BasicEditor::UnitFlagName(unitflag);
     if (unitname[0] == '\0')
+    {
       return false;
+    }
     form->Touch(16, new TCollection_HAsciiString(unitname));
     form->Touch(17, new TCollection_HAsciiString(IGESData_BasicEditor::UnitFlagValue(unitflag)));
   }
   if (num == 16)
   {
     if (!enforce)
+    {
       return false; // quand meme ...
-                    //    Unit Name : mettre a jour UnitFlag et UnitValue
+    }
+    //    Unit Name : mettre a jour UnitFlag et UnitValue
     int unitflag = IGESData_BasicEditor::UnitNameFlag(val->ToCString());
     if (unitflag == 0)
+    {
       return false; // pas bon
+    }
     form->Touch(15, new TCollection_HAsciiString(unitflag));
     form->Touch(17, new TCollection_HAsciiString(IGESData_BasicEditor::UnitFlagValue(unitflag)));
   }
@@ -354,10 +409,14 @@ bool IGESSelect_EditHeader::Update(const occ::handle<IFSelect_EditForm>&        
     //    Unit Version : mettre a jour son nom
     int version = 3; // par defaut ...
     if (!val.IsNull())
+    {
       version = atoi(val->ToCString());
+    }
     const char* versname = IGESData_BasicEditor::IGESVersionName(version);
     if (versname[0] == '\0')
+    {
       return false;
+    }
     form->Touch(26, new TCollection_HAsciiString(versname));
   }
   if (num == 27)
@@ -365,10 +424,14 @@ bool IGESSelect_EditHeader::Update(const occ::handle<IFSelect_EditForm>&        
     //   Drafting : mettre a jour son nom
     int draft = 0;
     if (!val.IsNull())
+    {
       draft = atoi(val->ToCString());
+    }
     const char* draftname = IGESData_BasicEditor::IGESVersionName(draft);
     if (draftname[0] == '\0')
+    {
       return false;
+    }
     form->Touch(28, new TCollection_HAsciiString(draftname));
   }
   return true;
@@ -380,85 +443,143 @@ bool IGESSelect_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& form,
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   IGESData_GlobalSection GS = modl->GlobalSection();
 
   occ::handle<TCollection_HAsciiString> str;
 
   if (form->IsModified(1))
+  {
     modl->SetStartSection(form->EditedList(1));
+  }
   if (form->IsModified(2))
   {
     str = form->EditedValue(2);
     if (!str.IsNull() && str->Length() >= 1)
+    {
       GS.SetSeparator(str->Value(1));
+    }
   }
   if (form->IsModified(3))
   {
     str = form->EditedValue(3);
     if (!str.IsNull() && str->Length() >= 1)
+    {
       GS.SetEndMark(str->Value(1));
+    }
   }
   if (form->IsModified(4))
+  {
     GS.SetSendName(form->EditedValue(4));
+  }
   if (form->IsModified(5))
+  {
     GS.SetFileName(form->EditedValue(5));
+  }
   if (form->IsModified(6))
+  {
     GS.SetSystemId(form->EditedValue(6));
+  }
   if (form->IsModified(7))
+  {
     GS.SetInterfaceVersion(form->EditedValue(7));
+  }
 
   if (form->IsModified(8))
+  {
     GS.SetIntegerBits(form->EditedValue(8)->IntegerValue());
+  }
   if (form->IsModified(9))
+  {
     GS.SetMaxPower10Single(form->EditedValue(9)->IntegerValue());
+  }
   if (form->IsModified(10))
+  {
     GS.SetMaxDigitsSingle(form->EditedValue(10)->IntegerValue());
+  }
   if (form->IsModified(11))
+  {
     GS.SetMaxPower10Double(form->EditedValue(11)->IntegerValue());
+  }
   if (form->IsModified(12))
+  {
     GS.SetMaxDigitsDouble(form->EditedValue(12)->IntegerValue());
+  }
 
   if (form->IsModified(13))
+  {
     GS.SetReceiveName(form->EditedValue(13));
+  }
   if (form->IsModified(14))
+  {
     GS.SetScale(form->EditedValue(14)->RealValue());
+  }
   if (form->IsModified(15))
+  {
     GS.SetUnitFlag(form->EditedValue(15)->IntegerValue());
+  }
   if (form->IsModified(16))
+  {
     GS.SetUnitName(form->EditedValue(16));
+  }
 
   if (form->IsModified(18))
+  {
     GS.SetLineWeightGrad(form->EditedValue(18)->IntegerValue());
+  }
   if (form->IsModified(19))
+  {
     GS.SetMaxLineWeight(form->EditedValue(19)->RealValue());
+  }
 
   if (form->IsModified(20))
+  {
     GS.SetDate(form->EditedValue(20));
+  }
   if (form->IsModified(21))
+  {
     GS.SetResolution(form->EditedValue(21)->RealValue());
+  }
   if (form->IsModified(22))
   {
     str = form->EditedValue(22);
     if (str.IsNull())
+    {
       GS.SetMaxCoord();
+    }
     else
+    {
       GS.SetMaxCoord(str->RealValue());
+    }
   }
 
   if (form->IsModified(23))
+  {
     GS.SetAuthorName(form->EditedValue(23));
+  }
   if (form->IsModified(24))
+  {
     GS.SetCompanyName(form->EditedValue(24));
+  }
   if (form->IsModified(25))
+  {
     GS.SetIGESVersion(form->EditedValue(25)->IntegerValue());
+  }
   if (form->IsModified(27))
+  {
     GS.SetDraftingStandard(form->EditedValue(27)->IntegerValue());
+  }
   if (form->IsModified(29))
+  {
     GS.SetLastChangeDate(form->EditedValue(29));
+  }
   if (form->IsModified(30))
+  {
     GS.SetApplicationProtocol(form->EditedValue(30));
+  }
 
   modl->SetGlobalSection(GS);
 
@@ -467,7 +588,9 @@ bool IGESSelect_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& form,
   {
     IGESData_BasicEditor bed(modl, occ::down_cast<IGESData_Protocol>(modl->Protocol()));
     if (bed.SetUnitValue(GS.UnitValue()))
+    {
       return false;
+    }
     bed.ApplyUnit(true);
   }
 

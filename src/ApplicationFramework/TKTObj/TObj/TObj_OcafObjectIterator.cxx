@@ -51,6 +51,8 @@ void TObj_OcafObjectIterator::MakeStep()
       myAllSubChildren ? myIterator.Next() : myIterator.NextBrother();
     }
     else
+    {
       myIterator.Next();
+    }
   }
 }

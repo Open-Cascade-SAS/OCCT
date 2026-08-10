@@ -59,10 +59,6 @@ public:
   static occ::handle<Graphic3d_Camera> ConvertVtkToOccCamera(const IVtk_IView::Handle& theView);
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
-
-private:
-  int  myPixTol;
-  bool myToUpdateTol;
 };
 
 #endif // __IVTKOCC_VIEWERSELECTOR_H__

@@ -45,7 +45,9 @@ void StepData_StepModel::GetFromAnother(const occ::handle<Interface_InterfaceMod
   theheader.Clear();
   DeclareAndCast(StepData_StepModel, another, other);
   if (another.IsNull())
+  {
     return;
+  }
   Interface_EntityIterator iter = another->Header();
   // Copy the header. Important: header is distinct from content...
   Interface_CopyTool TC(this, StepData::HeaderProtocol());
@@ -53,9 +55,13 @@ void StepData_StepModel::GetFromAnother(const occ::handle<Interface_InterfaceMod
   {
     occ::handle<Standard_Transient> newhead;
     if (!TC.Copy(iter.Value(), newhead, false, false))
+    {
       continue;
+    }
     if (!newhead.IsNull())
+    {
       theheader.Append(newhead);
+    }
   }
 }
 
@@ -108,7 +114,9 @@ void StepData_StepModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
   {
     const occ::handle<Standard_Transient>& head = iter.Value();
     if (!lib.Select(head, module, CN))
+    {
       continue;
+    }
     module->CheckCase(CN, head, sh, ach);
   }
 }
@@ -120,7 +128,9 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const int /*level*/) co
   occ::handle<StepData_Protocol> stepro = StepData::HeaderProtocol();
   bool                           iapro  = !stepro.IsNull();
   if (!iapro)
+  {
     S << " -- WARNING : StepModel DumpHeader, Protocol not defined\n";
+  }
 
   Interface_EntityIterator iter = Header();
   int                      nb   = iter.NbEntities();
@@ -130,7 +140,9 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const int /*level*/) co
     S << "  " << iter.Value()->DynamicType()->Name() << "\n";
   }
   if (!iapro || nb == 0)
+  {
     return;
+  }
   S << " --  --        STEP MODEL    HEADER  CONTENT      --  --" << "\n";
   S << " --   Dumped with Protocol : " << stepro->DynamicType()->Name() << "   --\n";
 
@@ -151,7 +163,9 @@ void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& en
 {
   int num = Number(ent);
   if (!num)
+  {
     return; // Entity not found in model
+  }
   int nbEnt = NbEntities();
 
   // Initialize identifier array if not yet created
@@ -169,7 +183,9 @@ void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& en
     // Copy existing identifier mappings
     int k = 1;
     for (; k <= prevLength; k++)
+    {
       idnums1->SetValue(k, theidnums->Value(k));
+    }
     theidnums = idnums1;
   }
   theidnums->SetValue(num, ident);
@@ -178,7 +194,9 @@ void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& en
 int StepData_StepModel::IdentLabel(const occ::handle<Standard_Transient>& ent) const
 {
   if (theidnums.IsNull())
+  {
     return 0;
+  }
   int num = Number(ent);
   return (!num ? 0 : theidnums->Value(num));
 }
@@ -189,11 +207,17 @@ void StepData_StepModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
   int num = (theidnums.IsNull() ? 0 : Number(ent));
   int nid = (!num ? 0 : theidnums->Value(num));
   if (nid > 0)
+  {
     S << "#" << nid;
+  }
   else if (num > 0)
+  {
     S << "(#" << num << ")";
+  }
   else
+  {
     S << "(#0..)";
+  }
 }
 
 occ::handle<TCollection_HAsciiString> StepData_StepModel::StringLabel(
@@ -205,11 +229,17 @@ occ::handle<TCollection_HAsciiString> StepData_StepModel::StringLabel(
   int                                   nid = (!num ? 0 : theidnums->Value(num));
 
   if (nid > 0)
+  {
     Sprintf(text, "#%d", nid);
+  }
   else if (num > 0)
+  {
     Sprintf(text, "(#%d)", num);
+  }
   else
+  {
     Sprintf(text, "(#0..)");
+  }
 
   label = new TCollection_HAsciiString(text);
   return label;

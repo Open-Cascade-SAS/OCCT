@@ -34,12 +34,16 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
   int num = num0;
   // data->NamedForComplex("AREA_UNIT",num0,num,ach);
   if (!data->CheckNbParams(num, 0, ach, "area_unit"))
+  {
     return;
+  }
 
   // --- Instance of plex component ConversionBasedUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
@@ -54,7 +58,9 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
   num = data->NextForComplex(num);
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
   occ::handle<StepBasic_DimensionalExponents> aDimensions;
   data->ReadEntity(num,
                    1,

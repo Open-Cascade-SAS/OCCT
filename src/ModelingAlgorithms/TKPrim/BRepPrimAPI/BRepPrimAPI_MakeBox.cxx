@@ -26,11 +26,17 @@ inline gp_Pnt pmin(const gp_Pnt& p, const double dx, const double dy, const doub
 {
   gp_Pnt P = p;
   if (dx < 0)
+  {
     P.SetX(P.X() + dx);
+  }
   if (dy < 0)
+  {
     P.SetY(P.Y() + dy);
+  }
   if (dz < 0)
+  {
     P.SetZ(P.Z() + dz);
+  }
   return P;
 }
 

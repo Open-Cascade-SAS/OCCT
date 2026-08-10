@@ -83,7 +83,9 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                        anOStre
         if (Tool.HasSurface())
         {
           if (Tool.IsPlanarFace())
+          {
             isoU = aDrawer->IsoOnPlane();
+          }
           if (isoU)
           {
             S.Initialize(Tool.GetFace());
@@ -110,7 +112,9 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                        anOStre
         if (Tool.HasSurface())
         {
           if (Tool.IsPlanarFace())
+          {
             isoV = aDrawer->IsoOnPlane();
+          }
           if (isoV)
           {
             S.Initialize(Tool.GetFace());

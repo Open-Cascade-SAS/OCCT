@@ -34,9 +34,13 @@ const char* IGESSelect_IGESName::Value(const occ::handle<Standard_Transient>& en
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return &falsetype[0];
+  }
   occ::handle<TCollection_HAsciiString> label = igesent->ShortLabel();
   if (label.IsNull())
+  {
     return &voidlabel[0];
+  }
   return label->ToCString();
 }

@@ -86,7 +86,9 @@ int Bisector_PolyBis::Interval(const double U) const
   }
   double dU = (Last().ParamOnBis() - First().ParamOnBis()) / (nbPoints - 1);
   if (dU <= gp::Resolution())
+  {
     return 1;
+  }
 
   int IntU = int(std::abs(U - First().ParamOnBis()) / dU);
   IntU++;

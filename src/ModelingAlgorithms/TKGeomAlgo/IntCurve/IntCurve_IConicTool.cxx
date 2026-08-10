@@ -263,9 +263,13 @@ double IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
       if (P.X() > 0.0)
+      {
         return ((P.X() * P.X()) / Hypr_aa - (P.Y() * P.Y()) / Hypr_bb - 1.0);
+      }
       else
+      {
         return ((-P.X() * P.X()) / Hypr_aa - (P.Y() * P.Y()) / Hypr_bb - 1.0);
+      }
     }
     default: {
       std::cout << "### Erreur sur le  type de la courbe ###";

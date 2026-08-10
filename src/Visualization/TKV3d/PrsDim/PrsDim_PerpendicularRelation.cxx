@@ -168,7 +168,9 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
                                isInfinite1,
                                isInfinite2,
                                myPlane))
+  {
     return;
+  }
 
   bool interOut1(false), interOut2(false);
 
@@ -192,7 +194,9 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
     geom_lin1 = occ::down_cast<Geom_Line>(geom1);
   }
   else
+  {
     return;
+  }
 
   if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
   {
@@ -212,7 +216,9 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
     geom_lin2 = occ::down_cast<Geom_Line>(geom2);
   }
   else
+  {
     return;
+  }
 
   // current face
   BRepBuilderAPI_MakeFace makeface(myPlane->Pln());
@@ -225,9 +231,13 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
   occ::handle<Geom2d_Line> lin2_2d       = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
   IntAna2d_AnaIntersection inter(lin1_2d->Lin2d(), lin2_2d->Lin2d());
   if (!inter.IsDone())
+  {
     return;
+  }
   if (!inter.NbPoints())
+  {
     return;
+  }
 
   gp_Pnt2d pint(inter.Point(1).Value());
   pint3d = adp.Value(pint.X(), pint.Y());
@@ -258,17 +268,25 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       pmax   = std::max(par1, par2);
 
       if (myPosition.SquareDistance(ptat11) > myPosition.SquareDistance(ptat12))
+      {
         p1 = ptat11;
+      }
       else
+      {
         p1 = ptat12;
+      }
       if ((curpar < pmin) || (curpar > pmax))
       {
         interOut1 = true;
       }
       if (!isInfinite2)
+      {
         length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+      }
       else
+      {
         length = 2. * ptat11.Distance(ptat12) / 5.;
+      }
       lengthComputed = true;
       gp_Vec vec1(gce_MakeDir(myPosition, p1));
       vec1.Multiply(length);
@@ -284,9 +302,13 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       pmax   = std::max(par1, par2);
 
       if (myPosition.SquareDistance(ptat21) > myPosition.SquareDistance(ptat22))
+      {
         p2 = ptat21;
+      }
       else
+      {
         p2 = ptat22;
+      }
       if ((curpar < pmin) || (curpar > pmax))
       {
         interOut2 = true;
@@ -295,9 +317,13 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       if (!lengthComputed)
       {
         if (!isInfinite1)
+        {
           length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+        }
         else
+        {
           length = 2. * ptat21.Distance(ptat22) / 5.;
+        }
       }
       vec2.Multiply(length);
       pAx2      = myPosition.Translated(vec2);

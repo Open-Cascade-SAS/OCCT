@@ -59,7 +59,9 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                         const bool /* setSelfContained */)
 {
   if (aSourceDataSet->IsEmpty())
+  {
     return;
+  }
 
   NCollection_Map<TDF_Label>&                  srcLabs = aSourceDataSet->Labels();
   NCollection_Map<occ::handle<TDF_Attribute>>& srcAtts = aSourceDataSet->Attributes();
@@ -106,7 +108,9 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
       // 2 - The target attribute is present BUT its privilege over the
       // source one must be ignored. The source attribute can be copied.
       if ((sAtt != tAtt) && aPrivilegeFilter.IsIgnored(tAtt->ID()))
+      {
         sAtt->Paste(tAtt, aRelocationTable);
+      }
     }
   }
 }
@@ -171,7 +175,9 @@ void TDF_CopyTool::CopyAttributes(
       {
         tAtt = sAtt->NewEmpty();
         if (tAtt->ID() != id)
+        {
           tAtt->SetID(id); //
+        }
         aTargetLabel.AddAttribute(tAtt, true);
         aAttMap.Bind(sAtt, tAtt);
       }
@@ -180,9 +186,13 @@ void TDF_CopyTool::CopyAttributes(
         // Some attributes have the same ID, but are different and
         // exclusive. This obliged to test the dynamic type identity.
         if (tAtt->IsInstance(sAtt->DynamicType()))
+        {
           aAttMap.Bind(sAtt, tAtt);
+        }
         else
+        {
           throw Standard_TypeMismatch("TDF_CopyTool: Cannot paste to a different type attribute.");
+        }
       }
     }
   }

@@ -56,11 +56,15 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   occ::handle<NCollection_HArray1<gp_XYZ>>                           tempPoints;
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(), "Number of Dimensions", tempNbDimens); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempNbDimens = 1;
+  }
 
   bool st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
   if (st && num > 0)
@@ -70,7 +74,9 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
     tempPoints      = new NCollection_HArray1<gp_XYZ>(1, num);
   }
   else
+  {
     PR.AddFail("Number of Geometries: Not Positive");
+  }
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR, PR.Current(), "Dimension Entity", tempDimen);
@@ -78,6 +84,7 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   PR.ReadReal(PR.Current(), "Angle Value", tempAngle);
 
   if (!tempGeomEnts.IsNull())
+  {
     for (i = 1; i <= num; i++)
     {
       occ::handle<IGESData_IGESEntity> tempEnt;
@@ -95,6 +102,7 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
       PR.ReadXYZ(PR.CurrentList(1, 3), "Point", tempPnt); // szv#4:S4163:12Mar99 `st=` not needed
       tempPoints->SetValue(i, tempPnt);
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNbDimens,
@@ -133,7 +141,9 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnShared(
   int i, num;
   iter.GetOneItem(ent->DimensionEntity());
   for (num = ent->NbGeometries(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->GeometryEntity(i));
+  }
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnCopy(
@@ -178,7 +188,9 @@ bool IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
     ent->InitTransf(nultransf);
   }
   if (ent->NbDimensions() == 1)
+  {
     return res;
+  }
   //   Force NbDimensions = 1 -> reconstruct
   int                                                                nb = ent->NbGeometries();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts =
@@ -224,9 +236,13 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbDimensions() != 1)
+  {
     ach->AddFail("Number of Dimensions != 1");
+  }
   if (ent->HasTransf())
+  {
     ach->AddWarning("Transformation Matrix exists, ignored");
+  }
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnDump(
@@ -249,6 +265,7 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnDump(
   IGESData_DumpEntities(S, dumper, -level, 1, ent->NbGeometries(), ent->GeometryEntity);
   S << "\n";
   if (level > 4)
+  {
     for (num = ent->NbGeometries(), i = 1; i <= num; i++)
     {
       S << "[" << i << "]:\n"
@@ -259,5 +276,6 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnDump(
         << "Point : ";
       IGESData_DumpXYZL(S, level, ent->Point(i), ent->Location());
     }
-  S << std::endl;
+  }
+  S << '\n';
 }

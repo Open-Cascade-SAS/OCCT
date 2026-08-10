@@ -76,7 +76,9 @@ Geom_CylindricalSurface::Geom_CylindricalSurface(const Ax3& A3, const double R)
 {
 
   if (R < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = A3;
 }
 
@@ -273,7 +275,9 @@ gp_Vec Geom_CylindricalSurface::EvalDN(const double U,
                                        const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
 
   if (Nv > 1)
   {
@@ -315,7 +319,9 @@ void Geom_CylindricalSurface::Transform(const Trsf& T)
 void Geom_CylindricalSurface::TransformParameters(double&, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
+  {
     V *= std::abs(T.ScaleFactor());
+  }
 }
 
 //=================================================================================================

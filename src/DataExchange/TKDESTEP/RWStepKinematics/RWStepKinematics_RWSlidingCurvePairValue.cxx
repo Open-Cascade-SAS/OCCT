@@ -38,7 +38,9 @@ void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "sliding_curve_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

@@ -23,13 +23,21 @@ StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect() = defau
 int StepBasic_PersonOrganizationSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Person)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Organization)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_PersonAndOrganization)))
+  {
     return 3;
+  }
   return 0;
 }
 

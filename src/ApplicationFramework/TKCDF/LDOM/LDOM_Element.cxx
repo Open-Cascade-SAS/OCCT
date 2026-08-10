@@ -35,16 +35,21 @@ LDOMString LDOM_Element::getAttribute(const LDOMString& aName) const
 {
   const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
   if (anElem.isNull())
+  {
     return LDOMString();
+  }
   if (myLastChild == nullptr)
   {
     const LDOM_BasicNode* aNode = anElem.GetFirstChild();
     if (aNode && aNode->getNodeType() != LDOM_Node::ATTRIBUTE_NODE)
+    {
       for (;;)
       {
         const LDOM_BasicNode* aSibling = aNode->GetSibling();
         if (aSibling == nullptr)
+        {
           return LDOMString();
+        }
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
           (const LDOM_BasicNode*&)myLastChild = aNode;
@@ -52,10 +57,13 @@ LDOMString LDOM_Element::getAttribute(const LDOMString& aName) const
         }
         aNode = aSibling;
       }
+    }
   }
   const LDOM_BasicAttribute& anAttr = anElem.GetAttribute(aName, myLastChild);
   if (anAttr.isNull())
+  {
     return LDOMString();
+  }
   return LDOMString(anAttr.GetValue(), myDocument->Self());
 }
 
@@ -65,16 +73,21 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
 {
   const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
   if (anElem.isNull())
+  {
     return LDOM_Attr();
+  }
   if (myLastChild == nullptr)
   {
     const LDOM_BasicNode* aNode = anElem.GetFirstChild();
     if (aNode && aNode->getNodeType() != LDOM_Node::ATTRIBUTE_NODE)
+    {
       for (;;)
       {
         const LDOM_BasicNode* aSibling = aNode->GetSibling();
         if (aSibling == nullptr)
+        {
           return LDOM_Attr();
+        }
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
           (const LDOM_BasicNode*&)myLastChild = aSibling;
@@ -82,6 +95,7 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
         }
         aNode = aSibling;
       }
+    }
   }
   const LDOM_BasicAttribute& anAttr = anElem.GetAttribute(aName, myLastChild);
   return LDOM_Attr(anAttr, myDocument);
@@ -97,7 +111,9 @@ LDOM_NodeList LDOM_Element::getElementsByTagName(const LDOMString& theTagName) c
     const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
     //    if (anElem.GetTagName().equals(theTagName))
     if (strcmp(anElem.GetTagName(), theTagName.GetString()) == 0)
+    {
       aList.Append(anElem);
+    }
     anElem.AddElementsByTagName(aList, theTagName);
   }
   return aList;
@@ -109,7 +125,9 @@ void LDOM_Element::setAttribute(const LDOMString& aName, const LDOMString& aVal)
 {
   LDOM_BasicElement& anElem = (LDOM_BasicElement&)Origin();
   if (anElem.isNull())
+  {
     return;
+  }
 
   myLastChild = anElem.AddAttribute(aName, LDOMString(aVal, myDocument), myDocument, myLastChild);
 }
@@ -127,7 +145,9 @@ void LDOM_Element::removeAttribute(const LDOMString& aName)
 {
   const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
   if (anElem.isNull())
+  {
     return;
+  }
   anElem.RemoveAttribute(aName, myLastChild);
 }
 
@@ -138,7 +158,9 @@ LDOM_Element LDOM_Element::GetChildByTagName(const LDOMString& aTagName) const
   // Verify preconditions
   LDOM_Element aVoidElement;
   if (isNull() || aTagName == nullptr)
+  {
     return aVoidElement;
+  }
 
   // Take the first child. If it doesn't match look for other ones in a loop
   LDOM_Node aChildNode = getFirstChild();
@@ -146,7 +168,9 @@ LDOM_Element LDOM_Element::GetChildByTagName(const LDOMString& aTagName) const
   {
     const LDOM_Node::NodeType aNodeType = aChildNode.getNodeType();
     if (aNodeType == LDOM_Node::ATTRIBUTE_NODE)
+    {
       break;
+    }
     if (aNodeType == LDOM_Node::ELEMENT_NODE)
     {
       LDOMString
@@ -156,7 +180,9 @@ LDOM_Element LDOM_Element::GetChildByTagName(const LDOMString& aTagName) const
 #endif
         aNodeName = aChildNode.getNodeName(); // use DOM1
       if (aNodeName.equals(aTagName))
+      {
         return (LDOM_Element&)aChildNode; // a match has been found
+      }
     }
     aChildNode = aChildNode.getNextSibling();
   }
@@ -170,7 +196,9 @@ LDOM_Element LDOM_Element::GetSiblingByTagName() const
   // Verify preconditions
   LDOM_Element aVoidElement;
   if (isNull())
+  {
     return aVoidElement;
+  }
 
   LDOMString aTagName = getTagName();
 
@@ -180,12 +208,16 @@ LDOM_Element LDOM_Element::GetSiblingByTagName() const
   {
     const LDOM_Node::NodeType aNodeType = aNextNode.getNodeType();
     if (aNodeType == LDOM_Node::ATTRIBUTE_NODE)
+    {
       break;
+    }
     if (aNodeType == LDOM_Node::ELEMENT_NODE)
     {
       LDOM_Element aNextElement = (LDOM_Element&)aNextNode;
       if (aNextElement.getTagName().equals(aTagName))
+      {
         return aNextElement; // a match has been found
+      }
     }
     aNextNode = aNextNode.getNextSibling();
   }

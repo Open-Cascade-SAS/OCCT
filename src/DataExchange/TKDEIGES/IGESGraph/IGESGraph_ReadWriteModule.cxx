@@ -59,9 +59,13 @@ int IGESGraph_ReadWriteModule::CaseIGES(const int typenum, const int formnum) co
   {
     case 304:
       if (formnum == 1)
+      {
         return 9;
+      }
       else if (formnum == 2)
+      {
         return 7;
+      }
       break;
     case 310:
       return 13;
@@ -110,7 +114,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 1: {
       DeclareAndCast(IGESGraph_Color, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolColor tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -118,7 +124,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 2: {
       DeclareAndCast(IGESGraph_DefinitionLevel, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDefinitionLevel tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -126,7 +134,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 3: {
       DeclareAndCast(IGESGraph_DrawingSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingSize tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -134,7 +144,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 4: {
       DeclareAndCast(IGESGraph_DrawingUnits, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingUnits tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -142,7 +154,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 5: {
       DeclareAndCast(IGESGraph_HighLight, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolHighLight tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -150,7 +164,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 6: {
       DeclareAndCast(IGESGraph_IntercharacterSpacing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolIntercharacterSpacing tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -158,7 +174,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 7: {
       DeclareAndCast(IGESGraph_LineFontDefPattern, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefPattern tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -166,7 +184,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 8: {
       DeclareAndCast(IGESGraph_LineFontPredefined, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontPredefined tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -174,7 +194,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 9: {
       DeclareAndCast(IGESGraph_LineFontDefTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefTemplate tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -182,7 +204,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 10: {
       DeclareAndCast(IGESGraph_NominalSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolNominalSize tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -190,7 +214,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 11: {
       DeclareAndCast(IGESGraph_Pick, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolPick tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -198,7 +224,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 12: {
       DeclareAndCast(IGESGraph_TextDisplayTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextDisplayTemplate tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -206,7 +234,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 13: {
       DeclareAndCast(IGESGraph_TextFontDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextFontDef tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -214,7 +244,9 @@ void IGESGraph_ReadWriteModule::ReadOwnParams(const int                         
     case 14: {
       DeclareAndCast(IGESGraph_UniformRectGrid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolUniformRectGrid tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -233,7 +265,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 1: {
       DeclareAndCast(IGESGraph_Color, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolColor tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -241,7 +275,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 2: {
       DeclareAndCast(IGESGraph_DefinitionLevel, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDefinitionLevel tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -249,7 +285,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 3: {
       DeclareAndCast(IGESGraph_DrawingSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingSize tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -257,7 +295,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 4: {
       DeclareAndCast(IGESGraph_DrawingUnits, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingUnits tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -265,7 +305,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 5: {
       DeclareAndCast(IGESGraph_HighLight, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolHighLight tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -273,7 +315,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 6: {
       DeclareAndCast(IGESGraph_IntercharacterSpacing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolIntercharacterSpacing tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -281,7 +325,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 7: {
       DeclareAndCast(IGESGraph_LineFontDefPattern, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefPattern tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -289,7 +335,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 8: {
       DeclareAndCast(IGESGraph_LineFontPredefined, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontPredefined tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -297,7 +345,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 9: {
       DeclareAndCast(IGESGraph_LineFontDefTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefTemplate tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -305,7 +355,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 10: {
       DeclareAndCast(IGESGraph_NominalSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolNominalSize tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -313,7 +365,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 11: {
       DeclareAndCast(IGESGraph_Pick, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolPick tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -321,7 +375,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 12: {
       DeclareAndCast(IGESGraph_TextDisplayTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextDisplayTemplate tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -329,7 +385,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 13: {
       DeclareAndCast(IGESGraph_TextFontDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextFontDef tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -337,7 +395,9 @@ void IGESGraph_ReadWriteModule::WriteOwnParams(const int                        
     case 14: {
       DeclareAndCast(IGESGraph_UniformRectGrid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolUniformRectGrid tool;
       tool.WriteOwnParams(anent, IW);
     }

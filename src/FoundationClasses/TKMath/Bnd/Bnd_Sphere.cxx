@@ -88,7 +88,9 @@ void Bnd_Sphere::Add(const Bnd_Sphere& theOther)
   }
 
   if (theOther.myRadius + aDist <= myRadius)
+  {
     return; // this sphere encloses other
+  }
 
   // expansion
   const double dfR          = (aDist + myRadius + theOther.myRadius) * 0.5;
@@ -109,9 +111,13 @@ bool Bnd_Sphere::IsOut(const gp_XYZ& theXYZ, double& theMaxDist) const
   double aCurMinDist, aCurMaxDist;
   Distances(theXYZ, aCurMinDist, aCurMaxDist);
   if (aCurMinDist > theMaxDist)
+  {
     return true;
+  }
   if (myIsValid && aCurMaxDist < theMaxDist)
+  {
     theMaxDist = aCurMaxDist;
+  }
   return false;
 }
 

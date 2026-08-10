@@ -594,7 +594,9 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
     // Skip boundary points where derivative condition may not hold
     // Use generous tolerance since boundary extrema are valid but don't satisfy F=0
     if (aU < 0.01 || aU > 0.99)
+    {
       continue;
+    }
 
     aInteriorCount++;
 

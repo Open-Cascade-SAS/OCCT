@@ -38,7 +38,9 @@ void RWStepShape_RWCompoundShapeRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "compound_shape_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

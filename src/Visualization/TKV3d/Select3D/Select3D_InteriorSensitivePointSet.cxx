@@ -35,7 +35,9 @@ public:
   bool Contains(const gp_Pnt& thePnt) const
   {
     if (!myIsInitialized)
+    {
       return false;
+    }
 
     double aRes =
       myPlane.x() * thePnt.X() + myPlane.y() * thePnt.Y() + myPlane.z() * thePnt.Z() + myPlane.w();

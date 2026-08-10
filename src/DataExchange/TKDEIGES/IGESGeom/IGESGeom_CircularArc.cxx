@@ -51,7 +51,9 @@ gp_Pnt IGESGeom_CircularArc::TransformedCenter() const
 {
   gp_XYZ Center(theCenter.X(), theCenter.Y(), theZT);
   if (HasTransf())
+  {
     Location().Transforms(Center);
+  }
   gp_Pnt transCenter(Center);
   return transCenter;
 }
@@ -66,7 +68,9 @@ gp_Pnt IGESGeom_CircularArc::TransformedStartPoint() const
 {
   gp_XYZ Start(theStart.X(), theStart.Y(), theZT);
   if (HasTransf())
+  {
     Location().Transforms(Start);
+  }
   gp_Pnt transStart(Start);
   return transStart;
 }
@@ -86,7 +90,9 @@ gp_Pnt IGESGeom_CircularArc::TransformedEndPoint() const
 {
   gp_XYZ End(theEnd.X(), theEnd.Y(), theZT);
   if (HasTransf())
+  {
     Location().Transforms(End);
+  }
   gp_Pnt transEnd(End);
   return transEnd;
 }
@@ -130,7 +136,9 @@ gp_Dir IGESGeom_CircularArc::TransformedAxis() const
 {
   gp_XYZ axis(0.0, 0.0, 1.0);
   if (!HasTransf())
+  {
     return gp_Dir(axis);
+  }
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));
   loc.Transforms(axis);

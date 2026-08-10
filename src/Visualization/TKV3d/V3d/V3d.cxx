@@ -54,11 +54,17 @@ void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
   Xn = 0., Yn = 0., Zn = 0.;
 
   if (std::abs(Dx) <= std::abs(Dy) && std::abs(Dx) <= std::abs(Dz))
+  {
     Xn = 1.;
+  }
   else if (std::abs(Dy) <= std::abs(Dz) && std::abs(Dy) <= std::abs(Dx))
+  {
     Yn = 1.;
+  }
   else
+  {
     Zn = 1.;
+  }
   Xi = Dy * Zn - Dz * Yn;
   Yi = Dz * Xn - Dx * Zn;
   Zi = Dx * Yn - Dy * Xn;
@@ -91,7 +97,9 @@ void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
       X1 = X, Y1 = Y, Z1 = Z;
     }
     else
+    {
       aPrims->AddVertex(X, Y, Z);
+    }
     aPrims->AddBound(3);
     aPrims->AddVertex(X0, Y0, Z0);
     aPrims->AddVertex(X, Y, Z);
@@ -122,11 +130,17 @@ void V3d::CircleInPlane(const occ::handle<Graphic3d_Group>& gcircle,
     // Construction of marker i,j for the circle:
     Xn = 0., Yn = 0., Zn = 0.;
     if (std::abs(VX) <= std::abs(VY) && std::abs(VX) <= std::abs(VZ))
+    {
       Xn = 1.;
+    }
     else if (std::abs(VY) <= std::abs(VZ) && std::abs(VY) <= std::abs(VX))
+    {
       Yn = 1.;
+    }
     else
+    {
       Zn = 1.;
+    }
     Xi = VY * Zn - VZ * Yn;
     Yi = VZ * Xn - VX * Zn;
     Zi = VX * Yn - VY * Xn;
@@ -166,7 +180,9 @@ void V3d::SwitchViewsinWindow(const occ::handle<V3d_View>& aPreviousView,
 {
   aPreviousView->Viewer()->SetViewOff(aPreviousView);
   if (!aNextView->IfWindow())
+  {
     aNextView->SetWindow(aPreviousView->Window());
+  }
   aNextView->Viewer()->SetViewOn(aNextView);
 }
 

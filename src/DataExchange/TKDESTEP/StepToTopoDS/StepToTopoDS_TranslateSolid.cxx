@@ -53,7 +53,9 @@ void StepToTopoDS_TranslateSolid::Init(const occ::handle<StepVisual_TessellatedS
                                        const Message_ProgressRange& theProgress)
 {
   if (theTSo.IsNull())
+  {
     return;
+  }
 
   BRep_Builder aB;
   TopoDS_Shell aSh;
@@ -67,7 +69,9 @@ void StepToTopoDS_TranslateSolid::Init(const occ::handle<StepVisual_TessellatedS
     occ::handle<TransferBRep_ShapeBinder> aBinder =
       occ::down_cast<TransferBRep_ShapeBinder>(theTP->Find(theTSo->GeometricLink()));
     if (aBinder)
+    {
       aSo = aBinder->Solid();
+    }
   }
 
   bool aNewSolid = false;

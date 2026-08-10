@@ -73,7 +73,9 @@ void ShapeUpgrade_SplitSurfaceAngle::Compute(const bool /*Segment*/)
     S                                   = ofs->BasisSurface();
   }
   else
+  {
     S = mySurface;
+  }
 
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))
       || S->IsKind(STANDARD_TYPE(Geom_ConicalSurface))
@@ -88,13 +90,19 @@ void ShapeUpgrade_SplitSurfaceAngle::Compute(const bool /*Segment*/)
     double uLength    = ULast - UFirst;
     int    nbSegments = int((uLength - Precision::Angular()) / maxAngle) + 1;
     if (nbSegments == 1)
+    {
       if (!isRect || !(uLength < maxAngle) || !((U2 - U1) < maxAngle))
+      {
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+      }
+    }
     double                                     segAngle    = uLength / nbSegments;
     double                                     currAngle   = segAngle + UFirst;
     occ::handle<NCollection_HSequence<double>> splitValues = new NCollection_HSequence<double>;
     for (int i = 1; i < nbSegments; i++, currAngle += segAngle)
+    {
       splitValues->Append(currAngle);
+    }
     SetUSplitValues(splitValues);
   }
 }

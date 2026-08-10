@@ -30,7 +30,9 @@ void RWStepGeom_RWSphericalSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "spherical_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

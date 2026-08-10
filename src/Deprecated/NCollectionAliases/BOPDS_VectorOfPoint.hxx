@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfPoint.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_Point> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_Point> directly instead.
 
 #ifndef _BOPDS_VectorOfPoint_hxx
 #define _BOPDS_VectorOfPoint_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Point.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_Point> directly.")
+                           "NCollection_DynamicArray<BOPDS_Point> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfPoint is deprecated, use NCollection_Vector<BOPDS_Point> directly")
-typedef NCollection_Vector<BOPDS_Point> BOPDS_VectorOfPoint;
+    "BOPDS_VectorOfPoint is deprecated, use NCollection_DynamicArray<BOPDS_Point> directly")
+typedef NCollection_DynamicArray<BOPDS_Point> BOPDS_VectorOfPoint;
 
 #endif // _BOPDS_VectorOfPoint_hxx

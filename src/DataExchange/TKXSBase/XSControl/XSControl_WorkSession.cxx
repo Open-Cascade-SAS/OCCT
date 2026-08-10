@@ -60,7 +60,9 @@ void XSControl_WorkSession::ClearData(const int mode)
 {
   // 1-2-3-4 : standard IFSelect
   if (mode >= 1 && mode <= 4)
+  {
     IFSelect_WorkSession::ClearData(mode);
+  }
 
   // 5 : Transfers only
   // 6 : Forced results only
@@ -72,7 +74,9 @@ void XSControl_WorkSession::ClearData(const int mode)
     myTransferWriter->Clear(-1);
   }
   if (mode == 6 && !myTransferReader.IsNull())
+  {
     myTransferReader->Clear(1);
+  }
   myTransferReader->SetGraph(HGraph());
 }
 
@@ -88,9 +92,13 @@ bool XSControl_WorkSession::SelectNorm(const char* const normname)
 
   occ::handle<XSControl_Controller> newadapt = XSControl_Controller::Recorded(normname);
   if (newadapt.IsNull())
+  {
     return false;
+  }
   if (newadapt == myController)
+  {
     return true;
+  }
   SetController(newadapt);
   return true;
 }
@@ -168,15 +176,21 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
   if (wri)
   {
     if (FP.IsNull())
+    {
       return false;
+    }
     if (num == 0)
+    {
       return false;
+    }
 
     int ne = 0, nr = 0, max = FP->NbMapped(), maxr = FP->NbRoots();
     if (num > 0)
     {
       if (num > max)
+      {
         return false;
+      }
       ne     = num;
       finder = FP->Mapped(ne);
       nr     = FP->RootIndex(finder);
@@ -185,7 +199,9 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
     {
       nr = -num;
       if (nr > maxr)
+      {
         return false;
+      }
       finder = FP->Root(nr);
       ne     = FP->MapIndex(finder);
     }
@@ -195,9 +211,9 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
     {
       S << "  ** Transfer Root n0." << ne;
     }
-    S << std::endl;
+    S << '\n';
     ent = FP->FindTransient(finder);
-    S << " -> Type " << finder->DynamicType()->Name() << std::endl;
+    S << " -> Type " << finder->DynamicType()->Name() << '\n';
     FP->StartTrace(binder, finder, 0, 0); // pb sout/S
     if (!ent.IsNull())
     {
@@ -208,7 +224,7 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
         S << " In output Model, Entity ";
         model->Print(ent, S);
       }
-      S << std::endl;
+      S << '\n';
     }
   }
 
@@ -216,20 +232,30 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
   else
   {
     if (TP.IsNull())
+    {
       return false;
+    }
     occ::handle<Interface_InterfaceModel> model = TP->Model();
     if (model.IsNull())
-      std::cout << "No Model" << std::endl;
+    {
+      std::cout << "No Model" << '\n';
+    }
     else if (model != Model())
-      std::cout << "Model different from the session" << std::endl;
+    {
+      std::cout << "Model different from the session" << '\n';
+    }
     if (num == 0)
+    {
       return false;
+    }
 
     int ne = 0, nr = 0, max = TP->NbMapped(), maxr = TP->NbRoots();
     if (num > 0)
     {
       if (num > max)
+      {
         return false;
+      }
       ne  = num;
       ent = TP->Mapped(ne);
       nr  = TP->RootIndex(finder);
@@ -238,7 +264,9 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
     {
       nr = -num;
       if (nr > maxr)
+      {
         return false;
+      }
       ent = TP->Root(nr);
       ne  = TP->MapIndex(ent);
     }
@@ -248,14 +276,14 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
     {
       S << "  ** Transfer Root n0." << ne;
     }
-    S << std::endl;
+    S << '\n';
     if (!model.IsNull())
     {
       S << " In Model, Entity ";
       model->Print(ent, S);
     }
     binder = TP->MapItem(ne);
-    S << std::endl;
+    S << '\n';
     TP->StartTrace(binder, ent, 0, 0);
   }
 
@@ -268,13 +296,17 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
     {
       S << " - Warnings : " << nbw << " :\n";
       for (i = 1; i <= nbw; i++)
-        S << ch->CWarning(i) << std::endl;
+      {
+        S << ch->CWarning(i) << '\n';
+      }
     }
     if (nbf > 0)
     {
       S << " - Fails : " << nbf << " :\n";
       for (i = 1; i <= nbf; i++)
-        S << ch->CFail(i) << std::endl;
+      {
+        S << ch->CFail(i) << '\n';
+      }
     }
   }
   return true;
@@ -285,19 +317,29 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
 void XSControl_WorkSession::InitTransferReader(const int mode)
 {
   if (mode == 0 || mode == 5)
+  {
     myTransferReader->Clear(-1); // full clear
+  }
   if (myTransferReader.IsNull())
+  {
     SetTransferReader(new XSControl_TransferReader);
+  }
   else
+  {
     SetTransferReader(myTransferReader);
+  }
 
   // mode = 0 done by SetTransferReader following Nullify
   if (mode == 1)
   {
     if (!myTransferReader.IsNull())
+    {
       myTransferReader->Clear(-1);
+    }
     else
+    {
       SetTransferReader(new XSControl_TransferReader);
+    }
   }
   if (mode == 2)
   {
@@ -312,33 +354,47 @@ void XSControl_WorkSession::InitTransferReader(const int mode)
       myTransferReader->RecordedList();
     int i, nb = lis->Length();
     for (i = 1; i <= nb; i++)
+    {
       TP->SetRoot(lis->Value(i));
+    }
   }
   if (mode == 3)
   {
     occ::handle<Transfer_TransientProcess> TP = myTransferReader->TransientProcess();
     if (TP.IsNull())
+    {
       return;
+    }
     int i, nb = TP->NbRoots();
     for (i = 1; i <= nb; i++)
+    {
       myTransferReader->RecordResult(TP->Root(i));
+    }
   }
   if (mode == 4 || mode == 5)
+  {
     myTransferReader->BeginTransfer();
+  }
 }
 
 //=================================================================================================
 
 void XSControl_WorkSession::SetTransferReader(const occ::handle<XSControl_TransferReader>& TR)
 {
-  if (myTransferReader != TR) // i1 pdn 03.04.99 BUC60301
+  if (myTransferReader != TR)
+  { // i1 pdn 03.04.99 BUC60301
     myTransferReader = TR;
+  }
   if (TR.IsNull())
+  {
     return;
+  }
   TR->SetController(myController);
   TR->SetGraph(HGraph());
   if (!TR->TransientProcess().IsNull())
+  {
     return;
+  }
   occ::handle<Transfer_TransientProcess> TP =
     new Transfer_TransientProcess(Model().IsNull() ? 100 : Model()->NbEntities() + 100);
   TP->SetGraph(HGraph());
@@ -358,12 +414,18 @@ occ::handle<Transfer_TransientProcess> XSControl_WorkSession::MapReader() const
 bool XSControl_WorkSession::SetMapReader(const occ::handle<Transfer_TransientProcess>& TP)
 {
   if (TP.IsNull())
+  {
     return false;
+  }
   if (TP->Model().IsNull())
+  {
     TP->SetModel(Model());
+  }
   TP->SetGraph(HGraph());
   if (TP->Model() != Model())
+  {
     return false;
+  }
   //  TR must not move, it's a "hook" for signatures, selections ...
   //  On the other hand, better to reset it
   //  occ::handle<XSControl_TransferReader> TR = new XSControl_TransferReader;
@@ -388,20 +450,32 @@ occ::handle<Standard_Transient> XSControl_WorkSession::Result(
   occ::handle<Transfer_ResultFromModel> resu;
 
   if (ouca != 1)
+  {
     resu = myTransferReader->FinalResult(ent);
+  }
   if (mode == 20)
+  {
     return resu;
+  }
 
   if (!resu.IsNull())
+  {
     binder = resu->MainResult()->Binder();
+  }
   if (binder.IsNull() && ouca > 0)
+  {
     binder = myTransferReader->TransientProcess()->Find(ent);
+  }
 
   if (kica == 1)
+  {
     return binder;
+  }
   DeclareAndCast(Transfer_SimpleBinderOfTransient, trb, binder);
   if (!trb.IsNull())
+  {
     return trb->Result();
+  }
   return binder;
 }
 
@@ -416,13 +490,19 @@ int XSControl_WorkSession::TransferReadOne(const occ::handle<Standard_Transient>
 {
   occ::handle<Interface_InterfaceModel> model = Model();
   if (ent == model)
+  {
     return TransferReadRoots(theProgress);
+  }
 
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = GiveList(ent);
   if (list->Length() == 1)
+  {
     return myTransferReader->TransferOne(list->Value(1), true, theProgress);
+  }
   else
+  {
     return myTransferReader->TransferList(list, true, theProgress);
+  }
 }
 
 //=================================================================================================
@@ -443,12 +523,16 @@ occ::handle<Interface_InterfaceModel> XSControl_WorkSession::NewModel()
   const std::lock_guard<std::mutex>     aLock(GetGlobalMutex());
   occ::handle<Interface_InterfaceModel> newmod;
   if (myController.IsNull())
+  {
     return newmod;
+  }
   newmod = myController->NewModel();
 
   SetModel(newmod);
   if (!myTransferReader->TransientProcess().IsNull())
+  {
     myTransferReader->TransientProcess()->Clear();
+  }
   // clear all contains of WS
   myTransferReader->Clear(3);
   myTransferWriter->Clear(-1);
@@ -466,7 +550,9 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape(
   const std::lock_guard<std::mutex> aLock(GetGlobalMutex());
   IFSelect_ReturnStatus             status;
   if (myController.IsNull())
+  {
     return IFSelect_RetError;
+  }
   const occ::handle<Interface_InterfaceModel>& model = Model();
   if (model.IsNull() || shape.IsNull())
   {
@@ -475,12 +561,16 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape(
 
   status = myTransferWriter->TransferWriteShape(model, shape, theProgress);
   if (theProgress.UserBreak())
+  {
     return IFSelect_RetStop;
+  }
   //  which takes care of everything, try/catch included
 
   // skl insert param compgraph for XDE writing 10.12.2003
   if (compgraph)
+  {
     ComputeGraph(true);
+  }
 
   return status;
 }
@@ -506,7 +596,9 @@ void XSControl_WorkSession::ClearBinders()
   {
     occ::handle<Transfer_Binder> bnd = FP->MapItem(i);
     if (!bnd.IsNull())
+    {
       aSeqBnd.Append(bnd);
+    }
     occ::handle<Standard_Transient> ash(FP->Mapped(i));
     aSeqShapes.Append(ash);
   }

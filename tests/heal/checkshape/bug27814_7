@@ -1,4 +1,4 @@
-puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_114"
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_109"
 puts "=========="
 puts "0027814: Parallelize BRepCheck_Analyzer"
 puts "=========="

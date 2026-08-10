@@ -354,11 +354,17 @@ TEST(NCollection_IndexedMapTest, Iterator)
   {
     const KeyType& key = it.Value();
     if (key == 10)
+    {
       found10 = true;
+    }
     else if (key == 20)
+    {
       found20 = true;
+    }
     else if (key == 30)
+    {
       found30 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);
@@ -385,11 +391,17 @@ TEST(NCollection_IndexedMapTest, StlIterator)
   for (auto it = aMap.cbegin(); it != aMap.cend(); ++it, ++count)
   {
     if (*it == 10)
+    {
       found10 = true;
+    }
     else if (*it == 20)
+    {
       found20 = true;
+    }
     else if (*it == 30)
+    {
       found30 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);

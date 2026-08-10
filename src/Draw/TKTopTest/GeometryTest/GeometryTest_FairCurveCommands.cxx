@@ -33,7 +33,9 @@ bool IsGoodNumber(int argc, int waiting, Draw_Interpretor& di)
     return false;
   }
   else
+  {
     return true;
+  }
 }
 
 //=======================================================================
@@ -41,7 +43,9 @@ static int BattenCurve(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 6, di))
+  {
     return 1;
+  }
 
   const char* cp1        = argv[1];
   const char* cp2        = argv[2];
@@ -55,9 +59,13 @@ static int BattenCurve(Draw_Interpretor& di, int argc, const char** argv)
   gp_Pnt2d P1, P2;
 
   if (!DrawTrSurf::GetPoint2d(cp1, P1))
+  {
     return 1;
+  }
   if (!DrawTrSurf::GetPoint2d(cp2, P2))
+  {
     return 1;
+  }
 
   FairCurve_Batten* Bat = new FairCurve_Batten(P1, P2, h);
   Bat->SetAngle1(a1 * M_PI / 180);
@@ -83,7 +91,9 @@ static int MVCurve(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 6, di))
+  {
     return 1;
+  }
 
   const char* cp1     = argv[1];
   const char* cp2     = argv[2];
@@ -97,9 +107,13 @@ static int MVCurve(Draw_Interpretor& di, int argc, const char** argv)
   gp_Pnt2d P1, P2;
 
   if (!DrawTrSurf::GetPoint2d(cp1, P1))
+  {
     return 1;
+  }
   if (!DrawTrSurf::GetPoint2d(cp2, P2))
+  {
     return 1;
+  }
 
   FairCurve_MinimalVariation* MVC = new FairCurve_MinimalVariation(P1, P2, h);
   MVC->SetAngle1(a1 * M_PI / 180);
@@ -125,7 +139,9 @@ static int SetPoint(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 3, di))
+  {
     return 1;
+  }
 
   const char* side       = argv[1];
   const char* PointName  = argv[2];
@@ -135,12 +151,16 @@ static int SetPoint(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<DrawTrSurf_Point> Pnt = occ::down_cast<DrawTrSurf_Point>(Draw::Get(PointName));
   if (Pnt.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->SetPoint(cote, Pnt->Point2d());
   Draw::Repaint();
@@ -152,7 +172,9 @@ static int SetAngle(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 3, di))
+  {
     return 1;
+  }
 
   const char* side       = argv[1];
   const char* val        = argv[2];
@@ -164,7 +186,9 @@ static int SetAngle(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->SetAngle(cote, angle);
   Draw::Repaint();
@@ -176,7 +200,9 @@ static int SetCurvature(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 3, di))
+  {
     return 1;
+  }
 
   const char* side    = argv[1];
   const char* val     = argv[2];
@@ -188,7 +214,9 @@ static int SetCurvature(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_MinimalVariation> MVC =
     occ::down_cast<DrawFairCurve_MinimalVariation>(Draw::Get(MVCName));
   if (MVC.IsNull())
+  {
     return 1;
+  }
 
   MVC->SetCurvature(cote, rho);
   Draw::Repaint();
@@ -200,7 +228,9 @@ static int SetSlide(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* val        = argv[1];
   const char* BattenName = argv[2];
@@ -210,7 +240,9 @@ static int SetSlide(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->SetSliding(slide);
   Draw::Repaint();
@@ -222,7 +254,9 @@ static int FreeAngle(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* side       = argv[1];
   const char* BattenName = argv[2];
@@ -232,7 +266,9 @@ static int FreeAngle(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->FreeAngle(cote);
   Draw::Repaint();
@@ -244,7 +280,9 @@ static int FreeCurvature(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* side    = argv[1];
   const char* MVCName = argv[2];
@@ -254,7 +292,9 @@ static int FreeCurvature(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_MinimalVariation> MVC =
     occ::down_cast<DrawFairCurve_MinimalVariation>(Draw::Get(MVCName));
   if (MVC.IsNull())
+  {
     return 1;
+  }
 
   MVC->FreeCurvature(cote);
   Draw::Repaint();
@@ -266,14 +306,18 @@ static int FreeSlide(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 1, di))
+  {
     return 1;
+  }
 
   const char* BattenName = argv[1];
 
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->FreeSliding();
   Draw::Repaint();
@@ -285,7 +329,9 @@ static int SetHeight(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* val        = argv[1];
   const char* BattenName = argv[2];
@@ -295,7 +341,9 @@ static int SetHeight(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->SetHeight(Height);
   Draw::Repaint();
@@ -307,7 +355,9 @@ static int SetSlope(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* val        = argv[1];
   const char* BattenName = argv[2];
@@ -317,7 +367,9 @@ static int SetSlope(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_Batten> Bat =
     occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
+  {
     return 1;
+  }
 
   Bat->SetSlope(Slope);
   Draw::Repaint();
@@ -328,7 +380,9 @@ static int SetPhysicalRatio(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
+  {
     return 1;
+  }
 
   const char* val     = argv[1];
   const char* MVCName = argv[2];
@@ -338,7 +392,9 @@ static int SetPhysicalRatio(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<DrawFairCurve_MinimalVariation> MVC =
     occ::down_cast<DrawFairCurve_MinimalVariation>(Draw::Get(MVCName));
   if (MVC.IsNull())
+  {
     return 1;
+  }
 
   MVC->SetPhysicalRatio(ratio);
   Draw::Repaint();

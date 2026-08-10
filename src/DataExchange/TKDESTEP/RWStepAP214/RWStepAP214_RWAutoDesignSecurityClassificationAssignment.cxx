@@ -35,7 +35,9 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "auto_design_security_classification_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedSecurityClassification ---
 
@@ -65,7 +67,9 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
                                     STANDARD_TYPE(StepBasic_Approval),
                                     anent2);
       if (stat2)
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

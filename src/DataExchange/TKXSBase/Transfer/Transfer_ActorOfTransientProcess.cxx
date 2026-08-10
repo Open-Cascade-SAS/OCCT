@@ -31,7 +31,9 @@ occ::handle<Transfer_Binder> Transfer_ActorOfTransientProcess::Transfer(
 {
   occ::handle<Standard_Transient> res = TransferTransient(start, TP, theProgress);
   if (res.IsNull())
+  {
     return NullResult();
+  }
   return TransientResult(res);
 }
 

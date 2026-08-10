@@ -43,7 +43,9 @@ static int DDocStd_Main(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> DOC;
     if (!DDocStd::GetDocument(a[1], DOC))
+    {
       return 1;
+    }
     DDocStd::ReturnLabel(di, DOC->Main());
     return 0;
   }
@@ -59,7 +61,9 @@ static int DDocStd_Format(Draw_Interpretor& di, int n, const char** a)
   if (n == 2)
   {
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     // std::cout << "FORMAT : " << D->StorageFormat() << std::endl;
     di << "FORMAT : ";
     Standard_SStream aStream;
@@ -71,7 +75,9 @@ static int DDocStd_Format(Draw_Interpretor& di, int n, const char** a)
   if (n == 3)
   {
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     D->ChangeStorageFormat(a[2]);
     return 0;
   }
@@ -89,14 +95,22 @@ static int DDocStd_Copy(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDocStd_Document> DOC, XDOC;
     if (!DDocStd::GetDocument(a[1], DOC))
+    {
       return 1;
+    }
     if (!DDocStd::GetDocument(a[3], XDOC))
+    {
       return 1;
+    }
     TDF_Label L, XL;
     if (!DDocStd::Find(DOC, a[2], L))
+    {
       return 1;
+    }
     if (!DDocStd::Find(XDOC, a[4], XL))
+    {
       return 1;
+    }
     TDocStd_XLinkTool XLinkTool;
     XLinkTool.Copy(L, XL);
     if (!XLinkTool.IsDone())
@@ -119,14 +133,22 @@ static int DDocStd_CopyWithLink(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDocStd_Document> DOC, XDOC;
     if (!DDocStd::GetDocument(a[1], DOC))
+    {
       return 1;
+    }
     if (!DDocStd::GetDocument(a[3], XDOC))
+    {
       return 1;
+    }
     TDF_Label L, XL;
     if (!DDocStd::Find(DOC, a[2], L))
+    {
       return 1;
+    }
     if (!DDocStd::Find(XDOC, a[4], XL))
+    {
       return 1;
+    }
     TDocStd_XLinkTool XLinkTool;
     XLinkTool.CopyWithLink(L, XL);
     if (!XLinkTool.IsDone())
@@ -149,13 +171,17 @@ static int DDocStd_UpdateLink(Draw_Interpretor& di, int nb, const char** a)
   {
     occ::handle<TDocStd_Document> DOC;
     if (!DDocStd::GetDocument(a[1], DOC))
+    {
       return 1;
+    }
     occ::handle<TDF_Reference> REF;
     TDocStd_XLinkTool          XLinkTool;
     if (nb == 3)
     {
       if (!DDocStd::Find(DOC, a[2], TDF_Reference::GetID(), REF))
+      {
         return 1;
+      }
       XLinkTool.UpdateLink(REF->Label());
       if (!XLinkTool.IsDone())
       {
@@ -184,11 +210,15 @@ static int DDocStd_UpdateLink(Draw_Interpretor& di, int nb, const char** a)
 static int DDocStd_UndoLimit(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
 
   if (n > 2)
   {
@@ -211,11 +241,15 @@ static int DDocStd_UndoLimit(Draw_Interpretor& di, int n, const char** a)
 static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
 
   int i, step = 1;
   if (n > 2)
@@ -231,19 +265,25 @@ static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
     if (undo)
     {
       if (!D->Undo())
+      {
         di << "Undo not done\n";
+      }
     }
     else
     {
       if (!D->Redo())
+      {
         di << "Redo not done\n";
+      }
     }
   }
 
   // Redraw the viewer.
   occ::handle<AIS_InteractiveContext> IC;
   if (TPrsStd_AISViewer::Find(D->Main(), IC))
+  {
     IC->UpdateCurrentViewer();
+  }
 
   return 0;
 }
@@ -253,10 +293,14 @@ static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
 static int DDocStd_NewCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
   D->NewCommand();
   return 0;
 }
@@ -266,11 +310,15 @@ static int DDocStd_NewCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
   D->OpenCommand();
   return 0;
 }
@@ -280,10 +328,14 @@ static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
   D->AbortCommand();
   return 0;
 }
@@ -293,10 +345,14 @@ static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
   D->CommitCommand();
   return 0;
 }
@@ -312,13 +368,19 @@ static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     di << "\n";
     // document name
     if (D->IsSaved())
+    {
       di << "DOCUMENT      : " << D->GetName();
+    }
     else
+    {
       di << "DOCUMENT      : not saved";
+    }
     di << "\n";
     // format
     // std::cout << "FORMAT        : " << D->StorageFormat();
@@ -330,9 +392,13 @@ static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
     // command
     di << "COMMAND       : ";
     if (D->HasOpenCommand())
+    {
       di << " Is Open";
+    }
     else
+    {
       di << " Is Not Open";
+    }
     // undo
     di << "UNDO          :";
     di << " limit :" << D->GetUndoLimit();
@@ -347,16 +413,22 @@ static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
     // modified
     di << "MODIFIED      : ";
     if (D->IsModified())
+    {
       di << "true";
+    }
     else
+    {
       di << "false";
+    }
     di << "\n";
     if (!TDocStd_Modified::IsEmpty(D->Main()))
     {
       di << "MODIFICATIONS : ";
       NCollection_Map<TDF_Label>::Iterator it(D->GetModified());
       if (!it.More())
+      {
         di << "VALID\n";
+      }
       else
       {
         TCollection_AsciiString string;
@@ -385,12 +457,16 @@ static int DDocStd_SetModified(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     for (int i = 2; i < n; i++)
     {
       if (DDocStd::Find(D, a[i], L))
+      {
         D->SetModified(L);
+      }
     }
     return 0;
   }
@@ -494,7 +570,9 @@ void DDocStd::DocumentCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DDocStd commands";

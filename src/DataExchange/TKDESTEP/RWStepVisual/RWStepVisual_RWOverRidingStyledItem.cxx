@@ -32,7 +32,9 @@ void RWStepVisual_RWOverRidingStyledItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "over_riding_styled_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -58,7 +60,9 @@ void RWStepVisual_RWOverRidingStyledItem::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anent2))
+      {
         aStyles->SetValue(i2, anent2);
+      }
     }
   }
 

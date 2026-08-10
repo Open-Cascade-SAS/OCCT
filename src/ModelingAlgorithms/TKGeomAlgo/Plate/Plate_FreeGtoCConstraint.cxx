@@ -46,18 +46,24 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   if (IncrementalLoad != 1.)
   {
     gp_XYZ N0 = D1S.Du ^ D1S.Dv;
     if (N0.Modulus() < NORMIN)
+    {
       return;
+    }
     N0.Normalize();
     gp_XYZ N1 = normale;
     if (orientation != 0)
+    {
       N1 *= orientation;
+    }
     double c = N0 * N1;
     if (orientation == 0)
     {
@@ -70,7 +76,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
 
     double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
+    {
       return;
+    }
     double angle = atan2(c, s);
     // if (angle < 0.) angle += M_PI;
 
@@ -110,7 +118,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
@@ -118,7 +128,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
   if (normaleS.Modulus() < NORMIN)
   {
     if (IncrementalLoad != 1.)
+    {
       return;
+    }
     gp_XYZ du = D1S.Du * (-1.);
     gp_XYZ dv = D1S.Dv * (-1.);
 
@@ -134,7 +146,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
     gp_XYZ N0 = normaleS;
     gp_XYZ N1 = normale;
     if (orientation != 0)
+    {
       N1 *= orientation;
+    }
     double c = N0 * N1;
     if (orientation == 0)
     {
@@ -147,7 +161,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
 
     double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
+    {
       return;
+    }
     double angle = atan2(c, s);
 
     gp_XYZ d = N0 ^ N1;
@@ -197,7 +213,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
   mat(1, 1) = Sv * D1T.Dv;
   math_Gauss gauss(mat);
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;
@@ -253,7 +271,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
 
   gp_XYZ normale = D1T.Du ^ D1T.Dv;
   if (normale.Modulus() < NORMIN)
+  {
     return;
+  }
   normale.Normalize();
 
   // G1 Constraints
@@ -261,7 +281,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
   if (normaleS.Modulus() < NORMIN)
   {
     if (IncrementalLoad != 1.)
+    {
       return;
+    }
     gp_XYZ du = D1S.Du * (-1.);
     gp_XYZ dv = D1S.Dv * (-1.);
 
@@ -277,7 +299,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
     gp_XYZ N0 = normaleS;
     gp_XYZ N1 = normale;
     if (orientation != 0)
+    {
       N1 *= orientation;
+    }
     double c = N0 * N1;
     if (orientation == 0)
     {
@@ -289,7 +313,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
     }
     double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
+    {
       return;
+    }
     double angle = atan2(c, s);
 
     gp_XYZ d = N0 ^ N1;
@@ -343,7 +369,9 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
   mat(1, 1) = Sv * D1T.Dv;
   math_Gauss gauss(mat);
   if (!gauss.IsDone())
+  {
     return;
+  }
 
   math_Vector vec(0, 1);
   vec(0) = Su * Su;

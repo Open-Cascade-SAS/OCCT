@@ -30,7 +30,7 @@
 
 #include <gp_Pnt.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Solid.hxx>
@@ -122,7 +122,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid;
+typedef NCollection_DynamicArray<BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid;
 
 /////////////////////////////////////////////////////////////////////////
 //=================================================================================================
@@ -193,7 +193,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid;
+typedef NCollection_DynamicArray<BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid;
 
 /////////////////////////////////////////////////////////////////////////
 //=================================================================================================
@@ -230,7 +230,7 @@ public:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid;
+typedef NCollection_DynamicArray<BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid;
 
 //=================================================================================================
 
@@ -249,7 +249,7 @@ void BOPAlgo_CheckerSI::PerformVZ(const Message_ProgressRange& theRange)
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfVZ>& aVZs = myDS->InterfVZ();
+  NCollection_DynamicArray<BOPDS_InterfVZ>& aVZs = myDS->InterfVZ();
   aVZs.SetIncrement(iSize);
   //
   BOPAlgo_VectorOfVertexSolid aVVS;
@@ -376,7 +376,7 @@ void BOPAlgo_CheckerSI::PerformZZ(const Message_ProgressRange& theRange)
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfZZ>& aZZs = myDS->InterfZZ();
+  NCollection_DynamicArray<BOPDS_InterfZZ>& aZZs = myDS->InterfZZ();
   //
   aZZs.SetIncrement(iSize);
   //
@@ -442,8 +442,8 @@ void BOPAlgo_CheckerSI::PerformSZ(const TopAbs_ShapeEnum       theTS,
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfEZ>& aEZs = myDS->InterfEZ();
-  NCollection_Vector<BOPDS_InterfFZ>& aFZs = myDS->InterfFZ();
+  NCollection_DynamicArray<BOPDS_InterfEZ>& aEZs = myDS->InterfEZ();
+  NCollection_DynamicArray<BOPDS_InterfFZ>& aFZs = myDS->InterfFZ();
   //
   if (theTS == TopAbs_EDGE)
   {

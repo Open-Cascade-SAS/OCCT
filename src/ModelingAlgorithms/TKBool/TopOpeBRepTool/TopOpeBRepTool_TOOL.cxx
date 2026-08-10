@@ -104,7 +104,9 @@ static bool CheckEdgeLength(const TopoDS_Edge& E)
   anExtent  = aM.Extent();
 
   if (anExtent != 1)
+  {
     return true;
+  }
 
   gp_Pnt p1, p2;
   f  = BC.FirstParameter();
@@ -117,9 +119,13 @@ static bool CheckEdgeLength(const TopoDS_Edge& E)
     t = f + i * dt;
 
     if (i == aN)
+    {
       BC.D0(l, p2);
+    }
     else
+    {
       BC.D0(t, p2);
+    }
 
     d = p1.Distance(p2);
     ln += d;
@@ -143,23 +149,35 @@ int TopOpeBRepTool_TOOL::OriinSor(const TopoDS_Shape& sub,
     if (S.ShapeType() == TopAbs_EDGE)
     {
       if (sub.ShapeType() != TopAbs_VERTEX)
+      {
         return 0;
+      }
 
       TopoDS_Vertex vclo;
       Sclosed = TopOpeBRepTool_TOOL::ClosedE(TopoDS::Edge(S), vclo);
       if (Sclosed)
+      {
         if (sub.IsSame(vclo))
+        {
           return CLOSING;
+        }
+      }
     }
     else if (S.ShapeType() == TopAbs_FACE)
     {
       if (sub.ShapeType() != TopAbs_EDGE)
+      {
         return 0;
+      }
 
       Sclosed = ClosedS(TopoDS::Face(S));
       if (Sclosed)
+      {
         if (IsClosingE(TopoDS::Edge(sub), TopoDS::Face(S)))
+        {
           return CLOSING;
+        }
+      }
     }
   }
 
@@ -169,16 +187,26 @@ int TopOpeBRepTool_TOOL::OriinSor(const TopoDS_Shape& sub,
     const TopoDS_Shape& ssub = ex.Current();
     bool                same = ssub.IsSame(sub);
     if (!same)
+    {
       continue;
+    }
     TopAbs_Orientation osub = ssub.Orientation();
     if (M_FORWARD(osub))
+    {
       return FORWARD;
+    }
     else if (M_REVERSED(osub))
+    {
       return REVERSED;
+    }
     else if (M_INTERNAL(osub))
+    {
       return INTERNAL;
+    }
     else if (M_EXTERNAL(osub))
+    {
       return EXTERNAL;
+    }
   }
   return 0;
 }
@@ -190,12 +218,16 @@ int TopOpeBRepTool_TOOL::OriinSorclosed(const TopoDS_Shape& sub, const TopoDS_Sh
   if (S.ShapeType() == TopAbs_EDGE)
   {
     if (sub.ShapeType() != TopAbs_VERTEX)
+    {
       return 0;
+    }
   }
   else if (S.ShapeType() == TopAbs_FACE)
   {
     if (sub.ShapeType() != TopAbs_EDGE)
+    {
       return 0;
+    }
   }
   TopoDS_Iterator it(S);
   for (; it.More(); it.Next())
@@ -203,12 +235,18 @@ int TopOpeBRepTool_TOOL::OriinSorclosed(const TopoDS_Shape& sub, const TopoDS_Sh
     const TopoDS_Shape& ssub  = it.Value();
     bool                equal = ssub.IsEqual(sub);
     if (!equal)
+    {
       continue;
+    }
     TopAbs_Orientation osub = ssub.Orientation();
     if (M_FORWARD(osub))
+    {
       return FORWARD;
+    }
     else if (M_REVERSED(osub))
+    {
       return REVERSED;
+    }
   }
   return 0;
 }
@@ -221,7 +259,9 @@ bool TopOpeBRepTool_TOOL::ClosedE(const TopoDS_Edge& E, TopoDS_Vertex& vclo)
   //  return E.IsClosed();
   bool isdgE = BRep_Tool::Degenerated(E);
   if (isdgE)
+  {
     return false;
+  }
 
   TopoDS_Shape vv;
   vclo.Nullify();
@@ -230,9 +270,13 @@ bool TopOpeBRepTool_TOOL::ClosedE(const TopoDS_Edge& E, TopoDS_Vertex& vclo)
   {
     const TopoDS_Shape& v = ex.Current();
     if (M_INTERNAL(v.Orientation()))
+    {
       continue;
+    }
     if (vv.IsNull())
+    {
       vv = v;
+    }
     else if (v.IsSame(vv))
     {
       vclo = TopoDS::Vertex(vv);
@@ -248,13 +292,19 @@ bool TopOpeBRepTool_TOOL::ClosedS(const TopoDS_Face& F)
 {
   occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
   if (S.IsNull())
+  {
     return false;
+  }
   bool uclosed = S->IsUClosed();
   if (uclosed)
+  {
     uclosed = S->IsUPeriodic();
+  }
   bool vclosed = S->IsVClosed();
   if (vclosed)
+  {
     vclosed = S->IsVPeriodic();
+  }
   return (uclosed || vclosed);
 }
 
@@ -265,10 +315,16 @@ bool TopOpeBRepTool_TOOL::IsClosingE(const TopoDS_Edge& E, const TopoDS_Face& F)
   int             nbocc = 0;
   TopExp_Explorer exp(F, TopAbs_EDGE);
   for (; exp.More(); exp.Next())
+  {
     if (exp.Current().IsSame(E))
+    {
       nbocc++;
+    }
+  }
   if (nbocc != 2)
+  {
     return false;
+  }
   return BRep_Tool::IsClosed(E, F);
 }
 
@@ -281,10 +337,16 @@ bool TopOpeBRepTool_TOOL::IsClosingE(const TopoDS_Edge&  E,
   int             nbocc = 0;
   TopExp_Explorer exp(W, TopAbs_EDGE);
   for (; exp.More(); exp.Next())
+  {
     if (exp.Current().IsSame(E))
+    {
       nbocc++;
+    }
+  }
   if (nbocc != 2)
+  {
     return false;
+  }
   return BRep_Tool::IsClosed(E, F);
 }
 
@@ -353,13 +415,21 @@ int TopOpeBRepTool_TOOL::OnBoundary(const double par, const TopoDS_Edge& e)
   bool onl  = std::abs(par - last) < tolp;
   bool onfl = (onf || onl);
   if (onfl && closed)
+  {
     return CLOSING;
+  }
   if (onf)
+  {
     return FORWARD;
+  }
   if (onl)
+  {
     return REVERSED;
+  }
   if ((first < par) && (par < last))
+  {
     return INTERNAL;
+  }
   return EXTERNAL;
 }
 
@@ -416,7 +486,9 @@ bool TopOpeBRepTool_TOOL::SplitE(const TopoDS_Edge& Eanc, NCollection_List<TopoD
   }
   int nv = lov.Extent();
   if (nv <= 2)
+  {
     return false;
+  }
 
   ::FUN_tool_sortVonE(lov, EFOR);
 
@@ -428,7 +500,9 @@ bool TopOpeBRepTool_TOOL::SplitE(const TopoDS_Edge& Eanc, NCollection_List<TopoD
     itlov.Next();
   }
   else
+  {
     return false;
+  }
 
   for (; itlov.More(); itlov.Next())
   {
@@ -478,18 +552,24 @@ bool TopOpeBRepTool_TOOL::ParISO(const gp_Pnt2d&    uv,
   gp_Pnt2d o2d;
   bool     uviso = TopOpeBRepTool_TOOL::UVISO(E, F, isou, isov, d2d, o2d);
   if (!uviso)
+  {
     return false;
+  }
   if (isou)
   {
     par = (uv.Y() - o2d.Y());
     if (d2d.Y() < 0)
+    {
       par = -par;
+    }
   }
   if (isov)
   {
     par = (uv.X() - o2d.X());
     if (d2d.X() < 0)
+    {
       par = -par;
+    }
   }
   return true;
 }
@@ -523,7 +603,9 @@ bool TopOpeBRepTool_TOOL::ParE2d(const gp_Pnt2d&    p2d,
       dist = std::abs(p2d.Y() - Loc.Y());
     }
     if (isoU || isoV)
+    {
       return true;
+    }
   }
 
   Geom2dAPI_ProjectPointOnCurve proj(p2d, C2d);
@@ -544,23 +626,37 @@ bool TopOpeBRepTool_TOOL::TgINSIDE(const TopoDS_Vertex& v,
   //  TopoDS_Edge EFOR = TopoDS::Edge(E.Oriented(TopAbs_FORWARD));
   int ovE = TopOpeBRepTool_TOOL::OriinSor(v, EFOR, true);
   if (ovE == 0)
+  {
     return false;
+  }
   OvinE  = ovE;
   int iv = 0;
   if (ovE == CLOSING)
+  {
     iv = FORWARD;
+  }
   else if ((ovE == FORWARD) || (ovE == REVERSED))
+  {
     iv = ovE;
+  }
   double parE;
   if (iv == 0)
+  {
     parE = BRep_Tool::Parameter(v, E);
+  }
   else
+  {
     parE = TopOpeBRepTool_TOOL::ParE(iv, EFOR);
+  }
   bool ok = TopOpeBRepTool_TOOL::TggeomE(parE, EFOR, Tg);
   if (!ok)
+  {
     return false;
+  }
   if (ovE == REVERSED)
+  {
     Tg.Reverse();
+  }
   return true;
 }
 
@@ -585,7 +681,9 @@ bool TopOpeBRepTool_TOOL::TggeomE(const double par, const BRepAdaptor_Curve& BC,
   bool inbounds = (f < par) && (par < l);
 
   if ((!inbounds) && (!onf) && (!onl))
+  {
     return false;
+  }
   double thepar = par;
 
   gp_Pnt thepnt;
@@ -600,7 +698,9 @@ bool TopOpeBRepTool_TOOL::TggeomE(const double par, const TopoDS_Edge& E, gp_Vec
 {
   bool isdgE = BRep_Tool::Degenerated(E);
   if (isdgE)
+  {
     return false;
+  }
 
   BRepAdaptor_Curve BC(E);
   // modified by NIZNHY-PKV Fri Aug  4 09:49:31 2000 f
@@ -668,7 +768,9 @@ gp_Vec2d TopOpeBRepTool_TOOL::tryTg2dApp(const int                  iv,
   bool                             isquad = FUN_tool_quad(PC);
   bool                             line   = FUN_tool_line(PC);
   if (!isquad || line)
+  {
     return TopOpeBRepTool_TOOL::Tg2d(iv, E, C2DF);
+  }
   return TopOpeBRepTool_TOOL::Tg2dApp(iv, E, C2DF, factor);
 }
 
@@ -684,13 +786,17 @@ int TopOpeBRepTool_TOOL::tryOriEinF(const double par, const TopoDS_Edge& e, cons
   bool checkclo = true;
   int  oeinf    = TopOpeBRepTool_TOOL::OriinSor(e, f, checkclo);
   if (oeinf != 0)
+  {
     return oeinf;
+  }
 
   occ::handle<Geom2d_Curve> pc;
   double                    pf, pl, tol;
   bool                      hasold = FC2D_HasOldCurveOnSurface(e, f, pc);
   if (!hasold)
+  {
     return 0;
+  }
   pc = FC2D_EditableCurveOnSurface(e, f, pf, pl, tol);
 
   // n2d is such that (p2d,oop2d) is oriented INSIDE F
@@ -727,23 +833,31 @@ bool TopOpeBRepTool_TOOL::NgApp(const double       par,
 
   occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(f);
   if (S.IsNull())
+  {
     return false;
+  }
 
   bool fplane = FUN_tool_plane(f);
   if (fplane)
+  {
     return false;
+  }
 
   // NYI : for bspline surfaces, use a evolutive parameter
   //       on curve to find out "significant" tangents
   bool fquad = FUN_tool_quad(f);
   if (!fquad)
+  {
     return false;
+  }
   // <pc> :
   occ::handle<Geom2d_Curve> pc;
   double                    pf, pl, tol;
   bool                      hasold = FC2D_HasOldCurveOnSurface(e, f, pc);
   if (!hasold)
+  {
     return false;
+  }
   pc = FC2D_EditableCurveOnSurface(e, f, pf, pl, tol);
   // <orieinf> :
   TopoDS_Shape aLocalShape = f.Oriented(TopAbs_FORWARD);
@@ -751,23 +865,31 @@ bool TopOpeBRepTool_TOOL::NgApp(const double       par,
   //  int orieinf =
   //  TopOpeBRepTool_TOOL::tryOriEinF(par,e,TopoDS::Face(f.Oriented(TopAbs_FORWARD)));
   if (orieinf == 0)
+  {
     return false;
+  }
   // <uv> :
   gp_Pnt2d uv;
   bool     ok = FUN_tool_paronEF(e, par, f, uv);
   if (!ok)
+  {
     return false;
+  }
   // <ng> :
   gp_Dir ng = FUN_tool_ngS(uv, S);
   if (!ok)
+  {
     return false;
+  }
 
   // <n2dinsideS> :
   gp_Vec2d tg2d;
   pc->D1(par, uv, tg2d);
   gp_Dir2d n2dinsideS = FUN_tool_nC2dINSIDES(gp_Dir2d(tg2d));
   if (orieinf == 2)
+  {
     n2dinsideS.Reverse();
+  }
   //<duv> : '
   double   eps = 0.45678;
   gp_Vec2d duv = gp_Vec2d(n2dinsideS).Multiplied(eps);
@@ -806,14 +928,18 @@ bool TopOpeBRepTool_TOOL::tryNgApp(const double       par,
   gp_Pnt2d uv;
   bool     ok = FUN_tool_paronEF(e, par, f, uv);
   if (!ok)
+  {
     return false;
+  }
   gp_Dir ng(FUN_tool_nggeomF(uv, f));
 #ifdef OCCT_DEBUG
   gp_Dir ngApp;
 #endif
   ok = TopOpeBRepTool_TOOL::NgApp(par, e, f, tola, Ng);
   if (!ok)
+  {
     Ng = ng;
+  }
   return true;
 }
 
@@ -855,7 +981,9 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
   BRepLProp_CLProps clprops(BAC, par, 2, Precision::Confusion());
   bool              tgdef = clprops.IsTangentDefined();
   if (!tgdef)
+  {
     return false;
+  }
   curv = std::abs(clprops.Curvature());
 
   double tol      = Precision::Confusion() * 1.e+2; // NYITOLXPU
@@ -920,7 +1048,9 @@ static bool FUN_analyticcS(const gp_Pnt2d&                  uv0,
   //           then computes its curvature <curv>.
   occ::handle<Geom_Surface> su = TopOpeBRepTool_ShapeTool::BASISSURFACE(S);
   if (S.IsNull())
+  {
     return true;
+  }
   GeomAdaptor_Surface GS(su);
   GeomAbs_SurfaceType ST    = GS.GetType();
   bool                plane = (ST == GeomAbs_Plane);
@@ -962,7 +1092,9 @@ static bool FUN_analyticcS(const gp_Pnt2d&                  uv0,
 
     double prod2 = ngS.Dot(tg0);
     if (cyl || cone)
+    {
       nullcurv = nullcurv || FUN_nullprodv(1 - std::abs(prod2));
+    }
 
     if (nullcurv)
     {
@@ -1006,7 +1138,9 @@ bool TopOpeBRepTool_TOOL::CurvF(const TopoDS_Face& F,
   gp_Dir                    ngS = FUN_tool_nggeomF(uv, F);
   occ::handle<Geom_Surface> S   = TopOpeBRepTool_ShapeTool::BASISSURFACE(F);
   if (S.IsNull())
+  {
     return false;
+  }
   // purpose : Computes theContour's curvature,
   //          returns false if the compute fails.
 
@@ -1014,7 +1148,9 @@ bool TopOpeBRepTool_TOOL::CurvF(const TopoDS_Face& F,
 
   bool analyticcontour = FUN_analyticcS(uv, S, ngS, tg0, curv, direct);
   if (analyticcontour)
+  {
     return true;
+  }
 
   GeomLProp_SLProps slprops(S, uv.X(), uv.Y(), 2, Precision::Confusion());
   bool              curdef = slprops.IsCurvatureDefined();
@@ -1060,12 +1196,16 @@ bool TopOpeBRepTool_TOOL::UVISO(const occ::handle<Geom2d_Curve>& PC,
 {
   isoU = isoV = false;
   if (PC.IsNull())
+  {
     return false;
+  }
   occ::handle<Geom2d_Curve>  LLL      = BASISCURVE2D(PC);
   occ::handle<Standard_Type> T2       = LLL->DynamicType();
   bool                       isline2d = (T2 == STANDARD_TYPE(Geom2d_Line));
   if (!isline2d)
+  {
     return false;
+  }
 
   occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(LLL);
   d2d                        = L->Direction();
@@ -1073,7 +1213,9 @@ bool TopOpeBRepTool_TOOL::UVISO(const occ::handle<Geom2d_Curve>& PC,
   isoV                       = (std::abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
   bool isoUV                 = isoU || isoV;
   if (!isoUV)
+  {
     return false;
+  }
 
   o2d = L->Location();
   return true;
@@ -1092,7 +1234,9 @@ bool TopOpeBRepTool_TOOL::UVISO(const TopoDS_Edge& E,
   bool                      hasold = FC2D_HasOldCurveOnSurface(E, F, PC);
   PC                               = FC2D_EditableCurveOnSurface(E, F, f, l, tol);
   if (!hasold)
+  {
     FC2D_AddNewCurveOnSurface(PC, E, F, f, l, tol);
+  }
 
   bool iso = UVISO(PC, isoU, isoV, d2d, o2d);
   return iso;
@@ -1127,15 +1271,23 @@ bool TopOpeBRepTool_TOOL::IsonCLO(const occ::handle<Geom2d_Curve>& PC,
   gp_Dir2d d2d;
   bool     isouv = UVISO(PC, isou, isov, d2d, o2d);
   if (!isouv)
+  {
     return false;
+  }
   bool onX = (onU && isou) || ((!onU) && isov);
   if (!onX)
+  {
     return false;
+  }
   double dxx = 0;
   if (onU)
+  {
     dxx = std::abs(o2d.X() - xfirst);
+  }
   else
+  {
     dxx = std::abs(o2d.Y() - xfirst);
+  }
 
   bool onclo = (dxx < xtol);
   onclo      = onclo || (std::abs(xperiod - dxx) < xtol);
@@ -1171,7 +1323,9 @@ bool TopOpeBRepTool_TOOL::TrslUVModifE(const gp_Vec2d& t2d, const TopoDS_Face& F
   //  occ::handle<Geom2d_Curve> PC; double f,l,tol;
 
   if (PC.IsNull())
+  {
     return false;
+  }
   PC->Translate(t2d);
   //  occ::handle<Geom2d_Curve> toclear; BB.UpdateEdge(E,toclear,F,tole);
   BRep_Builder BB;
@@ -1189,14 +1343,20 @@ double TopOpeBRepTool_TOOL::Matter(const gp_Vec& d1, const gp_Vec& dR2, const gp
   double ang   = d1.Angle(d2);
   bool   equal = (ang < tola);
   if (equal)
+  {
     return 0.;
+  }
   bool oppo = ((M_PI - ang) < tola);
   if (oppo)
+  {
     return M_PI;
+  }
 
   ang = d1.AngleWithRef(d2, Ref);
   if (ang < 0)
+  {
     ang = 2. * M_PI + ang;
+  }
   return ang;
 }
 
@@ -1244,7 +1404,9 @@ bool TopOpeBRepTool_TOOL::Matter(const gp_Dir& xx1,
   double dot  = z2.Dot(z1);
   bool   oppo = (dot < 0.);
   if (!oppo)
+  {
     return false;
+  }
 
   // -nti points towards 3dmatter(fi)
   // => zi = xxi^nti gives the opposite sense for the compute of the matter angle
@@ -1256,7 +1418,9 @@ bool TopOpeBRepTool_TOOL::Matter(const gp_Dir& xx1,
     return true;
   }
   if (ang < 0)
+  {
     ang = 2. * M_PI + ang;
+  }
 
   return true;
 }
@@ -1271,7 +1435,9 @@ bool TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face& f,
 {
   bool quad = TopOpeBRepTool_TOOL::IsQuad(f);
   if (!quad)
+  {
     return false;
+  }
   Bnd_Box bndf;
   BRepBndLib::AddClose(f, bndf);
   double f1, f2, f3, l1, l2, l3;
@@ -1287,7 +1453,9 @@ bool TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face& f,
   double tolf = BRep_Tool::Tolerance(f);
   tolf *= 1.e2; // NYIXPUTOL
   if (d > tolf)
+  {
     return false;
+  }
 
   gp_Vec2d                  DUV(uv, uvtr);
   occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(f);
@@ -1297,7 +1465,9 @@ bool TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face& f,
     ElCLib::AdjustPeriodic(0., period, Precision::PConfusion(), U1, U2);
     double dx = U2 - U1;
     if (dx > period / 2.)
+    {
       dx -= period;
+    }
     DUV.SetX(dx);
   }
   if ((S->IsVPeriodic()) && (std::abs(DUV.Y()) > S->VPeriod() / 2.))
@@ -1306,7 +1476,9 @@ bool TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face& f,
     ElCLib::AdjustPeriodic(0., period, Precision::PConfusion(), V1, V2);
     double dy = V2 - V1;
     if (dy > period / 2.)
+    {
       dy -= period;
+    }
     DUV.SetY(dy);
   }
   duv = gp_Dir2d(DUV);
@@ -1325,11 +1497,15 @@ bool TopOpeBRepTool_TOOL::uvApp(const TopoDS_Face& f,
   // uv :
   bool ok = FUN_tool_paronEF(e, pare, f, uvapp);
   if (!ok)
+  {
     return false;
+  }
   gp_Vec2d dxx;
   ok = FUN_tool_getdxx(f, e, pare, dxx);
   if (!ok)
+  {
     return false;
+  }
   uvapp.Translate(dxx.Multiplied(eps));
   return true;
 }
@@ -1349,15 +1525,21 @@ bool TopOpeBRepTool_TOOL::XX(const gp_Pnt2d&    uv,
   double tol    = Precision::Confusion() * 1.e2; // NYITOL
   bool   nullng = (geomxx.Magnitude() < tol);
   if (nullng)
+  {
     return false;
+  }
 
   TopAbs_Orientation oef;
   bool               ok = FUN_tool_orientEinFFORWARD(e, f, oef);
   if (!ok)
+  {
     return false;
+  }
   XX = gp_Dir(geomxx);
   if (M_REVERSED(oef))
+  {
     XX.Reverse();
+  }
   return true;
 }
 
@@ -1368,10 +1550,14 @@ bool TopOpeBRepTool_TOOL::Nt(const gp_Pnt2d& uv, const TopoDS_Face& f, gp_Dir& n
   gp_Vec nggeom;
   bool   ok = TopOpeBRepTool_TOOL::NggeomF(uv, f, nggeom);
   if (!ok)
+  {
     return false;
+  }
   normt = gp_Dir(nggeom);
   if (M_REVERSED(f.Orientation()))
+  {
     normt.Reverse();
+  }
   return true;
 }
 
@@ -1420,9 +1606,13 @@ static bool FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec& ngF)
         double vf = bs.FirstVParameter();
 
         if (std::abs(vf - y) < tolu)
+        {
           vf += delta;
+        }
         else
+        {
           vf -= delta;
+        }
 
         // modified by NIZHNY-MZV  Fri Nov 26 12:38:55 1999
         y = vf;
@@ -1482,25 +1672,37 @@ bool TopOpeBRepTool_TOOL::Matter(const TopoDS_Face& f1,
   gp_Pnt2d uv1;
   bool     ok1 = FUN_tool_paronEF(e, par, f1, uv1, tolf1);
   if (!ok1)
+  {
     return false;
+  }
   ok1 = TopOpeBRepTool_TOOL::Nt(uv1, f1, nt1);
   if (!ok1)
+  {
     return false;
+  }
   ok1 = TopOpeBRepTool_TOOL::XX(uv1, f1, par, e, xx1);
   if (!ok1)
+  {
     return false;
+  }
 
   double   tolf2 = BRep_Tool::Tolerance(f2) * 2.e2; // nyitolxpu
   gp_Pnt2d uv2;
   bool     ok2 = FUN_tool_paronEF(e, par, f2, uv2, tolf2);
   if (!ok2)
+  {
     return false;
+  }
   ok2 = TopOpeBRepTool_TOOL::Nt(uv2, f2, nt2);
   if (!ok2)
+  {
     return false;
+  }
   ok2 = TopOpeBRepTool_TOOL::XX(uv2, f2, par, e, xx2);
   if (!ok2)
+  {
     return false;
+  }
 
   return (TopOpeBRepTool_TOOL::Matter(xx1, nt1, xx2, nt2, tola, ang));
 }
@@ -1526,11 +1728,15 @@ bool TopOpeBRepTool_TOOL::MatterKPtg(const TopoDS_Face& f1,
   gp_Dir nt1;
   bool   ok1 = TopOpeBRepTool_TOOL::Nt(uv1, f1, nt1);
   if (!ok1)
+  {
     return false;
+  }
   gp_Pnt2d uvapp1;
   ok1 = TopOpeBRepTool_TOOL::uvApp(f1, e, pare, eps, uvapp1);
   if (!ok1)
+  {
     return false;
+  }
   gp_Pnt pf1;
   FUN_tool_value(uvapp1, f1, pf1);
 
@@ -1540,7 +1746,9 @@ bool TopOpeBRepTool_TOOL::MatterKPtg(const TopoDS_Face& f1,
   gp_Pnt   pf2;
   FUN_tool_value(uv2, f2, pf2);
   if (!ok2)
+  {
     return false;
+  }
 
   gp_Dir v12(gp_Vec(pf1, pf2));
   double dot = v12.Dot(nt1);
@@ -1576,7 +1784,9 @@ bool TopOpeBRepTool_TOOL::Getstp3dF(const gp_Pnt&      p,
   double d;
   bool   ok = FUN_tool_projPonF(p, f, uv, d);
   if (!ok)
+  {
     return false;
+  }
   if (d < tol3d)
   {
     st = TopAbs_ON;
@@ -1586,12 +1796,16 @@ bool TopOpeBRepTool_TOOL::Getstp3dF(const gp_Pnt&      p,
   gp_Pnt ppr;
   ok = FUN_tool_value(uv, f, ppr);
   if (!ok)
+  {
     return false;
+  }
 
   gp_Dir ntf;
   ok = TopOpeBRepTool_TOOL::Nt(uv, f, ntf);
   if (!ok)
+  {
     return false;
+  }
 
   gp_Dir dppr(gp_Vec(p, ppr));
   double dot   = dppr.Dot(ntf);
@@ -1607,7 +1821,9 @@ void TopOpeBRepTool_TOOL::MkShell(const NCollection_List<TopoDS_Shape>& lF, Topo
   BRep_Builder BB;
   BB.MakeShell(TopoDS::Shell(She));
   for (NCollection_List<TopoDS_Shape>::Iterator li(lF); li.More(); li.Next())
+  {
     BB.Add(She, li.Value());
+  }
 }
 
 //=================================================================================================
@@ -1624,7 +1840,9 @@ bool TopOpeBRepTool_TOOL::Remove(NCollection_List<TopoDS_Shape>& loS, const Topo
       found = true;
     }
     else
+    {
       it.Next();
+    }
   }
   return found;
 }
@@ -1659,21 +1877,37 @@ void TopOpeBRepTool_TOOL::stuvF(const gp_Pnt2d& uv, const TopoDS_Face& f, int& o
   bool onuf = (std::abs(uf - u) < tolu), onul = (std::abs(ul - u) < tolu);
   bool onvf = (std::abs(vf - v) < tolv), onvl = (std::abs(vl - v) < tolv);
   if (onuf)
+  {
     onU = ONFIRST;
+  }
   if (onul)
+  {
     onU = ONLAST;
+  }
   if (onvf)
+  {
     onV = ONFIRST;
+  }
   if (onvl)
+  {
     onV = ONLAST;
+  }
   if (u < (uf - tolu))
+  {
     onU = INFFIRST;
+  }
   if (u > (ul + tolu))
+  {
     onU = SUPLAST;
+  }
   if (v < (vf - tolv))
+  {
     onV = INFFIRST;
+  }
   if (v > (vl + tolv))
+  {
     onV = SUPLAST;
+  }
 }
 
 //=================================================================================================
@@ -1731,7 +1965,9 @@ bool TopOpeBRepTool_TOOL::WireToFace(
       BB.Add(FF, wwi);
     }
     if (toreverse)
+    {
       FF.Orientation(TopAbs_REVERSED);
+    }
     lFs.Append(FF);
   }
   return true;
@@ -1758,12 +1994,16 @@ bool TopOpeBRepTool_TOOL::EdgeONFace(const double       par,
   gp_Vec tge;
   bool   ok = TopOpeBRepTool_TOOL::TggeomE(par, ed, tge);
   if (!ok)
+  {
     return false;
+  }
   gp_Vec ngf      = FUN_tool_nggeomF(uv, fa);
   double aProdDot = tge.Dot(ngf);
   bool   etgf     = std::abs(aProdDot) < tola;
   if (!etgf)
+  {
     return true;
+  }
 
   BRepAdaptor_Surface bs(fa);
   GeomAbs_SurfaceType st       = bs.GetType();
@@ -1791,15 +2031,25 @@ bool TopOpeBRepTool_TOOL::EdgeONFace(const double       par,
     gp_Dir ne;
     bool   det = true;
     if (circle)
+    {
       ne = bc.Circle().Axis().Direction();
+    }
     else if (ct == GeomAbs_Ellipse)
+    {
       ne = bc.Ellipse().Axis().Direction();
+    }
     else if (ct == GeomAbs_Hyperbola)
+    {
       ne = bc.Hyperbola().Axis().Direction();
+    }
     else if (ct == GeomAbs_Parabola)
+    {
       ne = bc.Parabola().Axis().Direction();
+    }
     else
+    {
       det = false;
+    }
     if (det)
     {
       double prod = ne.Dot(ngf);
@@ -1812,11 +2062,17 @@ bool TopOpeBRepTool_TOOL::EdgeONFace(const double       par,
     gp_Dir ne;
     bool   det = true;
     if (line)
+    {
       ne = tge;
+    }
     else if (circle)
+    {
       ne = bc.Circle().Axis().Direction();
+    }
     else
+    {
       det = false;
+    }
     gp_Dir axicy = bs.Cylinder().Axis().Direction();
 
     if (det)
@@ -1845,7 +2101,9 @@ bool TopOpeBRepTool_TOOL::EdgeONFace(const double       par,
   gp_Pnt2d ouv;
   ok = FUN_tool_parF(ed, opar, fa, ouv, tolf);
   if (!ok)
+  {
     return false;
+  }
   gp_Pnt ops = bs.Value(ouv.X(), ouv.Y());
 
   double dd = opc.Distance(ops);

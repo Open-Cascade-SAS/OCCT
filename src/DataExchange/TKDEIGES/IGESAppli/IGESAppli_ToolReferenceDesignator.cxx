@@ -81,7 +81,9 @@ bool IGESAppli_ToolReferenceDesignator::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->RefDesignatorText());
+  }
   //         nbpropertyvalues=1
   if (ent->SubordinateStatus() != 0)
   {
@@ -111,11 +113,17 @@ void IGESAppli_ToolReferenceDesignator::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
+  {
     // the level is ignored if this property is subordinate
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
+    {
       ach->AddFail("Level type: Not value/reference");
+    }
+  }
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("Number of Property Values != 1");
+  }
   // UNFINISHED
   // the level is ignored if this property is subordinate -- queried
 }
@@ -130,5 +138,5 @@ void IGESAppli_ToolReferenceDesignator::OwnDump(
   S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";
   S << "ReferenceDesignator : ";
   IGESData_DumpString(S, ent->RefDesignatorText());
-  S << std::endl;
+  S << '\n';
 }

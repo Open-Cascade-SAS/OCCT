@@ -80,6 +80,9 @@ public:
   //! Returns node at the given index.
   int Node(int theIndex) const { return myNodes.Value(theIndex); }
 
+  //! Returns mutable node-index array.
+  NCollection_Array1<int>& ChangeNodeArray() { return myNodes; }
+
   //! Sets node at the given index.
   void SetNode(int theIndex, int theNode) { myNodes.SetValue(theIndex, theNode); }
 
@@ -100,6 +103,14 @@ public:
     Standard_NullObject_Raise_if(myParameters.IsNull(),
                                  "Poly_PolygonOnTriangulation::Parameter : parameters is NULL");
     myParameters->SetValue(theIndex, theValue);
+  }
+
+  //! Returns mutable parameter array.
+  NCollection_Array1<double>& ChangeParameterArray()
+  {
+    Standard_NullObject_Raise_if(myParameters.IsNull(),
+                                 "Poly_PolygonOnTriangulation::Parameter : parameters is NULL");
+    return myParameters->ChangeArray1();
   }
 
   //! Sets the table of the parameters associated with each node in this polygon.

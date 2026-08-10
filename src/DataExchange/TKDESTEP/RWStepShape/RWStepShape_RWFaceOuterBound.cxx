@@ -29,7 +29,9 @@ void RWStepShape_RWFaceOuterBound::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "face_outer_bound"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

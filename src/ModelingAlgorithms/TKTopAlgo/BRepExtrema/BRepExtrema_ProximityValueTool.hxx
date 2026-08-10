@@ -21,7 +21,7 @@
 #include <NCollection_CellFilter.hxx>
 #include <Precision.hxx>
 
-typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
+typedef NCollection_DynamicArray<gp_XYZ> VectorOfPoint;
 
 //! Inspector for CellFilter algorithm working with gp_XYZ points in 3d space.
 //! Used in search of coincidence points with a certain tolerance.
@@ -92,10 +92,10 @@ public:
 
   //! Creates new proximity tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityValueTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&   theSet1,
+    const occ::handle<BRepExtrema_TriangleSet>&   theSet2,
+    const NCollection_DynamicArray<TopoDS_Shape>& theShapeList1,
+    const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2);
 
 public:
   //! Loads the given element sets into the proximity tool.
@@ -103,8 +103,8 @@ public:
                                         const occ::handle<BRepExtrema_TriangleSet>& theSet2);
 
   //! Loads the given list of subshapes into the proximity tool.
-  Standard_EXPORT void LoadShapeLists(const NCollection_Vector<TopoDS_Shape>& theShapeList1,
-                                      const NCollection_Vector<TopoDS_Shape>& theShapeList2);
+  Standard_EXPORT void LoadShapeLists(const NCollection_DynamicArray<TopoDS_Shape>& theShapeList1,
+                                      const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2);
 
   //! Sets number of sample points used for proximity calculation for each shape.
   //! If number is less or equal zero, all triangulation nodes are used.
@@ -144,41 +144,41 @@ private:
                             double&             theStep);
 
   //! Returns the computed proximity value from first BVH to another one.
-  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-                              const int                                   theNbSamples1,
-                              const BVH_Array3d&                          theAddVertices1,
-                              const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-                              const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-                              const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-                              const NCollection_Vector<TopoDS_Shape>&     theShapeList2,
-                              BVH_Vec3d&                                  thePoint1,
-                              BVH_Vec3d&                                  thePoint2,
-                              ProxPnt_Status&                             thePointStatus1,
-                              ProxPnt_Status&                             thePointStatus2) const;
+  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>&     theSet1,
+                              const int                                       theNbSamples1,
+                              const BVH_Array3d&                              theAddVertices1,
+                              const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1,
+                              const occ::handle<BRepExtrema_TriangleSet>&     theSet2,
+                              const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList1,
+                              const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList2,
+                              BVH_Vec3d&                                      thePoint1,
+                              BVH_Vec3d&                                      thePoint2,
+                              ProxPnt_Status&                                 thePointStatus1,
+                              ProxPnt_Status& thePointStatus2) const;
 
   //! Gets additional vertices on shapes with refining a coarser one if it's needed.
   bool getShapesAdditionalVertices();
 
   //! Gets additional vertices and their statuses on the edge with the input step.
-  bool getEdgeAdditionalVertices(const TopoDS_Edge&                  theEdge,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
-                                 NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+  bool getEdgeAdditionalVertices(const TopoDS_Edge&                        theEdge,
+                                 const double                              theStep,
+                                 BVH_Array3d&                              theAddVertices,
+                                 NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
   //! Gets additional vertices and their statuses on the face with the input step (triangle square).
-  bool getFaceAdditionalVertices(const TopoDS_Face&                  theFace,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
-                                 NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+  bool getFaceAdditionalVertices(const TopoDS_Face&                        theFace,
+                                 const double                              theStep,
+                                 BVH_Array3d&                              theAddVertices,
+                                 NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
   //! Splits the triangle recursively, halving the longest side
   //! to the area of the current triangle > input step
   void doRecurTrgSplit(const gp_Pnt (&theTrg)[3],
                        const ProxPnt_Status (&theEdgesStatus)[3],
-                       const double                        theTol,
-                       const double                        theStep,
-                       BVH_Array3d&                        theAddVertices,
-                       NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+                       const double                              theTol,
+                       const double                              theStep,
+                       BVH_Array3d&                              theAddVertices,
+                       NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
 private:
   //! Set of all mesh primitives of the 1st shape.
@@ -187,9 +187,9 @@ private:
   occ::handle<BRepExtrema_TriangleSet> mySet2;
 
   //! List of subshapes of the 1st shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList1;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList1;
   //! List of subshapes of the 2nd shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList2;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList2;
 
   //! The 1st shape.
   TopoDS_Shape myShape1;
@@ -200,8 +200,8 @@ private:
   BVH_Array3d myAddVertices2; //!< Additional vertices on the 2nd shape if its mesh is coarser.
 
   // clang-format off
-  NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape.
-  NCollection_Vector<ProxPnt_Status> myAddStatus2; //!< Status of additional vertices on the 2nd shape.
+  NCollection_DynamicArray<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape.
+  NCollection_DynamicArray<ProxPnt_Status> myAddStatus2; //!< Status of additional vertices on the 2nd shape.
   // clang-format on
 
   bool myIsInitS1; //!< Is the 1st shape initialized?

@@ -493,11 +493,13 @@ TEST_F(Geom_BezierSurface_Test, RationalSegment)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j)   = gp_Pnt(i, j, (i + j) * 0.1);
       aWeights(i, j) = 1.0 + 0.3 * ((i - 1) + (j - 1));
     }
+  }
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
   EXPECT_TRUE(aSurf->IsURational() || aSurf->IsVRational());

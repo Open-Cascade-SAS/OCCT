@@ -204,9 +204,13 @@ gp_XYZ gp_Mat::Column(const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 3, "gp_Mat::Column() - wrong index");
   if (theCol == 1)
+  {
     return gp_XYZ(myMat[0][0], myMat[1][0], myMat[2][0]);
+  }
   if (theCol == 2)
+  {
     return gp_XYZ(myMat[0][1], myMat[1][1], myMat[2][1]);
+  }
   return gp_XYZ(myMat[0][2], myMat[1][2], myMat[2][2]);
 }
 
@@ -223,9 +227,13 @@ gp_XYZ gp_Mat::Row(const int theRow) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3, "gp_Mat::Row() - wrong index");
   if (theRow == 1)
+  {
     return gp_XYZ(myMat[0][0], myMat[0][1], myMat[0][2]);
+  }
   if (theRow == 2)
+  {
     return gp_XYZ(myMat[1][0], myMat[1][1], myMat[1][2]);
+  }
   return gp_XYZ(myMat[2][0], myMat[2][1], myMat[2][2]);
 }
 
