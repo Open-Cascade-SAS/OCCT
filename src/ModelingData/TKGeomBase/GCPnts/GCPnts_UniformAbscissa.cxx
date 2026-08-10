@@ -94,7 +94,8 @@ static bool Perform(NCollection_Array1<double>& theParameters,
                     const double                theU2,
                     const double                theTotalLength,
                     int&                        theNbPoints,
-                    const double                theEPSILON)
+                    const double                theEPSILON,
+                    const double                theTol)
 {
   bool   isLocalDone = true;
   double aUU1 = std::min(theU1, theU2), aUU2 = std::max(theU1, theU2);
@@ -104,6 +105,9 @@ static bool Perform(NCollection_Array1<double>& theParameters,
   double aDelta  = (theAbscissa / theTotalLength) * (aUU2 - aUU1);
   int    anIndex = 1;
   theParameters.SetValue(anIndex, aUU1);
+  const typename GCPnts_TCurveTypes<TheCurve>::Point aPEnd = theC.Value(aUU2);
+
+  const double aTol2 = theTol * theTol;
   for (bool isNotDone = true; isNotDone;)
   {
     double aUi = theParameters.Value(anIndex) + aDelta;
@@ -125,7 +129,10 @@ static bool Perform(NCollection_Array1<double>& theParameters,
     {
       anIndex += 1;
       aUi = anAbscissaFinder.Parameter();
-      if (std::abs(aUi - aUU2) <= theEPSILON)
+      // theEPSILON is a parametric tolerance derived from theTol via Resolution(), which can be
+      // far tighter than theTol locally; also accept a point within theTol of the end in 3D.
+      if (std::abs(aUi - aUU2) <= theEPSILON
+          || (aUU2 - aUi < aDelta && theC.Value(aUi).SquareDistance(aPEnd) <= aTol2))
       {
         theParameters.SetValue(anIndex, aUU2);
         isNotDone = false;
@@ -437,7 +444,8 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve& theC,
                        theU2,
                        aL,
                        myNbPoints,
-                       anEPSILON);
+                       anEPSILON,
+                       std::max(theTol, Precision::Confusion()));
       break;
     }
   }
@@ -492,11 +500,13 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve& theC,
                                         const double    theU2,
                                         const double    theTol)
 {
-  Standard_ConstructionError_Raise_if(
-    theNbPoints <= 1,
-    "GCPnts_UniformAbscissa::Initialize() - number of points should be >= 2");
   myNbPoints = 0;
   myDone     = false;
+  if (theNbPoints <= 1)
+  {
+    // Not-done in every build, independent of whether No_Exception is defined.
+    return;
+  }
 
   const double anEPSILON = theC.Resolution(std::max(theTol, Precision::Confusion()));
   // although very similar to Initialize with Abscissa this avoid
@@ -550,7 +560,8 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve& theC,
                        theU2,
                        aL,
                        myNbPoints,
-                       anEPSILON);
+                       anEPSILON,
+                       std::max(theTol, Precision::Confusion()));
       break;
     }
   }
