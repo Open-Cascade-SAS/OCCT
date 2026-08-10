@@ -1305,12 +1305,12 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
 
     Bnd_B2d aBox;
     bool    isNotIntersect = checkIntersection(aNeighbourLink,
-                                               thePolygon,
-                                               theBoxes,
-                                               isCheckEndPoints,
-                                               isCheckPointOnEdge,
-                                               true,
-                                               aBox);
+                                            thePolygon,
+                                            theBoxes,
+                                            isCheckEndPoints,
+                                            isCheckPointOnEdge,
+                                            true,
+                                            aBox);
 
     if (isNotIntersect)
     {
