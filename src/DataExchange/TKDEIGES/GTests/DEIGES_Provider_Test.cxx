@@ -18,6 +18,7 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESFile_Read.hxx>
+#include <Interface_Check.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Application.hxx>
@@ -29,10 +30,26 @@
 
 #include <gtest/gtest.h>
 
+#include <mutex>
 #include <sstream>
 
 namespace
 {
+//! Serializes tests because the legacy IGES reader stores parser state in process-global data.
+std::mutex THE_IGES_TEST_MUTEX;
+
+class DEIGES_ProviderTest : public testing::Test
+{
+public:
+  DEIGES_ProviderTest()
+      : myLock(THE_IGES_TEST_MUTEX)
+  {
+  }
+
+private:
+  std::unique_lock<std::mutex> myLock;
+};
+
 //! Creates an IGES provider with default configuration.
 //! @return configured provider
 occ::handle<DEIGES_Provider> createProvider()
@@ -169,7 +186,7 @@ occ::handle<IGESData_IGESModel> readModel(const std::string& theContent, bool th
 
 } // namespace
 
-TEST(DEIGES_ProviderTest, BasicProperties)
+TEST_F(DEIGES_ProviderTest, BasicProperties)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   EXPECT_STREQ("IGES", aProvider->GetFormat().ToCString());
@@ -177,7 +194,7 @@ TEST(DEIGES_ProviderTest, BasicProperties)
   EXPECT_FALSE(aProvider->GetNode().IsNull());
 }
 
-TEST(DEIGES_ProviderTest, StreamShapeWriteRead)
+TEST_F(DEIGES_ProviderTest, StreamShapeWriteRead)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -206,7 +223,7 @@ TEST(DEIGES_ProviderTest, StreamShapeWriteRead)
   }
 }
 
-TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
+TEST_F(DEIGES_ProviderTest, StreamDocumentWriteRead)
 {
   const occ::handle<DEIGES_Provider>  aProvider = createProvider();
   const occ::handle<TDocStd_Document> aDocument = createDocument();
@@ -241,7 +258,7 @@ TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
   EXPECT_GT(aLabels.Length(), 0);
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
+TEST_F(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -269,7 +286,7 @@ TEST(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
   EXPECT_FALSE(aReadShape.IsNull());
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
+TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
@@ -293,7 +310,7 @@ TEST(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
   EXPECT_FALSE(aReadShape.IsNull());
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_ShiftedDExponentRecord_RestoresValue)
+TEST_F(DEIGES_ProviderTest, ReadStream_ShiftedDExponentRecord_RestoresValue)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   std::string                        anIGESContent;
@@ -311,7 +328,7 @@ TEST(DEIGES_ProviderTest, ReadStream_ShiftedDExponentRecord_RestoresValue)
   EXPECT_STREQ(aStartValue.c_str(), aModel->StartLine(1));
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
+TEST_F(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   std::string                        anIGESContent;
@@ -323,7 +340,7 @@ TEST(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
   EXPECT_GT(aModel->NbEntities(), 0);
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_LongFNESPreamble_IsSkippedAsPhysicalLine)
+TEST_F(DEIGES_ProviderTest, ReadStream_LongFNESPreamble_IsSkippedAsPhysicalLine)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   std::string                        anIGESContent;
@@ -336,7 +353,38 @@ TEST(DEIGES_ProviderTest, ReadStream_LongFNESPreamble_IsSkippedAsPhysicalLine)
   EXPECT_GT(aModel->NbEntities(), 0);
 }
 
-TEST(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
+TEST_F(DEIGES_ProviderTest, ReadStream_WhitespaceAfterTerminal_IsIgnored)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::string                        anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
+  anIGESContent += " \t  ";
+
+  const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  ASSERT_FALSE(aModel->GlobalCheck().IsNull());
+  EXPECT_EQ(aModel->GlobalCheck()->NbFails(), 0);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_WhitespaceAfterParameterSection_IsNotSyntaxFailure)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::string                        anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
+
+  const std::size_t aTerminalStart = anIGESContent.rfind('\n', anIGESContent.size() - 2);
+  ASSERT_NE(aTerminalStart, std::string::npos);
+  anIGESContent.erase(aTerminalStart + 1);
+  anIGESContent += " \t  ";
+
+  const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
+  ASSERT_FALSE(aModel.IsNull());
+  ASSERT_FALSE(aModel->GlobalCheck().IsNull());
+  EXPECT_EQ(aModel->GlobalCheck()->NbFails(), 0);
+  EXPECT_GT(aModel->GlobalCheck()->NbWarnings(), 0);
+}
+
+TEST_F(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   std::istringstream                 anInputStream;

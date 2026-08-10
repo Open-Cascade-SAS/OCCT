@@ -70,6 +70,21 @@ static void iges_unread_byte(IGES_InputState* theInput, char theByte)
   theInput->HasPendingByte = true;
 }
 
+//! Returns true when a physical record contains only ignorable horizontal whitespace.
+//! Such fragments are commonly left after the terminal record and were ignored by the legacy
+//! FILE reader when they ended directly at EOF.
+static bool iges_is_blank_record(const char* theRecord, std::size_t theRecordLength)
+{
+  for (std::size_t aByteIndex = 0; aByteIndex < theRecordLength; ++aByteIndex)
+  {
+    if (theRecord[aByteIndex] != ' ' && theRecord[aByteIndex] != '\t')
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 //! Discards bytes remaining on the current physical line.
 //! This is used only for a legacy preamble, which is defined as a physical line rather than
 //! an 80-column IGES record.
@@ -239,11 +254,15 @@ int iges_lire_stream(IGES_InputState* theInput,
   }
 
   std::size_t aRecordLength = 0;
-  int         aReadStatus   = iges_read_record(theInput, theRecord, &aRecordLength);
-  if (aReadStatus <= 0)
+  int         aReadStatus;
+  do
   {
-    return aReadStatus;
-  }
+    aReadStatus = iges_read_record(theInput, theRecord, &aRecordLength);
+    if (aReadStatus <= 0)
+    {
+      return aReadStatus;
+    }
+  } while (iges_is_blank_record(theRecord, aRecordLength));
 
   const bool isEncodedFNESRecord = iges_decode_fnes_record(theRecord, theIsFNES);
   iges_recover_shifted_real_record(theRecord, aRecordLength);
