@@ -142,6 +142,19 @@ public:
 private:
   NCollection_LinearVector<Frame> myFrames; // Container of frames.
 };
+
+//! Returns a snapshot of the neighbor link ids of the given node.
+NCollection_Array1<int> getSnapshotsOfNeighborLinkIds(
+  const IMeshData::ListOfInteger& theNeighborLinkIds)
+{
+  NCollection_Array1<int> aNeighborLinkIdsArray(theNeighborLinkIds.Size());
+  size_t                  anIndex = 0;
+  for (const auto& aLinkId : theNeighborLinkIds)
+  {
+    aNeighborLinkIdsArray.ChangeAt(anIndex++) = aLinkId;
+  }
+  return aNeighborLinkIdsArray;
+}
 } // anonymous namespace
 
 //=================================================================================================
@@ -1292,12 +1305,12 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
 
     Bnd_B2d aBox;
     bool    isNotIntersect = checkIntersection(aNeighbourLink,
-                                            thePolygon,
-                                            theBoxes,
-                                            isCheckEndPoints,
-                                            isCheckPointOnEdge,
-                                            true,
-                                            aBox);
+                                               thePolygon,
+                                               theBoxes,
+                                               isCheckEndPoints,
+                                               isCheckPointOnEdge,
+                                               true,
+                                               aBox);
 
     if (isNotIntersect)
     {
@@ -1543,31 +1556,13 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
   IMeshData::MapOfIntegerInteger&     theLoopEdges,
   IMeshData::VectorOfInteger&         theVictimNodes)
 {
-  // Snapshot the neighbor link ids before iterating: the loop body below can,
-  // via killTrianglesOnIntersectingLinks()/killLinkTriangles(), delete
-  // triangles and edges connected to theZombieNodeId, which mutates
-  // myMeshData->LinksConnectedTo(theZombieNodeId), the very list a live
-  // iterator would be walking. Continuing to use such an iterator after the
-  // list is mutated out from under it is undefined behavior. Iterating a
-  // stable copy instead, and skipping entries that have already become
-  // BRepMesh_Deleted by the time we reach them, is safe here specifically
-  // because nothing in this whole kill-cascade calls AddLink(), so no link
-  // id snapshotted here can be recycled for an unrelated edge before we get
-  // to it.
-  IMeshData::VectorOfInteger aNeighborLinkIds;
-  {
-    IMeshData::ListOfInteger::Iterator aLinksIt = myMeshData->LinksConnectedTo(theZombieNodeId);
-    for (; aLinksIt.More(); aLinksIt.Next())
-    {
-      aNeighborLinkIds.Append(aLinksIt.Value());
-    }
-  }
+  // Snapshot the neighbor link ids before iterating
+  const NCollection_Array1<int> aNeighborLinkIdsArray =
+    getSnapshotsOfNeighborLinkIds(myMeshData->LinksConnectedTo(theZombieNodeId));
 
   // Try to infect neighbor nodes
-  IMeshData::VectorOfInteger::Iterator aNeighborsIt(aNeighborLinkIds);
-  for (; aNeighborsIt.More(); aNeighborsIt.Next())
+  for (const int aNeighborLinkId : aNeighborLinkIdsArray)
   {
-    const int aNeighborLinkId = aNeighborsIt.Value();
     if (theSurvivedLinks.Contains(aNeighborLinkId))
     {
       continue;
@@ -1707,25 +1702,13 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
 
   killLinkTriangles(theLinkToCheckId, theLoopEdges);
 
-  // See killTrianglesAroundVertex() for why this snapshots the neighbor link
-  // ids before iterating rather than walking a live iterator over
-  // LinksConnectedTo(theEndPoint): the recursive call below can delete edges
-  // connected to theEndPoint via the same cascade, invalidating a live
-  // iterator over that same list.
-  IMeshData::VectorOfInteger aNeighborLinkIds;
-  {
-    IMeshData::ListOfInteger::Iterator aLinksIt = myMeshData->LinksConnectedTo(theEndPoint);
-    for (; aLinksIt.More(); aLinksIt.Next())
-    {
-      aNeighborLinkIds.Append(aLinksIt.Value());
-    }
-  }
+  // Snapshot the neighbor link ids before iterating
+  const NCollection_Array1<int> aNeighborLinkIds =
+    getSnapshotsOfNeighborLinkIds(myMeshData->LinksConnectedTo(theEndPoint));
 
-  IMeshData::VectorOfInteger::Iterator aNeighborsIt(aNeighborLinkIds);
-  for (; aNeighborsIt.More(); aNeighborsIt.Next())
+  for (const int aNeighborLinkId : aNeighborLinkIds)
   {
-    const int            aNeighborLinkId = aNeighborsIt.Value();
-    const BRepMesh_Edge& aNeighborLink   = GetEdge(aNeighborLinkId);
+    const BRepMesh_Edge& aNeighborLink = GetEdge(aNeighborLinkId);
     if (aNeighborLink.Movability() == BRepMesh_Deleted)
     {
       continue;
