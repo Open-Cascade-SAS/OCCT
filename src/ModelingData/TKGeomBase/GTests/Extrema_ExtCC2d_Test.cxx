@@ -79,10 +79,10 @@ TEST(Geom2dAPI_ExtremaCurveCurveTest, IsParallel_ForwardsToExtCC2d)
 
   occ::handle<Geom2d_TrimmedCurve> aC3 = segment2d(gp_Pnt2d(5, -5), gp_Pnt2d(5, 5));
   Geom2dAPI_ExtremaCurveCurve      aNonParallel(aC1,
-                                                aC3,
-                                                aC1->FirstParameter(),
-                                                aC1->LastParameter(),
-                                                aC3->FirstParameter(),
-                                                aC3->LastParameter());
+                                           aC3,
+                                           aC1->FirstParameter(),
+                                           aC1->LastParameter(),
+                                           aC3->FirstParameter(),
+                                           aC3->LastParameter());
   EXPECT_FALSE(aNonParallel.IsParallel());
 }

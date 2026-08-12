@@ -104,7 +104,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
   mySqDist.Clear();
   GeomAbs_CurveType type1 = Extrema_Curve2dTool::GetType(C1),
                     type2 = Extrema_Curve2dTool::GetType(*myC);
-  double            U11, U12, U21, U22, Tol = std::min(mytolc1, mytolc2);
+  double U11, U12, U21, U22, Tol = std::min(mytolc1, mytolc2);
   //  Extrema_POnCurv2d P1, P2;
   mynbext = 0;
   inverse = false;
