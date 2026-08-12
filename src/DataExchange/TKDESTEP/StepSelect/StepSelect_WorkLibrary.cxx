@@ -79,74 +79,98 @@ int StepSelect_WorkLibrary::ReadStream(const char* const                      th
   return aStatus;
 }
 
-bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
+//==================================================================================================
+
+bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& theContext) const
 {
-  //  Preparation
-  Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  DeclareAndCast(StepData_StepModel, stepmodel, ctx.Model());
-  DeclareAndCast(StepData_Protocol, stepro, ctx.Protocol());
-  if (stepmodel.IsNull() || stepro.IsNull())
+  if (occ::down_cast<StepData_StepModel>(theContext.Model()).IsNull()
+      || occ::down_cast<StepData_Protocol>(theContext.Protocol()).IsNull())
   {
     return false;
   }
 
+  Message_Messenger::StreamBuffer    aLog        = Message::SendInfo();
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
-    aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
+    aFileSystem->OpenOStream(theContext.FileName(),
+                             std::ios::out | std::ios::binary | std::ios::trunc);
 
   if (aStream.get() == nullptr)
   {
-    ctx.CCheck(0)->AddFail("Step File could not be created");
-    sout << " Step File could not be created : " << ctx.FileName() << '\n';
+    theContext.CCheck(0)->AddFail("Step File could not be created");
+    aLog << " Step File could not be created : " << theContext.FileName() << '\n';
     return false;
   }
-  sout << " Step File Name : " << ctx.FileName();
-  StepData_StepWriter SW(stepmodel);
-  sout << "(" << stepmodel->NbEntities() << " ents) ";
-
-  //  File Modifiers
-  int nbmod = ctx.NbModifiers();
-  for (int numod = 1; numod <= nbmod; numod++)
-  {
-    ctx.SetModifier(numod);
-    DeclareAndCast(StepSelect_FileModifier, filemod, ctx.FileModifier());
-    if (!filemod.IsNull())
-    {
-      filemod->Perform(ctx, SW);
-    }
-    //   (impressions de mise au point)
-    sout << " .. FileMod." << numod << filemod->Label();
-    if (ctx.IsForAll())
-    {
-      sout << " (all model)";
-    }
-    else
-    {
-      sout << " (" << ctx.NbEntities() << " entities)";
-    }
-    //    sout << std::flush;
-  }
-
-  //  Envoi
-  SW.SendModel(stepro);
-  Interface_CheckIterator chl = SW.CheckList();
-  for (chl.Start(); chl.More(); chl.Next())
-  {
-    ctx.CCheck(chl.Number())->GetMessages(chl.Value());
-  }
-  sout << " Write ";
-  bool isGood = SW.Print(*aStream);
-  sout << " Done" << '\n';
+  const bool isWritten = WriteStream(theContext, *aStream);
 
   errno = 0;
   aStream->flush();
-  isGood = aStream->good() && isGood && !errno;
+  const bool isFlushed = aStream->good() && errno == 0;
   aStream.reset();
   if (errno)
   {
-    sout << strerror(errno) << '\n';
+    aLog << strerror(errno) << '\n';
   }
-  return isGood;
+  return isWritten && isFlushed;
+}
+
+//==================================================================================================
+
+bool StepSelect_WorkLibrary::WriteStream(IFSelect_ContextWrite& theContext,
+                                         Standard_OStream&      theOStream) const
+{
+  Message_Messenger::StreamBuffer       aLog = Message::SendInfo();
+  const occ::handle<StepData_StepModel> aModel =
+    occ::down_cast<StepData_StepModel>(theContext.Model());
+  const occ::handle<StepData_Protocol> aProtocol =
+    occ::down_cast<StepData_Protocol>(theContext.Protocol());
+  if (aModel.IsNull() || aProtocol.IsNull())
+  {
+    return false;
+  }
+
+  aLog << " Step File Name : " << theContext.FileName();
+  StepData_StepWriter aWriter(aModel);
+  aLog << "(" << aModel->NbEntities() << " ents) ";
+
+  const int aNbModifiers = theContext.NbModifiers();
+  for (int aModifierIndex = 1; aModifierIndex <= aNbModifiers; ++aModifierIndex)
+  {
+    theContext.SetModifier(aModifierIndex);
+    const occ::handle<IFSelect_GeneralModifier> aModifier = theContext.FileModifier();
+    if (aModifier.IsNull())
+    {
+      continue;
+    }
+    const occ::handle<StepSelect_FileModifier> aFileModifier =
+      occ::down_cast<StepSelect_FileModifier>(aModifier);
+    if (aFileModifier.IsNull())
+    {
+      theContext.CCheck(0)->AddFail("STEP file modifier has an incompatible type");
+      return false;
+    }
+    aFileModifier->Perform(theContext, aWriter);
+    aLog << " .. FileMod." << aModifierIndex << " " << aFileModifier->Label();
+    if (theContext.IsForAll())
+    {
+      aLog << " (all model)";
+    }
+    else
+    {
+      aLog << " (" << theContext.NbEntities() << " entities)";
+    }
+  }
+
+  aWriter.SendModel(aProtocol);
+  Interface_CheckIterator aChecks = aWriter.CheckList();
+  for (aChecks.Start(); aChecks.More(); aChecks.Next())
+  {
+    theContext.CCheck(aChecks.Number())->GetMessages(aChecks.Value());
+  }
+  aLog << " Write ";
+  const bool isPrinted = aWriter.Print(theOStream);
+  aLog << " Done" << '\n';
+  return isPrinted && theOStream.good();
 }
 
 bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>& original,

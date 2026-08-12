@@ -122,10 +122,16 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
   // set the range on the DS Curves
   for (int ic = 1; ic <= DStr.NbCurves(); ic++)
   {
-    double parmin = RealLast(), parmax = RealFirst();
     const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI =
       DStr.CurveInterferences(ic);
-    for (TopOpeBRepDS_PointIterator it(LI); it.More(); it.Next())
+    TopOpeBRepDS_PointIterator it(LI);
+    if (!it.More())
+    {
+      continue;
+    }
+
+    double parmin = it.Parameter(), parmax = parmin;
+    for (it.Next(); it.More(); it.Next())
     {
       double par = it.Parameter();
       parmin     = std::min(parmin, par);

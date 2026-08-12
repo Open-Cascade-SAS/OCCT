@@ -54,10 +54,6 @@ set(OCCT_GccAna_FILES
   GccAna_Lin2dBisec.hxx
   GccAna_Lin2dTanObl.cxx
   GccAna_Lin2dTanObl.hxx
-  GccAna_Lin2dTanPar.cxx
-  GccAna_Lin2dTanPar.hxx
-  GccAna_Lin2dTanPer.cxx
-  GccAna_Lin2dTanPer.hxx
   GccAna_LinPnt2dBisec.cxx
   GccAna_LinPnt2dBisec.hxx
   GccAna_NoSolution.hxx

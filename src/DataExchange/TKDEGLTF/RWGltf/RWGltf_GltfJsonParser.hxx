@@ -472,6 +472,9 @@ private:
   Standard_EXPORT bool fillMeshData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData) const;
 
+  //! Load the binary body of a caller-owned GLB stream into memory.
+  Standard_EXPORT bool loadStreamBuffer();
+
 #endif
 protected:
   //! Print message about invalid glTF syntax.
@@ -503,6 +506,7 @@ protected:
 
   NCollection_DataMap<TCollection_AsciiString, bool>                            myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_Buffer>> myDecodedBuffers;
+  occ::handle<NCollection_Buffer>                                               myStreamBuffer;
   NCollection_DynamicArray<TopoDS_Face> myFaceList; //!< face list for loading triangulation
 
   TCollection_AsciiString myFilePath;         //!< file path

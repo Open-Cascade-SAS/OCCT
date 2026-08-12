@@ -20,13 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRepTool_PSoClassif.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <BRep_Builder.hxx>
 class gp_Pnt;
+class BRepClass3d_SolidClassifier;
 
 class TopOpeBRepTool_SolidClassifier
 {
@@ -54,7 +54,7 @@ public:
   Standard_EXPORT TopAbs_State State() const;
 
 private:
-  TopOpeBRepTool_PSoClassif                                                myPClassifier;
+  BRepClass3d_SolidClassifier*                                             myPClassifier;
   NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> myShapeClassifierMap;
   TopAbs_State                                                             myState;
   TopoDS_Shell                                                             myShell;

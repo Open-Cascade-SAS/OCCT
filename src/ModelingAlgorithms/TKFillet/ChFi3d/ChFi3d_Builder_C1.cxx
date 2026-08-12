@@ -1167,9 +1167,26 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
           continue;
         }
         anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-        if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+        if (ChFi3d_HasTransversalIntersection(anIntersector))
         {
           throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
+        }
+        bool isCorkStart  = false;
+        bool isOtherStart = false;
+        if (ChFi3d_HasCommonEndpoint(anIntersector,
+                                     aCorkPCurve,
+                                     anOtherPCurve,
+                                     tol2d,
+                                     isCorkStart,
+                                     isOtherStart))
+        {
+          const int anOtherCurveIndex = IShape == aData->IndexOfS1()
+                                          ? aData->InterferenceOnS1().LineIndex()
+                                          : aData->InterferenceOnS2().LineIndex();
+          if (anOtherCurveIndex > 0)
+          {
+            DStr.MergeEquivalentCurvePoints(ICurve, isCorkStart, anOtherCurveIndex, isOtherStart);
+          }
         }
       }
     }
@@ -1196,9 +1213,23 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
                                         anOtherCur->FirstParameter(),
                                         anOtherCur->LastParameter());
       anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-      if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+      if (ChFi3d_HasTransversalIntersection(anIntersector))
       {
         throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
+      }
+      bool isCorkStart  = false;
+      bool isOtherStart = false;
+      if (ChFi3d_HasCommonEndpoint(anIntersector,
+                                   aCorkPCurve,
+                                   anOtherPCurve,
+                                   tol2d,
+                                   isCorkStart,
+                                   isOtherStart))
+      {
+        DStr.MergeEquivalentCurvePoints(ICurve,
+                                        isCorkStart,
+                                        anOtherIntrf->Geometry(),
+                                        isOtherStart);
       }
     }
     // 31/01/02 akm ^^^

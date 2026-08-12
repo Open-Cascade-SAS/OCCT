@@ -24,6 +24,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -32,6 +33,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomLib.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -903,10 +905,16 @@ void TopOpeBRepDS_BuildTool::AddEdgeVertex(const TopoDS_Shape& Ein,
                                            TopoDS_Shape&       Eou,
                                            const TopoDS_Shape& V) const
 {
-  myBuilder.Add(Eou, V);
   TopoDS_Edge   e1 = TopoDS::Edge(Ein);
   TopoDS_Edge   e2 = TopoDS::Edge(Eou);
   TopoDS_Vertex v1 = TopoDS::Vertex(V);
+  if (e1.Orientation() == TopAbs_REVERSED)
+  {
+    v1.Reverse();
+  }
+  e1.Orientation(TopAbs_FORWARD);
+  e2.Orientation(TopAbs_FORWARD);
+  myBuilder.Add(e2, v1);
   myBuilder.Transfert(e1, e2, v1, v1);
 }
 
@@ -1250,9 +1258,9 @@ void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
     TopoDS_Face FF = TopoDS::Face(F);
     TopoDS_Edge EE = TopoDS::Edge(E);
 
-    const occ::handle<Geom2d_Curve>& PCT = PC;
-    double                           CDSmin, CDSmax;
-    bool                             rangedef = CDS.Range(CDSmin, CDSmax);
+    occ::handle<Geom2d_Curve> PCT = PC;
+    double                    CDSmin, CDSmax;
+    bool                      rangedef = CDS.Range(CDSmin, CDSmax);
 
     TopLoc_Location         L;
     double                  Cf, Cl;
@@ -1260,27 +1268,43 @@ void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
 
     if (!C.IsNull())
     {
-      bool                     deca     = (std::abs(Cf - CDSmin) > Precision::PConfusion());
-      occ::handle<Geom2d_Line> line2d   = occ::down_cast<Geom2d_Line>(PCT);
-      bool                     isline2d = !line2d.IsNull();
-      bool                     tran     = (rangedef && deca && C->IsPeriodic() && isline2d);
-      if (tran)
+      if (rangedef && (CDS.IsExistingEdgeReversed() || CDS.IsEquivalentCurveReversed()))
       {
-        TopLoc_Location                 Loc;
-        const occ::handle<Geom_Surface> Surf     = BRep_Tool::Surface(FF, Loc);
-        bool                            isUperio = Surf->IsUPeriodic();
-        bool                            isVperio = Surf->IsVPeriodic();
-        gp_Dir2d                        dir2d    = line2d->Direction();
-        double                          delta;
-        if (isUperio && dir2d.IsParallel(gp::DX2d(), Precision::Angular()))
+        occ::handle<Geom2d_TrimmedCurve> aReversedPCurve =
+          new Geom2d_TrimmedCurve(PCT, CDSmin, CDSmax);
+        aReversedPCurve->Reverse();
+        GeomLib::SameRange(Precision::PConfusion(),
+                           aReversedPCurve,
+                           aReversedPCurve->FirstParameter(),
+                           aReversedPCurve->LastParameter(),
+                           Cf,
+                           Cl,
+                           PCT);
+      }
+      else
+      {
+        bool                     deca     = (std::abs(Cf - CDSmin) > Precision::PConfusion());
+        occ::handle<Geom2d_Line> line2d   = occ::down_cast<Geom2d_Line>(PCT);
+        bool                     isline2d = !line2d.IsNull();
+        bool                     tran     = (rangedef && deca && C->IsPeriodic() && isline2d);
+        if (tran)
         {
-          delta = (CDSmin - Cf) * dir2d.X();
-          PCT->Translate(gp_Vec2d(delta, 0.));
-        }
-        else if (isVperio && dir2d.IsParallel(gp::DY2d(), Precision::Angular()))
-        {
-          delta = (CDSmin - Cf) * dir2d.Y();
-          PCT->Translate(gp_Vec2d(0., delta));
+          TopLoc_Location                 Loc;
+          const occ::handle<Geom_Surface> Surf     = BRep_Tool::Surface(FF, Loc);
+          bool                            isUperio = Surf->IsUPeriodic();
+          bool                            isVperio = Surf->IsVPeriodic();
+          gp_Dir2d                        dir2d    = line2d->Direction();
+          double                          delta;
+          if (isUperio && dir2d.IsParallel(gp::DX2d(), Precision::Angular()))
+          {
+            delta = (CDSmin - Cf) * dir2d.X();
+            PCT->Translate(gp_Vec2d(delta, 0.));
+          }
+          else if (isVperio && dir2d.IsParallel(gp::DY2d(), Precision::Angular()))
+          {
+            delta = (CDSmin - Cf) * dir2d.Y();
+            PCT->Translate(gp_Vec2d(0., delta));
+          }
         }
       }
     }

@@ -50,6 +50,15 @@
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+
+class Geom2dAdaptor_Curve;
+class Geom2dHatch_Hatcher;
+class Geom2dInt_GInter;
+
+//! Computes hatching domains using coincident segments only when no interior domain exists.
+Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,
+                                                   const int            theHatchingIndex);
+
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 extern OSD_Chronometer simul, elspine, chemine;
@@ -382,6 +391,26 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                             const occ::handle<ChFiDS_Stripe>& theStripe2,
                             TopOpeBRepDS_DataStructure&       DStr,
                             const double                      tol2d);
+
+//! Checks whether a 2D intersection contains a transversal crossing.
+//! @param[in] theIntersector intersection result to examine
+//! @return true if at least one intersection point crosses either curve
+bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector);
+
+//! Checks whether a non-transversal contact joins two curve ends.
+//! @param[in] theIntersector intersection result to examine
+//! @param[in] theFirstCurve first intersected curve
+//! @param[in] theSecondCurve second intersected curve
+//! @param[in] theTolerance parameter tolerance used to recognize curve ends
+//! @param[out] theFirstCurveStart true if the common end is the start of the first curve
+//! @param[out] theSecondCurveStart true if the common end is the start of the second curve
+//! @return true if a common endpoint is found
+bool ChFi3d_HasCommonEndpoint(const Geom2dInt_GInter&    theIntersector,
+                              const Geom2dAdaptor_Curve& theFirstCurve,
+                              const Geom2dAdaptor_Curve& theSecondCurve,
+                              const double               theTolerance,
+                              bool&                      theFirstCurveStart,
+                              bool&                      theSecondCurveStart);
 
 int ChFi3d_IndexOfSurfData(const TopoDS_Vertex&              V1,
                            const occ::handle<ChFiDS_Stripe>& CD,

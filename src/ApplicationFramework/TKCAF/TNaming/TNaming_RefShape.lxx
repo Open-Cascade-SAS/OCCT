@@ -31,7 +31,7 @@ inline TNaming_RefShape::TNaming_RefShape(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-inline void TNaming_RefShape::FirstUse(const TNaming_PtrNode& pdn)
+inline void TNaming_RefShape::FirstUse(TNaming_Node* const& pdn)
 {
   myFirstUse = pdn;
 }
@@ -45,7 +45,7 @@ inline void TNaming_RefShape::Shape(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-inline TNaming_PtrNode TNaming_RefShape::FirstUse() const
+inline TNaming_Node* TNaming_RefShape::FirstUse() const
 {
   return myFirstUse;
 }

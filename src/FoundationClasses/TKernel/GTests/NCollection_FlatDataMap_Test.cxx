@@ -15,6 +15,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <set>
 
 //=================================================================================================
@@ -264,6 +265,24 @@ TEST_F(NCollection_FlatDataMapTest, IteratorAccess)
   EXPECT_TRUE(foundValues.find("One") != foundValues.end());
   EXPECT_TRUE(foundValues.find("Two") != foundValues.end());
   EXPECT_TRUE(foundValues.find("Three") != foundValues.end());
+}
+
+TEST_F(NCollection_FlatDataMapTest, STLIterators)
+{
+  NCollection_FlatDataMap<int, int> aMap;
+  aMap.Bind(1, 10);
+  aMap.Bind(2, 20);
+  aMap.Bind(3, 30);
+
+  for (int& aValue : aMap)
+  {
+    aValue /= 10;
+  }
+
+  const NCollection_FlatDataMap<int, int>& aConstMap = aMap;
+  const auto anIt = std::find(aConstMap.cbegin(), aConstMap.cend(), 2);
+  ASSERT_NE(aConstMap.cend(), anIt);
+  EXPECT_EQ(2, *anIt);
 }
 
 TEST_F(NCollection_FlatDataMapTest, LargeDataSet)

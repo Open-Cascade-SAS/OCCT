@@ -7,8 +7,6 @@ set(OCCT_TransferBRep_FILES
   TransferBRep_BinderOfShape.cxx
   TransferBRep_BinderOfShape.hxx
 
-  TransferBRep_Reader.cxx
-  TransferBRep_Reader.hxx
 
   TransferBRep_ShapeBinder.cxx
   TransferBRep_ShapeBinder.hxx

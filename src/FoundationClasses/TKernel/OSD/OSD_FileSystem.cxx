@@ -12,8 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <OSD_FileSystem.hxx>
+
 #include <OSD_FileSystemSelector.hxx>
 #include <OSD_LocalFileSystem.hxx>
+#include <Standard_Assert.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OSD_FileSystem, Standard_Transient)
 

@@ -21,13 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
+class TopOpeBRepTool_ShapeClassifier;
 
 class TopOpeBRepDS_Filter
 {
@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                      const TopOpeBRepTool_PShapeClassifier& pClassif = nullptr);
+                                      TopOpeBRepTool_ShapeClassifier* const& pClassif = nullptr);
 
   Standard_EXPORT void ProcessInterferences();
 
@@ -60,7 +60,7 @@ public:
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopOpeBRepTool_PShapeClassifier          myPShapeClassif;
+  TopOpeBRepTool_ShapeClassifier*          myPShapeClassif;
 };
 
 #endif // _TopOpeBRepDS_Filter_HeaderFile

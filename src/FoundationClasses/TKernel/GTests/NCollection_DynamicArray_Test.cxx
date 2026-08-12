@@ -264,6 +264,8 @@ TEST(NCollection_DynamicArrayTest, STLIteratorSurvivesAppendAcrossBlocks)
     aVector.Append(anIdx + 1);
   }
 
+  EXPECT_NE(anEnd, aVector.end());
+
   int aSum = 0;
   for (; anIter != anEnd; ++anIter)
   {
@@ -272,6 +274,28 @@ TEST(NCollection_DynamicArrayTest, STLIteratorSurvivesAppendAcrossBlocks)
 
   EXPECT_EQ(10, aSum);
   EXPECT_EQ(64u, aVector.Size());
+}
+
+TEST(NCollection_DynamicArrayTest, IteratorsAcrossBlocks)
+{
+  NCollection_DynamicArray<int> aVector(size_t(2));
+  for (int anIndex = 0; anIndex < 6; ++anIndex)
+  {
+    aVector.Append(anIndex + 1);
+  }
+
+  int aSum = 0;
+  for (NCollection_DynamicArray<int>::Iterator anIterator(aVector); anIterator.More();
+       anIterator.Next())
+  {
+    aSum += anIterator.Value();
+  }
+  EXPECT_EQ(21, aSum);
+
+  const NCollection_DynamicArray<int>::iterator anBegin = aVector.begin();
+  EXPECT_EQ(4, *(anBegin + 3));
+  EXPECT_EQ(6, *(aVector.end() - 1));
+  EXPECT_EQ(aVector.end(), anBegin + 6);
 }
 
 TEST(NCollection_DynamicArrayTest, ConstSTLIteratorSurvivesAppendAcrossBlocks)
@@ -572,6 +596,23 @@ struct VecMoveOnlyType
   VecMoveOnlyType& operator=(const VecMoveOnlyType&) = delete;
 };
 
+struct VecConstructOnlyType
+{
+  int myValue = 0;
+
+  VecConstructOnlyType() = default;
+
+  explicit VecConstructOnlyType(const int theValue)
+      : myValue(theValue)
+  {
+  }
+
+  VecConstructOnlyType(const VecConstructOnlyType&)            = default;
+  VecConstructOnlyType(VecConstructOnlyType&&)                 = default;
+  VecConstructOnlyType& operator=(const VecConstructOnlyType&) = delete;
+  VecConstructOnlyType& operator=(VecConstructOnlyType&&)      = delete;
+};
+
 TEST(NCollection_DynamicArrayTest, EmplaceAppend)
 {
   NCollection_DynamicArray<VecMultiArgType> aVector;
@@ -652,6 +693,21 @@ TEST(NCollection_DynamicArrayTest, EmplaceWithMoveOnlyType)
   EXPECT_EQ(2, aVector.Length());
   EXPECT_EQ(42, aVector(0).myValue);
   EXPECT_EQ(100, aVector(1).myValue);
+}
+
+TEST(NCollection_DynamicArrayTest, ReplaceConstructOnlyType)
+{
+  NCollection_DynamicArray<VecConstructOnlyType> aVector;
+
+  aVector.EmplaceValue(0, 10);
+  aVector.EmplaceValue(0, 20);
+  EXPECT_EQ(20, aVector(0).myValue);
+
+  aVector.EmplaceValue(0, aVector(0));
+  EXPECT_EQ(20, aVector(0).myValue);
+
+  aVector.SetValue(0, VecConstructOnlyType(30));
+  EXPECT_EQ(30, aVector(0).myValue);
 }
 
 TEST(NCollection_DynamicArrayTest, EmplaceAppendMany)

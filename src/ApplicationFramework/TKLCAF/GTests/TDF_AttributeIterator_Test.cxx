@@ -58,3 +58,34 @@ TEST(TDF_AttributeIterator_Test, OCC24755_AttributeInsertionOrder)
   anIter.Next();
   EXPECT_FALSE(anIter.More()) << "Iterator should have no more attributes";
 }
+
+// caf/basic/B8: attribute order survives an undo/redo round trip.
+TEST(TDF_AttributeIterator_Test, CafBasic_B8_AttributeOrderAfterUndoRedo)
+{
+  occ::handle<TDocStd_Document> aDoc   = new TDocStd_Document("BinOcaf");
+  const TDF_Label               aLabel = aDoc->Main().FindChild(1, true);
+  aDoc->NewCommand();
+  TDataStd_Integer::Set(aLabel, 123);
+  TDataStd_Real::Set(aLabel, 123.321);
+  aDoc->NewCommand();
+
+  TDF_AttributeIterator anIterator(aLabel);
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(anIterator.Value()->IsKind(STANDARD_TYPE(TDataStd_Integer)));
+  anIterator.Next();
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(anIterator.Value()->IsKind(STANDARD_TYPE(TDataStd_Real)));
+  anIterator.Next();
+  EXPECT_FALSE(anIterator.More());
+
+  aDoc->Undo();
+  aDoc->Redo();
+  anIterator.Initialize(aLabel);
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(anIterator.Value()->IsKind(STANDARD_TYPE(TDataStd_Integer)));
+  anIterator.Next();
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(anIterator.Value()->IsKind(STANDARD_TYPE(TDataStd_Real)));
+  anIterator.Next();
+  EXPECT_FALSE(anIterator.More());
+}

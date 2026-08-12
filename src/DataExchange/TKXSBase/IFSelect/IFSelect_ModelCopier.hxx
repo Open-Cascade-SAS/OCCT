@@ -151,6 +151,21 @@ public:
                                                   const occ::handle<IFSelect_WorkLibrary>& WL,
                                                   const occ::handle<Interface_Protocol>& protocol);
 
+  //! Sends a model (defined in <G>) into one stream, without managing
+  //! remaining data, already sent files, etc. Applies the Model and
+  //! File Modifiers.
+  //! @param[out] theOStream destination stream
+  //! @param[in] theName logical stream name
+  //! @param[in] G source graph
+  //! @param[in] WL format-specific work library
+  //! @param[in] protocol source model protocol
+  //! @return checks produced while copying and writing
+  Standard_EXPORT Interface_CheckIterator SendAll(Standard_OStream&      theOStream,
+                                                  const char* const      theName,
+                                                  const Interface_Graph& G,
+                                                  const occ::handle<IFSelect_WorkLibrary>& WL,
+                                                  const occ::handle<Interface_Protocol>& protocol);
+
   //! Sends a part of a model into one file. Model is gotten from
   //! <G>, the part is defined in <iter>.
   //! Remaining data are managed and can be later be worked on.
@@ -293,6 +308,19 @@ protected:
                                    Interface_CheckIterator&                 checks) const;
 
 private:
+  //! Sends all graph entities to either a file or a stream.
+  //! @param[in] theName destination name used by the writing context
+  //! @param[out] theOStream destination stream, or nullptr for file output
+  //! @param[in] theGraph source graph
+  //! @param[in] theWorkLibrary format-specific work library
+  //! @param[in] theProtocol source model protocol
+  //! @return checks produced while copying and writing
+  Interface_CheckIterator sendAll(const char* const                        theName,
+                                  Standard_OStream* const                  theOStream,
+                                  const Interface_Graph&                   theGraph,
+                                  const occ::handle<IFSelect_WorkLibrary>& theWorkLibrary,
+                                  const occ::handle<Interface_Protocol>&   theProtocol);
+
   NCollection_Sequence<occ::handle<Interface_InterfaceModel>>               thefilemodels;
   NCollection_Sequence<TCollection_AsciiString>                             thefilenames;
   NCollection_Sequence<occ::handle<IFSelect_AppliedModifiers>>              theapplieds;

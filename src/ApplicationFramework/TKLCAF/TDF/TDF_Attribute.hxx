@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
@@ -35,6 +34,7 @@ class TDF_DeltaOnRemoval;
 class TDF_RelocationTable;
 class TDF_DataSet;
 class TDF_IDFilter;
+class TDF_LabelNode;
 
 //! A class each application has to implement. It is
 //! used to contain the application data.
@@ -397,7 +397,7 @@ private:
   //! Removes the last backup attribute, if it exists.
   Standard_EXPORT void RemoveBackup();
 
-  TDF_LabelNodePtr           myLabelNode;
+  TDF_LabelNode*             myLabelNode;
   int                        myTransaction;
   int                        mySavedTransaction;
   int                        myFlags;
