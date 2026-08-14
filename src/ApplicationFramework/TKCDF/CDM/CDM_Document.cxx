@@ -28,6 +28,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_Failure.hxx>
+#include <mutex>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
@@ -479,6 +480,8 @@ void CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData)
     aMetaData->SetDocument(this);
 
     // Update the document referencing this MetaData:
+    // MetaDataLookUpTable() is shared across threads/calls; guard the iteration.
+    std::lock_guard<std::mutex> aLookUpTableLock(Application()->MetaDataLookUpTableMutex());
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>::Iterator it(
       Application()->MetaDataLookUpTable());
     for (; it.More(); it.Next())

@@ -443,6 +443,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
 
               occ::handle<CDM_MetaData> aMetaData =
                 CDM_MetaData::LookUp(theApplication->MetaDataLookUpTable(),
+                                     theApplication->MetaDataLookUpTableMutex(),
                                      theFolder,
                                      theName,
                                      aPath,

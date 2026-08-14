@@ -24,6 +24,7 @@
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <mutex>
 
 class Message_Messenger;
 class CDM_Document;
@@ -53,6 +54,7 @@ private:
 
   Standard_EXPORT virtual occ::handle<CDM_MetaData> MetaData(
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+    std::mutex&                                                                 theMutex,
     const bool UseStorageConfiguration) const;
 
   Standard_EXPORT virtual int ReferenceIdentifier() const;
