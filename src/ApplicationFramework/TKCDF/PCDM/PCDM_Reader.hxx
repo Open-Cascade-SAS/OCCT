@@ -25,6 +25,7 @@
 #include <Standard_IStream.hxx>
 #include <Storage_Data.hxx>
 #include <Message_ProgressRange.hxx>
+#include <mutex>
 
 class CDM_Document;
 class TCollection_ExtendedString;
@@ -53,10 +54,16 @@ public:
 
   PCDM_ReaderStatus GetStatus() const;
 
+  //! Guards Read(), which is not reentrant on a shared driver instance.
+  std::mutex& Mutex() const { return myMutex; }
+
   DEFINE_STANDARD_RTTIEXT(PCDM_Reader, Standard_Transient)
 
 protected:
   PCDM_ReaderStatus myReaderStatus;
+
+private:
+  mutable std::mutex myMutex;
 };
 
 #include <PCDM_Reader.lxx>

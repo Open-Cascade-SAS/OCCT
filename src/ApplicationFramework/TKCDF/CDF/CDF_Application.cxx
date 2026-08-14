@@ -32,6 +32,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_ProgramError.hxx>
 #include <UTL.hxx>
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_Application, CDM_Application)
 
@@ -327,6 +328,8 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     try
     {
       OCC_CATCH_SIGNALS
+      // theReader is shared across threads/calls for this format; Read() is not reentrant.
+      std::lock_guard<std::mutex> aDriverLock(theReader->Mutex());
       theReader->Read(aMetaData->FileName(), aDocument, this, theFilter, theRange);
     }
     catch (Standard_Failure const& anException)
@@ -451,6 +454,8 @@ void CDF_Application::Read(Standard_IStream&                     theIStream,
   try
   {
     OCC_CATCH_SIGNALS
+    // aReader is shared across threads/calls for this format; Read() is not reentrant.
+    std::lock_guard<std::mutex> aDriverLock(aReader->Mutex());
     aReader->Read(theIStream, dData, theDocument, this, theFilter, theRange);
   }
   catch (Standard_Failure const& anException)
