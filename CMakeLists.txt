@@ -233,6 +233,18 @@ if (NOT DEFINED BUILD_DOC_RefMan)
   set (BUILD_DOC_RefMan OFF CACHE BOOL "${BUILD_DOC_RefMan_DESCR}")
 endif()
 
+if (NOT DEFINED BUILD_DOC_DotNumThreads)
+  set (BUILD_DOC_DotNumThreads "" CACHE STRING "${BUILD_DOC_DotNumThreads_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_DotBatchSize)
+  set (BUILD_DOC_DotBatchSize "" CACHE STRING "${BUILD_DOC_DotBatchSize_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_Search)
+  set (BUILD_DOC_Search ON CACHE BOOL "${BUILD_DOC_Search_DESCR}")
+endif()
+
 if (NOT DEFINED INSTALL_DOC_RefMan)
   set (INSTALL_DOC_RefMan OFF CACHE BOOL "${INSTALL_DOC_RefMan_DESCR}")
 endif()
