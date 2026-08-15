@@ -749,12 +749,27 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
 
   // Every section must have the same edge count as section 1 (nbEdges above); with
   // CheckCompatibility(false) nothing else enforces that, and the fixed-stride fill loop below
-  // would overrun `shapes` otherwise.
+  // would overrun (more edges) or silently misalign (fewer edges) otherwise.
+  auto isPunctualSection = [&](int theIndex) {
+    return (theIndex == 1 && w1Point) || (theIndex == nbSects && w2Point);
+  };
   for (int iSect = 1; iSect <= nbSects; iSect++)
   {
-    if ((iSect == 1 && w1Point) || (iSect == nbSects && w2Point))
+    if (isPunctualSection(iSect))
     {
-      continue; // a punctual end section legitimately has a different (zero) edge count
+      // A punctual section has one degenerate edge, repeated nbEdges times below -- not zero.
+      bool hasAnyEdge = false;
+      for (anExp.Init(TopoDS::Wire(myWires(iSect))); anExp.More(); anExp.Next())
+      {
+        hasAnyEdge = true;
+        break;
+      }
+      if (!hasAnyEdge)
+      {
+        myStatus = BRepFill_ThruSectionErrorStatus_ProfilesInconsistent;
+        return;
+      }
+      continue;
     }
     int aSectEdges = 0;
     for (anExp.Init(TopoDS::Wire(myWires(iSect))); anExp.More(); anExp.Next())
@@ -786,7 +801,7 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
         uClosed = false;
       }
     }
-    if ((i == 1 && w1Point) || (i == nbSects && w2Point))
+    if (isPunctualSection(i))
     {
       // if the wire is punctual
       anExp.Init(TopoDS::Wire(wire));

@@ -437,6 +437,24 @@ TEST(BRepOffsetAPI_ThruSections_Test, MismatchedSectionEdgeCountFailsCleanlyWith
     << "ThruSections should refuse mismatched section edge counts under CheckCompatibility(false)";
 }
 
+// A section with FEWER edges than section 1, when a LATER section's extra edges exactly make up
+// the shortfall, keeps the running fill-loop index in bounds the whole way through (2 + 1 + 3 = 3
+// * 2) -- no overrun, no crash, so it used to report success with every `shapes` slot filled but
+// silently misaligned to the wrong section's edges instead of failing. Same contract violation as
+// the more-edges case above, just without a crash to signal it.
+TEST(BRepOffsetAPI_ThruSections_Test, FewerSectionEdgesFailsCleanlyWithoutCheck)
+{
+  BRepOffsetAPI_ThruSections aThruSections(true, false);
+  aThruSections.CheckCompatibility(false);
+  aThruSections.AddWire(makeNGonWire(2, 5.0, 0.0));  // nbEdges = 2, from this section
+  aThruSections.AddWire(makeCircleWire(3.0, 10.0));  // 1 edge -- fewer
+  aThruSections.AddWire(makeNGonWire(3, 2.0, 20.0)); // 3 edges -- more, compensating the shortfall
+  ASSERT_NO_THROW(aThruSections.Build());
+  EXPECT_FALSE(aThruSections.IsDone())
+    << "ThruSections should refuse a fewer-edge section under CheckCompatibility(false), not "
+       "silently succeed with misaligned geometry";
+}
+
 // Regression guard for the fix above: sections that DO share the same edge count must keep
 // building under CheckCompatibility(false), including a punctual (vertex) section at either end.
 TEST(BRepOffsetAPI_ThruSections_Test, MatchingSectionEdgeCountsStillSucceedWithoutCheck)
