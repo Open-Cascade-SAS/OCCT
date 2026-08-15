@@ -124,31 +124,31 @@ private:
                       int                                     theInitUKnot,
                       int                                     theInitVKnot,
                       occ::handle<Geom_BSplineSurface>&       theSurface,
-                       size_t&                                  theNbReductions) const;
+                      size_t&                                 theNbReductions) const;
 
   //! Returns true if the isoparametric is quasi-punctual.
   bool isQPunctual(const GeomAdaptor_Surface& theAdaptor,
-                   double                    theParam,
-                   GeomAbs_IsoType           theIT,
-                   double                    theTolMin,
-                   double                    theTolMax) const;
+                   double                     theParam,
+                   GeomAbs_IsoType            theIT,
+                   double                     theTolMin,
+                   double                     theTolMax) const;
 
   struct OsculatingSurfaceData
   {
     occ::handle<Geom_BSplineSurface> Surface;
-    bool                              IsOpposite = false;
+    bool                             IsOpposite = false;
   };
 
   //! Append a second osculating surface and its derivative orientation.
   void appendOsculatingSurface2(const occ::handle<Geom_BSplineSurface>& theSurface,
-                                 size_t                                   theNbReductions);
+                                size_t                                  theNbReductions);
 
 private:
-  occ::handle<Geom_Surface>                              myBasisSurf;
-  double                                                 myTol;
+  occ::handle<Geom_Surface>                                  myBasisSurf;
+  double                                                     myTol;
   NCollection_LinearVector<occ::handle<Geom_BSplineSurface>> myOsculSurf1;
   NCollection_LinearVector<OsculatingSurfaceData>            myOsculSurf2;
-  std::array<bool, 4>                                    myAlong;
+  std::array<bool, 4>                                        myAlong;
 };
 
 #endif // _Geom_OsculatingSurface_HeaderFile
