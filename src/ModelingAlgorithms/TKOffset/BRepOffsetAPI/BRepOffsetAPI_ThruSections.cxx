@@ -747,6 +747,27 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     }
   }
 
+  // Every section must have the same edge count as section 1 (nbEdges above); with
+  // CheckCompatibility(false) nothing else enforces that, and the fixed-stride fill loop below
+  // would overrun `shapes` otherwise.
+  for (int iSect = 1; iSect <= nbSects; iSect++)
+  {
+    if ((iSect == 1 && w1Point) || (iSect == nbSects && w2Point))
+    {
+      continue; // a punctual end section legitimately has a different (zero) edge count
+    }
+    int aSectEdges = 0;
+    for (anExp.Init(TopoDS::Wire(myWires(iSect))); anExp.More(); anExp.Next())
+    {
+      aSectEdges++;
+    }
+    if (aSectEdges != nbEdges)
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_ProfilesInconsistent;
+      return;
+    }
+  }
+
   // recover the shapes
   bool                             uClosed = true;
   NCollection_Array1<TopoDS_Shape> shapes(1, nbSects * nbEdges);

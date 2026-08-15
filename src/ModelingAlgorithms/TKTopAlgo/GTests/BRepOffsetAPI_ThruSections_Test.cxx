@@ -16,6 +16,7 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
@@ -33,6 +34,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -390,4 +392,71 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
   EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
+}
+
+namespace
+{
+TopoDS_Wire makeCircleWire(double theRadius, double theZ)
+{
+  gp_Ax2                  anAxis(gp_Pnt(0, 0, theZ), gp::DZ());
+  gce_MakeCirc            aMakeCirc(anAxis, theRadius);
+  BRepBuilderAPI_MakeEdge aMakeEdge(aMakeCirc.Value());
+  return BRepBuilderAPI_MakeWire(aMakeEdge.Edge()).Wire();
+}
+
+TopoDS_Wire makeNGonWire(int theN, double theRadius, double theZ)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  for (int i = 0; i < theN; ++i)
+  {
+    double anAngle = 2.0 * M_PI * i / theN;
+    aPolygon.Add(gp_Pnt(theRadius * cos(anAngle), theRadius * sin(anAngle), theZ));
+  }
+  aPolygon.Close();
+  return aPolygon.Wire();
+}
+} // namespace
+
+// Test case: a builder reused with CheckCompatibility(false) and a later section whose edge
+// count differs from the first section used to overrun CreateSmoothed's fixed-stride `shapes`
+// array (heap corruption, observed as a SIGSEGV) instead of failing cleanly.
+TEST(BRepOffsetAPI_ThruSections_Test, MismatchedSectionEdgeCountFailsCleanlyWithoutCheck)
+{
+  BRepOffsetAPI_ThruSections aThruSections(true, false);
+  aThruSections.CheckCompatibility(false);
+  aThruSections.AddWire(makeCircleWire(5.0, 0.0));
+  aThruSections.AddWire(makeCircleWire(3.0, 10.0));
+  ASSERT_NO_THROW(aThruSections.Build());
+  ASSERT_TRUE(aThruSections.IsDone()) << "two matching circle sections should build";
+
+  // Reuse the same builder with a third section that has more edges than the first.
+  aThruSections.AddWire(makeNGonWire(3, 2.0, 20.0));
+  ASSERT_NO_THROW(aThruSections.Build())
+    << "a section edge-count mismatch must fail cleanly, not crash";
+  EXPECT_FALSE(aThruSections.IsDone())
+    << "ThruSections should refuse mismatched section edge counts under CheckCompatibility(false)";
+}
+
+// Regression guard for the fix above: sections that DO share the same edge count must keep
+// building under CheckCompatibility(false), including a punctual (vertex) section at either end.
+TEST(BRepOffsetAPI_ThruSections_Test, MatchingSectionEdgeCountsStillSucceedWithoutCheck)
+{
+  {
+    BRepOffsetAPI_ThruSections aThruSections(true, false);
+    aThruSections.CheckCompatibility(false);
+    aThruSections.AddWire(makeNGonWire(4, 5.0, 0.0));
+    aThruSections.AddWire(makeNGonWire(4, 4.0, 5.0));
+    aThruSections.AddWire(makeNGonWire(4, 3.0, 10.0));
+    aThruSections.Build();
+    EXPECT_TRUE(aThruSections.IsDone()) << "three matching 4-gon sections should build";
+  }
+  {
+    BRepOffsetAPI_ThruSections aThruSections(true, false);
+    aThruSections.CheckCompatibility(false);
+    aThruSections.AddVertex(BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+    aThruSections.AddWire(makeNGonWire(5, 4.0, 5.0));
+    aThruSections.AddWire(makeNGonWire(5, 3.0, 10.0));
+    aThruSections.Build();
+    EXPECT_TRUE(aThruSections.IsDone()) << "an apex section at the start should still build";
+  }
 }
