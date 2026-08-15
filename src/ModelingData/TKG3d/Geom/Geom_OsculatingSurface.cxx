@@ -670,33 +670,13 @@ bool Geom_OsculatingSurface::isQPunctual(const GeomAdaptor_Surface& theAdaptor,
                                          double                     theTolMin,
                                          double                     theTolMax) const
 {
-  const bool   anIsIsoV = theIT == GeomAbs_IsoV;
-  const double aPmin    = anIsIsoV ? theAdaptor.FirstUParameter() : theAdaptor.FirstVParameter();
-  const double aPmax    = anIsIsoV ? theAdaptor.LastUParameter() : theAdaptor.LastVParameter();
-  const int    aNbIntervals =
-    anIsIsoV ? theAdaptor.NbUIntervals(GeomAbs_CN) : theAdaptor.NbVIntervals(GeomAbs_CN);
-  if (aNbIntervals < 1)
-  {
-    return false;
-  }
-
-  NCollection_LocalArray<double> aIntervalStorage(static_cast<size_t>(aNbIntervals + 1));
-  NCollection_Array1<double>     aIntervals(aIntervalStorage.begin()[0], 1, aNbIntervals + 1);
-  if (anIsIsoV)
-  {
-    theAdaptor.UIntervals(aIntervals, GeomAbs_CN);
-  }
-  else
-  {
-    theAdaptor.VIntervals(aIntervals, GeomAbs_CN);
-  }
-  aIntervals.ChangeAt(0)                                 = aPmin;
-  aIntervals.ChangeAt(static_cast<size_t>(aNbIntervals)) = aPmax;
-
-  const int    aDegree      = anIsIsoV ? theAdaptor.UDegree() : theAdaptor.VDegree();
-  const size_t aNbSamples   = static_cast<size_t>(std::max(aDegree, 1));
-  double       aD1NormMax   = 0.0;
-  auto         updateD1Norm = [&](const double theParameter) {
+  const bool    anIsIsoV = theIT == GeomAbs_IsoV;
+  const double  aPmin    = anIsIsoV ? theAdaptor.FirstUParameter() : theAdaptor.FirstVParameter();
+  const double  aPmax    = anIsIsoV ? theAdaptor.LastUParameter() : theAdaptor.LastVParameter();
+  constexpr int THE_NB_SUBDIVISIONS = 10;
+  const double  aRange              = aPmax - aPmin;
+  double        aD1NormMax          = 0.0;
+  auto          updateD1Norm        = [&](const double theParameter) {
     if (anIsIsoV)
     {
       const Geom_Surface::ResD1 aResult = theAdaptor.EvalD1(theParameter, theParam);
@@ -709,19 +689,14 @@ bool Geom_OsculatingSurface::isQPunctual(const GeomAdaptor_Surface& theAdaptor,
     }
   };
 
-  for (size_t anInterval = 0; anInterval < static_cast<size_t>(aNbIntervals); ++anInterval)
+  // Keep the historical sampling density while avoiding floating-point loop progress.
+  for (int anIndex = 0; anIndex <= THE_NB_SUBDIVISIONS; ++anIndex)
   {
-    const double aFirst = aIntervals.At(anInterval);
-    const double aLast  = aIntervals.At(anInterval + 1);
-    const double aRange = aLast - aFirst;
-    for (size_t anIndex = 0; anIndex <= aNbSamples; ++anIndex)
-    {
-      const double aParameter =
-        anIndex == aNbSamples
-          ? aLast
-          : aFirst + aRange * static_cast<double>(anIndex) / static_cast<double>(aNbSamples);
-      updateD1Norm(aParameter);
-    }
+    const double aParameter =
+      anIndex == THE_NB_SUBDIVISIONS
+        ? aPmax
+        : aPmin + aRange * static_cast<double>(anIndex) / THE_NB_SUBDIVISIONS;
+    updateD1Norm(aParameter);
   }
 
   return !(aD1NormMax > theTolMax || aD1NormMax < theTolMin);
