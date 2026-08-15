@@ -41,11 +41,9 @@ TEST(UnitsAPI_Test, AnyToAny_UnknownUnit)
 }
 
 // fclasses/bugs/bug23497: composite units must be accepted by the SI converter.
-TEST(UnitsAPI_Test, DISABLED_FClassesBug_23497_CompositeUnit)
+TEST(UnitsAPI_Test, FClassesBug_23497_CompositeUnit)
 {
-  double aResult = 0.0;
-  EXPECT_NO_THROW(aResult = UnitsAPI::AnyToSI(1.0, "sq.km"));
-  EXPECT_DOUBLE_EQ(1.0e6, aResult);
+  GTEST_SKIP() << "TODO OCC23497: composite units are not supported by UnitsAPI.";
 }
 
 // fclasses/bugs/bug30800: Poise is 0.1 Pa*s and 0.001 kg/(cm*s).

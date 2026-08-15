@@ -309,12 +309,12 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug24909_2_ClosedCircularSpine)
   }
   catch (const Standard_Failure&)
   {
-    GTEST_SKIP() << "The historical closed-spine sweep still reports NotDone.";
+    GTEST_SKIP() << "TODO OCC24909: the historical closed-spine sweep still reports NotDone.";
   }
 
   if (!aSweep.IsDone())
   {
-    GTEST_SKIP() << "The closed-spine sweep did not complete on this platform.";
+    GTEST_SKIP() << "TODO OCC24909: the closed-spine sweep did not complete on this platform.";
   }
 
   EXPECT_EQ(aSweep.GetStatus(), BRepBuilderAPI_PipeDone);
