@@ -15,14 +15,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectNamed, StepData_SelectMember)
 
-//  Definitions taken from Field:
-#define KindInteger 1
-#define KindBoolean 2
-#define KindLogical 3
-#define KindEnum 4
-#define KindReal 5
-#define KindString 6
-
 StepData_SelectNamed::StepData_SelectNamed()
 {
   theval.Clear();
@@ -58,7 +50,7 @@ StepData_Field& StepData_SelectNamed::CField()
 
 int StepData_SelectNamed::Kind() const
 {
-  return theval.Kind();
+  return static_cast<int>(theval.Kind());
 }
 
 void StepData_SelectNamed::SetKind(const int kind)

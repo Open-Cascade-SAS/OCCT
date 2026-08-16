@@ -21,9 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <StepData_Logical.hxx>
-#include <Standard_CString.hxx>
+
+#include <cstdint>
+
 class StepData_SelectMember;
 
 //! Defines a generally defined Field for STEP data : can be used
@@ -41,6 +44,60 @@ class StepData_Field
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Encoded kind values used by StepData_Field and StepData_SelectMember.
+  //! Numeric values are kept compatible with the historical StepData API.
+  enum class FieldKind : uint8_t
+  {
+    Undefined = 0,
+    Integer   = 1,
+    Boolean   = 2,
+    Logical   = 3,
+    Enum      = 4,
+    Real      = 5,
+    String    = 6,
+    Entity    = 7,
+    Any       = 8,
+    Derived   = 9,
+
+    Select = 16,
+    List   = 64,
+    List2  = 128
+  };
+
+  //! Helpers for manipulating encoded field kinds.
+  struct KindTools
+  {
+    static constexpr int THE_TYPE_MASK   = 0x0F;
+    static constexpr int THE_ARITY_MASK  = 0xC0;
+    static constexpr int THE_ARITY_SHIFT = 6;
+
+    static constexpr int ToInt(const FieldKind theKind) noexcept
+    {
+      return static_cast<int>(theKind);
+    }
+
+    static constexpr FieldKind FromInt(const int theKind) noexcept
+    {
+      return theKind >= 0 && theKind <= 0xFF ? static_cast<FieldKind>(theKind)
+                                             : FieldKind::Undefined;
+    }
+
+    static constexpr FieldKind Combine(const FieldKind theLeft, const FieldKind theRight) noexcept
+    {
+      return FromInt(ToInt(theLeft) | ToInt(theRight));
+    }
+
+    static constexpr int Bits(const FieldKind theKind, const int theMask) noexcept
+    {
+      return ToInt(theKind) & theMask;
+    }
+
+    static constexpr FieldKind TypeOf(const FieldKind theKind) noexcept
+    {
+      return FromInt(Bits(theKind, THE_TYPE_MASK));
+    }
+  };
 
   //! Creates a Field, empty ("no value defined")
   Standard_EXPORT StepData_Field();
@@ -62,7 +119,10 @@ public:
   //! Clears the field, to set it as "no value defined"
   //! Just before SetList, predeclares it as "any"
   //! A Kind can be directly set here to declare a type
-  Standard_EXPORT void Clear(const int kind = 0);
+  Standard_EXPORT void Clear(const FieldKind theKind = FieldKind::Undefined);
+
+  //! Clears the field using the legacy encoded kind value.
+  Standard_EXPORT void Clear(const int theKind);
 
   //! Codes a Field as derived (no proper value)
   Standard_EXPORT void SetDerived();
@@ -123,7 +183,7 @@ public:
   Standard_EXPORT void ClearItem(const int num);
 
   //! Internal access to an Integer Value for a list, plus its kind
-  Standard_EXPORT void SetInt(const int num, const int val, const int kind);
+  Standard_EXPORT void SetInt(const int num, const int val, const FieldKind kind);
 
   //! Sets an Integer Value for a list (rank num)
   //! (recognizes a SelectMember)
@@ -148,12 +208,12 @@ public:
   //! Returns the kind of an item in a list or double list
   //! It is the kind of the list, except if it is "Any", in such a
   //! case the true kind is determined and returned
-  Standard_EXPORT int ItemKind(const int n1 = 1, const int n2 = 1) const;
+  Standard_EXPORT FieldKind ItemKind(const int n1 = 1, const int n2 = 1) const;
 
   //! Returns the kind of the field
   //! <type> True (D) : returns only the type itself
   //! else, returns the complete kind
-  Standard_EXPORT int Kind(const bool type = true) const;
+  Standard_EXPORT FieldKind Kind(const bool type = true) const;
 
   Standard_EXPORT int Arity() const;
 
@@ -182,7 +242,7 @@ public:
   Standard_EXPORT occ::handle<Standard_Transient> Transient() const;
 
 private:
-  int                             thekind;
+  FieldKind                       thekind;
   int                             theint;
   double                          thereal;
   occ::handle<Standard_Transient> theany;

@@ -11,10 +11,92 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_HArray1.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_SelectArrReal.hxx>
+#include <StepData_SelectInt.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+//=================================================================================================
+
+TCollection_AsciiString writeField(const StepData_Field& theField)
+{
+  occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  StepData_StepWriter             aWriter(aModel);
+  aWriter.StartEntity("TEST");
+  aWriter.SendField(theField, {});
+  aWriter.EndEntity();
+  return TCollection_AsciiString(aWriter.Line(1)->ToCString());
+}
+} // namespace
+
+TEST(StepData_StepWriterTest, SendField_UnsupportedValuesWriteUndefined)
+{
+  StepData_Field aField;
+  aField.Clear(10);
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+
+  aField.Clear(StepData_Field::FieldKind::Select);
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+
+  aField.SetEnum(-1, "");
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+}
+
+TEST(StepData_StepWriterTest, SendSelect_UnsupportedKindWritesUndefined)
+{
+  occ::handle<StepData_SelectInt> aSelect = new StepData_SelectInt;
+  aSelect->SetKind(static_cast<int>(StepData_Field::FieldKind::Any));
+
+  StepData_Field aField;
+  aField.SetSelectMember(aSelect);
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+
+  aSelect->SetKind(261);
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+}
+
+TEST(StepData_StepWriterTest, SendSelect_RealArrayPreservesBoundsAndParameterPosition)
+{
+  occ::handle<NCollection_HArray1<double>> anArray = new NCollection_HArray1<double>(-2, 0);
+  anArray->SetValue(-2, 1.0);
+  anArray->SetValue(-1, 2.0);
+  anArray->SetValue(0, 3.0);
+
+  occ::handle<StepData_SelectArrReal> aSelect = new StepData_SelectArrReal;
+  aSelect->SetArrReal(anArray);
+
+  occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  StepData_StepWriter             aWriter(aModel);
+  aWriter.StartEntity("TEST");
+  aWriter.Send(9);
+  aWriter.SendSelect(aSelect, {});
+  aWriter.Send(10);
+  aWriter.EndEntity();
+  EXPECT_STREQ(aWriter.Line(1)->ToCString(), "TEST(9,(1.,2.,3.),10);");
+
+  aSelect->SetName("VALUES");
+  StepData_StepWriter aNamedWriter(aModel);
+  aNamedWriter.StartEntity("TEST");
+  aNamedWriter.SendSelect(aSelect, {});
+  aNamedWriter.EndEntity();
+  EXPECT_STREQ(aNamedWriter.Line(1)->ToCString(), "TEST(VALUES((1.,2.,3.)));");
+}
+
+TEST(StepData_StepWriterTest, SendSelect_NullRealArrayWritesUndefined)
+{
+  occ::handle<StepData_SelectArrReal> aSelect = new StepData_SelectArrReal;
+
+  StepData_Field aField;
+  aField.SetSelectMember(aSelect);
+  EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+}
 
 // Test CleanTextForSend with basic character escaping
 TEST(StepData_StepWriterTest, CleanTextForSend_BasicEscaping)
