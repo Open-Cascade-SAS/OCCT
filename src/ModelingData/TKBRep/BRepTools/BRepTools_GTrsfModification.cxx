@@ -25,10 +25,10 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomLib.hxx>
 #include <gp_GTrsf.hxx>
+#include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Quaternion.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
@@ -36,27 +36,111 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
+#include <algorithm>
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_GTrsfModification, BRepTools_Modification)
+
+namespace
+{
+
+//=================================================================================================
+
+gp_Mat vectorialPart(const gp_GTrsf& theGTrsf)
+{
+  // Value() also includes the scale stored separately by a converted gp_Trsf.
+  return gp_Mat(theGTrsf.Value(1, 1),
+                theGTrsf.Value(1, 2),
+                theGTrsf.Value(1, 3),
+                theGTrsf.Value(2, 1),
+                theGTrsf.Value(2, 2),
+                theGTrsf.Value(2, 3),
+                theGTrsf.Value(3, 1),
+                theGTrsf.Value(3, 2),
+                theGTrsf.Value(3, 3));
+}
+
+//==================================================================================================
+
+double maxAbsCoefficient(const gp_Mat& theMatrix)
+{
+  return std::max({std::abs(theMatrix.Value(1, 1)),
+                   std::abs(theMatrix.Value(1, 2)),
+                   std::abs(theMatrix.Value(1, 3)),
+                   std::abs(theMatrix.Value(2, 1)),
+                   std::abs(theMatrix.Value(2, 2)),
+                   std::abs(theMatrix.Value(2, 3)),
+                   std::abs(theMatrix.Value(3, 1)),
+                   std::abs(theMatrix.Value(3, 2)),
+                   std::abs(theMatrix.Value(3, 3))});
+}
+
+//==================================================================================================
+
+double transformationScale(const gp_GTrsf& theGTrsf)
+{
+  return maxAbsCoefficient(vectorialPart(theGTrsf));
+}
+
+//==================================================================================================
+
+gp_Mat normalizedMatrix(const gp_Mat& theMatrix, const double theScale)
+{
+  // Divide the coefficients directly for scales whose reciprocal would overflow.
+  if (theScale == 0.0)
+  {
+    return theMatrix;
+  }
+  return gp_Mat(theMatrix.Value(1, 1) / theScale,
+                theMatrix.Value(1, 2) / theScale,
+                theMatrix.Value(1, 3) / theScale,
+                theMatrix.Value(2, 1) / theScale,
+                theMatrix.Value(2, 2) / theScale,
+                theMatrix.Value(2, 3) / theScale,
+                theMatrix.Value(3, 1) / theScale,
+                theMatrix.Value(3, 2) / theScale,
+                theMatrix.Value(3, 3) / theScale);
+}
+
+//==================================================================================================
+
+gp_Mat normalTransformation(const gp_Mat& theNormalizedVectorialPart, const bool theIsNegative)
+{
+  const gp_XYZ aCol1 = theNormalizedVectorialPart.Column(1);
+  const gp_XYZ aCol2 = theNormalizedVectorialPart.Column(2);
+  const gp_XYZ aCol3 = theNormalizedVectorialPart.Column(3);
+  gp_Mat       aNormalMat(aCol2.Crossed(aCol3), aCol3.Crossed(aCol1), aCol1.Crossed(aCol2));
+  if (theIsNegative)
+  {
+    aNormalMat *= -1.0;
+  }
+  return aNormalMat;
+}
+
+//=================================================================================================
+
+gp_GTrsf representationTransformation(const gp_GTrsf&        theGTrsf,
+                                      const TopLoc_Location& theSourceLocation,
+                                      const TopLoc_Location& theTargetLocation)
+{
+  // Convert source coordinates to world, apply the transform, then enter the target frame.
+  // Store full linear matrices: gp_GTrsf::Multiply() uses them directly for general transforms.
+  const gp_Trsf  aTargetInverse = theTargetLocation.Transformation().Inverted();
+  const gp_Trsf& aSource        = theSourceLocation.Transformation();
+  gp_GTrsf aLocalTrsf(aTargetInverse.VectorialPart(), aTargetInverse.TranslationPart());
+  aLocalTrsf.Multiply(gp_GTrsf(vectorialPart(theGTrsf), theGTrsf.TranslationPart()));
+  aLocalTrsf.Multiply(gp_GTrsf(aSource.VectorialPart(), aSource.TranslationPart()));
+  return aLocalTrsf;
+}
+} // namespace
 
 //=================================================================================================
 
 BRepTools_GTrsfModification::BRepTools_GTrsfModification(const gp_GTrsf& T)
-    : myGTrsf(T)
+    : myGTrsf(T),
+      myGScale(transformationScale(T))
 {
-  // use the sup norm as the maximum dilation for the tolerance
-  double loc1, loc2, loc3, loc4;
-
-  loc1 = std::max(std::abs(T.Value(1, 1)), std::abs(T.Value(1, 2)));
-  loc2 = std::max(std::abs(T.Value(2, 1)), std::abs(T.Value(2, 2)));
-  loc3 = std::max(std::abs(T.Value(3, 1)), std::abs(T.Value(3, 2)));
-  loc4 = std::max(std::abs(T.Value(1, 3)), std::abs(T.Value(2, 3)));
-
-  loc1 = std::max(loc1, loc2);
-  loc2 = std::max(loc3, loc4);
-
-  loc1 = std::max(loc1, loc2);
-
-  myGScale = std::max(loc1, std::abs(T.Value(3, 3)));
+  // Keep the field for binary compatibility. Tolerance callbacks use the current GTrsf().
 }
 
 //=================================================================================================
@@ -75,21 +159,17 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
                                              bool&                      RevWires,
                                              bool&                      RevFace)
 {
-  gp_GTrsf gtrsf;
-  gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
-  gtrsf.SetTranslationPart(myGTrsf.TranslationPart());
   S = BRep_Tool::Surface(F, L);
   if (S.IsNull())
   {
     // processing the case when there is no geometry
     return false;
   }
-  S = occ::down_cast<Geom_Surface>(S->Copy());
-
-  Tol = BRep_Tool::Tolerance(F);
-  Tol *= myGScale;
+  const gp_Mat aLinear = vectorialPart(myGTrsf);
+  const double aScale  = maxAbsCoefficient(aLinear);
+  Tol      = BRep_Tool::Tolerance(F) * aScale;
   RevWires = false;
-  RevFace  = myGTrsf.IsNegative();
+  RevFace  = normalizedMatrix(aLinear, aScale).Determinant() < 0.0;
   S        = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
 
   occ::handle<Standard_Type> TheTypeS = S->DynamicType();
@@ -100,10 +180,9 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
     {
       for (int j = 1; j <= S2->NbVPoles(); j++)
       {
-        gp_XYZ coor(S2->Pole(i, j).Coord());
-        gtrsf.Transforms(coor);
-        gp_Pnt P(coor);
-        S2->SetPole(i, j, P);
+        gp_Pnt aPole = S2->Pole(i, j);
+        myGTrsf.Transforms(aPole.ChangeCoord());
+        S2->SetPole(i, j, aPole);
       }
     }
   }
@@ -114,10 +193,9 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
     {
       for (int j = 1; j <= S2->NbVPoles(); j++)
       {
-        gp_XYZ coor(S2->Pole(i, j).Coord());
-        gtrsf.Transforms(coor);
-        gp_Pnt P(coor);
-        S2->SetPole(i, j, P);
+        gp_Pnt aPole = S2->Pole(i, j);
+        myGTrsf.Transforms(aPole.ChangeCoord());
+        S2->SetPole(i, j, aPole);
       }
     }
   }
@@ -137,26 +215,22 @@ bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&       E,
                                            TopLoc_Location&         L,
                                            double&                  Tol)
 {
-  double   f, l;
-  gp_GTrsf gtrsf;
-  gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
-  gtrsf.SetTranslationPart(myGTrsf.TranslationPart());
-  Tol = BRep_Tool::Tolerance(E) * myGScale;
+  double f, l;
+  Tol = BRep_Tool::Tolerance(E) * transformationScale(myGTrsf);
   C   = BRep_Tool::Curve(E, L, f, l);
 
   if (!C.IsNull())
   {
-    C = occ::down_cast<Geom_Curve>(C->Copy()->Transformed(L.Transformation()));
+    C = occ::down_cast<Geom_Curve>(C->Transformed(L.Transformation()));
     occ::handle<Standard_Type> TheTypeC = C->DynamicType();
     if (TheTypeC == STANDARD_TYPE(Geom_BSplineCurve))
     {
       occ::handle<Geom_BSplineCurve> C2 = occ::down_cast<Geom_BSplineCurve>(C);
       for (int i = 1; i <= C2->NbPoles(); i++)
       {
-        gp_XYZ coor(C2->Pole(i).Coord());
-        gtrsf.Transforms(coor);
-        gp_Pnt P(coor);
-        C2->SetPole(i, P);
+        gp_Pnt aPole = C2->Pole(i);
+        myGTrsf.Transforms(aPole.ChangeCoord());
+        C2->SetPole(i, aPole);
       }
     }
     else if (TheTypeC == STANDARD_TYPE(Geom_BezierCurve))
@@ -164,10 +238,9 @@ bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&       E,
       occ::handle<Geom_BezierCurve> C2 = occ::down_cast<Geom_BezierCurve>(C);
       for (int i = 1; i <= C2->NbPoles(); i++)
       {
-        gp_XYZ coor(C2->Pole(i).Coord());
-        gtrsf.Transforms(coor);
-        gp_Pnt P(coor);
-        C2->SetPole(i, P);
+        gp_Pnt aPole = C2->Pole(i);
+        myGTrsf.Transforms(aPole.ChangeCoord());
+        C2->SetPole(i, aPole);
       }
     }
     else
@@ -185,8 +258,7 @@ bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&       E,
 bool BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol)
 {
   gp_Pnt Pnt = BRep_Tool::Pnt(V);
-  Tol        = BRep_Tool::Tolerance(V);
-  Tol *= myGScale;
+  Tol        = BRep_Tool::Tolerance(V) * transformationScale(myGTrsf);
   gp_XYZ coor(Pnt.Coord());
   myGTrsf.Transforms(coor);
   P.SetXYZ(coor);
@@ -203,9 +275,7 @@ bool BRepTools_GTrsfModification::NewCurve2d(const TopoDS_Edge& E,
                                              occ::handle<Geom2d_Curve>& C,
                                              double&                    Tol)
 {
-  TopLoc_Location loc;
-  Tol = BRep_Tool::Tolerance(E);
-  Tol *= myGScale;
+  Tol = BRep_Tool::Tolerance(E) * transformationScale(myGTrsf);
   double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (C.IsNull())
@@ -224,9 +294,8 @@ bool BRepTools_GTrsfModification::NewParameter(const TopoDS_Vertex& V,
                                                double&              P,
                                                double&              Tol)
 {
-  Tol = BRep_Tool::Tolerance(V);
-  Tol *= myGScale;
-  P = BRep_Tool::Parameter(V, E);
+  Tol = BRep_Tool::Tolerance(V) * transformationScale(myGTrsf);
+  P   = BRep_Tool::Parameter(V, E);
   return true;
 }
 
@@ -255,14 +324,14 @@ bool BRepTools_GTrsfModification::NewTriangulation(
     return false;
   }
 
-  gp_GTrsf aGTrsf;
-  aGTrsf.SetVectorialPart(myGTrsf.VectorialPart());
-  aGTrsf.SetTranslationPart(myGTrsf.TranslationPart());
-  aGTrsf.Multiply(aLoc.Transformation());
+  const gp_GTrsf aGTrsf = representationTransformation(myGTrsf, aLoc, theFace.Location());
+  const gp_Mat&  aLinear = aGTrsf.VectorialPart();
+  const gp_Mat   aNormalizedVectorialPart = normalizedMatrix(aLinear, maxAbsCoefficient(aLinear));
+  const bool     aIsNegative              = aNormalizedVectorialPart.Determinant() < 0.0;
 
   theTriangulation = theTriangulation->Copy();
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
-  theTriangulation->Deflection(theTriangulation->Deflection() * std::abs(myGScale));
+  theTriangulation->Deflection(theTriangulation->Deflection() * transformationScale(myGTrsf));
   // apply transformation to 3D nodes
   for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
   {
@@ -271,7 +340,7 @@ bool BRepTools_GTrsfModification::NewTriangulation(
     theTriangulation->SetNode(anInd, aP);
   }
   // modify triangles orientation in case of mirror transformation
-  if (myGScale < 0.0)
+  if (aIsNegative)
   {
     for (int anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
     {
@@ -285,16 +354,22 @@ bool BRepTools_GTrsfModification::NewTriangulation(
   // modify normals
   if (theTriangulation->HasNormals())
   {
+    const gp_Mat aNormalMat = normalTransformation(aNormalizedVectorialPart, aIsNegative);
     for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
     {
-      gp_Dir aNormal = theTriangulation->Normal(anInd);
-      gp_Mat aMat    = aGTrsf.VectorialPart();
-      aMat.SetDiagonal(1., 1., 1.);
-      gp_Trsf aTrsf;
-      aTrsf.SetForm(gp_Rotation);
-      (gp_Mat&)aTrsf.HVectorialPart() = aMat;
-      aNormal.Transform(aTrsf);
-      theTriangulation->SetNormal(anInd, aNormal);
+      gp_XYZ aNormal = theTriangulation->Normal(anInd).XYZ();
+      aNormal.Multiply(aNormalMat);
+      const double aScale =
+        std::max({std::abs(aNormal.X()), std::abs(aNormal.Y()), std::abs(aNormal.Z())});
+      if (aScale == 0.0)
+      {
+        // A collapsed tangent plane has no transformed normal; preserve the source cache value.
+        continue;
+      }
+      theTriangulation->SetNormal(anInd,
+                                 gp_Dir(aNormal.X() / aScale,
+                                        aNormal.Y() / aScale,
+                                        aNormal.Z() / aScale));
     }
   }
 
@@ -313,13 +388,10 @@ bool BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&           theEdg
     return false;
   }
 
-  gp_GTrsf aGTrsf;
-  aGTrsf.SetVectorialPart(myGTrsf.VectorialPart());
-  aGTrsf.SetTranslationPart(myGTrsf.TranslationPart());
-  aGTrsf.Multiply(aLoc.Transformation());
+  const gp_GTrsf aGTrsf = representationTransformation(myGTrsf, aLoc, theEdge.Location());
 
   thePoly = thePoly->Copy();
-  thePoly->Deflection(thePoly->Deflection() * std::abs(myGScale));
+  thePoly->Deflection(thePoly->Deflection() * transformationScale(myGTrsf));
   // transform nodes
   NCollection_Array1<gp_Pnt>& aNodesArray = thePoly->ChangeNodes();
   for (int anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
@@ -349,5 +421,5 @@ bool BRepTools_GTrsfModification::NewPolygonOnTriangulation(
   {
     thePoly = thePoly->Copy();
   }
-  return true;
+  return !thePoly.IsNull();
 }

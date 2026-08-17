@@ -62,4 +62,6 @@ set(OCCT_TKBRep_GTests_FILES
   TopoDS_Edge_Test.cxx
   TopoDS_Iterator_Test.cxx
   TopoDS_TShape_Test.cxx
+  BRepTools_TrsfModification_Test.cxx
+  BRepTools_GTrsfModification_Test.cxx
 )
