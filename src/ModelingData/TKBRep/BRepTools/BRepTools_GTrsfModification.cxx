@@ -63,7 +63,15 @@ double maxAbsCoefficient(const gp_GTrsf& theGTrsf)
 
 gp_Mat normalizedVectorialPart(const gp_GTrsf& theGTrsf, const double theScale)
 {
-  gp_Mat aMat = theGTrsf.VectorialPart();
+  gp_Mat aMat(theGTrsf.Value(1, 1),
+              theGTrsf.Value(1, 2),
+              theGTrsf.Value(1, 3),
+              theGTrsf.Value(2, 1),
+              theGTrsf.Value(2, 2),
+              theGTrsf.Value(2, 3),
+              theGTrsf.Value(3, 1),
+              theGTrsf.Value(3, 2),
+              theGTrsf.Value(3, 3));
   if (theScale > 0.0)
   {
     aMat.Multiply(1.0 / theScale);
