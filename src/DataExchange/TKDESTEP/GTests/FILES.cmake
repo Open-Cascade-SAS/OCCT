@@ -5,6 +5,7 @@ set(OCCT_TKDESTEP_GTests_FILES
     DESTEP_Provider_Test.cxx
     STEPControl_ActorRead_Test.cxx
     STEPConstruct_RenderingProperties_Test.cxx
+    StepData_SelectMember_Test.cxx
     StepData_StepWriter_Test.cxx
     StepTidy_BaseTestFixture.pxx
     StepTidy_Axis2Placement3dReducer_Test.cxx
@@ -13,11 +14,14 @@ set(OCCT_TKDESTEP_GTests_FILES
     StepTidy_CartesianPointReducer_Test.cxx
     StepTidy_CircleReducer_Test.cxx
     StepTidy_DirectionReducer_Test.cxx
+    StepData_FieldSharing_Test.cxx
     StepTidy_LineReducer_Test.cxx
+    StepData_FieldCopy_Test.cxx
     StepTidy_PlaneReducer_Test.cxx
     StepTidy_Merger_Test.cxx
     StepTidy_VectorReducer_Test.cxx
     StepToTopoDS_TranslateFace_Test.cxx
     StepTransientReplacements_Test.cxx
     STEPCAFControl_Controller_Test.cxx
+    StepData_FieldArray_Test.cxx
 )

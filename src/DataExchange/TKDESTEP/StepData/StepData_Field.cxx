@@ -68,7 +68,7 @@ StepData_Field::StepData_Field(const StepData_Field& other, const bool copy)
   }
   thekind = other.Kind(false);
   theint  = other.Int();
-  thereal = other.Real();
+  thereal = other.thereal;
   theany  = other.Transient();
 }
 
@@ -76,7 +76,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
 {
   thekind = other.Kind(false);
   theint  = other.Int();
-  thereal = other.Real();
+  thereal = other.thereal;
   theany  = other.Transient();
   if (thekind == KindString || thekind == KindEnum)
   {
@@ -125,57 +125,43 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
   //    Les listes ...
   if ((thekind & KindArity) == KindList)
   {
-    int i, low, up;
-    DeclareAndCast(NCollection_HArray1<int>, hi, theany);
-    if (!hi.IsNull())
+    const occ::handle<NCollection_HArray1<int>> anIntegers =
+      occ::down_cast<NCollection_HArray1<int>>(theany);
+    if (!anIntegers.IsNull())
     {
-      low                                       = hi->Lower();
-      up                                        = hi->Upper();
-      occ::handle<NCollection_HArray1<int>> hi2 = new NCollection_HArray1<int>(low, up);
-      for (i = low; i <= up; i++)
-      {
-        hi2->SetValue(i, hi->Value(i));
-      }
+      theany = new NCollection_HArray1<int>(anIntegers->Array1());
       return;
     }
-    DeclareAndCast(NCollection_HArray1<double>, hr, theany);
-    if (!hr.IsNull())
+    const occ::handle<NCollection_HArray1<double>> aReals =
+      occ::down_cast<NCollection_HArray1<double>>(theany);
+    if (!aReals.IsNull())
     {
-      low                                          = hr->Lower();
-      up                                           = hr->Upper();
-      occ::handle<NCollection_HArray1<double>> hr2 = new NCollection_HArray1<double>(low, up);
-      for (i = low; i <= up; i++)
-      {
-        hr2->SetValue(i, hr->Value(i));
-      }
+      theany = new NCollection_HArray1<double>(aReals->Array1());
       return;
     }
-    DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
-    if (!hs.IsNull())
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aStrings =
+      occ::down_cast<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>(theany);
+    if (!aStrings.IsNull())
     {
-      low = hs->Lower();
-      up  = hs->Upper();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> hs2 =
-        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(low, up);
-      for (i = low; i <= up; i++)
+      const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aCopy =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(aStrings->Lower(),
+                                                                     aStrings->Upper());
+      for (size_t anOffset = 0; anOffset < aStrings->Size(); ++anOffset)
       {
-        hs2->SetValue(i, new TCollection_HAsciiString(hs->Value(i)));
+        const occ::handle<TCollection_HAsciiString>& aString = aStrings->At(anOffset);
+        if (!aString.IsNull())
+        {
+          aCopy->ChangeAt(anOffset) = new TCollection_HAsciiString(aString->ToCString());
+        }
       }
+      theany = aCopy;
       return;
     }
-    DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
-    if (!ht.IsNull())
+    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> anItems =
+      occ::down_cast<NCollection_HArray1<occ::handle<Standard_Transient>>>(theany);
+    if (!anItems.IsNull())
     {
-      low = ht->Lower();
-      up  = ht->Upper();
-      occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht2 =
-        new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
-      //  Should handle SelectMember cases...
-      for (i = low; i <= up; i++)
-      {
-        ht2->SetValue(i, ht->Value(i));
-      }
-      return;
+      theany = new NCollection_HArray1<occ::handle<Standard_Transient>>(anItems->Array1());
     }
   }
   //    Remains the 2D list...
@@ -481,16 +467,16 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
       kind = KindInteger;
     }
     thekind = kind | KindList2;
-    theint  = hi2->ColLength();
-    thereal = double(hi2->RowLength());
+    theint  = hi2->NbRows();
+    thereal = double(hi2->NbColumns());
     return;
   }
   DeclareAndCast(NCollection_HArray2<double>, hr2, val);
   if (!hr2.IsNull())
   {
-    thekind = KindInteger | KindList2;
-    theint  = hr2->ColLength();
-    thereal = double(hi2->RowLength());
+    thekind = KindReal | KindList2;
+    theint  = hr2->NbRows();
+    thereal = double(hr2->NbColumns());
     return;
   }
   DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht2, val);
@@ -501,8 +487,8 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
       kind = KindAny;
     }
     thekind = kind | KindList2;
-    theint  = ht2->ColLength();
-    thereal = double(hi2->RowLength());
+    theint  = ht2->NbRows();
+    thereal = double(ht2->NbColumns());
     return;
   }
 }
@@ -767,7 +753,7 @@ int StepData_Field::ItemKind(const int n1, const int n2) const
   if ((thekind & KindArity) == KindList)
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
-    if (!ht.IsNull())
+    if (ht.IsNull())
     {
       return kind;
     }
@@ -776,7 +762,7 @@ int StepData_Field::ItemKind(const int n1, const int n2) const
   else if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
-    if (!ht.IsNull())
+    if (ht.IsNull())
     {
       return kind;
     }
@@ -867,18 +853,27 @@ int StepData_Field::Lower(const int index) const
   }
   if ((thekind & KindArity) == KindList2)
   {
-    DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
-    if (ht.IsNull())
+    if (index != 1 && index != 2)
     {
       return 0;
     }
-    if (index == 1)
+    const occ::handle<NCollection_HArray2<int>> anIntegers =
+      occ::down_cast<NCollection_HArray2<int>>(theany);
+    if (!anIntegers.IsNull())
     {
-      return ht->LowerCol();
+      return index == 1 ? anIntegers->LowerRow() : anIntegers->LowerCol();
     }
-    if (index == 2)
+    const occ::handle<NCollection_HArray2<double>> aReals =
+      occ::down_cast<NCollection_HArray2<double>>(theany);
+    if (!aReals.IsNull())
     {
-      return ht->LowerRow();
+      return index == 1 ? aReals->LowerRow() : aReals->LowerCol();
+    }
+    const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>> anItems =
+      occ::down_cast<NCollection_HArray2<occ::handle<Standard_Transient>>>(theany);
+    if (!anItems.IsNull())
+    {
+      return index == 1 ? anItems->LowerRow() : anItems->LowerCol();
     }
   }
   return 0;
@@ -923,6 +918,12 @@ int StepData_Field::Integer(const int n1, const int n2) const
   }
   if ((thekind & KindArity) == KindList2)
   {
+    const occ::handle<NCollection_HArray2<int>> anArray =
+      occ::down_cast<NCollection_HArray2<int>>(theany);
+    if (!anArray.IsNull())
+    {
+      return anArray->Value(n1, n2);
+    }
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
     {

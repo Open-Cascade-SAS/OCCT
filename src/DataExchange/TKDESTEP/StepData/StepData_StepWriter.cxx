@@ -723,7 +723,7 @@ void StepData_StepWriter::SendField(const StepData_Field&               fild,
       OpenSub();
       for (i = low2; i <= up2; i++)
       {
-        kind = fild.ItemKind(i, j);
+        kind = fild.ItemKind(j, i);
         done = true;
         switch (kind)
         {
@@ -731,25 +731,25 @@ void StepData_StepWriter::SendField(const StepData_Field&               fild,
             SendUndef();
             break;
           case 1:
-            Send(fild.Integer(i, j));
+            Send(fild.Integer(j, i));
             break;
           case 2:
-            SendBoolean(fild.Boolean(i, j));
+            SendBoolean(fild.Boolean(j, i));
             break;
           case 3:
-            SendLogical(fild.Logical(i, j));
+            SendLogical(fild.Logical(j, i));
             break;
           case 4:
-            SendEnum(fild.EnumText(i, j));
+            SendEnum(fild.EnumText(j, i));
             break;
           case 5:
-            Send(fild.Real(i, j));
+            Send(fild.Real(j, i));
             break;
           case 6:
-            Send(fild.String(i, j));
+            Send(fild.String(j, i));
             break;
           case 7:
-            Send(fild.Entity(i, j));
+            Send(fild.Entity(j, i));
             break;
           default:
             SendUndef();
@@ -774,7 +774,8 @@ void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& s
   bool selname = false;
   if (sm.IsNull())
   {
-    return; // ??
+    SendUndef();
+    return;
   }
   if (sm->HasName())
   {
@@ -807,11 +808,22 @@ void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& s
     case 6:
       Send(sm->String());
       break;
-    case 8:
-      SendArrReal(occ::down_cast<StepData_SelectArrReal>(sm)->ArrReal());
+    case 8: {
+      const occ::handle<StepData_SelectArrReal> anArray =
+        occ::down_cast<StepData_SelectArrReal>(sm);
+      if (anArray.IsNull())
+      {
+        SendUndef();
+      }
+      else
+      {
+        SendArrReal(anArray->ArrReal());
+      }
       break;
+    }
     default:
-      break; // ??
+      SendUndef();
+      break;
   }
   if (selname)
   {
@@ -1126,7 +1138,7 @@ void StepData_StepWriter::SendString(const char* const val)
 
 void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 {
-  if (val.Length() == 1 && val.Value(1) == '$')
+  if (val.IsEmpty() || (val.Length() == 1 && val.Value(1) == '$'))
   {
     SendUndef();
     return;
@@ -1151,7 +1163,7 @@ void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 void StepData_StepWriter::SendEnum(const char* const val)
 {
 
-  if (val[0] == '$' && val[1] == '\0')
+  if (val == nullptr || val[0] == '\0' || (val[0] == '$' && val[1] == '\0'))
   {
     SendUndef();
     return;
@@ -1164,19 +1176,18 @@ void StepData_StepWriter::SendEnum(const char* const val)
 
 void StepData_StepWriter::SendArrReal(const occ::handle<NCollection_HArray1<double>>& anArr)
 {
-  AddString(textlist);
-  if (anArr->Length() > 0)
+  if (anArr.IsNull())
   {
-    // add real
-    Send(anArr->Value(1));
-    for (int i = 2; i <= anArr->Length(); i++)
-    {
-      //      AddString(textparam);
-      // add real
-      Send(anArr->Value(i));
-    }
+    SendUndef();
+    return;
   }
-  AddString(textendlist);
+
+  OpenSub();
+  for (const double aValue : *anArr)
+  {
+    Send(aValue);
+  }
+  CloseSub();
 }
 
 //=================================================================================================

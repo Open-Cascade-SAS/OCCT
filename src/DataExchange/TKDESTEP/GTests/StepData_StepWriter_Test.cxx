@@ -11,10 +11,63 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_HArray1.hxx>
+#include <StepData_SelectArrReal.hxx>
+#include <StepData_SelectInt.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+
+TEST(StepData_StepWriterTest, SendSelect_UnavailableValuesKeepParameterPositions)
+{
+  const occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  StepData_StepWriter                   aWriter(aModel);
+  const occ::handle<StepData_SelectInt> aWrongArrayType = new StepData_SelectInt;
+  aWrongArrayType->SetKind(8); // The writer uses kind 8 for real array SELECT values.
+  const occ::handle<StepData_SelectInt> anUnsupported = new StepData_SelectInt;
+  anUnsupported->SetKind(257);
+  const occ::handle<StepData_SelectArrReal> aNullArray = new StepData_SelectArrReal;
+
+  aWriter.StartEntity("TEST");
+  aWriter.Send(9);
+  aWriter.SendSelect({}, {});
+  aWriter.SendSelect(aWrongArrayType, {});
+  aWriter.SendSelect(anUnsupported, {});
+  aWriter.SendSelect(aNullArray, {});
+  aWriter.SendEnum("");
+  aWriter.Send(10);
+  aWriter.EndEntity();
+  EXPECT_STREQ(aWriter.Line(1)->ToCString(), "TEST(9,$,$,$,$,$,10);");
+}
+
+TEST(StepData_StepWriterTest, SendSelect_RealArrayUsesDeclaredBounds)
+{
+  const occ::handle<NCollection_HArray1<double>> anArray = new NCollection_HArray1<double>(-2, 0);
+  anArray->SetValue(-2, 1.0);
+  anArray->SetValue(-1, 2.0);
+  anArray->SetValue(0, 3.0);
+
+  const occ::handle<StepData_SelectArrReal> aSelect = new StepData_SelectArrReal;
+  aSelect->SetArrReal(anArray);
+
+  const occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  StepData_StepWriter                   aWriter(aModel);
+  aWriter.StartEntity("TEST");
+  aWriter.Send(9);
+  aWriter.SendSelect(aSelect, {});
+  aWriter.Send(10);
+  aWriter.EndEntity();
+  EXPECT_STREQ(aWriter.Line(1)->ToCString(), "TEST(9,(1.,2.,3.),10);");
+
+  aSelect->SetName("VALUES");
+  StepData_StepWriter aNamedWriter(aModel);
+  aNamedWriter.StartEntity("TEST");
+  aNamedWriter.SendSelect(aSelect, {});
+  aNamedWriter.EndEntity();
+  EXPECT_STREQ(aNamedWriter.Line(1)->ToCString(), "TEST(VALUES((1.,2.,3.)));");
+}
 
 // Test CleanTextForSend with basic character escaping
 TEST(StepData_StepWriterTest, CleanTextForSend_BasicEscaping)
