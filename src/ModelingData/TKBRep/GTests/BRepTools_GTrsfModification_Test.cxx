@@ -192,7 +192,7 @@ TEST(BRepTools_GTrsfModificationTest, Surface_LocatedBezierTransformsEvaluatedGe
   aBuilder.MakeFace(aFace, aSurface, aLocation, 0.2);
 
   const gp_GTrsf              aGTrsf(gp_Mat(2.0, 0.5, 0.0, 0.0, 3.0, 0.25, 0.0, 0.0, 4.0),
-                                     gp_XYZ(7.0, 8.0, 9.0));
+                        gp_XYZ(7.0, 8.0, 9.0));
   BRepTools_GTrsfModification aModification(aGTrsf);
   occ::handle<Geom_Surface>   aResult;
   TopLoc_Location             aResultLocation;
@@ -231,7 +231,7 @@ TEST(BRepTools_GTrsfModificationTest, Curve_LocatedBezierPreservesRangeAndSource
   aBuilder.Range(anEdge, 0.2, 0.8);
 
   const gp_GTrsf              aGTrsf(gp_Mat(1.0, 0.5, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0),
-                                     gp_XYZ(2.0, -1.0, 5.0));
+                        gp_XYZ(2.0, -1.0, 5.0));
   BRepTools_GTrsfModification aModification(aGTrsf);
   occ::handle<Geom_Curve>     aResult;
   TopLoc_Location             aResultLocation;

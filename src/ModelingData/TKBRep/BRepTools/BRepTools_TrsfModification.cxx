@@ -57,8 +57,7 @@ gp_Trsf representationTransformation(const gp_Trsf&         theTrsf,
 
 //=================================================================================================
 
-gp_Trsf representationTransformation(const gp_Trsf&         theTrsf,
-                                     const TopLoc_Location& theLocation)
+gp_Trsf representationTransformation(const gp_Trsf& theTrsf, const TopLoc_Location& theLocation)
 {
   return representationTransformation(theTrsf, theLocation, theLocation);
 }
@@ -219,8 +218,8 @@ bool BRepTools_TrsfModification::NewPolygon(const TopoDS_Edge&           theE,
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theE, aCurveLoc, aFirst, aLast);
     if (!aCurve.IsNull())
     {
-      const gp_Trsf aCurveTrsf = representationTransformation(myTrsf, aCurveLoc);
-      double aReparametrization = aCurve->ParametricTransformation(aCurveTrsf);
+      const gp_Trsf aCurveTrsf         = representationTransformation(myTrsf, aCurveLoc);
+      double        aReparametrization = aCurve->ParametricTransformation(aCurveTrsf);
       if (std::abs(aReparametrization - 1.0) > Precision::PConfusion())
       {
         NCollection_Array1<double>& aParams = theP->ChangeParameters();
@@ -395,9 +394,9 @@ bool BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
   if (std::abs(scale) != 1.)
   {
 
-    NewC = new Geom2d_TrimmedCurve(NewC, f, l);
+    NewC                     = new Geom2d_TrimmedCurve(NewC, f, l);
     const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, loc);
-    gp_GTrsf2d gtrsf = S->ParametricTransformation(aLocalTrsf);
+    gp_GTrsf2d    gtrsf      = S->ParametricTransformation(aLocalTrsf);
 
     if (gtrsf.Form() != gp_Identity)
     {
@@ -446,7 +445,7 @@ bool BRepTools_TrsfModification::NewParameter(const TopoDS_Vertex& V,
   if (!C.IsNull())
   {
     const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, loc);
-    P = C->TransformedParameter(P, aLocalTrsf);
+    P                        = C->TransformedParameter(P, aLocalTrsf);
   }
 
   return true;

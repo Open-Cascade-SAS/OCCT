@@ -287,7 +287,7 @@ bool BRepTools_GTrsfModification::NewTriangulation(
 
   const gp_GTrsf aGTrsf = representationTransformation(myGTrsf, aLoc, theFace.Location());
   const gp_Mat   aNormalizedVectorialPart = normalizedVectorialPart(aGTrsf, myGScale);
-  const bool     aIsNegative               = aNormalizedVectorialPart.Determinant() < 0.0;
+  const bool     aIsNegative              = aNormalizedVectorialPart.Determinant() < 0.0;
 
   theTriangulation = theTriangulation->Copy();
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
@@ -314,8 +314,7 @@ bool BRepTools_GTrsfModification::NewTriangulation(
   // modify normals
   if (theTriangulation->HasNormals())
   {
-    const gp_Mat aNormalMat =
-      normalTransformation(aNormalizedVectorialPart, aIsNegative);
+    const gp_Mat aNormalMat = normalTransformation(aNormalizedVectorialPart, aIsNegative);
     for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
     {
       gp_XYZ aNormal = theTriangulation->Normal(anInd).XYZ();
