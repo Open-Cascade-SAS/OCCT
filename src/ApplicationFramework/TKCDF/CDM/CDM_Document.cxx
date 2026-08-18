@@ -31,7 +31,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
-#include <UTL.hxx>
 class CDM_MetaData;
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Document, Standard_Transient)
@@ -886,10 +885,12 @@ static void FIND(const occ::handle<Resource_Manager>& theDocumentResource,
                  bool&                                IsDef,
                  TCollection_ExtendedString&          theValue)
 {
-  IsDef = UTL::Find(theDocumentResource, theResourceName);
+  const TCollection_AsciiString aResourceName(theResourceName);
+  IsDef = theDocumentResource->Find(aResourceName.ToCString());
   if (IsDef)
   {
-    theValue = UTL::Value(theDocumentResource, theResourceName);
+    theValue =
+      TCollection_ExtendedString(theDocumentResource->Value(aResourceName.ToCString()), true);
   }
 }
 

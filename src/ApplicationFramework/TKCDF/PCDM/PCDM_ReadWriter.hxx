@@ -87,6 +87,18 @@ public:
   Standard_EXPORT static void WriteFileFormat(const occ::handle<Storage_Data>& aData,
                                               const occ::handle<CDM_Document>& aDocument);
 
+  //! Parses a persisted document reference in the form "identifier version file-name".
+  //! @param[in] theReference persisted reference record to parse
+  //! @param[out] theIdentifier parsed reference identifier
+  //! @param[out] theDocumentVersion parsed document version
+  //! @param[out] theFileName parsed file name, which may contain spaces
+  //! @return true on success; false for an incomplete record or a non-numeric identifier/version.
+  //!         Output arguments remain unchanged when false is returned.
+  Standard_EXPORT static bool ParseReference(const TCollection_ExtendedString& theReference,
+                                             int&                              theIdentifier,
+                                             int&                              theDocumentVersion,
+                                             TCollection_ExtendedString&       theFileName);
+
   //! tries to get a format in the file. returns an empty
   //! string if the file could not be read or does not have
   //! a FileFormat information.

@@ -17,16 +17,17 @@
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <CDM_MetaData.hxx>
+#include <OSD_File.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
 #include <PCDM_DOMHeaderParser.hxx>
+#include <PCDM_ReadWriter.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Data.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
-#include <UTL.hxx>
 #include <XmlLDrivers.hxx>
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlMDF.hxx>
@@ -94,19 +95,10 @@ static int RemoveExtraSeparator(TCollection_AsciiString& aString)
 
 static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& aFileName)
 {
-  TCollection_AsciiString theCFile = UTL::CString(aFileName);
-  TCollection_AsciiString theDirectory;
-  int                     i = theCFile.SearchFromEnd("/");
-#ifdef _WIN32
-  //    if(i==-1) i=theCFile.SearchFromEnd("\\");
-  if (theCFile.SearchFromEnd("\\") > i)
-    i = theCFile.SearchFromEnd("\\");
-#endif
-  if (i != -1)
-  {
-    theDirectory = theCFile.SubString(1, i);
-  }
-  return theDirectory;
+  TCollection_AsciiString aFolder;
+  TCollection_AsciiString aName;
+  OSD_Path::FolderAndFileFromPath(TCollection_AsciiString(aFileName), aFolder, aName);
+  return aFolder;
 }
 
 static TCollection_AsciiString AbsolutePath(const TCollection_AsciiString& aDirPath,
@@ -288,7 +280,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
       TCollection_ExtendedString aMsg = TCollection_ExtendedString("error: wrong file version: ")
                                         + aDocVerStr + " while current is "
                                         + TDocStd_Document::CurrentStorageFormatVersion();
-      myReaderStatus = PCDM_RS_NoVersion;
+      myReaderStatus                  = PCDM_RS_NoVersion;
       if (!aMsgDriver.IsNull())
       {
         aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
@@ -354,23 +346,22 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
           if (isRef)
           { // Process References
 
-            int pos = anInfo.Search(" ");
-            if (pos != -1)
+            int                        aRefId           = 0;
+            int                        aDocumentVersion = 0;
+            TCollection_ExtendedString aFileName;
+            if (!PCDM_ReadWriter::ParseReference(anInfo, aRefId, aDocumentVersion, aFileName))
             {
-              // Parce RefId, DocumentVersion and FileName
-              int                        aRefId;
-              TCollection_ExtendedString aFileName;
-              int                        aDocumentVersion;
+              if (!aMsgDriver.IsNull())
+              {
+                TCollection_ExtendedString aMsg("Warning: invalid document reference: ");
+                aMsg += anInfo;
+                aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
+              }
+              continue;
+            }
 
-              TCollection_ExtendedString aRest = anInfo.Split(pos);
-              aRefId                           = UTL::IntegerValue(anInfo);
-
-              int pos2 = aRest.Search(" ");
-
-              aFileName        = aRest.Split(pos2);
-              aDocumentVersion = UTL::IntegerValue(aRest);
-
-              TCollection_AsciiString aPath = UTL::CString(aFileName);
+            {
+              TCollection_AsciiString aPath(aFileName);
               TCollection_AsciiString anAbsolutePath;
               if (!anAbsoluteDirectory.IsEmpty())
               {
@@ -398,27 +389,27 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
               // Add new ref!
               /////////////
               TCollection_ExtendedString theFolder, theName;
-              // TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
-              TCollection_ExtendedString f(aPath);
 #ifndef _WIN32
-
-              int                        i = f.SearchFromEnd("/");
-              TCollection_ExtendedString n = f.Split(i);
-              f.Trunc(f.Length() - 1);
-              theFolder = f;
-              theName   = n;
+              TCollection_AsciiString aFolder;
+              TCollection_AsciiString aName;
+              OSD_Path::FolderAndFileFromPath(aPath, aFolder, aName);
+              if (!aFolder.IsEmpty())
+              {
+                aFolder.Trunc(aFolder.Length() - 1);
+              }
+              theFolder = TCollection_ExtendedString(aFolder);
+              theName   = TCollection_ExtendedString(aName);
 #else
-              OSD_Path                   p = UTL::Path(f);
-              char16_t                   chr;
-              TCollection_ExtendedString dir, dirRet, name;
+              OSD_Path                   p(aPath);
+              TCollection_ExtendedString dir, dirRet;
 
-              dir = UTL::Disk(p);
-              dir += UTL::Trek(p);
+              dir = TCollection_ExtendedString(p.Disk());
+              dir += TCollection_ExtendedString(p.Trek());
 
               for (int i = 1; i <= dir.Length(); ++i)
               {
 
-                chr = dir.Value(i);
+                const char16_t chr = dir.Value(i);
 
                 switch (chr)
                 {
@@ -437,8 +428,8 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
                 }
               }
               theFolder = dirRet;
-              theName   = UTL::Name(p);
-              theName += UTL::Extension(p);
+              theName   = TCollection_ExtendedString(p.Name());
+              theName += TCollection_ExtendedString(p.Extension());
 #endif // _WIN32
 
               occ::handle<CDM_MetaData> aMetaData =
@@ -447,7 +438,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
                                      theName,
                                      aPath,
                                      aPath,
-                                     UTL::IsReadOnly(aFileName));
+                                     !OSD_File(OSD_Path(aFileName)).IsWriteable());
               ////////////
               theNewDocument->CreateReference(aMetaData,
                                               aRefId,

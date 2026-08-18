@@ -22,6 +22,7 @@
 #include <CDM_CanCloseStatus.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
+#include <OSD_Path.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
@@ -31,9 +32,22 @@
 #include <Standard_GUID.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_ProgramError.hxx>
-#include <UTL.hxx>
+#include <Resource_Manager.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_Application, CDM_Application)
+
+namespace
+{
+TCollection_AsciiString fileExtension(const TCollection_ExtendedString& theFileName)
+{
+  TCollection_AsciiString anExtension = OSD_Path(theFileName).Extension();
+  if (!anExtension.IsEmpty() && anExtension.Value(1) == '.')
+  {
+    anExtension.Remove(1);
+  }
+  return anExtension;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -175,11 +189,16 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
       TCollection_ExtendedString theFormat   = PCDM_ReadWriter::FileFormat(theFileName);
       if (theFormat.Length() == 0)
       {
-        TCollection_ExtendedString ResourceName = UTL::Extension(theFileName);
-        ResourceName += ".FileFormat";
-        if (UTL::Find(Resources(), ResourceName))
+        TCollection_AsciiString aResourceName = fileExtension(theFileName);
+        if (aResourceName.IsEmpty())
         {
-          theFormat = UTL::Value(Resources(), ResourceName);
+          return PCDM_RS_UnrecognizedFileFormat;
+        }
+        aResourceName += ".FileFormat";
+        if (Resources()->Find(aResourceName.ToCString()))
+        {
+          theFormat =
+            TCollection_ExtendedString(Resources()->Value(aResourceName.ToCString()), true);
         }
         else
         {
@@ -482,7 +501,8 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   // support of legacy method of loading reader as plugin
   TCollection_ExtendedString aResourceName = theFormat;
   aResourceName += ".RetrievalPlugin";
-  if (!UTL::Find(Resources(), aResourceName))
+  const TCollection_AsciiString aResourceNameUtf8(aResourceName);
+  if (!Resources()->Find(aResourceNameUtf8.ToCString()))
   {
     Standard_SStream aMsg;
     aMsg << "Could not found the item:" << aResourceName << (char)0;
@@ -491,7 +511,7 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   }
 
   // Get GUID as a string.
-  TCollection_ExtendedString strPluginId = UTL::Value(Resources(), aResourceName);
+  TCollection_ExtendedString strPluginId(Resources()->Value(aResourceNameUtf8.ToCString()), true);
 
   // If the GUID (as a string) contains blanks, remove them.
   if (strPluginId.Search(' ') != -1)
@@ -500,7 +520,8 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   }
 
   // Convert to GUID.
-  Standard_GUID aPluginId = UTL::GUID(strPluginId);
+  const TCollection_AsciiString aPluginIdString(strPluginId, '?');
+  Standard_GUID                 aPluginId(aPluginIdString.ToCString());
 
   try
   {
@@ -541,7 +562,8 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   // support of legacy method of loading reader as plugin
   TCollection_ExtendedString aResourceName = theFormat;
   aResourceName += ".StoragePlugin";
-  if (!UTL::Find(Resources(), aResourceName))
+  const TCollection_AsciiString aResourceNameUtf8(aResourceName);
+  if (!Resources()->Find(aResourceNameUtf8.ToCString()))
   {
     myWriters.Add(theFormat, aDriver);
     Standard_SStream aMsg;
@@ -550,7 +572,7 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   }
 
   // Get GUID as a string.
-  TCollection_ExtendedString strPluginId = UTL::Value(Resources(), aResourceName);
+  TCollection_ExtendedString strPluginId(Resources()->Value(aResourceNameUtf8.ToCString()), true);
 
   // If the GUID (as a string) contains blanks, remove them.
   if (strPluginId.Search(' ') != -1)
@@ -559,7 +581,8 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   }
 
   // Convert to GUID.
-  Standard_GUID aPluginId = UTL::GUID(strPluginId);
+  const TCollection_AsciiString aPluginIdString(strPluginId, '?');
+  Standard_GUID                 aPluginId(aPluginIdString.ToCString());
 
   try
   {
@@ -596,13 +619,16 @@ bool CDF_Application::Format(const TCollection_ExtendedString& aFileName,
   // It is good if the format is in the file. Otherwise base on the extension.
   if (theFormat.Length() == 0)
   {
-    TCollection_ExtendedString ResourceName;
-    ResourceName = UTL::Extension(aFileName);
-    ResourceName += ".FileFormat";
-
-    if (UTL::Find(Resources(), ResourceName))
+    TCollection_AsciiString aResourceName = fileExtension(aFileName);
+    if (aResourceName.IsEmpty())
     {
-      theFormat = UTL::Value(Resources(), ResourceName);
+      return false;
+    }
+    aResourceName += ".FileFormat";
+
+    if (Resources()->Find(aResourceName.ToCString()))
+    {
+      theFormat = TCollection_ExtendedString(Resources()->Value(aResourceName.ToCString()), true);
     }
     else
     {
