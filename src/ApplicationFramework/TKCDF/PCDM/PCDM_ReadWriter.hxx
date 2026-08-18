@@ -26,6 +26,8 @@
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Storage_OpenMode.hxx>
+#include <Standard_IStream.hxx>
+
 class TCollection_AsciiString;
 class Storage_Data;
 class CDM_Document;
