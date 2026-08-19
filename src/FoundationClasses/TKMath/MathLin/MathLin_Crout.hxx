@@ -38,7 +38,7 @@ struct CroutResult
   std::optional<double>      Determinant; //!< Matrix determinant
   double                     MinAbsPivot       = 0.0;
   double                     MaxAbsPivot       = 0.0;
-  double                     ConditionEstimate = std::numeric_limits<double>::infinity();
+  std::optional<double>      ConditionEstimate; //!< Pivot-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -77,8 +77,9 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
   math_Matrix aL(aN, aN, 0.0);
   math_Vector aDiag(aN);
 
-  double aDet         = 1.0;
-  double aMatrixScale = 0.0;
+  double      aDet                 = 1.0;
+  bool        hasFiniteDeterminant = true;
+  math_Vector aRowScale(aN, 0.0);
   for (size_t i = 0; i < aN; ++i)
   {
     for (size_t j = 0; j <= i; ++j)
@@ -89,7 +90,7 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
         aResult.Status = Status::InvalidInput;
         return aResult;
       }
-      aMatrixScale = std::max(aMatrixScale, std::abs(aValue));
+      aRowScale[i] = std::max(aRowScale[i], std::abs(aValue));
     }
   }
 
@@ -126,17 +127,16 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
       aResult.Status = Status::NumericalError;
       return aResult;
     }
-    if (std::abs(aDiag[i]) <= aRelTol * aMatrixScale)
+    if (aRowScale[i] == 0.0 || std::abs(aDiag[i]) / aRowScale[i] <= aRelTol)
     {
       aResult.Status = Status::Singular;
       return aResult;
     }
 
-    aDet *= aDiag[i];
-    if (!std::isfinite(aDet))
+    if (hasFiniteDeterminant)
     {
-      aResult.Status = Status::NumericalError;
-      return aResult;
+      aDet *= aDiag[i];
+      hasFiniteDeterminant = std::isfinite(aDet) && aDet != 0.0;
     }
 
     const double anAbsPivot = std::abs(aDiag[i]);
@@ -217,7 +217,7 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
   }
 
-  if (!Utils::IsFinite(aInv) || !std::isfinite(aDet))
+  if (!Utils::IsFinite(aInv))
   {
     aResult.Status = Status::NumericalError;
     return aResult;
@@ -252,8 +252,15 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
   }
 
-  aResult.Determinant       = aDet;
-  aResult.ConditionEstimate = aResult.MaxAbsPivot / aResult.MinAbsPivot;
+  if (hasFiniteDeterminant)
+  {
+    aResult.Determinant = aDet;
+  }
+  const double aConditionEstimate = aResult.MaxAbsPivot / aResult.MinAbsPivot;
+  if (std::isfinite(aConditionEstimate))
+  {
+    aResult.ConditionEstimate = aConditionEstimate;
+  }
   aResult.Status            = Status::OK;
   return aResult;
 }

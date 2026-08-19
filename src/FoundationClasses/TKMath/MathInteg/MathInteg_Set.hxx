@@ -19,6 +19,7 @@
 #include <math_Vector.hxx>
 #include <MathUtils_GaussKronrodWeights.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <type_traits>
 
@@ -58,16 +59,15 @@ struct SetResult
 //! @param theFunc vector-valued function to integrate
 //! @param theLower lower bound
 //! @param theUpper upper bound
-//! @param theOrder integration order (max 61)
+//! @param theOrder integration order (values above 61 are clamped)
 //! @return SetResult containing vector of integrals
 template <typename Func>
 SetResult GaussSet(Func& theFunc, double theLower, double theUpper, size_t theOrder)
 {
   SetResult aResult;
 
-  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower) || theOrder == 0
-      || theOrder > THE_SET_GAUSS_MAX_ORDER)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower)
+      || theOrder == 0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -93,6 +93,15 @@ SetResult GaussSet(Func& theFunc, double theLower, double theUpper, size_t theOr
   const size_t aNbEqua = static_cast<size_t>(aNbEquaValue);
 
   aResult.NbEquations = aNbEqua;
+
+  if (theLower == theUpper)
+  {
+    aResult.Values = math_Vector(aNbEqua, 0.0);
+    aResult.Status = Status::OK;
+    return aResult;
+  }
+
+  theOrder = std::min(theOrder, THE_SET_GAUSS_MAX_ORDER);
 
   // Get Gauss points and weights
   math_Vector aPoints(theOrder);

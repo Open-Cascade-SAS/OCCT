@@ -18,12 +18,12 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Gauss.hxx>
+#include <Precision.hxx>
 
 #include <NCollection_LinearVector.hxx>
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
 
 //! Numerical integration algorithms.
 namespace MathInteg
@@ -47,17 +47,22 @@ constexpr size_t THE_GAUSS_MAX_ORDER = 61;
 //! @param theFunc function to integrate
 //! @param theLower lower integration bound
 //! @param theUpper upper integration bound
-//! @param theNbPoints number of quadrature points (>= 1)
+//! @param theNbPoints number of quadrature points (>= 1, values above 61 are clamped)
 //! @return result containing integral value
 template <typename Function>
 IntegResult Gauss(Function& theFunc, double theLower, double theUpper, size_t theNbPoints = 15)
 {
   IntegResult aResult;
-  if (theNbPoints == 0 || theNbPoints > THE_GAUSS_MAX_ORDER || !std::isfinite(theLower)
-      || !std::isfinite(theUpper) || theLower == theUpper
+  if (theNbPoints == 0 || !std::isfinite(theLower) || !std::isfinite(theUpper)
       || !std::isfinite(theUpper - theLower))
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status = Status::OK;
+    aResult.Value  = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -69,6 +74,8 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, size_t th
     }
     return aResult;
   }
+
+  theNbPoints = std::min(theNbPoints, THE_GAUSS_MAX_ORDER);
 
   // Get quadrature points and weights
   math_Vector aPoints(theNbPoints);
@@ -148,13 +155,20 @@ IntegResult GaussAdaptive(Function&          theFunc,
 {
   IntegResult aResult;
 
-  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower) || !std::isfinite(theConfig.Tolerance)
-      || theConfig.Tolerance <= 0.0 || theConfig.InitialOrder < 1
-      || theConfig.MaxOrder < theConfig.InitialOrder || theConfig.MaxOrder < 2
-      || theConfig.MaxOrder > THE_GAUSS_MAX_ORDER || theConfig.MaxIterations < 1)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower)
+      || !std::isfinite(theConfig.Tolerance) || theConfig.Tolerance <= 0.0
+      || theConfig.InitialOrder < 1 || theConfig.MaxOrder < theConfig.InitialOrder
+      || theConfig.MaxOrder < 2 || theConfig.MaxOrder > THE_GAUSS_MAX_ORDER
+      || theConfig.MaxIterations < 1)
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status        = Status::OK;
+    aResult.Value         = 0.0;
+    aResult.AbsoluteError = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -168,9 +182,9 @@ IntegResult GaussAdaptive(Function&          theFunc,
   }
 
   uint32_t aCoarseOrder = theConfig.InitialOrder;
-  uint32_t aFineOrder = std::min(theConfig.MaxOrder,
-                                 std::min(static_cast<uint32_t>(THE_GAUSS_MAX_ORDER),
-                                          2 * aCoarseOrder));
+  uint32_t aFineOrder =
+    std::min(theConfig.MaxOrder,
+             std::min(static_cast<uint32_t>(THE_GAUSS_MAX_ORDER), 2 * aCoarseOrder));
   if (aFineOrder == aCoarseOrder)
   {
     if (aCoarseOrder > 1)
@@ -223,7 +237,7 @@ IntegResult GaussAdaptive(Function&          theFunc,
 
   const auto isConverged = [&](double theError, double theValue) {
     const double anAbsValue = std::abs(theValue);
-    return anAbsValue > std::numeric_limits<double>::epsilon()
+    return anAbsValue > Precision::Computational()
              ? theError <= theConfig.Tolerance * anAbsValue
              : theError <= theConfig.Tolerance;
   };
@@ -284,12 +298,12 @@ IntegResult GaussAdaptive(Function&          theFunc,
   }
   aResult.Value         = aTotalValue;
   aResult.AbsoluteError = aTotalError;
-  if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+  if (std::abs(aTotalValue) > Precision::Computational())
   {
     aResult.RelativeError = aTotalError / std::abs(aTotalValue);
   }
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = aWork;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = aWork;
   return aResult;
 }
 
@@ -313,11 +327,16 @@ IntegResult GaussComposite(Function& theFunc,
 {
   IntegResult aResult;
 
-  if (theNbIntervals == 0 || theNbPoints == 0 || theNbPoints > THE_GAUSS_MAX_ORDER
-      || !std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower))
+  if (theNbIntervals == 0 || theNbPoints == 0 || !std::isfinite(theLower)
+      || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower))
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status = Status::OK;
+    aResult.Value  = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -329,6 +348,8 @@ IntegResult GaussComposite(Function& theFunc,
     }
     return aResult;
   }
+
+  theNbPoints = std::min(theNbPoints, THE_GAUSS_MAX_ORDER);
 
   const double aH           = (theUpper - theLower) / theNbIntervals;
   double       aSum         = 0.0;

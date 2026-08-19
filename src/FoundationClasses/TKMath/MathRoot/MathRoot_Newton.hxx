@@ -20,6 +20,7 @@
 #include <MathUtils_Convergence.hxx>
 #include "MathRoot_Utils.hxx"
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
 
@@ -142,11 +143,16 @@ MathUtils::ScalarResult NewtonBounded(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
-  if (!Utils::IsValidBounds(theLower, theUpper) || !std::isfinite(theGuess)
-      || !Utils::IsValidConfig(theConfig))
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theGuess) || !Utils::IsValidConfig(theConfig))
   {
     aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
+  }
+
+  if (theLower > theUpper)
+  {
+    std::swap(theLower, theUpper);
   }
 
   double aX   = MathUtils::Clamp(theGuess, theLower, theUpper);

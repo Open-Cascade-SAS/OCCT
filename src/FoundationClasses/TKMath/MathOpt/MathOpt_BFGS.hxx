@@ -21,7 +21,6 @@
 #include <MathUtils_Deriv.hxx>
 #include "MathOpt_Utils.hxx"
 
-#include <NCollection_DynamicArray.hxx>
 #include <NCollection_LinearVector.hxx>
 
 #include <cmath>
@@ -385,27 +384,17 @@ VectorResult LBFGS(Function&          theFunc,
   }
 
   // Storage for {s, y} pairs (circular buffer)
-  NCollection_DynamicArray<math_Vector> aSVec(std::min<size_t>(aM, 8));
-  NCollection_DynamicArray<math_Vector> aYVec(std::min<size_t>(aM, 8));
-  NCollection_LinearVector<double>      aRhoVec;
-  for (size_t i = 0; i < aM; ++i)
-  {
-    aSVec.Append(math_Vector(aN));
-    aYVec.Append(math_Vector(aN));
-    aRhoVec.Append(0.0);
-  }
-  size_t aHead  = 0; // Index of oldest entry
-  size_t aCount = 0; // Number of stored pairs
+  NCollection_LinearVector<double> aSData(aM * aN, 0.0);
+  NCollection_LinearVector<double> aYData(aM * aN, 0.0);
+  NCollection_LinearVector<double> aRhoVec(aM, 0.0);
+  size_t                           aHead  = 0; // Index of oldest entry
+  size_t                           aCount = 0; // Number of stored pairs
 
   math_Vector                      aDir(aN);
   math_Vector                      aXNew(aN);
   math_Vector                      aGradNew(aN);
   math_Vector                      aQ(aN);
-  NCollection_LinearVector<double> aAlphaVec;
-  for (size_t i = 0; i < aM; ++i)
-  {
-    aAlphaVec.Append(0.0);
-  }
+  NCollection_LinearVector<double> aAlphaVec(aM, 0.0);
 
   for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
@@ -432,11 +421,12 @@ VectorResult LBFGS(Function&          theFunc,
     for (size_t k = aCount; k-- > 0;)
     {
       const size_t aIdx = (aHead + k) % aM;
-      aAlphaVec.ChangeValue(aIdx) =
-        aRhoVec.Value(aIdx) * MathUtils::DotProduct(aSVec.Value(aIdx), aQ);
+      math_Vector  aS(&aSData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      math_Vector  aY(&aYData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      aAlphaVec.ChangeValue(aIdx) = aRhoVec.Value(aIdx) * MathUtils::DotProduct(aS, aQ);
       for (size_t i = 0; i < aN; ++i)
       {
-        aQ.ChangeAt(i) -= aAlphaVec.Value(aIdx) * aYVec.Value(aIdx).At(i);
+        aQ.ChangeAt(i) -= aAlphaVec.Value(aIdx) * aY.At(i);
       }
     }
 
@@ -445,7 +435,8 @@ VectorResult LBFGS(Function&          theFunc,
     if (aCount > 0)
     {
       const size_t aLastIdx = (aHead + aCount - 1) % aM;
-      const double aYY      = MathUtils::DotProduct(aYVec.Value(aLastIdx), aYVec.Value(aLastIdx));
+      math_Vector  aY(&aYData.ChangeValue(aLastIdx * aN), 0, static_cast<int>(aN) - 1);
+      const double aYY = MathUtils::DotProduct(aY, aY);
       if (aYY > MathUtils::THE_ZERO_TOL)
       {
         aGamma = 1.0 / (aRhoVec.Value(aLastIdx) * aYY);
@@ -462,11 +453,13 @@ VectorResult LBFGS(Function&          theFunc,
     // Second loop (forward)
     for (size_t k = 0; k < aCount; ++k)
     {
-      const size_t aIdx  = (aHead + k) % aM;
-      const double aBeta = aRhoVec.Value(aIdx) * MathUtils::DotProduct(aYVec.Value(aIdx), aR);
+      const size_t aIdx = (aHead + k) % aM;
+      math_Vector  aS(&aSData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      math_Vector  aY(&aYData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      const double aBeta = aRhoVec.Value(aIdx) * MathUtils::DotProduct(aY, aR);
       for (size_t i = 0; i < aN; ++i)
       {
-        aR.ChangeAt(i) += (aAlphaVec.Value(aIdx) - aBeta) * aSVec.Value(aIdx).At(i);
+        aR.ChangeAt(i) += (aAlphaVec.Value(aIdx) - aBeta) * aS.At(i);
       }
     }
 
@@ -546,13 +539,15 @@ VectorResult LBFGS(Function&          theFunc,
 
     // Store new {s, y} pair
     const size_t aNewIdx = (aHead + aCount) % aM;
+    math_Vector  aS(&aSData.ChangeValue(aNewIdx * aN), 0, static_cast<int>(aN) - 1);
+    math_Vector  aY(&aYData.ChangeValue(aNewIdx * aN), 0, static_cast<int>(aN) - 1);
     for (size_t i = 0; i < aN; ++i)
     {
-      aSVec.ChangeValue(aNewIdx).ChangeAt(i) = aXNew.At(i) - aX.At(i);
-      aYVec.ChangeValue(aNewIdx).ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
+      aS.ChangeAt(i) = aXNew.At(i) - aX.At(i);
+      aY.ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
     }
 
-    double aSY = MathUtils::DotProduct(aSVec.Value(aNewIdx), aYVec.Value(aNewIdx));
+    double aSY = MathUtils::DotProduct(aS, aY);
     if (aSY > MathUtils::THE_ZERO_TOL)
     {
       aRhoVec.ChangeValue(aNewIdx) = 1.0 / aSY;

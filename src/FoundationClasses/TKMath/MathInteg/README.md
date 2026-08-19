@@ -10,7 +10,7 @@ The MathInteg package provides a collection of numerical integration methods for
 
 ### MathInteg_Gauss.hxx
 Gauss-Legendre quadrature methods:
-- `Gauss` - Fixed-order Gauss-Legendre integration (orders 1 through 61)
+- `Gauss` - Fixed-order Gauss-Legendre integration (orders above 61 are clamped to 61)
 - `GaussAdaptive` - Adaptive subdivision with error control using `IntegConfig.InitialOrder/MaxOrder`
 - `GaussComposite` - Composite rule over multiple subintervals
 
@@ -46,7 +46,8 @@ Vector-valued function integration:
 All functions are template-based and accept functor types with appropriate `Value()` methods. Results are returned as `IntegResult` or `SetResult` structures containing the integral value, error estimates, and status information.
 
 Finite integrations use oriented intervals: reversing the lower and upper bounds negates the
-integral. Equal or non-finite finite-interval bounds are invalid. Adaptive methods interpret
+integral, while equal finite bounds return exactly zero without evaluating the function. Non-finite
+finite-interval bounds are invalid. Adaptive methods interpret
 `Tolerance` as a relative error tolerance when the integral magnitude exceeds machine epsilon.
 For a near-zero integral, `Tolerance` is the absolute error tolerance and `RelativeError` is not
 set because a meaningful relative estimate is unavailable.

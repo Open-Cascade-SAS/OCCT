@@ -23,7 +23,6 @@
 #include <MathUtils_Core.hxx>
 #include "MathOpt_Utils.hxx"
 
-#include <NCollection_DynamicArray.hxx>
 #include <NCollection_LinearVector.hxx>
 
 #include <cmath>
@@ -116,24 +115,25 @@ VectorResult DifferentialEvolution(Function&           theFunc,
   // Random number generator
   MathUtils::RandomGenerator aRNG(theConfig.Seed);
 
-  // Population: vector of candidate solutions
-  NCollection_DynamicArray<math_Vector>           aPopulation(std::min<size_t>(aNbPop, 8));
-  NCollection_LinearVector<std::optional<double>> aFitness;
+  // Population stored as contiguous rows; math_Vector objects below are non-owning row views.
+  NCollection_LinearVector<double>                aPopulation(aNbPop * aNbDims, 0.0);
+  NCollection_LinearVector<std::optional<double>> aFitness(aNbPop, std::nullopt);
 
   // Initialize population
   for (size_t aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
   {
-    aPopulation.Append(math_Vector(aNbDims));
-    aFitness.Append(std::nullopt);
+    math_Vector aMember(&aPopulation.ChangeValue(aMemberIdx * aNbDims),
+                        0,
+                        static_cast<int>(aNbDims) - 1);
     for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
       const double aRandVal = aRNG.NextReal();
-      aPopulation.ChangeValue(aMemberIdx).ChangeAt(aDimIdx) =
+      aMember.ChangeAt(aDimIdx) =
         LowerBound(aDimIdx) + aRandVal * (UpperBound(aDimIdx) - LowerBound(aDimIdx));
     }
 
     double aFitVal = 0.0;
-    if (aCheckedFunc.Value(aPopulation.Value(aMemberIdx), aFitVal))
+    if (aCheckedFunc.Value(aMember, aFitVal))
     {
       aFitness.ChangeValue(aMemberIdx) = aFitVal;
     }
@@ -154,7 +154,7 @@ VectorResult DifferentialEvolution(Function&           theFunc,
   if (!aBestIdx)
   {
     aResult.Status = aCheckedFunc.FailureStatus != Status::OK ? aCheckedFunc.FailureStatus
-                                                               : Status::NumericalError;
+                                                              : Status::NumericalError;
     return aResult;
   }
 
@@ -186,6 +186,18 @@ VectorResult DifferentialEvolution(Function&           theFunc,
 
       // Mutation and crossover
       const size_t aJRand = static_cast<size_t>(aRNG.NextReal() * aNbDims);
+      math_Vector  aMember(&aPopulation.ChangeValue(aMemberIdx * aNbDims),
+                           0,
+                           static_cast<int>(aNbDims) - 1);
+      math_Vector  aMemberA(&aPopulation.ChangeValue(anIdxA * aNbDims),
+                            0,
+                            static_cast<int>(aNbDims) - 1);
+      math_Vector  aMemberB(&aPopulation.ChangeValue(anIdxB * aNbDims),
+                            0,
+                            static_cast<int>(aNbDims) - 1);
+      math_Vector  aMemberC(&aPopulation.ChangeValue(anIdxC * aNbDims),
+                            0,
+                            static_cast<int>(aNbDims) - 1);
 
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
@@ -193,16 +205,14 @@ VectorResult DifferentialEvolution(Function&           theFunc,
         {
           // Mutation: DE/rand/1
           const double aMutVal =
-            aPopulation.Value(anIdxA).At(aDimIdx)
-            + aMutScale
-                * (aPopulation.Value(anIdxB).At(aDimIdx) - aPopulation.Value(anIdxC).At(aDimIdx));
+            aMemberA.At(aDimIdx) + aMutScale * (aMemberB.At(aDimIdx) - aMemberC.At(aDimIdx));
           // Clamp to bounds
           aTrial.ChangeAt(aDimIdx) =
             MathUtils::Clamp(aMutVal, LowerBound(aDimIdx), UpperBound(aDimIdx));
         }
         else
         {
-          aTrial.ChangeAt(aDimIdx) = aPopulation.Value(aMemberIdx).At(aDimIdx);
+          aTrial.ChangeAt(aDimIdx) = aMember.At(aDimIdx);
         }
       }
 
@@ -213,8 +223,8 @@ VectorResult DifferentialEvolution(Function&           theFunc,
       if (isTrialValid
           && (!aFitness.Value(aMemberIdx) || aTrialFitness <= *aFitness.Value(aMemberIdx)))
       {
-        aPopulation.ChangeValue(aMemberIdx) = aTrial;
-        aFitness.ChangeValue(aMemberIdx)    = aTrialFitness;
+        aMember                          = aTrial;
+        aFitness.ChangeValue(aMemberIdx) = aTrialFitness;
 
         if (aTrialFitness < *aBestValue)
         {
@@ -244,7 +254,10 @@ VectorResult DifferentialEvolution(Function&           theFunc,
   }
 
   // Polish the best solution using coordinate-wise Brent's method
-  math_Vector aPolished      = aPopulation.Value(*aBestIdx);
+  math_Vector aBestMember(&aPopulation.ChangeValue(*aBestIdx * aNbDims),
+                          0,
+                          static_cast<int>(aNbDims) - 1);
+  math_Vector aPolished      = aBestMember;
   double      aPolishedValue = *aBestValue;
   if (theConfig.PolishBudgetPerDim > 0)
   {
@@ -294,11 +307,11 @@ VectorResult MultiStart(Function&           theFunc,
     return aResult;
   }
 
-  MathUtils::RandomGenerator                         aRNG(theConfig.Seed);
-  Utils::CheckedFunction<Function>                   aCheckedFunc(theFunc);
+  MathUtils::RandomGenerator                               aRNG(theConfig.Seed);
+  Utils::CheckedFunction<Function>                         aCheckedFunc(theFunc);
   Utils::BoundedFunction<Utils::CheckedFunction<Function>> aBoundedFunc(aCheckedFunc,
-                                                                         theLowerBounds,
-                                                                         theUpperBounds);
+                                                                        theLowerBounds,
+                                                                        theUpperBounds);
 
   auto LowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
   auto UpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
@@ -364,7 +377,7 @@ VectorResult MultiStart(Function&           theFunc,
   if (!aBestValue)
   {
     aResult.Status = aCheckedFunc.FailureStatus != Status::OK ? aCheckedFunc.FailureStatus
-                                                               : Status::NumericalError;
+                                                              : Status::NumericalError;
     return aResult;
   }
 

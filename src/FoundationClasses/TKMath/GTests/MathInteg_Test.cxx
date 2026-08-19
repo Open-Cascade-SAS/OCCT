@@ -433,8 +433,7 @@ TEST(MathInteg_GaussAdaptiveTest, SineFunction)
   MathInteg::IntegConfig aConfig;
   aConfig.Tolerance = 1.0e-12;
 
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
+  MathInteg::IntegResult aResult = MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Value, 2.0, 1.0e-11);
 }
@@ -458,8 +457,7 @@ TEST(MathInteg_GaussAdaptiveTest, OscillatoryFunction)
   aConfig.MaxIterations = 20;
 
   // Integral of sin(10x) from 0 to PI = (1 - cos(10*PI))/10 = 0
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
+  MathInteg::IntegResult aResult = MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Value, 0.0, 1.0e-6);
 }
@@ -470,8 +468,7 @@ TEST(MathInteg_GaussAdaptiveTest, ProvidesErrorEstimate)
   MathInteg::IntegConfig aConfig;
   aConfig.Tolerance = 1.0e-8;
 
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
+  MathInteg::IntegResult aResult = MathInteg::GaussAdaptive(aFunc, 0.0, MathUtils::THE_PI, aConfig);
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.AbsoluteError.has_value());
   ASSERT_TRUE(aResult.RelativeError.has_value());
@@ -505,8 +502,7 @@ TEST(MathInteg_GaussCompositeTest, SineFunction)
 {
   SinFunc aFunc;
   // 10 subintervals with 7-point Gauss each
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 10, 7);
+  MathInteg::IntegResult aResult = MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 10, 7);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Value, 2.0, THE_TOLERANCE);
   EXPECT_EQ(aResult.NbPoints, 70); // 10 * 7
@@ -516,8 +512,7 @@ TEST(MathInteg_GaussCompositeTest, OscillatoryFunction)
 {
   OscillatoryFunc aFunc;
   // More subintervals for oscillatory function
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 50, 7);
+  MathInteg::IntegResult aResult = MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 50, 7);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Value, 0.0, 1.0e-8);
 }
@@ -535,8 +530,7 @@ TEST(MathInteg_GaussCompositeTest, GaussianFunction)
 TEST(MathInteg_GaussCompositeTest, InvalidSubintervals)
 {
   SinFunc                aFunc;
-  MathInteg::IntegResult aResult =
-    MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 0, 7);
+  MathInteg::IntegResult aResult = MathInteg::GaussComposite(aFunc, 0.0, MathUtils::THE_PI, 0, 7);
   EXPECT_EQ(aResult.Status, MathInteg::Status::InvalidInput);
 }
 
@@ -768,15 +762,39 @@ TEST(MathInteg_KronrodTest, UnrepresentableMidpointIsNotConverged)
   EXPECT_EQ(aResult.NbIterations, 1u);
 }
 
-TEST(MathInteg_CorrectnessTest, FiniteRulesRejectInvalidIntervals)
+TEST(MathInteg_CorrectnessTest, FiniteRulesHandleZeroWidthAndRejectNonFiniteIntervals)
 {
-  SinFunc      aFunc;
+  FailingFunc  aFunc;
   const double anInf = std::numeric_limits<double>::infinity();
 
-  EXPECT_EQ(MathInteg::Gauss(aFunc, 1.0, 1.0, 7).Status, MathInteg::Status::InvalidInput);
+  for (const MathInteg::IntegResult& aResult : {MathInteg::Gauss(aFunc, 1.0, 1.0, 100),
+                                                MathInteg::GaussAdaptive(aFunc, 1.0, 1.0),
+                                                MathInteg::GaussComposite(aFunc, 1.0, 1.0, 4, 100),
+                                                MathInteg::KronrodRule(aFunc, 1.0, 1.0),
+                                                MathInteg::Kronrod(aFunc, 1.0, 1.0),
+                                                MathInteg::KronrodAuto(aFunc, 1.0, 1.0),
+                                                MathInteg::TanhSinh(aFunc, 1.0, 1.0),
+                                                MathInteg::DoubleExponential(aFunc, 1.0, 1.0)})
+  {
+    ASSERT_TRUE(aResult.IsDone());
+    ASSERT_TRUE(aResult.Value.has_value());
+    EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);
+    EXPECT_EQ(aResult.NbPoints, 0u);
+  }
+
   EXPECT_EQ(MathInteg::Gauss(aFunc, 0.0, anInf, 7).Status, MathInteg::Status::InvalidInput);
   EXPECT_EQ(MathInteg::KronrodRule(aFunc, 0.0, 1.0, 31).Status, MathInteg::Status::InvalidInput);
   EXPECT_EQ(MathInteg::TanhSinh(aFunc, 0.0, anInf).Status, MathInteg::Status::InvalidInput);
+}
+
+TEST(MathInteg_GaussTest, OrderAboveLegacyLimitIsClamped)
+{
+  ConstantFunc                 aFunc;
+  const MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, 1.0, 100);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Value.has_value());
+  EXPECT_NEAR(*aResult.Value, 5.0, THE_TOLERANCE);
+  EXPECT_EQ(aResult.NbPoints, 61u);
 }
 
 TEST(MathInteg_GaussAdaptiveTest, WorkBudgetExhaustionRetainsEstimateAndError)
@@ -812,10 +830,9 @@ TEST(MathInteg_KronrodTest, UnattainableToleranceIsNotSuccess)
 
 TEST(MathInteg_KronrodTest, DampedCosineOverPi)
 {
-  DampedCosineFunc           aFunc;
-  MathInteg::KronrodConfig   aConfig(1.0e-12, 100);
-  const MathUtils::IntegResult aResult =
-    MathInteg::Kronrod(aFunc, 0.0, MathUtils::THE_PI, aConfig);
+  DampedCosineFunc             aFunc;
+  MathInteg::KronrodConfig     aConfig(1.0e-12, 100);
+  const MathUtils::IntegResult aResult = MathInteg::Kronrod(aFunc, 0.0, MathUtils::THE_PI, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -874,8 +891,11 @@ TEST(MathInteg_MultipleTest, ValidatesDimensionsAndPropagatesCallbackFailure)
   EXPECT_EQ(aResult.NbPoints, 1u);
 
   anUpper(5) = 0.0;
-  EXPECT_EQ(MathInteg::GaussMultiple(aFunc, 2, aLower, anUpper, anOrders).Status,
-            MathInteg::Status::InvalidInput);
+  aResult = MathInteg::GaussMultiple(aFunc, 2, aLower, anUpper, anOrders);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Value.has_value());
+  EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);
+  EXPECT_EQ(aResult.NbPoints, 0u);
 }
 
 TEST(MathInteg_SetTest, UsesArbitraryBoundsAndRejectsNonFiniteComponents)
@@ -913,6 +933,12 @@ TEST(MathInteg_SetTest, CallbackFailureIsDistinctFromNonFiniteComponents)
   MathInteg::SetResult aResult = MathInteg::GaussSet(aFunc, 0.0, 1.0, 3);
   EXPECT_EQ(aResult.Status, MathInteg::Status::CallbackError);
   EXPECT_EQ(aResult.NbPoints, 1u);
+
+  aResult = MathInteg::GaussSet(aFunc, 1.0, 1.0, 100);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Values.has_value());
+  EXPECT_DOUBLE_EQ(aResult.Values->At(0), 0.0);
+  EXPECT_EQ(aResult.NbPoints, 0u);
 }
 
 TEST(MathInteg_BoundsTest, FiniteRulesPreserveIntervalOrientation)
@@ -926,6 +952,7 @@ TEST(MathInteg_BoundsTest, FiniteRulesPreserveIntervalOrientation)
       return true;
     }
   };
+
   class SetConstantFunc
   {
   public:
@@ -939,15 +966,14 @@ TEST(MathInteg_BoundsTest, FiniteRulesPreserveIntervalOrientation)
   };
 
   SinFunc                aSinFunc;
-  MathInteg::IntegResult aKronrod =
-    MathInteg::KronrodRule(aSinFunc, MathUtils::THE_PI, 0.0, 7);
+  MathInteg::IntegResult aKronrod  = MathInteg::KronrodRule(aSinFunc, MathUtils::THE_PI, 0.0, 7);
   MathInteg::IntegResult aTanhSinh = MathInteg::TanhSinh(aSinFunc, MathUtils::THE_PI, 0.0);
   MultipleConstantFunc   aMultipleFunc;
   math_Vector            aLower(2);
   math_Vector            anUpper(2);
   math_IntegerVector     anOrders(size_t{2}, 2);
-  aLower.ChangeAt(0) = 1.0;
-  aLower.ChangeAt(1) = 0.0;
+  aLower.ChangeAt(0)  = 1.0;
+  aLower.ChangeAt(1)  = 0.0;
   anUpper.ChangeAt(0) = 0.0;
   anUpper.ChangeAt(1) = 2.0;
   MathInteg::IntegResult aMultiple =
@@ -1006,6 +1032,7 @@ TEST(MathInteg_CorrectnessTest, SmallIntegralsUseRelativeTolerance)
       return true;
     }
   };
+
   class CountingScaledKinkFunc
   {
   public:
@@ -1043,8 +1070,7 @@ TEST(MathInteg_CorrectnessTest, SmallIntegralsUseRelativeTolerance)
     MathInteg::TanhSinh(aDoubleExpFunc, 0.0, 1.0, aDoubleExpConfig);
 
   CountingScaledKinkFunc aAutoFunc;
-  MathInteg::IntegResult aAutoResult =
-    MathInteg::KronrodAuto(aAutoFunc, 0.0, 1.0, 1.0e-10, 7);
+  MathInteg::IntegResult aAutoResult = MathInteg::KronrodAuto(aAutoFunc, 0.0, 1.0, 1.0e-10, 7);
 
   EXPECT_EQ(aGaussResult.Status, MathInteg::Status::MaxIterations);
   EXPECT_EQ(aKronrodResult.Status, MathInteg::Status::MaxIterations);
@@ -1114,7 +1140,7 @@ TEST(MathInteg_GaussCompositeTest, ShiftedGaussianOnFiniteInterval)
 TEST(MathInteg_GaussCompositeTest, RationalOscillationOnFiniteInterval)
 {
   RationalOscillationFunc aFunc;
-  MathInteg::IntegResult   aResult = MathInteg::GaussComposite(aFunc, 0.2, 3.4, 64, 15);
+  MathInteg::IntegResult  aResult = MathInteg::GaussComposite(aFunc, 0.2, 3.4, 64, 15);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -1123,9 +1149,9 @@ TEST(MathInteg_GaussCompositeTest, RationalOscillationOnFiniteInterval)
 
 TEST(MathInteg_KronrodTest, LogCosineOnAsymmetricInterval)
 {
-  LogCosineFunc             aFunc;
-  MathInteg::KronrodConfig  aConfig(1.0e-12, 100);
-  MathInteg::IntegResult    aResult = MathInteg::Kronrod(aFunc, -0.7, 2.4, aConfig);
+  LogCosineFunc            aFunc;
+  MathInteg::KronrodConfig aConfig(1.0e-12, 100);
+  MathInteg::IntegResult   aResult = MathInteg::Kronrod(aFunc, -0.7, 2.4, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -1136,7 +1162,7 @@ TEST(MathInteg_DoubleExpTest, ReversedSquareRootLogInterval)
 {
   SquareRootLogFunc          aFunc;
   MathInteg::DoubleExpConfig aConfig(1.0e-11, 100);
-  aConfig.NbLevels = 12;
+  aConfig.NbLevels               = 12;
   MathInteg::IntegResult aResult = MathInteg::TanhSinh(aFunc, 2.0, 0.0, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());

@@ -2,7 +2,7 @@
 
 The MathRoot package provides a collection of root finding algorithms for scalar functions. These algorithms are designed to find solutions to the equation f(x) = 0 with various convergence guarantees and performance characteristics.
 
-All methods require finite inputs, finite callback outputs, valid non-negative function tolerances, positive X tolerances and positive iteration/sample counts. Interval methods require strictly ordered bounds; reversed bounds are invalid input. A callback returning `false` produces `CallbackError`; a callback returning `true` with a non-finite value or derivative produces `NumericalError`.
+All methods require finite inputs, finite callback outputs, valid non-negative function tolerances, positive X tolerances and positive iteration/sample counts. Bracketed methods require strictly ordered bounds; `NewtonBounded` normalizes reversed finite bounds for compatibility with the legacy solver. A callback returning `false` produces `CallbackError`; a callback returning `true` with a non-finite value or derivative produces `NumericalError`.
 
 ## Overview
 

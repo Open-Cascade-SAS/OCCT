@@ -16,11 +16,11 @@
 
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Types.hxx>
+#include <Precision.hxx>
 
 #include <array>
 #include <cmath>
 #include <cstddef>
-#include <limits>
 
 //! Shared types for specialized small-dimension Newton solvers.
 namespace MathSys
@@ -77,7 +77,7 @@ namespace Utils
 inline constexpr size_t THE_LINE_SEARCH_MAX = 8;
 inline constexpr double THE_ARMIJO_C1       = 1.0e-4;
 //! Relative pivot threshold used by fixed-size Newton linear solves.
-inline constexpr double THE_NEWTON_PIVOT_TOL = 64.0 * std::numeric_limits<double>::epsilon();
+inline constexpr double THE_NEWTON_PIVOT_TOL = 64.0 * Precision::Computational();
 
 template <size_t N>
 inline bool IsFiniteArray(const std::array<double, N>& theValues)

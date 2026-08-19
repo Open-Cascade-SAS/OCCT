@@ -293,7 +293,7 @@ TEST_F(MathSys_Newton3DTest, SolveCurveSurfaceExtrema3D_Smoke)
   const MathSys::NewtonResultN<3> aResult =
     MathSys::SolveCurveSurfaceExtrema3D(aCurve,
                                         aSurface,
-                                         std::array<double, 3>{1.0, 2.0, -3.0},
+                                        std::array<double, 3>{1.0, 2.0, -3.0},
                                         aBounds,
                                         aOptions);
 
@@ -338,9 +338,9 @@ TEST_F(MathSys_Newton3DTest, Solve3D_HeterogeneousFullRankJacobian)
 {
   const auto aFunc = [](double theX, double theY, double theZ, double theF[3], double theJ[3][3]) {
     constexpr double THE_SMALL_SCALE = 1.0e-7;
-    theF[0]                         = theX - 1.0;
-    theF[1]                         = THE_SMALL_SCALE * (theY - 2.0);
-    theF[2]                         = THE_SMALL_SCALE * (theZ - 3.0);
+    theF[0]                          = theX - 1.0;
+    theF[1]                          = THE_SMALL_SCALE * (theY - 2.0);
+    theF[2]                          = THE_SMALL_SCALE * (theZ - 3.0);
     for (size_t aRow = 0; aRow < 3; ++aRow)
     {
       for (size_t aCol = 0; aCol < 3; ++aCol)
@@ -364,4 +364,30 @@ TEST_F(MathSys_Newton3DTest, Solve3D_HeterogeneousFullRankJacobian)
   EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-12);
   EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-12);
   EXPECT_NEAR(aResult.X[2], 3.0, 1.0e-12);
+}
+
+TEST_F(MathSys_Newton3DTest, HeterogeneousUnboundedSystemTakesFullNewtonStep)
+{
+  const auto aFunc = [](double theX, double theY, double theZ, double theF[3], double theJ[3][3]) {
+    const double aX[3]      = {theX, theY, theZ};
+    const double aTarget[3] = {100.0, -200.0, 300.0};
+    const double aScale[3]  = {1.0e20, 1.0, 1.0};
+    for (size_t aRow = 0; aRow < 3; ++aRow)
+    {
+      theF[aRow] = aScale[aRow] * (aX[aRow] - aTarget[aRow]);
+      for (size_t aCol = 0; aCol < 3; ++aCol)
+      {
+        theJ[aRow][aCol] = aRow == aCol ? aScale[aRow] : 0.0;
+      }
+    }
+    return true;
+  };
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
+
+  const MathSys::NewtonResultN<3> aResult = MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(aResult.X[0], 100.0);
+  EXPECT_DOUBLE_EQ(aResult.X[1], -200.0);
+  EXPECT_DOUBLE_EQ(aResult.X[2], 300.0);
 }

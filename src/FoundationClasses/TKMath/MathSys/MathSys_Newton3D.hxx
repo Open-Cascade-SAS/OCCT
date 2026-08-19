@@ -23,6 +23,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <optional>
 
 //! @file MathSys_Newton3D.hxx
 //! @brief Optimized 3D Newton-Raphson solver for systems of 3 equations in 3 unknowns.
@@ -67,18 +68,18 @@ inline bool IsOptionsValid3D(const NewtonOptions& theOptions)
          && theOptions.SoftBoundsExtension >= 0.0;
 }
 
-//! Return the largest domain extent across all 3 dimensions (min 1.0).
-inline double MaxDomainSize3D(const NewtonBoundsN<3>& theBounds)
+//! Return the step limit for a bounded problem; no value means no step limit.
+inline std::optional<double> MaxStep3D(const NewtonBoundsN<3>& theBounds, double theMaxStepRatio)
 {
   if (!theBounds.HasBounds)
   {
-    return 1.0;
+    return std::nullopt;
   }
 
   const double aDX = theBounds.Max[0] - theBounds.Min[0];
   const double aDY = theBounds.Max[1] - theBounds.Min[1];
   const double aDZ = theBounds.Max[2] - theBounds.Min[2];
-  return std::max(1.0, std::max(aDX, std::max(aDY, aDZ)));
+  return theMaxStepRatio * std::max(1.0, std::max(aDX, std::max(aDY, aDZ)));
 }
 
 //! Clamp solution array to bounds, optionally extending by soft-bounds ratio.
@@ -111,26 +112,24 @@ inline void Clamp3D(std::array<double, 3>&  theX,
 //! @return true if system was solved successfully (non-singular)
 inline bool Solve3x3(const double theJ[3][3], const double theF[3], double theDelta[3])
 {
-  double aScale = 0.0;
-  for (size_t aRow = 0; aRow < 3; ++aRow)
-  {
-    for (size_t aCol = 0; aCol < 3; ++aCol)
-    {
-      aScale = std::max(aScale, std::abs(theJ[aRow][aCol]));
-    }
-  }
-  if (!(aScale > 0.0))
-  {
-    return false;
-  }
   double aJ[3][3];
   double aF[3];
   for (size_t aRow = 0; aRow < 3; ++aRow)
   {
-    aF[aRow] = theF[aRow] / aScale;
+    const double aRowScale =
+      std::max({std::abs(theJ[aRow][0]), std::abs(theJ[aRow][1]), std::abs(theJ[aRow][2])});
+    if (!(aRowScale > 0.0))
+    {
+      return false;
+    }
+    aF[aRow] = theF[aRow] / aRowScale;
     for (size_t aCol = 0; aCol < 3; ++aCol)
     {
-      aJ[aRow][aCol] = theJ[aRow][aCol] / aScale;
+      aJ[aRow][aCol] = theJ[aRow][aCol] / aRowScale;
+    }
+    if (!std::isfinite(aF[aRow]))
+    {
+      return false;
     }
   }
 
@@ -216,7 +215,7 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
 
   Utils::Clamp3D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aMaxStep = theOptions.MaxStepRatio * Utils::MaxDomainSize3D(theBounds);
+  const std::optional<double> aMaxStep = Utils::MaxStep3D(theBounds, theOptions.MaxStepRatio);
 
   for (uint32_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
@@ -261,9 +260,9 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
 
     // Limit step size to prevent wild oscillations
     const double aStepNorm = Utils::SafeNormN(aDelta);
-    if (aStepNorm > aMaxStep)
+    if (aMaxStep && aStepNorm > *aMaxStep)
     {
-      const double aScale = aMaxStep / aStepNorm;
+      const double aScale = *aMaxStep / aStepNorm;
       aDelta[0] *= aScale;
       aDelta[1] *= aScale;
       aDelta[2] *= aScale;

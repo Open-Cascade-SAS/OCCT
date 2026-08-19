@@ -17,9 +17,9 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
-#include <limits>
 
 namespace MathInteg
 {
@@ -31,9 +31,9 @@ constexpr size_t THE_DOUBLE_EXP_DEFAULT_MAX_POINTS_PER_LEVEL = 10000;
 //! Configuration for double exponential integration.
 struct DoubleExpConfig : IntegConfig
 {
-  uint32_t NbLevels          = 10;    //!< Number of refinement levels (each doubles points)
-  double   StepFactor        = 0.5;   //!< Initial transformed-coordinate step size
-  size_t MaxPointsPerLevel =
+  uint32_t NbLevels   = 10;  //!< Number of refinement levels (each doubles points)
+  double   StepFactor = 0.5; //!< Initial transformed-coordinate step size
+  size_t   MaxPointsPerLevel =
     THE_DOUBLE_EXP_DEFAULT_MAX_POINTS_PER_LEVEL; //!< Maximum evaluations at one level
 
   //! Default constructor.
@@ -79,13 +79,20 @@ IntegResult TanhSinh(Function&              theFunc,
 {
   IntegResult aResult;
 
-  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower) || !std::isfinite(theConfig.Tolerance)
-      || theConfig.Tolerance <= 0.0 || !std::isfinite(theConfig.StepFactor)
-      || theConfig.StepFactor <= 0.0 || theConfig.NbLevels == 0 || theConfig.MaxIterations == 0
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower)
+      || !std::isfinite(theConfig.Tolerance) || theConfig.Tolerance <= 0.0
+      || !std::isfinite(theConfig.StepFactor) || theConfig.StepFactor <= 0.0
+      || theConfig.NbLevels == 0 || theConfig.MaxIterations == 0
       || theConfig.MaxPointsPerLevel == 0)
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status        = Status::OK;
+    aResult.Value         = 0.0;
+    aResult.AbsoluteError = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -109,7 +116,7 @@ IntegResult TanhSinh(Function&              theFunc,
   double                aPrevSum = 0.0;
   std::optional<double> aLastError;
   size_t                aTotalPoints = 0;
-  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
+  const uint32_t        aNbLevels    = std::min(theConfig.NbLevels, theConfig.MaxIterations);
 
   // Level-by-level refinement
   for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
@@ -299,21 +306,21 @@ IntegResult TanhSinh(Function&              theFunc,
       const double aAbsError = std::abs(aNewSum - aPrevSum);
       aLastError             = aAbsError;
 
-      const double anAbsValue = std::abs(aNewSum);
-      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
-                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
-                                 : aAbsError <= theConfig.Tolerance;
+      const double anAbsValue  = std::abs(aNewSum);
+      const bool   isConverged = anAbsValue > Precision::Computational()
+                                   ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                   : aAbsError <= theConfig.Tolerance;
       if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        if (anAbsValue > Precision::Computational())
         {
           aResult.RelativeError = aAbsError / anAbsValue;
         }
-        aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = aLevel + 1;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
         return aResult;
       }
     }
@@ -326,12 +333,12 @@ IntegResult TanhSinh(Function&              theFunc,
   aResult.Status        = Status::MaxIterations;
   aResult.Value         = aPrevSum;
   aResult.AbsoluteError = aLastError;
-  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  if (aLastError && std::abs(aPrevSum) > Precision::Computational())
   {
     aResult.RelativeError = *aLastError / std::abs(aPrevSum);
   }
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = aNbLevels;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = aNbLevels;
   return aResult;
 }
 
@@ -361,12 +368,12 @@ IntegResult ExpSinh(Function&              theFunc,
     return aResult;
   }
 
-  const double   aHalfPi      = M_PI / 2.0;
-  double         aH           = theConfig.StepFactor;
+  const double          aHalfPi  = M_PI / 2.0;
+  double                aH       = theConfig.StepFactor;
   double                aPrevSum = 0.0;
   std::optional<double> aLastError;
   size_t                aTotalPoints = 0;
-  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
+  const uint32_t        aNbLevels    = std::min(theConfig.NbLevels, theConfig.MaxIterations);
 
   for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
   {
@@ -478,21 +485,21 @@ IntegResult ExpSinh(Function&              theFunc,
       const double aAbsError = std::abs(aNewSum - aPrevSum);
       aLastError             = aAbsError;
 
-      const double anAbsValue = std::abs(aNewSum);
-      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
-                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
-                                 : aAbsError <= theConfig.Tolerance;
+      const double anAbsValue  = std::abs(aNewSum);
+      const bool   isConverged = anAbsValue > Precision::Computational()
+                                   ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                   : aAbsError <= theConfig.Tolerance;
       if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        if (anAbsValue > Precision::Computational())
         {
           aResult.RelativeError = aAbsError / anAbsValue;
         }
-        aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = aLevel + 1;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
         return aResult;
       }
     }
@@ -504,12 +511,12 @@ IntegResult ExpSinh(Function&              theFunc,
   aResult.Status        = Status::MaxIterations;
   aResult.Value         = aPrevSum;
   aResult.AbsoluteError = aLastError;
-  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  if (aLastError && std::abs(aPrevSum) > Precision::Computational())
   {
     aResult.RelativeError = *aLastError / std::abs(aPrevSum);
   }
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = aNbLevels;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = aNbLevels;
   return aResult;
 }
 
@@ -536,12 +543,12 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
     return aResult;
   }
 
-  const double   aHalfPi      = M_PI / 2.0;
-  double         aH           = theConfig.StepFactor;
+  const double          aHalfPi  = M_PI / 2.0;
+  double                aH       = theConfig.StepFactor;
   double                aPrevSum = 0.0;
   std::optional<double> aLastError;
   size_t                aTotalPoints = 0;
-  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
+  const uint32_t        aNbLevels    = std::min(theConfig.NbLevels, theConfig.MaxIterations);
 
   for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
   {
@@ -648,21 +655,21 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
       const double aAbsError = std::abs(aNewSum - aPrevSum);
       aLastError             = aAbsError;
 
-      const double anAbsValue = std::abs(aNewSum);
-      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
-                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
-                                 : aAbsError <= theConfig.Tolerance;
+      const double anAbsValue  = std::abs(aNewSum);
+      const bool   isConverged = anAbsValue > Precision::Computational()
+                                   ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                   : aAbsError <= theConfig.Tolerance;
       if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        if (anAbsValue > Precision::Computational())
         {
           aResult.RelativeError = aAbsError / anAbsValue;
         }
-        aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = aLevel + 1;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
         return aResult;
       }
     }
@@ -674,12 +681,12 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
   aResult.Status        = Status::MaxIterations;
   aResult.Value         = aPrevSum;
   aResult.AbsoluteError = aLastError;
-  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  if (aLastError && std::abs(aPrevSum) > Precision::Computational())
   {
     aResult.RelativeError = *aLastError / std::abs(aPrevSum);
   }
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = aNbLevels;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = aNbLevels;
   return aResult;
 }
 
@@ -703,11 +710,16 @@ IntegResult DoubleExponential(Function&              theFunc,
                               const DoubleExpConfig& theConfig = DoubleExpConfig())
 {
   IntegResult anInvalidResult;
-  if (std::isnan(theLower) || std::isnan(theUpper) || theLower == theUpper
+  if (std::isnan(theLower) || std::isnan(theUpper)
       || (theLower > theUpper && (!std::isfinite(theLower) || !std::isfinite(theUpper))))
   {
     anInvalidResult.Status = Status::InvalidInput;
     return anInvalidResult;
+  }
+
+  if (std::isfinite(theLower) && theLower == theUpper)
+  {
+    return TanhSinh(theFunc, theLower, theUpper, theConfig);
   }
 
   const bool aIsLowerInf = std::isinf(theLower) && theLower < 0.0;
@@ -848,7 +860,7 @@ IntegResult TanhSinhWithSingularity(Function&              theFunc,
   if (aLeft.AbsoluteError && aRight.AbsoluteError)
   {
     aResult.AbsoluteError = *aLeft.AbsoluteError + *aRight.AbsoluteError;
-    if (std::abs(*aResult.Value) > std::numeric_limits<double>::epsilon())
+    if (std::abs(*aResult.Value) > Precision::Computational())
     {
       aResult.RelativeError = *aResult.AbsoluteError / std::abs(*aResult.Value);
     }

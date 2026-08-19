@@ -104,6 +104,32 @@ private:
   double myTargetV;
 };
 
+class SymmetricHeterogeneousFunc
+{
+public:
+  bool Value(double theU, double theV, double& theF1, double& theF2) const
+  {
+    theF1 = 1.0e20 * (theU - 100.0);
+    theF2 = theV + 200.0;
+    return true;
+  }
+
+  bool ValueAndJacobian(double  theU,
+                        double  theV,
+                        double& theF1,
+                        double& theF2,
+                        double& theJ11,
+                        double& theJ12,
+                        double& theJ22) const
+  {
+    Value(theU, theV, theF1, theF2);
+    theJ11 = 1.0e20;
+    theJ12 = 0.0;
+    theJ22 = 1.0;
+    return true;
+  }
+};
+
 //! Constant residual with huge Jacobian creates tiny Newton step.
 class HugeJacobianConstantResidual
 {
@@ -418,4 +444,31 @@ TEST(MathSys_Newton2DTest, Solve2D_ScaleRelativeJacobianAndFiniteValidation)
     return true;
   };
   EXPECT_EQ(MathSys::Solve2D(aNaN, {0.0, 0.0}, aBounds).Status, MathUtils::Status::NumericalError);
+}
+
+TEST(MathSys_Newton2DTest, HeterogeneousUnboundedSystemTakesFullNewtonStep)
+{
+  const auto aFunc = [](double theU, double theV, double theF[2], double theJ[2][2]) {
+    theF[0]    = 1.0e20 * (theU - 100.0);
+    theF[1]    = theV + 200.0;
+    theJ[0][0] = 1.0e20;
+    theJ[0][1] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0;
+    return true;
+  };
+  MathSys::NewtonBoundsN<2> aBounds;
+  aBounds.HasBounds = false;
+
+  const MathSys::NewtonResultN<2> aGeneral = MathSys::Solve2D(aFunc, {0.0, 0.0}, aBounds);
+  ASSERT_TRUE(aGeneral.IsDone());
+  EXPECT_DOUBLE_EQ(aGeneral.X[0], 100.0);
+  EXPECT_DOUBLE_EQ(aGeneral.X[1], -200.0);
+
+  SymmetricHeterogeneousFunc      aSymmetricFunc;
+  const MathSys::NewtonResultN<2> aSymmetric =
+    MathSys::Solve2DSymmetric(aSymmetricFunc, {0.0, 0.0}, aBounds);
+  ASSERT_TRUE(aSymmetric.IsDone());
+  EXPECT_DOUBLE_EQ(aSymmetric.X[0], 100.0);
+  EXPECT_DOUBLE_EQ(aSymmetric.X[1], -200.0);
 }

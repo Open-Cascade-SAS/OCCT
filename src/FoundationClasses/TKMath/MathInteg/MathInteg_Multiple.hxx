@@ -20,7 +20,6 @@
 #include <math_IntegerVector.hxx>
 #include <MathUtils_GaussKronrodWeights.hxx>
 
-#include <NCollection_DynamicArray.hxx>
 #include <NCollection_LinearVector.hxx>
 
 #include <cmath>
@@ -75,14 +74,17 @@ IntegResult GaussMultiple(Func&                     theFunc,
 
   // Validate all dimensions before allocating quadrature storage.
   size_t                           aNbEvaluations = 1;
-  NCollection_LinearVector<size_t> anOrders;
+  size_t                           aNbGaussValues = 0;
+  bool                             hasZeroWidth   = false;
+  NCollection_LinearVector<size_t> anOrders(theNVars, 0);
+  NCollection_LinearVector<size_t> aGaussOffsets(theNVars, 0);
   for (size_t i = 0; i < theNVars; ++i)
   {
     const double aLower       = theLower.At(i);
     const double anUpper      = theUpper.At(i);
     const int    anOrderValue = theOrder.At(i);
-    if (!std::isfinite(aLower) || !std::isfinite(anUpper) || aLower == anUpper
-        || !std::isfinite(anUpper - aLower) || anOrderValue < 1)
+    if (!std::isfinite(aLower) || !std::isfinite(anUpper) || !std::isfinite(anUpper - aLower)
+        || anOrderValue < 1)
     {
       aResult.Status = Status::InvalidInput;
       return aResult;
@@ -93,8 +95,18 @@ IntegResult GaussMultiple(Func&                     theFunc,
       aResult.Status = Status::InvalidInput;
       return aResult;
     }
-    anOrders.Append(anOrder);
+    hasZeroWidth                 = hasZeroWidth || aLower == anUpper;
+    anOrders.ChangeValue(i)      = anOrder;
+    aGaussOffsets.ChangeValue(i) = aNbGaussValues;
+    aNbGaussValues += anOrder;
     aNbEvaluations *= anOrder;
+  }
+
+  if (hasZeroWidth)
+  {
+    aResult.Status = Status::OK;
+    aResult.Value  = 0.0;
+    return aResult;
   }
 
   // Compute midpoints and half-widths for coordinate transformation
@@ -106,48 +118,36 @@ IntegResult GaussMultiple(Func&                     theFunc,
     aXm.ChangeAt(i) = theLower.At(i) + aXr.At(i);
   }
 
-  // Get Gauss points and weights for each variable
-  // Use NCollection_DynamicArray since math_Vector has no default constructor
-  NCollection_DynamicArray<math_Vector> aGaussPoints(std::min(theNVars, size_t{8}));
-  NCollection_DynamicArray<math_Vector> aGaussWeights(std::min(theNVars, size_t{8}));
+  // Store all per-variable Gauss tables in two contiguous buffers.
+  NCollection_LinearVector<double> aGaussPoints(aNbGaussValues, 0.0);
+  NCollection_LinearVector<double> aGaussWeights(aNbGaussValues, 0.0);
 
   for (size_t i = 0; i < theNVars; ++i)
   {
-    const size_t anOrder = anOrders.Value(i);
-    aGaussPoints.Append(math_Vector(anOrder));
-    aGaussWeights.Append(math_Vector(anOrder));
-
-    math_Vector aGP(anOrder);
-    math_Vector aGW(anOrder);
+    const size_t anOrder  = anOrders.Value(i);
+    const size_t anOffset = aGaussOffsets.Value(i);
+    math_Vector  aGP(&aGaussPoints.ChangeValue(anOffset), 0, static_cast<int>(anOrder) - 1);
+    math_Vector  aGW(&aGaussWeights.ChangeValue(anOffset), 0, static_cast<int>(anOrder) - 1);
     if (!GetOrderedGaussPointsAndWeights(static_cast<int>(anOrder), aGP, aGW))
     {
       aResult.Status = Status::InvalidInput;
       return aResult;
     }
-
-    for (size_t k = 0; k < anOrder; ++k)
-    {
-      aGaussPoints.ChangeValue(i).ChangeAt(k)  = aGP.At(k);
-      aGaussWeights.ChangeValue(i).ChangeAt(k) = aGW.At(k);
-    }
   }
 
   double                           aVal = 0.0;
   math_Vector                      aX(theNVars);
-  NCollection_LinearVector<size_t> anIndices;
-  for (size_t i = 0; i < theNVars; ++i)
-  {
-    anIndices.Append(0);
-  }
+  NCollection_LinearVector<size_t> anIndices(theNVars, 0);
 
   for (size_t anEval = 0; anEval < aNbEvaluations; ++anEval)
   {
     double aWeight = 1.0;
     for (size_t j = 0; j < theNVars; ++j)
     {
-      const size_t anIndex = anIndices.Value(j);
-      aX.ChangeAt(j)       = aXm.At(j) + aXr.At(j) * aGaussPoints.Value(j).At(anIndex);
-      aWeight *= aGaussWeights.Value(j).At(anIndex);
+      const size_t anIndex  = anIndices.Value(j);
+      const size_t anOffset = aGaussOffsets.Value(j) + anIndex;
+      aX.ChangeAt(j)        = aXm.At(j) + aXr.At(j) * aGaussPoints.Value(anOffset);
+      aWeight *= aGaussWeights.Value(anOffset);
     }
 
     double aFunctionValue = 0.0;

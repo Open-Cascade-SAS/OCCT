@@ -365,7 +365,7 @@ TEST(MathLin_SVD_Test, WideMatrixReconstructionAndMinimumNorm)
     }
   }
 
-  math_Vector aB(size_t{2}, 1.0);
+  math_Vector                   aB(size_t{2}, 1.0);
   const MathUtils::LinearResult aSolve = MathLin::SolveSVD(aA, aB);
   ASSERT_TRUE(aSolve.IsDone());
   EXPECT_NEAR(aSolve.Solution->At(0), 1.0 / 3.0, 1.0e-12);
@@ -461,16 +461,16 @@ TEST(MathLin_Gauss_Test, ThreeByThreePivotedSystem)
   aMatrix.ChangeAt(2, 2) = 3.0;
 
   math_Vector aRightHandSide(3);
-  aRightHandSide.ChangeAt(0) = 7.0;
-  aRightHandSide.ChangeAt(1) = -4.0;
-  aRightHandSide.ChangeAt(2) = 5.0;
+  aRightHandSide.ChangeAt(0)            = 7.0;
+  aRightHandSide.ChangeAt(1)            = -4.0;
+  aRightHandSide.ChangeAt(2)            = 5.0;
   const MathUtils::LinearResult aResult = MathLin::Solve(aMatrix, aRightHandSide);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.Solution.has_value());
   constexpr double THE_EXPECTED_SOLUTION[] = {2.2716049382716048,
-                                               -1.1604938271604937,
-                                               -0.23456790123456786};
+                                              -1.1604938271604937,
+                                              -0.23456790123456786};
   for (size_t anIndex = 0; anIndex < 3; ++anIndex)
   {
     EXPECT_NEAR(aResult.Solution->At(anIndex), THE_EXPECTED_SOLUTION[anIndex], 1.0e-13);
@@ -511,10 +511,10 @@ TEST(MathLin_Gauss_Test, TwoByTwoNonsymmetricSystem)
 TEST(MathLin_Gauss_Test, FourByFourNonsymmetricSystem)
 {
   constexpr double THE_A[4][4] = {{3.0, -2.0, 0.5, 1.0},
-                                   {1.0, 4.0, -1.0, 2.0},
-                                   {-2.0, 0.75, 5.0, -1.0},
-                                   {0.5, -3.0, 2.0, 6.0}};
-  constexpr double THE_B[4] = {4.5, -2.0, 7.25, 1.0};
+                                  {1.0, 4.0, -1.0, 2.0},
+                                  {-2.0, 0.75, 5.0, -1.0},
+                                  {0.5, -3.0, 2.0, 6.0}};
+  constexpr double THE_B[4]    = {4.5, -2.0, 7.25, 1.0};
   math_Matrix      aA(size_t{4}, size_t{4});
   math_Vector      aB(size_t{4});
   for (size_t i = 0; i < 4; ++i)
@@ -532,9 +532,9 @@ TEST(MathLin_Gauss_Test, FourByFourNonsymmetricSystem)
   ASSERT_TRUE(aResult.Determinant.has_value());
 
   constexpr double THE_EXPECTED_SOLUTION[4] = {1.3449494949494951,
-                                                -0.065151515151515113,
-                                                1.877020202020202,
-                                                -0.60366161616161618};
+                                               -0.065151515151515113,
+                                               1.877020202020202,
+                                               -0.60366161616161618};
   for (size_t i = 0; i < 4; ++i)
   {
     EXPECT_NEAR(aResult.Solution->At(i), THE_EXPECTED_SOLUTION[i], 1.0e-13);
@@ -551,11 +551,11 @@ TEST(MathLin_Gauss_Test, FourByFourNonsymmetricSystem)
 TEST(MathLin_Gauss_Test, FiveByFiveColumnScaledSystem)
 {
   constexpr double THE_A[5][5] = {{2.5, 0.0012, -3.0, 1.5, 0.2},
-                                   {-1.0, 0.0021, 2.0, 0.5, -0.7},
-                                   {3.0, -0.0008, 1.0, -2.0, 0.4},
-                                   {0.5, 0.0032, -1.0, 4.0, 1.1},
-                                   {-2.0, 0.0017, 0.5, 1.0, 3.0}};
-  constexpr double THE_B[5] = {1.2, -3.4, 5.6, 0.75, -2.1};
+                                  {-1.0, 0.0021, 2.0, 0.5, -0.7},
+                                  {3.0, -0.0008, 1.0, -2.0, 0.4},
+                                  {0.5, 0.0032, -1.0, 4.0, 1.1},
+                                  {-2.0, 0.0017, 0.5, 1.0, 3.0}};
+  constexpr double THE_B[5]    = {1.2, -3.4, 5.6, 0.75, -2.1};
   math_Matrix      aA(size_t{5}, size_t{5});
   math_Vector      aB(size_t{5});
   for (size_t i = 0; i < 5; ++i)
@@ -573,10 +573,10 @@ TEST(MathLin_Gauss_Test, FiveByFiveColumnScaledSystem)
   ASSERT_TRUE(aResult.Determinant.has_value());
 
   constexpr double THE_EXPECTED_SOLUTION[5] = {1.8626125409601375,
-                                                -1955.7312378710285,
-                                                1.2160500111347952,
-                                                1.5690929914421161,
-                                                0.92428339643050317};
+                                               -1955.7312378710285,
+                                               1.2160500111347952,
+                                               1.5690929914421161,
+                                               0.92428339643050317};
   for (size_t i = 0; i < 5; ++i)
   {
     EXPECT_NEAR(aResult.Solution->At(i), THE_EXPECTED_SOLUTION[i], 1.0e-9);
@@ -660,25 +660,50 @@ TEST(MathLin_Gauss_Test, ArbitraryMismatchedBoundsAndScaledSystem)
   }
 }
 
-TEST(MathLin_Gauss_Test, RejectsDeterminantOverflow)
+TEST(MathLin_Gauss_Test, DeterminantOverflowDoesNotInvalidateSolve)
 {
   math_Matrix aA(2, 2, 0.0);
   aA.ChangeAt(0, 0) = 1.0e200;
   aA.ChangeAt(1, 1) = 1.0e200;
 
   const MathLin::LUResult aLU = MathLin::LU(aA);
-  EXPECT_EQ(aLU.Status, MathUtils::Status::NumericalError);
+  ASSERT_TRUE(aLU.IsDone());
   EXPECT_FALSE(aLU.Determinant.has_value());
+
+  math_Vector aB(size_t{2});
+  aB.ChangeAt(0)                       = 1.0e200;
+  aB.ChangeAt(1)                       = 1.0e200;
+  const MathUtils::LinearResult aSolve = MathLin::Solve(aA, aB);
+  ASSERT_TRUE(aSolve.IsDone());
+  ASSERT_TRUE(aSolve.Solution.has_value());
+  EXPECT_DOUBLE_EQ(aSolve.Solution->At(0), 1.0);
+  EXPECT_DOUBLE_EQ(aSolve.Solution->At(1), 1.0);
+  EXPECT_FALSE(aSolve.Determinant.has_value());
+
   const MathUtils::LinearResult aDeterminant = MathLin::Determinant(aA);
   EXPECT_EQ(aDeterminant.Status, MathUtils::Status::NumericalError);
   EXPECT_FALSE(aDeterminant.Determinant.has_value());
 }
 
+TEST(MathLin_Gauss_Test, IndependentlyScaledRowsRemainSolvable)
+{
+  math_Matrix aA(size_t{2}, size_t{2}, 0.0);
+  aA.ChangeAt(0, 0) = 1.0e20;
+  aA.ChangeAt(1, 1) = 1.0;
+  math_Vector aB(size_t{2});
+  aB.ChangeAt(0) = 1.0e20;
+  aB.ChangeAt(1) = 1.0;
+
+  const MathUtils::LinearResult aResult = MathLin::Solve(aA, aB);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Solution.has_value());
+  EXPECT_DOUBLE_EQ(aResult.Solution->At(0), 1.0);
+  EXPECT_DOUBLE_EQ(aResult.Solution->At(1), 1.0);
+}
+
 TEST(MathLin_Gauss_Test, ThreeByThreeDeterminantAndInverse)
 {
-  constexpr double THE_A[3][3] = {{4.0, -1.0, 2.0},
-                                   {0.5, 3.0, -0.75},
-                                   {-2.0, 1.0, 5.0}};
+  constexpr double THE_A[3][3] = {{4.0, -1.0, 2.0}, {0.5, 3.0, -0.75}, {-2.0, 1.0, 5.0}};
   constexpr double THE_EXPECTED_INVERSE[3][3] = {
     {0.20454545454545453, 0.090909090909090912, -0.068181818181818177},
     {-0.012987012987012986, 0.31168831168831168, 0.051948051948051945},
@@ -768,6 +793,30 @@ TEST(MathLin_Crout_Test, SymmetricIndefiniteUsesLowerTriangle)
   EXPECT_NEAR(aResult.Inverse->At(0, 1), 2.0 / 3.0, THE_TOLERANCE);
   EXPECT_NEAR(aResult.Inverse->At(1, 0), 2.0 / 3.0, THE_TOLERANCE);
   EXPECT_NEAR(aResult.Inverse->At(1, 1), -1.0 / 3.0, THE_TOLERANCE);
+}
+
+TEST(MathLin_Crout_Test, ScalingAndDeterminantOverflowDoNotInvalidateResults)
+{
+  math_Matrix aScaled(size_t{2}, size_t{2}, 0.0);
+  aScaled.ChangeAt(0, 0) = 1.0e20;
+  aScaled.ChangeAt(1, 1) = 1.0;
+  math_Vector aB(size_t{2});
+  aB.ChangeAt(0)                             = 1.0e20;
+  aB.ChangeAt(1)                             = 1.0;
+  const MathUtils::LinearResult aScaledSolve = MathLin::SolveCrout(aScaled, aB);
+  ASSERT_TRUE(aScaledSolve.IsDone());
+  EXPECT_DOUBLE_EQ(aScaledSolve.Solution->At(0), 1.0);
+  EXPECT_DOUBLE_EQ(aScaledSolve.Solution->At(1), 1.0);
+
+  math_Matrix anOverflow(size_t{2}, size_t{2}, 0.0);
+  anOverflow.ChangeAt(0, 0)                = 1.0e200;
+  anOverflow.ChangeAt(1, 1)                = 1.0e200;
+  const MathUtils::InverseResult anInverse = MathLin::InvertCrout(anOverflow);
+  ASSERT_TRUE(anInverse.IsDone());
+  ASSERT_TRUE(anInverse.Inverse.has_value());
+  EXPECT_DOUBLE_EQ(anInverse.Inverse->At(0, 0), 1.0e-200);
+  EXPECT_DOUBLE_EQ(anInverse.Inverse->At(1, 1), 1.0e-200);
+  EXPECT_FALSE(anInverse.Determinant.has_value());
 }
 
 TEST(MathLin_Householder_Test, SolveQRMultiple_ReturnsFullMatrix)
@@ -997,10 +1046,10 @@ TEST(MathLin_Jacobi_Test, Eigenvalues_Symmetric)
 TEST(MathLin_Jacobi_Test, DenseFourByFourSymmetricSystem)
 {
   constexpr double THE_A[4][4] = {{6.0, 2.0, -1.0, 0.5},
-                                   {2.0, 3.0, 0.75, -1.0},
-                                   {-1.0, 0.75, 4.0, 1.5},
-                                   {0.5, -1.0, 1.5, 2.0}};
-  math_Matrix aA(size_t{4}, size_t{4});
+                                  {2.0, 3.0, 0.75, -1.0},
+                                  {-1.0, 0.75, 4.0, 1.5},
+                                  {0.5, -1.0, 1.5, 2.0}};
+  math_Matrix      aA(size_t{4}, size_t{4});
   for (size_t i = 0; i < 4; ++i)
   {
     for (size_t j = 0; j < 4; ++j)
@@ -1015,9 +1064,9 @@ TEST(MathLin_Jacobi_Test, DenseFourByFourSymmetricSystem)
   ASSERT_TRUE(aResult.EigenVectors.has_value());
 
   constexpr double THE_EXPECTED_EIGENVALUES[4] = {7.1223130768175151,
-                                                   4.7817499346384418,
-                                                   3.0874669645313992,
-                                                   0.0084700240126456498};
+                                                  4.7817499346384418,
+                                                  3.0874669645313992,
+                                                  0.0084700240126456498};
   for (size_t j = 0; j < 4; ++j)
   {
     const double anEigenvalue = aResult.EigenValues->At(j);
@@ -1209,13 +1258,13 @@ TEST(MathLin_LeastSquares_Test, Overdetermined)
 TEST(MathLin_LeastSquares_Test, NoisyQuadraticFit)
 {
   constexpr double THE_A[7][3] = {{1.0, -2.0, 4.0},
-                                   {1.0, -1.0, 1.0},
-                                   {1.0, -0.25, 0.0625},
-                                   {1.0, 0.5, 0.25},
-                                   {1.0, 1.0, 1.0},
-                                   {1.0, 1.75, 3.0625},
-                                   {1.0, 2.5, 6.25}};
-  constexpr double THE_B[7] = {7.1, 2.4, 0.85, 1.2, 2.05, 4.8, 9.7};
+                                  {1.0, -1.0, 1.0},
+                                  {1.0, -0.25, 0.0625},
+                                  {1.0, 0.5, 0.25},
+                                  {1.0, 1.0, 1.0},
+                                  {1.0, 1.75, 3.0625},
+                                  {1.0, 2.5, 6.25}};
+  constexpr double THE_B[7]    = {7.1, 2.4, 0.85, 1.2, 2.05, 4.8, 9.7};
   math_Matrix      aA(size_t{7}, size_t{3});
   math_Vector      aB(size_t{7});
   for (size_t i = 0; i < 7; ++i)
@@ -1236,8 +1285,8 @@ TEST(MathLin_LeastSquares_Test, NoisyQuadraticFit)
   EXPECT_EQ(aResult.Rank, 3u);
 
   constexpr double THE_EXPECTED_SOLUTION[3] = {0.74941012717216748,
-                                                -0.18756729578259318,
-                                                1.4926750303520839};
+                                               -0.18756729578259318,
+                                               1.4926750303520839};
   for (size_t i = 0; i < 3; ++i)
   {
     EXPECT_NEAR(aResult.Solution->At(i), THE_EXPECTED_SOLUTION[i], 1.0e-12);
@@ -1356,8 +1405,7 @@ TEST(MathLin_LeastSquares_Test, ZeroRegularizationUsesSVDCutoff)
   aA.ChangeAt(1, 1) = std::numeric_limits<double>::epsilon();
   math_Vector aB(size_t{2}, 1.0);
 
-  const MathLin::LeastSquaresResult aResult =
-    MathLin::RegularizedLeastSquares(aA, aB, 0.0, 0.0);
+  const MathLin::LeastSquaresResult aResult = MathLin::RegularizedLeastSquares(aA, aB, 0.0, 0.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.Rank, 1u);
   EXPECT_DOUBLE_EQ(aResult.Solution->At(0), 1.0);
@@ -1412,8 +1460,7 @@ TEST(MathLin_LeastSquares_Test, GCVSelectionAndInvalidInput)
     aA(i, 3)        = aX * aX;
     aB(-5 + i)      = 1.0 + 2.0 * aX + ((i % 2 == 0) ? 0.3 : -0.3);
   }
-  const std::optional<double> aLambda =
-    MathLin::OptimalRegularization(aA, aB, 1.0e-8, 1.0e1, 30);
+  const std::optional<double> aLambda = MathLin::OptimalRegularization(aA, aB, 1.0e-8, 1.0e1, 30);
   ASSERT_TRUE(aLambda.has_value());
   EXPECT_TRUE(std::isfinite(*aLambda));
   EXPECT_GE(*aLambda, 1.0e-8);

@@ -20,11 +20,12 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include <Precision.hxx>
+#include <Standard_Real.hxx>
 
 #include <NCollection_LinearVector.hxx>
 
 #include <cmath>
-#include <limits>
 
 namespace MathInteg
 {
@@ -43,7 +44,7 @@ constexpr uint32_t THE_KRONROD_AUTO_MAX_ITERATIONS = 50;
 struct KronrodConfig : IntegConfig
 {
   size_t NbGaussPoints = THE_KRONROD_AUTO_INITIAL_ORDER; //!< Gauss points; Kronrod uses 2n+1
-  bool   Adaptive      = true; //!< Whether to use adaptive subdivision
+  bool   Adaptive      = true;                           //!< Whether to use adaptive subdivision
 
   //! Default constructor.
   KronrodConfig() = default;
@@ -72,11 +73,17 @@ IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, siz
 {
   IntegResult aResult;
 
-  if (theNbGauss == 0 || theNbGauss > THE_KRONROD_MAX_GAUSS_ORDER
-      || !std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower))
+  if (theNbGauss == 0 || theNbGauss > THE_KRONROD_MAX_GAUSS_ORDER || !std::isfinite(theLower)
+      || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower))
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status        = Status::OK;
+    aResult.Value         = 0.0;
+    aResult.AbsoluteError = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -236,19 +243,19 @@ IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, siz
   }
   // QUADPACK limits unrealistically small estimates using the absolute integral estimate.
   if (anAbsVal
-      > std::numeric_limits<double>::min() / (50.0 * std::numeric_limits<double>::epsilon()))
+      > RealSmall() / (50.0 * Precision::Computational()))
   {
-    aAbsError = std::max(aAbsError, 50.0 * std::numeric_limits<double>::epsilon() * anAbsVal);
+    aAbsError = std::max(aAbsError, 50.0 * Precision::Computational() * anAbsVal);
   }
 
   aResult.Status        = Status::OK;
   aResult.Value         = aKronrodVal;
   aResult.AbsoluteError = aAbsError;
-  if (std::abs(aKronrodVal) > std::numeric_limits<double>::epsilon())
+  if (std::abs(aKronrodVal) > Precision::Computational())
   {
     aResult.RelativeError = aAbsError / std::abs(aKronrodVal);
   }
-  aResult.NbIterations  = 1;
+  aResult.NbIterations = 1;
   return aResult;
 }
 
@@ -272,13 +279,19 @@ IntegResult Kronrod(Function&            theFunc,
 {
   IntegResult aResult;
 
-  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower) || theConfig.NbGaussPoints < 1
-      || theConfig.NbGaussPoints > THE_KRONROD_MAX_GAUSS_ORDER
-      || !std::isfinite(theConfig.Tolerance)
-      || theConfig.Tolerance <= 0.0 || theConfig.MaxIterations < 1)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower)
+      || theConfig.NbGaussPoints < 1 || theConfig.NbGaussPoints > THE_KRONROD_MAX_GAUSS_ORDER
+      || !std::isfinite(theConfig.Tolerance) || theConfig.Tolerance <= 0.0
+      || theConfig.MaxIterations < 1)
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower == theUpper)
+  {
+    aResult.Status        = Status::OK;
+    aResult.Value         = 0.0;
+    aResult.AbsoluteError = 0.0;
     return aResult;
   }
   if (theLower > theUpper)
@@ -324,7 +337,7 @@ IntegResult Kronrod(Function&            theFunc,
 
   const auto isConverged = [&](double theError, double theValue) {
     const double anAbsValue = std::abs(theValue);
-    return anAbsValue > std::numeric_limits<double>::epsilon()
+    return anAbsValue > Precision::Computational()
              ? theError <= theConfig.Tolerance * anAbsValue
              : theError <= theConfig.Tolerance;
   };
@@ -367,11 +380,11 @@ IntegResult Kronrod(Function&            theFunc,
       aResult.Value         = aTotalValue;
       aResult.AbsoluteError = aTotalError;
       aResult.NbPoints      = aTotalPoints;
-      if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+      if (std::abs(aTotalValue) > Precision::Computational())
       {
         aResult.RelativeError = aTotalError / std::abs(aTotalValue);
       }
-      aResult.NbIterations  = aIterations;
+      aResult.NbIterations = aIterations;
       return aResult;
     }
 
@@ -382,12 +395,12 @@ IntegResult Kronrod(Function&            theFunc,
       aResult.Status        = aRightResult.Status;
       aResult.Value         = aTotalValue;
       aResult.AbsoluteError = aTotalError;
-      if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+      if (std::abs(aTotalValue) > Precision::Computational())
       {
         aResult.RelativeError = aTotalError / std::abs(aTotalValue);
       }
-      aResult.NbPoints      = aTotalPoints;
-      aResult.NbIterations  = aIterations;
+      aResult.NbPoints     = aTotalPoints;
+      aResult.NbIterations = aIterations;
       return aResult;
     }
 
@@ -410,12 +423,12 @@ IntegResult Kronrod(Function&            theFunc,
     hasConverged ? Status::OK : (isStagnated ? Status::NotConverged : Status::MaxIterations);
   aResult.Value         = aTotalValue;
   aResult.AbsoluteError = aTotalError;
-  if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+  if (std::abs(aTotalValue) > Precision::Computational())
   {
     aResult.RelativeError = aTotalError / std::abs(aTotalValue);
   }
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = aIterations;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = aIterations;
   return aResult;
 }
 
@@ -436,18 +449,24 @@ IntegResult KronrodAuto(Function& theFunc,
                         double    theLower,
                         double    theUpper,
                         double    theTolerance = 1.0e-10,
-                         size_t    theMaxOrder  = THE_KRONROD_MAX_GAUSS_ORDER)
+                        size_t    theMaxOrder  = THE_KRONROD_MAX_GAUSS_ORDER)
 {
   IntegResult aBestResult;
   aBestResult.Status  = Status::NotConverged;
   size_t aTotalPoints = 0;
 
-  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
-      || !std::isfinite(theUpper - theLower) || !std::isfinite(theTolerance) || theTolerance <= 0.0
-      || theMaxOrder < THE_KRONROD_AUTO_INITIAL_ORDER
-      || theMaxOrder > THE_KRONROD_MAX_GAUSS_ORDER)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || !std::isfinite(theUpper - theLower)
+      || !std::isfinite(theTolerance) || theTolerance <= 0.0
+      || theMaxOrder < THE_KRONROD_AUTO_INITIAL_ORDER || theMaxOrder > THE_KRONROD_MAX_GAUSS_ORDER)
   {
     aBestResult.Status = Status::InvalidInput;
+    return aBestResult;
+  }
+  if (theLower == theUpper)
+  {
+    aBestResult.Status        = Status::OK;
+    aBestResult.Value         = 0.0;
+    aBestResult.AbsoluteError = 0.0;
     return aBestResult;
   }
   if (theLower > theUpper)
@@ -475,12 +494,11 @@ IntegResult KronrodAuto(Function& theFunc,
     aBestResult = aResult;
 
     // Check if tolerance is met
-    const double anAbsValue = std::abs(*aResult.Value);
-    const bool isConverged =
-      aResult.AbsoluteError
-      && (anAbsValue > std::numeric_limits<double>::epsilon()
-            ? *aResult.AbsoluteError <= theTolerance * anAbsValue
-            : *aResult.AbsoluteError <= theTolerance);
+    const double anAbsValue  = std::abs(*aResult.Value);
+    const bool   isConverged = aResult.AbsoluteError
+                               && (anAbsValue > Precision::Computational()
+                                     ? *aResult.AbsoluteError <= theTolerance * anAbsValue
+                                     : *aResult.AbsoluteError <= theTolerance);
     if (isConverged)
     {
       aResult.NbPoints = aTotalPoints;

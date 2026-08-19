@@ -239,9 +239,7 @@ public:
           gp_Vec& theD2VV,
           gp_Vec& theD2UV) const
   {
-    theP.SetCoord(theU,
-                  theV,
-                  myZOffset + myCurvature * (theU * theU + theV * theV));
+    theP.SetCoord(theU, theV, myZOffset + myCurvature * (theU * theU + theV * theV));
     theD1U.SetCoord(1.0, 0.0, 2.0 * myCurvature * theU);
     theD1V.SetCoord(0.0, 1.0, 2.0 * myCurvature * theV);
     theD2UU.SetCoord(0.0, 0.0, 2.0 * myCurvature);
@@ -270,7 +268,7 @@ TEST_F(MathSys_Newton4DTest, SolveSurfaceSurfaceExtrema4D_Smoke)
   const MathSys::NewtonResultN<4> aResult =
     MathSys::SolveSurfaceSurfaceExtrema4D(aSurf1,
                                           aSurf2,
-                                           std::array<double, 4>{0.1, -0.1, -0.1, 0.1},
+                                          std::array<double, 4>{0.1, -0.1, -0.1, 0.1},
                                           aBounds,
                                           aOptions);
 
@@ -311,4 +309,32 @@ TEST_F(MathSys_Newton4DTest, Solve4D_ScaleRelativeJacobian)
   {
     EXPECT_NEAR(aResult.X[anIndex], static_cast<double>(anIndex + 1), 1.0e-12);
   }
+}
+
+TEST_F(MathSys_Newton4DTest, HeterogeneousUnboundedSystemTakesFullNewtonStep)
+{
+  const auto aFunc =
+    [](double theX0, double theX1, double theX2, double theX3, double theF[4], double theJ[4][4]) {
+      const double aX[4]      = {theX0, theX1, theX2, theX3};
+      const double aTarget[4] = {100.0, -200.0, 300.0, -400.0};
+      const double aScale[4]  = {1.0e20, 1.0, 1.0, 1.0};
+      for (size_t aRow = 0; aRow < 4; ++aRow)
+      {
+        theF[aRow] = aScale[aRow] * (aX[aRow] - aTarget[aRow]);
+        for (size_t aCol = 0; aCol < 4; ++aCol)
+        {
+          theJ[aRow][aCol] = aRow == aCol ? aScale[aRow] : 0.0;
+        }
+      }
+      return true;
+    };
+  MathSys::NewtonBoundsN<4> aBounds;
+  aBounds.HasBounds = false;
+
+  const MathSys::NewtonResultN<4> aResult = MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(aResult.X[0], 100.0);
+  EXPECT_DOUBLE_EQ(aResult.X[1], -200.0);
+  EXPECT_DOUBLE_EQ(aResult.X[2], 300.0);
+  EXPECT_DOUBLE_EQ(aResult.X[3], -400.0);
 }

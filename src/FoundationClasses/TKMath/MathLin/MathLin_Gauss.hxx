@@ -35,13 +35,13 @@ struct LUResult
   std::optional<math_Matrix>        LU;    //!< Combined L and U matrices
   std::optional<math_IntegerVector> Pivot; //!< Pivot indices
   std::optional<double>             Determinant;
-  int                               Sign = 1; //!< Sign from row interchanges
-  size_t                            RowLower = 0;
-  size_t                            ColLower = 0;
-  size_t                            Dimension = 0;
-  double                            MinAbsPivot = 0.0;
-  double                            MaxAbsPivot = 0.0;
-  double                            ConditionEstimate = std::numeric_limits<double>::infinity();
+  int                               Sign              = 1; //!< Sign from row interchanges
+  size_t                            RowLower          = 0;
+  size_t                            ColLower          = 0;
+  size_t                            Dimension         = 0;
+  double                            MinAbsPivot       = 0.0;
+  double                            MaxAbsPivot       = 0.0;
+  std::optional<double>             ConditionEstimate; //!< Pivot-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -79,16 +79,15 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
   math_Matrix&        aLU    = *aResult.LU;
   math_IntegerVector& aPivot = *aResult.Pivot;
 
-  // Scaling factors for implicit pivoting
-  math_Vector aScale(aRowCount);
-  double      aMatrixScale = 0.0;
+  // Row scales for implicit pivoting and scale-relative singularity detection.
+  math_Vector aRowScale(aRowCount);
   for (size_t i = 0; i < aRowCount; ++i)
   {
     double aMax = 0.0;
     for (size_t j = 0; j < aRowCount; ++j)
     {
       aLU.ChangeAt(i, j) = theA.At(i, j);
-      const double aAbs = std::abs(aLU.At(i, j));
+      const double aAbs  = std::abs(aLU.At(i, j));
       if (aAbs > aMax)
       {
         aMax = aAbs;
@@ -99,8 +98,7 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
       aResult.Status = Status::NumericalError; // Singular matrix
       return aResult;
     }
-    aScale[i] = 1.0 / aMax;
-    aMatrixScale = std::max(aMatrixScale, aMax);
+    aRowScale[i] = aMax;
   }
 
   // Crout's algorithm with partial pivoting
@@ -112,7 +110,7 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
 
     for (size_t i = k; i < aRowCount; ++i)
     {
-      const double aScaled = aScale[i] * std::abs(aLU.At(i, k));
+      const double aScaled = std::abs(aLU.At(i, k)) / aRowScale[i];
       if (aScaled > aMaxScaled)
       {
         aMaxScaled = aScaled;
@@ -128,13 +126,14 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
         std::swap(aLU.ChangeAt(aPivotRow, j), aLU.ChangeAt(k, j));
       }
       aResult.Sign = -aResult.Sign;
-      std::swap(aScale[aPivotRow], aScale[k]);
+      std::swap(aRowScale[aPivotRow], aRowScale[k]);
     }
     aPivot[k] = static_cast<int>(aPivotRow);
 
     // Check for singular matrix
-    const double anAbsPivot = std::abs(aLU.At(k, k));
-    if (!std::isfinite(anAbsPivot) || anAbsPivot <= aRelTol * aMatrixScale)
+    const double anAbsPivot   = std::abs(aLU.At(k, k));
+    const double aScaledPivot = anAbsPivot / aRowScale[k];
+    if (!std::isfinite(anAbsPivot) || !std::isfinite(aScaledPivot) || aScaledPivot <= aRelTol)
     {
       aResult.Status = Status::NumericalError;
       return aResult;
@@ -158,16 +157,20 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
   aResult.Determinant = static_cast<double>(aResult.Sign);
   for (size_t i = 0; i < aRowCount; ++i)
   {
-    *aResult.Determinant *= aLU.At(i, i);
-    if (!std::isfinite(*aResult.Determinant))
+    const double aPivot = aLU.At(i, i);
+    *aResult.Determinant *= aPivot;
+    if (!std::isfinite(*aResult.Determinant) || (*aResult.Determinant == 0.0 && aPivot != 0.0))
     {
       aResult.Determinant.reset();
-      aResult.Status = Status::NumericalError;
-      return aResult;
+      break;
     }
   }
 
-  aResult.ConditionEstimate = aResult.MaxAbsPivot / aResult.MinAbsPivot;
+  const double aConditionEstimate = aResult.MaxAbsPivot / aResult.MinAbsPivot;
+  if (std::isfinite(aConditionEstimate))
+  {
+    aResult.ConditionEstimate = aConditionEstimate;
+  }
 
   aResult.Status = Status::OK;
   return aResult;
@@ -252,8 +255,8 @@ inline LinearResult Solve(const math_Matrix& theA,
 //! @param theMinPivot minimum pivot value
 //! @return result containing solution matrix
 inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
-                                           const math_Matrix& theB,
-                                           double             theMinPivot = 1.0e-15)
+                                          const math_Matrix& theB,
+                                          double             theMinPivot = 1.0e-15)
 {
   LinearMultipleResult aResult;
 
@@ -343,6 +346,10 @@ inline LinearResult Determinant(const math_Matrix& theA, double theMinPivot = 1.
 
   aResult.Status      = Status::OK;
   aResult.Determinant = aLURes.Determinant;
+  if (!aResult.Determinant.has_value())
+  {
+    aResult.Status = Status::NumericalError;
+  }
   return aResult;
 }
 

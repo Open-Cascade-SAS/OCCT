@@ -20,7 +20,6 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
-#include <limits>
 #include <optional>
 
 //! @file MathSys_Newton2D.hxx
@@ -60,17 +59,44 @@ inline bool IsBoundsValid2D(const NewtonBoundsN<2>& theBounds)
          && theBounds.Min[0] <= theBounds.Max[0] && theBounds.Min[1] <= theBounds.Max[1];
 }
 
-//! Return the largest domain extent across both dimensions (min 1.0).
-inline double MaxDomainSize2D(const NewtonBoundsN<2>& theBounds)
+//! Return the step limit for a bounded problem; no value means no step limit.
+inline std::optional<double> MaxStep2D(const NewtonBoundsN<2>& theBounds, double theMaxStepRatio)
 {
   if (!theBounds.HasBounds)
   {
-    return 1.0;
+    return std::nullopt;
   }
 
   const double aDU = theBounds.Max[0] - theBounds.Min[0];
   const double aDV = theBounds.Max[1] - theBounds.Min[1];
-  return std::max(1.0, std::max(aDU, aDV));
+  return theMaxStepRatio * std::max(1.0, std::max(aDU, aDV));
+}
+
+//! Solve a general 2x2 system J*delta = -F using independent row scaling.
+inline bool Solve2x2(const double theJ[2][2], const double theF[2], double& theDU, double& theDV)
+{
+  const double aScale0 = std::max(std::abs(theJ[0][0]), std::abs(theJ[0][1]));
+  const double aScale1 = std::max(std::abs(theJ[1][0]), std::abs(theJ[1][1]));
+  if (!(aScale0 > 0.0) || !(aScale1 > 0.0))
+  {
+    return false;
+  }
+
+  const double aJ00 = theJ[0][0] / aScale0;
+  const double aJ01 = theJ[0][1] / aScale0;
+  const double aJ10 = theJ[1][0] / aScale1;
+  const double aJ11 = theJ[1][1] / aScale1;
+  const double aF0  = theF[0] / aScale0;
+  const double aF1  = theF[1] / aScale1;
+  const double aDet = aJ00 * aJ11 - aJ01 * aJ10;
+  if (!std::isfinite(aF0) || !std::isfinite(aF1) || !(std::abs(aDet) > THE_NEWTON_PIVOT_TOL))
+  {
+    return false;
+  }
+
+  theDU = (-aF0 * aJ11 + aF1 * aJ01) / aDet;
+  theDV = (-aF1 * aJ00 + aF0 * aJ10) / aDet;
+  return std::isfinite(theDU) && std::isfinite(theDV);
 }
 
 //! Clamp solution array to bounds, optionally extending by soft-bounds ratio.
@@ -205,7 +231,7 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
 
   Utils::Clamp2D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aMaxStep = theOptions.MaxStepRatio * Utils::MaxDomainSize2D(theBounds);
+  const std::optional<double> aMaxStep = Utils::MaxStep2D(theBounds, theOptions.MaxStepRatio);
 
   for (uint32_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
@@ -230,14 +256,7 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
     double aDU = 0.0;
     double aDV = 0.0;
 
-    const double aJScale =
-      std::max({std::abs(aJ[0][0]), std::abs(aJ[0][1]), std::abs(aJ[1][0]), std::abs(aJ[1][1])});
-    const double aS00 = (aJScale > 0.0) ? aJ[0][0] / aJScale : 0.0;
-    const double aS01 = (aJScale > 0.0) ? aJ[0][1] / aJScale : 0.0;
-    const double aS10 = (aJScale > 0.0) ? aJ[1][0] / aJScale : 0.0;
-    const double aS11 = (aJScale > 0.0) ? aJ[1][1] / aJScale : 0.0;
-    const double aDet = aS00 * aS11 - aS01 * aS10;
-    if (!(aJScale > 0.0) || std::abs(aDet) <= 64.0 * std::numeric_limits<double>::epsilon())
+    if (!Utils::Solve2x2(aJ, aF, aDU, aDV))
     {
       const double aGradU    = aJ[0][0] * aF[0] + aJ[1][0] * aF[1];
       const double aGradV    = aJ[0][1] * aF[0] + aJ[1][1] * aF[1];
@@ -252,19 +271,11 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
       aDU                 = -aAlpha * aGradU;
       aDV                 = -aAlpha * aGradV;
     }
-    else
-    {
-      const double aScaledF0 = aF[0] / aJScale;
-      const double aScaledF1 = aF[1] / aJScale;
-      const double aInvDet   = 1.0 / aDet;
-      aDU                    = (-aScaledF0 * aS11 + aScaledF1 * aS01) * aInvDet;
-      aDV                    = (-aScaledF1 * aS00 + aScaledF0 * aS10) * aInvDet;
-    }
 
     const double aStepNorm = std::hypot(aDU, aDV);
-    if (aStepNorm > aMaxStep)
+    if (aMaxStep && aStepNorm > *aMaxStep)
     {
-      const double aScale = aMaxStep / aStepNorm;
+      const double aScale = *aMaxStep / aStepNorm;
       aDU *= aScale;
       aDV *= aScale;
     }
@@ -367,7 +378,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
   Utils::Clamp2D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aMaxStep = theOptions.MaxStepRatio * Utils::MaxDomainSize2D(theBounds);
+  const std::optional<double> aMaxStep = Utils::MaxStep2D(theBounds, theOptions.MaxStepRatio);
 
   for (uint32_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
@@ -392,18 +403,19 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
     double aDU = 0.0;
     double aDV = 0.0;
 
-    const double aJScale = std::max({std::abs(aJ11), std::abs(aJ12), std::abs(aJ22)});
-    const double aS11    = (aJScale > 0.0) ? aJ11 / aJScale : 0.0;
-    const double aS12    = (aJScale > 0.0) ? aJ12 / aJScale : 0.0;
-    const double aS22    = (aJScale > 0.0) ? aJ22 / aJScale : 0.0;
-    const double aDet    = aS11 * aS22 - aS12 * aS12;
-    if (!(aJScale > 0.0) || std::abs(aDet) <= 64.0 * std::numeric_limits<double>::epsilon())
+    const double aJ[2][2] = {{aJ11, aJ12}, {aJ12, aJ22}};
+    const double aF[2]    = {aF1, aF2};
+    if (!Utils::Solve2x2(aJ, aF, aDU, aDV))
     {
       if (!Utils::SolveSymmetric2x2SVD(aJ11, aJ12, aJ22, aF1, aF2, aDU, aDV))
       {
-        const double aFScale = std::max(std::abs(aF1), std::abs(aF2));
-        const double aGradU  = aS11 * (aF1 / aFScale) + aS12 * (aF2 / aFScale);
-        const double aGradV  = aS12 * (aF1 / aFScale) + aS22 * (aF2 / aFScale);
+        const double aJScale   = std::max({std::abs(aJ11), std::abs(aJ12), std::abs(aJ22)});
+        const double aS11      = (aJScale > 0.0) ? aJ11 / aJScale : 0.0;
+        const double aS12      = (aJScale > 0.0) ? aJ12 / aJScale : 0.0;
+        const double aS22      = (aJScale > 0.0) ? aJ22 / aJScale : 0.0;
+        const double aFScale   = std::max(std::abs(aF1), std::abs(aF2));
+        const double aGradU    = aS11 * (aF1 / aFScale) + aS12 * (aF2 / aFScale);
+        const double aGradV    = aS12 * (aF1 / aFScale) + aS22 * (aF2 / aFScale);
         const double aGradNorm = std::hypot(aGradU, aGradV);
         if (!(aGradNorm >= Utils::THE_CRITICAL_GRAD))
         {
@@ -411,31 +423,22 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
           return aRes;
         }
 
-        const double aAlpha = (aRes.ResidualNorm >= 10.0 * aGradNorm)
-                                ? 1.0
-                                : 0.1 * aRes.ResidualNorm / aGradNorm;
-        aDU                 = -aAlpha * aGradU / aGradNorm;
-        aDV                 = -aAlpha * aGradV / aGradNorm;
+        const double aAlpha =
+          (aRes.ResidualNorm >= 10.0 * aGradNorm) ? 1.0 : 0.1 * aRes.ResidualNorm / aGradNorm;
+        aDU = -aAlpha * aGradU / aGradNorm;
+        aDV = -aAlpha * aGradV / aGradNorm;
       }
-    }
-    else
-    {
-      const double aScaledF1 = aF1 / aJScale;
-      const double aScaledF2 = aF2 / aJScale;
-      const double aInvDet   = 1.0 / aDet;
-      aDU                    = (-aScaledF1 * aS22 + aScaledF2 * aS12) * aInvDet;
-      aDV                    = (-aScaledF2 * aS11 + aScaledF1 * aS12) * aInvDet;
     }
 
     const double aStepNorm = std::hypot(aDU, aDV);
-    if (aStepNorm > aMaxStep)
+    if (aMaxStep && aStepNorm > *aMaxStep)
     {
-      const double aScale = aMaxStep / aStepNorm;
+      const double aScale = *aMaxStep / aStepNorm;
       aDU *= aScale;
       aDV *= aScale;
     }
 
-    std::array<double, 2> aNewX            = aRes.X;
+    std::array<double, 2> aNewX = aRes.X;
     std::optional<double> aNewResidualNorm;
 
     if (theOptions.EnableLineSearch)
@@ -445,18 +448,17 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
       for (size_t aLineIter = 0; aLineIter < Utils::THE_LINE_SEARCH_MAX; ++aLineIter)
       {
         const double aAlpha = std::ldexp(1.0, -static_cast<int>(aLineIter));
-        aNewX[0] = aRes.X[0] + aAlpha * aDU;
-        aNewX[1] = aRes.X[1] + aAlpha * aDV;
+        aNewX[0]            = aRes.X[0] + aAlpha * aDU;
+        aNewX[1]            = aRes.X[1] + aAlpha * aDV;
         Utils::Clamp2D(aNewX,
                        theBounds,
                        theOptions.AllowSoftBounds,
                        theOptions.AllowSoftBounds ? theOptions.SoftBoundsExtension : 0.0);
 
-        const double                 aF[2] = {aF1, aF2};
-        const double                 aJ[2][2] = {{aJ11, aJ12}, {aJ12, aJ22}};
-        const std::array<double, 2> aProjectedStep = {aNewX[0] - aRes.X[0],
-                                                       aNewX[1] - aRes.X[1]};
-        const long double aProjectedDerivative =
+        const double                aF[2]          = {aF1, aF2};
+        const double                aJ[2][2]       = {{aJ11, aJ12}, {aJ12, aJ22}};
+        const std::array<double, 2> aProjectedStep = {aNewX[0] - aRes.X[0], aNewX[1] - aRes.X[1]};
+        const long double           aProjectedDerivative =
           Utils::MeritDirectionalDerivative(aF, aJ, aProjectedStep);
         if (!(aProjectedDerivative < 0.0L))
         {

@@ -23,7 +23,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
-#include <limits>
+#include <optional>
 
 //! @file MathSys_Newton4D.hxx
 //! @brief Optimized 4D Newton-Raphson solver for systems of 4 equations in 4 unknowns.
@@ -68,19 +68,20 @@ inline bool IsOptionsValid4D(const NewtonOptions& theOptions)
          && theOptions.SoftBoundsExtension >= 0.0;
 }
 
-//! Return the largest domain extent across all 4 dimensions (min 1.0).
-inline double MaxDomainSize4D(const NewtonBoundsN<4>& theBounds)
+//! Return the step limit for a bounded problem; no value means no step limit.
+inline std::optional<double> MaxStep4D(const NewtonBoundsN<4>& theBounds, double theMaxStepRatio)
 {
   if (!theBounds.HasBounds)
   {
-    return 1.0;
+    return std::nullopt;
   }
 
   const double aD0 = theBounds.Max[0] - theBounds.Min[0];
   const double aD1 = theBounds.Max[1] - theBounds.Min[1];
   const double aD2 = theBounds.Max[2] - theBounds.Min[2];
   const double aD3 = theBounds.Max[3] - theBounds.Min[3];
-  return std::max(1.0, std::max(aD0, std::max(aD1, std::max(aD2, aD3))));
+  return theMaxStepRatio
+         * std::max(1.0, std::max(aD0, std::max(aD1, std::max(aD2, aD3))));
 }
 
 //! Clamp solution array to bounds, optionally extending by soft-bounds ratio.
@@ -109,27 +110,25 @@ inline void Clamp4D(std::array<double, 4>&  theX,
 //! @return true if system was solved successfully
 inline bool Solve4x4(const double theJ[4][4], const double theF[4], double theDelta[4])
 {
-  double aScale = 0.0;
-  for (size_t i = 0; i < 4; ++i)
-  {
-    for (size_t j = 0; j < 4; ++j)
-    {
-      aScale = std::max(aScale, std::abs(theJ[i][j]));
-    }
-  }
-  if (!(aScale > 0.0))
-  {
-    return false;
-  }
   // Augmented matrix [J | -F]
   double A[4][5];
   for (size_t i = 0; i < 4; ++i)
   {
+    const double aRowScale = std::max(
+      {std::abs(theJ[i][0]), std::abs(theJ[i][1]), std::abs(theJ[i][2]), std::abs(theJ[i][3])});
+    if (!(aRowScale > 0.0))
+    {
+      return false;
+    }
     for (size_t j = 0; j < 4; ++j)
     {
-      A[i][j] = theJ[i][j] / aScale;
+      A[i][j] = theJ[i][j] / aRowScale;
     }
-    A[i][4] = -theF[i] / aScale;
+    A[i][4] = -theF[i] / aRowScale;
+    if (!std::isfinite(A[i][4]))
+    {
+      return false;
+    }
   }
 
   // Forward elimination with partial pivoting
@@ -149,7 +148,7 @@ inline bool Solve4x4(const double theJ[4][4], const double theF[4], double theDe
     }
 
     // Check for singularity
-    if (aMaxVal <= 64.0 * std::numeric_limits<double>::epsilon())
+    if (aMaxVal <= THE_NEWTON_PIVOT_TOL)
     {
       return false;
     }
@@ -229,7 +228,7 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
 
   Utils::Clamp4D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aMaxStep = theOptions.MaxStepRatio * Utils::MaxDomainSize4D(theBounds);
+  const std::optional<double> aMaxStep = Utils::MaxStep4D(theBounds, theOptions.MaxStepRatio);
 
   for (uint32_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
@@ -281,9 +280,9 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
 
     // Limit step size to prevent wild oscillations
     const double aStepNorm = Utils::SafeNormN(aDelta);
-    if (aStepNorm > aMaxStep)
+    if (aMaxStep && aStepNorm > *aMaxStep)
     {
-      const double aScale = aMaxStep / aStepNorm;
+      const double aScale = *aMaxStep / aStepNorm;
       for (size_t i = 0; i < 4; ++i)
       {
         aDelta[i] *= aScale;

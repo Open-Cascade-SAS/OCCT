@@ -227,8 +227,8 @@ public:
   bool Values(double theX, double& theF, double& theDf) const
   {
     const double aDenominator = theX + 2.0;
-    theF                     = theX / aDenominator - std::cos(theX);
-    theDf                    = 2.0 / (aDenominator * aDenominator) + std::sin(theX);
+    theF                      = theX / aDenominator - std::cos(theX);
+    theDf                     = 2.0 / (aDenominator * aDenominator) + std::sin(theX);
     return true;
   }
 };
@@ -394,7 +394,7 @@ TEST(MathRoot_NewtonTest, RationalCosineEquation)
 
 TEST(MathRoot_NewtonTest, ScaledExponentialEquation)
 {
-  ScaledExpFunc     aFunc;
+  ScaledExpFunc    aFunc;
   MathRoot::Config aConfig;
   aConfig.XTolerance = 1.0e-14;
   aConfig.FTolerance = 1.0e-13;
@@ -714,8 +714,7 @@ TEST(MathRoot_BisectionNewtonTest, LogLinearEquation)
   aConfig.XTolerance = 1.0e-14;
   aConfig.FTolerance = 1.0e-14;
 
-  const MathRoot::ScalarResult aResult =
-    MathRoot::BisectionNewton(aFunc, 0.25, 4.0, aConfig);
+  const MathRoot::ScalarResult aResult = MathRoot::BisectionNewton(aFunc, 0.25, 4.0, aConfig);
   ASSERT_EQ(aResult.Status, MathRoot::Status::OK);
   ASSERT_TRUE(aResult.Root.has_value());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -730,8 +729,7 @@ TEST(MathRoot_BisectionNewtonTest, NegativeQuinticRoot)
   aConfig.XTolerance = 1.0e-14;
   aConfig.FTolerance = 1.0e-14;
 
-  const MathRoot::ScalarResult aResult =
-    MathRoot::BisectionNewton(aFunc, -2.0, -0.5, aConfig);
+  const MathRoot::ScalarResult aResult = MathRoot::BisectionNewton(aFunc, -2.0, -0.5, aConfig);
   ASSERT_EQ(aResult.Status, MathRoot::Status::OK);
   ASSERT_TRUE(aResult.Root.has_value());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -769,9 +767,9 @@ TEST(MathRoot_BisectionNewtonTest, StalledNewtonStepWithLargeResidualIsNotConver
   } aFunc;
 
   MathRoot::Config aConfig;
-  aConfig.XTolerance    = 1.0e-12;
-  aConfig.FTolerance    = 0.0;
-  aConfig.MaxIterations = 1;
+  aConfig.XTolerance                   = 1.0e-12;
+  aConfig.FTolerance                   = 0.0;
+  aConfig.MaxIterations                = 1;
   const MathRoot::ScalarResult aResult = MathRoot::BisectionNewton(aFunc, 0.0, 2.0, aConfig);
   EXPECT_FALSE(aResult.IsDone());
   ASSERT_TRUE(aResult.Value.has_value());
@@ -840,13 +838,16 @@ TEST(MathRoot_CorrectnessTest, BracketedMethodsAcceptExactEndpoints)
   }
 }
 
-TEST(MathRoot_CorrectnessTest, ReversedAndNonFiniteBoundsAreInvalid)
+TEST(MathRoot_CorrectnessTest, NewtonBoundedNormalizesReversedFiniteBounds)
 {
   SqrtTwoFunc aFunc;
   EXPECT_EQ(MathRoot::Bisection(aFunc, 2.0, 1.0).Status, MathRoot::Status::InvalidInput);
   EXPECT_EQ(MathRoot::BisectionNewton(aFunc, 2.0, 1.0).Status, MathRoot::Status::InvalidInput);
   EXPECT_EQ(MathRoot::Brent(aFunc, 2.0, 1.0).Status, MathRoot::Status::InvalidInput);
-  EXPECT_EQ(MathRoot::NewtonBounded(aFunc, 1.5, 2.0, 1.0).Status, MathRoot::Status::InvalidInput);
+  const MathRoot::ScalarResult aNewton = MathRoot::NewtonBounded(aFunc, 1.5, 2.0, 1.0);
+  ASSERT_TRUE(aNewton.IsDone());
+  ASSERT_TRUE(aNewton.Root.has_value());
+  EXPECT_NEAR(*aNewton.Root, std::sqrt(2.0), 1.0e-10);
   EXPECT_EQ(MathRoot::Brent(aFunc, 1.0, std::numeric_limits<double>::infinity()).Status,
             MathRoot::Status::InvalidInput);
 }
@@ -932,8 +933,7 @@ TEST(MathRoot_CorrectnessTest, CallbackRefusalAndNonFiniteOutputHaveDistinctStat
   EXPECT_EQ(MathRoot::BisectionNewton(aRefusingFunc, 0.0, 1.0).Status,
             MathRoot::Status::CallbackError);
   EXPECT_EQ(MathRoot::Brent(aNonFiniteFunc, 0.0, 1.0).Status, MathRoot::Status::NumericalError);
-  EXPECT_EQ(MathRoot::Secant(aNonFiniteFunc, 0.0, 1.0).Status,
-            MathRoot::Status::NumericalError);
+  EXPECT_EQ(MathRoot::Secant(aNonFiniteFunc, 0.0, 1.0).Status, MathRoot::Status::NumericalError);
   EXPECT_EQ(MathRoot::BisectionNewton(aNonFiniteFunc, 0.0, 1.0).Status,
             MathRoot::Status::NumericalError);
 }
