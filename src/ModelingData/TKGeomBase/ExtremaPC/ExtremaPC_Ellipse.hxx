@@ -256,7 +256,7 @@ private:
     };
 
     // Add solutions from solver
-    for (int i = 0; i < aTrigRes.NbRoots; ++i)
+    for (size_t i = 0; i < aTrigRes.NbRoots; ++i)
     {
       addExtremum(aTrigRes.Roots[i]);
     }
