@@ -244,15 +244,15 @@ VectorResult PSO(Function&                                        theFunc,
     return aResult;
   }
 
-  const size_t aNbParticles        = theConfig.NbParticles;
-  const bool   isInitModeValid     = theConfig.InitMode == PSOInitMode::RandomOnly
-                                     || theConfig.InitMode == PSOInitMode::SeededOnly
-                                     || theConfig.InitMode == PSOInitMode::SeededPlusRandom;
-  const bool   isBoundaryModeValid = theConfig.BoundaryMode == PSOBoundaryMode::Clamp
-                                     || theConfig.BoundaryMode == PSOBoundaryMode::Reflect
-                                     || theConfig.BoundaryMode == PSOBoundaryMode::Wrap;
-  const bool   isScheduleValid = theConfig.InertiaSchedule == PSOInertiaSchedule::Constant
-                                 || theConfig.InertiaSchedule == PSOInertiaSchedule::LinearDecay;
+  const size_t aNbParticles    = theConfig.NbParticles;
+  const bool   isInitModeValid = theConfig.InitMode == PSOInitMode::RandomOnly
+                               || theConfig.InitMode == PSOInitMode::SeededOnly
+                               || theConfig.InitMode == PSOInitMode::SeededPlusRandom;
+  const bool isBoundaryModeValid = theConfig.BoundaryMode == PSOBoundaryMode::Clamp
+                                   || theConfig.BoundaryMode == PSOBoundaryMode::Reflect
+                                   || theConfig.BoundaryMode == PSOBoundaryMode::Wrap;
+  const bool isScheduleValid = theConfig.InertiaSchedule == PSOInertiaSchedule::Constant
+                               || theConfig.InertiaSchedule == PSOInertiaSchedule::LinearDecay;
   if (aNbParticles == 0 || !isInitModeValid || !isBoundaryModeValid || !isScheduleValid
       || !std::isfinite(theConfig.Omega) || !std::isfinite(theConfig.OmegaMin)
       || !std::isfinite(theConfig.PhiPersonal) || theConfig.PhiPersonal < 0.0
@@ -455,8 +455,8 @@ VectorResult PSO(Function&                                        theFunc,
     math_Vector  aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
     math_Vector  aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
     math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
-                               0,
-                               static_cast<int>(aNbDims) - 1);
+                              0,
+                              static_cast<int>(aNbDims) - 1);
     std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
     std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
     for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
@@ -522,8 +522,8 @@ VectorResult PSO(Function&                                        theFunc,
       math_Vector  aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
       math_Vector  aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
       math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
-                                 0,
-                                 static_cast<int>(aNbDims) - 1);
+                                0,
+                                static_cast<int>(aNbDims) - 1);
       std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
       std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
 
@@ -694,14 +694,14 @@ VectorResult PSO(Function&                                        theFunc,
               const size_t           aRestartIdx = aWorstIndices.Value(aRestIdx);
               const size_t           anOffset    = aRestartIdx * aNbDims;
               math_Vector            aPosition(&aPositions.ChangeValue(anOffset),
-                                               0,
-                                               static_cast<int>(aNbDims) - 1);
+                                    0,
+                                    static_cast<int>(aNbDims) - 1);
               math_Vector            aVelocity(&aVelocities.ChangeValue(anOffset),
-                                               0,
-                                               static_cast<int>(aNbDims) - 1);
+                                    0,
+                                    static_cast<int>(aNbDims) - 1);
               math_Vector            aBestPosition(&aBestPositions.ChangeValue(anOffset),
-                                                   0,
-                                                   static_cast<int>(aNbDims) - 1);
+                                        0,
+                                        static_cast<int>(aNbDims) - 1);
               std::optional<double>& aBestValue    = aBestValues.ChangeValue(aRestartIdx);
               std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aRestartIdx);
               for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)

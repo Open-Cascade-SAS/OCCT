@@ -194,17 +194,17 @@ VectorResult DifferentialEvolution(Function&           theFunc,
       // Mutation and crossover
       const size_t aJRand = static_cast<size_t>(aRNG.NextReal() * aNbDims);
       math_Vector  aMember(&aPopulation.ChangeValue(aMemberIdx * aNbDims),
+                          0,
+                          static_cast<int>(aNbDims) - 1);
+      math_Vector  aMemberA(&aPopulation.ChangeValue(anIdxA * aNbDims),
                            0,
                            static_cast<int>(aNbDims) - 1);
-      math_Vector  aMemberA(&aPopulation.ChangeValue(anIdxA * aNbDims),
-                            0,
-                            static_cast<int>(aNbDims) - 1);
       math_Vector  aMemberB(&aPopulation.ChangeValue(anIdxB * aNbDims),
-                            0,
-                            static_cast<int>(aNbDims) - 1);
+                           0,
+                           static_cast<int>(aNbDims) - 1);
       math_Vector  aMemberC(&aPopulation.ChangeValue(anIdxC * aNbDims),
-                            0,
-                            static_cast<int>(aNbDims) - 1);
+                           0,
+                           static_cast<int>(aNbDims) - 1);
 
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
