@@ -14,7 +14,7 @@
 #ifndef _MathPoly_Laguerre_HeaderFile
 #define _MathPoly_Laguerre_HeaderFile
 
-#include "MathPoly_Quartic.hxx"
+#include <MathPoly_Quartic.hxx>
 #include <MathUtils_Core.hxx>
 
 #include <algorithm>

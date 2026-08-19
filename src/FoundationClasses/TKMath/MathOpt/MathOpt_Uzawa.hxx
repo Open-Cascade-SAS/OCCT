@@ -19,7 +19,7 @@
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <MathLin_Crout.hxx>
-#include "MathOpt_Utils.hxx"
+#include <MathOpt_Utils.hxx>
 
 #include <cmath>
 

@@ -17,7 +17,7 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
-#include "MathLin_Utils.hxx"
+#include <MathLin_Utils.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <math_IntegerVector.hxx>

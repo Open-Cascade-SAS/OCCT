@@ -18,7 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <math_Recipes.hxx>
 #include <MathUtils_Core.hxx>
-#include "MathLin_Utils.hxx"
+#include <MathLin_Utils.hxx>
 
 #include <cmath>
 #include <algorithm>

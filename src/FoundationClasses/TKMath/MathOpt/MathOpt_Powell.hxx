@@ -18,7 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_LineSearch.hxx>
-#include "MathOpt_Utils.hxx"
+#include <MathOpt_Utils.hxx>
 
 #include <cmath>
 

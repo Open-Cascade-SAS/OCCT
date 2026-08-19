@@ -14,7 +14,7 @@
 #ifndef _MathPoly_Quartic_HeaderFile
 #define _MathPoly_Quartic_HeaderFile
 
-#include "MathPoly_Cubic.hxx"
+#include <MathPoly_Cubic.hxx>
 
 namespace MathPoly
 {

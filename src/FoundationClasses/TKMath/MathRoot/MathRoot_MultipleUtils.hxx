@@ -17,7 +17,7 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathRoot_Brent.hxx>
-#include "MathRoot_Utils.hxx"
+#include <MathRoot_Utils.hxx>
 #include <math_Vector.hxx>
 
 #include <NCollection_LinearVector.hxx>

@@ -21,7 +21,7 @@
 #include <MathOpt_BFGS.hxx>
 #include <MathOpt_Powell.hxx>
 #include <MathUtils_Core.hxx>
-#include "MathOpt_Utils.hxx"
+#include <MathOpt_Utils.hxx>
 
 #include <NCollection_LinearVector.hxx>
 

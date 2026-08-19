@@ -20,7 +20,7 @@
 #include <MathLin_SVD.hxx>
 #include <MathLin_Householder.hxx>
 #include <MathUtils_Core.hxx>
-#include "MathLin_Utils.hxx"
+#include <MathLin_Utils.hxx>
 
 #include <cmath>
 

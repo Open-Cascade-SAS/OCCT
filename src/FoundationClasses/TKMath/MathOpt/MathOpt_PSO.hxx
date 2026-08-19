@@ -19,7 +19,7 @@
 #include <MathUtils_Core.hxx>
 #include <MathUtils_LineSearch.hxx>
 #include <MathUtils_Random.hxx>
-#include "MathOpt_Utils.hxx"
+#include <MathOpt_Utils.hxx>
 
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_LinearVector.hxx>

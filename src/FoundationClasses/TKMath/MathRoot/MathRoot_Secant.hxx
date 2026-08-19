@@ -18,7 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Convergence.hxx>
-#include "MathRoot_Utils.hxx"
+#include <MathRoot_Utils.hxx>
 
 #include <cmath>
 

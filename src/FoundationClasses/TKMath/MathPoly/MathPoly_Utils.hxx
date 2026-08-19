@@ -14,7 +14,7 @@
 #ifndef _MathPoly_Utils_HeaderFile
 #define _MathPoly_Utils_HeaderFile
 
-#include "MathPoly_Types.hxx"
+#include <MathPoly_Types.hxx>
 
 #include <algorithm>
 #include <array>

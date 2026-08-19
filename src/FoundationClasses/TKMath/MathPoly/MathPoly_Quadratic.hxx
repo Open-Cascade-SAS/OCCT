@@ -14,7 +14,7 @@
 #ifndef _MathPoly_Quadratic_HeaderFile
 #define _MathPoly_Quadratic_HeaderFile
 
-#include "MathPoly_Utils.hxx"
+#include <MathPoly_Utils.hxx>
 
 //! Polynomial root finding algorithms.
 namespace MathPoly
