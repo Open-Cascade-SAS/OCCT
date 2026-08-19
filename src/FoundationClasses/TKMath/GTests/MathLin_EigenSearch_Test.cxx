@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <MathLin_EigenSearch.hxx>
+#include <MathLin_Jacobi.hxx>
 #include <math_EigenValuesSearcher.hxx>
 
 #include <NCollection_Array1.hxx>
@@ -22,6 +23,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <random>
 #include <vector>
 
@@ -35,17 +37,17 @@ constexpr int    THE_RANDOM_NB_CASES = 120;
 
 math_Matrix BuildSymmetricTridiagonal(const math_Vector& theDiag, const math_Vector& theSubdiag)
 {
-  const int   aN = theDiag.Length();
-  math_Matrix aM(1, aN, 1, aN, 0.0);
-  for (int i = 1; i <= aN; ++i)
+  const size_t aN = theDiag.Size();
+  math_Matrix  aM(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aM(i, i) = theDiag(theDiag.Lower() + i - 1);
+    aM.ChangeAt(i, i) = theDiag.At(i);
   }
-  for (int i = 2; i <= aN; ++i)
+  for (size_t i = 1; i < aN; ++i)
   {
-    const double aE = theSubdiag(theSubdiag.Lower() + i - 1);
-    aM(i, i - 1)    = aE;
-    aM(i - 1, i)    = aE;
+    const double aE       = theSubdiag.At(i);
+    aM.ChangeAt(i, i - 1) = aE;
+    aM.ChangeAt(i - 1, i) = aE;
   }
   return aM;
 }
@@ -55,11 +57,11 @@ void BuildLegacyArrays(const math_Vector&          theDiag,
                        NCollection_Array1<double>& theDiagLegacy,
                        NCollection_Array1<double>& theSubdiagLegacy)
 {
-  const int aN = theDiag.Length();
-  for (int i = 1; i <= aN; ++i)
+  const size_t aN = theDiag.Size();
+  for (size_t i = 0; i < aN; ++i)
   {
-    theDiagLegacy(i)    = theDiag(theDiag.Lower() + i - 1);
-    theSubdiagLegacy(i) = theSubdiag(theSubdiag.Lower() + i - 1);
+    theDiagLegacy.ChangeValue(static_cast<int>(i) + 1)    = theDiag.At(i);
+    theSubdiagLegacy.ChangeValue(static_cast<int>(i) + 1) = theSubdiag.At(i);
   }
 }
 
@@ -85,10 +87,10 @@ std::vector<double> SortedEigenValuesFromModern(const MathLin::EigenResult& theM
   }
 
   const math_Vector& aEig = *theModern.EigenValues;
-  aVals.reserve(static_cast<size_t>(aEig.Length()));
-  for (int i = aEig.Lower(); i <= aEig.Upper(); ++i)
+  aVals.reserve(aEig.Size());
+  for (size_t i = 0; i < aEig.Size(); ++i)
   {
-    aVals.push_back(aEig(i));
+    aVals.push_back(aEig.At(i));
   }
   std::sort(aVals.begin(), aVals.end());
   return aVals;
@@ -97,9 +99,9 @@ std::vector<double> SortedEigenValuesFromModern(const MathLin::EigenResult& theM
 double VectorNorm2(const math_Vector& theVec)
 {
   double aNorm2 = 0.0;
-  for (int i = theVec.Lower(); i <= theVec.Upper(); ++i)
+  for (size_t i = 0; i < theVec.Size(); ++i)
   {
-    aNorm2 += theVec(i) * theVec(i);
+    aNorm2 += theVec.At(i) * theVec.At(i);
   }
   return std::sqrt(aNorm2);
 }
@@ -108,16 +110,16 @@ double PairResidualInfinity(const math_Matrix& theMatrix,
                             double             theLambda,
                             const math_Vector& theVector)
 {
-  const int aN   = theMatrix.RowNumber();
-  double    aMax = 0.0;
-  for (int i = 1; i <= aN; ++i)
+  const size_t aN   = theMatrix.RowSize();
+  double       aMax = 0.0;
+  for (size_t i = 0; i < aN; ++i)
   {
     double aAx = 0.0;
-    for (int j = 1; j <= aN; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aAx += theMatrix(i, j) * theVector(j);
+      aAx += theMatrix.At(i, j) * theVector.At(j);
     }
-    const double aRes = std::abs(aAx - theLambda * theVector(i));
+    const double aRes = std::abs(aAx - theLambda * theVector.At(i));
     if (aRes > aMax)
     {
       aMax = aRes;
@@ -128,27 +130,96 @@ double PairResidualInfinity(const math_Matrix& theMatrix,
 
 double DotProduct(const math_Vector& theV1, const math_Vector& theV2)
 {
-  const int aN   = theV1.Length();
-  double    aDot = 0.0;
-  for (int i = 1; i <= aN; ++i)
+  const size_t aN   = theV1.Size();
+  double       aDot = 0.0;
+  for (size_t i = 0; i < aN; ++i)
   {
-    aDot += theV1(i) * theV2(i);
+    aDot += theV1.At(i) * theV2.At(i);
   }
   return aDot;
 }
 
 } // namespace
 
+TEST(MathLin_EigenSearch_Test, CoexistsWithJacobiInDangerousIncludeOrder)
+{
+  math_Vector aDiag(size_t{2}, 0.0);
+  math_Vector aSubdiag(size_t{2}, 0.0);
+  aDiag[0]    = 1.0;
+  aDiag[1]    = 2.0;
+  aSubdiag[1] = 0.5;
+
+  const MathLin::EigenResult aTridiagonal = MathLin::EigenTridiagonal(aDiag, aSubdiag);
+
+  math_Matrix aSymmetric(2, 2, 0.0);
+  aSymmetric.ChangeAt(0, 0)            = 1.0;
+  aSymmetric.ChangeAt(0, 1)            = 0.5;
+  aSymmetric.ChangeAt(1, 0)            = 0.5;
+  aSymmetric.ChangeAt(1, 1)            = 2.0;
+  const MathUtils::EigenResult aJacobi = MathLin::Jacobi(aSymmetric);
+
+  EXPECT_TRUE(aTridiagonal.IsDone());
+  EXPECT_TRUE(aJacobi.IsDone());
+}
+
+TEST(MathLin_EigenSearch_Test, AcceptsDocumentedSubdiagonalShape)
+{
+  math_Vector aDiag(size_t{3}, 2.0);
+  math_Vector aSubdiag(size_t{2}, 1.0);
+  const MathLin::EigenResult aResult = MathLin::EigenTridiagonal(aDiag, aSubdiag);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Dimension, 3u);
+  EXPECT_EQ(aResult.EigenValues->Size(), 3u);
+  const std::vector<double> aValues = SortedEigenValuesFromModern(aResult);
+  EXPECT_NEAR(aValues[0], 2.0 - std::sqrt(2.0), THE_EIGEN_TOL);
+  EXPECT_NEAR(aValues[1], 2.0, THE_EIGEN_TOL);
+  EXPECT_NEAR(aValues[2], 2.0 + std::sqrt(2.0), THE_EIGEN_TOL);
+}
+
+TEST(MathLin_EigenSearch_Test, LargeFiniteDiagonalDoesNotDeflateCoupling)
+{
+  const double aMagnitude = std::numeric_limits<double>::max() / 2.0;
+  math_Vector aDiag(size_t{2}, aMagnitude);
+  math_Vector aSubdiag(size_t{1}, aMagnitude / 4.0);
+
+  const MathLin::EigenResult aResult = MathLin::EigenTridiagonal(aDiag, aSubdiag);
+  ASSERT_TRUE(aResult.IsDone());
+  std::vector<double> aValues = SortedEigenValuesFromModern(aResult);
+  ASSERT_EQ(aValues.size(), 2u);
+  EXPECT_NEAR(aValues[0] / aMagnitude, 0.75, 1.0e-12);
+  EXPECT_NEAR(aValues[1] / aMagnitude, 1.25, 1.0e-12);
+}
+
+TEST(MathLin_EigenSearch_Test, InputAndIterationStatuses)
+{
+  math_Vector aOne(size_t{1}, 7.0);
+  math_Vector anEmpty(size_t{0});
+  const MathLin::EigenResult aSingle = MathLin::EigenTridiagonal(aOne, anEmpty);
+  ASSERT_TRUE(aSingle.IsDone());
+  EXPECT_DOUBLE_EQ(aSingle.EigenValues->At(0), 7.0);
+
+  math_Vector aWrong(size_t{2}, 0.0);
+  EXPECT_EQ(MathLin::EigenTridiagonal(aOne, aWrong).Status, MathUtils::Status::InvalidInput);
+  EXPECT_EQ(MathLin::EigenTridiagonal(aOne, anEmpty, 0).Status,
+            MathUtils::Status::InvalidInput);
+
+  math_Vector aDiag(size_t{4}, 2.0);
+  math_Vector aSubdiag(size_t{3}, 1.0);
+  EXPECT_EQ(MathLin::EigenTridiagonal(aDiag, aSubdiag, 1).Status,
+            MathUtils::Status::MaxIterations);
+}
+
 TEST(MathLin_EigenSearch_Test, BasicParityWithLegacy_3x3)
 {
-  math_Vector aDiag(1, 3);
-  math_Vector aSubdiag(1, 3);
-  aDiag(1)    = 4.0;
-  aDiag(2)    = 4.0;
-  aDiag(3)    = 4.0;
-  aSubdiag(1) = 0.0;
-  aSubdiag(2) = 1.0;
-  aSubdiag(3) = 1.0;
+  math_Vector aDiag(3);
+  math_Vector aSubdiag(3);
+  aDiag.ChangeAt(0)    = 4.0;
+  aDiag.ChangeAt(1)    = 4.0;
+  aDiag.ChangeAt(2)    = 4.0;
+  aSubdiag.ChangeAt(0) = 0.0;
+  aSubdiag.ChangeAt(1) = 1.0;
+  aSubdiag.ChangeAt(2) = 1.0;
 
   NCollection_Array1<double> aDiagLegacy(1, 3);
   NCollection_Array1<double> aSubdiagLegacy(1, 3);
@@ -172,11 +243,11 @@ TEST(MathLin_EigenSearch_Test, BasicParityWithLegacy_3x3)
 
   const math_Matrix  aA       = BuildSymmetricTridiagonal(aDiag, aSubdiag);
   const math_Vector& aEigVals = *aModern.EigenValues;
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aModern.Dimension; ++i)
   {
     const math_Vector aVec = MathLin::GetEigenVector(aModern, i);
     EXPECT_NEAR(VectorNorm2(aVec), 1.0, THE_NORMALIZED_TOL);
-    EXPECT_NEAR(PairResidualInfinity(aA, aEigVals(i), aVec), 0.0, THE_RESIDUAL_TOL);
+    EXPECT_NEAR(PairResidualInfinity(aA, aEigVals.At(i), aVec), 0.0, THE_RESIDUAL_TOL);
   }
 }
 
@@ -228,12 +299,12 @@ TEST(MathLin_EigenSearch_Test, RandomParityAndOrthogonality)
   {
     const int aN = aDimDist(aGen);
 
-    math_Vector aDiag(1, aN);
-    math_Vector aSubdiag(1, aN);
-    for (int i = 1; i <= aN; ++i)
+    math_Vector aDiag(static_cast<size_t>(aN));
+    math_Vector aSubdiag(static_cast<size_t>(aN));
+    for (size_t i = 0; i < aDiag.Size(); ++i)
     {
-      aDiag(i)    = aValDist(aGen);
-      aSubdiag(i) = (i == 1) ? 0.0 : aValDist(aGen);
+      aDiag.ChangeAt(i)    = aValDist(aGen);
+      aSubdiag.ChangeAt(i) = (i == 0) ? 0.0 : aValDist(aGen);
     }
 
     NCollection_Array1<double> aDiagLegacy(1, aN);
@@ -263,18 +334,18 @@ TEST(MathLin_EigenSearch_Test, RandomParityAndOrthogonality)
     const math_Matrix  aA       = BuildSymmetricTridiagonal(aDiag, aSubdiag);
     const math_Vector& aEigVals = *aModern.EigenValues;
 
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aModern.Dimension; ++i)
     {
       const math_Vector aVec = MathLin::GetEigenVector(aModern, i);
       EXPECT_NEAR(VectorNorm2(aVec), 1.0, THE_NORMALIZED_TOL) << "case=" << aCase;
-      EXPECT_NEAR(PairResidualInfinity(aA, aEigVals(i), aVec), 0.0, THE_RESIDUAL_TOL)
+      EXPECT_NEAR(PairResidualInfinity(aA, aEigVals.At(i), aVec), 0.0, THE_RESIDUAL_TOL)
         << "case=" << aCase;
     }
 
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aModern.Dimension; ++i)
     {
       const math_Vector aVecI = MathLin::GetEigenVector(aModern, i);
-      for (int j = i + 1; j <= aN; ++j)
+      for (size_t j = i + 1; j < aModern.Dimension; ++j)
       {
         const math_Vector aVecJ = MathLin::GetEigenVector(aModern, j);
         EXPECT_NEAR(DotProduct(aVecI, aVecJ), 0.0, THE_ORTHOGONAL_TOL) << "case=" << aCase;

@@ -20,6 +20,7 @@
 #include <math_Matrix.hxx>
 
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -41,17 +42,17 @@ struct LinearSystem2D
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    theF(1) = theX(1) + theX(2) - 3.0;
-    theF(2) = theX(1) - theX(2) - 1.0;
+    theF.ChangeAt(0) = theX.At(0) + theX.At(1) - 3.0;
+    theF.ChangeAt(1) = theX.At(0) - theX.At(1) - 1.0;
     return true;
   }
 
-  bool Derivatives(const math_Vector& /*theX*/, math_Matrix& theD)
+  bool Derivatives(const math_Vector&, math_Matrix& theD)
   {
-    theD(1, 1) = 1.0;
-    theD(1, 2) = 1.0;
-    theD(2, 1) = 1.0;
-    theD(2, 2) = -1.0;
+    theD.ChangeAt(0, 0) = 1.0;
+    theD.ChangeAt(0, 1) = 1.0;
+    theD.ChangeAt(1, 0) = 1.0;
+    theD.ChangeAt(1, 1) = -1.0;
     return true;
   }
 
@@ -73,17 +74,17 @@ struct CircleHyperbola
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    theF(1) = theX(1) * theX(1) + theX(2) * theX(2) - 4.0;
-    theF(2) = theX(1) * theX(2) - 1.0;
+    theF.ChangeAt(0) = theX.At(0) * theX.At(0) + theX.At(1) * theX.At(1) - 4.0;
+    theF.ChangeAt(1) = theX.At(0) * theX.At(1) - 1.0;
     return true;
   }
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD)
   {
-    theD(1, 1) = 2.0 * theX(1);
-    theD(1, 2) = 2.0 * theX(2);
-    theD(2, 1) = theX(2);
-    theD(2, 2) = theX(1);
+    theD.ChangeAt(0, 0) = 2.0 * theX.At(0);
+    theD.ChangeAt(0, 1) = 2.0 * theX.At(1);
+    theD.ChangeAt(1, 0) = theX.At(1);
+    theD.ChangeAt(1, 1) = theX.At(0);
     return true;
   }
 
@@ -105,17 +106,17 @@ struct RosenbrockResidual
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    theF(1) = 10.0 * (theX(2) - theX(1) * theX(1));
-    theF(2) = 1.0 - theX(1);
+    theF.ChangeAt(0) = 10.0 * (theX.At(1) - theX.At(0) * theX.At(0));
+    theF.ChangeAt(1) = 1.0 - theX.At(0);
     return true;
   }
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD)
   {
-    theD(1, 1) = -20.0 * theX(1);
-    theD(1, 2) = 10.0;
-    theD(2, 1) = -1.0;
-    theD(2, 2) = 0.0;
+    theD.ChangeAt(0, 0) = -20.0 * theX.At(0);
+    theD.ChangeAt(0, 1) = 10.0;
+    theD.ChangeAt(1, 0) = -1.0;
+    theD.ChangeAt(1, 1) = 0.0;
     return true;
   }
 
@@ -139,10 +140,10 @@ struct PowellSingular
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    theF(1) = theX(1) + 10.0 * theX(2);
-    theF(2) = std::sqrt(5.0) * (theX(3) - theX(4));
-    theF(3) = (theX(2) - 2.0 * theX(3)) * (theX(2) - 2.0 * theX(3));
-    theF(4) = std::sqrt(10.0) * (theX(1) - theX(4)) * (theX(1) - theX(4));
+    theF.ChangeAt(0) = theX.At(0) + 10.0 * theX.At(1);
+    theF.ChangeAt(1) = std::sqrt(5.0) * (theX.At(2) - theX.At(3));
+    theF.ChangeAt(2) = (theX.At(1) - 2.0 * theX.At(2)) * (theX.At(1) - 2.0 * theX.At(2));
+    theF.ChangeAt(3) = std::sqrt(10.0) * (theX.At(0) - theX.At(3)) * (theX.At(0) - theX.At(3));
     return true;
   }
 
@@ -150,19 +151,19 @@ struct PowellSingular
   {
     theD.Init(0.0);
     // F1 = x1 + 10*x2
-    theD(1, 1) = 1.0;
-    theD(1, 2) = 10.0;
+    theD.ChangeAt(0, 0) = 1.0;
+    theD.ChangeAt(0, 1) = 10.0;
     // F2 = sqrt(5)*(x3 - x4)
-    theD(2, 3) = std::sqrt(5.0);
-    theD(2, 4) = -std::sqrt(5.0);
+    theD.ChangeAt(1, 2) = std::sqrt(5.0);
+    theD.ChangeAt(1, 3) = -std::sqrt(5.0);
     // F3 = (x2 - 2*x3)^2
-    const double aT1 = theX(2) - 2.0 * theX(3);
-    theD(3, 2)       = 2.0 * aT1;
-    theD(3, 3)       = -4.0 * aT1;
+    const double aT1    = theX.At(1) - 2.0 * theX.At(2);
+    theD.ChangeAt(2, 1) = 2.0 * aT1;
+    theD.ChangeAt(2, 2) = -4.0 * aT1;
     // F4 = sqrt(10)*(x1 - x4)^2
-    const double aT2 = theX(1) - theX(4);
-    theD(4, 1)       = 2.0 * std::sqrt(10.0) * aT2;
-    theD(4, 4)       = -2.0 * std::sqrt(10.0) * aT2;
+    const double aT2    = theX.At(0) - theX.At(3);
+    theD.ChangeAt(3, 0) = 2.0 * std::sqrt(10.0) * aT2;
+    theD.ChangeAt(3, 3) = -2.0 * std::sqrt(10.0) * aT2;
     return true;
   }
 
@@ -186,20 +187,20 @@ struct ExponentialFit
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    for (int i = 0; i < 5; ++i)
+    for (size_t i = 0; i < 5; ++i)
     {
-      theF(i + 1) = myY[i] - theX(1) * std::exp(theX(2) * myT[i]);
+      theF.ChangeAt(i) = myY[i] - theX.At(0) * std::exp(theX.At(1) * myT[i]);
     }
     return true;
   }
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD)
   {
-    for (int i = 0; i < 5; ++i)
+    for (size_t i = 0; i < 5; ++i)
     {
-      const double aExp = std::exp(theX(2) * myT[i]);
-      theD(i + 1, 1)    = -aExp;
-      theD(i + 1, 2)    = -theX(1) * myT[i] * aExp;
+      const double aExp   = std::exp(theX.At(1) * myT[i]);
+      theD.ChangeAt(i, 0) = -aExp;
+      theD.ChangeAt(i, 1) = -theX.At(0) * myT[i] * aExp;
     }
     return true;
   }
@@ -223,20 +224,20 @@ struct OverdeterminedSystem
 
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
-    theF(1) = theX(1) + theX(2) - 2.0;
-    theF(2) = theX(1) - theX(2);
-    theF(3) = 2.0 * theX(1) + theX(2) - 3.0;
+    theF.ChangeAt(0) = theX.At(0) + theX.At(1) - 2.0;
+    theF.ChangeAt(1) = theX.At(0) - theX.At(1);
+    theF.ChangeAt(2) = 2.0 * theX.At(0) + theX.At(1) - 3.0;
     return true;
   }
 
   bool Derivatives(const math_Vector& /*theX*/, math_Matrix& theD)
   {
-    theD(1, 1) = 1.0;
-    theD(1, 2) = 1.0;
-    theD(2, 1) = 1.0;
-    theD(2, 2) = -1.0;
-    theD(3, 1) = 2.0;
-    theD(3, 2) = 1.0;
+    theD.ChangeAt(0, 0) = 1.0;
+    theD.ChangeAt(0, 1) = 1.0;
+    theD.ChangeAt(1, 0) = 1.0;
+    theD.ChangeAt(1, 1) = -1.0;
+    theD.ChangeAt(2, 0) = 2.0;
+    theD.ChangeAt(2, 1) = 1.0;
     return true;
   }
 
@@ -244,6 +245,67 @@ struct OverdeterminedSystem
   {
     return Value(theX, theF) && Derivatives(theX, theD);
   }
+};
+
+struct StationaryNonRoot
+{
+  int NbVariables() const { return 2; }
+
+  int NbEquations() const { return 3; }
+
+  bool Value(const math_Vector&, math_Vector& theF)
+  {
+    theF.ChangeAt(0) = 100.0;
+    theF.ChangeAt(1) = -200.0;
+    theF.ChangeAt(2) = 50.0;
+    return true;
+  }
+
+  bool Derivatives(const math_Vector&, math_Matrix& theD)
+  {
+    theD.Init(0.0);
+    return true;
+  }
+};
+
+struct NonFiniteResidual : StationaryNonRoot
+{
+  bool Value(const math_Vector&, math_Vector& theF)
+  {
+    theF.ChangeAt(0) = std::numeric_limits<double>::quiet_NaN();
+    theF.ChangeAt(1) = 0.0;
+    theF.ChangeAt(2) = 0.0;
+    return true;
+  }
+};
+
+struct ScalarResidual
+{
+  int NbVariables() const { return 1; }
+
+  int NbEquations() const { return 1; }
+
+  bool Value(const math_Vector& theX, math_Vector& theF)
+  {
+    theF.ChangeAt(0) = theX.At(0) + 1.0;
+    return true;
+  }
+
+  bool Derivatives(const math_Vector&, math_Matrix& theD)
+  {
+    theD.ChangeAt(0, 0) = 1.0;
+    return true;
+  }
+};
+
+struct CallbackFailure : ScalarResidual
+{
+  bool Value(const math_Vector&, math_Vector&) { return false; }
+};
+
+struct DerivativeCallbackFailure : ScalarResidual
+{
+  bool Derivatives(const math_Vector&, math_Matrix&) { return false; }
 };
 
 // ============================================================================
@@ -330,8 +392,8 @@ TEST(MathSys_LM_Test, LinearSystem2D)
   auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 2.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 2.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -353,8 +415,8 @@ TEST(MathSys_LM_Test, CircleHyperbola)
   ASSERT_TRUE(aResult.IsDone());
 
   // Verify solution satisfies both equations
-  const double aX = (*aResult.Solution)(1);
-  const double aY = (*aResult.Solution)(2);
+  const double aX = aResult.Solution->At(0);
+  const double aY = aResult.Solution->At(1);
 
   EXPECT_NEAR(aX * aX + aY * aY, 4.0, THE_TOLERANCE);
   EXPECT_NEAR(aX * aY, 1.0, THE_TOLERANCE);
@@ -376,8 +438,8 @@ TEST(MathSys_LM_Test, RosenbrockResidual)
   auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_LOOSE_TOL);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_LOOSE_TOL);
   EXPECT_LT(*aResult.Value, 0.01);
 }
 
@@ -401,9 +463,9 @@ TEST(MathSys_LM_Test, PowellSingular)
   ASSERT_TRUE(aResult.IsDone());
 
   // Powell singular function converges to origin
-  for (int i = 1; i <= 4; ++i)
+  for (size_t i = 0; i < aResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aResult.Solution)(i), 0.0, 0.1);
+    EXPECT_NEAR(aResult.Solution->At(i), 0.0, 0.1);
   }
   EXPECT_LT(*aResult.Value, 0.01);
 }
@@ -427,8 +489,8 @@ TEST(MathSys_LM_Test, OverdeterminedSystem)
   auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_TOLERANCE);
 }
 
 TEST(MathSys_LM_Test, ExponentialFit)
@@ -448,8 +510,8 @@ TEST(MathSys_LM_Test, ExponentialFit)
   ASSERT_TRUE(aResult.IsDone());
 
   // The fit should be approximately f(t) = 1 * exp(1 * t)
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 0.1);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, 0.1);
 }
 
 // ============================================================================
@@ -482,8 +544,8 @@ TEST(MathSys_LM_Test, BoundedCircleHyperbola)
   ASSERT_TRUE(aResult.IsDone());
 
   // Verify solution is within bounds
-  const double aX = (*aResult.Solution)(1);
-  const double aY = (*aResult.Solution)(2);
+  const double aX = aResult.Solution->At(0);
+  const double aY = aResult.Solution->At(1);
 
   EXPECT_GE(aX, 0.0);
   EXPECT_LE(aX, 5.0);
@@ -519,8 +581,8 @@ TEST(MathSys_LM_Test, BoundedRosenbrock)
   auto aResult = MathSys::LevenbergMarquardtBounded(aFunc, aStart, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_LOOSE_TOL);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_LOOSE_TOL);
 }
 
 TEST(MathSys_LM_Test, BoundedActiveConstraint)
@@ -547,8 +609,15 @@ TEST(MathSys_LM_Test, BoundedActiveConstraint)
 
   auto aResult = MathSys::LevenbergMarquardtBounded(aFunc, aStart, aLower, aUpper, aConfig);
 
-  // Solution should be at or near the bound
-  EXPECT_LE((*aResult.Solution)(1), 1.5 + THE_TOLERANCE);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Solution.has_value());
+  EXPECT_TRUE(aResult.IsStationary);
+  EXPECT_FALSE(aResult.IsRoot);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.5, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_TOLERANCE);
+  ASSERT_TRUE(aResult.Gradient.has_value());
+  EXPECT_LT(aResult.Gradient->At(0), -0.9);
+  EXPECT_NEAR(aResult.Gradient->At(1), 0.0, THE_TOLERANCE);
 }
 
 // ============================================================================
@@ -578,8 +647,8 @@ TEST(MathSys_LM_Test, DampingParameters)
 
     ASSERT_TRUE(aResult.IsDone()) << "Failed with lambda = " << aLambda;
 
-    const double aX = (*aResult.Solution)(1);
-    const double aY = (*aResult.Solution)(2);
+    const double aX = aResult.Solution->At(0);
+    const double aY = aResult.Solution->At(1);
 
     EXPECT_NEAR(aX * aX + aY * aY, 4.0, THE_TOLERANCE)
       << "Failed equation 1 with lambda = " << aLambda;
@@ -653,8 +722,8 @@ TEST(MathSys_LM_Test, CompareWithOldAPI_CircleHyperbola)
   EXPECT_NEAR(anOldSol(1) * anOldSol(1) + anOldSol(2) * anOldSol(2), 4.0, THE_LOOSE_TOL);
   EXPECT_NEAR(anOldSol(1) * anOldSol(2), 1.0, THE_LOOSE_TOL);
 
-  const double aNewX = (*aNewResult.Solution)(1);
-  const double aNewY = (*aNewResult.Solution)(2);
+  const double aNewX = aNewResult.Solution->At(0);
+  const double aNewY = aNewResult.Solution->At(1);
   EXPECT_NEAR(aNewX * aNewX + aNewY * aNewY, 4.0, THE_TOLERANCE);
   EXPECT_NEAR(aNewX * aNewY, 1.0, THE_TOLERANCE);
 }
@@ -684,8 +753,8 @@ TEST(MathSys_LM_Test, CompareWithOldAPI_Rosenbrock)
   ASSERT_TRUE(aNewResult.IsDone());
 
   // New API should find the optimal solution
-  EXPECT_NEAR((*aNewResult.Solution)(1), 1.0, THE_LOOSE_TOL);
-  EXPECT_NEAR((*aNewResult.Solution)(2), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aNewResult.Solution->At(0), 1.0, THE_LOOSE_TOL);
+  EXPECT_NEAR(aNewResult.Solution->At(1), 1.0, THE_LOOSE_TOL);
 }
 
 TEST(MathSys_LM_Test, CompareWithOldAPI_Bounded)
@@ -728,8 +797,8 @@ TEST(MathSys_LM_Test, CompareWithOldAPI_Bounded)
   EXPECT_GE(anOldSol(2), 0.0);
   EXPECT_LE(anOldSol(2), 5.0);
 
-  const double aNewX = (*aNewResult.Solution)(1);
-  const double aNewY = (*aNewResult.Solution)(2);
+  const double aNewX = aNewResult.Solution->At(0);
+  const double aNewY = aNewResult.Solution->At(1);
   EXPECT_GE(aNewX, 0.0);
   EXPECT_LE(aNewX, 5.0);
   EXPECT_GE(aNewY, 0.0);
@@ -763,8 +832,8 @@ TEST(MathSys_LM_Test, DifferentStartingPoints)
     ASSERT_TRUE(aResult.IsDone()) << "Failed with start = (" << aStartPt[0] << ", " << aStartPt[1]
                                   << ")";
 
-    const double aX = (*aResult.Solution)(1);
-    const double aY = (*aResult.Solution)(2);
+    const double aX = aResult.Solution->At(0);
+    const double aY = aResult.Solution->At(1);
 
     EXPECT_NEAR(aX * aX + aY * aY, 4.0, THE_TOLERANCE)
       << "Failed equation 1 with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
@@ -793,8 +862,8 @@ TEST(MathSys_LM_Test, ConvergenceIterations)
   // Linear system should converge quickly
   EXPECT_LT(aResult.NbIterations, 20);
 
-  EXPECT_NEAR((*aResult.Solution)(1), 2.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 2.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_TOLERANCE);
 }
 
 // ============================================================================
@@ -803,19 +872,23 @@ TEST(MathSys_LM_Test, ConvergenceIterations)
 
 TEST(MathSys_LM_Test, MaxIterationsReached)
 {
-  RosenbrockResidual aFunc;
+  LinearSystem2D aFunc;
 
   math_Vector aStart(1, 2);
-  aStart(1) = -1.0;
-  aStart(2) = 1.0;
+  aStart(1) = 0.0;
+  aStart(2) = 0.0;
 
   MathSys::LMConfig aConfig;
-  aConfig.Tolerance     = 1.0e-15; // Very tight tolerance
-  aConfig.MaxIterations = 5;       // Very few iterations
+  aConfig.Tolerance         = 1.0e-15;
+  aConfig.XTolerance        = 1.0e-15;
+  aConfig.FTolerance        = 1.0e-15;
+  aConfig.RelativeTolerance = 0.0;
+  aConfig.MaxIterations     = 1;
 
   auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
-  // Should either succeed or reach max iterations (not crash)
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_EQ(aResult.NbIterations, 1u);
   EXPECT_TRUE(aResult.Solution.has_value());
 }
 
@@ -860,4 +933,159 @@ TEST(MathSys_LM_Test, BoundedInvalidDimensions)
 
   EXPECT_FALSE(aResult.IsDone());
   EXPECT_EQ(aResult.Status, MathSys::Status::InvalidInput);
+}
+
+TEST(MathSys_LM_Test, StationaryLargeResidualIsNotReportedAsRoot)
+{
+  StationaryNonRoot           aFunc;
+  math_Vector                 aStart(4, 5, 0.0);
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_TRUE(aResult.IsStationary);
+  EXPECT_FALSE(aResult.IsRoot);
+  EXPECT_EQ(aResult.Rank, 0);
+  EXPECT_GT(aResult.ResidualNorm, 100.0);
+  ASSERT_TRUE(aResult.Jacobian.has_value());
+  EXPECT_EQ(aResult.Jacobian->LowerCol(), 0);
+}
+
+TEST(MathSys_LM_Test, NonFiniteResidualIsNumericalError)
+{
+  NonFiniteResidual           aFunc;
+  math_Vector                 aStart(1, 2, 0.0);
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::NumericalError);
+  EXPECT_FALSE(aResult.IsDone());
+}
+
+TEST(MathSys_LM_Test, NonFiniteConfigIsInvalidInput)
+{
+  LinearSystem2D    aFunc;
+  math_Vector       aStart(1, 2, 0.0);
+  MathSys::LMConfig aConfigs[11];
+  const double      aNaN        = std::numeric_limits<double>::quiet_NaN();
+  aConfigs[0].Tolerance         = aNaN;
+  aConfigs[1].XTolerance        = aNaN;
+  aConfigs[2].FTolerance        = aNaN;
+  aConfigs[3].RelativeTolerance = aNaN;
+  aConfigs[4].StepMin           = aNaN;
+  aConfigs[5].LambdaInit        = aNaN;
+  aConfigs[6].LambdaIncrease    = aNaN;
+  aConfigs[7].LambdaDecrease    = aNaN;
+  aConfigs[8].LambdaMax         = aNaN;
+  aConfigs[9].LambdaMin         = aNaN;
+  aConfigs[10].RankTolerance    = aNaN;
+
+  for (const MathSys::LMConfig& aConfig : aConfigs)
+  {
+    const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+    EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
+  }
+}
+
+TEST(MathSys_LM_Test, ReversedLambdaBoundsAreInvalidInput)
+{
+  LinearSystem2D    aFunc;
+  math_Vector       aStart(1, 2, 0.0);
+  MathSys::LMConfig aConfig;
+  aConfig.LambdaMin  = 3.0;
+  aConfig.LambdaInit = 1.0;
+  aConfig.LambdaMax  = 2.0;
+
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
+}
+
+TEST(MathSys_LM_Test, RelativeToleranceParticipatesInResidualConvergence)
+{
+  LinearSystem2D    aFunc;
+  math_Vector       aStart(1, 2, 0.0);
+  MathSys::LMConfig aConfig;
+  aConfig.MaxIterations     = 1;
+  aConfig.FTolerance        = 1.0e-15;
+  aConfig.XTolerance        = 1.0e-15;
+  aConfig.RelativeTolerance = 1.0e-2;
+
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_TRUE(aResult.IsRoot);
+  EXPECT_EQ(aResult.NbIterations, 1u);
+}
+
+TEST(MathSys_LM_Test, StepMinParticipatesInStagnationDetection)
+{
+  LinearSystem2D    aFunc;
+  math_Vector       aStart(1, 2, 0.0);
+  MathSys::LMConfig aConfig;
+  aConfig.MaxIterations     = 1;
+  aConfig.Tolerance         = 1.0e-15;
+  aConfig.XTolerance        = 1.0e-15;
+  aConfig.FTolerance        = 1.0e-15;
+  aConfig.RelativeTolerance = 0.0;
+
+  const MathSys::SystemResult aDefaultStep = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+  EXPECT_EQ(aDefaultStep.Status, MathUtils::Status::MaxIterations);
+
+  aConfig.StepMin = 10.0;
+  const MathSys::SystemResult aMinimumStep = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+  EXPECT_EQ(aMinimumStep.Status, MathUtils::Status::NotConverged);
+}
+
+TEST(MathSys_LM_Test, TinyAcceptedStepWithLargeResidualIsNotConverged)
+{
+  ScalarResidual    aFunc;
+  math_Vector       aStart(1, 1, 0.0);
+  MathSys::LMConfig aConfig;
+  aConfig.LambdaInit = 1.0e12;
+  aConfig.XTolerance = 1.0e-10;
+  aConfig.FTolerance = 1.0e-12;
+
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::NotConverged);
+  EXPECT_FALSE(aResult.IsRoot);
+  EXPECT_GT(aResult.ResidualNorm, 0.5);
+}
+
+TEST(MathSys_LM_Test, LinearizedSolveUsesRankTolerance)
+{
+  math_Matrix aMatrix(2, 2, 0.0);
+  aMatrix.ChangeAt(0, 0) = 1.0;
+  aMatrix.ChangeAt(0, 1) = 1.0;
+  aMatrix.ChangeAt(1, 1) = 1.0e-8;
+  math_Vector aRhs(1, 2, 0.0);
+  aRhs.ChangeAt(0) = 1.0;
+  aRhs.ChangeAt(1) = 0.0;
+
+  const MathSys::Utils::LinearStep aStep = MathSys::Utils::SolveLinearized(aMatrix, aRhs, 1.0e-6);
+  ASSERT_TRUE(aStep.Solution.has_value());
+  EXPECT_EQ(aStep.Rank, 1u);
+}
+
+TEST(MathSys_LM_Test, CallbackFalseIsCallbackError)
+{
+  CallbackFailure             aFunc;
+  math_Vector                 aStart(1, 1, 0.0);
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::CallbackError);
+}
+
+TEST(MathSys_LM_Test, DerivativeCallbackFalseIsCallbackError)
+{
+  DerivativeCallbackFailure   aFunc;
+  math_Vector                 aStart(1, 1, 0.0);
+  const MathSys::SystemResult aResult = MathSys::LevenbergMarquardt(aFunc, aStart);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::CallbackError);
+}
+
+TEST(MathSys_LM_Test, BoundsMayUseDifferentLowerIndices)
+{
+  LinearSystem2D              aFunc;
+  math_Vector                 aStart(4, 5, 0.0);
+  math_Vector                 aLower(-3, -2, -10.0);
+  math_Vector                 anUpper(8, 9, 10.0);
+  const MathSys::SystemResult aResult =
+    MathSys::LevenbergMarquardtBounded(aFunc, aStart, aLower, anUpper);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.Solution->At(0), 2.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, THE_TOLERANCE);
 }

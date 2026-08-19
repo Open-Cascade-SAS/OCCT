@@ -5,14 +5,16 @@ Polynomial root finding algorithms for OCCT.
 ## Overview
 
 The MathPoly package provides efficient, numerically stable algorithms for finding
-real roots of polynomial equations, with dedicated closed-form solvers for degree <= 4
+real roots of polynomial equations, with dedicated direct solvers for degree <= 4
 and a general Laguerre-based solver for higher degrees.
 
 ## Contents
 
+- `MathPoly_Types.hxx` - package-local result type with root multiplicities
+- `MathPoly_Utils.hxx` - power-of-two scaling, residual checks, and direct-solver utilities
 - `MathPoly_Quadratic.hxx` - Linear and quadratic equation solvers
-- `MathPoly_Cubic.hxx` - Cubic equation solver (Cardano's method)
-- `MathPoly_Quartic.hxx` - Quartic equation solver (Ferrari's method)
+- `MathPoly_Cubic.hxx` - Cubic real-root solver using derivative-recursive isolation
+- `MathPoly_Quartic.hxx` - Quartic real-root solver using derivative-recursive isolation
 - `MathPoly_Laguerre.hxx` - General polynomial solver (Laguerre + deflation), plus quintic/sextic/octic helpers
 
 ## Usage
@@ -62,48 +64,47 @@ if (result1.IsDone())
 - Handles all discriminant cases
 
 ### Cubic (ax^3 + bx^2 + cx + d = 0)
-- Cardano's method with Vieta substitution
-- Trigonometric solution for three real roots (casus irreducibilis)
-- Newton-Raphson refinement
+- Uses derivative roots to partition the real line into monotone intervals
+- Detects tangential roots at critical points and bisects sign-changing intervals
+- Reports algebraic multiplicity from successive derivatives
 
 ### Quartic (ax^4 + bx^3 + cx^2 + dx + e = 0)
-- Ferrari's method
-- Special handling for biquadratic case
-- Newton-Raphson refinement
+- Uses the same scaled derivative-recursive isolation as the cubic solver
+- Returns all distinct real roots in sorted order
+- Reports algebraic multiplicity explicitly
 
 ### General Degree N (Laguerre + Deflation)
 - Works up to degree 20 (`MathPoly::Laguerre()`)
 - Finds real and complex roots (complex conjugate pairs)
+- Uses power-of-two coefficient/variable scaling and scale-aware residual checks
+- Retries Laguerre iteration from deterministic starts and reports failed convergence
+- Verifies roots and synthetic-division remainders before accepting deflation
 - Uses root deflation and Newton refinement of real roots
 - Helper wrappers available for quintic, sextic, and octic cases
 
 ## Result Type
 
-Dedicated quadratic/cubic/quartic/quintic/sextic helpers return `MathUtils::PolyResult`:
+All solvers return `MathPoly::PolyResult`:
 
 ```cpp
 struct PolyResult
 {
-  Status Status = Status::OK;    // Solution status
-  size_t NbRoots = 0;            // Number of real roots found
-  std::array<double, 4> Roots;   // Root values (sorted ascending)
-
-  bool IsDone() const;           // True if Status is OK
-};
-```
-
-General Laguerre solver returns `MathPoly::GeneralPolyResult`:
-
-```cpp
-struct GeneralPolyResult
-{
   Status Status = Status::NotConverged;
-  std::array<double, 20> Roots;                    // Real roots
+  std::array<double, 20> Roots;                 // Distinct sorted real roots
+  std::array<size_t, 20> Multiplicities;        // Algebraic multiplicity per real root
   std::array<std::complex<double>, 20> ComplexRoots;
+  std::array<size_t, 20> ComplexMultiplicities;
   size_t NbRoots = 0;
   size_t NbComplexRoots = 0;
+
+  bool IsDone() const;
 };
 ```
+
+Repeated roots occur once in `Roots`; their algebraic multiplicity is reported by the matching
+`Multiplicities` entry. A finite-coefficient equation whose root is not representable as a finite
+`double` reports `NumericalError` instead of returning a non-finite root. `GeneralPolyResult` is an
+alias of `PolyResult`.
 
 ## Dependencies
 

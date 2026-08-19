@@ -1,172 +1,183 @@
 // Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
-//
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
 
 #ifndef _MathUtils_Bracket_HeaderFile
 #define _MathUtils_Bracket_HeaderFile
 
 #include <MathUtils_Core.hxx>
+#include <MathUtils_Types.hxx>
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <utility>
 
-//! Modern math solver utilities.
+//! Correctness-first bracketing utilities.
 namespace MathUtils
 {
 
-//! Result of root bracketing operation.
+//! Result of root bracketing. Finite endpoint fields are available only when their HasF flag is
+//! set.
 struct BracketResult
 {
-  bool   IsValid = false; //!< True if valid bracket found
-  double A       = 0.0;   //!< Lower bound
-  double B       = 0.0;   //!< Upper bound
-  double Fa      = 0.0;   //!< Function value at A
-  double Fb      = 0.0;   //!< Function value at B
+  MathUtils::Status Status       = MathUtils::Status::NotConverged;
+  bool              IsValid      = false;
+  uint32_t          NbIterations = 0;
+  double            A            = 0.0;
+  double            B            = 0.0;
+  double            Fa           = std::numeric_limits<double>::quiet_NaN();
+  double            Fb           = std::numeric_limits<double>::quiet_NaN();
+  bool              HasFA        = false;
+  bool              HasFB        = false;
 };
 
-//! Bracket a root by expanding interval until sign change is found.
-//! Starting from [theA, theB], expands outward using golden ratio.
-//! @tparam Function type with Value(double theX, double& theF) method
-//! @param theFunc function to bracket
-//! @param theA initial lower bound
-//! @param theB initial upper bound
-//! @param theMaxIter maximum expansion iterations
-//! @return bracketing result
+namespace Utils
+{
 template <typename Function>
-BracketResult BracketRoot(Function& theFunc, double theA, double theB, int theMaxIter = 50)
+bool EvaluateFinite(Function& theFunc, double theX, double& theValue, MathUtils::Status& theStatus)
+{
+  if (!theFunc.Value(theX, theValue))
+  {
+    theStatus = MathUtils::Status::CallbackError;
+    return false;
+  }
+  if (!std::isfinite(theValue))
+  {
+    theStatus = MathUtils::Status::NumericalError;
+    return false;
+  }
+  return true;
+}
+
+inline bool OppositeSigns(double theA, double theB)
+{
+  return theA == 0.0 || theB == 0.0 || std::signbit(theA) != std::signbit(theB);
+}
+} // namespace Utils
+
+//! Bracket a root by expanding the endpoint with the smaller residual.
+template <typename Function>
+BracketResult BracketRoot(Function& theFunc, double theA, double theB, uint32_t theMaxIter = 50)
 {
   BracketResult aResult;
   aResult.A = theA;
   aResult.B = theB;
-
-  if (!theFunc.Value(aResult.A, aResult.Fa))
+  if (!std::isfinite(theA) || !std::isfinite(theB) || theA == theB || theMaxIter <= 0)
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+  if (!Utils::EvaluateFinite(theFunc, aResult.A, aResult.Fa, aResult.Status))
   {
     return aResult;
   }
-  if (!theFunc.Value(aResult.B, aResult.Fb))
+  aResult.HasFA = true;
+  if (!Utils::EvaluateFinite(theFunc, aResult.B, aResult.Fb, aResult.Status))
   {
     return aResult;
   }
+  aResult.HasFB = true;
 
-  for (int i = 0; i < theMaxIter; ++i)
+  for (uint32_t anIter = 0; anIter <= theMaxIter; ++anIter)
   {
-    if (aResult.Fa * aResult.Fb < 0.0)
+    if (Utils::OppositeSigns(aResult.Fa, aResult.Fb))
     {
-      aResult.IsValid = true;
-      // Ensure A < B
       if (aResult.A > aResult.B)
       {
         std::swap(aResult.A, aResult.B);
         std::swap(aResult.Fa, aResult.Fb);
       }
+      aResult.Status  = MathUtils::Status::OK;
+      aResult.IsValid = true;
       return aResult;
     }
+    if (anIter == theMaxIter)
+    {
+      break;
+    }
 
-    // Expand the interval using golden ratio
+    double* aPoint     = nullptr;
+    double* aValue     = nullptr;
+    double  aCandidate = 0.0;
     if (std::abs(aResult.Fa) < std::abs(aResult.Fb))
     {
-      aResult.A += THE_GOLDEN_RATIO * (aResult.A - aResult.B);
-      if (!theFunc.Value(aResult.A, aResult.Fa))
-      {
-        return aResult;
-      }
+      aPoint     = &aResult.A;
+      aValue     = &aResult.Fa;
+      aCandidate = aResult.A + THE_GOLDEN_RATIO * (aResult.A - aResult.B);
     }
     else
     {
-      aResult.B += THE_GOLDEN_RATIO * (aResult.B - aResult.A);
-      if (!theFunc.Value(aResult.B, aResult.Fb))
-      {
-        return aResult;
-      }
+      aPoint     = &aResult.B;
+      aValue     = &aResult.Fb;
+      aCandidate = aResult.B + THE_GOLDEN_RATIO * (aResult.B - aResult.A);
     }
+    if (!std::isfinite(aCandidate) || aCandidate == *aPoint)
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+    double aCandidateValue = 0.0;
+    if (!Utils::EvaluateFinite(theFunc, aCandidate, aCandidateValue, aResult.Status))
+    {
+      return aResult;
+    }
+    *aPoint = aCandidate;
+    *aValue = aCandidateValue;
+    ++aResult.NbIterations;
   }
-
+  aResult.Status = MathUtils::Status::MaxIterations;
   return aResult;
 }
 
-//! Result of minimum bracketing operation.
+//! Result of minimum bracketing. On success A < B < C and Fb < Fa,Fc.
 struct MinBracketResult
 {
-  bool   IsValid = false; //!< True if valid bracket found (Fb < Fa and Fb < Fc)
-  double A       = 0.0;   //!< Left bound
-  double B       = 0.0;   //!< Middle point (minimum location estimate)
-  double C       = 0.0;   //!< Right bound
-  double Fa      = 0.0;   //!< Function value at A
-  double Fb      = 0.0;   //!< Function value at B
-  double Fc      = 0.0;   //!< Function value at C
+  MathUtils::Status Status       = MathUtils::Status::NotConverged;
+  bool              IsValid      = false;
+  uint32_t          NbIterations = 0;
+  double            A            = 0.0;
+  double            B            = 0.0;
+  double            C            = 0.0;
+  double            Fa           = std::numeric_limits<double>::quiet_NaN();
+  double            Fb           = std::numeric_limits<double>::quiet_NaN();
+  double            Fc           = std::numeric_limits<double>::quiet_NaN();
 };
 
 //! Options for minimum bracketing.
 struct MinBracketOptions
 {
-  int    MaxIterations = 50;    //!< Maximum iterations
-  bool   UseLimits     = false; //!< Enable hard limits for parameter
-  double LeftLimit     = 0.0;   //!< Left hard limit (inclusive)
-  double RightLimit    = 0.0;   //!< Right hard limit (inclusive)
-  bool   HasFA         = false; //!< True if FA is precomputed
-  bool   HasFB         = false; //!< True if FB is precomputed
-  double FA            = 0.0;   //!< Precomputed f(A)
-  double FB            = 0.0;   //!< Precomputed f(B)
+  uint32_t MaxIterations = 50;
+  bool   UseLimits     = false;
+  double LeftLimit     = 0.0;
+  double RightLimit    = 0.0;
+  bool   HasFA         = false;
+  bool   HasFB         = false;
+  double FA            = 0.0;
+  double FB            = 0.0;
 };
 
-namespace detail
+namespace Utils
 {
 inline double Limited(double theValue, const MinBracketOptions& theOptions)
 {
-  if (!theOptions.UseLimits)
-  {
-    return theValue;
-  }
-  return std::max(theOptions.LeftLimit, std::min(theOptions.RightLimit, theValue));
+  return theOptions.UseLimits
+           ? std::max(theOptions.LeftLimit, std::min(theOptions.RightLimit, theValue))
+           : theValue;
 }
 
-template <typename Function>
-bool LimitAndMayBeSwap(Function&                theFunc,
-                       const MinBracketOptions& theOptions,
-                       const double             theA,
-                       double&                  theB,
-                       double&                  theFB,
-                       double&                  theC,
-                       double&                  theFC)
+inline bool IsValid(const MinBracketOptions& theOptions)
 {
-  theC = Limited(theC, theOptions);
-  if (std::abs(theB - theC) < THE_ZERO_TOL)
-  {
-    return false;
-  }
-  if (!theFunc.Value(theC, theFC))
-  {
-    return false;
-  }
-
-  // Keep B between A and C
-  if ((theA - theB) * (theB - theC) < 0.0)
-  {
-    std::swap(theB, theC);
-    std::swap(theFB, theFC);
-  }
-  return true;
+  return theOptions.MaxIterations > 0
+         && (!theOptions.UseLimits
+             || (std::isfinite(theOptions.LeftLimit) && std::isfinite(theOptions.RightLimit)
+                 && theOptions.LeftLimit < theOptions.RightLimit))
+         && (!theOptions.HasFA || std::isfinite(theOptions.FA))
+         && (!theOptions.HasFB || std::isfinite(theOptions.FB));
 }
-} // namespace detail
+} // namespace Utils
 
-//! Bracket a minimum by finding three points a < b < c with f(b) < f(a) and f(b) < f(c).
-//! Uses golden section expansion with parabolic interpolation.
-//! @tparam Function type with Value(double theX, double& theF) method
-//! @param theFunc function to bracket
-//! @param theA initial point A
-//! @param theB initial point B (should be to the right of A in descent direction)
-//! @param theOptions bracketing options
-//! @return bracketing result
+//! Bracket a strict local minimum by safeguarded golden-ratio expansion.
 template <typename Function>
 MinBracketResult BracketMinimum(Function&                theFunc,
                                 double                   theA,
@@ -174,255 +185,113 @@ MinBracketResult BracketMinimum(Function&                theFunc,
                                 const MinBracketOptions& theOptions = MinBracketOptions())
 {
   MinBracketResult aResult;
-  if (theOptions.MaxIterations < 1)
+  if (!Utils::IsValid(theOptions) || !std::isfinite(theA) || !std::isfinite(theB))
   {
+    aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
-  if (theOptions.UseLimits && theOptions.LeftLimit > theOptions.RightLimit)
+  aResult.A = Utils::Limited(theA, theOptions);
+  aResult.B = Utils::Limited(theB, theOptions);
+  if (aResult.A == aResult.B)
   {
-    return aResult;
-  }
-
-  aResult.A = detail::Limited(theA, theOptions);
-  aResult.B = detail::Limited(theB, theOptions);
-  if (std::abs(aResult.A - aResult.B) < THE_ZERO_TOL)
-  {
+    aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
 
-  const bool isUseFA =
-    theOptions.HasFA && (!theOptions.UseLimits || std::abs(aResult.A - theA) < THE_ZERO_TOL);
-  const bool isUseFB =
-    theOptions.HasFB && (!theOptions.UseLimits || std::abs(aResult.B - theB) < THE_ZERO_TOL);
-
+  const bool isUseFA = theOptions.HasFA && aResult.A == theA;
+  const bool isUseFB = theOptions.HasFB && aResult.B == theB;
   if (isUseFA)
   {
     aResult.Fa = theOptions.FA;
   }
-  else if (!theFunc.Value(aResult.A, aResult.Fa))
+  else if (!Utils::EvaluateFinite(theFunc, aResult.A, aResult.Fa, aResult.Status))
   {
     return aResult;
   }
-
   if (isUseFB)
   {
     aResult.Fb = theOptions.FB;
   }
-  else if (!theFunc.Value(aResult.B, aResult.Fb))
+  else if (!Utils::EvaluateFinite(theFunc, aResult.B, aResult.Fb, aResult.Status))
   {
     return aResult;
   }
 
-  // Ensure we go downhill from A to B
   if (aResult.Fb > aResult.Fa)
   {
     std::swap(aResult.A, aResult.B);
     std::swap(aResult.Fa, aResult.Fb);
   }
-
-  // Initial guess for C using golden ratio
-  aResult.C = aResult.B + THE_GOLDEN_RATIO * (aResult.B - aResult.A);
-  if (theOptions.UseLimits)
+  aResult.C = Utils::Limited(aResult.B + THE_GOLDEN_RATIO * (aResult.B - aResult.A), theOptions);
+  if (!std::isfinite(aResult.C))
   {
-    if (!detail::LimitAndMayBeSwap(theFunc,
-                                   theOptions,
-                                   aResult.A,
-                                   aResult.B,
-                                   aResult.Fb,
-                                   aResult.C,
-                                   aResult.Fc))
-    {
-      return aResult;
-    }
+    aResult.Status = MathUtils::Status::NumericalError;
+    return aResult;
   }
-  else if (!theFunc.Value(aResult.C, aResult.Fc))
+  if (aResult.C == aResult.B)
+  {
+    aResult.Status = MathUtils::Status::NoSolution;
+    return aResult;
+  }
+  if (!Utils::EvaluateFinite(theFunc, aResult.C, aResult.Fc, aResult.Status))
   {
     return aResult;
   }
 
-  // Keep expanding until we bracket a minimum
-  for (int anIter = 0; anIter < theOptions.MaxIterations && aResult.Fb >= aResult.Fc; ++anIter)
+  for (uint32_t anIter = 0; anIter <= theOptions.MaxIterations; ++anIter)
   {
-    // Parabolic extrapolation
-    const double aR     = (aResult.B - aResult.A) * (aResult.Fb - aResult.Fc);
-    const double aQ     = (aResult.B - aResult.C) * (aResult.Fb - aResult.Fa);
-    const double aDenom = 2.0 * SignTransfer(std::max(std::abs(aQ - aR), THE_ZERO_TOL), aQ - aR);
-
-    double aU = aResult.B - ((aResult.B - aResult.C) * aQ - (aResult.B - aResult.A) * aR) / aDenom;
-
-    double aULim = aResult.B + 100.0 * (aResult.C - aResult.B);
-    if (theOptions.UseLimits)
+    if (aResult.Fb < aResult.Fa && aResult.Fb < aResult.Fc)
     {
-      aULim = detail::Limited(aULim, theOptions);
-    }
-    double aFu = 0.0;
-
-    if ((aResult.B - aU) * (aU - aResult.C) > 0.0)
-    {
-      // U is between B and C
-      if (!theFunc.Value(aU, aFu))
+      if (aResult.A > aResult.C)
       {
-        return aResult;
+        std::swap(aResult.A, aResult.C);
+        std::swap(aResult.Fa, aResult.Fc);
       }
-
-      if (aFu < aResult.Fc)
+      if (aResult.A < aResult.B && aResult.B < aResult.C)
       {
-        aResult.A       = aResult.B;
-        aResult.B       = aU;
-        aResult.Fa      = aResult.Fb;
-        aResult.Fb      = aFu;
+        aResult.Status  = MathUtils::Status::OK;
         aResult.IsValid = true;
         return aResult;
       }
-      else if (aFu > aResult.Fb)
-      {
-        aResult.C       = aU;
-        aResult.Fc      = aFu;
-        aResult.IsValid = true;
-        return aResult;
-      }
-
-      // Parabolic step didn't help, use golden section
-      aU = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
-      if (theOptions.UseLimits)
-      {
-        if (!detail::LimitAndMayBeSwap(theFunc,
-                                       theOptions,
-                                       aResult.B,
-                                       aResult.C,
-                                       aResult.Fc,
-                                       aU,
-                                       aFu))
-        {
-          return aResult;
-        }
-      }
-      else if (!theFunc.Value(aU, aFu))
-      {
-        return aResult;
-      }
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
     }
-    else if ((aResult.C - aU) * (aU - aULim) > 0.0)
+    if (anIter == theOptions.MaxIterations)
     {
-      // U is between C and limit
-      if (theOptions.UseLimits)
-      {
-        if (!detail::LimitAndMayBeSwap(theFunc,
-                                       theOptions,
-                                       aResult.B,
-                                       aResult.C,
-                                       aResult.Fc,
-                                       aU,
-                                       aFu))
-        {
-          return aResult;
-        }
-      }
-      else if (!theFunc.Value(aU, aFu))
-      {
-        return aResult;
-      }
-
-      if (aFu < aResult.Fc)
-      {
-        aResult.B  = aResult.C;
-        aResult.C  = aU;
-        aU         = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
-        aResult.Fb = aResult.Fc;
-        aResult.Fc = aFu;
-        if (theOptions.UseLimits)
-        {
-          if (!detail::LimitAndMayBeSwap(theFunc,
-                                         theOptions,
-                                         aResult.B,
-                                         aResult.C,
-                                         aResult.Fc,
-                                         aU,
-                                         aFu))
-          {
-            return aResult;
-          }
-        }
-        else if (!theFunc.Value(aU, aFu))
-        {
-          return aResult;
-        }
-      }
-    }
-    else if ((aU - aULim) * (aULim - aResult.C) >= 0.0)
-    {
-      // U is beyond limit
-      aU = aULim;
-      if (theOptions.UseLimits)
-      {
-        if (!detail::LimitAndMayBeSwap(theFunc,
-                                       theOptions,
-                                       aResult.B,
-                                       aResult.C,
-                                       aResult.Fc,
-                                       aU,
-                                       aFu))
-        {
-          return aResult;
-        }
-      }
-      else if (!theFunc.Value(aU, aFu))
-      {
-        return aResult;
-      }
-    }
-    else
-    {
-      // Default golden section step
-      aU = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
-      if (theOptions.UseLimits)
-      {
-        if (!detail::LimitAndMayBeSwap(theFunc,
-                                       theOptions,
-                                       aResult.B,
-                                       aResult.C,
-                                       aResult.Fc,
-                                       aU,
-                                       aFu))
-        {
-          return aResult;
-        }
-      }
-      else if (!theFunc.Value(aU, aFu))
-      {
-        return aResult;
-      }
+      break;
     }
 
-    // Shift points
+    const double aCandidate =
+      Utils::Limited(aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B), theOptions);
+    if (!std::isfinite(aCandidate))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+    if (aCandidate == aResult.C)
+    {
+      aResult.Status = MathUtils::Status::NoSolution;
+      return aResult;
+    }
+    double aCandidateValue = 0.0;
+    if (!Utils::EvaluateFinite(theFunc, aCandidate, aCandidateValue, aResult.Status))
+    {
+      return aResult;
+    }
     aResult.A  = aResult.B;
-    aResult.B  = aResult.C;
-    aResult.C  = aU;
     aResult.Fa = aResult.Fb;
+    aResult.B  = aResult.C;
     aResult.Fb = aResult.Fc;
-    aResult.Fc = aFu;
+    aResult.C  = aCandidate;
+    aResult.Fc = aCandidateValue;
+    ++aResult.NbIterations;
   }
-
-  aResult.IsValid = (aResult.Fb < aResult.Fa && aResult.Fb < aResult.Fc);
-
-  // Ensure A < B < C ordering
-  if (aResult.IsValid && aResult.A > aResult.C)
-  {
-    std::swap(aResult.A, aResult.C);
-    std::swap(aResult.Fa, aResult.Fc);
-  }
-
-  if (aResult.IsValid && !(aResult.A < aResult.B && aResult.B < aResult.C))
-  {
-    aResult.IsValid = false;
-  }
-
+  aResult.Status = MathUtils::Status::MaxIterations;
   return aResult;
 }
 
-//! Backward-compatible convenience overload with only max-iterations argument.
 template <typename Function>
-MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, int theMaxIter)
+MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, uint32_t theMaxIter)
 {
   MinBracketOptions anOptions;
   anOptions.MaxIterations = theMaxIter;

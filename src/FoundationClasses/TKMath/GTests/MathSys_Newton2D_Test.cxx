@@ -17,6 +17,7 @@
 
 #include <array>
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -214,14 +215,48 @@ TEST(MathSys_Newton2DTest, Solve2D_TinyStepLargeResidual_ReturnsMaxIterations)
   aBounds.Max = {1.0, 1.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance    = 1.0e-8;
-  aOptions.XTolerance    = 1.0e-16;
-  aOptions.MaxIterations = 10;
+  aOptions.FTolerance       = 1.0e-8;
+  aOptions.XTolerance       = 1.0e-16;
+  aOptions.MaxIterations    = 10;
+  aOptions.EnableLineSearch = false;
 
   const MathSys::NewtonResultN<2> aResult = MathSys::Solve2D(aFunc, {0.0, 0.0}, aBounds, aOptions);
   EXPECT_FALSE(aResult.IsDone());
   EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
   EXPECT_GT(aResult.ResidualNorm, 1.0e-2);
+}
+
+TEST(MathSys_Newton2DTest, Solve2D_LineSearchRejectsIncreasingFullStep)
+{
+  const auto aFunc = [](double theU, double theV, double theF[2], double theJ[2][2]) {
+    theF[0]    = std::atan(theU);
+    theF[1]    = theV;
+    theJ[0][0] = 1.0 / (1.0 + theU * theU);
+    theJ[0][1] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0;
+    return true;
+  };
+
+  MathSys::NewtonBoundsN<2> aBounds;
+  aBounds.HasBounds = false;
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-12;
+  aOptions.XTolerance    = 1.0e-16;
+  aOptions.MaxIterations = 1;
+  aOptions.MaxStepRatio  = 10.0;
+
+  aOptions.EnableLineSearch = false;
+  const MathSys::NewtonResultN<2> aFullStep =
+    MathSys::Solve2D(aFunc, {2.0, 0.0}, aBounds, aOptions);
+  aOptions.EnableLineSearch = true;
+  const MathSys::NewtonResultN<2> aBacktracked =
+    MathSys::Solve2D(aFunc, {2.0, 0.0}, aBounds, aOptions);
+
+  const double anInitialResidual = std::atan(2.0);
+  EXPECT_GT(aFullStep.ResidualNorm, anInitialResidual);
+  EXPECT_LT(aBacktracked.ResidualNorm, anInitialResidual);
+  EXPECT_NE(aBacktracked.X[0], aFullStep.X[0]);
 }
 
 TEST(MathSys_Newton2DTest, Solve2DSymmetric_Target_Converges)
@@ -350,4 +385,37 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_ConsistentFromDifferentStarts)
     EXPECT_NEAR(aResult.X[0], 5.0, 1.0e-8);
     EXPECT_NEAR(aResult.X[1], 5.0, 1.0e-8);
   }
+}
+
+TEST(MathSys_Newton2DTest, Solve2D_ScaleRelativeJacobianAndFiniteValidation)
+{
+  const auto aScaled = [](double theU, double theV, double theF[2], double theJ[2][2]) {
+    constexpr double THE_SCALE = 1.0e-150;
+    theF[0]                    = THE_SCALE * (theU - 1.0);
+    theF[1]                    = THE_SCALE * (theV + 2.0);
+    theJ[0][0]                 = THE_SCALE;
+    theJ[0][1]                 = 0.0;
+    theJ[1][0]                 = 0.0;
+    theJ[1][1]                 = THE_SCALE;
+    return true;
+  };
+  MathSys::NewtonBoundsN<2> aBounds;
+  aBounds.HasBounds = false;
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance   = 1.0e-200;
+  aOptions.MaxStepRatio = 10.0;
+  const MathSys::NewtonResultN<2> aResult =
+    MathSys::Solve2D(aScaled, {0.0, 0.0}, aBounds, aOptions);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[1], -2.0, 1.0e-12);
+
+  const auto aNaN = [](double, double, double theF[2], double theJ[2][2]) {
+    theF[0]    = std::numeric_limits<double>::quiet_NaN();
+    theF[1]    = 0.0;
+    theJ[0][0] = theJ[1][1] = 1.0;
+    theJ[0][1] = theJ[1][0] = 0.0;
+    return true;
+  };
+  EXPECT_EQ(MathSys::Solve2D(aNaN, {0.0, 0.0}, aBounds).Status, MathUtils::Status::NumericalError);
 }

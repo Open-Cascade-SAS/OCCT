@@ -24,6 +24,40 @@
 namespace MathUtils
 {
 
+namespace Utils
+{
+inline bool Perturbations(double theX, double theStep, double& theMinus, double& thePlus)
+{
+  if (!std::isfinite(theX) || !std::isfinite(theStep) || theStep <= 0.0)
+  {
+    return false;
+  }
+  thePlus  = theX + theStep;
+  theMinus = theX - theStep;
+  if (thePlus == theX)
+  {
+    thePlus = std::nextafter(theX, std::numeric_limits<double>::infinity());
+  }
+  if (theMinus == theX)
+  {
+    theMinus = std::nextafter(theX, -std::numeric_limits<double>::infinity());
+  }
+  return std::isfinite(theMinus) && std::isfinite(thePlus) && theMinus < theX && theX < thePlus;
+}
+
+inline bool IsFiniteVector(const math_Vector& theVector)
+{
+  for (size_t i = 0; i < theVector.Size(); ++i)
+  {
+    if (!std::isfinite(theVector.At(i)))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+} // namespace Utils
+
 //! Central difference derivative approximation for scalar functions.
 //! f'(x) ~= (f(x+h) - f(x-h)) / (2h)
 //! Accuracy: O(h^2)
@@ -37,19 +71,30 @@ namespace MathUtils
 template <typename Function>
 bool CentralDifference(Function& theFunc, double theX, double& theDeriv, double theStep = 1.0e-8)
 {
+  double aMinus = 0.0;
+  double aPlus  = 0.0;
+  if (!Utils::Perturbations(theX, theStep, aMinus, aPlus))
+  {
+    return false;
+  }
   double aFPlus  = 0.0;
   double aFMinus = 0.0;
 
-  if (!theFunc.Value(theX + theStep, aFPlus))
+  if (!theFunc.Value(aPlus, aFPlus) || !std::isfinite(aFPlus))
   {
     return false;
   }
-  if (!theFunc.Value(theX - theStep, aFMinus))
+  if (!theFunc.Value(aMinus, aFMinus) || !std::isfinite(aFMinus))
   {
     return false;
   }
 
-  theDeriv = (aFPlus - aFMinus) / (2.0 * theStep);
+  const double aDeriv = (aFPlus - aFMinus) / (aPlus - aMinus);
+  if (!std::isfinite(aDeriv))
+  {
+    return false;
+  }
+  theDeriv = aDeriv;
   return true;
 }
 
@@ -72,14 +117,32 @@ bool ForwardDifference(Function& theFunc,
                        double&   theDeriv,
                        double    theStep = 1.0e-8)
 {
+  if (!std::isfinite(theX) || !std::isfinite(theFx) || !std::isfinite(theStep) || theStep <= 0.0)
+  {
+    return false;
+  }
+  double aXPlus = theX + theStep;
+  if (aXPlus == theX)
+  {
+    aXPlus = std::nextafter(theX, std::numeric_limits<double>::infinity());
+  }
+  if (!std::isfinite(aXPlus) || aXPlus <= theX)
+  {
+    return false;
+  }
   double aFPlus = 0.0;
 
-  if (!theFunc.Value(theX + theStep, aFPlus))
+  if (!theFunc.Value(aXPlus, aFPlus) || !std::isfinite(aFPlus))
   {
     return false;
   }
 
-  theDeriv = (aFPlus - theFx) / theStep;
+  const double aDeriv = (aFPlus - theFx) / (aXPlus - theX);
+  if (!std::isfinite(aDeriv))
+  {
+    return false;
+  }
+  theDeriv = aDeriv;
   return true;
 }
 
@@ -98,36 +161,49 @@ bool NumericalGradient(Function&    theFunc,
                        math_Vector& theGrad,
                        double       theStep = 1.0e-8)
 {
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
-
-  for (int i = aLower; i <= aUpper; ++i)
+  if (theX.Size() != theGrad.Size() || !Utils::IsFiniteVector(theX) || !std::isfinite(theStep)
+      || theStep <= 0.0)
   {
-    const double aXi     = theX(i);
-    double       aFPlus  = 0.0;
-    double       aFMinus = 0.0;
+    return false;
+  }
+  for (size_t i = 0; i < theX.Size(); ++i)
+  {
+    const double aXi    = theX.At(i);
+    double       aMinus = 0.0;
+    double       aPlus  = 0.0;
+    if (!Utils::Perturbations(aXi, theStep, aMinus, aPlus))
+    {
+      return false;
+    }
+    double aFPlus  = 0.0;
+    double aFMinus = 0.0;
 
     // Forward perturbation
-    theX(i) = aXi + theStep;
-    if (!theFunc.Value(theX, aFPlus))
+    theX.ChangeAt(i) = aPlus;
+    if (!theFunc.Value(theX, aFPlus) || !std::isfinite(aFPlus))
     {
-      theX(i) = aXi;
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
     // Backward perturbation
-    theX(i) = aXi - theStep;
-    if (!theFunc.Value(theX, aFMinus))
+    theX.ChangeAt(i) = aMinus;
+    if (!theFunc.Value(theX, aFMinus) || !std::isfinite(aFMinus))
     {
-      theX(i) = aXi;
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
     // Restore original value
-    theX(i) = aXi;
+    theX.ChangeAt(i) = aXi;
 
     // Central difference
-    theGrad(i) = (aFPlus - aFMinus) / (2.0 * theStep);
+    const double aDeriv = (aFPlus - aFMinus) / (aPlus - aMinus);
+    if (!std::isfinite(aDeriv))
+    {
+      return false;
+    }
+    theGrad.ChangeAt(i) = aDeriv;
   }
 
   return true;
@@ -148,34 +224,47 @@ bool NumericalGradientAdaptive(Function&    theFunc,
                                math_Vector& theGrad,
                                double       theRelStep = 1.0e-8)
 {
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
-
-  for (int i = aLower; i <= aUpper; ++i)
+  if (theX.Size() != theGrad.Size() || !Utils::IsFiniteVector(theX)
+      || !std::isfinite(theRelStep) || theRelStep <= 0.0)
   {
-    const double aXi = theX(i);
+    return false;
+  }
+  for (size_t i = 0; i < theX.Size(); ++i)
+  {
+    const double aXi = theX.At(i);
     // Adaptive step: larger for larger |x|, with minimum floor
-    const double aStep = theRelStep * std::max(1.0, std::abs(aXi));
+    const double aStep  = theRelStep * std::max(1.0, std::abs(aXi));
+    double       aMinus = 0.0;
+    double       aPlus  = 0.0;
+    if (!Utils::Perturbations(aXi, aStep, aMinus, aPlus))
+    {
+      return false;
+    }
 
     double aFPlus  = 0.0;
     double aFMinus = 0.0;
 
-    theX(i) = aXi + aStep;
-    if (!theFunc.Value(theX, aFPlus))
+    theX.ChangeAt(i) = aPlus;
+    if (!theFunc.Value(theX, aFPlus) || !std::isfinite(aFPlus))
     {
-      theX(i) = aXi;
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
-    theX(i) = aXi - aStep;
-    if (!theFunc.Value(theX, aFMinus))
+    theX.ChangeAt(i) = aMinus;
+    if (!theFunc.Value(theX, aFMinus) || !std::isfinite(aFMinus))
     {
-      theX(i) = aXi;
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
-    theX(i)    = aXi;
-    theGrad(i) = (aFPlus - aFMinus) / (2.0 * aStep);
+    theX.ChangeAt(i)    = aXi;
+    const double aDeriv = (aFPlus - aFMinus) / (aPlus - aMinus);
+    if (!std::isfinite(aDeriv))
+    {
+      return false;
+    }
+    theGrad.ChangeAt(i) = aDeriv;
   }
 
   return true;
@@ -196,40 +285,56 @@ bool NumericalJacobian(Function&    theFunc,
                        math_Matrix& theJac,
                        double       theStep = 1.0e-8)
 {
-  const int aNbRows = theJac.RowNumber();
-  const int aNbCols = theJac.ColNumber();
+  const size_t aNbRows = theJac.RowSize();
+  const size_t aNbCols = theJac.ColSize();
 
-  math_Vector aFPlus(1, aNbRows);
-  math_Vector aFMinus(1, aNbRows);
-
-  for (int j = 1; j <= aNbCols; ++j)
+  if (theX.Size() != aNbCols || aNbRows == 0 || !Utils::IsFiniteVector(theX)
+      || !std::isfinite(theStep) || theStep <= 0.0)
   {
-    const int    aIdx = theX.Lower() + j - 1;
-    const double aXj  = theX(aIdx);
+    return false;
+  }
+
+  math_Vector aFPlus(aNbRows);
+  math_Vector aFMinus(aNbRows);
+
+  for (size_t j = 0; j < aNbCols; ++j)
+  {
+    const double aXj    = theX.At(j);
+    double       aMinus = 0.0;
+    double       aPlus  = 0.0;
+    if (!Utils::Perturbations(aXj, theStep * std::max(1.0, std::abs(aXj)), aMinus, aPlus))
+    {
+      return false;
+    }
 
     // Forward perturbation
-    theX(aIdx) = aXj + theStep;
-    if (!theFunc.Value(theX, aFPlus))
+    theX.ChangeAt(j) = aPlus;
+    if (!theFunc.Value(theX, aFPlus) || !Utils::IsFiniteVector(aFPlus))
     {
-      theX(aIdx) = aXj;
+      theX.ChangeAt(j) = aXj;
       return false;
     }
 
     // Backward perturbation
-    theX(aIdx) = aXj - theStep;
-    if (!theFunc.Value(theX, aFMinus))
+    theX.ChangeAt(j) = aMinus;
+    if (!theFunc.Value(theX, aFMinus) || !Utils::IsFiniteVector(aFMinus))
     {
-      theX(aIdx) = aXj;
+      theX.ChangeAt(j) = aXj;
       return false;
     }
 
     // Restore
-    theX(aIdx) = aXj;
+    theX.ChangeAt(j) = aXj;
 
     // Fill column of Jacobian
-    for (int i = 1; i <= aNbRows; ++i)
+    for (size_t i = 0; i < aNbRows; ++i)
     {
-      theJac(i, j) = (aFPlus(i) - aFMinus(i)) / (2.0 * theStep);
+      const double aDeriv = (aFPlus.At(i) - aFMinus.At(i)) / (aPlus - aMinus);
+      if (!std::isfinite(aDeriv))
+      {
+        return false;
+      }
+      theJac.ChangeAt(i, j) = aDeriv;
     }
   }
 
@@ -252,101 +357,125 @@ bool NumericalHessian(Function&    theFunc,
                       math_Matrix& theHess,
                       double       theStep = 1.0e-5)
 {
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
+  if (theHess.RowSize() != theX.Size() || theHess.ColSize() != theX.Size()
+      || !Utils::IsFiniteVector(theX) || !std::isfinite(theStep) || theStep <= 0.0)
+  {
+    return false;
+  }
 
   double aFx = 0.0;
-  if (!theFunc.Value(theX, aFx))
+  if (!theFunc.Value(theX, aFx) || !std::isfinite(aFx))
   {
     return false;
   }
 
   // Diagonal elements: d^2f/dx[i]^2 ~= (f(x+h[i]*e[i]) - 2f(x) + f(x-h[i]*e[i])) / h^2
-  for (int i = aLower; i <= aUpper; ++i)
+  for (size_t i = 0; i < theX.Size(); ++i)
   {
-    const double aXi     = theX(i);
-    double       aFPlus  = 0.0;
-    double       aFMinus = 0.0;
-
-    theX(i) = aXi + theStep;
-    if (!theFunc.Value(theX, aFPlus))
+    const double aXi    = theX.At(i);
+    double       aMinus = 0.0;
+    double       aPlus  = 0.0;
+    if (!Utils::Perturbations(aXi, theStep * std::max(1.0, std::abs(aXi)), aMinus, aPlus))
     {
-      theX(i) = aXi;
+      return false;
+    }
+    double aFPlus  = 0.0;
+    double aFMinus = 0.0;
+
+    theX.ChangeAt(i) = aPlus;
+    if (!theFunc.Value(theX, aFPlus) || !std::isfinite(aFPlus))
+    {
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
-    theX(i) = aXi - theStep;
-    if (!theFunc.Value(theX, aFMinus))
+    theX.ChangeAt(i) = aMinus;
+    if (!theFunc.Value(theX, aFMinus) || !std::isfinite(aFMinus))
     {
-      theX(i) = aXi;
+      theX.ChangeAt(i) = aXi;
       return false;
     }
 
-    theX(i) = aXi;
+    theX.ChangeAt(i) = aXi;
 
-    const int aMatIdx         = i - aLower + 1;
-    theHess(aMatIdx, aMatIdx) = (aFPlus - 2.0 * aFx + aFMinus) / (theStep * theStep);
+    const double aHPlus  = aPlus - aXi;
+    const double aHMinus = aXi - aMinus;
+    const double aD2 =
+      2.0 * ((aFPlus - aFx) / aHPlus - (aFx - aFMinus) / aHMinus) / (aHPlus + aHMinus);
+    if (!std::isfinite(aD2))
+    {
+      return false;
+    }
+    theHess.ChangeAt(i, i) = aD2;
   }
 
   // Off-diagonal elements: d^2f/dx[i]dx[j]
   // ~= (f(x+h[i]*e[i]+h[j]*e[j]) - f(x+h[i]*e[i]-h[j]*e[j])
   //    - f(x-h[i]*e[i]+h[j]*e[j]) + f(x-h[i]*e[i]-h[j]*e[j])) / (4h^2)
-  for (int i = aLower; i <= aUpper; ++i)
+  for (size_t i = 0; i < theX.Size(); ++i)
   {
-    for (int j = i + 1; j <= aUpper; ++j)
+    for (size_t j = i + 1; j < theX.Size(); ++j)
     {
-      const double aXi  = theX(i);
-      const double aXj  = theX(j);
-      double       aFpp = 0.0, aFpm = 0.0, aFmp = 0.0, aFmm = 0.0;
+      const double aXi     = theX.At(i);
+      const double aXj     = theX.At(j);
+      double       aMinusI = 0.0, aPlusI = 0.0, aMinusJ = 0.0, aPlusJ = 0.0;
+      if (!Utils::Perturbations(aXi, theStep * std::max(1.0, std::abs(aXi)), aMinusI, aPlusI)
+          || !Utils::Perturbations(aXj, theStep * std::max(1.0, std::abs(aXj)), aMinusJ, aPlusJ))
+      {
+        return false;
+      }
+      double aFpp = 0.0, aFpm = 0.0, aFmp = 0.0, aFmm = 0.0;
 
       // f(x + h[i]*e[i] + h[j]*e[j])
-      theX(i) = aXi + theStep;
-      theX(j) = aXj + theStep;
-      if (!theFunc.Value(theX, aFpp))
+      theX.ChangeAt(i) = aPlusI;
+      theX.ChangeAt(j) = aPlusJ;
+      if (!theFunc.Value(theX, aFpp) || !std::isfinite(aFpp))
       {
-        theX(i) = aXi;
-        theX(j) = aXj;
+        theX.ChangeAt(i) = aXi;
+        theX.ChangeAt(j) = aXj;
         return false;
       }
 
       // f(x + h[i]*e[i] - h[j]*e[j])
-      theX(j) = aXj - theStep;
-      if (!theFunc.Value(theX, aFpm))
+      theX.ChangeAt(j) = aMinusJ;
+      if (!theFunc.Value(theX, aFpm) || !std::isfinite(aFpm))
       {
-        theX(i) = aXi;
-        theX(j) = aXj;
+        theX.ChangeAt(i) = aXi;
+        theX.ChangeAt(j) = aXj;
         return false;
       }
 
       // f(x - h[i]*e[i] - h[j]*e[j])
-      theX(i) = aXi - theStep;
-      if (!theFunc.Value(theX, aFmm))
+      theX.ChangeAt(i) = aMinusI;
+      if (!theFunc.Value(theX, aFmm) || !std::isfinite(aFmm))
       {
-        theX(i) = aXi;
-        theX(j) = aXj;
+        theX.ChangeAt(i) = aXi;
+        theX.ChangeAt(j) = aXj;
         return false;
       }
 
       // f(x - h[i]*e[i] + h[j]*e[j])
-      theX(j) = aXj + theStep;
-      if (!theFunc.Value(theX, aFmp))
+      theX.ChangeAt(j) = aPlusJ;
+      if (!theFunc.Value(theX, aFmp) || !std::isfinite(aFmp))
       {
-        theX(i) = aXi;
-        theX(j) = aXj;
+        theX.ChangeAt(i) = aXi;
+        theX.ChangeAt(j) = aXj;
         return false;
       }
 
       // Restore
-      theX(i) = aXi;
-      theX(j) = aXj;
+      theX.ChangeAt(i) = aXi;
+      theX.ChangeAt(j) = aXj;
 
-      const int    aMatI = i - aLower + 1;
-      const int    aMatJ = j - aLower + 1;
-      const double aHij  = (aFpp - aFpm - aFmp + aFmm) / (4.0 * theStep * theStep);
+      const double aHij  = (aFpp - aFpm - aFmp + aFmm) / ((aPlusI - aMinusI) * (aPlusJ - aMinusJ));
+      if (!std::isfinite(aHij))
+      {
+        return false;
+      }
 
       // Symmetric
-      theHess(aMatI, aMatJ) = aHij;
-      theHess(aMatJ, aMatI) = aHij;
+      theHess.ChangeAt(i, j) = aHij;
+      theHess.ChangeAt(j, i) = aHij;
     }
   }
 
@@ -370,19 +499,34 @@ bool SecondDerivative(Function& theFunc,
                       double&   theD2f,
                       double    theStep = 1.0e-5)
 {
+  double aMinus = 0.0;
+  double aPlus  = 0.0;
+  if (!std::isfinite(theFx)
+      || !Utils::Perturbations(theX, theStep * std::max(1.0, std::abs(theX)), aMinus, aPlus))
+  {
+    return false;
+  }
   double aFPlus  = 0.0;
   double aFMinus = 0.0;
 
-  if (!theFunc.Value(theX + theStep, aFPlus))
+  if (!theFunc.Value(aPlus, aFPlus) || !std::isfinite(aFPlus))
   {
     return false;
   }
-  if (!theFunc.Value(theX - theStep, aFMinus))
+  if (!theFunc.Value(aMinus, aFMinus) || !std::isfinite(aFMinus))
   {
     return false;
   }
 
-  theD2f = (aFPlus - 2.0 * theFx + aFMinus) / (theStep * theStep);
+  const double aHPlus  = aPlus - theX;
+  const double aHMinus = theX - aMinus;
+  const double aD2 =
+    2.0 * ((aFPlus - theFx) / aHPlus - (theFx - aFMinus) / aHMinus) / (aHPlus + aHMinus);
+  if (!std::isfinite(aD2))
+  {
+    return false;
+  }
+  theD2f = aD2;
   return true;
 }
 

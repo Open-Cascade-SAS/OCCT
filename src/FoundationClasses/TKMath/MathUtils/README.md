@@ -82,7 +82,8 @@ enum class Status {
   NoSolution,
   NotPositiveDefinite,
   Singular,
-  NonDescentDirection
+  NonDescentDirection,
+  CallbackError
 };
 ```
 
@@ -101,9 +102,13 @@ via `MathSys_NewtonTypes.hxx`.
 struct Config {
   double XTolerance = 1e-10;   // Tolerance on X
   double FTolerance = 1e-10;   // Tolerance on F
-  int    MaxIterations = 100;  // Maximum iterations
+  uint32_t MaxIterations = 100;  // Maximum iterations
 };
 ```
+
+Solver iteration limits and stored iteration counters use `uint32_t`. Collection dimensions,
+indices, and evaluation counts use `size_t`. Private package helpers consistently use a nested
+`Utils` namespace; wrappers that merely duplicate a C++ standard-library function are not provided.
 
 ## Design Principles
 

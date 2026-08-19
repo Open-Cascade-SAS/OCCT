@@ -19,6 +19,7 @@
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <MathLin_Crout.hxx>
+#include "MathOpt_Utils.hxx"
 
 #include <cmath>
 
@@ -35,7 +36,7 @@ struct UzawaResult
   std::optional<math_Vector> Error;        //!< X - X0 (difference from starting point)
   std::optional<math_Vector> InitialError; //!< C*X0 - S (initial constraint violation)
   std::optional<math_Matrix> InverseCTC;   //!< (C * C^T)^-1 for gradient computation
-  int                        NbIterations = 0;
+  uint32_t                   NbIterations = 0;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -47,7 +48,7 @@ struct UzawaConfig
 {
   double EpsLix        = 1.0e-6; //!< Tolerance for X convergence
   double EpsLic        = 1.0e-6; //!< Tolerance for dual variable convergence
-  int    MaxIterations = 500;    //!< Maximum iterations
+  uint32_t MaxIterations = 500;   //!< Maximum iterations
 };
 
 //! Solve constrained least squares using Uzawa algorithm.
@@ -71,46 +72,45 @@ struct UzawaConfig
 inline UzawaResult Uzawa(const math_Matrix& theCont,
                          const math_Vector& theSecont,
                          const math_Vector& theStartingPoint,
-                         int                theNce,
-                         int                theNci,
+                          size_t             theNce,
+                          size_t             theNci,
                          const UzawaConfig& theConfig = UzawaConfig())
 {
   UzawaResult aResult;
 
-  const int aNlig = theCont.RowNumber();
-  const int aNcol = theCont.ColNumber();
+  const size_t aNlig = theCont.RowSize();
+  const size_t aNcol = theCont.ColSize();
 
   // Validate dimensions
-  if (theSecont.Length() != aNlig || (theNce + theNci) != aNlig
-      || theStartingPoint.Length() != aNcol)
+  if (theNce > aNlig || theNci != aNlig - theNce
+      || theSecont.Size() != aNlig || theStartingPoint.Size() != aNcol
+      || !Utils::IsFinite(theCont) || !Utils::IsFinite(theSecont)
+      || !Utils::IsFinite(theStartingPoint) || theConfig.MaxIterations == 0
+      || !std::isfinite(theConfig.EpsLix) || theConfig.EpsLix <= 0.0
+      || !std::isfinite(theConfig.EpsLic) || theConfig.EpsLic <= 0.0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  const int aRowLower = theCont.LowerRow();
-  const int aColLower = theCont.LowerCol();
-  const int aSecLower = theSecont.Lower();
-  const int aXLower   = theStartingPoint.Lower();
-
   // Compute initial error: C*X0 - S
-  math_Vector aErrinit(1, aNlig);
-  for (int i = 1; i <= aNlig; ++i)
+  math_Vector aErrinit(aNlig);
+  for (size_t i = 0; i < aNlig; ++i)
   {
     double aSum = 0.0;
-    for (int j = 1; j <= aNcol; ++j)
+    for (size_t j = 0; j < aNcol; ++j)
     {
-      aSum += theCont(i + aRowLower - 1, j + aColLower - 1) * theStartingPoint(j + aXLower - 1);
+      aSum += theCont.At(i, j) * theStartingPoint.At(j);
     }
-    aErrinit(i) = aSum - theSecont(i + aSecLower - 1);
+    aErrinit.ChangeAt(i) = aSum - theSecont.At(i);
   }
 
   aResult.InitialError = aErrinit;
 
   // Initialize dual variables and error
-  math_Vector aVardua(1, aNlig);
-  math_Vector aErruza(1, aNcol, 0.0);
-  math_Matrix aCTCinv(1, aNlig, 1, aNlig, 0.0);
+  math_Vector aVardua(aNlig);
+  math_Vector aErruza(aNcol, 0.0);
+  math_Matrix aCTCinv(aNlig, aNlig, 0.0);
 
   if (theNci == 0)
   {
@@ -118,20 +118,19 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
     aResult.NbIterations = 1;
 
     // Compute C * C^T (symmetric)
-    for (int i = 1; i <= aNlig; ++i)
+    for (size_t i = 0; i < aNlig; ++i)
     {
-      for (int j = 1; j <= i; ++j)
+      for (size_t j = 0; j <= i; ++j)
       {
         double aSum = 0.0;
-        for (int k = 1; k <= aNcol; ++k)
+        for (size_t k = 0; k < aNcol; ++k)
         {
-          aSum += theCont(i + aRowLower - 1, k + aColLower - 1)
-                  * theCont(j + aRowLower - 1, k + aColLower - 1);
+          aSum += theCont.At(i, k) * theCont.At(j, k);
         }
-        aCTCinv(i, j) = aSum;
+        aCTCinv.ChangeAt(i, j) = aSum;
         if (i != j)
         {
-          aCTCinv(j, i) = aSum;
+          aCTCinv.ChangeAt(j, i) = aSum;
         }
       }
     }
@@ -144,147 +143,162 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
       return aResult;
     }
     aCTCinv = *aInvResult.Inverse;
+    if (!Utils::IsFinite(aCTCinv))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
 
     // Compute dual variables: (C*C^T)^-1 * (C*X0 - S)
-    for (int i = 1; i <= aNlig; ++i)
+    for (size_t i = 0; i < aNlig; ++i)
     {
       double aSum = 0.0;
-      for (int j = 1; j <= aNlig; ++j)
+      for (size_t j = 0; j < aNlig; ++j)
       {
-        aSum += aCTCinv(i, j) * aErrinit(j);
+        aSum += aCTCinv.At(i, j) * aErrinit.At(j);
       }
-      aVardua(i) = aSum;
+      aVardua.ChangeAt(i) = aSum;
     }
 
     // Compute error: -C^T * dual
-    for (int i = 1; i <= aNcol; ++i)
+    for (size_t i = 0; i < aNcol; ++i)
     {
       double aSum = 0.0;
-      for (int j = 1; j <= aNlig; ++j)
+      for (size_t j = 0; j < aNlig; ++j)
       {
-        aSum -= theCont(j + aRowLower - 1, i + aColLower - 1) * aVardua(j);
+        aSum -= theCont.At(j, i) * aVardua.At(j);
       }
-      aErruza(i) = aSum;
+      aErruza.ChangeAt(i) = aSum;
     }
 
     // Compute solution
-    math_Vector aResul(1, aNcol);
-    for (int i = 1; i <= aNcol; ++i)
+    math_Vector aResul(aNcol);
+    for (size_t i = 0; i < aNcol; ++i)
     {
-      aResul(i) = theStartingPoint(i + aXLower - 1) + aErruza(i);
+      aResul.ChangeAt(i) = theStartingPoint.At(i) + aErruza.At(i);
     }
 
     aResult.Solution   = aResul;
     aResult.Dual       = aVardua;
     aResult.Error      = aErruza;
     aResult.InverseCTC = aCTCinv;
-    aResult.Status     = Status::OK;
+    aResult.Status     = Utils::IsFinite(aResul) && Utils::IsFinite(aVardua)
+                            && Utils::IsFinite(aErruza)
+                         ? Status::OK
+                         : Status::NumericalError;
     return aResult;
   }
 
   // Iterative Uzawa for mixed equality/inequality constraints
   // Initialize dual variables
-  for (int i = 1; i <= aNlig; ++i)
+  for (size_t i = 0; i < aNlig; ++i)
   {
-    aVardua(i) = (i <= theNce) ? 0.0 : 1.0;
+    aVardua.ChangeAt(i) = (i < theNce) ? 0.0 : 1.0;
   }
 
   // Compute step size rho
-  double aNormat = 0.0;
-  for (int i = 1; i <= aNlig; ++i)
+  double aMatrixNorm = 0.0;
+  for (size_t i = 0; i < aNlig; ++i)
   {
-    double aNormli = 0.0;
-    for (int j = 1; j <= aNcol; ++j)
+    for (size_t j = 0; j < aNcol; ++j)
     {
-      double aVal = theCont(i + aRowLower - 1, j + aColLower - 1);
-      aNormli += aVal * aVal;
+      const double aVal = theCont.At(i, j);
+      aMatrixNorm       = std::hypot(aMatrixNorm, aVal);
     }
-    aNormat += aNormli;
   }
-  const double aRho = 1.0 / (std::sqrt(2.0) * aNormat);
+  if (!std::isfinite(aMatrixNorm)
+      || aMatrixNorm <= std::sqrt(std::numeric_limits<double>::min()))
+  {
+    aResult.Status = Status::Singular;
+    return aResult;
+  }
+  const double aRho = 1.0 / aMatrixNorm / aMatrixNorm / std::sqrt(2.0);
+  if (!std::isfinite(aRho) || aRho <= 0.0)
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
 
   // Uzawa iterations
-  for (int anIter = 1; anIter <= theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
-    aResult.NbIterations = anIter;
+    aResult.NbIterations = anIter + 1;
 
     double aXmax = 0.0;
 
     // Update primal: X = X0 - C^T * dual
-    for (int i = 1; i <= aNcol; ++i)
+    for (size_t i = 0; i < aNcol; ++i)
     {
-      double aXprev = aErruza(i);
+      const double aXprev = aErruza.At(i);
       double aSum   = 0.0;
-      for (int j = 1; j <= aNlig; ++j)
+      for (size_t j = 0; j < aNlig; ++j)
       {
-        aSum -= theCont(j + aRowLower - 1, i + aColLower - 1) * aVardua(j);
+        aSum -= theCont.At(j, i) * aVardua.At(j);
       }
-      aErruza(i) = aSum;
+      aErruza.ChangeAt(i) = aSum;
 
-      if (anIter > 1)
+      if (anIter > 0)
       {
-        aXmax = std::max(aXmax, std::abs(aErruza(i) - aXprev));
+        aXmax = std::max(aXmax, std::abs(aErruza.At(i) - aXprev));
       }
     }
 
     // Update dual variables and compute constraint error
     double aErrMax = 0.0;
-    for (int i = 1; i <= aNlig; ++i)
+    for (size_t i = 0; i < aNlig; ++i)
     {
       // Constraint violation: C*X - S
-      double aErr = aErrinit(i);
-      for (int j = 1; j <= aNcol; ++j)
+      double aErr = aErrinit.At(i);
+      for (size_t j = 0; j < aNcol; ++j)
       {
-        aErr += theCont(i + aRowLower - 1, j + aColLower - 1) * aErruza(j);
+        aErr += theCont.At(i, j) * aErruza.At(j);
       }
 
       double aErr1;
-      if (i <= theNce)
+      if (i < theNce)
       {
         // Equality constraint: update freely
-        aVardua(i) += aRho * aErr;
+        aVardua.ChangeAt(i) += aRho * aErr;
         aErr1 = std::abs(aRho * aErr);
       }
       else
       {
         // Inequality constraint: project to non-negative
-        double aXmuPrev = aVardua(i);
-        aVardua(i)      = std::max(0.0, aVardua(i) + aRho * aErr);
-        aErr1           = std::abs(aVardua(i) - aXmuPrev);
+        const double aXmuPrev = aVardua.At(i);
+        aVardua.ChangeAt(i)   = std::max(0.0, aVardua.At(i) + aRho * aErr);
+        aErr1                 = std::abs(aVardua.At(i) - aXmuPrev);
       }
       aErrMax = std::max(aErrMax, aErr1);
     }
 
-    // Check convergence
-    if (anIter > 1)
+    // Primal and dual changes are independent convergence requirements.
+    if (anIter > 0 && aXmax <= theConfig.EpsLix && aErrMax <= theConfig.EpsLic)
     {
-      if (aXmax <= theConfig.EpsLix)
+      math_Vector aResul(aNcol);
+      for (size_t i = 0; i < aNcol; ++i)
       {
-        if (aErrMax <= theConfig.EpsLic)
-        {
-          // Converged
-          math_Vector aResul(1, aNcol);
-          for (int i = 1; i <= aNcol; ++i)
-          {
-            aResul(i) = theStartingPoint(i + aXLower - 1) + aErruza(i);
-          }
-
-          aResult.Solution = aResul;
-          aResult.Dual     = aVardua;
-          aResult.Error    = aErruza;
-          aResult.Status   = Status::OK;
-          return aResult;
-        }
-        else
-        {
-          // Dual did not converge
-          aResult.Status = Status::NotConverged;
-          return aResult;
-        }
+        aResul.ChangeAt(i) = theStartingPoint.At(i) + aErruza.At(i);
       }
+
+      aResult.Solution = aResul;
+      aResult.Dual     = aVardua;
+      aResult.Error    = aErruza;
+      aResult.Status   = Utils::IsFinite(aResul) && Utils::IsFinite(aVardua)
+                            && Utils::IsFinite(aErruza)
+                         ? Status::OK
+                         : Status::NumericalError;
+      return aResult;
     }
   }
 
+  math_Vector aResul(aNcol);
+  for (size_t i = 0; i < aNcol; ++i)
+  {
+    aResul.ChangeAt(i) = theStartingPoint.At(i) + aErruza.At(i);
+  }
+  aResult.Solution = aResul;
+  aResult.Dual     = aVardua;
+  aResult.Error    = aErruza;
   aResult.Status = Status::MaxIterations;
   return aResult;
 }
@@ -303,7 +317,7 @@ inline UzawaResult UzawaEquality(const math_Matrix& theCont,
                                  const math_Vector& theStartingPoint,
                                  const UzawaConfig& theConfig = UzawaConfig())
 {
-  return Uzawa(theCont, theSecont, theStartingPoint, theCont.RowNumber(), 0, theConfig);
+  return Uzawa(theCont, theSecont, theStartingPoint, theCont.RowSize(), 0, theConfig);
 }
 
 } // namespace MathOpt

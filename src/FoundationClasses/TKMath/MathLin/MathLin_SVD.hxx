@@ -18,6 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <math_Recipes.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathLin_Utils.hxx"
 
 #include <cmath>
 #include <algorithm>
@@ -30,10 +31,11 @@ using namespace MathUtils;
 struct SVDResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Matrix> U;              //!< Left singular vectors (m x n)
-  std::optional<math_Vector> SingularValues; //!< Singular values (n elements)
-  std::optional<math_Matrix> V;              //!< Right singular vectors (n x n)
-  int                        Rank = 0;       //!< Numerical rank
+  std::optional<math_Matrix> U;                   //!< Left singular vectors (m x n)
+  std::optional<math_Vector> SingularValues;      //!< Singular values (n elements)
+  std::optional<math_Matrix> V;                   //!< Right singular vectors (n x n)
+  size_t                     Rank            = 0; //!< Numerical rank
+  double                     ConditionNumber = std::numeric_limits<double>::infinity();
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -43,12 +45,14 @@ struct SVDResult
 //! Singular Value Decomposition: A = U * diag(S) * V^T.
 //!
 //! Decomposes an m x n matrix A into:
-//! - U: m x n matrix of left singular vectors (orthonormal columns)
+//! - U: m x n matrix of left singular vectors; columns for nonzero singular values are orthonormal
 //! - S: n singular values in descending order
 //! - V: n x n matrix of right singular vectors (orthonormal)
 //!
 //! Properties:
 //! - Works for any m x n matrix (m can be less, equal, or greater than n)
+//! - For m < n, the n-m columns associated with zero singular values are padding and are not
+//!   guaranteed to be orthonormal after U is truncated to m rows
 //! - Singular values are always non-negative
 //! - Provides the best low-rank approximation of a matrix
 //! - Useful for solving ill-conditioned linear systems
@@ -60,80 +64,133 @@ inline SVDResult SVD(const math_Matrix& theA, double theTolerance = 1.0e-15)
 {
   SVDResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1; // Number of rows
-  const int aN        = aColUpper - aColLower + 1; // Number of columns
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
+
+  const double aRelTol = Utils::RelativeTolerance(theTolerance, std::max(aM, aN));
+  if (aM == 0 || aN == 0 || aRelTol < 0.0 || !Utils::IsFinite(theA))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   // U matrix needs to be at least n x n for the algorithm
-  const int aURows = std::max(aM, aN);
+  const size_t aURows = std::max(aM, aN);
 
-  // Create working matrices with 1-based indexing as required by SVD_Decompose
-  math_Matrix aU(1, aURows, 1, aN, 0.0);
-  math_Vector aW(1, aN);
-  math_Matrix aV(1, aN, 1, aN);
+  math_Matrix aUStorage(aURows, aN, 0.0);
+  math_Vector aWStorage(aN);
+  math_Matrix aVStorage(aN, aN);
 
-  // Copy input matrix to U
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  // Scaling keeps the legacy bidiagonalization away from overflow and underflow.
+  double aScale = 0.0;
+  for (size_t i = 0; i < aM; ++i)
   {
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aU(i - aRowLower + 1, j - aColLower + 1) = theA(i, j);
+      aScale = std::max(aScale, std::abs(theA.At(i, j)));
+    }
+  }
+  for (size_t i = 0; i < aM; ++i)
+  {
+    for (size_t j = 0; j < aN; ++j)
+    {
+      aUStorage.ChangeAt(i, j) = aScale == 0.0 ? 0.0 : theA.At(i, j) / aScale;
     }
   }
 
   // Perform SVD decomposition
+  const int   aRecipeM = static_cast<int>(aURows);
+  const int   aRecipeN = static_cast<int>(aN);
+  math_Matrix aU(&aUStorage.ChangeAt(0, 0), 1, aRecipeM, 1, aRecipeN);
+  math_Vector aW(&aWStorage[0], 1, aRecipeN);
+  math_Matrix aV(&aVStorage.ChangeAt(0, 0), 1, aRecipeN, 1, aRecipeN);
   if (SVD_Decompose(aU, aW, aV) != 0)
   {
     aResult.Status = Status::NumericalError;
     return aResult;
   }
 
-  // Determine numerical rank
-  double aMaxSV = 0.0;
-  for (int i = 1; i <= aN; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    aMaxSV = std::max(aMaxSV, aW(i));
+    aWStorage[i] *= aScale;
   }
 
-  double aThreshold = theTolerance * aMaxSV;
-  aResult.Rank      = 0;
-  for (int i = 1; i <= aN; ++i)
+  // SVD_Decompose does not promise ordering; move both singular-vector columns with each value.
+  for (size_t i = 0; i + 1 < aN; ++i)
   {
-    if (aW(i) > aThreshold)
+    size_t aMaxIndex = i;
+    for (size_t j = i + 1; j < aN; ++j)
+    {
+      if (aWStorage[j] > aWStorage[aMaxIndex])
+      {
+        aMaxIndex = j;
+      }
+    }
+    if (aMaxIndex != i)
+    {
+      std::swap(aWStorage[i], aWStorage[aMaxIndex]);
+      for (size_t j = 0; j < aURows; ++j)
+      {
+        std::swap(aUStorage.ChangeAt(j, i), aUStorage.ChangeAt(j, aMaxIndex));
+      }
+      for (size_t j = 0; j < aN; ++j)
+      {
+        std::swap(aVStorage.ChangeAt(j, i), aVStorage.ChangeAt(j, aMaxIndex));
+      }
+    }
+  }
+
+  // Determine numerical rank
+  double aMaxSV = 0.0;
+  for (size_t i = 0; i < aN; ++i)
+  {
+    aMaxSV = std::max(aMaxSV, aWStorage[i]);
+  }
+
+  const double aThreshold = aRelTol * aMaxSV;
+  aResult.Rank            = 0;
+  for (size_t i = 0; i < aN; ++i)
+  {
+    if (aWStorage[i] > aThreshold)
     {
       ++aResult.Rank;
     }
   }
 
-  // Copy results back with original indexing
-  aResult.U = math_Matrix(aRowLower, aRowLower + aM - 1, aColLower, aColLower + aN - 1);
-  for (int i = 1; i <= aM; ++i)
+  const size_t aFullRank = std::min(aM, aN);
+  if (aResult.Rank == aFullRank && aFullRank > 0)
   {
-    for (int j = 1; j <= aN; ++j)
+    aResult.ConditionNumber = aWStorage[0] / aWStorage[aFullRank - 1];
+  }
+
+  aResult.U = math_Matrix(aM, aN);
+  for (size_t i = 0; i < aM; ++i)
+  {
+    for (size_t j = 0; j < aN; ++j)
     {
-      (*aResult.U)(aRowLower + i - 1, aColLower + j - 1) = aU(i, j);
+      aResult.U->ChangeAt(i, j) = aUStorage.At(i, j);
     }
   }
 
-  aResult.SingularValues = math_Vector(aColLower, aColLower + aN - 1);
-  for (int i = 1; i <= aN; ++i)
+  aResult.SingularValues = math_Vector(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    (*aResult.SingularValues)(aColLower + i - 1) = aW(i);
+    (*aResult.SingularValues)[i] = aWStorage[i];
   }
 
-  aResult.V = math_Matrix(aColLower, aColLower + aN - 1, aColLower, aColLower + aN - 1);
-  for (int i = 1; i <= aN; ++i)
+  aResult.V = math_Matrix(aN, aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    for (int j = 1; j <= aN; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      (*aResult.V)(aColLower + i - 1, aColLower + j - 1) = aV(i, j);
+      aResult.V->ChangeAt(i, j) = aVStorage.At(i, j);
     }
   }
 
-  aResult.Status = Status::OK;
+  aResult.Status = Utils::IsFinite(*aResult.U) && Utils::IsFinite(*aResult.SingularValues)
+                       && Utils::IsFinite(*aResult.V)
+                     ? Status::OK
+                     : Status::NumericalError;
   return aResult;
 }
 
@@ -161,20 +218,15 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
     return aResult;
   }
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (theB.Length() != aM)
+  if (theB.Size() != aM || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
-
-  const int aBLower = theB.Lower(); // B vector may have different indexing
 
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aW = *aSVD.SingularValues;
@@ -182,44 +234,44 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
 
   // Compute threshold for singular values
   double aMaxSV = 0.0;
-  for (int i = aColLower; i <= aColUpper; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    aMaxSV = std::max(aMaxSV, aW(i));
+    aMaxSV = std::max(aMaxSV, aW[i]);
   }
-  double aWMin = theTolerance * aMaxSV;
+  const double aRelTol = Utils::RelativeTolerance(theTolerance, std::max(aM, aN));
+  const double aWMin   = aRelTol * aMaxSV;
 
   // Solve: x = V * diag(1/w) * U^T * b
   // First compute tmp = U^T * b
-  math_Vector aTmp(aColLower, aColUpper, 0.0);
-  for (int j = aColLower; j <= aColUpper; ++j)
+  math_Vector aTmp(aN, 0.0);
+  for (size_t j = 0; j < aN; ++j)
   {
     double aSum = 0.0;
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aM; ++i)
     {
-      // Map i to B's index space: B[aBLower + (i - aRowLower)]
-      aSum += aU(i, j) * theB(aBLower + (i - aRowLower));
+      aSum += aU.At(i, j) * theB.At(i);
     }
     // Divide by singular value if above threshold
-    if (aW(j) > aWMin)
+    if (aW[j] > aWMin)
     {
-      aTmp(j) = aSum / aW(j);
+      aTmp[j] = aSum / aW[j];
     }
     // else aTmp(j) remains 0 (regularization)
   }
 
   // Compute x = V * tmp
-  aResult.Solution = math_Vector(aColLower, aColUpper, 0.0);
-  for (int i = aColLower; i <= aColUpper; ++i)
+  aResult.Solution = math_Vector(aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
     double aSum = 0.0;
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aSum += aV(i, j) * aTmp(j);
+      aSum += aV.At(i, j) * aTmp[j];
     }
-    (*aResult.Solution)(i) = aSum;
+    (*aResult.Solution)[i] = aSum;
   }
 
-  aResult.Status = Status::OK;
+  aResult.Status = Utils::IsFinite(*aResult.Solution) ? Status::OK : Status::NumericalError;
   return aResult;
 }
 
@@ -247,10 +299,8 @@ inline InverseResult PseudoInverse(const math_Matrix& theA, double theTolerance 
     return aResult;
   }
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
 
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aW = *aSVD.SingularValues;
@@ -258,33 +308,34 @@ inline InverseResult PseudoInverse(const math_Matrix& theA, double theTolerance 
 
   // Compute threshold
   double aMaxSV = 0.0;
-  for (int i = aColLower; i <= aColUpper; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    aMaxSV = std::max(aMaxSV, aW(i));
+    aMaxSV = std::max(aMaxSV, aW[i]);
   }
-  double aWMin = theTolerance * aMaxSV;
+  const double aRelTol = Utils::RelativeTolerance(theTolerance, std::max(aM, aN));
+  const double aWMin   = aRelTol * aMaxSV;
 
   // Compute A^+ = V * diag(1/w) * U^T
   // Result is n x m
-  aResult.Inverse = math_Matrix(aColLower, aColUpper, aRowLower, aRowUpper, 0.0);
+  aResult.Inverse = math_Matrix(aN, aM, 0.0);
 
-  for (int i = aColLower; i <= aColUpper; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    for (int j = aRowLower; j <= aRowUpper; ++j)
+    for (size_t j = 0; j < aM; ++j)
     {
       double aSum = 0.0;
-      for (int k = aColLower; k <= aColUpper; ++k)
+      for (size_t k = 0; k < aN; ++k)
       {
-        if (aW(k) > aWMin)
+        if (aW[k] > aWMin)
         {
-          aSum += aV(i, k) * aU(j, k) / aW(k);
+          aSum += aV.At(i, k) * aU.At(j, k) / aW[k];
         }
       }
-      (*aResult.Inverse)(i, j) = aSum;
+      aResult.Inverse->ChangeAt(i, j) = aSum;
     }
   }
 
-  aResult.Status = Status::OK;
+  aResult.Status = Utils::IsFinite(*aResult.Inverse) ? Status::OK : Status::NumericalError;
   return aResult;
 }
 
@@ -303,28 +354,7 @@ inline double ConditionNumber(const math_Matrix& theA)
     return std::numeric_limits<double>::infinity();
   }
 
-  const math_Vector& aW     = *aSVD.SingularValues;
-  const int          aLower = aW.Lower();
-  const int          aUpper = aW.Upper();
-
-  double aMaxSV = 0.0;
-  double aMinSV = std::numeric_limits<double>::max();
-
-  for (int i = aLower; i <= aUpper; ++i)
-  {
-    if (aW(i) > 0.0)
-    {
-      aMaxSV = std::max(aMaxSV, aW(i));
-      aMinSV = std::min(aMinSV, aW(i));
-    }
-  }
-
-  if (aMinSV <= 0.0 || aMaxSV <= 0.0)
-  {
-    return std::numeric_limits<double>::infinity();
-  }
-
-  return aMaxSV / aMinSV;
+  return aSVD.ConditionNumber;
 }
 
 //! Compute numerical rank of matrix using SVD.
@@ -333,7 +363,7 @@ inline double ConditionNumber(const math_Matrix& theA)
 //! @param theA input matrix
 //! @param theTolerance relative tolerance for singular values
 //! @return numerical rank
-inline int NumericalRank(const math_Matrix& theA, double theTolerance = 1.0e-15)
+inline size_t NumericalRank(const math_Matrix& theA, double theTolerance = 1.0e-15)
 {
   SVDResult aSVD = SVD(theA, theTolerance);
   return aSVD.IsDone() ? aSVD.Rank : 0;

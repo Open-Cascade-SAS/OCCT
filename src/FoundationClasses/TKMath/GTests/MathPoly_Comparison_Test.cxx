@@ -52,14 +52,18 @@ std::vector<double> GetOldRoots(const math_DirectPolynomialRoots& theSolver)
 }
 
 //! Extract roots from new API result.
-std::vector<double> GetNewRoots(const MathUtils::PolyResult& theResult)
+std::vector<double> GetNewRoots(const MathPoly::PolyResult& theResult)
 {
   std::vector<double> aRoots;
   if (theResult.IsDone())
   {
     for (size_t i = 0; i < theResult.NbRoots; ++i)
     {
-      aRoots.push_back(theResult.Roots[i]);
+      for (size_t aMultiplicity = 0; aMultiplicity < theResult.Multiplicities[i];
+           ++aMultiplicity)
+      {
+        aRoots.push_back(theResult.Roots[i]);
+      }
     }
   }
   return SortRoots(aRoots);
@@ -89,7 +93,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_TwoDistinctRoots)
   const double aA = 1.0, aB = -5.0, aC = 6.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -103,7 +107,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_DoubleRoot)
   const double aA = 1.0, aB = -4.0, aC = 4.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -129,7 +133,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_NoRealRoots)
   const double aA = 1.0, aB = 0.0, aC = 1.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   // Both should report no real solutions
   EXPECT_EQ(anOldSolver.NbSolutions(), 0);
@@ -142,7 +146,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_NegativeRoots)
   const double aA = 1.0, aB = 5.0, aC = 6.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -156,7 +160,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_LargeCoefficients)
   const double aA = 1000.0, aB = -3000.0, aC = 2000.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -174,7 +178,7 @@ TEST(MathPoly_ComparisonTest, Cubic_ThreeDistinctRoots)
   const double aA = 1.0, aB = -6.0, aC = 11.0, aD = -6.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD);
-  MathUtils::PolyResult      aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
+  MathPoly::PolyResult       aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -188,13 +192,13 @@ TEST(MathPoly_ComparisonTest, Cubic_OneRealRoot)
   const double aA = 1.0, aB = 0.0, aC = 1.0, aD = 2.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD);
-  MathUtils::PolyResult      aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
+  MathPoly::PolyResult       aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
 
   // Both should find same number of real roots
-  EXPECT_EQ(anOldSolver.NbSolutions(), aNewResult.NbRoots);
+  EXPECT_EQ(static_cast<size_t>(anOldSolver.NbSolutions()), aNewResult.NbRoots);
 
   if (anOldSolver.NbSolutions() > 0 && aNewResult.NbRoots > 0)
   {
@@ -208,20 +212,15 @@ TEST(MathPoly_ComparisonTest, Cubic_TripleRoot)
   const double aA = 1.0, aB = -3.0, aC = 3.0, aD = -1.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD);
-  MathUtils::PolyResult      aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
+  MathPoly::PolyResult       aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // For triple roots, both should find roots near 1.0
-  auto aOldRoots = GetOldRoots(anOldSolver);
-  auto aNewRoots = GetNewRoots(aNewResult);
-
-  // All roots should be near 1.0
-  for (double aRoot : aOldRoots)
-  {
-    EXPECT_NEAR(aRoot, 1.0, 1.0e-6);
-  }
+  ASSERT_EQ(aNewResult.NbRoots, 1u);
+  EXPECT_EQ(aNewResult.Multiplicities[0], 3u);
+  const std::vector<double> aNewRoots = GetNewRoots(aNewResult);
+  ASSERT_EQ(aNewRoots.size(), 3u);
   for (double aRoot : aNewRoots)
   {
     EXPECT_NEAR(aRoot, 1.0, 1.0e-6);
@@ -234,7 +233,7 @@ TEST(MathPoly_ComparisonTest, Cubic_NegativeLeadingCoeff)
   const double aA = -1.0, aB = 6.0, aC = -11.0, aD = 6.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD);
-  MathUtils::PolyResult      aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
+  MathPoly::PolyResult       aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -252,7 +251,7 @@ TEST(MathPoly_ComparisonTest, Quartic_FourDistinctRoots)
   const double aA = 1.0, aB = -10.0, aC = 35.0, aD = -50.0, aE = 24.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -266,7 +265,7 @@ TEST(MathPoly_ComparisonTest, Quartic_TwoRealRoots)
   const double aA = 1.0, aB = 0.0, aC = 0.0, aD = 0.0, aE = -1.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -284,7 +283,7 @@ TEST(MathPoly_ComparisonTest, Quartic_Biquadratic)
   const double aA = 1.0, aB = 0.0, aC = -5.0, aD = 0.0, aE = 4.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -298,7 +297,7 @@ TEST(MathPoly_ComparisonTest, Quartic_NoRealRoots)
   const double aA = 1.0, aB = 0.0, aC = 0.0, aD = 0.0, aE = 1.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   // Both should report no real solutions
   EXPECT_EQ(anOldSolver.NbSolutions(), 0);
@@ -311,19 +310,15 @@ TEST(MathPoly_ComparisonTest, Quartic_QuadrupleRoot)
   const double aA = 1.0, aB = -8.0, aC = 24.0, aD = -32.0, aE = 16.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // All roots should be near 2.0
-  auto aOldRoots = GetOldRoots(anOldSolver);
-  auto aNewRoots = GetNewRoots(aNewResult);
-
-  for (double aRoot : aOldRoots)
-  {
-    EXPECT_NEAR(aRoot, 2.0, 1.0e-5);
-  }
+  ASSERT_EQ(aNewResult.NbRoots, 1u);
+  EXPECT_EQ(aNewResult.Multiplicities[0], 4u);
+  const std::vector<double> aNewRoots = GetNewRoots(aNewResult);
+  ASSERT_EQ(aNewRoots.size(), 4u);
   for (double aRoot : aNewRoots)
   {
     EXPECT_NEAR(aRoot, 2.0, 1.0e-5);
@@ -340,7 +335,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_SmallDiscriminant)
   const double aA = 1.0, aB = -2.0, aC = 0.9999;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -358,7 +353,7 @@ TEST(MathPoly_ComparisonTest, Cubic_SmallCoefficients)
   const double aA = 0.001, aB = -0.006, aC = 0.011, aD = -0.006;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD);
-  MathUtils::PolyResult      aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
+  MathPoly::PolyResult       aNewResult = MathPoly::Cubic(aA, aB, aC, aD);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -376,7 +371,7 @@ TEST(MathPoly_ComparisonTest, Quadratic_NumericallyChallengingCase)
   const double aA = 1.0, aB = -1.0e8, aC = 1.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quadratic(aA, aB, aC);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quadratic(aA, aB, aC);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -401,7 +396,7 @@ TEST(MathPoly_ComparisonTest, Quartic_SymmetricRoots)
   const double aA = 1.0, aB = 0.0, aC = -5.0, aD = 0.0, aE = 4.0;
 
   math_DirectPolynomialRoots anOldSolver(aA, aB, aC, aD, aE);
-  MathUtils::PolyResult      aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
+  MathPoly::PolyResult       aNewResult = MathPoly::Quartic(aA, aB, aC, aD, aE);
 
   ASSERT_TRUE(anOldSolver.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());

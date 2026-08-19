@@ -19,12 +19,19 @@
 #include <MathUtils_Core.hxx>
 #include <MathUtils_LineSearch.hxx>
 #include <MathUtils_Deriv.hxx>
+#include "MathOpt_Utils.hxx"
 
 #include <cmath>
 
 namespace MathOpt
 {
 using namespace MathUtils;
+
+namespace Utils
+{
+//! Nonlinear conjugate gradient requires a stronger curvature condition than quasi-Newton methods.
+inline constexpr double THE_FRPR_WOLFE_CURVATURE = 0.1;
+} // namespace Utils
 
 //! Conjugate gradient formula selection.
 enum class ConjugateGradientFormula
@@ -39,13 +46,13 @@ enum class ConjugateGradientFormula
 struct FRPRConfig : Config
 {
   ConjugateGradientFormula Formula = ConjugateGradientFormula::PolakRibiere; //!< Beta formula
-  int RestartInterval = 0; //!< Restart every N iterations (0 = n, where n is dimension)
+  uint32_t RestartInterval = 0; //!< Restart every N iterations (0 = n, where n is dimension)
 
   //! Default constructor.
   FRPRConfig() = default;
 
   //! Constructor with tolerance.
-  explicit FRPRConfig(double theTolerance, int theMaxIter = 100)
+  explicit FRPRConfig(double theTolerance, uint32_t theMaxIter = 100)
       : Config(theTolerance, theMaxIter)
   {
   }
@@ -81,38 +88,43 @@ VectorResult FRPR(Function&          theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const size_t aN = theStartingPoint.Size();
+
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   // Restart interval
-  const int aRestartInterval = (theConfig.RestartInterval > 0) ? theConfig.RestartInterval : aN;
+  const size_t aRestartInterval = (theConfig.RestartInterval > 0) ? theConfig.RestartInterval : aN;
 
   // Current point
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
-
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  math_Vector aX(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aResult.Status = Status::NumericalError;
+    aX.ChangeAt(i) = theStartingPoint.At(i);
+  }
+
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
+  {
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
   // Gradient at current point
-  math_Vector aGrad(aLower, aUpper);
-  if (!theFunc.Gradient(aX, aGrad))
+  math_Vector  aGrad(aN);
+  const Status aGradientStatus = Utils::GradientStatus(theFunc, aX, aGrad);
+  if (aGradientStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aGradientStatus;
     return aResult;
   }
 
   // Check if already at minimum
-  double aGradNormSq = 0.0;
-  for (int i = aLower; i <= aUpper; ++i)
-  {
-    aGradNormSq += MathUtils::Sqr(aGrad(i));
-  }
+  double aGradNormSq = MathUtils::DotProduct(aGrad, aGrad);
 
   if (std::sqrt(aGradNormSq) < theConfig.FTolerance)
   {
@@ -124,39 +136,62 @@ VectorResult FRPR(Function&          theFunc,
   }
 
   // Search direction (initially steepest descent)
-  math_Vector aDir(aLower, aUpper);
-  for (int i = aLower; i <= aUpper; ++i)
+  math_Vector aDir(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aDir(i) = -aGrad(i);
+    aDir.ChangeAt(i) = -aGrad.At(i);
   }
 
   // Working vectors
-  math_Vector aXNew(aLower, aUpper);
-  math_Vector aGradNew(aLower, aUpper);
-  math_Vector aGradDiff(aLower, aUpper);
+  math_Vector aXNew(aN);
+  math_Vector aGradNew(aN);
+  math_Vector aGradDiff(aN);
 
-  int aRestartCount = 0;
+  uint32_t aRestartCount = 0;
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
     // Line search
     MathUtils::LineSearchResult aLineResult =
-      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
-
-    if (!aLineResult.IsValid || aLineResult.Alpha < MathUtils::THE_EPSILON)
+      MathUtils::WolfeSearch(theFunc,
+                             aX,
+                             aDir,
+                             aGrad,
+                             aFx,
+                             1.0,
+                             MathUtils::THE_ARMIJO_C1,
+                             Utils::THE_FRPR_WOLFE_CURVATURE);
+    if (aLineResult.Alpha < theConfig.StepMin)
     {
+      aLineResult.IsValid = false;
+    }
+
+    if (!aLineResult.IsValid)
+    {
+      const MathUtils::LineSearchResult anInitialLineResult = aLineResult;
       // Line search failed, try steepest descent
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aDir(i) = -aGrad(i);
+        aDir.ChangeAt(i) = -aGrad.At(i);
       }
-      aLineResult = MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      aLineResult = MathUtils::WolfeSearch(theFunc,
+                                           aX,
+                                           aDir,
+                                           aGrad,
+                                           aFx,
+                                           1.0,
+                                           MathUtils::THE_ARMIJO_C1,
+                                           Utils::THE_FRPR_WOLFE_CURVATURE);
+      if (aLineResult.Alpha < theConfig.StepMin)
+      {
+        aLineResult.IsValid = false;
+      }
 
       if (!aLineResult.IsValid)
       {
-        aResult.Status   = Status::NotConverged;
+        aResult.Status   = Utils::LineSearchFailureStatus(anInitialLineResult, aLineResult);
         aResult.Solution = aX;
         aResult.Value    = aFx;
         aResult.Gradient = aGrad;
@@ -166,32 +201,27 @@ VectorResult FRPR(Function&          theFunc,
     }
 
     // Compute new point
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aXNew(i) = aX(i) + aLineResult.Alpha * aDir(i);
-    }
-
-    // Check X convergence
-    double aMaxDiff = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
-    {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew(i) - aX(i)));
+      aXNew.ChangeAt(i) = aX.At(i) + aLineResult.Alpha * aDir.At(i);
     }
 
     // Evaluate gradient at new point
-    if (!theFunc.Gradient(aXNew, aGradNew))
+    const Status aNewGradientStatus = Utils::GradientStatus(theFunc, aXNew, aGradNew);
+    if (aNewGradientStatus != Status::OK)
     {
-      aResult.Status   = Status::NumericalError;
+      aResult.Status   = aNewGradientStatus;
       aResult.Solution = aX;
       aResult.Value    = aFx;
+      aResult.Gradient = aGrad;
       return aResult;
     }
 
     // Check gradient convergence
     double aGradNewNormSq = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aGradNewNormSq += MathUtils::Sqr(aGradNew(i));
+      aGradNewNormSq += MathUtils::Sqr(aGradNew.At(i));
     }
 
     if (std::sqrt(aGradNewNormSq) < theConfig.FTolerance)
@@ -203,19 +233,10 @@ VectorResult FRPR(Function&          theFunc,
       return aResult;
     }
 
-    if (aMaxDiff < theConfig.XTolerance)
-    {
-      aResult.Status   = Status::OK;
-      aResult.Solution = aXNew;
-      aResult.Value    = aLineResult.FNew;
-      aResult.Gradient = aGradNew;
-      return aResult;
-    }
-
     // Compute gradient difference for some formulas
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aGradDiff(i) = aGradNew(i) - aGrad(i);
+      aGradDiff.ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
     }
 
     // Compute beta based on selected formula
@@ -243,9 +264,9 @@ VectorResult FRPR(Function&          theFunc,
         case ConjugateGradientFormula::PolakRibiere: {
           // beta = g_new^T (g_new - g) / g^T g
           double aDot = 0.0;
-          for (int i = aLower; i <= aUpper; ++i)
+          for (size_t i = 0; i < aN; ++i)
           {
-            aDot += aGradNew(i) * aGradDiff(i);
+            aDot += aGradNew.At(i) * aGradDiff.At(i);
           }
           if (aGradNormSq > MathUtils::THE_ZERO_TOL)
           {
@@ -264,10 +285,10 @@ VectorResult FRPR(Function&          theFunc,
           // beta = g_new^T (g_new - g) / d^T (g_new - g)
           double aNum = 0.0;
           double aDen = 0.0;
-          for (int i = aLower; i <= aUpper; ++i)
+          for (size_t i = 0; i < aN; ++i)
           {
-            aNum += aGradNew(i) * aGradDiff(i);
-            aDen += aDir(i) * aGradDiff(i);
+            aNum += aGradNew.At(i) * aGradDiff.At(i);
+            aDen += aDir.At(i) * aGradDiff.At(i);
           }
           if (std::abs(aDen) > MathUtils::THE_ZERO_TOL)
           {
@@ -284,9 +305,9 @@ VectorResult FRPR(Function&          theFunc,
         case ConjugateGradientFormula::DaiYuan: {
           // beta = g_new^T g_new / d^T (g_new - g)
           double aDen = 0.0;
-          for (int i = aLower; i <= aUpper; ++i)
+          for (size_t i = 0; i < aN; ++i)
           {
-            aDen += aDir(i) * aGradDiff(i);
+            aDen += aDir.At(i) * aGradDiff.At(i);
           }
           if (std::abs(aDen) > MathUtils::THE_ZERO_TOL)
           {
@@ -294,28 +315,40 @@ VectorResult FRPR(Function&          theFunc,
           }
         }
         break;
+        default:
+          aResult.Status   = Status::InvalidInput;
+          aResult.Solution = aX;
+          aResult.Value    = aFx;
+          aResult.Gradient = aGrad;
+          return aResult;
       }
     }
 
-    // Update search direction: p = -g_new + beta * p
-    for (int i = aLower; i <= aUpper; ++i)
+    if (!std::isfinite(aBeta))
     {
-      aDir(i) = -aGradNew(i) + aBeta * aDir(i);
+      aBeta         = 0.0;
+      aRestartCount = 0;
+    }
+
+    // Update search direction: p = -g_new + beta * p
+    for (size_t i = 0; i < aN; ++i)
+    {
+      aDir.ChangeAt(i) = -aGradNew.At(i) + aBeta * aDir.At(i);
     }
 
     // Check if direction is still a descent direction
     double aDirDeriv = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aDirDeriv += aGradNew(i) * aDir(i);
+      aDirDeriv += aGradNew.At(i) * aDir.At(i);
     }
 
-    if (aDirDeriv >= 0.0)
+    if (!std::isfinite(aDirDeriv) || aDirDeriv >= 0.0)
     {
       // Not a descent direction, restart with steepest descent
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aDir(i) = -aGradNew(i);
+        aDir.ChangeAt(i) = -aGradNew.At(i);
       }
       aRestartCount = 0;
     }
@@ -350,6 +383,13 @@ VectorResult FRPRNumerical(Function&          theFunc,
                            double             theGradStep = 1.0e-8,
                            const FRPRConfig&  theConfig   = FRPRConfig())
 {
+  if (!std::isfinite(theGradStep) || theGradStep <= 0.0)
+  {
+    VectorResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   // Wrapper that adds numerical gradient
   class FuncWithGradient
   {

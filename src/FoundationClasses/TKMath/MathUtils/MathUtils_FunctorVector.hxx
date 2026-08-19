@@ -16,6 +16,7 @@
 
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
+#include <MathUtils_Core.hxx>
 
 #include <cmath>
 #include <utility>
@@ -37,7 +38,7 @@ namespace MathUtils
 //! Usage:
 //! @code
 //! auto aFunc = VectorLambda([](const math_Vector& x, double& y) {
-//!   y = x(1)*x(1) + x(2)*x(2);  // Sphere function
+//!   y = x.At(0)*x.At(0) + x.At(1)*x.At(1);  // Sphere function
 //!   return true;
 //! });
 //! auto aResult = MathOpt::Powell(aFunc, aStartPoint);
@@ -72,12 +73,12 @@ private:
 //! @code
 //! auto aFunc = VectorLambdaWithGradient(
 //!   [](const math_Vector& x, double& y) {
-//!     y = x(1)*x(1) + x(2)*x(2);
+//!     y = x.At(0)*x.At(0) + x.At(1)*x.At(1);
 //!     return true;
 //!   },
 //!   [](const math_Vector& x, math_Vector& g) {
-//!     g(1) = 2.0 * x(1);
-//!     g(2) = 2.0 * x(2);
+//!     g.ChangeAt(0) = 2.0 * x.At(0);
+//!     g.ChangeAt(1) = 2.0 * x.At(1);
 //!     return true;
 //!   });
 //! auto aResult = MathOpt::BFGS(aFunc, aStartPoint);
@@ -157,11 +158,11 @@ VectorLambdaWithGradient<ValueLambda, GradLambda> MakeVectorWithGradient(ValueLa
 //!
 //! Usage:
 //! @code
-//! math_Matrix A(1, 2, 1, 2);
-//! A(1,1) = 2.0; A(1,2) = 0.0;
-//! A(2,1) = 0.0; A(2,2) = 2.0;
-//! math_Vector b(1, 2);
-//! b(1) = -4.0; b(2) = -4.0;
+//! math_Matrix A(2, 2);
+//! A.ChangeAt(0, 0) = 2.0; A.ChangeAt(0, 1) = 0.0;
+//! A.ChangeAt(1, 0) = 0.0; A.ChangeAt(1, 1) = 2.0;
+//! math_Vector b(2);
+//! b.ChangeAt(0) = -4.0; b.ChangeAt(1) = -4.0;
 //! QuadraticForm aFunc(A, b, 8.0);  // f(x) = 2*x1^2 + 2*x2^2 - 4*x1 - 4*x2 + 8
 //! // Minimum at (1, 1) with value 4
 //! @endcode
@@ -187,17 +188,17 @@ public:
   {
     theY = myC;
     // x^T A x
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      for (int j = theX.Lower(); j <= theX.Upper(); ++j)
+      for (size_t j = 0; j < theX.Size(); ++j)
       {
-        theY += theX(i) * myA(i, j) * theX(j);
+        theY += theX.At(i) * myA.At(i, j) * theX.At(j);
       }
     }
     // b^T x
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theY += myB(i) * theX(i);
+      theY += myB.At(i) * theX.At(i);
     }
     return true;
   }
@@ -209,12 +210,12 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
     // g = (A + A^T) * x + b = 2*A*x + b (for symmetric A)
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theG(i) = myB(i);
-      for (int j = theX.Lower(); j <= theX.Upper(); ++j)
+      theG.ChangeAt(i) = myB.At(i);
+      for (size_t j = 0; j < theX.Size(); ++j)
       {
-        theG(i) += (myA(i, j) + myA(j, i)) * theX(j);
+        theG.ChangeAt(i) += (myA.At(i, j) + myA.At(j, i)) * theX.At(j);
       }
     }
     return true;
@@ -244,8 +245,8 @@ private:
 //! Usage:
 //! @code
 //! Rosenbrock aRosen;  // Default a=1, b=100
-//! math_Vector aStart(1, 2);
-//! aStart(1) = -1.0; aStart(2) = 1.0;
+//! math_Vector aStart(2);
+//! aStart.ChangeAt(0) = -1.0; aStart.ChangeAt(1) = 1.0;
 //! auto aResult = MathOpt::BFGS(aRosen, aStart);
 //! // Should converge to (1, 1)
 //! @endcode
@@ -267,8 +268,8 @@ public:
   //! @return true if evaluation succeeded
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x  = theX(theX.Lower());
-    const double y  = theX(theX.Lower() + 1);
+    const double x  = theX.At(0);
+    const double y  = theX.At(1);
     const double t1 = myA - x;
     const double t2 = y - x * x;
     theY            = t1 * t1 + myB * t2 * t2;
@@ -281,11 +282,11 @@ public:
   //! @return true if evaluation succeeded
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX(theX.Lower());
-    const double y         = theX(theX.Lower() + 1);
+    const double x         = theX.At(0);
+    const double y         = theX.At(1);
     const double t2        = y - x * x;
-    theG(theG.Lower())     = -2.0 * (myA - x) - 4.0 * myB * x * t2;
-    theG(theG.Lower() + 1) = 2.0 * myB * t2;
+    theG.ChangeAt(0)       = -2.0 * (myA - x) - 4.0 * myB * x * t2;
+    theG.ChangeAt(1)       = 2.0 * myB * t2;
     return true;
   }
 
@@ -311,7 +312,7 @@ private:
 //! Usage:
 //! @code
 //! Sphere aSphere;
-//! math_Vector aStart(1, 3);
+//! math_Vector aStart(3);
 //! aStart.Init(1.0);  // Start at (1, 1, 1)
 //! auto aResult = MathOpt::Powell(aSphere, aStart);
 //! // Should converge to (0, 0, 0)
@@ -326,9 +327,9 @@ public:
   bool Value(const math_Vector& theX, double& theY) const
   {
     theY = 0.0;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theY += theX(i) * theX(i);
+      theY += theX.At(i) * theX.At(i);
     }
     return true;
   }
@@ -339,9 +340,9 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theG(i) = 2.0 * theX(i);
+      theG.ChangeAt(i) = 2.0 * theX.At(i);
     }
     return true;
   }
@@ -364,8 +365,8 @@ public:
 //! Usage:
 //! @code
 //! Booth aBooth;
-//! math_Vector aStart(1, 2);
-//! aStart(1) = 0.0; aStart(2) = 0.0;
+//! math_Vector aStart(2);
+//! aStart.ChangeAt(0) = 0.0; aStart.ChangeAt(1) = 0.0;
 //! auto aResult = MathOpt::BFGS(aBooth, aStart);
 //! // Should converge to (1, 3)
 //! @endcode
@@ -378,8 +379,8 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x  = theX(theX.Lower());
-    const double y  = theX(theX.Lower() + 1);
+    const double x  = theX.At(0);
+    const double y  = theX.At(1);
     const double t1 = x + 2.0 * y - 7.0;
     const double t2 = 2.0 * x + y - 5.0;
     theY            = t1 * t1 + t2 * t2;
@@ -392,12 +393,12 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX(theX.Lower());
-    const double y         = theX(theX.Lower() + 1);
+    const double x         = theX.At(0);
+    const double y         = theX.At(1);
     const double t1        = x + 2.0 * y - 7.0;
     const double t2        = 2.0 * x + y - 5.0;
-    theG(theG.Lower())     = 2.0 * t1 + 4.0 * t2;
-    theG(theG.Lower() + 1) = 4.0 * t1 + 2.0 * t2;
+    theG.ChangeAt(0)       = 2.0 * t1 + 4.0 * t2;
+    theG.ChangeAt(1)       = 4.0 * t1 + 2.0 * t2;
     return true;
   }
 
@@ -424,8 +425,8 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x  = theX(theX.Lower());
-    const double y  = theX(theX.Lower() + 1);
+    const double x  = theX.At(0);
+    const double y  = theX.At(1);
     const double t1 = 1.5 - x + x * y;
     const double t2 = 2.25 - x + x * y * y;
     const double t3 = 2.625 - x + x * y * y * y;
@@ -439,15 +440,15 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX(theX.Lower());
-    const double y         = theX(theX.Lower() + 1);
+    const double x         = theX.At(0);
+    const double y         = theX.At(1);
     const double y2        = y * y;
     const double y3        = y2 * y;
     const double t1        = 1.5 - x + x * y;
     const double t2        = 2.25 - x + x * y2;
     const double t3        = 2.625 - x + x * y3;
-    theG(theG.Lower())     = 2.0 * ((y - 1.0) * t1 + (y2 - 1.0) * t2 + (y3 - 1.0) * t3);
-    theG(theG.Lower() + 1) = 2.0 * x * (t1 + 2.0 * y * t2 + 3.0 * y2 * t3);
+    theG.ChangeAt(0)       = 2.0 * ((y - 1.0) * t1 + (y2 - 1.0) * t2 + (y3 - 1.0) * t3);
+    theG.ChangeAt(1)       = 2.0 * x * (t1 + 2.0 * y * t2 + 3.0 * y2 * t3);
     return true;
   }
 
@@ -475,8 +476,8 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x  = theX(theX.Lower());
-    const double y  = theX(theX.Lower() + 1);
+    const double x  = theX.At(0);
+    const double y  = theX.At(1);
     const double t1 = x * x + y - 11.0;
     const double t2 = x + y * y - 7.0;
     theY            = t1 * t1 + t2 * t2;
@@ -489,12 +490,12 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX(theX.Lower());
-    const double y         = theX(theX.Lower() + 1);
+    const double x         = theX.At(0);
+    const double y         = theX.At(1);
     const double t1        = x * x + y - 11.0;
     const double t2        = x + y * y - 7.0;
-    theG(theG.Lower())     = 4.0 * x * t1 + 2.0 * t2;
-    theG(theG.Lower() + 1) = 2.0 * t1 + 4.0 * y * t2;
+    theG.ChangeAt(0)       = 4.0 * x * t1 + 2.0 * t2;
+    theG.ChangeAt(1)       = 2.0 * t1 + 4.0 * y * t2;
     return true;
   }
 
@@ -530,12 +531,11 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    constexpr double aTwoPi = 2.0 * 3.14159265358979323846;
-    const int        n      = theX.Upper() - theX.Lower() + 1;
-    theY                    = myA * static_cast<double>(n);
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    const size_t n = theX.Size();
+    theY           = myA * static_cast<double>(n);
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theY += theX(i) * theX(i) - myA * std::cos(aTwoPi * theX(i));
+      theY += theX.At(i) * theX.At(i) - myA * std::cos(THE_2PI * theX.At(i));
     }
     return true;
   }
@@ -546,10 +546,9 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    constexpr double aTwoPi = 2.0 * 3.14159265358979323846;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theG(i) = 2.0 * theX(i) + myA * aTwoPi * std::sin(aTwoPi * theX(i));
+      theG.ChangeAt(i) = 2.0 * theX.At(i) + myA * THE_2PI * std::sin(THE_2PI * theX.At(i));
     }
     return true;
   }
@@ -579,7 +578,7 @@ public:
   //! @param theA parameter a (default 20.0)
   //! @param theB parameter b (default 0.2)
   //! @param theC parameter c (default 2*pi)
-  Ackley(double theA = 20.0, double theB = 0.2, double theC = 2.0 * 3.14159265358979323846)
+  Ackley(double theA = 20.0, double theB = 0.2, double theC = THE_2PI)
       : myA(theA),
         myB(theB),
         myC(theC)
@@ -589,20 +588,35 @@ public:
   //! Evaluates the Ackley function.
   //! @param[in] theX input vector
   //! @param[out] theY function value
-  //! @return true (always succeeds)
+  //! @return false for empty or non-finite input, parameters, or result
   bool Value(const math_Vector& theX, double& theY) const
   {
-    constexpr double aE      = 2.718281828459045;
-    const int        n       = theX.Upper() - theX.Lower() + 1;
-    double           aSumSq  = 0.0;
-    double           aSumCos = 0.0;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    const size_t aSize = theX.Size();
+    if (aSize == 0 || !std::isfinite(myA) || !std::isfinite(myB) || !std::isfinite(myC))
     {
-      aSumSq += theX(i) * theX(i);
-      aSumCos += std::cos(myC * theX(i));
+      return false;
     }
-    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / n)) - std::exp(aSumCos / n) + myA + aE;
-    return true;
+
+    double aSumSq  = 0.0;
+    double aSumCos = 0.0;
+    for (size_t i = 0; i < aSize; ++i)
+    {
+      const double aValue = theX.At(i);
+      if (!std::isfinite(aValue) || !std::isfinite(myC * aValue))
+      {
+        return false;
+      }
+      aSumSq += aValue * aValue;
+      aSumCos += std::cos(myC * aValue);
+      if (!std::isfinite(aSumSq) || !std::isfinite(aSumCos))
+      {
+        return false;
+      }
+    }
+    const double aDivisor = static_cast<double>(aSize);
+    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / aDivisor))
+            - std::exp(aSumCos / aDivisor) + myA + THE_EULER_NUMBER;
+    return std::isfinite(theY);
   }
 
 private:
@@ -616,11 +630,11 @@ private:
 //!
 //! Usage:
 //! @code
-//! math_Matrix A(1, 3, 1, 2);  // 3x2 overdetermined system
-//! math_Vector b(1, 3);
+//! math_Matrix A(3, 2);  // 3x2 overdetermined system
+//! math_Vector b(3);
 //! // ... fill A and b ...
 //! LinearResidual aRes(A, b);
-//! math_Vector aStart(1, 2);
+//! math_Vector aStart(2);
 //! aStart.Init(0.0);
 //! auto aResult = MathOpt::BFGS(aRes, aStart);
 //! @endcode
@@ -643,12 +657,12 @@ public:
   bool Value(const math_Vector& theX, double& theY) const
   {
     theY = 0.0;
-    for (int i = myA.LowerRow(); i <= myA.UpperRow(); ++i)
+    for (size_t i = 0; i < myA.RowSize(); ++i)
     {
-      double aResidual = -myB(i);
-      for (int j = myA.LowerCol(); j <= myA.UpperCol(); ++j)
+      double aResidual = -myB.At(i);
+      for (size_t j = 0; j < myA.ColSize(); ++j)
       {
-        aResidual += myA(i, j) * theX(j);
+        aResidual += myA.At(i, j) * theX.At(j);
       }
       theY += aResidual * aResidual;
     }
@@ -662,23 +676,22 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
     // First compute residual r = Ax - b
-    const int   m = myA.UpperRow() - myA.LowerRow() + 1;
-    math_Vector aResidual(1, m);
-    for (int i = myA.LowerRow(); i <= myA.UpperRow(); ++i)
+    math_Vector aResidual(myA.RowSize());
+    for (size_t i = 0; i < myA.RowSize(); ++i)
     {
-      aResidual(i - myA.LowerRow() + 1) = -myB(i);
-      for (int j = myA.LowerCol(); j <= myA.UpperCol(); ++j)
+      aResidual.ChangeAt(i) = -myB.At(i);
+      for (size_t j = 0; j < myA.ColSize(); ++j)
       {
-        aResidual(i - myA.LowerRow() + 1) += myA(i, j) * theX(j);
+        aResidual.ChangeAt(i) += myA.At(i, j) * theX.At(j);
       }
     }
     // Then compute g = 2 * A^T * r
-    for (int j = myA.LowerCol(); j <= myA.UpperCol(); ++j)
+    for (size_t j = 0; j < myA.ColSize(); ++j)
     {
-      theG(j) = 0.0;
-      for (int i = myA.LowerRow(); i <= myA.UpperRow(); ++i)
+      theG.ChangeAt(j) = 0.0;
+      for (size_t i = 0; i < myA.RowSize(); ++i)
       {
-        theG(j) += 2.0 * myA(i, j) * aResidual(i - myA.LowerRow() + 1);
+        theG.ChangeAt(j) += 2.0 * myA.At(i, j) * aResidual.At(i);
       }
     }
     return true;
@@ -705,8 +718,8 @@ private:
 //! Usage:
 //! @code
 //! auto aSys = SystemLambda([](const math_Vector& x, math_Vector& f) {
-//!   f(1) = x(1)*x(1) + x(2)*x(2) - 1.0;  // Circle
-//!   f(2) = x(1) - x(2);                   // Line y=x
+//!   f.ChangeAt(0) = x.At(0)*x.At(0) + x.At(1)*x.At(1) - 1.0;  // Circle
+//!   f.ChangeAt(1) = x.At(0) - x.At(1);                         // Line y=x
 //!   return true;
 //! });
 //! auto aResult = MathSys::Newton(aSys, aStartPoint);
@@ -720,7 +733,7 @@ public:
   //! Constructor from lambda.
   //! @param theLambda callable for system evaluation
   //! @param theNbEquations number of equations in the system
-  SystemLambda(Lambda theLambda, int theNbEquations)
+  SystemLambda(Lambda theLambda, size_t theNbEquations)
       : myLambda(std::move(theLambda)),
         myNbEquations(theNbEquations)
   {
@@ -728,7 +741,7 @@ public:
 
   //! Returns the number of equations.
   //! @return number of equations
-  int NbEquations() const { return myNbEquations; }
+  size_t NbEquations() const { return myNbEquations; }
 
   //! Evaluates the system F(x).
   //! @param[in] theX input vector
@@ -738,7 +751,7 @@ public:
 
 private:
   Lambda myLambda;
-  int    myNbEquations;
+  size_t myNbEquations;
 };
 
 //! Helper function to create SystemLambda with type deduction.
@@ -747,7 +760,7 @@ private:
 //! @param theNbEquations number of equations
 //! @return SystemLambda wrapper
 template <typename Lambda>
-SystemLambda<Lambda> MakeSystem(Lambda theLambda, int theNbEquations)
+SystemLambda<Lambda> MakeSystem(Lambda theLambda, size_t theNbEquations)
 {
   return SystemLambda<Lambda>(std::move(theLambda), theNbEquations);
 }

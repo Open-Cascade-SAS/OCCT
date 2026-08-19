@@ -18,6 +18,7 @@
 
 #include <cmath>
 #include <array>
+#include <cstdint>
 
 //! Modern math solver utilities.
 namespace MathUtils
@@ -31,6 +32,10 @@ namespace MathUtils
 //! @return P(theX)
 inline double EvalPoly(const double* theCoeffs, int theDegree, double theX)
 {
+  if (theCoeffs == nullptr || theDegree < 0 || !std::isfinite(theX))
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   double aResult = theCoeffs[theDegree];
   for (int i = theDegree - 1; i >= 0; --i)
   {
@@ -52,6 +57,12 @@ inline void EvalPolyDeriv(const double* theCoeffs,
                           double&       theValue,
                           double&       theDeriv)
 {
+  if (theCoeffs == nullptr || theDegree < 0 || !std::isfinite(theX))
+  {
+    theValue = std::numeric_limits<double>::quiet_NaN();
+    theDeriv = std::numeric_limits<double>::quiet_NaN();
+    return;
+  }
   theValue = theCoeffs[theDegree];
   theDeriv = 0.0;
   for (int i = theDegree - 1; i >= 0; --i)
@@ -69,6 +80,10 @@ inline void EvalPolyDeriv(const double* theCoeffs,
 //! @return P(theX)
 inline double EvalPolyDesc(const double* theCoeffs, int theDegree, double theX)
 {
+  if (theCoeffs == nullptr || theDegree < 0 || !std::isfinite(theX))
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   double aResult = theCoeffs[0];
   for (int i = 1; i <= theDegree; ++i)
   {
@@ -87,21 +102,29 @@ inline double EvalPolyDesc(const double* theCoeffs, int theDegree, double theX)
 inline double RefinePolyRoot(const double* theCoeffs,
                              int           theDegree,
                              double        theRoot,
-                             int           theMaxIter = 5)
+                             uint32_t      theMaxIter = 5)
 {
+  if (theCoeffs == nullptr || theDegree < 0 || !std::isfinite(theRoot))
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   double aX = theRoot;
-  for (int i = 0; i < theMaxIter; ++i)
+  for (uint32_t i = 0; i < theMaxIter; ++i)
   {
     double aF  = 0.0;
     double aDf = 0.0;
     EvalPolyDeriv(theCoeffs, theDegree, aX, aF, aDf);
 
-    if (IsZero(aDf))
+    if (!std::isfinite(aF) || !std::isfinite(aDf) || aDf == 0.0)
     {
       break;
     }
 
     const double aDx = aF / aDf;
+    if (!std::isfinite(aDx) || !std::isfinite(aX - aDx))
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
     aX -= aDx;
 
     if (std::abs(aDx) < THE_EPSILON * std::max(1.0, std::abs(aX)))
@@ -121,8 +144,12 @@ inline double RefinePolyRoot(const double* theCoeffs,
 inline double RefinePolyRootDesc(const double* theCoeffs,
                                  int           theDegree,
                                  double        theRoot,
-                                 int           theMaxIter = 5)
+                                  uint32_t      theMaxIter = 5)
 {
+  if (theCoeffs == nullptr || theDegree < 0 || theDegree > 4)
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   // Convert to ascending order for refinement
   std::array<double, 5> aAsc;
   for (int i = 0; i <= theDegree; ++i)
@@ -157,15 +184,28 @@ inline void SortRoots(double* theRoots, size_t theCount)
 //! @return new count after removing duplicates
 inline size_t RemoveDuplicateRoots(double* theRoots, size_t theCount, double theTolerance = 1.0e-10)
 {
+  if (theRoots == nullptr || !std::isfinite(theTolerance) || theTolerance < 0.0)
+  {
+    return 0;
+  }
   if (theCount <= 1)
   {
-    return theCount;
+    return theCount == 0 || std::isfinite(theRoots[0]) ? theCount : 0;
+  }
+  if (!std::isfinite(theRoots[0]))
+  {
+    return 0;
   }
 
   size_t aNewCount = 1;
   for (size_t i = 1; i < theCount; ++i)
   {
-    if (std::abs(theRoots[i] - theRoots[aNewCount - 1]) > theTolerance)
+    if (!std::isfinite(theRoots[i]))
+    {
+      return 0;
+    }
+    const double aScale = std::max(std::abs(theRoots[i]), std::abs(theRoots[aNewCount - 1]));
+    if (std::abs(theRoots[i] - theRoots[aNewCount - 1]) > theTolerance + theTolerance * aScale)
     {
       theRoots[aNewCount] = theRoots[i];
       ++aNewCount;

@@ -1,582 +1,432 @@
-// Copyright (c) 2025 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
-//
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
 
 #ifndef _MathSys_LevenbergMarquardt_HeaderFile
 #define _MathSys_LevenbergMarquardt_HeaderFile
 
-#include <MathUtils_Types.hxx>
-#include <MathUtils_Config.hxx>
-#include <MathLin_Gauss.hxx>
-#include <MathUtils_Core.hxx>
+#include <MathSys_LinearAlgebra.hxx>
+#include <MathSys_Types.hxx>
 
+#include <algorithm>
 #include <cmath>
+#include <cstdint>
 
 namespace MathSys
 {
-using namespace MathUtils;
 
-//! Configuration for Levenberg-Marquardt algorithm.
-//! Extends base Config with damping parameter settings.
-struct LMConfig : Config
+//! Configuration for the scaled, gain-ratio Levenberg-Marquardt algorithm.
+struct LMConfig : MathUtils::Config
 {
-  double LambdaInit     = 1.0e-3;  //!< Initial damping parameter
-  double LambdaIncrease = 10.0;    //!< Factor to increase lambda on rejected step
-  double LambdaDecrease = 0.1;     //!< Factor to decrease lambda on accepted step
-  double LambdaMax      = 1.0e10;  //!< Maximum lambda value before failing
-  double LambdaMin      = 1.0e-12; //!< Minimum lambda value
+  double LambdaInit     = 1.0e-3;
+  double LambdaIncrease = 10.0;
+  double LambdaDecrease = 0.1;
+  double LambdaMax      = 1.0e16;
+  double LambdaMin      = 1.0e-15;
+  double RankTolerance  = Utils::THE_RANK_TOL;
 
-  //! Default constructor.
   LMConfig() = default;
 
-  //! Constructor with custom tolerance.
-  //! @param theTolerance convergence tolerance
-  //! @param theMaxIter maximum iterations
-  explicit LMConfig(double theTolerance, int theMaxIter = 100)
-      : Config(theTolerance, theMaxIter)
+  explicit LMConfig(double theTolerance, uint32_t theMaxIter = 100)
+      : MathUtils::Config(theTolerance, theMaxIter)
   {
   }
 };
 
-//! Levenberg-Marquardt algorithm for nonlinear least squares.
-//!
-//! Minimizes ||F(X)||^2 where F is a vector function of vector X.
-//! Combines Gauss-Newton method (fast near minimum) with gradient
-//! descent (robust far from minimum) using adaptive damping.
-//!
-//! Algorithm:
-//! 1. Compute F(X) and Jacobian J at current point
-//! 2. Solve (J^T*J + lambda*I) * dX = -J^T*F for correction dX
-//! 3. If ||F(X+dX)||^2 < ||F(X)||^2: accept step, decrease lambda
-//! 4. Otherwise: reject step, increase lambda
-//! 5. Repeat until convergence
-//!
-//! @tparam FuncSetType type with NbVariables(), NbEquations(),
-//!         Value(const math_Vector& X, math_Vector& F) and
-//!         Derivatives(const math_Vector& X, math_Matrix& J) or
-//!         Values(const math_Vector& X, math_Vector& F, math_Matrix& J)
-//! @param theFunc function set providing residuals and Jacobian
-//! @param theStart initial guess vector
-//! @param theConfig Levenberg-Marquardt configuration
-//! @return result containing solution vector if converged
-template <typename FuncSetType>
-VectorResult LevenbergMarquardt(FuncSetType&       theFunc,
-                                const math_Vector& theStart,
-                                const LMConfig&    theConfig = LMConfig())
+namespace Utils
 {
-  VectorResult aResult;
 
-  const int aNbVars = theFunc.NbVariables();
-  const int aNbEqs  = theFunc.NbEquations();
+//! Maximum damping retries performed during one LM iteration.
+inline constexpr uint32_t THE_LM_DAMPING_MAX = 24;
 
-  // Check dimensions
-  if (theStart.Length() != aNbVars)
+template <typename FuncSetType>
+inline bool FinishLM(FuncSetType&       theFunc,
+                     const math_Vector& theSolution,
+                     size_t             theNbEquations,
+                     const LMConfig&    theConfig,
+                     double             theInitialResidualNorm,
+                     const math_Vector* theInfBound,
+                     const math_Vector* theSupBound,
+                     SystemResult&      theResult)
+{
+  math_Vector aResidual(theNbEquations, 0.0);
+  math_Matrix aJacobian(theNbEquations, theSolution.Size(), 0.0);
+  theResult.Solution = theSolution;
+  if (!theFunc.Value(theSolution, aResidual))
   {
-    aResult.Status = Status::InvalidInput;
-    return aResult;
+    theResult.Status = MathUtils::Status::CallbackError;
+    return false;
+  }
+  if (!IsFinite(aResidual))
+  {
+    theResult.Status = MathUtils::Status::NumericalError;
+    return false;
+  }
+  if (!theFunc.Derivatives(theSolution, aJacobian))
+  {
+    theResult.Status = MathUtils::Status::CallbackError;
+    return false;
+  }
+  if (!IsFinite(aJacobian))
+  {
+    theResult.Status = MathUtils::Status::NumericalError;
+    return false;
   }
 
-  const int aVarLower = theStart.Lower();
-  const int aVarUpper = theStart.Upper();
-
-  // Working vectors and matrices
-  math_Vector aSol = theStart;
-  math_Vector aF(1, aNbEqs);
-  math_Vector aFNew(1, aNbEqs);
-  math_Vector aDeltaX(aVarLower, aVarUpper);
-  math_Vector aGrad(aVarLower, aVarUpper);
-  math_Matrix aJac(1, aNbEqs, aVarLower, aVarUpper);
-  math_Matrix aJtJ(aVarLower, aVarUpper, aVarLower, aVarUpper);
-  math_Vector aJtF(aVarLower, aVarUpper);
-
-  double aLambda = theConfig.LambdaInit;
-
-  // Evaluate initial residual
-  if (!theFunc.Value(aSol, aF))
+  const std::optional<size_t> aRank = ScaledRank(aJacobian, theConfig.RankTolerance);
+  if (!aRank.has_value())
   {
-    aResult.Status = Status::NumericalError;
-    return aResult;
+    theResult.Status = MathUtils::Status::NumericalError;
+    return false;
   }
-
-  // Compute initial ||F||^2
-  double aChi2 = 0.0;
-  for (int i = 1; i <= aNbEqs; ++i)
+  theResult.Gradient = math_Vector(theSolution.Size(), 0.0);
+  for (size_t aCol = 0; aCol < theSolution.Size(); ++aCol)
   {
-    aChi2 += aF(i) * aF(i);
-  }
-
-  // Main iteration loop
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
-  {
-    aResult.NbIterations = anIter + 1;
-
-    // Check F convergence
-    bool aFConverged = true;
-    for (int i = 1; i <= aNbEqs; ++i)
+    for (size_t aRow = 0; aRow < theNbEquations; ++aRow)
     {
-      if (std::abs(aF(i)) > theConfig.FTolerance)
+      theResult.Gradient->ChangeAt(aCol) += aJacobian.At(aRow, aCol) * aResidual.At(aRow);
+    }
+  }
+  theResult.ResidualNorm        = SafeNorm(aResidual);
+  const double aSquaredResidual = theResult.ResidualNorm * theResult.ResidualNorm;
+  if (std::isfinite(aSquaredResidual))
+  {
+    theResult.Value = aSquaredResidual;
+  }
+  if (!IsFinite(*theResult.Gradient))
+  {
+    theResult.Status = MathUtils::Status::NumericalError;
+    return false;
+  }
+  double aProjectedGradientNorm = 0.0;
+  for (size_t anOffset = 0; anOffset < theSolution.Size(); ++anOffset)
+  {
+    double aComponent = theResult.Gradient->At(anOffset);
+    if (theInfBound != nullptr && theSupBound != nullptr
+        && ((theSolution.At(anOffset) <= theInfBound->At(anOffset) && aComponent > 0.0)
+            || (theSolution.At(anOffset) >= theSupBound->At(anOffset) && aComponent < 0.0)))
+    {
+      aComponent = 0.0;
+    }
+    aProjectedGradientNorm = std::hypot(aProjectedGradientNorm, aComponent);
+  }
+  const double aResidualTolerance =
+    theConfig.FTolerance + theConfig.RelativeTolerance * theInitialResidualNorm;
+  theResult.Jacobian     = aJacobian;
+  theResult.Rank         = *aRank;
+  theResult.IsRoot       = theResult.ResidualNorm <= aResidualTolerance;
+  theResult.IsStationary = aProjectedGradientNorm <= theConfig.Tolerance;
+  return true;
+}
+
+template <typename FuncSetType>
+SystemResult LMImpl(FuncSetType&       theFunc,
+                    const math_Vector& theStart,
+                    const LMConfig&    theConfig,
+                    const math_Vector* theInfBound,
+                    const math_Vector* theSupBound)
+{
+  SystemResult aResult;
+  const bool   hasBounds = theInfBound != nullptr && theSupBound != nullptr;
+  if (theFunc.NbVariables() <= 0 || theFunc.NbEquations() <= 0)
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+  const size_t aN = static_cast<size_t>(theFunc.NbVariables());
+  const size_t aM = static_cast<size_t>(theFunc.NbEquations());
+  if (theStart.Size() != aN || !IsFinite(theStart) || theConfig.MaxIterations == 0
+      || !std::isfinite(theConfig.Tolerance) || !(theConfig.Tolerance > 0.0)
+      || !std::isfinite(theConfig.XTolerance) || !(theConfig.XTolerance > 0.0)
+      || !std::isfinite(theConfig.FTolerance) || !(theConfig.FTolerance > 0.0)
+      || !std::isfinite(theConfig.RelativeTolerance) || theConfig.RelativeTolerance < 0.0
+      || !std::isfinite(theConfig.StepMin) || !(theConfig.StepMin > 0.0)
+      || !std::isfinite(theConfig.LambdaInit) || !(theConfig.LambdaInit > 0.0)
+      || !std::isfinite(theConfig.LambdaIncrease) || !(theConfig.LambdaIncrease > 1.0)
+      || !std::isfinite(theConfig.LambdaDecrease) || !(theConfig.LambdaDecrease > 0.0)
+      || !(theConfig.LambdaDecrease < 1.0) || !std::isfinite(theConfig.LambdaMin)
+      || !(theConfig.LambdaMin > 0.0) || !(theConfig.LambdaMin <= theConfig.LambdaInit)
+      || !std::isfinite(theConfig.LambdaMax) || !(theConfig.LambdaInit <= theConfig.LambdaMax)
+      || !std::isfinite(theConfig.RankTolerance)
+      || !(theConfig.RankTolerance > 0.0)
+      || (hasBounds
+          && (theInfBound->Size() != aN || theSupBound->Size() != aN || !IsFinite(*theInfBound)
+              || !IsFinite(*theSupBound))))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
+  math_Vector aSolution(aN);
+  for (size_t anOffset = 0; anOffset < aN; ++anOffset)
+  {
+    aSolution.ChangeAt(anOffset) = theStart.At(anOffset);
+    if (hasBounds)
+    {
+      const double aMin = theInfBound->At(anOffset);
+      const double aMax = theSupBound->At(anOffset);
+      if (aMin > aMax)
       {
-        aFConverged = false;
+        aResult.Status = MathUtils::Status::InvalidInput;
+        return aResult;
+      }
+      aSolution.ChangeAt(anOffset) = std::clamp(aSolution.At(anOffset), aMin, aMax);
+    }
+  }
+
+  math_Vector aResidual(aM, 0.0);
+  math_Vector aTrialResidual(aM, 0.0);
+  math_Matrix aJacobian(aM, aN, 0.0);
+  if (!theFunc.Value(aSolution, aResidual))
+  {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!IsFinite(aResidual))
+  {
+    aResult.Status = MathUtils::Status::NumericalError;
+    return aResult;
+  }
+
+  double            aLambda =
+    std::clamp(theConfig.LambdaInit, theConfig.LambdaMin, theConfig.LambdaMax);
+  const double      aResidualNorm = SafeNorm(aResidual);
+  long double       aMerit        = 0.5L * aResidualNorm * aResidualNorm;
+  uint32_t          anIter = 0;
+  for (; anIter < theConfig.MaxIterations; ++anIter)
+  {
+    aResult.NbIterations = anIter;
+    if (!theFunc.Derivatives(aSolution, aJacobian))
+    {
+      aResult.Status = MathUtils::Status::CallbackError;
+      break;
+    }
+    if (!IsFinite(aJacobian))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      break;
+    }
+
+    math_Vector aGradient(aN, 0.0);
+    for (size_t aRow = 0; aRow < aM; ++aRow)
+    {
+      for (size_t aCol = 0; aCol < aN; ++aCol)
+      {
+        aGradient.ChangeAt(aCol) += aJacobian.At(aRow, aCol) * aResidual.At(aRow);
+      }
+    }
+    if (!IsFinite(aGradient))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      break;
+    }
+
+    double aProjectedGradientNorm = 0.0;
+    for (size_t anOffset = 0; anOffset < aN; ++anOffset)
+    {
+      double aComponent = aGradient.At(anOffset);
+      if (hasBounds)
+      {
+        const double aMin = theInfBound->At(anOffset);
+        const double aMax = theSupBound->At(anOffset);
+        if ((aSolution.At(anOffset) <= aMin && aComponent > 0.0)
+            || (aSolution.At(anOffset) >= aMax && aComponent < 0.0))
+        {
+          aComponent = 0.0;
+        }
+      }
+      aProjectedGradientNorm = std::hypot(aProjectedGradientNorm, aComponent);
+    }
+    if (aProjectedGradientNorm <= theConfig.Tolerance)
+    {
+      aResult.Status       = MathUtils::Status::OK;
+      aResult.IsStationary = true;
+      break;
+    }
+
+    bool isAccepted = false;
+    for (uint32_t aDampingIter = 0; aDampingIter < THE_LM_DAMPING_MAX; ++aDampingIter)
+    {
+      math_Matrix anAugmented(aM + aN, aN, 0.0);
+      math_Vector anAugmentedRhs(aM + aN, 0.0);
+      for (size_t aRow = 0; aRow < aM; ++aRow)
+      {
+        anAugmentedRhs.ChangeAt(aRow) = -aResidual.At(aRow);
+        for (size_t aCol = 0; aCol < aN; ++aCol)
+        {
+          anAugmented.ChangeAt(aRow, aCol) = aJacobian.At(aRow, aCol);
+        }
+      }
+      for (size_t aCol = 0; aCol < aN; ++aCol)
+      {
+        double aColumnNorm = 0.0;
+        for (size_t aRow = 0; aRow < aM; ++aRow)
+        {
+          aColumnNorm = std::hypot(aColumnNorm, aJacobian.At(aRow, aCol));
+        }
+        anAugmented.ChangeAt(aM + aCol, aCol) = std::sqrt(aLambda) * std::max(aColumnNorm, 1.0);
+      }
+
+      const LinearStep aStepResult =
+        SolveLinearized(anAugmented, anAugmentedRhs, theConfig.RankTolerance);
+      if (!aStepResult.Solution.has_value())
+      {
+        if (aLambda >= theConfig.LambdaMax)
+        {
+          break;
+        }
+        aLambda = std::min(theConfig.LambdaMax, aLambda * theConfig.LambdaIncrease);
+        continue;
+      }
+      const math_Vector& aStep = *aStepResult.Solution;
+      math_Vector        aTrial(aN, 0.0);
+      for (size_t anOffset = 0; anOffset < aN; ++anOffset)
+      {
+        aTrial.ChangeAt(anOffset) = aSolution.At(anOffset) + aStep.At(anOffset);
+        if (hasBounds)
+        {
+          aTrial.ChangeAt(anOffset) =
+            std::clamp(aTrial.At(anOffset), theInfBound->At(anOffset), theSupBound->At(anOffset));
+        }
+      }
+      if (!IsFinite(aTrial))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
         break;
       }
-    }
-
-    if (aFConverged)
-    {
-      aResult.Status   = Status::OK;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      return aResult;
-    }
-
-    // Compute Jacobian
-    if (!theFunc.Derivatives(aSol, aJac))
-    {
-      aResult.Status = Status::NumericalError;
-      return aResult;
-    }
-
-    // Compute J^T * J
-    for (int i = aVarLower; i <= aVarUpper; ++i)
-    {
-      for (int j = aVarLower; j <= aVarUpper; ++j)
+      if (!theFunc.Value(aTrial, aTrialResidual))
       {
-        double aSum = 0.0;
-        for (int k = 1; k <= aNbEqs; ++k)
+        aResult.Status = MathUtils::Status::CallbackError;
+        break;
+      }
+      if (!IsFinite(aTrialResidual))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        break;
+      }
+
+      const double      aTrialNorm  = SafeNorm(aTrialResidual);
+      const long double aTrialMerit = 0.5L * aTrialNorm * aTrialNorm;
+      long double       aPredicted  = 0.0L;
+      for (size_t aCol = 0; aCol < aN; ++aCol)
+      {
+        const double aProjectedStep = aTrial.At(aCol) - aSolution.At(aCol);
+        aPredicted -= static_cast<long double>(aGradient.At(aCol)) * aProjectedStep;
+      }
+      double aLinearNorm = 0.0;
+      for (size_t aRow = 0; aRow < aM; ++aRow)
+      {
+        double aValue = 0.0;
+        for (size_t aCol = 0; aCol < aN; ++aCol)
         {
-          aSum += aJac(k, i) * aJac(k, j);
+          aValue += aJacobian.At(aRow, aCol) * (aTrial.At(aCol) - aSolution.At(aCol));
         }
-        aJtJ(i, j) = aSum;
+        aLinearNorm = std::hypot(aLinearNorm, aValue);
       }
+      aPredicted -= 0.5L * aLinearNorm * aLinearNorm;
+      const long double aRho =
+        (aPredicted > 0.0L) ? (aMerit - aTrialMerit) / aPredicted : -1.0L;
+      if (aRho > 0.0 && aTrialMerit < aMerit)
+      {
+        aResult.StepNorm = 0.0;
+        for (size_t aCol = 0; aCol < aN; ++aCol)
+        {
+          aResult.StepNorm = std::hypot(aResult.StepNorm, aTrial.At(aCol) - aSolution.At(aCol));
+        }
+        aSolution = aTrial;
+        aResidual = aTrialResidual;
+        aMerit    = aTrialMerit;
+        aLambda =
+          std::max(theConfig.LambdaMin, aLambda * ((aRho > 0.75) ? theConfig.LambdaDecrease : 1.0));
+        isAccepted = true;
+        break;
+      }
+      if (aLambda >= theConfig.LambdaMax)
+      {
+        break;
+      }
+      aLambda =
+        std::min(theConfig.LambdaMax, aLambda * ((aRho < 0.25) ? theConfig.LambdaIncrease : 2.0));
     }
 
-    // Compute J^T * F (negative gradient of chi^2)
-    for (int i = aVarLower; i <= aVarUpper; ++i)
+    aResult.NbIterations = anIter + 1;
+    if (aResult.Status == MathUtils::Status::CallbackError
+        || aResult.Status == MathUtils::Status::NumericalError)
     {
-      double aSum = 0.0;
-      for (int k = 1; k <= aNbEqs; ++k)
-      {
-        aSum += aJac(k, i) * aF(k);
-      }
-      aJtF(i)  = aSum;
-      aGrad(i) = 2.0 * aSum; // Gradient of chi^2 = 2 * J^T * F
+      break;
     }
-
-    // Check gradient convergence
-    double aGradNorm = 0.0;
-    for (int i = aVarLower; i <= aVarUpper; ++i)
+    if (!isAccepted)
     {
-      aGradNorm += aGrad(i) * aGrad(i);
+      aResult.Status = MathUtils::Status::NotConverged;
+      break;
     }
-    aGradNorm = std::sqrt(aGradNorm);
-
-    if (aGradNorm < theConfig.Tolerance)
+    const double aCurrentResidualNorm = SafeNorm(aResidual);
+    double       aSolutionScale       = 1.0;
+    for (size_t anOffset = 0; anOffset < aN; ++anOffset)
     {
-      aResult.Status   = Status::OK;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      aResult.Gradient = aGrad;
-      return aResult;
+      aSolutionScale = std::max(aSolutionScale, std::abs(aSolution.At(anOffset)));
     }
-
-    // Inner loop: try to find an acceptable step
-    bool aStepAccepted = false;
-    for (int aLamIter = 0; aLamIter < 20 && !aStepAccepted; ++aLamIter)
+    const double aStepTolerance =
+      std::max(theConfig.StepMin,
+               theConfig.XTolerance + theConfig.RelativeTolerance * aSolutionScale);
+    if (aResult.StepNorm <= aStepTolerance)
     {
-      // Add damping: J^T*J + lambda*I
-      math_Matrix aDamped = aJtJ;
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aDamped(i, i) += aLambda;
-      }
-
-      // Solve (J^T*J + lambda*I) * dX = -J^T*F
-      math_Vector aNegJtF(aVarLower, aVarUpper);
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aNegJtF(i) = -aJtF(i);
-      }
-
-      auto aLinResult = MathLin::Solve(aDamped, aNegJtF);
-      if (!aLinResult.IsDone())
-      {
-        // Matrix is singular, increase damping
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::Singular;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-        continue;
-      }
-
-      aDeltaX = *aLinResult.Solution;
-
-      // Compute new solution
-      math_Vector aSolNew(aVarLower, aVarUpper);
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aSolNew(i) = aSol(i) + aDeltaX(i);
-      }
-
-      // Evaluate new residual
-      if (!theFunc.Value(aSolNew, aFNew))
-      {
-        // Function evaluation failed, increase damping
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::NumericalError;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-        continue;
-      }
-
-      // Compute new ||F||^2
-      double aChi2New = 0.0;
-      for (int i = 1; i <= aNbEqs; ++i)
-      {
-        aChi2New += aFNew(i) * aFNew(i);
-      }
-
-      // Accept or reject step
-      if (aChi2New < aChi2)
-      {
-        // Step accepted
-        aSol  = aSolNew;
-        aF    = aFNew;
-        aChi2 = aChi2New;
-        aLambda *= theConfig.LambdaDecrease;
-        if (aLambda < theConfig.LambdaMin)
-        {
-          aLambda = theConfig.LambdaMin;
-        }
-        aStepAccepted = true;
-
-        // Check X convergence
-        bool aXConverged = true;
-        for (int i = aVarLower; i <= aVarUpper; ++i)
-        {
-          if (std::abs(aDeltaX(i)) > theConfig.XTolerance * (1.0 + std::abs(aSol(i))))
-          {
-            aXConverged = false;
-            break;
-          }
-        }
-
-        if (aXConverged)
-        {
-          aResult.Status   = Status::OK;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-      }
-      else
-      {
-        // Step rejected, increase damping
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::NotConverged;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-      }
-    }
-
-    if (!aStepAccepted)
-    {
-      // Failed to find acceptable step
-      aResult.Status   = Status::NotConverged;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      return aResult;
+      aResult.Status = (aCurrentResidualNorm <= theConfig.FTolerance)
+                         ? MathUtils::Status::OK
+                         : MathUtils::Status::NotConverged;
+      break;
     }
   }
 
-  // Max iterations reached
-  aResult.Status   = Status::MaxIterations;
-  aResult.Solution = aSol;
-  aResult.Value    = aChi2;
+  if (aResult.Status == MathUtils::Status::NotConverged && anIter == theConfig.MaxIterations)
+  {
+    aResult.Status = MathUtils::Status::MaxIterations;
+  }
+  if (aResult.Status == MathUtils::Status::CallbackError
+      || aResult.Status == MathUtils::Status::NumericalError)
+  {
+    aResult.Solution = aSolution;
+    return aResult;
+  }
+  if (FinishLM(theFunc,
+               aSolution,
+               aM,
+               theConfig,
+               aResidualNorm,
+               theInfBound,
+               theSupBound,
+               aResult)
+       && (aResult.IsRoot || aResult.IsStationary))
+  {
+    aResult.Status = MathUtils::Status::OK;
+  }
+  else if (aResult.Status == MathUtils::Status::OK)
+  {
+    aResult.Status = MathUtils::Status::NotConverged;
+  }
   return aResult;
 }
 
-//! Levenberg-Marquardt with bounds constraints.
-//!
-//! Minimizes ||F(X)||^2 subject to theInfBound <= X <= theSupBound.
-//! Solution is clamped to bounds after each step.
-//!
-//! @param theFunc function set providing residuals and Jacobian
-//! @param theStart initial guess vector
-//! @param theInfBound lower bounds for solution
-//! @param theSupBound upper bounds for solution
-//! @param theConfig Levenberg-Marquardt configuration
-//! @return result containing solution vector if converged
+} // namespace Utils
+
+//! Minimize the squared residual norm using scaled Levenberg-Marquardt.
 template <typename FuncSetType>
-VectorResult LevenbergMarquardtBounded(FuncSetType&       theFunc,
+SystemResult LevenbergMarquardt(FuncSetType&       theFunc,
+                                const math_Vector& theStart,
+                                const LMConfig&    theConfig = LMConfig())
+{
+  return Utils::LMImpl(theFunc, theStart, theConfig, nullptr, nullptr);
+}
+
+//! Minimize the squared residual norm subject to box constraints.
+template <typename FuncSetType>
+SystemResult LevenbergMarquardtBounded(FuncSetType&       theFunc,
                                        const math_Vector& theStart,
                                        const math_Vector& theInfBound,
                                        const math_Vector& theSupBound,
                                        const LMConfig&    theConfig = LMConfig())
 {
-  VectorResult aResult;
-
-  const int aNbVars = theFunc.NbVariables();
-  const int aNbEqs  = theFunc.NbEquations();
-
-  // Check dimensions
-  if (theStart.Length() != aNbVars || theInfBound.Length() != aNbVars
-      || theSupBound.Length() != aNbVars)
-  {
-    aResult.Status = Status::InvalidInput;
-    return aResult;
-  }
-
-  const int aVarLower = theStart.Lower();
-  const int aVarUpper = theStart.Upper();
-
-  // Working vectors and matrices
-  math_Vector aSol = theStart;
-  math_Vector aF(1, aNbEqs);
-  math_Vector aFNew(1, aNbEqs);
-  math_Vector aDeltaX(aVarLower, aVarUpper);
-  math_Vector aGrad(aVarLower, aVarUpper);
-  math_Matrix aJac(1, aNbEqs, aVarLower, aVarUpper);
-  math_Matrix aJtJ(aVarLower, aVarUpper, aVarLower, aVarUpper);
-  math_Vector aJtF(aVarLower, aVarUpper);
-
-  // Clamp initial solution to bounds
-  for (int i = aVarLower; i <= aVarUpper; ++i)
-  {
-    aSol(i) = MathUtils::Clamp(aSol(i), theInfBound(i), theSupBound(i));
-  }
-
-  double aLambda = theConfig.LambdaInit;
-
-  // Evaluate initial residual
-  if (!theFunc.Value(aSol, aF))
-  {
-    aResult.Status = Status::NumericalError;
-    return aResult;
-  }
-
-  // Compute initial ||F||^2
-  double aChi2 = 0.0;
-  for (int i = 1; i <= aNbEqs; ++i)
-  {
-    aChi2 += aF(i) * aF(i);
-  }
-
-  // Main iteration loop
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
-  {
-    aResult.NbIterations = anIter + 1;
-
-    // Check F convergence
-    bool aFConverged = true;
-    for (int i = 1; i <= aNbEqs; ++i)
-    {
-      if (std::abs(aF(i)) > theConfig.FTolerance)
-      {
-        aFConverged = false;
-        break;
-      }
-    }
-
-    if (aFConverged)
-    {
-      aResult.Status   = Status::OK;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      return aResult;
-    }
-
-    // Compute Jacobian
-    if (!theFunc.Derivatives(aSol, aJac))
-    {
-      aResult.Status = Status::NumericalError;
-      return aResult;
-    }
-
-    // Compute J^T * J
-    for (int i = aVarLower; i <= aVarUpper; ++i)
-    {
-      for (int j = aVarLower; j <= aVarUpper; ++j)
-      {
-        double aSum = 0.0;
-        for (int k = 1; k <= aNbEqs; ++k)
-        {
-          aSum += aJac(k, i) * aJac(k, j);
-        }
-        aJtJ(i, j) = aSum;
-      }
-    }
-
-    // Compute J^T * F
-    for (int i = aVarLower; i <= aVarUpper; ++i)
-    {
-      double aSum = 0.0;
-      for (int k = 1; k <= aNbEqs; ++k)
-      {
-        aSum += aJac(k, i) * aF(k);
-      }
-      aJtF(i)  = aSum;
-      aGrad(i) = 2.0 * aSum;
-    }
-
-    // Check gradient convergence
-    double aGradNorm = 0.0;
-    for (int i = aVarLower; i <= aVarUpper; ++i)
-    {
-      aGradNorm += aGrad(i) * aGrad(i);
-    }
-    aGradNorm = std::sqrt(aGradNorm);
-
-    if (aGradNorm < theConfig.Tolerance)
-    {
-      aResult.Status   = Status::OK;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      aResult.Gradient = aGrad;
-      return aResult;
-    }
-
-    // Inner loop: try to find an acceptable step
-    bool aStepAccepted = false;
-    for (int aLamIter = 0; aLamIter < 20 && !aStepAccepted; ++aLamIter)
-    {
-      // Add damping
-      math_Matrix aDamped = aJtJ;
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aDamped(i, i) += aLambda;
-      }
-
-      // Solve (J^T*J + lambda*I) * dX = -J^T*F
-      math_Vector aNegJtF(aVarLower, aVarUpper);
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aNegJtF(i) = -aJtF(i);
-      }
-
-      auto aLinResult = MathLin::Solve(aDamped, aNegJtF);
-      if (!aLinResult.IsDone())
-      {
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::Singular;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-        continue;
-      }
-
-      aDeltaX = *aLinResult.Solution;
-
-      // Compute new solution with bounds clamping
-      math_Vector aSolNew(aVarLower, aVarUpper);
-      for (int i = aVarLower; i <= aVarUpper; ++i)
-      {
-        aSolNew(i) = MathUtils::Clamp(aSol(i) + aDeltaX(i), theInfBound(i), theSupBound(i));
-      }
-
-      // Evaluate new residual
-      if (!theFunc.Value(aSolNew, aFNew))
-      {
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::NumericalError;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-        continue;
-      }
-
-      // Compute new ||F||^2
-      double aChi2New = 0.0;
-      for (int i = 1; i <= aNbEqs; ++i)
-      {
-        aChi2New += aFNew(i) * aFNew(i);
-      }
-
-      // Accept or reject step
-      if (aChi2New < aChi2)
-      {
-        aSol  = aSolNew;
-        aF    = aFNew;
-        aChi2 = aChi2New;
-        aLambda *= theConfig.LambdaDecrease;
-        if (aLambda < theConfig.LambdaMin)
-        {
-          aLambda = theConfig.LambdaMin;
-        }
-        aStepAccepted = true;
-
-        // Check X convergence
-        bool aXConverged = true;
-        for (int i = aVarLower; i <= aVarUpper; ++i)
-        {
-          if (std::abs(aDeltaX(i)) > theConfig.XTolerance * (1.0 + std::abs(aSol(i))))
-          {
-            aXConverged = false;
-            break;
-          }
-        }
-
-        if (aXConverged)
-        {
-          aResult.Status   = Status::OK;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-      }
-      else
-      {
-        aLambda *= theConfig.LambdaIncrease;
-        if (aLambda > theConfig.LambdaMax)
-        {
-          aResult.Status   = Status::NotConverged;
-          aResult.Solution = aSol;
-          aResult.Value    = aChi2;
-          return aResult;
-        }
-      }
-    }
-
-    if (!aStepAccepted)
-    {
-      aResult.Status   = Status::NotConverged;
-      aResult.Solution = aSol;
-      aResult.Value    = aChi2;
-      return aResult;
-    }
-  }
-
-  // Max iterations reached
-  aResult.Status   = Status::MaxIterations;
-  aResult.Solution = aSol;
-  aResult.Value    = aChi2;
-  return aResult;
+  return Utils::LMImpl(theFunc, theStart, theConfig, &theInfBound, &theSupBound);
 }
 
 } // namespace MathSys

@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
 
 //! @file MathSys_Newton3D.hxx
 //! @brief Optimized 3D Newton-Raphson solver for systems of 3 equations in 3 unknowns.
@@ -34,13 +35,13 @@
 //! Optimizations compared to general Newton:
 //! - No math_Vector/math_Matrix allocation overhead
 //! - Cramer's rule with precomputed cofactors for 3x3 system
-//! - Squared norm comparisons (avoid sqrt in convergence check)
+//! - Overflow-safe norm comparisons
 //! - Step limiting to prevent wild oscillations
 //! - Gradient descent fallback for singular Jacobian
 
 namespace MathSys
 {
-namespace detail
+namespace Utils
 {
 
 //! Check that NewtonBoundsN<3> has valid (min <= max) ranges.
@@ -51,15 +52,19 @@ inline bool IsBoundsValid3D(const NewtonBoundsN<3>& theBounds)
     return true;
   }
 
-  return theBounds.Min[0] <= theBounds.Max[0] && theBounds.Min[1] <= theBounds.Max[1]
+  return IsFiniteArray(theBounds.Min) && IsFiniteArray(theBounds.Max)
+         && theBounds.Min[0] <= theBounds.Max[0] && theBounds.Min[1] <= theBounds.Max[1]
          && theBounds.Min[2] <= theBounds.Max[2];
 }
 
 //! Check that NewtonOptions fields are positive and valid.
 inline bool IsOptionsValid3D(const NewtonOptions& theOptions)
 {
-  return theOptions.FTolerance > 0.0 && theOptions.XTolerance > 0.0 && theOptions.MaxIterations > 0
-         && theOptions.MaxStepRatio > 0.0 && theOptions.SoftBoundsExtension >= 0.0;
+  return std::isfinite(theOptions.FTolerance) && theOptions.FTolerance > 0.0
+         && std::isfinite(theOptions.XTolerance) && theOptions.XTolerance > 0.0
+         && theOptions.MaxIterations > 0 && std::isfinite(theOptions.MaxStepRatio)
+         && theOptions.MaxStepRatio > 0.0 && std::isfinite(theOptions.SoftBoundsExtension)
+         && theOptions.SoftBoundsExtension >= 0.0;
 }
 
 //! Return the largest domain extent across all 3 dimensions (min 1.0).
@@ -99,50 +104,86 @@ inline void Clamp3D(std::array<double, 3>&  theX,
   theX[2] = std::clamp(theX[2], theBounds.Min[2] - aExtZ, theBounds.Max[2] + aExtZ);
 }
 
-//! Solve 3x3 linear system J*x = -F using Cramer's rule with cofactor expansion.
+//! Solve 3x3 linear system J*x = -F using scaled Gaussian elimination with pivoting.
 //! @param[in] theJ 3x3 Jacobian matrix
 //! @param[in] theF 3-element right-hand side
 //! @param[out] theDelta 3-element solution vector
 //! @return true if system was solved successfully (non-singular)
 inline bool Solve3x3(const double theJ[3][3], const double theF[3], double theDelta[3])
 {
-  // Compute cofactors for first row (used for determinant and inverse)
-  const double aCof00 = theJ[1][1] * theJ[2][2] - theJ[1][2] * theJ[2][1];
-  const double aCof01 = theJ[1][2] * theJ[2][0] - theJ[1][0] * theJ[2][2];
-  const double aCof02 = theJ[1][0] * theJ[2][1] - theJ[1][1] * theJ[2][0];
-
-  // Determinant by first row expansion
-  const double aDet = theJ[0][0] * aCof00 + theJ[0][1] * aCof01 + theJ[0][2] * aCof02;
-  // Check for singularity
-  if (std::abs(aDet) < 1.0e-30)
+  double aScale = 0.0;
+  for (size_t aRow = 0; aRow < 3; ++aRow)
+  {
+    for (size_t aCol = 0; aCol < 3; ++aCol)
+    {
+      aScale = std::max(aScale, std::abs(theJ[aRow][aCol]));
+    }
+  }
+  if (!(aScale > 0.0))
   {
     return false;
   }
+  double aJ[3][3];
+  double aF[3];
+  for (size_t aRow = 0; aRow < 3; ++aRow)
+  {
+    aF[aRow] = theF[aRow] / aScale;
+    for (size_t aCol = 0; aCol < 3; ++aCol)
+    {
+      aJ[aRow][aCol] = theJ[aRow][aCol] / aScale;
+    }
+  }
 
-  const double aInvDet = 1.0 / aDet;
-
-  // Remaining cofactors
-  const double aCof10 = theJ[0][2] * theJ[2][1] - theJ[0][1] * theJ[2][2];
-  const double aCof11 = theJ[0][0] * theJ[2][2] - theJ[0][2] * theJ[2][0];
-  const double aCof12 = theJ[0][1] * theJ[2][0] - theJ[0][0] * theJ[2][1];
-
-  const double aCof20 = theJ[0][1] * theJ[1][2] - theJ[0][2] * theJ[1][1];
-  const double aCof21 = theJ[0][2] * theJ[1][0] - theJ[0][0] * theJ[1][2];
-  const double aCof22 = theJ[0][0] * theJ[1][1] - theJ[0][1] * theJ[1][0];
-
-  // Solve: delta = -J^(-1) * F = -adjugate(J)^T * F / det
-  theDelta[0] = -(aCof00 * theF[0] + aCof10 * theF[1] + aCof20 * theF[2]) * aInvDet;
-  theDelta[1] = -(aCof01 * theF[0] + aCof11 * theF[1] + aCof21 * theF[2]) * aInvDet;
-  theDelta[2] = -(aCof02 * theF[0] + aCof12 * theF[1] + aCof22 * theF[2]) * aInvDet;
-  return true;
+  for (size_t aPivot = 0; aPivot < 3; ++aPivot)
+  {
+    size_t aPivotRow = aPivot;
+    for (size_t aRow = aPivot + 1; aRow < 3; ++aRow)
+    {
+      if (std::abs(aJ[aRow][aPivot]) > std::abs(aJ[aPivotRow][aPivot]))
+      {
+        aPivotRow = aRow;
+      }
+    }
+    if (!(std::abs(aJ[aPivotRow][aPivot]) > THE_NEWTON_PIVOT_TOL))
+    {
+      return false;
+    }
+    if (aPivotRow != aPivot)
+    {
+      for (size_t aCol = aPivot; aCol < 3; ++aCol)
+      {
+        std::swap(aJ[aPivot][aCol], aJ[aPivotRow][aCol]);
+      }
+      std::swap(aF[aPivot], aF[aPivotRow]);
+    }
+    for (size_t aRow = aPivot + 1; aRow < 3; ++aRow)
+    {
+      const double aFactor = aJ[aRow][aPivot] / aJ[aPivot][aPivot];
+      for (size_t aCol = aPivot + 1; aCol < 3; ++aCol)
+      {
+        aJ[aRow][aCol] -= aFactor * aJ[aPivot][aCol];
+      }
+      aF[aRow] -= aFactor * aF[aPivot];
+    }
+  }
+  for (size_t aRow = 3; aRow-- > 0;)
+  {
+    double aValue = -aF[aRow];
+    for (size_t aCol = aRow + 1; aCol < 3; ++aCol)
+    {
+      aValue -= aJ[aRow][aCol] * theDelta[aCol];
+    }
+    theDelta[aRow] = aValue / aJ[aRow][aRow];
+  }
+  return std::isfinite(theDelta[0]) && std::isfinite(theDelta[1]) && std::isfinite(theDelta[2]);
 }
 
-} // namespace detail
+} // namespace Utils
 
 //! Solve a 3x3 nonlinear system by Newton iteration with bounds.
 //!
 //! Solves the system [F1, F2, F3] = [0, 0, 0] using Newton-Raphson iteration
-//! with Cramer's rule for the 3x3 linear system at each step.
+//! with scaled, pivoted elimination for the 3x3 linear system at each step.
 //!
 //! The function type must be callable with signature:
 //! @code
@@ -166,33 +207,31 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
   NewtonResultN<3> aRes;
   aRes.X = theX0;
 
-  if (!detail::IsOptionsValid3D(theOptions) || !detail::IsBoundsValid3D(theBounds))
+  if (!Utils::IsOptionsValid3D(theOptions) || !Utils::IsBoundsValid3D(theBounds)
+      || !Utils::IsFiniteArray(theX0))
   {
     aRes.Status = MathUtils::Status::InvalidInput;
     return aRes;
   }
 
-  detail::Clamp3D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
+  Utils::Clamp3D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aTolSq   = theOptions.FTolerance * theOptions.FTolerance;
-  const double aMaxStep = theOptions.MaxStepRatio * detail::MaxDomainSize3D(theBounds);
+  const double aMaxStep = theOptions.MaxStepRatio * Utils::MaxDomainSize3D(theBounds);
 
-  for (int anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
-    aRes.NbIterations = static_cast<size_t>(anIter + 1);
+    aRes.NbIterations = anIter + 1;
 
     double aF[3];
     double aJ[3][3];
-    if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aF, aJ))
+    if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aF, aJ) || !Utils::IsFiniteSystemN(aF, aJ))
     {
       aRes.Status = MathUtils::Status::NumericalError;
       return aRes;
     }
 
-    // Check convergence using squared norm (avoid sqrt)
-    const double aFNormSq = aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2];
-    aRes.ResidualNorm     = std::sqrt(aFNormSq);
-    if (aFNormSq <= aTolSq)
+    aRes.ResidualNorm = Utils::SafeNormN(aF);
+    if (aRes.ResidualNorm <= theOptions.FTolerance)
     {
       aRes.Status = MathUtils::Status::OK;
       return aRes;
@@ -200,29 +239,28 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
 
     // Solve 3x3 linear system: J * delta = -F
     double aDelta[3];
-    if (!detail::Solve3x3(aJ, aF, aDelta))
+    if (!Utils::Solve3x3(aJ, aF, aDelta))
     {
       // Singular Jacobian - try steepest descent direction: -J^T * F
-      const double aGradX  = aJ[0][0] * aF[0] + aJ[1][0] * aF[1] + aJ[2][0] * aF[2];
-      const double aGradY  = aJ[0][1] * aF[0] + aJ[1][1] * aF[1] + aJ[2][1] * aF[2];
-      const double aGradZ  = aJ[0][2] * aF[0] + aJ[1][2] * aF[1] + aJ[2][2] * aF[2];
-      const double aGradSq = aGradX * aGradX + aGradY * aGradY + aGradZ * aGradZ;
-      if (aGradSq < 1.0e-60)
+      const double aGradX       = aJ[0][0] * aF[0] + aJ[1][0] * aF[1] + aJ[2][0] * aF[2];
+      const double aGradY       = aJ[0][1] * aF[0] + aJ[1][1] * aF[1] + aJ[2][1] * aF[2];
+      const double aGradZ       = aJ[0][2] * aF[0] + aJ[1][2] * aF[1] + aJ[2][2] * aF[2];
+      const double aGradient[3] = {aGradX, aGradY, aGradZ};
+      const double aGradNorm    = Utils::SafeNormN(aGradient);
+      if (aGradNorm < 1.0e-30)
       {
         aRes.Status = MathUtils::Status::Singular;
         return aRes;
       }
 
-      const double aAlpha = std::min(1.0, std::sqrt(aFNormSq / aGradSq) * 0.1);
+      const double aAlpha = std::min(1.0, aRes.ResidualNorm / aGradNorm * 0.1);
       aDelta[0]           = -aAlpha * aGradX;
       aDelta[1]           = -aAlpha * aGradY;
       aDelta[2]           = -aAlpha * aGradZ;
     }
 
     // Limit step size to prevent wild oscillations
-    const double aStepNormSq =
-      aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1] + aDelta[2] * aDelta[2];
-    const double aStepNorm = std::sqrt(aStepNormSq);
+    const double aStepNorm = Utils::SafeNormN(aDelta);
     if (aStepNorm > aMaxStep)
     {
       const double aScale = aMaxStep / aStepNorm;
@@ -231,32 +269,64 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
       aDelta[2] *= aScale;
     }
 
-    // Update and clamp to bounds
-    std::array<double, 3> aNewX = {aRes.X[0] + aDelta[0],
-                                   aRes.X[1] + aDelta[1],
-                                   aRes.X[2] + aDelta[2]};
-    detail::Clamp3D(aNewX, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
+    std::array<double, 3> aNewX = aRes.X;
+    if (theOptions.EnableLineSearch)
+    {
+      bool isAccepted = false;
+      for (size_t aLineIter = 0; aLineIter < Utils::THE_LINE_SEARCH_MAX; ++aLineIter)
+      {
+        const double anAlpha = std::ldexp(1.0, -static_cast<int>(aLineIter));
+        for (size_t anIndex = 0; anIndex < 3; ++anIndex)
+        {
+          aNewX[anIndex] = aRes.X[anIndex] + anAlpha * aDelta[anIndex];
+        }
+        Utils::Clamp3D(aNewX,
+                       theBounds,
+                       theOptions.AllowSoftBounds,
+                       theOptions.SoftBoundsExtension);
+        const std::array<double, 3> aProjectedStep = {aNewX[0] - aRes.X[0],
+                                                      aNewX[1] - aRes.X[1],
+                                                      aNewX[2] - aRes.X[2]};
+        const long double aDerivative = Utils::MeritDirectionalDerivative(aF, aJ, aProjectedStep);
+        double            aTrialF[3];
+        double            aTrialJ[3][3];
+        if (theFunc(aNewX[0], aNewX[1], aNewX[2], aTrialF, aTrialJ)
+            && Utils::IsFiniteSystemN(aTrialF, aTrialJ)
+            && Utils::IsArmijoAccepted(aRes.ResidualNorm, Utils::SafeNormN(aTrialF), aDerivative))
+        {
+          isAccepted = true;
+          break;
+        }
+      }
+      if (!isAccepted)
+      {
+        aRes.Status = MathUtils::Status::NonDescentDirection;
+        return aRes;
+      }
+    }
+    else
+    {
+      aNewX = {aRes.X[0] + aDelta[0], aRes.X[1] + aDelta[1], aRes.X[2] + aDelta[2]};
+      Utils::Clamp3D(aNewX, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
+    }
 
-    aRes.StepNorm = std::sqrt((aNewX[0] - aRes.X[0]) * (aNewX[0] - aRes.X[0])
-                              + (aNewX[1] - aRes.X[1]) * (aNewX[1] - aRes.X[1])
-                              + (aNewX[2] - aRes.X[2]) * (aNewX[2] - aRes.X[2]));
+    const bool isStepWithinTolerance =
+      Utils::IsStepWithinTolerance(aNewX, aRes.X, theOptions.XTolerance);
+    aRes.StepNorm = Utils::SafeDistanceN(aNewX, aRes.X);
     aRes.X        = aNewX;
 
-    const double aScaleRef =
-      std::max(1.0,
-               std::max(std::abs(aRes.X[0]), std::max(std::abs(aRes.X[1]), std::abs(aRes.X[2]))));
-    if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
+    if (isStepWithinTolerance)
     {
       double aCheckF[3];
       double aCheckJ[3][3];
-      if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aCheckF, aCheckJ))
+      if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aCheckF, aCheckJ)
+          || !Utils::IsFiniteSystemN(aCheckF, aCheckJ))
       {
         aRes.Status = MathUtils::Status::NumericalError;
         return aRes;
       }
 
-      aRes.ResidualNorm =
-        std::sqrt(aCheckF[0] * aCheckF[0] + aCheckF[1] * aCheckF[1] + aCheckF[2] * aCheckF[2]);
+      aRes.ResidualNorm = Utils::SafeNormN(aCheckF);
       aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
                                                                  : MathUtils::Status::MaxIterations;
       return aRes;
@@ -266,15 +336,15 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
   // Final convergence check after max iterations
   double aF[3];
   double aJ[3][3];
-  if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aF, aJ))
+  if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aF, aJ) || !Utils::IsFiniteSystemN(aF, aJ))
   {
     aRes.Status = MathUtils::Status::NumericalError;
     return aRes;
   }
 
-  aRes.ResidualNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2]);
-  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                   : MathUtils::Status::MaxIterations;
+  aRes.ResidualNorm = Utils::SafeNormN(aF);
+  aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                             : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

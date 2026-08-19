@@ -33,6 +33,15 @@ class math_DoubleTab
   static const int THE_BUFFER_SIZE = 64;
 
 public:
+  //! Constructs a zero-based table with theNbRows rows and theNbColumns columns.
+  math_DoubleTab(size_t theNbRows, size_t theNbColumns)
+      : myBuffer{},
+        myArray(theNbRows != 0 && theNbColumns <= THE_BUFFER_SIZE / theNbRows
+                  ? NCollection_Array2<double>(myBuffer.data(), theNbRows, theNbColumns)
+                  : NCollection_Array2<double>(theNbRows, theNbColumns))
+  {
+  }
+
   DEFINE_STANDARD_ALLOC;
   DEFINE_NCOLLECTION_ALLOC;
 
@@ -126,8 +135,20 @@ public:
   //! Get number of rows
   int NbRows() const noexcept { return myArray.NbRows(); }
 
+  //! Get number of rows as an unsigned size.
+  size_t RowSize() const noexcept { return myArray.RowSize(); }
+
   //! Get number of columns
   int NbColumns() const noexcept { return myArray.NbColumns(); }
+
+  //! Get number of columns as an unsigned size.
+  size_t ColSize() const noexcept { return myArray.ColSize(); }
+
+  //! Access an element by zero-based row and column offsets.
+  const double& At(size_t theRow, size_t theCol) const { return myArray.At(theRow, theCol); }
+
+  //! Access an element by zero-based row and column offsets in read-write mode.
+  double& ChangeAt(size_t theRow, size_t theCol) { return myArray.ChangeAt(theRow, theCol); }
 
   //! Access element at (theRowIndex, theColIndex)
   const double& Value(const int theRowIndex, const int theColIndex) const

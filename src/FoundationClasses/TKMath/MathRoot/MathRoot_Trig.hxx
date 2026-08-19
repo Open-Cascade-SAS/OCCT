@@ -17,6 +17,7 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathRoot_Utils.hxx"
 #include <MathPoly_Quadratic.hxx>
 #include <MathPoly_Quartic.hxx>
 
@@ -32,13 +33,53 @@ struct TrigResult
 {
   MathUtils::Status     Status        = MathUtils::Status::NotConverged;
   std::array<double, 4> Roots         = {0.0, 0.0, 0.0, 0.0};
-  int                   NbRoots       = 0;
+  size_t                NbRoots       = 0;
   bool                  InfiniteRoots = false;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };
+
+namespace Utils
+{
+
+//! Iteration cap preventing unbounded trigonometric root refinement.
+inline constexpr uint32_t THE_TRIG_REFINEMENT_MAX_ITERATIONS = 20;
+
+//! Step tolerance terminating trigonometric root refinement.
+inline constexpr double THE_TRIG_REFINEMENT_STEP_TOLERANCE = 1.0e-14;
+
+//! Maximum Newton or Halley step used to prevent refinement overshoot.
+inline constexpr double THE_TRIG_REFINEMENT_MAX_STEP = 0.5;
+
+//! Inserts a root in ascending order unless an equivalent root is already present.
+inline void AddDistinctTrigRoot(TrigResult& theResult, double theRoot, double theTolerance)
+{
+  size_t aPosition = 0;
+  while (aPosition < theResult.NbRoots && theResult.Roots[aPosition] < theRoot)
+  {
+    if (std::abs(theRoot - theResult.Roots[aPosition]) <= theTolerance)
+    {
+      return;
+    }
+    ++aPosition;
+  }
+  if ((aPosition < theResult.NbRoots
+       && std::abs(theRoot - theResult.Roots[aPosition]) <= theTolerance)
+      || theResult.NbRoots == theResult.Roots.size())
+  {
+    return;
+  }
+  for (size_t anIndex = theResult.NbRoots; anIndex > aPosition; --anIndex)
+  {
+    theResult.Roots[anIndex] = theResult.Roots[anIndex - 1];
+  }
+  theResult.Roots[aPosition] = theRoot;
+  ++theResult.NbRoots;
+}
+
+} // namespace Utils
 
 //! Solve trigonometric equation: a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0.
 //!
@@ -56,7 +97,7 @@ struct TrigResult
 //! @param theE constant term
 //! @param theInfBound lower bound for roots (default 0)
 //! @param theSupBound upper bound for roots (default 2*PI)
-//! @param theEps tolerance for coefficient comparison
+//! @param theEps relative tolerance for coefficient classification after common scaling
 //! @return TrigResult containing roots in specified interval
 inline TrigResult Trigonometric(double theA,
                                 double theB,
@@ -68,7 +109,25 @@ inline TrigResult Trigonometric(double theA,
                                 double theEps      = 1.5e-12)
 {
   TrigResult aResult;
+  if (!std::isfinite(theA) || !std::isfinite(theB) || !std::isfinite(theC) || !std::isfinite(theD)
+      || !std::isfinite(theE) || !Utils::IsValidBounds(theInfBound, theSupBound)
+      || !std::isfinite(theEps) || theEps <= 0.0)
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
   aResult.Status = MathUtils::Status::OK;
+
+  const double aCoefficientScale =
+    std::max({std::abs(theA), std::abs(theB), std::abs(theC), std::abs(theD), std::abs(theE)});
+  if (aCoefficientScale > 0.0)
+  {
+    theA /= aCoefficientScale;
+    theB /= aCoefficientScale;
+    theC /= aCoefficientScale;
+    theD /= aCoefficientScale;
+    theE /= aCoefficientScale;
+  }
 
   // Compute working interval
   double aMyBorneInf, aDelta, aMod;
@@ -149,7 +208,7 @@ inline TrigResult Trigonometric(double theA,
           double aX = aZer[i] - aMyBorneInf;
           if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
           {
-            aResult.Roots[aResult.NbRoots++] = aZer[i];
+            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
           }
         }
         return aResult;
@@ -171,33 +230,28 @@ inline TrigResult Trigonometric(double theA,
       aNZer             = 2;
 
       // For each solution, find the representative in or near the given bounds
+      const double anUpperBound = aMyBorneInf + aDelta;
       for (size_t i = 0; i < aNZer; ++i)
       {
         double aAngle = aZer[i];
         // Shift angle to be near the lower bound
-        double aK = std::floor((theInfBound - aAngle) / THE_2PI);
-        aAngle += (aK + 1) * THE_2PI; // Start from a value >= theInfBound - 2*PI
+        const double aK = std::ceil((aMyBorneInf - aAngle) / THE_2PI);
+        aAngle += aK * THE_2PI;
 
-        // Check both this value and the next period
-        for (int aPeriod = 0; aPeriod < 2; ++aPeriod)
+        if (aAngle >= aMyBorneInf - aDelta_Eps && aAngle <= anUpperBound + aDelta_Eps)
         {
-          double aTestAngle = aAngle + aPeriod * THE_2PI;
-          if (aTestAngle >= theInfBound - aDelta_Eps && aTestAngle <= theSupBound + aDelta_Eps)
+          bool aDup = false;
+          for (size_t k = 0; k < aResult.NbRoots; ++k)
           {
-            // Avoid duplicates
-            bool aDup = false;
-            for (int k = 0; k < aResult.NbRoots; ++k)
+            if (std::abs(aAngle - aResult.Roots[k]) < theEps)
             {
-              if (std::abs(aTestAngle - aResult.Roots[k]) < theEps)
-              {
-                aDup = true;
-                break;
-              }
+              aDup = true;
+              break;
             }
-            if (!aDup && aResult.NbRoots < 4)
-            {
-              aResult.Roots[aResult.NbRoots++] = aTestAngle;
-            }
+          }
+          if (!aDup)
+          {
+            Utils::AddDistinctTrigRoot(aResult, aAngle, theEps);
           }
         }
       }
@@ -274,7 +328,7 @@ inline TrigResult Trigonometric(double theA,
           if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
           {
             aZer[i] = std::max(theInfBound, std::min(theSupBound, aZer[i]));
-            aResult.Roots[aResult.NbRoots++] = aZer[i];
+            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
           }
         }
         return aResult;
@@ -318,7 +372,7 @@ inline TrigResult Trigonometric(double theA,
           if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
           {
             aZer[i] = std::max(theInfBound, std::min(theSupBound, aZer[i]));
-            aResult.Roots[aResult.NbRoots++] = aZer[i];
+            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
           }
         }
         return aResult;
@@ -378,10 +432,9 @@ inline TrigResult Trigonometric(double theA,
     {
       // Newton refinement with Halley's method fallback for double roots
       auto aRefineRoot = [&](double theX) -> double {
-        constexpr int    THE_MAX_ITER = 20;
-        constexpr double THE_TOL      = 1.0e-14;
-
-        for (int anIter = 0; anIter < THE_MAX_ITER; ++anIter)
+        for (uint32_t anIter = 0;
+             anIter < Utils::THE_TRIG_REFINEMENT_MAX_ITERATIONS;
+             ++anIter)
         {
           double aCos  = std::cos(theX);
           double aSin  = std::sin(theX);
@@ -420,15 +473,15 @@ inline TrigResult Trigonometric(double theA,
           }
 
           // Limit step size to avoid overshooting
-          constexpr double THE_MAX_STEP = 0.5;
-          if (std::abs(aDelta) > THE_MAX_STEP)
+          if (std::abs(aDelta) > Utils::THE_TRIG_REFINEMENT_MAX_STEP)
           {
-            aDelta = (aDelta > 0) ? THE_MAX_STEP : -THE_MAX_STEP;
+            aDelta = (aDelta > 0) ? Utils::THE_TRIG_REFINEMENT_MAX_STEP
+                                  : -Utils::THE_TRIG_REFINEMENT_MAX_STEP;
           }
 
           theX -= aDelta;
 
-          if (std::abs(aDelta) < THE_TOL)
+          if (std::abs(aDelta) < Utils::THE_TRIG_REFINEMENT_STEP_TOLERANCE)
           {
             break;
           }
@@ -446,36 +499,7 @@ inline TrigResult Trigonometric(double theA,
         aTeta = aTetaRefined;
       }
 
-      // Insert in sorted order, avoiding duplicates
-      bool aFound = false;
-      for (int k = 0; k < aResult.NbRoots; ++k)
-      {
-        if (std::abs(aTeta - aResult.Roots[k]) < theEps)
-        {
-          aFound = true;
-          break;
-        }
-      }
-
-      if (!aFound && aResult.NbRoots < 4)
-      {
-        // Insert sorted
-        int aPos = aResult.NbRoots;
-        for (int k = 0; k < aResult.NbRoots; ++k)
-        {
-          if (aTeta < aResult.Roots[k])
-          {
-            aPos = k;
-            break;
-          }
-        }
-        for (int k = aResult.NbRoots; k > aPos; --k)
-        {
-          aResult.Roots[k] = aResult.Roots[k - 1];
-        }
-        aResult.Roots[aPos] = aTeta;
-        aResult.NbRoots++;
-      }
+      Utils::AddDistinctTrigRoot(aResult, aTeta, theEps);
     }
   }
 
@@ -486,33 +510,7 @@ inline TrigResult Trigonometric(double theA,
     double aX    = aTeta - aMyBorneInf;
     if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
     {
-      bool aFound = false;
-      for (int k = 0; k < aResult.NbRoots; ++k)
-      {
-        if (std::abs(aTeta - aResult.Roots[k]) <= theEps)
-        {
-          aFound = true;
-          break;
-        }
-      }
-      if (!aFound)
-      {
-        int aPos = aResult.NbRoots;
-        for (int k = 0; k < aResult.NbRoots; ++k)
-        {
-          if (aTeta < aResult.Roots[k])
-          {
-            aPos = k;
-            break;
-          }
-        }
-        for (int k = aResult.NbRoots; k > aPos; --k)
-        {
-          aResult.Roots[k] = aResult.Roots[k - 1];
-        }
-        aResult.Roots[aPos] = aTeta;
-        aResult.NbRoots++;
-      }
+      Utils::AddDistinctTrigRoot(aResult, aTeta, theEps);
     }
   }
 

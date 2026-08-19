@@ -17,6 +17,7 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathLin_Utils.hxx"
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <math_IntegerVector.hxx>
@@ -35,6 +36,12 @@ struct LUResult
   std::optional<math_IntegerVector> Pivot; //!< Pivot indices
   std::optional<double>             Determinant;
   int                               Sign = 1; //!< Sign from row interchanges
+  size_t                            RowLower = 0;
+  size_t                            ColLower = 0;
+  size_t                            Dimension = 0;
+  double                            MinAbsPivot = 0.0;
+  double                            MaxAbsPivot = 0.0;
+  double                            ConditionEstimate = std::numeric_limits<double>::infinity();
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -46,65 +53,66 @@ struct LUResult
 //! and U is upper triangular. The result stores L and U in a combined matrix.
 //!
 //! @param theA input square matrix
-//! @param theMinPivot minimum pivot value (smaller treated as singular)
+//! @param theTolerance relative pivot tolerance
 //! @return LU decomposition result
-inline LUResult LU(const math_Matrix& theA, double theMinPivot = 1.0e-20)
+inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
 {
   LUResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aRowCount = aRowUpper - aRowLower + 1;
-  const int aColCount = aColUpper - aColLower + 1;
+  const size_t aRowCount = theA.RowSize();
+  const size_t aColCount = theA.ColSize();
 
-  // Check for square matrix
-  if (aRowCount != aColCount)
+  const double aRelTol = Utils::RelativeTolerance(theTolerance, aRowCount);
+  if (aRowCount != aColCount || aRowCount == 0 || aRelTol < 0.0 || !Utils::IsFinite(theA))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  // Initialize LU matrix as copy of A
-  aResult.LU    = theA;
-  aResult.Pivot = math_IntegerVector(aRowLower, aRowUpper);
-  aResult.Sign  = 1;
+  aResult.LU        = math_Matrix(aRowCount, aRowCount);
+  aResult.Pivot     = math_IntegerVector(aRowCount);
+  aResult.Sign      = 1;
+  aResult.RowLower  = 0;
+  aResult.ColLower  = 0;
+  aResult.Dimension = aRowCount;
 
   math_Matrix&        aLU    = *aResult.LU;
   math_IntegerVector& aPivot = *aResult.Pivot;
 
   // Scaling factors for implicit pivoting
-  math_Vector aScale(aRowLower, aRowUpper);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  math_Vector aScale(aRowCount);
+  double      aMatrixScale = 0.0;
+  for (size_t i = 0; i < aRowCount; ++i)
   {
     double aMax = 0.0;
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aRowCount; ++j)
     {
-      const double aAbs = std::abs(aLU(i, j));
+      aLU.ChangeAt(i, j) = theA.At(i, j);
+      const double aAbs = std::abs(aLU.At(i, j));
       if (aAbs > aMax)
       {
         aMax = aAbs;
       }
     }
-    if (aMax < theMinPivot)
+    if (aMax == 0.0)
     {
       aResult.Status = Status::NumericalError; // Singular matrix
       return aResult;
     }
-    aScale(i) = 1.0 / aMax;
+    aScale[i] = 1.0 / aMax;
+    aMatrixScale = std::max(aMatrixScale, aMax);
   }
 
   // Crout's algorithm with partial pivoting
-  for (int k = aRowLower; k <= aRowUpper; ++k)
+  for (size_t k = 0; k < aRowCount; ++k)
   {
     // Find pivot
     double aMaxScaled = 0.0;
-    int    aPivotRow  = k;
+    size_t aPivotRow  = k;
 
-    for (int i = k; i <= aRowUpper; ++i)
+    for (size_t i = k; i < aRowCount; ++i)
     {
-      const double aScaled = aScale(i) * std::abs(aLU(i, k));
+      const double aScaled = aScale[i] * std::abs(aLU.At(i, k));
       if (aScaled > aMaxScaled)
       {
         aMaxScaled = aScaled;
@@ -115,40 +123,51 @@ inline LUResult LU(const math_Matrix& theA, double theMinPivot = 1.0e-20)
     // Swap rows if needed
     if (aPivotRow != k)
     {
-      for (int j = aColLower; j <= aColUpper; ++j)
+      for (size_t j = 0; j < aRowCount; ++j)
       {
-        std::swap(aLU(aPivotRow, j), aLU(k, j));
+        std::swap(aLU.ChangeAt(aPivotRow, j), aLU.ChangeAt(k, j));
       }
       aResult.Sign = -aResult.Sign;
-      std::swap(aScale(aPivotRow), aScale(k));
+      std::swap(aScale[aPivotRow], aScale[k]);
     }
-    aPivot(k) = aPivotRow;
+    aPivot[k] = static_cast<int>(aPivotRow);
 
     // Check for singular matrix
-    if (std::abs(aLU(k, k)) < theMinPivot)
+    const double anAbsPivot = std::abs(aLU.At(k, k));
+    if (!std::isfinite(anAbsPivot) || anAbsPivot <= aRelTol * aMatrixScale)
     {
       aResult.Status = Status::NumericalError;
       return aResult;
     }
 
     // Eliminate below diagonal
-    for (int i = k + 1; i <= aRowUpper; ++i)
+    aResult.MaxAbsPivot = std::max(aResult.MaxAbsPivot, anAbsPivot);
+    aResult.MinAbsPivot = k == 0 ? anAbsPivot : std::min(aResult.MinAbsPivot, anAbsPivot);
+    for (size_t i = k + 1; i < aRowCount; ++i)
     {
-      aLU(i, k) /= aLU(k, k);
-      const double aFactor = aLU(i, k);
-      for (int j = k + 1; j <= aColUpper; ++j)
+      aLU.ChangeAt(i, k) /= aLU.At(k, k);
+      const double aFactor = aLU.At(i, k);
+      for (size_t j = k + 1; j < aRowCount; ++j)
       {
-        aLU(i, j) -= aFactor * aLU(k, j);
+        aLU.ChangeAt(i, j) -= aFactor * aLU.At(k, j);
       }
     }
   }
 
   // Compute determinant
   aResult.Determinant = static_cast<double>(aResult.Sign);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aRowCount; ++i)
   {
-    *aResult.Determinant *= aLU(i, i);
+    *aResult.Determinant *= aLU.At(i, i);
+    if (!std::isfinite(*aResult.Determinant))
+    {
+      aResult.Determinant.reset();
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
   }
+
+  aResult.ConditionEstimate = aResult.MaxAbsPivot / aResult.MinAbsPivot;
 
   aResult.Status = Status::OK;
   return aResult;
@@ -162,7 +181,7 @@ inline LUResult LU(const math_Matrix& theA, double theMinPivot = 1.0e-20)
 //! @return result containing solution vector
 inline LinearResult Solve(const math_Matrix& theA,
                           const math_Vector& theB,
-                          double             theMinPivot = 1.0e-20)
+                          double             theMinPivot = 1.0e-15)
 {
   LinearResult aResult;
 
@@ -174,11 +193,8 @@ inline LinearResult Solve(const math_Matrix& theA,
     return aResult;
   }
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-
-  // Check dimensions
-  if (theB.Lower() != aRowLower || theB.Upper() != aRowUpper)
+  const size_t aN = theA.RowSize();
+  if (theB.Size() != aN || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -187,44 +203,43 @@ inline LinearResult Solve(const math_Matrix& theA,
   const math_Matrix&        aLU    = *aLURes.LU;
   const math_IntegerVector& aPivot = *aLURes.Pivot;
 
-  // Copy B to working vector (we modify it in-place like the legacy algorithm)
-  math_Vector aX = theB;
+  math_Vector aX(aN);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    aX[i] = theB.At(i);
+  }
 
   // Forward substitution with in-place permutation (matches legacy LU_Solve)
-  int aFirstNonZero = 0;
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    const int aPivotIdx = aPivot(i);
-    double    aSum      = aX(aPivotIdx);
-    aX(aPivotIdx)       = aX(i); // Swap elements in-place
+    const size_t aPivotIdx = static_cast<size_t>(aPivot[i]);
+    double       aSum      = aX[aPivotIdx];
+    aX[aPivotIdx]          = aX[i]; // Swap elements in-place
 
-    if (aFirstNonZero != 0)
+    for (size_t j = 0; j < i; ++j)
     {
-      for (int j = aFirstNonZero; j < i; ++j)
-      {
-        aSum -= aLU(i, j) * aX(j);
-      }
+      aSum -= aLU.At(i, j) * aX[j];
     }
-    else if (!MathUtils::IsZero(aSum))
-    {
-      aFirstNonZero = i;
-    }
-    aX(i) = aSum;
+    aX[i] = aSum;
   }
 
   // Back substitution (solve Ux = y)
-  for (int i = aRowUpper; i >= aRowLower; --i)
+  for (size_t i = aN; i-- > 0;)
   {
-    double aSum = aX(i);
-    for (int j = i + 1; j <= aRowUpper; ++j)
+    double aSum = aX[i];
+    for (size_t j = i + 1; j < aN; ++j)
     {
-      aSum -= aLU(i, j) * aX(j);
+      aSum -= aLU.At(i, j) * aX[j];
     }
-    aX(i) = aSum / aLU(i, i);
+    aX[i] = aSum / aLU.At(i, i);
   }
 
-  aResult.Status      = Status::OK;
-  aResult.Solution    = aX;
+  aResult.Solution = math_Vector(aN);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    (*aResult.Solution)[i] = aX[i];
+  }
+  aResult.Status      = Utils::IsFinite(*aResult.Solution) ? Status::OK : Status::NumericalError;
   aResult.Determinant = aLURes.Determinant;
   return aResult;
 }
@@ -237,8 +252,8 @@ inline LinearResult Solve(const math_Matrix& theA,
 //! @param theMinPivot minimum pivot value
 //! @return result containing solution matrix
 inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
-                                          const math_Matrix& theB,
-                                          double             theMinPivot = 1.0e-20)
+                                           const math_Matrix& theB,
+                                           double             theMinPivot = 1.0e-15)
 {
   LinearMultipleResult aResult;
 
@@ -250,11 +265,8 @@ inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
     return aResult;
   }
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-
-  // Check dimensions
-  if (theB.LowerRow() != aRowLower || theB.UpperRow() != aRowUpper)
+  const size_t aN = theA.RowSize();
+  if (theB.RowSize() != aN || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -264,58 +276,50 @@ inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
   const math_IntegerVector& aPivot = *aLURes.Pivot;
 
   // Solve for each column of B
-  math_Matrix aX(aRowLower, aRowUpper, theB.LowerCol(), theB.UpperCol());
+  math_Matrix aX(theA.ColSize(), theB.ColSize());
 
-  for (int col = theB.LowerCol(); col <= theB.UpperCol(); ++col)
+  for (size_t aCol = 0; aCol < theB.ColSize(); ++aCol)
   {
     // Extract column as working vector
-    math_Vector aWork(aRowLower, aRowUpper);
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    math_Vector aWork(aN);
+    for (size_t i = 0; i < aN; ++i)
     {
-      aWork(i) = theB(i, col);
+      aWork[i] = theB.At(i, aCol);
     }
 
     // Forward substitution with in-place permutation
-    int aFirstNonZero = 0;
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      const int aPivotIdx = aPivot(i);
-      double    aSum      = aWork(aPivotIdx);
-      aWork(aPivotIdx)    = aWork(i); // Swap elements in-place
+      const size_t aPivotIdx = static_cast<size_t>(aPivot[i]);
+      double       aSum      = aWork[aPivotIdx];
+      aWork[aPivotIdx]       = aWork[i]; // Swap elements in-place
 
-      if (aFirstNonZero != 0)
+      for (size_t j = 0; j < i; ++j)
       {
-        for (int j = aFirstNonZero; j < i; ++j)
-        {
-          aSum -= aLU(i, j) * aWork(j);
-        }
+        aSum -= aLU.At(i, j) * aWork[j];
       }
-      else if (!MathUtils::IsZero(aSum))
-      {
-        aFirstNonZero = i;
-      }
-      aWork(i) = aSum;
+      aWork[i] = aSum;
     }
 
     // Back substitution
-    for (int i = aRowUpper; i >= aRowLower; --i)
+    for (size_t i = aN; i-- > 0;)
     {
-      double aSum = aWork(i);
-      for (int j = i + 1; j <= aRowUpper; ++j)
+      double aSum = aWork[i];
+      for (size_t j = i + 1; j < aN; ++j)
       {
-        aSum -= aLU(i, j) * aWork(j);
+        aSum -= aLU.At(i, j) * aWork[j];
       }
-      aWork(i) = aSum / aLU(i, i);
+      aWork[i] = aSum / aLU.At(i, i);
     }
 
     // Copy result to output matrix
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aX(i, col) = aWork(i);
+      aX.ChangeAt(i, aCol) = aWork[i];
     }
   }
 
-  aResult.Status      = Status::OK;
+  aResult.Status      = Utils::IsFinite(aX) ? Status::OK : Status::NumericalError;
   aResult.Determinant = aLURes.Determinant;
   aResult.Solutions   = aX;
   return aResult;
@@ -326,15 +330,14 @@ inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
 //! @param theA input square matrix
 //! @param theMinPivot minimum pivot value
 //! @return result containing determinant value
-inline LinearResult Determinant(const math_Matrix& theA, double theMinPivot = 1.0e-20)
+inline LinearResult Determinant(const math_Matrix& theA, double theMinPivot = 1.0e-15)
 {
   LinearResult aResult;
 
   LUResult aLURes = LU(theA, theMinPivot);
   if (!aLURes.IsDone())
   {
-    aResult.Status      = aLURes.Status;
-    aResult.Determinant = 0.0;
+    aResult.Status = aLURes.Status;
     return aResult;
   }
 
@@ -348,7 +351,7 @@ inline LinearResult Determinant(const math_Matrix& theA, double theMinPivot = 1.
 //! @param theA input square matrix
 //! @param theMinPivot minimum pivot value
 //! @return result containing inverse matrix
-inline InverseResult Invert(const math_Matrix& theA, double theMinPivot = 1.0e-20)
+inline InverseResult Invert(const math_Matrix& theA, double theMinPivot = 1.0e-15)
 {
   InverseResult aResult;
 
@@ -360,68 +363,56 @@ inline InverseResult Invert(const math_Matrix& theA, double theMinPivot = 1.0e-2
     return aResult;
   }
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-
   const math_Matrix&        aLU    = *aLURes.LU;
   const math_IntegerVector& aPivot = *aLURes.Pivot;
 
   // Compute inverse column by column using LU_Solve approach
-  math_Matrix aInv(aRowLower, aRowUpper, aColLower, aColUpper, 0.0);
-  math_Vector aCol(aRowLower, aRowUpper);
+  const size_t aN = theA.RowSize();
+  math_Matrix  aInv(theA.ColSize(), theA.RowSize(), 0.0);
+  math_Vector  aCol(aN);
 
-  for (int col = aColLower; col <= aColUpper; ++col)
+  for (size_t aColIdx = 0; aColIdx < aN; ++aColIdx)
   {
     // Initialize column as unit vector
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aCol(i) = 0.0;
+      aCol[i] = 0.0;
     }
-    aCol(col - aColLower + aRowLower) = 1.0;
+    aCol[aColIdx] = 1.0;
 
     // Forward substitution with in-place permutation
-    int aFirstNonZero = 0;
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      const int aPivotIdx = aPivot(i);
-      double    aSum      = aCol(aPivotIdx);
-      aCol(aPivotIdx)     = aCol(i); // Swap elements in-place
+      const size_t aPivotIdx = static_cast<size_t>(aPivot[i]);
+      double       aSum      = aCol[aPivotIdx];
+      aCol[aPivotIdx]        = aCol[i]; // Swap elements in-place
 
-      if (aFirstNonZero != 0)
+      for (size_t j = 0; j < i; ++j)
       {
-        for (int j = aFirstNonZero; j < i; ++j)
-        {
-          aSum -= aLU(i, j) * aCol(j);
-        }
+        aSum -= aLU.At(i, j) * aCol[j];
       }
-      else if (!MathUtils::IsZero(aSum))
-      {
-        aFirstNonZero = i;
-      }
-      aCol(i) = aSum;
+      aCol[i] = aSum;
     }
 
     // Back substitution
-    for (int i = aRowUpper; i >= aRowLower; --i)
+    for (size_t i = aN; i-- > 0;)
     {
-      double aSum = aCol(i);
-      for (int j = i + 1; j <= aRowUpper; ++j)
+      double aSum = aCol[i];
+      for (size_t j = i + 1; j < aN; ++j)
       {
-        aSum -= aLU(i, j) * aCol(j);
+        aSum -= aLU.At(i, j) * aCol[j];
       }
-      aCol(i) = aSum / aLU(i, i);
+      aCol[i] = aSum / aLU.At(i, i);
     }
 
     // Copy result to inverse matrix
-    for (int i = aRowLower; i <= aRowUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aInv(i, col) = aCol(i);
+      aInv.ChangeAt(i, aColIdx) = aCol[i];
     }
   }
 
-  aResult.Status      = Status::OK;
+  aResult.Status      = Utils::IsFinite(aInv) ? Status::OK : Status::NumericalError;
   aResult.Inverse     = aInv;
   aResult.Determinant = aLURes.Determinant;
   return aResult;

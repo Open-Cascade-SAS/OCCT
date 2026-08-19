@@ -158,9 +158,10 @@ TEST_F(MathSys_Newton3DTest, Solve3D_TinyStepLargeResidual_ReturnsMaxIterations)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance    = 1.0e-8;
-  aOptions.XTolerance    = 1.0e-16;
-  aOptions.MaxIterations = 10;
+  aOptions.FTolerance       = 1.0e-8;
+  aOptions.XTolerance       = 1.0e-16;
+  aOptions.MaxIterations    = 10;
+  aOptions.EnableLineSearch = false;
 
   const MathSys::NewtonResultN<3> aResult =
     MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
@@ -248,8 +249,8 @@ class LineCurveEval
 public:
   void D2(double theT, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const
   {
-    theP.SetCoord(theT, 0.0, 0.0);
-    theD1.SetCoord(1.0, 0.0, 0.0);
+    theP.SetCoord(0.0, 0.0, theT);
+    theD1.SetCoord(0.0, 0.0, 1.0);
     theD2.SetCoord(0.0, 0.0, 0.0);
   }
 };
@@ -292,10 +293,75 @@ TEST_F(MathSys_Newton3DTest, SolveCurveSurfaceExtrema3D_Smoke)
   const MathSys::NewtonResultN<3> aResult =
     MathSys::SolveCurveSurfaceExtrema3D(aCurve,
                                         aSurface,
-                                        std::array<double, 3>{1.0, 1.0, 0.0},
+                                         std::array<double, 3>{1.0, 2.0, -3.0},
                                         aBounds,
                                         aOptions);
 
   EXPECT_TRUE(aResult.IsDone());
+  EXPECT_GT(aResult.NbIterations, 0u);
+  EXPECT_NEAR(aResult.X[0], 0.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[1], 0.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[2], 0.0, 1.0e-12);
   EXPECT_NEAR(aResult.ResidualNorm, 0.0, 1.0e-12);
+}
+
+TEST_F(MathSys_Newton3DTest, Solve3D_ScaleRelativeJacobian)
+{
+  const auto aFunc = [](double theX, double theY, double theZ, double theF[3], double theJ[3][3]) {
+    constexpr double THE_SCALE = 1.0e-150;
+    theF[0]                    = THE_SCALE * (theX - 1.0);
+    theF[1]                    = THE_SCALE * (theY - 2.0);
+    theF[2]                    = THE_SCALE * (theZ - 3.0);
+    for (size_t aRow = 0; aRow < 3; ++aRow)
+    {
+      for (size_t aCol = 0; aCol < 3; ++aCol)
+      {
+        theJ[aRow][aCol] = (aRow == aCol) ? THE_SCALE : 0.0;
+      }
+    }
+    return true;
+  };
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance   = 1.0e-200;
+  aOptions.MaxStepRatio = 10.0;
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[2], 3.0, 1.0e-12);
+}
+
+TEST_F(MathSys_Newton3DTest, Solve3D_HeterogeneousFullRankJacobian)
+{
+  const auto aFunc = [](double theX, double theY, double theZ, double theF[3], double theJ[3][3]) {
+    constexpr double THE_SMALL_SCALE = 1.0e-7;
+    theF[0]                         = theX - 1.0;
+    theF[1]                         = THE_SMALL_SCALE * (theY - 2.0);
+    theF[2]                         = THE_SMALL_SCALE * (theZ - 3.0);
+    for (size_t aRow = 0; aRow < 3; ++aRow)
+    {
+      for (size_t aCol = 0; aCol < 3; ++aCol)
+      {
+        theJ[aRow][aCol] = 0.0;
+      }
+    }
+    theJ[0][0] = 1.0;
+    theJ[1][1] = THE_SMALL_SCALE;
+    theJ[2][2] = THE_SMALL_SCALE;
+    return true;
+  };
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance   = 1.0e-14;
+  aOptions.MaxStepRatio = 10.0;
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-12);
+  EXPECT_NEAR(aResult.X[2], 3.0, 1.0e-12);
 }

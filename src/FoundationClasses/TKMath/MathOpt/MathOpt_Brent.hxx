@@ -18,6 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Bracket.hxx>
+#include "MathOpt_Utils.hxx"
 
 #include <cmath>
 
@@ -50,6 +51,13 @@ ScalarResult Brent(Function&     theFunc,
 {
   ScalarResult aResult;
 
+  if (!Utils::IsValidConfig(theConfig) || !std::isfinite(theLower) || !std::isfinite(theUpper)
+      || theLower >= theUpper)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   double aA = theLower;
   double aB = theUpper;
 
@@ -58,10 +66,11 @@ ScalarResult Brent(Function&     theFunc,
   double aW = aX;
   double aV = aX;
 
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aValueStatus;
     return aResult;
   }
   double aFw = aFx;
@@ -70,7 +79,7 @@ ScalarResult Brent(Function&     theFunc,
   double aD = 0.0; // Current step
   double aE = 0.0; // Previous step
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     const double aXm   = 0.5 * (aA + aB);
     const double aTol1 = theConfig.XTolerance * std::abs(aX) + MathUtils::THE_ZERO_TOL / 10.0;
@@ -143,10 +152,11 @@ ScalarResult Brent(Function&     theFunc,
       aU = aX + MathUtils::SignTransfer(aTol1, aD);
     }
 
-    double aFu = 0.0;
-    if (!theFunc.Value(aU, aFu))
+    double       aFu          = 0.0;
+    const Status aValueStatus = Utils::ValueStatus(theFunc, aU, aFu);
+    if (aValueStatus != Status::OK)
     {
-      aResult.Status = Status::NumericalError;
+      aResult.Status = aValueStatus;
       aResult.Root   = aX;
       aResult.Value  = aFx;
       return aResult;
@@ -222,31 +232,37 @@ ScalarResult Golden(Function&     theFunc,
 {
   ScalarResult aResult;
 
-  constexpr double aR = 0.618033988749895; // (sqrt(5) - 1) / 2
-  constexpr double aC = 1.0 - aR;
+  if (!Utils::IsValidConfig(theConfig) || !std::isfinite(theLower) || !std::isfinite(theUpper)
+      || theLower >= theUpper)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   double aA = theLower;
   double aB = theUpper;
 
   // Initialize interior points
-  double aX1 = aA + aC * (aB - aA);
-  double aX2 = aA + aR * (aB - aA);
+  double aX1 = aA + MathUtils::THE_GOLDEN_SECTION * (aB - aA);
+  double aX2 = aA + (1.0 - MathUtils::THE_GOLDEN_SECTION) * (aB - aA);
 
   double aF1 = 0.0;
   double aF2 = 0.0;
 
-  if (!theFunc.Value(aX1, aF1))
+  const Status aFirstValueStatus = Utils::ValueStatus(theFunc, aX1, aF1);
+  if (aFirstValueStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aFirstValueStatus;
     return aResult;
   }
-  if (!theFunc.Value(aX2, aF2))
+  const Status aSecondValueStatus = Utils::ValueStatus(theFunc, aX2, aF2);
+  if (aSecondValueStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aSecondValueStatus;
     return aResult;
   }
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
@@ -270,13 +286,14 @@ ScalarResult Golden(Function&     theFunc,
     if (aF1 < aF2)
     {
       // Minimum is in [a, x2]
-      aB  = aX2;
-      aX2 = aX1;
-      aF2 = aF1;
-      aX1 = aA + aC * (aB - aA);
-      if (!theFunc.Value(aX1, aF1))
+      aB                        = aX2;
+      aX2                       = aX1;
+      aF2                       = aF1;
+      aX1                       = aA + MathUtils::THE_GOLDEN_SECTION * (aB - aA);
+      const Status aValueStatus = Utils::ValueStatus(theFunc, aX1, aF1);
+      if (aValueStatus != Status::OK)
       {
-        aResult.Status = Status::NumericalError;
+        aResult.Status = aValueStatus;
         aResult.Root   = aX2;
         aResult.Value  = aF2;
         return aResult;
@@ -285,13 +302,14 @@ ScalarResult Golden(Function&     theFunc,
     else
     {
       // Minimum is in [x1, b]
-      aA  = aX1;
-      aX1 = aX2;
-      aF1 = aF2;
-      aX2 = aA + aR * (aB - aA);
-      if (!theFunc.Value(aX2, aF2))
+      aA                        = aX1;
+      aX1                       = aX2;
+      aF1                       = aF2;
+      aX2                       = aA + (1.0 - MathUtils::THE_GOLDEN_SECTION) * (aB - aA);
+      const Status aValueStatus = Utils::ValueStatus(theFunc, aX2, aF2);
+      if (aValueStatus != Status::OK)
       {
-        aResult.Status = Status::NumericalError;
+        aResult.Status = aValueStatus;
         aResult.Root   = aX1;
         aResult.Value  = aF1;
         return aResult;
@@ -331,13 +349,25 @@ ScalarResult BrentWithBracket(Function&     theFunc,
 {
   ScalarResult aResult;
 
+  if (!Utils::IsValidConfig(theConfig) || !std::isfinite(theGuess) || !std::isfinite(theStep)
+      || theStep == 0.0 || !std::isfinite(theGuess + theStep))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   // Try to bracket minimum
   MathUtils::MinBracketResult aBracket =
     MathUtils::BracketMinimum(theFunc, theGuess, theGuess + theStep);
 
   if (!aBracket.IsValid)
   {
-    aResult.Status = Status::InvalidInput;
+    aResult.Status = aBracket.Status;
+    return aResult;
+  }
+  if (!std::isfinite(aBracket.A) || !std::isfinite(aBracket.C) || aBracket.A == aBracket.C)
+  {
+    aResult.Status = Status::NumericalError;
     return aResult;
   }
 

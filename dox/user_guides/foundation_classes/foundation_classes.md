@@ -1427,7 +1427,7 @@ Math primitives and algorithms available in Open CASCADE Technology include:
 
 The Vectors and Matrices component provides a C++ implementation of the fundamental types *math_Vector* and *math_Matrix*, which are regularly used to define more complex data structures.
 
-@note **Modern alternative.** New code should prefer the *MathLin* solvers under `src/FoundationClasses/TKMath/MathLin/` (`MathLin_Gauss`, `MathLin_LU`, `MathLin_QR`, `MathLin_SVD`, …) and the dynamic vector type `NCollection_LinearVector`. The convenience entry point `MathLin::Solve(A, b)` returns a `MathUtils::LinearResult` with an optional `Solution` and a `Status` enum. The *math_** classes documented below remain fully supported and are still used internally by many algorithms.
+@note **Modern alternative.** New code should prefer the *MathLin* solvers under `src/FoundationClasses/TKMath/MathLin/` (`MathLin_Gauss`, `MathLin_Householder`, `MathLin_SVD`, etc.). The convenience entry point `MathLin::Solve(A, b)` returns a zero-based `MathUtils::LinearResult` with an optional `Solution` and a `Status` enum. Modern solver dimensions and indices use `size_t`; iteration counters use `uint32_t`. These APIs intentionally do not preserve the stateful API or indexing behavior of the legacy *math_** solver classes.
 
 The <i>math_Vector</i> and <i>math_Matrix</i> classes provide commonly used mathematical algorithms which include:
 

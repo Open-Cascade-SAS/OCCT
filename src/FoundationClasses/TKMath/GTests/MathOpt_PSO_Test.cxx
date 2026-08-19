@@ -36,9 +36,9 @@ struct SphereFunc
   bool Value(const math_Vector& theX, double& theF)
   {
     theF = 0.0;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theF += theX(i) * theX(i);
+      theF += theX.At(i) * theX.At(i);
     }
     return true;
   }
@@ -51,12 +51,12 @@ struct RastriginFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN  = theX.Length();
+    const size_t aN  = theX.Size();
     const double aPI = M_PI;
     theF             = 10.0 * aN;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theF += theX(i) * theX(i) - 10.0 * std::cos(2.0 * aPI * theX(i));
+      theF += theX.At(i) * theX.At(i) - 10.0 * std::cos(2.0 * aPI * theX.At(i));
     }
     return true;
   }
@@ -67,15 +67,15 @@ struct AckleyFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN    = theX.Length();
+    const size_t aN    = theX.Size();
     const double aPI   = M_PI;
     double       aSum1 = 0.0;
     double       aSum2 = 0.0;
 
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      aSum1 += theX(i) * theX(i);
-      aSum2 += std::cos(2.0 * aPI * theX(i));
+      aSum1 += theX.At(i) * theX.At(i);
+      aSum2 += std::cos(2.0 * aPI * theX.At(i));
     }
 
     theF = -20.0 * std::exp(-0.2 * std::sqrt(aSum1 / aN)) - std::exp(aSum2 / aN) + 20.0 + M_E;
@@ -89,8 +89,8 @@ struct RosenbrockFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX  = theX(1);
-    const double aY  = theX(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     const double aT1 = aY - aX * aX;
     const double aT2 = 1.0 - aX;
     theF             = 100.0 * aT1 * aT1 + aT2 * aT2;
@@ -104,13 +104,35 @@ struct BoothFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX  = theX(1);
-    const double aY  = theX(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     const double aT1 = aX + 2.0 * aY - 7.0;
     const double aT2 = 2.0 * aX + aY - 5.0;
     theF             = aT1 * aT1 + aT2 * aT2;
     return true;
   }
+};
+
+struct PartiallyDefinedFunc
+{
+  bool Value(const math_Vector& theX, double& theF)
+  {
+    if (theX.At(0) < 0.0)
+    {
+      ++NbRejectedCalls;
+      return false;
+    }
+    const double aDelta = theX.At(0) - 0.25;
+    theF                = aDelta * aDelta;
+    return true;
+  }
+
+  int NbRejectedCalls = 0;
+};
+
+struct RejectAllFunc
+{
+  bool Value(const math_Vector&, double&) { return false; }
 };
 
 // ============================================================================
@@ -151,8 +173,8 @@ TEST(MathOpt_PSOTest, Sphere2D)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 50;
@@ -162,8 +184,8 @@ TEST(MathOpt_PSOTest, Sphere2D)
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -171,8 +193,8 @@ TEST(MathOpt_PSOTest, Sphere3D)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 3, -5.0);
-  math_Vector aUpper(1, 3, 5.0);
+  math_Vector aLower(size_t{3}, -5.0);
+  math_Vector aUpper(size_t{3}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 40;
@@ -184,7 +206,7 @@ TEST(MathOpt_PSOTest, Sphere3D)
   ASSERT_TRUE(aResult.IsDone());
   for (int i = 1; i <= 3; ++i)
   {
-    EXPECT_NEAR((*aResult.Solution)(i), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR(aResult.Solution->At(static_cast<size_t>(i - 1)), 0.0, THE_TOLERANCE);
   }
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
@@ -193,8 +215,8 @@ TEST(MathOpt_PSOTest, Booth)
 {
   BoothFunc aFunc;
 
-  math_Vector aLower(1, 2, -10.0);
-  math_Vector aUpper(1, 2, 10.0);
+  math_Vector aLower(size_t{2}, -10.0);
+  math_Vector aUpper(size_t{2}, 10.0);
 
   // PSO with larger search space needs more exploration
   MathOpt::PSOConfig aConfig;
@@ -205,8 +227,8 @@ TEST(MathOpt_PSOTest, Booth)
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_STOCHASTIC_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, THE_STOCHASTIC_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_STOCHASTIC_TOLERANCE);
 }
 
@@ -214,8 +236,8 @@ TEST(MathOpt_PSOTest, Rosenbrock)
 {
   RosenbrockFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 50;
@@ -225,8 +247,8 @@ TEST(MathOpt_PSOTest, Rosenbrock)
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 0.1);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, 0.1);
   EXPECT_LT(*aResult.Value, 0.1);
 }
 
@@ -238,8 +260,8 @@ TEST(MathOpt_PSOTest, Rastrigin2D)
 {
   RastriginFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.12);
-  math_Vector aUpper(1, 2, 5.12);
+  math_Vector aLower(size_t{2}, -5.12);
+  math_Vector aUpper(size_t{2}, 5.12);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 60;
@@ -250,8 +272,8 @@ TEST(MathOpt_PSOTest, Rastrigin2D)
 
   ASSERT_TRUE(aResult.IsDone());
   // PSO should find the global minimum at origin
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 0.5);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 0.5);
   EXPECT_LT(*aResult.Value, 1.0);
 }
 
@@ -259,8 +281,8 @@ TEST(MathOpt_PSOTest, Ackley2D)
 {
   AckleyFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 60;
@@ -271,8 +293,8 @@ TEST(MathOpt_PSOTest, Ackley2D)
 
   ASSERT_TRUE(aResult.IsDone());
   // Global minimum at origin with f = 0
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 0.5);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 0.5);
   EXPECT_LT(*aResult.Value, 1.0);
 }
 
@@ -284,8 +306,8 @@ TEST(MathOpt_PSOTest, ParameterSensitivity_Omega)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // Test different inertia weights
   double aOmegas[] = {0.4, 0.7, 0.9};
@@ -309,8 +331,8 @@ TEST(MathOpt_PSOTest, ParameterSensitivity_SwarmSize)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // Test different swarm sizes
   int aSizes[] = {10, 30, 50, 100};
@@ -337,8 +359,8 @@ TEST(MathOpt_PSOTest, Reproducibility)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 30;
@@ -353,8 +375,8 @@ TEST(MathOpt_PSOTest, Reproducibility)
 
   // With same seed, results should be identical
   EXPECT_DOUBLE_EQ(*aResult1.Value, *aResult2.Value);
-  EXPECT_DOUBLE_EQ((*aResult1.Solution)(1), (*aResult2.Solution)(1));
-  EXPECT_DOUBLE_EQ((*aResult1.Solution)(2), (*aResult2.Solution)(2));
+  EXPECT_DOUBLE_EQ(aResult1.Solution->At(0), aResult2.Solution->At(0));
+  EXPECT_DOUBLE_EQ(aResult1.Solution->At(1), aResult2.Solution->At(1));
 }
 
 // ============================================================================
@@ -366,12 +388,15 @@ TEST(MathOpt_PSOTest, CompareWithOldAPI_Sphere)
   SphereFuncOld anOldFunc(2);
   SphereFunc    aNewFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector anOldLower(1, 2, -5.0);
+  math_Vector anOldUpper(1, 2, 5.0);
+
+  math_Vector aNewLower(size_t{2}, -5.0);
+  math_Vector aNewUpper(size_t{2}, 5.0);
 
   // Old API
   math_Vector aStep(1, 2, 0.5);
-  math_PSO    anOldSolver(&anOldFunc, aLower, aUpper, aStep, 30, 100);
+  math_PSO    anOldSolver(&anOldFunc, anOldLower, anOldUpper, aStep, 30, 100);
   double      anOldValue = 0.0;
   math_Vector anOldOutPnt(1, 2);
   anOldSolver.Perform(aStep, anOldValue, anOldOutPnt);
@@ -381,12 +406,16 @@ TEST(MathOpt_PSOTest, CompareWithOldAPI_Sphere)
   aConfig.NbParticles   = 30;
   aConfig.MaxIterations = 100;
   aConfig.Tolerance     = 1.0e-8;
-  auto aNewResult       = MathOpt::PSO(aNewFunc, aLower, aUpper, aConfig);
+  auto aNewResult       = MathOpt::PSO(aNewFunc, aNewLower, aNewUpper, aConfig);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // Both should find a good solution
+  // Both should find comparable minima.
+  EXPECT_LT(anOldValue, 0.01);
   EXPECT_LT(*aNewResult.Value, 0.01);
+  EXPECT_NEAR(anOldValue, *aNewResult.Value, 0.01);
+  EXPECT_NEAR(anOldOutPnt.At(0), aNewResult.Solution->At(0), 0.1);
+  EXPECT_NEAR(anOldOutPnt.At(1), aNewResult.Solution->At(1), 0.1);
 }
 
 // ============================================================================
@@ -397,8 +426,8 @@ TEST(MathOpt_PSOTest, Sphere5D)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 5, -5.0);
-  math_Vector aUpper(1, 5, 5.0);
+  math_Vector aLower(size_t{5}, -5.0);
+  math_Vector aUpper(size_t{5}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 60;
@@ -410,7 +439,7 @@ TEST(MathOpt_PSOTest, Sphere5D)
   ASSERT_TRUE(aResult.IsDone());
   for (int i = 1; i <= 5; ++i)
   {
-    EXPECT_NEAR((*aResult.Solution)(i), 0.0, 0.1);
+    EXPECT_NEAR(aResult.Solution->At(static_cast<size_t>(i - 1)), 0.0, 0.1);
   }
   EXPECT_LT(*aResult.Value, 0.1);
 }
@@ -424,13 +453,13 @@ TEST(MathOpt_PSOTest, AsymmetricBounds)
   BoothFunc aFunc;
 
   // Asymmetric bounds that still contain the minimum (1, 3)
-  math_Vector aLower(1, 2);
-  aLower(1) = -5.0;
-  aLower(2) = 0.0;
+  math_Vector aLower(2);
+  aLower.ChangeAt(0) = -5.0;
+  aLower.ChangeAt(1) = 0.0;
 
-  math_Vector aUpper(1, 2);
-  aUpper(1) = 5.0;
-  aUpper(2) = 10.0;
+  math_Vector aUpper(2);
+  aUpper.ChangeAt(0) = 5.0;
+  aUpper.ChangeAt(1) = 10.0;
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 40;
@@ -440,8 +469,8 @@ TEST(MathOpt_PSOTest, AsymmetricBounds)
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_STOCHASTIC_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, THE_STOCHASTIC_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_STOCHASTIC_TOLERANCE);
 }
 
@@ -453,8 +482,8 @@ TEST(MathOpt_PSOTest, SeededInit_Sphere2D_ImprovesEvalCount)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // Unseeded run
   MathOpt::PSOConfig aConfig;
@@ -470,9 +499,9 @@ TEST(MathOpt_PSOTest, SeededInit_Sphere2D_ImprovesEvalCount)
   MathOpt::PSOConfig aConfigSeeded = aConfig;
   aConfigSeeded.InitMode           = MathOpt::PSOInitMode::SeededPlusRandom;
 
-  math_Vector aSeedPos(1, 2, 0.0);
-  aSeedPos(1) = 0.1;
-  aSeedPos(2) = -0.1;
+  math_Vector aSeedPos(size_t{2}, 0.0);
+  aSeedPos.ChangeAt(0) = 0.1;
+  aSeedPos.ChangeAt(1) = -0.1;
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
 
@@ -491,8 +520,8 @@ TEST(MathOpt_PSOTest, SeededInit_Rastrigin2D_StableQuality)
 {
   RastriginFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.12);
-  math_Vector aUpper(1, 2, 5.12);
+  math_Vector aLower(size_t{2}, -5.12);
+  math_Vector aUpper(size_t{2}, 5.12);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 60;
@@ -501,15 +530,15 @@ TEST(MathOpt_PSOTest, SeededInit_Rastrigin2D_StableQuality)
   aConfig.InitMode      = MathOpt::PSOInitMode::SeededPlusRandom;
 
   // Seed near global minimum
-  math_Vector                                        aSeedPos(1, 2, 0.0);
+  math_Vector                                        aSeedPos(size_t{2}, 0.0);
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos, 0.0));
 
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, &aSeeds);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 0.5);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 0.5);
   EXPECT_LT(*aResult.Value, 1.0);
 }
 
@@ -522,13 +551,13 @@ TEST(MathOpt_PSOTest, BoundaryMode_Reflect_NearBoundMinimum)
   BoothFunc aFunc;
 
   // Tight bounds around minimum (1, 3)
-  math_Vector aLower(1, 2);
-  aLower(1) = 0.0;
-  aLower(2) = 2.0;
+  math_Vector aLower(2);
+  aLower.ChangeAt(0) = 0.0;
+  aLower.ChangeAt(1) = 2.0;
 
-  math_Vector aUpper(1, 2);
-  aUpper(1) = 2.0;
-  aUpper(2) = 4.0;
+  math_Vector aUpper(2);
+  aUpper.ChangeAt(0) = 2.0;
+  aUpper.ChangeAt(1) = 4.0;
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 40;
@@ -540,8 +569,8 @@ TEST(MathOpt_PSOTest, BoundaryMode_Reflect_NearBoundMinimum)
   auto              aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, nullptr, &aStats);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 0.1);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, 0.1);
   EXPECT_LT(*aResult.Value, 0.1);
   // Tight bounds should trigger boundary corrections
   EXPECT_GT(aStats.NbBoundaryCorrections, 0);
@@ -555,8 +584,8 @@ TEST(MathOpt_PSOTest, Restart_Ackley_RecoversAfterStagnation)
 {
   AckleyFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles     = 30;
@@ -568,7 +597,8 @@ TEST(MathOpt_PSOTest, Restart_Ackley_RecoversAfterStagnation)
   MathOpt::PSOStats aStats;
   auto              aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, nullptr, &aStats);
 
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  ASSERT_TRUE(aResult.Value.has_value());
   EXPECT_LT(*aResult.Value, 1.0);
   // With tight convergence and restart enabled, stats should show activity
   EXPECT_GT(aStats.NbFunctionEvals, 0);
@@ -584,8 +614,8 @@ TEST(MathOpt_PSOTest, TargetValue_EarlyStop)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // Run without target value
   MathOpt::PSOConfig aConfigFull;
@@ -618,8 +648,8 @@ TEST(MathOpt_PSOTest, InertiaSchedule_LinearDecay_NonRegression)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles     = 40;
@@ -631,8 +661,8 @@ TEST(MathOpt_PSOTest, InertiaSchedule_LinearDecay_NonRegression)
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -644,8 +674,8 @@ TEST(MathOpt_PSOTest, Stats_Reproducibility_FixedSeed)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 30;
@@ -665,8 +695,12 @@ TEST(MathOpt_PSOTest, Stats_Reproducibility_FixedSeed)
   EXPECT_EQ(aStats1.NbFunctionEvals, aStats2.NbFunctionEvals);
   EXPECT_EQ(aStats1.NbIterations, aStats2.NbIterations);
   EXPECT_EQ(aStats1.NbBoundaryCorrections, aStats2.NbBoundaryCorrections);
-  EXPECT_DOUBLE_EQ(aStats1.InitialBest, aStats2.InitialBest);
-  EXPECT_DOUBLE_EQ(aStats1.FinalBest, aStats2.FinalBest);
+  ASSERT_TRUE(aStats1.InitialBest.has_value());
+  ASSERT_TRUE(aStats2.InitialBest.has_value());
+  ASSERT_TRUE(aStats1.FinalBest.has_value());
+  ASSERT_TRUE(aStats2.FinalBest.has_value());
+  EXPECT_DOUBLE_EQ(*aStats1.InitialBest, *aStats2.InitialBest);
+  EXPECT_DOUBLE_EQ(*aStats1.FinalBest, *aStats2.FinalBest);
   EXPECT_DOUBLE_EQ(*aResult1.Value, *aResult2.Value);
 }
 
@@ -678,8 +712,8 @@ TEST(MathOpt_PSOTest, Polishing_Sphere2D_ReachesHighPrecision)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 30;
@@ -688,10 +722,12 @@ TEST(MathOpt_PSOTest, Polishing_Sphere2D_ReachesHighPrecision)
 
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
 
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  ASSERT_TRUE(aResult.Solution.has_value());
+  ASSERT_TRUE(aResult.Value.has_value());
   // After polishing, component precision should be better than 1e-8
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 1.0e-8);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 1.0e-8);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 1.0e-8);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 1.0e-8);
   EXPECT_NEAR(*aResult.Value, 0.0, 1.0e-14);
 }
 
@@ -703,8 +739,8 @@ TEST(MathOpt_PSOTest, SeededOnly_NoSeeds_ReturnsInvalidInput)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 20;
@@ -726,8 +762,8 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 10;
@@ -736,9 +772,9 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
   aConfig.InitMode      = MathOpt::PSOInitMode::SeededPlusRandom;
 
   // Seed at out-of-bounds position with incorrect stale value
-  math_Vector aSeedPos(1, 2);
-  aSeedPos(1) = 10.0;  // out of bounds (will be clamped to 5.0)
-  aSeedPos(2) = -10.0; // out of bounds (will be clamped to -5.0)
+  math_Vector aSeedPos(2);
+  aSeedPos.ChangeAt(0) = 10.0;  // out of bounds (will be clamped to 5.0)
+  aSeedPos.ChangeAt(1) = -10.0; // out of bounds (will be clamped to -5.0)
 
   // Provide a stale value of 0.0 which is wrong for (5, -5)
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
@@ -749,7 +785,121 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
 
   ASSERT_TRUE(aResult.IsDone());
   // The result should be correct (near origin), not misled by the stale value
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_STOCHASTIC_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_STOCHASTIC_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_STOCHASTIC_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_STOCHASTIC_TOLERANCE);
+}
+
+TEST(MathOpt_PSOTest, InBoundsSeed_ReEvaluates_StaleValue)
+{
+  SphereFunc aFunc;
+  math_Vector aLower(size_t{1}, -2.0);
+  math_Vector anUpper(size_t{1}, 2.0);
+  math_Vector aSeedPos(size_t{1}, 1.0);
+
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos, -100.0));
+
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles        = 1;
+  aConfig.MaxIterations      = 1;
+  aConfig.InitMode           = MathOpt::PSOInitMode::SeededOnly;
+  aConfig.VelocityClamp      = 0.0;
+  aConfig.PhiPersonal        = 0.0;
+  aConfig.PhiGlobal          = 0.0;
+  aConfig.NoImproveIters     = 10;
+  aConfig.PolishBudgetPerDim = 0;
+
+  MathOpt::PSOStats aStats;
+  const MathUtils::VectorResult aResult =
+    MathOpt::PSO(aFunc, aLower, anUpper, aConfig, &aSeeds, &aStats);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  ASSERT_TRUE(aResult.Value.has_value());
+  EXPECT_DOUBLE_EQ(*aResult.Value, 1.0);
+  EXPECT_EQ(aStats.NbFunctionEvals, size_t{2});
+}
+
+TEST(MathOpt_PSOTest, MinIterationsUsesCompletedIterationCount)
+{
+  SphereFunc aFunc;
+  math_Vector aLower(size_t{1}, -1.0);
+  math_Vector anUpper(size_t{1}, 1.0);
+  math_Vector aSeedPos(size_t{1}, 0.0);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
+
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles        = 1;
+  aConfig.MaxIterations      = 10;
+  aConfig.MinIterations      = 3;
+  aConfig.NoImproveIters     = 1;
+  aConfig.InitMode           = MathOpt::PSOInitMode::SeededOnly;
+  aConfig.VelocityClamp      = 0.0;
+  aConfig.PhiPersonal        = 0.0;
+  aConfig.PhiGlobal          = 0.0;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult = MathOpt::PSO(aFunc, aLower, anUpper, aConfig, &aSeeds);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
+  EXPECT_EQ(aResult.NbIterations, uint32_t{4});
+}
+
+TEST(MathOpt_PSOTest, RejectedParticleDoesNotPoisonValidBest)
+{
+  PartiallyDefinedFunc aFunc;
+  math_Vector          aLower(size_t{1}, -1.0);
+  math_Vector          anUpper(size_t{1}, 1.0);
+  math_Vector          aValidPos(size_t{1}, 0.25);
+  math_Vector          anInvalidPos(size_t{1}, -0.25);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(aValidPos));
+  aSeeds.Append(MathOpt::PSOSeedParticle(anInvalidPos));
+
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles        = 2;
+  aConfig.MaxIterations      = 3;
+  aConfig.NoImproveIters     = 1;
+  aConfig.InitMode           = MathOpt::PSOInitMode::SeededOnly;
+  aConfig.VelocityClamp      = 0.0;
+  aConfig.PhiPersonal        = 0.0;
+  aConfig.PhiGlobal          = 0.0;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult = MathOpt::PSO(aFunc, aLower, anUpper, aConfig, &aSeeds);
+
+  EXPECT_GT(aFunc.NbRejectedCalls, 0);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);
+}
+
+TEST(MathOpt_PSOTest, AllRejectedParticlesPreserveCallbackStatus)
+{
+  RejectAllFunc aFunc;
+  math_Vector   aLower(size_t{1}, -1.0);
+  math_Vector   anUpper(size_t{1}, 1.0);
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles = 4;
+
+  EXPECT_EQ(MathOpt::PSO(aFunc, aLower, anUpper, aConfig).Status,
+            MathUtils::Status::CallbackError);
+}
+
+TEST(MathOpt_PSOTest, BudgetExhaustionRetainsBest)
+{
+  SphereFunc aFunc;
+  math_Vector aLower(size_t{1}, -1.0);
+  math_Vector anUpper(size_t{1}, 1.0);
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles        = 4;
+  aConfig.MaxIterations      = 1;
+  aConfig.NoImproveIters     = 10;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult = MathOpt::PSO(aFunc, aLower, anUpper, aConfig);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_TRUE(aResult.Solution.has_value());
+  EXPECT_TRUE(aResult.Value.has_value());
 }

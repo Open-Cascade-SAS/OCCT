@@ -18,22 +18,24 @@
 #include <MathUtils_Config.hxx>
 #include <math_Vector.hxx>
 #include <math_IntegerVector.hxx>
-#include <math_Matrix.hxx>
 #include <MathUtils_GaussKronrodWeights.hxx>
 
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <cmath>
-#include <functional>
 
 namespace MathInteg
 {
 using namespace MathUtils;
 
+//! Largest per-dimension order supported by the Gauss weight generator.
+constexpr size_t THE_MULTIPLE_GAUSS_MAX_ORDER = 61;
+
 //! Configuration for multi-dimensional Gauss integration.
 struct MultipleConfig
 {
-  int MaxOrder = 61; //!< Maximum integration order per dimension
+  size_t MaxOrder = THE_MULTIPLE_GAUSS_MAX_ORDER; //!< Maximum integration order per dimension
 };
 
 //! Gauss-Legendre integration of a multi-variable function.
@@ -54,7 +56,7 @@ struct MultipleConfig
 //! @return IntegResult containing the integral value
 template <typename Func>
 IntegResult GaussMultiple(Func&                     theFunc,
-                          int                       theNVars,
+                          size_t                    theNVars,
                           const math_Vector&        theLower,
                           const math_Vector&        theUpper,
                           const math_IntegerVector& theOrder,
@@ -63,125 +65,134 @@ IntegResult GaussMultiple(Func&                     theFunc,
   IntegResult aResult;
 
   // Validate inputs
-  if (theNVars <= 0 || theLower.Length() != theNVars || theUpper.Length() != theNVars
-      || theOrder.Length() != theNVars)
+  if (theNVars == 0 || theLower.Size() != theNVars || theUpper.Size() != theNVars
+      || theOrder.Size() != theNVars || theConfig.MaxOrder == 0
+      || theConfig.MaxOrder > THE_MULTIPLE_GAUSS_MAX_ORDER)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  const int aLowerL  = theLower.Lower();
-  const int aLowerU  = theUpper.Lower();
-  const int aLowerOr = theOrder.Lower();
-
-  // Find maximum order and clamp orders
-  math_IntegerVector aOrd(0, theNVars - 1);
-  int                aMaxOrder = 0;
-  for (int i = 0; i < theNVars; ++i)
+  // Validate all dimensions before allocating quadrature storage.
+  size_t                           aNbEvaluations = 1;
+  NCollection_LinearVector<size_t> anOrders;
+  for (size_t i = 0; i < theNVars; ++i)
   {
-    aOrd(i) = std::min(theOrder(i + aLowerOr), theConfig.MaxOrder);
-    aOrd(i) = std::max(aOrd(i), 1);
-    if (aOrd(i) > aMaxOrder)
+    const double aLower       = theLower.At(i);
+    const double anUpper      = theUpper.At(i);
+    const int    anOrderValue = theOrder.At(i);
+    if (!std::isfinite(aLower) || !std::isfinite(anUpper) || aLower == anUpper
+        || !std::isfinite(anUpper - aLower) || anOrderValue < 1)
     {
-      aMaxOrder = aOrd(i);
+      aResult.Status = Status::InvalidInput;
+      return aResult;
     }
+    const size_t anOrder = static_cast<size_t>(anOrderValue);
+    if (anOrder > theConfig.MaxOrder || anOrder > THE_MULTIPLE_GAUSS_MAX_ORDER)
+    {
+      aResult.Status = Status::InvalidInput;
+      return aResult;
+    }
+    anOrders.Append(anOrder);
+    aNbEvaluations *= anOrder;
   }
 
   // Compute midpoints and half-widths for coordinate transformation
-  math_Vector aXm(0, theNVars - 1);
-  math_Vector aXr(0, theNVars - 1);
-  for (int i = 0; i < theNVars; ++i)
+  math_Vector aXm(theNVars);
+  math_Vector aXr(theNVars);
+  for (size_t i = 0; i < theNVars; ++i)
   {
-    aXm(i) = 0.5 * (theLower(i + aLowerL) + theUpper(i + aLowerU));
-    aXr(i) = 0.5 * (theUpper(i + aLowerU) - theLower(i + aLowerL));
+    aXr.ChangeAt(i) = 0.5 * (theUpper.At(i) - theLower.At(i));
+    aXm.ChangeAt(i) = theLower.At(i) + aXr.At(i);
   }
 
   // Get Gauss points and weights for each variable
   // Use NCollection_DynamicArray since math_Vector has no default constructor
-  NCollection_DynamicArray<math_Vector> aGaussPoints;
-  NCollection_DynamicArray<math_Vector> aGaussWeights;
+  NCollection_DynamicArray<math_Vector> aGaussPoints(std::min(theNVars, size_t{8}));
+  NCollection_DynamicArray<math_Vector> aGaussWeights(std::min(theNVars, size_t{8}));
 
-  for (int i = 0; i < theNVars; ++i)
+  for (size_t i = 0; i < theNVars; ++i)
   {
-    aGaussPoints.Append(math_Vector(0, aOrd(i) - 1));
-    aGaussWeights.Append(math_Vector(0, aOrd(i) - 1));
+    const size_t anOrder = anOrders.Value(i);
+    aGaussPoints.Append(math_Vector(anOrder));
+    aGaussWeights.Append(math_Vector(anOrder));
 
-    math_Vector aGP(1, aOrd(i));
-    math_Vector aGW(1, aOrd(i));
-    if (!GetOrderedGaussPointsAndWeights(aOrd(i), aGP, aGW))
+    math_Vector aGP(anOrder);
+    math_Vector aGW(anOrder);
+    if (!GetOrderedGaussPointsAndWeights(static_cast<int>(anOrder), aGP, aGW))
     {
       aResult.Status = Status::InvalidInput;
       return aResult;
     }
 
-    for (int k = 0; k < aOrd(i); ++k)
+    for (size_t k = 0; k < anOrder; ++k)
     {
-      aGaussPoints.ChangeValue(i)(k)  = aGP(k + 1);
-      aGaussWeights.ChangeValue(i)(k) = aGW(k + 1);
+      aGaussPoints.ChangeValue(i).ChangeAt(k)  = aGP.At(k);
+      aGaussWeights.ChangeValue(i).ChangeAt(k) = aGW.At(k);
     }
   }
 
-  // Recursive integration using lambda
-  double      aVal = 0.0;
-  math_Vector aX(1, theNVars);
-  math_Vector aDx(1, theNVars);
-
-  // Index array for iteration
-  math_IntegerVector aInc(0, theNVars - 1, 0);
-
-  // Iterative approach using index array
-  std::function<bool(int)> aRecurse = [&](int theN) -> bool {
-    if (theN == theNVars)
-    {
-      // Compute function value at current Gauss point
-      for (int j = 0; j < theNVars; ++j)
-      {
-        aDx(j + 1) = aXr(j) * aGaussPoints.Value(j)(aInc(j));
-        aX(j + 1)  = aXm(j) + aDx(j + 1);
-      }
-
-      double aF1;
-      if (!theFunc.Value(aX, aF1))
-      {
-        return false;
-      }
-
-      // Compute product of weights
-      double aWeight = 1.0;
-      for (int j = 0; j < theNVars; ++j)
-      {
-        aWeight *= aGaussWeights.Value(j)(aInc(j));
-      }
-
-      aVal += aWeight * aF1;
-      return true;
-    }
-
-    // Iterate over Gauss points for variable theN
-    for (aInc(theN) = 0; aInc(theN) < aOrd(theN); ++aInc(theN))
-    {
-      if (!aRecurse(theN + 1))
-      {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  if (!aRecurse(0))
+  double                           aVal = 0.0;
+  math_Vector                      aX(theNVars);
+  NCollection_LinearVector<size_t> anIndices;
+  for (size_t i = 0; i < theNVars; ++i)
   {
-    aResult.Status = Status::NotConverged;
-    return aResult;
+    anIndices.Append(0);
+  }
+
+  for (size_t anEval = 0; anEval < aNbEvaluations; ++anEval)
+  {
+    double aWeight = 1.0;
+    for (size_t j = 0; j < theNVars; ++j)
+    {
+      const size_t anIndex = anIndices.Value(j);
+      aX.ChangeAt(j)       = aXm.At(j) + aXr.At(j) * aGaussPoints.Value(j).At(anIndex);
+      aWeight *= aGaussWeights.Value(j).At(anIndex);
+    }
+
+    double aFunctionValue = 0.0;
+    ++aResult.NbPoints;
+    if (!theFunc.Value(aX, aFunctionValue))
+    {
+      aResult.Status = Status::CallbackError;
+      return aResult;
+    }
+    if (!std::isfinite(aFunctionValue))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+    aVal += aWeight * aFunctionValue;
+    if (!std::isfinite(aVal))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+
+    for (size_t j = theNVars; j-- > 0;)
+    {
+      if (++anIndices.ChangeValue(j) < anOrders.Value(j))
+      {
+        break;
+      }
+      anIndices.ChangeValue(j) = 0;
+    }
   }
 
   // Scale by half-widths
-  for (int i = 0; i < theNVars; ++i)
+  for (size_t i = 0; i < theNVars; ++i)
   {
-    aVal *= aXr(i);
+    aVal *= aXr.At(i);
+    if (!std::isfinite(aVal))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
   }
 
-  aResult.Value  = aVal;
-  aResult.Status = Status::OK;
+  aResult.Value        = aVal;
+  aResult.Status       = Status::OK;
+  aResult.NbIterations = 1;
   return aResult;
 }
 
@@ -196,12 +207,18 @@ IntegResult GaussMultiple(Func&                     theFunc,
 //! @return IntegResult containing the integral value
 template <typename Func>
 IntegResult GaussMultipleUniform(Func&              theFunc,
-                                 int                theNVars,
+                                 size_t             theNVars,
                                  const math_Vector& theLower,
                                  const math_Vector& theUpper,
-                                 int                theOrder)
+                                 size_t             theOrder)
 {
-  math_IntegerVector aOrders(0, theNVars - 1, theOrder);
+  if (theNVars == 0 || theOrder == 0 || theOrder > THE_MULTIPLE_GAUSS_MAX_ORDER)
+  {
+    IntegResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  math_IntegerVector aOrders(theNVars, static_cast<int>(theOrder));
   return GaussMultiple(theFunc, theNVars, theLower, theUpper, aOrders);
 }
 

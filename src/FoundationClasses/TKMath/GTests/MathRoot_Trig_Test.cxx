@@ -14,14 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <MathRoot_Trig.hxx>
+#include <MathUtils_Core.hxx>
 
 #include <cmath>
+#include <limits>
 
 namespace
 {
 constexpr double THE_TOL = 1.0e-10;
-constexpr double THE_PI  = 3.14159265358979323846;
-constexpr double THE_2PI = 2.0 * THE_PI;
 
 //! Helper to verify that a root satisfies the equation
 //! a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
@@ -46,7 +46,7 @@ void verifyRoots(const MathRoot::TrigResult& theResult,
                  double                      theE,
                  double                      theTol = 1.0e-10)
 {
-  for (int i = 0; i < theResult.NbRoots; ++i)
+  for (size_t i = 0; i < theResult.NbRoots; ++i)
   {
     double aVal = evaluateEquation(theA, theB, theC, theD, theE, theResult.Roots[i]);
     EXPECT_NEAR(aVal, 0.0, theTol)
@@ -100,7 +100,8 @@ TEST(MathRoot_TrigTest, LinearSin_BoundaryValue)
   // sin(x) = 1 => x = PI/2
   MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, -1.0);
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_GE(aResult.NbRoots, 1);
+  ASSERT_EQ(aResult.NbRoots, 1u);
+  EXPECT_NEAR(aResult.Roots[0], MathUtils::THE_PI / 2.0, THE_TOL);
   verifyRoots(aResult, 0.0, 0.0, 0.0, 1.0, -1.0);
 }
 
@@ -227,7 +228,7 @@ TEST(MathRoot_TrigTest, Mixed_SinTimesCos)
   //        or: cos(x) = -1 => x = PI
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0, 0.5, 0.0, 1.0, 0.0);
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_GE(aResult.NbRoots, 2);
+  EXPECT_EQ(aResult.NbRoots, 2u);
   verifyRoots(aResult, 0.0, 0.5, 0.0, 1.0, 0.0);
 }
 
@@ -263,22 +264,26 @@ TEST(MathRoot_TrigTest, General_AllCoefficients)
 TEST(MathRoot_TrigTest, Bounds_FirstQuadrant)
 {
   // sin(x) = 0.5 in [0, PI/2]
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, -0.5, 0.0, THE_PI / 2.0);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, -0.5, 0.0, MathUtils::THE_PI / 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 1);
   EXPECT_GE(aResult.Roots[0], 0.0 - THE_TOL);
-  EXPECT_LE(aResult.Roots[0], THE_PI / 2.0 + THE_TOL);
+  EXPECT_LE(aResult.Roots[0], MathUtils::THE_PI / 2.0 + THE_TOL);
   verifyRoots(aResult, 0.0, 0.0, 0.0, 1.0, -0.5);
 }
 
 TEST(MathRoot_TrigTest, Bounds_SecondQuadrant)
 {
   // sin(x) = 0.5 in [PI/2, PI]
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, -0.5, THE_PI / 2.0, THE_PI);
+  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0,
+                                                               -0.5,
+                                                               MathUtils::THE_PI / 2.0,
+                                                               MathUtils::THE_PI);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 1);
-  EXPECT_GE(aResult.Roots[0], THE_PI / 2.0 - THE_TOL);
-  EXPECT_LE(aResult.Roots[0], THE_PI + THE_TOL);
+  EXPECT_GE(aResult.Roots[0], MathUtils::THE_PI / 2.0 - THE_TOL);
+  EXPECT_LE(aResult.Roots[0], MathUtils::THE_PI + THE_TOL);
   verifyRoots(aResult, 0.0, 0.0, 0.0, 1.0, -0.5);
 }
 
@@ -286,17 +291,34 @@ TEST(MathRoot_TrigTest, Bounds_NarrowRange)
 {
   // cos(x) = 0 in narrow range around PI/2
   MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, 0.0, THE_PI / 2.0 - 0.1, THE_PI / 2.0 + 0.1);
+    MathRoot::Trigonometric(0.0,
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0,
+                            MathUtils::THE_PI / 2.0 - 0.1,
+                            MathUtils::THE_PI / 2.0 + 0.1);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 1);
-  EXPECT_NEAR(aResult.Roots[0], THE_PI / 2.0, THE_TOL);
+  EXPECT_NEAR(aResult.Roots[0], MathUtils::THE_PI / 2.0, THE_TOL);
+}
+
+TEST(MathRoot_TrigTest, CosineRootAtLowerBound)
+{
+  const double               aLower = MathUtils::THE_PI / 3.0;
+  const MathRoot::TrigResult aResult =
+    MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, -0.5, aLower, MathUtils::THE_PI);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 1u);
+  EXPECT_NEAR(aResult.Roots[0], aLower, THE_TOL);
 }
 
 TEST(MathRoot_TrigTest, Bounds_RootOutsideRange)
 {
   // sin(x) = 0.5, roots at PI/6 and 5*PI/6
   // Looking in [PI, 2*PI] where these roots don't exist
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, -0.5, THE_PI, THE_2PI);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, -0.5, MathUtils::THE_PI, MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 0);
 }
@@ -304,7 +326,8 @@ TEST(MathRoot_TrigTest, Bounds_RootOutsideRange)
 TEST(MathRoot_TrigTest, Bounds_FullCircle)
 {
   // sin(x) = 0 in [0, 2*PI]
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, THE_2PI);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 2);
 }
@@ -312,10 +335,19 @@ TEST(MathRoot_TrigTest, Bounds_FullCircle)
 TEST(MathRoot_TrigTest, Bounds_MultipleCircles)
 {
   // sin(x) = 0 in [0, 4*PI] - but we only look in one period
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, 4.0 * THE_PI);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, 4.0 * MathUtils::THE_PI);
   ASSERT_TRUE(aResult.IsDone());
   // Should still only return 2 roots in one period
   EXPECT_EQ(aResult.NbRoots, 2);
+}
+
+TEST(MathRoot_TrigTest, CosineOnlyReturnsOnePeriod)
+{
+  const MathRoot::TrigResult aResult =
+    MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 4.0 * MathUtils::THE_PI);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbRoots, 2u);
 }
 
 // ============================================================================
@@ -378,9 +410,9 @@ TEST(MathRoot_TrigTest, SpecialCase_PiRootCheck)
   ASSERT_TRUE(aResult.IsDone());
   // Check if PI is in the roots
   bool aFoundPi = false;
-  for (int i = 0; i < aResult.NbRoots; ++i)
+  for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
-    if (std::abs(aResult.Roots[i] - THE_PI) < THE_TOL)
+    if (std::abs(aResult.Roots[i] - MathUtils::THE_PI) < THE_TOL)
     {
       aFoundPi = true;
       break;
@@ -414,6 +446,29 @@ TEST(MathRoot_TrigTest, Stability_SmallCoefficients)
   }
 }
 
+TEST(MathRoot_TrigTest, GlobalScalingPreservesClassificationAndRoots)
+{
+  const MathRoot::TrigResult aSmall =
+    MathRoot::Trigonometric(1.0e-13, 0.0, 0.0, 0.0, 1.0e-13);
+  const MathRoot::TrigResult aUnit = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, 1.0);
+  ASSERT_TRUE(aSmall.IsDone());
+  ASSERT_TRUE(aUnit.IsDone());
+  EXPECT_FALSE(aSmall.InfiniteRoots);
+  EXPECT_FALSE(aUnit.InfiniteRoots);
+  EXPECT_EQ(aSmall.NbRoots, 0u);
+  EXPECT_EQ(aSmall.NbRoots, aUnit.NbRoots);
+
+  const MathRoot::TrigResult aScaledLinear =
+    MathRoot::TrigonometricLinear(1.0e-200, -0.5e-200);
+  const MathRoot::TrigResult aLinear = MathRoot::TrigonometricLinear(1.0, -0.5);
+  ASSERT_TRUE(aScaledLinear.IsDone());
+  ASSERT_EQ(aScaledLinear.NbRoots, aLinear.NbRoots);
+  for (size_t anIndex = 0; anIndex < aLinear.NbRoots; ++anIndex)
+  {
+    EXPECT_NEAR(aScaledLinear.Roots[anIndex], aLinear.Roots[anIndex], THE_TOL);
+  }
+}
+
 TEST(MathRoot_TrigTest, Stability_MixedMagnitude)
 {
   // Coefficients of very different magnitudes
@@ -431,7 +486,7 @@ TEST(MathRoot_TrigTest, RootOrdering_Sorted)
   // sin(x) = 0 => x = 0, PI (should be sorted)
   MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0);
   ASSERT_TRUE(aResult.IsDone());
-  for (int i = 1; i < aResult.NbRoots; ++i)
+  for (size_t i = 1; i < aResult.NbRoots; ++i)
   {
     EXPECT_LE(aResult.Roots[i - 1], aResult.Roots[i]) << "Roots should be in ascending order";
   }
@@ -442,9 +497,9 @@ TEST(MathRoot_TrigTest, RootUniqueness_NoDuplicates)
   // cos^2(x) = 0.25 => 4 distinct roots
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, -0.25);
   ASSERT_TRUE(aResult.IsDone());
-  for (int i = 0; i < aResult.NbRoots; ++i)
+  for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
-    for (int j = i + 1; j < aResult.NbRoots; ++j)
+    for (size_t j = i + 1; j < aResult.NbRoots; ++j)
     {
       EXPECT_GT(std::abs(aResult.Roots[i] - aResult.Roots[j]), 1.0e-10)
         << "Roots " << i << " and " << j << " are duplicates";
@@ -463,7 +518,7 @@ TEST(MathRoot_TrigTest, Wrapper_TrigonometricLinear)
   MathRoot::TrigResult aResult2 = MathRoot::Trigonometric(0.0, 0.0, 0.0, 2.0, -1.0);
 
   EXPECT_EQ(aResult1.NbRoots, aResult2.NbRoots);
-  for (int i = 0; i < aResult1.NbRoots; ++i)
+  for (size_t i = 0; i < aResult1.NbRoots; ++i)
   {
     EXPECT_NEAR(aResult1.Roots[i], aResult2.Roots[i], THE_TOL);
   }
@@ -476,7 +531,7 @@ TEST(MathRoot_TrigTest, Wrapper_TrigonometricCDE)
   MathRoot::TrigResult aResult2 = MathRoot::Trigonometric(0.0, 0.0, 1.0, 2.0, -0.5);
 
   EXPECT_EQ(aResult1.NbRoots, aResult2.NbRoots);
-  for (int i = 0; i < aResult1.NbRoots; ++i)
+  for (size_t i = 0; i < aResult1.NbRoots; ++i)
   {
     EXPECT_NEAR(aResult1.Roots[i], aResult2.Roots[i], THE_TOL);
   }
@@ -518,7 +573,13 @@ TEST(MathRoot_TrigTest, Ellipse_PointOnMajorAxis)
   double aBY             = 0.0;
 
   MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0, aB2MinusA2Over2, -aBY, aAX, 0.0, 0.0, THE_2PI);
+    MathRoot::Trigonometric(0.0,
+                            aB2MinusA2Over2,
+                            -aBY,
+                            aAX,
+                            0.0,
+                            0.0,
+                            MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   // Should find x=0 and x=PI as roots
   EXPECT_GE(aResult.NbRoots, 2);
@@ -536,7 +597,13 @@ TEST(MathRoot_TrigTest, Ellipse_GeneralPoint)
   double aBY             = 10.0 * 8.0;            // 80
 
   MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0, aB2MinusA2Over2, -aBY, aAX, 0.0, 0.0, THE_2PI);
+    MathRoot::Trigonometric(0.0,
+                            aB2MinusA2Over2,
+                            -aBY,
+                            aAX,
+                            0.0,
+                            0.0,
+                            MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   // Verify any roots found
   verifyRoots(aResult, 0.0, aB2MinusA2Over2, -aBY, aAX, 0.0);
@@ -549,13 +616,14 @@ TEST(MathRoot_TrigTest, Ellipse_GeneralPoint)
 TEST(MathRoot_TrigTest, NegativeBounds_Basic)
 {
   // sin(x) = 0 in [-PI, 0]
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0, -THE_PI, 0.0);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, 0.0, -MathUtils::THE_PI, 0.0);
   ASSERT_TRUE(aResult.IsDone());
   // Should find x = -PI and x = 0 (or just one depending on boundary handling)
   EXPECT_GE(aResult.NbRoots, 1);
-  for (int i = 0; i < aResult.NbRoots; ++i)
+  for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
-    EXPECT_GE(aResult.Roots[i], -THE_PI - THE_TOL);
+    EXPECT_GE(aResult.Roots[i], -MathUtils::THE_PI - THE_TOL);
     EXPECT_LE(aResult.Roots[i], THE_TOL);
   }
 }
@@ -563,9 +631,28 @@ TEST(MathRoot_TrigTest, NegativeBounds_Basic)
 TEST(MathRoot_TrigTest, NegativeBounds_CosEquation)
 {
   // cos(x) = 0.5 in [-PI, PI]
-  MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, -0.5, -THE_PI, THE_PI);
+  MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0,
+                                                         0.0,
+                                                         1.0,
+                                                         0.0,
+                                                         -0.5,
+                                                         -MathUtils::THE_PI,
+                                                         MathUtils::THE_PI);
   ASSERT_TRUE(aResult.IsDone());
   // cos(x) = 0.5 => x = +/-PI/3
   EXPECT_GE(aResult.NbRoots, 2);
   verifyRoots(aResult, 0.0, 0.0, 1.0, 0.0, -0.5);
+}
+
+//=================================================================================================
+
+TEST(MathRoot_TrigTest, InvalidFiniteOrderedInputPolicy)
+{
+  EXPECT_EQ(MathRoot::TrigonometricLinear(1.0, 0.0, 1.0, 0.0).Status,
+            MathRoot::Status::InvalidInput);
+  EXPECT_EQ(MathRoot::TrigonometricLinear(std::numeric_limits<double>::quiet_NaN(), 0.0).Status,
+            MathRoot::Status::InvalidInput);
+  EXPECT_EQ(
+    MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, std::numeric_limits<double>::infinity()).Status,
+    MathRoot::Status::InvalidInput);
 }

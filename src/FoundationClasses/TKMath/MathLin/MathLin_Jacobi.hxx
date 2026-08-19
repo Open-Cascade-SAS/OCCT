@@ -18,6 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <math_Recipes.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathLin_Utils.hxx"
 
 #include <cmath>
 #include <algorithm>
@@ -48,61 +49,88 @@ using namespace MathUtils;
 //! @param theA input symmetric matrix (n x n)
 //! @param theSortDescending if true, eigenvalues are sorted in descending order
 //! @return eigenvalue result
-inline EigenResult Jacobi(const math_Matrix& theA, bool theSortDescending = true)
+inline MathUtils::EigenResult Jacobi(const math_Matrix& theA, bool theSortDescending = true)
 {
-  EigenResult aResult;
+  MathUtils::EigenResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aN        = aRowUpper - aRowLower + 1;
+  const size_t aN = theA.RowSize();
 
   // Check for square matrix
-  if (aColUpper - aColLower + 1 != aN)
+  if (theA.ColSize() != aN || aN == 0 || !Utils::IsFinite(theA))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
+  if (aN == 1)
+  {
+    aResult.EigenValues  = math_Vector(size_t{1}, theA.At(0, 0));
+    aResult.EigenVectors = math_Matrix(size_t{1}, size_t{1}, 1.0);
+    aResult.Status       = Status::OK;
+    return aResult;
+  }
 
-  // Create 1-based working copies as required by the Jacobi function
-  math_Matrix aWorkA(1, aN, 1, aN);
-  math_Vector aEigenVals(1, aN);
-  math_Matrix aEigenVecs(1, aN, 1, aN);
+  double aScale = 0.0;
+  for (size_t i = 0; i < aN; ++i)
+  {
+    for (size_t j = 0; j < aN; ++j)
+    {
+      const double anAij = theA.At(i, j);
+      const double anAji = theA.At(j, i);
+      aScale             = std::max(aScale, std::abs(anAij));
+      if (std::abs(anAij - anAji) > std::numeric_limits<double>::epsilon() * static_cast<double>(aN)
+                                      * std::max(std::abs(anAij), std::abs(anAji)))
+      {
+        aResult.Status = Status::InvalidInput;
+        return aResult;
+      }
+    }
+  }
+  math_Matrix aWorkAStorage(aN, aN);
+  math_Vector aEigenValsStorage(aN);
+  math_Matrix aEigenVecsStorage(aN, aN);
 
   // Copy input to working matrix
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aWorkA(i - aRowLower + 1, j - aColLower + 1) = theA(i, j);
+      aWorkAStorage.ChangeAt(i, j) = aScale == 0.0 ? 0.0 : theA.At(i, j) / aScale;
     }
   }
 
   // Call the Jacobi function from math_Recipes
-  int aNbRotations = 0;
+  const int   aRecipeN = static_cast<int>(aN);
+  math_Matrix aWorkA(&aWorkAStorage.ChangeAt(0, 0), 1, aRecipeN, 1, aRecipeN);
+  math_Vector aEigenVals(&aEigenValsStorage[0], 1, aRecipeN);
+  math_Matrix aEigenVecs(&aEigenVecsStorage.ChangeAt(0, 0), 1, aRecipeN, 1, aRecipeN);
+  int         aNbRotations = 0;
   if (::Jacobi(aWorkA, aEigenVals, aEigenVecs, aNbRotations) != 0)
   {
     aResult.Status = Status::NotConverged;
     return aResult;
   }
 
-  aResult.NbIterations = static_cast<size_t>(aNbRotations);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    aEigenValsStorage[i] *= aScale;
+  }
+
+  aResult.NbIterations = static_cast<uint32_t>(aNbRotations);
 
   // Sort eigenvalues and eigenvectors if requested
   if (theSortDescending && aN > 1)
   {
     // Simple selection sort
-    for (int i = 1; i < aN; ++i)
+    for (size_t i = 0; i + 1 < aN; ++i)
     {
-      int    aMaxIdx = i;
-      double aMaxVal = aEigenVals(i);
+      size_t aMaxIdx = i;
+      double aMaxVal = aEigenValsStorage[i];
 
-      for (int j = i + 1; j <= aN; ++j)
+      for (size_t j = i + 1; j < aN; ++j)
       {
-        if (aEigenVals(j) > aMaxVal)
+        if (aEigenValsStorage[j] > aMaxVal)
         {
-          aMaxVal = aEigenVals(j);
+          aMaxVal = aEigenValsStorage[j];
           aMaxIdx = j;
         }
       }
@@ -110,34 +138,35 @@ inline EigenResult Jacobi(const math_Matrix& theA, bool theSortDescending = true
       if (aMaxIdx != i)
       {
         // Swap eigenvalues
-        std::swap(aEigenVals(i), aEigenVals(aMaxIdx));
+        std::swap(aEigenValsStorage[i], aEigenValsStorage[aMaxIdx]);
 
         // Swap corresponding eigenvector columns
-        for (int k = 1; k <= aN; ++k)
+        for (size_t k = 0; k < aN; ++k)
         {
-          std::swap(aEigenVecs(k, i), aEigenVecs(k, aMaxIdx));
+          std::swap(aEigenVecsStorage.ChangeAt(k, i), aEigenVecsStorage.ChangeAt(k, aMaxIdx));
         }
       }
     }
   }
 
-  // Copy results with original indexing
-  aResult.EigenValues = math_Vector(aRowLower, aRowUpper);
-  for (int i = 1; i <= aN; ++i)
+  aResult.EigenValues = math_Vector(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    (*aResult.EigenValues)(aRowLower + i - 1) = aEigenVals(i);
+    (*aResult.EigenValues)[i] = aEigenValsStorage[i];
   }
 
-  aResult.EigenVectors = math_Matrix(aRowLower, aRowUpper, aColLower, aColUpper);
-  for (int i = 1; i <= aN; ++i)
+  aResult.EigenVectors = math_Matrix(aN, aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    for (int j = 1; j <= aN; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      (*aResult.EigenVectors)(aRowLower + i - 1, aColLower + j - 1) = aEigenVecs(i, j);
+      aResult.EigenVectors->ChangeAt(i, j) = aEigenVecsStorage.At(i, j);
     }
   }
 
-  aResult.Status = Status::OK;
+  aResult.Status = Utils::IsFinite(*aResult.EigenValues) && Utils::IsFinite(*aResult.EigenVectors)
+                     ? Status::OK
+                     : Status::NumericalError;
   return aResult;
 }
 
@@ -149,7 +178,7 @@ inline EigenResult Jacobi(const math_Matrix& theA, bool theSortDescending = true
 //! @param theA input symmetric matrix (n x n)
 //! @param theSortDescending if true, eigenvalues are sorted in descending order
 //! @return eigenvalue result (only EigenValues is set)
-inline EigenResult EigenValues(const math_Matrix& theA, bool theSortDescending = true)
+inline MathUtils::EigenResult EigenValues(const math_Matrix& theA, bool theSortDescending = true)
 {
   // Currently delegates to full Jacobi, but eigenvectors are computed
   // A future optimization could avoid eigenvector computation
@@ -166,7 +195,7 @@ inline EigenResult EigenValues(const math_Matrix& theA, bool theSortDescending =
 //!
 //! @param theA input symmetric matrix (n x n)
 //! @return eigenvalue result with EigenValues (diagonal of D) and EigenVectors (V)
-inline EigenResult SpectralDecomposition(const math_Matrix& theA)
+inline MathUtils::EigenResult SpectralDecomposition(const math_Matrix& theA)
 {
   return Jacobi(theA, false);
 }
@@ -181,7 +210,12 @@ inline EigenResult SpectralDecomposition(const math_Matrix& theA)
 //! @return A^p matrix
 inline std::optional<math_Matrix> MatrixPower(const math_Matrix& theA, double thePower)
 {
-  EigenResult aEigen = Jacobi(theA, false);
+  if (!std::isfinite(thePower))
+  {
+    return std::nullopt;
+  }
+
+  MathUtils::EigenResult aEigen = Jacobi(theA, false);
   if (!aEigen.IsDone())
   {
     return std::nullopt;
@@ -190,37 +224,44 @@ inline std::optional<math_Matrix> MatrixPower(const math_Matrix& theA, double th
   const math_Vector& aD = *aEigen.EigenValues;
   const math_Matrix& aV = *aEigen.EigenVectors;
 
-  const int aLower = aD.Lower();
-  const int aUpper = aD.Upper();
+  const size_t aN = aD.Size();
 
   // Compute D^p
-  math_Vector aDp(aLower, aUpper);
-  for (int i = aLower; i <= aUpper; ++i)
+  math_Vector aDp(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    if (aD(i) < 0.0 && thePower != std::floor(thePower))
+    if (aD[i] < 0.0 && thePower != std::floor(thePower))
     {
       // Can't take fractional power of negative eigenvalue
       return std::nullopt;
     }
-    aDp(i) = (aD(i) >= 0.0) ? std::pow(aD(i), thePower) : std::pow(-aD(i), thePower);
-    if (aD(i) < 0.0 && static_cast<int>(thePower) % 2 != 0)
+    aDp[i] = (aD[i] >= 0.0) ? std::pow(aD[i], thePower) : std::pow(-aD[i], thePower);
+    if (aD[i] < 0.0 && std::fmod(std::abs(thePower), 2.0) == 1.0)
     {
-      aDp(i) = -aDp(i);
+      aDp[i] = -aDp[i];
+    }
+    if (!std::isfinite(aDp[i]))
+    {
+      return std::nullopt;
     }
   }
 
   // Compute V * D^p * V^T
-  math_Matrix aResult(aLower, aUpper, aLower, aUpper, 0.0);
-  for (int i = aLower; i <= aUpper; ++i)
+  math_Matrix aResult(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    for (int j = aLower; j <= aUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
       double aSum = 0.0;
-      for (int k = aLower; k <= aUpper; ++k)
+      for (size_t k = 0; k < aN; ++k)
       {
-        aSum += aV(i, k) * aDp(k) * aV(j, k);
+        aSum += aV.At(i, k) * aDp[k] * aV.At(j, k);
       }
-      aResult(i, j) = aSum;
+      if (!std::isfinite(aSum))
+      {
+        return std::nullopt;
+      }
+      aResult.ChangeAt(i, j) = aSum;
     }
   }
 

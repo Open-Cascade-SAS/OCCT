@@ -18,6 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Convergence.hxx>
+#include "MathRoot_Utils.hxx"
 
 #include <cmath>
 
@@ -49,6 +50,13 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
+  if (!std::isfinite(theX0) || !std::isfinite(theX1) || theX0 == theX1
+      || !Utils::IsValidConfig(theConfig))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
   double aX0 = theX0;
   double aX1 = theX1;
   double aF0 = 0.0;
@@ -57,21 +65,39 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
   // Evaluate at initial points
   if (!theFunc.Value(aX0, aF0))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aF0))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
   if (!theFunc.Value(aX1, aF1))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aF1))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  if (std::abs(aF0) <= theConfig.FTolerance)
+  {
+    aResult.Status = MathUtils::Status::OK;
+    aResult.Root   = aX0;
+    aResult.Value  = aF0;
+    return aResult;
+  }
+
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
     // Check convergence
-    if (MathUtils::IsFConverged(aF1, theConfig.FTolerance))
+    if (std::abs(aF1) <= theConfig.FTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
       aResult.Root   = aX1;
@@ -81,7 +107,7 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
 
     // Secant step
     const double aDenom = aF1 - aF0;
-    if (MathUtils::IsZero(aDenom))
+    if (!std::isfinite(aDenom) || aDenom == 0.0)
     {
       aResult.Status = MathUtils::Status::NumericalError;
       aResult.Root   = aX1;
@@ -89,14 +115,35 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
       return aResult;
     }
 
-    const double aXNew = aX1 - aF1 * (aX1 - aX0) / aDenom;
+    const double aXNew = aX1 - (aF1 / aDenom) * (aX1 - aX0);
+    if (!std::isfinite(aXNew))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      aResult.Root   = aX1;
+      aResult.Value  = aF1;
+      return aResult;
+    }
 
-    // Check X convergence
     if (MathUtils::IsXConverged(aX1, aXNew, theConfig.XTolerance))
     {
       double aFNew = 0.0;
-      theFunc.Value(aXNew, aFNew);
-      aResult.Status = MathUtils::Status::OK;
+      if (!theFunc.Value(aXNew, aFNew))
+      {
+        aResult.Status = MathUtils::Status::CallbackError;
+        aResult.Root   = aX1;
+        aResult.Value  = aF1;
+        return aResult;
+      }
+      if (!std::isfinite(aFNew))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        aResult.Root   = aX1;
+        aResult.Value  = aF1;
+        return aResult;
+      }
+      aResult.Status = (std::abs(aFNew) <= theConfig.FTolerance)
+                         ? MathUtils::Status::OK
+                         : MathUtils::Status::NotConverged;
       aResult.Root   = aXNew;
       aResult.Value  = aFNew;
       return aResult;
@@ -109,8 +156,16 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
 
     if (!theFunc.Value(aX1, aF1))
     {
+      aResult.Status = MathUtils::Status::CallbackError;
+      aResult.Root   = aX0;
+      aResult.Value  = aF0;
+      return aResult;
+    }
+    if (!std::isfinite(aF1))
+    {
       aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root   = aX1;
+      aResult.Root   = aX0;
+      aResult.Value  = aF0;
       return aResult;
     }
   }
@@ -134,8 +189,20 @@ MathUtils::ScalarResult SecantAuto(Function&                theFunc,
                                    double                   theX0,
                                    const MathUtils::Config& theConfig = MathUtils::Config())
 {
+  if (!std::isfinite(theX0))
+  {
+    MathUtils::ScalarResult aResult;
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
   // Create second point by small perturbation
   const double aDelta = (std::abs(theX0) > 1.0) ? 0.01 * theX0 : 0.01;
+  if (!std::isfinite(theX0 + aDelta) || theX0 + aDelta == theX0)
+  {
+    MathUtils::ScalarResult aResult;
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
   return Secant(theFunc, theX0, theX0 + aDelta, theConfig);
 }
 

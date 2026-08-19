@@ -248,8 +248,14 @@ public:
   //! Returns number of rows
   int NbRows() const noexcept { return static_cast<int>(mySizeRow); }
 
+  //! Returns number of rows as an unsigned size.
+  size_t RowSize() const noexcept { return mySizeRow; }
+
   //! Returns number of columns
   int NbColumns() const noexcept { return static_cast<int>(mySizeCol); }
+
+  //! Returns number of columns as an unsigned size.
+  size_t ColSize() const noexcept { return mySizeCol; }
 
   //! Returns length of the row, i.e. number of columns
   int RowLength() const noexcept { return NbColumns(); }

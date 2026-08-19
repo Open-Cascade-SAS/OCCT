@@ -16,6 +16,7 @@
 #include <MathPoly_Laguerre.hxx>
 
 #include <cmath>
+#include <limits>
 
 //! Test fixture for MathPoly Laguerre solver tests.
 class MathPoly_LaguerreTest : public testing::Test
@@ -33,6 +34,32 @@ protected:
     }
     return aResult;
   }
+
+  static std::complex<double> EvaluatePoly(const double*               theCoeffs,
+                                           int                         theDegree,
+                                           const std::complex<double>& theX)
+  {
+    std::complex<double> aResult = theCoeffs[theDegree];
+    for (int anIndex = theDegree - 1; anIndex >= 0; --anIndex)
+    {
+      aResult = aResult * theX + theCoeffs[anIndex];
+    }
+    return aResult;
+  }
+
+  static double ComplexEvaluationRoundoff(const double*               theCoeffs,
+                                          int                         theDegree,
+                                          const std::complex<double>& theX)
+  {
+    double       aMagnitude = std::abs(theCoeffs[theDegree]);
+    const double anAbsX     = std::abs(theX);
+    for (int anIndex = theDegree - 1; anIndex >= 0; --anIndex)
+    {
+      aMagnitude = aMagnitude * anAbsX + std::abs(theCoeffs[anIndex]);
+    }
+    const double anOperationRoundoff = theDegree * std::numeric_limits<double>::epsilon();
+    return anOperationRoundoff / (1.0 - anOperationRoundoff) * aMagnitude;
+  }
 };
 
 // Test quintic with known roots: (x-1)(x-2)(x-3)(x-4)(x-5) = x^5 - 15x^4 + 85x^3 - 225x^2 + 274x -
@@ -42,9 +69,8 @@ TEST_F(MathPoly_LaguerreTest, Quintic_FiveDistinctRoots)
   auto aResult = MathPoly::Quintic(1.0, -15.0, 85.0, -225.0, 274.0, -120.0);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_EQ(aResult.NbRoots, 4u); // PolyResult has max 4 roots
+  EXPECT_EQ(aResult.NbRoots, 5u);
 
-  // Check that roots 1, 2, 3, 4 are found (5 might be cut off)
   for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
     double aVal = aResult.Roots[i];
@@ -62,7 +88,7 @@ TEST_F(MathPoly_LaguerreTest, Sextic_SixDistinctRoots)
   auto aResult = MathPoly::Sextic(1.0, -21.0, 175.0, -735.0, 1624.0, -1764.0, 720.0);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_EQ(aResult.NbRoots, 4u); // PolyResult has max 4 roots
+  EXPECT_EQ(aResult.NbRoots, 6u);
 
   for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
@@ -252,4 +278,126 @@ TEST_F(MathPoly_LaguerreTest, Performance_CompareToQuartic)
   {
     EXPECT_NEAR(aLagResult.Roots[i], aQuartResult.Roots[i], THE_TOL);
   }
+}
+
+TEST_F(MathPoly_LaguerreTest, RepeatedRootsReportMultiplicity)
+{
+  // (x-1)^3 * (x+2)^2
+  const double         aCoeffs[6] = {-4.0, 8.0, -1.0, -5.0, 1.0, 1.0};
+  MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 5, 1.0e-11);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 2u);
+  EXPECT_NEAR(aResult.Roots[0], -2.0, 1.0e-6);
+  EXPECT_NEAR(aResult.Roots[1], 1.0, 1.0e-6);
+  EXPECT_EQ(aResult.Multiplicities[0], 2);
+  EXPECT_EQ(aResult.Multiplicities[1], 3);
+}
+
+TEST_F(MathPoly_LaguerreTest, SmallPureImaginaryRootsRemainComplex)
+{
+  constexpr double     THE_CONSTANT = 1.0e-14;
+  const double         aCoeffs[3]   = {THE_CONSTANT, 0.0, 1.0};
+  MathPoly::PolyResult aResult      = MathPoly::Laguerre(aCoeffs, 2);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbRoots, 0u);
+  ASSERT_EQ(aResult.NbComplexRoots, 2u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[0], 1u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[1], 1u);
+  EXPECT_EQ(aResult.ComplexRoots[1], std::conj(aResult.ComplexRoots[0]));
+  for (size_t anIndex = 0; anIndex < aResult.NbComplexRoots; ++anIndex)
+  {
+    EXPECT_NEAR(aResult.ComplexRoots[anIndex].real(), 0.0, THE_TOL);
+    EXPECT_NEAR(std::abs(aResult.ComplexRoots[anIndex].imag()),
+                std::sqrt(THE_CONSTANT),
+                THE_TOL);
+    EXPECT_LE(std::abs(EvaluatePoly(aCoeffs, 2, aResult.ComplexRoots[anIndex])),
+              ComplexEvaluationRoundoff(aCoeffs, 2, aResult.ComplexRoots[anIndex]));
+  }
+}
+
+TEST_F(MathPoly_LaguerreTest, UnitPureImaginaryRootsRemainComplex)
+{
+  const double         aCoeffs[3] = {1.0, 0.0, 1.0};
+  MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 2);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbRoots, 0u);
+  ASSERT_EQ(aResult.NbComplexRoots, 2u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[0], 1u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[1], 1u);
+  EXPECT_EQ(aResult.ComplexRoots[1], std::conj(aResult.ComplexRoots[0]));
+  for (size_t anIndex = 0; anIndex < aResult.NbComplexRoots; ++anIndex)
+  {
+    EXPECT_NEAR(aResult.ComplexRoots[anIndex].real(), 0.0, THE_TOL);
+    EXPECT_NEAR(std::abs(aResult.ComplexRoots[anIndex].imag()), 1.0, THE_TOL);
+    EXPECT_LE(std::abs(EvaluatePoly(aCoeffs, 2, aResult.ComplexRoots[anIndex])),
+              ComplexEvaluationRoundoff(aCoeffs, 2, aResult.ComplexRoots[anIndex]));
+  }
+}
+
+TEST_F(MathPoly_LaguerreTest, RepeatedComplexConjugatesReportMultiplicity)
+{
+  const double         aCoeffs[5] = {1.0, 0.0, 2.0, 0.0, 1.0};
+  MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 4);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbRoots, 0u);
+  ASSERT_EQ(aResult.NbComplexRoots, 2u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[0], 2u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[1], 2u);
+  EXPECT_EQ(aResult.ComplexRoots[1], std::conj(aResult.ComplexRoots[0]));
+  for (size_t anIndex = 0; anIndex < aResult.NbComplexRoots; ++anIndex)
+  {
+    EXPECT_NEAR(aResult.ComplexRoots[anIndex].real(), 0.0, THE_TOL);
+    EXPECT_NEAR(std::abs(aResult.ComplexRoots[anIndex].imag()), 1.0, 1.0e-8);
+    EXPECT_LE(std::abs(EvaluatePoly(aCoeffs, 4, aResult.ComplexRoots[anIndex])),
+              ComplexEvaluationRoundoff(aCoeffs, 4, aResult.ComplexRoots[anIndex]));
+  }
+}
+
+TEST_F(MathPoly_LaguerreTest, RepeatedRealAndComplexRootsUseMatchingDeflation)
+{
+  // (x-1)^2 * (x^2+1)
+  const double               aCoefficients[5] = {1.0, -2.0, 2.0, -2.0, 1.0};
+  const MathPoly::PolyResult aResult          = MathPoly::Laguerre(aCoefficients, 4);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 1u);
+  EXPECT_NEAR(aResult.Roots[0], 1.0, 1.0e-8);
+  EXPECT_EQ(aResult.Multiplicities[0], 2u);
+  ASSERT_EQ(aResult.NbComplexRoots, 2u);
+  EXPECT_NEAR(aResult.ComplexRoots[0].real(), 0.0, 1.0e-8);
+  EXPECT_NEAR(std::abs(aResult.ComplexRoots[0].imag()), 1.0, 1.0e-8);
+  EXPECT_EQ(aResult.ComplexMultiplicities[0], 1u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[1], 1u);
+}
+
+TEST_F(MathPoly_LaguerreTest, GloballyScaledEquation)
+{
+  const double aCoeffs[6]      = {-1.2e-298, 2.74e-298, -2.25e-298, 8.5e-299, -1.5e-299, 1.0e-300};
+  MathPoly::PolyResult aResult = MathPoly::Laguerre(aCoeffs, 5);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 5u);
+  for (size_t anIndex = 0; anIndex < aResult.NbRoots; ++anIndex)
+  {
+    EXPECT_NEAR(aResult.Roots[anIndex], static_cast<double>(anIndex + 1), 1.0e-8);
+  }
+}
+
+TEST_F(MathPoly_LaguerreTest, RejectsNonFiniteInputAndTolerance)
+{
+  const double aNan       = std::numeric_limits<double>::quiet_NaN();
+  const double aCoeffs[3] = {1.0, aNan, 1.0};
+  EXPECT_EQ(MathPoly::Laguerre(aCoeffs, 2).Status, MathUtils::Status::InvalidInput);
+  const double aFiniteCoeffs[3] = {-1.0, 0.0, 1.0};
+  EXPECT_EQ(MathPoly::Laguerre(aFiniteCoeffs, 2, aNan).Status, MathUtils::Status::InvalidInput);
+  EXPECT_EQ(MathPoly::Laguerre(aFiniteCoeffs, 2, 0.0).Status, MathUtils::Status::InvalidInput);
+}
+
+TEST_F(MathPoly_LaguerreTest, ForcedNonConvergenceIsReported)
+{
+  const double         aCoeffs[6] = {-120.0, 274.0, -225.0, 85.0, -15.0, 1.0};
+  MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 5, 1.0e-12, 0);
+  EXPECT_FALSE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
 }

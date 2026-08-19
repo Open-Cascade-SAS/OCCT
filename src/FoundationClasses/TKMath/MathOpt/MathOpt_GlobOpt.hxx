@@ -21,10 +21,13 @@
 #include <MathOpt_BFGS.hxx>
 #include <MathOpt_Powell.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathOpt_Utils.hxx"
 
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <cmath>
+#include <optional>
 
 namespace MathOpt
 {
@@ -43,12 +46,12 @@ enum class GlobalStrategy
 struct GlobalConfig : NDimConfig
 {
   GlobalStrategy Strategy           = GlobalStrategy::PSOHybrid; //!< Algorithm to use
-  int            NbPopulation       = 40;                        //!< Population/swarm size
-  int            NbStarts           = 10;  //!< Number of random starts (for MultiStart)
+  size_t         NbPopulation       = 40;                        //!< Population/swarm size
+  size_t         NbStarts           = 10;  //!< Number of random starts (for MultiStart)
   double         MutationScale      = 0.8; //!< Mutation scale (for DE)
   double         CrossoverProb      = 0.9; //!< Crossover probability (for DE)
   unsigned int   Seed               = 6;   //!< Random seed
-  int            PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = no polishing)
+  uint32_t       PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = no polishing)
 
   //! Default constructor.
   GlobalConfig()
@@ -57,7 +60,7 @@ struct GlobalConfig : NDimConfig
   }
 
   //! Constructor with strategy.
-  GlobalConfig(GlobalStrategy theStrategy, int theMaxIter = 200)
+  GlobalConfig(GlobalStrategy theStrategy, uint32_t theMaxIter = 200)
       : NDimConfig(1.0e-8, theMaxIter, true),
         Strategy(theStrategy)
   {
@@ -84,17 +87,18 @@ VectorResult DifferentialEvolution(Function&           theFunc,
 {
   VectorResult aResult;
 
-  const int aLower  = theLowerBounds.Lower();
-  const int aUpper  = theLowerBounds.Upper();
-  const int aNbDims = aUpper - aLower + 1;
+  const size_t aNbDims = theLowerBounds.Size();
 
-  if (theUpperBounds.Length() != aNbDims)
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsValidBounds(theLowerBounds, theUpperBounds)
+      || !std::isfinite(theConfig.MutationScale) || theConfig.MutationScale < 0.0
+      || !std::isfinite(theConfig.CrossoverProb) || theConfig.CrossoverProb < 0.0
+      || theConfig.CrossoverProb > 1.0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  const int aNbPop = theConfig.NbPopulation;
+  const size_t aNbPop = theConfig.NbPopulation;
   if (aNbPop < 4)
   {
     // DE requires at least 4 population members for mutation (3 distinct + target)
@@ -102,106 +106,117 @@ VectorResult DifferentialEvolution(Function&           theFunc,
     return aResult;
   }
 
-  const double aMutScale  = theConfig.MutationScale;
-  const double aCrossProb = theConfig.CrossoverProb;
+  const double                     aMutScale  = theConfig.MutationScale;
+  const double                     aCrossProb = theConfig.CrossoverProb;
+  Utils::CheckedFunction<Function> aCheckedFunc(theFunc);
+
+  auto LowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
+  auto UpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
 
   // Random number generator
   MathUtils::RandomGenerator aRNG(theConfig.Seed);
 
   // Population: vector of candidate solutions
-  NCollection_DynamicArray<math_Vector> aPopulation;
-  math_Vector                           aFitness(0, aNbPop - 1);
+  NCollection_DynamicArray<math_Vector>           aPopulation(std::min<size_t>(aNbPop, 8));
+  NCollection_LinearVector<std::optional<double>> aFitness;
 
   // Initialize population
-  for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
+  for (size_t aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
   {
-    aPopulation.Append(math_Vector(aLower, aUpper));
-    for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
+    aPopulation.Append(math_Vector(aNbDims));
+    aFitness.Append(std::nullopt);
+    for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
       const double aRandVal = aRNG.NextReal();
-      aPopulation.ChangeValue(aMemberIdx)(aDimIdx) =
-        theLowerBounds(aDimIdx) + aRandVal * (theUpperBounds(aDimIdx) - theLowerBounds(aDimIdx));
+      aPopulation.ChangeValue(aMemberIdx).ChangeAt(aDimIdx) =
+        LowerBound(aDimIdx) + aRandVal * (UpperBound(aDimIdx) - LowerBound(aDimIdx));
     }
 
-    double aFitVal;
-    if (!theFunc.Value(aPopulation.Value(aMemberIdx), aFitVal))
+    double aFitVal = 0.0;
+    if (aCheckedFunc.Value(aPopulation.Value(aMemberIdx), aFitVal))
     {
-      aFitVal = std::numeric_limits<double>::max();
+      aFitness.ChangeValue(aMemberIdx) = aFitVal;
     }
-    aFitness(aMemberIdx) = aFitVal;
   }
 
   // Find best
-  int    aBestIdx   = 0;
-  double aBestValue = aFitness(0);
-  for (int aMemberIdx = 1; aMemberIdx < aNbPop; ++aMemberIdx)
+  std::optional<size_t> aBestIdx;
+  std::optional<double> aBestValue;
+  for (size_t aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
   {
-    if (aFitness(aMemberIdx) < aBestValue)
+    const std::optional<double>& aMemberFitness = aFitness.Value(aMemberIdx);
+    if (aMemberFitness.has_value() && (!aBestValue || *aMemberFitness < *aBestValue))
     {
-      aBestValue = aFitness(aMemberIdx);
+      aBestValue = *aMemberFitness;
       aBestIdx   = aMemberIdx;
     }
   }
+  if (!aBestIdx)
+  {
+    aResult.Status = aCheckedFunc.FailureStatus != Status::OK ? aCheckedFunc.FailureStatus
+                                                               : Status::NumericalError;
+    return aResult;
+  }
 
   // Trial vector
-  math_Vector aTrial(aLower, aUpper);
+  math_Vector aTrial(aNbDims);
 
   // Evolution loop
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  bool hasConverged = false;
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
-    for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
+    for (size_t aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
     {
       // Select 3 distinct random indices different from current member
-      int anIdxA, anIdxB, anIdxC;
+      size_t anIdxA, anIdxB, anIdxC;
       do
       {
-        anIdxA = static_cast<int>(aRNG.NextReal() * aNbPop);
+        anIdxA = static_cast<size_t>(aRNG.NextReal() * aNbPop);
       } while (anIdxA == aMemberIdx);
       do
       {
-        anIdxB = static_cast<int>(aRNG.NextReal() * aNbPop);
+        anIdxB = static_cast<size_t>(aRNG.NextReal() * aNbPop);
       } while (anIdxB == aMemberIdx || anIdxB == anIdxA);
       do
       {
-        anIdxC = static_cast<int>(aRNG.NextReal() * aNbPop);
+        anIdxC = static_cast<size_t>(aRNG.NextReal() * aNbPop);
       } while (anIdxC == aMemberIdx || anIdxC == anIdxA || anIdxC == anIdxB);
 
       // Mutation and crossover
-      const int aJRand = aLower + static_cast<int>(aRNG.NextReal() * aNbDims);
+      const size_t aJRand = static_cast<size_t>(aRNG.NextReal() * aNbDims);
 
-      for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
+      for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
         if (aRNG.NextReal() < aCrossProb || aDimIdx == aJRand)
         {
           // Mutation: DE/rand/1
           const double aMutVal =
-            aPopulation.Value(anIdxA)(aDimIdx)
-            + aMutScale * (aPopulation.Value(anIdxB)(aDimIdx) - aPopulation.Value(anIdxC)(aDimIdx));
+            aPopulation.Value(anIdxA).At(aDimIdx)
+            + aMutScale
+                * (aPopulation.Value(anIdxB).At(aDimIdx) - aPopulation.Value(anIdxC).At(aDimIdx));
           // Clamp to bounds
-          aTrial(aDimIdx) =
-            MathUtils::Clamp(aMutVal, theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
+          aTrial.ChangeAt(aDimIdx) =
+            MathUtils::Clamp(aMutVal, LowerBound(aDimIdx), UpperBound(aDimIdx));
         }
         else
         {
-          aTrial(aDimIdx) = aPopulation.Value(aMemberIdx)(aDimIdx);
+          aTrial.ChangeAt(aDimIdx) = aPopulation.Value(aMemberIdx).At(aDimIdx);
         }
       }
 
       // Selection
-      double aTrialFitness;
-      if (!theFunc.Value(aTrial, aTrialFitness))
-      {
-        aTrialFitness = std::numeric_limits<double>::max();
-      }
+      double     aTrialFitness = 0.0;
+      const bool isTrialValid  = aCheckedFunc.Value(aTrial, aTrialFitness);
 
-      if (aTrialFitness <= aFitness(aMemberIdx))
+      if (isTrialValid
+          && (!aFitness.Value(aMemberIdx) || aTrialFitness <= *aFitness.Value(aMemberIdx)))
       {
         aPopulation.ChangeValue(aMemberIdx) = aTrial;
-        aFitness(aMemberIdx)                = aTrialFitness;
+        aFitness.ChangeValue(aMemberIdx)    = aTrialFitness;
 
-        if (aTrialFitness < aBestValue)
+        if (aTrialFitness < *aBestValue)
         {
           aBestValue = aTrialFitness;
           aBestIdx   = aMemberIdx;
@@ -211,24 +226,30 @@ VectorResult DifferentialEvolution(Function&           theFunc,
 
     // Check convergence
     double aMaxDiff = 0.0;
-    for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
+    size_t aNbValid = 0;
+    for (size_t aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aFitness(aMemberIdx) - aBestValue));
+      if (aFitness.Value(aMemberIdx))
+      {
+        ++aNbValid;
+        aMaxDiff = std::max(aMaxDiff, std::abs(*aFitness.Value(aMemberIdx) - *aBestValue));
+      }
     }
 
-    if (aMaxDiff < theConfig.Tolerance)
+    if (aNbValid == aNbPop && aMaxDiff < theConfig.Tolerance)
     {
+      hasConverged = true;
       break;
     }
   }
 
   // Polish the best solution using coordinate-wise Brent's method
-  math_Vector aPolished      = aPopulation.Value(aBestIdx);
-  double      aPolishedValue = aBestValue;
+  math_Vector aPolished      = aPopulation.Value(*aBestIdx);
+  double      aPolishedValue = *aBestValue;
   if (theConfig.PolishBudgetPerDim > 0)
   {
-    int aPolishEvals = 0;
-    PolishCoordinateWise(theFunc,
+    size_t aPolishEvals = 0;
+    PolishCoordinateWise(aCheckedFunc,
                          aPolished,
                          aPolishedValue,
                          theLowerBounds,
@@ -238,7 +259,7 @@ VectorResult DifferentialEvolution(Function&           theFunc,
                          aPolishEvals);
   }
 
-  aResult.Status   = Status::OK;
+  aResult.Status   = hasConverged ? Status::OK : Status::MaxIterations;
   aResult.Solution = aPolished;
   aResult.Value    = aPolishedValue;
   return aResult;
@@ -264,21 +285,26 @@ VectorResult MultiStart(Function&           theFunc,
 {
   VectorResult aResult;
 
-  const int aLower  = theLowerBounds.Lower();
-  const int aUpper  = theLowerBounds.Upper();
-  const int aNbDims = aUpper - aLower + 1;
+  const size_t aNbDims = theLowerBounds.Size();
 
-  if (theUpperBounds.Length() != aNbDims)
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsValidBounds(theLowerBounds, theUpperBounds)
+      || theConfig.NbStarts == 0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  MathUtils::RandomGenerator aRNG(theConfig.Seed);
+  MathUtils::RandomGenerator                         aRNG(theConfig.Seed);
+  Utils::CheckedFunction<Function>                   aCheckedFunc(theFunc);
+  Utils::BoundedFunction<Utils::CheckedFunction<Function>> aBoundedFunc(aCheckedFunc,
+                                                                         theLowerBounds,
+                                                                         theUpperBounds);
 
-  math_Vector aBestSolution(aLower, aUpper);
-  double      aBestValue = std::numeric_limits<double>::max();
-  bool        aFound     = false;
+  auto LowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
+  auto UpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
+
+  std::optional<math_Vector> aBestSolution;
+  std::optional<double>      aBestValue;
 
   // Configure Powell optimization for local refinement
   Config aPowellConfig;
@@ -291,61 +317,60 @@ VectorResult MultiStart(Function&           theFunc,
     aPowellConfig.MaxIterations = 10;
   }
 
-  for (int aStartIdx = 0; aStartIdx < theConfig.NbStarts; ++aStartIdx)
+  for (size_t aStartIdx = 0; aStartIdx < theConfig.NbStarts; ++aStartIdx)
   {
     // Random starting point within bounds
-    math_Vector aStart(aLower, aUpper);
-    for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
+    math_Vector aStart(aNbDims);
+    for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
       const double aRandVal = aRNG.NextReal();
-      aStart(aDimIdx) =
-        theLowerBounds(aDimIdx) + aRandVal * (theUpperBounds(aDimIdx) - theLowerBounds(aDimIdx));
+      aStart.ChangeAt(aDimIdx) =
+        LowerBound(aDimIdx) + aRandVal * (UpperBound(aDimIdx) - LowerBound(aDimIdx));
     }
 
     // Run local optimization from this starting point
-    VectorResult aLocalResult = Powell(theFunc, aStart, aPowellConfig);
+    VectorResult aLocalResult = Powell(aBoundedFunc, aStart, aPowellConfig);
 
-    if (aLocalResult.IsDone() && aLocalResult.Value)
+    if (aLocalResult.Solution.has_value() && aLocalResult.Value.has_value())
     {
-      // Clamp solution to bounds
+      // Powell's internal coordinates are unconstrained; map its result back to the box.
       math_Vector aSol = *aLocalResult.Solution;
-      for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
+      for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
-        aSol(aDimIdx) =
-          MathUtils::Clamp(aSol(aDimIdx), theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
+        aSol.ChangeAt(aDimIdx) =
+          MathUtils::Clamp(aSol.At(aDimIdx), LowerBound(aDimIdx), UpperBound(aDimIdx));
       }
 
       // Re-evaluate at clamped point
       double aValue;
-      if (theFunc.Value(aSol, aValue) && aValue < aBestValue)
+      if (aCheckedFunc.Value(aSol, aValue) && (!aBestValue || aValue < *aBestValue))
       {
         aBestValue    = aValue;
         aBestSolution = aSol;
-        aFound        = true;
       }
     }
     else
     {
       // Powell failed, just evaluate at starting point
       double aValue;
-      if (theFunc.Value(aStart, aValue) && aValue < aBestValue)
+      if (aCheckedFunc.Value(aStart, aValue) && (!aBestValue || aValue < *aBestValue))
       {
         aBestValue    = aValue;
         aBestSolution = aStart;
-        aFound        = true;
       }
     }
   }
 
-  if (!aFound)
+  if (!aBestValue)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aCheckedFunc.FailureStatus != Status::OK ? aCheckedFunc.FailureStatus
+                                                               : Status::NumericalError;
     return aResult;
   }
 
   aResult.Status   = Status::OK;
-  aResult.Solution = aBestSolution;
-  aResult.Value    = aBestValue;
+  aResult.Solution = *aBestSolution;
+  aResult.Value    = *aBestValue;
   return aResult;
 }
 
@@ -398,6 +423,13 @@ VectorResult GlobalMinimum(Function&                                        theF
                            const NCollection_DynamicArray<PSOSeedParticle>* theSeeds = nullptr,
                            PSOStats*                                        theStats = nullptr)
 {
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsValidBounds(theLowerBounds, theUpperBounds))
+  {
+    VectorResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   switch (theConfig.Strategy)
   {
     case GlobalStrategy::PSO: {
@@ -433,7 +465,7 @@ VectorResult GlobalMinimum(Function&                                        theF
         // Auto-generate PSO config from GlobalConfig:
         // use half iterations and relaxed tolerance for the PSO phase
         aPSOConfig.NbParticles        = theConfig.NbPopulation;
-        aPSOConfig.MaxIterations      = theConfig.MaxIterations / 2;
+        aPSOConfig.MaxIterations      = std::max(uint32_t{1}, theConfig.MaxIterations / 2);
         aPSOConfig.Tolerance          = theConfig.Tolerance * 10.0;
         aPSOConfig.Seed               = theConfig.Seed;
         aPSOConfig.PolishBudgetPerDim = theConfig.PolishBudgetPerDim;
@@ -442,7 +474,7 @@ VectorResult GlobalMinimum(Function&                                        theF
       VectorResult aPSOResult =
         PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig, theSeeds, theStats);
 
-      if (!aPSOResult.IsDone() || !aPSOResult.Solution)
+      if (!aPSOResult.Solution.has_value() || !aPSOResult.Value.has_value())
       {
         return aPSOResult;
       }
@@ -452,31 +484,47 @@ VectorResult GlobalMinimum(Function&                                        theF
       aPowellConfig.Tolerance     = theConfig.Tolerance;
       aPowellConfig.XTolerance    = theConfig.Tolerance;
       aPowellConfig.FTolerance    = theConfig.Tolerance;
-      aPowellConfig.MaxIterations = theConfig.MaxIterations / 2;
+      aPowellConfig.MaxIterations = std::max(uint32_t{1}, theConfig.MaxIterations / 2);
 
-      VectorResult aLocalResult = Powell(theFunc, *aPSOResult.Solution, aPowellConfig);
+      Utils::BoundedFunction<Function> aBoundedFunc(theFunc, theLowerBounds, theUpperBounds);
+      VectorResult aLocalResult = Powell(aBoundedFunc, *aPSOResult.Solution, aPowellConfig);
 
-      if (aLocalResult.IsDone() && aLocalResult.Value && aPSOResult.Value
-          && *aLocalResult.Value < *aPSOResult.Value)
+      if (aLocalResult.Status == Status::CallbackError
+          || aLocalResult.Status == Status::NumericalError)
+      {
+        return aLocalResult;
+      }
+
+      if (aLocalResult.IsDone() && aLocalResult.Solution && aPSOResult.Value)
       {
         // Clamp to bounds
-        const int   aLower = theLowerBounds.Lower();
-        const int   aUpper = theLowerBounds.Upper();
-        math_Vector aSol   = *aLocalResult.Solution;
-        for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
+        const size_t aNbDims = theLowerBounds.Size();
+        math_Vector  aSol    = *aLocalResult.Solution;
+        for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
         {
-          aSol(aDimIdx) =
-            MathUtils::Clamp(aSol(aDimIdx), theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
+          aSol.ChangeAt(aDimIdx) = MathUtils::Clamp(aSol.At(aDimIdx),
+                                                    theLowerBounds.At(aDimIdx),
+                                                    theUpperBounds.At(aDimIdx));
         }
         aLocalResult.Solution = aSol;
 
         // Re-evaluate at clamped point
         double aValue;
-        if (theFunc.Value(aSol, aValue))
+        if (Utils::Value(aBoundedFunc, aSol, aValue))
         {
           aLocalResult.Value = aValue;
+          if (aValue < *aPSOResult.Value)
+          {
+            return aLocalResult;
+          }
+          // The hybrid phase converged even when the retained PSO candidate is better.
+          aPSOResult.Status = Status::OK;
         }
-        return aLocalResult;
+        else
+        {
+          aLocalResult.Status = Status::NumericalError;
+          return aLocalResult;
+        }
       }
 
       return aPSOResult;

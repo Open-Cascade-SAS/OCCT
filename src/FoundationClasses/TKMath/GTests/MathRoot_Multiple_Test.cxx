@@ -12,18 +12,20 @@
 // commercial license or contractual agreement.
 
 #include <MathRoot_Multiple.hxx>
+#include <MathRoot_All.hxx>
+#include <MathUtils_Core.hxx>
 #include <MathUtils_FunctorScalar.hxx>
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
 #include <cmath>
+#include <limits>
 
 #include <gtest/gtest.h>
 
 namespace
 {
 constexpr double THE_TOLERANCE = 1e-8;
-constexpr double THE_PI        = 3.14159265358979323846;
 } // namespace
 
 //=================================================================================================
@@ -90,9 +92,9 @@ TEST(MathRoot_Multiple, FindAllRoots_SineFunction)
   EXPECT_EQ(aResult.NbRoots(), 4u); // 0, pi, 2*pi, 3*pi
 
   EXPECT_NEAR(aResult.Roots[0], 0.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[1], THE_PI, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[2], 2.0 * THE_PI, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[3], 3.0 * THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[1], MathUtils::THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[2], 2.0 * MathUtils::THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[3], 3.0 * MathUtils::THE_PI, THE_TOLERANCE);
 }
 
 TEST(MathRoot_Multiple, FindAllRoots_WithOffset)
@@ -152,12 +154,12 @@ TEST(MathRoot_Multiple, FindAllRoots_LambdaFunction)
   MathRoot::MultipleConfig aConfig;
   aConfig.NbSamples = 100;
 
-  auto aResult = MathRoot::FindAllRoots(aFunc, 0.0, 2.0 * THE_PI, aConfig);
+  auto aResult = MathRoot::FindAllRoots(aFunc, 0.0, 2.0 * MathUtils::THE_PI, aConfig);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots(), 2u);
   // cos(x) = 0.5 at x = pi/3 and x = 5*pi/3
-  EXPECT_NEAR(aResult.Roots[0], THE_PI / 3.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[1], 5.0 * THE_PI / 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[0], MathUtils::THE_PI / 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[1], 5.0 * MathUtils::THE_PI / 3.0, THE_TOLERANCE);
 }
 
 //=================================================================================================
@@ -227,8 +229,8 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_SineFunction)
   EXPECT_EQ(aResult.NbRoots(), 3u); // 0, pi, 2*pi
 
   EXPECT_NEAR(aResult.Roots[0], 0.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[1], THE_PI, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.Roots[2], 2.0 * THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[1], MathUtils::THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Roots[2], 2.0 * MathUtils::THE_PI, THE_TOLERANCE);
 }
 
 //=================================================================================================
@@ -251,7 +253,7 @@ TEST(MathRoot_Multiple, CompareWithReference_Polynomial)
   EXPECT_EQ(aResult.NbRoots(), 3u);
 
   // Verify function value at roots is close to zero
-  for (int i = 0; i < aResult.NbRoots(); ++i)
+  for (size_t i = 0; i < aResult.NbRoots(); ++i)
   {
     double aValue = 0.0;
     aFunc.Value(aResult.Roots[i], aValue);
@@ -400,7 +402,7 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_NegativeExtrema_BothProbeDire
   EXPECT_GE(aResult.NbRoots(), 1);
   // The root at x=2 should be found
   bool isFound = false;
-  for (int i = 0; i < aResult.NbRoots(); ++i)
+  for (size_t i = 0; i < aResult.NbRoots(); ++i)
   {
     if (std::abs(aResult.Roots[i] - 2.0) < THE_TOLERANCE)
     {
@@ -428,13 +430,14 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_NegativeExtrema_AsymmetricRoo
   aConfig.Offset     = -0.5;
   aConfig.FTolerance = 1.0e-12;
 
-  auto aResult = MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 2.0 * THE_PI, aConfig);
+  auto aResult =
+    MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 2.0 * MathUtils::THE_PI, aConfig);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots(), 2);
   if (aResult.NbRoots() == 2)
   {
-    EXPECT_NEAR(aResult.Roots[0], THE_PI / 6.0, THE_TOLERANCE);
-    EXPECT_NEAR(aResult.Roots[1], 5.0 * THE_PI / 6.0, THE_TOLERANCE);
+    EXPECT_NEAR(aResult.Roots[0], MathUtils::THE_PI / 6.0, THE_TOLERANCE);
+    EXPECT_NEAR(aResult.Roots[1], 5.0 * MathUtils::THE_PI / 6.0, THE_TOLERANCE);
   }
 }
 
@@ -455,7 +458,7 @@ TEST(MathRoot_Multiple, FindAllRoots_ExactZeroAtSample)
 
   bool isZeroFound = false;
   bool isOneFound  = false;
-  for (int i = 0; i < aResult.NbRoots(); ++i)
+  for (size_t i = 0; i < aResult.NbRoots(); ++i)
   {
     if (std::abs(aResult.Roots[i]) < THE_TOLERANCE)
     {
@@ -486,7 +489,7 @@ TEST(MathRoot_Multiple, FindAllRoots_ExactZeroWithSignChange)
   EXPECT_GE(aResult.NbRoots(), 1);
 
   bool isFound = false;
-  for (int i = 0; i < aResult.NbRoots(); ++i)
+  for (size_t i = 0; i < aResult.NbRoots(); ++i)
   {
     if (std::abs(aResult.Roots[i]) < THE_TOLERANCE)
     {
@@ -495,4 +498,110 @@ TEST(MathRoot_Multiple, FindAllRoots_ExactZeroWithSignChange)
     }
   }
   EXPECT_TRUE(isFound) << "Root at x=0 should be found when it is an exact zero at a sample point";
+}
+
+//=================================================================================================
+
+TEST(MathRoot_Multiple, InvalidBoundsAndSampleCountsAreRejectedBeforeSampling)
+{
+  MathUtils::Polynomial    aFunc({-1.0, 1.0});
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples = 1;
+  EXPECT_EQ(MathRoot::FindAllRoots(aFunc, 0.0, 2.0, aConfig).Status,
+            MathRoot::Status::InvalidInput);
+
+  aConfig.NbSamples = 20;
+  EXPECT_EQ(MathRoot::FindAllRoots(aFunc, 2.0, 0.0, aConfig).Status,
+            MathRoot::Status::InvalidInput);
+  EXPECT_EQ(
+    MathRoot::FindAllRoots(aFunc, 0.0, std::numeric_limits<double>::infinity(), aConfig).Status,
+    MathRoot::Status::InvalidInput);
+
+  const MathRoot::AllRootsResult anAllResult =
+    MathRoot::FindAllRootsWithIntervals(aFunc, 0.0, 2.0, 1);
+  EXPECT_EQ(anAllResult.Status, MathRoot::Status::InvalidInput);
+}
+
+TEST(MathRoot_Multiple, ValueOnlySearchDoesNotClaimUnsampledTangentialRoot)
+{
+  const double aRoot = std::sqrt(2.0) / 4.0;
+  auto         aFunc = MathUtils::MakeScalar([&](double theX, double& theY) {
+    const double aDx = theX - aRoot;
+    theY             = aDx * aDx;
+    return true;
+  });
+
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples                      = 2;
+  aConfig.FTolerance                     = 1.0e-14;
+  const MathRoot::MultipleResult aResult = MathRoot::FindAllRoots(aFunc, 0.0, 1.0, aConfig);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbRoots(), 0);
+}
+
+TEST(MathRoot_Multiple, FailedRefinementIsPropagatedAndEarlierRootsArePreserved)
+{
+  class FailOnSecondBracket
+  {
+  public:
+    bool Value(double theX, double& theY)
+    {
+      ++myCalls;
+      if (myCalls > 21 && theX > 0.0)
+      {
+        return false;
+      }
+      theY = (theX + 0.5) * (theX - 0.37);
+      return true;
+    }
+
+  private:
+    int myCalls = 0;
+  } aFunc;
+
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples                      = 2;
+  const MathRoot::MultipleResult aResult = MathRoot::FindAllRoots(aFunc, -1.0, 1.0, aConfig);
+  EXPECT_EQ(aResult.Status, MathRoot::Status::CallbackError);
+  ASSERT_EQ(aResult.NbRoots(), 1);
+  EXPECT_NEAR(aResult.Roots[0], -0.5, THE_TOLERANCE);
+}
+
+TEST(MathRoot_Multiple, NonFiniteSampleOutputIsNumericalError)
+{
+  auto aFunc = MathUtils::MakeScalar([](double, double& theY) {
+    theY = std::numeric_limits<double>::quiet_NaN();
+    return true;
+  });
+  EXPECT_EQ(MathRoot::FindAllRoots(aFunc, 0.0, 1.0).Status, MathRoot::Status::NumericalError);
+}
+
+TEST(MathRoot_Multiple, CallbackRefusalIsCallbackError)
+{
+  auto aFunc = MathUtils::MakeScalar([](double, double&) { return false; });
+  EXPECT_EQ(MathRoot::FindAllRoots(aFunc, 0.0, 1.0).Status, MathRoot::Status::CallbackError);
+  EXPECT_EQ(MathRoot::FindAllRootsWithIntervals(aFunc, 0.0, 1.0, 20).Status,
+            MathRoot::Status::CallbackError);
+}
+
+TEST(MathRoot_Multiple, DerivativeCallbackRefusalIsCallbackError)
+{
+  class RefusingDerivativeFunc
+  {
+  public:
+    bool Value(double theX, double& theY) const
+    {
+      const double aDx = theX - 0.37;
+      theY             = aDx * aDx;
+      return true;
+    }
+
+    bool Values(double, double&, double&) const { return false; }
+  } aFunc;
+
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples  = 10;
+  aConfig.FTolerance = 1.0e-12;
+  EXPECT_EQ(MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 1.0, aConfig).Status,
+            MathRoot::Status::CallbackError);
 }

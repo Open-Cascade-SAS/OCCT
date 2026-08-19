@@ -21,25 +21,35 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <cmath>
+#include <limits>
 
 namespace MathInteg
 {
 using namespace MathUtils;
 
+//! Largest Gauss order supported by the Gauss-Kronrod weight generator.
+constexpr size_t THE_KRONROD_MAX_GAUSS_ORDER = 30;
+//! Initial Gauss order used by automatic order selection.
+constexpr size_t THE_KRONROD_AUTO_INITIAL_ORDER = 7;
+//! Order increment used by automatic order selection.
+constexpr size_t THE_KRONROD_AUTO_ORDER_STEP = 4;
+//! Adaptive work limit used after automatic order selection is exhausted.
+constexpr uint32_t THE_KRONROD_AUTO_MAX_ITERATIONS = 50;
+
 //! Configuration for Gauss-Kronrod integration.
 struct KronrodConfig : IntegConfig
 {
-  int  NbGaussPoints = 7;    //!< Number of Gauss points (n), Kronrod will use 2n+1 points
-  bool Adaptive      = true; //!< Whether to use adaptive subdivision
+  size_t NbGaussPoints = THE_KRONROD_AUTO_INITIAL_ORDER; //!< Gauss points; Kronrod uses 2n+1
+  bool   Adaptive      = true; //!< Whether to use adaptive subdivision
 
   //! Default constructor.
   KronrodConfig() = default;
 
   //! Constructor with tolerance.
-  explicit KronrodConfig(double theTolerance, int theMaxIter = 100)
+  explicit KronrodConfig(double theTolerance, uint32_t theMaxIter = 100)
       : IntegConfig(theTolerance, theMaxIter)
   {
   }
@@ -58,124 +68,186 @@ struct KronrodConfig : IntegConfig
 //! @param theNbGauss number of Gauss points (determines rule order)
 //! @return integration result with error estimate
 template <typename Function>
-IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, int theNbGauss = 7)
+IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, size_t theNbGauss = 7)
 {
   IntegResult aResult;
 
+  if (theNbGauss == 0 || theNbGauss > THE_KRONROD_MAX_GAUSS_ORDER
+      || !std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower > theUpper)
+  {
+    aResult = KronrodRule(theFunc, theUpper, theLower, theNbGauss);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
+
   // Number of Kronrod points = 2*n + 1
-  const int aNbKronrod = 2 * theNbGauss + 1;
+  const size_t aNbKronrod = 2 * theNbGauss + 1;
 
   // Get Gauss-Kronrod points and weights using global ::math class
-  math_Vector aGaussP(1, theNbGauss);
-  math_Vector aGaussW(1, theNbGauss);
-  math_Vector aKronrodP(1, aNbKronrod);
-  math_Vector aKronrodW(1, aNbKronrod);
+  math_Vector aGaussP(theNbGauss);
+  math_Vector aGaussW(theNbGauss);
+  math_Vector aKronrodP(aNbKronrod);
+  math_Vector aKronrodW(aNbKronrod);
 
-  if (!GetKronrodPointsAndWeights(aNbKronrod, aKronrodP, aKronrodW)
-      || !GetOrderedGaussPointsAndWeights(theNbGauss, aGaussP, aGaussW))
+  if (!GetKronrodPointsAndWeights(static_cast<int>(aNbKronrod), aKronrodP, aKronrodW)
+      || !GetOrderedGaussPointsAndWeights(static_cast<int>(theNbGauss), aGaussP, aGaussW))
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
   // Transform interval [theLower, theUpper] to [-1, 1]
   const double aHalfLen = 0.5 * (theUpper - theLower);
-  const double aMid     = 0.5 * (theUpper + theLower);
+  const double aMid     = theLower + aHalfLen;
 
   // Compute Gauss and Kronrod quadratures simultaneously
-  const int aNPnt2 = (aNbKronrod + 1) / 2;
+  const size_t aHalfCount = (aNbKronrod + 1) / 2;
 
   double aGaussVal   = 0.0;
   double aKronrodVal = 0.0;
+  double anAbsVal    = 0.0;
+
+  const auto anEvaluate = [&](double theX, double& theValue) -> Status {
+    ++aResult.NbPoints;
+    theValue = 0.0;
+    if (!std::isfinite(theX))
+    {
+      return Status::NumericalError;
+    }
+    if (!theFunc.Value(theX, theValue))
+    {
+      return Status::CallbackError;
+    }
+    return std::isfinite(theValue) ? Status::OK : Status::NumericalError;
+  };
 
   // Function values at symmetric points
-  math_Vector aF1(0, aNPnt2 - 1);
-  math_Vector aF2(0, aNPnt2 - 1);
+  math_Vector aF1(aHalfCount);
+  math_Vector aF2(aHalfCount);
 
-  // Even indices (Gauss points embedded in Kronrod)
-  for (int i = 2; i < aNPnt2; i += 2)
+  // Offsets corresponding to Gauss points embedded in the Kronrod rule.
+  for (size_t i = 1; i + 1 < aHalfCount; i += 2)
   {
-    const double aDx   = aHalfLen * aKronrodP(i);
+    const double aDx   = aHalfLen * aKronrodP.At(i);
     double       aVal1 = 0.0, aVal2 = 0.0;
 
-    if (!theFunc.Value(aMid + aDx, aVal1) || !theFunc.Value(aMid - aDx, aVal2))
+    const Status aStatus1 = anEvaluate(aMid + aDx, aVal1);
+    if (aStatus1 != Status::OK)
     {
-      aResult.Status = Status::NumericalError;
+      aResult.Status = aStatus1;
+      return aResult;
+    }
+    const Status aStatus2 = anEvaluate(aMid - aDx, aVal2);
+    if (aStatus2 != Status::OK)
+    {
+      aResult.Status = aStatus2;
       return aResult;
     }
 
-    aF1(i) = aVal1;
-    aF2(i) = aVal2;
-    aGaussVal += (aVal1 + aVal2) * aGaussW(i / 2);
-    aKronrodVal += (aVal1 + aVal2) * aKronrodW(i);
+    aF1.ChangeAt(i) = aVal1;
+    aF2.ChangeAt(i) = aVal2;
+    aGaussVal += (aVal1 + aVal2) * aGaussW.At(i / 2);
+    aKronrodVal += (aVal1 + aVal2) * aKronrodW.At(i);
+    anAbsVal += (std::abs(aVal1) + std::abs(aVal2)) * aKronrodW.At(i);
   }
 
   // Center point
-  double aFc = 0.0;
-  if (!theFunc.Value(aMid, aFc))
+  double       aFc           = 0.0;
+  const Status aCenterStatus = anEvaluate(aMid, aFc);
+  if (aCenterStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aCenterStatus;
     return aResult;
   }
 
-  aKronrodVal += aFc * aKronrodW(aNPnt2);
+  aKronrodVal += aFc * aKronrodW.At(aHalfCount - 1);
+  anAbsVal += std::abs(aFc) * aKronrodW.At(aHalfCount - 1);
 
   // Check if center is also a Gauss point
-  if (aNPnt2 % 2 == 0)
+  if (aHalfCount % 2 == 0)
   {
-    aGaussVal += aFc * aGaussW(aNPnt2 / 2);
+    aGaussVal += aFc * aGaussW.At(aHalfCount / 2 - 1);
   }
 
-  // Odd indices (Kronrod-only points)
-  for (int i = 1; i < aNPnt2; i += 2)
+  // Offsets corresponding to Kronrod-only points.
+  for (size_t i = 0; i + 1 < aHalfCount; i += 2)
   {
-    const double aDx   = aHalfLen * aKronrodP(i);
+    const double aDx   = aHalfLen * aKronrodP.At(i);
     double       aVal1 = 0.0, aVal2 = 0.0;
 
-    if (!theFunc.Value(aMid + aDx, aVal1) || !theFunc.Value(aMid - aDx, aVal2))
+    const Status aStatus1 = anEvaluate(aMid + aDx, aVal1);
+    if (aStatus1 != Status::OK)
     {
-      aResult.Status = Status::NumericalError;
+      aResult.Status = aStatus1;
+      return aResult;
+    }
+    const Status aStatus2 = anEvaluate(aMid - aDx, aVal2);
+    if (aStatus2 != Status::OK)
+    {
+      aResult.Status = aStatus2;
       return aResult;
     }
 
-    aF1(i) = aVal1;
-    aF2(i) = aVal2;
-    aKronrodVal += (aVal1 + aVal2) * aKronrodW(i);
+    aF1.ChangeAt(i) = aVal1;
+    aF2.ChangeAt(i) = aVal2;
+    aKronrodVal += (aVal1 + aVal2) * aKronrodW.At(i);
+    anAbsVal += (std::abs(aVal1) + std::abs(aVal2)) * aKronrodW.At(i);
   }
 
   // QUADPACK-style error estimation:
   // Compute asc = integral of |f(x) - mean|, which measures function variability
   const double aMean = 0.5 * aKronrodVal;
-  double       aAsc  = std::abs(aFc - aMean) * aKronrodW(aNPnt2);
-  for (int i = 1; i < aNPnt2; ++i)
+  double       aAsc  = std::abs(aFc - aMean) * aKronrodW.At(aHalfCount - 1);
+  for (size_t i = 0; i + 1 < aHalfCount; ++i)
   {
-    aAsc += aKronrodW(i) * (std::abs(aF1(i) - aMean) + std::abs(aF2(i) - aMean));
+    aAsc += aKronrodW.At(i) * (std::abs(aF1.At(i) - aMean) + std::abs(aF2.At(i) - aMean));
   }
 
   // Scale by interval half-length
   aAsc *= aHalfLen;
+  anAbsVal *= aHalfLen;
   aKronrodVal *= aHalfLen;
   aGaussVal *= aHalfLen;
+
+  if (!std::isfinite(aAsc) || !std::isfinite(anAbsVal) || !std::isfinite(aKronrodVal)
+      || !std::isfinite(aGaussVal))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
 
   // Basic error estimate
   double aAbsError = std::abs(aKronrodVal - aGaussVal);
 
-  // QUADPACK scaling: when error is small relative to function variability,
-  // the actual error may be even smaller
+  // QUADPACK rescales the embedded-rule difference using the function variability.
   if (aAsc != 0.0 && aAbsError != 0.0)
   {
     const double aScale = std::pow(200.0 * aAbsError / aAsc, 1.5);
-    if (aScale < 1.0)
-    {
-      aAbsError = std::min(aAbsError, aAsc * aScale);
-    }
+    aAbsError           = aAsc * std::min(1.0, aScale);
+  }
+  // QUADPACK limits unrealistically small estimates using the absolute integral estimate.
+  if (anAbsVal
+      > std::numeric_limits<double>::min() / (50.0 * std::numeric_limits<double>::epsilon()))
+  {
+    aAbsError = std::max(aAbsError, 50.0 * std::numeric_limits<double>::epsilon() * anAbsVal);
   }
 
   aResult.Status        = Status::OK;
   aResult.Value         = aKronrodVal;
   aResult.AbsoluteError = aAbsError;
-  aResult.RelativeError = aAbsError / std::max(std::abs(aKronrodVal), 1.0e-15);
-  aResult.NbPoints      = static_cast<size_t>(aNbKronrod);
+  if (std::abs(aKronrodVal) > std::numeric_limits<double>::epsilon())
+  {
+    aResult.RelativeError = aAbsError / std::abs(aKronrodVal);
+  }
   aResult.NbIterations  = 1;
   return aResult;
 }
@@ -200,6 +272,25 @@ IntegResult Kronrod(Function&            theFunc,
 {
   IntegResult aResult;
 
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower) || theConfig.NbGaussPoints < 1
+      || theConfig.NbGaussPoints > THE_KRONROD_MAX_GAUSS_ORDER
+      || !std::isfinite(theConfig.Tolerance)
+      || theConfig.Tolerance <= 0.0 || theConfig.MaxIterations < 1)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower > theUpper)
+  {
+    aResult = Kronrod(theFunc, theUpper, theLower, theConfig);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
+
   if (!theConfig.Adaptive)
   {
     // Single application of Kronrod rule
@@ -222,27 +313,35 @@ IntegResult Kronrod(Function&            theFunc,
     return anInitResult;
   }
 
-  NCollection_DynamicArray<Interval> aHeap;
+  NCollection_LinearVector<Interval> aHeap;
   aHeap.Append({theLower, theUpper, *anInitResult.Value, *anInitResult.AbsoluteError});
 
-  double aTotalValue  = *anInitResult.Value;
-  double aTotalError  = *anInitResult.AbsoluteError;
-  size_t aTotalPoints = anInitResult.NbPoints;
-  int    aIterations  = 1;
+  double   aTotalValue  = *anInitResult.Value;
+  double   aTotalError  = *anInitResult.AbsoluteError;
+  size_t   aTotalPoints = anInitResult.NbPoints;
+  uint32_t aIterations  = 1;
+  bool     isStagnated  = false;
+
+  const auto isConverged = [&](double theError, double theValue) {
+    const double anAbsValue = std::abs(theValue);
+    return anAbsValue > std::numeric_limits<double>::epsilon()
+             ? theError <= theConfig.Tolerance * anAbsValue
+             : theError <= theConfig.Tolerance;
+  };
 
   // Adaptive refinement
   while (aIterations < theConfig.MaxIterations)
   {
     // Check convergence
-    if (aTotalError < theConfig.Tolerance * std::max(std::abs(aTotalValue), 1.0e-15))
+    if (isConverged(aTotalError, aTotalValue))
     {
       break;
     }
 
     // Find interval with largest error
-    int    aMaxIdx   = 0;
+    size_t aMaxIdx   = 0;
     double aMaxError = 0.0;
-    for (int i = 0; i < aHeap.Length(); ++i)
+    for (size_t i = 0; i < aHeap.Size(); ++i)
     {
       if (aHeap.Value(i).Error > aMaxError)
       {
@@ -251,25 +350,44 @@ IntegResult Kronrod(Function&            theFunc,
       }
     }
 
-    if (aMaxError < MathUtils::THE_ZERO_TOL)
-    {
-      break; // No more refinement needed
-    }
-
     // Bisect the interval with largest error (copy to avoid reference invalidation)
     const Interval aWorst  = aHeap.Value(aMaxIdx);
-    const double   aBisMid = 0.5 * (aWorst.Lower + aWorst.Upper);
-
-    IntegResult aLeftResult  = KronrodRule(theFunc, aWorst.Lower, aBisMid, theConfig.NbGaussPoints);
-    IntegResult aRightResult = KronrodRule(theFunc, aBisMid, aWorst.Upper, theConfig.NbGaussPoints);
-
-    if (!aLeftResult.IsDone() || !aRightResult.IsDone())
+    const double   aBisMid = aWorst.Lower + 0.5 * (aWorst.Upper - aWorst.Lower);
+    if (!(aBisMid > aWorst.Lower && aBisMid < aWorst.Upper))
     {
-      aResult.Status        = Status::NumericalError;
+      isStagnated = true;
+      break;
+    }
+
+    IntegResult aLeftResult = KronrodRule(theFunc, aWorst.Lower, aBisMid, theConfig.NbGaussPoints);
+    aTotalPoints += aLeftResult.NbPoints;
+    if (!aLeftResult.IsDone())
+    {
+      aResult.Status        = aLeftResult.Status;
       aResult.Value         = aTotalValue;
       aResult.AbsoluteError = aTotalError;
       aResult.NbPoints      = aTotalPoints;
-      aResult.NbIterations  = static_cast<size_t>(aIterations);
+      if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+      {
+        aResult.RelativeError = aTotalError / std::abs(aTotalValue);
+      }
+      aResult.NbIterations  = aIterations;
+      return aResult;
+    }
+
+    IntegResult aRightResult = KronrodRule(theFunc, aBisMid, aWorst.Upper, theConfig.NbGaussPoints);
+    aTotalPoints += aRightResult.NbPoints;
+    if (!aRightResult.IsDone())
+    {
+      aResult.Status        = aRightResult.Status;
+      aResult.Value         = aTotalValue;
+      aResult.AbsoluteError = aTotalError;
+      if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+      {
+        aResult.RelativeError = aTotalError / std::abs(aTotalValue);
+      }
+      aResult.NbPoints      = aTotalPoints;
+      aResult.NbIterations  = aIterations;
       return aResult;
     }
 
@@ -278,7 +396,7 @@ IntegResult Kronrod(Function&            theFunc,
     aTotalError -= aWorst.Error;
     aTotalValue += *aLeftResult.Value + *aRightResult.Value;
     aTotalError += *aLeftResult.AbsoluteError + *aRightResult.AbsoluteError;
-    aTotalPoints += aLeftResult.NbPoints + aRightResult.NbPoints;
+    aTotalError = std::max(0.0, aTotalError);
     ++aIterations;
 
     // Replace the worst interval with the two new intervals
@@ -287,12 +405,17 @@ IntegResult Kronrod(Function&            theFunc,
     aHeap.Append({aBisMid, aWorst.Upper, *aRightResult.Value, *aRightResult.AbsoluteError});
   }
 
-  aResult.Status        = Status::OK;
+  const bool hasConverged = isConverged(aTotalError, aTotalValue);
+  aResult.Status =
+    hasConverged ? Status::OK : (isStagnated ? Status::NotConverged : Status::MaxIterations);
   aResult.Value         = aTotalValue;
   aResult.AbsoluteError = aTotalError;
-  aResult.RelativeError = aTotalError / std::max(std::abs(aTotalValue), 1.0e-15);
+  if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
+  {
+    aResult.RelativeError = aTotalError / std::abs(aTotalValue);
+  }
   aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = static_cast<size_t>(aIterations);
+  aResult.NbIterations  = aIterations;
   return aResult;
 }
 
@@ -313,25 +436,54 @@ IntegResult KronrodAuto(Function& theFunc,
                         double    theLower,
                         double    theUpper,
                         double    theTolerance = 1.0e-10,
-                        int       theMaxOrder  = 30)
+                         size_t    theMaxOrder  = THE_KRONROD_MAX_GAUSS_ORDER)
 {
   IntegResult aBestResult;
-  aBestResult.Status = Status::NotConverged;
+  aBestResult.Status  = Status::NotConverged;
+  size_t aTotalPoints = 0;
+
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower) || !std::isfinite(theTolerance) || theTolerance <= 0.0
+      || theMaxOrder < THE_KRONROD_AUTO_INITIAL_ORDER
+      || theMaxOrder > THE_KRONROD_MAX_GAUSS_ORDER)
+  {
+    aBestResult.Status = Status::InvalidInput;
+    return aBestResult;
+  }
+  if (theLower > theUpper)
+  {
+    aBestResult = KronrodAuto(theFunc, theUpper, theLower, theTolerance, theMaxOrder);
+    if (aBestResult.Value)
+    {
+      *aBestResult.Value = -*aBestResult.Value;
+    }
+    return aBestResult;
+  }
 
   // Try increasing orders
-  for (int aOrder = 7; aOrder <= theMaxOrder; aOrder += 4)
+  for (size_t aOrder = THE_KRONROD_AUTO_INITIAL_ORDER; aOrder <= theMaxOrder;
+       aOrder += THE_KRONROD_AUTO_ORDER_STEP)
   {
     IntegResult aResult = KronrodRule(theFunc, theLower, theUpper, aOrder);
+    aTotalPoints += aResult.NbPoints;
     if (!aResult.IsDone())
     {
-      continue;
+      aResult.NbPoints = aTotalPoints;
+      return aResult;
     }
 
     aBestResult = aResult;
 
     // Check if tolerance is met
-    if (aResult.RelativeError && *aResult.RelativeError < theTolerance)
+    const double anAbsValue = std::abs(*aResult.Value);
+    const bool isConverged =
+      aResult.AbsoluteError
+      && (anAbsValue > std::numeric_limits<double>::epsilon()
+            ? *aResult.AbsoluteError <= theTolerance * anAbsValue
+            : *aResult.AbsoluteError <= theTolerance);
+    if (isConverged)
     {
+      aResult.NbPoints = aTotalPoints;
       return aResult;
     }
   }
@@ -339,11 +491,13 @@ IntegResult KronrodAuto(Function& theFunc,
   // If fixed order didn't work, try adaptive
   KronrodConfig aConfig;
   aConfig.Tolerance     = theTolerance;
-  aConfig.NbGaussPoints = 7;
+  aConfig.NbGaussPoints = THE_KRONROD_AUTO_INITIAL_ORDER;
   aConfig.Adaptive      = true;
-  aConfig.MaxIterations = 50;
+  aConfig.MaxIterations = THE_KRONROD_AUTO_MAX_ITERATIONS;
 
-  return Kronrod(theFunc, theLower, theUpper, aConfig);
+  IntegResult aResult = Kronrod(theFunc, theLower, theUpper, aConfig);
+  aResult.NbPoints += aTotalPoints;
+  return aResult;
 }
 
 //! Gauss-Kronrod integration over semi-infinite interval [a, +infinity).
@@ -360,6 +514,13 @@ IntegResult KronrodSemiInfinite(Function&            theFunc,
                                 double               theLower,
                                 const KronrodConfig& theConfig = KronrodConfig())
 {
+  if (!std::isfinite(theLower))
+  {
+    IntegResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   class TransformedFunc
   {
   public:

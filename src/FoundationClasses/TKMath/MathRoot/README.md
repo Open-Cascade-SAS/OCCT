@@ -2,6 +2,8 @@
 
 The MathRoot package provides a collection of root finding algorithms for scalar functions. These algorithms are designed to find solutions to the equation f(x) = 0 with various convergence guarantees and performance characteristics.
 
+All methods require finite inputs, finite callback outputs, valid non-negative function tolerances, positive X tolerances and positive iteration/sample counts. Interval methods require strictly ordered bounds; reversed bounds are invalid input. A callback returning `false` produces `CallbackError`; a callback returning `true` with a non-finite value or derivative produces `NumericalError`.
+
 ## Overview
 
 This package contains header-only template implementations of classical root finding methods, suitable for use with any functor that provides the required interface.
@@ -23,7 +25,7 @@ This package contains header-only template implementations of classical root fin
 
 | Algorithm | Header | Description |
 |-----------|--------|-------------|
-| FindAllRoots | `MathRoot_Multiple.hxx` | Finds all roots in an interval using sampling |
+| FindAllRoots | `MathRoot_Multiple.hxx` | Finds sampled and sign-changing roots in an interval |
 | FindAllRootsWithDerivative | `MathRoot_Multiple.hxx` | Same as above, with extrema detection |
 | FindAllRootsWithIntervals | `MathRoot_All.hxx` | Finds roots and null intervals |
 
@@ -112,7 +114,7 @@ void Example()
   if (aResult.IsDone())
   {
     // aResult.Roots contains: 0, PI, 2*PI, 3*PI
-    for (int i = 0; i < aResult.NbRoots(); ++i)
+    for (size_t i = 0; i < aResult.NbRoots(); ++i)
     {
       double aRoot = aResult[i];
     }
@@ -129,10 +131,16 @@ void Example()
 - **Bisection-Newton**: Good balance of robustness and speed
 - **Secant**: Good alternative to Newton when derivatives are expensive to compute
 
+Successful open-method results (Newton and Secant) have a finite residual within `FTolerance`; step stagnation with a larger residual is not converged. Bracketed methods (Brent, Bisection, and Bisection-Newton) may also succeed when a continuous function's sign-changing bracket is localized within `XTolerance`, so their returned residual can exceed `FTolerance`. A stalled Newton proposal in the hybrid is not positional convergence unless the bracket itself is localized. Value-only multiple-root sampling cannot generally detect tangential roots unless a sample point itself has an acceptable residual; use `FindAllRootsWithDerivative` when extrema detection is required.
+
 ## Dependencies
 
 - `MathUtils_Types.hxx`: Common types (Status, ScalarResult)
 - `MathUtils_Config.hxx`: Solver configuration
 - `MathUtils_Core.hxx`: Core utilities (IsZero, Clamp, etc.)
 - `MathUtils_Convergence.hxx`: Convergence testing utilities
-- `MathPoly_Poly.hxx`: Polynomial solvers (for trigonometric equations)
+- `MathPoly_Quadratic.hxx`, `MathPoly_Quartic.hxx`: polynomial solvers for trigonometric equations
+
+Multiple-root collections and indices are zero-based and use `size_t`. Iteration limits and stored
+iteration counters use `uint32_t`. Package-private helpers are defined in `MathRoot_Utils.hxx` under
+`MathRoot::Utils`.

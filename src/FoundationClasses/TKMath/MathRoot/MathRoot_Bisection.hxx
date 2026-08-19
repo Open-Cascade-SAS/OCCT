@@ -17,20 +17,21 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathRoot_Utils.hxx"
 
 #include <cmath>
-#include <utility>
 
 namespace MathRoot
 {
 using namespace MathUtils;
 
 //! Bisection method for root finding.
-//! Simple and robust, guaranteed to converge if a valid bracket is provided.
+//! Simple and robust for a continuous function with a valid bracket.
 //! Converges linearly, halving the interval at each step.
+//! Convergence is accepted on either residual or bracket width.
 //!
 //! Algorithm:
-//! 1. Start with bracket [a, b] where f(a) * f(b) < 0
+//! 1. Start with an ordered bracket [a, b] whose endpoint values have opposite signs
 //! 2. Compute midpoint m = (a + b) / 2
 //! 3. If f(m) has same sign as f(a), set a = m, else set b = m
 //! 4. Repeat until convergence
@@ -49,6 +50,12 @@ MathUtils::ScalarResult Bisection(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
+  if (!Utils::IsValidBounds(theLower, theUpper) || !Utils::IsValidConfig(theConfig))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
   double aA  = theLower;
   double aB  = theUpper;
   double aFa = 0.0;
@@ -57,40 +64,59 @@ MathUtils::ScalarResult Bisection(Function&                theFunc,
   // Evaluate at endpoints
   if (!theFunc.Value(aA, aFa))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFa))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
   if (!theFunc.Value(aB, aFb))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFb))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
 
-  // Check that bracket is valid (sign change)
-  if (aFa * aFb > 0.0)
+  if (std::abs(aFa) <= theConfig.FTolerance)
+  {
+    aResult.Status = MathUtils::Status::OK;
+    aResult.Root   = aA;
+    aResult.Value  = aFa;
+    return aResult;
+  }
+  if (std::abs(aFb) <= theConfig.FTolerance)
+  {
+    aResult.Status = MathUtils::Status::OK;
+    aResult.Root   = aB;
+    aResult.Value  = aFb;
+    return aResult;
+  }
+
+  if (!Utils::HaveOppositeSigns(aFa, aFb))
   {
     aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
 
-  // Ensure a < b
-  if (aA > aB)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
-    std::swap(aA, aB);
-    std::swap(aFa, aFb);
-  }
-
-  // Track which endpoint has the negative value
-  // We use separate tracking instead of swapping to maintain aA < aB
-  bool aIsNegAtA = (aFa < 0.0);
-
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
-  {
-    // Compute midpoint
-    const double aM  = 0.5 * (aA + aB);
+    const double aM  = Utils::Midpoint(aA, aB);
     double       aFm = 0.0;
 
     if (!theFunc.Value(aM, aFm))
+    {
+      aResult.Status       = MathUtils::Status::CallbackError;
+      aResult.Root         = aM;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
+    if (!std::isfinite(aFm))
     {
       aResult.Status       = MathUtils::Status::NumericalError;
       aResult.Root         = aM;
@@ -101,7 +127,7 @@ MathUtils::ScalarResult Bisection(Function&                theFunc,
     aResult.NbIterations = anIter + 1;
 
     // Check convergence on function value
-    if (std::abs(aFm) < theConfig.FTolerance)
+    if (std::abs(aFm) <= theConfig.FTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
       aResult.Root   = aM;
@@ -109,8 +135,7 @@ MathUtils::ScalarResult Bisection(Function&                theFunc,
       return aResult;
     }
 
-    // Check convergence on interval size
-    if ((aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aM)))
+    if (0.5 * std::abs(aB - aA) <= theConfig.XTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
       aResult.Root   = aM;
@@ -118,27 +143,30 @@ MathUtils::ScalarResult Bisection(Function&                theFunc,
       return aResult;
     }
 
-    // Update bracket based on sign tracking
-    const bool aIsNegAtM = (aFm < 0.0);
-    if (aIsNegAtM == aIsNegAtA)
+    if (aM == aA || aM == aB)
     {
-      // Same sign as endpoint A, replace A
-      aA  = aM;
-      aFa = aFm;
+      aResult.Status = MathUtils::Status::NotConverged;
+      aResult.Root   = aM;
+      aResult.Value  = aFm;
+      return aResult;
+    }
+
+    if (Utils::HaveOppositeSigns(aFa, aFm))
+    {
+      aB  = aM;
+      aFb = aFm;
     }
     else
     {
-      // Same sign as endpoint B, replace B
-      aB  = aM;
-      aFb = aFm;
+      aA  = aM;
+      aFa = aFm;
     }
   }
 
   // Maximum iterations reached
   aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root   = 0.5 * (aA + aB);
-  aResult.Value  = 0.0;
-  theFunc.Value(*aResult.Root, *aResult.Value);
+  aResult.Root   = (std::abs(aFa) <= std::abs(aFb)) ? aA : aB;
+  aResult.Value  = (std::abs(aFa) <= std::abs(aFb)) ? aFa : aFb;
   return aResult;
 }
 
@@ -160,6 +188,12 @@ MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
+  if (!Utils::IsValidBounds(theLower, theUpper) || !Utils::IsValidConfig(theConfig))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
   double aA     = theLower;
   double aB     = theUpper;
   double aFa    = 0.0;
@@ -169,40 +203,64 @@ MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
   // Evaluate at endpoints
   if (!theFunc.Values(aA, aFa, aDummy))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFa) || !std::isfinite(aDummy))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
-  if (!theFunc.Values(aB, aFb, aDummy))
+  double aDb = 0.0;
+  if (!theFunc.Values(aB, aFb, aDb))
+  {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFb) || !std::isfinite(aDb))
   {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
 
-  // Check that bracket is valid
-  if (aFa * aFb > 0.0)
+  if (std::abs(aFa) <= theConfig.FTolerance)
+  {
+    aResult.Status     = MathUtils::Status::OK;
+    aResult.Root       = aA;
+    aResult.Value      = aFa;
+    aResult.Derivative = aDummy;
+    return aResult;
+  }
+  if (std::abs(aFb) <= theConfig.FTolerance)
+  {
+    aResult.Status     = MathUtils::Status::OK;
+    aResult.Root       = aB;
+    aResult.Value      = aFb;
+    aResult.Derivative = aDb;
+    return aResult;
+  }
+
+  if (!Utils::HaveOppositeSigns(aFa, aFb))
   {
     aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
 
-  // Ensure a < b
-  if (aA > aB)
-  {
-    std::swap(aA, aB);
-    std::swap(aFa, aFb);
-  }
-
-  // Track which endpoint has the negative value
-  bool aIsNegAtA = (aFa < 0.0);
-
   // Start from midpoint
-  double aX   = 0.5 * (aA + aB);
+  double aX   = Utils::Midpoint(aA, aB);
   double aFx  = 0.0;
   double aDfx = 0.0;
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     if (!theFunc.Values(aX, aFx, aDfx))
+    {
+      aResult.Status       = MathUtils::Status::CallbackError;
+      aResult.Root         = aX;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
+    if (!std::isfinite(aFx) || !std::isfinite(aDfx))
     {
       aResult.Status       = MathUtils::Status::NumericalError;
       aResult.Root         = aX;
@@ -213,7 +271,7 @@ MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
     aResult.NbIterations = anIter + 1;
 
     // Check convergence
-    if (std::abs(aFx) < theConfig.FTolerance)
+    if (std::abs(aFx) <= theConfig.FTolerance)
     {
       aResult.Status     = MathUtils::Status::OK;
       aResult.Root       = aX;
@@ -222,7 +280,20 @@ MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
       return aResult;
     }
 
-    if ((aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aX)))
+    if (Utils::HaveOppositeSigns(aFa, aFx))
+    {
+      aB  = aX;
+      aFb = aFx;
+    }
+    else
+    {
+      aA  = aX;
+      aFa = aFx;
+    }
+
+    // A bracketed method may converge by localization even when no floating-point point has an
+    // exact residual, but a stalled Newton step alone is not evidence of a root.
+    if (0.5 * std::abs(aB - aA) <= theConfig.XTolerance)
     {
       aResult.Status     = MathUtils::Status::OK;
       aResult.Root       = aX;
@@ -232,41 +303,38 @@ MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
     }
 
     // Try Newton step
-    double aXNew = aX;
-    if (!MathUtils::IsZero(aDfx))
+    const double aMidpoint = Utils::Midpoint(aA, aB);
+    double       aXNew     = aMidpoint;
+    if (aDfx != 0.0)
     {
-      aXNew = aX - aFx / aDfx;
+      const double aNewtonX = aX - aFx / aDfx;
+      if (std::isfinite(aNewtonX) && aNewtonX > aA && aNewtonX < aB
+          && std::abs(aNewtonX - aX) > theConfig.XTolerance)
+      {
+        aXNew = aNewtonX;
+      }
     }
 
-    // Check if Newton step stays within bracket
-    if (aXNew <= aA || aXNew >= aB)
+    if (aXNew == aX || aXNew == aA || aXNew == aB)
     {
-      // Fall back to bisection
-      aXNew = 0.5 * (aA + aB);
+      aResult.Status     = MathUtils::Status::NotConverged;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
+      aResult.Derivative = aDfx;
+      return aResult;
     }
 
-    // Update bracket based on current point using sign tracking
-    const bool aIsNegAtX = (aFx < 0.0);
-    if (aIsNegAtX == aIsNegAtA)
+    if (anIter + 1 < theConfig.MaxIterations)
     {
-      // Same sign as endpoint A, replace A
-      aA = aX;
+      aX = aXNew;
     }
-    else
-    {
-      // Same sign as endpoint B, replace B
-      aB = aX;
-    }
-
-    aX = aXNew;
   }
 
   // Maximum iterations reached
   aResult.Status     = MathUtils::Status::MaxIterations;
   aResult.Root       = aX;
-  aResult.Value      = 0.0;
-  aResult.Derivative = 0.0;
-  theFunc.Values(*aResult.Root, *aResult.Value, *aResult.Derivative);
+  aResult.Value      = aFx;
+  aResult.Derivative = aDfx;
   return aResult;
 }
 

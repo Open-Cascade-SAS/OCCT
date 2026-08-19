@@ -20,6 +20,7 @@
 #include <MathLin_SVD.hxx>
 #include <MathLin_Householder.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathLin_Utils.hxx"
 
 #include <cmath>
 
@@ -42,7 +43,8 @@ struct LeastSquaresResult
   std::optional<math_Vector> Solution;   //!< Least squares solution x
   std::optional<double>      Residual;   //!< ||Ax - b||_2 (L2 norm of residual)
   std::optional<double>      ResidualSq; //!< ||Ax - b||_2^2 (squared residual)
-  int                        Rank = 0;   //!< Numerical rank of A (for SVD)
+  size_t                     Rank = 0;   //!< Numerical rank of A (for SVD)
+  std::optional<double>      ConditionNumber; //!< Decomposition-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -71,15 +73,12 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
 {
   LeastSquaresResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
-  const int aN        = aColUpper - aColLower + 1;
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (theB.Length() != aM)
+  if (aM < aN || theB.Size() != aM || !Utils::IsFinite(theA)
+      || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -91,32 +90,32 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
   {
     case LeastSquaresMethod::NormalEquations: {
       // Form normal equations: A^T * A * x = A^T * b
-      math_Matrix aAtA(aColLower, aColUpper, aColLower, aColUpper, 0.0);
-      math_Vector aAtb(aColLower, aColUpper, 0.0);
+      math_Matrix aAtA(aN, aN, 0.0);
+      math_Vector aAtb(aN, 0.0);
 
       // Compute A^T * A
-      for (int i = aColLower; i <= aColUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = aColLower; j <= aColUpper; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
           double aSum = 0.0;
-          for (int k = aRowLower; k <= aRowUpper; ++k)
+          for (size_t k = 0; k < aM; ++k)
           {
-            aSum += theA(k, i) * theA(k, j);
+            aSum += theA.At(k, i) * theA.At(k, j);
           }
-          aAtA(i, j) = aSum;
+          aAtA.ChangeAt(i, j) = aSum;
         }
       }
 
       // Compute A^T * b
-      for (int i = aColLower; i <= aColUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
         double aSum = 0.0;
-        for (int k = aRowLower; k <= aRowUpper; ++k)
+        for (size_t k = 0; k < aM; ++k)
         {
-          aSum += theA(k, i) * theB(theB.Lower() + k - aRowLower);
+          aSum += theA.At(k, i) * theB.At(k);
         }
-        aAtb(i) = aSum;
+        aAtb[i] = aSum;
       }
 
       // Solve the normal equations
@@ -126,12 +125,15 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
     break;
 
     case LeastSquaresMethod::QR: {
-      aLinResult = SolveQR(theA, theB, theTolerance);
-      if (aLinResult.IsDone())
+      const QRResult aQR = QR(theA, theTolerance);
+      if (!aQR.IsDone() || aQR.Rank != aN)
       {
-        // Estimate rank from QR (not exact)
-        aResult.Rank = aN;
+        aResult.Status = aQR.IsDone() ? Status::Singular : aQR.Status;
+        return aResult;
       }
+      aResult.Rank            = aQR.Rank;
+      aResult.ConditionNumber = aQR.ConditionEstimate;
+      aLinResult              = SolveQR(theA, theB, theTolerance);
     }
     break;
 
@@ -142,6 +144,10 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
         // Get rank from SVD
         SVDResult aSVD = SVD(theA, theTolerance);
         aResult.Rank   = aSVD.IsDone() ? aSVD.Rank : 0;
+        if (aSVD.IsDone())
+        {
+          aResult.ConditionNumber = aSVD.ConditionNumber;
+        }
       }
     }
     break;
@@ -157,22 +163,37 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
 
   // Compute residual ||Ax - b||_2
   const math_Vector& aX          = *aResult.Solution;
-  double             aResidualSq = 0.0;
+  double             aResidualScale = 0.0;
+  double             aResidualSumSq = 1.0;
+  bool               isResidualValid = true;
 
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aM; ++i)
   {
     double aAxi = 0.0;
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aAxi += theA(i, j) * aX(j);
+      aAxi += theA.At(i, j) * aX[j];
     }
-    double aRi = aAxi - theB(theB.Lower() + i - aRowLower);
-    aResidualSq += aRi * aRi;
+    const double aRi = aAxi - theB.At(i);
+    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq)
+                      && isResidualValid;
   }
 
-  aResult.ResidualSq = aResidualSq;
-  aResult.Residual   = std::sqrt(aResidualSq);
-  aResult.Status     = Status::OK;
+  const std::optional<double> aResidual = isResidualValid
+                                            ? Utils::Norm(aResidualScale, aResidualSumSq)
+                                            : std::nullopt;
+  if (!aResidual.has_value())
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
+  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  if (*aResidual <= aMaxNormWithFiniteSquare)
+  {
+    aResult.ResidualSq = *aResidual * *aResidual;
+  }
+  aResult.Residual = aResidual;
+  aResult.Status   = Status::OK;
   return aResult;
 }
 
@@ -196,23 +217,20 @@ inline LeastSquaresResult WeightedLeastSquares(
 {
   LeastSquaresResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (theB.Length() != aM || theW.Length() != aM)
+  if (theB.Size() != aM || theW.Size() != aM || !Utils::IsFinite(theW))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
   // Check weights are positive
-  for (int i = theW.Lower(); i <= theW.Upper(); ++i)
+  for (size_t i = 0; i < theW.Size(); ++i)
   {
-    if (theW(i) <= 0.0)
+    if (theW[i] <= 0.0)
     {
       aResult.Status = Status::InvalidInput;
       return aResult;
@@ -220,17 +238,17 @@ inline LeastSquaresResult WeightedLeastSquares(
   }
 
   // Apply weights: A' = W^{1/2} * A, b' = W^{1/2} * b
-  math_Matrix aWA(aRowLower, aRowUpper, aColLower, aColUpper);
-  math_Vector aWB(theB.Lower(), theB.Upper());
+  math_Matrix aWA(aM, aN);
+  math_Vector aWB(aM);
 
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aM; ++i)
   {
-    double aSqrtW = std::sqrt(theW(theW.Lower() + i - aRowLower));
-    for (int j = aColLower; j <= aColUpper; ++j)
+    const double aSqrtW = std::sqrt(theW.At(i));
+    for (size_t j = 0; j < aN; ++j)
     {
-      aWA(i, j) = aSqrtW * theA(i, j);
+      aWA.ChangeAt(i, j) = aSqrtW * theA.At(i, j);
     }
-    aWB(theB.Lower() + i - aRowLower) = aSqrtW * theB(theB.Lower() + i - aRowLower);
+    aWB[i] = aSqrtW * theB.At(i);
   }
 
   // Solve weighted system
@@ -255,127 +273,187 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
 {
   LeastSquaresResult aResult;
 
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
-  const int aN        = aColUpper - aColLower + 1;
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (theB.Length() != aM)
+  if (theB.Size() != aM || !Utils::IsFinite(theA) || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  if (theLambda < 0.0)
+  if (!std::isfinite(theLambda) || theLambda < 0.0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  // Form regularized normal equations: (A^T*A + lambda*I) * x = A^T * b
-  math_Matrix aAtA(aColLower, aColUpper, aColLower, aColUpper, 0.0);
-  math_Vector aAtb(aColLower, aColUpper, 0.0);
-
-  // Compute A^T * A + lambda*I
-  for (int i = aColLower; i <= aColUpper; ++i)
+  const SVDResult aSVD = SVD(theA, theTolerance);
+  if (!aSVD.IsDone())
   {
-    for (int j = aColLower; j <= aColUpper; ++j)
-    {
-      double aSum = 0.0;
-      for (int k = aRowLower; k <= aRowUpper; ++k)
-      {
-        aSum += theA(k, i) * theA(k, j);
-      }
-      aAtA(i, j) = aSum;
-    }
-    // Add regularization
-    aAtA(i, i) += theLambda;
-  }
-
-  // Compute A^T * b
-  for (int i = aColLower; i <= aColUpper; ++i)
-  {
-    double aSum = 0.0;
-    for (int k = aRowLower; k <= aRowUpper; ++k)
-    {
-      aSum += theA(k, i) * theB(theB.Lower() + k - aRowLower);
-    }
-    aAtb(i) = aSum;
-  }
-
-  // Solve the regularized normal equations
-  LinearResult aLinResult = Solve(aAtA, aAtb, theTolerance);
-  if (!aLinResult.IsDone())
-  {
-    aResult.Status = aLinResult.Status;
+    aResult.Status = aSVD.Status;
     return aResult;
   }
-
-  aResult.Solution = aLinResult.Solution;
-  aResult.Rank     = aN;
+  const math_Matrix& aU = *aSVD.U;
+  const math_Vector& aS = *aSVD.SingularValues;
+  const math_Matrix& aV = *aSVD.V;
+  math_Vector aFiltered(aN, 0.0);
+  for (size_t j = 0; j < aN; ++j)
+  {
+    double aProjection = 0.0;
+    for (size_t i = 0; i < aM; ++i)
+    {
+      aProjection += aU.At(i, j) * theB.At(i);
+    }
+    const double aSigma = aS[j];
+    const double aFilter = j >= aSVD.Rank
+                             ? 0.0
+                             : 1.0 / (aSigma + theLambda / aSigma);
+    aFiltered[j] = aFilter * aProjection;
+  }
+  aResult.Solution = math_Vector(aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    for (size_t j = 0; j < aN; ++j)
+    {
+      (*aResult.Solution)[i] += aV.At(i, j) * aFiltered[j];
+    }
+  }
+  aResult.Rank            = aSVD.Rank;
+  aResult.ConditionNumber = aSVD.ConditionNumber;
 
   // Compute residual
   const math_Vector& aX          = *aResult.Solution;
-  double             aResidualSq = 0.0;
+  double             aResidualScale = 0.0;
+  double             aResidualSumSq = 1.0;
+  bool               isResidualValid = true;
 
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  for (size_t i = 0; i < aM; ++i)
   {
     double aAxi = 0.0;
-    for (int j = aColLower; j <= aColUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aAxi += theA(i, j) * aX(j);
+      aAxi += theA.At(i, j) * aX[j];
     }
-    double aRi = aAxi - theB(theB.Lower() + i - aRowLower);
-    aResidualSq += aRi * aRi;
+    const double aRi = aAxi - theB.At(i);
+    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq)
+                      && isResidualValid;
   }
 
-  aResult.ResidualSq = aResidualSq;
-  aResult.Residual   = std::sqrt(aResidualSq);
-  aResult.Status     = Status::OK;
+  const std::optional<double> aResidual = isResidualValid
+                                            ? Utils::Norm(aResidualScale, aResidualSumSq)
+                                            : std::nullopt;
+  if (!aResidual.has_value() || !Utils::IsFinite(*aResult.Solution))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
+  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  if (*aResidual <= aMaxNormWithFiniteSquare)
+  {
+    aResult.ResidualSq = *aResidual * *aResidual;
+  }
+  aResult.Residual = aResidual;
+  aResult.Status   = Status::OK;
   return aResult;
 }
 
-//! Compute optimal regularization parameter using Leave-One-Out Cross-Validation.
+//! Compute a regularization parameter using generalized cross-validation (GCV).
 //!
-//! Minimizes the LOO-CV score: sum_i (a_i^T * x_{-i} - b_i)^2
-//! where x_{-i} is the solution with the i-th observation removed.
+//! Minimizes ||(I-H_lambda)b||_2^2 / (m-tr(H_lambda))^2 on a logarithmic grid,
+//! where H_lambda is the ridge-regression influence matrix. GCV is a rotation-invariant
+//! approximation to leave-one-out cross-validation and does not minimize training error.
 //!
 //! @param theA coefficient matrix
 //! @param theB right-hand side vector
 //! @param theLambdaMin minimum lambda to consider
 //! @param theLambdaMax maximum lambda to consider
 //! @param theNbPoints number of lambda values to try
-//! @return optimal regularization parameter
-inline double OptimalRegularization(const math_Matrix& theA,
-                                    const math_Vector& theB,
-                                    double             theLambdaMin = 1.0e-10,
-                                    double             theLambdaMax = 1.0e2,
-                                    int                theNbPoints  = 20)
+//! @return optimal regularization parameter, or no value if no finite score can be evaluated
+inline std::optional<double> OptimalRegularization(const math_Matrix& theA,
+                                                   const math_Vector& theB,
+                                                   double             theLambdaMin = 1.0e-10,
+                                                   double             theLambdaMax = 1.0e2,
+                                                   size_t             theNbPoints  = 20)
 {
-  double aBestLambda = theLambdaMin;
-  double aBestScore  = std::numeric_limits<double>::max();
+  if (theA.RowSize() < theA.ColSize() || theB.Size() != theA.RowSize()
+      || !Utils::IsFinite(theA) || !Utils::IsFinite(theB)
+      || !std::isfinite(theLambdaMin) || !std::isfinite(theLambdaMax)
+      || theLambdaMin <= 0.0 || theLambdaMax < theLambdaMin || theNbPoints < 2)
+  {
+    return std::nullopt;
+  }
+
+  const SVDResult aSVD = SVD(theA);
+  if (!aSVD.IsDone())
+  {
+    return std::nullopt;
+  }
+
+  const math_Matrix& aU = *aSVD.U;
+  const math_Vector& aS = *aSVD.SingularValues;
+  const size_t aM = theA.RowSize();
+  const size_t aN = theA.ColSize();
+  math_Vector aProjection(aS.Size(), 0.0);
+  double aBScale = 0.0;
+  double aBSumSq = 1.0;
+  for (size_t i = 0; i < aM; ++i)
+  {
+    if (!Utils::AccumulateNorm(theB.At(i), aBScale, aBSumSq))
+    {
+      return std::nullopt;
+    }
+  }
+  if (aBScale != 0.0)
+  {
+    for (size_t i = 0; i < aM; ++i)
+    {
+      const double aNormalizedB = theB.At(i) / aBScale;
+      for (size_t j = 0; j < aN; ++j)
+      {
+        aProjection[j] += aU.At(i, j) * aNormalizedB;
+      }
+    }
+  }
+  double aOrthogonalResidualSq = aBScale == 0.0 ? 0.0 : aBSumSq;
+  for (size_t j = 0; j < aProjection.Size(); ++j)
+  {
+    aOrthogonalResidualSq -= aProjection[j] * aProjection[j];
+  }
+  aOrthogonalResidualSq = std::max(0.0, aOrthogonalResidualSq);
+
+  std::optional<double> aBestLambda;
+  double aBestScore  = std::numeric_limits<double>::infinity();
 
   // Logarithmic grid search
   const double aLogMin  = std::log10(theLambdaMin);
   const double aLogMax  = std::log10(theLambdaMax);
   const double aLogStep = (aLogMax - aLogMin) / (theNbPoints - 1);
 
-  for (int k = 0; k < theNbPoints; ++k)
+  for (size_t k = 0; k < theNbPoints; ++k)
   {
-    double aLambda = std::pow(10.0, aLogMin + k * aLogStep);
-
-    auto aResult = RegularizedLeastSquares(theA, theB, aLambda);
-    if (aResult.IsDone() && aResult.ResidualSq)
+    const double aLambda = std::pow(10.0, aLogMin + k * aLogStep);
+    double aResidualSq = aOrthogonalResidualSq;
+    double aTrace = 0.0;
+    for (size_t j = 0; j < aS.Size(); ++j)
     {
-      double aScore = *aResult.ResidualSq;
-      if (aScore < aBestScore)
-      {
-        aBestScore  = aScore;
-        aBestLambda = aLambda;
-      }
+      const double aSigma = aS[j];
+      const double aFilter = aSigma == 0.0
+                               ? 0.0
+                               : 1.0 / (1.0 + (aLambda / aSigma) / aSigma);
+      const double aResidualProjection = (1.0 - aFilter) * aProjection[j];
+      aResidualSq += aResidualProjection * aResidualProjection;
+      aTrace += aFilter;
+    }
+    const double aDenominator = static_cast<double>(aM) - aTrace;
+    const double aScore = aDenominator > 0.0
+                            ? aResidualSq / (aDenominator * aDenominator)
+                            : std::numeric_limits<double>::infinity();
+    if (std::isfinite(aScore) && aScore < aBestScore)
+    {
+      aBestScore  = aScore;
+      aBestLambda = aLambda;
     }
   }
 

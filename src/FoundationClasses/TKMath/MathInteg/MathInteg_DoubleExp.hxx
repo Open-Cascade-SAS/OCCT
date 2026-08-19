@@ -19,26 +19,37 @@
 #include <MathUtils_Core.hxx>
 
 #include <cmath>
+#include <limits>
 
 namespace MathInteg
 {
 using namespace MathUtils;
 
+//! Default callback-evaluation limit for one double-exponential refinement level.
+constexpr size_t THE_DOUBLE_EXP_DEFAULT_MAX_POINTS_PER_LEVEL = 10000;
+
 //! Configuration for double exponential integration.
 struct DoubleExpConfig : IntegConfig
 {
-  int    NbLevels   = 6;   //!< Number of refinement levels (each doubles points)
-  double StepFactor = 0.5; //!< Initial step size h = StepFactor / NbPoints
+  uint32_t NbLevels          = 10;    //!< Number of refinement levels (each doubles points)
+  double   StepFactor        = 0.5;   //!< Initial transformed-coordinate step size
+  size_t MaxPointsPerLevel =
+    THE_DOUBLE_EXP_DEFAULT_MAX_POINTS_PER_LEVEL; //!< Maximum evaluations at one level
 
   //! Default constructor.
   DoubleExpConfig() = default;
 
   //! Constructor with tolerance.
-  explicit DoubleExpConfig(double theTolerance, int theMaxIter = 100)
+  explicit DoubleExpConfig(double theTolerance, uint32_t theMaxIter = 100)
       : IntegConfig(theTolerance, theMaxIter)
   {
   }
 };
+
+//! Largest safe argument used by the hyperbolic transformations.
+constexpr double THE_DOUBLE_EXP_MAX_TRANSFORM_ARGUMENT = 700.0;
+//! Negative Exp-Sinh transform argument after which contributions are negligible.
+constexpr double THE_EXP_SINH_MIN_TRANSFORM_ARGUMENT = -30.0;
 
 //! Tanh-Sinh (Double Exponential) quadrature for finite interval [a,b].
 //!
@@ -68,36 +79,52 @@ IntegResult TanhSinh(Function&              theFunc,
 {
   IntegResult aResult;
 
-  if (theLower >= theUpper)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower) || !std::isfinite(theConfig.Tolerance)
+      || theConfig.Tolerance <= 0.0 || !std::isfinite(theConfig.StepFactor)
+      || theConfig.StepFactor <= 0.0 || theConfig.NbLevels == 0 || theConfig.MaxIterations == 0
+      || theConfig.MaxPointsPerLevel == 0)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
+  if (theLower > theUpper)
+  {
+    aResult = TanhSinh(theFunc, theUpper, theLower, theConfig);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
 
   const double aHalfPi = M_PI / 2.0;
-  const double aMid    = 0.5 * (theUpper + theLower);
   const double aHalf   = 0.5 * (theUpper - theLower);
+  const double aMid    = theLower + aHalf;
 
   // Initial step size
-  double aH = 1.0;
+  double aH = theConfig.StepFactor;
 
   // For convergence checking
-  double aPrevSum     = 0.0;
-  size_t aTotalPoints = 0;
+  double                aPrevSum = 0.0;
+  std::optional<double> aLastError;
+  size_t                aTotalPoints = 0;
+  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
 
   // Level-by-level refinement
-  for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
+  for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
   {
-    double aSum      = 0.0;
-    int    aNbPoints = 0;
+    double       aSum          = 0.0;
+    const size_t aPointsBefore = aTotalPoints;
+    size_t       aLevelPoints  = 0;
 
     // For level 0, evaluate at t = 0, +/-h, +/-2h, ...
     // For level > 0, evaluate only at new points: +/-h/2, +/-3h/2, ...
-    int aStart = (aLevel == 0) ? 0 : 1;
-    int aStep  = (aLevel == 0) ? 1 : 2;
+    const size_t aStart = (aLevel == 0) ? 0 : 1;
+    const size_t aStep  = (aLevel == 0) ? 1 : 2;
 
     // Positive t direction
-    for (int k = aStart;; k += aStep)
+    for (size_t k = aStart;;)
     {
       double aT = k * aH;
 
@@ -109,7 +136,7 @@ IntegResult TanhSinh(Function&              theFunc,
       double aU = aHalfPi * aSinhT;
 
       // Check for overflow in exp
-      if (std::abs(aU) > 700.0)
+      if (std::abs(aU) > THE_DOUBLE_EXP_MAX_TRANSFORM_ARGUMENT)
       {
         break; // tanh(u) ~= +/-1, contribution is negligible
       }
@@ -123,7 +150,7 @@ IntegResult TanhSinh(Function&              theFunc,
       double aX = aMid + aHalf * aTanhU;
 
       // Check if x is within bounds (with small tolerance)
-      if (aX <= theLower + MathUtils::THE_ZERO_TOL || aX >= theUpper - MathUtils::THE_ZERO_TOL)
+      if (aX <= theLower || aX >= theUpper)
       {
         break;
       }
@@ -132,46 +159,64 @@ IntegResult TanhSinh(Function&              theFunc,
       double aWeight = aHalf * aHalfPi * aCoshT * aSech2U;
 
       // Check if weight is negligible
-      if (aWeight < MathUtils::THE_ZERO_TOL)
+      if (aWeight <= 0.0 || !std::isfinite(aWeight))
       {
         break;
       }
 
       // Evaluate function
+      if (aLevelPoints >= theConfig.MaxPointsPerLevel)
+      {
+        aResult.Status       = Status::MaxIterations;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        if (aLevel > 0)
+        {
+          aResult.Value         = aPrevSum;
+          aResult.AbsoluteError = aLastError;
+        }
+        return aResult;
+      }
       double aF = 0.0;
+      ++aLevelPoints;
+      ++aTotalPoints;
       if (!theFunc.Value(aX, aF))
       {
-        // Function evaluation failed, skip this point
-        continue;
+        aResult.Status       = Status::CallbackError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
-
-      // Handle NaN or Inf
       if (!std::isfinite(aF))
       {
-        continue;
+        aResult.Status       = Status::NumericalError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
 
       aSum += aWeight * aF;
-      ++aNbPoints;
-
-      // Limit number of points for safety
-      if (aNbPoints > 10000)
+      if (!std::isfinite(aSum))
       {
-        break;
+        aResult.Status       = Status::NumericalError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
+      k += aStep;
     }
 
     // Negative t direction (skip t=0 which was already counted)
-    int aNegStart = (aLevel == 0) ? 1 : aStart; // Start at 1 for level 0, aStart otherwise
-    for (int k = aNegStart;; k += aStep)
+    const size_t aNegStart = (aLevel == 0) ? 1 : aStart;
+    for (size_t k = aNegStart;;)
     {
-      double aT = -k * aH;
+      const double aT = -static_cast<double>(k) * aH;
 
       double aSinhT = std::sinh(aT);
       double aCoshT = std::cosh(aT);
       double aU     = aHalfPi * aSinhT;
 
-      if (std::abs(aU) > 700.0)
+      if (std::abs(aU) > THE_DOUBLE_EXP_MAX_TRANSFORM_ARGUMENT)
       {
         break;
       }
@@ -182,60 +227,93 @@ IntegResult TanhSinh(Function&              theFunc,
 
       double aX = aMid + aHalf * aTanhU;
 
-      if (aX <= theLower + MathUtils::THE_ZERO_TOL || aX >= theUpper - MathUtils::THE_ZERO_TOL)
+      if (aX <= theLower || aX >= theUpper)
       {
         break;
       }
 
       double aWeight = aHalf * aHalfPi * aCoshT * aSech2U;
 
-      if (aWeight < MathUtils::THE_ZERO_TOL)
+      if (aWeight <= 0.0 || !std::isfinite(aWeight))
       {
         break;
       }
 
+      if (aLevelPoints >= theConfig.MaxPointsPerLevel)
+      {
+        aResult.Status       = Status::MaxIterations;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        if (aLevel > 0)
+        {
+          aResult.Value         = aPrevSum;
+          aResult.AbsoluteError = aLastError;
+        }
+        return aResult;
+      }
       double aF = 0.0;
+      ++aLevelPoints;
+      ++aTotalPoints;
       if (!theFunc.Value(aX, aF))
       {
-        continue;
+        aResult.Status       = Status::CallbackError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
-
       if (!std::isfinite(aF))
       {
-        continue;
+        aResult.Status       = Status::NumericalError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
 
       aSum += aWeight * aF;
-      ++aNbPoints;
-
-      if (aNbPoints > 10000)
+      if (!std::isfinite(aSum))
       {
-        break;
+        aResult.Status       = Status::NumericalError;
+        aResult.NbPoints     = aTotalPoints;
+        aResult.NbIterations = aLevel + 1;
+        return aResult;
       }
+      k += aStep;
     }
 
     // Scale by step size
     double aLevelSum = aH * aSum;
-    aTotalPoints += static_cast<size_t>(aNbPoints);
-
+    if (!std::isfinite(aLevelSum))
+    {
+      aResult.Status       = Status::NumericalError;
+      aResult.NbPoints     = aTotalPoints;
+      aResult.NbIterations = aLevel + 1;
+      return aResult;
+    }
     // For level > 0, add to previous sum (trapezoidal refinement)
     // S_new = S_old/2 + h_new * new_points_sum
     double aNewSum = (aLevel == 0) ? aLevelSum : 0.5 * aPrevSum + aLevelSum;
 
     // Check for convergence
-    if (aLevel > 0)
+    if (aLevel > 0 && aTotalPoints > aPointsBefore)
     {
-      double aAbsError = std::abs(aNewSum - aPrevSum);
-      double aRelError = aAbsError / std::max(std::abs(aNewSum), 1.0e-15);
+      const double aAbsError = std::abs(aNewSum - aPrevSum);
+      aLastError             = aAbsError;
 
-      if (aRelError < theConfig.Tolerance)
+      const double anAbsValue = std::abs(aNewSum);
+      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
+                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                 : aAbsError <= theConfig.Tolerance;
+      if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        aResult.RelativeError = aRelError;
+        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        {
+          aResult.RelativeError = aAbsError / anAbsValue;
+        }
         aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = static_cast<size_t>(aLevel + 1);
+        aResult.NbIterations  = aLevel + 1;
         return aResult;
       }
     }
@@ -245,10 +323,15 @@ IntegResult TanhSinh(Function&              theFunc,
   }
 
   // Did not converge, return best estimate
-  aResult.Status       = Status::OK; // Still return a result
-  aResult.Value        = aPrevSum;
-  aResult.NbPoints     = aTotalPoints;
-  aResult.NbIterations = static_cast<size_t>(theConfig.NbLevels);
+  aResult.Status        = Status::MaxIterations;
+  aResult.Value         = aPrevSum;
+  aResult.AbsoluteError = aLastError;
+  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  {
+    aResult.RelativeError = *aLastError / std::abs(aPrevSum);
+  }
+  aResult.NbPoints      = aTotalPoints;
+  aResult.NbIterations  = aNbLevels;
   return aResult;
 }
 
@@ -269,37 +352,44 @@ IntegResult ExpSinh(Function&              theFunc,
 {
   IntegResult aResult;
 
-  const double aHalfPi      = M_PI / 2.0;
-  double       aH           = 1.0;
-  double       aPrevSum     = 0.0;
-  size_t       aTotalPoints = 0;
-
-  for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
+  if (!std::isfinite(theLower) || !std::isfinite(theConfig.Tolerance) || theConfig.Tolerance <= 0.0
+      || !std::isfinite(theConfig.StepFactor) || theConfig.StepFactor <= 0.0
+      || theConfig.NbLevels == 0 || theConfig.MaxIterations == 0
+      || theConfig.MaxPointsPerLevel == 0)
   {
-    double aSum      = 0.0;
-    int    aNbPoints = 0;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
-    int aStart = (aLevel == 0) ? 0 : 1;
-    int aStep  = (aLevel == 0) ? 1 : 2;
+  const double   aHalfPi      = M_PI / 2.0;
+  double         aH           = theConfig.StepFactor;
+  double                aPrevSum = 0.0;
+  std::optional<double> aLastError;
+  size_t                aTotalPoints = 0;
+  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
+
+  for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
+  {
+    double       aSum          = 0.0;
+    const size_t aPointsBefore = aTotalPoints;
+    size_t       aLevelPoints  = 0;
+
+    const size_t aStart = (aLevel == 0) ? 0 : 1;
+    const size_t aStep  = (aLevel == 0) ? 1 : 2;
 
     // Positive and negative t
     for (int aSign = -1; aSign <= 1; aSign += 2)
     {
-      for (int k = (aSign < 0 && aLevel == 0) ? 1 : aStart;; k += aStep)
+      for (size_t k = (aSign < 0 && aLevel == 0) ? 1 : aStart;;)
       {
-        if (aSign < 0 && k == 0)
-        {
-          continue;
-        }
-
-        double aT = aSign * k * aH;
+        const double aT = static_cast<double>(aSign) * static_cast<double>(k) * aH;
 
         double aSinhT = std::sinh(aT);
         double aCoshT = std::cosh(aT);
         double aU     = aHalfPi * aSinhT;
 
         // exp(u) for x transformation
-        if (aU > 700.0)
+        if (aU > THE_DOUBLE_EXP_MAX_TRANSFORM_ARGUMENT)
         {
           break; // Overflow
         }
@@ -318,51 +408,91 @@ IntegResult ExpSinh(Function&              theFunc,
         }
 
         // For negative t with large |u|, the contribution may be negligible
-        if (aU < -30.0)
+        if (aU < THE_EXP_SINH_MIN_TRANSFORM_ARGUMENT)
         {
           break;
         }
 
+        if (aLevelPoints >= theConfig.MaxPointsPerLevel)
+        {
+          aResult.Status       = Status::MaxIterations;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          if (aLevel > 0)
+          {
+            aResult.Value         = aPrevSum;
+            aResult.AbsoluteError = aLastError;
+          }
+          return aResult;
+        }
         double aF = 0.0;
+        ++aLevelPoints;
+        ++aTotalPoints;
+        if (!std::isfinite(aX))
+        {
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
+        }
         if (!theFunc.Value(aX, aF))
         {
-          continue;
+          aResult.Status       = Status::CallbackError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
-
         if (!std::isfinite(aF))
         {
-          continue;
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
 
         aSum += aWeight * aF;
-        ++aNbPoints;
-
-        if (aNbPoints > 10000)
+        if (!std::isfinite(aSum))
         {
-          break;
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
+        k += aStep;
       }
     }
 
     double aLevelSum = aH * aSum;
-    aTotalPoints += static_cast<size_t>(aNbPoints);
-
+    if (!std::isfinite(aLevelSum))
+    {
+      aResult.Status       = Status::NumericalError;
+      aResult.NbPoints     = aTotalPoints;
+      aResult.NbIterations = aLevel + 1;
+      return aResult;
+    }
     // Trapezoidal refinement: S_new = S_old/2 + h_new * new_points_sum
     double aNewSum = (aLevel == 0) ? aLevelSum : 0.5 * aPrevSum + aLevelSum;
 
-    if (aLevel > 0)
+    if (aLevel > 0 && aTotalPoints > aPointsBefore)
     {
-      double aAbsError = std::abs(aNewSum - aPrevSum);
-      double aRelError = aAbsError / std::max(std::abs(aNewSum), 1.0e-15);
+      const double aAbsError = std::abs(aNewSum - aPrevSum);
+      aLastError             = aAbsError;
 
-      if (aRelError < theConfig.Tolerance)
+      const double anAbsValue = std::abs(aNewSum);
+      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
+                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                 : aAbsError <= theConfig.Tolerance;
+      if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        aResult.RelativeError = aRelError;
+        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        {
+          aResult.RelativeError = aAbsError / anAbsValue;
+        }
         aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = static_cast<size_t>(aLevel + 1);
+        aResult.NbIterations  = aLevel + 1;
         return aResult;
       }
     }
@@ -371,10 +501,15 @@ IntegResult ExpSinh(Function&              theFunc,
     aH *= 0.5;
   }
 
-  aResult.Status       = Status::OK;
-  aResult.Value        = aPrevSum;
-  aResult.NbPoints     = aTotalPoints;
-  aResult.NbIterations = static_cast<size_t>(theConfig.NbLevels);
+  aResult.Status        = Status::MaxIterations;
+  aResult.Value         = aPrevSum;
+  aResult.AbsoluteError = aLastError;
+  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  {
+    aResult.RelativeError = *aLastError / std::abs(aPrevSum);
+  }
+  aResult.NbPoints      = aTotalPoints;
+  aResult.NbIterations  = aNbLevels;
   return aResult;
 }
 
@@ -392,37 +527,44 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
 {
   IntegResult aResult;
 
-  const double aHalfPi      = M_PI / 2.0;
-  double       aH           = 1.0;
-  double       aPrevSum     = 0.0;
-  size_t       aTotalPoints = 0;
-
-  for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
+  if (!std::isfinite(theConfig.Tolerance) || theConfig.Tolerance <= 0.0
+      || !std::isfinite(theConfig.StepFactor) || theConfig.StepFactor <= 0.0
+      || theConfig.NbLevels == 0 || theConfig.MaxIterations == 0
+      || theConfig.MaxPointsPerLevel == 0)
   {
-    double aSum      = 0.0;
-    int    aNbPoints = 0;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
-    int aStart = (aLevel == 0) ? 0 : 1;
-    int aStep  = (aLevel == 0) ? 1 : 2;
+  const double   aHalfPi      = M_PI / 2.0;
+  double         aH           = theConfig.StepFactor;
+  double                aPrevSum = 0.0;
+  std::optional<double> aLastError;
+  size_t                aTotalPoints = 0;
+  const uint32_t        aNbLevels = std::min(theConfig.NbLevels, theConfig.MaxIterations);
+
+  for (uint32_t aLevel = 0; aLevel < aNbLevels; ++aLevel)
+  {
+    double       aSum          = 0.0;
+    const size_t aPointsBefore = aTotalPoints;
+    size_t       aLevelPoints  = 0;
+
+    const size_t aStart = (aLevel == 0) ? 0 : 1;
+    const size_t aStep  = (aLevel == 0) ? 1 : 2;
 
     // Positive and negative t
     for (int aSign = -1; aSign <= 1; aSign += 2)
     {
-      for (int k = (aSign < 0 && aLevel == 0) ? 1 : aStart;; k += aStep)
+      for (size_t k = (aSign < 0 && aLevel == 0) ? 1 : aStart;;)
       {
-        if (aSign < 0 && k == 0)
-        {
-          continue;
-        }
-
-        double aT = aSign * k * aH;
+        const double aT = static_cast<double>(aSign) * static_cast<double>(k) * aH;
 
         double aSinhT = std::sinh(aT);
         double aCoshT = std::cosh(aT);
         double aU     = aHalfPi * aSinhT;
 
         // sinh(u) and cosh(u) for transformation
-        if (std::abs(aU) > 700.0)
+        if (std::abs(aU) > THE_DOUBLE_EXP_MAX_TRANSFORM_ARGUMENT)
         {
           break;
         }
@@ -441,46 +583,86 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
           break;
         }
 
+        if (aLevelPoints >= theConfig.MaxPointsPerLevel)
+        {
+          aResult.Status       = Status::MaxIterations;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          if (aLevel > 0)
+          {
+            aResult.Value         = aPrevSum;
+            aResult.AbsoluteError = aLastError;
+          }
+          return aResult;
+        }
         double aF = 0.0;
+        ++aLevelPoints;
+        ++aTotalPoints;
+        if (!std::isfinite(aX))
+        {
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
+        }
         if (!theFunc.Value(aX, aF))
         {
-          continue;
+          aResult.Status       = Status::CallbackError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
-
         if (!std::isfinite(aF))
         {
-          continue;
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
 
         aSum += aWeight * aF;
-        ++aNbPoints;
-
-        if (aNbPoints > 10000)
+        if (!std::isfinite(aSum))
         {
-          break;
+          aResult.Status       = Status::NumericalError;
+          aResult.NbPoints     = aTotalPoints;
+          aResult.NbIterations = aLevel + 1;
+          return aResult;
         }
+        k += aStep;
       }
     }
 
     double aLevelSum = aH * aSum;
-    aTotalPoints += static_cast<size_t>(aNbPoints);
-
+    if (!std::isfinite(aLevelSum))
+    {
+      aResult.Status       = Status::NumericalError;
+      aResult.NbPoints     = aTotalPoints;
+      aResult.NbIterations = aLevel + 1;
+      return aResult;
+    }
     // Trapezoidal refinement: S_new = S_old/2 + h_new * new_points_sum
     double aNewSum = (aLevel == 0) ? aLevelSum : 0.5 * aPrevSum + aLevelSum;
 
-    if (aLevel > 0)
+    if (aLevel > 0 && aTotalPoints > aPointsBefore)
     {
-      double aAbsError = std::abs(aNewSum - aPrevSum);
-      double aRelError = aAbsError / std::max(std::abs(aNewSum), 1.0e-15);
+      const double aAbsError = std::abs(aNewSum - aPrevSum);
+      aLastError             = aAbsError;
 
-      if (aRelError < theConfig.Tolerance)
+      const double anAbsValue = std::abs(aNewSum);
+      const bool isConverged = anAbsValue > std::numeric_limits<double>::epsilon()
+                                 ? aAbsError <= theConfig.Tolerance * anAbsValue
+                                 : aAbsError <= theConfig.Tolerance;
+      if (isConverged)
       {
         aResult.Status        = Status::OK;
         aResult.Value         = aNewSum;
         aResult.AbsoluteError = aAbsError;
-        aResult.RelativeError = aRelError;
+        if (anAbsValue > std::numeric_limits<double>::epsilon())
+        {
+          aResult.RelativeError = aAbsError / anAbsValue;
+        }
         aResult.NbPoints      = aTotalPoints;
-        aResult.NbIterations  = static_cast<size_t>(aLevel + 1);
+        aResult.NbIterations  = aLevel + 1;
         return aResult;
       }
     }
@@ -489,10 +671,15 @@ IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = Doubl
     aH *= 0.5;
   }
 
-  aResult.Status       = Status::OK;
-  aResult.Value        = aPrevSum;
-  aResult.NbPoints     = aTotalPoints;
-  aResult.NbIterations = static_cast<size_t>(theConfig.NbLevels);
+  aResult.Status        = Status::MaxIterations;
+  aResult.Value         = aPrevSum;
+  aResult.AbsoluteError = aLastError;
+  if (aLastError && std::abs(aPrevSum) > std::numeric_limits<double>::epsilon())
+  {
+    aResult.RelativeError = *aLastError / std::abs(aPrevSum);
+  }
+  aResult.NbPoints      = aTotalPoints;
+  aResult.NbIterations  = aNbLevels;
   return aResult;
 }
 
@@ -515,10 +702,21 @@ IntegResult DoubleExponential(Function&              theFunc,
                               double                 theUpper,
                               const DoubleExpConfig& theConfig = DoubleExpConfig())
 {
-  const double aHuge = 1.0e300;
+  IntegResult anInvalidResult;
+  if (std::isnan(theLower) || std::isnan(theUpper) || theLower == theUpper
+      || (theLower > theUpper && (!std::isfinite(theLower) || !std::isfinite(theUpper))))
+  {
+    anInvalidResult.Status = Status::InvalidInput;
+    return anInvalidResult;
+  }
 
-  bool aIsLowerInf = (theLower < -aHuge);
-  bool aIsUpperInf = (theUpper > aHuge);
+  const bool aIsLowerInf = std::isinf(theLower) && theLower < 0.0;
+  const bool aIsUpperInf = std::isinf(theUpper) && theUpper > 0.0;
+  if ((std::isinf(theLower) && !aIsLowerInf) || (std::isinf(theUpper) && !aIsUpperInf))
+  {
+    anInvalidResult.Status = Status::InvalidInput;
+    return anInvalidResult;
+  }
 
   if (aIsLowerInf && aIsUpperInf)
   {
@@ -576,7 +774,6 @@ IntegResult TanhSinhSingular(Function& theFunc,
 {
   DoubleExpConfig aConfig;
   aConfig.Tolerance = theTolerance;
-  aConfig.NbLevels  = 8; // More levels for singular functions
 
   return TanhSinh(theFunc, theLower, theUpper, aConfig);
 }
@@ -601,6 +798,21 @@ IntegResult TanhSinhWithSingularity(Function&              theFunc,
 {
   IntegResult aResult;
 
+  if (!std::isfinite(theSingularity))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (std::isfinite(theLower) && std::isfinite(theUpper) && theLower > theUpper)
+  {
+    aResult = TanhSinhWithSingularity(theFunc, theUpper, theLower, theSingularity, theConfig);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
+
   if (theSingularity <= theLower || theSingularity >= theUpper)
   {
     // Singularity is at or outside bounds, use regular integration
@@ -618,6 +830,12 @@ IntegResult TanhSinhWithSingularity(Function&              theFunc,
   IntegResult aRight = TanhSinh(theFunc, theSingularity, theUpper, theConfig);
   if (!aRight.IsDone())
   {
+    if (aLeft.Value && aRight.Value)
+    {
+      aRight.Value = *aLeft.Value + *aRight.Value;
+    }
+    aRight.NbPoints += aLeft.NbPoints;
+    aRight.NbIterations += aLeft.NbIterations;
     return aRight;
   }
 
@@ -625,12 +843,15 @@ IntegResult TanhSinhWithSingularity(Function&              theFunc,
   aResult.Status       = Status::OK;
   aResult.Value        = *aLeft.Value + *aRight.Value;
   aResult.NbPoints     = aLeft.NbPoints + aRight.NbPoints;
-  aResult.NbIterations = std::max(aLeft.NbIterations, aRight.NbIterations);
+  aResult.NbIterations = aLeft.NbIterations + aRight.NbIterations;
 
   if (aLeft.AbsoluteError && aRight.AbsoluteError)
   {
     aResult.AbsoluteError = *aLeft.AbsoluteError + *aRight.AbsoluteError;
-    aResult.RelativeError = *aResult.AbsoluteError / std::max(std::abs(*aResult.Value), 1.0e-15);
+    if (std::abs(*aResult.Value) > std::numeric_limits<double>::epsilon())
+    {
+      aResult.RelativeError = *aResult.AbsoluteError / std::abs(*aResult.Value);
+    }
   }
 
   return aResult;

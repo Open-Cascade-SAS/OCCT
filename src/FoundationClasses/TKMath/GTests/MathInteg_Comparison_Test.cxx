@@ -16,6 +16,7 @@
 // New API
 #include <MathInteg_Gauss.hxx>
 #include <MathInteg_Kronrod.hxx>
+#include <MathUtils_Core.hxx>
 
 // Old API
 #include <math_Function.hxx>
@@ -26,7 +27,6 @@
 namespace
 {
 constexpr double THE_TOLERANCE = 1.0e-10;
-constexpr double THE_PI        = 3.14159265358979323846;
 
 // ============================================================================
 // Adapter classes for old API (inherit from math_Function)
@@ -217,10 +217,11 @@ TEST(MathInteg_ComparisonTest, Gauss_SinPi)
   const int anOrder = 15;
 
   // Old API
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, anOrder);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, anOrder);
 
   // New API
-  MathInteg::IntegResult aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, anOrder);
+  MathInteg::IntegResult aNewResult =
+    MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, anOrder);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -277,10 +278,11 @@ TEST(MathInteg_ComparisonTest, Gauss_Cosine)
   const int anOrder = 15;
 
   // Old API
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI / 2.0, anOrder);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI / 2.0, anOrder);
 
   // New API
-  MathInteg::IntegResult aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI / 2.0, anOrder);
+  MathInteg::IntegResult aNewResult =
+    MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI / 2.0, anOrder);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -378,8 +380,8 @@ TEST(MathInteg_ComparisonTest, Order3_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 3);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 3);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 3);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 3);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -392,8 +394,8 @@ TEST(MathInteg_ComparisonTest, Order5_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 5);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 5);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 5);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 5);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -406,8 +408,8 @@ TEST(MathInteg_ComparisonTest, Order7_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 7);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 7);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 7);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 7);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -420,8 +422,8 @@ TEST(MathInteg_ComparisonTest, Order15_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 15);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 15);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 15);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 15);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -434,8 +436,8 @@ TEST(MathInteg_ComparisonTest, Order21_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 21);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 21);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 21);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 21);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -448,8 +450,8 @@ TEST(MathInteg_ComparisonTest, Order41_Comparison)
   SinFuncOld anOldFunc;
   SinFuncNew aNewFunc;
 
-  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 41);
-  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 41);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, 41);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, 41);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -513,19 +515,16 @@ TEST(MathInteg_ComparisonTest, NegativeBounds)
 
 TEST(MathInteg_ComparisonTest, ReversedBounds)
 {
-  SinFuncNew aFunc;
+  SinFuncOld anOldFunc;
+  SinFuncNew aNewFunc;
 
-  // Normal bounds
-  MathInteg::IntegResult aResultNormal = MathInteg::Gauss(aFunc, 0.0, THE_PI, 15);
+  math_GaussSingleIntegration anOldInteg(anOldFunc, MathUtils::THE_PI, 0.0, 15);
+  MathInteg::IntegResult aNewResult = MathInteg::Gauss(aNewFunc, MathUtils::THE_PI, 0.0, 15);
 
-  // Reversed bounds
-  MathInteg::IntegResult aResultReversed = MathInteg::Gauss(aFunc, THE_PI, 0.0, 15);
-
-  ASSERT_TRUE(aResultNormal.IsDone());
-  ASSERT_TRUE(aResultReversed.IsDone());
-
-  // Reversed bounds should give negative of normal result
-  EXPECT_NEAR(*aResultNormal.Value, -*aResultReversed.Value, THE_TOLERANCE);
+  ASSERT_TRUE(anOldInteg.IsDone());
+  ASSERT_TRUE(aNewResult.IsDone());
+  EXPECT_NEAR(anOldInteg.Value(), *aNewResult.Value, THE_TOLERANCE);
+  EXPECT_NEAR(*aNewResult.Value, -2.0, THE_TOLERANCE);
 }
 
 // ============================================================================

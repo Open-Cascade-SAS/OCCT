@@ -36,6 +36,9 @@ inline constexpr double THE_PI = 3.14159265358979323846;
 //! Two Pi constant.
 inline constexpr double THE_2PI = 6.28318530717958647692;
 
+//! Euler's number, the base of natural logarithms.
+inline constexpr double THE_EULER_NUMBER = 2.718281828459045;
+
 //! Golden ratio for optimization algorithms.
 inline constexpr double THE_GOLDEN_RATIO = 1.618033988749895;
 
@@ -58,7 +61,8 @@ inline constexpr double Clamp(double theValue, double theLower, double theUpper)
 //! @return true if |theValue| < theTolerance
 inline bool IsZero(double theValue, double theTolerance = THE_ZERO_TOL)
 {
-  return std::abs(theValue) < theTolerance;
+  return std::isfinite(theValue) && std::isfinite(theTolerance) && theTolerance >= 0.0
+         && std::abs(theValue) <= theTolerance;
 }
 
 //! Check if two values are approximately equal.
@@ -68,9 +72,46 @@ inline bool IsZero(double theValue, double theTolerance = THE_ZERO_TOL)
 //! @return true if values are approximately equal
 inline bool IsEqual(double theA, double theB, double theTolerance = THE_ZERO_TOL)
 {
-  const double aDiff  = std::abs(theA - theB);
+  if (!std::isfinite(theA) || !std::isfinite(theB) || !std::isfinite(theTolerance)
+      || theTolerance < 0.0)
+  {
+    return false;
+  }
+  const double aDiff = std::abs(theA - theB);
+  if (!std::isfinite(aDiff))
+  {
+    return false;
+  }
   const double aScale = std::max({1.0, std::abs(theA), std::abs(theB)});
-  return aDiff < theTolerance * aScale;
+  return aDiff / aScale <= theTolerance;
+}
+
+//! Test a difference against coherent absolute and relative tolerances.
+inline bool IsWithinTolerance(double theA,
+                              double theB,
+                              double theAbsTolerance,
+                              double theRelTolerance)
+{
+  if (!std::isfinite(theA) || !std::isfinite(theB) || !std::isfinite(theAbsTolerance)
+      || !std::isfinite(theRelTolerance) || theAbsTolerance < 0.0 || theRelTolerance < 0.0)
+  {
+    return false;
+  }
+  const double aDiff = std::abs(theA - theB);
+  if (!std::isfinite(aDiff))
+  {
+    return false;
+  }
+  const double aScale = std::max(std::abs(theA), std::abs(theB));
+  if (aScale == 0.0)
+  {
+    return true;
+  }
+  if (aDiff <= theAbsTolerance)
+  {
+    return true;
+  }
+  return (aDiff - theAbsTolerance) / aScale <= theRelTolerance;
 }
 
 //! Safe division avoiding division by zero.
@@ -143,14 +184,26 @@ inline bool IsFinite(double theValue)
 //! @param theCoeffs array of coefficients
 //! @param theCount number of coefficients
 //! @return scaling factor (power of 2 for exact arithmetic)
-inline double ComputeScaleFactor(const double* theCoeffs, int theCount)
+inline double ComputeScaleFactor(const double* theCoeffs, size_t theCount)
 {
-  double aMaxAbs = 0.0;
-  for (int i = 0; i < theCount; ++i)
+  if (theCoeffs == nullptr || theCount == 0)
   {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  double aMaxAbs = 0.0;
+  for (size_t i = 0; i < theCount; ++i)
+  {
+    if (!std::isfinite(theCoeffs[i]))
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
     aMaxAbs = std::max(aMaxAbs, std::abs(theCoeffs[i]));
   }
 
+  if (aMaxAbs == 0.0)
+  {
+    return 1.0;
+  }
   if (aMaxAbs < THE_ZERO_TOL || aMaxAbs > 1.0e15)
   {
     // Find nearest power of 2 for exact scaling
@@ -168,14 +221,27 @@ inline double ComputeScaleFactor(const double* theCoeffs, int theCount)
 //! @return dot product sum(A[i] * B[i])
 inline double DotProduct(const math_Vector& theA, const math_Vector& theB)
 {
-  double    aSum   = 0.0;
-  const int aLower = theA.Lower();
-  const int aUpper = theA.Upper();
-  for (int i = aLower; i <= aUpper; ++i)
+  if (theA.Size() != theB.Size())
   {
-    aSum += theA(i) * theB(i);
+    return std::numeric_limits<double>::quiet_NaN();
   }
-  return aSum;
+  long double aSum        = 0.0L;
+  long double aCorrection = 0.0L;
+  for (size_t i = 0; i < theA.Size(); ++i)
+  {
+    const double anA = theA.At(i);
+    const double aB  = theB.At(i);
+    if (!std::isfinite(anA) || !std::isfinite(aB))
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
+    const long double aProduct = static_cast<long double>(anA) * static_cast<long double>(aB);
+    const long double aNewSum  = aSum + aProduct;
+    aCorrection += std::abs(aSum) >= std::abs(aProduct) ? (aSum - aNewSum) + aProduct
+                                                        : (aProduct - aNewSum) + aSum;
+    aSum = aNewSum;
+  }
+  return static_cast<double>(aSum + aCorrection);
 }
 
 //! Compute Euclidean norm of a vector.
@@ -183,12 +249,45 @@ inline double DotProduct(const math_Vector& theA, const math_Vector& theB)
 //! @return sqrt(sum(V[i]^2))
 inline double VectorNorm(const math_Vector& theVec)
 {
-  double aSum = 0.0;
-  for (int i = theVec.Lower(); i <= theVec.Upper(); ++i)
+  double aScale = 0.0;
+  double aSum   = 1.0;
+  for (size_t i = 0; i < theVec.Size(); ++i)
   {
-    aSum += theVec(i) * theVec(i);
+    const double aValue = std::abs(theVec.At(i));
+    if (!std::isfinite(aValue))
+    {
+      return aValue;
+    }
+    if (aValue == 0.0)
+    {
+      continue;
+    }
+    if (aScale < aValue)
+    {
+      const double aRatio = aScale / aValue;
+      aSum                = 1.0 + aSum * aRatio * aRatio;
+      aScale              = aValue;
+    }
+    else
+    {
+      const double aRatio = aValue / aScale;
+      aSum += aRatio * aRatio;
+    }
   }
-  return std::sqrt(aSum);
+  return aScale == 0.0 ? 0.0 : aScale * std::sqrt(aSum);
+}
+
+//! Compute the Euclidean norm.
+inline double Norm(const math_Vector& theVec)
+{
+  return VectorNorm(theVec);
+}
+
+//! Compute the squared Euclidean norm. Overflow is reported as infinity.
+inline double Norm2(const math_Vector& theVec)
+{
+  const double aNorm = VectorNorm(theVec);
+  return aNorm * aNorm;
 }
 
 //! Compute infinity norm (maximum absolute value) of a vector.
@@ -197,9 +296,9 @@ inline double VectorNorm(const math_Vector& theVec)
 inline double VectorInfNorm(const math_Vector& theVec)
 {
   double aMax = 0.0;
-  for (int i = theVec.Lower(); i <= theVec.Upper(); ++i)
+  for (size_t i = 0; i < theVec.Size(); ++i)
   {
-    aMax = std::max(aMax, std::abs(theVec(i)));
+    aMax = std::max(aMax, std::abs(theVec.At(i)));
   }
   return aMax;
 }

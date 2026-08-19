@@ -22,7 +22,9 @@
 #include <algorithm>
 #include <cmath>
 
-namespace
+namespace MathUtils
+{
+namespace Utils
 {
 struct ValueAndWeight
 {
@@ -34,24 +36,26 @@ struct ValueAndWeight
 
 bool ComputeGaussLegendre(const int theOrder, math_Vector& thePoints, math_Vector& theWeights)
 {
-  if (theOrder < 1 || thePoints.Length() != theOrder || theWeights.Length() != theOrder)
+  if (theOrder < 1 || thePoints.Size() != static_cast<size_t>(theOrder)
+      || theWeights.Size() != static_cast<size_t>(theOrder))
   {
     return false;
   }
 
   try
   {
-    math_Vector aDiag(1, theOrder);
-    math_Vector aSubDiag(1, theOrder);
+    const size_t anOrder = static_cast<size_t>(theOrder);
+    math_Vector  aDiag(anOrder);
+    math_Vector  aSubDiag(anOrder);
 
-    for (int i = 1; i <= theOrder; ++i)
+    for (size_t i = 0; i < anOrder; ++i)
     {
-      aDiag(i)    = 0.0;
-      aSubDiag(i) = 0.0;
-      if (i > 1)
+      aDiag.ChangeAt(i)    = 0.0;
+      aSubDiag.ChangeAt(i) = 0.0;
+      if (i > 0)
       {
-        const int aSqrIm1 = (i - 1) * (i - 1);
-        aSubDiag(i)       = std::sqrt(static_cast<double>(aSqrIm1) / (4.0 * aSqrIm1 - 1.0));
+        const size_t aSqrI = i * i;
+        aSubDiag.ChangeAt(i) = std::sqrt(static_cast<double>(aSqrI) / (4.0 * aSqrI - 1.0));
       }
     }
 
@@ -65,24 +69,19 @@ bool ComputeGaussLegendre(const int theOrder, math_Vector& thePoints, math_Vecto
     const math_Matrix& aEigenVecs   = *anEigen.EigenVectors;
 
     NCollection_Array1<ValueAndWeight> aValuesAndWeights(1, theOrder);
-    const int                          aVecLowerRow = aEigenVecs.LowerRow();
-    const int                          aVecLowerCol = aEigenVecs.LowerCol();
-    const int                          aValLower    = aEigenValues.Lower();
-    for (int i = 1; i <= theOrder; ++i)
+    for (size_t i = 0; i < anOrder; ++i)
     {
-      const double aWeight = 2.0 * aEigenVecs(aVecLowerRow, aVecLowerCol + i - 1)
-                             * aEigenVecs(aVecLowerRow, aVecLowerCol + i - 1);
-      aValuesAndWeights(i) = {aEigenValues(aValLower + i - 1), aWeight};
+      const double aWeight = 2.0 * aEigenVecs.At(0, i) * aEigenVecs.At(0, i);
+      aValuesAndWeights(static_cast<int>(i) + 1) = {aEigenValues.At(i), aWeight};
     }
 
     std::sort(aValuesAndWeights.begin(), aValuesAndWeights.end());
 
-    const int aPointLower  = thePoints.Lower();
-    const int aWeightLower = theWeights.Lower();
-    for (int i = 1; i <= theOrder; ++i)
+    for (size_t i = 0; i < anOrder; ++i)
     {
-      thePoints(aPointLower + i - 1)   = aValuesAndWeights(i).Value;
-      theWeights(aWeightLower + i - 1) = aValuesAndWeights(i).Weight;
+      const ValueAndWeight& aValueAndWeight = aValuesAndWeights(static_cast<int>(i) + 1);
+      thePoints.ChangeAt(i)                 = aValueAndWeight.Value;
+      theWeights.ChangeAt(i)                = aValueAndWeight.Weight;
     }
 
     return true;
@@ -93,7 +92,8 @@ bool ComputeGaussLegendre(const int theOrder, math_Vector& thePoints, math_Vecto
   }
 }
 
-} // namespace
+} // namespace Utils
+} // namespace MathUtils
 
 //==================================================================================================
 
@@ -101,15 +101,27 @@ bool MathUtils::GetGaussPointsAndWeights(int          theOrder,
                                          math_Vector& thePoints,
                                          math_Vector& theWeights)
 {
-  if (theOrder < 1 || thePoints.Length() != theOrder || theWeights.Length() != theOrder)
+  if (theOrder < 1 || thePoints.Size() != static_cast<size_t>(theOrder)
+      || theWeights.Size() != static_cast<size_t>(theOrder))
   {
     return false;
   }
-
   if (theOrder <= math::GaussPointsMax())
   {
-    return math::OrderedGaussPointsAndWeights(theOrder, thePoints, theWeights);
+    const size_t anOrder = static_cast<size_t>(theOrder);
+    math_Vector  aPoints(anOrder);
+    math_Vector  aWeights(anOrder);
+    if (!math::OrderedGaussPointsAndWeights(theOrder, aPoints, aWeights))
+    {
+      return false;
+    }
+    for (size_t i = 0; i < anOrder; ++i)
+    {
+      thePoints.ChangeAt(i)  = aPoints.At(i);
+      theWeights.ChangeAt(i) = aWeights.At(i);
+    }
+    return true;
   }
 
-  return ComputeGaussLegendre(theOrder, thePoints, theWeights);
+  return Utils::ComputeGaussLegendre(theOrder, thePoints, theWeights);
 }

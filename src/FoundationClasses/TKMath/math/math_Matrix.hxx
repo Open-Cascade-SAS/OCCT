@@ -76,6 +76,12 @@ class math_Matrix
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Constructs a non-initialized zero-based matrix.
+  inline math_Matrix(size_t theNbRows, size_t theNbColumns);
+
+  //! Constructs a zero-based matrix initialized to theInitialValue.
+  inline math_Matrix(size_t theNbRows, size_t theNbColumns, double theInitialValue);
+
   //! Constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! For the constructed matrix:
@@ -125,6 +131,9 @@ public:
   //! rows of A.returns the row range of a matrix.
   int RowNumber() const noexcept;
 
+  //! Returns the number of rows as an unsigned size.
+  size_t RowSize() const noexcept { return Array.RowSize(); }
+
   //! Returns the number of rows of this matrix.
   //! Note that for a matrix A you always have the following relations:
   //! - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
@@ -133,6 +142,9 @@ public:
   //! - the length of a column of A is equal to the number of
   //! rows of A.returns the row range of a matrix.
   int ColNumber() const noexcept;
+
+  //! Returns the number of columns as an unsigned size.
+  size_t ColSize() const noexcept { return Array.ColSize(); }
 
   //! Returns the value of the Lower index of the row
   //! range of a matrix.
@@ -355,6 +367,12 @@ public:
   const double& operator()(const int Row, const int Col) const { return Value(Row, Col); }
 
   double& operator()(const int Row, const int Col) { return Value(Row, Col); }
+
+  //! Accesses an element by zero-based row and column offsets.
+  const double& At(size_t theRow, size_t theCol) const { return Array.At(theRow, theCol); }
+
+  //! Accesses an element by zero-based row and column offsets in read-write mode.
+  double& ChangeAt(size_t theRow, size_t theCol) { return Array.ChangeAt(theRow, theCol); }
 
   //! Matrixes are copied through assignment.
   //! An exception is raised if the dimensions are different.

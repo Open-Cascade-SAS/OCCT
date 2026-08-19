@@ -63,6 +63,12 @@ class math_VectorBase
   static const int THE_BUFFER_SIZE = 32;
 
 public:
+  //! Constructs a non-initialized zero-based vector of theSize elements.
+  inline explicit math_VectorBase(size_t theSize);
+
+  //! Constructs a zero-based vector of theSize elements initialized to theInitialValue.
+  inline math_VectorBase(size_t theSize, TheItemType theInitialValue);
+
   //! Memory allocation
   DEFINE_STANDARD_ALLOC;
   DEFINE_NCOLLECTION_ALLOC;
@@ -98,6 +104,9 @@ public:
 
   //! Returns the length of a vector
   inline int Length() const { return Array.Length(); }
+
+  //! Returns the number of elements.
+  inline size_t Size() const noexcept { return Array.Size(); }
 
   //! Returns the lower index of the vector
   inline int Lower() const { return Array.Lower(); }
@@ -245,6 +254,16 @@ public:
   const TheItemType& operator()(const int theNum) const { return Value(theNum); }
 
   TheItemType& operator()(const int theNum) { return Value(theNum); }
+
+  //! Accesses an element by zero-based offset.
+  const TheItemType& At(size_t theIndex) const { return Array.At(theIndex); }
+
+  //! Accesses an element by zero-based offset in read-write mode.
+  TheItemType& ChangeAt(size_t theIndex) { return Array.ChangeAt(theIndex); }
+
+  const TheItemType& operator[](size_t theIndex) const { return At(theIndex); }
+
+  TheItemType& operator[](size_t theIndex) { return ChangeAt(theIndex); }
 
   //! Initialises a vector by copying "theOther".
   //! An exception is raised if the Lengths are different.

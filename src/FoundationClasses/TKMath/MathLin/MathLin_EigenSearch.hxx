@@ -16,10 +16,13 @@
 
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
+#include "MathLin_Utils.hxx"
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace MathLin
 {
@@ -31,36 +34,34 @@ struct EigenResult
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> EigenValues;  //!< Computed eigenvalues
   std::optional<math_Matrix> EigenVectors; //!< Eigenvectors as columns
-  int                        Dimension = 0;
+  size_t                     Dimension = 0;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };
 
-namespace Internal
+namespace Utils
 {
 
-//! Computes sqrt(x*x + y*y) avoiding overflow/underflow.
-inline double Hypot(double theX, double theY)
-{
-  return std::sqrt(theX * theX + theY * theY);
-}
+//! Relative threshold used to deflate a negligible tridiagonal coupling.
+constexpr double THE_TRIDIAGONAL_DEFLATION_TOLERANCE = std::numeric_limits<double>::epsilon();
+
+//! Multiplier for the scale-normalized eigenpair residual acceptance threshold.
+constexpr double THE_TRIDIAGONAL_RESIDUAL_TOLERANCE_FACTOR = 256.0;
 
 //! Finds the end of unreduced submatrix using deflation test.
-inline int FindSubmatrixEnd(const math_Vector& theDiag,
-                            const math_Vector& theSubdiag,
-                            int                theStart,
-                            int                theN)
+inline size_t FindSubmatrixEnd(const math_Vector& theDiag,
+                               const math_Vector& theSubdiag,
+                               size_t             theStart,
+                               size_t             theN)
 {
-  const int aLower = theDiag.Lower();
-  int       aEnd;
-  for (aEnd = theStart; aEnd <= theN - 1; ++aEnd)
+  size_t aEnd;
+  for (aEnd = theStart; aEnd + 1 < theN; ++aEnd)
   {
-    const double aDiagSum =
-      std::abs(theDiag(aEnd + aLower - 1)) + std::abs(theDiag(aEnd + 1 + aLower - 1));
-    // Deflation test: subdiagonal negligible relative to diagonal elements
-    if (std::abs(theSubdiag(aEnd + aLower - 1)) + aDiagSum == aDiagSum)
+    const double aDiagScale = std::max(std::abs(theDiag[aEnd]), std::abs(theDiag[aEnd + 1]));
+    const double aThreshold = THE_TRIDIAGONAL_DEFLATION_TOLERANCE * aDiagScale;
+    if (std::abs(theSubdiag[aEnd]) <= aThreshold)
     {
       break;
     }
@@ -71,23 +72,22 @@ inline int FindSubmatrixEnd(const math_Vector& theDiag,
 //! Computes Wilkinson's shift for accelerated convergence.
 inline double ComputeWilkinsonShift(const math_Vector& theDiag,
                                     const math_Vector& theSubdiag,
-                                    int                theStart,
-                                    int                theEnd)
+                                    size_t             theStart,
+                                    size_t             theEnd)
 {
-  const int aLower = theDiag.Lower();
-  double    aShift = (theDiag(theStart + 1 + aLower - 1) - theDiag(theStart + aLower - 1))
-                  / (2.0 * theSubdiag(theStart + aLower - 1));
-  const double aRadius = Hypot(1.0, aShift);
+  double aShift = (theDiag[theStart + 1] - theDiag[theStart])
+                  / (2.0 * theSubdiag[theStart]);
+  const double aRadius = std::hypot(1.0, aShift);
 
   if (aShift < 0.0)
   {
-    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1)
-             + theSubdiag(theStart + aLower - 1) / (aShift - aRadius);
+    aShift = theDiag[theEnd] - theDiag[theStart]
+             + theSubdiag[theStart] / (aShift - aRadius);
   }
   else
   {
-    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1)
-             + theSubdiag(theStart + aLower - 1) / (aShift + aRadius);
+    aShift = theDiag[theEnd] - theDiag[theStart]
+             + theSubdiag[theStart] / (aShift + aRadius);
   }
   return aShift;
 }
@@ -96,69 +96,111 @@ inline double ComputeWilkinsonShift(const math_Vector& theDiag,
 inline bool PerformQLStep(math_Vector& theDiag,
                           math_Vector& theSubdiag,
                           math_Matrix& theEigenVec,
-                          int          theStart,
-                          int          theEnd,
+                          size_t       theStart,
+                          size_t       theEnd,
                           double       theShift,
-                          int          theN)
+                          size_t       theN)
 {
-  const int aLowerD = theDiag.Lower();
-  const int aLowerV = theEigenVec.LowerRow();
-
   double aSine     = 1.0;
   double aCosine   = 1.0;
   double aPrevDiag = 0.0;
   double aShift    = theShift;
   double aRadius   = 0.0;
 
-  int aRowIdx;
-  for (aRowIdx = theEnd - 1; aRowIdx >= theStart; --aRowIdx)
+  for (size_t aRowIdx = theEnd; aRowIdx-- > theStart;)
   {
-    const double aTempVal                 = aSine * theSubdiag(aRowIdx + aLowerD - 1);
-    const double aSubdiagTemp             = aCosine * theSubdiag(aRowIdx + aLowerD - 1);
-    aRadius                               = Hypot(aTempVal, aShift);
-    theSubdiag(aRowIdx + 1 + aLowerD - 1) = aRadius;
+    const double aTempVal     = aSine * theSubdiag[aRowIdx];
+    const double aSubdiagTemp = aCosine * theSubdiag[aRowIdx];
+    aRadius                   = std::hypot(aTempVal, aShift);
+    theSubdiag[aRowIdx + 1]   = aRadius;
 
     if (aRadius == 0.0)
     {
-      theDiag(aRowIdx + 1 + aLowerD - 1) -= aPrevDiag;
-      theSubdiag(theEnd + aLowerD - 1) = 0.0;
-      break;
+      theDiag[aRowIdx + 1] -= aPrevDiag;
+      theSubdiag[theEnd] = 0.0;
+      return true;
     }
 
     aSine   = aTempVal / aRadius;
     aCosine = aShift / aRadius;
-    aShift  = theDiag(aRowIdx + 1 + aLowerD - 1) - aPrevDiag;
+    aShift  = theDiag[aRowIdx + 1] - aPrevDiag;
 
     const double aRadiusTemp =
-      (theDiag(aRowIdx + aLowerD - 1) - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
-    aPrevDiag                          = aSine * aRadiusTemp;
-    theDiag(aRowIdx + 1 + aLowerD - 1) = aShift + aPrevDiag;
-    aShift                             = aCosine * aRadiusTemp - aSubdiagTemp;
+      (theDiag[aRowIdx] - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
+    aPrevDiag              = aSine * aRadiusTemp;
+    theDiag[aRowIdx + 1]   = aShift + aPrevDiag;
+    aShift                 = aCosine * aRadiusTemp - aSubdiagTemp;
 
     // Update eigenvector matrix
-    for (int aVecIdx = 1; aVecIdx <= theN; ++aVecIdx)
+    for (size_t aVecIdx = 0; aVecIdx < theN; ++aVecIdx)
     {
-      const double aTempVec = theEigenVec(aVecIdx + aLowerV - 1, aRowIdx + 1 + aLowerV - 1);
-      theEigenVec(aVecIdx + aLowerV - 1, aRowIdx + 1 + aLowerV - 1) =
-        aSine * theEigenVec(aVecIdx + aLowerV - 1, aRowIdx + aLowerV - 1) + aCosine * aTempVec;
-      theEigenVec(aVecIdx + aLowerV - 1, aRowIdx + aLowerV - 1) =
-        aCosine * theEigenVec(aVecIdx + aLowerV - 1, aRowIdx + aLowerV - 1) - aSine * aTempVec;
+      const double aTempVec = theEigenVec.At(aVecIdx, aRowIdx + 1);
+      theEigenVec.ChangeAt(aVecIdx, aRowIdx + 1) =
+        aSine * theEigenVec.At(aVecIdx, aRowIdx) + aCosine * aTempVec;
+      theEigenVec.ChangeAt(aVecIdx, aRowIdx) =
+        aCosine * theEigenVec.At(aVecIdx, aRowIdx) - aSine * aTempVec;
     }
   }
 
-  if (aRadius == 0.0 && aRowIdx >= 1)
-  {
-    return true;
-  }
-
-  theDiag(theStart + aLowerD - 1) -= aPrevDiag;
-  theSubdiag(theStart + aLowerD - 1) = aShift;
-  theSubdiag(theEnd + aLowerD - 1)   = 0.0;
+  theDiag[theStart] -= aPrevDiag;
+  theSubdiag[theStart] = aShift;
+  theSubdiag[theEnd]   = 0.0;
 
   return true;
 }
 
-} // namespace Internal
+//! Checks T*v = lambda*v without using overflow-prone unscaled matrix products.
+inline bool ValidateEigenpairs(const math_Vector& theOriginalDiag,
+                               const math_Vector& theOriginalSubdiag,
+                               const math_Vector& theEigenValues,
+                               const math_Matrix& theEigenVectors)
+{
+  const size_t aN = theOriginalDiag.Size();
+  double       aMatrixScale = 0.0;
+  for (size_t i = 0; i < aN; ++i)
+  {
+    aMatrixScale = std::max(aMatrixScale, std::abs(theOriginalDiag[i]));
+    if (i + 1 < aN)
+    {
+      aMatrixScale = std::max(aMatrixScale, std::abs(theOriginalSubdiag[i]));
+    }
+  }
+  if (aMatrixScale == 0.0)
+  {
+    return true;
+  }
+
+  const double aDimensionFactor = static_cast<double>(std::max<size_t>(1, aN));
+  for (size_t j = 0; j < aN; ++j)
+  {
+    const double aScaledEigenValue = theEigenValues[j] / aMatrixScale;
+    const double aTolerance = THE_TRIDIAGONAL_RESIDUAL_TOLERANCE_FACTOR
+                              * std::numeric_limits<double>::epsilon() * aDimensionFactor
+                              * std::max(1.0, std::abs(aScaledEigenValue));
+    for (size_t i = 0; i < aN; ++i)
+    {
+      double aResidual = theOriginalDiag[i] / aMatrixScale * theEigenVectors.At(i, j)
+                         - aScaledEigenValue * theEigenVectors.At(i, j);
+      if (i > 0)
+      {
+        aResidual += theOriginalSubdiag[i - 1] / aMatrixScale
+                     * theEigenVectors.At(i - 1, j);
+      }
+      if (i + 1 < aN)
+      {
+        aResidual += theOriginalSubdiag[i] / aMatrixScale
+                     * theEigenVectors.At(i + 1, j);
+      }
+      if (!std::isfinite(aResidual) || std::abs(aResidual) > aTolerance)
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+} // namespace Utils
 
 //! Eigenvalue decomposition of symmetric tridiagonal matrix using QL algorithm.
 //!
@@ -171,17 +213,21 @@ inline bool PerformQLStep(math_Vector& theDiag,
 //! - Numerically stable with implicit shifts
 //!
 //! @param theDiagonal diagonal elements of the tridiagonal matrix
-//! @param theSubdiagonal subdiagonal elements (one less than diagonal)
+//! @param theSubdiagonal N-1 subdiagonal elements. An N-element legacy vector with an ignored
+//! leading element is also accepted for integration with math_EigenValuesSearcher callers.
 //! @param theMaxIterations maximum iterations per eigenvalue (default 30)
 //! @return EigenResult containing eigenvalues and eigenvector matrix
 inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
                                     const math_Vector& theSubdiagonal,
-                                    int                theMaxIterations = 30)
+                                     uint32_t           theMaxIterations = 30)
 {
   EigenResult aResult;
 
-  const int aN = theDiagonal.Length();
-  if (theSubdiagonal.Length() != aN)
+  const size_t aN = theDiagonal.Size();
+  const bool hasNaturalSubdiagonal = aN > 0 && theSubdiagonal.Size() == aN - 1;
+  const bool hasLegacySubdiagonal  = theSubdiagonal.Size() == aN;
+  if ((!hasNaturalSubdiagonal && !hasLegacySubdiagonal) || aN == 0 || theMaxIterations == 0
+      || !Utils::IsFinite(theDiagonal) || !Utils::IsFinite(theSubdiagonal))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -190,47 +236,49 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
   aResult.Dimension = aN;
 
   // Create working copies
-  math_Vector aDiag(1, aN);
-  math_Vector aSubdiag(1, aN);
+  math_Vector aDiag(aN);
+  math_Vector aSubdiag(aN);
 
   // Copy diagonal
-  for (int i = 1; i <= aN; ++i)
+  for (size_t i = 0; i < aN; ++i)
   {
-    aDiag(i) = theDiagonal(theDiagonal.Lower() + i - 1);
+    aDiag[i] = theDiagonal.At(i);
   }
 
-  // Shift subdiagonal: e[i-1] = e[i] for QL algorithm
-  for (int i = 2; i <= aN; ++i)
+  for (size_t i = 0; i + 1 < aN; ++i)
   {
-    aSubdiag(i - 1) = theSubdiagonal(theSubdiagonal.Lower() + i - 1);
+    aSubdiag[i] = theSubdiagonal.At(hasNaturalSubdiagonal ? i : i + 1);
   }
-  aSubdiag(aN) = 0.0;
+  aSubdiag[aN - 1] = 0.0;
+  const math_Vector anOriginalDiag    = aDiag;
+  const math_Vector anOriginalSubdiag = aSubdiag;
 
   // Initialize eigenvector matrix as identity
-  math_Matrix aEigenVec(1, aN, 1, aN, 0.0);
-  for (int i = 1; i <= aN; ++i)
+  math_Matrix aEigenVec(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aEigenVec(i, i) = 1.0;
+    aEigenVec.ChangeAt(i, i) = 1.0;
   }
 
   // Special case: 1x1 matrix
   if (aN == 1)
   {
-    aResult.EigenValues  = aDiag;
-    aResult.EigenVectors = aEigenVec;
+    aResult.EigenValues = math_Vector(size_t{1});
+    (*aResult.EigenValues)[0] = aDiag[0];
+    aResult.EigenVectors = math_Matrix(size_t{1}, size_t{1}, 1.0);
     aResult.Status       = Status::OK;
     return aResult;
   }
 
   // QL Algorithm with implicit shifts
-  for (int aStart = 1; aStart <= aN; ++aStart)
+  for (size_t aStart = 0; aStart < aN; ++aStart)
   {
-    int aIterCount = 0;
-    int aEnd;
+    uint32_t aIterCount = 0;
+    size_t aEnd;
 
     do
     {
-      aEnd = Internal::FindSubmatrixEnd(aDiag, aSubdiag, aStart, aN);
+      aEnd = Utils::FindSubmatrixEnd(aDiag, aSubdiag, aStart, aN);
 
       if (aEnd != aStart)
       {
@@ -240,44 +288,59 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
           return aResult;
         }
 
-        const double aShift = Internal::ComputeWilkinsonShift(aDiag, aSubdiag, aStart, aEnd);
+        const double aShift = Utils::ComputeWilkinsonShift(aDiag, aSubdiag, aStart, aEnd);
 
-        if (!Internal::PerformQLStep(aDiag, aSubdiag, aEigenVec, aStart, aEnd, aShift, aN))
+        if (!std::isfinite(aShift)
+            || !Utils::PerformQLStep(aDiag, aSubdiag, aEigenVec, aStart, aEnd, aShift, aN)
+            || !Utils::IsFinite(aDiag) || !Utils::IsFinite(aSubdiag)
+            || !Utils::IsFinite(aEigenVec))
         {
-          aResult.Status = Status::NotConverged;
+          aResult.Status = Status::NumericalError;
           return aResult;
         }
       }
     } while (aEnd != aStart);
   }
 
-  aResult.EigenValues  = aDiag;
-  aResult.EigenVectors = aEigenVec;
-  aResult.Status       = Status::OK;
+  aResult.EigenValues = math_Vector(aN);
+  aResult.EigenVectors = math_Matrix(aN, aN);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    (*aResult.EigenValues)[i] = aDiag[i];
+    for (size_t j = 0; j < aN; ++j)
+    {
+      aResult.EigenVectors->ChangeAt(i, j) = aEigenVec.At(i, j);
+    }
+  }
+  aResult.Status = Utils::IsFinite(*aResult.EigenValues) && Utils::IsFinite(*aResult.EigenVectors)
+                           && Utils::ValidateEigenpairs(anOriginalDiag,
+                                                        anOriginalSubdiag,
+                                                        *aResult.EigenValues,
+                                                        *aResult.EigenVectors)
+                     ? Status::OK
+                     : Status::NumericalError;
   return aResult;
 }
 
 //! Get a single eigenvector from the result.
 //!
 //! @param theResult eigenvalue decomposition result
-//! @param theIndex 1-based index of eigenvector
+//! @param theIndex zero-based index of eigenvector
 //! @return eigenvector as math_Vector
-inline math_Vector GetEigenVector(const EigenResult& theResult, int theIndex)
+inline math_Vector GetEigenVector(const EigenResult& theResult, size_t theIndex)
 {
   if (!theResult.EigenVectors.has_value())
   {
-    return math_Vector(1, 1);
+    return math_Vector(size_t{1});
   }
 
-  const math_Matrix& aVecs   = *theResult.EigenVectors;
-  const int          aN      = aVecs.RowNumber();
-  const int          aLowerR = aVecs.LowerRow();
-  const int          aLowerC = aVecs.LowerCol();
+  const math_Matrix& aVecs = *theResult.EigenVectors;
+  const size_t       aN    = aVecs.RowSize();
 
-  math_Vector aVec(1, aN);
-  for (int i = 1; i <= aN; ++i)
+  math_Vector aVec(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aVec(i) = aVecs(i + aLowerR - 1, theIndex + aLowerC - 1);
+    aVec[i] = aVecs.At(i, theIndex);
   }
   return aVec;
 }

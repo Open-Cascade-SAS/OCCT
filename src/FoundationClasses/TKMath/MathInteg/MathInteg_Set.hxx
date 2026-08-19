@@ -20,17 +20,22 @@
 #include <MathUtils_GaussKronrodWeights.hxx>
 
 #include <cmath>
+#include <type_traits>
 
 namespace MathInteg
 {
 using namespace MathUtils;
+
+//! Largest order supported by vector-valued Gauss integration.
+constexpr size_t THE_SET_GAUSS_MAX_ORDER = 61;
 
 //! Result for vector function integration.
 struct SetResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> Values; //!< Integral of each component
-  int                        NbEquations = 0;
+  size_t                     NbEquations = 0;
+  size_t                     NbPoints    = 0; //!< Number of callback evaluations
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -48,7 +53,7 @@ struct SetResult
 //! is not implemented in the legacy API.
 //!
 //! @tparam Func function type with:
-//!   - int NbEquations() - number of output components
+//!   - integral NbEquations() - positive number of output components
 //!   - bool Value(const math_Vector& theX, math_Vector& theF)
 //! @param theFunc vector-valued function to integrate
 //! @param theLower lower bound
@@ -56,96 +61,129 @@ struct SetResult
 //! @param theOrder integration order (max 61)
 //! @return SetResult containing vector of integrals
 template <typename Func>
-SetResult GaussSet(Func& theFunc, double theLower, double theUpper, int theOrder)
+SetResult GaussSet(Func& theFunc, double theLower, double theUpper, size_t theOrder)
 {
   SetResult aResult;
 
-  // Get function dimensions
-  const int aNbEqua = theFunc.NbEquations();
-  if (aNbEqua <= 0)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower) || theOrder == 0
+      || theOrder > THE_SET_GAUSS_MAX_ORDER)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
+
+  // Get function dimensions
+  using NbEquationsType = decltype(theFunc.NbEquations());
+  static_assert(std::is_integral_v<NbEquationsType>, "NbEquations() must return an integral type");
+  const NbEquationsType aNbEquaValue = theFunc.NbEquations();
+  if constexpr (std::is_signed_v<NbEquationsType>)
+  {
+    if (aNbEquaValue <= 0)
+    {
+      aResult.Status = Status::InvalidInput;
+      return aResult;
+    }
+  }
+  else if (aNbEquaValue == 0)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  const size_t aNbEqua = static_cast<size_t>(aNbEquaValue);
 
   aResult.NbEquations = aNbEqua;
 
-  // Clamp order
-  int aOrder = std::min(theOrder, 61);
-  aOrder     = std::max(aOrder, 1);
-
   // Get Gauss points and weights
-  math_Vector aGP(1, aOrder);
-  math_Vector aGW(1, aOrder);
-  if (!GetOrderedGaussPointsAndWeights(aOrder, aGP, aGW))
+  math_Vector aPoints(theOrder);
+  math_Vector aWeights(theOrder);
+  if (!GetOrderedGaussPointsAndWeights(static_cast<int>(theOrder), aPoints, aWeights))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  math_Vector aPoints(0, aOrder - 1);
-  math_Vector aWeights(0, aOrder - 1);
-  for (int i = 0; i < aOrder; ++i)
-  {
-    aPoints(i)  = aGP(i + 1);
-    aWeights(i) = aGW(i + 1);
-  }
-
   // Coordinate transformation
-  const double aXm = 0.5 * (theLower + theUpper);
   const double aXr = 0.5 * (theUpper - theLower);
+  const double aXm = theLower + aXr;
 
   // Initialize result vector
-  math_Vector aVal(1, aNbEqua, 0.0);
-  math_Vector aTval(1, 1); // Input vector (1D)
-  math_Vector aFVal1(1, aNbEqua);
-  math_Vector aFVal2(1, aNbEqua);
+  math_Vector aVal(aNbEqua, 0.0);
+  math_Vector aTval(size_t{1}); // Input vector (1D)
+  math_Vector aFVal1(aNbEqua);
+  math_Vector aFVal2(aNbEqua);
 
-  const int aInd  = aOrder / 2;
-  const int aInd1 = (aOrder + 1) / 2;
+  const size_t aInd  = theOrder / 2;
+  const size_t aInd1 = (theOrder + 1) / 2;
 
   // Handle odd order case (middle point)
   if (aInd1 > aInd)
   {
-    aTval(1) = aXm;
+    aTval.ChangeAt(0) = aXm;
+    aVal.Init(0.0);
+    ++aResult.NbPoints;
     if (!theFunc.Value(aTval, aVal))
     {
-      aResult.Status = Status::NotConverged;
+      aResult.Status = Status::CallbackError;
       return aResult;
     }
-    for (int j = 1; j <= aNbEqua; ++j)
+    for (size_t j = 0; j < aNbEqua; ++j)
     {
-      aVal(j) *= aWeights(aInd1 - 1);
+      if (!std::isfinite(aVal.At(j)))
+      {
+        aResult.Status = Status::NumericalError;
+        return aResult;
+      }
+      aVal.ChangeAt(j) *= aWeights.At(aInd1 - 1);
     }
   }
 
   // Symmetric Gauss quadrature
-  for (int i = 0; i < aInd; ++i)
+  for (size_t i = 0; i < aInd; ++i)
   {
-    aTval(1) = aXm + aXr * aPoints(i);
+    aTval.ChangeAt(0) = aXm + aXr * aPoints.At(i);
+    aFVal1.Init(0.0);
+    ++aResult.NbPoints;
     if (!theFunc.Value(aTval, aFVal1))
     {
-      aResult.Status = Status::NotConverged;
+      aResult.Status = Status::CallbackError;
       return aResult;
     }
 
-    aTval(1) = aXm - aXr * aPoints(i);
+    aTval.ChangeAt(0) = aXm - aXr * aPoints.At(i);
+    aFVal2.Init(0.0);
+    ++aResult.NbPoints;
     if (!theFunc.Value(aTval, aFVal2))
     {
-      aResult.Status = Status::NotConverged;
+      aResult.Status = Status::CallbackError;
       return aResult;
     }
 
-    for (int j = 1; j <= aNbEqua; ++j)
+    for (size_t j = 0; j < aNbEqua; ++j)
     {
-      aVal(j) += (aFVal1(j) + aFVal2(j)) * aWeights(i);
+      if (!std::isfinite(aFVal1.At(j)) || !std::isfinite(aFVal2.At(j)))
+      {
+        aResult.Status = Status::NumericalError;
+        return aResult;
+      }
+      aVal.ChangeAt(j) += (aFVal1.At(j) + aFVal2.At(j)) * aWeights.At(i);
+      if (!std::isfinite(aVal.At(j)))
+      {
+        aResult.Status = Status::NumericalError;
+        return aResult;
+      }
     }
   }
 
   // Scale by half-width
-  for (int j = 1; j <= aNbEqua; ++j)
+  for (size_t j = 0; j < aNbEqua; ++j)
   {
-    aVal(j) *= aXr;
+    aVal.ChangeAt(j) *= aXr;
+    if (!std::isfinite(aVal.At(j)))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
   }
 
   aResult.Values = aVal;
@@ -167,9 +205,15 @@ template <typename Func>
 SetResult GaussSet(Func&              theFunc,
                    const math_Vector& theLower,
                    const math_Vector& theUpper,
-                   int                theOrder)
+                   size_t             theOrder)
 {
-  return GaussSet(theFunc, theLower(theLower.Lower()), theUpper(theUpper.Lower()), theOrder);
+  if (theLower.Size() < 1 || theUpper.Size() < 1)
+  {
+    SetResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  return GaussSet(theFunc, theLower.At(0), theUpper.At(0), theOrder);
 }
 
 } // namespace MathInteg

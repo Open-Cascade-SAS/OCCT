@@ -18,6 +18,7 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_LineSearch.hxx>
+#include "MathOpt_Utils.hxx"
 
 #include <cmath>
 
@@ -55,38 +56,45 @@ VectorResult Powell(Function&          theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const size_t aN = theStartingPoint.Size();
+
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   // Current point
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
+  math_Vector aX(aN);
+  for (size_t anIdx = 0; anIdx < aN; ++anIdx)
+  {
+    aX.ChangeAt(anIdx) = theStartingPoint.At(anIdx);
+  }
 
   // Function value at current point
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
   // Initialize direction set to coordinate axes
   // Directions stored as rows of matrix
-  math_Matrix aDirections(1, aN, 1, aN, 0.0);
-  for (int i = 1; i <= aN; ++i)
+  math_Matrix aDirections(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aDirections(i, i) = 1.0;
+    aDirections.ChangeAt(i, i) = 1.0;
   }
 
   // Working vectors
-  math_Vector aDir(aLower, aUpper);
-  math_Vector aXOld(aLower, aUpper);
-  math_Vector aPt(aLower, aUpper);
-  math_Vector aPtt(aLower, aUpper);
-  math_Vector aXit(aLower, aUpper);
+  math_Vector aDir(aN);
+  math_Vector aXOld(aN);
+  math_Vector aPtt(aN);
+  math_Vector aXit(aN);
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
@@ -95,29 +103,42 @@ VectorResult Powell(Function&          theFunc,
 
     // Track largest decrease and its direction index
     double aDel  = 0.0;
-    int    aIBig = 0;
+    size_t aIBig = 0;
 
     // Minimize along each direction
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
       // Extract direction i
-      for (int j = aLower; j <= aUpper; ++j)
+      for (size_t j = 0; j < aN; ++j)
       {
-        aDir(j) = aDirections(i, j - aLower + 1);
+        aDir.ChangeAt(j) = aDirections.At(i, j);
       }
 
       const double aFpPrev = aFx;
 
       // Line minimization along direction
       MathUtils::LineSearchResult aLineResult =
-        MathUtils::ExactLineSearch(theFunc, aX, aDir, 10.0, theConfig.XTolerance);
+        MathUtils::ExactLineSearch(theFunc,
+                                   aX,
+                                   aDir,
+                                   MathUtils::THE_EXACT_LINE_SEARCH_ALPHA_MAX,
+                                   theConfig.XTolerance);
 
-      if (aLineResult.IsValid)
+      if (!aLineResult.IsValid && Utils::IsLineSearchEvaluationError(aLineResult))
+      {
+        aResult.Status   = aLineResult.Status;
+        aResult.Solution = aX;
+        aResult.Value    = aFx;
+        return aResult;
+      }
+
+      if (aLineResult.IsValid && std::isfinite(aLineResult.Alpha) && std::isfinite(aLineResult.FNew)
+          && aLineResult.FNew <= aFx)
       {
         // Update position
-        for (int j = aLower; j <= aUpper; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aX(j) += aLineResult.Alpha * aDir(j);
+          aX.ChangeAt(j) += aLineResult.Alpha * aDir.At(j);
         }
         aFx = aLineResult.FNew;
 
@@ -126,7 +147,7 @@ VectorResult Powell(Function&          theFunc,
         if (aDecrease > aDel)
         {
           aDel  = aDecrease;
-          aIBig = i;
+          aIBig = i + 1;
         }
       }
     }
@@ -135,25 +156,32 @@ VectorResult Powell(Function&          theFunc,
     if (2.0 * std::abs(aFp - aFx)
         <= theConfig.FTolerance * (std::abs(aFp) + std::abs(aFx) + MathUtils::THE_ZERO_TOL))
     {
-      aResult.Status   = Status::OK;
+      Status anEvaluationStatus = Status::OK;
+      aResult.Status =
+        Utils::IsStationary(theFunc, aX, aFx, theConfig, anEvaluationStatus)
+          ? Status::OK
+          : (anEvaluationStatus != Status::OK ? anEvaluationStatus : Status::NotConverged);
       aResult.Solution = aX;
       aResult.Value    = aFx;
       return aResult;
     }
 
     // Construct extrapolated point and new direction
-    for (int j = aLower; j <= aUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aPtt(j) = 2.0 * aX(j) - aXOld(j);
-      aXit(j) = aX(j) - aXOld(j);
+      aPtt.ChangeAt(j) = 2.0 * aX.At(j) - aXOld.At(j);
+      aXit.ChangeAt(j) = aX.At(j) - aXOld.At(j);
     }
 
     // Evaluate at extrapolated point
-    double aFptt = 0.0;
-    if (!theFunc.Value(aPtt, aFptt))
+    double       aFptt      = 0.0;
+    const Status aPttStatus = Utils::ValueStatus(theFunc, aPtt, aFptt);
+    if (aPttStatus != Status::OK)
     {
-      // If evaluation fails, continue with current directions
-      continue;
+      aResult.Status   = aPttStatus;
+      aResult.Solution = aX;
+      aResult.Value    = aFx;
+      return aResult;
     }
 
     // Check if new direction should be added
@@ -166,24 +194,37 @@ VectorResult Powell(Function&          theFunc,
       {
         // Minimize along new direction
         MathUtils::LineSearchResult aLineResult =
-          MathUtils::ExactLineSearch(theFunc, aX, aXit, 10.0, theConfig.XTolerance);
+          MathUtils::ExactLineSearch(theFunc,
+                                     aX,
+                                     aXit,
+                                     MathUtils::THE_EXACT_LINE_SEARCH_ALPHA_MAX,
+                                     theConfig.XTolerance);
 
-        if (aLineResult.IsValid)
+        if (!aLineResult.IsValid && Utils::IsLineSearchEvaluationError(aLineResult))
+        {
+          aResult.Status   = aLineResult.Status;
+          aResult.Solution = aX;
+          aResult.Value    = aFx;
+          return aResult;
+        }
+
+        if (aLineResult.IsValid && std::isfinite(aLineResult.Alpha)
+            && std::isfinite(aLineResult.FNew) && aLineResult.FNew <= aFx)
         {
           // Update position
-          for (int j = aLower; j <= aUpper; ++j)
+          for (size_t j = 0; j < aN; ++j)
           {
-            aX(j) += aLineResult.Alpha * aXit(j);
+            aX.ChangeAt(j) += aLineResult.Alpha * aXit.At(j);
           }
           aFx = aLineResult.FNew;
 
           // Replace direction with largest decrease
           if (aIBig > 0)
           {
-            for (int j = 1; j <= aN; ++j)
+            for (size_t j = 0; j < aN; ++j)
             {
-              aDirections(aIBig, j) = aDirections(aN, j);
-              aDirections(aN, j)    = aXit(aLower + j - 1);
+              aDirections.ChangeAt(aIBig - 1, j) = aDirections.At(aN - 1, j);
+              aDirections.ChangeAt(aN - 1, j)    = aXit.At(j);
             }
           }
         }
@@ -192,13 +233,17 @@ VectorResult Powell(Function&          theFunc,
 
     // Check X convergence
     double aMaxDiff = 0.0;
-    for (int j = aLower; j <= aUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aX(j) - aXOld(j)));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aX.At(j) - aXOld.At(j)));
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status   = Status::OK;
+      Status anEvaluationStatus = Status::OK;
+      aResult.Status =
+        Utils::IsStationary(theFunc, aX, aFx, theConfig, anEvaluationStatus)
+          ? Status::OK
+          : (anEvaluationStatus != Status::OK ? anEvaluationStatus : Status::NotConverged);
       aResult.Solution = aX;
       aResult.Value    = aFx;
       return aResult;
@@ -229,37 +274,47 @@ VectorResult PowellWithDirections(Function&          theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const size_t aN = theStartingPoint.Size();
 
   // Validate dimensions
-  if (theInitialDirections.RowNumber() != aN || theInitialDirections.ColNumber() != aN)
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint)
+      || theInitialDirections.RowSize() != aN || theInitialDirections.ColSize() != aN
+      || !Utils::IsFinite(theInitialDirections))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
-
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  math_Vector aX(aN);
+  for (size_t anIdx = 0; anIdx < aN; ++anIdx)
   {
-    aResult.Status = Status::NumericalError;
+    aX.ChangeAt(anIdx) = theStartingPoint.At(anIdx);
+  }
+
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
+  {
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
   // Copy initial directions
-  math_Matrix aDirections(1, aN, 1, aN);
-  aDirections = theInitialDirections;
+  math_Matrix aDirections(aN, aN);
+  for (size_t aRow = 0; aRow < aN; ++aRow)
+  {
+    for (size_t aCol = 0; aCol < aN; ++aCol)
+    {
+      aDirections.ChangeAt(aRow, aCol) = theInitialDirections.At(aRow, aCol);
+    }
+  }
 
-  math_Vector aDir(aLower, aUpper);
-  math_Vector aXOld(aLower, aUpper);
-  math_Vector aPtt(aLower, aUpper);
-  math_Vector aXit(aLower, aUpper);
+  math_Vector aDir(aN);
+  math_Vector aXOld(aN);
+  math_Vector aPtt(aN);
+  math_Vector aXit(aN);
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
@@ -267,25 +322,38 @@ VectorResult PowellWithDirections(Function&          theFunc,
     aXOld            = aX;
 
     double aDel  = 0.0;
-    int    aIBig = 0;
+    size_t aIBig = 0;
 
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      for (int j = aLower; j <= aUpper; ++j)
+      for (size_t j = 0; j < aN; ++j)
       {
-        aDir(j) = aDirections(i, j - aLower + 1);
+        aDir.ChangeAt(j) = aDirections.At(i, j);
       }
 
       const double aFpPrev = aFx;
 
       MathUtils::LineSearchResult aLineResult =
-        MathUtils::ExactLineSearch(theFunc, aX, aDir, 10.0, theConfig.XTolerance);
+        MathUtils::ExactLineSearch(theFunc,
+                                   aX,
+                                   aDir,
+                                   MathUtils::THE_EXACT_LINE_SEARCH_ALPHA_MAX,
+                                   theConfig.XTolerance);
 
-      if (aLineResult.IsValid)
+      if (!aLineResult.IsValid && Utils::IsLineSearchEvaluationError(aLineResult))
       {
-        for (int j = aLower; j <= aUpper; ++j)
+        aResult.Status   = aLineResult.Status;
+        aResult.Solution = aX;
+        aResult.Value    = aFx;
+        return aResult;
+      }
+
+      if (aLineResult.IsValid && std::isfinite(aLineResult.Alpha) && std::isfinite(aLineResult.FNew)
+          && aLineResult.FNew <= aFx)
+      {
+        for (size_t j = 0; j < aN; ++j)
         {
-          aX(j) += aLineResult.Alpha * aDir(j);
+          aX.ChangeAt(j) += aLineResult.Alpha * aDir.At(j);
         }
         aFx = aLineResult.FNew;
 
@@ -293,7 +361,7 @@ VectorResult PowellWithDirections(Function&          theFunc,
         if (aDecrease > aDel)
         {
           aDel  = aDecrease;
-          aIBig = i;
+          aIBig = i + 1;
         }
       }
     }
@@ -302,23 +370,31 @@ VectorResult PowellWithDirections(Function&          theFunc,
     if (2.0 * std::abs(aFp - aFx)
         <= theConfig.FTolerance * (std::abs(aFp) + std::abs(aFx) + MathUtils::THE_ZERO_TOL))
     {
-      aResult.Status   = Status::OK;
+      Status anEvaluationStatus = Status::OK;
+      aResult.Status =
+        Utils::IsStationary(theFunc, aX, aFx, theConfig, anEvaluationStatus)
+          ? Status::OK
+          : (anEvaluationStatus != Status::OK ? anEvaluationStatus : Status::NotConverged);
       aResult.Solution = aX;
       aResult.Value    = aFx;
       return aResult;
     }
 
     // Construct extrapolated point
-    for (int j = aLower; j <= aUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aPtt(j) = 2.0 * aX(j) - aXOld(j);
-      aXit(j) = aX(j) - aXOld(j);
+      aPtt.ChangeAt(j) = 2.0 * aX.At(j) - aXOld.At(j);
+      aXit.ChangeAt(j) = aX.At(j) - aXOld.At(j);
     }
 
-    double aFptt = 0.0;
-    if (!theFunc.Value(aPtt, aFptt))
+    double       aFptt      = 0.0;
+    const Status aPttStatus = Utils::ValueStatus(theFunc, aPtt, aFptt);
+    if (aPttStatus != Status::OK)
     {
-      continue;
+      aResult.Status   = aPttStatus;
+      aResult.Solution = aX;
+      aResult.Value    = aFx;
+      return aResult;
     }
 
     if (aFptt < aFp)
@@ -329,22 +405,35 @@ VectorResult PowellWithDirections(Function&          theFunc,
       if (aT < 0.0)
       {
         MathUtils::LineSearchResult aLineResult =
-          MathUtils::ExactLineSearch(theFunc, aX, aXit, 10.0, theConfig.XTolerance);
+          MathUtils::ExactLineSearch(theFunc,
+                                     aX,
+                                     aXit,
+                                     MathUtils::THE_EXACT_LINE_SEARCH_ALPHA_MAX,
+                                     theConfig.XTolerance);
 
-        if (aLineResult.IsValid)
+        if (!aLineResult.IsValid && Utils::IsLineSearchEvaluationError(aLineResult))
         {
-          for (int j = aLower; j <= aUpper; ++j)
+          aResult.Status   = aLineResult.Status;
+          aResult.Solution = aX;
+          aResult.Value    = aFx;
+          return aResult;
+        }
+
+        if (aLineResult.IsValid && std::isfinite(aLineResult.Alpha)
+            && std::isfinite(aLineResult.FNew) && aLineResult.FNew <= aFx)
+        {
+          for (size_t j = 0; j < aN; ++j)
           {
-            aX(j) += aLineResult.Alpha * aXit(j);
+            aX.ChangeAt(j) += aLineResult.Alpha * aXit.At(j);
           }
           aFx = aLineResult.FNew;
 
           if (aIBig > 0)
           {
-            for (int j = 1; j <= aN; ++j)
+            for (size_t j = 0; j < aN; ++j)
             {
-              aDirections(aIBig, j) = aDirections(aN, j);
-              aDirections(aN, j)    = aXit(aLower + j - 1);
+              aDirections.ChangeAt(aIBig - 1, j) = aDirections.At(aN - 1, j);
+              aDirections.ChangeAt(aN - 1, j)    = aXit.At(j);
             }
           }
         }
@@ -352,13 +441,17 @@ VectorResult PowellWithDirections(Function&          theFunc,
     }
 
     double aMaxDiff = 0.0;
-    for (int j = aLower; j <= aUpper; ++j)
+    for (size_t j = 0; j < aN; ++j)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aX(j) - aXOld(j)));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aX.At(j) - aXOld.At(j)));
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status   = Status::OK;
+      Status anEvaluationStatus = Status::OK;
+      aResult.Status =
+        Utils::IsStationary(theFunc, aX, aFx, theConfig, anEvaluationStatus)
+          ? Status::OK
+          : (anEvaluationStatus != Status::OK ? anEvaluationStatus : Status::NotConverged);
       aResult.Solution = aX;
       aResult.Value    = aFx;
       return aResult;

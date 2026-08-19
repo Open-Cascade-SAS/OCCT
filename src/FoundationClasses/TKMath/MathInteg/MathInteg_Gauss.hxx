@@ -19,13 +19,19 @@
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Gauss.hxx>
 
+#include <NCollection_LinearVector.hxx>
+
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 //! Numerical integration algorithms.
 namespace MathInteg
 {
 using namespace MathUtils;
+
+//! Largest order supported by the Gauss-Legendre weight generator.
+constexpr size_t THE_GAUSS_MAX_ORDER = 61;
 
 //! Gauss-Legendre quadrature for definite integrals.
 //! Computes integral of f(x) from theLower to theUpper using n-point Gauss-Legendre rule.
@@ -44,20 +50,31 @@ using namespace MathUtils;
 //! @param theNbPoints number of quadrature points (>= 1)
 //! @return result containing integral value
 template <typename Function>
-IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNbPoints = 15)
+IntegResult Gauss(Function& theFunc, double theLower, double theUpper, size_t theNbPoints = 15)
 {
   IntegResult aResult;
-  if (theNbPoints < 1)
+  if (theNbPoints == 0 || theNbPoints > THE_GAUSS_MAX_ORDER || !std::isfinite(theLower)
+      || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
+  if (theLower > theUpper)
+  {
+    aResult = Gauss(theFunc, theUpper, theLower, theNbPoints);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
 
   // Get quadrature points and weights
-  math_Vector aPoints(1, theNbPoints);
-  math_Vector aWeights(1, theNbPoints);
+  math_Vector aPoints(theNbPoints);
+  math_Vector aWeights(theNbPoints);
 
-  if (!MathUtils::GetGaussPointsAndWeights(theNbPoints, aPoints, aWeights))
+  if (!MathUtils::GetGaussPointsAndWeights(static_cast<int>(theNbPoints), aPoints, aWeights))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -65,24 +82,46 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
 
   // Transform from [-1, 1] to [theLower, theUpper]
   const double aHalfLen = 0.5 * (theUpper - theLower);
-  const double aMid     = 0.5 * (theUpper + theLower);
+  const double aMid     = theLower + aHalfLen;
 
   double aSum = 0.0;
-  for (int i = 1; i <= theNbPoints; ++i)
+  for (size_t i = 0; i < theNbPoints; ++i)
   {
-    const double aX = aMid + aHalfLen * aPoints(i);
+    const double aX = aMid + aHalfLen * aPoints.At(i);
     double       aF = 0.0;
-    if (!theFunc.Value(aX, aF))
+    ++aResult.NbPoints;
+    if (!std::isfinite(aX))
     {
       aResult.Status = Status::NumericalError;
       return aResult;
     }
-    aSum += aWeights(i) * aF;
+    if (!theFunc.Value(aX, aF))
+    {
+      aResult.Status = Status::CallbackError;
+      return aResult;
+    }
+    if (!std::isfinite(aF))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+    aSum += aWeights.At(i) * aF;
+    if (!std::isfinite(aSum))
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+  }
+
+  const double aValue = aHalfLen * aSum;
+  if (!std::isfinite(aValue))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
   }
 
   aResult.Status       = Status::OK;
-  aResult.Value        = aHalfLen * aSum;
-  aResult.NbPoints     = theNbPoints;
+  aResult.Value        = aValue;
   aResult.NbIterations = 1;
   return aResult;
 }
@@ -109,15 +148,29 @@ IntegResult GaussAdaptive(Function&          theFunc,
 {
   IntegResult aResult;
 
-  if (theConfig.InitialOrder < 1 || theConfig.MaxOrder < theConfig.InitialOrder
-      || theConfig.MaxOrder > 61 || theConfig.MaxIterations < 1)
+  if (!std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower) || !std::isfinite(theConfig.Tolerance)
+      || theConfig.Tolerance <= 0.0 || theConfig.InitialOrder < 1
+      || theConfig.MaxOrder < theConfig.InitialOrder || theConfig.MaxOrder < 2
+      || theConfig.MaxOrder > THE_GAUSS_MAX_ORDER || theConfig.MaxIterations < 1)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
+  if (theLower > theUpper)
+  {
+    aResult = GaussAdaptive(theFunc, theUpper, theLower, theConfig);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
+    return aResult;
+  }
 
-  int aCoarseOrder = theConfig.InitialOrder;
-  int aFineOrder   = std::min(theConfig.MaxOrder, std::min(61, 2 * aCoarseOrder));
+  uint32_t aCoarseOrder = theConfig.InitialOrder;
+  uint32_t aFineOrder = std::min(theConfig.MaxOrder,
+                                 std::min(static_cast<uint32_t>(THE_GAUSS_MAX_ORDER),
+                                          2 * aCoarseOrder));
   if (aFineOrder == aCoarseOrder)
   {
     if (aCoarseOrder > 1)
@@ -130,74 +183,113 @@ IntegResult GaussAdaptive(Function&          theFunc,
     }
   }
 
-  // Compute with coarse and fine grids
-  IntegResult aCoarse = Gauss(theFunc, theLower, theUpper, aCoarseOrder);
-  if (!aCoarse.IsDone())
+  struct Interval
   {
-    return aCoarse;
-  }
+    double Lower;
+    double Upper;
+    double Value;
+    double Error;
+  };
 
-  IntegResult aFine = Gauss(theFunc, theLower, theUpper, aFineOrder);
-  if (!aFine.IsDone())
-  {
+  const auto anEvaluate = [&](double theA, double theB, Interval& theInterval) -> IntegResult {
+    IntegResult aCoarse = Gauss(theFunc, theA, theB, aCoarseOrder);
+    if (!aCoarse.IsDone())
+    {
+      return aCoarse;
+    }
+    IntegResult aFine = Gauss(theFunc, theA, theB, aFineOrder);
+    aFine.NbPoints += aCoarse.NbPoints;
+    if (!aFine.IsDone())
+    {
+      return aFine;
+    }
+    theInterval = {theA, theB, *aFine.Value, std::abs(*aFine.Value - *aCoarse.Value)};
     return aFine;
-  }
+  };
 
-  const double aError = std::abs(*aFine.Value - *aCoarse.Value);
-  const double aScale = std::max(std::abs(*aFine.Value), 1.0e-15);
-
-  // Check if converged
-  if (aError < theConfig.Tolerance * aScale)
+  Interval    anInitial;
+  IntegResult anInitialResult = anEvaluate(theLower, theUpper, anInitial);
+  if (!anInitialResult.IsDone())
   {
-    aResult.Status        = Status::OK;
-    aResult.Value         = *aFine.Value;
-    aResult.AbsoluteError = aError;
-    aResult.RelativeError = aError / aScale;
-    aResult.NbPoints      = static_cast<size_t>(aFineOrder);
-    aResult.NbIterations  = 1;
-    return aResult;
+    return anInitialResult;
   }
 
-  // Need to subdivide - check iteration limit
-  if (theConfig.MaxIterations <= 1)
+  NCollection_LinearVector<Interval> anIntervals;
+  anIntervals.Append(anInitial);
+  double   aTotalValue  = anInitial.Value;
+  double   aTotalError  = anInitial.Error;
+  size_t   aTotalPoints = anInitialResult.NbPoints;
+  uint32_t aWork        = 1;
+
+  const auto isConverged = [&](double theError, double theValue) {
+    const double anAbsValue = std::abs(theValue);
+    return anAbsValue > std::numeric_limits<double>::epsilon()
+             ? theError <= theConfig.Tolerance * anAbsValue
+             : theError <= theConfig.Tolerance;
+  };
+
+  while (!isConverged(aTotalError, aTotalValue))
   {
-    aResult.Status        = Status::MaxIterations;
-    aResult.Value         = *aFine.Value;
-    aResult.AbsoluteError = aError;
-    aResult.RelativeError = aError / aScale;
-    aResult.NbPoints      = static_cast<size_t>(aFineOrder);
-    aResult.NbIterations  = 1;
-    return aResult;
+    if (aWork >= theConfig.MaxIterations)
+    {
+      aResult.Status = Status::MaxIterations;
+      break;
+    }
+
+    size_t aWorstIndex = 0;
+    for (size_t i = 1; i < anIntervals.Size(); ++i)
+    {
+      if (anIntervals.Value(i).Error > anIntervals.Value(aWorstIndex).Error)
+      {
+        aWorstIndex = i;
+      }
+    }
+
+    const Interval aWorst = anIntervals.Value(aWorstIndex);
+    const double   aMid   = aWorst.Lower + 0.5 * (aWorst.Upper - aWorst.Lower);
+    if (!(aMid > aWorst.Lower && aMid < aWorst.Upper))
+    {
+      aResult.Status = Status::NotConverged;
+      break;
+    }
+
+    Interval    aLeft;
+    IntegResult aLeftResult = anEvaluate(aWorst.Lower, aMid, aLeft);
+    aTotalPoints += aLeftResult.NbPoints;
+    if (!aLeftResult.IsDone())
+    {
+      aResult.Status = aLeftResult.Status;
+      break;
+    }
+
+    Interval    aRight;
+    IntegResult aRightResult = anEvaluate(aMid, aWorst.Upper, aRight);
+    aTotalPoints += aRightResult.NbPoints;
+    if (!aRightResult.IsDone())
+    {
+      aResult.Status = aRightResult.Status;
+      break;
+    }
+
+    aTotalValue += aLeft.Value + aRight.Value - aWorst.Value;
+    aTotalError = std::max(0.0, aTotalError + aLeft.Error + aRight.Error - aWorst.Error);
+    anIntervals.ChangeValue(aWorstIndex) = aLeft;
+    anIntervals.Append(aRight);
+    ++aWork;
   }
 
-  // Subdivide interval
-  const double aMid = 0.5 * (theLower + theUpper);
-
-  IntegConfig aSubConfig   = theConfig;
-  aSubConfig.MaxIterations = theConfig.MaxIterations - 1;
-
-  IntegResult aLeft = GaussAdaptive(theFunc, theLower, aMid, aSubConfig);
-  if (!aLeft.IsDone())
+  if (aResult.Status == Status::NotConverged && isConverged(aTotalError, aTotalValue))
   {
-    aResult.Status = aLeft.Status;
-    aResult.Value  = aLeft.Value;
-    return aResult;
+    aResult.Status = Status::OK;
   }
-
-  IntegResult aRight = GaussAdaptive(theFunc, aMid, theUpper, aSubConfig);
-  if (!aRight.IsDone())
+  aResult.Value         = aTotalValue;
+  aResult.AbsoluteError = aTotalError;
+  if (std::abs(aTotalValue) > std::numeric_limits<double>::epsilon())
   {
-    aResult.Status = aRight.Status;
-    aResult.Value  = *aLeft.Value + (aRight.Value ? *aRight.Value : 0.0);
-    return aResult;
+    aResult.RelativeError = aTotalError / std::abs(aTotalValue);
   }
-
-  aResult.Status        = Status::OK;
-  aResult.Value         = *aLeft.Value + *aRight.Value;
-  aResult.AbsoluteError = *aLeft.AbsoluteError + *aRight.AbsoluteError;
-  aResult.RelativeError = *aResult.AbsoluteError / std::max(std::abs(*aResult.Value), 1.0e-15);
-  aResult.NbPoints      = aLeft.NbPoints + aRight.NbPoints;
-  aResult.NbIterations  = std::max(aLeft.NbIterations, aRight.NbIterations) + 1;
+  aResult.NbPoints      = aTotalPoints;
+  aResult.NbIterations  = aWork;
   return aResult;
 }
 
@@ -216,14 +308,25 @@ template <typename Function>
 IntegResult GaussComposite(Function& theFunc,
                            double    theLower,
                            double    theUpper,
-                           int       theNbIntervals,
-                           int       theNbPoints = 7)
+                           uint32_t  theNbIntervals,
+                           size_t    theNbPoints = 7)
 {
   IntegResult aResult;
 
-  if (theNbIntervals < 1)
+  if (theNbIntervals == 0 || theNbPoints == 0 || theNbPoints > THE_GAUSS_MAX_ORDER
+      || !std::isfinite(theLower) || !std::isfinite(theUpper) || theLower == theUpper
+      || !std::isfinite(theUpper - theLower))
   {
     aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  if (theLower > theUpper)
+  {
+    aResult = GaussComposite(theFunc, theUpper, theLower, theNbIntervals, theNbPoints);
+    if (aResult.Value)
+    {
+      *aResult.Value = -*aResult.Value;
+    }
     return aResult;
   }
 
@@ -231,7 +334,7 @@ IntegResult GaussComposite(Function& theFunc,
   double       aSum         = 0.0;
   size_t       aTotalPoints = 0;
 
-  for (int i = 0; i < theNbIntervals; ++i)
+  for (uint32_t i = 0; i < theNbIntervals; ++i)
   {
     const double aA = theLower + i * aH;
     const double aB = aA + aH;
@@ -239,9 +342,10 @@ IntegResult GaussComposite(Function& theFunc,
     IntegResult aSubResult = Gauss(theFunc, aA, aB, theNbPoints);
     if (!aSubResult.IsDone())
     {
-      aResult.Status   = aSubResult.Status;
-      aResult.Value    = aSum;
-      aResult.NbPoints = aTotalPoints;
+      aResult.Status       = aSubResult.Status;
+      aResult.Value        = aSum;
+      aResult.NbPoints     = aTotalPoints + aSubResult.NbPoints;
+      aResult.NbIterations = i + 1;
       return aResult;
     }
 
@@ -252,7 +356,7 @@ IntegResult GaussComposite(Function& theFunc,
   aResult.Status       = Status::OK;
   aResult.Value        = aSum;
   aResult.NbPoints     = aTotalPoints;
-  aResult.NbIterations = 1;
+  aResult.NbIterations = theNbIntervals;
   return aResult;
 }
 

@@ -35,9 +35,9 @@ struct SphereFunc
   bool Value(const math_Vector& theX, double& theF)
   {
     theF = 0.0;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theF += theX(i) * theX(i);
+      theF += theX.At(i) * theX.At(i);
     }
     return true;
   }
@@ -48,12 +48,12 @@ struct RastriginFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN  = theX.Length();
+    const size_t aN  = theX.Size();
     const double aPI = M_PI;
     theF             = 10.0 * aN;
-    for (int i = theX.Lower(); i <= theX.Upper(); ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      theF += theX(i) * theX(i) - 10.0 * std::cos(2.0 * aPI * theX(i));
+      theF += theX.At(i) * theX.At(i) - 10.0 * std::cos(2.0 * aPI * theX.At(i));
     }
     return true;
   }
@@ -64,8 +64,8 @@ struct RosenbrockFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX  = theX(1);
-    const double aY  = theX(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     const double aT1 = aY - aX * aX;
     const double aT2 = 1.0 - aX;
     theF             = 100.0 * aT1 * aT1 + aT2 * aT2;
@@ -78,13 +78,57 @@ struct BoothFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX  = theX(1);
-    const double aY  = theX(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     const double aT1 = aX + 2.0 * aY - 7.0;
     const double aT2 = 2.0 * aX + aY - 5.0;
     theF             = aT1 * aT1 + aT2 * aT2;
     return true;
   }
+};
+
+//! Box-local minimum at 0.25 and a lower unbounded minimum outside the box.
+struct OutsideMinimumFunc
+{
+  bool Value(const math_Vector& theX, double& theF)
+  {
+    const double aX = theX.At(0);
+    if (aX < 0.0 || aX > 1.0)
+    {
+      ++NbOutsideCalls;
+      const double anOutsideDelta = aX - 2.0;
+      theF                        = anOutsideDelta * anOutsideDelta - 1.0;
+      return true;
+    }
+    const double aDelta = aX - 0.25;
+    theF                = aDelta * aDelta;
+    return true;
+  }
+
+  int NbOutsideCalls = 0;
+};
+
+//! Objective with an implicit feasible half-box.
+struct PartiallyDefinedFunc
+{
+  bool Value(const math_Vector& theX, double& theF)
+  {
+    if (theX.At(0) < 0.0)
+    {
+      ++NbRejectedCalls;
+      return false;
+    }
+    const double aDelta = theX.At(0) - 0.25;
+    theF                = aDelta * aDelta;
+    return true;
+  }
+
+  int NbRejectedCalls = 0;
+};
+
+struct RejectAllFunc
+{
+  bool Value(const math_Vector&, double&) { return false; }
 };
 
 //! Himmelblau function - has 4 identical local minima
@@ -93,8 +137,8 @@ struct HimmelblauFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX  = theX(1);
-    const double aY  = theX(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     const double aT1 = aX * aX + aY - 11.0;
     const double aT2 = aX + aY * aY - 7.0;
     theF             = aT1 * aT1 + aT2 * aT2;
@@ -107,8 +151,8 @@ struct GoldsteinPriceFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const double aX = theX(1);
-    const double aY = theX(2);
+    const double aX = theX.At(0);
+    const double aY = theX.At(1);
 
     const double aA =
       1.0
@@ -160,8 +204,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_Sphere)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSO, 100);
   aConfig.NbPopulation = 40;
@@ -169,8 +213,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_Sphere)
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -178,8 +222,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_MultiStart_Sphere)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::MultiStart, 100);
   aConfig.NbStarts = 20;
@@ -187,8 +231,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_MultiStart_Sphere)
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -196,8 +240,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_Booth)
 {
   BoothFunc aFunc;
 
-  math_Vector aLower(1, 2, -10.0);
-  math_Vector aUpper(1, 2, 10.0);
+  math_Vector aLower(size_t{2}, -10.0);
+  math_Vector aUpper(size_t{2}, 10.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
   aConfig.NbPopulation = 40;
@@ -205,8 +249,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_Booth)
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -214,8 +258,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_DE_Sphere)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 100);
   aConfig.NbPopulation  = 40;
@@ -225,8 +269,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_DE_Sphere)
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -238,8 +282,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 100;
@@ -250,8 +294,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere)
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -259,8 +303,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rosenbrock)
 {
   RosenbrockFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 200;
@@ -271,8 +315,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rosenbrock)
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 0.1);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, 0.1);
   EXPECT_LT(*aResult.Value, 0.1);
 }
 
@@ -280,8 +324,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rastrigin)
 {
   RastriginFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.12);
-  math_Vector aUpper(1, 2, 5.12);
+  math_Vector aLower(size_t{2}, -5.12);
+  math_Vector aUpper(size_t{2}, 5.12);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 200;
@@ -293,9 +337,58 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rastrigin)
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find global minimum at origin
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 0.5);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 0.5);
   EXPECT_LT(*aResult.Value, 1.0);
+}
+
+TEST(MathOpt_GlobOptTest, DifferentialEvolutionRejectsInvalidCandidatesWithoutPoisoningBest)
+{
+  PartiallyDefinedFunc aFunc;
+  math_Vector          aLower(size_t{1}, -1.0);
+  math_Vector          anUpper(size_t{1}, 1.0);
+  MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 100);
+  aConfig.NbPopulation       = 20;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult =
+    MathOpt::DifferentialEvolution(aFunc, aLower, anUpper, aConfig);
+
+  EXPECT_GT(aFunc.NbRejectedCalls, 0);
+  EXPECT_NE(aResult.Status, MathUtils::Status::CallbackError);
+  EXPECT_NE(aResult.Status, MathUtils::Status::NumericalError);
+  ASSERT_TRUE(aResult.Solution.has_value());
+  ASSERT_TRUE(aResult.Value.has_value());
+}
+
+TEST(MathOpt_GlobOptTest, DifferentialEvolutionBudgetExhaustionRetainsBest)
+{
+  SphereFunc aFunc;
+  math_Vector aLower(size_t{1}, -1.0);
+  math_Vector anUpper(size_t{1}, 1.0);
+  MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 1);
+  aConfig.NbPopulation       = 4;
+  aConfig.Tolerance          = 1.0e-30;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult =
+    MathOpt::DifferentialEvolution(aFunc, aLower, anUpper, aConfig);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_TRUE(aResult.Solution.has_value());
+  EXPECT_TRUE(aResult.Value.has_value());
+}
+
+TEST(MathOpt_GlobOptTest, DifferentialEvolutionPreservesAllRejectedCallbackStatus)
+{
+  RejectAllFunc aFunc;
+  math_Vector   aLower(size_t{1}, -1.0);
+  math_Vector   anUpper(size_t{1}, 1.0);
+  MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 10);
+  aConfig.NbPopulation = 4;
+
+  EXPECT_EQ(MathOpt::DifferentialEvolution(aFunc, aLower, anUpper, aConfig).Status,
+            MathUtils::Status::CallbackError);
 }
 
 // ============================================================================
@@ -306,8 +399,8 @@ TEST(MathOpt_GlobOptTest, MultiStart_Sphere)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.NbStarts = 20;
@@ -315,8 +408,8 @@ TEST(MathOpt_GlobOptTest, MultiStart_Sphere)
   auto aResult = MathOpt::MultiStart(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
@@ -324,8 +417,8 @@ TEST(MathOpt_GlobOptTest, MultiStart_Booth)
 {
   BoothFunc aFunc;
 
-  math_Vector aLower(1, 2, -10.0);
-  math_Vector aUpper(1, 2, 10.0);
+  math_Vector aLower(size_t{2}, -10.0);
+  math_Vector aUpper(size_t{2}, 10.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.NbStarts = 30;
@@ -333,9 +426,26 @@ TEST(MathOpt_GlobOptTest, MultiStart_Booth)
   auto aResult = MathOpt::MultiStart(aFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 0.5);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 0.5);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, 0.5);
   EXPECT_LT(*aResult.Value, 1.0);
+}
+
+TEST(MathOpt_GlobOptTest, MultiStartEvaluatesAndSolvesInsideBounds)
+{
+  OutsideMinimumFunc aFunc;
+  math_Vector        aLower(size_t{1}, 0.0);
+  math_Vector        anUpper(size_t{1}, 1.0);
+  MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::MultiStart, 100);
+  aConfig.NbStarts = 10;
+
+  const MathUtils::VectorResult aResult = MathOpt::MultiStart(aFunc, aLower, anUpper, aConfig);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Solution.has_value());
+  EXPECT_EQ(aFunc.NbOutsideCalls, 0);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.25, 1.0e-4);
+  EXPECT_NEAR(*aResult.Value, 0.0, 1.0e-8);
 }
 
 // ============================================================================
@@ -346,8 +456,8 @@ TEST(MathOpt_GlobOptTest, Himmelblau_FindsOneMinimum)
 {
   HimmelblauFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 200);
   aConfig.NbPopulation = 50;
@@ -369,8 +479,8 @@ TEST(MathOpt_GlobOptTest, GoldsteinPrice)
 {
   GoldsteinPriceFunc aFunc;
 
-  math_Vector aLower(1, 2, -2.0);
-  math_Vector aUpper(1, 2, 2.0);
+  math_Vector aLower(size_t{2}, -2.0);
+  math_Vector aUpper(size_t{2}, 2.0);
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 200);
   aConfig.NbPopulation = 60;
@@ -380,8 +490,8 @@ TEST(MathOpt_GlobOptTest, GoldsteinPrice)
   ASSERT_TRUE(aResult.IsDone());
 
   // Global minimum at (0, -1) with f = 3
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 0.1);
-  EXPECT_NEAR((*aResult.Solution)(2), -1.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 0.1);
+  EXPECT_NEAR(aResult.Solution->At(1), -1.0, 0.1);
   EXPECT_NEAR(*aResult.Value, 3.0, 0.5);
 }
 
@@ -393,8 +503,8 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere5D)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 5, -5.0);
-  math_Vector aUpper(1, 5, 5.0);
+  math_Vector aLower(size_t{5}, -5.0);
+  math_Vector aUpper(size_t{5}, 5.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 300;
@@ -407,7 +517,7 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere5D)
   ASSERT_TRUE(aResult.IsDone());
   for (int i = 1; i <= 5; ++i)
   {
-    EXPECT_NEAR((*aResult.Solution)(i), 0.0, 0.1);
+    EXPECT_NEAR(aResult.Solution->At(static_cast<size_t>(i - 1)), 0.0, 0.1);
   }
   EXPECT_LT(*aResult.Value, 0.1);
 }
@@ -420,8 +530,8 @@ TEST(MathOpt_GlobOptTest, StrategyComparison_Rosenbrock)
 {
   RosenbrockFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // Test PSO
   MathOpt::GlobalConfig aConfigPSO(MathOpt::GlobalStrategy::PSO, 200);
@@ -451,8 +561,8 @@ TEST(MathOpt_GlobOptTest, Reproducibility_DE)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 100;
@@ -477,12 +587,17 @@ TEST(MathOpt_GlobOptTest, CompareWithOldAPI_Sphere)
   SphereFuncOld anOldFunc(2);
   SphereFunc    aNewFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector anOldLower(1, 2, -5.0);
+  math_Vector anOldUpper(1, 2, 5.0);
+
+  math_Vector aNewLower(size_t{2}, -5.0);
+  math_Vector aNewUpper(size_t{2}, 5.0);
 
   // Old API
-  math_GlobOptMin anOldSolver(&anOldFunc, aLower, aUpper, 0.01);
+  math_GlobOptMin anOldSolver(&anOldFunc, anOldLower, anOldUpper, 0.01);
   anOldSolver.Perform();
+  ASSERT_TRUE(anOldSolver.isDone());
+  ASSERT_GT(anOldSolver.NbExtrema(), 0);
   math_Vector anOldSol(1, 2);
   anOldSolver.Points(1, anOldSol);
 
@@ -490,12 +605,16 @@ TEST(MathOpt_GlobOptTest, CompareWithOldAPI_Sphere)
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
   aConfig.NbPopulation = 40;
 
-  auto aNewResult = MathOpt::GlobalMinimum(aNewFunc, aLower, aUpper, aConfig);
+  auto aNewResult = MathOpt::GlobalMinimum(aNewFunc, aNewLower, aNewUpper, aConfig);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // Both should find a good solution
+  // Both should find comparable bounded minima.
+  EXPECT_LT(anOldSolver.GetF(), 0.1);
   EXPECT_LT(*aNewResult.Value, 0.1);
+  EXPECT_NEAR(anOldSolver.GetF(), *aNewResult.Value, 0.1);
+  EXPECT_NEAR(anOldSol.At(0), aNewResult.Solution->At(0), 0.1);
+  EXPECT_NEAR(anOldSol.At(1), aNewResult.Solution->At(1), 0.1);
 }
 
 // ============================================================================
@@ -506,8 +625,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_CustomPSOConfig)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   MathOpt::GlobalConfig aGlobConfig(MathOpt::GlobalStrategy::PSO, 200);
   aGlobConfig.NbPopulation = 40;
@@ -525,8 +644,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_CustomPSOConfig)
     MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aGlobConfig, &aPSOConfig, nullptr, &aStats);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
   EXPECT_GT(aStats.NbFunctionEvals, 0);
   EXPECT_GT(aStats.NbIterations, 0);
@@ -536,8 +655,8 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_WithSeeds)
 {
   BoothFunc aFunc;
 
-  math_Vector aLower(1, 2, -10.0);
-  math_Vector aUpper(1, 2, 10.0);
+  math_Vector aLower(size_t{2}, -10.0);
+  math_Vector aUpper(size_t{2}, 10.0);
 
   MathOpt::GlobalConfig aGlobConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
   aGlobConfig.NbPopulation = 40;
@@ -550,9 +669,9 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_WithSeeds)
   aPSOConfig.InitMode = MathOpt::PSOInitMode::SeededPlusRandom;
 
   // Seed near the minimum (1, 3)
-  math_Vector aSeedPos(1, 2);
-  aSeedPos(1) = 1.5;
-  aSeedPos(2) = 2.5;
+  math_Vector aSeedPos(2);
+  aSeedPos.ChangeAt(0) = 1.5;
+  aSeedPos.ChangeAt(1) = 2.5;
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
 
@@ -561,18 +680,61 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_WithSeeds)
     MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aGlobConfig, &aPSOConfig, &aSeeds, &aStats);
 
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_TOLERANCE);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
   EXPECT_GT(aStats.NbFunctionEvals, 0);
+}
+
+TEST(MathOpt_GlobOptTest, PSOHybridKeepsBetterPSOCandidateAfterClamping)
+{
+  OutsideMinimumFunc aFunc;
+  math_Vector        aLower(size_t{1}, 0.0);
+  math_Vector        anUpper(size_t{1}, 1.0);
+
+  math_Vector                                        aSeedPosition(size_t{1}, 0.25);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPosition, 0.0));
+
+  MathOpt::PSOConfig aPSOConfig;
+  aPSOConfig.NbParticles        = 1;
+  aPSOConfig.MaxIterations      = 1;
+  aPSOConfig.InitMode           = MathOpt::PSOInitMode::SeededOnly;
+  aPSOConfig.VelocityClamp      = 0.0;
+  aPSOConfig.PhiPersonal        = 0.0;
+  aPSOConfig.PhiGlobal          = 0.0;
+  aPSOConfig.PolishBudgetPerDim = 0;
+
+  MathOpt::GlobalConfig         aConfig(MathOpt::GlobalStrategy::PSOHybrid, 2);
+  const MathUtils::VectorResult aResult =
+    MathOpt::GlobalMinimum(aFunc, aLower, anUpper, aConfig, &aPSOConfig, &aSeeds);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(aResult.Solution->At(0), 0.25);
+  EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);
+  EXPECT_EQ(aFunc.NbOutsideCalls, 0);
+}
+
+TEST(MathOpt_GlobOptTest, PSOHybridAcceptsSingleIterationBudget)
+{
+  SphereFunc            aFunc;
+  math_Vector           aLower(size_t{1}, -1.0);
+  math_Vector           anUpper(size_t{1}, 1.0);
+  MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSOHybrid, 1);
+  aConfig.NbPopulation       = 4;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult = MathOpt::GlobalMinimum(aFunc, aLower, anUpper, aConfig);
+
+  EXPECT_NE(aResult.Status, MathUtils::Status::InvalidInput);
 }
 
 TEST(MathOpt_GlobOptTest, GlobalMinimum_NonPSOStrategies_UnchangedWithPSOOptions)
 {
   SphereFunc aFunc;
 
-  math_Vector aLower(1, 2, -5.0);
-  math_Vector aUpper(1, 2, 5.0);
+  math_Vector aLower(size_t{2}, -5.0);
+  math_Vector aUpper(size_t{2}, 5.0);
 
   // MultiStart - PSO params should be ignored
   MathOpt::GlobalConfig aConfigMS(MathOpt::GlobalStrategy::MultiStart, 100);

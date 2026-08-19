@@ -17,23 +17,24 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include "MathRoot_Utils.hxx"
 
 #include <cmath>
-#include <utility>
+#include <limits>
 
 namespace MathRoot
 {
 using namespace MathUtils;
 
-//! Brent's method for root finding.
-//! Combines bisection, secant, and inverse quadratic interpolation.
-//! Guaranteed to converge if a valid bracket is provided.
+//! Safeguarded Brent method for root finding.
+//! Combines inverse quadratic interpolation, secant steps, and bisection safeguards.
 //!
 //! Algorithm:
-//! 1. Start with bracket [a, b] where f(a) * f(b) < 0
-//! 2. At each step, try inverse quadratic interpolation
-//! 3. If interpolation step is rejected, use bisection
-//! 4. Acceptance criteria ensure superlinear convergence when possible
+//! 1. Start with an ordered bracket [a, b] whose endpoint values have opposite signs
+//! 2. Keep the best estimate at b and the opposite side of the bracket at c
+//! 3. Attempt inverse quadratic interpolation (or secant interpolation with two points)
+//! 4. If interpolation is unsafe, use bisection
+//! 5. Report success when either the residual or bracket is within tolerance
 //!
 //! @tparam Function type with Value(double theX, double& theF) method
 //! @param theFunc function to find root of
@@ -49,50 +50,88 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
+  if (!Utils::IsValidBounds(theLower, theUpper) || !Utils::IsValidConfig(theConfig))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
   double aA  = theLower;
   double aB  = theUpper;
+  double aC  = aB;
   double aFa = 0.0;
   double aFb = 0.0;
+  double aFc = 0.0;
+  double aD  = 0.0;
+  double anE = 0.0;
 
-  // Evaluate at endpoints
   if (!theFunc.Value(aA, aFa))
+  {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFa))
   {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
   if (!theFunc.Value(aB, aFb))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFb))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
 
-  // Check that bracket is valid (sign change)
-  if (aFa * aFb > 0.0)
+  if (std::abs(aFa) <= theConfig.FTolerance)
+  {
+    aResult.Status = MathUtils::Status::OK;
+    aResult.Root   = aA;
+    aResult.Value  = aFa;
+    return aResult;
+  }
+  if (std::abs(aFb) <= theConfig.FTolerance)
+  {
+    aResult.Status = MathUtils::Status::OK;
+    aResult.Root   = aB;
+    aResult.Value  = aFb;
+    return aResult;
+  }
+  if (!Utils::HaveOppositeSigns(aFa, aFb))
   {
     aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
 
-  // Ensure |f(a)| >= |f(b)| (b is the better approximation)
-  if (std::abs(aFa) < std::abs(aFb))
-  {
-    std::swap(aA, aB);
-    std::swap(aFa, aFb);
-  }
-
-  double aC  = aA; // Previous iterate
-  double aFc = aFa;
-  double aD  = aB - aA; // Step size
-  double aE  = aD;      // Previous step size
-
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  aFc = aFb;
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
-    const double aTol = 2.0 * MathUtils::THE_EPSILON * std::abs(aB) + 0.5 * theConfig.XTolerance;
-    const double aM   = 0.5 * (aC - aB);
+    if (!Utils::HaveOppositeSigns(aFb, aFc))
+    {
+      aC  = aA;
+      aFc = aFa;
+      aD  = aB - aA;
+      anE = aD;
+    }
+    if (std::abs(aFc) < std::abs(aFb))
+    {
+      aA  = aB;
+      aB  = aC;
+      aC  = aA;
+      aFa = aFb;
+      aFb = aFc;
+      aFc = aFa;
+    }
 
-    if (std::abs(aFb) < theConfig.FTolerance || aFb == 0.0 || std::abs(aM) <= aTol)
+    const double aTol =
+      2.0 * std::numeric_limits<double>::epsilon() * std::abs(aB) + 0.5 * theConfig.XTolerance;
+    const double aXm = Utils::Midpoint(aC, -aB);
+    if (std::abs(aXm) <= aTol || std::abs(aFb) <= theConfig.FTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
       aResult.Root   = aB;
@@ -100,88 +139,72 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
       return aResult;
     }
 
-    double aS = 0.0; // New approximation
-
-    // Try inverse quadratic interpolation if we have three distinct points
-    if (std::abs(aFa - aFc) > MathUtils::THE_ZERO_TOL
-        && std::abs(aFb - aFc) > MathUtils::THE_ZERO_TOL)
+    if (std::abs(anE) >= aTol && std::abs(aFa) > std::abs(aFb))
     {
-      // Inverse quadratic interpolation
-      aS = aA * aFb * aFc / ((aFa - aFb) * (aFa - aFc))
-           + aB * aFa * aFc / ((aFb - aFa) * (aFb - aFc))
-           + aC * aFa * aFb / ((aFc - aFa) * (aFc - aFb));
-    }
-    else
-    {
-      // Secant method
-      aS = aB - aFb * (aB - aA) / (aFb - aFa);
-    }
-
-    // Decide whether to accept the interpolation step
-    bool aUseInterp = false;
-
-    // Check if s is between (3a+b)/4 and b
-    const double aBound1 = (3.0 * aA + aB) / 4.0;
-    if ((aS > std::min(aBound1, aB) && aS < std::max(aBound1, aB)))
-    {
-      // Accept interpolation if step is smaller than half the previous step
-      // (ensures convergence rate). Minimum step is enforced later.
-      if (std::abs(aS - aB) < std::abs(aE) / 2.0)
+      const double aS = aFb / aFa;
+      double       aP = 0.0;
+      double       aQ = 0.0;
+      if (aA == aC)
       {
-        aUseInterp = true;
+        aP = 2.0 * aXm * aS;
+        aQ = 1.0 - aS;
+      }
+      else
+      {
+        aQ              = aFa / aFc;
+        const double aR = aFb / aFc;
+        aP              = aS * (2.0 * aXm * aQ * (aQ - aR) - (aB - aA) * (aR - 1.0));
+        aQ              = (aQ - 1.0) * (aR - 1.0) * (aS - 1.0);
+      }
+      if (aP > 0.0)
+      {
+        aQ = -aQ;
+      }
+      aP                 = std::abs(aP);
+      const double aMin1 = 3.0 * aXm * aQ - std::abs(aTol * aQ);
+      const double aMin2 = std::abs(anE * aQ);
+      if (2.0 * aP < (aMin1 < aMin2 ? aMin1 : aMin2))
+      {
+        anE = aD;
+        aD  = aP / aQ;
+      }
+      else
+      {
+        aD  = aXm;
+        anE = aD;
       }
     }
-
-    if (!aUseInterp)
-    {
-      // Bisection step
-      aS = aB + aM;
-      aE = aM;
-      aD = aM;
-    }
     else
     {
-      aE = aD;
-      aD = aS - aB;
+      aD  = aXm;
+      anE = aD;
     }
 
-    // Update previous values
     aA  = aB;
     aFa = aFb;
-
-    // Compute new point, ensuring minimum step
     if (std::abs(aD) > aTol)
     {
-      aB = aS;
+      aB += aD;
     }
     else
     {
-      aB += (aM > 0.0) ? aTol : -aTol;
+      aB += aXm > 0.0 ? std::abs(aTol) : -std::abs(aTol);
     }
 
-    // Evaluate function at new point
-    if (!theFunc.Value(aB, aFb))
+    if (!std::isfinite(aB))
     {
       aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root   = aB;
       return aResult;
     }
-
-    // Update bracket
-    if (aFb * aFc > 0.0)
+    if (!theFunc.Value(aB, aFb))
     {
-      aC  = aA;
-      aFc = aFa;
-      aD  = aB - aA;
-      aE  = aD;
+      aResult.Status = MathUtils::Status::CallbackError;
+      return aResult;
     }
-    else if (std::abs(aFc) < std::abs(aFb))
+    if (!std::isfinite(aFb))
     {
-      // Swap b and c if c is better (use std::swap to avoid overwriting)
-      aA  = aB;
-      aFa = aFb;
-      std::swap(aB, aC);
-      std::swap(aFb, aFc);
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
     }
   }
 

@@ -18,8 +18,10 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Convergence.hxx>
+#include "MathRoot_Utils.hxx"
 
 #include <cmath>
+#include <optional>
 
 //! Root finding algorithms for scalar functions.
 namespace MathRoot
@@ -47,54 +49,68 @@ MathUtils::ScalarResult Newton(Function&                theFunc,
                                const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
-  double                  aX   = theGuess;
-  double                  aFx  = 0.0;
-  double                  aDfx = 0.0;
-
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  if (!std::isfinite(theGuess) || !Utils::IsValidConfig(theConfig))
   {
-    const double anXOld = aX;
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
 
-    // Evaluate function and derivative
+  double                aX   = theGuess;
+  double                aFx  = 0.0;
+  double                aDfx = 0.0;
+  std::optional<double> aDx;
+
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  {
     if (!theFunc.Values(aX, aFx, aDfx))
+    {
+      aResult.Status       = MathUtils::Status::CallbackError;
+      aResult.Root         = aX;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
+    if (!std::isfinite(aFx) || !std::isfinite(aDfx))
     {
       aResult.Status       = MathUtils::Status::NumericalError;
       aResult.Root         = aX;
-      aResult.NbIterations = anIter;
+      aResult.NbIterations = anIter + 1;
       return aResult;
     }
 
-    // Check for zero derivative (stationary point)
-    if (MathUtils::IsZero(aDfx))
-    {
-      // Try to continue with a small perturbation if not converged
-      if (!MathUtils::IsFConverged(aFx, theConfig.FTolerance))
-      {
-        aResult.Status       = MathUtils::Status::NumericalError;
-        aResult.Root         = aX;
-        aResult.Value        = aFx;
-        aResult.Derivative   = aDfx;
-        aResult.NbIterations = anIter;
-        return aResult;
-      }
-      // Zero derivative at a root is fine (multiple root)
-    }
-    else
-    {
-      // Newton step
-      aX -= aFx / aDfx;
-    }
-
     aResult.NbIterations = anIter + 1;
-
-    // Check convergence
-    if (MathUtils::IsConverged(anXOld, aX, aFx, theConfig))
+    if (aFx == 0.0
+        || (aDx.has_value() && std::abs(*aDx) <= theConfig.XTolerance
+            && std::abs(aFx) <= theConfig.FTolerance))
     {
       aResult.Status     = MathUtils::Status::OK;
       aResult.Root       = aX;
       aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
+    }
+
+    if (aDfx == 0.0)
+    {
+      aResult.Status     = MathUtils::Status::NumericalError;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
+      aResult.Derivative = aDfx;
+      return aResult;
+    }
+
+    aDx                = aFx / aDfx;
+    const double aXNew = aX - *aDx;
+    if (!std::isfinite(aXNew))
+    {
+      aResult.Status     = MathUtils::Status::NumericalError;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
+      aResult.Derivative = aDfx;
+      return aResult;
+    }
+    if (anIter + 1 < theConfig.MaxIterations)
+    {
+      aX = aXNew;
     }
   }
 
@@ -126,7 +142,13 @@ MathUtils::ScalarResult NewtonBounded(Function&                theFunc,
 {
   MathUtils::ScalarResult aResult;
 
-  // Clamp initial guess to bounds
+  if (!Utils::IsValidBounds(theLower, theUpper) || !std::isfinite(theGuess)
+      || !Utils::IsValidConfig(theConfig))
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+
   double aX   = MathUtils::Clamp(theGuess, theLower, theUpper);
   double aXLo = theLower;
   double aXHi = theUpper;
@@ -140,35 +162,66 @@ MathUtils::ScalarResult NewtonBounded(Function&                theFunc,
   // Initialize bounds with function values
   if (!theFunc.Values(aXLo, aFLo, aDummy))
   {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFLo) || !std::isfinite(aDummy))
+  {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
-  if (!theFunc.Values(aXHi, aFHi, aDummy))
+  double aDHi = 0.0;
+  if (!theFunc.Values(aXHi, aFHi, aDHi))
+  {
+    aResult.Status = MathUtils::Status::CallbackError;
+    return aResult;
+  }
+  if (!std::isfinite(aFHi) || !std::isfinite(aDHi))
   {
     aResult.Status = MathUtils::Status::NumericalError;
     return aResult;
   }
 
-  // Check if bounds bracket a root
-  const bool aBracketed = (aFLo * aFHi < 0.0);
-
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  if (std::abs(aFLo) <= theConfig.FTolerance)
   {
-    const double anXOld = aX;
+    aResult.Status     = MathUtils::Status::OK;
+    aResult.Root       = aXLo;
+    aResult.Value      = aFLo;
+    aResult.Derivative = aDummy;
+    return aResult;
+  }
+  if (std::abs(aFHi) <= theConfig.FTolerance)
+  {
+    aResult.Status     = MathUtils::Status::OK;
+    aResult.Root       = aXHi;
+    aResult.Value      = aFHi;
+    aResult.Derivative = aDHi;
+    return aResult;
+  }
 
-    // Evaluate function and derivative at current point
+  const bool isBracketed = Utils::HaveOppositeSigns(aFLo, aFHi);
+
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  {
     if (!theFunc.Values(aX, aFx, aDfx))
+    {
+      aResult.Status       = MathUtils::Status::CallbackError;
+      aResult.Root         = aX;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
+    if (!std::isfinite(aFx) || !std::isfinite(aDfx))
     {
       aResult.Status       = MathUtils::Status::NumericalError;
       aResult.Root         = aX;
-      aResult.NbIterations = anIter;
+      aResult.NbIterations = anIter + 1;
       return aResult;
     }
 
     aResult.NbIterations = anIter + 1;
 
     // Check convergence
-    if (MathUtils::IsFConverged(aFx, theConfig.FTolerance))
+    if (std::abs(aFx) <= theConfig.FTolerance)
     {
       aResult.Status     = MathUtils::Status::OK;
       aResult.Root       = aX;
@@ -177,55 +230,56 @@ MathUtils::ScalarResult NewtonBounded(Function&                theFunc,
       return aResult;
     }
 
-    // Compute Newton step
-    double aXNew = aX;
-    if (!MathUtils::IsZero(aDfx))
+    if (isBracketed)
     {
-      aXNew = aX - aFx / aDfx;
-    }
-
-    // Check if Newton step is within bounds
-    if (aXNew < aXLo || aXNew > aXHi)
-    {
-      // Fall back to bisection if bracketed
-      if (aBracketed)
+      if (Utils::HaveOppositeSigns(aFLo, aFx))
       {
-        aXNew = 0.5 * (aXLo + aXHi);
-      }
-      else
-      {
-        // Just clamp to bounds
-        aXNew = MathUtils::Clamp(aXNew, aXLo, aXHi);
-      }
-    }
-
-    aX = aXNew;
-
-    // Update bracket if root is bracketed
-    if (aBracketed)
-    {
-      if (aFx * aFLo < 0.0)
-      {
-        aXHi = anXOld;
+        aXHi = aX;
         aFHi = aFx;
       }
       else
       {
-        aXLo = anXOld;
+        aXLo = aX;
         aFLo = aFx;
       }
     }
 
-    // Check X convergence
-    if (MathUtils::IsXConverged(anXOld, aX, theConfig.XTolerance))
+    double aXNew = aX;
+    if (aDfx != 0.0)
     {
-      // Re-evaluate at final position
-      theFunc.Values(aX, aFx, aDfx);
+      aXNew = aX - aFx / aDfx;
+    }
+    if (!std::isfinite(aXNew) || aXNew <= aXLo || aXNew >= aXHi)
+    {
+      if (isBracketed)
+      {
+        aXNew = Utils::Midpoint(aXLo, aXHi);
+      }
+      else
+      {
+        aXNew = MathUtils::Clamp(aXNew, aXLo, aXHi);
+      }
+    }
+
+    if (!std::isfinite(aXNew))
+    {
+      aResult.Status     = MathUtils::Status::NumericalError;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
+      aResult.Derivative = aDfx;
+      return aResult;
+    }
+    if (std::abs(aXNew - aX) <= theConfig.XTolerance && std::abs(aFx) <= theConfig.FTolerance)
+    {
       aResult.Status     = MathUtils::Status::OK;
       aResult.Root       = aX;
       aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
+    }
+    if (anIter + 1 < theConfig.MaxIterations)
+    {
+      aX = aXNew;
     }
   }
 

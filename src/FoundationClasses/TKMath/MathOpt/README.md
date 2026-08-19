@@ -49,9 +49,9 @@ public:
 
 // Use BFGS optimization
 MyFunction aFunc;
-math_Vector aStart(1, 2);
-aStart(1) = 0.0;
-aStart(2) = 0.0;
+math_Vector aStart(size_t{2});
+aStart[0] = 0.0;
+aStart[1] = 0.0;
 
 MathOpt::VectorResult aResult = MathOpt::BFGS(aFunc, aStart);
 if (aResult.IsDone())
@@ -70,3 +70,16 @@ if (aResult.IsDone())
 - MathUtils_Deriv.hxx - Numerical differentiation
 - MathUtils_Bracket.hxx - Bracket finding utilities
 - MathLin_*.hxx - Linear algebra solvers
+
+All modern optimization vectors and result vectors are zero-based. Dimensions and indices use
+`size_t`; bounded iteration counters stored in configurations and results use `uint32_t`.
+
+`PSO`, `DifferentialEvolution`, `MultiStart`, and `PSOHybrid` treat lower and upper vectors as
+inclusive box bounds; objective callbacks are evaluated only inside that box. Stochastic candidate
+evaluations that report failure are rejected without invalidating an existing finite best candidate.
+If PSO or Differential Evolution exhausts `MaxIterations` before its stopping criterion, the result
+has status `MaxIterations` while retaining the best-so-far `Solution` and `Value`. A seed particle's
+optional `Value` is advisory only: PSO always evaluates the callback at the clamped seed position.
+
+`Config::Tolerance`, `Config::XTolerance`, and `Config::FTolerance` are independent after
+construction. Assigning one field does not update the others.
