@@ -30,15 +30,13 @@ namespace Utils
 {
 
 //! Residual threshold used to recognize distinct real roots at critical points.
-inline constexpr long double THE_DISTINCT_ROOT_RESIDUAL_TOLERANCE =
-  64.0L * LDBL_EPSILON;
+inline constexpr long double THE_DISTINCT_ROOT_RESIDUAL_TOLERANCE = 64.0L * LDBL_EPSILON;
 
 //! Fixed bisection count providing full long-double refinement for degree <= 4.
 inline constexpr uint32_t THE_DISTINCT_ROOT_BISECTION_ITERATIONS = 200;
 
 //! Residual threshold used to identify repeated roots from successive derivatives.
-inline constexpr long double THE_ROOT_MULTIPLICITY_TOLERANCE =
-  32768.0L * LDBL_EPSILON;
+inline constexpr long double THE_ROOT_MULTIPLICITY_TOLERANCE = 32768.0L * LDBL_EPSILON;
 
 using LongCoefficients = std::array<long double, THE_MAX_POLY_DEGREE + 1>;
 
@@ -164,8 +162,7 @@ inline void AppendUnique(std::array<long double, 4>& theRoots,
                          size_t&                     theCount,
                          long double                 theRoot)
 {
-  const long double aTolerance =
-    128.0L * LDBL_EPSILON * std::max(1.0L, std::abs(theRoot));
+  const long double aTolerance = 128.0L * LDBL_EPSILON * std::max(1.0L, std::abs(theRoot));
   for (size_t anIndex = 0; anIndex < theCount; ++anIndex)
   {
     if (std::abs(theRoots[anIndex] - theRoot) <= aTolerance)
@@ -395,10 +392,7 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
     }
     const std::optional<double> aRoot =
       ToDouble(std::scalbn(aRoots[aRootIndex], aVariableExponent));
-    if (!HasSmallResidual(aScaled,
-                          theDegree,
-                          aRoots[aRootIndex],
-                          256.0L * LDBL_EPSILON)
+    if (!HasSmallResidual(aScaled, theDegree, aRoots[aRootIndex], 256.0L * LDBL_EPSILON)
         || !aRoot.has_value())
     {
       aResult.Status = MathUtils::Status::NumericalError;
