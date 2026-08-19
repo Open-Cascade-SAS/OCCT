@@ -54,7 +54,7 @@ bool ComputeGaussLegendre(const int theOrder, math_Vector& thePoints, math_Vecto
       aSubDiag.ChangeAt(i) = 0.0;
       if (i > 0)
       {
-        const size_t aSqrI = i * i;
+        const size_t aSqrI   = i * i;
         aSubDiag.ChangeAt(i) = std::sqrt(static_cast<double>(aSqrI) / (4.0 * aSqrI - 1.0));
       }
     }
@@ -71,7 +71,7 @@ bool ComputeGaussLegendre(const int theOrder, math_Vector& thePoints, math_Vecto
     NCollection_Array1<ValueAndWeight> aValuesAndWeights(1, theOrder);
     for (size_t i = 0; i < anOrder; ++i)
     {
-      const double aWeight = 2.0 * aEigenVecs.At(0, i) * aEigenVecs.At(0, i);
+      const double aWeight                       = 2.0 * aEigenVecs.At(0, i) * aEigenVecs.At(0, i);
       aValuesAndWeights(static_cast<int>(i) + 1) = {aEigenValues.At(i), aWeight};
     }
 

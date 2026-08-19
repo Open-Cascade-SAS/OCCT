@@ -891,7 +891,7 @@ TEST(MathInteg_MultipleTest, ValidatesDimensionsAndPropagatesCallbackFailure)
   EXPECT_EQ(aResult.NbPoints, 1u);
 
   anUpper(5) = 0.0;
-  aResult = MathInteg::GaussMultiple(aFunc, 2, aLower, anUpper, anOrders);
+  aResult    = MathInteg::GaussMultiple(aFunc, 2, aLower, anUpper, anOrders);
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_TRUE(aResult.Value.has_value());
   EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);

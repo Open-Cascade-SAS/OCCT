@@ -308,9 +308,7 @@ TEST_F(MathPoly_LaguerreTest, SmallPureImaginaryRootsRemainComplex)
   for (size_t anIndex = 0; anIndex < aResult.NbComplexRoots; ++anIndex)
   {
     EXPECT_NEAR(aResult.ComplexRoots[anIndex].real(), 0.0, THE_TOL);
-    EXPECT_NEAR(std::abs(aResult.ComplexRoots[anIndex].imag()),
-                std::sqrt(THE_CONSTANT),
-                THE_TOL);
+    EXPECT_NEAR(std::abs(aResult.ComplexRoots[anIndex].imag()), std::sqrt(THE_CONSTANT), THE_TOL);
     EXPECT_LE(std::abs(EvaluatePoly(aCoeffs, 2, aResult.ComplexRoots[anIndex])),
               ComplexEvaluationRoundoff(aCoeffs, 2, aResult.ComplexRoots[anIndex]));
   }

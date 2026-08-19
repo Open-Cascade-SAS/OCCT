@@ -1,6 +1,15 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #ifndef _MathSys_LevenbergMarquardt_HeaderFile
 #define _MathSys_LevenbergMarquardt_HeaderFile
@@ -147,8 +156,7 @@ SystemResult LMImpl(FuncSetType&       theFunc,
       || !(theConfig.LambdaDecrease < 1.0) || !std::isfinite(theConfig.LambdaMin)
       || !(theConfig.LambdaMin > 0.0) || !(theConfig.LambdaMin <= theConfig.LambdaInit)
       || !std::isfinite(theConfig.LambdaMax) || !(theConfig.LambdaInit <= theConfig.LambdaMax)
-      || !std::isfinite(theConfig.RankTolerance)
-      || !(theConfig.RankTolerance > 0.0)
+      || !std::isfinite(theConfig.RankTolerance) || !(theConfig.RankTolerance > 0.0)
       || (hasBounds
           && (theInfBound->Size() != aN || theSupBound->Size() != aN || !IsFinite(*theInfBound)
               || !IsFinite(*theSupBound))))
@@ -188,11 +196,10 @@ SystemResult LMImpl(FuncSetType&       theFunc,
     return aResult;
   }
 
-  double            aLambda =
-    std::clamp(theConfig.LambdaInit, theConfig.LambdaMin, theConfig.LambdaMax);
-  const double      aResidualNorm = SafeNorm(aResidual);
-  long double       aMerit        = 0.5L * aResidualNorm * aResidualNorm;
-  uint32_t          anIter = 0;
+  double       aLambda = std::clamp(theConfig.LambdaInit, theConfig.LambdaMin, theConfig.LambdaMax);
+  const double aResidualNorm = SafeNorm(aResidual);
+  long double  aMerit        = 0.5L * aResidualNorm * aResidualNorm;
+  uint32_t     anIter        = 0;
   for (; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter;
@@ -324,8 +331,7 @@ SystemResult LMImpl(FuncSetType&       theFunc,
         aLinearNorm = std::hypot(aLinearNorm, aValue);
       }
       aPredicted -= 0.5L * aLinearNorm * aLinearNorm;
-      const long double aRho =
-        (aPredicted > 0.0L) ? (aMerit - aTrialMerit) / aPredicted : -1.0L;
+      const long double aRho = (aPredicted > 0.0L) ? (aMerit - aTrialMerit) / aPredicted : -1.0L;
       if (aRho > 0.0 && aTrialMerit < aMerit)
       {
         aResult.StepNorm = 0.0;
@@ -388,15 +394,8 @@ SystemResult LMImpl(FuncSetType&       theFunc,
     aResult.Solution = aSolution;
     return aResult;
   }
-  if (FinishLM(theFunc,
-               aSolution,
-               aM,
-               theConfig,
-               aResidualNorm,
-               theInfBound,
-               theSupBound,
-               aResult)
-       && (aResult.IsRoot || aResult.IsStationary))
+  if (FinishLM(theFunc, aSolution, aM, theConfig, aResidualNorm, theInfBound, theSupBound, aResult)
+      && (aResult.IsRoot || aResult.IsStationary))
   {
     aResult.Status = MathUtils::Status::OK;
   }

@@ -30,9 +30,9 @@ using namespace MathUtils;
 struct QRResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Matrix> Q;        //!< Orthogonal matrix Q (m x m)
-  std::optional<math_Matrix> R;        //!< Upper triangular matrix R (m x n)
-  size_t                     Rank = 0; //!< Numerical rank
+  std::optional<math_Matrix> Q;                     //!< Orthogonal matrix Q (m x m)
+  std::optional<math_Matrix> R;                     //!< Upper triangular matrix R (m x n)
+  size_t                     Rank              = 0; //!< Numerical rank
   double                     ConditionEstimate = std::numeric_limits<double>::infinity();
   double                     DiagonalThreshold = 0.0;
 
@@ -220,8 +220,7 @@ inline QRResult QR(const math_Matrix& theA, double theTolerance = 1.0e-15)
 
   aResult.Q      = aQ;
   aResult.R      = aR;
-  aResult.Status = Utils::IsFinite(aQ) && Utils::IsFinite(aR) ? Status::OK
-                                                                    : Status::NumericalError;
+  aResult.Status = Utils::IsFinite(aQ) && Utils::IsFinite(aR) ? Status::OK : Status::NumericalError;
   return aResult;
 }
 
@@ -282,7 +281,7 @@ inline LinearResult SolveQR(const math_Matrix& theA,
   }
 
   // Back substitution: R[0:n, 0:n] * x = c[0:n]
-  const size_t aN = theA.ColSize();
+  const size_t aN  = theA.ColSize();
   aResult.Solution = math_Vector(aN, 0.0);
 
   for (size_t i = aN; i-- > 0;)
@@ -345,7 +344,7 @@ inline LinearMultipleResult SolveQRMultiple(const math_Matrix& theA,
   // Solve for each column of B
   const size_t aM = theA.RowSize();
   const size_t aN = theA.ColSize();
-  math_Matrix aX(aN, theB.ColSize(), 0.0);
+  math_Matrix  aX(aN, theB.ColSize(), 0.0);
 
   for (size_t j = 0; j < theB.ColSize(); ++j)
   {

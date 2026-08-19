@@ -1,6 +1,15 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #ifndef _MathSys_LinearAlgebra_HeaderFile
 #define _MathSys_LinearAlgebra_HeaderFile
@@ -252,16 +261,15 @@ inline LinearStep SolveLinearized(const math_Matrix& theA,
 
   if (!aScaledSolution.has_value())
   {
-    const MathUtils::LinearResult anSVDSolution =
-      MathLin::SolveSVD(theA, theB, theRankTolerance);
+    const MathUtils::LinearResult anSVDSolution = MathLin::SolveSVD(theA, theB, theRankTolerance);
     if (!anSVDSolution.IsDone())
     {
       aResult.Status = anSVDSolution.Status;
       return aResult;
     }
     aResult.Solution = anSVDSolution.Solution;
-    aResult.Status = IsFinite(*aResult.Solution) ? MathUtils::Status::OK
-                                                 : MathUtils::Status::NumericalError;
+    aResult.Status =
+      IsFinite(*aResult.Solution) ? MathUtils::Status::OK : MathUtils::Status::NumericalError;
     return aResult;
   }
 

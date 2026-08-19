@@ -75,19 +75,16 @@ inline double ComputeWilkinsonShift(const math_Vector& theDiag,
                                     size_t             theStart,
                                     size_t             theEnd)
 {
-  double aShift = (theDiag[theStart + 1] - theDiag[theStart])
-                  / (2.0 * theSubdiag[theStart]);
+  double       aShift  = (theDiag[theStart + 1] - theDiag[theStart]) / (2.0 * theSubdiag[theStart]);
   const double aRadius = std::hypot(1.0, aShift);
 
   if (aShift < 0.0)
   {
-    aShift = theDiag[theEnd] - theDiag[theStart]
-             + theSubdiag[theStart] / (aShift - aRadius);
+    aShift = theDiag[theEnd] - theDiag[theStart] + theSubdiag[theStart] / (aShift - aRadius);
   }
   else
   {
-    aShift = theDiag[theEnd] - theDiag[theStart]
-             + theSubdiag[theStart] / (aShift + aRadius);
+    aShift = theDiag[theEnd] - theDiag[theStart] + theSubdiag[theStart] / (aShift + aRadius);
   }
   return aShift;
 }
@@ -125,11 +122,10 @@ inline bool PerformQLStep(math_Vector& theDiag,
     aCosine = aShift / aRadius;
     aShift  = theDiag[aRowIdx + 1] - aPrevDiag;
 
-    const double aRadiusTemp =
-      (theDiag[aRowIdx] - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
-    aPrevDiag              = aSine * aRadiusTemp;
-    theDiag[aRowIdx + 1]   = aShift + aPrevDiag;
-    aShift                 = aCosine * aRadiusTemp - aSubdiagTemp;
+    const double aRadiusTemp = (theDiag[aRowIdx] - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
+    aPrevDiag                = aSine * aRadiusTemp;
+    theDiag[aRowIdx + 1]     = aShift + aPrevDiag;
+    aShift                   = aCosine * aRadiusTemp - aSubdiagTemp;
 
     // Update eigenvector matrix
     for (size_t aVecIdx = 0; aVecIdx < theN; ++aVecIdx)
@@ -155,7 +151,7 @@ inline bool ValidateEigenpairs(const math_Vector& theOriginalDiag,
                                const math_Vector& theEigenValues,
                                const math_Matrix& theEigenVectors)
 {
-  const size_t aN = theOriginalDiag.Size();
+  const size_t aN           = theOriginalDiag.Size();
   double       aMatrixScale = 0.0;
   for (size_t i = 0; i < aN; ++i)
   {
@@ -174,7 +170,7 @@ inline bool ValidateEigenpairs(const math_Vector& theOriginalDiag,
   for (size_t j = 0; j < aN; ++j)
   {
     const double aScaledEigenValue = theEigenValues[j] / aMatrixScale;
-    const double aTolerance = THE_TRIDIAGONAL_RESIDUAL_TOLERANCE_FACTOR
+    const double aTolerance        = THE_TRIDIAGONAL_RESIDUAL_TOLERANCE_FACTOR
                               * std::numeric_limits<double>::epsilon() * aDimensionFactor
                               * std::max(1.0, std::abs(aScaledEigenValue));
     for (size_t i = 0; i < aN; ++i)
@@ -183,13 +179,11 @@ inline bool ValidateEigenpairs(const math_Vector& theOriginalDiag,
                          - aScaledEigenValue * theEigenVectors.At(i, j);
       if (i > 0)
       {
-        aResidual += theOriginalSubdiag[i - 1] / aMatrixScale
-                     * theEigenVectors.At(i - 1, j);
+        aResidual += theOriginalSubdiag[i - 1] / aMatrixScale * theEigenVectors.At(i - 1, j);
       }
       if (i + 1 < aN)
       {
-        aResidual += theOriginalSubdiag[i] / aMatrixScale
-                     * theEigenVectors.At(i + 1, j);
+        aResidual += theOriginalSubdiag[i] / aMatrixScale * theEigenVectors.At(i + 1, j);
       }
       if (!std::isfinite(aResidual) || std::abs(aResidual) > aTolerance)
       {
@@ -219,13 +213,13 @@ inline bool ValidateEigenpairs(const math_Vector& theOriginalDiag,
 //! @return EigenResult containing eigenvalues and eigenvector matrix
 inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
                                     const math_Vector& theSubdiagonal,
-                                     uint32_t           theMaxIterations = 30)
+                                    uint32_t           theMaxIterations = 30)
 {
   EigenResult aResult;
 
-  const size_t aN = theDiagonal.Size();
-  const bool hasNaturalSubdiagonal = aN > 0 && theSubdiagonal.Size() == aN - 1;
-  const bool hasLegacySubdiagonal  = theSubdiagonal.Size() == aN;
+  const size_t aN                    = theDiagonal.Size();
+  const bool   hasNaturalSubdiagonal = aN > 0 && theSubdiagonal.Size() == aN - 1;
+  const bool   hasLegacySubdiagonal  = theSubdiagonal.Size() == aN;
   if ((!hasNaturalSubdiagonal && !hasLegacySubdiagonal) || aN == 0 || theMaxIterations == 0
       || !Utils::IsFinite(theDiagonal) || !Utils::IsFinite(theSubdiagonal))
   {
@@ -249,7 +243,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
   {
     aSubdiag[i] = theSubdiagonal.At(hasNaturalSubdiagonal ? i : i + 1);
   }
-  aSubdiag[aN - 1] = 0.0;
+  aSubdiag[aN - 1]                    = 0.0;
   const math_Vector anOriginalDiag    = aDiag;
   const math_Vector anOriginalSubdiag = aSubdiag;
 
@@ -263,10 +257,10 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
   // Special case: 1x1 matrix
   if (aN == 1)
   {
-    aResult.EigenValues = math_Vector(size_t{1});
+    aResult.EigenValues       = math_Vector(size_t{1});
     (*aResult.EigenValues)[0] = aDiag[0];
-    aResult.EigenVectors = math_Matrix(size_t{1}, size_t{1}, 1.0);
-    aResult.Status       = Status::OK;
+    aResult.EigenVectors      = math_Matrix(size_t{1}, size_t{1}, 1.0);
+    aResult.Status            = Status::OK;
     return aResult;
   }
 
@@ -274,7 +268,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
   for (size_t aStart = 0; aStart < aN; ++aStart)
   {
     uint32_t aIterCount = 0;
-    size_t aEnd;
+    size_t   aEnd;
 
     do
     {
@@ -292,8 +286,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
 
         if (!std::isfinite(aShift)
             || !Utils::PerformQLStep(aDiag, aSubdiag, aEigenVec, aStart, aEnd, aShift, aN)
-            || !Utils::IsFinite(aDiag) || !Utils::IsFinite(aSubdiag)
-            || !Utils::IsFinite(aEigenVec))
+            || !Utils::IsFinite(aDiag) || !Utils::IsFinite(aSubdiag) || !Utils::IsFinite(aEigenVec))
         {
           aResult.Status = Status::NumericalError;
           return aResult;
@@ -302,7 +295,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
     } while (aEnd != aStart);
   }
 
-  aResult.EigenValues = math_Vector(aN);
+  aResult.EigenValues  = math_Vector(aN);
   aResult.EigenVectors = math_Matrix(aN, aN);
   for (size_t i = 0; i < aN; ++i)
   {
@@ -313,10 +306,10 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
     }
   }
   aResult.Status = Utils::IsFinite(*aResult.EigenValues) && Utils::IsFinite(*aResult.EigenVectors)
-                           && Utils::ValidateEigenpairs(anOriginalDiag,
-                                                        anOriginalSubdiag,
-                                                        *aResult.EigenValues,
-                                                        *aResult.EigenVectors)
+                       && Utils::ValidateEigenpairs(anOriginalDiag,
+                                                    anOriginalSubdiag,
+                                                    *aResult.EigenValues,
+                                                    *aResult.EigenVectors)
                      ? Status::OK
                      : Status::NumericalError;
   return aResult;

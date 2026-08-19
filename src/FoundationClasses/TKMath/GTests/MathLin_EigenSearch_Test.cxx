@@ -164,8 +164,8 @@ TEST(MathLin_EigenSearch_Test, CoexistsWithJacobiInDangerousIncludeOrder)
 
 TEST(MathLin_EigenSearch_Test, AcceptsDocumentedSubdiagonalShape)
 {
-  math_Vector aDiag(size_t{3}, 2.0);
-  math_Vector aSubdiag(size_t{2}, 1.0);
+  math_Vector                aDiag(size_t{3}, 2.0);
+  math_Vector                aSubdiag(size_t{2}, 1.0);
   const MathLin::EigenResult aResult = MathLin::EigenTridiagonal(aDiag, aSubdiag);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -180,8 +180,8 @@ TEST(MathLin_EigenSearch_Test, AcceptsDocumentedSubdiagonalShape)
 TEST(MathLin_EigenSearch_Test, LargeFiniteDiagonalDoesNotDeflateCoupling)
 {
   const double aMagnitude = std::numeric_limits<double>::max() / 2.0;
-  math_Vector aDiag(size_t{2}, aMagnitude);
-  math_Vector aSubdiag(size_t{1}, aMagnitude / 4.0);
+  math_Vector  aDiag(size_t{2}, aMagnitude);
+  math_Vector  aSubdiag(size_t{1}, aMagnitude / 4.0);
 
   const MathLin::EigenResult aResult = MathLin::EigenTridiagonal(aDiag, aSubdiag);
   ASSERT_TRUE(aResult.IsDone());
@@ -193,21 +193,19 @@ TEST(MathLin_EigenSearch_Test, LargeFiniteDiagonalDoesNotDeflateCoupling)
 
 TEST(MathLin_EigenSearch_Test, InputAndIterationStatuses)
 {
-  math_Vector aOne(size_t{1}, 7.0);
-  math_Vector anEmpty(size_t{0});
+  math_Vector                aOne(size_t{1}, 7.0);
+  math_Vector                anEmpty(size_t{0});
   const MathLin::EigenResult aSingle = MathLin::EigenTridiagonal(aOne, anEmpty);
   ASSERT_TRUE(aSingle.IsDone());
   EXPECT_DOUBLE_EQ(aSingle.EigenValues->At(0), 7.0);
 
   math_Vector aWrong(size_t{2}, 0.0);
   EXPECT_EQ(MathLin::EigenTridiagonal(aOne, aWrong).Status, MathUtils::Status::InvalidInput);
-  EXPECT_EQ(MathLin::EigenTridiagonal(aOne, anEmpty, 0).Status,
-            MathUtils::Status::InvalidInput);
+  EXPECT_EQ(MathLin::EigenTridiagonal(aOne, anEmpty, 0).Status, MathUtils::Status::InvalidInput);
 
   math_Vector aDiag(size_t{4}, 2.0);
   math_Vector aSubdiag(size_t{3}, 1.0);
-  EXPECT_EQ(MathLin::EigenTridiagonal(aDiag, aSubdiag, 1).Status,
-            MathUtils::Status::MaxIterations);
+  EXPECT_EQ(MathLin::EigenTridiagonal(aDiag, aSubdiag, 1).Status, MathUtils::Status::MaxIterations);
 }
 
 TEST(MathLin_EigenSearch_Test, BasicParityWithLegacy_3x3)

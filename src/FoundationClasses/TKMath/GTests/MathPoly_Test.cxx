@@ -68,8 +68,7 @@ TEST(MathPoly_LinearTest, ZeroCoefficient_NoSolution)
 TEST(MathPoly_LinearTest, UnrepresentableFiniteRootIsNumericalError)
 {
   const MathPoly::PolyResult aResult =
-    MathPoly::Linear(std::numeric_limits<double>::denorm_min(),
-                     std::numeric_limits<double>::max());
+    MathPoly::Linear(std::numeric_limits<double>::denorm_min(), std::numeric_limits<double>::max());
   EXPECT_EQ(aResult.Status, MathUtils::Status::NumericalError);
   EXPECT_EQ(aResult.NbRoots, 0u);
 }
@@ -181,8 +180,7 @@ TEST(MathPoly_QuadraticTest, GlobalCoefficientScalingDoesNotChangeRoots)
 {
   for (double aScale : {1.0e-300, 1.0e300})
   {
-    MathPoly::PolyResult aResult =
-      MathPoly::Quadratic(aScale, -5.0 * aScale, 6.0 * aScale);
+    MathPoly::PolyResult aResult = MathPoly::Quadratic(aScale, -5.0 * aScale, 6.0 * aScale);
     ASSERT_TRUE(aResult.IsDone());
     ASSERT_EQ(aResult.NbRoots, 2u);
     EXPECT_NEAR(aResult.Roots[0], 2.0, THE_TOLERANCE);
@@ -201,7 +199,7 @@ TEST(MathPoly_QuadraticTest, ExtremeRootMagnitudes)
 
 TEST(MathPoly_QuadraticTest, RejectsNonFiniteCoefficients)
 {
-  const double aNan = std::numeric_limits<double>::quiet_NaN();
+  const double aNan       = std::numeric_limits<double>::quiet_NaN();
   const double anInfinity = std::numeric_limits<double>::infinity();
   EXPECT_EQ(MathPoly::Quadratic(aNan, 1.0, 1.0).Status, MathUtils::Status::InvalidInput);
   EXPECT_EQ(MathPoly::Quadratic(1.0, anInfinity, 1.0).Status, MathUtils::Status::InvalidInput);
@@ -349,8 +347,7 @@ TEST(MathPoly_CubicTest, ThreeUnevenRealRoots)
 TEST(MathPoly_CubicTest, FractionalTangentialRoot)
 {
   // x^3 - 2.125*x^2 + 0.171875*x + 1.181640625 = 0
-  const MathPoly::PolyResult aResult =
-    MathPoly::Cubic(1.0, -2.125, 0.171875, 1.181640625);
+  const MathPoly::PolyResult aResult = MathPoly::Cubic(1.0, -2.125, 0.171875, 1.181640625);
 
   ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
   ASSERT_EQ(aResult.NbRoots, size_t{2});
@@ -364,8 +361,7 @@ TEST(MathPoly_CubicTest, FractionalTangentialRoot)
 TEST(MathPoly_CubicTest, LargeScaleIrregularEquation)
 {
   // 2.3e80*x^3 - 1.7e80*x^2 - 3.9e80*x + 6.5e79 = 0
-  const MathPoly::PolyResult aResult =
-    MathPoly::Cubic(2.3e80, -1.7e80, -3.9e80, 6.5e79);
+  const MathPoly::PolyResult aResult = MathPoly::Cubic(2.3e80, -1.7e80, -3.9e80, 6.5e79);
 
   ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
   ASSERT_EQ(aResult.NbRoots, size_t{3});
@@ -493,11 +489,8 @@ TEST(MathPoly_QuarticTest, GloballyScaledRepeatedEquation)
 {
   for (double aScale : {1.0e-280, 1.0e280})
   {
-    MathPoly::PolyResult aResult = MathPoly::Quartic(aScale,
-                                                     -8.0 * aScale,
-                                                     22.0 * aScale,
-                                                     -24.0 * aScale,
-                                                     9.0 * aScale);
+    MathPoly::PolyResult aResult =
+      MathPoly::Quartic(aScale, -8.0 * aScale, 22.0 * aScale, -24.0 * aScale, 9.0 * aScale);
     ASSERT_TRUE(aResult.IsDone());
     ASSERT_EQ(aResult.NbRoots, 2u);
     EXPECT_NEAR(aResult.Roots[0], 1.0, 1.0e-10);
@@ -535,7 +528,7 @@ TEST(MathPoly_ComplexRootsTest, QuarticWithRealAndComplexRoots)
 {
   // 1.3*x^4 - 0.4*x^3 + 0.7*x^2 - 2.2*x - 1.1 = 0
   const double               aCoefficients[] = {-1.1, -2.2, 0.7, -0.4, 1.3};
-  const MathPoly::PolyResult aResult          = MathPoly::Laguerre(aCoefficients, 4);
+  const MathPoly::PolyResult aResult         = MathPoly::Laguerre(aCoefficients, 4);
 
   ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
   ASSERT_EQ(aResult.NbRoots, size_t{2});

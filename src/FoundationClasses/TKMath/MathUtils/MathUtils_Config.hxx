@@ -108,10 +108,10 @@ constexpr double THE_ARMIJO_C1 = 1.0e-4;
 //! Provides common settings for convergence criteria and iteration limits.
 struct Config
 {
-  uint32_t MaxIterations = 100;   //!< Maximum number of iterations allowed
-  double Tolerance     = 1.0e-10; //!< General convergence tolerance
-  double XTolerance    = 1.0e-10; //!< Tolerance for solution change |x_{n+1} - x_n|
-  double FTolerance    = 1.0e-10; //!< Tolerance for function value |f(x)|
+  uint32_t MaxIterations = 100;     //!< Maximum number of iterations allowed
+  double   Tolerance     = 1.0e-10; //!< General convergence tolerance
+  double   XTolerance    = 1.0e-10; //!< Tolerance for solution change |x_{n+1} - x_n|
+  double   FTolerance    = 1.0e-10; //!< Tolerance for function value |f(x)|
 
   //! Relative tolerance used together with the absolute X/F tolerances.
   double RelativeTolerance = 1.0e-10;
@@ -159,9 +159,9 @@ struct BoundedConfig : Config
   //! @param theUpper upper bound
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
-  BoundedConfig(double theLower,
-                double theUpper,
-                double theTolerance = 1.0e-10,
+  BoundedConfig(double   theLower,
+                double   theUpper,
+                double   theTolerance = 1.0e-10,
                 uint32_t theMaxIter   = 100)
       : Config(theTolerance, theMaxIter),
         LowerBound(theLower),
@@ -190,9 +190,7 @@ struct NDimConfig : Config
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
   //! @param theUseBounds whether to use bounds
-  explicit NDimConfig(double   theTolerance,
-                      uint32_t theMaxIter  = 100,
-                      bool     theUseBounds = false)
+  explicit NDimConfig(double theTolerance, uint32_t theMaxIter = 100, bool theUseBounds = false)
       : Config(theTolerance, theMaxIter),
         UseBounds(theUseBounds)
   {
@@ -203,10 +201,10 @@ struct NDimConfig : Config
 //! Provides settings for quadrature order and adaptive refinement.
 struct IntegConfig
 {
-  uint32_t InitialOrder  = 15;    //!< Initial number of quadrature points
-  uint32_t MaxOrder      = 61;    //!< Maximum quadrature order (Gauss-Legendre limit)
-  uint32_t MaxIterations = 100;   //!< Maximum adaptive subdivision iterations
-  double Tolerance     = 1.0e-10; //!< Relative tolerance for error estimation
+  uint32_t InitialOrder  = 15;      //!< Initial number of quadrature points
+  uint32_t MaxOrder      = 61;      //!< Maximum quadrature order (Gauss-Legendre limit)
+  uint32_t MaxIterations = 100;     //!< Maximum adaptive subdivision iterations
+  double   Tolerance     = 1.0e-10; //!< Relative tolerance for error estimation
 
   //! Default constructor.
   IntegConfig() = default;

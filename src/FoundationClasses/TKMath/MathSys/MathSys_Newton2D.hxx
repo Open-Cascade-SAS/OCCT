@@ -333,8 +333,8 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
       }
 
       aRes.ResidualNorm = Utils::SafeNormN(aCheckF);
-      aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                 : MathUtils::Status::MaxIterations;
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -348,8 +348,8 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
   }
 
   aRes.ResidualNorm = Utils::SafeNormN(aF);
-  aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                             : MathUtils::Status::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 
@@ -519,8 +519,8 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
       }
 
       aRes.ResidualNorm = std::hypot(aCheckF1, aCheckF2);
-      aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                 : MathUtils::Status::MaxIterations;
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -533,8 +533,8 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
   }
 
   aRes.ResidualNorm = std::hypot(aF1, aF2);
-  aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                             : MathUtils::Status::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

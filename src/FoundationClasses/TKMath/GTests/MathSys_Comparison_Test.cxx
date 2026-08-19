@@ -135,8 +135,8 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
     theD.ChangeAt(0, 0) = aY - 1.0;
     theD.ChangeAt(0, 1) = 1.0 + aX;
     theD.ChangeAt(1, 0) = 0.0;
@@ -326,8 +326,8 @@ public:
   bool Value(const math_Vector& theX, math_Vector& theF)
   {
     constexpr double THE_INV_SQRT_TWO = 0.70710678118654752440;
-    theF.ChangeAt(0) = std::sqrt(2.0) * theX.At(0) + 3.0 * THE_INV_SQRT_TWO * theX.At(1)
-                       - THE_INV_SQRT_TWO;
+    theF.ChangeAt(0) =
+      std::sqrt(2.0) * theX.At(0) + 3.0 * THE_INV_SQRT_TWO * theX.At(1) - THE_INV_SQRT_TWO;
     theF.ChangeAt(1) = THE_INV_SQRT_TWO * theX.At(1) - THE_INV_SQRT_TWO;
     return true;
   }
@@ -335,10 +335,10 @@ public:
   bool Derivatives(const math_Vector&, math_Matrix& theD)
   {
     constexpr double THE_INV_SQRT_TWO = 0.70710678118654752440;
-    theD.ChangeAt(0, 0) = std::sqrt(2.0);
-    theD.ChangeAt(0, 1) = 3.0 * THE_INV_SQRT_TWO;
-    theD.ChangeAt(1, 0) = 0.0;
-    theD.ChangeAt(1, 1) = THE_INV_SQRT_TWO;
+    theD.ChangeAt(0, 0)               = std::sqrt(2.0);
+    theD.ChangeAt(0, 1)               = 3.0 * THE_INV_SQRT_TWO;
+    theD.ChangeAt(1, 0)               = 0.0;
+    theD.ChangeAt(1, 1)               = THE_INV_SQRT_TWO;
     return true;
   }
 
@@ -357,8 +357,8 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     theF.ChangeAt(0) = std::exp(aX) + aY * aY - 2.0;
     theF.ChangeAt(1) = aX * aX + aY - 1.0;
     return true;
@@ -366,8 +366,8 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
     theD.ChangeAt(0, 0) = std::exp(aX);
     theD.ChangeAt(0, 1) = 2.0 * aY;
     theD.ChangeAt(1, 0) = 2.0 * aX;
@@ -390,8 +390,8 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     theF.ChangeAt(0) = std::sin(aX) + aY * aY - 1.0;
     theF.ChangeAt(1) = aX * aY + std::cos(aY) - 1.2;
     return true;
@@ -399,8 +399,8 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
     theD.ChangeAt(0, 0) = std::cos(aX);
     theD.ChangeAt(0, 1) = 2.0 * aY;
     theD.ChangeAt(1, 0) = aY;
@@ -423,9 +423,9 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
-    const double aZ = theX.At(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
+    const double aZ  = theX.At(2);
     theF.ChangeAt(0) = aX * aX + aY + aZ - 2.5;
     theF.ChangeAt(1) = std::sin(aX) + aY * aY - aZ - 1.0;
     theF.ChangeAt(2) = std::exp(aZ) + aX * aY - 2.8;
@@ -434,9 +434,9 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
-    const double aZ = theX.At(2);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
+    const double aZ     = theX.At(2);
     theD.ChangeAt(0, 0) = 2.0 * aX;
     theD.ChangeAt(0, 1) = 1.0;
     theD.ChangeAt(0, 2) = 1.0;
@@ -464,9 +464,9 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
-    const double aZ = theX.At(2);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
+    const double aZ  = theX.At(2);
     theF.ChangeAt(0) = aX * aY + aZ * aZ - 1.5;
     theF.ChangeAt(1) = std::cos(aX) + aY - aZ - 0.6;
     theF.ChangeAt(2) = aX * aX * aX + aY * aY + aZ - 2.2;
@@ -475,9 +475,9 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
-    const double aZ = theX.At(2);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
+    const double aZ     = theX.At(2);
     theD.ChangeAt(0, 0) = aY;
     theD.ChangeAt(0, 1) = aX;
     theD.ChangeAt(0, 2) = 2.0 * aZ;
@@ -505,8 +505,8 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     theF.ChangeAt(0) = std::exp(aX) + aY * aY - 2.4621188003905088;
     theF.ChangeAt(1) = std::sin(aY) + aX * aY - 1.1973560908995227;
     theF.ChangeAt(2) = aX * aX + std::cos(aY) - 1.0567067093471654;
@@ -515,8 +515,8 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
     theD.ChangeAt(0, 0) = std::exp(aX);
     theD.ChangeAt(0, 1) = 2.0 * aY;
     theD.ChangeAt(1, 0) = aY;
@@ -541,8 +541,8 @@ public:
 
   bool Value(const math_Vector& theX, math_Vector& theF) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX  = theX.At(0);
+    const double aY  = theX.At(1);
     theF.ChangeAt(0) = std::log(1.0 + aX) + aY * aY - 1.5;
     theF.ChangeAt(1) = aX * aY + std::sin(aY) - 1.0;
     return true;
@@ -550,8 +550,8 @@ public:
 
   bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
-    const double aX = theX.At(0);
-    const double aY = theX.At(1);
+    const double aX     = theX.At(0);
+    const double aY     = theX.At(1);
     theD.ChangeAt(0, 0) = 1.0 / (1.0 + aX);
     theD.ChangeAt(0, 1) = 2.0 * aY;
     theD.ChangeAt(1, 0) = aY;
@@ -1016,8 +1016,8 @@ TEST(MathSys_ComparisonTest, NewtonBounded_UsesFeasibleGradientForActiveSet)
   math_Vector          aStart(size_t{2}, 0.0);
   math_Vector          aLower(size_t{2});
   math_Vector          anUpper(size_t{2});
-  aLower.ChangeAt(0) = 0.0;
-  aLower.ChangeAt(1) = -2.0;
+  aLower.ChangeAt(0)  = 0.0;
+  aLower.ChangeAt(1)  = -2.0;
   anUpper.ChangeAt(0) = 2.0;
   anUpper.ChangeAt(1) = 0.0;
   math_Vector aTolerance(size_t{2}, 1.0e-12);
@@ -1090,7 +1090,7 @@ TEST(MathSys_ComparisonTest, NewtonBounded_TrigonometricProductSystem)
 TEST(MathSys_ComparisonTest, Newton_MixedSpaceSystem)
 {
   MixedSpaceFunctionSet aFunction;
-  math_Vector            aStart(size_t{3});
+  math_Vector           aStart(size_t{3});
   aStart.ChangeAt(0) = 0.8;
   aStart.ChangeAt(1) = 1.0;
   aStart.ChangeAt(2) = 0.7;
@@ -1114,7 +1114,7 @@ TEST(MathSys_ComparisonTest, Newton_MixedSpaceSystem)
 TEST(MathSys_ComparisonTest, Newton_CubicSpaceSystem)
 {
   CubicSpaceFunctionSet aFunction;
-  math_Vector            aStart(size_t{3}, 0.8);
+  math_Vector           aStart(size_t{3}, 0.8);
 
   const MathSys::SystemResult aResult = MathSys::Newton(aFunction, aStart, 1.0e-12, 1.0e-12);
   ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
@@ -1162,10 +1162,10 @@ TEST(MathSys_ComparisonTest, NewtonBounded_LogarithmicSystem)
   math_Vector                   aLower(size_t{2});
   math_Vector                   anUpper(size_t{2});
   math_Vector                   aTolerance(size_t{2}, 1.0e-12);
-  aStart.ChangeAt(0) = 0.4;
-  aStart.ChangeAt(1) = 1.2;
-  aLower.ChangeAt(0) = 0.01;
-  aLower.ChangeAt(1) = 0.8;
+  aStart.ChangeAt(0)  = 0.4;
+  aStart.ChangeAt(1)  = 1.2;
+  aLower.ChangeAt(0)  = 0.01;
+  aLower.ChangeAt(1)  = 0.8;
   anUpper.ChangeAt(0) = 0.8;
   anUpper.ChangeAt(1) = 1.4;
 

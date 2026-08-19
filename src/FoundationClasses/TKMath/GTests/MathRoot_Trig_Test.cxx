@@ -276,10 +276,8 @@ TEST(MathRoot_TrigTest, Bounds_FirstQuadrant)
 TEST(MathRoot_TrigTest, Bounds_SecondQuadrant)
 {
   // sin(x) = 0.5 in [PI/2, PI]
-  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0,
-                                                               -0.5,
-                                                               MathUtils::THE_PI / 2.0,
-                                                               MathUtils::THE_PI);
+  MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricLinear(1.0, -0.5, MathUtils::THE_PI / 2.0, MathUtils::THE_PI);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 1);
   EXPECT_GE(aResult.Roots[0], MathUtils::THE_PI / 2.0 - THE_TOL);
@@ -290,14 +288,13 @@ TEST(MathRoot_TrigTest, Bounds_SecondQuadrant)
 TEST(MathRoot_TrigTest, Bounds_NarrowRange)
 {
   // cos(x) = 0 in narrow range around PI/2
-  MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0,
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0,
-                            MathUtils::THE_PI / 2.0 - 0.1,
-                            MathUtils::THE_PI / 2.0 + 0.1);
+  MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0,
+                                                         0.0,
+                                                         1.0,
+                                                         0.0,
+                                                         0.0,
+                                                         MathUtils::THE_PI / 2.0 - 0.1,
+                                                         MathUtils::THE_PI / 2.0 + 0.1);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 1);
   EXPECT_NEAR(aResult.Roots[0], MathUtils::THE_PI / 2.0, THE_TOL);
@@ -326,8 +323,7 @@ TEST(MathRoot_TrigTest, Bounds_RootOutsideRange)
 TEST(MathRoot_TrigTest, Bounds_FullCircle)
 {
   // sin(x) = 0 in [0, 2*PI]
-  MathRoot::TrigResult aResult =
-    MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, MathUtils::THE_2PI);
+  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 2);
 }
@@ -448,9 +444,8 @@ TEST(MathRoot_TrigTest, Stability_SmallCoefficients)
 
 TEST(MathRoot_TrigTest, GlobalScalingPreservesClassificationAndRoots)
 {
-  const MathRoot::TrigResult aSmall =
-    MathRoot::Trigonometric(1.0e-13, 0.0, 0.0, 0.0, 1.0e-13);
-  const MathRoot::TrigResult aUnit = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, 1.0);
+  const MathRoot::TrigResult aSmall = MathRoot::Trigonometric(1.0e-13, 0.0, 0.0, 0.0, 1.0e-13);
+  const MathRoot::TrigResult aUnit  = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, 1.0);
   ASSERT_TRUE(aSmall.IsDone());
   ASSERT_TRUE(aUnit.IsDone());
   EXPECT_FALSE(aSmall.InfiniteRoots);
@@ -458,9 +453,8 @@ TEST(MathRoot_TrigTest, GlobalScalingPreservesClassificationAndRoots)
   EXPECT_EQ(aSmall.NbRoots, 0u);
   EXPECT_EQ(aSmall.NbRoots, aUnit.NbRoots);
 
-  const MathRoot::TrigResult aScaledLinear =
-    MathRoot::TrigonometricLinear(1.0e-200, -0.5e-200);
-  const MathRoot::TrigResult aLinear = MathRoot::TrigonometricLinear(1.0, -0.5);
+  const MathRoot::TrigResult aScaledLinear = MathRoot::TrigonometricLinear(1.0e-200, -0.5e-200);
+  const MathRoot::TrigResult aLinear       = MathRoot::TrigonometricLinear(1.0, -0.5);
   ASSERT_TRUE(aScaledLinear.IsDone());
   ASSERT_EQ(aScaledLinear.NbRoots, aLinear.NbRoots);
   for (size_t anIndex = 0; anIndex < aLinear.NbRoots; ++anIndex)
@@ -573,13 +567,7 @@ TEST(MathRoot_TrigTest, Ellipse_PointOnMajorAxis)
   double aBY             = 0.0;
 
   MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0,
-                            aB2MinusA2Over2,
-                            -aBY,
-                            aAX,
-                            0.0,
-                            0.0,
-                            MathUtils::THE_2PI);
+    MathRoot::Trigonometric(0.0, aB2MinusA2Over2, -aBY, aAX, 0.0, 0.0, MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   // Should find x=0 and x=PI as roots
   EXPECT_GE(aResult.NbRoots, 2);
@@ -597,13 +585,7 @@ TEST(MathRoot_TrigTest, Ellipse_GeneralPoint)
   double aBY             = 10.0 * 8.0;            // 80
 
   MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(0.0,
-                            aB2MinusA2Over2,
-                            -aBY,
-                            aAX,
-                            0.0,
-                            0.0,
-                            MathUtils::THE_2PI);
+    MathRoot::Trigonometric(0.0, aB2MinusA2Over2, -aBY, aAX, 0.0, 0.0, MathUtils::THE_2PI);
   ASSERT_TRUE(aResult.IsDone());
   // Verify any roots found
   verifyRoots(aResult, 0.0, aB2MinusA2Over2, -aBY, aAX, 0.0);
@@ -616,8 +598,7 @@ TEST(MathRoot_TrigTest, Ellipse_GeneralPoint)
 TEST(MathRoot_TrigTest, NegativeBounds_Basic)
 {
   // sin(x) = 0 in [-PI, 0]
-  MathRoot::TrigResult aResult =
-    MathRoot::TrigonometricLinear(1.0, 0.0, -MathUtils::THE_PI, 0.0);
+  MathRoot::TrigResult aResult = MathRoot::TrigonometricLinear(1.0, 0.0, -MathUtils::THE_PI, 0.0);
   ASSERT_TRUE(aResult.IsDone());
   // Should find x = -PI and x = 0 (or just one depending on boundary handling)
   EXPECT_GE(aResult.NbRoots, 1);
@@ -631,13 +612,8 @@ TEST(MathRoot_TrigTest, NegativeBounds_Basic)
 TEST(MathRoot_TrigTest, NegativeBounds_CosEquation)
 {
   // cos(x) = 0.5 in [-PI, PI]
-  MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0,
-                                                         0.0,
-                                                         1.0,
-                                                         0.0,
-                                                         -0.5,
-                                                         -MathUtils::THE_PI,
-                                                         MathUtils::THE_PI);
+  MathRoot::TrigResult aResult =
+    MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, -0.5, -MathUtils::THE_PI, MathUtils::THE_PI);
   ASSERT_TRUE(aResult.IsDone());
   // cos(x) = 0.5 => x = +/-PI/3
   EXPECT_GE(aResult.NbRoots, 2);

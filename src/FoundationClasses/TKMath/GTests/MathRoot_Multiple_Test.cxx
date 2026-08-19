@@ -430,8 +430,7 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_NegativeExtrema_AsymmetricRoo
   aConfig.Offset     = -0.5;
   aConfig.FTolerance = 1.0e-12;
 
-  auto aResult =
-    MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 2.0 * MathUtils::THE_PI, aConfig);
+  auto aResult = MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 2.0 * MathUtils::THE_PI, aConfig);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots(), 2);
   if (aResult.NbRoots() == 2)

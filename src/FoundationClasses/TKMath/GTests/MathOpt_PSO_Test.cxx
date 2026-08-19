@@ -792,7 +792,7 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
 
 TEST(MathOpt_PSOTest, InBoundsSeed_ReEvaluates_StaleValue)
 {
-  SphereFunc aFunc;
+  SphereFunc  aFunc;
   math_Vector aLower(size_t{1}, -2.0);
   math_Vector anUpper(size_t{1}, 2.0);
   math_Vector aSeedPos(size_t{1}, 1.0);
@@ -810,7 +810,7 @@ TEST(MathOpt_PSOTest, InBoundsSeed_ReEvaluates_StaleValue)
   aConfig.NoImproveIters     = 10;
   aConfig.PolishBudgetPerDim = 0;
 
-  MathOpt::PSOStats aStats;
+  MathOpt::PSOStats             aStats;
   const MathUtils::VectorResult aResult =
     MathOpt::PSO(aFunc, aLower, anUpper, aConfig, &aSeeds, &aStats);
 
@@ -822,10 +822,10 @@ TEST(MathOpt_PSOTest, InBoundsSeed_ReEvaluates_StaleValue)
 
 TEST(MathOpt_PSOTest, MinIterationsUsesCompletedIterationCount)
 {
-  SphereFunc aFunc;
-  math_Vector aLower(size_t{1}, -1.0);
-  math_Vector anUpper(size_t{1}, 1.0);
-  math_Vector aSeedPos(size_t{1}, 0.0);
+  SphereFunc                                         aFunc;
+  math_Vector                                        aLower(size_t{1}, -1.0);
+  math_Vector                                        anUpper(size_t{1}, 1.0);
+  math_Vector                                        aSeedPos(size_t{1}, 0.0);
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
 
@@ -848,11 +848,11 @@ TEST(MathOpt_PSOTest, MinIterationsUsesCompletedIterationCount)
 
 TEST(MathOpt_PSOTest, RejectedParticleDoesNotPoisonValidBest)
 {
-  PartiallyDefinedFunc aFunc;
-  math_Vector          aLower(size_t{1}, -1.0);
-  math_Vector          anUpper(size_t{1}, 1.0);
-  math_Vector          aValidPos(size_t{1}, 0.25);
-  math_Vector          anInvalidPos(size_t{1}, -0.25);
+  PartiallyDefinedFunc                               aFunc;
+  math_Vector                                        aLower(size_t{1}, -1.0);
+  math_Vector                                        anUpper(size_t{1}, 1.0);
+  math_Vector                                        aValidPos(size_t{1}, 0.25);
+  math_Vector                                        anInvalidPos(size_t{1}, -0.25);
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aValidPos));
   aSeeds.Append(MathOpt::PSOSeedParticle(anInvalidPos));
@@ -876,21 +876,20 @@ TEST(MathOpt_PSOTest, RejectedParticleDoesNotPoisonValidBest)
 
 TEST(MathOpt_PSOTest, AllRejectedParticlesPreserveCallbackStatus)
 {
-  RejectAllFunc aFunc;
-  math_Vector   aLower(size_t{1}, -1.0);
-  math_Vector   anUpper(size_t{1}, 1.0);
+  RejectAllFunc      aFunc;
+  math_Vector        aLower(size_t{1}, -1.0);
+  math_Vector        anUpper(size_t{1}, 1.0);
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles = 4;
 
-  EXPECT_EQ(MathOpt::PSO(aFunc, aLower, anUpper, aConfig).Status,
-            MathUtils::Status::CallbackError);
+  EXPECT_EQ(MathOpt::PSO(aFunc, aLower, anUpper, aConfig).Status, MathUtils::Status::CallbackError);
 }
 
 TEST(MathOpt_PSOTest, BudgetExhaustionRetainsBest)
 {
-  SphereFunc aFunc;
-  math_Vector aLower(size_t{1}, -1.0);
-  math_Vector anUpper(size_t{1}, 1.0);
+  SphereFunc         aFunc;
+  math_Vector        aLower(size_t{1}, -1.0);
+  math_Vector        anUpper(size_t{1}, 1.0);
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles        = 4;
   aConfig.MaxIterations      = 1;

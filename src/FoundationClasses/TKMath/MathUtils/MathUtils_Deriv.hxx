@@ -224,8 +224,8 @@ bool NumericalGradientAdaptive(Function&    theFunc,
                                math_Vector& theGrad,
                                double       theRelStep = 1.0e-8)
 {
-  if (theX.Size() != theGrad.Size() || !Utils::IsFiniteVector(theX)
-      || !std::isfinite(theRelStep) || theRelStep <= 0.0)
+  if (theX.Size() != theGrad.Size() || !Utils::IsFiniteVector(theX) || !std::isfinite(theRelStep)
+      || theRelStep <= 0.0)
   {
     return false;
   }
@@ -467,7 +467,7 @@ bool NumericalHessian(Function&    theFunc,
       theX.ChangeAt(i) = aXi;
       theX.ChangeAt(j) = aXj;
 
-      const double aHij  = (aFpp - aFpm - aFmp + aFmm) / ((aPlusI - aMinusI) * (aPlusJ - aMinusJ));
+      const double aHij = (aFpp - aFpm - aFmp + aFmm) / ((aPlusI - aMinusI) * (aPlusJ - aMinusJ));
       if (!std::isfinite(aHij))
       {
         return false;

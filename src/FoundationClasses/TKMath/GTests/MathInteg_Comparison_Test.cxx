@@ -220,8 +220,7 @@ TEST(MathInteg_ComparisonTest, Gauss_SinPi)
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, MathUtils::THE_PI, anOrder);
 
   // New API
-  MathInteg::IntegResult aNewResult =
-    MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, anOrder);
+  MathInteg::IntegResult aNewResult = MathInteg::Gauss(aNewFunc, 0.0, MathUtils::THE_PI, anOrder);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -519,7 +518,7 @@ TEST(MathInteg_ComparisonTest, ReversedBounds)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, MathUtils::THE_PI, 0.0, 15);
-  MathInteg::IntegResult aNewResult = MathInteg::Gauss(aNewFunc, MathUtils::THE_PI, 0.0, 15);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, MathUtils::THE_PI, 0.0, 15);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());

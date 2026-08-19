@@ -716,13 +716,7 @@ VectorResult NewtonBounded(Function&           theFunc,
         if (aAlphaMax > 0.0)
         {
           aLineResult =
-            Utils::Backtrack(aBoundedFunc,
-                             aX,
-                             aDir,
-                             aGrad,
-                             aFx,
-                             aAlphaMax,
-                             theConfig.StepMin);
+            Utils::Backtrack(aBoundedFunc, aX, aDir, aGrad, aFx, aAlphaMax, theConfig.StepMin);
         }
 
         if (!aLineResult.IsValid)

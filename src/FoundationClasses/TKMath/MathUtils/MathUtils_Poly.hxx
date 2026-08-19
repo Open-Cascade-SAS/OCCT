@@ -144,7 +144,7 @@ inline double RefinePolyRoot(const double* theCoeffs,
 inline double RefinePolyRootDesc(const double* theCoeffs,
                                  int           theDegree,
                                  double        theRoot,
-                                  uint32_t      theMaxIter = 5)
+                                 uint32_t      theMaxIter = 5)
 {
   if (theCoeffs == nullptr || theDegree < 0 || theDegree > 4)
   {

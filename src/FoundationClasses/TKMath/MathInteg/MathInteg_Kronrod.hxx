@@ -242,8 +242,7 @@ IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, siz
     aAbsError           = aAsc * std::min(1.0, aScale);
   }
   // QUADPACK limits unrealistically small estimates using the absolute integral estimate.
-  if (anAbsVal
-      > RealSmall() / (50.0 * Precision::Computational()))
+  if (anAbsVal > RealSmall() / (50.0 * Precision::Computational()))
   {
     aAbsError = std::max(aAbsError, 50.0 * Precision::Computational() * anAbsVal);
   }
@@ -337,9 +336,8 @@ IntegResult Kronrod(Function&            theFunc,
 
   const auto isConverged = [&](double theError, double theValue) {
     const double anAbsValue = std::abs(theValue);
-    return anAbsValue > Precision::Computational()
-             ? theError <= theConfig.Tolerance * anAbsValue
-             : theError <= theConfig.Tolerance;
+    return anAbsValue > Precision::Computational() ? theError <= theConfig.Tolerance * anAbsValue
+                                                   : theError <= theConfig.Tolerance;
   };
 
   // Adaptive refinement
@@ -496,9 +494,9 @@ IntegResult KronrodAuto(Function& theFunc,
     // Check if tolerance is met
     const double anAbsValue  = std::abs(*aResult.Value);
     const bool   isConverged = aResult.AbsoluteError
-                               && (anAbsValue > Precision::Computational()
-                                     ? *aResult.AbsoluteError <= theTolerance * anAbsValue
-                                     : *aResult.AbsoluteError <= theTolerance);
+                             && (anAbsValue > Precision::Computational()
+                                   ? *aResult.AbsoluteError <= theTolerance * anAbsValue
+                                   : *aResult.AbsoluteError <= theTolerance);
     if (isConverged)
     {
       aResult.NbPoints = aTotalPoints;

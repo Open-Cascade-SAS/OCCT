@@ -59,8 +59,7 @@ std::vector<double> GetNewRoots(const MathPoly::PolyResult& theResult)
   {
     for (size_t i = 0; i < theResult.NbRoots; ++i)
     {
-      for (size_t aMultiplicity = 0; aMultiplicity < theResult.Multiplicities[i];
-           ++aMultiplicity)
+      for (size_t aMultiplicity = 0; aMultiplicity < theResult.Multiplicities[i]; ++aMultiplicity)
       {
         aRoots.push_back(theResult.Roots[i]);
       }

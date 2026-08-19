@@ -141,9 +141,8 @@ MathUtils::ScalarResult Secant(Function&                theFunc,
         aResult.Value  = aF1;
         return aResult;
       }
-      aResult.Status = (std::abs(aFNew) <= theConfig.FTolerance)
-                         ? MathUtils::Status::OK
-                         : MathUtils::Status::NotConverged;
+      aResult.Status = (std::abs(aFNew) <= theConfig.FTolerance) ? MathUtils::Status::OK
+                                                                 : MathUtils::Status::NotConverged;
       aResult.Root   = aXNew;
       aResult.Value  = aFNew;
       return aResult;

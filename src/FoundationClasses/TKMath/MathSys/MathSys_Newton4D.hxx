@@ -80,8 +80,7 @@ inline std::optional<double> MaxStep4D(const NewtonBoundsN<4>& theBounds, double
   const double aD1 = theBounds.Max[1] - theBounds.Min[1];
   const double aD2 = theBounds.Max[2] - theBounds.Min[2];
   const double aD3 = theBounds.Max[3] - theBounds.Min[3];
-  return theMaxStepRatio
-         * std::max(1.0, std::max(aD0, std::max(aD1, std::max(aD2, aD3))));
+  return theMaxStepRatio * std::max(1.0, std::max(aD0, std::max(aD1, std::max(aD2, aD3))));
 }
 
 //! Clamp solution array to bounds, optionally extending by soft-bounds ratio.
@@ -351,8 +350,8 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
       }
 
       aRes.ResidualNorm = Utils::SafeNormN(aCheckF);
-      aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                 : MathUtils::Status::MaxIterations;
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -368,8 +367,8 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
   }
 
   aRes.ResidualNorm = Utils::SafeNormN(aF);
-  aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                             : MathUtils::Status::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

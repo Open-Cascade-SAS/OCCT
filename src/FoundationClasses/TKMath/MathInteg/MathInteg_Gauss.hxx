@@ -237,9 +237,8 @@ IntegResult GaussAdaptive(Function&          theFunc,
 
   const auto isConverged = [&](double theError, double theValue) {
     const double anAbsValue = std::abs(theValue);
-    return anAbsValue > Precision::Computational()
-             ? theError <= theConfig.Tolerance * anAbsValue
-             : theError <= theConfig.Tolerance;
+    return anAbsValue > Precision::Computational() ? theError <= theConfig.Tolerance * anAbsValue
+                                                   : theError <= theConfig.Tolerance;
   };
 
   while (!isConverged(aTotalError, aTotalValue))

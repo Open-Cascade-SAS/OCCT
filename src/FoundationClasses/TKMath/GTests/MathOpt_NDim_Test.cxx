@@ -140,7 +140,7 @@ public:
   {
     const double aX = theX.At(0);
     const double aY = theX.At(1);
-    theF = 3.0 * aX * aX + 2.0 * aX * aY + 2.0 * aY * aY - 7.0 * aX + aY + 5.0;
+    theF            = 3.0 * aX * aX + 2.0 * aX * aY + 2.0 * aY * aY - 7.0 * aX + aY + 5.0;
     return true;
   }
 
@@ -652,7 +652,7 @@ TEST(MathOpt_BFGSTest, RotatedQuadraticMinimum)
 TEST(MathOpt_BFGSTest, RosenbrockFunction)
 {
   MathOptTest_RosenbrockFunction aFunc;
-  math_Vector        aStart(2);
+  math_Vector                    aStart(2);
   aStart.ChangeAt(0) = -1.0;
   aStart.ChangeAt(1) = 1.0;
 

@@ -432,9 +432,7 @@ inline TrigResult Trigonometric(double theA,
     {
       // Newton refinement with Halley's method fallback for double roots
       auto aRefineRoot = [&](double theX) -> double {
-        for (uint32_t anIter = 0;
-             anIter < Utils::THE_TRIG_REFINEMENT_MAX_ITERATIONS;
-             ++anIter)
+        for (uint32_t anIter = 0; anIter < Utils::THE_TRIG_REFINEMENT_MAX_ITERATIONS; ++anIter)
         {
           double aCos  = std::cos(theX);
           double aSin  = std::sin(theX);

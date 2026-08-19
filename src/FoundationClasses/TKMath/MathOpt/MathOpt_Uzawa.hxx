@@ -46,9 +46,9 @@ struct UzawaResult
 //! Configuration for Uzawa algorithm.
 struct UzawaConfig
 {
-  double EpsLix        = 1.0e-6; //!< Tolerance for X convergence
-  double EpsLic        = 1.0e-6; //!< Tolerance for dual variable convergence
-  uint32_t MaxIterations = 500;   //!< Maximum iterations
+  double   EpsLix        = 1.0e-6; //!< Tolerance for X convergence
+  double   EpsLic        = 1.0e-6; //!< Tolerance for dual variable convergence
+  uint32_t MaxIterations = 500;    //!< Maximum iterations
 };
 
 //! Solve constrained least squares using Uzawa algorithm.
@@ -72,8 +72,8 @@ struct UzawaConfig
 inline UzawaResult Uzawa(const math_Matrix& theCont,
                          const math_Vector& theSecont,
                          const math_Vector& theStartingPoint,
-                          size_t             theNce,
-                          size_t             theNci,
+                         size_t             theNce,
+                         size_t             theNci,
                          const UzawaConfig& theConfig = UzawaConfig())
 {
   UzawaResult aResult;
@@ -82,11 +82,10 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
   const size_t aNcol = theCont.ColSize();
 
   // Validate dimensions
-  if (theNce > aNlig || theNci != aNlig - theNce
-      || theSecont.Size() != aNlig || theStartingPoint.Size() != aNcol
-      || !Utils::IsFinite(theCont) || !Utils::IsFinite(theSecont)
-      || !Utils::IsFinite(theStartingPoint) || theConfig.MaxIterations == 0
-      || !std::isfinite(theConfig.EpsLix) || theConfig.EpsLix <= 0.0
+  if (theNce > aNlig || theNci != aNlig - theNce || theSecont.Size() != aNlig
+      || theStartingPoint.Size() != aNcol || !Utils::IsFinite(theCont)
+      || !Utils::IsFinite(theSecont) || !Utils::IsFinite(theStartingPoint)
+      || theConfig.MaxIterations == 0 || !std::isfinite(theConfig.EpsLix) || theConfig.EpsLix <= 0.0
       || !std::isfinite(theConfig.EpsLic) || theConfig.EpsLic <= 0.0)
   {
     aResult.Status = Status::InvalidInput;
@@ -182,10 +181,9 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
     aResult.Dual       = aVardua;
     aResult.Error      = aErruza;
     aResult.InverseCTC = aCTCinv;
-    aResult.Status     = Utils::IsFinite(aResul) && Utils::IsFinite(aVardua)
-                            && Utils::IsFinite(aErruza)
-                         ? Status::OK
-                         : Status::NumericalError;
+    aResult.Status = Utils::IsFinite(aResul) && Utils::IsFinite(aVardua) && Utils::IsFinite(aErruza)
+                       ? Status::OK
+                       : Status::NumericalError;
     return aResult;
   }
 
@@ -206,8 +204,7 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
       aMatrixNorm       = std::hypot(aMatrixNorm, aVal);
     }
   }
-  if (!std::isfinite(aMatrixNorm)
-      || aMatrixNorm <= std::sqrt(std::numeric_limits<double>::min()))
+  if (!std::isfinite(aMatrixNorm) || aMatrixNorm <= std::sqrt(std::numeric_limits<double>::min()))
   {
     aResult.Status = Status::Singular;
     return aResult;
@@ -230,7 +227,7 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
     for (size_t i = 0; i < aNcol; ++i)
     {
       const double aXprev = aErruza.At(i);
-      double aSum   = 0.0;
+      double       aSum   = 0.0;
       for (size_t j = 0; j < aNlig; ++j)
       {
         aSum -= theCont.At(j, i) * aVardua.At(j);
@@ -283,10 +280,10 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
       aResult.Solution = aResul;
       aResult.Dual     = aVardua;
       aResult.Error    = aErruza;
-      aResult.Status   = Utils::IsFinite(aResul) && Utils::IsFinite(aVardua)
-                            && Utils::IsFinite(aErruza)
-                         ? Status::OK
-                         : Status::NumericalError;
+      aResult.Status =
+        Utils::IsFinite(aResul) && Utils::IsFinite(aVardua) && Utils::IsFinite(aErruza)
+          ? Status::OK
+          : Status::NumericalError;
       return aResult;
     }
   }
@@ -299,7 +296,7 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
   aResult.Solution = aResul;
   aResult.Dual     = aVardua;
   aResult.Error    = aErruza;
-  aResult.Status = Status::MaxIterations;
+  aResult.Status   = Status::MaxIterations;
   return aResult;
 }
 

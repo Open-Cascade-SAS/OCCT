@@ -1,6 +1,15 @@
-// Copyright (c) 2025 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #ifndef _MathPoly_Utils_HeaderFile
 #define _MathPoly_Utils_HeaderFile
@@ -65,18 +74,18 @@ inline bool Validate(const double* theCoefficients, int theDegree, double theTol
 }
 
 //! Scales x = 2^theVariableExponent*y and normalizes coefficients by a common power of two.
-inline bool ScalePolynomial(const double*    theCoefficients,
-                            int              theDegree,
+inline bool ScalePolynomial(const double*     theCoefficients,
+                            int               theDegree,
                             LongCoefficients& theScaled,
-                            int&             theVariableExponent)
+                            int&              theVariableExponent)
 {
   if (theCoefficients[theDegree] == 0.0)
   {
     return false;
   }
 
-  const int aLeadingExponent = std::ilogb(std::abs(theCoefficients[theDegree]));
-  long double aScaleExponent = -1000.0L;
+  const int   aLeadingExponent = std::ilogb(std::abs(theCoefficients[theDegree]));
+  long double aScaleExponent   = -1000.0L;
   for (int anIndex = 0; anIndex < theDegree; ++anIndex)
   {
     if (theCoefficients[anIndex] == 0.0)
@@ -84,20 +93,21 @@ inline bool ScalePolynomial(const double*    theCoefficients,
       continue;
     }
     const int anExponent = std::ilogb(std::abs(theCoefficients[anIndex]));
-    aScaleExponent = std::max(aScaleExponent,
+    aScaleExponent       = std::max(aScaleExponent,
                               static_cast<long double>(anExponent - aLeadingExponent)
                                 / static_cast<long double>(theDegree - anIndex));
   }
-  theVariableExponent = std::max(-1000, std::min(1000, static_cast<int>(std::ceil(aScaleExponent))));
+  theVariableExponent =
+    std::max(-1000, std::min(1000, static_cast<int>(std::ceil(aScaleExponent))));
 
   int aCommonExponent = aLeadingExponent + theDegree * theVariableExponent;
   for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
   {
     if (theCoefficients[anIndex] != 0.0)
     {
-      aCommonExponent = std::max(aCommonExponent,
-                                 std::ilogb(std::abs(theCoefficients[anIndex]))
-                                   + anIndex * theVariableExponent);
+      aCommonExponent =
+        std::max(aCommonExponent,
+                 std::ilogb(std::abs(theCoefficients[anIndex])) + anIndex * theVariableExponent);
     }
   }
   for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
@@ -116,16 +126,15 @@ inline void Evaluate(const LongCoefficients& theCoefficients,
                      long double&            theDerivative,
                      long double&            theMagnitude)
 {
-  theValue      = theCoefficients[static_cast<size_t>(theDegree)];
-  theDerivative = 0.0L;
-  theMagnitude  = std::abs(theCoefficients[static_cast<size_t>(theDegree)]);
+  theValue                 = theCoefficients[static_cast<size_t>(theDegree)];
+  theDerivative            = 0.0L;
+  theMagnitude             = std::abs(theCoefficients[static_cast<size_t>(theDegree)]);
   const long double anAbsX = std::abs(theX);
   for (int anIndex = theDegree - 1; anIndex >= 0; --anIndex)
   {
     theDerivative = theDerivative * theX + theValue;
-    theValue = theValue * theX + theCoefficients[static_cast<size_t>(anIndex)];
-    theMagnitude = theMagnitude * anAbsX
-                   + std::abs(theCoefficients[static_cast<size_t>(anIndex)]);
+    theValue      = theValue * theX + theCoefficients[static_cast<size_t>(anIndex)];
+    theMagnitude  = theMagnitude * anAbsX + std::abs(theCoefficients[static_cast<size_t>(anIndex)]);
   }
 }
 
@@ -145,16 +154,17 @@ inline long double RootBound(const LongCoefficients& theCoefficients, int theDeg
   long double       aRatio   = 0.0L;
   for (int anIndex = 0; anIndex < theDegree; ++anIndex)
   {
-    aRatio = std::max(aRatio,
-                      std::abs(theCoefficients[static_cast<size_t>(anIndex)]) / aLeading);
+    aRatio = std::max(aRatio, std::abs(theCoefficients[static_cast<size_t>(anIndex)]) / aLeading);
   }
   return 1.0L + aRatio;
 }
 
-inline void AppendUnique(std::array<long double, 4>& theRoots, size_t& theCount, long double theRoot)
+inline void AppendUnique(std::array<long double, 4>& theRoots,
+                         size_t&                     theCount,
+                         long double                 theRoot)
 {
-  const long double aTolerance = 128.0L * std::numeric_limits<long double>::epsilon()
-                                 * std::max(1.0L, std::abs(theRoot));
+  const long double aTolerance =
+    128.0L * std::numeric_limits<long double>::epsilon() * std::max(1.0L, std::abs(theRoot));
   for (size_t anIndex = 0; anIndex < theCount; ++anIndex)
   {
     if (std::abs(theRoots[anIndex] - theRoot) <= aTolerance)
@@ -187,7 +197,7 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
     aDerivative[static_cast<size_t>(anIndex - 1)] =
       static_cast<long double>(anIndex) * theCoefficients[static_cast<size_t>(anIndex)];
   }
-  std::array<long double, 4> aCritical = {};
+  std::array<long double, 4> aCritical      = {};
   size_t                     aCriticalCount = 0;
   if (!SolveDistinctReal(aDerivative, theDegree - 1, aCritical, aCriticalCount))
   {
@@ -195,10 +205,10 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
   }
   std::sort(aCritical.begin(), aCritical.begin() + aCriticalCount);
 
-  std::array<long double, 6> aPoints = {};
+  std::array<long double, 6> aPoints     = {};
   size_t                     aPointCount = 0;
-  const long double          aBound = RootBound(theCoefficients, theDegree);
-  aPoints[aPointCount++] = -aBound;
+  const long double          aBound      = RootBound(theCoefficients, theDegree);
+  aPoints[aPointCount++]                 = -aBound;
   for (size_t anIndex = 0; anIndex < aCriticalCount; ++anIndex)
   {
     if (anIndex == 0 || aCritical[anIndex] != aCritical[anIndex - 1])
@@ -223,10 +233,10 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
     Evaluate(theCoefficients, theDegree, aLeft, aLeftValue, aDummy, aMagnitude);
     Evaluate(theCoefficients, theDegree, aRight, aRightValue, aDummy, aMagnitude);
     if ((anIndex > 1
-          && HasSmallResidual(theCoefficients,
-                              theDegree,
-                              aLeft,
-                              THE_DISTINCT_ROOT_RESIDUAL_TOLERANCE))
+         && HasSmallResidual(theCoefficients,
+                             theDegree,
+                             aLeft,
+                             THE_DISTINCT_ROOT_RESIDUAL_TOLERANCE))
         || (anIndex + 1 < aPointCount
             && HasSmallResidual(theCoefficients,
                                 theDegree,
@@ -239,16 +249,15 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
     {
       continue;
     }
-    for (uint32_t anIteration = 0;
-         anIteration < THE_DISTINCT_ROOT_BISECTION_ITERATIONS;
+    for (uint32_t anIteration = 0; anIteration < THE_DISTINCT_ROOT_BISECTION_ITERATIONS;
          ++anIteration)
     {
-      const long double aMiddle = (aLeft + aRight) / 2.0L;
+      const long double aMiddle      = (aLeft + aRight) / 2.0L;
       long double       aMiddleValue = 0.0L;
       Evaluate(theCoefficients, theDegree, aMiddle, aMiddleValue, aDummy, aMagnitude);
       if ((aLeftValue < 0.0L) == (aMiddleValue < 0.0L))
       {
-        aLeft = aMiddle;
+        aLeft      = aMiddle;
         aLeftValue = aMiddleValue;
       }
       else
@@ -276,15 +285,14 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
   if (theDegree == 0)
   {
     aResult.Status = theCoefficients[0] == 0.0 ? MathUtils::Status::InfiniteSolutions
-                                                : MathUtils::Status::NoSolution;
+                                               : MathUtils::Status::NoSolution;
     return aResult;
   }
 
   if (theDegree == 1)
   {
-    const std::optional<double> aRoot =
-      ToDouble(-static_cast<long double>(theCoefficients[0])
-               / static_cast<long double>(theCoefficients[1]));
+    const std::optional<double> aRoot = ToDouble(-static_cast<long double>(theCoefficients[0])
+                                                 / static_cast<long double>(theCoefficients[1]));
     if (!aRoot.has_value())
     {
       aResult.Status = MathUtils::Status::NumericalError;
@@ -299,17 +307,15 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
 
   if (theDegree == 2)
   {
-    const double aCoefficientScale =
-      std::max({std::abs(theCoefficients[0]),
-                std::abs(theCoefficients[1]),
-                std::abs(theCoefficients[2])});
-    const long double aA = theCoefficients[2] / aCoefficientScale;
-    const long double aB = theCoefficients[1] / aCoefficientScale;
-    const long double aC = theCoefficients[0] / aCoefficientScale;
-    const long double aDiscriminant = aB * aB - 4.0L * aA * aC;
+    const double aCoefficientScale = std::max(
+      {std::abs(theCoefficients[0]), std::abs(theCoefficients[1]), std::abs(theCoefficients[2])});
+    const long double aA                 = theCoefficients[2] / aCoefficientScale;
+    const long double aB                 = theCoefficients[1] / aCoefficientScale;
+    const long double aC                 = theCoefficients[0] / aCoefficientScale;
+    const long double aDiscriminant      = aB * aB - 4.0L * aA * aC;
     const long double aDiscriminantScale = aB * aB + std::abs(4.0L * aA * aC);
-    const long double aTolerance = 64.0L * std::numeric_limits<long double>::epsilon()
-                                   * aDiscriminantScale;
+    const long double aTolerance =
+      64.0L * std::numeric_limits<long double>::epsilon() * aDiscriminantScale;
     aResult.Status = MathUtils::Status::OK;
     if (aDiscriminant < -aTolerance)
     {
@@ -323,24 +329,24 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
         aResult.Status = MathUtils::Status::NumericalError;
         return aResult;
       }
-      aResult.Roots[0] = *aRoot;
+      aResult.Roots[0]          = *aRoot;
       aResult.Multiplicities[0] = 2;
-      aResult.NbRoots = 1;
+      aResult.NbRoots           = 1;
       return aResult;
     }
     const long double aSquareRoot = std::sqrt(aDiscriminant);
-    const long double aQ = -0.5L * (aB + std::copysign(aSquareRoot, aB));
-    const long double aRoots[2] = {aQ / aA, aC / aQ};
+    const long double aQ          = -0.5L * (aB + std::copysign(aSquareRoot, aB));
+    const long double aRoots[2]   = {aQ / aA, aC / aQ};
     for (const long double aLongRoot : aRoots)
     {
       const std::optional<double> aRoot = ToDouble(aLongRoot);
       if (!aRoot.has_value())
       {
-        aResult.Status = MathUtils::Status::NumericalError;
+        aResult.Status  = MathUtils::Status::NumericalError;
         aResult.NbRoots = 0;
         return aResult;
       }
-      aResult.Roots[aResult.NbRoots] = *aRoot;
+      aResult.Roots[aResult.NbRoots]            = *aRoot;
       aResult.Multiplicities[aResult.NbRoots++] = 1;
     }
     if (aResult.Roots[0] > aResult.Roots[1])
@@ -350,10 +356,10 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
     return aResult;
   }
 
-  LongCoefficients aScaled = {};
+  LongCoefficients aScaled           = {};
   int              aVariableExponent = 0;
   ScalePolynomial(theCoefficients, theDegree, aScaled, aVariableExponent);
-  std::array<long double, 4> aRoots = {};
+  std::array<long double, 4> aRoots     = {};
   size_t                     aRootCount = 0;
   if (!SolveDistinctReal(aScaled, theDegree, aRoots, aRootCount))
   {
@@ -364,9 +370,9 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
 
   for (size_t aRootIndex = 0; aRootIndex < aRootCount; ++aRootIndex)
   {
-    LongCoefficients aDerivative = aScaled;
+    LongCoefficients aDerivative       = aScaled;
     int              aDerivativeDegree = theDegree;
-    size_t           aMultiplicity = 1;
+    size_t           aMultiplicity     = 1;
     while (aMultiplicity < static_cast<size_t>(theDegree) && aDerivativeDegree > 0)
     {
       LongCoefficients aNext = {};
@@ -379,7 +385,7 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
       if (!HasSmallResidual(aNext,
                             aDerivativeDegree,
                             aRoots[aRootIndex],
-                             THE_ROOT_MULTIPLICITY_TOLERANCE))
+                            THE_ROOT_MULTIPLICITY_TOLERANCE))
       {
         break;
       }
@@ -397,7 +403,7 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
       aResult.Status = MathUtils::Status::NumericalError;
       return aResult;
     }
-    aResult.Roots[aResult.NbRoots] = *aRoot;
+    aResult.Roots[aResult.NbRoots]          = *aRoot;
     aResult.Multiplicities[aResult.NbRoots] = aMultiplicity;
     ++aResult.NbRoots;
   }

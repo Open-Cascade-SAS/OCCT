@@ -282,11 +282,11 @@ public:
   //! @return true if evaluation succeeded
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX.At(0);
-    const double y         = theX.At(1);
-    const double t2        = y - x * x;
-    theG.ChangeAt(0)       = -2.0 * (myA - x) - 4.0 * myB * x * t2;
-    theG.ChangeAt(1)       = 2.0 * myB * t2;
+    const double x   = theX.At(0);
+    const double y   = theX.At(1);
+    const double t2  = y - x * x;
+    theG.ChangeAt(0) = -2.0 * (myA - x) - 4.0 * myB * x * t2;
+    theG.ChangeAt(1) = 2.0 * myB * t2;
     return true;
   }
 
@@ -393,12 +393,12 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX.At(0);
-    const double y         = theX.At(1);
-    const double t1        = x + 2.0 * y - 7.0;
-    const double t2        = 2.0 * x + y - 5.0;
-    theG.ChangeAt(0)       = 2.0 * t1 + 4.0 * t2;
-    theG.ChangeAt(1)       = 4.0 * t1 + 2.0 * t2;
+    const double x   = theX.At(0);
+    const double y   = theX.At(1);
+    const double t1  = x + 2.0 * y - 7.0;
+    const double t2  = 2.0 * x + y - 5.0;
+    theG.ChangeAt(0) = 2.0 * t1 + 4.0 * t2;
+    theG.ChangeAt(1) = 4.0 * t1 + 2.0 * t2;
     return true;
   }
 
@@ -440,15 +440,15 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX.At(0);
-    const double y         = theX.At(1);
-    const double y2        = y * y;
-    const double y3        = y2 * y;
-    const double t1        = 1.5 - x + x * y;
-    const double t2        = 2.25 - x + x * y2;
-    const double t3        = 2.625 - x + x * y3;
-    theG.ChangeAt(0)       = 2.0 * ((y - 1.0) * t1 + (y2 - 1.0) * t2 + (y3 - 1.0) * t3);
-    theG.ChangeAt(1)       = 2.0 * x * (t1 + 2.0 * y * t2 + 3.0 * y2 * t3);
+    const double x   = theX.At(0);
+    const double y   = theX.At(1);
+    const double y2  = y * y;
+    const double y3  = y2 * y;
+    const double t1  = 1.5 - x + x * y;
+    const double t2  = 2.25 - x + x * y2;
+    const double t3  = 2.625 - x + x * y3;
+    theG.ChangeAt(0) = 2.0 * ((y - 1.0) * t1 + (y2 - 1.0) * t2 + (y3 - 1.0) * t3);
+    theG.ChangeAt(1) = 2.0 * x * (t1 + 2.0 * y * t2 + 3.0 * y2 * t3);
     return true;
   }
 
@@ -490,12 +490,12 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x         = theX.At(0);
-    const double y         = theX.At(1);
-    const double t1        = x * x + y - 11.0;
-    const double t2        = x + y * y - 7.0;
-    theG.ChangeAt(0)       = 4.0 * x * t1 + 2.0 * t2;
-    theG.ChangeAt(1)       = 2.0 * t1 + 4.0 * y * t2;
+    const double x   = theX.At(0);
+    const double y   = theX.At(1);
+    const double t1  = x * x + y - 11.0;
+    const double t2  = x + y * y - 7.0;
+    theG.ChangeAt(0) = 4.0 * x * t1 + 2.0 * t2;
+    theG.ChangeAt(1) = 2.0 * t1 + 4.0 * y * t2;
     return true;
   }
 
@@ -614,8 +614,8 @@ public:
       }
     }
     const double aDivisor = static_cast<double>(aSize);
-    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / aDivisor))
-            - std::exp(aSumCos / aDivisor) + myA + THE_EULER_NUMBER;
+    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / aDivisor)) - std::exp(aSumCos / aDivisor) + myA
+           + THE_EULER_NUMBER;
     return std::isfinite(theY);
   }
 

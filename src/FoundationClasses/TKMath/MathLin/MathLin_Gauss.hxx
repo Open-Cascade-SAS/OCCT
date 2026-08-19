@@ -35,12 +35,12 @@ struct LUResult
   std::optional<math_Matrix>        LU;    //!< Combined L and U matrices
   std::optional<math_IntegerVector> Pivot; //!< Pivot indices
   std::optional<double>             Determinant;
-  int                               Sign              = 1; //!< Sign from row interchanges
-  size_t                            RowLower          = 0;
-  size_t                            ColLower          = 0;
-  size_t                            Dimension         = 0;
-  double                            MinAbsPivot       = 0.0;
-  double                            MaxAbsPivot       = 0.0;
+  int                               Sign        = 1; //!< Sign from row interchanges
+  size_t                            RowLower    = 0;
+  size_t                            ColLower    = 0;
+  size_t                            Dimension   = 0;
+  double                            MinAbsPivot = 0.0;
+  double                            MaxAbsPivot = 0.0;
   std::optional<double>             ConditionEstimate; //!< Pivot-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }

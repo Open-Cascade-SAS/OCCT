@@ -326,8 +326,8 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
       }
 
       aRes.ResidualNorm = Utils::SafeNormN(aCheckF);
-      aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                 : MathUtils::Status::MaxIterations;
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -342,8 +342,8 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
   }
 
   aRes.ResidualNorm = Utils::SafeNormN(aF);
-  aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                             : MathUtils::Status::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

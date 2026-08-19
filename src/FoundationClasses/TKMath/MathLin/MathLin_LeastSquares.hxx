@@ -40,10 +40,10 @@ enum class LeastSquaresMethod
 struct LeastSquaresResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Vector> Solution;   //!< Least squares solution x
-  std::optional<double>      Residual;   //!< ||Ax - b||_2 (L2 norm of residual)
-  std::optional<double>      ResidualSq; //!< ||Ax - b||_2^2 (squared residual)
-  size_t                     Rank = 0;   //!< Numerical rank of A (for SVD)
+  std::optional<math_Vector> Solution;        //!< Least squares solution x
+  std::optional<double>      Residual;        //!< ||Ax - b||_2 (L2 norm of residual)
+  std::optional<double>      ResidualSq;      //!< ||Ax - b||_2^2 (squared residual)
+  size_t                     Rank = 0;        //!< Numerical rank of A (for SVD)
   std::optional<double>      ConditionNumber; //!< Decomposition-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
@@ -77,8 +77,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
   const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (aM < aN || theB.Size() != aM || !Utils::IsFinite(theA)
-      || !Utils::IsFinite(theB))
+  if (aM < aN || theB.Size() != aM || !Utils::IsFinite(theA) || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -162,9 +161,9 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
   aResult.Solution = aLinResult.Solution;
 
   // Compute residual ||Ax - b||_2
-  const math_Vector& aX          = *aResult.Solution;
-  double             aResidualScale = 0.0;
-  double             aResidualSumSq = 1.0;
+  const math_Vector& aX              = *aResult.Solution;
+  double             aResidualScale  = 0.0;
+  double             aResidualSumSq  = 1.0;
   bool               isResidualValid = true;
 
   for (size_t i = 0; i < aM; ++i)
@@ -175,13 +174,11 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
       aAxi += theA.At(i, j) * aX[j];
     }
     const double aRi = aAxi - theB.At(i);
-    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq)
-                      && isResidualValid;
+    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq) && isResidualValid;
   }
 
-  const std::optional<double> aResidual = isResidualValid
-                                            ? Utils::Norm(aResidualScale, aResidualSumSq)
-                                            : std::nullopt;
+  const std::optional<double> aResidual =
+    isResidualValid ? Utils::Norm(aResidualScale, aResidualSumSq) : std::nullopt;
   if (!aResidual.has_value())
   {
     aResult.Status = Status::NumericalError;
@@ -298,7 +295,7 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aS = *aSVD.SingularValues;
   const math_Matrix& aV = *aSVD.V;
-  math_Vector aFiltered(aN, 0.0);
+  math_Vector        aFiltered(aN, 0.0);
   for (size_t j = 0; j < aN; ++j)
   {
     double aProjection = 0.0;
@@ -306,11 +303,9 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
     {
       aProjection += aU.At(i, j) * theB.At(i);
     }
-    const double aSigma = aS[j];
-    const double aFilter = j >= aSVD.Rank
-                             ? 0.0
-                             : 1.0 / (aSigma + theLambda / aSigma);
-    aFiltered[j] = aFilter * aProjection;
+    const double aSigma  = aS[j];
+    const double aFilter = j >= aSVD.Rank ? 0.0 : 1.0 / (aSigma + theLambda / aSigma);
+    aFiltered[j]         = aFilter * aProjection;
   }
   aResult.Solution = math_Vector(aN, 0.0);
   for (size_t i = 0; i < aN; ++i)
@@ -324,9 +319,9 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
   aResult.ConditionNumber = aSVD.ConditionNumber;
 
   // Compute residual
-  const math_Vector& aX          = *aResult.Solution;
-  double             aResidualScale = 0.0;
-  double             aResidualSumSq = 1.0;
+  const math_Vector& aX              = *aResult.Solution;
+  double             aResidualScale  = 0.0;
+  double             aResidualSumSq  = 1.0;
   bool               isResidualValid = true;
 
   for (size_t i = 0; i < aM; ++i)
@@ -337,13 +332,11 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
       aAxi += theA.At(i, j) * aX[j];
     }
     const double aRi = aAxi - theB.At(i);
-    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq)
-                      && isResidualValid;
+    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq) && isResidualValid;
   }
 
-  const std::optional<double> aResidual = isResidualValid
-                                            ? Utils::Norm(aResidualScale, aResidualSumSq)
-                                            : std::nullopt;
+  const std::optional<double> aResidual =
+    isResidualValid ? Utils::Norm(aResidualScale, aResidualSumSq) : std::nullopt;
   if (!aResidual.has_value() || !Utils::IsFinite(*aResult.Solution))
   {
     aResult.Status = Status::NumericalError;
@@ -377,9 +370,8 @@ inline std::optional<double> OptimalRegularization(const math_Matrix& theA,
                                                    double             theLambdaMax = 1.0e2,
                                                    size_t             theNbPoints  = 20)
 {
-  if (theA.RowSize() < theA.ColSize() || theB.Size() != theA.RowSize()
-      || !Utils::IsFinite(theA) || !Utils::IsFinite(theB)
-      || !std::isfinite(theLambdaMin) || !std::isfinite(theLambdaMax)
+  if (theA.RowSize() < theA.ColSize() || theB.Size() != theA.RowSize() || !Utils::IsFinite(theA)
+      || !Utils::IsFinite(theB) || !std::isfinite(theLambdaMin) || !std::isfinite(theLambdaMax)
       || theLambdaMin <= 0.0 || theLambdaMax < theLambdaMin || theNbPoints < 2)
   {
     return std::nullopt;
@@ -393,11 +385,11 @@ inline std::optional<double> OptimalRegularization(const math_Matrix& theA,
 
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aS = *aSVD.SingularValues;
-  const size_t aM = theA.RowSize();
-  const size_t aN = theA.ColSize();
-  math_Vector aProjection(aS.Size(), 0.0);
-  double aBScale = 0.0;
-  double aBSumSq = 1.0;
+  const size_t       aM = theA.RowSize();
+  const size_t       aN = theA.ColSize();
+  math_Vector        aProjection(aS.Size(), 0.0);
+  double             aBScale = 0.0;
+  double             aBSumSq = 1.0;
   for (size_t i = 0; i < aM; ++i)
   {
     if (!Utils::AccumulateNorm(theB.At(i), aBScale, aBSumSq))
@@ -424,7 +416,7 @@ inline std::optional<double> OptimalRegularization(const math_Matrix& theA,
   aOrthogonalResidualSq = std::max(0.0, aOrthogonalResidualSq);
 
   std::optional<double> aBestLambda;
-  double aBestScore  = std::numeric_limits<double>::infinity();
+  double                aBestScore = std::numeric_limits<double>::infinity();
 
   // Logarithmic grid search
   const double aLogMin  = std::log10(theLambdaMin);
@@ -433,23 +425,20 @@ inline std::optional<double> OptimalRegularization(const math_Matrix& theA,
 
   for (size_t k = 0; k < theNbPoints; ++k)
   {
-    const double aLambda = std::pow(10.0, aLogMin + k * aLogStep);
-    double aResidualSq = aOrthogonalResidualSq;
-    double aTrace = 0.0;
+    const double aLambda     = std::pow(10.0, aLogMin + k * aLogStep);
+    double       aResidualSq = aOrthogonalResidualSq;
+    double       aTrace      = 0.0;
     for (size_t j = 0; j < aS.Size(); ++j)
     {
-      const double aSigma = aS[j];
-      const double aFilter = aSigma == 0.0
-                               ? 0.0
-                               : 1.0 / (1.0 + (aLambda / aSigma) / aSigma);
+      const double aSigma  = aS[j];
+      const double aFilter = aSigma == 0.0 ? 0.0 : 1.0 / (1.0 + (aLambda / aSigma) / aSigma);
       const double aResidualProjection = (1.0 - aFilter) * aProjection[j];
       aResidualSq += aResidualProjection * aResidualProjection;
       aTrace += aFilter;
     }
     const double aDenominator = static_cast<double>(aM) - aTrace;
-    const double aScore = aDenominator > 0.0
-                            ? aResidualSq / (aDenominator * aDenominator)
-                            : std::numeric_limits<double>::infinity();
+    const double aScore       = aDenominator > 0.0 ? aResidualSq / (aDenominator * aDenominator)
+                                                   : std::numeric_limits<double>::infinity();
     if (std::isfinite(aScore) && aScore < aBestScore)
     {
       aBestScore  = aScore;

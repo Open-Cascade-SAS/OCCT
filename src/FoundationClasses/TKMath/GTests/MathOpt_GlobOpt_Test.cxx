@@ -344,9 +344,9 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rastrigin)
 
 TEST(MathOpt_GlobOptTest, DifferentialEvolutionRejectsInvalidCandidatesWithoutPoisoningBest)
 {
-  PartiallyDefinedFunc aFunc;
-  math_Vector          aLower(size_t{1}, -1.0);
-  math_Vector          anUpper(size_t{1}, 1.0);
+  PartiallyDefinedFunc  aFunc;
+  math_Vector           aLower(size_t{1}, -1.0);
+  math_Vector           anUpper(size_t{1}, 1.0);
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 100);
   aConfig.NbPopulation       = 20;
   aConfig.PolishBudgetPerDim = 0;
@@ -363,9 +363,9 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolutionRejectsInvalidCandidatesWithoutPo
 
 TEST(MathOpt_GlobOptTest, DifferentialEvolutionBudgetExhaustionRetainsBest)
 {
-  SphereFunc aFunc;
-  math_Vector aLower(size_t{1}, -1.0);
-  math_Vector anUpper(size_t{1}, 1.0);
+  SphereFunc            aFunc;
+  math_Vector           aLower(size_t{1}, -1.0);
+  math_Vector           anUpper(size_t{1}, 1.0);
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 1);
   aConfig.NbPopulation       = 4;
   aConfig.Tolerance          = 1.0e-30;
@@ -381,9 +381,9 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolutionBudgetExhaustionRetainsBest)
 
 TEST(MathOpt_GlobOptTest, DifferentialEvolutionPreservesAllRejectedCallbackStatus)
 {
-  RejectAllFunc aFunc;
-  math_Vector   aLower(size_t{1}, -1.0);
-  math_Vector   anUpper(size_t{1}, 1.0);
+  RejectAllFunc         aFunc;
+  math_Vector           aLower(size_t{1}, -1.0);
+  math_Vector           anUpper(size_t{1}, 1.0);
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 10);
   aConfig.NbPopulation = 4;
 
@@ -433,9 +433,9 @@ TEST(MathOpt_GlobOptTest, MultiStart_Booth)
 
 TEST(MathOpt_GlobOptTest, MultiStartEvaluatesAndSolvesInsideBounds)
 {
-  OutsideMinimumFunc aFunc;
-  math_Vector        aLower(size_t{1}, 0.0);
-  math_Vector        anUpper(size_t{1}, 1.0);
+  OutsideMinimumFunc    aFunc;
+  math_Vector           aLower(size_t{1}, 0.0);
+  math_Vector           anUpper(size_t{1}, 1.0);
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::MultiStart, 100);
   aConfig.NbStarts = 10;
 

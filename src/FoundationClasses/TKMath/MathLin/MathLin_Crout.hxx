@@ -36,8 +36,8 @@ struct CroutResult
   std::optional<math_Vector> D;           //!< Diagonal elements
   std::optional<math_Matrix> Inverse;     //!< Full symmetric inverse matrix
   std::optional<double>      Determinant; //!< Matrix determinant
-  double                     MinAbsPivot       = 0.0;
-  double                     MaxAbsPivot       = 0.0;
+  double                     MinAbsPivot = 0.0;
+  double                     MaxAbsPivot = 0.0;
   std::optional<double>      ConditionEstimate; //!< Pivot-based conditioning diagnostic
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
@@ -261,7 +261,7 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
   {
     aResult.ConditionEstimate = aConditionEstimate;
   }
-  aResult.Status            = Status::OK;
+  aResult.Status = Status::OK;
   return aResult;
 }
 

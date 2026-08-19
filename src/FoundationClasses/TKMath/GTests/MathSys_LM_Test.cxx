@@ -1026,7 +1026,7 @@ TEST(MathSys_LM_Test, StepMinParticipatesInStagnationDetection)
   const MathSys::SystemResult aDefaultStep = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
   EXPECT_EQ(aDefaultStep.Status, MathUtils::Status::MaxIterations);
 
-  aConfig.StepMin = 10.0;
+  aConfig.StepMin                          = 10.0;
   const MathSys::SystemResult aMinimumStep = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
   EXPECT_EQ(aMinimumStep.Status, MathUtils::Status::NotConverged);
 }
