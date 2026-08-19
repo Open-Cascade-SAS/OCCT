@@ -359,62 +359,6 @@ inline bool HasMultiplicity(const double* theCoefficients,
   return true;
 }
 
-inline double MultipleRootUncertainty(const double* theCoefficients,
-                                      int           theDegree,
-                                      double        theRoot,
-                                      double        theTolerance,
-                                      size_t        theMinimumMultiplicity)
-{
-  std::array<long double, THE_MAX_POLY_DEGREE + 1> aDerivative = {};
-  for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
-  {
-    aDerivative[static_cast<size_t>(anIndex)] = theCoefficients[anIndex];
-  }
-
-  const long double anAbsRoot  = std::abs(static_cast<long double>(theRoot));
-  long double       aMagnitude = std::abs(aDerivative[static_cast<size_t>(theDegree)]);
-  for (int anIndex = theDegree - 1; anIndex >= 0; --anIndex)
-  {
-    aMagnitude = aMagnitude * anAbsRoot + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
-  }
-  const long double aResidualScale = theTolerance * std::max(1.0L, aMagnitude);
-
-  int         aDerivativeDegree = theDegree;
-  long double aFactorial        = 1.0L;
-  for (size_t anOrder = 1; anOrder <= static_cast<size_t>(theDegree); ++anOrder)
-  {
-    for (int anIndex = 1; anIndex <= aDerivativeDegree; ++anIndex)
-    {
-      aDerivative[static_cast<size_t>(anIndex - 1)] =
-        static_cast<long double>(anIndex) * aDerivative[static_cast<size_t>(anIndex)];
-    }
-    --aDerivativeDegree;
-    aFactorial *= static_cast<long double>(anOrder);
-    if (anOrder < theMinimumMultiplicity)
-    {
-      continue;
-    }
-
-    long double aTaylorCoefficient = aDerivative[static_cast<size_t>(aDerivativeDegree)];
-    for (int anIndex = aDerivativeDegree - 1; anIndex >= 0; --anIndex)
-    {
-      aTaylorCoefficient = aTaylorCoefficient * theRoot + aDerivative[static_cast<size_t>(anIndex)];
-    }
-    aTaylorCoefficient /= aFactorial;
-    if (std::abs(aTaylorCoefficient) <= aResidualScale)
-    {
-      continue;
-    }
-    const long double anUncertainty =
-      std::pow(aResidualScale / std::abs(aTaylorCoefficient), 1.0L / anOrder);
-    const double aResult = static_cast<double>(anUncertainty);
-    return std::isfinite(aResult)
-             ? aResult + Precision::Computational() * std::max(1.0, std::abs(theRoot))
-             : 0.0;
-  }
-  return 0.0;
-}
-
 inline void ConsolidateRealRoots(PolyResult&   theResult,
                                  double        theTolerance,
                                  const double* theOriginal,
@@ -704,26 +648,29 @@ inline PolyResult Laguerre(const double* theCoefficients,
         aResult.Status = MathUtils::Status::NumericalError;
         return aResult;
       }
-      double     aRepeatedRealRoot = anIteration.Root.real();
-      const bool isRepeatedReal =
-        Utils::HasMultiplicity(anOriginal.data(), theDegree, aRepeatedRealRoot, 2)
-        && std::abs(anIteration.Root.imag()) <= Utils::MultipleRootUncertainty(anOriginal.data(),
-                                                                               theDegree,
-                                                                               aRepeatedRealRoot,
-                                                                               theTolerance,
-                                                                               2);
-      if (isRepeatedReal)
+      double aRealRoot         = anIteration.Root.real();
+      double aRepeatedRealRoot = aRealRoot;
+      if (Utils::HasMultiplicity(aWork.data(), aDegree, aRepeatedRealRoot, 2))
       {
-        if (!Utils::DeflateReal(aWork.data(), aDegree, aRepeatedRealRoot, theTolerance)
-            || !Utils::DeflateReal(aWork.data(), aDegree, aRepeatedRealRoot, theTolerance))
+        aRealRoot = aRepeatedRealRoot;
+      }
+
+      std::array<double, THE_MAX_POLY_DEGREE + 1> aRealWork   = aWork;
+      int                                         aRealDegree = aDegree;
+      if (Utils::HasSmallResidual(aWork.data(), aDegree, aRealRoot, theTolerance)
+          && Utils::DeflateReal(aRealWork.data(), aRealDegree, aRealRoot, theTolerance))
+      {
+        const std::optional<double> anUnscaledRealRoot =
+          Utils::ToDouble(std::scalbn(static_cast<long double>(aRealRoot), aVariableExponent));
+        if (!anUnscaledRealRoot.has_value())
         {
           aResult.Status = MathUtils::Status::NumericalError;
           return aResult;
         }
-        const double anUnscaledRealRoot = std::scalbn(aRepeatedRealRoot, aVariableExponent);
-        aResult.Roots[aResult.NbRoots]  = anUnscaledRealRoot;
-        aResult.Multiplicities[aResult.NbRoots++] = 1;
-        aResult.Roots[aResult.NbRoots]            = anUnscaledRealRoot;
+
+        aWork                                     = aRealWork;
+        aDegree                                   = aRealDegree;
+        aResult.Roots[aResult.NbRoots]            = *anUnscaledRealRoot;
         aResult.Multiplicities[aResult.NbRoots++] = 1;
       }
       else
