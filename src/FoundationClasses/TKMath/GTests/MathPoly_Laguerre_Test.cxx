@@ -285,7 +285,9 @@ TEST_F(MathPoly_LaguerreTest, RepeatedRootsReportMultiplicity)
   // (x-1)^3 * (x+2)^2
   const double         aCoeffs[6] = {-4.0, 8.0, -1.0, -5.0, 1.0, 1.0};
   MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 5, 1.0e-11);
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.IsDone()) << "status=" << static_cast<int>(aResult.Status)
+                                << ", real roots=" << aResult.NbRoots
+                                << ", complex roots=" << aResult.NbComplexRoots;
   ASSERT_EQ(aResult.NbRoots, 2u);
   EXPECT_NEAR(aResult.Roots[0], -2.0, 1.0e-6);
   EXPECT_NEAR(aResult.Roots[1], 1.0, 1.0e-6);

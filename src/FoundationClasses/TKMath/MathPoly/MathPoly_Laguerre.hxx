@@ -671,7 +671,14 @@ inline PolyResult Laguerre(const double* theCoefficients,
       + Precision::Computational() * std::max(1.0, std::abs(anIteration.Root));
     if (std::abs(anIteration.Root.imag()) <= anImaginaryUncertainty)
     {
-      const double aRoot = anIteration.Root.real();
+      double aRoot         = anIteration.Root.real();
+      double aRepeatedRoot = aRoot;
+      const double aRootScale = std::max(1.0, std::abs(aRoot));
+      if (*anIteration.RootError > theTolerance * aRootScale && aDegree > 1
+          && Utils::HasMultiplicity(aWork.data(), aDegree, aRepeatedRoot, 2))
+      {
+        aRoot = aRepeatedRoot;
+      }
       if (!Utils::HasSmallResidual(aWork.data(), aDegree, aRoot, theTolerance)
           || !Utils::DeflateReal(aWork.data(), aDegree, aRoot, theTolerance))
       {
