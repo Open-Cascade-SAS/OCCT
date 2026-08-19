@@ -38,14 +38,8 @@ inline PolyResult Linear(double theA, double theB)
 #endif
 
 //! Solve quadratic equation: a*x^2 + b*x + c = 0
-//! Uses numerically stable formulas to avoid catastrophic cancellation.
-//!
-//! Algorithm:
-//! 1. Handle linear case when a = 0
-//! 2. Compute discriminant D = b^2 - 4ac
-//! 3. For D < 0: no real roots
-//! 4. For D = 0: one double root
-//! 5. For D > 0: two roots using stable formula
+//! Coefficients are scaled by an exact power of two. The discriminant is evaluated with
+//! compensated products, and distinct roots use a cancellation-resistant formula.
 //!
 //! @param theA coefficient of x^2
 //! @param theB coefficient of x

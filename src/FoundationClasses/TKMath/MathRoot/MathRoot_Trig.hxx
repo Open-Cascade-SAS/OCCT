@@ -18,8 +18,8 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathRoot_Utils.hxx>
-#include <MathPoly_Quadratic.hxx>
 #include <MathPoly_Quartic.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
 #include <algorithm>
@@ -79,6 +79,48 @@ inline void AddDistinctTrigRoot(TrigResult& theResult, double theRoot, double th
   ++theResult.NbRoots;
 }
 
+//! Maps a periodic root into the interval.
+inline bool MapPeriodicTrigRoot(double  theRoot,
+                                double  theLower,
+                                double  theUpper,
+                                double  theTolerance,
+                                double& theMappedRoot)
+{
+  theRoot += std::floor((theLower - theRoot) / THE_2PI) * THE_2PI;
+  if (theRoot < theLower - theTolerance)
+  {
+    theRoot += THE_2PI;
+  }
+  if (theRoot < theLower)
+  {
+    theRoot = theLower;
+  }
+  if (theRoot > theUpper + theTolerance)
+  {
+    return false;
+  }
+  if (theRoot > theUpper)
+  {
+    theRoot = theUpper;
+  }
+  theMappedRoot = theRoot;
+  return true;
+}
+
+//! Maps a periodic root into the interval and appends it when present.
+inline void AddPeriodicTrigRoot(TrigResult& theResult,
+                                double      theRoot,
+                                double      theLower,
+                                double      theUpper,
+                                double      theTolerance)
+{
+  double aMappedRoot = 0.0;
+  if (MapPeriodicTrigRoot(theRoot, theLower, theUpper, theTolerance, aMappedRoot))
+  {
+    AddDistinctTrigRoot(theResult, aMappedRoot, theTolerance);
+  }
+}
+
 } // namespace Utils
 
 //! Solve trigonometric equation: a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0.
@@ -109,8 +151,11 @@ inline TrigResult Trigonometric(double theA,
                                 double theEps      = 1.5e-12)
 {
   TrigResult aResult;
+  const bool isLowerInfinite = Precision::IsNegativeInfinite(theInfBound);
+  const bool isUpperInfinite = Precision::IsPositiveInfinite(theSupBound);
   if (!std::isfinite(theA) || !std::isfinite(theB) || !std::isfinite(theC) || !std::isfinite(theD)
       || !std::isfinite(theE) || !Utils::IsValidBounds(theInfBound, theSupBound)
+      || Precision::IsPositiveInfinite(theInfBound) || Precision::IsNegativeInfinite(theSupBound)
       || !std::isfinite(theEps) || theEps <= 0.0)
   {
     aResult.Status = MathUtils::Status::InvalidInput;
@@ -130,31 +175,26 @@ inline TrigResult Trigonometric(double theA,
   }
 
   // Compute working interval
-  double aMyBorneInf, aDelta, aMod;
-  if (theInfBound <= std::numeric_limits<double>::lowest() / 2.0
-      && theSupBound >= std::numeric_limits<double>::max() / 2.0)
+  double aMyBorneInf, aDelta;
+  if (isLowerInfinite && isUpperInfinite)
   {
     aMyBorneInf = 0.0;
     aDelta      = THE_2PI;
-    aMod        = 0.0;
   }
-  else if (theSupBound >= std::numeric_limits<double>::max() / 2.0)
+  else if (isUpperInfinite)
   {
     aMyBorneInf = theInfBound;
     aDelta      = THE_2PI;
-    aMod        = aMyBorneInf / THE_2PI;
   }
-  else if (theInfBound <= std::numeric_limits<double>::lowest() / 2.0)
+  else if (isLowerInfinite)
   {
     aMyBorneInf = theSupBound - THE_2PI;
     aDelta      = THE_2PI;
-    aMod        = aMyBorneInf / THE_2PI;
   }
   else
   {
     aMyBorneInf = theInfBound;
     aDelta      = theSupBound - theInfBound;
-    aMod        = theInfBound / THE_2PI;
     if (aDelta > THE_2PI)
     {
       aDelta = THE_2PI;
@@ -163,7 +203,9 @@ inline TrigResult Trigonometric(double theA,
 
   std::array<double, 4> aZer       = {0.0, 0.0, 0.0, 0.0};
   size_t                aNZer      = 0;
-  const double          aDelta_Eps = std::numeric_limits<double>::epsilon() * std::abs(aDelta);
+  const double          aDeltaEps  = Precision::Computational() * std::abs(aDelta);
+  const double          anUpper    = aMyBorneInf + aDelta;
+  const double          anAngleTol = std::max(theEps, aDeltaEps);
 
   // Case: A = B = 0 (degree <= 2 in cos/sin)
   if (std::abs(theA) <= theEps && std::abs(theB) <= theEps)
@@ -197,19 +239,9 @@ inline TrigResult Trigonometric(double theA,
         aZer[1] = THE_PI - aZer[0];
         aNZer   = 2;
 
-        // Adjust to positive range
         for (size_t i = 0; i < aNZer; ++i)
         {
-          if (aZer[i] <= -theEps)
-          {
-            aZer[i] = THE_2PI - std::abs(aZer[i]);
-          }
-          aZer[i] += std::trunc(aMod) * THE_2PI;
-          double aX = aZer[i] - aMyBorneInf;
-          if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
-          {
-            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
-          }
+          Utils::AddPeriodicTrigRoot(aResult, aZer[i], aMyBorneInf, anUpper, anAngleTol);
         }
         return aResult;
       }
@@ -230,58 +262,32 @@ inline TrigResult Trigonometric(double theA,
       aNZer             = 2;
 
       // For each solution, find the representative in or near the given bounds
-      const double anUpperBound = aMyBorneInf + aDelta;
       for (size_t i = 0; i < aNZer; ++i)
       {
-        double aAngle = aZer[i];
-        // Shift angle to be near the lower bound
-        const double aK = std::ceil((aMyBorneInf - aAngle) / THE_2PI);
-        aAngle += aK * THE_2PI;
-
-        if (aAngle >= aMyBorneInf - aDelta_Eps && aAngle <= anUpperBound + aDelta_Eps)
-        {
-          bool aDup = false;
-          for (size_t k = 0; k < aResult.NbRoots; ++k)
-          {
-            if (std::abs(aAngle - aResult.Roots[k]) < theEps)
-            {
-              aDup = true;
-              break;
-            }
-          }
-          if (!aDup)
-          {
-            Utils::AddDistinctTrigRoot(aResult, aAngle, theEps);
-          }
-        }
+        Utils::AddPeriodicTrigRoot(aResult, aZer[i], aMyBorneInf, anUpper, anAngleTol);
       }
       return aResult;
     }
     else
     {
-      // c*cos(x) + d*sin(x) + e = 0
-      // Using t = tan(x/2): (e-c)*t^2 + 2d*t + (e+c) = 0
-      double aAA = theE - theC;
-      double aBB = 2.0 * theD;
-      double aCC = theE + theC;
-
-      MathPoly::PolyResult aPoly = MathPoly::Quadratic(aAA, aBB, aCC);
-      if (!aPoly.IsDone())
+      // c*cos(x) + d*sin(x) = r*cos(x - phase)
+      const double aRadius = std::hypot(theC, theD);
+      double       aRatio  = -theE / aRadius;
+      if (std::abs(aRatio) > 1.0 + theEps)
       {
-        aResult.Status = aPoly.Status;
+        aResult.NbRoots = 0;
         return aResult;
       }
-      if (aPoly.Status == MathUtils::Status::InfiniteSolutions)
+      aRatio                = std::max(-1.0, std::min(1.0, aRatio));
+      const double aPhase   = std::atan2(theD, theC);
+      const double anOffset = std::acos(aRatio);
+      aZer[0]               = aPhase + anOffset;
+      aZer[1]               = aPhase - anOffset;
+      for (size_t anIndex = 0; anIndex < 2; ++anIndex)
       {
-        aResult.InfiniteRoots = true;
-        return aResult;
+        Utils::AddPeriodicTrigRoot(aResult, aZer[anIndex], aMyBorneInf, anUpper, anAngleTol);
       }
-
-      aNZer = aPoly.NbRoots;
-      for (size_t i = 0; i < aNZer; ++i)
-      {
-        aZer[i] = aPoly.Roots[i];
-      }
+      return aResult;
     }
   }
   else
@@ -319,17 +325,7 @@ inline TrigResult Trigonometric(double theA,
 
         for (size_t i = 0; i < aNZer; ++i)
         {
-          if (aZer[i] <= aMyBorneInf - theEps)
-          {
-            aZer[i] += THE_2PI;
-          }
-          aZer[i] += std::trunc(aMod) * THE_2PI;
-          double aX = aZer[i] - aMyBorneInf;
-          if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
-          {
-            aZer[i] = std::max(theInfBound, std::min(theSupBound, aZer[i]));
-            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
-          }
+          Utils::AddPeriodicTrigRoot(aResult, aZer[i], aMyBorneInf, anUpper, anAngleTol);
         }
         return aResult;
       }
@@ -363,17 +359,7 @@ inline TrigResult Trigonometric(double theA,
 
         for (size_t i = 0; i < aNZer; ++i)
         {
-          if (aZer[i] <= aMyBorneInf - theEps)
-          {
-            aZer[i] += THE_2PI;
-          }
-          aZer[i] += std::trunc(aMod) * THE_2PI;
-          double aX = aZer[i] - aMyBorneInf;
-          if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
-          {
-            aZer[i] = std::max(theInfBound, std::min(theSupBound, aZer[i]));
-            Utils::AddDistinctTrigRoot(aResult, aZer[i], theEps);
-          }
+          Utils::AddPeriodicTrigRoot(aResult, aZer[i], aMyBorneInf, anUpper, anAngleTol);
         }
         return aResult;
       }
@@ -421,15 +407,10 @@ inline TrigResult Trigonometric(double theA,
     {
       aTeta = THE_2PI - std::abs(aTeta);
     }
-    aTeta += std::trunc(aMod) * THE_2PI;
-    if (aTeta - aMyBorneInf < 0.0)
+    double aMappedTeta = 0.0;
+    if (Utils::MapPeriodicTrigRoot(aTeta, aMyBorneInf, anUpper, anAngleTol, aMappedTeta))
     {
-      aTeta += THE_2PI;
-    }
-
-    double aX = aTeta - aMyBorneInf;
-    if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
-    {
+      aTeta = aMappedTeta;
       // Newton refinement with Halley's method fallback for double roots
       auto aRefineRoot = [&](double theX) -> double {
         for (uint32_t anIter = 0; anIter < Utils::THE_TRIG_REFINEMENT_MAX_ITERATIONS; ++anIter)
@@ -491,25 +472,20 @@ inline TrigResult Trigonometric(double theA,
 
       // Check if Newton didn't diverge too far
       double aDeltaNewton = std::abs(aTetaRefined - aTeta);
-      double aSupmInfs100 = (theSupBound - theInfBound) * 0.01;
+      double aSupmInfs100 = aDelta * 0.01;
       if (aDeltaNewton <= aSupmInfs100)
       {
         aTeta = aTetaRefined;
       }
 
-      Utils::AddDistinctTrigRoot(aResult, aTeta, theEps);
+      Utils::AddPeriodicTrigRoot(aResult, aTeta, aMyBorneInf, anUpper, anAngleTol);
     }
   }
 
   // Special case: check if PI is a root (when A - C + E = 0)
   if (aResult.NbRoots < 4 && std::abs(theA - theC + theE) <= theEps)
   {
-    double aTeta = THE_PI + std::trunc(aMod) * THE_2PI;
-    double aX    = aTeta - aMyBorneInf;
-    if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
-    {
-      Utils::AddDistinctTrigRoot(aResult, aTeta, theEps);
-    }
+    Utils::AddPeriodicTrigRoot(aResult, THE_PI, aMyBorneInf, anUpper, anAngleTol);
   }
 
   return aResult;

@@ -111,7 +111,7 @@ struct Config
   uint32_t MaxIterations = 100;     //!< Maximum number of iterations allowed
   double   Tolerance     = 1.0e-10; //!< General convergence tolerance
   double   XTolerance    = 1.0e-10; //!< Tolerance for solution change |x_{n+1} - x_n|
-  double   FTolerance    = 1.0e-10; //!< Tolerance for function value |f(x)|
+  double   FTolerance    = 1.0e-10; //!< Absolute function, residual, or gradient tolerance
 
   //! Relative tolerance used together with the absolute X/F tolerances.
   double RelativeTolerance = 1.0e-10;

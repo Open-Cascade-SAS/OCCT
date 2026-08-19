@@ -23,6 +23,7 @@
 
 #include <NCollection_LinearVector.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 namespace MathOpt
@@ -30,7 +31,6 @@ namespace MathOpt
 using namespace MathUtils;
 
 //! BFGS (Broyden-Fletcher-Goldfarb-Shanno) quasi-Newton method.
-//! One of the most effective algorithms for smooth unconstrained optimization.
 //!
 //! Algorithm:
 //! 1. Start with initial Hessian approximation H (usually identity)
@@ -43,17 +43,13 @@ using namespace MathUtils;
 //! The inverse Hessian update is applied only when the measured curvature
 //! s^T*y is positive; otherwise the current approximation is retained.
 //!
-//! Advantages:
-//! - Superlinear convergence near minimum
-//! - Self-correcting Hessian approximation
-//! - No need to compute actual Hessian
-//!
 //! @tparam Function type with:
 //!   - Value(const math_Vector&, double&) for function value
 //!   - Gradient(const math_Vector&, math_Vector&) for gradient
 //! @param theFunc function object with value and gradient
 //! @param theStartingPoint initial guess
-//! @param theConfig solver configuration
+//! @param theConfig solver configuration; FTolerance bounds the gradient norm, while
+//! RelativeTolerance scales the initial gradient norm when a step reaches XTolerance
 //! @return result containing minimum location and value
 template <typename Function>
 VectorResult BFGS(Function&          theFunc,
@@ -95,9 +91,10 @@ VectorResult BFGS(Function&          theFunc,
   }
 
   // Check if already at minimum (gradient near zero)
-  double aGradNorm = Utils::Norm(aGrad);
+  double       aGradNorm         = Utils::Norm(aGrad);
+  const double anInitialGradNorm = aGradNorm;
 
-  if (aGradNorm < theConfig.FTolerance)
+  if (aGradNorm <= theConfig.FTolerance)
   {
     aResult.Status   = Status::OK;
     aResult.Solution = aX;
@@ -194,7 +191,7 @@ VectorResult BFGS(Function&          theFunc,
     // Check gradient convergence
     aGradNorm = Utils::Norm(aGradNew);
 
-    if (aGradNorm < theConfig.FTolerance)
+    if (aGradNorm <= theConfig.FTolerance)
     {
       aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
@@ -209,9 +206,11 @@ VectorResult BFGS(Function&          theFunc,
     {
       aMaxDiff = std::max(aMaxDiff, std::abs(aXNew.At(i) - aX.At(i)));
     }
-    if (aMaxDiff < theConfig.XTolerance)
+    if (aMaxDiff <= theConfig.XTolerance)
     {
-      aResult.Status   = Status::NotConverged;
+      const double aGradientTolerance =
+        theConfig.FTolerance + theConfig.RelativeTolerance * anInitialGradNorm;
+      aResult.Status   = aGradNorm <= aGradientTolerance ? Status::OK : Status::NotConverged;
       aResult.Solution = aXNew;
       aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;

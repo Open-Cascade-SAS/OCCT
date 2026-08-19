@@ -30,10 +30,10 @@ using namespace MathUtils;
 struct QRResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Matrix> Q;                     //!< Orthogonal matrix Q (m x m)
-  std::optional<math_Matrix> R;                     //!< Upper triangular matrix R (m x n)
-  size_t                     Rank              = 0; //!< Numerical rank
-  double                     ConditionEstimate = std::numeric_limits<double>::infinity();
+  std::optional<math_Matrix> Q;                 //!< Orthogonal matrix Q (m x m)
+  std::optional<math_Matrix> R;                 //!< Upper triangular matrix R (m x n)
+  size_t                     Rank = 0;          //!< Numerical rank
+  std::optional<double>      ConditionEstimate; //!< Full-rank diagonal condition estimate
   double                     DiagonalThreshold = 0.0;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
@@ -189,11 +189,11 @@ inline QRResult QR(const math_Matrix& theA, double theTolerance = 1.0e-15)
   }
 
   double aMaxDiag = 0.0;
-  double aMinDiag = std::numeric_limits<double>::infinity();
   for (size_t j = 0; j < aN; ++j)
   {
     aMaxDiag = std::max(aMaxDiag, std::abs(aR.At(j, j)));
   }
+  double aMinDiag           = aMaxDiag;
   aResult.DiagonalThreshold = aRelTol * aMaxDiag;
   for (size_t j = 0; j < aN; ++j)
   {
@@ -206,7 +206,11 @@ inline QRResult QR(const math_Matrix& theA, double theTolerance = 1.0e-15)
   }
   if (aResult.Rank == aN)
   {
-    aResult.ConditionEstimate = aMaxDiag / aMinDiag;
+    const double aConditionEstimate = aMaxDiag / aMinDiag;
+    if (std::isfinite(aConditionEstimate))
+    {
+      aResult.ConditionEstimate = aConditionEstimate;
+    }
   }
 
   // Zero out below-diagonal elements of R for cleanliness

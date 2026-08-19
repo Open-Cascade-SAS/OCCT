@@ -278,6 +278,23 @@ public:
   }
 };
 
+class MathOptTest_LargeOffsetQuadraticFunction
+{
+public:
+  bool Value(const math_Vector& theX, double& theF)
+  {
+    const double aX = theX.At(0);
+    theF            = 1.0e20 + aX * aX;
+    return true;
+  }
+
+  bool Gradient(const math_Vector& theX, math_Vector& theGradient)
+  {
+    theGradient.ChangeAt(0) = 2.0 * theX.At(0);
+    return true;
+  }
+};
+
 class MathOptTest_WeightedShiftedSphereFunction
 {
 public:
@@ -401,6 +418,22 @@ TEST(MathOpt_BFGSTest, RotatedQuadratic3DLeastSquares)
   EXPECT_NEAR(aResult.Solution->At(1), -1.0, 1.0e-9);
   EXPECT_NEAR(aResult.Solution->At(2), -1.0, 1.0e-9);
   EXPECT_NEAR(*aResult.Value, 0.75, 1.0e-10);
+}
+
+TEST(MathOpt_BFGSTest, LargeObjectiveOffsetDoesNotImplyConvergence)
+{
+  MathOptTest_LargeOffsetQuadraticFunction aFunc;
+  math_Vector                              aStart(size_t{1}, 1.0);
+  MathOpt::Config                          aConfig;
+  aConfig.XTolerance        = 3.0;
+  aConfig.FTolerance        = 1.0e-12;
+  aConfig.RelativeTolerance = 0.0;
+
+  const MathUtils::VectorResult aResult = MathOpt::BFGS(aFunc, aStart, aConfig);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::NotConverged);
+  ASSERT_TRUE(aResult.Gradient.has_value());
+  EXPECT_GT(std::abs(aResult.Gradient->At(0)), aConfig.FTolerance);
 }
 
 TEST(MathOpt_LBFGSTest, WeightedShiftedSphere4D)

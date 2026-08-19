@@ -23,10 +23,10 @@ This package contains template-based implementations of various optimization alg
 
 ### Gradient-Based N-D Optimization
 
-- **BFGS** (MathOpt_BFGS.hxx): Quasi-Newton method with superlinear convergence
+- **BFGS** (MathOpt_BFGS.hxx): Quasi-Newton method with Armijo backtracking
 - **L-BFGS** (MathOpt_BFGS.hxx): Limited-memory BFGS for large-scale problems
 - **FRPR** (MathOpt_FRPR.hxx): Fletcher-Reeves-Polak-Ribiere conjugate gradient
-- **Newton** (MathOpt_Newton.hxx): Newton's method with Hessian for quadratic convergence
+- **Newton** (MathOpt_Newton.hxx): Hessian-based method with line search
 
 ### Constrained Optimization
 
@@ -84,3 +84,7 @@ optional `Value` is advisory only: PSO always evaluates the callback at the clam
 
 `Config::Tolerance`, `Config::XTolerance`, and `Config::FTolerance` are independent after
 construction. Assigning one field does not update the others.
+
+For BFGS, `FTolerance` is the absolute gradient-norm tolerance. If the coordinate step reaches
+`XTolerance`, `RelativeTolerance` additionally scales the initial gradient norm; a small objective
+change alone is not treated as convergence because it depends on the arbitrary objective offset.

@@ -59,7 +59,8 @@ if (result1.IsDone())
 - Handles degenerate cases (a = 0)
 
 ### Quadratic (ax^2 + bx + c = 0)
-- Uses numerically stable formula to avoid catastrophic cancellation
+- Uses exact power-of-two coefficient scaling and a compensated discriminant
+- Uses a cancellation-resistant formula for distinct roots
 - Handles all discriminant cases
 
 ### Cubic (ax^3 + bx^2 + cx + d = 0)

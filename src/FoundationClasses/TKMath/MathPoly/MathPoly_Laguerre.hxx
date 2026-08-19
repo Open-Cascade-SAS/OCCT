@@ -16,13 +16,14 @@
 
 #include <MathPoly_Quartic.hxx>
 #include <MathUtils_Core.hxx>
+#include <Precision.hxx>
 
 #include <algorithm>
 #include <array>
+#include <cfloat>
 #include <cmath>
 #include <complex>
 #include <cstdint>
-#include <limits>
 #include <optional>
 
 namespace MathPoly
@@ -32,6 +33,9 @@ namespace Utils
 
 //! Number of deterministic complex starts used to recover a Laguerre root.
 inline constexpr size_t THE_LAGUERRE_NB_STARTS = 16;
+
+//! Iteration cap for refining a candidate through a multiple derivative root.
+inline constexpr uint32_t THE_MULTIPLICITY_REFINEMENT_MAX_ITERATIONS = 64;
 
 struct IterationResult
 {
@@ -86,8 +90,9 @@ inline IterationResult LaguerreIteration(const double*        theCoefficients,
                                          double               theTolerance,
                                          uint32_t             theMaxIterations)
 {
-  IterationResult      aResult;
-  std::complex<double> aRoot = theStart;
+  IterationResult                aResult;
+  std::optional<IterationResult> aBestResult;
+  std::complex<double>           aRoot = theStart;
   for (uint32_t anIteration = 0; anIteration < theMaxIterations; ++anIteration)
   {
     std::complex<double> aValue, aDerivative, aSecondDerivative;
@@ -102,14 +107,18 @@ inline IterationResult LaguerreIteration(const double*        theCoefficients,
     if (!IsFinite(aValue) || !IsFinite(aDerivative) || !IsFinite(aSecondDerivative)
         || !std::isfinite(aMagnitude))
     {
+      if (aBestResult.has_value())
+      {
+        return *aBestResult;
+      }
       aResult.Status = MathUtils::Status::NumericalError;
       return aResult;
     }
     if (aValue == std::complex<double>(0.0, 0.0))
     {
-      aResult.Status    = MathUtils::Status::OK;
-      aResult.Root      = aRoot;
-      aResult.RootError = std::numeric_limits<double>::epsilon() * std::max(1.0, std::abs(aRoot));
+      aResult.Status       = MathUtils::Status::OK;
+      aResult.Root         = aRoot;
+      aResult.RootError    = Precision::Computational() * std::max(1.0, std::abs(aRoot));
       aResult.NbIterations = anIteration;
       return aResult;
     }
@@ -123,6 +132,10 @@ inline IterationResult LaguerreIteration(const double*        theCoefficients,
     const std::complex<double> aDenominator = std::abs(aPlus) >= std::abs(aMinus) ? aPlus : aMinus;
     if (!IsFinite(aDenominator) || std::abs(aDenominator) == 0.0)
     {
+      if (aBestResult.has_value())
+      {
+        return *aBestResult;
+      }
       aResult.Status = MathUtils::Status::NumericalError;
       return aResult;
     }
@@ -130,20 +143,35 @@ inline IterationResult LaguerreIteration(const double*        theCoefficients,
     const std::complex<double> aNext = aRoot - aStep;
     if (!IsFinite(aStep) || !IsFinite(aNext))
     {
+      if (aBestResult.has_value())
+      {
+        return *aBestResult;
+      }
       aResult.Status = MathUtils::Status::NumericalError;
       return aResult;
     }
     const double aRootScale = std::max(1.0, std::abs(aRoot));
-    if (std::abs(aValue) <= theTolerance * std::max(1.0, aMagnitude)
-        && std::abs(aStep) <= theTolerance * aRootScale)
+    if (std::abs(aValue) <= theTolerance * std::max(1.0, aMagnitude))
     {
-      aResult.Status       = MathUtils::Status::OK;
-      aResult.Root         = aRoot;
-      aResult.RootError    = std::abs(aStep) + std::numeric_limits<double>::epsilon() * aRootScale;
-      aResult.NbIterations = anIteration;
-      return aResult;
+      IterationResult aCandidate;
+      aCandidate.Status       = MathUtils::Status::OK;
+      aCandidate.Root         = aRoot;
+      aCandidate.RootError    = std::abs(aStep) + Precision::Computational() * aRootScale;
+      aCandidate.NbIterations = anIteration;
+      if (!aBestResult.has_value() || *aCandidate.RootError < *aBestResult->RootError)
+      {
+        aBestResult = aCandidate;
+      }
+      if (std::abs(aStep) <= theTolerance * aRootScale)
+      {
+        return aCandidate;
+      }
     }
     aRoot = aNext;
+  }
+  if (aBestResult.has_value())
+  {
+    return *aBestResult;
   }
   aResult.Status       = MathUtils::Status::MaxIterations;
   aResult.Root         = aRoot;
@@ -275,7 +303,8 @@ inline bool HasMultiplicity(const double* theCoefficients,
   }
 
   long double aRoot = theRoot;
-  for (int anIteration = 0; anIteration < theDegree; ++anIteration)
+  for (uint32_t anIteration = 0; anIteration < THE_MULTIPLICITY_REFINEMENT_MAX_ITERATIONS;
+       ++anIteration)
   {
     long double aValue = aMultiplicityDerivative[static_cast<size_t>(aMultiplicityDegree)];
     long double aDerivativeValue = 0.0L;
@@ -284,9 +313,13 @@ inline bool HasMultiplicity(const double* theCoefficients,
       aDerivativeValue = aDerivativeValue * aRoot + aValue;
       aValue           = aValue * aRoot + aMultiplicityDerivative[static_cast<size_t>(anIndex)];
     }
-    if (!std::isfinite(aValue) || !std::isfinite(aDerivativeValue) || aDerivativeValue == 0.0L)
+    if (!std::isfinite(aValue) || !std::isfinite(aDerivativeValue))
     {
       return false;
+    }
+    if (aDerivativeValue == 0.0L)
+    {
+      break;
     }
     const long double aRefinedRoot = aRoot - aValue / aDerivativeValue;
     if (!std::isfinite(aRefinedRoot))
@@ -311,7 +344,7 @@ inline bool HasMultiplicity(const double* theCoefficients,
       aNorm += std::abs(aDerivative[static_cast<size_t>(anIndex)]);
     }
     if (!std::isfinite(aValue)
-        || std::abs(aValue) > std::numeric_limits<double>::epsilon() * std::max(1.0L, aNorm))
+        || std::abs(aValue) > Precision::Computational() * std::max(1.0L, aNorm))
     {
       return false;
     }
@@ -329,7 +362,8 @@ inline bool HasMultiplicity(const double* theCoefficients,
 inline double MultipleRootUncertainty(const double* theCoefficients,
                                       int           theDegree,
                                       double        theRoot,
-                                      size_t        theMultiplicity)
+                                      double        theTolerance,
+                                      size_t        theMinimumMultiplicity)
 {
   std::array<long double, THE_MAX_POLY_DEGREE + 1> aDerivative = {};
   for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
@@ -343,10 +377,11 @@ inline double MultipleRootUncertainty(const double* theCoefficients,
   {
     aMagnitude = aMagnitude * anAbsRoot + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
   }
+  const long double aResidualScale = theTolerance * std::max(1.0L, aMagnitude);
 
   int         aDerivativeDegree = theDegree;
   long double aFactorial        = 1.0L;
-  for (size_t anOrder = 0; anOrder < theMultiplicity; ++anOrder)
+  for (size_t anOrder = 1; anOrder <= static_cast<size_t>(theDegree); ++anOrder)
   {
     for (int anIndex = 1; anIndex <= aDerivativeDegree; ++anIndex)
     {
@@ -354,25 +389,30 @@ inline double MultipleRootUncertainty(const double* theCoefficients,
         static_cast<long double>(anIndex) * aDerivative[static_cast<size_t>(anIndex)];
     }
     --aDerivativeDegree;
-    aFactorial *= static_cast<long double>(anOrder + 1);
-  }
+    aFactorial *= static_cast<long double>(anOrder);
+    if (anOrder < theMinimumMultiplicity)
+    {
+      continue;
+    }
 
-  long double aTaylorCoefficient = aDerivative[static_cast<size_t>(aDerivativeDegree)];
-  for (int anIndex = aDerivativeDegree - 1; anIndex >= 0; --anIndex)
-  {
-    aTaylorCoefficient = aTaylorCoefficient * theRoot + aDerivative[static_cast<size_t>(anIndex)];
+    long double aTaylorCoefficient = aDerivative[static_cast<size_t>(aDerivativeDegree)];
+    for (int anIndex = aDerivativeDegree - 1; anIndex >= 0; --anIndex)
+    {
+      aTaylorCoefficient = aTaylorCoefficient * theRoot + aDerivative[static_cast<size_t>(anIndex)];
+    }
+    aTaylorCoefficient /= aFactorial;
+    if (std::abs(aTaylorCoefficient) <= aResidualScale)
+    {
+      continue;
+    }
+    const long double anUncertainty =
+      std::pow(aResidualScale / std::abs(aTaylorCoefficient), 1.0L / anOrder);
+    const double aResult = static_cast<double>(anUncertainty);
+    return std::isfinite(aResult)
+             ? aResult + Precision::Computational() * std::max(1.0, std::abs(theRoot))
+             : 0.0;
   }
-  aTaylorCoefficient /= aFactorial;
-  if (!std::isfinite(aTaylorCoefficient) || aTaylorCoefficient == 0.0L)
-  {
-    return 0.0;
-  }
-
-  const long double aCoefficientRoundoff = std::numeric_limits<double>::epsilon() * aMagnitude;
-  const long double anUncertainty = std::pow(aCoefficientRoundoff / std::abs(aTaylorCoefficient),
-                                             1.0L / static_cast<long double>(theMultiplicity));
-  return static_cast<double>(anUncertainty)
-         + std::numeric_limits<double>::epsilon() * std::max(1.0, std::abs(theRoot));
+  return 0.0;
 }
 
 inline void ConsolidateRealRoots(PolyResult&   theResult,
@@ -452,7 +492,8 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
   }
 
   LongComplex aRoot(theRoot.real(), theRoot.imag());
-  for (int anIteration = 0; anIteration < theDegree; ++anIteration)
+  for (uint32_t anIteration = 0; anIteration < THE_MULTIPLICITY_REFINEMENT_MAX_ITERATIONS;
+       ++anIteration)
   {
     LongComplex aValue = aMultiplicityDerivative[static_cast<size_t>(aMultiplicityDegree)];
     LongComplex aDerivativeValue = 0.0L;
@@ -462,10 +503,13 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
       aValue           = aValue * aRoot + aMultiplicityDerivative[static_cast<size_t>(anIndex)];
     }
     if (!std::isfinite(aValue.real()) || !std::isfinite(aValue.imag())
-        || !std::isfinite(aDerivativeValue.real()) || !std::isfinite(aDerivativeValue.imag())
-        || std::abs(aDerivativeValue) == 0.0L)
+        || !std::isfinite(aDerivativeValue.real()) || !std::isfinite(aDerivativeValue.imag()))
     {
       return false;
+    }
+    if (std::abs(aDerivativeValue) == 0.0L)
+    {
+      break;
     }
     const LongComplex aRefinedRoot = aRoot - aValue / aDerivativeValue;
     if (!std::isfinite(aRefinedRoot.real()) || !std::isfinite(aRefinedRoot.imag()))
@@ -491,7 +535,7 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
       aMagnitude = aMagnitude * anAbsRoot + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
     }
     if (!std::isfinite(aValue.real()) || !std::isfinite(aValue.imag())
-        || std::abs(aValue) > std::numeric_limits<double>::epsilon() * std::max(1.0L, aMagnitude))
+        || std::abs(aValue) > Precision::Computational() * std::max(1.0L, aMagnitude))
     {
       return false;
     }
@@ -624,7 +668,7 @@ inline PolyResult Laguerre(const double* theCoefficients,
     }
     const double anImaginaryUncertainty =
       *anIteration.RootError
-      + std::numeric_limits<double>::epsilon() * std::max(1.0, std::abs(anIteration.Root));
+      + Precision::Computational() * std::max(1.0, std::abs(anIteration.Root));
     if (std::abs(anIteration.Root.imag()) <= anImaginaryUncertainty)
     {
       const double aRoot = anIteration.Root.real();
@@ -656,8 +700,11 @@ inline PolyResult Laguerre(const double* theCoefficients,
       double     aRepeatedRealRoot = anIteration.Root.real();
       const bool isRepeatedReal =
         Utils::HasMultiplicity(anOriginal.data(), theDegree, aRepeatedRealRoot, 2)
-        && std::abs(anIteration.Root.imag())
-             <= Utils::MultipleRootUncertainty(anOriginal.data(), theDegree, aRepeatedRealRoot, 2);
+        && std::abs(anIteration.Root.imag()) <= Utils::MultipleRootUncertainty(anOriginal.data(),
+                                                                               theDegree,
+                                                                               aRepeatedRealRoot,
+                                                                               theTolerance,
+                                                                               2);
       if (isRepeatedReal)
       {
         if (!Utils::DeflateReal(aWork.data(), aDegree, aRepeatedRealRoot, theTolerance)
@@ -728,8 +775,7 @@ inline PolyResult Laguerre(const double* theCoefficients,
         break;
       }
       aRoot -= aStep;
-      if (std::abs(aStep)
-          <= std::numeric_limits<long double>::epsilon() * std::max(1.0L, std::abs(aRoot)))
+      if (std::abs(aStep) <= LDBL_EPSILON * std::max(1.0L, std::abs(aRoot)))
       {
         break;
       }

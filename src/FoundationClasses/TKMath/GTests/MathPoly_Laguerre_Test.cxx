@@ -370,6 +370,29 @@ TEST_F(MathPoly_LaguerreTest, RepeatedRealAndComplexRootsUseMatchingDeflation)
   EXPECT_EQ(aResult.ComplexMultiplicities[1], 1u);
 }
 
+TEST_F(MathPoly_LaguerreTest, NearbyComplexPairRemainsDistinctFromRepeatedRealRoot)
+{
+  // (x-1)^2 * ((x-1)^2 + 0.01^2)
+  constexpr double           THE_IMAGINARY_PART = 0.01;
+  constexpr double           THE_SQUARE         = THE_IMAGINARY_PART * THE_IMAGINARY_PART;
+  const double               aCoefficients[5]   = {1.0 + THE_SQUARE,
+                                                   -4.0 - 2.0 * THE_SQUARE,
+                                                   6.0 + THE_SQUARE,
+                                                   -4.0,
+                                                   1.0};
+  const MathPoly::PolyResult aResult            = MathPoly::Laguerre(aCoefficients, 4, 1.0e-11);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 1u);
+  EXPECT_NEAR(aResult.Roots[0], 1.0, 1.0e-7);
+  EXPECT_EQ(aResult.Multiplicities[0], 2u);
+  ASSERT_EQ(aResult.NbComplexRoots, 2u);
+  EXPECT_NEAR(aResult.ComplexRoots[0].real(), 1.0, 1.0e-7);
+  EXPECT_NEAR(std::abs(aResult.ComplexRoots[0].imag()), THE_IMAGINARY_PART, 1.0e-7);
+  EXPECT_EQ(aResult.ComplexMultiplicities[0], 1u);
+  EXPECT_EQ(aResult.ComplexMultiplicities[1], 1u);
+}
+
 TEST_F(MathPoly_LaguerreTest, GloballyScaledEquation)
 {
   const double aCoeffs[6]      = {-1.2e-298, 2.74e-298, -2.25e-298, 8.5e-299, -1.5e-299, 1.0e-300};

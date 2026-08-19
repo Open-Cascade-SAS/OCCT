@@ -43,7 +43,8 @@ inline bool IsValidConfig(const MathUtils::Config& theConfig)
 {
   return theConfig.MaxIterations > 0 && std::isfinite(theConfig.Tolerance)
          && std::isfinite(theConfig.XTolerance) && std::isfinite(theConfig.FTolerance)
-         && std::isfinite(theConfig.StepMin) && theConfig.Tolerance > 0.0
+         && std::isfinite(theConfig.RelativeTolerance) && std::isfinite(theConfig.StepMin)
+         && theConfig.Tolerance > 0.0 && theConfig.RelativeTolerance >= 0.0
          && theConfig.XTolerance > 0.0 && theConfig.FTolerance > 0.0 && theConfig.StepMin > 0.0;
 }
 

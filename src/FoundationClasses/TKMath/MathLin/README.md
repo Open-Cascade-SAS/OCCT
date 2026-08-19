@@ -23,7 +23,7 @@ Singular Value Decomposition for general and ill-conditioned matrices.
 - `SVD()` - Compute singular value decomposition A = U * S * V^T
 - `SolveSVD()` - Solve linear system using SVD (handles rank-deficient systems)
 - `PseudoInverse()` - Compute Moore-Penrose pseudo-inverse
-- `ConditionNumber()` - Compute matrix condition number
+- `ConditionNumber()` - Compute an optional full-rank matrix condition number
 - `NumericalRank()` - Determine numerical rank
 
 ### MathLin_Householder.hxx

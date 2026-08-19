@@ -275,9 +275,10 @@ TEST(MathLin_SVD_Test, PseudoInverseRejectsNonFiniteOutput)
 TEST(MathLin_SVD_Test, ConditionNumber)
 {
   // Well-conditioned identity matrix
-  math_Matrix aI     = CreateIdentity(3);
-  double      aCondI = MathLin::ConditionNumber(aI);
-  EXPECT_NEAR(aCondI, 1.0, THE_TOLERANCE);
+  const math_Matrix           aI     = CreateIdentity(3);
+  const std::optional<double> aCondI = MathLin::ConditionNumber(aI);
+  ASSERT_TRUE(aCondI.has_value());
+  EXPECT_NEAR(*aCondI, 1.0, THE_TOLERANCE);
 
   // Ill-conditioned matrix
   math_Matrix aHilbert(1, 3, 1, 3);
@@ -288,8 +289,9 @@ TEST(MathLin_SVD_Test, ConditionNumber)
       aHilbert(i, j) = 1.0 / (i + j - 1);
     }
   }
-  double aCondH = MathLin::ConditionNumber(aHilbert);
-  EXPECT_GT(aCondH, 100.0); // Hilbert matrices are ill-conditioned
+  const std::optional<double> aCondH = MathLin::ConditionNumber(aHilbert);
+  ASSERT_TRUE(aCondH.has_value());
+  EXPECT_GT(*aCondH, 100.0); // Hilbert matrices are ill-conditioned
 }
 
 TEST(MathLin_SVD_Test, RankDeficiencyBoundsAndSortedReconstruction)
@@ -305,7 +307,7 @@ TEST(MathLin_SVD_Test, RankDeficiencyBoundsAndSortedReconstruction)
   const MathLin::SVDResult aSVD = MathLin::SVD(aA);
   ASSERT_TRUE(aSVD.IsDone());
   EXPECT_EQ(aSVD.Rank, 1);
-  EXPECT_TRUE(std::isinf(aSVD.ConditionNumber));
+  EXPECT_FALSE(aSVD.ConditionNumber.has_value());
   EXPECT_GE(aSVD.SingularValues->At(0), aSVD.SingularValues->At(1));
   for (size_t i = 0; i < aSVD.U->RowSize(); ++i)
   {
@@ -886,6 +888,8 @@ TEST(MathLin_Householder_Test, BasicQR_2x2)
   auto aResult = MathLin::QR(aMat);
 
   ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.ConditionEstimate.has_value());
+  EXPECT_TRUE(std::isfinite(*aResult.ConditionEstimate));
 
   const math_Matrix& aQ = *aResult.Q;
   const math_Matrix& aR = *aResult.R;
@@ -977,6 +981,7 @@ TEST(MathLin_Householder_Test, BoundsScalingRankAndReconstruction)
   const MathLin::QRResult aQR = MathLin::QR(aA);
   ASSERT_TRUE(aQR.IsDone());
   EXPECT_EQ(aQR.Rank, 2);
+  EXPECT_TRUE(aQR.ConditionEstimate.has_value());
   for (size_t i = 0; i < aQR.Q->RowSize(); ++i)
   {
     for (size_t j = 0; j < aQR.R->ColSize(); ++j)
@@ -992,11 +997,13 @@ TEST(MathLin_Householder_Test, BoundsScalingRankAndReconstruction)
     }
   }
 
-  aA(-4, 4) = 2.0 * aA(-4, 3);
-  aA(-3, 4) = 2.0 * aA(-3, 3);
-  aA(-2, 4) = 2.0 * aA(-2, 3);
+  aA(-4, 4)                                = 2.0 * aA(-4, 3);
+  aA(-3, 4)                                = 2.0 * aA(-3, 3);
+  aA(-2, 4)                                = 2.0 * aA(-2, 3);
+  const MathLin::QRResult aRankDeficientQR = MathLin::QR(aA);
+  EXPECT_EQ(aRankDeficientQR.Rank, 1);
+  EXPECT_FALSE(aRankDeficientQR.ConditionEstimate.has_value());
   math_Vector aB(10, 12, 1.0);
-  EXPECT_EQ(MathLin::QR(aA).Rank, 1);
   EXPECT_EQ(MathLin::SolveQR(aA, aB).Status, MathUtils::Status::Singular);
 }
 

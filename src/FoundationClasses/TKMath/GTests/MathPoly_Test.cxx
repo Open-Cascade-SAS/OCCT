@@ -197,6 +197,23 @@ TEST(MathPoly_QuadraticTest, ExtremeRootMagnitudes)
   EXPECT_NEAR(aResult.Roots[1] / 1.0e150, 1.0, 1.0e-12);
 }
 
+TEST(MathPoly_QuadraticTest, AdjacentDiscriminantsRemainDistinct)
+{
+  const double               aBelowOne   = std::nextafter(1.0, 0.0);
+  const MathPoly::PolyResult aRealResult = MathPoly::Quadratic(1.0, -2.0, aBelowOne);
+  ASSERT_EQ(aRealResult.Status, MathUtils::Status::OK);
+  ASSERT_EQ(aRealResult.NbRoots, 2u);
+  EXPECT_LT(aRealResult.Roots[0], 1.0);
+  EXPECT_GT(aRealResult.Roots[1], 1.0);
+  EXPECT_EQ(aRealResult.Multiplicities[0], 1u);
+  EXPECT_EQ(aRealResult.Multiplicities[1], 1u);
+
+  const double               aAboveOne      = std::nextafter(1.0, 2.0);
+  const MathPoly::PolyResult aComplexResult = MathPoly::Quadratic(1.0, -2.0, aAboveOne);
+  EXPECT_EQ(aComplexResult.Status, MathUtils::Status::OK);
+  EXPECT_EQ(aComplexResult.NbRoots, 0u);
+}
+
 TEST(MathPoly_QuadraticTest, RejectsNonFiniteCoefficients)
 {
   const double aNan       = std::numeric_limits<double>::quiet_NaN();
@@ -319,6 +336,21 @@ TEST(MathPoly_CubicTest, ClusteredRootsRemainDistinct)
   EXPECT_NEAR(aResult.Roots[0], 1.0, 1.0e-11);
   EXPECT_NEAR(aResult.Roots[1], 1.001, 1.0e-11);
   EXPECT_NEAR(aResult.Roots[2], 2.0, 1.0e-11);
+}
+
+TEST(MathPoly_CubicTest, CloselySpacedRootsRemainDistinct)
+{
+  // x * (x - 1.0e-6) * (x - 1)
+  const MathPoly::PolyResult aResult = MathPoly::Cubic(1.0, -1.000001, 1.0e-6, 0.0);
+
+  ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
+  ASSERT_EQ(aResult.NbRoots, size_t{3});
+  constexpr double THE_EXPECTED_ROOTS[] = {0.0, 1.0e-6, 1.0};
+  for (size_t anIndex = 0; anIndex < aResult.NbRoots; ++anIndex)
+  {
+    EXPECT_EQ(aResult.Multiplicities[anIndex], size_t{1});
+    EXPECT_NEAR(aResult.Roots[anIndex], THE_EXPECTED_ROOTS[anIndex], 1.0e-13);
+  }
 }
 
 TEST(MathPoly_CubicTest, ThreeUnevenRealRoots)

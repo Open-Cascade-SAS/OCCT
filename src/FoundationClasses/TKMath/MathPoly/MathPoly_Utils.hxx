@@ -18,10 +18,10 @@
 
 #include <algorithm>
 #include <array>
+#include <cfloat>
 #include <cmath>
 #include <complex>
 #include <cstdint>
-#include <limits>
 #include <optional>
 
 namespace MathPoly
@@ -31,14 +31,14 @@ namespace Utils
 
 //! Residual threshold used to recognize distinct real roots at critical points.
 inline constexpr long double THE_DISTINCT_ROOT_RESIDUAL_TOLERANCE =
-  2048.0L * std::numeric_limits<long double>::epsilon();
+  64.0L * LDBL_EPSILON;
 
 //! Fixed bisection count providing full long-double refinement for degree <= 4.
 inline constexpr uint32_t THE_DISTINCT_ROOT_BISECTION_ITERATIONS = 200;
 
 //! Residual threshold used to identify repeated roots from successive derivatives.
 inline constexpr long double THE_ROOT_MULTIPLICITY_TOLERANCE =
-  32768.0L * std::numeric_limits<long double>::epsilon();
+  32768.0L * LDBL_EPSILON;
 
 using LongCoefficients = std::array<long double, THE_MAX_POLY_DEGREE + 1>;
 
@@ -49,11 +49,12 @@ inline bool IsFinite(const std::complex<double>& theValue)
 
 inline std::optional<double> ToDouble(long double theValue)
 {
-  if (!std::isfinite(theValue) || std::abs(theValue) > std::numeric_limits<double>::max())
+  if (!std::isfinite(theValue))
   {
     return std::nullopt;
   }
-  return static_cast<double>(theValue);
+  const double aValue = static_cast<double>(theValue);
+  return std::isfinite(aValue) ? std::optional<double>(aValue) : std::nullopt;
 }
 
 inline bool Validate(const double* theCoefficients, int theDegree, double theTolerance = 1.0)
@@ -164,7 +165,7 @@ inline void AppendUnique(std::array<long double, 4>& theRoots,
                          long double                 theRoot)
 {
   const long double aTolerance =
-    128.0L * std::numeric_limits<long double>::epsilon() * std::max(1.0L, std::abs(theRoot));
+    128.0L * LDBL_EPSILON * std::max(1.0L, std::abs(theRoot));
   for (size_t anIndex = 0; anIndex < theCount; ++anIndex)
   {
     if (std::abs(theRoots[anIndex] - theRoot) <= aTolerance)
@@ -309,21 +310,22 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
   {
     const double aCoefficientScale = std::max(
       {std::abs(theCoefficients[0]), std::abs(theCoefficients[1]), std::abs(theCoefficients[2])});
-    const long double aA                 = theCoefficients[2] / aCoefficientScale;
-    const long double aB                 = theCoefficients[1] / aCoefficientScale;
-    const long double aC                 = theCoefficients[0] / aCoefficientScale;
-    const long double aDiscriminant      = aB * aB - 4.0L * aA * aC;
-    const long double aDiscriminantScale = aB * aB + std::abs(4.0L * aA * aC);
-    const long double aTolerance =
-      64.0L * std::numeric_limits<long double>::epsilon() * aDiscriminantScale;
-    aResult.Status = MathUtils::Status::OK;
-    if (aDiscriminant < -aTolerance)
+    const int    aScaleExponent = std::ilogb(aCoefficientScale);
+    const double aA             = std::scalbn(theCoefficients[2], -aScaleExponent);
+    const double aB             = std::scalbn(theCoefficients[1], -aScaleExponent);
+    const double aC             = std::scalbn(theCoefficients[0], -aScaleExponent);
+    const double aFourA         = 4.0 * aA;
+    const double aFourAC        = aFourA * aC;
+    const double aProductError  = std::fma(-aFourA, aC, aFourAC);
+    const double aDiscriminant  = std::fma(aB, aB, -aFourAC) + aProductError;
+    aResult.Status              = MathUtils::Status::OK;
+    if (aDiscriminant < 0.0)
     {
       return aResult;
     }
-    if (std::abs(aDiscriminant) <= aTolerance)
+    if (aDiscriminant == 0.0)
     {
-      const std::optional<double> aRoot = ToDouble(-aB / (2.0L * aA));
+      const std::optional<double> aRoot = ToDouble(-aB / (2.0 * aA));
       if (!aRoot.has_value())
       {
         aResult.Status = MathUtils::Status::NumericalError;
@@ -334,19 +336,18 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
       aResult.NbRoots           = 1;
       return aResult;
     }
-    const long double aSquareRoot = std::sqrt(aDiscriminant);
-    const long double aQ          = -0.5L * (aB + std::copysign(aSquareRoot, aB));
-    const long double aRoots[2]   = {aQ / aA, aC / aQ};
-    for (const long double aLongRoot : aRoots)
+    const double aSquareRoot = std::sqrt(aDiscriminant);
+    const double aQ          = -0.5 * (aB + std::copysign(aSquareRoot, aB));
+    const double aRoots[2]   = {aQ / aA, aC / aQ};
+    for (const double aDoubleRoot : aRoots)
     {
-      const std::optional<double> aRoot = ToDouble(aLongRoot);
-      if (!aRoot.has_value())
+      if (!std::isfinite(aDoubleRoot))
       {
         aResult.Status  = MathUtils::Status::NumericalError;
         aResult.NbRoots = 0;
         return aResult;
       }
-      aResult.Roots[aResult.NbRoots]            = *aRoot;
+      aResult.Roots[aResult.NbRoots]            = aDoubleRoot;
       aResult.Multiplicities[aResult.NbRoots++] = 1;
     }
     if (aResult.Roots[0] > aResult.Roots[1])
@@ -397,7 +398,7 @@ inline PolyResult SolveDirect(const double* theCoefficients, int theDegree)
     if (!HasSmallResidual(aScaled,
                           theDegree,
                           aRoots[aRootIndex],
-                          4096.0L * std::numeric_limits<long double>::epsilon())
+                          256.0L * LDBL_EPSILON)
         || !aRoot.has_value())
     {
       aResult.Status = MathUtils::Status::NumericalError;

@@ -31,11 +31,11 @@ using namespace MathUtils;
 struct SVDResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Matrix> U;                   //!< Left singular vectors (m x n)
-  std::optional<math_Vector> SingularValues;      //!< Singular values (n elements)
-  std::optional<math_Matrix> V;                   //!< Right singular vectors (n x n)
-  size_t                     Rank            = 0; //!< Numerical rank
-  double                     ConditionNumber = std::numeric_limits<double>::infinity();
+  std::optional<math_Matrix> U;               //!< Left singular vectors (m x n)
+  std::optional<math_Vector> SingularValues;  //!< Singular values (n elements)
+  std::optional<math_Matrix> V;               //!< Right singular vectors (n x n)
+  size_t                     Rank = 0;        //!< Numerical rank
+  std::optional<double>      ConditionNumber; //!< Full-rank singular-value condition number
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -160,7 +160,11 @@ inline SVDResult SVD(const math_Matrix& theA, double theTolerance = 1.0e-15)
   const size_t aFullRank = std::min(aM, aN);
   if (aResult.Rank == aFullRank && aFullRank > 0)
   {
-    aResult.ConditionNumber = aWStorage[0] / aWStorage[aFullRank - 1];
+    const double aConditionNumber = aWStorage[0] / aWStorage[aFullRank - 1];
+    if (std::isfinite(aConditionNumber))
+    {
+      aResult.ConditionNumber = aConditionNumber;
+    }
   }
 
   aResult.U = math_Matrix(aM, aN);
@@ -345,13 +349,13 @@ inline InverseResult PseudoInverse(const math_Matrix& theA, double theTolerance 
 //! High condition number (> 1e10) indicates ill-conditioned matrix.
 //!
 //! @param theA input matrix
-//! @return condition number (infinity if matrix is singular)
-inline double ConditionNumber(const math_Matrix& theA)
+//! @return condition number, or no value if decomposition fails or the matrix is rank deficient
+inline std::optional<double> ConditionNumber(const math_Matrix& theA)
 {
   SVDResult aSVD = SVD(theA);
   if (!aSVD.IsDone())
   {
-    return std::numeric_limits<double>::infinity();
+    return std::nullopt;
   }
 
   return aSVD.ConditionNumber;

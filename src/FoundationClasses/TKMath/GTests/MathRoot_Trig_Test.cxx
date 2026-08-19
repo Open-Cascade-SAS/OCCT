@@ -15,6 +15,7 @@
 
 #include <MathRoot_Trig.hxx>
 #include <MathUtils_Core.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
 #include <limits>
@@ -184,6 +185,32 @@ TEST(MathRoot_TrigTest, CDE_NoSolution)
   MathRoot::TrigResult aResult = MathRoot::TrigonometricCDE(1.0, 1.0, -2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 0);
+}
+
+TEST(MathRoot_TrigTest, CDE_TangentRootAtLowerBound)
+{
+  const double               aLower = -0.989;
+  const double               aC     = std::cos(aLower);
+  const double               aD     = std::sin(aLower);
+  const MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricCDE(aC, aD, -1.0, aLower, aLower + 0.1);
+
+  ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
+  ASSERT_EQ(aResult.NbRoots, 1u);
+  EXPECT_NEAR(aResult.Roots[0], aLower, THE_TOL);
+  verifyRoots(aResult, 0.0, 0.0, aC, aD, -1.0);
+}
+
+TEST(MathRoot_TrigTest, CDE_OCCTInfiniteBoundsUseCanonicalPeriod)
+{
+  const MathRoot::TrigResult aResult =
+    MathRoot::TrigonometricCDE(1.0, 1.0, 0.0, -Precision::Infinite(), Precision::Infinite());
+
+  ASSERT_EQ(aResult.Status, MathUtils::Status::OK);
+  ASSERT_EQ(aResult.NbRoots, 2u);
+  EXPECT_GE(aResult.Roots[0], 0.0);
+  EXPECT_LE(aResult.Roots[1], MathUtils::THE_2PI);
+  verifyRoots(aResult, 0.0, 0.0, 1.0, 1.0, 0.0);
 }
 
 // ============================================================================
