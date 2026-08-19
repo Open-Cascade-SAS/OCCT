@@ -21,6 +21,7 @@
 #include <NCollection_Map.hxx>
 #include <ShapeFix_FaceConnect.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
