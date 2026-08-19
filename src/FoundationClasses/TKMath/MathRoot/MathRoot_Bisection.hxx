@@ -26,7 +26,7 @@ namespace MathRoot
 using namespace MathUtils;
 
 //! Bisection method for root finding.
-//! Simple and robust for a continuous function with a valid bracket.
+//! Bisection for a continuous function with a valid bracket.
 //! Converges linearly, halving the interval at each step.
 //! Convergence is accepted on either residual or bracket width.
 //!

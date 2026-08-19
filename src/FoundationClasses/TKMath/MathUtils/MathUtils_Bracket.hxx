@@ -22,7 +22,7 @@
 #include <limits>
 #include <utility>
 
-//! Correctness-first bracketing utilities.
+//! Bracketing utilities.
 namespace MathUtils
 {
 

@@ -280,7 +280,6 @@ inline LinearResult SolveQR(const math_Matrix& theA,
     aC[i] = aSum;
   }
 
-  // Back substitution: R[0:n, 0:n] * x = c[0:n]
   const size_t aN  = theA.ColSize();
   aResult.Solution = math_Vector(aN, 0.0);
 
@@ -360,7 +359,6 @@ inline LinearMultipleResult SolveQRMultiple(const math_Matrix& theA,
       aC[i] = aSum;
     }
 
-    // Back substitution: R[0:n,0:n] * x_j = c[0:n]
     for (size_t i = aN; i-- > 0;)
     {
       const double aDiag = aR.At(i, i);

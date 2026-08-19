@@ -135,7 +135,6 @@ VectorResult BFGS(Function&          theFunc,
       aDir.ChangeAt(i) = -aSum;
     }
 
-    // Armijo backtracking line search
     MathUtils::LineSearchResult aLineResult =
       Utils::Backtrack(theFunc, aX, aDir, aGrad, aFx, 1.0, theConfig.StepMin);
 
@@ -383,9 +382,14 @@ VectorResult LBFGS(Function&          theFunc,
     return aResult;
   }
 
-  // Storage for {s, y} pairs (circular buffer)
-  NCollection_LinearVector<double> aSData(aM * aN, 0.0);
-  NCollection_LinearVector<double> aYData(aM * aN, 0.0);
+  const size_t aHistorySize = aM * aN;
+  if (aHistorySize / aN != aM)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  NCollection_LinearVector<double> aSData(aHistorySize, 0.0);
+  NCollection_LinearVector<double> aYData(aHistorySize, 0.0);
   NCollection_LinearVector<double> aRhoVec(aM, 0.0);
   size_t                           aHead  = 0; // Index of oldest entry
   size_t                           aCount = 0; // Number of stored pairs

@@ -67,7 +67,7 @@ public:
   inline explicit math_VectorBase(size_t theSize);
 
   //! Constructs a zero-based vector of theSize elements initialized to theInitialValue.
-  inline math_VectorBase(size_t theSize, TheItemType theInitialValue);
+  inline explicit math_VectorBase(size_t theSize, TheItemType theInitialValue);
 
   //! Memory allocation
   DEFINE_STANDARD_ALLOC;

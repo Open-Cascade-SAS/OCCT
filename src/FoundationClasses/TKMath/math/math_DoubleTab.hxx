@@ -34,7 +34,7 @@ class math_DoubleTab
 
 public:
   //! Constructs a zero-based table with theNbRows rows and theNbColumns columns.
-  math_DoubleTab(size_t theNbRows, size_t theNbColumns)
+  explicit math_DoubleTab(size_t theNbRows, size_t theNbColumns)
       : myBuffer{},
         myArray(theNbRows != 0 && theNbColumns <= THE_BUFFER_SIZE / theNbRows
                   ? NCollection_Array2<double>(myBuffer.data(), theNbRows, theNbColumns)

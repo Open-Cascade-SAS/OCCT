@@ -609,7 +609,6 @@ TEST(MathOpt_GlobOptTest, CompareWithOldAPI_Sphere)
 
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // Both should find comparable bounded minima.
   EXPECT_LT(anOldSolver.GetF(), 0.1);
   EXPECT_LT(*aNewResult.Value, 0.1);
   EXPECT_NEAR(anOldSolver.GetF(), *aNewResult.Value, 0.1);

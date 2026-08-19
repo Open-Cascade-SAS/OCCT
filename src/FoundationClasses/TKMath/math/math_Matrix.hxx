@@ -77,10 +77,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a non-initialized zero-based matrix.
-  inline math_Matrix(size_t theNbRows, size_t theNbColumns);
+  inline explicit math_Matrix(size_t theNbRows, size_t theNbColumns);
 
   //! Constructs a zero-based matrix initialized to theInitialValue.
-  inline math_Matrix(size_t theNbRows, size_t theNbColumns, double theInitialValue);
+  inline explicit math_Matrix(size_t theNbRows, size_t theNbColumns, double theInitialValue);
 
   //! Constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]

@@ -4,9 +4,8 @@ Polynomial root finding algorithms for OCCT.
 
 ## Overview
 
-The MathPoly package provides efficient, numerically stable algorithms for finding
-real roots of polynomial equations, with dedicated direct solvers for degree <= 4
-and a general Laguerre-based solver for higher degrees.
+The MathPoly package provides algorithms for finding roots of polynomial equations, with dedicated
+direct real-root solvers for degree <= 4 and a general Laguerre-based solver for higher degrees.
 
 ## Contents
 

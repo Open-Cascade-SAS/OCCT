@@ -244,15 +244,15 @@ VectorResult PSO(Function&                                        theFunc,
     return aResult;
   }
 
-  const size_t aNbParticles    = theConfig.NbParticles;
-  const bool   isInitModeValid = theConfig.InitMode == PSOInitMode::RandomOnly
-                               || theConfig.InitMode == PSOInitMode::SeededOnly
-                               || theConfig.InitMode == PSOInitMode::SeededPlusRandom;
-  const bool isBoundaryModeValid = theConfig.BoundaryMode == PSOBoundaryMode::Clamp
-                                   || theConfig.BoundaryMode == PSOBoundaryMode::Reflect
-                                   || theConfig.BoundaryMode == PSOBoundaryMode::Wrap;
-  const bool isScheduleValid = theConfig.InertiaSchedule == PSOInertiaSchedule::Constant
-                               || theConfig.InertiaSchedule == PSOInertiaSchedule::LinearDecay;
+  const size_t aNbParticles        = theConfig.NbParticles;
+  const bool   isInitModeValid     = theConfig.InitMode == PSOInitMode::RandomOnly
+                                     || theConfig.InitMode == PSOInitMode::SeededOnly
+                                     || theConfig.InitMode == PSOInitMode::SeededPlusRandom;
+  const bool   isBoundaryModeValid = theConfig.BoundaryMode == PSOBoundaryMode::Clamp
+                                     || theConfig.BoundaryMode == PSOBoundaryMode::Reflect
+                                     || theConfig.BoundaryMode == PSOBoundaryMode::Wrap;
+  const bool   isScheduleValid = theConfig.InertiaSchedule == PSOInertiaSchedule::Constant
+                                 || theConfig.InertiaSchedule == PSOInertiaSchedule::LinearDecay;
   if (aNbParticles == 0 || !isInitModeValid || !isBoundaryModeValid || !isScheduleValid
       || !std::isfinite(theConfig.Omega) || !std::isfinite(theConfig.OmegaMin)
       || !std::isfinite(theConfig.PhiPersonal) || theConfig.PhiPersonal < 0.0
@@ -275,28 +275,17 @@ VectorResult PSO(Function&                                        theFunc,
   auto LowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
   auto UpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
 
-  // Particle data
-  struct Particle
+  const size_t aSwarmSize = aNbParticles * aNbDims;
+  if (aSwarmSize / aNbDims != aNbParticles)
   {
-    math_Vector           Position;
-    math_Vector           Velocity;
-    math_Vector           BestPosition;
-    std::optional<double> BestValue;
-    std::optional<double> CurrentValue;
-
-    Particle(size_t theSize)
-        : Position(theSize),
-          Velocity(theSize),
-          BestPosition(theSize)
-    {
-    }
-  };
-
-  NCollection_DynamicArray<Particle> aSwarm(std::min<size_t>(aNbParticles, 8));
-  for (size_t aPartIdx = 0; aPartIdx < aNbParticles; ++aPartIdx)
-  {
-    aSwarm.Append(Particle(aNbDims));
+    aResult.Status = Status::InvalidInput;
+    return aResult;
   }
+  NCollection_LinearVector<double>                aPositions(aSwarmSize, 0.0);
+  NCollection_LinearVector<double>                aVelocities(aSwarmSize, 0.0);
+  NCollection_LinearVector<double>                aBestPositions(aSwarmSize, 0.0);
+  NCollection_LinearVector<std::optional<double>> aBestValues(aNbParticles, std::nullopt);
+  NCollection_LinearVector<std::optional<double>> aCurrentValues(aNbParticles, std::nullopt);
 
   // Random number generator
   MathUtils::RandomGenerator aRNG(theConfig.Seed);
@@ -359,15 +348,21 @@ VectorResult PSO(Function&                                        theFunc,
     const size_t aNbDirect = std::min(aNbSeeds, aNbParticles);
     for (size_t aSeedIdx = 0; aSeedIdx < aNbDirect; ++aSeedIdx)
     {
-      Particle&              aParticle = aSwarm.ChangeValue(aSeedIdx);
-      const PSOSeedParticle& aSeed     = theSeeds->Value(aSeedIdx);
+      const PSOSeedParticle& aSeed    = theSeeds->Value(aSeedIdx);
+      const size_t           anOffset = aSeedIdx * aNbDims;
+      math_Vector aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+      math_Vector aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+      math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
+                                0,
+                                static_cast<int>(aNbDims) - 1);
+      std::optional<double>& aBestValue    = aBestValues.ChangeValue(aSeedIdx);
+      std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aSeedIdx);
 
-      // Clamp seed position to bounds.
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
         const double aClamped =
           MathUtils::Clamp(aSeed.Position.At(aDimIdx), LowerBound(aDimIdx), UpperBound(aDimIdx));
-        aParticle.Position.ChangeAt(aDimIdx) = aClamped;
+        aPosition.ChangeAt(aDimIdx) = aClamped;
       }
 
       // Use seed velocity or generate random
@@ -376,7 +371,7 @@ VectorResult PSO(Function&                                        theFunc,
         const math_Vector& aSeedVel = *aSeed.Velocity;
         for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
         {
-          aParticle.Velocity.ChangeAt(aDimIdx) =
+          aVelocity.ChangeAt(aDimIdx) =
             MathUtils::Clamp(aSeedVel.At(aDimIdx), -aVelMax.At(aDimIdx), aVelMax.At(aDimIdx));
         }
       }
@@ -384,26 +379,25 @@ VectorResult PSO(Function&                                        theFunc,
       {
         for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
         {
-          aParticle.Velocity.ChangeAt(aDimIdx) =
-            (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
+          aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
         }
       }
 
       // Always verify fitness at the actual initial position.
-      double aCurrentValue = 0.0;
-      if (aCheckedFunc.Value(aParticle.Position, aCurrentValue))
+      double aFunctionValue = 0.0;
+      if (aCheckedFunc.Value(aPosition, aFunctionValue))
       {
-        aParticle.CurrentValue = aCurrentValue;
-        aParticle.BestValue    = aCurrentValue;
+        aCurrentValue = aFunctionValue;
+        aBestValue    = aFunctionValue;
       }
       ++aLocalStats.NbFunctionEvals;
 
-      aParticle.BestPosition = aParticle.Position;
+      aBestPosition = aPosition;
 
-      if (aParticle.BestValue && (!aGlobalBestValue || *aParticle.BestValue < *aGlobalBestValue))
+      if (aBestValue && (!aGlobalBestValue || *aBestValue < *aGlobalBestValue))
       {
-        aGlobalBestValue = *aParticle.BestValue;
-        aGlobalBest      = aParticle.BestPosition;
+        aGlobalBestValue = *aBestValue;
+        aGlobalBest      = aBestPosition;
       }
     }
     aSeeded = aNbDirect;
@@ -413,36 +407,41 @@ VectorResult PSO(Function&                                        theFunc,
     {
       for (size_t aPartIdx = aSeeded; aPartIdx < aNbParticles; ++aPartIdx)
       {
-        Particle& aParticle = aSwarm.ChangeValue(aPartIdx);
+        const size_t anOffset = aPartIdx * aNbDims;
+        math_Vector  aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+        math_Vector aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+        math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
+                                  0,
+                                  static_cast<int>(aNbDims) - 1);
+        std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+        std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
         // Pick a seed to jitter (round-robin)
         const size_t           aSrcIdx = aPartIdx % aSeeded;
         const PSOSeedParticle& aSrc    = theSeeds->Value(aSrcIdx);
 
         for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
         {
-          const double aJitter = (2.0 * aRNG.NextReal() - 1.0) * 0.1 * aRange.At(aDimIdx);
-          aParticle.Position.ChangeAt(aDimIdx) =
-            MathUtils::Clamp(aSrc.Position.At(aDimIdx) + aJitter,
-                             LowerBound(aDimIdx),
-                             UpperBound(aDimIdx));
-          aParticle.Velocity.ChangeAt(aDimIdx) =
-            (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
+          const double aJitter        = (2.0 * aRNG.NextReal() - 1.0) * 0.1 * aRange.At(aDimIdx);
+          aPosition.ChangeAt(aDimIdx) = MathUtils::Clamp(aSrc.Position.At(aDimIdx) + aJitter,
+                                                         LowerBound(aDimIdx),
+                                                         UpperBound(aDimIdx));
+          aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
         }
 
-        double aCurrentValue = 0.0;
-        if (aCheckedFunc.Value(aParticle.Position, aCurrentValue))
+        double aFunctionValue = 0.0;
+        if (aCheckedFunc.Value(aPosition, aFunctionValue))
         {
-          aParticle.CurrentValue = aCurrentValue;
-          aParticle.BestValue    = aCurrentValue;
+          aCurrentValue = aFunctionValue;
+          aBestValue    = aFunctionValue;
         }
         ++aLocalStats.NbFunctionEvals;
 
-        aParticle.BestPosition = aParticle.Position;
+        aBestPosition = aPosition;
 
-        if (aParticle.BestValue && (!aGlobalBestValue || *aParticle.BestValue < *aGlobalBestValue))
+        if (aBestValue && (!aGlobalBestValue || *aBestValue < *aGlobalBestValue))
         {
-          aGlobalBestValue = *aParticle.BestValue;
-          aGlobalBest      = aParticle.BestPosition;
+          aGlobalBestValue = *aBestValue;
+          aGlobalBest      = aBestPosition;
         }
       }
       aSeeded = aNbParticles;
@@ -452,28 +451,34 @@ VectorResult PSO(Function&                                        theFunc,
   // Fill remaining particles randomly
   for (size_t aPartIdx = aSeeded; aPartIdx < aNbParticles; ++aPartIdx)
   {
-    Particle& aParticle = aSwarm.ChangeValue(aPartIdx);
+    const size_t anOffset = aPartIdx * aNbDims;
+    math_Vector  aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+    math_Vector  aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+    math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
+                               0,
+                               static_cast<int>(aNbDims) - 1);
+    std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+    std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
     for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
-      aParticle.Position.ChangeAt(aDimIdx) =
-        LowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
-      aParticle.Velocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
+      aPosition.ChangeAt(aDimIdx) = LowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
+      aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
     }
 
-    double aCurrentValue = 0.0;
-    if (aCheckedFunc.Value(aParticle.Position, aCurrentValue))
+    double aFunctionValue = 0.0;
+    if (aCheckedFunc.Value(aPosition, aFunctionValue))
     {
-      aParticle.CurrentValue = aCurrentValue;
-      aParticle.BestValue    = aCurrentValue;
+      aCurrentValue = aFunctionValue;
+      aBestValue    = aFunctionValue;
     }
     ++aLocalStats.NbFunctionEvals;
 
-    aParticle.BestPosition = aParticle.Position;
+    aBestPosition = aPosition;
 
-    if (aParticle.BestValue && (!aGlobalBestValue || *aParticle.BestValue < *aGlobalBestValue))
+    if (aBestValue && (!aGlobalBestValue || *aBestValue < *aGlobalBestValue))
     {
-      aGlobalBestValue = *aParticle.BestValue;
-      aGlobalBest      = aParticle.BestPosition;
+      aGlobalBestValue = *aBestValue;
+      aGlobalBest      = aBestPosition;
     }
   }
 
@@ -513,7 +518,14 @@ VectorResult PSO(Function&                                        theFunc,
     // Update each particle
     for (size_t aPartIdx = 0; aPartIdx < aNbParticles; ++aPartIdx)
     {
-      Particle& aParticle = aSwarm.ChangeValue(aPartIdx);
+      const size_t anOffset = aPartIdx * aNbDims;
+      math_Vector  aPosition(&aPositions.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+      math_Vector  aVelocity(&aVelocities.ChangeValue(anOffset), 0, static_cast<int>(aNbDims) - 1);
+      math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
+                                 0,
+                                 static_cast<int>(aNbDims) - 1);
+      std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+      std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
 
       // Update velocity
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
@@ -521,21 +533,20 @@ VectorResult PSO(Function&                                        theFunc,
         const double aRand1 = aRNG.NextReal();
         const double aRand2 = aRNG.NextReal();
 
-        double aVnew = anOmega * aParticle.Velocity.At(aDimIdx)
-                       + theConfig.PhiPersonal * aRand1
-                           * (aParticle.BestPosition.At(aDimIdx) - aParticle.Position.At(aDimIdx))
-                       + theConfig.PhiGlobal * aRand2
-                           * (aGlobalBest.At(aDimIdx) - aParticle.Position.At(aDimIdx));
+        double aVnew =
+          anOmega * aVelocity.At(aDimIdx)
+          + theConfig.PhiPersonal * aRand1 * (aBestPosition.At(aDimIdx) - aPosition.At(aDimIdx))
+          + theConfig.PhiGlobal * aRand2 * (aGlobalBest.At(aDimIdx) - aPosition.At(aDimIdx));
 
         // Clamp velocity
         aVnew = MathUtils::Clamp(aVnew, -aVelMax.At(aDimIdx), aVelMax.At(aDimIdx));
-        aParticle.Velocity.ChangeAt(aDimIdx) = aVnew;
+        aVelocity.ChangeAt(aDimIdx) = aVnew;
       }
 
       // Update position with boundary handling
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
-        double aXnew = aParticle.Position.At(aDimIdx) + aParticle.Velocity.At(aDimIdx);
+        double aXnew = aPosition.At(aDimIdx) + aVelocity.At(aDimIdx);
 
         if (aXnew < LowerBound(aDimIdx) || aXnew > UpperBound(aDimIdx))
         {
@@ -545,7 +556,7 @@ VectorResult PSO(Function&                                        theFunc,
           {
             case PSOBoundaryMode::Clamp: {
               aXnew = MathUtils::Clamp(aXnew, LowerBound(aDimIdx), UpperBound(aDimIdx));
-              aParticle.Velocity.ChangeAt(aDimIdx) = -0.5 * aParticle.Velocity.At(aDimIdx);
+              aVelocity.ChangeAt(aDimIdx) = -0.5 * aVelocity.At(aDimIdx);
               break;
             }
             case PSOBoundaryMode::Reflect: {
@@ -559,7 +570,7 @@ VectorResult PSO(Function&                                        theFunc,
               }
               // Re-clamp in case reflection overshoots the other bound
               aXnew = MathUtils::Clamp(aXnew, LowerBound(aDimIdx), UpperBound(aDimIdx));
-              aParticle.Velocity.ChangeAt(aDimIdx) = -0.5 * aParticle.Velocity.At(aDimIdx);
+              aVelocity.ChangeAt(aDimIdx) = -0.5 * aVelocity.At(aDimIdx);
               break;
             }
             case PSOBoundaryMode::Wrap: {
@@ -576,35 +587,34 @@ VectorResult PSO(Function&                                        theFunc,
           }
         }
 
-        aParticle.Position.ChangeAt(aDimIdx) = aXnew;
+        aPosition.ChangeAt(aDimIdx) = aXnew;
       }
 
       // Evaluate fitness
-      double     aCurrentValue  = 0.0;
-      const bool isCurrentValid = aCheckedFunc.Value(aParticle.Position, aCurrentValue);
+      double     aFunctionValue = 0.0;
+      const bool isCurrentValid = aCheckedFunc.Value(aPosition, aFunctionValue);
       if (isCurrentValid)
       {
-        aParticle.CurrentValue = aCurrentValue;
+        aCurrentValue = aFunctionValue;
       }
       else
       {
-        aParticle.CurrentValue.reset();
+        aCurrentValue.reset();
       }
       ++aLocalStats.NbFunctionEvals;
 
       // Update personal best
-      if (aParticle.CurrentValue
-          && (!aParticle.BestValue || *aParticle.CurrentValue < *aParticle.BestValue))
+      if (aCurrentValue && (!aBestValue || *aCurrentValue < *aBestValue))
       {
-        aParticle.BestValue    = *aParticle.CurrentValue;
-        aParticle.BestPosition = aParticle.Position;
+        aBestValue    = *aCurrentValue;
+        aBestPosition = aPosition;
       }
 
       // Update global best
-      if (aParticle.BestValue && *aParticle.BestValue < *aGlobalBestValue)
+      if (aBestValue && *aBestValue < *aGlobalBestValue)
       {
-        aGlobalBestValue = *aParticle.BestValue;
-        aGlobalBest      = aParticle.BestPosition;
+        aGlobalBestValue = *aBestValue;
+        aGlobalBest      = aBestPosition;
       }
     }
 
@@ -641,8 +651,8 @@ VectorResult PSO(Function&                                        theFunc,
             std::optional<size_t> aBestIdx;
             for (size_t aFindIdx = 0; aFindIdx < aNbParticles; ++aFindIdx)
             {
-              const std::optional<double>& aBestValue = aSwarm.Value(aFindIdx).BestValue;
-              if (aBestValue && (!aBestIdx || *aBestValue < *aSwarm.Value(*aBestIdx).BestValue))
+              const std::optional<double>& aBestValue = aBestValues.Value(aFindIdx);
+              if (aBestValue && (!aBestIdx || *aBestValue < *aBestValues.Value(*aBestIdx)))
               {
                 aBestIdx = aFindIdx;
               }
@@ -665,9 +675,9 @@ VectorResult PSO(Function&                                        theFunc,
                    ++aSortInner)
               {
                 const std::optional<double>& anOuterValue =
-                  aSwarm.Value(aWorstIndices.Value(aSortOuter)).BestValue;
+                  aBestValues.Value(aWorstIndices.Value(aSortOuter));
                 const std::optional<double>& anInnerValue =
-                  aSwarm.Value(aWorstIndices.Value(aSortInner)).BestValue;
+                  aBestValues.Value(aWorstIndices.Value(aSortInner));
                 if (anOuterValue && (!anInnerValue || *anOuterValue < *anInnerValue))
                 {
                   const size_t aTmp                     = aWorstIndices.Value(aSortOuter);
@@ -681,34 +691,45 @@ VectorResult PSO(Function&                                        theFunc,
               std::min(static_cast<size_t>(aNbRestart), aWorstIndices.Size());
             for (size_t aRestIdx = 0; aRestIdx < aNbToRestart; ++aRestIdx)
             {
-              Particle& aRestartPart = aSwarm.ChangeValue(aWorstIndices.Value(aRestIdx));
+              const size_t           aRestartIdx = aWorstIndices.Value(aRestIdx);
+              const size_t           anOffset    = aRestartIdx * aNbDims;
+              math_Vector            aPosition(&aPositions.ChangeValue(anOffset),
+                                               0,
+                                               static_cast<int>(aNbDims) - 1);
+              math_Vector            aVelocity(&aVelocities.ChangeValue(anOffset),
+                                               0,
+                                               static_cast<int>(aNbDims) - 1);
+              math_Vector            aBestPosition(&aBestPositions.ChangeValue(anOffset),
+                                                   0,
+                                                   static_cast<int>(aNbDims) - 1);
+              std::optional<double>& aBestValue    = aBestValues.ChangeValue(aRestartIdx);
+              std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aRestartIdx);
               for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
               {
-                aRestartPart.Position.ChangeAt(aDimIdx) =
+                aPosition.ChangeAt(aDimIdx) =
                   LowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
-                aRestartPart.Velocity.ChangeAt(aDimIdx) =
-                  (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
+                aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
               }
 
-              double aCurrentValue = 0.0;
-              if (aCheckedFunc.Value(aRestartPart.Position, aCurrentValue))
+              double aFunctionValue = 0.0;
+              if (aCheckedFunc.Value(aPosition, aFunctionValue))
               {
-                aRestartPart.CurrentValue = aCurrentValue;
-                aRestartPart.BestValue    = aCurrentValue;
+                aCurrentValue = aFunctionValue;
+                aBestValue    = aFunctionValue;
               }
               else
               {
-                aRestartPart.CurrentValue.reset();
-                aRestartPart.BestValue.reset();
+                aCurrentValue.reset();
+                aBestValue.reset();
               }
               ++aLocalStats.NbFunctionEvals;
 
-              aRestartPart.BestPosition = aRestartPart.Position;
+              aBestPosition = aPosition;
 
-              if (aRestartPart.BestValue && *aRestartPart.BestValue < *aGlobalBestValue)
+              if (aBestValue && *aBestValue < *aGlobalBestValue)
               {
-                aGlobalBestValue = *aRestartPart.BestValue;
-                aGlobalBest      = aRestartPart.BestPosition;
+                aGlobalBestValue = *aBestValue;
+                aGlobalBest      = aBestPosition;
               }
             }
           }

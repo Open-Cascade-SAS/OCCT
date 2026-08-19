@@ -10,8 +10,8 @@ This package contains template-based implementations of various optimization alg
 
 ### 1D Minimization (MathOpt_Brent.hxx)
 
-- **Brent**: Combines golden section search with parabolic interpolation for robust 1D minimization
-- **Golden**: Golden section search for simple, guaranteed convergence
+- **Brent**: Combines golden-section search with parabolic interpolation for bounded 1D minimization
+- **Golden**: Contracts a bounded 1D interval using golden-section steps
 - **BrentWithBracket**: Automatic bracket search followed by Brent's method
 
 ### Gradient-Free N-D Optimization
@@ -71,8 +71,9 @@ if (aResult.IsDone())
 - MathUtils_Bracket.hxx - Bracket finding utilities
 - MathLin_*.hxx - Linear algebra solvers
 
-All modern optimization vectors and result vectors are zero-based. Dimensions and indices use
-`size_t`; bounded iteration counters stored in configurations and results use `uint32_t`.
+MathOpt reads input vectors positionally, regardless of their lower bounds, and returns zero-based
+result vectors. Dimensions and indices use `size_t`; bounded iteration counters stored in
+configurations and results use `uint32_t`.
 
 `PSO`, `DifferentialEvolution`, `MultiStart`, and `PSOHybrid` treat lower and upper vectors as
 inclusive box bounds; objective callbacks are evaluated only inside that box. Stochastic candidate

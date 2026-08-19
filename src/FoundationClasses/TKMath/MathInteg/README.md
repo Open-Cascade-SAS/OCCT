@@ -4,13 +4,15 @@ Numerical integration (quadrature) algorithms for OCCT.
 
 ## Overview
 
-The MathInteg package provides a collection of numerical integration methods for computing definite integrals of functions. It includes both classical quadrature rules and advanced adaptive methods suitable for various types of integrands, including those with singularities or over infinite intervals.
+The MathInteg package provides fixed-order and adaptive quadrature for finite, semi-infinite, and
+infinite intervals, including double-exponential rules for endpoint singularities.
 
 ## Components
 
 ### MathInteg_Gauss.hxx
 Gauss-Legendre quadrature methods:
-- `Gauss` - Fixed-order Gauss-Legendre integration (orders above 61 are clamped to 61)
+- `Gauss` - Fixed-order Gauss-Legendre integration (order 0 is invalid; orders above 61 are
+  clamped to 61)
 - `GaussAdaptive` - Adaptive subdivision with error control using `IntegConfig.InitialOrder/MaxOrder`
 - `GaussComposite` - Composite rule over multiple subintervals
 
@@ -47,8 +49,8 @@ All functions are template-based and accept functor types with appropriate `Valu
 
 Finite integrations use oriented intervals: reversing the lower and upper bounds negates the
 integral, while equal finite bounds return exactly zero without evaluating the function. Non-finite
-finite-interval bounds are invalid. Adaptive methods interpret
-`Tolerance` as a relative error tolerance when the integral magnitude exceeds machine epsilon.
+endpoints are invalid for finite-interval overloads. Adaptive methods interpret `Tolerance` as a
+relative error tolerance when the integral magnitude exceeds machine epsilon.
 For a near-zero integral, `Tolerance` is the absolute error tolerance and `RelativeError` is not
 set because a meaningful relative estimate is unavailable.
 
@@ -84,7 +86,4 @@ if (aResult.IsDone())
 - MathUtils package for core types, configuration, and helper functions
 - math_Vector, math_IntegerVector, math_Matrix for multi-dimensional integration
 
-Lightweight interval queues use `NCollection_LinearVector`. Segmented
-`NCollection_DynamicArray` storage is reserved for heavy `math_Vector` values and always specifies
-an explicit small block increment. Iteration counters use `uint32_t`; quadrature point and callback
-evaluation counts use `size_t`.
+Iteration counters use `uint32_t`; quadrature point and callback evaluation counts use `size_t`.

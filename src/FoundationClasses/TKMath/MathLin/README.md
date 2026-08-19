@@ -87,7 +87,6 @@ The MathLin package depends on:
 
 ## Indexing
 
-Modern MathLin decompositions and results are always zero-based. Dimensions and positional indices
-use `size_t`; use `Size()`, `RowSize()`, `ColSize()`, `At()`, and `ChangeAt()`. Ranged legacy inputs
-are accepted only at migration boundaries and are read positionally. Their lower bounds are not
-propagated to results.
+MathLin reads input vectors and matrices positionally, regardless of their lower bounds, and returns
+zero-based results. Dimensions and positional indices use `size_t`; use `Size()`, `RowSize()`,
+`ColSize()`, `At()`, and `ChangeAt()`. Input lower bounds are not propagated to results.

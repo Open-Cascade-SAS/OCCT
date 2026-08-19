@@ -103,7 +103,6 @@ SetResult GaussSet(Func& theFunc, double theLower, double theUpper, size_t theOr
 
   theOrder = std::min(theOrder, THE_SET_GAUSS_MAX_ORDER);
 
-  // Get Gauss points and weights
   math_Vector aPoints(theOrder);
   math_Vector aWeights(theOrder);
   if (!GetOrderedGaussPointsAndWeights(static_cast<int>(theOrder), aPoints, aWeights))

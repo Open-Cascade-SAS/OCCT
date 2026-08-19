@@ -14,10 +14,11 @@
 #ifndef _MathUtils_Config_HeaderFile
 #define _MathUtils_Config_HeaderFile
 
+#include <Precision.hxx>
+
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <limits>
 
 //! Modern math solver configuration structures.
 namespace MathUtils
@@ -50,7 +51,6 @@ constexpr double THE_NEWTON2D_MAX_STEP_RATIO = 0.5;
 
 //! Domain extension factor for soft boundary handling.
 //! Solutions slightly outside domain (by this fraction) are allowed if converged.
-//! Reduced to 1e-4 to closely match old algorithm behavior.
 constexpr double THE_NEWTON2D_DOMAIN_EXT = 1.0e-4;
 
 //! Stagnation progress ratio - improvement required each iteration to avoid stagnation.
@@ -117,7 +117,7 @@ struct Config
   double RelativeTolerance = 1.0e-10;
 
   //! Minimum step size before declaring convergence or failure.
-  double StepMin = std::numeric_limits<double>::epsilon();
+  double StepMin = Precision::Computational();
 
   //! Default constructor with standard tolerances.
   Config() = default;
@@ -148,8 +148,8 @@ struct Config
 //! Extends Config with interval bounds.
 struct BoundedConfig : Config
 {
-  double LowerBound = -std::numeric_limits<double>::max(); //!< Lower bound of search interval
-  double UpperBound = std::numeric_limits<double>::max();  //!< Upper bound of search interval
+  double LowerBound = -Precision::Infinite(); //!< Lower bound of search interval
+  double UpperBound = Precision::Infinite();  //!< Upper bound of search interval
 
   //! Default constructor.
   BoundedConfig() = default;

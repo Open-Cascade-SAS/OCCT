@@ -72,7 +72,6 @@ IntegResult GaussMultiple(Func&                     theFunc,
     return aResult;
   }
 
-  // Validate all dimensions before allocating quadrature storage.
   size_t                           aNbEvaluations = 1;
   size_t                           aNbGaussValues = 0;
   bool                             hasZeroWidth   = false;
@@ -95,11 +94,18 @@ IntegResult GaussMultiple(Func&                     theFunc,
       aResult.Status = Status::InvalidInput;
       return aResult;
     }
-    hasZeroWidth                 = hasZeroWidth || aLower == anUpper;
-    anOrders.ChangeValue(i)      = anOrder;
-    aGaussOffsets.ChangeValue(i) = aNbGaussValues;
-    aNbGaussValues += anOrder;
-    aNbEvaluations *= anOrder;
+    hasZeroWidth                   = hasZeroWidth || aLower == anUpper;
+    anOrders.ChangeValue(i)        = anOrder;
+    aGaussOffsets.ChangeValue(i)   = aNbGaussValues;
+    const size_t aNewNbGaussValues = aNbGaussValues + anOrder;
+    const size_t aNewNbEvaluations = aNbEvaluations * anOrder;
+    if (aNewNbGaussValues < aNbGaussValues || aNewNbEvaluations / anOrder != aNbEvaluations)
+    {
+      aResult.Status = Status::InvalidInput;
+      return aResult;
+    }
+    aNbGaussValues = aNewNbGaussValues;
+    aNbEvaluations = aNewNbEvaluations;
   }
 
   if (hasZeroWidth)
@@ -118,7 +124,7 @@ IntegResult GaussMultiple(Func&                     theFunc,
     aXm.ChangeAt(i) = theLower.At(i) + aXr.At(i);
   }
 
-  // Store all per-variable Gauss tables in two contiguous buffers.
+  // Flat storage allows math_Vector to expose each table without owning it.
   NCollection_LinearVector<double> aGaussPoints(aNbGaussValues, 0.0);
   NCollection_LinearVector<double> aGaussWeights(aNbGaussValues, 0.0);
 

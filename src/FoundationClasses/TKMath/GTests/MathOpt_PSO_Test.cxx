@@ -211,6 +211,31 @@ TEST(MathOpt_PSOTest, Sphere3D)
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
 }
 
+TEST(MathOpt_PSOTest, ContiguousStorageBeyondLocalVectorCapacity)
+{
+  constexpr size_t aNbDims = 40;
+  SphereFunc       aFunc;
+  math_Vector      aLower(aNbDims, -1.0);
+  math_Vector      aUpper(aNbDims, 1.0);
+
+  MathOpt::PSOConfig aConfig;
+  aConfig.NbParticles        = 8;
+  aConfig.MaxIterations      = 1;
+  aConfig.PolishBudgetPerDim = 0;
+
+  const MathUtils::VectorResult aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
+
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  ASSERT_TRUE(aResult.Solution.has_value());
+  ASSERT_TRUE(aResult.Value.has_value());
+  EXPECT_EQ(aResult.Solution->Size(), aNbDims);
+  for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
+  {
+    EXPECT_GE(aResult.Solution->At(aDimIdx), aLower.At(aDimIdx));
+    EXPECT_LE(aResult.Solution->At(aDimIdx), aUpper.At(aDimIdx));
+  }
+}
+
 TEST(MathOpt_PSOTest, Booth)
 {
   BoothFunc aFunc;
@@ -410,7 +435,6 @@ TEST(MathOpt_PSOTest, CompareWithOldAPI_Sphere)
 
   ASSERT_TRUE(aNewResult.IsDone());
 
-  // Both should find comparable minima.
   EXPECT_LT(anOldValue, 0.01);
   EXPECT_LT(*aNewResult.Value, 0.01);
   EXPECT_NEAR(anOldValue, *aNewResult.Value, 0.01);
