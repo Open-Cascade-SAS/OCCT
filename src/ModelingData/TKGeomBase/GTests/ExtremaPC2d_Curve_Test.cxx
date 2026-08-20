@@ -1,5 +1,15 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #include <ExtremaPC2d_Curve.hxx>
 
@@ -66,56 +76,47 @@ occ::handle<Geom2d_BSplineCurve> makeBSpline()
 TEST(ExtremaPC2d_CurveTest, NullCurveIsUninitializedAndNotDone)
 {
   occ::handle<Geom2d_Curve> aNull;
-  ExtremaPC2d_Curve anEvaluator(aNull);
+  ExtremaPC2d_Curve         anEvaluator(aNull);
   EXPECT_FALSE(anEvaluator.IsInitialized());
-  EXPECT_EQ(anEvaluator.Perform(gp_Pnt2d(), THE_TOL).Status,
-            ExtremaPC2d::Status::NotDone);
+  EXPECT_EQ(anEvaluator.Perform(gp_Pnt2d(), THE_TOL).Status, ExtremaPC2d::Status::NotDone);
   EXPECT_EQ(anEvaluator.PerformWithEndpoints(gp_Pnt2d(), THE_TOL).Status,
             ExtremaPC2d::Status::NotDone);
 }
 
 TEST(ExtremaPC2d_CurveTest, AnalyticalAdaptorDispatchMatchesSpecialists)
 {
-  const gp_Pnt2d aQuery(8.0, 3.0);
-  occ::handle<Geom2d_Line> aLine =
-    new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1.0, 0.0));
-  Geom2dAdaptor_Curve aLineAdaptor(aLine, -10.0, 10.0);
-  ExtremaPC2d_Curve aLineAggregate(aLineAdaptor);
-  ExtremaPC2d_Line aLineDirect(aLine->Lin2d(), {-10.0, 10.0});
+  const gp_Pnt2d           aQuery(8.0, 3.0);
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1.0, 0.0));
+  Geom2dAdaptor_Curve      aLineAdaptor(aLine, -10.0, 10.0);
+  ExtremaPC2d_Curve        aLineAggregate(aLineAdaptor);
+  ExtremaPC2d_Line         aLineDirect(aLine->Lin2d(), {-10.0, 10.0});
   compareResults(aLineAggregate.Perform(aQuery, THE_TOL), aLineDirect.Perform(aQuery, THE_TOL));
 
-  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    4.0);
-  ExtremaPC2d_Curve aCircleAggregate(aCircle);
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 4.0);
+  ExtremaPC2d_Curve  aCircleAggregate(aCircle);
   ExtremaPC2d_Circle aCircleDirect(aCircle->Circ2d());
-  compareResults(aCircleAggregate.Perform(aQuery, THE_TOL),
-                 aCircleDirect.Perform(aQuery, THE_TOL));
+  compareResults(aCircleAggregate.Perform(aQuery, THE_TOL), aCircleDirect.Perform(aQuery, THE_TOL));
 
-  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    5.0,
-    2.0);
-  ExtremaPC2d_Curve anEllipseAggregate(anEllipse);
+  occ::handle<Geom2d_Ellipse> anEllipse =
+    new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 5.0, 2.0);
+  ExtremaPC2d_Curve   anEllipseAggregate(anEllipse);
   ExtremaPC2d_Ellipse anEllipseDirect(anEllipse->Elips2d());
   compareResults(anEllipseAggregate.Perform(aQuery, THE_TOL),
                  anEllipseDirect.Perform(aQuery, THE_TOL));
 
-  occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    3.0,
-    2.0);
-  Geom2dAdaptor_Curve aHyperbolaAdaptor(aHyperbola, -2.0, 2.0);
-  ExtremaPC2d_Curve aHyperbolaAggregate(aHyperbolaAdaptor);
+  occ::handle<Geom2d_Hyperbola> aHyperbola =
+    new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 3.0, 2.0);
+  Geom2dAdaptor_Curve   aHyperbolaAdaptor(aHyperbola, -2.0, 2.0);
+  ExtremaPC2d_Curve     aHyperbolaAggregate(aHyperbolaAdaptor);
   ExtremaPC2d_Hyperbola aHyperbolaDirect(aHyperbola->Hypr2d(), {-2.0, 2.0});
   compareResults(aHyperbolaAggregate.Perform(aQuery, THE_TOL),
                  aHyperbolaDirect.Perform(aQuery, THE_TOL));
 
-  occ::handle<Geom2d_Parabola> aParabola = new Geom2d_Parabola(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    2.0);
-  Geom2dAdaptor_Curve aParabolaAdaptor(aParabola, -2.0, 2.0);
-  ExtremaPC2d_Curve aParabolaAggregate(aParabolaAdaptor);
+  occ::handle<Geom2d_Parabola> aParabola =
+    new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 2.0);
+  Geom2dAdaptor_Curve  aParabolaAdaptor(aParabola, -2.0, 2.0);
+  ExtremaPC2d_Curve    aParabolaAggregate(aParabolaAdaptor);
   ExtremaPC2d_Parabola aParabolaDirect(aParabola->Parab2d(), {-2.0, 2.0});
   compareResults(aParabolaAggregate.Perform(aQuery, THE_TOL),
                  aParabolaDirect.Perform(aQuery, THE_TOL));
@@ -123,45 +124,41 @@ TEST(ExtremaPC2d_CurveTest, AnalyticalAdaptorDispatchMatchesSpecialists)
 
 TEST(ExtremaPC2d_CurveTest, NumericalHandleDispatchMatchesSpecialists)
 {
-  const gp_Pnt2d aQuery(2.0, 1.5);
+  const gp_Pnt2d                  aQuery(2.0, 1.5);
   occ::handle<Geom2d_BezierCurve> aBezier = makeBezier();
-  ExtremaPC2d_Curve aBezierAggregate(aBezier);
-  ExtremaPC2d_BezierCurve aBezierDirect(aBezier);
-  compareResults(aBezierAggregate.Perform(aQuery, THE_TOL),
-                 aBezierDirect.Perform(aQuery, THE_TOL));
+  ExtremaPC2d_Curve               aBezierAggregate(aBezier);
+  ExtremaPC2d_BezierCurve         aBezierDirect(aBezier);
+  compareResults(aBezierAggregate.Perform(aQuery, THE_TOL), aBezierDirect.Perform(aQuery, THE_TOL));
 
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeBSpline();
-  ExtremaPC2d_Curve aBSplineAggregate(aBSpline);
-  ExtremaPC2d_BSplineCurve aBSplineDirect(aBSpline);
+  ExtremaPC2d_Curve                aBSplineAggregate(aBSpline);
+  ExtremaPC2d_BSplineCurve         aBSplineDirect(aBSpline);
   compareResults(aBSplineAggregate.Perform(aQuery, THE_TOL),
                  aBSplineDirect.Perform(aQuery, THE_TOL));
 }
 
 TEST(ExtremaPC2d_CurveTest, OffsetDispatchAndSearchModes)
 {
-  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    3.0);
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 3.0);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 1.0);
-  ExtremaPC2d_Curve anEvaluator(anOffset, 0.0, 2.0 * M_PI);
-  const ExtremaPC2d::Result& aMin = anEvaluator.Perform(gp_Pnt2d(8.0, 0.0), THE_TOL,
-                                                        ExtremaPC2d::SearchMode::Min);
+  ExtremaPC2d_Curve               anEvaluator(anOffset, 0.0, 2.0 * M_PI);
+  const ExtremaPC2d::Result&      aMin =
+    anEvaluator.Perform(gp_Pnt2d(8.0, 0.0), THE_TOL, ExtremaPC2d::SearchMode::Min);
   ASSERT_EQ(aMin.NbExt(), 1);
   EXPECT_TRUE(aMin[0].IsMinimum);
-  const ExtremaPC2d::Result& aMax = anEvaluator.Perform(gp_Pnt2d(8.0, 0.0), THE_TOL,
-                                                        ExtremaPC2d::SearchMode::Max);
+  const ExtremaPC2d::Result& aMax =
+    anEvaluator.Perform(gp_Pnt2d(8.0, 0.0), THE_TOL, ExtremaPC2d::SearchMode::Max);
   ASSERT_EQ(aMax.NbExt(), 1);
   EXPECT_TRUE(aMax[0].IsMaximum);
 }
 
 TEST(ExtremaPC2d_CurveTest, GeneralCurveDispatchMatchesSpecialist)
 {
-  occ::handle<Geom2dEval_SineWaveCurve> aCurve = new Geom2dEval_SineWaveCurve(
-    gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0)),
-    1.0,
-    2.0);
-  Geom2dAdaptor_Curve anAdaptor(aCurve, -2.0, 2.0);
-  ExtremaPC2d_Curve anAggregate(anAdaptor);
+  occ::handle<Geom2dEval_SineWaveCurve> aCurve =
+    new Geom2dEval_SineWaveCurve(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0)), 1.0, 2.0);
+  Geom2dAdaptor_Curve    anAdaptor(aCurve, -2.0, 2.0);
+  ExtremaPC2d_Curve      anAggregate(anAdaptor);
   ExtremaPC2d_OtherCurve aDirect(anAdaptor, {-2.0, 2.0});
   compareResults(anAggregate.Perform(gp_Pnt2d(0.5, 1.0), THE_TOL),
                  aDirect.Perform(gp_Pnt2d(0.5, 1.0), THE_TOL));
@@ -169,12 +166,11 @@ TEST(ExtremaPC2d_CurveTest, GeneralCurveDispatchMatchesSpecialist)
 
 TEST(ExtremaPC2d_CurveTest, TrimmedCurveUsesTrimBounds)
 {
-  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    3.0);
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 3.0);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aCircle, 0.2, 1.0);
-  ExtremaPC2d_Curve anEvaluator(aTrimmed);
-  const ExtremaPC2d::Result& aResult =
+  ExtremaPC2d_Curve                anEvaluator(aTrimmed);
+  const ExtremaPC2d::Result&       aResult =
     anEvaluator.PerformWithEndpoints(gp_Pnt2d(6.0, 0.0), THE_TOL);
   ASSERT_TRUE(aResult.IsDone());
   for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
@@ -186,12 +182,11 @@ TEST(ExtremaPC2d_CurveTest, TrimmedCurveUsesTrimBounds)
 
 TEST(ExtremaPC2d_CurveTest, ExplicitBoundsIntersectTrimmedBounds)
 {
-  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(
-    gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true),
-    3.0);
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(), gp_Dir2d(1.0, 0.0), true), 3.0);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aCircle, 0.2, 1.0);
-  ExtremaPC2d_Curve anEvaluator(aTrimmed, 0.5, 2.0);
-  const ExtremaPC2d::Result& aResult =
+  ExtremaPC2d_Curve                anEvaluator(aTrimmed, 0.5, 2.0);
+  const ExtremaPC2d::Result&       aResult =
     anEvaluator.PerformWithEndpoints(gp_Pnt2d(6.0, 0.0), THE_TOL);
   for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
   {
@@ -203,21 +198,21 @@ TEST(ExtremaPC2d_CurveTest, ExplicitBoundsIntersectTrimmedBounds)
 TEST(ExtremaPC2d_CurveTest, BezierMutationFlowsThroughAggregator)
 {
   occ::handle<Geom2d_BezierCurve> aCurve = makeBezier();
-  ExtremaPC2d_Curve anEvaluator(aCurve);
+  ExtremaPC2d_Curve               anEvaluator(aCurve);
   const double aBefore = anEvaluator.Perform(gp_Pnt2d(2.0, 2.0), THE_TOL).MinSquareDistance();
   aCurve->SetPole(2, gp_Pnt2d(3.5, -4.0));
   const ExtremaPC2d::Result& anAfter = anEvaluator.Perform(gp_Pnt2d(2.0, 2.0), THE_TOL);
   EXPECT_GT(std::abs(anAfter.MinSquareDistance() - aBefore), 1.0e-4);
   EXPECT_EQ(anAfter[anAfter.MinIndex()].Point.Distance(
-              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)), 0.0);
+              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
+            0.0);
 }
 
 TEST(ExtremaPC2d_CurveTest, AnalyticalDispatchCopiesPrimitiveGeometry)
 {
-  occ::handle<Geom2d_Line> aLine =
-    new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1.0, 0.0));
-  Geom2dAdaptor_Curve anAdaptor(aLine, -10.0, 10.0);
-  ExtremaPC2d_Curve anEvaluator(anAdaptor);
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1.0, 0.0));
+  Geom2dAdaptor_Curve      anAdaptor(aLine, -10.0, 10.0);
+  ExtremaPC2d_Curve        anEvaluator(anAdaptor);
   anAdaptor.Load(new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(0.0, 1.0)), -10.0, 10.0);
   const ExtremaPC2d::Result& aResult = anEvaluator.Perform(gp_Pnt2d(4.0, 3.0), THE_TOL);
   ASSERT_EQ(aResult.NbExt(), 1);
@@ -226,9 +221,9 @@ TEST(ExtremaPC2d_CurveTest, AnalyticalDispatchCopiesPrimitiveGeometry)
 
 TEST(ExtremaPC2d_CurveTest, ResultStorageIsEvaluatorLocal)
 {
-  ExtremaPC2d_Curve aFirst(makeBezier());
-  ExtremaPC2d_Curve aSecond(makeBSpline());
-  const ExtremaPC2d::Result* aFirstResult = &aFirst.Perform(gp_Pnt2d(1.0, 2.0), THE_TOL);
+  ExtremaPC2d_Curve          aFirst(makeBezier());
+  ExtremaPC2d_Curve          aSecond(makeBSpline());
+  const ExtremaPC2d::Result* aFirstResult  = &aFirst.Perform(gp_Pnt2d(1.0, 2.0), THE_TOL);
   const ExtremaPC2d::Result* aSecondResult = &aSecond.Perform(gp_Pnt2d(1.0, 2.0), THE_TOL);
   EXPECT_NE(aFirstResult, aSecondResult);
   EXPECT_EQ(aFirstResult, &aFirst.Perform(gp_Pnt2d(3.0, 2.0), THE_TOL));

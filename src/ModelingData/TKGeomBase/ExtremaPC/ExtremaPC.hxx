@@ -350,10 +350,10 @@ inline void AddEndpointExtrema(Result&               theResult,
 
     const double aStep =
       hasFiniteSpan
-        ? std::min((theUMax - theUMin) * THE_NEIGHBOR_STEP_RATIO, (theUMax - theUMin) * 0.5)
-        : std::max(THE_NEIGHBOR_STEP_RATIO, std::abs(theParameter) * THE_NEIGHBOR_STEP_RATIO);
-    const gp_Pnt aPoint            = theEval.Value(theParameter);
-    const gp_Pnt aNeighbor         = theEval.Value(theParameter + (theIsLower ? aStep : -aStep));
+                ? std::min((theUMax - theUMin) * THE_NEIGHBOR_STEP_RATIO, (theUMax - theUMin) * 0.5)
+                : std::max(THE_NEIGHBOR_STEP_RATIO, std::abs(theParameter) * THE_NEIGHBOR_STEP_RATIO);
+    const gp_Pnt aPoint    = theEval.Value(theParameter);
+    const gp_Pnt aNeighbor = theEval.Value(theParameter + (theIsLower ? aStep : -aStep));
     const double aSquareDistance   = theP.SquareDistance(aPoint);
     const double aNeighborDistance = theP.SquareDistance(aNeighbor);
     const bool   isMinimum         = aSquareDistance <= aNeighborDistance;

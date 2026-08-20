@@ -486,7 +486,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_HighEccentricity)
 
   // Verify that the minimum extremum is correct by checking
   // the computed point is actually on the curve
-  size_t    aMinIdx   = aNewResult.MinIndex();
+  size_t aMinIdx   = aNewResult.MinIndex();
   gp_Pnt aMinPoint = aNewResult[aMinIdx].Point;
 
   // Verify the distance is consistent

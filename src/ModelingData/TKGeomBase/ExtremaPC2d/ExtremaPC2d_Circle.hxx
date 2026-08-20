@@ -97,7 +97,7 @@ public:
   //! @return const reference to result containing extrema or InfiniteSolutions status
   [[nodiscard]] const ExtremaPC2d::Result& Perform(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     myResult.Clear();
@@ -123,8 +123,8 @@ public:
     }
 
     const gp_Pnt2d& aCenter = myCircle.Location();
-    const gp_Vec2d aOPp(aCenter, theP);
-    double aOPpMag = aOPp.Magnitude();
+    const gp_Vec2d  aOPp(aCenter, theP);
+    double          aOPpMag = aOPp.Magnitude();
 
     if (aOPpMag <= gp::Resolution())
     {
@@ -135,7 +135,7 @@ public:
     }
 
     const gp_Ax22d& aPosition = myCircle.Axis();
-    double aUs1 = std::atan2(aOPp.Dot(gp_Vec2d(aPosition.YDirection())),
+    double          aUs1      = std::atan2(aOPp.Dot(gp_Vec2d(aPosition.YDirection())),
                              aOPp.Dot(gp_Vec2d(aPosition.XDirection())));
 
     // Handle angle boundaries
@@ -156,7 +156,7 @@ public:
     const double aTolU = ExtremaPC2d::THE_PARAM_TOLERANCE;
     if (myDomain.has_value())
     {
-      const double theUMin = myDomain->Min;
+      const double theUMin        = myDomain->Min;
       const double aLiftTolerance = Precision::Angular();
       aUs1 += std::ceil((theUMin - aUs1 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
       aUs2 += std::ceil((theUMin - aUs2 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
@@ -172,10 +172,9 @@ public:
     const size_t aEnd   = (theMode == ExtremaPC2d::SearchMode::Min) ? 1 : 2;
 
     const double aSolutions[2] = {aUs1, aUs2};
-    const bool isClosedDomain = myDomain.has_value()
-                                && ExtremaPC2d::IsClosedPeriodicDomain(*myDomain,
-                                                                       2.0 * M_PI,
-                                                                       Precision::Angular());
+    const bool   isClosedDomain =
+      myDomain.has_value()
+      && ExtremaPC2d::IsClosedPeriodicDomain(*myDomain, 2.0 * M_PI, Precision::Angular());
 
     for (size_t anIndex = aStart; anIndex < aEnd; ++anIndex)
     {
@@ -196,8 +195,7 @@ public:
       double aPreviousParameter = 0.0;
       for (size_t aPeriodIndex = 0; aPeriodIndex < aNbRepresentatives; ++aPeriodIndex)
       {
-        const double aU = aSolutions[anIndex]
-                          + static_cast<double>(aPeriodIndex) * (2.0 * M_PI);
+        const double aU = aSolutions[anIndex] + static_cast<double>(aPeriodIndex) * (2.0 * M_PI);
         if (aPeriodIndex > 0 && aU <= aPreviousParameter)
         {
           myResult.Clear();
@@ -219,8 +217,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution
-                                                 : ExtremaPC2d::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution : ExtremaPC2d::Status::OK;
     return myResult;
   }
 
@@ -233,7 +231,7 @@ public:
   //! status
   [[nodiscard]] const ExtremaPC2d::Result& PerformWithEndpoints(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     if (!ExtremaPC2d::IsValidTolerance(theTol) || !ExtremaPC2d::IsFinitePoint(theP)
@@ -248,8 +246,8 @@ public:
     {
       myResult.Clear();
       ExtremaPC2d::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
-      myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution
-                                                   : ExtremaPC2d::Status::OK;
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution : ExtremaPC2d::Status::OK;
       return myResult;
     }
 
@@ -262,12 +260,7 @@ public:
     {
       const bool isClosed =
         ExtremaPC2d::IsClosedPeriodicDomain(*myDomain, 2.0 * M_PI, Precision::Angular());
-      ExtremaPC2d::AddEndpointExtrema(myResult,
-                                    theP,
-                                    *myDomain,
-                                    *this,
-                                    theMode,
-                                    isClosed);
+      ExtremaPC2d::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, isClosed);
       if (!myResult.Extrema.IsEmpty())
       {
         myResult.Status = ExtremaPC2d::Status::OK;

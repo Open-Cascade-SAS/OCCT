@@ -60,8 +60,8 @@ Standard_EXPORT gp_Pln LinePlane(const gp_Lin& theLine);
 //! @param[out] theCurve2d projected curve
 //! @return true if an exact supported projection was built
 Standard_EXPORT bool ProjectBezier(const occ::handle<Geom_BezierCurve>& theCurve,
-                                   gp_Pln&                               thePlane,
-                                   occ::handle<Geom2d_BezierCurve>&      theCurve2d);
+                                   gp_Pln&                              thePlane,
+                                   occ::handle<Geom2d_BezierCurve>&     theCurve2d);
 
 //! Projects a planar BSpline curve to 2D without changing its parameterization.
 //! Curves with evaluation representations, non-planar control polygons, or a rational
@@ -71,8 +71,8 @@ Standard_EXPORT bool ProjectBezier(const occ::handle<Geom_BezierCurve>& theCurve
 //! @param[out] theCurve2d projected curve
 //! @return true if an exact supported projection was built
 Standard_EXPORT bool ProjectBSpline(const occ::handle<Geom_BSplineCurve>& theCurve,
-                                    gp_Pln&                                thePlane,
-                                    occ::handle<Geom2d_BSplineCurve>&      theCurve2d);
+                                    gp_Pln&                               thePlane,
+                                    occ::handle<Geom2d_BSplineCurve>&     theCurve2d);
 
 //! Projects a planar 3D offset curve to its parameter-preserving 2D representation.
 //! The basis curve must have an exact supported projection and the offset direction
@@ -82,8 +82,8 @@ Standard_EXPORT bool ProjectBSpline(const occ::handle<Geom_BSplineCurve>& theCur
 //! @param[out] theCurve2d projected offset curve
 //! @return true if an exact supported projection was built
 Standard_EXPORT bool ProjectOffset(const occ::handle<Geom_OffsetCurve>& theCurve,
-                                   gp_Pln&                               thePlane,
-                                   occ::handle<Geom2d_OffsetCurve>&      theCurve2d);
+                                   gp_Pln&                              thePlane,
+                                   occ::handle<Geom2d_OffsetCurve>&     theCurve2d);
 
 //! Converts a 2D result to the corresponding 3D result.
 //! Points and distances are evaluated on the original 3D evaluator at unchanged parameters.
@@ -99,7 +99,7 @@ bool ConvertPlanarResult(const ExtremaPC2d::Result& theResult2d,
                          const gp_Pnt&              theQuery,
                          const gp_Pln&              thePlane,
                          const CurveEvaluator&      theEvaluator,
-                         ExtremaPC::Result&          theResult)
+                         ExtremaPC::Result&         theResult)
 {
   if (theResult2d.Status == ExtremaPC2d::Status::NotDone
       || theResult2d.Status == ExtremaPC2d::Status::NumericalError)
@@ -129,15 +129,14 @@ bool ConvertPlanarResult(const ExtremaPC2d::Result& theResult2d,
 
   if (theResult2d.IsInfinite())
   {
-    const double aHeight = thePlane.Distance(theQuery);
-    theResult.InfiniteSquareDistance =
-      theResult2d.InfiniteSquareDistance + aHeight * aHeight;
+    const double aHeight             = thePlane.Distance(theQuery);
+    theResult.InfiniteSquareDistance = theResult2d.InfiniteSquareDistance + aHeight * aHeight;
     return true;
   }
 
   for (size_t anIndex = 0; anIndex < theResult2d.NbExt(); ++anIndex)
   {
-    const double aParameter = theResult2d[anIndex].Parameter;
+    const double aParameter  = theResult2d[anIndex].Parameter;
     const gp_Pnt aCurvePoint = theEvaluator.Value(aParameter);
     theResult.Extrema.Append(ExtremaPC::ExtremumResult{aParameter,
                                                        aCurvePoint,
@@ -164,28 +163,28 @@ bool ConvertPlanarResult(const ExtremaPC2d::Result& theResult2d,
 //! @param[out] theResult converted result
 //! @return false when the 3D implementation should be used instead
 template <typename Evaluator2d, typename Geometry2d, typename CurveEvaluator>
-bool PerformPlanar(const Geometry2d&                    theGeometry,
+bool PerformPlanar(const Geometry2d&                         theGeometry,
                    const std::optional<ExtremaPC::Domain1D>& theDomain,
-                   const gp_Pnt2d&                      theQuery2d,
-                   const gp_Pnt&                        theQuery3d,
-                   const gp_Pln&                        thePlane,
-                   const CurveEvaluator&                theEvaluator,
-                   double                               theTolerance,
-                   ExtremaPC::SearchMode                theMode,
-                   bool                                 theIncludeEndpoints,
-                   ExtremaPC::Result&                   theResult)
+                   const gp_Pnt2d&                           theQuery2d,
+                   const gp_Pnt&                             theQuery3d,
+                   const gp_Pln&                             thePlane,
+                   const CurveEvaluator&                     theEvaluator,
+                   double                                    theTolerance,
+                   ExtremaPC::SearchMode                     theMode,
+                   bool                                      theIncludeEndpoints,
+                   ExtremaPC::Result&                        theResult)
 {
   const ExtremaPC2d::SearchMode aMode = ExtremaPC::ToSearchMode2d(theMode);
   if (theDomain.has_value())
   {
-    Evaluator2d anEvaluator2d(theGeometry, theDomain.value());
+    Evaluator2d                anEvaluator2d(theGeometry, theDomain.value());
     const ExtremaPC2d::Result& aResult2d =
       theIncludeEndpoints ? anEvaluator2d.PerformWithEndpoints(theQuery2d, theTolerance, aMode)
                           : anEvaluator2d.Perform(theQuery2d, theTolerance, aMode);
     return ConvertPlanarResult(aResult2d, theQuery3d, thePlane, theEvaluator, theResult);
   }
 
-  Evaluator2d anEvaluator2d(theGeometry);
+  Evaluator2d                anEvaluator2d(theGeometry);
   const ExtremaPC2d::Result& aResult2d =
     theIncludeEndpoints ? anEvaluator2d.PerformWithEndpoints(theQuery2d, theTolerance, aMode)
                         : anEvaluator2d.Perform(theQuery2d, theTolerance, aMode);

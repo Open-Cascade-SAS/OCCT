@@ -55,7 +55,7 @@ public:
     gp_Vec2d aD1;
     myCurve->D1(theU, aPt, aD1);
 
-    gp_Vec2d aVec(myP, aPt);
+    gp_Vec2d     aVec(myP, aPt);
     const double aSpeed = aD1.Magnitude();
     if (aSpeed <= gp::Resolution())
     {
@@ -80,7 +80,7 @@ public:
     gp_Vec2d aD1, aD2;
     myCurve->D2(theU, aPt, aD1, aD2);
 
-    gp_Vec2d aVec(myP, aPt);
+    gp_Vec2d     aVec(myP, aPt);
     const double aSpeed = aD1.Magnitude();
     if (aSpeed <= gp::Resolution())
     {
@@ -89,9 +89,9 @@ public:
       return true;
     }
     const double aRawF = aVec.Dot(aD1);
-    theF                = aRawF / aSpeed;
-    theDF = (aD1.Dot(aD1) + aVec.Dot(aD2)) / aSpeed
-            - aRawF * aD1.Dot(aD2) / (aSpeed * aSpeed * aSpeed);
+    theF               = aRawF / aSpeed;
+    theDF =
+      (aD1.Dot(aD1) + aVec.Dot(aD2)) / aSpeed - aRawF * aD1.Dot(aD2) / (aSpeed * aSpeed * aSpeed);
     return true;
   }
 

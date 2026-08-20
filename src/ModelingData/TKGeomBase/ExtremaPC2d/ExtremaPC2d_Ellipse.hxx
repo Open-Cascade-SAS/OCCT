@@ -95,7 +95,7 @@ public:
   //! @return const reference to result containing extrema or InfiniteSolutions status
   [[nodiscard]] const ExtremaPC2d::Result& Perform(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     if (!ExtremaPC2d::IsValidTolerance(theTol) || !ExtremaPC2d::IsFinitePoint(theP)
@@ -128,7 +128,7 @@ public:
   //! status
   [[nodiscard]] const ExtremaPC2d::Result& PerformWithEndpoints(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     if (!ExtremaPC2d::IsValidTolerance(theTol) || !ExtremaPC2d::IsFinitePoint(theP)
@@ -143,8 +143,8 @@ public:
     {
       myResult.Clear();
       ExtremaPC2d::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
-      myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution
-                                                   : ExtremaPC2d::Status::OK;
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution : ExtremaPC2d::Status::OK;
       return myResult;
     }
 
@@ -157,12 +157,7 @@ public:
     {
       const bool isClosed =
         ExtremaPC2d::IsClosedPeriodicDomain(*myDomain, 2.0 * M_PI, Precision::Angular());
-      ExtremaPC2d::AddEndpointExtrema(myResult,
-                                    theP,
-                                    *myDomain,
-                                    *this,
-                                    theMode,
-                                    isClosed);
+      ExtremaPC2d::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, isClosed);
       if (!myResult.Extrema.IsEmpty())
       {
         myResult.Status = ExtremaPC2d::Status::OK;
@@ -180,7 +175,7 @@ private:
   //! Stores results in myResult.
   void performCore(const gp_Pnt2d&              theP,
                    const ExtremaPC2d::Domain1D& theDomain,
-                   double                     theTol,
+                   double                       theTol,
                    ExtremaPC2d::SearchMode      theMode) const
   {
     myResult.Clear();
@@ -196,11 +191,11 @@ private:
     const double theUMax = theDomain.Max;
 
     const gp_Pnt2d& aCenter = myEllipse.Location();
-    const double aA = myEllipse.MajorRadius();
-    const double aB = myEllipse.MinorRadius();
+    const double    aA      = myEllipse.MajorRadius();
+    const double    aB      = myEllipse.MinorRadius();
 
     const gp_Vec2d aOPp(aCenter, theP);
-    const double aOPpMag = aOPp.Magnitude();
+    const double   aOPpMag = aOPp.Magnitude();
 
     // Check for degenerate case: point at center with circular ellipse
     if (aOPpMag <= gp::Resolution())
@@ -234,7 +229,7 @@ private:
     if (aTrigRes.InfiniteRoots)
     {
       myResult.Status                 = ExtremaPC2d::Status::InfiniteSolutions;
-      const gp_Pnt2d aPtOnCurve         = ElCLib::Value(0.0, myEllipse);
+      const gp_Pnt2d aPtOnCurve       = ElCLib::Value(0.0, myEllipse);
       myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
       return;
     }
@@ -254,9 +249,9 @@ private:
     const bool isClosedDomain =
       ExtremaPC2d::IsClosedPeriodicDomain(theDomain, 2.0 * M_PI, Precision::Angular());
     bool hasEnumerationError = false;
-    auto addExtremum = [&](double aU, bool theIsMin) {
-      aU += std::ceil((theUMin - aU - ExtremaPC2d::THE_PARAM_TOLERANCE) / (2.0 * M_PI))
-            * (2.0 * M_PI);
+    auto addExtremum         = [&](double aU, bool theIsMin) {
+      aU +=
+        std::ceil((theUMin - aU - ExtremaPC2d::THE_PARAM_TOLERANCE) / (2.0 * M_PI)) * (2.0 * M_PI);
       if (std::abs(aU - theUMin) <= ExtremaPC2d::THE_PARAM_TOLERANCE)
       {
         aU = theUMin;
@@ -291,8 +286,8 @@ private:
           hasEnumerationError = true;
           return;
         }
-        aPreviousParameter = aParameter;
-        const gp_Pnt2d aCurvePt = ElCLib::Value(aParameter, myEllipse);
+        aPreviousParameter                   = aParameter;
+        const gp_Pnt2d              aCurvePt = ElCLib::Value(aParameter, myEllipse);
         ExtremaPC2d::ExtremumResult anExt;
         anExt.Parameter      = aParameter;
         anExt.Point          = aCurvePt;
@@ -303,7 +298,7 @@ private:
       }
     };
 
-    std::array<double, 4> aCanonicalRoots = {};
+    std::array<double, 4> aCanonicalRoots   = {};
     size_t                aNbCanonicalRoots = 0;
     for (size_t aRootIndex = 0; aRootIndex < aTrigRes.NbRoots; ++aRootIndex)
     {
@@ -337,10 +332,10 @@ private:
     for (size_t i = 0; i < aNbCanonicalRoots; ++i)
     {
       const double aRoot = aCanonicalRoots[i];
-      const double aPrev = i == 0 ? aCanonicalRoots[aNbCanonicalRoots - 1] - 2.0 * M_PI
-                                  : aCanonicalRoots[i - 1];
-      const double aNext = i + 1 == aNbCanonicalRoots ? aCanonicalRoots[0] + 2.0 * M_PI
-                                                      : aCanonicalRoots[i + 1];
+      const double aPrev =
+        i == 0 ? aCanonicalRoots[aNbCanonicalRoots - 1] - 2.0 * M_PI : aCanonicalRoots[i - 1];
+      const double aNext =
+        i + 1 == aNbCanonicalRoots ? aCanonicalRoots[0] + 2.0 * M_PI : aCanonicalRoots[i + 1];
       const double aLeftValue  = stationarity((aPrev + aRoot) * 0.5);
       const double aRightValue = stationarity((aRoot + aNext) * 0.5);
       const bool   isMinimum   = aLeftValue < 0.0 && aRightValue > 0.0;
@@ -357,8 +352,8 @@ private:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution
-                                                 : ExtremaPC2d::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution : ExtremaPC2d::Status::OK;
   }
 
   gp_Elips2d                           myEllipse; //!< Ellipse geometry

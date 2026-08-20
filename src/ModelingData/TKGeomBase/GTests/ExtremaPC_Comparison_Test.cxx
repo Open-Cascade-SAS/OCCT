@@ -73,7 +73,7 @@ protected:
 
     // Find minimum from new implementation
     double aNewMinSqDist = theNew.MinSquareDistance();
-    size_t    aNewMinIdx    = theNew.MinIndex();
+    size_t aNewMinIdx    = theNew.MinIndex();
 
     // Both should find extrema (or both find none)
     if (aOldMinIdx < 0 && aNewMinIdx < 0)

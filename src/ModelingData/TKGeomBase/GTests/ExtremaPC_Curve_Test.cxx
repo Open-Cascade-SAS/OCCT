@@ -964,7 +964,7 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_CompoundScale_LinePreservesParamete
 
   GeomAdaptor_TransformedCurve aTransformed(aLine, 0.0, 10.0, aTrsf);
   ExtremaPC_Curve              anExtPC(aTransformed);
-  const gp_Pnt                 aQuery = gp_Pnt(4, 7, 0).Transformed(aTrsf);
+  const gp_Pnt                 aQuery  = gp_Pnt(4, 7, 0).Transformed(aTrsf);
   const ExtremaPC::Result&     aResult = anExtPC.Perform(aQuery, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -986,9 +986,9 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_CompoundScale_ParabolaPreservesPara
 
   GeomAdaptor_TransformedCurve aTransformed(aParabola, -10.0, 10.0, aTrsf);
   ExtremaPC_Curve              anExtPC(aTransformed);
-  constexpr double            aParameter = 3.0;
-  const gp_Pnt                 aQuery = aTransformed.Value(aParameter);
-  const ExtremaPC::Result&     aResult = anExtPC.Perform(aQuery, THE_TOL);
+  constexpr double             aParameter = 3.0;
+  const gp_Pnt                 aQuery     = aTransformed.Value(aParameter);
+  const ExtremaPC::Result&     aResult    = anExtPC.Perform(aQuery, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -1147,8 +1147,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Translation_Bezier)
   ASSERT_TRUE(aResultTr.IsDone());
   EXPECT_NEAR(aResult.MinSquareDistance(), aResultTr.MinSquareDistance(), THE_TOL);
 
-  size_t    aMinIdx     = aResult.MinIndex();
-  size_t    aMinIdxTr   = aResultTr.MinIndex();
+  size_t aMinIdx     = aResult.MinIndex();
+  size_t aMinIdxTr   = aResultTr.MinIndex();
   gp_Pnt aExpectedPt = aResult[aMinIdx].Point.Transformed(aTrsf);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.X(), aExpectedPt.X(), THE_TOL);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.Y(), aExpectedPt.Y(), THE_TOL);

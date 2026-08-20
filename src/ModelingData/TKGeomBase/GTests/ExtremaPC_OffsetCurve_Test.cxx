@@ -350,15 +350,13 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyDistanceConsistency)
 
 TEST_F(ExtremaPC_OffsetCurveTest, PlanarDelegation_PreservesNormalDirectionSign)
 {
-  occ::handle<Geom_Circle> aBasis = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0.0, 0.0, 2.0), gp_Dir(0.0, 0.0, 1.0)),
-    3.0);
+  occ::handle<Geom_Circle> aBasis =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 2.0), gp_Dir(0.0, 0.0, 1.0)), 3.0);
   occ::handle<Geom_OffsetCurve> anOffset =
     new Geom_OffsetCurve(aBasis, 1.0, gp_Dir(0.0, 0.0, -1.0));
-  GeomAdaptor_Curve anAdaptor(anOffset);
-  ExtremaPC_OffsetCurve anEvaluator(anAdaptor,
-                                     ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
-  const gp_Pnt aQuery(8.0, 0.0, 7.0);
+  GeomAdaptor_Curve        anAdaptor(anOffset);
+  ExtremaPC_OffsetCurve    anEvaluator(anAdaptor, ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
+  const gp_Pnt             aQuery(8.0, 0.0, 7.0);
   const ExtremaPC::Result& aResult = anEvaluator.Perform(aQuery, THE_TOL);
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -370,17 +368,16 @@ TEST_F(ExtremaPC_OffsetCurveTest, PlanarDelegation_PreservesNormalDirectionSign)
 
 TEST_F(ExtremaPC_OffsetCurveTest, ScaledTransformedOffsetUsesParameterSafeFallback)
 {
-  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(), gp_Dir(1.0, 0.0, 0.0));
-  occ::handle<Geom_OffsetCurve> anOffset =
-    new Geom_OffsetCurve(aLine, 2.0, gp_Dir(0.0, 0.0, 1.0));
-  gp_Trsf aScale;
+  occ::handle<Geom_Line>        aLine    = new Geom_Line(gp_Pnt(), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aLine, 2.0, gp_Dir(0.0, 0.0, 1.0));
+  gp_Trsf                       aScale;
   aScale.SetScale(gp_Pnt(), 3.0);
   GeomAdaptor_TransformedCurve anAdaptor(anOffset, -2.0, 2.0, aScale);
-  ExtremaPC_OffsetCurve anEvaluator(anAdaptor, {-2.0, 2.0});
+  ExtremaPC_OffsetCurve        anEvaluator(anAdaptor, {-2.0, 2.0});
 
-  const gp_Pnt aQuery = anAdaptor.Value(1.25).Translated(gp_Vec(0.0, 4.0, 0.0));
-  const ExtremaPC::Result& aResult = anEvaluator.Perform(aQuery, THE_TOL,
-                                                         ExtremaPC::SearchMode::Min);
+  const gp_Pnt             aQuery = anAdaptor.Value(1.25).Translated(gp_Vec(0.0, 4.0, 0.0));
+  const ExtremaPC::Result& aResult =
+    anEvaluator.Perform(aQuery, THE_TOL, ExtremaPC::SearchMode::Min);
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult[0].Parameter, 1.25, THE_TOL);

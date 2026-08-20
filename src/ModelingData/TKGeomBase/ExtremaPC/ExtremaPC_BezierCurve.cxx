@@ -31,9 +31,9 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>
   myAdaptor.Load(myCurve);
   myDomain.Min = myCurve->FirstParameter();
   myDomain.Max = myCurve->LastParameter();
-  myNbSamples = std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
-                         ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER
-                           * static_cast<size_t>(myCurve->Degree() + 1));
+  myNbSamples =
+    std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
+             ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER * static_cast<size_t>(myCurve->Degree() + 1));
   buildParams();
 }
 
@@ -50,9 +50,9 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>
     return;
   }
   myAdaptor.Load(myCurve);
-  myNbSamples = std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
-                         ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER
-                           * static_cast<size_t>(myCurve->Degree() + 1));
+  myNbSamples =
+    std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
+             ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER * static_cast<size_t>(myCurve->Degree() + 1));
   buildParams();
 }
 
@@ -81,9 +81,9 @@ gp_Pnt ExtremaPC_BezierCurve::Value(double theU) const
 //=================================================================================================
 
 bool ExtremaPC_BezierCurve::performPlanar(const gp_Pnt&         theP,
-                                           double                theTol,
-                                           ExtremaPC::SearchMode theMode,
-                                           bool theIncludeEndpoints) const
+                                          double                theTol,
+                                          ExtremaPC::SearchMode theMode,
+                                          bool                  theIncludeEndpoints) const
 {
   gp_Pln                          aPlane;
   occ::handle<Geom2d_BezierCurve> aCurve2d;
@@ -92,18 +92,14 @@ bool ExtremaPC_BezierCurve::performPlanar(const gp_Pnt&         theP,
     return false;
   }
 
-  ExtremaPC2d_BezierCurve anEvaluator2d(aCurve2d,
-                                         ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
-  const ExtremaPC2d::SearchMode aMode = ExtremaPC::ToSearchMode2d(theMode);
-  const gp_Pnt2d aPoint2d = ProjLib::Project(aPlane, theP);
-  const ExtremaPC2d::Result& aResult2d =
+  ExtremaPC2d_BezierCurve       anEvaluator2d(aCurve2d,
+                                        ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
+  const ExtremaPC2d::SearchMode aMode    = ExtremaPC::ToSearchMode2d(theMode);
+  const gp_Pnt2d                aPoint2d = ProjLib::Project(aPlane, theP);
+  const ExtremaPC2d::Result&    aResult2d =
     theIncludeEndpoints ? anEvaluator2d.PerformWithEndpoints(aPoint2d, theTol, aMode)
-                        : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
-  return ExtremaPC::ConvertPlanarResult(aResult2d,
-                                        theP,
-                                        aPlane,
-                                        *this,
-                                        myEvaluator.Result());
+                           : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
+  return ExtremaPC::ConvertPlanarResult(aResult2d, theP, aPlane, *this, myEvaluator.Result());
 }
 
 //==================================================================================================

@@ -65,9 +65,9 @@ gp_Pnt ExtremaPC_OffsetCurve::Value(double theU) const
 //=================================================================================================
 
 bool ExtremaPC_OffsetCurve::performPlanar(const gp_Pnt&         theP,
-                                           double                theTol,
-                                           ExtremaPC::SearchMode theMode,
-                                           bool theIncludeEndpoints) const
+                                          double                theTol,
+                                          ExtremaPC::SearchMode theMode,
+                                          bool                  theIncludeEndpoints) const
 {
   gp_Pln                          aPlane;
   occ::handle<Geom2d_OffsetCurve> anOffset2d;
@@ -91,19 +91,15 @@ bool ExtremaPC_OffsetCurve::performPlanar(const gp_Pnt&         theP,
     return false;
   }
 
-  Geom2dAdaptor_Curve anAdaptor2d(anOffset2d, myDomain.Min, myDomain.Max);
-  ExtremaPC2d_OffsetCurve anEvaluator2d(anAdaptor2d,
-                                         ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
-  const ExtremaPC2d::SearchMode aMode = ExtremaPC::ToSearchMode2d(theMode);
-  const gp_Pnt2d aPoint2d = ProjLib::Project(aPlane, theP);
-  const ExtremaPC2d::Result& aResult2d =
+  Geom2dAdaptor_Curve           anAdaptor2d(anOffset2d, myDomain.Min, myDomain.Max);
+  ExtremaPC2d_OffsetCurve       anEvaluator2d(anAdaptor2d,
+                                        ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
+  const ExtremaPC2d::SearchMode aMode    = ExtremaPC::ToSearchMode2d(theMode);
+  const gp_Pnt2d                aPoint2d = ProjLib::Project(aPlane, theP);
+  const ExtremaPC2d::Result&    aResult2d =
     theIncludeEndpoints ? anEvaluator2d.PerformWithEndpoints(aPoint2d, theTol, aMode)
-                        : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
-  return ExtremaPC::ConvertPlanarResult(aResult2d,
-                                        theP,
-                                        aPlane,
-                                        *this,
-                                        myEvaluator.Result());
+                           : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
+  return ExtremaPC::ConvertPlanarResult(aResult2d, theP, aPlane, *this, myEvaluator.Result());
 }
 
 //==================================================================================================

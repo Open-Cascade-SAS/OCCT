@@ -228,8 +228,8 @@ bool ExtremaPC::ProjectBezier(const occ::handle<Geom_BezierCurve>& theCurve,
 
   NCollection_LocalArray<gp_Pnt2d, 32> aPoleStorage(theCurve->Poles().Size());
   NCollection_Array1<gp_Pnt2d>         aPoles(aPoleStorage[0],
-                                              theCurve->Poles().Lower(),
-                                              theCurve->Poles().Upper());
+                                      theCurve->Poles().Lower(),
+                                      theCurve->Poles().Upper());
   for (size_t anIndex = 0; anIndex < aPoles.Size(); ++anIndex)
   {
     aPoles.ChangeAt(anIndex) = ProjLib::Project(thePlane, theCurve->Poles().At(anIndex));
@@ -254,8 +254,8 @@ bool ExtremaPC::ProjectBSpline(const occ::handle<Geom_BSplineCurve>& theCurve,
 
   NCollection_LocalArray<gp_Pnt2d, 64> aPoleStorage(theCurve->Poles().Size());
   NCollection_Array1<gp_Pnt2d>         aPoles(aPoleStorage[0],
-                                              theCurve->Poles().Lower(),
-                                              theCurve->Poles().Upper());
+                                      theCurve->Poles().Lower(),
+                                      theCurve->Poles().Upper());
   for (size_t anIndex = 0; anIndex < aPoles.Size(); ++anIndex)
   {
     aPoles.ChangeAt(anIndex) = ProjLib::Project(thePlane, theCurve->Poles().At(anIndex));

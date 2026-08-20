@@ -75,9 +75,7 @@ TEST(ExtremaPC2dTest, ClosedPeriodicDomainValidation)
 {
   constexpr double aTol = 1.0e-10;
   EXPECT_TRUE(ExtremaPC2d::IsClosedPeriodicDomain({0.0, 2.0 * M_PI}, 2.0 * M_PI, aTol));
-  EXPECT_TRUE(ExtremaPC2d::IsClosedPeriodicDomain({7.0, 7.0 + 4.0 * M_PI},
-                                                  2.0 * M_PI,
-                                                  aTol));
+  EXPECT_TRUE(ExtremaPC2d::IsClosedPeriodicDomain({7.0, 7.0 + 4.0 * M_PI}, 2.0 * M_PI, aTol));
   EXPECT_FALSE(ExtremaPC2d::IsClosedPeriodicDomain({0.0, M_PI}, 2.0 * M_PI, aTol));
   EXPECT_FALSE(ExtremaPC2d::IsClosedPeriodicDomain({1.0, 0.0}, 2.0 * M_PI, aTol));
   EXPECT_FALSE(ExtremaPC2d::IsClosedPeriodicDomain({0.0, 2.0 * M_PI}, 0.0, aTol));
@@ -89,14 +87,14 @@ TEST(ExtremaPC2dTest, ClosedPeriodicDomainValidation)
 TEST(ExtremaPC2dTest, EndpointClassificationAndModes)
 {
   const LinearEvaluator2d anEvaluator;
-  const gp_Pnt2d aQuery(-2.0, 3.0);
-  ExtremaPC2d::Result aResult;
+  const gp_Pnt2d          aQuery(-2.0, 3.0);
+  ExtremaPC2d::Result     aResult;
   ExtremaPC2d::AddEndpointExtrema(aResult,
-                                   aQuery,
-                                   {0.0, 10.0},
-                                   anEvaluator,
-                                   ExtremaPC2d::SearchMode::MinMax,
-                                   false);
+                                  aQuery,
+                                  {0.0, 10.0},
+                                  anEvaluator,
+                                  ExtremaPC2d::SearchMode::MinMax,
+                                  false);
   ASSERT_EQ(aResult.NbExt(), 2);
   EXPECT_NEAR(aResult[0].Parameter, 0.0, 1.0e-12);
   EXPECT_TRUE(aResult[0].IsMinimum);
@@ -105,11 +103,11 @@ TEST(ExtremaPC2dTest, EndpointClassificationAndModes)
 
   aResult.Clear();
   ExtremaPC2d::AddEndpointExtrema(aResult,
-                                   aQuery,
-                                   {0.0, 10.0},
-                                   anEvaluator,
-                                   ExtremaPC2d::SearchMode::Min,
-                                   false);
+                                  aQuery,
+                                  {0.0, 10.0},
+                                  anEvaluator,
+                                  ExtremaPC2d::SearchMode::Min,
+                                  false);
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult[0].Parameter, 0.0, 1.0e-12);
 }
@@ -119,37 +117,37 @@ TEST(ExtremaPC2dTest, EndpointClassificationAndModes)
 TEST(ExtremaPC2dTest, SingletonAndClosedEndpointBehavior)
 {
   const LinearEvaluator2d anEvaluator;
-  ExtremaPC2d::Result aResult;
+  ExtremaPC2d::Result     aResult;
   ExtremaPC2d::AddEndpointExtrema(aResult,
-                                   gp_Pnt2d(5.0, 3.0),
-                                   {2.0, 2.0},
-                                   anEvaluator,
-                                   ExtremaPC2d::SearchMode::MinMax,
-                                   false);
+                                  gp_Pnt2d(5.0, 3.0),
+                                  {2.0, 2.0},
+                                  anEvaluator,
+                                  ExtremaPC2d::SearchMode::MinMax,
+                                  false);
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_TRUE(aResult[0].IsMinimum);
   EXPECT_TRUE(aResult[0].IsMaximum);
 
   aResult.Clear();
   ExtremaPC2d::AddEndpointExtrema(aResult,
-                                   gp_Pnt2d(),
-                                   {0.0, 1.0},
-                                   anEvaluator,
-                                   ExtremaPC2d::SearchMode::MinMax,
-                                   true);
+                                  gp_Pnt2d(),
+                                  {0.0, 1.0},
+                                  anEvaluator,
+                                  ExtremaPC2d::SearchMode::MinMax,
+                                  true);
   EXPECT_EQ(aResult.NbExt(), 0);
 }
 
 TEST(ExtremaPC2dTest, EndpointClassificationUsesLocalBehavior)
 {
   const RapidEndpointEvaluator2d anEvaluator;
-  ExtremaPC2d::Result aResult;
+  ExtremaPC2d::Result            aResult;
   ExtremaPC2d::AddEndpointExtrema(aResult,
-                                   gp_Pnt2d(),
-                                   {0.0, 1.0},
-                                   anEvaluator,
-                                   ExtremaPC2d::SearchMode::Min,
-                                   false);
+                                  gp_Pnt2d(),
+                                  {0.0, 1.0},
+                                  anEvaluator,
+                                  ExtremaPC2d::SearchMode::Min,
+                                  false);
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult[0].Parameter, 0.0, Precision::PConfusion());
   EXPECT_TRUE(aResult[0].IsMinimum);

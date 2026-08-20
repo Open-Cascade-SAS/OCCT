@@ -176,12 +176,12 @@ bool ExtremaPC_BSplineCurve::performPlanar(const gp_Pnt&         theP,
   }
 
   ExtremaPC2d_BSplineCurve      anEvaluator2d(aCurve2d,
-                                              ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
+                                         ExtremaPC2d::Domain1D(myDomain.Min, myDomain.Max));
   const ExtremaPC2d::SearchMode aMode    = ExtremaPC::ToSearchMode2d(theMode);
   const gp_Pnt2d                aPoint2d = ProjLib::Project(aPlane, theP);
   const ExtremaPC2d::Result&    aResult2d =
     theIncludeEndpoints ? anEvaluator2d.PerformWithEndpoints(aPoint2d, theTol, aMode)
-                        : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
+                           : anEvaluator2d.Perform(aPoint2d, theTol, aMode);
   return ExtremaPC::ConvertPlanarResult(aResult2d, theP, aPlane, *this, myEvaluator.Result());
 }
 

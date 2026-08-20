@@ -41,8 +41,8 @@ TEST_F(ExtremaPC_EllipseTest, ShiftedFullPeriod_UniqueRepresentatives)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(30.0, 0.0, 0.0);
 
-  constexpr double aUMin = -10.0;
-  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMin + THE_2PI});
+  constexpr double         aUMin = -10.0;
+  ExtremaPC_Ellipse        anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMin + THE_2PI});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -56,7 +56,7 @@ TEST_F(ExtremaPC_EllipseTest, ShiftedFullPeriod_UniqueRepresentatives)
 
 TEST_F(ExtremaPC_EllipseTest, SingletonDomain_InvalidTolerance)
 {
-  gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  gp_Elips          anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{0.5, 0.5});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(30, 0, 0), 0.0);
@@ -175,7 +175,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInFirstQuadrant)
   EXPECT_GT(aMinSqDist, 0.0);
 
   // Verify the closest point is actually on the ellipse
-  size_t    aMinIdx      = aResult.MinIndex();
+  size_t aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -192,7 +192,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInSecondQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the point on ellipse
-  size_t    aMinIdx      = aResult.MinIndex();
+  size_t aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -209,7 +209,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInThirdQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the closest point is on the ellipse and distance is reasonable
-  size_t    aMinIdx      = aResult.MinIndex();
+  size_t aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 
@@ -230,7 +230,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInFourthQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the closest point is on the ellipse
-  size_t    aMinIdx      = aResult.MinIndex();
+  size_t aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 
@@ -598,7 +598,7 @@ TEST_F(ExtremaPC_EllipseTest, PlanarDelegation_PreservesParameterAndHeight)
     gp_Elips(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0, 2.0));
   ExtremaPC2d_Ellipse anEvaluator2d(
     gp_Elips2d(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), true), 5.0, 2.0));
-  const ExtremaPC::Result& aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC::Result&   aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
   const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
   ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
   for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)

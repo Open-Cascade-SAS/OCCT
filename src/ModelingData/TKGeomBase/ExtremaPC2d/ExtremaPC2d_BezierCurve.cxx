@@ -26,7 +26,7 @@ ExtremaPC2d_BezierCurve::ExtremaPC2d_BezierCurve(const occ::handle<Geom2d_Bezier
   }
   myDomain.Min = myCurve->FirstParameter();
   myDomain.Max = myCurve->LastParameter();
-  myNbSamples = std::max(ExtremaPC2d::THE_BEZIER_MIN_SAMPLES,
+  myNbSamples  = std::max(ExtremaPC2d::THE_BEZIER_MIN_SAMPLES,
                          ExtremaPC2d::THE_BEZIER_DEGREE_MULTIPLIER
                            * static_cast<size_t>(myCurve->Degree() + 1));
 }

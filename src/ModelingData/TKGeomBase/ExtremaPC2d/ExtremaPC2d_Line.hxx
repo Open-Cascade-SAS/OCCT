@@ -91,7 +91,7 @@ public:
   //! @return const reference to result containing the extremum
   [[nodiscard]] const ExtremaPC2d::Result& Perform(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     myResult.Clear();
@@ -113,7 +113,7 @@ public:
     const gp_Dir2d& aDir    = myLine.Direction();
     const gp_Pnt2d& aOrigin = myLine.Location();
     gp_Vec2d        aVec(aOrigin, theP);
-    double        aU = aVec.Dot(gp_Vec2d(aDir));
+    double          aU = aVec.Dot(gp_Vec2d(aDir));
 
     // Check bounds if domain is specified
     if (myDomain.has_value())
@@ -152,7 +152,7 @@ public:
   //! @return const reference to result containing interior + endpoint extrema
   [[nodiscard]] const ExtremaPC2d::Result& PerformWithEndpoints(
     const gp_Pnt2d&         theP,
-    double                theTol,
+    double                  theTol,
     ExtremaPC2d::SearchMode theMode = ExtremaPC2d::SearchMode::MinMax) const
   {
     if (!ExtremaPC2d::IsValidTolerance(theTol) || !ExtremaPC2d::IsFinitePoint(theP)
@@ -167,8 +167,8 @@ public:
     {
       myResult.Clear();
       ExtremaPC2d::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
-      myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution
-                                                   : ExtremaPC2d::Status::OK;
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC2d::Status::NoSolution : ExtremaPC2d::Status::OK;
       return myResult;
     }
 

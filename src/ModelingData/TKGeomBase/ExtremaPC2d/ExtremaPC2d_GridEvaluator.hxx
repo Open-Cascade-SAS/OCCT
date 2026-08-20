@@ -368,7 +368,7 @@ private:
       {
         const size_t      aSecondIndex = aResultIndex - anIndex;
         const long double aFactor      = aDegreeBinomial[anIndex] * aDegreeBinomial[aSecondIndex]
-                                         / aDoubleDegreeBinomial[aResultIndex];
+                                    / aDoubleDegreeBinomial[aResultIndex];
         aDistance +=
           aFactor * (aQx[anIndex] * aQx[aSecondIndex] + aQy[anIndex] * aQy[aSecondIndex]);
         aWeight += aFactor * aWeights[anIndex] * aWeights[aSecondIndex];

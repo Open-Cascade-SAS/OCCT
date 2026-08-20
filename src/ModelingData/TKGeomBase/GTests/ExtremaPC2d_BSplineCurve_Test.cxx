@@ -1,5 +1,15 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #include <ExtremaPC2d_BSplineCurve.hxx>
 
@@ -46,7 +56,7 @@ occ::handle<Geom2d_BSplineCurve> makeC1Curve()
 
 TEST(ExtremaPC2d_BSplineCurveTest, LinearProjectionIsExact)
 {
-  ExtremaPC2d_BSplineCurve anEvaluator(makeLinear());
+  ExtremaPC2d_BSplineCurve   anEvaluator(makeLinear());
   const ExtremaPC2d::Result& aResult = anEvaluator.Perform(gp_Pnt2d(6.0, 4.0), THE_TOL);
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult[0].Parameter, 0.6, THE_TOL);
@@ -57,8 +67,8 @@ TEST(ExtremaPC2d_BSplineCurveTest, PartialDomainUsesEndpointWhenRequested)
 {
   ExtremaPC2d_BSplineCurve anEvaluator(makeLinear(), {0.0, 0.5});
   EXPECT_EQ(anEvaluator.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL).NbExt(), 0);
-  const ExtremaPC2d::Result& aResult = anEvaluator.PerformWithEndpoints(
-    gp_Pnt2d(8.0, 3.0), THE_TOL, ExtremaPC2d::SearchMode::Min);
+  const ExtremaPC2d::Result& aResult =
+    anEvaluator.PerformWithEndpoints(gp_Pnt2d(8.0, 3.0), THE_TOL, ExtremaPC2d::SearchMode::Min);
   ASSERT_EQ(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult[0].Parameter, 0.5, THE_TOL);
 }
@@ -66,9 +76,9 @@ TEST(ExtremaPC2d_BSplineCurveTest, PartialDomainUsesEndpointWhenRequested)
 TEST(ExtremaPC2d_BSplineCurveTest, C1JunctionPointIsFound)
 {
   occ::handle<Geom2d_BSplineCurve> aCurve = makeC1Curve();
-  ExtremaPC2d_BSplineCurve anEvaluator(aCurve);
-  const ExtremaPC2d::Result& aResult = anEvaluator.Perform(aCurve->Value(0.5), THE_TOL,
-                                                           ExtremaPC2d::SearchMode::Min);
+  ExtremaPC2d_BSplineCurve         anEvaluator(aCurve);
+  const ExtremaPC2d::Result&       aResult =
+    anEvaluator.Perform(aCurve->Value(0.5), THE_TOL, ExtremaPC2d::SearchMode::Min);
   ASSERT_GE(aResult.NbExt(), 1);
   EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aResult.MinIndex()].Parameter, 0.5, THE_TOL);
@@ -79,7 +89,7 @@ TEST(ExtremaPC2d_BSplineCurveTest, DegenerateCurveHasInfiniteSolutions)
   occ::handle<Geom2d_BSplineCurve> aCurve = makeLinear();
   aCurve->SetPole(1, gp_Pnt2d(2.0, -1.0));
   aCurve->SetPole(2, gp_Pnt2d(2.0, -1.0));
-  ExtremaPC2d_BSplineCurve anEvaluator(aCurve);
+  ExtremaPC2d_BSplineCurve   anEvaluator(aCurve);
   const ExtremaPC2d::Result& aResult = anEvaluator.Perform(gp_Pnt2d(5.0, 3.0), THE_TOL);
   EXPECT_TRUE(aResult.IsInfinite());
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 25.0, THE_TOL);
@@ -88,27 +98,28 @@ TEST(ExtremaPC2d_BSplineCurveTest, DegenerateCurveHasInfiniteSolutions)
 TEST(ExtremaPC2d_BSplineCurveTest, PoleMutationIsObserved)
 {
   occ::handle<Geom2d_BSplineCurve> aCurve = makeC1Curve();
-  ExtremaPC2d_BSplineCurve anEvaluator(aCurve);
+  ExtremaPC2d_BSplineCurve         anEvaluator(aCurve);
   const double aBefore = anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL).MinSquareDistance();
   aCurve->SetPole(2, gp_Pnt2d(1.0, -3.0));
   const ExtremaPC2d::Result& anAfter = anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL);
   ASSERT_TRUE(anAfter.IsDone());
   EXPECT_GT(std::abs(anAfter.MinSquareDistance() - aBefore), 1.0e-4);
   EXPECT_EQ(anAfter[anAfter.MinIndex()].Point.Distance(
-              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)), 0.0);
+              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
+            0.0);
 }
 
 TEST(ExtremaPC2d_BSplineCurveTest, SearchModesFilterExtrema)
 {
-  ExtremaPC2d_BSplineCurve anEvaluator(makeC1Curve());
-  const ExtremaPC2d::Result& aMin = anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL,
-                                                        ExtremaPC2d::SearchMode::Min);
+  ExtremaPC2d_BSplineCurve   anEvaluator(makeC1Curve());
+  const ExtremaPC2d::Result& aMin =
+    anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL, ExtremaPC2d::SearchMode::Min);
   for (size_t anIndex = 0; anIndex < aMin.NbExt(); ++anIndex)
   {
     EXPECT_TRUE(aMin[anIndex].IsMinimum);
   }
-  const ExtremaPC2d::Result& aMax = anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL,
-                                                        ExtremaPC2d::SearchMode::Max);
+  const ExtremaPC2d::Result& aMax =
+    anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL, ExtremaPC2d::SearchMode::Max);
   for (size_t anIndex = 0; anIndex < aMax.NbExt(); ++anIndex)
   {
     EXPECT_TRUE(aMax[anIndex].IsMaximum);
@@ -121,14 +132,12 @@ TEST(ExtremaPC2d_BSplineCurveTest, SingletonInvalidNullAndOwnership)
   EXPECT_EQ(aSingleton.Perform(gp_Pnt2d(), THE_TOL).NbExt(), 0);
   EXPECT_EQ(aSingleton.PerformWithEndpoints(gp_Pnt2d(), THE_TOL).NbExt(), 1);
   ExtremaPC2d_BSplineCurve anInvalid(makeLinear(), {1.0, 0.0});
-  EXPECT_EQ(anInvalid.Perform(gp_Pnt2d(), THE_TOL).Status,
-            ExtremaPC2d::Status::InvalidInput);
+  EXPECT_EQ(anInvalid.Perform(gp_Pnt2d(), THE_TOL).Status, ExtremaPC2d::Status::InvalidInput);
   occ::handle<Geom2d_BSplineCurve> aNull;
-  ExtremaPC2d_BSplineCurve aNullEvaluator(aNull);
-  EXPECT_EQ(aNullEvaluator.Perform(gp_Pnt2d(), THE_TOL).Status,
-            ExtremaPC2d::Status::NotDone);
+  ExtremaPC2d_BSplineCurve         aNullEvaluator(aNull);
+  EXPECT_EQ(aNullEvaluator.Perform(gp_Pnt2d(), THE_TOL).Status, ExtremaPC2d::Status::NotDone);
   occ::handle<Geom2d_BSplineCurve> aCurve = makeLinear();
-  ExtremaPC2d_BSplineCurve anOwned(aCurve);
+  ExtremaPC2d_BSplineCurve         anOwned(aCurve);
   aCurve.Nullify();
   EXPECT_FALSE(anOwned.Curve().IsNull());
 }

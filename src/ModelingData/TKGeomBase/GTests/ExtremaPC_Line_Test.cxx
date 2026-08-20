@@ -35,7 +35,7 @@ protected:
 
 TEST_F(ExtremaPC_LineTest, SingletonDomain_IsMinimumAndMaximum)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{2.0, 2.0});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(5, 3, 0), THE_TOL);
@@ -49,7 +49,7 @@ TEST_F(ExtremaPC_LineTest, SingletonDomain_IsMinimumAndMaximum)
 
 TEST_F(ExtremaPC_LineTest, SingletonProjection_IsMinimumAndMaximum)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{2.0, 2.0});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
@@ -62,7 +62,7 @@ TEST_F(ExtremaPC_LineTest, SingletonProjection_IsMinimumAndMaximum)
 
 TEST_F(ExtremaPC_LineTest, EffectivelyUnboundedDomain_DoesNotAddEndpoints)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-1.0e100, 1.0e100});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
@@ -74,7 +74,7 @@ TEST_F(ExtremaPC_LineTest, EffectivelyUnboundedDomain_DoesNotAddEndpoints)
 
 TEST_F(ExtremaPC_LineTest, LowerBoundedDomain_PreservesFiniteEndpoint)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 1.0e100});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(-2, 3, 0), THE_TOL);
@@ -87,7 +87,7 @@ TEST_F(ExtremaPC_LineTest, LowerBoundedDomain_PreservesFiniteEndpoint)
 
 TEST_F(ExtremaPC_LineTest, UpperBoundedDomain_PreservesFiniteEndpoint)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-1.0e100, 0.0});
 
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
@@ -100,7 +100,7 @@ TEST_F(ExtremaPC_LineTest, UpperBoundedDomain_PreservesFiniteEndpoint)
 
 TEST_F(ExtremaPC_LineTest, ReversedDomain_IsInvalidInput)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{1.0, -1.0});
 
   const ExtremaPC::Result& aResult = anEval.Perform(gp_Pnt(0, 0, 0), THE_TOL);
@@ -342,7 +342,7 @@ TEST_F(ExtremaPC_LineTest, LineDiagonal_XY)
 
   // Parameter along diagonal: (5,5,0) projected = 5*sqrt(2)
   double aExpectedParam = 5.0 * std::sqrt(2.0);
-  size_t    aMinIdx        = aResult.MinIndex();
+  size_t aMinIdx        = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aExpectedParam, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 9.0, THE_TOL); // Z offset = 3
 }
@@ -485,7 +485,7 @@ TEST_F(ExtremaPC_LineTest, VerifyProjectedPoint)
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
   // Verify the minimum point (projected point)
-  size_t    aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   gp_Pnt aExpectedPt(7.0, 0.0, 0.0);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), aExpectedPt.X(), THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), aExpectedPt.Y(), THE_TOL);
@@ -504,7 +504,7 @@ TEST_F(ExtremaPC_LineTest, VerifyDistanceConsistency)
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
   // Verify distance matches point distance for minimum
-  size_t    aMinIdx       = aResult.MinIndex();
+  size_t aMinIdx       = aResult.MinIndex();
   double aComputedDist = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedDist, THE_TOL);
   EXPECT_NEAR(aResult.MinSquareDistance(), 100.0, THE_TOL); // 6^2 + 8^2 = 100
@@ -534,7 +534,7 @@ TEST_F(ExtremaPC_LineTest, EndpointsAsMaxima)
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 1.0, THE_TOL); // 1^2
 
   // Verify maximum is at one of the endpoints
-  size_t    aMaxIdx   = aResult.MaxIndex();
+  size_t aMaxIdx   = aResult.MaxIndex();
   double aMaxParam = aResult[aMaxIdx].Parameter;
   EXPECT_TRUE(std::abs(aMaxParam - 0.0) < THE_TOL || std::abs(aMaxParam - 10.0) < THE_TOL);
 }
@@ -543,10 +543,10 @@ TEST_F(ExtremaPC_LineTest, EndpointsAsMaxima)
 
 TEST_F(ExtremaPC_LineTest, PlanarDelegation_PreservesParameterAndHeight)
 {
-  ExtremaPC_Line anEvaluator3d(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+  ExtremaPC_Line   anEvaluator3d(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
   ExtremaPC2d_Line anEvaluator2d(gp_Lin2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)));
 
-  const ExtremaPC::Result& aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC::Result&   aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
   const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
   ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
   ASSERT_EQ(aResult3d.NbExt(), 1);
