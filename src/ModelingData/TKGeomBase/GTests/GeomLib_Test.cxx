@@ -118,7 +118,7 @@ void checkExtendedSurface(const bool theRational, const bool theInU, const bool 
     aBoundaryDerivatives.ChangeAt(anIndex) = theInU ? aUDerivative : aVDerivative;
   }
 
-  occ::handle<Geom_BoundedSurface> anExtended = aSource;
+  occ::handle<Geom_BoundedSurface> anExtended = occ::down_cast<Geom_BoundedSurface>(aSource);
   GeomLib::ExtendSurfByLength(anExtended, anExtensionLength, 1, theInU, theAfter);
   const occ::handle<Geom_BSplineSurface> aResult = occ::down_cast<Geom_BSplineSurface>(anExtended);
   ASSERT_FALSE(aResult.IsNull());
