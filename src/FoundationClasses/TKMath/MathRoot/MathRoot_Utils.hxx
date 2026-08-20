@@ -17,6 +17,7 @@
 #include <MathUtils_Config.hxx>
 
 #include <cmath>
+#include <cstddef>
 
 namespace MathRoot
 {
@@ -47,6 +48,73 @@ inline bool HaveOppositeSigns(double theFirst, double theSecond)
 inline double Midpoint(double theFirst, double theSecond)
 {
   return 0.5 * theFirst + 0.5 * theSecond;
+}
+
+//! Compute how many periodic representatives starting at theFirst lie in an upper-bounded domain.
+//! @param[in] theFirst first representative, already mapped to the domain lower bound
+//! @param[in] theUpper domain upper bound
+//! @param[in] thePeriod positive period
+//! @param[in] theTolerance tolerance applied at the upper bound
+//! @param[in] theExcludeUpperTolerance true to stop before upper-tolerance; false to include
+//! upper+tolerance
+//! @param[out] theCount number of representable periodic roots
+//! @return false if the inputs, count, or floating-point step cannot be represented safely
+inline bool ComputePeriodicRootCount(double  theFirst,
+                                     double  theUpper,
+                                     double  thePeriod,
+                                     double  theTolerance,
+                                     bool    theExcludeUpperTolerance,
+                                     size_t& theCount)
+{
+  theCount = 0;
+  if (!std::isfinite(theFirst) || !std::isfinite(theUpper) || !std::isfinite(thePeriod)
+      || thePeriod <= 0.0 || !std::isfinite(theTolerance) || theTolerance < 0.0)
+  {
+    return false;
+  }
+
+  const double aLimit =
+    theExcludeUpperTolerance ? theUpper - theTolerance : theUpper + theTolerance;
+  if (!std::isfinite(aLimit))
+  {
+    return false;
+  }
+  if (theExcludeUpperTolerance ? theFirst >= aLimit : theFirst > aLimit)
+  {
+    return true;
+  }
+
+  const long double aSpan = static_cast<long double>(aLimit) - theFirst;
+  const long double aCount =
+    theExcludeUpperTolerance ? std::ceil(aSpan / thePeriod) : std::floor(aSpan / thePeriod) + 1.0L;
+  if (aCount < 1.0L || aCount >= static_cast<long double>(static_cast<size_t>(-1)))
+  {
+    return false;
+  }
+  theCount     = static_cast<size_t>(aCount);
+  double aLast = theFirst + static_cast<double>(theCount - 1) * thePeriod;
+  if (theExcludeUpperTolerance ? aLast >= aLimit : aLast > aLimit)
+  {
+    --theCount;
+  }
+  const double aNext        = theFirst + static_cast<double>(theCount) * thePeriod;
+  const bool   isNextInside = theExcludeUpperTolerance ? aNext < aLimit : aNext <= aLimit;
+  if (theCount < static_cast<size_t>(-1) - 1 && isNextInside)
+  {
+    ++theCount;
+  }
+  if (theCount == 0)
+  {
+    return true;
+  }
+  aLast = theFirst + static_cast<double>(theCount - 1) * thePeriod;
+  if (theCount < 2 || theFirst + thePeriod <= theFirst)
+  {
+    return theCount < 2;
+  }
+
+  const double aPrevious = theFirst + static_cast<double>(theCount - 2) * thePeriod;
+  return std::isfinite(aLast) && aLast > aPrevious;
 }
 
 } // namespace Utils

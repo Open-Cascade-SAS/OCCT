@@ -17,12 +17,15 @@
 #include <Adaptor3d_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 //! @brief Distance function for point-curve extrema computation.
 //!
-//! Implements the function F(u) = (C(u) - P) . C'(u) and its derivative
-//! F'(u) = C'(u) . C'(u) + (C(u) - P) . C''(u).
+//! Implements the normalized stationarity function
+//! F(u) = (C(u) - P) . C'(u) / |C'(u)| and its derivative.
+//! Normalization gives F geometric length units and makes tolerance behavior
+//! independent of regular curve reparameterization.
 //!
 //! The roots of F(u) = 0 correspond to the extrema (local minima and maxima)
 //! of the squared distance function D(u) = ||C(u) - P||^2.
@@ -42,7 +45,7 @@ public:
   {
   }
 
-  //! Computes F(u) = (C(u) - P) . C'(u).
+  //! Computes F(u) = (C(u) - P) . C'(u) / |C'(u)|.
   //! @param theU parameter value
   //! @param theF output: function value
   //! @return true if computation succeeded
@@ -53,13 +56,20 @@ public:
     myCurve->D1(theU, aPt, aD1);
 
     gp_Vec aVec(myP, aPt);
-    theF = aVec.Dot(aD1);
+    const double aSpeed = aD1.Magnitude();
+    if (aSpeed <= gp::Resolution())
+    {
+      // The normalized function has no defined direction at a singular parameter.
+      // Its continuous one-sided signs are used later for extrema classification.
+      theF = 0.0;
+      return true;
+    }
+    theF = aVec.Dot(aD1) / aSpeed;
     return true;
   }
 
   //! Computes F(u) and F'(u).
-  //! F(u) = (C(u) - P) . C'(u)
-  //! F'(u) = C'(u) . C'(u) + (C(u) - P) . C''(u)
+  //! Computes the normalized stationarity function and its derivative.
   //! @param theU parameter value
   //! @param theF output: function value
   //! @param theDF output: derivative value
@@ -71,8 +81,17 @@ public:
     myCurve->D2(theU, aPt, aD1, aD2);
 
     gp_Vec aVec(myP, aPt);
-    theF  = aVec.Dot(aD1);
-    theDF = aD1.Dot(aD1) + aVec.Dot(aD2);
+    const double aSpeed = aD1.Magnitude();
+    if (aSpeed <= gp::Resolution())
+    {
+      theF  = 0.0;
+      theDF = 0.0;
+      return true;
+    }
+    const double aRawF = aVec.Dot(aD1);
+    theF                = aRawF / aSpeed;
+    theDF = (aD1.Dot(aD1) + aVec.Dot(aD2)) / aSpeed
+            - aRawF * aD1.Dot(aD2) / (aSpeed * aSpeed * aSpeed);
     return true;
   }
 

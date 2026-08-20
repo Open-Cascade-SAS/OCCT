@@ -659,3 +659,57 @@ TEST(MathRoot_TrigTest, InvalidFiniteOrderedInputPolicy)
     MathRoot::TrigonometricLinear(1.0, 0.0, 0.0, std::numeric_limits<double>::infinity()).Status,
     MathRoot::Status::InvalidInput);
 }
+
+TEST(MathRoot_TrigTest, PeriodicRootCountRejectsUnrepresentableSteps)
+{
+  size_t aCount = 0;
+  EXPECT_TRUE(MathRoot::Utils::ComputePeriodicRootCount(0.5,
+                                                        0.5 + 6.0 * M_PI,
+                                                        2.0 * M_PI,
+                                                        0.0,
+                                                        false,
+                                                        aCount));
+  EXPECT_EQ(aCount, 4u);
+  EXPECT_TRUE(MathRoot::Utils::ComputePeriodicRootCount(0.5,
+                                                        0.5 + 6.0 * M_PI,
+                                                        2.0 * M_PI,
+                                                        1.0e-12,
+                                                        true,
+                                                        aCount));
+  EXPECT_EQ(aCount, 3u);
+  EXPECT_TRUE(MathRoot::Utils::ComputePeriodicRootCount(0.5,
+                                                        0.5 + 6.0 * M_PI,
+                                                        2.0 * M_PI,
+                                                        0.0,
+                                                        true,
+                                                        aCount));
+  EXPECT_EQ(aCount, 3u);
+  EXPECT_TRUE(MathRoot::Utils::ComputePeriodicRootCount(0.5, 0.5, 2.0 * M_PI, 0.0, true, aCount));
+  EXPECT_EQ(aCount, 0u);
+
+  const double aFourthRoot = 0.5 + 3.0 * (2.0 * M_PI);
+  EXPECT_TRUE(
+    MathRoot::Utils::ComputePeriodicRootCount(0.5,
+                                              std::nextafter(aFourthRoot, aFourthRoot + 1.0),
+                                              2.0 * M_PI,
+                                              0.0,
+                                              true,
+                                              aCount));
+  EXPECT_EQ(aCount, 4u);
+  EXPECT_TRUE(
+    MathRoot::Utils::ComputePeriodicRootCount(0.5,
+                                              std::nextafter(aFourthRoot, aFourthRoot - 1.0),
+                                              2.0 * M_PI,
+                                              0.0,
+                                              false,
+                                              aCount));
+  EXPECT_EQ(aCount, 3u);
+
+  const double aLargeParameter = 1.0e17;
+  EXPECT_FALSE(MathRoot::Utils::ComputePeriodicRootCount(aLargeParameter,
+                                                         aLargeParameter + 100.0,
+                                                         2.0 * M_PI,
+                                                         0.0,
+                                                         false,
+                                                         aCount));
+}

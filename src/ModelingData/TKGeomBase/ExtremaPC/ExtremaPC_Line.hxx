@@ -15,9 +15,12 @@
 #define _ExtremaPC_Line_HeaderFile
 
 #include <ExtremaPC.hxx>
+#include <ExtremaPC_Planar.hxx>
+#include <ExtremaPC2d_Line.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <ProjLib.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <algorithm>
@@ -53,8 +56,7 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPC_Line(const gp_Lin& theLine, const ExtremaPC::Domain1D& theDomain)
       : myLine(theLine),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain)
-                                      : std::nullopt)
+        myDomain(theDomain)
   {
   }
 
@@ -88,16 +90,42 @@ public:
   //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for parameter comparison
-  //! @param theMode search mode (unused for lines - always returns minimum)
+  //! @param theMode search mode (Max returns no interior extremum)
   //! @return const reference to result containing the extremum
   [[nodiscard]] const ExtremaPC::Result& Perform(
     const gp_Pnt&         theP,
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    (void)theMode; // Lines always have exactly one extremum (minimum)
-
     myResult.Clear();
+
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    const gp_Pln aPlane = ExtremaPC::LinePlane(myLine);
+    if (ExtremaPC::PerformPlanar<ExtremaPC2d_Line>(ProjLib::Project(aPlane, myLine),
+                                                   myDomain,
+                                                   ProjLib::Project(aPlane, theP),
+                                                   theP,
+                                                   aPlane,
+                                                   *this,
+                                                   theTol,
+                                                   theMode,
+                                                   false,
+                                                   myResult))
+    {
+      return myResult;
+    }
+
+    if (theMode == ExtremaPC::SearchMode::Max)
+    {
+      myResult.Status = ExtremaPC::Status::NoSolution;
+      return myResult;
+    }
 
     // Compute projection parameter: u = (P - O) . Direction
     const gp_Dir& aDir    = myLine.Direction();
@@ -111,7 +139,7 @@ public:
       if (aU < myDomain->Min - theTol || aU > myDomain->Max + theTol)
       {
         // Projection is outside bounds - no interior extremum
-        myResult.Status = ExtremaPC::Status::OK;
+        myResult.Status = ExtremaPC::Status::NoSolution;
         return myResult;
       }
       // Clamp to bounds
@@ -127,6 +155,7 @@ public:
     anExt.Point          = aPtOnLine;
     anExt.SquareDistance = theP.SquareDistance(aPtOnLine);
     anExt.IsMinimum      = true;
+    anExt.IsMaximum      = false;
 
     myResult.Extrema.Append(anExt);
     myResult.Status = ExtremaPC::Status::OK;
@@ -144,11 +173,34 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    if (myDomain.has_value() && myDomain->Min == myDomain->Max)
+    {
+      myResult.Clear();
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
+      return myResult;
+    }
+
     (void)Perform(theP, theTol, theMode);
 
-    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if ((myResult.Status == ExtremaPC::Status::OK
+         || myResult.Status == ExtremaPC::Status::NoSolution)
+        && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      if (!myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaPC::Status::OK;
+      }
     }
 
     return myResult;

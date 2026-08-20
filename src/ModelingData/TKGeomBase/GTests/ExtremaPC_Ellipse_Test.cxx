@@ -14,10 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_Ellipse.hxx>
+#include <ExtremaPC2d_Ellipse.hxx>
 
 #include <gp_Ax2.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Elips.hxx>
+#include <gp_Elips2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 
 #include <cmath>
@@ -31,6 +35,34 @@ protected:
   static constexpr double THE_PI   = M_PI;
   static constexpr double THE_PI_2 = M_PI / 2.0;
 };
+
+TEST_F(ExtremaPC_EllipseTest, ShiftedFullPeriod_UniqueRepresentatives)
+{
+  gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  gp_Pnt   aPoint(30.0, 0.0, 0.0);
+
+  constexpr double aUMin = -10.0;
+  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMin + THE_2PI});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 2);
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    EXPECT_GE(aResult[anIndex].Parameter, aUMin);
+    EXPECT_LE(aResult[anIndex].Parameter, aUMin + THE_2PI);
+  }
+}
+
+TEST_F(ExtremaPC_EllipseTest, SingletonDomain_InvalidTolerance)
+{
+  gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{0.5, 0.5});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(30, 0, 0), 0.0);
+
+  EXPECT_EQ(aResult.Status, ExtremaPC::Status::InvalidInput);
+}
 
 //==================================================================================================
 // Basic tests - point on major axis
@@ -143,7 +175,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInFirstQuadrant)
   EXPECT_GT(aMinSqDist, 0.0);
 
   // Verify the closest point is actually on the ellipse
-  int    aMinIdx      = aResult.MinIndex();
+  size_t    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -160,7 +192,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInSecondQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the point on ellipse
-  int    aMinIdx      = aResult.MinIndex();
+  size_t    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -177,7 +209,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInThirdQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the closest point is on the ellipse and distance is reasonable
-  int    aMinIdx      = aResult.MinIndex();
+  size_t    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 
@@ -198,7 +230,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInFourthQuadrant)
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the closest point is on the ellipse
-  int    aMinIdx      = aResult.MinIndex();
+  size_t    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 
@@ -234,7 +266,7 @@ TEST_F(ExtremaPC_EllipseTest, PointAtCenter_Degenerate)
   EXPECT_NEAR(aMaxDist, 20.0, THE_TOL);
 
   // Verify all extrema are on the ellipse
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[i].Parameter, anEllipse);
     EXPECT_NEAR(aResult[i].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
@@ -349,7 +381,7 @@ TEST_F(ExtremaPC_EllipseTest, EllipseInYZPlane)
   EXPECT_GT(aMinSqDist, 0.0);
 
   // Verify extremum point is on the ellipse (project back and check)
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     const ExtremaPC::ExtremumResult& anExt  = aResult[i];
     gp_Pnt                           aCheck = ElCLib::Value(anExt.Parameter, anEllipse);
@@ -489,7 +521,7 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_VerySmall)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify all extrema are within parameter bounds
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, aUMin - THE_TOL);
     EXPECT_LE(aResult[i].Parameter, aUMax + THE_TOL);
@@ -512,7 +544,7 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_MediumSmall)
   ASSERT_TRUE(aResult.IsDone());
 
   // Verify distance calculation is consistent
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[i].Parameter, anEllipse);
     EXPECT_NEAR(aPtOnEllipse.Distance(aResult[i].Point), 0.0, THE_TOL);
@@ -552,8 +584,28 @@ TEST_F(ExtremaPC_EllipseTest, LargeRange_FullCircle)
   EXPECT_GE(aResult.NbExt(), 4);
 
   // Verify all distances are positive
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GT(aResult[i].SquareDistance, 0.0);
+  }
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_EllipseTest, PlanarDelegation_PreservesParameterAndHeight)
+{
+  ExtremaPC_Ellipse anEvaluator3d(
+    gp_Elips(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0, 2.0));
+  ExtremaPC2d_Ellipse anEvaluator2d(
+    gp_Elips2d(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), true), 5.0, 2.0));
+  const ExtremaPC::Result& aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 36.0,
+                THE_TOL);
   }
 }

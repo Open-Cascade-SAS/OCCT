@@ -14,10 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_Hyperbola.hxx>
+#include <ExtremaPC2d_Hyperbola.hxx>
 
 #include <gp_Ax2.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 
 #include <cmath>
@@ -97,7 +101,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOffAxis_FirstQuadrant)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the point is on the hyperbola
-  int    aMinIdx     = aResult.MinIndex();
+  size_t    aMinIdx     = aResult.MinIndex();
   gp_Pnt aPtOnHyper  = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   double aExpectedSq = aPoint.SquareDistance(aPtOnHyper);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aExpectedSq, THE_TOL);
@@ -115,7 +119,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOffAxis_FourthQuadrant)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the closest point is on the hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnHyper), THE_TOL);
@@ -136,7 +140,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointInsideAsymptotes)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the closest point is on the hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
 
@@ -196,7 +200,7 @@ TEST_F(ExtremaPC_HyperbolaTest, BoundsPositive)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // All parameters should be positive
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, 0.0 - THE_TOL);
   }
@@ -215,7 +219,7 @@ TEST_F(ExtremaPC_HyperbolaTest, BoundsNegative)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // All parameters should be negative or zero
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_LE(aResult[i].Parameter, 0.0 + THE_TOL);
   }
@@ -234,7 +238,7 @@ TEST_F(ExtremaPC_HyperbolaTest, NarrowBounds)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Parameter should be within bounds
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, 0.5 - THE_TOL);
     EXPECT_LE(aResult[i].Parameter, 1.5 + THE_TOL);
@@ -257,7 +261,7 @@ TEST_F(ExtremaPC_HyperbolaTest, SmallSemiAxes)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnHyper), THE_TOL);
@@ -275,7 +279,7 @@ TEST_F(ExtremaPC_HyperbolaTest, LargeSemiAxes)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
 }
@@ -292,7 +296,7 @@ TEST_F(ExtremaPC_HyperbolaTest, NearlyRectangular)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnHyper), THE_TOL);
@@ -375,7 +379,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaWithOffset_PointOff)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnHyper), THE_TOL);
@@ -397,7 +401,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaInYZPlane)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
 
@@ -417,7 +421,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaInXZPlane)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnHyper = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnHyper), 0.0, THE_TOL);
 
@@ -441,7 +445,7 @@ TEST_F(ExtremaPC_HyperbolaTest, VerifyProjectedPoint)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify the projected point is on the hyperbola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t    aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = ElCLib::Value(aResult[aMinIdx].Parameter, aHyperbola);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), aPtOnCurve.X(), THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), aPtOnCurve.Y(), THE_TOL);
@@ -460,7 +464,27 @@ TEST_F(ExtremaPC_HyperbolaTest, VerifyDistanceConsistency)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify distance matches point distance
-  int    aMinIdx     = aResult.MinIndex();
+  size_t    aMinIdx     = aResult.MinIndex();
   double aComputedSq = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedSq, THE_TOL);
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_HyperbolaTest, PlanarDelegation_PreservesParameterAndHeight)
+{
+  ExtremaPC_Hyperbola anEvaluator3d(
+    gp_Hypr(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 3.0, 1.5));
+  ExtremaPC2d_Hyperbola anEvaluator2d(
+    gp_Hypr2d(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), true), 3.0, 1.5));
+  const ExtremaPC::Result& aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 36.0,
+                THE_TOL);
+  }
 }

@@ -63,7 +63,7 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOnLine)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
   EXPECT_TRUE(aResult[aMinIdx].IsMinimum);
@@ -83,7 +83,7 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOffLine)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
   EXPECT_TRUE(aResult[aMinIdx].IsMinimum);
@@ -103,7 +103,7 @@ TEST_F(ExtremaPC_CurveTest, Line_ProjectionOutsideBounds)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 0, max at 100
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   // Should be at endpoint U=0
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 0.0, THE_TOL);
 }
@@ -195,7 +195,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL);
 }
@@ -315,7 +315,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify that stored distance matches computed distance
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
@@ -346,7 +346,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify that stored distance matches computed distance
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
@@ -396,7 +396,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Check that all extrema are within bounds
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, -THE_TOL);
     EXPECT_LE(aResult[i].Parameter, M_PI / 2.0 + THE_TOL);
@@ -475,7 +475,7 @@ TEST_F(ExtremaPC_CurveTest, Result_Empty)
 
   EXPECT_FALSE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 0);
-  EXPECT_EQ(aResult.MinIndex(), -1);
+  EXPECT_EQ(aResult.MinIndex(), ExtremaPC::Result::INVALID_INDEX);
   EXPECT_TRUE(std::isinf(aResult.MinSquareDistance()));
 }
 
@@ -597,7 +597,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline_SearchMode_Min)
 
   ASSERT_TRUE(aResult.IsDone());
   // In Min mode, should only return minimum extrema
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_TRUE(aResult[i].IsMinimum);
   }
@@ -739,7 +739,7 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Translation_Line)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), 10.0, THE_TOL);
@@ -788,8 +788,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Translation_BSpline)
   ASSERT_EQ(aResult.NbExt(), aResultTr.NbExt());
   EXPECT_NEAR(aResult.MinSquareDistance(), aResultTr.MinSquareDistance(), THE_TOL);
 
-  int aMinIdx   = aResult.MinIndex();
-  int aMinIdxTr = aResultTr.MinIndex();
+  size_t aMinIdx   = aResult.MinIndex();
+  size_t aMinIdxTr = aResultTr.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aResultTr[aMinIdxTr].Parameter, THE_TOL);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.X(), aResult[aMinIdx].Point.X() + 10.0, THE_TOL);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.Y(), aResult[aMinIdx].Point.Y() + 20.0, THE_TOL);
@@ -818,7 +818,7 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Rotation_Line)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(std::sqrt(aResult[aMinIdx].SquareDistance), 3.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), 5.0, THE_TOL);
@@ -846,8 +846,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Rotation_BSpline)
   ASSERT_TRUE(aResultTr.IsDone());
   EXPECT_NEAR(aResult.MinSquareDistance(), aResultTr.MinSquareDistance(), THE_TOL);
 
-  int aMinIdx   = aResult.MinIndex();
-  int aMinIdxTr = aResultTr.MinIndex();
+  size_t aMinIdx   = aResult.MinIndex();
+  size_t aMinIdxTr = aResultTr.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aResultTr[aMinIdxTr].Parameter, THE_TOL);
 }
 
@@ -881,8 +881,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Compound_BSpline)
   ASSERT_TRUE(aResultTr.IsDone());
   EXPECT_NEAR(aResult.MinSquareDistance(), aResultTr.MinSquareDistance(), THE_TOL);
 
-  int aMinIdx   = aResult.MinIndex();
-  int aMinIdxTr = aResultTr.MinIndex();
+  size_t aMinIdx   = aResult.MinIndex();
+  size_t aMinIdxTr = aResultTr.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aResultTr[aMinIdxTr].Parameter, THE_TOL);
 
   gp_Pnt aExpectedPt = aResult[aMinIdx].Point.Transformed(aTrsf);
@@ -919,8 +919,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Scale_BSpline)
   // Distances scale by s^2 = 4
   EXPECT_NEAR(aResultTr.MinSquareDistance(), aResult.MinSquareDistance() * 4.0, THE_TOL);
 
-  int aMinIdx   = aResult.MinIndex();
-  int aMinIdxTr = aResultTr.MinIndex();
+  size_t aMinIdx   = aResult.MinIndex();
+  size_t aMinIdxTr = aResultTr.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aResultTr[aMinIdxTr].Parameter, THE_TOL);
 }
 
@@ -947,6 +947,54 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Scale_Bezier)
 
   // Distances scale by s^2 = 9
   EXPECT_NEAR(aResultTr.MinSquareDistance(), aResult.MinSquareDistance() * 9.0, 1.0e-4);
+}
+
+TEST_F(ExtremaPC_CurveTest, TransformedCurve_CompoundScale_LinePreservesParameter)
+{
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+
+  gp_Trsf aTrsf;
+  aTrsf.SetScale(gp_Pnt(0, 0, 0), 2.0);
+  gp_Trsf aRotation;
+  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 2.0);
+  aTrsf.PreMultiply(aRotation);
+  gp_Trsf aTranslation;
+  aTranslation.SetTranslation(gp_Vec(5, 7, 0));
+  aTrsf.PreMultiply(aTranslation);
+
+  GeomAdaptor_TransformedCurve aTransformed(aLine, 0.0, 10.0, aTrsf);
+  ExtremaPC_Curve              anExtPC(aTransformed);
+  const gp_Pnt                 aQuery = gp_Pnt(4, 7, 0).Transformed(aTrsf);
+  const ExtremaPC::Result&     aResult = anExtPC.Perform(aQuery, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, 4.0, THE_TOL);
+  EXPECT_NEAR(aResult[0].Point.Distance(aTransformed.Value(aResult[0].Parameter)), 0.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_CurveTest, TransformedCurve_CompoundScale_ParabolaPreservesParameter)
+{
+  occ::handle<Geom_Parabola> aParabola =
+    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetScale(gp_Pnt(0, 0, 0), 3.0);
+  gp_Trsf aTranslation;
+  aTranslation.SetTranslation(gp_Vec(10, -4, 2));
+  aTrsf.PreMultiply(aTranslation);
+
+  GeomAdaptor_TransformedCurve aTransformed(aParabola, -10.0, 10.0, aTrsf);
+  ExtremaPC_Curve              anExtPC(aTransformed);
+  constexpr double            aParameter = 3.0;
+  const gp_Pnt                 aQuery = aTransformed.Value(aParameter);
+  const ExtremaPC::Result&     aResult = anExtPC.Perform(aQuery, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_GE(aResult.NbExt(), 1);
+  const size_t aMinIndex = aResult.MinIndex();
+  EXPECT_NEAR(aResult[aMinIndex].Parameter, aParameter, THE_TOL);
+  EXPECT_NEAR(aResult[aMinIndex].Point.Distance(aQuery), 0.0, THE_TOL);
 }
 
 //==================================================================================================
@@ -993,7 +1041,7 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_DomainLimited_Circle)
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, -THE_TOL);
     EXPECT_LE(aResult[i].Parameter, M_PI / 2.0 + THE_TOL);
@@ -1016,7 +1064,7 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_DomainLimited_Constructor)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 9.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), 5.0, THE_TOL);
@@ -1099,8 +1147,8 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_Translation_Bezier)
   ASSERT_TRUE(aResultTr.IsDone());
   EXPECT_NEAR(aResult.MinSquareDistance(), aResultTr.MinSquareDistance(), THE_TOL);
 
-  int    aMinIdx     = aResult.MinIndex();
-  int    aMinIdxTr   = aResultTr.MinIndex();
+  size_t    aMinIdx     = aResult.MinIndex();
+  size_t    aMinIdxTr   = aResultTr.MinIndex();
   gp_Pnt aExpectedPt = aResult[aMinIdx].Point.Transformed(aTrsf);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.X(), aExpectedPt.X(), THE_TOL);
   EXPECT_NEAR(aResultTr[aMinIdxTr].Point.Y(), aExpectedPt.Y(), THE_TOL);
