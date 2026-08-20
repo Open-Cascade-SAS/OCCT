@@ -101,9 +101,8 @@ void checkExtendedSurface(const bool theRational, const bool theInU, const bool 
   constexpr double                       aContinuityTolerance = 1.0e-10;
   // Pointwise length is approximate because normalized boundary tangents are represented by the
   // extended surface pole grid.
-  constexpr double                       aRelativeLengthTolerance = 5.0e-3;
-  const double                           aLengthTolerance =
-    anExtensionLength * aRelativeLengthTolerance;
+  constexpr double aRelativeLengthTolerance = 5.0e-3;
+  const double     aLengthTolerance         = anExtensionLength * aRelativeLengthTolerance;
 
   NCollection_Array1<gp_Pnt> aBoundaryPoints(size_t{3});
   NCollection_Array1<gp_Vec> aBoundaryDerivatives(size_t{3});
@@ -165,8 +164,8 @@ TEST(GeomLibTest, ExtendSurfByLength_CoversAllDirectionsAndRationality)
     {
       for (const bool isAfter : {false, true})
       {
-        SCOPED_TRACE(testing::Message() << "rational=" << isRational << ", inU=" << isInU
-                                        << ", after=" << isAfter);
+        SCOPED_TRACE(testing::Message()
+                     << "rational=" << isRational << ", inU=" << isInU << ", after=" << isAfter);
         checkExtendedSurface(isRational, isInU, isAfter);
       }
     }

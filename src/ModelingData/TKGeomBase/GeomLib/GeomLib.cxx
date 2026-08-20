@@ -153,8 +153,7 @@ static void ComputeLambda(const math_Matrix& Constraint,
   {
     for (size_t aRow = 0; aRow + 1 < aHermiteOrder; ++aRow)
     {
-      HDer.ChangeAt(aRow, aColumn) =
-        static_cast<double>(aRow + 1) * Hermit.At(aColumn, aRow + 1);
+      HDer.ChangeAt(aRow, aColumn) = static_cast<double>(aRow + 1) * Hermit.At(aColumn, aRow + 1);
     }
   }
 
@@ -227,11 +226,9 @@ static void ComputeLambda(const math_Matrix& Constraint,
     for (size_t aFirstIndex = 0; aFirstIndex < pol2.Size(); ++aFirstIndex)
     {
       size_t aResultIndex = aFirstIndex;
-      for (size_t aSecondIndex = 0; aSecondIndex < aFirstIndex;
-           ++aSecondIndex, ++aResultIndex)
+      for (size_t aSecondIndex = 0; aSecondIndex < aFirstIndex; ++aSecondIndex, ++aResultIndex)
       {
-        pol4.ChangeAt(aResultIndex) +=
-          2.0 * GW * pol2.At(aFirstIndex) * pol2.At(aSecondIndex);
+        pol4.ChangeAt(aResultIndex) += 2.0 * GW * pol2.At(aFirstIndex) * pol2.At(aSecondIndex);
       }
       pol4.ChangeAt(2 * aFirstIndex) += GW * std::pow(pol2.At(aFirstIndex), 2);
     }
@@ -245,8 +242,8 @@ static void ComputeLambda(const math_Matrix& Constraint,
     // Search for extrema of the function
     GeomLib_PolyFunc      FF(pol4);
     GeomLib_LogSample     S(Lambda * THE_LAMBDA_MIN_FACTOR,
-                            Lambda * THE_LAMBDA_MAX_FACTOR,
-                            THE_LAMBDA_SAMPLE_COUNT);
+                        Lambda * THE_LAMBDA_MAX_FACTOR,
+                        THE_LAMBDA_SAMPLE_COUNT);
     math_FunctionAllRoots Solve(FF,
                                 S,
                                 Precision::Confusion(),
@@ -286,9 +283,9 @@ void GeomLib::RemovePointsFromArray(const int                         NumPoints,
   {
     const int    aRequestedInteriorCount = std::max(0, NumPoints - 2);
     const double aDelta                  = (InParameters.Last() - InParameters.First())
-                                           / static_cast<double>(aRequestedInteriorCount + 1);
-    double       aCurrentParameter       = InParameters.First() + 0.5 * aDelta;
-    size_t       anInputIndex            = 1;
+                          / static_cast<double>(aRequestedInteriorCount + 1);
+    double aCurrentParameter = InParameters.First() + 0.5 * aDelta;
+    size_t anInputIndex      = 1;
     for (int aSegment = 0; anInputIndex + 1 < InParameters.Size() && aSegment < NumPoints;
          ++aSegment, aCurrentParameter += aDelta)
     {
@@ -439,20 +436,16 @@ void GeomLib::EvalMaxDistanceAlongParameter(const Adaptor3d_Curve&            AC
                                             const NCollection_Array1<double>& Parameters,
                                             double&                           MaxDistance)
 {
-  double       max_squared       = 0.0;
-  const double tolerance_squared = Tolerance * Tolerance;
-  double       other_parameter   = Parameters.First();
-  const double para_tolerance    = AReferenceCurve.Resolution(Tolerance);
-  const gp_Pnt anInitialPoint = ACurve.EvalD0(other_parameter);
-  Extrema_LocateExtPC a_projector(anInitialPoint,
-                                  AReferenceCurve,
-                                  other_parameter,
-                                  para_tolerance);
+  double              max_squared       = 0.0;
+  const double        tolerance_squared = Tolerance * Tolerance;
+  double              other_parameter   = Parameters.First();
+  const double        para_tolerance    = AReferenceCurve.Resolution(Tolerance);
+  const gp_Pnt        anInitialPoint    = ACurve.EvalD0(other_parameter);
+  Extrema_LocateExtPC a_projector(anInitialPoint, AReferenceCurve, other_parameter, para_tolerance);
   for (const double aParameter : Parameters)
   {
-    const gp_Pnt aPoint = ACurve.EvalD0(aParameter);
-    double       local_distance_squared =
-      aPoint.SquareDistance(AReferenceCurve.EvalD0(aParameter));
+    const gp_Pnt aPoint                 = ACurve.EvalD0(aParameter);
+    double       local_distance_squared = aPoint.SquareDistance(AReferenceCurve.EvalD0(aParameter));
 
     if (local_distance_squared > tolerance_squared)
     {
@@ -460,7 +453,7 @@ void GeomLib::EvalMaxDistanceAlongParameter(const Adaptor3d_Curve&            AC
       a_projector.Perform(aPoint, other_parameter);
       if (a_projector.IsDone())
       {
-        other_parameter = a_projector.Point().Parameter();
+        other_parameter        = a_projector.Point().Parameter();
         local_distance_squared = aPoint.SquareDistance(AReferenceCurve.EvalD0(other_parameter));
       }
       else
@@ -944,16 +937,16 @@ void GeomLib_CurveOnSurfaceEvaluator::Evaluate(int*, /*Dimension*/
     }
     case 1: {
       const gp_Vec aDerivative = TrimCurve->EvalD1(*Parameter).D1;
-      Result[0]                 = aDerivative.X();
-      Result[1]                 = aDerivative.Y();
-      Result[2]                 = aDerivative.Z();
+      Result[0]                = aDerivative.X();
+      Result[1]                = aDerivative.Y();
+      Result[2]                = aDerivative.Z();
       break;
     }
     case 2: {
       const gp_Vec aSecondDerivative = TrimCurve->EvalD2(*Parameter).D2;
-      Result[0] = aSecondDerivative.X();
-      Result[1] = aSecondDerivative.Y();
-      Result[2] = aSecondDerivative.Z();
+      Result[0]                      = aSecondDerivative.X();
+      Result[1]                      = aSecondDerivative.Y();
+      Result[2]                      = aSecondDerivative.Z();
       break;
     }
     default:
@@ -1115,8 +1108,7 @@ void GeomLib::AdjustExtremity(occ::handle<Geom_BoundedCurve>& Curve,
   aLastUnitTangent.Normalize();
   const gp_Vec aLastDerivativeCorrection =
     aLastUnitTangent * (aLastUnitTangent * aLastDerivative) - aLastDerivative;
-  PolesDef.ChangeLast().ChangeCoord() =
-    (Ti.Last() - Ti.First()) * aLastDerivativeCorrection.XYZ();
+  PolesDef.ChangeLast().ChangeCoord() = (Ti.Last() - Ti.First()) * aLastDerivativeCorrection.XYZ();
 
   // Interpolation of constraints
   math_Matrix Mat(1, 4, 1, 4);
@@ -1198,9 +1190,8 @@ void GeomLib::ExtendCurveToPoint(occ::handle<Geom_BoundedCurve>& Curve,
   GeomConvert_CompCurveToBSplineCurve Concat(Curve, Convert_QuasiAngular);
 
   // Construction constraints
-  NCollection_LocalArray<gp_XYZ, 5> aConstraintStorage(
-    static_cast<size_t>(aConstraintCount));
-  NCollection_Array1<gp_XYZ> Cont(*aConstraintStorage.begin(), 1, aConstraintCount);
+  NCollection_LocalArray<gp_XYZ, 5> aConstraintStorage(static_cast<size_t>(aConstraintCount));
+  NCollection_Array1<gp_XYZ>        Cont(*aConstraintStorage.begin(), 1, aConstraintCount);
   if (After)
   {
     Ubord = Curve->LastParameter();
@@ -1216,9 +1207,9 @@ void GeomLib::ExtendCurveToPoint(occ::handle<Geom_BoundedCurve>& Curve,
                             MatCoefs);
 
   const auto [aBoundaryPoint, aBoundaryD1, aBoundaryD2, aBoundaryD3] = Curve->EvalD3(Ubord);
-  const double aDerivativeDirection = After ? 1.0 : -1.0;
-  const gp_Vec aFirstDerivative     = aBoundaryD1.Multiplied(aDerivativeDirection);
-  const gp_Vec aThirdDerivative     = aBoundaryD3.Multiplied(aDerivativeDirection);
+  const double aDerivativeDirection                                  = After ? 1.0 : -1.0;
+  const gp_Vec aFirstDerivative = aBoundaryD1.Multiplied(aDerivativeDirection);
+  const gp_Vec aThirdDerivative = aBoundaryD3.Multiplied(aDerivativeDirection);
 
   L1 = aBoundaryPoint.Distance(Point);
   if (L1 > Tol)
@@ -1254,12 +1245,12 @@ void GeomLib::ExtendCurveToPoint(occ::handle<Geom_BoundedCurve>& Curve,
 
   // Optimization of Lambda
   math_Matrix Cons(1, 3, 1, aConstraintCount);
-  Cons(1, 1)    = aBoundaryPoint.X();
-  Cons(2, 1)    = aBoundaryPoint.Y();
-  Cons(3, 1)    = aBoundaryPoint.Z();
-  Cons(1, 2)    = aFirstDerivative.X();
-  Cons(2, 2)    = aFirstDerivative.Y();
-  Cons(3, 2)    = aFirstDerivative.Z();
+  Cons(1, 1)                = aBoundaryPoint.X();
+  Cons(2, 1)                = aBoundaryPoint.Y();
+  Cons(3, 1)                = aBoundaryPoint.Z();
+  Cons(1, 2)                = aFirstDerivative.X();
+  Cons(2, 2)                = aFirstDerivative.Y();
+  Cons(3, 2)                = aFirstDerivative.Z();
   Cons(1, aConstraintCount) = Point.X();
   Cons(2, aConstraintCount) = Point.Y();
   Cons(3, aConstraintCount) = Point.Z();
@@ -1425,13 +1416,13 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     // BS = GeomConvert::SurfaceToBSplineSurface(Surface);
     const occ::handle<Geom_Surface>& aSurf = Surface; // to resolve ambiguity
     GeomConvert_ApproxSurface        theApprox(aSurf,
-                                               THE_SURFACE_APPROX_TOLERANCE,
-                                               GeomAbs_C1,
-                                               GeomAbs_C1,
-                                               THE_SURFACE_APPROX_MAX_DEGREE,
-                                               THE_SURFACE_APPROX_MAX_DEGREE,
-                                               THE_SURFACE_APPROX_MAX_SEGMENTS,
-                                               THE_SURFACE_APPROX_PRECISION);
+                                        THE_SURFACE_APPROX_TOLERANCE,
+                                        GeomAbs_C1,
+                                        GeomAbs_C1,
+                                        THE_SURFACE_APPROX_MAX_DEGREE,
+                                        THE_SURFACE_APPROX_MAX_DEGREE,
+                                        THE_SURFACE_APPROX_MAX_SEGMENTS,
+                                        THE_SURFACE_APPROX_PRECISION);
     if (theApprox.HasResult())
     {
       BS = theApprox.Surface();
@@ -1663,8 +1654,7 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
   }
 
   //  arrays needed for the extension
-  const size_t anExtendedFlatKnotCapacity =
-    static_cast<size_t>(aFlatKnotCount + Cdeg);
+  const size_t anExtendedFlatKnotCapacity = static_cast<size_t>(aFlatKnotCount + Cdeg);
   NCollection_Array1<double> FK(anExtendedFlatKnotCapacity);
 
   const size_t anExtendedPoleCoordinateCapacity =
@@ -2359,8 +2349,8 @@ int GeomLib::NormEstim(const occ::handle<Geom_Surface>& theSurf,
   const double aTol2 = Square(theTol);
 
   const Geom_Surface::ResD1 aFirstEvaluation = theSurf->EvalD1(theUV.X(), theUV.Y());
-  const double MDU = aFirstEvaluation.D1U.SquareMagnitude();
-  const double MDV = aFirstEvaluation.D1V.SquareMagnitude();
+  const double              MDU              = aFirstEvaluation.D1U.SquareMagnitude();
+  const double              MDV              = aFirstEvaluation.D1V.SquareMagnitude();
   if (MDU >= aTol2 && MDV >= aTol2)
   {
     const gp_Vec aNorm = aFirstEvaluation.D1U ^ aFirstEvaluation.D1V;
@@ -2407,7 +2397,7 @@ int GeomLib::NormEstim(const occ::handle<Geom_Surface>& theSurf,
     if (anEvaluationBefore.D1U.SquareMagnitude() > THE_NORMAL_SQUARED_MAGNITUDE_TOL
         && anEvaluationBefore.D1V.SquareMagnitude() > THE_NORMAL_SQUARED_MAGNITUDE_TOL)
     {
-      const gp_Dir aNormal1(anEvaluationBefore.D1U ^ anEvaluationBefore.D1V);
+      const gp_Dir              aNormal1(anEvaluationBefore.D1U ^ anEvaluationBefore.D1V);
       const Geom_Surface::ResD1 anEvaluationAfter =
         theSurf->EvalD1(theUV.X(), theUV.Y() + sign * THE_NORMAL_PARAMETER_STEP);
       if (anEvaluationAfter.D1U.SquareMagnitude() > THE_NORMAL_SQUARED_MAGNITUDE_TOL
@@ -2532,15 +2522,15 @@ void GeomLib::IsClosed(const occ::handle<Geom_Surface>& S,
       }
       const gp_Pnt p1 = aGAS.EvalD0(u1, v1);
       const gp_Pnt p2 = aGAS.EvalD0(u2, v1);
-      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      isUClosed       = p1.SquareDistance(p2) <= Tol2;
       return;
     }
     case GeomAbs_Cone: {
       // find v with maximal distance from axis
       if (!(Precision::IsInfinite(v1) || Precision::IsInfinite(v2)))
       {
-        gp_Cone aCone  = aGAS.Cone();
-        gp_Pnt  anApex = aCone.Apex();
+        gp_Cone      aCone  = aGAS.Cone();
+        gp_Pnt       anApex = aCone.Apex();
         const gp_Pnt P1     = aGAS.EvalD0(u1, v1);
         const gp_Pnt P2     = aGAS.EvalD0(u1, v2);
         if (P2.SquareDistance(anApex) > P1.SquareDistance(anApex))
@@ -2554,7 +2544,7 @@ void GeomLib::IsClosed(const occ::handle<Geom_Surface>& S,
       }
       const gp_Pnt p1 = aGAS.EvalD0(u1, v1);
       const gp_Pnt p2 = aGAS.EvalD0(u2, v1);
-      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      isUClosed       = p1.SquareDistance(p2) <= Tol2;
       return;
     }
     case GeomAbs_Sphere: {
@@ -2572,7 +2562,7 @@ void GeomLib::IsClosed(const occ::handle<Geom_Surface>& S,
       }
       const gp_Pnt p1 = aGAS.EvalD0(u1, v1);
       const gp_Pnt p2 = aGAS.EvalD0(u2, v1);
-      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      isUClosed       = p1.SquareDistance(p2) <= Tol2;
       return;
     }
     case GeomAbs_Torus: {
@@ -2632,7 +2622,7 @@ void GeomLib::IsClosed(const occ::handle<Geom_Surface>& S,
       int    i;
       for (i = 0; i < nbp; ++i)
       {
-        t         = (i == nbp - 1 ? v2 : v1 + i * dt);
+        t               = (i == nbp - 1 ? v2 : v1 + i * dt);
         const gp_Pnt p1 = aGAS.EvalD0(u1, t);
         const gp_Pnt p2 = aGAS.EvalD0(u2, t);
         if (p1.SquareDistance(p2) > Tol2)
@@ -2654,7 +2644,7 @@ void GeomLib::IsClosed(const occ::handle<Geom_Surface>& S,
       }
       for (i = 0; i < nbp; ++i)
       {
-        t         = (i == nbp - 1 ? u2 : u1 + i * dt);
+        t               = (i == nbp - 1 ? u2 : u1 + i * dt);
         const gp_Pnt p1 = aGAS.EvalD0(t, v1);
         const gp_Pnt p2 = aGAS.EvalD0(t, v2);
         if (p1.SquareDistance(p2) > Tol2)

@@ -206,12 +206,11 @@ public:
   //! @param[in] theConfusion tolerance for matching values from the two input arrays
   //! @param[in] theAdjustToFirstInterval when true, a matching pair is represented by the value
   //!                                      from the first array; otherwise its midpoint is used
-  Standard_EXPORT static void FuseIntervals(
-    const NCollection_Array1<double>& theInterval1,
-    const NCollection_Array1<double>& theInterval2,
-    NCollection_LinearVector<double>& theFusion,
-    const double                      theConfusion             = 1.0e-9,
-    const bool                        theAdjustToFirstInterval = false);
+  Standard_EXPORT static void FuseIntervals(const NCollection_Array1<double>& theInterval1,
+                                            const NCollection_Array1<double>& theInterval2,
+                                            NCollection_LinearVector<double>& theFusion,
+                                            const double                      theConfusion = 1.0e-9,
+                                            const bool theAdjustToFirstInterval            = false);
 
   //! this will compute the maximum distance at the
   //! parameters given in the Parameters array by
