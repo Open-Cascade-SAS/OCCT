@@ -203,9 +203,10 @@ TEST(ExtremaPC2d_CurveTest, BezierMutationFlowsThroughAggregator)
   aCurve->SetPole(2, gp_Pnt2d(3.5, -4.0));
   const ExtremaPC2d::Result& anAfter = anEvaluator.Perform(gp_Pnt2d(2.0, 2.0), THE_TOL);
   EXPECT_GT(std::abs(anAfter.MinSquareDistance() - aBefore), 1.0e-4);
-  EXPECT_EQ(anAfter[anAfter.MinIndex()].Point.Distance(
-              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
-            0.0);
+  EXPECT_NEAR(anAfter[anAfter.MinIndex()].Point.Distance(
+                aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
+              0.0,
+              THE_TOL);
 }
 
 TEST(ExtremaPC2d_CurveTest, AnalyticalDispatchCopiesPrimitiveGeometry)

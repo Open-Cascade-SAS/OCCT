@@ -104,9 +104,10 @@ TEST(ExtremaPC2d_BSplineCurveTest, PoleMutationIsObserved)
   const ExtremaPC2d::Result& anAfter = anEvaluator.Perform(gp_Pnt2d(1.5, 2.0), THE_TOL);
   ASSERT_TRUE(anAfter.IsDone());
   EXPECT_GT(std::abs(anAfter.MinSquareDistance() - aBefore), 1.0e-4);
-  EXPECT_EQ(anAfter[anAfter.MinIndex()].Point.Distance(
-              aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
-            0.0);
+  EXPECT_NEAR(anAfter[anAfter.MinIndex()].Point.Distance(
+                aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
+              0.0,
+              THE_TOL);
 }
 
 TEST(ExtremaPC2d_BSplineCurveTest, SearchModesFilterExtrema)

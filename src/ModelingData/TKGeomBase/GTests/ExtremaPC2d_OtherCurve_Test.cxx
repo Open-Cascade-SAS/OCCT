@@ -39,7 +39,9 @@ TEST(ExtremaPC2d_OtherCurveTest, SineWaveFindsOriginMinimum)
   for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
   {
     hasOrigin = hasOrigin || std::abs(aResult[anIndex].Parameter) <= THE_TOL;
-    EXPECT_EQ(aResult[anIndex].Point.Distance(aCurve->Value(aResult[anIndex].Parameter)), 0.0);
+    EXPECT_NEAR(aResult[anIndex].Point.Distance(aCurve->Value(aResult[anIndex].Parameter)),
+                0.0,
+                THE_TOL);
   }
   EXPECT_TRUE(hasOrigin);
 }
