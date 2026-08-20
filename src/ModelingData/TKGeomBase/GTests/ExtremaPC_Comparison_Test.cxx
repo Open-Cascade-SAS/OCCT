@@ -72,17 +72,19 @@ protected:
     }
 
     // Find minimum from new implementation
-    double aNewMinSqDist = theNew.MinSquareDistance();
-    size_t aNewMinIdx    = theNew.MinIndex();
+    const double aNewMinSqDist = theNew.MinSquareDistance();
+    const size_t aNewMinIdx    = theNew.MinIndex();
+    const bool   hasOldMinimum = aOldMinIdx >= 1;
+    const bool   hasNewMinimum = aNewMinIdx != ExtremaPC::Result::INVALID_INDEX;
 
     // Both should find extrema (or both find none)
-    if (aOldMinIdx < 0 && aNewMinIdx < 0)
+    if (!hasOldMinimum && !hasNewMinimum)
     {
       return; // Both found no extrema - OK
     }
 
-    ASSERT_GE(aOldMinIdx, 1) << theTestName << ": Old implementation found no minimum";
-    ASSERT_GE(aNewMinIdx, 0) << theTestName << ": New implementation found no minimum";
+    ASSERT_TRUE(hasOldMinimum) << theTestName << ": Old implementation found no minimum";
+    ASSERT_TRUE(hasNewMinimum) << theTestName << ": New implementation found no minimum";
 
     // Compare minimum distances
     double aOldDist = std::sqrt(aOldMinSqDist);

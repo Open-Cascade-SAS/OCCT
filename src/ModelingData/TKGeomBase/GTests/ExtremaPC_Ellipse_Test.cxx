@@ -566,8 +566,12 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_TinyArc)
   ExtremaPC_Ellipse        anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
-  // Should complete without error
-  ASSERT_TRUE(aResult.IsDone() || aResult.NbExt() >= 0);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 2u);
+  EXPECT_EQ(aResult[0].Parameter, aUMin);
+  EXPECT_TRUE(aResult[0].IsMaximum);
+  EXPECT_EQ(aResult[1].Parameter, aUMax);
+  EXPECT_TRUE(aResult[1].IsMinimum);
 }
 
 TEST_F(ExtremaPC_EllipseTest, LargeRange_FullCircle)
