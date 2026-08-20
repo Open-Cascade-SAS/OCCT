@@ -39,6 +39,7 @@
 #include <Standard_TypeMismatch.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -2041,19 +2042,18 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   }
 
   // fusion
-  NCollection_Sequence<double> Fusion;
+  NCollection_LinearVector<double> Fusion;
   if (!CArr.IsNull())
   {
     GeomLib::FuseIntervals(BArr->ChangeArray1(),
                            CArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
-    Fusion.Clear();
   }
 
   if (!UArr.IsNull())
@@ -2062,12 +2062,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
                            UArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
-    Fusion.Clear();
   }
 
   if (!VArr.IsNull())
@@ -2076,10 +2075,10 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
                            VArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
   }
 

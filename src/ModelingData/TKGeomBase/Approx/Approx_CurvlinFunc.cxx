@@ -25,7 +25,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Approx_CurvlinFunc, Standard_Transient)
 
@@ -302,9 +302,9 @@ int Approx_CurvlinFunc::NbIntervals(const GeomAbs_Shape S) const
       NCollection_Array1<double> T2(1, NbInt + 1);
       CurOnSur.Intervals(T2, S);
 
-      NCollection_Sequence<double> Fusion;
+      NCollection_LinearVector<double> Fusion;
       GeomLib::FuseIntervals(T1, T2, Fusion);
-      return Fusion.Length() - 1;
+      return static_cast<int>(Fusion.Size()) - 1;
   }
 
   // POP pour WNT
@@ -339,12 +339,12 @@ void Approx_CurvlinFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_
       NCollection_Array1<double> T2(1, NbInt + 1);
       CurOnSur.Intervals(T2, S);
 
-      NCollection_Sequence<double> Fusion;
+      NCollection_LinearVector<double> Fusion;
       GeomLib::FuseIntervals(T1, T2, Fusion);
 
-      for (i = 1; i <= Fusion.Length(); i++)
+      for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
       {
-        T.ChangeValue(i) = Fusion.Value(i);
+        T.ChangeAt(anIndex) = Fusion.Value(anIndex);
       }
   }
 

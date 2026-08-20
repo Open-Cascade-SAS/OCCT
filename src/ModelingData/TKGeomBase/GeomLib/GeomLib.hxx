@@ -21,8 +21,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 
 class Geom_Curve;
 class gp_Ax2;
@@ -39,7 +38,7 @@ class Geom_BSplineSurface;
 class Geom_BezierSurface;
 class Geom_Surface;
 
-typedef class Adaptor2d_Curve2d Adaptor2d_Curve2d;
+class Adaptor2d_Curve2d;
 
 //! Geom Library. This package provides an
 //! implementation of functions for basic computation
@@ -180,34 +179,39 @@ public:
   //! midpoint of the next segment
   //! There will be at the end at most NumPoints + 1
   //! if NumPoints > 2 in the OutParameters Array
-  Standard_EXPORT static void RemovePointsFromArray(
-    const int                                 NumPoints,
-    const NCollection_Array1<double>&         InParameters,
-    occ::handle<NCollection_HArray1<double>>& OutParameters);
+  //! @param[in] NumPoints target number of uniform segments
+  //! @param[in] InParameters increasing input parameters
+  //! @param[out] OutParameters selected parameters; resized with lower bound 1
+  Standard_EXPORT static void RemovePointsFromArray(const int                         NumPoints,
+                                                    const NCollection_Array1<double>& InParameters,
+                                                    NCollection_Array1<double>& OutParameters);
 
   //! this makes sure that there is at least MinNumPoints
   //! in OutParameters taking into account the parameters in
   //! the InParameters array provided those are in order,
   //! that is the sequence of real in the InParameter is strictly
   //! non decreasing
-  Standard_EXPORT static void DensifyArray1OfReal(
-    const int                                 MinNumPoints,
-    const NCollection_Array1<double>&         InParameters,
-    occ::handle<NCollection_HArray1<double>>& OutParameters);
+  //! @param[in] MinNumPoints minimum requested output size
+  //! @param[in] InParameters input parameters
+  //! @param[out] OutParameters resulting parameters; resized with lower bound 1
+  Standard_EXPORT static void DensifyArray1OfReal(const int                         MinNumPoints,
+                                                  const NCollection_Array1<double>& InParameters,
+                                                  NCollection_Array1<double>&       OutParameters);
 
-  //! This method fuse intervals Interval1 and Interval2 with specified Confusion
-  //! @param[in] Interval1  first interval to fuse
-  //! @param[in] Interval2  second interval to fuse
-  //! @param[in] Confision  tolerance to compare intervals
-  //! @param[in] IsAdjustToFirstInterval  flag to set method of fusion, if intervals are close
-  //!                               if false, intervals are fusing by half-division method
-  //!                               if true, intervals are fusing by selecting value from Interval1
-  //! @param[out] Fusion  output interval
-  Standard_EXPORT static void FuseIntervals(const NCollection_Array1<double>& Interval1,
-                                            const NCollection_Array1<double>& Interval2,
-                                            NCollection_Sequence<double>&     Fusion,
-                                            const double                      Confusion = 1.0e-9,
-                                            const bool IsAdjustToFirstInterval          = false);
+  //! Merges two non-decreasing arrays, eliminating values equal within the specified tolerance.
+  //! @param[in] theInterval1 first sorted interval array
+  //! @param[in] theInterval2 second sorted interval array
+  //! @param[out] theFusion merged interval array; previous contents are discarded while allocated
+  //!                       capacity is retained for reuse
+  //! @param[in] theConfusion tolerance for matching values from the two input arrays
+  //! @param[in] theAdjustToFirstInterval when true, a matching pair is represented by the value
+  //!                                      from the first array; otherwise its midpoint is used
+  Standard_EXPORT static void FuseIntervals(
+    const NCollection_Array1<double>& theInterval1,
+    const NCollection_Array1<double>& theInterval2,
+    NCollection_LinearVector<double>& theFusion,
+    const double                      theConfusion             = 1.0e-9,
+    const bool                        theAdjustToFirstInterval = false);
 
   //! this will compute the maximum distance at the
   //! parameters given in the Parameters array by
@@ -259,7 +263,7 @@ public:
 
   //! Returns true if the poles of U1 isoline and the poles of
   //! U2 isoline of surface are identical according to tolerance criterion.
-  //! For rational surfaces Weights(i)*Poles(i) are checked.
+  //! For rational surfaces normalized homogeneous poles are checked.
   Standard_EXPORT static bool IsBSplUClosed(const occ::handle<Geom_BSplineSurface>& S,
                                             const double                            U1,
                                             const double                            U2,
@@ -267,7 +271,7 @@ public:
 
   //! Returns true if the poles of V1 isoline and the poles of
   //! V2 isoline of surface are identical according to tolerance criterion.
-  //! For rational surfaces Weights(i)*Poles(i) are checked.
+  //! For rational surfaces normalized homogeneous poles are checked.
   Standard_EXPORT static bool IsBSplVClosed(const occ::handle<Geom_BSplineSurface>& S,
                                             const double                            V1,
                                             const double                            V2,
@@ -275,6 +279,7 @@ public:
 
   //! Returns true if the poles of U1 isoline and the poles of
   //! U2 isoline of surface are identical according to tolerance criterion.
+  //! For rational surfaces normalized homogeneous poles are checked.
   Standard_EXPORT static bool IsBzUClosed(const occ::handle<Geom_BezierSurface>& S,
                                           const double                           U1,
                                           const double                           U2,
@@ -282,6 +287,7 @@ public:
 
   //! Returns true if the poles of V1 isoline and the poles of
   //! V2 isoline of surface are identical according to tolerance criterion.
+  //! For rational surfaces normalized homogeneous poles are checked.
   Standard_EXPORT static bool IsBzVClosed(const occ::handle<Geom_BezierSurface>& S,
                                           const double                           V1,
                                           const double                           V2,
