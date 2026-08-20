@@ -40,7 +40,11 @@ TEST(ExtremaPC2d_GridEvaluatorTest, UniformParamsCoverDomainExactly)
 
 TEST(ExtremaPC2d_GridEvaluatorTest, UniformParamsRejectInvalidSampleCount)
 {
+#if !defined(No_Exception) && !defined(No_Standard_RangeError)
   EXPECT_THROW(ExtremaPC2d_GridEvaluator::BuildUniformParams(0.0, 1.0, 1), Standard_RangeError);
+#else
+  GTEST_SKIP() << "Standard_RangeError raising is disabled in this build.";
+#endif
 }
 
 //=================================================================================================

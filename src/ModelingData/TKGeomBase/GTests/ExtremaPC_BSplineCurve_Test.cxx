@@ -780,7 +780,9 @@ TEST_F(ExtremaPC_BSplineCurveTest, ShiftedMultiPeriodNonPlanarCurveFindsEveryMin
 
 TEST_F(ExtremaPC_BSplineCurveTest, GridUtilitiesRejectInvalidSamplesAndShortOpenClosure)
 {
+#if !defined(No_Exception) && !defined(No_Standard_RangeError)
   EXPECT_THROW(ExtremaPC_GridEvaluator::BuildUniformParams(0.0, 1.0, 1), Standard_RangeError);
+#endif
 
   NCollection_Array1<gp_Pnt> aPoles(1, 2);
   aPoles(1)                            = gp_Pnt(0.0, 0.0, 0.0);
