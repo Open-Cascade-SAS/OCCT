@@ -29,6 +29,8 @@
 class Graphic3d_AspectFillArea3d;
 class Graphic3d_Texture2D;
 
+//! @deprecated Use AIS_Shape directly; define texture mapping through AIS_Shape::Attributes().
+//!
 //! This class allows to map textures on shapes.
 //! Presentations modes AIS_WireFrame (0) and AIS_Shaded (1) behave in the same manner as in
 //! AIS_Shape, whilst new modes 2 (bounding box) and 3 (texture mapping) extends it functionality.

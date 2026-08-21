@@ -5,7 +5,6 @@ set(OCCT_AIS_FILES
   AIS.hxx
   AIS_Animation.cxx
   AIS_Animation.hxx
-  AIS_AnimationTimer.hxx
   AIS_AnimationAxisRotation.cxx
   AIS_AnimationAxisRotation.hxx
   AIS_AnimationCamera.cxx
@@ -16,12 +15,8 @@ set(OCCT_AIS_FILES
   AIS_AttributeFilter.hxx
   AIS_Axis.cxx
   AIS_Axis.hxx
-  AIS_BadEdgeFilter.cxx
-  AIS_BadEdgeFilter.hxx
   AIS_BaseAnimationObject.cxx
   AIS_BaseAnimationObject.hxx
-  AIS_C0RegularityFilter.cxx
-  AIS_C0RegularityFilter.hxx
   AIS_CameraFrustum.cxx
   AIS_CameraFrustum.hxx
   AIS_Circle.cxx
@@ -38,8 +33,6 @@ set(OCCT_AIS_FILES
   AIS_DisplayMode.hxx
   AIS_DisplayStatus.hxx
   AIS_DragAction.hxx
-  AIS_ExclusionFilter.cxx
-  AIS_ExclusionFilter.hxx
   AIS_GlobalStatus.cxx
   AIS_GlobalStatus.hxx
   AIS_GraphicTool.cxx
@@ -59,8 +52,6 @@ set(OCCT_AIS_FILES
   AIS_ManipulatorMode.hxx
   AIS_ManipulatorOwner.hxx
   AIS_ManipulatorOwner.cxx
-  AIS_MediaPlayer.cxx
-  AIS_MediaPlayer.hxx
   AIS_MouseGesture.hxx
   AIS_MultipleConnectedInteractive.cxx
   AIS_MultipleConnectedInteractive.hxx

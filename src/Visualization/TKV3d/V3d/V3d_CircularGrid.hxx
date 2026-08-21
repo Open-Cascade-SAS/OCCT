@@ -20,8 +20,8 @@
 #include <Standard.hxx>
 
 #include <Aspect_CircularGrid.hxx>
-#include <V3d_ViewerPointer.hxx>
 #include <gp_Ax3.hxx>
+class V3d_Viewer;
 class Graphic3d_Structure;
 class Graphic3d_Group;
 
@@ -41,7 +41,7 @@ public:
   //! @param[in] aViewer     viewer that owns the grid (and provides DefaultViewSize)
   //! @param[in] aColor      color of the regular rings / spokes
   //! @param[in] aTenthColor color of every 10-th ring (and the diameter spokes)
-  Standard_EXPORT V3d_CircularGrid(const V3d_ViewerPointer& aViewer,
+  Standard_EXPORT V3d_CircularGrid(V3d_Viewer* const& aViewer,
                                    const Quantity_Color&    aColor,
                                    const Quantity_Color&    aTenthColor);
 
@@ -97,7 +97,7 @@ private:
   occ::handle<Graphic3d_Structure> myStructure;
   occ::handle<Graphic3d_Group>     myGroup;
   gp_Ax3                           myCurViewPlane;
-  V3d_ViewerPointer                myViewer;
+  V3d_Viewer*                      myViewer;
   bool                             myCurAreDefined;
   bool                             myToComputePrs;
   Aspect_GridDrawMode              myCurDrawMode;

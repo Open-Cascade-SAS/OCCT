@@ -51,7 +51,6 @@ set(OCCT_Aspect_FILES
 
   Aspect_TrackedDevicePose.hxx
   Aspect_TypeOfColorScaleData.hxx
-  Aspect_TypeOfColorScaleOrientation.hxx
   Aspect_TypeOfColorScalePosition.hxx
   Aspect_TypeOfDeflection.hxx
   Aspect_TypeOfDisplayText.hxx
@@ -67,7 +66,6 @@ set(OCCT_Aspect_FILES
   Aspect_VKeyFlags.hxx
   Aspect_VKeySet.cxx
   Aspect_VKeySet.hxx
-  Aspect_WidthOfLine.hxx
   Aspect_Window.cxx
   Aspect_Window.hxx
   Aspect_WindowDefinitionError.hxx
