@@ -103,6 +103,12 @@ inline bool MapPeriodicTrigRoot(double  theRoot,
   {
     theRoot = theUpper;
   }
+  size_t aNbRepresentatives = 0;
+  if (!ComputePeriodicRootCount(theRoot, theUpper, THE_2PI, theTolerance, false, aNbRepresentatives)
+      || aNbRepresentatives == 0)
+  {
+    return false;
+  }
   theMappedRoot = theRoot;
   return true;
 }
