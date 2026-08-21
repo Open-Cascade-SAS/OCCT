@@ -166,13 +166,15 @@ OpenGl_VariableSetterSelector::~OpenGl_VariableSetterSelector()
 // =======================================================================
 void OpenGl_VariableSetterSelector::Set(const occ::handle<OpenGl_Context>&           theCtx,
                                         const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-                                        OpenGl_ShaderProgram* theProgram) const
+                                        OpenGl_ShaderProgram*                        theProgram,
+                                        GLint theLocation) const
 {
   Standard_ASSERT_RETURN(mySetterList.IsBound(theVariable->Value()->TypeID()),
                          "The type of user-defined uniform variable is not supported...",
                          Standard_VOID_RETURN);
 
-  mySetterList.Find(theVariable->Value()->TypeID())->Set(theCtx, theVariable, theProgram);
+  mySetterList.Find(theVariable->Value()->TypeID())
+    ->Set(theCtx, theVariable, theProgram, theLocation);
 }
 
 // =======================================================================
@@ -202,8 +204,8 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram(const occ::handle<Graphic3d_ShaderPro
 // purpose  : Initializes program object with the list of shader objects
 // =======================================================================
 bool OpenGl_ShaderProgram::Initialize(
-  const occ::handle<OpenGl_Context>&                               theCtx,
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& theShaders)
+  const occ::handle<OpenGl_Context>&                                   theCtx,
+  const NCollection_LinearVector<occ::handle<Graphic3d_ShaderObject>>& theShaders)
 {
   myHasTessShader = false;
   if (theCtx.IsNull() || !Create(theCtx))
@@ -214,11 +216,9 @@ bool OpenGl_ShaderProgram::Initialize(
   TCollection_AsciiString aHeaderVer =
     !myProxy.IsNull() ? myProxy->Header() : TCollection_AsciiString();
   int aShaderMask = 0;
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < theShaders.Size(); ++i)
   {
-    aShaderMask |= anIter.Value()->Type();
+    aShaderMask |= theShaders.Value(i)->Type();
   }
   myHasTessShader =
     (aShaderMask & (Graphic3d_TOS_TESS_CONTROL | Graphic3d_TOS_TESS_EVALUATION)) != 0;
@@ -352,11 +352,10 @@ bool OpenGl_ShaderProgram::Initialize(
     }
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders);
-       anIter.More();
-       anIter.Next())
+  for (size_t aShaderIdx_ = 0; aShaderIdx_ < theShaders.Size(); ++aShaderIdx_)
   {
-    if (!anIter.Value()->IsDone())
+    const occ::handle<Graphic3d_ShaderObject>& aSrcShader = theShaders.Value(aShaderIdx_);
+    if (!aSrcShader->IsDone())
     {
       const TCollection_ExtendedString aMsg = "Error! Failed to get shader source";
       theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -367,7 +366,7 @@ bool OpenGl_ShaderProgram::Initialize(
       return false;
     }
 
-    const GLenum aShaderType = shaderTypeToGl(anIter.Value()->Type());
+    const GLenum aShaderType = shaderTypeToGl(aSrcShader->Type());
     if (aShaderType == 0)
     {
       return false;
@@ -448,7 +447,7 @@ bool OpenGl_ShaderProgram::Initialize(
     }
 
     TCollection_AsciiString aPrecisionHeader;
-    if (anIter.Value()->Type() == Graphic3d_TOS_FRAGMENT
+    if (aSrcShader->Type() == Graphic3d_TOS_FRAGMENT
         && theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
     {
       aPrecisionHeader = theCtx->hasHighp ? "precision highp float;\n"
@@ -458,7 +457,7 @@ bool OpenGl_ShaderProgram::Initialize(
     }
 
     TCollection_AsciiString aHeaderType;
-    switch (anIter.Value()->Type())
+    switch (aSrcShader->Type())
     {
       case Graphic3d_TOS_COMPUTE: {
         aHeaderType = "#define COMPUTE_SHADER\n";
@@ -546,7 +545,7 @@ bool OpenGl_ShaderProgram::Initialize(
       + Shaders_Declarations_glsl // common declarations (global constants and Vertex Shader inputs)
       + Shaders_DeclarationsImpl_glsl
       // clang-format off
-                                          + anIter.Value()->Source();      // the source code itself (defining main() function)
+                                          + aSrcShader->Source();      // the source code itself (defining main() function)
     // clang-format on
     if (!aShader->LoadAndCompile(theCtx, myResourceId, aSource))
     {
@@ -560,8 +559,7 @@ bool OpenGl_ShaderProgram::Initialize(
       if (theCtx->caps->glslDumpLevel == OpenGl_ShaderProgramDumpLevel_Short)
       {
         anOutputSource = aHeaderVer + (!aHeaderVer.IsEmpty() ? "\n" : "") + anExtensions
-                         + aPrecisionHeader + aHeaderType + aHeaderConstants
-                         + anIter.Value()->Source();
+                         + aPrecisionHeader + aHeaderType + aHeaderConstants + aSrcShader->Source();
       }
       aShader->DumpSourceCode(theCtx, myResourceId, anOutputSource);
     }
@@ -582,14 +580,12 @@ bool OpenGl_ShaderProgram::Initialize(
   // bind custom Vertex Attributes
   if (!myProxy.IsNull())
   {
-    for (NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>::Iterator anAttribIter(
-           myProxy->VertexAttributes());
-         anAttribIter.More();
-         anAttribIter.Next())
+    const NCollection_LinearVector<occ::handle<Graphic3d_ShaderAttribute>>& anAttribs =
+      myProxy->VertexAttributes();
+    for (size_t i = 0; i < anAttribs.Size(); ++i)
     {
-      SetAttributeName(theCtx,
-                       anAttribIter.Value()->Location(),
-                       anAttribIter.Value()->Name().ToCString());
+      const occ::handle<Graphic3d_ShaderAttribute>& anAttr = anAttribs.Value(i);
+      SetAttributeName(theCtx, anAttr->Location(), anAttr->Name().ToCString());
     }
   }
 
@@ -724,17 +720,15 @@ bool OpenGl_ShaderProgram::AttachShader(const occ::handle<OpenGl_Context>&      
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (theShader == anIter.Value())
+    if (myShaderObjects.Value(i) == theShader)
     {
       return false;
     }
   }
-
   myShaderObjects.Append(theShader);
+
   theCtx->core20fwd->glAttachShader(myProgramID, theShader->myShaderID);
   return true;
 }
@@ -751,19 +745,17 @@ bool OpenGl_ShaderProgram::DetachShader(const occ::handle<OpenGl_Context>&      
     return false;
   }
 
-  NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-  while (anIter.More())
+  bool isFound = false;
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (theShader == anIter.Value())
+    if (myShaderObjects.Value(i) == theShader)
     {
-      myShaderObjects.Remove(anIter);
+      myShaderObjects.Erase(i);
+      isFound = true;
       break;
     }
-
-    anIter.Next();
   }
-
-  if (!anIter.More())
+  if (!isFound)
   {
     return false;
   }
@@ -776,6 +768,7 @@ bool OpenGl_ShaderProgram::DetachShader(const occ::handle<OpenGl_Context>&      
 
 bool OpenGl_ShaderProgram::link(const occ::handle<OpenGl_Context>& theCtx)
 {
+  myUniformLocations.Clear();
   if (myProgramID == NO_PROGRAM)
   {
     return false;
@@ -874,12 +867,15 @@ bool OpenGl_ShaderProgram::ApplyVariables(const occ::handle<OpenGl_Context>& the
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>::Iterator anIter(
-         myProxy->Variables());
+  for (NCollection_OrderedDataMap<TCollection_AsciiString,
+                                  occ::handle<Graphic3d_ShaderVariable>>::Iterator
+         anIter(myProxy->Variables());
        anIter.More();
        anIter.Next())
   {
-    mySetterSelector.Set(theCtx, anIter.Value(), this);
+    const OpenGl_ShaderUniformLocation aLocation =
+      GetUniformLocation(theCtx, anIter.Key().ToCString());
+    mySetterSelector.Set(theCtx, anIter.Value(), this, aLocation);
   }
 
   myProxy->ClearVariables();
@@ -894,9 +890,23 @@ OpenGl_ShaderUniformLocation OpenGl_ShaderProgram::GetUniformLocation(
   const occ::handle<OpenGl_Context>& theCtx,
   const GLchar*                      theName) const
 {
-  return OpenGl_ShaderUniformLocation(
-    myProgramID != NO_PROGRAM ? theCtx->core20fwd->glGetUniformLocation(myProgramID, theName)
-                              : INVALID_LOCATION);
+  if (myProgramID == NO_PROGRAM || theCtx.IsNull() || theCtx->core20fwd == nullptr
+      || theName == nullptr)
+  {
+    return OpenGl_ShaderUniformLocation(INVALID_LOCATION);
+  }
+
+  const TCollection_AsciiString aName(theName);
+  OpenGl_ShaderUniformLocation  aLocation;
+  if (myUniformLocations.Find(aName, aLocation))
+  {
+    return aLocation;
+  }
+
+  aLocation =
+    OpenGl_ShaderUniformLocation(theCtx->core20fwd->glGetUniformLocation(myProgramID, theName));
+  myUniformLocations.Bind(aName, aLocation);
+  return aLocation;
 }
 
 // =======================================================================
@@ -1509,6 +1519,7 @@ bool OpenGl_ShaderProgram::Create(const occ::handle<OpenGl_Context>& theCtx)
 
 void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
 {
+  myUniformLocations.Clear();
   if (myProgramID == NO_PROGRAM)
   {
     return;
@@ -1519,16 +1530,15 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
     "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...",
     Standard_VOID_RETURN);
 
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (!anIter.Value().IsNull())
+    const occ::handle<OpenGl_ShaderObject>& aShader = myShaderObjects.Value(i);
+    if (!aShader.IsNull())
     {
-      anIter.ChangeValue()->Release(theCtx);
-      anIter.ChangeValue().Nullify();
+      aShader->Release(theCtx);
     }
   }
+  myShaderObjects.Clear();
 
   if (theCtx->core20fwd != nullptr && theCtx->IsValid())
   {
@@ -1562,20 +1572,16 @@ bool OpenGl_ShaderProgram::UpdateDebugDump(const occ::handle<OpenGl_Context>& th
   }
 
   bool hasUpdates = false;
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (size_t i = 0; i < myShaderObjects.Size(); ++i)
   {
-    if (!anIter.Value().IsNull())
+    const occ::handle<OpenGl_ShaderObject>& aShader = myShaderObjects.Value(i);
+    if (!aShader.IsNull())
     {
       // desktop OpenGL (but not OpenGL ES) allows multiple shaders of the same stage to be
       // attached, but here we expect only single source per stage
-      hasUpdates = anIter.ChangeValue()->updateDebugDump(theCtx,
-                                                         myResourceId,
-                                                         aFolder,
-                                                         theToBeautify,
-                                                         theToReset)
-                   || hasUpdates;
+      hasUpdates =
+        aShader->updateDebugDump(theCtx, myResourceId, aFolder, theToBeautify, theToReset)
+        || hasUpdates;
     }
   }
   if (hasUpdates)

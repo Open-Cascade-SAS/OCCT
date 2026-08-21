@@ -19,9 +19,9 @@
 
 #include <Standard.hxx>
 
+#include <AIS_SelectionModes.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
 
 //! Stores information about objects in graphic context:
@@ -51,21 +51,19 @@ public:
   const occ::handle<Prs3d_Drawer>& HilightStyle() const { return myHiStyle; }
 
   //! Returns active selection modes of the object.
-  const NCollection_List<int>& SelectionModes() const { return mySelModes; }
+  const AIS_SelectionModes& SelectionModes() const { return mySelModes; }
+
+  //! Returns number of active selection modes.
+  size_t NbSelectionModes() const { return mySelModes.Size(); }
+
+  //! Return TRUE when the only registered selection mode matches the given one.
+  bool HasOnlySelectionMode(const int theMode) const { return mySelModes.HasOnly(theMode); }
 
   //! Return TRUE if selection mode was registered.
   bool IsSModeIn(int theMode) const { return mySelModes.Contains(theMode); }
 
   //! Add selection mode.
-  bool AddSelectionMode(const int theMode)
-  {
-    if (!mySelModes.Contains(theMode))
-    {
-      mySelModes.Append(theMode);
-      return true;
-    }
-    return false;
-  }
+  bool AddSelectionMode(const int theMode) { return mySelModes.Add(theMode); }
 
   //! Remove selection mode.
   bool RemoveSelectionMode(const int theMode) { return mySelModes.Remove(theMode); }
@@ -78,7 +76,7 @@ public:
   void SetSubIntensity(bool theIsOn) { mySubInt = theIsOn; }
 
 private:
-  NCollection_List<int>     mySelModes;
+  AIS_SelectionModes        mySelModes;
   occ::handle<Prs3d_Drawer> myHiStyle;
   int                       myDispMode;
   bool                      myIsHilit;

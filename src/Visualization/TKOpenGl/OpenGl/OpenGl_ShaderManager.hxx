@@ -27,9 +27,9 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_TextureSet.hxx>
 
-class OpenGl_VertexBuffer;
+#include <NCollection_OrderedMap.hxx>
 
-//! List of shader programs.
+class OpenGl_VertexBuffer;
 
 //! This class is responsible for managing shader programs.
 class OpenGl_ShaderManager : public Graphic3d_ShaderManager
@@ -86,7 +86,7 @@ public:
                                   occ::handle<OpenGl_ShaderProgram>& theProgram);
 
   //! Returns list of registered shader programs.
-  const NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>& ShaderPrograms() const
+  const NCollection_OrderedMap<occ::handle<OpenGl_ShaderProgram>>& ShaderPrograms() const
   {
     return myProgramList;
   }
@@ -802,9 +802,8 @@ protected:
   occ::handle<OpenGl_ShaderProgramFFP> myFfpProgram;
 
   Graphic3d_TypeOfShadingModel myShadingModel; //!< lighting shading model
-  NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>
-    myProgramList; //!< The list of shader programs
-                   // clang-format off
+  NCollection_OrderedMap<occ::handle<OpenGl_ShaderProgram>> myProgramList; //!< Shader programs
+                                                                           // clang-format off
   occ::handle<OpenGl_SetOfShaderPrograms> myLightPrograms;      //!< pointer to active lighting programs matrix
   occ::handle<OpenGl_SetOfPrograms>       myUnlitPrograms;      //!< programs matrix without lighting
   occ::handle<OpenGl_SetOfPrograms>       myOutlinePrograms;    //!< programs matrix without lighting for outline presentation

@@ -42,11 +42,9 @@ occ::handle<Graphic3d_CView> D3DHost_GraphicDriver::CreateView(
 {
   occ::handle<D3DHost_View> aView = new D3DHost_View(theMgr, this, myCaps, &myStateCounter);
   myMapOfView.Add(aView);
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-       aLayerIter.More();
-       aLayerIter.Next())
+  for (size_t i = 0; i < myLayers.Size(); ++i)
   {
-    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = myLayers.Value(i);
     aView->InsertLayerAfter(aLayer->LayerId(), aLayer->LayerSettings(), Graphic3d_ZLayerId_UNKNOWN);
   }
   return aView;

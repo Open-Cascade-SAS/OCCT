@@ -20,33 +20,23 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
 
-namespace
-{
-constexpr int THE_MaxSizeOfResult = 100000;
-}
-
 //=================================================================================================
 
-AIS_Selection::AIS_Selection()
-{
-  // for maximum performance on medium selections (< 100000 objects)
-  myResultMap.ReSize(THE_MaxSizeOfResult);
-}
+AIS_Selection::AIS_Selection() {}
 
 //=================================================================================================
 
 void AIS_Selection::Clear()
 {
-  for (NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(Objects());
+  for (NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator aSelIter(Objects());
        aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_EntityOwner> anObject = aSelIter.Value();
     anObject->SetSelected(false);
   }
-  myresult.Clear();
-  myResultMap.Clear();
-  myIterator = NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator();
+  myOwners.Clear();
+  myIterator = NCollection_OrderedMap<occ::handle<SelectMgr_EntityOwner>>::Iterator();
 }
 
 //=================================================================================================
@@ -66,32 +56,21 @@ AIS_SelectStatus AIS_Selection::Select(const occ::handle<SelectMgr_EntityOwner>&
   const bool wasSelected = theOwner->IsSelected();
   const bool toSelect    = theOwner->Select(theSelScheme, isDetected);
 
-  if (!wasSelected || !myResultMap.IsBound(theOwner))
+  if (!wasSelected || !myOwners.Contains(theOwner))
   {
     if (!toSelect)
     {
       return AIS_SS_NotDone;
     }
 
-    NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aListIter;
-    myresult.Append(theOwner, aListIter);
-    myResultMap.Bind(theOwner, aListIter);
+    myOwners.Add(theOwner);
     theOwner->SetSelected(true);
     return AIS_SS_Added;
   }
 
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aListIter =
-    myResultMap.Find(theOwner);
-  if (myIterator == aListIter)
+  if (myIterator.More() && myIterator.Value() == theOwner)
   {
-    if (myIterator.More())
-    {
-      myIterator.Next();
-    }
-    else
-    {
-      myIterator = NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator();
-    }
+    myIterator.Next();
   }
 
   // In the mode of advanced mesh selection only one owner is created for all selection modes.
@@ -103,23 +82,8 @@ AIS_SelectStatus AIS_Selection::Select(const occ::handle<SelectMgr_EntityOwner>&
     return AIS_SS_Added;
   }
 
-  myresult.Remove(aListIter);
-  myResultMap.UnBind(theOwner);
+  myOwners.Remove(theOwner);
   theOwner->SetSelected(false);
-
-  // update list iterator for next object in <myresult> list if any
-  if (aListIter.More())
-  {
-    const occ::handle<SelectMgr_EntityOwner>& aNextObject = aListIter.Value();
-    if (myResultMap.IsBound(aNextObject))
-    {
-      myResultMap(aNextObject) = aListIter;
-    }
-    else
-    {
-      myResultMap.Bind(aNextObject, aListIter);
-    }
-  }
   return AIS_SS_Removed;
 }
 
@@ -127,14 +91,12 @@ AIS_SelectStatus AIS_Selection::Select(const occ::handle<SelectMgr_EntityOwner>&
 
 AIS_SelectStatus AIS_Selection::AddSelect(const occ::handle<SelectMgr_EntityOwner>& theObject)
 {
-  if (theObject.IsNull() || !theObject->HasSelectable() || myResultMap.IsBound(theObject))
+  if (theObject.IsNull() || !theObject->HasSelectable() || myOwners.Contains(theObject))
   {
     return AIS_SS_NotDone;
   }
 
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aListIter;
-  myresult.Append(theObject, aListIter);
-  myResultMap.Bind(theObject, aListIter);
+  myOwners.Add(theObject);
   theObject->SetSelected(true);
   return AIS_SS_Added;
 }
@@ -149,7 +111,7 @@ void AIS_Selection::SelectOwners(
 {
   (void)theToAllowSelOverlap;
 
-  if (theSelScheme == AIS_SelectionScheme_ReplaceExtra && thePickedOwners.Size() == myresult.Size())
+  if (theSelScheme == AIS_SelectionScheme_ReplaceExtra && thePickedOwners.Size() == myOwners.Size())
   {
     // If picked owners is equivalent to the selected then just clear selected.
     bool isTheSame = true;
@@ -158,7 +120,7 @@ void AIS_Selection::SelectOwners(
          aPickedIter.More();
          aPickedIter.Next())
     {
-      if (!myResultMap.IsBound(aPickedIter.Value()))
+      if (!myOwners.Contains(aPickedIter.Value()))
       {
         isTheSame = false;
         break;

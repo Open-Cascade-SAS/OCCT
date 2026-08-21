@@ -18,6 +18,7 @@
 #include <AIS_GraphicTool.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -73,12 +74,11 @@ void AIS_PointCloudOwner::HilightWithColor(const occ::handle<PrsMgr_Presentation
              ? theStyle->ZLayer()
              : (thePrsMgr->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : anObj->ZLayer());
   aMap->ChangeMap().Clear();
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         anObj->Selections());
-       aSelIter.More();
-       aSelIter.Next())
+  const NCollection_LinearVector<occ::handle<SelectMgr_Selection>>& aSelections =
+    anObj->Selections();
+  for (size_t aSelIdx = 0; aSelIdx < aSelections.Size(); ++aSelIdx)
   {
-    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSel = aSelections.Value(aSelIdx);
     for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();

@@ -95,14 +95,12 @@ void SelectMgr_SelectionManager::Remove(const occ::handle<SelectMgr_SelectableOb
   {
     if (mySelector->Contains(theObject))
     {
-      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-             theObject->Selections());
-           aSelIter.More();
-           aSelIter.Next())
+      for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
       {
-        mySelector->RemoveSelectionOfObject(theObject, aSelIter.Value());
-        aSelIter.Value()->UpdateBVHStatus(SelectMgr_TBU_Remove);
-        mySelector->Deactivate(aSelIter.Value());
+        const occ::handle<SelectMgr_Selection>& aSel = theObject->Selections().Value(aSelIdx);
+        mySelector->RemoveSelectionOfObject(theObject, aSel);
+        aSel->UpdateBVHStatus(SelectMgr_TBU_Remove);
+        mySelector->Deactivate(aSel);
       }
       mySelector->RemoveSelectableObject(theObject);
     }
@@ -221,12 +219,9 @@ void SelectMgr_SelectionManager::Deactivate(
   const occ::handle<SelectMgr_Selection>& aSel = theObject->Selection(theMode);
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           theObject->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
     {
-      mySelector->Deactivate(aSelIter.Value());
+      mySelector->Deactivate(theObject->Selections().Value(aSelIdx));
     }
   }
   else if (!aSel.IsNull())
@@ -262,12 +257,9 @@ bool SelectMgr_SelectionManager::IsActivated(
 
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           theObject->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
     {
-      if (mySelector->Status(aSelIter.Value()) == SelectMgr_SOS_Activated)
+      if (mySelector->Status(theObject->Selections().Value(aSelIdx)) == SelectMgr_SOS_Activated)
       {
         return true;
       }
@@ -321,12 +313,9 @@ void SelectMgr_SelectionManager::ClearSelectionStructures(
   }
   else
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           theObj->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < theObj->Selections().Size(); ++aSelIdx)
     {
-      const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+      const occ::handle<SelectMgr_Selection>& aSelection = theObj->Selections().Value(aSelIdx);
       mySelector->RemoveSelectionOfObject(theObj, aSelection);
       aSelection->UpdateBVHStatus(SelectMgr_TBU_Add);
     }
@@ -370,12 +359,9 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures(
   }
   else
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           theObj->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < theObj->Selections().Size(); ++aSelIdx)
     {
-      const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+      const occ::handle<SelectMgr_Selection>& aSelection = theObj->Selections().Value(aSelIdx);
       mySelector->AddSelectionToObject(theObj, aSelection);
       aSelection->UpdateBVHStatus(SelectMgr_TBU_None);
     }
@@ -445,12 +431,9 @@ void SelectMgr_SelectionManager::RecomputeSelection(
 
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           theObject->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
     {
-      const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+      const occ::handle<SelectMgr_Selection>& aSelection = theObject->Selections().Value(aSelIdx);
       const int                               aSelMode   = aSelection->Mode();
       recomputeSelectionMode(theObject, aSelection, aSelMode);
     }
@@ -486,12 +469,9 @@ void SelectMgr_SelectionManager::Update(const occ::handle<SelectMgr_SelectableOb
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         theObject->Selections());
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
   {
-    const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+    const occ::handle<SelectMgr_Selection>& aSelection = theObject->Selections().Value(aSelIdx);
     if (theIsForce || mySelector->Status(aSelection) == SelectMgr_SOS_Activated)
     {
       switch (aSelection->UpdateStatus())
@@ -595,12 +575,9 @@ void SelectMgr_SelectionManager::SetUpdateMode(
   const occ::handle<SelectMgr_SelectableObject>& theObject,
   const SelectMgr_TypeOfUpdate                   theType)
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         theObject->Selections());
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t aSelIdx = 0; aSelIdx < theObject->Selections().Size(); ++aSelIdx)
   {
-    aSelIter.Value()->UpdateStatus(theType);
+    theObject->Selections().Value(aSelIdx)->UpdateStatus(theType);
   }
 }
 

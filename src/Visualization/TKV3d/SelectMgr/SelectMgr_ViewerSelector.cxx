@@ -973,18 +973,16 @@ bool SelectMgr_ViewerSelector::Modes(
   const SelectMgr_StateOfSelection               theWantedState) const
 {
   bool hasActivatedStates = Contains(theSelectableObject);
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         theSelectableObject->Selections());
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t aSelIdx = 0; aSelIdx < theSelectableObject->Selections().Size(); ++aSelIdx)
   {
+    const occ::handle<SelectMgr_Selection>& aSel = theSelectableObject->Selections().Value(aSelIdx);
     if (theWantedState == SelectMgr_SOS_Any)
     {
-      theModeList.Append(aSelIter.Value()->Mode());
+      theModeList.Append(aSel->Mode());
     }
-    else if (theWantedState == aSelIter.Value()->GetSelectionState())
+    else if (theWantedState == aSel->GetSelectionState())
     {
-      theModeList.Append(aSelIter.Value()->Mode());
+      theModeList.Append(aSel->Mode());
     }
   }
 
@@ -1038,17 +1036,14 @@ TCollection_AsciiString SelectMgr_ViewerSelector::Status(
   const occ::handle<SelectMgr_SelectableObject>& theSelectableObject) const
 {
   TCollection_AsciiString aStatus("Status Object :\n\t");
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         theSelectableObject->Selections());
-       aSelIter.More();
-       aSelIter.Next())
+  for (size_t aSelIdx = 0; aSelIdx < theSelectableObject->Selections().Size(); ++aSelIdx)
   {
-    if (aSelIter.Value()->GetSelectionState() != SelectMgr_SOS_Unknown)
+    const occ::handle<SelectMgr_Selection>& aSel = theSelectableObject->Selections().Value(aSelIdx);
+    if (aSel->GetSelectionState() != SelectMgr_SOS_Unknown)
     {
-      aStatus =
-        aStatus + "Mode " + TCollection_AsciiString(aSelIter.Value()->Mode()) + " present - "
-        + (aSelIter.Value()->GetSelectionState() == SelectMgr_SOS_Activated ? " Active \n\t"
-                                                                            : " Inactive \n\t");
+      aStatus = aStatus + "Mode " + TCollection_AsciiString(aSel->Mode()) + " present - "
+                + (aSel->GetSelectionState() == SelectMgr_SOS_Activated ? " Active \n\t"
+                                                                        : " Inactive \n\t");
     }
   }
 
@@ -1391,15 +1386,13 @@ void SelectMgr_ViewerSelector::DisplaySensitive(const occ::handle<V3d_View>& the
     occ::handle<Graphic3d_Structure> aStruct =
       new Graphic3d_Structure(theView->Viewer()->StructureManager());
     const occ::handle<SelectMgr_SelectableObject>& anObj = aSelectableIt.Value();
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           anObj->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < anObj->Selections().Size(); ++aSelIdx)
     {
-      if (aSelIter.Value()->GetSelectionState() == SelectMgr_SOS_Activated)
+      const occ::handle<SelectMgr_Selection>& aSel = anObj->Selections().Value(aSelIdx);
+      if (aSel->GetSelectionState() == SelectMgr_SOS_Activated)
       {
         SelectMgr::ComputeSensitivePrs(aStruct,
-                                       aSelIter.Value(),
+                                       aSel,
                                        anObj->Transformation(),
                                        anObj->TransformPersistence());
       }

@@ -30,12 +30,9 @@ public:
          anObjIter.Next())
     {
       const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
-      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-             anObj->Selections());
-           aSelIter.More();
-           aSelIter.Next())
+      for (size_t aSelIdx = 0; aSelIdx < anObj->Selections().Size(); ++aSelIdx)
       {
-        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        const occ::handle<SelectMgr_Selection>& aSel = anObj->Selections().Value(aSelIdx);
         for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
@@ -84,12 +81,9 @@ public:
          anObjIter.Next())
     {
       const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
-      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-             anObj->Selections());
-           aSelIter.More();
-           aSelIter.Next())
+      for (size_t aSelIdx = 0; aSelIdx < anObj->Selections().Size(); ++aSelIdx)
       {
-        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        const occ::handle<SelectMgr_Selection>& aSel = anObj->Selections().Value(aSelIdx);
         for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
@@ -245,12 +239,9 @@ public:
          anObjIter.Next())
     {
       const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
-      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-             anObj->Selections());
-           aSelIter.More();
-           aSelIter.Next())
+      for (size_t aSelIdx = 0; aSelIdx < anObj->Selections().Size(); ++aSelIdx)
       {
-        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        const occ::handle<SelectMgr_Selection>& aSel = anObj->Selections().Value(aSelIdx);
         for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
@@ -324,12 +315,9 @@ public:
     const occ::handle<SelectMgr_SelectableObject>& aSelectable =
       myMainSel->Picked(thePicked)->Selectable();
     const occ::handle<Select3D_SensitiveEntity>& anEntity = myMainSel->PickedEntity(thePicked);
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-           aSelectable->Selections());
-         aSelIter.More();
-         aSelIter.Next())
+    for (size_t aSelIdx = 0; aSelIdx < aSelectable->Selections().Size(); ++aSelIdx)
     {
-      const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+      const occ::handle<SelectMgr_Selection>& aSelection = aSelectable->Selections().Value(aSelIdx);
       for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSelection->Entities());
            aSelEntIter.More();

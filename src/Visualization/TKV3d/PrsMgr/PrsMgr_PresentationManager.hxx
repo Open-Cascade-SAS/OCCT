@@ -19,7 +19,7 @@
 
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <NCollection_List.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Prs3d_Presentation.hxx>
 
 class Graphic3d_Structure;
@@ -195,10 +195,10 @@ private:
   void displayImmediate(const occ::handle<V3d_Viewer>& theViewer);
 
 protected:
-  occ::handle<Graphic3d_StructureManager>           myStructureManager;
-  int                                               myImmediateModeOn;
-  NCollection_List<occ::handle<Prs3d_Presentation>> myImmediateList;
-  NCollection_List<occ::handle<Prs3d_Presentation>> myViewDependentImmediateList;
+  occ::handle<Graphic3d_StructureManager>                   myStructureManager;
+  int                                                       myImmediateModeOn;
+  NCollection_LinearVector<occ::handle<Prs3d_Presentation>> myImmediateList;
+  NCollection_LinearVector<occ::handle<Prs3d_Presentation>> myViewDependentImmediateList;
 };
 
 #endif // _PrsMgr_PresentationManager_HeaderFile

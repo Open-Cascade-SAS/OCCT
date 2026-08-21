@@ -19,8 +19,9 @@
 
 #include <PrsMgr_PresentableObject.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <NCollection_Shared.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Shared.hxx>
 #include <SelectMgr_Selection.hxx>
 
 class SelectMgr_EntityOwner;
@@ -95,8 +96,9 @@ public:
   //! object.
   bool HasSelection(const int theMode) const { return !Selection(theMode).IsNull(); }
 
-  //! Return the sequence of selections.
-  const NCollection_Sequence<occ::handle<SelectMgr_Selection>>& Selections() const
+  //! Return the contiguous list of selections in insertion order.
+  //! Each entry carries its own mode via SelectMgr_Selection::Mode().
+  const NCollection_LinearVector<occ::handle<SelectMgr_Selection>>& Selections() const
   {
     return myselections;
   }
@@ -206,13 +208,14 @@ protected:
   Standard_EXPORT virtual void updateSelection(const int theMode);
 
 protected:
-  NCollection_Sequence<occ::handle<SelectMgr_Selection>> myselections; //!< list of selections
-                                                                       // clang-format off
+  NCollection_LinearVector<occ::handle<SelectMgr_Selection>>
+    myselections;       //!< selections in insertion order; mode lives on each entry
+                        // clang-format off
   occ::handle<Prs3d_Presentation>    mySelectionPrs;  //!< optional presentation for highlighting selected object
   occ::handle<Prs3d_Presentation>    myHilightPrs;    //!< optional presentation for highlighting detected object
-                                                                       // clang-format on
-  int  myGlobalSelMode;                                                //!< global selection mode
-  bool myAutoHilight; //!< auto-highlighting flag defining
+                        // clang-format on
+  int  myGlobalSelMode; //!< global selection mode
+  bool myAutoHilight;   //!< auto-highlighting flag defining
 };
 
 #endif // _SelectMgr_SelectableObject_HeaderFile
