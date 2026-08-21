@@ -995,48 +995,6 @@ double ProjLib_ProjectedCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt2d ProjLib_ProjectedCurve::Value(const double) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Value() - method is not implemented");
-}
-
-//=================================================================================================
-
-void ProjLib_ProjectedCurve::D0(const double, gp_Pnt2d&) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D0() - method is not implemented");
-}
-
-//=================================================================================================
-
-void ProjLib_ProjectedCurve::D1(const double, gp_Pnt2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D1() - method is not implemented");
-}
-
-//=================================================================================================
-
-void ProjLib_ProjectedCurve::D2(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D2() - method is not implemented");
-}
-
-//=================================================================================================
-
-void ProjLib_ProjectedCurve::D3(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D3() - method is not implemented");
-}
-
-//=================================================================================================
-
-gp_Vec2d ProjLib_ProjectedCurve::DN(const double, const int) const
-{
-  throw Standard_NotImplemented("ProjLib_ProjectedCurve::DN() - method is not implemented");
-}
-
-//=================================================================================================
-
 double ProjLib_ProjectedCurve::Resolution(const double) const
 {
   throw Standard_NotImplemented("ProjLib_ProjectedCurve::Resolution() - method is not implemented");
