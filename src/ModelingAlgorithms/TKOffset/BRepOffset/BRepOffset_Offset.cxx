@@ -121,6 +121,27 @@ static occ::handle<Geom_Surface> ConvertOffsetSurfaceToBSpline(
     return theSurf;
   }
 
+  // Ruled / extrusion-like offsets (degree 1 in one direction) already intersect reliably.
+  int aUDeg = 1;
+  int aVDeg = 1;
+  if (aBasis->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+  {
+    const occ::handle<Geom_BSplineSurface> aBSplineBasis =
+      occ::down_cast<Geom_BSplineSurface>(aBasis);
+    aUDeg = aBSplineBasis->UDegree();
+    aVDeg = aBSplineBasis->VDegree();
+  }
+  else
+  {
+    const occ::handle<Geom_BezierSurface> aBezierBasis = occ::down_cast<Geom_BezierSurface>(aBasis);
+    aUDeg                                              = aBezierBasis->UDegree();
+    aVDeg                                              = aBezierBasis->VDegree();
+  }
+  if (aUDeg <= 1 || aVDeg <= 1)
+  {
+    return theSurf;
+  }
+
   double aU1, aU2, aV1, aV2;
   theSurf->Bounds(aU1, aU2, aV1, aV2);
   if (Precision::IsInfinite(aU1) || Precision::IsInfinite(aU2) || Precision::IsInfinite(aV1)
@@ -872,7 +893,8 @@ void BRepOffset_Offset::Init(
   } // end of processing offsets of faces with possible degenerated edges
 
   double aFaceTol = BRep_Tool::Tolerance(Face);
-  if (JoinType == GeomAbs_Intersection)
+  // Approximate only inward Intersection offsets of high-degree BSpline/Bezier walls.
+  if (JoinType == GeomAbs_Intersection && !OffsetOutside)
   {
     TheSurf = ConvertOffsetSurfaceToBSpline(TheSurf, aFaceTol);
   }

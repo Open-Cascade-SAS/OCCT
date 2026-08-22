@@ -60,10 +60,13 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -750,6 +753,52 @@ static bool IsConnectedShell(const TopoDS_Shape& S)
   return !Explo.More();
 }
 
+// True if the surface (after trim/offset unwrap) is a BSpline/Bezier of degree > 1 in both
+// directions. Ruled lofts are typically degree 1 in the ruling parameter.
+static bool IsHighDegreeFreeform(const occ::handle<Geom_Surface>& theSurf)
+{
+  occ::handle<Geom_Surface> aSurf = theSurf;
+  while (!aSurf.IsNull() && aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
+    aSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf)->BasisSurface();
+  }
+  if (!aSurf.IsNull() && aSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  {
+    aSurf = occ::down_cast<Geom_OffsetSurface>(aSurf)->BasisSurface();
+    while (!aSurf.IsNull() && aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    {
+      aSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf)->BasisSurface();
+    }
+  }
+  if (aSurf.IsNull())
+  {
+    return false;
+  }
+  if (aSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+  {
+    const occ::handle<Geom_BSplineSurface> aBSpline = occ::down_cast<Geom_BSplineSurface>(aSurf);
+    return aBSpline->UDegree() > 1 && aBSpline->VDegree() > 1;
+  }
+  if (aSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
+  {
+    const occ::handle<Geom_BezierSurface> aBezier = occ::down_cast<Geom_BezierSurface>(aSurf);
+    return aBezier->UDegree() > 1 && aBezier->VDegree() > 1;
+  }
+  return false;
+}
+
+static bool HasHighDegreeFreeformFace(const TopoDS_Shape& theShape)
+{
+  for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    if (IsHighDegreeFreeform(BRep_Tool::Surface(TopoDS::Face(anExp.Current()))))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 //=================================================================================================
 
 static void MakeList(NCollection_List<TopoDS_Shape>& OffsetFaces,
@@ -1351,7 +1400,10 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   //-------------------------------------------------------------------
   // Extension of faces and calculation of new edges of intersection.
   //-------------------------------------------------------------------
-  const bool ExtentContext = !myFaces.IsEmpty();
+  // Enlarge opening/context faces for outward offsets, and for inward offsets of
+  // high-degree BSpline/Bezier walls (ruled deg-1 lofts and analytic faces stay as before).
+  const bool ExtentContext =
+    (myOffset > 0) || (!myFaces.IsEmpty() && HasHighDegreeFreeformFace(myFaceComp));
 
   BRepOffset_Inter3d Inter3(AsDes, Side, myTol);
   // Intersection between parallel faces
