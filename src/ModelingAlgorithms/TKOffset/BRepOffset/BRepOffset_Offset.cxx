@@ -109,8 +109,7 @@ static occ::handle<Geom_Surface> ConvertOffsetSurfaceToBSpline(
     return theSurf;
   }
 
-  occ::handle<Geom_Surface> aBasis =
-    occ::down_cast<Geom_OffsetSurface>(aCheck)->BasisSurface();
+  occ::handle<Geom_Surface> aBasis = occ::down_cast<Geom_OffsetSurface>(aCheck)->BasisSurface();
   while (!aBasis.IsNull() && aBasis->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
     aBasis = occ::down_cast<Geom_RectangularTrimmedSurface>(aBasis)->BasisSurface();
