@@ -34,6 +34,8 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -50,6 +52,7 @@
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <GeomFill_Pipe.hxx>
 #include <GeomLib.hxx>
 #include <GeomProjLib.hxx>
@@ -61,8 +64,11 @@
 #include <gp_Torus.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
+#include <ShapeConstruct.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -81,7 +87,67 @@ static bool Affich   = false;
 static int  NbOFFSET = 0;
 #endif
 #include <cstdio>
-#include <Geom_BSplineSurface.hxx>
+#include <algorithm>
+
+// Intersection join cannot reliably trim a Geom_OffsetSurface of a BSpline/Bezier.
+static occ::handle<Geom_Surface> ConvertOffsetSurfaceToBSpline(
+  const occ::handle<Geom_Surface>& theSurf,
+  double&                          theTol)
+{
+  if (theSurf.IsNull())
+  {
+    return theSurf;
+  }
+
+  occ::handle<Geom_Surface> aCheck = theSurf;
+  while (!aCheck.IsNull() && aCheck->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
+    aCheck = occ::down_cast<Geom_RectangularTrimmedSurface>(aCheck)->BasisSurface();
+  }
+  if (aCheck.IsNull() || !aCheck->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  {
+    return theSurf;
+  }
+
+  occ::handle<Geom_Surface> aBasis =
+    occ::down_cast<Geom_OffsetSurface>(aCheck)->BasisSurface();
+  while (!aBasis.IsNull() && aBasis->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
+    aBasis = occ::down_cast<Geom_RectangularTrimmedSurface>(aBasis)->BasisSurface();
+  }
+  if (aBasis.IsNull()
+      || (!aBasis->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
+          && !aBasis->IsKind(STANDARD_TYPE(Geom_BezierSurface))))
+  {
+    return theSurf;
+  }
+
+  double aU1, aU2, aV1, aV2;
+  theSurf->Bounds(aU1, aU2, aV1, aV2);
+  if (Precision::IsInfinite(aU1) || Precision::IsInfinite(aU2) || Precision::IsInfinite(aV1)
+      || Precision::IsInfinite(aV2))
+  {
+    return theSurf;
+  }
+
+  // Same parameters as ShapeCustom_ConvertToBSpline for OffsetSurface (C0: ApproxSurface can hang).
+  occ::handle<Geom_BSplineSurface> aBSpline =
+    ShapeConstruct::ConvertSurfaceToBSpline(theSurf,
+                                            aU1,
+                                            aU2,
+                                            aV1,
+                                            aV2,
+                                            Precision::Approximation(),
+                                            GeomAbs_C0,
+                                            10000,
+                                            15);
+  if (aBSpline.IsNull())
+  {
+    return theSurf;
+  }
+  theTol = std::max(theTol, Precision::Approximation());
+  return aBSpline;
+}
 
 static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
 {
@@ -805,6 +871,12 @@ void BRepOffset_Offset::Init(
       } // end of else (case of Geom_OffsetSurface)
     } // end of if (!DegEdges.IsEmpty())
   } // end of processing offsets of faces with possible degenerated edges
+
+  double aFaceTol = BRep_Tool::Tolerance(Face);
+  if (JoinType == GeomAbs_Intersection)
+  {
+    TheSurf = ConvertOffsetSurfaceToBSpline(TheSurf, aFaceTol);
+  }
 
   // find the PCurves of the edges of <Faces>
 

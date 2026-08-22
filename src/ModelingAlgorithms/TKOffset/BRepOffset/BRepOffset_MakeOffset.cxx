@@ -1351,11 +1351,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   //-------------------------------------------------------------------
   // Extension of faces and calculation of new edges of intersection.
   //-------------------------------------------------------------------
-  bool ExtentContext = false;
-  if (myOffset > 0)
-  {
-    ExtentContext = true;
-  }
+  const bool ExtentContext = !myFaces.IsEmpty();
 
   BRepOffset_Inter3d Inter3(AsDes, Side, myTol);
   // Intersection between parallel faces
