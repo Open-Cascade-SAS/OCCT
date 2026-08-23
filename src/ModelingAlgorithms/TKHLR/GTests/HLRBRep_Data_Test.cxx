@@ -134,10 +134,10 @@ TEST(HLRBRep_DataTest, RejectionBitsCrossWordBoundary)
   {
     const double anOffset = static_cast<double>(anIndex) * 0.25;
     aFaces[anIndex]       = makeRectangularFace(static_cast<double>(anIndex),
-                                                -4.0 + anOffset,
-                                                4.0 + anOffset,
-                                                -3.0 + anOffset,
-                                                3.0 + anOffset);
+                                          -4.0 + anOffset,
+                                          4.0 + anOffset,
+                                          -3.0 + anOffset,
+                                          3.0 + anOffset);
     aBuilder.Add(aForwardCompound, aFaces[anIndex]);
   }
   for (size_t anIndex = aFaces.size(); anIndex > 0; --anIndex)

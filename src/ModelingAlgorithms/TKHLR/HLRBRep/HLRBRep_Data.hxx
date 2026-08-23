@@ -53,6 +53,7 @@ class HLRBRep_EdgeData;
 class HLRBRep_FaceData;
 class HLRBRep_Surface;
 class IntRes2d_IntersectionPoint;
+
 class HLRBRep_Data : public Standard_Transient
 {
 
