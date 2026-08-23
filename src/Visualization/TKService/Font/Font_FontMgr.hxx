@@ -28,7 +28,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 
-class TCollection_HAsciiString;
 class NCollection_Buffer;
 
 //! Collects and provides information about available fonts in system.
@@ -58,9 +57,11 @@ public:
     return "invalid";
   }
 
-  //! Return flag to use fallback fonts in case if used font does not include symbols from specific
-  //! Unicode subset; TRUE by default.
-  Standard_EXPORT static bool& ToUseUnicodeSubsetFallback();
+  //! Return whether newly created fonts use Unicode-subset fallback; true by default.
+  Standard_EXPORT static bool ToUseUnicodeSubsetFallback();
+
+  //! Set whether newly created fonts use Unicode-subset fallback.
+  Standard_EXPORT static void SetUseUnicodeSubsetFallback(bool theToUseFallback);
 
 public:
   //! Return the list of available fonts.
@@ -233,7 +234,7 @@ private:
   {
     size_t operator()(const occ::handle<Font_SystemFont>& theFont) const noexcept
     {
-      return std::hash<TCollection_AsciiString>{}(theFont->FontKey());
+      return theFont->FontKey().HashCode();
     }
 
     bool operator()(const occ::handle<Font_SystemFont>& theFont1,

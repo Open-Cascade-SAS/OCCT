@@ -23,7 +23,8 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
-#include <Font_BRepTextBuilder.hxx>
+#include <Font_FTFont.hxx>
+#include <StdPrs_BRepFont.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -63,6 +64,8 @@
 #include <V3d_Viewer.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <UnitsAPI.hxx>
+
+#include <optional>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Dimension, AIS_InteractiveObject)
 
@@ -279,7 +282,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) co
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // text width produced by BRepFont
-    Font_BRepFont aFont;
+    StdPrs_BRepFont aFont;
     if (aFont.FindAndInit(aTextAspect->Aspect()->Font(),
                           aTextAspect->Aspect()->GetTextFontAspect(),
                           aTextAspect->Height(),
@@ -296,7 +299,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) co
   else
   {
     // Text width for 1:1 scale 2D case
-    Font_FTFontParams                aFontParams;
+    Font_FTFont::Params              aFontParams;
     const Graphic3d_RenderingParams& aRendParams =
       GetContext()->CurrentViewer()->DefaultRenderingParams();
     aFontParams.PointSize   = (unsigned int)aTextAspect->Height();
@@ -395,11 +398,10 @@ void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresen
     double                        aFontHeight = aTextAspect->Height();
 
     // creating TopoDS_Shape for text
-    Font_BRepFont aFont(aTextAspect->Aspect()->Font().ToCString(), aFontAspect, aFontHeight);
+    StdPrs_BRepFont aFont(aTextAspect->Aspect()->Font().ToCString(), aFontAspect, aFontHeight);
     NCollection_UtfString<char> anUTFString(theText.ToExtString());
 
-    Font_BRepTextBuilder aBuilder;
-    TopoDS_Shape         aTextShape = aBuilder.Perform(aFont, anUTFString);
+    TopoDS_Shape aTextShape = aFont.RenderText(anUTFString);
 
     // compute text width with kerning
     double aTextWidth  = 0.0;

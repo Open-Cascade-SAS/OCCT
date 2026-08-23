@@ -25,9 +25,9 @@
 #include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>
 
-#include <Font_BRepFont.hxx>
-#include <Font_BRepTextBuilder.hxx>
+#include <StdPrs_BRepFont.hxx>
 #include <Font_FontMgr.hxx>
+#include <Font_TextFormatter.hxx>
 #include <Message.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
@@ -51,6 +51,8 @@
 
 #include <TopoDS_Solid.hxx>
 #include <BRepTools.hxx>
+
+#include <optional>
 #include <BRep_Builder.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
@@ -5646,8 +5648,8 @@ static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   TCollection_AsciiString aName(theArgVec[anArgIter++]);
   TCollection_AsciiString aFileName;
   gp_XYZ                  aPnt(Atof(theArgVec[anArgIter]),
-              Atof(theArgVec[anArgIter + 1]),
-              Atof(theArgVec[anArgIter + 2]));
+                               Atof(theArgVec[anArgIter + 1]),
+                               Atof(theArgVec[anArgIter + 2]));
   anArgIter += 3;
 
   int    aPointsOnSide = 10;
@@ -5732,11 +5734,11 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
   const char* aName   = theArgVec[anArgIt++];
   const char* aText   = theArgVec[anArgIt++];
 
-  Font_BRepFont           aFont;
+  StdPrs_BRepFont         aFont;
   TCollection_AsciiString aFontName("Courier");
-  double                  aTextHeight        = 16.0;
-  Font_FontAspect         aFontAspect        = Font_FA_Regular;
-  bool                    anIsCompositeCurve = false;
+  double                  aTextHeight           = 16.0;
+  Font_FontAspect         aFontAspect           = Font_FA_Regular;
+  bool                    toConcatenateContours = false;
   gp_Ax3                  aPenAx3(gp::XOY());
   gp_Dir                  aNormal(gp_Dir::D::Z);
   gp_Dir                  aDirection(gp_Dir::D::X);
@@ -5870,8 +5872,7 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
         Message::SendFail() << "Error: wrong number of values for parameter '" << aParam << "'";
         return 1;
       }
-
-      Draw::ParseOnOff(theArgVec[anArgIt], anIsCompositeCurve);
+      Draw::ParseOnOff(theArgVec[anArgIt], toConcatenateContours);
     }
     else if (aParam == "-plane")
     {
@@ -5897,7 +5898,6 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
     }
   }
 
-  aFont.SetCompositeCurveMode(anIsCompositeCurve);
   if (!aFont.FindAndInit(aFontName.ToCString(), aFontAspect, aTextHeight, aStrictLevel))
   {
     Message::SendFail("Error: unable to load Font");
@@ -5906,8 +5906,18 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
 
   aPenAx3 = gp_Ax3(aPenLoc, aNormal, aDirection);
 
-  Font_BRepTextBuilder aBuilder;
-  DBRep::Set(aName, aBuilder.Perform(aFont, aText, aPenAx3, aHJustification, aVJustification));
+  StdPrs_BRepFont::TextOptions anOptions;
+  anOptions.Pen                   = aPenAx3;
+  anOptions.HorizontalAlignment   = aHJustification;
+  anOptions.VerticalAlignment     = aVJustification;
+  anOptions.ToConcatenateContours = toConcatenateContours;
+  const TopoDS_Shape aResult      = aFont.RenderText(aText, anOptions);
+  if (aResult.IsNull())
+  {
+    Message::SendFail("Error: unable to create text shape");
+    return 1;
+  }
+  DBRep::Set(aName, aResult);
   return 0;
 }
 
@@ -6154,7 +6164,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       {
         ++anArgIter;
       }
-      Font_FontMgr::ToUseUnicodeSubsetFallback() = toEnable;
+      Font_FontMgr::SetUseUnicodeSubsetFallback(toEnable);
     }
     else
     {
@@ -6238,9 +6248,9 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
     }
 
     TCollection_AsciiString aModeStr(theArgs[2]);
-    Prs3d_VertexDrawMode    aNewMode = aModeStr == "isolated"
-                                         ? Prs3d_VDM_Isolated
-                                         : (aModeStr == "all" ? Prs3d_VDM_All : Prs3d_VDM_Inherited);
+    Prs3d_VertexDrawMode aNewMode = aModeStr == "isolated"
+                                      ? Prs3d_VDM_Isolated
+                                      : (aModeStr == "all" ? Prs3d_VDM_All : Prs3d_VDM_Inherited);
 
     bool                                                 aRedrawNeeded = false;
     NCollection_List<occ::handle<AIS_InteractiveObject>> anObjs;
