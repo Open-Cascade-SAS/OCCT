@@ -54,9 +54,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <memory>
 
-#ifdef OCCT_DEBUG
-extern bool ChFi3d_GettraceCHRON();
-#endif
 
 //=======================================================================
 // function : SearchCommonFaces
@@ -575,15 +572,6 @@ void ChFi3d_ChBuilder::ResetContour(const int IC)
 
 void ChFi3d_ChBuilder::Simulate(const int IC)
 {
-#ifdef OCCT_DEBUG
-  if (ChFi3d_GettraceCHRON())
-  {
-    simul.Reset();
-    elspine.Reset();
-    chemine.Reset();
-    simul.Start();
-  }
-#endif
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
   int                                                    i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
@@ -594,18 +582,6 @@ void ChFi3d_ChBuilder::Simulate(const int IC)
       break;
     }
   }
-#ifdef OCCT_DEBUG
-  if (ChFi3d_GettraceCHRON())
-  {
-    simul.Stop();
-    std::cout << "Total simulation time : ";
-    simul.Show();
-    std::cout << "Spine construction time : ";
-    elspine.Show();
-    std::cout << "and progression time : ";
-    chemine.Show();
-  }
-#endif
 }
 
 //---------------------------AJOUT---------------------------------------

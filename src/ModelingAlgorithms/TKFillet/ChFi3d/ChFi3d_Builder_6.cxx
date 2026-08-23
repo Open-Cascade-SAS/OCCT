@@ -77,16 +77,7 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <NCollection_List.hxx>
 
-#include <cstdio>
 
-#ifdef OCCT_DEBUG
-extern bool ChFi3d_GettraceDRAWFIL();
-extern bool ChFi3d_GettraceDRAWWALK();
-extern bool ChFi3d_GetcontextNOOPT();
-extern void ChFi3d_SettraceDRAWFIL(const bool b);
-extern void ChFi3d_SettraceDRAWWALK(const bool b);
-extern void ChFi3d_SetcontextNOOPT(const bool b);
-#endif
 
 //=================================================================================================
 

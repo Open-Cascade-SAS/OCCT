@@ -115,14 +115,6 @@
 #include <NCollection_IndexedMap.hxx>
 #include <ChFi3d.hxx>
 
-// performances
-#ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
-extern double t_plate, t_approxplate, t_batten;
-extern void   ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void   ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
-#endif
-
 //=================================================================================================
 
 static void Indices(const int n, const int ic, int& icplus, int& icmoins)
@@ -1239,9 +1231,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
 //    ========================================
 //             Initialisations
 //     ========================================
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch;
-#endif
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   const TopoDS_Vertex&        V1   = myVDataMap.FindKey(Jndex);
   int                         nedge;
@@ -3088,9 +3077,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
           bool contraint1 = true, contraint2 = true;
           if (raccordbatten)
           {
-#ifdef OCCT_DEBUG
-            ChFi3d_InitChron(ch); // initial performances for  battens
-#endif
             bool inverseic, inverseicplus;
             if (sharp.Value(ic))
             {
@@ -3133,9 +3119,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
                          inverseic,
                          inverseicplus,
                          pcurve);
-#ifdef OCCT_DEBUG
-            ChFi3d_ResultChron(ch, t_batten); // resulting performances for battens
-#endif
           }
 
           // construction of borders for Plate
@@ -3487,21 +3470,12 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
     }
   }
 
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch); // init performances for plate
-#endif
 
   PSurf.Perform();
 
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_plate); // result performances for plate
-#endif
 
   // call of approx
 
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch); // init performances for approxplate
-#endif
   if (PSurf.IsDone())
   {
     int                            nbcarreau = 9;
@@ -3522,9 +3496,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
     double                     coef = 1.1, apperror;
     apperror                        = Mapp.CriterionError() * coef;
 
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch, t_approxplate); // result performances for approxplate
-#endif
 
     //  Storage of the surface plate and corresponding curves in the DS
 

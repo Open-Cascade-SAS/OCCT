@@ -59,10 +59,6 @@ class Geom2dInt_GInter;
 Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,
                                                    const int            theHatchingIndex);
 
-#ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
-extern OSD_Chronometer simul, elspine, chemine;
-#endif
 
 double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, const double Eps);
 
