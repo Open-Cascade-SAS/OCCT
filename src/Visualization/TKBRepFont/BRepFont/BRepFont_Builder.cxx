@@ -80,7 +80,9 @@ occ::handle<Geom2d_Curve> makeCurve2d(const BRepFont_PlanarRegion::Curve& theCur
     const gp_Pnt2d   aFirst(theCurve.Start().X() * theScale, theCurve.Start().Y() * theScale);
     const gp_Pnt2d   aLast(theCurve.End().X() * theScale, theCurve.End().Y() * theScale);
     GC_MakeSegment2d aMaker(aFirst, aLast);
-    return aMaker.IsDone() ? aMaker.Value() : occ::handle<Geom2d_Curve>();
+    occ::handle<Geom2d_Curve> aResult;
+    aResult = aMaker.IsDone() ? aMaker.Value() : nullptr;
+    return aResult;
   }
 
   const int aNbPoles = theCurve.Type() == Font_GlyphOutline::Segment::Kind::QuadraticBezier ? 3 : 4;
