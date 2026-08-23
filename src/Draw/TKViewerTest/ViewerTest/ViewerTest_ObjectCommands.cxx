@@ -5648,8 +5648,8 @@ static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   TCollection_AsciiString aName(theArgVec[anArgIter++]);
   TCollection_AsciiString aFileName;
   gp_XYZ                  aPnt(Atof(theArgVec[anArgIter]),
-                               Atof(theArgVec[anArgIter + 1]),
-                               Atof(theArgVec[anArgIter + 2]));
+              Atof(theArgVec[anArgIter + 1]),
+              Atof(theArgVec[anArgIter + 2]));
   anArgIter += 3;
 
   int    aPointsOnSide = 10;
@@ -6248,9 +6248,9 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
     }
 
     TCollection_AsciiString aModeStr(theArgs[2]);
-    Prs3d_VertexDrawMode aNewMode = aModeStr == "isolated"
-                                      ? Prs3d_VDM_Isolated
-                                      : (aModeStr == "all" ? Prs3d_VDM_All : Prs3d_VDM_Inherited);
+    Prs3d_VertexDrawMode    aNewMode = aModeStr == "isolated"
+                                         ? Prs3d_VDM_Isolated
+                                         : (aModeStr == "all" ? Prs3d_VDM_All : Prs3d_VDM_Inherited);
 
     bool                                                 aRedrawNeeded = false;
     NCollection_List<occ::handle<AIS_InteractiveObject>> anObjs;

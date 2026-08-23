@@ -166,15 +166,15 @@ Bnd_Box2d BRepFont_PlanarRegion::Curve::Bounds() const
 
   const PowerCoefficients aCoefficients = powerCoefficients();
   const bool              hasXExtrema   = addCoordinateExtrema(aBounds,
-                                                               *this,
-                                                               aCoefficients.X[1],
-                                                               aCoefficients.X[2],
-                                                               aCoefficients.X[3]);
+                                                *this,
+                                                aCoefficients.X[1],
+                                                aCoefficients.X[2],
+                                                aCoefficients.X[3]);
   const bool              hasYExtrema   = addCoordinateExtrema(aBounds,
-                                                               *this,
-                                                               aCoefficients.Y[1],
-                                                               aCoefficients.Y[2],
-                                                               aCoefficients.Y[3]);
+                                                *this,
+                                                aCoefficients.Y[1],
+                                                aCoefficients.Y[2],
+                                                aCoefficients.Y[3]);
   if (!hasXExtrema || !hasYExtrema)
   {
     // Preserve the conservative control-hull bound if polynomial solving fails.

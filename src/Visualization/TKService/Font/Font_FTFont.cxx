@@ -518,8 +518,7 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
     aFontMgr->FindFont(theFontName, theStrictLevel, anAspect);
   if (!aSystemFont.IsNull())
   {
-    aParams.IsSingleStrokeFont =
-      aParams.IsSingleStrokeFont || aSystemFont->IsSingleStrokeFont();
+    aParams.IsSingleStrokeFont = aParams.IsSingleStrokeFont || aSystemFont->IsSingleStrokeFont();
     int                           aFaceId = 0;
     const TCollection_AsciiString aPath =
       aSystemFont->FontPathAny(anAspect, aParams.ToSynthesizeItalic, aFaceId);
@@ -583,8 +582,7 @@ bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
     Params          aParams    = myFontParams;
     Font_FontAspect anAspect   = myFontAspect;
     int             aFaceId    = 0;
-    aParams.IsSingleStrokeFont =
-      aParams.IsSingleStrokeFont || aSystemFont->IsSingleStrokeFont();
+    aParams.IsSingleStrokeFont = aParams.IsSingleStrokeFont || aSystemFont->IsSingleStrokeFont();
     const TCollection_AsciiString aPath =
       aSystemFont->FontPathAny(anAspect, aParams.ToSynthesizeItalic, aFaceId);
     if (!aPath.IsEmpty() && myFallbackFaces[aSubsetIndex]->Init(aPath, aParams, aFaceId))
@@ -783,12 +781,12 @@ std::optional<Font_GlyphOutline> Font_FTFont::LoadGlyphOutline(
 
   Font_GlyphOutline aResult;
   OutlineStorage    aStorage{theGlyph.Index(),
-                             aResult.myUnitsPerEm,
-                             aResult.myFillRule,
-                             aResult.myIsSingleStroke,
-                             aResult.myHasPossibleOverlaps,
-                             aResult.mySegments,
-                             aResult.myContours};
+                          aResult.myUnitsPerEm,
+                          aResult.myFillRule,
+                          aResult.myIsSingleStroke,
+                          aResult.myHasPossibleOverlaps,
+                          aResult.mySegments,
+                          aResult.myContours};
   if (!decomposeOutline(aFont->myFTFace,
                         aFont->myFontParams.IsSingleStrokeFont,
                         static_cast<double>(myWidthScaling),

@@ -169,7 +169,7 @@ TEST(Font_FTFontTest, FindAndInitPreservesExplicitSingleStrokeMode)
   }
 
   Font_FTFont::Params aParams{72, 4800};
-  aParams.IsSingleStrokeFont = true;
+  aParams.IsSingleStrokeFont           = true;
   const occ::handle<Font_FTFont> aFont = new Font_FTFont();
   ASSERT_TRUE(aFont->FindAndInit("", anAspect, aParams, Font_StrictLevel_Any));
   EXPECT_TRUE(aFont->IsSingleStrokeFont());

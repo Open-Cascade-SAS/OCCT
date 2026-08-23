@@ -21,7 +21,7 @@ enum Font_UnicodeSubset
   Font_UnicodeSubset_Korean,  //!< modern Korean letters
   Font_UnicodeSubset_CJK,     //!< Chinese characters (Chinese, Japanese, Korean and Vietnam)
   Font_UnicodeSubset_Arabic,  //!< Arabic  characters
-  Font_UnicodeSubset_NB //!< number of Unicode subsets
+  Font_UnicodeSubset_NB       //!< number of Unicode subsets
 };
 
 #endif // _Font_UnicodeSubset_HeaderFile
