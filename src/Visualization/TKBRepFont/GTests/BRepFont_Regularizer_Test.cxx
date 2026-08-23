@@ -204,7 +204,7 @@ TEST(BRepFont_RegularizerTest, DisjointContoursBuildSeparateRegions)
   EXPECT_EQ(2u, aResult.PlanarRegion()->Regions().Size());
 }
 
-TEST(BRepFont_RegularizerTest, ConcaveStationaryCubicsUseFlattenedInteriorPoint)
+TEST(BRepFont_RegularizerTest, ConcaveStationaryCubicsFindInteriorPoint)
 {
   NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;
   NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
@@ -254,6 +254,41 @@ TEST(BRepFont_RegularizerTest, RetracingQuadraticReturnsNoRegion)
   aSegments.Append(Font_GlyphOutline::Segment::Line(gp_XY(-10.0, 0.0), gp_XY(0.0, 0.0)));
   NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
   aContours.EmplaceAppend(0, 5);
+
+  const BRepFont_Regularizer::Result aResult = BRepFont_Regularizer().Build(
+    BRepFont_Regularizer_Test::createOutline(std::move(aSegments), std::move(aContours)));
+  EXPECT_EQ(BRepFont_Regularizer::Status::IntersectingContours, aResult.StatusValue());
+  EXPECT_FALSE(aResult.PlanarRegion().has_value());
+}
+
+TEST(BRepFont_RegularizerTest, QuadraticAndAdjacentLineDetectSecondIntersection)
+{
+  NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;
+  aSegments.Append(
+    Font_GlyphOutline::Segment::Quadratic(gp_XY(0.0, 0.0), gp_XY(5.0, 10.0), gp_XY(10.0, 0.0)));
+  aSegments.Append(Font_GlyphOutline::Segment::Line(gp_XY(10.0, 0.0), gp_XY(0.0, 8.0)));
+  aSegments.Append(Font_GlyphOutline::Segment::Line(gp_XY(0.0, 8.0), gp_XY(0.0, 0.0)));
+  NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
+  aContours.EmplaceAppend(0, 3);
+
+  const BRepFont_Regularizer::Result aResult = BRepFont_Regularizer().Build(
+    BRepFont_Regularizer_Test::createOutline(std::move(aSegments), std::move(aContours)));
+  EXPECT_EQ(BRepFont_Regularizer::Status::IntersectingContours, aResult.StatusValue());
+  EXPECT_FALSE(aResult.PlanarRegion().has_value());
+}
+
+TEST(BRepFont_RegularizerTest, QuadraticTangencyWithLineIsIntersection)
+{
+  NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;
+  aSegments.Append(
+    Font_GlyphOutline::Segment::Quadratic(gp_XY(0.0, 0.0), gp_XY(5.0, 10.0), gp_XY(10.0, 0.0)));
+  aSegments.Append(Font_GlyphOutline::Segment::Line(gp_XY(10.0, 0.0), gp_XY(0.0, 0.0)));
+  NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
+  aContours.EmplaceAppend(0, 2);
+  BRepFont_Regularizer_Test::appendClosedContour(
+    {gp_XY(4.0, 5.0), gp_XY(6.0, 5.0), gp_XY(6.0, 7.0), gp_XY(4.0, 7.0)},
+    aSegments,
+    aContours);
 
   const BRepFont_Regularizer::Result aResult = BRepFont_Regularizer().Build(
     BRepFont_Regularizer_Test::createOutline(std::move(aSegments), std::move(aContours)));

@@ -16,7 +16,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <GC_MakeSegment2d.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
@@ -135,9 +134,13 @@ std::optional<TopoDS_Wire> buildWire(
   {
     return std::nullopt;
   }
-  BRepBuilderAPI_MakeWire               aWireMaker;
   BRep_Builder                          aBuilder;
   Geom2dConvert_CompCurveToBSplineCurve aCompositeMaker;
+  TopoDS_Wire                           aWire;
+  aBuilder.MakeWire(aWire);
+
+  const BRepFont_PlanarRegion::Use& aFirstUse       = theRegion.Uses()[aLoop.FirstUse()];
+  uint32_t                          aPreviousVertex = aFirstUse.FirstVertex().Value();
 
   for (uint32_t anOffset = 0; anOffset < aLoop.NbUses(); ++anOffset)
   {
@@ -147,10 +150,11 @@ std::optional<TopoDS_Wire> buildWire(
     const uint32_t                    aFirstVertex = aUse.FirstVertex().Value();
     const uint32_t                    aLastVertex  = aUse.LastVertex().Value();
     if (aCurveIndex >= theCurves2d.Size() || aFirstVertex >= theRegion.Vertices().Size()
-        || aLastVertex >= theRegion.Vertices().Size())
+        || aLastVertex >= theRegion.Vertices().Size() || aFirstVertex != aPreviousVertex)
     {
       return std::nullopt;
     }
+    aPreviousVertex = aLastVertex;
 
     const occ::handle<Geom2d_Curve>& aCurve2d = theCurves2d[aCurveIndex];
     if (aCurve2d.IsNull() || !(aCurve2d->LastParameter() > aCurve2d->FirstParameter())
@@ -201,11 +205,7 @@ std::optional<TopoDS_Wire> buildWire(
     {
       anEdge.Reverse();
     }
-    aWireMaker.Add(anEdge);
-    if (!aWireMaker.IsDone())
-    {
-      return std::nullopt;
-    }
+    aBuilder.Add(aWire, anEdge);
   }
   if (theToConcatenateContours)
   {
@@ -226,13 +226,10 @@ std::optional<TopoDS_Wire> buildWire(
     }
     TopoDS_Edge anEdge = anEdgeMaker.Edge();
     aBuilder.UpdateEdge(anEdge, aCurve2d, theSurface, TopLoc_Location(), theTolerance);
-    aWireMaker.Add(anEdge);
-    if (!aWireMaker.IsDone())
-    {
-      return std::nullopt;
-    }
+    aBuilder.Add(aWire, anEdge);
   }
-  return aWireMaker.Wire();
+  aWire.Closed(aPreviousVertex == aFirstUse.FirstVertex().Value());
+  return aWire;
 }
 } // namespace
 

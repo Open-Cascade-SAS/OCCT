@@ -33,6 +33,20 @@ enum class IntersectionKind : uint8_t
   WithinLoop
 };
 
+enum class LineIntersectionKind : uint8_t
+{
+  None,
+  Point,
+  Overlap
+};
+
+struct LineIntersection
+{
+  LineIntersectionKind Kind = LineIntersectionKind::None;
+  std::array<gp_XY, 2> Points;
+  size_t               NbPoints = 0;
+};
+
 struct LoopInfo
 {
   enum class Role : uint8_t
@@ -59,19 +73,6 @@ struct HoleBinding
 
   uint32_t OuterLoop;
   uint32_t HoleLoop;
-};
-
-//! Packed range of approximation points used only during loop classification.
-struct FlattenedLoop
-{
-  FlattenedLoop(const uint32_t theFirstPoint, const uint32_t theNbPoints)
-      : FirstPoint(theFirstPoint),
-        NbPoints(theNbPoints)
-  {
-  }
-
-  uint32_t FirstPoint;
-  uint32_t NbPoints;
 };
 
 //! Curve bounds used by the intersection sweep.
@@ -114,30 +115,21 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
 
 occ::handle<Geom2d_Curve> curveGeometry(const BRepFont_PlanarRegion::Curve& theCurve);
 
-bool contains(const BRepFont_PlanarRegion::Loop&     theLoop,
-              const NCollection_LinearVector<gp_XY>& thePoints,
-              const FlattenedLoop&                   theFlattened,
-              const gp_XY&                           thePoint);
+LineIntersection intersectLines(const BRepFont_PlanarRegion::Curve& theFirst,
+                                const BRepFont_PlanarRegion::Curve& theSecond,
+                                double                              theTolerance);
 
-bool flattenLoops(const BRepFont_PlanarRegion&             theRegion,
-                  double                                   theTolerance,
-                  NCollection_LinearVector<gp_XY>&         thePoints,
-                  NCollection_LinearVector<FlattenedLoop>& theLoops);
+LineIntersection intersectLineQuadratic(const BRepFont_PlanarRegion::Curve& theLine,
+                                        const BRepFont_PlanarRegion::Curve& theQuadratic,
+                                        double                              theTolerance);
 
-void appendFlattened(const BRepFont_PlanarRegion::Curve& theCurve,
-                     double                              theFirst,
-                     const gp_XY&                        theFirstPoint,
-                     double                              theLast,
-                     const gp_XY&                        theLastPoint,
-                     double                              theSquareTolerance,
-                     int                                 theDepth,
-                     NCollection_LinearVector<gp_XY>&    thePoints);
+bool contains(const BRepFont_PlanarRegion&       theRegion,
+              const BRepFont_PlanarRegion::Loop& theLoop,
+              const gp_XY&                       thePoint);
 
-std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&           theRegion,
-                                   const BRepFont_PlanarRegion::Loop&     theLoop,
-                                   const NCollection_LinearVector<gp_XY>& thePoints,
-                                   const FlattenedLoop&                   theFlattened,
-                                   double                                 theTolerance);
+std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&       theRegion,
+                                   const BRepFont_PlanarRegion::Loop& theLoop,
+                                   double                             theTolerance);
 
 //=================================================================================================
 
@@ -192,8 +184,8 @@ BRepFont_Regularizer::Result BRepFont_Regularizer::Build(const Font_GlyphOutline
   NCollection_FlatMap<uint64_t> anIntersectingLoopPairs;
   const IntersectionKind        anIntersectionKind =
     aRegion.IsSingleStroke()
-             ? IntersectionKind::None
-             : intersections(aRegion, theOptions.Tolerance, anIntersectingLoopPairs);
+      ? IntersectionKind::None
+      : intersections(aRegion, theOptions.Tolerance, anIntersectingLoopPairs);
   if (anIntersectionKind != IntersectionKind::None)
   {
     if (!theOutline.HasPossibleOverlaps())
@@ -530,6 +522,230 @@ uint64_t loopPairKey(const uint32_t theFirst, const uint32_t theSecond) noexcept
 
 //=================================================================================================
 
+LineIntersection intersectLines(const BRepFont_PlanarRegion::Curve& theFirst,
+                                const BRepFont_PlanarRegion::Curve& theSecond,
+                                const double                        theTolerance)
+{
+  const gp_XY  aFirstDirection  = theFirst.End() - theFirst.Start();
+  const gp_XY  aSecondDirection = theSecond.End() - theSecond.Start();
+  const double aFirstLength     = aFirstDirection.Modulus();
+  const double aSecondLength    = aSecondDirection.Modulus();
+  if (aFirstLength == 0.0 || aSecondLength == 0.0)
+  {
+    return {};
+  }
+
+  const gp_XY  anOffset        = theSecond.Start() - theFirst.Start();
+  const double aCross          = aFirstDirection.Crossed(aSecondDirection);
+  const double aCrossTolerance = theTolerance * (aFirstLength + aSecondLength);
+  const double aFirstParamTol  = theTolerance / aFirstLength;
+  const double aSecondParamTol = theTolerance / aSecondLength;
+  if (std::abs(aCross) <= aCrossTolerance)
+  {
+    const bool isCoincident =
+      std::abs(anOffset.Crossed(aFirstDirection)) <= theTolerance * aFirstLength
+      && std::abs((theSecond.End() - theFirst.Start()).Crossed(aFirstDirection))
+           <= theTolerance * aFirstLength;
+    if (isCoincident)
+    {
+      const double aFirstSquareLength = aFirstDirection.SquareModulus();
+      double       aFirstParameter    = anOffset.Dot(aFirstDirection) / aFirstSquareLength;
+      double       aLastParameter =
+        (theSecond.End() - theFirst.Start()).Dot(aFirstDirection) / aFirstSquareLength;
+      if (aLastParameter < aFirstParameter)
+      {
+        std::swap(aFirstParameter, aLastParameter);
+      }
+      const double anOverlapFirst = std::max(0.0, aFirstParameter);
+      const double anOverlapLast  = std::min(1.0, aLastParameter);
+      if (anOverlapLast - anOverlapFirst > aFirstParamTol)
+      {
+        LineIntersection aResult;
+        aResult.Kind = LineIntersectionKind::Overlap;
+        return aResult;
+      }
+      if (anOverlapLast + aFirstParamTol < anOverlapFirst)
+      {
+        return {};
+      }
+
+      const double     aParameter = std::clamp(0.5 * (anOverlapFirst + anOverlapLast), 0.0, 1.0);
+      LineIntersection aResult;
+      aResult.Kind      = LineIntersectionKind::Point;
+      aResult.Points[0] = theFirst.Start() + aFirstDirection * aParameter;
+      aResult.NbPoints  = 1;
+      return aResult;
+    }
+    if (aCross == 0.0)
+    {
+      return {};
+    }
+  }
+
+  const double aFirstParameter  = anOffset.Crossed(aSecondDirection) / aCross;
+  const double aSecondParameter = anOffset.Crossed(aFirstDirection) / aCross;
+  if (aFirstParameter < -aFirstParamTol || aFirstParameter > 1.0 + aFirstParamTol
+      || aSecondParameter < -aSecondParamTol || aSecondParameter > 1.0 + aSecondParamTol)
+  {
+    return {};
+  }
+
+  const gp_XY aFirstPoint =
+    theFirst.Start() + aFirstDirection * std::clamp(aFirstParameter, 0.0, 1.0);
+  const gp_XY aSecondPoint =
+    theSecond.Start() + aSecondDirection * std::clamp(aSecondParameter, 0.0, 1.0);
+  LineIntersection aResult;
+  aResult.Kind      = LineIntersectionKind::Point;
+  aResult.Points[0] = 0.5 * (aFirstPoint + aSecondPoint);
+  aResult.NbPoints  = 1;
+  return aResult;
+}
+
+//=================================================================================================
+
+LineIntersection intersectLineQuadratic(const BRepFont_PlanarRegion::Curve& theLine,
+                                        const BRepFont_PlanarRegion::Curve& theQuadratic,
+                                        const double                        theTolerance)
+{
+  const gp_XY  aLineDirection = theLine.End() - theLine.Start();
+  const double aLineLength    = aLineDirection.Modulus();
+  if (aLineLength == 0.0)
+  {
+    return {};
+  }
+
+  const double aLineSquareLength = aLineDirection.SquareModulus();
+  const double aLineParamTol     = theTolerance / aLineLength;
+  const double aCrossTolerance   = theTolerance * aLineLength;
+  const auto   crossFromLine     = [&](const gp_XY& thePoint) {
+    return (thePoint - theLine.Start()).Crossed(aLineDirection);
+  };
+  const double aStartCross   = crossFromLine(theQuadratic.Start());
+  const double aControlCross = crossFromLine(theQuadratic.Control1());
+  const double anEndCross    = crossFromLine(theQuadratic.End());
+
+  if (std::abs(aStartCross) <= aCrossTolerance && std::abs(aControlCross) <= aCrossTolerance
+      && std::abs(anEndCross) <= aCrossTolerance)
+  {
+    const auto lineParameter = [&](const gp_XY& thePoint) {
+      return (thePoint - theLine.Start()).Dot(aLineDirection) / aLineSquareLength;
+    };
+    const double aStartParameter   = lineParameter(theQuadratic.Start());
+    const double aControlParameter = lineParameter(theQuadratic.Control1());
+    const double anEndParameter    = lineParameter(theQuadratic.End());
+    double       aMinParameter     = std::min(aStartParameter, anEndParameter);
+    double       aMaxParameter     = std::max(aStartParameter, anEndParameter);
+    const double aDenominator      = aStartParameter - 2.0 * aControlParameter + anEndParameter;
+    if (aDenominator != 0.0)
+    {
+      const double anExtremum = (aStartParameter - aControlParameter) / aDenominator;
+      if (anExtremum > 0.0 && anExtremum < 1.0)
+      {
+        const double aU     = 1.0 - anExtremum;
+        const double aValue = aStartParameter * (aU * aU)
+                              + aControlParameter * (2.0 * aU * anExtremum)
+                              + anEndParameter * (anExtremum * anExtremum);
+        aMinParameter       = std::min(aMinParameter, aValue);
+        aMaxParameter       = std::max(aMaxParameter, aValue);
+      }
+    }
+
+    const double anOverlapFirst = std::max(0.0, aMinParameter);
+    const double anOverlapLast  = std::min(1.0, aMaxParameter);
+    if (anOverlapLast - anOverlapFirst > aLineParamTol)
+    {
+      LineIntersection aResult;
+      aResult.Kind = LineIntersectionKind::Overlap;
+      return aResult;
+    }
+    if (anOverlapLast + aLineParamTol < anOverlapFirst)
+    {
+      return {};
+    }
+
+    LineIntersection aResult;
+    aResult.Kind = LineIntersectionKind::Point;
+    aResult.Points[0] =
+      theLine.Start()
+      + aLineDirection * std::clamp(0.5 * (anOverlapFirst + anOverlapLast), 0.0, 1.0);
+    aResult.NbPoints = 1;
+    return aResult;
+  }
+
+  LineIntersection aResult;
+  const auto       appendParameter = [&](const long double theParameter) {
+    const double aParameter = static_cast<double>(theParameter);
+    if (!std::isfinite(aParameter) || aParameter < 0.0 || aParameter > 1.0)
+    {
+      return;
+    }
+    const gp_XY  aCurvePoint = theQuadratic.Value(aParameter);
+    const double aCross      = crossFromLine(aCurvePoint);
+    if (std::abs(aCross) > aCrossTolerance)
+    {
+      return;
+    }
+    const double aLineParameter =
+      (aCurvePoint - theLine.Start()).Dot(aLineDirection) / aLineSquareLength;
+    if (aLineParameter < -aLineParamTol || aLineParameter > 1.0 + aLineParamTol)
+    {
+      return;
+    }
+    const gp_XY aLinePoint =
+      theLine.Start() + aLineDirection * std::clamp(aLineParameter, 0.0, 1.0);
+    const gp_XY anIntersection = 0.5 * (aCurvePoint + aLinePoint);
+    for (size_t aPointIndex = 0; aPointIndex < aResult.NbPoints; ++aPointIndex)
+    {
+      if ((aResult.Points[aPointIndex] - anIntersection).SquareModulus()
+          <= theTolerance * theTolerance)
+      {
+        return;
+      }
+    }
+    if (aResult.NbPoints < aResult.Points.size())
+    {
+      aResult.Points[aResult.NbPoints++] = anIntersection;
+      aResult.Kind                       = LineIntersectionKind::Point;
+    }
+  };
+
+  const long double anA = static_cast<long double>(aStartCross) - 2.0L * aControlCross + anEndCross;
+  const long double aB  = 2.0L * (static_cast<long double>(aControlCross) - aStartCross);
+  const long double aC  = aStartCross;
+  if (anA == 0.0L)
+  {
+    if (aB != 0.0L)
+    {
+      appendParameter(-aC / aB);
+    }
+  }
+  else
+  {
+    const long double aDiscriminant = aB * aB - 4.0L * anA * aC;
+    if (aDiscriminant == 0.0L)
+    {
+      appendParameter(-aB / (2.0L * anA));
+    }
+    else if (aDiscriminant > 0.0L)
+    {
+      const long double aSquareRoot = std::sqrt(aDiscriminant);
+      const long double aQ          = -0.5L * (aB + std::copysign(aSquareRoot, aB));
+      appendParameter(aQ / anA);
+      appendParameter(aC / aQ);
+    }
+  }
+
+  appendParameter(0.0L);
+  appendParameter(1.0L);
+  if (anA != 0.0L)
+  {
+    appendParameter(-aB / (2.0L * anA));
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
 IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
                                const double                   theTolerance,
                                NCollection_FlatMap<uint64_t>& theLoopPairs)
@@ -537,10 +753,8 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
   const auto&      aCurves = theRegion.Curves();
   IntersectionKind aResult = IntersectionKind::None;
 
-  NCollection_LinearVector<uint32_t> aCurveLoops(aCurves.Size());
-  NCollection_LinearVector<uint32_t> aCurveOffsets(aCurves.Size());
-  aCurveLoops.Resize(aCurves.Size());
-  aCurveOffsets.Resize(aCurves.Size());
+  NCollection_LinearVector<uint32_t> aCurveLoops(aCurves.Size(), 0);
+  NCollection_LinearVector<uint32_t> aCurveOffsets(aCurves.Size(), 0);
   for (uint32_t aLoopIndex = 0; aLoopIndex < theRegion.Loops().Size(); ++aLoopIndex)
   {
     const BRepFont_PlanarRegion::Loop& aLoop = theRegion.Loops()[aLoopIndex];
@@ -557,15 +771,22 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
     }
   }
 
-  NCollection_LinearVector<occ::handle<Geom2d_Curve>> aGeometry(aCurves.Size());
+  NCollection_LinearVector<occ::handle<Geom2d_Curve>> aGeometry(aCurves.Size(),
+                                                                occ::handle<Geom2d_Curve>());
   NCollection_LinearVector<IntersectionCurve>         aSweep(aCurves.Size());
-  aGeometry.Resize(aCurves.Size());
+  const auto geometry = [&](const uint32_t theCurveIndex) -> const occ::handle<Geom2d_Curve>& {
+    occ::handle<Geom2d_Curve>& aCurveGeometry = aGeometry[theCurveIndex];
+    if (aCurveGeometry.IsNull())
+    {
+      aCurveGeometry = curveGeometry(aCurves[theCurveIndex]);
+    }
+    return aCurveGeometry;
+  };
 
   const double aSquareTolerance = theTolerance * theTolerance;
   for (uint32_t aCurveIndex = 0; aCurveIndex < aCurves.Size(); ++aCurveIndex)
   {
     const BRepFont_PlanarRegion::Curve& aCurve = aCurves[aCurveIndex];
-    aGeometry[aCurveIndex]                     = curveGeometry(aCurve);
 
     bool toCheckSelfIntersection = aCurve.Type() == Font_GlyphOutline::Segment::Kind::CubicBezier;
     if (aCurve.Type() == Font_GlyphOutline::Segment::Kind::QuadraticBezier)
@@ -573,18 +794,18 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
       const gp_XY aFirstTangent = aCurve.Control1() - aCurve.Start();
       const gp_XY aLastTangent  = aCurve.End() - aCurve.Control1();
       const bool  isMonotonicX  = (aFirstTangent.X() >= 0.0 && aLastTangent.X() >= 0.0
-                                 && (aFirstTangent.X() > 0.0 || aLastTangent.X() > 0.0))
-                                || (aFirstTangent.X() <= 0.0 && aLastTangent.X() <= 0.0
-                                    && (aFirstTangent.X() < 0.0 || aLastTangent.X() < 0.0));
-      const bool isMonotonicY = (aFirstTangent.Y() >= 0.0 && aLastTangent.Y() >= 0.0
-                                 && (aFirstTangent.Y() > 0.0 || aLastTangent.Y() > 0.0))
-                                || (aFirstTangent.Y() <= 0.0 && aLastTangent.Y() <= 0.0
-                                    && (aFirstTangent.Y() < 0.0 || aLastTangent.Y() < 0.0));
-      toCheckSelfIntersection = !isMonotonicX && !isMonotonicY;
+                                   && (aFirstTangent.X() > 0.0 || aLastTangent.X() > 0.0))
+                                  || (aFirstTangent.X() <= 0.0 && aLastTangent.X() <= 0.0
+                                      && (aFirstTangent.X() < 0.0 || aLastTangent.X() < 0.0));
+      const bool  isMonotonicY  = (aFirstTangent.Y() >= 0.0 && aLastTangent.Y() >= 0.0
+                                   && (aFirstTangent.Y() > 0.0 || aLastTangent.Y() > 0.0))
+                                  || (aFirstTangent.Y() <= 0.0 && aLastTangent.Y() <= 0.0
+                                      && (aFirstTangent.Y() < 0.0 || aLastTangent.Y() < 0.0));
+      toCheckSelfIntersection   = !isMonotonicX && !isMonotonicY;
     }
     if (toCheckSelfIntersection)
     {
-      Geom2dAPI_InterCurveCurve aSelfIntersector(aGeometry[aCurveIndex], theTolerance);
+      Geom2dAPI_InterCurveCurve aSelfIntersector(geometry(aCurveIndex), theTolerance);
       if (aSelfIntersector.NbPoints() > 0 || aSelfIntersector.NbSegments() > 0)
       {
         return IntersectionKind::WithinLoop;
@@ -627,21 +848,8 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
         continue;
       }
 
-      const uint32_t            aSecondIndex = aSecond.Index;
-      Geom2dAPI_InterCurveCurve anIntersector(aGeometry[aFirstIndex],
-                                              aGeometry[aSecondIndex],
-                                              theTolerance);
-      const bool                isSameLoop = aCurveLoops[aFirstIndex] == aCurveLoops[aSecondIndex];
-      if (anIntersector.NbSegments() > 0)
-      {
-        if (isSameLoop)
-        {
-          return IntersectionKind::WithinLoop;
-        }
-        theLoopPairs.Add(loopPairKey(aCurveLoops[aFirstIndex], aCurveLoops[aSecondIndex]));
-        aResult = IntersectionKind::BetweenLoops;
-        continue;
-      }
+      const uint32_t aSecondIndex = aSecond.Index;
+      const bool     isSameLoop   = aCurveLoops[aFirstIndex] == aCurveLoops[aSecondIndex];
 
       bool  isAdjacent = false;
       gp_XY aSharedPoint;
@@ -669,6 +877,76 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
         }
       }
 
+      const Font_GlyphOutline::Segment::Kind aFirstType  = aCurves[aFirstIndex].Type();
+      const Font_GlyphOutline::Segment::Kind aSecondType = aCurves[aSecondIndex].Type();
+      std::optional<LineIntersection>        aDirectIntersection;
+      if (aFirstType == Font_GlyphOutline::Segment::Kind::Line
+          && aSecondType == Font_GlyphOutline::Segment::Kind::Line)
+      {
+        aDirectIntersection =
+          intersectLines(aCurves[aFirstIndex], aCurves[aSecondIndex], theTolerance);
+      }
+      else if ((aFirstType == Font_GlyphOutline::Segment::Kind::Line
+                && aSecondType == Font_GlyphOutline::Segment::Kind::QuadraticBezier)
+               || (aFirstType == Font_GlyphOutline::Segment::Kind::QuadraticBezier
+                   && aSecondType == Font_GlyphOutline::Segment::Kind::Line))
+      {
+        const BRepFont_PlanarRegion::Curve& aLine =
+          aFirstType == Font_GlyphOutline::Segment::Kind::Line ? aCurves[aFirstIndex]
+                                                               : aCurves[aSecondIndex];
+        const BRepFont_PlanarRegion::Curve& aQuadratic =
+          aFirstType == Font_GlyphOutline::Segment::Kind::QuadraticBezier ? aCurves[aFirstIndex]
+                                                                          : aCurves[aSecondIndex];
+        aDirectIntersection = intersectLineQuadratic(aLine, aQuadratic, theTolerance);
+      }
+
+      if (aDirectIntersection.has_value())
+      {
+        if (aDirectIntersection->Kind == LineIntersectionKind::Overlap)
+        {
+          if (isSameLoop)
+          {
+            return IntersectionKind::WithinLoop;
+          }
+          theLoopPairs.Add(loopPairKey(aCurveLoops[aFirstIndex], aCurveLoops[aSecondIndex]));
+          aResult = IntersectionKind::BetweenLoops;
+        }
+        else
+        {
+          for (size_t aPointIndex = 0; aPointIndex < aDirectIntersection->NbPoints; ++aPointIndex)
+          {
+            if (isAdjacent
+                && (aDirectIntersection->Points[aPointIndex] - aSharedPoint).SquareModulus()
+                     <= aSquareTolerance)
+            {
+              continue;
+            }
+            if (isSameLoop)
+            {
+              return IntersectionKind::WithinLoop;
+            }
+            theLoopPairs.Add(loopPairKey(aCurveLoops[aFirstIndex], aCurveLoops[aSecondIndex]));
+            aResult = IntersectionKind::BetweenLoops;
+            break;
+          }
+        }
+        continue;
+      }
+
+      Geom2dAPI_InterCurveCurve anIntersector(geometry(aFirstIndex),
+                                              geometry(aSecondIndex),
+                                              theTolerance);
+      if (anIntersector.NbSegments() > 0)
+      {
+        if (isSameLoop)
+        {
+          return IntersectionKind::WithinLoop;
+        }
+        theLoopPairs.Add(loopPairKey(aCurveLoops[aFirstIndex], aCurveLoops[aSecondIndex]));
+        aResult = IntersectionKind::BetweenLoops;
+        continue;
+      }
+
       for (int aPointIndex = 1; aPointIndex <= anIntersector.NbPoints(); ++aPointIndex)
       {
         if (!isAdjacent
@@ -691,98 +969,197 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
 
 //=================================================================================================
 
-void appendFlattened(const BRepFont_PlanarRegion::Curve& theCurve,
-                     const double                        theFirst,
-                     const gp_XY&                        theFirstPoint,
-                     const double                        theLast,
-                     const gp_XY&                        theLastPoint,
-                     const double                        theSquareTolerance,
-                     const int                           theDepth,
-                     NCollection_LinearVector<gp_XY>&    thePoints)
+double coordinateValue(const Font_GlyphOutline::Segment::Kind theKind,
+                       const double                           theStart,
+                       const double                           theControl1,
+                       const double                           theControl2,
+                       const double                           theEnd,
+                       const double                           theParameter)
 {
-  const double aMiddle             = 0.5 * (theFirst + theLast);
-  const gp_XY  aMiddlePoint        = theCurve.Value(aMiddle);
-  const gp_XY  aChord              = theLastPoint - theFirstPoint;
-  const gp_XY  aQuarterPoint       = theCurve.Value(0.5 * (theFirst + aMiddle));
-  const gp_XY  aThreeQuartersPoint = theCurve.Value(0.5 * (aMiddle + theLast));
-  double       aSquareDistance     = 0.0;
-  if (aChord.SquareModulus() > 0.0)
+  const double aT = theParameter;
+  const double aU = 1.0 - aT;
+  switch (theKind)
   {
-    const std::array<gp_XY, 3> aSamplePoints = {aQuarterPoint, aMiddlePoint, aThreeQuartersPoint};
-    for (const gp_XY& aSamplePoint : aSamplePoints)
-    {
-      const gp_XY  aDelta = aSamplePoint - theFirstPoint;
-      const double aCross = aChord.X() * aDelta.Y() - aChord.Y() * aDelta.X();
-      aSquareDistance     = std::max(aSquareDistance, aCross * aCross / aChord.SquareModulus());
-    }
+    case Font_GlyphOutline::Segment::Kind::Line:
+      return theStart * aU + theEnd * aT;
+    case Font_GlyphOutline::Segment::Kind::QuadraticBezier:
+      return theStart * (aU * aU) + theControl1 * (2.0 * aU * aT) + theEnd * (aT * aT);
+    case Font_GlyphOutline::Segment::Kind::CubicBezier:
+      return theStart * (aU * aU * aU) + theControl1 * (3.0 * aU * aU * aT)
+             + theControl2 * (3.0 * aU * aT * aT) + theEnd * (aT * aT * aT);
   }
-  else
-  {
-    aSquareDistance = std::max({(aQuarterPoint - theFirstPoint).SquareModulus(),
-                                (aMiddlePoint - theFirstPoint).SquareModulus(),
-                                (aThreeQuartersPoint - theFirstPoint).SquareModulus()});
-  }
-
-  if (theDepth >= 16 || aSquareDistance <= theSquareTolerance)
-  {
-    thePoints.Append(theLastPoint);
-    return;
-  }
-  appendFlattened(theCurve,
-                  theFirst,
-                  theFirstPoint,
-                  aMiddle,
-                  aMiddlePoint,
-                  theSquareTolerance,
-                  theDepth + 1,
-                  thePoints);
-  appendFlattened(theCurve,
-                  aMiddle,
-                  aMiddlePoint,
-                  theLast,
-                  theLastPoint,
-                  theSquareTolerance,
-                  theDepth + 1,
-                  thePoints);
+  return theStart;
 }
 
 //=================================================================================================
 
-bool contains(const BRepFont_PlanarRegion::Loop&     theLoop,
-              const NCollection_LinearVector<gp_XY>& thePoints,
-              const FlattenedLoop&                   theFlattened,
-              const gp_XY&                           thePoint)
+double curveX(const BRepFont_PlanarRegion::Curve& theCurve, const double theParameter)
+{
+  return coordinateValue(theCurve.Type(),
+                         theCurve.Start().X(),
+                         theCurve.Control1().X(),
+                         theCurve.Control2().X(),
+                         theCurve.End().X(),
+                         theParameter);
+}
+
+//=================================================================================================
+
+double curveY(const BRepFont_PlanarRegion::Curve& theCurve, const double theParameter)
+{
+  return coordinateValue(theCurve.Type(),
+                         theCurve.Start().Y(),
+                         theCurve.Control1().Y(),
+                         theCurve.Control2().Y(),
+                         theCurve.End().Y(),
+                         theParameter);
+}
+
+//=================================================================================================
+
+size_t yIntervals(const BRepFont_PlanarRegion::Curve& theCurve,
+                  const double                        theFirst,
+                  const double                        theLast,
+                  std::array<double, 4>&              theParameters)
+{
+  theParameters[0]         = theFirst;
+  size_t     aNbParameters = 1;
+  const auto appendRoot    = [&](const long double theRoot) {
+    const double aRoot = static_cast<double>(theRoot);
+    if (std::isfinite(aRoot) && aRoot > theFirst && aRoot < theLast)
+    {
+      theParameters[aNbParameters++] = aRoot;
+    }
+  };
+  switch (theCurve.Type())
+  {
+    case Font_GlyphOutline::Segment::Kind::Line:
+      break;
+    case Font_GlyphOutline::Segment::Kind::QuadraticBezier: {
+      const long double aQuadratic = static_cast<long double>(theCurve.Start().Y())
+                                     - 2.0L * theCurve.Control1().Y() + theCurve.End().Y();
+      if (aQuadratic != 0.0L)
+      {
+        const long double aLinear =
+          2.0L * (static_cast<long double>(theCurve.Control1().Y()) - theCurve.Start().Y());
+        appendRoot(-aLinear / (2.0L * aQuadratic));
+      }
+      break;
+    }
+    case Font_GlyphOutline::Segment::Kind::CubicBezier: {
+      const long double aCubic = -static_cast<long double>(theCurve.Start().Y())
+                                 + 3.0L * theCurve.Control1().Y() - 3.0L * theCurve.Control2().Y()
+                                 + theCurve.End().Y();
+      const long double aQuadratic = 3.0L
+                                     * (static_cast<long double>(theCurve.Start().Y())
+                                        - 2.0L * theCurve.Control1().Y() + theCurve.Control2().Y());
+      const long double aLinear =
+        3.0L * (static_cast<long double>(theCurve.Control1().Y()) - theCurve.Start().Y());
+      const long double anA = 3.0L * aCubic;
+      const long double aB  = 2.0L * aQuadratic;
+      if (anA == 0.0L)
+      {
+        if (aB != 0.0L)
+        {
+          appendRoot(-aLinear / aB);
+        }
+        break;
+      }
+      const long double aDiscriminant = aB * aB - 4.0L * anA * aLinear;
+      if (aDiscriminant < 0.0L)
+      {
+        break;
+      }
+      if (aDiscriminant == 0.0L)
+      {
+        appendRoot(-aB / (2.0L * anA));
+        break;
+      }
+      const long double aSquareRoot = std::sqrt(aDiscriminant);
+      const long double aQ          = -0.5L * (aB + std::copysign(aSquareRoot, aB));
+      appendRoot(aQ / anA);
+      appendRoot(aLinear / aQ);
+      break;
+    }
+  }
+  std::sort(theParameters.begin(), theParameters.begin() + aNbParameters);
+  theParameters[aNbParameters++] = theLast;
+  return aNbParameters;
+}
+
+//=================================================================================================
+
+double horizontalCrossing(const BRepFont_PlanarRegion::Curve& theCurve,
+                          const double                        theFirst,
+                          const double                        theFirstY,
+                          const double                        theLast,
+                          const double                        theLastY,
+                          const double                        theY)
+{
+  if (theCurve.Type() == Font_GlyphOutline::Segment::Kind::Line)
+  {
+    return theFirst + (theLast - theFirst) * (theY - theFirstY) / (theLastY - theFirstY);
+  }
+  double     aFirst       = theFirst;
+  double     aLast        = theLast;
+  const bool isFirstAbove = theFirstY > theY;
+  for (int anIteration = 0; anIteration < 40; ++anIteration)
+  {
+    const double aMiddle = 0.5 * (aFirst + aLast);
+    if ((curveY(theCurve, aMiddle) > theY) == isFirstAbove)
+    {
+      aFirst = aMiddle;
+    }
+    else
+    {
+      aLast = aMiddle;
+    }
+  }
+  return 0.5 * (aFirst + aLast);
+}
+
+//=================================================================================================
+
+bool contains(const BRepFont_PlanarRegion&       theRegion,
+              const BRepFont_PlanarRegion::Loop& theLoop,
+              const gp_XY&                       thePoint)
 {
   if (theLoop.Bounds().IsOut(gp_Pnt2d(thePoint)))
   {
     return false;
   }
 
-  int          aWinding   = 0;
-  const size_t anEndPoint = static_cast<size_t>(theFlattened.FirstPoint) + theFlattened.NbPoints;
-  for (size_t aPointIndex = theFlattened.FirstPoint; aPointIndex + 1 < anEndPoint; ++aPointIndex)
+  int aWinding = 0;
+  for (uint32_t anOffset = 0; anOffset < theLoop.NbUses(); ++anOffset)
   {
-    const gp_XY& aFirst  = thePoints[aPointIndex];
-    const gp_XY& aSecond = thePoints[aPointIndex + 1];
-    if (aFirst.Y() <= thePoint.Y())
+    const BRepFont_PlanarRegion::Use& aUse = theRegion.Uses()[theLoop.FirstUse() + anOffset];
+    if (aUse.CurveIndex().Value() >= theRegion.Curves().Size())
     {
-      if (aSecond.Y() > thePoint.Y())
-      {
-        const double aCross = (aSecond.X() - aFirst.X()) * (thePoint.Y() - aFirst.Y())
-                              - (thePoint.X() - aFirst.X()) * (aSecond.Y() - aFirst.Y());
-        if (aCross > 0.0)
-        {
-          ++aWinding;
-        }
-      }
+      return false;
     }
-    else if (aSecond.Y() <= thePoint.Y())
+    const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
+    std::array<double, 4>               aParameters;
+    const size_t                        aNbParameters =
+      yIntervals(aCurve, aUse.FirstParameter(), aUse.LastParameter(), aParameters);
+    for (size_t anInterval = 0; anInterval + 1 < aNbParameters; ++anInterval)
     {
-      const double aCross = (aSecond.X() - aFirst.X()) * (thePoint.Y() - aFirst.Y())
-                            - (thePoint.X() - aFirst.X()) * (aSecond.Y() - aFirst.Y());
-      if (aCross < 0.0)
+      const double aFirst =
+        aUse.IsReversed() ? aParameters[aNbParameters - anInterval - 1] : aParameters[anInterval];
+      const double aLast      = aUse.IsReversed() ? aParameters[aNbParameters - anInterval - 2]
+                                                  : aParameters[anInterval + 1];
+      const double aFirstY    = curveY(aCurve, aFirst);
+      const double aLastY     = curveY(aCurve, aLast);
+      const bool   isUpward   = aFirstY <= thePoint.Y() && aLastY > thePoint.Y();
+      const bool   isDownward = aFirstY > thePoint.Y() && aLastY <= thePoint.Y();
+      if (!isUpward && !isDownward)
       {
-        --aWinding;
+        continue;
+      }
+      const double aParameter =
+        horizontalCrossing(aCurve, aFirst, aFirstY, aLast, aLastY, thePoint.Y());
+      if (curveX(aCurve, aParameter) > thePoint.X())
+      {
+        aWinding += isUpward ? 1 : -1;
       }
     }
   }
@@ -791,135 +1168,57 @@ bool contains(const BRepFont_PlanarRegion::Loop&     theLoop,
 
 //=================================================================================================
 
-bool flattenLoops(const BRepFont_PlanarRegion&             theRegion,
-                  const double                             theTolerance,
-                  NCollection_LinearVector<gp_XY>&         thePoints,
-                  NCollection_LinearVector<FlattenedLoop>& theLoops)
+std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&       theRegion,
+                                   const BRepFont_PlanarRegion::Loop& theLoop,
+                                   const double                       theTolerance)
 {
-  thePoints.Reserve(theRegion.Uses().Size() * 2);
-  theLoops.Reserve(theRegion.Loops().Size());
-  const double aSquareTolerance = theTolerance * theTolerance;
-  for (const BRepFont_PlanarRegion::Loop& aLoop : theRegion.Loops())
-  {
-    const std::optional<uint32_t> aFirstPoint = index(thePoints.Size());
-    if (!aFirstPoint.has_value())
-    {
-      return false;
-    }
-
-    const BRepFont_PlanarRegion::Use& aFirstUse   = theRegion.Uses()[aLoop.FirstUse()];
-    const uint32_t                    aFirstCurve = aFirstUse.CurveIndex().Value();
-    if (aFirstCurve >= theRegion.Curves().Size())
-    {
-      return false;
-    }
-    thePoints.Append(theRegion.Curves()[aFirstCurve].Start());
-
-    for (uint32_t anOffset = 0; anOffset < aLoop.NbUses(); ++anOffset)
-    {
-      const BRepFont_PlanarRegion::Use& aUse = theRegion.Uses()[aLoop.FirstUse() + anOffset];
-      if (aUse.CurveIndex().Value() >= theRegion.Curves().Size())
-      {
-        return false;
-      }
-      const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
-      appendFlattened(aCurve,
-                      0.0,
-                      aCurve.Start(),
-                      1.0,
-                      aCurve.End(),
-                      aSquareTolerance,
-                      0,
-                      thePoints);
-    }
-
-    const std::optional<uint32_t> anAfterLastPoint = index(thePoints.Size());
-    if (!anAfterLastPoint.has_value())
-    {
-      return false;
-    }
-    theLoops.EmplaceAppend(*aFirstPoint, *anAfterLastPoint - *aFirstPoint);
-  }
-  return true;
-}
-
-//=================================================================================================
-
-std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&           theRegion,
-                                   const BRepFont_PlanarRegion::Loop&     theLoop,
-                                   const NCollection_LinearVector<gp_XY>& thePoints,
-                                   const FlattenedLoop&                   theFlattened,
-                                   const double                           theTolerance)
-{
-  double aMinX = 0.0;
-  double aMinY = 0.0;
-  double aMaxX = 0.0;
-  double aMaxY = 0.0;
-  theLoop.Bounds().Get(aMinX, aMinY, aMaxX, aMaxY);
-  const double aDiagonal       = std::hypot(aMaxX - aMinX, aMaxY - aMinY);
-  const double anInitialOffset = std::max(8.0 * theTolerance, aDiagonal * 1.0e-6);
+  const auto [aMinX, aMaxX, aMinY, aMaxY] = theLoop.Bounds().Get();
+  const double aDiagonal                  = std::hypot(aMaxX - aMinX, aMaxY - aMinY);
+  const double anInitialOffset            = std::max(8.0 * theTolerance, aDiagonal * 1.0e-6);
 
   for (uint32_t anOffset = 0; anOffset < theLoop.NbUses(); ++anOffset)
   {
     const BRepFont_PlanarRegion::Use&   aUse   = theRegion.Uses()[theLoop.FirstUse() + anOffset];
     const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
-    const gp_XY                         aDerivative = aCurve.D1(0.5);
-    const double                        aLength     = aDerivative.Modulus();
-    if (aLength <= theTolerance)
+    constexpr std::array<double, 3>     THE_SAMPLES = {0.5, 0.25, 0.75};
+    for (const double aSample : THE_SAMPLES)
     {
-      continue;
-    }
-    gp_XY aNormal(-aDerivative.Y() / aLength, aDerivative.X() / aLength);
-    if (theLoop.SignedArea() < 0.0)
-    {
-      aNormal.Reverse();
-    }
-    double anInteriorOffset = anInitialOffset;
-    for (int anAttempt = 0; anAttempt < 24; ++anAttempt)
-    {
-      const gp_XY aCandidate = aCurve.Value(0.5) + aNormal * anInteriorOffset;
-      if (contains(theLoop, thePoints, theFlattened, aCandidate))
+      const double aParameter =
+        aUse.IsReversed()
+          ? aUse.LastParameter() - (aUse.LastParameter() - aUse.FirstParameter()) * aSample
+          : aUse.FirstParameter() + (aUse.LastParameter() - aUse.FirstParameter()) * aSample;
+      gp_XY aDerivative = aCurve.D1(aParameter);
+      if (aUse.IsReversed())
       {
-        return aCandidate;
+        aDerivative.Reverse();
       }
-      anInteriorOffset *= 0.5;
-    }
-  }
-
-  const size_t anAfterLastPoint =
-    static_cast<size_t>(theFlattened.FirstPoint) + theFlattened.NbPoints;
-  for (size_t aPointIndex = theFlattened.FirstPoint; aPointIndex + 1 < anAfterLastPoint;
-       ++aPointIndex)
-  {
-    const gp_XY& aFirst      = thePoints[aPointIndex];
-    const gp_XY& aLast       = thePoints[aPointIndex + 1];
-    const gp_XY  aDerivative = aLast - aFirst;
-    const double aLength     = aDerivative.Modulus();
-    if (aLength <= theTolerance)
-    {
-      continue;
-    }
-    gp_XY aNormal(-aDerivative.Y() / aLength, aDerivative.X() / aLength);
-    if (theLoop.SignedArea() < 0.0)
-    {
-      aNormal.Reverse();
-    }
-    double anInteriorOffset = anInitialOffset;
-    for (int anAttempt = 0; anAttempt < 24; ++anAttempt)
-    {
-      const gp_XY aCandidate = 0.5 * (aFirst + aLast) + aNormal * anInteriorOffset;
-      if (contains(theLoop, thePoints, theFlattened, aCandidate))
+      const double aLength = aDerivative.Modulus();
+      if (aLength <= theTolerance)
       {
-        return aCandidate;
+        continue;
       }
-      anInteriorOffset *= 0.5;
+      gp_XY aNormal(-aDerivative.Y() / aLength, aDerivative.X() / aLength);
+      if (theLoop.SignedArea() < 0.0)
+      {
+        aNormal.Reverse();
+      }
+      const gp_XY aCurvePoint      = aCurve.Value(aParameter);
+      double      anInteriorOffset = anInitialOffset;
+      for (int anAttempt = 0; anAttempt < 24; ++anAttempt)
+      {
+        const gp_XY aCandidate = aCurvePoint + aNormal * anInteriorOffset;
+        if (contains(theRegion, theLoop, aCandidate))
+        {
+          return aCandidate;
+        }
+        anInteriorOffset *= 0.5;
+      }
     }
   }
 
   const gp_XY aBoundsCenter(0.5 * (aMinX + aMaxX), 0.5 * (aMinY + aMaxY));
-  return contains(theLoop, thePoints, theFlattened, aBoundsCenter)
-           ? std::optional<gp_XY>(aBoundsCenter)
-           : std::nullopt;
+  return contains(theRegion, theLoop, aBoundsCenter) ? std::optional<gp_XY>(aBoundsCenter)
+                                                     : std::nullopt;
 }
 } // namespace
 
@@ -931,23 +1230,12 @@ bool BRepFont_Regularizer::classifyLoops(
   const double                         theTolerance,
   const NCollection_FlatMap<uint64_t>& theIntersectingLoopPairs)
 {
-  NCollection_LinearVector<gp_XY>         aFlattenedPoints;
-  NCollection_LinearVector<FlattenedLoop> aFlattenedLoops;
-  if (!flattenLoops(theRegion, theTolerance, aFlattenedPoints, aFlattenedLoops))
-  {
-    return false;
-  }
-
-  NCollection_LinearVector<LoopInfo> aLoopInfo(theRegion.myLoops.Size());
-  aLoopInfo.Resize(theRegion.myLoops.Size());
+  NCollection_LinearVector<LoopInfo> aLoopInfo(theRegion.myLoops.Size(), LoopInfo{});
   NCollection_LinearVector<uint32_t> anOrder(theRegion.myLoops.Size());
   for (uint32_t aLoopIndex = 0; aLoopIndex < theRegion.myLoops.Size(); ++aLoopIndex)
   {
-    const std::optional<gp_XY> anInteriorPoint = interiorPoint(theRegion,
-                                                               theRegion.myLoops[aLoopIndex],
-                                                               aFlattenedPoints,
-                                                               aFlattenedLoops[aLoopIndex],
-                                                               theTolerance);
+    const std::optional<gp_XY> anInteriorPoint =
+      interiorPoint(theRegion, theRegion.myLoops[aLoopIndex], theTolerance);
     if (!anInteriorPoint.has_value())
     {
       return false;
@@ -974,10 +1262,7 @@ bool BRepFont_Regularizer::classifyLoops(
           || (!theIntersectingLoopPairs.IsEmpty()
               && theIntersectingLoopPairs.Contains(loopPairKey(aLoopIndex, aCandidateIndex)))
           || aCandidate.Bounds().IsOut(aLoop.Bounds())
-          || !contains(aCandidate,
-                       aFlattenedPoints,
-                       aFlattenedLoops[aCandidateIndex],
-                       aLoopInfo[aLoopIndex].InteriorPoint))
+          || !contains(theRegion, aCandidate, aLoopInfo[aLoopIndex].InteriorPoint))
       {
         continue;
       }
