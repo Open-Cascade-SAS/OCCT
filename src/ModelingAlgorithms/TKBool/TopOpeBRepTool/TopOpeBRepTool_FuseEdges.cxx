@@ -58,9 +58,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceFE();
-#endif
 
 //=================================================================================================
 
@@ -214,14 +211,7 @@ TopoDS_Shape& TopOpeBRepTool_FuseEdges::Shape()
 void TopOpeBRepTool_FuseEdges::BuildListEdges()
 {
 
-#ifdef OCCT_DEBUG
-  bool tFE = TopOpeBRepBuild_GettraceFE();
-#endif
 
-#ifdef OCCT_DEBUG
-  if (tFE)
-    std::cout << std::endl << "FuseEdges : BuildListEdges  " << std::endl;
-#endif
 
   //--------------------------------------------------------
   // Step One : Build the map ancestors
@@ -270,14 +260,7 @@ void TopOpeBRepTool_FuseEdges::BuildListEdges()
 void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 {
 
-#ifdef OCCT_DEBUG
-  bool tFE = TopOpeBRepBuild_GettraceFE();
-#endif
 
-#ifdef OCCT_DEBUG
-  if (tFE)
-    std::cout << std::endl << "FuseEdges : BuildListResultEdges  " << std::endl;
-#endif
 
   // if we have edges to fuse
   if (myMapLstEdg.Extent() > 0)
@@ -325,10 +308,6 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
         C = occ::down_cast<Geom_TrimmedCurve>(C)->BasisCurve();
       }
 
-#ifdef OCCT_DEBUG
-      if (tFE)
-        std::cout << std::endl << "FuseEdges : Creating New Edge " << std::endl;
-#endif
 
       BRepLib_MakeEdge ME(C, VF, VL);
 
@@ -338,11 +317,6 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
         // the curve which is not infinite and limited to old vertices
         // we try to use ExtendCurveToPoint, then rebuild the NewEdge
 
-#ifdef OCCT_DEBUG
-        if (tFE)
-          std::cout << std::endl
-                    << "FuseEdges : MakeEdge failed. Trying to Extend Curve " << std::endl;
-#endif
         occ::handle<Geom_BoundedCurve> ExtC = occ::down_cast<Geom_BoundedCurve>(C->Copy());
         if (!ExtC.IsNull())
         {
@@ -365,10 +339,6 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 
       NewEdge = ME.Edge();
 
-#ifdef OCCT_DEBUG
-      if (tFE)
-        std::cout << std::endl << "FuseEdges : Updating pcurve " << std::endl;
-#endif
       if (UpdatePCurve(OldEdge, NewEdge, LmapEdg))
       {
         myMapEdg.Bind(iLst, NewEdge);
@@ -384,19 +354,12 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 void TopOpeBRepTool_FuseEdges::Perform()
 {
 
-#ifdef OCCT_DEBUG
-  bool tFE = TopOpeBRepBuild_GettraceFE();
-#endif
 
   if (!myResultEdgesDone)
   {
     BuildListResultEdges();
   }
 
-#ifdef OCCT_DEBUG
-  if (tFE)
-    std::cout << std::endl << "FuseEdges : Perform  " << std::endl;
-#endif
 
   // if we have fused edges
   if (myMapEdg.Extent() > 0)
@@ -434,10 +397,6 @@ void TopOpeBRepTool_FuseEdges::Perform()
       }
     }
 
-#ifdef OCCT_DEBUG
-    if (tFE)
-      std::cout << std::endl << "FuseEdges : Building New Shape  " << std::endl;
-#endif
 
     // perform the effective substitution
     Bsub.Build(myShape);
@@ -459,10 +418,6 @@ void TopOpeBRepTool_FuseEdges::Perform()
       myShape = (Bsub.Copy(myShape)).First();
     }
 
-#ifdef OCCT_DEBUG
-    if (tFE)
-      std::cout << std::endl << "FuseEdges : " << NbVertices() << " vertices removed" << std::endl;
-#endif
   }
 
   myShapeDone = true;

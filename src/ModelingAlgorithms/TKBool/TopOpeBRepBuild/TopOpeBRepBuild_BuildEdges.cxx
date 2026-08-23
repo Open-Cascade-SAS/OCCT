@@ -38,9 +38,6 @@
 #include <algorithm>
 #include <cmath>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceCU();
-#endif
 
 namespace
 {
@@ -155,10 +152,6 @@ bool TopOpeBRepBuild_FindCurveEnd(const occ::handle<TopOpeBRepDS_HDataStructure>
 void TopOpeBRepBuild_Builder::BuildEdges(const int                                       iC,
                                          const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceCU())
-    std::cout << "\nBuildEdges on C " << iC << std::endl;
-#endif
   const TopOpeBRepDS_Curve&                     C   = HDS->Curve(iC);
   const occ::handle<Geom_Curve>&                C3D = C.Curve();
   const occ::handle<TopOpeBRepDS_Interference>& I1  = C.GetSCI1();

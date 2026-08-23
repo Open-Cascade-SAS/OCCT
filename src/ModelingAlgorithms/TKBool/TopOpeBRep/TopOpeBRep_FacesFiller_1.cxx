@@ -55,9 +55,6 @@ Standard_EXPORT void debrline()
   std::cout << "+ debrline" << std::endl;
 }
 
-extern bool TopOpeBRep_GettraceNVP(int a, int b, int c, int d, int e);
-extern bool GLOBAL_bvpr;
-extern void debvprmess(int f1, int f2, int il, int vp, int si);
 extern bool TopOpeBRep_GetcontextNOPUNK();
 
 static void FUN_traceRLine(const TopOpeBRep_LineInter&) {}
@@ -508,13 +505,6 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
 {
   int ShapeIndex = 0;
   int iVP        = VP.Index();
-
-#ifdef OCCT_DEBUG
-  int ili = myLine->Index(), ivp = iVP, isi = ShapeIndex;
-  GLOBAL_bvpr = TopOpeBRep_GettraceNVP(myexF1, myexF2, ili, ivp, isi);
-  if (GLOBAL_bvpr)
-    debvprmess(myexF1, myexF2, ili, ivp, isi);
-#endif
 
   int iINON1, iINONn, nINON;
   myLine->VPBounds(iINON1, iINONn, nINON);

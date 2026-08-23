@@ -60,10 +60,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-extern bool BRepFeat_GettraceFEATRIB();
-#endif
 
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_LinearForm&,
@@ -89,11 +85,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
                                    const int                      Mode,
                                    const bool                     Modify)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeLinearForm::Init" << std::endl;
-#endif
   bool RevolRib = false;
   Done();
   myGenerated.Clear();
@@ -124,15 +115,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   myPln  = Plane;
 
   myFuse = Mode != 0;
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    if (myFuse)
-      std::cout << " Fuse" << std::endl;
-    if (!myFuse)
-      std::cout << " Cut" << std::endl;
-  }
-#endif
 
   // ---Determine Tolerance : max tolerance on parameters
   myTol = Precision::Confusion();
@@ -166,10 +148,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
     double ang = myDir1.Angle(myDir);
     if (ang != M_PI)
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Directions must be opposite" << std::endl;
-#endif
       myStatusError = BRepFeat_BadDirect;
       NotDone();
       return;
@@ -179,10 +157,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   {
 
 // Rib is centre in the middle of translation
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Rib is centre" << std::endl;
-#endif
     const gp_Vec& DirTranslation = (Direc + Direc1) * 0.5;
     gp_Trsf       T;
     T.SetTranslation(DirTranslation);
@@ -251,10 +225,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
 
   if (!Data)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " No Extreme faces" << std::endl;
-#endif
     myStatusError = BRepFeat_NoExtFace;
     NotDone();
     return;
@@ -278,10 +248,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
 
   if (Sliding)
   { // sliding
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Sliding" << std::endl;
-#endif
     Sliding                     = false;
     occ::handle<Geom_Surface> s = BRep_Tool::Surface(FirstFace);
     if (s->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
@@ -359,10 +325,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   // ---case of sliding : construction of the profile face
   if (Sliding)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " still Sliding" << std::endl;
-#endif
     TopoDS_Face Prof;
     bool        ProfileOK;
     ProfileOK = SlidingProfile(Prof,
@@ -381,13 +343,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
 
     if (!ProfileOK)
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-      {
-        std::cout << "Not computable" << std::endl;
-        std::cout << "Face profile not computable" << std::endl;
-      }
-#endif
       myStatusError = BRepFeat_NoFaceProf;
       NotDone();
       return;
@@ -765,14 +720,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   // ---Case without sliding : construction of the profile face
   if (!Sliding)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-    {
-      if (Modify)
-        std::cout << " Sliding failure" << std::endl;
-      std::cout << " no Sliding" << std::endl;
-    }
-#endif
     TopoDS_Face Prof;
     bool        ProfileOK;
     ProfileOK = NoSlidingProfile(Prof,
@@ -794,13 +741,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
 
     if (!ProfileOK)
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-      {
-        std::cout << "Not computable" << std::endl;
-        std::cout << " Face profile not computable" << std::endl;
-      }
-#endif
       myStatusError = BRepFeat_NoFaceProf;
       NotDone();
       return;
@@ -857,11 +797,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
 
 void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeLinearForm::Add" << std::endl;
-#endif
   if (mySlface.IsEmpty())
   {
     TopExp_Explorer exp;
@@ -904,17 +839,8 @@ void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 void BRepFeat_MakeLinearForm::Perform()
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeLinearForm::Perform()" << std::endl;
-#endif
   if (mySbase.IsNull() || mySkface.IsNull() || myPbase.IsNull())
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Fields not initialized" << std::endl;
-#endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
     return;
@@ -961,10 +887,6 @@ void BRepFeat_MakeLinearForm::Perform()
     const TopoDS_Edge& e = TopoDS::Edge(exx.Current());
     if (!myMap.IsBound(e))
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Sliding face not in Base shape" << std::endl;
-#endif
       myStatusError = BRepFeat_IncSlidFace;
       NotDone();
       return;
@@ -976,13 +898,6 @@ void BRepFeat_MakeLinearForm::Perform()
 
   if (!myGluedF.IsEmpty() && !mySUntil.IsNull())
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-    {
-      std::cout << "The case is not computable" << std::endl;
-      std::cout << " Glued faces not empty and Until shape not null" << std::endl;
-    }
-#endif
     myStatusError = BRepFeat_InvShape;
     NotDone();
     return;
@@ -1038,11 +953,6 @@ bool BRepFeat_MakeLinearForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
                                         const gp_Pnt&                   Lastpnt,
                                         bool&                           falseside)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_MakeLinearForm::Propagate" << std::endl;
-#endif
   gp_Pnt Firstpoint = Firstpnt;
   gp_Pnt Lastpoint  = Lastpnt;
 

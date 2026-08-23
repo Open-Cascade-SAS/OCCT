@@ -51,9 +51,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Map.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-#endif
 
 #define NECHANT 7 // voir BRepFeat.cxx
 
@@ -719,14 +716,6 @@ occ::handle<Geom_Curve> LocOpe_DPrism::BarycCurve() const
   }
   if (mySpine.Orientation() == TopAbs_REVERSED)
   {
-#ifdef OCCT_DEBUG
-    bool trc = BRepFeat_GettraceFEAT();
-    if (trc)
-    {
-      std::cout << "LocOpe_DPrism::BarycCurve()" << std::endl;
-      std::cout << " Reversed Spine orientation" << std::endl;
-    }
-#endif
     //    Normale.Reverse();  //cts20871
   }
   gp_Vec Vec = dz * Normale.XYZ();

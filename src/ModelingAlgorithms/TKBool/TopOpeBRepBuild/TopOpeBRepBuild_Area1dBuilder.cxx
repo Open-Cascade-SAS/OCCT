@@ -20,9 +20,6 @@
 #include <TopOpeBRepBuild_PaveClassifier.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceAREA();
-#endif
 
 //=================================================================================================
 
@@ -86,18 +83,6 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
     const occ::handle<TopOpeBRepBuild_Loop>& L         = LS.Loop();
     bool                                     boundaryL = L->IsShape();
 
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepBuild_GettraceAREA())
-    {
-      std::cout << "++++ new loop : ";
-      L->Dump();
-      if (boundaryL)
-        std::cout << " is bound";
-      else
-        std::cout << " is not bound";
-      std::cout << std::endl;
-    }
-#endif
 
     // L = shape et ForceClass  : on traite L comme un block
     // L = shape et !ForceClass : on traite L comme un pur shape
@@ -281,18 +266,6 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
     } // end of block loop
   } // end of LoopSet LS scan
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    if (!myArea.IsEmpty())
-    {
-      std::cout << "------- Areas -------" << std::endl;
-      for (AreaIter.Initialize(myArea); AreaIter.More(); AreaIter.Next())
-        DumpList(AreaIter.Value());
-      std::cout << "---------------------" << std::endl;
-    }
-  }
-#endif
 
   InitArea();
 }
@@ -310,18 +283,6 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(
 {
   LOL.Append(L);
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    std::cout << "--------------------- add area loop to area : ";
-    L->Dump();
-    std::cout << std::endl;
-    if (ss != NULL)
-      std::cout << (char*)ss << std::endl;
-    DumpList(LOL);
-    std::cout << "---------------------" << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================
@@ -338,29 +299,9 @@ void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop(
 {
 #endif
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    if (ITA.More())
-    {
-      std::cout << "--------------------- remove area loop from area : ";
-      ITA.Value()->Dump();
-      std::cout << std::endl;
-      if (s != NULL)
-        std::cout << s << std::endl;
-    }
-  }
-#endif
 
   A.Remove(ITA);
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    DumpList(A);
-    std::cout << "---------------------" << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================
@@ -378,36 +319,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
   void* const) const
 #endif
 {
-#ifdef OCCT_DEBUG
-  char* s  = (char*)ss;
-  char* s1 = (char*)ss1;
-  char* s2 = (char*)ss2;
-
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    std::cout << "--------------------- add area 1 to area 2 : ";
-    if (s != NULL)
-      std::cout << s;
-    std::cout << std::endl;
-    std::cout << "1 : ";
-    if (s1 != NULL)
-      std::cout << s1;
-    std::cout << std::endl;
-    DumpList(A1);
-  }
-#endif
 
   A2.Append(A1);
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceAREA())
-  {
-    std::cout << "2 : ";
-    if (s2 != NULL)
-      std::cout << s2;
-    std::cout << std::endl;
-    DumpList(A2);
-    std::cout << "---------------------" << std::endl;
-  }
-#endif
 }

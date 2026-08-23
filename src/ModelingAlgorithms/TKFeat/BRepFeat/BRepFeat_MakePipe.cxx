@@ -32,9 +32,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-#endif
 
 static void MajMap(const TopoDS_Shape&, // base
                    LocOpe_Pipe&,
@@ -53,11 +50,6 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
                              const int           Mode,
                              const bool          Modify)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakePipe::Init" << std::endl;
-#endif
   mySbase = Sbase;
   BasisShapeValid();
   mySkface = Skface;
@@ -101,30 +93,12 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    if (myJustFeat)
-      std::cout << " Just Feature" << std::endl;
-    if (myFuse)
-      std::cout << " Fuse" << std::endl;
-    if (!myFuse)
-      std::cout << " Cut" << std::endl;
-    if (!myModify)
-      std::cout << " Modify = 0" << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================
 
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakePipe::Add(Edge,face)" << std::endl;
-#endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
   {
@@ -173,11 +147,6 @@ void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 void BRepFeat_MakePipe::Perform()
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakePipe::Perform()" << std::endl;
-#endif
   mySFrom.Nullify();
   ShapeFromValid();
   mySUntil.Nullify();
@@ -231,11 +200,6 @@ void BRepFeat_MakePipe::Perform()
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakePipe::Perform(Until)" << std::endl;
-#endif
   if (Until.IsNull())
   {
     throw Standard_ConstructionError();
@@ -273,11 +237,6 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakePipe::Perform(From,Until)" << std::endl;
-#endif
   if (From.IsNull() || Until.IsNull())
   {
     throw Standard_ConstructionError();

@@ -38,9 +38,6 @@
 #include <NCollection_IndexedMap.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GetcontextNOPURGE();
-extern bool TopOpeBRepBuild_GetcontextNOCORRISO();
-extern bool TopOpeBRepBuild_GettraceCHK();
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \
     (sarg) = (sarg) + (shaset).DEBNumber() + (str);
@@ -112,10 +109,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
   // This can occur when the face has a closing edge. To avoid this,
   // we delete the lonesome closing edge from the wire.
   bool topurge = true;
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GetcontextNOPURGE())
-    topurge = false;
-#endif
 
   if (topurge)
   {
@@ -211,12 +204,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
   //   translates edge's pcurve to have it in F's UVbounds
   //   translates edge's pcurve to have it connexed to others in UV space
   bool corronISO = true;
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GetcontextNOCORRISO())
-    corronISO = false;
-  if (tSPS)
-    debcorriso(iF);
-#endif
   bool ffcloseds = FUN_tool_closedS(FF);
   corronISO      = corronISO && ffcloseds;
   if (corronISO)

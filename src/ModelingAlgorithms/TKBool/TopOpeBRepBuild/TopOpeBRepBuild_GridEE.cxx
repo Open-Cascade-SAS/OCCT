@@ -44,9 +44,6 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 
-#ifdef OCCT_DEBUG
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOSG();
-#endif
 
 #define M_FORWARD(st) (st == TopAbs_FORWARD)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
@@ -857,17 +854,10 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape&         
   {
     ori = TopAbs::Complement(ori);
   }
-#ifdef OCCT_DEBUG
-  if (!TopOpeBRepBuild_GetcontextNOSG())
+  if (!samegeom)
   {
-#endif
-    if (!samegeom)
-    {
-      ori = TopAbs::Complement(ori);
-    }
-#ifdef OCCT_DEBUG
+    ori = TopAbs::Complement(ori);
   }
-#endif
 
   bool lesmemes = E.IsEqual(myEdgeReference);
   if (!lesmemes)

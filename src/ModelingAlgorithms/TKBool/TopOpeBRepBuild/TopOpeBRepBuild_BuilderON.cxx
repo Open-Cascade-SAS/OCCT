@@ -34,9 +34,6 @@
 #include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextEINTERNAL();
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextEEXTERNAL();
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOSG();
 
 Standard_EXPORT void debON(const int iF)
 {
@@ -1239,17 +1236,10 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     {
       return; // nyiRAISE
     }
-#ifdef OCCT_DEBUG
-    if (!TopOpeBRepBuild_GetcontextNOSG())
+    if (!samegeom)
     {
-#endif
-      if (!samegeom)
-      {
-        oe3dk = TopAbs::Complement(oe3dk);
-      }
-#ifdef OCCT_DEBUG
+      oe3dk = TopAbs::Complement(oe3dk);
     }
-#endif
 
     bool keep3d = false;
     if (oe3dk == TopAbs_FORWARD)
@@ -1547,14 +1537,6 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
         return; // nyiRAISE
       }
       bool reverse = (!samegeom);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepBuild_GetcontextNOSG())
-        // MSV 21.03.2002: restore the general behaviour, since the function
-        //                 FUN_UNKFstasta was corrected.
-        reverse = false; // we exclude this line from #ifdef OCCT_DEBUG because
-                         // in optimised mode this line will never be included , and that
-                         // follows to regressions MZV-12-05-2000
-#endif
 
       if (reverse)
       {
@@ -2853,17 +2835,10 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     {
       return; // nyiRAISE
     }
-#ifdef OCCT_DEBUG
-    if (!TopOpeBRepBuild_GetcontextNOSG())
+    if (!samegeom)
     {
-#endif
-      if (!samegeom)
-      {
-        oe3dk = TopAbs::Complement(oe3dk);
-      }
-#ifdef OCCT_DEBUG
+      oe3dk = TopAbs::Complement(oe3dk);
     }
-#endif
 
     bool keep3d = false;
     // l'etat a construire sur FOR est TB1,
@@ -2957,17 +2932,10 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     {
       return; // nyiRAISE
     }
-#ifdef OCCT_DEBUG
-    if (!TopOpeBRepBuild_GetcontextNOSG())
+    if (!samegeom)
     {
-#endif
-      if (!samegeom)
-      {
-        oe2dk = TopAbs::Complement(oe2dk);
-      }
-#ifdef OCCT_DEBUG
+      oe2dk = TopAbs::Complement(oe2dk);
     }
-#endif
 
     bool keep2d = false;
     // l'etat a construire sur FOR est TB1,

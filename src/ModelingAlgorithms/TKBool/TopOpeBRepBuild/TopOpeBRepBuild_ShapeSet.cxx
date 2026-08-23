@@ -22,9 +22,6 @@
 #include <TopOpeBRepBuild_ShapeSet.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceCHK();
-extern bool TopOpeBRepBuild_GettraceCHKOK();
-extern bool TopOpeBRepBuild_GettraceCHKNOK();
 
 Standard_EXPORT void debaddss() {}
 
@@ -339,13 +336,6 @@ void TopOpeBRepBuild_ShapeSet::CheckShape(const bool checkshape)
 {
   myCheckShape = checkshape;
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape)
-  {
-    DumpName(std::cout, "no checkshape set on ");
-    std::cout << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================
@@ -397,31 +387,6 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
     return;
   }
 
-#ifdef OCCT_DEBUG
-  TopAbs_ShapeEnum t = S.ShapeType();
-  if (!chk)
-  {
-    if (TopOpeBRepBuild_GettraceCHK() || TopOpeBRepBuild_GettraceCHKNOK())
-    {
-      DumpName(OS, "*********************** ");
-      OS << str << " ";
-      TopAbs::Print(t, OS);
-      OS << " : incorrect" << std::endl;
-    }
-  }
-  else
-  {
-    if (TopOpeBRepBuild_GettraceCHK() || TopOpeBRepBuild_GettraceCHKOK())
-    {
-      DumpName(OS, "");
-      OS << str << " ";
-      TopAbs::Print(t, OS);
-      OS << " : correct" << std::endl;
-    }
-  }
-  if (!chk)
-    debaddss();
-#endif
 }
 
 //=================================================================================================

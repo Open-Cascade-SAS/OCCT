@@ -19,9 +19,6 @@
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_ShellFaceSet.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceCHK();
-#endif
 
 //=================================================================================================
 
@@ -47,31 +44,6 @@ TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
 {
   mySolid = TopoDS::Solid(S);
 
-#ifdef OCCT_DEBUG
-  myDEBName = "SFS";
-  if (A != NULL)
-  {
-    TopOpeBRepBuild_Builder* pB = ((TopOpeBRepBuild_Builder*)((void*)A));
-    myDEBNumber                 = pB->GdumpSHASETindex();
-    int  iS;
-    bool tSPS = pB->GtraceSPS(S, iS);
-    if (tSPS)
-    {
-      std::cout << "creation SFS " << myDEBNumber << " on ";
-    }
-    if (tSPS)
-    {
-      pB->GdumpSHA(S, NULL);
-      std::cout << std::endl;
-    }
-  }
-
-  if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape)
-  {
-    DumpName(std::cout, "no checkshape in creation of ");
-    std::cout << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================

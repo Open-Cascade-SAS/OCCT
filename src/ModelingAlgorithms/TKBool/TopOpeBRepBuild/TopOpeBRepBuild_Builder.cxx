@@ -51,11 +51,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceCU();
-extern bool TopOpeBRepBuild_GettraceCUV();
-extern bool TopOpeBRepBuild_GettraceSPF();
-extern bool TopOpeBRepBuild_GettraceSPS();
-extern bool TopOpeBRepBuild_GetcontextSF2();
 
 Standard_EXPORT void debmarksplit(const int i)
 {
@@ -1116,13 +1111,6 @@ void TopOpeBRepBuild_Builder::SplitEdge(const TopoDS_Shape& E,
                                         const TopAbs_State  ToBuild1,
                                         const TopAbs_State  ToBuild2)
 {
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GetcontextSF2())
-  {
-    SplitEdge2(E, ToBuild1, ToBuild2);
-    return;
-  }
-#endif
   SplitEdge1(E, ToBuild1, ToBuild2);
 }
 
@@ -1346,13 +1334,6 @@ void TopOpeBRepBuild_Builder::SplitFace(const TopoDS_Shape& Foriented,
                                         const TopAbs_State  ToBuild1,
                                         const TopAbs_State  ToBuild2)
 {
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GetcontextSF2())
-  {
-    SplitFace2(Foriented, ToBuild1, ToBuild2);
-    return;
-  }
-#endif
   SplitFace1(Foriented, ToBuild1, ToBuild2);
 }
 
@@ -1407,22 +1388,6 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
   // ----------------------------------------------
   TopOpeBRepBuild_WireEdgeSet WES(Fforward, this);
 
-#ifdef OCCT_DEBUG
-  bool tSPF  = TopOpeBRepBuild_GettraceSPF();
-  int  iFace = myDataStructure->Shape(Foriented);
-  if (tSPF)
-  {
-    std::cout << std::endl;
-    GdumpSHASTA(Foriented, ToBuild1, "=== SplitFace ");
-  }
-  if (tSPF)
-  {
-    GdumpSAMDOM(LF1, (char*)"1 : ");
-    GdumpSAMDOM(LF2, (char*)"2 : ");
-  }
-  if (tSPF)
-    debspf(iFace);
-#endif
 
   NCollection_List<TopoDS_Shape>::Iterator itLF1, itLF2;
 
@@ -1528,17 +1493,6 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   int n1 = LF1.Extent();
   int n2 = LF2.Extent();
 
-#ifdef OCCT_DEBUG
-  bool tSPF = TopOpeBRepBuild_GettraceSPF();
-  //  int iFace = myDataStructure->Shape(Foriented);
-  if (tSPF)
-  {
-    std::cout << std::endl;
-    GdumpSHASTA(Foriented, ToBuild1, "=== SplitFace ");
-    GdumpSAMDOM(LF1, (char*)"samedomain 1 : ");
-    GdumpSAMDOM(LF2, (char*)"samedomain 2 : ");
-  }
-#endif
 
   // SplitFace on a face having other same domained faces on the
   // other shape : do not reverse orientation of faces in FillFace
@@ -1571,15 +1525,6 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   FindSameRank(LFSO, rankX, LFSO2);
   FindSameRank(LFOO, rankX, LFOO2);
 
-#ifdef OCCT_DEBUG
-  if (tSPF)
-  {
-    GdumpSAMDOM(LFSO1, (char*)"LFSO1 : ");
-    GdumpSAMDOM(LFOO1, (char*)"LFOO1 : ");
-    GdumpSAMDOM(LFSO2, (char*)"LFSO2 : ");
-    GdumpSAMDOM(LFOO2, (char*)"LFOO2 : ");
-  }
-#endif
 
   TopAbs_State tob1     = ToBuild1;
   TopAbs_State tob2     = ToBuild2;
@@ -1792,18 +1737,6 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
   // -----------------------------------------
   TopOpeBRepBuild_ShellFaceSet SFS;
 
-#ifdef OCCT_DEBUG
-  bool tSPS = TopOpeBRepBuild_GettraceSPS();
-  //  int iSolid = myDataStructure->Shape(S1oriented);
-  if (tSPS)
-  {
-    std::cout << std::endl;
-    GdumpSHASTA(S1oriented, ToBuild1, "___ SplitSolid ");
-    GdumpSAMDOM(LS1, (char*)"1 : ");
-    GdumpSAMDOM(LS2, (char*)"2 : ");
-  }
-  SFS.DEBNumber(GdumpSHASETindex());
-#endif
 
   STATIC_SOLIDINDEX = 1;
   NCollection_List<TopoDS_Shape>::Iterator itLS1;
@@ -1836,18 +1769,6 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
         TopAbs_Orientation ori   = SSurfaces.Orientation(ToBuild1);
         myBuildTool.Orientation(aFace, ori);
 
-#ifdef OCCT_DEBUG
-        if (tSPS)
-        {
-          TCollection_AsciiString ss("--- SplitSolid ");
-          ss = ss + SFS.DEBNumber() + " AddElement SFS+ face ";
-          GdumpSHA(aFace, (void*)ss.ToCString());
-          std::cout << " ";
-          TopAbs::Print(ToBuild1, std::cout) << " : 1 face ";
-          TopAbs::Print(ori, std::cout);
-          std::cout << std::endl;
-        }
-#endif
         SFS.AddElement(aFace);
       }
     }
@@ -2163,18 +2084,6 @@ void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape&                   F1,
                                        TopOpeBRepBuild_WireEdgeSet&          WES,
                                        const bool                            RevOri)
 {
-#ifdef OCCT_DEBUG
-  bool tSPF = TopOpeBRepBuild_GettraceSPF();
-  //  int iFace = myDataStructure->Shape(F1);
-  if (tSPF)
-  {
-    std::cout << std::endl;
-  }
-  if (tSPF)
-  {
-    GdumpSHASTA(F1, ToBuild1, "=-= FillFace ");
-  }
-#endif
   myListOfFace = LF2;
   FillShape(F1, ToBuild1, LF2, ToBuild2, WES, RevOri);
   myListOfFace.Clear();

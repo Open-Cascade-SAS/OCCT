@@ -19,9 +19,6 @@
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceAREA();
-#endif
 
 //=================================================================================================
 
@@ -248,10 +245,6 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
   {
     if (myArea.IsEmpty())
     {
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepBuild_GettraceAREA())
-        std::cout << "---" << std::endl << "--- purge" << std::endl << "---" << std::endl;
-#endif
       NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> newArea3;
       newArea3.Append(boundaryloops);
       myArea.Append(newArea3);

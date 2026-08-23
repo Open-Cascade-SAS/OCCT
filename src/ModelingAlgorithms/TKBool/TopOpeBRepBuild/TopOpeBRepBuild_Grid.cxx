@@ -21,9 +21,6 @@
 #include <TopOpeBRepBuild_GTopo.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GetcontextSPEON();
-#endif
 
 //=================================================================================================
 
@@ -51,41 +48,6 @@ bool TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S, const TopAbs_State
   }
 #endif
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GetcontextSPEON())
-  {                                              // CONTEXT
-    tSPS       = true;                           // CONTEXT
-    bool hasON = false;                          // CONTEXT
-    bool isE   = (S.ShapeType() == TopAbs_EDGE); // CONTEXT
-    if (isE)
-    {                                                                   // CONTEXT
-      const TopoDS_Edge& E    = TopoDS::Edge(S);                        // CONTEXT
-      bool               issE = myDataStructure->DS().IsSectionEdge(E); // CONTEXT
-      if (issE)
-      {                                         // CONTEXT
-        bool issplitON = IsSplit(E, TopAbs_ON); // CONTEXT
-        if (issplitON)
-        {                                        // CONTEXT
-          int n = Splits(E, TopAbs_ON).Extent(); // CONTEXT
-          hasON = (n > 0);                       // CONTEXT
-        } // CONTEXT
-      } // CONTEXT
-    } // CONTEXT
-    bool tosplitH = tosplit || hasON; // CONTEXT
-    if (tSPS)
-    {
-      std::cout << "GToSplit context SPEON";
-    } // CONTEXT
-    if (tSPS)
-    {
-      std::cout << " " << tosplitH << " : tosplit " << tosplit;
-    } // CONTEXT
-    if (tSPS)
-    {
-      std::cout << " || hasON " << hasON << std::endl;
-    } // CONTEXT
-  } // CONTEXT
-#endif
 
   return tosplit;
 } // GToSplit
