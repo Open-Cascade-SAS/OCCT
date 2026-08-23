@@ -595,8 +595,7 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
   double                                    aLabelWidth;
   occ::handle<StdPrs_BRepFont>              aFont;
   std::optional<BRepFont_Builder::TextPlan> aTextPlan;
-  TCollection_ExtendedString                aLabelString =
-    GetValueString(aLabelWidth, aFont, aTextPlan);
+  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth, aFont, aTextPlan);
 
   // add margins to label width
   if (aDimensionAspect->IsText3d())

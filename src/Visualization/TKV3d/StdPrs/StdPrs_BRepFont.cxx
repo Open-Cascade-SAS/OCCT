@@ -263,11 +263,11 @@ public:
   {
     const double aScale = theSize / THE_FONT_METRIC_SIZE;
     FontMetrics         = Metrics{theSize,
-                                  aScale,
-                                  aScale * static_cast<double>(Font->Ascender()),
-                                  aScale * static_cast<double>(Font->Descender()),
-                                  aScale * static_cast<double>(Font->LineSpacing()),
-                                  aScale * static_cast<double>(Font->PointSize())};
+                          aScale,
+                          aScale * static_cast<double>(Font->Ascender()),
+                          aScale * static_cast<double>(Font->Descender()),
+                          aScale * static_cast<double>(Font->LineSpacing()),
+                          aScale * static_cast<double>(Font->PointSize())};
   }
 
   std::optional<Request> MakeRequest(const char32_t theChar)

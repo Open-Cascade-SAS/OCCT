@@ -190,8 +190,8 @@ BRepFont_Regularizer::Result BRepFont_Regularizer::Build(const Font_GlyphOutline
   NCollection_FlatMap<uint64_t> anIntersectingLoopPairs;
   const IntersectionKind        anIntersectionKind =
     aRegion.IsSingleStroke()
-      ? IntersectionKind::None
-      : intersections(aRegion, theOptions.Tolerance, anIntersectingLoopPairs);
+             ? IntersectionKind::None
+             : intersections(aRegion, theOptions.Tolerance, anIntersectingLoopPairs);
   if (anIntersectionKind != IntersectionKind::None)
   {
     if (!theOutline.HasPossibleOverlaps())
@@ -651,8 +651,8 @@ LineIntersection intersectLineQuadratic(const BRepFont_PlanarRegion::Curve& theL
         const double aValue = aStartParameter * (aU * aU)
                               + aControlParameter * (2.0 * aU * anExtremum)
                               + anEndParameter * (anExtremum * anExtremum);
-        aMinParameter       = std::min(aMinParameter, aValue);
-        aMaxParameter       = std::max(aMaxParameter, aValue);
+        aMinParameter = std::min(aMinParameter, aValue);
+        aMaxParameter = std::max(aMaxParameter, aValue);
       }
     }
 
@@ -800,14 +800,14 @@ IntersectionKind intersections(const BRepFont_PlanarRegion&   theRegion,
       const gp_XY aFirstTangent = aCurve.Control1() - aCurve.Start();
       const gp_XY aLastTangent  = aCurve.End() - aCurve.Control1();
       const bool  isMonotonicX  = (aFirstTangent.X() >= 0.0 && aLastTangent.X() >= 0.0
-                                   && (aFirstTangent.X() > 0.0 || aLastTangent.X() > 0.0))
-                                  || (aFirstTangent.X() <= 0.0 && aLastTangent.X() <= 0.0
-                                      && (aFirstTangent.X() < 0.0 || aLastTangent.X() < 0.0));
-      const bool  isMonotonicY  = (aFirstTangent.Y() >= 0.0 && aLastTangent.Y() >= 0.0
-                                   && (aFirstTangent.Y() > 0.0 || aLastTangent.Y() > 0.0))
-                                  || (aFirstTangent.Y() <= 0.0 && aLastTangent.Y() <= 0.0
-                                      && (aFirstTangent.Y() < 0.0 || aLastTangent.Y() < 0.0));
-      toCheckSelfIntersection   = !isMonotonicX && !isMonotonicY;
+                                 && (aFirstTangent.X() > 0.0 || aLastTangent.X() > 0.0))
+                                || (aFirstTangent.X() <= 0.0 && aLastTangent.X() <= 0.0
+                                    && (aFirstTangent.X() < 0.0 || aLastTangent.X() < 0.0));
+      const bool isMonotonicY = (aFirstTangent.Y() >= 0.0 && aLastTangent.Y() >= 0.0
+                                 && (aFirstTangent.Y() > 0.0 || aLastTangent.Y() > 0.0))
+                                || (aFirstTangent.Y() <= 0.0 && aLastTangent.Y() <= 0.0
+                                    && (aFirstTangent.Y() < 0.0 || aLastTangent.Y() < 0.0));
+      toCheckSelfIntersection = !isMonotonicX && !isMonotonicY;
     }
     if (toCheckSelfIntersection)
     {
