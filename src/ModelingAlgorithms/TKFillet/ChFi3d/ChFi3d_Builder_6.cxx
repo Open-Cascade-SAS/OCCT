@@ -77,8 +77,6 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <NCollection_List.hxx>
 
-
-
 //=================================================================================================
 
 static int SearchIndex(const double Value, occ::handle<BRepBlend_Line>& Lin)

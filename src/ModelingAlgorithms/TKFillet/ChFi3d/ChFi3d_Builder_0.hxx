@@ -59,7 +59,6 @@ class Geom2dInt_GInter;
 Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,
                                                    const int            theHatchingIndex);
 
-
 double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, const double Eps);
 
 void ChFi3d_Boite(const gp_Pnt2d& p1,

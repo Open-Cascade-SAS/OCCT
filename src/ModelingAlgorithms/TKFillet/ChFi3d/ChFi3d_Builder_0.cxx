@@ -82,7 +82,6 @@
 #include <algorithm>
 #include <cmath>
 
-
 //=================================================================================================
 
 double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, const double Eps)

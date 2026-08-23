@@ -59,7 +59,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 
-
 //=================================================================================================
 
 static int SearchPivot(int* s, double u[3][3], const double t)
@@ -227,7 +226,6 @@ static bool ToricCorner(const TopoDS_Face& F, const double rd, const double rf, 
 
 void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
 {
-
 
   TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
   const TopoDS_Vertex&                                   Vtx  = myVDataMap.FindKey(Jndex);
@@ -657,10 +655,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
 
   done = false;
 
-
   if (c1toric)
   {
-
 
     // Direct Construction.
     // ---------------------
@@ -678,11 +674,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                                                 pfac2,
                                                 psurf1,
                                                 psurf2);
-
   }
   else if (c1spheric)
   {
-
 
     done = ChFiKPart_ComputeData::ComputeCorner(DStr,
                                                 coin,
@@ -696,7 +690,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                                                 pfac1,
                                                 psurf1,
                                                 psurf2);
-
   }
   else if (c1pointu)
   {
@@ -706,7 +699,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   {
     if (!filling)
     {
-
 
       // Calculate a guideline,
       //------------------------------
@@ -854,12 +846,10 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
           filling = true;
         }
       }
-
     }
 
     if (filling)
     {
-
 
       // the contour to be fillet consists of straight lines uv in beginning and end
       // of two pcurves (only one if c1pointu) calculated as possible
@@ -955,7 +945,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                           false,
                           false,
                           false);
-
     }
   }
   double P1deb, P2deb, P1fin, P2fin;
@@ -969,7 +958,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   {
     // Update of 4 Stripes and the DS
     // -------------------------------------
-
 
     gp_Pnt2d                  pp1, pp2;
     double                    parpp1, parpp2;
@@ -1265,5 +1253,4 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   myEVIMap.ChangeFind(Vtx).Append(coin->Surf());
   corner->SetSolidIndex(CD[pivot]->SolidIndex());
   myListStripe.Append(corner);
-
 }

@@ -53,7 +53,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 
-
 //=================================================================================================
 
 static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
@@ -201,7 +200,6 @@ void ChFi3d_Builder::Compute()
   // preanalysis to evaluate the extensions.
   ExtentAnalyse();
 
-
   // Construction of the stripe of fillet on each stripe.
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
@@ -231,7 +229,6 @@ void ChFi3d_Builder::Compute()
     done = true;
   }
   done = (badstripes.IsEmpty());
-
 
   // construct fillets on each vertex + feed the Ds
   if (done)
@@ -265,7 +262,6 @@ void ChFi3d_Builder::Compute()
       done = badvertices.IsEmpty();
     }
   }
-
 
   NCollection_Map<int> MapIndSo;
   TopExp_Explorer      expso(myShape, TopAbs_SOLID);
@@ -325,7 +321,6 @@ void ChFi3d_Builder::Compute()
         break;
       }
     }
-
 
     if (done)
     {
@@ -495,7 +490,6 @@ void ChFi3d_Builder::Compute()
 
       // Regularities are coded after cutting.
       SetRegul();
-
     }
   }
 

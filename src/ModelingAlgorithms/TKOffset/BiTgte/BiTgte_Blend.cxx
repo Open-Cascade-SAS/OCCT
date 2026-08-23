@@ -78,7 +78,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-
 // include - all hxx,
 //         - all small static functions.
 //======================== START STATIC FUNCTIONS ============
@@ -405,7 +404,6 @@ occ::handle<Geom_Curve> MakeCurve(const BiTgte_CurveOnEdge& HC)
 {
   occ::handle<Geom_Curve> C;
 
-
   if (HC.GetType() == GeomAbs_Circle)
   {
     C = new Geom_Circle(HC.Circle());
@@ -447,7 +445,6 @@ occ::handle<Geom_Curve> MakeCurve(const BiTgte_CurveOnEdge& HC)
 
     C = new Geom_BSplineCurve(NewPoles, NewKnots, NewMults, Conv.Degree());
   }
-
 
   return C;
 }
@@ -831,7 +828,6 @@ void BiTgte_Blend::Perform(const bool BuildShape)
   myShape = SewedShape;
   // end Sewing for false free borders.
 
-
   // ----------------------------------------------------------------
   // place faces with the proper orientation in the initial shape
   // ----------------------------------------------------------------
@@ -857,13 +853,11 @@ void BiTgte_Blend::Perform(const bool BuildShape)
 
   ComputeCenters();
 
-
   // -----------------------------
   // Calculate connection Surfaces
   // -----------------------------
 
   ComputeSurfaces();
-
 
   // ----------------------------------
   // Calculate the generated shape if required
@@ -874,11 +868,9 @@ void BiTgte_Blend::Perform(const bool BuildShape)
     ComputeShape();
   }
 
-
   // Finally construct curves 3d from edges to be transferred
   // since the partition is provided ( A Priori);
   BRepLib::BuildCurves3d(myResult, Precision::Confusion());
-
 
   myDone = true;
 }

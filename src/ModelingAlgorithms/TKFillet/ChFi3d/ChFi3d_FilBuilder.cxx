@@ -65,7 +65,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 
-
 static double MaxRad(const occ::handle<ChFiDS_FilSpine>& fsp,
 
                      const TopoDS_Edge& E)
@@ -1554,7 +1553,6 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
     FInv.Set(fsp->Radius(), Choix);
     Func.Set(myShape);
 
-
     done = ComputeData(Data,
                        HGuide,
                        Spine,
@@ -1584,15 +1582,12 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
                        RecOnS1,
                        RecOnS2);
 
-
     if (!done)
     {
       return false; // recovery is possible PMN 14/05/1998
     }
 
-
     done = CompleteData(Data, Func, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
-
 
     if (!done)
     {
@@ -1607,7 +1602,6 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
     Func.Set(Choix);
     FInv.Set(Choix);
     Func.Set(myShape);
-
 
     done = ComputeData(Data,
                        HGuide,
@@ -1643,9 +1637,7 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
       return false;
     }
 
-
     done = CompleteData(Data, Func, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
-
 
     if (!done)
     {

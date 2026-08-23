@@ -64,7 +64,6 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-
 //=======================================================================
 // function : ToricRotule
 // purpose  : Test if it is a particular case of torus routine.
@@ -436,7 +435,6 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
     }
   }
 
-
   // bevel
   //------
   ChFiDS_CommonPoint      cp11, cp12, cp21, cp22;
@@ -446,7 +444,6 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   {
 
     done = PerformTwoCornerbyInter(Index);
-
 
     if (!done)
     {
@@ -513,8 +510,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         {
           bid = ChFi3d::ConcaveSide(BRS1, BRS2, pivot, op1, op2);
         }
-        op1 = TopAbs::Reverse(op1);
-        op2 = TopAbs::Reverse(op2);
+        op1           = TopAbs::Reverse(op1);
+        op2           = TopAbs::Reverse(op2);
         double radius = occ::down_cast<ChFiDS_FilSpine>(st1->Spine())->Radius();
         done          = ChFiKPart_ComputeData::ComputeCorner(DStr,
                                                     coin,

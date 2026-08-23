@@ -685,7 +685,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
   Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
   TopExp_Explorer ex;
 
-
   if (onsame)
   {
     if (!CV1.IsOnArc() && !CV2.IsOnArc())
@@ -903,7 +902,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
     Update(HBs, pced, HGs, Fd->ChangeInterferenceOnS2(), CV2, isfirst);
   }
 
-
   TopoDS_Edge                    edgecouture;
   bool                           couture, intcouture = false;
   double                         tolreached = tolapp3d;
@@ -1071,7 +1069,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
 
     //
   }
-
 
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV1, DStr), isfirst, 1);
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2, DStr), isfirst, 2);
@@ -1651,7 +1648,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
   {
     ChFi3d_SetPointTolerance(DStr, box2, stripe->IndexPoint(isfirst, 2));
   }
-
 }
 
 //=======================================================================
@@ -1836,7 +1832,6 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
   // - top has n (n>3) adjacent edges
   // - top has 3 edges and fillet on one of edges touches
   //   more than one face
-
 
   TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
   const int                                              nn   = 15;
@@ -5145,7 +5140,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
     //
   }
 
-
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV1, DStr), isfirst, 1);
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2, DStr), isfirst, 2);
 
@@ -5424,5 +5418,4 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
   {
     ChFi3d_SetPointTolerance(DStr, box2, stripe->IndexPoint(isfirst, 2));
   }
-
 }

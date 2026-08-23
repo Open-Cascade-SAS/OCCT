@@ -54,7 +54,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <memory>
 
-
 //=======================================================================
 // function : SearchCommonFaces
 // purpose  : search the 2 common faces <F1> and <F2> of the edge <E>

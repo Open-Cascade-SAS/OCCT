@@ -1228,9 +1228,9 @@ static TopAbs_Orientation PlateOrientation(
 
 void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
 {
-//    ========================================
-//             Initialisations
-//     ========================================
+  //    ========================================
+  //             Initialisations
+  //     ========================================
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   const TopoDS_Vertex&        V1   = myVDataMap.FindKey(Jndex);
   int                         nedge;
@@ -3470,9 +3470,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
     }
   }
 
-
   PSurf.Perform();
-
 
   // call of approx
 
@@ -3495,7 +3493,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
     occ::handle<Geom_Surface>  Surf(Mapp.Surface());
     double                     coef = 1.1, apperror;
     apperror                        = Mapp.CriterionError() * coef;
-
 
     //  Storage of the surface plate and corresponding curves in the DS
 
