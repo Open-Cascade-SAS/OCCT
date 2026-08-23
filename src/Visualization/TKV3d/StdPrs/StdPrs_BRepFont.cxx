@@ -37,10 +37,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)
 namespace
 {
 // A 72-point font is one inch high. The high resolution reduces rounding in FreeType text metrics.
-constexpr uint32_t     THE_POINTS_PER_INCH = 72;
-constexpr uint32_t     THE_FONT_POINT_SIZE = 72;
-constexpr uint32_t     THE_FONT_RESOLUTION = 4800;
-constexpr double       THE_FONT_METRIC_SIZE =
+constexpr uint32_t THE_POINTS_PER_INCH = 72;
+constexpr uint32_t THE_FONT_POINT_SIZE = 72;
+constexpr uint32_t THE_FONT_RESOLUTION = 4800;
+constexpr double   THE_FONT_METRIC_SIZE =
   static_cast<double>(THE_FONT_POINT_SIZE) * THE_FONT_RESOLUTION / THE_POINTS_PER_INCH;
 constexpr Font_FTFont::Params THE_FONT_PARAMETERS{THE_FONT_POINT_SIZE, THE_FONT_RESOLUTION};
 
@@ -197,9 +197,9 @@ public:
   [[nodiscard]] occ::handle<Impl> Copy() const
   {
     std::lock_guard<std::mutex> aLock(FontMutex);
-    occ::handle<Impl>           aCopy         = new Impl();
+    occ::handle<Impl>           aCopy = new Impl();
     aCopy->Font->SetUseUnicodeSubsetFallback(Font->ToUseUnicodeSubsetFallback());
-    bool                        isInitialized = false;
+    bool isInitialized = false;
     if (const FileSource* aSource = std::get_if<FileSource>(&FontSource))
     {
       isInitialized =
