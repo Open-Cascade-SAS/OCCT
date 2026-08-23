@@ -41,6 +41,8 @@
 #include <GC_MakeArcOfCircle.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
@@ -64,6 +66,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 // Regression for fillets that must remove an intervening face or meet on opposite
 // edges of a prism. Related reports:
@@ -765,4 +768,84 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   GProp_GProps aResultProps;
   BRepGProp::SurfaceProperties(aResult, aResultProps);
   EXPECT_NEAR(aResultProps.Mass(), 7507.61, 7507.61 * 0.001) << "Surface area mismatch";
+}
+
+namespace
+{
+//! A progress indicator that reports a user break once its poll allowance is spent.
+class ChFi3d_BreakAfterPolls : public Message_ProgressIndicator
+{
+public:
+  explicit ChFi3d_BreakAfterPolls(const int theAllowance)
+      : myAllowance(theAllowance)
+  {
+  }
+
+  //! Counts the poll and asks for a break past the allowance.
+  bool UserBreak() override { return ++myPolls > myAllowance; }
+
+  //! Returns how many times the algorithm polled for a user break.
+  int Polls() const { return myPolls; }
+
+protected:
+  void Show(const Message_ProgressScope&, const bool) override {}
+
+private:
+  int myAllowance = 0;
+  int myPolls     = 0;
+};
+
+//! Asks the maker for a constant fillet on every edge of the shape.
+void FilletEveryEdge(BRepFilletAPI_MakeFillet& theMaker,
+                     const TopoDS_Shape&       theShape,
+                     const double              theRadius)
+{
+  for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    theMaker.Add(theRadius, TopoDS::Edge(anExp.Current()));
+  }
+}
+} // namespace
+
+// The progress range given to Build() must reach ChFi3d_Builder::Compute(): a break asked for
+// before the first contour gives up without a result, and Reset() puts the maker back to work.
+TEST(BRepFilletAPI_MakeFilletTest, UserBreakGivesUpTheBuild)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepFilletAPI_MakeFillet aMaker(aBox);
+  FilletEveryEdge(aMaker, aBox, 1.0);
+
+  occ::handle<ChFi3d_BreakAfterPolls> aBreakAtOnce = new ChFi3d_BreakAfterPolls(0);
+  aMaker.Build(aBreakAtOnce->Start());
+
+  EXPECT_FALSE(aMaker.IsDone()) << "A user break must leave the fillet not done";
+  EXPECT_EQ(aBreakAtOnce->Polls(), 1) << "The build must give up at the first poll";
+
+  aMaker.Reset();
+  FilletEveryEdge(aMaker, aBox, 1.0);
+  aMaker.Build();
+  EXPECT_TRUE(aMaker.IsDone()) << "A maker broken off must build again after Reset()";
+}
+
+// A range that never breaks must not change the outcome, and the build must reach all three poll
+// points: between contours, between vertices and before the topological reconstruction.
+TEST(BRepFilletAPI_MakeFilletTest, UnbrokenProgressRangeBuildsAsBefore)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepFilletAPI_MakeFillet aMaker(aBox);
+  FilletEveryEdge(aMaker, aBox, 1.0);
+
+  occ::handle<ChFi3d_BreakAfterPolls> aNeverBreaks =
+    new ChFi3d_BreakAfterPolls(std::numeric_limits<int>::max());
+  aMaker.Build(aNeverBreaks->Start());
+
+  ASSERT_TRUE(aMaker.IsDone()) << "Fillet must be done";
+  EXPECT_GE(aNeverBreaks->Polls(), 3) << "Every poll point must be reached";
+
+  BRepCheck_Analyzer aChecker(aMaker.Shape());
+  EXPECT_TRUE(aChecker.IsValid()) << "Result shape must be valid";
 }

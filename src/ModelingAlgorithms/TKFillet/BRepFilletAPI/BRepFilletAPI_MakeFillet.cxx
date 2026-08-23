@@ -368,9 +368,9 @@ occ::handle<TopOpeBRepBuild_HBuilder> BRepFilletAPI_MakeFillet::Builder() const
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& /*theRange*/)
+void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& theRange)
 {
-  myBuilder.Compute();
+  myBuilder.Compute(theRange);
   if (myBuilder.IsDone())
   {
     Done();

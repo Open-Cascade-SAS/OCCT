@@ -181,7 +181,7 @@ void ChFi3d_Builder::ExtentAnalyse()
 
 //=================================================================================================
 
-void ChFi3d_Builder::Compute()
+void ChFi3d_Builder::Compute(const Message_ProgressRange& theRange)
 {
 
 #ifdef OCCT_DEBUG // perf
@@ -272,6 +272,11 @@ void ChFi3d_Builder::Compute()
   // Construction of the stripe of fillet on each stripe.
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
+    if (theRange.UserBreak())
+    {
+      done = false;
+      return;
+    }
     itel.Value()->Spine()->SetErrorStatus(ChFiDS_Ok);
     try
     {
@@ -310,6 +315,11 @@ void ChFi3d_Builder::Compute()
     int j;
     for (j = 1; j <= myVDataMap.Extent(); j++)
     {
+      if (theRange.UserBreak())
+      {
+        done = false;
+        return;
+      }
       try
       {
         OCC_CATCH_SIGNALS
@@ -341,6 +351,12 @@ void ChFi3d_Builder::Compute()
   ChFi3d_ResultChron(cl_perffilletonvertex, t_perffilletonvertex);
   ChFi3d_InitChron(cl_filds);
 #endif
+
+  if (theRange.UserBreak())
+  {
+    done = false;
+    return;
+  }
 
   NCollection_Map<int> MapIndSo;
   TopExp_Explorer      expso(myShape, TopAbs_SOLID);

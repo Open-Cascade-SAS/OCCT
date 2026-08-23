@@ -20,6 +20,8 @@
 #include <gp_Ax2.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
@@ -296,4 +298,56 @@ TEST(BRepFilletAPI_MakeChamferTest, SequentialChamferNoCrash)
   // Verify at least one chamfer iteration succeeded, ensuring the test
   // meaningfully exercises topology changes rather than trivially passing.
   EXPECT_GE(aSuccessCount, 1);
+}
+
+namespace
+{
+//! A progress indicator that asks for a user break as soon as it is polled.
+class ChFi3d_BreakAtOnce : public Message_ProgressIndicator
+{
+public:
+  bool UserBreak() override
+  {
+    ++myPolls;
+    return true;
+  }
+
+  //! Returns how many times the algorithm polled for a user break.
+  int Polls() const { return myPolls; }
+
+protected:
+  void Show(const Message_ProgressScope&, const bool) override {}
+
+private:
+  int myPolls = 0;
+};
+} // namespace
+
+// The chamfer builder shares ChFi3d_Builder::Compute() with the fillet, so the progress range
+// given to Build() must reach it here as well.
+TEST(BRepFilletAPI_MakeChamferTest, UserBreakGivesUpTheBuild)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(20.0, 20.0, 20.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aMaker(aBox);
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aMaker.Add(2.0, TopoDS::Edge(anExp.Current()));
+  }
+
+  occ::handle<ChFi3d_BreakAtOnce> aBreakAtOnce = new ChFi3d_BreakAtOnce();
+  aMaker.Build(aBreakAtOnce->Start());
+
+  EXPECT_FALSE(aMaker.IsDone()) << "A user break must leave the chamfer not done";
+  EXPECT_EQ(aBreakAtOnce->Polls(), 1) << "The build must give up at the first poll";
+
+  aMaker.Reset();
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aMaker.Add(2.0, TopoDS::Edge(anExp.Current()));
+  }
+  aMaker.Build();
+  EXPECT_TRUE(aMaker.IsDone()) << "A maker broken off must build again after Reset()";
 }

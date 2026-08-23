@@ -29,6 +29,7 @@
 #include <ChFiDS_StripeMap.hxx>
 #include <ChFiDS_ElSpine.hxx>
 #include <math_Vector.hxx>
+#include <Message_ProgressRange.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -128,7 +129,10 @@ public:
 
   //! general calculation of geometry on all edges,
   //! topologic reconstruction.
-  Standard_EXPORT void Compute();
+  //! @param theRange the range polled for a user break; the computation is given up between
+  //!                 contours, between vertices and before the topological reconstruction, and
+  //!                 IsDone() then returns false.
+  Standard_EXPORT void Compute(const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! returns True if the computation is success
   Standard_EXPORT bool IsDone() const;

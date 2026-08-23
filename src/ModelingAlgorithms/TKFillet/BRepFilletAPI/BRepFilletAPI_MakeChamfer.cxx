@@ -272,9 +272,9 @@ occ::handle<TopOpeBRepBuild_HBuilder> BRepFilletAPI_MakeChamfer::Builder() const
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::Build(const Message_ProgressRange& /*theRange*/)
+void BRepFilletAPI_MakeChamfer::Build(const Message_ProgressRange& theRange)
 {
-  myBuilder.Compute();
+  myBuilder.Compute(theRange);
   if (myBuilder.IsDone())
   {
     Done();
