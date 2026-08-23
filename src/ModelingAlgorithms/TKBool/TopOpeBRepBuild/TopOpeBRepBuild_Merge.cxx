@@ -42,9 +42,6 @@
 #include <cmath>
 
 // #include <DBRep.hxx>
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceSPS();
-#endif
 //------------
 // static int ifvNbFace = 0;
 // static char *name = "                 ";

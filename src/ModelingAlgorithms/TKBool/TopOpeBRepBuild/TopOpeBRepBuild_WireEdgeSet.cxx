@@ -37,13 +37,7 @@
 #include <TopOpeBRepTool_2d.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool              TopOpeBRep_GettraceSHA(const int i);
-extern bool              TopOpeBRepBuild_GettraceSS();
-extern bool              TopOpeBRepBuild_GetcontextSSCONNEX();
-extern bool              TopOpeBRepBuild_GettraceCHK();
 TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
-
-void debwesclo(const int) {}
 #endif
 
 //=================================================================================================
@@ -87,9 +81,6 @@ void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
 
 void TopOpeBRepBuild_WireEdgeSet::AddStartElement(const TopoDS_Shape& S)
 {
-#ifdef OCCT_DEBUG
-
-#endif
   bool tocheck = true;
   bool isedge  = (S.ShapeType() == TopAbs_EDGE);
   if (isedge)
@@ -442,13 +433,6 @@ void TopOpeBRepBuild_WireEdgeSet::LocalD1(const TopoDS_Shape& SF,
 
 bool TopOpeBRepBuild_WireEdgeSet::IsClosed(const TopoDS_Shape& E) const
 {
-#ifdef OCCT_DEBUG
-  int  ista = myOMSS.FindIndex(E);
-  bool tsh  = (ista) ? TopOpeBRep_GettraceSHA(ista) : false;
-  if (tsh)
-    debwesclo(ista);
-#endif
-
   const TopoDS_Edge& EE     = TopoDS::Edge(E);
   bool               closed = BRep_Tool::IsClosed(EE, myFace);
   return closed;

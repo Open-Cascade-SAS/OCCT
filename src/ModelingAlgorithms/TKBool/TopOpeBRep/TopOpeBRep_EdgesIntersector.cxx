@@ -50,8 +50,6 @@ extern bool TopOpeBRep_GettracePROEDG();
 extern bool TopOpeBRep_GetcontextTOL0();
 extern bool TopOpeBRep_GetcontextNOFEI();
 extern bool TopOpeBRep_GettraceFITOL();
-extern bool TopOpeBRep_GettraceEEFF();
-extern void debeeff();
   #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_INTEE("intersection edge/edge");
 #endif
@@ -602,11 +600,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   myNbPoints     = mylpnt.Length();
   myTrueNbPoints = myNbPoints + 2 * myNbSegments;
   myPointIndex   = 0;
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceEEFF())
-    debeeff();
-#endif
 
   MakePoints2d();
   if (ReduceSegment)
