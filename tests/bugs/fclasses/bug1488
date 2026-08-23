@@ -1,0 +1,12 @@
+puts "========"
+puts "GitHub Issue #1488: Vector scale error in DRAW"
+puts "========"
+
+set aScaled2d [2dscale 1 2 5]
+checkreal "2D scaled vector X component" [lindex ${aScaled2d} 0] 5 0 0
+checkreal "2D scaled vector Y component" [lindex ${aScaled2d} 1] 10 0 0
+
+set aScaled3d [scale 1 -2 3 -4]
+checkreal "3D scaled vector X component" [lindex ${aScaled3d} 0] -4 0 0
+checkreal "3D scaled vector Y component" [lindex ${aScaled3d} 1] 8 0 0
+checkreal "3D scaled vector Z component" [lindex ${aScaled3d} 2] -12 0 0
