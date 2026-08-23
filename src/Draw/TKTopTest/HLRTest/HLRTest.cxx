@@ -322,22 +322,6 @@ static int show(Draw_Interpretor&, int, const char**)
 
 //=================================================================================================
 
-static int hdbg(Draw_Interpretor& di, int, const char**)
-{
-  hider->Debug(!hider->Debug());
-  if (hider->Debug())
-  {
-    di << "debug\n";
-  }
-  else
-  {
-    di << "no debug\n";
-  }
-  return 0;
-}
-
-//=================================================================================================
-
 static int hnul(Draw_Interpretor&, int, const char**)
 {
   hider->OutLinedShapeNullify();
@@ -618,7 +602,6 @@ void HLRTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("hupdate", "hupdate", __FILE__, upda, g);
   theCommands.Add("hhide", "hhide", __FILE__, hide, g);
   theCommands.Add("hshowall", "hshowall", __FILE__, show, g);
-  theCommands.Add("hdebug", "hdebug", __FILE__, hdbg, g);
   theCommands.Add("hnullify", "hnullify", __FILE__, hnul, g);
   theCommands.Add("hres2d", "hres2d", __FILE__, hres, g);
 
