@@ -425,7 +425,9 @@ void PrsDim_AngleDimension::DrawArcWithText(const occ::handle<Prs3d_Presentation
                                             const TCollection_ExtendedString&      theText,
                                             const double                           theTextWidth,
                                             const int                              theMode,
-                                            const int                              theLabelPosition)
+                                            const int                              theLabelPosition,
+                                            const occ::handle<StdPrs_BRepFont>&    theFont,
+                                            const BRepFont_Builder::TextPlan*      thePlan)
 {
   gp_Pln aPlane(myCenterPoint, GetNormalForMinAngle());
 
@@ -455,7 +457,7 @@ void PrsDim_AngleDimension::DrawArcWithText(const occ::handle<Prs3d_Presentation
     gp_Dir aTextDir = gce_MakeDir(theFirstAttach, theSecondAttach);
 
     // Drawing text
-    drawText(thePresentation, aTextPos, aTextDir, theText, theLabelPosition);
+    drawText(thePresentation, aTextPos, aTextDir, theText, theLabelPosition, theFont, thePlan);
   }
 
   if (theMode != ComputeMode_All && theMode != ComputeMode_Line)
@@ -590,8 +592,11 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
   double anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
   // prepare label string and compute its geometrical width
-  double                     aLabelWidth;
-  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
+  double                                    aLabelWidth;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aTextPlan;
+  TCollection_ExtendedString                aLabelString =
+    GetValueString(aLabelWidth, aFont, aTextPlan);
 
   // add margins to label width
   if (aDimensionAspect->IsText3d())
@@ -613,7 +618,7 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
   bool isArrowsExternal = false;
   int  aLabelPosition   = LabelPosition_None;
 
-  FitTextAlignment(aHorisontalTextPos, aLabelPosition, isArrowsExternal);
+  FitTextAlignment(aHorisontalTextPos, aLabelWidth, aLabelPosition, isArrowsExternal);
 
   gp_Pnt aFirstAttach =
     myCenterPoint.Translated(gp_Vec(myCenterPoint, myFirstPoint).Normalized() * GetFlyout());
@@ -672,7 +677,9 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                         aLabelString,
                         aLabelWidth,
                         theMode,
-                        aLabelPosition);
+                        aLabelPosition,
+                        aFont,
+                        aTextPlan ? &*aTextPlan : nullptr);
         break;
       }
 
@@ -685,7 +692,13 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                             : GetCenterOnArc(aFirstAttach, aSecondAttach, myCenterPoint);
         gp_Dir aTextDir = aDimensionDir;
 
-        drawText(thePresentation, aTextPos, aTextDir, aLabelString, aLabelPosition);
+        drawText(thePresentation,
+                 aTextPos,
+                 aTextDir,
+                 aLabelString,
+                 aLabelPosition,
+                 aFont,
+                 aTextPlan ? &*aTextPlan : nullptr);
       }
 
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
@@ -714,7 +727,9 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                     aLabelString,
                     aLabelWidth,
                     theMode,
-                    aLabelPosition);
+                    aLabelPosition,
+                    aFont,
+                    aTextPlan ? &*aTextPlan : nullptr);
     }
     break;
 
@@ -728,7 +743,9 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                     aLabelString,
                     aLabelWidth,
                     theMode,
-                    aLabelPosition);
+                    aLabelPosition,
+                    aFont,
+                    aTextPlan ? &*aTextPlan : nullptr);
     }
     break;
   }
@@ -779,7 +796,9 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                     TCollection_ExtendedString::EmptyString(),
                     THE_EMPTY_LABEL_WIDTH,
                     theMode,
-                    LabelPosition_None);
+                    LabelPosition_None,
+                    aFont,
+                    aTextPlan ? &*aTextPlan : nullptr);
     }
 
     if (aHPosition != LabelPosition_Right
@@ -792,7 +811,9 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
                     TCollection_ExtendedString::EmptyString(),
                     THE_EMPTY_LABEL_WIDTH,
                     theMode,
-                    LabelPosition_None);
+                    LabelPosition_None,
+                    aFont,
+                    aTextPlan ? &*aTextPlan : nullptr);
     }
   }
 
@@ -1216,8 +1237,14 @@ gp_Pnt PrsDim_AngleDimension::GetTextPosition() const
   occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   // Prepare label string and compute its geometrical width
-  double                     aLabelWidth;
-  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
+  double                                    aLabelWidth;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aTextPlan;
+  GetValueString(aLabelWidth, aFont, aTextPlan);
+  if (aDimensionAspect->IsText3d())
+  {
+    aLabelWidth += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
+  }
 
   gp_Pnt aFirstAttach =
     myCenterPoint.Translated(gp_Vec(myCenterPoint, myFirstPoint).Normalized() * GetFlyout());
@@ -1227,7 +1254,10 @@ gp_Pnt PrsDim_AngleDimension::GetTextPosition() const
   // Handle user-defined and automatic arrow placement
   bool isArrowsExternal = false;
   int  aLabelPosition   = LabelPosition_None;
-  FitTextAlignment(aDimensionAspect->TextHorizontalPosition(), aLabelPosition, isArrowsExternal);
+  FitTextAlignment(aDimensionAspect->TextHorizontalPosition(),
+                   aLabelWidth,
+                   aLabelPosition,
+                   isArrowsExternal);
 
   // Get text position
   switch (aLabelPosition & LabelPosition_HMask)
@@ -1390,22 +1420,13 @@ void PrsDim_AngleDimension::AdjustParameters(const gp_Pnt& theTextPos,
 
 void PrsDim_AngleDimension::FitTextAlignment(
   const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+  const double                                 theLabelWidth,
   int&                                         theLabelPosition,
   bool&                                        theIsArrowsExternal) const
 {
   occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   double anArrowLength = aDimensionAspect->ArrowAspect()->Length();
-
-  // Prepare label string and compute its geometrical width
-  double                     aLabelWidth;
-  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
-
-  // add margins to label width
-  if (aDimensionAspect->IsText3d())
-  {
-    aLabelWidth += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
-  }
 
   gp_Pnt aFirstAttach =
     myCenterPoint.Translated(gp_Vec(myCenterPoint, myFirstPoint).Normalized() * GetFlyout());
@@ -1432,7 +1453,7 @@ void PrsDim_AngleDimension::FitTextAlignment(
 
       double anArrowsWidth = (anArrowLength + anArrowMargin) * 2.0;
 
-      theIsArrowsExternal = aDimensionWidth < aLabelWidth + anArrowsWidth;
+      theIsArrowsExternal = aDimensionWidth < theLabelWidth + anArrowsWidth;
       break;
     }
   }
@@ -1453,7 +1474,7 @@ void PrsDim_AngleDimension::FitTextAlignment(
       gp_Vec anAttachVector(aFirstAttach, aSecondAttach);
       double aDimensionWidth = anAttachVector.Magnitude();
       double anArrowsWidth   = anArrowLength * 2.0;
-      double aContentWidth   = theIsArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
+      double aContentWidth   = theIsArrowsExternal ? theLabelWidth : theLabelWidth + anArrowsWidth;
 
       theLabelPosition |=
         aDimensionWidth < aContentWidth ? LabelPosition_Left : LabelPosition_HCenter;

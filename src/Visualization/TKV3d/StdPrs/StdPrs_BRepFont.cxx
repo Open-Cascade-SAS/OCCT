@@ -15,16 +15,12 @@
 
 #include <BRepFont_Builder.hxx>
 #include <BRepFont_Regularizer.hxx>
-#include <BRep_Builder.hxx>
 #include <Font_FTFont.hxx>
-#include <Font_FontMgr.hxx>
 #include <Font_TextFormatter.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
-#include <TopoDS_Compound.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <gp_XY.hxx>
 
 #include <cmath>
@@ -69,68 +65,81 @@ public:
 
   struct PendingItem
   {
-    Request GlyphRequest;
-    gp_XY   Position;
+    Font_GlyphOutline::Glyph Glyph;
+    gp_XY                    Position;
   };
 
-  class Cache
+  class GlyphCache
   {
   public:
     struct Entry
     {
       std::shared_ptr<const BRepFont_PlanarRegion> Region;
       TopoDS_Shape                                 DefaultShape;
-      TopoDS_Shape                                 CompositeShape;
+      TopoDS_Shape                                 ConcatenatedShape;
     };
 
-    Cache()
-    {
-      myRegions.ReSize(THE_CAPACITY);
-      myKeys.Reserve(THE_CAPACITY);
-    }
+    GlyphCache() { myEntries.ReSize(THE_CAPACITY); }
 
-    [[nodiscard]] std::shared_ptr<const BRepFont_PlanarRegion> Find(
+    [[nodiscard]] std::shared_ptr<const BRepFont_PlanarRegion> FindRegion(
       const Font_GlyphOutline::Glyph& theGlyph) const
     {
-      const Entry* anEntry = myRegions.Seek(theGlyph);
+      const Entry* anEntry = myEntries.Seek(theGlyph);
       return anEntry != nullptr ? anEntry->Region : std::shared_ptr<const BRepFont_PlanarRegion>();
     }
 
     [[nodiscard]] TopoDS_Shape FindShape(const Font_GlyphOutline::Glyph& theGlyph,
                                          const bool theToConcatenateContours) const
     {
-      const Entry* anEntry = myRegions.Seek(theGlyph);
+      const Entry* anEntry = myEntries.Seek(theGlyph);
       if (anEntry == nullptr)
       {
         return {};
       }
       const TopoDS_Shape& aShape =
-        theToConcatenateContours ? anEntry->CompositeShape : anEntry->DefaultShape;
+        theToConcatenateContours ? anEntry->ConcatenatedShape : anEntry->DefaultShape;
       return aShape;
     }
 
-    void Bind(const Font_GlyphOutline::Glyph&                     theGlyph,
-              const std::shared_ptr<const BRepFont_PlanarRegion>& theRegion)
+    [[nodiscard]] std::optional<Font_GlyphOutline::Glyph> FindGlyph(
+      const std::shared_ptr<const BRepFont_PlanarRegion>& theRegion) const
     {
-      if (myRegions.IsBound(theGlyph) || !theRegion || !isCacheable(*theRegion))
+      const Font_GlyphOutline::Glyph* aGlyph = myGlyphsByRegion.Seek(theRegion.get());
+      return aGlyph != nullptr ? std::optional<Font_GlyphOutline::Glyph>(*aGlyph) : std::nullopt;
+    }
+
+    void BindRegion(const Font_GlyphOutline::Glyph&                     theGlyph,
+                    const std::shared_ptr<const BRepFont_PlanarRegion>& theRegion)
+    {
+      if (myEntries.Contains(theGlyph) || !theRegion || !isCacheable(*theRegion))
       {
         return;
       }
-      prepareKey(theGlyph);
-      myRegions.Bind(theGlyph, Entry{theRegion, {}, {}});
+      const Entry anEntry{theRegion, {}, {}};
+      if (myEntries.Size() < THE_CAPACITY)
+      {
+        myEntries.Add(theGlyph, anEntry);
+      }
+      else
+      {
+        myGlyphsByRegion.UnBind(myEntries.FindFromIndex(myNextIndex).Region.get());
+        myEntries.Substitute(myNextIndex, theGlyph, anEntry);
+        myNextIndex = myNextIndex < THE_CAPACITY ? myNextIndex + 1 : 1;
+      }
+      myGlyphsByRegion.Bind(theRegion.get(), theGlyph);
     }
 
     void BindShape(const Font_GlyphOutline::Glyph& theGlyph,
                    const bool                      theToConcatenateContours,
                    const TopoDS_Shape&             theShape)
     {
-      Entry* anEntry = myRegions.ChangeSeek(theGlyph);
+      Entry* anEntry = myEntries.ChangeSeek(theGlyph);
       if (anEntry == nullptr)
       {
         return;
       }
       TopoDS_Shape& aCachedShape =
-        theToConcatenateContours ? anEntry->CompositeShape : anEntry->DefaultShape;
+        theToConcatenateContours ? anEntry->ConcatenatedShape : anEntry->DefaultShape;
       if (aCachedShape.IsNull())
       {
         aCachedShape = theShape;
@@ -139,9 +148,9 @@ public:
 
     void Clear()
     {
-      myRegions.Clear();
-      myKeys.Clear();
-      myNextEviction = 0;
+      myEntries.Clear();
+      myGlyphsByRegion.Clear();
+      myNextIndex = 1;
     }
 
   private:
@@ -162,35 +171,18 @@ public:
       return aComplexity <= THE_MAX_REGION_COMPLEXITY;
     }
 
-    void prepareKey(const Font_GlyphOutline::Glyph& theGlyph)
-    {
-      if (myRegions.IsBound(theGlyph))
-      {
-        return;
-      }
-      if (myKeys.Size() < THE_CAPACITY)
-      {
-        myKeys.Append(theGlyph);
-        return;
-      }
-      myRegions.UnBind(myKeys[myNextEviction]);
-      myKeys[myNextEviction] = theGlyph;
-      myNextEviction         = (myNextEviction + 1) % THE_CAPACITY;
-    }
-
-  private:
     static constexpr size_t THE_CAPACITY              = 256;
     static constexpr size_t THE_MAX_REGION_COMPLEXITY = 16384;
-    NCollection_DataMap<Font_GlyphOutline::Glyph, Entry, Font_GlyphOutline::Glyph::Hasher>
-                                                       myRegions;
-    NCollection_LinearVector<Font_GlyphOutline::Glyph> myKeys;
-    size_t                                             myNextEviction = 0;
+    NCollection_IndexedDataMap<Font_GlyphOutline::Glyph, Entry, Font_GlyphOutline::Glyph::Hasher>
+                                                                                myEntries;
+    NCollection_DataMap<const BRepFont_PlanarRegion*, Font_GlyphOutline::Glyph> myGlyphsByRegion;
+    size_t                                                                      myNextIndex = 1;
   };
 
   void ClearCache()
   {
     std::unique_lock<std::shared_mutex> aLock(CacheMutex);
-    Regions.Clear();
+    Glyphs.Clear();
   }
 
   std::optional<Request> MakeRequest(const char32_t theChar)
@@ -209,13 +201,11 @@ public:
     std::shared_ptr<const BRepFont_PlanarRegion> aCachedRegion;
     {
       std::shared_lock<std::shared_mutex> aLock(CacheMutex);
-      aCachedRegion = Regions.Find(theRequest.Glyph);
+      aCachedRegion = Glyphs.FindRegion(theRequest.Glyph);
     }
     if (aCachedRegion)
     {
-      std::shared_lock<std::shared_mutex> aFontLock(FontMutex);
-      return Font->IsGlyphValid(theRequest.Glyph) ? aCachedRegion
-                                                  : std::shared_ptr<const BRepFont_PlanarRegion>();
+      return aCachedRegion;
     }
 
     std::optional<Font_GlyphOutline> anOutline;
@@ -245,11 +235,11 @@ public:
     }
     std::unique_lock<std::shared_mutex> aCacheLock(CacheMutex);
     if (const std::shared_ptr<const BRepFont_PlanarRegion> aPublished =
-          Regions.Find(theRequest.Glyph))
+          Glyphs.FindRegion(theRequest.Glyph))
     {
       return aPublished;
     }
-    Regions.Bind(theRequest.Glyph, aRegion);
+    Glyphs.BindRegion(theRequest.Glyph, aRegion);
     return aRegion;
   }
 
@@ -258,12 +248,11 @@ public:
     TopoDS_Shape aShape;
     {
       std::shared_lock<std::shared_mutex> aLock(CacheMutex);
-      aShape = Regions.FindShape(theRequest.Glyph, theToConcatenateContours);
+      aShape = Glyphs.FindShape(theRequest.Glyph, theToConcatenateContours);
     }
     if (!aShape.IsNull())
     {
-      std::shared_lock<std::shared_mutex> aFontLock(FontMutex);
-      return Font->IsGlyphValid(theRequest.Glyph) ? aShape : TopoDS_Shape();
+      return aShape;
     }
 
     const std::shared_ptr<const BRepFont_PlanarRegion> aRegion = LoadRegion(theRequest);
@@ -285,23 +274,46 @@ public:
     }
     std::unique_lock<std::shared_mutex> aCacheLock(CacheMutex);
     const TopoDS_Shape                  aPublishedShape =
-      Regions.FindShape(theRequest.Glyph, theToConcatenateContours);
+      Glyphs.FindShape(theRequest.Glyph, theToConcatenateContours);
     if (!aPublishedShape.IsNull())
     {
       return aPublishedShape;
     }
-    Regions.BindShape(theRequest.Glyph, theToConcatenateContours, aShape);
+    Glyphs.BindShape(theRequest.Glyph, theToConcatenateContours, aShape);
     return aShape;
   }
 
-  std::optional<NCollection_LinearVector<PendingItem>> PrepareText(
+  std::optional<TopoDS_Shape> RenderRegion(
+    const std::shared_ptr<const BRepFont_PlanarRegion>& theRegion,
+    const double                                        theSize,
+    const bool                                          theToConcatenateContours)
+  {
+    std::optional<Font_GlyphOutline::Glyph> aGlyph;
+    {
+      std::shared_lock<std::shared_mutex> aLock(CacheMutex);
+      aGlyph = Glyphs.FindGlyph(theRegion);
+    }
+    if (!aGlyph.has_value())
+    {
+      return std::nullopt;
+    }
+    return RenderGlyph(Request{*aGlyph, theSize}, theToConcatenateContours);
+  }
+
+  std::optional<BRepFont_Builder::TextPlan> PlanText(
     const NCollection_String&               theText,
     const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
     const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
   {
+    if (theText.IsEmpty())
+    {
+      return std::nullopt;
+    }
     NCollection_LinearVector<PendingItem> aPendingItems;
     double                                aSize        = 0.0;
     double                                aMetricScale = 0.0;
+    gp_XY                                 aLowerLeft;
+    gp_XY                                 anUpperRight;
     {
       std::unique_lock<std::shared_mutex> aLock(FontMutex);
       if (!(Size > 0.0) || !Font->IsValid())
@@ -315,6 +327,12 @@ public:
       aFormatter.SetupAlignment(theHorizontalAlignment, theVerticalAlignment);
       aFormatter.Append(theText, *Font);
       aFormatter.Format();
+      Font_Rect aBounds;
+      aFormatter.BndBox(aBounds);
+      aLowerLeft.SetCoord(static_cast<double>(aBounds.Left) * aMetricScale,
+                          static_cast<double>(aBounds.Bottom) * aMetricScale);
+      anUpperRight.SetCoord(static_cast<double>(aBounds.Right) * aMetricScale,
+                            static_cast<double>(aBounds.Top) * aMetricScale);
       aPendingItems.Reserve(64);
       for (Font_TextFormatter::Iterator anIterator(
              aFormatter,
@@ -329,24 +347,56 @@ public:
           continue;
         }
         const NCollection_Vec2<float>& aCorner = aFormatter.BottomLeft(anIterator.SymbolPosition());
-        aPendingItems.Append(PendingItem{Request{*aGlyph, aSize},
+        aPendingItems.Append(PendingItem{*aGlyph,
                                          gp_XY(static_cast<double>(aCorner.x()) * aMetricScale,
                                                static_cast<double>(aCorner.y()) * aMetricScale)});
       }
     }
-    return !aPendingItems.IsEmpty()
-             ? std::optional<NCollection_LinearVector<PendingItem>>(std::move(aPendingItems))
-             : std::nullopt;
+    NCollection_DataMap<Font_GlyphOutline::Glyph, size_t, Font_GlyphOutline::Glyph::Hasher>
+                                                                           aRegionIndices;
+    NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> aRegions;
+    NCollection_LinearVector<BRepFont_Builder::TextPlan::Item>             anItems;
+    aRegions.Reserve(aPendingItems.Size());
+    anItems.Reserve(aPendingItems.Size());
+    for (const PendingItem& anItem : aPendingItems)
+    {
+      const size_t* aFoundIndex  = aRegionIndices.Seek(anItem.Glyph);
+      size_t        aRegionIndex = 0;
+      if (aFoundIndex == nullptr)
+      {
+        std::shared_ptr<const BRepFont_PlanarRegion> aRegion =
+          LoadRegion(Request{anItem.Glyph, aSize});
+        if (!aRegion)
+        {
+          continue;
+        }
+        aRegionIndex = aRegions.Size();
+        aRegions.Append(std::move(aRegion));
+        aRegionIndices.Bind(anItem.Glyph, aRegionIndex);
+      }
+      else
+      {
+        aRegionIndex = *aFoundIndex;
+      }
+      anItems.EmplaceAppend(aRegionIndex, anItem.Position);
+    }
+    return BRepFont_Builder::CreateTextPlan(aSize,
+                                            Tolerance,
+                                            aLowerLeft,
+                                            anUpperRight,
+                                            std::move(aRegions),
+                                            std::move(anItems));
   }
 
 public:
   occ::handle<Font_FTFont>  Font;
-  Cache                     Regions;
+  GlyphCache                Glyphs;
   mutable std::shared_mutex FontMutex;
   mutable std::shared_mutex CacheMutex;
   const double              Tolerance;
   double                    MetricScale = 1.0;
   double                    Size        = 0.0;
+  size_t                    Revision    = 0;
 };
 
 //=================================================================================================
@@ -404,6 +454,7 @@ void StdPrs_BRepFont::Release()
   myImpl->Font->Release();
   myImpl->MetricScale = 1.0;
   myImpl->Size        = 0.0;
+  ++myImpl->Revision;
 }
 
 //=================================================================================================
@@ -412,6 +463,22 @@ bool StdPrs_BRepFont::IsValid() const
 {
   std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
   return myImpl->Size > 0.0 && myImpl->Font->IsValid();
+}
+
+//=================================================================================================
+
+size_t StdPrs_BRepFont::configurationRevision() const
+{
+  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
+  return myImpl->Revision;
+}
+
+//=================================================================================================
+
+bool StdPrs_BRepFont::hasConfigurationRevision(const size_t theRevision) const
+{
+  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
+  return myImpl->Revision == theRevision && myImpl->Size > 0.0 && myImpl->Font->IsValid();
 }
 
 //=================================================================================================
@@ -433,6 +500,7 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
   myImpl->ClearCache();
   myImpl->Size        = theSize;
   myImpl->MetricScale = theSize / 4800.0;
+  ++myImpl->Revision;
   return true;
 }
 
@@ -456,6 +524,7 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
   myImpl->ClearCache();
   myImpl->Size        = theSize;
   myImpl->MetricScale = theSize / 4800.0;
+  ++myImpl->Revision;
   return true;
 }
 
@@ -491,37 +560,66 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
   {
     return {};
   }
-  const std::optional<NCollection_LinearVector<Impl::PendingItem>> anItems =
-    myImpl->PrepareText(theText, theOptions.HorizontalAlignment, theOptions.VerticalAlignment);
-  if (!anItems.has_value())
-  {
-    return {};
-  }
+  std::optional<BRepFont_Builder::TextPlan> aPlan =
+    PlanText(theText, theOptions.HorizontalAlignment, theOptions.VerticalAlignment);
+  return aPlan.has_value() ? RenderText(*aPlan, theOptions) : TopoDS_Shape();
+}
 
-  TopoDS_Compound aCompound;
-  BRep_Builder    aBuilder;
-  aBuilder.MakeCompound(aCompound);
-  for (const Impl::PendingItem& anItem : *anItems)
-  {
-    TopoDS_Shape aGlyph =
-      myImpl->RenderGlyph(anItem.GlyphRequest, theOptions.ToConcatenateContours);
-    if (aGlyph.IsNull())
-    {
-      continue;
-    }
-    gp_Trsf aPosition;
-    aPosition.SetTranslation(gp_Vec(anItem.Position.X(), anItem.Position.Y(), 0.0));
-    aGlyph.Move(aPosition);
-    aBuilder.Add(aCompound, aGlyph);
-  }
-  if (aCompound.NbChildren() == 0)
+//=================================================================================================
+
+std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::PlanText(
+  const NCollection_String&               theText,
+  const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
+  const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
+{
+  return myImpl->PlanText(theText, theHorizontalAlignment, theVerticalAlignment);
+}
+
+//=================================================================================================
+
+TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePlan,
+                                         const TextOptions&                theOptions)
+{
+  if (!isFinite(theOptions.Pen) || thePlan.NbRegions() == 0)
   {
     return {};
   }
-  gp_Trsf aPenTransform;
-  aPenTransform.SetTransformation(theOptions.Pen, gp_Ax3(gp::XOY()));
-  aCompound.Move(aPenTransform);
-  return aCompound;
+  NCollection_LinearVector<TopoDS_Shape> aGlyphShapes(thePlan.NbRegions(), TopoDS_Shape{});
+  for (size_t aRegionIndex = 0; aRegionIndex < thePlan.NbRegions(); ++aRegionIndex)
+  {
+    TopoDS_Shape&                     aGlyph = aGlyphShapes.ChangeValue(aRegionIndex);
+    const std::optional<TopoDS_Shape> aCachedGlyph =
+      myImpl->RenderRegion(thePlan.RegionHandle(aRegionIndex),
+                           thePlan.Size(),
+                           theOptions.ToConcatenateContours);
+    if (aCachedGlyph.has_value())
+    {
+      aGlyph = *aCachedGlyph;
+    }
+    else
+    {
+      BRepFont_Builder::GlyphOptions aGlyphOptions;
+      aGlyphOptions.Size                  = thePlan.Size();
+      aGlyphOptions.Tolerance             = thePlan.Tolerance();
+      aGlyphOptions.ToConcatenateContours = theOptions.ToConcatenateContours;
+      aGlyph = BRepFont_Builder::BuildGlyph(thePlan.Region(aRegionIndex), aGlyphOptions);
+    }
+    if (aGlyph.IsNull() && !thePlan.Region(aRegionIndex).IsEmpty())
+    {
+      return {};
+    }
+  }
+  BRepFont_Builder::TextOptions aBuilderOptions;
+  aBuilderOptions.Pen                   = theOptions.Pen;
+  aBuilderOptions.ToConcatenateContours = theOptions.ToConcatenateContours;
+  return BRepFont_Builder::BuildText(thePlan, aGlyphShapes, aBuilderOptions);
+}
+
+//=================================================================================================
+
+TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePlan)
+{
+  return RenderText(thePlan, TextOptions{});
 }
 
 //=================================================================================================
@@ -542,6 +640,7 @@ bool StdPrs_BRepFont::SetWidthScaling(const float theScaleFactor)
     return false;
   }
   myImpl->ClearCache();
+  ++myImpl->Revision;
   return true;
 }
 
@@ -556,6 +655,7 @@ void StdPrs_BRepFont::SetSingleStrokeFont(const bool theIsSingleStroke)
   }
   myImpl->Font->SetSingleStrokeFont(theIsSingleStroke);
   myImpl->ClearCache();
+  ++myImpl->Revision;
 }
 
 //=================================================================================================

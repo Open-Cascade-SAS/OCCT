@@ -745,10 +745,14 @@ bool isIdentity(const gp_Trsf& theTransformation) noexcept
 BRepFont_Builder::TextPlan::TextPlan(
   const double                                                             theSize,
   const double                                                             theTolerance,
+  const gp_XY&                                                             theLowerLeft,
+  const gp_XY&                                                             theUpperRight,
   NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>>&& theRegions,
   NCollection_LinearVector<Item>&&                                         theItems)
     : mySize(theSize),
       myTolerance(theTolerance),
+      myLowerLeft(theLowerLeft),
+      myUpperRight(theUpperRight),
       myRegions(std::move(theRegions)),
       myItems(std::move(theItems))
 {
@@ -759,11 +763,16 @@ BRepFont_Builder::TextPlan::TextPlan(
 std::optional<BRepFont_Builder::TextPlan> BRepFont_Builder::CreateTextPlan(
   const double                                                             theSize,
   const double                                                             theTolerance,
+  const gp_XY&                                                             theLowerLeft,
+  const gp_XY&                                                             theUpperRight,
   NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>>&& theRegions,
   NCollection_LinearVector<TextPlan::Item>&&                               theItems)
 {
   if (!std::isfinite(theSize) || !(theSize > 0.0) || !std::isfinite(theTolerance)
-      || !(theTolerance > 0.0))
+      || !(theTolerance > 0.0) || !std::isfinite(theLowerLeft.X())
+      || !std::isfinite(theLowerLeft.Y()) || !std::isfinite(theUpperRight.X())
+      || !std::isfinite(theUpperRight.Y()) || theUpperRight.X() < theLowerLeft.X()
+      || theUpperRight.Y() < theLowerLeft.Y())
   {
     return std::nullopt;
   }
@@ -783,7 +792,12 @@ std::optional<BRepFont_Builder::TextPlan> BRepFont_Builder::CreateTextPlan(
       return std::nullopt;
     }
   }
-  return TextPlan(theSize, theTolerance, std::move(theRegions), std::move(theItems));
+  return TextPlan(theSize,
+                  theTolerance,
+                  theLowerLeft,
+                  theUpperRight,
+                  std::move(theRegions),
+                  std::move(theItems));
 }
 
 //=================================================================================================
@@ -804,34 +818,65 @@ TopoDS_Shape BRepFont_Builder::BuildText(const TextPlan& thePlan, const TextOpti
     return {};
   }
 
-  NCollection_LinearVector<std::optional<TopoDS_Shape>> aGlyphShapes;
-  aGlyphShapes.Resize(thePlan.NbRegions());
   GlyphOptions aGlyphOptions;
   aGlyphOptions.Size                  = thePlan.Size();
   aGlyphOptions.Tolerance             = thePlan.Tolerance();
   aGlyphOptions.ToConcatenateContours = theOptions.ToConcatenateContours;
-  TopoDS_Compound aCompound;
-  BRep_Builder    aBuilder;
-  aBuilder.MakeCompound(aCompound);
-  gp_Trsf aPenTransform;
-  aPenTransform.SetTransformation(theOptions.Pen, gp_Ax3(gp::XOY()));
+  NCollection_LinearVector<std::optional<TopoDS_Shape>> aGlyphShapes(thePlan.NbRegions(),
+                                                                     std::nullopt);
   for (const TextPlan::Item& anItem : thePlan.Items())
   {
-    if (anItem.Region() >= aGlyphShapes.Size())
+    std::optional<TopoDS_Shape>& aShape = aGlyphShapes.ChangeValue(anItem.Region());
+    if (aShape.has_value())
+    {
+      continue;
+    }
+    const BRepFont_PlanarRegion& aRegion = thePlan.Region(anItem.Region());
+    aShape                               = BuildGlyph(aRegion, aGlyphOptions);
+    if (aShape->IsNull() && !aRegion.IsEmpty())
     {
       return {};
     }
-    std::optional<TopoDS_Shape>& aCachedShape = aGlyphShapes.ChangeValue(anItem.Region());
-    if (!aCachedShape.has_value())
+  }
+  NCollection_LinearVector<TopoDS_Shape> aBuiltShapes(thePlan.NbRegions(), TopoDS_Shape{});
+  for (size_t aRegionIndex = 0; aRegionIndex < thePlan.NbRegions(); ++aRegionIndex)
+  {
+    if (aGlyphShapes.Value(aRegionIndex).has_value())
     {
-      const BRepFont_PlanarRegion& aRegion = thePlan.Region(anItem.Region());
-      aCachedShape                         = BuildGlyph(aRegion, aGlyphOptions);
-      if (aCachedShape->IsNull() && !aRegion.IsEmpty())
-      {
-        return {};
-      }
+      aBuiltShapes.ChangeValue(aRegionIndex) = *aGlyphShapes.Value(aRegionIndex);
     }
-    TopoDS_Shape aGlyphShape = *aCachedShape;
+  }
+  return BuildText(thePlan, aBuiltShapes, theOptions);
+}
+
+//=================================================================================================
+
+TopoDS_Shape BRepFont_Builder::BuildText(
+  const TextPlan&                               thePlan,
+  const NCollection_LinearVector<TopoDS_Shape>& theGlyphShapes,
+  const TextOptions&                            theOptions)
+{
+  if (!std::isfinite(thePlan.Size()) || !(thePlan.Size() > 0.0)
+      || !std::isfinite(thePlan.Tolerance()) || !(thePlan.Tolerance() > 0.0)
+      || !isFinite(theOptions.Pen) || thePlan.Items().IsEmpty()
+      || theGlyphShapes.Size() != thePlan.NbRegions())
+  {
+    return {};
+  }
+  TopoDS_Compound aCompound;
+  BRep_Builder    aBuilder;
+  aBuilder.MakeCompound(aCompound);
+  for (const TextPlan::Item& anItem : thePlan.Items())
+  {
+    if (anItem.Region() >= theGlyphShapes.Size())
+    {
+      return {};
+    }
+    TopoDS_Shape aGlyphShape = theGlyphShapes.Value(anItem.Region());
+    if (aGlyphShape.IsNull() && !thePlan.Region(anItem.Region()).IsEmpty())
+    {
+      return {};
+    }
     if (aGlyphShape.IsNull())
     {
       continue;
@@ -845,6 +890,8 @@ TopoDS_Shape BRepFont_Builder::BuildText(const TextPlan& thePlan, const TextOpti
   {
     return {};
   }
+  gp_Trsf aPenTransform;
+  aPenTransform.SetTransformation(theOptions.Pen, gp_Ax3(gp::XOY()));
   aCompound.Move(aPenTransform);
   return aCompound;
 }

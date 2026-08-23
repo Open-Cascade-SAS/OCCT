@@ -452,14 +452,24 @@ std::optional<BRepFont_Builder::TextPlan> createRepeatedGlyphPlan()
   NCollection_LinearVector<BRepFont_Builder::TextPlan::Item> anItems;
   anItems.EmplaceAppend(0, gp_XY(0.0, 0.0));
   anItems.EmplaceAppend(0, gp_XY(20.0, 0.0));
-  return BRepFont_Builder::CreateTextPlan(12.0, 1.0e-7, std::move(aRegions), std::move(anItems));
+  return BRepFont_Builder::CreateTextPlan(12.0,
+                                          1.0e-7,
+                                          gp_XY(0.0, 0.0),
+                                          gp_XY(32.0, 12.0),
+                                          std::move(aRegions),
+                                          std::move(anItems));
 }
 
 std::optional<BRepFont_Builder::TextPlan> createEmptyPlan()
 {
   NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> aRegions;
   NCollection_LinearVector<BRepFont_Builder::TextPlan::Item>             anItems;
-  return BRepFont_Builder::CreateTextPlan(12.0, 1.0e-7, std::move(aRegions), std::move(anItems));
+  return BRepFont_Builder::CreateTextPlan(12.0,
+                                          1.0e-7,
+                                          gp_XY(0.0, 0.0),
+                                          gp_XY(0.0, 0.0),
+                                          std::move(aRegions),
+                                          std::move(anItems));
 }
 } // namespace BRepFont_BuilderText_Test
 
@@ -479,9 +489,13 @@ TEST(BRepFont_BuilderTextTest, InvalidTextPlanOptionsAreRejected)
 {
   NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> aRegions;
   NCollection_LinearVector<BRepFont_Builder::TextPlan::Item>             anItems;
-  EXPECT_FALSE(
-    BRepFont_Builder::CreateTextPlan(0.0, 1.0e-7, std::move(aRegions), std::move(anItems))
-      .has_value());
+  EXPECT_FALSE(BRepFont_Builder::CreateTextPlan(0.0,
+                                                1.0e-7,
+                                                gp_XY(0.0, 0.0),
+                                                gp_XY(0.0, 0.0),
+                                                std::move(aRegions),
+                                                std::move(anItems))
+                 .has_value());
 }
 
 TEST(BRepFont_BuilderTextTest, NonFinitePenIsRejectedWithoutChangingGraph)
@@ -524,6 +538,33 @@ TEST(BRepFont_BuilderTextTest, RepeatedGlyphUsesLocatedTopoDSOccurrences)
   EXPECT_DOUBLE_EQ(3.0, aFirstOrigin.X());
   EXPECT_DOUBLE_EQ(4.0, aFirstOrigin.Y());
   EXPECT_DOUBLE_EQ(5.0, aFirstOrigin.Z());
+}
+
+TEST(BRepFont_BuilderTextTest, CallerOwnedGlyphArtifactsArePlacedWithoutRebuilding)
+{
+  const std::optional<BRepFont_Builder::TextPlan> aPlan =
+    BRepFont_BuilderText_Test::createRepeatedGlyphPlan();
+  if (!aPlan.has_value())
+  {
+    GTEST_SKIP() << "FreeType or the embedded fallback glyph is unavailable";
+  }
+
+  BRepFont_Builder::GlyphOptions aGlyphOptions;
+  aGlyphOptions.Size      = aPlan->Size();
+  aGlyphOptions.Tolerance = aPlan->Tolerance();
+  NCollection_LinearVector<TopoDS_Shape> aGlyphShapes;
+  aGlyphShapes.Append(BRepFont_Builder::BuildGlyph(aPlan->Region(0), aGlyphOptions));
+  ASSERT_FALSE(aGlyphShapes[0].IsNull());
+
+  const TopoDS_Shape aText =
+    BRepFont_Builder::BuildText(*aPlan, aGlyphShapes, BRepFont_Builder::TextOptions{});
+  ASSERT_FALSE(aText.IsNull());
+  TopoDS_Iterator anIterator(aText);
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(aGlyphShapes[0].IsPartner(anIterator.Value()));
+  anIterator.Next();
+  ASSERT_TRUE(anIterator.More());
+  EXPECT_TRUE(aGlyphShapes[0].IsPartner(anIterator.Value()));
 }
 
 TEST(BRepFont_BuilderTextTest, RepeatedGlyphSharesOneGraphDefinition)

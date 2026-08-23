@@ -49,7 +49,7 @@ public:
     class Item
     {
     public:
-      Item(size_t theRegion, const gp_XY& thePosition)
+      Item(const size_t theRegion, const gp_XY& thePosition)
           : myRegion(theRegion),
             myPosition(thePosition)
       {
@@ -70,23 +70,46 @@ public:
 
     [[nodiscard]] size_t NbRegions() const noexcept { return myRegions.Size(); }
 
-    [[nodiscard]] const BRepFont_PlanarRegion& Region(size_t theIndex) const
+    [[nodiscard]] const BRepFont_PlanarRegion& Region(const size_t theIndex) const
     {
       return *myRegions.Value(theIndex);
     }
+
+    //! Return the shared planar region stored at the specified index.
+    [[nodiscard]] const std::shared_ptr<const BRepFont_PlanarRegion>& RegionHandle(
+      const size_t theIndex) const
+    {
+      return myRegions.Value(theIndex);
+    }
+
+    //! Return the lower-left corner of the formatted text bounds in model units.
+    [[nodiscard]] const gp_XY& LowerLeft() const noexcept { return myLowerLeft; }
+
+    //! Return the upper-right corner of the formatted text bounds in model units.
+    [[nodiscard]] const gp_XY& UpperRight() const noexcept { return myUpperRight; }
+
+    //! Return the formatted text width in model units.
+    [[nodiscard]] double Width() const noexcept { return myUpperRight.X() - myLowerLeft.X(); }
+
+    //! Return the formatted text height in model units.
+    [[nodiscard]] double Height() const noexcept { return myUpperRight.Y() - myLowerLeft.Y(); }
 
     [[nodiscard]] const NCollection_LinearVector<Item>& Items() const noexcept { return myItems; }
 
   private:
     friend class BRepFont_Builder;
 
-    TextPlan(double                                                                   theSize,
-             double                                                                   theTolerance,
+    TextPlan(const double                                                             theSize,
+             const double                                                             theTolerance,
+             const gp_XY&                                                             theLowerLeft,
+             const gp_XY&                                                             theUpperRight,
              NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>>&& theRegions,
              NCollection_LinearVector<Item>&&                                         theItems);
 
     double                                                                 mySize;
     double                                                                 myTolerance;
+    gp_XY                                                                  myLowerLeft;
+    gp_XY                                                                  myUpperRight;
     NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> myRegions;
     NCollection_LinearVector<Item>                                         myItems;
   };
@@ -102,12 +125,16 @@ public:
   //! Construct a validated text plan and take ownership of its packed pools.
   //! @param[in] theSize output glyph size in model units
   //! @param[in] theTolerance output construction tolerance
+  //! @param[in] theLowerLeft lower-left layout bound in model units
+  //! @param[in] theUpperRight upper-right layout bound in model units
   //! @param[in] theRegions unique planar glyph regions
   //! @param[in] theItems positioned references into theRegions
   //! @return plan, or empty when an option or region reference is invalid
   [[nodiscard]] Standard_EXPORT static std::optional<TextPlan> CreateTextPlan(
-    double                                                                   theSize,
-    double                                                                   theTolerance,
+    const double                                                             theSize,
+    const double                                                             theTolerance,
+    const gp_XY&                                                             theLowerLeft,
+    const gp_XY&                                                             theUpperRight,
     NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>>&& theRegions,
     NCollection_LinearVector<TextPlan::Item>&&                               theItems);
 
@@ -140,6 +167,16 @@ public:
   //! @return text compound, or a null shape on failure or for empty text
   [[nodiscard]] Standard_EXPORT static TopoDS_Shape BuildText(const TextPlan&    thePlan,
                                                               const TextOptions& theOptions);
+
+  //! Assemble positioned occurrences from caller-owned glyph artifacts.
+  //! @param[in] thePlan text plan defining occurrence positions
+  //! @param[in] theGlyphShapes one shape per unique plan region
+  //! @param[in] theOptions text placement options
+  //! @return text compound, or a null shape when input is invalid or text is empty
+  [[nodiscard]] Standard_EXPORT static TopoDS_Shape BuildText(
+    const TextPlan&                               thePlan,
+    const NCollection_LinearVector<TopoDS_Shape>& theGlyphShapes,
+    const TextOptions&                            theOptions);
 
   //! Add positioned text occurrences to an existing graph.
   //! @param[in, out] theGraph graph receiving glyph definitions and text occurrences

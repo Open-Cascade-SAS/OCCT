@@ -20,11 +20,10 @@
 #include <AIS_InteractiveContext.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepBndLib.hxx>
-#include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
 #include <Font_FTFont.hxx>
 #include <StdPrs_BRepFont.hxx>
+#include <StdPrs_BRepFontCache.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -95,6 +94,18 @@ PrsDim_Dimension::PrsDim_Dimension(const PrsDim_KindOfDimension theType)
       myIsGeometryValid(false),
       myKindOfDimension(theType)
 {
+}
+
+//=================================================================================================
+
+void PrsDim_Dimension::SetBRepFontCache(const occ::handle<StdPrs_BRepFontCache>& theCache)
+{
+  if (myBRepFontCache == theCache)
+  {
+    return;
+  }
+  myBRepFontCache = theCache;
+  SetToUpdate();
 }
 
 //=================================================================================================
@@ -237,7 +248,10 @@ double PrsDim_Dimension::ValueToDisplayUnits() const
 
 //=================================================================================================
 
-TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) const
+TCollection_ExtendedString PrsDim_Dimension::GetValueString(
+  double&                                    theWidth,
+  occ::handle<StdPrs_BRepFont>&              theFont,
+  std::optional<BRepFont_Builder::TextPlan>& thePlan) const
 {
   TCollection_ExtendedString aValueStr;
   if (myValueType == ValueType_CustomText)
@@ -278,21 +292,26 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) co
   NCollection_UtfString<char>   anUTFString(aValueStr.ToExtString());
 
   theWidth = 0.0;
+  theFont.Nullify();
+  thePlan.reset();
 
   if (myDrawer->DimensionAspect()->IsText3d())
   {
-    // text width produced by BRepFont
-    StdPrs_BRepFont aFont;
-    if (aFont.FindAndInit(aTextAspect->Aspect()->Font(),
-                          aTextAspect->Aspect()->GetTextFontAspect(),
-                          aTextAspect->Height(),
-                          Font_StrictLevel_Any))
+    theFont = myBRepFontCache.IsNull()
+                ? StdPrs_BRepFont::FindAndCreate(aTextAspect->Aspect()->Font(),
+                                                 aTextAspect->Aspect()->GetTextFontAspect(),
+                                                 aTextAspect->Height(),
+                                                 Font_StrictLevel_Any)
+                : myBRepFontCache->FindFont(aTextAspect->Aspect()->Font(),
+                                            aTextAspect->Aspect()->GetTextFontAspect(),
+                                            aTextAspect->Height(),
+                                            Font_StrictLevel_Any);
+    if (!theFont.IsNull())
     {
-      for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
+      thePlan = theFont->PlanText(anUTFString);
+      if (thePlan.has_value())
       {
-        char32_t aCurrChar = *anIter;
-        char32_t aNextChar = *(++anIter);
-        theWidth += aFont.AdvanceX(aCurrChar, aNextChar);
+        theWidth = thePlan->Width();
       }
     }
   }
@@ -386,7 +405,9 @@ void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresen
                                 const gp_Pnt&                          theTextPos,
                                 const gp_Dir&                          theTextDir,
                                 const TCollection_ExtendedString&      theText,
-                                const int                              theLabelPosition)
+                                const int                              theLabelPosition,
+                                const occ::handle<StdPrs_BRepFont>&    theFont,
+                                const BRepFont_Builder::TextPlan*      thePlan)
 {
   occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
   if (myDrawer->DimensionAspect()->IsText3d())
@@ -394,25 +415,19 @@ void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresen
     // getting font parameters
     occ::handle<Prs3d_TextAspect> aTextAspect = myDrawer->DimensionAspect()->TextAspect();
     Quantity_Color                aColor      = aTextAspect->Aspect()->Color();
-    Font_FontAspect               aFontAspect = aTextAspect->Aspect()->GetTextFontAspect();
     double                        aFontHeight = aTextAspect->Height();
 
-    // creating TopoDS_Shape for text
-    StdPrs_BRepFont aFont(aTextAspect->Aspect()->Font().ToCString(), aFontAspect, aFontHeight);
-    NCollection_UtfString<char> anUTFString(theText.ToExtString());
-
-    TopoDS_Shape aTextShape = aFont.RenderText(anUTFString);
-
-    // compute text width with kerning
-    double aTextWidth  = 0.0;
-    double aTextHeight = aFont.Ascender() + aFont.Descender();
-
-    for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
+    if (theFont.IsNull() || thePlan == nullptr)
     {
-      char32_t aCurrChar = *anIter;
-      char32_t aNextChar = *(++anIter);
-      aTextWidth += aFont.AdvanceX(aCurrChar, aNextChar);
+      return;
     }
+    TopoDS_Shape aTextShape = theFont->RenderText(*thePlan);
+    if (aTextShape.IsNull())
+    {
+      return;
+    }
+    const double aTextWidth  = thePlan->Width();
+    const double aTextHeight = thePlan->Height();
 
     // formatting text position in XOY plane
     int aHLabelPos = theLabelPosition & LabelPosition_HMask;
@@ -450,20 +465,10 @@ void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresen
     }
 
     // compute shape offset transformation
-    double aShapeHOffset = aCenterHOffset - aTextWidth / 2.0;
-    double aShapeVOffset = aCenterVOffset - aTextHeight / 2.0;
-
-    // center shape in its bounding box (suppress border spacing added by FT_Font)
-    Bnd_Box aShapeBnd;
-    BRepBndLib::AddClose(aTextShape, aShapeBnd);
-
-    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-    aShapeBnd.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-
-    double aXalign = aTextWidth * 0.5 - (aXmax + aXmin) * 0.5;
-    double aYalign = aTextHeight * 0.5 - (aYmax + aYmin) * 0.5;
-    aShapeHOffset += aXalign;
-    aShapeVOffset += aYalign;
+    const double aShapeHOffset =
+      aCenterHOffset - (thePlan->LowerLeft().X() + thePlan->UpperRight().X()) * 0.5;
+    const double aShapeVOffset =
+      aCenterVOffset - (thePlan->LowerLeft().Y() + thePlan->UpperRight().Y()) * 0.5;
 
     gp_Trsf anOffsetTrsf;
     anOffsetTrsf.SetTranslation(gp::Origin(), gp_Pnt(aShapeHOffset, aShapeVOffset, 0.0));
@@ -550,7 +555,9 @@ void PrsDim_Dimension::DrawExtension(const occ::handle<Prs3d_Presentation>& theP
                                      const TCollection_ExtendedString&      theLabelString,
                                      const double                           theLabelWidth,
                                      const int                              theMode,
-                                     const int                              theLabelPosition)
+                                     const int                              theLabelPosition,
+                                     const occ::handle<StdPrs_BRepFont>&    theFont,
+                                     const BRepFont_Builder::TextPlan*      thePlan)
 {
   // reference line for extension starting at its connection point
   gp_Lin anExtensionLine(theExtensionStart, theExtensionDir);
@@ -563,7 +570,13 @@ void PrsDim_Dimension::DrawExtension(const occ::handle<Prs3d_Presentation>& theP
     gp_Dir aTextDir = theExtensionDir;
 
     occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
-    drawText(thePresentation, aTextPos, aTextDir, theLabelString, theLabelPosition);
+    drawText(thePresentation,
+             aTextPos,
+             aTextDir,
+             theLabelString,
+             theLabelPosition,
+             theFont,
+             thePlan);
   }
 
   if (theMode != ComputeMode_All && theMode != ComputeMode_Line)
@@ -625,8 +638,10 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
   double anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
   double anExtensionSize = aDimensionAspect->ExtensionSize();
   // prepare label string and compute its geometrical width
-  double                     aLabelWidth;
-  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
+  double                                    aLabelWidth;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aTextPlan;
+  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth, aFont, aTextPlan);
 
   // add margins to cut dimension lines for 3d text
   if (aDimensionAspect->IsText3d())
@@ -659,6 +674,7 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                             theSecondPoint,
                             theIsOneSide,
                             aHorisontalTextPos,
+                            aLabelWidth,
                             aLabelPosition,
                             isArrowsExternal);
 
@@ -715,7 +731,13 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
       if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
         thePresentation->NewGroup();
-        drawText(thePresentation, aTextPos, aTextDir, aLabelString, aLabelPosition);
+        drawText(thePresentation,
+                 aTextPos,
+                 aTextDir,
+                 aLabelString,
+                 aLabelPosition,
+                 aFont,
+                 aTextPlan ? &*aTextPlan : nullptr);
       }
 
       // add dimension line primitives
@@ -811,7 +833,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                         TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
-                        LabelPosition_None);
+                        LabelPosition_None,
+                        aFont,
+                        aTextPlan ? &*aTextPlan : nullptr);
           if (!theIsOneSide)
           {
             DrawExtension(thePresentation,
@@ -821,7 +845,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                           TCollection_ExtendedString::EmptyString(),
                           0.0,
                           theMode,
-                          LabelPosition_None);
+                          LabelPosition_None,
+                          aFont,
+                          aTextPlan ? &*aTextPlan : nullptr);
           }
         }
       }
@@ -842,7 +868,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                       aLabelString,
                       aLabelWidth,
                       theMode,
-                      aLabelPosition);
+                      aLabelPosition,
+                      aFont,
+                      aTextPlan ? &*aTextPlan : nullptr);
       }
 
       // add dimension line primitives
@@ -890,7 +918,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                         TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
-                        LabelPosition_None);
+                        LabelPosition_None,
+                        aFont,
+                        aTextPlan ? &*aTextPlan : nullptr);
         }
       }
 
@@ -911,7 +941,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                     aLabelString,
                     aLabelWidth,
                     theMode,
-                    aLabelPosition);
+                    aLabelPosition,
+                    aFont,
+                    aTextPlan ? &*aTextPlan : nullptr);
 
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
       {
@@ -956,7 +988,9 @@ void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>
                         TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
-                        LabelPosition_None);
+                        LabelPosition_None,
+                        aFont,
+                        aTextPlan ? &*aTextPlan : nullptr);
         }
       }
 
@@ -1437,12 +1471,21 @@ gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt& theFirstPoint,
   occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   // Get label alignment and arrow orientation.
-  int  aLabelPosition   = 0;
-  bool isArrowsExternal = false;
+  int                                       aLabelPosition   = 0;
+  bool                                      isArrowsExternal = false;
+  double                                    aLabelWidth      = 0.0;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aTextPlan;
+  GetValueString(aLabelWidth, aFont, aTextPlan);
+  if (aDimensionAspect->IsText3d())
+  {
+    aLabelWidth += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
+  }
   FitTextAlignmentForLinear(theFirstPoint,
                             theSecondPoint,
                             theIsOneSide,
                             aDimensionAspect->TextHorizontalPosition(),
+                            aLabelWidth,
                             aLabelPosition,
                             isArrowsExternal);
 
@@ -1585,6 +1628,7 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
   const gp_Pnt&                                theSecondPoint,
   const bool                                   theIsOneSide,
   const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+  const double                                 theLabelWidth,
   int&                                         theLabelPosition,
   bool&                                        theIsArrowsExternal) const
 {
@@ -1613,16 +1657,6 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
   double anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
-  // prepare label string and compute its geometrical width
-  double                     aLabelWidth;
-  TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
-
-  // Add margins to cut dimension lines for 3d text
-  if (aDimensionAspect->IsText3d())
-  {
-    aLabelWidth += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
-  }
-
   // Handle user-defined and automatic arrow placement
   switch (aDimensionAspect->ArrowOrientation())
   {
@@ -1642,7 +1676,7 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
       double anArrowsWidth =
         theIsOneSide ? anArrowLength + anArrowMargin : (anArrowLength + anArrowMargin) * 2.0;
 
-      theIsArrowsExternal = aDimensionWidth < aLabelWidth + anArrowsWidth;
+      theIsArrowsExternal = aDimensionWidth < theLabelWidth + anArrowsWidth;
       break;
     }
   }
@@ -1662,7 +1696,7 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
     case Prs3d_DTHP_Fit: {
       double aDimensionWidth = aLineBegPoint.Distance(aLineEndPoint);
       double anArrowsWidth   = theIsOneSide ? anArrowLength : 2.0 * anArrowLength;
-      double aContentWidth   = theIsArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
+      double aContentWidth   = theIsArrowsExternal ? theLabelWidth : theLabelWidth + anArrowsWidth;
 
       theLabelPosition |=
         aDimensionWidth < aContentWidth ? LabelPosition_Left : LabelPosition_HCenter;
