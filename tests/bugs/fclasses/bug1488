@@ -1,5 +1,5 @@
 puts "========"
-puts "GitHub Issue #1488: Vector scale error in DRAW"
+puts "GitHub Issue #1488: Vector scale issue in DRAW"
 puts "========"
 
 set aScaled2d [2dscale 1 2 5]
