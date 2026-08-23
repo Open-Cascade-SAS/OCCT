@@ -50,7 +50,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-
 static void MajMap(const TopoDS_Shape&,
                    const LocOpe_DPrism&,
                    NCollection_DataMap<TopoDS_Shape,

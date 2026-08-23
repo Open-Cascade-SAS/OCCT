@@ -50,7 +50,6 @@
 #include <ElCLib.hxx>
 #include <Precision.hxx>
 
-
 static void GroupShape(
   NCollection_List<TopoDS_Shape>&,
   bool,
@@ -148,7 +147,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
     BRepCheck_Analyzer ana(fac);
     if (!ana.IsValid(fac))
     {
-//    if (!BRepCheck_Analyzer::IsValid(fac)) {
+      //    if (!BRepCheck_Analyzer::IsValid(fac)) {
       myModified = false;
       myDone     = true;
       myLFF      = myLRF;
@@ -487,7 +486,6 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
   myModified = true;
   myDone     = true;
-
 }
 
 //=======================================================================
@@ -577,7 +575,6 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
 
   myModified = true;
   myDone     = true;
-
 }
 
 //=======================================================================
@@ -691,7 +688,6 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 
   myModified = true;
   myDone     = true;
-
 }
 
 //=======================================================================
@@ -699,9 +695,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 // purpose  : Nettoyage des Faces : Suppression des vertex internes et externes
 //=======================================================================
 
-void TopOpeBRepBuild_FuseFace::ClearVertex()
-{
-}
+void TopOpeBRepBuild_FuseFace::ClearVertex() {}
 
 //=================================================================================================
 

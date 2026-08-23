@@ -1388,7 +1388,6 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
   // ----------------------------------------------
   TopOpeBRepBuild_WireEdgeSet WES(Fforward, this);
 
-
   NCollection_List<TopoDS_Shape>::Iterator itLF1, itLF2;
 
   for (itLF1.Initialize(LF1); itLF1.More(); itLF1.Next())
@@ -1493,7 +1492,6 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   int n1 = LF1.Extent();
   int n2 = LF2.Extent();
 
-
   // SplitFace on a face having other same domained faces on the
   // other shape : do not reverse orientation of faces in FillFace
   if (!n2)
@@ -1524,7 +1522,6 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   FindSameRank(LFOO, rankF, LFOO1);
   FindSameRank(LFSO, rankX, LFSO2);
   FindSameRank(LFOO, rankX, LFOO2);
-
 
   TopAbs_State tob1     = ToBuild1;
   TopAbs_State tob2     = ToBuild2;
@@ -1736,7 +1733,6 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
   // Create a face set <FS> connected by edges
   // -----------------------------------------
   TopOpeBRepBuild_ShellFaceSet SFS;
-
 
   STATIC_SOLIDINDEX = 1;
   NCollection_List<TopoDS_Shape>::Iterator itLS1;

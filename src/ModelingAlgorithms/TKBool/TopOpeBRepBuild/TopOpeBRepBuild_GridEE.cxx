@@ -44,7 +44,6 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 
-
 #define M_FORWARD(st) (st == TopAbs_FORWARD)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
 #define M_INTERNAL(st) (st == TopAbs_INTERNAL)

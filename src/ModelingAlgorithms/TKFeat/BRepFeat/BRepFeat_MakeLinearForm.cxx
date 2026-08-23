@@ -60,7 +60,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_LinearForm&,
                    NCollection_DataMap<TopoDS_Shape,
@@ -156,7 +155,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   else
   {
 
-// Rib is centre in the middle of translation
+    // Rib is centre in the middle of translation
     const gp_Vec& DirTranslation = (Direc + Direc1) * 0.5;
     gp_Trsf       T;
     T.SetTranslation(DirTranslation);

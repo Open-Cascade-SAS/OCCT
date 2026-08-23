@@ -43,7 +43,6 @@
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-
 static void FUN_Raise()
 {
 #ifdef OCCT_DEBUG
@@ -108,7 +107,6 @@ static bool disjPerformCut(
 int TopOpeBRepBuild_Builder::FindIsKPart()
 {
   KPClearMaps();
-
 
   int isfafa = KPisfafa();
   // face,face SameDomain
@@ -611,7 +609,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
   int iF2 =
 #endif
     myDataStructure->Shape(fac2); // DEB
-
 
   TopOpeBRepDS_Config config2 = BDS.SameDomainOri(fac2);
 
@@ -1363,7 +1360,6 @@ int TopOpeBRepBuild_Builder::KPisdisj()
   int isdisj1 = KPisdisjsh(myShape1);
   int isdisj2 = KPisdisjsh(myShape2);
 
-
   int isdisj = (isdisj1 && isdisj2) ? 1 : 0;
   return isdisj;
 }
@@ -1493,7 +1489,6 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape&              
   TopAbs_State state = TopAbs_UNKNOWN;
   state              = myShapeClassifier.StateShapeShape(S1, exLS1, S2);
 
-
   return state;
 }
 
@@ -1511,7 +1506,6 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,
                                                const TopoDS_Shape& S2)
 {
   TopAbs_State state = myShapeClassifier.StateShapeShape(S1, exS1, S2);
-
 
   return state;
 }
@@ -1591,7 +1585,6 @@ bool TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape&             Sarg
       //      ne++;
     }
     //    if (ne > 1) return false;
-
   }
 
   return true;
@@ -1978,7 +1971,6 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
       ires = RESSHAPE2;
     }
   } // SameOriented
-
 }
 
 //=================================================================================================
@@ -2070,7 +2062,6 @@ void TopOpeBRepBuild_Builder::KPisdisjanalyse(const TopAbs_State Stsol1,
       icla2 = SHECLASAUTR; //--
     }
   }
-
 }
 
 //=======================================================================
@@ -2162,7 +2153,6 @@ void TopOpeBRepBuild_Builder::KPclassFF(const TopoDS_Shape& F1,
 {
   St1 = KPclassF(F1, F2);
   St2 = KPclassF(F2, F1);
-
 }
 
 //=======================================================================

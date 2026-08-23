@@ -21,7 +21,6 @@
 #include <TopOpeBRepBuild_GTopo.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-
 //=================================================================================================
 
 bool TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S, const TopAbs_State TB) const
@@ -47,7 +46,6 @@ bool TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S, const TopAbs_State
     std::cout.flush();
   }
 #endif
-
 
   return tosplit;
 } // GToSplit

@@ -163,7 +163,6 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
   bool               toregu  = true;
   bool               usewtof = true;
 
-
   // If the same edge appears FOR+REV in the resulting face and
   // whereas it's not a closing edge, set it as INTERNAL instead.
   // FRA60275(iF=4) + PRO16297

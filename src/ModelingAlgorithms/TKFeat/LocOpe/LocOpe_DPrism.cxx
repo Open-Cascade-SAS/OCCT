@@ -51,7 +51,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Map.hxx>
 
-
 #define NECHANT 7 // voir BRepFeat.cxx
 
 //=================================================================================================

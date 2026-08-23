@@ -132,7 +132,6 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
   bool                toregu   = true;
   bool                usestos  = true;
 
-
   if (!toregu)
   {
     LOSO.Append(newSolid);

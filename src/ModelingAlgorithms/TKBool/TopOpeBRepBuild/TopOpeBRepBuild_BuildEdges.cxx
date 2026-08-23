@@ -38,7 +38,6 @@
 #include <algorithm>
 #include <cmath>
 
-
 namespace
 {
 struct TopOpeBRepBuild_SurfaceCurve

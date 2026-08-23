@@ -89,7 +89,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
     return;
   }
 
-
   NCollection_List<TopoDS_Shape>  LFIN;
   NCollection_List<TopoDS_Shape>* plfIN = nullptr;
   const TopoDS_Shape*             pfOU  = nullptr;
@@ -134,7 +133,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   {
     return;
   }
-
 
   int rankpfOU = GShapeRank(*pfOU);
   int rankpfIN = GShapeRank(*pfIN);
@@ -223,7 +221,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 
   ChangeMerged(she1, myState1);
   ChangeMerged(she2, myState2);
-
 
   TopoDS_Shell newshe;
 
@@ -1057,7 +1054,6 @@ bool TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape&             Sarg,
     {
       return false;
     }
-
   }
 
   return true;

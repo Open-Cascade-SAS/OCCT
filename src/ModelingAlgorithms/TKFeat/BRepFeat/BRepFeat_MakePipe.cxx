@@ -32,7 +32,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
-
 static void MajMap(const TopoDS_Shape&, // base
                    LocOpe_Pipe&,
                    NCollection_DataMap<TopoDS_Shape,

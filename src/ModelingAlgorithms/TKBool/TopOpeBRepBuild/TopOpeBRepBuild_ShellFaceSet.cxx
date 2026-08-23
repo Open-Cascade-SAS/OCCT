@@ -19,7 +19,6 @@
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_ShellFaceSet.hxx>
 
-
 //=================================================================================================
 
 TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet()
@@ -43,7 +42,6 @@ TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
       TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 {
   mySolid = TopoDS::Solid(S);
-
 }
 
 //=================================================================================================

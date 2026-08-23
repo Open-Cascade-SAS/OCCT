@@ -335,7 +335,6 @@ int TopOpeBRepBuild_ShapeSet::MaxNumberSubShape(const TopoDS_Shape& Shape)
 void TopOpeBRepBuild_ShapeSet::CheckShape(const bool checkshape)
 {
   myCheckShape = checkshape;
-
 }
 
 //=================================================================================================
@@ -386,7 +385,6 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
   {
     return;
   }
-
 }
 
 //=================================================================================================

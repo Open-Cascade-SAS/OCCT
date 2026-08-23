@@ -20,7 +20,6 @@
 #include <TopOpeBRepBuild_PaveClassifier.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
 
-
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
@@ -82,7 +81,6 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
     // process a new loop : L is the new current Loop
     const occ::handle<TopOpeBRepBuild_Loop>& L         = LS.Loop();
     bool                                     boundaryL = L->IsShape();
-
 
     // L = shape et ForceClass  : on traite L comme un block
     // L = shape et !ForceClass : on traite L comme un pur shape
@@ -266,7 +264,6 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
     } // end of block loop
   } // end of LoopSet LS scan
 
-
   InitArea();
 }
 
@@ -282,7 +279,6 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(
 ) const
 {
   LOL.Append(L);
-
 }
 
 //=================================================================================================
@@ -299,9 +295,7 @@ void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop(
 {
 #endif
 
-
   A.Remove(ITA);
-
 }
 
 //=================================================================================================
@@ -321,5 +315,4 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
 {
 
   A2.Append(A1);
-
 }

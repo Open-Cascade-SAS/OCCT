@@ -48,7 +48,6 @@
 #include <TopoDS_Solid.hxx>
 #include <NCollection_List.hxx>
 
-
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_Prism&,
                    NCollection_DataMap<TopoDS_Shape,

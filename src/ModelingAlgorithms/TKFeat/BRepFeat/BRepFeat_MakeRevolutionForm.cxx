@@ -75,7 +75,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_RevolutionForm&,
                    NCollection_DataMap<TopoDS_Shape,

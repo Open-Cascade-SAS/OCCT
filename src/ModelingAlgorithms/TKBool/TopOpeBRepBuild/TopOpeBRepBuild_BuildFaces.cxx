@@ -28,7 +28,6 @@
 #include <TopOpeBRepDS_CurveIterator.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::BuildFaces(const int                                       iS,

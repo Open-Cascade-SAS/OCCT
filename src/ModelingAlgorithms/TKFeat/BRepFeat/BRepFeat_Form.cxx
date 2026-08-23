@@ -44,7 +44,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-
 static void Descendants(const TopoDS_Shape&,
                         BRepFeat_Builder&,
                         NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
@@ -55,7 +54,6 @@ static void Descendants(const TopoDS_Shape&,
 //=======================================================================
 void BRepFeat_Form::GlobalPerform()
 {
-
 
   if (!mySbOK || !myGSOK || !mySFOK || !mySUOK || !myGFOK || !mySkOK || !myPSOK)
   {

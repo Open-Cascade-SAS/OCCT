@@ -58,7 +58,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-
 //=================================================================================================
 
 TopOpeBRepTool_FuseEdges::TopOpeBRepTool_FuseEdges(
@@ -211,8 +210,6 @@ TopoDS_Shape& TopOpeBRepTool_FuseEdges::Shape()
 void TopOpeBRepTool_FuseEdges::BuildListEdges()
 {
 
-
-
   //--------------------------------------------------------
   // Step One : Build the map ancestors
   //--------------------------------------------------------
@@ -260,8 +257,6 @@ void TopOpeBRepTool_FuseEdges::BuildListEdges()
 void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 {
 
-
-
   // if we have edges to fuse
   if (myMapLstEdg.Extent() > 0)
   {
@@ -308,7 +303,6 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
         C = occ::down_cast<Geom_TrimmedCurve>(C)->BasisCurve();
       }
 
-
       BRepLib_MakeEdge ME(C, VF, VL);
 
       if (!ME.IsDone())
@@ -354,12 +348,10 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 void TopOpeBRepTool_FuseEdges::Perform()
 {
 
-
   if (!myResultEdgesDone)
   {
     BuildListResultEdges();
   }
-
 
   // if we have fused edges
   if (myMapEdg.Extent() > 0)
@@ -397,7 +389,6 @@ void TopOpeBRepTool_FuseEdges::Perform()
       }
     }
 
-
     // perform the effective substitution
     Bsub.Build(myShape);
 
@@ -417,7 +408,6 @@ void TopOpeBRepTool_FuseEdges::Perform()
     {
       myShape = (Bsub.Copy(myShape)).First();
     }
-
   }
 
   myShapeDone = true;

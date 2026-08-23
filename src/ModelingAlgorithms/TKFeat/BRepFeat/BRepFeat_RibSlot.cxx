@@ -69,7 +69,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-
 //=======================================================================
 // function : LFPerform
 // purpose  : topological reconstruction of ribs
@@ -942,7 +941,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
       return true;
     }
 
-//--- FirstFace or LastFace was not found
+    //--- FirstFace or LastFace was not found
     LocOpe_CSIntersector                          ASI(mySbase);
     NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();

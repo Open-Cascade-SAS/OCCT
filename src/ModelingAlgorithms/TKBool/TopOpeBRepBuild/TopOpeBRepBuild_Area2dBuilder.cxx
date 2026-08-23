@@ -19,7 +19,6 @@
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 
-
 //=================================================================================================
 
 TopOpeBRepBuild_Area2dBuilder::TopOpeBRepBuild_Area2dBuilder() = default;
