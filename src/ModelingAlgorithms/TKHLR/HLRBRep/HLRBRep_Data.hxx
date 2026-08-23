@@ -44,14 +44,15 @@
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <NCollection_List.hxx>
+
+#include <memory>
+
 class BRepTopAdaptor_TopolTool;
 class gp_Dir2d;
 class HLRBRep_EdgeData;
 class HLRBRep_FaceData;
 class HLRBRep_Surface;
 class IntRes2d_IntersectionPoint;
-class TableauRejection;
-
 class HLRBRep_Data : public Standard_Transient
 {
 
@@ -199,11 +200,13 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~HLRBRep_Data() override { Destroy(); }
+  Standard_EXPORT ~HLRBRep_Data() override;
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_Data, Standard_Transient)
 
 private:
+  class RejectionCache;
+
   //! Orient the OutLines (left must be inside projection).
   //! Returns True if the face of a closed shell has been
   //! inverted.
@@ -281,7 +284,7 @@ private:
   int                                                           iInterf;
   HLRAlgo_Interference                                          myIntf;
   bool                                                          myAboveIntf;
-  TableauRejection*                                             myReject;
+  std::unique_ptr<RejectionCache>                               myRejectionCache;
 };
 
 #include <HLRBRep_Data.lxx>
