@@ -25,20 +25,19 @@
 
 class StdPrs_BRepFont;
 
-//! Bounded shareable cache of initialized BRep fonts.
+//! Cache of initialized BRep fonts with limited capacity.
 //!
-//! Each retained StdPrs_BRepFont owns its resolved glyph regions and output artifacts. This class
-//! owns only the multi-font configuration map and can be shared by presentation algorithms that
-//! need the same font resources without coupling them to a presentation manager or global state.
+//! The cache stores fonts by name, aspect, size, and matching level. Returned font objects share
+//! the cached glyph data, while changing a returned font does not change the cached font.
 class StdPrs_BRepFontCache : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(StdPrs_BRepFontCache, Standard_Transient)
 public:
   //! Construct an empty cache.
-  //! @param[in] theCapacity maximum number of retained font configurations
+  //! @param[in] theCapacity maximum number of stored fonts
   Standard_EXPORT explicit StdPrs_BRepFontCache(const size_t theCapacity = 16);
 
-  //! Find or initialize a font for an exact configuration.
+  //! Find or initialize a font with the specified parameters.
   //! @param[in] theFontName requested font family
   //! @param[in] theFontAspect requested font style
   //! @param[in] theSize glyph size in model units
@@ -50,13 +49,13 @@ public:
     const double                   theSize,
     const Font_StrictLevel         theStrictLevel = Font_StrictLevel_Any);
 
-  //! Release all retained font resources.
+  //! Remove all stored fonts.
   Standard_EXPORT void Clear();
 
-  //! Return the maximum number of retained font configurations.
+  //! Return the maximum number of stored fonts.
   [[nodiscard]] size_t Capacity() const noexcept { return myCapacity; }
 
-  //! Return the current number of retained font configurations.
+  //! Return the current number of stored fonts.
   [[nodiscard]] Standard_EXPORT size_t Size() const;
 
 private:
@@ -88,13 +87,11 @@ private:
   struct Entry
   {
     occ::handle<StdPrs_BRepFont> Font;
-    size_t                       FontRevision;
   };
 
   size_t                                                    myCapacity;
   NCollection_IndexedDataMap<Request, Entry, RequestHasher> myFonts;
   size_t                                                    myNextIndex = 1;
-  size_t                                                    myRevision  = 0;
   mutable std::shared_mutex                                 myMutex;
 };
 

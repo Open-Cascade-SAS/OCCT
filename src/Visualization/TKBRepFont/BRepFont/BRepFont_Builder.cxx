@@ -51,12 +51,18 @@ namespace
 {
 //=================================================================================================
 
+bool isValidReal(const double theValue) noexcept
+{
+  return !std::isnan(theValue) && !Precision::IsInfinite(theValue);
+}
+
+//=================================================================================================
+
 bool isFiniteScaled(const gp_XY& thePoint, const double theScale) noexcept
 {
   const double aX = thePoint.X() * theScale;
   const double aY = thePoint.Y() * theScale;
-  return std::isfinite(aX) && std::isfinite(aY) && !Precision::IsInfinite(aX)
-         && !Precision::IsInfinite(aY);
+  return isValidReal(aX) && isValidReal(aY);
 }
 
 //=================================================================================================
@@ -64,7 +70,7 @@ bool isFiniteScaled(const gp_XY& thePoint, const double theScale) noexcept
 occ::handle<Geom2d_Curve> makeCurve2d(const BRepFont_PlanarRegion::Curve& theCurve,
                                       const double                        theScale)
 {
-  if (!std::isfinite(theScale) || !(theScale > 0.0) || !isFiniteScaled(theCurve.Start(), theScale)
+  if (!isValidReal(theScale) || !(theScale > 0.0) || !isFiniteScaled(theCurve.Start(), theScale)
       || !isFiniteScaled(theCurve.End(), theScale)
       || (theCurve.Type() != Font_GlyphOutline::Segment::Kind::Line
           && !isFiniteScaled(theCurve.Control1(), theScale))
@@ -239,9 +245,9 @@ TopoDS_Shape BRepFont_Builder::BuildGlyph(const BRepFont_PlanarRegion& theRegion
                                           const GlyphOptions&          theOptions)
 {
   const bool aToConcatenateContours = theOptions.ToConcatenateContours;
-  if (!std::isfinite(theRegion.UnitsPerEm()) || !(theRegion.UnitsPerEm() > 0.0)
-      || !std::isfinite(theOptions.Size) || !(theOptions.Size > 0.0)
-      || !std::isfinite(theOptions.Tolerance) || !(theOptions.Tolerance > 0.0))
+  if (!isValidReal(theRegion.UnitsPerEm()) || !(theRegion.UnitsPerEm() > 0.0)
+      || !isValidReal(theOptions.Size) || !(theOptions.Size > 0.0)
+      || !isValidReal(theOptions.Tolerance) || !(theOptions.Tolerance > 0.0))
   {
     return {};
   }
@@ -251,7 +257,7 @@ TopoDS_Shape BRepFont_Builder::BuildGlyph(const BRepFont_PlanarRegion& theRegion
   }
 
   const double aScale = theOptions.Size / theRegion.UnitsPerEm();
-  if (!std::isfinite(aScale))
+  if (!isValidReal(aScale))
   {
     return {};
   }
@@ -263,8 +269,7 @@ TopoDS_Shape BRepFont_Builder::BuildGlyph(const BRepFont_PlanarRegion& theRegion
   {
     const double aX = aPoint.X() * aScale;
     const double aY = aPoint.Y() * aScale;
-    if (!std::isfinite(aX) || !std::isfinite(aY) || Precision::IsInfinite(aX)
-        || Precision::IsInfinite(aY))
+    if (!isValidReal(aX) || !isValidReal(aY))
     {
       return {};
     }
@@ -448,9 +453,9 @@ BRepGraph_NodeId BRepFont_Builder::AddGlyph(BRepGraph&                   theGrap
                                             const BRepFont_PlanarRegion& theRegion,
                                             const GlyphOptions&          theOptions)
 {
-  if (!std::isfinite(theRegion.UnitsPerEm()) || !(theRegion.UnitsPerEm() > 0.0)
-      || !std::isfinite(theOptions.Size) || !(theOptions.Size > 0.0)
-      || !std::isfinite(theOptions.Tolerance) || !(theOptions.Tolerance > 0.0))
+  if (!isValidReal(theRegion.UnitsPerEm()) || !(theRegion.UnitsPerEm() > 0.0)
+      || !isValidReal(theOptions.Size) || !(theOptions.Size > 0.0)
+      || !isValidReal(theOptions.Tolerance) || !(theOptions.Tolerance > 0.0))
   {
     return {};
   }
@@ -460,7 +465,7 @@ BRepGraph_NodeId BRepFont_Builder::AddGlyph(BRepGraph&                   theGrap
   }
 
   const double aScale = theOptions.Size / theRegion.UnitsPerEm();
-  if (!std::isfinite(aScale))
+  if (!isValidReal(aScale))
   {
     return {};
   }
@@ -469,8 +474,7 @@ BRepGraph_NodeId BRepFont_Builder::AddGlyph(BRepGraph&                   theGrap
   {
     const double aX = aVertex.X() * aScale;
     const double aY = aVertex.Y() * aScale;
-    if (!std::isfinite(aX) || !std::isfinite(aY) || Precision::IsInfinite(aX)
-        || Precision::IsInfinite(aY))
+    if (!isValidReal(aX) || !isValidReal(aY))
     {
       return {};
     }
@@ -709,13 +713,13 @@ namespace
 {
 //=================================================================================================
 
-bool isFinite(const gp_Ax3& thePen) noexcept
+bool isValidPosition(const gp_Ax3& thePen) noexcept
 {
-  return std::isfinite(thePen.Location().X()) && std::isfinite(thePen.Location().Y())
-         && std::isfinite(thePen.Location().Z()) && std::isfinite(thePen.Direction().X())
-         && std::isfinite(thePen.Direction().Y()) && std::isfinite(thePen.Direction().Z())
-         && std::isfinite(thePen.XDirection().X()) && std::isfinite(thePen.XDirection().Y())
-         && std::isfinite(thePen.XDirection().Z());
+  return isValidReal(thePen.Location().X()) && isValidReal(thePen.Location().Y())
+         && isValidReal(thePen.Location().Z()) && isValidReal(thePen.Direction().X())
+         && isValidReal(thePen.Direction().Y()) && isValidReal(thePen.Direction().Z())
+         && isValidReal(thePen.XDirection().X()) && isValidReal(thePen.XDirection().Y())
+         && isValidReal(thePen.XDirection().Z());
 }
 
 //=================================================================================================
@@ -765,26 +769,25 @@ std::optional<BRepFont_Builder::TextPlan> BRepFont_Builder::CreateTextPlan(
   NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>>&& theRegions,
   NCollection_LinearVector<TextPlan::Item>&&                               theItems)
 {
-  if (!std::isfinite(theSize) || !(theSize > 0.0) || !std::isfinite(theTolerance)
-      || !(theTolerance > 0.0) || !std::isfinite(theLowerLeft.X())
-      || !std::isfinite(theLowerLeft.Y()) || !std::isfinite(theUpperRight.X())
-      || !std::isfinite(theUpperRight.Y()) || theUpperRight.X() < theLowerLeft.X()
-      || theUpperRight.Y() < theLowerLeft.Y())
+  if (!isValidReal(theSize) || !(theSize > 0.0) || !isValidReal(theTolerance)
+      || !(theTolerance > 0.0) || !isValidReal(theLowerLeft.X()) || !isValidReal(theLowerLeft.Y())
+      || !isValidReal(theUpperRight.X()) || !isValidReal(theUpperRight.Y())
+      || theUpperRight.X() < theLowerLeft.X() || theUpperRight.Y() < theLowerLeft.Y())
   {
     return std::nullopt;
   }
   for (const std::shared_ptr<const BRepFont_PlanarRegion>& aRegion : theRegions)
   {
-    if (!aRegion || !std::isfinite(aRegion->UnitsPerEm()) || !(aRegion->UnitsPerEm() > 0.0)
-        || !std::isfinite(aRegion->Tolerance()) || !(aRegion->Tolerance() > 0.0))
+    if (!aRegion || !isValidReal(aRegion->UnitsPerEm()) || !(aRegion->UnitsPerEm() > 0.0)
+        || !isValidReal(aRegion->Tolerance()) || !(aRegion->Tolerance() > 0.0))
     {
       return std::nullopt;
     }
   }
   for (const TextPlan::Item& anItem : theItems)
   {
-    if (anItem.Region() >= theRegions.Size() || !std::isfinite(anItem.Position().X())
-        || !std::isfinite(anItem.Position().Y()))
+    if (anItem.Region() >= theRegions.Size() || !isValidReal(anItem.Position().X())
+        || !isValidReal(anItem.Position().Y()))
     {
       return std::nullopt;
     }
@@ -808,9 +811,9 @@ TopoDS_Shape BRepFont_Builder::BuildText(const TextPlan& thePlan)
 
 TopoDS_Shape BRepFont_Builder::BuildText(const TextPlan& thePlan, const TextOptions& theOptions)
 {
-  if (!std::isfinite(thePlan.Size()) || !(thePlan.Size() > 0.0)
-      || !std::isfinite(thePlan.Tolerance()) || !(thePlan.Tolerance() > 0.0)
-      || !isFinite(theOptions.Pen) || thePlan.Items().IsEmpty())
+  if (!isValidReal(thePlan.Size()) || !(thePlan.Size() > 0.0) || !isValidReal(thePlan.Tolerance())
+      || !(thePlan.Tolerance() > 0.0) || !isValidPosition(theOptions.Pen)
+      || thePlan.Items().IsEmpty())
   {
     return {};
   }
@@ -853,10 +856,9 @@ TopoDS_Shape BRepFont_Builder::BuildText(
   const NCollection_LinearVector<TopoDS_Shape>& theGlyphShapes,
   const TextOptions&                            theOptions)
 {
-  if (!std::isfinite(thePlan.Size()) || !(thePlan.Size() > 0.0)
-      || !std::isfinite(thePlan.Tolerance()) || !(thePlan.Tolerance() > 0.0)
-      || !isFinite(theOptions.Pen) || thePlan.Items().IsEmpty()
-      || theGlyphShapes.Size() != thePlan.NbRegions())
+  if (!isValidReal(thePlan.Size()) || !(thePlan.Size() > 0.0) || !isValidReal(thePlan.Tolerance())
+      || !(thePlan.Tolerance() > 0.0) || !isValidPosition(theOptions.Pen)
+      || thePlan.Items().IsEmpty() || theGlyphShapes.Size() != thePlan.NbRegions())
   {
     return {};
   }
@@ -906,9 +908,9 @@ BRepGraph_NodeId BRepFont_Builder::AddText(BRepGraph&         theGraph,
                                            const TextPlan&    thePlan,
                                            const TextOptions& theOptions)
 {
-  if (!std::isfinite(thePlan.Size()) || !(thePlan.Size() > 0.0)
-      || !std::isfinite(thePlan.Tolerance()) || !(thePlan.Tolerance() > 0.0)
-      || !isFinite(theOptions.Pen) || thePlan.Items().IsEmpty())
+  if (!isValidReal(thePlan.Size()) || !(thePlan.Size() > 0.0) || !isValidReal(thePlan.Tolerance())
+      || !(thePlan.Tolerance() > 0.0) || !isValidPosition(theOptions.Pen)
+      || thePlan.Items().IsEmpty())
   {
     return {};
   }

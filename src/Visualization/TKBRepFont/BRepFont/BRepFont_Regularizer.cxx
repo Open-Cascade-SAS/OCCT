@@ -17,6 +17,7 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
+#include <Precision.hxx>
 #include <gp_Pnt2d.hxx>
 
 #include <algorithm>
@@ -26,6 +27,11 @@
 
 namespace
 {
+bool isValidReal(const double theValue) noexcept
+{
+  return !std::isnan(theValue) && !Precision::IsInfinite(theValue);
+}
+
 enum class IntersectionKind : uint8_t
 {
   None,
@@ -101,7 +107,7 @@ bool isPointLike(const Font_GlyphOutline::Segment& theSegment,
                  const gp_XY&                      thePoint,
                  double                            theSquareTolerance);
 
-bool isFinitePoint(const gp_XY& thePoint);
+bool isValidPoint(const gp_XY& thePoint);
 
 Font_GlyphOutline::Segment healEndpoints(const Font_GlyphOutline::Segment& theSegment,
                                          const gp_XY&                      theStart,
@@ -153,9 +159,9 @@ BRepFont_Regularizer::Result BRepFont_Regularizer::Build(const Font_GlyphOutline
                                                          const Options&           theOptions) const
 {
   Result aResult;
-  if (!(theOutline.UnitsPerEm() > 0.0) || !std::isfinite(theOutline.UnitsPerEm())
-      || !(theOptions.Tolerance > 0.0) || !std::isfinite(theOptions.Tolerance)
-      || !std::isfinite(theOptions.Tolerance * theOptions.Tolerance))
+  if (!(theOutline.UnitsPerEm() > 0.0) || !isValidReal(theOutline.UnitsPerEm())
+      || !(theOptions.Tolerance > 0.0) || !isValidReal(theOptions.Tolerance)
+      || !isValidReal(theOptions.Tolerance * theOptions.Tolerance))
   {
     return aResult;
   }
@@ -237,9 +243,9 @@ bool isPointLike(const Font_GlyphOutline::Segment& theSegment,
 
 //=================================================================================================
 
-bool isFinitePoint(const gp_XY& thePoint)
+bool isValidPoint(const gp_XY& thePoint)
 {
-  return std::isfinite(thePoint.X()) && std::isfinite(thePoint.Y());
+  return isValidReal(thePoint.X()) && isValidReal(thePoint.Y());
 }
 
 //=================================================================================================
@@ -322,11 +328,11 @@ bool BRepFont_Regularizer::appendOutline(const Font_GlyphOutline& theOutline,
     {
       const uint32_t                    aSourceIndex = aContour.FirstSegment() + aLocalIndex;
       const Font_GlyphOutline::Segment& aSegment     = aSegments[aSourceIndex];
-      if (!isFinitePoint(aSegment.Start()) || !isFinitePoint(aSegment.End())
+      if (!isValidPoint(aSegment.Start()) || !isValidPoint(aSegment.End())
           || (aSegment.Type() != Font_GlyphOutline::Segment::Kind::Line
-              && !isFinitePoint(aSegment.Control1()))
+              && !isValidPoint(aSegment.Control1()))
           || (aSegment.Type() == Font_GlyphOutline::Segment::Kind::CubicBezier
-              && !isFinitePoint(aSegment.Control2())))
+              && !isValidPoint(aSegment.Control2())))
       {
         theStatus = Status::InvalidOutline;
         return false;
@@ -379,7 +385,7 @@ bool BRepFont_Regularizer::appendOutline(const Font_GlyphOutline& theOutline,
                                      BRepFont_PlanarRegion::VertexId(aPreviousVertexIndex),
                                      BRepFont_PlanarRegion::VertexId(aLastVertexIndex));
       const double aCurveArea = aCurve.SignedArea();
-      if (!std::isfinite(aCurveArea) || !std::isfinite(aSignedArea + aCurveArea))
+      if (!isValidReal(aCurveArea) || !isValidReal(aSignedArea + aCurveArea))
       {
         theStatus = Status::InvalidOutline;
         return false;
@@ -431,8 +437,8 @@ bool BRepFont_Regularizer::appendOutline(const Font_GlyphOutline& theOutline,
         theRegion.myCurves[aLastCurveIndex] = anOldCurve.WithEndpoints(anOldStart, aFirstPoint);
         const BRepFont_PlanarRegion::Curve& aHealedCurve = theRegion.myCurves[aLastCurveIndex];
         const double                        aHealedArea  = aHealedCurve.SignedArea();
-        if (!std::isfinite(anOldArea) || !std::isfinite(aHealedArea)
-            || !std::isfinite(aSignedArea + aHealedArea - anOldArea))
+        if (!isValidReal(anOldArea) || !isValidReal(aHealedArea)
+            || !isValidReal(aSignedArea + aHealedArea - anOldArea))
         {
           theStatus = Status::InvalidOutline;
           return false;
@@ -675,7 +681,7 @@ LineIntersection intersectLineQuadratic(const BRepFont_PlanarRegion::Curve& theL
   LineIntersection aResult;
   const auto       appendParameter = [&](const long double theParameter) {
     const double aParameter = static_cast<double>(theParameter);
-    if (!std::isfinite(aParameter) || aParameter < 0.0 || aParameter > 1.0)
+    if (!isValidReal(aParameter) || aParameter < 0.0 || aParameter > 1.0)
     {
       return;
     }
@@ -1026,7 +1032,7 @@ size_t yIntervals(const BRepFont_PlanarRegion::Curve& theCurve,
   size_t     aNbParameters = 1;
   const auto appendRoot    = [&](const long double theRoot) {
     const double aRoot = static_cast<double>(theRoot);
-    if (std::isfinite(aRoot) && aRoot > theFirst && aRoot < theLast)
+    if (isValidReal(aRoot) && aRoot > theFirst && aRoot < theLast)
     {
       theParameters[aNbParameters++] = aRoot;
     }

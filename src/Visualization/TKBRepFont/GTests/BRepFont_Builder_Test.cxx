@@ -540,7 +540,7 @@ TEST(BRepFont_BuilderTextTest, RepeatedGlyphUsesLocatedTopoDSOccurrences)
   EXPECT_DOUBLE_EQ(5.0, aFirstOrigin.Z());
 }
 
-TEST(BRepFont_BuilderTextTest, CallerOwnedGlyphArtifactsArePlacedWithoutRebuilding)
+TEST(BRepFont_BuilderTextTest, PrebuiltGlyphShapesArePlacedWithoutRebuilding)
 {
   const std::optional<BRepFont_Builder::TextPlan> aPlan =
     BRepFont_BuilderText_Test::createRepeatedGlyphPlan();

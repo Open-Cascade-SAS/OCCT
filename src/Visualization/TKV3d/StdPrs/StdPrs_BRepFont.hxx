@@ -25,7 +25,6 @@
 #include <gp_Ax3.hxx>
 
 #include <cstddef>
-#include <memory>
 #include <optional>
 
 class StdPrs_BRepFontCache;
@@ -141,26 +140,28 @@ public:
   Standard_EXPORT TopoDS_Shape RenderText(const NCollection_String& theText,
                                           const TextOptions&        theOptions);
 
-  //! Format text once and load its deduplicated planar glyph regions.
+  //! Format text and load each unique planar glyph region.
   //! Unsupported glyphs are skipped.
   //! @param[in] theText UTF text
   //! @param[in] theHorizontalAlignment horizontal layout alignment
   //! @param[in] theVerticalAlignment vertical layout alignment
-  //! @return immutable text plan including model-space bounds, or empty on failure or empty text
+  //! @return text plan including model-space bounds, or empty on failure or empty text
   [[nodiscard]] Standard_EXPORT std::optional<BRepFont_Builder::TextPlan> PlanText(
     const NCollection_String&               theText,
     const Graphic3d_HorizontalTextAlignment theHorizontalAlignment = Graphic3d_HTA_LEFT,
     const Graphic3d_VerticalTextAlignment   theVerticalAlignment   = Graphic3d_VTA_BOTTOM);
 
-  //! Render a previously formatted plan using persistent glyph artifacts owned by this font.
-  //! @param[in] thePlan immutable text plan
+  //! Render a text plan, reusing cached glyph shapes when available.
+  //! The plan stores its glyph regions and remains valid after changing this font.
+  //! @param[in] thePlan text plan
   //! @return generated compound, or a null shape when the plan is invalid
   [[nodiscard]] Standard_EXPORT TopoDS_Shape RenderText(const BRepFont_Builder::TextPlan& thePlan);
 
-  //! Render a previously formatted plan using persistent glyph artifacts owned by this font.
-  //! @param[in] thePlan immutable text plan
+  //! Render a text plan, reusing cached glyph shapes when available.
+  //! The plan stores its glyph regions and remains valid after changing this font.
+  //! @param[in] thePlan text plan
   //! @param[in] theOptions placement and contour options
-  //! @return generated compound, or a null shape when the plan is stale or invalid
+  //! @return generated compound, or a null shape when the plan is invalid
   [[nodiscard]] Standard_EXPORT TopoDS_Shape RenderText(const BRepFont_Builder::TextPlan& thePlan,
                                                         const TextOptions& theOptions);
 
@@ -210,17 +211,26 @@ public:
   //! Return the configured glyph size in model units.
   [[nodiscard]] Standard_EXPORT double Size() const;
 
+  //! Find and initialize a font by family name.
+  //! Font aliases and the global fallback font may be used when the family is unavailable.
+  //! @param[in] theFontName requested font family
+  //! @param[in] theFontAspect requested font style
+  //! @param[in] theSize glyph size in model units
+  //! @return true if a suitable font was initialized; false leaves the current font unchanged
+  bool Init(const NCollection_String& theFontName,
+            const Font_FontAspect     theFontAspect,
+            const double              theSize)
+  {
+    return FindAndInit(theFontName.ToCString(), theFontAspect, theSize, Font_StrictLevel_Any);
+  }
+
 private:
   friend class StdPrs_BRepFontCache;
 
-  //! Return the current configuration revision.
-  [[nodiscard]] size_t configurationRevision() const;
-
-  //! Return whether the font is valid and still has the specified configuration revision.
-  [[nodiscard]] bool hasConfigurationRevision(const size_t theRevision) const;
-
   class Impl;
-  std::unique_ptr<Impl> myImpl;
+  explicit StdPrs_BRepFont(const occ::handle<Impl>& theImpl);
+
+  occ::handle<Impl> myImpl;
 };
 
 #endif // StdPrs_BRepFont_HeaderFile

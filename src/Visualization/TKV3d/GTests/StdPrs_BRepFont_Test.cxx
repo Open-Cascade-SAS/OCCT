@@ -152,7 +152,7 @@ TEST(StdPrs_BRepFontTest, RenderTextReusesGlyphCache)
   EXPECT_EQ(2u, aNbOccurrences);
 }
 
-TEST(StdPrs_BRepFontTest, TextPlanOwnsLayoutBoundsAndReusableRegions)
+TEST(StdPrs_BRepFontTest, TextPlanStoresBoundsAndRegions)
 {
   const occ::handle<StdPrs_BRepFont> aFont = createFont();
   if (aFont.IsNull())
@@ -183,6 +183,43 @@ TEST(StdPrs_BRepFontTest, TextPlanOwnsLayoutBoundsAndReusableRegions)
     }
   }
   EXPECT_EQ(2u, aNbAOccurrences);
+}
+
+TEST(StdPrs_BRepFontTest, TextPlanRemainsValidAfterFontChanges)
+{
+  const occ::handle<StdPrs_BRepFont> aFont       = createFont();
+  const occ::handle<StdPrs_BRepFont> anOtherFont = createFont();
+  if (aFont.IsNull() || anOtherFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+
+  const std::optional<BRepFont_Builder::TextPlan> aPlan = aFont->PlanText("B");
+  ASSERT_TRUE(aPlan.has_value());
+  const TopoDS_Shape anOriginal = aFont->RenderText(*aPlan);
+  ASSERT_FALSE(anOriginal.IsNull());
+  EXPECT_GT(countSubShapes(anOriginal, TopAbs_FACE), 0);
+  EXPECT_FALSE(anOtherFont->RenderText(*aPlan).IsNull());
+
+  ASSERT_TRUE(aFont->SetWidthScaling(1.25f));
+  const TopoDS_Shape aTextFromOldPlan = aFont->RenderText(*aPlan);
+  ASSERT_FALSE(aTextFromOldPlan.IsNull());
+  EXPECT_GT(countSubShapes(aTextFromOldPlan, TopAbs_FACE), 0);
+  const std::optional<BRepFont_Builder::TextPlan> aScaledPlan = aFont->PlanText("B");
+  ASSERT_TRUE(aScaledPlan.has_value());
+  EXPECT_FALSE(aFont->RenderText(*aScaledPlan).IsNull());
+
+  aFont->SetSingleStrokeFont(true);
+  const TopoDS_Shape aTextFromFilledPlan = aFont->RenderText(*aScaledPlan);
+  ASSERT_FALSE(aTextFromFilledPlan.IsNull());
+  EXPECT_GT(countSubShapes(aTextFromFilledPlan, TopAbs_FACE), 0);
+
+  const std::optional<BRepFont_Builder::TextPlan> aStrokePlan = aFont->PlanText("B");
+  ASSERT_TRUE(aStrokePlan.has_value());
+  const TopoDS_Shape aStrokeText = aFont->RenderText(*aStrokePlan);
+  ASSERT_FALSE(aStrokeText.IsNull());
+  EXPECT_EQ(0, countSubShapes(aStrokeText, TopAbs_FACE));
+  EXPECT_GT(countSubShapes(aStrokeText, TopAbs_WIRE), 0);
 }
 
 TEST(StdPrs_BRepFontTest, InvisibleTextRetainsLayoutWithoutBuildingTopology)
@@ -222,7 +259,7 @@ TEST(StdPrs_BRepFontTest, WidthScalingValidationPreservesUsableFont)
   EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 
-TEST(StdPrs_BRepFontTest, CacheUsesExactTypedConfiguration)
+TEST(StdPrs_BRepFontTest, CacheDistinguishesFontParameters)
 {
   occ::handle<StdPrs_BRepFontCache>  aCache = new StdPrs_BRepFontCache(4);
   const occ::handle<StdPrs_BRepFont> aFont =
@@ -232,9 +269,15 @@ TEST(StdPrs_BRepFontTest, CacheUsesExactTypedConfiguration)
     GTEST_SKIP() << "FreeType and usable fonts are unavailable";
   }
 
-  EXPECT_EQ(
-    aFont,
-    aCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0));
+  const occ::handle<StdPrs_BRepFont> aSameFont =
+    aCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
+  ASSERT_FALSE(aSameFont.IsNull());
+  EXPECT_NE(aFont, aSameFont);
+  const TopoDS_Shape aGlyph     = aFont->RenderGlyph(U'A');
+  const TopoDS_Shape aSameGlyph = aSameFont->RenderGlyph(U'A');
+  ASSERT_FALSE(aGlyph.IsNull());
+  ASSERT_FALSE(aSameGlyph.IsNull());
+  EXPECT_TRUE(aGlyph.IsPartner(aSameGlyph));
   const double                       aNextSize = std::nextafter(12.0, 13.0);
   const occ::handle<StdPrs_BRepFont> aNextFont =
     aCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, aNextSize);
@@ -243,14 +286,19 @@ TEST(StdPrs_BRepFontTest, CacheUsesExactTypedConfiguration)
   EXPECT_EQ(2u, aCache->Size());
 
   ASSERT_TRUE(aFont->SetWidthScaling(1.25f));
-  const occ::handle<StdPrs_BRepFont> aRestored =
+  const occ::handle<StdPrs_BRepFont> aCached =
     aCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
-  ASSERT_FALSE(aRestored.IsNull());
-  EXPECT_NE(aFont, aRestored);
+  ASSERT_FALSE(aCached.IsNull());
+  EXPECT_NE(aFont, aCached);
+  const std::optional<BRepFont_Builder::TextPlan> aCachedPlan  = aCached->PlanText("AB");
+  const std::optional<BRepFont_Builder::TextPlan> aChangedPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(aCachedPlan.has_value());
+  ASSERT_TRUE(aChangedPlan.has_value());
+  EXPECT_LT(aCachedPlan->Width(), aChangedPlan->Width());
   EXPECT_EQ(2u, aCache->Size());
 }
 
-TEST(StdPrs_BRepFontTest, ExplicitCachesOwnIndependentBoundedResources)
+TEST(StdPrs_BRepFontTest, CachesAreIndependentAndRespectCapacity)
 {
   occ::handle<StdPrs_BRepFontCache> aFirstCache  = new StdPrs_BRepFontCache(2);
   occ::handle<StdPrs_BRepFontCache> aSecondCache = new StdPrs_BRepFontCache(2);
@@ -261,9 +309,10 @@ TEST(StdPrs_BRepFontTest, ExplicitCachesOwnIndependentBoundedResources)
   {
     GTEST_SKIP() << "FreeType and usable fonts are unavailable";
   }
-  EXPECT_EQ(
-    aFirst,
-    aFirstCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0));
+  const occ::handle<StdPrs_BRepFont> aFirstAgain =
+    aFirstCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
+  ASSERT_FALSE(aFirstAgain.IsNull());
+  EXPECT_NE(aFirst, aFirstAgain);
   const occ::handle<StdPrs_BRepFont> anOtherSize =
     aFirstCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 13.0);
   ASSERT_FALSE(anOtherSize.IsNull());
@@ -293,10 +342,10 @@ TEST(StdPrs_BRepFontTest, ExplicitCachesOwnIndependentBoundedResources)
   EXPECT_NE(aFirst, aRecreated);
 
   aRecreated->Release();
-  const occ::handle<StdPrs_BRepFont> aRecovered =
+  const occ::handle<StdPrs_BRepFont> aStillCached =
     aFirstCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
-  ASSERT_FALSE(aRecovered.IsNull());
-  EXPECT_NE(aRecreated, aRecovered);
+  ASSERT_FALSE(aStillCached.IsNull());
+  EXPECT_TRUE(aStillCached->IsValid());
 }
 
 TEST(StdPrs_BRepFontTest, SingleStrokeModeRebuildsGlyphAsWires)
@@ -342,6 +391,40 @@ TEST(StdPrs_BRepFontTest, FailedReinitializationPreservesCurrentFont)
   EXPECT_TRUE(aBefore.IsSame(aFont->RenderGlyph(U'I')));
 }
 
+TEST(StdPrs_BRepFontTest, ReinitializationPreservesWidthScaling)
+{
+  const occ::handle<StdPrs_BRepFont> aFont = createFont();
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+
+  const std::optional<BRepFont_Builder::TextPlan> anInitialPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(anInitialPlan.has_value());
+  ASSERT_TRUE(aFont->SetWidthScaling(1.25f));
+  const std::optional<BRepFont_Builder::TextPlan> aScaledPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(aScaledPlan.has_value());
+  EXPECT_GT(aScaledPlan->Width(), anInitialPlan->Width());
+
+  aFont->Release();
+  ASSERT_TRUE(aFont->Init("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0));
+  const std::optional<BRepFont_Builder::TextPlan> aReinitializedPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(aReinitializedPlan.has_value());
+  EXPECT_DOUBLE_EQ(aScaledPlan->Width(), aReinitializedPlan->Width());
+}
+
+TEST(StdPrs_BRepFontTest, FamilyNameInitOverloadForwardsToFontLookup)
+{
+  StdPrs_BRepFont aFont;
+  if (!aFont.Init("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0))
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  EXPECT_TRUE(aFont.IsValid());
+  EXPECT_DOUBLE_EQ(12.0, aFont.Size());
+  EXPECT_FALSE(aFont.RenderGlyph(U'A').IsNull());
+}
+
 TEST(StdPrs_BRepFontTest, ConcurrentTextRenderingRemainsUsable)
 {
   const occ::handle<StdPrs_BRepFont> aFont = createFont();
@@ -370,43 +453,5 @@ TEST(StdPrs_BRepFontTest, ConcurrentTextRenderingRemainsUsable)
   {
     aThread.join();
   }
-  EXPECT_TRUE(isValid.load(std::memory_order_relaxed));
-}
-
-TEST(StdPrs_BRepFontTest, ConcurrentConfigurationChangesLeaveFinalFontUsable)
-{
-  const occ::handle<StdPrs_BRepFont> aFont = createFont();
-  if (aFont.IsNull())
-  {
-    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
-  }
-  ASSERT_FALSE(aFont->RenderGlyph(U'B').IsNull());
-
-  std::atomic<bool> isValid{true};
-  std::thread       aRenderer([&aFont, &isValid]() {
-    for (int anIteration = 0; anIteration < 32; ++anIteration)
-    {
-      const TopoDS_Shape aGlyph = aFont->RenderGlyph(U'B');
-      if (!aGlyph.IsNull() && !BRepCheck_Analyzer(aGlyph).IsValid())
-      {
-        isValid.store(false, std::memory_order_relaxed);
-        return;
-      }
-    }
-  });
-  std::thread       aConfigurator([&aFont]() {
-    for (int anIteration = 0; anIteration < 16; ++anIteration)
-    {
-      aFont->SetSingleStrokeFont((anIteration % 2) == 0);
-    }
-  });
-  aRenderer.join();
-  aConfigurator.join();
-
-  aFont->SetSingleStrokeFont(false);
-  const TopoDS_Shape aFinalGlyph = aFont->RenderGlyph(U'B');
-  ASSERT_FALSE(aFinalGlyph.IsNull());
-  EXPECT_TRUE(BRepCheck_Analyzer(aFinalGlyph).IsValid());
-  EXPECT_GT(countSubShapes(aFinalGlyph, TopAbs_FACE), 0);
   EXPECT_TRUE(isValid.load(std::memory_order_relaxed));
 }

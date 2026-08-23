@@ -222,8 +222,8 @@ public:
   //! @param[in] theType  the type of dimension.
   Standard_EXPORT PrsDim_Dimension(const PrsDim_KindOfDimension theType);
 
-  //! Set an optional shareable cache for 3D BRep font resources.
-  //! A null handle keeps font ownership local to each presentation computation.
+  //! Set an optional shared cache for 3D BRep fonts.
+  //! A null handle creates a font for each presentation computation.
   //! @param[in] theCache cache shared with this dimension
   Standard_EXPORT void SetBRepFontCache(const occ::handle<StdPrs_BRepFontCache>& theCache);
 
@@ -373,7 +373,7 @@ public:
 protected:
   Standard_EXPORT double ValueToDisplayUnits() const;
 
-  //! Get the formatted value and prepare its reusable 3D layout when requested by the aspect.
+  //! Get the formatted value and prepare its 3D text plan when requested by the aspect.
   //! @param[out] theWidth model-space width of the string
   //! @param[out] theFont initialized BRep font for 3D text, or null for 2D text
   //! @param[out] thePlan formatted 3D text plan, or empty for 2D text or a failed font request

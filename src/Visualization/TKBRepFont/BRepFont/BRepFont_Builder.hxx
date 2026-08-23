@@ -41,7 +41,7 @@ public:
     bool ToConcatenateContours = false;
   };
 
-  //! Text layout with deduplicated planar glyph regions.
+  //! Text layout with unique planar glyph regions.
   class TextPlan
   {
   public:
@@ -122,7 +122,7 @@ public:
     bool ToConcatenateContours = false;
   };
 
-  //! Construct a validated text plan and take ownership of its packed pools.
+  //! Construct a validated text plan from the specified arrays.
   //! @param[in] theSize output glyph size in model units
   //! @param[in] theTolerance output construction tolerance
   //! @param[in] theLowerLeft lower-left layout bound in model units
@@ -168,7 +168,7 @@ public:
   [[nodiscard]] Standard_EXPORT static TopoDS_Shape BuildText(const TextPlan&    thePlan,
                                                               const TextOptions& theOptions);
 
-  //! Assemble positioned occurrences from caller-owned glyph artifacts.
+  //! Assemble positioned occurrences from prebuilt glyph shapes.
   //! @param[in] thePlan text plan defining occurrence positions
   //! @param[in] theGlyphShapes one shape per unique plan region
   //! @param[in] theOptions text placement options

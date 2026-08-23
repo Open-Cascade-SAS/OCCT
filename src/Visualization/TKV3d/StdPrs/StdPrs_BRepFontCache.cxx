@@ -14,10 +14,10 @@
 #include <StdPrs_BRepFontCache.hxx>
 
 #include <StdPrs_BRepFont.hxx>
+#include <Precision.hxx>
 #include <Standard_HashUtils.hxx>
 
 #include <array>
-#include <cmath>
 #include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFontCache, Standard_Transient)
@@ -62,61 +62,41 @@ occ::handle<StdPrs_BRepFont> StdPrs_BRepFontCache::FindFont(
   const double                   theSize,
   const Font_StrictLevel         theStrictLevel)
 {
-  if (myCapacity == 0 || !std::isfinite(theSize) || !(theSize > 0.0))
+  if (myCapacity == 0 || !(theSize > 0.0) || Precision::IsInfinite(theSize))
   {
     return {};
   }
   const Request aRequest(theFontName, theFontAspect, theSize, theStrictLevel);
-  for (;;)
   {
-    size_t aRevision = 0;
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    if (const Entry* anEntry = myFonts.Seek(aRequest))
     {
-      std::shared_lock<std::shared_mutex> aLock(myMutex);
-      if (const Entry* anEntry = myFonts.Seek(aRequest))
-      {
-        if (!anEntry->Font.IsNull()
-            && anEntry->Font->hasConfigurationRevision(anEntry->FontRevision))
-        {
-          return anEntry->Font;
-        }
-      }
-      aRevision = myRevision;
+      return new StdPrs_BRepFont(anEntry->Font->myImpl);
     }
-
-    occ::handle<StdPrs_BRepFont> aCreated =
-      StdPrs_BRepFont::FindAndCreate(theFontName, theFontAspect, theSize, theStrictLevel);
-    if (aCreated.IsNull())
-    {
-      return {};
-    }
-
-    std::unique_lock<std::shared_mutex> aLock(myMutex);
-    if (aRevision != myRevision)
-    {
-      continue;
-    }
-    const Entry aCreatedEntry{aCreated, aCreated->configurationRevision()};
-    if (Entry* aPublished = myFonts.ChangeSeek(aRequest))
-    {
-      if (!aPublished->Font.IsNull()
-          && aPublished->Font->hasConfigurationRevision(aPublished->FontRevision))
-      {
-        return aPublished->Font;
-      }
-      *aPublished = aCreatedEntry;
-      return aCreated;
-    }
-    if (myFonts.Size() < myCapacity)
-    {
-      myFonts.Add(aRequest, aCreatedEntry);
-    }
-    else
-    {
-      myFonts.Substitute(myNextIndex, aRequest, aCreatedEntry);
-      myNextIndex = myNextIndex < myCapacity ? myNextIndex + 1 : 1;
-    }
-    return aCreated;
   }
+
+  std::unique_lock<std::shared_mutex> aLock(myMutex);
+  if (const Entry* anEntry = myFonts.Seek(aRequest))
+  {
+    return new StdPrs_BRepFont(anEntry->Font->myImpl);
+  }
+  occ::handle<StdPrs_BRepFont> aCreated =
+    StdPrs_BRepFont::FindAndCreate(theFontName, theFontAspect, theSize, theStrictLevel);
+  if (aCreated.IsNull())
+  {
+    return {};
+  }
+  const Entry aCreatedEntry{aCreated};
+  if (myFonts.Size() < myCapacity)
+  {
+    myFonts.Add(aRequest, aCreatedEntry);
+  }
+  else
+  {
+    myFonts.Substitute(myNextIndex, aRequest, aCreatedEntry);
+    myNextIndex = myNextIndex < myCapacity ? myNextIndex + 1 : 1;
+  }
+  return new StdPrs_BRepFont(aCreated->myImpl);
 }
 
 //=================================================================================================
@@ -126,7 +106,6 @@ void StdPrs_BRepFontCache::Clear()
   std::unique_lock<std::shared_mutex> aLock(myMutex);
   myFonts.Clear();
   myNextIndex = 1;
-  ++myRevision;
 }
 
 //=================================================================================================

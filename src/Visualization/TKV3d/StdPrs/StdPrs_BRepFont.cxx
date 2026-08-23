@@ -28,29 +28,68 @@
 #include <optional>
 #include <shared_mutex>
 #include <utility>
+#include <variant>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)
 
 namespace
 {
-bool isFinite(const gp_Ax3& thePosition) noexcept
+// A 72-point font is one inch high. The high resolution reduces rounding in FreeType text metrics.
+constexpr unsigned int THE_POINTS_PER_INCH = 72;
+constexpr unsigned int THE_FONT_POINT_SIZE = 72;
+constexpr unsigned int THE_FONT_RESOLUTION = 4800;
+constexpr double       THE_FONT_METRIC_SIZE =
+  static_cast<double>(THE_FONT_POINT_SIZE) * THE_FONT_RESOLUTION / THE_POINTS_PER_INCH;
+constexpr Font_FTFont::Params THE_FONT_PARAMETERS{THE_FONT_POINT_SIZE, THE_FONT_RESOLUTION};
+
+bool isValidReal(const double theValue) noexcept
+{
+  return !std::isnan(theValue) && !Precision::IsInfinite(theValue);
+}
+
+bool isValidPosition(const gp_Ax3& thePosition) noexcept
 {
   const gp_Pnt& aLocation    = thePosition.Location();
   const gp_Dir& aDirection   = thePosition.Direction();
   const gp_Dir& anXDirection = thePosition.XDirection();
   const gp_Dir& anYDirection = thePosition.YDirection();
-  return std::isfinite(aLocation.X()) && std::isfinite(aLocation.Y())
-         && std::isfinite(aLocation.Z()) && std::isfinite(aDirection.X())
-         && std::isfinite(aDirection.Y()) && std::isfinite(aDirection.Z())
-         && std::isfinite(anXDirection.X()) && std::isfinite(anXDirection.Y())
-         && std::isfinite(anXDirection.Z()) && std::isfinite(anYDirection.X())
-         && std::isfinite(anYDirection.Y()) && std::isfinite(anYDirection.Z());
+  return isValidReal(aLocation.X()) && isValidReal(aLocation.Y()) && isValidReal(aLocation.Z())
+         && isValidReal(aDirection.X()) && isValidReal(aDirection.Y())
+         && isValidReal(aDirection.Z()) && isValidReal(anXDirection.X())
+         && isValidReal(anXDirection.Y()) && isValidReal(anXDirection.Z())
+         && isValidReal(anYDirection.X()) && isValidReal(anYDirection.Y())
+         && isValidReal(anYDirection.Z());
 }
 } // namespace
 
-class StdPrs_BRepFont::Impl
+class StdPrs_BRepFont::Impl : public Standard_Transient
 {
 public:
+  struct FileSource
+  {
+    TCollection_AsciiString Path;
+    int                     FaceId = 0;
+  };
+
+  struct NamedSource
+  {
+    TCollection_AsciiString Name;
+    Font_FontAspect         Aspect      = Font_FontAspect_Regular;
+    Font_StrictLevel        StrictLevel = Font_StrictLevel_Any;
+  };
+
+  struct Metrics
+  {
+    double Size        = 0.0;
+    double Scale       = 1.0;
+    double Ascender    = 0.0;
+    double Descender   = 0.0;
+    double LineSpacing = 0.0;
+    double PointSize   = 0.0;
+  };
+
+  using Source = std::variant<std::monostate, FileSource, NamedSource>;
+
   Impl()
       : Font(new Font_FTFont()),
         Tolerance(Precision::Confusion())
@@ -185,15 +224,62 @@ public:
     Glyphs.Clear();
   }
 
+  [[nodiscard]] occ::handle<Impl> Copy() const
+  {
+    std::lock_guard<std::mutex> aLock(FontMutex);
+    occ::handle<Impl>           aCopy         = new Impl();
+    bool                        isInitialized = false;
+    if (const FileSource* aSource = std::get_if<FileSource>(&FontSource))
+    {
+      isInitialized =
+        aCopy->Font->Init(aSource->Path.ToCString(), THE_FONT_PARAMETERS, aSource->FaceId);
+    }
+    else if (const NamedSource* aSource = std::get_if<NamedSource>(&FontSource))
+    {
+      isInitialized = aCopy->Font->FindAndInit(aSource->Name,
+                                               aSource->Aspect,
+                                               THE_FONT_PARAMETERS,
+                                               aSource->StrictLevel);
+    }
+    else
+    {
+      isInitialized = !Font->IsValid();
+    }
+    if (!isInitialized)
+    {
+      return {};
+    }
+    aCopy->Font->SetSingleStrokeFont(Font->IsSingleStrokeFont());
+    if (!aCopy->Font->SetWidthScaling(Font->WidthScaling()))
+    {
+      return {};
+    }
+    aCopy->SetSize(FontMetrics.Size);
+    aCopy->FontSource = FontSource;
+    return aCopy;
+  }
+
+  void SetSize(const double theSize)
+  {
+    const double aScale = theSize / THE_FONT_METRIC_SIZE;
+    FontMetrics         = Metrics{theSize,
+                                  aScale,
+                                  aScale * static_cast<double>(Font->Ascender()),
+                                  aScale * static_cast<double>(Font->Descender()),
+                                  aScale * static_cast<double>(Font->LineSpacing()),
+                                  aScale * static_cast<double>(Font->PointSize())};
+  }
+
   std::optional<Request> MakeRequest(const char32_t theChar)
   {
-    std::unique_lock<std::shared_mutex> aLock(FontMutex);
-    if (!(Size > 0.0) || !Font->IsValid())
+    std::lock_guard<std::mutex> aLock(FontMutex);
+    if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
     {
       return std::nullopt;
     }
     const std::optional<Font_GlyphOutline::Glyph> aGlyph = Font->ResolveGlyph(theChar);
-    return aGlyph.has_value() ? std::optional<Request>(Request{*aGlyph, Size}) : std::nullopt;
+    return aGlyph.has_value() ? std::optional<Request>(Request{*aGlyph, FontMetrics.Size})
+                              : std::nullopt;
   }
 
   std::shared_ptr<const BRepFont_PlanarRegion> LoadRegion(const Request& theRequest)
@@ -210,7 +296,7 @@ public:
 
     std::optional<Font_GlyphOutline> anOutline;
     {
-      std::unique_lock<std::shared_mutex> aLock(FontMutex);
+      std::lock_guard<std::mutex> aLock(FontMutex);
       anOutline = Font->LoadGlyphOutline(theRequest.Glyph);
     }
     if (!anOutline.has_value())
@@ -228,16 +314,16 @@ public:
     std::shared_ptr<const BRepFont_PlanarRegion> aRegion =
       std::make_shared<BRepFont_PlanarRegion>(std::move(*aResult.ChangePlanarRegion()));
 
-    std::shared_lock<std::shared_mutex> aFontLock(FontMutex);
+    std::lock_guard<std::mutex> aFontLock(FontMutex);
     if (!Font->IsGlyphValid(theRequest.Glyph))
     {
       return {};
     }
     std::unique_lock<std::shared_mutex> aCacheLock(CacheMutex);
-    if (const std::shared_ptr<const BRepFont_PlanarRegion> aPublished =
+    if (const std::shared_ptr<const BRepFont_PlanarRegion> anExisting =
           Glyphs.FindRegion(theRequest.Glyph))
     {
-      return aPublished;
+      return anExisting;
     }
     Glyphs.BindRegion(theRequest.Glyph, aRegion);
     return aRegion;
@@ -267,17 +353,17 @@ public:
     anOptions.ToConcatenateContours = theToConcatenateContours;
     aShape                          = BRepFont_Builder::BuildGlyph(*aRegion, anOptions);
 
-    std::shared_lock<std::shared_mutex> aFontLock(FontMutex);
+    std::lock_guard<std::mutex> aFontLock(FontMutex);
     if (!Font->IsGlyphValid(theRequest.Glyph))
     {
       return {};
     }
     std::unique_lock<std::shared_mutex> aCacheLock(CacheMutex);
-    const TopoDS_Shape                  aPublishedShape =
+    const TopoDS_Shape                  anExistingShape =
       Glyphs.FindShape(theRequest.Glyph, theToConcatenateContours);
-    if (!aPublishedShape.IsNull())
+    if (!anExistingShape.IsNull())
     {
-      return aPublishedShape;
+      return anExistingShape;
     }
     Glyphs.BindShape(theRequest.Glyph, theToConcatenateContours, aShape);
     return aShape;
@@ -315,13 +401,13 @@ public:
     gp_XY                                 aLowerLeft;
     gp_XY                                 anUpperRight;
     {
-      std::unique_lock<std::shared_mutex> aLock(FontMutex);
-      if (!(Size > 0.0) || !Font->IsValid())
+      std::lock_guard<std::mutex> aLock(FontMutex);
+      if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
       {
         return std::nullopt;
       }
-      aSize        = Size;
-      aMetricScale = MetricScale;
+      aSize        = FontMetrics.Size;
+      aMetricScale = FontMetrics.Scale;
 
       Font_TextFormatter aFormatter;
       aFormatter.SetupAlignment(theHorizontalAlignment, theVerticalAlignment);
@@ -391,18 +477,24 @@ public:
 public:
   occ::handle<Font_FTFont>  Font;
   GlyphCache                Glyphs;
-  mutable std::shared_mutex FontMutex;
+  mutable std::mutex        FontMutex;
   mutable std::shared_mutex CacheMutex;
   const double              Tolerance;
-  double                    MetricScale = 1.0;
-  double                    Size        = 0.0;
-  size_t                    Revision    = 0;
+  Metrics                   FontMetrics;
+  Source                    FontSource;
 };
 
 //=================================================================================================
 
 StdPrs_BRepFont::StdPrs_BRepFont()
-    : myImpl(std::make_unique<Impl>())
+    : myImpl(new Impl())
+{
+}
+
+//=================================================================================================
+
+StdPrs_BRepFont::StdPrs_BRepFont(const occ::handle<Impl>& theImpl)
+    : myImpl(theImpl)
 {
 }
 
@@ -449,36 +541,21 @@ occ::handle<StdPrs_BRepFont> StdPrs_BRepFont::FindAndCreate(
 
 void StdPrs_BRepFont::Release()
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  myImpl->ClearCache();
-  myImpl->Font->Release();
-  myImpl->MetricScale = 1.0;
-  myImpl->Size        = 0.0;
-  ++myImpl->Revision;
+  float aWidthScaling = 1.0f;
+  {
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    aWidthScaling = myImpl->Font->WidthScaling();
+  }
+  occ::handle<Impl> aNewImpl = new Impl();
+  aNewImpl->Font->SetWidthScaling(aWidthScaling);
+  myImpl = aNewImpl;
 }
 
 //=================================================================================================
 
 bool StdPrs_BRepFont::IsValid() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->Size > 0.0 && myImpl->Font->IsValid();
-}
-
-//=================================================================================================
-
-size_t StdPrs_BRepFont::configurationRevision() const
-{
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->Revision;
-}
-
-//=================================================================================================
-
-bool StdPrs_BRepFont::hasConfigurationRevision(const size_t theRevision) const
-{
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->Revision == theRevision && myImpl->Size > 0.0 && myImpl->Font->IsValid();
+  return myImpl->FontMetrics.Size > 0.0 && myImpl->Font->IsValid();
 }
 
 //=================================================================================================
@@ -487,20 +564,27 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
                            const double              theSize,
                            const int                 theFaceId)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  if (!std::isfinite(theSize) || !(theSize > myImpl->Tolerance * 100.0))
+  float aWidthScaling = 1.0f;
+  {
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    aWidthScaling = myImpl->Font->WidthScaling();
+  }
+  occ::handle<Impl> aNewImpl = new Impl();
+  if (!(theSize > aNewImpl->Tolerance * 100.0) || Precision::IsInfinite(theSize))
   {
     return false;
   }
-  const Font_FTFont::Params aParameters{72, 4800};
-  if (!myImpl->Font->Init(theFontPath.ToCString(), aParameters, theFaceId))
+  if (!aNewImpl->Font->Init(theFontPath.ToCString(), THE_FONT_PARAMETERS, theFaceId))
   {
     return false;
   }
-  myImpl->ClearCache();
-  myImpl->Size        = theSize;
-  myImpl->MetricScale = theSize / 4800.0;
-  ++myImpl->Revision;
+  if (!aNewImpl->Font->SetWidthScaling(aWidthScaling))
+  {
+    return false;
+  }
+  aNewImpl->SetSize(theSize);
+  aNewImpl->FontSource = Impl::FileSource{theFontPath.ToCString(), theFaceId};
+  myImpl               = aNewImpl;
   return true;
 }
 
@@ -511,20 +595,27 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
                                   const double                   theSize,
                                   const Font_StrictLevel         theStrictLevel)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  if (!std::isfinite(theSize) || !(theSize > myImpl->Tolerance * 100.0))
+  float aWidthScaling = 1.0f;
+  {
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    aWidthScaling = myImpl->Font->WidthScaling();
+  }
+  occ::handle<Impl> aNewImpl = new Impl();
+  if (!(theSize > aNewImpl->Tolerance * 100.0) || Precision::IsInfinite(theSize))
   {
     return false;
   }
-  const Font_FTFont::Params aParameters{72, 4800};
-  if (!myImpl->Font->FindAndInit(theFontName, theFontAspect, aParameters, theStrictLevel))
+  if (!aNewImpl->Font->FindAndInit(theFontName, theFontAspect, THE_FONT_PARAMETERS, theStrictLevel))
   {
     return false;
   }
-  myImpl->ClearCache();
-  myImpl->Size        = theSize;
-  myImpl->MetricScale = theSize / 4800.0;
-  ++myImpl->Revision;
+  if (!aNewImpl->Font->SetWidthScaling(aWidthScaling))
+  {
+    return false;
+  }
+  aNewImpl->SetSize(theSize);
+  aNewImpl->FontSource = Impl::NamedSource{theFontName, theFontAspect, theStrictLevel};
+  myImpl               = aNewImpl;
   return true;
 }
 
@@ -556,7 +647,7 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText)
 TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
                                          const TextOptions&        theOptions)
 {
-  if (!isFinite(theOptions.Pen))
+  if (!isValidPosition(theOptions.Pen))
   {
     return {};
   }
@@ -580,7 +671,7 @@ std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::PlanText(
 TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePlan,
                                          const TextOptions&                theOptions)
 {
-  if (!isFinite(theOptions.Pen) || thePlan.NbRegions() == 0)
+  if (!isValidPosition(theOptions.Pen) || thePlan.NbRegions() == 0)
   {
     return {};
   }
@@ -626,21 +717,29 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePl
 
 bool StdPrs_BRepFont::SetWidthScaling(const float theScaleFactor)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  if (!std::isfinite(theScaleFactor) || !(theScaleFactor > 0.0f))
+  if (!(theScaleFactor > 0.0f) || Precision::IsInfinite(static_cast<double>(theScaleFactor)))
   {
     return false;
   }
-  if (myImpl->Font->WidthScaling() == theScaleFactor)
   {
-    return true;
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    if (myImpl->Font->WidthScaling() == theScaleFactor)
+    {
+      return true;
+    }
   }
-  if (!myImpl->Font->SetWidthScaling(theScaleFactor))
+  occ::handle<Impl> anImpl = myImpl->GetRefCount() == 1 ? myImpl : myImpl->Copy();
+  if (anImpl.IsNull())
   {
     return false;
   }
-  myImpl->ClearCache();
-  ++myImpl->Revision;
+  std::lock_guard<std::mutex> aLock(anImpl->FontMutex);
+  if (!anImpl->Font->SetWidthScaling(theScaleFactor))
+  {
+    return false;
+  }
+  anImpl->ClearCache();
+  myImpl = anImpl;
   return true;
 }
 
@@ -648,92 +747,96 @@ bool StdPrs_BRepFont::SetWidthScaling(const float theScaleFactor)
 
 void StdPrs_BRepFont::SetSingleStrokeFont(const bool theIsSingleStroke)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  if (myImpl->Font->IsSingleStrokeFont() == theIsSingleStroke)
+  {
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    if (myImpl->Font->IsSingleStrokeFont() == theIsSingleStroke)
+    {
+      return;
+    }
+  }
+  occ::handle<Impl> anImpl = myImpl->GetRefCount() == 1 ? myImpl : myImpl->Copy();
+  if (anImpl.IsNull())
   {
     return;
   }
-  myImpl->Font->SetSingleStrokeFont(theIsSingleStroke);
-  myImpl->ClearCache();
-  ++myImpl->Revision;
+  std::lock_guard<std::mutex> aLock(anImpl->FontMutex);
+  anImpl->Font->SetSingleStrokeFont(theIsSingleStroke);
+  anImpl->ClearCache();
+  myImpl = anImpl;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::Ascender() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->Ascender());
+  return myImpl->FontMetrics.Ascender;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::Descender() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->Descender());
+  return myImpl->FontMetrics.Descender;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::LineSpacing() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->LineSpacing());
+  return myImpl->FontMetrics.LineSpacing;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::PointSize() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->PointSize());
+  return myImpl->FontMetrics.PointSize;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::AdvanceX(const char32_t theUCharNext)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->AdvanceX(theUCharNext));
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  return myImpl->FontMetrics.Scale * static_cast<double>(myImpl->Font->AdvanceX(theUCharNext));
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::AdvanceX(const char32_t theUChar, const char32_t theUCharNext)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->AdvanceX(theUChar, theUCharNext));
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  return myImpl->FontMetrics.Scale
+         * static_cast<double>(myImpl->Font->AdvanceX(theUChar, theUCharNext));
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::AdvanceY(const char32_t theUCharNext)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->AdvanceY(theUCharNext));
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  return myImpl->FontMetrics.Scale * static_cast<double>(myImpl->Font->AdvanceY(theUCharNext));
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::AdvanceY(const char32_t theUChar, const char32_t theUCharNext)
 {
-  std::unique_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale * static_cast<double>(myImpl->Font->AdvanceY(theUChar, theUCharNext));
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  return myImpl->FontMetrics.Scale
+         * static_cast<double>(myImpl->Font->AdvanceY(theUChar, theUCharNext));
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::Scale() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->MetricScale;
+  return myImpl->FontMetrics.Scale;
 }
 
 //=================================================================================================
 
 double StdPrs_BRepFont::Size() const
 {
-  std::shared_lock<std::shared_mutex> aLock(myImpl->FontMutex);
-  return myImpl->Size;
+  return myImpl->FontMetrics.Size;
 }
