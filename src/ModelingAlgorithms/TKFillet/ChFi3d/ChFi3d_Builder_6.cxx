@@ -917,6 +917,18 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   //   if (Du1.Dot(Du2)>0) Data->ChangeOrientation() = TopAbs_FORWARD;
   //   else Data->ChangeOrientation() = TopAbs_REVERSED;
 
+  // The walk below looks for a parameter where both surfaces have a well-defined normal, probing
+  // VFirst + (VLast - VFirst) / aDenom for aDenom = 2, 3, 4, ... -- from the middle of the range
+  // towards its start. Where such a parameter exists it is reached within the first few steps.
+  // Where it does not -- on a surface degenerate along the whole of this boundary, as happens on
+  // the seam of an extrusion whose profile has a cusp -- the step shrinks harmonically and falls
+  // under the parametric tolerance only after (VLast - VFirst) / tolget2d probes, each evaluating
+  // two B-spline surfaces. With the tolerance the approximation usually reaches, that is hundreds
+  // of millions of probes, and the caller sees a hang instead of the false returned in the end.
+  // The count is therefore bounded: a case needing more probes than that to find a usable
+  // parameter does not have one.
+  constexpr int aMaxProbes = 1000;
+
   double aDelta = VLast - VFirst;
   int    aDenom = 2;
 
@@ -943,7 +955,7 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     {
       aDenom++;
 
-      if (std::abs(aDeltav) <= tolget2d)
+      if (std::abs(aDeltav) <= tolget2d || aDenom > aMaxProbes)
       {
         return false;
       }
