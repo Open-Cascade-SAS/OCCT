@@ -1,5 +1,4 @@
-// Created on: 2013-09-16
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2019-2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Font_BRepFont_HeaderFile
-#define Font_BRepFont_HeaderFile
+#include <Font_UnicodeSubset.hxx>
 
-#include <StdPrs_BRepFont.hxx>
+#include <gtest/gtest.h>
 
-//! Alias for porting from old name.
-typedef StdPrs_BRepFont Font_BRepFont;
-
-#endif // _Font_BRepFont_H__
+TEST(Font_UnicodeSubsetTest, CountIncludesEveryDeclaredSubset)
+{
+  EXPECT_EQ(4, Font_UnicodeSubset_NB);
+  EXPECT_LT(Font_UnicodeSubset_Western, Font_UnicodeSubset_NB);
+  EXPECT_LT(Font_UnicodeSubset_Korean, Font_UnicodeSubset_NB);
+  EXPECT_LT(Font_UnicodeSubset_CJK, Font_UnicodeSubset_NB);
+  EXPECT_LT(Font_UnicodeSubset_Arabic, Font_UnicodeSubset_NB);
+}
