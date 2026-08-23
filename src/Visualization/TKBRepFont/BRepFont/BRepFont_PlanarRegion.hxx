@@ -67,7 +67,7 @@ public:
   class Curve
   {
   public:
-    explicit Curve(const Font_GlyphOutline::Segment& theSegment);
+    Standard_EXPORT explicit Curve(const Font_GlyphOutline::Segment& theSegment);
 
     [[nodiscard]] Font_GlyphOutline::Segment::Kind Type() const noexcept { return myKind; }
 
