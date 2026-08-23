@@ -23,6 +23,7 @@
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <mutex>
 #include <optional>
@@ -415,10 +416,12 @@ public:
       aFormatter.Format();
       Font_Rect aBounds;
       aFormatter.BndBox(aBounds);
-      aLowerLeft.SetCoord(static_cast<double>(aBounds.Left) * aMetricScale,
-                          static_cast<double>(aBounds.Bottom) * aMetricScale);
-      anUpperRight.SetCoord(static_cast<double>(aBounds.Right) * aMetricScale,
-                            static_cast<double>(aBounds.Top) * aMetricScale);
+      const double aLeft   = static_cast<double>(aBounds.Left) * aMetricScale;
+      const double aRight  = static_cast<double>(aBounds.Right) * aMetricScale;
+      const double aBottom = static_cast<double>(aBounds.Bottom) * aMetricScale;
+      const double aTop    = static_cast<double>(aBounds.Top) * aMetricScale;
+      aLowerLeft.SetCoord(std::min(aLeft, aRight), std::min(aBottom, aTop));
+      anUpperRight.SetCoord(std::max(aLeft, aRight), std::max(aBottom, aTop));
       aPendingItems.Reserve(64);
       for (Font_TextFormatter::Iterator anIterator(
              aFormatter,

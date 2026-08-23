@@ -25,6 +25,7 @@
 #include <Font_FontMgr.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 
 #include <limits>

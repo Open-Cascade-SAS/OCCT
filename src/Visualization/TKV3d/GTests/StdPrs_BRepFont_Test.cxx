@@ -185,6 +185,29 @@ TEST(StdPrs_BRepFontTest, TextPlanStoresBoundsAndRegions)
   EXPECT_EQ(2u, aNbAOccurrences);
 }
 
+TEST(StdPrs_BRepFontTest, RightAlignedMultilineTextBuildsShape)
+{
+  const occ::handle<StdPrs_BRepFont> aFont = StdPrs_BRepFont::FindAndCreate("Times-Roman",
+                                                                            Font_FontAspect_Regular,
+                                                                            50.0,
+                                                                            Font_StrictLevel_Any);
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+
+  const std::optional<BRepFont_Builder::TextPlan> aPlan =
+    aFont->PlanText("Top-Right\nFirst line\nLion The Second\n3rd",
+                    Graphic3d_HTA_RIGHT,
+                    Graphic3d_VTA_TOP);
+  ASSERT_TRUE(aPlan.has_value());
+  ASSERT_GT(aPlan->NbRegions(), 0u);
+  ASSERT_FALSE(aPlan->Items().IsEmpty());
+  EXPECT_LT(aPlan->LowerLeft().X(), aPlan->UpperRight().X());
+  EXPECT_LT(aPlan->LowerLeft().Y(), aPlan->UpperRight().Y());
+  EXPECT_FALSE(aFont->RenderText(*aPlan).IsNull());
+}
+
 TEST(StdPrs_BRepFontTest, TextPlanRemainsValidAfterFontChanges)
 {
   const occ::handle<StdPrs_BRepFont> aFont       = createFont();
