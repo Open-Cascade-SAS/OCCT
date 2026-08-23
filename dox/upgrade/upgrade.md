@@ -1945,10 +1945,11 @@ Deprecated (still compiles with warnings):
 
 @subsection upgrade_810_brepfont BRep font and text conversion
 
-BRep font construction has moved to the `TKBRepFont` toolkit. `StdPrs_BRepTextBuilder`,
-`Font_BRepTextBuilder`, and `Font_BRepFont` have been removed. For direct TopoDS conversion, use
-`StdPrs_BRepFont::RenderText()` or `StdPrs_BRepFont::RenderGlyph()`. Lower-level code can regularize
-a `Font_GlyphOutline` with `BRepFont_Regularizer` and pass the result to `BRepFont_Builder`.
+BRep font construction is provided by the `BRepFont` package in the `TKV3d` toolkit.
+`StdPrs_BRepTextBuilder`, `Font_BRepTextBuilder`, and `Font_BRepFont` have been removed. For direct
+TopoDS conversion, use `StdPrs_BRepFont::RenderText()` or `StdPrs_BRepFont::RenderGlyph()`.
+Lower-level code can regularize a `Font_GlyphOutline` with `BRepFont_Regularizer` and pass the result
+to `BRepFont_Builder`.
 
 For TopoDS output, contour concatenation is selected per call through `ToConcatenateContours` in
 the corresponding `GlyphOptions` or `TextOptions`. The persistent
