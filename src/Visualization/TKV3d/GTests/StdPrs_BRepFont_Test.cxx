@@ -14,6 +14,7 @@
 #include <StdPrs_BRepFont.hxx>
 
 #include <BRepCheck_Analyzer.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <StdPrs_BRepFontCache.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -23,7 +24,6 @@
 #include <cmath>
 #include <limits>
 #include <thread>
-#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -89,7 +89,7 @@ TEST(StdPrs_BRepFontTest, GlyphOptionsConcatenateContoursPerCall)
             countSubShapes(aCompositeShape, TopAbs_FACE));
 }
 
-TEST(StdPrs_BRepFontTest, ReusesBuiltGlyphForEachContourMode)
+TEST(StdPrs_BRepFontTest, RenderGlyphReturnsIndependentTopology)
 {
   const occ::handle<StdPrs_BRepFont> aFont = createFont();
   if (aFont.IsNull())
@@ -99,13 +99,17 @@ TEST(StdPrs_BRepFontTest, ReusesBuiltGlyphForEachContourMode)
 
   const TopoDS_Shape aDefaultShape = aFont->RenderGlyph(U'B');
   ASSERT_FALSE(aDefaultShape.IsNull());
-  EXPECT_TRUE(aDefaultShape.IsSame(aFont->RenderGlyph(U'B')));
+  const TopoDS_Shape aSecondDefaultShape = aFont->RenderGlyph(U'B');
+  ASSERT_FALSE(aSecondDefaultShape.IsNull());
+  EXPECT_FALSE(aDefaultShape.IsSame(aSecondDefaultShape));
 
   StdPrs_BRepFont::GlyphOptions anOptions;
   anOptions.ToConcatenateContours    = true;
   const TopoDS_Shape aCompositeShape = aFont->RenderGlyph(U'B', anOptions);
   ASSERT_FALSE(aCompositeShape.IsNull());
-  EXPECT_TRUE(aCompositeShape.IsSame(aFont->RenderGlyph(U'B', anOptions)));
+  const TopoDS_Shape aSecondCompositeShape = aFont->RenderGlyph(U'B', anOptions);
+  ASSERT_FALSE(aSecondCompositeShape.IsNull());
+  EXPECT_FALSE(aCompositeShape.IsSame(aSecondCompositeShape));
   EXPECT_FALSE(aDefaultShape.IsSame(aCompositeShape));
 }
 
@@ -130,7 +134,7 @@ TEST(StdPrs_BRepFontTest, RenderTextBuildsPlacedCompound)
   EXPECT_TRUE(BRepCheck_Analyzer(aConfiguredText).IsValid());
 }
 
-TEST(StdPrs_BRepFontTest, RenderTextReusesGlyphCache)
+TEST(StdPrs_BRepFontTest, RenderTextSharesOnlyPerCallGlyphTopology)
 {
   const occ::handle<StdPrs_BRepFont> aFont = createFont();
   if (aFont.IsNull())
@@ -143,10 +147,19 @@ TEST(StdPrs_BRepFontTest, RenderTextReusesGlyphCache)
   const TopoDS_Shape aText = aFont->RenderText("AA");
   ASSERT_FALSE(aText.IsNull());
 
-  size_t aNbOccurrences = 0;
+  TopoDS_Shape aFirstOccurrence;
+  size_t       aNbOccurrences = 0;
   for (TopoDS_Iterator anIterator(aText); anIterator.More(); anIterator.Next())
   {
-    EXPECT_TRUE(aGlyph.IsPartner(anIterator.Value()));
+    EXPECT_FALSE(aGlyph.IsPartner(anIterator.Value()));
+    if (aFirstOccurrence.IsNull())
+    {
+      aFirstOccurrence = anIterator.Value();
+    }
+    else
+    {
+      EXPECT_TRUE(aFirstOccurrence.IsPartner(anIterator.Value()));
+    }
     ++aNbOccurrences;
   }
   EXPECT_EQ(2u, aNbOccurrences);
@@ -170,19 +183,9 @@ TEST(StdPrs_BRepFontTest, TextPlanStoresBoundsAndRegions)
   EXPECT_LT(aPlan->LowerLeft().X(), 0.0);
   EXPECT_GT(aPlan->UpperRight().X(), 0.0);
 
-  const TopoDS_Shape aGlyph = aFont->RenderGlyph(U'A');
-  ASSERT_FALSE(aGlyph.IsNull());
   const TopoDS_Shape aText = aFont->RenderText(*aPlan);
   ASSERT_FALSE(aText.IsNull());
-  size_t aNbAOccurrences = 0;
-  for (TopoDS_Iterator anIterator(aText); anIterator.More(); anIterator.Next())
-  {
-    if (aGlyph.IsPartner(anIterator.Value()))
-    {
-      ++aNbAOccurrences;
-    }
-  }
-  EXPECT_EQ(2u, aNbAOccurrences);
+  EXPECT_EQ(4, aText.NbChildren());
 }
 
 TEST(StdPrs_BRepFontTest, RightAlignedMultilineTextBuildsShape)
@@ -274,7 +277,7 @@ TEST(StdPrs_BRepFontTest, WidthScalingValidationPreservesUsableFont)
   EXPECT_FALSE(aFont->SetWidthScaling(0.0f));
   EXPECT_FALSE(aFont->SetWidthScaling(-1.0f));
   EXPECT_FALSE(aFont->SetWidthScaling(std::numeric_limits<float>::infinity()));
-  EXPECT_TRUE(aBefore.IsSame(aFont->RenderGlyph(U'I')));
+  EXPECT_FALSE(aFont->RenderGlyph(U'I').IsNull());
 
   ASSERT_TRUE(aFont->SetWidthScaling(1.25f));
   const TopoDS_Shape anAfter = aFont->RenderGlyph(U'I');
@@ -300,7 +303,14 @@ TEST(StdPrs_BRepFontTest, CacheDistinguishesFontParameters)
   const TopoDS_Shape aSameGlyph = aSameFont->RenderGlyph(U'A');
   ASSERT_FALSE(aGlyph.IsNull());
   ASSERT_FALSE(aSameGlyph.IsNull());
-  EXPECT_TRUE(aGlyph.IsPartner(aSameGlyph));
+  EXPECT_FALSE(aGlyph.IsPartner(aSameGlyph));
+  const std::optional<BRepFont_Builder::TextPlan> aPlan     = aFont->PlanText("A");
+  const std::optional<BRepFont_Builder::TextPlan> aSamePlan = aSameFont->PlanText("A");
+  ASSERT_TRUE(aPlan.has_value());
+  ASSERT_TRUE(aSamePlan.has_value());
+  ASSERT_EQ(1u, aPlan->NbRegions());
+  ASSERT_EQ(1u, aSamePlan->NbRegions());
+  EXPECT_EQ(aPlan->RegionHandle(0).get(), aSamePlan->RegionHandle(0).get());
   const double                       aNextSize = std::nextafter(12.0, 13.0);
   const occ::handle<StdPrs_BRepFont> aNextFont =
     aCache->FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, aNextSize);
@@ -411,7 +421,7 @@ TEST(StdPrs_BRepFontTest, FailedReinitializationPreservesCurrentFont)
   EXPECT_FALSE(aFont->Init("", std::numeric_limits<double>::infinity(), 0));
   EXPECT_TRUE(aFont->IsValid());
   EXPECT_DOUBLE_EQ(aSize, aFont->Size());
-  EXPECT_TRUE(aBefore.IsSame(aFont->RenderGlyph(U'I')));
+  EXPECT_FALSE(aFont->RenderGlyph(U'I').IsNull());
 }
 
 TEST(StdPrs_BRepFontTest, ReinitializationPreservesWidthScaling)
@@ -457,11 +467,11 @@ TEST(StdPrs_BRepFontTest, ConcurrentTextRenderingRemainsUsable)
   }
   ASSERT_FALSE(aFont->RenderText("ABBA").IsNull());
 
-  std::atomic<bool>        isValid{true};
-  std::vector<std::thread> aThreads;
+  std::atomic<bool>                     isValid{true};
+  NCollection_LinearVector<std::thread> aThreads;
   for (int aThread = 0; aThread < 4; ++aThread)
   {
-    aThreads.emplace_back([&aFont, &isValid]() {
+    aThreads.EmplaceAppend([&aFont, &isValid]() {
       for (int anIteration = 0; anIteration < 8; ++anIteration)
       {
         if (aFont->RenderText("ABBA").IsNull())

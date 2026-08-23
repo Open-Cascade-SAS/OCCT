@@ -17,6 +17,7 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt2d.hxx>
 
@@ -24,6 +25,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 
 namespace
 {
@@ -134,8 +136,7 @@ bool contains(const BRepFont_PlanarRegion&       theRegion,
               const gp_XY&                       thePoint);
 
 std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&       theRegion,
-                                   const BRepFont_PlanarRegion::Loop& theLoop,
-                                   double                             theTolerance);
+                                   const BRepFont_PlanarRegion::Loop& theLoop);
 
 //=================================================================================================
 
@@ -207,7 +208,7 @@ BRepFont_Regularizer::Result BRepFont_Regularizer::Build(const Font_GlyphOutline
   }
   if (!aRegion.IsSingleStroke())
   {
-    if (!classifyLoops(theOutline, aRegion, theOptions.Tolerance, anIntersectingLoopPairs))
+    if (!classifyLoops(theOutline, aRegion, anIntersectingLoopPairs))
     {
       aResult.myStatus = Status::InvalidOutline;
       return aResult;
@@ -324,9 +325,9 @@ bool BRepFont_Regularizer::appendOutline(const Font_GlyphOutline& theOutline,
     double         aSignedArea = 0.0;
     Bnd_Box2d      aBounds;
 
-    for (uint32_t aLocalIndex = 0; aLocalIndex < aContour.NbSegments(); ++aLocalIndex)
+    for (size_t aLocalIndex = 0; aLocalIndex < aContour.NbSegments(); ++aLocalIndex)
     {
-      const uint32_t                    aSourceIndex = aContour.FirstSegment() + aLocalIndex;
+      const size_t                      aSourceIndex = aContour.FirstSegment() + aLocalIndex;
       const Font_GlyphOutline::Segment& aSegment     = aSegments[aSourceIndex];
       if (!isValidPoint(aSegment.Start()) || !isValidPoint(aSegment.End())
           || (aSegment.Type() != Font_GlyphOutline::Segment::Kind::Line
@@ -1109,9 +1110,13 @@ double horizontalCrossing(const BRepFont_PlanarRegion::Curve& theCurve,
   double     aFirst       = theFirst;
   double     aLast        = theLast;
   const bool isFirstAbove = theFirstY > theY;
-  for (int anIteration = 0; anIteration < 40; ++anIteration)
+  for (;;)
   {
     const double aMiddle = 0.5 * (aFirst + aLast);
+    if (aMiddle == aFirst || aMiddle == aLast)
+    {
+      break;
+    }
     if ((curveY(theCurve, aMiddle) > theY) == isFirstAbove)
     {
       aFirst = aMiddle;
@@ -1175,56 +1180,79 @@ bool contains(const BRepFont_PlanarRegion&       theRegion,
 //=================================================================================================
 
 std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&       theRegion,
-                                   const BRepFont_PlanarRegion::Loop& theLoop,
-                                   const double                       theTolerance)
+                                   const BRepFont_PlanarRegion::Loop& theLoop)
 {
-  const auto [aMinX, aMaxX, aMinY, aMaxY] = theLoop.Bounds().Get();
-  const double aDiagonal                  = std::hypot(aMaxX - aMinX, aMaxY - aMinY);
-  const double anInitialOffset            = std::max(8.0 * theTolerance, aDiagonal * 1.0e-6);
-
+  NCollection_LinearVector<double> aCriticalY;
   for (uint32_t anOffset = 0; anOffset < theLoop.NbUses(); ++anOffset)
   {
-    const BRepFont_PlanarRegion::Use&   aUse   = theRegion.Uses()[theLoop.FirstUse() + anOffset];
-    const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
-    constexpr std::array<double, 3>     THE_SAMPLES = {0.5, 0.25, 0.75};
-    for (const double aSample : THE_SAMPLES)
+    const BRepFont_PlanarRegion::Use& aUse = theRegion.Uses()[theLoop.FirstUse() + anOffset];
+    if (aUse.CurveIndex().Value() >= theRegion.Curves().Size())
     {
-      const double aParameter =
-        aUse.IsReversed()
-          ? aUse.LastParameter() - (aUse.LastParameter() - aUse.FirstParameter()) * aSample
-          : aUse.FirstParameter() + (aUse.LastParameter() - aUse.FirstParameter()) * aSample;
-      gp_XY aDerivative = aCurve.D1(aParameter);
-      if (aUse.IsReversed())
+      return std::nullopt;
+    }
+    const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
+    std::array<double, 4>               aParameters;
+    const size_t                        aNbParameters =
+      yIntervals(aCurve, aUse.FirstParameter(), aUse.LastParameter(), aParameters);
+    for (size_t aParameter = 0; aParameter < aNbParameters; ++aParameter)
+    {
+      aCriticalY.Append(curveY(aCurve, aParameters[aParameter]));
+    }
+  }
+  std::sort(aCriticalY.begin(), aCriticalY.end());
+  size_t aNbCriticalY = 0;
+  for (const double aY : aCriticalY)
+  {
+    if (aNbCriticalY == 0 || aY != aCriticalY[aNbCriticalY - 1])
+    {
+      aCriticalY.ChangeValue(aNbCriticalY++) = aY;
+    }
+  }
+  aCriticalY.Resize(aNbCriticalY);
+
+  NCollection_LinearVector<double> aCrossings;
+  for (size_t aSlab = 0; aSlab + 1 < aCriticalY.Size(); ++aSlab)
+  {
+    const double aY = 0.5 * aCriticalY[aSlab] + 0.5 * aCriticalY[aSlab + 1];
+    if (!(aY > aCriticalY[aSlab] && aY < aCriticalY[aSlab + 1]))
+    {
+      continue;
+    }
+    aCrossings.Clear();
+    for (uint32_t anOffset = 0; anOffset < theLoop.NbUses(); ++anOffset)
+    {
+      const BRepFont_PlanarRegion::Use&   aUse   = theRegion.Uses()[theLoop.FirstUse() + anOffset];
+      const BRepFont_PlanarRegion::Curve& aCurve = theRegion.Curves()[aUse.CurveIndex().Value()];
+      std::array<double, 4>               aParameters;
+      const size_t                        aNbParameters =
+        yIntervals(aCurve, aUse.FirstParameter(), aUse.LastParameter(), aParameters);
+      for (size_t anInterval = 0; anInterval + 1 < aNbParameters; ++anInterval)
       {
-        aDerivative.Reverse();
-      }
-      const double aLength = aDerivative.Modulus();
-      if (aLength <= theTolerance)
-      {
-        continue;
-      }
-      gp_XY aNormal(-aDerivative.Y() / aLength, aDerivative.X() / aLength);
-      if (theLoop.SignedArea() < 0.0)
-      {
-        aNormal.Reverse();
-      }
-      const gp_XY aCurvePoint      = aCurve.Value(aParameter);
-      double      anInteriorOffset = anInitialOffset;
-      for (int anAttempt = 0; anAttempt < 24; ++anAttempt)
-      {
-        const gp_XY aCandidate = aCurvePoint + aNormal * anInteriorOffset;
-        if (contains(theRegion, theLoop, aCandidate))
+        const double aFirst =
+          aUse.IsReversed() ? aParameters[aNbParameters - anInterval - 1] : aParameters[anInterval];
+        const double aLast   = aUse.IsReversed() ? aParameters[aNbParameters - anInterval - 2]
+                                                 : aParameters[anInterval + 1];
+        const double aFirstY = curveY(aCurve, aFirst);
+        const double aLastY  = curveY(aCurve, aLast);
+        if ((aFirstY <= aY && aLastY > aY) || (aFirstY > aY && aLastY <= aY))
         {
-          return aCandidate;
+          const double aParameter = horizontalCrossing(aCurve, aFirst, aFirstY, aLast, aLastY, aY);
+          aCrossings.Append(curveX(aCurve, aParameter));
         }
-        anInteriorOffset *= 0.5;
+      }
+    }
+    std::sort(aCrossings.begin(), aCrossings.end());
+    for (size_t aCrossing = 0; aCrossing + 1 < aCrossings.Size(); ++aCrossing)
+    {
+      const double anX = 0.5 * aCrossings[aCrossing] + 0.5 * aCrossings[aCrossing + 1];
+      if (anX > aCrossings[aCrossing] && anX < aCrossings[aCrossing + 1]
+          && contains(theRegion, theLoop, gp_XY(anX, aY)))
+      {
+        return gp_XY(anX, aY);
       }
     }
   }
-
-  const gp_XY aBoundsCenter(0.5 * (aMinX + aMaxX), 0.5 * (aMinY + aMaxY));
-  return contains(theRegion, theLoop, aBoundsCenter) ? std::optional<gp_XY>(aBoundsCenter)
-                                                     : std::nullopt;
+  return std::nullopt;
 }
 } // namespace
 
@@ -1233,7 +1261,6 @@ std::optional<gp_XY> interiorPoint(const BRepFont_PlanarRegion&       theRegion,
 bool BRepFont_Regularizer::classifyLoops(
   const Font_GlyphOutline&             theOutline,
   BRepFont_PlanarRegion&               theRegion,
-  const double                         theTolerance,
   const NCollection_FlatMap<uint64_t>& theIntersectingLoopPairs)
 {
   NCollection_LinearVector<LoopInfo> aLoopInfo(theRegion.myLoops.Size(), LoopInfo{});
@@ -1241,7 +1268,7 @@ bool BRepFont_Regularizer::classifyLoops(
   for (uint32_t aLoopIndex = 0; aLoopIndex < theRegion.myLoops.Size(); ++aLoopIndex)
   {
     const std::optional<gp_XY> anInteriorPoint =
-      interiorPoint(theRegion, theRegion.myLoops[aLoopIndex], theTolerance);
+      interiorPoint(theRegion, theRegion.myLoops[aLoopIndex]);
     if (!anInteriorPoint.has_value())
     {
       return false;

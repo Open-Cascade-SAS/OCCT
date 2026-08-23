@@ -31,7 +31,6 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
-#include <limits>
 #include <memory>
 #include <optional>
 
@@ -50,20 +49,19 @@ public:
   //! Font initialization parameters.
   struct Params
   {
-    //! Return whether sizing and hinting policies form a usable configuration.
+    //! Return whether backend-independent parameter constraints are satisfied.
     [[nodiscard]] bool IsValid() const noexcept
     {
       const bool hasConflictingHinting =
         (FontHinting & Font_Hinting_Light) != 0 && (FontHinting & Font_Hinting_Normal) != 0;
       const bool hasConflictingAutoHinting = (FontHinting & Font_Hinting_ForceAutohint) != 0
                                              && (FontHinting & Font_Hinting_NoAutohint) != 0;
-      return PointSize > 0
-             && PointSize <= static_cast<unsigned int>(std::numeric_limits<int32_t>::max() / 64)
-             && Resolution > 0 && !hasConflictingHinting && !hasConflictingAutoHinting;
+      return PointSize > 0 && Resolution > 0 && !hasConflictingHinting
+             && !hasConflictingAutoHinting;
     }
 
-    unsigned int PointSize          = 0;                //!< face size in points (1/72 inch)
-    unsigned int Resolution         = 72;               //!< target-device resolution in dpi
+    uint32_t     PointSize          = 0;                //!< face size in points (1/72 inch)
+    uint32_t     Resolution         = 72;               //!< target-device resolution in dpi
     Font_Hinting FontHinting        = Font_Hinting_Off; //!< FreeType hinting policy
     bool         ToSynthesizeItalic = false; //!< synthesize italic when the face has no style
     bool         IsSingleStrokeFont = false; //!< interpret outlines as one-line strokes
@@ -237,7 +235,7 @@ public:
   Standard_EXPORT float LineSpacing() const;
 
   //! Configured point size
-  unsigned int PointSize() const { return myFontParams.PointSize; }
+  uint32_t PointSize() const { return myFontParams.PointSize; }
 
   //! Return glyph scaling along X-axis.
   float WidthScaling() const { return myWidthScaling; }
@@ -327,9 +325,7 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-  bool Init(const NCollection_String& theFontPath,
-            unsigned int              thePointSize,
-            unsigned int              theResolution)
+  bool Init(const NCollection_String& theFontPath, uint32_t thePointSize, uint32_t theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;
@@ -347,8 +343,8 @@ public:
                       "parameters")
   bool Init(const NCollection_String& theFontName,
             Font_FontAspect           theFontAspect,
-            unsigned int              thePointSize,
-            unsigned int              theResolution)
+            uint32_t                  thePointSize,
+            uint32_t                  theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;

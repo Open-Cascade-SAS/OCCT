@@ -85,6 +85,31 @@ TEST(BRepFont_RegularizerTest, ClosedRectangleBuildsOneRegion)
   EXPECT_EQ(0u, aResult.PlanarRegion()->Regions()[0].NbHoles());
 }
 
+TEST(BRepFont_RegularizerTest, ThinConcaveContourFindsInteriorScanlinePoint)
+{
+  NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;
+  NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
+  BRepFont_Regularizer_Test::appendClosedContour({gp_XY(0.0, 0.0),
+                                                  gp_XY(1.0e12, 0.0),
+                                                  gp_XY(1.0e12, 0.1),
+                                                  gp_XY(0.1, 0.1),
+                                                  gp_XY(0.1, 0.9),
+                                                  gp_XY(1.0e12, 0.9),
+                                                  gp_XY(1.0e12, 1.0),
+                                                  gp_XY(0.0, 1.0)},
+                                                 aSegments,
+                                                 aContours);
+
+  BRepFont_Regularizer::Options anOptions;
+  anOptions.Tolerance                        = 0.01;
+  const BRepFont_Regularizer::Result aResult = BRepFont_Regularizer().Build(
+    BRepFont_Regularizer_Test::createOutline(std::move(aSegments), std::move(aContours)),
+    anOptions);
+  ASSERT_EQ(BRepFont_Regularizer::Status::Success, aResult.StatusValue());
+  ASSERT_TRUE(aResult.PlanarRegion().has_value());
+  EXPECT_EQ(1u, aResult.PlanarRegion()->Regions().Size());
+}
+
 TEST(BRepFont_RegularizerTest, NestedContourBuildsHole)
 {
   NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;

@@ -82,7 +82,6 @@ private:
                             Status&                  theStatus);
   static bool classifyLoops(const Font_GlyphOutline&             theOutline,
                             BRepFont_PlanarRegion&               theRegion,
-                            double                               theTolerance,
                             const NCollection_FlatMap<uint64_t>& theIntersectingLoopPairs);
 };
 

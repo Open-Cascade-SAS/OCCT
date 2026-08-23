@@ -25,8 +25,8 @@ namespace Font_FTFont_Test
 {
 static_assert(std::is_aggregate_v<Font_FTFont::Params>);
 
-occ::handle<Font_FTFont> createEmbeddedFont(const unsigned int thePointSize  = 72,
-                                            const unsigned int theResolution = 4800)
+occ::handle<Font_FTFont> createEmbeddedFont(const uint32_t thePointSize  = 72,
+                                            const uint32_t theResolution = 4800)
 {
   occ::handle<Font_FTFont>  aFont = new Font_FTFont();
   const Font_FTFont::Params aParams{thePointSize, theResolution};
@@ -277,12 +277,9 @@ TEST(Font_FTFontTest, ZeroCharacterHasNoResolvedGlyph)
   EXPECT_FALSE(aFont->ResolveGlyph(char32_t(0)).has_value());
 }
 
-TEST(Font_FTFontTest, ParamsRejectUnrepresentablePointSize)
+TEST(Font_FTFontTest, ParamsValidationIsBackendIndependent)
 {
   Font_FTFont::Params aParams;
-  aParams.PointSize = static_cast<unsigned int>(std::numeric_limits<int32_t>::max() / 64) + 1u;
-  EXPECT_FALSE(aParams.IsValid());
-
-  aParams.PointSize = static_cast<unsigned int>(std::numeric_limits<int32_t>::max() / 64);
+  aParams.PointSize = std::numeric_limits<uint32_t>::max();
   EXPECT_TRUE(aParams.IsValid());
 }

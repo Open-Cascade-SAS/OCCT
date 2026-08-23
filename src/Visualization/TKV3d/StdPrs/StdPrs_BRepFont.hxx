@@ -127,13 +127,13 @@ public:
   Standard_EXPORT TopoDS_Shape RenderGlyph(const char32_t theChar, const GlyphOptions& theOptions);
 
   //! Render text in the default XOY plane with left-bottom alignment.
-  //! Unsupported glyphs are skipped.
+  //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
   //! @param[in] theText UTF text
   //! @return generated compound, or a null shape when no text can be rendered
   Standard_EXPORT TopoDS_Shape RenderText(const NCollection_String& theText);
 
   //! Render text with explicit placement and contour options.
-  //! Unsupported glyphs are skipped.
+  //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
   //! @param[in] theText UTF text
   //! @param[in] theOptions rendering options
   //! @return generated compound, or a null shape when no text can be rendered
@@ -141,7 +141,7 @@ public:
                                           const TextOptions&        theOptions);
 
   //! Format text and load each unique planar glyph region.
-  //! Unsupported glyphs are skipped.
+  //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
   //! @param[in] theText UTF text
   //! @param[in] theHorizontalAlignment horizontal layout alignment
   //! @param[in] theVerticalAlignment vertical layout alignment

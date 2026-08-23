@@ -33,7 +33,7 @@ public:
     Loop
   };
 
-  //! Strongly typed index into an entity pool.
+  //! Strongly typed compact index into an entity pool.
   template <Entity TheEntity>
   class Id
   {

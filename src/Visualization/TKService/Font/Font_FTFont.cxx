@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <utility>
 
@@ -71,18 +72,29 @@ struct OutlineStorage
   NCollection_LinearVector<Font_GlyphOutline::Contour>& Contours;
 };
 
-int32_t toFTPoints(const unsigned int thePointSize) noexcept
+constexpr FT_F26Dot6 THE_FT_POINT_SCALE = 64;
+
+std::optional<FT_F26Dot6> toFTPoints(const uint32_t thePointSize) noexcept
 {
-  return static_cast<int32_t>(thePointSize) * 64;
+  constexpr uint64_t THE_MAX_POINT_SIZE =
+    static_cast<uint64_t>(std::numeric_limits<FT_F26Dot6>::max() / THE_FT_POINT_SCALE);
+  if constexpr (static_cast<uint64_t>(std::numeric_limits<uint32_t>::max()) > THE_MAX_POINT_SIZE)
+  {
+    if (static_cast<uint64_t>(thePointSize) > THE_MAX_POINT_SIZE)
+    {
+      return std::nullopt;
+    }
+  }
+  return static_cast<FT_F26Dot6>(thePointSize) * THE_FT_POINT_SCALE;
 }
 
 template <typename theReturn_t, typename theFTUnits_t>
 theReturn_t fromFTPoints(const theFTUnits_t theFTUnits) noexcept
 {
-  return static_cast<theReturn_t>(theFTUnits) / 64.0f;
+  return static_cast<theReturn_t>(theFTUnits) / static_cast<theReturn_t>(THE_FT_POINT_SCALE);
 }
 
-std::optional<uint32_t> outlineIndex(const size_t theValue) noexcept
+std::optional<uint32_t> toUInt32(const size_t theValue) noexcept
 {
   const uint32_t anIndex = static_cast<uint32_t>(theValue);
   return static_cast<size_t>(anIndex) == theValue ? std::optional<uint32_t>(anIndex) : std::nullopt;
@@ -120,9 +132,9 @@ bool finishOutlineContour(OutlineContext& theContext) noexcept
   {
     return false;
   }
-  const size_t                  aNbSegments      = theContext.NbSegments - theContext.FirstSegment;
-  const std::optional<uint32_t> aNbSegmentsIndex = outlineIndex(aNbSegments);
-  if (!aNbSegmentsIndex.has_value())
+  const size_t                  aNbSegments = theContext.NbSegments - theContext.FirstSegment;
+  const std::optional<uint32_t> aCompactNbSegments = toUInt32(aNbSegments);
+  if (!aCompactNbSegments.has_value())
   {
     return false;
   }
@@ -133,7 +145,7 @@ bool finishOutlineContour(OutlineContext& theContext) noexcept
       return false;
     }
     (*theContext.Contours)[theContext.NbContours++] =
-      Font_GlyphOutline::Contour(theContext.FirstSegment, *aNbSegmentsIndex);
+      Font_GlyphOutline::Contour(theContext.FirstSegment, *aCompactNbSegments);
   }
   theContext.HasContour = false;
   return true;
@@ -154,7 +166,7 @@ int moveToOutline(const FT_Vector* thePoint, void* theUser) noexcept
   {
     return FT_Err_Invalid_Outline;
   }
-  const std::optional<uint32_t> aFirstSegment = outlineIndex(aContext.NbSegments);
+  const std::optional<uint32_t> aFirstSegment = toUInt32(aContext.NbSegments);
   if (!aFirstSegment.has_value())
   {
     return FT_Err_Array_Too_Large;
@@ -259,7 +271,8 @@ bool decomposeOutline(FT_Face         theFace,
       return false;
     }
     aCoordinateScale = static_cast<double>(theFace->units_per_EM)
-                       / (static_cast<double>(theFace->size->metrics.y_ppem) * 64.0);
+                       / (static_cast<double>(theFace->size->metrics.y_ppem)
+                          * static_cast<double>(THE_FT_POINT_SCALE));
   }
 
   if (FT_Load_Glyph(theFace, static_cast<FT_UInt>(theStorage.GlyphIndex), aLoadFlags) != 0
@@ -447,15 +460,17 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
                        + "' doesn't contains Unicode charmap");
     return false;
   }
-  if (FT_Set_Char_Size(aNewFaceOwner.get(),
-                       0L,
-                       toFTPoints(theParams.PointSize),
-                       theParams.Resolution,
-                       theParams.Resolution)
-      != 0)
+  const std::optional<FT_F26Dot6> aPointSize = toFTPoints(theParams.PointSize);
+  if (!aPointSize.has_value()
+      || FT_Set_Char_Size(aNewFaceOwner.get(),
+                          0L,
+                          *aPointSize,
+                          theParams.Resolution,
+                          theParams.Resolution)
+           != 0)
   {
     Message::SendTrace(TCollection_AsciiString("Font '") + aNewPath
-                       + "' doesn't contains Unicode charmap of requested size");
+                       + "' failed to set requested character size");
     return false;
   }
 
@@ -669,7 +684,7 @@ std::optional<Font_FTFont::GlyphSelection> Font_FTFont::selectGlyph(const char32
   const FT_UInt aPrimaryGlyph = FT_Get_Char_Index(myFTFace, theUChar);
   if (aPrimaryGlyph != 0)
   {
-    const std::optional<uint32_t> aGlyphIndex = outlineIndex(static_cast<size_t>(aPrimaryGlyph));
+    const std::optional<uint32_t> aGlyphIndex = toUInt32(static_cast<size_t>(aPrimaryGlyph));
     if (!aGlyphIndex.has_value())
     {
       return std::nullopt;
@@ -685,7 +700,7 @@ std::optional<Font_FTFont::GlyphSelection> Font_FTFont::selectGlyph(const char32
     {
       const FT_UInt aFallbackGlyph =
         FT_Get_Char_Index(myFallbackFaces[aSubsetIndex]->myFTFace, theUChar);
-      const std::optional<uint32_t> aGlyphIndex = outlineIndex(static_cast<size_t>(aFallbackGlyph));
+      const std::optional<uint32_t> aGlyphIndex = toUInt32(static_cast<size_t>(aFallbackGlyph));
       if (!aGlyphIndex.has_value())
       {
         return std::nullopt;

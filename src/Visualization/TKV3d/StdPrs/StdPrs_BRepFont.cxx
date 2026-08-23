@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <mutex>
 #include <optional>
 #include <shared_mutex>
@@ -36,9 +37,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)
 namespace
 {
 // A 72-point font is one inch high. The high resolution reduces rounding in FreeType text metrics.
-constexpr unsigned int THE_POINTS_PER_INCH = 72;
-constexpr unsigned int THE_FONT_POINT_SIZE = 72;
-constexpr unsigned int THE_FONT_RESOLUTION = 4800;
+constexpr uint32_t     THE_POINTS_PER_INCH = 72;
+constexpr uint32_t     THE_FONT_POINT_SIZE = 72;
+constexpr uint32_t     THE_FONT_RESOLUTION = 4800;
 constexpr double       THE_FONT_METRIC_SIZE =
   static_cast<double>(THE_FONT_POINT_SIZE) * THE_FONT_RESOLUTION / THE_POINTS_PER_INCH;
 constexpr Font_FTFont::Params THE_FONT_PARAMETERS{THE_FONT_POINT_SIZE, THE_FONT_RESOLUTION};
@@ -115,8 +116,6 @@ public:
     struct Entry
     {
       std::shared_ptr<const BRepFont_PlanarRegion> Region;
-      TopoDS_Shape                                 DefaultShape;
-      TopoDS_Shape                                 ConcatenatedShape;
     };
 
     GlyphCache() { myEntries.ReSize(THE_CAPACITY); }
@@ -126,19 +125,6 @@ public:
     {
       const Entry* anEntry = myEntries.Seek(theGlyph);
       return anEntry != nullptr ? anEntry->Region : std::shared_ptr<const BRepFont_PlanarRegion>();
-    }
-
-    [[nodiscard]] TopoDS_Shape FindShape(const Font_GlyphOutline::Glyph& theGlyph,
-                                         const bool theToConcatenateContours) const
-    {
-      const Entry* anEntry = myEntries.Seek(theGlyph);
-      if (anEntry == nullptr)
-      {
-        return {};
-      }
-      const TopoDS_Shape& aShape =
-        theToConcatenateContours ? anEntry->ConcatenatedShape : anEntry->DefaultShape;
-      return aShape;
     }
 
     [[nodiscard]] std::optional<Font_GlyphOutline::Glyph> FindGlyph(
@@ -155,7 +141,7 @@ public:
       {
         return;
       }
-      const Entry anEntry{theRegion, {}, {}};
+      const Entry anEntry{theRegion};
       if (myEntries.Size() < THE_CAPACITY)
       {
         myEntries.Add(theGlyph, anEntry);
@@ -167,23 +153,6 @@ public:
         myNextIndex = myNextIndex < THE_CAPACITY ? myNextIndex + 1 : 1;
       }
       myGlyphsByRegion.Bind(theRegion.get(), theGlyph);
-    }
-
-    void BindShape(const Font_GlyphOutline::Glyph& theGlyph,
-                   const bool                      theToConcatenateContours,
-                   const TopoDS_Shape&             theShape)
-    {
-      Entry* anEntry = myEntries.ChangeSeek(theGlyph);
-      if (anEntry == nullptr)
-      {
-        return;
-      }
-      TopoDS_Shape& aCachedShape =
-        theToConcatenateContours ? anEntry->ConcatenatedShape : anEntry->DefaultShape;
-      if (aCachedShape.IsNull())
-      {
-        aCachedShape = theShape;
-      }
     }
 
     void Clear()
@@ -229,6 +198,7 @@ public:
   {
     std::lock_guard<std::mutex> aLock(FontMutex);
     occ::handle<Impl>           aCopy         = new Impl();
+    aCopy->Font->SetUseUnicodeSubsetFallback(Font->ToUseUnicodeSubsetFallback());
     bool                        isInitialized = false;
     if (const FileSource* aSource = std::get_if<FileSource>(&FontSource))
     {
@@ -332,16 +302,6 @@ public:
 
   TopoDS_Shape RenderGlyph(const Request& theRequest, const bool theToConcatenateContours)
   {
-    TopoDS_Shape aShape;
-    {
-      std::shared_lock<std::shared_mutex> aLock(CacheMutex);
-      aShape = Glyphs.FindShape(theRequest.Glyph, theToConcatenateContours);
-    }
-    if (!aShape.IsNull())
-    {
-      return aShape;
-    }
-
     const std::shared_ptr<const BRepFont_PlanarRegion> aRegion = LoadRegion(theRequest);
     if (!aRegion)
     {
@@ -352,22 +312,10 @@ public:
     anOptions.Size                  = theRequest.Size;
     anOptions.Tolerance             = Tolerance;
     anOptions.ToConcatenateContours = theToConcatenateContours;
-    aShape                          = BRepFont_Builder::BuildGlyph(*aRegion, anOptions);
+    TopoDS_Shape aShape             = BRepFont_Builder::BuildGlyph(*aRegion, anOptions);
 
     std::lock_guard<std::mutex> aFontLock(FontMutex);
-    if (!Font->IsGlyphValid(theRequest.Glyph))
-    {
-      return {};
-    }
-    std::unique_lock<std::shared_mutex> aCacheLock(CacheMutex);
-    const TopoDS_Shape                  anExistingShape =
-      Glyphs.FindShape(theRequest.Glyph, theToConcatenateContours);
-    if (!anExistingShape.IsNull())
-    {
-      return anExistingShape;
-    }
-    Glyphs.BindShape(theRequest.Glyph, theToConcatenateContours, aShape);
-    return aShape;
+    return Font->IsGlyphValid(theRequest.Glyph) ? aShape : TopoDS_Shape();
   }
 
   std::optional<TopoDS_Shape> RenderRegion(
