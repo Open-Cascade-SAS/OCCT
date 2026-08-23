@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Font_FontMgr.hxx>
+#include <NCollection_Buffer.hxx>
 
 #include <gtest/gtest.h>
 
