@@ -7,7 +7,7 @@ runs:
     - name: Install dependencies
       run: |
         choco install graphviz -y --no-progress
-        choco install doxygen.install -y --no-progress
+        choco install doxygen.install --version=1.17.0 -y --no-progress
       shell: pwsh
 
     - name: Configure OCCT
@@ -24,7 +24,7 @@ runs:
                 -D BUILD_DOC_RefMan=ON `
                 -D BUILD_DOC_Search=OFF `
                 -D BUILD_DOC_DotNumThreads=1 `
-                -D BUILD_DOC_DotBatchSize=1 `
+                -D BUILD_DOC_DotBatchSize=5 `
                 -D "3RDPARTY_DOXYGEN_EXECUTABLE:FILEPATH=$doxygenExe" `
                 -D BUILD_MODULE_Draw=OFF `
                 -D USE_D3D=OFF `
@@ -48,7 +48,7 @@ runs:
       run: |
         set "PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen"
         cd build
-        cmake --build . --target doc --config Release
+        cmake --build . --target doc --config Release -- /m:1
       shell: cmd
 
     - name: Upload refman documentation
