@@ -64,6 +64,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Law_Composite.hxx>
+#include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt.hxx>
@@ -4922,6 +4923,74 @@ static bool GoodExt(const occ::handle<Geom_Curve>& C,
 
 //=================================================================================================
 
+// Detect a geometrically smooth closure whose curvature is discontinuous. SetPeriodic() turns the
+// two end knots into one knot, but its multiplicity alone does not distinguish such a transition
+// from an exact periodic curve that should retain its original representation (OCC22163).
+static bool ChFi3d_HasCurvatureClosureDiscontinuity(const occ::handle<Geom_BSplineCurve>& theCurve,
+                                                    const double theTolerance)
+{
+  GeomLProp_CLProps aFirstProps(theCurve, theCurve->FirstParameter(), 2, gp::Resolution());
+  GeomLProp_CLProps aLastProps(theCurve, theCurve->LastParameter(), 2, gp::Resolution());
+  if (!aFirstProps.Value().IsEqual(aLastProps.Value(),
+                                   std::max(theTolerance, Precision::Confusion()))
+      || !aFirstProps.IsTangentDefined() || !aLastProps.IsTangentDefined())
+  {
+    return false;
+  }
+
+  // Apply the angular, null-curvature and relative-variation criteria used by OCCT's local G2
+  // analysis. The null-curvature threshold must scale as inverse length.
+  constexpr double anAngularTolerance          = 1.0e-3;
+  constexpr double aRelativeCurvatureTolerance = 1.0e-2;
+  gp_Dir           aFirstTangent, aLastTangent;
+  aFirstProps.Tangent(aFirstTangent);
+  aLastProps.Tangent(aLastTangent);
+  if (aFirstTangent.Angle(aLastTangent) > anAngularTolerance)
+  {
+    return false;
+  }
+
+  const double      aFirstCurvature = aFirstProps.Curvature();
+  const double      aLastCurvature  = aLastProps.Curvature();
+  GeomAdaptor_Curve aCurveAdaptor(theCurve);
+  const double      aCurveLength     = GCPnts_AbscissaPoint::Length(aCurveAdaptor);
+  const double      aLinearTolerance = std::max(theTolerance, Precision::Confusion());
+  if (aCurveLength <= aLinearTolerance)
+  {
+    return false;
+  }
+
+  const double aNullCurvature      = 8.0 * aLinearTolerance / (aCurveLength * aCurveLength);
+  const double anInfiniteCurvature = 1.0 / aLinearTolerance;
+  const bool   isFirstNull         = aFirstCurvature <= aNullCurvature;
+  const bool   isLastNull          = aLastCurvature <= aNullCurvature;
+  if (isFirstNull || isLastNull)
+  {
+    return isFirstNull != isLastNull;
+  }
+
+  const bool isFirstInfinite = aFirstCurvature > anInfiniteCurvature;
+  const bool isLastInfinite  = aLastCurvature > anInfiniteCurvature;
+  if (isFirstInfinite || isLastInfinite)
+  {
+    return isFirstInfinite != isLastInfinite;
+  }
+
+  const double aRelativeVariation =
+    std::abs(aFirstCurvature - aLastCurvature) / std::sqrt(aFirstCurvature * aLastCurvature);
+  if (aRelativeVariation > aRelativeCurvatureTolerance)
+  {
+    return true;
+  }
+
+  gp_Dir aFirstNormal, aLastNormal;
+  aFirstProps.Normal(aFirstNormal);
+  aLastProps.Normal(aLastNormal);
+  return aFirstNormal.Angle(aLastNormal) > anAngularTolerance;
+}
+
+//=================================================================================================
+
 Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
                                            occ::handle<ChFiDS_Spine>&   Spine,
                                            const GeomAbs_Shape          continuity,
@@ -4929,8 +4998,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
                                            const bool                   IsOffset)
 {
 
-  bool                           periodic, Bof, checkdeb, cepadur, bIsSmooth;
-  int                            IEdge, IF, IL, nbed, iToApproxByC2;
+  bool                           periodic, Bof, checkdeb, cepadur, bIsSmooth, hasApproxByC2;
+  int                            IEdge, IF, IL, nbed;
   double                         WF, WL, Wrefdeb, Wreffin, nwf, nwl, period, pared = 0., tolpared;
   double                         First, Last, epsV, urefdeb, tolrac;
   GeomAbs_Shape                  aContinuity;
@@ -5109,14 +5178,14 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   CurveCleaner(BS, std::abs(WL - WF) * 1.e-4, 0);
   //
   // Smoothing of the curve
-  iToApproxByC2 = 0;
+  hasApproxByC2 = false;
   aContinuity   = TC->Continuity();
   bIsSmooth     = ChFi3d_IsSmooth(TC);
   if (aContinuity < GeomAbs_C2 && !bIsSmooth)
   {
-    ++iToApproxByC2;
-    BS = ChFi3d_ApproxByC2(TC);
-    TC = BS;
+    hasApproxByC2 = true;
+    BS            = ChFi3d_ApproxByC2(TC);
+    TC            = BS;
   }
   //
   //  Concatenation des aretes suivantes
@@ -5200,9 +5269,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     bIsSmooth   = ChFi3d_IsSmooth(TC);
     if (aContinuity < GeomAbs_C2 && !bIsSmooth)
     {
-      ++iToApproxByC2;
-      BS = ChFi3d_ApproxByC2(TC);
-      TC = BS;
+      hasApproxByC2 = true;
+      BS            = ChFi3d_ApproxByC2(TC);
+      TC            = BS;
     }
     //
     tolrac = std::min(tol, epsV);
@@ -5400,14 +5469,15 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     if (!BSpline->IsPeriodic())
     {
+      const bool hasCurvatureClosureDiscontinuity =
+        ChFi3d_HasCurvatureClosureDiscontinuity(BSpline, tol);
       BSpline->SetPeriodic();
-      // modified by NIZNHY-PKV Fri Dec 10 12:20:22 2010ft
-      if (iToApproxByC2)
+      // Keep the OCC22163 guard for exact periodic guides, and additionally smooth a closure that
+      // is tangent-continuous but has the curvature jump seen at a multi-edge tangent transition.
+      if ((hasApproxByC2 || hasCurvatureClosureDiscontinuity) && BSpline->Multiplicity(1) > MultMax)
       {
         Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
       }
-      // Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL-WF)/10);
-      // modified by NIZNHY-PKV Mon Dec 13 14:12:54 2010t
     }
   }
   else
