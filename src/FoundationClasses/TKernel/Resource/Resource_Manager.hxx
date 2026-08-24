@@ -28,6 +28,7 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <mutex>
 
 //! Defines a resource structure and its management methods.
 class Resource_Manager : public Standard_Transient
@@ -60,6 +61,10 @@ public:
                                    const TCollection_AsciiString& theDefaultsDirectory,
                                    const TCollection_AsciiString& theUserDefaultsDirectory,
                                    const bool                     theIsVerbose = false);
+
+  //! Copies the maps under theOther's lock; myMutex is not itself copyable and is
+  //! default-constructed.
+  Standard_EXPORT Resource_Manager(const Resource_Manager& theOther);
 
   //! Save the user resource structure in the specified file.
   //! Creates the file if it does not exist.
@@ -132,6 +137,7 @@ private:
   NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString> myExtStrMap;
   bool                                                                     myVerbose;
   bool                                                                     myInitialized;
+  mutable std::recursive_mutex                                             myMutex;
 };
 
 #endif // _Resource_Manager_HeaderFile

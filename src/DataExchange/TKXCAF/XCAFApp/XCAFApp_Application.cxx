@@ -27,11 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFApp_Application, TDocStd_Application)
 
 occ::handle<XCAFApp_Application> XCAFApp_Application::GetApplication()
 {
-  static occ::handle<XCAFApp_Application> locApp;
-  if (locApp.IsNull())
-  {
-    locApp = new XCAFApp_Application;
-  }
+  // Construct in the initializer: thread-safe exactly once (C++11 magic statics),
+  // unlike the previous separate IsNull()-guarded assignment.
+  static occ::handle<XCAFApp_Application> locApp = new XCAFApp_Application;
   return locApp;
 }
 
