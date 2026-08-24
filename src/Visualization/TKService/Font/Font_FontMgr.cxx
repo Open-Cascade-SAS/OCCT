@@ -91,6 +91,7 @@ const char* const* fontServiceConfigurations()
 
 //=================================================================================================
 
+#if !defined(_WIN32)
 const char* const* defaultFontDirectories()
 {
 #if defined(__APPLE__)
@@ -109,7 +110,6 @@ const char* const* defaultFontDirectories()
 void addDirsRecursively(const OSD_Path&                           thePath,
                         NCollection_Map<TCollection_AsciiString>& theDirsMap)
 {
-#if !defined(_WIN32)
   TCollection_AsciiString aDirName;
   thePath.SystemName(aDirName);
   if (!theDirsMap.Add(aDirName))
@@ -129,11 +129,8 @@ void addDirsRecursively(const OSD_Path&                           thePath,
       addDirsRecursively(OSD_Path(aDirName + "/" + aChildDirName), theDirsMap);
     }
   }
-#else
-  (void)thePath;
-  (void)theDirsMap;
-#endif
 }
+#endif
 
 std::atomic<bool>& unicodeSubsetFallback()
 {
