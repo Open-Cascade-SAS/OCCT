@@ -94,14 +94,14 @@ const char* const* fontServiceConfigurations()
 #if !defined(_WIN32)
 const char* const* defaultFontDirectories()
 {
-#if defined(__APPLE__)
+  #if defined(__APPLE__)
   static const char* THE_DIRECTORIES[] = {"/System/Library/Fonts", "/Library/Fonts", nullptr};
-#else
+  #else
   static const char* THE_DIRECTORIES[] = {"/system/fonts",
                                           "/usr/share/fonts",
                                           "/usr/local/share/fonts",
                                           nullptr};
-#endif
+  #endif
   return THE_DIRECTORIES;
 }
 
