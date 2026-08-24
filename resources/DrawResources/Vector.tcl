@@ -274,7 +274,7 @@ help scale {scale x y z factor
 } {Vector and measurement Commands}
 
 proc scale {x y z factor} {
-    list [dval $x*$factor] [dval $y^$factor] [dval $z*$factor]
+    list [dval $x*$factor] [dval $y*$factor] [dval $z*$factor]
 }
 
 help 2dscale {2dscale x y factor
@@ -282,7 +282,7 @@ help 2dscale {2dscale x y factor
 } {Vector and measurement Commands}
 
 proc 2dscale {x y factor} {
-    list [dval $x*$factor] [dval $y^$factor]
+    list [dval $x*$factor] [dval $y*$factor]
 }
 
 help pntc {pntc curve u
