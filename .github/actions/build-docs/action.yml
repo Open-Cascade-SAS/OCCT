@@ -24,7 +24,7 @@ runs:
                 -D BUILD_DOC_RefMan=ON `
                 -D BUILD_DOC_Search=OFF `
                 -D BUILD_DOC_DotNumThreads=1 `
-                -D BUILD_DOC_DotBatchSize=1 `
+                -D BUILD_DOC_DotBatchSize=5 `
                 -D "3RDPARTY_DOXYGEN_EXECUTABLE:FILEPATH=$doxygenExe" `
                 -D BUILD_MODULE_Draw=OFF `
                 -D USE_D3D=OFF `
