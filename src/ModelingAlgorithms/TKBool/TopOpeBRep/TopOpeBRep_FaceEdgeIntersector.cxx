@@ -41,15 +41,13 @@ extern bool TopOpeBRep_GettraceSAVFF();
 static void SAVFE(const TopoDS_Face& F1, const TopoDS_Edge& E)
 {
   TCollection_AsciiString aname_1("FE_face"), aname_2("FE_edge");
-  const char *            name_1 = aname_1.ToCString(), name_2 = aname_2.ToCString();
+  const char*             name_1 = aname_1.ToCString();
+  const char*             name_2 = aname_2.ToCString();
   std::cout << "FaceEdgeIntersector : " << name_1 << "," << name_2 << std::endl;
   BRepTools::Write(F1, name_1);
   BRepTools::Write(E, name_2);
 }
 
-extern bool TopOpeBRepTool_GettraceKRO();
-  #include <TopOpeBRepTool_KRO.hxx>
-Standard_EXPORT TOPKRO KRO_DSFILLER_INTFE("intersection face/edge");
 #endif
 
 //=================================================================================================
@@ -102,18 +100,8 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF, const TopoD
   occ::handle<Geom_Curve>*   PGCao1 = (occ::handle<Geom_Curve>*)&GGao1;
   myCurve.Load(*PGCao1, f, l);
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTFE.Start();
-#endif
-
   BRepIntCurveSurface_Inter FEINT;
   FEINT.Init(myFace, myCurve, myTol);
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTFE.Stop();
-#endif
 
   for (FEINT.Init(myFace, myCurve, myTol); FEINT.More(); FEINT.Next())
   {

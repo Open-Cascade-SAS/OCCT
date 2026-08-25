@@ -24,6 +24,7 @@
 #include <TopAbs_State.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
@@ -905,14 +906,22 @@ protected:
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMAP2;
   int                                                           myIsKPart;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                                  myKPMAPf1f2;
-  int                                                                             mySHASETindex;
-  bool                                                                            myClassifyDef;
-  bool                                                                            myClassifyVal;
-  TopOpeBRepTool_ShapeClassifier                                                  myShapeClassifier;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                          myMemoSplit;
-  TCollection_AsciiString                                                         myEmptyAS;
-  bool                                                                            myProcessON;
+                                                                  myKPMAPf1f2;
+  int                                                             mySHASETindex;
+  bool                                                            myClassifyDef;
+  bool                                                            myClassifyVal;
+  TopOpeBRepTool_ShapeClassifier                                  myShapeClassifier;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          myMemoSplit;
+  TCollection_AsciiString                                         myEmptyAS;
+  bool                                                            myProcessON;
+  bool                                                            myFaces2d;
+  bool                                                            myClassifySplitEdge;
+  bool                                                            myReverseOwnSplitFaceOrientation;
+  TopOpeBRepDS_DataStructure                                      myDS2d;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> mySplitFaceAncestors;
+  NCollection_List<TopoDS_Shape>                                  myFacesToProcess;
+  bool                                                            myProcessFaces;
+  int                                                             mySplitSectionState;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myONFacesMap;
   NCollection_IndexedMap<TopoDS_Shape>                                            myONElemMap;
 };

@@ -32,11 +32,6 @@
 #include <StdPrs_WFDeflectionRestrictedFace.hxx>
 #include <NCollection_Sequence.hxx>
 
-#ifdef OCCT_DEBUG_MESH
-  #include <OSD_Chronometer.hxx>
-extern OSD_Chronometer FFaceTimer1, FFaceTimer2, FFaceTimer3, FFaceTimer4;
-#endif
-
 //=================================================================================================
 
 static void FindLimits(const Adaptor3d_Curve& aCurve,
@@ -100,11 +95,6 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
   const occ::handle<Prs3d_Drawer>&                              aDrawer,
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& Curves)
 {
-
-#ifdef OCCT_DEBUG_MESH
-  FFaceTimer1.Start();
-#endif
-
   StdPrs_ToolRFace ToolRst(aFace);
   const double     UF = aFace->FirstUParameter();
   const double     UL = aFace->LastUParameter();
@@ -233,11 +223,6 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
     }
   }
 
-#ifdef OCCT_DEBUG_MESH
-  FFaceTimer1.Stop();
-  FFaceTimer2.Start();
-#endif
-
   // Compute the hatching tolerance.
   aHatchingTol *= 0.1;
   aHatchingTol = std::max(Precision::Confusion(), aHatchingTol);
@@ -283,21 +268,11 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
     }
   }
 
-#ifdef OCCT_DEBUG_MESH
-  FFaceTimer2.Stop();
-  FFaceTimer3.Start();
-#endif
-
   int ll = tabP.Length();
   for (int i = 1; i <= ll; i += 2)
   {
     isobuild.Trim(tabP(i), tabP(i + 1));
   }
-
-#ifdef OCCT_DEBUG_MESH
-  FFaceTimer3.Stop();
-  FFaceTimer4.Start();
-#endif
 
   // draw the isos
 
@@ -381,9 +356,6 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
       }
     }
   }
-#ifdef OCCT_DEBUG_MESH
-  FFaceTimer4.Stop();
-#endif
 }
 
 //=================================================================================================

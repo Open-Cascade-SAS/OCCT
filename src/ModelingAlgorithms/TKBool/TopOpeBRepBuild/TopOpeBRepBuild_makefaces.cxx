@@ -67,7 +67,6 @@ Standard_EXPORT void debcorriso(const int i)
   std::cout << "++ debcorriso " << i << std::endl;
 }
 
-extern void* GFABUMAKEFACEPWES_DEB;
 #endif
 
 Standard_EXPORT bool FUN_tool_ClosedW(const TopoDS_Wire& W);
@@ -97,7 +96,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
   {
     debwesmf(iF);
   }
-  GFABUMAKEFACEPWES_DEB = (void*)&WES;
 #endif
 
   const bool                  ForceClass = true;
