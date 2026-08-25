@@ -255,6 +255,39 @@ public:
   //! description.
   Standard_EXPORT static bool AutoNaming();
 
+  //! Returns the auto-naming mode for this instance: its own local override if
+  //! set, otherwise the process-wide default. See SetOwnAutoNaming().
+  bool OwnAutoNaming() const
+  {
+    return myOwnAutonaming == -1 ? XCAFDoc_ShapeTool::AutoNaming() : myOwnAutonaming == 1;
+  }
+
+  //! Locally overrides auto-naming for this instance only, leaving the
+  //! process-wide default and other documents untouched. Prefer
+  //! OwnAutoNamingScope so a local override can't leak past an exception.
+  void SetOwnAutoNaming(const bool theOwnFlag) { myOwnAutonaming = theOwnFlag ? 1 : 0; }
+
+  //! Resets this instance to inherit the process-wide default again.
+  void UnsetOwnAutoNaming() { myOwnAutonaming = -1; }
+
+  //! RAII scope: locally overrides auto-naming on one ShapeTool instance,
+  //! restoring its previous own-override state on destruction. Needs no
+  //! locking, and nests correctly on the same instance.
+  class OwnAutoNamingScope
+  {
+  public:
+    Standard_EXPORT OwnAutoNamingScope(const occ::handle<XCAFDoc_ShapeTool>& theTool,
+                                       const bool                            theTemporaryValue);
+    Standard_EXPORT ~OwnAutoNamingScope();
+
+    OwnAutoNamingScope(const OwnAutoNamingScope&)            = delete;
+    OwnAutoNamingScope& operator=(const OwnAutoNamingScope&) = delete;
+
+  private:
+    occ::handle<XCAFDoc_ShapeTool> myTool;
+    int                            myWasOwnAutoNaming;
+  };
+
   //! recursive
   Standard_EXPORT void ComputeShapes(const TDF_Label& L);
 
@@ -500,9 +533,9 @@ private:
 
   //! Makes a shape on label L to be a reference to shape refL
   //! with location loc
-  Standard_EXPORT static void MakeReference(const TDF_Label&       L,
-                                            const TDF_Label&       refL,
-                                            const TopLoc_Location& loc);
+  Standard_EXPORT void MakeReference(const TDF_Label&       L,
+                                     const TDF_Label&       refL,
+                                     const TopLoc_Location& loc);
 
   //! Auxiliary method for Expand
   //! Add declared under expanded theMainShapeL subshapes to new part label thePart
@@ -517,6 +550,8 @@ private:
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> mySubShapes;
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> mySimpleShapes;
   bool                                                                  hasSimpleShapes;
+  //! -1: inherit the process-wide default; 0/1: local override.
+  int myOwnAutonaming;
 };
 
 #endif // _XCAFDoc_ShapeTool_HeaderFile

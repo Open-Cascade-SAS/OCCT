@@ -455,20 +455,18 @@ void RWGltf_CafReader::fillDocument()
     Message::SendWarning("Warning: Length unit of document not equal to the system length unit");
   }
 
-  const bool wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
-  XCAFDoc_ShapeTool::SetAutoNaming(false);
   const TCollection_AsciiString aRootName; // = generateRootName (theFile);
   CafDocumentTools              aTools;
   aTools.ShapeTool       = XCAFDoc_DocumentTool::ShapeTool(myXdeDoc->Main());
   aTools.ColorTool       = XCAFDoc_DocumentTool::ColorTool(myXdeDoc->Main());
   aTools.VisMaterialTool = XCAFDoc_DocumentTool::VisMaterialTool(myXdeDoc->Main());
+  XCAFDoc_ShapeTool::OwnAutoNamingScope anAutoNamingScope(aTools.ShapeTool, false);
   for (NCollection_Sequence<TopoDS_Shape>::Iterator aRootIter(myRootShapes); aRootIter.More();
        aRootIter.Next())
   {
     addShapeIntoDoc(aTools, aRootIter.Value(), TDF_Label(), aRootName);
   }
   XCAFDoc_DocumentTool::ShapeTool(myXdeDoc->Main())->UpdateAssemblies();
-  XCAFDoc_ShapeTool::SetAutoNaming(wasAutoNaming);
 }
 
 //=================================================================================================
