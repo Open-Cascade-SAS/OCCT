@@ -26,6 +26,10 @@
 #include <BRepBlend_HCurveTool.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepBlend_PointOnRst.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
 #include <Blend_FuncInv.hxx>
 #include <Blend_Function.hxx>
 #include <Blend_Point.hxx>
@@ -43,9 +47,184 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <gce_MakePln.hxx>
+#include <Geom2d_Curve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
+
+namespace
+{
+// Limit the new unwrapped walking mode to open guides on conical supports. A periodic guide uses
+// the support seam as its intentional closure and must retain the established seam recadrage.
+// Other periodic support types retain their established behavior as well.
+bool usePeriodicSeamHandling(const Adaptor3d_Surface&           theSurface,
+                             const occ::handle<ChFiDS_ElSpine>& theGuide)
+{
+  if (theGuide.IsNull() || theGuide->IsPeriodic() || theSurface.GetType() != GeomAbs_Cone)
+  {
+    return false;
+  }
+
+  const gp_Pnt aFirstPoint = theGuide->EvalD0(theGuide->FirstParameter());
+  const gp_Pnt aLastPoint  = theGuide->EvalD0(theGuide->LastParameter());
+  return !aFirstPoint.IsEqual(aLastPoint, Precision::Confusion());
+}
+
+// A topological seam closes the parameter chart of a periodic support but does not bound the
+// support geometrically. The walker therefore classifies points on the canonical chart while
+// retaining an unwrapped solution which is continuous with the preceding section.
+bool isFullPeriod(const occ::handle<BRepAdaptor_Surface>& theSurface, const bool theIsU)
+{
+  if ((theIsU && !theSurface->IsUPeriodic()) || (!theIsU && !theSurface->IsVPeriodic()))
+  {
+    return false;
+  }
+  const double aFirst  = theIsU ? theSurface->FirstUParameter() : theSurface->FirstVParameter();
+  const double aLast   = theIsU ? theSurface->LastUParameter() : theSurface->LastVParameter();
+  const double aPeriod = theIsU ? theSurface->UPeriod() : theSurface->VPeriod();
+  return aPeriod > 0.0 && aLast - aFirst >= aPeriod - Precision::PConfusion();
+}
+
+bool isPeriodicSeam(const occ::handle<Adaptor2d_Curve2d>& theArc,
+                    const occ::handle<Adaptor3d_Surface>& theSurface,
+                    const occ::handle<ChFiDS_ElSpine>&    theGuide)
+{
+  if (!usePeriodicSeamHandling(*theSurface, theGuide))
+  {
+    return false;
+  }
+  const occ::handle<BRepAdaptor_Curve2d> aCurve   = occ::down_cast<BRepAdaptor_Curve2d>(theArc);
+  const occ::handle<BRepAdaptor_Surface> aSurface = occ::down_cast<BRepAdaptor_Surface>(theSurface);
+  if (aCurve.IsNull() || aSurface.IsNull()
+      || !BRepTools::IsReallyClosed(aCurve->Edge(), aSurface->Face()))
+  {
+    return false;
+  }
+
+  TopoDS_Edge aForwardEdge  = aCurve->Edge();
+  TopoDS_Edge aReversedEdge = aCurve->Edge();
+  aForwardEdge.Orientation(TopAbs_FORWARD);
+  aReversedEdge.Orientation(TopAbs_REVERSED);
+  double                    aFirst1 = 0.0;
+  double                    aLast1  = 0.0;
+  double                    aFirst2 = 0.0;
+  double                    aLast2  = 0.0;
+  occ::handle<Geom2d_Curve> aPCurve1 =
+    BRep_Tool::CurveOnSurface(aForwardEdge, aSurface->Face(), aFirst1, aLast1);
+  occ::handle<Geom2d_Curve> aPCurve2 =
+    BRep_Tool::CurveOnSurface(aReversedEdge, aSurface->Face(), aFirst2, aLast2);
+  const double aFirst = std::max(aFirst1, aFirst2);
+  const double aLast  = std::min(aLast1, aLast2);
+  if (aPCurve1.IsNull() || aPCurve2.IsNull() || aLast < aFirst)
+  {
+    return false;
+  }
+
+  const double aTolerance    = 10.0 * Precision::PConfusion();
+  const auto   isPeriodShift = [&](const double theParameter, const bool theIsU) {
+    const gp_Pnt2d aPoint1 = aPCurve1->Value(theParameter);
+    const gp_Pnt2d aPoint2 = aPCurve2->Value(theParameter);
+    const double   aDeltaU = std::abs(aPoint1.X() - aPoint2.X());
+    const double   aDeltaV = std::abs(aPoint1.Y() - aPoint2.Y());
+    return theIsU ? std::abs(aDeltaU - aSurface->UPeriod()) <= aTolerance && aDeltaV <= aTolerance
+                    : std::abs(aDeltaV - aSurface->VPeriod()) <= aTolerance && aDeltaU <= aTolerance;
+  };
+  const double aMiddle = 0.5 * (aFirst + aLast);
+  const bool   isUSeam = isFullPeriod(aSurface, true) && isPeriodShift(aFirst, true)
+                       && isPeriodShift(aMiddle, true) && isPeriodShift(aLast, true);
+  const bool isVSeam = isFullPeriod(aSurface, false) && isPeriodShift(aFirst, false)
+                       && isPeriodShift(aMiddle, false) && isPeriodShift(aLast, false);
+  return isUSeam || isVSeam;
+}
+
+bool normalizePeriodicCoordinate(double&      theCoordinate,
+                                 const double theFirst,
+                                 const double theLast,
+                                 const double thePeriod,
+                                 const double theTolerance)
+{
+  const double aTolerance = std::max(theTolerance, Precision::PConfusion());
+  if (thePeriod <= 0.0 || theLast - theFirst < thePeriod - aTolerance)
+  {
+    // A periodic basis surface can carry a face restricted to less than one period. Such a face
+    // has real parameter-space boundaries and must retain the normal domain classification.
+    return false;
+  }
+
+  theCoordinate -= std::floor((theCoordinate - theFirst) / thePeriod) * thePeriod;
+  if (theCoordinate - theFirst <= aTolerance || theFirst + thePeriod - theCoordinate <= aTolerance)
+  {
+    // The two ends of a full-period chart represent an internal topological seam. Classify a
+    // nearby point inside the canonical chart so that this seam is not mistaken for a boundary.
+    theCoordinate = theFirst + std::min(2.0 * aTolerance, 0.25 * thePeriod);
+  }
+  return true;
+}
+
+TopAbs_State classifyPeriodic(const occ::handle<Adaptor3d_TopolTool>& theDomain,
+                              const occ::handle<Adaptor3d_Surface>&   theSurface,
+                              gp_Pnt2d                                thePoint,
+                              const double                            theTolerance,
+                              const occ::handle<ChFiDS_ElSpine>&      theGuide)
+{
+  if (!usePeriodicSeamHandling(*theSurface, theGuide))
+  {
+    return theDomain->Classify(thePoint, theTolerance, false);
+  }
+  if (theSurface->IsUPeriodic())
+  {
+    double aU = thePoint.X();
+    normalizePeriodicCoordinate(aU,
+                                theSurface->FirstUParameter(),
+                                theSurface->LastUParameter(),
+                                theSurface->UPeriod(),
+                                theTolerance);
+    thePoint.SetX(aU);
+  }
+  if (theSurface->IsVPeriodic())
+  {
+    double aV = thePoint.Y();
+    normalizePeriodicCoordinate(aV,
+                                theSurface->FirstVParameter(),
+                                theSurface->LastVParameter(),
+                                theSurface->VPeriod(),
+                                theTolerance);
+    thePoint.SetY(aV);
+  }
+  return theDomain->Classify(thePoint, theTolerance, false);
+}
+
+void recalePeriodicSolution(math_Vector&                          theSolution,
+                            const math_Vector&                    theReference,
+                            const occ::handle<Adaptor3d_Surface>& theSurface,
+                            const int                             theFirstIndex,
+                            const occ::handle<ChFiDS_ElSpine>&    theGuide)
+{
+  if (!usePeriodicSeamHandling(*theSurface, theGuide))
+  {
+    return;
+  }
+  if (theSurface->IsUPeriodic())
+  {
+    const double aPeriod = theSurface->UPeriod();
+    while (std::abs(theSolution(theFirstIndex) - theReference(theFirstIndex)) > 0.5 * aPeriod)
+    {
+      theSolution(theFirstIndex) +=
+        theSolution(theFirstIndex) < theReference(theFirstIndex) ? aPeriod : -aPeriod;
+    }
+  }
+  if (theSurface->IsVPeriodic())
+  {
+    const double aPeriod = theSurface->VPeriod();
+    while (std::abs(theSolution(theFirstIndex + 1) - theReference(theFirstIndex + 1))
+           > 0.5 * aPeriod)
+    {
+      theSolution(theFirstIndex + 1) +=
+        theSolution(theFirstIndex + 1) < theReference(theFirstIndex + 1) ? aPeriod : -aPeriod;
+    }
+  }
+}
+} // namespace
 
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
@@ -233,8 +412,11 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
 
     if (clasonS1)
     {
-      situ1 =
-        domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
+      situ1 = classifyPeriodic(domain1,
+                               surf1,
+                               gp_Pnt2d(sol(1), sol(2)),
+                               std::min(tolerance(1), tolerance(2)),
+                               hguide);
     }
     else
     {
@@ -242,8 +424,11 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
     }
     if (clasonS2)
     {
-      situ2 =
-        domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
+      situ2 = classifyPeriodic(domain2,
+                               surf2,
+                               gp_Pnt2d(sol(3), sol(4)),
+                               std::min(tolerance(3), tolerance(4)),
+                               hguide);
     }
     else
     {
@@ -340,8 +525,16 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function& Func,
   }
   rsnld.Root(sol);
   ParDep = sol;
-  Pos1   = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
-  Pos2   = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
+  Pos1   = classifyPeriodic(domain1,
+                          surf1,
+                          gp_Pnt2d(sol(1), sol(2)),
+                          std::min(tolerance(1), tolerance(2)),
+                          hguide);
+  Pos2   = classifyPeriodic(domain2,
+                          surf2,
+                          gp_Pnt2d(sol(3), sol(4)),
+                          std::min(tolerance(3), tolerance(4)),
+                          hguide);
   if (Pos1 != TopAbs_IN || Pos2 != TopAbs_IN)
   {
     return false;
@@ -1190,7 +1383,13 @@ int BRepBlend_Walking::ArcToRecadre(const bool         OnFirst,
   while (Iter->More())
   {
     nbarc++;
-    ok = false;
+    ok                                             = false;
+    const occ::handle<Adaptor3d_Surface>& aSurface = OnFirst ? surf1 : surf2;
+    if (isPeriodicSeam(Iter->Value(), aSurface, hguide))
+    {
+      Iter->Next();
+      continue;
+    }
     if (OnFirst)
     {
       if (byinter)
@@ -2021,11 +2220,16 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
     else
     {
       rsnld.Root(sol);
+      recalePeriodicSolution(sol, parinit, surf1, 1, hguide);
+      recalePeriodicSolution(sol, parinit, surf2, 3, hguide);
 
       if (clasonS1)
       {
-        situ1 =
-          domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
+        situ1 = classifyPeriodic(domain1,
+                                 surf1,
+                                 gp_Pnt2d(sol(1), sol(2)),
+                                 std::min(tolerance(1), tolerance(2)),
+                                 hguide);
       }
       else
       {
@@ -2033,8 +2237,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
       }
       if (clasonS2)
       {
-        situ2 =
-          domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
+        situ2 = classifyPeriodic(domain2,
+                                 surf2,
+                                 gp_Pnt2d(sol(3), sol(4)),
+                                 std::min(tolerance(3), tolerance(4)),
+                                 hguide);
       }
       else
       {
@@ -2144,8 +2351,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         TopAbs_State situ;
         if (recad1 && clasonS2)
         {
-          situ = recdomain2->Classify(gp_Pnt2d(solrst1(3), solrst1(4)),
-                                      std::min(tolerance(3), tolerance(4)));
+          situ = classifyPeriodic(recdomain2,
+                                  surf2,
+                                  gp_Pnt2d(solrst1(3), solrst1(4)),
+                                  std::min(tolerance(3), tolerance(4)),
+                                  hguide);
           if (situ == TopAbs_OUT)
           {
             recad1     = false;
@@ -2154,8 +2364,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         }
         else if (recad2 && clasonS1)
         {
-          situ = recdomain1->Classify(gp_Pnt2d(solrst2(3), solrst2(4)),
-                                      std::min(tolerance(1), tolerance(1)));
+          situ = classifyPeriodic(recdomain1,
+                                  surf1,
+                                  gp_Pnt2d(solrst2(3), solrst2(4)),
+                                  std::min(tolerance(1), tolerance(2)),
+                                  hguide);
           if (situ == TopAbs_OUT)
           {
             recad2     = false;

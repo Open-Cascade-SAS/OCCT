@@ -24,6 +24,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
+#include <BRepTools.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -44,6 +45,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
+#include <OSD_Environment.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -63,6 +65,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 // Regression for fillets that must remove an intervening face or meet on opposite
@@ -765,4 +768,86 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   GProp_GProps aResultProps;
   BRepGProp::SurfaceProperties(aResult, aResultProps);
   EXPECT_NEAR(aResultProps.Mass(), 7507.61, 7507.61 * 0.001) << "Surface area mismatch";
+}
+
+// Regression for a fillet whose contact curves cross the periodic seam of a conical support.
+// The geometric blend is continuous, but the support pcurves must be split at every chart crossing.
+TEST(BRepFilletAPI_MakeFilletTest, PeriodicSupportSeamProducesValidResult)
+{
+  OSD_Environment         aDataPathEnv("CSF_OCCTDataPath");
+  TCollection_AsciiString aDataPath = aDataPathEnv.Value();
+  if (aDataPath.IsEmpty())
+  {
+    // The installed GCC Debug test environment does not currently export CSF_OCCTDataPath, but
+    // the workflow runs the test from <source>/install/bin with the source data still available.
+    aDataPath = "../../data";
+  }
+  aDataPath += "/occ/periodic_seam_fillet.brep";
+
+  TopoDS_Shape aShape;
+  ASSERT_TRUE(BRepTools::Read(aShape, aDataPath.ToCString(), BRep_Builder()))
+    << "Cannot read periodic seam fillet test shape";
+  ASSERT_FALSE(aShape.IsNull());
+
+  constexpr std::array<int, 34> THE_EDGE_INDICES = {9,  33, 32, 31, 30, 8,  7,  6,  11, 12, 13, 14,
+                                                    38, 37, 36, 35, 19, 18, 17, 16, 40, 41, 42, 28,
+                                                    26, 23, 22, 21, 20, 44, 45, 46, 49, 43};
+
+  std::array<double, 2> aReferenceVolumes = {-1.0, -1.0};
+  for (const bool isMirrored : {false, true})
+  {
+    SCOPED_TRACE(isMirrored ? "mirrored shape" : "original shape");
+    TopoDS_Shape aTestShape = aShape;
+    if (isMirrored)
+    {
+      gp_Trsf aMirror;
+      aMirror.SetMirror(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+      aTestShape = BRepBuilderAPI_Transform(aShape, aMirror, true).Shape();
+    }
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aTestShape, TopAbs_EDGE, anEdges);
+    ASSERT_EQ(anEdges.Extent(), 114);
+
+    for (const bool isReversed : {false, true})
+    {
+      SCOPED_TRACE(isReversed ? "reverse edge order" : "forward edge order");
+      BRepFilletAPI_MakeFillet aFillet(aTestShape);
+      if (isReversed)
+      {
+        for (auto anIt = THE_EDGE_INDICES.rbegin(); anIt != THE_EDGE_INDICES.rend(); ++anIt)
+        {
+          aFillet.Add(2.0, TopoDS::Edge(anEdges(*anIt)));
+        }
+      }
+      else
+      {
+        for (const int anEdgeIndex : THE_EDGE_INDICES)
+        {
+          aFillet.Add(2.0, TopoDS::Edge(anEdges(anEdgeIndex)));
+        }
+      }
+
+      ASSERT_NO_THROW(aFillet.Build());
+      ASSERT_TRUE(aFillet.IsDone());
+      ASSERT_FALSE(aFillet.Shape().IsNull());
+      EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+
+      GProp_GProps aProperties;
+      BRepGProp::VolumeProperties(aFillet.Shape(), aProperties);
+      const double aVolume = std::abs(aProperties.Mass());
+      EXPECT_GT(aVolume, Precision::Confusion());
+      const std::size_t aReferenceIndex = isReversed ? 1 : 0;
+      if (aReferenceVolumes[aReferenceIndex] < 0.0)
+      {
+        aReferenceVolumes[aReferenceIndex] = aVolume;
+      }
+      else
+      {
+        EXPECT_NEAR(aVolume,
+                    aReferenceVolumes[aReferenceIndex],
+                    1.0e-6 * aReferenceVolumes[aReferenceIndex]);
+      }
+    }
+  }
 }
