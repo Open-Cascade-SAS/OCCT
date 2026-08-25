@@ -5,7 +5,7 @@
 ## ====================================
 
 # Build and validate the periodic fillet used by Z3.
-source [file join $env(CSF_OCCTTestsPath) blend simple Z3]
+source [file join $env(CSF_TestScriptsPath) blend simple Z3]
 
 # Select the unique horizontal top face, which remains at Z = 30 after filleting.
 set aTopFaces {}
