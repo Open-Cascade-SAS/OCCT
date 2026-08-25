@@ -274,11 +274,6 @@ bool TopOpeBRepTool_ShapeTool::Closed(const TopoDS_Shape& S1, const TopoDS_Shape
   return false;
 }
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceVC();
-extern bool TopOpeBRepTool_GettraceNYI();
-#endif
-
 inline bool PARINBOUNDS(const double par, const double first, const double last, const double tol)
 {
   bool b = (((first + tol) <= par) && (par <= (last - tol)));
@@ -370,19 +365,6 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
       periopar = ADJUST(par, Vfirst, Vlast, tol);
     }
 
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepTool_GettraceVC())
-    {
-      std::cout << "TopOpeBRepTool_ShapeTool PC on edge is ";
-      if (isoU)
-        std::cout << "isoU f,l " << Ufirst << " " << Ulast << std::endl;
-      else if (isoV)
-        std::cout << "isoV f,l " << Vfirst << " " << Vlast << std::endl;
-      else
-        std::cout << "not isoU, not isoV" << std::endl;
-      std::cout << "par = " << par << " --> " << periopar << std::endl;
-    }
-#endif
   }
   // NYI : BSpline ...
 
@@ -505,13 +487,6 @@ bool TopOpeBRepTool_ShapeTool::SurfacesSameOriented(const BRepAdaptor_Surface& S
   {
     // prendre u1,v1 et projeter sur 2 pour calcul des normales
     // au meme point 3d.
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepTool_GettraceNYI())
-    {
-      std::cout << "TopOpeBRepTool_ShapeTool::SurfacesSameOriented surfaces non traitees : NYI";
-      std::cout << std::endl;
-    }
-#endif
   }
 
   return so;
@@ -571,13 +546,6 @@ bool TopOpeBRepTool_ShapeTool::CurvesSameOriented(const BRepAdaptor_Curve& C1,
   {
     // prendre p1 et projeter sur 2 pour calcul des normales
     // au meme point 3d.
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepTool_GettraceNYI())
-    {
-      std::cout << "TopOpeBRepTool_ShapeTool::CurvesSameOriented non lineaires : NYI";
-      std::cout << std::endl;
-    }
-#endif
   }
 
   return so;

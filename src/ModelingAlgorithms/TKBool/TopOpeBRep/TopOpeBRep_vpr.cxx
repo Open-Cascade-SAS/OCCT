@@ -454,7 +454,8 @@ Standard_EXPORT void FUN_VPIndex(
 } // FUN_VPIndex
 
 //-----------------------------------------------------------------------
-static bool FUN_LineRestF(const TopoDS_Face&                    F,
+static bool FUN_LineRestF(const TopOpeBRep_FacesFiller&          FF,
+                          const TopoDS_Face&                    F,
                           const TopOpeBRep_LineInter&           L,
                           const NCollection_List<TopoDS_Shape>& ERL,
                           TopoDS_Edge&                          ER)
@@ -482,7 +483,7 @@ static bool FUN_LineRestF(const TopoDS_Face&                    F,
     const TopoDS_Shape&            e = itER.Value();
     NCollection_List<TopoDS_Shape> eL;
     eL.Append(e);
-    bool isonL = TopOpeBRep_FacesFiller::LSameDomainERL(L, eL);
+    bool isonL = FF.LSameDomainERL(L, eL);
     if (isonL)
     {
       ERLonFonL.Append(e);
@@ -601,7 +602,7 @@ Standard_EXPORT bool FUN_newtransEdge(const occ::handle<TopOpeBRepDS_HDataStruct
     }
     else
     {
-      onOOface = ::FUN_LineRestF(OOface, L, ERL, OOER);
+      onOOface = ::FUN_LineRestF(FF, OOface, L, ERL, OOER);
     }
     if (!onOOface)
     {

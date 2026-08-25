@@ -46,9 +46,7 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 // define parameter division number as 10*e^(-PI) = 0.43213918
-const double PAR_T = 0.43213918;
-
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySDEdgeMap;
+constexpr double PAR_T = 0.43213918;
 
 static TopAbs_State ClassifyEdgeToFaceByOnePoint(const TopoDS_Edge& E, const TopoDS_Face& F);
 
@@ -58,7 +56,7 @@ static TopAbs_State ClassifyEdgeToFaceByOnePoint(const TopoDS_Edge& E, const Top
 // because new algo can not be used in LocOpe and Mechanical Features (for the moment)
 // that's why we use new algo only in BRepAlgoAPI_BooleanOperation
 // in all other cases old algo is called (see the methods GFillSolidSFS, GFillShellSFS, etc.);
-bool GLOBAL_USE_NEW_BUILDER = false;
+constexpr bool GLOBAL_USE_NEW_BUILDER = false;
 
 //=================================================================================================
 

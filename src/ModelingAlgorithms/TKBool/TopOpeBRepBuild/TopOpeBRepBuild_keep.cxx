@@ -20,11 +20,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
 #ifdef OCCT_DEBUG
-extern int GLOBAL_iexE;
-extern int GLOBAL_iexF;
-bool       STATIC_trace_iexE = false;
-bool       STATIC_trace_iexF = false;
-
 Standard_EXPORT void debkeep(const int i)
 {
   std::cout << "++ debkeep " << i << std::endl;
@@ -71,29 +66,11 @@ bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   
 #ifdef OCCT_DEBUG
   int  iS;
   bool tSPS  = GtraceSPS(S, iS);
-  int  iface = 0, isoli = 0;
-  bool tSPSface = false;
-  bool tSPSsoli = false;
-  if (S.ShapeType() == TopAbs_EDGE)
-  {
-    tSPSface = GtraceSPS(myFaceToFill, iface);
-    tSPSface = tSPSface && STATIC_trace_iexE;
-  }
-  else if (S.ShapeType() == TopAbs_FACE)
-  {
-    tSPSsoli = GtraceSPS(mySolidToFill, isoli);
-    tSPSsoli = tSPSsoli && STATIC_trace_iexF;
-  }
-
-  bool tr = tSPS || tSPSface || tSPSsoli;
+  bool tr = tSPS;
   if (tr)
   {
     if (tSPS)
       GdumpSHA(S);
-    else if (tSPSface)
-      std::cout << "EDGE exploration " << GLOBAL_iexE;
-    else if (tSPSsoli)
-      std::cout << "FACE exploration " << GLOBAL_iexF;
     if (keep)
       std::cout << " is kept";
     else

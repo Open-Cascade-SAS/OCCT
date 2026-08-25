@@ -36,8 +36,6 @@
 
 #ifdef OCCT_DEBUG
 void debc2dnull(void) {}
-
-Standard_EXPORT bool TopOpeBRepTool_GettraceC2D();
 #endif
 
 // structure e -> C2D/F
@@ -327,13 +325,6 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     l2d = l;
   }
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull())
-  {
-    std::cout << "#FC2D_make2d1 --> PCurve IsNull" << std::endl;
-  }
-#endif
-
   return C2D;
 } // make2d1
 
@@ -523,13 +514,6 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     l2d = l;
     FC2D_translate(C2D, E, F, EF);
   }
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull())
-  {
-    std::cout << "#FC2D_make2d2 --> PCurve IsNull" << std::endl;
-  }
-#endif
 
   return C2D;
 } // make2d2

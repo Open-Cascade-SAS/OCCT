@@ -502,10 +502,6 @@ void TopOpeBRepBuild_Builder::GdumpSOBU(TopOpeBRepBuild_SolidBuilder& /*ME*/) co
 #endif
 } // GdumpSOBU
 
-#ifdef OCCT_DEBUG
-void* GFABUMAKEFACEPWES_DEB = NULL;
-#endif
-
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
@@ -515,8 +511,6 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
   int                 iF;
   //  bool tSPS =
   GtraceSPS(face, iF);
-  TopOpeBRepBuild_WireEdgeSet* PWES = (TopOpeBRepBuild_WireEdgeSet*)GFABUMAKEFACEPWES_DEB;
-
   int nf, nw, ne;
   ME.InitFace();
   if (ME.MoreFace())
@@ -546,8 +540,6 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
           TCollection_AsciiString VFnam("VF");
           TCollection_AsciiString VRnam("VR");
           Enam = Enam + ne + "NF" + nf + "F" + iF;
-          if (PWES)
-            Enam = Enam + PWES->DEBName() + PWES->DEBNumber();
           VFnam = VFnam + ne + "NF" + nf + "F" + iF;
           VRnam = VRnam + ne + "NF" + nf + "F" + iF;
           //	  std::cout<<"    puts \"edge "<<ne<<" : "<<Enam<<"\"";std::cout<<"; ";

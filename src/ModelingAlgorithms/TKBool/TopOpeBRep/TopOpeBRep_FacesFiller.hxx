@@ -229,8 +229,8 @@ public:
 
   //! Returns <True> if <L> shares a same geometric domain with
   //! at least one of the section edges of <ERL>.
-  Standard_EXPORT static bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
-                                             const NCollection_List<TopoDS_Shape>& ERL);
+  Standard_EXPORT bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
+                                      const NCollection_List<TopoDS_Shape>& ERL) const;
 
   //! Computes the transition <T> of the VPoint <iVP> on the edge
   //! of <SI12>. Returns <False> if the status is unknown.

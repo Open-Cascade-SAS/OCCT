@@ -443,14 +443,6 @@ static bool FUN_findTOOF(TopOpeBRepDS_DataStructure* pDS,
   return ok;
 }
 
-Standard_EXPORT bool GLOBAL_btcx = false;
-
-Standard_EXPORT void debtcxmess(int f1, int f2, int il)
-{
-  std::cout << "f1,f2,il : " << f1 << "," << f2 << "," << il << '\n';
-  std::cout.flush();
-}
-
 //=================================================================================================
 
 void TopOpeBRep_FacesFiller::ProcessLine()

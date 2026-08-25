@@ -74,10 +74,6 @@ Standard_EXPORT const TopOpeBRepBuild_GTopo& FUN_motherope()
   return STATIC_Gmotherope;
 }
 
-// Standard_IMPORT extern bool GLOBAL_classifysplitedge;
-Standard_EXPORTEXTERN bool GLOBAL_classifysplitedge;
-// Standard_IMPORT extern bool GLOBAL_revownsplfacori;
-Standard_EXPORTEXTERN bool GLOBAL_revownsplfacori;
 Standard_EXPORT void       FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
                                                         const NCollection_List<TopoDS_Shape>& LF1,
                                                         const NCollection_List<TopoDS_Shape>& LF2,
@@ -228,9 +224,6 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
   return 0;
 }
 
-Standard_EXPORT NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* GLOBAL_SplitAnc =
-  nullptr; // xpu260598
-
 static void FUN_getAncestorFsp(
   TopOpeBRepBuild_Builder&                                         B,
   TopOpeBRepTool_ShapeClassifier&                                  SC,
@@ -279,14 +272,6 @@ static void FUN_getAncestorFsp(
   } // itsp
 }
 
-Standard_EXPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1         = nullptr;
-Standard_EXPORT bool                            GLOBAL_lfrtoprocess = false;
-
-// Standard_IMPORT extern NCollection_List<TopoDS_Shape>* GLOBAL_lfr1;
-// Standard_IMPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1;
-// Standard_IMPORT extern bool GLOBAL_lfrtoprocess;
-// Standard_IMPORT bool GLOBAL_lfrtoprocess;
-
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                   FOR,
@@ -323,7 +308,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
   TopoDS_Shape FF = FOR;
   FF.Orientation(TopAbs_FORWARD);
   bool hsd            = myDataStructure->HasSameDomain(FOR); // xpu280598
-  GLOBAL_lfrtoprocess = false;
+  myProcessFaces = false;
 
   if (tosplit && tomerge)
   {
@@ -354,29 +339,14 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
       bool performfufa = true;
       if (performfufa)
       {
-        GLOBAL_lfrtoprocess = true;
-        if (GLOBAL_lfrtoprocess)
-        {
-          if (GLOBAL_lfr1 == nullptr)
-          {
-            GLOBAL_lfr1 = (NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>();
-          }
-          GLOBAL_lfr1->Clear();
-        }
+        myProcessFaces = true;
+        myFacesToProcess.Clear();
       }
 
-      // xpu280598 : Filling up GLOBAL_SplitAnc = {(fsp,ifanc)}
+      // xpu280598 : Filling up split-face ancestors = {(fsp,ifanc)}
       //              . fsp = spIN/OU(fanc),
       //              . fanc hsdm is the unique ancestor face
-      if (GLOBAL_SplitAnc == nullptr)
-      {
-        GLOBAL_SplitAnc =
-          (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*)new NCollection_DataMap<
-            TopoDS_Shape,
-            int,
-            TopTools_ShapeMapHasher>();
-      }
-      GLOBAL_SplitAnc->Clear();
+      mySplitFaceAncestors.Clear();
 
       NCollection_List<TopoDS_Shape> LFSO, LFDO, LFSO1, LFDO1, LFSO2, LFDO2;
       GFindSamDomSODO(FF, LFSO, LFDO); // -980617
@@ -413,11 +383,11 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
           GdumpSAMDOM(LF2, (char*)"LF2 (LFSO2) : ");
         }
 #endif
-        GLOBAL_classifysplitedge = true;
+        myClassifySplitEdge = true;
         GFillFacesWESMakeFaces(LF1, LF2, LSO2, GM);
-        GLOBAL_classifysplitedge = false;
+        myClassifySplitEdge = false;
 
-        GLOBAL_revownsplfacori = true;
+        myReverseOwnSplitFaceOrientation = true;
         FUNBUILD_ANCESTORRANKPREPARE(*this,
                                      LF1,
                                      LF2,
@@ -430,25 +400,21 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
                              LF1,
                              LF2,
                              FOR,
-                             GLOBAL_SplitAnc); // xpu280598
+                             &mySplitFaceAncestors); // xpu280598
         }
 
-        // GLOBAL_lfrtoprocess = t
+        // myProcessFaces = true
         // ==> on ne stocke PAS les faces 'startelement' dans le SFS
-        //     mais dans GLOBAL_lfr1,
-        // GLOBAL_lfrtoprocess = f
-        // ==> on stocke normalement dans le SFS et pas dans GLOBAL_lfr1
+        //     mais dans myFacesToProcess,
+        // myProcessFaces = false
+        // ==> on stocke normalement dans le SFS et pas dans myFacesToProcess
         // NYI : + argument a la methode GSplitFaceSFS ?? a voir
 
-        // ici : GLOBAL_lfrtoprocess = t
-        // clang-format off
-	if (GLOBAL_lfr1==nullptr) { GLOBAL_lfr1=(NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>(); //flo150998
-}
-        // clang-format on
-        GLOBAL_lfr1->Clear();
+        // ici : myProcessFaces = true
+        myFacesToProcess.Clear();
         GSplitFaceSFS(FOR, LSO2, GM, SFS);
-        GLOBAL_lfrtoprocess    = false;
-        GLOBAL_revownsplfacori = false;
+        myProcessFaces                    = false;
+        myReverseOwnSplitFaceOrientation = false;
       }
 
       // WES : FOR + faces d'orientation topologique opposee
@@ -485,11 +451,11 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
           std::cout << std::endl;
         }
 #endif
-        GLOBAL_classifysplitedge = true;
+        myClassifySplitEdge = true;
         GFillFacesWESMakeFaces(LF1, LF2, LSO2, GM);
-        GLOBAL_classifysplitedge = false;
+        myClassifySplitEdge = false;
 
-        GLOBAL_revownsplfacori = true;
+        myReverseOwnSplitFaceOrientation = true;
         FUNBUILD_ANCESTORRANKPREPARE(*this,
                                      LF1,
                                      LF2,
@@ -502,7 +468,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
                              LF1,
                              LF2,
                              FOR,
-                             GLOBAL_SplitAnc); // xpu280598
+                             &mySplitFaceAncestors); // xpu280598
         }
 
         if (Opecom())
@@ -539,7 +505,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
         } // OpeCom
 
         GSplitFaceSFS(FOR, LSO2, GM, SFS);
-        GLOBAL_revownsplfacori = false;
+        myReverseOwnSplitFaceOrientation = false;
 
       } // dodo
 
@@ -573,11 +539,11 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
             std::cout << std::endl;
           }
 #endif
-          GLOBAL_classifysplitedge = true;
+          myClassifySplitEdge = true;
           GFillFacesWESMakeFaces(LF1, LF2, LSO2, GM);
-          GLOBAL_classifysplitedge = false;
+          myClassifySplitEdge = false;
 
-          GLOBAL_revownsplfacori = true;
+          myReverseOwnSplitFaceOrientation = true;
           FUNBUILD_ANCESTORRANKPREPARE(*this,
                                        LF1,
                                        LF2,
@@ -590,10 +556,10 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
                                LF1,
                                LF2,
                                FOR,
-                               GLOBAL_SplitAnc); // xpu280598
+                               &mySplitFaceAncestors); // xpu280598
           }
           GSplitFaceSFS(FOR, LSO2, GM, SFS);
-          GLOBAL_revownsplfacori = false;
+          myReverseOwnSplitFaceOrientation = false;
         }
       } // !Opecom
 
@@ -607,7 +573,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
       }
 #endif
 
-      GLOBAL_SplitAnc->Clear(); // xpu280598
+      mySplitFaceAncestors.Clear(); // xpu280598
 
       // FuseFace
       SFS.ChangeStartShapes().Extent();
@@ -619,17 +585,17 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 #endif
 //	const NCollection_List<TopoDS_Shape>& lou = Splits(FF,TopAbs_OUT); int nou = lou.Extent();
 //	const NCollection_List<TopoDS_Shape>& lin = Splits(FF,TopAbs_IN);  int nin = lin.Extent();
-//	GCopyList(lou,*GLOBAL_lfr1);
-//	GCopyList(lin,*GLOBAL_lfr1);
+//	GCopyList(lou,myFacesToProcess);
+//	GCopyList(lin,myFacesToProcess);
 #ifdef OCCT_DEBUG
-//	int nlfr1 = GLOBAL_lfr1->Extent();
+//	int nlfr1 = myFacesToProcess.Extent();
 #endif
 
         // NYI : Builder += methode pour le process fufa
         // clang-format off
 	TopOpeBRepBuild_FuseFace fufa; NCollection_List<TopoDS_Shape> ldum; int addinternal = 1; // disparition
         // clang-format on
-        fufa.Init(ldum, *GLOBAL_lfr1, addinternal);
+        fufa.Init(ldum, myFacesToProcess, addinternal);
         fufa.PerformFace();
         bool isdone = fufa.IsDone();
         if (!isdone)
@@ -641,7 +607,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 #endif
         const NCollection_List<TopoDS_Shape>& lfr2 = fufa.LFuseFace();
         //
-        //	const NCollection_List<TopoDS_Shape>& lfr2 = *GLOBAL_lfr1
+        //	const NCollection_List<TopoDS_Shape>& lfr2 = myFacesToProcess
         // les faces remplacantes
         for (NCollection_List<TopoDS_Shape>::Iterator itlfr2(lfr2); itlfr2.More(); itlfr2.Next())
         {

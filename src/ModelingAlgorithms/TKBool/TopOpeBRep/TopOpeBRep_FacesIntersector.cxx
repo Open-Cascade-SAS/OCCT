@@ -34,8 +34,6 @@
 #include <BRepTools.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 
-Standard_EXPORT double GLOBAL_tolFF = 1.e-7;
-
 #ifdef OCCT_DEBUG
   #include <TopAbs.hxx>
 extern bool TopOpeBRep_GettraceFI();
@@ -59,10 +57,6 @@ static void SAVFF(const TopoDS_Face& F1, const TopoDS_Face& F2)
   BRepTools::Write(F1, n1);
   BRepTools::Write(F2, n2);
 }
-
-extern bool TopOpeBRepTool_GettraceKRO();
-  #include <TopOpeBRepTool_KRO.hxx>
-Standard_EXPORT TOPKRO KRO_DSFILLER_INTFF("intersection face/face");
 
 #endif
 
@@ -194,11 +188,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
   const occ::handle<Adaptor3d_Surface>& aSurf2 = mySurface2; // to avoid ambiguity
   myDomain2->Initialize(aSurf2);
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTFF.Start();
-#endif
-
   double Deflection = 0.01, MaxUV = 0.01;
   if (!myForceTolerances)
   {
@@ -207,11 +196,9 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
     myTol2 = (myTol2 > 1.e-4) ? 1.e-4 : myTol2;
   }
 
-  double tol1  = myTol1;
-  double tol2  = myTol2;
-  GLOBAL_tolFF = std::max(tol1, tol2);
-
 #ifdef OCCT_DEBUG
+  const double tol1 = myTol1;
+  const double tol2 = myTol2;
   if (TopOpeBRep_GettraceFITOL())
   {
     std::cout << "FacesIntersector : Perform tol1 = " << tol1 << std::endl;
@@ -224,11 +211,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
   myIntersector.SetTolerances(myTol1, myTol2, MaxUV, Deflection);
   myIntersector
     .Perform(mySurface1, myDomain1, mySurface2, myDomain2, myTol1, myTol2, true, true, false);
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTFF.Stop();
-#endif
 
   // xpu180998 : cto900Q1
   bool done = myIntersector.IsDone();

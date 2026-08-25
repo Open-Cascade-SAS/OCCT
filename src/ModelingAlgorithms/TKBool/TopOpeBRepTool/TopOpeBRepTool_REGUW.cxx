@@ -36,57 +36,6 @@
 #define M_INTERNAL(ori) (ori == TopAbs_INTERNAL)
 #define M_EXTERNAL(ori) (ori == TopAbs_EXTERNAL)
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceREGUFA();
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_mapf, STATIC_mapw,
-  STATIC_mapv;
-static NCollection_IndexedMap<TopoDS_Shape> STATIC_mapeds;
-
-void FUN_tro(const int i)
-{
-  if (i == 1)
-    std::cout << "FORWARD";
-  else if (i == 2)
-    std::cout << "REVERSED";
-  else if (i == 3)
-    std::cout << "INTERNAL";
-  else if (i == 4)
-    std::cout << "EXTERNAL";
-  else if (i == 5)
-    std::cout << "CLOSING";
-}
-
-Standard_EXPORT int FUN_adds(const TopoDS_Shape& s)
-{
-  TopAbs_ShapeEnum        typ = s.ShapeType();
-  TCollection_AsciiString aa;
-  int                     is = 0;
-  if (typ == TopAbs_VERTEX)
-  {
-    aa = TCollection_AsciiString("v");
-    is = STATIC_mapv.Add(s);
-  }
-  if (typ == TopAbs_EDGE)
-  {
-    aa = TCollection_AsciiString("e");
-    is = STATIC_mapeds.Add(s);
-  }
-  if (typ == TopAbs_WIRE)
-  {
-    aa = TCollection_AsciiString("wi");
-    is = STATIC_mapw.Add(s);
-  }
-  if (typ == TopAbs_FACE)
-  {
-    aa = TCollection_AsciiString("f");
-    is = STATIC_mapf.Add(s);
-  }
-  return is;
-}
-#endif
-
-extern void FUN_tool_tori(const TopAbs_Orientation Or);
-
 void FUN_tool_Add(
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& map,
   const TopoDS_Shape&                                                                         key,
@@ -102,16 +51,6 @@ void FUN_tool_Add(
     los.Append(subitem);
     map.Bind(key, los);
   }
-}
-
-static void FUN_Raise()
-{
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << "*** Raise REGUW" << std::endl;
-//  throw Standard_Failure("REGUW");
-#endif
 }
 
 //=================================================================================================
@@ -190,12 +129,6 @@ bool TopOpeBRepTool_REGUW::SplitEds()
   {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
   }
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << "**    SPLITTING EDGES    **" << std::endl;
-#endif
-
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mehasIv;
   int                                                           i;
   for (i = 1; i <= mymapvEds.Extent(); i++)
@@ -232,10 +165,6 @@ bool TopOpeBRepTool_REGUW::SplitEds()
     {
       hasnewsplits = true;
     }
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << "e" << FUN_adds(e) << " gives splits =" << std::endl;
-#endif
     if (!(issp || isdone))
     {
       continue; // nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnyi
@@ -246,12 +175,6 @@ bool TopOpeBRepTool_REGUW::SplitEds()
     for (; ite.More(); ite.Next())
     {
       const TopoDS_Shape& esp = ite.Value();
-#ifdef OCCT_DEBUG
-      if (trc)
-      {
-        std::cout << " e" << FUN_adds(esp);
-      }
-#endif
       TopExp_Explorer exvv(esp, TopAbs_VERTEX);
       for (; exvv.More(); exvv.Next())
       {
@@ -266,10 +189,6 @@ bool TopOpeBRepTool_REGUW::SplitEds()
         co.AddItem(ivv, esp);
       } // exvv(exvv,VERTEX)
     } // ite(splits)
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << std::endl;
-#endif
   }
   return true;
 }
@@ -325,12 +244,6 @@ bool TopOpeBRepTool_REGUW::MapS()
   {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
   }
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << "**    MAPPING    **" << std::endl;
-#endif
-
   // Prequesitories :
   //        0) an edge with an INTERNAL vertex binded in <mapVedges> must be
   //           split
@@ -410,47 +323,6 @@ bool TopOpeBRepTool_REGUW::MapS()
     } // exv
   } // exe
 
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    for (int iv = 1; iv <= mymapvEds.Extent(); iv++)
-    {
-      const TopoDS_Vertex& v = TopoDS::Vertex(mymapvEds.FindKey(iv));
-      std::cout << "#v" << FUN_adds(v) << " :\n";
-      const TopOpeBRepTool_connexity& co = mymapvEds(iv);
-      for (int i = 1; i <= 5; i++)
-      {
-        NCollection_List<TopoDS_Shape> eds;
-        int                            ieds = co.Item(i, eds);
-        if (ieds == 0)
-          continue;
-        std::cout << " is ";
-        FUN_tro(i);
-        std::cout << " in ";
-        NCollection_List<TopoDS_Shape>::Iterator ite(eds);
-        for (; ite.More(); ite.Next())
-        {
-          const TopoDS_Edge& e = TopoDS::Edge(ite.Value());
-          std::cout << "e" << FUN_adds(e);
-          FUN_tool_tori(e.Orientation());
-          TopoDS_Vertex vclo;
-          bool          cloE = TopOpeBRepTool_TOOL::ClosedE(e, vclo);
-          if (cloE)
-            std::cout << "closed";
-          bool dgE = BRep_Tool::Degenerated(e);
-          if (dgE)
-            std::cout << "degenerated";
-          bool iscE = TopOpeBRepTool_TOOL::IsClosingE(e, myCORRISO.S(), Fref());
-          if (iscE)
-            std::cout << "closing";
-          std::cout << " ";
-        }
-        std::cout << std::endl;
-      } // i=1..5
-    }
-  } // trc
-#endif
-
   int nV = mymapvEds.Extent();
   if (nV < 1)
   {
@@ -529,10 +401,6 @@ bool TopOpeBRepTool_REGUW::InitBlock()
   {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
   }
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-#endif
-
   myv0.Nullify();
   myp2d0 = gp_Pnt2d(1.e7, 1.e7);
   myed.Nullify();
@@ -658,17 +526,6 @@ bool TopOpeBRepTool_REGUW::InitBlock()
   // myv, myp2d, mytg2d :
   ::FUN_nextdata(iStep, myed, pc, myv, myp2d, mytg2d);
 
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    std::cout << std::endl
-              << " v0   = v" << FUN_adds(myv0) << " p2d0 = (" << myp2d0.X() << " " << myp2d0.Y()
-              << ")" << std::endl;
-    std::cout << " vcur = v" << FUN_adds(myv) << "  p2d = (" << myp2d.X() << " " << myp2d.Y() << ")"
-              << std::endl;
-    std::cout << " ecur = e" << FUN_adds(myed) << std::endl;
-  }
-#endif
   return true;
 }
 
@@ -677,10 +534,6 @@ bool TopOpeBRepTool_REGUW::InitBlock()
 bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
                                     TopoDS_Edge&                          efound) const
 {
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-#endif
-
   if (!HasInit())
   {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
@@ -723,11 +576,6 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
   {
     angfound = 2. * M_PI - TopOpeBRepTool_TOOL::Matter(tg2dfound, mytg2d);
   }
-#ifdef OCCT_DEBUG
-  if (trc)
-    std::cout << "ang(e" << FUN_adds(myed) << ",e" << FUN_adds(efound) << ")=" << angfound
-              << std::endl;
-#endif
 
   // purpose : finding out <efound> /
   //     ecur is given by <tg2d>
@@ -765,13 +613,8 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
       angi = 2. * M_PI - TopOpeBRepTool_TOOL::Matter(tg2di, mytg2d);
     }
     bool eq = std::abs(angi - angfound) < tola;
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << "ang(e" << FUN_adds(myed) << ",e" << FUN_adds(ei) << ")=" << angi << std::endl;
-#endif
     if (eq)
     {
-      FUN_Raise();
       return false;
     }
 
@@ -792,14 +635,6 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
   }
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << std::endl
-              << " vcur = v" << FUN_adds(myv) << "   p2d = (" << myp2d.X() << " " << myp2d.Y()
-              << ")" << std::endl;
-#endif
-
   int                             iv0e1 = (iStep == 1) ? REVERSED : FORWARD;
   const TopOpeBRepTool_connexity& co    = mymapvEds.FindFromKey(myv);
 
@@ -817,18 +652,9 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   while (ite.More())
   {
     const TopoDS_Edge& e = TopoDS::Edge(ite.Value());
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " e" << FUN_adds(e);
-#endif
-
     bool issame = e.IsSame(myed);
     if (issame)
     { // xpu240299 FRA60275, fsp4
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " is same : not valid" << std::endl;
-#endif
       le.Remove(ite);
       continue;
     }
@@ -837,7 +663,6 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
     bool                bound = myCORRISO.UVRep(e, c2df);
     if (!bound)
     {
-      FUN_Raise();
       return false;
     }
     double                           f, l, tol;
@@ -856,20 +681,10 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
     {
       ite.Next();
     }
-#ifdef OCCT_DEBUG
-    if (trc)
-    {
-      if (samep2d)
-        std::cout << " valid" << std::endl;
-      else
-        std::cout << " not valid" << std::endl;
-    }
-#endif
   } // ite(le)
   ne = le.Extent();
   if (ne == 0)
   {
-    FUN_Raise();
     return false;
   }
 
@@ -885,7 +700,6 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
     bool        found = NearestE(le, efound);
     if (!found)
     {
-      FUN_Raise();
       return false;
     }
     myed = efound;
@@ -895,11 +709,7 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   for (; exv.More(); exv.Next())
   {
     TopOpeBRepTool_connexity& cco = mymapvEds.ChangeFromKey(exv.Current());
-    // #ifdef OCCT_DEBUG
-    //     bool ok =
-    // #endif
     cco.RemoveItem(myed);
-    //    if (!ok) {FUN_Raise(); return false;} closed edges
   }
 
   TopOpeBRepTool_C2DF c2df;
@@ -908,14 +718,6 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   const occ::handle<Geom2d_Curve>& pc = c2df.PC(f, l, tol);
   ::FUN_nextdata(iStep, myed, pc, myv, myp2d, mytg2d);
 
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    std::cout << " vcur = v" << FUN_adds(myv) << "  p2d = (" << myp2d.X() << " " << myp2d.Y() << ")"
-              << std::endl;
-    std::cout << " ecur = e" << FUN_adds(myed) << std::endl;
-  }
-#endif
   return true;
 } // NextinBlock
 
@@ -925,11 +727,7 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
 //=======================================================================
 
 bool TopOpeBRepTool_REGUW::REGU(const int istep,
-#ifdef OCCT_DEBUG
-                                const TopoDS_Shape& Scur,
-#else
                                 const TopoDS_Shape&,
-#endif
                                 NCollection_List<TopoDS_Shape>& Splits)
 {
   if (!HasInit())
@@ -937,12 +735,6 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
   }
   iStep = istep;
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << std::endl << "**    REGU    istep=**" << iStep << std::endl;
-#endif
-
   Splits.Clear();
   // A valid face is built on "valid" wires.
   // A valid wire has for UV representation a set of 2d edges of connexity = 2.
@@ -1007,12 +799,7 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
       bool ok = InitBlock();
       if (!ok)
       {
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << "** InitBlock fails" << std::endl;
-#endif
         {
-          FUN_Raise();
           return false;
         }
       }
@@ -1065,10 +852,6 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
       bool onewok = FINI && loW.IsEmpty() && !hasnewsplits;
       if (onewok)
       {
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << "wire " << FUN_adds(Scur) << " is found valid\n";
-#endif
         return true;
       } // onewok
 
@@ -1080,24 +863,10 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
       }
       else
       {
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << "** FUN_tool_MakeWire fails" << std::endl;
-#endif
         {
-          FUN_Raise();
           return false;
         }
       }
-#ifdef OCCT_DEBUG
-      if (trc)
-      {
-        std::cout << "#->new wire = wi" << FUN_adds(newW) << " = ";
-        for (NCollection_List<TopoDS_Shape>::Iterator it(loEcur); it.More(); it.Next())
-          std::cout << " e" << FUN_adds(it.Value());
-        std::cout << "\n\n";
-      }
-#endif
       isinit0 = true;
       loEcur.Clear();
 
@@ -1115,12 +884,7 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
     bool gotonext = NextinBlock();
     if (!gotonext)
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << "** NextinBlock fails" << std::endl;
-#endif
       {
-        FUN_Raise();
         return false;
       }
     }
@@ -1155,7 +919,6 @@ bool TopOpeBRepTool_REGUW::REGU()
   bool                           ok = REGU(1, S(), loS);
   if (!ok)
   {
-    FUN_Raise();
     return false;
   }
 
@@ -1182,7 +945,6 @@ bool TopOpeBRepTool_REGUW::REGU()
     ok = REGU(2, Scur, sp);
     if (!ok)
     {
-      FUN_Raise();
       return false;
     }
     if (sp.IsEmpty())
@@ -1254,24 +1016,6 @@ bool TopOpeBRepTool_REGUW::AddNewConnexity(const TopoDS_Vertex& v,
   TopOpeBRepTool_connexity& co = mymapvEds.ChangeFromKey(v);
   co.AddItem(OriKey, e);
 
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-  {
-    std::cout << "** setting new connexity : v" << FUN_adds(v) << " is ";
-    FUN_tro(OriKey);
-    std::cout << " in  e" << FUN_adds(e);
-    FUN_tool_tori(e.Orientation());
-    TopoDS_Vertex vclo;
-    bool          cloE = TopOpeBRepTool_TOOL::ClosedE(e, vclo);
-    if (cloE)
-      std::cout << " closed";
-    bool dgE = BRep_Tool::Degenerated(e);
-    if (dgE)
-      std::cout << " degenerated";
-    std::cout << std::endl;
-  }
-#endif
   return true;
 }
 

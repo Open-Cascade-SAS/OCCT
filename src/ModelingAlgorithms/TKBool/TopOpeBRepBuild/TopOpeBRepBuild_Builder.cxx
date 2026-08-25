@@ -122,7 +122,15 @@ TopOpeBRepBuild_Builder::TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& B
       myIsKPart(0),
       myClassifyDef(false),
       myClassifyVal(true),
-      myProcessON(false)
+      myProcessON(false),
+      myFaces2d(false),
+      myClassifySplitEdge(false),
+      myReverseOwnSplitFaceOrientation(false),
+      myDS2d(),
+      mySplitFaceAncestors(),
+      myFacesToProcess(),
+      myProcessFaces(false),
+      mySplitSectionState(0)
 {
   InitSection();
 }

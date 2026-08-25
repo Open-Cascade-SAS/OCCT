@@ -25,11 +25,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceVC();
-  #include <TopOpeBRepBuild_Builder.hxx>
-#endif
-
 //=================================================================================================
 
 TopOpeBRepBuild_PaveSet::TopOpeBRepBuild_PaveSet(const TopoDS_Shape& E)
@@ -155,31 +150,6 @@ void TopOpeBRepBuild_PaveSet::Prepare()
     return;
   }
 
-#ifdef OCCT_DEBUG
-  bool trc = false;
-  trc      = trc || TopOpeBRepTool_GettraceVC();
-  int iv   = 0; //,nv=myVertices.Extent();
-  if (trc)
-  {
-    NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator itd(myVertices);
-    std::cout << std::endl;
-    for (; itd.More(); itd.Next())
-    {
-      const occ::handle<TopOpeBRepBuild_Pave>& PV     = itd.Value();
-      TopoDS_Vertex&                           VI     = TopoDS::Vertex(PV->ChangeVertex());
-      bool                                     hasVSD = PV->HasSameDomain();
-      TopoDS_Vertex                            VSD;
-      if (hasVSD)
-        VSD = TopoDS::Vertex(PV->SameDomain());
-      TopAbs_Orientation VIori = VI.Orientation();
-      double             p     = PV->Parameter();
-      std::cout << "pvs : v " << ++iv << " par " << p << " ";
-      TopAbs::Print(VIori, std::cout);
-      std::cout << std::endl;
-    }
-  }
-#endif
-
   bool isEd            = BRep_Tool::Degenerated(myEdge);
   int  EdgeVertexCount = 0;
 
@@ -293,28 +263,6 @@ void TopOpeBRepBuild_PaveSet::Prepare()
     SortPave(List, myVertices);
   }
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceVC())
-  {
-    myVerticesIt.Initialize(myVertices);
-    if (MoreLoop())
-      std::cout << "--- PaveSet : Prepare" << std::endl;
-    for (; MoreLoop(); NextLoop())
-    {
-      occ::handle<TopOpeBRepBuild_Pave> PV = occ::down_cast<TopOpeBRepBuild_Pave>(Loop());
-      const TopoDS_Vertex&              v  = TopoDS::Vertex(PV->Vertex());
-      double                            p  = PV->Parameter();
-      bool                              b  = PV->IsShape();
-      TopOpeBRepBuild_Builder::GdumpORIPARPNT(v.Orientation(), p, BRep_Tool::Pnt(v));
-      if (b)
-        std::cout << " is bound";
-      else
-        std::cout << " is not bound";
-      std::cout << std::endl;
-    }
-  }
-#endif
-
   myPrepareDone = true;
 }
 
@@ -381,12 +329,6 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
 
       p2       = it2.Value()->Parameter();
       double d = std::abs(p1 - p2);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepTool_GettraceVC())
-      {
-        std::cout << "VertexSet : p1,p2  d " << p1 << "," << p2 << "  " << d << std::endl;
-      }
-#endif
       if (d < Precision::PConfusion())
       {
         myHasEqualParameters = true;
@@ -417,23 +359,12 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
     {
       for (it1.Initialize(myVertices); (!myHasEqualParameters) && it1.More(); it1.Next())
       {
-#ifdef OCCT_DEBUG
-//	const TopoDS_Shape& v1 = it1.Value()->Vertex();
-#endif
         p1       = it1.Value()->Parameter();
         double d = std::abs(p1 - f);
         if (d < Precision::PConfusion())
         {
           myHasEqualParameters = true;
           myEqualParameters    = f;
-#ifdef OCCT_DEBUG
-          if (TopOpeBRepTool_GettraceVC())
-          {
-            std::cout << "=*=*=*=*=*=*=*=*=*=*=*=*=*=*" << std::endl;
-            std::cout << "PaveSet : p1,f  d " << p1 << "," << f << "  " << d << std::endl;
-            std::cout << "=*=*=*=*=*=*=*=*=*=*=*=*=*=*" << std::endl;
-          }
-#endif
         }
       }
     }
