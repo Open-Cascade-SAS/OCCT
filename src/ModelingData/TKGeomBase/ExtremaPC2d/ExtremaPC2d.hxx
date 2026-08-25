@@ -340,14 +340,13 @@ inline void AddEndpointExtrema(Result&               theResult,
       return;
     }
 
-    const double aParameterResolution = Precision::PConfusion();
     const double aStep =
       hasFiniteSpan
-                ? std::min((theUMax - theUMin) * 0.5,
-                   std::max((theUMax - theUMin) * THE_NEIGHBOR_STEP_RATIO, aParameterResolution))
-                : aParameterResolution;
-    const gp_Pnt2d aPoint    = theEval.Value(theParameter);
-    const gp_Pnt2d aNeighbor = theEval.Value(theParameter + (theIsLower ? aStep : -aStep));
+        ? std::min((theUMax - theUMin) * 0.5,
+                   std::max((theUMax - theUMin) * THE_NEIGHBOR_STEP_RATIO, Precision::PConfusion()))
+        : Precision::PConfusion();
+    const gp_Pnt2d aPoint            = theEval.Value(theParameter);
+    const gp_Pnt2d aNeighbor         = theEval.Value(theParameter + (theIsLower ? aStep : -aStep));
     const double   aSquareDistance   = theP.SquareDistance(aPoint);
     const double   aNeighborDistance = theP.SquareDistance(aNeighbor);
     const bool     isMinimum         = aSquareDistance <= aNeighborDistance;

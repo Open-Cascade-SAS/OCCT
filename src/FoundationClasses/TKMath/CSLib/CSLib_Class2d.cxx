@@ -331,7 +331,7 @@ void CSLib_Class2d::buildGridCache() const
     myGrid.Init(GridCell_Unvisited);
 
     const double                  aCellSize = 1.0 / THE_GRID_SIZE;
-    const double                  anEps     = 8.0 * std::numeric_limits<double>::epsilon();
+    constexpr double              anEps     = 8.0 * std::numeric_limits<double>::epsilon();
     const double*                 pX        = &myPnts2dX.First();
     const double*                 pY        = &myPnts2dY.First();
     NCollection_LinearVector<int> aCellQueue(static_cast<size_t>(aTotalCells));

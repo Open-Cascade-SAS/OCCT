@@ -764,8 +764,8 @@ TEST(MathInteg_KronrodTest, UnrepresentableMidpointIsNotConverged)
 
 TEST(MathInteg_CorrectnessTest, FiniteRulesHandleZeroWidthAndRejectNonFiniteIntervals)
 {
-  FailingFunc  aFunc;
-  const double anInf = std::numeric_limits<double>::infinity();
+  FailingFunc      aFunc;
+  constexpr double anInf = std::numeric_limits<double>::infinity();
 
   for (const MathInteg::IntegResult& aResult : {MathInteg::Gauss(aFunc, 1.0, 1.0, 100),
                                                 MathInteg::GaussAdaptive(aFunc, 1.0, 1.0),
