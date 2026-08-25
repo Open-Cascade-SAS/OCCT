@@ -1,0 +1,20 @@
+# G2 constraints derived from the planes of the first and last profiles.
+circle c1 0 0 0 0 0 1 5
+mkedge e1 c1
+wire w1 e1
+
+circle c2 1 0 5 0 0 1 6
+mkedge e2 c2
+wire w2 e2
+
+circle c3 3 0 10 0 0 1 7
+mkedge e3 c3
+wire w3 e3
+
+# Keep the unconstrained loft as g0 for interactive comparison.
+thrusections g0 0 0 w1 w2 w3
+thrusections result 0 0 w1 w2 w3 -param uniform -firstnormal G2 -lastnormal G2
+checkshape g0
+checkshape result
+
+puts "G0 comparison: g0; plane-normal G2 loft: result"

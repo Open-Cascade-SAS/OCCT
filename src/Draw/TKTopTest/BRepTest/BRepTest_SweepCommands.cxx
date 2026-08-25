@@ -39,6 +39,7 @@
 #include <Precision.hxx>
 #include <Law_Interpol.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -489,8 +490,76 @@ int gener(Draw_Interpretor&, int n, const char** a)
 
 //=================================================================================================
 
+enum ThruSectionsConstraintType
+{
+  ThruSectionsConstraintType_None,
+  ThruSectionsConstraintType_Tangent,
+  ThruSectionsConstraintType_Normal,
+  ThruSectionsConstraintType_Support,
+  ThruSectionsConstraintType_Supports
+};
+
+struct ThruSectionsConstraint
+{
+  ThruSectionsConstraintType              Type       = ThruSectionsConstraintType_None;
+  GeomAbs_Shape                           Continuity = GeomAbs_G1;
+  gp_Vec                                  Direction;
+  TopoDS_Face                             Support;
+  BRepOffsetAPI_ThruSections::EdgeFaceMap Supports;
+};
+
+//=================================================================================================
+
+static bool ParseBoundaryContinuity(Draw_Interpretor& theDI,
+                                    const char*       theArg,
+                                    GeomAbs_Shape&    theContinuity)
+{
+  if (!strcmp(theArg, "G1") || !strcmp(theArg, "g1"))
+  {
+    theContinuity = GeomAbs_G1;
+    return true;
+  }
+  if (!strcmp(theArg, "G2") || !strcmp(theArg, "g2"))
+  {
+    theContinuity = GeomAbs_G2;
+    return true;
+  }
+  theDI << "Continuity must be G1 or G2\n";
+  return false;
+}
+
+//=================================================================================================
+
+static void PrintThruSectionsHelp(Draw_Interpretor& theDI)
+{
+  theDI << "thrusections [-N] result issolid isruled shape1 shape2 [..shape..] [options]\n"
+           "  Shapes must be wires, except for an optional first or last vertex.\n"
+           "  Options:\n"
+           "    -safe                         do not modify input shapes\n"
+           "    -angtol radians               support angular tolerance (default 0.01)\n"
+           "    -curvtol inverse-distance     G2 support curvature tolerance (default 0.1)\n"
+           "    -plantol distance             planar-section tolerance (default -1)\n"
+           "    -param chord|centripetal|uniform\n"
+           "    -firsttangent G1|G2 dx dy dz  constrain the first derivative\n"
+           "    -lasttangent G1|G2 dx dy dz   constrain the last derivative\n"
+           "    -firstnormal G1|G2             use the first section plane normal\n"
+           "    -lastnormal G1|G2              use the last section plane normal\n"
+           "    -firstsupport G1|G2 face       use one support face at the first section\n"
+           "    -lastsupport G1|G2 face        use one support face at the last section\n"
+           "    -firstsupports G1|G2 edge face [edge face ...]\n"
+           "    -lastsupports G1|G2 edge face [edge face ...]\n"
+           "  -N disables compatibility checking when all wires have the same edge count.\n";
+}
+
+//=================================================================================================
+
 int thrusections(Draw_Interpretor& di, int n, const char** a)
 {
+  if (n == 1)
+  {
+    PrintThruSectionsHelp(di);
+    return 0;
+  }
   if (n < 6)
   {
     return 1;
@@ -520,15 +589,12 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
   bool IsMutableInput = true;
   int  NbEdges        = 0;
   bool IsFirstWire    = false;
-  for (int i = index + 2; i <= n - 1; i++)
+  int  aNbSections    = 0;
+  int  anArgIndex     = index + 2;
+  for (; anArgIndex < n && a[anArgIndex][0] != '-'; ++anArgIndex)
   {
-    if (!strcmp(a[i], "-safe"))
-    {
-      IsMutableInput = false;
-      continue;
-    }
     bool IsWire = true;
-    Shape       = DBRep::Get(a[i], TopAbs_WIRE);
+    Shape       = DBRep::Get(a[anArgIndex], TopAbs_WIRE);
     if (!Shape.IsNull())
     {
       Generator->AddWire(TopoDS::Wire(Shape));
@@ -536,7 +602,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
     }
     else
     {
-      Shape  = DBRep::Get(a[i], TopAbs_VERTEX);
+      Shape  = DBRep::Get(a[anArgIndex], TopAbs_VERTEX);
       IsWire = false;
       if (!Shape.IsNull())
       {
@@ -547,6 +613,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
         return 1;
       }
     }
+    ++aNbSections;
 
     int             cpt = 0;
     TopExp_Explorer PE;
@@ -563,8 +630,241 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
       samenumber = false;
     }
   }
+  if (aNbSections < 2)
+  {
+    di << "At least two sections are required\n";
+    return 1;
+  }
+
+  double                     anAngularTolerance  = 0.01;
+  double                     aCurvatureTolerance = 0.1;
+  double                     aPlaneTolerance     = -1.0;
+  Approx_ParametrizationType aParametrization    = Approx_ChordLength;
+  ThruSectionsConstraint     aFirstConstraint;
+  ThruSectionsConstraint     aLastConstraint;
+  while (anArgIndex < n)
+  {
+    const char* anOption = a[anArgIndex];
+    if (!strcmp(anOption, "-safe"))
+    {
+      IsMutableInput = false;
+      ++anArgIndex;
+      continue;
+    }
+    if (!strcmp(anOption, "-angtol") || !strcmp(anOption, "-curvtol")
+        || !strcmp(anOption, "-plantol"))
+    {
+      if (anArgIndex + 1 >= n)
+      {
+        di << "Missing tolerance after " << anOption << "\n";
+        return 1;
+      }
+      if (!strcmp(anOption, "-angtol"))
+      {
+        anAngularTolerance = Draw::Atof(a[anArgIndex + 1]);
+      }
+      else if (!strcmp(anOption, "-curvtol"))
+      {
+        aCurvatureTolerance = Draw::Atof(a[anArgIndex + 1]);
+      }
+      else
+      {
+        aPlaneTolerance = Draw::Atof(a[anArgIndex + 1]);
+      }
+      anArgIndex += 2;
+      continue;
+    }
+    if (!strcmp(anOption, "-param"))
+    {
+      if (anArgIndex + 1 >= n)
+      {
+        di << "Missing parameterization after -param\n";
+        return 1;
+      }
+      const char* aParametrizationName = a[anArgIndex + 1];
+      if (!strcmp(aParametrizationName, "chord"))
+      {
+        aParametrization = Approx_ChordLength;
+      }
+      else if (!strcmp(aParametrizationName, "centripetal"))
+      {
+        aParametrization = Approx_Centripetal;
+      }
+      else if (!strcmp(aParametrizationName, "uniform"))
+      {
+        aParametrization = Approx_IsoParametric;
+      }
+      else
+      {
+        di << "Parameterization must be chord, centripetal, or uniform\n";
+        return 1;
+      }
+      anArgIndex += 2;
+      continue;
+    }
+
+    const bool isFirst = !strcmp(anOption, "-firsttangent") || !strcmp(anOption, "-firstnormal")
+                         || !strcmp(anOption, "-firstsupport")
+                         || !strcmp(anOption, "-firstsupports");
+    const bool isLast = !strcmp(anOption, "-lasttangent") || !strcmp(anOption, "-lastnormal")
+                        || !strcmp(anOption, "-lastsupport") || !strcmp(anOption, "-lastsupports");
+    if (!isFirst && !isLast)
+    {
+      di << "Unknown option: " << anOption << "\n";
+      return 1;
+    }
+
+    ThruSectionsConstraint& aConstraint = isFirst ? aFirstConstraint : aLastConstraint;
+    if (anArgIndex + 1 >= n
+        || !ParseBoundaryContinuity(di, a[anArgIndex + 1], aConstraint.Continuity))
+    {
+      return 1;
+    }
+
+    if (!strcmp(anOption, "-firsttangent") || !strcmp(anOption, "-lasttangent"))
+    {
+      if (anArgIndex + 4 >= n)
+      {
+        di << "A tangent constraint requires three direction components\n";
+        return 1;
+      }
+      aConstraint.Type = ThruSectionsConstraintType_Tangent;
+      aConstraint.Direction.SetCoord(Draw::Atof(a[anArgIndex + 2]),
+                                     Draw::Atof(a[anArgIndex + 3]),
+                                     Draw::Atof(a[anArgIndex + 4]));
+      if (aConstraint.Direction.SquareMagnitude() <= Precision::SquareConfusion())
+      {
+        di << "The tangent direction must be non-zero\n";
+        return 1;
+      }
+      anArgIndex += 5;
+      continue;
+    }
+    if (!strcmp(anOption, "-firstnormal") || !strcmp(anOption, "-lastnormal"))
+    {
+      aConstraint.Type = ThruSectionsConstraintType_Normal;
+      anArgIndex += 2;
+      continue;
+    }
+    if (!strcmp(anOption, "-firstsupport") || !strcmp(anOption, "-lastsupport"))
+    {
+      if (anArgIndex + 2 >= n)
+      {
+        di << "A support constraint requires a face\n";
+        return 1;
+      }
+      Shape = DBRep::Get(a[anArgIndex + 2], TopAbs_FACE);
+      if (Shape.IsNull())
+      {
+        di << a[anArgIndex + 2] << " is not a face\n";
+        return 1;
+      }
+      aConstraint.Type    = ThruSectionsConstraintType_Support;
+      aConstraint.Support = TopoDS::Face(Shape);
+      anArgIndex += 3;
+      continue;
+    }
+
+    aConstraint.Type = ThruSectionsConstraintType_Supports;
+    aConstraint.Supports.Clear();
+    anArgIndex += 2;
+    while (anArgIndex < n && a[anArgIndex][0] != '-')
+    {
+      if (anArgIndex + 1 >= n || a[anArgIndex + 1][0] == '-')
+      {
+        di << "Individual supports must be edge/face pairs\n";
+        return 1;
+      }
+      const TopoDS_Shape anEdge = DBRep::Get(a[anArgIndex], TopAbs_EDGE);
+      const TopoDS_Shape aFace  = DBRep::Get(a[anArgIndex + 1], TopAbs_FACE);
+      if (anEdge.IsNull() || aFace.IsNull())
+      {
+        di << "Invalid edge/face support pair: " << a[anArgIndex] << " " << a[anArgIndex + 1]
+           << "\n";
+        return 1;
+      }
+      if (aConstraint.Supports.IsBound(anEdge))
+      {
+        di << "Duplicate support for edge " << a[anArgIndex] << "\n";
+        return 1;
+      }
+      aConstraint.Supports.Bind(anEdge, aFace);
+      anArgIndex += 2;
+    }
+    if (aConstraint.Supports.IsEmpty())
+    {
+      di << "At least one edge/face support pair is required\n";
+      return 1;
+    }
+  }
 
   Generator->SetMutableInput(IsMutableInput);
+  Generator->SetParType(aParametrization);
+
+  const auto applyConstraint = [&](const ThruSectionsConstraint& theConstraint,
+                                   const bool                    theIsFirst) {
+    switch (theConstraint.Type)
+    {
+      case ThruSectionsConstraintType_Tangent:
+        if (theIsFirst)
+        {
+          Generator->SetFirstSectionTangent(gp_Dir(theConstraint.Direction),
+                                            theConstraint.Continuity);
+        }
+        else
+        {
+          Generator->SetLastSectionTangent(gp_Dir(theConstraint.Direction),
+                                           theConstraint.Continuity);
+        }
+        break;
+      case ThruSectionsConstraintType_Normal:
+        if (theIsFirst)
+        {
+          Generator->SetFirstSectionNormal(theConstraint.Continuity, aPlaneTolerance);
+        }
+        else
+        {
+          Generator->SetLastSectionNormal(theConstraint.Continuity, aPlaneTolerance);
+        }
+        break;
+      case ThruSectionsConstraintType_Support:
+        if (theIsFirst)
+        {
+          Generator->SetFirstSectionSupport(theConstraint.Support,
+                                            theConstraint.Continuity,
+                                            anAngularTolerance,
+                                            aCurvatureTolerance);
+        }
+        else
+        {
+          Generator->SetLastSectionSupport(theConstraint.Support,
+                                           theConstraint.Continuity,
+                                           anAngularTolerance,
+                                           aCurvatureTolerance);
+        }
+        break;
+      case ThruSectionsConstraintType_Supports:
+        if (theIsFirst)
+        {
+          Generator->SetFirstSectionSupports(theConstraint.Supports,
+                                             theConstraint.Continuity,
+                                             anAngularTolerance,
+                                             aCurvatureTolerance);
+        }
+        else
+        {
+          Generator->SetLastSectionSupports(theConstraint.Supports,
+                                            theConstraint.Continuity,
+                                            anAngularTolerance,
+                                            aCurvatureTolerance);
+        }
+        break;
+      case ThruSectionsConstraintType_None:
+        break;
+    }
+  };
+  applyConstraint(aFirstConstraint, true);
+  applyConstraint(aLastConstraint, false);
 
   check = (check || !samenumber);
   Generator->CheckCompatibility(check);
@@ -603,6 +903,12 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
         break;
       case BRepFill_ThruSectionErrorStatus_Failed:
         di << "Algorithm has failed\n";
+        break;
+      case BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint:
+        di << "Invalid boundary constraint\n";
+        break;
+      case BRepFill_ThruSectionErrorStatus_IncompatibleOptions:
+        di << "Boundary constraints are incompatible with ruled or smoothing options\n";
         break;
       default:
         break;
@@ -1185,14 +1491,7 @@ void BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("gener", "gener result wire1 wire2 [..wire..]", __FILE__, gener, g);
 
-  theCommands.Add("thrusections",
-                  "thrusections [-N] result issolid isruled shape1 shape2 [..shape..] [-safe],\n"
-                  "\t\tthe option -N means no check on wires, shapes must be wires or vertices "
-                  "(only first or last),\n"
-                  "\t\t-safe option allows to prevent the modifying of input shapes",
-                  __FILE__,
-                  thrusections,
-                  g);
+  theCommands.Add("thrusections", "thrusections, no args to get help", __FILE__, thrusections, g);
 
   theCommands.Add(
     "mksweep",
