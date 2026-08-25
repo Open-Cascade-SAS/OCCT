@@ -539,7 +539,7 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
           TCollection_AsciiString Enam("E");
           TCollection_AsciiString VFnam("VF");
           TCollection_AsciiString VRnam("VR");
-          Enam = Enam + ne + "NF" + nf + "F" + iF;
+          Enam  = Enam + ne + "NF" + nf + "F" + iF;
           VFnam = VFnam + ne + "NF" + nf + "F" + iF;
           VRnam = VRnam + ne + "NF" + nf + "F" + iF;
           //	  std::cout<<"    puts \"edge "<<ne<<" : "<<Enam<<"\"";std::cout<<"; ";

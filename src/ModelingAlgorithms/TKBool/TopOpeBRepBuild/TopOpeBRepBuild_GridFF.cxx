@@ -42,6 +42,7 @@
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \
     (sarg) = (sarg) + (shaset).DEBNumber() + (str);
+
 Standard_EXPORT void debfillw(const int /*i*/) {}
 
 Standard_EXPORT void debfille(const int /*i*/) {}
@@ -97,10 +98,10 @@ static TopAbs_State ClassifyEdgeToSolidByOnePoint(const TopoDS_Edge& E, const To
 static bool         FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                                           const TopoDS_Face&             F,
                                           const TopoDS_Edge&             E,
-                                          TopOpeBRepDS_DataStructure&   DS2d);
+                                          TopOpeBRepDS_DataStructure&    DS2d);
 static bool         FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                                           const TopoDS_Face&             F,
-                                          TopOpeBRepDS_DataStructure&   DS2d);
+                                          TopOpeBRepDS_DataStructure&    DS2d);
 
 //-------------------------------------------------------------
 // Unused :
@@ -138,7 +139,7 @@ bool TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const TopoDS_Shape&
 bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                            const TopoDS_Face&             F,
                            const TopoDS_Edge&             E,
-                           TopOpeBRepDS_DataStructure&   DS2d)
+                           TopOpeBRepDS_DataStructure&    DS2d)
 // purpose : compute new face/face interferences F FTRA,
 //  {I = (T(F),ES,FTRA)} / Fsdm F and ES interferes with E which has splits ON
 //  E is edge of F
@@ -305,7 +306,7 @@ bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 
 bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
                            const TopoDS_Face&             F,
-                           TopOpeBRepDS_DataStructure&   DS2d)
+                           TopOpeBRepDS_DataStructure&    DS2d)
 {
   TopExp_Explorer ex(F, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
@@ -391,7 +392,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
   TopOpeBRepBuild_WireEdgeSet WES(F1, this);
 
   myFaces2d = true;
-  int K1         = 1;
+  int K1    = 1;
   GFillFacesWESK(LF1, LF2, G1, WES, K1);
   int K3 = 3;
   GFillFacesWESK(LF1, LF2, G1, WES, K3); // xpu060598
@@ -541,12 +542,12 @@ void TopOpeBRepBuild_Builder::GFillFacesWESMakeFaces(const NCollection_List<Topo
     debffwesmf(iF);
 #endif
 
-  int n1         = 0;
+  int n1    = 0;
   myFaces2d = true;
-  int K1         = 1;
+  int K1    = 1;
   GFillFacesWESK(LF1, LF2, GM, WES, K1);
   myFaces2d = false;
-  n1             = WES.StartElements().Extent();
+  n1        = WES.StartElements().Extent();
 
   int K2 = 2;
   GFillFacesWESK(LF1, LF2, GM, WES, K2);

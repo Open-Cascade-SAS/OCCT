@@ -29,7 +29,7 @@ TEST(TopOpeBRepBuild_Builder1Test, SolidBuildCanBeRepeatedAfterClear)
   aHDS->AddAncestors(aFirstSolid);
   aHDS->AddAncestors(aSecondSolid);
 
-  TopOpeBRepDS_BuildTool  aBuildTool;
+  TopOpeBRepDS_BuildTool   aBuildTool;
   TopOpeBRepBuild_Builder1 aBuilder(aBuildTool);
 
   EXPECT_NO_THROW(aBuilder.Perform(aHDS, aFirstSolid, aSecondSolid));

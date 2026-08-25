@@ -54,8 +54,7 @@ static TopAbs_State ClassifyEdgeToSolidByOnePoint(const TopoDS_Edge&            
 
 //=================================================================================================
 
-TopOpeBRepBuild_Builder1::~TopOpeBRepBuild_Builder1()
-    = default;
+TopOpeBRepBuild_Builder1::~TopOpeBRepBuild_Builder1() = default;
 
 /*
 namespace {

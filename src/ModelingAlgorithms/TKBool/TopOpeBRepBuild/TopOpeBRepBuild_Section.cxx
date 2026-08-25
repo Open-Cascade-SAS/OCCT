@@ -1199,7 +1199,6 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     NCollection_List<TopoDS_Shape>& LINN = ChangeSplit(EOR, TopAbs_OUT);
     GCopyList(LEM, LINN);
   }
-
 }
 
 //=================================================================================================

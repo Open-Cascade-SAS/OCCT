@@ -175,7 +175,7 @@ bool TopOpeBRepTool_REGUW::SplitEds()
     for (; ite.More(); ite.Next())
     {
       const TopoDS_Shape& esp = ite.Value();
-      TopExp_Explorer exvv(esp, TopAbs_VERTEX);
+      TopExp_Explorer     exvv(esp, TopAbs_VERTEX);
       for (; exvv.More(); exvv.Next())
       {
         const TopoDS_Shape&       vv  = exvv.Current();
@@ -651,8 +651,8 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   NCollection_List<TopoDS_Shape>::Iterator ite(le);
   while (ite.More())
   {
-    const TopoDS_Edge& e = TopoDS::Edge(ite.Value());
-    bool issame = e.IsSame(myed);
+    const TopoDS_Edge& e      = TopoDS::Edge(ite.Value());
+    bool               issame = e.IsSame(myed);
     if (issame)
     { // xpu240299 FRA60275, fsp4
       le.Remove(ite);

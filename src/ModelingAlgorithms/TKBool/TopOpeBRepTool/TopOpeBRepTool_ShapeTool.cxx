@@ -364,7 +364,6 @@ double TopOpeBRepTool_ShapeTool::PeriodizeParameter(const double        par,
     {
       periopar = ADJUST(par, Vfirst, Vlast, tol);
     }
-
   }
   // NYI : BSpline ...
 

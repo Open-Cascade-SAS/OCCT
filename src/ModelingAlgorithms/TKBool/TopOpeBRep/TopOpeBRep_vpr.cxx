@@ -454,7 +454,7 @@ Standard_EXPORT void FUN_VPIndex(
 } // FUN_VPIndex
 
 //-----------------------------------------------------------------------
-static bool FUN_LineRestF(const TopOpeBRep_FacesFiller&          FF,
+static bool FUN_LineRestF(const TopOpeBRep_FacesFiller&         FF,
                           const TopoDS_Face&                    F,
                           const TopOpeBRep_LineInter&           L,
                           const NCollection_List<TopoDS_Shape>& ERL,

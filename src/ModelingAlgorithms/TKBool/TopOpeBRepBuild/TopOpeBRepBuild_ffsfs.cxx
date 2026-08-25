@@ -74,15 +74,15 @@ Standard_EXPORT const TopOpeBRepBuild_GTopo& FUN_motherope()
   return STATIC_Gmotherope;
 }
 
-Standard_EXPORT void       FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
-                                                        const NCollection_List<TopoDS_Shape>& LF1,
-                                                        const NCollection_List<TopoDS_Shape>& LF2,
-                                                        const TopOpeBRepDS_Config             c1,
-                                                        const TopOpeBRepDS_Config             c2);
-Standard_EXPORT void       FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
-                                                    const TopoDS_Shape&      f,
-                                                    bool&                    of1,
-                                                    bool&                    of2);
+Standard_EXPORT void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
+                                                  const NCollection_List<TopoDS_Shape>& LF1,
+                                                  const NCollection_List<TopoDS_Shape>& LF2,
+                                                  const TopOpeBRepDS_Config             c1,
+                                                  const TopOpeBRepDS_Config             c2);
+Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
+                                              const TopoDS_Shape&      f,
+                                              bool&                    of1,
+                                              bool&                    of2);
 
 static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
                               TopOpeBRepTool_ShapeClassifier&       SC,
@@ -307,7 +307,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 
   TopoDS_Shape FF = FOR;
   FF.Orientation(TopAbs_FORWARD);
-  bool hsd            = myDataStructure->HasSameDomain(FOR); // xpu280598
+  bool hsd       = myDataStructure->HasSameDomain(FOR); // xpu280598
   myProcessFaces = false;
 
   if (tosplit && tomerge)
@@ -413,7 +413,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
         // ici : myProcessFaces = true
         myFacesToProcess.Clear();
         GSplitFaceSFS(FOR, LSO2, GM, SFS);
-        myProcessFaces                    = false;
+        myProcessFaces                   = false;
         myReverseOwnSplitFaceOrientation = false;
       }
 

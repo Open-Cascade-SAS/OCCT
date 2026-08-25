@@ -72,7 +72,7 @@ void TopOpeBRepBuild_BuilderON::Perform2d(TopOpeBRepBuild_Builder* const&       
   myPLSclass = PLSclass;
   myPWES     = PWES;
 
-  const TopOpeBRepDS_DataStructure& BDS = myPB->DataStructure()->DS();
+  const TopOpeBRepDS_DataStructure&                               BDS = myPB->DataStructure()->DS();
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFEI =
     DS2d.ShapeInterferences(FOR);
 

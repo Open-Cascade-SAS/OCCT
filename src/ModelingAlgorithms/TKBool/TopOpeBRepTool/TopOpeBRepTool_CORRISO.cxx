@@ -143,8 +143,8 @@ bool TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
     TopExp_Explorer exv(E, TopAbs_VERTEX);
     for (; exv.More(); exv.Next())
     {
-      const TopoDS_Vertex& v = TopoDS::Vertex(exv.Current());
-      bool isb = myVEds.IsBound(v);
+      const TopoDS_Vertex& v   = TopoDS::Vertex(exv.Current());
+      bool                 isb = myVEds.IsBound(v);
       if (isb)
       {
         myVEds.ChangeFind(v).Append(E);
@@ -519,10 +519,10 @@ bool TopOpeBRepTool_CORRISO::PurgeFyClosingE(const NCollection_List<TopoDS_Shape
         return false; // NYIRAISE
       }
 
-      double   parvce = TopOpeBRepTool_TOOL::ParE(ivce, cE);
-      gp_Pnt2d UVvce  = TopOpeBRepTool_TOOL::UVF(parvce, cE2d);
-      double tttolvce = BRep_Tool::Tolerance(vce);
-      double tttuvvce = std::max(Tol(1, tttolvce), Tol(2, tttolvce));
+      double   parvce   = TopOpeBRepTool_TOOL::ParE(ivce, cE);
+      gp_Pnt2d UVvce    = TopOpeBRepTool_TOOL::UVF(parvce, cE2d);
+      double   tttolvce = BRep_Tool::Tolerance(vce);
+      double   tttuvvce = std::max(Tol(1, tttolvce), Tol(2, tttolvce));
 
       bool vceok = false;
       for (NCollection_List<TopoDS_Shape>::Iterator ite(loe); ite.More(); ite.Next())

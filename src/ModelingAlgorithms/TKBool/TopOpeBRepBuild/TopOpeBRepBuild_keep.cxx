@@ -65,8 +65,8 @@ bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   
   }
 #ifdef OCCT_DEBUG
   int  iS;
-  bool tSPS  = GtraceSPS(S, iS);
-  bool tr = tSPS;
+  bool tSPS = GtraceSPS(S, iS);
+  bool tr   = tSPS;
   if (tr)
   {
     if (tSPS)

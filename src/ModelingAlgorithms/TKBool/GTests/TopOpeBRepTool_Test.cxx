@@ -39,7 +39,7 @@ TopoDS_Face FindCylindricalFace(const TopoDS_Shape& theShape)
 {
   for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
   {
-    const TopoDS_Face aFace = TopoDS::Face(anExplorer.Current());
+    const TopoDS_Face   aFace = TopoDS::Face(anExplorer.Current());
     BRepAdaptor_Surface aSurface(aFace, false);
     if (aSurface.GetType() == GeomAbs_Cylinder)
     {
@@ -66,9 +66,9 @@ TEST(TopOpeBRepToolTest, MakeFacesKeepsValidFaces)
 
 TEST(TopOpeBRepToolTest, PurgeClosingEdgesHandlesNonPeriodicFace)
 {
-  const TopoDS_Face aFace = MakePlanarFace();
+  const TopoDS_Face                                               aFace = MakePlanarFace();
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aWireStates;
-  NCollection_IndexedMap<TopoDS_Shape>                             aFaultyShapes;
+  NCollection_IndexedMap<TopoDS_Shape>                            aFaultyShapes;
 
   EXPECT_FALSE(TopOpeBRepTool::PurgeClosingEdges(aFace, aFace, aWireStates, aFaultyShapes));
 
@@ -91,8 +91,8 @@ TEST(TopOpeBRepToolTest, PeriodicCylinderFacePassesPurgeAndUVCorrection)
   ASSERT_FALSE(aFace.IsNull());
 
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aWireStates;
-  NCollection_IndexedMap<TopoDS_Shape>                             aFaultyShapes;
-  NCollection_List<TopoDS_Shape>                                   aFaces;
+  NCollection_IndexedMap<TopoDS_Shape>                            aFaultyShapes;
+  NCollection_List<TopoDS_Shape>                                  aFaces;
   aFaces.Append(aFace);
 
   EXPECT_TRUE(TopOpeBRepTool::PurgeClosingEdges(aFace, aFaces, aWireStates, aFaultyShapes));
@@ -104,8 +104,8 @@ TEST(TopOpeBRepToolTest, PeriodicCylinderFacePassesPurgeAndUVCorrection)
 
 TEST(TopOpeBRepToolTest, FaceTolerances3dIsIndependentBetweenCalls)
 {
-  TopoDS_Face aFirstFace  = MakePlanarFace();
-  TopoDS_Face aSecondFace = MakePlanarFace();
+  TopoDS_Face  aFirstFace  = MakePlanarFace();
+  TopoDS_Face  aSecondFace = MakePlanarFace();
   BRep_Builder aBuilder;
   aBuilder.UpdateFace(aFirstFace, 2.e-5);
   aBuilder.UpdateFace(aSecondFace, 3.e-5);

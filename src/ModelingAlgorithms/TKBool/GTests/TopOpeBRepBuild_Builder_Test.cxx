@@ -38,10 +38,7 @@ public:
     myClassifySplitEdge = theClassifySplitEdge;
   }
 
-  bool IsReverseOwnSplitFaceOrientation() const
-  {
-    return myReverseOwnSplitFaceOrientation;
-  }
+  bool IsReverseOwnSplitFaceOrientation() const { return myReverseOwnSplitFaceOrientation; }
 
   void SetReverseOwnSplitFaceOrientation(const bool theReverseOwnSplitFaceOrientation)
   {

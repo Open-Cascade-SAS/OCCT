@@ -202,7 +202,6 @@ void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
       myP1 = AdjustCase(myP1, myO1, myP2, myPeriod, tol, myCas1);
     }
   }
-
 }
 
 //=================================================================================================
@@ -280,7 +279,6 @@ void TopOpeBRepBuild_PaveClassifier::SetFirstParameter(const double P)
 {
   myFirst          = P;
   mySameParameters = true;
-
 }
 
 //=================================================================================================
