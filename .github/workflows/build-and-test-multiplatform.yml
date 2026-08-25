@@ -146,6 +146,7 @@ jobs:
     name: Test on Windows (x64)
     runs-on: windows-2025
     needs: prepare-and-build-windows-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -164,6 +165,7 @@ jobs:
     name: Regression Test on Windows (x64)
     runs-on: windows-2025
     needs: test-windows-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -182,6 +184,7 @@ jobs:
     name: Test on macOS (x64)
     runs-on: macos-15
     needs: prepare-and-build-macos-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -200,6 +203,7 @@ jobs:
     name: Regression Test on macOS (x64)
     runs-on: macos-15
     needs: test-macos-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -218,6 +222,7 @@ jobs:
     name: Test on Linux with Clang (x64)
     runs-on: ubuntu-24.04
     needs: prepare-and-build-linux-clang-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -236,6 +241,7 @@ jobs:
     name: Regression Test on Linux with Clang (x64)
     runs-on: ubuntu-24.04
     needs: test-linux-clang-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
