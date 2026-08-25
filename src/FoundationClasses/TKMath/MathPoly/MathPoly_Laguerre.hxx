@@ -422,7 +422,7 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
                                    std::complex<double>& theRoot,
                                    size_t                theMultiplicity)
 {
-  using LongComplex                                            = std::complex<long double>;
+  using LongComplex = std::complex<long double>;
   if (theDegree < 0 || theDegree > THE_MAX_POLY_DEGREE || theMultiplicity == 0
       || theMultiplicity > static_cast<size_t>(theDegree + 1))
   {

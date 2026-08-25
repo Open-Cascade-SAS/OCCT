@@ -555,7 +555,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     }
     else if (aLeftY != 0.0 || aRightY != 0.0)
     {
-      double                  aRootValue         = 0.0;
+      double                  aRootValue            = 0.0;
       const MathUtils::Status aZeroEvaluationStatus = EvaluateValue(theFunc, aZeroX, aRootValue);
       if (aZeroEvaluationStatus != MathUtils::Status::OK)
       {
@@ -912,7 +912,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     {
       if (aVal2 - aVal1 > theConfig.FTolerance)
       {
-        double                  aRootValue         = 0.0;
+        double                  aRootValue = 0.0;
         const MathUtils::Status aFirstRootEvaluationStatus =
           EvaluateValue(theFunc, aRoot1, aRootValue);
         if (aFirstRootEvaluationStatus != MathUtils::Status::OK)
@@ -924,7 +924,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
       }
       else if (aVal1 - aVal2 > theConfig.FTolerance)
       {
-        double                  aRootValue         = 0.0;
+        double                  aRootValue = 0.0;
         const MathUtils::Status aSecondRootEvaluationStatus =
           EvaluateValue(theFunc, aRoot2, aRootValue);
         if (aSecondRootEvaluationStatus != MathUtils::Status::OK)
@@ -959,7 +959,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     }
     else if (hasRoot1)
     {
-      double                  aRootValue         = 0.0;
+      double                  aRootValue = 0.0;
       const MathUtils::Status aSingleRoot1EvaluationStatus =
         EvaluateValue(theFunc, aRoot1, aRootValue);
       if (aSingleRoot1EvaluationStatus != MathUtils::Status::OK)
@@ -971,7 +971,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     }
     else if (hasRoot2)
     {
-      double                  aRootValue         = 0.0;
+      double                  aRootValue = 0.0;
       const MathUtils::Status aSingleRoot2EvaluationStatus =
         EvaluateValue(theFunc, aRoot2, aRootValue);
       if (aSingleRoot2EvaluationStatus != MathUtils::Status::OK)

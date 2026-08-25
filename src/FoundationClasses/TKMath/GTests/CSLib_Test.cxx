@@ -507,12 +507,12 @@ TEST_F(CSLibClass2dTest, SiDansHandlesNegativeNonFiniteAndExtremeInputs)
   anExtremePnts(3) = gp_Pnt2d(0.5 * Precision::Infinite(), 0.5 * Precision::Infinite());
   anExtremePnts(4) = gp_Pnt2d(-0.5 * Precision::Infinite(), 0.5 * Precision::Infinite());
   CSLib_Class2d anExtremeCoordinates(anExtremePnts,
-                                      0.0,
-                                      0.0,
-                                      -Precision::Infinite(),
-                                      -Precision::Infinite(),
-                                      Precision::Infinite(),
-                                      Precision::Infinite());
+                                     0.0,
+                                     0.0,
+                                     -Precision::Infinite(),
+                                     -Precision::Infinite(),
+                                     Precision::Infinite(),
+                                     Precision::Infinite());
   EXPECT_EQ(anExtremeCoordinates.SiDans(gp_Pnt2d(0.0, 0.0)), CSLib_Class2d::Result_Inside);
   EXPECT_EQ(anExtremeCoordinates.SiDans(gp_Pnt2d(0.75 * Precision::Infinite(), 0.0)),
             CSLib_Class2d::Result_Outside);
@@ -529,8 +529,8 @@ TEST_F(CSLibClass2dTest, SiDansHandlesNegativeNonFiniteAndExtremeInputs)
             CSLib_Class2d::Result_Uncertain);
   EXPECT_EQ(aTolerantExtreme.SiDans(gp_Pnt2d(0.65 * Precision::Infinite(), 0.0)),
             CSLib_Class2d::Result_Outside);
-  EXPECT_EQ(anExtremeCoordinates.SiDans_OnMode(
-              gp_Pnt2d(0.0, 0.55 * Precision::Infinite()), aLargeTolerance),
+  EXPECT_EQ(anExtremeCoordinates.SiDans_OnMode(gp_Pnt2d(0.0, 0.55 * Precision::Infinite()),
+                                               aLargeTolerance),
             CSLib_Class2d::Result_Uncertain);
 }
 

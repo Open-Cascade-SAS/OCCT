@@ -152,7 +152,7 @@ ScalarResult Brent(Function&     theFunc,
       aU = aX + MathUtils::SignTransfer(aTol1, aD);
     }
 
-    double       aFu          = 0.0;
+    double       aFu               = 0.0;
     const Status aProbeValueStatus = Utils::ValueStatus(theFunc, aU, aFu);
     if (aProbeValueStatus != Status::OK)
     {
