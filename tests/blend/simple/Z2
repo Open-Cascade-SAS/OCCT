@@ -1,0 +1,61 @@
+## ====================================
+## Grid    : CFI001
+## Test    : Z2
+## Comment : Preserve exact analytic surfaces for periodic fillet spines
+## ====================================
+
+pcylinder cylinder 20 50
+pcone cone 25 12 50
+
+set aLastResult ""
+set aCaseIndex 0
+foreach aShape {cylinder cone} {
+  set aCircularEdges {}
+  foreach anEdge [explode $aShape e] {
+    mkcurve aCurve $anEdge
+    if {[regexp {Circle} [dump aCurve]]} {
+      lappend aCircularEdges $anEdge
+    }
+  }
+
+  if {[llength $aCircularEdges] != 2} {
+    puts "Error: expected 2 circular edges on $aShape, found [llength $aCircularEdges]"
+  }
+
+  foreach anEdge $aCircularEdges {
+    incr aCaseIndex
+    set aCurrentResult analytic_$aCaseIndex
+    if {[catch {blend $aCurrentResult $aShape 4 $anEdge R} anError]} {
+      puts "Error: periodic analytic fillet failed on $aShape edge $anEdge: $anError"
+      continue
+    }
+
+    checkshape $aCurrentResult
+    set aTorusCount 0
+    set aBSplineCount 0
+    foreach aFace [explode $aCurrentResult f] {
+      mksurface aSurface $aFace
+      set aSurfaceDump [dump aSurface]
+      if {[regexp {ToroidalSurface} $aSurfaceDump]} {
+        incr aTorusCount
+      }
+      if {[regexp {BSplineSurface} $aSurfaceDump]} {
+        incr aBSplineCount
+      }
+    }
+    if {$aTorusCount != 1} {
+      puts "Error: expected 1 toroidal fillet surface on $aShape, found $aTorusCount"
+    }
+    if {$aBSplineCount != 0} {
+      puts "Error: exact periodic fillet on $aShape contains $aBSplineCount BSpline surfaces"
+    }
+    set aLastResult $aCurrentResult
+  }
+}
+
+if {$aCaseIndex != 4} {
+  puts "Error: expected 4 periodic analytic fillet cases, processed $aCaseIndex"
+}
+if {$aLastResult ne ""} {
+  renamevar $aLastResult result
+}

@@ -1,0 +1,35 @@
+## ====================================
+## Grid    : CFI001
+## Test    : Z4
+## Comment : Thickness after periodic fillet must succeed when removing the top face
+## ====================================
+
+# Build and validate the periodic fillet used by Z3.
+source [file join $env(CSF_OCCTTestsPath) blend simple Z3]
+
+# Select the unique horizontal top face, which remains at Z = 30 after filleting.
+set aTopFaces {}
+foreach aFace [explode result f] {
+  bounding $aFace -save xMin yMin zMin xMax yMax zMax
+  if {abs([dval zMin] - 30.0) < 1.0e-6 && abs([dval zMax] - 30.0) < 1.0e-6} {
+    lappend aTopFaces $aFace
+  }
+}
+if {[llength $aTopFaces] != 1} {
+  puts "Error: expected 1 top face to remove, found [llength $aTopFaces]"
+}
+
+if {[llength $aTopFaces] == 1} {
+  offsetparameter 1.0e-7 c a
+  offsetload result -2.0 [lindex $aTopFaces 0]
+  if {[catch {offsetperform thickResult} anError]} {
+    puts "Error: thickness operation failed: $anError"
+  } elseif {![isdraw thickResult]} {
+    puts "Error: thickness operation did not produce a result"
+  } else {
+    checkshape thickResult
+    checknbshapes thickResult -face 35 -edge 80
+    checkprops thickResult -v 20067.4
+    copy thickResult result
+  }
+}
