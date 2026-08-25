@@ -36,8 +36,6 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextEINTERNAL();
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextEEXTERNAL();
 Standard_EXPORT void debfillonf(const int iF);
 
 Standard_EXPORT void debON2d(const int iF)

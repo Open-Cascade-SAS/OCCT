@@ -14,7 +14,11 @@
 #ifndef _MathUtils_Config_HeaderFile
 #define _MathUtils_Config_HeaderFile
 
-#include <limits>
+#include <Precision.hxx>
+
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
 
 //! Modern math solver configuration structures.
 namespace MathUtils
@@ -47,7 +51,6 @@ constexpr double THE_NEWTON2D_MAX_STEP_RATIO = 0.5;
 
 //! Domain extension factor for soft boundary handling.
 //! Solutions slightly outside domain (by this fraction) are allowed if converged.
-//! Reduced to 1e-4 to closely match old algorithm behavior.
 constexpr double THE_NEWTON2D_DOMAIN_EXT = 1.0e-4;
 
 //! Stagnation progress ratio - improvement required each iteration to avoid stagnation.
@@ -55,10 +58,10 @@ constexpr double THE_NEWTON2D_DOMAIN_EXT = 1.0e-4;
 constexpr double THE_NEWTON2D_STAGNATION_RATIO = 0.999;
 
 //! Number of iterations without progress before declaring stagnation.
-constexpr int THE_NEWTON2D_STAGNATION_COUNT = 3;
+constexpr size_t THE_NEWTON2D_STAGNATION_COUNT = 3;
 
 //! Maximum line search backtracking iterations.
-constexpr int THE_NEWTON2D_LINE_SEARCH_MAX = 8;
+constexpr size_t THE_NEWTON2D_LINE_SEARCH_MAX = 8;
 
 //! Relative step threshold below which line search is skipped.
 //! If step^2 / domain^2 < threshold, Newton is converging well.
@@ -105,13 +108,16 @@ constexpr double THE_ARMIJO_C1 = 1.0e-4;
 //! Provides common settings for convergence criteria and iteration limits.
 struct Config
 {
-  int    MaxIterations = 100;     //!< Maximum number of iterations allowed
-  double Tolerance     = 1.0e-10; //!< General convergence tolerance
-  double XTolerance    = 1.0e-10; //!< Tolerance for solution change |x_{n+1} - x_n|
-  double FTolerance    = 1.0e-10; //!< Tolerance for function value |f(x)|
+  uint32_t MaxIterations = 100;     //!< Maximum number of iterations allowed
+  double   Tolerance     = 1.0e-10; //!< General convergence tolerance
+  double   XTolerance    = 1.0e-10; //!< Tolerance for solution change |x_{n+1} - x_n|
+  double   FTolerance    = 1.0e-10; //!< Absolute function, residual, or gradient tolerance
+
+  //! Relative tolerance used together with the absolute X/F tolerances.
+  double RelativeTolerance = 1.0e-10;
 
   //! Minimum step size before declaring convergence or failure.
-  double StepMin = std::numeric_limits<double>::epsilon();
+  double StepMin = Precision::Computational();
 
   //! Default constructor with standard tolerances.
   Config() = default;
@@ -119,12 +125,22 @@ struct Config
   //! Constructor with custom tolerance (sets all tolerances to same value).
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
-  explicit Config(double theTolerance, int theMaxIter = 100)
+  explicit Config(double theTolerance, uint32_t theMaxIter = 100)
       : MaxIterations(theMaxIter),
         Tolerance(theTolerance),
         XTolerance(theTolerance),
-        FTolerance(theTolerance)
+        FTolerance(theTolerance),
+        RelativeTolerance(theTolerance)
   {
+  }
+
+  //! Return true when all iteration and tolerance settings are usable.
+  bool IsValid() const
+  {
+    return MaxIterations > 0 && std::isfinite(Tolerance) && Tolerance >= 0.0
+           && std::isfinite(XTolerance) && XTolerance >= 0.0 && std::isfinite(FTolerance)
+           && FTolerance >= 0.0 && std::isfinite(RelativeTolerance) && RelativeTolerance >= 0.0
+           && std::isfinite(StepMin) && StepMin > 0.0;
   }
 };
 
@@ -132,8 +148,8 @@ struct Config
 //! Extends Config with interval bounds.
 struct BoundedConfig : Config
 {
-  double LowerBound = -std::numeric_limits<double>::max(); //!< Lower bound of search interval
-  double UpperBound = std::numeric_limits<double>::max();  //!< Upper bound of search interval
+  double LowerBound = -Precision::Infinite(); //!< Lower bound of search interval
+  double UpperBound = Precision::Infinite();  //!< Upper bound of search interval
 
   //! Default constructor.
   BoundedConfig() = default;
@@ -143,14 +159,21 @@ struct BoundedConfig : Config
   //! @param theUpper upper bound
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
-  BoundedConfig(double theLower,
-                double theUpper,
-                double theTolerance = 1.0e-10,
-                int    theMaxIter   = 100)
+  BoundedConfig(double   theLower,
+                double   theUpper,
+                double   theTolerance = 1.0e-10,
+                uint32_t theMaxIter   = 100)
       : Config(theTolerance, theMaxIter),
         LowerBound(theLower),
         UpperBound(theUpper)
   {
+  }
+
+  //! Return true when the base configuration and finite ordered bounds are valid.
+  bool IsValid() const
+  {
+    return Config::IsValid() && std::isfinite(LowerBound) && std::isfinite(UpperBound)
+           && LowerBound <= UpperBound;
   }
 };
 
@@ -167,7 +190,7 @@ struct NDimConfig : Config
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
   //! @param theUseBounds whether to use bounds
-  explicit NDimConfig(double theTolerance, int theMaxIter = 100, bool theUseBounds = false)
+  explicit NDimConfig(double theTolerance, uint32_t theMaxIter = 100, bool theUseBounds = false)
       : Config(theTolerance, theMaxIter),
         UseBounds(theUseBounds)
   {
@@ -178,10 +201,10 @@ struct NDimConfig : Config
 //! Provides settings for quadrature order and adaptive refinement.
 struct IntegConfig
 {
-  int    InitialOrder  = 15;      //!< Initial number of quadrature points
-  int    MaxOrder      = 61;      //!< Maximum quadrature order (Gauss-Legendre limit)
-  int    MaxIterations = 100;     //!< Maximum adaptive subdivision iterations
-  double Tolerance     = 1.0e-10; //!< Relative tolerance for error estimation
+  uint32_t InitialOrder  = 15;      //!< Initial number of quadrature points
+  uint32_t MaxOrder      = 61;      //!< Maximum quadrature order (Gauss-Legendre limit)
+  uint32_t MaxIterations = 100;     //!< Maximum adaptive subdivision iterations
+  double   Tolerance     = 1.0e-10; //!< Relative tolerance for error estimation
 
   //! Default constructor.
   IntegConfig() = default;
@@ -189,10 +212,17 @@ struct IntegConfig
   //! Constructor with custom tolerance.
   //! @param theTolerance relative tolerance
   //! @param theMaxIter maximum adaptive iterations
-  explicit IntegConfig(double theTolerance, int theMaxIter = 100)
+  explicit IntegConfig(double theTolerance, uint32_t theMaxIter = 100)
       : MaxIterations(theMaxIter),
         Tolerance(theTolerance)
   {
+  }
+
+  //! Return true when quadrature and tolerance settings are usable.
+  bool IsValid() const
+  {
+    return InitialOrder > 0 && MaxOrder >= InitialOrder && MaxIterations > 0
+           && std::isfinite(Tolerance) && Tolerance >= 0.0;
   }
 };
 
@@ -205,6 +235,12 @@ struct LinConfig
 
   //! Default constructor.
   LinConfig() = default;
+
+  //! Return true when the singularity tolerance is finite and non-negative.
+  bool IsValid() const
+  {
+    return std::isfinite(SingularityTolerance) && SingularityTolerance >= 0.0;
+  }
 };
 
 } // namespace MathUtils

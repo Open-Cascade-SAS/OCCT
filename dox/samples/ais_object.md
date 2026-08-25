@@ -48,7 +48,10 @@ These tools could be found within @c Prs3d, @c StdPrs and @c DsgPrs packages:
   - @c Prs3d_Arrow, @c Prs3d_BndBox, @c Prs3d_Point, @c Prs3d_Text, @c Prs3d_ToolCylinder, @c Prs3d_ToolDisk, @c Prs3d_ToolSector, @c Prs3d_ToolSphere, @c Prs3d_ToolTorus
 - **StdPrs**
   provides builders for analytical geometry and B-Rep shapes (@c TopoDS_Shape).
-  - @c StdPrs_WFShape, @c StdPrs_ShadedShape, @c StdPrs_BRepTextBuilder
+  - @c StdPrs_WFShape, @c StdPrs_ShadedShape, @c StdPrs_BRepFont
+- **BRepFont**
+  converts font outlines into planar regions and TopoDS or BRepGraph topology.
+  - @c BRepFont_Regularizer, @c BRepFont_Builder
 - **DsgPrs**
   provides builders for datums, dimensions and relations.
 

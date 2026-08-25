@@ -252,12 +252,6 @@ bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&        
   return keep;
 } // FUNBREP_topowalki_new
 
-#ifdef OCCT_DEBUG
-extern bool GLOBAL_bvpr;
-
-Standard_EXPORT void debvpr2(void) {}
-#endif
-
 //----------------------------------------------------------------------
 bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&                   Ifound,
                        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
@@ -410,11 +404,6 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
 
     if (keep)
     {
-#ifdef OCCT_DEBUG
-      if (GLOBAL_bvpr)
-        debvpr2();
-#endif
-
       if (CPIfound && samepar)
       {
         double PIfound = TopOpeBRepDS_InterferenceTool::Parameter(Ifound);

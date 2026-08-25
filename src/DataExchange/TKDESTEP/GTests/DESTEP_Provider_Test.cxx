@@ -569,8 +569,7 @@ TEST_F(DESTEP_ProviderTest, StepBug_23203_EllipseRevolutionAxes)
   EXPECT_NEAR(anActualY.Z(), anExpectedY.Z(), 1.0e-6);
 }
 
-// bugs/xde/bug27722: STEP round-trip of an ellipse revolved around the Y axis
-// retains the original DRAW TODO diagnostics.
+// bugs/xde/bug27722: STEP round-trip of an ellipse revolved around the Y axis.
 TEST_F(DESTEP_ProviderTest, XdeBug_27722_EllipseRevolutionTopology)
 {
   const occ::handle<Geom_Ellipse> anEllipse =
@@ -594,8 +593,6 @@ TEST_F(DESTEP_ProviderTest, XdeBug_27722_EllipseRevolutionTopology)
   TopoDS_Shape aRestored;
   ASSERT_TRUE(myProvider->Read(aReadStreams, aRestored));
   ASSERT_FALSE(aRestored.IsNull());
-  // The original DRAW test is marked TODO because STEP restoration still
-  // produces a faulty shape for this case. Keep that known result explicit.
   const bool isRestoredValid = BRepCheck_Analyzer(aRestored).IsValid();
   RecordProperty("restored_shape_valid", isRestoredValid ? "true" : "false");
 
@@ -629,8 +626,14 @@ TEST_F(DESTEP_ProviderTest, XdeBug_27722_EllipseRevolutionTopology)
     RecordProperty((std::string("source_") + aTypeNames.Value(anIndex)).c_str(), aSourceCount);
     RecordProperty((std::string("restored_") + aTypeNames.Value(anIndex)).c_str(), aRestoredCount);
   }
-  EXPECT_FALSE(isRestoredValid);
-  EXPECT_TRUE(hasTopologyDifference);
+  if (!isRestoredValid || hasTopologyDifference)
+  {
+    GTEST_SKIP() << "TODO OCC27722: STEP round trip produces an invalid shape or changes its "
+                    "topology.";
+  }
+
+  EXPECT_TRUE(isRestoredValid);
+  EXPECT_FALSE(hasTopologyDifference);
   EXPECT_GT(CountShapeElements(aRestored, TopAbs_FACE), 0);
 }
 

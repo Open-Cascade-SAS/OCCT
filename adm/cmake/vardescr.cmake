@@ -193,6 +193,15 @@ set (BUILD_DOC_Overview_DESCR
      
 set (BUILD_DOC_RefMan_DESCR 
      "Build OCCT reference manual documentation using Doxygen")
+
+set (BUILD_DOC_DotNumThreads_DESCR
+     "Number of Graphviz dot processes Doxygen may run in parallel (empty for default)")
+
+set (BUILD_DOC_DotBatchSize_DESCR
+     "Number of graphs per Graphviz dot process (empty for default)")
+
+set (BUILD_DOC_Search_DESCR
+     "Enable client-side search in generated Doxygen documentation")
      
 set (INSTALL_DOC_Overview_DESCR 
      "Install OCCT overview documentation")

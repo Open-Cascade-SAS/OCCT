@@ -18,21 +18,20 @@
 #include <ExtremaPC.hxx>
 #include <ExtremaPC_GridEvaluator.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-//! @brief Point-OffsetCurve extrema computation using grid-based approach.
+//! @brief Point-OffsetCurve extrema computation using numerical root isolation.
 //!
-//! Computes the extrema between a 3D point and an offset curve using
-//! a grid-based approach with Newton refinement.
+//! Computes roots of the normalized point-curve stationarity function with a
+//! derivative-aware multiple-root solver.
 //!
 //! The grid is cached for efficiency when performing multiple queries
 //! with the same parameter domain.
 //!
 //! The algorithm:
-//! 1. Build uniform grid using GeomGridEval
-//! 2. Linear scan of grid to find candidate intervals (sign changes in F(u))
-//! 3. Newton refinement on each candidate interval
+//! 1. Build a uniform parameter partition
+//! 2. Isolate all roots of the stationarity function, including tangential roots
+//! 3. Classify roots from the stationarity sign on both sides
 //!
 //! Offset curves are handled through the Adaptor3d_Curve interface,
 //! which provides uniform access to the offset geometry.
@@ -45,12 +44,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with curve adaptor (uses full curve domain).
-  //! Grid is built eagerly at construction time.
+  //! Parameter partition is built eagerly at construction time.
   //! @param[in] theCurve curve adaptor for offset curve (must remain valid)
   Standard_EXPORT explicit ExtremaPC_OffsetCurve(const Adaptor3d_Curve& theCurve);
 
   //! Constructor with curve adaptor and parameter domain.
-  //! Grid is built eagerly at construction time for the specified domain.
+  //! Parameter partition is built eagerly at construction time for the specified domain.
   //! @param[in] theCurve curve adaptor for offset curve (must remain valid)
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPC_OffsetCurve(const Adaptor3d_Curve&     theCurve,
@@ -74,7 +73,7 @@ public:
   Standard_EXPORT gp_Pnt Value(double theU) const;
 
   //! Returns true if domain is bounded.
-  bool IsBounded() const { return true; } // Offset curves are always bounded
+  bool IsBounded() const { return myDomain.IsFinite(); }
 
   //! Returns the domain.
   const ExtremaPC::Domain1D& Domain() const { return myDomain; }
@@ -102,13 +101,24 @@ public:
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
 private:
-  //! Build grid for the curve.
-  void buildGrid();
+  //! Build parameter partition for the curve.
+  void buildParams();
+
+  //! Performs through the exact 2D representation when the current offset is planar.
+  //! @param[in] theP query point
+  //! @param[in] theTol tolerance for root finding
+  //! @param[in] theMode search mode
+  //! @param[in] theIncludeEndpoints whether endpoints should be included
+  //! @return true when the 2D result was accepted
+  bool performPlanar(const gp_Pnt&         theP,
+                     double                theTol,
+                     ExtremaPC::SearchMode theMode,
+                     bool                  theIncludeEndpoints) const;
 
   const Adaptor3d_Curve* myCurve;  //!< Curve adaptor (not owned)
   ExtremaPC::Domain1D    myDomain; //!< Parameter domain (fixed)
 
-  //! Grid evaluator with cached state (grid, result, temporary vectors).
+  //! Numerical evaluator with cached parameter partition and result.
   mutable ExtremaPC_GridEvaluator myEvaluator;
 };
 

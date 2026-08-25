@@ -707,7 +707,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMaxMode)
   EXPECT_GE(aNewResult.NbExt(), 1);
 
   // Verify all found points are valid
-  for (int i = 0; i < aNewResult.NbExt(); ++i)
+  for (size_t i = 0; i < aNewResult.NbExt(); ++i)
   {
     const auto& aExtremum = aNewResult[i];
     EXPECT_GE(aExtremum.Parameter, 0.0 - THE_TOL);

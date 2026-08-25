@@ -51,7 +51,6 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_sort.cxx
   TopOpeBRep_trace.cxx
   TopOpeBRep_traceALWL.cxx
-  TopOpeBRep_traceBOOPNINT.cxx
   TopOpeBRep_TypeLineCurve.hxx
   TopOpeBRep_VPointInter.cxx
   TopOpeBRep_VPointInter.hxx

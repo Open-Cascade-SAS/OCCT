@@ -4505,7 +4505,7 @@ int AdvApp2Var_MathBase::mmfmtb1_(int*    maxsz1,
   i__1 = *isize1;
   for (ii = 1; ii <= i__1; ++ii)
   {
-    iipt = (ii - 1) * *maxsz2 + iofst;
+    iipt = static_cast<intptr_t>(ii - 1) * *maxsz2 + iofst;
     i__2 = *jsize1;
     for (jj = 1; jj <= i__2; ++jj)
     {
