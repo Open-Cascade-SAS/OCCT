@@ -86,6 +86,25 @@ public:
   using const_pointer   = const TheItemType*;
 
 private:
+  //! Raw storage for an object which is constructed only when its slot is used.
+  template <typename TheType>
+  struct UninitializedStorage
+  {
+    struct Empty
+    {
+    };
+
+    union {
+      alignas(TheType) char myData[sizeof(TheType)];
+      Empty myEmpty;
+    };
+
+    UninitializedStorage() noexcept
+        : myEmpty()
+    {
+    }
+  };
+
   //! Internal slot structure holding key, value, and metadata.
   //! Key and item storage is uninitialized until state becomes Used.
 #ifdef _MSC_VER
@@ -94,30 +113,27 @@ private:
 #endif
   struct Slot
   {
-    size_t myHash; //!< Cached hash code
+    using KeyStorage  = UninitializedStorage<TheKeyType>;
+    using ItemStorage = UninitializedStorage<TheItemType>;
+
+    size_t myHash = 0; //!< Cached hash code
     //! Distance from ideal bucket plus one; 0 means Empty, otherwise Used.
-    size_t myProbeDistancePlus1;
-    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
-    alignas(TheItemType) char myItemStorage[sizeof(TheItemType)];
+    size_t      myProbeDistancePlus1 = 0;
+    KeyStorage  myKeyStorage;
+    ItemStorage myItemStorage;
 
-    Slot() noexcept
-        : myHash(0),
-          myProbeDistancePlus1(0)
-    {
-    }
-
-    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage.myData); }
 
     const TheKeyType& Key() const noexcept
     {
-      return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
+      return *reinterpret_cast<const TheKeyType*>(myKeyStorage.myData);
     }
 
-    TheItemType& Item() noexcept { return *reinterpret_cast<TheItemType*>(myItemStorage); }
+    TheItemType& Item() noexcept { return *reinterpret_cast<TheItemType*>(myItemStorage.myData); }
 
     const TheItemType& Item() const noexcept
     {
-      return *reinterpret_cast<const TheItemType*>(myItemStorage);
+      return *reinterpret_cast<const TheItemType*>(myItemStorage.myData);
     }
 
     bool IsEmpty() const noexcept { return myProbeDistancePlus1 == 0; }
