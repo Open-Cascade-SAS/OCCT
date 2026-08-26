@@ -19,41 +19,14 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 
-static thread_local NCollection_DataMap<TopoDS_Shape,
-                                        NCollection_List<TopoDS_Shape>,
-                                        TopTools_ShapeMapHasher>* GLOBAL_elf1 =
-  nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_DataMap<TopoDS_Shape,
-                                        NCollection_List<TopoDS_Shape>,
-                                        TopTools_ShapeMapHasher>* GLOBAL_elf2 =
-  nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_DataMap<TopoDS_Shape,
-                                        NCollection_List<TopoDS_Shape>,
-                                        TopTools_ShapeMapHasher>* GLOBAL_fle =
-  nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_List<TopoDS_Shape>* GLOBAL_los =
-  nullptr; // NYI to CDLize as a tool of DS
-static thread_local bool GLOBAL_FDSCNX_prepared = false;
-
-// modified by NIZNHY-PKV Sun Dec 15 17:41:43 2002 f
-//=================================================================================================
-
-void FDSCNX_Close()
+namespace
 {
-  delete GLOBAL_elf1;
-  GLOBAL_elf1 = nullptr;
-  //
-  delete GLOBAL_elf2;
-  GLOBAL_elf2 = nullptr;
-  //
-  delete GLOBAL_fle;
-  GLOBAL_fle = nullptr;
-  //
-  delete GLOBAL_los;
-  GLOBAL_los = nullptr;
-  //
-  GLOBAL_FDSCNX_prepared = false;
+const NCollection_List<TopoDS_Shape>& EmptyConnexList()
+{
+  static const NCollection_List<TopoDS_Shape> anEmptyConnexList;
+  return anEmptyConnexList;
 }
+} // namespace
 
 // modified by NIZNHY-PKV Sun Dec 15 17:41:40 2002 t
 
@@ -64,36 +37,40 @@ Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexityShapeI
 {
   if (HDS.IsNull())
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
-  if (!GLOBAL_FDSCNX_prepared)
+  const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
+  if (!BDS.myConnexPrepared)
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
   if (SI != 1 && SI != 2)
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
-  const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
   TopAbs_ShapeEnum                  t   = E.ShapeType();
   if (t != TopAbs_EDGE)
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
   bool has = FDSCNX_HasConnexFace(E, HDS);
   if (!has)
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
   int re = BDS.AncestorRank(E);
   if (re == 0)
   {
-    return *GLOBAL_los;
+    return EmptyConnexList();
   }
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* pelf =
-    (SI == 1) ? GLOBAL_elf1 : GLOBAL_elf2;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& elf =
-    *pelf;
+  const NCollection_DataMap<TopoDS_Shape,
+                            NCollection_List<TopoDS_Shape>,
+                            TopTools_ShapeMapHasher>& elf =
+    (SI == 1) ? BDS.myConnexEdges1 : BDS.myConnexEdges2;
+  if (!elf.IsBound(E))
+  {
+    return EmptyConnexList();
+  }
   const NCollection_List<TopoDS_Shape>& lof = elf.Find(E);
   return lof;
 }
@@ -104,24 +81,28 @@ Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexitySameSh
   const TopoDS_Shape&                             S,
   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
+  if (HDS.IsNull())
+  {
+    return EmptyConnexList();
+  }
+
+  const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
   TopAbs_ShapeEnum t = S.ShapeType();
   if (t == TopAbs_EDGE)
   {
-    int                                   si = HDS->DS().AncestorRank(S);
+    int                                   si = BDS.AncestorRank(S);
     const NCollection_List<TopoDS_Shape>& lf = FDSCNX_EdgeConnexityShapeIndex(S, HDS, si);
     return lf;
   }
   else if (t == TopAbs_FACE)
   {
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      fle = *GLOBAL_fle;
-    if (fle.IsBound(S))
+    if (BDS.myConnexFaceEdges.IsBound(S))
     {
-      const NCollection_List<TopoDS_Shape>& le = fle.Find(S);
+      const NCollection_List<TopoDS_Shape>& le = BDS.myConnexFaceEdges.Find(S);
       return le;
     }
   }
-  return *GLOBAL_los;
+  return EmptyConnexList();
 }
 
 Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
@@ -130,45 +111,13 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
 {
   if (HDS.IsNull())
   {
-    GLOBAL_FDSCNX_prepared = false;
     return;
   }
-  const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
-  if (GLOBAL_elf1 == nullptr)
-  {
-    GLOBAL_elf1 = (NCollection_DataMap<
-                   TopoDS_Shape,
-                   NCollection_List<TopoDS_Shape>,
-                   TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>();
-  }
-  if (GLOBAL_elf2 == nullptr)
-  {
-    GLOBAL_elf2 = (NCollection_DataMap<
-                   TopoDS_Shape,
-                   NCollection_List<TopoDS_Shape>,
-                   TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>();
-  }
-  if (GLOBAL_fle == nullptr)
-  {
-    GLOBAL_fle = (NCollection_DataMap<
-                  TopoDS_Shape,
-                  NCollection_List<TopoDS_Shape>,
-                  TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
-                                                                    NCollection_List<TopoDS_Shape>,
-                                                                    TopTools_ShapeMapHasher>();
-  }
-  if (GLOBAL_los == nullptr)
-  {
-    GLOBAL_los = (NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>();
-  }
-  GLOBAL_elf1->Clear();
-  GLOBAL_elf2->Clear();
-  GLOBAL_fle->Clear();
-  GLOBAL_los->Clear();
+  TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
+  BDS.myConnexEdges1.Clear();
+  BDS.myConnexEdges2.Clear();
+  BDS.myConnexFaceEdges.Clear();
+  BDS.myConnexPrepared = false;
 
   int i = 0, n = BDS.NbShapes();
   for (i = 1; i <= n; i++)
@@ -184,10 +133,13 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
       continue;
     }
     //    BDS.Shape(f);
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      fle = *GLOBAL_fle;
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                    elf = (rf == 1) ? *GLOBAL_elf1 : *GLOBAL_elf2;
+    NCollection_DataMap<TopoDS_Shape,
+                        NCollection_List<TopoDS_Shape>,
+                        TopTools_ShapeMapHasher>& fle = BDS.myConnexFaceEdges;
+    NCollection_DataMap<TopoDS_Shape,
+                        NCollection_List<TopoDS_Shape>,
+                        TopTools_ShapeMapHasher>& elf =
+      (rf == 1) ? BDS.myConnexEdges1 : BDS.myConnexEdges2;
     TopExp_Explorer exe;
     for (exe.Init(f, TopAbs_EDGE); exe.More(); exe.Next())
     {
@@ -216,7 +168,7 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
       aListElf->Append(f);
     }
   }
-  GLOBAL_FDSCNX_prepared = true;
+  BDS.myConnexPrepared = true;
 }
 
 Standard_EXPORT bool FDSCNX_HasConnexFace(const TopoDS_Shape&                             S,
@@ -239,14 +191,11 @@ Standard_EXPORT bool FDSCNX_HasConnexFace(const TopoDS_Shape&                   
     return false;
   }
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* pelf =
-    (rs == 1) ? GLOBAL_elf1 : GLOBAL_elf2;
-  if (pelf == nullptr)
-  {
-    return false;
-  }
-
-  bool has = (t == TopAbs_EDGE ? pelf : GLOBAL_fle)->IsBound(S);
+  const NCollection_DataMap<TopoDS_Shape,
+                            NCollection_List<TopoDS_Shape>,
+                            TopTools_ShapeMapHasher>* pelf =
+    (rs == 1) ? &BDS.myConnexEdges1 : &BDS.myConnexEdges2;
+  bool has = (t == TopAbs_EDGE ? pelf : &BDS.myConnexFaceEdges)->IsBound(S);
   return has;
 }
 

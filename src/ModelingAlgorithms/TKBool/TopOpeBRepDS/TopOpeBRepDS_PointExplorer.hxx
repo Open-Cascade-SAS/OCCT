@@ -59,7 +59,6 @@ private:
   int                myMax;
   void*              myDS;
   bool               myFound;
-  TopOpeBRepDS_Point myEmpty;
   bool               myFindKeep;
 };
 

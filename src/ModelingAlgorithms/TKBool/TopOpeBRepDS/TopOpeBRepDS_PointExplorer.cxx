@@ -20,6 +20,11 @@
 
 #define MYDS (*((TopOpeBRepDS_DataStructure*)myDS))
 
+namespace
+{
+  static const TopOpeBRepDS_Point anEmptyPoint;
+}
+
 //=================================================================================================
 
 TopOpeBRepDS_PointExplorer::TopOpeBRepDS_PointExplorer()
@@ -101,7 +106,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_PointExplorer::Point() const
   }
   else
   {
-    return myEmpty;
+    return anEmptyPoint;
   }
 }
 
@@ -135,7 +140,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_PointExplorer::Point(const int I) const
   }
   else
   {
-    return myEmpty;
+    return anEmptyPoint;
   }
 }
 

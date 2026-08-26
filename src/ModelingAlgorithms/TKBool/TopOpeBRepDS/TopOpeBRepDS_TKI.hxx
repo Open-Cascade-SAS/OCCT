@@ -117,8 +117,6 @@ private:
   NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
                                                            myITM;
   TopOpeBRepDS_Kind                                        myK;
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myEmptyLOI;
-  TCollection_AsciiString                                  myDummyAsciiString;
 };
 
 #endif // _TopOpeBRepDS_TKI_HeaderFile

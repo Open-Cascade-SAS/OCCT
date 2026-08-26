@@ -355,13 +355,14 @@ void TopOpeBRepBuild_Builder1::PerformShapeWithStates(const TopoDS_Shape& anObj,
   myShapeClassifier.SetReference(aReference);
   TopOpeBRepDS_DataStructure& aDS = myDataStructure->ChangeDS();
   // Get aMapOfShapeWithState for Obj
-  bool aFlag;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
-    aMapOfShapeWithState = aDS.ChangeMapOfShapeWithState(anObj, aFlag);
-  if (!aFlag)
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>*
+    aMapOfShapeWithStatePtr = aDS.ChangeMapOfShapeWithState(anObj);
+  if (aMapOfShapeWithStatePtr == nullptr)
   {
     return;
   }
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+    aMapOfShapeWithState = *aMapOfShapeWithStatePtr;
   //
   int i, j, k, nS, nF, nE;
 
@@ -460,13 +461,14 @@ void TopOpeBRepBuild_Builder1::PerformFacesWithStates(
 {
   TopOpeBRepDS_DataStructure& aDS = myDataStructure->ChangeDS();
   // Get aMapOfShapeWithState for Obj
-  bool aFlag;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
-    aMapOfShapeWithState = aDS.ChangeMapOfShapeWithState(anObj, aFlag);
-  if (!aFlag)
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>*
+    aMapOfShapeWithStatePtr = aDS.ChangeMapOfShapeWithState(anObj);
+  if (aMapOfShapeWithStatePtr == nullptr)
   {
     return;
   }
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+    aMapOfShapeWithState = *aMapOfShapeWithStatePtr;
   //
 
   int i, j, k, nF, nW, nE;
@@ -550,13 +552,14 @@ void TopOpeBRepBuild_Builder1::StatusEdgesToSplit(
 
   TopOpeBRepDS_DataStructure& aDS = myDataStructure->ChangeDS();
   // Get aMapOfShapeWithState for Obj
-  bool aFlag;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
-    aMapOfShapeWithState = aDS.ChangeMapOfShapeWithState(anObj, aFlag);
-  if (!aFlag)
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>*
+    aMapOfShapeWithStatePtr = aDS.ChangeMapOfShapeWithState(anObj);
+  if (aMapOfShapeWithStatePtr == nullptr)
   {
     return;
   }
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+    aMapOfShapeWithState = *aMapOfShapeWithStatePtr;
   //
 
   int i, nE = anEdgesToSplitMap.Extent();

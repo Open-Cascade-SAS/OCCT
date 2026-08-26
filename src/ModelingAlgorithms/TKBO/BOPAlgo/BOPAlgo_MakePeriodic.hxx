@@ -425,7 +425,7 @@ public: //! @name Getting the identical shapes
   //! @param[in] theS  Shape to get the twins for.
   const NCollection_List<TopoDS_Shape>& GetTwins(const TopoDS_Shape& theS) const
   {
-    static NCollection_List<TopoDS_Shape> empty;
+    static const NCollection_List<TopoDS_Shape> empty;
     const NCollection_List<TopoDS_Shape>* aTwins =
       myRepeatedTwins.IsEmpty() ? myTwins.Seek(theS) : myRepeatedTwins.Seek(theS);
     return (aTwins ? *aTwins : empty);

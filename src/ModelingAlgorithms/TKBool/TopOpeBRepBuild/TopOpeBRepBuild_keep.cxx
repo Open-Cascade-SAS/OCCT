@@ -90,23 +90,15 @@ bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   
   return keep;
 }
 
-//=======================================================================
-// function : GKeepShapes
-// purpose  :
-// select shapes to keep from list Lin located TB compared with LSclass shapes
-// selected shapes are stored in list Lou
-// (apply GKeepShape on Lin shapes)
-// Lou is not cleared
-// S is used for trace only
-//=======================================================================
+//=================================================================================================
 void TopOpeBRepBuild_Builder::GKeepShapes
 #ifdef OCCT_DEBUG
   (const TopoDS_Shape& S,
+   const TopAbs_State  TB,
 #else
   (const TopoDS_Shape&,
+   const TopAbs_State,
 #endif
-   const NCollection_List<TopoDS_Shape>& LSclass,
-   const TopAbs_State                    TB,
    const NCollection_List<TopoDS_Shape>& Lin,
    NCollection_List<TopoDS_Shape>&       Lou)
 {
@@ -125,15 +117,7 @@ void TopOpeBRepBuild_Builder::GKeepShapes
   {
     const TopoDS_Shape& SL = it.Value();
 
-    bool keep = true;
-    if (!LSclass.IsEmpty())
-    {
-      TopAbs_State pos = ShapePosition(SL, LSclass);
-      if (pos != TB)
-      {
-        keep = false;
-      }
-    }
+    Lou.Append(SL);
 
 #ifdef OCCT_DEBUG
     TopAbs_ShapeEnum t = SL.ShapeType();
@@ -151,10 +135,7 @@ void TopOpeBRepBuild_Builder::GKeepShapes
     {
       std::cout << " from ";
       GdumpSHA(S);
-      if (keep)
-        std::cout << " is kept";
-      else
-        std::cout << " is NOT kept";
+      std::cout << " is kept";
     }
     if (tSPS)
     {
@@ -164,17 +145,9 @@ void TopOpeBRepBuild_Builder::GKeepShapes
     }
     if (tSPS)
     {
-      if (LSclass.IsEmpty())
-        std::cout << "empty list";
-      else
-        GdumpLS(LSclass);
+      std::cout << "empty list";
       std::cout << std::endl;
     }
 #endif
-
-    if (keep)
-    {
-      Lou.Append(SL);
-    }
   }
 }

@@ -68,6 +68,7 @@ public:
 private:
   TopOpeBRepDS_DataStructure* myPBDS;
   bool                        myrefdef;
+  bool                        myToReverse;
   TopAbs_Orientation          myFaceOrientation;
   int                         myFaceOriented;
   TopTrans_SurfaceTransition  myTool;

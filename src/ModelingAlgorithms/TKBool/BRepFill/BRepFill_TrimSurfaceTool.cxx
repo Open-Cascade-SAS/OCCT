@@ -54,11 +54,6 @@
 #include <TopoDS_Vertex.hxx>
 
 #include <cstdio>
-#ifdef OCCT_DEBUG
-static bool Affich = false;
-static int  NBCALL = 0;
-#endif
-
 //=======================================================================
 // function : BRepFill_TrimSurfaceTool
 // purpose  : Initialisation with two neighbor faces
@@ -84,13 +79,6 @@ BRepFill_TrimSurfaceTool::BRepFill_TrimSurfaceTool(const occ::handle<Geom2d_Curv
       myInv2(Inv2),
       myBis(Bis)
 {
-#ifdef OCCT_DEBUG
-  if (Affich)
-  {
-    NBCALL++;
-    std::cout << " ---------->TrimSurfaceTool : NBCALL = " << NBCALL << std::endl;
-  }
-#endif
 }
 
 //=======================================================================

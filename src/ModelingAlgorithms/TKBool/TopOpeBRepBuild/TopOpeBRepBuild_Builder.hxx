@@ -556,10 +556,9 @@ public:
                                    const TopAbs_State                    T,
                                    TopAbs_State&                         pos);
 
-  //! add to Lou the shapes of Lin classified <T> / Lref shapes.
-  //! Lou is not cleared. (S is a dummy trace argument)
+  //! Adds the shapes from Lin to Lou.
+  //! Lou is not cleared. S and T are used for debug tracing.
   Standard_EXPORT void GKeepShapes(const TopoDS_Shape&                   S,
-                                   const NCollection_List<TopoDS_Shape>& Lref,
                                    const TopAbs_State                    T,
                                    const NCollection_List<TopoDS_Shape>& Lin,
                                    NCollection_List<TopoDS_Shape>&       Lou);
@@ -726,6 +725,15 @@ public:
   Standard_EXPORT static bool GcheckNBOUNDS(const TopoDS_Shape& E);
 
   friend class TopOpeBRepBuild_HBuilder;
+  friend void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&,
+                                           const NCollection_List<TopoDS_Shape>&,
+                                           const NCollection_List<TopoDS_Shape>&,
+                                           const TopOpeBRepDS_Config,
+                                           const TopOpeBRepDS_Config);
+  friend void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder&,
+                                       const TopoDS_Shape&,
+                                       bool&,
+                                       bool&);
 
 protected:
   //! update the DS by creating new geometries.
@@ -882,7 +890,6 @@ protected:
     myMergedON;
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>
                                  myMergedOUT;
-  NCollection_List<TopoDS_Shape> myEmptyShapeList;
   NCollection_List<TopoDS_Shape> myListOfSolid;
   NCollection_List<TopoDS_Shape> myListOfFace;
   NCollection_List<TopoDS_Shape> myListOfEdge;
@@ -912,7 +919,6 @@ protected:
   bool                                                            myClassifyVal;
   TopOpeBRepTool_ShapeClassifier                                  myShapeClassifier;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          myMemoSplit;
-  TCollection_AsciiString                                         myEmptyAS;
   bool                                                            myProcessON;
   bool                                                            myFaces2d;
   bool                                                            myClassifySplitEdge;
@@ -922,6 +928,18 @@ protected:
   NCollection_List<TopoDS_Shape>                                  myFacesToProcess;
   bool                                                            myProcessFaces;
   int                                                             mySplitSectionState;
+  int                                                             mySolidIndex;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myAncestorRankEdges1;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myAncestorRankEdges2;
+  NCollection_IndexedDataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>
+    myAncestorRankEdgeFaces1;
+  NCollection_IndexedDataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>
+    myAncestorRankEdgeFaces2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myAncestorRankFaceEdges;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myONFacesMap;
   NCollection_IndexedMap<TopoDS_Shape>                                            myONElemMap;
 };

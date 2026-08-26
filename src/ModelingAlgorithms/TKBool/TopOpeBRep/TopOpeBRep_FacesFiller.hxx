@@ -32,7 +32,6 @@
 #include <TopAbs_State.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepDS_DataStructure;
-class TopOpeBRep_FFDumper;
 class TopOpeBRep_FacesIntersector;
 class TopoDS_Shape;
 class TopOpeBRep_VPointInter;
@@ -300,6 +299,10 @@ private:
   NCollection_List<TopoDS_Shape>           myERL;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                                                            myDataforDegenEd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                           myMapOfTreatedVertexListOfEdge;
+  TopOpeBRep_LineInter*                                  myCurrentLine;
+  int                                                     myLastVPind;
   bool                                                     myLastVPison0;
   int                                                      mykeptVPnbr;
   int                                                      myDSCIndex;
@@ -308,7 +311,6 @@ private:
   TopOpeBRepTool_ShapeClassifier*                          myPShapeClassifier;
   int                                                      myexF1;
   int                                                      myexF2;
-  occ::handle<TopOpeBRep_FFDumper>                         myHFFD;
 };
 
 #endif // _TopOpeBRep_FacesFiller_HeaderFile

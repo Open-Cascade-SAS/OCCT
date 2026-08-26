@@ -150,8 +150,8 @@ TopAbs_State TopOpeBRepBuild_WireEdgeClassifier::Compare(
       {
         return state;
       }
-      TopOpeBRepTool_ShapeClassifier& SC         = FSC_GetPSC();
-      int                             samedomain = SC.SameDomain();
+      TopOpeBRepTool_ShapeClassifier SC;
+      int                            samedomain = SC.SameDomain();
       SC.SameDomain(1);
       SC.SetReference(s2);
       const TopoDS_Shape& AvS = s2;

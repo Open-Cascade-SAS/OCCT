@@ -714,49 +714,37 @@ static void FUNBUILD_MAPANCSPLSHAPES(
   }
 }
 
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> stabuild_IMELF1;
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> stabuild_IMELF2;
-static NCollection_IndexedDataMap<TopoDS_Shape,
-                                  NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>
-  stabuild_IDMEALF1;
-static NCollection_IndexedDataMap<TopoDS_Shape,
-                                  NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>
-                           stabuild_IDMEALF2;
-static TopOpeBRepDS_Config static_CONF1;
-static TopOpeBRepDS_Config static_CONF2;
-
 // ----------------------------------------------------------------------
 Standard_EXPORT void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
                                                   const NCollection_List<TopoDS_Shape>& LF1,
                                                   const NCollection_List<TopoDS_Shape>& LF2,
-                                                  const TopOpeBRepDS_Config             CONF1,
-                                                  const TopOpeBRepDS_Config             CONF2)
+                                                  const TopOpeBRepDS_Config,
+                                                  const TopOpeBRepDS_Config)
 {
-  static_CONF1 = CONF1;
-  static_CONF2 = CONF2;
-  FUNBUILD_MAPSUBSHAPES(LF1, TopAbs_EDGE, stabuild_IMELF1);
-  FUNBUILD_MAPSUBSHAPES(LF2, TopAbs_EDGE, stabuild_IMELF2);
-  FUNBUILD_MAPANCSPLSHAPES(B, stabuild_IMELF1, stabuild_IDMEALF1);
-  FUNBUILD_MAPANCSPLSHAPES(B, stabuild_IMELF2, stabuild_IDMEALF2);
+  B.myAncestorRankEdges1.Clear();
+  B.myAncestorRankEdges2.Clear();
+  B.myAncestorRankEdgeFaces1.Clear();
+  B.myAncestorRankEdgeFaces2.Clear();
+  FUNBUILD_MAPSUBSHAPES(LF1, TopAbs_EDGE, B.myAncestorRankEdges1);
+  FUNBUILD_MAPSUBSHAPES(LF2, TopAbs_EDGE, B.myAncestorRankEdges2);
+  FUNBUILD_MAPANCSPLSHAPES(B, B.myAncestorRankEdges1, B.myAncestorRankEdgeFaces1);
+  FUNBUILD_MAPANCSPLSHAPES(B, B.myAncestorRankEdges2, B.myAncestorRankEdgeFaces2);
 }
 
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> stabuild_IMEF;
-
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& /*B*/,
-                                              const TopoDS_Shape& f,
-                                              bool&               of1,
-                                              bool&               of2)
+Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
+                                              const TopoDS_Shape&      f,
+                                              bool&                    of1,
+                                              bool&                    of2)
 {
-  FUNBUILD_MAPSUBSHAPES(f, TopAbs_EDGE, stabuild_IMEF);
-  int ief = 1, nef = stabuild_IMEF.Extent();
+  B.myAncestorRankFaceEdges.Clear();
+  FUNBUILD_MAPSUBSHAPES(f, TopAbs_EDGE, B.myAncestorRankFaceEdges);
+  int ief = 1, nef = B.myAncestorRankFaceEdges.Extent();
   of1 = false;
   for (ief = 1; ief <= nef; ief++)
   {
-    const TopoDS_Shape& e = stabuild_IMEF(ief);
-    of1                   = stabuild_IDMEALF1.Contains(e);
+    const TopoDS_Shape& e = B.myAncestorRankFaceEdges(ief);
+    of1                   = B.myAncestorRankEdgeFaces1.Contains(e);
     if (of1)
     {
       break;
@@ -765,8 +753,8 @@ Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& /*B*/,
   of2 = false;
   for (ief = 1; ief <= nef; ief++)
   {
-    const TopoDS_Shape& e = stabuild_IMEF(ief);
-    of2                   = stabuild_IDMEALF2.Contains(e);
+    const TopoDS_Shape& e = B.myAncestorRankFaceEdges(ief);
+    of2                   = B.myAncestorRankEdgeFaces2.Contains(e);
     if (of2)
     {
       break;
@@ -1425,10 +1413,10 @@ void TopOpeBRepBuild_Builder::GSplitFace(const TopoDS_Shape&                   F
     myONElemMap.Clear();
   }
 
-  // LOFS : LOF faces located TB1 / LSclass = split faces of state TB1 of FF
+  // LOFS : LOF faces located in state TB1 of FF
   NCollection_List<TopoDS_Shape>& LOFS = ChangeSplit(FF, TB1);
   LOFS.Clear();
-  GKeepShapes(FF, myEmptyShapeList, TB1, LOF, LOFS);
+  GKeepShapes(FF, TB1, LOF, LOFS);
 
 } // GSplitFace
 
