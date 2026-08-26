@@ -177,7 +177,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const double Radius, const bo
 
   bool Fuse = false;
   AddTool(theTool);
-  SetOperation(Fuse);
+  SetOperation(Fuse, true);
   BOPAlgo_BOP::Perform();
   NCollection_List<TopoDS_Shape> parts;
   PartsOfTool(parts);
@@ -318,7 +318,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const double Radius, const bo
 
   bool Fuse = false;
   AddTool(theTool);
-  SetOperation(Fuse);
+  SetOperation(Fuse, true);
   BOPAlgo_BOP::Perform();
   NCollection_List<TopoDS_Shape> parts;
   PartsOfTool(parts);
@@ -434,7 +434,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const double Radius,
 
   bool Fuse = false;
   AddTool(theTool);
-  SetOperation(Fuse);
+  SetOperation(Fuse, true);
   BOPAlgo_BOP::Perform();
   NCollection_List<TopoDS_Shape> parts;
   PartsOfTool(parts);
@@ -566,7 +566,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const double Radius,
   // myBuilder.Perform(theTool,theList,Fuse);
   // myBuilder.BuildPartsOfTool();
   AddTool(theTool);
-  SetOperation(Fuse);
+  SetOperation(Fuse, true);
   BOPAlgo_BOP::Perform();
   NCollection_List<TopoDS_Shape> parts;
   PartsOfTool(parts);
