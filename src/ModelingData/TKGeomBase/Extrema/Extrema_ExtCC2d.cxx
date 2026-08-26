@@ -493,7 +493,7 @@ void Extrema_ExtCC2d::Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv
   {
     throw StdFail_NotDone();
   }
-  if ((N <= 0) || (N > mynbext))
+  if (N <= 0 || 2 * N > mypoints.Length())
   {
     throw Standard_OutOfRange();
   }
