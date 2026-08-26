@@ -22,7 +22,6 @@
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
-#include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>
 
 // Attribute methods ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -533,7 +532,7 @@ void TDF_Label::ResumeAttribute(const occ::handle<TDF_Attribute>& anAttribute) c
 
 //=================================================================================================
 
-void TDF_Label::AddToNode(const TDF_LabelNodePtr&           toNode,
+void TDF_Label::AddToNode(TDF_LabelNode* const&             toNode,
                           const occ::handle<TDF_Attribute>& anAttribute,
                           const bool                        append) const
 {
@@ -582,7 +581,7 @@ void TDF_Label::AddToNode(const TDF_LabelNodePtr&           toNode,
 
 //=================================================================================================
 
-void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
+void TDF_Label::ForgetFromNode(TDF_LabelNode* const&             fromNode,
                                const occ::handle<TDF_Attribute>& anAttribute) const
 {
   // check that modification is allowed
@@ -646,7 +645,7 @@ void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
 
 //=================================================================================================
 
-void TDF_Label::ResumeToNode(const TDF_LabelNodePtr&           toNode,
+void TDF_Label::ResumeToNode(TDF_LabelNode* const&             toNode,
                              const occ::handle<TDF_Attribute>& anAttribute) const
 {
   if (anAttribute.IsNull())

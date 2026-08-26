@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <cmath>
-
 #include <BRep_Builder.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
@@ -22,6 +20,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
@@ -31,7 +30,9 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRep_Tool.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <TopExp.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -56,10 +57,242 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Failure.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <cmath>
+
+// Regression for fillets that must remove an intervening face or meet on opposite
+// edges of a prism. Related reports:
+// - https://github.com/Open-Cascade-SAS/OCCT/issues/1177
+// - https://github.com/FreeCAD/FreeCAD/issues/5561 (OCC tracker #25478)
+// DRAW repro (OCCT #1177): box 10 10 10 / blend result box 10 box_10
+
+// Single edge: radius equals the full span on adjacent faces (9.999 works, 10 fails).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletToOpposingEdge_SucceedsWithoutCrash)
+{
+  const double aSize = 10.0;
+
+  BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize, aSize);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(aSize, anEdge);
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone()) << "Fillet radius equal to box size should succeed (issue #1177)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_HistoryReferencesResultTopology)
+{
+  constexpr double aSize = 10.0;
+
+  BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize, aSize);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anEdgeExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anEdgeExp.More());
+  const TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExp.Current());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(aSize, anEdge);
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aResultShapes;
+  TopExp::MapShapes(aFillet.Shape(), aResultShapes);
+
+  const NCollection_List<TopoDS_Shape>& aGenerated = aFillet.Generated(anEdge);
+  ASSERT_FALSE(aGenerated.IsEmpty());
+  for (NCollection_List<TopoDS_Shape>::Iterator anIt(aGenerated); anIt.More(); anIt.Next())
+  {
+    EXPECT_TRUE(aResultShapes.Contains(anIt.Value()))
+      << "Generated() returned topology absent from the result";
+  }
+
+  bool hasModified = false;
+  for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
+    const NCollection_List<TopoDS_Shape>& aModified = aFillet.Modified(aFaceExp.Current());
+    hasModified                                     = hasModified || !aModified.IsEmpty();
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(aModified); anIt.More(); anIt.Next())
+    {
+      EXPECT_TRUE(aResultShapes.Contains(anIt.Value()))
+        << "Modified() returned topology absent from the result";
+    }
+  }
+  EXPECT_TRUE(hasModified);
+}
+
+// Two parallel edges on the same face: each fillet radius is half the span so they
+// should meet and remove the strip between them (FreeCAD #5561: two 10 mm fillets
+// on a 20 mm thick body; OCCT #1177 DRAW: blend result box 5 box_10 5 box_9).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_OpposingFilletsMeet_SucceedsWithoutCrash)
+{
+  const double aSize   = 10.0;
+  const double aRadius = 0.5 * aSize;
+
+  BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize, aSize);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  // Collect all edges of the first face of the box; edges 1 and 3 (in wire order)
+  // are the two opposing parallel edges that bound the face on opposite sides.
+  TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(aFaceExp.More());
+  const TopoDS_Face aFace = TopoDS::Face(aFaceExp.Current());
+
+  NCollection_Sequence<TopoDS_Edge> aFaceEdges;
+  for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aFaceEdges.Append(TopoDS::Edge(anEdgeExp.Current()));
+  }
+  ASSERT_GE(aFaceEdges.Length(), 4) << "Box face must have at least 4 edges";
+
+  const TopoDS_Edge anEdgeLow  = aFaceEdges.Value(1);
+  const TopoDS_Edge anEdgeHigh = aFaceEdges.Value(3);
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(aRadius, anEdgeLow);
+  aFillet.Add(aRadius, anEdgeHigh);
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone())
+    << "Opposing fillets that should meet must succeed (issues #1177, FreeCAD #5561)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_ConcaveFilletsMeet_SucceedsWithoutCrash)
+{
+  const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape       aTool = BRepPrimAPI_MakeBox(10.0, 10.0, 12.0).Shape();
+  gp_Trsf            aTranslation;
+  aTranslation.SetTranslation(gp_Vec(5.0, 5.0, -1.0));
+  aTool = BRepBuilderAPI_Transform(aTool, aTranslation).Shape();
+
+  BRepAlgoAPI_Cut aCut(aBox, aTool);
+  ASSERT_TRUE(aCut.IsDone());
+  ASSERT_TRUE(BRepCheck_Analyzer(aCut.Shape()).IsValid());
+
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdgeMap;
+  TopExp::MapShapes(aCut.Shape(), TopAbs_EDGE, anEdgeMap);
+  NCollection_Sequence<TopoDS_Edge> anEdges;
+  for (int anEdgeIndex = 1; anEdgeIndex <= anEdgeMap.Extent(); ++anEdgeIndex)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeMap(anEdgeIndex));
+    TopoDS_Vertex      aFirstVertex;
+    TopoDS_Vertex      aLastVertex;
+    TopExp::Vertices(anEdge, aFirstVertex, aLastVertex);
+    const gp_Pnt& aFirstPoint = BRep_Tool::Pnt(aFirstVertex);
+    const gp_Pnt& aLastPoint  = BRep_Tool::Pnt(aLastVertex);
+    if (std::abs(aFirstPoint.X() - aLastPoint.X()) > Precision::Confusion()
+        || std::abs(aFirstPoint.Y() - aLastPoint.Y()) > Precision::Confusion())
+    {
+      continue;
+    }
+    const bool isReportedEdge = (std::abs(aFirstPoint.X() - 5.0) <= Precision::Confusion()
+                                 && (std::abs(aFirstPoint.Y() - 5.0) <= Precision::Confusion()
+                                     || std::abs(aFirstPoint.Y() - 10.0) <= Precision::Confusion()))
+                                || (std::abs(aFirstPoint.X() - 10.0) <= Precision::Confusion()
+                                    && std::abs(aFirstPoint.Y() - 5.0) <= Precision::Confusion());
+    if (isReportedEdge)
+    {
+      anEdges.Append(anEdge);
+    }
+  }
+  ASSERT_EQ(anEdges.Length(), 3);
+
+  BRepFilletAPI_MakeFillet aFillet(aCut.Shape());
+  for (NCollection_Sequence<TopoDS_Edge>::Iterator anEdgeIt(anEdges); anEdgeIt.More();
+       anEdgeIt.Next())
+  {
+    aFillet.Add(2.5, anEdgeIt.Value());
+  }
+
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  ASSERT_FALSE(aFillet.Shape().IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+}
+
+// Fillet every edge of a flat 50x50x10 slab with radius 5. The top and bottom
+// fillets of each 50x10 side face (5 + 5) exactly consume the 10 mm height, so
+// the intervening side faces must be removed and the opposing fillets must meet
+// cleanly, leaving no degenerate mid edges (issue #1177).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletAllEdgesFlatBox_SucceedsWithoutCrash)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(50.0, 50.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aFillet.Add(5.0, TopoDS::Edge(anExp.Current()));
+  }
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone())
+    << "Filleting all edges of a 50x50x10 slab with r=5 should succeed (issue #1177)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult, true, false, true);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+
+  double aMaxTolerance = 0.0;
+  for (TopExp_Explorer aVertexExp(aResult, TopAbs_VERTEX); aVertexExp.More(); aVertexExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(aVertexExp.Current())));
+  }
+  for (TopExp_Explorer anEdgeExp(aResult, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Edge(anEdgeExp.Current())));
+  }
+  EXPECT_LE(aMaxTolerance, 1.01 * Precision::Confusion())
+    << "Fillet construction must not hide inconsistent edge parameterization with tolerance";
+}
 
 TEST(BRepFilletAPI_MakeFilletTest, FilletOneEdge)
 {

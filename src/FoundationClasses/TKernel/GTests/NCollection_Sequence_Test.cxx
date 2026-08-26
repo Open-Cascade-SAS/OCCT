@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <list>
 #include <random>
+#include <type_traits>
 
 // Basic test type for the Sequence
 typedef int ItemType;
@@ -72,6 +73,39 @@ TEST(NCollection_SequenceTest, BasicFunctions)
   // Test bounds
   EXPECT_EQ(aSeq.Lower(), 1);
   EXPECT_EQ(aSeq.Upper(), 3);
+}
+
+TEST(NCollection_SequenceTest, StandardIteratorContract)
+{
+  using SequenceType = NCollection_Sequence<int>;
+  static_assert(
+    std::is_same_v<decltype(std::declval<SequenceType&>().begin()), SequenceType::iterator>);
+  static_assert(std::is_same_v<decltype(std::declval<const SequenceType&>().begin()),
+                               SequenceType::const_iterator>);
+  static_assert(std::is_same_v<decltype(std::declval<const SequenceType&>().end()),
+                               SequenceType::const_iterator>);
+
+  SequenceType aSequence;
+  aSequence.Append(1);
+  aSequence.Append(2);
+  const SequenceType& aConstSequence = aSequence;
+
+  EXPECT_EQ(aSequence.begin(), aConstSequence.begin());
+  EXPECT_EQ(aSequence.end(), aConstSequence.end());
+  for (int& aValue : aSequence)
+  {
+    ++aValue;
+  }
+  EXPECT_EQ(aSequence(1), 2);
+  EXPECT_EQ(aSequence(2), 3);
+
+  const auto aFound = std::find(aConstSequence.cbegin(), aConstSequence.cend(), 3);
+  ASSERT_NE(aConstSequence.cend(), aFound);
+  EXPECT_EQ(3, *aFound);
+
+  std::reverse(aSequence.begin(), aSequence.end());
+  EXPECT_EQ(3, aSequence(1));
+  EXPECT_EQ(2, aSequence(2));
 }
 
 TEST(NCollection_SequenceTest, ModifyingOperations)

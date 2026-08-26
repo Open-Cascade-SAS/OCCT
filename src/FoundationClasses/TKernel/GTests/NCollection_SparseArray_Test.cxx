@@ -14,6 +14,8 @@
 #include <NCollection_SparseArray.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <vector>
 
 // Basic test type for the SparseArray
 typedef int ItemType;
@@ -190,6 +192,35 @@ TEST(NCollection_SparseArrayTest, IteratorFunctions)
   EXPECT_EQ(anArray.Value(30), 600);
 }
 
+TEST(NCollection_SparseArrayTest, STLIterators)
+{
+  NCollection_SparseArray<ItemType> anArray(8);
+  anArray.SetValue(5, 50);
+  anArray.SetValue(10, 100);
+  anArray.SetValue(30, 300);
+
+  const NCollection_SparseArray<ItemType>& aConstArray = anArray;
+  EXPECT_EQ(anArray.begin(), aConstArray.cbegin());
+  EXPECT_EQ(anArray.end(), aConstArray.cend());
+
+  const NCollection_SparseArray<ItemType>::iterator       anBegin = anArray.begin();
+  const NCollection_SparseArray<ItemType>::const_iterator aConstBegin(anBegin);
+  EXPECT_EQ(anBegin, aConstBegin);
+  EXPECT_EQ(50, *aConstBegin);
+
+  std::vector<ItemType> aValues(aConstArray.cbegin(), aConstArray.cend());
+  EXPECT_EQ((std::vector<ItemType>{50, 100, 300}), aValues);
+
+  const auto anFound = std::find(aConstArray.cbegin(), aConstArray.cend(), 100);
+  ASSERT_NE(aConstArray.cend(), anFound);
+  EXPECT_EQ(100, *anFound);
+
+  std::for_each(anArray.begin(), anArray.end(), [](ItemType& theValue) { theValue += 1; });
+  EXPECT_EQ(51, anArray.Value(5));
+  EXPECT_EQ(101, anArray.Value(10));
+  EXPECT_EQ(301, anArray.Value(30));
+}
+
 TEST(NCollection_SparseArrayTest, ComplexType)
 {
   NCollection_SparseArray<TestClass> anArray(10);
@@ -306,4 +337,19 @@ TEST(NCollection_SparseArrayTest, AssignAndExchange)
   EXPECT_EQ(anArray3.Value(15), 150);
   EXPECT_FALSE(anArray3.HasValue(10));
   EXPECT_FALSE(anArray3.HasValue(20));
+}
+
+TEST(NCollection_SparseArrayTest, AssignClearsUnsetItemsInSharedBlock)
+{
+  NCollection_SparseArray<int> aSource(4);
+  NCollection_SparseArray<int> aDestination(4);
+  aSource.SetValue(0, 11);
+  aDestination.SetValue(1, 22);
+
+  aDestination.Assign(aSource);
+
+  EXPECT_EQ(aDestination.Size(), 1);
+  EXPECT_TRUE(aDestination.HasValue(0));
+  EXPECT_FALSE(aDestination.HasValue(1));
+  EXPECT_EQ(aDestination.Value(0), 11);
 }

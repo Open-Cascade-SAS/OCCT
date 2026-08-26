@@ -32,7 +32,6 @@
 #include <BRepBlend_AppSurface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
-#include <BRepBlend_CSWalking.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepBlend_RstRstLineBuilder.hxx>
 #include <BRepBlend_SurfRstLineBuilder.hxx>
@@ -77,17 +76,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 #include <NCollection_List.hxx>
-
-#include <cstdio>
-
-#ifdef OCCT_DEBUG
-extern bool ChFi3d_GettraceDRAWFIL();
-extern bool ChFi3d_GettraceDRAWWALK();
-extern bool ChFi3d_GetcontextNOOPT();
-extern void ChFi3d_SettraceDRAWFIL(const bool b);
-extern void ChFi3d_SettraceDRAWWALK(const bool b);
-extern void ChFi3d_SetcontextNOOPT(const bool b);
-#endif
 
 //=================================================================================================
 

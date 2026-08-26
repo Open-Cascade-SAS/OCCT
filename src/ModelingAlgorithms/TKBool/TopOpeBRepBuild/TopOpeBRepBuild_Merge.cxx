@@ -17,6 +17,7 @@
 #include <BRepCheck.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Status.hxx>
+#include <BRep_Builder.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Shared.hxx>
 #include <BRepCheck_Result.hxx>
@@ -36,11 +37,11 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Precision.hxx>
+
+#include <cmath>
 
 // #include <DBRep.hxx>
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceSPS();
-#endif
 //------------
 // static int ifvNbFace = 0;
 // static char *name = "                 ";
@@ -540,7 +541,13 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape&             anEdge,
 
     myBuildTool.CopyEdge(anEdge, newEdge);
 
-    bool hasvertex = false;
+    bool         hasvertex          = false;
+    bool         hasForwardVertex   = false;
+    bool         hasReversedVertex  = false;
+    double       aForwardParameter  = 0.0;
+    double       aReversedParameter = 0.0;
+    TopoDS_Shape aForwardVertex;
+    TopoDS_Shape aReversedVertex;
     for (EDBU.InitVertex(); EDBU.MoreVertex(); EDBU.NextVertex())
     {
       TopoDS_Shape       V    = EDBU.Vertex();
@@ -593,6 +600,18 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape&             anEdge,
         {
           hasvertex   = true;
           double parV = EDBU.Parameter();
+          if (Vori == TopAbs_FORWARD)
+          {
+            hasForwardVertex  = true;
+            aForwardVertex    = V;
+            aForwardParameter = parV;
+          }
+          else if (Vori == TopAbs_REVERSED)
+          {
+            hasReversedVertex  = true;
+            aReversedVertex    = V;
+            aReversedParameter = parV;
+          }
           myBuildTool.AddEdgeVertex(newEdge, V);
           myBuildTool.Parameter(newEdge, V, parV);
         }
@@ -616,6 +635,12 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape&             anEdge,
 
     if (hasvertex)
     {
+      if (hasForwardVertex && hasReversedVertex && aForwardVertex.IsSame(aReversedVertex)
+          && std::abs(aForwardParameter - aReversedParameter) <= Precision::PConfusion())
+      {
+        BRep_Builder aBuilder;
+        aBuilder.Degenerated(TopoDS::Edge(newEdge), true);
+      }
       L.Append(newEdge);
     }
   } // loop on EDBU edges

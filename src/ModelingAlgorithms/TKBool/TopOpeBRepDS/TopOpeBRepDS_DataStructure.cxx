@@ -28,6 +28,8 @@
 #include <TopOpeBRepDS_SurfaceData.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
+#include <algorithm>
+
 //=================================================================================================
 
 TopOpeBRepDS_DataStructure::TopOpeBRepDS_DataStructure()
@@ -48,6 +50,7 @@ void TopOpeBRepDS_DataStructure::Init()
   myNbPoints   = 0;
   mySurfaces.Clear();
   myCurves.Clear();
+  myEquivalentCurvePoints.Clear();
   myPoints.Clear();
   myShapes.Clear();
   // Begin modified by NIZHNY-MZV  Tue Apr 18 16:33:26 2000
@@ -180,6 +183,61 @@ void TopOpeBRepDS_DataStructure::ChangeKeepCurve(const int I, const bool FindKee
 void TopOpeBRepDS_DataStructure::ChangeKeepCurve(TopOpeBRepDS_Curve& C, const bool FindKeep)
 {
   C.ChangeKeep(FindKeep);
+}
+
+//=================================================================================================
+
+int TopOpeBRepDS_DataStructure::FindEquivalentCurvePoint(const int  theCurve,
+                                                         const bool theCurveStart,
+                                                         bool&      theRepresentativeStart) const
+{
+  int aPoint = 2 * theCurve + (theCurveStart ? 0 : 1);
+  while (myEquivalentCurvePoints.IsBound(aPoint) && myEquivalentCurvePoints(aPoint) != aPoint)
+  {
+    aPoint = myEquivalentCurvePoints(aPoint);
+  }
+  theRepresentativeStart = (aPoint % 2 == 0);
+  return aPoint / 2;
+}
+
+//=================================================================================================
+
+void TopOpeBRepDS_DataStructure::MergeEquivalentCurvePoints(const int  theFirstCurve,
+                                                            const bool theFirstCurveStart,
+                                                            const int  theSecondCurve,
+                                                            const bool theSecondCurveStart)
+{
+  bool      isFirstRootStart  = false;
+  bool      isSecondRootStart = false;
+  const int aFirstRootCurve =
+    FindEquivalentCurvePoint(theFirstCurve, theFirstCurveStart, isFirstRootStart);
+  const int aSecondRootCurve =
+    FindEquivalentCurvePoint(theSecondCurve, theSecondCurveStart, isSecondRootStart);
+  const int aFirstRoot  = 2 * aFirstRootCurve + (isFirstRootStart ? 0 : 1);
+  const int aSecondRoot = 2 * aSecondRootCurve + (isSecondRootStart ? 0 : 1);
+  if (aFirstRoot == aSecondRoot)
+  {
+    return;
+  }
+
+  const int aRoot  = std::min(aFirstRoot, aSecondRoot);
+  const int aChild = std::max(aFirstRoot, aSecondRoot);
+  if (myEquivalentCurvePoints.IsBound(aRoot))
+  {
+    myEquivalentCurvePoints.ChangeFind(aRoot) = aRoot;
+  }
+  else
+  {
+    myEquivalentCurvePoints.Bind(aRoot, aRoot);
+  }
+  if (myEquivalentCurvePoints.IsBound(aChild))
+  {
+    myEquivalentCurvePoints.ChangeFind(aChild) = aRoot;
+  }
+  else
+  {
+    myEquivalentCurvePoints.Bind(aChild, aRoot);
+  }
 }
 
 //=================================================================================================
@@ -1102,6 +1160,42 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const int I)
     return C;
   }
   return myEmptyCurve;
+}
+
+//=================================================================================================
+
+int TopOpeBRepDS_DataStructure::FindEquivalentCurve(const int I, bool& theIsReversed) const
+{
+  int aRoot     = I;
+  theIsReversed = false;
+  while (Curve(aRoot).EquivalentCurve() > 0 && Curve(aRoot).EquivalentCurve() != aRoot)
+  {
+    theIsReversed ^= Curve(aRoot).IsEquivalentCurveReversed();
+    aRoot = Curve(aRoot).EquivalentCurve();
+  }
+  return aRoot;
+}
+
+//=================================================================================================
+
+void TopOpeBRepDS_DataStructure::MergeEquivalentCurves(const int  theFirst,
+                                                       const int  theSecond,
+                                                       const bool theIsReversed)
+{
+  bool      isFirstReversed  = false;
+  bool      isSecondReversed = false;
+  const int aFirstRoot       = FindEquivalentCurve(theFirst, isFirstReversed);
+  const int aSecondRoot      = FindEquivalentCurve(theSecond, isSecondReversed);
+  if (aFirstRoot == aSecondRoot)
+  {
+    return;
+  }
+
+  const int  aReference     = aFirstRoot < aSecondRoot ? aFirstRoot : aSecondRoot;
+  const int  anEquivalent   = aFirstRoot < aSecondRoot ? aSecondRoot : aFirstRoot;
+  const bool isRootReversed = isFirstReversed ^ isSecondReversed ^ theIsReversed;
+  ChangeCurve(aReference).SetEquivalentCurve(aReference, false);
+  ChangeCurve(anEquivalent).SetEquivalentCurve(aReference, isRootReversed);
 }
 
 //=================================================================================================

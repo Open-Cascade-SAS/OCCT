@@ -10,16 +10,16 @@ set aShapeData "
 DBRep_DrawableShape
 
 CASCADE Topology V1, (c) Matra-Datavision
-Locations 0 
+Locations 0
 Curve2ds 0
 Curves 2
-1 8111.3 2939 9014.2 0.23 5.2e-07 0.97 
-1 9996.2 2940 8568.4 -0.229 3.64e-07 -0.97 
+1 8111.3 2939 9014.2 0.23 5.2e-07 0.97
+1 9996.2 2940 8568.4 -0.229 3.64e-07 -0.97
 Polygon3D 0
 PolygonOnTriangulations 0
 Surfaces 2
-1 9056.7 2940 8807.3 1.29e-07 -1 5e-07 -1.26e-29 -5.03e-07 -1 1 1.288e-07 -6.48e-14 
-1 10000 1519 8584.45 -0.97 -8.47e-08 0.23 0.23 0 0.97 -8.24e-08 1 1.95e-08 
+1 9056.7 2940 8807.3 1.29e-07 -1 5e-07 -1.26e-29 -5.03e-07 -1 1 1.288e-07 -6.48e-14
+1 10000 1519 8584.45 -0.97 -8.47e-08 0.23 0.23 0 0.97 -8.24e-08 1 1.95e-08
 Triangulations 0
 
 TShapes 10
@@ -88,7 +88,7 @@ Fa
 0101000
 -2 0 *
 
--1 4 
+-1 4
 "
 
 set aFile [open "$imagedir/${casename}.brep" wb]

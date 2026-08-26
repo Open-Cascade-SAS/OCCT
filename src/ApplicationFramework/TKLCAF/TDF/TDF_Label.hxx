@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -29,6 +28,7 @@ class TDF_Attribute;
 class TDF_Data;
 class Standard_GUID;
 class TDF_IDFilter;
+class TDF_LabelNode;
 
 //! This class provides basic operations to define
 //! a label in a data structure.
@@ -261,32 +261,32 @@ public:
 
 private:
   //! Reserved to the friends.
-  TDF_Label(const TDF_LabelNodePtr& aNode);
+  TDF_Label(TDF_LabelNode* const& aNode);
 
   //! Adds an Attribute to <toNode>. Raises if there is
   //! already one.
-  Standard_EXPORT void AddToNode(const TDF_LabelNodePtr&           toNode,
+  Standard_EXPORT void AddToNode(TDF_LabelNode* const&             toNode,
                                  const occ::handle<TDF_Attribute>& anAttribute,
                                  const bool                        append) const;
 
   //! Forgets an Attribute from <fromNode>. Raises if
   //! the attribute is not in the structure.
-  Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
+  Standard_EXPORT void ForgetFromNode(TDF_LabelNode* const&             fromNode,
                                       const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Resumes a forgotten Attribute to <toNode>. Raises
   //! if the attribute is not in the structure.
-  Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&           fromNode,
+  Standard_EXPORT void ResumeToNode(TDF_LabelNode* const&             fromNode,
                                     const occ::handle<TDF_Attribute>& anAttribute) const;
 
-  Standard_EXPORT TDF_LabelNodePtr FindOrAddChild(const int aTag, const bool create) const;
+  Standard_EXPORT TDF_LabelNode* FindOrAddChild(const int aTag, const bool create) const;
 
   Standard_EXPORT void InternalDump(Standard_OStream&                                   anOS,
                                     const TDF_IDFilter&                                 aFilter,
                                     NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap,
                                     const bool extended) const;
 
-  TDF_LabelNodePtr myLabelNode;
+  TDF_LabelNode* myLabelNode;
 };
 
 #include <TDF_Label.lxx>

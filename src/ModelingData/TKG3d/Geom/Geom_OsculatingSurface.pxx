@@ -19,15 +19,14 @@
 
 #include <GeomAbs_IsoType.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <array>
+#include <cstddef>
 
 class Geom_Surface;
 class Geom_BSplineSurface;
+class GeomAdaptor_Surface;
 
 //! Internal helper class for Geom_OffsetSurface.
 //! Detects if the surface has punctual U or V isoparametric curve
@@ -110,23 +109,46 @@ private:
                               const occ::handle<Geom_BSplineSurface>& theBS,
                               occ::handle<Geom_BSplineSurface>&       theL) const;
 
-  //! Returns true if the isoparametric is quasi-punctual.
-  bool isQPunctual(const occ::handle<Geom_Surface>& theS,
-                   double                           theParam,
-                   GeomAbs_IsoType                  theIT,
-                   double                           theTolMin,
-                   double                           theTolMax) const;
+  //! Iteratively reduce an iso until the result is no longer quasi-punctual.
+  //! @param[in]  theInitSurf starting surface for this knot span
+  //! @param[in]  theParam parameter of the degenerate iso
+  //! @param[in]  theIso direction of the degenerate iso
+  //! @param[in]  theInitUKnot initial U-knot index
+  //! @param[in]  theInitVKnot initial V-knot index
+  //! @param[out] theSurface final reduced surface
+  //! @param[out] theNbReductions number of reductions performed
+  //! @return false if a reduction cannot be built
+  bool reduceAlongIso(const occ::handle<Geom_BSplineSurface>& theInitSurf,
+                      double                                  theParam,
+                      GeomAbs_IsoType                         theIso,
+                      int                                     theInitUKnot,
+                      int                                     theInitVKnot,
+                      occ::handle<Geom_BSplineSurface>&       theSurface,
+                      size_t&                                 theNbReductions) const;
 
-  //! Clear osculating flags.
-  void clearOsculFlags();
+  //! Returns true if the isoparametric is quasi-punctual.
+  bool isQPunctual(const GeomAdaptor_Surface& theAdaptor,
+                   double                     theParam,
+                   GeomAbs_IsoType            theIT,
+                   double                     theTolMin,
+                   double                     theTolMax) const;
+
+  struct OsculatingSurfaceData
+  {
+    occ::handle<Geom_BSplineSurface> Surface;
+    bool                             IsOpposite = false;
+  };
+
+  //! Append a second osculating surface and its derivative orientation.
+  void appendOsculatingSurface2(const occ::handle<Geom_BSplineSurface>& theSurface,
+                                size_t                                  theNbReductions);
 
 private:
-  occ::handle<Geom_Surface>                              myBasisSurf;
-  double                                                 myTol;
-  NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf1;
-  NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf2;
-  NCollection_Sequence<int>                              myKdeg;
-  std::array<bool, 4>                                    myAlong;
+  occ::handle<Geom_Surface>                                  myBasisSurf;
+  double                                                     myTol;
+  NCollection_LinearVector<occ::handle<Geom_BSplineSurface>> myOsculSurf1;
+  NCollection_LinearVector<OsculatingSurfaceData>            myOsculSurf2;
+  std::array<bool, 4>                                        myAlong;
 };
 
 #endif // _Geom_OsculatingSurface_HeaderFile

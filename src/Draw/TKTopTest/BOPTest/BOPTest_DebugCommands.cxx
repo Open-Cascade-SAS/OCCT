@@ -200,7 +200,7 @@ int bopds(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -262,7 +262,7 @@ int bopiterator(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -336,7 +336,7 @@ int bopinterf(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -416,7 +416,7 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -548,7 +548,7 @@ int bopnews(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -615,7 +615,7 @@ int bopindex(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -653,7 +653,7 @@ int bopsd(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -699,7 +699,7 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -849,7 +849,7 @@ int boppb(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -908,7 +908,7 @@ int bopcb(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -975,7 +975,7 @@ int bopsp(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -1069,7 +1069,7 @@ int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -1169,7 +1169,7 @@ int bopfav(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -1229,7 +1229,7 @@ int bopimage(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -1285,7 +1285,7 @@ int boporigin(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";
@@ -1346,7 +1346,7 @@ int bopfsd(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << " prepare PaveFiller first\n";

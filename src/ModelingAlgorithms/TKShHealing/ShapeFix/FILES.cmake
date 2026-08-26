@@ -6,11 +6,10 @@ set(OCCT_ShapeFix_FILES
   ShapeFix.hxx
   ShapeFix_ComposeShell.cxx
   ShapeFix_ComposeShell.hxx
-
-  ShapeFix_Edge.cxx
-  ShapeFix_Edge.hxx
   ShapeFix_EdgeConnect.cxx
   ShapeFix_EdgeConnect.hxx
+  ShapeFix_Edge.cxx
+  ShapeFix_Edge.hxx
   ShapeFix_EdgeProjAux.cxx
   ShapeFix_EdgeProjAux.hxx
   ShapeFix_Face.cxx

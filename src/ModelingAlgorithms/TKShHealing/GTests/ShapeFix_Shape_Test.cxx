@@ -13,6 +13,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -21,9 +22,18 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <ShapeExtend_Status.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeFix_Shape.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Wire.hxx>
 
 #include <gtest/gtest.h>
 
@@ -122,4 +132,61 @@ TEST(ShapeFix_ShapeTest, HealPrismFromSelfIntersectingFace)
 
   BRepCheck_Analyzer anAnalyzer(aFixer->Shape());
   EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// Migrated from tests/bugs/heal/bug24881.  A valid box must pass the same
+// reorder/gap-fixing sequence used by the DRAW OCC24881 command without
+// reporting a failure status for either 3D or 2D gaps.
+TEST(ShapeFix_ShapeTest, OCC24881_ValidBoxHasNoWireGapFailures)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 200.0, 300.0).Shape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  occ::handle<ShapeFix_Wire> aWireFix = new ShapeFix_Wire;
+  int                        aNbWires = 0;
+  for (TopExp_Explorer aFaceExplorer(aBox, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
+  {
+    const TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
+    for (TopoDS_Iterator aWireIterator(aFace); aWireIterator.More(); aWireIterator.Next())
+    {
+      const TopoDS_Wire aWire = TopoDS::Wire(aWireIterator.Value());
+      aWireFix->Load(aWire);
+      aWireFix->SetFace(aFace);
+      EXPECT_NO_THROW(aWireFix->FixReorder());
+
+      bool aFixed3d = false;
+      EXPECT_NO_THROW(aFixed3d = aWireFix->FixGaps3d());
+      EXPECT_FALSE(aWireFix->StatusGaps3d(ShapeExtend_FAIL));
+
+      bool aFixed2d = false;
+      EXPECT_NO_THROW(aFixed2d = aWireFix->FixGaps2d());
+      EXPECT_FALSE(aWireFix->StatusGaps2d(ShapeExtend_FAIL));
+      (void)aFixed3d;
+      (void)aFixed2d;
+      ++aNbWires;
+    }
+  }
+
+  EXPECT_EQ(aNbWires, 6);
+}
+
+// Migrated from tests/bugs/heal/bug25014.  The DRAW stwire +r path must be
+// safe even when the input wire contains no edges.
+TEST(ShapeFix_ShapeTest, OCC25014_EmptyWireReorderDoesNotThrow)
+{
+  BRep_Builder aBuilder;
+  TopoDS_Wire  anEmptyWire;
+  aBuilder.MakeWire(anEmptyWire);
+
+  occ::handle<ShapeExtend_WireData> aWireData  = new ShapeExtend_WireData;
+  occ::handle<ShapeAnalysis_Wire>   anAnalyzer = new ShapeAnalysis_Wire;
+  anAnalyzer->Load(aWireData);
+
+  ShapeFix_Wire aFixer;
+  aFixer.Init(anAnalyzer);
+  ShapeAnalysis_WireOrder anOrder(true, BRepBuilderAPI::Precision());
+  EXPECT_NO_THROW(anAnalyzer->CheckOrder(anOrder));
+  EXPECT_NO_THROW(aFixer.FixReorder(anOrder));
+  EXPECT_EQ(anOrder.NbEdges(), 0);
+  EXPECT_EQ(anEmptyWire.ShapeType(), TopAbs_WIRE);
 }

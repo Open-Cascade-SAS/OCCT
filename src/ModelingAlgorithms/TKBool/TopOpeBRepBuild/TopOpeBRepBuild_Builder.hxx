@@ -857,15 +857,18 @@ protected:
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mlf,
     const TopAbs_State                                                              state);
 
-  TopAbs_State                                                     myState1;
-  TopAbs_State                                                     myState2;
-  TopoDS_Shape                                                     myShape1;
-  TopoDS_Shape                                                     myShape2;
-  occ::handle<TopOpeBRepDS_HDataStructure>                         myDataStructure;
-  TopOpeBRepDS_BuildTool                                           myBuildTool;
-  occ::handle<NCollection_HArray1<TopoDS_Shape>>                   myNewVertices;
-  NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>         myNewEdges;
-  occ::handle<NCollection_HArray1<NCollection_List<TopoDS_Shape>>> myNewFaces;
+  TopAbs_State                                                             myState1;
+  TopAbs_State                                                             myState2;
+  TopoDS_Shape                                                             myShape1;
+  TopoDS_Shape                                                             myShape2;
+  occ::handle<TopOpeBRepDS_HDataStructure>                                 myDataStructure;
+  TopOpeBRepDS_BuildTool                                                   myBuildTool;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>>                           myNewVertices;
+  NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>                 myNewEdges;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myCoincidentEdges;
+  NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher>         myConsumedFaces;
+  NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher>         myConsumedFaceEdges;
+  occ::handle<NCollection_HArray1<NCollection_List<TopoDS_Shape>>>         myNewFaces;
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>
     mySplitIN;
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>

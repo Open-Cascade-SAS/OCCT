@@ -23,8 +23,10 @@
 
 /**
  * This class provides tool handling one of partitions (the set of
- * homogeneous elements) in the OCAF based model`s data structure
+ * homogeneous elements) in the OCAF based model's data structure
  */
+
+class TObj_Model;
 
 class TObj_Partition : public TObj_Object
 {
@@ -142,7 +144,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(TObj_Partition, TObj_Object)
 
 public:
-  friend class TObj_Model;
+  friend TObj_Model;
 };
 
 //! Define handle class for TObj_Partition

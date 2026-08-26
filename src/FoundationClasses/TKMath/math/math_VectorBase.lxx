@@ -20,6 +20,22 @@
 #include <stdio.h>
 
 template <typename TheItemType>
+math_VectorBase<TheItemType>::math_VectorBase(const size_t theSize)
+    : Array(theSize <= math_VectorBase::THE_BUFFER_SIZE
+              ? NCollection_Array1<TheItemType>(myBuffer.data(), theSize)
+              : NCollection_Array1<TheItemType>(theSize))
+{
+}
+
+template <typename TheItemType>
+math_VectorBase<TheItemType>::math_VectorBase(const size_t      theSize,
+                                              const TheItemType theInitialValue)
+    : math_VectorBase(theSize)
+{
+  Array.Init(theInitialValue);
+}
+
+template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const int theLower, const int theUpper)
     : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
               ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)

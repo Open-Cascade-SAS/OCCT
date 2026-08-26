@@ -10,8 +10,8 @@ This package contains template-based implementations of various optimization alg
 
 ### 1D Minimization (MathOpt_Brent.hxx)
 
-- **Brent**: Combines golden section search with parabolic interpolation for robust 1D minimization
-- **Golden**: Golden section search for simple, guaranteed convergence
+- **Brent**: Combines golden-section search with parabolic interpolation for bounded 1D minimization
+- **Golden**: Contracts a bounded 1D interval using golden-section steps
 - **BrentWithBracket**: Automatic bracket search followed by Brent's method
 
 ### Gradient-Free N-D Optimization
@@ -23,10 +23,10 @@ This package contains template-based implementations of various optimization alg
 
 ### Gradient-Based N-D Optimization
 
-- **BFGS** (MathOpt_BFGS.hxx): Quasi-Newton method with superlinear convergence
+- **BFGS** (MathOpt_BFGS.hxx): Quasi-Newton method with Armijo backtracking
 - **L-BFGS** (MathOpt_BFGS.hxx): Limited-memory BFGS for large-scale problems
 - **FRPR** (MathOpt_FRPR.hxx): Fletcher-Reeves-Polak-Ribiere conjugate gradient
-- **Newton** (MathOpt_Newton.hxx): Newton's method with Hessian for quadratic convergence
+- **Newton** (MathOpt_Newton.hxx): Hessian-based method with line search
 
 ### Constrained Optimization
 
@@ -49,9 +49,9 @@ public:
 
 // Use BFGS optimization
 MyFunction aFunc;
-math_Vector aStart(1, 2);
-aStart(1) = 0.0;
-aStart(2) = 0.0;
+math_Vector aStart(size_t{2});
+aStart[0] = 0.0;
+aStart[1] = 0.0;
 
 MathOpt::VectorResult aResult = MathOpt::BFGS(aFunc, aStart);
 if (aResult.IsDone())
@@ -70,3 +70,21 @@ if (aResult.IsDone())
 - MathUtils_Deriv.hxx - Numerical differentiation
 - MathUtils_Bracket.hxx - Bracket finding utilities
 - MathLin_*.hxx - Linear algebra solvers
+
+MathOpt reads input vectors positionally, regardless of their lower bounds, and returns zero-based
+result vectors. Dimensions and indices use `size_t`; bounded iteration counters stored in
+configurations and results use `uint32_t`.
+
+`PSO`, `DifferentialEvolution`, `MultiStart`, and `PSOHybrid` treat lower and upper vectors as
+inclusive box bounds; objective callbacks are evaluated only inside that box. Stochastic candidate
+evaluations that report failure are rejected without invalidating an existing finite best candidate.
+If PSO or Differential Evolution exhausts `MaxIterations` before its stopping criterion, the result
+has status `MaxIterations` while retaining the best-so-far `Solution` and `Value`. A seed particle's
+optional `Value` is advisory only: PSO always evaluates the callback at the clamped seed position.
+
+`Config::Tolerance`, `Config::XTolerance`, and `Config::FTolerance` are independent after
+construction. Assigning one field does not update the others.
+
+For BFGS, `FTolerance` is the absolute gradient-norm tolerance. If the coordinate step reaches
+`XTolerance`, `RelativeTolerance` additionally scales the initial gradient norm; a small objective
+change alone is not treated as convergence because it depends on the arbitrary objective offset.

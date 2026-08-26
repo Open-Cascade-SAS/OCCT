@@ -17,6 +17,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <type_traits>
 #include <vector>
 #include <set>
 
@@ -629,6 +630,33 @@ TEST_F(NCollection_DataMapTest, ConstItemsIteration)
   }
 
   EXPECT_EQ(2, aCount);
+}
+
+TEST_F(NCollection_DataMapTest, StandardIteratorContract)
+{
+  using MapType = NCollection_DataMap<int, TCollection_AsciiString>;
+  static_assert(std::is_same_v<decltype(std::declval<MapType&>().begin()), MapType::iterator>);
+  static_assert(
+    std::is_same_v<decltype(std::declval<const MapType&>().begin()), MapType::const_iterator>);
+  static_assert(
+    std::is_same_v<decltype(std::declval<const MapType&>().end()), MapType::const_iterator>);
+
+  MapType aMap;
+  aMap.Bind(1, "one");
+  aMap.Bind(2, "two");
+
+  const MapType& aConstMap = aMap;
+  auto           anIt      = aMap.begin();
+  auto           aConstIt  = aConstMap.begin();
+  EXPECT_EQ(anIt, aConstIt);
+  EXPECT_EQ(aMap.end(), aConstMap.end());
+
+  for (auto& aValue : aMap)
+  {
+    aValue += "!";
+  }
+  EXPECT_STREQ("one!", aMap.Find(1).ToCString());
+  EXPECT_STREQ("two!", aMap.Find(2).ToCString());
 }
 
 // Test iterator equality for Items() view

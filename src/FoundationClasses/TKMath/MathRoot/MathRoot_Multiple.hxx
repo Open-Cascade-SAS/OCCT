@@ -32,7 +32,8 @@ namespace MathRoot
 //! 1. Sample function at NbSamples uniform points
 //! 2. Detect all sign changes and zero crossings
 //! 3. For each bracket, apply Brent's method to find precise root
-//! 4. Check for extrema that might touch zero
+//! Value-only sampling cannot generally detect tangential roots. Such a root is returned only
+//! when a sample itself has an acceptable residual.
 //!
 //! @tparam Function type with Value(double theX, double& theF) method
 //! @param theFunc function object to find roots of
@@ -46,22 +47,29 @@ MultipleResult FindAllRoots(Function&             theFunc,
                             double                theUpper,
                             const MultipleConfig& theConfig = MultipleConfig())
 {
-  const int   aNbSamples = std::max(2 * theConfig.NbSamples, 20);
-  math_Vector aSamples(0, aNbSamples);
+  if (!Utils::IsValidMultipleInput(theLower, theUpper, theConfig))
+  {
+    MultipleResult aResult;
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
 
-  MultipleSampleValueFn<Function>     aSampleFn{theFunc, aSamples, theConfig.Offset};
-  MultipleGetValueFn                  aGetValue{aSamples};
-  MultipleBrentValueWrapper<Function> aWrapper{theFunc, theConfig.Offset};
-  MultipleGetRootValueFn<Function>    aGetRootValue{theFunc};
+  const size_t aNbSamples = std::max<size_t>(2 * theConfig.NbSamples, 20);
+  math_Vector  aSamples(aNbSamples + 1);
 
-  return FindAllRootsImpl(theLower,
-                          theUpper,
-                          theConfig,
-                          aSampleFn,
-                          aGetValue,
-                          aWrapper,
-                          aGetRootValue,
-                          MultipleNoExtraHandler());
+  Utils::MultipleSampleValueFn<Function>     aSampleFn{theFunc, aSamples, theConfig.Offset};
+  Utils::MultipleGetValueFn                  aGetValue{aSamples};
+  Utils::MultipleBrentValueWrapper<Function> aWrapper{theFunc, theConfig.Offset};
+  Utils::MultipleGetRootValueFn<Function>    aGetRootValue{theFunc};
+
+  return Utils::FindAllRootsImpl(theLower,
+                                 theUpper,
+                                 theConfig,
+                                 aSampleFn,
+                                 aGetValue,
+                                 aWrapper,
+                                 aGetRootValue,
+                                 Utils::MultipleNoExtraHandler());
 }
 
 //! Finds all real roots of a function with derivative within range [theLower, theUpper].
@@ -81,7 +89,7 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
                                           double                theUpper,
                                           const MultipleConfig& theConfig = MultipleConfig())
 {
-  return FindAllRootsWithDerivativeImpl(theFunc, theLower, theUpper, theConfig);
+  return Utils::FindAllRootsWithDerivativeImpl(theFunc, theLower, theUpper, theConfig);
 }
 
 //! Convenience alias using default configuration.
@@ -92,7 +100,10 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
 //! @param theNbSamples number of sample points
 //! @return result with all found roots
 template <typename Function>
-MultipleResult FindAllRoots(Function& theFunc, double theLower, double theUpper, int theNbSamples)
+MultipleResult FindAllRoots(Function& theFunc,
+                            double    theLower,
+                            double    theUpper,
+                            size_t    theNbSamples)
 {
   MultipleConfig aConfig;
   aConfig.NbSamples = theNbSamples;

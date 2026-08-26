@@ -22,11 +22,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPAlgo_PPaveFiller.hxx>
 #include <BOPAlgo_BuilderShape.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 #include <BOPAlgo_Operation.hxx>
-#include <BOPDS_PDS.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
@@ -38,6 +36,8 @@
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
 class TopoDS_Shape;
+class BOPAlgo_PaveFiller;
+class BOPDS_DS;
 
 //!
 //! The class is a General Fuse algorithm - base algorithm for the
@@ -87,10 +87,10 @@ public:
   Standard_EXPORT void Clear() override;
 
   //! Returns the PaveFiller, algorithm for sub-shapes intersection.
-  BOPAlgo_PPaveFiller PPaveFiller() { return myPaveFiller; }
+  BOPAlgo_PaveFiller* PPaveFiller() { return myPaveFiller; }
 
   //! Returns the Data Structure, holder of intersection information.
-  BOPDS_PDS PDS() { return myDS; }
+  BOPDS_DS* PDS() { return myDS; }
 
   //! Returns the Context, tool for cashing heavy algorithms.
   occ::handle<IntTools_Context> Context() const { return myContext; }
@@ -492,8 +492,8 @@ protected:                                    //! @name Fields
   NCollection_List<TopoDS_Shape> myArguments; //!< Arguments of the operation
   // clang-format off
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapFence;               //!< Fence map providing the uniqueness of the shapes in the list of arguments
-  BOPAlgo_PPaveFiller myPaveFiller;             //!< Pave Filler - algorithm for sub-shapes intersection
-  BOPDS_PDS myDS;                               //!< Data Structure - holder of intersection information
+  BOPAlgo_PaveFiller* myPaveFiller;             //!< Pave Filler - algorithm for sub-shapes intersection
+  BOPDS_DS* myDS;                               //!< Data Structure - holder of intersection information
   occ::handle<IntTools_Context> myContext;           //!< Context - tool for cashing heavy algorithms such as Projectors and Classifiers
   int myEntryPoint;                //!< EntryPoint - controls the deletion of the PaveFiller, which could live longer than the Builder
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myImages;  //!< Images - map of Images of the sub-shapes of arguments
