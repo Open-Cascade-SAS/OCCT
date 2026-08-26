@@ -37,6 +37,9 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 
 namespace
 {
@@ -122,6 +125,28 @@ static TDF_Label AddDatum(GdtContext&      theContext,
   }
   anAttribute->SetObject(anObject);
   theContext.DimTolTool->SetDatumToGeomTol(aDatum, theTolerance);
+  return aDatum;
+}
+
+static TDF_Label AddBareDatum(GdtContext& theContext,
+                              const char* theName,
+                              const bool  theWithPlane,
+                              const bool  theWithPoint)
+{
+  const TDF_Label            aDatum = theContext.DimTolTool->AddDatum();
+  occ::handle<XCAFDoc_Datum> anAttribute;
+  EXPECT_TRUE(aDatum.FindAttribute(XCAFDoc_Datum::GetID(), anAttribute));
+  occ::handle<XCAFDimTolObjects_DatumObject> anObject = anAttribute->GetObject();
+  anObject->SetName(new TCollection_HAsciiString(theName));
+  if (theWithPlane)
+  {
+    anObject->SetPlane(gp_Ax2(gp_Pnt(6.0, 6.0, 6.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)));
+  }
+  if (theWithPoint)
+  {
+    anObject->SetPoint(gp_Pnt(7.0, 7.0, 7.0));
+  }
+  anAttribute->SetObject(anObject);
   return aDatum;
 }
 
@@ -356,4 +381,49 @@ TEST(XCAFDoc_GDT_Test, GdtTolerances_A2_TwoDatums)
   EXPECT_EQ(aDatumObjectB->GetPosition(), 2);
   EXPECT_EQ(aDatumObjectA->GetModifiers().Length(), 1);
   EXPECT_EQ(aDatumObjectB->GetModifiers().Length(), 0);
+}
+
+// The datum point is read back from its own array. It used to be built with the X of the
+// annotation plane's location, which also dereferenced a null handle when there was no plane.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PointIsReadFromItsOwnArray)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", true, true);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_TRUE(anObject->HasPlane());
+  ASSERT_TRUE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().X(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().X(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Y(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Z(), 7.0);
+}
+
+// A datum may carry a point without an annotation plane, in which case the plane's array is never
+// bound and must not be read.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PointWithoutPlane)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", false, true);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_FALSE(anObject->HasPlane());
+  ASSERT_TRUE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().X(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Y(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Z(), 7.0);
+}
+
+// A datum with a plane and no point is what a STEP import produces, and is unaffected.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PlaneWithoutPoint)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", true, false);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_TRUE(anObject->HasPlane());
+  EXPECT_FALSE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().X(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().Y(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().Z(), 6.0);
 }
