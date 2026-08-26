@@ -49,15 +49,6 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver, PCDM_StorageDriver
 
 #define FAILSTR "Failed to write xsi:schemaLocation : "
 
-// #define TAKE_TIMES
-static void take_time(const int, const char*, const occ::handle<Message_Messenger>&)
-#ifdef TAKE_TIMES
-  ;
-#else
-{
-}
-#endif
-
 //=================================================================================================
 
 XmlLDrivers_DocumentStorageDriver::XmlLDrivers_DocumentStorageDriver(
@@ -116,7 +107,6 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
                                               const Message_ProgressRange&     theRange)
 {
   occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
-  ::take_time(~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
 
   // Create new DOM_Document
   XmlObjMgt_Document aDOMDoc = XmlObjMgt_Document::createDocument("document");
@@ -145,8 +135,6 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
 
       throw Standard_Failure("File cannot be opened for writing");
     }
-
-    ::take_time(0, " +++++ Fin formatting to XML : ", aMessageDriver);
   }
 }
 
@@ -357,7 +345,6 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   }
   // 2b. Write number of objects into the info section
   anInfoElem.setAttribute("objnb", anObjNb);
-  ::take_time(0, " +++++ Fin DOM data for OCAF : ", aMessageDriver);
 
   // 3. Clear relocation table
   //    If the application needs to use myRelocTable to store additional
@@ -367,7 +354,6 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   // 4. Write Shapes section
   if (WriteShapeSection(theElement, aFormatVersion, aPS.Next()))
   {
-    ::take_time(0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
   }
   if (!aPS.More())
   {
@@ -429,42 +415,6 @@ occ::handle<XmlMDF_ADriverTable> XmlLDrivers_DocumentStorageDriver::AttributeDri
 {
   return XmlLDrivers::AttributeDrivers(theMessageDriver);
 }
-
-//=======================================================================
-// function : take_time
-// class    : static
-// purpose  : output astronomical time elapsed
-//=======================================================================
-#ifdef TAKE_TIMES
-  #include <time.h>
-  #include <sys/timeb.h>
-  #include <sys/types.h>
-  #include <stdio.h>
-  #ifndef _WIN32
-extern "C" int ftime(struct timeb* tp);
-  #endif
-struct timeb tmbuf0;
-
-static void take_time(const int                             isReset,
-                      const char*                           aHeader,
-                      const occ::handle<Message_Messenger>& aMessageDriver)
-{
-  struct timeb tmbuf;
-  ftime(&tmbuf);
-  TCollection_ExtendedString aMessage((const char*)aHeader);
-  if (isReset)
-    tmbuf0 = tmbuf;
-  else
-  {
-    char take_tm_buf[64];
-    Sprintf(take_tm_buf,
-            "%9.2f s ++++",
-            double(tmbuf.time - tmbuf0.time) + double(tmbuf.millitm - tmbuf0.millitm) / 1000.);
-    aMessage += take_tm_buf;
-  }
-  aMessageDriver->Send(aMessage.ToExtString(), Message_Trace);
-}
-#endif
 
 //=================================================================================================
 

@@ -44,14 +44,10 @@
 #include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceNYI();
-extern bool TopOpeBRepTool_GettraceKRO();
 extern bool TopOpeBRep_GettracePROEDG();
 extern bool TopOpeBRep_GetcontextTOL0();
 extern bool TopOpeBRep_GetcontextNOFEI();
 extern bool TopOpeBRep_GettraceFITOL();
-  #include <TopOpeBRepTool_KRO.hxx>
-Standard_EXPORT TOPKRO KRO_DSFILLER_INTEE("intersection edge/edge");
 #endif
 
 // la surface de reference peut etre celle de la 1ere ou la 2eme face
@@ -494,11 +490,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   }
 
   // compute the intersection
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTEE.Start();
-#endif
-
   double tol1 = myTol1, tol2 = myTol2;
   // Wrong !!!
   /*  if ( !myTolForced ) {
@@ -673,10 +664,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
     } // (isvertex && esd)
   } // MorePoint
 
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepTool_GettraceKRO())
-    KRO_DSFILLER_INTEE.Stop();
-#endif
 } // Perform
 
 //=================================================================================================
@@ -723,10 +710,6 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
 
   if (t1 != GeomAbs_Circle)
   {
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepTool_GettraceNYI())
-      std::cout << "TopOpeBRep_EdgesIntersector : EdgesSameDomain on NYI curve type" << std::endl;
-#endif
     return SetSameDomain(false);
   }
 
