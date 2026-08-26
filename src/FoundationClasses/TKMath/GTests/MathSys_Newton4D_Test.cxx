@@ -81,9 +81,9 @@ TEST_F(MathSys_Newton4DTest, Solve4D_Bounded)
     theF[2] = theX3 - 3.0;
     theF[3] = theX4 - 4.0;
 
-    for (int r = 0; r < 4; ++r)
+    for (size_t r = 0; r < 4; ++r)
     {
-      for (int c = 0; c < 4; ++c)
+      for (size_t c = 0; c < 4; ++c)
       {
         theJ[r][c] = (r == c) ? 1.0 : 0.0;
       }
@@ -118,9 +118,9 @@ TEST_F(MathSys_Newton4DTest, Solve4D_SmallStepAtRoot_ReturnsOK)
     theF[2] = theX3 - 3.0;
     theF[3] = theX4 - 4.0;
 
-    for (int r = 0; r < 4; ++r)
+    for (size_t r = 0; r < 4; ++r)
     {
-      for (int c = 0; c < 4; ++c)
+      for (size_t c = 0; c < 4; ++c)
       {
         theJ[r][c] = (r == c) ? 1.0 : 0.0;
       }
@@ -160,9 +160,9 @@ TEST_F(MathSys_Newton4DTest, Solve4D_TinyStepLargeResidual_ReturnsMaxIterations)
     theF[2] = 1.0;
     theF[3] = 1.0;
 
-    for (int r = 0; r < 4; ++r)
+    for (size_t r = 0; r < 4; ++r)
     {
-      for (int c = 0; c < 4; ++c)
+      for (size_t c = 0; c < 4; ++c)
       {
         theJ[r][c] = (r == c) ? 1.0e20 : 0.0;
       }
@@ -174,9 +174,10 @@ TEST_F(MathSys_Newton4DTest, Solve4D_TinyStepLargeResidual_ReturnsMaxIterations)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance    = 1.0e-8;
-  aOptions.XTolerance    = 1.0e-16;
-  aOptions.MaxIterations = 10;
+  aOptions.FTolerance       = 1.0e-8;
+  aOptions.XTolerance       = 1.0e-16;
+  aOptions.MaxIterations    = 10;
+  aOptions.EnableLineSearch = false;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
@@ -193,10 +194,10 @@ TEST_F(MathSys_Newton4DTest, Solve4D_InvalidInput)
                   double /*theX4*/,
                   double theF[4],
                   double theJ[4][4]) -> bool {
-    for (int i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
       theF[i] = 0.0;
-      for (int j = 0; j < 4; ++j)
+      for (size_t j = 0; j < 4; ++j)
       {
         theJ[i][j] = (i == j) ? 1.0 : 0.0;
       }
@@ -223,6 +224,12 @@ namespace
 class PlaneSurfaceEval
 {
 public:
+  PlaneSurfaceEval(double theZOffset, double theCurvature)
+      : myZOffset(theZOffset),
+        myCurvature(theCurvature)
+  {
+  }
+
   void D2(double  theU,
           double  theV,
           gp_Pnt& theP,
@@ -232,20 +239,24 @@ public:
           gp_Vec& theD2VV,
           gp_Vec& theD2UV) const
   {
-    theP.SetCoord(theU, theV, 0.0);
-    theD1U.SetCoord(1.0, 0.0, 0.0);
-    theD1V.SetCoord(0.0, 1.0, 0.0);
-    theD2UU.SetCoord(0.0, 0.0, 0.0);
-    theD2VV.SetCoord(0.0, 0.0, 0.0);
+    theP.SetCoord(theU, theV, myZOffset + myCurvature * (theU * theU + theV * theV));
+    theD1U.SetCoord(1.0, 0.0, 2.0 * myCurvature * theU);
+    theD1V.SetCoord(0.0, 1.0, 2.0 * myCurvature * theV);
+    theD2UU.SetCoord(0.0, 0.0, 2.0 * myCurvature);
+    theD2VV.SetCoord(0.0, 0.0, 2.0 * myCurvature);
     theD2UV.SetCoord(0.0, 0.0, 0.0);
   }
+
+private:
+  double myZOffset;
+  double myCurvature;
 };
 } // namespace
 
 TEST_F(MathSys_Newton4DTest, SolveSurfaceSurfaceExtrema4D_Smoke)
 {
-  PlaneSurfaceEval aSurf1;
-  PlaneSurfaceEval aSurf2;
+  PlaneSurfaceEval aSurf1(0.0, 1.0);
+  PlaneSurfaceEval aSurf2(2.0, -1.0);
 
   MathSys::NewtonBoundsN<4> aBounds;
   aBounds.Min = {-10.0, -10.0, -10.0, -10.0};
@@ -257,10 +268,73 @@ TEST_F(MathSys_Newton4DTest, SolveSurfaceSurfaceExtrema4D_Smoke)
   const MathSys::NewtonResultN<4> aResult =
     MathSys::SolveSurfaceSurfaceExtrema4D(aSurf1,
                                           aSurf2,
-                                          std::array<double, 4>{1.0, 2.0, 1.0, 2.0},
+                                          std::array<double, 4>{0.1, -0.1, -0.1, 0.1},
                                           aBounds,
                                           aOptions);
 
   EXPECT_TRUE(aResult.IsDone());
+  EXPECT_GT(aResult.NbIterations, 0u);
+  for (double aParameter : aResult.X)
+  {
+    EXPECT_NEAR(aParameter, 0.0, 1.0e-8);
+  }
   EXPECT_NEAR(aResult.ResidualNorm, 0.0, 1.0e-12);
+}
+
+TEST_F(MathSys_Newton4DTest, Solve4D_ScaleRelativeJacobian)
+{
+  const auto aFunc =
+    [](double theX1, double theX2, double theX3, double theX4, double theF[4], double theJ[4][4]) {
+      constexpr double THE_SCALE = 1.0e150;
+      const double     aX[4]     = {theX1, theX2, theX3, theX4};
+      for (size_t aRow = 0; aRow < 4; ++aRow)
+      {
+        theF[aRow] = THE_SCALE * (aX[aRow] - static_cast<double>(aRow + 1));
+        for (size_t aCol = 0; aCol < 4; ++aCol)
+        {
+          theJ[aRow][aCol] = (aRow == aCol) ? THE_SCALE : 0.0;
+        }
+      }
+      return true;
+    };
+  MathSys::NewtonBoundsN<4> aBounds;
+  aBounds.HasBounds = false;
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance   = 1.0e-12;
+  aOptions.MaxStepRatio = 10.0;
+  const MathSys::NewtonResultN<4> aResult =
+    MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
+  ASSERT_TRUE(aResult.IsDone());
+  for (size_t anIndex = 0; anIndex < 4; ++anIndex)
+  {
+    EXPECT_NEAR(aResult.X[anIndex], static_cast<double>(anIndex + 1), 1.0e-12);
+  }
+}
+
+TEST_F(MathSys_Newton4DTest, HeterogeneousUnboundedSystemTakesFullNewtonStep)
+{
+  const auto aFunc =
+    [](double theX0, double theX1, double theX2, double theX3, double theF[4], double theJ[4][4]) {
+      const double aX[4]      = {theX0, theX1, theX2, theX3};
+      const double aTarget[4] = {100.0, -200.0, 300.0, -400.0};
+      const double aScale[4]  = {1.0e20, 1.0, 1.0, 1.0};
+      for (size_t aRow = 0; aRow < 4; ++aRow)
+      {
+        theF[aRow] = aScale[aRow] * (aX[aRow] - aTarget[aRow]);
+        for (size_t aCol = 0; aCol < 4; ++aCol)
+        {
+          theJ[aRow][aCol] = aRow == aCol ? aScale[aRow] : 0.0;
+        }
+      }
+      return true;
+    };
+  MathSys::NewtonBoundsN<4> aBounds;
+  aBounds.HasBounds = false;
+
+  const MathSys::NewtonResultN<4> aResult = MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(aResult.X[0], 100.0);
+  EXPECT_DOUBLE_EQ(aResult.X[1], -200.0);
+  EXPECT_DOUBLE_EQ(aResult.X[2], 300.0);
+  EXPECT_DOUBLE_EQ(aResult.X[3], -400.0);
 }

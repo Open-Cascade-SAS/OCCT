@@ -26,9 +26,6 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <OSD.hxx>
 #include <OSD_Thread.hxx>
 #include <PCDM_ReaderFilter.hxx>
@@ -155,30 +152,18 @@ static occ::handle<TDocStd_Document> SaveAndOpen(
     return SaveAndOpenStream(theApplication, theDocument);
   }
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path      aPath;
-  aDirectory.Path(aPath);
-  aPath.SetName(theTestName);
-  aPath.SetExtension(strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
-
-  TCollection_AsciiString aSystemName;
-  aPath.SystemName(aSystemName);
-  const TCollection_ExtendedString aFileName(aSystemName, true);
-
+  SCOPED_TRACE(theTestName);
+  EXPECT_EQ(theDocument->StorageFormat(), TCollection_ExtendedString(theFormat));
+  std::stringstream aStream;
   theDocument->NewCommand();
-  EXPECT_EQ(theApplication->SaveAs(theDocument, aFileName), PCDM_SS_OK);
-  OSD_File aFile(aPath);
-  EXPECT_TRUE(aFile.Exists());
+  EXPECT_EQ(theApplication->SaveAs(theDocument, aStream), PCDM_SS_OK);
+  EXPECT_FALSE(aStream.str().empty());
 
   theApplication->Close(theDocument);
+  aStream.seekg(0);
   occ::handle<TDocStd_Document> aRestored;
-  EXPECT_EQ(theApplication->Open(aFileName, aRestored), PCDM_RS_OK);
+  EXPECT_EQ(theApplication->Open(aStream, aRestored), PCDM_RS_OK);
   EXPECT_FALSE(aRestored.IsNull());
-
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
   return aRestored;
 }
 
@@ -345,7 +330,7 @@ TEST(TDocStd_Storage_Test, CafBug_31785_BackgroundXbfStreamOpen)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStoreStatus = anApplication->SaveAs(aDocument, aStream);
-  ASSERT_TRUE(aStoreStatus == PCDM_SS_OK || aStoreStatus == PCDM_SS_No_Obj);
+  ASSERT_EQ(aStoreStatus, PCDM_SS_No_Obj);
   const std::string aData = aStream.str();
   ASSERT_FALSE(aData.empty());
   anApplication->Close(aDocument);
@@ -2760,7 +2745,7 @@ static void RunCafBug31839_2Stream()
     OpenDocumentStream(anApplication, aStream, aRestored, aSkipShapes);
   // BinOcaf reports a generic driver failure when the filter rejects every attribute;
   // DRAW ignores this status and validates the resulting document contents instead.
-  EXPECT_TRUE(aSkipStatus == PCDM_RS_OK || aSkipStatus == PCDM_RS_DriverFailure);
+  EXPECT_EQ(aSkipStatus, PCDM_RS_DriverFailure);
   ASSERT_FALSE(aRestored.IsNull());
   const TDF_Label aSkippedBoxLabel = LabelByEntry(aRestored, "0:1");
   const TDF_Label aSkippedFace1    = LabelByEntry(aRestored, "0:1:1");
@@ -3750,7 +3735,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_24164_1_FunctionStream)
   RunCafBug24164_1Stream();
 }
 
-// bugs/caf/bug158: saving an empty BinOcaf document reports a valid empty-store status.
+// bugs/caf/bug158: an empty BinOcaf document can be stored through the stream API.
 TEST(TDocStd_Storage_Test, Cbf_CafBug_158_EmptyDocumentStreamSave)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
@@ -3759,12 +3744,13 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_158_EmptyDocumentStreamSave)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
-  EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
+  EXPECT_EQ(aStatus, PCDM_SS_No_Obj);
+  EXPECT_FALSE(aStream.str().empty());
   EXPECT_NO_THROW(anApplication->Close(aDocument));
 }
 
 // bugs/caf/bug267_1: an empty BinOcaf document can be stored through the
-// stream API and produces the same valid empty-store status as DRAW SaveAs.
+// stream API and produces the expected empty-document payload.
 TEST(TDocStd_Storage_Test, Cbf_CafBug_267_1_EmptyDocumentStreamSave)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
@@ -3773,7 +3759,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_267_1_EmptyDocumentStreamSave)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
-  EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
+  EXPECT_EQ(aStatus, PCDM_SS_No_Obj);
   EXPECT_FALSE(aStream.str().empty());
   EXPECT_NO_THROW(anApplication->Close(aDocument));
 }

@@ -53,20 +53,6 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRep_GettraceNVP(int a, int b, int c, int d, int e);
-
-bool GLOBAL_bvpr = false;
-
-void debvpr() {};
-
-void debvprmess(int f1, int f2, int il, int vp, int si)
-{
-  std::cout << "f1,f2,il,vp,si : " << f1 << "," << f2 << "," << il << "," << vp << "," << si
-            << std::endl;
-  std::cout.flush();
-  debvpr();
-}
-
 void debpoint(int i)
 {
   std::cout << "+ debpoint" << i << std::endl;
@@ -948,13 +934,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
     dgOOe     = BRep_Tool::Degenerated(OOedge);
   }
 
-#ifdef OCCT_DEBUG
-  int ili = myLine->Index(), ivp = iVP, isi = ShapeIndex;
-  GLOBAL_bvpr = TopOpeBRep_GettraceNVP(myexF1, myexF2, ili, ivp, isi);
-  if (GLOBAL_bvpr)
-    debvprmess(myexF1, myexF2, ili, ivp, isi);
-#endif
-
   // degenerated edge processing
   // ---------------------------
   int               PVIndex = 0; // POINT or VERTEX index
@@ -1382,11 +1361,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
 
   // Gfound = VP corresponds with an existing geometry of ShapeIndex
   bool Gfound = (EPIfound || CPIfound);
-#ifdef OCCT_DEBUG
-  if (GLOBAL_bvpr)
-    debvprmess(myexF1, myexF2, ili, ivp, isi);
-#endif
-
   // ===================================================================
   //          Current VPoint VP is kept
   // ===================================================================
@@ -1661,11 +1635,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
       addEPI = true;
     }
   } // EPIfound
-
-#ifdef OCCT_DEBUG
-  if (GLOBAL_bvpr)
-    debvprmess(myexF1, myexF2, ili, ivp, isi);
-#endif
 
   // xpu030998 : edge has restriction on OOface, do NOT append EPIf
   //     cto904A3 (edge19,OOface14,vG16),

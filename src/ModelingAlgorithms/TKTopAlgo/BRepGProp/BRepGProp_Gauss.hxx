@@ -14,47 +14,43 @@
 #ifndef _BRepGProp_Gauss_HeaderFile
 #define _BRepGProp_Gauss_HeaderFile
 
-#include <NCollection_Handle.hxx>
-#include <NCollection_Array1.hxx>
+#include <Standard.hxx>
 
-template <typename T>
-class math_VectorBase;
-using math_Vector = math_VectorBase<double>;
+#include <functional>
+
+class BRepGProp_Domain;
+class BRepGProp_Face;
+class gp_Mat;
+class gp_Pnt;
+class gp_Vec;
 
 //! Class performs computing of the global inertia properties
 //! of geometric object in 3D space by adaptive and non-adaptive
 //! 2D Gauss integration algorithms.
 class BRepGProp_Gauss
 {
+  using GaussFunc = std::function<double(double, double)>;
+
   //! Auxiliary structure for storing of inertial moments.
   struct Inertia
   {
     //! Mass of the current system (without density).
     //! May correspond to: length, area, volume.
-    double Mass;
+    double Mass = 0.0;
 
     //! Static moments of inertia.
-    double Ix;
-    double Iy;
-    double Iz;
+    double Ix = 0.0;
+    double Iy = 0.0;
+    double Iz = 0.0;
 
     //! Quadratic moments of inertia.
-    double Ixx;
-    double Iyy;
-    double Izz;
-    double Ixy;
-    double Ixz;
-    double Iyz;
-
-    //! Default constructor.
-    Inertia();
-
-    //! Zeroes all values.
-    void Reset();
+    double Ixx = 0.0;
+    double Iyy = 0.0;
+    double Izz = 0.0;
+    double Ixy = 0.0;
+    double Ixz = 0.0;
+    double Iyz = 0.0;
   };
-
-  typedef NCollection_Handle<NCollection_Array1<Inertia>> InertiaArray;
-  typedef double (*BRepGProp_GaussFunc)(const double, const double);
 
 public: //! @name public API
   //! Describes types of geometric objects.
@@ -63,14 +59,14 @@ public: //! @name public API
   //! -- Point and Surface;
   //! -- Plane and Surface.
   //! - Sinert is face in 3D space.
-  typedef enum
+  enum class GaussType
   {
     Vinert = 0,
     Sinert
-  } BRepGProp_GaussType;
+  };
 
   //! Constructor
-  Standard_EXPORT explicit BRepGProp_Gauss(const BRepGProp_GaussType theType);
+  Standard_EXPORT explicit BRepGProp_Gauss(const GaussType theType);
 
   //! Computes the global properties of a solid region of 3D space which can be
   //! delimited by the surface and point or surface and plane. Surface can be closed.
@@ -233,32 +229,10 @@ private: //! @name private methods
                gp_Mat&                         theOutMatrixOfInertia,
                double&                         theOutMass);
 
-  static int MaxSubs(const int theN, const int theCoeff = 32);
-
-  static void Init(NCollection_Handle<math_Vector>& theOutVec,
-                   const double                     theValue,
-                   const int                        theFirst = 0,
-                   const int                        theLast  = 0);
-
-  static void InitMass(const double  theValue,
-                       const int     theFirst,
-                       const int     theLast,
-                       InertiaArray& theArray);
-
-  static int FillIntervalBounds(const double                      theA,
-                                const double                      theB,
-                                const NCollection_Array1<double>& theKnots,
-                                const int                         theNumSubs,
-                                InertiaArray&                     theInerts,
-                                NCollection_Handle<math_Vector>&  theParam1,
-                                NCollection_Handle<math_Vector>&  theParam2,
-                                NCollection_Handle<math_Vector>&  theError,
-                                NCollection_Handle<math_Vector>&  theCommonError);
-
-private:                      //! @name private fields
-  BRepGProp_GaussType myType; //!< Type of geometric object
-  BRepGProp_GaussFunc add;    //!< Pointer on the add function
-  BRepGProp_GaussFunc mult;   //!< Pointer on the mult function
+private:            //! @name private fields
+  GaussType myType; //!< Type of geometric object
+  GaussFunc add;    //!< Addition operation
+  GaussFunc mult;   //!< Multiplication operation
 };
 
 #endif

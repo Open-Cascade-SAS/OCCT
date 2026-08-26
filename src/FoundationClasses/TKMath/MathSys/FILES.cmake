@@ -2,6 +2,8 @@
 set(OCCT_MathSys_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_MathSys_FILES
+  MathSys_Types.hxx
+  MathSys_LinearAlgebra.hxx
   MathSys_NewtonTypes.hxx
   MathSys_Newton.hxx
   MathSys_Newton2D.hxx

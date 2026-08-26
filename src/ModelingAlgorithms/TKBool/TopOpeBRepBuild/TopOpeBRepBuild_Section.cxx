@@ -45,7 +45,6 @@
 #define MGhc2 occ::handle<Geom2d_Curve>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceSPS();
 
 Standard_EXPORT void debsplitse(const int) {}
 

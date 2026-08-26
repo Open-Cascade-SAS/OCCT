@@ -565,10 +565,10 @@ occ::handle<OpenGl_Font> OpenGl_Text::FindFont(const occ::handle<OpenGl_Context>
     const TCollection_AsciiString& aFontName = !theAspect.Aspect()->TextFont().IsNull()
                                                  ? theAspect.Aspect()->TextFont()->String()
                                                  : THE_DEFAULT_FONT;
-    Font_FontAspect   anAspect = theAspect.Aspect()->TextFontAspect() != Font_FA_Undefined
-                                   ? theAspect.Aspect()->TextFontAspect()
-                                   : Font_FA_Regular;
-    Font_FTFontParams aParams;
+    Font_FontAspect     anAspect = theAspect.Aspect()->TextFontAspect() != Font_FA_Undefined
+                                     ? theAspect.Aspect()->TextFontAspect()
+                                     : Font_FA_Regular;
+    Font_FTFont::Params aParams;
     aParams.PointSize   = theHeight;
     aParams.Resolution  = theResolution;
     aParams.FontHinting = theFontHinting;

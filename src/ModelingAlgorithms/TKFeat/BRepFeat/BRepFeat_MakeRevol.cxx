@@ -44,10 +44,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-#endif
-
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_Revol&,
                    NCollection_DataMap<TopoDS_Shape,
@@ -75,11 +71,6 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
                               const int           Mode,
                               const bool          Modify)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::Init" << std::endl;
-#endif
   myAxis  = Axis;
   myPbase = Pbase;
   mySbase = Sbase;
@@ -124,19 +115,6 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    if (myJustFeat)
-      std::cout << " Just Feature" << std::endl;
-    if (myFuse)
-      std::cout << " Fuse" << std::endl;
-    if (!myFuse)
-      std::cout << " Cut" << std::endl;
-    if (!myModify)
-      std::cout << " Modify = 0" << std::endl;
-  }
-#endif
 }
 
 //=======================================================================
@@ -146,11 +124,6 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
 
 void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::Add(Edge,face)" << std::endl;
-#endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
   {
@@ -199,11 +172,6 @@ void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 void BRepFeat_MakeRevol::Perform(const double Angle)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::Perform(Angle)" << std::endl;
-#endif
   mySFrom.Nullify();
   ShapeFromValid();
   mySUntil.Nullify();
@@ -339,11 +307,6 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::Perform(Until)" << std::endl;
-#endif
   double Angle       = 0.;
   bool   TourComplet = false;
 
@@ -376,10 +339,6 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   if (!TourComplet)
   {
     Angle = 2. * M_PI - 3 * M_PI / 180.;
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " No complete Revolution" << std::endl;
-#endif
   }
   theRevol.Perform(myPbase, myAxis, Angle);
   TopoDS_Shape VraiRevol = theRevol.Shape();
@@ -472,11 +431,6 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::Perform(From,Until)" << std::endl;
-#endif
   if (From.IsNull() || Until.IsNull())
   {
     throw Standard_ConstructionError();
@@ -654,11 +608,6 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
 
 void BRepFeat_MakeRevol::PerformThruAll()
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::PerformThruAll()" << std::endl;
-#endif
   Perform(2. * M_PI);
 }
 
@@ -669,11 +618,6 @@ void BRepFeat_MakeRevol::PerformThruAll()
 
 void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until, const double Angle)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_MakeRevol::PerformUntilAngle(Until,Angle)" << std::endl;
-#endif
   if (Until.IsNull())
   {
     Perform(Angle);
@@ -879,11 +823,6 @@ static void VerifGluedFaces(
     }
     if (!GluedFaces)
     {
-#ifdef OCCT_DEBUG
-      bool trc = BRepFeat_GettraceFEAT();
-      if (trc)
-        std::cout << " Intersection Revol/skface : no gluing" << std::endl;
-#endif
       theMap.Clear();
     }
   }
