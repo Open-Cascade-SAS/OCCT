@@ -16,12 +16,15 @@
 
 #include <ElCLib.hxx>
 #include <ExtremaPC.hxx>
+#include <ExtremaPC_Planar.hxx>
+#include <ExtremaPC2d_Hyperbola.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <MathPoly_Quartic.hxx>
 #include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <ProjLib.hxx>
 
 #include <cmath>
 #include <optional>
@@ -61,8 +64,7 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPC_Hyperbola(const gp_Hypr& theHyperbola, const ExtremaPC::Domain1D& theDomain)
       : myHyperbola(theHyperbola),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain)
-                                      : std::nullopt)
+        myDomain(theDomain)
   {
     cacheGeometry();
   }
@@ -111,6 +113,22 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    const gp_Pln aPlane(gp_Ax3(myHyperbola.Position()));
+    if (ExtremaPC::IsValidTolerance(theTol) && ExtremaPC::IsFinitePoint(theP)
+        && (!myDomain.has_value() || myDomain->IsValid())
+        && ExtremaPC::PerformPlanar<ExtremaPC2d_Hyperbola>(ProjLib::Project(aPlane, myHyperbola),
+                                                           myDomain,
+                                                           ProjLib::Project(aPlane, theP),
+                                                           theP,
+                                                           aPlane,
+                                                           *this,
+                                                           theTol,
+                                                           theMode,
+                                                           false,
+                                                           myResult))
+    {
+      return myResult;
+    }
     performCore(theP, myDomain, theTol, theMode);
     return myResult;
   }
@@ -126,12 +144,35 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    if (myDomain.has_value() && myDomain->IsValid() && myDomain->Min == myDomain->Max)
+    {
+      myResult.Clear();
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
+      return myResult;
+    }
+
     (void)Perform(theP, theTol, theMode);
 
     // Add endpoints if interior computation succeeded and domain is bounded
-    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if ((myResult.Status == ExtremaPC::Status::OK
+         || myResult.Status == ExtremaPC::Status::NoSolution)
+        && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      if (!myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaPC::Status::OK;
+      }
     }
 
     return myResult;
@@ -218,6 +259,13 @@ private:
   {
     myResult.Clear();
 
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (theDomain.has_value() && !theDomain->IsValid()))
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return;
+    }
+
     MathPoly::PolyResult aPolyRes = solveQuartic(theP);
 
     if (!aPolyRes.IsDone())
@@ -235,8 +283,6 @@ private:
       return;
     }
 
-    double aTol2 = theTol * theTol;
-
     // Process all positive roots (v > 0 required for u = ln(v))
     for (size_t i = 0; i < aPolyRes.NbRoots; ++i)
     {
@@ -249,17 +295,20 @@ private:
       // Check bounds if domain is specified
       if (theDomain.has_value())
       {
-        if (aU < theDomain->Min || aU > theDomain->Max)
+        if (!theDomain->Contains(aU, ExtremaPC::THE_PARAM_TOLERANCE))
+        {
           continue;
+        }
+        aU = theDomain->Clamp(aU);
       }
 
       gp_Pnt aCurvePt = Value(aU);
 
       // Check for duplicates
       bool aDuplicate = false;
-      for (int j = 0; j < myResult.Extrema.Length(); ++j)
+      for (const ExtremaPC::ExtremumResult& anExtremum : myResult.Extrema)
       {
-        if (aCurvePt.SquareDistance(myResult.Extrema.Value(j).Point) < aTol2)
+        if (std::abs(aU - anExtremum.Parameter) < ExtremaPC::THE_PARAM_TOLERANCE)
         {
           aDuplicate = true;
           break;
@@ -268,23 +317,25 @@ private:
       if (aDuplicate)
         continue;
 
-      // Determine if minimum or maximum using neighbor comparison
-      double aSqDist = theP.SquareDistance(aCurvePt);
-      double aNeighborU;
-      if (theDomain.has_value())
+      const size_t aMultiplicity = aPolyRes.Multiplicities[i];
+      if (aMultiplicity % 2 == 0)
       {
-        // For bounded case, choose neighbor direction based on position in domain
-        aNeighborU = aU + (aU < (theDomain->Min + theDomain->Max) * 0.5 ? 1.0 : -1.0);
-        aNeighborU = std::max(theDomain->Min, std::min(theDomain->Max, aNeighborU));
+        continue;
       }
-      else
+
+      // The quartic is v^2 times the stationary function and has a positive leading
+      // coefficient. Since v = exp(u) is increasing, odd roots that follow determine whether
+      // the stationary function crosses from negative to positive at this root.
+      double aSqDist          = theP.SquareDistance(aCurvePt);
+      size_t aNbOddRootsAfter = 0;
+      for (size_t aNext = i + 1; aNext < aPolyRes.NbRoots; ++aNext)
       {
-        // For unbounded case, just use +1.0
-        aNeighborU = aU + 1.0;
+        if (aPolyRes.Roots[aNext] > 0.0)
+        {
+          aNbOddRootsAfter += aPolyRes.Multiplicities[aNext] % 2;
+        }
       }
-      gp_Pnt aNeighborPt   = Value(aNeighborU);
-      double aNeighborDist = theP.SquareDistance(aNeighborPt);
-      bool   aIsMin        = aSqDist < aNeighborDist;
+      const bool aIsMin = aNbOddRootsAfter % 2 == 0;
 
       // Filter by search mode
       if (theMode == ExtremaPC::SearchMode::Min && !aIsMin)
@@ -297,11 +348,13 @@ private:
       anExt.Point          = aCurvePt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
+      anExt.IsMaximum      = !aIsMin;
 
       myResult.Extrema.Append(anExt);
     }
 
-    myResult.Status = ExtremaPC::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
   }
 
   gp_Hypr                            myHyperbola; //!< Hyperbola geometry

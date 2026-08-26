@@ -23,12 +23,16 @@
 #include <NCollection_Buffer.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Environment.hxx>
+#include <OSD_Path.hxx>
 #include <Standard_Macro.hxx>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+
+#include <atomic>
+#include <memory>
 
 #ifdef HAVE_FREETYPE
   #include "Font_DejavuSans_Latin_woff.pxx"
@@ -43,62 +47,68 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr, Standard_Transient)
   #include <windows.h>
   #include <stdlib.h>
 
-namespace
-{
-// list of supported extensions
-static const char* Font_FontMgr_Extensions[] = {"ttf", "otf", "ttc", NULL};
-} // namespace
-
 #else
 
   #include <OSD_DirectoryIterator.hxx>
   #include <OSD_FileIterator.hxx>
-  #include <OSD_Path.hxx>
   #include <OSD_File.hxx>
   #include <OSD_OpenMode.hxx>
   #include <OSD_Protection.hxx>
 
-namespace
-{
-
-// list of supported extensions
-static const char* Font_FontMgr_Extensions[] = {"ttf",
-                                                "otf",
-                                                "ttc",
-                                                "pfa",
-                                                "pfb",
-  #ifdef __APPLE__
-  // Datafork TrueType (OS X), obsolete
-  //"dfont",
-  #endif
-                                                nullptr};
-
   #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__)                       \
     && !defined(__EMSCRIPTEN__)
-// X11 configuration file in plain text format (obsolete - doesn't exists in modern distributives)
-static const char* myFontServiceConf[] = {"/etc/X11/fs/config",
-                                          "/usr/X11R6/lib/X11/fs/config",
-                                          "/usr/X11/lib/X11/fs/config",
-                                          nullptr};
-
     // Although fontconfig library can be built for various platforms,
     // practically it is useful only on desktop Linux distributions, where it is always packaged.
     #include <fontconfig/fontconfig.h>
   #endif
+#endif
 
-  #ifdef __APPLE__
-// default fonts paths in Mac OS X
-static const char* myDefaultFontsDirs[] = {"/System/Library/Fonts", "/Library/Fonts", nullptr};
+namespace
+{
+const char* const* extensions()
+{
+#if defined(_WIN32)
+  static const char* THE_EXTENSIONS[] = {"ttf", "otf", "ttc", nullptr};
+#else
+  static const char* THE_EXTENSIONS[] = {"ttf", "otf", "ttc", "pfa", "pfb", nullptr};
+#endif
+  return THE_EXTENSIONS;
+}
+
+//=================================================================================================
+
+#if defined(HAVE_FREETYPE) && !defined(_WIN32) && !defined(__ANDROID__) && !defined(__APPLE__)     \
+  && !defined(__EMSCRIPTEN__)
+const char* const* fontServiceConfigurations()
+{
+  static const char* THE_CONFIGURATIONS[] = {"/etc/X11/fs/config",
+                                             "/usr/X11R6/lib/X11/fs/config",
+                                             "/usr/X11/lib/X11/fs/config",
+                                             nullptr};
+  return THE_CONFIGURATIONS;
+}
+#endif
+
+//=================================================================================================
+
+#if !defined(_WIN32)
+const char* const* defaultFontDirectories()
+{
+  #if defined(__APPLE__)
+  static const char* THE_DIRECTORIES[] = {"/System/Library/Fonts", "/Library/Fonts", nullptr};
   #else
-// default fonts paths in most Unix systems (Linux and others)
-static const char* myDefaultFontsDirs[] = {"/system/fonts", // Android
-                                           "/usr/share/fonts",
-                                           "/usr/local/share/fonts",
-                                           nullptr};
+  static const char* THE_DIRECTORIES[] = {"/system/fonts",
+                                          "/usr/share/fonts",
+                                          "/usr/local/share/fonts",
+                                          nullptr};
   #endif
+  return THE_DIRECTORIES;
+}
 
-static void addDirsRecursively(const OSD_Path&                           thePath,
-                               NCollection_Map<TCollection_AsciiString>& theDirsMap)
+//=================================================================================================
+
+void addDirsRecursively(const OSD_Path&                           thePath,
+                        NCollection_Map<TCollection_AsciiString>& theDirsMap)
 {
   TCollection_AsciiString aDirName;
   thePath.SystemName(aDirName);
@@ -116,16 +126,17 @@ static void addDirsRecursively(const OSD_Path&                           thePath
     aChildDirPath.SystemName(aChildDirName);
     if (!aChildDirName.IsEqual(".") && !aChildDirName.IsEqual(".."))
     {
-      aChildDirName = aDirName + "/" + aChildDirName;
-      OSD_Path aPath(aChildDirName);
-      addDirsRecursively(aPath, theDirsMap);
+      addDirsRecursively(OSD_Path(aDirName + "/" + aChildDirName), theDirsMap);
     }
   }
 }
-
-} // anonymous namespace
-
 #endif
+
+std::atomic<bool>& unicodeSubsetFallback()
+{
+  static std::atomic<bool> THE_TO_USE_UNICODE_SUBSET_FALLBACK{true};
+  return THE_TO_USE_UNICODE_SUBSET_FALLBACK;
+}
 
 //! Retrieve font information.
 //! @param theFonts   [out] list of validated fonts
@@ -133,10 +144,10 @@ static void addDirsRecursively(const OSD_Path&                           thePath
 //! @param theFontPath [in] path to the file
 //! @param theFaceId   [in] face id, or -1 to load all faces within the file
 //! @return TRUE if at least one font face has been detected
-static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
-                      const occ::handle<Font_FTLibrary>&                  theFTLib,
-                      const TCollection_AsciiString&                      theFontPath,
-                      signed long                                         theFaceId = -1) // FT_Long
+bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
+               const occ::handle<Font_FTLibrary>&                  theFTLib,
+               const TCollection_AsciiString&                      theFontPath,
+               signed long                                         theFaceId = -1) // FT_Long
 {
 #ifdef HAVE_FREETYPE
   const FT_Long aFaceId = theFaceId != -1 ? theFaceId : 0;
@@ -147,11 +158,11 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   {
     return false;
   }
+  const std::unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> aFaceOwner(aFontFace, &FT_Done_Face);
   if (aFontFace->family_name == nullptr // skip broken fonts (error in FreeType?)
       || FT_Select_Charmap(aFontFace, ft_encoding_unicode)
            != 0) // Font_FTFont supports only UNICODE fonts
   {
-    FT_Done_Face(aFontFace);
     return false;
   }
 
@@ -251,7 +262,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   }
 
   occ::handle<Font_SystemFont> aResult = new Font_SystemFont(aFamily);
-  aResult->SetFontPath(anAspect, theFontPath, (int)aFaceId);
+  aResult->SetFontPath(anAspect, theFontPath, static_cast<int>(aFaceId));
   // automatically identify some known single-line fonts
   aResult->SetSingleStrokeFont(aResult->FontKey().StartsWith("olf "));
   theFonts.Append(aResult);
@@ -273,7 +284,6 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
     }
   }
 
-  FT_Done_Face(aFontFace);
   return true;
 #else
   (void)theFonts;
@@ -283,26 +293,29 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   return false;
 #endif
 }
+} // namespace
 
 //=================================================================================================
 
 occ::handle<Font_FontMgr> Font_FontMgr::GetInstance()
 {
-  static occ::handle<Font_FontMgr> _mgr;
-  if (_mgr.IsNull())
-  {
-    _mgr = new Font_FontMgr();
-  }
+  static const occ::handle<Font_FontMgr> THE_INSTANCE = new Font_FontMgr();
 
-  return _mgr;
+  return THE_INSTANCE;
 }
 
 //=================================================================================================
 
-bool& Font_FontMgr::ToUseUnicodeSubsetFallback()
+bool Font_FontMgr::ToUseUnicodeSubsetFallback()
 {
-  static bool TheToUseUnicodeSubsetFallback = true;
-  return TheToUseUnicodeSubsetFallback;
+  return unicodeSubsetFallback().load(std::memory_order_relaxed);
+}
+
+//=================================================================================================
+
+void Font_FontMgr::SetUseUnicodeSubsetFallback(const bool theToUseFallback)
+{
+  unicodeSubsetFallback().store(theToUseFallback, std::memory_order_relaxed);
 }
 
 //=================================================================================================
@@ -649,9 +662,10 @@ void Font_FontMgr::InitFontDataBase()
   }
 
   NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
-  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != NULL; ++anIter)
+  const char* const*                       anExtensions = extensions();
+  for (int anIter = 0; anExtensions[anIter] != nullptr; ++anIter)
   {
-    const char* anExt = Font_FontMgr_Extensions[anIter];
+    const char* anExt = anExtensions[anIter];
     aSupportedExtensions.Add(TCollection_AsciiString(anExt));
   }
 
@@ -732,9 +746,10 @@ void Font_FontMgr::InitFontDataBase()
     Message::SendAlarm("Font_FontMgr, fontconfig library returns an empty folder list");
 
     // read fonts directories from font service config file (obsolete)
-    for (int anIter = 0; myFontServiceConf[anIter] != nullptr; ++anIter)
+    const char* const* aConfigurations = fontServiceConfigurations();
+    for (int anIter = 0; aConfigurations[anIter] != nullptr; ++anIter)
     {
-      const TCollection_AsciiString aFileOfFontsPath(myFontServiceConf[anIter]);
+      const TCollection_AsciiString aFileOfFontsPath(aConfigurations[anIter]);
       OSD_File                      aFile(aFileOfFontsPath);
       if (!aFile.Exists())
       {
@@ -788,18 +803,20 @@ void Font_FontMgr::InitFontDataBase()
   #endif
 
   // append default directories
-  for (int anIter = 0; myDefaultFontsDirs[anIter] != nullptr; ++anIter)
+  const char* const* aDefaultDirectories = defaultFontDirectories();
+  for (int anIter = 0; aDefaultDirectories[anIter] != nullptr; ++anIter)
   {
-    const char*             anItem = myDefaultFontsDirs[anIter];
+    const char*             anItem = aDefaultDirectories[anIter];
     TCollection_AsciiString aPathStr(anItem);
     OSD_Path                aPath(aPathStr);
     addDirsRecursively(aPath, aMapOfFontsDirs);
   }
 
   NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
-  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != nullptr; ++anIter)
+  const char* const*                       anExtensions = extensions();
+  for (int anIter = 0; anExtensions[anIter] != nullptr; ++anIter)
   {
-    const char* anExt = Font_FontMgr_Extensions[anIter];
+    const char* anExt = anExtensions[anIter];
     aSupportedExtensions.Add(TCollection_AsciiString(anExt));
   }
 
@@ -981,6 +998,8 @@ occ::handle<Font_SystemFont> Font_FontMgr::FindFallbackFont(Font_UnicodeSubset t
     case Font_UnicodeSubset_Arabic:
       aFont = FindFont(Font_NOF_ARABIC, Font_StrictLevel_Aliases, aFontAspect, false);
       break;
+    case Font_UnicodeSubset_NB:
+      return occ::handle<Font_SystemFont>();
   }
   if (aFont.IsNull())
   {
@@ -999,6 +1018,8 @@ occ::handle<Font_SystemFont> Font_FontMgr::FindFallbackFont(Font_UnicodeSubset t
       case Font_UnicodeSubset_Arabic:
         aRange = "Arabic";
         break;
+      case Font_UnicodeSubset_NB:
+        return occ::handle<Font_SystemFont>();
     }
     Message::SendFail(TCollection_AsciiString("Font_FontMgr, error: unable to find ") + aRange
                       + " fallback font!");

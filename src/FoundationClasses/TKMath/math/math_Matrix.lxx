@@ -97,6 +97,23 @@ inline void math_Matrix::SetLower(const int LowerRow, const int LowerCol) noexce
 
 //=================================================================================================
 
+inline math_Matrix::math_Matrix(const size_t theNbRows, const size_t theNbColumns)
+    : Array(theNbRows, theNbColumns)
+{
+}
+
+//=================================================================================================
+
+inline math_Matrix::math_Matrix(const size_t theNbRows,
+                                const size_t theNbColumns,
+                                const double theInitialValue)
+    : Array(theNbRows, theNbColumns)
+{
+  Array.Init(theInitialValue);
+}
+
+//=================================================================================================
+
 inline math_Matrix::math_Matrix(const int LowerRow,
                                 const int UpperRow,
                                 const int LowerCol,

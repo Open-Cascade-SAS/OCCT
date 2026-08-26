@@ -38,6 +38,32 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_TrsfModification, BRepTools_Modification)
 
+namespace
+{
+
+//=================================================================================================
+
+gp_Trsf representationTransformation(const gp_Trsf&         theTrsf,
+                                     const TopLoc_Location& theSourceLocation,
+                                     const TopLoc_Location& theTargetLocation)
+{
+  if (theSourceLocation.IsIdentity() && theTargetLocation.IsIdentity())
+  {
+    return theTrsf;
+  }
+  return theTargetLocation.Transformation().Inverted() * theTrsf
+         * theSourceLocation.Transformation();
+}
+
+//=================================================================================================
+
+gp_Trsf representationTransformation(const gp_Trsf& theTrsf, const TopLoc_Location& theLocation)
+{
+  return representationTransformation(theTrsf, theLocation, theLocation);
+}
+
+} // namespace
+
 //=================================================================================================
 
 BRepTools_TrsfModification::BRepTools_TrsfModification(const gp_Trsf& T)
@@ -81,12 +107,8 @@ bool BRepTools_TrsfModification::NewSurface(const TopoDS_Face&         F,
   RevWires = false;
   RevFace  = myTrsf.IsNegative();
 
-  gp_Trsf LT = L.Transformation();
-  LT.Invert();
-  LT.Multiply(myTrsf);
-  LT.Multiply(L.Transformation());
-
-  S = occ::down_cast<Geom_Surface>(S->Transformed(LT));
+  const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, L);
+  S                        = occ::down_cast<Geom_Surface>(S->Transformed(aLocalTrsf));
 
   return true;
 }
@@ -109,11 +131,7 @@ bool BRepTools_TrsfModification::NewTriangulation(const TopoDS_Face&            
     return false;
   }
 
-  gp_Trsf aTrsf = myTrsf;
-  if (!aLoc.IsIdentity())
-  {
-    aTrsf = aLoc.Transformation().Inverted() * aTrsf * aLoc.Transformation();
-  }
+  const gp_Trsf aTrsf = representationTransformation(myTrsf, aLoc, theFace.Location());
 
   theTriangulation = theTriangulation->Copy();
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
@@ -129,12 +147,13 @@ bool BRepTools_TrsfModification::NewTriangulation(const TopoDS_Face&            
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace, aLoc);
   if (theTriangulation->HasUVNodes() && !aSurf.IsNull())
   {
+    const gp_Trsf aSurfaceTrsf = representationTransformation(myTrsf, aLoc);
     for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
     {
       gp_Pnt2d aP2d = theTriangulation->UVNode(anInd);
       aSurf->TransformParameters(aP2d.ChangeCoord().ChangeCoord(1),
                                  aP2d.ChangeCoord().ChangeCoord(2),
-                                 myTrsf);
+                                 aSurfaceTrsf);
       theTriangulation->SetUVNode(anInd, aP2d);
     }
   }
@@ -181,11 +200,7 @@ bool BRepTools_TrsfModification::NewPolygon(const TopoDS_Edge&           theE,
     return false;
   }
 
-  gp_Trsf aTrsf = myTrsf;
-  if (!aLoc.IsIdentity())
-  {
-    aTrsf = aLoc.Transformation().Inverted() * aTrsf * aLoc.Transformation();
-  }
+  const gp_Trsf aTrsf = representationTransformation(myTrsf, aLoc, theE.Location());
 
   theP = theP->Copy();
   theP->Deflection(theP->Deflection() * std::abs(myTrsf.ScaleFactor()));
@@ -203,7 +218,8 @@ bool BRepTools_TrsfModification::NewPolygon(const TopoDS_Edge&           theE,
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theE, aCurveLoc, aFirst, aLast);
     if (!aCurve.IsNull())
     {
-      double aReparametrization = aCurve->ParametricTransformation(aTrsf);
+      const gp_Trsf aCurveTrsf         = representationTransformation(myTrsf, aCurveLoc);
+      double        aReparametrization = aCurve->ParametricTransformation(aCurveTrsf);
       if (std::abs(aReparametrization - 1.0) > Precision::PConfusion())
       {
         NCollection_Array1<double>& aParams = theP->ChangeParameters();
@@ -249,10 +265,11 @@ bool BRepTools_TrsfModification::NewPolygonOnTriangulation(
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theF, aLoc);
   double                    aFirst, aLast;
   occ::handle<Geom2d_Curve> aC2d = BRep_Tool::CurveOnSurface(theE, theF, aFirst, aLast);
-  if (!aSurf.IsNull() && !aC2d.IsNull()
+  if (theP->HasParameters() && !aSurf.IsNull() && !aC2d.IsNull()
       && std::abs(std::abs(myTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec())
   {
-    gp_GTrsf2d aGTrsf = aSurf->ParametricTransformation(myTrsf);
+    const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, aLoc);
+    gp_GTrsf2d    aGTrsf     = aSurf->ParametricTransformation(aLocalTrsf);
     if (aGTrsf.Form() != gp_Identity)
     {
       occ::handle<Geom2d_Curve> aNewC2d = GeomLib::GTransform(aC2d, aGTrsf);
@@ -283,14 +300,10 @@ bool BRepTools_TrsfModification::NewCurve(const TopoDS_Edge&       E,
   Tol = BRep_Tool::Tolerance(E);
   Tol *= std::abs(myTrsf.ScaleFactor());
 
-  gp_Trsf LT = L.Transformation();
-  LT.Invert();
-  LT.Multiply(myTrsf);
-  LT.Multiply(L.Transformation());
-
   if (!C.IsNull())
   {
-    C = occ::down_cast<Geom_Curve>(C->Transformed(LT));
+    const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, L);
+    C                        = occ::down_cast<Geom_Curve>(C->Transformed(aLocalTrsf));
   }
 
   return true;
@@ -381,8 +394,9 @@ bool BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
   if (std::abs(scale) != 1.)
   {
 
-    NewC             = new Geom2d_TrimmedCurve(NewC, f, l);
-    gp_GTrsf2d gtrsf = S->ParametricTransformation(myTrsf);
+    NewC                     = new Geom2d_TrimmedCurve(NewC, f, l);
+    const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, loc);
+    gp_GTrsf2d    gtrsf      = S->ParametricTransformation(aLocalTrsf);
 
     if (gtrsf.Form() != gp_Identity)
     {
@@ -430,7 +444,8 @@ bool BRepTools_TrsfModification::NewParameter(const TopoDS_Vertex& V,
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, loc, f, l);
   if (!C.IsNull())
   {
-    P = C->TransformedParameter(P, myTrsf);
+    const gp_Trsf aLocalTrsf = representationTransformation(myTrsf, loc);
+    P                        = C->TransformedParameter(P, aLocalTrsf);
   }
 
   return true;

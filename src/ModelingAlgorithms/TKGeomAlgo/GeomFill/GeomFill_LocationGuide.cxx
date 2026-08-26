@@ -41,6 +41,7 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
@@ -1189,14 +1190,14 @@ int GeomFill_LocationGuide::NbIntervals(const GeomAbs_Shape S) const
     return Nb_Sec;
   }
 
-  NCollection_Array1<double>   IntC(1, Nb_Sec + 1);
-  NCollection_Array1<double>   IntL(1, Nb_Law + 1);
-  NCollection_Sequence<double> Inter;
+  NCollection_Array1<double>       IntC(1, Nb_Sec + 1);
+  NCollection_Array1<double>       IntL(1, Nb_Law + 1);
+  NCollection_LinearVector<double> Inter;
   myTrimmed->Intervals(IntC, S);
   myLaw->Intervals(IntL, S);
 
   GeomLib::FuseIntervals(IntC, IntL, Inter, Precision::PConfusion() * 0.99);
-  return Inter.Length() - 1;
+  return static_cast<int>(Inter.Size()) - 1;
 }
 
 //=================================================================================================
@@ -1218,16 +1219,16 @@ void GeomFill_LocationGuide::Intervals(NCollection_Array1<double>& T, const Geom
     return;
   }
 
-  NCollection_Array1<double>   IntC(1, Nb_Sec + 1);
-  NCollection_Array1<double>   IntL(1, Nb_Law + 1);
-  NCollection_Sequence<double> Inter;
+  NCollection_Array1<double>       IntC(1, Nb_Sec + 1);
+  NCollection_Array1<double>       IntL(1, Nb_Law + 1);
+  NCollection_LinearVector<double> Inter;
   myTrimmed->Intervals(IntC, S);
   myLaw->Intervals(IntL, S);
 
   GeomLib::FuseIntervals(IntC, IntL, Inter, Precision::PConfusion() * 0.99);
-  for (int ii = 1; ii <= Inter.Length(); ii++)
+  for (size_t anIndex = 0; anIndex < Inter.Size(); ++anIndex)
   {
-    T(ii) = Inter(ii);
+    T.ChangeAt(anIndex) = Inter.Value(anIndex);
   }
 }
 

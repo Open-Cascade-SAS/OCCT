@@ -78,20 +78,9 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
-#endif
-
-#include <cstdio>
 // include - all hxx,
 //         - all small static functions.
 //======================== START STATIC FUNCTIONS ============
-// variables for performance
-double t_mkcurve;
-#ifdef OCCT_DEBUG
-extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
-#endif
 
 //=================================================================================================
 
@@ -415,11 +404,6 @@ occ::handle<Geom_Curve> MakeCurve(const BiTgte_CurveOnEdge& HC)
 {
   occ::handle<Geom_Curve> C;
 
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch;
-  ChFi3d_InitChron(ch);
-#endif
-
   if (HC.GetType() == GeomAbs_Circle)
   {
     C = new Geom_Circle(HC.Circle());
@@ -461,10 +445,6 @@ occ::handle<Geom_Curve> MakeCurve(const BiTgte_CurveOnEdge& HC)
 
     C = new Geom_BSplineCurve(NewPoles, NewKnots, NewMults, Conv.Degree());
   }
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_mkcurve);
-#endif
 
   return C;
 }
@@ -848,18 +828,6 @@ void BiTgte_Blend::Perform(const bool BuildShape)
   myShape = SewedShape;
   // end Sewing for false free borders.
 
-#ifdef OCCT_DEBUG
-  OSD_Chronometer cl_total, ch;
-  double          t_total, t_center, t_surface, t_shape;
-
-  t_total   = 0;
-  t_center  = 0;
-  t_surface = 0;
-  t_mkcurve = 0;
-  t_shape   = 0;
-  ChFi3d_InitChron(cl_total);
-#endif
-
   // ----------------------------------------------------------------
   // place faces with the proper orientation in the initial shape
   // ----------------------------------------------------------------
@@ -882,59 +850,27 @@ void BiTgte_Blend::Perform(const bool BuildShape)
   // ----------------------------------------------
   // Calculate lines of centers and of surfaces
   // ----------------------------------------------
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch);
-#endif
 
   ComputeCenters();
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_center);
-#endif
 
   // -----------------------------
   // Calculate connection Surfaces
   // -----------------------------
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch);
-#endif
 
   ComputeSurfaces();
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_surface);
-#endif
 
   // ----------------------------------
   // Calculate the generated shape if required
   // ----------------------------------
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch);
-#endif
 
   if (myBuildShape)
   {
     ComputeShape();
   }
 
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_shape);
-#endif
-
   // Finally construct curves 3d from edges to be transferred
   // since the partition is provided ( A Priori);
   BRepLib::BuildCurves3d(myResult, Precision::Confusion());
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(cl_total, t_total);
-  std::cout << std::endl;
-  std::cout << "Blend_PERFORM: temps total " << t_total << " s  dont :" << std::endl;
-  std::cout << "- ComputeCenters  " << t_center << " s" << std::endl;
-  std::cout << "- ComputeSurfaces " << t_surface << " s" << std::endl;
-  std::cout << "----> MakeCurve   " << t_mkcurve << " s" << std::endl;
-  if (myBuildShape)
-    std::cout << "- ComputeShape " << t_shape << " s" << std::endl;
-#endif
 
   myDone = true;
 }

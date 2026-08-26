@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <StepData_SelectArrReal.hxx>
+#include <StepData_Field.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectArrReal, StepData_SelectNamed)
-
-//  Definitions : cf Field
-#define myKindArrReal 8
 
 //=================================================================================================
 
@@ -26,7 +24,7 @@ StepData_SelectArrReal::StepData_SelectArrReal() = default;
 
 int StepData_SelectArrReal::Kind() const
 {
-  return myKindArrReal;
+  return static_cast<int>(StepData_Field::FieldKind::Any);
 }
 
 //=================================================================================================

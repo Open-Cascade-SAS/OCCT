@@ -69,11 +69,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-extern bool BRepFeat_GettraceFEATRIB();
-#endif
-
 //=======================================================================
 // function : LFPerform
 // purpose  : topological reconstruction of ribs
@@ -81,19 +76,9 @@ extern bool BRepFeat_GettraceFEATRIB();
 
 void BRepFeat_RibSlot::LFPerform()
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::LFPerform()" << std::endl;
-#endif
   if (mySbase.IsNull() || myPbase.IsNull() || mySkface.IsNull() || myGShape.IsNull()
       || myLFMap.IsEmpty())
   {
-#ifdef OCCT_DEBUG
-    std::cout << "Topological reconstruction is impossible" << std::endl;
-    if (trc)
-      std::cout << " Fields not initialized" << std::endl;
-#endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
     return;
@@ -269,11 +254,6 @@ bool BRepFeat_RibSlot::IsDeleted(const TopoDS_Shape& F)
 
 const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Modified(const TopoDS_Shape& F)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::Modified" << std::endl;
-#endif
   if (myMap.IsBound(F))
   {
     static NCollection_List<TopoDS_Shape> list;
@@ -296,11 +276,6 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Modified(const TopoDS_Sh
 
 const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_Shape& S)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::Generated" << std::endl;
-#endif
   if (S.ShapeType() != TopAbs_FACE)
   {
     myGenerated.Clear();
@@ -445,11 +420,6 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
                                     const occ::handle<Geom_Plane>& Pln)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::CheckPoint" << std::endl;
-#endif
   // Vector product : normal to plane X direction Wire
   // -> gives the material side
   // Proofing point somewhat inside the material side
@@ -481,11 +451,6 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
 gp_Dir BRepFeat_RibSlot::Normal(const TopoDS_Face& F, const gp_Pnt& P)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::Normal" << std::endl;
-#endif
   double U, V;
   gp_Pnt pt;
 
@@ -581,11 +546,6 @@ double BRepFeat_RibSlot::IntPar(const occ::handle<Geom_Curve>& C, const gp_Pnt& 
 
 void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e, const double bnd, const bool FirstLast)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::EdgeExtention" << std::endl;
-#endif
   double                         f, l;
   occ::handle<Geom_Curve>        cu = BRep_Tool::Curve(e, f, l);
   occ::handle<Geom_BoundedCurve> C  = new Geom_TrimmedCurve(cu, f, l);
@@ -649,11 +609,6 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>& face
                                             const occ::handle<Geom_Plane>& Pln)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::ChoiceOfFaces" << std::endl;
-#endif
   TopoDS_Face FFF;
 
   gp_Pnt pp;
@@ -713,11 +668,6 @@ double BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
                                    gp_Pnt&             p1,
                                    gp_Pnt&             p2)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::HeightMax" << std::endl;
-#endif
   Bnd_Box Box;
   BRepBndLib::Add(theSbase, Box);
   if (!theSUntil.IsNull())
@@ -761,11 +711,6 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
                                     TopoDS_Edge&                   OnLastEdge)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::ExtremeFaces" << std::endl;
-#endif
   bool Data = true;
   FirstFace.Nullify();
   LastFace.Nullify();
@@ -793,10 +738,6 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
   // ---the wire includes only one edge
   if (NumberOfEdges == 1)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " One Edge" << std::endl;
-#endif
     exp.ReInit();
     double f, l; //, f1, l1, temp;
     gp_Pnt firstpoint, lastpoint;
@@ -1000,11 +941,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
       return true;
     }
 
-//--- FirstFace or LastFace was not found
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " FirstFace or LastFace null" << std::endl;
-#endif
+    //--- FirstFace or LastFace was not found
     LocOpe_CSIntersector                          ASI(mySbase);
     NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
@@ -1051,10 +988,6 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
     }
     else
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Less than 2 intersection points" << std::endl;
-#endif
       Data = false;
       return Data;
     }
@@ -1076,10 +1009,6 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
   // ---The wire consists of several edges
   else
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Multiple Edges" << std::endl;
-#endif
     BRepTools_WireExplorer ex(myWire);
     for (; ex.More(); ex.Next())
     {
@@ -1309,10 +1238,6 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
     }
     else
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " First or Last not OK" << std::endl;
-#endif
       return false;
     }
   }
@@ -1335,11 +1260,6 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
                                       TopoDS_Vertex& OnVertex)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEATRIB();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::PtOnEdgeVertex" << std::endl;
-#endif
   bool TestOK;
   //  PtOnEdge = false;
   //  OnEdge.Nullify();
@@ -1430,11 +1350,6 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
                                       const TopoDS_Edge& LastEdge)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::SlidingProfile" << std::endl;
-#endif
   bool ProfileOK = true;
   // --case of sliding : construction of the wire of the profile
   // --> 1 part bounding box + 1 part wire
@@ -1570,10 +1485,6 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
 
     if (BndEdge1.IsNull() || BndEdge2.IsNull())
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Null bounding edge" << std::endl;
-#endif
       ProfileOK = false;
       return ProfileOK;
     }
@@ -1735,10 +1646,6 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
 
   if (!BRepAlgo::IsValid(fac))
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Invalid Face" << std::endl;
-#endif
     ProfileOK = false;
     return ProfileOK;
   }
@@ -1775,10 +1682,6 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
 
   if (!BRepAlgo::IsValid(Prof))
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Invalid Face Profile" << std::endl;
-#endif
     ProfileOK = false;
     return ProfileOK;
   }
@@ -1808,11 +1711,6 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
                                         const bool         OnLastFace)
 
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_RibSlot::NoSlidingProfile" << std::endl;
-#endif
   bool ProfileOK = true;
 
   double        l1, f1, f2, l2; //, p;
@@ -1981,10 +1879,6 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
 
     if (BndEdge1.IsNull() || BndEdge2.IsNull())
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Null bounding edge" << std::endl;
-#endif
       ProfileOK = false;
       return ProfileOK;
     }
@@ -2621,10 +2515,6 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
 
   if (!BRepAlgo::IsValid(fac))
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Invalid Face" << std::endl;
-#endif
     ProfileOK = false;
     return ProfileOK;
   }
@@ -2657,10 +2547,6 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
 
   if (!BRepAlgo::IsValid(Prof))
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Invalid Face Profile" << std::endl;
-#endif
     ProfileOK = false;
     return ProfileOK;
   }

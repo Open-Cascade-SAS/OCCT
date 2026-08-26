@@ -233,6 +233,18 @@ if (NOT DEFINED BUILD_DOC_RefMan)
   set (BUILD_DOC_RefMan OFF CACHE BOOL "${BUILD_DOC_RefMan_DESCR}")
 endif()
 
+if (NOT DEFINED BUILD_DOC_DotNumThreads)
+  set (BUILD_DOC_DotNumThreads "" CACHE STRING "${BUILD_DOC_DotNumThreads_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_DotBatchSize)
+  set (BUILD_DOC_DotBatchSize "" CACHE STRING "${BUILD_DOC_DotBatchSize_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_Search)
+  set (BUILD_DOC_Search ON CACHE BOOL "${BUILD_DOC_Search_DESCR}")
+endif()
+
 if (NOT DEFINED INSTALL_DOC_RefMan)
   set (INSTALL_DOC_RefMan OFF CACHE BOOL "${INSTALL_DOC_RefMan_DESCR}")
 endif()
@@ -1104,8 +1116,10 @@ COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}"
 # Create and install Standard_Version.hxx
 CONFIGURE_AND_INSTALL_VERSION_HEADER()
 
-# Install deprecated NCollection alias headers for backward compatibility
-install(DIRECTORY src/Deprecated/NCollectionAliases/
+# Install deprecated alias headers for backward compatibility. These headers are intentionally
+# excluded from toolkit manifests and are therefore available only in installed OCCT packages.
+include("${CMAKE_CURRENT_SOURCE_DIR}/src/Deprecated/PACKAGES.cmake")
+install(DIRECTORY ${OCCT_DEPRECATED_HEADER_DIRECTORIES}
         DESTINATION "${INSTALL_DIR_INCLUDE}")
 
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")

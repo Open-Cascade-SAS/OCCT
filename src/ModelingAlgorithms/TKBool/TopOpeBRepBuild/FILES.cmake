@@ -105,7 +105,6 @@ set(OCCT_TopOpeBRepBuild_FILES
   TopOpeBRepBuild_Tools2d.cxx
   TopOpeBRepBuild_Tools2d.hxx
   TopOpeBRepBuild_Tools_1.cxx
-  TopOpeBRepBuild_trace.cxx
   TopOpeBRepBuild_VertexInfo.cxx
   TopOpeBRepBuild_VertexInfo.hxx
   TopOpeBRepBuild_WireEdgeClassifier.cxx
