@@ -35,8 +35,14 @@
 
 namespace
 {
+//=================================================================================================
+
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& EmptyListOfInterference()
+{
   static const NCollection_List<occ::handle<TopOpeBRepDS_Interference>> anEmptyListOfInterference;
+  return anEmptyListOfInterference;
 }
+} // namespace
 
 //=================================================================================================
 
@@ -137,7 +143,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
   {
     return myT->Value(TI).Find(G);
   }
-  return anEmptyListOfInterference;
+  return EmptyListOfInterference();
 }
 
 //=================================================================================================
@@ -275,7 +281,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
 {
   if (!More())
   {
-    return anEmptyListOfInterference;
+    return EmptyListOfInterference();
   }
   K = myK;
   G = myG;

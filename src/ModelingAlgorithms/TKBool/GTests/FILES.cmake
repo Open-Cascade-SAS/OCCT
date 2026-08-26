@@ -11,6 +11,7 @@ set(OCCT_TKBool_GTests_FILES
   TopOpeBRepBuild_Builder_Test.cxx
   TopOpeBRepBuild_Builder1_Test.cxx
   TopOpeBRepTool_Test.cxx
+  TopOpeBRepTool_ShapeClassifier_Test.cxx
   TopOpeBRepDS_BuildTool_Test.cxx
   TopOpeBRepDS_DataStructure_Test.cxx
   TopOpeBRepDS_TKI_Test.cxx

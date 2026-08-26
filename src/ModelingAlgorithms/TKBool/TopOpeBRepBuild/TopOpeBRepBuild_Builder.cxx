@@ -52,8 +52,14 @@
 
 namespace
 {
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& EmptyShapeList()
+{
   static const NCollection_List<TopoDS_Shape> anEmptyShapeList;
+  return anEmptyShapeList;
 }
+} // namespace
 
 #ifdef OCCT_DEBUG
 
@@ -466,7 +472,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::NewEdges(const in
   }
   else
   {
-    return anEmptyShapeList;
+    return EmptyShapeList();
   }
 } // NewEdges
 
@@ -628,7 +634,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
   }
   if (p == nullptr)
   {
-    return anEmptyShapeList;
+    return EmptyShapeList();
   }
 
   if ((*p).IsBound(S))
@@ -637,7 +643,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
     const NCollection_List<TopoDS_Shape>&   L     = losos.ListOnState();
     return L;
   }
-  return anEmptyShapeList;
+  return EmptyShapeList();
 } // Splits
 
 //=================================================================================================
@@ -699,7 +705,7 @@ TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&         
 
   // take the edges of myEdgeAvoid as shape to avoid
   // during face classification
-  const NCollection_List<TopoDS_Shape>* PLOS = &anEmptyShapeList;
+  const NCollection_List<TopoDS_Shape>* PLOS = &EmptyShapeList();
   TopAbs_ShapeEnum                      tS   = S.ShapeType();
   if (tS == TopAbs_FACE)
   {

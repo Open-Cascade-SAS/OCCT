@@ -22,8 +22,14 @@
 
 namespace
 {
+//=================================================================================================
+
+const TopOpeBRepDS_Point& EmptyPoint()
+{
   static const TopOpeBRepDS_Point anEmptyPoint;
+  return anEmptyPoint;
 }
+} // namespace
 
 //=================================================================================================
 
@@ -106,7 +112,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_PointExplorer::Point() const
   }
   else
   {
-    return anEmptyPoint;
+    return EmptyPoint();
   }
 }
 
@@ -140,7 +146,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_PointExplorer::Point(const int I) const
   }
   else
   {
-    return anEmptyPoint;
+    return EmptyPoint();
   }
 }
 

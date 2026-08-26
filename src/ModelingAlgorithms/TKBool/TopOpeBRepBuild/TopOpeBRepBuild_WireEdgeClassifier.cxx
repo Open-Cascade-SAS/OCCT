@@ -140,23 +140,20 @@ TopAbs_State TopOpeBRepBuild_WireEdgeClassifier::Compare(
 
     if (state == TopAbs_UNKNOWN)
     {
-      TopoDS_Shape s1 = LoopToShape(L1);
-      if (s1.IsNull())
+      TopoDS_Shape aFirstShape = LoopToShape(L1);
+      if (aFirstShape.IsNull())
       {
         return state;
       }
-      TopoDS_Shape s2 = LoopToShape(L2);
-      if (s2.IsNull())
+      TopoDS_Shape aSecondShape = LoopToShape(L2);
+      if (aSecondShape.IsNull())
       {
         return state;
       }
-      TopOpeBRepTool_ShapeClassifier SC;
-      int                            samedomain = SC.SameDomain();
-      SC.SameDomain(1);
-      SC.SetReference(s2);
-      const TopoDS_Shape& AvS = s2;
-      state                   = SC.StateShapeReference(s1, AvS);
-      SC.SameDomain(samedomain);
+      TopOpeBRepTool_ShapeClassifier aClassifier;
+      aClassifier.SameDomain(1);
+      aClassifier.SetReference(aSecondShape);
+      state = aClassifier.StateShapeReference(aFirstShape, aSecondShape);
     } // UNKNOWN
   }
   return state;

@@ -44,8 +44,14 @@
 
 namespace
 {
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& EmptyShapeList()
+{
   static const NCollection_List<TopoDS_Shape> anEmptyShapeList;
+  return anEmptyShapeList;
 }
+} // namespace
 
 // #include <DBRep.hxx>
 //------------
@@ -712,12 +718,12 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Merged(
   }
   if (p == nullptr)
   {
-    return anEmptyShapeList;
+    return EmptyShapeList();
   }
 
   if (!(*p).IsBound(S))
   {
-    return anEmptyShapeList;
+    return EmptyShapeList();
   }
   else
   {

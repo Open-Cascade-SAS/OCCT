@@ -51,18 +51,23 @@
 //=================================================================================================
 
 TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier()
-    : myP3Ddef(false),
-      myP2Ddef(false)
+    : myPAvLS(nullptr),
+      mymren(0),
+      mymredone(false),
+      myState(TopAbs_UNKNOWN),
+      myP3Ddef(false),
+      myP2Ddef(false),
+      mySameDomain(-1)
 {
 }
 
 //=================================================================================================
 
-TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& SRef)
-    : myP3Ddef(false),
-      myP2Ddef(false)
+TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier(
+  const TopoDS_Shape& theReference)
+    : TopOpeBRepTool_ShapeClassifier()
 {
-  myRef = SRef;
+  SetReference(theReference);
 }
 
 //=================================================================================================
