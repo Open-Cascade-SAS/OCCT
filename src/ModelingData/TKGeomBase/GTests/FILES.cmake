@@ -57,6 +57,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomConvert_Test.cxx
   GeomLib_Test.cxx
   GeomLib_CheckCurveOnSurface_Test.cxx
+  GeomTools_Curve2dSet_Test.cxx
+  GeomTools_SurfaceSet_Test.cxx
   GProp_PEquation_Test.cxx
   GProp_PGProps_Test.cxx
   Hermit_Test.cxx
