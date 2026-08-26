@@ -16,6 +16,7 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
@@ -33,6 +34,9 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+
+#include <cmath>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -126,6 +130,22 @@ occ::handle<Geom_BSplineCurve> createBSplineCurve(const std::vector<double>& the
   BSplCLib::Knots(aKnotSeq, aKnots, aMults);
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree, false);
+}
+
+//! Closed polygonal wire on a cylinder of radius theRadius, with theK periods of sinusoidal
+//! out-of-plane variation of amplitude theAmp around the loop. theK == 1 is secretly planar
+//! (it is the cylinder's intersection with a tilted plane); theK >= 2 is not.
+TopoDS_Wire createSaddleWire(double theRadius, int theK, double theAmp, double theZOffset, int theN)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  for (int i = 0; i < theN; ++i)
+  {
+    double aTheta = 2.0 * M_PI * i / theN;
+    double aZ     = theAmp * cos(theK * aTheta) + theZOffset;
+    aPolygon.Add(gp_Pnt(theRadius * cos(aTheta), theRadius * sin(aTheta), aZ));
+  }
+  aPolygon.Close();
+  return aPolygon.Wire();
 }
 } // namespace
 
@@ -390,4 +410,51 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
   EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
+}
+
+// Test: ThruSections(isSolid) must report failure, not a wrong success, when a closed section
+// wire is genuinely non-planar (>= 2 periods of out-of-plane variation around the loop). Such a
+// wire has no fitting plane and no surface already attached to its edges, so PerformPlan() cannot
+// cap it. Before this fix, MakeSolid() still marked the shell/solid Closed(true) regardless, and
+// Build() reported IsDone() == true for a solid missing both end caps.
+TEST(BRepOffsetAPI_ThruSections_Test, NonPlanarClosedWireCappingFails)
+{
+  TopoDS_Wire anOuter = createSaddleWire(20.0, 2, 5.0, 0.0, 60);
+  TopoDS_Wire anInner = createSaddleWire(15.0, 2, 5.0, -10.0, 60);
+  ASSERT_FALSE(anOuter.IsNull());
+  ASSERT_FALSE(anInner.IsNull());
+
+  BRepOffsetAPI_ThruSections aLoft(true, false); // solid, smoothed
+  aLoft.CheckCompatibility(true);
+  aLoft.AddWire(anOuter);
+  aLoft.AddWire(anInner);
+  aLoft.Build();
+
+  EXPECT_FALSE(aLoft.IsDone()) << "a genuinely non-planar closed wire (k=2) has no capping plane "
+                                  "or surface; Build() must fail rather than return an unclosed "
+                                  "solid";
+}
+
+// Regression guard for the fix above: a degenerate (point) end must still succeed. PerformPlan()
+// reports "no cap needed" for a wire made only of degenerate edges (AddVertex()'s output), which
+// must not be confused with a genuine capping failure.
+TEST(BRepOffsetAPI_ThruSections_Test, DegenerateVertexEndStillSucceeds)
+{
+  gce_MakeCirc aMakeCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp::DZ()), 10.0);
+  ASSERT_TRUE(aMakeCirc.IsDone());
+  BRepBuilderAPI_MakeEdge aMakeEdge(aMakeCirc.Value());
+  ASSERT_TRUE(aMakeEdge.IsDone());
+  BRepBuilderAPI_MakeWire aMakeWire(aMakeEdge.Edge());
+  ASSERT_TRUE(aMakeWire.IsDone());
+
+  BRepBuilderAPI_MakeVertex aMakeApex(gp_Pnt(0, 0, 20.0));
+  ASSERT_TRUE(aMakeApex.IsDone());
+
+  BRepOffsetAPI_ThruSections aLoft(true, true); // solid, ruled
+  aLoft.AddWire(aMakeWire.Wire());
+  aLoft.AddVertex(aMakeApex.Vertex());
+  aLoft.Build();
+
+  EXPECT_TRUE(aLoft.IsDone())
+    << "a degenerate (point) end needs no cap face; must not be treated as a capping failure";
 }

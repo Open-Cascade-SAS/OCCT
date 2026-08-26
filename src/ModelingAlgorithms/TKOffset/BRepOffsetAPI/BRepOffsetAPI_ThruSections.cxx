@@ -234,6 +234,19 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell&      shell,
     }
   }
 
+  if (!B)
+  {
+    // Neither extremity was already closed nor could be capped (no plane or attached
+    // surface fits a genuinely non-planar wire); fail instead of returning an unclosed
+    // shape marked Closed(true) below. face1/face2 (aliased to the caller's myFirst/myLast)
+    // may already hold a real face from the other extremity's successful PerformPlan() call;
+    // clear both so a caller that inspects FirstShape()/LastShape() after a failed Build()
+    // cannot observe a face that was never added to the shell.
+    face1.Nullify();
+    face2.Nullify();
+    throw StdFail_NotDone("BRepOffsetAPI_ThruSections: could not close a non-planar extremity");
+  }
+
   TopoDS_Solid solid;
   BB.MakeSolid(solid);
   BB.Add(solid, shell);
