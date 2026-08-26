@@ -258,9 +258,9 @@ private:
   occ::handle<NCollection_HArray1<int>>                                      mySense;
   int                                                                        myDegree;
   occ::handle<NCollection_HArray1<int>>                                      myInitOrder;
-  double                                                                     myG0Error;
-  double                                                                     myG1Error;
-  double                                                                     myG2Error;
+  double                                                                     myG0Error = 0.0;
+  double                                                                     myG1Error = 0.0;
+  double                                                                     myG2Error = 0.0;
   int                                                                        myNbPtsOnCur;
   bool                                                                       mySurfInitIsGive;
   int                                                                        myNbIter;

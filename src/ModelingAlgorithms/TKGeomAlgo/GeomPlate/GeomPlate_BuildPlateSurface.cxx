@@ -438,6 +438,9 @@ void GeomPlate_BuildPlateSurface::Add(const occ::handle<GeomPlate_PointConstrain
 void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgress)
 {
   myGeomPlateSurface.Nullify();
+  // Cleared with the result they describe, so a build that returns early does not report the
+  // previous one's deviations.
+  myG0Error = myG1Error = myG2Error = 0.;
 
 #ifdef OCCT_DEBUG
   // Timing
@@ -724,6 +727,11 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
       Fini = true;
       double di, an, cu;
       VerifPoints(di, an, cu);
+      // No curve constraint here, so VerifSurface() never runs and these are the only measured
+      // deviations this build produces.
+      myG0Error = di;
+      myG1Error = an;
+      myG2Error = cu;
     }
   } while (!Fini); // End loop for better surface
 #ifdef OCCT_DEBUG
@@ -2740,9 +2748,12 @@ void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist, double& Ang, double&
   gp_Pnt   Pi, Pf;
   gp_Pnt2d P2d;
   gp_Vec   v1i, v1f, v2i, v2f, v3i, v3f;
-  Ang  = 0;
+  double   aAng = 0;
+  Ang           = 0;
   Dist = 0, Curv = 0;
   occ::handle<GeomPlate_PointConstraint> PntCont;
+  // Each deviation is accumulated as a maximum over the constraints, since that is what the
+  // G0Error/G1Error/G2Error accessors this feeds report.
   for (int i = 1; i <= NTPntCont; i++)
   {
     PntCont = myPntCont->Value(i);
@@ -2752,20 +2763,21 @@ void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist, double& Ang, double&
         P2d = PntCont->Pnt2dOnSurf();
         PntCont->D0(Pi);
         myGeomPlateSurface->D0(P2d.Coord(1), P2d.Coord(2), Pf);
-        Dist = Pf.Distance(Pi);
+        Dist = std::max(Dist, Pf.Distance(Pi));
         break;
       case 1:
         PntCont->D1(Pi, v1i, v2i);
         P2d = PntCont->Pnt2dOnSurf();
         myGeomPlateSurface->D1(P2d.Coord(1), P2d.Coord(2), Pf, v1f, v2f);
-        Dist = Pf.Distance(Pi);
+        Dist = std::max(Dist, Pf.Distance(Pi));
         v3i  = v1i ^ v2i;
         v3f  = v1f ^ v2f;
-        Ang  = v3f.Angle(v3i);
-        if (Ang > (M_PI / 2))
+        aAng = v3f.Angle(v3i);
+        if (aAng > (M_PI / 2))
         {
-          Ang = M_PI - Ang;
+          aAng = M_PI - aAng;
         }
+        Ang = std::max(Ang, aAng);
         break;
       case 2:
         occ::handle<Geom_Surface>       Splate(myGeomPlateSurface);
@@ -2773,9 +2785,9 @@ void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist, double& Ang, double&
         P2d = PntCont->Pnt2dOnSurf();
         GeomLProp_SLProps Prop(Splate, P2d.Coord(1), P2d.Coord(2), 2, 0.001);
         CG2.ComputeAnalysis(Prop, PntCont->LPropSurf(), GeomAbs_G2);
-        Dist = CG2.C0Value();
-        Ang  = CG2.G1Angle();
-        Curv = CG2.G2CurvatureGap();
+        Dist = std::max(Dist, CG2.C0Value());
+        Ang  = std::max(Ang, CG2.G1Angle());
+        Curv = std::max(Curv, CG2.G2CurvatureGap());
         break;
     }
   }

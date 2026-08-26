@@ -14,20 +14,28 @@
 #include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <GeomPlate_PointConstraint.hxx>
+#include <GeomPlate_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <GeomLProp_SLProps.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cmath>
+#include <cstring>
+#include <new>
 
 namespace
 {
@@ -56,6 +64,13 @@ protected:
 
 private:
   NCollection_Sequence<TCollection_AsciiString> myMessages;
+};
+
+//! A progress indicator that cancels immediately, so Perform() returns before it measures anything.
+class CancellingObserver : public ProgressObserver
+{
+public:
+  bool UserBreak() override { return true; }
 };
 
 bool hasProgressText(const ProgressObserver& theObserver, const char* theText)
@@ -236,4 +251,125 @@ TEST(GeomPlate_BuildPlateSurface, Progress_A4_OneHundredPointContour)
   EXPECT_TRUE(aBuilder.IsDone());
   EXPECT_FALSE(aBuilder.Surface().IsNull());
   expectPlateProgress(*aProgress);
+}
+
+// A plate built from point constraints alone never reaches VerifSurface(), the only writer of
+// myG0Error / myG1Error / myG2Error, so the three accessors used to return uninitialised members.
+// The deviations are measured on that branch already, by VerifPoints(), and are now kept.
+TEST(GeomPlate_BuildPlateSurface, PointOnlyConstraintsReportMeasuredErrors)
+{
+  GeomPlate_BuildPlateSurface aBuilder(3, 10, 5, 1.e-5, 1.e-1);
+  for (int aI = 0; aI < 5; ++aI)
+  {
+    for (int aJ = 0; aJ < 5; ++aJ)
+    {
+      const double aX = aI * 2.5;
+      const double aY = aJ * 2.5;
+      const double aZ = 2. * ((aI + aJ) % 2 ? 1. : -1.) + 0.35 * aX - 0.2 * aY;
+      aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(aX, aY, aZ), 0));
+    }
+  }
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+
+  // The same distance VerifPoints() measures, recomputed from the built surface.
+  const occ::handle<GeomPlate_Surface> aPlate   = aBuilder.Surface();
+  double                               aMaxDist = 0.;
+  for (int anIndex = 1; anIndex <= 25; ++anIndex)
+  {
+    const occ::handle<GeomPlate_PointConstraint> aConstraint = aBuilder.PointConstraint(anIndex);
+    const gp_Pnt2d                               aUV         = aConstraint->Pnt2dOnSurf();
+    gp_Pnt                                       aTarget, aOnPlate;
+    aConstraint->D0(aTarget);
+    aPlate->D0(aUV.Coord(1), aUV.Coord(2), aOnPlate);
+    aMaxDist = std::max(aMaxDist, aOnPlate.Distance(aTarget));
+  }
+
+  EXPECT_DOUBLE_EQ(aBuilder.G0Error(), aMaxDist);
+  EXPECT_LT(aBuilder.G0Error(), 1.e-6) << "a plate interpolates its own point constraints";
+  EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.);
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.);
+}
+
+// The accessors document a maximum over the constraints, so VerifPoints() accumulates rather than
+// overwrites. The G2 gaps below depend only on V, and the constraints are added with V descending,
+// so the largest gap belongs to the first constraint and the last one is measurably smaller.
+TEST(GeomPlate_BuildPlateSurface, PointOnlyErrorsAreMaximaNotTheLastConstraint)
+{
+  const occ::handle<Geom_SphericalSurface> aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
+  GeomPlate_BuildPlateSurface aBuilder(3, 10, 5, 1.e-5, 1.e-1);
+  for (int aI = 0; aI < 3; ++aI)
+  {
+    for (int aJ = 2; aJ >= 0; --aJ)
+    {
+      aBuilder.Add(
+        new GeomPlate_PointConstraint(aI * 0.7, 0.3 + aJ * 0.35, aSphere, 2, 1.e-4, 1.e-2, 1.e-1));
+    }
+  }
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+
+  const occ::handle<Geom_Surface> aPlate   = aBuilder.Surface();
+  double                          aMaxCurv = 0., aLastCurv = 0.;
+  for (int anIndex = 1; anIndex <= 9; ++anIndex)
+  {
+    const occ::handle<GeomPlate_PointConstraint> aConstraint = aBuilder.PointConstraint(anIndex);
+    const gp_Pnt2d                               aUV         = aConstraint->Pnt2dOnSurf();
+    GeomLProp_SLProps               aProps(aPlate, aUV.Coord(1), aUV.Coord(2), 2, 0.001);
+    LocalAnalysis_SurfaceContinuity aContinuity;
+    aContinuity.ComputeAnalysis(aProps, aConstraint->LPropSurf(), GeomAbs_G2);
+    aLastCurv = aContinuity.G2CurvatureGap();
+    aMaxCurv  = std::max(aMaxCurv, aLastCurv);
+  }
+
+  ASSERT_GT(aMaxCurv, aLastCurv) << "fixture must separate the maximum from the last constraint";
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), aMaxCurv);
+}
+
+// The members are read by the accessors on every path, including a Perform() that returns before
+// any deviation is measured, so they are initialised rather than left to the caller's memory.
+TEST(GeomPlate_BuildPlateSurface, ErrorsAreZeroBeforePerform)
+{
+  alignas(GeomPlate_BuildPlateSurface) unsigned char aBuffer[sizeof(GeomPlate_BuildPlateSurface)];
+  std::memset(aBuffer, 0x5A, sizeof(aBuffer));
+
+  GeomPlate_BuildPlateSurface* aBuilder =
+    new (static_cast<void*>(aBuffer)) GeomPlate_BuildPlateSurface(3, 10, 5);
+  EXPECT_DOUBLE_EQ(aBuilder->G0Error(), 0.);
+  EXPECT_DOUBLE_EQ(aBuilder->G1Error(), 0.);
+  EXPECT_DOUBLE_EQ(aBuilder->G2Error(), 0.);
+  aBuilder->~GeomPlate_BuildPlateSurface();
+}
+
+// Perform() clears the three deviations with the surface they describe, so a build that returns
+// early does not report the previous build's numbers. Plate_Plate::Init() leaves IsDone() true, so
+// IsDone() does not warn a caller off this case.
+TEST(GeomPlate_BuildPlateSurface, CancelledRebuildDoesNotReportThePreviousErrors)
+{
+  GeomPlate_BuildPlateSurface aBuilder(3, 10, 5, 1.e-5, 1.e-1);
+  for (int aI = 0; aI < 5; ++aI)
+  {
+    for (int aJ = 0; aJ < 5; ++aJ)
+    {
+      const double aX = aI * 2.5;
+      const double aY = aJ * 2.5;
+      const double aZ = 2. * ((aI + aJ) % 2 ? 1. : -1.) + 0.35 * aX - 0.2 * aY;
+      aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(aX, aY, aZ), 0));
+    }
+  }
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_GT(aBuilder.G0Error(), 0.)
+    << "the first build must leave a non-zero deviation to be stale";
+
+  occ::handle<CancellingObserver> aProgress = new CancellingObserver();
+  aBuilder.Perform(Message_ProgressIndicator::Start(aProgress));
+
+  EXPECT_TRUE(aBuilder.Surface().IsNull());
+  EXPECT_DOUBLE_EQ(aBuilder.G0Error(), 0.);
+  EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.);
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.);
 }
