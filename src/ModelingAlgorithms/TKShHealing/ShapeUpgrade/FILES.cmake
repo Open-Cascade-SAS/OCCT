@@ -50,6 +50,8 @@ set(OCCT_ShapeUpgrade_FILES
   ShapeUpgrade_ShapeDivideClosedEdges.hxx
   ShapeUpgrade_ShapeDivideContinuity.cxx
   ShapeUpgrade_ShapeDivideContinuity.hxx
+  ShapeUpgrade_ShellSewing.cxx
+  ShapeUpgrade_ShellSewing.hxx
   ShapeUpgrade_SplitCurve.cxx
   ShapeUpgrade_SplitCurve.hxx
   ShapeUpgrade_SplitCurve2d.cxx

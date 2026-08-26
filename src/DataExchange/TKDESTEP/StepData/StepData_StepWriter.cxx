@@ -23,6 +23,7 @@
 #include <Standard_Transient.hxx>
 #include <StepData_ESDescr.hxx>
 #include <StepData_FieldList.hxx>
+#include <StepData_Field.hxx>
 #include <StepData_PDescr.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_ReadWriteModule.hxx>
@@ -612,53 +613,54 @@ void StepData_StepWriter::EndComplex()
 void StepData_StepWriter::SendField(const StepData_Field&               fild,
                                     const occ::handle<StepData_PDescr>& descr)
 {
-  bool done = true;
-  int  kind = fild.Kind(false); // valeur interne
+  const StepData_Field::FieldKind aFieldKind = fild.Kind(false);
 
-  if (kind == 16)
+  if (aFieldKind == StepData_Field::FieldKind::Select)
   {
-    DeclareAndCast(StepData_SelectMember, sm, fild.Transient());
+    const occ::handle<StepData_SelectMember> sm =
+      occ::down_cast<StepData_SelectMember>(fild.Transient());
     SendSelect(sm, descr);
     return;
   }
-  switch (kind)
+  bool isSent = true;
+  switch (aFieldKind)
   {
       //   here the simple cases; then we cast and see
-    case 0:
+    case StepData_Field::FieldKind::Undefined:
       SendUndef();
       break;
-    case 1:
+    case StepData_Field::FieldKind::Integer:
       Send(fild.Integer());
       break;
-    case 2:
+    case StepData_Field::FieldKind::Boolean:
       SendBoolean(fild.Boolean());
       break;
-    case 3:
+    case StepData_Field::FieldKind::Logical:
       SendLogical(fild.Logical());
       break;
-    case 4:
+    case StepData_Field::FieldKind::Enum:
       SendEnum(fild.EnumText());
       break; // enum : descr ?
-    case 5:
+    case StepData_Field::FieldKind::Real:
       Send(fild.Real());
       break;
-    case 6:
+    case StepData_Field::FieldKind::String:
       Send(fild.String());
       break;
-    case 7:
+    case StepData_Field::FieldKind::Entity:
       Send(fild.Entity());
       break;
-    case 8:
-      done = false;
+    case StepData_Field::FieldKind::Any:
+      isSent = false;
       break;
-    case 9:
+    case StepData_Field::FieldKind::Derived:
       SendDerived();
       break;
     default:
-      done = false;
+      isSent = false;
       break;
   }
-  if (done)
+  if (isSent)
   {
     return;
   }
@@ -673,40 +675,39 @@ void StepData_StepWriter::SendField(const StepData_Field&               fild,
   if (arity == 1)
   {
     OpenSub();
-    int i, low = fild.Lower(), up = low + fild.Length() - 1;
-    for (i = low; i <= up; i++)
+    const int aLower  = fild.Lower();
+    const int anUpper = aLower + fild.Length() - 1;
+    for (int anIndex = aLower; anIndex <= anUpper; ++anIndex)
     {
-      kind = fild.ItemKind(i);
-      done = true;
-      switch (kind)
+      const StepData_Field::FieldKind anItemKind = fild.ItemKind(anIndex);
+      switch (anItemKind)
       {
-        case 0:
+        case StepData_Field::FieldKind::Undefined:
           SendUndef();
           break;
-        case 1:
-          Send(fild.Integer(i));
+        case StepData_Field::FieldKind::Integer:
+          Send(fild.Integer(anIndex));
           break;
-        case 2:
-          SendBoolean(fild.Boolean(i));
+        case StepData_Field::FieldKind::Boolean:
+          SendBoolean(fild.Boolean(anIndex));
           break;
-        case 3:
-          SendLogical(fild.Logical(i));
+        case StepData_Field::FieldKind::Logical:
+          SendLogical(fild.Logical(anIndex));
           break;
-        case 4:
-          SendEnum(fild.EnumText(i));
+        case StepData_Field::FieldKind::Enum:
+          SendEnum(fild.EnumText(anIndex));
           break;
-        case 5:
-          Send(fild.Real(i));
+        case StepData_Field::FieldKind::Real:
+          Send(fild.Real(anIndex));
           break;
-        case 6:
-          Send(fild.String(i));
+        case StepData_Field::FieldKind::String:
+          Send(fild.String(anIndex));
           break;
-        case 7:
-          Send(fild.Entity(i));
+        case StepData_Field::FieldKind::Entity:
+          Send(fild.Entity(anIndex));
           break;
         default:
           SendUndef();
-          done = false;
           break; // ANORMAL
       }
     }
@@ -716,44 +717,44 @@ void StepData_StepWriter::SendField(const StepData_Field&               fild,
   if (arity == 2)
   {
     OpenSub();
-    int j, low1 = fild.Lower(1), up1 = low1 + fild.Length(1) - 1;
-    for (j = low1; j <= up1; j++)
+    const int aRowLower  = fild.Lower(1);
+    const int anRowUpper = aRowLower + fild.Length(1) - 1;
+    for (int aRow = aRowLower; aRow <= anRowUpper; ++aRow)
     {
-      int i = 0, low2 = fild.Lower(2), up2 = low2 + fild.Length(2) - 1;
+      const int aColumnLower = fild.Lower(2);
+      const int aColumnUpper = aColumnLower + fild.Length(2) - 1;
       OpenSub();
-      for (i = low2; i <= up2; i++)
+      for (int aColumn = aColumnLower; aColumn <= aColumnUpper; ++aColumn)
       {
-        kind = fild.ItemKind(i, j);
-        done = true;
-        switch (kind)
+        const StepData_Field::FieldKind anItemKind = fild.ItemKind(aRow, aColumn);
+        switch (anItemKind)
         {
-          case 0:
+          case StepData_Field::FieldKind::Undefined:
             SendUndef();
             break;
-          case 1:
-            Send(fild.Integer(i, j));
+          case StepData_Field::FieldKind::Integer:
+            Send(fild.Integer(aRow, aColumn));
             break;
-          case 2:
-            SendBoolean(fild.Boolean(i, j));
+          case StepData_Field::FieldKind::Boolean:
+            SendBoolean(fild.Boolean(aRow, aColumn));
             break;
-          case 3:
-            SendLogical(fild.Logical(i, j));
+          case StepData_Field::FieldKind::Logical:
+            SendLogical(fild.Logical(aRow, aColumn));
             break;
-          case 4:
-            SendEnum(fild.EnumText(i, j));
+          case StepData_Field::FieldKind::Enum:
+            SendEnum(fild.EnumText(aRow, aColumn));
             break;
-          case 5:
-            Send(fild.Real(i, j));
+          case StepData_Field::FieldKind::Real:
+            Send(fild.Real(aRow, aColumn));
             break;
-          case 6:
-            Send(fild.String(i, j));
+          case StepData_Field::FieldKind::String:
+            Send(fild.String(aRow, aColumn));
             break;
-          case 7:
-            Send(fild.Entity(i, j));
+          case StepData_Field::FieldKind::Entity:
+            Send(fild.Entity(aRow, aColumn));
             break;
           default:
             SendUndef();
-            done = false;
             break; // ANORMAL
         }
       }
@@ -762,6 +763,7 @@ void StepData_StepWriter::SendField(const StepData_Field&               fild,
     CloseSub();
     return;
   }
+  SendUndef();
 }
 
 //=================================================================================================
@@ -774,7 +776,8 @@ void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& s
   bool selname = false;
   if (sm.IsNull())
   {
-    return; // ??
+    SendUndef();
+    return;
   }
   if (sm->HasName())
   {
@@ -783,35 +786,42 @@ void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& s
     //    AddString(textlist);     // SANS AJOUT DE PARAMETRE !!
     OpenTypedSub(sm->Name());
   }
-  int kind = sm->Kind();
-  switch (kind)
+  switch (sm->Kind())
   {
-    case 0:
+    case static_cast<int>(StepData_Field::FieldKind::Undefined):
       SendUndef();
       break;
-    case 1:
+    case static_cast<int>(StepData_Field::FieldKind::Integer):
       Send(sm->Integer());
       break;
-    case 2:
+    case static_cast<int>(StepData_Field::FieldKind::Boolean):
       SendBoolean(sm->Boolean());
       break;
-    case 3:
+    case static_cast<int>(StepData_Field::FieldKind::Logical):
       SendLogical(sm->Logical());
       break;
-    case 4:
+    case static_cast<int>(StepData_Field::FieldKind::Enum):
       SendEnum(sm->EnumText());
       break; // enum : descr ?
-    case 5:
+    case static_cast<int>(StepData_Field::FieldKind::Real):
       Send(sm->Real());
       break;
-    case 6:
+    case static_cast<int>(StepData_Field::FieldKind::String):
       Send(sm->String());
       break;
-    case 8:
-      SendArrReal(occ::down_cast<StepData_SelectArrReal>(sm)->ArrReal());
+    case static_cast<int>(StepData_Field::FieldKind::Any):
+      if (occ::is_kind<StepData_SelectArrReal>(sm))
+      {
+        SendArrReal(occ::down_cast<StepData_SelectArrReal>(sm)->ArrReal());
+      }
+      else
+      {
+        SendUndef();
+      }
       break;
     default:
-      break; // ??
+      SendUndef();
+      break;
   }
   if (selname)
   {
@@ -1126,7 +1136,7 @@ void StepData_StepWriter::SendString(const char* const val)
 
 void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 {
-  if (val.Length() == 1 && val.Value(1) == '$')
+  if (val.IsEmpty() || (val.Length() == 1 && val.Value(1) == '$'))
   {
     SendUndef();
     return;
@@ -1150,8 +1160,7 @@ void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 
 void StepData_StepWriter::SendEnum(const char* const val)
 {
-
-  if (val[0] == '$' && val[1] == '\0')
+  if (val == nullptr || val[0] == '\0' || (val[0] == '$' && val[1] == '\0'))
   {
     SendUndef();
     return;
@@ -1164,19 +1173,18 @@ void StepData_StepWriter::SendEnum(const char* const val)
 
 void StepData_StepWriter::SendArrReal(const occ::handle<NCollection_HArray1<double>>& anArr)
 {
-  AddString(textlist);
-  if (anArr->Length() > 0)
+  if (anArr.IsNull())
   {
-    // add real
-    Send(anArr->Value(1));
-    for (int i = 2; i <= anArr->Length(); i++)
-    {
-      //      AddString(textparam);
-      // add real
-      Send(anArr->Value(i));
-    }
+    SendUndef();
+    return;
   }
-  AddString(textendlist);
+
+  OpenSub();
+  for (int anIndex = anArr->Lower(); anIndex <= anArr->Upper(); ++anIndex)
+  {
+    Send(anArr->Value(anIndex));
+  }
+  CloseSub();
 }
 
 //=================================================================================================

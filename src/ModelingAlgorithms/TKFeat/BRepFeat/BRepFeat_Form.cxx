@@ -44,10 +44,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool BRepFeat_GettraceFEAT();
-#endif
-
 static void Descendants(const TopoDS_Shape&,
                         BRepFeat_Builder&,
                         NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
@@ -59,18 +55,8 @@ static void Descendants(const TopoDS_Shape&,
 void BRepFeat_Form::GlobalPerform()
 {
 
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-  if (trc)
-    std::cout << "BRepFeat_Form::GlobalPerform ()" << std::endl;
-#endif
-
   if (!mySbOK || !myGSOK || !mySFOK || !mySUOK || !myGFOK || !mySkOK || !myPSOK)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Fields not initialized in BRepFeat_Form" << std::endl;
-#endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
     return;
@@ -83,10 +69,6 @@ void BRepFeat_Form::GlobalPerform()
 
   if (myJustFeat && !myFuse)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Invalid option : myJustFeat + Cut" << std::endl;
-#endif
     myStatusError = BRepFeat_InvOption;
     NotDone();
     return;
@@ -123,10 +105,6 @@ void BRepFeat_Form::GlobalPerform()
       if (!exp.More())
       {
         FromInShape = false;
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << " From not in Shape" << std::endl;
-#endif
         break;
       }
     }
@@ -148,10 +126,6 @@ void BRepFeat_Form::GlobalPerform()
       if (!exp.More())
       {
         UntilInShape = false;
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << " Until not in Shape" << std::endl;
-#endif
         break;
       }
     }
@@ -332,10 +306,6 @@ void BRepFeat_Form::GlobalPerform()
 
   if (theOpe == 1)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Gluer" << std::endl;
-#endif
     bool Collage = true;
     // cut by FFrom && FUntil
     TopoDS_Shape Comp;
@@ -603,10 +573,6 @@ void BRepFeat_Form::GlobalPerform()
 
   if (theOpe == 1)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " still Gluer" << std::endl;
-#endif
     theGlue.Perform();
     if (theGlue.IsDone())
     {
@@ -617,10 +583,6 @@ void BRepFeat_Form::GlobalPerform()
         UpdateDescendants(theGlue);
         myNewEdges = theGlue.Edges();
         myTgtEdges = theGlue.TgtEdges();
-#ifdef OCCT_DEBUG
-        if (trc)
-          std::cout << " Gluer result" << std::endl;
-#endif
         Done();
         myShape = theGlue.ResultingShape();
       }
@@ -641,10 +603,6 @@ void BRepFeat_Form::GlobalPerform()
 
   if (theOpe == 2 && ChangeOpe && myJustGluer)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " Gluer failure" << std::endl;
-#endif
     myJustGluer = false;
     theOpe      = 0;
     //    Done();
@@ -655,17 +613,9 @@ void BRepFeat_Form::GlobalPerform()
 
   if (theOpe == 2)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " No Gluer" << std::endl;
-#endif
     TopoDS_Shape theGShape = myGShape;
     if (ChangeOpe)
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " Passage to topological operations" << std::endl;
-#endif
     }
 
     TopoDS_Shape Comp;
@@ -1165,10 +1115,6 @@ void BRepFeat_Form::GlobalPerform()
         // Case when no part of the tool is preserved
         if (!KeepParts)
         {
-#ifdef OCCT_DEBUG
-          if (trc)
-            std::cout << " No parts of tool kept" << std::endl;
-#endif
           myStatusError = BRepFeat_NoParts;
           NotDone();
           return;
@@ -1377,9 +1323,6 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::TgtEdges() const
 
 bool BRepFeat_Form::TransformShapeFU(const int flag)
 {
-#ifdef OCCT_DEBUG
-  bool trc = BRepFeat_GettraceFEAT();
-#endif
   bool Trf = false;
 
   TopoDS_Shape shapefu;
@@ -1399,10 +1342,6 @@ bool BRepFeat_Form::TransformShapeFU(const int flag)
   TopExp_Explorer exp(shapefu, TopAbs_FACE);
   if (!exp.More())
   { // no faces... It is necessary to return an error
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << " BRepFeat_Form::TransformShapeFU : invalid Shape" << std::endl;
-#endif
     return Trf;
   }
 
@@ -1466,15 +1405,6 @@ bool BRepFeat_Form::TransformShapeFU(const int flag)
       myMap(fac).Append(fac);
     }
   }
-#ifdef OCCT_DEBUG
-  if (trc)
-  {
-    if (Trf && (flag == 0))
-      std::cout << " TransformShapeFU From" << std::endl;
-    if (Trf && (flag == 1))
-      std::cout << " TransformShapeFU Until" << std::endl;
-  }
-#endif
   return Trf;
 }
 

@@ -28,15 +28,6 @@
 #include <TopOpeBRepDS_CurveIterator.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceCU();
-extern bool TopOpeBRepBuild_GettraceCUV();
-extern bool TopOpeBRepBuild_GettraceSPF();
-extern bool TopOpeBRepBuild_GettraceSPS();
-extern bool TopOpeBRepBuild_GetcontextSF2();
-extern bool TopOpeBRepBuild_GettraceSHEX();
-#endif
-
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::BuildFaces(const int                                       iS,
@@ -91,9 +82,6 @@ void TopOpeBRepBuild_Builder::BuildFaces(const int                              
     }
   }
   //
-#ifdef OCCT_DEBUG
-  bool tSE = TopOpeBRepBuild_GettraceSPF();
-#endif
   //
   TopOpeBRepDS_CurveIterator SCurves(HDS->SurfaceCurves(iS));
   for (; SCurves.More(); SCurves.Next())
@@ -106,10 +94,6 @@ void TopOpeBRepBuild_Builder::BuildFaces(const int                              
     {
       continue;
     }
-#ifdef OCCT_DEBUG
-    if (tSE)
-      std::cout << std::endl << "BuildFaces : C " << iC << " on S " << iS << std::endl;
-#endif
     TopoDS_Shape                             anEdge;
     NCollection_List<TopoDS_Shape>::Iterator Iti(NewEdges(iC));
     for (; Iti.More(); Iti.Next())

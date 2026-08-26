@@ -2,8 +2,6 @@
 set(OCCT_Font_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Font_FILES
-  Font_BRepFont.hxx
-  Font_BRepTextBuilder.hxx
   Font_FontAspect.hxx
   Font_FontMgr.cxx
   Font_FontMgr.hxx
@@ -11,6 +9,8 @@ set(OCCT_Font_FILES
   Font_FTFont.hxx
   Font_FTLibrary.cxx
   Font_FTLibrary.hxx
+  Font_GlyphOutline.cxx
+  Font_GlyphOutline.hxx
   Font_Hinting.hxx
   Font_NameOfFont.hxx
 

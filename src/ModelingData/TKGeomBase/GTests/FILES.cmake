@@ -30,6 +30,19 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaPC_OffsetCurve_Test.cxx
   ExtremaPC_Parabola_Test.cxx
   ExtremaPC_SearchMode_Test.cxx
+  ExtremaPC2d_Curve_Test.cxx
+  ExtremaPC2d_Circle_Test.cxx
+  ExtremaPC2d_BSplineCurve_Test.cxx
+  ExtremaPC2d_BezierCurve_Test.cxx
+  ExtremaPC2d_DistanceFunction_Test.cxx
+  ExtremaPC2d_Ellipse_Test.cxx
+  ExtremaPC2d_GridEvaluator_Test.cxx
+  ExtremaPC2d_Hyperbola_Test.cxx
+  ExtremaPC2d_Line_Test.cxx
+  ExtremaPC2d_OffsetCurve_Test.cxx
+  ExtremaPC2d_OtherCurve_Test.cxx
+  ExtremaPC2d_Parabola_Test.cxx
+  ExtremaPC2d_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
@@ -42,6 +55,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx
+  GeomLib_Test.cxx
   GeomLib_CheckCurveOnSurface_Test.cxx
   GeomTools_Curve2dSet_Test.cxx
   GeomTools_SurfaceSet_Test.cxx

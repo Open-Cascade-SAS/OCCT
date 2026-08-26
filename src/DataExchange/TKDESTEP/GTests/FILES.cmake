@@ -5,6 +5,7 @@ set(OCCT_TKDESTEP_GTests_FILES
     DESTEP_Provider_Test.cxx
     GDT_STEP_Storage_Test.cxx
     STEPConstruct_RenderingProperties_Test.cxx
+    StepData_Field_Test.cxx
     StepData_StepWriter_Test.cxx
     StepTidy_BaseTestFixture.pxx
     StepTidy_Axis2Placement3dReducer_Test.cxx

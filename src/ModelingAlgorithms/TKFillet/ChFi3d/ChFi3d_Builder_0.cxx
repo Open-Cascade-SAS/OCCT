@@ -82,16 +82,6 @@
 #include <algorithm>
 #include <cmath>
 
-#ifdef OCCT_DEBUG
-extern bool   ChFi3d_GetcontextFORCEBLEND();
-extern bool   ChFi3d_GettraceDRAWINT();
-extern bool   ChFi3d_GettraceDRAWENLARGE();
-extern bool   ChFi3d_GettraceDRAWSPINE();
-extern double t_sameparam, t_batten;
-extern void   ChFi3d_SettraceDRAWINT(const bool b);
-extern void   ChFi3d_SettraceDRAWSPINE(const bool b);
-#endif
-
 //=================================================================================================
 
 double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, const double Eps)

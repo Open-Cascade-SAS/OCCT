@@ -16,11 +16,14 @@
 
 #include <ElCLib.hxx>
 #include <ExtremaPC.hxx>
+#include <ExtremaPC_Planar.hxx>
+#include <ExtremaPC2d_Circle.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <ProjLib.hxx>
 
 #include <cmath>
 #include <optional>
@@ -62,8 +65,7 @@ public:
   //! @param[in] theDomain parameter domain in radians (fixed for all queries)
   ExtremaPC_Circle(const gp_Circ& theCircle, const ExtremaPC::Domain1D& theDomain)
       : myCircle(theCircle),
-        myDomain(theDomain.IsFullPeriod(2.0 * M_PI) ? std::nullopt
-                                                    : std::optional<ExtremaPC::Domain1D>(theDomain))
+        myDomain(theDomain)
   {
   }
 
@@ -103,6 +105,35 @@ public:
   {
     myResult.Clear();
 
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    const gp_Pln aPlane(gp_Ax3(myCircle.Position()));
+    if (ExtremaPC::PerformPlanar<ExtremaPC2d_Circle>(ProjLib::Project(aPlane, myCircle),
+                                                     myDomain,
+                                                     ProjLib::Project(aPlane, theP),
+                                                     theP,
+                                                     aPlane,
+                                                     *this,
+                                                     theTol,
+                                                     theMode,
+                                                     false,
+                                                     myResult))
+    {
+      return myResult;
+    }
+
+    if (myCircle.Radius() <= gp::Resolution())
+    {
+      myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+      myResult.InfiniteSquareDistance = theP.SquareDistance(myCircle.Location());
+      return myResult;
+    }
+
     // Step 1: Project point P onto the circle plane
     const gp_Pnt& aCenter = myCircle.Location();
     const gp_Dir& aAxis   = myCircle.Axis().Direction();
@@ -115,7 +146,7 @@ public:
     gp_Vec aOPp(aCenter, aPp);
     double aOPpMag = aOPp.Magnitude();
 
-    if (aOPpMag < theTol)
+    if (aOPpMag <= gp::Resolution())
     {
       // Point is on the circle axis - all points on circle are equidistant
       myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
@@ -142,7 +173,7 @@ public:
     // Us2 = Us1 + PI corresponds to maximum distance (farthest point)
     double aUs2 = aUs1 + M_PI;
 
-    // Step 4: For bounded case, adjust for periodicity
+    // Step 4: For bounded case, lift each canonical solution into the requested domain.
     double aTolU = Precision::Angular();
     if (myDomain.has_value())
     {
@@ -154,38 +185,43 @@ public:
         aTolU = theTol / aRadius;
       }
 
-      // Adjust angles to be within [theUMin, theUMin + 2*PI]
-      double aUinf = theUMin;
-      ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs1);
-      ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs2);
-
-      // Handle boundary tolerance
-      if (std::abs(aUs1 - 2.0 * M_PI - theUMin) < aTolU)
-      {
+      const double aLiftTolerance = Precision::Angular();
+      aUs1 += std::ceil((theUMin - aUs1 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
+      aUs2 += std::ceil((theUMin - aUs2 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
+      if (std::abs(aUs1 - theUMin) <= aLiftTolerance)
         aUs1 = theUMin;
-      }
-      if (std::abs(aUs2 - 2.0 * M_PI - theUMin) < aTolU)
-      {
+      if (std::abs(aUs2 - theUMin) <= aLiftTolerance)
         aUs2 = theUMin;
-      }
     }
 
     // Step 5: Add extrema (with bounds check if domain specified)
     // Skip based on search mode: i=0 is minimum, i=1 is maximum
-    int aStart = (theMode == ExtremaPC::SearchMode::Max) ? 1 : 0;
-    int aEnd   = (theMode == ExtremaPC::SearchMode::Min) ? 1 : 2;
+    const size_t aStart = (theMode == ExtremaPC::SearchMode::Max) ? 1 : 0;
+    const size_t aEnd   = (theMode == ExtremaPC::SearchMode::Min) ? 1 : 2;
 
-    double aSolutions[2] = {aUs1, aUs2};
+    const double aSolutions[2] = {aUs1, aUs2};
 
-    for (int i = aStart; i < aEnd; ++i)
+    for (size_t anIndex = aStart; anIndex < aEnd; ++anIndex)
     {
-      double aU = aSolutions[i];
+      const double aU = aSolutions[anIndex];
 
       // Check bounds only if domain is specified
       if (myDomain.has_value())
       {
-        if (aU < myDomain->Min - aTolU || aU > myDomain->Max + aTolU)
-          continue;
+        if (aU >= myDomain->Min - aTolU && aU <= myDomain->Max + aTolU)
+        {
+          gp_Pnt aCurvePt = ElCLib::Value(aU, myCircle);
+
+          ExtremaPC::ExtremumResult anExt;
+          anExt.Parameter      = aU;
+          anExt.Point          = aCurvePt;
+          anExt.SquareDistance = theP.SquareDistance(aCurvePt);
+          anExt.IsMinimum      = (anIndex == 0);
+          anExt.IsMaximum      = (anIndex == 1);
+
+          myResult.Extrema.Append(anExt);
+        }
+        continue;
       }
 
       gp_Pnt aCurvePt = ElCLib::Value(aU, myCircle);
@@ -194,12 +230,14 @@ public:
       anExt.Parameter      = aU;
       anExt.Point          = aCurvePt;
       anExt.SquareDistance = theP.SquareDistance(aCurvePt);
-      anExt.IsMinimum      = (i == 0); // First solution is minimum, second is maximum
+      anExt.IsMinimum      = (anIndex == 0); // First solution is minimum, second is maximum
+      anExt.IsMaximum      = (anIndex == 1);
 
       myResult.Extrema.Append(anExt);
     }
 
-    myResult.Status = ExtremaPC::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
     return myResult;
   }
 
@@ -215,12 +253,37 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    if (myDomain.has_value() && myDomain->IsValid() && myDomain->Min == myDomain->Max)
+    {
+      myResult.Clear();
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
+      return myResult;
+    }
+
     (void)Perform(theP, theTol, theMode);
 
     // Add endpoints if interior computation succeeded and domain is bounded
-    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if ((myResult.Status == ExtremaPC::Status::OK
+         || myResult.Status == ExtremaPC::Status::NoSolution)
+        && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
+      const bool isClosed =
+        ExtremaPC::IsClosedPeriodicDomain(*myDomain, 2.0 * M_PI, Precision::Angular());
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, isClosed);
+      if (!myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaPC::Status::OK;
+      }
     }
 
     return myResult;

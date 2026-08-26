@@ -32,9 +32,7 @@ namespace MathUtils
 //! @return true if converged
 inline bool IsXConverged(double theXOld, double theXNew, double theTolerance)
 {
-  const double aDiff  = std::abs(theXNew - theXOld);
-  const double aScale = std::max(1.0, std::abs(theXNew));
-  return aDiff < theTolerance * aScale;
+  return IsWithinTolerance(theXOld, theXNew, theTolerance, theTolerance);
 }
 
 //! Check convergence based on absolute function value.
@@ -43,7 +41,8 @@ inline bool IsXConverged(double theXOld, double theXNew, double theTolerance)
 //! @return true if |f(x)| < tolerance
 inline bool IsFConverged(double theFValue, double theTolerance)
 {
-  return std::abs(theFValue) < theTolerance;
+  return std::isfinite(theFValue) && std::isfinite(theTolerance) && theTolerance >= 0.0
+         && std::abs(theFValue) <= theTolerance;
 }
 
 //! Combined convergence test for scalar root finders.
@@ -55,7 +54,11 @@ inline bool IsFConverged(double theFValue, double theTolerance)
 //! @return true if either criterion is satisfied
 inline bool IsConverged(double theXOld, double theXNew, double theFValue, const Config& theConfig)
 {
-  return IsXConverged(theXOld, theXNew, theConfig.XTolerance)
+  if (!theConfig.IsValid() || !std::isfinite(theFValue))
+  {
+    return false;
+  }
+  return IsWithinTolerance(theXOld, theXNew, theConfig.XTolerance, theConfig.RelativeTolerance)
          || IsFConverged(theFValue, theConfig.FTolerance);
 }
 
@@ -72,16 +75,17 @@ inline bool IsMinConverged(double        theXOld,
                            double        theFNew,
                            const Config& theConfig)
 {
-  // X convergence
-  if (IsXConverged(theXOld, theXNew, theConfig.XTolerance))
+  if (!theConfig.IsValid() || !std::isfinite(theFOld) || !std::isfinite(theFNew))
+  {
+    return false;
+  }
+  if (IsWithinTolerance(theXOld, theXNew, theConfig.XTolerance, theConfig.RelativeTolerance))
   {
     return true;
   }
 
   // Relative function change convergence
-  const double aFDiff  = std::abs(theFNew - theFOld);
-  const double aFScale = std::max(1.0, std::abs(theFNew));
-  return aFDiff < theConfig.FTolerance * aFScale;
+  return IsWithinTolerance(theFOld, theFNew, theConfig.FTolerance, theConfig.RelativeTolerance);
 }
 
 //! Convergence test for vector solvers using infinity norm.
@@ -93,14 +97,20 @@ inline bool IsVectorConverged(const math_Vector& theOld,
                               const math_Vector& theNew,
                               double             theTolerance)
 {
-  double aMaxDiff  = 0.0;
-  double aMaxScale = 1.0;
-  for (int i = theOld.Lower(); i <= theOld.Upper(); ++i)
+  if (theOld.Size() != theNew.Size() || !std::isfinite(theTolerance) || theTolerance < 0.0)
   {
-    aMaxDiff  = std::max(aMaxDiff, std::abs(theNew(i) - theOld(i)));
-    aMaxScale = std::max(aMaxScale, std::abs(theNew(i)));
+    return false;
   }
-  return aMaxDiff < theTolerance * aMaxScale;
+  for (size_t i = 0; i < theOld.Size(); ++i)
+  {
+    const double anOld = theOld.At(i);
+    const double aNew  = theNew.At(i);
+    if (!IsWithinTolerance(anOld, aNew, theTolerance, theTolerance))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 //! Convergence test using gradient norm for minimization.
@@ -109,12 +119,8 @@ inline bool IsVectorConverged(const math_Vector& theOld,
 //! @return true if ||gradient|| < tolerance
 inline bool IsGradientConverged(const math_Vector& theGradient, double theTolerance)
 {
-  double aNormSq = 0.0;
-  for (int i = theGradient.Lower(); i <= theGradient.Upper(); ++i)
-  {
-    aNormSq += Sqr(theGradient(i));
-  }
-  return std::sqrt(aNormSq) < theTolerance;
+  return std::isfinite(theTolerance) && theTolerance >= 0.0
+         && VectorNorm(theGradient) <= theTolerance;
 }
 
 //! Compute infinity norm of a vector.
@@ -123,9 +129,9 @@ inline bool IsGradientConverged(const math_Vector& theGradient, double theTolera
 inline double InfinityNorm(const math_Vector& theVector)
 {
   double aMax = 0.0;
-  for (int i = theVector.Lower(); i <= theVector.Upper(); ++i)
+  for (size_t i = 0; i < theVector.Size(); ++i)
   {
-    aMax = std::max(aMax, std::abs(theVector(i)));
+    aMax = std::max(aMax, std::abs(theVector.At(i)));
   }
   return aMax;
 }
@@ -135,12 +141,7 @@ inline double InfinityNorm(const math_Vector& theVector)
 //! @return sqrt(sum(v_i^2))
 inline double EuclideanNorm(const math_Vector& theVector)
 {
-  double aSumSq = 0.0;
-  for (int i = theVector.Lower(); i <= theVector.Upper(); ++i)
-  {
-    aSumSq += Sqr(theVector(i));
-  }
-  return std::sqrt(aSumSq);
+  return VectorNorm(theVector);
 }
 
 } // namespace MathUtils

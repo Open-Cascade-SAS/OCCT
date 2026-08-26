@@ -61,11 +61,6 @@
 #include <algorithm>
 #include <cmath>
 
-#ifdef OCCT_DEBUG
-extern bool ChFi3d_GettraceDRAWFIL();
-extern void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure&   DStr,
-                                 const occ::handle<ChFiDS_SurfData>& Data);
-#endif
 //=======================================================================
 // function : CompTra
 // purpose  : Calculate the Transition from start point.
@@ -1646,14 +1641,5 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
       SetData.Remove(i + 1, SetData.Length());
     }
   }
-#ifdef OCCT_DEBUG
-  if (ChFi3d_GettraceDRAWFIL())
-  {
-    for (i = 1; i <= SetData.Length(); i++)
-    {
-      ChFi3d_CheckSurfData(DStr, SetData.Value(i));
-    }
-  }
-#endif
   return true;
 }
