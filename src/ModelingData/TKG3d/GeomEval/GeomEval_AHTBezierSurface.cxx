@@ -1145,8 +1145,10 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
   const int aDimU = NbPolesU();
   const int aDimV = NbPolesV();
 
-  NCollection_LocalArray<double, 16> aBUDerivs((Nu + 1) * aDimU);
-  NCollection_LocalArray<double, 16> aBVDerivs((Nv + 1) * aDimV);
+  const size_t                       aNbUDerivs = static_cast<size_t>(Nu + 1) * aDimU;
+  const size_t                       aNbVDerivs = static_cast<size_t>(Nv + 1) * aDimV;
+  NCollection_LocalArray<double, 16> aBUDerivs(aNbUDerivs);
+  NCollection_LocalArray<double, 16> aBVDerivs(aNbVDerivs);
   evalAxisDerivs(U, Nu, myAlgDegreeU, myAlphaU, myBetaU, aDimU, aBUDerivs);
   evalAxisDerivs(V, Nv, myAlgDegreeV, myAlphaV, myBetaV, aDimV, aBVDerivs);
 
@@ -1168,9 +1170,10 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
     return gp_Vec(aSum);
   }
 
-  NCollection_LocalArray<gp_XYZ, 16> aNDerivs((Nu + 1) * (Nv + 1));
-  NCollection_LocalArray<double, 16> aWDerivs((Nu + 1) * (Nv + 1));
-  NCollection_LocalArray<gp_XYZ, 16> aCDerivs((Nu + 1) * (Nv + 1));
+  const size_t                       aNbDerivs = static_cast<size_t>(Nu + 1) * (Nv + 1);
+  NCollection_LocalArray<gp_XYZ, 16> aNDerivs(aNbDerivs);
+  NCollection_LocalArray<double, 16> aWDerivs(aNbDerivs);
+  NCollection_LocalArray<gp_XYZ, 16> aCDerivs(aNbDerivs);
   evalTensorDerivs(myPoles,
                    &myWeights,
                    Nu,

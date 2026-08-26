@@ -98,17 +98,6 @@
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#ifdef OCCT_DEBUG
-//  Modified by Sergey KHROMOV - Thu Apr 11 12:23:40 2002 Begin
-// The method
-// ChFi3d_Builder::PerformMoreSurfdata(const int Index)
-// is totally rewroted.
-//  Modified by Sergey KHROMOV - Thu Apr 11 12:23:40 2002 End
-
-extern double t_same, t_inter, t_sameinter;
-extern void   ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void   ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
-#endif
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <math_FunctionSample.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
@@ -612,9 +601,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch; // init perf for PerformSetOfKPart
-#endif
   // the top,
   const TopoDS_Vertex& Vtx = myVDataMap.FindKey(Index);
   // The fillet is returned,
@@ -698,10 +684,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
   int  IFadArc = 1, IFopArc = 2;
   Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
   TopExp_Explorer ex;
-
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch); // init perf condition  if (onsame)
-#endif
 
   if (onsame)
   {
@@ -920,11 +902,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
     Update(HBs, pced, HGs, Fd->ChangeInterferenceOnS2(), CV2, isfirst);
   }
 
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_same); // result perf condition if (same)
-  ChFi3d_InitChron(ch);           // init perf condition if (inters)
-#endif
-
   TopoDS_Edge                    edgecouture;
   bool                           couture, intcouture = false;
   double                         tolreached = tolapp3d;
@@ -1092,11 +1069,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
 
     //
   }
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_inter); // result perf condition if (inter)
-  ChFi3d_InitChron(ch);            // init perf condition  if (onsame && inters)
-#endif
 
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV1, DStr), isfirst, 1);
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2, DStr), isfirst, 2);
@@ -1676,10 +1648,6 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
   {
     ChFi3d_SetPointTolerance(DStr, box2, stripe->IndexPoint(isfirst, 2));
   }
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_sameinter); // result perf condition if (same &&inter)
-#endif
 }
 
 //=======================================================================
@@ -1864,10 +1832,6 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
   // - top has n (n>3) adjacent edges
   // - top has 3 edges and fillet on one of edges touches
   //   more than one face
-
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch; // init perf
-#endif
 
   TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
   const int                                              nn   = 15;
@@ -4740,9 +4704,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch; // init perf pour PerformSetOfKPart
-#endif
   // The fillet is returned,
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator StrIt;
   StrIt.Initialize(myVDataMap(Index));
@@ -4815,9 +4776,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
   Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
   TopExp_Explorer ex;
 
-#ifdef OCCT_DEBUG
-  ChFi3d_InitChron(ch); // init perf condition
-#endif
   {
     if (!CV1.IsOnArc() && !CV2.IsOnArc())
     {
@@ -5017,10 +4975,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
     pced->Initialize(CPadArc.Arc(), Fv);
     Update(HBs, pced, HGs, FiadArc, CPadArc, isfirst);
   }
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_same); // result perf condition if (same)
-  ChFi3d_InitChron(ch);           // init perf condition if (inters)
-#endif
 
   TopoDS_Edge                    edgecouture;
   bool                           couture, intcouture = false;
@@ -5185,11 +5139,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
 
     //
   }
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_inter); // result perf condition if (inter)
-  ChFi3d_InitChron(ch);            // init perf condition  if ( inters)
-#endif
 
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV1, DStr), isfirst, 1);
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2, DStr), isfirst, 2);
@@ -5469,8 +5418,4 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
   {
     ChFi3d_SetPointTolerance(DStr, box2, stripe->IndexPoint(isfirst, 2));
   }
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_sameinter); // result perf condition if (same &&inter)
-#endif
 }

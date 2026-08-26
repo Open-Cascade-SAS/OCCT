@@ -15,107 +15,56 @@
 #define _ExtremaPC_GridEvaluator_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Extrema_CurveTool.hxx>
 #include <ExtremaPC.hxx>
 #include <ExtremaPC_DistanceFunction.hxx>
-#include <GeomGridEval.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <math_Vector.hxx>
-#include <MathRoot_Newton.hxx>
-#include <MathUtils_Config.hxx>
+#include <MathRoot_Multiple.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <Standard_Failure.hxx>
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
-#include <utility>
+#include <optional>
 
-//! @brief Grid-based point-curve extrema computation class.
+//! @brief Numerical point-curve extrema computation over a cached parameter partition.
 //!
-//! Provides grid-based extrema finding algorithm with cached state for
-//! optimal performance on repeated queries. Used by BSpline, Bezier,
-//! Offset, and other curve evaluators.
-//!
-//! Algorithm:
-//! 1. Build grid of (parameter, point, D1) from GeomGridEval
-//! 2. Linear scan of grid to find candidate intervals (sign changes in F(u))
-//! 3. Newton refinement on each candidate
-//! 4. Optional endpoint handling
-//!
-//! All temporary vectors are stored as mutable fields and reused via Clear()
-//! to avoid repeated heap allocations.
+//! Each adjacent parameter pair is solved independently, making non-uniform knot- and
+//! curvature-aware distributions effective. C2 continuity bounds are inserted into the
+//! partition and classified separately from ordinary sampling boundaries.
 class ExtremaPC_GridEvaluator
 {
 public:
-  //! Cached grid point with pre-computed data.
-  struct GridPoint
-  {
-    double Param; //!< Parameter value
-    gp_Pnt Point; //!< Curve point C(u)
-    gp_Vec D1;    //!< First derivative C'(u)
-  };
-
-  //! Type of candidate extremum detected during grid scan.
-  enum class CandidateType
-  {
-    SignChange, //!< F(u) changes sign between grid points
-    NearZero    //!< F(u) is very small at grid point
-  };
-
-  //! Candidate interval for Newton refinement.
-  struct Candidate
-  {
-    CandidateType Type;   //!< Type of candidate
-    int           IdxLo;  //!< Lower grid index
-    int           IdxHi;  //!< Upper grid index (same as IdxLo for NearZero)
-    double        StartU; //!< Starting point for Newton
-  };
-
   //! Default constructor.
   ExtremaPC_GridEvaluator() = default;
 
-  //! @brief Build grid from GeomGridEval D1 results.
-  //!
-  //! @tparam GridEval type with EvaluateGridD1(params) method
-  //! @param theEval grid evaluator
-  //! @param theParams parameter values (math_Vector with Array1() accessor)
-  template <typename GridEval>
-  void BuildGrid(GridEval& theEval, const math_Vector& theParams)
+  //! Stores ordered parameter values defining the numerical search partition.
+  //! @param[in] theParams ordered parameter values
+  void SetParams(const math_Vector& theParams)
   {
-    // Use Array1() accessor to pass to GeomGridEval which expects NCollection_Array1
-    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams.Array1());
-
-    const int aNbParams = theParams.Length();
-
-    // Resize grid if needed
-    if (myGrid.Length() != aNbParams)
+    const size_t aNbParams = theParams.Size();
+    if (aNbParams == 0)
     {
-      myGrid = NCollection_Array1<GridPoint>(0, aNbParams - 1);
+      myParams.Clear();
+      return;
     }
 
-    for (int i = 0; i < aNbParams; ++i)
+    myParams.Resize(aNbParams);
+    for (size_t anIndex = 0; anIndex < aNbParams; ++anIndex)
     {
-      const int aD1Idx = aD1Grid.Lower() + i;
-
-      myGrid[i].Param = theParams(theParams.Lower() + i);
-      myGrid[i].Point = aD1Grid.Value(aD1Idx).Point;
-      myGrid[i].D1    = aD1Grid.Value(aD1Idx).D1;
+      myParams[anIndex] = theParams.At(anIndex);
     }
   }
-
-  //! Returns the cached grid.
-  const NCollection_Array1<GridPoint>& Grid() const { return myGrid; }
 
   //! Returns mutable reference to the result for post-processing.
   ExtremaPC::Result& Result() const { return myResult; }
 
-  //! @brief Perform extrema computation using cached grid (interior only).
-  //!
-  //! @param theCurve curve adaptor
-  //! @param theP query point
-  //! @param theDomain parameter domain
-  //! @param theTol tolerance
-  //! @param theMode search mode
-  //! @return const reference to result with interior extrema only
+  //! Performs extrema computation using the cached parameter partition.
   [[nodiscard]] const ExtremaPC::Result& Perform(const Adaptor3d_Curve&     theCurve,
                                                  const gp_Pnt&              theP,
                                                  const ExtremaPC::Domain1D& theDomain,
@@ -123,385 +72,625 @@ public:
                                                  ExtremaPC::SearchMode      theMode) const
   {
     myResult.Clear();
-    scanGrid(theP, theTol, theMode);
-    refineCandidates(theCurve, theP, theDomain, theTol, theMode);
-
-    if (!myResult.Extrema.IsEmpty())
+    if (!theDomain.IsValid() || !ExtremaPC::IsValidTolerance(theTol)
+        || !ExtremaPC::IsFinitePoint(theP))
     {
-      myResult.Status = ExtremaPC::Status::OK;
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
     }
+    if (theDomain.Min == theDomain.Max)
+    {
+      myResult.Status = ExtremaPC::Status::NoSolution;
+      return myResult;
+    }
+    if (!validateParams(theDomain))
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    const std::optional<double> aConstantDistance =
+      constantSquareDistance(theCurve, theP, theDomain);
+    if (aConstantDistance.has_value())
+    {
+      myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+      myResult.InfiniteSquareDistance = aConstantDistance.value();
+      return myResult;
+    }
+
+    myContinuityBounds.Clear();
+    myPartition.Clear();
+    buildPartition(theCurve, theDomain, myContinuityBounds, myPartition);
+
+    MathRoot::MultipleConfig aConfig;
+    aConfig.NbSamples     = 2;
+    aConfig.XTolerance    = ExtremaPC::THE_PARAM_TOLERANCE;
+    aConfig.FTolerance    = theTol;
+    aConfig.NullTolerance = theTol;
+
+    myRoots.Clear();
+    for (size_t anInterval = 0; anInterval + 1 < myPartition.Size(); ++anInterval)
+    {
+      const double aLower  = myPartition.Value(anInterval);
+      const double anUpper = myPartition.Value(anInterval + 1);
+      if (anUpper - aLower <= ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        continue;
+      }
+      occ::handle<Adaptor3d_Curve> aLocalCurve;
+      try
+      {
+        aLocalCurve = theCurve.Trim(aLower, anUpper, Precision::PConfusion());
+      }
+      catch (const Standard_Failure&)
+      {
+        // Some custom adaptors support evaluation but do not implement Trim().
+      }
+      const Adaptor3d_Curve&     aCurveForInterval = aLocalCurve.IsNull() ? theCurve : *aLocalCurve;
+      ExtremaPC_DistanceFunction aLocalFunction(aCurveForInterval, theP);
+      MathRoot::MultipleResult   anIntervalRoots;
+      try
+      {
+        anIntervalRoots =
+          MathRoot::FindAllRootsWithDerivative(aLocalFunction, aLower, anUpper, aConfig);
+      }
+      catch (const Standard_Failure&)
+      {
+        myResult.Status = ExtremaPC::Status::NumericalError;
+        return myResult;
+      }
+      if (!anIntervalRoots.IsDone())
+      {
+        myResult.Status = ExtremaPC::Status::NumericalError;
+        return myResult;
+      }
+      if (anIntervalRoots.IsAllNull)
+      {
+        MathRoot::MultipleConfig aRetryConfig = aConfig;
+        aRetryConfig.FTolerance               = std::min(theTol, ExtremaPC::THE_DEFAULT_TOLERANCE);
+        aRetryConfig.NullTolerance            = 0.0;
+        try
+        {
+          anIntervalRoots =
+            MathRoot::FindAllRootsWithDerivative(aLocalFunction, aLower, anUpper, aRetryConfig);
+        }
+        catch (const Standard_Failure&)
+        {
+          myResult.Status = ExtremaPC::Status::NumericalError;
+          return myResult;
+        }
+        if (!anIntervalRoots.IsDone() || anIntervalRoots.IsAllNull)
+        {
+          myResult.Status = ExtremaPC::Status::NumericalError;
+          return myResult;
+        }
+      }
+      for (size_t aRootIndex = 0; aRootIndex < anIntervalRoots.NbRoots(); ++aRootIndex)
+      {
+        appendRoot(myRoots, RootCandidate{anIntervalRoots[aRootIndex], aLower, anUpper});
+      }
+    }
+    ExtremaPC_DistanceFunction aFunction(theCurve, theP);
+    const bool                 isClosed = IsClosedDomain(theCurve, theDomain);
+    classifyRoots(theCurve,
+                  theP,
+                  theDomain,
+                  aFunction,
+                  myContinuityBounds,
+                  myRoots,
+                  theTol,
+                  theMode);
+    classifyJunctions(theCurve,
+                      theP,
+                      theDomain,
+                      aFunction,
+                      myContinuityBounds,
+                      myPartition,
+                      myRoots,
+                      isClosed,
+                      theTol,
+                      theMode);
+
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
     return myResult;
   }
 
-  //! @brief Build uniform parameter grid.
-  //! @return math_Vector with 1-based indexing
-  static math_Vector BuildUniformParams(double theUMin, double theUMax, int theNbSamples)
+  //! Builds a uniform parameter partition.
+  static math_Vector BuildUniformParams(double theUMin, double theUMax, size_t theNbSamples)
   {
-    math_Vector  aParams(1, theNbSamples);
-    const double aStep = (theUMax - theUMin) / (theNbSamples - 1);
-
-    for (int i = 1; i <= theNbSamples; ++i)
+    Standard_RangeError_Raise_if(theNbSamples < 2, "ExtremaPC_GridEvaluator::BuildUniformParams");
+    math_Vector  aParams(theNbSamples);
+    const double aStep = (theUMax - theUMin) / static_cast<double>(theNbSamples - 1);
+    for (size_t anIndex = 0; anIndex < theNbSamples; ++anIndex)
     {
-      aParams(i) = theUMin + (i - 1) * aStep;
+      aParams.ChangeAt(anIndex) = theUMin + static_cast<double>(anIndex) * aStep;
     }
-    aParams(theNbSamples) = theUMax; // Ensure exact endpoint
-
+    aParams.ChangeAt(theNbSamples - 1) = theUMax;
     return aParams;
   }
 
-private:
-  //! @brief Scan grid to find candidate intervals for extrema.
-  void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
+  //! Builds a deflection-aware partition within each C2-smooth curve interval.
+  static math_Vector BuildCurveAwareParams(const Adaptor3d_Curve&     theCurve,
+                                           const ExtremaPC::Domain1D& theDomain)
   {
-    myCandidates.Clear();
-    const int aNbGrid = myGrid.Length();
+    try
+    {
+      NCollection_LinearVector<double> aParameters;
+      insertParameter(aParameters, theDomain.Min);
+      insertParameter(aParameters, theDomain.Max);
 
-    if (aNbGrid < 2)
+      const int                          aNbIntervals = theCurve.NbIntervals(GeomAbs_C2);
+      NCollection_LocalArray<double, 32> anIntervalStorage(static_cast<size_t>(aNbIntervals + 1));
+      NCollection_Array1<double>         anIntervals(anIntervalStorage[0], 1, aNbIntervals + 1);
+      theCurve.Intervals(anIntervals, GeomAbs_C2);
+      for (size_t anInterval = 0; anInterval + 1 < anIntervals.Size(); ++anInterval)
+      {
+        const double aLower  = theDomain.Clamp(anIntervals.At(anInterval));
+        const double anUpper = theDomain.Clamp(anIntervals.At(anInterval + 1));
+        if (anUpper - aLower <= ExtremaPC::THE_PARAM_TOLERANCE)
+        {
+          continue;
+        }
+
+        insertParameter(aParameters, aLower);
+        insertParameter(aParameters, anUpper);
+        occ::handle<Adaptor3d_Curve> aLocalCurve =
+          theCurve.Trim(aLower, anUpper, Precision::PConfusion());
+        if (aLocalCurve.IsNull())
+        {
+          continue;
+        }
+
+        const occ::handle<NCollection_HArray1<double>> aDeflectionParameters =
+          Extrema_CurveTool::DeflCurvIntervals(*aLocalCurve);
+        if (aDeflectionParameters.IsNull())
+        {
+          continue;
+        }
+        for (double aParameter : aDeflectionParameters->Array1())
+        {
+          insertParameter(aParameters, ExtremaPC::Domain1D(aLower, anUpper).Clamp(aParameter));
+        }
+      }
+
+      math_Vector aResult(aParameters.Size());
+      for (size_t anIndex = 0; anIndex < aParameters.Size(); ++anIndex)
+      {
+        aResult.ChangeAt(anIndex) = aParameters.Value(anIndex);
+      }
+      return aResult;
+    }
+    catch (const Standard_Failure&)
+    {
+      return BuildUniformParams(theDomain.Min,
+                                theDomain.Max,
+                                ExtremaPC::THE_OTHER_CURVE_NB_SAMPLES);
+    }
+  }
+
+  //! Returns true when the domain endpoints represent the same curve point.
+  static bool IsClosedDomain(const Adaptor3d_Curve& theCurve, const ExtremaPC::Domain1D& theDomain)
+  {
+    if (!theDomain.IsFinite() || theDomain.Min == theDomain.Max)
+    {
+      return false;
+    }
+    try
+    {
+      if (theCurve.IsPeriodic()
+          && ExtremaPC::IsClosedPeriodicDomain(theDomain,
+                                               theCurve.Period(),
+                                               ExtremaPC::THE_PARAM_TOLERANCE))
+      {
+        return true;
+      }
+      return theCurve.Value(theDomain.Min).SquareDistance(theCurve.Value(theDomain.Max)) == 0.0;
+    }
+    catch (const Standard_Failure&)
+    {
+      return false;
+    }
+  }
+
+private:
+  //! Root and the non-uniform cell used to isolate it.
+  struct RootCandidate
+  {
+    double Parameter;
+    double LeftBound;
+    double RightBound;
+  };
+
+  //! Validates the cached partition and its coverage of the requested domain.
+  bool validateParams(const ExtremaPC::Domain1D& theDomain) const
+  {
+    if (myParams.Size() < 2)
+    {
+      return false;
+    }
+    if (std::abs(myParams.First() - theDomain.Min) > ExtremaPC::THE_PARAM_TOLERANCE
+        || std::abs(myParams.Last() - theDomain.Max) > ExtremaPC::THE_PARAM_TOLERANCE)
+    {
+      return false;
+    }
+    for (size_t anIndex = 1; anIndex < myParams.Size(); ++anIndex)
+    {
+      if (!std::isfinite(myParams[anIndex - 1]) || !std::isfinite(myParams[anIndex])
+          || myParams[anIndex] <= myParams[anIndex - 1])
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  //! Returns a constant squared distance only when the curve geometry proves it exactly.
+  static std::optional<double> constantSquareDistance(const Adaptor3d_Curve&     theCurve,
+                                                      const gp_Pnt&              thePoint,
+                                                      const ExtremaPC::Domain1D& theDomain)
+  {
+    try
+    {
+      const GeomAbs_CurveType aType = theCurve.GetType();
+      if (aType == GeomAbs_Circle)
+      {
+        const gp_Circ aCircle = theCurve.Circle();
+        const gp_Vec  aCenterToPoint(aCircle.Location(), thePoint);
+        if (aCenterToPoint.Crossed(gp_Vec(aCircle.Axis().Direction())).SquareMagnitude() == 0.0)
+        {
+          return thePoint.SquareDistance(theCurve.Value(theDomain.Min));
+        }
+      }
+      else if (aType == GeomAbs_Ellipse)
+      {
+        const gp_Elips anEllipse = theCurve.Ellipse();
+        const gp_Vec   aCenterToPoint(anEllipse.Location(), thePoint);
+        if (anEllipse.MajorRadius() == anEllipse.MinorRadius()
+            && aCenterToPoint.Crossed(gp_Vec(anEllipse.Axis().Direction())).SquareMagnitude()
+                 == 0.0)
+        {
+          return thePoint.SquareDistance(theCurve.Value(theDomain.Min));
+        }
+      }
+
+      const occ::handle<Geom_BezierCurve> aBezier =
+        aType == GeomAbs_BezierCurve ? theCurve.Bezier() : occ::handle<Geom_BezierCurve>();
+      const occ::handle<Geom_BSplineCurve> aBSpline =
+        aType == GeomAbs_BSplineCurve ? theCurve.BSpline() : occ::handle<Geom_BSplineCurve>();
+      const size_t aNbPoles = static_cast<size_t>(
+        !aBezier.IsNull() ? aBezier->NbPoles() : (!aBSpline.IsNull() ? aBSpline->NbPoles() : 0));
+      if (aNbPoles > 0)
+      {
+        const gp_Pnt aReference = !aBezier.IsNull() ? aBezier->Pole(1) : aBSpline->Pole(1);
+        for (size_t aPoleIndex = 1; aPoleIndex < aNbPoles; ++aPoleIndex)
+        {
+          const int    aGeomIndex = static_cast<int>(aPoleIndex + 1);
+          const gp_Pnt aPole =
+            !aBezier.IsNull() ? aBezier->Pole(aGeomIndex) : aBSpline->Pole(aGeomIndex);
+          if (aPole.SquareDistance(aReference) != 0.0)
+          {
+            return std::nullopt;
+          }
+        }
+        return thePoint.SquareDistance(aReference);
+      }
+      return std::nullopt;
+    }
+    catch (const Standard_Failure&)
+    {
+      return std::nullopt;
+    }
+  }
+
+  //! Inserts a parameter in ascending order unless it is already present.
+  static void insertParameter(NCollection_LinearVector<double>& theParameters, double theParameter)
+  {
+    size_t aLower  = 0;
+    size_t anUpper = theParameters.Size();
+    while (aLower < anUpper)
+    {
+      const size_t aMiddle = aLower + (anUpper - aLower) / 2;
+      if (theParameters.Value(aMiddle) < theParameter)
+      {
+        aLower = aMiddle + 1;
+      }
+      else
+      {
+        anUpper = aMiddle;
+      }
+    }
+    if ((aLower < theParameters.Size()
+         && std::abs(theParameters.Value(aLower) - theParameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
+        || (aLower > 0
+            && std::abs(theParameters.Value(aLower - 1) - theParameter)
+                 <= ExtremaPC::THE_PARAM_TOLERANCE))
     {
       return;
     }
 
-    // Resize processed array if needed
-    if (myProcessed.Length() != aNbGrid)
+    if (aLower == theParameters.Size())
     {
-      myProcessed = NCollection_Array1<bool>(0, aNbGrid - 1);
+      theParameters.Append(theParameter);
     }
-    myProcessed.Init(false);
-
-    double aPrevF     = 0.0;
-    double aPrevDist  = 0.0;
-    bool   aPrevValid = false;
-
-    for (int i = 0; i < aNbGrid; ++i)
+    else
     {
-      const GridPoint& aGP = myGrid[i];
-
-      // Compute distance function value: F(u) = (C(u) - P) . C'(u)
-      gp_Vec aVec(theP, aGP.Point);
-      double aF    = aVec.Dot(aGP.D1);
-      double aDist = aVec.SquareMagnitude();
-
-      // Check for sign change with previous point
-      if (aPrevValid && aPrevF * aF < 0.0 && !myProcessed[i - 1])
-      {
-        Candidate aCand;
-        aCand.Type  = CandidateType::SignChange;
-        aCand.IdxLo = i - 1;
-        aCand.IdxHi = i;
-        // Use linear interpolation for better starting point (secant method)
-        double aFLo  = aPrevF;
-        double aFHi  = aF;
-        double aULo  = myGrid[i - 1].Param;
-        double aUHi  = aGP.Param;
-        aCand.StartU = aULo - aFLo * (aUHi - aULo) / (aFHi - aFLo);
-        myCandidates.Append(aCand);
-        myProcessed[i - 1] = true;
-        myProcessed[i]     = true;
-      }
-
-      // Check for near-zero F (direct hit on extremum)
-      if (std::abs(aF) < theTol * ExtremaPC::THE_NEAR_ZERO_F_FACTOR && !myProcessed[i])
-      {
-        Candidate aCand;
-        aCand.Type   = CandidateType::NearZero;
-        aCand.IdxLo  = i;
-        aCand.IdxHi  = i;
-        aCand.StartU = aGP.Param;
-        myCandidates.Append(aCand);
-        myProcessed[i] = true;
-      }
-
-      // Check for local extremum by distance comparison (3-point test)
-      if (i > 0 && i < aNbGrid - 1 && !myProcessed[i])
-      {
-        double aNextDist = theP.SquareDistance(myGrid[i + 1].Point);
-
-        // Local minimum: distance decreases then increases
-        bool aIsLocalMin = (aDist <= aPrevDist && aDist <= aNextDist);
-        // Local maximum: distance increases then decreases
-        bool aIsLocalMax = (aDist >= aPrevDist && aDist >= aNextDist);
-
-        if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax)
-            && aIsLocalMin)
-        {
-          Candidate aCand;
-          aCand.Type   = CandidateType::NearZero;
-          aCand.IdxLo  = i;
-          aCand.IdxHi  = i;
-          aCand.StartU = aGP.Param;
-          myCandidates.Append(aCand);
-          myProcessed[i] = true;
-        }
-        else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax)
-                 && aIsLocalMax && !aIsLocalMin)
-        {
-          Candidate aCand;
-          aCand.Type   = CandidateType::NearZero;
-          aCand.IdxLo  = i;
-          aCand.IdxHi  = i;
-          aCand.StartU = aGP.Param;
-          myCandidates.Append(aCand);
-          myProcessed[i] = true;
-        }
-      }
-
-      aPrevF     = aF;
-      aPrevDist  = aDist;
-      aPrevValid = true;
+      theParameters.InsertBefore(aLower, theParameter);
     }
   }
 
-  //! @brief Refine candidates using Newton's method.
-  void refineCandidates(const Adaptor3d_Curve&     theCurve,
-                        const gp_Pnt&              theP,
-                        const ExtremaPC::Domain1D& theDomain,
-                        double                     theTol,
-                        ExtremaPC::SearchMode      theMode) const
+  //! Combines cached sampling parameters with C2 continuity boundaries.
+  void buildPartition(const Adaptor3d_Curve&            theCurve,
+                      const ExtremaPC::Domain1D&        theDomain,
+                      NCollection_LinearVector<double>& theContinuityBounds,
+                      NCollection_LinearVector<double>& thePartition) const
   {
-    myResult.Status = ExtremaPC::Status::OK;
-    myFoundRoots.Clear();
-    mySortedIndices.Clear();
-
-    ExtremaPC_DistanceFunction aFunc(theCurve, theP);
-
-    // Newton configuration
-    MathUtils::Config aConfig;
-    aConfig.XTolerance    = theTol * ExtremaPC::THE_NEWTON_XTOL_FACTOR;
-    aConfig.FTolerance    = theTol * ExtremaPC::THE_NEWTON_FTOL_FACTOR;
-    aConfig.MaxIterations = ExtremaPC::THE_MAX_NEWTON_ITERATIONS;
-
-    // Build sorted indices by estimated distance
-    for (int c = 0; c < myCandidates.Length(); ++c)
+    thePartition.Reserve(myParams.Size());
+    for (const double aParameter : myParams)
     {
-      const Candidate& aCand     = myCandidates.Value(c);
-      double           anEstDist = theP.SquareDistance(myGrid[aCand.IdxLo].Point);
-      mySortedIndices.Append(std::make_pair(c, anEstDist));
+      thePartition.Append(aParameter);
     }
 
-    // Sort by estimated distance for Min mode (ascending), Max mode (descending)
-    if (theMode == ExtremaPC::SearchMode::Min)
+    try
     {
-      std::sort(mySortedIndices.begin(),
-                mySortedIndices.end(),
-                [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
-                  return a.second < b.second;
-                });
-    }
-    else if (theMode == ExtremaPC::SearchMode::Max)
-    {
-      std::sort(mySortedIndices.begin(),
-                mySortedIndices.end(),
-                [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
-                  return a.second > b.second;
-                });
-    }
-
-    // Best distance found so far (for early termination)
-    double aBestSqDist = (theMode == ExtremaPC::SearchMode::Min)
-                           ? std::numeric_limits<double>::max()
-                           : -std::numeric_limits<double>::max();
-
-    for (int s = 0; s < mySortedIndices.Length(); ++s)
-    {
-      int              c         = mySortedIndices.Value(s).first;
-      double           anEstDist = mySortedIndices.Value(s).second;
-      const Candidate& aCand     = myCandidates.Value(c);
-
-      // Early termination: skip candidates that are clearly worse than the best found.
-      // For Min mode: skip if estimated distance > best * (2.0 - threshold), i.e., ~1.1x best.
-      // For Max mode: skip if estimated distance < best * threshold, i.e., ~0.9x best.
-      constexpr double aMinSkipThreshold = 2.0 - ExtremaPC::THE_MAX_SKIP_THRESHOLD;
-      if (theMode == ExtremaPC::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
+      const int                          aNbIntervals = theCurve.NbIntervals(GeomAbs_C2);
+      NCollection_LocalArray<double, 32> anIntervalStorage(static_cast<size_t>(aNbIntervals + 1));
+      NCollection_Array1<double>         anIntervals(anIntervalStorage[0], 1, aNbIntervals + 1);
+      thePartition.Reserve(myParams.Size() + static_cast<size_t>(aNbIntervals + 1));
+      theContinuityBounds.Reserve(static_cast<size_t>(aNbIntervals + 1));
+      theCurve.Intervals(anIntervals, GeomAbs_C2);
+      for (size_t anIndex = 0; anIndex < anIntervals.Size(); ++anIndex)
       {
-        break;
-      }
-      if (theMode == ExtremaPC::SearchMode::Max
-          && anEstDist < aBestSqDist * ExtremaPC::THE_MAX_SKIP_THRESHOLD)
-      {
-        break;
-      }
-
-      // Skip if too close to already found root
-      bool aSkip = false;
-      for (int r = 0; r < myFoundRoots.Length(); ++r)
-      {
-        if (std::abs(aCand.StartU - myFoundRoots.Value(r)) < theTol)
+        const double aParameter = theDomain.Clamp(anIntervals.At(anIndex));
+        insertParameter(thePartition, aParameter);
+        if (aParameter > theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE
+            && aParameter < theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE)
         {
-          aSkip = true;
+          insertParameter(theContinuityBounds, aParameter);
+        }
+      }
+    }
+    catch (const Standard_Failure&)
+    {
+      // Cached sampling remains usable for adaptors without interval APIs.
+    }
+  }
+
+  //! Appends a sorted root, merging the cells of an equivalent boundary root.
+  static void appendRoot(NCollection_LinearVector<RootCandidate>& theRoots,
+                         const RootCandidate&                     theRoot)
+  {
+    if (!theRoots.IsEmpty())
+    {
+      RootCandidate& aLast = theRoots.ChangeValue(theRoots.Size() - 1);
+      if (std::abs(aLast.Parameter - theRoot.Parameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        aLast.LeftBound  = std::min(aLast.LeftBound, theRoot.LeftBound);
+        aLast.RightBound = std::max(aLast.RightBound, theRoot.RightBound);
+        return;
+      }
+      if (aLast.Parameter < theRoot.Parameter)
+      {
+        theRoots.Append(theRoot);
+        return;
+      }
+    }
+
+    // The interval traversal and MathRoot results are ordered. Keep a defensive insertion path
+    // for custom or future solvers that violate that contract.
+    for (size_t anIndex = 0; anIndex < theRoots.Size(); ++anIndex)
+    {
+      RootCandidate& anExisting = theRoots.ChangeValue(anIndex);
+      if (std::abs(anExisting.Parameter - theRoot.Parameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        anExisting.LeftBound  = std::min(anExisting.LeftBound, theRoot.LeftBound);
+        anExisting.RightBound = std::max(anExisting.RightBound, theRoot.RightBound);
+        return;
+      }
+      if (theRoot.Parameter < anExisting.Parameter)
+      {
+        theRoots.InsertBefore(anIndex, theRoot);
+        return;
+      }
+    }
+    theRoots.Append(theRoot);
+  }
+
+  //! Returns the stationarity sign at a probe, treating small values as unresolved.
+  static int stationaritySign(ExtremaPC_DistanceFunction& theFunction,
+                              double                      theParameter,
+                              double                      theTol)
+  {
+    double aValue = 0.0;
+    try
+    {
+      const double aSignTolerance = std::min(theTol, ExtremaPC::THE_DEFAULT_TOLERANCE);
+      if (!theFunction.Value(theParameter, aValue) || std::abs(aValue) <= aSignTolerance)
+      {
+        return 0;
+      }
+      return aValue < 0.0 ? -1 : 1;
+    }
+    catch (const Standard_Failure&)
+    {
+      return 0;
+    }
+  }
+
+  //! Adds one classified extremum if it matches the requested mode and is not duplicated.
+  void addExtremum(const Adaptor3d_Curve& theCurve,
+                   const gp_Pnt&          theP,
+                   double                 theParameter,
+                   int                    theLeftSign,
+                   int                    theRightSign,
+                   ExtremaPC::SearchMode  theMode) const
+  {
+    const bool isMinimum = theLeftSign < 0 && theRightSign > 0;
+    const bool isMaximum = theLeftSign > 0 && theRightSign < 0;
+    if ((!isMinimum && !isMaximum) || (theMode == ExtremaPC::SearchMode::Min && !isMinimum)
+        || (theMode == ExtremaPC::SearchMode::Max && !isMaximum))
+    {
+      return;
+    }
+
+    for (size_t anIndex = 0; anIndex < myResult.Extrema.Size(); ++anIndex)
+    {
+      if (std::abs(myResult.Extrema.Value(anIndex).Parameter - theParameter)
+          <= ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        return;
+      }
+    }
+
+    const gp_Pnt              aCurvePoint = theCurve.Value(theParameter);
+    ExtremaPC::ExtremumResult anExtremum;
+    anExtremum.Parameter      = theParameter;
+    anExtremum.Point          = aCurvePoint;
+    anExtremum.SquareDistance = theP.SquareDistance(aCurvePoint);
+    anExtremum.IsMinimum      = isMinimum;
+    anExtremum.IsMaximum      = isMaximum;
+    myResult.Extrema.Append(anExtremum);
+  }
+
+  //! Classifies smooth stationary roots within their isolation cells.
+  void classifyRoots(const Adaptor3d_Curve&                         theCurve,
+                     const gp_Pnt&                                  theP,
+                     const ExtremaPC::Domain1D&                     theDomain,
+                     ExtremaPC_DistanceFunction&                    theFunction,
+                     const NCollection_LinearVector<double>&        theContinuityBounds,
+                     const NCollection_LinearVector<RootCandidate>& theRoots,
+                     double                                         theTol,
+                     ExtremaPC::SearchMode                          theMode) const
+  {
+    for (size_t aRootIndex = 0; aRootIndex < theRoots.Size(); ++aRootIndex)
+    {
+      const RootCandidate& aRoot      = theRoots.Value(aRootIndex);
+      bool                 isJunction = false;
+      for (size_t aJunctionIndex = 0; aJunctionIndex < theContinuityBounds.Size(); ++aJunctionIndex)
+      {
+        if (std::abs(aRoot.Parameter - theContinuityBounds.Value(aJunctionIndex))
+            <= ExtremaPC::THE_PARAM_TOLERANCE)
+        {
+          isJunction = true;
           break;
         }
       }
-      if (aSkip)
+      if (isJunction)
       {
         continue;
       }
 
-      // Determine Newton bounds
-      double aULo, aUHi;
-      if (aCand.Type == CandidateType::SignChange)
+      const bool isAtFirst = aRoot.Parameter <= theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE;
+      const bool isAtLast  = aRoot.Parameter >= theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE;
+      if (isAtFirst || isAtLast)
       {
-        aULo = myGrid[aCand.IdxLo].Param;
-        aUHi = myGrid[aCand.IdxHi].Param;
-      }
-      else
-      {
-        double aExpand = (theDomain.Max - theDomain.Min) * ExtremaPC::THE_INTERVAL_EXPAND_RATIO;
-        aULo           = std::max(theDomain.Min, aCand.StartU - aExpand);
-        aUHi           = std::min(theDomain.Max, aCand.StartU + aExpand);
-      }
-
-      // Try Newton refinement
-      MathUtils::ScalarResult aNewtonRes =
-        MathRoot::NewtonBounded(aFunc, aCand.StartU, aULo, aUHi, aConfig);
-
-      double aRootU     = 0.0;
-      bool   aConverged = false;
-
-      if (aNewtonRes.IsDone())
-      {
-        aRootU     = std::max(theDomain.Min, std::min(theDomain.Max, *aNewtonRes.Root));
-        aConverged = true;
-      }
-      else
-      {
-        // Try iterative grid refinement as fallback
-        double aBestU    = aCand.StartU;
-        double aBestDist = std::numeric_limits<double>::max();
-        double aRefUMin  = aULo;
-        double aRefUMax  = aUHi;
-
-        for (int aPass = 0; aPass < ExtremaPC::THE_REFINEMENT_NB_PASSES; ++aPass)
-        {
-          const int    aNbSamples = ExtremaPC::THE_REFINEMENT_NB_SAMPLES;
-          const double aStep      = (aRefUMax - aRefUMin) / (aNbSamples - 1);
-
-          for (int i = 0; i < aNbSamples; ++i)
-          {
-            double aU    = aRefUMin + i * aStep;
-            gp_Pnt aPt   = theCurve.Value(aU);
-            double aDist = theP.SquareDistance(aPt);
-
-            if (aDist < aBestDist)
-            {
-              aBestDist = aDist;
-              aBestU    = aU;
-            }
-          }
-
-          // Narrow range
-          double aRangeHalf = (aRefUMax - aRefUMin) * ExtremaPC::THE_RANGE_NARROWING_FACTOR * 0.5;
-          aRefUMin          = std::max(theDomain.Min, aBestU - aRangeHalf);
-          aRefUMax          = std::min(theDomain.Max, aBestU + aRangeHalf);
-
-          // Try Newton with refined point
-          MathUtils::ScalarResult aRetryRes =
-            MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, aConfig);
-          if (aRetryRes.IsDone())
-          {
-            aRootU     = std::max(theDomain.Min, std::min(theDomain.Max, *aRetryRes.Root));
-            aConverged = true;
-            break;
-          }
-        }
-
-        // Use best grid point as fallback
-        if (!aConverged)
-        {
-          gp_Pnt aPt;
-          gp_Vec aD1;
-          theCurve.D1(aBestU, aPt, aD1);
-          gp_Vec aVec(theP, aPt);
-          double aF = aVec.Dot(aD1);
-
-          if (std::abs(aF) < theTol * ExtremaPC::THE_FALLBACK_F_FACTOR)
-          {
-            aRootU     = aBestU;
-            aConverged = true;
-          }
-        }
-      }
-
-      if (!aConverged)
         continue;
+      }
 
-      // Check for duplicate
-      bool aDuplicate = false;
-      for (int r = 0; r < myFoundRoots.Length(); ++r)
+      double aLeftBound  = aRoot.LeftBound;
+      double aRightBound = aRoot.RightBound;
+      if (aRootIndex > 0)
       {
-        if (std::abs(aRootU - myFoundRoots.Value(r)) < theTol)
+        const RootCandidate& aPrevious = theRoots.Value(aRootIndex - 1);
+        aLeftBound = std::max(aLeftBound, (aPrevious.Parameter + aRoot.Parameter) * 0.5);
+      }
+      if (aRootIndex + 1 < theRoots.Size())
+      {
+        const RootCandidate& aNext = theRoots.Value(aRootIndex + 1);
+        aRightBound = std::min(aRightBound, (aRoot.Parameter + aNext.Parameter) * 0.5);
+      }
+      const int aLeftSign =
+        stationaritySign(theFunction, (aLeftBound + aRoot.Parameter) * 0.5, theTol);
+      const int aRightSign =
+        stationaritySign(theFunction, (aRoot.Parameter + aRightBound) * 0.5, theTol);
+      addExtremum(theCurve, theP, aRoot.Parameter, aLeftSign, aRightSign, theMode);
+    }
+  }
+
+  //! Classifies C2 continuity boundaries and the periodic seam from one-sided values.
+  void classifyJunctions(const Adaptor3d_Curve&                         theCurve,
+                         const gp_Pnt&                                  theP,
+                         const ExtremaPC::Domain1D&                     theDomain,
+                         ExtremaPC_DistanceFunction&                    theFunction,
+                         const NCollection_LinearVector<double>&        theContinuityBounds,
+                         const NCollection_LinearVector<double>&        thePartition,
+                         const NCollection_LinearVector<RootCandidate>& theRoots,
+                         bool                                           theIsClosed,
+                         double                                         theTol,
+                         ExtremaPC::SearchMode                          theMode) const
+  {
+    for (size_t aJunctionIndex = 0; aJunctionIndex < theContinuityBounds.Size(); ++aJunctionIndex)
+    {
+      const double aJunction   = theContinuityBounds.Value(aJunctionIndex);
+      double       aLeftBound  = theDomain.Min;
+      double       aRightBound = theDomain.Max;
+      for (size_t aParamIndex = 1; aParamIndex < thePartition.Size(); ++aParamIndex)
+      {
+        if (thePartition.Value(aParamIndex) >= aJunction)
         {
-          aDuplicate = true;
+          aLeftBound  = thePartition.Value(aParamIndex - 1);
+          aRightBound = thePartition.Value(aParamIndex);
+          if (std::abs(aRightBound - aJunction) <= ExtremaPC::THE_PARAM_TOLERANCE
+              && aParamIndex + 1 < thePartition.Size())
+          {
+            aRightBound = thePartition.Value(aParamIndex + 1);
+          }
           break;
         }
       }
-      if (aDuplicate)
-        continue;
-
-      gp_Pnt aPt     = theCurve.Value(aRootU);
-      double aSqDist = theP.SquareDistance(aPt);
-
-      // Classify as min/max using neighbor sampling
-      double aStep = (theDomain.Max - theDomain.Min) * ExtremaPC::THE_REFINEMENT_STEP_RATIO;
-      double aDistPlus =
-        theP.SquareDistance(theCurve.Value(std::min(theDomain.Max, aRootU + aStep)));
-      double aDistMinus =
-        theP.SquareDistance(theCurve.Value(std::max(theDomain.Min, aRootU - aStep)));
-      bool aIsMin = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
-
-      // Filter by mode
-      bool aKeep = false;
-      if (theMode == ExtremaPC::SearchMode::MinMax)
+      for (size_t aRootIndex = 0; aRootIndex < theRoots.Size(); ++aRootIndex)
       {
-        aKeep = true;
-      }
-      else if (theMode == ExtremaPC::SearchMode::Min && aIsMin)
-      {
-        aKeep = true;
-      }
-      else if (theMode == ExtremaPC::SearchMode::Max && !aIsMin)
-      {
-        aKeep = true;
-      }
-
-      if (aKeep)
-      {
-        ExtremaPC::ExtremumResult anExt;
-        anExt.Parameter      = aRootU;
-        anExt.Point          = aPt;
-        anExt.SquareDistance = aSqDist;
-        anExt.IsMinimum      = aIsMin;
-        myResult.Extrema.Append(anExt);
-
-        myFoundRoots.Append(aRootU);
-
-        // Update best distance for early termination
-        if (theMode == ExtremaPC::SearchMode::Min && aSqDist < aBestSqDist)
+        const double aRoot = theRoots.Value(aRootIndex).Parameter;
+        if (aRoot > aLeftBound + ExtremaPC::THE_PARAM_TOLERANCE
+            && aRoot < aJunction - ExtremaPC::THE_PARAM_TOLERANCE)
         {
-          aBestSqDist = aSqDist;
+          aLeftBound = aRoot;
         }
-        else if (theMode == ExtremaPC::SearchMode::Max && aSqDist > aBestSqDist)
+        else if (aRoot > aJunction + ExtremaPC::THE_PARAM_TOLERANCE
+                 && aRoot < aRightBound - ExtremaPC::THE_PARAM_TOLERANCE)
         {
-          aBestSqDist = aSqDist;
+          aRightBound = aRoot;
+          break;
         }
       }
+
+      const int aLeftSign  = stationaritySign(theFunction, (aLeftBound + aJunction) * 0.5, theTol);
+      const int aRightSign = stationaritySign(theFunction, (aJunction + aRightBound) * 0.5, theTol);
+      addExtremum(theCurve, theP, aJunction, aLeftSign, aRightSign, theMode);
     }
 
-    if (myResult.Extrema.IsEmpty() && myCandidates.IsEmpty())
+    if (theIsClosed)
     {
-      myResult.Status = ExtremaPC::Status::NoSolution;
+      double aLeftBound  = myParams[myParams.Size() - 2];
+      double aRightBound = myParams[1];
+      for (size_t aRootIndex = 0; aRootIndex < theRoots.Size(); ++aRootIndex)
+      {
+        const double aRoot = theRoots.Value(aRootIndex).Parameter;
+        if (aRoot > aLeftBound + ExtremaPC::THE_PARAM_TOLERANCE
+            && aRoot < theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE)
+        {
+          aLeftBound = aRoot;
+        }
+        if (aRoot > theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE
+            && aRoot < aRightBound - ExtremaPC::THE_PARAM_TOLERANCE)
+        {
+          aRightBound = aRoot;
+        }
+      }
+      const int aLeftSign =
+        stationaritySign(theFunction, (aLeftBound + theDomain.Max) * 0.5, theTol);
+      const int aRightSign =
+        stationaritySign(theFunction, (theDomain.Min + aRightBound) * 0.5, theTol);
+      addExtremum(theCurve, theP, theDomain.Min, aLeftSign, aRightSign, theMode);
     }
   }
 
 private:
-  NCollection_Array1<GridPoint> myGrid; //!< Cached grid
-
-  // Mutable cached temporaries (reused via Clear())
-  mutable ExtremaPC::Result                   myResult;     //!< Reusable result
-  mutable NCollection_DynamicArray<Candidate> myCandidates; //!< Candidates from grid scan
-  mutable NCollection_DynamicArray<double>    myFoundRoots; //!< Found roots for dedup
-  mutable NCollection_DynamicArray<std::pair<int, double>>
-                                   mySortedIndices; //!< Sorted candidate indices
-  mutable NCollection_Array1<bool> myProcessed;     //!< Processed flags for grid scan
+  NCollection_LinearVector<double>                myParams; //!< Cached parameter partition
+  mutable NCollection_LinearVector<double>        myContinuityBounds; //!< Reusable C2 bounds
+  mutable NCollection_LinearVector<double>        myPartition;        //!< Reusable merged partition
+  mutable NCollection_LinearVector<RootCandidate> myRoots;            //!< Reusable root candidates
+  mutable ExtremaPC::Result                       myResult;           //!< Reusable result
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

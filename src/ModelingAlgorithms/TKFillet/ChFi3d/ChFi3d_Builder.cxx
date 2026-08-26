@@ -53,28 +53,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 
-#ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
-
-// variables for performances
-
-OSD_Chronometer cl_total, cl_extent, cl_perfsetofsurf, cl_perffilletonvertex, cl_filds,
-  cl_reconstruction, cl_setregul, cl_perform1corner, cl_perform2corner, cl_performatend,
-  cl_perform3corner, cl_performmore3corner;
-
-Standard_EXPORT double t_total, t_extent, t_perfsetofsurf, t_perffilletonvertex, t_filds,
-  t_reconstruction, t_setregul, t_perfsetofkgen, t_perfsetofkpart, t_makextremities, t_performatend,
-  t_startsol, t_performsurf, t_perform1corner, t_perform2corner, t_perform3corner,
-  t_performmore3corner, t_batten, t_inter, t_sameinter, t_same, t_plate, t_approxplate,
-  t_t2cornerinit, t_perf2cornerbyinter, t_chfikpartcompdata, t_cheminement, t_remplissage,
-  t_t3cornerinit, t_spherique, t_torique, t_notfilling, t_filling, t_sameparam, t_computedata,
-  t_completedata, t_t2cornerDS, t_t3cornerDS;
-
-extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
-extern bool ChFi3d_GettraceCHRON();
-#endif
-
 //=================================================================================================
 
 static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
@@ -184,48 +162,6 @@ void ChFi3d_Builder::ExtentAnalyse()
 void ChFi3d_Builder::Compute()
 {
 
-#ifdef OCCT_DEBUG // perf
-  t_total              = 0;
-  t_extent             = 0;
-  t_perfsetofsurf      = 0;
-  t_perffilletonvertex = 0;
-  t_filds              = 0;
-  t_reconstruction     = 0;
-  t_setregul           = 0;
-  t_perfsetofkpart     = 0;
-  t_perfsetofkgen      = 0;
-  t_makextremities     = 0;
-  t_performsurf        = 0;
-  t_startsol           = 0;
-  t_perform1corner     = 0;
-  t_perform2corner     = 0;
-  t_perform3corner     = 0;
-  t_performmore3corner = 0;
-  t_inter              = 0;
-  t_same               = 0;
-  t_sameinter          = 0;
-  t_plate              = 0;
-  t_approxplate        = 0;
-  t_batten             = 0;
-  t_remplissage        = 0;
-  t_t3cornerinit       = 0;
-  t_spherique          = 0;
-  t_torique            = 0;
-  t_notfilling         = 0;
-  t_filling            = 0;
-  t_performatend       = 0;
-  t_t2cornerinit       = 0;
-  t_perf2cornerbyinter = 0;
-  t_chfikpartcompdata  = 0;
-  t_cheminement        = 0;
-  t_sameparam          = 0;
-  t_computedata        = 0;
-  t_completedata       = 0;
-  t_t2cornerDS         = 0;
-  t_t3cornerDS         = 0;
-  ChFi3d_InitChron(cl_total);
-  ChFi3d_InitChron(cl_extent);
-#endif
   UpdateTolesp();
 
   if (myListStripe.IsEmpty())
@@ -264,11 +200,6 @@ void ChFi3d_Builder::Compute()
   // preanalysis to evaluate the extensions.
   ExtentAnalyse();
 
-#ifdef OCCT_DEBUG // perf
-  ChFi3d_ResultChron(cl_extent, t_extent);
-  ChFi3d_InitChron(cl_perfsetofsurf);
-#endif
-
   // Construction of the stripe of fillet on each stripe.
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
@@ -298,11 +229,6 @@ void ChFi3d_Builder::Compute()
     done = true;
   }
   done = (badstripes.IsEmpty());
-
-#ifdef OCCT_DEBUG // perf
-  ChFi3d_ResultChron(cl_perfsetofsurf, t_perfsetofsurf);
-  ChFi3d_InitChron(cl_perffilletonvertex);
-#endif
 
   // construct fillets on each vertex + feed the Ds
   if (done)
@@ -336,11 +262,6 @@ void ChFi3d_Builder::Compute()
       done = badvertices.IsEmpty();
     }
   }
-
-#ifdef OCCT_DEBUG // perf
-  ChFi3d_ResultChron(cl_perffilletonvertex, t_perffilletonvertex);
-  ChFi3d_InitChron(cl_filds);
-#endif
 
   NCollection_Map<int> MapIndSo;
   TopExp_Explorer      expso(myShape, TopAbs_SOLID);
@@ -400,11 +321,6 @@ void ChFi3d_Builder::Compute()
         break;
       }
     }
-
-#ifdef OCCT_DEBUG // perf
-    ChFi3d_ResultChron(cl_filds, t_filds);
-    ChFi3d_InitChron(cl_reconstruction);
-#endif
 
     if (done)
     {
@@ -571,91 +487,12 @@ void ChFi3d_Builder::Compute()
           }
         }
       }
-#ifdef OCCT_DEBUG // perf
-      ChFi3d_ResultChron(cl_reconstruction, t_reconstruction);
-      ChFi3d_InitChron(cl_setregul);
-#endif
 
       // Regularities are coded after cutting.
       SetRegul();
-
-#ifdef OCCT_DEBUG // perf
-      ChFi3d_ResultChron(cl_setregul, t_setregul);
-#endif
     }
   }
-#ifdef OCCT_DEBUG // perf
-  ChFi3d_ResultChron(cl_total, t_total);
-#endif
 
-  // display of time for perfs
-
-#ifdef OCCT_DEBUG
-  if (ChFi3d_GettraceCHRON())
-  {
-    std::cout << std::endl;
-    std::cout << "COMPUTE: temps total " << t_total << "s  dont :" << std::endl;
-    std::cout << "- Init + ExtentAnalyse " << t_extent << "s" << std::endl;
-    std::cout << "- PerformSetOfSurf " << t_perfsetofsurf << "s" << std::endl;
-    std::cout << "- PerformFilletOnVertex " << t_perffilletonvertex << "s" << std::endl;
-    std::cout << "- FilDS " << t_filds << "s" << std::endl;
-    std::cout << "- Reconstruction " << t_reconstruction << "s" << std::endl;
-    std::cout << "- SetRegul " << t_setregul << "s" << std::endl << std::endl;
-
-    std::cout << std::endl;
-    std::cout << "temps PERFORMSETOFSURF " << t_perfsetofsurf << "s  dont : " << std::endl;
-    std::cout << "- SetofKPart " << t_perfsetofkpart << "s" << std::endl;
-    std::cout << "- SetofKGen " << t_perfsetofkgen << "s" << std::endl;
-    std::cout << "- MakeExtremities " << t_makextremities << "s" << std::endl << std::endl;
-
-    std::cout << "temps SETOFKGEN " << t_perfsetofkgen << "s dont : " << std::endl;
-    std::cout << "- PerformSurf " << t_performsurf << "s" << std::endl;
-    std::cout << "- starsol " << t_startsol << "s" << std::endl << std::endl;
-
-    std::cout << "temps PERFORMSURF " << t_performsurf << "s  dont : " << std::endl;
-    std::cout << "- computedata " << t_computedata << "s" << std::endl;
-    std::cout << "- completedata " << t_completedata << "s" << std::endl << std::endl;
-
-    std::cout << "temps PERFORMFILLETVERTEX " << t_perffilletonvertex << "s dont : " << std::endl;
-    std::cout << "- PerformOneCorner " << t_perform1corner << "s" << std::endl;
-    std::cout << "- PerformIntersectionAtEnd " << t_performatend << "s" << std::endl;
-    std::cout << "- PerformTwoCorner " << t_perform2corner << "s" << std::endl;
-    std::cout << "- PerformThreeCorner " << t_perform3corner << "s" << std::endl;
-    std::cout << "- PerformMoreThreeCorner " << t_performmore3corner << "s" << std::endl
-              << std::endl;
-
-    std::cout << "temps PerformOneCorner " << t_perform1corner << "s dont:" << std::endl;
-    std::cout << "- temps condition if (same) " << t_same << "s " << std::endl;
-    std::cout << "- temps condition if (inter) " << t_inter << "s " << std::endl;
-    std::cout << "- temps condition if (same inter) " << t_sameinter << "s " << std::endl
-              << std::endl;
-
-    std::cout << "temps PerformTwocorner " << t_perform2corner << "s  dont:" << std::endl;
-    std::cout << "- temps initialisation " << t_t2cornerinit << "s" << std::endl;
-    std::cout << "- temps PerformTwoCornerbyInter " << t_perf2cornerbyinter << "s" << std::endl;
-    std::cout << "- temps ChFiKPart_ComputeData " << t_chfikpartcompdata << "s" << std::endl;
-    std::cout << "- temps cheminement " << t_cheminement << "s" << std::endl;
-    std::cout << "- temps remplissage " << t_remplissage << "s" << std::endl;
-    std::cout << "- temps mise a jour stripes  " << t_t2cornerDS << "s" << std::endl << std::endl;
-
-    std::cout << " temps PerformThreecorner " << t_perform3corner << "s  dont:" << std::endl;
-    std::cout << "- temps initialisation " << t_t3cornerinit << "s" << std::endl;
-    std::cout << "- temps cas spherique  " << t_spherique << "s" << std::endl;
-    std::cout << "- temps cas torique  " << t_torique << "s" << std::endl;
-    std::cout << "- temps notfilling " << t_notfilling << "s" << std::endl;
-    std::cout << "- temps filling " << t_filling << "s" << std::endl;
-    std::cout << "- temps mise a jour stripes  " << t_t3cornerDS << "s" << std::endl << std::endl;
-
-    std::cout << "temps PerformMore3Corner " << t_performmore3corner << "s dont:" << std::endl;
-    std::cout << "-temps plate " << t_plate << "s " << std::endl;
-    std::cout << "-temps approxplate " << t_approxplate << "s " << std::endl;
-    std::cout << "-temps batten " << t_batten << "s " << std::endl << std::endl;
-
-    std::cout << "TEMPS DIVERS " << std::endl;
-    std::cout << "-temps ChFi3d_sameparameter " << t_sameparam << "s" << std::endl << std::endl;
-  }
-#endif
-  //
   // Inspect the new faces to provide sameparameter
   // if it is necessary
   if (IsDone())
@@ -828,19 +665,10 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
         }
         if (nba > 3)
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_performatend);
-#endif
           PerformIntersectionAtEnd(Index);
-#ifdef OCCT_DEBUG
-          ChFi3d_ResultChron(cl_performatend, t_performatend);
-#endif
         }
         else
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_perform1corner);
-#endif
           if (MoreSurfdata(Index))
           {
             PerformMoreSurfdata(Index);
@@ -849,66 +677,33 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
           {
             PerformOneCorner(Index);
           }
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_ResultChron(cl_perform1corner, t_perform1corner);
-#endif
         }
       }
       break;
       case 2: {
         if (nba > 3)
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_performmore3corner);
-#endif
           PerformMoreThreeCorner(Index, i);
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_ResultChron(cl_performmore3corner, t_performmore3corner);
-#endif
         }
         else
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_perform2corner);
-#endif
           PerformTwoCorner(Index);
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_ResultChron(cl_perform2corner, t_perform2corner);
-#endif
         }
       }
       break;
       case 3: {
         if (nba > 3)
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_performmore3corner);
-#endif
           PerformMoreThreeCorner(Index, i);
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_ResultChron(cl_performmore3corner, t_performmore3corner);
-#endif
         }
         else
         {
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_InitChron(cl_perform3corner);
-#endif
           PerformThreeCorner(Index);
-#ifdef OCCT_DEBUG // perf
-          ChFi3d_ResultChron(cl_perform3corner, t_perform3corner);
-#endif
         }
       }
       break;
       default: {
-#ifdef OCCT_DEBUG // perf
-        ChFi3d_InitChron(cl_performmore3corner);
-#endif
         PerformMoreThreeCorner(Index, i);
-#ifdef OCCT_DEBUG // perf
-        ChFi3d_ResultChron(cl_performmore3corner, t_performmore3corner);
-#endif
       }
     }
   }

@@ -1,5 +1,6 @@
 # Auto-generated list of packages for TKV3d toolkit
 set(OCCT_TKV3d_LIST_OF_PACKAGES
+  BRepFont
   V3d
   Select3D
   Prs3d

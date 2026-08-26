@@ -586,7 +586,7 @@ void ApproxInt_KnotTools::BuildKnots(const NCollection_Array1<gp_Pnt>&   thePnts
     return;
   }
 
-  NCollection_LocalArray<double> aCoords(thePars.Length() * aDim);
+  NCollection_LocalArray<double> aCoords(static_cast<size_t>(thePars.Length()) * aDim);
   int                            i, j;
   for (i = thePars.Lower(); i <= thePars.Upper(); ++i)
   {
@@ -758,7 +758,7 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(
   }
 
   int                            aLength = theLpar - theFpar + 1;
-  NCollection_LocalArray<double> aCoords(aLength * aDim);
+  NCollection_LocalArray<double> aCoords(static_cast<size_t>(aLength) * aDim);
   for (i = theFpar; i <= theLpar; ++i)
   {
     j = (i - theFpar) * aDim;

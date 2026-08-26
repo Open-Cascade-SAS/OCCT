@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <Standard_Type.hxx>
+#include <StepData_Field.hxx>
 #include <StepData_SelectReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectReal, StepData_SelectMember)
-
-//  Definitions : cf Field
-#define KindReal 5
 
 StepData_SelectReal::StepData_SelectReal()
 {
@@ -26,7 +24,7 @@ StepData_SelectReal::StepData_SelectReal()
 
 int StepData_SelectReal::Kind() const
 {
-  return KindReal;
+  return static_cast<int>(StepData_Field::FieldKind::Real);
 }
 
 double StepData_SelectReal::Real() const

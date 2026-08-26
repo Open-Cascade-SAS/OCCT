@@ -29,6 +29,7 @@
 #include <Standard_Type.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_HArray1.hxx>
 
 #include <algorithm>
@@ -792,10 +793,10 @@ int GeomFill_Frenet::NbIntervals(const GeomAbs_Shape S) const
   NCollection_Array1<double> TrimInt(1, NbTrimmed + 1);
   myCurve->Intervals(TrimInt, tmpS);
 
-  NCollection_Sequence<double> Fusion;
+  NCollection_LinearVector<double> Fusion;
   GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), true);
 
-  return Fusion.Length() - 1;
+  return static_cast<int>(Fusion.Size()) - 1;
 }
 
 //=================================================================================================
@@ -831,12 +832,12 @@ void GeomFill_Frenet::Intervals(NCollection_Array1<double>& T, const GeomAbs_Sha
   NCollection_Array1<double> TrimInt(1, NbTrimmed + 1);
   myCurve->Intervals(TrimInt, tmpS);
 
-  NCollection_Sequence<double> Fusion;
+  NCollection_LinearVector<double> Fusion;
   GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), true);
 
-  for (int i = 1; i <= Fusion.Length(); i++)
+  for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
   {
-    T.ChangeValue(i) = Fusion.Value(i);
+    T.ChangeAt(anIndex) = Fusion.Value(anIndex);
   }
 }
 

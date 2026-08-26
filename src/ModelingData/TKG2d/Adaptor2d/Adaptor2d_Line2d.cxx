@@ -154,56 +154,51 @@ double Adaptor2d_Line2d::Period() const
 
 //=================================================================================================
 
-gp_Pnt2d Adaptor2d_Line2d::Value(const double X) const
+gp_Pnt2d Adaptor2d_Line2d::EvalD0(const double theX) const
 {
-  return ElCLib::LineValue(X, myAx2d);
+  return ElCLib::LineValue(theX, myAx2d);
 }
 
 //=================================================================================================
 
-void Adaptor2d_Line2d::D0(const double X, gp_Pnt2d& P) const
+Geom2d_Curve::ResD1 Adaptor2d_Line2d::EvalD1(const double theX) const
 {
-  P = ElCLib::LineValue(X, myAx2d);
+  Geom2d_Curve::ResD1 aResult;
+  ElCLib::LineD1(theX, myAx2d, aResult.Point, aResult.D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Adaptor2d_Line2d::D1(const double X, gp_Pnt2d& P, gp_Vec2d& V) const
+Geom2d_Curve::ResD2 Adaptor2d_Line2d::EvalD2(const double theX) const
 {
-  ElCLib::LineD1(X, myAx2d, P, V);
+  Geom2d_Curve::ResD2 aResult;
+  ElCLib::LineD1(theX, myAx2d, aResult.Point, aResult.D1);
+  aResult.D2.SetCoord(0., 0.);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Adaptor2d_Line2d::D2(const double X, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+Geom2d_Curve::ResD3 Adaptor2d_Line2d::EvalD3(const double theX) const
 {
-  ElCLib::LineD1(X, myAx2d, P, V1);
-  V2.SetCoord(0., 0.);
-}
-
-//=================================================================================================
-
-void Adaptor2d_Line2d::D3(const double X,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const
-{
-  ElCLib::LineD1(X, myAx2d, P, V1);
-  V2.SetCoord(0., 0.);
-  V3.SetCoord(0., 0.);
+  Geom2d_Curve::ResD3 aResult;
+  ElCLib::LineD1(theX, myAx2d, aResult.Point, aResult.D1);
+  aResult.D2.SetCoord(0., 0.);
+  aResult.D3.SetCoord(0., 0.);
+  return aResult;
 }
 
 //=================================================================================================
 
 // gp_Vec2d Adaptor2d_Line2d::DN(const double U, const int N) const
-gp_Vec2d Adaptor2d_Line2d::DN(const double, const int N) const
+gp_Vec2d Adaptor2d_Line2d::EvalDN(const double, const int theN) const
 {
-  if (N <= 0)
+  if (theN <= 0)
   {
     throw Standard_OutOfRange();
   }
-  if (N == 1)
+  if (theN == 1)
   {
     return myAx2d.Direction();
   }

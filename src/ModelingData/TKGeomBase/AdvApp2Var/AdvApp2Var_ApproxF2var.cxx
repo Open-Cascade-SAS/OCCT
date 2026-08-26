@@ -7146,8 +7146,8 @@ L1000:
     i__1  = *ndimen;
     for (nd = 1; nd <= i__1; ++nd)
     {
-      iptt = ipt1 + ((nd - 1) << 1) * (ndgre / 2 + 1);
-      jptt = ipt4 + (nd - 1) * ncoeff[ncb1];
+      iptt = ipt1 + (static_cast<intptr_t>(nd - 1) << 1) * (ndgre / 2 + 1);
+      jptt = ipt4 + static_cast<intptr_t>(nd - 1) * ncoeff[ncb1];
       AdvApp2Var_MathBase::mmjacan_(iordre, &ndgre, &wrkar_off[iptt], &wrkar_off[jptt]);
       /* L400: */
     }

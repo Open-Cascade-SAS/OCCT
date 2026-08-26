@@ -37,31 +37,39 @@ StepData_Field& StepData_FieldList::CField(const int)
   throw Standard_OutOfRange("StepData_FieldList : CField");
 }
 
-void StepData_FieldList::FillShared(Interface_EntityIterator& iter) const
+void StepData_FieldList::FillShared(Interface_EntityIterator& theIterator) const
 {
-  int i, nb = NbFields();
-  for (i = 1; i <= nb; i++)
+  for (int aFieldIndex = 1; aFieldIndex <= NbFields(); ++aFieldIndex)
   {
-    const StepData_Field& fi = Field(i);
-    if (fi.Kind() != 7)
+    const StepData_Field& aField = Field(aFieldIndex);
+    if (aField.Kind() != StepData_Field::FieldKind::Entity)
     {
-      continue; // KindEntity
+      continue;
     }
-    int i1, i2, nb1 = 1, nb2 = 1, ari = fi.Arity();
-    if (ari == 1)
+
+    const int anArity  = aField.Arity();
+    int       aLower1  = 1;
+    int       aLength1 = 1;
+    int       aLower2  = 1;
+    int       aLength2 = 1;
+    if (anArity == 1)
     {
-      nb1 = fi.Length();
+      aLower1  = aField.Lower(1);
+      aLength1 = aField.Length(1);
     }
-    if (ari == 2)
+    else if (anArity == 2)
     {
-      nb1 = fi.Length(1);
-      nb2 = fi.Length(2);
+      aLower1  = aField.Lower(1);
+      aLength1 = aField.Length(1);
+      aLower2  = aField.Lower(2);
+      aLength2 = aField.Length(2);
     }
-    for (i1 = 1; i1 <= nb1; i1++)
+
+    for (int anOffset1 = 0; anOffset1 < aLength1; ++anOffset1)
     {
-      for (i2 = 1; i2 <= nb2; i2++)
+      for (int anOffset2 = 0; anOffset2 < aLength2; ++anOffset2)
       {
-        iter.AddItem(fi.Entity(i1, i2));
+        theIterator.AddItem(aField.Entity(aLower1 + anOffset1, aLower2 + anOffset2));
       }
     }
   }

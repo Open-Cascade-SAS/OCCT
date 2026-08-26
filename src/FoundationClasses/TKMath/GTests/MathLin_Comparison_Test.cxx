@@ -61,9 +61,9 @@ TEST(MathLin_ComparisonTest, Solve_3x3System)
   aOldGauss.Solve(aB, aOldX);
 
   // Compare solutions
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), THE_TOLERANCE)
+    EXPECT_NEAR(aNewResult.Solution->At(i), aOldX.At(i), THE_TOLERANCE)
       << "Solution differs at index " << i;
   }
 }
@@ -107,9 +107,9 @@ TEST(MathLin_ComparisonTest, Solve_5x5System)
   aOldGauss.Solve(aB, aOldX);
 
   // Compare solutions
-  for (int i = 1; i <= 5; ++i)
+  for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), THE_TOLERANCE)
+    EXPECT_NEAR(aNewResult.Solution->At(i), aOldX.At(i), THE_TOLERANCE)
       << "Solution differs at index " << i;
   }
 }
@@ -205,11 +205,11 @@ TEST(MathLin_ComparisonTest, Invert_3x3Matrix)
   aOldGauss.Invert(aOldInv);
 
   // Compare inverse matrices
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aNewResult.Inverse->RowSize(); ++i)
   {
-    for (int j = 1; j <= 3; ++j)
+    for (size_t j = 0; j < aNewResult.Inverse->ColSize(); ++j)
     {
-      EXPECT_NEAR((*aNewResult.Inverse)(i, j), aOldInv(i, j), THE_TOLERANCE)
+      EXPECT_NEAR(aNewResult.Inverse->At(i, j), aOldInv.At(i, j), THE_TOLERANCE)
         << "Inverse differs at (" << i << ", " << j << ")";
     }
   }
@@ -240,12 +240,12 @@ TEST(MathLin_ComparisonTest, Invert_VerifyByMultiplication)
   // Multiply A * A^-1 and check if result is identity
   math_Matrix aProduct = aA * (*aNewResult.Inverse);
 
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aProduct.RowSize(); ++i)
   {
-    for (int j = 1; j <= 3; ++j)
+    for (size_t j = 0; j < aProduct.ColSize(); ++j)
     {
       double aExpected = (i == j) ? 1.0 : 0.0;
-      EXPECT_NEAR(aProduct(i, j), aExpected, THE_TOLERANCE)
+      EXPECT_NEAR(aProduct.At(i, j), aExpected, THE_TOLERANCE)
         << "Product differs at (" << i << ", " << j << ")";
     }
   }
@@ -279,19 +279,19 @@ TEST(MathLin_ComparisonTest, LU_Decomposition)
   // Extract L (lower triangular with 1s on diagonal) and U (upper triangular)
   const math_Matrix& aLUMat = *aLUResult.LU;
 
-  math_Matrix aL(1, 3, 1, 3, 0.0);
-  math_Matrix aU(1, 3, 1, 3, 0.0);
+  math_Matrix aL(3, 3, 0.0);
+  math_Matrix aU(3, 3, 0.0);
 
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aLUMat.RowSize(); ++i)
   {
-    aL(i, i) = 1.0;
-    for (int j = 1; j < i; ++j)
+    aL.ChangeAt(i, i) = 1.0;
+    for (size_t j = 0; j < i; ++j)
     {
-      aL(i, j) = aLUMat(i, j);
+      aL.ChangeAt(i, j) = aLUMat.At(i, j);
     }
-    for (int j = i; j <= 3; ++j)
+    for (size_t j = i; j < aLUMat.ColSize(); ++j)
     {
-      aU(i, j) = aLUMat(i, j);
+      aU.ChangeAt(i, j) = aLUMat.At(i, j);
     }
   }
 
@@ -310,10 +310,10 @@ TEST(MathLin_ComparisonTest, LU_Decomposition)
 
   // Compute residual: A*x - b
   math_Vector aResidual = aA * (*aSolveResult.Solution);
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aResidual.Size(); ++i)
   {
-    aResidual(i) -= aB(i);
-    EXPECT_NEAR(aResidual(i), 0.0, THE_TOLERANCE) << "Residual at " << i;
+    aResidual.ChangeAt(i) -= aB.At(i);
+    EXPECT_NEAR(aResidual.At(i), 0.0, THE_TOLERANCE) << "Residual at " << i;
   }
 }
 
@@ -380,9 +380,9 @@ TEST(MathLin_ComparisonTest, IllConditioned_HilbertMatrix)
 
   // For ill-conditioned matrices, use looser tolerance
   constexpr double aLooseTol = 1.0e-6;
-  for (int i = 1; i <= aN; ++i)
+  for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), aLooseTol)
+    EXPECT_NEAR(aNewResult.Solution->At(i), aOldX.At(i), aLooseTol)
       << "Solution differs at index " << i;
   }
 }
@@ -457,9 +457,9 @@ TEST(MathLin_ComparisonTest, Solve_KnownSolution)
   ASSERT_TRUE(aNewResult.IsDone());
 
   // Compare with expected
-  for (int i = 1; i <= 3; ++i)
+  for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aNewResult.Solution)(i), aExpectedX(i), THE_TOLERANCE);
+    EXPECT_NEAR(aNewResult.Solution->At(i), aExpectedX.At(i), THE_TOLERANCE);
   }
 }
 
@@ -508,10 +508,10 @@ TEST(MathLin_ComparisonTest, Solve_ComplexKnownSolution)
   aOldGauss.Solve(aB, aOldX);
 
   // Compare both solutions with expected
-  for (int i = 1; i <= 4; ++i)
+  for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
-    EXPECT_NEAR((*aNewResult.Solution)(i), aExpectedX(i), THE_TOLERANCE);
-    EXPECT_NEAR(aOldX(i), aExpectedX(i), THE_TOLERANCE);
-    EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), THE_TOLERANCE);
+    EXPECT_NEAR(aNewResult.Solution->At(i), aExpectedX.At(i), THE_TOLERANCE);
+    EXPECT_NEAR(aOldX.At(i), aExpectedX.At(i), THE_TOLERANCE);
+    EXPECT_NEAR(aNewResult.Solution->At(i), aOldX.At(i), THE_TOLERANCE);
   }
 }
