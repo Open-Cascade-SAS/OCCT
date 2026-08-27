@@ -63,8 +63,7 @@ TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier()
 
 //=================================================================================================
 
-TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier(
-  const TopoDS_Shape& theReference)
+TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& theReference)
     : TopOpeBRepTool_ShapeClassifier()
 {
   SetReference(theReference);

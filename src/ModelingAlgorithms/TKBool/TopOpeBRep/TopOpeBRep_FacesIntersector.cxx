@@ -194,7 +194,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
       myEdgeRestrictionMap.Add(E);
     }
   }
-
 }
 
 //=================================================================================================

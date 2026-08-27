@@ -56,7 +56,7 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF, const TopoD
   {
     ShapeTolerances(SF, SE);
   }
-  myTol = BRep_Tool::Tolerance(TopoDS::Edge(SE));
+  myTol  = BRep_Tool::Tolerance(TopoDS::Edge(SE));
   myFace = TopoDS::Face(SF);
   myFace.Orientation(TopAbs_FORWARD);
   myEdge = TopoDS::Edge(SE);
@@ -116,7 +116,6 @@ void TopOpeBRep_FaceEdgeIntersector::ForceTolerance(const double Tol)
 {
   myTol            = Tol;
   myForceTolerance = true;
-
 }
 
 //=================================================================================================
@@ -336,7 +335,6 @@ void TopOpeBRep_FaceEdgeIntersector::ShapeTolerances(const TopoDS_Shape& S1, con
 {
   myTol            = std::max(ToleranceMax(S1, TopAbs_EDGE), ToleranceMax(S2, TopAbs_EDGE));
   myForceTolerance = false;
-
 }
 
 //=================================================================================================

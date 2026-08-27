@@ -54,6 +54,7 @@
 #include <TopoDS_Vertex.hxx>
 
 #include <cstdio>
+
 //=======================================================================
 // function : BRepFill_TrimSurfaceTool
 // purpose  : Initialisation with two neighbor faces

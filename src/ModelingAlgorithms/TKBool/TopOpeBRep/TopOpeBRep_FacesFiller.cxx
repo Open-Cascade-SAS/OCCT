@@ -91,8 +91,8 @@ TopOpeBRep_FacesFiller::TopOpeBRep_FacesFiller()
     : myPShapeClassifier(nullptr)
 {
   myexF1 = myexF2 = 0;
-  myCurrentLine = nullptr;
-  myLastVPind   = 0;
+  myCurrentLine   = nullptr;
+  myLastVPind     = 0;
 }
 
 //=================================================================================================

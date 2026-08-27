@@ -1986,7 +1986,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     TopOpeBRepTool_ShapeClassifier PSC;
     PSC.SetReference(FOR);
     TopAbs_State state2d = FSC_StateEonFace(EspON, 0.345, FOR, PSC);
-    bool                            isin    = (state2d == TopAbs_IN);
+    bool         isin    = (state2d == TopAbs_IN);
     if (!isin)
     {
       return;
@@ -2325,7 +2325,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     TopOpeBRepTool_ShapeClassifier PSC;
     PSC.SetReference(FOR);
     TopAbs_State state2d = FSC_StateEonFace(EspON, 0.345, FOR, PSC);
-    bool                            isin    = (state2d == TopAbs_IN);
+    bool         isin    = (state2d == TopAbs_IN);
     if (!isin)
     {
       return;

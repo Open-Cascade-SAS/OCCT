@@ -4454,7 +4454,7 @@ void BRepOffset_Tool::CorrectOrientation(
   for (; exp.More(); exp.Next())
   {
 
-    const TopoDS_Face&                       FI  = TopoDS::Face(exp.Current());
+    const TopoDS_Face&                       FI = TopoDS::Face(exp.Current());
     NCollection_List<TopoDS_Shape>           aFallback;
     const NCollection_List<TopoDS_Shape>&    LOF = InitOffset.ImageOrSelf(FI, aFallback);
     NCollection_List<TopoDS_Shape>::Iterator it(LOF);

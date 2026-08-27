@@ -777,7 +777,7 @@ static void FUN_processCPI(TopOpeBRep_FacesFiller&        FF,
                            const bool&                                                     Gfound,
                            const TopOpeBRepDS_Kind&                                        PVKind,
                            const int&                                                      PVIndex,
-                           int&                                                            lastVPind,
+                           int& lastVPind,
                            int& keptVPnbr)
 //-----------------------------------------------------------------------
 {
@@ -805,8 +805,8 @@ static void FUN_processCPI(TopOpeBRep_FacesFiller&        FF,
   // dist(p2d1,p2d2) < toluv => p2d1, p2d2 are considered equal.
   // NYI : compute uvtol with the original faces. By default, we set toluv = TolClass
   double toluv = 1.e-8;
-  bool   keep = FUNBREP_topokpart(
-    Ifound, DSCIL, L, VP, (*pDS), E, F, toluv, parline, ttransLine, lastVPind);
+  bool   keep =
+    FUNBREP_topokpart(Ifound, DSCIL, L, VP, (*pDS), E, F, toluv, parline, ttransLine, lastVPind);
 
   if (keep)
   {

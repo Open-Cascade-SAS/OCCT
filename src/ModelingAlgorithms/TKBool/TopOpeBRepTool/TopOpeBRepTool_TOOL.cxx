@@ -1231,7 +1231,7 @@ bool TopOpeBRepTool_TOOL::UVISO(const TopoDS_Edge& E,
   //  double f,l,tol; occ::handle<Geom2d_Curve> PC = FC2D_CurveOnSurface(E,F,f,l,tol);
   occ::handle<Geom2d_Curve> PC;
   double                    f, l, tol;
-  PC                               = FC2D_EditableCurveOnSurface(E, F, f, l, tol);
+  PC = FC2D_EditableCurveOnSurface(E, F, f, l, tol);
 
   bool iso = UVISO(PC, isoU, isoV, d2d, o2d);
   return iso;

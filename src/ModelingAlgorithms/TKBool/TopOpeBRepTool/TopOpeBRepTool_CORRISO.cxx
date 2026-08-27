@@ -126,7 +126,7 @@ bool TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
     //    double f,l,tol; occ::handle<Geom2d_Curve> PC = FC2D_CurveOnSurface(E,myFref,f,l,tol);
     occ::handle<Geom2d_Curve> PC;
     double                    f, l, tol;
-    PC                               = FC2D_EditableCurveOnSurface(E, myFref, f, l, tol);
+    PC = FC2D_EditableCurveOnSurface(E, myFref, f, l, tol);
     if (PC.IsNull())
     {
       return false;
@@ -1118,7 +1118,7 @@ bool TopOpeBRepTool_CORRISO::AddNewConnexity(const TopoDS_Vertex&, const TopoDS_
   {
     occ::handle<Geom2d_Curve> PC;
     double                    f, l, tol;
-    PC                               = FC2D_EditableCurveOnSurface(E, myFref, f, l, tol);
+    PC = FC2D_EditableCurveOnSurface(E, myFref, f, l, tol);
     if (PC.IsNull())
     {
       return false;

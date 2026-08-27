@@ -44,11 +44,10 @@
 
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:23 2000.BEGIN
 static bool local_FindTreatedEdgeOnVertex(
-  NCollection_DataMap<TopoDS_Shape,
-                      NCollection_List<TopoDS_Shape>,
-                      TopTools_ShapeMapHasher>& theMap,
-  const TopoDS_Edge&                                  theEdge,
-  const TopoDS_Vertex&                                theVertex);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                       theMap,
+  const TopoDS_Edge&   theEdge,
+  const TopoDS_Vertex& theVertex);
 
 static bool local_FindVertex(
   const TopOpeBRep_VPointInter&                              theVP,
@@ -378,7 +377,7 @@ static int FUN_putInterfonDegenEd(
   const TopoDS_Face&            F1,
   const TopoDS_Face&            F2,
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                            DataforDegenEd, // const but for copy &
+    DataforDegenEd, // const but for copy &
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
                                             TreatedVertexListOfEdge,
   occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
@@ -804,11 +803,10 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
 
 // modified by NIZHNY-MKK  Tue Nov 21 17:32:52 2000.BEGIN
 static bool local_FindTreatedEdgeOnVertex(
-  NCollection_DataMap<TopoDS_Shape,
-                      NCollection_List<TopoDS_Shape>,
-                      TopTools_ShapeMapHasher>& theMap,
-  const TopoDS_Edge&                                  theEdge,
-  const TopoDS_Vertex&                                theVertex)
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                       theMap,
+  const TopoDS_Edge&   theEdge,
+  const TopoDS_Vertex& theVertex)
 {
   bool found = false;
   if (theMap.IsBound(theVertex))

@@ -730,10 +730,7 @@ public:
                                            const NCollection_List<TopoDS_Shape>&,
                                            const TopOpeBRepDS_Config,
                                            const TopOpeBRepDS_Config);
-  friend void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder&,
-                                       const TopoDS_Shape&,
-                                       bool&,
-                                       bool&);
+  friend void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder&, const TopoDS_Shape&, bool&, bool&);
 
 protected:
   //! update the DS by creating new geometries.
@@ -931,14 +928,10 @@ protected:
   int                                                             mySolidIndex;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myAncestorRankEdges1;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myAncestorRankEdges2;
-  NCollection_IndexedDataMap<TopoDS_Shape,
-                             NCollection_List<TopoDS_Shape>,
-                             TopTools_ShapeMapHasher>
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     myAncestorRankEdgeFaces1;
-  NCollection_IndexedDataMap<TopoDS_Shape,
-                             NCollection_List<TopoDS_Shape>,
-                             TopTools_ShapeMapHasher>
-    myAncestorRankEdgeFaces2;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                myAncestorRankEdgeFaces2;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myAncestorRankFaceEdges;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myONFacesMap;
   NCollection_IndexedMap<TopoDS_Shape>                                            myONElemMap;

@@ -298,11 +298,11 @@ private:
   bool                                     myLineIsonEdge;
   NCollection_List<TopoDS_Shape>           myERL;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                           myDataforDegenEd;
+    myDataforDegenEd;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                                                            myMapOfTreatedVertexListOfEdge;
-  TopOpeBRep_LineInter*                                  myCurrentLine;
-  int                                                     myLastVPind;
+  TopOpeBRep_LineInter*                                    myCurrentLine;
+  int                                                      myLastVPind;
   bool                                                     myLastVPison0;
   int                                                      mykeptVPnbr;
   int                                                      myDSCIndex;

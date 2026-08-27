@@ -31,8 +31,7 @@ TEST(TopOpeBRepTool_ShapeClassifierTest, DefaultStateIsInitialized)
 
 TEST(TopOpeBRepTool_ShapeClassifierTest, ClassifiesPointUsingConstructorReference)
 {
-  const TopoDS_Face aFace =
-    BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), 0.0, 10.0, 0.0, 10.0).Face();
+  const TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), 0.0, 10.0, 0.0, 10.0).Face();
   TopOpeBRepTool_ShapeClassifier aClassifier(aFace);
 
   aClassifier.StateP2DReference(gp_Pnt2d(5.0, 5.0));
