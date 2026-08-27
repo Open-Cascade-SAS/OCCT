@@ -203,9 +203,7 @@ public:
     if (const FileSource* aFileSource = std::get_if<FileSource>(&FontSource))
     {
       isInitialized =
-        aCopy->Font->Init(aFileSource->Path.ToCString(),
-                          THE_FONT_PARAMETERS,
-                          aFileSource->FaceId);
+        aCopy->Font->Init(aFileSource->Path.ToCString(), THE_FONT_PARAMETERS, aFileSource->FaceId);
     }
     else if (const NamedSource* aNamedSource = std::get_if<NamedSource>(&FontSource))
     {
