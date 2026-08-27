@@ -336,18 +336,18 @@ public:
 
   friend class TopOpeBRepDS_CurveExplorer;
   friend class TopOpeBRepDS_PointExplorer;
-  friend const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexityShapeIndex(
+  friend Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexityShapeIndex(
     const TopoDS_Shape&,
     const occ::handle<TopOpeBRepDS_HDataStructure>&,
     const int);
-  friend const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexitySameShape(
+  friend Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexitySameShape(
     const TopoDS_Shape&,
     const occ::handle<TopOpeBRepDS_HDataStructure>&);
-  friend void FDSCNX_Prepare(const TopoDS_Shape&,
-                             const TopoDS_Shape&,
-                             const occ::handle<TopOpeBRepDS_HDataStructure>&);
-  friend bool FDSCNX_HasConnexFace(const TopoDS_Shape&,
-                                   const occ::handle<TopOpeBRepDS_HDataStructure>&);
+  friend Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape&,
+                                             const TopoDS_Shape&,
+                                             const occ::handle<TopOpeBRepDS_HDataStructure>&);
+  friend Standard_EXPORT bool FDSCNX_HasConnexFace(const TopoDS_Shape&,
+                                                   const occ::handle<TopOpeBRepDS_HDataStructure>&);
 
 private:
   Standard_EXPORT bool FindInterference(

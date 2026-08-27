@@ -50,15 +50,15 @@ Standard_EXPORT void debffflo(const int i)
 }
 #endif
 
-Standard_EXPORT void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
-                                                  const NCollection_List<TopoDS_Shape>& LF1,
-                                                  const NCollection_List<TopoDS_Shape>& LF2,
-                                                  const TopOpeBRepDS_Config             c1,
-                                                  const TopOpeBRepDS_Config             c2);
-Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
-                                              const TopoDS_Shape&      f,
-                                              bool&                    of1,
-                                              bool&                    of2);
+void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
+                                  const NCollection_List<TopoDS_Shape>& LF1,
+                                  const NCollection_List<TopoDS_Shape>& LF2,
+                                  const TopOpeBRepDS_Config             c1,
+                                  const TopOpeBRepDS_Config             c2);
+void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
+                              const TopoDS_Shape&      f,
+                              bool&                    of1,
+                              bool&                    of2);
 
 static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
                               TopOpeBRepTool_ShapeClassifier&       SC,

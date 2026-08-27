@@ -715,11 +715,11 @@ static void FUNBUILD_MAPANCSPLSHAPES(
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
-                                                  const NCollection_List<TopoDS_Shape>& LF1,
-                                                  const NCollection_List<TopoDS_Shape>& LF2,
-                                                  const TopOpeBRepDS_Config,
-                                                  const TopOpeBRepDS_Config)
+void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
+                                  const NCollection_List<TopoDS_Shape>& LF1,
+                                  const NCollection_List<TopoDS_Shape>& LF2,
+                                  const TopOpeBRepDS_Config,
+                                  const TopOpeBRepDS_Config)
 {
   B.myAncestorRankEdges1.Clear();
   B.myAncestorRankEdges2.Clear();
@@ -732,10 +732,10 @@ Standard_EXPORT void FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&      
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
-                                              const TopoDS_Shape&      f,
-                                              bool&                    of1,
-                                              bool&                    of2)
+void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
+                              const TopoDS_Shape&      f,
+                              bool&                    of1,
+                              bool&                    of2)
 {
   B.myAncestorRankFaceEdges.Clear();
   FUNBUILD_MAPSUBSHAPES(f, TopAbs_EDGE, B.myAncestorRankFaceEdges);
