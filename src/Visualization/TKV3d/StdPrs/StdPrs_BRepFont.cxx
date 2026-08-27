@@ -200,17 +200,19 @@ public:
     occ::handle<Impl>           aCopy = new Impl();
     aCopy->Font->SetUseUnicodeSubsetFallback(Font->ToUseUnicodeSubsetFallback());
     bool isInitialized = false;
-    if (const FileSource* aSource = std::get_if<FileSource>(&FontSource))
+    if (const FileSource* aFileSource = std::get_if<FileSource>(&FontSource))
     {
       isInitialized =
-        aCopy->Font->Init(aSource->Path.ToCString(), THE_FONT_PARAMETERS, aSource->FaceId);
+        aCopy->Font->Init(aFileSource->Path.ToCString(),
+                          THE_FONT_PARAMETERS,
+                          aFileSource->FaceId);
     }
-    else if (const NamedSource* aSource = std::get_if<NamedSource>(&FontSource))
+    else if (const NamedSource* aNamedSource = std::get_if<NamedSource>(&FontSource))
     {
-      isInitialized = aCopy->Font->FindAndInit(aSource->Name,
-                                               aSource->Aspect,
+      isInitialized = aCopy->Font->FindAndInit(aNamedSource->Name,
+                                               aNamedSource->Aspect,
                                                THE_FONT_PARAMETERS,
-                                               aSource->StrictLevel);
+                                               aNamedSource->StrictLevel);
     }
     else
     {
