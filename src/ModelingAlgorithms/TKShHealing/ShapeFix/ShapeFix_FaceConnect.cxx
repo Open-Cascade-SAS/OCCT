@@ -503,7 +503,7 @@ TopoDS_Shell ShapeFix_FaceConnect::rebuildShell(const TopoDS_Shell& theShell,
       // Perform necessary fixes on subshapes
       // smh#8
       TopoDS_Shape emptyCopiedShell = result.EmptyCopied();
-      TopoDS_Shell theShell         = TopoDS::Shell(emptyCopiedShell);
+      TopoDS_Shell aShell           = TopoDS::Shell(emptyCopiedShell);
       for (TopoDS_Iterator itf1(result); itf1.More(); itf1.Next())
       {
         TopoDS_Face newface = TopoDS::Face(itf1.Value());
@@ -557,10 +557,10 @@ TopoDS_Shell ShapeFix_FaceConnect::rebuildShell(const TopoDS_Shell& theShell,
         {
           EmpFace = SFF->Face();
         }
-        theBuilder.Add(theShell, EmpFace);
+        theBuilder.Add(aShell, EmpFace);
       }
-      theShell.Closed(BRep_Tool::IsClosed(theShell));
-      result = theShell;
+      aShell.Closed(BRep_Tool::IsClosed(aShell));
+      result = aShell;
 
       if (!theRepVertices.IsEmpty())
       {
