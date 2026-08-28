@@ -131,10 +131,7 @@ void BRepAlgo_Image::Remove(const TopoDS_Shape& S)
   up.UnBind(S);
 }
 
-//=======================================================================
-// function : NCollection_List<TopoDS_Shape>&
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const NCollection_List<TopoDS_Shape>& BRepAlgo_Image::Roots() const
 {
@@ -195,26 +192,45 @@ bool BRepAlgo_Image::HasImage(const TopoDS_Shape& S) const
   return down.IsBound(S);
 }
 
-//=======================================================================
-// function : NCollection_List<TopoDS_Shape>&
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-const NCollection_List<TopoDS_Shape>& BRepAlgo_Image::Image(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& BRepAlgo_Image::Image(const TopoDS_Shape& theShape) const
 {
-  if (!HasImage(S))
+  const NCollection_List<TopoDS_Shape>* anImage = down.Seek(theShape);
+  if (anImage == nullptr)
   {
-    static NCollection_List<TopoDS_Shape> L;
-    L.Append(S);
-    return L;
+    throw Standard_ConstructionError(" BRepAlgo_Image::Image");
   }
-  return down(S);
+  return *anImage;
 }
 
-//=======================================================================
-// function : NCollection_List<TopoDS_Shape>&
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
+TopoDS_Shape BRepAlgo_Image::FirstImage(const TopoDS_Shape& theShape) const
+{
+  const NCollection_List<TopoDS_Shape>* anImage = down.Seek(theShape);
+  return anImage != nullptr ? anImage->First() : theShape;
+}
+
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& BRepAlgo_Image::ImageOrSelf(
+  const TopoDS_Shape&             theShape,
+  NCollection_List<TopoDS_Shape>& theFallback) const
+{
+  const NCollection_List<TopoDS_Shape>* anImage = down.Seek(theShape);
+  if (anImage != nullptr)
+  {
+    return *anImage;
+  }
+
+  theFallback.Clear();
+  theFallback.Append(theShape);
+  return theFallback;
+}
+
+//=================================================================================================
+
 void BRepAlgo_Image::LastImage(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& L) const
 {
   if (!down.IsBound(S))

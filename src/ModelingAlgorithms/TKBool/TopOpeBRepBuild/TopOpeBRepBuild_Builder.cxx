@@ -50,6 +50,17 @@
 #include <TopOpeBRepDS_SurfaceIterator.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
+namespace
+{
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& EmptyShapeList()
+{
+  static const NCollection_List<TopoDS_Shape> anEmptyShapeList;
+  return anEmptyShapeList;
+}
+} // namespace
+
 #ifdef OCCT_DEBUG
 
 Standard_EXPORT void debmarksplit(const int i)
@@ -67,9 +78,6 @@ Standard_EXPORT void debspf(const int i)
   std::cout << "++  debspf" << i << std::endl;
 }
 #endif
-
-// Per-thread: a SplitSolid/FillSolid state flag; sharing it races concurrent builds.
-static thread_local int STATIC_SOLIDINDEX = 0;
 
 //=================================================================================================
 
@@ -130,7 +138,8 @@ TopOpeBRepBuild_Builder::TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& B
       mySplitFaceAncestors(),
       myFacesToProcess(),
       myProcessFaces(false),
-      mySplitSectionState(0)
+      mySplitSectionState(0),
+      mySolidIndex(0)
 {
   InitSection();
 }
@@ -463,7 +472,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::NewEdges(const in
   }
   else
   {
-    return myEmptyShapeList;
+    return EmptyShapeList();
   }
 } // NewEdges
 
@@ -625,7 +634,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
   }
   if (p == nullptr)
   {
-    return myEmptyShapeList;
+    return EmptyShapeList();
   }
 
   if ((*p).IsBound(S))
@@ -634,7 +643,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
     const NCollection_List<TopoDS_Shape>&   L     = losos.ListOnState();
     return L;
   }
-  return myEmptyShapeList;
+  return EmptyShapeList();
 } // Splits
 
 //=================================================================================================
@@ -671,7 +680,7 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoD
   }
   if (p == nullptr)
   {
-    return myEmptyShapeList;
+    throw Standard_ProgramError("TopOpeBRepBuild_Builder::ChangeSplit");
   }
   TopOpeBRepDS_ListOfShapeOn1State thelist1;
   if (!(*p).IsBound(S))
@@ -696,7 +705,7 @@ TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&         
 
   // take the edges of myEdgeAvoid as shape to avoid
   // during face classification
-  const NCollection_List<TopoDS_Shape>* PLOS = &myEmptyShapeList;
+  const NCollection_List<TopoDS_Shape>* PLOS = &EmptyShapeList();
   TopAbs_ShapeEnum                      tS   = S.ShapeType();
   if (tS == TopAbs_FACE)
   {
@@ -1742,7 +1751,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
   // -----------------------------------------
   TopOpeBRepBuild_ShellFaceSet SFS;
 
-  STATIC_SOLIDINDEX = 1;
+  mySolidIndex = 1;
   NCollection_List<TopoDS_Shape>::Iterator itLS1;
   for (itLS1.Initialize(LS1); itLS1.More(); itLS1.Next())
   {
@@ -1750,7 +1759,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
     FillSolid(Scur, ToBuild1, LS2, ToBuild2, SFS, RevOri1);
   }
 
-  STATIC_SOLIDINDEX = 2;
+  mySolidIndex = 2;
   NCollection_List<TopoDS_Shape>::Iterator itLS2;
   for (itLS2.Initialize(LS2); itLS2.More(); itLS2.Next())
   {
@@ -1956,7 +1965,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
           // on classifie en solide uniqt si
           // E dans la DS et E a ete purgee de ses interfs car en bout
           TopoDS_Shape sol;
-          if (STATIC_SOLIDINDEX == 1)
+          if (mySolidIndex == 1)
           {
             sol = myShape2;
           }

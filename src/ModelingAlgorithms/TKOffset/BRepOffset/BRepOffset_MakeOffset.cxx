@@ -2322,7 +2322,7 @@ void BRepOffset_MakeOffset::ToContext(
     if (myInitOffsetEdge.IsImage(OE))
     {
       TopoDS_Shape E = myInitOffsetEdge.ImageFrom(OE);
-      Or             = myInitOffsetEdge.Image(E).First().Orientation();
+      Or             = myInitOffsetEdge.FirstImage(E).Orientation();
       if (NE.Orientation() == TopAbs_REVERSED)
       {
         NE.Orientation(TopAbs::Reverse(Or));
@@ -3076,7 +3076,7 @@ void BRepOffset_MakeOffset::MakeFaces(
   //----------------------------------
   for (itr.Initialize(Roots); itr.More(); itr.Next())
   {
-    TopoDS_Face F = TopoDS::Face(myInitOffsetFace.Image(itr.Value()).First());
+    TopoDS_Face F = TopoDS::Face(myInitOffsetFace.FirstImage(itr.Value()));
     if (!myImageOffset.HasImage(F))
     {
       LOF.Append(F);
