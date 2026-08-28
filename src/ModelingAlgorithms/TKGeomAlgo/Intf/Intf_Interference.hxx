@@ -29,6 +29,7 @@
 class Intf_SectionPoint;
 class Intf_SectionLine;
 class Intf_TangentZone;
+class Message_ProgressScope;
 
 //! Describes the Interference computation result
 //! between polygon2d or polygon3d or polyhedron
@@ -72,7 +73,17 @@ public:
   //! Inserts a new zone of tangence in the current list of
   //! tangent zones of the interference and returns True
   //! when done.
+  //!
+  //! Periodically polls the breaker set by SetBreaker, if any, and throws
+  //! Standard_Failure to abort early if it signals UserBreak. No breaker
+  //! set (the default) is zero-overhead.
   Standard_EXPORT bool Insert(const Intf_TangentZone& TheZone);
+
+  //! Sets (or clears, with nullptr) the thread-local breaker Insert()
+  //! polls. theScope must outlive the Insert() calls it is set for; use
+  //! Intf_InterferenceBreakerScope for exception-safe scoping. Only safe
+  //! for callers that guarantee single-threaded execution.
+  Standard_EXPORT static void SetBreaker(const Message_ProgressScope* theScope);
 
   //! Insert a new segment of intersection in the current list of
   //! polylines of intersection of the interference.
@@ -98,5 +109,21 @@ protected:
 };
 
 #include <Intf_Interference.lxx>
+
+//! RAII scope for Intf_Interference::SetBreaker: restores the previous
+//! breaker (typically null) on destruction, including when unwound by the
+//! abort exception it enabled.
+class Intf_InterferenceBreakerScope
+{
+public:
+  Standard_EXPORT Intf_InterferenceBreakerScope(const Message_ProgressScope* theScope);
+  Standard_EXPORT ~Intf_InterferenceBreakerScope();
+
+private:
+  Intf_InterferenceBreakerScope(const Intf_InterferenceBreakerScope&)            = delete;
+  Intf_InterferenceBreakerScope& operator=(const Intf_InterferenceBreakerScope&) = delete;
+
+  const Message_ProgressScope* myPrev;
+};
 
 #endif // _Intf_Interference_HeaderFile

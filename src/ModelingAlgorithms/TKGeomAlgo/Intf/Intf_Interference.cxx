@@ -18,6 +18,8 @@
 #include <Intf_SectionLine.hxx>
 #include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
+#include <Message_ProgressScope.hxx>
+#include <Standard_Failure.hxx>
 
 //=======================================================================
 // function : Intf_Interference
@@ -27,6 +29,20 @@ Intf_Interference::Intf_Interference(const bool Self)
     : SelfIntf(Self),
       Tolerance(0.0)
 {
+}
+
+//=================================================================================================
+
+namespace
+{
+// thread_local: safe by construction even if a future caller runs this on
+// a worker thread of its own.
+thread_local const Message_ProgressScope* t_intfBreaker = nullptr;
+} // namespace
+
+void Intf_Interference::SetBreaker(const Message_ProgressScope* theScope)
+{
+  t_intfBreaker = theScope;
 }
 
 //=======================================================================
@@ -49,6 +65,14 @@ void Intf_Interference::SelfInterference(const bool Self)
 
 bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
 {
+  // Poll every 256 calls: this function can run tens of thousands of times
+  // on a degenerate surface, so polling every call would add its own tax.
+  static thread_local int t_pollCounter = 0;
+  if (t_intfBreaker != nullptr && (++t_pollCounter & 0xFF) == 0 && t_intfBreaker->UserBreak())
+  {
+    throw Standard_Failure("Intf_Interference::Insert: aborted by breaker");
+  }
+
   if (myTZones.Length() <= 0)
   {
     return false;
@@ -63,13 +87,20 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
   int  npcz     = -1;                      // Number of points in the current zone
   int  nplz     = LaZone.NumberOfPoints(); // in the new zone
 
+  // GetPoint(Index) is O(n) per call (NCollection_Sequence has no O(1)
+  // indexed access), so calling it inside the nested loop below made every
+  // comparison pay that cost again. Points() caches a random-access array
+  // per zone instead: same comparisons, same result, O(1) lookup.
+  const NCollection_Array1<Intf_SectionPoint>& laZonePts = LaZone.Points();
+
   // Loop on TangentZone :
   for (int Iz = 1; Iz <= myTZones.Length(); Iz++)
   {
 
     // Loop on edges of the TangentZone :
-    npcz = myTZones(Iz).NumberOfPoints();
-    int Ipz0, Ipz1, Ipz2;
+    npcz                                                    = myTZones(Iz).NumberOfPoints();
+    const NCollection_Array1<Intf_SectionPoint>& curZonePts = myTZones(Iz).Points();
+    int                                          Ipz0, Ipz1, Ipz2;
     for (Ipz1 = 1; Ipz1 <= npcz; Ipz1++)
     {
       Ipz0 = Ipz1 - 1;
@@ -86,9 +117,9 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
       {
         Ilz2 = (Ilz1 % nplz) + 1;
 
-        if ((myTZones(Iz).GetPoint(Ipz1)).IsEqual(LaZone.GetPoint(Ilz1)))
+        if (curZonePts(Ipz1).IsEqual(laZonePts(Ilz1)))
         {
-          if ((myTZones(Iz).GetPoint(Ipz0)).IsEqual(LaZone.GetPoint(Ilz2)))
+          if (curZonePts(Ipz0).IsEqual(laZonePts(Ilz2)))
           {
             lzin = Iz;
             lunp = Ipz0;
@@ -98,7 +129,7 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
             same = false;
             break;
           }
-          else if ((myTZones(Iz).GetPoint(Ipz2)).IsEqual(LaZone.GetPoint(Ilz2)))
+          else if (curZonePts(Ipz2).IsEqual(laZonePts(Ilz2)))
           {
             lzin = Iz;
             lunp = Ipz1;
@@ -132,7 +163,7 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
   {
     for (Ilc = lotl + 1; (((Ilc - 1) % nplz) + 1) != lunl; Ilc++)
     {
-      myTZones(lzin).InsertBefore(lotp, LaZone.GetPoint(((Ilc - 1) % nplz) + 1));
+      myTZones(lzin).InsertBefore(lotp, laZonePts(((Ilc - 1) % nplz) + 1));
       if (!same)
       {
         lotp++;
@@ -145,7 +176,7 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
     bool loop = false;
     for (Ilc = lunl;; Ilc++)
     {
-      myTZones(lzin).InsertBefore(lunp, LaZone.GetPoint((((Ilc - 1) % nplz) + 1)));
+      myTZones(lzin).InsertBefore(lunp, laZonePts((((Ilc - 1) % nplz) + 1)));
       lunp++;
       if (loop && (((Ilc - 1) % nplz) + 1) == lunl)
       {
@@ -324,4 +355,19 @@ void Intf_Interference::Dump() const
   {
     myTZones(t).Dump(2);
   }
+}
+
+//=================================================================================================
+
+Intf_InterferenceBreakerScope::Intf_InterferenceBreakerScope(const Message_ProgressScope* theScope)
+{
+  myPrev = t_intfBreaker;
+  Intf_Interference::SetBreaker(theScope);
+}
+
+//=================================================================================================
+
+Intf_InterferenceBreakerScope::~Intf_InterferenceBreakerScope()
+{
+  Intf_Interference::SetBreaker(myPrev);
 }
