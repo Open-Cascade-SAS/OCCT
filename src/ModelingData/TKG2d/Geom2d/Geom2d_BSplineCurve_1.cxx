@@ -184,13 +184,27 @@ gp_Pnt2d Geom2d_BSplineCurve::EvalD0(const double U) const
   int      aSpanIndex = 0;
   double   aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots.Value(aSpanIndex))
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
+  if (aNewU < myFlatKnots.Value(aSpanIndex))
   {
     aSpanIndex--;
   }
 
-  BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P);
+  BSplCLib::D0(aNewU,
+               aSpanIndex,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P);
   return P;
 }
 
@@ -208,8 +222,14 @@ Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
   int                 aSpanIndex = 0;
   double              aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots.Value(aSpanIndex))
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
+  if (aNewU < myFlatKnots.Value(aSpanIndex))
   {
     aSpanIndex--;
   }
@@ -220,8 +240,8 @@ Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1);
   return aResult;
@@ -241,8 +261,14 @@ Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
   int                 aSpanIndex = 0;
   double              aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots.Value(aSpanIndex))
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
+  if (aNewU < myFlatKnots.Value(aSpanIndex))
   {
     aSpanIndex--;
   }
@@ -253,8 +279,8 @@ Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1,
                aResult.D2);
@@ -275,8 +301,14 @@ Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
   int                 aSpanIndex = 0;
   double              aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots.Value(aSpanIndex))
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
+  if (aNewU < myFlatKnots.Value(aSpanIndex))
   {
     aSpanIndex--;
   }
@@ -287,8 +319,8 @@ Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1,
                aResult.D2,
