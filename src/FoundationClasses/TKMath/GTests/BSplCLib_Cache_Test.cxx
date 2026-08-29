@@ -547,10 +547,7 @@ TEST_F(BSplCLib_CacheTest, NearRepeatedKnotUsesActualSpan)
   aMults(4) = 3;
   aMults(5) = 4;
 
-  NCollection_Array1<double> aFlatKnots(1,
-                                        BSplCLib::KnotSequenceLength(aMults,
-                                                                    aDegree,
-                                                                    false));
+  NCollection_Array1<double> aFlatKnots(1, BSplCLib::KnotSequenceLength(aMults, aDegree, false));
   BSplCLib::KnotSequence(aKnots, aMults, aDegree, false, aFlatKnots);
 
   occ::handle<BSplCLib_Cache> aCache =
@@ -566,13 +563,7 @@ TEST_F(BSplCLib_CacheTest, NearRepeatedKnotUsesActualSpan)
 
     int    aRefSpan  = 0;
     double aRefParam = aParameter;
-    BSplCLib::LocateParameter(aDegree,
-                              aKnots,
-                              &aMults,
-                              aParameter,
-                              false,
-                              aRefSpan,
-                              aRefParam);
+    BSplCLib::LocateParameter(aDegree, aKnots, &aMults, aParameter, false, aRefSpan, aRefParam);
     if (aRefParam < aKnots.Value(aRefSpan))
     {
       --aRefSpan;

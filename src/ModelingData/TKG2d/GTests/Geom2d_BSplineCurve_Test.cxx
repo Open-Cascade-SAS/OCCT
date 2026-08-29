@@ -237,18 +237,17 @@ TEST(Geom2d_BSplineCurve_EvaluationTest, FlatKnotsMatchCompressedKnots)
   aMults(5) = 4;
   Geom2d_BSplineCurve aCurve(aPoles, aWeights, aKnots, aMults, 3);
 
-  const double aParameters[] =
-    {0.0,
-     0.1,
-     std::nextafter(0.2, 0.0),
-     0.2,
-     std::nextafter(0.2, 1.0),
-     std::nextafter(0.5, 0.0),
-     0.5,
-     std::nextafter(0.75, 0.0),
-     0.75,
-     0.9,
-     1.0};
+  const double aParameters[] = {0.0,
+                                0.1,
+                                std::nextafter(0.2, 0.0),
+                                0.2,
+                                std::nextafter(0.2, 1.0),
+                                std::nextafter(0.5, 0.0),
+                                0.5,
+                                std::nextafter(0.75, 0.0),
+                                0.75,
+                                0.9,
+                                1.0};
   for (const double aParameter : aParameters)
   {
     gp_Pnt2d aRefPoint;

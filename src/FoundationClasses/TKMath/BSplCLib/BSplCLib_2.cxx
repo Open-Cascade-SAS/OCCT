@@ -68,8 +68,15 @@ void BSplCLib::D0(const double                      U,
                   const NCollection_Array1<int>*    Mults,
                   double&                           P)
 {
-  BSplCLib_D0<double, double, NCollection_Array1<double>, 1>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P);
+  BSplCLib_D0<double, double, NCollection_Array1<double>, 1>(U,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P);
 }
 
 //=================================================================================================
@@ -85,8 +92,16 @@ void BSplCLib::D1(const double                      U,
                   double&                           P,
                   double&                           V)
 {
-  BSplCLib_D1<double, double, NCollection_Array1<double>, 1>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V);
+  BSplCLib_D1<double, double, NCollection_Array1<double>, 1>(U,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V);
 }
 
 //=================================================================================================
@@ -103,8 +118,17 @@ void BSplCLib::D2(const double                      U,
                   double&                           V1,
                   double&                           V2)
 {
-  BSplCLib_D2<double, double, NCollection_Array1<double>, 1>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2);
+  BSplCLib_D2<double, double, NCollection_Array1<double>, 1>(U,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V1,
+                                                             V2);
 }
 
 //=================================================================================================
@@ -122,8 +146,18 @@ void BSplCLib::D3(const double                      U,
                   double&                           V2,
                   double&                           V3)
 {
-  BSplCLib_D3<double, double, NCollection_Array1<double>, 1>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2, V3);
+  BSplCLib_D3<double, double, NCollection_Array1<double>, 1>(U,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V1,
+                                                             V2,
+                                                             V3);
 }
 
 //=================================================================================================
@@ -139,8 +173,16 @@ void BSplCLib::DN(const double                      U,
                   const NCollection_Array1<int>*    Mults,
                   double&                           VN)
 {
-  BSplCLib_DN<double, double, NCollection_Array1<double>, 1>(
-    U, N, Index, Degree, Periodic, Poles, Weights, Knots, Mults, VN);
+  BSplCLib_DN<double, double, NCollection_Array1<double>, 1>(U,
+                                                             N,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             VN);
 }
 
 //=================================================================================================

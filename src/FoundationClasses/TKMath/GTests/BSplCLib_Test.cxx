@@ -162,13 +162,8 @@ TEST(BSplCLibTest, ScalarEvaluationMatches2dSharedImplementation)
 
   for (const NCollection_Array1<double>* aCurveWeights : {BSplCLib::NoWeights(), &aWeights})
   {
-    for (const double aParameter : {0.0,
-                                    std::nextafter(0.3, 0.0),
-                                    0.3,
-                                    0.5,
-                                    std::nextafter(0.7, 0.0),
-                                    0.7,
-                                    1.0})
+    for (const double aParameter :
+         {0.0, std::nextafter(0.3, 0.0), 0.3, 0.5, std::nextafter(0.7, 0.0), 0.7, 1.0})
     {
       double aValue, aD1, aD2, aD3;
       BSplCLib::D3(aParameter,
@@ -262,10 +257,7 @@ TEST(BSplCLibTest, FlatKnotsNearRepeatedKnotUseActualSpan)
   aMults(4) = 3;
   aMults(5) = 4;
 
-  NCollection_Array1<double> aFlatKnots(1,
-                                        BSplCLib::KnotSequenceLength(aMults,
-                                                                    aDegree,
-                                                                    false));
+  NCollection_Array1<double> aFlatKnots(1, BSplCLib::KnotSequenceLength(aMults, aDegree, false));
   BSplCLib::KnotSequence(aKnots, aMults, aDegree, false, aFlatKnots);
 
   for (const double aParameter : {std::nextafter(0.5, 0.0), std::nextafter(0.75, 0.0)})
@@ -309,13 +301,7 @@ TEST(BSplCLibTest, FlatKnotsNearRepeatedKnotUseActualSpan)
 
     int    aRefSpan  = 0;
     double aRefParam = aParameter;
-    BSplCLib::LocateParameter(aDegree,
-                              aKnots,
-                              &aMults,
-                              aParameter,
-                              false,
-                              aRefSpan,
-                              aRefParam);
+    BSplCLib::LocateParameter(aDegree, aKnots, &aMults, aParameter, false, aRefSpan, aRefParam);
     if (aRefParam < aKnots.Value(aRefSpan))
     {
       --aRefSpan;
