@@ -32,6 +32,8 @@
 #include <Standard_HashUtils.hxx>
 #include <NCollection_LinearVector.hxx>
 
+#include <string_view>
+
 //! An abstract class implementing procedure to read OBJ file.
 //!
 //! This class is not bound to particular data structure
@@ -245,19 +247,19 @@ private:
   int triangulatePolygon(const NCollection_Array1<int>& theIndices);
 
   //! Handle "o ObjectName".
-  void pushObject(const char* theObjectName);
+  void pushObject(const std::string_view theObjectName);
 
   //! Handle "g GroupName".
-  void pushGroup(const char* theGroupName);
+  void pushGroup(const std::string_view theGroupName);
 
   //! Handle "s SmoothGroupIndex".
-  void pushSmoothGroup(const char* theSmoothGroupIndex);
+  void pushSmoothGroup(const std::string_view theSmoothGroupIndex);
 
   //! Handle "usemtl MaterialName".
-  void pushMaterial(const char* theMaterialName);
+  void pushMaterial(const std::string_view theMaterialName);
 
   //! Handle "mtllib FileName".
-  void readMaterialLib(const char* theFileName);
+  void readMaterialLib(const std::string_view theFileName);
 
   //! Check memory limits.
   //! @return FALSE on out of memory

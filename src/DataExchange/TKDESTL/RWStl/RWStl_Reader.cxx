@@ -27,7 +27,9 @@
 #include <Standard_CLocaleSentry.hxx>
 
 #include <algorithm>
+#include <cctype>
 #include <limits>
+#include <string_view>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWStl_Reader, Standard_Transient)
 
@@ -251,32 +253,57 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
   #define GETPOS(aPos) ((int64_t)aPos)
 #endif
 
-static inline bool str_starts_with(const char* theStr, const char* theWord, int theN)
+static bool startsWithKeywordIgnoreCase(const std::string_view theLine,
+                                        const std::string_view theKeyword)
 {
-  while (isspace(*theStr) && *theStr != '\0')
+  size_t anOffset = 0;
+  while (anOffset < theLine.size()
+         && std::isspace(static_cast<unsigned char>(theLine[anOffset])) != 0)
   {
-    theStr++;
+    ++anOffset;
   }
-  return !strncasecmp(theStr, theWord, theN);
+  if (theLine.size() - anOffset < theKeyword.size()
+      || strncasecmp(theLine.data() + anOffset, theKeyword.data(), theKeyword.size()) != 0)
+  {
+    return false;
+  }
+  const size_t anEndOffset = anOffset + theKeyword.size();
+  return anEndOffset == theLine.size()
+         || std::isspace(static_cast<unsigned char>(theLine[anEndOffset])) != 0;
 }
 
-static bool ReadVertex(const char* theStr, double& theX, double& theY, double& theZ)
+static bool readVertex(const std::string_view theLine, double& theX, double& theY, double& theZ)
 {
-  const char* aStr = theStr;
-
-  // skip 'vertex'
-  while (isspace((unsigned char)*aStr) || isalpha((unsigned char)*aStr))
+  if (!startsWithKeywordIgnoreCase(theLine, "vertex"))
   {
-    ++aStr;
+    return false;
   }
 
-  // read values
-  char* aEnd;
-  theX = Strtod(aStr, &aEnd);
-  theY = Strtod(aStr = aEnd, &aEnd);
-  theZ = Strtod(aStr = aEnd, &aEnd);
+  const char* aPosition = theLine.data();
 
-  return aEnd != aStr;
+  while (std::isspace(static_cast<unsigned char>(*aPosition)) != 0)
+  {
+    ++aPosition;
+  }
+  aPosition += sizeof("vertex") - 1;
+
+  // read values
+  char* aNextPosition;
+  theX = Strtod(aPosition, &aNextPosition);
+  if (aNextPosition == aPosition)
+  {
+    return false;
+  }
+  aPosition = aNextPosition;
+  theY      = Strtod(aPosition, &aNextPosition);
+  if (aNextPosition == aPosition)
+  {
+    return false;
+  }
+  aPosition = aNextPosition;
+  theZ      = Strtod(aPosition, &aNextPosition);
+
+  return aNextPosition != aPosition;
 }
 
 //=================================================================================================
@@ -334,12 +361,12 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
       Message::SendFail("Error: premature end of file");
       return false;
     }
-    if (str_starts_with(aLine, "endsolid", 8))
+    if (startsWithKeywordIgnoreCase(std::string_view(aLine, aLineLen), "endsolid"))
     {
       // end of STL code
       break;
     }
-    if (!str_starts_with(aLine, "facet", 5))
+    if (!startsWithKeywordIgnoreCase(std::string_view(aLine, aLineLen), "facet"))
     {
       Message::SendFail(TCollection_AsciiString("Error: unexpected format of facet at line ")
                         + (aNbLine + 1));
@@ -347,7 +374,8 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
     }
 
     aLine = theBuffer.ReadLine(theStream, aLineLen); // "outer loop"
-    if (aLine == nullptr || !str_starts_with(aLine, "outer", 5))
+    if (aLine == nullptr
+        || !startsWithKeywordIgnoreCase(std::string_view(aLine, aLineLen), "outer"))
     {
       Message::SendFail(TCollection_AsciiString("Error: unexpected format of facet at line ")
                         + (aNbLine + 1));
@@ -365,7 +393,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
         break;
       }
       gp_XYZ aReadVertex;
-      if (!ReadVertex(aLine,
+      if (!readVertex(std::string_view(aLine, aLineLen),
                       aReadVertex.ChangeCoord(1),
                       aReadVertex.ChangeCoord(2),
                       aReadVertex.ChangeCoord(3)))
