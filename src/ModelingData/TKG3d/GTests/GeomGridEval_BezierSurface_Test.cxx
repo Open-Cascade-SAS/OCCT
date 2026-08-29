@@ -68,6 +68,41 @@ TEST(GeomGridEval_BezierSurfaceTest, BasicEvaluation)
   }
 }
 
+TEST(GeomGridEval_BezierSurfaceTest, SinglePointGrid)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  for (int aUIndex = 1; aUIndex <= 3; ++aUIndex)
+  {
+    for (int aVIndex = 1; aVIndex <= 3; ++aVIndex)
+    {
+      aPoles.SetValue(aUIndex, aVIndex, gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + aVIndex)));
+    }
+  }
+
+  const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
+  GeomGridEval_BezierSurface            anEvaluator(aSurface);
+  NCollection_Array1<double>            aUParams(1);
+  NCollection_Array1<double>            aVParams(1);
+  aUParams.ChangeAt(0) = 0.37;
+  aVParams.ChangeAt(0) = 0.63;
+
+  const gp_Pnt               aPoint       = anEvaluator.EvaluateGrid(aUParams, aVParams).At(0);
+  const GeomGridEval::SurfD1 aD1          = anEvaluator.EvaluateGridD1(aUParams, aVParams).At(0);
+  const GeomGridEval::SurfD2 aD2          = anEvaluator.EvaluateGridD2(aUParams, aVParams).At(0);
+  const Geom_Surface::ResD1  anExpectedD1 = aSurface->EvalD1(0.37, 0.63);
+  const Geom_Surface::ResD2  anExpectedD2 = aSurface->EvalD2(0.37, 0.63);
+  EXPECT_NEAR(aPoint.Distance(anExpectedD1.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aD1.Point.Distance(anExpectedD1.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD1.D1U - anExpectedD1.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD1.D1V - anExpectedD1.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aD2.Point.Distance(anExpectedD2.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D1U - anExpectedD2.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D1V - anExpectedD2.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2U - anExpectedD2.D2U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2V - anExpectedD2.D2V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2UV - anExpectedD2.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
+}
+
 TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
 {
   // Rational Bezier surface
@@ -161,6 +196,41 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
       EXPECT_NEAR((aGrid.Value(i, j).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2RationalLinear)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles.SetValue(1, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, 1, gp_Pnt(1.0, 0.0, 0.0));
+  aPoles.SetValue(1, 2, gp_Pnt(0.0, 1.0, 0.0));
+  aPoles.SetValue(2, 2, gp_Pnt(1.0, 1.0, 1.0));
+  aWeights.SetValue(1, 1, 1.0);
+  aWeights.SetValue(2, 1, 1.5);
+  aWeights.SetValue(1, 2, 2.0);
+  aWeights.SetValue(2, 2, 0.75);
+
+  const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles, aWeights);
+  GeomGridEval_BezierSurface            anEval(aSurface);
+  NCollection_Array1<double>            aParams        = CreateUniformParams(0.0, 1.0, 7);
+  const NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aParams, aParams);
+  for (size_t aUIndex = 0; aUIndex < aParams.Size(); ++aUIndex)
+  {
+    for (size_t aVIndex = 0; aVIndex < aParams.Size(); ++aVIndex)
+    {
+      const Geom_Surface::ResD2 anExpected =
+        aSurface->EvalD2(aParams.At(aUIndex), aParams.At(aVIndex));
+      const size_t                anIndex = aUIndex * aParams.Size() + aVIndex;
+      const GeomGridEval::SurfD2& aResult = aGrid.At(anIndex);
+      EXPECT_NEAR(aResult.Point.Distance(anExpected.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D1U - anExpected.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D1V - anExpected.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2U - anExpected.D2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2V - anExpected.D2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2UV - anExpected.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
     }
   }
 }
