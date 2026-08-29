@@ -179,17 +179,17 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
   SpanBlocks                  aUBlocks(aNbU);
   SpanBlocks                  aVBlocks(aNbV);
   const size_t                aNbUBlocks = prepareSpanBlocks(theUParams,
-                                                             *theData.UFlatKnots,
-                                                             theData.UDegree,
-                                                             theData.IsUPeriodic,
-                                                             aPreparedU,
-                                                             aUBlocks);
+                                              *theData.UFlatKnots,
+                                              theData.UDegree,
+                                              theData.IsUPeriodic,
+                                              aPreparedU,
+                                              aUBlocks);
   const size_t                aNbVBlocks = prepareSpanBlocks(theVParams,
-                                                             *theData.VFlatKnots,
-                                                             theData.VDegree,
-                                                             theData.IsVPeriodic,
-                                                             aPreparedV,
-                                                             aVBlocks);
+                                              *theData.VFlatKnots,
+                                              theData.VDegree,
+                                              theData.IsVPeriodic,
+                                              aPreparedV,
+                                              aVBlocks);
   occ::handle<BSplSLib_Cache> aCache;
 
   for (size_t aUBlockIndex = 0; aUBlockIndex < aNbUBlocks; ++aUBlockIndex)
