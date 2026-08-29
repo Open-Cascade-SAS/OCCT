@@ -356,6 +356,15 @@ void BSplCLib::LocateParameter(const int                         Degree,
                               NewU,
                               Knots(first),
                               Knots(last));
+
+    // Flat-knot caches and grid reuse must select the span containing the parameter.
+    if (Mults == nullptr)
+    {
+      while (KnotIndex > first && NewU < Knots(KnotIndex))
+      {
+        --KnotIndex;
+      }
+    }
   }
   else
   {
