@@ -93,7 +93,7 @@ public:
 
 private:
   static NCollection_Array1<TheItemType>&& moveArray(NCollection_Array1<TheItemType>& theOther,
-                                                     const size_t theExpectedSize)
+                                                     [[maybe_unused]] const size_t theExpectedSize)
   {
     Standard_DimensionMismatch_Raise_if(theOther.Size() != theExpectedSize,
                                         "NCollection_Array2: array size does not match dimensions");
