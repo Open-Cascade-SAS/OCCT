@@ -190,11 +190,6 @@ gp_Pnt Geom_BSplineCurve::EvalD0(const double U) const
                             myPeriodic,
                             aSpanIndex,
                             aNewU);
-  if (aNewU < myFlatKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
   BSplCLib::D0(aNewU,
                aSpanIndex,
                myDeg,
@@ -228,11 +223,6 @@ Geom_Curve::ResD1 Geom_BSplineCurve::EvalD1(const double U) const
                             myPeriodic,
                             aSpanIndex,
                             aNewU);
-  if (aNewU < myFlatKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
   BSplCLib::D1(aNewU,
                aSpanIndex,
                myDeg,
@@ -267,11 +257,6 @@ Geom_Curve::ResD2 Geom_BSplineCurve::EvalD2(const double U) const
                             myPeriodic,
                             aSpanIndex,
                             aNewU);
-  if (aNewU < myFlatKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
   BSplCLib::D2(aNewU,
                aSpanIndex,
                myDeg,
@@ -307,11 +292,6 @@ Geom_Curve::ResD3 Geom_BSplineCurve::EvalD3(const double U) const
                             myPeriodic,
                             aSpanIndex,
                             aNewU);
-  if (aNewU < myFlatKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
   BSplCLib::D3(aNewU,
                aSpanIndex,
                myDeg,

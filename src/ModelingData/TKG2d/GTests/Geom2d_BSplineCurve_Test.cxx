@@ -210,14 +210,14 @@ TEST_F(Geom2d_BSplineCurve_Test, Evaluation_D2)
 
 TEST(Geom2d_BSplineCurve_EvaluationTest, FlatKnotsMatchCompressedKnots)
 {
-  NCollection_Array1<gp_Pnt2d> aPoles(1, 8);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 10);
   for (int anIndex = 1; anIndex <= aPoles.Upper(); ++anIndex)
   {
     const double aX = static_cast<double>(anIndex - 1);
     aPoles(anIndex) = gp_Pnt2d(aX, std::sin(aX));
   }
 
-  NCollection_Array1<double> aWeights(1, 8);
+  NCollection_Array1<double> aWeights(1, 10);
   for (int anIndex = 1; anIndex <= aWeights.Upper(); ++anIndex)
   {
     aWeights(anIndex) = 1.0 + 0.1 * static_cast<double>(anIndex % 3);
@@ -233,12 +233,22 @@ TEST(Geom2d_BSplineCurve_EvaluationTest, FlatKnotsMatchCompressedKnots)
   aMults(1) = 4;
   aMults(2) = 1;
   aMults(3) = 2;
-  aMults(4) = 1;
+  aMults(4) = 3;
   aMults(5) = 4;
   Geom2d_BSplineCurve aCurve(aPoles, aWeights, aKnots, aMults, 3);
 
   const double aParameters[] =
-    {0.0, 0.1, std::nextafter(0.2, 0.0), 0.2, std::nextafter(0.2, 1.0), 0.5, 0.75, 0.9, 1.0};
+    {0.0,
+     0.1,
+     std::nextafter(0.2, 0.0),
+     0.2,
+     std::nextafter(0.2, 1.0),
+     std::nextafter(0.5, 0.0),
+     0.5,
+     std::nextafter(0.75, 0.0),
+     0.75,
+     0.9,
+     1.0};
   for (const double aParameter : aParameters)
   {
     gp_Pnt2d aRefPoint;
@@ -266,6 +276,10 @@ TEST(Geom2d_BSplineCurve_EvaluationTest, FlatKnotsMatchCompressedKnots)
     expectVectorNear(aD1, aRefD1);
     expectVectorNear(aD2, aRefD2);
     expectVectorNear(aD3, aRefD3);
+
+    expectVectorNear(aCurve.DN(aParameter, 1), aRefD1);
+    expectVectorNear(aCurve.DN(aParameter, 2), aRefD2);
+    expectVectorNear(aCurve.DN(aParameter, 3), aRefD3);
   }
 }
 

@@ -45,6 +45,18 @@ typedef gp_Vec                     Vec;
 typedef NCollection_Array1<double> Array1OfReal;
 typedef NCollection_Array1<int>    Array1OfInteger;
 
+//! Corrects tolerance-based location to the actual flat-knot span.
+static void locateFlatSpan(const Array1OfReal& theKnots,
+                           const int           theFirst,
+                           int&                theKnotIndex,
+                           const double        theParameter)
+{
+  while (theKnotIndex > theFirst && theParameter < theKnots.Value(theKnotIndex))
+  {
+    --theKnotIndex;
+  }
+}
+
 //=======================================================================
 // class : BSplCLib_LocalMatrix
 // purpose: Auxiliary class optimizing creation of matrix buffer for
@@ -182,6 +194,7 @@ void BSplCLib::LocateParameter(const int, // Degree,
     ul = Knots(Knots.Upper());
   }
   BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, uf, ul);
+  locateFlatSpan(Knots, std::min(FromK1, ToK2), KnotIndex, NewU);
 }
 
 //=================================================================================================
@@ -211,6 +224,8 @@ void BSplCLib::LocateParameter(const int           Degree,
   {
     BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, 0., 1.);
   }
+
+  locateFlatSpan(Knots, std::min(FromK1, ToK2), KnotIndex, NewU);
 }
 
 //=================================================================================================
@@ -360,6 +375,11 @@ void BSplCLib::LocateParameter(const int                         Degree,
   else
   {
     NewU = U;
+  }
+
+  if (Mults == nullptr)
+  {
+    locateFlatSpan(Knots, first, KnotIndex, NewU);
   }
 }
 

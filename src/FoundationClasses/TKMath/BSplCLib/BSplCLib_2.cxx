@@ -39,9 +39,6 @@
 
 #include "BSplCLib_CurveComputation.pxx"
 
-// Use 1D specialization of the template data container
-using BSplCLib_DataContainer = BSplCLib_DataContainer_T<1>;
-
 // methods for 1 dimensional BSplines
 
 //=================================================================================================
@@ -52,89 +49,11 @@ void BSplCLib::BuildEval(const int                         Degree,
                          const NCollection_Array1<double>* Weights,
                          double&                           LP)
 {
-  int    PLower = Poles.Lower();
-  int    PUpper = Poles.Upper();
-  int    i;
-  int    ip = PLower + Index - 1;
-  double w, *pole = &LP;
-  if (Weights == nullptr)
-  {
-
-    for (i = 0; i <= Degree; i++)
-    {
-      ip++;
-      if (ip > PUpper)
-      {
-        ip = PLower;
-      }
-      pole[0] = Poles(ip);
-      pole += 1;
-    }
-  }
-  else
-  {
-
-    for (i = 0; i <= Degree; i++)
-    {
-      ip++;
-      if (ip > PUpper)
-      {
-        ip = PLower;
-      }
-      pole[1] = w = (*Weights)(ip);
-      pole[0]     = Poles(ip) * w;
-      pole += 2;
-    }
-  }
-}
-
-//=================================================================================================
-
-static void PrepareEval(double&                           u,
-                        int&                              index,
-                        int&                              dim,
-                        bool&                             rational,
-                        const int                         Degree,
-                        const bool                        Periodic,
-                        const NCollection_Array1<double>& Poles,
-                        const NCollection_Array1<double>* Weights,
-                        const NCollection_Array1<double>& Knots,
-                        const NCollection_Array1<int>*    Mults,
-                        BSplCLib_DataContainer&           dc)
-{
-  // Set the Index
-  BSplCLib::LocateParameter(Degree, Knots, Mults, u, Periodic, index, u);
-
-  // make the knots
-  BSplCLib::BuildKnots(Degree, index, Periodic, Knots, Mults, *dc.knots);
-  if (Mults == nullptr)
-  {
-    index -= Knots.Lower() + Degree;
-  }
-  else
-  {
-    index = BSplCLib::PoleIndex(Degree, index, Periodic, *Mults);
-  }
-
-  // check truly rational
-  rational = (Weights != nullptr);
-  if (rational)
-  {
-    int WLower = Weights->Lower() + index;
-    rational   = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
-  }
-
-  // make the poles
-  if (rational)
-  {
-    dim = 2;
-    BSplCLib::BuildEval(Degree, index, Poles, Weights, *dc.poles);
-  }
-  else
-  {
-    dim = 1;
-    BSplCLib::BuildEval(Degree, index, Poles, BSplCLib::NoWeights(), *dc.poles);
-  }
+  BSplCLib_BuildEval<double, double, NCollection_Array1<double>, 1>(Degree,
+                                                                    Index,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    LP);
 }
 
 //=================================================================================================
@@ -149,21 +68,8 @@ void BSplCLib::D0(const double                      U,
                   const NCollection_Array1<int>*    Mults,
                   double&                           P)
 {
-  int    dim, index = Index;
-  double u = U;
-  bool   rational;
-  validateBSplineDegree(Degree);
-  BSplCLib_DataContainer dc;
-  PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
-  BSplCLib::Eval(u, Degree, *dc.knots, dim, *dc.poles);
-  if (rational)
-  {
-    P = dc.poles[0] / dc.poles[1];
-  }
-  else
-  {
-    P = dc.poles[0];
-  }
+  BSplCLib_D0<double, double, NCollection_Array1<double>, 1>(
+    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P);
 }
 
 //=================================================================================================
@@ -179,21 +85,8 @@ void BSplCLib::D1(const double                      U,
                   double&                           P,
                   double&                           V)
 {
-  int    dim, index = Index;
-  double u = U;
-  bool   rational;
-  validateBSplineDegree(Degree);
-  BSplCLib_DataContainer dc;
-  PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
-  BSplCLib::Bohm(u, Degree, 1, *dc.knots, dim, *dc.poles);
-  double* result = dc.poles;
-  if (rational)
-  {
-    PLib::RationalDerivative(Degree, 1, 1, *dc.poles, *dc.ders);
-    result = dc.ders;
-  }
-  P = result[0];
-  V = result[1];
+  BSplCLib_D1<double, double, NCollection_Array1<double>, 1>(
+    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V);
 }
 
 //=================================================================================================
@@ -210,29 +103,8 @@ void BSplCLib::D2(const double                      U,
                   double&                           V1,
                   double&                           V2)
 {
-  int    dim, index = Index;
-  double u = U;
-  bool   rational;
-  validateBSplineDegree(Degree);
-  BSplCLib_DataContainer dc;
-  PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
-  BSplCLib::Bohm(u, Degree, 2, *dc.knots, dim, *dc.poles);
-  double* result = dc.poles;
-  if (rational)
-  {
-    PLib::RationalDerivative(Degree, 2, 1, *dc.poles, *dc.ders);
-    result = dc.ders;
-  }
-  P  = result[0];
-  V1 = result[1];
-  if (!rational && (Degree < 2))
-  {
-    V2 = 0.;
-  }
-  else
-  {
-    V2 = result[2];
-  }
+  BSplCLib_D2<double, double, NCollection_Array1<double>, 1>(
+    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2);
 }
 
 //=================================================================================================
@@ -250,37 +122,8 @@ void BSplCLib::D3(const double                      U,
                   double&                           V2,
                   double&                           V3)
 {
-  int    dim, index = Index;
-  double u = U;
-  bool   rational;
-  validateBSplineDegree(Degree);
-  BSplCLib_DataContainer dc;
-  PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
-  BSplCLib::Bohm(u, Degree, 3, *dc.knots, dim, *dc.poles);
-  double* result = dc.poles;
-  if (rational)
-  {
-    PLib::RationalDerivative(Degree, 3, 1, *dc.poles, *dc.ders);
-    result = dc.ders;
-  }
-  P  = result[0];
-  V1 = result[1];
-  if (!rational && (Degree < 2))
-  {
-    V2 = 0.;
-  }
-  else
-  {
-    V2 = result[2];
-  }
-  if (!rational && (Degree < 3))
-  {
-    V3 = 0.;
-  }
-  else
-  {
-    V3 = result[3];
-  }
+  BSplCLib_D3<double, double, NCollection_Array1<double>, 1>(
+    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2, V3);
 }
 
 //=================================================================================================
@@ -296,30 +139,8 @@ void BSplCLib::DN(const double                      U,
                   const NCollection_Array1<int>*    Mults,
                   double&                           VN)
 {
-  int    dim, index = Index;
-  double u = U;
-  bool   rational;
-  validateBSplineDegree(Degree);
-  BSplCLib_DataContainer dc;
-  PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
-  BSplCLib::Bohm(u, Degree, N, *dc.knots, dim, *dc.poles);
-  if (rational)
-  {
-    double v;
-    PLib::RationalDerivative(Degree, N, 1, *dc.poles, v, false);
-    VN = v;
-  }
-  else
-  {
-    if (N > Degree)
-    {
-      VN = 0.;
-    }
-    else
-    {
-      VN = dc.poles[N];
-    }
-  }
+  BSplCLib_DN<double, double, NCollection_Array1<double>, 1>(
+    U, N, Index, Degree, Periodic, Poles, Weights, Knots, Mults, VN);
 }
 
 //=================================================================================================
