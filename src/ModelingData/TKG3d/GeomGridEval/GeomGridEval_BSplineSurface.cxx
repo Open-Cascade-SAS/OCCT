@@ -23,8 +23,12 @@
 namespace
 {
 
-//! Cache construction is amortized only for span blocks containing at least two grid points.
-constexpr size_t THE_CACHE_THRESHOLD = 2;
+//! Minimum number of points in one U/V span-block product that amortizes cache construction.
+constexpr size_t THE_POLYNOMIAL_CACHE_MIN_POINTS = 8;
+
+//! Measured rational cache crossovers for one Cartesian span block.
+constexpr size_t THE_RATIONAL_D0_D1_CACHE_MIN_POINTS = 4;
+constexpr size_t THE_RATIONAL_D2_CACHE_MIN_POINTS    = 6;
 
 //! Helper structure holding extracted B-spline surface data.
 struct SurfaceData
@@ -80,15 +84,22 @@ inline void locateSpan(double                            theParam,
                             theAdjustedParam);
 }
 
+//! Compute a span midpoint without adding both potentially large knot values.
+inline double spanMidpoint(const NCollection_Array1<double>& theFlatKnots, const int theSpan)
+{
+  const double aStart = theFlatKnots.Value(theSpan);
+  return aStart + 0.5 * (theFlatKnots.Value(theSpan + 1) - aStart);
+}
+
 //! Compute span local parameter coefficients (mid and half-length).
 inline void computeSpanCoeffs(const NCollection_Array1<double>& theFlatKnots,
-                              int                               theSpan,
+                              const int                         theSpan,
                               double&                           theMid,
                               double&                           theHalfLen)
 {
   const double aStart = theFlatKnots.Value(theSpan);
-  theHalfLen          = 0.5 * (theFlatKnots.Value(theSpan + 1) - aStart);
-  theMid              = aStart + theHalfLen;
+  theMid              = spanMidpoint(theFlatKnots, theSpan);
+  theHalfLen          = theMid - aStart;
 }
 
 struct SpanBlock
@@ -96,6 +107,7 @@ struct SpanBlock
   size_t Start;
   size_t Count;
   int    Span;
+  double Mid;
 };
 
 struct PreparedParam
@@ -117,17 +129,28 @@ size_t prepareSpanBlocks(const NCollection_Array1<double>& theParams,
   const size_t aNbParams     = theParams.Size();
   size_t       aNbBlocks     = 0;
   int          aPreviousSpan = -1;
+  double       aSpanStart    = 0.0;
+  double       aSpanEnd      = 0.0;
   double       aMid          = 0.0;
   double       aHalfLen      = 1.0;
   for (size_t anIndex = 0; anIndex < aNbParams; ++anIndex)
   {
     double anAdjusted = theParams.At(anIndex);
     int    aSpan      = 0;
-    locateSpan(anAdjusted, theFlatKnots, theDegree, theIsPeriodic, anAdjusted, aSpan);
+    if (!theIsPeriodic && aPreviousSpan >= 0 && anAdjusted >= aSpanStart && anAdjusted < aSpanEnd)
+    {
+      aSpan = aPreviousSpan;
+    }
+    else
+    {
+      locateSpan(anAdjusted, theFlatKnots, theDegree, theIsPeriodic, anAdjusted, aSpan);
+    }
     if (aSpan != aPreviousSpan)
     {
       computeSpanCoeffs(theFlatKnots, aSpan, aMid, aHalfLen);
-      theBlocks[aNbBlocks++] = {anIndex, 1, aSpan};
+      aSpanStart             = theFlatKnots.Value(aSpan);
+      aSpanEnd               = theFlatKnots.Value(aSpan + 1);
+      theBlocks[aNbBlocks++] = {anIndex, 1, aSpan, aMid};
       aPreviousSpan          = aSpan;
     }
     else
@@ -144,6 +167,7 @@ template <typename ResultT, typename CacheEvaluator, typename DirectEvaluator>
 NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&                theData,
                                                const NCollection_Array1<double>& theUParams,
                                                const NCollection_Array1<double>& theVParams,
+                                               const size_t                      theCacheThreshold,
                                                CacheEvaluator&&                  theCacheEvaluator,
                                                DirectEvaluator&&                 theDirectEvaluator)
 {
@@ -155,17 +179,17 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
   SpanBlocks                  aUBlocks(aNbU);
   SpanBlocks                  aVBlocks(aNbV);
   const size_t                aNbUBlocks = prepareSpanBlocks(theUParams,
-                                              *theData.UFlatKnots,
-                                              theData.UDegree,
-                                              theData.IsUPeriodic,
-                                              aPreparedU,
-                                              aUBlocks);
+                                                             *theData.UFlatKnots,
+                                                             theData.UDegree,
+                                                             theData.IsUPeriodic,
+                                                             aPreparedU,
+                                                             aUBlocks);
   const size_t                aNbVBlocks = prepareSpanBlocks(theVParams,
-                                              *theData.VFlatKnots,
-                                              theData.VDegree,
-                                              theData.IsVPeriodic,
-                                              aPreparedV,
-                                              aVBlocks);
+                                                             *theData.VFlatKnots,
+                                                             theData.VDegree,
+                                                             theData.IsVPeriodic,
+                                                             aPreparedV,
+                                                             aVBlocks);
   occ::handle<BSplSLib_Cache> aCache;
 
   for (size_t aUBlockIndex = 0; aUBlockIndex < aNbUBlocks; ++aUBlockIndex)
@@ -173,9 +197,8 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
     const SpanBlock& aUBlock = aUBlocks[aUBlockIndex];
     for (size_t aVBlockIndex = 0; aVBlockIndex < aNbVBlocks; ++aVBlockIndex)
     {
-      const SpanBlock& aVBlock = aVBlocks[aVBlockIndex];
-      const bool       isCacheUsed =
-        aUBlock.Count >= THE_CACHE_THRESHOLD || aVBlock.Count >= THE_CACHE_THRESHOLD;
+      const SpanBlock& aVBlock     = aVBlocks[aVBlockIndex];
+      const bool       isCacheUsed = aUBlock.Count * aVBlock.Count >= theCacheThreshold;
       if (isCacheUsed)
       {
         if (aCache.IsNull())
@@ -188,8 +211,8 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
                                       *theData.VFlatKnots,
                                       theData.Weights);
         }
-        aCache->BuildCache(aPreparedU[aUBlock.Start].Adjusted,
-                           aPreparedV[aVBlock.Start].Adjusted,
+        aCache->BuildCache(aUBlock.Mid,
+                           aVBlock.Mid,
                            *theData.UFlatKnots,
                            *theData.VFlatKnots,
                            *theData.Poles,
@@ -250,7 +273,6 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
 
     if (!theData.IsUPeriodic && aPrevUSpan >= 0 && aU >= aUSpanStart && aU < aUSpanEnd)
     {
-      aAdjU  = aU;
       aUSpan = aPrevUSpan;
     }
     else
@@ -276,7 +298,6 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
 
       if (!theData.IsVPeriodic && aPrevVSpan >= 0 && aV >= aVSpanStart && aV < aVSpanEnd)
       {
-        aAdjV  = aV;
         aVSpan = aPrevVSpan;
       }
       else
@@ -290,9 +311,7 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
         aVSpanEnd   = theData.VFlatKnots->Value(aVSpan + 1);
       }
 
-      ResultT aResult;
-      theEval(theData, aAdjU, aAdjV, aUSpan, aVSpan, aResult);
-      aGrid.ChangeAt(aUIndex * aNbV + aVIndex) = aResult;
+      theEval(theData, aAdjU, aAdjV, aUSpan, aVSpan, aGrid.ChangeAt(aUIndex * aNbV + aVIndex));
     }
   }
 
@@ -317,6 +336,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
     aData,
     theUParams,
     theVParams,
+    aData.Weights != nullptr ? THE_RATIONAL_D0_D1_CACHE_MIN_POINTS
+                             : THE_POLYNOMIAL_CACHE_MIN_POINTS,
     [](const BSplSLib_Cache& theCache, double theLocalU, double theLocalV, gp_Pnt& theResult) {
       theCache.D0Local(theLocalU, theLocalV, theResult);
     },
@@ -334,8 +355,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
                    theData.Weights,
                    *theData.UFlatKnots,
                    *theData.VFlatKnots,
-                   nullptr,
-                   nullptr,
+                   BSplCLib::NoMults(),
+                   BSplCLib::NoMults(),
                    theData.UDegree,
                    theData.VDegree,
                    theData.IsURational,
@@ -361,6 +382,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
     aData,
     theUParams,
     theVParams,
+    aData.Weights != nullptr ? THE_RATIONAL_D0_D1_CACHE_MIN_POINTS
+                             : THE_POLYNOMIAL_CACHE_MIN_POINTS,
     [](const BSplSLib_Cache& theCache,
        double                theLocalU,
        double                theLocalV,
@@ -381,8 +404,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                    theData.Weights,
                    *theData.UFlatKnots,
                    *theData.VFlatKnots,
-                   nullptr,
-                   nullptr,
+                   BSplCLib::NoMults(),
+                   BSplCLib::NoMults(),
                    theData.UDegree,
                    theData.VDegree,
                    theData.IsURational,
@@ -410,6 +433,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
     aData,
     theUParams,
     theVParams,
+    aData.Weights != nullptr ? THE_RATIONAL_D2_CACHE_MIN_POINTS : THE_POLYNOMIAL_CACHE_MIN_POINTS,
     [](const BSplSLib_Cache& theCache,
        double                theLocalU,
        double                theLocalV,
@@ -437,8 +461,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                    theData.Weights,
                    *theData.UFlatKnots,
                    *theData.VFlatKnots,
-                   nullptr,
-                   nullptr,
+                   BSplCLib::NoMults(),
+                   BSplCLib::NoMults(),
                    theData.UDegree,
                    theData.VDegree,
                    theData.IsURational,
@@ -475,7 +499,6 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
                                                      int                   theUSpan,
                                                      int                   theVSpan,
                                                      GeomGridEval::SurfD3& theResult) {
-                                                    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
                                                     BSplSLib::D3(theU,
                                                                  theV,
                                                                  theUSpan,
@@ -484,8 +507,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
                                                                  theData.Weights,
                                                                  *theData.UFlatKnots,
                                                                  *theData.VFlatKnots,
-                                                                 nullptr,
-                                                                 nullptr,
+                                                                 BSplCLib::NoMults(),
+                                                                 BSplCLib::NoMults(),
                                                                  theData.UDegree,
                                                                  theData.VDegree,
                                                                  theData.IsURational,
@@ -493,20 +516,15 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
                                                                  theData.IsUPeriodic,
                                                                  theData.IsVPeriodic,
                                                                  theResult.Point,
-                                                                 aD1U,
-                                                                 aD1V,
-                                                                 aD2U,
-                                                                 aD2V,
-                                                                 aD2UV,
+                                                                 theResult.D1U,
+                                                                 theResult.D1V,
+                                                                 theResult.D2U,
+                                                                 theResult.D2V,
+                                                                 theResult.D2UV,
                                                                  theResult.D3U,
                                                                  theResult.D3V,
                                                                  theResult.D3UUV,
                                                                  theResult.D3UVV);
-                                                    theResult.D1U  = aD1U;
-                                                    theResult.D1V  = aD1V;
-                                                    theResult.D2U  = aD2U;
-                                                    theResult.D2V  = aD2V;
-                                                    theResult.D2UV = aD2UV;
                                                   });
 }
 
@@ -532,11 +550,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
   if (theNU > aData.UDegree || theNV > aData.VDegree)
   {
     NCollection_Array2<gp_Vec> aGrid(1, static_cast<int>(aNbU), 1, static_cast<int>(aNbV));
-    const gp_Vec               aZero(0.0, 0.0, 0.0);
-    for (size_t anIndex = 0; anIndex < aGrid.Size(); ++anIndex)
-    {
-      aGrid.ChangeAt(anIndex) = aZero;
-    }
+    aGrid.Init(gp_Vec(0.0, 0.0, 0.0));
     return aGrid;
   }
 
@@ -559,8 +573,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
                                                    theData.Weights,
                                                    *theData.UFlatKnots,
                                                    *theData.VFlatKnots,
-                                                   nullptr,
-                                                   nullptr,
+                                                   BSplCLib::NoMults(),
+                                                   BSplCLib::NoMults(),
                                                    theData.UDegree,
                                                    theData.VDegree,
                                                    theData.IsURational,

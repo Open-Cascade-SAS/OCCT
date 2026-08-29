@@ -300,26 +300,58 @@ TEST(GeomGridEval_BSplineSurfaceTest, UnorderedParametersAcrossSpans)
   }
 }
 
-TEST(GeomGridEval_BSplineSurfaceTest, NearKnotUsesCanonicalSpan)
+TEST(GeomGridEval_BSplineSurfaceTest, NearKnotUsesContainingSpan)
 {
   const occ::handle<Geom_BSplineSurface> aSurface = CreateMultiSpanBSplineSurface();
   GeomGridEval_BSplineSurface            anEvaluator(aSurface);
-  NCollection_Array1<double>             aUParams(2);
-  NCollection_Array1<double>             aVParams(1);
-  aUParams.ChangeAt(0) = 0.25;
-  aUParams.ChangeAt(1) = std::nextafter(0.5, 0.0);
-  aVParams.ChangeAt(0) = 0.25;
+  NCollection_Array1<double>             aUParams(7);
+  NCollection_Array1<double>             aVParams(7);
+  const double                           aParams[] =
+    {0.25, 0.4, std::nextafter(0.5, 0.0), 0.5, std::nextafter(0.5, 1.0), 0.6, 0.75};
+  for (size_t anIndex = 0; anIndex < 7; ++anIndex)
+  {
+    aUParams.ChangeAt(anIndex) = aParams[anIndex];
+    aVParams.ChangeAt(anIndex) = aParams[anIndex];
+  }
 
-  const NCollection_Array2<GeomGridEval::SurfD2> aGrid =
+  const NCollection_Array2<GeomGridEval::SurfD1> aD1 =
+    anEvaluator.EvaluateGridD1(aUParams, aVParams);
+  const NCollection_Array2<GeomGridEval::SurfD2> aD2 =
     anEvaluator.EvaluateGridD2(aUParams, aVParams);
-  const Geom_Surface::ResD2   anExpected = aSurface->EvalD2(aUParams.At(1), aVParams.At(0));
-  const GeomGridEval::SurfD2& aResult    = aGrid.At(1);
-  EXPECT_NEAR(aResult.Point.Distance(anExpected.Point), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((aResult.D1U - anExpected.D1U).Magnitude(), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((aResult.D1V - anExpected.D1V).Magnitude(), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((aResult.D2U - anExpected.D2U).Magnitude(), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((aResult.D2V - anExpected.D2V).Magnitude(), 0.0, THE_TOLERANCE);
-  EXPECT_NEAR((aResult.D2UV - anExpected.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
+  for (size_t aUIndex = 0; aUIndex < aUParams.Size(); ++aUIndex)
+  {
+    for (size_t aVIndex = 0; aVIndex < aVParams.Size(); ++aVIndex)
+    {
+      const size_t              anIndex = aUIndex * aVParams.Size() + aVIndex;
+      const Geom_Surface::ResD1 anExpectedD1 =
+        aSurface->EvalD1(aUParams.At(aUIndex), aVParams.At(aVIndex));
+      const Geom_Surface::ResD2 anExpectedD2 =
+        aSurface->EvalD2(aUParams.At(aUIndex), aVParams.At(aVIndex));
+      const GeomGridEval::SurfD1& aResultD1 = aD1.At(anIndex);
+      const GeomGridEval::SurfD2& aResultD2 = aD2.At(anIndex);
+      EXPECT_NEAR(aResultD1.Point.Distance(anExpectedD1.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD1.D1U - anExpectedD1.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD1.D1V - anExpectedD1.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR(aResultD2.Point.Distance(anExpectedD2.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD2.D1U - anExpectedD2.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD2.D1V - anExpectedD2.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD2.D2U - anExpectedD2.D2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD2.D2V - anExpectedD2.D2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResultD2.D2UV - anExpectedD2.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+
+  const Geom_Surface::ResD1 aULeft  = aSurface->EvalD1(aParams[2], 0.25);
+  const Geom_Surface::ResD1 aUAt    = aSurface->EvalD1(aParams[3], 0.25);
+  const Geom_Surface::ResD1 aURight = aSurface->EvalD1(aParams[4], 0.25);
+  EXPECT_GT((aULeft.D1U - aUAt.D1U).Magnitude(), 1.0);
+  EXPECT_NEAR((aURight.D1U - aUAt.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+
+  const Geom_Surface::ResD1 aVLeft  = aSurface->EvalD1(0.25, aParams[2]);
+  const Geom_Surface::ResD1 aVAt    = aSurface->EvalD1(0.25, aParams[3]);
+  const Geom_Surface::ResD1 aVRight = aSurface->EvalD1(0.25, aParams[4]);
+  EXPECT_GT((aVLeft.D1V - aVAt.D1V).Magnitude(), 1.0);
+  EXPECT_NEAR((aVRight.D1V - aVAt.D1V).Magnitude(), 0.0, THE_TOLERANCE);
 }
 
 TEST(GeomGridEval_BSplineSurfaceTest, HigherDegree)
