@@ -230,15 +230,15 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
     theSP->A() * cos(theSP->Gamma()) + theSP->B() * sin(theSP->Gamma()) * sin(theSP->Alpha());
   double aLocY =
     theSP->A() * sin(theSP->Gamma()) - theSP->B() * cos(theSP->Gamma()) * sin(theSP->Alpha());
-  double       aLocZ   = theSP->C() + theSP->B() * cos(theSP->Alpha());
-  double       anAsisX = sin(theSP->Gamma()) * sin(theSP->Alpha());
-  double       anAxisY = -cos(theSP->Gamma()) * sin(theSP->Alpha());
-  double       anAxisZ = cos(theSP->Alpha());
-  double       aDirX   = cos(theSP->Gamma()) * cos(theSP->Beta())
-                         - sin(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
-  double       aDirY   = sin(theSP->Gamma()) * cos(theSP->Beta())
-                         + cos(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
-  double       aDirZ   = sin(theSP->Alpha()) * sin(theSP->Beta());
+  double aLocZ   = theSP->C() + theSP->B() * cos(theSP->Alpha());
+  double anAsisX = sin(theSP->Gamma()) * sin(theSP->Alpha());
+  double anAxisY = -cos(theSP->Gamma()) * sin(theSP->Alpha());
+  double anAxisZ = cos(theSP->Alpha());
+  double aDirX   = cos(theSP->Gamma()) * cos(theSP->Beta())
+                 - sin(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
+  double aDirY = sin(theSP->Gamma()) * cos(theSP->Beta())
+                 + cos(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
+  double       aDirZ = sin(theSP->Alpha()) * sin(theSP->Beta());
   const gp_Pnt Pgp(aLocX, aLocY, aLocZ);
   const gp_Dir Ngp(anAsisX, anAxisY, anAxisZ);
   const gp_Dir Vxgp(aDirX, aDirY, aDirZ);
@@ -899,7 +899,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
 
   NCollection_Array1<double> aUniqueKnots(aUniqueKnotValues.Data(), aNbUniqueKnots);
   NCollection_Array1<int>    aUniqueKnotMultiplicities(aUniqueKnotMultiplicityValues.Data(),
-                                                       aNbUniqueKnots);
+                                                    aNbUniqueKnots);
 
   if (aFirstMultiplicityExcess > aNbPoles
       || aLastMultiplicityExcess > aNbPoles - aFirstMultiplicityExcess)
