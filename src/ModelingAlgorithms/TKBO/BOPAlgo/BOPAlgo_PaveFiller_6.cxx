@@ -3527,8 +3527,122 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
   // Keep the opposite bounding point
   gp_Pnt aPOp;
 
-  occ::handle<BOPDS_PaveBlock>&          aPB = aNC.ChangePaveBlock1();
-  NCollection_List<BOPDS_Pave>&          aLP = aPB->ChangeExtPaves();
+  occ::handle<BOPDS_PaveBlock>& aPB = aNC.ChangePaveBlock1();
+  NCollection_List<BOPDS_Pave>& aLP = aPB->ChangeExtPaves();
+
+  // A nearly closed intersection curve can already contain a pave immediately
+  // inside one of its bounds. This usually is a vertex shared with another
+  // section curve meeting at the seam. PutBoundPaveOnCurve() may additionally
+  // create separate vertices exactly at both bounds if the approximation gap
+  // is wider than their tolerances. Keeping those vertices makes the main pave
+  // block open and may break the subsequent face classification.
+  //
+  // Reuse the shared near-bound pave for both ends when the 3D curve is smooth
+  // at the seam and all involved points fit a small multiple of the
+  // intersection tolerance. The parameter check prevents an interior
+  // self-intersection point from being used as the seam.
+  constexpr double aMaxClosingScale   = 10.0;
+  constexpr double anAngularTolerance = 1.0e-6;
+  const double     aClosingPointTolerance =
+    std::max(aNC.Tolerance(), aNC.TangentialTolerance()) + Precision::Confusion();
+  const GeomAdaptor_Curve aCurveAdaptor(aC3D);
+  gp_Pnt                  aCurveEnd[2];
+  gp_Vec                  aCurveTangent[2];
+  aC3D->D1(aT[0], aCurveEnd[0], aCurveTangent[0]);
+  aC3D->D1(aT[1], aCurveEnd[1], aCurveTangent[1]);
+  if (aCurveTangent[0].SquareMagnitude() > gp::Resolution()
+      && aCurveTangent[1].SquareMagnitude() > gp::Resolution()
+      && aCurveTangent[0].Angle(aCurveTangent[1]) <= anAngularTolerance)
+  {
+    int    aClosingVertex    = -1;
+    double aClosingParameter = 0.0;
+    double aClosingTolerance = 0.0;
+    for (NCollection_List<BOPDS_Pave>::Iterator aIt(aLP); aIt.More(); aIt.Next())
+    {
+      const BOPDS_Pave& aCandidate          = aIt.Value();
+      const double      aCandidateParameter = aCandidate.Parameter();
+      if (std::abs(aCandidateParameter - aT[0]) < Precision::PConfusion()
+          || std::abs(aCandidateParameter - aT[1]) < Precision::PConfusion())
+      {
+        continue;
+      }
+
+      const TopoDS_Vertex& aCandidateVertex    = TopoDS::Vertex(myDS->Shape(aCandidate.Index()));
+      const gp_Pnt&        aCandidatePoint     = BRep_Tool::Pnt(aCandidateVertex);
+      const double         aCandidateTolerance = BRep_Tool::Tolerance(aCandidateVertex);
+      const double         aMaxClosingDistance =
+        aMaxClosingScale * (aCandidateTolerance + aClosingPointTolerance + myFuzzyValue);
+      const double aParameterTolerance = aCurveAdaptor.Resolution(aMaxClosingDistance);
+      const bool   isNearFirst = std::abs(aCandidateParameter - aT[0]) <= aParameterTolerance;
+      const bool   isNearLast  = std::abs(aCandidateParameter - aT[1]) <= aParameterTolerance;
+      if ((!isNearFirst && !isNearLast)
+          || aCurveEnd[0].Distance(aCurveEnd[1]) > aMaxClosingDistance)
+      {
+        continue;
+      }
+
+      const double aDistance[2] = {aCandidatePoint.Distance(aCurveEnd[0]),
+                                   aCandidatePoint.Distance(aCurveEnd[1])};
+      if (aDistance[0] > aMaxClosingDistance || aDistance[1] > aMaxClosingDistance)
+      {
+        continue;
+      }
+
+      const double aCandidateClosingTolerance =
+        std::max(aCandidateTolerance,
+                 std::max(aDistance[0], aDistance[1]) + BOPTools_AlgoTools::DTolerance());
+
+      double aFirst;
+      double aLast;
+      if (!BRepLib::FindValidRange(aCurveAdaptor,
+                                   aIC.Tolerance(),
+                                   aT[0],
+                                   aP[0],
+                                   aCandidateClosingTolerance,
+                                   aT[1],
+                                   aP[1],
+                                   aCandidateClosingTolerance,
+                                   aFirst,
+                                   aLast))
+      {
+        continue;
+      }
+      aClosingVertex    = aCandidate.Index();
+      aClosingParameter = aCandidateParameter;
+      aClosingTolerance = aCandidateClosingTolerance;
+      break;
+    }
+
+    if (aClosingVertex >= 0)
+    {
+      const int aClosingVertexNew = UpdateVertex(aClosingVertex, aClosingTolerance);
+      NCollection_List<BOPDS_Pave>::Iterator aIt(aLP);
+      while (aIt.More())
+      {
+        BOPDS_Pave&  aCurrentPave      = aIt.ChangeValue();
+        const double aCurrentParameter = aCurrentPave.Parameter();
+        if (std::abs(aCurrentParameter - aT[0]) < Precision::PConfusion()
+            || std::abs(aCurrentParameter - aT[1]) < Precision::PConfusion())
+        {
+          aLP.Remove(aIt);
+          continue;
+        }
+        if (aCurrentPave.Index() == aClosingVertex)
+        {
+          aCurrentPave.SetIndex(aClosingVertexNew);
+        }
+        aIt.Next();
+      }
+
+      BOPDS_Pave aClosingPave;
+      aClosingPave.SetIndex(aClosingVertexNew);
+      aClosingPave.SetParameter(
+        std::abs(aClosingParameter - aT[0]) < std::abs(aClosingParameter - aT[1]) ? aT[1] : aT[0]);
+      aLP.Append(aClosingPave);
+      return;
+    }
+  }
+
   NCollection_List<BOPDS_Pave>::Iterator aItLP(aLP);
   for (; aItLP.More() && (nV < 0); aItLP.Next())
   {

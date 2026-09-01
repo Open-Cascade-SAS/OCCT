@@ -13,8 +13,11 @@
 
 #include "BOPTest_Utilities.pxx"
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepTools.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopExp.hxx>
@@ -29,6 +32,10 @@
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+
+#include <cstdlib>
+#include <string>
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
@@ -1907,4 +1914,33 @@ TEST(BRepAlgoAPI_CutTest, Bug825_SphereHalfSpaceCut)
   EXPECT_EQ(countSubShapes(aResult2, TopAbs_SHELL), 1);
   EXPECT_EQ(countSubShapes(aResult2, TopAbs_SOLID), 1);
   EXPECT_EQ(aResult2.ShapeType(), TopAbs_COMPOUND);
+}
+
+// FreeCAD issue 25899: a smooth face/face intersection curve has endpoints 1.49e-6 apart and
+// already contains a shared pave immediately inside its bounds. The section edge must reuse that
+// pave at both ends instead of retaining two artificial bound vertices.
+TEST(BRepAlgoAPI_CutTest, FreeCADIssue_25899_NearlyClosedSectionCurve)
+{
+  const char* aTestsPath = std::getenv("CSF_OCCTTestsPath");
+  ASSERT_NE(aTestsPath, nullptr) << "CSF_OCCTTestsPath is not defined";
+
+  const std::string aDataPath = std::string(aTestsPath) + "/bugs/modalg_8/data/freecad_25899_";
+  TopoDS_Shape      aBase;
+  TopoDS_Shape      aTool;
+  BRep_Builder      aBuilder;
+  ASSERT_TRUE(BRepTools::Read(aBase, (aDataPath + "base.brep").c_str(), aBuilder));
+  ASSERT_TRUE(BRepTools::Read(aTool, (aDataPath + "tool.brep").c_str(), aBuilder));
+
+  BRepAlgoAPI_Cut aCut(aBase, aTool);
+  aCut.Build();
+  ASSERT_TRUE(aCut.IsDone());
+  ASSERT_FALSE(aCut.Shape().IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aCut.Shape()).IsValid());
+  EXPECT_EQ(countUniqueSubShapes(aCut.Shape(), TopAbs_SOLID), 1);
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aCut.Shape()), 493113.590083303, 1.0e-6);
+
+  const NCollection_List<TopoDS_Shape>& aSectionEdges = aCut.SectionEdges();
+  ASSERT_EQ(aSectionEdges.Size(), 1);
+  EXPECT_TRUE(BRep_Tool::IsClosed(TopoDS::Edge(aSectionEdges.First())))
+    << "The nearly closed intersection must use one shared vertex at both ends";
 }
