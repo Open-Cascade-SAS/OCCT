@@ -906,7 +906,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
 
   NCollection_Array1<double> aUniqueKnots(aUniqueKnotValues.Data(), aNbUniqueKnots);
   NCollection_Array1<int>    aUniqueKnotMultiplicities(aUniqueKnotMultiplicityValues.Data(),
-                                                       aNbUniqueKnots);
+                                                    aNbUniqueKnots);
 
   if (aFirstMultiplicityExcess > aNbPoles
       || aLastMultiplicityExcess > aNbPoles - aFirstMultiplicityExcess)
