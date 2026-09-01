@@ -68,9 +68,10 @@ namespace
 const char* const* extensions()
 {
 #if defined(_WIN32)
-  static const char* THE_EXTENSIONS[] = {"ttf", "otf", "ttc", nullptr};
+  static constexpr const char* const THE_EXTENSIONS[] = {"ttf", "otf", "ttc", nullptr};
 #else
-  static const char* THE_EXTENSIONS[] = {"ttf", "otf", "ttc", "pfa", "pfb", nullptr};
+  static constexpr const char* const THE_EXTENSIONS[] = {
+    "ttf", "otf", "ttc", "pfa", "pfb", nullptr};
 #endif
   return THE_EXTENSIONS;
 }
@@ -81,10 +82,10 @@ const char* const* extensions()
   && !defined(__EMSCRIPTEN__)
 const char* const* fontServiceConfigurations()
 {
-  static const char* THE_CONFIGURATIONS[] = {"/etc/X11/fs/config",
-                                             "/usr/X11R6/lib/X11/fs/config",
-                                             "/usr/X11/lib/X11/fs/config",
-                                             nullptr};
+  static constexpr const char* const THE_CONFIGURATIONS[] = {"/etc/X11/fs/config",
+                                                             "/usr/X11R6/lib/X11/fs/config",
+                                                             "/usr/X11/lib/X11/fs/config",
+                                                             nullptr};
   return THE_CONFIGURATIONS;
 }
 #endif
@@ -95,12 +96,11 @@ const char* const* fontServiceConfigurations()
 const char* const* defaultFontDirectories()
 {
   #if defined(__APPLE__)
-  static const char* THE_DIRECTORIES[] = {"/System/Library/Fonts", "/Library/Fonts", nullptr};
+  static constexpr const char* const THE_DIRECTORIES[] = {
+    "/System/Library/Fonts", "/Library/Fonts", nullptr};
   #else
-  static const char* THE_DIRECTORIES[] = {"/system/fonts",
-                                          "/usr/share/fonts",
-                                          "/usr/local/share/fonts",
-                                          nullptr};
+  static constexpr const char* const THE_DIRECTORIES[] = {
+    "/system/fonts", "/usr/share/fonts", "/usr/local/share/fonts", nullptr};
   #endif
   return THE_DIRECTORIES;
 }

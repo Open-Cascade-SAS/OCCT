@@ -52,11 +52,6 @@ public:
   // string should be deleted in caller routine (via delete[]).
   // The output parameter theLen gives the length of the encoded string
   // With isAttribute==True additionally encodes to $quot; for attr values
-
-private:
-  // ---------- PRIVATE FIELDS ----------
-
-  static int myTab[256];
 };
 
 #endif

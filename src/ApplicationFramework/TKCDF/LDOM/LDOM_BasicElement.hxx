@@ -43,6 +43,9 @@ public:
 
   //    Empty constructor
 
+  //! Creates an element in the document memory pool.
+  //! Raises Standard_NullObject if the memory manager or element name is null.
+  //! Raises Standard_ConstructionError if the element name is empty.
   static LDOM_BasicElement& Create(const char*                         aName,
                                    const int                           aLength,
                                    const occ::handle<LDOM_MemManager>& aDoc);

@@ -21,14 +21,15 @@
 // Constant litterales
 namespace TextValue
 {
-static char SubList[]  = "/* (SUB) */";
-static char Scope[]    = "SCOPE";
-static char Nil[]      = " ";
-static char Sub1[]     = "$1"; /* optimisation ... */
-static char Sub2[]     = "$2";
-static char ArgType1[] = "(IF#TnEHBx"; /* types arguments (2 1es lettres) */
-static char ArgType2[] = ")nlIxdnxix";
-static char IdZero[]   = "#0";
+constexpr char SubList[]        = "/* (SUB) */";
+constexpr char Scope[]          = "SCOPE";
+constexpr char Nil[]            = " ";
+constexpr char Sub1[]           = "$1"; /* optimisation ... */
+constexpr char Sub2[]           = "$2";
+constexpr char ArgType1[]       = "(IF#TnEHBx"; /* types arguments (2 1es lettres) */
+constexpr char ArgType2[]       = ")nlIxdnxix";
+constexpr char IdZero[]         = "#0";
+constexpr char CartesianPoint[] = "CARTESIAN_POINT";
 } // namespace TextValue
 
 class StepFile_ReadData::Argument
@@ -45,7 +46,7 @@ public:
 
 public:
   Argument*           myNext;  //!< Next argument in the list for this record
-  char*               myValue; //!< Character value of the argument
+  const char*         myValue; //!< Character value of the argument
   Interface_ParamType myType;  //!< Type of the argument
 };
 
@@ -67,8 +68,8 @@ public:
   Record*   myNext;  //!< Next record in the list
   Argument* myFirst; //!< First argument in the record
   Argument* myLast;  //!< Last argument in the record
-  char*     myIdent; //!< Record identifier (Example: "#12345") or scope-end
-  char*     myType;  //!< Type of the record
+  const char* myIdent; //!< Record identifier (Example: "#12345") or scope-end
+  const char* myType;  //!< Type of the record
 };
 
 class StepFile_ReadData::Scope
@@ -148,28 +149,29 @@ StepFile_ReadData::StepFile_ReadData()
 void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
 {
   // Optimization for most frequent entity, CARTESIAN_POINT
-  static char aTextOfCarPnt[] = "CARTESIAN_POINT";
-  if (strcmp(theNewText, aTextOfCarPnt) == 0)
+  if (strcmp(theNewText, TextValue::CartesianPoint) == 0)
   {
-    myResText = aTextOfCarPnt;
+    myResText = TextValue::CartesianPoint;
     return;
   }
   //  If error argument exists - prepare size to new text value and old result text
   const int aLength = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
 
-  char* anOldResText = myResText;
+  const char* anOldResText = myResText;
 
-  myResText = static_cast<char*>(myTextAlloc.AllocateOptimal(aLength + 1));
+  char* aNewResText = static_cast<char*>(myTextAlloc.AllocateOptimal(aLength + 1));
 
   // If error argument exists - append new text to old result text
   // Else create new result text
   if (myErrorArg)
   {
-    strcpy(myResText, anOldResText);
-    strcpy(myResText + (int)strlen(anOldResText), theNewText);
+    strcpy(aNewResText, anOldResText);
+    strcpy(aNewResText + (int)strlen(anOldResText), theNewText);
+    myResText = aNewResText;
     return;
   }
-  strcpy(myResText, theNewText);
+  strcpy(aNewResText, theNewText);
+  myResText = aNewResText;
 }
 
 //=================================================================================================
@@ -391,7 +393,7 @@ void StepFile_ReadData::ClearRecorder(const int theMode)
 
 //=================================================================================================
 
-bool StepFile_ReadData::GetArgDescription(Interface_ParamType* theType, char** theValue)
+bool StepFile_ReadData::GetArgDescription(Interface_ParamType* theType, const char** theValue)
 {
   if (myCurrArg == nullptr)
   {
@@ -415,7 +417,9 @@ void StepFile_ReadData::GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage
 
 //=================================================================================================
 
-bool StepFile_ReadData::GetRecordDescription(char** theIdent, char** theType, int* theNbArg)
+bool StepFile_ReadData::GetRecordDescription(const char** theIdent,
+                                             const char** theType,
+                                             int*        theNbArg)
 {
   if (myCurRec == nullptr)
   {
@@ -534,10 +538,10 @@ const char* StepFile_ReadData::GetLastError() const
 
 //=================================================================================================
 
-char* StepFile_ReadData::RecordNewText(char* theText)
+const char* StepFile_ReadData::RecordNewText(const char* theText)
 {
-  char* aSavResText;
-  char* aNewText;
+  const char* aSavResText;
+  const char* aNewText;
   aSavResText = myResText;
   CreateNewText(theText, (int)strlen(theText));
   aNewText  = myResText;
@@ -547,7 +551,7 @@ char* StepFile_ReadData::RecordNewText(char* theText)
 
 //=================================================================================================
 
-void StepFile_ReadData::GetResultText(char** theText)
+void StepFile_ReadData::GetResultText(const char** theText)
 {
   *theText = myResText;
 }

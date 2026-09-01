@@ -62,7 +62,6 @@ public:
 private:
   bool                      aSolidLoaded;
   BRepClass3d_SolidExplorer explorer;
-  bool                      isaholeinspace;
 };
 
 #endif // _BRepClass3d_SolidClassifier_HeaderFile

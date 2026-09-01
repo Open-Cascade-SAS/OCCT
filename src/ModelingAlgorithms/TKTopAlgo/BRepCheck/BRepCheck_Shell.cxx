@@ -78,32 +78,6 @@ static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
 
 //=================================================================================================
 
-Standard_EXPORT int BRepCheck_Trace(const int phase)
-{
-  static int BRC_Trace = 0;
-  if (phase < 0)
-  {
-    BRC_Trace = 0;
-  }
-  else if (phase > 0)
-  {
-    BRC_Trace = phase;
-  }
-  return BRC_Trace;
-}
-
-void PrintShape(const TopoDS_Shape& theShape)
-{
-  if (!theShape.IsNull())
-  {
-    size_t code = TopTools_ShapeMapHasher{}(theShape);
-    std::cout << TopAbs::ShapeTypeToString(theShape.ShapeType()) << " : " << code << " "
-              << TopAbs::ShapeOrientationToString(theShape.Orientation()) << '\n';
-  }
-}
-
-//=================================================================================================
-
 inline bool IsOriented(const TopoDS_Shape& S)
 {
   return (S.Orientation() == TopAbs_FORWARD || S.Orientation() == TopAbs_REVERSED);
@@ -503,20 +477,6 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
     }
   }
 
-#ifdef OCCT_DEBUG
-  if (BRepCheck_Trace(0) > 1)
-  {
-    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator itt(
-      MapOfShapeOrientation);
-    std::cout << "La map shape Orientation :" << std::endl;
-    for (; itt.More(); itt.Next())
-    {
-      PrintShape(itt.Key());
-    }
-    std::cout << std::endl;
-  }
-#endif
-
   // Then the orientation of faces by their connectivity is checked
   // BRepCheck_BadOrientationOfSubshape and
   //         BRepCheck_SubshapeNotInShape are checked;
@@ -734,14 +694,6 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
           //        orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
           Fref.Orientation(orf);
 
-#ifdef OCCT_DEBUG
-          if (BRepCheck_Trace(0) > 3)
-          {
-            std::cout << "Fref : ";
-            PrintShape(Fref);
-          }
-#endif
-
           TopExp_Explorer edFcur;
           alre.Add(Fref);
 
@@ -784,13 +736,6 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
             //          orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
             Fcur.Orientation(orf);
 
-#ifdef OCCT_DEBUG
-            if (BRepCheck_Trace(0) > 3)
-            {
-              std::cout << "    Fcur : ";
-              PrintShape(Fcur);
-            }
-#endif
             for (edFcur.Init(Fcur, TopAbs_EDGE); edFcur.More(); edFcur.Next())
             {
               if (edFcur.Current().IsSame(edg))
@@ -810,30 +755,11 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
                   BRepCheck::Add(aStatusList, myOstat);
                 }
                 // quit, otherwise there is a risk of taking too much time.
-#ifdef OCCT_DEBUG
-                if (BRepCheck_Trace(0) > 3)
-                {
-                  orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
-                  Fcur.Orientation(orf);
-                  std::cout << "    Error : this face has been already examined " << std::endl;
-                  std::cout << "    Impossible to return it ";
-                  PrintShape(Fcur);
-                }
-#endif
                 return myOstat;
               }
               orf                         = TopAbs::Reverse(orf);
               MapOfShapeOrientation(Fcur) = orf;
 
-#ifdef OCCT_DEBUG
-              if (BRepCheck_Trace(0) > 3)
-              {
-                orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
-                Fcur.Orientation(orf);
-                std::cout << "    Resulting Fcur is returned : ";
-                PrintShape(Fcur);
-              }
-#endif
             }
             if (alre.Add(Fcur))
             {

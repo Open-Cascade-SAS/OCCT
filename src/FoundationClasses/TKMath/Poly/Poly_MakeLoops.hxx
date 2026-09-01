@@ -233,10 +233,6 @@ protected:
       aLink.Reverse();
     return aLink;
   }
-#ifdef OCCT_DEBUG
-  void showBoundaryBreaks() const;
-#endif
-
 private:
   int  findContour(int                                           theIndexS,
                    NCollection_IndexedMap<int>&                  theContour,

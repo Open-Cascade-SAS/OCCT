@@ -62,7 +62,6 @@ public:
     return thePolygon.EndOfSeg(Index);
   }
 
-  Standard_EXPORT static void Dump(const HLRBRep_ThePolygonOfInterCSurf& thePolygon);
 };
 
 #endif // _HLRBRep_ThePolygonToolOfInterCSurf_HeaderFile

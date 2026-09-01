@@ -15,9 +15,9 @@
 
 //=================================================================================================
 
-inline mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
+const mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
 {
-  static double e_1[3721] = {1.,
+  static constexpr mmcmcnp_1_ THE_MMCMCNP = {{1.,
                              1.,
                              1.,
                              1.,
@@ -3739,6 +3739,6 @@ inline mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
                              60.,
                              1.
 
-  };
-  return *((mmcmcnp_1_*)&e_1);
+                                           }};
+  return THE_MMCMCNP;
 }

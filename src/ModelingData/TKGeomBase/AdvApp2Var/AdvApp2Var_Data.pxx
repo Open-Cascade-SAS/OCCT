@@ -15,101 +15,84 @@
 #define AdvApp2Var_Data_HeaderFile
 
 //
-struct mdnombr_1_
-{
-  double pi, deuxpi, pisur2, pis180, c180pi, zero, one, a180, a360, a90;
-};
-
-//
-struct minombr_1_
-{
-  int nbr[1001];
-};
-
-//
-struct maovpar_1_
-{
-  double r8und, r8ovr, x4und, x4ovr;
-  float  r4und, r4ovr;
-  int    r4nbe, r8nbm, r8nbe, i4ovr, i4ovn, r4exp, r8exp, r4exn, r8exn, r4ncs, r8ncs, r4nbm;
-  short  i2ovr, i2ovn;
-};
-
-//
-struct maovpch_1_
-{
-  char cnmmac[16], frmr4[8], frmr8[8], cdcode[8];
-};
-
-//
 struct mlgdrtl_1_
 {
-  double rootab[930], // was [465][2]
-    hiltab[930],      // was [465][2]
-    hi0tab[31];
+  double values[1891];
+
+  constexpr const double* Rootab() const { return values; }
+
+  constexpr const double* Hiltab() const { return values + 930; }
+
+  constexpr const double* Hi0tab() const { return values + 1860; }
 };
 
 //
 struct mmjcobi_1_
 {
-  double plgcan[3968]; // was [496][2][4]
-  double canjac[3968]; // was [496][2][4]
+  double values[3968];
+
+  constexpr const double* Plgcan() const { return values; }
 };
 
 //
 struct mmcmcnp_1_
 {
-  double cnp[3721]; // was [61][61] ;
+  double values[3721];
+
+  constexpr const double* Cnp() const { return values; }
 };
 
 //
 struct mmapgss_1_
 {
-  double gslxjs[5017], gsl0js[52];
+  double values[5069];
+
+  constexpr const double* Gslxjs() const { return values; }
+
+  constexpr const double* Gsl0js() const { return values + 5017; }
 };
 
 //
 struct mmapgs0_1_
 {
-  double gslxj0[4761], gsl0j0[49];
+  double values[4810];
+
+  constexpr const double* Gslxj0() const { return values; }
+
+  constexpr const double* Gsl0j0() const { return values + 4761; }
 };
 
 //
 struct mmapgs1_1_
 {
-  double gslxj1[4505], gsl0j1[46];
+  double values[4551];
+
+  constexpr const double* Gslxj1() const { return values; }
+
+  constexpr const double* Gsl0j1() const { return values + 4505; }
 };
 
 //
 struct mmapgs2_1_
 {
-  double gslxj2[4249], gsl0j2[43];
+  double values[4292];
+
+  constexpr const double* Gslxj2() const { return values; }
+
+  constexpr const double* Gsl0j2() const { return values + 4249; }
 };
 
 ////
 class AdvApp2Var_Data
 {
 public:
-  static mdnombr_1_& Getmdnombr();
-  static minombr_1_& Getminombr();
-  static maovpar_1_& Getmaovpar();
-  static maovpch_1_& Getmaovpch();
-  static mlgdrtl_1_& Getmlgdrtl();
-  static mmjcobi_1_& Getmmjcobi();
-  static mmcmcnp_1_& Getmmcmcnp();
-  static mmapgss_1_& Getmmapgss();
-  static mmapgs0_1_& Getmmapgs0();
-  static mmapgs1_1_& Getmmapgs1();
-  static mmapgs2_1_& Getmmapgs2();
+  static const mlgdrtl_1_&              Getmlgdrtl();
+  static const mmjcobi_1_&              Getmmjcobi();
+  static const mmcmcnp_1_&              Getmmcmcnp();
+  static const mmapgss_1_&              Getmmapgss();
+  static const mmapgs0_1_&              Getmmapgs0();
+  static const mmapgs1_1_&              Getmmapgs1();
+  static const mmapgs2_1_&              Getmmapgs2();
 };
-
-#include "AdvApp2Var_Data_Main.pxx"
-#include "AdvApp2Var_Data_Mlgdrtl.pxx"
-#include "AdvApp2Var_Data_Mmjcobi.pxx"
-#include "AdvApp2Var_Data_Mmcmcnp.pxx"
-#include "AdvApp2Var_Data_Mmapgss.pxx"
-#include "AdvApp2Var_Data_Mmapgs0.pxx"
-#include "AdvApp2Var_Data_Mmapgs1.pxx"
-#include "AdvApp2Var_Data_Mmapgs2.pxx"
 
 #endif

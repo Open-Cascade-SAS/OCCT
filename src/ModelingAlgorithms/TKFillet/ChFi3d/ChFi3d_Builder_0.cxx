@@ -1556,15 +1556,15 @@ void ChFi3d_ProjectPCurv(const occ::handle<Adaptor3d_Curve>&   HCg,
 // function : CheckSameParameter
 // purpose  : Controls a posteriori that sameparameter worked well
 //=======================================================================
-bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
+bool ChFi3d_CheckSameParameter(const Adaptor3d_Curve&                C3d,
                                occ::handle<Geom2d_Curve>&            Pcurv,
                                const occ::handle<Adaptor3d_Surface>& S,
                                const double                          tol3d,
                                double&                               tolreached)
 {
   tolreached  = 0.;
-  double f    = C3d->FirstParameter();
-  double l    = C3d->LastParameter();
+  double f    = C3d.FirstParameter();
+  double l    = C3d.LastParameter();
   int    nbp  = 45;
   double step = 1. / (nbp - 1);
   for (int i = 0; i < nbp; i++)
@@ -1574,7 +1574,7 @@ bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
     t = (1 - t) * f + t * l;
     Pcurv->Value(t).Coord(u, v);
     gp_Pnt pS  = S->Value(u, v);
-    gp_Pnt pC  = C3d->Value(t);
+    gp_Pnt pC  = C3d.Value(t);
     double d2  = pS.SquareDistance(pC);
     tolreached = std::max(tolreached, d2);
   }
@@ -1599,7 +1599,7 @@ bool ChFi3d_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
                           const double                          tol3d,
                           double&                               tolreached)
 {
-  if (ChFi3d_CheckSameParameter(C3d, Pcurv, S, tol3d, tolreached))
+  if (ChFi3d_CheckSameParameter(*C3d, Pcurv, S, tol3d, tolreached))
   {
     return true;
   }

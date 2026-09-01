@@ -1,6 +1,3 @@
-// Created on: 1993-05-06
-// Created by: Jacques GOUSSARD
-// Copyright (c) 1993-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -14,11 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Polygo.hxx>
+#include "AdvApp2Var_Data.pxx"
 
-//=================================================================================================
-
-IntPatch_Polygo::IntPatch_Polygo(const double theError)
-    : myError(theError)
-{
-}
+#include "AdvApp2Var_Data_Mlgdrtl.pxx"
+#include "AdvApp2Var_Data_Mmapgs0.pxx"
+#include "AdvApp2Var_Data_Mmapgs1.pxx"
+#include "AdvApp2Var_Data_Mmapgs2.pxx"
+#include "AdvApp2Var_Data_Mmapgss.pxx"
+#include "AdvApp2Var_Data_Mmcmcnp.pxx"
+#include "AdvApp2Var_Data_Mmjcobi.pxx"

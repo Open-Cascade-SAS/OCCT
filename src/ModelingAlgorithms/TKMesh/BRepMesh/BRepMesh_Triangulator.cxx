@@ -144,12 +144,12 @@ void BRepMesh_Triangulator::addTriange34(const NCollection_Sequence<int>& theW,
     if (d24 < d13)
     {
       // additional check for inner corner
-      static int aPivotNodes[4] = {2, 4, 1, 3};
+      constexpr int aPivotNodes[4] = {2, 4, 1, 3};
       use13                     = checkCondition(aPivotNodes, theW);
     }
     else
     {
-      static int aPivotNodes[4] = {1, 3, 2, 4};
+      constexpr int aPivotNodes[4] = {1, 3, 2, 4};
       use13                     = !checkCondition(aPivotNodes, theW);
     }
 

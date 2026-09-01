@@ -46,11 +46,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)
 
-// Patch
-#ifdef OCCT_DEBUG
-static bool Affich = 0;
-#endif
-
 static double ComputeTorsion(const double Param, const occ::handle<Adaptor3d_Curve>& aCurve)
 {
   double Torsion;
@@ -173,16 +168,6 @@ static void smoothlaw(occ::handle<Law_BSpline>&                       Law,
     Law = BS;
   }
 
-#ifdef OCCT_DEBUG
-  if (Affich)
-  {
-    std::cout << "Knots Law : " << std::endl;
-    for (ii = 1; ii <= BS->NbKnots(); ii++)
-    {
-      std::cout << ii << " : " << BS->Knot(ii) << std::endl;
-    }
-  }
-#endif
 }
 
 //=================================================================================================

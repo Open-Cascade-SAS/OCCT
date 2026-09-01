@@ -258,19 +258,6 @@ private: //! Data to keep the history.
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved; //!< The removed shapes.
 
-private: //! Auxiliary members to read the history.
-  //! An auxiliary empty list.
-  static const NCollection_List<TopoDS_Shape> myEmptyList;
-
-  //! A method to export the auxiliary list.
-  Standard_EXPORT static const NCollection_List<TopoDS_Shape>& emptyList();
-
-private:
-  //! Auxiliary messages.
-  static const char* myMsgUnsupportedType;
-  static const char* myMsgGeneratedAndRemoved;
-  static const char* myMsgModifiedAndRemoved;
-  static const char* myMsgGeneratedAndModified;
 };
 
 #endif // _BRepTools_History_HeaderFile

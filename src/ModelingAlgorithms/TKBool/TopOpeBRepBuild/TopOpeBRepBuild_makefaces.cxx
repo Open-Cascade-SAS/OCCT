@@ -52,16 +52,6 @@ Standard_EXPORT void debwesmf(const int i)
   std::cout << "++ debwesmf " << i << std::endl;
 }
 
-Standard_EXPORT bool DEBpurclo = false;
-
-void debpurclo() {}
-
-void debpurclomess(int i)
-{
-  std::cout << "++ debpurclo " << i << std::endl;
-  debpurclo();
-}
-
 Standard_EXPORT void debcorriso(const int i)
 {
   std::cout << "++ debcorriso " << i << std::endl;
@@ -180,10 +170,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
     }
     topurge = !MshNOK.IsEmpty();
 
-#ifdef OCCT_DEBUG
-    if (tSPS)
-      DEBpurclo = false;
-#endif
   } // topurge
 
   if (topurge)

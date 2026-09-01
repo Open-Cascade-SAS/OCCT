@@ -2,6 +2,7 @@
 set(OCCT_TKDESTEP_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDESTEP_GTests_FILES
+    APIHeaderSection_MakeHeader_Test.cxx
     DESTEP_Provider_Test.cxx
     GDT_STEP_Storage_Test.cxx
     STEPConstruct_RenderingProperties_Test.cxx
