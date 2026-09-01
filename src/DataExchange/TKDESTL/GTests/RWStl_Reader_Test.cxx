@@ -39,6 +39,45 @@ TEST(RWStl_ReaderTest, RejectsIncompleteFacet)
   EXPECT_TRUE(RWStl::ReadAsciiStream(anInput).IsNull());
 }
 
+TEST(RWStl_ReaderTest, RejectsMalformedFacetClosures)
+{
+  for (const char* aContent : {"solid s\n"
+                               "facet normal 0 0 1\n"
+                               "outer loop\n"
+                               "vertex 0 0 0\n"
+                               "vertex 1 0 0\n"
+                               "vertex 0 1 0\n"
+                               "not_endloop\n"
+                               "endfacet\n"
+                               "endsolid\n",
+                               "solid s\n"
+                               "facet normal 0 0 1\n"
+                               "outer loop\n"
+                               "vertex 0 0 0\n"
+                               "vertex 1 0 0\n"
+                               "vertex 0 1 0\n"
+                               "endloop\n"
+                               "not_endfacet\n"
+                               "endsolid\n",
+                               "solid s\n"
+                               "facet normal 0 0 1\n"
+                               "outer loop\n"
+                               "vertex 0 0 0\n"
+                               "vertex 1 0 0\n"
+                               "vertex 0 1 0\n",
+                               "solid s\n"
+                               "facet normal 0 0 1\n"
+                               "outer loop\n"
+                               "vertex 0 0 0\n"
+                               "vertex 1 0 0\n"
+                               "vertex 0 1 0\n"
+                               "endloop\n"})
+  {
+    std::istringstream anInput(aContent);
+    EXPECT_TRUE(RWStl::ReadAsciiStream(anInput).IsNull());
+  }
+}
+
 TEST(RWStl_ReaderTest, ReadsCompleteAsciiKeywords)
 {
   std::istringstream                    anInput("solid triangle\n"

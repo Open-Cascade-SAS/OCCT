@@ -830,8 +830,9 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
 
   const size_t                     aMaxMultiplicity         = static_cast<size_t>(aDegree) + 1;
   const size_t                     aMaxRelevantMultiplicity = aNbPoles + aMaxMultiplicity;
-  NCollection_LinearVector<double> aUniqueKnotValues;
-  NCollection_LinearVector<size_t> aMergedKnotMultiplicities;
+  const size_t                     aMergeCapacity = std::min(aNbKnots, aMaxRelevantMultiplicity);
+  NCollection_LinearVector<double> aUniqueKnotValues(aMergeCapacity);
+  NCollection_LinearVector<size_t> aMergedKnotMultiplicities(aMergeCapacity);
   const double                     aFirstKnot = aKnots->At(0);
   if (aKnotMultiplicities->At(0) <= 0 || !isValidReal(aFirstKnot))
   {
@@ -875,6 +876,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   NCollection_LinearVector<int> aUniqueKnotMultiplicityValues(aNbUniqueKnots);
   size_t                        aFirstMultiplicityExcess = 0;
   size_t                        aLastMultiplicityExcess  = 0;
+  size_t                        aMultiplicitySum         = 0;
   for (size_t aKnotIdx = 0; aKnotIdx < aNbUniqueKnots; ++aKnotIdx)
   {
     const size_t aMultiplicity = aMergedKnotMultiplicities.Value(aKnotIdx);
@@ -893,13 +895,18 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
                 << "\nChanged to " << aDegree + 1 << std::endl;
 #endif
     }
-    aUniqueKnotMultiplicityValues.Append(
-      static_cast<int>(std::min(aMultiplicity, aMaxMultiplicity)));
+    const size_t aClampedMultiplicity = std::min(aMultiplicity, aMaxMultiplicity);
+    if (aClampedMultiplicity > aMaxRelevantMultiplicity - aMultiplicitySum)
+    {
+      return nullptr;
+    }
+    aMultiplicitySum += aClampedMultiplicity;
+    aUniqueKnotMultiplicityValues.Append(static_cast<int>(aClampedMultiplicity));
   }
 
   NCollection_Array1<double> aUniqueKnots(aUniqueKnotValues.Data(), aNbUniqueKnots);
   NCollection_Array1<int>    aUniqueKnotMultiplicities(aUniqueKnotMultiplicityValues.Data(),
-                                                    aNbUniqueKnots);
+                                                       aNbUniqueKnots);
 
   if (aFirstMultiplicityExcess > aNbPoles
       || aLastMultiplicityExcess > aNbPoles - aFirstMultiplicityExcess)
@@ -912,26 +919,9 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   {
     return nullptr;
   }
-  TPntArray aPoles(aNbUniquePoles);
-
-  for (size_t aPoleIdx = aFirstMultiplicityExcess; aPoleIdx < aNbPoles - aLastMultiplicityExcess;
-       ++aPoleIdx)
+  if (aMultiplicitySum > aNbUniquePoles + aMaxMultiplicity)
   {
-    occ::handle<TCartesianPoint> aPoint =
-      (*thePointMakerFunction)(aControlPointsList->At(aPoleIdx), theLocalFactors);
-    if (!aPoint.IsNull())
-    {
-      const TGpPnt aPnt = ((*aPoint).*thePntGetterFunction)();
-      if (!isValidPoint(aPnt))
-      {
-        return nullptr;
-      }
-      aPoles.ChangeAt(aPoleIdx - aFirstMultiplicityExcess) = aPnt;
-    }
-    else
-    {
-      return nullptr;
-    }
+    return nullptr;
   }
 
   // Match the descriptor against the same pole-count contract used by the curve constructors.
@@ -944,12 +934,10 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
     return nullptr;
   }
 
-  occ::handle<TBSplineCurve> aBSplineCurve;
-  if (theStepGeom_BSplineCurve->IsKind(
-        STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
+  occ::handle<NCollection_HArray1<double>> aWeights;
+  if (!aBSplineCurveWithKnotsAndRationalBSplineCurve.IsNull())
   {
-    const occ::handle<NCollection_HArray1<double>>& aWeights =
-      aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
+    aWeights = aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
     if (aWeights.IsNull() || static_cast<size_t>(aWeights->Length()) != aNbPoles)
     {
       return nullptr;
@@ -962,6 +950,29 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
         return nullptr;
       }
     }
+  }
+
+  TPntArray aPoles(aNbUniquePoles);
+  for (size_t aPoleIdx = aFirstMultiplicityExcess; aPoleIdx < aNbPoles - aLastMultiplicityExcess;
+       ++aPoleIdx)
+  {
+    occ::handle<TCartesianPoint> aPoint =
+      (*thePointMakerFunction)(aControlPointsList->At(aPoleIdx), theLocalFactors);
+    if (aPoint.IsNull())
+    {
+      return nullptr;
+    }
+    const TGpPnt aPnt = ((*aPoint).*thePntGetterFunction)();
+    if (!isValidPoint(aPnt))
+    {
+      return nullptr;
+    }
+    aPoles.ChangeAt(aPoleIdx - aFirstMultiplicityExcess) = aPnt;
+  }
+
+  occ::handle<TBSplineCurve> aBSplineCurve;
+  if (!aWeights.IsNull())
+  {
     NCollection_Array1<double> aUniqueWeights(aNbUniquePoles);
     for (size_t aPoleIdx = aFirstMultiplicityExcess; aPoleIdx < aNbPoles - aLastMultiplicityExcess;
          ++aPoleIdx)

@@ -15,6 +15,7 @@
 #include <Precision.hxx>
 #include <StepData_Logical.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepToGeom.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -55,6 +56,30 @@ static occ::handle<StepGeom_BSplineCurveWithKnots> createLinearCurve(const doubl
                aKnots,
                StepGeom_KnotType::StepGeom_ktUnspecified);
   return aCurve;
+}
+
+static occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> createRationalLinearCurve(
+  const double theFirstWeight,
+  const double theSecondWeight)
+{
+  const occ::handle<StepGeom_BSplineCurveWithKnots> aCurve = createLinearCurve(0.0);
+  occ::handle<NCollection_HArray1<double>> aWeights        = new NCollection_HArray1<double>(1, 2);
+  aWeights->SetValue(1, theFirstWeight);
+  aWeights->SetValue(2, theSecondWeight);
+
+  occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> aRationalCurve =
+    new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve();
+  aRationalCurve->Init(aCurve->Name(),
+                       aCurve->Degree(),
+                       aCurve->ControlPointsList(),
+                       aCurve->CurveForm(),
+                       aCurve->ClosedCurve(),
+                       aCurve->SelfIntersect(),
+                       aCurve->KnotMultiplicities(),
+                       aCurve->Knots(),
+                       StepGeom_KnotType::StepGeom_ktUnspecified,
+                       aWeights);
+  return aRationalCurve;
 }
 } // namespace
 
@@ -170,6 +195,46 @@ TEST(StepToGeomTest, RejectsInvalidInteriorKnotMultiplicity)
   occ::handle<Geom_BSplineCurve> aResult;
   EXPECT_NO_THROW(aResult = StepToGeom::MakeBSplineCurve(aCurve));
   EXPECT_TRUE(aResult.IsNull());
+}
+
+TEST(StepToGeomTest, RejectsOversizedMultiplicitySum)
+{
+  const occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("curve");
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aPoles =
+    new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, 2);
+  for (int aPoleIdx = 1; aPoleIdx <= 2; ++aPoleIdx)
+  {
+    occ::handle<StepGeom_CartesianPoint> aPoint = new StepGeom_CartesianPoint();
+    aPoint->Init3D(aName, static_cast<double>(aPoleIdx), 0.0, 0.0);
+    aPoles->SetValue(aPoleIdx, aPoint);
+  }
+
+  occ::handle<NCollection_HArray1<int>>    aMultiplicities = new NCollection_HArray1<int>(1, 5);
+  occ::handle<NCollection_HArray1<double>> aKnots          = new NCollection_HArray1<double>(1, 5);
+  for (int aKnotIdx = 1; aKnotIdx <= 5; ++aKnotIdx)
+  {
+    aMultiplicities->SetValue(aKnotIdx, 1);
+    aKnots->SetValue(aKnotIdx, static_cast<double>(aKnotIdx - 1));
+  }
+
+  occ::handle<StepGeom_BSplineCurveWithKnots> aCurve = new StepGeom_BSplineCurveWithKnots();
+  aCurve->Init(aName,
+               1,
+               aPoles,
+               StepGeom_BSplineCurveForm::StepGeom_bscfUnspecified,
+               StepData_Logical::StepData_LFalse,
+               StepData_Logical::StepData_LFalse,
+               aMultiplicities,
+               aKnots,
+               StepGeom_KnotType::StepGeom_ktUnspecified);
+  EXPECT_TRUE(StepToGeom::MakeBSplineCurve(aCurve).IsNull());
+}
+
+TEST(StepToGeomTest, ValidatesRationalWeights)
+{
+  EXPECT_FALSE(StepToGeom::MakeBSplineCurve(createRationalLinearCurve(1.0, 2.0)).IsNull());
+  EXPECT_TRUE(StepToGeom::MakeBSplineCurve(createRationalLinearCurve(1.0, std::nan(""))).IsNull());
+  EXPECT_TRUE(StepToGeom::MakeBSplineCurve(createRationalLinearCurve(1.0, 0.0)).IsNull());
 }
 
 TEST(StepToGeomTest, ConvertsValidBSplineCurve)

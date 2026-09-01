@@ -405,21 +405,34 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
       aVertex[i] = aReadVertex;
     }
 
-    // stop reading if end of file is reached;
-    // note that well-formatted file never ends by the vertex line
+    // A well-formed facet always contains all vertices and both closing records.
     if (isEOF)
     {
-      break;
+      Message::SendFail("Error: premature end of file while reading facet vertices");
+      return false;
     }
 
     aNbLine += 5;
 
-    // add triangle
+    aLine = theBuffer.ReadLine(theStream, aLineLen); // "endloop"
+    if (aLine == nullptr
+        || !startsWithKeywordIgnoreCase(std::string_view(aLine, aLineLen), "endloop"))
+    {
+      Message::SendFail(TCollection_AsciiString("Error: expected endloop at line ")
+                        + (aNbLine + 1));
+      return false;
+    }
+
+    aLine = theBuffer.ReadLine(theStream, aLineLen); // "endfacet"
+    if (aLine == nullptr
+        || !startsWithKeywordIgnoreCase(std::string_view(aLine, aLineLen), "endfacet"))
+    {
+      Message::SendFail(TCollection_AsciiString("Error: expected endfacet at line ")
+                        + (aNbLine + 2));
+      return false;
+    }
+
     aMergeTool.AddTriangle(aVertex);
-
-    theBuffer.ReadLine(theStream, aLineLen); // skip "endloop"
-    theBuffer.ReadLine(theStream, aLineLen); // skip "endfacet"
-
     aNbLine += 2;
   }
 

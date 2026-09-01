@@ -50,6 +50,31 @@ TEST(StepShape_OrientedEdgeTest, RejectsCycles)
   EXPECT_TRUE(anEdge->EdgeEnd().IsNull());
 }
 
+TEST(StepShape_OrientedEdgeTest, ResolvesDeepAcyclicNesting)
+{
+  const occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString("edge");
+  const occ::handle<StepShape_Vertex>         aStart = new StepShape_Vertex();
+  const occ::handle<StepShape_Vertex>         anEnd  = new StepShape_Vertex();
+  occ::handle<StepShape_Edge>                 anEdge = new StepShape_Edge();
+  anEdge->Init(aName, aStart, anEnd);
+
+  bool isReversed = false;
+  for (int anEdgeIdx = 0; anEdgeIdx < 256; ++anEdgeIdx)
+  {
+    const bool                                isForward  = anEdgeIdx % 3 != 0;
+    const occ::handle<StepShape_OrientedEdge> anOriented = new StepShape_OrientedEdge();
+    anOriented->Init(aName, anEdge, isForward);
+    anEdge = anOriented;
+    if (!isForward)
+    {
+      isReversed = !isReversed;
+    }
+  }
+
+  EXPECT_EQ(anEdge->EdgeStart(), isReversed ? anEnd : aStart);
+  EXPECT_EQ(anEdge->EdgeEnd(), isReversed ? aStart : anEnd);
+}
+
 TEST(StepShape_OrientedEdgeTest, RejectsSettingRedefinedEndpoints)
 {
   const occ::handle<StepShape_OrientedEdge> anEdge  = new StepShape_OrientedEdge();
