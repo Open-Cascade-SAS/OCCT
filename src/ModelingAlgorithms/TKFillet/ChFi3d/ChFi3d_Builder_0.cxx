@@ -22,8 +22,12 @@
 
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <Approx_SameParameter.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <BRep_Builder.hxx>
@@ -43,6 +47,8 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -77,10 +83,12 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
+#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
 
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 //=================================================================================================
 
@@ -105,6 +113,13 @@ double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, 
 
 namespace
 {
+// Keep periodic contact-curve processing aligned with the conical seam handling in
+// BRepBlend_Walking. Other periodic support types retain their established builder path.
+bool ChFi3d_UsePeriodicSeamHandling(const Adaptor3d_Surface& theSurface)
+{
+  return theSurface.GetType() == GeomAbs_Cone;
+}
+
 const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const GeomAdaptor_Surface& theSurface)
 {
   return theSurface.Surface();
@@ -113,6 +128,53 @@ const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const GeomAdaptor_Surface& t
 const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const BRepAdaptor_Surface& theSurface)
 {
   return theSurface.GeomSurfaceOriginal();
+}
+
+double ChFi3d_FullUPeriod(const Adaptor3d_Surface& theSurface)
+{
+  if (!ChFi3d_UsePeriodicSeamHandling(theSurface) || !theSurface.IsUPeriodic())
+  {
+    return 0.0;
+  }
+  const double aPeriod = theSurface.UPeriod();
+  return theSurface.LastUParameter() - theSurface.FirstUParameter()
+             >= aPeriod - Precision::PConfusion()
+           ? aPeriod
+           : 0.0;
+}
+
+double ChFi3d_FullVPeriod(const Adaptor3d_Surface& theSurface)
+{
+  if (!ChFi3d_UsePeriodicSeamHandling(theSurface) || !theSurface.IsVPeriodic())
+  {
+    return 0.0;
+  }
+  const double aPeriod = theSurface.VPeriod();
+  return theSurface.LastVParameter() - theSurface.FirstVParameter()
+             >= aPeriod - Precision::PConfusion()
+           ? aPeriod
+           : 0.0;
+}
+
+gp_Pnt2d ChFi3d_NearestPeriodicPoint(const occ::handle<Adaptor3d_Surface>& theSurface,
+                                     const gp_Pnt2d&                       theReference,
+                                     gp_Pnt2d                              thePoint)
+{
+  // Corner data may come from opposite sides of the canonical parameter interval even though
+  // the endpoints are close in 3D. Put both endpoints on one unwrapped chart before filling.
+  const double aUPeriod = ChFi3d_FullUPeriod(*theSurface);
+  if (aUPeriod > 0.0)
+  {
+    thePoint.SetX(thePoint.X()
+                  + std::round((theReference.X() - thePoint.X()) / aUPeriod) * aUPeriod);
+  }
+  const double aVPeriod = ChFi3d_FullVPeriod(*theSurface);
+  if (aVPeriod > 0.0)
+  {
+    thePoint.SetY(thePoint.Y()
+                  + std::round((theReference.Y() - thePoint.Y()) / aVPeriod) * aVPeriod);
+  }
+  return thePoint;
 }
 
 void ChFi3d_ApplyBounds(GeomAdaptor_Surface&             theSurface,
@@ -957,6 +1019,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       P2d = BRep_Tool::Parameters(Vtx, face);
     }
+    BRepAdaptor_Surface aFaceSurface(face);
+    const double        aUPeriod = ChFi3d_FullUPeriod(aFaceSurface);
+    const double        aVPeriod = ChFi3d_FullVPeriod(aFaceSurface);
     if (ChFi3d_IntTraces(fd1,
                          pref1,
                          p1,
@@ -969,7 +1034,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
                          sens2,
                          P2d,
                          Check2dDistance,
-                         enlarge))
+                         enlarge,
+                         aUPeriod,
+                         aVPeriod))
     {
       u1 = p1;
       u2 = p2;
@@ -1009,6 +1076,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       P2d = BRep_Tool::Parameters(Vtx, face);
     }
+    BRepAdaptor_Surface aFaceSurface(face);
+    const double        aUPeriod = ChFi3d_FullUPeriod(aFaceSurface);
+    const double        aVPeriod = ChFi3d_FullVPeriod(aFaceSurface);
     if (ChFi3d_IntTraces(fd1,
                          pref1,
                          p1,
@@ -1021,7 +1091,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
                          sens2,
                          P2d,
                          Check2dDistance,
-                         enlarge))
+                         enlarge,
+                         aUPeriod,
+                         aVPeriod))
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
@@ -1085,6 +1157,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       P2d = BRep_Tool::Parameters(Vtx, face);
     }
+    BRepAdaptor_Surface aFaceSurface(face);
+    const double        aUPeriod = ChFi3d_FullUPeriod(aFaceSurface);
+    const double        aVPeriod = ChFi3d_FullVPeriod(aFaceSurface);
     if (ChFi3d_IntTraces(fd1,
                          pref1,
                          p1,
@@ -1097,7 +1172,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
                          sens2,
                          P2d,
                          Check2dDistance,
-                         enlarge))
+                         enlarge,
+                         aUPeriod,
+                         aVPeriod))
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
@@ -1161,6 +1238,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       P2d = BRep_Tool::Parameters(Vtx, face);
     }
+    BRepAdaptor_Surface aFaceSurface(face);
+    const double        aUPeriod = ChFi3d_FullUPeriod(aFaceSurface);
+    const double        aVPeriod = ChFi3d_FullVPeriod(aFaceSurface);
     if (ChFi3d_IntTraces(fd1,
                          pref1,
                          p1,
@@ -1173,7 +1253,9 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
                          sens2,
                          P2d,
                          Check2dDistance,
-                         enlarge))
+                         enlarge,
+                         aUPeriod,
+                         aVPeriod))
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
@@ -1237,7 +1319,9 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
                       const int                           sens2,
                       const gp_Pnt2d&                     RefP2d,
                       const bool                          Check2dDistance,
-                      const bool                          enlarge)
+                      const bool                          enlarge,
+                      const double                        UPeriod,
+                      const double                        VPeriod)
 {
   Geom2dAdaptor_Curve C1;
   Geom2dAdaptor_Curve C2;
@@ -1260,6 +1344,19 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
   if (pcf1.IsNull())
   {
     return false;
+  }
+  const gp_Pnt2d aPoint1  = pcf1->Value(pref1);
+  const double   aUShift1 = Check2dDistance && UPeriod > 0.0
+                              ? std::round((RefP2d.X() - aPoint1.X()) / UPeriod) * UPeriod
+                              : 0.0;
+  const double   aVShift1 = Check2dDistance && VPeriod > 0.0
+                              ? std::round((RefP2d.Y() - aPoint1.Y()) / VPeriod) * VPeriod
+                              : 0.0;
+  if (aUShift1 != 0.0 || aVShift1 != 0.0)
+  {
+    // Intersect local copies: the stored pcurves still belong to their original face chart.
+    pcf1 = occ::down_cast<Geom2d_Curve>(pcf1->Copy());
+    pcf1->Translate(gp_Vec2d(aUShift1, aVShift1));
   }
   bool isper1 = pcf1->IsPeriodic();
   if (isper1)
@@ -1292,6 +1389,18 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
   {
     return false;
   }
+  const gp_Pnt2d aPoint2  = pcf2->Value(pref2);
+  const double   aUShift2 = Check2dDistance && UPeriod > 0.0
+                              ? std::round((RefP2d.X() - aPoint2.X()) / UPeriod) * UPeriod
+                              : 0.0;
+  const double   aVShift2 = Check2dDistance && VPeriod > 0.0
+                              ? std::round((RefP2d.Y() - aPoint2.Y()) / VPeriod) * VPeriod
+                              : 0.0;
+  if (aUShift2 != 0.0 || aVShift2 != 0.0)
+  {
+    pcf2 = occ::down_cast<Geom2d_Curve>(pcf2->Copy());
+    pcf2->Translate(gp_Vec2d(aUShift2, aVShift2));
+  }
   bool isper2 = pcf2->IsPeriodic();
   if (isper2)
   {
@@ -1304,7 +1413,7 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
   }
   else
   {
-    C2.Load(fd2->Interference(jf2).PCurveOnFace(), first - delta, last + delta);
+    C2.Load(pcf2, first - delta, last + delta);
   }
   double first2 = pcf2->FirstParameter(), last2 = pcf2->LastParameter();
 
@@ -1312,7 +1421,8 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
   Geom2dInt_GInter           Intersection;
   int                        nbpt, nbseg;
   gp_Pnt2d                   p2d;
-  if (fd1->Interference(jf1).PCurveOnFace() == fd2->Interference(jf2).PCurveOnFace())
+  if (fd1->Interference(jf1).PCurveOnFace() == fd2->Interference(jf2).PCurveOnFace()
+      && aUShift1 == aUShift2 && aVShift1 == aVShift2)
   {
     Intersection.Perform(C1, Precision::PIntersection(), Precision::PIntersection());
   }
@@ -1762,7 +1872,8 @@ occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surfac
   {
     v2.Reverse();
   }
-  curv = ChFi3d_BuildPCurve(Fac, pfac1, v1, pfac2, v2, false);
+  const gp_Pnt2d aPoint2 = ChFi3d_NearestPeriodicPoint(Fac, pfac1, pfac2);
+  curv                   = ChFi3d_BuildPCurve(Fac, pfac1, v1, aPoint2, v2, false);
   return ChFi3d_mkbound(Fac, curv, t3d, ta);
 }
 
@@ -2554,6 +2665,324 @@ static bool findIndexPoint(const TopOpeBRepDS_DataStructure&   DStr,
   return false;
 }
 
+namespace
+{
+// TopOpe needs a vertex on a real seam whenever a support pcurve changes periodic charts. The
+// fillet surface remains continuous; only its curve record and the support pcurve are partitioned.
+struct ChFi3d_PeriodicSeamSplit
+{
+  struct Arc
+  {
+    double             ParameterOnEdge = 0.0;
+    double             Distance3d      = 0.0;
+    gp_Vec2d           Tangent2d;
+    TopAbs_Orientation Transition = TopAbs_INTERNAL;
+    TopoDS_Edge        Edge;
+  };
+
+  double           Parameter = 0.0;
+  gp_Vec2d         PCurveShift;
+  std::vector<Arc> Arcs;
+};
+
+bool ChFi3d_FindSeamEdge(const TopoDS_Face&             theFace,
+                         const gp_Pnt2d&                thePoint2d,
+                         const gp_Pnt&                  thePoint,
+                         const bool                     theIsU,
+                         const double                   theTolerance,
+                         ChFi3d_PeriodicSeamSplit::Arc& theArc)
+{
+  BRepAdaptor_Surface aFaceSurface(theFace);
+  const double anOrigin = theIsU ? aFaceSurface.FirstUParameter() : aFaceSurface.FirstVParameter();
+  const double aPeriod  = theIsU ? aFaceSurface.UPeriod() : aFaceSurface.VPeriod();
+  double       aBestDistance2d = RealLast();
+  for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+    if (!BRepTools::IsReallyClosed(anEdge, theFace))
+    {
+      continue;
+    }
+    for (const TopAbs_Orientation anOrientation : {TopAbs_FORWARD, TopAbs_REVERSED})
+    {
+      TopoDS_Edge anOrientedEdge = anEdge;
+      anOrientedEdge.Orientation(anOrientation);
+      double                    aFirst2d = 0.0;
+      double                    aLast2d  = 0.0;
+      occ::handle<Geom2d_Curve> aPCurve =
+        BRep_Tool::CurveOnSurface(anOrientedEdge, theFace, aFirst2d, aLast2d);
+      if (aPCurve.IsNull())
+      {
+        continue;
+      }
+
+      const gp_Pnt2d aFirstPoint          = aPCurve->Value(aFirst2d);
+      const gp_Pnt2d aMiddle              = aPCurve->Value(0.5 * (aFirst2d + aLast2d));
+      const gp_Pnt2d aLastPoint           = aPCurve->Value(aLast2d);
+      const double   aFirstCoordinate     = theIsU ? aFirstPoint.X() : aFirstPoint.Y();
+      const double   aCoordinate          = theIsU ? aMiddle.X() : aMiddle.Y();
+      const double   aLastCoordinate      = theIsU ? aLastPoint.X() : aLastPoint.Y();
+      const double   aCoordinateTolerance = 10.0 * Precision::PConfusion();
+      if (std::max({aFirstCoordinate, aCoordinate, aLastCoordinate})
+            - std::min({aFirstCoordinate, aCoordinate, aLastCoordinate})
+          > aCoordinateTolerance)
+      {
+        continue;
+      }
+      const double aNearestSeam =
+        anOrigin + std::round((aCoordinate - anOrigin) / aPeriod) * aPeriod;
+      if (std::abs(aCoordinate - aNearestSeam) > aCoordinateTolerance)
+      {
+        continue;
+      }
+
+      gp_Pnt2d aPointInChart = thePoint2d;
+      if (aFaceSurface.IsUPeriodic())
+      {
+        aPointInChart.SetX(aPointInChart.X()
+                           + std::round((aMiddle.X() - aPointInChart.X()) / aFaceSurface.UPeriod())
+                               * aFaceSurface.UPeriod());
+      }
+      if (aFaceSurface.IsVPeriodic())
+      {
+        aPointInChart.SetY(aPointInChart.Y()
+                           + std::round((aMiddle.Y() - aPointInChart.Y()) / aFaceSurface.VPeriod())
+                               * aFaceSurface.VPeriod());
+      }
+      Geom2dAPI_ProjectPointOnCurve aProjector2d(aPointInChart, aPCurve, aFirst2d, aLast2d);
+      if (aProjector2d.NbPoints() == 0 || aProjector2d.LowerDistance() >= aBestDistance2d)
+      {
+        continue;
+      }
+
+      double                  aFirst3d = 0.0;
+      double                  aLast3d  = 0.0;
+      occ::handle<Geom_Curve> aCurve3d = BRep_Tool::Curve(anEdge, aFirst3d, aLast3d);
+      if (aCurve3d.IsNull())
+      {
+        continue;
+      }
+      GeomAPI_ProjectPointOnCurve aProjector3d(thePoint, aCurve3d, aFirst3d, aLast3d);
+      if (aProjector3d.NbPoints() == 0)
+      {
+        continue;
+      }
+      // A filled corner is coincident with the support only within its approximation tolerance,
+      // which can be larger than the tolerance carried by the original seam edge.
+      const double anAllowedDistance3d =
+        10.0 * std::max({theTolerance, BRep_Tool::Tolerance(anEdge), Precision::Confusion()});
+      if (aProjector3d.LowerDistance() > anAllowedDistance3d)
+      {
+        continue;
+      }
+      aBestDistance2d        = aProjector2d.LowerDistance();
+      theArc.ParameterOnEdge = aProjector3d.LowerDistanceParameter();
+      theArc.Distance3d      = aProjector3d.LowerDistance();
+      gp_Pnt2d aPointOnArc;
+      aPCurve->D1(aProjector2d.LowerDistanceParameter(), aPointOnArc, theArc.Tangent2d);
+      theArc.Edge = anEdge;
+    }
+  }
+  return !theArc.Edge.IsNull();
+}
+
+void ChFi3d_FindPeriodicSeamSplits(const TopoDS_Face&                     theFace,
+                                   const ChFiDS_FaceInterference&         theInterference,
+                                   const occ::handle<Geom_Curve>&         theCurve3d,
+                                   const double                           theTolerance,
+                                   std::vector<ChFi3d_PeriodicSeamSplit>& theSplits)
+{
+  const occ::handle<Geom2d_Curve>& aPCurve = theInterference.PCurveOnFace();
+  if (aPCurve.IsNull() || theCurve3d.IsNull())
+  {
+    return;
+  }
+
+  BRepAdaptor_Surface aSurface(theFace);
+  if (!ChFi3d_UsePeriodicSeamHandling(aSurface))
+  {
+    return;
+  }
+  const double aFirst = theInterference.FirstParameter();
+  const double aLast  = theInterference.LastParameter();
+  if (aLast - aFirst <= Precision::PConfusion())
+  {
+    return;
+  }
+  if (theCurve3d->Value(aFirst).IsEqual(theCurve3d->Value(aLast),
+                                        std::max(theTolerance, Precision::Confusion())))
+  {
+    // For a closed contact curve, the support seam is the intentional closure of the curve's
+    // parameterization. Splitting it as an interior crossing creates duplicate open segments.
+    return;
+  }
+
+  Bnd_Box2d aBox;
+  BndLib_Add2dCurve::AddOptimal(aPCurve, aFirst, aLast, Precision::PConfusion(), aBox);
+  if (aBox.IsVoid())
+  {
+    return;
+  }
+  double aXMin, aYMin, aXMax, aYMax;
+  aBox.Get(aXMin, aYMin, aXMax, aYMax);
+  const occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aPCurve, aFirst, aLast);
+  const double aParameterTolerance = std::max(Precision::PConfusion(), 1.0e-9 * (aLast - aFirst));
+
+  for (int aCoordinate = 1; aCoordinate <= 2; ++aCoordinate)
+  {
+    const bool isU = aCoordinate == 1;
+    if ((isU && !aSurface.IsUPeriodic()) || (!isU && !aSurface.IsVPeriodic()))
+    {
+      continue;
+    }
+    const double aMin     = isU ? aXMin : aYMin;
+    const double aMax     = isU ? aXMax : aYMax;
+    const double anOrigin = isU ? aSurface.FirstUParameter() : aSurface.FirstVParameter();
+    const double aPeriod  = isU ? aSurface.UPeriod() : aSurface.VPeriod();
+    const int    aKFirst  = static_cast<int>(std::ceil((aMin - anOrigin) / aPeriod));
+    const int    aKLast   = static_cast<int>(std::floor((aMax - anOrigin) / aPeriod));
+    for (int aK = aKFirst; aK <= aKLast; ++aK)
+    {
+      const double                   aSeam      = anOrigin + aK * aPeriod;
+      const gp_Pnt2d                 anOrigin2d = isU ? gp_Pnt2d(aSeam, 0.0) : gp_Pnt2d(0.0, aSeam);
+      const gp_Dir2d                 aDirection = isU ? gp::DY2d() : gp::DX2d();
+      const occ::handle<Geom2d_Line> aLine      = new Geom2d_Line(anOrigin2d, aDirection);
+      Geom2dAPI_InterCurveCurve      anIntersection(aTrimmed, aLine, Precision::PIntersection());
+      for (int anIndex = 1; anIndex <= anIntersection.NbPoints(); ++anIndex)
+      {
+        const double aParameter = anIntersection.Intersector().Point(anIndex).ParamOnFirst();
+        if (aParameter <= aFirst + Precision::PConfusion()
+            || aParameter >= aLast - Precision::PConfusion())
+        {
+          continue;
+        }
+        const double aAvailable = std::min(aParameter - aFirst, aLast - aParameter);
+        const double aDelta =
+          std::min(std::max(0.001 * (aLast - aFirst), 100.0 * Precision::PConfusion()),
+                   0.25 * aAvailable);
+        const gp_Pnt2d aPointBefore = aPCurve->Value(aParameter - aDelta);
+        const gp_Pnt2d aPointAfter  = aPCurve->Value(aParameter + aDelta);
+        const double   aBefore      = isU ? aPointBefore.X() : aPointBefore.Y();
+        const double   anAfter      = isU ? aPointAfter.X() : aPointAfter.Y();
+        if ((aBefore - aSeam) * (anAfter - aSeam) >= 0.0)
+        {
+          continue;
+        }
+        const double   aShift   = anAfter > aBefore ? -aPeriod : aPeriod;
+        const gp_Vec2d aShift2d = isU ? gp_Vec2d(aShift, 0.0) : gp_Vec2d(0.0, aShift);
+        const gp_Pnt2d aPoint2d = aPCurve->Value(aParameter);
+        const gp_Pnt   aPoint   = theCurve3d->Value(aParameter);
+        ChFi3d_PeriodicSeamSplit::Arc anArc;
+        if (!ChFi3d_FindSeamEdge(theFace, aPoint2d, aPoint, isU, theTolerance, anArc))
+        {
+          continue;
+        }
+        gp_Vec2d aContactDirection(aPointBefore, aPointAfter);
+        if (theInterference.Transition() == TopAbs_REVERSED)
+        {
+          aContactDirection.Reverse();
+        }
+        // The oriented contact direction has the retained part of the support on its left. Along
+        // the seam edge's native parameter direction, crossing to that side is a FORWARD
+        // transition. Use the already verified crossing chord so a stationary point cannot make
+        // the transition arbitrary.
+        const double aTransitionSign = aContactDirection.Crossed(anArc.Tangent2d);
+        anArc.Transition             = aTransitionSign >= 0.0 ? TopAbs_FORWARD : TopAbs_REVERSED;
+
+        auto aSplitIt =
+          std::find_if(theSplits.begin(),
+                       theSplits.end(),
+                       [&](const ChFi3d_PeriodicSeamSplit& theSplit) {
+                         return std::abs(theSplit.Parameter - aParameter) <= aParameterTolerance;
+                       });
+        if (aSplitIt == theSplits.end())
+        {
+          ChFi3d_PeriodicSeamSplit aSplit;
+          aSplit.Parameter   = aParameter;
+          aSplit.PCurveShift = aShift2d;
+          aSplit.Arcs.push_back(anArc);
+          theSplits.push_back(aSplit);
+        }
+        else
+        {
+          if (isU)
+          {
+            aSplitIt->PCurveShift.SetX(aShift);
+          }
+          else
+          {
+            aSplitIt->PCurveShift.SetY(aShift);
+          }
+          const bool isDuplicate =
+            std::any_of(aSplitIt->Arcs.begin(),
+                        aSplitIt->Arcs.end(),
+                        [&](const ChFi3d_PeriodicSeamSplit::Arc& theExisting) {
+                          return theExisting.Edge.IsSame(anArc.Edge);
+                        });
+          if (!isDuplicate)
+          {
+            aSplitIt->Arcs.push_back(anArc);
+          }
+        }
+      }
+    }
+  }
+  std::sort(theSplits.begin(),
+            theSplits.end(),
+            [](const ChFi3d_PeriodicSeamSplit& theLeft, const ChFi3d_PeriodicSeamSplit& theRight) {
+              return theLeft.Parameter < theRight.Parameter;
+            });
+}
+
+struct ChFi3d_PeriodicSeamData
+{
+  std::vector<ChFi3d_PeriodicSeamSplit> Splits;
+  std::vector<int>                      Curves;
+  std::vector<int>                      Points;
+};
+
+void ChFi3d_PreparePeriodicSeamData(const int                      theCurveIndex,
+                                    const int                      theSupportIndex,
+                                    const ChFiDS_FaceInterference& theInterference,
+                                    TopOpeBRepDS_DataStructure&    theDS,
+                                    ChFi3d_PeriodicSeamData&       theData)
+{
+  theData.Curves.push_back(theCurveIndex);
+  const TopOpeBRepDS_Curve aCurve = theDS.Curve(theCurveIndex);
+  if (theSupportIndex <= 0 || theDS.Shape(theSupportIndex).ShapeType() != TopAbs_FACE
+      || aCurve.Curve().IsNull())
+  {
+    return;
+  }
+
+  ChFi3d_FindPeriodicSeamSplits(TopoDS::Face(theDS.Shape(theSupportIndex)),
+                                theInterference,
+                                aCurve.Curve(),
+                                aCurve.Tolerance(),
+                                theData.Splits);
+  for (const ChFi3d_PeriodicSeamSplit& aSplit : theData.Splits)
+  {
+    theData.Curves.push_back(theDS.AddCurve(aCurve));
+    double aTolerance = std::max(aCurve.Tolerance(), Precision::Confusion());
+    for (const ChFi3d_PeriodicSeamSplit::Arc& anArc : aSplit.Arcs)
+    {
+      aTolerance = std::max(
+        {aTolerance, BRep_Tool::Tolerance(anArc.Edge), anArc.Distance3d + Precision::Confusion()});
+    }
+    const int aPointIndex =
+      theDS.AddPoint(TopOpeBRepDS_Point(aCurve.Curve()->Value(aSplit.Parameter), aTolerance));
+    theData.Points.push_back(aPointIndex);
+    for (const ChFi3d_PeriodicSeamSplit::Arc& anArc : aSplit.Arcs)
+    {
+      const int anEdgeIndex = theDS.AddShape(anArc.Edge);
+      theDS.ChangeShapeInterferences(anArc.Edge)
+        .Append(
+          ChFi3d_FilPointInDS(anArc.Transition, anEdgeIndex, aPointIndex, anArc.ParameterOnEdge));
+    }
+  }
+}
+} // namespace
+
 //=================================================================================================
 
 void ChFi3d_FilDS(const int                         SolidIndex,
@@ -2958,9 +3387,18 @@ void ChFi3d_FilDS(const int                         SolidIndex,
 
     if (IcFil1 != 0)
     {
+      Ishape1 = Fd->IndexOfS1();
+      ChFi3d_PeriodicSeamData aSeamData1;
+      ChFi3d_PreparePeriodicSeamData(IcFil1, Ishape1, Fi1, DStr, aSeamData1);
+
       Interfc3 = ChFi3d_FilCurveInDS(IcFil1, Isurf, Fi1.PCurveOnSurf(), trafil1);
       DStr.ChangeSurfaceInterferences(Isurf).Append(Interfc3);
-      Ishape1 = Fd->IndexOfS1();
+      for (std::size_t aSegment = 1; aSegment < aSeamData1.Curves.size(); ++aSegment)
+      {
+        occ::handle<TopOpeBRepDS_SurfaceCurveInterference> anInterferenceAfter =
+          ChFi3d_FilCurveInDS(aSeamData1.Curves[aSegment], Isurf, Fi1.PCurveOnSurf(), trafil1);
+        DStr.ChangeSurfaceInterferences(Isurf).Append(anInterferenceAfter);
+      }
       // Case of degenerated edge : pcurve is associated via SCI
       // to TopOpeBRepDSCurve.
       TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil1);
@@ -2986,6 +3424,25 @@ void ChFi3d_FilDS(const int                         SolidIndex,
           regon1.SetS2(Ishape1, true);
           Interfc1 = ChFi3d_FilCurveInDS(IcFil1, Ishape1, Fi1.PCurveOnFace(), Fi1.Transition());
           DStr.ChangeShapeInterferences(Ishape1).Append(Interfc1);
+          gp_Vec2d aCumulativeShift;
+          for (std::size_t aSegment = 1; aSegment < aSeamData1.Curves.size(); ++aSegment)
+          {
+            aCumulativeShift += aSeamData1.Splits[aSegment - 1].PCurveShift;
+            occ::handle<Geom2d_Curve> aPCurveAfter =
+              occ::down_cast<Geom2d_Curve>(Fi1.PCurveOnFace()->Copy());
+            aPCurveAfter->Translate(aCumulativeShift);
+            occ::handle<TopOpeBRepDS_SurfaceCurveInterference> anInterferenceAfter =
+              ChFi3d_FilCurveInDS(aSeamData1.Curves[aSegment],
+                                  Ishape1,
+                                  aPCurveAfter,
+                                  Fi1.Transition());
+            DStr.ChangeShapeInterferences(Ishape1).Append(anInterferenceAfter);
+            ChFiDS_Regul aRegulAfter;
+            aRegulAfter.SetCurve(aSeamData1.Curves[aSegment]);
+            aRegulAfter.SetS1(Isurf, false);
+            aRegulAfter.SetS2(Ishape1, true);
+            reglist.Append(aRegulAfter);
+          }
         }
         reglist.Append(regon1);
       }
@@ -3045,11 +3502,46 @@ void ChFi3d_FilDS(const int                         SolidIndex,
           ChFi3d_FilPointInDS(TopAbs_FORWARD, IcFil1, Ipoin1, Fi1.FirstParameter(), isVertex1);
         DStr.ChangeCurveInterferences(IcFil1).Append(Interfp1);
       }
-      if (ipoin == Ipoin1 || !ChFi3d_Contains(Li, IcFil1, ipoin))
+      if (aSeamData1.Splits.empty())
       {
-        Interfp3 =
-          ChFi3d_FilPointInDS(TopAbs_REVERSED, IcFil1, ipoin, Fi1.LastParameter(), isVertex);
-        DStr.ChangeCurveInterferences(IcFil1).Append(Interfp3);
+        if (ipoin == Ipoin1 || !ChFi3d_Contains(Li, IcFil1, ipoin))
+        {
+          Interfp3 =
+            ChFi3d_FilPointInDS(TopAbs_REVERSED, IcFil1, ipoin, Fi1.LastParameter(), isVertex);
+          DStr.ChangeCurveInterferences(IcFil1).Append(Interfp3);
+        }
+      }
+      else
+      {
+        for (std::size_t aSegment = 0; aSegment < aSeamData1.Curves.size(); ++aSegment)
+        {
+          const int aCurveIndex = aSeamData1.Curves[aSegment];
+          NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& aCurveInterferences =
+            DStr.ChangeCurveInterferences(aCurveIndex);
+          if (aSegment > 0)
+          {
+            aCurveInterferences.Append(
+              ChFi3d_FilPointInDS(TopAbs_FORWARD,
+                                  aCurveIndex,
+                                  aSeamData1.Points[aSegment - 1],
+                                  aSeamData1.Splits[aSegment - 1].Parameter));
+          }
+          if (aSegment < aSeamData1.Splits.size())
+          {
+            aCurveInterferences.Append(ChFi3d_FilPointInDS(TopAbs_REVERSED,
+                                                           aCurveIndex,
+                                                           aSeamData1.Points[aSegment],
+                                                           aSeamData1.Splits[aSegment].Parameter));
+          }
+          else
+          {
+            aCurveInterferences.Append(ChFi3d_FilPointInDS(TopAbs_REVERSED,
+                                                           aCurveIndex,
+                                                           ipoin,
+                                                           Fi1.LastParameter(),
+                                                           isVertex));
+          }
+        }
       }
       Ipoin1    = ipoin;
       isVertex1 = isVertex;
@@ -3058,9 +3550,18 @@ void ChFi3d_FilDS(const int                         SolidIndex,
     IcFil2 = Fi2.LineIndex();
     if (IcFil2 != 0)
     {
+      Ishape2 = Fd->IndexOfS2();
+      ChFi3d_PeriodicSeamData aSeamData2;
+      ChFi3d_PreparePeriodicSeamData(IcFil2, Ishape2, Fi2, DStr, aSeamData2);
+
       Interfc4 = ChFi3d_FilCurveInDS(IcFil2, Isurf, Fi2.PCurveOnSurf(), trafil2);
       DStr.ChangeSurfaceInterferences(Isurf).Append(Interfc4);
-      Ishape2 = Fd->IndexOfS2();
+      for (std::size_t aSegment = 1; aSegment < aSeamData2.Curves.size(); ++aSegment)
+      {
+        occ::handle<TopOpeBRepDS_SurfaceCurveInterference> anInterferenceAfter =
+          ChFi3d_FilCurveInDS(aSeamData2.Curves[aSegment], Isurf, Fi2.PCurveOnSurf(), trafil2);
+        DStr.ChangeSurfaceInterferences(Isurf).Append(anInterferenceAfter);
+      }
       // Case of degenerated edge : pcurve is associated via SCI
       // to TopOpeBRepDSCurve.
       TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil2);
@@ -3086,6 +3587,25 @@ void ChFi3d_FilDS(const int                         SolidIndex,
           regon2.SetS2(Ishape2, true);
           Interfc2 = ChFi3d_FilCurveInDS(IcFil2, Ishape2, Fi2.PCurveOnFace(), Fi2.Transition());
           DStr.ChangeShapeInterferences(Ishape2).Append(Interfc2);
+          gp_Vec2d aCumulativeShift;
+          for (std::size_t aSegment = 1; aSegment < aSeamData2.Curves.size(); ++aSegment)
+          {
+            aCumulativeShift += aSeamData2.Splits[aSegment - 1].PCurveShift;
+            occ::handle<Geom2d_Curve> aPCurveAfter =
+              occ::down_cast<Geom2d_Curve>(Fi2.PCurveOnFace()->Copy());
+            aPCurveAfter->Translate(aCumulativeShift);
+            occ::handle<TopOpeBRepDS_SurfaceCurveInterference> anInterferenceAfter =
+              ChFi3d_FilCurveInDS(aSeamData2.Curves[aSegment],
+                                  Ishape2,
+                                  aPCurveAfter,
+                                  Fi2.Transition());
+            DStr.ChangeShapeInterferences(Ishape2).Append(anInterferenceAfter);
+            ChFiDS_Regul aRegulAfter;
+            aRegulAfter.SetCurve(aSeamData2.Curves[aSegment]);
+            aRegulAfter.SetS1(Isurf, false);
+            aRegulAfter.SetS2(Ishape2, true);
+            reglist.Append(aRegulAfter);
+          }
         }
         reglist.Append(regon2);
       }
@@ -3149,11 +3669,46 @@ void ChFi3d_FilDS(const int                         SolidIndex,
           ChFi3d_FilPointInDS(TopAbs_FORWARD, IcFil2, Ipoin2, Fi2.FirstParameter(), isVertex2);
         DStr.ChangeCurveInterferences(IcFil2).Append(Interfp2);
       }
-      if (ipoin == Ipoin2 || !ChFi3d_Contains(Li, IcFil2, ipoin))
+      if (aSeamData2.Splits.empty())
       {
-        Interfp4 =
-          ChFi3d_FilPointInDS(TopAbs_REVERSED, IcFil2, ipoin, Fi2.LastParameter(), isVertex);
-        DStr.ChangeCurveInterferences(IcFil2).Append(Interfp4);
+        if (ipoin == Ipoin2 || !ChFi3d_Contains(Li, IcFil2, ipoin))
+        {
+          Interfp4 =
+            ChFi3d_FilPointInDS(TopAbs_REVERSED, IcFil2, ipoin, Fi2.LastParameter(), isVertex);
+          DStr.ChangeCurveInterferences(IcFil2).Append(Interfp4);
+        }
+      }
+      else
+      {
+        for (std::size_t aSegment = 0; aSegment < aSeamData2.Curves.size(); ++aSegment)
+        {
+          const int aCurveIndex = aSeamData2.Curves[aSegment];
+          NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& aCurveInterferences =
+            DStr.ChangeCurveInterferences(aCurveIndex);
+          if (aSegment > 0)
+          {
+            aCurveInterferences.Append(
+              ChFi3d_FilPointInDS(TopAbs_FORWARD,
+                                  aCurveIndex,
+                                  aSeamData2.Points[aSegment - 1],
+                                  aSeamData2.Splits[aSegment - 1].Parameter));
+          }
+          if (aSegment < aSeamData2.Splits.size())
+          {
+            aCurveInterferences.Append(ChFi3d_FilPointInDS(TopAbs_REVERSED,
+                                                           aCurveIndex,
+                                                           aSeamData2.Points[aSegment],
+                                                           aSeamData2.Splits[aSegment].Parameter));
+          }
+          else
+          {
+            aCurveInterferences.Append(ChFi3d_FilPointInDS(TopAbs_REVERSED,
+                                                           aCurveIndex,
+                                                           ipoin,
+                                                           Fi2.LastParameter(),
+                                                           isVertex));
+          }
+        }
       }
       Ipoin2    = ipoin;
       isVertex2 = isVertex;

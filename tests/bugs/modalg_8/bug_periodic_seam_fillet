@@ -1,0 +1,32 @@
+puts "==============================================="
+puts "Periodic support seam crossed by fillet pcurves"
+puts "==============================================="
+
+restore [locate_data_file occ/periodic_seam_fillet.brep] shape
+explode shape e
+
+blend result shape \
+  2 shape_9  2 shape_33 2 shape_32 2 shape_31 2 shape_30 2 shape_8  2 shape_7 \
+  2 shape_6  2 shape_11 2 shape_12 2 shape_13 2 shape_14 2 shape_38 2 shape_37 \
+  2 shape_36 2 shape_35 2 shape_19 2 shape_18 2 shape_17 2 shape_16 2 shape_40 \
+  2 shape_41 2 shape_42 2 shape_28 2 shape_26 2 shape_23 2 shape_22 2 shape_21 \
+  2 shape_20 2 shape_44 2 shape_45 2 shape_46 2 shape_49 2 shape_43
+
+checkshape result
+checknbshapes result -face 82
+
+# A mirror reverses the seam-edge parameterization while preserving the same geometry.
+tcopy shape mirrored
+tmirror mirrored 0 0 0 1 0 0
+explode mirrored e
+
+blend mirrored_result mirrored \
+  2 mirrored_9  2 mirrored_33 2 mirrored_32 2 mirrored_31 2 mirrored_30 2 mirrored_8 \
+  2 mirrored_7  2 mirrored_6  2 mirrored_11 2 mirrored_12 2 mirrored_13 2 mirrored_14 \
+  2 mirrored_38 2 mirrored_37 2 mirrored_36 2 mirrored_35 2 mirrored_19 2 mirrored_18 \
+  2 mirrored_17 2 mirrored_16 2 mirrored_40 2 mirrored_41 2 mirrored_42 2 mirrored_28 \
+  2 mirrored_26 2 mirrored_23 2 mirrored_22 2 mirrored_21 2 mirrored_20 2 mirrored_44 \
+  2 mirrored_45 2 mirrored_46 2 mirrored_49 2 mirrored_43
+
+checkshape mirrored_result
+checknbshapes mirrored_result -face 85

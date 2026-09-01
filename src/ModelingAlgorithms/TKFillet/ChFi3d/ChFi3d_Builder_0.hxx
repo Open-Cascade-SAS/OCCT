@@ -301,7 +301,9 @@ bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
                       const int                           sens2,
                       const gp_Pnt2d&                     RefP2d,
                       const bool                          Check2dDistance = false,
-                      const bool                          enlarge         = false);
+                      const bool                          enlarge         = false,
+                      const double                        UPeriod         = 0.0,
+                      const double                        VPeriod         = 0.0);
 
 bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
                       const occ::handle<ChFiDS_Stripe>& cd1,
