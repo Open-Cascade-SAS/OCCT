@@ -33,9 +33,9 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <cstdlib>
-#include <string>
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
@@ -1921,15 +1921,18 @@ TEST(BRepAlgoAPI_CutTest, Bug825_SphereHalfSpaceCut)
 // pave at both ends instead of retaining two artificial bound vertices.
 TEST(BRepAlgoAPI_CutTest, FreeCADIssue_25899_NearlyClosedSectionCurve)
 {
-  const char* aTestsPath = std::getenv("CSF_OCCTTestsPath");
-  ASSERT_NE(aTestsPath, nullptr) << "CSF_OCCTTestsPath is not defined";
+  const char* aDataRoot = std::getenv("CSF_OCCTDataPath");
+  ASSERT_NE(aDataRoot, nullptr) << "CSF_OCCTDataPath is not defined";
 
-  const std::string aDataPath = std::string(aTestsPath) + "/bugs/modalg_8/data/freecad_25899_";
-  TopoDS_Shape      aBase;
-  TopoDS_Shape      aTool;
-  BRep_Builder      aBuilder;
-  ASSERT_TRUE(BRepTools::Read(aBase, (aDataPath + "base.brep").c_str(), aBuilder));
-  ASSERT_TRUE(BRepTools::Read(aTool, (aDataPath + "tool.brep").c_str(), aBuilder));
+  const TCollection_AsciiString aDataPath =
+    TCollection_AsciiString(aDataRoot) + "/occ/freecad_25899_";
+  const TCollection_AsciiString aBasePath = aDataPath + "base.brep";
+  const TCollection_AsciiString aToolPath = aDataPath + "tool.brep";
+  TopoDS_Shape                  aBase;
+  TopoDS_Shape                  aTool;
+  BRep_Builder                  aBuilder;
+  ASSERT_TRUE(BRepTools::Read(aBase, aBasePath.ToCString(), aBuilder));
+  ASSERT_TRUE(BRepTools::Read(aTool, aToolPath.ToCString(), aBuilder));
 
   BRepAlgoAPI_Cut aCut(aBase, aTool);
   aCut.Build();
