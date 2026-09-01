@@ -233,6 +233,7 @@ protected:
       aLink.Reverse();
     return aLink;
   }
+
 private:
   int  findContour(int                                           theIndexS,
                    NCollection_IndexedMap<int>&                  theContour,

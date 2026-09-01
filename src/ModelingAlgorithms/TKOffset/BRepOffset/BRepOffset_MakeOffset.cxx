@@ -2111,7 +2111,6 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
       }
     }
   }
-
 }
 
 //=================================================================================================
@@ -2963,7 +2962,6 @@ void BRepOffset_MakeOffset::MakeLoops(
     InSide = false;
   }
   myMakeLoops.BuildOnContext(LC, myAnalyse, myAsDes, myImageOffset, InSide, aPS.Next(LC.Extent()));
-
 }
 
 //=======================================================================
@@ -4043,7 +4041,6 @@ void BRepOffset_MakeOffset::EncodeRegularity()
       }
     }
   }
-
 }
 
 //=================================================================================================

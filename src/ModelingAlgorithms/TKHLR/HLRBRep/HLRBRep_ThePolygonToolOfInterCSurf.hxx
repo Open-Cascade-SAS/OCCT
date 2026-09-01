@@ -61,7 +61,6 @@ public:
   {
     return thePolygon.EndOfSeg(Index);
   }
-
 };
 
 #endif // _HLRBRep_ThePolygonToolOfInterCSurf_HeaderFile

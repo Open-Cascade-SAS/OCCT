@@ -63,7 +63,6 @@ public:
   {
     return thePolygon.EndOfSeg(Index);
   }
-
 };
 
 #endif // _IntCurveSurface_ThePolygonToolOfHInter_HeaderFile

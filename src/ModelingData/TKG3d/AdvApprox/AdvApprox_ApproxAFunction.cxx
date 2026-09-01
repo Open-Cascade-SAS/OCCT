@@ -324,7 +324,7 @@ void AdvApprox_ApproxAFunction::Approximation(
   int&                        ErrorCode)
 {
   //  double EpsPar =  Precision::Confusion();
-  int NUPIL, TheDeg;
+  int  NUPIL, TheDeg;
   bool isCut = false;
 
   // Definition of C arrays

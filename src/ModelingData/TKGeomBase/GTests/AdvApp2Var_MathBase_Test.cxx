@@ -206,7 +206,7 @@ TEST(AdvApp2Var_SysBaseTest, MemoryFillHandlesOverlapAndNonPositiveSizes)
   EXPECT_EQ(aValues, (std::array<int, 4>{1, 1, 2, 3}));
 
   const std::array<int, 4> anExpected = aValues;
-  aSize                                = -1;
+  aSize                               = -1;
   AdvApp2Var_SysBase::mcrfill_(&aSize, aValues.data(), aValues.data() + 1);
   EXPECT_EQ(aValues, anExpected);
 

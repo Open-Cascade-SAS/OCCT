@@ -86,13 +86,13 @@ struct mmapgs2_1_
 class AdvApp2Var_Data
 {
 public:
-  static const mlgdrtl_1_&              Getmlgdrtl();
-  static const mmjcobi_1_&              Getmmjcobi();
-  static const mmcmcnp_1_&              Getmmcmcnp();
-  static const mmapgss_1_&              Getmmapgss();
-  static const mmapgs0_1_&              Getmmapgs0();
-  static const mmapgs1_1_&              Getmmapgs1();
-  static const mmapgs2_1_&              Getmmapgs2();
+  static const mlgdrtl_1_& Getmlgdrtl();
+  static const mmjcobi_1_& Getmmjcobi();
+  static const mmcmcnp_1_& Getmmcmcnp();
+  static const mmapgss_1_& Getmmapgss();
+  static const mmapgs0_1_& Getmmapgs0();
+  static const mmapgs1_1_& Getmmapgs1();
+  static const mmapgs2_1_& Getmmapgs2();
 };
 
 #endif

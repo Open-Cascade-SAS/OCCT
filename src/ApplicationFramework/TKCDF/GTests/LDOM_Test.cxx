@@ -49,7 +49,7 @@ TEST(LDOM_CharReference, EncodeCharacterClasses)
 
 TEST(LDOM_BasicElement, CreateInitializesElement)
 {
-  occ::handle<LDOM_MemManager> aManager = new LDOM_MemManager(1024);
+  occ::handle<LDOM_MemManager> aManager  = new LDOM_MemManager(1024);
   LDOM_BasicElement&           anElement = LDOM_BasicElement::Create("element", 7, aManager);
 
   EXPECT_FALSE(anElement.isNull());

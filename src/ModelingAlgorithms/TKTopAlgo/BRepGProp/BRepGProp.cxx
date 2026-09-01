@@ -166,7 +166,7 @@ static double surfaceProperties(const TopoDS_Shape& S,
                                 const bool          SkipShared,
                                 const bool          UseTriangulation)
 {
-  int i;
+  int              i;
   double           ErrorMax = 0.0, Error;
   TopExp_Explorer  ex;
   gp_Pnt           P(roughBaryCenter(S));
@@ -284,7 +284,7 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
                                     const bool          SkipShared,
                                     const bool          UseTriangulation)
 {
-  int i;
+  int              i;
   double           ErrorMax = 0.0, Error = 0.0;
   TopExp_Explorer  ex;
   BRepGProp_Vinert G;
@@ -565,7 +565,7 @@ double BRepGProp::VolumeProperties(const TopoDS_Shape& S,
   gp_Pnt P(0, 0, 0);
   P.Transform(S.Location());
   Props = GProp_GProps(P);
-  int i;
+  int    i;
   double ErrorMax = 0.0, Error = 0.0;
   if (OnlyClosed)
   {

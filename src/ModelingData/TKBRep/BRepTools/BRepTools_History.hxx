@@ -257,7 +257,6 @@ private: //! Data to keep the history.
     myShapeToGenerated;
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved; //!< The removed shapes.
-
 };
 
 #endif // _BRepTools_History_HeaderFile

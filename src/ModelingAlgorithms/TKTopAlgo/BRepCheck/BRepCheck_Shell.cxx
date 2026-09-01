@@ -759,7 +759,6 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
               }
               orf                         = TopAbs::Reverse(orf);
               MapOfShapeOrientation(Fcur) = orf;
-
             }
             if (alre.Add(Fcur))
             {

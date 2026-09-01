@@ -391,7 +391,6 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
       myIntersector.Perform(myC1, D1, myC2, D2, tol, tol);
     }
   } while (aPasBon);
-
 }
 
 //=================================================================================================

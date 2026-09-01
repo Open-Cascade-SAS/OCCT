@@ -71,6 +71,7 @@
 #include <NCollection_Array1.hxx>
 
 #include <cstdio>
+
 static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1,
                        NCollection_Sequence<occ::handle<Geom_Curve>>&       Seq2)
 {

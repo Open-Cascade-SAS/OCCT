@@ -24,9 +24,9 @@ static constexpr const char* TopAbs_Table_PrintShapeEnum[9] =
   {"COMPOUND", "COMPSOLID", "SOLID", "SHELL", "FACE", "WIRE", "EDGE", "VERTEX", "SHAPE"};
 
 static constexpr const char* TopAbs_Table_PrintOrientation[4] = {"FORWARD",
-                                                       "REVERSED",
-                                                       "INTERNAL",
-                                                       "EXTERNAL"};
+                                                                 "REVERSED",
+                                                                 "INTERNAL",
+                                                                 "EXTERNAL"};
 } // namespace
 
 //=================================================================================================

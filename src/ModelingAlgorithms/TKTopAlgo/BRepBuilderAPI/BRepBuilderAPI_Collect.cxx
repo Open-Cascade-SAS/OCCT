@@ -164,6 +164,7 @@ static void Update(
     }
   }
 }
+
 //=================================================================================================
 
 BRepBuilderAPI_Collect::BRepBuilderAPI_Collect() = default;
@@ -186,7 +187,6 @@ void BRepBuilderAPI_Collect::Add(const TopoDS_Shape& SI, BRepBuilderAPI_MakeShap
   Update(myMod, myGen, ModBack, GenBack, SI, MKS, TopAbs_WIRE);
   Update(myMod, myGen, ModBack, GenBack, SI, MKS, TopAbs_EDGE);
   Update(myMod, myGen, ModBack, GenBack, SI, MKS, TopAbs_VERTEX);
-
 }
 
 //=================================================================================================

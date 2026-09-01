@@ -65,9 +65,9 @@ public:
   ~Record() = default;
 
 public:
-  Record*   myNext;  //!< Next record in the list
-  Argument* myFirst; //!< First argument in the record
-  Argument* myLast;  //!< Last argument in the record
+  Record*     myNext;  //!< Next record in the list
+  Argument*   myFirst; //!< First argument in the record
+  Argument*   myLast;  //!< Last argument in the record
   const char* myIdent; //!< Record identifier (Example: "#12345") or scope-end
   const char* myType;  //!< Type of the record
 };
@@ -419,7 +419,7 @@ void StepFile_ReadData::GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage
 
 bool StepFile_ReadData::GetRecordDescription(const char** theIdent,
                                              const char** theType,
-                                             int*        theNbArg)
+                                             int*         theNbArg)
 {
   if (myCurRec == nullptr)
   {

@@ -22,7 +22,7 @@
 
 TEST(Contap_HContToolTest, SurfaceSamplingHasNoCrossCallState)
 {
-  const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
+  const occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
   const occ::handle<Adaptor3d_Surface> aFirstSurface =
     new GeomAdaptor_Surface(aPlane, 0.0, 4.0, 10.0, 14.0);
   const occ::handle<Adaptor3d_Surface> aSecondSurface =

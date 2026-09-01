@@ -54,6 +54,7 @@ constexpr double MyTolerance                = 10.0e-7;
 constexpr double MyConfusionPrecision       = 10.0e-12;
 constexpr double SquareMyConfusionPrecision = 10.0e-24;
 } // namespace
+
 //
 static inline double maxSR(const double a, const double b, const double c);
 

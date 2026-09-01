@@ -70,8 +70,8 @@ const char* const* extensions()
 #if defined(_WIN32)
   static constexpr const char* const THE_EXTENSIONS[] = {"ttf", "otf", "ttc", nullptr};
 #else
-  static constexpr const char* const THE_EXTENSIONS[] = {
-    "ttf", "otf", "ttc", "pfa", "pfb", nullptr};
+  static constexpr const char* const THE_EXTENSIONS[] =
+    {"ttf", "otf", "ttc", "pfa", "pfb", nullptr};
 #endif
   return THE_EXTENSIONS;
 }
@@ -96,11 +96,14 @@ const char* const* fontServiceConfigurations()
 const char* const* defaultFontDirectories()
 {
   #if defined(__APPLE__)
-  static constexpr const char* const THE_DIRECTORIES[] = {
-    "/System/Library/Fonts", "/Library/Fonts", nullptr};
+  static constexpr const char* const THE_DIRECTORIES[] = {"/System/Library/Fonts",
+                                                          "/Library/Fonts",
+                                                          nullptr};
   #else
-  static constexpr const char* const THE_DIRECTORIES[] = {
-    "/system/fonts", "/usr/share/fonts", "/usr/local/share/fonts", nullptr};
+  static constexpr const char* const THE_DIRECTORIES[] = {"/system/fonts",
+                                                          "/usr/share/fonts",
+                                                          "/usr/local/share/fonts",
+                                                          nullptr};
   #endif
   return THE_DIRECTORIES;
 }

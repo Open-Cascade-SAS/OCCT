@@ -949,13 +949,13 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
               aPINod1->ChangeValue(aPol1(iPol));
             aNode12Indices = &pi1p2iPol->Indices();
             aNod12RValues  = &pi1p2iPol->Data();
-            X1   = X2;
-            Y1   = Y2;
-            Z1   = Z2;
-            XTI1 = XTI2;
-            YTI1 = YTI2;
-            ZTI1 = ZTI2;
-            U1   = U2;
+            X1             = X2;
+            Y1             = Y2;
+            Z1             = Z2;
+            XTI1           = XTI2;
+            YTI1           = YTI2;
+            ZTI1           = ZTI2;
+            U1             = U2;
             XTI2 = X2 = aNod12RValues->Point.X();
             YTI2 = Y2 = aNod12RValues->Point.Y();
             ZTI2 = Z2 = aNod12RValues->Point.Z();
@@ -1149,13 +1149,13 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
               &aPINod2->ChangeValue(aPol2(iPol));
             aNod22Indices = &(*pi2p2iPol)->Indices();
             aNod22RValues = &(*pi2p2iPol)->Data();
-            X1   = X2;
-            Y1   = Y2;
-            Z1   = Z2;
-            XTI1 = XTI2;
-            YTI1 = YTI2;
-            ZTI1 = ZTI2;
-            U1   = U2;
+            X1            = X2;
+            Y1            = Y2;
+            Z1            = Z2;
+            XTI1          = XTI2;
+            YTI1          = YTI2;
+            ZTI1          = ZTI2;
+            U1            = U2;
             XTI2 = X2 = aNod12RValues->Point.X();
             YTI2 = Y2 = aNod12RValues->Point.Y();
             ZTI2 = Z2 = aNod12RValues->Point.Z();
@@ -2933,7 +2933,6 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(
       TTMa[2][2]              = aTTrsfMat.Value(3, 3);
     }
 
-
     const int aNbSegs = aPid->NbPISeg();
     for (int aSegIter = 1; aSegIter <= aNbSegs; ++aSegIter)
     {
@@ -3045,7 +3044,6 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(
     {
       aPid->IntOutL(true);
     }
-
   }
 }
 

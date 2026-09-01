@@ -678,9 +678,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
         tterm     = ncrossns1.Dot(dnplan.Crossed(nsurf1));
         smallterm = -tterm * cube;
         // Derived from the norm
-        uterm     = ncrossns1.Dot(nplan.Crossed(dns1u1));
-        DSecn     = (nplan.Crossed(dns1u1)).Dot(dnplan.Crossed(nsurf1))
-                    + ncrossns1.Dot(dnplan.Crossed(dns1u1));
+        uterm = ncrossns1.Dot(nplan.Crossed(dns1u1));
+        DSecn = (nplan.Crossed(dns1u1)).Dot(dnplan.Crossed(nsurf1))
+                + ncrossns1.Dot(dnplan.Crossed(dns1u1));
         grosterme = (3 * uterm * tterm * carre - DSecn) * cube;
         uterm *= -cube;
 
@@ -703,9 +703,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
 
         //--> Derived compared to v1 and t
         // Derived from the norm
-        uterm     = ncrossns1.Dot(nplan.Crossed(dns1v1));
-        DSecn     = (nplan.Crossed(dns1v1)).Dot(dnplan.Crossed(nsurf1))
-                    + ncrossns1.Dot(dnplan.Crossed(dns1v1));
+        uterm = ncrossns1.Dot(nplan.Crossed(dns1v1));
+        DSecn = (nplan.Crossed(dns1v1)).Dot(dnplan.Crossed(nsurf1))
+                + ncrossns1.Dot(dnplan.Crossed(dns1v1));
         grosterme = (3 * uterm * tterm * carre - DSecn) * cube;
         uterm *= -cube;
 
@@ -731,9 +731,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
         tterm     = ncrossns2.Dot(dnplan.Crossed(nsurf2));
         smallterm = -tterm * cube;
         // Derived from the norm
-        uterm     = ncrossns2.Dot(nplan.Crossed(dns1u2));
-        DSecn     = (nplan.Crossed(dns1u2)).Dot(dnplan.Crossed(nsurf2))
-                    + ncrossns2.Dot(dnplan.Crossed(dns1u2));
+        uterm = ncrossns2.Dot(nplan.Crossed(dns1u2));
+        DSecn = (nplan.Crossed(dns1u2)).Dot(dnplan.Crossed(nsurf2))
+                + ncrossns2.Dot(dnplan.Crossed(dns1u2));
         grosterme = (3 * uterm * tterm * carre - DSecn) * cube;
         uterm *= -cube;
 
@@ -756,9 +756,9 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
 
         //--> Derived compared to v2 and t
         // Derived from the norm
-        uterm     = ncrossns2.Dot(nplan.Crossed(dns1v2));
-        DSecn     = (nplan.Crossed(dns1v2)).Dot(dnplan.Crossed(nsurf2))
-                    + ncrossns2.Dot(dnplan.Crossed(dns1v2));
+        uterm = ncrossns2.Dot(nplan.Crossed(dns1v2));
+        DSecn = (nplan.Crossed(dns1v2)).Dot(dnplan.Crossed(nsurf2))
+                + ncrossns2.Dot(dnplan.Crossed(dns1v2));
         grosterme = (3 * uterm * tterm * carre - DSecn) * cube;
         uterm *= -cube;
 
