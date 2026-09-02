@@ -61,11 +61,8 @@
 #include <Standard_Integer.hxx>
 #include <Message_ProgressScope.hxx>
 
-#include <cstdio>
-
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
-static int Affich = 0;
 #endif
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
@@ -621,17 +618,6 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
 
   do
   {
-#ifdef OCCT_DEBUG
-    if (Affich && NbBoucle)
-    {
-      std::cout << "Resultats boucle" << NbBoucle << std::endl;
-      std::cout << "DistMax=" << myG0Error << std::endl;
-      if (myG1Error != 0)
-        std::cout << "AngleMax=" << myG1Error << std::endl;
-      if (myG2Error != 0)
-        std::cout << "CourbMax=" << myG2Error << std::endl;
-    }
-#endif
     NbBoucle++;
     if (NTLinCont != 0)
     { //====================================================================
@@ -1948,13 +1934,6 @@ void GeomPlate_BuildPlateSurface::Intersect(
           int2d = Intersection.Point(k);
           myLinCont->Value(i)->D0(int2d.ParamOnFirst(), P1);
           myLinCont->Value(j)->D0(int2d.ParamOnSecond(), P2);
-#ifdef OCCT_DEBUG
-          if (Affich > 1)
-          {
-            std::cout << " Intersection " << k << " entre " << i << " &" << j << std::endl;
-            std::cout << "  Distance = " << P1.Distance(P2) << std::endl;
-          }
-#endif
           if (P1.Distance(P2) < myTol3d)
           { // 2D intersection corresponds to close 3D points.
             // Note the interval, in which the point needs to be removed
@@ -2019,11 +1998,6 @@ void GeomPlate_BuildPlateSurface::Intersect(
                 {
                   Tol = 100000 * myTol3d;
                 }
-#ifdef OCCT_DEBUG
-                if (Affich)
-                  std::cout << "Angle between curves " << i << "," << j << " "
-                            << std::abs(std::abs(A1) - M_PI) << std::endl;
-#endif
 
                 coin        = Ci.Resolution(Tol);
                 double Par1 = int2d.ParamOnFirst() - coin, Par2 = int2d.ParamOnFirst() + coin;
@@ -2078,11 +2052,6 @@ void GeomPlate_BuildPlateSurface::Intersect(
                 {
                   Tol = 100000 * myTol3d;
                 }
-#ifdef OCCT_DEBUG
-                if (Affich)
-                  std::cout << "Angle entre Courbe " << i << "," << j << " "
-                            << std::abs(std::abs(A1) - M_PI) << std::endl;
-#endif
                 if (myLinCont->Value(i)->Order() == 1)
                 {
                   coin = Ci.Resolution(Tol);
@@ -2225,14 +2194,6 @@ void GeomPlate_BuildPlateSurface::Discretise(
     NbPtInter = PntInter->Value(i).Length();
     NbPtG1G1  = PntG1G1->Value(i).Length();
 
-#ifdef OCCT_DEBUG
-    if (Affich > 1)
-    {
-      std::cout << "Courbe : " << i << std::endl;
-      std::cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " << NbPtInter << ", "
-                << NbPtG1G1 << std::endl;
-    }
-#endif
     for (int j = 1; j <= NbPnt_i; j++)
     {
       // Distribution of points in cosine following ACR 2D

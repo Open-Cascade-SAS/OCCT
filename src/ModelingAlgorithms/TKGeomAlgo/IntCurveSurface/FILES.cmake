@@ -28,7 +28,6 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_ThePolygonOfHInter.hxx
   IntCurveSurface_ThePolygonOfHInter.cxx
   IntCurveSurface_ThePolygonToolOfHInter.hxx
-  IntCurveSurface_ThePolygonToolOfHInter.cxx
   IntCurveSurface_ThePolyhedronOfHInter.hxx
   IntCurveSurface_ThePolyhedronOfHInter.cxx
   IntCurveSurface_ThePolyhedronToolOfHInter.hxx

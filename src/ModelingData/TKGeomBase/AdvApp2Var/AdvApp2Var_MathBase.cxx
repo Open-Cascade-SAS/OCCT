@@ -18,38 +18,41 @@
 #include <AdvApp2Var_MathBase.hxx>
 #include "AdvApp2Var_Data.pxx"
 #include <NCollection_Array1.hxx>
+#include <PLib_JacobiPolynomial.hxx>
 
 namespace
 {
-// Keep legacy behavior: numerical thresholds are configured once before first public use.
-void initMathBasePrecision()
+constexpr double THE_SPATIAL_EPSILON  = 1.0e-9;
+constexpr double THE_DIVISION_EPSILON = 1.0e-9;
+
+// Canonical coefficients of Hermite basis polynomials on [-1, 1].
+// Each row stores six coefficients for every endpoint constraint of a given order.
+constexpr double THE_HERMITE_COEFFICIENTS[3][36] = {
+  {0.5, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0},
+  {0.5, -0.75, 0.0, 0.25, 0.0,  0.0, 0.25,  -0.25, -0.25, 0.25,  0.0,   0.0,  0.0,  0.0, 0.0,
+   0.0, 0.0,   0.0, 0.5,  0.75, 0.0, -0.25, 0.0,   0.0,   -0.25, -0.25, 0.25, 0.25, 0.0, 0.0},
+  {0.5,   -0.9375, 0.0,     0.625,  0.0,     -0.1875, 0.3125,  -0.4375, -0.375,
+   0.625, 0.0625,  -0.1875, 0.0625, -0.0625, -0.125,  0.125,   0.0625,  -0.0625,
+   0.5,   0.9375,  0.0,     -0.625, 0.0,     0.1875,  -0.3125, -0.4375, 0.375,
+   0.625, -0.0625, -0.1875, 0.0625, 0.0625,  -0.125,  -0.125,  0.0625,  0.0625}};
+
+bool loadHermiteCoefficients(const int theOrder, double* theCoefficients)
 {
-  constexpr double THE_EPSILON_1 = 1.0e-9;
-  constexpr double THE_EPSILON_2 = 1.0e-8;
-  constexpr double THE_EPSILON_3 = 1.0e-9;
-  constexpr double THE_EPSILON_4 = 1.0e-4;
-  constexpr int    THE_ITER_1    = 8;
-  constexpr int    THE_ITER_2    = 40;
-
-  double anEpsilon1 = THE_EPSILON_1;
-  double anEpsilon2 = THE_EPSILON_2;
-  double anEpsilon3 = THE_EPSILON_3;
-  double anEpsilon4 = THE_EPSILON_4;
-  int    anIter1    = THE_ITER_1;
-  int    anIter2    = THE_ITER_2;
-  AdvApp2Var_MathBase::mmwprcs_(&anEpsilon1,
-                                &anEpsilon2,
-                                &anEpsilon3,
-                                &anEpsilon4,
-                                &anIter1,
-                                &anIter2);
-}
-
-// One-time static initialization trigger for this translation unit.
-[[maybe_unused]] const bool THE_STMAT_LIB_INIT = []() {
-  initMathBasePrecision();
+  if (theOrder < -1 || theOrder > 2)
+  {
+    return false;
+  }
+  if (theOrder < 0)
+  {
+    std::fill_n(theCoefficients, 36, 0.0);
+  }
+  else
+  {
+    std::copy_n(THE_HERMITE_COEFFICIENTS[theOrder], 36, theCoefficients);
+  }
   return true;
-}();
+}
 } // namespace
 
 // statics
@@ -141,9 +144,6 @@ static int mmexthi_(int* ndegre, NCollection_Array1<double>& hwgaus);
 
 static int mmextrl_(int* ndegre, NCollection_Array1<double>& rootlg);
 
-static int mmherm0_(double* debfin, int* iercod);
-
-static int mmherm1_(double* debfin, int* ordrmx, int* iordre, double* hermit, int* iercod);
 static int mmloncv_(int*    ndimax,
                     int*    ndimen,
                     int*    ncoeff,
@@ -217,17 +217,6 @@ static int mvgaus0_(int* kindic, double* urootl, double* hiltab, int* nbrval, in
 static int mvpscr2_(int* ncoeff, double* curve2, double* tparam, double* pntcrb);
 
 static int mvpscr3_(int* ncoeff, double* curve2, double* tparam, double* pntcrb);
-
-static struct
-{
-  double eps1, eps2, eps3, eps4;
-  int    niterm, niterr;
-} mmprcsn_;
-
-static struct
-{
-  double tdebut, tfinal, verifi, cmherm[576];
-} mmcmher_;
 
 //=================================================================================================
 
@@ -603,44 +592,15 @@ int mmaper2_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
-                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-                             3.72184531357268220291630708234186};
-
   /* System generated locals */
   int    crvjac_dim1, crvjac_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    idec, ncut;
-  double bidon;
-  int    ii, nd;
+  int                               idec, ncut;
+  double                            bidon;
+  int                               ii, nd;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C0);
 
   /* **********************************************************************/
 
@@ -708,7 +668,7 @@ int mmaper2_(int*    ncofmx,
   for (ii = ncut; ii <= i__1; ++ii)
   {
     /*   Factor of renormalization. */
-    bidon = xmaxj[ii - idec];
+    bidon = aMaxValues.At(static_cast<size_t>(ii - idec));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -745,43 +705,15 @@ int mmaper4_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-                             3.05886060707437081434964933864149};
-
   /* System generated locals */
   int    crvjac_dim1, crvjac_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    idec, ncut;
-  double bidon;
-  int    ii, nd;
+  int                               idec, ncut;
+  double                            bidon;
+  int                               ii, nd;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C1);
 
   /* ***********************************************************************/
 
@@ -850,7 +782,7 @@ int mmaper4_(int*    ncofmx,
   for (ii = ncut; ii <= i__1; ++ii)
   {
     /*   Factor of renormalisation. */
-    bidon = xmaxj[ii - idec];
+    bidon = aMaxValues.At(static_cast<size_t>(ii - idec));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -882,42 +814,15 @@ int mmaper6_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-                             2.71238965987606292679677228666411};
-
   /* System generated locals */
   int    crvjac_dim1, crvjac_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    idec, ncut;
-  double bidon;
-  int    ii, nd;
+  int                               idec, ncut;
+  double                            bidon;
+  int                               ii, nd;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C2);
 
   /* ***********************************************************************/
   /*     FUNCTION : */
@@ -985,7 +890,7 @@ int mmaper6_(int*    ncofmx,
   for (ii = ncut; ii <= i__1; ++ii)
   {
     /*   Factor of renormalization. */
-    bidon = xmaxj[ii - idec];
+    bidon = aMaxValues.At(static_cast<size_t>(ii - idec));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -1951,7 +1856,7 @@ int AdvApp2Var_MathBase::mmcdriv_(int*    ndimen,
   i__1 = *ncoeff;
   for (j = k + 1; j <= i__1; ++j)
   {
-    bid  = AdvApp2Var_Data::Getmmcmcnp().cnp[j - 1 + k * 61] * mfactk;
+    bid  = AdvApp2Var_Data::Getmmcmcnp().Cnp()[j - 1 + k * 61] * mfactk;
     i__2 = *ndimen;
     for (i__ = 1; i__ <= i__2; ++i__)
     {
@@ -2617,8 +2522,6 @@ int AdvApp2Var_MathBase::mmcvinv_(int* ndimax, int* ncoef, int* ndim, double* cu
 {
   /* Initialized data */
 
-  static char nomprg[8 + 1] = "MMCVINV ";
-
   /* System generated locals */
   int curve_dim1, curve_offset, curveo_dim1, curveo_offset, i__1, i__2;
 
@@ -2668,7 +2571,7 @@ int AdvApp2Var_MathBase::mmcvinv_(int* ndimax, int* ncoef, int* ndim, double* cu
   ibb = AdvApp2Var_SysBase::mnfndeb_();
   if (ibb >= 2)
   {
-    AdvApp2Var_SysBase::mgenmsg_(nomprg, 6L);
+    AdvApp2Var_SysBase::mgenmsg_("MMCVINV", 6L);
   }
 
   i__1 = *ncoef;
@@ -2782,7 +2685,7 @@ int mmcvstd_(int* ncofmx, int* ndimax, int* ncoeff, int* ndimen, double* crvcan,
       i__3 = ndeg;
       for (i__ = j; i__ <= i__3; i__ += 2)
       {
-        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().cnp[i__ + j * 61];
+        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().Cnp()[i__ + j * 61];
         /* L410: */
       }
       courbe[nd + j * courbe_dim1] = bid;
@@ -2792,7 +2695,7 @@ int mmcvstd_(int* ncofmx, int* ndimax, int* ncoeff, int* ndimen, double* crvcan,
       i__3 = ndeg;
       for (i__ = j1; i__ <= i__3; i__ += 2)
       {
-        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().cnp[i__ + j * 61];
+        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().Cnp()[i__ + j * 61];
         /* L420: */
       }
       courbe[nd + j * courbe_dim1] -= bid;
@@ -3198,27 +3101,27 @@ int AdvApp2Var_MathBase::mmdrvck_(int*    ncoeff,
 {
   /* Initialized data */
 
-  static double mmfack[21] = {1.,
-                              2.,
-                              6.,
-                              24.,
-                              120.,
-                              720.,
-                              5040.,
-                              40320.,
-                              362880.,
-                              3628800.,
-                              39916800.,
-                              479001600.,
-                              6227020800.,
-                              87178291200.,
-                              1.307674368e12,
-                              2.0922789888e13,
-                              3.55687428096e14,
-                              6.402373705728e15,
-                              1.21645100408832e17,
-                              2.43290200817664e18,
-                              5.109094217170944e19};
+  constexpr double mmfack[21] = {1.,
+                                 2.,
+                                 6.,
+                                 24.,
+                                 120.,
+                                 720.,
+                                 5040.,
+                                 40320.,
+                                 362880.,
+                                 3628800.,
+                                 39916800.,
+                                 479001600.,
+                                 6227020800.,
+                                 87178291200.,
+                                 1.307674368e12,
+                                 2.0922789888e13,
+                                 3.55687428096e14,
+                                 6.402373705728e15,
+                                 1.21645100408832e17,
+                                 2.43290200817664e18,
+                                 5.109094217170944e19};
 
   /* System generated locals */
   int courbe_dim1, courbe_offset, i__1, i__2;
@@ -3355,14 +3258,14 @@ int AdvApp2Var_MathBase::mmdrvck_(int*    ncoeff,
   for (nd = 1; nd <= i__1; ++nd)
   {
     pntcrb[nd] = courbe[nd + *ncoeff * courbe_dim1]
-                 * AdvApp2Var_Data::Getmmcmcnp().cnp[*ncoeff - 1 + k * 61] * mfactk;
+                 * AdvApp2Var_Data::Getmmcmcnp().Cnp()[*ncoeff - 1 + k * 61] * mfactk;
     /* L300: */
   }
 
   i__1 = k + 1;
   for (j = *ncoeff - 1; j >= i__1; --j)
   {
-    bid  = AdvApp2Var_Data::Getmmcmcnp().cnp[j - 1 + k * 61] * mfactk;
+    bid  = AdvApp2Var_Data::Getmmcmcnp().Cnp()[j - 1 + k * 61] * mfactk;
     i__2 = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -3385,82 +3288,8 @@ L9999:
 int AdvApp2Var_MathBase::mmeps1_(double* epsilo)
 
 {
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*        Extraction of EPS1 from COMMON MPRCSN. EPS1 is spatial zero  */
-  /*     equal to 1.D-9 */
-
-  /*     KEYWORDS : */
-  /*     ---------- */
-  /*        MPRCSN,PRECISON,EPS1. */
-
-  /*     INPUT ARGUMENTS : */
-  /*     ------------------ */
-  /*        None */
-
-  /*     OUTPUT ARGUMENTS : */
-  /*     ------------------- */
-  /*        EPSILO : Value of EPS1 (spatial zero (10**-9)) */
-
-  /*     COMMONS USED   : */
-  /*     ---------------- */
-
-  /*     REFERENCES CALLED   : */
-  /*     ----------------------- */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  /*     EPS1 is ABSOLUTE spatial zero, so it is necessary */
-  /*     to use it whenever it is necessary to test if a variable */
-  /*     is null. For example, if the norm of a vector is lower than */
-  /*     EPS1, this vector is NULL ! (when one works in */
-  /*     REAL*8) It is absolutely not advised to test arguments  */
-  /*     compared to EPS1**2. Taking into account the rounding errors inevitable */
-  /*     during calculations, this causes testing compared to 0.D0. */
-  /* > */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*          Gives tolerances of invalidity in stream */
-  /*          as well as limits of iterative processes */
-
-  /*          general context, modifiable by the user */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*          PARAMETER , TOLERANCE */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  /*       INITIALISATION   :  profile , **VIA MPRFTX** at input in stream */
-  /*       loading of default values of the profile in MPRFTX at input */
-  /*       in stream. They are preserved in local variables of MPRFTX */
-
-  /*        Reset of default values                  : MDFINT */
-  /*        Interactive modification by the user   : MDBINT */
-
-  /*        ACCESS FUNCTION  :  MMEPS1   ...  EPS1 */
-  /*                            MEPSPB  ...  EPS3,EPS4 */
-  /*                            MEPSLN  ...  EPS2, NITERM , NITERR */
-  /*                            MEPSNR  ...  EPS2 , NITERM */
-  /*                            MITERR  ...  NITERR */
-  /* > */
-  /* ***********************************************************************/
-
-  /*     NITERM : max nb of iterations */
-  /*     NITERR : nb of rapid iterations */
-  /*     EPS1   : tolerance of 3D null distance */
-  /*     EPS2   : tolerance of parametric null distance */
-  /*     EPS3   : tolerance to avoid division by 0.. */
-  /*     EPS4   : angular tolerance */
-
-  /* ***********************************************************************/
-  *epsilo = mmprcsn_.eps1;
+  // Absolute spatial-zero tolerance used by the translated numerical routines.
+  *epsilo = THE_SPATIAL_EPSILON;
 
   return 0;
 } /* mmeps1_ */
@@ -3574,7 +3403,7 @@ int mmexthi_(int* ndegre, NCollection_Array1<double>& hwgaus)
   for (ii = ideb; ii <= i__1; ++ii)
   {
     kpt        = iadd + ii - ideb;
-    hwgaus(ii) = AdvApp2Var_Data::Getmlgdrtl().hiltab[kpt + nmod2 * 465 - 1];
+    hwgaus(ii) = AdvApp2Var_Data::Getmlgdrtl().Hiltab()[kpt + nmod2 * 465 - 1];
     /* L100: */
   }
 
@@ -3593,7 +3422,7 @@ int mmexthi_(int* ndegre, NCollection_Array1<double>& hwgaus)
 
   if (nmod2 == 1)
   {
-    hwgaus(ndeg2 + 1) = AdvApp2Var_Data::Getmlgdrtl().hi0tab[ndeg2];
+    hwgaus(ndeg2 + 1) = AdvApp2Var_Data::Getmlgdrtl().Hi0tab()[ndeg2];
   }
 
   /* --------------------------- The end --------------------------------- */
@@ -3710,7 +3539,7 @@ int mmextrl_(int* ndegre, NCollection_Array1<double>& rootlg)
   for (ii = ideb; ii <= i__1; ++ii)
   {
     kpt        = iadd + ii - ideb;
-    rootlg(ii) = AdvApp2Var_Data::Getmlgdrtl().rootab[kpt + nmod2 * 465 - 1];
+    rootlg(ii) = AdvApp2Var_Data::Getmlgdrtl().Rootab()[kpt + nmod2 * 465 - 1];
     /* L100: */
   }
 
@@ -4732,496 +4561,6 @@ L9999:
 
 //=================================================================================================
 
-int mmherm0_(double* debfin, int* iercod)
-{
-  int c__576 = 576;
-  int c__6   = 6;
-
-  /* System generated locals */
-  int    i__1, i__2;
-  double d__1;
-
-  /* Local variables */
-  double amat[36] /* was [6][6] */;
-  int    iord[2];
-  double prod;
-  int    iord1, iord2;
-  double miden[36] /* was [6][6] */;
-  int    ncmat;
-  double epspi, d1, d2;
-  int    ii, jj, pp, ncf;
-  double cof[6];
-  int    iof[2], ier;
-  double mat[36] /* was [6][6] */;
-  int    cot;
-  double abid[72] /* was [12][6] */;
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*      INIT OF COEFFS. OF POLYNOMS OF HERMIT INTERPOLATION */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*      MATH_ACCES :: HERMITE */
-
-  /*     INPUT ARGUMENTS */
-  /*     -------------------- */
-  /*       DEBFIN : PARAMETERS DEFINING THE CONSTRAINTS */
-  /*                 DEBFIN(1) : FIRST PARAMETER */
-  /*                 DEBFIN(2) : SECOND PARAMETER */
-
-  /*      ONE SHOULD HAVE: */
-  /*                 ABS (DEBFIN(I)) < 100 */
-  /*                 and */
-  /*                 (ABS(DEBFIN(1)+ABS(DEBFIN(2))) > 1/100 */
-  /*           (for overflows) */
-
-  /*      ABS(DEBFIN(2)-DEBFIN(1)) / (ABS(DEBFIN(1)+ABS(DEBFIN(2))) > 1/100 */
-  /*           (for the conditioning) */
-
-  /*     OUTPUT ARGUMENTS : */
-  /*     --------------------- */
-
-  /*       IERCOD : Error code : 0 : O.K. */
-  /*                                1 : value of DEBFIN */
-  /*                                are unreasonable */
-  /*                                -1 : init was already done */
-  /*                                   (OK but no processing) */
-
-  /*     COMMONS USED : */
-  /*     ------------------ */
-
-  /*     REFERENCES CALLED : */
-  /*     ---------------------- */
-  /*     Type  Name */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /*        This program initializes the coefficients of Hermit polynoms */
-  /*     that are read later by MMHERM1 */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*      Used to STORE  coefficients of Hermit interpolation polynoms */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*      HERMITE */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /*     The coefficients of hermit polynoms are calculated by */
-  /*     the routine MMHERM0 and read by the routine MMHERM1 */
-  /* > */
-  /* ***********************************************************************/
-
-  /*     NBCOEF is the size of CMHERM (see below) */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-  /*     Data checking */
-  /* ***********************************************************************/
-
-  /* Parameter adjustments */
-  --debfin;
-
-  /* Function Body */
-  d1 = std::abs(debfin[1]);
-  if (d1 > (float)100.)
-  {
-    goto L9101;
-  }
-
-  d2 = std::abs(debfin[2]);
-  if (d2 > (float)100.)
-  {
-    goto L9101;
-  }
-
-  d2 = d1 + d2;
-  if (d2 < (float).01)
-  {
-    goto L9101;
-  }
-
-  d1 = (d__1 = debfin[2] - debfin[1], std::abs(d__1));
-  if (d1 / d2 < (float).01)
-  {
-    goto L9101;
-  }
-
-  /* ***********************************************************************/
-  /*     Initialization                                                    */
-  /* ***********************************************************************/
-
-  *iercod = 0;
-
-  epspi = 1e-10;
-
-  /* ***********************************************************************/
-
-  /*     IS IT ALREADY INITIALIZED ? */
-
-  d1 = std::abs(debfin[1]) + std::abs(debfin[2]);
-  d1 *= 16111959;
-
-  if (debfin[1] != mmcmher_.tdebut)
-  {
-    goto L100;
-  }
-  if (debfin[2] != mmcmher_.tfinal)
-  {
-    goto L100;
-  }
-  if (d1 != mmcmher_.verifi)
-  {
-    goto L100;
-  }
-
-  goto L9001;
-
-  /* ***********************************************************************/
-  /*     CALCULATION                                                       */
-  /* ***********************************************************************/
-
-L100:
-
-  /*     Init. matrix identity : */
-
-  ncmat = 36;
-  AdvApp2Var_SysBase::mvriraz_(&ncmat, miden);
-
-  for (ii = 1; ii <= 6; ++ii)
-  {
-    miden[ii + ii * 6 - 7] = 1.;
-    /* L110: */
-  }
-
-  /*     Init to 0 of table CMHERM */
-
-  AdvApp2Var_SysBase::mvriraz_(&c__576, mmcmher_.cmherm);
-
-  /*     Calculation by solution of linear systems */
-
-  for (iord1 = -1; iord1 <= 2; ++iord1)
-  {
-    for (iord2 = -1; iord2 <= 2; ++iord2)
-    {
-
-      iord[0] = iord1;
-      iord[1] = iord2;
-
-      iof[0] = 0;
-      iof[1] = iord[0] + 1;
-
-      ncf = iord[0] + iord[1] + 2;
-
-      /*        Calculate matrix MAT to invert: */
-
-      for (cot = 1; cot <= 2; ++cot)
-      {
-
-        if (iord[cot - 1] > -1)
-        {
-          prod = 1.;
-          i__1 = ncf;
-          for (jj = 1; jj <= i__1; ++jj)
-          {
-            cof[jj - 1] = 1.;
-            /* L200: */
-          }
-        }
-
-        i__1 = iord[cot - 1] + 1;
-        for (pp = 1; pp <= i__1; ++pp)
-        {
-
-          ii = pp + iof[cot - 1];
-
-          prod = 1.;
-
-          i__2 = pp - 1;
-          for (jj = 1; jj <= i__2; ++jj)
-          {
-            mat[ii + jj * 6 - 7] = (float)0.;
-            /* L300: */
-          }
-
-          i__2 = ncf;
-          for (jj = pp; jj <= i__2; ++jj)
-          {
-
-            /* everything is done in these 3 lines */
-
-            mat[ii + jj * 6 - 7] = cof[jj - 1] * prod;
-            cof[jj - 1] *= jj - pp;
-            prod *= debfin[cot];
-
-            /* L400: */
-          }
-          /* L500: */
-        }
-
-        /* L1000: */
-      }
-
-      /*     Inversion */
-
-      if (ncf >= 1)
-      {
-        AdvApp2Var_MathBase::mmmrslwd_(&c__6, &ncf, &ncf, mat, miden, &epspi, abid, amat, &ier);
-        if (ier > 0)
-        {
-          goto L9101;
-        }
-      }
-
-      for (cot = 1; cot <= 2; ++cot)
-      {
-        i__1 = iord[cot - 1] + 1;
-        for (pp = 1; pp <= i__1; ++pp)
-        {
-          i__2 = ncf;
-          for (ii = 1; ii <= i__2; ++ii)
-          {
-            mmcmher_.cmherm[ii + (pp + (cot + ((iord1 + (iord2 << 2)) << 1)) * 3) * 6 + 155] =
-              amat[ii + (pp + iof[cot - 1]) * 6 - 7];
-            /* L1300: */
-          }
-          /* L1400: */
-        }
-        /* L1500: */
-      }
-
-      /* L2000: */
-    }
-    /* L2010: */
-  }
-
-  /* ***********************************************************************/
-
-  /*     The initialized long is located: */
-
-  mmcmher_.tdebut = debfin[1];
-  mmcmher_.tfinal = debfin[2];
-
-  d1              = std::abs(debfin[1]) + std::abs(debfin[2]);
-  mmcmher_.verifi = d1 * 16111959;
-
-  /* ***********************************************************************/
-
-  goto L9999;
-
-  /* ***********************************************************************/
-
-L9101:
-  *iercod = 1;
-  goto L9999;
-
-L9001:
-  *iercod = -1;
-  goto L9999;
-
-  /* ***********************************************************************/
-
-L9999:
-
-  AdvApp2Var_SysBase::maermsg_("MMHERM0", iercod, 7L);
-
-  /* ***********************************************************************/
-  return 0;
-} /* mmherm0_ */
-
-//=================================================================================================
-
-int mmherm1_(double* debfin, int* ordrmx, int* iordre, double* hermit, int* iercod)
-{
-  /* System generated locals */
-  int hermit_dim1, hermit_dim2, hermit_offset;
-
-  /* Local variables */
-  int    nbval;
-  double d1;
-  int    cot;
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*      reading of coeffs. of HERMIT interpolation polynoms */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*      MATH_ACCES :: HERMIT */
-
-  /*     INPUT ARGUMENTS : */
-  /*     -------------------- */
-  /*       DEBFIN : PARAMETERS DEFINING THE CONSTRAINTS */
-  /*                 DEBFIN(1) : FIRST PARAMETER */
-  /*                 DEBFIN(2) : SECOND PARAMETER */
-
-  /*           Should be equal to the corresponding arguments during the */
-  /*           last call to MMHERM0 for the initialization of coeffs. */
-
-  /*       ORDRMX : indicates the dimensioning of HERMIT: */
-  /*              there is no choice : ORDRMX should be equal to the value */
-  /*              of PARAMETER IORDMX of INCLUDE MMCMHER, or 2 for the moment */
-
-  /*       IORDRE (2) : Orders of constraints in each corresponding parameter DEBFIN(I) */
-  /*              should be between -1 (no constraints) and ORDRMX. */
-
-  /*     OUTPUT ARGUMENTS : */
-  /*     --------------------- */
-
-  /*       HERMIT : HERMIT(1:IORDRE(1)+IORDRE(2)+2, j, cote) are the  */
-  /*       coefficients in the canonic base of Hermit polynom */
-  /*       corresponding to orders IORDRE with parameters DEBFIN for */
-  /*       the constraint of order j on DEBFIN(cote). j is between 0 and IORDRE(cote). */
-
-  /*       IERCOD : Error code : */
-  /*          -1: O.K but necessary to reinitialize the coefficients */
-  /*                 (info for optimization) */
-  /*          0 : O.K. */
-  /*          1 : Error in MMHERM0 */
-  /*          2 : arguments invalid */
-
-  /*     COMMONS USED : */
-  /*     ------------------ */
-
-  /*     REFERENCES CALLED   : */
-  /*     ---------------------- */
-  /*     Type  Name */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /*     This program reads coefficients of Hermit polynoms */
-  /*     that were earlier initialized by MMHERM0 */
-
-  /* PMN : initialisation is no more done by the caller. */
-
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*      Serves to STORE the coefficients of Hermit interpolation polynoms */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*      HERMITE */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /*     the coefficients of Hetmit polynoms are calculated by */
-  /*     routine MMHERM0 and read by routine MMHERM1 */
-
-  /* > */
-  /* ***********************************************************************/
-
-  /*     NBCOEF is the size of CMHERM (see lower) */
-
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-  /*     Initializations */
-  /* ***********************************************************************/
-
-  /* Parameter adjustments */
-  --debfin;
-  hermit_dim1   = (*ordrmx << 1) + 2;
-  hermit_dim2   = *ordrmx + 1;
-  hermit_offset = hermit_dim1 * hermit_dim2 + 1;
-  hermit -= hermit_offset;
-  --iordre;
-
-  /* Function Body */
-  *iercod = 0;
-
-  /* ***********************************************************************/
-  /*     Data Checking                                                     */
-  /* ***********************************************************************/
-
-  if (*ordrmx != 2)
-  {
-    goto L9102;
-  }
-
-  for (cot = 1; cot <= 2; ++cot)
-  {
-    if (iordre[cot] < -1)
-    {
-      goto L9102;
-    }
-    if (iordre[cot] > *ordrmx)
-    {
-      goto L9102;
-    }
-    /* L100: */
-  }
-
-  /*     IS-IT CORRECTLY INITIALIZED ? */
-
-  d1 = std::abs(debfin[1]) + std::abs(debfin[2]);
-  d1 *= 16111959;
-
-  /*     OTHERWISE IT IS INITIALIZED */
-
-  if (debfin[1] != mmcmher_.tdebut || debfin[2] != mmcmher_.tfinal || d1 != mmcmher_.verifi)
-  {
-    *iercod = -1;
-    mmherm0_(&debfin[1], iercod);
-    if (*iercod > 0)
-    {
-      goto L9101;
-    }
-  }
-
-  /* ***********************************************************************/
-  /*        READING                                                        */
-  /* ***********************************************************************/
-
-  nbval = 36;
-
-  AdvApp2Var_SysBase::msrfill_(
-    &nbval,
-    &mmcmher_.cmherm[((((iordre[1] + (iordre[2] << 2)) << 1) + 1) * 3 + 1) * 6 + 156],
-    &hermit[hermit_offset]);
-
-  /* ***********************************************************************/
-
-  goto L9999;
-
-  /* ***********************************************************************/
-
-L9101:
-  *iercod = 1;
-  goto L9999;
-
-L9102:
-  *iercod = 2;
-  goto L9999;
-
-  /* ***********************************************************************/
-
-L9999:
-
-  AdvApp2Var_SysBase::maermsg_("MMHERM1", iercod, 7L);
-
-  /* ***********************************************************************/
-  return 0;
-} /* mmherm1_ */
-
-//=================================================================================================
-
 int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
                                   int*    ncourb,
                                   int*    ncftab,
@@ -5233,7 +4572,7 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
                                   int*    iercod)
 
 {
-  int c__2  = 2;
+  int c__1  = 1;
   int c__21 = 21;
   /* System generated locals */
   int tcbold_dim1, tcbold_dim2, tcbold_offset, tcbnew_dim1, tcbnew_dim2, tcbnew_offset, i__1, i__2,
@@ -5247,9 +4586,7 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
   double mfact;
   int    ncoeff;
   double tjacap[21];
-  int    iordre[2];
-  double hermit[36] /* was [6][3][2] */, ctenor, bornes[2];
-  int    ier;
+  double hermit[36] /* was [6][3][2] */, ctenor;
   int    aux1, aux2;
 
   /* ***********************************************************************/
@@ -5289,23 +4626,6 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
   /* ***********************************************************************/
 
   /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*        Providesinteger constants from 0 to 1000 */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*        ALL, INTEGER */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  /* > */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
   /*                      INITIALIZATION                                   */
   /* ***********************************************************************/
 
@@ -5328,9 +4648,6 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
   }
   *iercod = 0;
 
-  bornes[0] = -1.;
-  bornes[1] = 1.;
-
   /* ***********************************************************************/
   /*                     PROCESSING                                        */
   /* ***********************************************************************/
@@ -5346,10 +4663,7 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
 
   /*     CALCULATION OF HERMIT POLYNOMS IN THE CANONIC BASE ON (-1,1) */
 
-  iordre[0] = *orcont;
-  iordre[1] = *orcont;
-  mmherm1_(bornes, &c__2, iordre, hermit, &ier);
-  if (ier > 0)
+  if (!loadHermiteCoefficients(*orcont, hermit))
   {
     goto L9102;
   }
@@ -5403,11 +4717,7 @@ int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
       /*     CONVERSION OF THE COEFFICIENTS OF THE PART OF THE CURVE EXPRESSED */
       /*     IN CANONIC-JACOBI BASE, INTO THE CANONIC BASE */
 
-      AdvApp2Var_MathBase::mmapcmp_(&AdvApp2Var_Data::Getminombr().nbr[1],
-                                    &c__21,
-                                    &ncoeff,
-                                    taux1,
-                                    tjacap);
+      AdvApp2Var_MathBase::mmapcmp_(&c__1, &c__21, &ncoeff, taux1, tjacap);
       AdvApp2Var_MathBase::mmjacan_(orcont, &ndeg, tjacap, taux1);
 
       /*        RECOPY THE COEFS RESULTING FROM THE CONVERSION IN THE TABLE */
@@ -5747,7 +5057,7 @@ int AdvApp2Var_MathBase::mmjacan_(const int* ideriv, int* ndeg, double* poljac, 
     i__2 = *ndeg / 2;
     for (j = i__; j <= i__2; ++j)
     {
-      bid += AdvApp2Var_Data::Getmmjcobi().plgcan[iptt + j + *ideriv * 992 + 991] * poljac[j];
+      bid += AdvApp2Var_Data::Getmmjcobi().Plgcan()[iptt + j + *ideriv * 992 + 991] * poljac[j];
       /* L310: */
     }
     polcan[i__ * 2] = bid;
@@ -5769,7 +5079,7 @@ int AdvApp2Var_MathBase::mmjacan_(const int* ideriv, int* ndeg, double* poljac, 
     i__2 = (*ndeg - 1) / 2;
     for (j = i__; j <= i__2; ++j)
     {
-      bid += AdvApp2Var_Data::Getmmjcobi().plgcan[iptt + j + ((*ideriv << 1) + 1) * 496 + 991]
+      bid += AdvApp2Var_Data::Getmmjcobi().Plgcan()[iptt + j + ((*ideriv << 1) + 1) * 496 + 991]
              * poljac[j + poljac_dim1];
       /* L410: */
     }
@@ -5798,8 +5108,6 @@ int AdvApp2Var_MathBase::mmjaccv_(const int*    ncoef,
 
 {
   /* Initialized data */
-
-  static char nomprg[8 + 1] = "MMJACCV ";
 
   /* System generated locals */
   int crvlgd_dim1, crvlgd_offset, crvcan_dim1, crvcan_offset, polaux_dim1, i__1, i__2;
@@ -5856,7 +5164,7 @@ int AdvApp2Var_MathBase::mmjaccv_(const int*    ncoef,
   ibb = AdvApp2Var_SysBase::mnfndeb_();
   if (ibb >= 3)
   {
-    AdvApp2Var_SysBase::mgenmsg_(nomprg, 6L);
+    AdvApp2Var_SysBase::mgenmsg_("MMJACCV", 6L);
   }
 
   ndeg = *ncoef - 1;
@@ -6143,12 +5451,7 @@ int AdvApp2Var_MathBase::mmpobas_(double* tparam,
                                   int*    iercod)
 
 {
-  int c__2 = 2;
   int c__1 = 1;
-
-  /* Initialized data */
-
-  double moin11[2] = {-1., 1.};
 
   /* System generated locals */
   int valbas_dim1 = 0, i__1 = 0;
@@ -6157,7 +5460,6 @@ int AdvApp2Var_MathBase::mmpobas_(double* tparam,
   double                     vjacc[80] = {};
   double                     herm[24]  = {};
   NCollection_Array1<double> vjac(vjacc[0], 1, 80);
-  int                        iord[2] = {};
   double                     wval[4] = {};
   int                        nwcof = 0, iunit = 0;
   double                     wpoly[7] = {};
@@ -6242,9 +5544,7 @@ int AdvApp2Var_MathBase::mmpobas_(double* tparam,
     goto L9101;
   }
 
-  iord[0] = *iordre;
-  iord[1] = *iordre;
-  iorjac  = (*iordre + 1) << 1;
+  iorjac = (*iordre + 1) << 1;
 
   /*  (1) Generic Calculations .... */
 
@@ -6252,8 +5552,7 @@ int AdvApp2Var_MathBase::mmpobas_(double* tparam,
 
   if (*iordre >= 0)
   {
-    mmherm1_(moin11, &c__2, iord, hermit, &ier);
-    if (ier > 0)
+    if (!loadHermiteCoefficients(*iordre, hermit))
     {
       goto L9102;
     }
@@ -8013,7 +7312,7 @@ int AdvApp2Var_MathBase::mmrtptt_(int* ndglgd, double* rtlegd)
   ilong = nsur2 << 3;
   ideb  = nsur2 * (nsur2 - 1) / 2 + 1;
   AdvApp2Var_SysBase::mcrfill_(&ilong,
-                               &AdvApp2Var_Data::Getmlgdrtl().rootab[ideb + nmod2 * 465 - 1],
+                               &AdvApp2Var_Data::Getmlgdrtl().Rootab()[ideb + nmod2 * 465 - 1],
                                &rtlegd[1]);
 
   /* ----------------------------- The end ------------------------------- */
@@ -8436,45 +7735,16 @@ int mmtrpj2_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
-                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-                             3.72184531357268220291630708234186};
-
   /* System generated locals */
   int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    ncut, i__;
-  double bidon, error;
-  int    ia, nd;
-  double bid, eps1;
+  int                               ncut, i__;
+  double                            bidon, error;
+  int                               ia, nd;
+  double                            bid, eps1;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C0);
 
   /* ***********************************************************************/
 
@@ -8541,7 +7811,7 @@ int mmtrpj2_(int*    ncofmx,
   for (i__ = *ncoeff; i__ >= i__1; --i__)
   {
     /*   Factor of renormalization. */
-    bidon = xmaxj[i__ - ncut];
+    bidon = aMaxValues.At(static_cast<size_t>(i__ - ncut));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -8608,44 +7878,16 @@ int mmtrpj4_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-                             3.05886060707437081434964933864149};
-
   /* System generated locals */
   int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    ncut, i__;
-  double bidon, error;
-  int    ia, nd;
-  double bid, eps1;
+  int                               ncut, i__;
+  double                            bidon, error;
+  int                               ia, nd;
+  double                            bid, eps1;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C1);
 
   /* ***********************************************************************/
 
@@ -8713,7 +7955,7 @@ int mmtrpj4_(int*    ncofmx,
   for (i__ = *ncoeff; i__ >= i__1; --i__)
   {
     /*   Factor of renormalization. */
-    bidon = xmaxj[i__ - ncut];
+    bidon = aMaxValues.At(static_cast<size_t>(i__ - ncut));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -8781,43 +8023,16 @@ int mmtrpj6_(int*    ncofmx,
 {
   /* Initialized data */
 
-  static double xmaxj[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-                             2.71238965987606292679677228666411};
-
   /* System generated locals */
   int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
   double d__1;
 
   /* Local variables */
-  int    ncut, i__;
-  double bidon, error;
-  int    ia, nd;
-  double bid, eps1;
+  int                               ncut, i__;
+  double                            bidon, error;
+  int                               ia, nd;
+  double                            bid, eps1;
+  const NCollection_Array1<double>& aMaxValues = PLib_JacobiPolynomial::MaxValues(GeomAbs_C2);
 
   /* ***********************************************************************/
 
@@ -8884,7 +8099,7 @@ int mmtrpj6_(int*    ncofmx,
   for (i__ = *ncoeff; i__ >= i__1; --i__)
   {
     /*   Factor of renormalization. */
-    bidon = xmaxj[i__ - ncut];
+    bidon = aMaxValues.At(static_cast<size_t>(i__ - ncut));
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -9170,90 +8385,8 @@ L9999:
 
 int AdvApp2Var_MathBase::mmveps3_(double* eps03)
 {
-  /* Initialized data */
-
-  static char nomprg[8 + 1] = "MMEPS1  ";
-
-  int ibb;
-
-  /*************************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*        Extraction of EPS1 from COMMON MPRCSN. */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*        MPRCSN,PRECISON,EPS3. */
-
-  /*     INPUT ARGUMENTS : */
-  /*     ------------------ */
-  /*       Humm. */
-
-  /*     OUTPUT ARGUMENTS : */
-  /*     ------------------- */
-  /*        EPS3 :  space zero of the denominator (10**-9) */
-  /*        EPS3 should value 10**-15 */
-
-  /*     COMMONS USED   : */
-  /*     ---------------- */
-
-  /*     REFERENCES CALLED   : */
-  /*     ----------------------- */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /* > */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*          GIVES TOLERANCES OF NULLITY IN STRIM */
-  /*          AND LIMITS OF ITERATIVE PROCESSES */
-
-  /*          GENERAL CONTEXT, MODIFIABLE BY THE UTILISER */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*          PARAMETER , TOLERANCE */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  /*       INITIALISATION   :  PROFILE , **VIA MPRFTX** AT INPUT IN STRIM*/
-  /*       LOADING OF DEFAULT VALUES OF THE PROFILE IN MPRFTX AT INPUT*/
-  /*       IN STRIM. THEY ARE PRESERVED IN THE LOCAL VARIABLES OF MPRFTX */
-
-  /*        RESET DEFAULT VALUES                   : MDFINT */
-  /*        MODIFICATION INTERACTIVE BY THE USER   : MDBINT */
-
-  /*        ACCESS FUNCTION  :  MMEPS1  ...  EPS1 */
-  /*                            MEPSPB  ...  EPS3,EPS4 */
-  /*                            MEPSLN  ...  EPS2, NITERM , NITERR */
-  /*                            MEPSNR  ...  EPS2 , NITERM */
-  /*                            MITERR  ...  NITERR */
-
-  /* > */
-  /* ***********************************************************************/
-
-  /*     NITERM : MAX NB OF ITERATIONS */
-  /*     NITERR : NB OF RAPID ITERATIONS */
-  /*     EPS1   : TOLERANCE OF 3D NULL DISTANCE */
-  /*     EPS2   : TOLERANCE OF ZERO PARAMETRIC DISTANCE */
-  /*     EPS3   : TOLERANCE TO AVOID DIVISION BY 0.. */
-  /*     EPS4   : TOLERANCE ANGULAR */
-
-  /* ***********************************************************************/
-
-  ibb = AdvApp2Var_SysBase::mnfndeb_();
-  if (ibb >= 5)
-  {
-    AdvApp2Var_SysBase::mgenmsg_(nomprg, 6L);
-  }
-
-  *eps03 = mmprcsn_.eps3;
+  // Denominator-zero tolerance used by the translated numerical routines.
+  *eps03 = THE_DIVISION_EPSILON;
 
   return 0;
 } /* mmveps3_ */
@@ -9421,109 +8554,6 @@ L9999:
   }
   return 0;
 } /* mmvncol_ */
-
-//=================================================================================================
-
-void AdvApp2Var_MathBase::mmwprcs_(double* epsil1,
-                                   double* epsil2,
-                                   double* epsil3,
-                                   double* epsil4,
-                                   int*    niter1,
-                                   int*    niter2)
-
-{
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*     ACCESS IN WRITING FOR COMMON MPRCSN */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*     WRITING */
-
-  /*     INPUT ARGUMENTS : */
-  /*     -------------------- */
-  /*     EPSIL1  : TOLERANCE OF 3D NULL DISTANCE */
-  /*     EPSIL2  : TOLERANCE OF PARAMETRIC NULL DISTANCE */
-  /*     EPSIL3  : TOLERANCE TO AVOID DIVISION BY 0.. */
-  /*     EPSIL4  : ANGULAR TOLERANCE */
-  /*     NITER1  : MAX NB OF ITERATIONS */
-  /*     NITER2  : NB OF RAPID ITERATIONS */
-
-  /*     OUTPUT ARGUMENTS : */
-  /*     --------------------- */
-  /*     NONE */
-
-  /*     COMMONS USED : */
-  /*     ------------------ */
-
-  /*     REFERENCES CALLED : */
-  /*     --------------------- */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-
-  /* > */
-  /* ***********************************************************************/
-  /*                            DECLARATIONS                               */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-  /*                      INITIALIZATIONS                                  */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-  /*                      PROCESSING                                       */
-  /* ***********************************************************************/
-
-  /* ***********************************************************************/
-
-  /*     FUNCTION : */
-  /*     ---------- */
-  /*          GIVES TOLERANCES OF NULLITY IN STRIM */
-  /*          AND  LIMITS OF ITERATIVE PROCESSES */
-
-  /*          GENERAL CONTEXT, MODIFIABLE BY THE UTILISER */
-
-  /*     KEYWORDS : */
-  /*     ----------- */
-  /*          PARAMETER , TOLERANCE */
-
-  /*     DESCRIPTION/NOTES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  /*       INITIALISATION   :  PROFILE , **VIA MPRFTX** AT INPUT IN STRIM*/
-  /*       LOADING OF DEFAULT VALUES OF THE PROFILE IN MPRFTX AT INPUT*/
-  /*       IN STRIM. THEY ARE PRESERVED IN THE LOCAL VARIABLES OF MPRFTX */
-
-  /*        RESET DEFAULT VALUES                   : MDFINT */
-  /*        MODIFICATION INTERACTIVE BY THE USER   : MDBINT */
-
-  /*        ACCESS FUNCTION  :  MMEPS1  ...  EPS1 */
-  /*                            MEPSPB  ...  EPS3,EPS4 */
-  /*                            MEPSLN  ...  EPS2, NITERM , NITERR */
-  /*                            MEPSNR  ...  EPS2 , NITERM */
-  /*                            MITERR  ...  NITERR */
-
-  /* > */
-  /* ***********************************************************************/
-
-  /*     NITERM : MAX NB OF ITERATIONS */
-  /*     NITERR : NB OF RAPID ITERATIONS */
-  /*     EPS1   : TOLERANCE OF 3D NULL DISTANCE */
-  /*     EPS2   : TOLERANCE OF ZERO PARAMETRIC DISTANCE */
-  /*     EPS3   : TOLERANCE TO AVOID DIVISION BY 0.. */
-  /*     EPS4   : TOLERANCE ANGULAR */
-
-  /* ***********************************************************************/
-  mmprcsn_.eps1   = *epsil1;
-  mmprcsn_.eps2   = *epsil2;
-  mmprcsn_.eps3   = *epsil3;
-  mmprcsn_.eps4   = *epsil4;
-  mmprcsn_.niterm = *niter1;
-  mmprcsn_.niterr = *niter2;
-} /* mmwprcs_  */
 
 //=================================================================================================
 
@@ -9829,7 +8859,7 @@ int mvcvin2_(int* ncoeff, double* crvold, double* crvnew, int* iercod)
     i__2  = *ncoeff;
     for (k = j + 1; k <= i__2; ++k)
     {
-      bid = AdvApp2Var_Data::Getmmcmcnp().cnp[k - 1 + (j - 1) * 61];
+      bid = AdvApp2Var_Data::Getmmcmcnp().Cnp()[k - 1 + (j - 1) * 61];
       cij1 += crvold[(k << 1) + 1] * bid;
       cij2 += crvold[(k << 1) + 2] * bid;
     }
@@ -9973,7 +9003,7 @@ int mvcvinv_(int* ncoeff, double* crvold, double* crvnew, int* iercod)
     i__2  = *ncoeff;
     for (k = j + 1; k <= i__2; ++k)
     {
-      bid = AdvApp2Var_Data::Getmmcmcnp().cnp[k - 1 + (j - 1) * 61];
+      bid = AdvApp2Var_Data::Getmmcmcnp().Cnp()[k - 1 + (j - 1) * 61];
       cij1 += crvold[k * 3 + 1] * bid;
       cij2 += crvold[k * 3 + 2] * bid;
       cij3 += crvold[k * 3 + 3] * bid;
