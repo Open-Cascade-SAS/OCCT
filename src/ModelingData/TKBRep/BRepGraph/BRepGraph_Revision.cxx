@@ -599,7 +599,7 @@ BRepGraph_Revision::CreateResult BRepGraph_Revision::Create(const BRepGraph& the
                                               theOptions.SchemaVersion,
                                               aSupportsSparseEdits,
                                               aComponents);
-    aResult.Status = BRepGraph_RevisionStatus::Code::Ok;
+    aResult.Status   = BRepGraph_RevisionStatus::Code::Ok;
     return aResult;
   }
   catch (const Standard_Failure& theFailure)
@@ -678,7 +678,7 @@ BRepGraph_Revision::CreateResult BRepGraph_Revision::FromTransactionGraph(
                                               theSchemaVersion,
                                               aSupportsSparseEdits,
                                               aComponents);
-    aResult.Status = BRepGraph_RevisionStatus::Code::Ok;
+    aResult.Status   = BRepGraph_RevisionStatus::Code::Ok;
   }
   catch (const Standard_Failure& theFailure)
   {
@@ -1356,7 +1356,7 @@ occ::handle<BRepGraph_Revision> BRepGraph_Revision::FromComponents(
   try
   {
     const std::shared_ptr<const HashState> aBaseHashState = theBaseRevision->hashStateIfAvailable();
-    std::shared_ptr<const HashState> aHashState;
+    std::shared_ptr<const HashState>       aHashState;
     if (aBaseHashState != nullptr)
     {
       std::shared_ptr<HashState> aNewHashState = std::make_shared<HashState>(*aBaseHashState);

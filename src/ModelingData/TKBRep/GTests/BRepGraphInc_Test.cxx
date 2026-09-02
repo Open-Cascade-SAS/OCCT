@@ -207,10 +207,10 @@ TEST(BRepGraphIncTest, ParityOrientationRejectsInternalExternal)
 
 TEST(BRepGraphIncTest, CopiedStorageDetachesModifiedRelations)
 {
-  BRepGraphInc_Storage          aSource;
-  const BRepGraph_VertexId      aVertex   = aSource.AppendVertex();
-  const BRepGraph_CompoundId    aCompound = aSource.AppendCompound();
-  const BRepGraph_ChildRefId    aChildRef =
+  BRepGraphInc_Storage       aSource;
+  const BRepGraph_VertexId   aVertex   = aSource.AppendVertex();
+  const BRepGraph_CompoundId aCompound = aSource.AppendCompound();
+  const BRepGraph_ChildRefId aChildRef =
     aSource.AttachChildToCompound(aCompound, BRepGraph_NodeId(aVertex));
   ASSERT_TRUE(aChildRef.IsValid());
 

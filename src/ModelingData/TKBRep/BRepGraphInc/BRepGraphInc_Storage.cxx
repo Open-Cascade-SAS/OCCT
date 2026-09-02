@@ -1085,8 +1085,7 @@ void BRepGraphInc_Storage::ClearRelations()
 const NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraphInc_Storage::CompoundRefsOfNode(
   const BRepGraph_NodeId theNode) const
 {
-  if (const NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs =
-        myNodeToCompounds.Seek(theNode))
+  if (const NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs = myNodeToCompounds.Seek(theNode))
   {
     return *aRefs;
   }
@@ -1722,10 +1721,10 @@ bool BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
       || NbFaces() != theSource.NbFaces() || NbShells() != theSource.NbShells()
       || NbSolids() != theSource.NbSolids() || NbCompounds() != theSource.NbCompounds()
       || NbCompSolids() != theSource.NbCompSolids() || NbProducts() != theSource.NbProducts()
-      || NbOccurrences() != theSource.NbOccurrences()
-      || NbShellRefs() != theSource.NbShellRefs() || NbFaceRefs() != theSource.NbFaceRefs()
-      || NbWireRefs() != theSource.NbWireRefs() || NbVertexRefs() != theSource.NbVertexRefs()
-      || NbSolidRefs() != theSource.NbSolidRefs() || NbChildRefs() != theSource.NbChildRefs()
+      || NbOccurrences() != theSource.NbOccurrences() || NbShellRefs() != theSource.NbShellRefs()
+      || NbFaceRefs() != theSource.NbFaceRefs() || NbWireRefs() != theSource.NbWireRefs()
+      || NbVertexRefs() != theSource.NbVertexRefs() || NbSolidRefs() != theSource.NbSolidRefs()
+      || NbChildRefs() != theSource.NbChildRefs()
       || NbOccurrenceRefs() != theSource.NbOccurrenceRefs())
   {
     return false;
